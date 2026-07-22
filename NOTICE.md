@@ -7,7 +7,18 @@ the shadcn v4 "new-york" registry. The event-delegation JS architecture is
 original to gsxui.
 
 Icon markup embedded in components is from [Lucide](https://lucide.dev)
-(ISC License, © Lucide Contributors — https://lucide.dev/license).
+(ISC License, © Lucide Contributors — https://lucide.dev/license). `ui/icon`'s
+generated files (`icon_data.go`, `icon_defs.go`) are produced by
+`internal/lucidegen` from
+[lucide-icons/lucide@4e2efb9350fac7dbcb94caae9ccac5654bdcc050](https://github.com/lucide-icons/lucide/tree/4e2efb9350fac7dbcb94caae9ccac5654bdcc050)
+(1,748 icons); regenerate with `make icons` against a fresh checkout to pick
+up a newer Lucide release.
+
+gsxui's server-side shadcn ports (component structure, `data-slot` parity,
+the generated-registry CLI) were developed with
+[templUI](https://github.com/templui/templui) (MIT, © templUI contributors)
+consulted as architectural precedent for porting shadcn/ui to a Go templating
+language — structure only; no templUI code was copied.
 
 When `gsxui add` vendors component source into your project, the vendored
 files remain subject to these notices alongside gsxui's own MIT license.
