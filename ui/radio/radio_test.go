@@ -23,12 +23,11 @@ func TestRadioDefault(t *testing.T) {
 	for _, want := range []string{
 		`<input type="radio"`,
 		`data-slot="radio"`,
-		"peer size-4 shrink-0 appearance-none rounded-full",
+		"peer aspect-square size-4 shrink-0 appearance-none rounded-full",
+		"text-primary",
 		"disabled:cursor-not-allowed disabled:opacity-50",
 		"aria-invalid:border-destructive aria-invalid:ring-destructive/20",
-		"checked:bg-primary checked:border-primary",
-		"checked:bg-[url(&#39;data:image/svg+xml",
-		"checked:bg-center checked:bg-no-repeat checked:bg-[length:12px_12px]",
+		"checked:bg-[radial-gradient(circle_closest-side,currentColor_45%,transparent_50%)]",
 		"/>",
 	} {
 		if !strings.Contains(got, want) {
@@ -37,14 +36,17 @@ func TestRadioDefault(t *testing.T) {
 	}
 }
 
-func TestRadioNoStraySpaceInDataURI(t *testing.T) {
-	// Same class-merge corruption hazard as checkbox — see
+func TestRadioNoStraySpaceInGradient(t *testing.T) {
+	// Same class-merge corruption hazard as checkbox's data-URI — see
 	// checkbox_test.go's TestCheckboxNoStraySpaceInDataURI and
-	// docs/jsx-parity.md.
+	// docs/jsx-parity.md. The radial-gradient's embedded spaces are
+	// Tailwind's underscore escape, not literal spaces, so it must survive
+	// the tailwind-merge pass (merge.Merge, invoked on every render) intact
+	// rather than being torn apart at a bare space token boundary.
 	got := render(t, radio.Radio(nil))
-	want := "checked:bg-[url(&#39;data:image/svg+xml;charset=utf-8,%3Csvg_xmlns=%22http://www.w3.org/2000/svg%22_viewBox=%220_0_24_24%22%3E%3Ccircle_cx=%2212%22_cy=%2212%22_r=%226%22_fill=%22white%22/%3E%3C/svg%3E&#39;)]"
+	want := "checked:bg-[radial-gradient(circle_closest-side,currentColor_45%,transparent_50%)]"
 	if !strings.Contains(got, want) {
-		t.Errorf("data-URI corrupted by class merge\nwant substring: %s\n in: %s", want, got)
+		t.Errorf("radial-gradient corrupted by class merge\nwant substring: %s\n in: %s", want, got)
 	}
 }
 
@@ -90,10 +92,12 @@ func TestRadioPinned(t *testing.T) {
 	// Exact full-render pin. Token-by-token verified against shadcn's
 	// RadioGroupItem (registry/new-york-v4/ui/radio-group.tsx) plus the
 	// ledgered ADAPTs: native <input type="radio"> replaces Radix
-	// Root/Indicator/CircleIcon; checked-state visuals move to a
-	// checked:bg-[url(...)] data-URI circle. See docs/jsx-parity.md.
+	// Root/Indicator/CircleIcon; the Indicator's fill-primary CircleIcon
+	// becomes a checked:bg-[radial-gradient(...)] painted in currentColor
+	// (text-primary is what makes currentColor resolve to primary here —
+	// load-bearing, not vestigial). See docs/jsx-parity.md.
 	got := render(t, radio.Radio(nil))
-	want := `<input type="radio" data-slot="radio" class="peer size-4 shrink-0 appearance-none rounded-full border border-input shadow-xs transition-shadow outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:bg-input/30 checked:bg-primary checked:border-primary checked:bg-[url(&#39;data:image/svg+xml;charset=utf-8,%3Csvg_xmlns=%22http://www.w3.org/2000/svg%22_viewBox=%220_0_24_24%22%3E%3Ccircle_cx=%2212%22_cy=%2212%22_r=%226%22_fill=%22white%22/%3E%3C/svg%3E&#39;)] checked:bg-center checked:bg-no-repeat checked:bg-[length:12px_12px]"/>`
+	want := `<input type="radio" data-slot="radio" class="peer aspect-square size-4 shrink-0 appearance-none rounded-full border border-input text-primary shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:bg-input/30 checked:bg-[radial-gradient(circle_closest-side,currentColor_45%,transparent_50%)]"/>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

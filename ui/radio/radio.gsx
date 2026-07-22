@@ -10,11 +10,24 @@ import "github.com/gsxhq/gsx"
 // elements already gives you the group; the layout wrapper is the caller's
 // concern, same as any other flex/grid container (ledger ADAPT).
 //
-// The Indicator's CircleIcon child becomes a checked:bg-[url(...)] data-URI
-// background (same restructuring as checkbox); the data-URI's embedded
+// Tokens are carried verbatim from RadioGroupItem (aspect-square size-4
+// shrink-0 rounded-full border border-input text-primary shadow-xs
+// transition-[color,box-shadow] outline-none + focus-visible/disabled/
+// aria-invalid/dark tokens); appearance-none is added for the same
+// mechanical reason as checkbox.
+//
+// The Indicator's CircleIcon child (`fill-primary`) becomes a
+// checked:bg-[radial-gradient(...)] painted in currentColor — a data-URI
+// can't reference the caller's CSS custom properties (--primary), but a
+// currentColor gradient can, and text-primary above is what makes
+// currentColor resolve to the primary color here. This is why text-primary
+// stays instead of being dropped like checkbox's analogous token: it is now
+// load-bearing for the dot's color, not vestigial. Same restructuring
+// approach as checkbox's data-URI, different mechanism because the payload
+// here is a flat fill, not an SVG path; the radial-gradient's embedded
 // spaces are Tailwind's underscore escape for whitespace inside a bracketed
 // arbitrary value, not literal spaces — see checkbox.gsx and
 // docs/jsx-parity.md.
 component Radio(attrs gsx.Attrs) {
-	<input type="radio" data-slot="radio" class="peer size-4 shrink-0 appearance-none rounded-full border border-input shadow-xs transition-shadow outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:bg-input/30 checked:bg-primary checked:border-primary checked:bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg_xmlns=%22http://www.w3.org/2000/svg%22_viewBox=%220_0_24_24%22%3E%3Ccircle_cx=%2212%22_cy=%2212%22_r=%226%22_fill=%22white%22/%3E%3C/svg%3E')] checked:bg-center checked:bg-no-repeat checked:bg-[length:12px_12px]" { attrs... }/>
+	<input type="radio" data-slot="radio" class="peer aspect-square size-4 shrink-0 appearance-none rounded-full border border-input text-primary shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:bg-input/30 checked:bg-[radial-gradient(circle_closest-side,currentColor_45%,transparent_50%)]" { attrs... }/>
 }

@@ -92,9 +92,11 @@ func TestSwitchPinned(t *testing.T) {
 	// Switch (registry/new-york-v4/ui/switch.tsx) plus the ledgered
 	// ADAPTs: native <input type="checkbox" role="switch"> replaces Root,
 	// and the Thumb span becomes a before: pseudo-element on the same
-	// input. See docs/jsx-parity.md.
+	// input. shadcn's Thumb has no shadow at all (ring-0, nothing else) —
+	// before:shadow-lg is not sourced from anywhere and is intentionally
+	// absent here. See docs/jsx-parity.md.
 	got := render(t, switchctl.Switch(nil))
-	want := `<input type="checkbox" role="switch" data-slot="switch" class="peer inline-flex shrink-0 items-center appearance-none rounded-full border border-transparent shadow-xs transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 h-[1.15rem] w-8 bg-input checked:bg-primary dark:bg-input/80 before:pointer-events-none before:block before:size-4 before:rounded-full before:bg-background before:shadow-lg before:transition-transform before:content-[&#39;&#39;] checked:before:translate-x-[calc(100%-2px)] dark:before:bg-foreground dark:checked:before:bg-primary-foreground"/>`
+	want := `<input type="checkbox" role="switch" data-slot="switch" class="peer inline-flex shrink-0 items-center appearance-none rounded-full border border-transparent shadow-xs transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 h-[1.15rem] w-8 bg-input checked:bg-primary dark:bg-input/80 before:pointer-events-none before:block before:size-4 before:rounded-full before:bg-background before:transition-transform before:content-[&#39;&#39;] checked:before:translate-x-[calc(100%-2px)] dark:before:bg-foreground dark:checked:before:bg-primary-foreground"/>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

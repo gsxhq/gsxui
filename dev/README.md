@@ -12,3 +12,10 @@ backdrop: must close.
 
 After opening: dialog must have aria-labelledby and aria-describedby;
 trigger aria-expanded flips true/false with open state.
+
+checkbox/radio/switchctl are zero-JS (native `<input>` + `:checked`/
+`:disabled` browser truth, no delegation/behavior JS to smoke-test) so they
+are intentionally absent from this harness — it verifies buildless
+JS-behavior only, and these components' correctness is entirely in their
+Tailwind class recipes, which need a Tailwind'd site to render meaningfully
+(see Plan 4).
