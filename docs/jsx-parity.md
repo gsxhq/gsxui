@@ -14,3 +14,9 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
 
 ## card
 - Straight port; package-namespaced compound parts (`card.CardHeader`) replace module exports. No divergences.
+
+## dialog
+- WIN: Radix Portal/Overlay replaced by native <dialog> top layer + ::backdrop; Esc handling is browser-native.
+- GAP: `showCloseButton` defaults true in shadcn; gsx named params default to zero — inverted to `hideCloseButton`. Raise: default parameter values.
+- GAP: Radix client context (trigger↔content wiring) replaced by closest("[data-gsxui-dialog]") proximity in JS.
+- NOTE: controlled open/onOpenChange not ported; JS CustomEvents (gsxui:open/close) + dialog.showModal() are the programmatic API.
