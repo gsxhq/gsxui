@@ -66,6 +66,17 @@ func TestBadgeCallerClassMerges(t *testing.T) {
 	}
 }
 
+func TestBadgePinned(t *testing.T) {
+	// Exact full-render pin, verified token-by-token against shadcn's
+	// badgeVariants base + default variant (registry/new-york-v4/ui/badge.tsx)
+	// and docs/jsx-parity.md — no ADAPT deviations apply to the default badge.
+	got := render(t, badge.Badge("", gsx.Raw("New"), nil))
+	want := `<span data-slot="badge" data-variant="default" class="inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-full border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;&gt;svg]:pointer-events-none [&amp;&gt;svg]:size-3 bg-primary text-primary-foreground [a&amp;]:hover:bg-primary/90">New</span>`
+	if got != want {
+		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
+	}
+}
+
 func TestBadgeAttrsFallThrough(t *testing.T) {
 	got := render(t, badge.Badge("", gsx.Raw("x"), gsx.Attrs{{Key: "id", Value: "b1"}, {Key: "aria-label", Value: "badge"}}))
 	for _, want := range []string{`id="b1"`, `aria-label="badge"`} {

@@ -42,6 +42,18 @@ func TestButtonDefault(t *testing.T) {
 	}
 }
 
+func TestButtonPinned(t *testing.T) {
+	// Exact full-render pin, verified token-by-token against shadcn's
+	// buttonVariants base + default variant + default size
+	// (registry/new-york-v4/ui/button.tsx) and docs/jsx-parity.md — no ADAPT
+	// deviations apply to the default button.
+	got := render(t, button.Button("", "", "", false, gsx.Raw("Save"), nil))
+	want := `<button data-slot="button" data-variant="default" data-size="default" type="button" class="inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 has-[&gt;svg]:px-3">Save</button>`
+	if got != want {
+		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
+	}
+}
+
 func TestButtonVariantSize(t *testing.T) {
 	got := render(t, button.Button("outline", "sm", "", false, gsx.Raw("x"), nil))
 	for _, want := range []string{

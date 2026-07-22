@@ -42,6 +42,17 @@ func TestCardParts(t *testing.T) {
 	}
 }
 
+func TestCardPinned(t *testing.T) {
+	// Exact full-render pin, verified token-by-token against shadcn's Card
+	// (registry/new-york-v4/ui/card.tsx) and docs/jsx-parity.md — a straight
+	// port, no divergences.
+	got := render(t, card.Card(gsx.Raw("Content"), nil))
+	want := `<div data-slot="card" class="flex flex-col gap-6 rounded-xl border bg-card py-6 text-card-foreground shadow-sm">Content</div>`
+	if got != want {
+		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
+	}
+}
+
 func TestCardComposition(t *testing.T) {
 	got := render(t, card.Card(
 		gsx.Fragment(
