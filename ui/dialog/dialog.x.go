@@ -56,11 +56,17 @@ func DialogTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"button\"")
 		}
+		if !attrs.Has("aria-haspopup") {
+			_gsxgw.S(" aria-haspopup=\"dialog\"")
+		}
+		if !attrs.Has("aria-expanded") {
+			_gsxgw.S(" aria-expanded=\"false\"")
+		}
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line dialog.gsx:16:90
+//line dialog.gsx:16:135
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()

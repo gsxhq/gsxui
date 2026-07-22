@@ -13,7 +13,7 @@ component Dialog(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component DialogTrigger(children gsx.Node, attrs gsx.Attrs) {
-	<button data-slot="dialog-trigger" data-gsxui-dialog-trigger type="button" { attrs... }>{ children }</button>
+	<button data-slot="dialog-trigger" data-gsxui-dialog-trigger type="button" aria-haspopup="dialog" aria-expanded="false" { attrs... }>{ children }</button>
 }
 
 // DialogContent renders the native <dialog>. hideCloseButton omits the
