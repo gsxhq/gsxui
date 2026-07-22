@@ -13,6 +13,14 @@ backdrop: must close.
 After opening: dialog must have aria-labelledby and aria-describedby;
 trigger aria-expanded flips true/false with open state.
 
+Dropdown: click the trigger to open (positioned under it); trigger
+aria-expanded flips true/false with open state; ArrowDown/ArrowUp roves
+focus between menu items, wrapping at both ends; clicking a menu item logs
+`gsxui:select <item text>` and closes the menu; clicking anywhere outside
+the open menu light-dismisses it (no JS for this — native `popover="auto"`)
+and logs `gsxui:close`; Esc also closes it for free. Every open/close
+transition logs its CustomEvent.
+
 Avatar: the good-image block must end up showing only the image (fallback
 `display:none`); the broken-image block must end up showing only the
 fallback (image `display:none`). The image covers the fallback via

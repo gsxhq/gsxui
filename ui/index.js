@@ -3,3 +3,4 @@
 export * from "./core/gsxui.js";
 import "./avatar/avatar.js";
 import "./dialog/dialog.js";
+import "./dropdown/dropdown.js";

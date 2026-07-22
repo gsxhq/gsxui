@@ -12,6 +12,18 @@
 	</div>
 	<pre id="log"></pre>
 
+	<p>Dropdown (open via trigger; ArrowDown/ArrowUp roves focus between items; clicking an item logs gsxui:select and closes; clicking outside the menu light-dismisses it for free — native popover="auto"):</p>
+	<div data-slot="dropdown-menu" data-gsxui-dropdown class="contents">
+		<button data-slot="dropdown-menu-trigger" data-gsxui-dropdown-trigger type="button" aria-haspopup="menu" aria-expanded="false">Open menu</button>
+		<div data-slot="dropdown-menu-content" data-gsxui-dropdown-content popover="auto" role="menu" data-state="closed">
+			<div data-slot="dropdown-menu-label">Actions</div>
+			<div data-slot="dropdown-menu-separator" role="separator"></div>
+			<div data-slot="dropdown-menu-item" data-gsxui-dropdown-item data-variant="default" role="menuitem" tabindex="-1">Edit</div>
+			<div data-slot="dropdown-menu-item" data-gsxui-dropdown-item data-variant="default" role="menuitem" tabindex="-1">Duplicate</div>
+			<div data-slot="dropdown-menu-item" data-gsxui-dropdown-item data-variant="destructive" role="menuitem" tabindex="-1">Delete</div>
+		</div>
+	</div>
+
 	<p>Avatar (good image — should show the image, fallback hidden):</p>
 	<span data-slot="avatar" style="display:flex">
 		<img data-slot="avatar-image" data-gsxui-avatar-image src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=" alt="ok"/>
@@ -29,6 +41,7 @@
 		const log = document.getElementById("log");
 		document.addEventListener("gsxui:open", () => (log.textContent += "gsxui:open\n"));
 		document.addEventListener("gsxui:close", () => (log.textContent += "gsxui:close\n"));
+		document.addEventListener("gsxui:select", (e) => (log.textContent += `gsxui:select ${e.target.textContent}\n`));
 	</script>
 </body>
 </html>
