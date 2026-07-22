@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>gsxui dev preview</title></head>
+<body>
+	<div data-gsxui-dialog class="contents" data-slot="dialog">
+		<button data-slot="dialog-trigger" data-gsxui-dialog-trigger type="button">Open dialog</button>
+		<dialog data-slot="dialog-content" data-gsxui-dialog-content data-state="closed">
+			<h2 data-slot="dialog-title">Are you sure?</h2>
+			<p data-slot="dialog-description">This cannot be undone.</p>
+			<button data-slot="dialog-close" data-gsxui-dialog-close type="button" aria-label="Close">X</button>
+		</dialog>
+	</div>
+	<pre id="log"></pre>
+	<script type="module">
+		import "../ui/index.js";
+		const log = document.getElementById("log");
+		document.addEventListener("gsxui:open", () => (log.textContent += "gsxui:open\n"));
+		document.addEventListener("gsxui:close", () => (log.textContent += "gsxui:close\n"));
+	</script>
+</body>
+</html>
