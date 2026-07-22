@@ -155,19 +155,22 @@ func AccordionContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line accordion.gsx:80:2
+		_gsxv0 := attrs.Without("class")
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
+		if !_gsxv0.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"accordion-content\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("overflow-hidden text-sm"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("overflow-hidden text-sm"), _gsxrt.Class(_gsxv0.Class()))
 		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.StyleMerged("", _gsxv0.Style())
+		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
 //line accordion.gsx:81:3
-		_gsxgw.S("<div class=\"pt-0 pb-4\">")
-//line accordion.gsx:81:26
+		_gsxgw.S("<div class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pt-0 pb-4"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\">")
+//line accordion.gsx:81:45
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div></div>")
 		return _gsxgw.Err()

@@ -114,6 +114,43 @@ func TestAccordionAttrsFallThrough(t *testing.T) {
 	}
 }
 
+// TestAccordionContentCallerClassRoutesToInner covers the shadcn parity fix:
+// rest props land on the OUTER Content element (class hardcoded to
+// "overflow-hidden text-sm"), while a caller's className merges onto the
+// INNER `pt-0 pb-4` wrapper div — matching shadcn's cn() split between the
+// two divs, expressed here via attrs.Without("class") / attrs.Class().
+func TestAccordionContentCallerClassRoutesToInner(t *testing.T) {
+	got := render(t, accordion.AccordionContent(gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "pb-8"}}))
+
+	// pb-8 conflicts with the inner pt-0 pb-4's pb-4 (both set
+	// padding-bottom) and must win there; pt-0 survives untouched.
+	if !strings.Contains(got, `<div class="pt-0 pb-8">x</div>`) {
+		t.Errorf("caller class must merge onto the INNER wrapper, dropping pb-4\nin: %s", got)
+	}
+	if strings.Contains(got, "pb-4") {
+		t.Errorf("pb-4 should have been dropped by caller's pb-8\nin: %s", got)
+	}
+	// The outer div's class is the hardcoded shadcn constant only — no
+	// caller class landed there.
+	if !strings.Contains(got, `<div data-slot="accordion-content" class="overflow-hidden text-sm">`) {
+		t.Errorf("outer div's class must stay the hardcoded constant, unmerged with caller class\nin: %s", got)
+	}
+}
+
+// TestAccordionContentNonClassAttrsRouteToOuter covers the other half of the
+// routing split: non-class rest props (id, aria-*, data-*, …) land on the
+// OUTER Content element, matching Radix's rest-prop spread target.
+func TestAccordionContentNonClassAttrsRouteToOuter(t *testing.T) {
+	got := render(t, accordion.AccordionContent(gsx.Raw("x"), gsx.Attrs{{Key: "id", Value: "panel-1"}}))
+
+	if !strings.Contains(got, `<div data-slot="accordion-content" class="overflow-hidden text-sm" id="panel-1">`) {
+		t.Errorf("id must land on the OUTER div\nin: %s", got)
+	}
+	if !strings.Contains(got, `<div class="pt-0 pb-4">x</div>`) {
+		t.Errorf("inner wrapper must be unaffected by non-class attrs\nin: %s", got)
+	}
+}
+
 func TestAccordionItemPinned(t *testing.T) {
 	// Exact full-render pin for a closed AccordionItem, verified token-by-
 	// token against shadcn's AccordionItem (registry/new-york-v4/ui/

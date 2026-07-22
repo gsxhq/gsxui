@@ -77,7 +77,7 @@ component AccordionTrigger(children gsx.Node, attrs gsx.Attrs) {
 // it's recorded here rather than shipped; a future task can layer it on as
 // a pure-CSS enhancement without touching this markup.
 component AccordionContent(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="accordion-content" class="overflow-hidden text-sm" { attrs... }>
-		<div class="pt-0 pb-4">{ children }</div>
+	<div data-slot="accordion-content" class="overflow-hidden text-sm" { attrs.Without("class")... }>
+		<div class={ "pt-0 pb-4", attrs.Class() }>{ children }</div>
 	</div>
 }
