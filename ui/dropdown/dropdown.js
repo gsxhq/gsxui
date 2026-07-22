@@ -20,7 +20,12 @@ on("click", "[data-gsxui-dropdown-trigger]", (_e, trigger) => {
   if (!content) return;
   const wasOpen = trigger.dataset.gsxuiWasOpen === "true";
   delete trigger.dataset.gsxuiWasOpen;
-  if (wasOpen) return;                        // light dismiss already closed it
+  if (wasOpen) {
+    // If light dismiss didn't fire (e.g. a caller overrode popover="manual"),
+    // converge on the actual state instead of assuming it closed.
+    if (content.matches(":popover-open")) content.hidePopover();
+    return;
+  }
   if (content.matches(":popover-open")) {     // keyboard activation close path
     content.hidePopover();
     return;
@@ -42,6 +47,7 @@ on(
       .closest("[data-gsxui-dropdown]")
       ?.querySelector("[data-gsxui-dropdown-trigger]");
     trigger?.setAttribute("aria-expanded", open ? "true" : "false");
+    delete trigger?.dataset.gsxuiWasOpen;
     if (open) content.querySelector('[role="menuitem"]:not([aria-disabled])')?.focus();
     emit(content, open ? "gsxui:open" : "gsxui:close");
   },
