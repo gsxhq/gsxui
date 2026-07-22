@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -99,5 +100,69 @@ func TestAddUnknown(t *testing.T) {
 	err := Run([]string{"add", "nope"})
 	if err == nil || !strings.Contains(err.Error(), "unknown component") {
 		t.Fatalf("want unknown-component error, got %v", err)
+	}
+}
+
+func TestAddGenerateFailureHint(t *testing.T) {
+	_, _ = initedModule(t)
+	orig := runCommand
+	runCommand = func(dir, name string, args ...string) error {
+		if name == "go" && len(args) > 0 && args[0] == "tool" {
+			return fmt.Errorf("exit status 1")
+		}
+		return nil
+	}
+	t.Cleanup(func() { runCommand = orig })
+	err := Run([]string{"add", "badge"})
+	if err == nil {
+		t.Fatal("want error when gsx generate fails")
+	}
+	if !strings.Contains(err.Error(), "gsx generate:") || !strings.Contains(err.Error(), "gsxui init") {
+		t.Fatalf("want actionable hint, got %v", err)
+	}
+}
+
+func TestAddRejectsCore(t *testing.T) {
+	_, _ = initedModule(t)
+	err := Run([]string{"add", "core"})
+	if err == nil || !strings.Contains(err.Error(), "unknown component") {
+		t.Fatalf("want unknown-component error for core, got %v", err)
+	}
+}
+
+func TestAddRefusesCustomBarrel(t *testing.T) {
+	dir, _ := initedModule(t)
+	indexPath := filepath.Join(dir, "web/gsxui/index.js")
+	custom := "// hand-written, thanks\nexport * from \"./core/gsxui.js\";\n"
+	if err := os.WriteFile(indexPath, []byte(custom), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	err := Run([]string{"add", "badge"})
+	if err == nil || !strings.Contains(err.Error(), "--overwrite") {
+		t.Fatalf("want overwrite-refusal error, got %v", err)
+	}
+	got, _ := os.ReadFile(indexPath)
+	if string(got) != custom {
+		t.Errorf("custom index.js was modified:\n%s", got)
+	}
+	if err := Run([]string{"add", "--overwrite", "badge"}); err != nil {
+		t.Fatal(err)
+	}
+	got, _ = os.ReadFile(indexPath)
+	if !strings.HasPrefix(string(got), barrelHeader) {
+		t.Errorf("--overwrite should replace with the generated barrel:\n%s", got)
+	}
+}
+
+func TestAddRegeneratesGeneratedBarrelWithoutOverwrite(t *testing.T) {
+	dir, _ := initedModule(t)
+	// index.js from init already carries the generated header; adding a
+	// component with JS must regenerate it without needing --overwrite.
+	if err := Run([]string{"add", "dialog"}); err != nil {
+		t.Fatal(err)
+	}
+	index, _ := os.ReadFile(filepath.Join(dir, "web/gsxui/index.js"))
+	if !strings.Contains(string(index), `import "./dialog.js";`) {
+		t.Errorf("generated barrel not regenerated:\n%s", index)
 	}
 }

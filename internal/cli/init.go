@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"errors"
 	"fmt"
 	"io/fs"
 	"os"
@@ -39,11 +40,16 @@ func runInit(args []string) error {
 	if err != nil {
 		return err
 	}
-	cfg := DefaultConfig()
-	if existing, err := LoadConfig(dir); err == nil {
-		cfg = existing
-	} else if err := cfg.Save(dir); err != nil {
-		return err
+	cfg, err := LoadConfig(dir)
+	switch {
+	case err == nil:
+	case errors.Is(err, errConfigNotFound):
+		cfg = DefaultConfig()
+		if err := cfg.Save(dir); err != nil {
+			return err
+		}
+	default:
+		return err // unparsable or unreadable: never overwrite
 	}
 
 	css, err := fs.ReadFile(gsxui.Files, "assets/gsxui.css")

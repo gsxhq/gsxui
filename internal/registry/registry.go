@@ -8,14 +8,15 @@ import (
 	"fmt"
 	"io/fs"
 	"regexp"
+	"slices"
 	"sort"
 
 	gsxui "github.com/gsxhq/gsxui"
 )
 
 // importRe matches gsxui-internal imports in .gsx source, capturing the
-// component package name.
-var importRe = regexp.MustCompile(`"github\.com/gsxhq/gsxui/ui/([a-z]+)"`)
+// component package name (component dir names are lowercase alphanumerics).
+var importRe = regexp.MustCompile(`"github\.com/gsxhq/gsxui/ui/([a-z0-9]+)"`)
 
 func Components() ([]string, error) {
 	entries, err := fs.ReadDir(gsxui.Files, "ui")
@@ -33,6 +34,9 @@ func Components() ([]string, error) {
 }
 
 func Deps(name string) ([]string, error) {
+	if !isComponent(name) {
+		return nil, fmt.Errorf("unknown component %q (run 'gsxui list')", name)
+	}
 	entries, err := fs.ReadDir(gsxui.Files, "ui/"+name)
 	if err != nil {
 		return nil, fmt.Errorf("unknown component %q (run 'gsxui list')", name)
@@ -98,4 +102,15 @@ func Resolve(names []string) ([]string, error) {
 func isGsx(name string) bool {
 	const ext = ".gsx"
 	return len(name) > len(ext) && name[len(name)-len(ext):] == ext
+}
+
+// isComponent reports whether name is a real component directory — i.e. a
+// member of Components(), excluding infrastructure dirs like "core" that
+// happen to live under ui/ but aren't installable components.
+func isComponent(name string) bool {
+	names, err := Components()
+	if err != nil {
+		return false
+	}
+	return slices.Contains(names, name)
 }

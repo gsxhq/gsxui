@@ -16,6 +16,9 @@ In your project (a Go module):
 You own the vendored code. `gsxui add` never touches a modified file unless
 you pass `--overwrite`.
 
+After upgrading the gsxui binary, re-run `gsxui add <name> --overwrite` to
+refresh vendored components — this discards local edits to those files.
+
 **Status: pre-release.** Components: badge, button, card, dialog. The
 showcase site, theme editor, and the remaining shadcn set are in progress.
 

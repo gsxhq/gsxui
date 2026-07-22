@@ -2,6 +2,7 @@ package registry_test
 
 import (
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/gsxhq/gsxui/internal/registry"
@@ -59,5 +60,23 @@ func TestResolveTransitive(t *testing.T) {
 func TestResolveUnknown(t *testing.T) {
 	if _, err := registry.Resolve([]string{"nope"}); err == nil {
 		t.Fatal("want error for unknown component")
+	}
+}
+
+func TestResolveRejectsNonComponentDir(t *testing.T) {
+	// "core" is a real directory under ui/ but isn't an installable
+	// component — it must be rejected the same as any unknown name.
+	_, err := registry.Resolve([]string{"core"})
+	if err == nil {
+		t.Fatal("want error for ui/core, which is not a component")
+	}
+	if !strings.Contains(err.Error(), `unknown component "core"`) {
+		t.Fatalf("got %v, want unknown-component error", err)
+	}
+}
+
+func TestDepsRejectsNonComponentDir(t *testing.T) {
+	if _, err := registry.Deps("core"); err == nil {
+		t.Fatal("want error for ui/core, which is not a component")
 	}
 }

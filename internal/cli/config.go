@@ -8,6 +8,12 @@ import (
 	"path/filepath"
 )
 
+// errConfigNotFound sentinels a true absence of gsxui.json, distinguishing
+// it from other read failures (permissions) or a parse error. Callers that
+// need to tell "not initialized yet" apart from "broken" use errors.Is
+// against this.
+var errConfigNotFound = fmt.Errorf("gsxui.json not found — run 'gsxui init' first")
+
 // Config is gsxui.json: where vendored Go packages, JS, and CSS live,
 // relative to the module root. The module path itself is always read from
 // go.mod, never stored.
@@ -24,7 +30,10 @@ func DefaultConfig() Config {
 func LoadConfig(dir string) (Config, error) {
 	data, err := os.ReadFile(filepath.Join(dir, "gsxui.json"))
 	if err != nil {
-		return Config{}, fmt.Errorf("gsxui.json not found — run 'gsxui init' first")
+		if os.IsNotExist(err) {
+			return Config{}, errConfigNotFound
+		}
+		return Config{}, fmt.Errorf("reading gsxui.json: %w", err)
 	}
 	var c Config
 	if err := json.Unmarshal(data, &c); err != nil {

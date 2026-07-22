@@ -90,3 +90,22 @@ func TestInitOutsideModuleRoot(t *testing.T) {
 		t.Fatalf("want module-root error, got %v", err)
 	}
 }
+
+func TestInitDoesNotClobberUnparsableConfig(t *testing.T) {
+	dir, _ := initTestModule(t)
+	const broken = `{"ui": "ui", "js": "web/gsxui", "css": "web/gsxui.css",}` // trailing comma
+	if err := os.WriteFile(filepath.Join(dir, "gsxui.json"), []byte(broken), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	err := Run([]string{"init"})
+	if err == nil || !strings.Contains(err.Error(), "gsxui.json") {
+		t.Fatalf("want error mentioning gsxui.json, got %v", err)
+	}
+	got, readErr := os.ReadFile(filepath.Join(dir, "gsxui.json"))
+	if readErr != nil {
+		t.Fatal(readErr)
+	}
+	if string(got) != broken {
+		t.Errorf("gsxui.json was modified:\n%s", got)
+	}
+}
