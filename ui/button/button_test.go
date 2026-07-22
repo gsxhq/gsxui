@@ -69,8 +69,11 @@ func TestButtonHrefRendersAnchor(t *testing.T) {
 func TestButtonDisabled(t *testing.T) {
 	// disabled wins over href: render a real disabled <button>.
 	got := render(t, button.Button("", "", "/docs", true, gsx.Raw("x"), nil))
-	if !strings.Contains(got, "<button") || !strings.Contains(got, "disabled") {
+	if !strings.Contains(got, "<button") {
 		t.Errorf("want disabled <button>\nin: %s", got)
+	}
+	if !disabledAttr.MatchString(got) {
+		t.Errorf("want real disabled attribute\nin: %s", got)
 	}
 }
 
