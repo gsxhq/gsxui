@@ -24,6 +24,12 @@
 		</div>
 	</div>
 
+	<p>Tooltip (real pointer: hover the trigger and wait ~300ms — controller verifies visually; synthetic fallback: Tab to the trigger, which fires focusin and shows immediately):</p>
+	<div data-slot="tooltip" data-gsxui-tooltip class="contents">
+		<button data-slot="tooltip-trigger" data-gsxui-tooltip-trigger type="button">Hover or focus me</button>
+		<div data-slot="tooltip-content" data-gsxui-tooltip-content popover="manual" role="tooltip" data-state="closed">Add to library</div>
+	</div>
+
 	<p>Avatar (good image — should show the image, fallback hidden):</p>
 	<span data-slot="avatar" style="display:flex">
 		<img data-slot="avatar-image" data-gsxui-avatar-image src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=" alt="ok"/>
