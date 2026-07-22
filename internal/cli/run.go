@@ -32,7 +32,3 @@ func Run(args []string) error {
 		return fmt.Errorf("unknown command %q (want init, add, or list)", args[0])
 	}
 }
-
-// runAdd and runList are stubs for Task 3; Task 4 replaces them.
-func runAdd(args []string) error  { return fmt.Errorf("add: implemented in a later task") }
-func runList(args []string) error { return fmt.Errorf("list: implemented in a later task") }
