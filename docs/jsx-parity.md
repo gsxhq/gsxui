@@ -3,16 +3,6 @@
 Divergences between gsxui components and their shadcn/ui reference, both
 directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
 
-## separator
-- ADAPT: Radix's `decorative` prop (default `true`, flips `role="separator"` +
-  `aria-orientation` when `false`) is not ported — `Separator` always renders
-  `role="none"`, matching shadcn's default usage. No orientation param needed
-  for a semantic separator variant; callers wanting a semantic (non-decorative)
-  separator fall through `attrs` to set `role`/`aria-orientation` themselves.
-- WIN: no variant switch — the single verbatim class string dispatches on
-  `data-orientation` via Tailwind's `data-[orientation=...]` selectors, so
-  `orientation` only needs to stamp the attribute.
-
 ## badge
 - WIN: `cva()` variant map replaced by `switch` inside `class={}`.
 - GAP (narrow): shadcn's `asChild` tag-swapping (render the badge as an `<a>`)
@@ -43,3 +33,16 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
 - WIN: shadcn/templUI ports wrap each Lucide React component (or a `<template>`-per-icon component) individually; gsx's tag-callable values (`func(attrs ...gsx.Attr) gsx.Node`) let a single generated `New(name)` factory back every icon var (`var ChevronDown = New("chevron-down")`), so `<icon.ChevronDown class="size-4"/>` is both markup-callable and a plain Go value, generated from one shared `svgIcon` component instead of 1,748 near-duplicate wrapper components.
 - WIN: `aria-hidden="true"` is authored before `{ attrs... }` in `svgIcon` — positional spread precedence (the same idiom as badge's `data-variant` and dialog's `data-state`) makes it an overridable default: a caller's own `aria-hidden` (e.g. `aria-hidden="false"` alongside `aria-label`) wins with no conditional logic.
 - MECHANISM: unknown icon names are a render-time error (`New("nope")` → `unknown icon "nope"`), never a silently empty `<svg>` — mirrors the hard-error idiom used elsewhere in gsxui for unrecognized identifiers, so a typo'd icon name fails loudly instead of shipping a blank glyph.
+
+## separator
+- ADAPT: Radix's `decorative` prop (default `true`, flips `role="separator"` +
+  `aria-orientation` when `false`) is not ported — `Separator` always renders
+  `role="none"`, matching shadcn's default usage. No orientation param needed
+  for a semantic separator variant; callers wanting a semantic (non-decorative)
+  separator fall through `attrs` to set `role`/`aria-orientation` themselves.
+- WIN: no variant switch — the single verbatim class string dispatches on
+  `data-orientation` via Tailwind's `data-[orientation=...]` selectors, so
+  `orientation` only needs to stamp the attribute.
+
+## skeleton
+- Straight port; no divergences.
