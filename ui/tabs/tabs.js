@@ -8,12 +8,14 @@ function activate(trigger) {
   const value = trigger.dataset.value;
   root.dataset.value = value;
   for (const t of root.querySelectorAll('[data-gsxui-tabs-trigger]')) {
+    if (t.closest("[data-gsxui-tabs]") !== root) continue;
     const active = t.dataset.value === value;
     t.dataset.state = active ? "active" : "inactive";
     t.setAttribute("aria-selected", active ? "true" : "false");
     t.tabIndex = active ? 0 : -1;
   }
   for (const p of root.querySelectorAll('[role="tabpanel"]')) {
+    if (p.closest("[data-gsxui-tabs]") !== root) continue;
     const active = p.dataset.value === value;
     p.dataset.state = active ? "active" : "inactive";
     p.hidden = !active;
@@ -26,7 +28,9 @@ on("click", "[data-gsxui-tabs-trigger]", (_e, t) => activate(t));
 on("keydown", "[data-gsxui-tabs-trigger]", (e, t) => {
   const dir = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
   if (!dir) return;
-  const list = [...t.closest('[role="tablist"]').querySelectorAll('[data-gsxui-tabs-trigger]')];
+  const tablist = t.closest('[role="tablist"]');
+  if (!tablist) return;
+  const list = [...tablist.querySelectorAll('[data-gsxui-tabs-trigger]')];
   const next = list[(list.indexOf(t) + dir + list.length) % list.length];
   next.focus();
   activate(next);

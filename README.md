@@ -77,3 +77,8 @@ per-component GAP notes (see those for the detailed rationale):
   and closing snaps (open-path `animate-in` unaffected); accepted for v1.
   An animated-close strategy (`beforetoggle`/`allow-discrete`, or
   dialog-style `requestClose`) remains adoptable once designed.
+- **Checkbox checkmark theming** — the check glyph is a data-URI with
+  hard-coded `stroke="white"`; data-URIs are static text and can't reference
+  CSS variables, so the mark doesn't follow `--primary-foreground` and is
+  wrong/low-contrast for themes where that color isn't near-white. Swap to a
+  `currentColor` CSS-mask approach in the Plan 4 theming work.

@@ -2,7 +2,7 @@
 // open delay, manual popover so hover can't light-dismiss it.
 import { on, emit } from "../core/gsxui.js";
 
-let timer;
+const timers = new WeakMap();
 const contentOf = (el) =>
   el.closest("[data-gsxui-tooltip]")?.querySelector("[data-gsxui-tooltip-content]");
 
@@ -20,7 +20,8 @@ function show(trigger) {
 }
 
 function hide(trigger) {
-  clearTimeout(timer);
+  clearTimeout(timers.get(trigger));
+  timers.delete(trigger);
   const content = contentOf(trigger);
   if (!content || !content.matches(":popover-open")) return;
   content.hidePopover();
@@ -29,8 +30,8 @@ function hide(trigger) {
 }
 
 on("pointerover", "[data-gsxui-tooltip-trigger]", (_e, t) => {
-  clearTimeout(timer);
-  timer = setTimeout(() => show(t), 300);
+  clearTimeout(timers.get(t));
+  timers.set(t, setTimeout(() => show(t), 300));
 });
 on("pointerout", "[data-gsxui-tooltip-trigger]", (_e, t) => hide(t));
 on("focusin", "[data-gsxui-tooltip-trigger]", (_e, t) => show(t));

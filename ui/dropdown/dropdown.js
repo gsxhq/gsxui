@@ -6,14 +6,30 @@ import { on, emit } from "../core/gsxui.js";
 const contentOf = (el) =>
   el.closest("[data-gsxui-dropdown]")?.querySelector("[data-gsxui-dropdown-content]");
 
+// A pointerdown on the trigger records whether the menu was open at that
+// instant: popover="auto" light-dismisses on outside pointerdown (the
+// trigger is outside the content), so by click time the popover may already
+// be closed and a bare toggle would wrongly reopen it.
+on("pointerdown", "[data-gsxui-dropdown-trigger]", (_e, trigger) => {
+  const content = contentOf(trigger);
+  if (content) trigger.dataset.gsxuiWasOpen = content.matches(":popover-open") ? "true" : "false";
+});
+
 on("click", "[data-gsxui-dropdown-trigger]", (_e, trigger) => {
   const content = contentOf(trigger);
   if (!content) return;
+  const wasOpen = trigger.dataset.gsxuiWasOpen === "true";
+  delete trigger.dataset.gsxuiWasOpen;
+  if (wasOpen) return;                        // light dismiss already closed it
+  if (content.matches(":popover-open")) {     // keyboard activation close path
+    content.hidePopover();
+    return;
+  }
   const r = trigger.getBoundingClientRect();
   content.style.position = "fixed";
   content.style.left = `${r.left}px`;
   content.style.top = `${r.bottom + 4}px`;
-  content.togglePopover();
+  content.showPopover();
 });
 
 on(
@@ -42,6 +58,7 @@ on("keydown", "[data-gsxui-dropdown-content]", (e, content) => {
 });
 
 on("click", "[data-gsxui-dropdown-item]", (_e, item) => {
+  if (item.getAttribute("aria-disabled") === "true" || "disabled" in item.dataset) return;
   const content = item.closest("[data-gsxui-dropdown-content]");
   emit(item, "gsxui:select");
   content?.hidePopover();

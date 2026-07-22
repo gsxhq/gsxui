@@ -26,11 +26,11 @@ import (
 // the Radix Thumb span, which needs no content at all) — see
 // docs/jsx-parity.md.
 
-//line switch.gsx:29:1
+//line switch.gsx:30:1
 func Switch(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line switch.gsx:30:2
+//line switch.gsx:31:2
 		_gsxgw.S("<input")
 		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"checkbox\"")
