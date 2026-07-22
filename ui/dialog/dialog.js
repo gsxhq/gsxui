@@ -1,5 +1,12 @@
 // Dialog behavior. Trigger→content wiring by proximity (closest root), state
 // stamped on the <dialog>, gsxui:open/gsxui:close CustomEvents as the API.
+//
+// State sync and events ride the ToggleEvent (`toggle`, capture-delegated,
+// Baseline 2024) rather than the native `close` event: `toggle` fires on
+// every open/close path — trigger, Escape, light dismiss, and programmatic
+// showModal()/close() from user code — while `close` proved unreliable in
+// current Chrome (never delivered, verified empirically; `cancel` alone
+// fires on Esc).
 import { on, emit } from "../core/gsxui.js";
 
 on("click", "[data-gsxui-dialog-trigger]", (_event, trigger) => {
@@ -8,8 +15,6 @@ on("click", "[data-gsxui-dialog-trigger]", (_event, trigger) => {
     ?.querySelector("dialog[data-gsxui-dialog-content]");
   if (!dialog || dialog.open) return;
   dialog.showModal();
-  dialog.dataset.state = "open";
-  emit(dialog, "gsxui:open");
 });
 
 on("click", "[data-gsxui-dialog-close]", (_event, closer) => {
@@ -22,14 +27,14 @@ on("click", "dialog[data-gsxui-dialog-content]", (event, dialog) => {
   if (event.target === dialog) dialog.close();
 });
 
-// Native close event (covers Esc and every close() path above). It does not
-// bubble — delegate in the capture phase.
+// Single source of truth for state + events, all open/close paths included.
 on(
-  "close",
+  "toggle",
   "dialog[data-gsxui-dialog-content]",
-  (_event, dialog) => {
-    dialog.dataset.state = "closed";
-    emit(dialog, "gsxui:close");
+  (event, dialog) => {
+    const open = event.newState === "open";
+    dialog.dataset.state = open ? "open" : "closed";
+    emit(dialog, open ? "gsxui:open" : "gsxui:close");
   },
   { capture: true },
 );

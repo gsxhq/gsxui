@@ -6,3 +6,5 @@ delegation/behavior JS only.
 
 Checklist per interactive component: open via trigger, close via X, close
 via Esc, close via backdrop click; every transition logs its CustomEvent.
+Programmatic path: dialog.showModal()/close() from the console must also
+log the events.
