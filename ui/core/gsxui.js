@@ -1,6 +1,10 @@
 // gsxui delegation core. One document-level listener per (event type, phase);
 // behaviors register selector→handler pairs. No per-instance listeners, no
 // init scan — elements added later (HTMX swaps, innerHTML) just work.
+//
+// Non-bubbling events (toggle, close, focus, blur, …) must be registered with
+// { capture: true } — the document-level listener only sees them during the
+// capture descent.
 
 const registry = new Map(); // "type:capture" -> [{ selector, handler }]
 

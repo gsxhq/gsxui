@@ -21,10 +21,16 @@ on("click", "[data-gsxui-dialog-close]", (_event, closer) => {
   closer.closest("dialog[data-gsxui-dialog-content]")?.close();
 });
 
-// Light dismiss: a click on the <dialog> itself (not its children) is a
-// click on the backdrop area.
+// Light dismiss: only a click outside the dialog's own box — i.e. on the
+// ::backdrop — dismisses. Clicks in the panel's padding and grid gaps also
+// target the <dialog> element itself, so target identity alone is not enough.
 on("click", "dialog[data-gsxui-dialog-content]", (event, dialog) => {
-  if (event.target === dialog) dialog.close();
+  if (event.target !== dialog) return;
+  const r = dialog.getBoundingClientRect();
+  const inBox =
+    event.clientX >= r.left && event.clientX <= r.right &&
+    event.clientY >= r.top && event.clientY <= r.bottom;
+  if (!inBox) dialog.close();
 });
 
 // Single source of truth for state + events, all open/close paths included.
