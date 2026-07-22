@@ -1,0 +1,63 @@
+package registry_test
+
+import (
+	"reflect"
+	"testing"
+
+	"github.com/gsxhq/gsxui/internal/registry"
+)
+
+func TestComponents(t *testing.T) {
+	got, err := registry.Components()
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []string{"badge", "button", "card", "dialog"}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("got %v want %v", got, want)
+	}
+}
+
+func TestDepsDerivedFromImports(t *testing.T) {
+	deps, err := registry.Deps("dialog")
+	if err != nil {
+		t.Fatal(err)
+	}
+	// dialog.gsx imports ui/button (DialogFooter's Close button).
+	if !reflect.DeepEqual(deps, []string{"button"}) {
+		t.Fatalf("dialog deps = %v, want [button]", deps)
+	}
+	deps, err = registry.Deps("badge")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(deps) != 0 {
+		t.Fatalf("badge deps = %v, want none", deps)
+	}
+}
+
+func TestHasJS(t *testing.T) {
+	if !registry.HasJS("dialog") {
+		t.Error("dialog should have JS")
+	}
+	if registry.HasJS("badge") {
+		t.Error("badge should not have JS")
+	}
+}
+
+func TestResolveTransitive(t *testing.T) {
+	got, err := registry.Resolve([]string{"dialog"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []string{"button", "dialog"}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("got %v want %v", got, want)
+	}
+}
+
+func TestResolveUnknown(t *testing.T) {
+	if _, err := registry.Resolve([]string{"nope"}); err == nil {
+		t.Fatal("want error for unknown component")
+	}
+}
