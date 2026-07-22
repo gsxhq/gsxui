@@ -70,8 +70,10 @@ per-component GAP notes (see those for the detailed rationale):
   calculation in JS. Once CSS anchor positioning (`anchor()`/
   `position-anchor`) reaches Baseline across browsers, both can drop that
   JS for native, collision-aware placement.
-- **Popover exit-animation strategy** — pending the controller's browser
-  verdict on dialog/dropdown/tooltip's current exit-animation approach
-  (stamping `data-state="closed"` before close, which a direct
-  programmatic close bypasses); a native alternative may be adoptable once
-  broader browser support lands.
+- **Popover exit-animation strategy** — verified inert, strategy TBD:
+  dropdown/tooltip's native popover is already `display: none` at the
+  moment the `toggle` (newState=closed) handler stamps
+  `data-state="closed"`, so `data-[state=closed]:animate-out` never runs
+  and closing snaps (open-path `animate-in` unaffected); accepted for v1.
+  An animated-close strategy (`beforetoggle`/`allow-discrete`, or
+  dialog-style `requestClose`) remains adoptable once designed.

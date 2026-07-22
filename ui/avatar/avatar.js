@@ -12,3 +12,13 @@ const sync = (img, ok) => {
 
 on("error", "[data-gsxui-avatar-image]", (_e, img) => sync(img, false), { capture: true });
 on("load", "[data-gsxui-avatar-image]", (_e, img) => sync(img, true), { capture: true });
+
+// Images that settled before this module imported already fired load/error —
+// sweep them once at import and again at window load; delegation covers the
+// rest (including HTMX swaps).
+function sweep() {
+  for (const img of document.querySelectorAll("[data-gsxui-avatar-image]"))
+    if (img.complete) sync(img, img.naturalWidth > 0);
+}
+sweep();
+window.addEventListener("load", sweep, { once: true });
