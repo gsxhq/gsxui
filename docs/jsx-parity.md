@@ -11,3 +11,6 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
 - GAP: `asChild`/Slot not expressible (no dynamic tag: `const Comp = asChild ? Slot : "button"` has no gsx equivalent). Ported as `href` param rendering `<a>`. Raise: slot/render-child feature.
 - WIN: `type="button"` before `{ attrs... }` makes it an overridable default — positional spread precedence replaces prop-ordering conventions.
 - WIN: `cva()` replaced by plain Go variant/size funcs shared by both branches.
+
+## card
+- Straight port; package-namespaced compound parts (`card.CardHeader`) replace module exports. No divergences.
