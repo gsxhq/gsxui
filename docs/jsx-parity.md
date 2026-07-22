@@ -3,6 +3,12 @@
 Divergences between gsxui components and their shadcn/ui reference, both
 directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
 
+## alert
+- WIN: `cva()` variant map replaced by `switch` inside `class={}` (default |
+  destructive), the same idiom as badge/button. No `data-variant` stamp —
+  shadcn's own Alert doesn't stamp one either (unlike Badge/Button), so
+  there's nothing to port.
+
 ## badge
 - WIN: `cva()` variant map replaced by `switch` inside `class={}`.
 - GAP (narrow): shadcn's `asChild` tag-swapping (render the badge as an `<a>`)
