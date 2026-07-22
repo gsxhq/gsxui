@@ -36,3 +36,7 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
 
 ## input
 - Straight port. `type="text"` is authored before `{ attrs... }` — the same overridable-default idiom as button's `type="button"`, so `type="email"` etc. at the call site replaces rather than duplicates it.
+
+## label
+- Straight port of the rendered markup: shadcn wraps Radix's `LabelPrimitive.Root`, which is itself a plain `<label>`.
+- GAP (narrow, accepted): Radix's `onMouseDown` handler, which calls `preventDefault()` on multi-click to stop text selection inside the label, is not ported (no client JS for this component). Low impact — the base class already carries `select-none`, which suppresses text selection via CSS regardless.
