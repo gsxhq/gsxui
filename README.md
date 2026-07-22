@@ -3,9 +3,21 @@
 shadcn-style components for [gsx](https://github.com/gsxhq/gsx) — copy-in,
 type-checked, server-rendered.
 
-**Status: pre-release.** Foundation in place: theme tokens
-(`assets/gsxui.css`), the event-delegation JS runtime (`ui/core/`), and the
-first components — badge, button, card, dialog — with pin tests.
+## Install
+
+    go install github.com/gsxhq/gsxui/cmd/gsxui@latest
+
+In your project (a Go module):
+
+    gsxui init          # tokens css, js runtime, class merger, gsx.toml wiring
+    gsxui add dialog    # vendors dialog + its deps (button), regenerates
+    gsxui list          # what's available
+
+You own the vendored code. `gsxui add` never touches a modified file unless
+you pass `--overwrite`.
+
+**Status: pre-release.** Components: badge, button, card, dialog. The
+showcase site, theme editor, and the remaining shadcn set are in progress.
 
 - Components live in `ui/<name>/` — a `.gsx` source (JSX-style, named
   parameters, fallthrough attrs) plus a behavior `.js` when interactive.
