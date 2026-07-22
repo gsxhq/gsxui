@@ -4,6 +4,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -29,6 +30,34 @@ func TestEndToEnd(t *testing.T) {
 		if _, err := os.Stat(filepath.Join(dir, p)); err != nil {
 			t.Fatalf("missing generated %s: %v", p, err)
 		}
+	}
+	mustRun(t, dir, "go", "build", "./...")
+
+	if err := Run([]string{"add", "selectbox", "tabs"}); err != nil {
+		t.Fatal(err)
+	}
+	// selectbox depends on icon (chevron); icon has no JS behavior of its
+	// own but its generated data file must have been vendored transitively
+	// as a plain dependency of selectbox. tabs is JS-backed: its behavior
+	// module lands under the JS root (web/gsxui by default) and the barrel
+	// must be regenerated to import it.
+	for _, p := range []string{
+		"ui/selectbox/select.x.go",
+		"ui/icon/icon.x.go",
+		"ui/icon/icon_data.go",
+		"ui/tabs/tabs.x.go",
+		"web/gsxui/tabs.js",
+	} {
+		if _, err := os.Stat(filepath.Join(dir, p)); err != nil {
+			t.Fatalf("missing generated/vendored %s: %v", p, err)
+		}
+	}
+	barrel, err := os.ReadFile(filepath.Join(dir, "web/gsxui/index.js"))
+	if err != nil {
+		t.Fatalf("reading barrel: %v", err)
+	}
+	if !strings.Contains(string(barrel), `"./tabs.js"`) {
+		t.Fatalf("barrel index.js missing tabs import:\n%s", barrel)
 	}
 	mustRun(t, dir, "go", "build", "./...")
 }
