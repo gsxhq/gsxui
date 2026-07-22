@@ -11,6 +11,19 @@
 		</dialog>
 	</div>
 	<pre id="log"></pre>
+
+	<p>Avatar (good image — should show the image, fallback hidden):</p>
+	<span data-slot="avatar" style="display:flex">
+		<img data-slot="avatar-image" data-gsxui-avatar-image src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=" alt="ok"/>
+		<span data-slot="avatar-fallback">OK</span>
+	</span>
+
+	<p>Avatar (broken image — should show the fallback, image hidden):</p>
+	<span data-slot="avatar" style="display:flex">
+		<img data-slot="avatar-image" data-gsxui-avatar-image src="/does-not-exist.jpg" alt="broken"/>
+		<span data-slot="avatar-fallback">XX</span>
+	</span>
+
 	<script type="module">
 		import "../ui/index.js";
 		const log = document.getElementById("log");

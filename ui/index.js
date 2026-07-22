@@ -1,4 +1,5 @@
 // gsxui barrel. Import this for everything, or deep-import individual
 // behaviors (side-effect modules) for tree-shaken selective loading.
 export * from "./core/gsxui.js";
+import "./avatar/avatar.js";
 import "./dialog/dialog.js";

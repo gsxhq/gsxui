@@ -9,6 +9,31 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
   shadcn's own Alert doesn't stamp one either (unlike Badge/Button), so
   there's nothing to port.
 
+## avatar
+- ADAPT: Radix's client-side load-state context (`imageLoadingStatus`:
+  idle/loading/loaded/error, gating which of Image/Fallback mounts) is
+  replaced by delegation: `AvatarFallback` always server-renders (no
+  `hidden` attribute — load state isn't known at render time) and
+  `AvatarImage` carries `data-gsxui-avatar-image`; `ui/avatar/avatar.js`
+  toggles `display` on the image's native `load`/`error` events
+  (capture-delegated — neither bubbles). Until the script runs (or if the
+  image is already cached and fires before listeners attach), both image
+  and fallback are visible — a brief, accepted divergence from Radix's
+  server-unknown-then-resolved single-render.
+- GAP: `AvatarBadge`, `AvatarGroup`, `AvatarGroupCount` (added to shadcn's
+  registry after the base three parts) are not ported — out of scope for
+  this task; only `Avatar`/`AvatarImage`/`AvatarFallback` per the task
+  brief.
+- ADAPT: `Avatar`'s `size` prop (default/sm/lg) is dropped along with it, so
+  `data-size` is never stamped and the size-keyed selectors that depend on
+  it are dead weight — `group/avatar` and `data-[size=lg]:size-10
+  data-[size=sm]:size-6` are dropped from `Avatar`'s class, and
+  `group-data-[size=sm]/avatar:text-xs` from `AvatarFallback`'s (the same
+  "drop the selector, don't ship dead CSS" call as dialog's close-button
+  `data-[state=open]:...` ADAPT). `size-*` stays fully overridable via the
+  ordinary caller-class-merge mechanism on `Avatar`/`AvatarFallback`
+  directly.
+
 ## badge
 - WIN: `cva()` variant map replaced by `switch` inside `class={}`.
 - GAP (narrow): shadcn's `asChild` tag-swapping (render the badge as an `<a>`)

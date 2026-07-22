@@ -12,3 +12,9 @@ backdrop: must close.
 
 After opening: dialog must have aria-labelledby and aria-describedby;
 trigger aria-expanded flips true/false with open state.
+
+Avatar: the good-image block must end up showing only the image (fallback
+`display:none`); the broken-image block must end up showing only the
+fallback (image `display:none`). Reload with the network tab throttled to
+confirm the pre-JS/pre-load moment briefly shows both — expected per the
+avatar ADAPT in docs/jsx-parity.md, not a bug.

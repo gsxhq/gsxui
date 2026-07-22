@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"alert", "badge", "button", "card", "dialog", "icon", "separator", "skeleton"}
+	want := []string{"alert", "avatar", "badge", "button", "card", "dialog", "icon", "separator", "skeleton"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
