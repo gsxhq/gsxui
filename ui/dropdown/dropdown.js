@@ -47,8 +47,11 @@ on(
       .closest("[data-gsxui-dropdown]")
       ?.querySelector("[data-gsxui-dropdown-trigger]");
     trigger?.setAttribute("aria-expanded", open ? "true" : "false");
-    delete trigger?.dataset.gsxuiWasOpen;
-    if (open) content.querySelector('[role="menuitem"]:not([aria-disabled])')?.focus();
+    if (open) {
+      // clear only on open — clearing on close races the trigger-click task that needs to read the flag
+      delete trigger?.dataset.gsxuiWasOpen;
+      content.querySelector('[role="menuitem"]:not([aria-disabled])')?.focus();
+    }
     emit(content, open ? "gsxui:open" : "gsxui:close");
   },
   { capture: true },
