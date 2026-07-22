@@ -25,3 +25,10 @@ are intentionally absent from this harness — it verifies buildless
 JS-behavior only, and these components' correctness is entirely in their
 Tailwind class recipes, which need a Tailwind'd site to render meaningfully
 (see Plan 4).
+
+Tabs: click Tab B — Tab A must go `data-state="inactive"`/`aria-selected=
+"false"`/`tabindex="-1"`, Content A must gain `hidden`, Tab B/Content B
+must flip to active/visible; the log must gain one `gsxui:change
+{"value":"b"}` line. Focus a trigger and press ArrowRight/ArrowLeft:
+focus AND activation both move, wrapping at the ends; each press logs
+another `gsxui:change`.

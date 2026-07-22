@@ -24,11 +24,22 @@
 		<span data-slot="avatar-fallback">XX</span>
 	</span>
 
+	<p>Tabs (click a trigger, or focus one and press ArrowLeft/ArrowRight — every switch must log gsxui:change):</p>
+	<div data-slot="tabs" data-gsxui-tabs data-value="a">
+		<div data-slot="tabs-list" role="tablist">
+			<button data-slot="tabs-trigger" data-gsxui-tabs-trigger role="tab" type="button" data-value="a" data-state="active" aria-selected="true" tabindex="0">Tab A</button>
+			<button data-slot="tabs-trigger" data-gsxui-tabs-trigger role="tab" type="button" data-value="b" data-state="inactive" aria-selected="false" tabindex="-1">Tab B</button>
+		</div>
+		<div data-slot="tabs-content" role="tabpanel" data-value="a" data-state="active">Content A</div>
+		<div data-slot="tabs-content" role="tabpanel" data-value="b" data-state="inactive" hidden>Content B</div>
+	</div>
+
 	<script type="module">
 		import "../ui/index.js";
 		const log = document.getElementById("log");
 		document.addEventListener("gsxui:open", () => (log.textContent += "gsxui:open\n"));
 		document.addEventListener("gsxui:close", () => (log.textContent += "gsxui:close\n"));
+		document.addEventListener("gsxui:change", (e) => (log.textContent += `gsxui:change ${JSON.stringify(e.detail)}\n`));
 	</script>
 </body>
 </html>

@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"alert", "avatar", "badge", "button", "card", "checkbox", "dialog", "icon", "input", "label", "radio", "separator", "skeleton", "switchctl", "table", "textarea"}
+	want := []string{"alert", "avatar", "badge", "button", "card", "checkbox", "dialog", "icon", "input", "label", "radio", "separator", "skeleton", "switchctl", "table", "tabs", "textarea"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -35,6 +35,14 @@ func TestDepsDerivedFromImports(t *testing.T) {
 	if len(deps) != 0 {
 		t.Fatalf("badge deps = %v, want none", deps)
 	}
+	// tabs.gsx has no cross-component imports.
+	deps, err = registry.Deps("tabs")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(deps) != 0 {
+		t.Fatalf("tabs deps = %v, want none", deps)
+	}
 }
 
 func TestHasJS(t *testing.T) {
@@ -43,6 +51,9 @@ func TestHasJS(t *testing.T) {
 	}
 	if registry.HasJS("badge") {
 		t.Error("badge should not have JS")
+	}
+	if !registry.HasJS("tabs") {
+		t.Error("tabs should have JS")
 	}
 }
 
