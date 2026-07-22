@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"alert", "avatar", "badge", "button", "card", "checkbox", "dialog", "icon", "input", "label", "radio", "separator", "skeleton", "switchctl", "table", "tabs", "textarea"}
+	want := []string{"accordion", "alert", "avatar", "badge", "button", "card", "checkbox", "dialog", "icon", "input", "label", "radio", "separator", "skeleton", "switchctl", "table", "tabs", "textarea"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -43,6 +43,14 @@ func TestDepsDerivedFromImports(t *testing.T) {
 	if len(deps) != 0 {
 		t.Fatalf("tabs deps = %v, want none", deps)
 	}
+	// accordion.gsx imports ui/icon (AccordionTrigger's chevron).
+	deps, err = registry.Deps("accordion")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(deps, []string{"icon"}) {
+		t.Fatalf("accordion deps = %v, want [icon]", deps)
+	}
 }
 
 func TestHasJS(t *testing.T) {
@@ -54,6 +62,9 @@ func TestHasJS(t *testing.T) {
 	}
 	if !registry.HasJS("tabs") {
 		t.Error("tabs should have JS")
+	}
+	if registry.HasJS("accordion") {
+		t.Error("accordion should be zero-JS — native <details name> replaces the state machine")
 	}
 }
 
