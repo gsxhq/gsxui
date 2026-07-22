@@ -3,6 +3,16 @@
 Divergences between gsxui components and their shadcn/ui reference, both
 directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
 
+## separator
+- ADAPT: Radix's `decorative` prop (default `true`, flips `role="separator"` +
+  `aria-orientation` when `false`) is not ported — `Separator` always renders
+  `role="none"`, matching shadcn's default usage. No orientation param needed
+  for a semantic separator variant; callers wanting a semantic (non-decorative)
+  separator fall through `attrs` to set `role`/`aria-orientation` themselves.
+- WIN: no variant switch — the single verbatim class string dispatches on
+  `data-orientation` via Tailwind's `data-[orientation=...]` selectors, so
+  `orientation` only needs to stamp the attribute.
+
 ## badge
 - WIN: `cva()` variant map replaced by `switch` inside `class={}`.
 - GAP (narrow): shadcn's `asChild` tag-swapping (render the badge as an `<a>`)
