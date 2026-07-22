@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"alert", "avatar", "badge", "button", "card", "checkbox", "dialog", "icon", "input", "label", "radio", "separator", "skeleton", "switchctl", "table", "textarea"}
+	want := []string{"alert", "avatar", "badge", "button", "card", "checkbox", "dialog", "icon", "input", "label", "radio", "selectbox", "separator", "skeleton", "switchctl", "table", "textarea"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -34,6 +34,14 @@ func TestDepsDerivedFromImports(t *testing.T) {
 	}
 	if len(deps) != 0 {
 		t.Fatalf("badge deps = %v, want none", deps)
+	}
+	deps, err = registry.Deps("selectbox")
+	if err != nil {
+		t.Fatal(err)
+	}
+	// select.gsx imports ui/icon (the chevron).
+	if !reflect.DeepEqual(deps, []string{"icon"}) {
+		t.Fatalf("selectbox deps = %v, want [icon]", deps)
 	}
 }
 
