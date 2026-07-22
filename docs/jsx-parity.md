@@ -77,3 +77,6 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
 - Straight port; no divergences.
 ## textarea
 - ADAPT: shadcn's Textarea takes its content via a `value` prop forwarded through `...props` onto React's controlled `<textarea value={...}>`. Native HTML `<textarea>` has no `value` attribute — its initial content is a text child. Ported as a `value string` param rendered as the (escaped) text child instead: `textarea.Textarea("initial text", nil)`.
+
+## table
+- NOTE: `Table` renders a scroll-container `<div data-slot="table-container">` wrapping `<table data-slot="table">`, matching shadcn's structure exactly. Fallthrough `attrs` land on the `<table>` element (where shadcn's `{...props}` lands), not the container div — the container is purely structural scroll-wrapping and has no props of its own in the source either.
