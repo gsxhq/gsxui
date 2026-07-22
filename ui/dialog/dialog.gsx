@@ -1,6 +1,9 @@
 package dialog
 
-import "github.com/gsxhq/gsx"
+import (
+	"github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/ui/button"
+)
 
 // Dialog is the shadcn/ui Dialog on the native <dialog> element: the top
 // layer replaces Radix's Portal, ::backdrop replaces Overlay, and Esc-to-
@@ -50,8 +53,16 @@ component DialogHeader(children gsx.Node, attrs gsx.Attrs) {
 	<div data-slot="dialog-header" class="flex flex-col gap-2 text-center sm:text-left" { attrs... }>{ children }</div>
 }
 
-component DialogFooter(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="dialog-footer" class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end" { attrs... }>{ children }</div>
+// DialogFooter is the shadcn/ui DialogFooter. showCloseButton (zero value
+// false, matching shadcn's default) appends an outline Close button — the
+// data-attribute idiom standing in for shadcn's <DialogClose asChild>.
+component DialogFooter(showCloseButton bool, children gsx.Node, attrs gsx.Attrs) {
+	<div data-slot="dialog-footer" class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end" { attrs... }>
+		{ children }
+		{ if showCloseButton {
+			<button.Button variant="outline" data-gsxui-dialog-close>Close</button.Button>
+		} }
+	</div>
 }
 
 component DialogTitle(children gsx.Node, attrs gsx.Attrs) {

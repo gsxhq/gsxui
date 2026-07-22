@@ -27,7 +27,7 @@ func TestDialogStructure(t *testing.T) {
 					dialog.DialogTitle(gsx.Raw("Are you sure?"), nil),
 					dialog.DialogDescription(gsx.Raw("This cannot be undone."), nil),
 				), nil),
-				dialog.DialogFooter(dialog.DialogClose(gsx.Raw("Cancel"), nil), nil),
+				dialog.DialogFooter(false, dialog.DialogClose(gsx.Raw("Cancel"), nil), nil),
 			), nil),
 		),
 		nil,
@@ -71,5 +71,19 @@ func TestDialogHideCloseButton(t *testing.T) {
 	got := render(t, dialog.DialogContent(true, gsx.Raw("x"), nil))
 	if strings.Contains(got, `aria-label="Close"`) {
 		t.Errorf("hideCloseButton must omit the X button\nin: %s", got)
+	}
+}
+
+func TestDialogFooterShowCloseButton(t *testing.T) {
+	got := render(t, dialog.DialogFooter(true, gsx.Raw("x"), nil))
+	for _, want := range []string{
+		`data-slot="dialog-footer"`,
+		`data-gsxui-dialog-close`,
+		`data-variant="outline"`,
+		">Close<",
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("missing %q\nin: %s", want, got)
+		}
 	}
 }
