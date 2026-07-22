@@ -57,10 +57,10 @@ func TestAvatarCallerClassMerges(t *testing.T) {
 func TestAvatarPinned(t *testing.T) {
 	// Exact full-render pin for Avatar > AvatarImage, verified token-by-token
 	// against shadcn's Avatar/AvatarImage (registry/new-york-v4/ui/avatar.tsx)
-	// and docs/jsx-parity.md's ADAPT: data-gsxui-avatar-image replaces
-	// Radix's load-state context.
+	// and docs/jsx-parity.md's ADAPT: AvatarImage adds absolute inset-0
+	// to overlay the fallback (no-JS rendering correct).
 	got := render(t, avatar.AvatarImage("/shadcn.jpg", "shadcn", nil))
-	want := `<img data-slot="avatar-image" data-gsxui-avatar-image src="/shadcn.jpg" alt="shadcn" class="aspect-square size-full"/>`
+	want := `<img data-slot="avatar-image" data-gsxui-avatar-image src="/shadcn.jpg" alt="shadcn" class="aspect-square size-full absolute inset-0"/>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

@@ -10,16 +10,7 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
   there's nothing to port.
 
 ## avatar
-- ADAPT: Radix's client-side load-state context (`imageLoadingStatus`:
-  idle/loading/loaded/error, gating which of Image/Fallback mounts) is
-  replaced by delegation: `AvatarFallback` always server-renders (no
-  `hidden` attribute — load state isn't known at render time) and
-  `AvatarImage` carries `data-gsxui-avatar-image`; `ui/avatar/avatar.js`
-  toggles `display` on the image's native `load`/`error` events
-  (capture-delegated — neither bubbles). Until the script runs (or if the
-  image is already cached and fires before listeners attach), both image
-  and fallback are visible — a brief, accepted divergence from Radix's
-  server-unknown-then-resolved single-render.
+- ADAPT: AvatarImage adds `absolute inset-0` (not in shadcn) — the image overlays the in-flow fallback, so the no-JS/pre-JS state renders correctly (fallback behind, image covers when loaded); `ui/avatar/avatar.js` handles only the error path (hide broken image). Radix's mount-gated rendering can't exist server-side.
 - GAP: `AvatarBadge`, `AvatarGroup`, `AvatarGroupCount` (added to shadcn's
   registry after the base three parts) are not ported — out of scope for
   this task; only `Avatar`/`AvatarImage`/`AvatarFallback` per the task

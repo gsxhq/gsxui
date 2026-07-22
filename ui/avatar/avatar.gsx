@@ -16,7 +16,7 @@ component Avatar(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component AvatarImage(src string, alt string, attrs gsx.Attrs) {
-	<img data-slot="avatar-image" data-gsxui-avatar-image src={ src } alt={ alt } class="aspect-square size-full" { attrs... }/>
+	<img data-slot="avatar-image" data-gsxui-avatar-image src={ src } alt={ alt } class="aspect-square size-full absolute inset-0" { attrs... }/>
 }
 
 component AvatarFallback(children gsx.Node, attrs gsx.Attrs) {
