@@ -3,6 +3,28 @@
 Divergences between gsxui components and their shadcn/ui reference, both
 directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
 
+## alert
+- WIN: `cva()` variant map replaced by `switch` inside `class={}` (default |
+  destructive), the same idiom as badge/button. No `data-variant` stamp —
+  shadcn's own Alert doesn't stamp one either (unlike Badge/Button), so
+  there's nothing to port.
+
+## avatar
+- ADAPT: AvatarImage adds `absolute inset-0` (not in shadcn) — the image overlays the in-flow fallback, so the no-JS/pre-JS state renders correctly (fallback behind, image covers when loaded); `ui/avatar/avatar.js` handles only the error path (hide broken image). Radix's mount-gated rendering can't exist server-side.
+- GAP: `AvatarBadge`, `AvatarGroup`, `AvatarGroupCount` (added to shadcn's
+  registry after the base three parts) are not ported — out of scope for
+  this task; only `Avatar`/`AvatarImage`/`AvatarFallback` per the task
+  brief.
+- ADAPT: `Avatar`'s `size` prop (default/sm/lg) is dropped along with it, so
+  `data-size` is never stamped and the size-keyed selectors that depend on
+  it are dead weight — `group/avatar` and `data-[size=lg]:size-10
+  data-[size=sm]:size-6` are dropped from `Avatar`'s class, and
+  `group-data-[size=sm]/avatar:text-xs` from `AvatarFallback`'s (the same
+  "drop the selector, don't ship dead CSS" call as dialog's close-button
+  `data-[state=open]:...` ADAPT). `size-*` stays fully overridable via the
+  ordinary caller-class-merge mechanism on `Avatar`/`AvatarFallback`
+  directly.
+
 ## badge
 - WIN: `cva()` variant map replaced by `switch` inside `class={}`.
 - GAP (narrow): shadcn's `asChild` tag-swapping (render the badge as an `<a>`)
@@ -41,5 +63,17 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
 - Straight port of the rendered markup: shadcn wraps Radix's `LabelPrimitive.Root`, which is itself a plain `<label>`.
 - GAP (narrow, accepted): Radix's `onMouseDown` handler, which calls `preventDefault()` on multi-click to stop text selection inside the label, is not ported (no client JS for this component). Low impact — the base class already carries `select-none`, which suppresses text selection via CSS regardless.
 
+## separator
+- ADAPT: Radix's `decorative` prop (default `true`, flips `role="separator"` +
+  `aria-orientation` when `false`) is not ported — `Separator` always renders
+  `role="none"`, matching shadcn's default usage. No orientation param needed
+  for a semantic separator variant; callers wanting a semantic (non-decorative)
+  separator fall through `attrs` to set `role`/`aria-orientation` themselves.
+- WIN: no variant switch — the single verbatim class string dispatches on
+  `data-orientation` via Tailwind's `data-[orientation=...]` selectors, so
+  `orientation` only needs to stamp the attribute.
+
+## skeleton
+- Straight port; no divergences.
 ## textarea
 - ADAPT: shadcn's Textarea takes its content via a `value` prop forwarded through `...props` onto React's controlled `<textarea value={...}>`. Native HTML `<textarea>` has no `value` attribute — its initial content is a text child. Ported as a `value string` param rendered as the (escaped) text child instead: `textarea.Textarea("initial text", nil)`.

@@ -12,3 +12,9 @@ backdrop: must close.
 
 After opening: dialog must have aria-labelledby and aria-describedby;
 trigger aria-expanded flips true/false with open state.
+
+Avatar: the good-image block must end up showing only the image (fallback
+`display:none`); the broken-image block must end up showing only the
+fallback (image `display:none`). The image covers the fallback via
+`absolute inset-0`, so no-JS/pre-load rendering is correct; avatar.js
+handles only the error path (hide broken image).
