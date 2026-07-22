@@ -40,3 +40,6 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
 ## label
 - Straight port of the rendered markup: shadcn wraps Radix's `LabelPrimitive.Root`, which is itself a plain `<label>`.
 - GAP (narrow, accepted): Radix's `onMouseDown` handler, which calls `preventDefault()` on multi-click to stop text selection inside the label, is not ported (no client JS for this component). Low impact — the base class already carries `select-none`, which suppresses text selection via CSS regardless.
+
+## textarea
+- ADAPT: shadcn's Textarea takes its content via a `value` prop forwarded through `...props` onto React's controlled `<textarea value={...}>`. Native HTML `<textarea>` has no `value` attribute — its initial content is a text child. Ported as a `value string` param rendered as the (escaped) text child instead: `textarea.Textarea("initial text", nil)`.
