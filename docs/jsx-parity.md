@@ -52,7 +52,7 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
   `data-[state=open]:...` ADAPT). `size-*` stays fully overridable via the
   ordinary caller-class-merge mechanism on `Avatar`/`AvatarFallback`
   directly.
-- FINDING: gsx's image-sink URL sanitizer requires the literal `;base64,` marker in data: URLs — percent-encoded data:image/svg+xml,... forms are blocked to about:invalid#gsx. Any component/example with an image src hits this; base64-encode data URIs.
+- FINDING: gsx's image-sink URL sanitizer requires the literal `;base64,` marker in data: URLs — percent-encoded data:image/svg+xml,... forms are blocked to about:invalid#gsx. Any component/example with an image src hits this; base64-encode data URIs, or vouch a specific developer-authored value with `gsx.RawURL` (the per-value opt-out, same trust story as `gsx.RawCSS`). The block is silent — no generate-time diagnostic, the broken image is the first signal; upstream proposal filed as gsxhq/gsx#154 (generate-time diagnostic for always-blocked literals + strictly-validated percent-encoded acceptance).
 
 ## badge
 - WIN: `cva()` variant map replaced by `switch` inside `class={}`.
