@@ -31,6 +31,8 @@ func (h Home) Page() _gsxrt.Node {
 			_gsxgw.S("<h1 class=\"text-4xl font-semibold tracking-tight sm:text-5xl\">Components for modern web frontends in Go.</h1>")
 //line home.gsx:20:4
 			_gsxgw.S("<p class=\"max-w-2xl text-lg text-muted-foreground\">gsxui is a shadcn-style component set for")
+//line home.gsx:21:46
+			_gsxgw.Text(string(" "))
 //line home.gsx:22:5
 			_gsxgw.S("<a href=\"https://gsxhq.github.io/\" target=\"_blank\" rel=\"noreferrer\" class=\"underline underline-offset-4 hover:text-foreground\">gsx</a>: copy-in, type-checked, server-rendered. Own the code, style it with Tailwind, ship it.</p>")
 //line home.gsx:32:4

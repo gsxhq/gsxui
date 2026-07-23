@@ -18,7 +18,7 @@ component (h Home) Page() {
 				Components for modern web frontends in Go.
 			</h1>
 			<p class="max-w-2xl text-lg text-muted-foreground">
-				gsxui is a shadcn-style component set for
+				gsxui is a shadcn-style component set for{" "}
 				<a
 					href="https://gsxhq.github.io/"
 					target="_blank"
