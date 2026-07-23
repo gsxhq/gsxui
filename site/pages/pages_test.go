@@ -95,6 +95,37 @@ func TestComponentPageRoute(t *testing.T) {
 		}
 	})
 
+	// Task 3a's representative: proves a form-control component (input)
+	// is wired through the same registry/page harness as button, not
+	// just button itself.
+	t.Run("registered component (input)", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/components/input", nil)
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+
+		if rec.Code != http.StatusOK {
+			t.Fatalf("GET /components/input = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
+		}
+		body := rec.Body.String()
+		if !strings.Contains(body, "border rounded-lg p-8 bg-background") {
+			t.Errorf("response missing preview panel marker; body:\n%s", body)
+		}
+		if !strings.Contains(body, `data-slot="input"`) {
+			t.Errorf(`response missing rendered example (data-slot="input"); body:\n%s`, body)
+		}
+		// A distinctive identifier from basic.gsx's literal source — proves
+		// the displayed source is the exact embedded file, not paraphrased.
+		if !strings.Contains(body, "uiinput.Input") {
+			t.Errorf("response missing literal source text %q; body:\n%s", "uiinput.Input", body)
+		}
+		if !strings.Contains(body, `data-site-copy`) {
+			t.Errorf(`response missing copy button (data-site-copy); body:\n%s`, body)
+		}
+		if !strings.Contains(body, "gsxui add input") {
+			t.Errorf(`response missing install snippet "gsxui add input"; body:\n%s`, body)
+		}
+	})
+
 	t.Run("unknown component", func(t *testing.T) {
 		req := httptest.NewRequest(http.MethodGet, "/components/nope", nil)
 		rec := httptest.NewRecorder()
