@@ -71,6 +71,24 @@ func TestCollapsibleTriggerMarkerSuppressed(t *testing.T) {
 	}
 }
 
+// TestCollapsibleTriggerCallerClassMerges covers the tailwind-merge path on
+// CollapsibleTrigger's base class, same shape as
+// TestAccordionCallerClassMerges: a caller-supplied list-disc conflicts
+// with the base list-none (both set the list-style-type/list utility
+// category) and must win, while the unrelated webkit-marker-hiding
+// arbitrary variant is untouched (different bucket, no collision).
+func TestCollapsibleTriggerCallerClassMerges(t *testing.T) {
+	got := render(t, ui.CollapsibleTrigger(gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "list-disc"}}))
+	if strings.Contains(got, "list-none") {
+		t.Errorf("base list-none should be dropped by caller list-disc\nin: %s", got)
+	}
+	for _, want := range []string{"list-disc", "[&amp;::-webkit-details-marker]:hidden"} {
+		if !strings.Contains(got, want) {
+			t.Errorf("missing %q\nin: %s", want, got)
+		}
+	}
+}
+
 func TestCollapsibleTriggerAttrsFallThrough(t *testing.T) {
 	got := render(t, ui.CollapsibleTrigger(nil, gsx.Attrs{{Key: "id", Value: "t1"}, {Key: "aria-label", Value: "toggle"}}))
 	for _, want := range []string{`id="t1"`, `aria-label="toggle"`} {
