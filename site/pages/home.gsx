@@ -43,9 +43,7 @@ component (h Home) Page() {
 			</div>
 		</section>
 		<section class="pb-10">
-			<pre class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"><code>
-				{ installSnippet }
-			</code></pre>
+			<pre class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"><code>{ installSnippet }</code></pre>
 		</section>
 		<section id="components" class="flex flex-col gap-10 border-t border-border py-10">
 			<div>
