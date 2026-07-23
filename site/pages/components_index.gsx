@@ -20,7 +20,8 @@ component (c ComponentsIndex) Page() {
 				<h1 class="text-3xl font-semibold tracking-tight">Components</h1>
 				<p class="mt-2 max-w-2xl text-muted-foreground">
 					Every component gsxui ships. Copy any of them into your project with
-					<code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm">gsxui add &lt;name&gt;</code>.
+					<code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm">gsxui add &lt;name&gt;</code>
+					.
 				</p>
 			</div>
 			{{ names, _ := registry.Components() }}

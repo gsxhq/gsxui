@@ -1,3 +1,10 @@
+// Item and its parts are the shadcn/ui Item family
+// (registry/new-york-v4/ui/item.tsx): a generic media + content + actions
+// row, with ItemGroup/ItemSeparator for stacked lists and
+// ItemHeader/ItemFooter for framing. All cva variant maps are static class
+// blocks (no data-keyed selectors in the source), so they port as switches
+// inside class={} — see docs/jsx-parity.md `## item` for the drop list
+// (asChild) and mechanisms.
 package ui
 
 import "github.com/gsxhq/gsx"
@@ -47,20 +54,8 @@ component Item(variant string, size string, children gsx.Node, attrs gsx.Attrs) 
 		data-size={size |> default("default")}
 		class={
 			itemBase,
-			switch variant {
-			case "outline":
-				"border-border"
-			case "muted":
-				"bg-muted/50"
-			default:
-				"bg-transparent"
-			},
-			switch size {
-			case "sm":
-				"gap-2.5 px-4 py-3"
-			default:
-				"gap-4 p-4"
-			}
+			switch variant { case "outline": "border-border" case "muted": "bg-muted/50" default: "bg-transparent" },
+			switch size { case "sm": "gap-2.5 px-4 py-3" default: "gap-4 p-4" }
 		}
 		{ attrs... }
 	>

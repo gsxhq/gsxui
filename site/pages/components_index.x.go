@@ -37,17 +37,17 @@ func (c ComponentsIndex) Page() _gsxrt.Node {
 			_gsxgw.S("<p class=\"mt-2 max-w-2xl text-muted-foreground\">Every component gsxui ships. Copy any of them into your project with")
 //line components_index.gsx:23:6
 			_gsxgw.S("<code class=\"rounded bg-muted px-1.5 py-0.5 font-mono text-sm\">gsxui add &lt;name&gt;</code>.</p></div>")
-//line components_index.gsx:26:4
-			names, _ := registry.Components()
 //line components_index.gsx:27:4
+			names, _ := registry.Components()
+//line components_index.gsx:28:4
 			_gsxgw.S("<div class=\"grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4\">")
-//line components_index.gsx:28:5
+//line components_index.gsx:29:5
 			for _, name := range names {
-//line components_index.gsx:29:6
+//line components_index.gsx:30:6
 				_gsxgw.S("<a href=\"")
 				_gsxgw.URL(string("/components/" + name))
 				_gsxgw.S("\" class=\"rounded-lg border border-border p-4 text-sm font-medium capitalize transition-colors hover:bg-accent hover:text-accent-foreground\">")
-//line components_index.gsx:33:7
+//line components_index.gsx:34:7
 				_gsxgw.Text(string(name))
 				_gsxgw.S("</a>")
 			}
