@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "dialog", "dropdown", "empty", "field", "icon", "input", "input-group", "item", "kbd", "label", "pagination", "progress", "radio", "select", "separator", "skeleton", "spinner", "switch", "table", "tabs", "textarea", "tooltip"}
+	want := []string{"accordion", "alert", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "collapsible", "dialog", "dropdown", "empty", "field", "icon", "input", "input-group", "item", "kbd", "label", "pagination", "progress", "radio", "select", "separator", "skeleton", "spinner", "switch", "table", "tabs", "textarea", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -187,6 +187,17 @@ func TestDeps(t *testing.T) {
 	}
 	if !reflect.DeepEqual(deps, []string{"label", "separator"}) {
 		t.Fatalf("field deps = %v, want [label separator]", deps)
+	}
+
+	// collapsible.gsx has no icon import and no intra-package reference to
+	// another component (the site example composes ui.Button/ui/icon, but
+	// internal/registry only scans ui/*.gsx, not site/examples/).
+	deps, err = registry.Deps("collapsible")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(deps) != 0 {
+		t.Fatalf("collapsible deps = %v, want none", deps)
 	}
 
 	if _, err := registry.Deps("nosuch"); err == nil || !strings.Contains(err.Error(), "gsxui list") {
