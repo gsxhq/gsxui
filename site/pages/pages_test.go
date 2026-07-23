@@ -1,6 +1,7 @@
 package pages_test
 
 import (
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -11,23 +12,40 @@ import (
 	"github.com/jackielii/structpages"
 )
 
-// TestSiteRoutes is the Task 1 integration smoke test: mounts the real page
-// tree on a real mux (as site/main.go does) and asserts "/" renders the
-// landing page with at least one live gsxui component on it.
-func TestSiteRoutes(t *testing.T) {
+// newTestHandler mounts the real page tree on a real mux the same way
+// site/main.go does — same WithErrorHandler wiring (so ErrorWithStatus
+// Props errors produce the right status here too, not the framework's
+// default 500), same dev-mode Vite middleware (no I/O, so no real Vite
+// server is needed for tests; Layout reads *vite.Vite via
+// vite.FromContext).
+func newTestHandler(t *testing.T) http.Handler {
+	t.Helper()
 	mux := http.NewServeMux()
-	if _, err := structpages.Mount(mux, pages.Pages{}, "/", "gsxui"); err != nil {
+	if _, err := structpages.Mount(mux, pages.Pages{}, "/", "gsxui",
+		structpages.WithErrorHandler(func(w http.ResponseWriter, r *http.Request, err error) {
+			var se pages.ErrorWithStatus
+			if errors.As(err, &se) {
+				http.Error(w, se.Message, se.Status)
+				return
+			}
+			http.Error(w, "internal server error", http.StatusInternalServerError)
+		}),
+	); err != nil {
 		t.Fatalf("structpages.Mount: %v", err)
 	}
 
-	// Layout reads *vite.Vite from the request context (vite.FromContext);
-	// wire dev-mode Vite the same way site/main.go's v.Middleware does. Dev
-	// mode does no I/O, so no real Vite server is needed for this test.
 	v, err := vite.New(vite.Config{DevURL: "http://localhost:5173", DevBase: "/__vite/"})
 	if err != nil {
 		t.Fatalf("vite.New: %v", err)
 	}
-	handler := v.Middleware(mux)
+	return v.Middleware(mux)
+}
+
+// TestSiteRoutes is the Task 1 integration smoke test: mounts the real page
+// tree on a real mux (as site/main.go does) and asserts "/" renders the
+// landing page with at least one live gsxui component on it.
+func TestSiteRoutes(t *testing.T) {
+	handler := newTestHandler(t)
 
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	rec := httptest.NewRecorder()
@@ -39,4 +57,51 @@ func TestSiteRoutes(t *testing.T) {
 	if !strings.Contains(rec.Body.String(), `data-slot="button"`) {
 		t.Errorf(`response missing data-slot="button"; body:\n%s`, rec.Body.String())
 	}
+}
+
+// TestComponentPageRoute is the Task 2 integration smoke test for
+// /components/{name}: a registered component renders the preview panel
+// (live component) next to its literal, unescaped-by-identifier source
+// text; an unregistered name 404s via ErrorWithStatus rather than the
+// framework's default 500 or a rendered-but-empty page.
+func TestComponentPageRoute(t *testing.T) {
+	handler := newTestHandler(t)
+
+	t.Run("registered component", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/components/button", nil)
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+
+		if rec.Code != http.StatusOK {
+			t.Fatalf("GET /components/button = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
+		}
+		body := rec.Body.String()
+		if !strings.Contains(body, "border rounded-lg p-8 bg-background") {
+			t.Errorf("response missing preview panel marker; body:\n%s", body)
+		}
+		if !strings.Contains(body, `data-slot="button"`) {
+			t.Errorf(`response missing rendered example (data-slot="button"); body:\n%s`, body)
+		}
+		// A distinctive identifier from basic.gsx's literal source — proves
+		// the displayed source is the exact embedded file, not paraphrased.
+		if !strings.Contains(body, "uibutton.Button") {
+			t.Errorf("response missing literal source text %q; body:\n%s", "uibutton.Button", body)
+		}
+		if !strings.Contains(body, `data-site-copy`) {
+			t.Errorf(`response missing copy button (data-site-copy); body:\n%s`, body)
+		}
+		if !strings.Contains(body, "gsxui add button") {
+			t.Errorf(`response missing install snippet "gsxui add button"; body:\n%s`, body)
+		}
+	})
+
+	t.Run("unknown component", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/components/nope", nil)
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+
+		if rec.Code != http.StatusNotFound {
+			t.Fatalf("GET /components/nope = %d, want %d; body:\n%s", rec.Code, http.StatusNotFound, rec.Body.String())
+		}
+	})
 }

@@ -7,6 +7,7 @@ import (
 	"cmp"
 	"context"
 	"embed"
+	"errors"
 	"log"
 	"net/http"
 	"os"
@@ -42,6 +43,11 @@ func main() {
 
 	if _, err := structpages.Mount(mux, pages.Pages{}, "/", "gsxui",
 		structpages.WithErrorHandler(func(w http.ResponseWriter, r *http.Request, err error) {
+			var se pages.ErrorWithStatus
+			if errors.As(err, &se) {
+				http.Error(w, se.Message, se.Status)
+				return
+			}
 			log.Printf("error rendering %s: %v", r.URL.Path, err)
 			http.Error(w, "internal server error", http.StatusInternalServerError)
 		}),
