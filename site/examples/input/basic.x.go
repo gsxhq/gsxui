@@ -11,11 +11,11 @@ import (
 
 // Basic renders a default Input.
 
-//line basic.gsx:11:1
+//line basic.gsx:7:1
 func Basic() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:12:2
+//line basic.gsx:8:2
 		_gsxgw.Node(ctx, uiinput.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "type", Value: "email"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "you@example.com"}})))
 		return _gsxgw.Err()
 	})

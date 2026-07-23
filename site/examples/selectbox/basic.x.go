@@ -12,26 +12,26 @@ import (
 // Basic renders a Select with plain SelectOption children, one
 // pre-selected.
 
-//line basic.gsx:12:1
+//line basic.gsx:8:1
 func Basic() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:13:2
+//line basic.gsx:9:2
 		_gsxgw.Node(ctx, uiselect.Select(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:14:3
+//line basic.gsx:10:3
 			_gsxgw.Node(ctx, uiselect.SelectOption("apple", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Apple")
 				return _gsxgw.Err()
 			}), nil))
-//line basic.gsx:15:3
+//line basic.gsx:11:3
 			_gsxgw.Node(ctx, uiselect.SelectOption("banana", true, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Banana")
 				return _gsxgw.Err()
 			}), nil))
-//line basic.gsx:16:3
+//line basic.gsx:12:3
 			_gsxgw.Node(ctx, uiselect.SelectOption("cherry", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Cherry")

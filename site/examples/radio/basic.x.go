@@ -13,28 +13,28 @@ import (
 // Basic groups three Radio inputs by a shared name — native radio grouping,
 // no wrapper component needed.
 
-//line basic.gsx:15:1
+//line basic.gsx:11:1
 func Basic() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:16:2
+//line basic.gsx:12:2
 		_gsxgw.S("<div class=\"flex flex-col gap-2\">")
-//line basic.gsx:17:3
+//line basic.gsx:13:3
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")
-//line basic.gsx:18:4
+//line basic.gsx:14:4
 		_gsxgw.Node(ctx, uiradio.Radio(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "radio-basic-card"}}, _gsxrt.Attrs{{Key: "name", Value: "radio-basic-plan"}}, _gsxrt.Attrs{{Key: "checked", Value: true}})))
-//line basic.gsx:19:4
+//line basic.gsx:15:4
 		_gsxgw.Node(ctx, uilabel.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Card")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "for", Value: "radio-basic-card"}}))
 		_gsxgw.S("</div>")
-//line basic.gsx:21:3
+//line basic.gsx:17:3
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")
-//line basic.gsx:22:4
+//line basic.gsx:18:4
 		_gsxgw.Node(ctx, uiradio.Radio(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "radio-basic-paypal"}}, _gsxrt.Attrs{{Key: "name", Value: "radio-basic-plan"}})))
-//line basic.gsx:23:4
+//line basic.gsx:19:4
 		_gsxgw.Node(ctx, uilabel.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("PayPal")

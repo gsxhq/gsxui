@@ -1,8 +1,4 @@
-// Package checkbox holds the site's example gsx components for
-// ui/checkbox. Each example is a real, compiled gsx component — the exact
-// source below is what the component page displays AND what it renders, so
-// source shown is source run; the examples_test.go drift test enforces
-// they can't diverge.
+// Package checkbox holds the site's example gsx components for ui/checkbox.
 package checkbox
 
 import (

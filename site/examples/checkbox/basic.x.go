@@ -12,15 +12,15 @@ import (
 
 // Basic pairs a Checkbox with a Label via matching id/for.
 
-//line basic.gsx:14:1
+//line basic.gsx:10:1
 func Basic() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:15:2
+//line basic.gsx:11:2
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")
-//line basic.gsx:16:3
+//line basic.gsx:12:3
 		_gsxgw.Node(ctx, uicheckbox.Checkbox(_gsxrt.Attrs{{Key: "id", Value: "checkbox-basic-marketing"}}))
-//line basic.gsx:17:3
+//line basic.gsx:13:3
 		_gsxgw.Node(ctx, uilabel.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Send me marketing emails")
