@@ -1,22 +1,22 @@
 package alert
 
 import (
-	uialert "github.com/gsxhq/gsxui/ui/alert"
+	"github.com/gsxhq/gsxui/ui"
 	uiicon "github.com/gsxhq/gsxui/ui/icon"
 )
 
 // Variants renders the default and destructive Alert variants together.
 component Variants() {
 	<div class="flex flex-col gap-4">
-		<uialert.Alert>
+		<ui.Alert>
 			<uiicon.CircleCheck/>
-			<uialert.AlertTitle>Success! Your changes have been saved.</uialert.AlertTitle>
-			<uialert.AlertDescription>This is an alert with icon, title, and description.</uialert.AlertDescription>
-		</uialert.Alert>
-		<uialert.Alert variant="destructive">
+			<ui.AlertTitle>Success! Your changes have been saved.</ui.AlertTitle>
+			<ui.AlertDescription>This is an alert with icon, title, and description.</ui.AlertDescription>
+		</ui.Alert>
+		<ui.Alert variant="destructive">
 			<uiicon.CircleAlert/>
-			<uialert.AlertTitle>Unable to process your payment.</uialert.AlertTitle>
-			<uialert.AlertDescription>Please verify your billing information and try again.</uialert.AlertDescription>
-		</uialert.Alert>
+			<ui.AlertTitle>Unable to process your payment.</ui.AlertTitle>
+			<ui.AlertDescription>Please verify your billing information and try again.</ui.AlertDescription>
+		</ui.Alert>
 	</div>
 }

@@ -1,8 +1,7 @@
 package checkbox
 
 import (
-	uicheckbox "github.com/gsxhq/gsxui/ui/checkbox"
-	uilabel "github.com/gsxhq/gsxui/ui/label"
+	"github.com/gsxhq/gsxui/ui"
 )
 
 // States renders Checkbox unchecked, checked, and disabled+checked —
@@ -12,16 +11,16 @@ import (
 component States() {
 	<div class="flex flex-col gap-3">
 		<div class="flex items-center gap-2">
-			<uicheckbox.Checkbox id="checkbox-states-unchecked"/>
-			<uilabel.Label for="checkbox-states-unchecked">Unchecked</uilabel.Label>
+			<ui.Checkbox id="checkbox-states-unchecked"/>
+			<ui.Label for="checkbox-states-unchecked">Unchecked</ui.Label>
 		</div>
 		<div class="flex items-center gap-2">
-			<uicheckbox.Checkbox id="checkbox-states-checked" checked/>
-			<uilabel.Label for="checkbox-states-checked">Checked</uilabel.Label>
+			<ui.Checkbox id="checkbox-states-checked" checked/>
+			<ui.Label for="checkbox-states-checked">Checked</ui.Label>
 		</div>
 		<div class="flex items-center gap-2">
-			<uicheckbox.Checkbox id="checkbox-states-disabled" checked disabled/>
-			<uilabel.Label for="checkbox-states-disabled">Checked and disabled</uilabel.Label>
+			<ui.Checkbox id="checkbox-states-disabled" checked disabled/>
+			<ui.Label for="checkbox-states-disabled">Checked and disabled</ui.Label>
 		</div>
 	</div>
 }

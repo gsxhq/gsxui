@@ -22,10 +22,7 @@ done — build with: go build ./...`
 
 const gsPageGsx = `package main
 
-import (
-	"example.com/myapp/ui/button"
-	"example.com/myapp/ui/card"
-)
+import "example.com/myapp/ui"
 
 component Home() {
 	<html lang="en">
@@ -34,15 +31,15 @@ component Home() {
 			<link rel="stylesheet" href="/web/gsxui.css"/>
 		</head>
 		<body class="flex min-h-svh items-center justify-center bg-background p-8 text-foreground">
-			<card.Card class="w-full max-w-sm">
-				<card.CardHeader>
-					<card.CardTitle>Hello, gsxui</card.CardTitle>
-					<card.CardDescription>Your first page.</card.CardDescription>
-				</card.CardHeader>
-				<card.CardContent>
-					<button.Button>Click me</button.Button>
-				</card.CardContent>
-			</card.Card>
+			<ui.Card class="w-full max-w-sm">
+				<ui.CardHeader>
+					<ui.CardTitle>Hello, gsxui</ui.CardTitle>
+					<ui.CardDescription>Your first page.</ui.CardDescription>
+				</ui.CardHeader>
+				<ui.CardContent>
+					<ui.Button>Click me</ui.Button>
+				</ui.CardContent>
+			</ui.Card>
 		</body>
 	</html>
 }`
@@ -108,8 +105,8 @@ component (g GettingStarted) Page() {
 				<pre class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"><code>{ gsAddOutput }</code></pre>
 				<p class="text-muted-foreground">
 					<code>card</code> has no dependencies of its own, but a component that does
-					(e.g. <code>selectbox</code>, which needs <code>icon</code>) pulls its
-					dependency in automatically — <code>gsxui add selectbox</code> vendors
+					(e.g. <code>select</code>, which needs <code>icon</code>) pulls its
+					dependency in automatically — <code>gsxui add select</code> vendors
 					<code>icon</code> too. You own every file this writes:
 					<code>gsxui add</code> never touches one you've already modified unless you
 					pass <code>--overwrite</code>. After upgrading the <code>gsxui</code> binary,

@@ -5,7 +5,7 @@ package accordion
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uiaccordion "github.com/gsxhq/gsxui/ui/accordion"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
@@ -18,19 +18,19 @@ func Compact() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line compact.gsx:9:2
-		_gsxgw.Node(ctx, uiaccordion.Accordion("compact", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Accordion("compact", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line compact.gsx:10:3
-			_gsxgw.Node(ctx, uiaccordion.AccordionItem("compact", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.AccordionItem("compact", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line compact.gsx:11:4
-				_gsxgw.Node(ctx, uiaccordion.AccordionTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.AccordionTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Shipping")
 					return _gsxgw.Err()
 				}), nil))
 //line compact.gsx:12:4
-				_gsxgw.Node(ctx, uiaccordion.AccordionContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.AccordionContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Ships within 2 business days.")
 					return _gsxgw.Err()
@@ -38,16 +38,16 @@ func Compact() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line compact.gsx:14:3
-			_gsxgw.Node(ctx, uiaccordion.AccordionItem("compact", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.AccordionItem("compact", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line compact.gsx:15:4
-				_gsxgw.Node(ctx, uiaccordion.AccordionTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.AccordionTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Returns")
 					return _gsxgw.Err()
 				}), nil))
 //line compact.gsx:16:4
-				_gsxgw.Node(ctx, uiaccordion.AccordionContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.AccordionContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("30-day return window.")
 					return _gsxgw.Err()

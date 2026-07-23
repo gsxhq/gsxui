@@ -5,7 +5,7 @@ package avatar
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uiavatar "github.com/gsxhq/gsxui/ui/avatar"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
@@ -23,12 +23,12 @@ func Basic() _gsxrt.Node {
 //line basic.gsx:13:2
 		_gsxgw.S("<div class=\"flex items-center gap-4\">")
 //line basic.gsx:14:3
-		_gsxgw.Node(ctx, uiavatar.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:15:4
-			_gsxgw.Node(ctx, uiavatar.AvatarImage(avatarSVG, "Ada Lovelace", nil))
+			_gsxgw.Node(ctx, ui.AvatarImage(avatarSVG, "Ada Lovelace", nil))
 //line basic.gsx:16:4
-			_gsxgw.Node(ctx, uiavatar.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("AL")
 				return _gsxgw.Err()
@@ -36,12 +36,12 @@ func Basic() _gsxrt.Node {
 			return _gsxgw.Err()
 		}), nil))
 //line basic.gsx:18:3
-		_gsxgw.Node(ctx, uiavatar.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:19:4
-			_gsxgw.Node(ctx, uiavatar.AvatarImage("/broken-image.jpg", "Broken avatar", nil))
+			_gsxgw.Node(ctx, ui.AvatarImage("/broken-image.jpg", "Broken avatar", nil))
 //line basic.gsx:20:4
-			_gsxgw.Node(ctx, uiavatar.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("JD")
 				return _gsxgw.Err()

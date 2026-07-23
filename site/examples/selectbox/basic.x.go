@@ -5,7 +5,7 @@ package selectbox
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uiselect "github.com/gsxhq/gsxui/ui/selectbox"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
@@ -17,22 +17,22 @@ func Basic() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:9:2
-		_gsxgw.Node(ctx, uiselect.Select(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Select(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:10:3
-			_gsxgw.Node(ctx, uiselect.SelectOption("apple", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.SelectOption("apple", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Apple")
 				return _gsxgw.Err()
 			}), nil))
 //line basic.gsx:11:3
-			_gsxgw.Node(ctx, uiselect.SelectOption("banana", true, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.SelectOption("banana", true, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Banana")
 				return _gsxgw.Err()
 			}), nil))
 //line basic.gsx:12:3
-			_gsxgw.Node(ctx, uiselect.SelectOption("cherry", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.SelectOption("cherry", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Cherry")
 				return _gsxgw.Err()

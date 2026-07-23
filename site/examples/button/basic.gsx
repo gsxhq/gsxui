@@ -1,9 +1,9 @@
 // Package button holds the site's example gsx components for ui/button.
 package button
 
-import uibutton "github.com/gsxhq/gsxui/ui/button"
+import "github.com/gsxhq/gsxui/ui"
 
 // Basic renders the default Button.
 component Basic() {
-	<uibutton.Button>Button</uibutton.Button>
+	<ui.Button>Button</ui.Button>
 }

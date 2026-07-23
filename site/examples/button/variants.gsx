@@ -1,15 +1,15 @@
 package button
 
-import uibutton "github.com/gsxhq/gsxui/ui/button"
+import "github.com/gsxhq/gsxui/ui"
 
 // Variants renders every Button variant side by side.
 component Variants() {
 	<div class="flex flex-wrap items-center gap-3">
-		<uibutton.Button>Default</uibutton.Button>
-		<uibutton.Button variant="secondary">Secondary</uibutton.Button>
-		<uibutton.Button variant="destructive">Destructive</uibutton.Button>
-		<uibutton.Button variant="outline">Outline</uibutton.Button>
-		<uibutton.Button variant="ghost">Ghost</uibutton.Button>
-		<uibutton.Button variant="link">Link</uibutton.Button>
+		<ui.Button>Default</ui.Button>
+		<ui.Button variant="secondary">Secondary</ui.Button>
+		<ui.Button variant="destructive">Destructive</ui.Button>
+		<ui.Button variant="outline">Outline</ui.Button>
+		<ui.Button variant="ghost">Ghost</ui.Button>
+		<ui.Button variant="link">Link</ui.Button>
 	</div>
 }

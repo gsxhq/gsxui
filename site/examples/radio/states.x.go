@@ -5,48 +5,47 @@ package radio
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uilabel "github.com/gsxhq/gsxui/ui/label"
-	uiradio "github.com/gsxhq/gsxui/ui/radio"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
 // States adds a disabled option to the group — disabled is a bare boolean
 // attribute forwarded through Radio's { attrs... } spread.
 
-//line states.gsx:10:1
+//line states.gsx:9:1
 func States() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line states.gsx:11:2
+//line states.gsx:10:2
 		_gsxgw.S("<div class=\"flex flex-col gap-2\">")
-//line states.gsx:12:3
+//line states.gsx:11:3
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")
+//line states.gsx:12:4
+		_gsxgw.Node(ctx, ui.Radio(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "radio-states-monthly"}}, _gsxrt.Attrs{{Key: "name", Value: "radio-states-billing"}}, _gsxrt.Attrs{{Key: "checked", Value: true}})))
 //line states.gsx:13:4
-		_gsxgw.Node(ctx, uiradio.Radio(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "radio-states-monthly"}}, _gsxrt.Attrs{{Key: "name", Value: "radio-states-billing"}}, _gsxrt.Attrs{{Key: "checked", Value: true}})))
-//line states.gsx:14:4
-		_gsxgw.Node(ctx, uilabel.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Monthly")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "for", Value: "radio-states-monthly"}}))
 		_gsxgw.S("</div>")
-//line states.gsx:16:3
+//line states.gsx:15:3
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")
+//line states.gsx:16:4
+		_gsxgw.Node(ctx, ui.Radio(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "radio-states-yearly"}}, _gsxrt.Attrs{{Key: "name", Value: "radio-states-billing"}})))
 //line states.gsx:17:4
-		_gsxgw.Node(ctx, uiradio.Radio(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "radio-states-yearly"}}, _gsxrt.Attrs{{Key: "name", Value: "radio-states-billing"}})))
-//line states.gsx:18:4
-		_gsxgw.Node(ctx, uilabel.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Yearly")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "for", Value: "radio-states-yearly"}}))
 		_gsxgw.S("</div>")
-//line states.gsx:20:3
+//line states.gsx:19:3
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")
+//line states.gsx:20:4
+		_gsxgw.Node(ctx, ui.Radio(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "radio-states-lifetime"}}, _gsxrt.Attrs{{Key: "name", Value: "radio-states-billing"}}, _gsxrt.Attrs{{Key: "disabled", Value: true}})))
 //line states.gsx:21:4
-		_gsxgw.Node(ctx, uiradio.Radio(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "radio-states-lifetime"}}, _gsxrt.Attrs{{Key: "name", Value: "radio-states-billing"}}, _gsxrt.Attrs{{Key: "disabled", Value: true}})))
-//line states.gsx:22:4
-		_gsxgw.Node(ctx, uilabel.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Lifetime (unavailable)")
 			return _gsxgw.Err()

@@ -5,7 +5,7 @@ package textarea
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uitextarea "github.com/gsxhq/gsxui/ui/textarea"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
@@ -19,11 +19,11 @@ func States() _gsxrt.Node {
 //line states.gsx:8:2
 		_gsxgw.S("<div class=\"flex max-w-sm flex-col gap-3\">")
 //line states.gsx:9:3
-		_gsxgw.Node(ctx, uitextarea.Textarea("Filled in already.", _gsxrt.Attrs{{Key: "placeholder", Value: "Message"}}))
+		_gsxgw.Node(ctx, ui.Textarea("Filled in already.", _gsxrt.Attrs{{Key: "placeholder", Value: "Message"}}))
 //line states.gsx:10:3
-		_gsxgw.Node(ctx, uitextarea.Textarea("", _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "placeholder", Value: "Disabled"}}, _gsxrt.Attrs{{Key: "disabled", Value: true}})))
+		_gsxgw.Node(ctx, ui.Textarea("", _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "placeholder", Value: "Disabled"}}, _gsxrt.Attrs{{Key: "disabled", Value: true}})))
 //line states.gsx:11:3
-		_gsxgw.Node(ctx, uitextarea.Textarea("", _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "placeholder", Value: "Invalid"}}, _gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}})))
+		_gsxgw.Node(ctx, ui.Textarea("", _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "placeholder", Value: "Invalid"}}, _gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}})))
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

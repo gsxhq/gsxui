@@ -5,7 +5,7 @@ package separator
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uiseparator "github.com/gsxhq/gsxui/ui/separator"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
@@ -20,7 +20,7 @@ func Basic() _gsxrt.Node {
 //line basic.gsx:10:3
 		_gsxgw.S("<p>Above the line.</p>")
 //line basic.gsx:11:3
-		_gsxgw.Node(ctx, uiseparator.Separator("", _gsxrt.Attrs{{Key: "class", Value: "my-4"}}))
+		_gsxgw.Node(ctx, ui.Separator("", _gsxrt.Attrs{{Key: "class", Value: "my-4"}}))
 //line basic.gsx:12:3
 		_gsxgw.S("<p>Below the line.</p></div>")
 		return _gsxgw.Err()

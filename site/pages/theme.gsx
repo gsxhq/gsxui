@@ -1,13 +1,7 @@
 package pages
 
 import (
-	"github.com/gsxhq/gsxui/ui/alert"
-	"github.com/gsxhq/gsxui/ui/badge"
-	"github.com/gsxhq/gsxui/ui/button"
-	"github.com/gsxhq/gsxui/ui/card"
-	"github.com/gsxhq/gsxui/ui/checkbox"
-	"github.com/gsxhq/gsxui/ui/input"
-	"github.com/gsxhq/gsxui/ui/label"
+	"github.com/gsxhq/gsxui/ui"
 )
 
 // Theme is the /theme route: a live editor over the 20 shadcn-compatible
@@ -145,8 +139,8 @@ component (t Theme) Page() {
 					<section class="flex flex-col gap-3 border-t border-border pt-6">
 						<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Export</h2>
 						<div class="flex flex-wrap gap-2">
-							<button.Button data-theme-copy variant="outline" size="sm">Copy CSS</button.Button>
-							<button.Button data-theme-download variant="outline" size="sm">Download gsxui.css</button.Button>
+							<ui.Button data-theme-copy variant="outline" size="sm">Copy CSS</ui.Button>
+							<ui.Button data-theme-download variant="outline" size="sm">Download gsxui.css</ui.Button>
 						</div>
 						<textarea
 							data-theme-export-output
@@ -167,7 +161,7 @@ component (t Theme) Page() {
 							class="w-full rounded-md border border-input bg-transparent p-2 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
 						></textarea>
 						<div>
-							<button.Button data-theme-import-apply variant="outline" size="sm">Apply</button.Button>
+							<ui.Button data-theme-import-apply variant="outline" size="sm">Apply</ui.Button>
 						</div>
 					</section>
 				</div>
@@ -192,45 +186,45 @@ component (t Theme) Page() {
 					</div>
 					<div data-theme-preview class="flex flex-col gap-6 rounded-xl border border-border bg-background p-6">
 						<div class="flex flex-wrap items-center gap-2">
-							<button.Button>Default</button.Button>
-							<button.Button variant="secondary">Secondary</button.Button>
-							<button.Button variant="outline">Outline</button.Button>
-							<button.Button variant="ghost">Ghost</button.Button>
-							<button.Button variant="link">Link</button.Button>
-							<button.Button variant="destructive">Destructive</button.Button>
+							<ui.Button>Default</ui.Button>
+							<ui.Button variant="secondary">Secondary</ui.Button>
+							<ui.Button variant="outline">Outline</ui.Button>
+							<ui.Button variant="ghost">Ghost</ui.Button>
+							<ui.Button variant="link">Link</ui.Button>
+							<ui.Button variant="destructive">Destructive</ui.Button>
 						</div>
 						<div class="flex flex-wrap items-center gap-2">
-							<badge.Badge>Default</badge.Badge>
-							<badge.Badge variant="secondary">Secondary</badge.Badge>
-							<badge.Badge variant="outline">Outline</badge.Badge>
-							<badge.Badge variant="destructive">Destructive</badge.Badge>
+							<ui.Badge>Default</ui.Badge>
+							<ui.Badge variant="secondary">Secondary</ui.Badge>
+							<ui.Badge variant="outline">Outline</ui.Badge>
+							<ui.Badge variant="destructive">Destructive</ui.Badge>
 						</div>
-						<card.Card class="max-w-sm">
-							<card.CardHeader>
-								<card.CardTitle>Profile</card.CardTitle>
-								<card.CardDescription>Preview restyles live as you edit the tokens.</card.CardDescription>
-							</card.CardHeader>
-							<card.CardContent>
+						<ui.Card class="max-w-sm">
+							<ui.CardHeader>
+								<ui.CardTitle>Profile</ui.CardTitle>
+								<ui.CardDescription>Preview restyles live as you edit the tokens.</ui.CardDescription>
+							</ui.CardHeader>
+							<ui.CardContent>
 								<div class="flex flex-col gap-3">
 									<div class="flex flex-col gap-1.5">
-										<label.Label for="theme-preview-name">Name</label.Label>
-										<input.Input id="theme-preview-name" placeholder="Ada Lovelace"/>
+										<ui.Label for="theme-preview-name">Name</ui.Label>
+										<ui.Input id="theme-preview-name" placeholder="Ada Lovelace"/>
 									</div>
 									<div class="flex items-center gap-2">
-										<checkbox.Checkbox id="theme-preview-terms" checked/>
-										<label.Label for="theme-preview-terms">Accept terms</label.Label>
+										<ui.Checkbox id="theme-preview-terms" checked/>
+										<ui.Label for="theme-preview-terms">Accept terms</ui.Label>
 									</div>
 								</div>
-							</card.CardContent>
-						</card.Card>
-						<alert.Alert>
-							<alert.AlertTitle>Heads up</alert.AlertTitle>
-							<alert.AlertDescription>This alert restyles with the tokens above.</alert.AlertDescription>
-						</alert.Alert>
-						<alert.Alert variant="destructive">
-							<alert.AlertTitle>Something went wrong</alert.AlertTitle>
-							<alert.AlertDescription>The destructive variant uses --destructive.</alert.AlertDescription>
-						</alert.Alert>
+							</ui.CardContent>
+						</ui.Card>
+						<ui.Alert>
+							<ui.AlertTitle>Heads up</ui.AlertTitle>
+							<ui.AlertDescription>This alert restyles with the tokens above.</ui.AlertDescription>
+						</ui.Alert>
+						<ui.Alert variant="destructive">
+							<ui.AlertTitle>Something went wrong</ui.AlertTitle>
+							<ui.AlertDescription>The destructive variant uses --destructive.</ui.AlertDescription>
+						</ui.Alert>
 					</div>
 				</div>
 			</div>

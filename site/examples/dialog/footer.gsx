@@ -1,23 +1,22 @@
 package dialog
 
 import (
-	uibutton "github.com/gsxhq/gsxui/ui/button"
-	uidialog "github.com/gsxhq/gsxui/ui/dialog"
+	"github.com/gsxhq/gsxui/ui"
 )
 
 // Footer shows DialogFooter's showCloseButton: true appends an outline
 // Close button automatically, no explicit DialogClose needed.
 component Footer() {
-	<uidialog.Dialog>
-		<uibutton.Button data-gsxui-dialog-trigger>Share</uibutton.Button>
-		<uidialog.DialogContent>
-			<uidialog.DialogHeader>
-				<uidialog.DialogTitle>Share link</uidialog.DialogTitle>
-				<uidialog.DialogDescription>Anyone with this link can view.</uidialog.DialogDescription>
-			</uidialog.DialogHeader>
-			<uidialog.DialogFooter showCloseButton>
-				<uibutton.Button>Copy link</uibutton.Button>
-			</uidialog.DialogFooter>
-		</uidialog.DialogContent>
-	</uidialog.Dialog>
+	<ui.Dialog>
+		<ui.Button data-gsxui-dialog-trigger>Share</ui.Button>
+		<ui.DialogContent>
+			<ui.DialogHeader>
+				<ui.DialogTitle>Share link</ui.DialogTitle>
+				<ui.DialogDescription>Anyone with this link can view.</ui.DialogDescription>
+			</ui.DialogHeader>
+			<ui.DialogFooter showCloseButton>
+				<ui.Button>Copy link</ui.Button>
+			</ui.DialogFooter>
+		</ui.DialogContent>
+	</ui.Dialog>
 }

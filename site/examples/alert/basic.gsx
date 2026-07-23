@@ -2,15 +2,15 @@
 package alert
 
 import (
-	uialert "github.com/gsxhq/gsxui/ui/alert"
+	"github.com/gsxhq/gsxui/ui"
 	uiicon "github.com/gsxhq/gsxui/ui/icon"
 )
 
 // Basic renders a default Alert with an icon, title, and description.
 component Basic() {
-	<uialert.Alert>
+	<ui.Alert>
 		<uiicon.Terminal/>
-		<uialert.AlertTitle>Heads up!</uialert.AlertTitle>
-		<uialert.AlertDescription>You can add components to your app using the CLI.</uialert.AlertDescription>
-	</uialert.Alert>
+		<ui.AlertTitle>Heads up!</ui.AlertTitle>
+		<ui.AlertDescription>You can add components to your app using the CLI.</ui.AlertDescription>
+	</ui.Alert>
 }

@@ -5,7 +5,7 @@ package badge
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uibadge "github.com/gsxhq/gsxui/ui/badge"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
@@ -18,37 +18,37 @@ func Variants() _gsxrt.Node {
 //line variants.gsx:7:2
 		_gsxgw.S("<div class=\"flex flex-wrap items-center gap-2\">")
 //line variants.gsx:8:3
-		_gsxgw.Node(ctx, uibadge.Badge("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Badge("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Default")
 			return _gsxgw.Err()
 		}), nil))
 //line variants.gsx:9:3
-		_gsxgw.Node(ctx, uibadge.Badge("secondary", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Badge("secondary", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Secondary")
 			return _gsxgw.Err()
 		}), nil))
 //line variants.gsx:10:3
-		_gsxgw.Node(ctx, uibadge.Badge("destructive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Badge("destructive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Destructive")
 			return _gsxgw.Err()
 		}), nil))
 //line variants.gsx:11:3
-		_gsxgw.Node(ctx, uibadge.Badge("outline", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Badge("outline", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Outline")
 			return _gsxgw.Err()
 		}), nil))
 //line variants.gsx:12:3
-		_gsxgw.Node(ctx, uibadge.Badge("ghost", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Badge("ghost", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Ghost")
 			return _gsxgw.Err()
 		}), nil))
 //line variants.gsx:13:3
-		_gsxgw.Node(ctx, uibadge.Badge("link", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Badge("link", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Link")
 			return _gsxgw.Err()

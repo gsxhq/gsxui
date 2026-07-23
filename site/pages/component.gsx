@@ -46,7 +46,7 @@ func (Component) Props(r *http.Request) (ComponentProps, error) {
 	}
 	eps := make([]exampleProps, len(exs))
 	for i, ex := range exs {
-		src, err := examples.Source(name, ex.Name)
+		src, err := examples.Source(ex.SourcePath)
 		if err != nil {
 			return ComponentProps{}, err
 		}
@@ -64,16 +64,12 @@ func capitalize(s string) string {
 
 // shadcnSlug maps gsxui component names to the slug shadcn/ui uses under
 // ui.shadcn.com/docs/components/{slug} — most names match verbatim, but a
-// handful of gsxui components were renamed off their shadcn source (e.g.
-// switchctl, since "switch" is a reserved Go keyword — see
-// ui/switchctl/switch.gsx) or restructured (selectbox splits shadcn's
-// Select; dropdown ports DropdownMenu). Names not present here pass through
-// unchanged.
+// couple of gsxui components restructure their shadcn source under a
+// different name (dropdown ports DropdownMenu; radio ports RadioGroup).
+// Names not present here pass through unchanged.
 var shadcnSlug = map[string]string{
-	"switchctl": "switch",
-	"selectbox": "select",
-	"dropdown":  "dropdown-menu",
-	"radio":     "radio-group",
+	"dropdown": "dropdown-menu",
+	"radio":    "radio-group",
 }
 
 // shadcnName resolves a gsxui component name to its shadcn/ui docs slug,

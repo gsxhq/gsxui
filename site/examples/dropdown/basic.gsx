@@ -2,20 +2,19 @@
 package dropdown
 
 import (
-	uibutton "github.com/gsxhq/gsxui/ui/button"
-	uidropdown "github.com/gsxhq/gsxui/ui/dropdown"
+	"github.com/gsxhq/gsxui/ui"
 )
 
 // Basic renders a menu with a label, separator, and plain items.
 component Basic() {
-	<uidropdown.DropdownMenu>
-		<uibutton.Button variant="outline" data-gsxui-dropdown-trigger>Options</uibutton.Button>
-		<uidropdown.DropdownMenuContent>
-			<uidropdown.DropdownMenuLabel>My Account</uidropdown.DropdownMenuLabel>
-			<uidropdown.DropdownMenuSeparator/>
-			<uidropdown.DropdownMenuItem>Profile</uidropdown.DropdownMenuItem>
-			<uidropdown.DropdownMenuItem>Billing</uidropdown.DropdownMenuItem>
-			<uidropdown.DropdownMenuItem>Settings</uidropdown.DropdownMenuItem>
-		</uidropdown.DropdownMenuContent>
-	</uidropdown.DropdownMenu>
+	<ui.DropdownMenu>
+		<ui.Button variant="outline" data-gsxui-dropdown-trigger>Options</ui.Button>
+		<ui.DropdownMenuContent>
+			<ui.DropdownMenuLabel>My Account</ui.DropdownMenuLabel>
+			<ui.DropdownMenuSeparator/>
+			<ui.DropdownMenuItem>Profile</ui.DropdownMenuItem>
+			<ui.DropdownMenuItem>Billing</ui.DropdownMenuItem>
+			<ui.DropdownMenuItem>Settings</ui.DropdownMenuItem>
+		</ui.DropdownMenuContent>
+	</ui.DropdownMenu>
 }

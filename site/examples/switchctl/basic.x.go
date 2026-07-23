@@ -5,36 +5,35 @@ package switchctl
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uilabel "github.com/gsxhq/gsxui/ui/label"
-	uiswitch "github.com/gsxhq/gsxui/ui/switchctl"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
 // Basic pairs an unchecked and a checked Switch, each with a Label.
 
-//line basic.gsx:10:1
+//line basic.gsx:9:1
 func Basic() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:11:2
+//line basic.gsx:10:2
 		_gsxgw.S("<div class=\"flex flex-col gap-3\">")
-//line basic.gsx:12:3
+//line basic.gsx:11:3
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")
+//line basic.gsx:12:4
+		_gsxgw.Node(ctx, ui.Switch(_gsxrt.Attrs{{Key: "id", Value: "switch-basic-airplane"}}))
 //line basic.gsx:13:4
-		_gsxgw.Node(ctx, uiswitch.Switch(_gsxrt.Attrs{{Key: "id", Value: "switch-basic-airplane"}}))
-//line basic.gsx:14:4
-		_gsxgw.Node(ctx, uilabel.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Airplane mode")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "for", Value: "switch-basic-airplane"}}))
 		_gsxgw.S("</div>")
-//line basic.gsx:16:3
+//line basic.gsx:15:3
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")
+//line basic.gsx:16:4
+		_gsxgw.Node(ctx, ui.Switch(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "switch-basic-wifi"}}, _gsxrt.Attrs{{Key: "checked", Value: true}})))
 //line basic.gsx:17:4
-		_gsxgw.Node(ctx, uiswitch.Switch(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "switch-basic-wifi"}}, _gsxrt.Attrs{{Key: "checked", Value: true}})))
-//line basic.gsx:18:4
-		_gsxgw.Node(ctx, uilabel.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Wi-Fi")
 			return _gsxgw.Err()

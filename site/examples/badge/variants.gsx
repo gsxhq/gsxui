@@ -1,15 +1,15 @@
 package badge
 
-import uibadge "github.com/gsxhq/gsxui/ui/badge"
+import "github.com/gsxhq/gsxui/ui"
 
 // Variants renders every Badge variant side by side.
 component Variants() {
 	<div class="flex flex-wrap items-center gap-2">
-		<uibadge.Badge>Default</uibadge.Badge>
-		<uibadge.Badge variant="secondary">Secondary</uibadge.Badge>
-		<uibadge.Badge variant="destructive">Destructive</uibadge.Badge>
-		<uibadge.Badge variant="outline">Outline</uibadge.Badge>
-		<uibadge.Badge variant="ghost">Ghost</uibadge.Badge>
-		<uibadge.Badge variant="link">Link</uibadge.Badge>
+		<ui.Badge>Default</ui.Badge>
+		<ui.Badge variant="secondary">Secondary</ui.Badge>
+		<ui.Badge variant="destructive">Destructive</ui.Badge>
+		<ui.Badge variant="outline">Outline</ui.Badge>
+		<ui.Badge variant="ghost">Ghost</ui.Badge>
+		<ui.Badge variant="link">Link</ui.Badge>
 	</div>
 }

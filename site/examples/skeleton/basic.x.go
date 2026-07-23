@@ -5,7 +5,7 @@ package skeleton
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uiskeleton "github.com/gsxhq/gsxui/ui/skeleton"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
@@ -19,13 +19,13 @@ func Basic() _gsxrt.Node {
 //line basic.gsx:10:2
 		_gsxgw.S("<div class=\"flex items-center gap-4\">")
 //line basic.gsx:11:3
-		_gsxgw.Node(ctx, uiskeleton.Skeleton(_gsxrt.Attrs{{Key: "class", Value: "size-12 rounded-full"}}))
+		_gsxgw.Node(ctx, ui.Skeleton(_gsxrt.Attrs{{Key: "class", Value: "size-12 rounded-full"}}))
 //line basic.gsx:12:3
 		_gsxgw.S("<div class=\"grid gap-2\">")
 //line basic.gsx:13:4
-		_gsxgw.Node(ctx, uiskeleton.Skeleton(_gsxrt.Attrs{{Key: "class", Value: "h-4 w-[250px]"}}))
+		_gsxgw.Node(ctx, ui.Skeleton(_gsxrt.Attrs{{Key: "class", Value: "h-4 w-[250px]"}}))
 //line basic.gsx:14:4
-		_gsxgw.Node(ctx, uiskeleton.Skeleton(_gsxrt.Attrs{{Key: "class", Value: "h-4 w-[200px]"}}))
+		_gsxgw.Node(ctx, ui.Skeleton(_gsxrt.Attrs{{Key: "class", Value: "h-4 w-[200px]"}}))
 		_gsxgw.S("</div></div>")
 		return _gsxgw.Err()
 	})

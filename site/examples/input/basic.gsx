@@ -1,9 +1,9 @@
 // Package input holds the site's example gsx components for ui/input.
 package input
 
-import uiinput "github.com/gsxhq/gsxui/ui/input"
+import "github.com/gsxhq/gsxui/ui"
 
 // Basic renders a default Input.
 component Basic() {
-	<uiinput.Input type="email" placeholder="you@example.com"/>
+	<ui.Input type="email" placeholder="you@example.com"/>
 }

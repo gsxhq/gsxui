@@ -5,7 +5,7 @@ package badge
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uibadge "github.com/gsxhq/gsxui/ui/badge"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
@@ -16,7 +16,7 @@ func Basic() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:8:2
-		_gsxgw.Node(ctx, uibadge.Badge("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Badge("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Badge")
 			return _gsxgw.Err()

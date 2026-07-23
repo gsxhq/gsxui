@@ -1,20 +1,19 @@
 package dialog
 
 import (
-	uibutton "github.com/gsxhq/gsxui/ui/button"
-	uidialog "github.com/gsxhq/gsxui/ui/dialog"
+	"github.com/gsxhq/gsxui/ui"
 )
 
 // Events shows the gsxui:open/gsxui:close CustomEvents dialog.js emits on
 // the <dialog> element on every open/close path — trigger, Esc, light
 // dismiss, and programmatic showModal()/close() alike.
 component Events() {
-	<uidialog.Dialog>
-		<uibutton.Button data-gsxui-dialog-trigger>Open</uibutton.Button>
-		<uidialog.DialogContent id="events-dialog">
-			<uidialog.DialogTitle>Watched dialog</uidialog.DialogTitle>
-			<uidialog.DialogDescription>Its open/close events log below.</uidialog.DialogDescription>
-		</uidialog.DialogContent>
+	<ui.Dialog>
+		<ui.Button data-gsxui-dialog-trigger>Open</ui.Button>
+		<ui.DialogContent id="events-dialog">
+			<ui.DialogTitle>Watched dialog</ui.DialogTitle>
+			<ui.DialogDescription>Its open/close events log below.</ui.DialogDescription>
+		</ui.DialogContent>
 		<output id="events-log" class="mt-4 block text-sm text-muted-foreground">closed</output>
 		<script>
 			document.addEventListener("gsxui:open", (e) => {
@@ -24,5 +23,5 @@ component Events() {
 				if (e.target.id === "events-dialog") document.getElementById("events-log").textContent = "closed";
 			});
 		</script>
-	</uidialog.Dialog>
+	</ui.Dialog>
 }

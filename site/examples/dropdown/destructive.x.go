@@ -5,8 +5,7 @@ package dropdown
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uibutton "github.com/gsxhq/gsxui/ui/button"
-	uidropdown "github.com/gsxhq/gsxui/ui/dropdown"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
@@ -14,38 +13,38 @@ import (
 // styles the row red; aria-disabled/data-disabled skip it in roving focus
 // and the click handler (see ui/dropdown/dropdown.js).
 
-//line destructive.gsx:11:1
+//line destructive.gsx:10:1
 func Destructive() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line destructive.gsx:12:2
-		_gsxgw.Node(ctx, uidropdown.DropdownMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line destructive.gsx:11:2
+		_gsxgw.Node(ctx, ui.DropdownMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line destructive.gsx:13:3
-			_gsxgw.Node(ctx, uibutton.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line destructive.gsx:12:3
+			_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Manage")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "data-gsxui-dropdown-trigger", Value: true}}))
-//line destructive.gsx:14:3
-			_gsxgw.Node(ctx, uidropdown.DropdownMenuContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line destructive.gsx:13:3
+			_gsxgw.Node(ctx, ui.DropdownMenuContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line destructive.gsx:15:4
-				_gsxgw.Node(ctx, uidropdown.DropdownMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line destructive.gsx:14:4
+				_gsxgw.Node(ctx, ui.DropdownMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Rename")
 					return _gsxgw.Err()
 				}), nil))
-//line destructive.gsx:16:4
-				_gsxgw.Node(ctx, uidropdown.DropdownMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line destructive.gsx:15:4
+				_gsxgw.Node(ctx, ui.DropdownMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Archive (unavailable)")
 					return _gsxgw.Err()
 				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-disabled", Value: "true"}}, _gsxrt.Attrs{{Key: "data-disabled", Value: "true"}})))
+//line destructive.gsx:16:4
+				_gsxgw.Node(ctx, ui.DropdownMenuSeparator(nil))
 //line destructive.gsx:17:4
-				_gsxgw.Node(ctx, uidropdown.DropdownMenuSeparator(nil))
-//line destructive.gsx:18:4
-				_gsxgw.Node(ctx, uidropdown.DropdownMenuItem("destructive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.DropdownMenuItem("destructive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Delete")
 					return _gsxgw.Err()

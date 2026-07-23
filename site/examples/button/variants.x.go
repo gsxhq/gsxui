@@ -5,7 +5,7 @@ package button
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uibutton "github.com/gsxhq/gsxui/ui/button"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
@@ -18,37 +18,37 @@ func Variants() _gsxrt.Node {
 //line variants.gsx:7:2
 		_gsxgw.S("<div class=\"flex flex-wrap items-center gap-3\">")
 //line variants.gsx:8:3
-		_gsxgw.Node(ctx, uibutton.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Default")
 			return _gsxgw.Err()
 		}), nil))
 //line variants.gsx:9:3
-		_gsxgw.Node(ctx, uibutton.Button("secondary", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Button("secondary", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Secondary")
 			return _gsxgw.Err()
 		}), nil))
 //line variants.gsx:10:3
-		_gsxgw.Node(ctx, uibutton.Button("destructive", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Button("destructive", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Destructive")
 			return _gsxgw.Err()
 		}), nil))
 //line variants.gsx:11:3
-		_gsxgw.Node(ctx, uibutton.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Outline")
 			return _gsxgw.Err()
 		}), nil))
 //line variants.gsx:12:3
-		_gsxgw.Node(ctx, uibutton.Button("ghost", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Button("ghost", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Ghost")
 			return _gsxgw.Err()
 		}), nil))
 //line variants.gsx:13:3
-		_gsxgw.Node(ctx, uibutton.Button("link", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Button("link", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Link")
 			return _gsxgw.Err()

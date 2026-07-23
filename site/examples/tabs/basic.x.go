@@ -5,7 +5,7 @@ package tabs
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uitabs "github.com/gsxhq/gsxui/ui/tabs"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
@@ -18,25 +18,25 @@ func Basic() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:10:2
-		_gsxgw.Node(ctx, uitabs.Tabs("account", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Tabs("account", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:11:3
-			_gsxgw.Node(ctx, uitabs.TabsList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.TabsList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:12:4
-				_gsxgw.Node(ctx, uitabs.TabsTrigger("account", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.TabsTrigger("account", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Account")
 					return _gsxgw.Err()
 				}), nil))
 //line basic.gsx:13:4
-				_gsxgw.Node(ctx, uitabs.TabsTrigger("password", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.TabsTrigger("password", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Password")
 					return _gsxgw.Err()
 				}), nil))
 //line basic.gsx:14:4
-				_gsxgw.Node(ctx, uitabs.TabsTrigger("team", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.TabsTrigger("team", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Team")
 					return _gsxgw.Err()
@@ -44,19 +44,19 @@ func Basic() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line basic.gsx:16:3
-			_gsxgw.Node(ctx, uitabs.TabsContent("account", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.TabsContent("account", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Update your account details.")
 				return _gsxgw.Err()
 			}), nil))
 //line basic.gsx:17:3
-			_gsxgw.Node(ctx, uitabs.TabsContent("password", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.TabsContent("password", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Change your password.")
 				return _gsxgw.Err()
 			}), nil))
 //line basic.gsx:18:3
-			_gsxgw.Node(ctx, uitabs.TabsContent("team", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.TabsContent("team", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Manage your team members.")
 				return _gsxgw.Err()

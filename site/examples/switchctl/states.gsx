@@ -1,8 +1,7 @@
 package switchctl
 
 import (
-	uilabel "github.com/gsxhq/gsxui/ui/label"
-	uiswitch "github.com/gsxhq/gsxui/ui/switchctl"
+	"github.com/gsxhq/gsxui/ui"
 )
 
 // States adds disabled variants — disabled is a bare boolean attribute
@@ -11,12 +10,12 @@ import (
 component States() {
 	<div class="flex flex-col gap-3">
 		<div class="flex items-center gap-2">
-			<uiswitch.Switch id="switch-states-off-disabled" disabled/>
-			<uilabel.Label for="switch-states-off-disabled">Off, disabled</uilabel.Label>
+			<ui.Switch id="switch-states-off-disabled" disabled/>
+			<ui.Label for="switch-states-off-disabled">Off, disabled</ui.Label>
 		</div>
 		<div class="flex items-center gap-2">
-			<uiswitch.Switch id="switch-states-on-disabled" checked disabled/>
-			<uilabel.Label for="switch-states-on-disabled">On, disabled</uilabel.Label>
+			<ui.Switch id="switch-states-on-disabled" checked disabled/>
+			<ui.Label for="switch-states-on-disabled">On, disabled</ui.Label>
 		</div>
 	</div>
 }

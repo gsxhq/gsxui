@@ -22,16 +22,21 @@ refresh vendored components — this discards local edits to those files.
 **Status: pre-release.** v1 component set (20 components + icon) is complete.
 The showcase site and theme editor are in progress.
 
-- Components live in `ui/<name>/` — a `.gsx` source (JSX-style, named
-  parameters, fallthrough attrs) plus a behavior `.js` when interactive.
+- Components live flat in `ui/` — one `package ui`, each component its own
+  `<name>.gsx` source (JSX-style, named parameters, fallthrough attrs) plus
+  a behavior `<name>.js` when interactive. `icon` is the one exception,
+  staying its own `ui/icon` package (generated Lucide data). Every
+  component is imported the same way: `import "github.com/gsxhq/gsxui/ui"`,
+  used as `ui.Button`, `ui.CardHeader`, `ui.DialogContent`, etc. — see
+  `docs/jsx-parity.md`'s packaging note for why.
 - `make test` regenerates and tests everything; `make check` adds JS syntax
   and gofmt checks.
 - Divergences from the shadcn/ui reference: `docs/jsx-parity.md`.
 
 ## Components
 
-**Form controls:** button, checkbox, input, label, radio, selectbox,
-switchctl, textarea
+**Form controls:** button, checkbox, input, label, radio, select,
+switch, textarea
 
 **Display:** alert, avatar, badge, card, separator, skeleton, table
 
@@ -39,15 +44,25 @@ switchctl, textarea
 
 **Navigation:** accordion, tabs
 
-**Primitives:** icon (Lucide, generated — a dependency of selectbox,
+**Primitives:** icon (Lucide, generated — a dependency of select,
 accordion, and dropdown's own future items, not usually added directly)
 
-Some native-first components (checkbox, radio, switchctl, selectbox,
+Some native-first components (checkbox, radio, switch, select,
 accordion) trade a slice of shadcn's Radix-driven behavior for a real
 `<input>`/`<select>`/`<details>` element — zero client JS, browser-native
 `:checked`/`:disabled`/exclusivity semantics. dropdown and tooltip trade
 Radix's Portal for the native popover API. Every divergence, with its
 rationale, is ledgered in `docs/jsx-parity.md`.
+
+### Vendored layout compatibility note
+
+`gsxui add` now vendors components flat into `ui/<name>.gsx`, one
+`package ui` (a v1.0-era CLI instead vendored one package per component,
+e.g. `ui/button/button.gsx` as `package button`). The two layouts don't
+coexist — an old per-component-directory vendor tree is obsolete, not
+migrated in place: delete your project's vendored `ui/` directory and
+re-run `gsxui add <name>...` against a current `gsxui` binary to get the
+flat layout back.
 
 ## Running the site
 
@@ -94,7 +109,7 @@ per-component GAP notes (see those for the detailed rationale):
 
 - **Custom listbox select** — shadcn's full Radix `Select` (floating panel,
   check-mark item indicator, keyboard typeahead). v1 ships a styled native
-  `<select>` instead (`ui/selectbox`); the Radix-equivalent listbox visual
+  `<select>` instead (`ui/select.gsx`); the Radix-equivalent listbox visual
   is not built.
 - **Dropdown checkbox/radio items + submenus** — `DropdownMenuCheckboxItem`,
   `DropdownMenuRadioGroup`/`DropdownMenuRadioItem`,

@@ -5,7 +5,7 @@ package card
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uicard "github.com/gsxhq/gsxui/ui/card"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
@@ -18,19 +18,19 @@ func Attrs() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line attrs.gsx:9:2
-		_gsxgw.Node(ctx, uicard.Card(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Card(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line attrs.gsx:10:3
-			_gsxgw.Node(ctx, uicard.CardHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.CardHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line attrs.gsx:11:4
-				_gsxgw.Node(ctx, uicard.CardTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.CardTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Roomier card")
 					return _gsxgw.Err()
 				}), nil))
 //line attrs.gsx:12:4
-				_gsxgw.Node(ctx, uicard.CardDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.CardDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("py-8 overrides py-6; the rest of the class list merges untouched.")
 					return _gsxgw.Err()
@@ -38,7 +38,7 @@ func Attrs() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line attrs.gsx:14:3
-			_gsxgw.Node(ctx, uicard.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line attrs.gsx:15:4
 				_gsxgw.S("<p class=\"text-sm text-muted-foreground\">Every part accepts attrs the same way — this isn't Card-specific.</p>")

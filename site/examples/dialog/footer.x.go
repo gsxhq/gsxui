@@ -5,52 +5,51 @@ package dialog
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uibutton "github.com/gsxhq/gsxui/ui/button"
-	uidialog "github.com/gsxhq/gsxui/ui/dialog"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
 // Footer shows DialogFooter's showCloseButton: true appends an outline
 // Close button automatically, no explicit DialogClose needed.
 
-//line footer.gsx:10:1
+//line footer.gsx:9:1
 func Footer() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line footer.gsx:11:2
-		_gsxgw.Node(ctx, uidialog.Dialog(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line footer.gsx:10:2
+		_gsxgw.Node(ctx, ui.Dialog(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line footer.gsx:12:3
-			_gsxgw.Node(ctx, uibutton.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line footer.gsx:11:3
+			_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Share")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "data-gsxui-dialog-trigger", Value: true}}))
-//line footer.gsx:13:3
-			_gsxgw.Node(ctx, uidialog.DialogContent(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line footer.gsx:12:3
+			_gsxgw.Node(ctx, ui.DialogContent(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line footer.gsx:14:4
-				_gsxgw.Node(ctx, uidialog.DialogHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line footer.gsx:13:4
+				_gsxgw.Node(ctx, ui.DialogHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line footer.gsx:15:5
-					_gsxgw.Node(ctx, uidialog.DialogTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line footer.gsx:14:5
+					_gsxgw.Node(ctx, ui.DialogTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Share link")
 						return _gsxgw.Err()
 					}), nil))
-//line footer.gsx:16:5
-					_gsxgw.Node(ctx, uidialog.DialogDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line footer.gsx:15:5
+					_gsxgw.Node(ctx, ui.DialogDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Anyone with this link can view.")
 						return _gsxgw.Err()
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line footer.gsx:18:4
-				_gsxgw.Node(ctx, uidialog.DialogFooter(true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line footer.gsx:17:4
+				_gsxgw.Node(ctx, ui.DialogFooter(true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line footer.gsx:19:5
-					_gsxgw.Node(ctx, uibutton.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line footer.gsx:18:5
+					_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Copy link")
 						return _gsxgw.Err()

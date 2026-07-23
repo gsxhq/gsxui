@@ -5,10 +5,7 @@ package input
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uibutton "github.com/gsxhq/gsxui/ui/button"
-	uicheckbox "github.com/gsxhq/gsxui/ui/checkbox"
-	uiinput "github.com/gsxhq/gsxui/ui/input"
-	uilabel "github.com/gsxhq/gsxui/ui/label"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
@@ -16,36 +13,36 @@ import (
 // realistic form row — Label/for pairs with Input/Checkbox by id, the
 // pattern most real forms actually reach for.
 
-//line form-row.gsx:13:1
+//line form-row.gsx:10:1
 func FormRow() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line form-row.gsx:14:2
+//line form-row.gsx:11:2
 		_gsxgw.S("<form class=\"flex max-w-sm flex-col gap-4\">")
-//line form-row.gsx:15:3
+//line form-row.gsx:12:3
 		_gsxgw.S("<div class=\"flex flex-col gap-2\">")
-//line form-row.gsx:16:4
-		_gsxgw.Node(ctx, uilabel.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line form-row.gsx:13:4
+		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Email")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "for", Value: "form-row-email"}}))
-//line form-row.gsx:17:4
-		_gsxgw.Node(ctx, uiinput.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "form-row-email"}}, _gsxrt.Attrs{{Key: "type", Value: "email"}}, _gsxrt.Attrs{{Key: "name", Value: "email"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "you@example.com"}}, _gsxrt.Attrs{{Key: "required", Value: true}})))
+//line form-row.gsx:14:4
+		_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "form-row-email"}}, _gsxrt.Attrs{{Key: "type", Value: "email"}}, _gsxrt.Attrs{{Key: "name", Value: "email"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "you@example.com"}}, _gsxrt.Attrs{{Key: "required", Value: true}})))
 		_gsxgw.S("</div>")
-//line form-row.gsx:19:3
+//line form-row.gsx:16:3
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")
-//line form-row.gsx:20:4
-		_gsxgw.Node(ctx, uicheckbox.Checkbox(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "form-row-remember"}}, _gsxrt.Attrs{{Key: "name", Value: "remember"}})))
-//line form-row.gsx:21:4
-		_gsxgw.Node(ctx, uilabel.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line form-row.gsx:17:4
+		_gsxgw.Node(ctx, ui.Checkbox(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "form-row-remember"}}, _gsxrt.Attrs{{Key: "name", Value: "remember"}})))
+//line form-row.gsx:18:4
+		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Remember me")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "for", Value: "form-row-remember"}}))
 		_gsxgw.S("</div>")
-//line form-row.gsx:23:3
-		_gsxgw.Node(ctx, uibutton.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line form-row.gsx:20:3
+		_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Sign in")
 			return _gsxgw.Err()

@@ -5,8 +5,7 @@ package switchctl
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uilabel "github.com/gsxhq/gsxui/ui/label"
-	uiswitch "github.com/gsxhq/gsxui/ui/switchctl"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
@@ -14,29 +13,29 @@ import (
 // forwarded through Switch's { attrs... } spread onto the native
 // checkbox+role=switch input.
 
-//line states.gsx:11:1
+//line states.gsx:10:1
 func States() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line states.gsx:12:2
+//line states.gsx:11:2
 		_gsxgw.S("<div class=\"flex flex-col gap-3\">")
-//line states.gsx:13:3
+//line states.gsx:12:3
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")
+//line states.gsx:13:4
+		_gsxgw.Node(ctx, ui.Switch(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "switch-states-off-disabled"}}, _gsxrt.Attrs{{Key: "disabled", Value: true}})))
 //line states.gsx:14:4
-		_gsxgw.Node(ctx, uiswitch.Switch(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "switch-states-off-disabled"}}, _gsxrt.Attrs{{Key: "disabled", Value: true}})))
-//line states.gsx:15:4
-		_gsxgw.Node(ctx, uilabel.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Off, disabled")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "for", Value: "switch-states-off-disabled"}}))
 		_gsxgw.S("</div>")
-//line states.gsx:17:3
+//line states.gsx:16:3
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")
+//line states.gsx:17:4
+		_gsxgw.Node(ctx, ui.Switch(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "switch-states-on-disabled"}}, _gsxrt.Attrs{{Key: "checked", Value: true}}, _gsxrt.Attrs{{Key: "disabled", Value: true}})))
 //line states.gsx:18:4
-		_gsxgw.Node(ctx, uiswitch.Switch(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "switch-states-on-disabled"}}, _gsxrt.Attrs{{Key: "checked", Value: true}}, _gsxrt.Attrs{{Key: "disabled", Value: true}})))
-//line states.gsx:19:4
-		_gsxgw.Node(ctx, uilabel.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("On, disabled")
 			return _gsxgw.Err()

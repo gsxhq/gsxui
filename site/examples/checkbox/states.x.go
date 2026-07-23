@@ -5,8 +5,7 @@ package checkbox
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uicheckbox "github.com/gsxhq/gsxui/ui/checkbox"
-	uilabel "github.com/gsxhq/gsxui/ui/label"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
@@ -15,40 +14,40 @@ import (
 // { attrs... } spread onto the native input, so browser :checked/:disabled
 // truth drives the styling with no data-state plumbing.
 
-//line states.gsx:12:1
+//line states.gsx:11:1
 func States() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line states.gsx:13:2
+//line states.gsx:12:2
 		_gsxgw.S("<div class=\"flex flex-col gap-3\">")
-//line states.gsx:14:3
+//line states.gsx:13:3
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")
+//line states.gsx:14:4
+		_gsxgw.Node(ctx, ui.Checkbox(_gsxrt.Attrs{{Key: "id", Value: "checkbox-states-unchecked"}}))
 //line states.gsx:15:4
-		_gsxgw.Node(ctx, uicheckbox.Checkbox(_gsxrt.Attrs{{Key: "id", Value: "checkbox-states-unchecked"}}))
-//line states.gsx:16:4
-		_gsxgw.Node(ctx, uilabel.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Unchecked")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "for", Value: "checkbox-states-unchecked"}}))
 		_gsxgw.S("</div>")
-//line states.gsx:18:3
+//line states.gsx:17:3
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")
+//line states.gsx:18:4
+		_gsxgw.Node(ctx, ui.Checkbox(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "checkbox-states-checked"}}, _gsxrt.Attrs{{Key: "checked", Value: true}})))
 //line states.gsx:19:4
-		_gsxgw.Node(ctx, uicheckbox.Checkbox(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "checkbox-states-checked"}}, _gsxrt.Attrs{{Key: "checked", Value: true}})))
-//line states.gsx:20:4
-		_gsxgw.Node(ctx, uilabel.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Checked")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "for", Value: "checkbox-states-checked"}}))
 		_gsxgw.S("</div>")
-//line states.gsx:22:3
+//line states.gsx:21:3
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")
+//line states.gsx:22:4
+		_gsxgw.Node(ctx, ui.Checkbox(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "checkbox-states-disabled"}}, _gsxrt.Attrs{{Key: "checked", Value: true}}, _gsxrt.Attrs{{Key: "disabled", Value: true}})))
 //line states.gsx:23:4
-		_gsxgw.Node(ctx, uicheckbox.Checkbox(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "checkbox-states-disabled"}}, _gsxrt.Attrs{{Key: "checked", Value: true}}, _gsxrt.Attrs{{Key: "disabled", Value: true}})))
-//line states.gsx:24:4
-		_gsxgw.Node(ctx, uilabel.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Checked and disabled")
 			return _gsxgw.Err()

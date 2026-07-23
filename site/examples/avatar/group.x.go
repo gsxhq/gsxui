@@ -5,7 +5,7 @@ package avatar
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uiavatar "github.com/gsxhq/gsxui/ui/avatar"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
@@ -19,12 +19,12 @@ func Group() _gsxrt.Node {
 //line group.gsx:8:2
 		_gsxgw.S("<div class=\"flex -space-x-2\">")
 //line group.gsx:9:3
-		_gsxgw.Node(ctx, uiavatar.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line group.gsx:10:4
-			_gsxgw.Node(ctx, uiavatar.AvatarImage(avatarSVG, "Ada Lovelace", nil))
+			_gsxgw.Node(ctx, ui.AvatarImage(avatarSVG, "Ada Lovelace", nil))
 //line group.gsx:11:4
-			_gsxgw.Node(ctx, uiavatar.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("AL")
 				return _gsxgw.Err()
@@ -32,10 +32,10 @@ func Group() _gsxrt.Node {
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "class", Value: "ring-2 ring-background"}}))
 //line group.gsx:13:3
-		_gsxgw.Node(ctx, uiavatar.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line group.gsx:14:4
-			_gsxgw.Node(ctx, uiavatar.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("GH")
 				return _gsxgw.Err()
@@ -43,10 +43,10 @@ func Group() _gsxrt.Node {
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "class", Value: "ring-2 ring-background"}}))
 //line group.gsx:16:3
-		_gsxgw.Node(ctx, uiavatar.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line group.gsx:17:4
-			_gsxgw.Node(ctx, uiavatar.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("AT")
 				return _gsxgw.Err()

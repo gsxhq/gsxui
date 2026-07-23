@@ -2,14 +2,13 @@
 package tooltip
 
 import (
-	uibutton "github.com/gsxhq/gsxui/ui/button"
-	uitooltip "github.com/gsxhq/gsxui/ui/tooltip"
+	"github.com/gsxhq/gsxui/ui"
 )
 
 // Basic shows a tooltip on hover/focus of a Button trigger.
 component Basic() {
-	<uitooltip.Tooltip>
-		<uibutton.Button variant="outline" data-gsxui-tooltip-trigger>Hover me</uibutton.Button>
-		<uitooltip.TooltipContent>Add to library</uitooltip.TooltipContent>
-	</uitooltip.Tooltip>
+	<ui.Tooltip>
+		<ui.Button variant="outline" data-gsxui-tooltip-trigger>Hover me</ui.Button>
+		<ui.TooltipContent>Add to library</ui.TooltipContent>
+	</ui.Tooltip>
 }

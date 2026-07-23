@@ -2,8 +2,7 @@
 package radio
 
 import (
-	uilabel "github.com/gsxhq/gsxui/ui/label"
-	uiradio "github.com/gsxhq/gsxui/ui/radio"
+	"github.com/gsxhq/gsxui/ui"
 )
 
 // Basic groups three Radio inputs by a shared name — native radio grouping,
@@ -11,12 +10,12 @@ import (
 component Basic() {
 	<div class="flex flex-col gap-2">
 		<div class="flex items-center gap-2">
-			<uiradio.Radio id="radio-basic-card" name="radio-basic-plan" checked/>
-			<uilabel.Label for="radio-basic-card">Card</uilabel.Label>
+			<ui.Radio id="radio-basic-card" name="radio-basic-plan" checked/>
+			<ui.Label for="radio-basic-card">Card</ui.Label>
 		</div>
 		<div class="flex items-center gap-2">
-			<uiradio.Radio id="radio-basic-paypal" name="radio-basic-plan"/>
-			<uilabel.Label for="radio-basic-paypal">PayPal</uilabel.Label>
+			<ui.Radio id="radio-basic-paypal" name="radio-basic-plan"/>
+			<ui.Label for="radio-basic-paypal">PayPal</ui.Label>
 		</div>
 	</div>
 }

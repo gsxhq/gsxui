@@ -5,7 +5,7 @@ package separator
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uiseparator "github.com/gsxhq/gsxui/ui/separator"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
@@ -25,17 +25,17 @@ func Orientation() _gsxrt.Node {
 //line orientation.gsx:11:4
 		_gsxgw.S("<p class=\"text-sm text-muted-foreground\">Real gsx components, not JSX facsimiles.</p></div>")
 //line orientation.gsx:13:3
-		_gsxgw.Node(ctx, uiseparator.Separator("", _gsxrt.Attrs{{Key: "class", Value: "my-4"}}))
+		_gsxgw.Node(ctx, ui.Separator("", _gsxrt.Attrs{{Key: "class", Value: "my-4"}}))
 //line orientation.gsx:14:3
 		_gsxgw.S("<div class=\"flex h-5 items-center gap-4 text-sm\">")
 //line orientation.gsx:15:4
 		_gsxgw.S("<div>Docs</div>")
 //line orientation.gsx:16:4
-		_gsxgw.Node(ctx, uiseparator.Separator("vertical", nil))
+		_gsxgw.Node(ctx, ui.Separator("vertical", nil))
 //line orientation.gsx:17:4
 		_gsxgw.S("<div>Components</div>")
 //line orientation.gsx:18:4
-		_gsxgw.Node(ctx, uiseparator.Separator("vertical", nil))
+		_gsxgw.Node(ctx, ui.Separator("vertical", nil))
 //line orientation.gsx:19:4
 		_gsxgw.S("<div>GitHub</div></div></div>")
 		return _gsxgw.Err()

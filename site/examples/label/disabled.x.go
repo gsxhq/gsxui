@@ -5,8 +5,7 @@ package label
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uicheckbox "github.com/gsxhq/gsxui/ui/checkbox"
-	uilabel "github.com/gsxhq/gsxui/ui/label"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
@@ -14,16 +13,16 @@ import (
 // carries "peer", so a disabled sibling Checkbox dims and cursor-blocks its
 // Label automatically — no state plumbing needed on Label itself.
 
-//line disabled.gsx:11:1
+//line disabled.gsx:10:1
 func Disabled() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line disabled.gsx:12:2
+//line disabled.gsx:11:2
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")
+//line disabled.gsx:12:3
+		_gsxgw.Node(ctx, ui.Checkbox(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "label-disabled-terms"}}, _gsxrt.Attrs{{Key: "disabled", Value: true}})))
 //line disabled.gsx:13:3
-		_gsxgw.Node(ctx, uicheckbox.Checkbox(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "label-disabled-terms"}}, _gsxrt.Attrs{{Key: "disabled", Value: true}})))
-//line disabled.gsx:14:3
-		_gsxgw.Node(ctx, uilabel.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Accept terms (disabled)")
 			return _gsxgw.Err()

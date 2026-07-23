@@ -2,14 +2,13 @@
 package label
 
 import (
-	uiinput "github.com/gsxhq/gsxui/ui/input"
-	uilabel "github.com/gsxhq/gsxui/ui/label"
+	"github.com/gsxhq/gsxui/ui"
 )
 
 // Basic pairs a Label with an Input via matching for/id.
 component Basic() {
 	<div class="flex max-w-sm flex-col gap-2">
-		<uilabel.Label for="label-basic-email">Email</uilabel.Label>
-		<uiinput.Input id="label-basic-email" type="email" placeholder="you@example.com"/>
+		<ui.Label for="label-basic-email">Email</ui.Label>
+		<ui.Input id="label-basic-email" type="email" placeholder="you@example.com"/>
 	</div>
 }

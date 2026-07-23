@@ -2,14 +2,13 @@
 package checkbox
 
 import (
-	uicheckbox "github.com/gsxhq/gsxui/ui/checkbox"
-	uilabel "github.com/gsxhq/gsxui/ui/label"
+	"github.com/gsxhq/gsxui/ui"
 )
 
 // Basic pairs a Checkbox with a Label via matching id/for.
 component Basic() {
 	<div class="flex items-center gap-2">
-		<uicheckbox.Checkbox id="checkbox-basic-marketing"/>
-		<uilabel.Label for="checkbox-basic-marketing">Send me marketing emails</uilabel.Label>
+		<ui.Checkbox id="checkbox-basic-marketing"/>
+		<ui.Label for="checkbox-basic-marketing">Send me marketing emails</ui.Label>
 	</div>
 }

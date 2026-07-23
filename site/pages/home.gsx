@@ -1,9 +1,7 @@
 package pages
 
 import (
-	"github.com/gsxhq/gsxui/ui/badge"
-	"github.com/gsxhq/gsxui/ui/button"
-	"github.com/gsxhq/gsxui/ui/dialog"
+	"github.com/gsxhq/gsxui/ui"
 )
 
 // Home is the site's landing page.
@@ -32,8 +30,8 @@ component (h Home) Page() {
 				: copy-in, type-checked, server-rendered. Own the code, style it with Tailwind, ship it.
 			</p>
 			<div class="flex flex-wrap items-center gap-3 pt-2">
-				<button.Button size="lg" href="#components">Browse components</button.Button>
-				<button.Button
+				<ui.Button size="lg" href="#components">Browse components</ui.Button>
+				<ui.Button
 					size="lg"
 					variant="outline"
 					href="https://github.com/gsxhq/gsxui"
@@ -41,7 +39,7 @@ component (h Home) Page() {
 					rel="noreferrer"
 				>
 					View on GitHub
-				</button.Button>
+				</ui.Button>
 			</div>
 		</section>
 		<section class="pb-10">
@@ -53,40 +51,40 @@ component (h Home) Page() {
 			<div>
 				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Button</h2>
 				<div class="mt-4 flex flex-wrap items-center gap-3">
-					<button.Button>Default</button.Button>
-					<button.Button variant="secondary">Secondary</button.Button>
-					<button.Button variant="destructive">Destructive</button.Button>
-					<button.Button variant="outline">Outline</button.Button>
-					<button.Button variant="ghost">Ghost</button.Button>
-					<button.Button variant="link">Link</button.Button>
+					<ui.Button>Default</ui.Button>
+					<ui.Button variant="secondary">Secondary</ui.Button>
+					<ui.Button variant="destructive">Destructive</ui.Button>
+					<ui.Button variant="outline">Outline</ui.Button>
+					<ui.Button variant="ghost">Ghost</ui.Button>
+					<ui.Button variant="link">Link</ui.Button>
 				</div>
 			</div>
 			<div>
 				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Badge</h2>
 				<div class="mt-4 flex flex-wrap items-center gap-3">
-					<badge.Badge>Default</badge.Badge>
-					<badge.Badge variant="secondary">Secondary</badge.Badge>
-					<badge.Badge variant="destructive">Destructive</badge.Badge>
-					<badge.Badge variant="outline">Outline</badge.Badge>
+					<ui.Badge>Default</ui.Badge>
+					<ui.Badge variant="secondary">Secondary</ui.Badge>
+					<ui.Badge variant="destructive">Destructive</ui.Badge>
+					<ui.Badge variant="outline">Outline</ui.Badge>
 				</div>
 			</div>
 			<div>
 				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Dialog</h2>
 				<div class="mt-4">
-					<dialog.Dialog>
-						<dialog.DialogTrigger>
-							<button.Button variant="outline">Open dialog</button.Button>
-						</dialog.DialogTrigger>
-						<dialog.DialogContent>
-							<dialog.DialogHeader>
-								<dialog.DialogTitle>Edit profile</dialog.DialogTitle>
-								<dialog.DialogDescription>
+					<ui.Dialog>
+						<ui.DialogTrigger>
+							<ui.Button variant="outline">Open dialog</ui.Button>
+						</ui.DialogTrigger>
+						<ui.DialogContent>
+							<ui.DialogHeader>
+								<ui.DialogTitle>Edit profile</ui.DialogTitle>
+								<ui.DialogDescription>
 									Rendered by ui/dialog on the native &lt;dialog&gt; element — no client framework required.
-								</dialog.DialogDescription>
-							</dialog.DialogHeader>
-							<dialog.DialogFooter showCloseButton={true}></dialog.DialogFooter>
-						</dialog.DialogContent>
-					</dialog.Dialog>
+								</ui.DialogDescription>
+							</ui.DialogHeader>
+							<ui.DialogFooter showCloseButton={true}></ui.DialogFooter>
+						</ui.DialogContent>
+					</ui.Dialog>
 				</div>
 			</div>
 		</section>

@@ -5,7 +5,7 @@ package selectbox
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uiselect "github.com/gsxhq/gsxui/ui/selectbox"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
@@ -17,19 +17,19 @@ func Groups() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line groups.gsx:8:2
-		_gsxgw.Node(ctx, uiselect.Select(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Select(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line groups.gsx:9:3
-			_gsxgw.Node(ctx, uiselect.SelectGroup("Americas", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.SelectGroup("Americas", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line groups.gsx:10:4
-				_gsxgw.Node(ctx, uiselect.SelectOption("est", true, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.SelectOption("est", true, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Eastern")
 					return _gsxgw.Err()
 				}), nil))
 //line groups.gsx:11:4
-				_gsxgw.Node(ctx, uiselect.SelectOption("pst", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.SelectOption("pst", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Pacific")
 					return _gsxgw.Err()
@@ -37,16 +37,16 @@ func Groups() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line groups.gsx:13:3
-			_gsxgw.Node(ctx, uiselect.SelectGroup("Europe", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.SelectGroup("Europe", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line groups.gsx:14:4
-				_gsxgw.Node(ctx, uiselect.SelectOption("cet", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.SelectOption("cet", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Central")
 					return _gsxgw.Err()
 				}), nil))
 //line groups.gsx:15:4
-				_gsxgw.Node(ctx, uiselect.SelectOption("gmt", false, true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.SelectOption("gmt", false, true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Greenwich (unavailable)")
 					return _gsxgw.Err()

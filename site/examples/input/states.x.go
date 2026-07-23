@@ -5,7 +5,7 @@ package input
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uiinput "github.com/gsxhq/gsxui/ui/input"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
@@ -20,11 +20,11 @@ func States() _gsxrt.Node {
 //line states.gsx:9:2
 		_gsxgw.S("<div class=\"flex max-w-sm flex-col gap-3\">")
 //line states.gsx:10:3
-		_gsxgw.Node(ctx, uiinput.Input(_gsxrt.Attrs{{Key: "placeholder", Value: "Enabled"}}))
+		_gsxgw.Node(ctx, ui.Input(_gsxrt.Attrs{{Key: "placeholder", Value: "Enabled"}}))
 //line states.gsx:11:3
-		_gsxgw.Node(ctx, uiinput.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "placeholder", Value: "Disabled"}}, _gsxrt.Attrs{{Key: "disabled", Value: true}})))
+		_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "placeholder", Value: "Disabled"}}, _gsxrt.Attrs{{Key: "disabled", Value: true}})))
 //line states.gsx:12:3
-		_gsxgw.Node(ctx, uiinput.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "placeholder", Value: "Invalid"}}, _gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}}, _gsxrt.Attrs{{Key: "value", Value: "not-an-email"}})))
+		_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "placeholder", Value: "Invalid"}}, _gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}}, _gsxrt.Attrs{{Key: "value", Value: "not-an-email"}})))
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

@@ -5,7 +5,7 @@ package alert
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uialert "github.com/gsxhq/gsxui/ui/alert"
+	"github.com/gsxhq/gsxui/ui"
 	uiicon "github.com/gsxhq/gsxui/ui/icon"
 	_gsxio "io"
 )
@@ -19,18 +19,18 @@ func Variants() _gsxrt.Node {
 //line variants.gsx:10:2
 		_gsxgw.S("<div class=\"flex flex-col gap-4\">")
 //line variants.gsx:11:3
-		_gsxgw.Node(ctx, uialert.Alert("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Alert("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:12:4
 			_gsxgw.Node(ctx, uiicon.CircleCheck())
 //line variants.gsx:13:4
-			_gsxgw.Node(ctx, uialert.AlertTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.AlertTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Success! Your changes have been saved.")
 				return _gsxgw.Err()
 			}), nil))
 //line variants.gsx:14:4
-			_gsxgw.Node(ctx, uialert.AlertDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.AlertDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("This is an alert with icon, title, and description.")
 				return _gsxgw.Err()
@@ -38,18 +38,18 @@ func Variants() _gsxrt.Node {
 			return _gsxgw.Err()
 		}), nil))
 //line variants.gsx:16:3
-		_gsxgw.Node(ctx, uialert.Alert("destructive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Alert("destructive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:17:4
 			_gsxgw.Node(ctx, uiicon.CircleAlert())
 //line variants.gsx:18:4
-			_gsxgw.Node(ctx, uialert.AlertTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.AlertTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Unable to process your payment.")
 				return _gsxgw.Err()
 			}), nil))
 //line variants.gsx:19:4
-			_gsxgw.Node(ctx, uialert.AlertDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.AlertDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Please verify your billing information and try again.")
 				return _gsxgw.Err()

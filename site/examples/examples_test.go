@@ -22,9 +22,9 @@ func TestExampleSourceMatchesFile(t *testing.T) {
 	for _, component := range examples.Components() {
 		for _, ex := range examples.For(component) {
 			t.Run(component+"/"+ex.Name, func(t *testing.T) {
-				got, err := examples.Source(component, ex.Name)
+				got, err := examples.Source(ex.SourcePath)
 				if err != nil {
-					t.Fatalf("examples.Source(%q, %q): %v", component, ex.Name, err)
+					t.Fatalf("examples.Source(%q): %v", ex.SourcePath, err)
 				}
 
 				want, err := os.ReadFile(filepath.FromSlash(ex.SourcePath))

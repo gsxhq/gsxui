@@ -5,7 +5,7 @@ package input
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uiinput "github.com/gsxhq/gsxui/ui/input"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
@@ -19,7 +19,7 @@ func Custom() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line custom.gsx:10:2
-		_gsxgw.Node(ctx, uiinput.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: "h-12 text-base"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "Larger input"}})))
+		_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: "h-12 text-base"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "Larger input"}})))
 		return _gsxgw.Err()
 	})
 }

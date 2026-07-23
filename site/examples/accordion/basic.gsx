@@ -2,23 +2,23 @@
 // ui/accordion.
 package accordion
 
-import uiaccordion "github.com/gsxhq/gsxui/ui/accordion"
+import "github.com/gsxhq/gsxui/ui"
 
 // Basic renders three items sharing name="faq" — native <details name>
 // gives the group exclusive-open behavior, no JS. The first item opens.
 component Basic() {
-	<uiaccordion.Accordion name="faq">
-		<uiaccordion.AccordionItem name="faq" open>
-			<uiaccordion.AccordionTrigger>Is it accessible?</uiaccordion.AccordionTrigger>
-			<uiaccordion.AccordionContent>Yes, it follows the WAI-ARIA design pattern.</uiaccordion.AccordionContent>
-		</uiaccordion.AccordionItem>
-		<uiaccordion.AccordionItem name="faq">
-			<uiaccordion.AccordionTrigger>Is it styled?</uiaccordion.AccordionTrigger>
-			<uiaccordion.AccordionContent>Yes, it comes with default styles.</uiaccordion.AccordionContent>
-		</uiaccordion.AccordionItem>
-		<uiaccordion.AccordionItem name="faq">
-			<uiaccordion.AccordionTrigger>Is it animated?</uiaccordion.AccordionTrigger>
-			<uiaccordion.AccordionContent>Yes, height is animated by default.</uiaccordion.AccordionContent>
-		</uiaccordion.AccordionItem>
-	</uiaccordion.Accordion>
+	<ui.Accordion name="faq">
+		<ui.AccordionItem name="faq" open>
+			<ui.AccordionTrigger>Is it accessible?</ui.AccordionTrigger>
+			<ui.AccordionContent>Yes, it follows the WAI-ARIA design pattern.</ui.AccordionContent>
+		</ui.AccordionItem>
+		<ui.AccordionItem name="faq">
+			<ui.AccordionTrigger>Is it styled?</ui.AccordionTrigger>
+			<ui.AccordionContent>Yes, it comes with default styles.</ui.AccordionContent>
+		</ui.AccordionItem>
+		<ui.AccordionItem name="faq">
+			<ui.AccordionTrigger>Is it animated?</ui.AccordionTrigger>
+			<ui.AccordionContent>Yes, height is animated by default.</ui.AccordionContent>
+		</ui.AccordionItem>
+	</ui.Accordion>
 }

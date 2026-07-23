@@ -1,8 +1,7 @@
 package label
 
 import (
-	uicheckbox "github.com/gsxhq/gsxui/ui/checkbox"
-	uilabel "github.com/gsxhq/gsxui/ui/label"
+	"github.com/gsxhq/gsxui/ui"
 )
 
 // Disabled shows Label's peer-disabled styling: Checkbox's base class
@@ -10,7 +9,7 @@ import (
 // Label automatically — no state plumbing needed on Label itself.
 component Disabled() {
 	<div class="flex items-center gap-2">
-		<uicheckbox.Checkbox id="label-disabled-terms" disabled/>
-		<uilabel.Label for="label-disabled-terms">Accept terms (disabled)</uilabel.Label>
+		<ui.Checkbox id="label-disabled-terms" disabled/>
+		<ui.Label for="label-disabled-terms">Accept terms (disabled)</ui.Label>
 	</div>
 }

@@ -5,8 +5,8 @@ package tabs
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/ui"
 	"github.com/gsxhq/gsxui/ui/icon"
-	uitabs "github.com/gsxhq/gsxui/ui/tabs"
 	_gsxio "io"
 )
 
@@ -17,23 +17,23 @@ func Icons() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line icons.gsx:10:2
-		_gsxgw.Node(ctx, uitabs.Tabs("grid", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Tabs("grid", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line icons.gsx:11:3
-			_gsxgw.Node(ctx, uitabs.TabsList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.TabsList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line icons.gsx:12:4
-				_gsxgw.Node(ctx, uitabs.TabsTrigger("grid", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.TabsTrigger("grid", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line icons.gsx:12:46
+//line icons.gsx:12:42
 					_gsxgw.Node(ctx, icon.LayoutGrid(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
 					_gsxgw.S("Grid")
 					return _gsxgw.Err()
 				}), nil))
 //line icons.gsx:13:4
-				_gsxgw.Node(ctx, uitabs.TabsTrigger("list", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.TabsTrigger("list", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line icons.gsx:13:37
+//line icons.gsx:13:33
 					_gsxgw.Node(ctx, icon.List(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
 					_gsxgw.S("List")
 					return _gsxgw.Err()
@@ -41,13 +41,13 @@ func Icons() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line icons.gsx:15:3
-			_gsxgw.Node(ctx, uitabs.TabsContent("grid", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.TabsContent("grid", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Items shown as a grid.")
 				return _gsxgw.Err()
 			}), nil))
 //line icons.gsx:16:3
-			_gsxgw.Node(ctx, uitabs.TabsContent("list", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.TabsContent("list", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Items shown as a list.")
 				return _gsxgw.Err()

@@ -1,18 +1,18 @@
 package selectbox
 
-import uiselect "github.com/gsxhq/gsxui/ui/selectbox"
+import "github.com/gsxhq/gsxui/ui"
 
 // Groups renders a Select whose options are organized under SelectGroup
 // (native <optgroup>), plus one disabled option.
 component Groups() {
-	<uiselect.Select name="timezone">
-		<uiselect.SelectGroup label="Americas">
-			<uiselect.SelectOption value="est" selected>Eastern</uiselect.SelectOption>
-			<uiselect.SelectOption value="pst">Pacific</uiselect.SelectOption>
-		</uiselect.SelectGroup>
-		<uiselect.SelectGroup label="Europe">
-			<uiselect.SelectOption value="cet">Central</uiselect.SelectOption>
-			<uiselect.SelectOption value="gmt" disabled>Greenwich (unavailable)</uiselect.SelectOption>
-		</uiselect.SelectGroup>
-	</uiselect.Select>
+	<ui.Select name="timezone">
+		<ui.SelectGroup label="Americas">
+			<ui.SelectOption value="est" selected>Eastern</ui.SelectOption>
+			<ui.SelectOption value="pst">Pacific</ui.SelectOption>
+		</ui.SelectGroup>
+		<ui.SelectGroup label="Europe">
+			<ui.SelectOption value="cet">Central</ui.SelectOption>
+			<ui.SelectOption value="gmt" disabled>Greenwich (unavailable)</ui.SelectOption>
+		</ui.SelectGroup>
+	</ui.Select>
 }

@@ -1,11 +1,11 @@
-// Theme editor (/theme) — vanilla ESM riding ui/core's delegated on(). No
-// framework, no build-time state: two in-memory var maps (light/dark) seeded
-// from the server-rendered inputs are the single source of truth; every
-// mutation (typing, tab switch, import) re-derives the preview node's
+// Theme editor (/theme) — vanilla ESM riding ui/gsxui.js's delegated on().
+// No framework, no build-time state: two in-memory var maps (light/dark)
+// seeded from the server-rendered inputs are the single source of truth;
+// every mutation (typing, tab switch, import) re-derives the preview node's
 // inline style from whichever map is active. "Applying" always clears every
 // tracked property first, so stale values from the other mode never linger
 // (see .superpowers/sdd/task-5-brief.md's "simplest correct model").
-import { on } from "../ui/core/gsxui.js";
+import { on } from "../ui/gsxui.js";
 
 const preview = document.querySelector("[data-theme-preview]");
 

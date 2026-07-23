@@ -5,7 +5,7 @@ package textarea
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uitextarea "github.com/gsxhq/gsxui/ui/textarea"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
@@ -16,7 +16,7 @@ func Basic() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:8:2
-		_gsxgw.Node(ctx, uitextarea.Textarea("", _gsxrt.Attrs{{Key: "placeholder", Value: "Type your message here."}}))
+		_gsxgw.Node(ctx, ui.Textarea("", _gsxrt.Attrs{{Key: "placeholder", Value: "Type your message here."}}))
 		return _gsxgw.Err()
 	})
 }

@@ -78,9 +78,9 @@ const themeRestyleSnippet = `/* web/gsxui.css — yours after 'gsxui init'; edit
   --primary: oklch(0.72 0.15 265);
 }`
 
-const themeMergeSnippet = `<button.Button class="h-12">Tall</button.Button>`
+const themeMergeSnippet = `<ui.Button class="h-12">Tall</ui.Button>`
 
-const themeAttrsSnippet = `<button.Button
+const themeAttrsSnippet = `<ui.Button
 	id="submit"
 	aria-label="Submit the form"
 	data-testid="submit-btn"
@@ -88,16 +88,16 @@ const themeAttrsSnippet = `<button.Button
 	hx-target="#result"
 >
 	Submit
-</button.Button>`
+</ui.Button>`
 
-const themeDataAttrSnippet = `<dialog.Dialog>
-	<button.Button variant="outline" data-gsxui-dialog-trigger>
+const themeDataAttrSnippet = `<ui.Dialog>
+	<ui.Button variant="outline" data-gsxui-dialog-trigger>
 		Open
-	</button.Button>
-	<dialog.DialogContent>
+	</ui.Button>
+	<ui.DialogContent>
 		...
-	</dialog.DialogContent>
-</dialog.Dialog>`
+	</ui.DialogContent>
+</ui.Dialog>`
 
 component (t Theming) Page() {
 	<Layout title="Theming" active="theming">

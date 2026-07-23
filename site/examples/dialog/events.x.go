@@ -5,8 +5,7 @@ package dialog
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
-	uibutton "github.com/gsxhq/gsxui/ui/button"
-	uidialog "github.com/gsxhq/gsxui/ui/dialog"
+	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
@@ -14,39 +13,39 @@ import (
 // the <dialog> element on every open/close path — trigger, Esc, light
 // dismiss, and programmatic showModal()/close() alike.
 
-//line events.gsx:11:1
+//line events.gsx:10:1
 func Events() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line events.gsx:12:2
-		_gsxgw.Node(ctx, uidialog.Dialog(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line events.gsx:11:2
+		_gsxgw.Node(ctx, ui.Dialog(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line events.gsx:13:3
-			_gsxgw.Node(ctx, uibutton.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line events.gsx:12:3
+			_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Open")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "data-gsxui-dialog-trigger", Value: true}}))
-//line events.gsx:14:3
-			_gsxgw.Node(ctx, uidialog.DialogContent(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line events.gsx:13:3
+			_gsxgw.Node(ctx, ui.DialogContent(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line events.gsx:15:4
-				_gsxgw.Node(ctx, uidialog.DialogTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line events.gsx:14:4
+				_gsxgw.Node(ctx, ui.DialogTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Watched dialog")
 					return _gsxgw.Err()
 				}), nil))
-//line events.gsx:16:4
-				_gsxgw.Node(ctx, uidialog.DialogDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line events.gsx:15:4
+				_gsxgw.Node(ctx, ui.DialogDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Its open/close events log below.")
 					return _gsxgw.Err()
 				}), nil))
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "id", Value: "events-dialog"}}))
-//line events.gsx:18:3
+//line events.gsx:17:3
 			_gsxgw.S("<output id=\"events-log\" class=\"mt-4 block text-sm text-muted-foreground\">closed</output>")
-//line events.gsx:19:3
+//line events.gsx:18:3
 			_gsxgw.S("<script")
 			_gsxgw.Nonce(ctx)
 			_gsxgw.S(">\ndocument.addEventListener(\"gsxui:open\", (e) => {\n\tif (e.target.id === \"events-dialog\") document.getElementById(\"events-log\").textContent = \"open\";\n});\ndocument.addEventListener(\"gsxui:close\", (e) => {\n\tif (e.target.id === \"events-dialog\") document.getElementById(\"events-log\").textContent = \"closed\";\n});\n</script>")

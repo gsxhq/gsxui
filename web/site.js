@@ -1,7 +1,7 @@
 // Site chrome behavior — dogfoods the same delegated-listener core the
-// components themselves use (ui/core/gsxui.js), rather than a separate
+// components themselves use (ui/gsxui.js), rather than a separate
 // listener pattern just for site pages.
-import { on } from "../ui/core/gsxui.js";
+import { on } from "../ui/gsxui.js";
 
 // Component pages wrap each example's source block as:
 //   <div data-site-example><pre><code>…</code></pre><button data-site-copy>…</button></div>

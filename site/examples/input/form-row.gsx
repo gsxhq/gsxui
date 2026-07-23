@@ -1,10 +1,7 @@
 package input
 
 import (
-	uibutton "github.com/gsxhq/gsxui/ui/button"
-	uicheckbox "github.com/gsxhq/gsxui/ui/checkbox"
-	uiinput "github.com/gsxhq/gsxui/ui/input"
-	uilabel "github.com/gsxhq/gsxui/ui/label"
+	"github.com/gsxhq/gsxui/ui"
 )
 
 // FormRow composes Label, Input, Checkbox, and a submit Button into a
@@ -13,13 +10,13 @@ import (
 component FormRow() {
 	<form class="flex max-w-sm flex-col gap-4">
 		<div class="flex flex-col gap-2">
-			<uilabel.Label for="form-row-email">Email</uilabel.Label>
-			<uiinput.Input id="form-row-email" type="email" name="email" placeholder="you@example.com" required/>
+			<ui.Label for="form-row-email">Email</ui.Label>
+			<ui.Input id="form-row-email" type="email" name="email" placeholder="you@example.com" required/>
 		</div>
 		<div class="flex items-center gap-2">
-			<uicheckbox.Checkbox id="form-row-remember" name="remember"/>
-			<uilabel.Label for="form-row-remember">Remember me</uilabel.Label>
+			<ui.Checkbox id="form-row-remember" name="remember"/>
+			<ui.Label for="form-row-remember">Remember me</ui.Label>
 		</div>
-		<uibutton.Button type="submit">Sign in</uibutton.Button>
+		<ui.Button type="submit">Sign in</ui.Button>
 	</form>
 }
