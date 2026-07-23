@@ -6,12 +6,11 @@ import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/ui"
+	_gsxf0 "github.com/jackielii/structpages"
 	_gsxio "io"
 )
 
 // Home is the site's landing page.
-//
-//line home.gsx:7:1
 type Home struct{}
 
 const installSnippet = `go install github.com/gsxhq/gsxui/cmd/gsxui@latest
@@ -38,7 +37,11 @@ func (h Home) Page() _gsxrt.Node {
 //line home.gsx:32:4
 			_gsxgw.S("<div class=\"flex flex-wrap items-center gap-3 pt-2\">")
 //line home.gsx:33:5
-			_gsxgw.Node(ctx, ui.Button("", "lg", "#components", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxa0, _gsxerr := _gsxf0.URLFor(ctx, (ComponentsIndex{}))
+			if _gsxerr != nil {
+				return _gsxerr
+			}
+			_gsxgw.Node(ctx, ui.Button("", "lg", _gsxa0, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Browse components")
 				return _gsxgw.Err()

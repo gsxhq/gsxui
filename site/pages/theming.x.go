@@ -14,8 +14,6 @@ import (
 // docs/jsx-parity.md's dialog MECHANISM entry and the button/badge WIN
 // entries — caller class merge, attrs fallthrough, and the data-attribute
 // idiom for behavior attachment.
-//
-//line theming.gsx:3:1
 type Theming struct{}
 
 const themeTokensCSS = `@theme inline {

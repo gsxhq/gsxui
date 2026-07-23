@@ -14,8 +14,6 @@ import (
 // CSS custom properties every gsxui component reads. Entirely client-side
 // once loaded (web/theme.js) — the Go side only server-renders the default
 // light/dark values so the page works before any JS runs.
-//
-//line theme.gsx:7:1
 type Theme struct{}
 
 // themeVar is one editable CSS custom property, with its default light and

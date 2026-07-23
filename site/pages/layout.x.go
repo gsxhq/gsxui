@@ -13,7 +13,6 @@ import (
 	_gsxio "io"
 )
 
-//line layout.gsx:9:1
 // Layout is the shared page shell every site page renders through: header
 // (wordmark + GitHub link), sidebar (component list from the registry —
 // derived, so it can never drift from what `ui/` actually ships), and

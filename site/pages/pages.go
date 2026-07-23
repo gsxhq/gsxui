@@ -7,10 +7,11 @@ import "net/http"
 
 // Pages is the route tree root, mounted at "/".
 type Pages struct {
-	Home      `route:"/{$} Home"`
-	Docs      `route:"/docs Docs"`
-	Component `route:"/components/{name} Component"`
-	Theme     `route:"/theme Theme"`
+	Home            `route:"/{$} Home"`
+	Docs            `route:"/docs Docs"`
+	ComponentsIndex `route:"/components/{$} Components"`
+	Component       `route:"/components/{name} Component"`
+	Theme           `route:"/theme Theme"`
 }
 
 // Docs groups the standalone documentation pages under /docs — it has no

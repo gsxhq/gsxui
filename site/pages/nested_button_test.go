@@ -44,7 +44,7 @@ func nestedButtonDepth(body string) (maxDepth int) {
 func TestNoNestedButtons(t *testing.T) {
 	handler := newTestHandler(t)
 
-	paths := []string{"/", "/docs/getting-started", "/docs/theming", "/theme"}
+	paths := []string{"/", "/components/", "/docs/getting-started", "/docs/theming", "/theme"}
 	for _, name := range examples.Components() {
 		paths = append(paths, "/components/"+name)
 	}
