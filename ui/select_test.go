@@ -30,9 +30,9 @@ func TestSelectDefault(t *testing.T) {
 
 func TestSelectIconDependency(t *testing.T) {
 	// The wrapper renders icon.ChevronDown as the trigger's chevron — the
-	// selectbox -> icon import internal/registry derives Deps("selectbox")
-	// from. This is a render-level proof the icon is actually wired in, not
-	// just imported.
+	// select -> icon import internal/registry derives Deps("select") from.
+	// This is a render-level proof the icon is actually wired in, not just
+	// imported.
 	got := render(t, ui.Select(nil, nil))
 	if !strings.Contains(got, "<svg") {
 		t.Errorf("expected chevron svg in render\nin: %s", got)

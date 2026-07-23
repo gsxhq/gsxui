@@ -18,16 +18,16 @@ import (
 // comes from porting SelectTrigger's classes onto the real <select>
 // element, minus the Radix-only/dead-selector tokens ledgered in
 // docs/jsx-parity.md. The chevron is rendered via ui/icon (icon.ChevronDown)
-// — this import is the selectbox → icon dependency internal/registry
+// — this import is the select → icon dependency internal/registry
 // derives and internal/registry/registry_test.go pins.
 
-//line select.gsx:26:1
+//line select.gsx:23:1
 func Select(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line select.gsx:27:2
+//line select.gsx:24:2
 		_gsxgw.S("<div data-slot=\"select\" class=\"relative\">")
-//line select.gsx:28:3
+//line select.gsx:25:3
 		_gsxgw.S("<select")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"select-trigger\"")
@@ -38,10 +38,10 @@ func Select(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line select.gsx:32:4
+//line select.gsx:29:4
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</select>")
-//line select.gsx:33:3
+//line select.gsx:30:3
 		_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.Attrs{{Key: "class", Value: "pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 opacity-50"}}...))
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
@@ -53,11 +53,11 @@ func Select(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // zero value (false) renders absent, matching browser selectedness/disabled
 // truth — no data-state plumbing needed, unlike Radix's SelectItem.
 
-//line select.gsx:41:1
+//line select.gsx:38:1
 func SelectOption(value string, selected bool, disabled bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line select.gsx:42:2
+//line select.gsx:39:2
 		_gsxgw.S("<option")
 		if !attrs.Has("value") {
 			_gsxgw.S(" value=\"")
@@ -74,7 +74,7 @@ func SelectOption(value string, selected bool, disabled bool, children gsx.Node,
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line select.gsx:42:83
+//line select.gsx:39:83
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</option>")
 		return _gsxgw.Err()
@@ -88,11 +88,11 @@ func SelectOption(value string, selected bool, disabled bool, children gsx.Node,
 // child, only the label attribute, so there is nothing to port SelectLabel's
 // own class string onto.
 
-//line select.gsx:51:1
+//line select.gsx:48:1
 func SelectGroup(label string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line select.gsx:52:2
+//line select.gsx:49:2
 		_gsxgw.S("<optgroup")
 		if !attrs.Has("label") {
 			_gsxgw.S(" label=\"")
@@ -103,7 +103,7 @@ func SelectGroup(label string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line select.gsx:52:41
+//line select.gsx:49:41
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</optgroup>")
 		return _gsxgw.Err()

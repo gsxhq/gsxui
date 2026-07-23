@@ -1,13 +1,10 @@
 package ui
 
-// Package selectbox backs the shadcn/ui Select component. It cannot be
-// named "select" — that is a reserved Go keyword, illegal as a package
-// name AND as an import alias (there is no way to write `import select
-// "..."` either), mirroring switchctl's own precedent for "switch". The
-// registry/CLI-facing component name stays "selectbox" — Components()/
-// Deps() walk directory names, and there is no separate "logical name"
-// layer (see docs/jsx-parity.md switch entry). Component identifiers stay
-// Select/SelectOption/SelectGroup.
+// select.gsx backs the shadcn/ui Select component. "select" is a Go
+// keyword, so this could never be its own package — one of the reasons
+// ui/ is a single flat package (see docs/jsx-parity.md packaging entry);
+// as a file basename and CLI name (`gsxui add select`) it is fine.
+// Component identifiers are Select/SelectOption/SelectGroup.
 
 import (
 	"github.com/gsxhq/gsx"
@@ -21,7 +18,7 @@ import (
 // comes from porting SelectTrigger's classes onto the real <select>
 // element, minus the Radix-only/dead-selector tokens ledgered in
 // docs/jsx-parity.md. The chevron is rendered via ui/icon (icon.ChevronDown)
-// — this import is the selectbox → icon dependency internal/registry
+// — this import is the select → icon dependency internal/registry
 // derives and internal/registry/registry_test.go pins.
 component Select(children gsx.Node, attrs gsx.Attrs) {
 	<div data-slot="select" class="relative">

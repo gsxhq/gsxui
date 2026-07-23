@@ -1,13 +1,7 @@
-// Package switchctl backs the Switch component. It cannot be named
-// "switch" — that is a reserved Go keyword, illegal as a package name AND as
-// an import alias (there is no way to write `import switch "..."` either),
-// so no spelling of the directory name alone can make `switch.Switch(...)`
-// legal Go. The package/directory is "switchctl" instead, and since the
-// registry/CLI derives component names from directory names (not a separate
-// logical-name layer), the CLI-facing name is `gsxui add switchctl` — the
-// component itself is `switchctl.Switch`. This exactly mirrors the plan's
-// own precedent for `select` (ui/selectbox, package selectbox — see
-// task-6-brief.md). Ledger NOTE in docs/jsx-parity.md.
+// switch.gsx backs the Switch component. "switch" is a Go keyword, so this
+// could never be its own package — one of the reasons ui/ is a single flat
+// package (see docs/jsx-parity.md packaging entry); as a file basename and
+// CLI name (`gsxui add switch`) it is fine. The component is `ui.Switch`.
 package ui
 
 import "github.com/gsxhq/gsx"
