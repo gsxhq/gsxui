@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "dialog", "dropdown", "empty", "icon", "input", "item", "kbd", "label", "pagination", "progress", "radio", "select", "separator", "skeleton", "spinner", "switch", "table", "tabs", "textarea", "tooltip"}
+	want := []string{"accordion", "alert", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "dialog", "dropdown", "empty", "field", "icon", "input", "input-group", "item", "kbd", "label", "pagination", "progress", "radio", "select", "separator", "skeleton", "spinner", "switch", "table", "tabs", "textarea", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -165,6 +165,28 @@ func TestDeps(t *testing.T) {
 	}
 	if !reflect.DeepEqual(deps, []string{"separator"}) {
 		t.Fatalf("item deps = %v, want [separator]", deps)
+	}
+
+	// input-group.gsx has no icon import; InputGroupButton/InputGroupInput/
+	// InputGroupTextarea call ui.Button/ui.Input/ui.Textarea directly (flat
+	// package intra-package edges, same shape as dialog's button dep).
+	deps, err = registry.Deps("input-group")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(deps, []string{"button", "input", "textarea"}) {
+		t.Fatalf("input-group deps = %v, want [button input textarea]", deps)
+	}
+
+	// field.gsx has no icon import; FieldLabel calls ui.Label and
+	// FieldSeparator calls ui.Separator directly (flat package intra-package
+	// edges, same shape as item's own separator dep).
+	deps, err = registry.Deps("field")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(deps, []string{"label", "separator"}) {
+		t.Fatalf("field deps = %v, want [label separator]", deps)
 	}
 
 	if _, err := registry.Deps("nosuch"); err == nil || !strings.Contains(err.Error(), "gsxui list") {

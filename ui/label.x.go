@@ -21,20 +21,27 @@ import (
 func Label(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line label.gsx:11:2
-		_gsxgw.S("<label")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"label\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
-		_gsxgw.S(">")
-//line label.gsx:16:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</label>")
-		return _gsxgw.Err()
+		return _gsxrenderLabel(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderLabel(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line label.gsx:11:2
+	_gsxgw.S("<label")
+	if !attrs.Has("data-slot") {
+		_gsxgw.S(" data-slot=\"label\"")
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.S(">")
+//line label.gsx:16:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</label>")
+	return _gsxgw.Err()
 }
