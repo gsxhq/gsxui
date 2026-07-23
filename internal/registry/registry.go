@@ -1,22 +1,32 @@
 // Package registry derives the vendorable component set from the embedded
-// filesystem — the component list, inter-component dependencies (parsed from
-// .gsx imports), and behavior-JS presence. Derived, never declared: it
-// cannot drift from the code it describes.
+// filesystem — the component list, inter-component dependencies, and
+// behavior-JS presence. Derived, never declared: it cannot drift from the
+// code it describes.
+//
+// ui/ is one flat package, so a component is a .gsx file basename:
+// ui/button.gsx is component "button". ui/icon is the one directory
+// component — it stays a package so icon.New reads as a name. Dependencies
+// come from two sources: the icon import in .gsx source, and — because
+// intra-package references have no import to scan — identifiers in a
+// component's generated .x.go that another component's .x.go declares,
+// resolved with go/parser against a declaration index.
 package registry
 
 import (
 	"fmt"
+	"go/ast"
+	"go/parser"
+	"go/token"
 	"io/fs"
 	"regexp"
 	"slices"
 	"sort"
+	"strings"
 
 	gsxui "github.com/gsxhq/gsxui"
 )
 
-// importRe matches gsxui-internal imports in .gsx source, capturing the
-// component package name (component dir names are lowercase alphanumerics).
-var importRe = regexp.MustCompile(`"github\.com/gsxhq/gsxui/ui/([a-z0-9]+)"`)
+var iconImportRe = regexp.MustCompile(`"github\.com/gsxhq/gsxui/ui/icon"`)
 
 func Components() ([]string, error) {
 	entries, err := fs.ReadDir(gsxui.Files, "ui")
@@ -25,45 +35,137 @@ func Components() ([]string, error) {
 	}
 	var names []string
 	for _, e := range entries {
-		if e.IsDir() && e.Name() != "core" {
-			names = append(names, e.Name())
+		if e.IsDir() {
+			if e.Name() == "icon" {
+				names = append(names, e.Name())
+			}
+			continue
+		}
+		if name, ok := strings.CutSuffix(e.Name(), ".gsx"); ok {
+			names = append(names, name)
 		}
 	}
 	sort.Strings(names)
 	return names, nil
 }
 
+// parseX parses component name's committed generated source.
+func parseX(name string) (*ast.File, error) {
+	src, err := fs.ReadFile(gsxui.Files, "ui/"+name+".x.go")
+	if err != nil {
+		return nil, err
+	}
+	return parser.ParseFile(token.NewFileSet(), name+".x.go", src, parser.SkipObjectResolution)
+}
+
+// declIndex maps every top-level identifier declared in a flat component's
+// .x.go to the component (file basename) that declares it. Exported and
+// unexported names are both indexed: ui/ is one flat package, so gsx's
+// generated code freely calls other components' unexported render helpers
+// (e.g. dialog.x.go invokes button.x.go's _gsxrenderButton, not Button) —
+// and since all these files compile together as a single package, two
+// components cannot legally declare the same top-level unexported name, so
+// the index stays injective.
+func declIndex() (map[string]string, error) {
+	comps, err := Components()
+	if err != nil {
+		return nil, err
+	}
+	idx := map[string]string{}
+	for _, c := range comps {
+		if c == "icon" {
+			continue
+		}
+		f, err := parseX(c)
+		if err != nil {
+			return nil, err
+		}
+		for _, decl := range f.Decls {
+			switch d := decl.(type) {
+			case *ast.FuncDecl:
+				if d.Recv == nil {
+					idx[d.Name.Name] = c
+				}
+			case *ast.GenDecl:
+				for _, spec := range d.Specs {
+					switch s := spec.(type) {
+					case *ast.TypeSpec:
+						idx[s.Name.Name] = c
+					case *ast.ValueSpec:
+						for _, n := range s.Names {
+							idx[n.Name] = c
+						}
+					}
+				}
+			}
+		}
+	}
+	return idx, nil
+}
+
 func Deps(name string) ([]string, error) {
 	if !isComponent(name) {
 		return nil, fmt.Errorf("unknown component %q (run 'gsxui list')", name)
 	}
-	entries, err := fs.ReadDir(gsxui.Files, "ui/"+name)
-	if err != nil {
-		return nil, fmt.Errorf("unknown component %q (run 'gsxui list')", name)
+	if name == "icon" {
+		return nil, nil
 	}
 	seen := map[string]bool{}
 	var deps []string
-	for _, e := range entries {
-		if e.IsDir() || !isGsx(e.Name()) {
-			continue
-		}
-		src, err := fs.ReadFile(gsxui.Files, "ui/"+name+"/"+e.Name())
-		if err != nil {
-			return nil, err
-		}
-		for _, m := range importRe.FindAllStringSubmatch(string(src), -1) {
-			if dep := m[1]; dep != name && !seen[dep] {
-				seen[dep] = true
-				deps = append(deps, dep)
-			}
+	add := func(dep string) {
+		if dep != name && !seen[dep] {
+			seen[dep] = true
+			deps = append(deps, dep)
 		}
 	}
+	src, err := fs.ReadFile(gsxui.Files, "ui/"+name+".gsx")
+	if err != nil {
+		return nil, err
+	}
+	if iconImportRe.Match(src) {
+		add("icon")
+	}
+	idx, err := declIndex()
+	if err != nil {
+		return nil, err
+	}
+	f, err := parseX(name)
+	if err != nil {
+		return nil, err
+	}
+	ast.Inspect(f, func(n ast.Node) bool {
+		if sel, ok := n.(*ast.SelectorExpr); ok {
+			// Only the base of a selector can be a package-level component
+			// ident; the .Sel side (icon.New, sb.WriteString) never is.
+			ast.Inspect(sel.X, func(m ast.Node) bool {
+				if id, ok := m.(*ast.Ident); ok {
+					if owner, ok := idx[id.Name]; ok {
+						add(owner)
+					}
+				}
+				return true
+			})
+			return false
+		}
+		if id, ok := n.(*ast.Ident); ok {
+			if owner, ok := idx[id.Name]; ok {
+				add(owner)
+			}
+		}
+		return true
+	})
 	sort.Strings(deps)
 	return deps, nil
 }
 
+// HasJS reports whether name is a component with companion behavior JS.
+// The isComponent guard matters: ui/gsxui.js and ui/index.js are real files
+// under ui/ but aren't any component's behavior JS.
 func HasJS(name string) bool {
-	_, err := fs.Stat(gsxui.Files, "ui/"+name+"/"+name+".js")
+	if !isComponent(name) {
+		return false
+	}
+	_, err := fs.Stat(gsxui.Files, "ui/"+name+".js")
 	return err == nil
 }
 
@@ -99,14 +201,8 @@ func Resolve(names []string) ([]string, error) {
 	return out, nil
 }
 
-func isGsx(name string) bool {
-	const ext = ".gsx"
-	return len(name) > len(ext) && name[len(name)-len(ext):] == ext
-}
-
-// isComponent reports whether name is a real component directory — i.e. a
-// member of Components(), excluding infrastructure dirs like "core" that
-// happen to live under ui/ but aren't installable components.
+// isComponent reports whether name is a member of Components() — excluding
+// non-component files like index.js/gsxui.js (not .gsx) by construction.
 func isComponent(name string) bool {
 	names, err := Components()
 	if err != nil {
