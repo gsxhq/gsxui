@@ -73,3 +73,18 @@ on("click", "[data-gsxui-dropdown-item]", (_e, item) => {
   emit(item, "gsxui:select");
   content?.hidePopover();
 });
+
+// Hover highlight IS focus (Radix's roving-focus-follows-pointer): the
+// shadcn item classes style focus: only, so pointer hover must move focus
+// onto the item for the highlight to appear.
+on("pointerover", "[data-gsxui-dropdown-item]", (_e, item) => {
+  if (item.getAttribute("aria-disabled") === "true" || "disabled" in item.dataset) return;
+  item.focus();
+});
+
+// Leaving the menu entirely clears the item highlight by parking focus on
+// the content (tabindex="-1") — not body, so arrow keys keep working.
+on("pointerout", "[data-gsxui-dropdown-content]", (e, content) => {
+  if (e.relatedTarget instanceof Element && content.contains(e.relatedTarget)) return;
+  if (content.contains(document.activeElement)) content.focus();
+});

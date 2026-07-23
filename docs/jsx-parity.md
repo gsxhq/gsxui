@@ -134,6 +134,7 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
 - Registry: `accordion.gsx` imports `ui/icon` for the chevron — `registry.Deps("accordion") == ["icon"]`, same dependency-derivation mechanism as Task 6's dropdown/select → icon.
 
 ## dropdown
+- MECHANISM: hover highlight IS focus — shadcn item classes style `focus:` only because Radix moves roving focus onto hovered items; dropdown.js ports that (pointerover → item.focus(); leaving the menu parks focus on the content via tabindex="-1" so arrow keys keep working).
 - ADAPT: Radix runtime CSS vars (`--radix-*-available-height`/`transform-origin`) don't exist without Radix — replaced with static `max-h-96` / `origin-top-left`.
 - ADAPT: `dropdown.js` sets `content.style.inset = "auto"` before setting `left`/`top` — the UA popover default rule (`inset: 0`) otherwise leaves `right: 0; bottom: 0` active alongside the hand-set `left`/`top`, collapsing/mispositioning the content since only two of the four inset edges were ever overridden.
 - WIN: Radix Portal/Content replaced by the native popover API (`popover="auto"` on `DropdownMenuContent`) — top layer, light dismiss, and Esc are all browser-native, same win as dialog's `<dialog>`. Trigger↔content wiring is `closest("[data-gsxui-dropdown]")` proximity in JS, no ids, same MECHANISM as dialog.
