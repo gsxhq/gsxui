@@ -157,3 +157,59 @@ func TestComponentPageRoute(t *testing.T) {
 		}
 	})
 }
+
+// TestDocsRoutes is the Task 4 smoke test for the two standalone docs
+// pages: both render 200 with a distinctive marker, and each links to the
+// other via the sidebar's Docs section so the active-state wiring is
+// exercised too.
+func TestDocsRoutes(t *testing.T) {
+	handler := newTestHandler(t)
+
+	t.Run("getting started", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/docs/getting-started", nil)
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+
+		if rec.Code != http.StatusOK {
+			t.Fatalf("GET /docs/getting-started = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
+		}
+		body := rec.Body.String()
+		if !strings.Contains(body, `data-doc="getting-started"`) {
+			t.Errorf(`response missing data-doc="getting-started"; body:\n%s`, body)
+		}
+		// The CLI's actual printed init output (internal/cli/init.go), not a
+		// paraphrase — proves the walkthrough shows real output.
+		if !strings.Contains(body, "gsxui initialized.") {
+			t.Errorf(`response missing real "gsxui initialized." CLI output; body:\n%s`, body)
+		}
+		if !strings.Contains(body, "adding: button card") {
+			t.Errorf(`response missing real "adding: button card" CLI output; body:\n%s`, body)
+		}
+		if !strings.Contains(body, "/docs/theming") {
+			t.Errorf("response missing sidebar/inline link to /docs/theming; body:\n%s", body)
+		}
+	})
+
+	t.Run("theming", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/docs/theming", nil)
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+
+		if rec.Code != http.StatusOK {
+			t.Fatalf("GET /docs/theming = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
+		}
+		body := rec.Body.String()
+		if !strings.Contains(body, `data-doc="theming"`) {
+			t.Errorf(`response missing data-doc="theming"; body:\n%s`, body)
+		}
+		if !strings.Contains(body, "--primary-foreground") {
+			t.Errorf("response missing token model content (--primary-foreground); body:\n%s", body)
+		}
+		if !strings.Contains(body, "data-gsxui-dialog-trigger") {
+			t.Errorf("response missing data-attribute idiom example (data-gsxui-dialog-trigger); body:\n%s", body)
+		}
+		if !strings.Contains(body, "/docs/getting-started") {
+			t.Errorf("response missing sidebar link to /docs/getting-started; body:\n%s", body)
+		}
+	})
+}
