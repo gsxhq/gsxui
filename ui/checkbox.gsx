@@ -9,18 +9,27 @@ import "github.com/gsxhq/gsx"
 // data-URI background — a void, childless element opts into fallthrough via
 // the explicit { attrs... } spread, same as every other component here.
 //
-// NOTE: the data-URI's embedded spaces (SVG attribute/path separators) are
-// percent-encoded (%20) — never literal spaces, and never Tailwind's
-// underscore escape. A literal space would split the token (HTML's class
-// attribute is whitespace-delimited, so any tool walking the class list —
-// the configured tailwind-merge included — treats a bare space as a token
-// boundary, tearing the SVG apart). And `_` does NOT become a space here:
-// Tailwind v4 deliberately preserves underscores inside url() values, so an
-// underscored URI reaches the browser verbatim as invalid XML
-// (<svg_xmlns=...>) and the checkmark silently never paints. %20 satisfies
-// both layers: one unbroken class token, standard percent-decoding in the
-// browser. Pinned by TestCheckboxDataURIDecodesToValidSVG, which decodes
-// the rendered URI and XML-parses it. See docs/jsx-parity.md.
+// NOTE: the data-URI payloads are base64 — deliberately, after every
+// richer encoding lost to some layer of the toolchain in turn: literal
+// spaces are class-token boundaries (torn by tailwind-merge); Tailwind's
+// `_` whitespace escape is NOT converted inside url() values, so it
+// reached the browser as invalid XML (<svg_xmlns=...>) and the checkmark
+// silently never painted; and percent-encoding with parens (the dark
+// stroke's oklch(...)) broke the postcss parse of Tailwind's emitted CSS
+// under vite. Base64 is [A-Za-z0-9+/=] only — nothing for any layer to
+// split, convert, or mis-parse. Pinned by
+// TestCheckboxDataURIDecodesToValidSVG, which base64-decodes the rendered
+// URIs and XML-parses them. See docs/jsx-parity.md.
+//
+// The dark:checked:* trio mirrors shadcn's explicit
+// dark:data-[state=checked]:bg-primary — NOT redundant: the dark custom
+// variant (:is(.dark *)) carries class specificity that beats a bare
+// :checked, so without it dark:bg-input/30 wins over checked:bg-primary in
+// dark mode. The dark check URI strokes the dark --primary-foreground
+// value (oklch(0.205 0 0)) because primary flips near-white there and the
+// light URI's white stroke would vanish; both strokes are static text — a
+// data-URI can't read CSS variables — so custom themes that move
+// primary-foreground still need the ledgered currentColor-mask follow-up.
 component Checkbox(attrs gsx.Attrs) {
-	<input type="checkbox" data-slot="checkbox" class="peer size-4 shrink-0 appearance-none rounded-[4px] border border-input shadow-xs transition-shadow outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:bg-input/30 checked:bg-primary checked:border-primary checked:bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22white%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M20%206%209%2017l-5-5%22/%3E%3C/svg%3E')] checked:bg-center checked:bg-no-repeat checked:bg-[length:12px_12px]" { attrs... }/>
+	<input type="checkbox" data-slot="checkbox" class="peer size-4 shrink-0 appearance-none rounded-[4px] border border-input shadow-xs transition-shadow outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:bg-input/30 checked:bg-primary checked:border-primary checked:bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0yMCA2IDkgMTdsLTUtNSIvPjwvc3ZnPg==')] checked:bg-center checked:bg-no-repeat checked:bg-[length:12px_12px] dark:checked:bg-primary dark:checked:border-primary dark:checked:bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJva2xjaCgwLjIwNSAwIDApIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTIwIDYgOSAxN2wtNS01Ii8+PC9zdmc+')]" { attrs... }/>
 }
