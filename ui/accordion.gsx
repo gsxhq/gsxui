@@ -68,14 +68,18 @@ component AccordionTrigger(children gsx.Node, attrs gsx.Attrs) {
 
 // AccordionContent drops shadcn's data-[state=open]:animate-accordion-down /
 // data-[state=closed]:animate-accordion-up pair (both keyed off Radix's
-// data-state, which nothing stamps here) rather than ship dead classes.
-// NOTE (CSS-only animation, not applied): Baseline-newish
-// `<details>::details-content` plus `interpolate-size`/`transition-behavior:
-// allow-discrete` can animate the native open/close height without any JS —
-// but it's recent-Chrome-only (no cross-browser support as of writing) and
-// unverifiable without a real Tailwind build + browser in this sandbox, so
-// it's recorded here rather than shipped; a future task can layer it on as
-// a pure-CSS enhancement without touching this markup.
+// data-state, which nothing stamps here). The open/close height animation
+// is instead pure CSS in gsxui.css (and web/site.css, the site's copied
+// twin — TestAccordionAnimationCSSDriftPin keeps the two in sync): the
+// `::details-content` pseudo-element that wraps everything but the summary
+// animates its grid row 0fr -> 1fr, which is height-to-auto with no
+// interpolate-size and no JS, plus a discrete content-visibility transition
+// so the collapsing content stays rendered until the close finishes.
+// Browser-verified both directions (rAF height sampling: 0->36px easing
+// over the duration). Browsers without ::details-content ignore the rules
+// and toggle instantly — a progressive enhancement over the same markup.
+// That stylesheet keys on this component's data-slot attributes, and its
+// min-height:0 on accordion-content is what lets the 0fr row collapse.
 component AccordionContent(children gsx.Node, attrs gsx.Attrs) {
 	<div data-slot="accordion-content" class="overflow-hidden text-sm" { attrs.Without("class")... }>
 		<div class={ "pt-0 pb-4", attrs.Class() }>{ children }</div>

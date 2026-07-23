@@ -141,20 +141,24 @@ func AccordionTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 
 // AccordionContent drops shadcn's data-[state=open]:animate-accordion-down /
 // data-[state=closed]:animate-accordion-up pair (both keyed off Radix's
-// data-state, which nothing stamps here) rather than ship dead classes.
-// NOTE (CSS-only animation, not applied): Baseline-newish
-// `<details>::details-content` plus `interpolate-size`/`transition-behavior:
-// allow-discrete` can animate the native open/close height without any JS —
-// but it's recent-Chrome-only (no cross-browser support as of writing) and
-// unverifiable without a real Tailwind build + browser in this sandbox, so
-// it's recorded here rather than shipped; a future task can layer it on as
-// a pure-CSS enhancement without touching this markup.
+// data-state, which nothing stamps here). The open/close height animation
+// is instead pure CSS in gsxui.css (and web/site.css, the site's copied
+// twin — TestAccordionAnimationCSSDriftPin keeps the two in sync): the
+// `::details-content` pseudo-element that wraps everything but the summary
+// animates its grid row 0fr -> 1fr, which is height-to-auto with no
+// interpolate-size and no JS, plus a discrete content-visibility transition
+// so the collapsing content stays rendered until the close finishes.
+// Browser-verified both directions (rAF height sampling: 0->36px easing
+// over the duration). Browsers without ::details-content ignore the rules
+// and toggle instantly — a progressive enhancement over the same markup.
+// That stylesheet keys on this component's data-slot attributes, and its
+// min-height:0 on accordion-content is what lets the 0fr row collapse.
 
-//line accordion.gsx:79:1
+//line accordion.gsx:83:1
 func AccordionContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line accordion.gsx:80:2
+//line accordion.gsx:84:2
 		_gsxv0 := attrs.Without("class")
 		_gsxgw.S("<div")
 		if !_gsxv0.Has("data-slot") {
@@ -166,11 +170,11 @@ func AccordionContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", _gsxv0.Style())
 		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line accordion.gsx:81:3
+//line accordion.gsx:85:3
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pt-0 pb-4"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\">")
-//line accordion.gsx:81:45
+//line accordion.gsx:85:45
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div></div>")
 		return _gsxgw.Err()

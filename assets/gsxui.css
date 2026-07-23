@@ -83,3 +83,23 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Accordion open/close animation — pure CSS over the native <details>
+   mechanism. ::details-content wraps everything but the summary; animating
+   its grid row 0fr -> 1fr animates height-to-auto with no interpolate-size
+   and no JS, and the discrete content-visibility transition keeps the
+   collapsing content rendered until the close finishes. Browsers without
+   ::details-content ignore the rules and toggle instantly. */
+[data-slot="accordion-item"]::details-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition:
+    grid-template-rows 200ms ease-out,
+    content-visibility 200ms allow-discrete;
+}
+[data-slot="accordion-item"][open]::details-content {
+  grid-template-rows: 1fr;
+}
+[data-slot="accordion-content"] {
+  min-height: 0;
+}
