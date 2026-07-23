@@ -1,2 +1,5 @@
-dist/
 node_modules/
+site/dist/*
+!site/dist/.gitkeep
+/tmp/
+.env

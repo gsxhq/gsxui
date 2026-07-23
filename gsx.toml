@@ -1,1 +1,11 @@
 class_merger = "github.com/gsxhq/gsxui/merge.Merge"
+
+# structpages URL generation used by site/pages/*.gsx (e.g. { Home{} |> url }).
+[filters]
+url = "github.com/jackielii/structpages.URLFor"
+
+# `gsx dev` builds "." by default, but the site's main package lives in
+# site/ (this module's root package is the gsxui library, not a command).
+[dev]
+build = ["go", "build", "-o", "tmp/gsxui-site", "./site"]
+run = ["tmp/gsxui-site"]

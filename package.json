@@ -1,0 +1,15 @@
+{
+  "name": "gsxui-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "go tool gsx dev",
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "@gsxhq/vite-plugin-gsx": "^0.4.6",
+    "@tailwindcss/vite": "^4.3.3",
+    "tailwindcss": "^4.3.3",
+    "vite": "^7.0.0"
+  }
+}

@@ -1,4 +1,4 @@
-.PHONY: generate test check icons
+.PHONY: generate test check icons site-dev site
 
 generate:
 	go tool gsx generate
@@ -19,3 +19,18 @@ check: test
 	@test -z "$$(git status --porcelain -- '*.x.go' | grep '^??')" || { echo "error: untracked .x.go files"; exit 1; }
 	@for f in $$(find ui -name '*.js'); do node --check $$f || exit 1; done
 	gofmt -l . | (! grep .)
+
+# site-dev runs the two-command dev loop: `npm install` once, then this.
+# `gsx dev` warm-generates .x.go, builds-then-swaps the site/ binary (see
+# gsx.toml [dev]), and runs Vite as the front door (proxying everything but
+# its own /__vite/ namespace to the Go server).
+site-dev:
+	go tool gsx dev
+
+# site builds the production bundle (Vite assets embedded by site/main.go)
+# and runs the server in prod mode (no VITE_DEV_URL → gsxhq/vite serves the
+# embedded dist/ instead of proxying to a dev server).
+site:
+	npx vite build
+	go tool gsx generate
+	go run ./site
