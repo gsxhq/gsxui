@@ -20,7 +20,7 @@ component (h Home) Page() {
 			<p class="max-w-2xl text-lg text-muted-foreground">
 				gsxui is a shadcn-style component set for
 				<a
-					href="https://github.com/gsxhq/gsx"
+					href="https://gsxhq.github.io/"
 					target="_blank"
 					rel="noreferrer"
 					class="underline underline-offset-4 hover:text-foreground"
@@ -39,6 +39,15 @@ component (h Home) Page() {
 					rel="noreferrer"
 				>
 					View on GitHub
+				</ui.Button>
+				<ui.Button
+					size="lg"
+					variant="ghost"
+					href="https://gsxhq.github.io/"
+					target="_blank"
+					rel="noreferrer"
+				>
+					gsx documentation ↗
 				</ui.Button>
 			</div>
 		</section>
