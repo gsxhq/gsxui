@@ -104,11 +104,24 @@ component AlertDialogContent(children gsx.Node, attrs gsx.Attrs) {
 // AlertDialogHeader/Footer/Title/Description are NOT composed from Dialog's
 // own Header/Footer/Title/Description — alert-dialog.tsx's class strings
 // differ from dialog.tsx's (Title drops leading-none; Footer happens to
-// coincide byte-for-byte with DialogFooter's own in the upstream revision
-// this port targets, see the ledger NOTE) — each renders its own element
-// with alert-dialog's own token-for-token classes.
+// coincide byte-for-byte with DialogFooter's own) — each renders its own
+// element with alert-dialog's own classes.
+//
+// AlertDialogHeader carries the CURRENT upstream source's unconditional
+// grid recipe (`grid grid-rows-[auto_1fr] place-items-center gap-1.5
+// text-center`) — unlike Content/Header/Footer/Title's `size`/
+// `AlertDialogMedia`-conditional tokens (dropped, see this file's own
+// header comment and docs/jsx-parity.md's `## alert-dialog` GAP), this is
+// Header's unconditional BASE, not a selector gated on the unported
+// `size`/Media state, so it is not dead weight to drop — it is the layout.
+// Two grid rows (title, then description, in source order) with
+// place-items-center + text-center: always centered, both axes, since the
+// one thing that would left-align it at sm+ widths
+// (`sm:group-data-[size=default]/alert-dialog-content:place-items-start`
+// `sm:group-data-[size=default]/alert-dialog-content:text-left`) IS
+// `size`-conditional and stays dropped along with the rest of that gap.
 component AlertDialogHeader(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="alert-dialog-header" class="flex flex-col gap-2 text-center sm:text-left" { attrs... }>{ children }</div>
+	<div data-slot="alert-dialog-header" class="grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center" { attrs... }>{ children }</div>
 }
 
 component AlertDialogFooter(children gsx.Node, attrs gsx.Attrs) {
@@ -119,8 +132,14 @@ component AlertDialogTitle(children gsx.Node, attrs gsx.Attrs) {
 	<h2 data-slot="alert-dialog-title" class="text-lg font-semibold" { attrs... }>{ children }</h2>
 }
 
+// class token order (`text-sm text-muted-foreground`) matches the current
+// upstream source exactly — unchanged across the size/Media refactor, but
+// corrected here to the on-disk order (an earlier draft of this file had
+// the two tokens transposed, `text-muted-foreground text-sm`, from
+// checking against a stale pre-refactor revision; same set either way, no
+// visual difference, fixed for token-for-token fidelity to the checkout).
 component AlertDialogDescription(children gsx.Node, attrs gsx.Attrs) {
-	<p data-slot="alert-dialog-description" class="text-muted-foreground text-sm" { attrs... }>{ children }</p>
+	<p data-slot="alert-dialog-description" class="text-sm text-muted-foreground" { attrs... }>{ children }</p>
 }
 
 // AlertDialogAction is ui.Button (default variant/size, shadcn's own

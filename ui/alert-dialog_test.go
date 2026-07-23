@@ -110,9 +110,15 @@ func TestAlertDialogContentAttrsFallThrough(t *testing.T) {
 	}
 }
 
+// TestAlertDialogHeaderPinned pins the current-upstream unconditional grid
+// recipe (registry/new-york-v4/ui/alert-dialog.tsx's AlertDialogHeader
+// base, HEAD f31ed8198) — always centered, two grid rows — not the
+// pre-refactor flex/sm:text-left shape; see ui/alert-dialog.gsx's own doc
+// comment on AlertDialogHeader for why this base is not scoped out along
+// with the size/Media-conditional tokens.
 func TestAlertDialogHeaderPinned(t *testing.T) {
 	got := render(t, ui.AlertDialogHeader(gsx.Raw("x"), nil))
-	want := `<div data-slot="alert-dialog-header" class="flex flex-col gap-2 text-center sm:text-left">x</div>`
+	want := `<div data-slot="alert-dialog-header" class="grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -149,9 +155,12 @@ func TestAlertDialogTitleCallerClassMerges(t *testing.T) {
 	}
 }
 
+// class token order (text-sm text-muted-foreground) matches current
+// upstream exactly — see ui/alert-dialog.gsx's own comment on
+// AlertDialogDescription.
 func TestAlertDialogDescriptionPinned(t *testing.T) {
 	got := render(t, ui.AlertDialogDescription(gsx.Raw("This action cannot be undone."), nil))
-	want := `<p data-slot="alert-dialog-description" class="text-muted-foreground text-sm">This action cannot be undone.</p>`
+	want := `<p data-slot="alert-dialog-description" class="text-sm text-muted-foreground">This action cannot be undone.</p>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

@@ -152,37 +152,50 @@ func AlertDialogContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // AlertDialogHeader/Footer/Title/Description are NOT composed from Dialog's
 // own Header/Footer/Title/Description — alert-dialog.tsx's class strings
 // differ from dialog.tsx's (Title drops leading-none; Footer happens to
-// coincide byte-for-byte with DialogFooter's own in the upstream revision
-// this port targets, see the ledger NOTE) — each renders its own element
-// with alert-dialog's own token-for-token classes.
+// coincide byte-for-byte with DialogFooter's own) — each renders its own
+// element with alert-dialog's own classes.
+//
+// AlertDialogHeader carries the CURRENT upstream source's unconditional
+// grid recipe (`grid grid-rows-[auto_1fr] place-items-center gap-1.5
+// text-center`) — unlike Content/Header/Footer/Title's `size`/
+// `AlertDialogMedia`-conditional tokens (dropped, see this file's own
+// header comment and docs/jsx-parity.md's `## alert-dialog` GAP), this is
+// Header's unconditional BASE, not a selector gated on the unported
+// `size`/Media state, so it is not dead weight to drop — it is the layout.
+// Two grid rows (title, then description, in source order) with
+// place-items-center + text-center: always centered, both axes, since the
+// one thing that would left-align it at sm+ widths
+// (`sm:group-data-[size=default]/alert-dialog-content:place-items-start`
+// `sm:group-data-[size=default]/alert-dialog-content:text-left`) IS
+// `size`-conditional and stays dropped along with the rest of that gap.
 
-//line alert-dialog.gsx:110:1
+//line alert-dialog.gsx:123:1
 func AlertDialogHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line alert-dialog.gsx:111:2
+//line alert-dialog.gsx:124:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"alert-dialog-header\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-col gap-2 text-center sm:text-left"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line alert-dialog.gsx:111:105
+//line alert-dialog.gsx:124:125
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line alert-dialog.gsx:114:1
+//line alert-dialog.gsx:127:1
 func AlertDialogFooter(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line alert-dialog.gsx:115:2
+//line alert-dialog.gsx:128:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"alert-dialog-footer\"")
@@ -193,18 +206,18 @@ func AlertDialogFooter(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line alert-dialog.gsx:115:115
+//line alert-dialog.gsx:128:115
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line alert-dialog.gsx:118:1
+//line alert-dialog.gsx:131:1
 func AlertDialogTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line alert-dialog.gsx:119:2
+//line alert-dialog.gsx:132:2
 		_gsxgw.S("<h2")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"alert-dialog-title\"")
@@ -215,36 +228,44 @@ func AlertDialogTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line alert-dialog.gsx:119:80
+//line alert-dialog.gsx:132:80
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</h2>")
 		return _gsxgw.Err()
 	})
 }
 
-//line alert-dialog.gsx:122:1
+//line alert-dialog.gsx:135:1
+// class token order (`text-sm text-muted-foreground`) matches the current
+// upstream source exactly — unchanged across the size/Media refactor, but
+// corrected here to the on-disk order (an earlier draft of this file had
+// the two tokens transposed, `text-muted-foreground text-sm`, from
+// checking against a stale pre-refactor revision; same set either way, no
+// visual difference, fixed for token-for-token fidelity to the checkout).
+
+//line alert-dialog.gsx:141:1
 func AlertDialogDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line alert-dialog.gsx:123:2
+//line alert-dialog.gsx:142:2
 		_gsxgw.S("<p")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"alert-dialog-description\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground text-sm"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-sm text-muted-foreground"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line alert-dialog.gsx:123:93
+//line alert-dialog.gsx:142:93
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</p>")
 		return _gsxgw.Err()
 	})
 }
 
-//line alert-dialog.gsx:126:1
+//line alert-dialog.gsx:145:1
 // AlertDialogAction is ui.Button (default variant/size, shadcn's own
 // buttonVariants() default) plus data-gsxui-dialog-close — the same
 // data-attribute idiom DialogFooter's own Close button and DialogClose use
@@ -253,14 +274,14 @@ func AlertDialogDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // data-slot="alert-dialog-action" overrides Button's own "button" slot via
 // the same attrs-position mechanism as AlertDialogContent's own override.
 
-//line alert-dialog.gsx:133:1
+//line alert-dialog.gsx:152:1
 func AlertDialogAction(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line alert-dialog.gsx:134:2
+//line alert-dialog.gsx:153:2
 		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line alert-dialog.gsx:134:79
+//line alert-dialog.gsx:153:79
 			_gsxgw.Node(ctx, children)
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-slot", Value: "alert-dialog-action"}}, _gsxrt.Attrs{{Key: "data-gsxui-dialog-close", Value: true}}, attrs)))
@@ -268,19 +289,19 @@ func AlertDialogAction(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line alert-dialog.gsx:137:1
+//line alert-dialog.gsx:156:1
 // AlertDialogCancel is ui.Button with variant="outline" (shadcn's own
 // buttonVariants({variant: "outline"})) plus data-gsxui-dialog-close — same
 // mechanism as AlertDialogAction.
 
-//line alert-dialog.gsx:140:1
+//line alert-dialog.gsx:159:1
 func AlertDialogCancel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line alert-dialog.gsx:141:2
+//line alert-dialog.gsx:160:2
 		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line alert-dialog.gsx:141:97
+//line alert-dialog.gsx:160:97
 			_gsxgw.Node(ctx, children)
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-slot", Value: "alert-dialog-cancel"}}, _gsxrt.Attrs{{Key: "data-gsxui-dialog-close", Value: true}}, attrs)))
