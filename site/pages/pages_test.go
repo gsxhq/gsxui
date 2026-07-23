@@ -157,3 +157,44 @@ func TestComponentPageRoute(t *testing.T) {
 		}
 	})
 }
+
+// TestThemePageRoute is the Task 5 smoke test for /theme: the page renders
+// (JS-less) with the token-editing controls and a default-themed preview
+// panel present in the markup — no JS assertions, since the live restyling
+// itself is web/theme.js's job, not the server's.
+func TestThemePageRoute(t *testing.T) {
+	handler := newTestHandler(t)
+
+	req := httptest.NewRequest(http.MethodGet, "/theme", nil)
+	rec := httptest.NewRecorder()
+	handler.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("GET /theme = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
+	}
+	body := rec.Body.String()
+	if !strings.Contains(body, `data-theme-var="--primary"`) {
+		t.Errorf(`response missing data-theme-var="--primary"; body:\n%s`, body)
+	}
+	if !strings.Contains(body, `data-theme-preview`) {
+		t.Errorf(`response missing data-theme-preview; body:\n%s`, body)
+	}
+	if !strings.Contains(body, `data-theme-tab="light"`) {
+		t.Errorf(`response missing data-theme-tab="light"; body:\n%s`, body)
+	}
+	if !strings.Contains(body, `data-theme-import`) {
+		t.Errorf(`response missing data-theme-import; body:\n%s`, body)
+	}
+	// Preview panel renders the representative component set: button
+	// variants, badges, a Card+Label+Input+Checkbox form row, and both
+	// Alert variants — all live gsxui components, not static markup.
+	if !strings.Contains(body, `data-slot="button"`) {
+		t.Errorf(`response missing data-slot="button" in preview; body:\n%s`, body)
+	}
+	if !strings.Contains(body, `data-slot="checkbox"`) {
+		t.Errorf(`response missing data-slot="checkbox" in preview; body:\n%s`, body)
+	}
+	if !strings.Contains(body, `role="alert"`) {
+		t.Errorf(`response missing role="alert" in preview; body:\n%s`, body)
+	}
+}

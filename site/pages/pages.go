@@ -5,11 +5,11 @@ package pages
 
 import "net/http"
 
-// Pages is the route tree root, mounted at "/". Later tasks add Docs and
-// Theme fields here.
+// Pages is the route tree root, mounted at "/". Later tasks add Docs here.
 type Pages struct {
 	Home      `route:"/{$} Home"`
 	Component `route:"/components/{name} Component"`
+	Theme     `route:"/theme Theme"`
 }
 
 // ServeHTTP is the fallback for any path under "/" that no child route
