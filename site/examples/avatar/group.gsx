@@ -7,7 +7,7 @@ import "github.com/gsxhq/gsxui/ui"
 component Group() {
 	<div class="flex -space-x-2">
 		<ui.Avatar class="ring-2 ring-background">
-			<ui.AvatarImage src={avatarSVG} alt="Ada Lovelace"/>
+			<ui.AvatarImage src={avatarSVG |> dataURL("image/svg+xml")} alt="Ada Lovelace"/>
 			<ui.AvatarFallback>AL</ui.AvatarFallback>
 		</ui.Avatar>
 		<ui.Avatar class="ring-2 ring-background">

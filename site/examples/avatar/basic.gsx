@@ -3,11 +3,12 @@ package avatar
 
 import "github.com/gsxhq/gsxui/ui"
 
-// data: image URLs must be ;base64, — gsx's image-sink sanitizer blocks percent-encoded forms (see docs/jsx-parity.md ## avatar).
-// Decodes to a 64x64 violet tile with white "AL" initials — a stand-in
-// portrait, so the loaded-image state is visibly an avatar (a bare color
-// square reads as broken) and visibly distinct from the gray fallback.
-const avatarSVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc2NCcgaGVpZ2h0PSc2NCc+PHJlY3Qgd2lkdGg9JzY0JyBoZWlnaHQ9JzY0JyBmaWxsPScjNmQyOGQ5Jy8+PHRleHQgeD0nMzInIHk9JzM0JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBkb21pbmFudC1iYXNlbGluZT0nY2VudHJhbCcgZm9udC1mYW1pbHk9J3NhbnMtc2VyaWYnIGZvbnQtd2VpZ2h0PSc2MDAnIGZvbnQtc2l6ZT0nMjYnIGZpbGw9JyNmZmYnPkFMPC90ZXh0Pjwvc3ZnPg=="
+// A 64x64 violet tile with white "AL" initials — a stand-in portrait, so
+// the loaded-image state is visibly an avatar and visibly distinct from
+// the gray fallback. Authored as plain SVG bytes; the `|> dataURL(mime)`
+// std filter at the src site assembles the base64 data: URL gsx's
+// image-sink sanitizer accepts (see docs/jsx-parity.md ## avatar).
+var avatarSVG = []byte("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect width='64' height='64' fill='#6d28d9'/><text x='32' y='34' text-anchor='middle' dominant-baseline='central' font-family='sans-serif' font-weight='600' font-size='26' fill='#fff'>AL</text></svg>")
 
 // Basic renders two Avatars side by side: one whose image loads (a data
 // URI), one whose image 404s and falls back to initials — avatar.js
@@ -15,7 +16,7 @@ const avatarSVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5
 component Basic() {
 	<div class="flex items-center gap-4">
 		<ui.Avatar>
-			<ui.AvatarImage src={avatarSVG} alt="Ada Lovelace"/>
+			<ui.AvatarImage src={avatarSVG |> dataURL("image/svg+xml")} alt="Ada Lovelace"/>
 			<ui.AvatarFallback>AL</ui.AvatarFallback>
 		</ui.Avatar>
 		<ui.Avatar>

@@ -5,34 +5,36 @@ package avatar
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
+	_gsxstd "github.com/gsxhq/gsx/std"
 	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
-// data: image URLs must be ;base64, — gsx's image-sink sanitizer blocks percent-encoded forms (see docs/jsx-parity.md ## avatar).
-// Decodes to a 64x64 violet tile with white "AL" initials — a stand-in
-// portrait, so the loaded-image state is visibly an avatar (a bare color
-// square reads as broken) and visibly distinct from the gray fallback.
+// A 64x64 violet tile with white "AL" initials — a stand-in portrait, so
+// the loaded-image state is visibly an avatar and visibly distinct from
+// the gray fallback. Authored as plain SVG bytes; the `|> dataURL(mime)`
+// std filter at the src site assembles the base64 data: URL gsx's
+// image-sink sanitizer accepts (see docs/jsx-parity.md ## avatar).
 //
 //line basic.gsx:6:1
-const avatarSVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc2NCcgaGVpZ2h0PSc2NCc+PHJlY3Qgd2lkdGg9JzY0JyBoZWlnaHQ9JzY0JyBmaWxsPScjNmQyOGQ5Jy8+PHRleHQgeD0nMzInIHk9JzM0JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBkb21pbmFudC1iYXNlbGluZT0nY2VudHJhbCcgZm9udC1mYW1pbHk9J3NhbnMtc2VyaWYnIGZvbnQtd2VpZ2h0PSc2MDAnIGZvbnQtc2l6ZT0nMjYnIGZpbGw9JyNmZmYnPkFMPC90ZXh0Pjwvc3ZnPg=="
+var avatarSVG = []byte("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect width='64' height='64' fill='#6d28d9'/><text x='32' y='34' text-anchor='middle' dominant-baseline='central' font-family='sans-serif' font-weight='600' font-size='26' fill='#fff'>AL</text></svg>")
 
 // Basic renders two Avatars side by side: one whose image loads (a data
 // URI), one whose image 404s and falls back to initials — avatar.js
 // toggles which of image/fallback is visible on the image's load/error.
 
-//line basic.gsx:15:1
+//line basic.gsx:16:1
 func Basic() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:16:2
+//line basic.gsx:17:2
 		_gsxgw.S("<div class=\"flex items-center gap-4\">")
-//line basic.gsx:17:3
+//line basic.gsx:18:3
 		_gsxgw.Node(ctx, ui.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:18:4
-			_gsxgw.Node(ctx, ui.AvatarImage(avatarSVG, "Ada Lovelace", nil))
 //line basic.gsx:19:4
+			_gsxgw.Node(ctx, ui.AvatarImage(_gsxstd.DataURL((avatarSVG), "image/svg+xml"), "Ada Lovelace", nil))
+//line basic.gsx:20:4
 			_gsxgw.Node(ctx, ui.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("AL")
@@ -40,12 +42,12 @@ func Basic() _gsxrt.Node {
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
-//line basic.gsx:21:3
+//line basic.gsx:22:3
 		_gsxgw.Node(ctx, ui.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:22:4
-			_gsxgw.Node(ctx, ui.AvatarImage("/broken-image.jpg", "Broken avatar", nil))
 //line basic.gsx:23:4
+			_gsxgw.Node(ctx, ui.AvatarImage("/broken-image.jpg", "Broken avatar", nil))
+//line basic.gsx:24:4
 			_gsxgw.Node(ctx, ui.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("JD")

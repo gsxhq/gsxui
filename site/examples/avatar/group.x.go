@@ -5,6 +5,7 @@ package avatar
 import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
+	_gsxstd "github.com/gsxhq/gsx/std"
 	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
@@ -23,7 +24,7 @@ func Group() _gsxrt.Node {
 		_gsxgw.Node(ctx, ui.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line group.gsx:10:4
-			_gsxgw.Node(ctx, ui.AvatarImage(avatarSVG, "Ada Lovelace", nil))
+			_gsxgw.Node(ctx, ui.AvatarImage(_gsxstd.DataURL((avatarSVG), "image/svg+xml"), "Ada Lovelace", nil))
 //line group.gsx:11:4
 			_gsxgw.Node(ctx, ui.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
