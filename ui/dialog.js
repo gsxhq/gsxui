@@ -62,8 +62,15 @@ on("click", "[data-gsxui-dialog-close]", (_event, closer) => {
 // Light dismiss: only a click outside the dialog's own box — i.e. on the
 // ::backdrop — dismisses. Clicks in the panel's padding and grid gaps also
 // target the <dialog> element itself, so target identity alone is not enough.
+//
+// data-gsxui-dialog-static (ui/alert-dialog.gsx's AlertDialogContent) opts
+// a content element out of this path entirely: Radix's own AlertDialog
+// ignores outside clicks while Esc still closes it, and this early return
+// reproduces exactly that — Esc/cancel below and the close-button/toggle
+// handlers are untouched, only the backdrop-click path is skipped.
 on("click", "dialog[data-gsxui-dialog-content]", (event, dialog) => {
   if (event.target !== dialog) return;
+  if (dialog.hasAttribute("data-gsxui-dialog-static")) return;
   const r = dialog.getBoundingClientRect();
   const inBox =
     event.clientX >= r.left && event.clientX <= r.right &&

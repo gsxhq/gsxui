@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "collapsible", "dialog", "dropdown", "empty", "field", "icon", "input", "input-group", "item", "kbd", "label", "pagination", "progress", "radio", "select", "separator", "skeleton", "spinner", "switch", "table", "tabs", "textarea", "tooltip"}
+	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "collapsible", "dialog", "dropdown", "empty", "field", "icon", "input", "input-group", "item", "kbd", "label", "pagination", "progress", "radio", "select", "separator", "skeleton", "spinner", "switch", "table", "tabs", "textarea", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -200,6 +200,20 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("collapsible deps = %v, want none", deps)
 	}
 
+	// alert-dialog.gsx has no icon import; AlertDialog composes ui.Dialog
+	// and AlertDialogAction/AlertDialogCancel compose ui.Button directly
+	// (flat package intra-package edges, same shape as dialog's own button
+	// dep) — alert-dialog -> dialog is also what makes the CLI vendor
+	// ui/dialog.js for alert-dialog (HasJS("alert-dialog") is false; it has
+	// no behavior module of its own, only dialog's).
+	deps, err = registry.Deps("alert-dialog")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(deps, []string{"button", "dialog"}) {
+		t.Fatalf("alert-dialog deps = %v, want [button dialog]", deps)
+	}
+
 	if _, err := registry.Deps("nosuch"); err == nil || !strings.Contains(err.Error(), "gsxui list") {
 		t.Fatalf("Deps(nosuch) err = %v, want error mentioning 'gsxui list'", err)
 	}
@@ -218,6 +232,13 @@ func TestHasJS(t *testing.T) {
 	if registry.HasJS("gsxui") {
 		t.Error("gsxui should not have JS")
 	}
+	// alert-dialog has no ui/alert-dialog.js of its own — it reuses
+	// ui/dialog.js entirely (the data-gsxui-dialog-static opt-out lives in
+	// dialog.js itself); vendoring dialog.js comes from the derived
+	// alert-dialog -> dialog dependency (see TestDeps), not from HasJS here.
+	if registry.HasJS("alert-dialog") {
+		t.Error("alert-dialog should not have its own JS")
+	}
 }
 
 func TestResolveTransitive(t *testing.T) {
@@ -235,6 +256,18 @@ func TestResolveTransitive(t *testing.T) {
 		t.Fatal(err)
 	}
 	want = []string{"icon", "select"}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("got %v want %v", got, want)
+	}
+
+	// alert-dialog resolves transitively through dialog to button — this is
+	// the chain that makes the CLI vendor ui/dialog.js (HasJS("dialog")) for
+	// an alert-dialog install even though alert-dialog has no JS of its own.
+	got, err = registry.Resolve([]string{"alert-dialog"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want = []string{"alert-dialog", "button", "dialog"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
