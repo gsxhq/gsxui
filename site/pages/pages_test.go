@@ -95,6 +95,27 @@ func TestComponentPageRoute(t *testing.T) {
 		}
 	})
 
+	t.Run("interactive component (dialog)", func(t *testing.T) {
+		// Task 3c representative: proves an interactive component (behavior
+		// wired via web/main.js's ui/index.js import, not just markup) also
+		// renders through the same harness, including its gsxui:* events
+		// example.
+		req := httptest.NewRequest(http.MethodGet, "/components/dialog", nil)
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+
+		if rec.Code != http.StatusOK {
+			t.Fatalf("GET /components/dialog = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
+		}
+		body := rec.Body.String()
+		if !strings.Contains(body, `data-gsxui-dialog`) {
+			t.Errorf(`response missing data-gsxui-dialog; body:\n%s`, body)
+		}
+		if !strings.Contains(body, "gsxui:open") {
+			t.Errorf(`response missing events example source (gsxui:open); body:\n%s`, body)
+		}
+	})
+
 	t.Run("unknown component", func(t *testing.T) {
 		req := httptest.NewRequest(http.MethodGet, "/components/nope", nil)
 		rec := httptest.NewRecorder()
