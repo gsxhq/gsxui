@@ -1,6 +1,8 @@
 package ui_test
 
 import (
+	"encoding/xml"
+	"net/url"
 	"strings"
 	"testing"
 
@@ -27,18 +29,44 @@ func TestCheckboxDefault(t *testing.T) {
 	}
 }
 
-func TestCheckboxNoStraySpaceInDataURI(t *testing.T) {
-	// The data-URI's SVG attribute/path separators must survive the
-	// tailwind-merge pass intact — they are authored as Tailwind's
-	// underscore escape (`_`) for whitespace inside a bracketed arbitrary
-	// value, never a literal space (a literal space is a class-token
-	// boundary and gets torn apart by any whitespace-splitting class
-	// tooling, corrupting the embedded SVG). See docs/jsx-parity.md. (The
-	// quotes render as &#39; — gsx attribute-escapes every value.)
+func TestCheckboxDataURIDecodesToValidSVG(t *testing.T) {
+	// The check glyph is a data-URI SVG in a checked:bg-[url(...)] arbitrary
+	// value. Its whitespace must be percent-encoded (%20): a literal space is
+	// a class-token boundary (torn apart by any whitespace-splitting class
+	// tooling, tailwind-merge included), and Tailwind's underscore escape is
+	// NOT converted to a space inside url() — Tailwind v4 deliberately
+	// preserves underscores in URLs, so `_` reaches the browser verbatim and
+	// corrupts the SVG (<svg_xmlns=...> — the shipped-broken-checkmark bug).
+	// Prove the browser's view: extract the URI payload from the rendered
+	// class, percent-decode it, and parse it as XML.
 	got := render(t, ui.Checkbox(nil))
-	want := "checked:bg-[url(&#39;data:image/svg+xml;charset=utf-8,%3Csvg_xmlns=%22http://www.w3.org/2000/svg%22_viewBox=%220_0_24_24%22_fill=%22none%22_stroke=%22white%22_stroke-width=%223%22_stroke-linecap=%22round%22_stroke-linejoin=%22round%22%3E%3Cpath_d=%22M20_6_9_17l-5-5%22/%3E%3C/svg%3E&#39;)]"
-	if !strings.Contains(got, want) {
-		t.Errorf("data-URI corrupted by class merge\nwant substring: %s\n in: %s", want, got)
+	const pre, post = "data:image/svg+xml;charset=utf-8,", "&#39;)]"
+	start := strings.Index(got, pre)
+	if start < 0 {
+		t.Fatalf("data-URI not found in render\nin: %s", got)
+	}
+	payload := got[start+len(pre):]
+	end := strings.Index(payload, post)
+	if end < 0 {
+		t.Fatalf("unterminated data-URI in render\nin: %s", got)
+	}
+	payload = payload[:end]
+	if strings.ContainsAny(payload, "_ ") {
+		t.Errorf("data-URI must percent-encode whitespace (%%20): underscores survive Tailwind's url() handling and literal spaces split the class token\nuri: %s", payload)
+	}
+	decoded, err := url.PathUnescape(payload)
+	if err != nil {
+		t.Fatalf("data-URI does not percent-decode: %v\nuri: %s", err, payload)
+	}
+	var svg struct {
+		XMLName xml.Name
+		Stroke  string `xml:"stroke,attr"`
+	}
+	if err := xml.Unmarshal([]byte(decoded), &svg); err != nil {
+		t.Fatalf("decoded data-URI is not well-formed XML (the browser would drop the checkmark): %v\nsvg: %s", err, decoded)
+	}
+	if svg.XMLName.Local != "svg" || svg.Stroke != "white" {
+		t.Errorf("decoded root = <%s stroke=%q>, want <svg stroke=\"white\">\nsvg: %s", svg.XMLName.Local, svg.Stroke, decoded)
 	}
 }
 
@@ -92,7 +120,7 @@ func TestCheckboxPinned(t *testing.T) {
 	// <input type="checkbox"> whose checked-state visuals move to a
 	// checked:bg-[url(...)] data-URI background. See docs/jsx-parity.md.
 	got := render(t, ui.Checkbox(nil))
-	want := `<input type="checkbox" data-slot="checkbox" class="peer size-4 shrink-0 appearance-none rounded-[4px] border border-input shadow-xs transition-shadow outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:bg-input/30 checked:bg-primary checked:border-primary checked:bg-[url(&#39;data:image/svg+xml;charset=utf-8,%3Csvg_xmlns=%22http://www.w3.org/2000/svg%22_viewBox=%220_0_24_24%22_fill=%22none%22_stroke=%22white%22_stroke-width=%223%22_stroke-linecap=%22round%22_stroke-linejoin=%22round%22%3E%3Cpath_d=%22M20_6_9_17l-5-5%22/%3E%3C/svg%3E&#39;)] checked:bg-center checked:bg-no-repeat checked:bg-[length:12px_12px]"/>`
+	want := `<input type="checkbox" data-slot="checkbox" class="peer size-4 shrink-0 appearance-none rounded-[4px] border border-input shadow-xs transition-shadow outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:bg-input/30 checked:bg-primary checked:border-primary checked:bg-[url(&#39;data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22white%22%20stroke-width=%223%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M20%206%209%2017l-5-5%22/%3E%3C/svg%3E&#39;)] checked:bg-center checked:bg-no-repeat checked:bg-[length:12px_12px]"/>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
