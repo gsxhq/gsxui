@@ -78,19 +78,43 @@ component Layout(title string, active string, children gsx.Node) {
 			</header>
 			<div class="mx-auto flex max-w-6xl gap-10 px-4 py-10">
 				<aside class="hidden w-44 shrink-0 md:block">
-					<nav class="sticky top-20 flex flex-col gap-1 text-sm">
-						{{ names, _ := registry.Components() }}
-						{ for _, name := range names {
+					<nav class="sticky top-20 flex flex-col gap-4 text-sm">
+						<div class="flex flex-col gap-1">
+							<h3 class="px-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Docs</h3>
 							<a
-								href={"/components/" + name}
+								href={GettingStarted{} |> url}
 								class={
-									"rounded-md px-2 py-1 capitalize text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
-									"bg-accent text-accent-foreground": active == name
+									"rounded-md px-2 py-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
+									"bg-accent text-accent-foreground": active == "getting-started"
 								}
 							>
-								{ name }
+								Getting Started
 							</a>
-						} }
+							<a
+								href={Theming{} |> url}
+								class={
+									"rounded-md px-2 py-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
+									"bg-accent text-accent-foreground": active == "theming"
+								}
+							>
+								Theming
+							</a>
+						</div>
+						<div class="flex flex-col gap-1">
+							<h3 class="px-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Components</h3>
+							{{ names, _ := registry.Components() }}
+							{ for _, name := range names {
+								<a
+									href={"/components/" + name}
+									class={
+										"rounded-md px-2 py-1 capitalize text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
+										"bg-accent text-accent-foreground": active == name
+									}
+								>
+									{ name }
+								</a>
+							} }
+						</div>
 					</nav>
 				</aside>
 				<main class="min-w-0 flex-1">{ children }</main>

@@ -106,30 +106,60 @@ func _gsxrenderLayout(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title string, 
 //line layout.gsx:80:5
 	_gsxgw.S("<aside class=\"hidden w-44 shrink-0 md:block\">")
 //line layout.gsx:81:6
-	_gsxgw.S("<nav class=\"sticky top-20 flex flex-col gap-1 text-sm\">")
+	_gsxgw.S("<nav class=\"sticky top-20 flex flex-col gap-4 text-sm\">")
 //line layout.gsx:82:7
-	names, _ := registry.Components()
-//line layout.gsx:83:7
-	for _, name := range names {
+	_gsxgw.S("<div class=\"flex flex-col gap-1\">")
+//line layout.gsx:83:8
+	_gsxgw.S("<h3 class=\"px-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground\">Docs</h3>")
 //line layout.gsx:84:8
+	_gsxgw.S("<a")
+	_gsxv1, _gsxerr := _gsxf0.URLFor(ctx, (GettingStarted{}))
+	if _gsxerr != nil {
+		return _gsxerr
+	}
+	_gsxgw.S(" href=\"")
+	_gsxgw.URL(string(_gsxv1))
+	_gsxgw.S("\" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("rounded-md px-2 py-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"), _gsxrt.ClassIf("bg-accent text-accent-foreground", active == "getting-started"))
+	_gsxgw.S("\">Getting Started</a>")
+//line layout.gsx:93:8
+	_gsxgw.S("<a")
+	_gsxv2, _gsxerr := _gsxf0.URLFor(ctx, (Theming{}))
+	if _gsxerr != nil {
+		return _gsxerr
+	}
+	_gsxgw.S(" href=\"")
+	_gsxgw.URL(string(_gsxv2))
+	_gsxgw.S("\" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("rounded-md px-2 py-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"), _gsxrt.ClassIf("bg-accent text-accent-foreground", active == "theming"))
+	_gsxgw.S("\">Theming</a></div>")
+//line layout.gsx:103:7
+	_gsxgw.S("<div class=\"flex flex-col gap-1\">")
+//line layout.gsx:104:8
+	_gsxgw.S("<h3 class=\"px-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground\">Components</h3>")
+//line layout.gsx:105:8
+	names, _ := registry.Components()
+//line layout.gsx:106:8
+	for _, name := range names {
+//line layout.gsx:107:9
 		_gsxgw.S("<a href=\"")
 		_gsxgw.URL(string("/components/" + name))
 		_gsxgw.S("\" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("rounded-md px-2 py-1 capitalize text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"), _gsxrt.ClassIf("bg-accent text-accent-foreground", active == name))
 		_gsxgw.S("\">")
-//line layout.gsx:91:9
+//line layout.gsx:114:10
 		_gsxgw.Text(string(name))
 		_gsxgw.S("</a>")
 	}
-	_gsxgw.S("</nav></aside>")
-//line layout.gsx:96:5
+	_gsxgw.S("</div></nav></aside>")
+//line layout.gsx:120:5
 	_gsxgw.S("<main class=\"min-w-0 flex-1\">")
-//line layout.gsx:96:34
+//line layout.gsx:120:34
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</main></div>")
-//line layout.gsx:98:4
+//line layout.gsx:122:4
 	_gsxgw.S("<footer class=\"border-t border-border\">")
-//line layout.gsx:99:5
+//line layout.gsx:123:5
 	_gsxgw.S("<div class=\"mx-auto max-w-6xl px-4 py-6 text-sm text-muted-foreground\">gsxui — shadcn-style components for gsx. Copy-in, type-checked, server-rendered.</div></footer></body></html>")
 	return _gsxgw.Err()
 }
