@@ -96,7 +96,7 @@ func TestTooltipPinned(t *testing.T) {
 	// "tooltip"/data-state replace Radix's Portal+Content wiring; the Arrow
 	// part is dropped.
 	got := render(t, tooltip.TooltipContent(gsx.Raw("Add to library"), nil))
-	want := `<div data-slot="tooltip-content" data-gsxui-tooltip-content popover="manual" role="tooltip" data-state="closed" class="z-50 w-fit origin-(--radix-tooltip-content-transform-origin) animate-in rounded-md bg-foreground px-3 py-1.5 text-xs text-balance text-background fade-in-0 zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95">Add to library</div>`
+	want := `<div data-slot="tooltip-content" data-gsxui-tooltip-content popover="manual" role="tooltip" data-state="closed" class="z-50 w-fit origin-bottom animate-in rounded-md bg-foreground px-3 py-1.5 text-xs text-balance text-background fade-in-0 zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95">Add to library</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

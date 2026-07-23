@@ -11,6 +11,7 @@ function show(trigger) {
   if (!content || content.matches(":popover-open")) return;
   const r = trigger.getBoundingClientRect();
   content.style.position = "fixed";
+  content.style.inset = "auto";
   content.style.left = `${r.left + r.width / 2}px`;
   content.style.top = `${r.top - 6}px`;
   content.style.transform = "translate(-50%, -100%)";

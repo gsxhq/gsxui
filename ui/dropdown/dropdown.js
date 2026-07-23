@@ -32,6 +32,7 @@ on("click", "[data-gsxui-dropdown-trigger]", (_e, trigger) => {
   }
   const r = trigger.getBoundingClientRect();
   content.style.position = "fixed";
+  content.style.inset = "auto";
   content.style.left = `${r.left}px`;
   content.style.top = `${r.bottom + 4}px`;
   content.showPopover();
