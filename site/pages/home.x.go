@@ -141,29 +141,24 @@ func (h Home) Page() _gsxrt.Node {
 			_gsxgw.Node(ctx, ui.Dialog(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line home.gsx:73:7
-				_gsxgw.Node(ctx, ui.DialogTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line home.gsx:74:8
-					_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-						_gsxgw := _gsxrt.W(_gsxw)
-						_gsxgw.S("Open dialog")
-						return _gsxgw.Err()
-					}), nil))
+					_gsxgw.S("Open dialog")
 					return _gsxgw.Err()
-				}), nil))
-//line home.gsx:76:7
+				}), _gsxrt.Attrs{{Key: "data-gsxui-dialog-trigger", Value: true}}))
+//line home.gsx:74:7
 				_gsxgw.Node(ctx, ui.DialogContent(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line home.gsx:77:8
+//line home.gsx:75:8
 					_gsxgw.Node(ctx, ui.DialogHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line home.gsx:78:9
+//line home.gsx:76:9
 						_gsxgw.Node(ctx, ui.DialogTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Edit profile")
 							return _gsxgw.Err()
 						}), nil))
-//line home.gsx:79:9
+//line home.gsx:77:9
 						_gsxgw.Node(ctx, ui.DialogDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Rendered by ui/dialog on the native &lt;dialog&gt; element — no client framework required.")
@@ -171,7 +166,7 @@ func (h Home) Page() _gsxrt.Node {
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line home.gsx:83:8
+//line home.gsx:81:8
 					_gsxgw.Node(ctx, ui.DialogFooter(true, nil, nil))
 					return _gsxgw.Err()
 				}), nil))

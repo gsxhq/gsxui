@@ -12,6 +12,14 @@ component Dialog(children gsx.Node, attrs gsx.Attrs) {
 	<div data-slot="dialog" data-gsxui-dialog class="contents" { attrs... }>{ children }</div>
 }
 
+// DialogTrigger renders its own <button>, so its children must be phrasing
+// content — never a Button or other interactive element. HTML forbids
+// nested buttons: the parser hoists the inner one out as a sibling, leaving
+// this (wired) button empty and unclickable while the visible button is
+// orphaned from the dialog wiring. For a styled trigger, skip the wrapper
+// and put the data attribute on the Button itself — the documented idiom:
+// <ui.Button data-gsxui-dialog-trigger>Open</ui.Button> (docs/jsx-parity.md
+// dialog MECHANISM; TestNoNestedButtons guards the site against this).
 component DialogTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<button data-slot="dialog-trigger" data-gsxui-dialog-trigger type="button" aria-haspopup="dialog" aria-expanded="false" { attrs... }>{ children }</button>
 }
