@@ -66,14 +66,22 @@ component Layout(title string, active string, children gsx.Node) {
 			<header class="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur">
 				<div class="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
 					<a href={Home{} |> url} class="font-mono text-sm font-semibold tracking-tight">gsxui</a>
-					<a
-						href="https://github.com/gsxhq/gsxui"
-						target="_blank"
-						rel="noreferrer"
-						class="text-sm text-muted-foreground transition-colors hover:text-foreground"
-					>
-						GitHub
-					</a>
+					<nav class="flex items-center gap-4">
+						<a
+							href={Theme{} |> url}
+							class="text-sm text-muted-foreground transition-colors hover:text-foreground"
+						>
+							Theme
+						</a>
+						<a
+							href="https://github.com/gsxhq/gsxui"
+							target="_blank"
+							rel="noreferrer"
+							class="text-sm text-muted-foreground transition-colors hover:text-foreground"
+						>
+							GitHub
+						</a>
+					</nav>
 				</div>
 			</header>
 			<div class="mx-auto flex max-w-6xl gap-10 px-4 py-10">
