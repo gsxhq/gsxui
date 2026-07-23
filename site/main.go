@@ -26,6 +26,17 @@ import (
 //go:embed all:dist
 var distFS embed.FS
 
+// listenPort resolves the bind port. GO_PORT (dev): set via .env / matched
+// by vite.config.ts's proxy target — wins so the dev loop stays coherent.
+// PORT (containers): the Dockerfile sets ENV PORT=8080 and Cloud Run injects
+// it. Final fallback is 7777 — the SAME default vite.config.ts and `gsx dev`
+// assume — so a fresh checkout's `make site-dev` works with no .env at all;
+// an 8080-style fallback here desynchronizes the proxy and shows the
+// "backend unavailable" interstitial forever.
+func listenPort(getenv func(string) string) string {
+	return cmp.Or(getenv("GO_PORT"), getenv("PORT"), "7777")
+}
+
 func main() {
 	devURL := os.Getenv("VITE_DEV_URL") // "" in prod
 	v, err := vite.New(vite.Config{DevURL: devURL, DevBase: "/__vite/", Dist: distFS, DistDir: "dist"})
@@ -58,12 +69,7 @@ func main() {
 	// v.Middleware injects *vite.Vite into each request's context so components
 	// read the asset bundle from ctx (no prop threading).
 	//
-	// GO_PORT (dev): set by .env / `gsx dev`, wired to vite.config.ts's proxy
-	// target — takes precedence so the dev loop is unaffected. PORT (prod):
-	// Cloud Run injects this and expects the container to bind it; 8080 is
-	// Cloud Run's own default, used as the final fallback for a bare
-	// `docker run` with neither var set.
-	port := cmp.Or(os.Getenv("GO_PORT"), os.Getenv("PORT"), "8080")
+	port := listenPort(os.Getenv)
 	srv := &http.Server{Addr: ":" + port, Handler: v.Middleware(mux)}
 
 	// Serve in the background so the main goroutine can wait for a shutdown

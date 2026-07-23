@@ -69,13 +69,15 @@ the binary, served without a dev proxy):
 
 Either way, open the printed URL (`make site-dev` prints Vite's dev URL;
 `make site` serves directly on `$GO_PORT`, falling back to `$PORT`, then
-8080, if neither is set).
+7777 — the same default the dev loop's Vite proxy assumes — if neither is
+set).
 
 ### Deploying
 
 `site/Dockerfile` is a three-stage build (Vite production build → `go
 build` against the committed `.x.go` + built `dist/` → distroless static
-run stage) that binds `$PORT` (Cloud Run's convention; falls back to 8080).
+run stage) that binds `$PORT` (Cloud Run's convention; the image sets
+`PORT=8080` explicitly).
 Build it from the **repo root** as context:
 
     docker build -f site/Dockerfile -t gsxui-site .
