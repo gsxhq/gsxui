@@ -20,12 +20,22 @@ import (
 // docs/jsx-parity.md. The chevron is rendered via ui/icon (icon.ChevronDown)
 // — this import is the select → icon dependency internal/registry
 // derives and internal/registry/registry_test.go pins.
+//
+// The chevron overlays the <select> from a positioned wrapper (a native
+// select can only contain option/optgroup), so the wrapper — not the
+// select — must carry the width: it is w-fit (shadcn's trigger default)
+// and takes the caller's class (width intent like w-full / w-[180px] maps
+// here, where shadcn callers put it on the Trigger), while the select
+// fills it with w-full. Putting w-fit on the select inside an unconstrained
+// wrapper detaches the absolutely-anchored chevron to the wrapper's far
+// edge. Non-class attrs still land on the <select> (name, id, aria-*,
+// disabled are form-control concerns).
 component Select(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="select" class="relative">
+	<div data-slot="select" class={ "relative w-fit", attrs.Class() }>
 		<select
 			data-slot="select-trigger"
-			class="flex w-fit items-center justify-between gap-2 rounded-md border border-input bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 h-9 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40 appearance-none pr-8"
-			{ attrs... }
+			class="flex w-full items-center justify-between gap-2 rounded-md border border-input bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 h-9 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40 appearance-none pr-8"
+			{ attrs.Without("class")... }
 		>
 			{ children }
 		</select>
