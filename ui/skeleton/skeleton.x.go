@@ -27,7 +27,7 @@ func Skeleton(attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
-		_gsxgw.S("/>")
+		_gsxgw.S("></div>")
 		return _gsxgw.Err()
 	})
 }

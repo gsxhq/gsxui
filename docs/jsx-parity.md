@@ -3,6 +3,9 @@
 Divergences between gsxui components and their shadcn/ui reference, both
 directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
 
+## rendering
+- FINDING (gsx upstream): gsx emits authored self-closing syntax verbatim — `<div/>` in .gsx reaches HTML as `<div/>`, which browsers parse as an OPEN tag (self-closing is void/foreign-content-only in HTML), silently nesting all following siblings. Until gsx expands or rejects self-closed non-voids, always write explicit closes on non-void elements. Bit dropdown's separator and skeleton in production.
+
 ## alert
 - WIN: `cva()` variant map replaced by `switch` inside `class={}` (default |
   destructive), the same idiom as badge/button. No `data-variant` stamp —

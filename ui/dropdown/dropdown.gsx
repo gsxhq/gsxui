@@ -57,7 +57,7 @@ component DropdownMenuLabel(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component DropdownMenuSeparator(attrs gsx.Attrs) {
-	<div data-slot="dropdown-menu-separator" role="separator" class="-mx-1 my-1 h-px bg-border" { attrs... }/>
+	<div data-slot="dropdown-menu-separator" role="separator" class="-mx-1 my-1 h-px bg-border" { attrs... }></div>
 }
 
 component DropdownMenuShortcut(children gsx.Node, attrs gsx.Attrs) {

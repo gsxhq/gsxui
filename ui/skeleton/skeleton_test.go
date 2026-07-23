@@ -44,7 +44,7 @@ func TestSkeletonPinned(t *testing.T) {
 	// Skeleton (registry/new-york-v4/ui/skeleton.tsx) — straight port, no
 	// divergences.
 	got := render(t, skeleton.Skeleton(nil))
-	want := `<div data-slot="skeleton" class="animate-pulse rounded-md bg-accent"/>`
+	want := `<div data-slot="skeleton" class="animate-pulse rounded-md bg-accent"></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
