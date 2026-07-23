@@ -115,8 +115,8 @@ component (t Theming) Page() {
 			<section class="flex flex-col gap-3">
 				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">The token model</h2>
 				<p class="text-muted-foreground">
-					<code>gsxui init</code> vendors <code>web/gsxui.css</code> with 20
-					shadcn-compatible tokens (plus <code>--radius</code>) defined twice —
+					<code>gsxui init</code> vendors <code>web/gsxui.css</code> with 19
+					color tokens plus <code>--radius</code> (20 total) defined twice —
 					once in <code>:root</code> for light mode, once in <code>.dark</code>
 					for dark mode (toggled by a <code>.dark</code> class anywhere up the
 					tree, via Tailwind's <code>@custom-variant dark</code>) — and an
@@ -127,7 +127,7 @@ component (t Theming) Page() {
 				</p>
 				<pre class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"><code>{ themeTokensCSS }</code></pre>
 				<p class="text-muted-foreground">
-					The ten paired tokens (<code>background</code>/<code>foreground</code>,
+					The eight paired tokens (<code>background</code>/<code>foreground</code>,
 					<code>card</code>, <code>popover</code>, <code>primary</code>,
 					<code>secondary</code>, <code>muted</code>, <code>accent</code>, each
 					with a matching <code>-foreground</code>, plus <code>destructive</code>/

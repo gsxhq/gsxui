@@ -131,9 +131,9 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:118:6
 			_gsxgw.S("<code>gsxui init</code> vendors ")
 //line theming.gsx:118:38
-			_gsxgw.S("<code>web/gsxui.css</code> with 20 shadcn-compatible tokens (plus ")
-//line theming.gsx:119:37
-			_gsxgw.S("<code>--radius</code>) defined twice — once in ")
+			_gsxgw.S("<code>web/gsxui.css</code> with 19 color tokens plus ")
+//line theming.gsx:119:24
+			_gsxgw.S("<code>--radius</code> (20 total) defined twice — once in ")
 //line theming.gsx:120:14
 			_gsxgw.S("<code>:root</code> for light mode, once in ")
 //line theming.gsx:120:57
@@ -158,10 +158,10 @@ func (t Theming) Page() _gsxrt.Node {
 			_gsxgw.Text(string(themeTokensCSS))
 			_gsxgw.S("</code></pre>")
 //line theming.gsx:129:5
-			_gsxgw.S("<p class=\"text-muted-foreground\">The ten paired tokens (")
-//line theming.gsx:130:29
+			_gsxgw.S("<p class=\"text-muted-foreground\">The eight paired tokens (")
+//line theming.gsx:130:31
 			_gsxgw.S("<code>background</code>/")
-//line theming.gsx:130:53
+//line theming.gsx:130:55
 			_gsxgw.S("<code>foreground</code>,")
 //line theming.gsx:131:6
 			_gsxgw.S("<code>card</code>, ")
