@@ -79,6 +79,12 @@ var themeGroups = []themeGroup{
 	},
 }
 
+// ThemeGroups returns the default theme group definitions for testing purposes.
+// This allows tests to verify that Go defaults stay in sync with CSS values.
+func ThemeGroups() []themeGroup {
+	return themeGroups
+}
+
 const tabBtnBase = "rounded-md border border-border px-3 py-1.5 text-sm font-medium transition-colors"
 
 const themeImportPlaceholder = `:root {
@@ -110,22 +116,27 @@ component (t Theme) Page() {
 									<span>Dark</span>
 								</div>
 								{ for _, v := range g.Vars {
-									<div class="grid grid-cols-[minmax(0,120px)_1fr_1fr] items-center gap-3">
-										<label class="truncate font-mono text-xs text-muted-foreground" title={ v.Name }>{ v.Name }</label>
-										<input
-											type="text"
-											data-theme-var={ v.Name }
-											data-theme-mode="light"
-											value={ v.Light }
-											class="h-8 w-full min-w-0 rounded-md border border-input bg-transparent px-2 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
-										/>
-										<input
-											type="text"
-											data-theme-var={ v.Name }
-											data-theme-mode="dark"
-											value={ v.Dark }
-											class="h-8 w-full min-w-0 rounded-md border border-input bg-transparent px-2 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
-										/>
+									<div>
+										<div class="grid grid-cols-[minmax(0,120px)_1fr_1fr] items-center gap-3">
+											<label class="truncate font-mono text-xs text-muted-foreground" title={ v.Name }>{ v.Name }</label>
+											<input
+												type="text"
+												data-theme-var={ v.Name }
+												data-theme-mode="light"
+												value={ v.Light }
+												class="h-8 w-full min-w-0 rounded-md border border-input bg-transparent px-2 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+											/>
+											<input
+												type="text"
+												data-theme-var={ v.Name }
+												data-theme-mode="dark"
+												value={ v.Dark }
+												class="h-8 w-full min-w-0 rounded-md border border-input bg-transparent px-2 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+											/>
+										</div>
+										{ if v.Name == "--radius" {
+											<p class="col-start-2 col-span-2 mt-1 text-xs text-muted-foreground">preview only — radius is theme-invariant in exports</p>
+										} }
 									</div>
 								} }
 							</div>

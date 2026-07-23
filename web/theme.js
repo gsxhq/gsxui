@@ -195,7 +195,7 @@ ${darkLines}
   function parseVars(blockText) {
     const result = {};
     if (!blockText) return result;
-    const pairRe = /--([a-zA-Z0-9-]+)\s*:\s*([^;]+);/g;
+    const pairRe = /--([a-zA-Z0-9-]+)\s*:\s*([^;}]+)(?:;)?/g;
     let m;
     while ((m = pairRe.exec(blockText))) {
       result[`--${m[1]}`] = m[2].trim();
