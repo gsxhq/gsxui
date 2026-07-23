@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "collapsible", "dialog", "dropdown", "empty", "field", "icon", "input", "input-group", "item", "kbd", "label", "pagination", "progress", "radio", "select", "separator", "skeleton", "spinner", "switch", "table", "tabs", "textarea", "tooltip"}
+	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "collapsible", "dialog", "dropdown", "empty", "field", "icon", "input", "input-group", "item", "kbd", "label", "pagination", "progress", "radio", "select", "separator", "sheet", "skeleton", "spinner", "switch", "table", "tabs", "textarea", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -214,6 +214,22 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("alert-dialog deps = %v, want [button dialog]", deps)
 	}
 
+	// sheet.gsx has no icon import; Sheet composes ui.Dialog directly (flat
+	// package intra-package edge, same shape as alert-dialog's own dialog
+	// dep) — SheetContent renders its own <dialog> rather than composing
+	// DialogContent, and SheetTrigger/SheetContent's injected close
+	// button/SheetClose all render their own <button> rather than composing
+	// Button, so dialog is the only edge — sheet -> dialog is also what
+	// makes the CLI vendor ui/dialog.js for a sheet install (HasJS("sheet")
+	// is false; it has no behavior module of its own, only dialog's).
+	deps, err = registry.Deps("sheet")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(deps, []string{"dialog"}) {
+		t.Fatalf("sheet deps = %v, want [dialog]", deps)
+	}
+
 	if _, err := registry.Deps("nosuch"); err == nil || !strings.Contains(err.Error(), "gsxui list") {
 		t.Fatalf("Deps(nosuch) err = %v, want error mentioning 'gsxui list'", err)
 	}
@@ -238,6 +254,11 @@ func TestHasJS(t *testing.T) {
 	// alert-dialog -> dialog dependency (see TestDeps), not from HasJS here.
 	if registry.HasJS("alert-dialog") {
 		t.Error("alert-dialog should not have its own JS")
+	}
+	// sheet has no ui/sheet.js of its own — same reuse-dialog.js shape as
+	// alert-dialog (see TestDeps' sheet entry).
+	if registry.HasJS("sheet") {
+		t.Error("sheet should not have its own JS")
 	}
 }
 
@@ -268,6 +289,17 @@ func TestResolveTransitive(t *testing.T) {
 		t.Fatal(err)
 	}
 	want = []string{"alert-dialog", "button", "dialog"}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("got %v want %v", got, want)
+	}
+
+	// sheet resolves transitively through dialog to button — the same
+	// vendoring chain as alert-dialog's own (TestDeps' sheet entry).
+	got, err = registry.Resolve([]string{"sheet"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want = []string{"button", "dialog", "sheet"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}

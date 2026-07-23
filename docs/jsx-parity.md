@@ -212,6 +212,177 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
   `data-orientation` via Tailwind's `data-[orientation=...]` selectors, so
   `orientation` only needs to stamp the attribute.
 
+## sheet
+- WIN: `Sheet`/`SheetTrigger` compose `ui.Dialog` directly / mirror
+  `AlertDialogTrigger`'s own doc-comment idiom (see `## alert-dialog`) —
+  `Sheet` overrides the composed `data-slot` (`"dialog"`→`"sheet"`) via the
+  same explicit-non-parameter-attribute mechanism as `AlertDialog` (`##
+  alert-dialog` WIN), so `sheet → dialog` derives and the CLI vendors
+  `ui/dialog.js` — trigger/content proximity wiring, Esc-to-close,
+  `data-state` stamping, and the `getAnimations`-gated exit-animation wait
+  are all reused unmodified. This is also the mechanism that gives sheet
+  working exit animations at all (unlike, e.g., the popover family's
+  ledgered-inert exit animations).
+- ADAPT (the one part that does NOT compose): `SheetContent` renders its
+  own native `<dialog data-slot="sheet-content" data-gsxui-dialog-content
+  data-state="closed" data-side="...">` rather than composing
+  `ui.DialogContent` the way `AlertDialogContent` composes it.
+  `AlertDialogContent`'s merge-through-`class` trick worked only because its
+  content recipe is nearly identical to `DialogContent`'s own (`##
+  alert-dialog` ADAPT) — `DialogContent`'s centered-card recipe
+  (`top-[50%]`/`left-[50%]`/`translate-*`/`max-w-lg`/`grid`) and `Sheet`'s
+  side-anchored recipe (`inset-y-0`-or-`inset-x-0`/`h-full`-or-`h-auto`/
+  `w-3/4`/`flex`) target the same CSS properties with materially different
+  values on every one of them — there is no single caller class string that
+  tailwind-merge could resolve into "dialog centered card, except also a
+  side drawer." A second, independent `<dialog>` element is simpler and
+  matches the design brief's own call ("the centering/grid class fights
+  aren't worth tailwind-merge roulette").
+- ADAPT: the base class's unscoped `flex` (from
+  `registry/new-york-v4/ui/sheet.tsx`'s `SheetContent`) becomes `open:flex`
+  — the identical display-gating fix as `DialogContent`'s own `open:grid`
+  (`## dialog` ADAPT): content stays in the DOM while the native `<dialog>`
+  is closed (no Radix unmount), so an ungated display utility would defeat
+  the UA's closed-dialog `display:none`.
+- ADAPT: `text-foreground` is added, the same fix and the same reason as
+  `DialogContent`'s own (`## dialog` ADAPT) — native `<dialog>` gets UA
+  `color: CanvasText` and does not inherit the themed body color the way a
+  plain Radix `<div>` would.
+- ADAPT (three-part fix, all found only by rendering `site/examples/sheet`
+  in-browser per Task 3's render-and-verify requirement — none of these
+  three UA-default fights are visible from the class string alone or from
+  `go test`'s render-string pins, since HTML/CSS's own cascade/layout
+  algorithm is what's at issue, not the generated markup): a modal
+  `<dialog>`'s Chrome UA style is `position:fixed; inset:0; width:fit-
+  content; height:fit-content; margin:auto; max-width/max-height:
+  calc(100% - 6px - 2em)`. `sheet.tsx`'s ported side classes were written
+  for a plain Radix `<div>`, which has none of these UA defaults to fight,
+  and each defeats a different part of them:
+  1. **Wrong edge (margin):** `sheet.tsx`'s side classes set only THREE of
+     the four inset sides explicitly (e.g. the right variant's `inset-y-0
+     right-0` sets top/bottom/right, leaving `left` unset) plus an explicit
+     `width` (`w-3/4`). Reproduced live: with the UA's `margin:auto` and
+     `left:0` (from its base, un-overridden `inset:0`) both left standing,
+     the drawer first rendered dead-CENTER instead of flush right —
+     `left`/`width`/`right` all specified with `margin` still `auto` hits
+     CSS2.1 §10.3.7's "both margins auto → center" branch. Adding `m-0` to
+     the base string (unconditionally zeroing margin, side-agnostic since
+     every variant leaves exactly one edge unset the same way) forecloses
+     that branch — but with `m-0` alone, the drawer then rendered flush
+     against the WRONG edge instead (a right-side sheet opened flush
+     LEFT): `left`(UA-0)/`width`(author)/`right`(author) all concretely
+     specified and margins pinned to `0` is CSS2.1's genuinely
+     over-constrained case, whose spec text says `left` should be the
+     value ignored/recomputed for `direction:ltr` (i.e. `right`+`width`
+     should win) — empirically, in Chrome, `left` won instead. The actual
+     fix is each side switch case adding the ONE inset utility on the
+     OPPOSITE edge from its anchor, set to `auto` (`left-auto` for right,
+     `right-auto` for left, `bottom-auto` for top, `top-auto` for bottom):
+     once that edge is genuinely `auto` (not merely absent-and-UA-
+     defaulted-to-`0`), the box falls through to the unambiguous "one
+     offset auto, the other two given" case and anchors correctly. `m-0`
+     alone was necessary but not sufficient.
+  2. **Height short by ~38px (max-height):** Chrome's UA `max-height:
+     calc(100% - 6px - 2em)` applies to `:modal` dialogs too (confirmed via
+     `getComputedStyle` in the live session) and clamps LEFT/RIGHT's
+     `h-full` (an explicit `height:100%`, not `auto`) short of the full
+     viewport by that same ~38px — measured directly (`getBoundingClientRect
+     ().height` 38px less than `window.innerHeight`) before being
+     neutralized by adding `max-h-none` to the base string (applies to all
+     four sides; harmless for TOP/BOTTOM's small `h-auto` box, load-bearing
+     for LEFT/RIGHT's `h-full`).
+  3. **Width shrink-to-content instead of full-bleed (TOP/BOTTOM only):**
+     `sheet.tsx`'s TOP/BOTTOM variants rely on bare `inset-x-0` with `width`
+     left `auto` to stretch edge-to-edge — the plain-`<div>` default. On the
+     native `<dialog>`, that did NOT stretch: measured rendered width came
+     out shrink-to-fit (content width, e.g. ~447px on an ~1888px-wide test
+     viewport) instead of full-bleed — a real Chrome behavior divergence
+     from the classical CSS2.1 stretch algorithm this port works around
+     rather than fully explains (setting `max-width:none` via inline style
+     had zero effect on this specific symptom, ruling out `max-width` as
+     ITS cause — it is a separate `auto`-width-resolution quirk). TOP/BOTTOM
+     add `w-full` (not in `sheet.tsx`'s own source) to sidestep the `auto`-
+     resolution ambiguity entirely — but `width:100%` is then itself
+     subject to the SAME UA `max-width` (2) neutralizes on the block axis
+     only, so TOP/BOTTOM also add their own explicit `max-w-none` (LEFT/
+     RIGHT don't need one: their own `sm:max-w-sm` is already the sole
+     author-origin `max-width` declaration and always beats the UA's,
+     regardless of which is numerically smaller — cascade origin, not
+     specificity or value, decides that tie).
+  All four sides confirmed flush-to-edge, full-size, with working slide-in/
+  slide-out enter and exit animations, in a real (focused, foregrounded)
+  browser tab — see this task's report for the debugging trail, including a
+  red herring (an unfocused/backgrounded MCP automation tab pauses CSS
+  animations entirely, `document.visibilityState === "hidden"`, which
+  briefly looked like a stuck-mid-animation position bug and was not one).
+- ADAPT: `backdrop:bg-black/50` is folded onto `SheetContent`'s own class
+  string — the same native-`::backdrop`-replaces-`Overlay`/`Portal`
+  substitution as `DialogContent`'s own (`## dialog` WIN/GAP): `sheet.tsx`'s
+  separate `SheetOverlay` (`fixed inset-0 z-50 bg-black/50` plus its own
+  `data-[state=...]:animate-in/out fade-in/out-0` pair) is not ported at
+  all — there is no second element for it to be. The backdrop's fade timing
+  is not reproduced (a plain, unanimated translucent backdrop, exactly
+  `DialogContent`'s own existing behavior) — not a new gap this task
+  introduces, the same one `## dialog` already accepts.
+- NOTE (signature judgment call): `SheetContent` carries a `hideCloseButton
+  bool` param mirroring `DialogContent`'s own convention (zero value keeps
+  shadcn's `showCloseButton` default of `true`) even though the task
+  brief's own parts list only calls out `SheetContent(side)`.
+  `showCloseButton` is a real, pre-existing `sheet.tsx` prop (not something
+  newly grown since the brief was written, the category the brief's
+  scope-out-via-GAP instruction actually targets), and `DialogContent`
+  already established the exact bool-inversion pattern for this prop on the
+  sibling component the brief explicitly points at for the close-button
+  rendering ("compare dialog.gsx's injected button") — porting it keeps
+  `SheetContent` at parity with `DialogContent`'s own capability. Flagged
+  here as a judgment call, not a silent addition.
+- MECHANISM: `side |> default("right")` both stamps `data-side` on the
+  element (consistency with every other data-variant stamp in this
+  codebase, plus availability to any downstream selector/JS) and selects
+  one of `sheet.tsx`'s four static class blocks (right/left/top/bottom — no
+  `data-[side=...]` selectors in the source to preserve, so this is a
+  `switch` inside `class={}`, the same idiom as `item.gsx`'s variant/size
+  pair, not a CSS-side data-attribute selector). `ui/dialog.js` itself never
+  reads `data-side` — the slide direction is fully determined server-side
+  by which static class block was selected, not client-side by the stamp.
+- MECHANISM (close button structure, not `sheet.tsx`'s own): the injected X
+  follows `DialogContent`'s own established structure (inline `<svg>` +
+  `aria-label="Close"` on the `<button>`) rather than `sheet.tsx`'s actual
+  source shape (`<XIcon className="size-4" />` + a separate `<span
+  className="sr-only">Close</span>` for the accessible name) — for
+  consistency across the dialog family (`Dialog`, and now `Sheet`), per the
+  task brief's own framing ("compare dialog.gsx's injected button"). The
+  CLASS STRING on the button and its icon IS `sheet.tsx`'s own, carried
+  token-for-token (`data-[state=open]:bg-secondary`, not `DialogContent`'s
+  `data-[state=open]:bg-accent data-[state=open]:text-muted-foreground`)
+  — only the accessible-name/icon-embedding mechanics are shared with
+  `DialogContent` rather than reproduced from `sheet.tsx`'s own JSX shape.
+  Because `sheet.tsx`'s own close-button class string has no
+  `[&_svg:not([class*='size-'])]:size-4` selector (unlike `DialogContent`'s
+  own, which relies on exactly that selector to size an unclassed raw
+  `<svg>`), the inlined `<svg>` here carries an explicit `class="size-4"`
+  directly — matching what `sheet.tsx`'s own `<XIcon className="size-4" />`
+  actually does, token-for-token, even though the icon-*embedding*
+  mechanism (inline svg vs. a component) differs.
+- GAP: `SheetOverlay`/`SheetPortal` are not ported — same reasoning as
+  `## dialog`'s own Portal/Overlay GAP: the native `<dialog>` top layer
+  replaces `Portal`, and `::backdrop` (folded onto `SheetContent`, see the
+  ADAPT above) replaces `Overlay`. Nothing in this port ever needs a portal
+  or a separate overlay element to target.
+- GAP (narrow): `asChild` is not ported anywhere in this component — same
+  narrow gap as `## dialog`'s own MECHANISM entry; the
+  `data-gsxui-dialog-trigger`/`data-gsxui-dialog-close` attribute idiom is
+  the replacement throughout.
+- Registry: `sheet.gsx` imports nothing from `ui/icon`; `Sheet` calls
+  `ui.Dialog` (flat-package intra-package edge, same shape as
+  `## alert-dialog`'s own `dialog` dep) — `SheetTrigger`/`SheetContent`'s
+  injected close button/`SheetClose` all render their own `<button>`
+  rather than composing `ui.Button`, so `dialog` is the ONLY dep —
+  `registry.Deps("sheet") == ["dialog"]`, pinned in
+  `internal/registry/registry_test.go`. `HasJS("sheet")` is `false` — like
+  `alert-dialog`, it has no behavior module of its own, only `ui/dialog.js`,
+  pulled in transitively.
+
 ## skeleton
 - Straight port; no divergences.
 
