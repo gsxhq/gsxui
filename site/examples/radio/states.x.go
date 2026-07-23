@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line states.gsx:7:1
 // States adds a disabled option to the group — disabled is a bare boolean
 // attribute forwarded through Radio's { attrs... } spread.
 

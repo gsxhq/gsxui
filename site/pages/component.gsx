@@ -82,7 +82,7 @@ func shadcnName(name string) string {
 }
 
 component (c Component) Page(props ComponentProps) {
-	<Layout title={ props.Title } active={ props.Name }>
+	<Layout title={props.Title} active={props.Name}>
 		<div class="flex flex-col gap-10 py-10">
 			<h1 class="text-3xl font-semibold tracking-tight">{ props.Title }</h1>
 			{ for _, ex := range props.Examples {
@@ -92,7 +92,9 @@ component (c Component) Page(props ComponentProps) {
 						{ ex.Node }
 					</div>
 					<div class="relative" data-site-example>
-						<pre class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"><code>{ ex.Source }</code></pre>
+						<pre
+							class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
+						><code>{ ex.Source }</code></pre>
 						<button
 							type="button"
 							data-site-copy
@@ -104,7 +106,9 @@ component (c Component) Page(props ComponentProps) {
 				</section>
 			} }
 			<footer class="flex flex-col gap-3 border-t border-border pt-6 text-sm text-muted-foreground">
-				<pre class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-card-foreground"><code>{ "gsxui add " + props.Name }</code></pre>
+				<pre
+					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-card-foreground"
+				><code>{ "gsxui add " + props.Name }</code></pre>
 				{ if props.Name == "icon" {
 					<a
 						href="https://lucide.dev"
@@ -116,7 +120,7 @@ component (c Component) Page(props ComponentProps) {
 					</a>
 				} else {
 					<a
-						href={ "https://ui.shadcn.com/docs/components/" + shadcnName(props.Name) }
+						href={"https://ui.shadcn.com/docs/components/" + shadcnName(props.Name)}
 						target="_blank"
 						rel="noreferrer"
 						class="underline underline-offset-4 hover:text-foreground"

@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line basic.gsx:6:1
 // Basic renders a 3-tab group with "account" selected on first paint —
 // selected is server-resolved by comparing each part's value to the root's
 // (see ui/tabs/tabs.gsx).

@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line card.gsx:5:1
 // Card composes Skeletons into a card-shaped loading placeholder — the
 // space a real Card would occupy while its data is still loading.
 

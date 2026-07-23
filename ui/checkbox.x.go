@@ -10,6 +10,7 @@ import (
 	_gsxio "io"
 )
 
+//line checkbox.gsx:5:1
 // Checkbox is the shadcn/ui Checkbox, ported as a real native <input
 // type="checkbox">: form-native, zero JS, :checked/:disabled browser truth
 // replaces Radix's button-role + hidden-input + Indicator part (ledger

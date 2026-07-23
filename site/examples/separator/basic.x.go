@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line basic.gsx:7:1
 // Basic renders a horizontal Separator between two lines of text.
 
 //line basic.gsx:8:1

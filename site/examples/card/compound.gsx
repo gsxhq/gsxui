@@ -11,7 +11,9 @@ component Compound() {
 		<ui.CardHeader class="border-b">
 			<ui.CardTitle>Notifications</ui.CardTitle>
 			<ui.CardDescription>You have 3 unread messages.</ui.CardDescription>
-			<ui.CardAction><ui.Badge variant="secondary">New</ui.Badge></ui.CardAction>
+			<ui.CardAction>
+				<ui.Badge variant="secondary">New</ui.Badge>
+			</ui.CardAction>
 		</ui.CardHeader>
 		<ui.CardContent>
 			<p class="text-sm text-muted-foreground">Push notifications are enabled for this device.</p>

@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line footer.gsx:7:1
 // Footer shows DialogFooter's showCloseButton: true appends an outline
 // Close button automatically, no explicit DialogClose needed.
 

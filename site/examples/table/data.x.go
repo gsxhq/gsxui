@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line data.gsx:5:1
 // Data renders a compound table: caption, header, and three rows built
 // from a slice via a for-range loop; the Unpaid row's status gets a
 // conditional class.
@@ -34,19 +35,19 @@ func Data() _gsxrt.Node {
 //line data.gsx:13:4
 				_gsxgw.Node(ctx, ui.TableRow(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line data.gsx:13:17
+//line data.gsx:14:5
 					_gsxgw.Node(ctx, ui.TableHead(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Invoice")
 						return _gsxgw.Err()
 					}), nil))
-//line data.gsx:13:53
+//line data.gsx:15:5
 					_gsxgw.Node(ctx, ui.TableHead(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Status")
 						return _gsxgw.Err()
 					}), nil))
-//line data.gsx:13:88
+//line data.gsx:16:5
 					_gsxgw.Node(ctx, ui.TableHead(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Amount")
@@ -56,32 +57,32 @@ func Data() _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line data.gsx:15:3
+//line data.gsx:19:3
 			_gsxgw.Node(ctx, ui.TableBody(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line data.gsx:16:4
+//line data.gsx:20:4
 				for _, inv := range invoices {
-//line data.gsx:17:5
+//line data.gsx:21:5
 					_gsxgw.Node(ctx, ui.TableRow(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line data.gsx:18:6
+//line data.gsx:22:6
 						_gsxgw.Node(ctx, ui.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line data.gsx:18:40
+//line data.gsx:22:40
 							_gsxgw.Text(string(inv.Invoice))
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "class", Value: "font-medium"}}))
-//line data.gsx:19:6
+//line data.gsx:23:6
 						_gsxgw.Node(ctx, ui.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line data.gsx:19:73
+//line data.gsx:23:73
 							_gsxgw.Text(string(inv.Status))
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.ClassIf("text-destructive", inv.Status == "Unpaid"))}}))
-//line data.gsx:20:6
+//line data.gsx:24:6
 						_gsxgw.Node(ctx, ui.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line data.gsx:20:39
+//line data.gsx:24:39
 							_gsxgw.Text(string(inv.Amount))
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "class", Value: "text-right"}}))

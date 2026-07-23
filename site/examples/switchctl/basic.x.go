@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line basic.gsx:9:1
 // Basic pairs an unchecked and a checked Switch, each with a Label.
 
 //line basic.gsx:10:1

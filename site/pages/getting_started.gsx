@@ -72,79 +72,114 @@ component (g GettingStarted) Page() {
 			<div class="flex flex-col gap-4">
 				<h1 class="text-3xl font-semibold tracking-tight">Getting Started</h1>
 				<p class="text-muted-foreground">
-					gsxui components are copy-in: the CLI vendors real <code>.gsx</code> source into
-					your own module, so what you build against is code you own and can edit —
-					not a package you import and can't touch.
+					gsxui components are copy-in: the CLI vendors real <code>
+						.gsx
+					</code> source into your own module, so what you build against is code you own and can edit — not a package you import and can't touch.
 				</p>
 			</div>
-
 			<section class="flex flex-col gap-3">
 				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">1. Install the CLI</h2>
-				<pre class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"><code>{ gsInstallSnippet }</code></pre>
+				<pre
+					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
+				><code>{ gsInstallSnippet }</code></pre>
 			</section>
-
 			<section class="flex flex-col gap-3">
 				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">2. Initialize your project</h2>
 				<p class="text-muted-foreground">In your project (a Go module):</p>
-				<pre class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"><code>{ gsInitSnippet }</code></pre>
-				<pre class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"><code>{ gsInitOutput }</code></pre>
+				<pre
+					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
+				><code>{ gsInitSnippet }</code></pre>
+				<pre
+					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
+				><code>{ gsInitOutput }</code></pre>
 				<p class="text-muted-foreground">
-					This vendors the theme tokens (<code>web/gsxui.css</code>), the JS runtime
-					and behavior barrel (<code>web/gsxui/</code>), and the class merger
-					(<code>ui/merge/merge.go</code>), then points <code>gsx.toml</code>'s
-					<code>class_merger</code> at it — the seam that makes caller-class-merge
-					work (see <a href={ Theming{} |> url } class="underline underline-offset-4 hover:text-foreground">Theming</a>). It also
-					<code>go get</code>s <code>gsx</code> and <code>tailwind-merge-go</code>, and
-					installs the <code>gsx</code> tool via <code>go get -tool</code>.
+					This vendors the theme tokens (
+					<code>web/gsxui.css</code>
+					), the JS runtime and behavior barrel (
+					<code>web/gsxui/</code>
+					), and the class merger (
+					<code>ui/merge/merge.go</code>
+					), then points <code>gsx.toml</code>
+					's
+					<code>class_merger</code> at it — the seam that makes caller-class-merge work (see <a
+						href={Theming{} |> url}
+						class="underline underline-offset-4 hover:text-foreground"
+					>
+						Theming
+					</a>
+					). It also
+					<code>go get</code>
+					s <code>gsx</code> and <code>tailwind-merge-go</code>
+					, and installs the <code>gsx</code> tool via <code>go get -tool</code>
+					.
 				</p>
 				<p class="text-muted-foreground">
 					<code>web/gsxui.css</code> begins with
 					<code>@import "tailwindcss"</code> and
-					<code>@import "tw-animate-css"</code> — your Tailwind build resolves
-					both from npm, so make sure they're installed:
-					<code>npm install tailwindcss @tailwindcss/vite tw-animate-css</code>.
-					Without <code>tw-animate-css</code> every
-					<code>animate-in</code>/<code>animate-out</code> class the components
-					carry (dialog, dropdown, tooltip) is silently inert.
+					<code>
+						@import "tw-animate-css"
+					</code> — your Tailwind build resolves both from npm, so make sure they're installed:
+					<code>npm install tailwindcss @tailwindcss/vite tw-animate-css</code>
+					. Without <code>tw-animate-css</code> every
+					<code>animate-in</code>
+					/
+					<code>animate-out</code> class the components carry (dialog, dropdown, tooltip) is silently inert.
 				</p>
 			</section>
-
 			<section class="flex flex-col gap-3">
 				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">3. Add components</h2>
-				<pre class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"><code>{ gsAddSnippet }</code></pre>
-				<pre class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"><code>{ gsAddOutput }</code></pre>
+				<pre
+					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
+				><code>{ gsAddSnippet }</code></pre>
+				<pre
+					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
+				><code>{ gsAddOutput }</code></pre>
 				<p class="text-muted-foreground">
-					<code>card</code> has no dependencies of its own, but a component that does
-					(e.g. <code>select</code>, which needs <code>icon</code>) pulls its
-					dependency in automatically — <code>gsxui add select</code> vendors
+					<code>card</code> has no dependencies of its own, but a component that does (e.g. <code>select</code>
+					, which needs <code>icon</code>
+					) pulls its dependency in automatically — <code>gsxui add select</code> vendors
 					<code>icon</code> too. You own every file this writes:
-					<code>gsxui add</code> never touches one you've already modified unless you
-					pass <code>--overwrite</code>. After upgrading the <code>gsxui</code> binary,
-					re-run <code>gsxui add &lt;name&gt; --overwrite</code> to refresh vendored
-					components — that discards local edits to those files.
+					<code>gsxui add</code> never touches one you've already modified unless you pass <code>--overwrite</code>
+					. After upgrading the <code>gsxui</code> binary, re-run <code>
+						gsxui add &lt;name&gt; --overwrite
+					</code> to refresh vendored components — that discards local edits to those files.
 				</p>
 			</section>
-
 			<section class="flex flex-col gap-3">
 				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">4. Your first page</h2>
 				<p class="text-muted-foreground">
 					A tiny two-file app: <code>home.gsx</code> renders a <code>Card</code> around a
-					<code>Button</code>, and <code>main.go</code> serves it.
+					<code>Button</code>
+					, and <code>main.go</code> serves it.
 				</p>
-				<pre class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"><code>{ gsPageGsx }</code></pre>
-				<pre class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"><code>{ gsMainGo }</code></pre>
-				<p class="text-muted-foreground">Compile the <code>.gsx</code> file to plain Go, then run it:</p>
-				<pre class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"><code>{ gsGenerateSnippet }</code></pre>
+				<pre
+					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
+				><code>{ gsPageGsx }</code></pre>
+				<pre
+					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
+				><code>{ gsMainGo }</code></pre>
+				<p class="text-muted-foreground">
+					Compile the <code>.gsx</code> file to plain Go, then run it:
+				</p>
+				<pre
+					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
+				><code>{ gsGenerateSnippet }</code></pre>
 				<p class="text-muted-foreground">
 					(silent on success — it writes <code>home.x.go</code> next to
 					<code>home.gsx</code> and exits 0)
 				</p>
-				<pre class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"><code>{ gsRunSnippet }</code></pre>
-				<pre class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"><code>{ gsRunOutput }</code></pre>
+				<pre
+					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
+				><code>{ gsRunSnippet }</code></pre>
+				<pre
+					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
+				><code>{ gsRunOutput }</code></pre>
 				<p class="text-muted-foreground">
-					Open <code>http://localhost:8080</code> — a styled Card with a Button inside,
-					rendered with gsxui's default light theme. Next:
-					<a href={ Theming{} |> url } class="underline underline-offset-4 hover:text-foreground">restyle it</a>.
+					Open <code>
+						http://localhost:8080
+					</code> — a styled Card with a Button inside, rendered with gsxui's default light theme. Next:
+					<a href={Theming{} |> url} class="underline underline-offset-4 hover:text-foreground">restyle it</a>
+					.
 				</p>
 			</section>
 		</div>

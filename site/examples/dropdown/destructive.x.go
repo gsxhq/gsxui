@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line destructive.gsx:7:1
 // Destructive shows a destructive item alongside a disabled one — variant
 // styles the row red; aria-disabled/data-disabled skip it in roving focus
 // and the click handler (see ui/dropdown/dropdown.js).

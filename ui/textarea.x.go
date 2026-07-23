@@ -10,6 +10,7 @@ import (
 	_gsxio "io"
 )
 
+//line textarea.gsx:5:1
 // Textarea is the shadcn/ui Textarea. HTML <textarea> takes its initial
 // content as a text child, not a value attribute — shadcn's `...props`
 // value pass-through has no gsx equivalent for that reason. value renders

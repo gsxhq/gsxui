@@ -24,19 +24,39 @@ component TableBody(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component TableFooter(children gsx.Node, attrs gsx.Attrs) {
-	<tfoot data-slot="table-footer" class="border-t bg-muted/50 font-medium [&>tr]:last:border-b-0" { attrs... }>{ children }</tfoot>
+	<tfoot data-slot="table-footer" class="border-t bg-muted/50 font-medium [&>tr]:last:border-b-0" { attrs... }>
+		{ children }
+	</tfoot>
 }
 
 component TableRow(children gsx.Node, attrs gsx.Attrs) {
-	<tr data-slot="table-row" class="border-b transition-colors hover:bg-muted/50 has-aria-expanded:bg-muted/50 data-[state=selected]:bg-muted" { attrs... }>{ children }</tr>
+	<tr
+		data-slot="table-row"
+		class="border-b transition-colors hover:bg-muted/50 has-aria-expanded:bg-muted/50 data-[state=selected]:bg-muted"
+		{ attrs... }
+	>
+		{ children }
+	</tr>
 }
 
 component TableHead(children gsx.Node, attrs gsx.Attrs) {
-	<th data-slot="table-head" class="h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]" { attrs... }>{ children }</th>
+	<th
+		data-slot="table-head"
+		class="h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]"
+		{ attrs... }
+	>
+		{ children }
+	</th>
 }
 
 component TableCell(children gsx.Node, attrs gsx.Attrs) {
-	<td data-slot="table-cell" class="p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]" { attrs... }>{ children }</td>
+	<td
+		data-slot="table-cell"
+		class="p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]"
+		{ attrs... }
+	>
+		{ children }
+	</td>
 }
 
 component TableCaption(children gsx.Node, attrs gsx.Attrs) {

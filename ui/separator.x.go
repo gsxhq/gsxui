@@ -11,6 +11,7 @@ import (
 	_gsxio "io"
 )
 
+//line separator.gsx:5:1
 // Separator is the shadcn/ui Separator. orientation: "" (default,
 // "horizontal") | "vertical" — stamped onto data-orientation, which one
 // verbatim class string dispatches on via Tailwind's data-[orientation=...]

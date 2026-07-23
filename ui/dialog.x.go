@@ -10,6 +10,7 @@ import (
 	_gsxio "io"
 )
 
+//line dialog.gsx:5:1
 // Dialog is the shadcn/ui Dialog on the native <dialog> element: the top
 // layer replaces Radix's Portal, ::backdrop replaces Overlay, and Esc-to-
 // close is browser-native. Trigger and content are wired by proximity —
@@ -41,6 +42,7 @@ func Dialog(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
+//line dialog.gsx:15:1
 // DialogTrigger renders its own <button>, so its children must be phrasing
 // content — never a Button or other interactive element. HTML forbids
 // nested buttons: the parser hoists the inner one out as a sibling, leaving
@@ -75,22 +77,23 @@ func DialogTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line dialog.gsx:24:135
+//line dialog.gsx:32:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
+//line dialog.gsx:36:1
 // DialogContent renders the native <dialog>. hideCloseButton omits the
 // injected top-right X button (shadcn's showCloseButton default-true,
 // inverted so the gsx zero value keeps the shadcn default).
 
-//line dialog.gsx:30:1
+//line dialog.gsx:39:1
 func DialogContent(hideCloseButton bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dialog.gsx:31:2
+//line dialog.gsx:40:2
 		_gsxgw.S("<dialog")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dialog-content\"")
@@ -107,19 +110,19 @@ func DialogContent(hideCloseButton bool, children gsx.Node, attrs gsx.Attrs) _gs
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line dialog.gsx:42:3
+//line dialog.gsx:51:3
 		_gsxgw.Node(ctx, children)
-//line dialog.gsx:43:3
+//line dialog.gsx:52:3
 		if !hideCloseButton {
-//line dialog.gsx:44:4
+//line dialog.gsx:53:4
 			_gsxgw.S("<button type=\"button\" data-slot=\"dialog-close\"")
 			_gsxgw.BoolAttr("data-gsxui-dialog-close", true)
 			_gsxgw.S(" aria-label=\"Close\" class=\"absolute top-4 right-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4\">")
-//line dialog.gsx:51:5
+//line dialog.gsx:60:5
 			_gsxgw.S("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">")
-//line dialog.gsx:51:186
+//line dialog.gsx:71:6
 			_gsxgw.S("<path d=\"M18 6 6 18\"/>")
-//line dialog.gsx:51:208
+//line dialog.gsx:72:6
 			_gsxgw.S("<path d=\"m6 6 12 12\"/></svg></button>")
 		}
 		_gsxgw.S("</dialog>")
@@ -127,11 +130,11 @@ func DialogContent(hideCloseButton bool, children gsx.Node, attrs gsx.Attrs) _gs
 	})
 }
 
-//line dialog.gsx:57:1
+//line dialog.gsx:79:1
 func DialogHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dialog.gsx:58:2
+//line dialog.gsx:80:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dialog-header\"")
@@ -142,22 +145,23 @@ func DialogHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line dialog.gsx:58:99
+//line dialog.gsx:80:99
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
+//line dialog.gsx:83:1
 // DialogFooter is the shadcn/ui DialogFooter. showCloseButton (zero value
 // false, matching shadcn's default) appends an outline Close button — the
 // data-attribute idiom standing in for shadcn's <DialogClose asChild>.
 
-//line dialog.gsx:64:1
+//line dialog.gsx:86:1
 func DialogFooter(showCloseButton bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dialog.gsx:65:2
+//line dialog.gsx:87:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dialog-footer\"")
@@ -168,11 +172,11 @@ func DialogFooter(showCloseButton bool, children gsx.Node, attrs gsx.Attrs) _gsx
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line dialog.gsx:66:3
+//line dialog.gsx:88:3
 		_gsxgw.Node(ctx, children)
-//line dialog.gsx:67:3
+//line dialog.gsx:89:3
 		if showCloseButton {
-//line dialog.gsx:68:4
+//line dialog.gsx:90:4
 			_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Close")
@@ -184,11 +188,11 @@ func DialogFooter(showCloseButton bool, children gsx.Node, attrs gsx.Attrs) _gsx
 	})
 }
 
-//line dialog.gsx:73:1
+//line dialog.gsx:95:1
 func DialogTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dialog.gsx:74:2
+//line dialog.gsx:96:2
 		_gsxgw.S("<h2")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dialog-title\"")
@@ -199,18 +203,18 @@ func DialogTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line dialog.gsx:74:87
+//line dialog.gsx:96:87
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</h2>")
 		return _gsxgw.Err()
 	})
 }
 
-//line dialog.gsx:77:1
+//line dialog.gsx:99:1
 func DialogDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dialog.gsx:78:2
+//line dialog.gsx:100:2
 		_gsxgw.S("<p")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dialog-description\"")
@@ -221,18 +225,18 @@ func DialogDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line dialog.gsx:78:87
+//line dialog.gsx:100:87
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</p>")
 		return _gsxgw.Err()
 	})
 }
 
-//line dialog.gsx:81:1
+//line dialog.gsx:103:1
 func DialogClose(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dialog.gsx:82:2
+//line dialog.gsx:104:2
 		_gsxgw.S("<button")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dialog-close\"")
@@ -247,7 +251,7 @@ func DialogClose(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line dialog.gsx:82:86
+//line dialog.gsx:104:86
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()

@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line compound.gsx:7:1
 // Compound composes every Card part: a border-b header with title,
 // description and action, content, and a border-t footer.
 
@@ -37,7 +38,7 @@ func Compound() _gsxrt.Node {
 //line compound.gsx:14:4
 				_gsxgw.Node(ctx, ui.CardAction(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line compound.gsx:14:19
+//line compound.gsx:15:5
 					_gsxgw.Node(ctx, ui.Badge("secondary", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("New")
@@ -47,17 +48,17 @@ func Compound() _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "border-b"}}))
-//line compound.gsx:16:3
+//line compound.gsx:18:3
 			_gsxgw.Node(ctx, ui.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line compound.gsx:17:4
+//line compound.gsx:19:4
 				_gsxgw.S("<p class=\"text-sm text-muted-foreground\">Push notifications are enabled for this device.</p>")
 				return _gsxgw.Err()
 			}), nil))
-//line compound.gsx:19:3
+//line compound.gsx:21:3
 			_gsxgw.Node(ctx, ui.CardFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line compound.gsx:20:4
+//line compound.gsx:22:4
 				_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Mark all as read")

@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line groups.gsx:5:1
 // Groups renders a Select whose options are organized under SelectGroup
 // (native <optgroup>), plus one disabled option.
 

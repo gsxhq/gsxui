@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line orientation.gsx:5:1
 // Orientation combines both orientations: a horizontal Separator under a
 // heading block, then vertical Separators between an inline row of links.
 

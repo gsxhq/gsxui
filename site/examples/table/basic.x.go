@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line basic.gsx:6:1
 // Basic renders a minimal table: header row plus two data rows.
 
 //line basic.gsx:7:1
@@ -24,13 +25,13 @@ func Basic() _gsxrt.Node {
 //line basic.gsx:10:4
 				_gsxgw.Node(ctx, ui.TableRow(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:10:17
+//line basic.gsx:11:5
 					_gsxgw.Node(ctx, ui.TableHead(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Product")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:10:53
+//line basic.gsx:12:5
 					_gsxgw.Node(ctx, ui.TableHead(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Price")
@@ -40,19 +41,19 @@ func Basic() _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line basic.gsx:12:3
+//line basic.gsx:15:3
 			_gsxgw.Node(ctx, ui.TableBody(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:13:4
+//line basic.gsx:16:4
 				_gsxgw.Node(ctx, ui.TableRow(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:13:17
+//line basic.gsx:17:5
 					_gsxgw.Node(ctx, ui.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Widget")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:13:52
+//line basic.gsx:18:5
 					_gsxgw.Node(ctx, ui.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("$9.00")
@@ -60,16 +61,16 @@ func Basic() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:14:4
+//line basic.gsx:20:4
 				_gsxgw.Node(ctx, ui.TableRow(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:14:17
+//line basic.gsx:21:5
 					_gsxgw.Node(ctx, ui.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Gadget")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:14:52
+//line basic.gsx:22:5
 					_gsxgw.Node(ctx, ui.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("$19.00")

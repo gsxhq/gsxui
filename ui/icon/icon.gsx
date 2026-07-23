@@ -22,5 +22,7 @@ component svgIcon(name string, inner gsx.Node, attrs gsx.Attrs) {
 		stroke-linejoin="round"
 		class="size-4"
 		{ attrs... }
-	>{ inner }</svg>
+	>
+		{ inner }
+	</svg>
 }

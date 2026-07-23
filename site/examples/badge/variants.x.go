@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line variants.gsx:5:1
 // Variants renders every Badge variant side by side.
 
 //line variants.gsx:6:1

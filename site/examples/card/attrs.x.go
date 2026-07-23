@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line attrs.gsx:5:1
 // Attrs demonstrates class-merge override: class="py-8" replaces Card's
 // default py-6 — tailwind-merge resolves same-property conflicts, caller
 // wins, same mechanism every gsxui component uses for its fallthrough attrs.

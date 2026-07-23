@@ -10,6 +10,7 @@ import (
 	_gsxio "io"
 )
 
+//line label.gsx:5:1
 // Label is the shadcn/ui Label. shadcn wraps Radix's LabelPrimitive.Root,
 // which renders a plain <label> with an onMouseDown guard that suppresses
 // double-click text selection; gsx ports the markup straight (base class
@@ -31,7 +32,7 @@ func Label(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line label.gsx:15:3
+//line label.gsx:16:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</label>")
 		return _gsxgw.Err()

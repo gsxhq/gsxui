@@ -20,7 +20,7 @@ import (
 // data-name is a readability/debugging stamp only; nothing reads it back
 // (no accordion.js — there is none).
 component Accordion(name string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="accordion" data-name={ name } { attrs... }>{ children }</div>
+	<div data-slot="accordion" data-name={name} { attrs... }>{ children }</div>
 }
 
 // AccordionItem's open bool is the explicit, server-visible initial state —
@@ -29,7 +29,9 @@ component Accordion(name string, children gsx.Node, attrs gsx.Attrs) {
 // entirely native <details> behavior; toggling one member of a named group
 // closes the previously-open sibling without any JS on our side.
 component AccordionItem(name string, open bool, children gsx.Node, attrs gsx.Attrs) {
-	<details data-slot="accordion-item" name={ name } open={ open } class="border-b last:border-b-0" { attrs... }>{ children }</details>
+	<details data-slot="accordion-item" name={name} open={open} class="border-b last:border-b-0" { attrs... }>
+		{ children }
+	</details>
 }
 
 // AccordionTrigger drops the Radix Header wrapper (a bare block-level
@@ -60,9 +62,15 @@ component AccordionItem(name string, open bool, children gsx.Node, attrs gsx.Att
 // icon to align against the Header wrapper's row baseline, which no longer
 // exists now that the icon sits directly in <summary>'s own flex row.
 component AccordionTrigger(children gsx.Node, attrs gsx.Attrs) {
-	<summary data-slot="accordion-trigger" class="flex items-start justify-between gap-4 rounded-md py-4 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 list-none [&::-webkit-details-marker]:hidden" { attrs... }>
+	<summary
+		data-slot="accordion-trigger"
+		class="flex items-start justify-between gap-4 rounded-md py-4 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 list-none [&::-webkit-details-marker]:hidden"
+		{ attrs... }
+	>
 		{ children }
-		<icon.ChevronDown class="text-muted-foreground size-4 shrink-0 transition-transform duration-200 [[open]>summary_&]:rotate-180"/>
+		<icon.ChevronDown
+			class="text-muted-foreground size-4 shrink-0 transition-transform duration-200 [[open]>summary_&]:rotate-180"
+		/>
 	</summary>
 }
 

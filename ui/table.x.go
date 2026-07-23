@@ -10,6 +10,7 @@ import (
 	_gsxio "io"
 )
 
+//line table.gsx:5:1
 // Table and its parts are the shadcn/ui Table compound set. Parts are plain
 // sibling components — compose them in markup; no shared state, no context.
 //
@@ -100,18 +101,18 @@ func TableFooter(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line table.gsx:27:111
+//line table.gsx:28:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</tfoot>")
 		return _gsxgw.Err()
 	})
 }
 
-//line table.gsx:30:1
+//line table.gsx:32:1
 func TableRow(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line table.gsx:31:2
+//line table.gsx:33:2
 		_gsxgw.S("<tr")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"table-row\"")
@@ -122,18 +123,18 @@ func TableRow(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line table.gsx:31:155
+//line table.gsx:38:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</tr>")
 		return _gsxgw.Err()
 	})
 }
 
-//line table.gsx:34:1
+//line table.gsx:42:1
 func TableHead(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line table.gsx:35:2
+//line table.gsx:43:2
 		_gsxgw.S("<th")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"table-head\"")
@@ -144,18 +145,18 @@ func TableHead(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line table.gsx:35:197
+//line table.gsx:48:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</th>")
 		return _gsxgw.Err()
 	})
 }
 
-//line table.gsx:38:1
+//line table.gsx:52:1
 func TableCell(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line table.gsx:39:2
+//line table.gsx:53:2
 		_gsxgw.S("<td")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"table-cell\"")
@@ -166,18 +167,18 @@ func TableCell(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line table.gsx:39:153
+//line table.gsx:58:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</td>")
 		return _gsxgw.Err()
 	})
 }
 
-//line table.gsx:42:1
+//line table.gsx:62:1
 func TableCaption(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line table.gsx:43:2
+//line table.gsx:63:2
 		_gsxgw.S("<caption")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"table-caption\"")
@@ -188,7 +189,7 @@ func TableCaption(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line table.gsx:43:93
+//line table.gsx:63:93
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</caption>")
 		return _gsxgw.Err()

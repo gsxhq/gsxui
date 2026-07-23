@@ -10,6 +10,7 @@ import (
 	_gsxio "io"
 )
 
+//line avatar.gsx:5:1
 // Avatar and its parts are the shadcn/ui Avatar. Radix's client-side
 // load-state machinery (image loading/loaded/error, driving which of
 // image/fallback is mounted) is replaced by delegation (ADAPT, see
@@ -34,18 +35,18 @@ func Avatar(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line avatar.gsx:15:119
+//line avatar.gsx:16:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()
 	})
 }
 
-//line avatar.gsx:18:1
+//line avatar.gsx:20:1
 func AvatarImage(src string, alt string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line avatar.gsx:19:2
+//line avatar.gsx:21:2
 		_gsxgw.S("<img")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"avatar-image\"")
@@ -73,11 +74,11 @@ func AvatarImage(src string, alt string, attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line avatar.gsx:22:1
+//line avatar.gsx:31:1
 func AvatarFallback(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line avatar.gsx:23:2
+//line avatar.gsx:32:2
 		_gsxgw.S("<span")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"avatar-fallback\"")
@@ -88,7 +89,7 @@ func AvatarFallback(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line avatar.gsx:23:152
+//line avatar.gsx:37:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()

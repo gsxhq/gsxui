@@ -10,6 +10,7 @@ import (
 	_gsxio "io"
 )
 
+//line variants.gsx:8:1
 // Variants renders the default and destructive Alert variants together.
 
 //line variants.gsx:9:1

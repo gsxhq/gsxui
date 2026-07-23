@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line basic.gsx:7:1
 // Basic renders a circular avatar placeholder beside two text-line
 // placeholders — the shape, not the content, is what a skeleton loads.
 

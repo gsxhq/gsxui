@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line basic.gsx:8:1
 // Basic renders a menu with a label, separator, and plain items.
 
 //line basic.gsx:9:1

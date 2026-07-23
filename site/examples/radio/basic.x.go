@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line basic.gsx:8:1
 // Basic groups three Radio inputs by a shared name — native radio grouping,
 // no wrapper component needed.
 

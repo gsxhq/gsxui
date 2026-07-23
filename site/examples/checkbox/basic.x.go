@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line basic.gsx:8:1
 // Basic pairs a Checkbox with a Label via matching id/for.
 
 //line basic.gsx:9:1

@@ -18,6 +18,8 @@ import (
 // (registered in site/examples/registry.go), rendered live next to the
 // exact source text that produced it. Unknown/unregistered names 404 (see
 // Props below and ErrorWithStatus in pages.go).
+//
+//line component.gsx:11:1
 type Component struct{}
 
 // ComponentProps is Component's Props result.
@@ -120,31 +122,31 @@ func (c Component) Page(props ComponentProps) _gsxrt.Node {
 				_gsxgw.S(">")
 //line component.gsx:95:7
 				_gsxgw.S("<pre class=\"overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground\">")
-//line component.gsx:95:109
+//line component.gsx:97:8
 				_gsxgw.S("<code>")
-//line component.gsx:95:115
+//line component.gsx:97:14
 				_gsxgw.Text(string(ex.Source))
 				_gsxgw.S("</code></pre>")
-//line component.gsx:96:7
+//line component.gsx:98:7
 				_gsxgw.S("<button type=\"button\"")
 				_gsxgw.BoolAttr("data-site-copy", true)
 				_gsxgw.S(" class=\"absolute right-2 top-2 rounded-md border border-border bg-background px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground\">Copy</button></div></section>")
 			}
-//line component.gsx:106:4
+//line component.gsx:108:4
 			_gsxgw.S("<footer class=\"flex flex-col gap-3 border-t border-border pt-6 text-sm text-muted-foreground\">")
-//line component.gsx:107:5
+//line component.gsx:109:5
 			_gsxgw.S("<pre class=\"overflow-x-auto rounded-lg border border-border bg-card p-4 text-card-foreground\">")
-//line component.gsx:107:99
+//line component.gsx:111:6
 			_gsxgw.S("<code>")
-//line component.gsx:107:105
+//line component.gsx:111:12
 			_gsxgw.Text(string("gsxui add " + props.Name))
 			_gsxgw.S("</code></pre>")
-//line component.gsx:108:5
+//line component.gsx:112:5
 			if props.Name == "icon" {
-//line component.gsx:109:6
+//line component.gsx:113:6
 				_gsxgw.S("<a href=\"https://lucide.dev\" target=\"_blank\" rel=\"noreferrer\" class=\"underline underline-offset-4 hover:text-foreground\">View the icon set on lucide.dev</a>")
 			} else {
-//line component.gsx:118:6
+//line component.gsx:122:6
 				_gsxgw.S("<a href=\"")
 				_gsxgw.URL(string("https://ui.shadcn.com/docs/components/" + shadcnName(props.Name)))
 				_gsxgw.S("\" target=\"_blank\" rel=\"noreferrer\" class=\"underline underline-offset-4 hover:text-foreground\">View the original on shadcn/ui</a>")

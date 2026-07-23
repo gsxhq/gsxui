@@ -11,6 +11,7 @@ import (
 	_gsxio "io"
 )
 
+//line dropdown.gsx:5:1
 // DropdownMenu is the shadcn/ui DropdownMenu on the native popover API: the
 // top layer replaces Radix's Portal, light dismiss and Esc are browser-
 // native. Trigger and content are wired by proximity — DropdownMenuTrigger
@@ -70,13 +71,14 @@ func DropdownMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line dropdown.gsx:18:142
+//line dropdown.gsx:26:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
+//line dropdown.gsx:30:1
 // DropdownMenuContent renders the popover. popover="auto" gives top layer,
 // light dismiss, and free Esc; data-state is server-rendered "closed" and
 // kept in sync by dropdown.js on the toggle event. data-side="bottom" is
@@ -84,11 +86,11 @@ func DropdownMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // trigger, so shadcn's data-[side=bottom]:slide-in-from-top-2 enter slide
 // applies without Radix's runtime side tracking (same ADAPT as tooltip).
 
-//line dropdown.gsx:27:1
+//line dropdown.gsx:36:1
 func DropdownMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dropdown.gsx:28:2
+//line dropdown.gsx:37:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dropdown-menu-content\"")
@@ -117,24 +119,25 @@ func DropdownMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line dropdown.gsx:38:3
+//line dropdown.gsx:48:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
+//line dropdown.gsx:52:1
 // DropdownMenuItem is the shadcn/ui DropdownMenuItem, ported as a real menu
 // item on a <div role="menuitem">: dropdown.js's arrow-key roving focus
 // walks these. variant: "" (default) | "destructive". inset is dropped
 // (see docs/jsx-parity.md) — the data-[inset]:pl-8 selector is removed with
 // it.
 
-//line dropdown.gsx:46:1
+//line dropdown.gsx:57:1
 func DropdownMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dropdown.gsx:47:2
+//line dropdown.gsx:58:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dropdown-menu-item\"")
@@ -159,21 +162,22 @@ func DropdownMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line dropdown.gsx:55:3
+//line dropdown.gsx:67:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
+//line dropdown.gsx:71:1
 // DropdownMenuLabel's inset prop is dropped along with DropdownMenuItem's
 // (see docs/jsx-parity.md) — the data-[inset]:pl-8 selector is removed.
 
-//line dropdown.gsx:60:1
+//line dropdown.gsx:73:1
 func DropdownMenuLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dropdown.gsx:61:2
+//line dropdown.gsx:74:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dropdown-menu-label\"")
@@ -184,18 +188,18 @@ func DropdownMenuLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line dropdown.gsx:61:92
+//line dropdown.gsx:74:92
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line dropdown.gsx:64:1
+//line dropdown.gsx:77:1
 func DropdownMenuSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dropdown.gsx:65:2
+//line dropdown.gsx:78:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dropdown-menu-separator\"")
@@ -213,11 +217,11 @@ func DropdownMenuSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line dropdown.gsx:68:1
+//line dropdown.gsx:81:1
 func DropdownMenuShortcut(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dropdown.gsx:69:2
+//line dropdown.gsx:82:2
 		_gsxgw.S("<span")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dropdown-menu-shortcut\"")
@@ -228,7 +232,7 @@ func DropdownMenuShortcut(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line dropdown.gsx:69:118
+//line dropdown.gsx:83:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()

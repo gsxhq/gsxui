@@ -44,6 +44,9 @@ component TooltipContent(children gsx.Node, attrs gsx.Attrs) {
 		{ attrs... }
 	>
 		{ children }
-		<span data-slot="tooltip-arrow" class="absolute top-full left-1/2 z-50 size-2.5 -translate-x-1/2 -translate-y-[calc(50%+2px)] rotate-45 rounded-[2px] bg-foreground"></span>
+		<span
+			data-slot="tooltip-arrow"
+			class="absolute top-full left-1/2 z-50 size-2.5 -translate-x-1/2 -translate-y-[calc(50%+2px)] rotate-45 rounded-[2px] bg-foreground"
+		></span>
 	</div>
 }

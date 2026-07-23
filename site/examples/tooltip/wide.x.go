@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line wide.gsx:7:1
 // Wide overrides TooltipContent's default w-fit with a caller class,
 // proving tailwind-merge wins over the base utility.
 

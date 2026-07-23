@@ -21,7 +21,16 @@ component Dialog(children gsx.Node, attrs gsx.Attrs) {
 // <ui.Button data-gsxui-dialog-trigger>Open</ui.Button> (docs/jsx-parity.md
 // dialog MECHANISM; TestNoNestedButtons guards the site against this).
 component DialogTrigger(children gsx.Node, attrs gsx.Attrs) {
-	<button data-slot="dialog-trigger" data-gsxui-dialog-trigger type="button" aria-haspopup="dialog" aria-expanded="false" { attrs... }>{ children }</button>
+	<button
+		data-slot="dialog-trigger"
+		data-gsxui-dialog-trigger
+		type="button"
+		aria-haspopup="dialog"
+		aria-expanded="false"
+		{ attrs... }
+	>
+		{ children }
+	</button>
 }
 
 // DialogContent renders the native <dialog>. hideCloseButton omits the
@@ -35,7 +44,7 @@ component DialogContent(hideCloseButton bool, children gsx.Node, attrs gsx.Attrs
 		class={
 			"fixed top-[50%] left-[50%] z-50 open:grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border bg-background p-6 text-foreground shadow-lg duration-200 outline-none sm:max-w-lg",
 			"data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
-			"backdrop:bg-black/50",
+			"backdrop:bg-black/50"
 		}
 		{ attrs... }
 	>
@@ -48,7 +57,20 @@ component DialogContent(hideCloseButton bool, children gsx.Node, attrs gsx.Attrs
 				aria-label="Close"
 				class="absolute top-4 right-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
 			>
-				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="24"
+					height="24"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<path d="M18 6 6 18"/>
+					<path d="m6 6 12 12"/>
+				</svg>
 			</button>
 		} }
 	</dialog>

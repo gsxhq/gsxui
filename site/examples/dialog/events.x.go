@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line events.gsx:7:1
 // Events shows the gsxui:open/gsxui:close CustomEvents dialog.js emits on
 // the <dialog> element on every open/close path — trigger, Esc, light
 // dismiss, and programmatic showModal()/close() alike.

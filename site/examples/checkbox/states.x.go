@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line states.gsx:7:1
 // States renders Checkbox unchecked, checked, and disabled+checked —
 // checked/disabled are bare boolean attributes forwarded through Checkbox's
 // { attrs... } spread onto the native input, so browser :checked/:disabled

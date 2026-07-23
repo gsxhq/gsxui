@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line form-row.gsx:7:1
 // FormRow composes Label, Input, Checkbox, and a submit Button into a
 // realistic form row — Label/for pairs with Input/Checkbox by id, the
 // pattern most real forms actually reach for.

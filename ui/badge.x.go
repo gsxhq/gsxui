@@ -11,6 +11,7 @@ import (
 	_gsxio "io"
 )
 
+//line badge.gsx:5:1
 // Badge is the shadcn/ui Badge. variant: "" (default) | "secondary" |
 // "destructive" | "outline" | "ghost" | "link". Extra attributes fall
 // through to the <span>; caller classes merge (caller wins per property).
@@ -51,7 +52,7 @@ func Badge(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line badge.gsx:30:3
+//line badge.gsx:31:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()

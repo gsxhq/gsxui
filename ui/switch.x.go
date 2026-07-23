@@ -10,6 +10,7 @@ import (
 	_gsxio "io"
 )
 
+//line switch.gsx:9:1
 // Switch is the shadcn/ui Switch, ported as a real native
 // <input type="checkbox" role="switch">: form-native, zero JS, browser
 // :checked/:disabled truth replaces Radix's button-role Root + separate

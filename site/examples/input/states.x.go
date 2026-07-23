@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line states.gsx:5:1
 // States renders Input in its enabled, disabled, and invalid states —
 // disabled is a bare boolean attribute, aria-invalid is a plain string
 // attribute; both fall through Input's { attrs... } spread untouched.

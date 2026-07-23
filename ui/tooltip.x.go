@@ -10,6 +10,7 @@ import (
 	_gsxio "io"
 )
 
+//line tooltip.gsx:5:1
 // Tooltip is the shadcn/ui Tooltip on the native popover API: popover="manual"
 // puts the content in the top layer without light dismiss (hover/focus drive
 // it, not outside clicks or Esc). Trigger and content are wired by proximity
@@ -74,6 +75,7 @@ func TooltipTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
+//line tooltip.gsx:25:1
 // TooltipContent renders the popover. popover="manual" is load-bearing:
 // "auto" popovers light-dismiss on outside pointerdown, which would race
 // tooltip.js's own pointerout/focusout hide logic. data-state is

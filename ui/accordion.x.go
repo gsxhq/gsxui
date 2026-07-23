@@ -11,6 +11,7 @@ import (
 	_gsxio "io"
 )
 
+//line accordion.gsx:8:1
 // Accordion and its parts are the shadcn/ui Accordion, ported onto the
 // native <details name="…">/<summary> pair instead of Radix's client state
 // machine (ledger WIN): grouped <details> sharing a name attribute already
@@ -44,13 +45,14 @@ func Accordion(name string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line accordion.gsx:23:61
+//line accordion.gsx:23:59
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
+//line accordion.gsx:26:1
 // AccordionItem's open bool is the explicit, server-visible initial state —
 // the zero value (false) renders closed, matching shadcn's Radix default
 // (nothing expanded until interacted with). Opening/closing thereafter is
@@ -80,13 +82,14 @@ func AccordionItem(name string, open bool, children gsx.Node, attrs gsx.Attrs) _
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line accordion.gsx:32:112
+//line accordion.gsx:33:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</details>")
 		return _gsxgw.Err()
 	})
 }
 
+//line accordion.gsx:37:1
 // AccordionTrigger drops the Radix Header wrapper (a bare block-level
 // <summary> already lays out as its own row) and, with it, the Trigger's
 // now-meaningless flex-1 (nothing left to flex within) and its
@@ -115,11 +118,11 @@ func AccordionItem(name string, open bool, children gsx.Node, attrs gsx.Attrs) _
 // icon to align against the Header wrapper's row baseline, which no longer
 // exists now that the icon sits directly in <summary>'s own flex row.
 
-//line accordion.gsx:62:1
+//line accordion.gsx:64:1
 func AccordionTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line accordion.gsx:63:2
+//line accordion.gsx:65:2
 		_gsxgw.S("<summary")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"accordion-trigger\"")
@@ -130,15 +133,16 @@ func AccordionTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line accordion.gsx:64:3
+//line accordion.gsx:70:3
 		_gsxgw.Node(ctx, children)
-//line accordion.gsx:65:3
+//line accordion.gsx:71:3
 		_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.Attrs{{Key: "class", Value: "text-muted-foreground size-4 shrink-0 transition-transform duration-200 [[open]>summary_&]:rotate-180"}}...))
 		_gsxgw.S("</summary>")
 		return _gsxgw.Err()
 	})
 }
 
+//line accordion.gsx:77:1
 // AccordionContent drops shadcn's data-[state=open]:animate-accordion-down /
 // data-[state=closed]:animate-accordion-up pair (both keyed off Radix's
 // data-state, which nothing stamps here). The open/close height animation
@@ -154,11 +158,11 @@ func AccordionTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // That stylesheet keys on this component's data-slot attributes, and its
 // min-height:0 on accordion-content is what lets the 0fr row collapse.
 
-//line accordion.gsx:83:1
+//line accordion.gsx:91:1
 func AccordionContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line accordion.gsx:84:2
+//line accordion.gsx:92:2
 		_gsxv0 := attrs.Without("class")
 		_gsxgw.S("<div")
 		if !_gsxv0.Has("data-slot") {
@@ -170,11 +174,11 @@ func AccordionContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", _gsxv0.Style())
 		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line accordion.gsx:85:3
+//line accordion.gsx:93:3
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pt-0 pb-4"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\">")
-//line accordion.gsx:85:45
+//line accordion.gsx:93:45
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div></div>")
 		return _gsxgw.Err()

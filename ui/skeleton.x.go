@@ -10,6 +10,7 @@ import (
 	_gsxio "io"
 )
 
+//line skeleton.gsx:5:1
 // Skeleton is the shadcn/ui Skeleton loading placeholder. Straight port; no
 // divergences.
 

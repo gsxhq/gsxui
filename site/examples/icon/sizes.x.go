@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line sizes.gsx:5:1
 // Sizes shows icons take the same class-merge story as every other
 // component: size-* controls the box, text-* tints the stroke (stroke
 // uses currentColor).

@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line compact.gsx:5:1
 // Compact overrides AccordionContent's default pb-4 with a caller pb-2 —
 // tailwind-merge drops the base utility, same class-merge story as every
 // other component.

@@ -105,116 +105,147 @@ component (t Theming) Page() {
 			<div class="flex flex-col gap-4">
 				<h1 class="text-3xl font-semibold tracking-tight">Theming</h1>
 				<p class="text-muted-foreground">
-					Every gsxui component is styled entirely through Tailwind utilities
-					that resolve to a fixed set of CSS custom properties — never a
-					literal color. Change the properties and every component restyles
-					at once; no per-component theme prop, no rebuild of gsxui itself.
+					Every gsxui component is styled entirely through Tailwind utilities that resolve to a fixed set of CSS custom properties — never a literal color. Change the properties and every component restyles at once; no per-component theme prop, no rebuild of gsxui itself.
 				</p>
 			</div>
-
 			<section class="flex flex-col gap-3">
 				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">The token model</h2>
 				<p class="text-muted-foreground">
-					<code>gsxui init</code> vendors <code>web/gsxui.css</code> with 19
-					color tokens plus <code>--radius</code> (20 total) defined twice —
-					once in <code>:root</code> for light mode, once in <code>.dark</code>
-					for dark mode (toggled by a <code>.dark</code> class anywhere up the
-					tree, via Tailwind's <code>@custom-variant dark</code>) — and an
-					<code>@theme inline</code> block that maps each one onto Tailwind's
-					own color scale, so <code>bg-primary</code>, <code>text-muted-foreground</code>,
-					<code>border-input</code>, and friends all resolve to a token, not a
-					hard-coded value:
+					<code>gsxui init</code> vendors <code>web/gsxui.css</code> with 19 color tokens plus <code>
+						--radius
+					</code> (20 total) defined twice — once in <code>:root</code> for light mode, once in <code>.dark</code>
+					for dark mode (toggled by a <code>.dark</code> class anywhere up the tree, via Tailwind's <code>
+						@custom-variant dark
+					</code>
+					) — and an
+					<code>@theme inline</code> block that maps each one onto Tailwind's own color scale, so <code>
+						bg-primary
+					</code>
+					, <code>text-muted-foreground</code>
+					,
+					<code>border-input</code>
+					, and friends all resolve to a token, not a hard-coded value:
 				</p>
-				<pre class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"><code>{ themeTokensCSS }</code></pre>
+				<pre
+					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
+				><code>{ themeTokensCSS }</code></pre>
 				<p class="text-muted-foreground">
-					The eight paired tokens (<code>background</code>/<code>foreground</code>,
-					<code>card</code>, <code>popover</code>, <code>primary</code>,
-					<code>secondary</code>, <code>muted</code>, <code>accent</code>, each
-					with a matching <code>-foreground</code>, plus <code>destructive</code>/
-					<code>destructive-foreground</code>) cover every surface + text
-					combination a component draws; <code>border</code>, <code>input</code>,
-					and <code>ring</code> cover outlines and focus rings; <code>radius</code>
+					The eight paired tokens (
+					<code>background</code>
+					/
+					<code>foreground</code>
+					,
+					<code>card</code>
+					, <code>popover</code>
+					, <code>primary</code>
+					,
+					<code>secondary</code>
+					, <code>muted</code>
+					, <code>accent</code>
+					, each with a matching <code>-foreground</code>
+					, plus <code>destructive</code>
+					/
+					<code>destructive-foreground</code>
+					) cover every surface + text combination a component draws; <code>border</code>
+					, <code>input</code>
+					, and <code>ring</code> cover outlines and focus rings; <code>radius</code>
 					drives every rounded corner via the derived <code>--radius-sm</code>
-					…<code>--radius-xl</code> scale.
+					…
+					<code>--radius-xl</code> scale.
 				</p>
 			</section>
-
 			<section class="flex flex-col gap-3">
 				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">How to restyle</h2>
 				<p class="text-muted-foreground">
-					<code>web/gsxui.css</code> is vendored, not imported — it's yours the
-					moment <code>gsxui init</code> writes it. Restyling is editing the
-					values inside <code>:root</code> and <code>.dark</code> directly:
+					<code>web/gsxui.css</code> is vendored, not imported — it's yours the moment <code>
+						gsxui init
+					</code> writes it. Restyling is editing the values inside <code>:root</code> and <code>.dark</code> directly:
 				</p>
-				<pre class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"><code>{ themeRestyleSnippet }</code></pre>
+				<pre
+					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
+				><code>{ themeRestyleSnippet }</code></pre>
 				<p class="text-muted-foreground">
-					Because the variable names (<code>--primary</code>,
-					<code>--primary-foreground</code>, …) match shadcn/ui's own
-					convention exactly, the file is <strong>tweakcn-compatible</strong>:
-					generate a theme at
-					<a href="https://tweakcn.com" target="_blank" rel="noreferrer" class="underline underline-offset-4 hover:text-foreground">tweakcn.com</a>
-					(or any other shadcn theme tool) and paste its <code>:root</code>/
-					<code>.dark</code> blocks over gsxui's own — no renaming, no
-					translation layer.
+					Because the variable names (
+					<code>--primary</code>
+					,
+					<code>--primary-foreground</code>
+					, …) match shadcn/ui's own convention exactly, the file is <strong>tweakcn-compatible</strong>
+					: generate a theme at
+					<a
+						href="https://tweakcn.com"
+						target="_blank"
+						rel="noreferrer"
+						class="underline underline-offset-4 hover:text-foreground"
+					>
+						tweakcn.com
+					</a>
+					(or any other shadcn theme tool) and paste its <code>:root</code>
+					/
+					<code>.dark</code> blocks over gsxui's own — no renaming, no translation layer.
 				</p>
 			</section>
-
 			<section class="flex flex-col gap-6">
 				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Customizing components</h2>
-
 				<div class="flex flex-col gap-3">
 					<h3 class="font-medium">Caller class merge: a conflicting utility wins</h3>
 					<p class="text-muted-foreground">
 						Every component's fallthrough <code>attrs</code> can carry a
-						<code>class</code>, and it doesn't just get appended — <code>gsx.toml</code>'s
+						<code>class</code>
+						, and it doesn't just get appended — <code>gsx.toml</code>
+						's
 						<code>class_merger</code> (vendored to <code>ui/merge/merge.go</code> by
-						<code>gsxui init</code>, backed by <code>tailwind-merge-go</code>) resolves
-						conflicts the way Tailwind itself would: whichever utility comes
-						last in the same category wins, structural classes that aren't in
-						that category are untouched.
+						<code>gsxui init</code>
+						, backed by <code>tailwind-merge-go</code>
+						) resolves conflicts the way Tailwind itself would: whichever utility comes last in the same category wins, structural classes that aren't in that category are untouched.
 					</p>
-					<pre class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"><code>{ themeMergeSnippet }</code></pre>
+					<pre
+						class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
+					><code>{ themeMergeSnippet }</code></pre>
 					<p class="text-muted-foreground">
-						<code>Button</code>'s default size class is
-						<code>h-9 px-4 py-2 has-[&gt;svg]:px-3</code>. The caller's
-						<code>h-12</code> is in the same height category as <code>h-9</code>,
-						so it drops <code>h-9</code> and wins; <code>px-4 py-2</code> and the
-						structural base classes (<code>inline-flex</code>,
-						<code>items-center</code>, <code>rounded-md</code>, …) survive
-						because nothing the caller passed conflicts with them.
+						<code>Button</code>
+						's default size class is
+						<code>h-9 px-4 py-2 has-[&gt;svg]:px-3</code>
+						. The caller's
+						<code>h-12</code> is in the same height category as <code>h-9</code>
+						, so it drops <code>h-9</code> and wins; <code>px-4 py-2</code> and the structural base classes (
+						<code>inline-flex</code>
+						,
+						<code>items-center</code>
+						, <code>rounded-md</code>
+						, …) survive because nothing the caller passed conflicts with them.
 					</p>
 				</div>
-
 				<div class="flex flex-col gap-3">
 					<h3 class="font-medium">Attrs fallthrough: id, aria-*, data-*, hx-*</h3>
 					<p class="text-muted-foreground">
-						Beyond <code>class</code>, every attribute a caller passes that
-						isn't one of the component's own named parameters lands on the
-						rendered element untouched — ids, ARIA attributes, arbitrary
-						<code>data-*</code>, and HTMX's <code>hx-*</code> attributes all pass
-						straight through:
+						Beyond <code>class</code>
+						, every attribute a caller passes that isn't one of the component's own named parameters lands on the rendered element untouched — ids, ARIA attributes, arbitrary
+						<code>data-*</code>
+						, and HTMX's <code>hx-*</code> attributes all pass straight through:
 					</p>
-					<pre class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"><code>{ themeAttrsSnippet }</code></pre>
+					<pre
+						class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
+					><code>{ themeAttrsSnippet }</code></pre>
 				</div>
-
 				<div class="flex flex-col gap-3">
 					<h3 class="font-medium">Data-attribute idiom: attaching behavior to your own markup</h3>
 					<p class="text-muted-foreground">
-						Interactive components (dialog, dropdown, tabs, tooltip, …) don't
-						use React's <code>asChild</code>/Slot pattern — gsx has no dynamic
-						tag-swapping. Instead, each interactive component's
-						<code>data-gsxui-*</code> attribute is its public contract, and
-						fallthrough <code>attrs</code> deliver it to <em>any</em> element or
-						component, no cloning and no wrapper required. A plain styled
-						<code>Button</code> becomes a dialog trigger just by carrying the
-						attribute:
+						Interactive components (dialog, dropdown, tabs, tooltip, …) don't use React's <code>asChild</code>
+						/Slot pattern — gsx has no dynamic tag-swapping. Instead, each interactive component's
+						<code>data-gsxui-*</code> attribute is its public contract, and fallthrough <code>
+							attrs
+						</code> deliver it to <em>any</em> element or component, no cloning and no wrapper required. A plain styled
+						<code>Button</code> becomes a dialog trigger just by carrying the attribute:
 					</p>
-					<pre class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"><code>{ themeDataAttrSnippet }</code></pre>
+					<pre
+						class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
+					><code>{ themeDataAttrSnippet }</code></pre>
 					<p class="text-muted-foreground">
 						The same idiom covers every interactive component's public hooks —
-						<code>data-gsxui-dialog-close</code>,
-						<code>data-gsxui-dropdown-trigger</code>, and so on — see each
-						component's page for its specific attribute names.
+						<code>data-gsxui-dialog-close</code>
+						,
+						<code>data-gsxui-dropdown-trigger</code>
+						, and so on — see each component's page for its specific attribute names.
 					</p>
 				</div>
 			</section>

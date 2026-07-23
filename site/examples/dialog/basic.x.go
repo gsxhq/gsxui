@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line basic.gsx:8:1
 // Basic renders a confirm dialog. The trigger is a real Button carrying
 // data-gsxui-dialog-trigger — the documented idiom for a styled trigger,
 // no DialogTrigger wrapper needed (see docs/jsx-parity.md).

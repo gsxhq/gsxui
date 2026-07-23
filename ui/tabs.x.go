@@ -11,6 +11,7 @@ import (
 	_gsxsc "strconv"
 )
 
+//line tabs.gsx:5:1
 // Tabs and its parts are the shadcn/ui Tabs, minus Radix's client context —
 // each part is a plain sibling component, no shared React-tree state. The
 // root still needs to know which trigger/panel is active at first paint, so
@@ -61,7 +62,7 @@ func Tabs(value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line tabs.gsx:32:102
+//line tabs.gsx:32:100
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
@@ -86,13 +87,14 @@ func TabsList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line tabs.gsx:36:165
+//line tabs.gsx:42:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
+//line tabs.gsx:46:1
 // TabsTrigger's selected bool is the explicit, server-visible stand-in for
 // "does my value match the root's" — the caller (which already has both
 // values in scope when building the tree) resolves the comparison; this
@@ -100,18 +102,18 @@ func TabsList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // inactive state, matching a caller who forgets to pass it — never
 // accidentally active.
 
-//line tabs.gsx:45:1
+//line tabs.gsx:52:1
 func TabsTrigger(value string, selected bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 		var _gsxnum [32]byte
-//line tabs.gsx:46:2
+//line tabs.gsx:53:2
 		state := "inactive"
 		tabindex := -1
 		if selected {
 			state, tabindex = "active", 0
 		}
-//line tabs.gsx:53:2
+//line tabs.gsx:60:2
 		_gsxgw.S("<button")
 		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"button\"")
@@ -151,26 +153,27 @@ func TabsTrigger(value string, selected bool, children gsx.Node, attrs gsx.Attrs
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line tabs.gsx:64:3
+//line tabs.gsx:72:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
+//line tabs.gsx:76:1
 // TabsContent's selected bool mirrors TabsTrigger's — same value-comparison
 // contract, same zero-value-is-inactive default.
 
-//line tabs.gsx:69:1
+//line tabs.gsx:78:1
 func TabsContent(value string, selected bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line tabs.gsx:70:2
+//line tabs.gsx:79:2
 		state := "inactive"
 		if selected {
 			state = "active"
 		}
-//line tabs.gsx:76:2
+//line tabs.gsx:85:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"tabpanel\"")
@@ -197,7 +200,7 @@ func TabsContent(value string, selected bool, children gsx.Node, attrs gsx.Attrs
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line tabs.gsx:84:3
+//line tabs.gsx:94:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

@@ -10,6 +10,7 @@ import (
 	_gsxio "io"
 )
 
+//line input.gsx:5:1
 // Input is the shadcn/ui Input — a straight port of the native <input>.
 // type="text" is an overridable default (the button type="button" pattern) —
 // pass type="email" etc. at the call site. Void, childless element: the

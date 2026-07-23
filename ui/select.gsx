@@ -26,7 +26,9 @@ component Select(children gsx.Node, attrs gsx.Attrs) {
 			data-slot="select-trigger"
 			class="flex w-fit items-center justify-between gap-2 rounded-md border border-input bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 h-9 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40 appearance-none pr-8"
 			{ attrs... }
-		>{ children }</select>
+		>
+			{ children }
+		</select>
 		<icon.ChevronDown class="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 opacity-50"/>
 	</div>
 }
@@ -36,7 +38,7 @@ component Select(children gsx.Node, attrs gsx.Attrs) {
 // zero value (false) renders absent, matching browser selectedness/disabled
 // truth — no data-state plumbing needed, unlike Radix's SelectItem.
 component SelectOption(value string, selected bool, disabled bool, children gsx.Node, attrs gsx.Attrs) {
-	<option value={ value } selected={ selected } disabled={ disabled } { attrs... }>{ children }</option>
+	<option value={value} selected={selected} disabled={disabled} { attrs... }>{ children }</option>
 }
 
 // SelectGroup is a native <optgroup>. shadcn's separate SelectGroup
@@ -46,5 +48,5 @@ component SelectOption(value string, selected bool, disabled bool, children gsx.
 // child, only the label attribute, so there is nothing to port SelectLabel's
 // own class string onto.
 component SelectGroup(label string, children gsx.Node, attrs gsx.Attrs) {
-	<optgroup label={ label } { attrs... }>{ children }</optgroup>
+	<optgroup label={label} { attrs... }>{ children }</optgroup>
 }

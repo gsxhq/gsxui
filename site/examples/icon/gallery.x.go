@@ -12,6 +12,8 @@ import (
 
 // namedIcon pairs a display label with one of the 1,748 tag-callable
 // Lucide icon components ui/icon/icon_defs.go generates.
+//
+//line gallery.gsx:9:1
 type namedIcon struct {
 	Name   string
 	Render func(...gsx.Attr) gsx.Node

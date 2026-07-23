@@ -19,13 +19,23 @@ component Alert(variant string, children gsx.Node, attrs gsx.Attrs) {
 			}
 		}
 		{ attrs... }
-	>{ children }</div>
+	>
+		{ children }
+	</div>
 }
 
 component AlertTitle(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="alert-title" class="col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight" { attrs... }>{ children }</div>
+	<div data-slot="alert-title" class="col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight" { attrs... }>
+		{ children }
+	</div>
 }
 
 component AlertDescription(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="alert-description" class="col-start-2 grid justify-items-start gap-1 text-sm text-muted-foreground [&_p]:leading-relaxed" { attrs... }>{ children }</div>
+	<div
+		data-slot="alert-description"
+		class="col-start-2 grid justify-items-start gap-1 text-sm text-muted-foreground [&_p]:leading-relaxed"
+		{ attrs... }
+	>
+		{ children }
+	</div>
 }

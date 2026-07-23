@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line basic.gsx:8:1
 // Basic shows a tooltip on hover/focus of a Button trigger.
 
 //line basic.gsx:9:1

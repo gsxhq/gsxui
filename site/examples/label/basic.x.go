@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line basic.gsx:8:1
 // Basic pairs a Label with an Input via matching for/id.
 
 //line basic.gsx:9:1

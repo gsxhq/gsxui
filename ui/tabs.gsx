@@ -29,11 +29,18 @@ import "github.com/gsxhq/gsx"
 // no longer stamp data-orientation/orientation/data-variant — nothing reads
 // them. See docs/jsx-parity.md.
 component Tabs(value string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="tabs" data-gsxui-tabs data-value={ value } class="flex flex-col gap-2" { attrs... }>{ children }</div>
+	<div data-slot="tabs" data-gsxui-tabs data-value={value} class="flex flex-col gap-2" { attrs... }>{ children }</div>
 }
 
 component TabsList(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="tabs-list" role="tablist" class="bg-muted text-muted-foreground inline-flex h-9 w-fit items-center justify-center rounded-lg p-[3px]" { attrs... }>{ children }</div>
+	<div
+		data-slot="tabs-list"
+		role="tablist"
+		class="bg-muted text-muted-foreground inline-flex h-9 w-fit items-center justify-center rounded-lg p-[3px]"
+		{ attrs... }
+	>
+		{ children }
+	</div>
 }
 
 // TabsTrigger's selected bool is the explicit, server-visible stand-in for
@@ -55,13 +62,15 @@ component TabsTrigger(value string, selected bool, children gsx.Node, attrs gsx.
 		role="tab"
 		data-slot="tabs-trigger"
 		data-gsxui-tabs-trigger
-		data-value={ value }
-		data-state={ state }
-		aria-selected={ selected }
-		tabindex={ tabindex }
+		data-value={value}
+		data-state={state}
+		aria-selected={selected}
+		tabindex={tabindex}
 		class="relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm dark:text-muted-foreground dark:hover:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-[state=active]:bg-background data-[state=active]:text-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 dark:data-[state=active]:text-foreground"
 		{ attrs... }
-	>{ children }</button>
+	>
+		{ children }
+	</button>
 }
 
 // TabsContent's selected bool mirrors TabsTrigger's — same value-comparison
@@ -76,10 +85,12 @@ component TabsContent(value string, selected bool, children gsx.Node, attrs gsx.
 	<div
 		role="tabpanel"
 		data-slot="tabs-content"
-		data-value={ value }
-		data-state={ state }
-		hidden={ !selected }
+		data-value={value}
+		data-state={state}
+		hidden={!selected}
 		class="flex-1 outline-none"
 		{ attrs... }
-	>{ children }</div>
+	>
+		{ children }
+	</div>
 }

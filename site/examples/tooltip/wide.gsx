@@ -9,6 +9,8 @@ import (
 component Wide() {
 	<ui.Tooltip>
 		<ui.Button variant="outline" data-gsxui-tooltip-trigger>Info</ui.Button>
-		<ui.TooltipContent class="w-64 text-center">Deploys automatically when you push to the main branch.</ui.TooltipContent>
+		<ui.TooltipContent class="w-64 text-center">
+			Deploys automatically when you push to the main branch.
+		</ui.TooltipContent>
 	</ui.Tooltip>
 }

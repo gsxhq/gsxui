@@ -3,7 +3,7 @@ module github.com/gsxhq/gsxui
 go 1.26.1
 
 require (
-	github.com/gsxhq/gsx v0.0.0-20260722142810-aab3c82b36bb
+	github.com/gsxhq/gsx v0.0.0-20260723163322-21531af777b9
 	github.com/gsxhq/vite v0.3.1
 	github.com/jackielii/structpages v0.6.6
 	github.com/jackielii/tailwind-merge-go v0.0.0-20260517071107-a44bd10e01e0

@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line group.gsx:5:1
 // Group renders three overlapping Avatars — a stacked-avatars pattern
 // built entirely from attrs (-space-x-2, a ring), no extra component.
 

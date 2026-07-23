@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line basic.gsx:7:1
 // Basic renders a Select with plain SelectOption children, one
 // pre-selected.
 

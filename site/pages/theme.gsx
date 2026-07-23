@@ -94,8 +94,7 @@ component (t Theme) Page() {
 			<div>
 				<h1 class="text-3xl font-semibold tracking-tight">Theme editor</h1>
 				<p class="mt-2 max-w-2xl text-sm text-muted-foreground">
-					Edit the 20 CSS custom properties gsxui's components read (mirrors assets/gsxui.css).
-					Paste a tweakcn/shadcn theme's root and dark blocks into Import to try it, or export what you build here as a ready-to-drop-in gsxui.css.
+					Edit the 20 CSS custom properties gsxui's components read (mirrors assets/gsxui.css). Paste a tweakcn/shadcn theme's root and dark blocks into Import to try it, or export what you build here as a ready-to-drop-in gsxui.css.
 				</p>
 			</div>
 			<div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
@@ -112,24 +111,26 @@ component (t Theme) Page() {
 								{ for _, v := range g.Vars {
 									<div>
 										<div class="grid grid-cols-[minmax(0,120px)_1fr_1fr] items-center gap-3">
-											<label class="truncate font-mono text-xs text-muted-foreground" title={ v.Name }>{ v.Name }</label>
+											<label class="truncate font-mono text-xs text-muted-foreground" title={v.Name}>{ v.Name }</label>
 											<input
 												type="text"
-												data-theme-var={ v.Name }
+												data-theme-var={v.Name}
 												data-theme-mode="light"
-												value={ v.Light }
+												value={v.Light}
 												class="h-8 w-full min-w-0 rounded-md border border-input bg-transparent px-2 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
 											/>
 											<input
 												type="text"
-												data-theme-var={ v.Name }
+												data-theme-var={v.Name}
 												data-theme-mode="dark"
-												value={ v.Dark }
+												value={v.Dark}
 												class="h-8 w-full min-w-0 rounded-md border border-input bg-transparent px-2 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
 											/>
 										</div>
 										{ if v.Name == "--radius" {
-											<p class="col-start-2 col-span-2 mt-1 text-xs text-muted-foreground">preview only — radius is theme-invariant in exports</p>
+											<p class="col-start-2 col-span-2 mt-1 text-xs text-muted-foreground">
+												preview only — radius is theme-invariant in exports
+											</p>
 										} }
 									</div>
 								} }
@@ -157,7 +158,7 @@ component (t Theme) Page() {
 						<textarea
 							data-theme-import
 							rows="6"
-							placeholder={ themeImportPlaceholder }
+							placeholder={themeImportPlaceholder}
 							class="w-full rounded-md border border-input bg-transparent p-2 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
 						></textarea>
 						<div>

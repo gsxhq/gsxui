@@ -50,21 +50,25 @@ component Button(variant string, size string, href string, disabled bool, childr
 	{ if href != "" && !disabled {
 		<a
 			data-slot="button"
-			data-variant={ variant |> default("default") }
-			data-size={ size |> default("default") }
-			href={ href }
+			data-variant={variant |> default("default")}
+			data-size={size |> default("default")}
+			href={href}
 			class={ base, variantClass(variant), sizeClass(size) }
 			{ attrs... }
-		>{ children }</a>
+		>
+			{ children }
+		</a>
 	} else {
 		<button
 			data-slot="button"
-			data-variant={ variant |> default("default") }
-			data-size={ size |> default("default") }
+			data-variant={variant |> default("default")}
+			data-size={size |> default("default")}
 			type="button"
 			class={ base, variantClass(variant), sizeClass(size) }
-			disabled={ disabled }
+			disabled={disabled}
 			{ attrs... }
-		>{ children }</button>
+		>
+			{ children }
+		</button>
 	} }
 }

@@ -15,7 +15,16 @@ component DropdownMenu(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component DropdownMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
-	<button data-slot="dropdown-menu-trigger" data-gsxui-dropdown-trigger type="button" aria-haspopup="menu" aria-expanded="false" { attrs... }>{ children }</button>
+	<button
+		data-slot="dropdown-menu-trigger"
+		data-gsxui-dropdown-trigger
+		type="button"
+		aria-haspopup="menu"
+		aria-expanded="false"
+		{ attrs... }
+	>
+		{ children }
+	</button>
 }
 
 // DropdownMenuContent renders the popover. popover="auto" gives top layer,
@@ -35,7 +44,9 @@ component DropdownMenuContent(children gsx.Node, attrs gsx.Attrs) {
 		data-side="bottom"
 		class="z-50 max-h-96 min-w-[8rem] origin-top-left overflow-x-hidden overflow-y-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95"
 		{ attrs... }
-	>{ children }</div>
+	>
+		{ children }
+	</div>
 }
 
 // DropdownMenuItem is the shadcn/ui DropdownMenuItem, ported as a real menu
@@ -47,12 +58,14 @@ component DropdownMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-slot="dropdown-menu-item"
 		data-gsxui-dropdown-item
-		data-variant={ variant |> default("default") }
+		data-variant={variant |> default("default")}
 		role="menuitem"
 		tabindex="-1"
 		class="relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive!"
 		{ attrs... }
-	>{ children }</div>
+	>
+		{ children }
+	</div>
 }
 
 // DropdownMenuLabel's inset prop is dropped along with DropdownMenuItem's
@@ -66,5 +79,7 @@ component DropdownMenuSeparator(attrs gsx.Attrs) {
 }
 
 component DropdownMenuShortcut(children gsx.Node, attrs gsx.Attrs) {
-	<span data-slot="dropdown-menu-shortcut" class="ml-auto text-xs tracking-widest text-muted-foreground" { attrs... }>{ children }</span>
+	<span data-slot="dropdown-menu-shortcut" class="ml-auto text-xs tracking-widest text-muted-foreground" { attrs... }>
+		{ children }
+	</span>
 }

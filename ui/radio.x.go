@@ -10,6 +10,7 @@ import (
 	_gsxio "io"
 )
 
+//line radio.gsx:5:1
 // Radio is the shadcn/ui RadioGroupItem, ported as a real native
 // <input type="radio">: form-native, zero JS, browser :checked/:disabled
 // truth replaces Radix's button-role + hidden-input + Indicator part

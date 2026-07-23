@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line basic.gsx:7:1
 // Basic renders three items sharing name="faq" — native <details name>
 // gives the group exclusive-open behavior, no JS. The first item opens.
 

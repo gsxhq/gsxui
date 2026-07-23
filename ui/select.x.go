@@ -11,6 +11,7 @@ import (
 	_gsxio "io"
 )
 
+//line select.gsx:14:1
 // Select is the shadcn/ui Select, ported (ADAPT, native-select-v1,
 // prominent) as a styled native <select>: form-native, mobile-superior,
 // zero JS. shadcn's custom listbox (Trigger/Content/Item/portal machinery
@@ -38,26 +39,27 @@ func Select(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line select.gsx:29:4
+//line select.gsx:30:4
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</select>")
-//line select.gsx:30:3
+//line select.gsx:32:3
 		_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.Attrs{{Key: "class", Value: "pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 opacity-50"}}...))
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
+//line select.gsx:36:1
 // SelectOption is a native <option>. selected/disabled are HTML boolean
 // attributes (gsx.IsBooleanAttr classifies both "selected" and "disabled"):
 // zero value (false) renders absent, matching browser selectedness/disabled
 // truth — no data-state plumbing needed, unlike Radix's SelectItem.
 
-//line select.gsx:38:1
+//line select.gsx:40:1
 func SelectOption(value string, selected bool, disabled bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line select.gsx:39:2
+//line select.gsx:41:2
 		_gsxgw.S("<option")
 		if !attrs.Has("value") {
 			_gsxgw.S(" value=\"")
@@ -74,13 +76,14 @@ func SelectOption(value string, selected bool, disabled bool, children gsx.Node,
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line select.gsx:39:83
+//line select.gsx:41:77
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</option>")
 		return _gsxgw.Err()
 	})
 }
 
+//line select.gsx:44:1
 // SelectGroup is a native <optgroup>. shadcn's separate SelectGroup
 // (wrapper) + SelectLabel (child text) collapse into the one native element
 // that already carries a label as an attribute (ADAPT — see
@@ -88,11 +91,11 @@ func SelectOption(value string, selected bool, disabled bool, children gsx.Node,
 // child, only the label attribute, so there is nothing to port SelectLabel's
 // own class string onto.
 
-//line select.gsx:48:1
+//line select.gsx:50:1
 func SelectGroup(label string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line select.gsx:49:2
+//line select.gsx:51:2
 		_gsxgw.S("<optgroup")
 		if !attrs.Has("label") {
 			_gsxgw.S(" label=\"")
@@ -103,7 +106,7 @@ func SelectGroup(label string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line select.gsx:49:41
+//line select.gsx:51:39
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</optgroup>")
 		return _gsxgw.Err()

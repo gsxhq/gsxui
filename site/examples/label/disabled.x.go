@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line disabled.gsx:7:1
 // Disabled shows Label's peer-disabled styling: Checkbox's base class
 // carries "peer", so a disabled sibling Checkbox dims and cursor-blocks its
 // Label automatically — no state plumbing needed on Label itself.

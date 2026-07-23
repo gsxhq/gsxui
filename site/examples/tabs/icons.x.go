@@ -10,6 +10,7 @@ import (
 	_gsxio "io"
 )
 
+//line icons.gsx:8:1
 // Icons pairs each trigger with a lucide icon alongside its label.
 
 //line icons.gsx:9:1
@@ -25,28 +26,28 @@ func Icons() _gsxrt.Node {
 //line icons.gsx:12:4
 				_gsxgw.Node(ctx, ui.TabsTrigger("grid", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line icons.gsx:12:42
+//line icons.gsx:13:5
 					_gsxgw.Node(ctx, icon.LayoutGrid(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
 					_gsxgw.S("Grid")
 					return _gsxgw.Err()
 				}), nil))
-//line icons.gsx:13:4
+//line icons.gsx:16:4
 				_gsxgw.Node(ctx, ui.TabsTrigger("list", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line icons.gsx:13:33
+//line icons.gsx:17:5
 					_gsxgw.Node(ctx, icon.List(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
 					_gsxgw.S("List")
 					return _gsxgw.Err()
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line icons.gsx:15:3
+//line icons.gsx:21:3
 			_gsxgw.Node(ctx, ui.TabsContent("grid", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Items shown as a grid.")
 				return _gsxgw.Err()
 			}), nil))
-//line icons.gsx:16:3
+//line icons.gsx:22:3
 			_gsxgw.Node(ctx, ui.TabsContent("list", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Items shown as a list.")

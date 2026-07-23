@@ -10,6 +10,7 @@ import (
 	_gsxio "io"
 )
 
+//line icon.gsx:5:1
 // svgIcon renders a Lucide icon's <svg> wrapper: 24x24 viewBox, the Lucide
 // stroke defaults, default class="size-4" (caller-overridable via tailwind
 // class merge), data-slot="icon", and aria-hidden="true" unless the caller
@@ -57,7 +58,7 @@ func svgIcon(name string, inner gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line icon.gsx:25:3
+//line icon.gsx:26:3
 		_gsxgw.Node(ctx, inner)
 		_gsxgw.S("</svg>")
 		return _gsxgw.Err()

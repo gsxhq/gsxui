@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line basic.gsx:6:1
 // Basic renders a Textarea with placeholder text.
 
 //line basic.gsx:7:1

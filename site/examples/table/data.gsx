@@ -10,7 +10,11 @@ component Data() {
 	<ui.Table>
 		<ui.TableCaption>A list of your recent invoices.</ui.TableCaption>
 		<ui.TableHeader>
-			<ui.TableRow><ui.TableHead>Invoice</ui.TableHead><ui.TableHead>Status</ui.TableHead><ui.TableHead class="text-right">Amount</ui.TableHead></ui.TableRow>
+			<ui.TableRow>
+				<ui.TableHead>Invoice</ui.TableHead>
+				<ui.TableHead>Status</ui.TableHead>
+				<ui.TableHead class="text-right">Amount</ui.TableHead>
+			</ui.TableRow>
 		</ui.TableHeader>
 		<ui.TableBody>
 			{ for _, inv := range invoices {

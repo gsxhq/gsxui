@@ -9,6 +9,7 @@ import (
 	_gsxio "io"
 )
 
+//line states.gsx:7:1
 // States adds disabled variants — disabled is a bare boolean attribute
 // forwarded through Switch's { attrs... } spread onto the native
 // checkbox+role=switch input.

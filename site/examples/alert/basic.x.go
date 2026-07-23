@@ -10,6 +10,7 @@ import (
 	_gsxio "io"
 )
 
+//line basic.gsx:9:1
 // Basic renders a default Alert with an icon, title, and description.
 
 //line basic.gsx:10:1

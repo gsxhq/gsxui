@@ -11,6 +11,7 @@ import (
 	_gsxio "io"
 )
 
+//line button.gsx:5:1
 const base = "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
 
 func variantClass(variant string) string {
@@ -96,11 +97,11 @@ func _gsxrenderButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line button.gsx:58:4
+//line button.gsx:59:4
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</a>")
 	} else {
-//line button.gsx:60:3
+//line button.gsx:62:3
 		_gsxgw.S("<button")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"button\"")
@@ -127,7 +128,7 @@ func _gsxrenderButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line button.gsx:68:4
+//line button.gsx:71:4
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 	}
