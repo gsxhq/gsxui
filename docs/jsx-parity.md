@@ -32,6 +32,11 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
   shadcn's own Alert doesn't stamp one either (unlike Badge/Button), so
   there's nothing to port.
 
+## aspect-ratio
+- ADAPT: shadcn's `AspectRatio` is a bare passthrough onto Radix's `AspectRatioPrimitive.Root`, which renders the classic padding-hack pair — an outer `position:relative; width:100%; padding-bottom:calc(100% / ratio)` div (`ratio` set as an inline style computed from a numeric `ratio` prop) wrapping an inner `position:absolute; inset:0` div that actually holds the children. This port drops both divs and both computed styles for the single-property CSS `aspect-ratio` declaration on one div — no wrapper-within-wrapper, no percentage arithmetic to reproduce, and (a real capability gap Radix's hack technique predates) native browser support for intrinsic-size media inside the ratio box that the padding-hack couldn't give for free.
+- ADAPT: `ratio` is a Go `string`, not a `float`/`number` — callers write the literal CSS `aspect-ratio` value, e.g. `ratio="16 / 9"` (`aspect-ratio` also accepts a bare number, `ratio="1.5"`), instead of a numeric ratio the component would have to stringify itself.
+- MECHANISM: the composed value is wrapped in `gsx.RawCSS(ratio)` to opt it out of gw's CSS value filter — a conservative character-blocklist port of `html/template`'s CSS sanitizer that rejects `/` outright (along with `(`, `)`, `;`, and several other characters that never appear in a valid `aspect-ratio` value either). `/` is not incidental punctuation here; it is `aspect-ratio`'s own required `<width> "/" <height>` separator, so no value most callers would ever write could pass the filter unmodified. `ratio` is treated as trusted, developer-authored layout intent — the same trust boundary every `ui/*.gsx` component already extends to its own class strings (Tailwind's `class` attribute receives no injection filtering either), not sanitized end-user request data.
+
 ## avatar
 - ADAPT: AvatarImage adds `absolute inset-0` (not in shadcn) — the image overlays the in-flow fallback, so the no-JS/pre-JS state renders correctly (fallback behind, image covers when loaded); `ui/avatar/avatar.js` syncs image/fallback visibility via capture-delegated `load`/`error`. Radix's mount-gated rendering can't exist server-side. RACE (verified in-browser, fixed): images that settle before this module imports (data URIs, cached, fast-local) already fired their `load`/`error` event before the delegated listener existed, so neither image nor fallback visibility ever synced — resolved with a settle-sweep (`img.complete` check over `[data-gsxui-avatar-image]`) run once at import and again on `window` `load`, covering the gap between; the capture-delegated handlers still cover every settle after import, including HTMX swaps.
 - GAP: `AvatarBadge`, `AvatarGroup`, `AvatarGroupCount` (added to shadcn's
@@ -102,6 +107,11 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
 ## input
 - Straight port. `type="text"` is authored before `{ attrs... }` — the same overridable-default idiom as button's `type="button"`, so `type="email"` etc. at the call site replaces rather than duplicates it.
 
+## kbd
+- Straight port; no dropped tokens. Both `Kbd` and `KbdGroup` render onto real `<kbd>` elements, verbatim against `registry/new-york-v4/ui/kbd.tsx` — browsers freely nest `<kbd>` inside `<kbd>`, which is exactly how `KbdGroup` models a compound shortcut ("Ctrl Shift K") as a group of individual `Kbd`s.
+- NOTE: shadcn's own `KbdGroup` types its props as `React.ComponentProps<"div">` but the component itself renders a `<kbd>` element, not a `<div>` — carried over verbatim, tag included, since the task brief calls for token-for-token parity and this is shadcn's actual shipped behavior, not a typo we're free to "fix."
+- NOTE: `Kbd`'s `[[data-slot=tooltip-content]_&]:...` tokens are a real, exercisable selector in this port — nesting a `Kbd` inside a `ui.TooltipContent` (which does stamp `data-slot="tooltip-content"`) activates them exactly as shadcn intends.
+
 ## label
 - Straight port of the rendered markup: shadcn wraps Radix's `LabelPrimitive.Root`, which is itself a plain `<label>`.
 - GAP (narrow, accepted): Radix's `onMouseDown` handler, which calls `preventDefault()` on multi-click to stop text selection inside the label, is not ported (no client JS for this component). Low impact — the base class already carries `select-none`, which suppresses text selection via CSS regardless.
@@ -118,6 +128,11 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
 
 ## skeleton
 - Straight port; no divergences.
+
+## spinner
+- MECHANISM: shadcn's `Spinner` renders lucide-react's `Loader2Icon` directly (`registry/new-york-v4/ui/spinner.tsx`). `ui/icon`'s generated set carries the same Lucide glyph as `icon.LoaderCircle` (Lucide icon name `loader-circle` — `Loader2Icon` is lucide-react's own alias for it, same underlying SVG path data), so this port is one `icon.LoaderCircle` call — `spinner → icon`, the dependency `internal/registry` derives and `registry_test.go` pins — instead of a bespoke `<svg>`.
+- MECHANISM: `ui/icon/icon.gsx`'s shared `svgIcon` wrapper defaults every icon to `aria-hidden="true"` unless the caller supplies its own `aria-hidden` — correct for the purely decorative chevrons/glyphs every other `icon.*` call in this package renders, but wrong for `Spinner`: shadcn's version is deliberately NOT hidden from assistive tech (`role="status"` and `aria-label="Loading"` announce it as a live loading indicator). `Spinner` supplies `aria-hidden="false"` explicitly alongside `role`/`aria-label`, all three literal attrs authored before `{ attrs... }` — the same overridable-default idiom as button's `type="button"` — so a caller can still override any of the three.
+
 ## textarea
 - ADAPT: shadcn's Textarea takes its content via a `value` prop forwarded through `...props` onto React's controlled `<textarea value={...}>`. Native HTML `<textarea>` has no `value` attribute — its initial content is a text child. Ported as a `value string` param rendered as the (escaped) text child instead: `textarea.Textarea("initial text", nil)`.
 

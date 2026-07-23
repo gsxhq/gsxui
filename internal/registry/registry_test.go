@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "avatar", "badge", "button", "card", "checkbox", "dialog", "dropdown", "icon", "input", "label", "radio", "select", "separator", "skeleton", "switch", "table", "tabs", "textarea", "tooltip"}
+	want := []string{"accordion", "alert", "aspect-ratio", "avatar", "badge", "button", "card", "checkbox", "dialog", "dropdown", "icon", "input", "kbd", "label", "radio", "select", "separator", "skeleton", "spinner", "switch", "table", "tabs", "textarea", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -60,6 +60,33 @@ func TestDeps(t *testing.T) {
 	}
 	if !reflect.DeepEqual(deps, []string{"icon"}) {
 		t.Fatalf("select deps = %v, want [icon]", deps)
+	}
+
+	// spinner.gsx imports ui/icon (icon.LoaderCircle).
+	deps, err = registry.Deps("spinner")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(deps, []string{"icon"}) {
+		t.Fatalf("spinner deps = %v, want [icon]", deps)
+	}
+
+	// kbd.gsx and aspect-ratio.gsx have no icon import and no intra-package
+	// reference to another component.
+	deps, err = registry.Deps("kbd")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(deps) != 0 {
+		t.Fatalf("kbd deps = %v, want none", deps)
+	}
+
+	deps, err = registry.Deps("aspect-ratio")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(deps) != 0 {
+		t.Fatalf("aspect-ratio deps = %v, want none", deps)
 	}
 
 	deps, err = registry.Deps("button")
