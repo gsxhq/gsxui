@@ -1,0 +1,32 @@
+# Deploys the showcase site (ui.gsxhq.dev) on every push to main: run the
+# Go test suite, then `flyctl deploy` with Fly's remote builder (the Docker
+# build itself — vite build + go build — is the compile gate; see
+# site/Dockerfile). Auth is an app-scoped deploy token in the FLY_API_TOKEN
+# repo secret (`flyctl tokens create deploy`).
+name: fly-deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - run: go test ./...
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    # One deploy at a time; a queued deploy for a newer commit supersedes.
+    concurrency: fly-deploy
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
