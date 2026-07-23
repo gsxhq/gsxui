@@ -60,6 +60,11 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
   has no gsx equivalent — no dynamic tag. Behavior-attachment uses of
   `asChild` are covered by the data-attribute mechanism (see dialog).
 
+## breadcrumb
+- Straight port; no dropped tokens. shadcn's own `breadcrumb.tsx` has no Radix primitive underneath either — every part (`Breadcrumb`/`BreadcrumbList`/`BreadcrumbItem`/`BreadcrumbLink`/`BreadcrumbPage`/`BreadcrumbSeparator`/`BreadcrumbEllipsis`) is already a plain styled `<nav>`/`<ol>`/`<li>`/`<a>`/`<span>`, so this is the same "package-namespaced compound parts" shape as card, not an ADAPT.
+- GAP (narrow): `BreadcrumbLink`'s `asChild` tag-swapping is dropped — it always renders a real `<a>`, which is shadcn's own default (`const Comp = asChild ? Slot.Root : "a"`) for the dominant/only realistic use anyway. Same narrow gap as button's `asChild`; behavior-attachment uses are covered by the data-attribute mechanism (see dialog).
+- MECHANISM: `BreadcrumbSeparator`'s default child (shadcn's `{children ?? <ChevronRight />}`) and `BreadcrumbEllipsis`'s icon (`MoreHorizontal`) both come from `ui/icon` — `icon.ChevronRight` and `icon.Ellipsis`. Lucide renamed `MoreHorizontal` to `"ellipsis"` (verified against `ui/icon/icon_data.go`'s `"ellipsis"` entry: three `<circle>`s, the horizontal three-dot glyph, not `EllipsisVertical`'s rotated form) — the same rename precedent as Spinner's `Loader2Icon`/`icon.LoaderCircle` (see `## icon`-adjacent spinner entry). This import is the `breadcrumb` → `icon` dependency `internal/registry` derives and `registry_test.go` pins.
+
 ## button
 - GAP (narrow): `asChild` tag-swapping (no dynamic tag: `const Comp = asChild ? Slot : "button"`). Ported as `href` param rendering `<a>` — covers the dominant use. Behavior-attachment uses of `asChild` are covered by the data-attribute mechanism (see dialog).
 - WIN: `type="button"` before `{ attrs... }` makes it an overridable default — positional spread precedence replaces prop-ordering conventions.
@@ -115,6 +120,12 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
 ## label
 - Straight port of the rendered markup: shadcn wraps Radix's `LabelPrimitive.Root`, which is itself a plain `<label>`.
 - GAP (narrow, accepted): Radix's `onMouseDown` handler, which calls `preventDefault()` on multi-click to stop text selection inside the label, is not ported (no client JS for this component). Low impact — the base class already carries `select-none`, which suppresses text selection via CSS regardless.
+
+## progress
+- ADAPT: shadcn's `Progress` wraps Radix's `ProgressPrimitive.Root`/`ProgressPrimitive.Indicator` pair (`registry/new-york-v4/ui/progress.tsx`), driven by no client state of its own (a plain controlled `value` prop) but still routed through Radix's component machinery. This port replaces both with two plain `<div>`s and zero client JS — `role="progressbar"` plus `aria-valuemin="0"`/`aria-valuemax="100"`/`aria-valuenow={value}` (stamped directly, no `data-state`/`data-value`/`data-max` — nothing in shadcn's own class strings selects on those, so there is nothing for them to drive here) replace what Radix's `Root` stamps internally. Both divs' class strings are carried token-for-token.
+- WIN: `value` is a Go zero-value `float64` (0–100) — the zero value (0) already matches shadcn's own `value || 0` JS fallback, so an unset `Progress` renders identically to shadcn's unset case (indicator fully translated off-screen), no extra handling needed.
+- GAP: `children` is not a param — shadcn's own `Progress` never renders a `children` prop either (its JSX literal-child list is exactly the one `ProgressPrimitive.Indicator`, spread `{...props}` notwithstanding: a literal child between tags always wins over a same-named prop spread before it), so there is nothing to port. Same "children omitted where the element can't have any" call as `Skeleton`/`Separator`.
+- MECHANISM: the indicator's fill is Radix's `style={{ transform: translateX(-${100 - (value || 0)}%) }}` — ported as the identical `translateX` mechanism (not a `width` swap, which `transition-all` would animate differently), built from `strconv.FormatFloat(100-value, 'f', -1, 64)` since a `float64` can't itself concatenate into a string. The composed `style` value is wrapped in `gsx.RawCSS` (same precedent as `AspectRatio`'s `ratio` property, see `## aspect-ratio`) to opt the whole expression out of gw's CSS value filter, which blocklists `(`/`)` — punctuation `translateX(...)`'s function-call syntax requires, not injected data; the percentage is trusted, developer-computed layout intent, the same trust boundary aspect-ratio's `ratio` already extends.
 
 ## separator
 - ADAPT: Radix's `decorative` prop (default `true`, flips `role="separator"` +

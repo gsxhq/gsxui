@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "aspect-ratio", "avatar", "badge", "button", "card", "checkbox", "dialog", "dropdown", "icon", "input", "kbd", "label", "radio", "select", "separator", "skeleton", "spinner", "switch", "table", "tabs", "textarea", "tooltip"}
+	want := []string{"accordion", "alert", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "card", "checkbox", "dialog", "dropdown", "icon", "input", "kbd", "label", "progress", "radio", "select", "separator", "skeleton", "spinner", "switch", "table", "tabs", "textarea", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -71,8 +71,18 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("spinner deps = %v, want [icon]", deps)
 	}
 
-	// kbd.gsx and aspect-ratio.gsx have no icon import and no intra-package
-	// reference to another component.
+	// breadcrumb.gsx imports ui/icon (BreadcrumbSeparator's default
+	// ChevronRight, BreadcrumbEllipsis's Ellipsis/MoreHorizontal).
+	deps, err = registry.Deps("breadcrumb")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(deps, []string{"icon"}) {
+		t.Fatalf("breadcrumb deps = %v, want [icon]", deps)
+	}
+
+	// kbd.gsx, aspect-ratio.gsx, and progress.gsx have no icon import and no
+	// intra-package reference to another component.
 	deps, err = registry.Deps("kbd")
 	if err != nil {
 		t.Fatal(err)
@@ -87,6 +97,14 @@ func TestDeps(t *testing.T) {
 	}
 	if len(deps) != 0 {
 		t.Fatalf("aspect-ratio deps = %v, want none", deps)
+	}
+
+	deps, err = registry.Deps("progress")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(deps) != 0 {
+		t.Fatalf("progress deps = %v, want none", deps)
 	}
 
 	deps, err = registry.Deps("button")
