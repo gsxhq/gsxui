@@ -9,29 +9,25 @@ import (
 	_gsxio "io"
 )
 
-// avatarSVG is a small inline data-URI image — no network fetch, so the
-// "loaded" half of the pair renders identically in every environment. gsx's
-// image-resource sanitizer only accepts base64-encoded data: URLs (the
-// ";base64," marker constrains the payload charset so it can't smuggle a
-// scheme break), so the SVG is base64, not percent-encoded.
+// data: image URLs must be ;base64, — gsx's image-sink sanitizer blocks percent-encoded forms (see docs/jsx-parity.md ## avatar).
 const avatarSVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc2NCcgaGVpZ2h0PSc2NCc+PHJlY3Qgd2lkdGg9JzY0JyBoZWlnaHQ9JzY0JyBmaWxsPScjNmQyOGQ5Jy8+PC9zdmc+"
 
 // Basic renders two Avatars side by side: one whose image loads (a data
 // URI), one whose image 404s and falls back to initials — avatar.js
 // toggles which of image/fallback is visible on the image's load/error.
 
-//line basic.gsx:16:1
+//line basic.gsx:12:1
 func Basic() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:17:2
+//line basic.gsx:13:2
 		_gsxgw.S("<div class=\"flex items-center gap-4\">")
-//line basic.gsx:18:3
+//line basic.gsx:14:3
 		_gsxgw.Node(ctx, uiavatar.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:19:4
+//line basic.gsx:15:4
 			_gsxgw.Node(ctx, uiavatar.AvatarImage(avatarSVG, "Ada Lovelace", nil))
-//line basic.gsx:20:4
+//line basic.gsx:16:4
 			_gsxgw.Node(ctx, uiavatar.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("AL")
@@ -39,12 +35,12 @@ func Basic() _gsxrt.Node {
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
-//line basic.gsx:22:3
+//line basic.gsx:18:3
 		_gsxgw.Node(ctx, uiavatar.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:23:4
+//line basic.gsx:19:4
 			_gsxgw.Node(ctx, uiavatar.AvatarImage("/broken-image.jpg", "Broken avatar", nil))
-//line basic.gsx:24:4
+//line basic.gsx:20:4
 			_gsxgw.Node(ctx, uiavatar.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("JD")
