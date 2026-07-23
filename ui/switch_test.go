@@ -86,8 +86,23 @@ func TestSwitchPinned(t *testing.T) {
 	// before:shadow-lg is not sourced from anywhere and is intentionally
 	// absent here. See docs/jsx-parity.md.
 	got := render(t, ui.Switch(nil))
-	want := `<input type="checkbox" role="switch" data-slot="switch" class="peer inline-flex shrink-0 items-center appearance-none rounded-full border border-transparent shadow-xs transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 h-[1.15rem] w-8 bg-input checked:bg-primary dark:bg-input/80 before:pointer-events-none before:block before:size-4 before:rounded-full before:bg-background before:transition-transform before:content-[&#39;&#39;] checked:before:translate-x-[calc(100%-2px)] dark:before:bg-foreground dark:checked:before:bg-primary-foreground"/>`
+	want := `<input type="checkbox" role="switch" data-slot="switch" class="peer inline-flex shrink-0 items-center appearance-none rounded-full border border-transparent shadow-xs transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 h-[1.15rem] w-8 bg-input checked:bg-primary dark:bg-input/80 dark:checked:bg-primary before:pointer-events-none before:block before:size-4 before:rounded-full before:bg-background before:transition-transform before:content-[&#39;&#39;] checked:before:translate-x-[calc(100%-2px)] dark:before:bg-foreground dark:checked:before:bg-primary-foreground"/>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
+	}
+}
+
+func TestSwitchDarkCheckedOverride(t *testing.T) {
+	// Same cascade trap as checkbox's dark:checked:bg-primary (see
+	// checkbox_test.go): the dark custom variant (:is(.dark *)) carries
+	// class specificity (0,2,0) that beats bare :checked (0,1,1), so
+	// without an explicit dark:checked override the ungated
+	// dark:bg-input/80 wins in dark mode and a checked track loses its
+	// primary fill. shadcn avoids it by gating the dark track color to
+	// data-[state=unchecked]; our native port keeps the explicit-override
+	// idiom instead.
+	got := render(t, ui.Switch(nil))
+	if !strings.Contains(got, "dark:checked:bg-primary") {
+		t.Errorf("missing dark:checked:bg-primary override\nin: %s", got)
 	}
 }
