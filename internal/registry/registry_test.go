@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "dialog", "dropdown", "icon", "input", "kbd", "label", "pagination", "progress", "radio", "select", "separator", "skeleton", "spinner", "switch", "table", "tabs", "textarea", "tooltip"}
+	want := []string{"accordion", "alert", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "dialog", "dropdown", "empty", "icon", "input", "item", "kbd", "label", "pagination", "progress", "radio", "select", "separator", "skeleton", "spinner", "switch", "table", "tabs", "textarea", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -144,6 +144,27 @@ func TestDeps(t *testing.T) {
 	}
 	if len(deps) != 0 {
 		t.Fatalf("icon deps = %v, want none", deps)
+	}
+
+	// empty.gsx has no icon import and no intra-package reference to
+	// another component.
+	deps, err = registry.Deps("empty")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(deps) != 0 {
+		t.Fatalf("empty deps = %v, want none", deps)
+	}
+
+	// item.gsx has no icon import; ItemSeparator calls ui.Separator directly
+	// (flat package intra-package edge, same shape as button-group's own
+	// separator dep).
+	deps, err = registry.Deps("item")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(deps, []string{"separator"}) {
+		t.Fatalf("item deps = %v, want [separator]", deps)
 	}
 
 	if _, err := registry.Deps("nosuch"); err == nil || !strings.Contains(err.Error(), "gsxui list") {
