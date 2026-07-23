@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "card", "checkbox", "dialog", "dropdown", "icon", "input", "kbd", "label", "progress", "radio", "select", "separator", "skeleton", "spinner", "switch", "table", "tabs", "textarea", "tooltip"}
+	want := []string{"accordion", "alert", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "dialog", "dropdown", "icon", "input", "kbd", "label", "pagination", "progress", "radio", "select", "separator", "skeleton", "spinner", "switch", "table", "tabs", "textarea", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -113,6 +113,29 @@ func TestDeps(t *testing.T) {
 	}
 	if len(deps) != 0 {
 		t.Fatalf("button deps = %v, want none", deps)
+	}
+
+	// pagination.gsx imports ui/icon (ChevronLeft/ChevronRight/Ellipsis) and
+	// PaginationLink calls button.gsx's package-private base/variantClass/
+	// sizeClass helpers directly (flat package, no import needed for that
+	// edge — resolved via declIndex, same shape as dialog's button dep).
+	deps, err = registry.Deps("pagination")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(deps, []string{"button", "icon"}) {
+		t.Fatalf("pagination deps = %v, want [button icon]", deps)
+	}
+
+	// button-group.gsx has no icon import; ButtonGroupSeparator calls
+	// ui.Separator directly (flat package intra-package edge, same shape as
+	// dialog's button dep).
+	deps, err = registry.Deps("button-group")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(deps, []string{"separator"}) {
+		t.Fatalf("button-group deps = %v, want [separator]", deps)
 	}
 
 	deps, err = registry.Deps("icon")

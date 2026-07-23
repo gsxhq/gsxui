@@ -70,6 +70,13 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
 - WIN: `type="button"` before `{ attrs... }` makes it an overridable default — positional spread precedence replaces prop-ordering conventions.
 - WIN: `cva()` replaced by plain Go variant/size funcs shared by both branches.
 
+## button-group
+- WIN: shadcn's `buttonGroupVariants` cva map (`orientation`: horizontal/vertical) picks between two entirely static class blocks by the JS-resolved prop value — there are no `data-[orientation=...]:` selectors in `registry/new-york-v4/ui/button-group.tsx` to preserve. Ported via a `switch` inside `class={}`, the same idiom as badge/alert, not a CSS-side data-attribute selector.
+- ADAPT: `data-orientation` is still stamped on `ButtonGroup`'s root via the house `|> default("horizontal")` pattern (see button.gsx/dropdown.gsx), for consistency with every other data-variant stamp in this codebase. shadcn's own `data-orientation={orientation}` leaves the attribute entirely unset when `orientation` is undefined (no defaulting on the raw prop, only inside the cva call) — a narrow, cosmetic divergence.
+- GAP (narrow): `ButtonGroupText`'s `asChild` tag-swapping is dropped, same shape as button's own `asChild`; always renders a `<div>`.
+- NOTE: `ButtonGroupText` carries no `data-slot` in shadcn's own source either (every other button-group part does) — ported as-is, not "fixed," per the token-for-token rule.
+- WIN: `ButtonGroupSeparator` calls `ui.Separator` directly (flat package, no re-implementation) — the `button-group` → `separator` dependency `internal/registry` derives and `registry_test.go` pins. Its `orientation = "vertical"` default (the opposite of `Separator`'s own `"horizontal"`) is resolved before the call via the same `|> default` mechanism, since `Separator`'s own default is baked into its own component.
+
 ## card
 - Straight port; package-namespaced compound parts (`card.CardHeader`) replace module exports. No divergences.
 
@@ -120,6 +127,14 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
 ## label
 - Straight port of the rendered markup: shadcn wraps Radix's `LabelPrimitive.Root`, which is itself a plain `<label>`.
 - GAP (narrow, accepted): Radix's `onMouseDown` handler, which calls `preventDefault()` on multi-click to stop text selection inside the label, is not ported (no client JS for this component). Low impact — the base class already carries `select-none`, which suppresses text selection via CSS regardless.
+
+## pagination
+- Straight port; no dropped tokens. shadcn's own `pagination.tsx` has no Radix primitive underneath either — every part (`Pagination`/`PaginationContent`/`PaginationItem`/`PaginationLink`/`PaginationPrevious`/`PaginationNext`/`PaginationEllipsis`) is already a plain styled `<nav>`/`<ul>`/`<li>`/`<a>`/`<span>`, the same shape as breadcrumb.
+- WIN: `PaginationLink` composes button.gsx's package-private `base`/`variantClass`/`sizeClass` helpers directly (flat package, no re-implementation of `buttonVariants`) — the same call `Button` itself makes. This is the `pagination` → `button` dependency `internal/registry` derives (via `declIndex`, the same intra-package-edge shape as dialog → button) and `registry_test.go` pins.
+- MECHANISM: `isActive`'s conditional `aria-current="page"` — present only when true, entirely absent (not merely empty) when false — uses gsx's `{ if cond { attr=value } }` conditional-attribute syntax, standing in for shadcn's `aria-current={isActive ? "page" : undefined}`.
+- ADAPT: `size` defaults to `"icon"` (`PaginationLinkProps`' own `size = "icon"` default) rather than Button's `"default"` zero-value size — resolved in a small `{{ }}` prelude block (same mechanism as tabs.gsx's `state`/`tabindex` locals) before the class composition, since gsx's `|> default` pipe only applies at an expression's own top level and can't nest inside a `sizeClass(...)` call argument.
+- WIN: `PaginationPrevious`/`PaginationNext` hardcode their own icon+label content exactly like shadcn's versions (no `children` param) — matching React's own behavior, where a component's literal JSX children always win over anything spread from `...props`, so a caller-supplied `children` prop would have been silently ignored in the original too.
+- MECHANISM: `ChevronLeft`/`ChevronRight` (`PaginationPrevious`/`PaginationNext`) and `Ellipsis` (`PaginationEllipsis`, Lucide's `MoreHorizontal` — see breadcrumb's own `Ellipsis` entry) come from `ui/icon` — the `pagination` → `icon` dependency `internal/registry` derives and `registry_test.go` pins.
 
 ## progress
 - ADAPT: shadcn's `Progress` wraps Radix's `ProgressPrimitive.Root`/`ProgressPrimitive.Indicator` pair (`registry/new-york-v4/ui/progress.tsx`), driven by no client state of its own (a plain controlled `value` prop) but still routed through Radix's component machinery. This port replaces both with two plain `<div>`s and zero client JS — `role="progressbar"` plus `aria-valuemin="0"`/`aria-valuemax="100"`/`aria-valuenow={value}` (stamped directly, no `data-state`/`data-value`/`data-max` — nothing in shadcn's own class strings selects on those, so there is nothing for them to drive here) replace what Radix's `Root` stamps internally. Both divs' class strings are carried token-for-token.
