@@ -67,63 +67,93 @@ func capitalize(s string) string {
 	return strings.ToUpper(s[:1]) + s[1:]
 }
 
-//line component.gsx:65:1
+// shadcnSlug maps gsxui component names to the slug shadcn/ui uses under
+// ui.shadcn.com/docs/components/{slug} — most names match verbatim, but a
+// handful of gsxui components were renamed off their shadcn source (e.g.
+// switchctl, since "switch" is a reserved Go keyword — see
+// ui/switchctl/switch.gsx) or restructured (selectbox splits shadcn's
+// Select; dropdown ports DropdownMenu). Names not present here pass through
+// unchanged.
+var shadcnSlug = map[string]string{
+	"switchctl": "switch",
+	"selectbox": "select",
+	"dropdown":  "dropdown-menu",
+	"radio":     "radio-group",
+}
+
+// shadcnName resolves a gsxui component name to its shadcn/ui docs slug,
+// passing the name through unchanged when no rename is on record.
+func shadcnName(name string) string {
+	if slug, ok := shadcnSlug[name]; ok {
+		return slug
+	}
+	return name
+}
+
+//line component.gsx:88:1
 func (c Component) Page(props ComponentProps) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line component.gsx:66:2
+//line component.gsx:89:2
 		_gsxgw.NodeResult(_gsxrenderLayout(ctx, _gsxgw, props.Title, props.Name, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line component.gsx:67:3
+//line component.gsx:90:3
 			_gsxgw.S("<div class=\"flex flex-col gap-10 py-10\">")
-//line component.gsx:68:4
+//line component.gsx:91:4
 			_gsxgw.S("<h1 class=\"text-3xl font-semibold tracking-tight\">")
-//line component.gsx:68:54
+//line component.gsx:91:54
 			_gsxgw.Text(string(props.Title))
 			_gsxgw.S("</h1>")
-//line component.gsx:69:4
+//line component.gsx:92:4
 			for _, ex := range props.Examples {
-//line component.gsx:70:5
+//line component.gsx:93:5
 				_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line component.gsx:71:6
+//line component.gsx:94:6
 				_gsxgw.S("<h2 class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">")
-//line component.gsx:71:84
+//line component.gsx:94:84
 				_gsxgw.Text(string(ex.Title))
 				_gsxgw.S("</h2>")
-//line component.gsx:72:6
+//line component.gsx:95:6
 				_gsxgw.S("<div class=\"border rounded-lg p-8 bg-background\">")
-//line component.gsx:73:7
+//line component.gsx:96:7
 				_gsxgw.Node(ctx, ex.Node)
 				_gsxgw.S("</div>")
-//line component.gsx:75:6
+//line component.gsx:98:6
 				_gsxgw.S("<div class=\"relative\"")
 				_gsxgw.BoolAttr("data-site-example", true)
 				_gsxgw.S(">")
-//line component.gsx:76:7
+//line component.gsx:99:7
 				_gsxgw.S("<pre class=\"overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground\">")
-//line component.gsx:76:109
+//line component.gsx:99:109
 				_gsxgw.S("<code>")
-//line component.gsx:76:115
+//line component.gsx:99:115
 				_gsxgw.Text(string(ex.Source))
 				_gsxgw.S("</code></pre>")
-//line component.gsx:77:7
+//line component.gsx:100:7
 				_gsxgw.S("<button type=\"button\"")
 				_gsxgw.BoolAttr("data-site-copy", true)
 				_gsxgw.S(" class=\"absolute right-2 top-2 rounded-md border border-border bg-background px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground\">Copy</button></div></section>")
 			}
-//line component.gsx:87:4
+//line component.gsx:110:4
 			_gsxgw.S("<footer class=\"flex flex-col gap-3 border-t border-border pt-6 text-sm text-muted-foreground\">")
-//line component.gsx:88:5
+//line component.gsx:111:5
 			_gsxgw.S("<pre class=\"overflow-x-auto rounded-lg border border-border bg-card p-4 text-card-foreground\">")
-//line component.gsx:88:99
+//line component.gsx:111:99
 			_gsxgw.S("<code>")
-//line component.gsx:88:105
+//line component.gsx:111:105
 			_gsxgw.Text(string("gsxui add " + props.Name))
 			_gsxgw.S("</code></pre>")
-//line component.gsx:89:5
-			_gsxgw.S("<a href=\"")
-			_gsxgw.URL(string("https://ui.shadcn.com/docs/components/" + props.Name))
-			_gsxgw.S("\" target=\"_blank\" rel=\"noreferrer\" class=\"underline underline-offset-4 hover:text-foreground\">View the original on shadcn/ui</a></footer></div>")
+//line component.gsx:112:5
+			if props.Name == "icon" {
+//line component.gsx:113:6
+				_gsxgw.S("<a href=\"https://lucide.dev\" target=\"_blank\" rel=\"noreferrer\" class=\"underline underline-offset-4 hover:text-foreground\">View the icon set on lucide.dev</a>")
+			} else {
+//line component.gsx:122:6
+				_gsxgw.S("<a href=\"")
+				_gsxgw.URL(string("https://ui.shadcn.com/docs/components/" + shadcnName(props.Name)))
+				_gsxgw.S("\" target=\"_blank\" rel=\"noreferrer\" class=\"underline underline-offset-4 hover:text-foreground\">View the original on shadcn/ui</a>")
+			}
+			_gsxgw.S("</footer></div>")
 			return _gsxgw.Err()
 		})))
 		return _gsxgw.Err()

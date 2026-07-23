@@ -68,7 +68,8 @@ the binary, served without a dev proxy):
     make site
 
 Either way, open the printed URL (`make site-dev` prints Vite's dev URL;
-`make site` serves directly on `$GO_PORT`, default 7777).
+`make site` serves directly on `$GO_PORT`, falling back to `$PORT`, then
+8080, if neither is set).
 
 ### Deploying
 

@@ -17,6 +17,7 @@ test: generate
 check: test
 	@git diff --exit-code -- '*.x.go' || { echo "error: generated .x.go drifted — commit regenerated output"; exit 1; }
 	@test -z "$$(git status --porcelain -- '*.x.go' | grep '^??')" || { echo "error: untracked .x.go files"; exit 1; }
+	@test -f site/dist/.gitkeep || { echo "error: site/dist/.gitkeep missing (vite build deletes it — restore before commit)"; exit 1; }
 	@for f in $$(find ui -name '*.js'); do node --check $$f || exit 1; done
 	gofmt -l . | (! grep .)
 
@@ -32,5 +33,6 @@ site-dev:
 # embedded dist/ instead of proxying to a dev server).
 site:
 	npx vite build
+	@touch site/dist/.gitkeep
 	go tool gsx generate
 	go run ./site

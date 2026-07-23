@@ -55,7 +55,7 @@ func TestSeparatorPinned(t *testing.T) {
 	// Separator (registry/new-york-v4/ui/separator.tsx) and
 	// docs/jsx-parity.md — decorative is dropped (ADAPT), role="none" always.
 	got := render(t, separator.Separator("", nil))
-	want := `<div data-slot="separator" role="none" data-orientation="horizontal" class="shrink-0 bg-border data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px"/>`
+	want := `<div data-slot="separator" role="none" data-orientation="horizontal" class="shrink-0 bg-border data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px"></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

@@ -62,6 +62,29 @@ func capitalize(s string) string {
 	return strings.ToUpper(s[:1]) + s[1:]
 }
 
+// shadcnSlug maps gsxui component names to the slug shadcn/ui uses under
+// ui.shadcn.com/docs/components/{slug} — most names match verbatim, but a
+// handful of gsxui components were renamed off their shadcn source (e.g.
+// switchctl, since "switch" is a reserved Go keyword — see
+// ui/switchctl/switch.gsx) or restructured (selectbox splits shadcn's
+// Select; dropdown ports DropdownMenu). Names not present here pass through
+// unchanged.
+var shadcnSlug = map[string]string{
+	"switchctl": "switch",
+	"selectbox": "select",
+	"dropdown":  "dropdown-menu",
+	"radio":     "radio-group",
+}
+
+// shadcnName resolves a gsxui component name to its shadcn/ui docs slug,
+// passing the name through unchanged when no rename is on record.
+func shadcnName(name string) string {
+	if slug, ok := shadcnSlug[name]; ok {
+		return slug
+	}
+	return name
+}
+
 component (c Component) Page(props ComponentProps) {
 	<Layout title={ props.Title } active={ props.Name }>
 		<div class="flex flex-col gap-10 py-10">
@@ -86,14 +109,25 @@ component (c Component) Page(props ComponentProps) {
 			} }
 			<footer class="flex flex-col gap-3 border-t border-border pt-6 text-sm text-muted-foreground">
 				<pre class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-card-foreground"><code>{ "gsxui add " + props.Name }</code></pre>
-				<a
-					href={ "https://ui.shadcn.com/docs/components/" + props.Name }
-					target="_blank"
-					rel="noreferrer"
-					class="underline underline-offset-4 hover:text-foreground"
-				>
-					View the original on shadcn/ui
-				</a>
+				{ if props.Name == "icon" {
+					<a
+						href="https://lucide.dev"
+						target="_blank"
+						rel="noreferrer"
+						class="underline underline-offset-4 hover:text-foreground"
+					>
+						View the icon set on lucide.dev
+					</a>
+				} else {
+					<a
+						href={ "https://ui.shadcn.com/docs/components/" + shadcnName(props.Name) }
+						target="_blank"
+						rel="noreferrer"
+						class="underline underline-offset-4 hover:text-foreground"
+					>
+						View the original on shadcn/ui
+					</a>
+				} }
 			</footer>
 		</div>
 	</Layout>

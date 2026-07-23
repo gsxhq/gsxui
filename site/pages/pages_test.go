@@ -147,6 +147,43 @@ func TestComponentPageRoute(t *testing.T) {
 		}
 	})
 
+	// Task-6-review representative: proves a renamed component's footer
+	// link points at shadcn's actual slug (switchctl→switch), not the
+	// gsxui directory name verbatim, which would 404 on ui.shadcn.com.
+	t.Run("renamed component (switchctl) links to shadcn's switch slug", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/components/switchctl", nil)
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+
+		if rec.Code != http.StatusOK {
+			t.Fatalf("GET /components/switchctl = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
+		}
+		body := rec.Body.String()
+		if !strings.Contains(body, `ui.shadcn.com/docs/components/switch"`) {
+			t.Errorf(`response missing shadcn link to renamed slug "switch"; body:\n%s`, body)
+		}
+	})
+
+	// icon has no shadcn/ui counterpart (it ports Lucide directly), so the
+	// footer must not link ui.shadcn.com/docs/components/icon (404) and
+	// should point at lucide.dev instead.
+	t.Run("icon links to lucide.dev instead of shadcn", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/components/icon", nil)
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+
+		if rec.Code != http.StatusOK {
+			t.Fatalf("GET /components/icon = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
+		}
+		body := rec.Body.String()
+		if !strings.Contains(body, "lucide.dev") {
+			t.Errorf("response missing lucide.dev link; body:\n%s", body)
+		}
+		if strings.Contains(body, "ui.shadcn.com/docs/components/icon") {
+			t.Errorf("response should not link ui.shadcn.com/docs/components/icon (404); body:\n%s", body)
+		}
+	})
+
 	t.Run("unknown component", func(t *testing.T) {
 		req := httptest.NewRequest(http.MethodGet, "/components/nope", nil)
 		rec := httptest.NewRecorder()
