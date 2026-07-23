@@ -43,10 +43,15 @@ func TestTooltipTriggerType(t *testing.T) {
 
 func TestTooltipContentCallerClassMerges(t *testing.T) {
 	// Caller z-10 must WIN over base z-50 via tailwind-merge — and base
-	// structural classes must survive.
+	// structural classes must survive. Scope the z-50 check to the CONTENT
+	// element's class attribute (the first one): the arrow child span
+	// legitimately carries its own z-50 (shadcn's Arrow classes verbatim),
+	// which the caller's class on the content must not touch.
 	got := render(t, ui.TooltipContent(gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "z-10"}}))
-	if strings.Contains(got, "z-50") {
-		t.Errorf("base z-50 should be dropped by caller z-10\nin: %s", got)
+	contentClass := got[strings.Index(got, `class="`)+len(`class="`):]
+	contentClass = contentClass[:strings.Index(contentClass, `"`)]
+	if strings.Contains(contentClass, "z-50") {
+		t.Errorf("base z-50 should be dropped by caller z-10\ncontent class: %s", contentClass)
 	}
 	for _, want := range []string{"z-10", "rounded-md", "bg-foreground"} {
 		if !strings.Contains(got, want) {
@@ -83,10 +88,12 @@ func TestTooltipPinned(t *testing.T) {
 	// Exact full-render pin for TooltipContent, verified token-by-token
 	// against shadcn's TooltipContent classes (registry/new-york-v4/ui/
 	// tooltip.tsx) and docs/jsx-parity.md's ADAPT: popover="manual"/role=
-	// "tooltip"/data-state replace Radix's Portal+Content wiring; the Arrow
-	// part is dropped.
+	// "tooltip"/data-state replace Radix's Portal+Content wiring. The Arrow
+	// ports as a static child span: our tooltip is always JS-anchored above
+	// the trigger, so the diamond always straddles the bubble's
+	// bottom-center — no Radix side-tracking slot needed.
 	got := render(t, ui.TooltipContent(gsx.Raw("Add to library"), nil))
-	want := `<div data-slot="tooltip-content" data-gsxui-tooltip-content popover="manual" role="tooltip" data-state="closed" class="z-50 w-fit origin-bottom animate-in rounded-md bg-foreground px-3 py-1.5 text-xs text-balance text-background fade-in-0 zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95">Add to library</div>`
+	want := `<div data-slot="tooltip-content" data-gsxui-tooltip-content popover="manual" role="tooltip" data-state="closed" data-side="top" class="z-50 w-fit origin-bottom animate-in rounded-md bg-foreground px-3 py-1.5 text-xs text-balance text-background overflow-visible fade-in-0 zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95">Add to library<span data-slot="tooltip-arrow" class="absolute top-full left-1/2 z-50 size-2.5 -translate-x-1/2 -translate-y-[calc(50%+2px)] rotate-45 rounded-[2px] bg-foreground"></span></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

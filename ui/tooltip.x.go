@@ -17,14 +17,17 @@ import (
 // JS adds fixed-position anchoring above the trigger rect (CSS anchor
 // positioning is not yet Baseline — see docs/jsx-parity.md), a 300ms open
 // delay, and state/event sync. Radix's TooltipProvider delay-group
-// machinery and the Arrow part are not ported (see docs/jsx-parity.md).
-// Requires the tooltip behavior module (ui/tooltip/tooltip.js).
+// machinery is not ported (see docs/jsx-parity.md); the Arrow ports as a
+// static child span in TooltipContent (the tooltip is always anchored
+// above the trigger, so the diamond always sits bottom-center — no Radix
+// side-tracking slot needed). Requires the tooltip behavior module
+// (ui/tooltip.js).
 
-//line tooltip.gsx:14:1
+//line tooltip.gsx:17:1
 func Tooltip(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line tooltip.gsx:15:2
+//line tooltip.gsx:18:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"tooltip\"")
@@ -38,18 +41,18 @@ func Tooltip(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line tooltip.gsx:15:76
+//line tooltip.gsx:18:76
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line tooltip.gsx:18:1
+//line tooltip.gsx:21:1
 func TooltipTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line tooltip.gsx:19:2
+//line tooltip.gsx:22:2
 		_gsxgw.S("<button")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"tooltip-trigger\"")
@@ -64,7 +67,7 @@ func TooltipTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line tooltip.gsx:19:92
+//line tooltip.gsx:22:92
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
@@ -74,13 +77,19 @@ func TooltipTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // TooltipContent renders the popover. popover="manual" is load-bearing:
 // "auto" popovers light-dismiss on outside pointerdown, which would race
 // tooltip.js's own pointerout/focusout hide logic. data-state is
-// server-rendered "closed" and kept in sync by tooltip.js.
+// server-rendered "closed" and kept in sync by tooltip.js. data-side="top"
+// is server-rendered statically — tooltip.js always anchors above the
+// trigger, so shadcn's data-[side=top]:slide-in-from-bottom-2 enter slide
+// applies without Radix's runtime side tracking. overflow-visible is a
+// popover-port ADAPT (same family as inset:auto): the UA styles popovers
+// overflow:auto, which would clip the protruding arrow span and grow a
+// scrollbar instead of showing the diamond.
 
-//line tooltip.gsx:26:1
+//line tooltip.gsx:35:1
 func TooltipContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line tooltip.gsx:27:2
+//line tooltip.gsx:36:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"tooltip-content\"")
@@ -97,15 +106,19 @@ func TooltipContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		if !attrs.Has("data-state") {
 			_gsxgw.S(" data-state=\"closed\"")
 		}
+		if !attrs.Has("data-side") {
+			_gsxgw.S(" data-side=\"top\"")
+		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("z-50 w-fit origin-bottom animate-in rounded-md bg-foreground px-3 py-1.5 text-xs text-balance text-background fade-in-0 zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("z-50 w-fit origin-bottom animate-in rounded-md bg-foreground px-3 py-1.5 text-xs text-balance text-background overflow-visible fade-in-0 zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line tooltip.gsx:35:3
+//line tooltip.gsx:46:3
 		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
+//line tooltip.gsx:47:3
+		_gsxgw.S("<span data-slot=\"tooltip-arrow\" class=\"absolute top-full left-1/2 z-50 size-2.5 -translate-x-1/2 -translate-y-[calc(50%+2px)] rotate-45 rounded-[2px] bg-foreground\"></span></div>")
 		return _gsxgw.Err()
 	})
 }

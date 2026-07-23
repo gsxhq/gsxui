@@ -1,6 +1,12 @@
 /* gsxui theme — shadcn-compatible tokens on Tailwind v4.
    Generated themes (theme editor / tweakcn) replace the :root and .dark blocks. */
 @import "tailwindcss";
+/* Keyframes for the animate-in/animate-out (fade/zoom/slide) classes the
+   components carry — Tailwind v4 core does not define them; without this
+   import every animate-* token is silently dead. Ship it in package.json
+   alongside tailwindcss (npm install tw-animate-css), exactly as shadcn's
+   own v4 globals.css does. */
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 

@@ -153,109 +153,125 @@ func (g GettingStarted) Page() _gsxrt.Node {
 //line getting_started.gsx:98:19
 			_gsxgw.S("<code>gsx</code> tool via ")
 //line getting_started.gsx:98:45
-			_gsxgw.S("<code>go get -tool</code>.</p></section>")
-//line getting_started.gsx:102:4
+			_gsxgw.S("<code>go get -tool</code>.</p>")
+//line getting_started.gsx:100:5
+			_gsxgw.S("<p class=\"text-muted-foreground\">")
+//line getting_started.gsx:101:6
+			_gsxgw.S("<code>web/gsxui.css</code> begins with")
+//line getting_started.gsx:102:6
+			_gsxgw.S("<code>@import \"tailwindcss\"</code> and")
+//line getting_started.gsx:103:6
+			_gsxgw.S("<code>@import \"tw-animate-css\"</code> — your Tailwind build resolves both from npm, so make sure they're installed:")
+//line getting_started.gsx:105:6
+			_gsxgw.S("<code>npm install tailwindcss @tailwindcss/vite tw-animate-css</code>. Without ")
+//line getting_started.gsx:106:14
+			_gsxgw.S("<code>tw-animate-css</code> every")
+//line getting_started.gsx:107:6
+			_gsxgw.S("<code>animate-in</code>/")
+//line getting_started.gsx:107:30
+			_gsxgw.S("<code>animate-out</code> class the components carry (dialog, dropdown, tooltip) is silently inert.</p></section>")
+//line getting_started.gsx:112:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line getting_started.gsx:103:5
+//line getting_started.gsx:113:5
 			_gsxgw.S("<h2 class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">3. Add components</h2>")
-//line getting_started.gsx:104:5
+//line getting_started.gsx:114:5
 			_gsxgw.S("<pre class=\"overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground\">")
-//line getting_started.gsx:104:107
+//line getting_started.gsx:114:107
 			_gsxgw.S("<code>")
-//line getting_started.gsx:104:113
+//line getting_started.gsx:114:113
 			_gsxgw.Text(string(gsAddSnippet))
 			_gsxgw.S("</code></pre>")
-//line getting_started.gsx:105:5
+//line getting_started.gsx:115:5
 			_gsxgw.S("<pre class=\"overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground\">")
-//line getting_started.gsx:105:107
+//line getting_started.gsx:115:107
 			_gsxgw.S("<code>")
-//line getting_started.gsx:105:113
+//line getting_started.gsx:115:113
 			_gsxgw.Text(string(gsAddOutput))
 			_gsxgw.S("</code></pre>")
-//line getting_started.gsx:106:5
+//line getting_started.gsx:116:5
 			_gsxgw.S("<p class=\"text-muted-foreground\">")
-//line getting_started.gsx:107:6
+//line getting_started.gsx:117:6
 			_gsxgw.S("<code>card</code> has no dependencies of its own, but a component that does (e.g. ")
-//line getting_started.gsx:108:12
+//line getting_started.gsx:118:12
 			_gsxgw.S("<code>select</code>, which needs ")
-//line getting_started.gsx:108:45
+//line getting_started.gsx:118:45
 			_gsxgw.S("<code>icon</code>) pulls its dependency in automatically — ")
-//line getting_started.gsx:109:38
+//line getting_started.gsx:119:38
 			_gsxgw.S("<code>gsxui add select</code> vendors")
-//line getting_started.gsx:110:6
+//line getting_started.gsx:120:6
 			_gsxgw.S("<code>icon</code> too. You own every file this writes:")
-//line getting_started.gsx:111:6
+//line getting_started.gsx:121:6
 			_gsxgw.S("<code>gsxui add</code> never touches one you've already modified unless you pass ")
-//line getting_started.gsx:112:11
+//line getting_started.gsx:122:11
 			_gsxgw.S("<code>--overwrite</code>. After upgrading the ")
-//line getting_started.gsx:112:57
+//line getting_started.gsx:122:57
 			_gsxgw.S("<code>gsxui</code> binary, re-run ")
-//line getting_started.gsx:113:13
+//line getting_started.gsx:123:13
 			_gsxgw.S("<code>gsxui add &lt;name&gt; --overwrite</code> to refresh vendored components — that discards local edits to those files.</p></section>")
-//line getting_started.gsx:118:4
+//line getting_started.gsx:128:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line getting_started.gsx:119:5
+//line getting_started.gsx:129:5
 			_gsxgw.S("<h2 class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">4. Your first page</h2>")
-//line getting_started.gsx:120:5
+//line getting_started.gsx:130:5
 			_gsxgw.S("<p class=\"text-muted-foreground\">A tiny two-file app: ")
-//line getting_started.gsx:121:27
+//line getting_started.gsx:131:27
 			_gsxgw.S("<code>home.gsx</code> renders a ")
-//line getting_started.gsx:121:59
+//line getting_started.gsx:131:59
 			_gsxgw.S("<code>Card</code> around a")
-//line getting_started.gsx:122:6
+//line getting_started.gsx:132:6
 			_gsxgw.S("<code>Button</code>, and ")
-//line getting_started.gsx:122:31
+//line getting_started.gsx:132:31
 			_gsxgw.S("<code>main.go</code> serves it.</p>")
-//line getting_started.gsx:124:5
+//line getting_started.gsx:134:5
 			_gsxgw.S("<pre class=\"overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground\">")
-//line getting_started.gsx:124:107
+//line getting_started.gsx:134:107
 			_gsxgw.S("<code>")
-//line getting_started.gsx:124:113
+//line getting_started.gsx:134:113
 			_gsxgw.Text(string(gsPageGsx))
 			_gsxgw.S("</code></pre>")
-//line getting_started.gsx:125:5
+//line getting_started.gsx:135:5
 			_gsxgw.S("<pre class=\"overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground\">")
-//line getting_started.gsx:125:107
+//line getting_started.gsx:135:107
 			_gsxgw.S("<code>")
-//line getting_started.gsx:125:113
+//line getting_started.gsx:135:113
 			_gsxgw.Text(string(gsMainGo))
 			_gsxgw.S("</code></pre>")
-//line getting_started.gsx:126:5
+//line getting_started.gsx:136:5
 			_gsxgw.S("<p class=\"text-muted-foreground\">Compile the ")
-//line getting_started.gsx:126:50
+//line getting_started.gsx:136:50
 			_gsxgw.S("<code>.gsx</code> file to plain Go, then run it:</p>")
-//line getting_started.gsx:127:5
+//line getting_started.gsx:137:5
 			_gsxgw.S("<pre class=\"overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground\">")
-//line getting_started.gsx:127:107
+//line getting_started.gsx:137:107
 			_gsxgw.S("<code>")
-//line getting_started.gsx:127:113
+//line getting_started.gsx:137:113
 			_gsxgw.Text(string(gsGenerateSnippet))
 			_gsxgw.S("</code></pre>")
-//line getting_started.gsx:128:5
+//line getting_started.gsx:138:5
 			_gsxgw.S("<p class=\"text-muted-foreground\">(silent on success — it writes ")
-//line getting_started.gsx:129:39
+//line getting_started.gsx:139:39
 			_gsxgw.S("<code>home.x.go</code> next to")
-//line getting_started.gsx:130:6
+//line getting_started.gsx:140:6
 			_gsxgw.S("<code>home.gsx</code> and exits 0)</p>")
-//line getting_started.gsx:132:5
+//line getting_started.gsx:142:5
 			_gsxgw.S("<pre class=\"overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground\">")
-//line getting_started.gsx:132:107
+//line getting_started.gsx:142:107
 			_gsxgw.S("<code>")
-//line getting_started.gsx:132:113
+//line getting_started.gsx:142:113
 			_gsxgw.Text(string(gsRunSnippet))
 			_gsxgw.S("</code></pre>")
-//line getting_started.gsx:133:5
+//line getting_started.gsx:143:5
 			_gsxgw.S("<pre class=\"overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground\">")
-//line getting_started.gsx:133:107
+//line getting_started.gsx:143:107
 			_gsxgw.S("<code>")
-//line getting_started.gsx:133:113
+//line getting_started.gsx:143:113
 			_gsxgw.Text(string(gsRunOutput))
 			_gsxgw.S("</code></pre>")
-//line getting_started.gsx:134:5
+//line getting_started.gsx:144:5
 			_gsxgw.S("<p class=\"text-muted-foreground\">Open ")
-//line getting_started.gsx:135:11
+//line getting_started.gsx:145:11
 			_gsxgw.S("<code>http://localhost:8080</code> — a styled Card with a Button inside, rendered with gsxui's default light theme. Next:")
-//line getting_started.gsx:137:6
+//line getting_started.gsx:147:6
 			_gsxgw.S("<a")
 			_gsxv1, _gsxerr := _gsxf0.URLFor(ctx, (Theming{}))
 			if _gsxerr != nil {

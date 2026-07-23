@@ -97,6 +97,16 @@ component (g GettingStarted) Page() {
 					<code>go get</code>s <code>gsx</code> and <code>tailwind-merge-go</code>, and
 					installs the <code>gsx</code> tool via <code>go get -tool</code>.
 				</p>
+				<p class="text-muted-foreground">
+					<code>web/gsxui.css</code> begins with
+					<code>@import "tailwindcss"</code> and
+					<code>@import "tw-animate-css"</code> — your Tailwind build resolves
+					both from npm, so make sure they're installed:
+					<code>npm install tailwindcss @tailwindcss/vite tw-animate-css</code>.
+					Without <code>tw-animate-css</code> every
+					<code>animate-in</code>/<code>animate-out</code> class the components
+					carry (dialog, dropdown, tooltip) is silently inert.
+				</p>
 			</section>
 
 			<section class="flex flex-col gap-3">

@@ -12,10 +12,15 @@ function show(trigger) {
   const r = trigger.getBoundingClientRect();
   content.style.position = "fixed";
   content.style.inset = "auto";
-  content.style.left = `${r.left + r.width / 2}px`;
-  content.style.top = `${r.top - 6}px`;
-  content.style.transform = "translate(-50%, -100%)";
   content.showPopover();
+  // Position numerically AFTER showing (hidden popovers have no box) and
+  // never via transform: the animate-in enter keyframes animate transform,
+  // so a positioning translate would be overridden for the animation's
+  // duration — the tooltip would enter at the untranslated spot and snap.
+  // offsetWidth/Height are layout sizes, unaffected by the in-flight
+  // enter scale.
+  content.style.left = `${r.left + r.width / 2 - content.offsetWidth / 2}px`;
+  content.style.top = `${r.top - 6 - content.offsetHeight}px`;
   content.dataset.state = "open";
   emit(content, "gsxui:open");
 }

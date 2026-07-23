@@ -2,6 +2,10 @@
    assets/gsxui.css (the file `gsxui init` vendors into consumer projects) so
    the site styles itself exactly the way a real gsxui consumer would. */
 @import "tailwindcss";
+/* Keyframes for the animate-in/out classes the components carry — mirrors
+   assets/gsxui.css (and shadcn's v4 globals.css); without it every
+   animate-* token is silently dead. */
+@import "tw-animate-css";
 
 /* Scan gsxui's own component sources and the site's pages for class names —
    .gsx is not one of Tailwind's default-recognized extensions, so without
