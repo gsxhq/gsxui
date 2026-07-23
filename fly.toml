@@ -1,0 +1,32 @@
+# fly.toml — deploys the gsxui showcase site (ui.gsxhq.dev) to Fly.io.
+#
+# Reuses site/Dockerfile unchanged (build context = repo root, same as the
+# Cloud Run path documented in that file's header — Fly builds from the
+# directory holding this file and honors .dockerignore). The container binds
+# $PORT (Dockerfile sets ENV PORT=8080; site/main.go reads it with a 7777
+# fallback), matching internal_port below.
+#
+# Deploy from the repo root: flyctl deploy
+# Custom domain (once): flyctl certs add ui.gsxhq.dev
+#   then add a CNAME for "ui" → gsxui-site.fly.dev at the gsxhq.dev DNS host.
+
+app = "gsxui-site"
+primary_region = "lhr"
+
+[build]
+  dockerfile = "site/Dockerfile"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  # Scale-to-zero: the showcase is low-traffic; a stopped machine restarts
+  # on the first request (~sub-second for this distroless static binary).
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+# 256mb is plenty for a static-content Go binary and keeps the bill safely
+# inside the Legacy Hobby <$5/mo waiver even if a machine runs continuously.
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"

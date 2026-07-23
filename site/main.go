@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -37,6 +38,50 @@ func listenPort(getenv func(string) string) string {
 	return cmp.Or(getenv("GO_PORT"), getenv("PORT"), "7777")
 }
 
+// immutableAssets marks the Vite bundle under /static/assets/ cacheable
+// forever: those filenames carry a content hash, so a changed file is a new
+// URL and stale copies are unreachable by construction. The prefix check is
+// the fingerprint guarantee — anything else under /static/ (e.g. the Vite
+// manifest) is not hashed and must not get a forever header.
+func immutableAssets(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasPrefix(r.URL.Path, "/static/assets/") {
+			w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+// pageCache stamps rendered pages cacheable at the CDN edge (Cloudflare
+// sits proxied in front of ui.gsxhq.dev): browsers always revalidate
+// (max-age=0) so a deploy is visible immediately to direct visitors, while
+// the edge may hold a copy for s-maxage to absorb traffic without waking a
+// stopped Fly machine. The pages are fully static — no per-user content —
+// so shared caching is unconditionally safe. errorHandler must clear this
+// header before writing a failure (a cached 404/500 would outlive the
+// fault).
+func pageCache(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=300")
+		next.ServeHTTP(w, r)
+	})
+}
+
+// errorHandler is the structpages error handler. It clears the Cache-Control
+// header pageCache stamped before routing ran — http.Error does not remove
+// preset headers, and an edge-cached error page would keep serving after the
+// underlying fault (or missing route) is fixed.
+func errorHandler(w http.ResponseWriter, r *http.Request, err error) {
+	w.Header().Del("Cache-Control")
+	var se pages.ErrorWithStatus
+	if errors.As(err, &se) {
+		http.Error(w, se.Message, se.Status)
+		return
+	}
+	log.Printf("error rendering %s: %v", r.URL.Path, err)
+	http.Error(w, "internal server error", http.StatusInternalServerError)
+}
+
 func main() {
 	devURL := os.Getenv("VITE_DEV_URL") // "" in prod
 	v, err := vite.New(vite.Config{DevURL: devURL, DevBase: "/__vite/", Dist: distFS, DistDir: "dist"})
@@ -49,21 +94,22 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 	})
 	if !v.Dev() {
-		mux.Handle("/static/", v.StaticHandler())
+		mux.Handle("/static/", immutableAssets(v.StaticHandler()))
 	}
 
-	if _, err := structpages.Mount(mux, pages.Pages{}, "/", "gsxui",
-		structpages.WithErrorHandler(func(w http.ResponseWriter, r *http.Request, err error) {
-			var se pages.ErrorWithStatus
-			if errors.As(err, &se) {
-				http.Error(w, se.Message, se.Status)
-				return
-			}
-			log.Printf("error rendering %s: %v", r.URL.Path, err)
-			http.Error(w, "internal server error", http.StatusInternalServerError)
-		}),
+	// Pages mount on their own mux so the cache middleware wraps exactly the
+	// rendered routes — never /healthz, and /static/ keeps its own policy.
+	// Dev skips the wrapper: the dev loop should never see a caching header.
+	pagesMux := http.NewServeMux()
+	if _, err := structpages.Mount(pagesMux, pages.Pages{}, "/", "gsxui",
+		structpages.WithErrorHandler(errorHandler),
 	); err != nil {
 		log.Fatal(err)
+	}
+	if v.Dev() {
+		mux.Handle("/", pagesMux)
+	} else {
+		mux.Handle("/", pageCache(pagesMux))
 	}
 
 	// v.Middleware injects *vite.Vite into each request's context so components
