@@ -1,0 +1,62 @@
+# cloudbuild.yaml — builds, pushes, and deploys the gsxui showcase site to
+# Cloud Run.
+#
+# Pattern-matched from gsx's playground deploy (../gsx/cloudbuild.yaml builds
+# + pushes; ../gsx/.github/workflows/deploy-playground-server.yml does the
+# `gcloud run deploy`) — this file folds all three into one Cloud Build
+# config so a single `gcloud builds submit` (or a Cloud Build trigger) is
+# the whole deploy.
+#
+# The Dockerfile lives at site/Dockerfile but needs the repo root as build
+# context (Vite's Tailwind @source scan reads ui/**/*.gsx + site/**/*.gsx,
+# and the Go module lives at the root) — spelled out explicitly with -f.
+#
+# Usage (from the repo root):
+#   gcloud builds submit --config cloudbuild.yaml \
+#     --substitutions _REGION=us-central1,_SERVICE=gsxui-site .
+#
+# Requires (once, outside this file): an Artifact Registry repo named "gsxui"
+# in $_REGION, and a Cloud Run runtime service account with pull access to it.
+substitutions:
+  _REGION: us-central1
+  _REPOSITORY: gsxui
+  _SERVICE: gsxui-site
+
+steps:
+  - id: build
+    name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - --platform
+      - linux/amd64
+      - -f
+      - site/Dockerfile
+      - -t
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE}:$COMMIT_SHA
+      - .
+
+  - id: push
+    name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE}:$COMMIT_SHA
+
+  - id: deploy
+    name: gcr.io/google.com/cloudsdk/cloud-sdk
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - ${_SERVICE}
+      - --project=$PROJECT_ID
+      - --region=${_REGION}
+      - --image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE}:$COMMIT_SHA
+      - --allow-unauthenticated
+      - --memory=512Mi
+      - --cpu=1
+      - --concurrency=80
+      - --min-instances=0
+      - --max-instances=3
+
+images:
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE}:$COMMIT_SHA

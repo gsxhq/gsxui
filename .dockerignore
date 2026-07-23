@@ -1,0 +1,24 @@
+# Build context for site/Dockerfile (context = repo root; see that file's
+# header comment). Keep this in sync with .gitignore where they overlap.
+
+# Reinstalled/rebuilt inside each stage — never trust the host copy.
+node_modules
+site/dist
+
+# Planning/process docs — not read by either build stage.
+.superpowers
+docs
+
+# Local dev tooling and probes, unrelated to the site build.
+dev
+
+# Go test sources aren't needed to `go build ./site`; excluding trims the
+# image-build context (test data, fixtures) without affecting the build.
+*_test.go
+
+# VCS/editor/env cruft. NOTE: do NOT add a blanket "*.md" here — the root
+# package's `//go:embed ui assets merge NOTICE.md` (embed.go) needs
+# NOTICE.md at build time; only docs/ (excluded above) is documentation-only.
+.git
+.gitignore
+.env

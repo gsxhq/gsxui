@@ -57,7 +57,13 @@ func main() {
 
 	// v.Middleware injects *vite.Vite into each request's context so components
 	// read the asset bundle from ctx (no prop threading).
-	port := cmp.Or(os.Getenv("GO_PORT"), "7777")
+	//
+	// GO_PORT (dev): set by .env / `gsx dev`, wired to vite.config.ts's proxy
+	// target — takes precedence so the dev loop is unaffected. PORT (prod):
+	// Cloud Run injects this and expects the container to bind it; 8080 is
+	// Cloud Run's own default, used as the final fallback for a bare
+	// `docker run` with neither var set.
+	port := cmp.Or(os.Getenv("GO_PORT"), os.Getenv("PORT"), "8080")
 	srv := &http.Server{Addr: ":" + port, Handler: v.Middleware(mux)}
 
 	// Serve in the background so the main goroutine can wait for a shutdown
