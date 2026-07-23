@@ -1,4 +1,5 @@
-// Package selectbox holds the site's example gsx components for ui/selectbox.
+// Package selectbox holds the site's example gsx components for ui.Select
+// ("select" is a Go keyword, so this package keeps its legacy name).
 package selectbox
 
 import "github.com/gsxhq/gsxui/ui"

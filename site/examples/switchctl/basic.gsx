@@ -1,4 +1,5 @@
-// Package switchctl holds the site's example gsx components for ui/switchctl.
+// Package switchctl holds the site's example gsx components for ui.Switch
+// ("switch" is a Go keyword, so this package keeps its legacy name).
 package switchctl
 
 import (
