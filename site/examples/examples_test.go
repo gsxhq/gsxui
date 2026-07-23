@@ -1,8 +1,11 @@
 package examples_test
 
 import (
+	"bytes"
+	"context"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/gsxhq/gsxui/site/examples"
@@ -32,6 +35,27 @@ func TestExampleSourceMatchesFile(t *testing.T) {
 				if got != string(want) {
 					t.Errorf("embedded Source(%q, %q) != on-disk %q\n--- embedded ---\n%s\n--- on-disk ---\n%s",
 						component, ex.Name, ex.SourcePath, got, string(want))
+				}
+			})
+		}
+	}
+}
+
+// TestExamplesRender is a smoke test for rendering all registered examples.
+// For every component × example pair, it calls ex.Node.Render(context.Background(), &buf),
+// fails on error, and fails if the output contains gsx's blocked-URL sentinel "about:invalid#gsx".
+func TestExamplesRender(t *testing.T) {
+	for _, component := range examples.Components() {
+		for _, ex := range examples.For(component) {
+			t.Run(component+"/"+ex.Name, func(t *testing.T) {
+				var buf bytes.Buffer
+				err := ex.Node.Render(context.Background(), &buf)
+				if err != nil {
+					t.Errorf("ex.Node.Render: %v", err)
+				}
+				output := buf.String()
+				if strings.Contains(output, "about:invalid#gsx") {
+					t.Errorf("output contains blocked URL sentinel about:invalid#gsx")
 				}
 			})
 		}
