@@ -16,6 +16,8 @@ import (
 // components" button lands here — an in-page anchor was its previous
 // target, which on desktop viewports fit entirely above the fold and so
 // visibly did nothing.
+//
+//line components_index.gsx:7:1
 type ComponentsIndex struct{}
 
 //line components_index.gsx:16:1

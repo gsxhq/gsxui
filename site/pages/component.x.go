@@ -18,6 +18,8 @@ import (
 // (registered in site/examples/registry.go), rendered live next to the
 // exact source text that produced it. Unknown/unregistered names 404 (see
 // Props below and ErrorWithStatus in pages.go).
+//
+//line component.gsx:11:1
 type Component struct{}
 
 // ComponentProps is Component's Props result.

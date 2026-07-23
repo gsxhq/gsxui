@@ -13,6 +13,8 @@ import (
 // a minimal first page, expanded from README.md with real CLI output
 // (copied from internal/cli/init.go / add.go's actual printed strings, not
 // invented).
+//
+//line getting_started.gsx:3:1
 type GettingStarted struct{}
 
 const gsInstallSnippet = `go install github.com/gsxhq/gsxui/cmd/gsxui@latest`

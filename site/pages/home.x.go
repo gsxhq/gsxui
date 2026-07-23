@@ -11,6 +11,8 @@ import (
 )
 
 // Home is the site's landing page.
+//
+//line home.gsx:7:1
 type Home struct{}
 
 const installSnippet = `go install github.com/gsxhq/gsxui/cmd/gsxui@latest
