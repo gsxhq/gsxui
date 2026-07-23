@@ -26,31 +26,42 @@ func TestEndToEnd(t *testing.T) {
 		t.Fatal(err)
 	}
 	// generate ran for real: generated files exist
-	for _, p := range []string{"ui/dialog/dialog.x.go", "ui/button/button.x.go"} {
+	for _, p := range []string{"ui/dialog.x.go", "ui/button.x.go"} {
 		if _, err := os.Stat(filepath.Join(dir, p)); err != nil {
 			t.Fatalf("missing generated %s: %v", p, err)
 		}
 	}
+	// vendored .gsx keeps package ui regardless of cfg.UI's basename
+	dialogSrc, err := os.ReadFile(filepath.Join(dir, "ui/dialog.gsx"))
+	if err != nil {
+		t.Fatalf("reading vendored dialog.gsx: %v", err)
+	}
+	if !strings.Contains(string(dialogSrc), "package ui") {
+		t.Fatalf("vendored dialog.gsx missing package ui clause:\n%s", dialogSrc)
+	}
 	mustRun(t, dir, "go", "build", "./...")
 
-	if err := Run([]string{"add", "selectbox", "tabs"}); err != nil {
+	if err := Run([]string{"add", "select", "tabs"}); err != nil {
 		t.Fatal(err)
 	}
-	// selectbox depends on icon (chevron); icon has no JS behavior of its
-	// own but its generated data file must have been vendored transitively
-	// as a plain dependency of selectbox. tabs is JS-backed: its behavior
-	// module lands under the JS root (web/gsxui by default) and the barrel
-	// must be regenerated to import it.
+	// select depends on icon (chevron); icon vendors as its own ui/icon/
+	// directory package. tabs is JS-backed: its behavior module lands under
+	// the JS root (web/gsxui by default) and the barrel must be regenerated
+	// to import it.
 	for _, p := range []string{
-		"ui/selectbox/select.x.go",
+		"ui/select.x.go",
 		"ui/icon/icon.x.go",
 		"ui/icon/icon_data.go",
-		"ui/tabs/tabs.x.go",
+		"ui/tabs.x.go",
 		"web/gsxui/tabs.js",
 	} {
 		if _, err := os.Stat(filepath.Join(dir, p)); err != nil {
 			t.Fatalf("missing generated/vendored %s: %v", p, err)
 		}
+	}
+	iconDir, err := os.Stat(filepath.Join(dir, "ui/icon"))
+	if err != nil || !iconDir.IsDir() {
+		t.Fatalf("ui/icon must vendor as a directory: %v", err)
 	}
 	barrel, err := os.ReadFile(filepath.Join(dir, "web/gsxui/index.js"))
 	if err != nil {

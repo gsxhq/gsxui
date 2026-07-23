@@ -60,11 +60,11 @@ func runInit(args []string) error {
 		return err
 	}
 
-	core, err := fs.ReadFile(gsxui.Files, "ui/core/gsxui.js")
+	core, err := fs.ReadFile(gsxui.Files, "ui/gsxui.js")
 	if err != nil {
 		return err
 	}
-	if err := writeVendored(filepath.Join(dir, cfg.JS, "core", "gsxui.js"), core, false); err != nil {
+	if err := writeVendored(filepath.Join(dir, cfg.JS, "gsxui.js"), core, false); err != nil {
 		return err
 	}
 	indexPath := filepath.Join(dir, cfg.JS, "index.js")

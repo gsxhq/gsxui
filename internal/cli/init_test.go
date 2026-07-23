@@ -33,7 +33,7 @@ func TestInitWritesEverything(t *testing.T) {
 	for _, p := range []string{
 		"gsxui.json",
 		"web/gsxui.css",
-		"web/gsxui/core/gsxui.js",
+		"web/gsxui/gsxui.js",
 		"web/gsxui/index.js",
 		"ui/merge/merge.go",
 		"gsx.toml",

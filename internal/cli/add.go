@@ -13,6 +13,12 @@ import (
 	"github.com/gsxhq/gsxui/internal/registry"
 )
 
+// runAdd vendors the requested components (and their transitive deps) into
+// cfg.UI. Vendored .gsx files keep their "package ui" clause regardless of
+// cfg.UI's basename — Go allows a package's declared name to differ from
+// its directory name, so e.g. `gsxui add button` into cfg.UI = "components"
+// still produces components/button.gsx starting with "package ui", and it
+// compiles and imports fine as "components".
 func runAdd(args []string) error {
 	fs2 := flag.NewFlagSet("add", flag.ContinueOnError)
 	overwrite := fs2.Bool("overwrite", false, "replace locally modified files")
@@ -42,32 +48,45 @@ func runAdd(args []string) error {
 	fmt.Printf("adding: %s\n", strings.Join(resolved, " "))
 
 	for _, name := range resolved {
-		entries, err := fs.ReadDir(gsxui.Files, "ui/"+name)
-		if err != nil {
-			return err
-		}
-		for _, e := range entries {
-			fname := e.Name()
-			if e.IsDir() || strings.HasSuffix(fname, ".x.go") || strings.HasSuffix(fname, "_test.go") || strings.HasSuffix(fname, ".js") {
-				continue
-			}
-			src, err := fs.ReadFile(gsxui.Files, "ui/"+name+"/"+fname)
+		if fi, err := fs.Stat(gsxui.Files, "ui/"+name); err == nil && fi.IsDir() {
+			// Directory component (icon): vendors as its own package under
+			// <cfg.UI>/<name>/ — it must stay a package (icon.New) and its
+			// generated data tables stay out of the user's ui namespace.
+			entries, err := fs.ReadDir(gsxui.Files, "ui/"+name)
 			if err != nil {
 				return err
 			}
-			if strings.HasSuffix(fname, ".gsx") || strings.HasSuffix(fname, ".go") {
-				src = RewriteGsx(src, module, cfg.UI)
+			for _, e := range entries {
+				fname := e.Name()
+				if e.IsDir() || strings.HasSuffix(fname, ".x.go") || strings.HasSuffix(fname, "_test.go") {
+					continue
+				}
+				src, err := fs.ReadFile(gsxui.Files, "ui/"+name+"/"+fname)
+				if err != nil {
+					return err
+				}
+				if strings.HasSuffix(fname, ".gsx") || strings.HasSuffix(fname, ".go") {
+					src = RewriteGsx(src, module, cfg.UI)
+				}
+				if err := writeVendored(filepath.Join(dir, cfg.UI, name, fname), src, *overwrite); err != nil {
+					return err
+				}
 			}
-			if err := writeVendored(filepath.Join(dir, cfg.UI, name, fname), src, *overwrite); err != nil {
+		} else {
+			src, err := fs.ReadFile(gsxui.Files, "ui/"+name+".gsx")
+			if err != nil {
+				return err
+			}
+			if err := writeVendored(filepath.Join(dir, cfg.UI, name+".gsx"), RewriteGsx(src, module, cfg.UI), *overwrite); err != nil {
 				return err
 			}
 		}
 		if registry.HasJS(name) {
-			src, err := fs.ReadFile(gsxui.Files, "ui/"+name+"/"+name+".js")
+			src, err := fs.ReadFile(gsxui.Files, "ui/"+name+".js")
 			if err != nil {
 				return err
 			}
-			if err := writeVendored(filepath.Join(dir, cfg.JS, name+".js"), RewriteJS(src), *overwrite); err != nil {
+			if err := writeVendored(filepath.Join(dir, cfg.JS, name+".js"), src, *overwrite); err != nil {
 				return err
 			}
 		}
@@ -112,7 +131,7 @@ func regenBarrel(dir string, cfg Config, overwrite bool) error {
 	var behaviors []string
 	for _, m := range matches {
 		base := filepath.Base(m)
-		if base == "index.js" {
+		if base == "index.js" || base == "gsxui.js" {
 			continue
 		}
 		behaviors = append(behaviors, strings.TrimSuffix(base, ".js"))

@@ -25,8 +25,8 @@ func TestAddVendorsWithDeps(t *testing.T) {
 	}
 	// dialog pulls button transitively
 	for _, p := range []string{
-		"ui/dialog/dialog.gsx",
-		"ui/button/button.gsx",
+		"ui/dialog.gsx",
+		"ui/button.gsx",
 		"web/gsxui/dialog.js",
 		"ui/NOTICE.md",
 	} {
@@ -35,25 +35,32 @@ func TestAddVendorsWithDeps(t *testing.T) {
 		}
 	}
 	// no generated or test files vendored
-	if _, err := os.Stat(filepath.Join(dir, "ui/dialog/dialog.x.go")); err == nil {
+	if _, err := os.Stat(filepath.Join(dir, "ui/dialog.x.go")); err == nil {
 		t.Error("dialog.x.go must not be vendored")
 	}
-	// imports rewritten
-	gsx, _ := os.ReadFile(filepath.Join(dir, "ui/dialog/dialog.gsx"))
+	// package clause kept as-is; no unrewritten gsxui-internal refs remain
+	// (dialog.gsx has no cross-package import to rewrite — it's flat, so
+	// dialog's use of Button is an intra-package identifier reference; the
+	// icon-import rewrite path is covered by TestRewriteGsxIcon and the e2e
+	// test's ui/icon vendoring)
+	gsx, _ := os.ReadFile(filepath.Join(dir, "ui/dialog.gsx"))
 	if strings.Contains(string(gsx), "gsxhq/gsxui") {
 		t.Errorf("unrewritten import remains:\n%s", gsx)
 	}
-	if !strings.Contains(string(gsx), `"example.com/app/ui/button"`) {
-		t.Errorf("button import not retargeted:\n%s", gsx)
+	if !strings.Contains(string(gsx), "package ui") {
+		t.Errorf("vendored dialog.gsx missing package ui clause:\n%s", gsx)
 	}
 	js, _ := os.ReadFile(filepath.Join(dir, "web/gsxui/dialog.js"))
-	if !strings.Contains(string(js), `"./core/gsxui.js"`) {
-		t.Errorf("core import not flattened:\n%s", js)
+	if !strings.Contains(string(js), `"./gsxui.js"`) {
+		t.Errorf("core import not present:\n%s", js)
 	}
 	// barrel updated
 	index, _ := os.ReadFile(filepath.Join(dir, "web/gsxui/index.js"))
 	if !strings.Contains(string(index), `import "./dialog.js";`) {
 		t.Errorf("barrel missing dialog:\n%s", index)
+	}
+	if strings.Contains(string(index), `import "./gsxui.js";`) {
+		t.Errorf("core gsxui.js must not be listed as a behavior import:\n%s", index)
 	}
 	// gsx generate ran
 	joined := ""
@@ -70,7 +77,7 @@ func TestAddRefusesModifiedFile(t *testing.T) {
 	if err := Run([]string{"add", "badge"}); err != nil {
 		t.Fatal(err)
 	}
-	target := filepath.Join(dir, "ui/badge/badge.gsx")
+	target := filepath.Join(dir, "ui/badge.gsx")
 	os.WriteFile(target, []byte("package badge // locally hacked\n"), 0o644)
 	err := Run([]string{"add", "badge"})
 	if err == nil || !strings.Contains(err.Error(), "--overwrite") {
@@ -133,7 +140,7 @@ func TestAddRejectsCore(t *testing.T) {
 func TestAddRefusesCustomBarrel(t *testing.T) {
 	dir, _ := initedModule(t)
 	indexPath := filepath.Join(dir, "web/gsxui/index.js")
-	custom := "// hand-written, thanks\nexport * from \"./core/gsxui.js\";\n"
+	custom := "// hand-written, thanks\nexport * from \"./gsxui.js\";\n"
 	if err := os.WriteFile(indexPath, []byte(custom), 0o644); err != nil {
 		t.Fatal(err)
 	}
