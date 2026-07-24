@@ -31,6 +31,14 @@
 // round makes the drag/keyboard math consistent with it.
 import { on, emit } from "./gsxui.js";
 
+// Matched by EITHER data-slot="resizable-handle" (the shipped
+// ResizableHandle markup) OR data-gsxui-resizable-handle (the documented
+// public hook — see ui/resizable.gsx's own doc comment on ResizableHandle,
+// and docs/jsx-parity.md `## dialog` MECHANISM for the house-wide
+// data-gsxui-* convention) — a caller's own styled handle wires up with
+// either attribute.
+const HANDLE_SELECTOR = '[data-slot="resizable-handle"], [data-gsxui-resizable-handle]';
+
 const rootOf = (el) => el.closest("[data-gsxui-resizable]");
 
 const isPanel = (el) => !!el && el.dataset.slot === "resizable-panel";
@@ -114,7 +122,7 @@ function syncHandleAria(handle) {
 // just the one the user actually touched.
 function syncGroupAria(root) {
   for (const el of root.children) {
-    if (el.dataset && el.dataset.slot === "resizable-handle") syncHandleAria(el);
+    if (el.matches?.(HANDLE_SELECTOR)) syncHandleAria(el);
   }
 }
 
@@ -147,7 +155,7 @@ function applyDeltaPct(handle, prev, next, prevStartPct, nextStartPct, deltaPct)
 
 let drag = null;
 
-on("pointerdown", '[data-slot="resizable-handle"]', (e, handle) => {
+on("pointerdown", HANDLE_SELECTOR, (e, handle) => {
   const neighbours = neighboursOf(handle);
   const root = rootOf(handle);
   if (!neighbours || !root) return;
@@ -179,7 +187,7 @@ on("pointerdown", '[data-slot="resizable-handle"]', (e, handle) => {
 // element itself (per the Pointer Events spec) regardless of where the
 // pointer physically is — closest() below always resolves back to the same
 // handle.
-on("pointermove", '[data-slot="resizable-handle"]', (e, handle) => {
+on("pointermove", HANDLE_SELECTOR, (e, handle) => {
   if (!drag || drag.handle !== handle || drag.pointerId !== e.pointerId) return;
   const pos = drag.vertical ? e.clientY : e.clientX;
   const deltaPct = ((pos - drag.pointerStart) / drag.panelsTotalPx) * 100;
@@ -194,9 +202,9 @@ function endDrag(_e, handle) {
   emit(root, "gsxui:change", { sizes: currentSizes(root) });
 }
 
-on("pointerup", '[data-slot="resizable-handle"]', endDrag);
-on("pointercancel", '[data-slot="resizable-handle"]', endDrag);
-on("lostpointercapture", '[data-slot="resizable-handle"]', endDrag);
+on("pointerup", HANDLE_SELECTOR, endDrag);
+on("pointercancel", HANDLE_SELECTOR, endDrag);
+on("lostpointercapture", HANDLE_SELECTOR, endDrag);
 
 // --- Keyboard --------------------------------------------------------------
 
@@ -206,7 +214,7 @@ on("lostpointercapture", '[data-slot="resizable-handle"]', endDrag);
 // press, a gsxui-authored value, not ported from the library.
 const STEP = 10;
 
-on("keydown", '[data-slot="resizable-handle"]', (e, handle) => {
+on("keydown", HANDLE_SELECTOR, (e, handle) => {
   const neighbours = neighboursOf(handle);
   const root = rootOf(handle);
   if (!neighbours || !root) return;
@@ -241,7 +249,7 @@ on("keydown", '[data-slot="resizable-handle"]', (e, handle) => {
 // Same one-time module-load scan shape as toggle-group.js's normalize()
 // loop and carousel.js's own init loop: a handle added later via an HTMX
 // swap is not picked up, the same accepted limitation those modules carry.
-for (const handle of document.querySelectorAll('[data-slot="resizable-handle"]')) {
+for (const handle of document.querySelectorAll(HANDLE_SELECTOR)) {
   // Without this, touch input's default pan/scroll gesture wins the
   // pointerdown-to-pointermove race — the browser claims the gesture and
   // fires pointercancel mid-drag, so resizing never works on touch at all.

@@ -71,12 +71,17 @@ function toggle(wrapper) {
   }
 }
 
-on("click", '[data-slot="sidebar-trigger"]', (_e, trigger) => {
+// Matched by EITHER data-slot (the shipped Sidebar/SidebarRail markup) OR
+// data-gsxui-sidebar-trigger/-rail (the documented public hook — see
+// ui/sidebar.gsx's own doc comments on these two parts, and
+// docs/jsx-parity.md `## dialog` MECHANISM for the house-wide convention) —
+// a caller's own styled trigger/rail wires up with either attribute.
+on("click", '[data-slot="sidebar-trigger"], [data-gsxui-sidebar-trigger]', (_e, trigger) => {
   const wrapper = trigger.closest('[data-slot="sidebar-wrapper"]');
   if (wrapper) toggle(wrapper);
 });
 
-on("click", '[data-slot="sidebar-rail"]', (_e, rail) => {
+on("click", '[data-slot="sidebar-rail"], [data-gsxui-sidebar-rail]', (_e, rail) => {
   const wrapper = rail.closest('[data-slot="sidebar-wrapper"]');
   if (wrapper) toggle(wrapper);
 });

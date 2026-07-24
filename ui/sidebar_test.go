@@ -121,9 +121,22 @@ func TestSidebarOpenDrivesDesktopState(t *testing.T) {
 	}
 }
 
+func TestSidebarTriggerCarriesGsxuiHook(t *testing.T) {
+	// data-gsxui-sidebar-trigger is the documented public JS-attachment
+	// hook (docs/jsx-parity.md `## dialog` MECHANISM) — sidebar.js matches
+	// it alongside data-slot="sidebar-trigger" so a caller's own styled
+	// trigger wires up without stamping data-slot.
+	got := render(t, ui.SidebarTrigger(nil))
+	for _, want := range []string{`data-slot="sidebar-trigger"`, `data-gsxui-sidebar-trigger`} {
+		if !strings.Contains(got, want) {
+			t.Errorf("want %q\nin: %s", want, got)
+		}
+	}
+}
+
 func TestSidebarRailPinned(t *testing.T) {
 	got := render(t, ui.SidebarRail(nil))
-	want := `<button type="button" data-sidebar="rail" data-slot="sidebar-rail" aria-label="Toggle Sidebar" tabindex="-1" title="Toggle Sidebar" class="absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:after:bg-sidebar-border sm:flex in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize [[data-side=left][data-state=collapsed]_&amp;]:cursor-e-resize [[data-side=right][data-state=collapsed]_&amp;]:cursor-w-resize group-data-[collapsible=offcanvas]:translate-x-0 group-data-[collapsible=offcanvas]:after:left-full hover:group-data-[collapsible=offcanvas]:bg-sidebar [[data-side=left][data-collapsible=offcanvas]_&amp;]:-right-2 [[data-side=right][data-collapsible=offcanvas]_&amp;]:-left-2 [[data-mobile]_&amp;]:hidden"></button>`
+	want := `<button type="button" data-sidebar="rail" data-slot="sidebar-rail" data-gsxui-sidebar-rail aria-label="Toggle Sidebar" tabindex="-1" title="Toggle Sidebar" class="absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:after:bg-sidebar-border sm:flex in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize [[data-side=left][data-state=collapsed]_&amp;]:cursor-e-resize [[data-side=right][data-state=collapsed]_&amp;]:cursor-w-resize group-data-[collapsible=offcanvas]:translate-x-0 group-data-[collapsible=offcanvas]:after:left-full hover:group-data-[collapsible=offcanvas]:bg-sidebar [[data-side=left][data-collapsible=offcanvas]_&amp;]:-right-2 [[data-side=right][data-collapsible=offcanvas]_&amp;]:-left-2 [[data-mobile]_&amp;]:hidden"></button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -211,7 +224,11 @@ func TestSidebarMenuButtonActiveAndTooltip(t *testing.T) {
 		// carries data-collapsible=icon — true for the desktop copy of
 		// this button when icon-collapsed, never true for the mobile
 		// Sheet copy (review round 1, IMPORTANT 4).
-		"hidden group-data-[collapsible=icon]:block",
+		// FIX (review round 2, BLOCKING): gated on :open too, matching the
+		// `## dialog` ADAPT idiom (`open:grid`) — TooltipContent stays in
+		// the DOM while closed, so an ungated display utility would beat
+		// the UA's closed-popover display:none and render a ghost hit box.
+		"hidden group-data-[collapsible=icon]:open:block",
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("want %q\nin: %s", want, got)

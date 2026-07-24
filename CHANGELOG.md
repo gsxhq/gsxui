@@ -7,7 +7,7 @@ Notable changes to gsxui's component set, newest first.
 ### Added
 
 - **resizable** — drag-resizable split panes with keyboard support.
-- **combobox** — filterable input + listbox with typeahead and form binding.
+- **combobox** — filterable input + listbox with filter-as-you-type and form binding.
 - **sidebar** — collapsible app sidebar with desktop and mobile layouts.
 
 ## Earlier

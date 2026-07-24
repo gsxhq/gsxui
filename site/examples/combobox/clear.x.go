@@ -14,49 +14,62 @@ import (
 // button instead of the chevron trigger (ComboboxInput's own
 // group-has-data-[slot=combobox-clear]/input-group:hidden rule hides the
 // trigger whenever a clear button is present), and a pre-selected value
-// server-renders the checked item — combobox.js reflects it into the
-// input's displayed text at init (see ui/combobox.js's own init()).
+// server-renders the checked item.
+//
+// FIX (review round 2, IMPORTANT): a server-selected value must REFLECT in
+// the DOM on first paint (docs/superpowers/specs/2026-07-24-tier4-batch-a-
+// design.md §4) — combobox.js's init() only SEEDS the input's displayed
+// label from the checked item once JS has run (docs/jsx-parity.md
+// `## combobox`'s own "reopening filtered to the committed label" FIX
+// entry), so a no-JS request rendered an empty input despite the hidden
+// bridge already posting "go" correctly, and a JS request flashed
+// placeholder-to-label on load. ComboboxInput's attrs already reach the
+// inner <input> (attrs.Without("class") — see its own ADAPT doc comment),
+// so passing the picked item's own label through as `value` here needs no
+// signature change; combobox.js's init() is now a no-op fallback for
+// callers who don't supply it (it only seeds when the input is still
+// empty).
 
-//line clear.gsx:11:1
+//line clear.gsx:24:1
 func Clear() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line clear.gsx:12:2
+//line clear.gsx:25:2
 		_gsxgw.Node(ctx, ui.Combobox("language", "go", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line clear.gsx:13:3
-			_gsxgw.Node(ctx, ui.ComboboxInput("Search language...", false, true, false, nil, _gsxrt.Attrs{{Key: "class", Value: "w-[220px]"}}))
-//line clear.gsx:14:3
+//line clear.gsx:26:3
+			_gsxgw.Node(ctx, ui.ComboboxInput("Search language...", false, true, false, nil, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "value", Value: "Go"}}, _gsxrt.Attrs{{Key: "class", Value: "w-[220px]"}})))
+//line clear.gsx:27:3
 			_gsxgw.Node(ctx, ui.ComboboxContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line clear.gsx:15:4
+//line clear.gsx:28:4
 				_gsxgw.Node(ctx, ui.ComboboxList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line clear.gsx:16:5
+//line clear.gsx:29:5
 					_gsxgw.Node(ctx, ui.ComboboxEmpty(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("No language found.")
 						return _gsxgw.Err()
 					}), nil))
-//line clear.gsx:17:5
+//line clear.gsx:30:5
 					_gsxgw.Node(ctx, ui.ComboboxItem("go", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Go")
 						return _gsxgw.Err()
 					}), nil))
-//line clear.gsx:18:5
+//line clear.gsx:31:5
 					_gsxgw.Node(ctx, ui.ComboboxItem("rust", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Rust")
 						return _gsxgw.Err()
 					}), nil))
-//line clear.gsx:19:5
+//line clear.gsx:32:5
 					_gsxgw.Node(ctx, ui.ComboboxItem("typescript", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("TypeScript")
 						return _gsxgw.Err()
 					}), nil))
-//line clear.gsx:20:5
+//line clear.gsx:33:5
 					_gsxgw.Node(ctx, ui.ComboboxItem("python", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Python")

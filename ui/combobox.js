@@ -233,10 +233,24 @@ function init(root) {
     if (!list.id) list.id = `gsxui-combobox-list-${++uid}`;
     input.setAttribute("aria-controls", list.id);
   }
+  // FIX (review round 2, IMPORTANT): a caller is now expected to
+  // server-render the checked item's own label as ComboboxInput's `value`
+  // directly (docs/superpowers/specs/2026-07-24-tier4-batch-a-design.md
+  // §4 — state is a server-rendered parameter reflected in the DOM, not
+  // JS-seeded) — this used to be the ONLY place that label ever reached
+  // the input, so it wrote it unconditionally whenever the input was
+  // still empty. It stays as a fallback for a caller who doesn't supply
+  // `value` (input still empty), but either way the gsxuiCommitted flag
+  // must be set once the input's text equals the checked item's label —
+  // server-rendered or JS-seeded, an unflagged first reopen re-triggers
+  // the exact "reopening filtered to the committed label" bug this flag
+  // exists to prevent (see docs/jsx-parity.md `## combobox`'s own FIX
+  // entry): every option except this one would stay hidden.
   const checked = root.querySelector('[data-gsxui-combobox-item][data-state="checked"]');
-  if (checked && input && !input.value) {
-    input.value = labelOf(checked);
-    input.dataset.gsxuiCommitted = "true";
+  if (checked && input) {
+    const label = labelOf(checked);
+    if (!input.value) input.value = label;
+    if (input.value === label) input.dataset.gsxuiCommitted = "true";
   }
 }
 

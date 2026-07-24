@@ -188,6 +188,16 @@ component ResizablePanel(defaultSize string, minSize string, maxSize string, chi
 // above already uses — deliberately BETTER than the reference here, not
 // just equivalent: a static class works before JS has loaded, where the
 // library's own runtime injection would not.
+//
+// FIX (review round 2, IMPORTANT): resizable.js used to bind pointer/
+// keyboard behavior off data-slot="resizable-handle" alone — the only
+// interactive gsxui component whose public JS-attachment hook wasn't a
+// data-gsxui-* attribute (docs/jsx-parity.md `## dialog` MECHANISM: "the
+// data-gsxui-* attributes are each interactive component's PUBLIC
+// contract"). data-gsxui-resizable-handle is now stamped here and matched
+// by resizable.js ALONGSIDE data-slot, so a caller's own styled handle can
+// use the documented idiom and nothing already written against data-slot
+// breaks.
 component ResizableHandle(orientation string, withHandle bool, attrs gsx.Attrs) {
 	{{
 		handleOrientation := "vertical"
@@ -197,6 +207,7 @@ component ResizableHandle(orientation string, withHandle bool, attrs gsx.Attrs) 
 	}}
 	<div
 		data-slot="resizable-handle"
+		data-gsxui-resizable-handle
 		role="separator"
 		aria-orientation={handleOrientation}
 		tabindex="0"

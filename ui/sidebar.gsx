@@ -267,10 +267,23 @@ component Sidebar(open bool, side string, variant string, collapsible string, ch
 // SidebarTrigger composes ui.Button (variant="ghost" size="icon") — click
 // handling (toggle desktop state or open the mobile Sheet, resolved by
 // sidebar.js at click time) is entirely JS; see ui/sidebar.js.
+//
+// FIX (review round 2, IMPORTANT): sidebar.js used to bind this click
+// handler off data-slot="sidebar-trigger" alone — the ONLY interactive
+// gsxui component whose public JS-attachment hook wasn't a data-gsxui-*
+// attribute (docs/jsx-parity.md `## dialog` MECHANISM: "the data-gsxui-*
+// attributes are each interactive component's PUBLIC contract"). A caller
+// wiring their own styled trigger (`<ui.Button data-gsxui-sidebar-trigger>`,
+// the documented idiom) had to stamp data-slot instead, contradicting every
+// other component in this package. data-gsxui-sidebar-trigger is now
+// stamped here and matched by sidebar.js ALONGSIDE data-slot (either
+// selector wires the click), so nothing already written against data-slot
+// breaks.
 component SidebarTrigger(attrs gsx.Attrs) {
 	<Button
 		data-sidebar="trigger"
 		data-slot="sidebar-trigger"
+		data-gsxui-sidebar-trigger
 		variant="ghost"
 		size="icon"
 		class="size-7"
@@ -284,6 +297,10 @@ component SidebarTrigger(attrs gsx.Attrs) {
 // SidebarRail is a pointer-only affordance (tabindex="-1", deliberately not
 // a keyboard tab stop, matching the reference exactly — no drag is wired,
 // only a click) that shares SidebarTrigger's toggle mechanism.
+//
+// FIX (review round 2, IMPORTANT — same data-gsxui-* hook gap as
+// SidebarTrigger, see its own doc comment): data-gsxui-sidebar-rail is now
+// stamped here and matched by sidebar.js alongside data-slot="sidebar-rail".
 //
 // ADAPT (review round 1, MINOR 6 — [[data-mobile]_&]:hidden added, not in
 // upstream): callers place SidebarRail as a child of Sidebar, same as
@@ -306,6 +323,7 @@ component SidebarRail(attrs gsx.Attrs) {
 		type="button"
 		data-sidebar="rail"
 		data-slot="sidebar-rail"
+		data-gsxui-sidebar-rail
 		aria-label="Toggle Sidebar"
 		tabindex="-1"
 		title="Toggle Sidebar"
@@ -454,13 +472,27 @@ func sidebarMenuButtonSizeClass(size string) string {
 // tooltip.gsx's own doc comment — unlike the reference's side="right"),
 // and gating "only ever shown when collapsed AND on desktop" has no
 // isMobile/state param to read here either, so it is reproduced in pure
-// CSS instead: `hidden group-data-[collapsible=icon]:block` only matches
-// while SOME ancestor `.group` carries data-collapsible="icon" — which,
-// per the package doc comment's MOBILE section, is true for the DESKTOP
-// copy of this button exactly when the sidebar is icon-collapsed, and
-// never true for the MOBILE Sheet copy (whose ancestor tree carries no
+// CSS instead: `hidden group-data-[collapsible=icon]:open:block` only
+// matches while SOME ancestor `.group` carries data-collapsible="icon" —
+// which, per the package doc comment's MOBILE section, is true for the
+// DESKTOP copy of this button exactly when the sidebar is icon-collapsed,
+// and never true for the MOBILE Sheet copy (whose ancestor tree carries no
 // data-collapsible at all) — mobile is suppressed for free, no separate
 // isMobile check needed.
+//
+// FIX (review round 2, BLOCKING): the `open:` gate above is load-bearing,
+// not decorative — `TooltipContent` is a `popover="manual"` element that
+// stays in the DOM closed (no Radix unmount, same as `## dialog`'s own
+// native <dialog>), so a bare `group-data-[collapsible=icon]:block` beats
+// the UA's own closed-popover `display:none` the instant the sidebar
+// icon-collapses, regardless of whether the popover is actually open —
+// every closed desktop tooltip becomes a hit-testable, `position:fixed`,
+// `opacity-0`, `z-50` ghost box parked at the viewport corner. Gating on
+// `:open` too (`hidden group-data-[collapsible=icon]:open:block`) is the
+// exact idiom `docs/jsx-parity.md`'s `## dialog` ADAPT entry already
+// documents for the identical class of bug (`open:grid` instead of a bare
+// `grid`) — matching CSS `:open`/`::backdrop` shape, popover instead of
+// dialog.
 component SidebarMenuButton(isActive bool, variant string, size string, tooltip string, children gsx.Node, attrs gsx.Attrs) {
 	{ if tooltip == "" {
 		<button
@@ -488,7 +520,7 @@ component SidebarMenuButton(isActive bool, variant string, size string, tooltip 
 			>
 				{ children }
 			</button>
-			<TooltipContent class="hidden group-data-[collapsible=icon]:block">{ tooltip }</TooltipContent>
+			<TooltipContent class="hidden group-data-[collapsible=icon]:open:block">{ tooltip }</TooltipContent>
 		</Tooltip>
 	} }
 }

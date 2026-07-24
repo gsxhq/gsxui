@@ -241,20 +241,33 @@ func ResizablePanel(defaultSize string, minSize string, maxSize string, children
 // above already uses — deliberately BETTER than the reference here, not
 // just equivalent: a static class works before JS has loaded, where the
 // library's own runtime injection would not.
+//
+// FIX (review round 2, IMPORTANT): resizable.js used to bind pointer/
+// keyboard behavior off data-slot="resizable-handle" alone — the only
+// interactive gsxui component whose public JS-attachment hook wasn't a
+// data-gsxui-* attribute (docs/jsx-parity.md `## dialog` MECHANISM: "the
+// data-gsxui-* attributes are each interactive component's PUBLIC
+// contract"). data-gsxui-resizable-handle is now stamped here and matched
+// by resizable.js ALONGSIDE data-slot, so a caller's own styled handle can
+// use the documented idiom and nothing already written against data-slot
+// breaks.
 
-//line resizable.gsx:191:1
+//line resizable.gsx:201:1
 func ResizableHandle(orientation string, withHandle bool, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line resizable.gsx:192:2
+//line resizable.gsx:202:2
 		handleOrientation := "vertical"
 		if orientation == "vertical" {
 			handleOrientation = "horizontal"
 		}
-//line resizable.gsx:198:2
+//line resizable.gsx:208:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"resizable-handle\"")
+		}
+		if !attrs.Has("data-gsxui-resizable-handle") {
+			_gsxgw.BoolAttr("data-gsxui-resizable-handle", true)
 		}
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"separator\"")
@@ -281,9 +294,9 @@ func ResizableHandle(orientation string, withHandle bool, attrs gsx.Attrs) _gsxr
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line resizable.gsx:210:3
+//line resizable.gsx:221:3
 		if withHandle {
-//line resizable.gsx:211:4
+//line resizable.gsx:222:4
 			_gsxgw.S("<div class=\"z-10 flex shrink-0 h-6 w-1 rounded-lg bg-border\"></div>")
 		}
 		_gsxgw.S("</div>")
