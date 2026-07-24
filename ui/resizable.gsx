@@ -88,6 +88,29 @@ component ResizablePanelGroup(orientation string, children gsx.Node, attrs gsx.A
 // above for why this carries a class at all (upstream's own ResizablePanel
 // has none) and why defaultSize becomes a real inline style instead of a
 // data attribute.
+//
+// FIX (2026-07-24 review round 1, CRITICAL): `flex-1` is `flex: 1 1 0%` —
+// grow AND shrink, not just shrink. A sized panel's inline `flex-basis`
+// wins over the class's own basis component, but flex-GROW survives
+// unchallenged, so any leftover space in the group still gets
+// redistributed evenly across every panel at layout time regardless of
+// its `defaultSize` — silently discarding the server-rendered split the
+// MECHANISM entry above promises (caught only because every SHIPPED
+// example happens to sum its `defaultSize`s to 100%, leaving no leftover
+// space to misdistribute; two panels both `defaultSize="20%"` in a 1000px
+// group rendered 499.5/499.5, not 200/200). A sized panel must render
+// `grow-0` instead of `flex-1` (grow suppressed; shrink stays at its CSS
+// initial value of 1, same as `flex-1` already had, so the panel can still
+// give up space under real constraint) — `flex-1` stays exclusive to the
+// unsized case, which has no basis of its own to protect and genuinely
+// wants to grow.
+//
+// NOTE (contradictory min/max, ledgered per review item 9): if a panel's
+// own minSize exceeds its neighbour's maxSize (or vice versa),
+// resizable.js's drag/keyboard clamp silently prefers the tighter (max)
+// bound and the looser constraint (min) is violated — no error, no
+// warning; authoring non-conflicting min/max pairs is the caller's
+// responsibility.
 component ResizablePanel(defaultSize string, minSize string, maxSize string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-slot="resizable-panel"
@@ -100,7 +123,10 @@ component ResizablePanel(defaultSize string, minSize string, maxSize string, chi
 		{ if defaultSize != "" {
 			style=css`flex-basis: @{defaultSize}`
 		} }
-		class="flex-1 min-w-0 min-h-0"
+		class={
+			if defaultSize != "" { "grow-0" } else { "flex-1" },
+			"min-w-0 min-h-0",
+		}
 		{ attrs... }
 	>
 		{ children }

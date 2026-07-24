@@ -49,19 +49,49 @@ function readPct(el, key, fallback) {
 }
 
 // One entry per direct-child panel of root, in DOM order — the shape
-// gsxui:change's own `sizes` payload documents.
+// gsxui:change's own `sizes` payload documents. Normalized against the
+// PANELS' OWN total (excluding handle widths, unlike the drag/keyboard
+// math above which deliberately works in fractions of the group's full
+// content box) and rounded to 2 decimal places, so a caller persisting
+// this payload gets clean numbers that actually sum to 100 — reporting
+// raw panel-size/group-size fractions instead would leak every handle's
+// few px as missing space (e.g. two panels either side of one handle
+// reporting ~49.95/49.95) and carry binary-float noise forever.
 function currentSizes(root) {
   const vertical = isVertical(root);
-  const size = groupSize(root, vertical);
-  return [...root.children]
-    .filter(isPanel)
-    .map((panel) => (size ? (panelSize(panel, vertical) / size) * 100 : 0));
+  const rawSizes = [...root.children].filter(isPanel).map((panel) => panelSize(panel, vertical));
+  const total = rawSizes.reduce((sum, s) => sum + s, 0);
+  if (!total) return rawSizes.map(() => 0);
+  return rawSizes.map((s) => Math.round((s / total) * 100 * 100) / 100);
 }
 
 function syncAria(handle, prevSizePct, prevMin, prevMax) {
   handle.setAttribute("aria-valuenow", String(Math.round(prevSizePct)));
   handle.setAttribute("aria-valuemin", String(Math.round(prevMin)));
   handle.setAttribute("aria-valuemax", String(Math.round(prevMax)));
+}
+
+// Recomputes one handle's own aria-value* from its current DOM geometry —
+// the shared body behind both the module-init scan and syncGroupAria below.
+function syncHandleAria(handle) {
+  const neighbours = neighboursOf(handle);
+  const root = rootOf(handle);
+  if (!neighbours || !root) return;
+  const vertical = isVertical(root);
+  const size = groupSize(root, vertical);
+  const prevSizePct = size ? (panelSize(neighbours.prev, vertical) / size) * 100 : 0;
+  syncAria(handle, prevSizePct, readPct(neighbours.prev, "minSize", 0), readPct(neighbours.prev, "maxSize", 100));
+}
+
+// A commit (drag end or a keyboard step/Home/End) can move a PANEL that is
+// itself another handle's own neighbour — e.g. in a 3-panel group, handle 1
+// resizes panel 2, which is also handle 2's `prev` — so every handle
+// sharing this root needs its aria-value* re-derived after a commit, not
+// just the one the user actually touched.
+function syncGroupAria(root) {
+  for (const el of root.children) {
+    if (el.dataset && el.dataset.slot === "resizable-handle") syncHandleAria(el);
+  }
 }
 
 // Applies a percentage-point delta to the boundary between prev/next,
@@ -97,6 +127,12 @@ on("pointerdown", '[data-slot="resizable-handle"]', (e, handle) => {
   const size = groupSize(root, vertical);
   if (!size) return;
   handle.setPointerCapture(e.pointerId);
+  // Capture succeeded: this gesture belongs to the handle now, not to
+  // whatever native gesture the browser would otherwise start (text
+  // selection over the panels' own content) or to whatever element
+  // previously had focus (the keyboard path needs the handle focused).
+  e.preventDefault();
+  handle.focus();
   drag = {
     pointerId: e.pointerId,
     handle,
@@ -126,6 +162,7 @@ function endDrag(_e, handle) {
   if (!drag || drag.handle !== handle) return;
   const root = drag.root;
   drag = null;
+  syncGroupAria(root);
   emit(root, "gsxui:change", { sizes: currentSizes(root) });
 }
 
@@ -167,6 +204,7 @@ on("keydown", '[data-slot="resizable-handle"]', (e, handle) => {
 
   e.preventDefault();
   applyDeltaPct(handle, prev, next, prevStartPct, nextStartPct, deltaPct);
+  syncGroupAria(root);
   emit(root, "gsxui:change", { sizes: currentSizes(root) });
 });
 
@@ -176,11 +214,11 @@ on("keydown", '[data-slot="resizable-handle"]', (e, handle) => {
 // loop and carousel.js's own init loop: a handle added later via an HTMX
 // swap is not picked up, the same accepted limitation those modules carry.
 for (const handle of document.querySelectorAll('[data-slot="resizable-handle"]')) {
-  const neighbours = neighboursOf(handle);
-  const root = rootOf(handle);
-  if (!neighbours || !root) continue;
-  const vertical = isVertical(root);
-  const size = groupSize(root, vertical);
-  const prevSizePct = size ? (panelSize(neighbours.prev, vertical) / size) * 100 : 0;
-  syncAria(handle, prevSizePct, readPct(neighbours.prev, "minSize", 0), readPct(neighbours.prev, "maxSize", 100));
+  // Without this, touch input's default pan/scroll gesture wins the
+  // pointerdown-to-pointermove race — the browser claims the gesture and
+  // fires pointercancel mid-drag, so resizing never works on touch at all.
+  // The pinned class string itself stays untouched; this is a runtime
+  // style, not a class-string change.
+  handle.style.touchAction = "none";
+  syncHandleAria(handle);
 }

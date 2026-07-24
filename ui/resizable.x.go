@@ -118,12 +118,35 @@ func ResizablePanelGroup(orientation string, children gsx.Node, attrs gsx.Attrs)
 // above for why this carries a class at all (upstream's own ResizablePanel
 // has none) and why defaultSize becomes a real inline style instead of a
 // data attribute.
+//
+// FIX (2026-07-24 review round 1, CRITICAL): `flex-1` is `flex: 1 1 0%` —
+// grow AND shrink, not just shrink. A sized panel's inline `flex-basis`
+// wins over the class's own basis component, but flex-GROW survives
+// unchallenged, so any leftover space in the group still gets
+// redistributed evenly across every panel at layout time regardless of
+// its `defaultSize` — silently discarding the server-rendered split the
+// MECHANISM entry above promises (caught only because every SHIPPED
+// example happens to sum its `defaultSize`s to 100%, leaving no leftover
+// space to misdistribute; two panels both `defaultSize="20%"` in a 1000px
+// group rendered 499.5/499.5, not 200/200). A sized panel must render
+// `grow-0` instead of `flex-1` (grow suppressed; shrink stays at its CSS
+// initial value of 1, same as `flex-1` already had, so the panel can still
+// give up space under real constraint) — `flex-1` stays exclusive to the
+// unsized case, which has no basis of its own to protect and genuinely
+// wants to grow.
+//
+// NOTE (contradictory min/max, ledgered per review item 9): if a panel's
+// own minSize exceeds its neighbour's maxSize (or vice versa),
+// resizable.js's drag/keyboard clamp silently prefers the tighter (max)
+// bound and the looser constraint (min) is violated — no error, no
+// warning; authoring non-conflicting min/max pairs is the caller's
+// responsibility.
 
-//line resizable.gsx:91:1
+//line resizable.gsx:114:1
 func ResizablePanel(defaultSize string, minSize string, maxSize string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line resizable.gsx:92:2
+//line resizable.gsx:115:2
 		_gsxv0 := _gsxrt.Attrs{{Key: "data-slot", Value: _gsxrt.RawURL("resizable-panel")}}
 		_gsxv1, _gsxerr := _gsxrt.AttrsCond(minSize != "", func() (_gsxrt.Attrs, error) {
 			return _gsxrt.Attrs{{Key: "data-min-size", Value: minSize}}, nil
@@ -146,20 +169,28 @@ func ResizablePanel(defaultSize string, minSize string, maxSize string, children
 		if _gsxerr != nil {
 			return _gsxerr
 		}
-		_gsxv7 := _gsxrt.ConcatAttrs(_gsxv4, _gsxv6, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.RawURL("flex-1 min-w-0 min-h-0")}}, attrs)
+		_gsxv7 := _gsxrt.ConcatAttrs(_gsxv4, _gsxv6)
+		var _gsxv8 string
+		if defaultSize != "" {
+			_gsxv8 = "grow-0"
+		} else {
+			_gsxv8 = "flex-1"
+		}
+		_gsxv9 := "min-w-0 min-h-0"
+		_gsxv10 := _gsxrt.ConcatAttrs(_gsxv7, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv8), _gsxrt.Class(_gsxv9))}}, attrs)
 		_gsxgw.S("<div")
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv7.Class())
-		_gsxgw.StyleMerged("", _gsxv7.Style())
-		_gsxgw.Spread(ctx, _gsxv7, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv10.Class())
+		_gsxgw.StyleMerged("", _gsxv10.Style())
+		_gsxgw.Spread(ctx, _gsxv10, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line resizable.gsx:106:3
+//line resizable.gsx:132:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line resizable.gsx:110:1
+//line resizable.gsx:136:1
 // ResizableHandle — see the package doc comment's ADAPT entry above for
 // the inverted-aria-orientation derivation.
 //
@@ -176,16 +207,16 @@ func ResizablePanel(defaultSize string, minSize string, maxSize string, children
 // `GripVerticalIcon` import/render entirely — the resulting dependency-free
 // `Deps("resizable") == []` is a direct consequence, not a coincidence.
 
-//line resizable.gsx:125:1
+//line resizable.gsx:151:1
 func ResizableHandle(orientation string, withHandle bool, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line resizable.gsx:126:2
+//line resizable.gsx:152:2
 		handleOrientation := "vertical"
 		if orientation == "vertical" {
 			handleOrientation = "horizontal"
 		}
-//line resizable.gsx:132:2
+//line resizable.gsx:158:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"resizable-handle\"")
@@ -207,9 +238,9 @@ func ResizableHandle(orientation string, withHandle bool, attrs gsx.Attrs) _gsxr
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line resizable.gsx:140:3
+//line resizable.gsx:166:3
 		if withHandle {
-//line resizable.gsx:141:4
+//line resizable.gsx:167:4
 			_gsxgw.S("<div class=\"z-10 flex shrink-0 h-6 w-1 rounded-lg bg-border\"></div>")
 		}
 		_gsxgw.S("</div>")

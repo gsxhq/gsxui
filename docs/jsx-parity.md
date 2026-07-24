@@ -1179,14 +1179,19 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   constrain anything visually at rest, so they're stamped as
   `data-min-size`/`data-max-size` instead (present only when non-empty) and
   read only by `ui/resizable.js`'s drag/keyboard clamping.
-- NEW (`flex-1 min-w-0 min-h-0` on every panel, not in shadcn's source at
-  all): since `ResizablePanel` carries no upstream class, an unsized panel
-  needs something to make it share remaining space — `flex-1` (`flex: 1 1
-  0%`) sets flex-grow/flex-shrink to 1 while leaving `flex-basis` at the
-  stylesheet layer, which a caller-supplied inline `style="flex-basis:
-  ..."` cleanly overrides (inline beats an ordinary class rule for that one
-  longhand; grow/shrink from the class still apply) — so `flex-1` is
-  unconditional on every panel, sized or not. `min-w-0 min-h-0` counters
+- NEW (`grow-0`/`flex-1` split, plus `min-w-0 min-h-0`, on every panel —
+  none of it in shadcn's source at all): since `ResizablePanel` carries no
+  upstream class, an unsized panel needs something to make it share
+  remaining space: `flex-1` (`flex: 1 1 0%`, grow AND shrink 1, basis 0%).
+  A SIZED panel (non-empty `defaultSize`) instead renders `grow-0` — NOT
+  `flex-1` — so its inline `style="flex-basis: ..."` isn't fought by a
+  surviving `flex-grow: 1` redistributing leftover group space out from
+  under it (see the FIX entry below for the CRITICAL bug this corrects:
+  `flex-1` was originally unconditional on every panel, sized or not,
+  which silently discarded the server-rendered split whenever a group's
+  `defaultSize`s didn't already sum to 100%). Shrink is left at its CSS
+  initial value of 1 either way (no `shrink-0` anywhere), so a sized panel
+  can still give up space under real constraint. `min-w-0 min-h-0` counters
   the flexbox default `min-width:auto`/`min-height:auto` floor (a flex item
   won't shrink below its content's intrinsic size otherwise, regardless of
   `flex-basis`/`flex-shrink`) along BOTH axes, since `ResizablePanel` has no
@@ -1202,7 +1207,14 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   on drag end (`pointerup`/`pointercancel`/`lostpointercapture`) and on
   every keyboard commit — the caller owns persisting that however it wants
   (cookie, server round-trip, its own `localStorage` code), never gsxui
-  itself.
+  itself. FIX (review round 1, MINOR item 5): `sizes` is normalized against
+  the PANELS' OWN total (handle widths excluded) and rounded to 2 decimal
+  places — the first version reported each panel's raw
+  `panelSize/groupSize` fraction, which includes every handle's few px of
+  width in the denominator (a two-panel group reported `[49.95, 49.95]`,
+  not values summing to 100) and carried binary-float noise forever. A
+  caller persisting this payload now gets clean numbers that actually sum
+  to 100.
 - GAP (collapsible panels): react-resizable-panels' `collapsible`/
   `collapsedSize` props have no port here — no docs demo in scope
   (`resizable-demo`/`-demo-with-handle`/`-handle`/`-vertical`) exercises
@@ -1235,6 +1247,49 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   handles/panels are one level deeper in the DOM, never siblings of the
   outer handle) — exercised by `site/examples/resizable/basic.gsx`'s nested
   vertical group inside its right panel.
+- FIX (2026-07-24 review round 1, CRITICAL): `flex-1` (`flex: 1 1 0%`) is
+  grow AND shrink, not just shrink — a sized panel's inline `flex-basis`
+  wins over the class's own basis component, but `flex-grow` survived
+  unchallenged, so any leftover space in the group was still redistributed
+  evenly across every panel regardless of its own `defaultSize`, silently
+  discarding the server-rendered split the MECHANISM entry above promises.
+  Not caught by any test or shipped example, because every shipped
+  example's panels happen to sum their `defaultSize`s to 100% (no leftover
+  space to misdistribute) — two panels both `defaultSize="20%"` in a
+  1000px group rendered 499.5px/499.5px, not the intended 200px/200px.
+  Fixed: a panel with a non-empty `defaultSize` now renders `grow-0`
+  instead of `flex-1` (grow suppressed; shrink stays at its CSS initial
+  value of 1, unchanged from before) — `flex-1` is now exclusive to the
+  unsized case. `TestResizablePanelSizedPanelDoesNotGrow`/
+  `TestResizablePanelUnsizedPanelGrows` pin both branches as full-render
+  pins (this also surfaced that a `<div>` whose OWN tag carries a
+  conditional-attribute block — `ResizablePanel`'s `{ if minSize != "" {…}
+  }` etc. — gets a different, but equally deterministic, gsx codegen
+  attribute-emission order than a fully-static tag: `class`, then `style`,
+  then the rest in source order, rather than strict source order
+  throughout; both pinned tests reflect gsx's actual output, not a
+  hand-guessed one).
+- GAP (no server-rendered `aria-value*`, review round 1 item 8): the
+  handle's `aria-valuenow`/`aria-valuemin`/`aria-valuemax` are JS-only —
+  set by `ui/resizable.js`'s module-init scan and re-synced on every
+  drag/keyboard commit, never by `ResizableHandle` itself (which has no
+  parameter carrying panel size/min/max to render them from in the first
+  place). A `role="separator"` with `tabindex="0"` is therefore an
+  incomplete WAI-ARIA "window splitter" until JS has run — a real, if
+  narrow, no-JS accessibility gap, not just a progressive-enhancement nicety.
+- FINDING (nested-group event bubbling, review round 1 item 7, ledger
+  only): `emit()` dispatches `gsxui:change` with `bubbles: true` (see
+  `ui/gsxui.js`), so a NESTED `ResizablePanelGroup`'s own `gsxui:change`
+  also reaches any listener on an OUTER group it happens to sit inside
+  (`site/examples/resizable/basic.gsx`'s right panel nests exactly this
+  shape) — carrying the INNER group's `sizes` payload, not the outer's. A
+  listener bound to the outer group must check `e.target` (or
+  `e.target.closest("[data-gsxui-resizable]")`) against the group it
+  actually cares about rather than assuming every `gsxui:change` reaching
+  it describes its own panels. Not a bug — this is ordinary, expected DOM
+  event bubbling, exactly as carousel/toggle-group's own delegated events
+  behave — but easy to miss for a first-time caller of a nested group, so
+  it's ledgered explicitly here rather than left implicit.
 - Registry: `resizable.gsx` imports nothing from `ui/icon` and composes no
   other component (see the nova-pill ADAPT above) — `registry.Deps
   ("resizable")` is `[]`, pinned in `internal/registry/registry_test.go`.
