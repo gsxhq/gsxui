@@ -53,10 +53,13 @@ let expanded = false; // hover-expands the stack AND pauses every timer
 let leaveTimer = null;
 
 // --- Toaster region --------------------------------------------------------
-// Uses ui.Toaster's server-rendered region if present; otherwise builds a
-// fallback so the region always exists (the imperative API still needs the
-// per-type <template>s ui.Toaster ships — a page firing toast() must mount
-// <ui.Toaster/>).
+// Uses ui.Toaster's server-rendered region if present; otherwise builds an
+// empty fallback region. The fallback does NOT rescue the imperative API —
+// toast() needs the per-type <template>s only ui.Toaster ships (build()
+// returns null without them and show() no-ops), so a page firing toast()
+// must mount <ui.Toaster/>. What the fallback DOES back is the adoption
+// path: it carries id="gsxui-toaster", so a server-side OOB/partial append
+// can still land and be adopted on a page without a mounted Toaster.
 let olEl = null;
 function ol() {
   if (olEl && olEl.isConnected) return olEl;

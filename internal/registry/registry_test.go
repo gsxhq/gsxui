@@ -477,11 +477,12 @@ func TestHasJS(t *testing.T) {
 	if registry.HasJS("native-select") {
 		t.Error("native-select should not have JS")
 	}
-	// sonner has its own ui/sonner.js — the codebase's first client-
-	// constructed-DOM module (it builds every toast <li> from scratch and
-	// owns the stacking/timer/pause-on-hover/promise-morph lifecycle). The
-	// server-rendered ui/sonner.gsx (Toaster) is just the mount region;
-	// HasJS derives from the <basename>.js match, so the file is ui/sonner.js.
+	// sonner has its own ui/sonner.js — it clones Toaster's server-rendered
+	// per-type <template>s into live toast <li>s and owns the stacking/
+	// timer/pause-on-hover/promise-morph lifecycle plus adoption of
+	// server-inserted rows. ui/sonner.gsx (Toaster + ui.Toast) is the
+	// single source of the card markup; HasJS derives from the
+	// <basename>.js match, so the file is ui/sonner.js.
 	if !registry.HasJS("sonner") {
 		t.Error("sonner should have JS")
 	}
