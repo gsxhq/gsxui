@@ -612,24 +612,33 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
   gesture, so a "drag me" affordance that doesn't actually drag is a real,
   if minor, UX mismatch — accepted as a GAP (visual parity chosen over
   silently dropping the handle).
-- GAP (`DrawerHeader`'s direction-conditional text-alignment dropped):
-  upstream's `DrawerHeader` class also carries direction-conditional text
-  alignment (centered for bottom/top at every breakpoint, left-aligned at
-  `md:`+ for left/right) via the same `group-data-[vaul-drawer-
-  direction=...]/drawer-content` selector the handle bar uses.
-  `DrawerHeader` takes no `direction` param (matching `drawer.tsx`'s own
-  signature, and this port's test-pin scope, which treats `Header` as one
-  direction-invariant string rather than per-direction like `Content`'s
-  four) — reproducing the conditional would require either threading a new
-  `direction` param through `Header` or porting a `group/drawer-content`
-  named-group CSS selector (precedent exists elsewhere in this codebase:
-  `## item`, `## field`, `## input-group`, `## tabs`, `## toggle-group` all
-  use `group/name` + `group-data-[...]/name`), neither of which the task's
-  binding decisions called for. This port ships a single unconditional
-  `text-center` instead — correct for bottom (the default and the only
-  mandatory demo direction) and top, a narrow accepted divergence for
-  left/right at `md:`+ (upstream would left-align there; this port stays
-  centered).
+- MECHANISM (`DrawerHeader`'s direction-conditional text-alignment, ported
+  faithfully via `data-side` + `group/drawer-content`): upstream's
+  `DrawerHeader` class carries direction-conditional text alignment
+  (centered for bottom/top at every breakpoint, left-aligned at `md:`+ for
+  left/right) via `group-data-[vaul-drawer-direction=...]/drawer-content`
+  — the same selector the handle bar's visibility rule is keyed off of.
+  `DrawerHeader` takes no `direction` param of its own (matching
+  `drawer.tsx`'s own signature), but it doesn't need one: `DrawerContent`
+  already stamps `data-side` (always non-empty — `direction |>
+  default("bottom")`, `## drawer`'s own MECHANISM entry above) and now
+  also carries the named-group class `group/drawer-content` on the same
+  element, so the identical selector SHAPE ports directly with only the
+  attribute/group name swapped — `data-side` replaces
+  `data-vaul-drawer-direction`, `drawer-content` (already
+  `DrawerContent`'s own `data-slot`) is the group name.
+  `DrawerHeader`'s class is therefore `flex flex-col gap-0.5 p-4
+  group-data-[side=bottom]/drawer-content:text-center
+  group-data-[side=top]/drawer-content:text-center md:text-left`, byte-for-
+  byte the same alignment logic as upstream. This uses the same
+  `group/name` + `group-data-[...]/name` idiom already established
+  elsewhere in this codebase (`## item`, `## field`, `## input-group`,
+  `## tabs`, `## toggle-group`) — not a new mechanism, just its first
+  cross-component (ancestor-stamped-attribute rather than
+  same-element-state) application. (Coordinator review fix, replacing an
+  earlier draft of this entry that had incorrectly GAPed this as dropped —
+  the mechanism was available with zero signature change and is now
+  ported.)
 - GAP (nova `gap-0.5` header at every breakpoint): new-york-v4's own
   `DrawerHeader` bumps to `md:gap-1.5`; nova drops the responsive bump
   entirely, staying `gap-0.5` at every breakpoint — adopted as-is (no

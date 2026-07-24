@@ -76,17 +76,20 @@ import "github.com/gsxhq/gsx"
 // real, if minor, UX mismatch — accepted GAP (visual parity over silently
 // dropping it), ledgered in docs/jsx-parity.md `## drawer`.
 //
-// GAP: DrawerHeader's upstream class also carries a direction-conditional
-// text alignment (centered for bottom/top at every breakpoint, left-
-// aligned at md+ for left/right) via the same group-data-[vaul-drawer-
-// direction=...]/drawer-content selector the handle bar uses. DrawerHeader
-// takes no direction param (matching drawer.tsx's own signature and this
-// port's test-pin scope, which treats Header as a single, direction-
-// invariant string, unlike Content's four), so this port collapses that
-// conditional to an unconditional text-center — correct for bottom (the
-// default and only mandatory demo direction) and top, a narrow accepted
-// divergence for left/right at md+ (upstream would left-align there; this
-// port stays centered). Ledgered in docs/jsx-parity.md `## drawer`.
+// MECHANISM: DrawerHeader's upstream class also carries a direction-
+// conditional text alignment (centered for bottom/top at every breakpoint,
+// left-aligned at md+ for left/right) via
+// group-data-[vaul-drawer-direction=...]/drawer-content. gsxui has no vaul
+// underneath, but DrawerContent already stamps data-side (always non-empty
+// — direction |> default("bottom")) and carries the named group class
+// group/drawer-content, so the same selector shape ports directly with
+// only the attribute/group name swapped: data-side replaces
+// data-vaul-drawer-direction, drawer-content (already DrawerContent's own
+// data-slot) is the group name. DrawerHeader needs no direction param of
+// its own — the selector reads the ancestor <dialog>'s stamped attribute
+// at the CSS layer, the same group-data-[...]/name idiom `## item`/
+// `## field`/`## input-group`/`## tabs`/`## toggle-group` already use
+// elsewhere in this codebase.
 //
 // GAP: drag-to-dismiss, snap points, and background scaling (all vaul
 // gesture/physics features) are not ported — v1 replaces vaul's live-
@@ -135,7 +138,7 @@ component DrawerContent(direction string, children gsx.Node, attrs gsx.Attrs) {
 		data-state="closed"
 		data-side={direction |> default("bottom")}
 		class={
-			"fixed z-50 m-0 open:flex flex-col gap-4 bg-popover text-popover-foreground text-sm shadow-lg transition ease-in-out duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-black/10 backdrop:duration-200 supports-backdrop-filter:backdrop:backdrop-blur-xs data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0",
+			"group/drawer-content fixed z-50 m-0 open:flex flex-col gap-4 bg-popover text-popover-foreground text-sm shadow-lg transition ease-in-out duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-black/10 backdrop:duration-200 supports-backdrop-filter:backdrop:backdrop-blur-xs data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0",
 			switch direction {
 			case "top":
 				"inset-x-0 top-0 bottom-auto w-full max-w-none h-auto mb-24 max-h-[80vh] rounded-b-xl border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top"
@@ -156,10 +159,18 @@ component DrawerContent(direction string, children gsx.Node, attrs gsx.Attrs) {
 	</dialog>
 }
 
-// DrawerHeader's direction-conditional text alignment is collapsed to an
-// unconditional text-center — see this file's own header comment GAP note.
+// DrawerHeader's text alignment is direction-conditional, ported faithfully
+// via the data-side/group-drawer-content selector — see this file's own
+// header comment MECHANISM note. gap-0.5 is nova at every breakpoint (no
+// md: bump; new-york-v4's own DrawerHeader bumps to md:gap-1.5).
 component DrawerHeader(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="drawer-header" class="flex flex-col gap-0.5 p-4 text-center" { attrs... }>{ children }</div>
+	<div
+		data-slot="drawer-header"
+		class="flex flex-col gap-0.5 p-4 group-data-[side=bottom]/drawer-content:text-center group-data-[side=top]/drawer-content:text-center md:text-left"
+		{ attrs... }
+	>
+		{ children }
+	</div>
 }
 
 // DrawerFooter is byte-identical to SheetFooter's own (upstream drawer.tsx

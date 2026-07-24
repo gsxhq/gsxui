@@ -78,7 +78,7 @@ func TestDrawerTriggerPinned(t *testing.T) {
 // only in-browser.
 func TestDrawerContentPinnedBottom(t *testing.T) {
 	got := render(t, ui.DrawerContent("", gsx.Raw("x"), nil))
-	want := `<dialog data-slot="drawer-content" data-gsxui-dialog-content data-state="closed" data-side="bottom" class="fixed z-50 m-0 open:flex flex-col gap-4 bg-popover text-popover-foreground text-sm shadow-lg transition ease-in-out duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-black/10 backdrop:duration-200 supports-backdrop-filter:backdrop:backdrop-blur-xs data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 inset-x-0 bottom-0 top-auto w-full max-w-none h-auto mt-24 max-h-[80vh] rounded-t-xl border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom"><div data-slot="drawer-handle" class="mx-auto mt-4 h-1 w-[100px] shrink-0 rounded-full bg-muted"></div>x</dialog>`
+	want := `<dialog data-slot="drawer-content" data-gsxui-dialog-content data-state="closed" data-side="bottom" class="group/drawer-content fixed z-50 m-0 open:flex flex-col gap-4 bg-popover text-popover-foreground text-sm shadow-lg transition ease-in-out duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-black/10 backdrop:duration-200 supports-backdrop-filter:backdrop:backdrop-blur-xs data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 inset-x-0 bottom-0 top-auto w-full max-w-none h-auto mt-24 max-h-[80vh] rounded-t-xl border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom"><div data-slot="drawer-handle" class="mx-auto mt-4 h-1 w-[100px] shrink-0 rounded-full bg-muted"></div>x</dialog>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -86,7 +86,7 @@ func TestDrawerContentPinnedBottom(t *testing.T) {
 
 func TestDrawerContentPinnedTop(t *testing.T) {
 	got := render(t, ui.DrawerContent("top", gsx.Raw("x"), nil))
-	want := `<dialog data-slot="drawer-content" data-gsxui-dialog-content data-state="closed" data-side="top" class="fixed z-50 m-0 open:flex flex-col gap-4 bg-popover text-popover-foreground text-sm shadow-lg transition ease-in-out duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-black/10 backdrop:duration-200 supports-backdrop-filter:backdrop:backdrop-blur-xs data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 inset-x-0 top-0 bottom-auto w-full max-w-none h-auto mb-24 max-h-[80vh] rounded-b-xl border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top">x</dialog>`
+	want := `<dialog data-slot="drawer-content" data-gsxui-dialog-content data-state="closed" data-side="top" class="group/drawer-content fixed z-50 m-0 open:flex flex-col gap-4 bg-popover text-popover-foreground text-sm shadow-lg transition ease-in-out duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-black/10 backdrop:duration-200 supports-backdrop-filter:backdrop:backdrop-blur-xs data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 inset-x-0 top-0 bottom-auto w-full max-w-none h-auto mb-24 max-h-[80vh] rounded-b-xl border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top">x</dialog>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -94,7 +94,7 @@ func TestDrawerContentPinnedTop(t *testing.T) {
 
 func TestDrawerContentPinnedLeft(t *testing.T) {
 	got := render(t, ui.DrawerContent("left", gsx.Raw("x"), nil))
-	want := `<dialog data-slot="drawer-content" data-gsxui-dialog-content data-state="closed" data-side="left" class="fixed z-50 m-0 open:flex flex-col gap-4 bg-popover text-popover-foreground text-sm shadow-lg transition ease-in-out duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-black/10 backdrop:duration-200 supports-backdrop-filter:backdrop:backdrop-blur-xs data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 inset-y-0 left-0 right-auto h-full max-h-none w-3/4 rounded-r-xl border-r sm:max-w-sm data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left">x</dialog>`
+	want := `<dialog data-slot="drawer-content" data-gsxui-dialog-content data-state="closed" data-side="left" class="group/drawer-content fixed z-50 m-0 open:flex flex-col gap-4 bg-popover text-popover-foreground text-sm shadow-lg transition ease-in-out duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-black/10 backdrop:duration-200 supports-backdrop-filter:backdrop:backdrop-blur-xs data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 inset-y-0 left-0 right-auto h-full max-h-none w-3/4 rounded-r-xl border-r sm:max-w-sm data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left">x</dialog>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -102,7 +102,7 @@ func TestDrawerContentPinnedLeft(t *testing.T) {
 
 func TestDrawerContentPinnedRight(t *testing.T) {
 	got := render(t, ui.DrawerContent("right", gsx.Raw("x"), nil))
-	want := `<dialog data-slot="drawer-content" data-gsxui-dialog-content data-state="closed" data-side="right" class="fixed z-50 m-0 open:flex flex-col gap-4 bg-popover text-popover-foreground text-sm shadow-lg transition ease-in-out duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-black/10 backdrop:duration-200 supports-backdrop-filter:backdrop:backdrop-blur-xs data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 inset-y-0 right-0 left-auto h-full max-h-none w-3/4 rounded-l-xl border-l sm:max-w-sm data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right">x</dialog>`
+	want := `<dialog data-slot="drawer-content" data-gsxui-dialog-content data-state="closed" data-side="right" class="group/drawer-content fixed z-50 m-0 open:flex flex-col gap-4 bg-popover text-popover-foreground text-sm shadow-lg transition ease-in-out duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-black/10 backdrop:duration-200 supports-backdrop-filter:backdrop:backdrop-blur-xs data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 inset-y-0 right-0 left-auto h-full max-h-none w-3/4 rounded-l-xl border-l sm:max-w-sm data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right">x</dialog>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -153,7 +153,7 @@ func TestDrawerContentDisplayGated(t *testing.T) {
 
 func TestDrawerHeaderPinned(t *testing.T) {
 	got := render(t, ui.DrawerHeader(gsx.Raw("x"), nil))
-	want := `<div data-slot="drawer-header" class="flex flex-col gap-0.5 p-4 text-center">x</div>`
+	want := `<div data-slot="drawer-header" class="flex flex-col gap-0.5 p-4 group-data-[side=bottom]/drawer-content:text-center group-data-[side=top]/drawer-content:text-center md:text-left">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
