@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "carousel", "checkbox", "collapsible", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "input-otp", "item", "kbd", "label", "native-select", "pagination", "popover", "progress", "radio", "scroll-area", "separator", "sheet", "skeleton", "slider", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
+	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "carousel", "checkbox", "collapsible", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "input-otp", "item", "kbd", "label", "native-select", "pagination", "popover", "progress", "radio", "scroll-area", "select", "separator", "sheet", "skeleton", "slider", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -358,6 +358,18 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("input-otp deps = %v, want [icon]", deps)
 	}
 
+	// select.gsx imports ui/icon (SelectTrigger's ChevronDown and SelectItem's
+	// Check indicator) — same dependency-derivation shape as native-select's
+	// own icon edge; the custom listbox is the second select -> icon edge the
+	// controls map called out.
+	deps, err = registry.Deps("select")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(deps, []string{"icon"}) {
+		t.Fatalf("select deps = %v, want [icon]", deps)
+	}
+
 	if _, err := registry.Deps("nosuch"); err == nil || !strings.Contains(err.Error(), "gsxui list") {
 		t.Fatalf("Deps(nosuch) err = %v, want error mentioning 'gsxui list'", err)
 	}
@@ -441,6 +453,17 @@ func TestHasJS(t *testing.T) {
 	// filtering, slot-click-to-position).
 	if !registry.HasJS("input-otp") {
 		t.Error("input-otp should have JS")
+	}
+	// select has its own ui/select.js — the entire custom-listbox behavior
+	// (value model, focus-aware aria-selected recompute, bespoke prefix
+	// typeahead, hidden-select form bridge) layered on dropdown.js's reused
+	// popover machinery; a real new interactive module of its own, unlike the
+	// native-select (which has no JS at all).
+	if !registry.HasJS("select") {
+		t.Error("select should have JS")
+	}
+	if registry.HasJS("native-select") {
+		t.Error("native-select should not have JS")
 	}
 }
 
@@ -558,6 +581,17 @@ func TestResolveTransitive(t *testing.T) {
 		t.Fatal(err)
 	}
 	want = []string{"scroll-area"}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("got %v want %v", got, want)
+	}
+
+	// select resolves to itself + its derived icon dep, same shape as
+	// native-select's own transitive entry above.
+	got, err = registry.Resolve([]string{"select"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want = []string{"icon", "select"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
