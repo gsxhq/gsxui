@@ -12,14 +12,14 @@ import (
 )
 
 //line button.gsx:5:1
-const base = "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+const base = "inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
 
 func variantClass(variant string) string {
 	switch variant {
 	case "destructive":
 		return "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40"
 	case "outline":
-		return "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
+		return "border bg-background hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
 	case "secondary":
 		return "bg-secondary text-secondary-foreground hover:bg-secondary/80"
 	case "ghost":
@@ -34,30 +34,37 @@ func variantClass(variant string) string {
 func sizeClass(size string) string {
 	switch size {
 	case "xs":
-		return "h-6 gap-1 rounded-md px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3"
+		return "h-6 gap-1 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3"
 	case "sm":
-		return "h-8 gap-1.5 rounded-md px-3 has-[>svg]:px-2.5"
+		return "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3.5"
 	case "lg":
-		return "h-10 rounded-md px-6 has-[>svg]:px-4"
+		return "h-9 gap-1.5 px-2.5 has-[>svg]:px-2"
 	case "icon":
-		return "size-9"
-	case "icon-xs":
-		return "size-6 rounded-md [&_svg:not([class*='size-'])]:size-3"
-	case "icon-sm":
 		return "size-8"
+	case "icon-xs":
+		return "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3"
+	case "icon-sm":
+		return "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg"
 	case "icon-lg":
-		return "size-10"
+		return "size-9"
 	default:
-		return "h-9 px-4 py-2 has-[>svg]:px-3"
+		return "h-8 gap-1.5 px-2.5 has-[>svg]:px-2"
 	}
 }
 
-// Button is the shadcn/ui Button. A non-empty href on an enabled Button
-// renders an <a> (gsx's answer to asChild-wrapping a link); disabled always
-// renders a real disabled <button>. type="button" is an overridable default —
-// pass type="submit" at the call site to submit forms.
+// Button is the shadcn/ui Button, retargeted to nova density (2026-07-24
+// nova density map, `## button`). ADAPT: nova keys directional icon padding
+// off `data-icon="inline-start|inline-end"` stamps we don't emit; gsxui kept
+// its existing has-[>svg]:px-* selector mechanism and substituted nova's
+// inline-start numeric value (e.g. default has-[>svg]:px-3 → px-2). All
+// variants now carry a transparent 1px border in the base (box-size
+// consistency across variants) — outline just recolors that border and no
+// longer changes the box. A non-empty href on an enabled Button renders an
+// <a> (gsx's answer to asChild-wrapping a link); disabled always renders a
+// real disabled <button>. type="button" is an overridable default — pass
+// type="submit" at the call site to submit forms.
 
-//line button.gsx:49:1
+//line button.gsx:56:1
 func Button(variant string, size string, href string, disabled bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -69,9 +76,9 @@ func _gsxrenderButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line button.gsx:50:2
+//line button.gsx:57:2
 	if href != "" && !disabled {
-//line button.gsx:51:3
+//line button.gsx:58:3
 		_gsxgw.S("<a")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"button\"")
@@ -97,11 +104,11 @@ func _gsxrenderButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line button.gsx:59:4
+//line button.gsx:66:4
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</a>")
 	} else {
-//line button.gsx:62:3
+//line button.gsx:69:3
 		_gsxgw.S("<button")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"button\"")
@@ -128,7 +135,7 @@ func _gsxrenderButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line button.gsx:71:4
+//line button.gsx:78:4
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 	}

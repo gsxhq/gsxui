@@ -45,7 +45,7 @@ func TestPaginationItemPinned(t *testing.T) {
 // "default"), no aria-current, data-active="false".
 func TestPaginationLinkDefaultPinned(t *testing.T) {
 	got := render(t, ui.PaginationLink("/p/1", false, "", gsx.Raw("1"), nil))
-	want := `<a data-slot="pagination-link" data-active="false" href="/p/1" class="inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 size-9">1</a>`
+	want := `<a data-slot="pagination-link" data-active="false" href="/p/1" class="inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 size-8">1</a>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -57,7 +57,7 @@ func TestPaginationLinkDefaultPinned(t *testing.T) {
 // `aria-current={isActive ? "page" : undefined}`.
 func TestPaginationLinkActivePinned(t *testing.T) {
 	got := render(t, ui.PaginationLink("/p/2", true, "", gsx.Raw("2"), nil))
-	want := `<a aria-current="page" data-slot="pagination-link" data-active="true" href="/p/2" class="inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 size-9">2</a>`
+	want := `<a aria-current="page" data-slot="pagination-link" data-active="true" href="/p/2" class="inline-flex shrink-0 items-center justify-center rounded-lg border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 border bg-background hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 size-8">2</a>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -72,10 +72,10 @@ func TestPaginationLinkInactiveNoAriaCurrent(t *testing.T) {
 
 func TestPaginationLinkExplicitSize(t *testing.T) {
 	got := render(t, ui.PaginationLink("/p/1", false, "default", gsx.Raw("1"), nil))
-	if !strings.Contains(got, "h-9 px-4 py-2 has-[&gt;svg]:px-3") {
+	if !strings.Contains(got, "h-8 gap-1.5 px-2.5 has-[&gt;svg]:px-2") {
 		t.Errorf("explicit size=default should use Button's default size class\nin: %s", got)
 	}
-	if strings.Contains(got, "size-9") {
+	if strings.Contains(got, "size-8") {
 		t.Errorf("explicit size=default should not carry the icon size class\nin: %s", got)
 	}
 }
@@ -103,7 +103,7 @@ func TestPaginationLinkCallerClassMerges(t *testing.T) {
 // anything a caller could otherwise pass.
 func TestPaginationPreviousPinned(t *testing.T) {
 	got := render(t, ui.PaginationPrevious("/p/1", nil))
-	want := `<a data-slot="pagination-link" data-active="false" href="/p/1" class="inline-flex shrink-0 items-center justify-center rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 h-9 py-2 has-[&gt;svg]:px-3 gap-1 px-2.5 sm:pl-2.5" aria-label="Go to previous page"><svg data-slot="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="m15 18-6-6 6-6"/></svg><span class="hidden sm:block">Previous</span></a>`
+	want := `<a data-slot="pagination-link" data-active="false" href="/p/1" class="inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 h-8 has-[&gt;svg]:px-2 gap-1 px-2.5 sm:pl-2.5" aria-label="Go to previous page"><svg data-slot="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="m15 18-6-6 6-6"/></svg><span class="hidden sm:block">Previous</span></a>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -111,7 +111,7 @@ func TestPaginationPreviousPinned(t *testing.T) {
 
 func TestPaginationNextPinned(t *testing.T) {
 	got := render(t, ui.PaginationNext("/p/3", nil))
-	want := `<a data-slot="pagination-link" data-active="false" href="/p/3" class="inline-flex shrink-0 items-center justify-center rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 h-9 py-2 has-[&gt;svg]:px-3 gap-1 px-2.5 sm:pr-2.5" aria-label="Go to next page"><span class="hidden sm:block">Next</span><svg data-slot="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="m9 18 6-6-6-6"/></svg></a>`
+	want := `<a data-slot="pagination-link" data-active="false" href="/p/3" class="inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 h-8 has-[&gt;svg]:px-2 gap-1 px-2.5 sm:pr-2.5" aria-label="Go to next page"><span class="hidden sm:block">Next</span><svg data-slot="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="m9 18 6-6-6-6"/></svg></a>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

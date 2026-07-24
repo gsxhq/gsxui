@@ -171,7 +171,7 @@ func TestAlertDialogDescriptionPinned(t *testing.T) {
 // the close-wiring data attribute.
 func TestAlertDialogActionPinned(t *testing.T) {
 	got := render(t, ui.AlertDialogAction(gsx.Raw("Continue"), nil))
-	want := `<button data-variant="default" data-size="default" type="button" class="inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 has-[&gt;svg]:px-3" data-slot="alert-dialog-action" data-gsxui-dialog-close="true">Continue</button>`
+	want := `<button data-variant="default" data-size="default" type="button" class="inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 bg-primary text-primary-foreground hover:bg-primary/90 h-8 gap-1.5 px-2.5 has-[&gt;svg]:px-2" data-slot="alert-dialog-action" data-gsxui-dialog-close="true">Continue</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -186,7 +186,7 @@ func TestAlertDialogCancelPinned(t *testing.T) {
 	got := render(t, ui.AlertDialogCancel(gsx.Raw("Cancel"), nil))
 	for _, want := range []string{
 		`data-variant="outline"`,
-		"border bg-background shadow-xs", // Button's outline variant classes
+		"border bg-background", // Button's outline variant classes
 		`data-slot="alert-dialog-cancel"`,
 		`data-gsxui-dialog-close="true"`,
 		">Cancel<",
