@@ -51,17 +51,25 @@ import (
 // codebase, even though shadcn's own Toggle stamps neither — Radix's
 // TogglePrimitive.Root receives only data-slot; toggleVariants resolves
 // straight to className, no data attrs of its own to port.
+//
+// Retargeted to nova density (2026-07-24 nova density map, `## toggle`).
+// ADAPT: nova keys directional icon padding off `data-icon="inline-start|
+// inline-end"` stamps this component doesn't emit; ported instead onto
+// gsxui's existing has-[>svg]:px-* selector mechanism (the same substitution
+// button.gsx's sizeClass makes — see its own doc comment), collapsing
+// nova's matching inline-start/inline-end values into one has-[>svg]:px-*
+// per size.
 
-//line toggle.gsx:43:1
+//line toggle.gsx:51:1
 func Toggle(pressed bool, variant string, size string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line toggle.gsx:44:2
+//line toggle.gsx:52:2
 		state := "off"
 		if pressed {
 			state = "on"
 		}
-//line toggle.gsx:50:2
+//line toggle.gsx:58:2
 		_gsxgw.S("<button")
 		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"button\"")
@@ -92,22 +100,22 @@ func Toggle(pressed bool, variant string, size string, children gsx.Node, attrs 
 			_gsxgw.S(_gsxsc.FormatBool(bool(pressed)))
 			_gsxgw.S("\"")
 		}
-		_gsxv0 := "inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-muted hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+		_gsxv0 := "inline-flex items-center justify-center gap-1 rounded-lg text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-muted hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
 		var _gsxv1 string
 		switch variant {
 		case "outline":
-			_gsxv1 = "border border-input bg-transparent shadow-xs hover:bg-accent hover:text-accent-foreground"
+			_gsxv1 = "border border-input bg-transparent hover:bg-accent hover:text-accent-foreground"
 		default:
 			_gsxv1 = "bg-transparent"
 		}
 		var _gsxv2 string
 		switch size {
 		case "sm":
-			_gsxv2 = "h-8 min-w-8 px-1.5"
+			_gsxv2 = "h-7 min-w-7 rounded-[min(var(--radius-md),12px)] px-2.5 has-[>svg]:px-1.5 text-[0.8rem] [&_svg:not([class*='size-'])]:size-3.5"
 		case "lg":
-			_gsxv2 = "h-10 min-w-10 px-2.5"
+			_gsxv2 = "h-9 min-w-9 px-2.5 has-[>svg]:px-2"
 		default:
-			_gsxv2 = "h-9 min-w-9 px-2"
+			_gsxv2 = "h-8 min-w-8 px-2.5 has-[>svg]:px-2"
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(attrs.Class()))
@@ -115,7 +123,7 @@ func Toggle(pressed bool, variant string, size string, children gsx.Node, attrs 
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line toggle.gsx:65:3
+//line toggle.gsx:73:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()

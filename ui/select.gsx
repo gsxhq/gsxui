@@ -34,12 +34,12 @@ component Select(children gsx.Node, attrs gsx.Attrs) {
 	<div data-slot="select" class={ "relative w-fit", attrs.Class() }>
 		<select
 			data-slot="select-trigger"
-			class="flex w-full items-center justify-between gap-2 rounded-md border border-input bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 h-9 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40 appearance-none pr-8"
+			class="flex w-full items-center justify-between gap-2 rounded-lg border border-input bg-transparent pl-2.5 py-1 text-sm whitespace-nowrap transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 h-8 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40 appearance-none pr-8"
 			{ attrs.Without("class")... }
 		>
 			{ children }
 		</select>
-		<icon.ChevronDown class="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 opacity-50"/>
+		<icon.ChevronDown class="pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 opacity-50"/>
 	</div>
 }
 

@@ -10,7 +10,7 @@ import (
 
 func TestFieldSetPinned(t *testing.T) {
 	got := render(t, ui.FieldSet(gsx.Raw("x"), nil))
-	want := `<fieldset data-slot="field-set" class="flex flex-col gap-6 has-[&gt;[data-slot=checkbox-group]]:gap-3 has-[&gt;[data-slot=radio-group]]:gap-3">x</fieldset>`
+	want := `<fieldset data-slot="field-set" class="flex flex-col gap-4 has-[&gt;[data-slot=checkbox-group]]:gap-3 has-[&gt;[data-slot=radio-group]]:gap-3">x</fieldset>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -30,7 +30,7 @@ func TestFieldSetAttrsFallThrough(t *testing.T) {
 // a static-block cva switch — see ui/field.gsx's own comment).
 func TestFieldLegendDefaultPinned(t *testing.T) {
 	got := render(t, ui.FieldLegend("", gsx.Raw("x"), nil))
-	want := `<legend data-slot="field-legend" data-variant="legend" class="mb-3 font-medium data-[variant=legend]:text-base data-[variant=label]:text-sm">x</legend>`
+	want := `<legend data-slot="field-legend" data-variant="legend" class="mb-1.5 font-medium data-[variant=legend]:text-base data-[variant=label]:text-sm">x</legend>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -55,7 +55,7 @@ func TestFieldLegendAttrsFallThrough(t *testing.T) {
 
 func TestFieldGroupPinned(t *testing.T) {
 	got := render(t, ui.FieldGroup(gsx.Raw("x"), nil))
-	want := `<div data-slot="field-group" class="group/field-group @container/field-group flex w-full flex-col gap-7 data-[slot=checkbox-group]:gap-3 [&amp;&gt;[data-slot=field-group]]:gap-4">x</div>`
+	want := `<div data-slot="field-group" class="group/field-group @container/field-group flex w-full flex-col gap-5 data-[slot=checkbox-group]:gap-3 [&amp;&gt;[data-slot=field-group]]:gap-4">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -71,7 +71,7 @@ func TestFieldGroupAttrsFallThrough(t *testing.T) {
 // TestFieldDefaultPinned pins the zero-value ("vertical") orientation.
 func TestFieldDefaultPinned(t *testing.T) {
 	got := render(t, ui.Field("", gsx.Raw("x"), nil))
-	want := `<div role="group" data-slot="field" data-orientation="vertical" class="group/field flex w-full gap-3 data-[invalid=true]:text-destructive flex-col [&amp;&gt;*]:w-full [&amp;&gt;.sr-only]:w-auto">x</div>`
+	want := `<div role="group" data-slot="field" data-orientation="vertical" class="group/field flex w-full gap-2 data-[invalid=true]:text-destructive flex-col [&amp;&gt;*]:w-full [&amp;&gt;.sr-only]:w-auto">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -83,7 +83,7 @@ func TestFieldDefaultPinned(t *testing.T) {
 // this exact attribute value existing on an ancestor.
 func TestFieldHorizontalPinned(t *testing.T) {
 	got := render(t, ui.Field("horizontal", gsx.Raw("x"), nil))
-	want := `<div role="group" data-slot="field" data-orientation="horizontal" class="group/field flex w-full gap-3 data-[invalid=true]:text-destructive flex-row items-center [&amp;&gt;[data-slot=field-label]]:flex-auto has-[&gt;[data-slot=field-content]]:items-start has-[&gt;[data-slot=field-content]]:[&amp;&gt;[role=checkbox],[role=radio]]:mt-px">x</div>`
+	want := `<div role="group" data-slot="field" data-orientation="horizontal" class="group/field flex w-full gap-2 data-[invalid=true]:text-destructive flex-row items-center [&amp;&gt;[data-slot=field-label]]:flex-auto has-[&gt;[data-slot=field-content]]:items-start has-[&gt;[data-slot=field-content]]:[&amp;&gt;[role=checkbox],[role=radio]]:mt-px">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -91,7 +91,7 @@ func TestFieldHorizontalPinned(t *testing.T) {
 
 func TestFieldResponsivePinned(t *testing.T) {
 	got := render(t, ui.Field("responsive", gsx.Raw("x"), nil))
-	want := `<div role="group" data-slot="field" data-orientation="responsive" class="group/field flex w-full gap-3 data-[invalid=true]:text-destructive flex-col @md/field-group:flex-row @md/field-group:items-center [&amp;&gt;*]:w-full @md/field-group:[&amp;&gt;*]:w-auto [&amp;&gt;.sr-only]:w-auto @md/field-group:[&amp;&gt;[data-slot=field-label]]:flex-auto @md/field-group:has-[&gt;[data-slot=field-content]]:items-start @md/field-group:has-[&gt;[data-slot=field-content]]:[&amp;&gt;[role=checkbox],[role=radio]]:mt-px">x</div>`
+	want := `<div role="group" data-slot="field" data-orientation="responsive" class="group/field flex w-full gap-2 data-[invalid=true]:text-destructive flex-col @md/field-group:flex-row @md/field-group:items-center [&amp;&gt;*]:w-full @md/field-group:[&amp;&gt;*]:w-auto [&amp;&gt;.sr-only]:w-auto @md/field-group:[&amp;&gt;[data-slot=field-label]]:flex-auto @md/field-group:has-[&gt;[data-slot=field-content]]:items-start @md/field-group:has-[&gt;[data-slot=field-content]]:[&amp;&gt;[role=checkbox],[role=radio]]:mt-px">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -113,7 +113,7 @@ func TestFieldCallerClassMerges(t *testing.T) {
 
 func TestFieldContentPinned(t *testing.T) {
 	got := render(t, ui.FieldContent(gsx.Raw("x"), nil))
-	want := `<div data-slot="field-content" class="group/field-content flex flex-1 flex-col gap-1.5 leading-snug">x</div>`
+	want := `<div data-slot="field-content" class="group/field-content flex flex-1 flex-col gap-0.5 leading-snug">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -133,7 +133,7 @@ func TestFieldContentAttrsFallThrough(t *testing.T) {
 // leading-none.
 func TestFieldLabelPinned(t *testing.T) {
 	got := render(t, ui.FieldLabel(gsx.Raw("x"), nil))
-	want := `<label class="items-center text-sm font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50 group/field-label peer/field-label flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:opacity-50 has-[&gt;[data-slot=field]]:w-full has-[&gt;[data-slot=field]]:flex-col has-[&gt;[data-slot=field]]:rounded-md has-[&gt;[data-slot=field]]:border [&amp;&gt;*]:data-[slot=field]:p-4 has-data-[state=checked]:border-primary has-data-[state=checked]:bg-primary/5 dark:has-data-[state=checked]:bg-primary/10" data-slot="field-label">x</label>`
+	want := `<label class="items-center text-sm font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50 group/field-label peer/field-label flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:opacity-50 has-[&gt;[data-slot=field]]:w-full has-[&gt;[data-slot=field]]:flex-col has-[&gt;[data-slot=field]]:rounded-lg has-[&gt;[data-slot=field]]:border [&amp;&gt;*]:data-[slot=field]:p-2.5 has-data-[state=checked]:border-primary has-data-[state=checked]:bg-primary/5 dark:has-data-[state=checked]:bg-primary/10" data-slot="field-label">x</label>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -169,7 +169,7 @@ func TestFieldTitleAttrsFallThrough(t *testing.T) {
 
 func TestFieldDescriptionPinned(t *testing.T) {
 	got := render(t, ui.FieldDescription(gsx.Raw("x"), nil))
-	want := `<p data-slot="field-description" class="text-sm leading-normal font-normal text-muted-foreground group-has-[[data-orientation=horizontal]]/field:text-balance last:mt-0 nth-last-2:-mt-1 [[data-variant=legend]+&amp;]:-mt-1.5 [&amp;&gt;a]:underline [&amp;&gt;a]:underline-offset-4 [&amp;&gt;a:hover]:text-primary">x</p>`
+	want := `<p data-slot="field-description" class="text-sm leading-normal font-normal text-muted-foreground group-has-[[data-orientation=horizontal]]/field:text-balance last:mt-0 [[data-variant=legend]+&amp;]:-mt-1.5 [&amp;&gt;a]:underline [&amp;&gt;a]:underline-offset-4 [&amp;&gt;a:hover]:text-primary">x</p>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

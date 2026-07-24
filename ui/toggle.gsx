@@ -40,6 +40,14 @@ import "github.com/gsxhq/gsx"
 // codebase, even though shadcn's own Toggle stamps neither — Radix's
 // TogglePrimitive.Root receives only data-slot; toggleVariants resolves
 // straight to className, no data attrs of its own to port.
+//
+// Retargeted to nova density (2026-07-24 nova density map, `## toggle`).
+// ADAPT: nova keys directional icon padding off `data-icon="inline-start|
+// inline-end"` stamps this component doesn't emit; ported instead onto
+// gsxui's existing has-[>svg]:px-* selector mechanism (the same substitution
+// button.gsx's sizeClass makes — see its own doc comment), collapsing
+// nova's matching inline-start/inline-end values into one has-[>svg]:px-*
+// per size.
 component Toggle(pressed bool, variant string, size string, children gsx.Node, attrs gsx.Attrs) {
 	{{
 		state := "off"
@@ -56,9 +64,9 @@ component Toggle(pressed bool, variant string, size string, children gsx.Node, a
 		data-state={state}
 		aria-pressed={pressed}
 		class={
-			"inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-muted hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-			switch variant { case "outline": "border border-input bg-transparent shadow-xs hover:bg-accent hover:text-accent-foreground" default: "bg-transparent" },
-			switch size { case "sm": "h-8 min-w-8 px-1.5" case "lg": "h-10 min-w-10 px-2.5" default: "h-9 min-w-9 px-2" }
+			"inline-flex items-center justify-center gap-1 rounded-lg text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-muted hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+			switch variant { case "outline": "border border-input bg-transparent hover:bg-accent hover:text-accent-foreground" default: "bg-transparent" },
+			switch size { case "sm": "h-7 min-w-7 rounded-[min(var(--radius-md),12px)] px-2.5 has-[>svg]:px-1.5 text-[0.8rem] [&_svg:not([class*='size-'])]:size-3.5" case "lg": "h-9 min-w-9 px-2.5 has-[>svg]:px-2" default: "h-8 min-w-8 px-2.5 has-[>svg]:px-2" }
 		}
 		{ attrs... }
 	>

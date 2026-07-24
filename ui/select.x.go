@@ -47,7 +47,7 @@ func Select(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" data-slot=\"select-trigger\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex w-full items-center justify-between gap-2 rounded-md border border-input bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 h-9 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40 appearance-none pr-8"), _gsxrt.Class(_gsxv0.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex w-full items-center justify-between gap-2 rounded-lg border border-input bg-transparent pl-2.5 py-1 text-sm whitespace-nowrap transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 h-8 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40 appearance-none pr-8"), _gsxrt.Class(_gsxv0.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", _gsxv0.Style())
 		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
@@ -56,7 +56,7 @@ func Select(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</select>")
 //line select.gsx:42:3
-		_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.Attrs{{Key: "class", Value: "pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 opacity-50"}}...))
+		_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.Attrs{{Key: "class", Value: "pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 opacity-50"}}...))
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

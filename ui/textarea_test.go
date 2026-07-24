@@ -12,7 +12,7 @@ func TestTextareaDefault(t *testing.T) {
 	got := render(t, ui.Textarea("", nil))
 	for _, want := range []string{
 		"<textarea", `data-slot="textarea"`,
-		"flex field-sizing-content min-h-16 w-full rounded-md border border-input",
+		"flex field-sizing-content min-h-16 w-full rounded-lg border border-input",
 		"focus-visible:border-ring focus-visible:ring-[3px]",
 		"disabled:cursor-not-allowed disabled:opacity-50",
 		"></textarea>",
@@ -28,7 +28,7 @@ func TestTextareaPinned(t *testing.T) {
 	// Textarea (registry/new-york-v4/ui/textarea.tsx) and docs/jsx-parity.md
 	// — the only ADAPT is the value param (see docs/jsx-parity.md ## textarea).
 	got := render(t, ui.Textarea("", nil))
-	want := `<textarea data-slot="textarea" class="flex field-sizing-content min-h-16 w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:aria-invalid:ring-destructive/40"></textarea>`
+	want := `<textarea data-slot="textarea" class="flex field-sizing-content min-h-16 w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-base transition-[color,box-shadow] outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:aria-invalid:ring-destructive/40"></textarea>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -61,7 +61,7 @@ func TestTextareaCallerClassMerges(t *testing.T) {
 	if strings.Contains(got, "min-h-16") {
 		t.Errorf("caller min-h-32 must drop default min-h-16\nin: %s", got)
 	}
-	for _, want := range []string{"min-h-32", "rounded-md"} {
+	for _, want := range []string{"min-h-32", "rounded-lg"} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
