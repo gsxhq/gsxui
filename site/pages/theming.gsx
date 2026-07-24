@@ -110,7 +110,7 @@ component (t Theming) Page() {
 			</div>
 			<section class="flex flex-col gap-3">
 				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">The token model</h2>
-				<p class="text-muted-foreground">
+				<p>
 					<code>gsxui init</code> vendors <code>web/gsxui.css</code> with 19 color tokens plus <code>
 						--radius
 					</code> (20 total) defined twice — once in <code>:root</code> for light mode, once in <code>.dark</code>
@@ -129,7 +129,7 @@ component (t Theming) Page() {
 				<pre
 					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
 				><code>{ themeTokensCSS }</code></pre>
-				<p class="text-muted-foreground">
+				<p>
 					The eight paired tokens (
 					<code>background</code>
 					/
@@ -156,7 +156,7 @@ component (t Theming) Page() {
 			</section>
 			<section class="flex flex-col gap-3">
 				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">How to restyle</h2>
-				<p class="text-muted-foreground">
+				<p>
 					<code>web/gsxui.css</code> is vendored, not imported — it's yours the moment <code>
 						gsxui init
 					</code> writes it. Restyling is editing the values inside <code>:root</code> and <code>.dark</code> directly:
@@ -164,7 +164,7 @@ component (t Theming) Page() {
 				<pre
 					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
 				><code>{ themeRestyleSnippet }</code></pre>
-				<p class="text-muted-foreground">
+				<p>
 					Because the variable names (
 					<code>--primary</code>
 					,
@@ -188,7 +188,7 @@ component (t Theming) Page() {
 				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Customizing components</h2>
 				<div class="flex flex-col gap-3">
 					<h3 class="font-medium">Caller class merge: a conflicting utility wins</h3>
-					<p class="text-muted-foreground">
+					<p>
 						Every component's fallthrough <code>attrs</code> can carry a
 						<code>class</code>
 						, and it doesn't just get appended — <code>gsx.toml</code>
@@ -201,7 +201,7 @@ component (t Theming) Page() {
 					<pre
 						class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
 					><code>{ themeMergeSnippet }</code></pre>
-					<p class="text-muted-foreground">
+					<p>
 						<code>Button</code>
 						's default size class is
 						<code>h-9 px-4 py-2 has-[&gt;svg]:px-3</code>
@@ -217,7 +217,7 @@ component (t Theming) Page() {
 				</div>
 				<div class="flex flex-col gap-3">
 					<h3 class="font-medium">Attrs fallthrough: id, aria-*, data-*, hx-*</h3>
-					<p class="text-muted-foreground">
+					<p>
 						Beyond <code>class</code>
 						, every attribute a caller passes that isn't one of the component's own named parameters lands on the rendered element untouched — ids, ARIA attributes, arbitrary
 						<code>data-*</code>
@@ -229,7 +229,7 @@ component (t Theming) Page() {
 				</div>
 				<div class="flex flex-col gap-3">
 					<h3 class="font-medium">Data-attribute idiom: attaching behavior to your own markup</h3>
-					<p class="text-muted-foreground">
+					<p>
 						Interactive components (dialog, dropdown, tabs, tooltip, …) don't use React's <code>asChild</code>
 						/Slot pattern — gsx has no dynamic tag-swapping. Instead, each interactive component's
 						<code>data-gsxui-*</code> attribute is its public contract, and fallthrough <code>
@@ -240,7 +240,7 @@ component (t Theming) Page() {
 					<pre
 						class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
 					><code>{ themeDataAttrSnippet }</code></pre>
-					<p class="text-muted-foreground">
+					<p>
 						The same idiom covers every interactive component's public hooks —
 						<code>data-gsxui-dialog-close</code>
 						,

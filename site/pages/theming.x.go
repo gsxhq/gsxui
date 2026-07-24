@@ -129,7 +129,7 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:112:5
 			_gsxgw.S("<h2 class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">The token model</h2>")
 //line theming.gsx:113:5
-			_gsxgw.S("<p class=\"text-muted-foreground\">")
+			_gsxgw.S("<p>")
 //line theming.gsx:114:6
 			_gsxgw.S("<code>gsxui init</code> vendors ")
 //line theming.gsx:114:38
@@ -160,7 +160,7 @@ func (t Theming) Page() _gsxrt.Node {
 			_gsxgw.Text(string(themeTokensCSS))
 			_gsxgw.S("</code></pre>")
 //line theming.gsx:132:5
-			_gsxgw.S("<p class=\"text-muted-foreground\">The eight paired tokens (")
+			_gsxgw.S("<p>The eight paired tokens (")
 //line theming.gsx:134:6
 			_gsxgw.S("<code>background</code>/")
 //line theming.gsx:136:6
@@ -200,7 +200,7 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:158:5
 			_gsxgw.S("<h2 class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">How to restyle</h2>")
 //line theming.gsx:159:5
-			_gsxgw.S("<p class=\"text-muted-foreground\">")
+			_gsxgw.S("<p>")
 //line theming.gsx:160:6
 			_gsxgw.S("<code>web/gsxui.css</code> is vendored, not imported — it's yours the moment ")
 //line theming.gsx:160:85
@@ -217,7 +217,7 @@ func (t Theming) Page() _gsxrt.Node {
 			_gsxgw.Text(string(themeRestyleSnippet))
 			_gsxgw.S("</code></pre>")
 //line theming.gsx:167:5
-			_gsxgw.S("<p class=\"text-muted-foreground\">Because the variable names (")
+			_gsxgw.S("<p>Because the variable names (")
 //line theming.gsx:169:6
 			_gsxgw.S("<code>--primary</code>,")
 //line theming.gsx:171:6
@@ -239,7 +239,7 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:190:6
 			_gsxgw.S("<h3 class=\"font-medium\">Caller class merge: a conflicting utility wins</h3>")
 //line theming.gsx:191:6
-			_gsxgw.S("<p class=\"text-muted-foreground\">Every component's fallthrough ")
+			_gsxgw.S("<p>Every component's fallthrough ")
 //line theming.gsx:192:37
 			_gsxgw.S("<code>attrs</code> can carry a")
 //line theming.gsx:193:7
@@ -262,7 +262,7 @@ func (t Theming) Page() _gsxrt.Node {
 			_gsxgw.Text(string(themeMergeSnippet))
 			_gsxgw.S("</code></pre>")
 //line theming.gsx:204:6
-			_gsxgw.S("<p class=\"text-muted-foreground\">")
+			_gsxgw.S("<p>")
 //line theming.gsx:205:7
 			_gsxgw.S("<code>Button</code>'s default size class is")
 //line theming.gsx:207:7
@@ -286,7 +286,7 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:219:6
 			_gsxgw.S("<h3 class=\"font-medium\">Attrs fallthrough: id, aria-*, data-*, hx-*</h3>")
 //line theming.gsx:220:6
-			_gsxgw.S("<p class=\"text-muted-foreground\">Beyond ")
+			_gsxgw.S("<p>Beyond ")
 //line theming.gsx:221:14
 			_gsxgw.S("<code>class</code>, every attribute a caller passes that isn't one of the component's own named parameters lands on the rendered element untouched — ids, ARIA attributes, arbitrary")
 //line theming.gsx:223:7
@@ -305,7 +305,7 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:231:6
 			_gsxgw.S("<h3 class=\"font-medium\">Data-attribute idiom: attaching behavior to your own markup</h3>")
 //line theming.gsx:232:6
-			_gsxgw.S("<p class=\"text-muted-foreground\">Interactive components (dialog, dropdown, tabs, tooltip, …) don't use React's ")
+			_gsxgw.S("<p>Interactive components (dialog, dropdown, tabs, tooltip, …) don't use React's ")
 //line theming.gsx:233:87
 			_gsxgw.S("<code>asChild</code>/Slot pattern — gsx has no dynamic tag-swapping. Instead, each interactive component's")
 //line theming.gsx:235:7
@@ -324,7 +324,7 @@ func (t Theming) Page() _gsxrt.Node {
 			_gsxgw.Text(string(themeDataAttrSnippet))
 			_gsxgw.S("</code></pre>")
 //line theming.gsx:243:6
-			_gsxgw.S("<p class=\"text-muted-foreground\">The same idiom covers every interactive component's public hooks —")
+			_gsxgw.S("<p>The same idiom covers every interactive component's public hooks —")
 //line theming.gsx:245:7
 			_gsxgw.S("<code>data-gsxui-dialog-close</code>,")
 //line theming.gsx:247:7

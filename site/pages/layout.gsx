@@ -27,6 +27,12 @@ component Layout(title string, active string, children gsx.Node) {
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<title>{ title } · gsxui</title>
+			{/* Favicon set — embedded in the binary and served by site/main.go at
+			   root paths. SVG for modern browsers, 32px PNG for the ones that
+			   ignore SVG favicons (Safari), 180px for iOS home-screen. */}
+			<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+			<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png"/>
+			<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
 			<script>
 				// Theme init — runs before first paint (blocking head script) so
 				// a stored dark preference never flashes light. Explicit choice
@@ -87,7 +93,9 @@ component Layout(title string, active string, children gsx.Node) {
 		<body class="min-h-svh bg-background text-foreground antialiased">
 			<header class="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur">
 				<div class="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
-					<a href={Home{} |> url} class="font-mono text-sm font-semibold tracking-tight">gsxui</a>
+					<a href={Home{} |> url} class="flex items-center">
+						<siteLogo/>
+					</a>
 					<nav class="flex items-center gap-4">
 						<ui.Dialog>
 							<button

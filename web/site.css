@@ -102,12 +102,38 @@
   --ring: oklch(0.556 0 0);
 }
 
+/* Brand wordmark colors for the inlined header logo (site/pages/logo.gsx).
+   Site-only branding, kept out of the :root token block above so that block
+   stays an exact copy of assets/gsxui.css. Values come straight from the
+   designed gsxui-logo.svg / gsxui-logo-dark.svg: strong is the "gsx" word,
+   muted is the braces + "ui". */
+:root {
+  --site-logo-strong: #2f73a0;
+  --site-logo-muted: #9aaeba;
+}
+.dark {
+  --site-logo-strong: #eaf0f4;
+  --site-logo-muted: #6e9bbc;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Doc prose (containers opting in via data-doc, e.g. getting-started and
+     theming). Matches ui.shadcn.com's docs typography: roomier leading-7
+     body text and muted-chip inline code so dense technical paragraphs stay
+     scannable. Base layer, so page-level utilities (a lede's
+     text-muted-foreground, a pre's own code styling) still win. */
+  [data-doc] p {
+    @apply leading-7;
+  }
+  [data-doc] :not(pre) > code {
+    @apply rounded-md bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm;
   }
 }
 

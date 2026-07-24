@@ -27,6 +27,27 @@ import (
 //go:embed all:dist
 var distFS embed.FS
 
+// icons holds the favicon set (from the gsxui brand design). Served at
+// stable root paths (/favicon.svg etc.) straight from the binary rather
+// than through the Vite pipeline: favicons need unhashed, root-level URLs,
+// and Go serves these identically in dev (the Vite proxy forwards
+// everything but /__vite/ here) and prod.
+//
+//go:embed icons
+var iconsFS embed.FS
+
+// registerIcons mounts each icon at its root URL. A day of caching is
+// plenty — the files are tiny and change roughly never, but unlike
+// /static/assets/ they are not content-hashed, so no immutable header.
+func registerIcons(mux *http.ServeMux) {
+	for _, name := range []string{"favicon.svg", "favicon-32.png", "apple-touch-icon.png"} {
+		mux.HandleFunc("/"+name, func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Cache-Control", "public, max-age=86400")
+			http.ServeFileFS(w, r, iconsFS, "icons/"+name)
+		})
+	}
+}
+
 // listenPort resolves the bind port. GO_PORT (dev): set via .env / matched
 // by vite.config.ts's proxy target — wins so the dev loop stays coherent.
 // PORT (containers): the Dockerfile sets ENV PORT=8080 and Cloud Run injects
@@ -92,6 +113,7 @@ func main() {
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
+	registerIcons(mux)
 	if !v.Dev() {
 		mux.Handle("/static/", immutableAssets(v.StaticHandler()))
 	}
