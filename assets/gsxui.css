@@ -197,3 +197,43 @@ input[type="range"]:focus-visible::-moz-range-thumb,
 input[type="range"]:active::-moz-range-thumb {
   box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent);
 }
+
+/* ScrollArea legacy WebKit/Blink scrollbar pseudo-elements — layered
+   alongside the standard scrollbar-width/scrollbar-color pair carried on
+   the component itself (ui/scroll-area.gsx's own class string), never
+   replacing it: Firefox has never implemented ::-webkit-scrollbar-*, so
+   the standard properties are what it gets there, while WebKit/Chromium
+   get full shape control (rounded-full thumb, a p-px inset gap off the
+   track edge) neither the standard scrollbar-color property nor any
+   Tailwind utility can reach — the same ::details-content/range-input
+   pseudo-element precedent as the two blocks above: hand-authored CSS for
+   a mechanism no utility class touches. See docs/jsx-parity.md
+   `## scroll-area`.
+
+   Track: transparent, matching new-york-v4's own border-*-transparent
+   scrollbar recipe (the visible border comes from the thumb alone, not
+   the track). Thumb: bg-border/rounded-full ports shadcn's own
+   `.cn-scroll-area-thumb` verbatim (zero nova delta, see the source map's
+   own `## scroll-area` class-string-merge note) — a solid transparent
+   border plus background-clip: padding-box carves out the `p-px` inset
+   gap the real ScrollAreaScrollbar's own padding creates (there is no
+   `padding` property on ::-webkit-scrollbar-thumb itself, so a
+   background-stops-at-padding-edge border is the standard substitute).
+   [data-slot="scroll-area"] scopes every rule to gsxui's own ScrollArea
+   div, leaving the page's default scrollbar (<html>/<body>, or any plain
+   overflow-auto div without this data-slot) untouched. No
+   ::-webkit-scrollbar-corner rule ships — Corner has no v1 component to
+   scope it to (GAP, see ui/scroll-area.gsx's own doc comment). */
+[data-slot="scroll-area"]::-webkit-scrollbar {
+  width: 0.625rem;
+  height: 0.625rem;
+}
+[data-slot="scroll-area"]::-webkit-scrollbar-track {
+  background: transparent;
+}
+[data-slot="scroll-area"]::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  background-clip: padding-box;
+  border: 1px solid transparent;
+  border-radius: 9999px;
+}

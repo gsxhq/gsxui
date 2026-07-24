@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "collapsible", "command", "context-menu", "dialog", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "item", "kbd", "label", "pagination", "popover", "progress", "radio", "select", "separator", "sheet", "skeleton", "slider", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
+	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "collapsible", "command", "context-menu", "dialog", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "item", "kbd", "label", "pagination", "popover", "progress", "radio", "scroll-area", "select", "separator", "sheet", "skeleton", "slider", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -303,6 +303,19 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("slider deps = %v, want none", deps)
 	}
 
+	// scroll-area.gsx has no icon import and no intra-package reference to
+	// another component (the site examples compose ui.Separator, but
+	// internal/registry only scans ui/*.gsx, not site/examples/) — same
+	// shape as toggle's/popover's/hover-card's/context-menu's/slider's own
+	// deps entries above.
+	deps, err = registry.Deps("scroll-area")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(deps) != 0 {
+		t.Fatalf("scroll-area deps = %v, want none", deps)
+	}
+
 	if _, err := registry.Deps("nosuch"); err == nil || !strings.Contains(err.Error(), "gsxui list") {
 		t.Fatalf("Deps(nosuch) err = %v, want error mentioning 'gsxui list'", err)
 	}
@@ -460,6 +473,18 @@ func TestResolveTransitive(t *testing.T) {
 		t.Fatal(err)
 	}
 	want = []string{"slider"}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("got %v want %v", got, want)
+	}
+
+	// scroll-area has no deps of its own — Resolve returns just itself,
+	// same shape as popover/hover-card/context-menu/slider's own entries
+	// above.
+	got, err = registry.Resolve([]string{"scroll-area"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want = []string{"scroll-area"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
