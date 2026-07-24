@@ -57,7 +57,7 @@ func TestCarouselContentCallerClassMerges(t *testing.T) {
 
 func TestCarouselItemHorizontalPinned(t *testing.T) {
 	got := render(t, ui.CarouselItem("", gsx.Raw("x"), nil))
-	want := `<div role="group" aria-roledescription="slide" data-slot="carousel-item" class="min-w-0 shrink-0 grow-0 basis-full snap-start pl-4">x</div>`
+	want := `<div role="group" aria-roledescription="slide" data-slot="carousel-item" class="min-w-0 shrink-0 grow-0 basis-full snap-start last:snap-end pl-4">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -65,7 +65,7 @@ func TestCarouselItemHorizontalPinned(t *testing.T) {
 
 func TestCarouselItemVerticalPinned(t *testing.T) {
 	got := render(t, ui.CarouselItem("vertical", gsx.Raw("x"), nil))
-	want := `<div role="group" aria-roledescription="slide" data-slot="carousel-item" class="min-w-0 shrink-0 grow-0 basis-full snap-start pt-4">x</div>`
+	want := `<div role="group" aria-roledescription="slide" data-slot="carousel-item" class="min-w-0 shrink-0 grow-0 basis-full snap-start last:snap-end pt-4">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

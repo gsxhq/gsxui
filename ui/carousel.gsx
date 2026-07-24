@@ -83,6 +83,18 @@ component CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs
 	</div>
 }
 
+// The `last:snap-end` on CarouselItem is the native-snap equivalent of
+// embla's `containScroll: "trimSnaps"` default: the flex track's spacing
+// scheme (-ml-4 on the track, pl-4 on every item) leaves a trailing 16px of
+// pure padding after the last item's content, so a start-aligned last snap
+// rests at max-scroll − 16px — clipping the last slide by 16px AND leaving
+// the Next button un-greyed (updateDisabled's `pos >= max − EPS` never
+// fires; user-reported on the single-per-view demos, where multi-per-view
+// layouts mask it by clamping at max anyway). End-aligning the last item
+// makes its rest position exactly max-scroll: content fully visible,
+// disabled-state exact, and a no-op for multi-per-view layouts (their end
+// rest was already max).
+//
 // CarouselItem adds `snap-start` to shadcn's own class string — also NEW,
 // not in shadcn's source, required for native scroll-snap to have any snap
 // points at all (embla needed none: it never scrolls, it transforms).
@@ -92,7 +104,7 @@ component CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) {
 		aria-roledescription="slide"
 		data-slot="carousel-item"
 		class={
-			"min-w-0 shrink-0 grow-0 basis-full snap-start",
+			"min-w-0 shrink-0 grow-0 basis-full snap-start last:snap-end",
 			if orientation == "vertical" { "pt-4" } else { "pl-4" },
 		}
 		{ attrs... }

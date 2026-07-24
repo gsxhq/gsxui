@@ -700,8 +700,17 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   snap-mandatory` (or the vertical `-y`/`snap-y` pair) on `CarouselContent`'s
   outer viewport div — REPLACING shadcn's own bare `overflow-hidden`, since
   a scroll container needs `overflow: auto` to scroll at all — plus
-  `snap-start` on every `CarouselItem` (both classes are **new**, present in
-  neither shadcn's source nor nova's own CSS). `ui/carousel.js` supplies
+  `snap-start` on every `CarouselItem` plus `last:snap-end` (all three
+  classes are **new**, present in neither shadcn's source nor nova's own
+  CSS). `last:snap-end` is the native equivalent of embla's
+  `containScroll: "trimSnaps"` default (2026-07-24 fix, user-reported): the
+  track's -ml-4/pl-4 spacing scheme leaves a trailing 16px after the last
+  item's content, so a start-aligned last snap rests at max−16px — clipping
+  the last slide and never satisfying the Next button's `pos >= max − EPS`
+  disabled check on single-per-view layouts (multi-per-view masks it by
+  clamping at max). End-aligning the last item makes its rest position
+  exactly max: full visibility, exact disabled-state, no-op for
+  multi-per-view. `ui/carousel.js` supplies
   only the prev/next scroll-by-one-item calls and disabled-state/
   current-index bookkeeping; there is no drag-physics/momentum engine to
   port because the browser's own native scroll input now supplies it.
