@@ -75,6 +75,15 @@ site example pages, browser verification against the shadcn docs.
 - **form** — react-hook-form bindings; meaningless server-side. `field`
   (Tier 1) is the layout half; validation is Go handler + `aria-invalid`
   patterns, to be shown in the future patterns/page-examples phase.
+- **drawer-dialog** — shadcn's own `drawer-dialog.tsx` responsive pattern
+  (`Dialog` on desktop / `Drawer` on mobile, swapped via a
+  `useMediaQuery("(min-width: 768px)")` hook) has no gsxui equivalent for a
+  JS media-query-driven component swap and is out of scope for the
+  `drawer` component task itself (`docs/jsx-parity.md` `## drawer` GAP).
+  Worth a future patterns/pages-phase example once that phase exists —
+  either a small vanilla-JS media-query toggle between a server-rendered
+  `Dialog` and `Drawer`, or a CSS-only approach if one turns out to cover
+  it.
 - **direction** — RTL context provider; HTML `dir` attribute serves gsx.
 - **attachment, bubble, message, message-scroller, marker** — the new AI
   chat primitives; defer as a dedicated batch if gsx targets chat UIs.

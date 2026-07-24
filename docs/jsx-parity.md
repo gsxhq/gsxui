@@ -539,3 +539,127 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
 - WIN (thumb SIZE, non-gap named for completeness): native thumb size genuinely IS the viewport/content ratio, identical to what Radix's own `getThumbSize` computes from `ResizeObserver`-measured viewport/content dimensions — nothing to reproduce, the browser already does the same math for free.
 - ADAPT (`orientation`, no second component): `orientation="horizontal"` picks `overflow-x-auto` over the default `overflow-auto` via a plain Go `switch` inside `class={}` (the same idiom `## button-group`'s own orientation switch uses) — Radix needs a second literal `<ScrollBar orientation="horizontal"/>` element opted into explicitly; here it is one different overflow utility on the same collapsed div, no markup shape change. No `data-orientation` attribute is stamped: shadcn's own `Root` never carries one either (only the dropped `ScrollBar` part did), so there is nothing for a CSS selector to key off here — unlike `## separator`, which needs the attribute because its own `data-[orientation=...]:` selectors do the dispatching.
 - Registry: `scroll-area.gsx` imports nothing from `ui/icon` and calls no other `ui.*` component — `registry.Deps("scroll-area")` is empty, same shape as `## toggle`'s/`## popover`'s/`## slider`'s own deps entries (the site examples compose `ui.Separator`, but `internal/registry` only scans `ui/*.gsx`, not `site/examples/`). `HasJS("scroll-area")` is `false` — no `ui/scroll-area.js` ships; every behavior this port has (scroll input, thumb color/shape, focus ring) is either native or pure CSS.
+
+## drawer
+- WIN: `Drawer`/`DrawerTrigger` compose `ui.Dialog` directly, byte-for-byte
+  the same mechanism as `Sheet`/`AlertDialog` (`## sheet` WIN) — `Drawer`
+  overrides the composed `data-slot` (`"dialog"`→`"drawer"`), so
+  `drawer → dialog` derives and the CLI vendors `ui/dialog.js` unmodified:
+  trigger/content proximity wiring, Esc-to-close, `data-state` stamping,
+  and the `getAnimations`-gated exit-animation wait are all reused as-is.
+- ADAPT (the one part that does NOT compose): `DrawerContent` renders its
+  own native `<dialog data-slot="drawer-content" data-gsxui-dialog-content
+  data-state="closed" data-side="...">` rather than composing
+  `ui.DialogContent`/`ui.SheetContent` — same reasoning as `## sheet`'s own
+  ADAPT: the centered-card recipe, `Sheet`'s side-anchored recipe, and
+  `Drawer`'s own per-direction recipe all target the same CSS properties
+  with materially different values, so no single class string merges them.
+  Unlike `DialogContent`/`SheetContent`, `DrawerContent` never injects a
+  close X button — upstream `drawer.tsx` has no `showCloseButton`-
+  equivalent prop at all (dismissal is backdrop-click/Esc, or an explicit
+  `DrawerClose` the caller places wherever the design wants it) — so
+  `DrawerContent` has no `hideCloseButton` param, unlike `SheetContent`'s.
+- MECHANISM (naming, `direction` not `side`): `Drawer` has no vaul
+  underneath to key a client CSS attribute selector off of — direction
+  selection happens server-side via a Go `switch` in `class={}`, the same
+  idiom as `Sheet`'s own `side` switch. The Go param is named `direction`
+  (vaul's own vocabulary, distinct from `Sheet`'s `side`) per the task's
+  binding decision, both selecting the class-string case and stamping
+  `data-side` — reusing `Sheet`'s own internal attribute name (for any
+  future shared tooling/CSS keying off it generically) rather than
+  inventing a second attribute. `direction`'s default is `"bottom"` (vaul's
+  own conventional anchor, the mobile bottom-sheet pattern) — a real
+  behavioral difference from `Sheet`'s own `"right"` default.
+- ADAPT (per-direction class strings, Sheet's UA-default fixes carried
+  forward): `m-0`, `open:flex`, and each side's opposite-edge `-auto`
+  utility are all carried from `## sheet`'s own three-part ADAPT
+  (transcribed onto `drawer.tsx`'s values, not independently re-derived).
+  TOP/BOTTOM keep their own explicit `max-h-[80vh]` (author-origin, already
+  beats Chrome's UA `max-height` safety net) and so do NOT need `Sheet`'s
+  `max-h-none` escape hatch; LEFT/RIGHT use `h-full` like `Sheet`'s own
+  left/right and DO need `max-h-none`, copied verbatim. TOP/BOTTOM also
+  carry `Sheet`'s own `w-full max-w-none` pair (the plain-`<div>`
+  auto-width edge-to-edge stretch does not reproduce on a native
+  `<dialog>`). These strings are **transcribed-not-verified**: `Sheet`'s
+  six ADAPTs were only found by rendering `site/examples/sheet` in a real
+  browser tab (`## sheet`'s own three-part fix note) — the controller runs
+  that same in-browser verification pass for all four drawer directions
+  (`site/examples/drawer`) before this task is considered closed; this
+  entry will be updated with any correction that pass finds.
+- NOVA (the one deliberate `bg-popover`/`text-popover-foreground`
+  exception): every other retargeted component in this codebase kept
+  `bg-background`/`text-foreground` per the density retarget's own
+  NOT-ADOPTED color-scope stance (`## nova density`) specifically to stay
+  consistent with an existing gsxui baseline. `Drawer` has no prior
+  new-york-v4-based gsxui version to preserve continuity with — there is no
+  baseline to break — so this port adopts nova's `bg-popover
+  text-popover-foreground` on `DrawerContent` outright, confirmed per the
+  task's own binding decision. `rounded-*-xl` on all four directions is
+  also nova (new-york-v4 rounds only top/bottom; left/right get a plain
+  border, no rounding at all — nova rounds every direction, including the
+  free/non-anchored edge on left/right). Backdrop (`bg-black/10` +
+  `supports-backdrop-filter:backdrop:backdrop-blur-xs`, `duration-200` both
+  directions) is identical to `Sheet`'s own.
+- GAP (handle bar kept as decoration): upstream renders an unconditional
+  inline `<div>` (not a named sub-component), visible only for the bottom
+  direction via a `group-data-[vaul-drawer-direction=bottom]/drawer-
+  content:block` override on a base `hidden` class. `Drawer` has no vaul
+  underneath and direction is server-known, so this port replaces the
+  client CSS group-data selector with a plain Go `if direction == "" ||
+  direction == "bottom"` — the handle (`data-slot="drawer-handle"`, `h-1`
+  nova thinner than new-york-v4's `h-2`) is rendered ONLY for the bottom
+  direction, absent (not merely hidden) otherwise. v1 ships no drag
+  gesture, so a "drag me" affordance that doesn't actually drag is a real,
+  if minor, UX mismatch — accepted as a GAP (visual parity chosen over
+  silently dropping the handle).
+- GAP (`DrawerHeader`'s direction-conditional text-alignment dropped):
+  upstream's `DrawerHeader` class also carries direction-conditional text
+  alignment (centered for bottom/top at every breakpoint, left-aligned at
+  `md:`+ for left/right) via the same `group-data-[vaul-drawer-
+  direction=...]/drawer-content` selector the handle bar uses.
+  `DrawerHeader` takes no `direction` param (matching `drawer.tsx`'s own
+  signature, and this port's test-pin scope, which treats `Header` as one
+  direction-invariant string rather than per-direction like `Content`'s
+  four) — reproducing the conditional would require either threading a new
+  `direction` param through `Header` or porting a `group/drawer-content`
+  named-group CSS selector (precedent exists elsewhere in this codebase:
+  `## item`, `## field`, `## input-group`, `## tabs`, `## toggle-group` all
+  use `group/name` + `group-data-[...]/name`), neither of which the task's
+  binding decisions called for. This port ships a single unconditional
+  `text-center` instead — correct for bottom (the default and the only
+  mandatory demo direction) and top, a narrow accepted divergence for
+  left/right at `md:`+ (upstream would left-align there; this port stays
+  centered).
+- GAP (nova `gap-0.5` header at every breakpoint): new-york-v4's own
+  `DrawerHeader` bumps to `md:gap-1.5`; nova drops the responsive bump
+  entirely, staying `gap-0.5` at every breakpoint — adopted as-is (no
+  divergence, just recording the nova delta this port took).
+- GAP (drag-to-dismiss / snap points / background scaling not ported): v1
+  replaces vaul's live-transform drag physics entirely with the same
+  `<dialog>` + Tailwind-keyframe slide-in/out architecture `Sheet` already
+  uses — no pointer tracking, no spring-back, no snap-point stops, no
+  `shouldScaleBackground` (upstream's own `drawer.tsx` doesn't default it
+  on either, so no shadcn docs demo exercises it). Matches the roadmap's
+  own Tier 3 listing verbatim ("sheet variant; v1 without vaul's
+  drag-to-dismiss gesture, ledger the gap").
+- GAP (`asChild` not ported): same narrow gap as `## dialog`'s/`## sheet`'s
+  own MECHANISM entries — the `data-gsxui-dialog-trigger`/
+  `data-gsxui-dialog-close` attribute idiom is the replacement throughout.
+- GAP (demo scope, `drawer-dialog` deferred): upstream ships two demos —
+  `drawer-demo.tsx` (adapted here, see `site/examples/drawer/basic.gsx`'s
+  own doc comment for the recharts-sparkline-to-static-bars and
+  useState-stepper-to-static-markup substitutions, neither of which this
+  codebase has an equivalent for) and `drawer-dialog.tsx` (a responsive
+  `useMediaQuery`-driven `Dialog`-on-desktop/`Drawer`-on-mobile swap, no
+  gsxui equivalent for a JS media-query-driven component swap). The latter
+  is deferred to a future patterns/pages-phase example per the roadmap
+  (`docs/component-roadmap.md`'s new drawer-dialog note), out of scope for
+  this component task.
+- Registry: `drawer.gsx` imports nothing from `ui/icon`; `Drawer` calls
+  `ui.Dialog` (flat-package intra-package edge, same shape as `## sheet`'s
+  own `dialog` dep) — `DrawerTrigger`/`DrawerClose` render their own
+  `<button>` rather than composing `ui.Button`, so `dialog` is the ONLY
+  dep — `registry.Deps("drawer") == ["dialog"]`, pinned in
+  `internal/registry/registry_test.go`. `HasJS("drawer")` is `false` — like
+  `sheet`, it has no behavior module of its own, only `ui/dialog.js`,
+  pulled in transitively.

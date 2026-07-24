@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "collapsible", "command", "context-menu", "dialog", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "item", "kbd", "label", "pagination", "popover", "progress", "radio", "scroll-area", "select", "separator", "sheet", "skeleton", "slider", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
+	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "collapsible", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "item", "kbd", "label", "pagination", "popover", "progress", "radio", "scroll-area", "select", "separator", "sheet", "skeleton", "slider", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -230,6 +230,22 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("sheet deps = %v, want [dialog]", deps)
 	}
 
+	// drawer.gsx has no icon import; Drawer composes ui.Dialog directly (flat
+	// package intra-package edge, same shape as sheet's own dialog dep) —
+	// DrawerContent renders its own <dialog> rather than composing
+	// DialogContent/SheetContent, and DrawerTrigger/DrawerClose render their
+	// own <button> rather than composing Button, so dialog is the only edge
+	// — drawer -> dialog is also what makes the CLI vendor ui/dialog.js for
+	// a drawer install (HasJS("drawer") is false; it has no behavior module
+	// of its own, only dialog's — same conclusion as sheet's own entry).
+	deps, err = registry.Deps("drawer")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(deps, []string{"dialog"}) {
+		t.Fatalf("drawer deps = %v, want [dialog]", deps)
+	}
+
 	// toggle.gsx has no icon import and no intra-package reference to
 	// another component (the site example composes ui/icon, but
 	// internal/registry only scans ui/*.gsx, not site/examples/ — same
@@ -346,6 +362,11 @@ func TestHasJS(t *testing.T) {
 	if registry.HasJS("sheet") {
 		t.Error("sheet should not have its own JS")
 	}
+	// drawer has no ui/drawer.js of its own — same reuse-dialog.js shape as
+	// sheet/alert-dialog (see TestDeps' drawer entry).
+	if registry.HasJS("drawer") {
+		t.Error("drawer should not have its own JS")
+	}
 	// toggle has its own ui/toggle.js (click flips aria-pressed/data-state).
 	if !registry.HasJS("toggle") {
 		t.Error("toggle should have JS")
@@ -421,6 +442,18 @@ func TestResolveTransitive(t *testing.T) {
 		t.Fatal(err)
 	}
 	want = []string{"button", "dialog", "sheet"}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("got %v want %v", got, want)
+	}
+
+	// drawer resolves transitively through dialog to button — the same
+	// vendoring chain as sheet's/alert-dialog's own (TestDeps' drawer
+	// entry).
+	got, err = registry.Resolve([]string{"drawer"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want = []string{"button", "dialog", "drawer"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
