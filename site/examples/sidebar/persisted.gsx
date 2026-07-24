@@ -27,12 +27,18 @@ import (
 //         ui.SidebarProvider(open, pageBody(), nil).Render(r.Context(), w)
 //     }
 //
-//  2. CLIENT: write the cookie back whenever the sidebar toggles — three
-//     lines, listening for the gsxui:change event sidebar.js emits on
+//  2. CLIENT: write the cookie back whenever the sidebar toggles — a
+//     four-line listener for the gsxui:change event sidebar.js emits on
 //     SidebarProvider's own wrapper (see the <script> below, which is
-//     this exact snippet, live):
+//     this exact snippet, live). The target guard is NOT optional: gsxui:
+//     change is also emitted by ui/tabs.js, ui/toggle.js, ui/toggle-
+//     group.js and ui/resizable.js (review round 1, IMPORTANT 2) — without
+//     it, switching a tab or flipping a toggle ANYWHERE on a page that
+//     also has a sidebar would overwrite this cookie with
+//     "sidebar_state=undefined":
 //
 //     document.addEventListener("gsxui:change", (e) => {
+//       if (!e.target.matches?.('[data-slot="sidebar-wrapper"]')) return;
 //       document.cookie = `sidebar_state=${e.detail.open}; path=/; max-age=604800`;
 //     });
 //
@@ -46,7 +52,7 @@ import (
 component Persisted() {
 	<div>
 		<ui.SidebarProvider open={true} class="h-64 min-h-0 overflow-hidden rounded-lg border">
-			<ui.Sidebar collapsible="icon">
+			<ui.Sidebar open={true} collapsible="icon">
 				<ui.SidebarHeader>
 					<div class="px-2 py-1 text-sm font-semibold">Acme Inc</div>
 				</ui.SidebarHeader>
@@ -79,6 +85,7 @@ component Persisted() {
 		</ui.SidebarProvider>
 		<script>
 			document.addEventListener("gsxui:change", (e) => {
+				if (!e.target.matches?.('[data-slot="sidebar-wrapper"]')) return;
 				document.cookie = `sidebar_state=${e.detail.open}; path=/; max-age=604800`;
 			});
 		</script>

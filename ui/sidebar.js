@@ -20,7 +20,12 @@
 // is still honored.
 import { on, emit } from "./gsxui.js";
 
-const desktopRootOf = (wrapper) => wrapper.querySelector('[data-slot="sidebar"]:not([data-mobile])');
+// .group scopes this to the desktop tree's own root specifically —
+// [data-slot="sidebar"]:not([data-mobile]) alone also matches
+// collapsible="none"'s flat div (data-slot="sidebar", no data-mobile
+// either), which carries no `group` class and has no group-data-*
+// consumer to react to a toggle at all (review round 1, MINOR 5).
+const desktopRootOf = (wrapper) => wrapper.querySelector('[data-slot="sidebar"].group');
 const mobileDialogOf = (wrapper) => wrapper.querySelector('dialog[data-mobile="true"]');
 
 function isMobile(desktopRoot) {
@@ -76,12 +81,26 @@ on("click", '[data-slot="sidebar-rail"]', (_e, rail) => {
   if (wrapper) toggle(wrapper);
 });
 
+// True while the key event's own target is a place ordinary typing must
+// win — a text input/textarea/select or any contenteditable region. Cmd/
+// Ctrl+B is also the universal "bold" chord in every rich-text editor;
+// without this guard the sidebar would steal it out from under one
+// (review round 1, MINOR 7 — upstream's own SIDEBAR_KEYBOARD_SHORTCUT
+// listener has the identical hole, not fixed here, but not worth
+// reproducing).
+function isTypingTarget(target) {
+  if (!(target instanceof Element)) return false;
+  if (target.isContentEditable) return true;
+  return /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName);
+}
+
 // Cmd/Ctrl+B toggles the FIRST provider on the page (SIDEBAR_KEYBOARD_
 // SHORTCUT — see ui/sidebar.gsx's own package doc comment) — module scope,
 // same shape as command.js's own ⌘K handler, plus the repeat-fire guard:
 // holding the chord down must not spam toggle on every OS key-repeat.
 addEventListener("keydown", (e) => {
   if (e.key.toLowerCase() !== "b" || !(e.metaKey || e.ctrlKey) || e.repeat) return;
+  if (isTypingTarget(e.target)) return;
   const wrapper = document.querySelector('[data-slot="sidebar-wrapper"]');
   if (!wrapper) return;
   e.preventDefault();

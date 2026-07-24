@@ -25,35 +25,65 @@ import (
 // touches document.cookie or localStorage. Persisting across reloads is the
 // CALLER's job: site/examples/sidebar/persisted.gsx is the documented
 // cookie round-trip (a Go handler reading sidebar_state into `open`, plus a
-// three-line gsxui:change listener writing it back).
+// gsxui:change listener writing it back — target-guarded against
+// [data-slot="sidebar-wrapper"], since gsxui:change is also emitted by
+// tabs/toggle/toggle-group/resizable; see that example's own doc comment).
 //
-// GAP (Sidebar's own initial data-state is always "expanded"): Sidebar
-// takes side/variant/collapsible — deliberately NOT `open` (gsx has no
-// context; the fixed part signature list in this component's own task
-// brief has no state param on Sidebar) — so its desktop root cannot know
-// SidebarProvider's `open` value at render time and always server-renders
-// data-state="expanded"/data-collapsible="" (shadcn's own defaultOpen=true
-// default). A page whose SidebarProvider(false, ...) wants the desktop
-// sidebar collapsed on first paint gets an expanded flash until
-// sidebar.js's toggle runs — a real, accepted v1 limitation, not an
-// oversight; see docs/jsx-parity.md `## sidebar` GAP. The Go-invisible
+// FIX (review round 1, CRITICAL — supersedes the task brief's own Sidebar
+// signature, which omitted `open`): every state-driven visual in this
+// component — the gap's width, the container's offcanvas slide, icon-
+// collapsed sizing, SidebarInset's peer-data-[state=collapsed]:ml-2, the
+// rail's cursor, and all eight group-data-[collapsible=...] consumers —
+// roots at the DESKTOP ROOT div, never at SidebarProvider's own wrapper
+// (confirmed: no selector anywhere in this component reads
+// [data-slot=sidebar-wrapper]'s own data-state). A Sidebar with no `open`
+// parameter therefore had no way to ever render collapsed — not a flash,
+// a PERMANENT bug: SidebarProvider(false, ...) rendered a fully expanded
+// sidebar, full stop, and the first click/rail-press/Cmd+B had to fight
+// its way past a `data-state="expanded"` it was never told to start from
+// (sidebar.js's toggle reads the CURRENT data-state to decide the new one,
+// so a wrongly-expanded root swallowed the first press entirely). `Sidebar`
+// now takes `open bool` as its first parameter — the same value the
+// caller already passes to `SidebarProvider`, following this codebase's
+// established explicit-param pattern for values React context would
+// otherwise thread (see ui/toggle-group.gsx's own doc comment on
+// `groupType`/`variant`/`size`/`spacing` — "the caller, which already has
+// the value in scope, passes it explicitly"). `data-state` renders from
+// `open` directly; `data-collapsible` is the configured mode when
+// collapsed, `""` when expanded — exactly the reference's own
+// `state === "collapsed" ? collapsible : ""` ternary. The Go-invisible
 // configured collapse MODE ("offcanvas"/"icon"/"none") is separately
 // stamped as data-gsxui-sidebar-collapsible so sidebar.js can restore it
-// when the user later collapses — data-collapsible itself, matching
-// upstream, is only ever the mode value while actually collapsed, ""
-// otherwise (see MECHANISM below).
+// on a later collapse after the user has expanded it client-side (see
+// MECHANISM below) — that attribute is unaffected by this fix.
 //
 // 2. MOBILE. React swaps the whole sidebar for a Sheet via a client-only
 // useIsMobile() media query; a server render cannot branch on viewport.
 // Sidebar instead renders BOTH trees unconditionally and lets CSS gate
 // them: the desktop tree keeps shadcn's own `hidden … md:block` root and
 // `hidden … md:flex` container, and the mobile tree is the Sheet branch,
-// additionally marked `md:hidden` (a gsxui ADAPT — upstream never needs it,
-// since it only ever renders one branch at a time), carrying the
-// reference's own data-mobile="true", the --sidebar-width: 18rem override,
-// and the sr-only header/title/description. No media-query JS anywhere.
-// collapsible="none" still short-circuits to the reference's single flat
-// div branch, Sheet and all.
+// carrying the reference's own data-mobile="true", the
+// --sidebar-width: 18rem override, and the sr-only header/title/
+// description. No media-query JS anywhere. collapsible="none" still
+// short-circuits to the reference's single flat div branch, Sheet and all.
+//
+// FIX (review round 1, mobile gate specificity): the `md:hidden` that
+// CSS-gates the mobile tree (a gsxui ADAPT — upstream never needs it,
+// since it only ever renders one branch) lives on the Sheet ROOT
+// (`<Sheet class="md:hidden">`, a plain `class="contents"` div with no
+// competing display utility of its own), NOT on the `<dialog>` element
+// itself. It was originally on SheetContent's own class, where it lost to
+// the dialog's own `open:flex` (compiled `:is([open],:popover-open,
+// :open){display:flex}`, specificity (0,2,0) against `.md\:hidden`'s
+// (0,1,0)) — opening the sheet at a narrow viewport and then resizing to
+// >=md left BOTH trees visible at once, since a media query adds no
+// specificity to win that fight. An ancestor `display:none` still hides a
+// `<dialog>` promoted to the top layer via showModal() (top-layer
+// promotion escapes stacking/overflow/clipping containment, not ordinary
+// CSS box generation from an ancestor's own `display`), and the Sheet
+// root's plain `contents`/`md:hidden` pair has no such specificity fight
+// to lose, since neither `[open]`/`:popover-open`/`:open` pseudo-classes
+// ever match a plain wrapper div.
 //
 // CONSEQUENCE (children renders TWICE — read this before nesting anything
 // with an id inside a Sidebar): every non-"none" Sidebar renders `children`
@@ -130,10 +160,12 @@ component SidebarProvider(open bool, children gsx.Node, attrs gsx.Attrs) {
 // Sidebar renders the reference's three branches — see the package doc
 // comment's MOBILE section for why the offcanvas/icon branches below are
 // TWO trees (mobile Sheet + desktop group/peer), not the upstream
-// isMobile-gated either/or, and its GAP entry for why the desktop tree
-// always starts data-state="expanded". collapsible="none" still renders
-// the reference's single flat div, unconditionally, exactly once.
-component Sidebar(side string, variant string, collapsible string, children gsx.Node, attrs gsx.Attrs) {
+// isMobile-gated either/or, and its own FIX entry for why `open` is now
+// this component's first parameter, matching SidebarProvider's own value.
+// collapsible="none" still renders the reference's single flat div,
+// unconditionally, exactly once, and ignores `open` entirely (matching the
+// reference, whose own collapsible="none" branch never reads `state`).
+component Sidebar(open bool, side string, variant string, collapsible string, children gsx.Node, attrs gsx.Attrs) {
 	{{
 		s := side
 		if s == "" {
@@ -147,6 +179,12 @@ component Sidebar(side string, variant string, collapsible string, children gsx.
 		if c == "" {
 			c = "offcanvas"
 		}
+		state := "collapsed"
+		collapsibleAttr := c
+		if open {
+			state = "expanded"
+			collapsibleAttr = ""
+		}
 	}}
 	{ if collapsible == "none" {
 		<div
@@ -158,14 +196,14 @@ component Sidebar(side string, variant string, collapsible string, children gsx.
 		</div>
 	} else {
 		<>
-			<Sheet { attrs... }>
+			<Sheet class="md:hidden" { attrs... }>
 				<SheetContent
 					side={s}
 					data-slot="sidebar"
 					data-sidebar="sidebar"
 					data-mobile="true"
 					style=css`--sidebar-width:@{sidebarWidthMobile}`
-					class="w-(--sidebar-width) bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden md:hidden"
+					class="w-(--sidebar-width) bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
 				>
 					<SheetHeader class="sr-only">
 						<SheetTitle>Sidebar</SheetTitle>
@@ -176,8 +214,8 @@ component Sidebar(side string, variant string, collapsible string, children gsx.
 			</Sheet>
 			<div
 				class="group peer hidden text-sidebar-foreground md:block"
-				data-state="expanded"
-				data-collapsible=""
+				data-state={state}
+				data-collapsible={collapsibleAttr}
 				data-gsxui-sidebar-collapsible={c}
 				data-variant={v}
 				data-side={s}
@@ -246,6 +284,23 @@ component SidebarTrigger(attrs gsx.Attrs) {
 // SidebarRail is a pointer-only affordance (tabindex="-1", deliberately not
 // a keyboard tab stop, matching the reference exactly — no drag is wired,
 // only a click) that shares SidebarTrigger's toggle mechanism.
+//
+// ADAPT (review round 1, MINOR 6 — [[data-mobile]_&]:hidden added, not in
+// upstream): callers place SidebarRail as a child of Sidebar, same as
+// every shadcn block does (registry/new-york-v4/blocks/sidebar-*/
+// components/app-sidebar.tsx all render it as Sidebar's own last child) —
+// but `children` renders TWICE in this port (see the package doc
+// comment's MOBILE section), so a rail placed that way also lands inside
+// the mobile Sheet tree, where it has no desktop group/peer ancestor to
+// read data-* off, its click is a no-op (isMobile() routes clicks inside
+// the mobile tree to openMobile(), not toggleDesktop()), and its own
+// `sm:flex` would make it visibly overlay Sheet content between the sm and
+// md breakpoints. `[[data-mobile]_&]:hidden` (the same ancestor-selector
+// arbitrary-variant idiom this class already uses for the data-side/
+// data-state/data-collapsible combinators above) unconditionally hides it
+// whenever nested under a data-mobile ancestor — its compiled selector
+// (`[data-mobile] &`, specificity (0,2,0)) beats the plain `sm:flex`
+// utility (0,1,0) at every viewport, no !important needed.
 component SidebarRail(attrs gsx.Attrs) {
 	<button
 		type="button"
@@ -254,7 +309,7 @@ component SidebarRail(attrs gsx.Attrs) {
 		aria-label="Toggle Sidebar"
 		tabindex="-1"
 		title="Toggle Sidebar"
-		class="absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:after:bg-sidebar-border sm:flex in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize [[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize group-data-[collapsible=offcanvas]:translate-x-0 group-data-[collapsible=offcanvas]:after:left-full hover:group-data-[collapsible=offcanvas]:bg-sidebar [[data-side=left][data-collapsible=offcanvas]_&]:-right-2 [[data-side=right][data-collapsible=offcanvas]_&]:-left-2"
+		class="absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:after:bg-sidebar-border sm:flex in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize [[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize group-data-[collapsible=offcanvas]:translate-x-0 group-data-[collapsible=offcanvas]:after:left-full hover:group-data-[collapsible=offcanvas]:bg-sidebar [[data-side=left][data-collapsible=offcanvas]_&]:-right-2 [[data-side=right][data-collapsible=offcanvas]_&]:-left-2 [[data-mobile]_&]:hidden"
 		{ attrs... }
 	></button>
 }

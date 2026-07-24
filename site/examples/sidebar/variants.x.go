@@ -110,7 +110,7 @@ func _gsxrenderdemo(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, label string, si
 	_gsxgw.Node(ctx, ui.SidebarProvider(open, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:46:4
-		_gsxgw.Node(ctx, ui.Sidebar(side, variant, collapsible, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.Sidebar(open, side, variant, collapsible, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:47:5
 			_gsxgw.Node(ctx, ui.SidebarHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {

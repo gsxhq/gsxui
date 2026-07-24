@@ -23,7 +23,7 @@ func Basic() _gsxrt.Node {
 		_gsxgw.Node(ctx, ui.SidebarProvider(true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:14:3
-			_gsxgw.Node(ctx, ui.Sidebar("", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.Sidebar(true, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:15:4
 				_gsxgw.Node(ctx, ui.SidebarHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {

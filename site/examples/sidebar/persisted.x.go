@@ -33,12 +33,18 @@ import (
 //         ui.SidebarProvider(open, pageBody(), nil).Render(r.Context(), w)
 //     }
 //
-//  2. CLIENT: write the cookie back whenever the sidebar toggles — three
-//     lines, listening for the gsxui:change event sidebar.js emits on
+//  2. CLIENT: write the cookie back whenever the sidebar toggles — a
+//     four-line listener for the gsxui:change event sidebar.js emits on
 //     SidebarProvider's own wrapper (see the <script> below, which is
-//     this exact snippet, live):
+//     this exact snippet, live). The target guard is NOT optional: gsxui:
+//     change is also emitted by ui/tabs.js, ui/toggle.js, ui/toggle-
+//     group.js and ui/resizable.js (review round 1, IMPORTANT 2) — without
+//     it, switching a tab or flipping a toggle ANYWHERE on a page that
+//     also has a sidebar would overwrite this cookie with
+//     "sidebar_state=undefined":
 //
 //     document.addEventListener("gsxui:change", (e) => {
+//       if (!e.target.matches?.('[data-slot="sidebar-wrapper"]')) return;
 //       document.cookie = `sidebar_state=${e.detail.open}; path=/; max-age=604800`;
 //     });
 //
@@ -50,57 +56,57 @@ import (
 // your browser — inspect it in devtools, or check `document.cookie` in the
 // console.
 
-//line persisted.gsx:46:1
+//line persisted.gsx:52:1
 func Persisted() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line persisted.gsx:47:2
+//line persisted.gsx:53:2
 		_gsxgw.S("<div>")
-//line persisted.gsx:48:3
+//line persisted.gsx:54:3
 		_gsxgw.Node(ctx, ui.SidebarProvider(true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line persisted.gsx:49:4
-			_gsxgw.Node(ctx, ui.Sidebar("", "", "icon", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line persisted.gsx:55:4
+			_gsxgw.Node(ctx, ui.Sidebar(true, "", "", "icon", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line persisted.gsx:50:5
+//line persisted.gsx:56:5
 				_gsxgw.Node(ctx, ui.SidebarHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line persisted.gsx:51:6
+//line persisted.gsx:57:6
 					_gsxgw.S("<div class=\"px-2 py-1 text-sm font-semibold\">Acme Inc</div>")
 					return _gsxgw.Err()
 				}), nil))
-//line persisted.gsx:53:5
+//line persisted.gsx:59:5
 				_gsxgw.Node(ctx, ui.SidebarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line persisted.gsx:54:6
+//line persisted.gsx:60:6
 					_gsxgw.Node(ctx, ui.SidebarGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line persisted.gsx:55:7
+//line persisted.gsx:61:7
 						_gsxgw.Node(ctx, ui.SidebarMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line persisted.gsx:56:8
+//line persisted.gsx:62:8
 							_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
-//line persisted.gsx:57:9
+//line persisted.gsx:63:9
 								_gsxgw.Node(ctx, ui.SidebarMenuButton(true, "", "", "Home", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
-//line persisted.gsx:58:10
+//line persisted.gsx:64:10
 									_gsxgw.Node(ctx, icon.House())
-//line persisted.gsx:59:10
+//line persisted.gsx:65:10
 									_gsxgw.S("<span>Home</span>")
 									return _gsxgw.Err()
 								}), nil))
 								return _gsxgw.Err()
 							}), nil))
-//line persisted.gsx:62:8
+//line persisted.gsx:68:8
 							_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
-//line persisted.gsx:63:9
+//line persisted.gsx:69:9
 								_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "", "Settings", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
-//line persisted.gsx:64:10
+//line persisted.gsx:70:10
 									_gsxgw.Node(ctx, icon.Settings())
-//line persisted.gsx:65:10
+//line persisted.gsx:71:10
 									_gsxgw.S("<span>Settings</span>")
 									return _gsxgw.Err()
 								}), nil))
@@ -112,27 +118,27 @@ func Persisted() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line persisted.gsx:71:5
+//line persisted.gsx:77:5
 				_gsxgw.Node(ctx, ui.SidebarRail(nil))
 				return _gsxgw.Err()
 			}), nil))
-//line persisted.gsx:73:4
+//line persisted.gsx:79:4
 			_gsxgw.Node(ctx, ui.SidebarInset(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line persisted.gsx:74:5
+//line persisted.gsx:80:5
 				_gsxgw.S("<header class=\"flex h-12 items-center gap-2 border-b px-4\">")
-//line persisted.gsx:75:6
+//line persisted.gsx:81:6
 				_gsxgw.Node(ctx, ui.SidebarTrigger(nil))
-//line persisted.gsx:76:6
+//line persisted.gsx:82:6
 				_gsxgw.S("<span class=\"text-sm text-muted-foreground\">Toggle me, then check document.cookie</span></header>")
 				return _gsxgw.Err()
 			}), nil))
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "class", Value: "h-64 min-h-0 overflow-hidden rounded-lg border"}}))
-//line persisted.gsx:80:3
+//line persisted.gsx:86:3
 		_gsxgw.S("<script")
 		_gsxgw.Nonce(ctx)
-		_gsxgw.S(">\ndocument.addEventListener(\"gsxui:change\", (e) => {\n\tdocument.cookie = `sidebar_state=${e.detail.open}; path=/; max-age=604800`;\n});\n</script></div>")
+		_gsxgw.S(">\ndocument.addEventListener(\"gsxui:change\", (e) => {\n\tif (!e.target.matches?.('[data-slot=\"sidebar-wrapper\"]')) return;\n\tdocument.cookie = `sidebar_state=${e.detail.open}; path=/; max-age=604800`;\n});\n</script></div>")
 		return _gsxgw.Err()
 	})
 }

@@ -11,7 +11,7 @@ import (
 // trigger, and SidebarInset holding the "page" content next to it.
 component Basic() {
 	<ui.SidebarProvider open={true} class="min-h-[32rem] rounded-lg border">
-		<ui.Sidebar>
+		<ui.Sidebar open={true}>
 			<ui.SidebarHeader>
 				<div class="px-2 py-1 text-sm font-semibold">Acme Inc</div>
 			</ui.SidebarHeader>

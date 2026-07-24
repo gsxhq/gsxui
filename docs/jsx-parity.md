@@ -1385,15 +1385,55 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   was never read (absent from the checkout) and so has nothing to reuse.
 
 ## sidebar
+- FIX (review round 1, CRITICAL — supersedes the task brief's own Sidebar
+  signature, which had no `open` param): every state-driven visual in this
+  component — gap width, container offcanvas slide, icon-collapsed sizing,
+  `SidebarInset`'s `peer-data-[state=collapsed]:ml-2`, the rail cursor, and
+  all eight `group-data-[collapsible=…]` consumers — roots at the DESKTOP
+  ROOT div, never at `SidebarProvider`'s own wrapper (confirmed: nothing
+  anywhere in this component reads `[data-slot=sidebar-wrapper]`'s own
+  `data-state`). A `Sidebar` with no `open` parameter therefore had no way
+  to EVER render collapsed — not a flash, a permanent bug:
+  `SidebarProvider(false, …)` rendered a fully expanded sidebar
+  unconditionally, and the first click/rail-press/Cmd+B had to fight past a
+  wrongly-`"expanded"` `data-state` it was never told to start from
+  (`sidebar.js`'s toggle reads the CURRENT `data-state` to decide the next
+  one, so the first press was silently swallowed). `Sidebar` now takes
+  `open bool` as its first parameter, the same value the caller already
+  passes to `SidebarProvider` — the established house pattern for values
+  React context would otherwise thread (see `## toggle-group`'s own GAP:
+  "the caller, which already has the value in scope, passes it
+  explicitly"). `data-state` renders from `open` directly; `data-
+  collapsible` is the configured mode while collapsed, `""` while expanded
+  — exactly the reference's own `state === "collapsed" ? collapsible : ""`
+  ternary. This REMOVES the GAP an earlier draft of this ledger recorded
+  here ("Sidebar's own desktop root always starts data-state=expanded") —
+  there is no longer any such limitation.
 - ADAPT (both trees, CSS-gated, not a runtime isMobile branch): shadcn's
   `Sidebar` swaps its entire subtree for a `Sheet` via a client-only
   `useIsMobile()` media-query hook — a server render cannot branch on
   viewport. This port renders BOTH trees unconditionally instead — the
-  desktop `group peer hidden … md:block` tree and a mobile `Sheet` tree
-  additionally marked `md:hidden` (a real ADAPT: upstream never needs this
-  class since it only ever renders one branch) — and lets CSS decide which
-  one is visible. `collapsible="none"` still short-circuits to the
-  reference's single flat `div`, exactly once, no Sheet at all.
+  desktop `group peer hidden … md:block` tree and a mobile `Sheet` tree —
+  and lets CSS decide which one is visible. `collapsible="none"` still
+  short-circuits to the reference's single flat `div`, exactly once, no
+  Sheet at all.
+- FIX (review round 1, IMPORTANT 3 — mobile gate moved to the Sheet root):
+  the `md:hidden` CSS-gating the mobile tree (a real ADAPT either way —
+  upstream never needs this class, since it only ever renders one branch)
+  originally lived on `SheetContent`'s own `<dialog>` class, where it lost
+  a specificity fight against the dialog's own `open:flex` (compiled
+  `:is([open],:popover-open,:open){display:flex}`, specificity `(0,2,0)`
+  against `.md\:hidden`'s `(0,1,0)` — a media query adds no specificity):
+  opening the sheet at a narrow viewport and resizing past `md` left BOTH
+  trees visible at once. `md:hidden` now lives on the `Sheet` ROOT instead
+  (`<Sheet class="md:hidden">`, composing down to a plain
+  `class="contents md:hidden"` div with no `[open]`/`:popover-open`/`:open`
+  pseudo-class ever matching it, so there is no fight to lose) — an
+  ancestor `display:none` still hides a `<dialog>` promoted to the top
+  layer via `showModal()` (top-layer promotion escapes stacking/overflow/
+  clipping containment, not ordinary CSS box generation from an ancestor's
+  own `display`), so this closes the bug outright rather than papering
+  over the specificity war with `!important`.
 - GAP (children renders TWICE — read before nesting `id`s): the direct,
   accepted cost of the dual-tree ADAPT above — every non-`"none"` `Sidebar`
   renders `children` once inside the mobile `Sheet` and once inside the
@@ -1402,7 +1442,24 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   forward onto both the `Sheet` root and the desktop `sidebar-container`)
   would be duplicated and the document invalid — use classes/`data-*`
   instead. Documented prominently in `ui/sidebar.gsx`'s own package doc
-  comment, per the task brief's explicit instruction.
+  comment, per the task brief's explicit instruction. `SidebarRail` is the
+  one shadcn-block-standard child (every `registry/new-york-v4/blocks/
+  sidebar-*` renders it as `Sidebar`'s own last child) this duplication
+  actively breaks rather than merely risks — see the ADAPT below.
+- ADAPT (review round 1, MINOR 6 — SidebarRail hidden inside the mobile
+  tree): a rail placed as `Sidebar`'s child, matching every shadcn block's
+  own convention, lands inside BOTH trees per the GAP above. Inside the
+  mobile Sheet it has no desktop `group`/`peer` ancestor to react to, its
+  click is a no-op (`sidebar.js`'s `isMobile()` check routes it to
+  `openMobile()`, not `toggleDesktop()`), and its own `sm:flex` made it
+  visibly overlay Sheet content between the `sm` and `md` breakpoints.
+  `SidebarRail`'s class gains one additional token,
+  `[[data-mobile]_&]:hidden` (the same ancestor-selector arbitrary-variant
+  idiom its own pinned string already uses for the `data-side`/
+  `data-state`/`data-collapsible` combinators), which unconditionally hides
+  it under a `data-mobile` ancestor — compiled specificity `(0,2,0)` beats
+  the plain `sm:flex` utility's `(0,1,0)` at every viewport, no
+  `!important` needed.
 - ADAPT (persistence is the consumer's, not shipped as a cookie): shadcn's
   own `SidebarProvider` writes a plain non-HttpOnly `sidebar_state` cookie
   on every `setOpen` call and reads it back via a Server Component —  one
@@ -1416,10 +1473,20 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   `document.cookie`. `site/examples/sidebar/persisted.gsx` is the shipped
   replacement for the cookie: a documented, copyable recipe pairing a
   plain `net/http` handler snippet (read `sidebar_state` into `open` before
-  rendering `SidebarProvider`) with the three-line `gsxui:change` listener
-  that writes the cookie back client-side — the SAME mechanism upstream
-  bakes into the component, now explicit and swappable (a caller can use a
-  Go session, Alpine, htmx, or nothing, instead).
+  rendering `SidebarProvider`) with a target-guarded `gsxui:change`
+  listener that writes the cookie back client-side — the SAME mechanism
+  upstream bakes into the component, now explicit and swappable (a caller
+  can use a Go session, Alpine, htmx, or nothing, instead).
+- FIX (review round 1, IMPORTANT 2 — the persisted.gsx listener needed a
+  target filter): `gsxui:change` is not sidebar-exclusive — `ui/tabs.js`,
+  `ui/toggle.js`, `ui/toggle-group.js`, and `ui/resizable.js` all emit the
+  same event name on their own roots. An earlier draft's `document`-level
+  listener had no target check at all, so switching a tab or flipping any
+  toggle ANYWHERE on a page that also has a persisted sidebar would
+  overwrite the cookie with `sidebar_state=undefined` (`e.detail.open` is
+  `undefined` on those other events' payload shapes). Fixed in both places
+  the snippet appears (the doc comment and the live `<script>`) with
+  `if (!e.target.matches?.('[data-slot="sidebar-wrapper"]')) return;`.
 - MECHANISM (no context, pure CSS consumption — same shape as every other
   gsxui interactive component): `data-state`/`data-collapsible`/
   `data-variant`/`data-side` are stamped on the desktop root and consumed
@@ -1436,19 +1503,22 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   without a separate place to remember the mode, a collapse→expand→
   collapse cycle would have nothing to restore `data-collapsible` to once
   it had been cleared to `""`.
-- GAP (`Sidebar`'s own desktop root always starts `data-state="expanded"`):
-  `Sidebar` takes `side`/`variant`/`collapsible` — deliberately no `open`
-  param (the task brief's own fixed part-signature list has none, and gsx
-  has no context to thread `SidebarProvider`'s `open` into a sibling call)
-  — so its desktop root cannot know the provider's state at render time and
-  always server-renders as expanded (`data-collapsible=""`), matching
-  shadcn's own `defaultOpen=true` default. A page whose `SidebarProvider
-  (false, …)` wants the sidebar collapsed on first paint gets an expanded
-  flash until `sidebar.js`'s toggle runs. A real, accepted v1 limitation —
-  not an oversight — since `SidebarProvider`'s own `data-state` (the thing
-  that IS server-correct) has no CSS selector reading it in the reference
-  either (confirmed: no `[data-slot=sidebar-wrapper]`-keyed selector exists
-  anywhere in `sidebar.tsx`'s own class strings).
+- MECHANISM (review round 1, MINOR 5 — desktop-root selector narrowed):
+  `sidebar.js`'s `desktopRootOf` was `[data-slot="sidebar"]:not([data-
+  mobile])`, which also matches `collapsible="none"`'s flat div (same
+  `data-slot="sidebar"`, no `data-mobile` either) — toggling against that
+  div stamped `data-state`/`data-collapsible` on an element with no
+  `group` class and no `group-data-*` consumer to react to it, a silent
+  no-op with misleading DOM state left behind. Narrowed to
+  `[data-slot="sidebar"].group`, which only the desktop tree's own root
+  ever carries.
+- MECHANISM (review round 1, MINOR 7 — Cmd/Ctrl+B no longer steals bold):
+  the shortcut's own `keydown` handler now checks `e.target` against a
+  small `isTypingTarget()` helper (`isContentEditable`, or an `INPUT`/
+  `TEXTAREA`/`SELECT` tag) and bails before `preventDefault()`/toggling —
+  Cmd/Ctrl+B is the universal "bold" chord in rich text editors, and the
+  reference's own `SIDEBAR_KEYBOARD_SHORTCUT` listener has the identical
+  hole, unfixed upstream.
 - ADAPT (`TooltipProvider` dropped, correcting the source map's own
   dependency framing): the 2026-07-24 tier4 source map's `## sidebar`
   lists `Tooltip`+`TooltipContent`+`TooltipProvider`+`TooltipTrigger` as

@@ -43,7 +43,7 @@ component demo(label string, side string, variant string, collapsible string, op
 	<div>
 		<div class="mb-2 text-sm font-medium">{ label }</div>
 		<ui.SidebarProvider open={open} class="h-64 min-h-0 overflow-hidden rounded-lg border">
-			<ui.Sidebar side={side} variant={variant} collapsible={collapsible}>
+			<ui.Sidebar open={open} side={side} variant={variant} collapsible={collapsible}>
 				<ui.SidebarHeader>
 					<div class="px-2 py-1 text-sm font-semibold">Acme Inc</div>
 				</ui.SidebarHeader>
