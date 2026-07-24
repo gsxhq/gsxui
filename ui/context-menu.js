@@ -32,7 +32,8 @@
 //     can be arbitrarily close to any edge — so an unclamped menu could
 //     render partially or fully offscreen on an ordinary right-click near
 //     the right or bottom edge, not just an unusual one. Numeric clamping
-//     against window.innerWidth/innerHeight using the content's own
+//     against document.documentElement.clientWidth/clientHeight (the
+//     scrollbar-free client area) using the content's own
 //     offsetWidth/offsetHeight (read AFTER showPopover() — a hidden popover
 //     has no layout box) closes that gap; see docs/jsx-parity.md's ##
 //     context-menu ledger entry for the full ADAPT writeup.

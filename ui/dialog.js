@@ -41,8 +41,9 @@ function requestClose(dialog) {
   // iterations:Infinity, so its `finished` promise never resolves and a
   // subtree-wide wait would keep the dialog open forever). And because a
   // backgrounded/occluded tab freezes animation clocks entirely, the wait
-  // is raced against a hard cap comfortably above the 200ms exit the
-  // components ship — the dialog always closes, animation or not.
+  // is raced against a hard cap comfortably above every exit duration
+  // the components ship (dialog/alert-dialog 200ms, sheet 300ms), so
+  // the dialog always closes, animation or not.
   const anims = dialog.getAnimations();
   if (!anims.length) {
     dialog.close();
