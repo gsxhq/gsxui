@@ -38,9 +38,9 @@ func _gsxrenderLayout(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title string, 
 //line layout.gsx:17:3
 	_gsxgw.S("<head>")
 //line layout.gsx:18:4
-	_gsxgw.S("<meta charset=\"UTF-8\"/>")
+	_gsxgw.S("<meta charset=\"UTF-8\">")
 //line layout.gsx:19:4
-	_gsxgw.S("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>")
+	_gsxgw.S("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">")
 //line layout.gsx:20:4
 	_gsxgw.S("<title>")
 //line layout.gsx:20:11
@@ -66,14 +66,14 @@ func _gsxrenderLayout(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title string, 
 //line layout.gsx:56:5
 		_gsxgw.S("<link rel=\"stylesheet\" href=\"")
 		_gsxgw.URL(string(href))
-		_gsxgw.S("\"/>")
+		_gsxgw.S("\">")
 	}
 //line layout.gsx:58:4
 	for _, src := range assets.Preloads {
 //line layout.gsx:59:5
 		_gsxgw.S("<link rel=\"modulepreload\" href=\"")
 		_gsxgw.URL(string(src))
-		_gsxgw.S("\"/>")
+		_gsxgw.S("\">")
 	}
 //line layout.gsx:61:4
 	for _, src := range assets.JS {

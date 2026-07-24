@@ -18,7 +18,6 @@ func TestRadioDefault(t *testing.T) {
 		"disabled:cursor-not-allowed disabled:opacity-50",
 		"aria-invalid:border-destructive aria-invalid:ring-destructive/20",
 		"checked:bg-[radial-gradient(circle_closest-side,currentColor_45%,transparent_50%)]",
-		"/>",
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
@@ -87,7 +86,7 @@ func TestRadioPinned(t *testing.T) {
 	// (text-primary is what makes currentColor resolve to primary here —
 	// load-bearing, not vestigial). See docs/jsx-parity.md.
 	got := render(t, ui.Radio(nil))
-	want := `<input type="radio" data-slot="radio" class="peer aspect-square size-4 shrink-0 appearance-none rounded-full border border-input text-primary shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:bg-input/30 checked:bg-[radial-gradient(circle_closest-side,currentColor_45%,transparent_50%)]"/>`
+	want := `<input type="radio" data-slot="radio" class="peer aspect-square size-4 shrink-0 appearance-none rounded-full border border-input text-primary shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:bg-input/30 checked:bg-[radial-gradient(circle_closest-side,currentColor_45%,transparent_50%)]">`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

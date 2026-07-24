@@ -8,8 +8,8 @@ github.com/fsnotify/fsnotify v1.10.1 h1:b0/UzAf9yR5rhf3RPm9gf3ehBPpf0oZKIjtpKrx5
 github.com/fsnotify/fsnotify v1.10.1/go.mod h1:TLheqan6HD6GBK6PrDWyDPBaEV8LspOxvPSjC+bVfgo=
 github.com/google/go-cmp v0.7.0 h1:wk8382ETsv4JYUZwIsn6YpYiWiBsYLSJiTsyBybVuN8=
 github.com/google/go-cmp v0.7.0/go.mod h1:pXiqmnSA92OHEEa9HXL2W4E7lf9JzCmGVUdgjX3N/iU=
-github.com/gsxhq/gsx v0.0.0-20260723164635-eced9e2ab987 h1:cKXtzohzUL0Fo9A5FvVltYGGwg87DpMd0rnDM/G6Nh4=
-github.com/gsxhq/gsx v0.0.0-20260723164635-eced9e2ab987/go.mod h1:/jf9pgYLIm/iWTHKFDaSvcSXGL9uj8xZlO+nAP7ZeCU=
+github.com/gsxhq/gsx v0.0.0-20260724092639-66ed604307a9 h1:H+ED/TI3gl4PUyPYLjaqb/GusNQN40SxYYEvn3j8Pbc=
+github.com/gsxhq/gsx v0.0.0-20260724092639-66ed604307a9/go.mod h1:/jf9pgYLIm/iWTHKFDaSvcSXGL9uj8xZlO+nAP7ZeCU=
 github.com/gsxhq/vite v0.3.1 h1:XkdmrYkidP0wENeE+kSL5BpJCOB2Iti7CxTfHjgyzs0=
 github.com/gsxhq/vite v0.3.1/go.mod h1:tDUvkK2CbjwYex6b5+kHL0tK2vIwS0h3kJQLroxs2PY=
 github.com/jackielii/ctxkey v1.0.1 h1:CcgbR+fQbrzZJWxI/7Ec4EhzUbmTU1sfI1gV7MAgjIg=

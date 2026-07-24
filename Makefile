@@ -26,7 +26,7 @@ check: test
 # gsx.toml [dev]), and runs Vite as the front door (proxying everything but
 # its own /__vite/ namespace to the Go server).
 site-dev:
-	go tool gsx dev | tee /tmp/gsx-dev.log
+	go tool gsx dev | tee tmp/gsxui-dev.log
 
 # site builds the production bundle (Vite assets embedded by site/main.go)
 # and runs the server in prod mode (no VITE_DEV_URL → gsxhq/vite serves the

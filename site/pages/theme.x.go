@@ -152,13 +152,13 @@ func (t Theme) Page() _gsxrt.Node {
 					_gsxgw.AttrValue(string(v.Name))
 					_gsxgw.S("\" data-theme-mode=\"light\" value=\"")
 					_gsxgw.AttrValue(string(v.Light))
-					_gsxgw.S("\" class=\"h-8 w-full min-w-0 rounded-md border border-input bg-transparent px-2 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50\"/>")
+					_gsxgw.S("\" class=\"h-8 w-full min-w-0 rounded-md border border-input bg-transparent px-2 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50\">")
 //line theme.gsx:122:12
 					_gsxgw.S("<input type=\"text\" data-theme-var=\"")
 					_gsxgw.AttrValue(string(v.Name))
 					_gsxgw.S("\" data-theme-mode=\"dark\" value=\"")
 					_gsxgw.AttrValue(string(v.Dark))
-					_gsxgw.S("\" class=\"h-8 w-full min-w-0 rounded-md border border-input bg-transparent px-2 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50\"/></div>")
+					_gsxgw.S("\" class=\"h-8 w-full min-w-0 rounded-md border border-input bg-transparent px-2 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50\"></div>")
 //line theme.gsx:130:11
 					if v.Name == "--radius" {
 //line theme.gsx:131:12

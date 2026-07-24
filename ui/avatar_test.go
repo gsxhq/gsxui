@@ -50,7 +50,7 @@ func TestAvatarPinned(t *testing.T) {
 	// and docs/jsx-parity.md's ADAPT: AvatarImage adds absolute inset-0
 	// to overlay the fallback (no-JS rendering correct).
 	got := render(t, ui.AvatarImage("/shadcn.jpg", "shadcn", nil))
-	want := `<img data-slot="avatar-image" data-gsxui-avatar-image src="/shadcn.jpg" alt="shadcn" class="aspect-square size-full absolute inset-0"/>`
+	want := `<img data-slot="avatar-image" data-gsxui-avatar-image src="/shadcn.jpg" alt="shadcn" class="aspect-square size-full absolute inset-0">`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
