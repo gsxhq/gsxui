@@ -3,6 +3,7 @@
 export * from "./gsxui.js";
 import "./avatar.js";
 import "./dialog.js";
+import "./slider.js";
 import "./tabs.js";
 import "./dropdown.js";
 import "./tooltip.js";

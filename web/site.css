@@ -156,3 +156,91 @@
 [data-slot="accordion-content"] {
   min-height: 0;
 }
+
+/* Slider (native <input type=range>) cross-browser pseudo-elements —
+   nothing here is reachable via a Tailwind utility class, the same
+   ::details-content precedent as Accordion above. Two engines, two
+   selector families, both required (no single selector reaches every
+   browser): ::-webkit-slider-runnable-track/-thumb (Chromium, Safari) and
+   ::-moz-range-track/-thumb (Firefox). The base rule below suppresses UA
+   chrome first (appearance/background/width already ride Tailwind
+   utilities on the input itself, see ui/slider.gsx; only the parts below
+   have no utility-class equivalent at all).
+
+   Track fill: painted as a two-stop linear-gradient keyed off --fill (a
+   percentage custom property) rather than accent-color — accent-color's
+   cross-browser track-fill behavior is unverified, this gradient is
+   guaranteed cross-browser-identical. ui/slider.gsx computes --fill
+   server-side for first paint (exact arithmetic from value/min/max);
+   ui/slider.js keeps it in sync on every `input` event thereafter. See
+   docs/jsx-parity.md `## slider`.
+
+   Thumb: nova size-3 (0.75rem), border-primary (nova's border-ring color
+   recolor NOT adopted — house policy, color scope only). WebKit does not
+   auto-center a ::-webkit-slider-thumb on its track the way Firefox's
+   ::-moz-range-track box model does — margin-top compensates by half the
+   (track height - thumb height) difference; without it the thumb sits
+   visibly high, flush with the track's top edge instead of centered.
+
+   Focus ring: focus-visible:ring-3 cannot reach a UA-shadow thumb pseudo-
+   element through a plain descendant selector — `input:focus-visible::
+   -webkit-slider-thumb` IS valid (Chromium/Safari) but Firefox requires
+   the ::-moz-range-thumb pairing instead, so both selector families are
+   written for every state, hover/active included (nova adds active:ring-3
+   as a new state alongside focus-visible:ring-3, ring width matched at
+   3px = ring-[3px] ring-ring/50 → box-shadow 0 0 0 3px color-mix(in
+   oklab, var(--ring) 50%, transparent), same formula Tailwind itself
+   compiles ring-ring/50 to). */
+input[type="range"] {
+  outline: none;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 0.25rem;
+  border-radius: 9999px;
+  background: linear-gradient(
+    to right,
+    var(--primary) 0%,
+    var(--primary) var(--fill, 0%),
+    var(--muted) var(--fill, 0%),
+    var(--muted) 100%
+  );
+}
+input[type="range"]::-moz-range-track {
+  height: 0.25rem;
+  border-radius: 9999px;
+  background: linear-gradient(
+    to right,
+    var(--primary) 0%,
+    var(--primary) var(--fill, 0%),
+    var(--muted) var(--fill, 0%),
+    var(--muted) 100%
+  );
+}
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid var(--primary);
+  background: #fff;
+  margin-top: calc((0.25rem - 0.75rem) / 2);
+  transition: box-shadow 150ms;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid var(--primary);
+  background: #fff;
+  transition: box-shadow 150ms;
+}
+input[type="range"]:hover::-webkit-slider-thumb,
+input[type="range"]:focus-visible::-webkit-slider-thumb,
+input[type="range"]:active::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent);
+}
+input[type="range"]:hover::-moz-range-thumb,
+input[type="range"]:focus-visible::-moz-range-thumb,
+input[type="range"]:active::-moz-range-thumb {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent);
+}
