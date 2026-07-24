@@ -19,7 +19,13 @@ func variantClass(variant string) string {
 	case "destructive":
 		return "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40"
 	case "outline":
-		return "border bg-background hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
+		// border-border (nova .cn-button-variant-outline), not bare `border`:
+		// the base's border-transparent is a same-specificity color utility
+		// that survives the merge (width vs color — different conflict
+		// groups), so a width-only `border` here renders an INVISIBLE
+		// outline in light mode. The CSS base-layer border-color rule can't
+		// save it — utilities beat base layer. Found in visual verification.
+		return "border-border bg-background hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
 	case "secondary":
 		return "bg-secondary text-secondary-foreground hover:bg-secondary/80"
 	case "ghost":
@@ -64,7 +70,7 @@ func sizeClass(size string) string {
 // real disabled <button>. type="button" is an overridable default — pass
 // type="submit" at the call site to submit forms.
 
-//line button.gsx:56:1
+//line button.gsx:62:1
 func Button(variant string, size string, href string, disabled bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -76,9 +82,9 @@ func _gsxrenderButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line button.gsx:57:2
+//line button.gsx:63:2
 	if href != "" && !disabled {
-//line button.gsx:58:3
+//line button.gsx:64:3
 		_gsxgw.S("<a")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"button\"")
@@ -104,11 +110,11 @@ func _gsxrenderButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line button.gsx:66:4
+//line button.gsx:72:4
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</a>")
 	} else {
-//line button.gsx:69:3
+//line button.gsx:75:3
 		_gsxgw.S("<button")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"button\"")
@@ -135,7 +141,7 @@ func _gsxrenderButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line button.gsx:78:4
+//line button.gsx:84:4
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 	}

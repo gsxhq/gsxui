@@ -9,7 +9,13 @@ func variantClass(variant string) string {
 	case "destructive":
 		return "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40"
 	case "outline":
-		return "border bg-background hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
+		// border-border (nova .cn-button-variant-outline), not bare `border`:
+		// the base's border-transparent is a same-specificity color utility
+		// that survives the merge (width vs color — different conflict
+		// groups), so a width-only `border` here renders an INVISIBLE
+		// outline in light mode. The CSS base-layer border-color rule can't
+		// save it — utilities beat base layer. Found in visual verification.
+		return "border-border bg-background hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
 	case "secondary":
 		return "bg-secondary text-secondary-foreground hover:bg-secondary/80"
 	case "ghost":
