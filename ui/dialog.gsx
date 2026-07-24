@@ -42,7 +42,7 @@ component DialogContent(hideCloseButton bool, children gsx.Node, attrs gsx.Attrs
 		data-gsxui-dialog-content
 		data-state="closed"
 		class={
-			"fixed top-[50%] left-[50%] z-50 open:grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-xl ring-1 bg-background p-4 text-sm text-foreground duration-200 outline-none sm:max-w-sm",
+			"fixed top-[50%] left-[50%] z-50 open:grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-xl border bg-background p-4 text-sm text-foreground duration-200 outline-none sm:max-w-sm",
 			"data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
 			// ADAPT: the registry overlay is a plain bg-black/50 fade, but the
 			// live shadcn site's current default style (nova) pairs a light

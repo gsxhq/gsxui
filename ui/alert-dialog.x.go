@@ -112,7 +112,7 @@ func AlertDialogTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // Diffed token-for-token against DialogContent's own base class, every
 // non-variant utility alert-dialog.tsx's content class carries (bg-
 // background, fixed, top-[50%], left-[50%], z-50, w-full, max-w-[calc(100%-
-// 2rem)], translate-x/y-[-50%], gap-4, rounded-xl, ring-1, p-4, text-sm,
+// 2rem)], translate-x/y-[-50%], gap-4, rounded-xl, border, p-4, text-sm,
 // duration-200) and all six data-[state=…]:animate-in/out, fade-*, zoom-*
 // tokens are already there — both dialogs share one centered-card recipe
 // upstream (see the ledger NOTE on which revision). The one token that is
