@@ -60,6 +60,46 @@ on("click", "[data-gsxui-popover-trigger]", (_e, trigger) => {
   content.style.top = `${r.bottom + 4}px`;
 });
 
+// Focus management, the Radix FocusScope trio popover.js was missing
+// (found in real-keyboard verification — with none of it, Tab from an open
+// popover walked the page underneath):
+//   - on open, focus the first tabbable descendant, falling back to the
+//     content itself (tabindex="-1" in popover.gsx exists for this) —
+//     FocusScope's own mount behavior, and what makes a form popover
+//     immediately typeable;
+//   - while open, Tab/Shift+Tab wrap within the content (the keydown
+//     handler below);
+//   - on close, return focus to the trigger — but only when focus is still
+//     inside the content (Esc, or a wrapped Tab). An outside click has
+//     already moved focus to the clicked element by the time light dismiss
+//     hides the popover; stealing it back would fight the user's click.
+//     This runs on beforetoggle, not toggle: toggle is queued as a task, by
+//     which point the UA has already parked focus on <body> and "was focus
+//     inside?" is unanswerable.
+const TABBABLE =
+  'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+on(
+  "beforetoggle",
+  "[data-gsxui-popover-content]",
+  (e, content) => {
+    if (e.newState !== "closed" || !content.contains(document.activeElement)) return;
+    content.closest("[data-gsxui-popover]")?.querySelector("[data-gsxui-popover-trigger]")?.focus();
+  },
+  { capture: true },
+);
+
+on("keydown", "[data-gsxui-popover-content]", (e, content) => {
+  if (e.key !== "Tab") return;
+  const items = [...content.querySelectorAll(TABBABLE)];
+  if (!items.length) return;
+  const edge = e.shiftKey ? items[0] : items[items.length - 1];
+  if (document.activeElement === edge || document.activeElement === content) {
+    e.preventDefault();
+    (e.shiftKey ? items[items.length - 1] : items[0]).focus();
+  }
+});
+
 on(
   "toggle",
   "[data-gsxui-popover-content]",
@@ -72,7 +112,10 @@ on(
     trigger?.setAttribute("aria-expanded", open ? "true" : "false");
     // clear only on open — clearing on close races the trigger-click task
     // that needs to read the flag (same ordering rationale as dropdown.js).
-    if (open) delete trigger?.dataset.gsxuiWasOpen;
+    if (open) {
+      delete trigger?.dataset.gsxuiWasOpen;
+      (content.querySelector(TABBABLE) ?? content).focus();
+    }
     emit(content, open ? "gsxui:open" : "gsxui:close");
   },
   { capture: true },

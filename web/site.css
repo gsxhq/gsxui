@@ -7,6 +7,21 @@
    animate-* token is silently dead. */
 @import "tw-animate-css";
 
+/* Geist, the font ui.shadcn.com renders in — self-hosted via Fontsource so
+   the woff2 files ride the same content-hashed /static/assets/ immutable
+   cache as every other bundled asset (no third-party font CDN). Without
+   this the site fell back to Tailwind's system-ui stack (SF Pro on macOS)
+   and read visibly different from the reference site. The library itself
+   stays font-agnostic: this is site styling, not a component token, so
+   assets/gsxui.css (what `gsxui init` vendors) is deliberately unchanged. */
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+
+@theme {
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, monospace;
+}
+
 /* Scan gsxui's own component sources and the site's pages for class names —
    .gsx is not one of Tailwind's default-recognized extensions, so without
    these the automatic content heuristic may miss classes assembled inside
