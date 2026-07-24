@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "carousel", "checkbox", "collapsible", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "item", "kbd", "label", "pagination", "popover", "progress", "radio", "scroll-area", "select", "separator", "sheet", "skeleton", "slider", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
+	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "carousel", "checkbox", "collapsible", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "input-otp", "item", "kbd", "label", "pagination", "popover", "progress", "radio", "scroll-area", "select", "separator", "sheet", "skeleton", "slider", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -346,6 +346,18 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("scroll-area deps = %v, want none", deps)
 	}
 
+	// input-otp.gsx imports ui/icon (InputOTPSeparator's icon.Minus) — same
+	// shape as accordion's/select's/spinner's/breadcrumb's own deps entries
+	// above; no intra-package reference to another component (it does NOT
+	// compose ui.Input, see ui/input-otp.gsx's own doc comment).
+	deps, err = registry.Deps("input-otp")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(deps, []string{"icon"}) {
+		t.Fatalf("input-otp deps = %v, want [icon]", deps)
+	}
+
 	if _, err := registry.Deps("nosuch"); err == nil || !strings.Contains(err.Error(), "gsxui list") {
 		t.Fatalf("Deps(nosuch) err = %v, want error mentioning 'gsxui list'", err)
 	}
@@ -422,6 +434,13 @@ func TestHasJS(t *testing.T) {
 	// sheet/alert-dialog/drawer's own dialog.js reuse.
 	if !registry.HasJS("carousel") {
 		t.Error("carousel should have JS")
+	}
+	// input-otp has its own ui/input-otp.js (the entire hidden-single-input
+	// mechanism: DOM-order data-index stamping, char/data-active/fake-caret
+	// recompute on input/selectionchange/focus/blur, per-character pattern
+	// filtering, slot-click-to-position).
+	if !registry.HasJS("input-otp") {
+		t.Error("input-otp should have JS")
 	}
 }
 

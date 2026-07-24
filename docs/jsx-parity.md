@@ -833,3 +833,123 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
   `internal/registry/registry_test.go`. `HasJS("carousel")` is `true` — real
   new interactive JS (`ui/carousel.js`), unlike `sheet`/`alert-dialog`/
   `drawer`'s own JS-free reuse of `ui/dialog.js`.
+
+## input-otp
+- MECHANISM (stated plainly: ONE real input, not N inputs): the entire
+  behavior contract is that there is exactly ONE actual `<input>` element
+  (`data-gsxui-input-otp-input`), absolutely positioned to cover the whole
+  slots row and made visually invisible with `opacity-0` (never
+  `sr-only`/`hidden`/`display:none`, which would break focusability) while
+  staying clickable (no `pointer-events-none`, kept `z-10` on top). It owns
+  focus, caret, and paste. `InputOTPSlot` renders a purely presentational,
+  empty `<div>` — every slot's character, `data-active` state, and
+  fake-caret visibility are computed entirely by `ui/input-otp.js` from the
+  real input's live `value` + `selectionStart`/`selectionEnd` on every
+  `input`/`selectionchange`/`focus`/`blur` event. This is **not** N
+  separate `<input>` elements with manual per-slot focus-advance-on-keypress
+  JS — the common naive OTP reimplementation this port deliberately avoids.
+  Native browser text editing (typing advances the cursor, Backspace
+  deletes-and-moves-back, arrow keys move the selection) supplies
+  focus-advance, backspace-across-slots, and arrow navigation entirely for
+  free — `ui/input-otp.js` has zero per-slot keyboard handling. Paste needs
+  no special-case code path either: it lands in the real input's `value`
+  like any paste and is picked up by the ordinary `input`-event recompute
+  (verified: paste fires a native `input` event with
+  `inputType: "insertFromPaste"`, which the delegated `input` listener
+  handles identically to typing, pattern filter included).
+- ADAPT (DOM-order index stamping — a deliberate API departure from
+  shadcn's own `InputOTPSlot(index)`): shadcn's `InputOTPSlot` takes an
+  explicit `index` prop keying into React context's `slots[index]`; gsx has
+  no equivalent shared context, and threading an explicit index through
+  every call site is error-prone across `InputOTPSeparator`-split groups (a
+  3-group layout needs indices `0,1 | 2,3 | 4,5` spanning group boundaries
+  — easy to get wrong by hand if slots are ever reordered). `InputOTPSlot`
+  takes **no index param at all**; `ui/input-otp.js` walks each root's
+  slots (`querySelectorAll('[data-slot="input-otp-slot"]')`) in DOM order
+  and stamps `data-index` positionally, idempotently, on first use (init
+  scan, or the first `input`/click event to reach an as-yet-unstamped
+  root) — the exact same "stamp source order once, JS-computed identity
+  thereafter" idiom `command.js` already establishes for its own
+  `data-gsxui-index` (`ui/command.js`'s `filter()`). Recompute itself
+  doesn't strictly need the stamp (array position already equals slot
+  index within a stable DOM), but the click-to-position handler does need
+  a stable per-element identity to resolve "which index was clicked" — the
+  stamp is the mechanism for that. This changes `InputOTPSlot`'s call
+  signature from shadcn's own (`ui.InputOTPSlot()`, not
+  `ui.InputOTPSlot(0)`) — a real, deliberate choice, not an oversight.
+- DECISION (`data-gsxui-input-otp-pattern` is an UNANCHORED, per-character
+  class — NOT shadcn's whole-string-anchored `REGEXP_ONLY_*` constants):
+  `ui/input-otp.js` filters keystrokes (and pastes) by testing ONE
+  character at a time against this pattern
+  (`[...input.value].filter(c => re.test(c))`). shadcn's own exported
+  patterns (e.g. `REGEXP_ONLY_DIGITS_AND_CHARS`,
+  `^[0-9A-Za-z]*$`-shaped) are anchored to the WHOLE string for a different
+  internal use inside the `input-otp` library; testing a single character
+  against a `*`-quantified whole-string anchor would reject every
+  non-empty character (a one-char string never satisfies `^...*$` the way
+  one might assume from a naive per-character loop). `InputOTP` therefore
+  documents — in `ui/input-otp.gsx`'s own doc comment and in
+  `site/examples/inputotp/pattern.gsx` — that callers must pass a bare
+  per-character class such as `[0-9]`, not `[0-9]*` or `^[0-9]*$`. The
+  native HTML5 `pattern` attribute (whole-string-anchored, browser-native
+  constraint validation) is a SEPARATE, independently-set attribute that
+  still falls through via `attrs` unchanged — the pattern example sets
+  both (`pattern="[0-9]*"` for native validity, `data-gsxui-input-otp-
+  pattern="[0-9]"` for the live per-character filter) to make the split
+  explicit. The pattern RegExp is constructed once per real input (cached
+  in a `WeakMap`, not reconstructed every keystroke) and an invalid pattern
+  source is caught so it degrades to "no filtering" instead of throwing on
+  every `input` event.
+- GAP (slots render EMPTY server-side, a first-paint divergence from
+  shadcn): gsx has no client-side React context to pre-populate a slot's
+  `char`/`isActive` from an initial `value` the way shadcn's SSR-capable
+  React version can. Every `InputOTPSlot` renders inert
+  (`data-active="false"`, no text, no caret) at server-render time
+  regardless of the real input's initial `value` attribute — even a
+  server-rendered pre-filled OTP (an initial-`value`-set adaptation of
+  shadcn's `input-otp-controlled.tsx`, which itself doesn't translate
+  directly since gsx has no two-way client↔server value binding without a
+  page reload or HTMX round trip) would show empty slots for one frame
+  until `ui/input-otp.js`'s own init scan populates every root present at
+  parse time from the real input's actual value. This is a real, ledgered
+  divergence, not an oversight — `TestInputOTPSlotNoCaretServerSide` in
+  `ui/input-otp_test.go` pins the empty server render explicitly.
+- ADAPT (does NOT compose `ui.Input`): the per-slot visual chrome (borders,
+  `first:`/`last:` corner rounding, `data-[active=true]` ring) is different
+  enough from `Input`'s own single-box recipe that composing would fight
+  rather than help — the same reasoning `## sheet` gives for not composing
+  `DialogContent`.
+- Nova retarget (2026-07-24 controls source map, `## input-otp`, nova
+  deltas table, `style-nova.css` lines 682-701): slot `size-8` (was
+  new-york-v4's `h-9 w-9`), `shadow-xs` dropped (nova's shadow-presence
+  drop, consistent with `input`/`checkbox`'s own nova entries),
+  `first:rounded-l-lg`/`last:rounded-r-lg` (was `-md`, matches the global
+  radius-scale bump), `ring-3` (was `ring-[3px]`, same value, Tailwind v4
+  token spelling only). `data-[active=true]:z-10` is KEPT regardless of
+  nova's own excerpt omitting it — functionally necessary (keeps the
+  active ring from being occluded by a neighboring slot's border), judged
+  a reference-sheet omission rather than a deliberate nova drop.
+  `InputOTPGroup` adopts nova's NEW group-level `has-aria-invalid` ring
+  block (`has-aria-invalid:ring-destructive/20
+  dark:has-aria-invalid:ring-destructive/40 has-aria-invalid:border-
+  destructive rounded-lg has-aria-invalid:ring-3`), entirely absent from
+  new-york-v4's own `InputOTPGroup` (which only ever styles per-slot
+  `aria-invalid:border-destructive`) — adopted as precedent-consistent
+  (the destructive-ring-on-invalid color pattern already exists on
+  `checkbox`/`radio`/`input`'s own `aria-invalid:ring-destructive*`), not a
+  novel color introduction. `InputOTPSeparator` carries nova's
+  `[&_svg:not([class*='size-'])]:size-4` safeguard, likely a no-op since
+  `icon.Minus` already defaults to `size-4`, kept regardless per the map.
+- `animate-caret-blink` needs no new CSS: `tw-animate-css` (already
+  imported by both `assets/gsxui.css` and `web/site.css` via `@import
+  "tw-animate-css"`) defines `--animate-caret-blink: caret-blink 1.25s
+  ease-out infinite` plus the `@keyframes caret-blink` rule inside its own
+  `@theme inline` block, and Tailwind v4's `--animate-*` theme namespace
+  auto-generates the `animate-caret-blink` utility from that variable —
+  the same mechanism that already makes `animate-pulse`/`animate-spin`
+  work elsewhere in this codebase with no hand-authored keyframes. Verified
+  by grep against `node_modules/tw-animate-css/dist/tw-animate.css`; no
+  edit to either CSS file was needed.
+- Registry: `input-otp.gsx` imports `ui/icon` (`InputOTPSeparator`'s
+  `icon.Minus`) — `registry.Deps("input-otp") == ["icon"]`, pinned in
+  `internal/registry/registry_test.go`. `HasJS("input-otp")` is `true`.
