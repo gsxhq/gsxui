@@ -200,7 +200,7 @@ func DialogFooter(showCloseButton bool, children gsx.Node, attrs gsx.Attrs) _gsx
 			_gsxgw.S(" data-slot=\"dialog-footer\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-col-reverse gap-2 sm:flex-row sm:justify-end -mx-4 -mb-4 rounded-b-xl border-t p-4"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-col-reverse gap-2 sm:flex-row sm:justify-end bg-muted/50 -mx-4 -mb-4 rounded-b-xl border-t p-4"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})

@@ -211,12 +211,12 @@ func AlertDialogFooter(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" data-slot=\"alert-dialog-footer\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-col-reverse gap-2 sm:flex-row sm:justify-end -mx-4 -mb-4 rounded-b-xl border-t p-4"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-col-reverse gap-2 sm:flex-row sm:justify-end bg-muted/50 -mx-4 -mb-4 rounded-b-xl border-t p-4"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line alert-dialog.gsx:139:153
+//line alert-dialog.gsx:139:165
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

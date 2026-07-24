@@ -136,7 +136,7 @@ component AlertDialogHeader(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component AlertDialogFooter(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="alert-dialog-footer" class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end -mx-4 -mb-4 rounded-b-xl border-t p-4" { attrs... }>{ children }</div>
+	<div data-slot="alert-dialog-footer" class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end bg-muted/50 -mx-4 -mb-4 rounded-b-xl border-t p-4" { attrs... }>{ children }</div>
 }
 
 component AlertDialogTitle(children gsx.Node, attrs gsx.Attrs) {

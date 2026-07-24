@@ -96,7 +96,7 @@ component DialogHeader(children gsx.Node, attrs gsx.Attrs) {
 // false, matching shadcn's default) appends an outline Close button — the
 // data-attribute idiom standing in for shadcn's <DialogClose asChild>.
 component DialogFooter(showCloseButton bool, children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="dialog-footer" class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end -mx-4 -mb-4 rounded-b-xl border-t p-4" { attrs... }>
+	<div data-slot="dialog-footer" class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end bg-muted/50 -mx-4 -mb-4 rounded-b-xl border-t p-4" { attrs... }>
 		{ children }
 		{ if showCloseButton {
 			<Button variant="outline" data-gsxui-dialog-close>Close</Button>

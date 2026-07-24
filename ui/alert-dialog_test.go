@@ -126,7 +126,7 @@ func TestAlertDialogHeaderPinned(t *testing.T) {
 
 func TestAlertDialogFooterPinned(t *testing.T) {
 	got := render(t, ui.AlertDialogFooter(gsx.Raw("x"), nil))
-	want := `<div data-slot="alert-dialog-footer" class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end -mx-4 -mb-4 rounded-b-xl border-t p-4">x</div>`
+	want := `<div data-slot="alert-dialog-footer" class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end bg-muted/50 -mx-4 -mb-4 rounded-b-xl border-t p-4">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
