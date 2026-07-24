@@ -85,7 +85,7 @@ func TestAlertDialogTriggerPinned(t *testing.T) {
 // DialogContent render.
 func TestAlertDialogContentPinned(t *testing.T) {
 	got := render(t, ui.AlertDialogContent(gsx.Raw("x"), nil))
-	want := `<dialog data-gsxui-dialog-content data-state="closed" class="fixed top-[50%] left-[50%] z-50 open:grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border bg-background p-6 text-foreground shadow-lg duration-200 outline-none sm:max-w-lg data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 backdrop:bg-black/50" data-slot="alert-dialog-content" role="alertdialog" data-gsxui-dialog-static="true">x</dialog>`
+	want := `<dialog data-gsxui-dialog-content data-state="closed" class="fixed top-[50%] left-[50%] z-50 open:grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border bg-background p-6 text-foreground shadow-lg duration-200 outline-none sm:max-w-lg data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 backdrop:bg-black/30 backdrop:duration-200 supports-backdrop-filter:backdrop:backdrop-blur-sm data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0" data-slot="alert-dialog-content" role="alertdialog" data-gsxui-dialog-static="true">x</dialog>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

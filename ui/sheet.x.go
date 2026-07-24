@@ -216,7 +216,7 @@ func SheetContent(side string, hideCloseButton bool, children gsx.Node, attrs gs
 			_gsxgw.AttrValue(string(_gsxstd.Default((side), "right")))
 			_gsxgw.S("\"")
 		}
-		_gsxv0 := "fixed z-50 m-0 max-h-none open:flex flex-col gap-4 bg-background text-foreground shadow-lg transition ease-in-out data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:animate-in data-[state=open]:duration-500 backdrop:bg-black/50"
+		_gsxv0 := "fixed z-50 m-0 max-h-none open:flex flex-col gap-4 bg-background text-foreground shadow-lg transition ease-in-out data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:animate-in data-[state=open]:duration-500 backdrop:bg-black/30 supports-backdrop-filter:backdrop:backdrop-blur-sm data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=open]:backdrop:duration-500 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 data-[state=closed]:backdrop:duration-300"
 		var _gsxv1 string
 		switch side {
 		case "left":

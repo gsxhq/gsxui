@@ -40,17 +40,20 @@ component Collapsible(open bool, children gsx.Node, attrs gsx.Attrs) {
 // demo (registry/new-york-v4/examples/collapsible-demo.tsx) wraps a real
 // <Button> inside <CollapsibleTrigger asChild> is to make an actual button
 // element the clickable trigger while Radix's own Trigger contributes only
-// behavior. Here the data-attribute idiom doesn't even apply: a bare
-// <summary> already IS the clickable disclosure control (native semantics,
-// no click handler to attach to), and <button> is valid phrasing content
-// inside <summary> (unlike DialogTrigger's button-in-button trap — see
-// docs/jsx-parity.md's `## dialog` FINDING), so callers compose a real
-// <ui.Button> (or any element) directly as CollapsibleTrigger's child, no
-// wrapper/cloning/asChild needed:
+// behavior. Here the data-attribute idiom doesn't apply and neither does
+// composing a real button: a bare <summary> already IS the clickable
+// disclosure control, and activating a NESTED interactive element (a
+// <button>, <a>, <input>…) inside it is that element's own activation, not
+// the summary's — the click is swallowed and the details never toggles. So
+// callers style NON-interactive children to look like shadcn's trigger
+// button instead (the summary carries the focus/keyboard semantics; the
+// visual "button" is decoration):
 //
 //	<ui.CollapsibleTrigger>
-//		<ui.Button variant="ghost" size="icon"><icon.ChevronsUpDown/></ui.Button>
+//		<span aria-hidden="true" class="…ghost icon-button classes…"><icon.ChevronsUpDown/></span>
 //	</ui.CollapsibleTrigger>
+//
+// (site/examples/collapsible/basic.gsx is the full worked shape.)
 //
 // ADAPT: shadcn's CollapsibleTrigger carries no classes at all (nothing to
 // carry token-for-token) — list-none and the webkit marker selector below

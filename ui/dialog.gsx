@@ -44,7 +44,17 @@ component DialogContent(hideCloseButton bool, children gsx.Node, attrs gsx.Attrs
 		class={
 			"fixed top-[50%] left-[50%] z-50 open:grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border bg-background p-6 text-foreground shadow-lg duration-200 outline-none sm:max-w-lg",
 			"data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
-			"backdrop:bg-black/50"
+			// ADAPT: the registry overlay is a plain bg-black/50 fade, but the
+			// live shadcn site's current styles pair a lighter scrim with a
+			// backdrop blur — matched here (visual parity target is the site).
+			// The fade runs on ::backdrop off the same data-state dialog.js
+			// stamps for the panel. backdrop:duration-200 is load-bearing:
+			// tw-animate-css reads --tw-duration, registered inherits:false,
+			// so the panel's own duration-200 never reaches the pseudo-element
+			// — without it the backdrop's exit would end at the .15s default,
+			// snap back to opaque (fill-mode none), and flash until the
+			// panel's 200ms exit lets dialog.js call close().
+			"backdrop:bg-black/30 backdrop:duration-200 supports-backdrop-filter:backdrop:backdrop-blur-sm data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0"
 		}
 		{ attrs... }
 	>

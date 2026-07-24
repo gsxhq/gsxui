@@ -28,38 +28,41 @@ import (
 // row classes move from the (now-gone) wrapper div onto the trigger itself
 // — the whole row is the clickable summary, not just the button, per
 // ui/collapsible.gsx's CollapsibleTrigger doc comment.
+//
+// The chevron is a STYLED SPAN (ghost icon-button look), not a real
+// ui.Button: activating a nested interactive element inside a <summary> is
+// the element's own activation, not the summary's — a real <button> there
+// swallows the click and the details never toggles (and Radix never had
+// this trap: its Trigger IS the button). The summary is the one
+// interactive/focusable control; the span is decoration (aria-hidden).
 
-//line basic.gsx:27:1
+//line basic.gsx:34:1
 func Basic() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:28:2
+//line basic.gsx:35:2
 		_gsxgw.Node(ctx, ui.Collapsible(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:29:3
+//line basic.gsx:36:3
 			_gsxgw.Node(ctx, ui.CollapsibleTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:30:4
+//line basic.gsx:37:4
 				_gsxgw.S("<h4 class=\"text-sm font-semibold\">@peduarte starred 3 repositories</h4>")
-//line basic.gsx:31:4
-				_gsxgw.Node(ctx, ui.Button("ghost", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:32:5
-					_gsxgw.Node(ctx, icon.ChevronsUpDown())
-//line basic.gsx:33:5
-					_gsxgw.S("<span class=\"sr-only\">Toggle</span>")
-					return _gsxgw.Err()
-				}), _gsxrt.Attrs{{Key: "class", Value: "size-8"}}))
+//line basic.gsx:38:4
+				_gsxgw.S("<span aria-hidden=\"true\" class=\"inline-flex size-8 shrink-0 items-center justify-center rounded-md transition-colors hover:bg-accent hover:text-accent-foreground [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4\">")
+//line basic.gsx:42:5
+				_gsxgw.Node(ctx, icon.ChevronsUpDown())
+				_gsxgw.S("</span>")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "class", Value: "flex items-center justify-between gap-4 px-4"}}))
-//line basic.gsx:36:3
+			}), _gsxrt.Attrs{{Key: "class", Value: "flex cursor-default items-center justify-between gap-4 px-4"}}))
+//line basic.gsx:45:3
 			_gsxgw.S("<div class=\"rounded-md border px-4 py-2 font-mono text-sm\">@radix-ui/primitives</div>")
-//line basic.gsx:37:3
+//line basic.gsx:46:3
 			_gsxgw.Node(ctx, ui.CollapsibleContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:38:4
+//line basic.gsx:47:4
 				_gsxgw.S("<div class=\"rounded-md border px-4 py-2 font-mono text-sm\">@radix-ui/colors</div>")
-//line basic.gsx:39:4
+//line basic.gsx:48:4
 				_gsxgw.S("<div class=\"rounded-md border px-4 py-2 font-mono text-sm\">@stitches/react</div>")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "flex flex-col gap-2"}}))

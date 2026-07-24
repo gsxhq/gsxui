@@ -23,8 +23,12 @@
 //   - no arrow (hover-card has none, unlike tooltip's diamond span).
 import { on, emit } from "./gsxui.js";
 
-const OPEN_DELAY = 700; // Radix HoverCard's default openDelay
-const CLOSE_DELAY = 300; // Radix HoverCard's default closeDelay
+// Radix's own defaults are openDelay 700 / closeDelay 300, but shadcn's
+// site demos all pass openDelay={100} closeDelay={100} — the near-instant
+// feel users compare against. Match what the site shows, not the Radix
+// defaults nobody sees.
+const OPEN_DELAY = 100;
+const CLOSE_DELAY = 100;
 
 const timers = new WeakMap(); // trigger -> pending open/close setTimeout id
 const contentOf = (el) =>

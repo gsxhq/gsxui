@@ -11,29 +11,31 @@ import (
 )
 
 //line basic.gsx:10:1
-// Basic renders three realistic groups: a horizontal toolbar pair split by a
-// separator (the button-group-separator demo shape), a quantity stepper
-// showing ButtonGroupText between two icon buttons, and a vertical
-// orientation group.
+// Basic renders four realistic groups: a horizontal outline pair (NO
+// separator — adjacent outline buttons already share a single hairline via
+// the border-l-0 collapse; inserting a ButtonGroupSeparator there stacks
+// the button's own border on top of the separator's 1px and doubles the
+// divider), a secondary pair split by a ButtonGroupSeparator (shadcn's own
+// button-group-separator demo shape: the separator exists for borderLESS
+// variants), a quantity stepper showing ButtonGroupText between two icon
+// buttons, and a vertical orientation group.
 
-//line basic.gsx:14:1
+//line basic.gsx:18:1
 func Basic() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:15:2
+//line basic.gsx:19:2
 		_gsxgw.S("<div class=\"flex flex-wrap items-start gap-6\">")
-//line basic.gsx:16:3
+//line basic.gsx:20:3
 		_gsxgw.Node(ctx, ui.ButtonGroup("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:17:4
+//line basic.gsx:21:4
 			_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Archive")
 				return _gsxgw.Err()
 			}), nil))
-//line basic.gsx:18:4
-			_gsxgw.Node(ctx, ui.ButtonGroupSeparator("", nil))
-//line basic.gsx:19:4
+//line basic.gsx:22:4
 			_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Report")
@@ -41,45 +43,64 @@ func Basic() _gsxrt.Node {
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
-//line basic.gsx:21:3
+//line basic.gsx:24:3
 		_gsxgw.Node(ctx, ui.ButtonGroup("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:22:4
-			_gsxgw.Node(ctx, ui.Button("outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:23:5
-				_gsxgw.Node(ctx, icon.Minus())
-				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "aria-label", Value: "Decrease quantity"}}))
 //line basic.gsx:25:4
-			_gsxgw.Node(ctx, ui.ButtonGroupText(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.Button("secondary", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-				_gsxgw.S("42")
+				_gsxgw.S("Copy")
 				return _gsxgw.Err()
 			}), nil))
 //line basic.gsx:26:4
-			_gsxgw.Node(ctx, ui.Button("outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.ButtonGroupSeparator("", nil))
+//line basic.gsx:27:4
+			_gsxgw.Node(ctx, ui.Button("secondary", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:27:5
-				_gsxgw.Node(ctx, icon.Plus())
+				_gsxgw.S("Paste")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "aria-label", Value: "Increase quantity"}}))
+			}), nil))
 			return _gsxgw.Err()
-		}), _gsxrt.Attrs{{Key: "aria-label", Value: "Quantity"}}))
-//line basic.gsx:30:3
-		_gsxgw.Node(ctx, ui.ButtonGroup("vertical", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		}), nil))
+//line basic.gsx:29:3
+		_gsxgw.Node(ctx, ui.ButtonGroup("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:31:4
+//line basic.gsx:30:4
 			_gsxgw.Node(ctx, ui.Button("outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:32:5
-				_gsxgw.Node(ctx, icon.Plus())
+//line basic.gsx:31:5
+				_gsxgw.Node(ctx, icon.Minus())
+				return _gsxgw.Err()
+			}), _gsxrt.Attrs{{Key: "aria-label", Value: "Decrease quantity"}}))
+//line basic.gsx:33:4
+			_gsxgw.Node(ctx, ui.ButtonGroupText(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+				_gsxgw.S("42")
 				return _gsxgw.Err()
 			}), nil))
 //line basic.gsx:34:4
 			_gsxgw.Node(ctx, ui.Button("outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:35:5
+				_gsxgw.Node(ctx, icon.Plus())
+				return _gsxgw.Err()
+			}), _gsxrt.Attrs{{Key: "aria-label", Value: "Increase quantity"}}))
+			return _gsxgw.Err()
+		}), _gsxrt.Attrs{{Key: "aria-label", Value: "Quantity"}}))
+//line basic.gsx:38:3
+		_gsxgw.Node(ctx, ui.ButtonGroup("vertical", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:39:4
+			_gsxgw.Node(ctx, ui.Button("outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:40:5
+				_gsxgw.Node(ctx, icon.Plus())
+				return _gsxgw.Err()
+			}), nil))
+//line basic.gsx:42:4
+			_gsxgw.Node(ctx, ui.Button("outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:43:5
 				_gsxgw.Node(ctx, icon.Minus())
 				return _gsxgw.Err()
 			}), nil))

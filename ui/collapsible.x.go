@@ -68,17 +68,20 @@ func Collapsible(open bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // demo (registry/new-york-v4/examples/collapsible-demo.tsx) wraps a real
 // <Button> inside <CollapsibleTrigger asChild> is to make an actual button
 // element the clickable trigger while Radix's own Trigger contributes only
-// behavior. Here the data-attribute idiom doesn't even apply: a bare
-// <summary> already IS the clickable disclosure control (native semantics,
-// no click handler to attach to), and <button> is valid phrasing content
-// inside <summary> (unlike DialogTrigger's button-in-button trap — see
-// docs/jsx-parity.md's `## dialog` FINDING), so callers compose a real
-// <ui.Button> (or any element) directly as CollapsibleTrigger's child, no
-// wrapper/cloning/asChild needed:
+// behavior. Here the data-attribute idiom doesn't apply and neither does
+// composing a real button: a bare <summary> already IS the clickable
+// disclosure control, and activating a NESTED interactive element (a
+// <button>, <a>, <input>…) inside it is that element's own activation, not
+// the summary's — the click is swallowed and the details never toggles. So
+// callers style NON-interactive children to look like shadcn's trigger
+// button instead (the summary carries the focus/keyboard semantics; the
+// visual "button" is decoration):
 //
 //	<ui.CollapsibleTrigger>
-//		<ui.Button variant="ghost" size="icon"><icon.ChevronsUpDown/></ui.Button>
+//		<span aria-hidden="true" class="…ghost icon-button classes…"><icon.ChevronsUpDown/></span>
 //	</ui.CollapsibleTrigger>
+//
+// (site/examples/collapsible/basic.gsx is the full worked shape.)
 //
 // ADAPT: shadcn's CollapsibleTrigger carries no classes at all (nothing to
 // carry token-for-token) — list-none and the webkit marker selector below
@@ -89,11 +92,11 @@ func Collapsible(open bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // had. Without suppressing both, callers get shadcn's chevron icon PLUS a
 // browser-drawn triangle.
 
-//line collapsible.gsx:63:1
+//line collapsible.gsx:66:1
 func CollapsibleTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line collapsible.gsx:64:2
+//line collapsible.gsx:67:2
 		_gsxgw.S("<summary")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"collapsible-trigger\"")
@@ -104,14 +107,14 @@ func CollapsibleTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line collapsible.gsx:65:3
+//line collapsible.gsx:68:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</summary>")
 		return _gsxgw.Err()
 	})
 }
 
-//line collapsible.gsx:69:1
+//line collapsible.gsx:72:1
 // CollapsibleContent is a plain div, no classes (shadcn ships none) and no
 // animation block: shadcn's own collapsible.tsx has no
 // data-[state=open]:animate-* pair to port in the first place (unlike
@@ -121,11 +124,11 @@ func CollapsibleTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // transition reaches for the same ::details-content technique Accordion
 // documents, keyed off this component's ancestor <details>'s [open].
 
-//line collapsible.gsx:77:1
+//line collapsible.gsx:80:1
 func CollapsibleContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line collapsible.gsx:78:2
+//line collapsible.gsx:81:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"collapsible-content\"")
@@ -134,7 +137,7 @@ func CollapsibleContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line collapsible.gsx:79:3
+//line collapsible.gsx:82:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

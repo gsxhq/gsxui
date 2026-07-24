@@ -24,14 +24,23 @@ import (
 // row classes move from the (now-gone) wrapper div onto the trigger itself
 // — the whole row is the clickable summary, not just the button, per
 // ui/collapsible.gsx's CollapsibleTrigger doc comment.
+//
+// The chevron is a STYLED SPAN (ghost icon-button look), not a real
+// ui.Button: activating a nested interactive element inside a <summary> is
+// the element's own activation, not the summary's — a real <button> there
+// swallows the click and the details never toggles (and Radix never had
+// this trap: its Trigger IS the button). The summary is the one
+// interactive/focusable control; the span is decoration (aria-hidden).
 component Basic() {
 	<ui.Collapsible class="flex w-[350px] flex-col gap-2">
-		<ui.CollapsibleTrigger class="flex items-center justify-between gap-4 px-4">
+		<ui.CollapsibleTrigger class="flex cursor-default items-center justify-between gap-4 px-4">
 			<h4 class="text-sm font-semibold">@peduarte starred 3 repositories</h4>
-			<ui.Button variant="ghost" size="icon" class="size-8">
+			<span
+				aria-hidden="true"
+				class="inline-flex size-8 shrink-0 items-center justify-center rounded-md transition-colors hover:bg-accent hover:text-accent-foreground [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4"
+			>
 				<icon.ChevronsUpDown/>
-				<span class="sr-only">Toggle</span>
-			</ui.Button>
+			</span>
 		</ui.CollapsibleTrigger>
 		<div class="rounded-md border px-4 py-2 font-mono text-sm">@radix-ui/primitives</div>
 		<ui.CollapsibleContent class="flex flex-col gap-2">

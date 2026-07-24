@@ -59,6 +59,16 @@ on(
 );
 
 on("keydown", "[data-gsxui-dropdown-content]", (e, content) => {
+  // Items are <div role="menuitem">, not buttons — Enter/Space produce no
+  // native click, so menu-pattern activation is synthesized here.
+  if (e.key === "Enter" || e.key === " ") {
+    const item = e.target.closest("[data-gsxui-dropdown-item]");
+    if (item) {
+      e.preventDefault();
+      item.click();
+    }
+    return;
+  }
   const dir = { ArrowDown: 1, ArrowUp: -1 }[e.key];
   if (!dir) return;
   const items = [...content.querySelectorAll('[role="menuitem"]:not([aria-disabled])')];

@@ -51,24 +51,42 @@ on("contextmenu", "[data-gsxui-contextmenu-trigger]", (e, trigger) => {
   // Defensive: normally already closed by the right-click's own pointerdown
   // (light dismiss) before this event fires — see the header comment above.
   if (content.matches(":popover-open")) content.hidePopover();
-  content.style.position = "fixed";
-  content.style.inset = "auto";
-  content.showPopover();
-  // Position numerically AFTER showing (hidden popovers have no box) and
-  // never via transform: the animate-in enter keyframes animate transform,
-  // so a positioning translate would be overridden for the animation's
-  // duration (same rationale as dropdown.js/popover.js's own comment).
-  // Clamp to the viewport edges (the ADAPT from the siblings' no-clamp
-  // precedent, see the header comment above) so a right-click near the
-  // right/bottom edge doesn't spawn an offscreen menu. clientWidth/Height,
-  // not innerWidth/Height: the inner metrics include classic-scrollbar
-  // gutters, and clamping against them tucks the menu's edge under the
-  // scrollbar (found in the Task 7 browser pass on a real-scrollbar
-  // window).
-  const maxLeft = document.documentElement.clientWidth - content.offsetWidth;
-  const maxTop = document.documentElement.clientHeight - content.offsetHeight;
-  content.style.left = `${Math.max(0, Math.min(e.clientX, maxLeft))}px`;
-  content.style.top = `${Math.max(0, Math.min(e.clientY, maxTop))}px`;
+  const openAt = () => {
+    content.style.position = "fixed";
+    content.style.inset = "auto";
+    content.showPopover();
+    // Position numerically AFTER showing (hidden popovers have no box) and
+    // never via transform: the animate-in enter keyframes animate transform,
+    // so a positioning translate would be overridden for the animation's
+    // duration (same rationale as dropdown.js/popover.js's own comment).
+    // Clamp to the viewport edges (the ADAPT from the siblings' no-clamp
+    // precedent, see the header comment above) so a right-click near the
+    // right/bottom edge doesn't spawn an offscreen menu. clientWidth/Height,
+    // not innerWidth/Height: the inner metrics include classic-scrollbar
+    // gutters, and clamping against them tucks the menu's edge under the
+    // scrollbar (found in the Task 7 browser pass on a real-scrollbar
+    // window).
+    const maxLeft = document.documentElement.clientWidth - content.offsetWidth;
+    const maxTop = document.documentElement.clientHeight - content.offsetHeight;
+    content.style.left = `${Math.max(0, Math.min(e.clientX, maxLeft))}px`;
+    content.style.top = `${Math.max(0, Math.min(e.clientY, maxTop))}px`;
+  };
+  // On macOS the contextmenu event fires at mousedown time, so a button is
+  // still held here (e.buttons != 0) and the gesture's own pointerup is
+  // still coming. popover="auto"'s light dismiss pairs that pointerup with
+  // its pointerdown — both outside a popover that didn't exist yet — and
+  // hides whatever we show in between: showing now makes the menu flash
+  // once and vanish (found in real-mouse verification; synthetic occluded-
+  // tab passes can't reproduce it, UA light dismiss is disabled there).
+  // Defer past the gesture: its pointerup, then a task so the UA's light-
+  // dismiss processing for that event sees nothing open. On Windows/Linux
+  // contextmenu fires after the release (e.buttons == 0), and the keyboard
+  // Menu key has no pointer gesture at all — both show immediately.
+  if (e.buttons) {
+    addEventListener("pointerup", () => setTimeout(openAt), { once: true });
+  } else {
+    openAt();
+  }
 });
 
 // Everything below is dropdown.js's own menu-semantics block, unchanged
@@ -90,6 +108,16 @@ on(
 );
 
 on("keydown", "[data-gsxui-contextmenu-content]", (e, content) => {
+  // Items are <div role="menuitem">, not buttons — Enter/Space produce no
+  // native click, so menu-pattern activation is synthesized here.
+  if (e.key === "Enter" || e.key === " ") {
+    const item = e.target.closest("[data-gsxui-contextmenu-item]");
+    if (item) {
+      e.preventDefault();
+      item.click();
+    }
+    return;
+  }
   const dir = { ArrowDown: 1, ArrowUp: -1 }[e.key];
   if (!dir) return;
   const items = [...content.querySelectorAll('[role="menuitem"]:not([aria-disabled])')];
