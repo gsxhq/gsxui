@@ -64,16 +64,20 @@ import (
 // MECHANISM (roving tabindex, JS-normalized at init): server renders every
 // item with no tabindex attribute at all — a graceful no-JS fallback where
 // every item is its own tab stop. toggle-group.js sets tabindex="0" on
-// exactly one item (the pressed one for type="single"; the first
-// non-disabled item if type="multiple" or nothing is pressed) and
-// tabindex="-1" on the rest at init, then maintains that invariant on every
-// arrow move and click — see its own header comment.
+// exactly one item at init, then maintains that invariant on every arrow
+// move and click — see its own header comment. Entry-tabstop priority is
+// type-agnostic (matching Radix's own traced RovingFocusGroup: the "active"
+// candidate wins regardless of type, else fall back to the first item —
+// the map's behavior contract never conditions this on type="single" vs
+// "multiple"): the pressed-and-enabled item if one exists, else the first
+// non-disabled item — the same rule applies whether groupType is "single"
+// or "multiple".
 
-//line toggle-group.gsx:60:1
+//line toggle-group.gsx:64:1
 func ToggleGroup(groupType string, variant string, size string, spacing string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line toggle-group.gsx:61:2
+//line toggle-group.gsx:65:2
 		sp := spacing
 		if sp == "" {
 			sp = "0"
@@ -82,7 +86,7 @@ func ToggleGroup(groupType string, variant string, size string, spacing string, 
 		if groupType == "single" {
 			role = "radiogroup"
 		}
-//line toggle-group.gsx:71:2
+//line toggle-group.gsx:75:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"toggle-group\"")
@@ -124,14 +128,14 @@ func ToggleGroup(groupType string, variant string, size string, spacing string, 
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line toggle-group.gsx:83:3
+//line toggle-group.gsx:87:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line toggle-group.gsx:87:1
+//line toggle-group.gsx:91:1
 // ToggleGroupItem composes toggle.gsx's own toggleBase/toggleVariantClass/
 // toggleSizeClass — the identical nova-retargeted toggleVariants(variant,
 // size) computation Toggle itself uses, not a re-derivation — plus the
@@ -153,11 +157,11 @@ func ToggleGroup(groupType string, variant string, size string, spacing string, 
 // single group toggles it off (Radix allows an empty single value unless a
 // caller opts otherwise) — port the same replace-on-activate mechanic.
 
-//line toggle-group.gsx:107:1
+//line toggle-group.gsx:111:1
 func ToggleGroupItem(groupType string, variant string, size string, spacing string, pressed bool, value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line toggle-group.gsx:108:2
+//line toggle-group.gsx:112:2
 		sp := spacing
 		if sp == "" {
 			sp = "0"
@@ -166,7 +170,7 @@ func ToggleGroupItem(groupType string, variant string, size string, spacing stri
 		if pressed {
 			state = "on"
 		}
-//line toggle-group.gsx:118:2
+//line toggle-group.gsx:122:2
 		_gsxgw.S("<button")
 		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"button\"")
@@ -227,7 +231,7 @@ func ToggleGroupItem(groupType string, variant string, size string, spacing stri
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line toggle-group.gsx:142:3
+//line toggle-group.gsx:146:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()

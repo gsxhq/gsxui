@@ -53,10 +53,14 @@ import "github.com/gsxhq/gsx"
 // MECHANISM (roving tabindex, JS-normalized at init): server renders every
 // item with no tabindex attribute at all — a graceful no-JS fallback where
 // every item is its own tab stop. toggle-group.js sets tabindex="0" on
-// exactly one item (the pressed one for type="single"; the first
-// non-disabled item if type="multiple" or nothing is pressed) and
-// tabindex="-1" on the rest at init, then maintains that invariant on every
-// arrow move and click — see its own header comment.
+// exactly one item at init, then maintains that invariant on every arrow
+// move and click — see its own header comment. Entry-tabstop priority is
+// type-agnostic (matching Radix's own traced RovingFocusGroup: the "active"
+// candidate wins regardless of type, else fall back to the first item —
+// the map's behavior contract never conditions this on type="single" vs
+// "multiple"): the pressed-and-enabled item if one exists, else the first
+// non-disabled item — the same rule applies whether groupType is "single"
+// or "multiple".
 component ToggleGroup(groupType string, variant string, size string, spacing string, children gsx.Node, attrs gsx.Attrs) {
 	{{
 		sp := spacing
