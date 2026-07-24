@@ -62,7 +62,7 @@ func PaginationContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" data-slot=\"pagination-content\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-row items-center gap-1"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-row items-center gap-0.5"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
@@ -176,7 +176,7 @@ func PaginationPrevious(href string, attrs gsx.Attrs) _gsxrt.Node {
 //line pagination.gsx:87:3
 			_gsxgw.S("<span class=\"hidden sm:block\">Previous</span>")
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: "Go to previous page"}}, _gsxrt.Attrs{{Key: "class", Value: "gap-1 px-2.5 sm:pl-2.5"}}, attrs)))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: "Go to previous page"}}, _gsxrt.Attrs{{Key: "class", Value: "pl-1.5!"}}, attrs)))
 		return _gsxgw.Err()
 	})
 }
@@ -193,7 +193,7 @@ func PaginationNext(href string, attrs gsx.Attrs) _gsxrt.Node {
 //line pagination.gsx:100:3
 			_gsxgw.Node(ctx, icon.ChevronRight())
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: "Go to next page"}}, _gsxrt.Attrs{{Key: "class", Value: "gap-1 px-2.5 sm:pr-2.5"}}, attrs)))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: "Go to next page"}}, _gsxrt.Attrs{{Key: "class", Value: "pr-1.5!"}}, attrs)))
 		return _gsxgw.Err()
 	})
 }
@@ -211,7 +211,7 @@ func PaginationEllipsis(attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" data-slot=\"pagination-ellipsis\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex size-9 items-center justify-center"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex size-8 items-center justify-center"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})

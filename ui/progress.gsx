@@ -35,7 +35,7 @@ component Progress(value float64, attrs gsx.Attrs) {
 		aria-valuemin="0"
 		aria-valuemax="100"
 		aria-valuenow={value}
-		class="relative h-2 w-full overflow-hidden rounded-full bg-primary/20"
+		class="relative h-1 w-full overflow-hidden rounded-full bg-primary/20"
 		{ attrs... }
 	>
 		<div

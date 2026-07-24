@@ -25,7 +25,7 @@ func TestPaginationAttrsFallThrough(t *testing.T) {
 
 func TestPaginationContentPinned(t *testing.T) {
 	got := render(t, ui.PaginationContent(gsx.Raw("x"), nil))
-	want := `<ul data-slot="pagination-content" class="flex flex-row items-center gap-1">x</ul>`
+	want := `<ul data-slot="pagination-content" class="flex flex-row items-center gap-0.5">x</ul>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -89,8 +89,8 @@ func TestPaginationLinkAttrsFallThrough(t *testing.T) {
 
 func TestPaginationLinkCallerClassMerges(t *testing.T) {
 	got := render(t, ui.PaginationLink("/p/1", false, "", gsx.Raw("1"), gsx.Attrs{{Key: "class", Value: "size-10"}}))
-	if strings.Contains(got, "size-9") {
-		t.Errorf("base size-9 should be dropped by caller size-10\nin: %s", got)
+	if strings.Contains(got, "size-8") {
+		t.Errorf("base size-8 should be dropped by caller size-10\nin: %s", got)
 	}
 	if !strings.Contains(got, "size-10") {
 		t.Errorf("missing caller class size-10\nin: %s", got)
@@ -103,7 +103,7 @@ func TestPaginationLinkCallerClassMerges(t *testing.T) {
 // anything a caller could otherwise pass.
 func TestPaginationPreviousPinned(t *testing.T) {
 	got := render(t, ui.PaginationPrevious("/p/1", nil))
-	want := `<a data-slot="pagination-link" data-active="false" href="/p/1" class="inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 h-8 has-[&gt;svg]:px-2 gap-1 px-2.5 sm:pl-2.5" aria-label="Go to previous page"><svg data-slot="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="m15 18-6-6 6-6"/></svg><span class="hidden sm:block">Previous</span></a>`
+	want := `<a data-slot="pagination-link" data-active="false" href="/p/1" class="inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 h-8 gap-1.5 px-2.5 has-[&gt;svg]:px-2 pl-1.5!" aria-label="Go to previous page"><svg data-slot="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="m15 18-6-6 6-6"/></svg><span class="hidden sm:block">Previous</span></a>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -111,7 +111,7 @@ func TestPaginationPreviousPinned(t *testing.T) {
 
 func TestPaginationNextPinned(t *testing.T) {
 	got := render(t, ui.PaginationNext("/p/3", nil))
-	want := `<a data-slot="pagination-link" data-active="false" href="/p/3" class="inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 h-8 has-[&gt;svg]:px-2 gap-1 px-2.5 sm:pr-2.5" aria-label="Go to next page"><span class="hidden sm:block">Next</span><svg data-slot="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="m9 18 6-6-6-6"/></svg></a>`
+	want := `<a data-slot="pagination-link" data-active="false" href="/p/3" class="inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 h-8 gap-1.5 px-2.5 has-[&gt;svg]:px-2 pr-1.5!" aria-label="Go to next page"><span class="hidden sm:block">Next</span><svg data-slot="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="m9 18 6-6-6-6"/></svg></a>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -119,7 +119,7 @@ func TestPaginationNextPinned(t *testing.T) {
 
 func TestPaginationEllipsisPinned(t *testing.T) {
 	got := render(t, ui.PaginationEllipsis(nil))
-	want := `<span aria-hidden="true" data-slot="pagination-ellipsis" class="flex size-9 items-center justify-center"><svg data-slot="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg><span class="sr-only">More pages</span></span>`
+	want := `<span aria-hidden="true" data-slot="pagination-ellipsis" class="flex size-8 items-center justify-center"><svg data-slot="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg><span class="sr-only">More pages</span></span>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

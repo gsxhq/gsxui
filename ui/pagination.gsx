@@ -28,7 +28,7 @@ component Pagination(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component PaginationContent(children gsx.Node, attrs gsx.Attrs) {
-	<ul data-slot="pagination-content" class="flex flex-row items-center gap-1" { attrs... }>
+	<ul data-slot="pagination-content" class="flex flex-row items-center gap-0.5" { attrs... }>
 		{ children }
 	</ul>
 }
@@ -80,7 +80,7 @@ component PaginationPrevious(href string, attrs gsx.Attrs) {
 		href={href}
 		size="default"
 		aria-label="Go to previous page"
-		class="gap-1 px-2.5 sm:pl-2.5"
+		class="pl-1.5!"
 		{ attrs... }
 	>
 		<icon.ChevronLeft/>
@@ -93,7 +93,7 @@ component PaginationNext(href string, attrs gsx.Attrs) {
 		href={href}
 		size="default"
 		aria-label="Go to next page"
-		class="gap-1 px-2.5 sm:pr-2.5"
+		class="pr-1.5!"
 		{ attrs... }
 	>
 		<span class="hidden sm:block">Next</span>
@@ -105,7 +105,7 @@ component PaginationEllipsis(attrs gsx.Attrs) {
 	<span
 		aria-hidden="true"
 		data-slot="pagination-ellipsis"
-		class="flex size-9 items-center justify-center"
+		class="flex size-8 items-center justify-center"
 		{ attrs... }
 	>
 		<icon.Ellipsis class="size-4"/>

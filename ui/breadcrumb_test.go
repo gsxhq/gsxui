@@ -25,7 +25,7 @@ func TestBreadcrumbAttrsFallThrough(t *testing.T) {
 
 func TestBreadcrumbListPinned(t *testing.T) {
 	got := render(t, ui.BreadcrumbList(gsx.Raw("x"), nil))
-	want := `<ol data-slot="breadcrumb-list" class="flex flex-wrap items-center gap-1.5 text-sm break-words text-muted-foreground sm:gap-2.5">x</ol>`
+	want := `<ol data-slot="breadcrumb-list" class="flex flex-wrap items-center gap-1.5 text-sm break-words text-muted-foreground">x</ol>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -43,7 +43,7 @@ func TestBreadcrumbListCallerClassMerges(t *testing.T) {
 
 func TestBreadcrumbItemPinned(t *testing.T) {
 	got := render(t, ui.BreadcrumbItem(gsx.Raw("x"), nil))
-	want := `<li data-slot="breadcrumb-item" class="inline-flex items-center gap-1.5">x</li>`
+	want := `<li data-slot="breadcrumb-item" class="inline-flex items-center gap-1">x</li>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -92,7 +92,7 @@ func TestBreadcrumbSeparatorChildrenOverride(t *testing.T) {
 
 func TestBreadcrumbEllipsisPinned(t *testing.T) {
 	got := render(t, ui.BreadcrumbEllipsis(nil))
-	want := `<span data-slot="breadcrumb-ellipsis" role="presentation" aria-hidden="true" class="flex size-9 items-center justify-center"><svg data-slot="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg><span class="sr-only">More</span></span>`
+	want := `<span data-slot="breadcrumb-ellipsis" role="presentation" aria-hidden="true" class="flex size-5 items-center justify-center"><svg data-slot="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg><span class="sr-only">More</span></span>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
