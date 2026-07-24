@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "collapsible", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "item", "kbd", "label", "pagination", "popover", "progress", "radio", "scroll-area", "select", "separator", "sheet", "skeleton", "slider", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
+	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "carousel", "checkbox", "collapsible", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "item", "kbd", "label", "pagination", "popover", "progress", "radio", "scroll-area", "select", "separator", "sheet", "skeleton", "slider", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -79,6 +79,19 @@ func TestDeps(t *testing.T) {
 	}
 	if !reflect.DeepEqual(deps, []string{"icon"}) {
 		t.Fatalf("breadcrumb deps = %v, want [icon]", deps)
+	}
+
+	// carousel.gsx composes Button (CarouselPrevious/CarouselNext) — an
+	// intra-package edge with no import to scan, same resolution shape as
+	// dialog's own Deps entry above. No ui/icon edge: the arrow icons are
+	// inlined raw SVGs (dialog.gsx's own close-button precedent), not
+	// `<icon.ArrowLeft/>`/`<icon.ArrowRight/>`.
+	deps, err = registry.Deps("carousel")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(deps, []string{"button"}) {
+		t.Fatalf("carousel deps = %v, want [button]", deps)
 	}
 
 	// kbd.gsx, aspect-ratio.gsx, and progress.gsx have no icon import and no
@@ -401,6 +414,13 @@ func TestHasJS(t *testing.T) {
 	// thumb — the server-rendered initial --fill needs no JS at all).
 	if !registry.HasJS("slider") {
 		t.Error("slider should have JS")
+	}
+	// carousel has its own ui/carousel.js (prev/next scroll-by-one-item,
+	// scroll-driven disabled-state/current-index bookkeeping, ArrowLeft/
+	// ArrowRight keyboard, autoplay) — real new interactive JS, unlike
+	// sheet/alert-dialog/drawer's own dialog.js reuse.
+	if !registry.HasJS("carousel") {
+		t.Error("carousel should have JS")
 	}
 }
 

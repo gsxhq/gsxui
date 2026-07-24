@@ -672,3 +672,173 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
   `internal/registry/registry_test.go`. `HasJS("drawer")` is `false` — like
   `sheet`, it has no behavior module of its own, only `ui/dialog.js`,
   pulled in transitively.
+
+## carousel
+- ADAPT (scroll-snap substitution, the component's central decision): embla
+  (`embla-carousel-react`) is a JS-transform carousel — it applies
+  `transform: translate3d(...)` to the flex track div directly, driven by
+  its own pointer-drag-physics engine, and uses neither CSS `scroll-snap`
+  nor native `overflow: auto` anywhere. This port replaces the whole
+  mechanism with real native CSS scroll-snap: `overflow-x-auto snap-x
+  snap-mandatory` (or the vertical `-y`/`snap-y` pair) on `CarouselContent`'s
+  outer viewport div — REPLACING shadcn's own bare `overflow-hidden`, since
+  a scroll container needs `overflow: auto` to scroll at all — plus
+  `snap-start` on every `CarouselItem` (both classes are **new**, present in
+  neither shadcn's source nor nova's own CSS). `ui/carousel.js` supplies
+  only the prev/next scroll-by-one-item calls and disabled-state/
+  current-index bookkeeping; there is no drag-physics/momentum engine to
+  port because the browser's own native scroll input now supplies it.
+- WIN (momentum/rubber-banding, a genuine capability gain, not just a
+  substitution): because scrolling is now real native `overflow: auto`,
+  touch/trackpad momentum and rubber-banding at the ends come free from the
+  browser — embla's transform-based approach never had anything analogous,
+  it only ever animated to discrete snap points on release.
+- GAP (`loop`, no native-scroll analog): embla's infinite-wraparound `loop`
+  option works by literally cloning slides at both ends of the track: real,
+  reproducible extra work with no clean scroll-snap equivalent (a native
+  scroll container has two hard, non-wrapping ends). Not ported — no docs
+  demo (`carousel-demo`/`-api`/`-orientation`/`-size`/`-spacing`/`-plugin`)
+  requests it, so this is an accepted v1 gap, not a silent drop.
+- GAP (`align`, no `center` mode needed or ported): embla's own alignment
+  default is commonly documented as `"start"`; every docs demo that varies
+  more than one slide per view (`-orientation`/`-size`/`-spacing`) already
+  passes `opts={{align:"start"}}` explicitly, and the single-per-view
+  baseline (`-demo`) makes alignment moot (one slide always fills the
+  viewport). Native `scroll-snap-align: start` on every item is therefore
+  sufficient for every demo in scope; no `center`-alignment mode is ported.
+- ADAPT (prev/next scroll amount, one item not one viewport): scrolling by a
+  full viewport width would visibly skip slides whenever more than one is
+  visible per view (the `-size`/`-orientation` demos) — `ui/carousel.js`
+  scrolls by the FIRST item's own measured `getBoundingClientRect()` width
+  instead (embla's default `slidesToScroll: 1`). Because `CarouselContent`'s
+  flex track lays items out with no `gap` property (spacing comes from each
+  item's own `pl-4`/`pt-4` padding plus the track's compensating `-ml-4`/
+  `-mt-4`), one item's border-box width already IS the distance to the next
+  item's own start — no separate "plus the gap" term needed in the
+  arithmetic despite the map's own framing describing it that way.
+- ADAPT (prev/next disabled-state, computed from scroll position not an
+  embla API): embla's `canScrollPrev()`/`canScrollNext()` read its own
+  internal scroll-progress/edge state. This port instead compares the
+  viewport's own `scrollLeft`/`scrollTop` against `0` and against
+  `scrollWidth - clientWidth`/`scrollHeight - clientHeight`, with a 1px
+  epsilon for sub-pixel rounding, recomputed on a rAF-throttled `scroll`
+  listener AND a `ResizeObserver` on the viewport (covers a responsive
+  `basis-*` breakpoint change flipping disabled state or the resting index
+  with no scroll event ever firing) — set directly as the native `disabled`
+  attribute on the composed `Button`s, so `disabled:` variant classes apply
+  for free.
+- ADAPT (initial server-rendered disabled state, an asymmetric default):
+  shadcn's own `canScrollPrev`/`canScrollNext` both start `false` (a bare
+  `useState(false)`, corrected by a layout effect before paint) —
+  unobservable in practice for a hydrating React app, but a real,
+  observable server-rendered value here, since there is no synchronous
+  hydration step. `CarouselPrevious` renders `disabled` from the start: a
+  freshly mounted scroll container always has `scrollLeft`/`scrollTop` `0`,
+  a real DOM invariant, not a guess — Previous genuinely has nowhere to go
+  yet. `CarouselNext` renders enabled (not disabled) by default: whether
+  there is more content to scroll TO depends on rendered content/viewport
+  widths this Go component cannot measure at render time, so it takes the
+  permissive default — a button that turns out to have nothing to do is
+  harmless, one that turns out to be wrongly disabled is not.
+  `ui/carousel.js`'s own init pass recomputes and corrects both from the
+  real DOM immediately on load either way.
+- NEW (scrollbar hiding, present in neither source): `CarouselContent`'s
+  outer viewport div also carries `[scrollbar-width:none]
+  [&::-webkit-scrollbar]:hidden` — needed only because this port is now on
+  a real native scroll container that would otherwise show a visible
+  scrollbar; embla's transform-based approach never scrolled a real
+  overflow box, so it never had a scrollbar to hide in the first place.
+  Paired standard + legacy-WebKit selectors, same dual-surface rationale as
+  `## scroll-area`'s own MECHANISM entry (Firefox never implemented the
+  legacy `::-webkit-scrollbar` family, so both are required together for
+  full cross-browser coverage) — here both are plain Tailwind arbitrary
+  properties/variants in the class string, no hand-authored CSS file needed
+  (unlike scroll-area's shape-fidelity pseudo-elements, which need real
+  `::-webkit-scrollbar-thumb` geometry `scrollbar-width` alone can't
+  express; hiding the bar entirely needs no shape at all).
+- GAP (no context, `orientation` passed explicitly to every part):
+  Radix-less — there is no shared context broadcasting `orientation` from
+  `Carousel` down to `CarouselContent`/`CarouselItem`/`CarouselPrevious`/
+  `CarouselNext` the way shadcn's own `useCarousel()` hook does. Every part
+  that needs it takes its own `orientation` param instead, the same
+  explicit-prop-instead-of-context shape `## toggle-group`'s
+  groupType/variant/size/spacing already establishes.
+- WIN (spacing stays caller-controlled, no separate prop needed): embla's
+  default `-ml-4`/`pl-4` gap, overridden to `-ml-1`/`pl-1` by
+  `carousel-spacing.tsx`, proves gap is entirely a `className` override in
+  shadcn's own source — ported as-is via the ordinary class-merge
+  mechanism, no separate `spacing` param invented.
+- ADAPT (arrow icons inlined, not `ui/icon`): `CarouselPrevious`/
+  `CarouselNext`'s `ArrowLeft`/`ArrowRight` are inlined raw SVGs (Lucide's
+  own `arrow-left`/`arrow-right` path data, byte-identical to
+  `ui/icon/icon_data.go`'s own source) rather than
+  `<icon.ArrowLeft/>`/`<icon.ArrowRight/>` — the same inline-not-imported
+  choice `## dialog`'s own close-button X icon already makes. Keeps
+  `registry.Deps("carousel")` at just `["button"]`, no `ui/icon` edge;
+  Button's own base class's `[&_svg:not([class*='size-'])]:size-4` sizes
+  the raw 24x24 SVG down without the icon package's `svgIcon` wrapper.
+- ADAPT (API-surface reduction, deliberate, ledgered): embla's `CarouselApi`
+  (`scrollTo(i)`, `scrollPrev()`, `scrollNext()`, `canScrollPrev()`,
+  `canScrollNext()`, `selectedScrollSnap()`, `scrollSnapList()`,
+  `on(event, cb)`/`off()`, plus its whole plugin-extension mechanism) is not
+  reproduced 1:1 — there is no plugin ecosystem to support here. The
+  replacement surface is much smaller: a `gsxui:carousel-select` CustomEvent
+  (`{index, count}`, both 0-based, emitted on the carousel root whenever the
+  resting index actually changes — covers `carousel-api.tsx`'s "Slide X of
+  Y" indicator use case completely, see `site/examples/carousel/api.gsx`)
+  plus three methods stashed directly on the DOM node
+  (`carouselEl.gsxuiCarousel = {scrollTo(i), next(), prev()}`) for any
+  script needing imperative control. `data-current-index` is also stamped
+  on the root on every change, a CSS-only hook for a caller-authored
+  `[data-index="N"]` dot-indicator list needing no JS of its own. Embla's
+  full plugin system (Autoplay, ClassNames, Fade, WheelGesture, …) is not
+  ported at all; only the one bespoke `data-gsxui-carousel-autoplay`
+  attribute below stands in for the single plugin the docs demos actually
+  use.
+- ADAPT (autoplay, a bespoke data attribute standing in for
+  `embla-carousel-autoplay`): `data-gsxui-carousel-autoplay="<ms>"` on the
+  root starts a `setInterval` calling `next()` every `<ms>` milliseconds,
+  paused on `pointerenter`/`focusin` anywhere within the carousel and
+  resumed on `pointerleave`/`focusout` — reproducing `carousel-plugin.tsx`'s
+  ACTUAL demo behavior (its own explicit
+  `onMouseEnter={plugin.stop}`/`onMouseLeave={plugin.reset}` hover
+  pause/resume), not embla Autoplay's own `stopOnInteraction` semantics
+  (which trigger on drag/click, not hover). Attached via direct
+  `addEventListener` per carousel root at module-init time, not the
+  document-delegated `on()` helper — `pointerenter`/`pointerleave` don't
+  bubble and are meant to fire only on the exact listened-to element when
+  the pointer crosses ITS boundary, which is precisely the "hovering
+  anywhere within the carousel" semantic wanted here; delegating them
+  through `on()`'s `closest()`-based dispatch would not reproduce that
+  boundary-crossing behavior correctly. No loop mode (see the `loop` GAP
+  above) — autoplay simply stops advancing once it reaches the last slide
+  rather than wrapping back to the first. This attribute is not yet wired
+  into any site example (a stretch 5th example per the map's own demo
+  inventory, deferred).
+- MECHANISM (`scroll` is non-bubbling, delegated via capture): the viewport
+  `scroll` listener is registered `on("scroll", '[data-slot="carousel-
+  content"]', ..., { capture: true })` — `scroll` doesn't bubble, the same
+  documented reason `ui/gsxui.js`'s own header comment gives for
+  `toggle`/`close`/`focus`/`blur`, and rAF-throttled since `scroll` fires
+  far faster than layout needs to be re-measured.
+- MECHANISM (keyboard, ArrowLeft/ArrowRight regardless of orientation):
+  `ui/carousel.js` binds `ArrowLeft`/`ArrowRight` to prev/next within
+  `[data-gsxui-carousel]`, mirroring shadcn's own `onKeyDownCapture` exactly
+  — including the fact that it is hard-coded to `ArrowLeft`/`ArrowRight`
+  UNCONDITIONALLY, never `ArrowUp`/`ArrowDown`, even for
+  `orientation="vertical"` carousels (verified against `carousel.tsx`'s own
+  `handleKeyDown`, which never branches on orientation).
+- GAP (late-added carousels, module-init scan only): the module-level init
+  loop (`gsxuiCarousel` handle attachment, initial disabled/index
+  recompute, `ResizeObserver` registration, autoplay start) runs once over
+  `document.querySelectorAll("[data-gsxui-carousel]")` at module load — the
+  same one-time-scan shape `toggle-group.js`'s `normalize()` loop and
+  `command.js`'s `filter()` loop already establish. A carousel added later
+  via an HTMX swap after this module has already run is not picked up; the
+  same accepted limitation those two modules' own init loops carry.
+- Registry: `carousel.gsx` imports nothing from `ui/icon` (see the inlined-
+  icon ADAPT above); `CarouselPrevious`/`CarouselNext` compose `Button` —
+  `registry.Deps("carousel") == ["button"]`, pinned in
+  `internal/registry/registry_test.go`. `HasJS("carousel")` is `true` — real
+  new interactive JS (`ui/carousel.js`), unlike `sheet`/`alert-dialog`/
+  `drawer`'s own JS-free reuse of `ui/dialog.js`.
