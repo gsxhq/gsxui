@@ -26,7 +26,7 @@ component Switch(attrs gsx.Attrs) {
 		type="checkbox"
 		role="switch"
 		data-slot="switch"
-		class="peer inline-flex shrink-0 items-center appearance-none rounded-full border border-transparent shadow-xs transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 h-[1.15rem] w-8 bg-input checked:bg-primary dark:bg-input/80 dark:checked:bg-primary before:pointer-events-none before:block before:size-4 before:rounded-full before:bg-background before:transition-transform before:content-[''] checked:before:translate-x-[calc(100%-2px)] dark:before:bg-foreground dark:checked:before:bg-primary-foreground"
+		class="peer inline-flex shrink-0 items-center appearance-none rounded-full border border-transparent transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 h-[1.15rem] w-8 bg-input checked:bg-primary dark:bg-input/80 dark:checked:bg-primary before:pointer-events-none before:block before:size-4 before:rounded-full before:bg-background before:transition-transform before:content-[''] checked:before:translate-x-[calc(100%-2px)] dark:before:bg-foreground dark:checked:before:bg-primary-foreground"
 		{ attrs... }
 	/>
 }

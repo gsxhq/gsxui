@@ -56,7 +56,7 @@ func Radio(attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" data-slot=\"radio\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("peer aspect-square size-4 shrink-0 appearance-none rounded-full border border-input shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:bg-input/30 checked:border-primary checked:bg-primary checked:text-primary-foreground dark:checked:bg-primary checked:bg-[radial-gradient(circle_closest-side,currentColor_45%,transparent_50%)]"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("peer aspect-square size-4 shrink-0 appearance-none rounded-full border border-input transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:bg-input/30 checked:border-primary checked:bg-primary checked:text-primary-foreground dark:checked:bg-primary checked:bg-[radial-gradient(circle_closest-side,currentColor_45%,transparent_50%)]"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "xlink:href"}, []string{"background", "src"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})

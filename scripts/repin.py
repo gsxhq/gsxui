@@ -4,6 +4,10 @@
 Usage: python3 scripts/repin.py 'TestFoo|TestBar' ui/foo_test.go ui/bar_test.go
 Run from the repo root AFTER `go tool gsx generate`. Idempotent: with no
 failing pins it replaces nothing.
+
+WARNING: only the FIRST class="..." on each failing line gets spliced. Each
+want-literal is replaced globally across ALL listed files, so byte-identical
+literals cross-contaminate between tests/components — always diff before committing.
 """
 import pathlib, re, subprocess, sys
 

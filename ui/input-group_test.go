@@ -80,7 +80,7 @@ func TestInputGroupAddonAttrsFallThrough(t *testing.T) {
 // classes all come through) and that the "xs" overlay classes win their
 // tailwind-merge conflicts against Button's own default size classes: h-8 ->
 // h-6, rounded-lg -> rounded-[calc(var(--radius)-3px)], px-2.5 -> px-1.5,
-// has-data-[icon=...]:p{l,r}-2 -> has-[>svg]:px-1.5. gap-1.5 (Button's own
+// has-[>svg]:px-2 -> has-[>svg]:px-1.5. gap-1.5 (Button's own
 // default size class, which the xs overlay overrides to gap-1) does not
 // survive, matching shadcn's own cn() merge exactly (see
 // ui/input-group.gsx's own comment).
