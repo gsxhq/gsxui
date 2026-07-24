@@ -241,19 +241,28 @@ func _gsxrenderLayout(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title string, 
 	_gsxgw.BoolAttr("data-site-theme-toggle", true)
 	_gsxgw.S(" aria-label=\"Toggle theme\" title=\"Toggle theme\" class=\"inline-flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground\">")
 //line layout.gsx:144:8
-	_gsxgw.Node(ctx, icon.Contrast(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
-	_gsxgw.S("</button></nav></div></header>")
-//line layout.gsx:149:4
+	_gsxgw.S("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"size-4.5\">")
+//line layout.gsx:156:9
+	_gsxgw.S("<path d=\"M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0\"></path>")
+//line layout.gsx:157:9
+	_gsxgw.S("<path d=\"M12 3l0 18\"></path>")
+//line layout.gsx:158:9
+	_gsxgw.S("<path d=\"M12 9l4.65 -4.65\"></path>")
+//line layout.gsx:159:9
+	_gsxgw.S("<path d=\"M12 14.3l7.37 -7.37\"></path>")
+//line layout.gsx:160:9
+	_gsxgw.S("<path d=\"M12 19.6l8.85 -8.85\"></path></svg></button></nav></div></header>")
+//line layout.gsx:166:4
 	_gsxgw.S("<div class=\"mx-auto flex max-w-6xl gap-10 px-4 py-10\">")
-//line layout.gsx:150:5
+//line layout.gsx:167:5
 	_gsxgw.S("<aside class=\"hidden w-44 shrink-0 md:block\">")
-//line layout.gsx:151:6
+//line layout.gsx:168:6
 	_gsxgw.S("<nav class=\"sticky top-20 flex flex-col gap-4 text-sm\">")
-//line layout.gsx:152:7
+//line layout.gsx:169:7
 	_gsxgw.S("<div class=\"flex flex-col gap-1\">")
-//line layout.gsx:153:8
+//line layout.gsx:170:8
 	_gsxgw.S("<h3 class=\"px-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground\">Docs</h3>")
-//line layout.gsx:154:8
+//line layout.gsx:171:8
 	_gsxgw.S("<a")
 	_gsxv7, _gsxerr := _gsxf0.URLFor(ctx, (GettingStarted{}))
 	if _gsxerr != nil {
@@ -264,7 +273,7 @@ func _gsxrenderLayout(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title string, 
 	_gsxgw.S("\" class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("rounded-md px-2 py-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"), _gsxrt.ClassIf("bg-accent text-accent-foreground", active == "getting-started"))
 	_gsxgw.S("\">Getting Started</a>")
-//line layout.gsx:163:8
+//line layout.gsx:180:8
 	_gsxgw.S("<a")
 	_gsxv8, _gsxerr := _gsxf0.URLFor(ctx, (Theming{}))
 	if _gsxerr != nil {
@@ -275,33 +284,33 @@ func _gsxrenderLayout(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title string, 
 	_gsxgw.S("\" class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("rounded-md px-2 py-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"), _gsxrt.ClassIf("bg-accent text-accent-foreground", active == "theming"))
 	_gsxgw.S("\">Theming</a></div>")
-//line layout.gsx:173:7
+//line layout.gsx:190:7
 	_gsxgw.S("<div class=\"flex flex-col gap-1\">")
-//line layout.gsx:174:8
+//line layout.gsx:191:8
 	_gsxgw.S("<h3 class=\"px-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground\">Components</h3>")
-//line layout.gsx:175:8
+//line layout.gsx:192:8
 	names, _ := registry.Components()
-//line layout.gsx:176:8
+//line layout.gsx:193:8
 	for _, name := range names {
-//line layout.gsx:177:9
+//line layout.gsx:194:9
 		_gsxgw.S("<a href=\"")
 		_gsxgw.URL(string("/components/" + name))
 		_gsxgw.S("\" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("rounded-md px-2 py-1 capitalize text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"), _gsxrt.ClassIf("bg-accent text-accent-foreground", active == name))
 		_gsxgw.S("\">")
-//line layout.gsx:184:10
+//line layout.gsx:201:10
 		_gsxgw.Text(string(name))
 		_gsxgw.S("</a>")
 	}
 	_gsxgw.S("</div></nav></aside>")
-//line layout.gsx:190:5
+//line layout.gsx:207:5
 	_gsxgw.S("<main class=\"min-w-0 flex-1\">")
-//line layout.gsx:190:34
+//line layout.gsx:207:34
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</main></div>")
-//line layout.gsx:192:4
+//line layout.gsx:209:4
 	_gsxgw.S("<footer class=\"border-t border-border\">")
-//line layout.gsx:193:5
+//line layout.gsx:210:5
 	_gsxgw.S("<div class=\"mx-auto max-w-6xl px-4 py-6 text-sm text-muted-foreground\">gsxui — shadcn-style components for gsx. Copy-in, type-checked, server-rendered.</div></footer></body></html>")
 	return _gsxgw.Err()
 }
