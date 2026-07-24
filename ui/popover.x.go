@@ -114,7 +114,7 @@ func PopoverContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" tabindex=\"-1\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("z-50 w-72 origin-top rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-hidden"), _gsxrt.Class( // ADAPT: shadcn's tw-animate keyframe pair is replaced with discrete
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("z-50 w-72 origin-top gap-2.5 rounded-lg border bg-popover p-2.5 text-sm text-popover-foreground shadow-md outline-hidden"), _gsxrt.Class( // ADAPT: shadcn's tw-animate keyframe pair is replaced with discrete
 			// transitions — hidePopover() flips the UA's display:none in the same
 			// breath, so an exit KEYFRAME never gets a frame to play (the enter
 			// half worked; the exit half was silently dead). Transitions listing

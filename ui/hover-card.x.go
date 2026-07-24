@@ -119,7 +119,7 @@ func HoverCardContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" data-side=\"bottom\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("z-50 w-64 origin-top rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-hidden"), _gsxrt.Class( // Discrete-transition enter/exit replacing the tw-animate keyframe
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("z-50 w-64 origin-top rounded-lg border bg-popover p-2.5 text-sm text-popover-foreground shadow-md outline-hidden"), _gsxrt.Class( // Discrete-transition enter/exit replacing the tw-animate keyframe
 			// pair — a popover's exit keyframe never gets to play (hide is
 			// instant display:none); see popover.gsx's ADAPT comment and
 			// docs/jsx-parity.md ## animations for the full mechanism.

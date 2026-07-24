@@ -54,7 +54,7 @@ func TestPopoverContentCallerClassMerges(t *testing.T) {
 	if strings.Contains(got, "w-72") {
 		t.Errorf("base w-72 should be dropped by caller w-80\nin: %s", got)
 	}
-	for _, want := range []string{"w-80", "rounded-md", "bg-popover"} {
+	for _, want := range []string{"w-80", "rounded-lg", "bg-popover"} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
@@ -93,7 +93,7 @@ func TestPopoverPinned(t *testing.T) {
 	// data-side replace Radix's Portal+Content wiring, origin-top replaces
 	// the Radix runtime transform-origin var.
 	got := render(t, ui.PopoverContent(gsx.Raw("x"), nil))
-	want := `<div data-slot="popover-content" data-gsxui-popover-content popover="auto" data-state="closed" data-side="bottom" tabindex="-1" class="z-50 w-72 origin-top rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-hidden opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95 data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2">x</div>`
+	want := `<div data-slot="popover-content" data-gsxui-popover-content popover="auto" data-state="closed" data-side="bottom" tabindex="-1" class="z-50 w-72 origin-top gap-2.5 rounded-lg border bg-popover p-2.5 text-sm text-popover-foreground shadow-md outline-hidden opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95 data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

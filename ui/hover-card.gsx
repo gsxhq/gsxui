@@ -51,7 +51,7 @@ component HoverCardContent(children gsx.Node, attrs gsx.Attrs) {
 		data-state="closed"
 		data-side="bottom"
 		class={
-			"z-50 w-64 origin-top rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-hidden",
+			"z-50 w-64 origin-top rounded-lg border bg-popover p-2.5 text-sm text-popover-foreground shadow-md outline-hidden",
 			// Discrete-transition enter/exit replacing the tw-animate keyframe
 			// pair — a popover's exit keyframe never gets to play (hide is
 			// instant display:none); see popover.gsx's ADAPT comment and

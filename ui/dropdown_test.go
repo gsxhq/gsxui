@@ -74,7 +74,7 @@ func TestDropdownContentCallerClassMerges(t *testing.T) {
 	if strings.Contains(got, "z-50") {
 		t.Errorf("base z-50 should be dropped by caller z-10\nin: %s", got)
 	}
-	for _, want := range []string{"z-10", "rounded-md", "bg-popover"} {
+	for _, want := range []string{"z-10", "rounded-lg", "bg-popover"} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
@@ -113,7 +113,7 @@ func TestDropdownPinned(t *testing.T) {
 	// ADAPT: the inset prop is dropped, so data-[inset]:pl-8 is dropped
 	// along with it.
 	got := render(t, ui.DropdownMenuItem("", gsx.Raw("Edit"), nil))
-	want := `<div data-slot="dropdown-menu-item" data-gsxui-dropdown-item data-variant="default" role="menuitem" tabindex="-1" class="relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 [&amp;_svg:not([class*=&#39;text-&#39;])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive!">Edit</div>`
+	want := `<div data-slot="dropdown-menu-item" data-gsxui-dropdown-item data-variant="default" role="menuitem" tabindex="-1" class="relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 [&amp;_svg:not([class*=&#39;text-&#39;])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive!">Edit</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -124,7 +124,7 @@ func TestDropdownContentPinned(t *testing.T) {
 	// against shadcn's DropdownMenuContent classes plus the popover/role/
 	// data-state hooks that replace Radix's Portal+Content wiring.
 	got := render(t, ui.DropdownMenuContent(gsx.Raw("x"), nil))
-	want := `<div data-slot="dropdown-menu-content" data-gsxui-dropdown-content popover="auto" role="menu" tabindex="-1" data-state="closed" data-side="bottom" class="z-50 max-h-96 min-w-[8rem] origin-top-left overflow-x-hidden overflow-y-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95 data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2">x</div>`
+	want := `<div data-slot="dropdown-menu-content" data-gsxui-dropdown-content popover="auto" role="menu" tabindex="-1" data-state="closed" data-side="bottom" class="z-50 max-h-96 min-w-[8rem] origin-top-left overflow-x-hidden overflow-y-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95 data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

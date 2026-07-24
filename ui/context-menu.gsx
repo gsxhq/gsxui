@@ -47,7 +47,7 @@ component ContextMenuContent(children gsx.Node, attrs gsx.Attrs) {
 		tabindex="-1"
 		data-state="closed"
 		class={
-			"z-50 max-h-96 min-w-[8rem] origin-top-left overflow-x-hidden overflow-y-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md",
+			"z-50 max-h-96 min-w-36 origin-top-left overflow-x-hidden overflow-y-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md",
 			// Discrete-transition enter/exit replacing the tw-animate keyframe
 			// pair — a popover's exit keyframe never gets to play (hide is
 			// instant display:none); see popover.gsx's ADAPT comment and
@@ -77,7 +77,7 @@ component ContextMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 		data-variant={variant |> default("default")}
 		role="menuitem"
 		tabindex="-1"
-		class="relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive!"
+		class="relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive!"
 		{ attrs... }
 	>
 		{ children }
@@ -91,7 +91,7 @@ component ContextMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 // the shadcn source, not a copy error (see docs/jsx-parity.md ##
 // context-menu).
 component ContextMenuLabel(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="context-menu-label" class="px-2 py-1.5 text-sm font-medium text-foreground" { attrs... }>{ children }</div>
+	<div data-slot="context-menu-label" class="px-1.5 py-1 text-xs font-medium text-foreground" { attrs... }>{ children }</div>
 }
 
 component ContextMenuSeparator(attrs gsx.Attrs) {

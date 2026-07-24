@@ -31,7 +31,12 @@ component TooltipTrigger(children gsx.Node, attrs gsx.Attrs) {
 // applies without Radix's runtime side tracking. overflow-visible is a
 // popover-port ADAPT (same family as inset:auto): the UA styles popovers
 // overflow:auto, which would clip the protruding arrow span and grow a
-// scrollbar instead of showing the diamond.
+// scrollbar instead of showing the diamond. has-data-[slot=kbd]:pr-1.5 and
+// **:data-[slot=kbd]:rounded-sm (nova density retarget, 2026-07-24) extend
+// the existing tooltip-nested Kbd integration (see kbd.gsx's own
+// [[data-slot=tooltip-content]_&] color tokens) with metric-only padding/
+// radius adjustments for a Kbd child — inert unless a ui.Kbd is nested
+// inside TooltipContent.
 component TooltipContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-slot="tooltip-content"
@@ -41,7 +46,7 @@ component TooltipContent(children gsx.Node, attrs gsx.Attrs) {
 		data-state="closed"
 		data-side="top"
 		class={
-			"z-50 w-fit origin-bottom rounded-md bg-foreground px-3 py-1.5 text-xs text-balance text-background overflow-visible",
+			"z-50 w-fit origin-bottom gap-1.5 rounded-md bg-foreground px-3 py-1.5 text-xs has-data-[slot=kbd]:pr-1.5 **:data-[slot=kbd]:rounded-sm text-balance text-background overflow-visible",
 			// Discrete-transition enter/exit replacing the tw-animate keyframe
 			// pair — a popover's exit keyframe never gets to play (hide is
 			// instant display:none); see popover.gsx's ADAPT comment and

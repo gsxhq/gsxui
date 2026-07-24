@@ -48,7 +48,7 @@ component PopoverContent(children gsx.Node, attrs gsx.Attrs) {
 		data-side="bottom"
 		tabindex="-1"
 		class={
-			"z-50 w-72 origin-top rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-hidden",
+			"z-50 w-72 origin-top gap-2.5 rounded-lg border bg-popover p-2.5 text-sm text-popover-foreground shadow-md outline-hidden",
 			// ADAPT: shadcn's tw-animate keyframe pair is replaced with discrete
 			// transitions — hidePopover() flips the UA's display:none in the same
 			// breath, so an exit KEYFRAME never gets a frame to play (the enter

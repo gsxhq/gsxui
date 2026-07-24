@@ -85,13 +85,18 @@ func TooltipTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // applies without Radix's runtime side tracking. overflow-visible is a
 // popover-port ADAPT (same family as inset:auto): the UA styles popovers
 // overflow:auto, which would clip the protruding arrow span and grow a
-// scrollbar instead of showing the diamond.
+// scrollbar instead of showing the diamond. has-data-[slot=kbd]:pr-1.5 and
+// **:data-[slot=kbd]:rounded-sm (nova density retarget, 2026-07-24) extend
+// the existing tooltip-nested Kbd integration (see kbd.gsx's own
+// [[data-slot=tooltip-content]_&] color tokens) with metric-only padding/
+// radius adjustments for a Kbd child — inert unless a ui.Kbd is nested
+// inside TooltipContent.
 
-//line tooltip.gsx:35:1
+//line tooltip.gsx:40:1
 func TooltipContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line tooltip.gsx:36:2
+//line tooltip.gsx:41:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"tooltip-content\"")
@@ -112,7 +117,7 @@ func TooltipContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" data-side=\"top\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("z-50 w-fit origin-bottom rounded-md bg-foreground px-3 py-1.5 text-xs text-balance text-background overflow-visible"), _gsxrt.Class( // Discrete-transition enter/exit replacing the tw-animate keyframe
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("z-50 w-fit origin-bottom gap-1.5 rounded-md bg-foreground px-3 py-1.5 text-xs has-data-[slot=kbd]:pr-1.5 **:data-[slot=kbd]:rounded-sm text-balance text-background overflow-visible"), _gsxrt.Class( // Discrete-transition enter/exit replacing the tw-animate keyframe
 			// pair — a popover's exit keyframe never gets to play (hide is
 			// instant display:none); see popover.gsx's ADAPT comment and
 			// docs/jsx-parity.md ## animations for the full mechanism.
@@ -121,9 +126,9 @@ func TooltipContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line tooltip.gsx:54:3
+//line tooltip.gsx:59:3
 		_gsxgw.Node(ctx, children)
-//line tooltip.gsx:55:3
+//line tooltip.gsx:60:3
 		_gsxgw.S("<span data-slot=\"tooltip-arrow\" class=\"absolute top-full left-1/2 z-50 size-2.5 -translate-x-1/2 -translate-y-[calc(50%+2px)] rotate-45 rounded-[2px] bg-foreground\"></span></div>")
 		return _gsxgw.Err()
 	})

@@ -43,7 +43,7 @@ component DropdownMenuContent(children gsx.Node, attrs gsx.Attrs) {
 		data-state="closed"
 		data-side="bottom"
 		class={
-			"z-50 max-h-96 min-w-[8rem] origin-top-left overflow-x-hidden overflow-y-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md",
+			"z-50 max-h-96 min-w-[8rem] origin-top-left overflow-x-hidden overflow-y-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md",
 			// Discrete-transition enter/exit replacing the tw-animate keyframe
 			// pair — a popover's exit keyframe never gets to play (hide is
 			// instant display:none); see popover.gsx's ADAPT comment and
@@ -69,7 +69,7 @@ component DropdownMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 		data-variant={variant |> default("default")}
 		role="menuitem"
 		tabindex="-1"
-		class="relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive!"
+		class="relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive!"
 		{ attrs... }
 	>
 		{ children }
@@ -79,7 +79,7 @@ component DropdownMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 // DropdownMenuLabel's inset prop is dropped along with DropdownMenuItem's
 // (see docs/jsx-parity.md) — the data-[inset]:pl-8 selector is removed.
 component DropdownMenuLabel(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="dropdown-menu-label" class="px-2 py-1.5 text-sm font-medium" { attrs... }>{ children }</div>
+	<div data-slot="dropdown-menu-label" class="px-1.5 py-1 text-xs font-medium" { attrs... }>{ children }</div>
 }
 
 component DropdownMenuSeparator(attrs gsx.Attrs) {
