@@ -10,7 +10,14 @@ import "github.com/gsxhq/gsxui/ui"
 //  1. A static ui.Toast rendered inline (the markup showcase). On a full page
 //     load a server would drain its session/request flashes into <ui.Toaster/>
 //     exactly like this; ui/sonner.js adopts every li[data-slot="toast"]
-//     present at init.
+//     present at init — inside the toaster region, which is where a real
+//     flash render puts them. This standalone preview sits OUTSIDE that
+//     region (so it is deliberately never adopted: no timer, no stacking)
+//     and therefore has to opt out of the card's own `absolute bottom-6
+//     right-6`, which exists for the stacking model and would otherwise
+//     float the preview over the page. `class="static"` wins the position
+//     conflict group in the class merge and makes the insets inert; the
+//     <ul> wrapper keeps the <li> validly parented.
 //  2. A button + inline <script> that clones a pre-rendered server row (the
 //     ui.Toast wrapped in the <template data-server-flash-demo> below) and
 //     appends it into #gsxui-toaster — precisely what an HTMX out-of-band
@@ -21,7 +28,14 @@ import "github.com/gsxhq/gsxui/ui"
 // toast markup, ui.Toaster is mounted once, and appends flow in from anywhere.
 component Server() {
 	<div class="flex flex-col items-start gap-4">
-		<ui.Toast toastType="success" title="Profile updated" description="Your changes have been saved."/>
+		<ul class="list-none">
+			<ui.Toast
+				toastType="success"
+				title="Profile updated"
+				description="Your changes have been saved."
+				class="static"
+			/>
+		</ul>
 		<ui.Button variant="outline" id="sonner-server-flash-btn">Append a server flash</ui.Button>
 		<template data-server-flash-demo>
 			<ui.Toast

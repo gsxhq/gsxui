@@ -18,7 +18,14 @@ import (
 //  1. A static ui.Toast rendered inline (the markup showcase). On a full page
 //     load a server would drain its session/request flashes into <ui.Toaster/>
 //     exactly like this; ui/sonner.js adopts every li[data-slot="toast"]
-//     present at init.
+//     present at init — inside the toaster region, which is where a real
+//     flash render puts them. This standalone preview sits OUTSIDE that
+//     region (so it is deliberately never adopted: no timer, no stacking)
+//     and therefore has to opt out of the card's own `absolute bottom-6
+//     right-6`, which exists for the stacking model and would otherwise
+//     float the preview over the page. `class="static"` wins the position
+//     conflict group in the class merge and makes the insets inert; the
+//     <ul> wrapper keeps the <li> validly parented.
 //  2. A button + inline <script> that clones a pre-rendered server row (the
 //     ui.Toast wrapped in the <template data-server-flash-demo> below) and
 //     appends it into #gsxui-toaster — precisely what an HTMX out-of-band
@@ -28,28 +35,31 @@ import (
 // This is the one-viewport-per-page model: the server is the single source of
 // toast markup, ui.Toaster is mounted once, and appends flow in from anywhere.
 
-//line server.gsx:22:1
+//line server.gsx:29:1
 func Server() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line server.gsx:23:2
+//line server.gsx:30:2
 		_gsxgw.S("<div class=\"flex flex-col items-start gap-4\">")
-//line server.gsx:24:3
-		_gsxgw.Node(ctx, ui.Toast("success", "Profile updated", "Your changes have been saved.", "", "", nil))
-//line server.gsx:25:3
+//line server.gsx:31:3
+		_gsxgw.S("<ul class=\"list-none\">")
+//line server.gsx:32:4
+		_gsxgw.Node(ctx, ui.Toast("success", "Profile updated", "Your changes have been saved.", "", "", _gsxrt.Attrs{{Key: "class", Value: "static"}}))
+		_gsxgw.S("</ul>")
+//line server.gsx:39:3
 		_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Append a server flash")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "id", Value: "sonner-server-flash-btn"}}))
-//line server.gsx:26:3
+//line server.gsx:40:3
 		_gsxgw.S("<template")
 		_gsxgw.BoolAttr("data-server-flash-demo", true)
 		_gsxgw.S(">")
-//line server.gsx:27:4
+//line server.gsx:41:4
 		_gsxgw.Node(ctx, ui.Toast("info", "New message", "A server-rendered row, appended like an HTMX OOB swap.", "", "", nil))
 		_gsxgw.S("</template>")
-//line server.gsx:33:3
+//line server.gsx:47:3
 		_gsxgw.S("<script")
 		_gsxgw.Nonce(ctx)
 		_gsxgw.S(">\ndocument.getElementById(\"sonner-server-flash-btn\").addEventListener(\"click\", () => {\n\tconst tpl = document.querySelector(\"template[data-server-flash-demo]\");\n\tconst viewport = document.getElementById(\"gsxui-toaster\");\n\tif (!tpl || !viewport) return;\n\tviewport.appendChild(tpl.content.firstElementChild.cloneNode(true));\n});\n</script></div>")
