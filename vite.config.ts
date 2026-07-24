@@ -22,9 +22,12 @@ export default defineConfig(({ command, mode }) => {
   return {
     clearScreen: false,
     // Dev serves all Vite assets under /__vite/ (matches gsxhq/vite DevBase);
-    // prod uses the default base ("/") since hashed assets are served from
-    // /static via gsxhq/vite.
-    base: command === "serve" ? "/__vite/" : "/",
+    // prod must use /static/ (matches gsxhq/vite StaticURL) so URLs baked into
+    // the bundles themselves — e.g. @fontsource url() references in CSS — point
+    // where the assets are actually served. The manifest-driven <script>/<link>
+    // tags are unaffected: manifest paths are base-independent and prefixed
+    // Go-side.
+    base: command === "serve" ? "/__vite/" : "/static/",
     publicDir: false,
     customLogger: logger,
     plugins: [
