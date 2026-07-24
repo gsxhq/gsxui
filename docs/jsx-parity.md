@@ -1129,3 +1129,115 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   `["icon", "sonner"]` — pinned in `internal/registry/registry_test.go`
   (previously empty, when the icons were JS path-strings). `HasJS("sonner")`
   is `true` (`ui/sonner.js`, exact-basename match).
+
+## resizable
+- ADAPT (handle `aria-orientation` inverted from the group's own
+  `orientation`, forced by shadcn's own class string, not a gsxui choice):
+  `orientation` on `ResizablePanelGroup`/`ResizableHandle` always names the
+  GROUP's layout (`"horizontal"` = panels side-by-side, the default; the Go
+  zero value `""` also means horizontal) — the caller never reasons about
+  the handle's own inverted value. But `role="separator"`'s own
+  `aria-orientation` names the SEPARATOR, and the divider between
+  side-by-side panels is itself a VERTICAL line, so a horizontal group's
+  handle carries `aria-orientation="vertical"` and a vertical group's
+  handle carries `aria-orientation="horizontal"`. This is exactly what the
+  handle's base (unmatched-variant) class `w-px` (a full-height, 1px-WIDE
+  rule) versus its `aria-[orientation=horizontal]:h-px
+  aria-[orientation=horizontal]:w-full` branch (a full-WIDTH, 1px-tall
+  rule) encodes — see the 2026-07-24 tier4 source map's `## resizable` §3
+  mapping table for the full derivation, independently corroborated there
+  by the `[&[aria-orientation=horizontal]>div]:rotate-90` grip-rotation
+  rule. `ResizableHandle` computes the inversion internally (see
+  `ui/resizable.gsx`'s own package doc comment);
+  `TestResizableHandleOrientationIsInverted` pins both directions.
+- ADAPT (nova's empty pill grip, not new-york-v4's icon-in-a-box — source
+  map `## resizable` §6, via the `registry/bases/base/ui/resizable.tsx`
+  structure tiebreak): new-york-v4's `withHandle` renders a bordered `h-4
+  w-3` box containing a `size-2.5` `GripVerticalIcon`; nova's own
+  `.cn-resizable-handle-icon` rule (`@apply bg-border h-6 w-1 rounded-lg`)
+  instead applies to a COMPLETELY EMPTY div — no icon glyph, no border, no
+  box — which the map settled by reading `bases/base`'s actual markup
+  (`<div className="cn-resizable-handle-icon z-10 flex shrink-0" />`),
+  since nova's isolated CSS rule alone can't say what DOM it targets. Nova
+  wins on visual disagreement (house rule), so this port renders exactly
+  `<div class="z-10 flex shrink-0 h-6 w-1 rounded-lg bg-border"></div>` and
+  drops the `GripVerticalIcon` import entirely — `registry.Deps
+  ("resizable") == []`, pinned in `internal/registry/registry_test.go`, is
+  a direct consequence of this ADAPT, not a coincidence.
+- MECHANISM (sizes are server-rendered inline `flex-basis`, not
+  JS-computed): react-resizable-panels sets pixel/percentage sizing
+  imperatively after mount — `ResizablePanel`'s own upstream class string
+  is empty (no `cn()` call at all, confirmed by the source map), because
+  the library supplies 100% of its layout at runtime. gsxui has no
+  client-side layout pass before first paint, so `ResizablePanel` instead
+  renders `defaultSize` (a percentage string like `"50%"`, `""` meaning
+  unset) as a real inline `style="flex-basis: <defaultSize>"` —
+  `TestResizablePanelDefaultSizeIsInlineFlexBasis` pins this — so the split
+  is correct on first paint with JS disabled.
+  `TestResizablePanelUnsizedHasNoFlexBasis` pins the complementary case: an
+  unsized panel gets no `style` attribute at all. `minSize`/`maxSize` don't
+  constrain anything visually at rest, so they're stamped as
+  `data-min-size`/`data-max-size` instead (present only when non-empty) and
+  read only by `ui/resizable.js`'s drag/keyboard clamping.
+- NEW (`flex-1 min-w-0 min-h-0` on every panel, not in shadcn's source at
+  all): since `ResizablePanel` carries no upstream class, an unsized panel
+  needs something to make it share remaining space — `flex-1` (`flex: 1 1
+  0%`) sets flex-grow/flex-shrink to 1 while leaving `flex-basis` at the
+  stylesheet layer, which a caller-supplied inline `style="flex-basis:
+  ..."` cleanly overrides (inline beats an ordinary class rule for that one
+  longhand; grow/shrink from the class still apply) — so `flex-1` is
+  unconditional on every panel, sized or not. `min-w-0 min-h-0` counters
+  the flexbox default `min-width:auto`/`min-height:auto` floor (a flex item
+  won't shrink below its content's intrinsic size otherwise, regardless of
+  `flex-basis`/`flex-shrink`) along BOTH axes, since `ResizablePanel` has no
+  `orientation` param of its own to know which axis matters — harmless on
+  whichever axis doesn't apply.
+- GAP (`autoSaveId` dropped, `gsxui:change` instead): react-resizable-
+  panels' own `autoSaveId` persists layout to `localStorage` internally,
+  one more component silently owning storage — gsxui components take state
+  as a parameter and emit events instead (house rule; see e.g. `## sheet`/
+  `## select`'s own persistence GAPs). `ResizablePanelGroup` takes no
+  `autoSaveId`; `ui/resizable.js` emits `gsxui:change` on the group
+  (`{ sizes: [<percent number>, ...] }`, one entry per panel in DOM order)
+  on drag end (`pointerup`/`pointercancel`/`lostpointercapture`) and on
+  every keyboard commit — the caller owns persisting that however it wants
+  (cookie, server round-trip, its own `localStorage` code), never gsxui
+  itself.
+- GAP (collapsible panels): react-resizable-panels' `collapsible`/
+  `collapsedSize` props have no port here — no docs demo in scope
+  (`resizable-demo`/`-demo-with-handle`/`-handle`/`-vertical`) exercises
+  either, same accepted-gap shape as `## carousel`'s own `loop`/`align`
+  GAPs.
+- GAP (imperative panel API): react-resizable-panels' ref-based imperative
+  API (`panelRef.current.resize()`/`.collapse()`/`.expand()`/`.getSize()`)
+  has no gsxui equivalent — `gsxuiCarousel`-style imperative handles exist
+  for `## carousel` because its docs demo (`carousel-api.tsx`) needs one;
+  no resizable demo in scope does. A caller needing imperative control can
+  still write `flex-basis` on a panel directly and dispatch its own
+  `gsxui:change`-shaped event.
+- ADAPT (keyboard step, `derived-not-read`): the source map's own
+  `## resizable` §5 could not read react-resizable-panels' actual keyboard
+  step size — the library is absent from the reference checkout entirely (no
+  `node_modules`, confirmed by its own "Library presence check"). `10`
+  percentage points per Arrow press (`ui/resizable.js`'s `STEP` constant)
+  is therefore a gsxui-authored value, not a ported one; Home/End drive the
+  panel BEFORE the handle to its `data-min-size`/`data-max-size` (or
+  0%/100% when unset), both clamped by the OTHER panel's own min/max the
+  same way a drag is.
+- MECHANISM (two-panel resize, not whole-group redistribution): dragging or
+  keying a handle shifts only its two immediate DOM siblings' `flex-basis`
+  — every other panel in the group is untouched, matching a real splitter
+  (and react-resizable-panels' own documented per-handle-pair resize
+  model), not a redistribute-everything scheme. `neighboursOf()` in
+  `ui/resizable.js` resolves a handle's two panels via
+  `previousElementSibling`/`nextElementSibling`, which stays correct even
+  when a panel nests its OWN `ResizablePanelGroup` (the nested group's own
+  handles/panels are one level deeper in the DOM, never siblings of the
+  outer handle) — exercised by `site/examples/resizable/basic.gsx`'s nested
+  vertical group inside its right panel.
+- Registry: `resizable.gsx` imports nothing from `ui/icon` and composes no
+  other component (see the nova-pill ADAPT above) — `registry.Deps
+  ("resizable")` is `[]`, pinned in `internal/registry/registry_test.go`.
+  `HasJS("resizable")` is `true` (`ui/resizable.js`, exact-basename match)
+  — real new interactive JS, since react-resizable-panels' own dist build
+  was never read (absent from the checkout) and so has nothing to reuse.

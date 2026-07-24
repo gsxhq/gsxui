@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "carousel", "checkbox", "collapsible", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "input-otp", "item", "kbd", "label", "native-select", "pagination", "popover", "progress", "radio", "scroll-area", "select", "separator", "sheet", "skeleton", "slider", "sonner", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
+	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "carousel", "checkbox", "collapsible", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "input-otp", "item", "kbd", "label", "native-select", "pagination", "popover", "progress", "radio", "resizable", "scroll-area", "select", "separator", "sheet", "skeleton", "slider", "sonner", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -119,6 +119,18 @@ func TestDeps(t *testing.T) {
 	}
 	if len(deps) != 0 {
 		t.Fatalf("progress deps = %v, want none", deps)
+	}
+
+	// resizable.gsx imports nothing from ui/icon — nova's own withHandle
+	// grip is an empty pill div, not new-york-v4's GripVerticalIcon-in-a-box
+	// (2026-07-24 tier4 source map, `## resizable` §6) — and composes no
+	// other component, so it has no deps at all.
+	deps, err = registry.Deps("resizable")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(deps) != 0 {
+		t.Fatalf("resizable deps = %v, want none", deps)
 	}
 
 	deps, err = registry.Deps("button")
@@ -458,6 +470,15 @@ func TestHasJS(t *testing.T) {
 	// sheet/alert-dialog/drawer's own dialog.js reuse.
 	if !registry.HasJS("carousel") {
 		t.Error("carousel should have JS")
+	}
+	// resizable has its own ui/resizable.js (pointer drag + keyboard
+	// step/Home/End resizing of the two panels adjacent to a handle,
+	// aria-valuenow/-min/-max sync, gsxui:change on commit) — real new
+	// interactive JS, since react-resizable-panels is absent from the
+	// reference checkout entirely (nothing to reuse from a dist build that
+	// was never read).
+	if !registry.HasJS("resizable") {
+		t.Error("resizable should have JS")
 	}
 	// input-otp has its own ui/input-otp.js (the entire hidden-single-input
 	// mechanism: DOM-order data-index stamping, char/data-active/fake-caret
