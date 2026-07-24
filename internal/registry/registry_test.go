@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "collapsible", "dialog", "dropdown", "empty", "field", "icon", "input", "input-group", "item", "kbd", "label", "pagination", "progress", "radio", "select", "separator", "sheet", "skeleton", "spinner", "switch", "table", "tabs", "textarea", "toggle", "tooltip"}
+	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "collapsible", "dialog", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "item", "kbd", "label", "pagination", "popover", "progress", "radio", "select", "separator", "sheet", "skeleton", "spinner", "switch", "table", "tabs", "textarea", "toggle", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -242,6 +242,29 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("toggle deps = %v, want none", deps)
 	}
 
+	// popover.gsx has no icon import and no intra-package reference to
+	// another component — Popover/PopoverTrigger/PopoverContent are all
+	// plain elements, same shape as toggle's own deps entry.
+	deps, err = registry.Deps("popover")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(deps) != 0 {
+		t.Fatalf("popover deps = %v, want none", deps)
+	}
+
+	// hover-card.gsx has no icon import and no intra-package reference to
+	// another component (the site example composes ui.Avatar/ui.Button, but
+	// internal/registry only scans ui/*.gsx, not site/examples/ — same
+	// shape as collapsible's/toggle's own deps entries).
+	deps, err = registry.Deps("hover-card")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(deps) != 0 {
+		t.Fatalf("hover-card deps = %v, want none", deps)
+	}
+
 	if _, err := registry.Deps("nosuch"); err == nil || !strings.Contains(err.Error(), "gsxui list") {
 		t.Fatalf("Deps(nosuch) err = %v, want error mentioning 'gsxui list'", err)
 	}
@@ -275,6 +298,19 @@ func TestHasJS(t *testing.T) {
 	// toggle has its own ui/toggle.js (click flips aria-pressed/data-state).
 	if !registry.HasJS("toggle") {
 		t.Error("toggle should have JS")
+	}
+	// popover has its own ui/popover.js (anchored positioning + state/aria
+	// sync, adapted from dropdown.js).
+	if !registry.HasJS("popover") {
+		t.Error("popover should have JS")
+	}
+	// hover-card has its own ui/hover-card.js — HasJS derives from
+	// <basename>.js, so the file is named ui/hover-card.js (hyphenated,
+	// matching the component basename) even though the site example
+	// package directory strips the hyphen to "hovercard" (Go package name
+	// constraint, same selectbox/switchctl precedent).
+	if !registry.HasJS("hover-card") {
+		t.Error("hover-card should have JS")
 	}
 }
 
@@ -326,6 +362,26 @@ func TestResolveTransitive(t *testing.T) {
 		t.Fatal(err)
 	}
 	want = []string{"toggle"}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("got %v want %v", got, want)
+	}
+
+	// popover and hover-card have no deps of their own — Resolve returns
+	// just themselves, same shape as toggle's own entry above.
+	got, err = registry.Resolve([]string{"popover"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want = []string{"popover"}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("got %v want %v", got, want)
+	}
+
+	got, err = registry.Resolve([]string{"hover-card"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want = []string{"hover-card"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
