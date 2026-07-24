@@ -36,12 +36,21 @@ function wireA11y(root, dialog) {
 function requestClose(dialog) {
   if (!dialog.open) return;
   dialog.dataset.state = "closed";
-  const anims = dialog.getAnimations({ subtree: true });
+  // Wait only for the dialog's OWN exit animations — never the subtree's:
+  // a child may run an unbounded animation (ui.Spinner's animate-spin has
+  // iterations:Infinity, so its `finished` promise never resolves and a
+  // subtree-wide wait would keep the dialog open forever). And because a
+  // backgrounded/occluded tab freezes animation clocks entirely, the wait
+  // is raced against a hard cap comfortably above the 200ms exit the
+  // components ship — the dialog always closes, animation or not.
+  const anims = dialog.getAnimations();
   if (!anims.length) {
     dialog.close();
     return;
   }
-  Promise.allSettled(anims.map((a) => a.finished)).then(() => dialog.close());
+  const done = Promise.allSettled(anims.map((a) => a.finished));
+  const cap = new Promise((resolve) => setTimeout(resolve, 600));
+  Promise.race([done, cap]).then(() => dialog.close());
 }
 
 const rootOf = (el) => el.closest("[data-gsxui-dialog]");

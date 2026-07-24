@@ -59,9 +59,13 @@ on("contextmenu", "[data-gsxui-contextmenu-trigger]", (e, trigger) => {
   // duration (same rationale as dropdown.js/popover.js's own comment).
   // Clamp to the viewport edges (the ADAPT from the siblings' no-clamp
   // precedent, see the header comment above) so a right-click near the
-  // right/bottom edge doesn't spawn an offscreen menu.
-  const maxLeft = window.innerWidth - content.offsetWidth;
-  const maxTop = window.innerHeight - content.offsetHeight;
+  // right/bottom edge doesn't spawn an offscreen menu. clientWidth/Height,
+  // not innerWidth/Height: the inner metrics include classic-scrollbar
+  // gutters, and clamping against them tucks the menu's edge under the
+  // scrollbar (found in the Task 7 browser pass on a real-scrollbar
+  // window).
+  const maxLeft = document.documentElement.clientWidth - content.offsetWidth;
+  const maxTop = document.documentElement.clientHeight - content.offsetHeight;
   content.style.left = `${Math.max(0, Math.min(e.clientX, maxLeft))}px`;
   content.style.top = `${Math.max(0, Math.min(e.clientY, maxTop))}px`;
 });
