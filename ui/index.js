@@ -13,6 +13,7 @@ import "./input-otp.js";
 import "./popover.js";
 import "./resizable.js";
 import "./select.js";
+import "./sidebar.js";
 import "./slider.js";
 import "./sonner.js";
 import "./tabs.js";

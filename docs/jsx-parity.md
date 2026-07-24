@@ -1383,3 +1383,152 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   `HasJS("resizable")` is `true` (`ui/resizable.js`, exact-basename match)
   — real new interactive JS, since react-resizable-panels' own dist build
   was never read (absent from the checkout) and so has nothing to reuse.
+
+## sidebar
+- ADAPT (both trees, CSS-gated, not a runtime isMobile branch): shadcn's
+  `Sidebar` swaps its entire subtree for a `Sheet` via a client-only
+  `useIsMobile()` media-query hook — a server render cannot branch on
+  viewport. This port renders BOTH trees unconditionally instead — the
+  desktop `group peer hidden … md:block` tree and a mobile `Sheet` tree
+  additionally marked `md:hidden` (a real ADAPT: upstream never needs this
+  class since it only ever renders one branch) — and lets CSS decide which
+  one is visible. `collapsible="none"` still short-circuits to the
+  reference's single flat `div`, exactly once, no Sheet at all.
+- GAP (children renders TWICE — read before nesting `id`s): the direct,
+  accepted cost of the dual-tree ADAPT above — every non-`"none"` `Sidebar`
+  renders `children` once inside the mobile `Sheet` and once inside the
+  desktop tree. Any `id` attribute anywhere inside a `Sidebar`'s children
+  (or in `attrs` passed to `Sidebar`/`SidebarProvider` themselves, which
+  forward onto both the `Sheet` root and the desktop `sidebar-container`)
+  would be duplicated and the document invalid — use classes/`data-*`
+  instead. Documented prominently in `ui/sidebar.gsx`'s own package doc
+  comment, per the task brief's explicit instruction.
+- ADAPT (persistence is the consumer's, not shipped as a cookie): shadcn's
+  own `SidebarProvider` writes a plain non-HttpOnly `sidebar_state` cookie
+  on every `setOpen` call and reads it back via a Server Component —  one
+  more gsxui component silently owning storage, the same house objection as
+  `## resizable`'s own `autoSaveId` GAP and `## sheet`/`## select`'s own
+  persistence GAPs. `SidebarProvider` instead takes `open bool` and stamps
+  `data-state="expanded"|"collapsed"` server-side (no flash, no hydration
+  step) with NO cookie/localStorage anywhere in the component; `ui/
+  sidebar.js` only flips that `data-state` and emits `gsxui:change`
+  (`{ open }`, via `ui/gsxui.js`'s shared `emit()`) — it never touches
+  `document.cookie`. `site/examples/sidebar/persisted.gsx` is the shipped
+  replacement for the cookie: a documented, copyable recipe pairing a
+  plain `net/http` handler snippet (read `sidebar_state` into `open` before
+  rendering `SidebarProvider`) with the three-line `gsxui:change` listener
+  that writes the cookie back client-side — the SAME mechanism upstream
+  bakes into the component, now explicit and swappable (a caller can use a
+  Go session, Alpine, htmx, or nothing, instead).
+- MECHANISM (no context, pure CSS consumption — same shape as every other
+  gsxui interactive component): `data-state`/`data-collapsible`/
+  `data-variant`/`data-side` are stamped on the desktop root and consumed
+  by descendants entirely through `group-data-*`/`peer-data-*` selectors,
+  already pure CSS in the reference, so nothing needs Go-level threading.
+  `SidebarTrigger`/`SidebarRail` resolve "the provider" from the DOM
+  (`closest('[data-slot="sidebar-wrapper"]')`) at click time, not an
+  imperative handle — matching `dialog.js`'s own proximity-wiring
+  convention. The one gsxui-invented attribute, `data-gsxui-sidebar-
+  collapsible` (the constant configured `collapsible` mode, stamped once,
+  never itself toggled), exists because `data-collapsible` itself IS
+  toggled between `""` and that mode by `sidebar.js`, mirroring the
+  reference's own `state === "collapsed" ? collapsible : ""` ternary —
+  without a separate place to remember the mode, a collapse→expand→
+  collapse cycle would have nothing to restore `data-collapsible` to once
+  it had been cleared to `""`.
+- GAP (`Sidebar`'s own desktop root always starts `data-state="expanded"`):
+  `Sidebar` takes `side`/`variant`/`collapsible` — deliberately no `open`
+  param (the task brief's own fixed part-signature list has none, and gsx
+  has no context to thread `SidebarProvider`'s `open` into a sibling call)
+  — so its desktop root cannot know the provider's state at render time and
+  always server-renders as expanded (`data-collapsible=""`), matching
+  shadcn's own `defaultOpen=true` default. A page whose `SidebarProvider
+  (false, …)` wants the sidebar collapsed on first paint gets an expanded
+  flash until `sidebar.js`'s toggle runs. A real, accepted v1 limitation —
+  not an oversight — since `SidebarProvider`'s own `data-state` (the thing
+  that IS server-correct) has no CSS selector reading it in the reference
+  either (confirmed: no `[data-slot=sidebar-wrapper]`-keyed selector exists
+  anywhere in `sidebar.tsx`'s own class strings).
+- ADAPT (`TooltipProvider` dropped, correcting the source map's own
+  dependency framing): the 2026-07-24 tier4 source map's `## sidebar`
+  lists `Tooltip`+`TooltipContent`+`TooltipProvider`+`TooltipTrigger` as
+  gsxui dependencies, but `ui/tooltip.gsx` never ports `TooltipProvider` at
+  all (see this file's own `## tooltip` GAP: "shared delayDuration/
+  skip-delay-group machinery … is not ported"). `SidebarProvider` does NOT
+  wrap `children` in a `TooltipProvider` call — there is nothing in gsxui
+  to wrap them in. Flagged here per this task's own instruction to report
+  (not silently diverge from) a source-map claim that turns out wrong.
+- MECHANISM (`SidebarMenuButton`'s tooltip, no `asChild`/no `side` param):
+  the reference wraps `<TooltipTrigger asChild>{button}</TooltipTrigger>`;
+  gsxui has no `asChild`, so — same button-in-button HTML trap as
+  `DialogTrigger`/`SheetTrigger` (`## dialog` FINDING) — `data-gsxui-
+  tooltip-trigger` goes directly on the `<button>` itself, no nested
+  `ui.TooltipTrigger`, per `ui.Tooltip`'s own documented idiom. The
+  reference's `side="right"` override has no gsxui equivalent at all
+  (`ui.TooltipContent` always anchors above the trigger, no side/align
+  params — `## tooltip`'s own NOTE); collapsed-AND-desktop-only gating
+  (`hidden={state !== "collapsed" || isMobile}`) has no `state`/`isMobile`
+  param to read either, so it is reproduced in pure CSS instead —
+  `TooltipContent` gets `hidden group-data-[collapsible=icon]:block`,
+  which only matches while an ancestor `.group` carries
+  `data-collapsible="icon"`. Per this component's own dual-tree ADAPT
+  above, that is true for the DESKTOP copy of a `SidebarMenuButton` when
+  the sidebar is icon-collapsed, and never true for the MOBILE Sheet
+  copy (whose ancestor chain carries no `data-collapsible` at all) —
+  mobile suppression falls out for free, no separate `isMobile` check
+  needed.
+- ADAPT (nova metric deltas, 2026-07-24 tier4 source map `## sidebar` §6):
+  `SidebarContent`/`SidebarMenu` both drop new-york-v4's `gap-2`/`gap-1`
+  for nova's `gap-0`; `SidebarContent` additionally adds nova's `no-
+  scrollbar` (matching `## carousel`/`## input-otp`'s own scrollbar-hiding
+  convention). Nova's `sidebar-inner` border→ring swap
+  (`rounded-lg ring-1 ring-sidebar-border` replacing `rounded-lg border
+  border-sidebar-border`) is NOT adopted — house standing exception, kept
+  `border` verbatim. Every other nova `.cn-sidebar-*` rule the source map's
+  own §6 catalogued is class-list reshuffling around the same bucket, not a
+  metric change (`data-active:` bare-boolean spelling vs. new-york-v4's
+  `data-[active=true]:` bracket form is `.cn-*`-family authoring style, not
+  a value difference — kept new-york-v4's bracket form, this codebase's
+  existing convention) — new-york-v4's fuller selector set (e.g.
+  `SidebarGroupLabel`'s `flex shrink-0 items-center outline-hidden [&>svg]:
+  shrink-0`, dropped in nova's own quoted rule) is kept as the base
+  throughout, per the source map's own recommendation.
+- ADAPT (`asChild` dropped throughout): `SidebarGroupLabel`/
+  `SidebarGroupAction`/`SidebarMenuButton`/`SidebarMenuSubButton`'s Radix
+  `Slot`-based `asChild` polymorphism has no gsxui equivalent (no dynamic
+  tag) — each always renders its own tag (`div`/`button`/`button`/`a`
+  respectively), same narrow gap as button's/item's own `asChild` entries.
+- NOTE (`type="button"` added to every native button this component
+  renders): the reference's own `Comp = asChild ? Slot.Root : "button"`
+  branches never set an explicit `type` prop — a plain native `"button"`
+  tag with no `type` defaults to `type="submit"` inside an ambient `<form>`
+  (unlike a Radix `Primitive.button`, which sets `type="button"`
+  internally). `SidebarGroupAction`/`SidebarMenuButton`/`SidebarMenuAction`/
+  `SidebarRail` all add `type="button"` explicitly, matching this
+  codebase's existing house convention for every other native button
+  (`ToggleGroupItem`, `DialogTrigger`, etc.) rather than porting a latent
+  upstream form-submit footgun.
+- NOTE (`SidebarMenuSkeleton`'s random width, server-computed once per
+  render): the reference computes a 50–90% random width via
+  `React.useMemo(() => …, [])` — fixed once per mount, never re-randomized.
+  gsx has no client-side "compute once at mount" equivalent for a
+  server-rendered page (the source map's own §2 entry flags this as an
+  open design decision, not resolved there) — this port computes the width
+  server-side with `math/rand`, once per render call, which stays fixed for
+  the page's lifetime exactly like `useMemo(() => …, [])` does, and (a
+  difference worth naming) varies independently between multiple
+  `SidebarMenuSkeleton` instances on the same page, matching upstream's own
+  per-instance `useMemo` behavior.
+- Registry: `sidebar.gsx` imports `ui/icon` (`SidebarTrigger`'s
+  `PanelLeft`) and composes `ui.Button` (`SidebarTrigger`), `ui.Input`
+  (`SidebarInput`), `ui.Separator` (`SidebarSeparator`), `ui.Sheet`/
+  `SheetContent`/`SheetHeader`/`SheetTitle`/`SheetDescription` (`Sidebar`'s
+  own mobile tree), `ui.Skeleton` (`SidebarMenuSkeleton`), and `ui.Tooltip`/
+  `TooltipContent` (`SidebarMenuButton`'s tooltip branch) directly — flat
+  package intra-package edges, same declIndex-resolved shape as
+  `## combobox`'s own deps. `registry.Deps("sidebar")` is `[button icon
+  input separator sheet skeleton tooltip]`, pinned in `internal/registry/
+  registry_test.go`; transitively through `sheet`'s own `dialog` dep,
+  `registry.Resolve(["sidebar"])` also pulls in `dialog` (which is what
+  vendors `ui/dialog.js` for the mobile Sheet tree, alongside `ui/
+  sidebar.js` itself — `HasJS("sidebar")` is `true`).

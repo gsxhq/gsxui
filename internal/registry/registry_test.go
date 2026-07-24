@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "carousel", "checkbox", "collapsible", "combobox", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "input-otp", "item", "kbd", "label", "native-select", "pagination", "popover", "progress", "radio", "resizable", "scroll-area", "select", "separator", "sheet", "skeleton", "slider", "sonner", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
+	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "carousel", "checkbox", "collapsible", "combobox", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "input-otp", "item", "kbd", "label", "native-select", "pagination", "popover", "progress", "radio", "resizable", "scroll-area", "select", "separator", "sheet", "sidebar", "skeleton", "slider", "sonner", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -408,6 +408,22 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("combobox deps = %v, want [icon input-group]", deps)
 	}
 
+	// sidebar.gsx imports ui/icon (SidebarTrigger's PanelLeft) and composes
+	// ui.Button (SidebarTrigger), ui.Input (SidebarInput), ui.Separator
+	// (SidebarSeparator), ui.Sheet/SheetContent/SheetHeader/SheetTitle/
+	// SheetDescription (Sidebar's own mobile tree), ui.Skeleton
+	// (SidebarMenuSkeleton), and ui.Tooltip/TooltipContent
+	// (SidebarMenuButton's tooltip branch) directly — flat package
+	// intra-package edges, same declIndex-resolved shape as combobox's own
+	// input-group/icon deps above. Deps sorts its result.
+	deps, err = registry.Deps("sidebar")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(deps, []string{"button", "icon", "input", "separator", "sheet", "skeleton", "tooltip"}) {
+		t.Fatalf("sidebar deps = %v, want [button icon input separator sheet skeleton tooltip]", deps)
+	}
+
 	if _, err := registry.Deps("nosuch"); err == nil || !strings.Contains(err.Error(), "gsxui list") {
 		t.Fatalf("Deps(nosuch) err = %v, want error mentioning 'gsxui list'", err)
 	}
@@ -530,6 +546,15 @@ func TestHasJS(t *testing.T) {
 	// GAP: no shared JS with command, registry.Deps reasoning).
 	if !registry.HasJS("combobox") {
 		t.Error("combobox should have JS")
+	}
+	// sidebar has its own ui/sidebar.js — desktop data-state/data-collapsible
+	// toggling, mobile-vs-desktop resolution (getComputedStyle, not a
+	// hard-coded breakpoint), and the Cmd/Ctrl+B shortcut; a real behavior
+	// module of its own, not a reuse of dialog.js (though the mobile tree's
+	// own Sheet does ride dialog.js transitively via the sheet -> dialog
+	// dependency above).
+	if !registry.HasJS("sidebar") {
+		t.Error("sidebar should have JS")
 	}
 }
 
@@ -681,6 +706,19 @@ func TestResolveTransitive(t *testing.T) {
 		t.Fatal(err)
 	}
 	want = []string{"button", "combobox", "icon", "input", "input-group", "textarea"}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("got %v want %v", got, want)
+	}
+
+	// sidebar resolves transitively through sheet to dialog/button, plus its
+	// own direct button/icon/input/separator/skeleton/tooltip deps — the
+	// same transitive-closure shape as alert-dialog/sheet/drawer/combobox's
+	// own chains above.
+	got, err = registry.Resolve([]string{"sidebar"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want = []string{"button", "dialog", "icon", "input", "separator", "sheet", "sidebar", "skeleton", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}

@@ -28,25 +28,32 @@ import (
 func Tooltip(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line tooltip.gsx:18:2
-		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"tooltip\"")
-		}
-		if !attrs.Has("data-gsxui-tooltip") {
-			_gsxgw.BoolAttr("data-gsxui-tooltip", true)
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("contents"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
-		_gsxgw.S(">")
-//line tooltip.gsx:18:76
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderTooltip(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderTooltip(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line tooltip.gsx:18:2
+	_gsxgw.S("<div")
+	if !attrs.Has("data-slot") {
+		_gsxgw.S(" data-slot=\"tooltip\"")
+	}
+	if !attrs.Has("data-gsxui-tooltip") {
+		_gsxgw.BoolAttr("data-gsxui-tooltip", true)
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("contents"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.S(">")
+//line tooltip.gsx:18:76
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line tooltip.gsx:21:1
@@ -96,40 +103,47 @@ func TooltipTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func TooltipContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line tooltip.gsx:41:2
-		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"tooltip-content\"")
-		}
-		if !attrs.Has("data-gsxui-tooltip-content") {
-			_gsxgw.BoolAttr("data-gsxui-tooltip-content", true)
-		}
-		if !attrs.Has("popover") {
-			_gsxgw.S(" popover=\"manual\"")
-		}
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"tooltip\"")
-		}
-		if !attrs.Has("data-state") {
-			_gsxgw.S(" data-state=\"closed\"")
-		}
-		if !attrs.Has("data-side") {
-			_gsxgw.S(" data-side=\"top\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("z-50 w-fit origin-bottom gap-1.5 rounded-md bg-foreground px-3 py-1.5 text-xs has-data-[slot=kbd]:pr-1.5 **:data-[slot=kbd]:rounded-sm text-balance text-background overflow-visible"), _gsxrt.Class( // Discrete-transition enter/exit replacing the tw-animate keyframe
-			// pair — a popover's exit keyframe never gets to play (hide is
-			// instant display:none); see popover.gsx's ADAPT comment and
-			// docs/jsx-parity.md ## animations for the full mechanism.
-			"opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95"), _gsxrt.Class("data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
-		_gsxgw.S(">")
-//line tooltip.gsx:59:3
-		_gsxgw.Node(ctx, children)
-//line tooltip.gsx:60:3
-		_gsxgw.S("<span data-slot=\"tooltip-arrow\" class=\"absolute top-full left-1/2 z-50 size-2.5 -translate-x-1/2 -translate-y-[calc(50%+2px)] rotate-45 rounded-[2px] bg-foreground\"></span></div>")
-		return _gsxgw.Err()
+		return _gsxrenderTooltipContent(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderTooltipContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line tooltip.gsx:41:2
+	_gsxgw.S("<div")
+	if !attrs.Has("data-slot") {
+		_gsxgw.S(" data-slot=\"tooltip-content\"")
+	}
+	if !attrs.Has("data-gsxui-tooltip-content") {
+		_gsxgw.BoolAttr("data-gsxui-tooltip-content", true)
+	}
+	if !attrs.Has("popover") {
+		_gsxgw.S(" popover=\"manual\"")
+	}
+	if !attrs.Has("role") {
+		_gsxgw.S(" role=\"tooltip\"")
+	}
+	if !attrs.Has("data-state") {
+		_gsxgw.S(" data-state=\"closed\"")
+	}
+	if !attrs.Has("data-side") {
+		_gsxgw.S(" data-side=\"top\"")
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("z-50 w-fit origin-bottom gap-1.5 rounded-md bg-foreground px-3 py-1.5 text-xs has-data-[slot=kbd]:pr-1.5 **:data-[slot=kbd]:rounded-sm text-balance text-background overflow-visible"), _gsxrt.Class( // Discrete-transition enter/exit replacing the tw-animate keyframe
+		// pair — a popover's exit keyframe never gets to play (hide is
+		// instant display:none); see popover.gsx's ADAPT comment and
+		// docs/jsx-parity.md ## animations for the full mechanism.
+		"opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95"), _gsxrt.Class("data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.S(">")
+//line tooltip.gsx:59:3
+	_gsxgw.Node(ctx, children)
+//line tooltip.gsx:60:3
+	_gsxgw.S("<span data-slot=\"tooltip-arrow\" class=\"absolute top-full left-1/2 z-50 size-2.5 -translate-x-1/2 -translate-y-[calc(50%+2px)] rotate-45 rounded-[2px] bg-foreground\"></span></div>")
+	return _gsxgw.Err()
 }
