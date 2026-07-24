@@ -6,3 +6,4 @@ import "./dialog.js";
 import "./tabs.js";
 import "./dropdown.js";
 import "./tooltip.js";
+import "./toggle.js";

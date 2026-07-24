@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "collapsible", "dialog", "dropdown", "empty", "field", "icon", "input", "input-group", "item", "kbd", "label", "pagination", "progress", "radio", "select", "separator", "sheet", "skeleton", "spinner", "switch", "table", "tabs", "textarea", "tooltip"}
+	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "collapsible", "dialog", "dropdown", "empty", "field", "icon", "input", "input-group", "item", "kbd", "label", "pagination", "progress", "radio", "select", "separator", "sheet", "skeleton", "spinner", "switch", "table", "tabs", "textarea", "toggle", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -230,6 +230,18 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("sheet deps = %v, want [dialog]", deps)
 	}
 
+	// toggle.gsx has no icon import and no intra-package reference to
+	// another component (the site example composes ui/icon, but
+	// internal/registry only scans ui/*.gsx, not site/examples/ — same
+	// shape as collapsible's own deps entry above).
+	deps, err = registry.Deps("toggle")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(deps) != 0 {
+		t.Fatalf("toggle deps = %v, want none", deps)
+	}
+
 	if _, err := registry.Deps("nosuch"); err == nil || !strings.Contains(err.Error(), "gsxui list") {
 		t.Fatalf("Deps(nosuch) err = %v, want error mentioning 'gsxui list'", err)
 	}
@@ -259,6 +271,10 @@ func TestHasJS(t *testing.T) {
 	// alert-dialog (see TestDeps' sheet entry).
 	if registry.HasJS("sheet") {
 		t.Error("sheet should not have its own JS")
+	}
+	// toggle has its own ui/toggle.js (click flips aria-pressed/data-state).
+	if !registry.HasJS("toggle") {
+		t.Error("toggle should have JS")
 	}
 }
 
@@ -300,6 +316,16 @@ func TestResolveTransitive(t *testing.T) {
 		t.Fatal(err)
 	}
 	want = []string{"button", "dialog", "sheet"}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("got %v want %v", got, want)
+	}
+
+	// toggle has no deps of its own — Resolve returns just itself.
+	got, err = registry.Resolve([]string{"toggle"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want = []string{"toggle"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
