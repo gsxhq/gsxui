@@ -2,21 +2,21 @@
 // behaviors (side-effect modules) for tree-shaken selective loading.
 export * from "./gsxui.js";
 import "./avatar.js";
+import "./carousel.js";
+import "./command.js";
+import "./context-menu.js";
 import "./dialog.js";
-import "./slider.js";
-import "./tabs.js";
 import "./dropdown.js";
-import "./tooltip.js";
+import "./hover-card.js";
+import "./input-otp.js";
+import "./popover.js";
+import "./select.js";
+import "./slider.js";
+import "./sonner.js";
+import "./tabs.js";
 import "./toggle-group.js";
 import "./toggle.js";
-import "./popover.js";
-import "./hover-card.js";
-import "./context-menu.js";
-import "./command.js";
-import "./carousel.js";
-import "./input-otp.js";
-import "./select.js";
-import "./sonner.js";
+import "./tooltip.js";
 
 // First public imperative API re-exported through the barrel for page
 // authors (every other module only exports internals for sibling use):
