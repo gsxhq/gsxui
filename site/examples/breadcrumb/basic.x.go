@@ -51,7 +51,7 @@ func Basic() _gsxrt.Node {
 				_gsxgw.Node(ctx, ui.BreadcrumbItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:23:5
-					_gsxgw.Node(ctx, ui.BreadcrumbLink("/docs/components", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.BreadcrumbLink("/components", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Components")
 						return _gsxgw.Err()

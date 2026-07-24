@@ -20,7 +20,7 @@ component Basic() {
 			</ui.BreadcrumbItem>
 			<ui.BreadcrumbSeparator/>
 			<ui.BreadcrumbItem>
-				<ui.BreadcrumbLink href="/docs/components">Components</ui.BreadcrumbLink>
+				<ui.BreadcrumbLink href="/components">Components</ui.BreadcrumbLink>
 			</ui.BreadcrumbItem>
 			<ui.BreadcrumbSeparator/>
 			<ui.BreadcrumbItem>
