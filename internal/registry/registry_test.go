@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "collapsible", "dialog", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "item", "kbd", "label", "pagination", "popover", "progress", "radio", "select", "separator", "sheet", "skeleton", "spinner", "switch", "table", "tabs", "textarea", "toggle", "tooltip"}
+	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "collapsible", "context-menu", "dialog", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "item", "kbd", "label", "pagination", "popover", "progress", "radio", "select", "separator", "sheet", "skeleton", "spinner", "switch", "table", "tabs", "textarea", "toggle", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -265,6 +265,20 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("hover-card deps = %v, want none", deps)
 	}
 
+	// context-menu.gsx has no icon import and no intra-package reference to
+	// another component — ContextMenu/ContextMenuTrigger/ContextMenuContent/
+	// ContextMenuItem/ContextMenuLabel/ContextMenuSeparator/
+	// ContextMenuShortcut are all plain elements, same shape as popover's own
+	// deps entry (the site example composes nothing from another ui.*
+	// component either).
+	deps, err = registry.Deps("context-menu")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(deps) != 0 {
+		t.Fatalf("context-menu deps = %v, want none", deps)
+	}
+
 	if _, err := registry.Deps("nosuch"); err == nil || !strings.Contains(err.Error(), "gsxui list") {
 		t.Fatalf("Deps(nosuch) err = %v, want error mentioning 'gsxui list'", err)
 	}
@@ -311,6 +325,11 @@ func TestHasJS(t *testing.T) {
 	// constraint, same selectbox/switchctl precedent).
 	if !registry.HasJS("hover-card") {
 		t.Error("hover-card should have JS")
+	}
+	// context-menu has its own ui/context-menu.js (cursor-positioned open on
+	// contextmenu, adapted from dropdown.js's menu semantics).
+	if !registry.HasJS("context-menu") {
+		t.Error("context-menu should have JS")
 	}
 }
 
@@ -382,6 +401,17 @@ func TestResolveTransitive(t *testing.T) {
 		t.Fatal(err)
 	}
 	want = []string{"hover-card"}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("got %v want %v", got, want)
+	}
+
+	// context-menu has no deps of its own — Resolve returns just itself,
+	// same shape as popover/hover-card's own entries above.
+	got, err = registry.Resolve([]string{"context-menu"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want = []string{"context-menu"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
