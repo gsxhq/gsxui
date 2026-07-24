@@ -19,11 +19,11 @@ import (
 // elements already gives you the group; the layout wrapper is the caller's
 // concern, same as any other flex/grid container (ledger ADAPT).
 //
-// Tokens are carried verbatim from RadioGroupItem (aspect-square size-4
-// shrink-0 rounded-full border border-input text-primary shadow-xs
-// transition-[color,box-shadow] outline-none + focus-visible/disabled/
-// aria-invalid/dark tokens); appearance-none is added for the same
-// mechanical reason as checkbox.
+// Tokens are carried from RadioGroupItem (aspect-square size-4 shrink-0
+// rounded-full border border-input transition-[color,box-shadow]
+// outline-none + focus-visible/disabled/aria-invalid/dark tokens) minus
+// shadow-xs (nova shadow-presence removal, same as checkbox/switch);
+// appearance-none is added for the same mechanical reason as checkbox.
 //
 // The checked paint follows the nova style (the live site's default, per
 // the density-retarget decision): the whole circle fills with primary
