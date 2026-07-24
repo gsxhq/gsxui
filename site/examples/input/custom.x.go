@@ -11,8 +11,8 @@ import (
 
 //line custom.gsx:5:1
 // Custom overrides Input's default height by passing class="h-12 text-base" at the
-// call site. Input's own h-9 is part of the same class-merge group, so the
-// caller's h-12 wins and h-9 is dropped entirely — not appended alongside
+// call site. Input's own h-8 is part of the same class-merge group, so the
+// caller's h-12 wins and h-8 is dropped entirely — not appended alongside
 // it — rather than the two classes fighting in the cascade.
 
 //line custom.gsx:9:1

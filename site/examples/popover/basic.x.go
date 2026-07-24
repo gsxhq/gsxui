@@ -50,7 +50,7 @@ func Basic() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "for", Value: "width"}}))
 //line basic.gsx:24:7
-				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "width"}}, _gsxrt.Attrs{{Key: "value", Value: "100%"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-2 h-8"}})))
+				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "width"}}, _gsxrt.Attrs{{Key: "value", Value: "100%"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-2"}})))
 				_gsxgw.S("</div>")
 //line basic.gsx:26:6
 				_gsxgw.S("<div class=\"grid grid-cols-3 items-center gap-4\">")
@@ -61,7 +61,7 @@ func Basic() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "for", Value: "maxWidth"}}))
 //line basic.gsx:28:7
-				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "maxWidth"}}, _gsxrt.Attrs{{Key: "value", Value: "300px"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-2 h-8"}})))
+				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "maxWidth"}}, _gsxrt.Attrs{{Key: "value", Value: "300px"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-2"}})))
 				_gsxgw.S("</div>")
 //line basic.gsx:30:6
 				_gsxgw.S("<div class=\"grid grid-cols-3 items-center gap-4\">")
@@ -72,7 +72,7 @@ func Basic() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "for", Value: "height"}}))
 //line basic.gsx:32:7
-				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "height"}}, _gsxrt.Attrs{{Key: "value", Value: "25px"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-2 h-8"}})))
+				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "height"}}, _gsxrt.Attrs{{Key: "value", Value: "25px"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-2"}})))
 				_gsxgw.S("</div>")
 //line basic.gsx:34:6
 				_gsxgw.S("<div class=\"grid grid-cols-3 items-center gap-4\">")
@@ -83,7 +83,7 @@ func Basic() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "for", Value: "maxHeight"}}))
 //line basic.gsx:36:7
-				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "maxHeight"}}, _gsxrt.Attrs{{Key: "value", Value: "none"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-2 h-8"}})))
+				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "maxHeight"}}, _gsxrt.Attrs{{Key: "value", Value: "none"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-2"}})))
 				_gsxgw.S("</div></div></div>")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "w-80"}}))

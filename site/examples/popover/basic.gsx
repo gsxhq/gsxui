@@ -21,19 +21,19 @@ component Basic() {
 				<div class="grid gap-2">
 					<div class="grid grid-cols-3 items-center gap-4">
 						<ui.Label for="width">Width</ui.Label>
-						<ui.Input id="width" value="100%" class="col-span-2 h-8"/>
+						<ui.Input id="width" value="100%" class="col-span-2"/>
 					</div>
 					<div class="grid grid-cols-3 items-center gap-4">
 						<ui.Label for="maxWidth">Max. width</ui.Label>
-						<ui.Input id="maxWidth" value="300px" class="col-span-2 h-8"/>
+						<ui.Input id="maxWidth" value="300px" class="col-span-2"/>
 					</div>
 					<div class="grid grid-cols-3 items-center gap-4">
 						<ui.Label for="height">Height</ui.Label>
-						<ui.Input id="height" value="25px" class="col-span-2 h-8"/>
+						<ui.Input id="height" value="25px" class="col-span-2"/>
 					</div>
 					<div class="grid grid-cols-3 items-center gap-4">
 						<ui.Label for="maxHeight">Max. height</ui.Label>
-						<ui.Input id="maxHeight" value="none" class="col-span-2 h-8"/>
+						<ui.Input id="maxHeight" value="none" class="col-span-2"/>
 					</div>
 				</div>
 			</div>

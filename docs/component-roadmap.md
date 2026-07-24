@@ -78,3 +78,52 @@ site example pages, browser verification against the shadcn docs.
 - **direction** — RTL context provider; HTML `dir` attribute serves gsx.
 - **attachment, bubble, message, message-scroller, marker** — the new AI
   chat primitives; defer as a dedicated batch if gsx targets chat UIs.
+
+## Nova follow-ups
+
+Deferred out of the 2026-07-24 nova density retarget (`docs/superpowers/plans/2026-07-24-nova-density-map.md`
+"Markup prerequisites" items 3–4; retarget itself was metric-tokens-only,
+see `docs/jsx-parity.md` `## nova density`). Each item below needs new
+markup/parts/params, not just a class-string edit — that's why they're
+roadmap items rather than density-map deltas.
+
+New parts nova ships that gsxui doesn't yet have a slot for:
+
+- **AlertAction** — `absolute top-2 right-2` action slot on `Alert`, plus the
+  root's `has-data-[slot=alert-action]:pr-18` reservation.
+- **AlertDialogMedia** — `mb-2 size-10 rounded-md` icon/media slot in
+  `AlertDialogHeader`, needs the header's own media-conditional grid-rows
+  variant too.
+- **PopoverHeader / PopoverTitle / PopoverDescription** — structured content
+  parts for `Popover`, mirroring dialog's header/title/description split.
+- **ProgressLabel / ProgressValue** — labeled-progress parts (current
+  `progress` ships the bar only).
+- **AvatarBadge / AvatarGroup / AvatarGroupCount** — status-badge overlay,
+  stacked-avatar wrapper, and the `+N` overflow-count part (`.cn-avatar-group-count`,
+  `size-8 rounded-full text-sm` + lg/sm variants).
+- **Item size-xs** — a fourth `Item` density below the current smallest.
+- **ItemGroup gap changes** — nova's `ItemGroup` gap tokens differ from
+  what shipped; needs its own map entry once scoped.
+
+New size axes (a `size`/`data-size` variant prop plus its class-selector
+plumbing) nova adds that aren't ported:
+
+- **alert-dialog** `size` (`default` | `sm`) — content max-width axis.
+- **avatar** `size` (`sm` | `lg`) — `data-[size=lg]:size-10` / `data-[size=sm]:size-6`,
+  plus `AvatarGroupCount`'s matching lg/sm.
+- **card** `size` (`sm`) — `--card-spacing` swaps from `--spacing(4)` to
+  `--spacing(3)` (p-3/gap-3, title drops to `text-sm`).
+- **native-select** `size` (`sm`) — `data-[size=sm]:h-8` (the `size=default`
+  axis is already baked in unconditionally, see `docs/jsx-parity.md` `## select`).
+- **switch** `size` (`sm`) — smaller switch/thumb metrics.
+
+Cross-cutting, larger design-system change (not a single component):
+
+- **border → ring hairline system** — nova recolors several surfaces'
+  `border` to `ring-1 ring-foreground/10` (dropdown/context-menu/popover/
+  hover-card content, dialog, alert-dialog, card). Ring sits outside the
+  border box, so adopting it shifts every affected surface's inner content
+  box by 1px/side — explicitly NOT adopted in the density retarget (color/
+  box-model scope, not metric-token scope; see `docs/jsx-parity.md`
+  `## nova density`). Worth its own scoped pass rather than folding into
+  a future density-only change.
