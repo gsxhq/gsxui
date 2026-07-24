@@ -105,6 +105,19 @@ component CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) {
 // size="icon") exactly like shadcn's own versions, plus
 // data-gsxui-carousel-prev/-next for carousel.js's delegated click wiring.
 // shadcn computes `disabled={!canScrollPrev}`/`!canScrollNext` from embla's
+// The horizontal buttons' `-translate-y-1/2` centering shares the translate-y
+// property with Button's nova press effect (`active:not-aria-[haspopup]:
+// translate-y-px`) — in gsxui's single-utilities-layer build the press token
+// wins while :active (extra pseudo beats the bare utility), replacing the
+// -50% centering and dropping the arrow half its height on every click.
+// shadcn's own site never sees this because its `.cn-button:active` rule
+// lives in an earlier @layer than the centering utility. The horizontal
+// strings therefore carry `active:not-aria-[haspopup]:translate-y-
+// [calc(1px_-_50%)]` — the SAME modifier chain so tailwind-merge drops the
+// base press token — preserving both the centering and the 1px press dip.
+// Vertical buttons center on translate-X (a different property), so the
+// base press token is harmless there and stays.
+//
 // live scroll-progress state, unavailable at Go render time — the initial
 // server-rendered `disabled` value is chosen per button since the two are
 // NOT symmetric unknowns: a freshly mounted scroll container always starts
@@ -128,7 +141,7 @@ component CarouselPrevious(orientation string, attrs gsx.Attrs) {
 			if orientation == "vertical" {
 				"-top-12 left-1/2 -translate-x-1/2 rotate-90"
 			} else {
-				"top-1/2 -left-12 -translate-y-1/2"
+				"top-1/2 -left-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
 			},
 		}
 		{ attrs... }
@@ -149,7 +162,7 @@ component CarouselNext(orientation string, attrs gsx.Attrs) {
 			if orientation == "vertical" {
 				"-bottom-12 left-1/2 -translate-x-1/2 rotate-90"
 			} else {
-				"top-1/2 -right-12 -translate-y-1/2"
+				"top-1/2 -right-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
 			},
 		}
 		{ attrs... }

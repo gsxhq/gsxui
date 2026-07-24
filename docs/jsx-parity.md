@@ -725,14 +725,35 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   sufficient for every demo in scope; no `center`-alignment mode is ported.
 - ADAPT (prev/next scroll amount, one item not one viewport): scrolling by a
   full viewport width would visibly skip slides whenever more than one is
-  visible per view (the `-size`/`-orientation` demos) — `ui/carousel.js`
-  scrolls by the FIRST item's own measured `getBoundingClientRect()` width
-  instead (embla's default `slidesToScroll: 1`). Because `CarouselContent`'s
-  flex track lays items out with no `gap` property (spacing comes from each
-  item's own `pl-4`/`pt-4` padding plus the track's compensating `-ml-4`/
-  `-mt-4`), one item's border-box width already IS the distance to the next
-  item's own start — no separate "plus the gap" term needed in the
-  arithmetic despite the map's own framing describing it that way.
+  visible per view (the `-size`/`-orientation` demos) — one press moves one
+  item (embla's default `slidesToScroll: 1`).
+- MECHANISM (intent-based target index, 2026-07-24 fix): the first shipped
+  version issued a relative smooth `scrollBy(±item width)`, which reads the
+  mid-flight interpolated position when a press lands while the previous
+  smooth scroll is still animating — mandatory scroll-snap then rounds the
+  compounded target back onto the snap point already in flight, so rapid
+  prev/next presses visibly did nothing (user-reported). embla is immune
+  because it tracks its own target index internally; `ui/carousel.js` now
+  does the same: a per-root pending target index (cleared once scrolling
+  settles, `SETTLE_MS` after the last scroll event — `scrollend` isn't
+  universal) and every press computes `clamp(pending ?? nearest-index ± 1)`
+  and scrolls to that item's leading edge absolutely via rect deltas (flight-
+  safe: item-minus-viewport rect offsets always give the correct remaining
+  distance regardless of interpolation state).
+- FINDING (horizontal prev/next press-dip, 2026-07-24 fix, user-reported):
+  Button's nova press effect (`active:not-aria-[haspopup]:translate-y-px`)
+  shares the translate-y property with the horizontal buttons'
+  `-translate-y-1/2` centering; in gsxui's single-utilities-layer build the
+  press token wins while `:active` (extra pseudo-class beats the bare
+  utility), replacing −50% with 1px and dropping the arrow half its height
+  on every click. shadcn's own site never shows this because its
+  `.cn-button:active` rule sits in an earlier `@layer` than the centering
+  utility. Fixed by giving the horizontal strings
+  `active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]` — the same
+  modifier chain, so tailwind-merge drops the base press token — keeping
+  both the centering and the 1px press dip. Vertical buttons center on
+  translate-X and are unaffected. Same hazard applies to ANY composition
+  that centers a Button with `-translate-y-1/2`.
 - ADAPT (prev/next disabled-state, computed from scroll position not an
   embla API): embla's `canScrollPrev()`/`canScrollNext()` read its own
   internal scroll-progress/edge state. This port instead compares the

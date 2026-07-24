@@ -175,6 +175,19 @@ func CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt
 // size="icon") exactly like shadcn's own versions, plus
 // data-gsxui-carousel-prev/-next for carousel.js's delegated click wiring.
 // shadcn computes `disabled={!canScrollPrev}`/`!canScrollNext` from embla's
+// The horizontal buttons' `-translate-y-1/2` centering shares the translate-y
+// property with Button's nova press effect (`active:not-aria-[haspopup]:
+// translate-y-px`) — in gsxui's single-utilities-layer build the press token
+// wins while :active (extra pseudo beats the bare utility), replacing the
+// -50% centering and dropping the arrow half its height on every click.
+// shadcn's own site never sees this because its `.cn-button:active` rule
+// lives in an earlier @layer than the centering utility. The horizontal
+// strings therefore carry `active:not-aria-[haspopup]:translate-y-
+// [calc(1px_-_50%)]` — the SAME modifier chain so tailwind-merge drops the
+// base press token — preserving both the centering and the 1px press dip.
+// Vertical buttons center on translate-X (a different property), so the
+// base press token is harmless there and stays.
+//
 // live scroll-progress state, unavailable at Go render time — the initial
 // server-rendered `disabled` value is chosen per button since the two are
 // NOT symmetric unknowns: a freshly mounted scroll container always starts
@@ -187,23 +200,23 @@ func CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt
 // not). carousel.js's own init pass recomputes and corrects both from the
 // real DOM immediately on load either way — see its own header comment.
 
-//line carousel.gsx:119:1
+//line carousel.gsx:132:1
 func CarouselPrevious(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:120:2
+//line carousel.gsx:133:2
 		_gsxv5 := "absolute size-8 rounded-full"
 		var _gsxv6 string
 		if orientation == "vertical" {
 			_gsxv6 = "-top-12 left-1/2 -translate-x-1/2 rotate-90"
 		} else {
-			_gsxv6 = "top-1/2 -left-12 -translate-y-1/2"
+			_gsxv6 = "top-1/2 -left-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
 		}
 		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:136:3
+//line carousel.gsx:149:3
 			_gsxgw.Node(ctx, icon.ArrowLeft())
-//line carousel.gsx:137:3
+//line carousel.gsx:150:3
 			_gsxgw.S("<span class=\"sr-only\">Previous slide</span>")
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-slot", Value: "carousel-previous"}}, _gsxrt.Attrs{{Key: "data-gsxui-carousel-prev", Value: true}}, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv5), _gsxrt.Class(_gsxv6))}}, attrs)))
@@ -211,23 +224,23 @@ func CarouselPrevious(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line carousel.gsx:141:1
+//line carousel.gsx:154:1
 func CarouselNext(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:142:2
+//line carousel.gsx:155:2
 		_gsxv7 := "absolute size-8 rounded-full"
 		var _gsxv8 string
 		if orientation == "vertical" {
 			_gsxv8 = "-bottom-12 left-1/2 -translate-x-1/2 rotate-90"
 		} else {
-			_gsxv8 = "top-1/2 -right-12 -translate-y-1/2"
+			_gsxv8 = "top-1/2 -right-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
 		}
 		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:157:3
+//line carousel.gsx:170:3
 			_gsxgw.Node(ctx, icon.ArrowRight())
-//line carousel.gsx:158:3
+//line carousel.gsx:171:3
 			_gsxgw.S("<span class=\"sr-only\">Next slide</span>")
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-slot", Value: "carousel-next"}}, _gsxrt.Attrs{{Key: "data-gsxui-carousel-next", Value: true}}, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv7), _gsxrt.Class(_gsxv8))}}, attrs)))

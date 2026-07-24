@@ -22,29 +22,69 @@ const isVertical = (root) => root.dataset.orientation === "vertical";
 // gives for embla's canScrollPrev/canScrollNext internals.
 const EPS = 1;
 
-// Scroll amount for one prev/next press: the FIRST item's own measured
-// width (border-box, so its own pl-4/pt-4 spacing padding is already
-// included) — not one full viewport width, which would visibly skip slides
-// whenever more than one slide is visible per view (the size/orientation
-// demos). Because CarouselContent's flex track lays items out with no gap
-// property (spacing comes from each item's own padding plus the track's
-// compensating negative margin), one item's rendered width IS the distance
-// from its own start to the next item's start — embla's default
-// slidesToScroll: 1 behavior, reproduced without needing embla's own
-// per-slide bookkeeping.
-function itemExtent(root) {
-  const items = itemsOf(root);
-  if (!items.length) return 0;
-  const rect = items[0].getBoundingClientRect();
-  return isVertical(root) ? rect.height : rect.width;
+// Rapid prev/next presses must compound by INTENT, not by mid-flight
+// position: a relative scroll issued while the previous smooth scroll is
+// still animating reads the interpolated position, and mandatory
+// scroll-snap then rounds the compounded target back onto the snap point
+// already in flight — the second press visibly does nothing. embla avoids
+// this by tracking its own target index internally; same scheme here.
+// `pending` holds the in-flight target index per root until scrolling
+// settles (SETTLE_MS after the last scroll event — `scrollend` support is
+// not yet universal), so every press advances from where the carousel is
+// GOING, not where it happens to be mid-animation. Manual wheel/drag
+// scrolling also settles and clears it, so stale intent can't outlive a
+// user taking over.
+const pending = new WeakMap();
+const settleTimers = new WeakMap();
+const SETTLE_MS = 150;
+
+function bumpSettle(root) {
+  clearTimeout(settleTimers.get(root));
+  settleTimers.set(
+    root,
+    setTimeout(() => pending.delete(root), SETTLE_MS),
+  );
 }
 
-function scrollByItems(root, dir) {
+// The item whose leading edge sits nearest the viewport's own leading edge
+// — the item scroll-snap is resting on (or nearest mid-flight).
+function nearestIndex(root) {
   const viewport = viewportOf(root);
-  if (!viewport) return;
-  const amount = itemExtent(root) * dir;
-  if (!amount) return;
-  viewport.scrollBy(isVertical(root) ? { top: amount, behavior: "smooth" } : { left: amount, behavior: "smooth" });
+  const items = itemsOf(root);
+  if (!viewport || !items.length) return 0;
+  const vertical = isVertical(root);
+  const viewportEdge = vertical
+    ? viewport.getBoundingClientRect().top
+    : viewport.getBoundingClientRect().left;
+  let index = 0;
+  let nearest = Infinity;
+  items.forEach((item, i) => {
+    const rect = item.getBoundingClientRect();
+    const edge = vertical ? rect.top : rect.left;
+    const distance = Math.abs(edge - viewportEdge);
+    if (distance < nearest) {
+      nearest = distance;
+      index = i;
+    }
+  });
+  return index;
+}
+
+function scrollToIndex(root, index) {
+  const items = itemsOf(root);
+  if (!items.length) return;
+  const target = Math.max(0, Math.min(items.length - 1, index));
+  pending.set(root, target);
+  bumpSettle(root);
+  scrollToItem(root, target);
+}
+
+// One prev/next press = one item (embla's default slidesToScroll: 1),
+// expressed as an absolute index move so presses stay deterministic under
+// rapid clicking (see the pending-intent comment above).
+function scrollByItems(root, dir) {
+  const base = pending.has(root) ? pending.get(root) : nearestIndex(root);
+  scrollToIndex(root, base + dir);
 }
 
 // scrollTo(index): scrolls so item `index`'s leading edge aligns with the
@@ -87,24 +127,9 @@ function updateDisabled(root) {
 // actually changes, so a caller's "Slide X of Y" listener isn't re-run on
 // every rAF tick while mid-scroll.
 function updateIndex(root) {
-  const viewport = viewportOf(root);
   const items = itemsOf(root);
-  if (!viewport || !items.length) return;
-  const vertical = isVertical(root);
-  const viewportEdge = vertical
-    ? viewport.getBoundingClientRect().top
-    : viewport.getBoundingClientRect().left;
-  let index = 0;
-  let nearest = Infinity;
-  items.forEach((item, i) => {
-    const rect = item.getBoundingClientRect();
-    const edge = vertical ? rect.top : rect.left;
-    const distance = Math.abs(edge - viewportEdge);
-    if (distance < nearest) {
-      nearest = distance;
-      index = i;
-    }
-  });
+  if (!viewportOf(root) || !items.length) return;
+  const index = nearestIndex(root);
   if (root.dataset.currentIndex === String(index)) return;
   root.dataset.currentIndex = String(index);
   emit(root, "gsxui:carousel-select", { index, count: items.length });
@@ -185,7 +210,9 @@ on(
   '[data-slot="carousel-content"]',
   (_e, viewport) => {
     const root = rootOf(viewport);
-    if (!root || scheduled.has(root)) return;
+    if (!root) return;
+    bumpSettle(root);
+    if (scheduled.has(root)) return;
     scheduled.add(root);
     requestAnimationFrame(() => {
       scheduled.delete(root);
@@ -211,7 +238,7 @@ const resizeObserver = new ResizeObserver((entries) => {
 // limitation those two modules' own init loops carry.
 for (const root of document.querySelectorAll("[data-gsxui-carousel]")) {
   root.gsxuiCarousel = {
-    scrollTo: (index) => scrollToItem(root, index),
+    scrollTo: (index) => scrollToIndex(root, index),
     next: () => scrollByItems(root, 1),
     prev: () => scrollByItems(root, -1),
   };
