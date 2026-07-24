@@ -127,7 +127,7 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:111:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line theming.gsx:112:5
-			_gsxgw.S("<h2 class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">The token model</h2>")
+			_gsxgw.S("<h2>The token model</h2>")
 //line theming.gsx:113:5
 			_gsxgw.S("<p>")
 //line theming.gsx:114:6
@@ -153,181 +153,181 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:126:6
 			_gsxgw.S("<code>border-input</code>, and friends all resolve to a token, not a hard-coded value:</p>")
 //line theming.gsx:129:5
-			_gsxgw.S("<pre class=\"overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground\">")
-//line theming.gsx:131:6
+			_gsxgw.S("<pre>")
+//line theming.gsx:129:10
 			_gsxgw.S("<code>")
-//line theming.gsx:131:12
+//line theming.gsx:129:16
 			_gsxgw.Text(string(themeTokensCSS))
 			_gsxgw.S("</code></pre>")
-//line theming.gsx:132:5
+//line theming.gsx:130:5
 			_gsxgw.S("<p>The eight paired tokens (")
-//line theming.gsx:134:6
+//line theming.gsx:132:6
 			_gsxgw.S("<code>background</code>/")
-//line theming.gsx:136:6
+//line theming.gsx:134:6
 			_gsxgw.S("<code>foreground</code>,")
-//line theming.gsx:138:6
+//line theming.gsx:136:6
 			_gsxgw.S("<code>card</code>, ")
-//line theming.gsx:139:8
+//line theming.gsx:137:8
 			_gsxgw.S("<code>popover</code>, ")
-//line theming.gsx:140:8
+//line theming.gsx:138:8
 			_gsxgw.S("<code>primary</code>,")
-//line theming.gsx:142:6
+//line theming.gsx:140:6
 			_gsxgw.S("<code>secondary</code>, ")
-//line theming.gsx:143:8
+//line theming.gsx:141:8
 			_gsxgw.S("<code>muted</code>, ")
-//line theming.gsx:144:8
+//line theming.gsx:142:8
 			_gsxgw.S("<code>accent</code>, each with a matching ")
-//line theming.gsx:145:29
+//line theming.gsx:143:29
 			_gsxgw.S("<code>-foreground</code>, plus ")
-//line theming.gsx:146:13
+//line theming.gsx:144:13
 			_gsxgw.S("<code>destructive</code>/")
-//line theming.gsx:148:6
+//line theming.gsx:146:6
 			_gsxgw.S("<code>destructive-foreground</code>) cover every surface + text combination a component draws; ")
-//line theming.gsx:149:66
+//line theming.gsx:147:66
 			_gsxgw.S("<code>border</code>, ")
-//line theming.gsx:150:8
+//line theming.gsx:148:8
 			_gsxgw.S("<code>input</code>, and ")
-//line theming.gsx:151:12
+//line theming.gsx:149:12
 			_gsxgw.S("<code>ring</code> cover outlines and focus rings; ")
-//line theming.gsx:151:62
+//line theming.gsx:149:62
 			_gsxgw.S("<code>radius</code>drives every rounded corner via the derived ")
-//line theming.gsx:152:50
+//line theming.gsx:150:50
 			_gsxgw.S("<code>--radius-sm</code>…")
-//line theming.gsx:154:6
+//line theming.gsx:152:6
 			_gsxgw.S("<code>--radius-xl</code> scale.</p></section>")
-//line theming.gsx:157:4
+//line theming.gsx:155:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line theming.gsx:158:5
-			_gsxgw.S("<h2 class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">How to restyle</h2>")
-//line theming.gsx:159:5
+//line theming.gsx:156:5
+			_gsxgw.S("<h2>How to restyle</h2>")
+//line theming.gsx:157:5
 			_gsxgw.S("<p>")
-//line theming.gsx:160:6
+//line theming.gsx:158:6
 			_gsxgw.S("<code>web/gsxui.css</code> is vendored, not imported — it's yours the moment ")
-//line theming.gsx:160:85
+//line theming.gsx:158:85
 			_gsxgw.S("<code>gsxui init</code> writes it. Restyling is editing the values inside ")
-//line theming.gsx:162:64
+//line theming.gsx:160:64
 			_gsxgw.S("<code>:root</code> and ")
-//line theming.gsx:162:87
+//line theming.gsx:160:87
 			_gsxgw.S("<code>.dark</code> directly:</p>")
-//line theming.gsx:164:5
-			_gsxgw.S("<pre class=\"overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground\">")
-//line theming.gsx:166:6
+//line theming.gsx:162:5
+			_gsxgw.S("<pre>")
+//line theming.gsx:162:10
 			_gsxgw.S("<code>")
-//line theming.gsx:166:12
+//line theming.gsx:162:16
 			_gsxgw.Text(string(themeRestyleSnippet))
 			_gsxgw.S("</code></pre>")
-//line theming.gsx:167:5
+//line theming.gsx:163:5
 			_gsxgw.S("<p>Because the variable names (")
-//line theming.gsx:169:6
+//line theming.gsx:165:6
 			_gsxgw.S("<code>--primary</code>,")
-//line theming.gsx:171:6
+//line theming.gsx:167:6
 			_gsxgw.S("<code>--primary-foreground</code>, …) match shadcn/ui's own convention exactly, the file is ")
-//line theming.gsx:172:67
+//line theming.gsx:168:67
 			_gsxgw.S("<strong>tweakcn-compatible</strong>: generate a theme at")
-//line theming.gsx:174:6
-			_gsxgw.S("<a href=\"https://tweakcn.com\" target=\"_blank\" rel=\"noreferrer\" class=\"underline underline-offset-4 hover:text-foreground\">tweakcn.com</a>(or any other shadcn theme tool) and paste its ")
-//line theming.gsx:182:53
+//line theming.gsx:170:6
+			_gsxgw.S("<a href=\"https://tweakcn.com\" target=\"_blank\" rel=\"noreferrer\">tweakcn.com</a>(or any other shadcn theme tool) and paste its ")
+//line theming.gsx:171:53
 			_gsxgw.S("<code>:root</code>/")
-//line theming.gsx:184:6
+//line theming.gsx:173:6
 			_gsxgw.S("<code>.dark</code> blocks over gsxui's own — no renaming, no translation layer.</p></section>")
-//line theming.gsx:187:4
+//line theming.gsx:176:4
 			_gsxgw.S("<section class=\"flex flex-col gap-6\">")
-//line theming.gsx:188:5
-			_gsxgw.S("<h2 class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">Customizing components</h2>")
-//line theming.gsx:189:5
+//line theming.gsx:177:5
+			_gsxgw.S("<h2>Customizing components</h2>")
+//line theming.gsx:178:5
 			_gsxgw.S("<div class=\"flex flex-col gap-3\">")
-//line theming.gsx:190:6
-			_gsxgw.S("<h3 class=\"font-medium\">Caller class merge: a conflicting utility wins</h3>")
-//line theming.gsx:191:6
+//line theming.gsx:179:6
+			_gsxgw.S("<h3>Caller class merge: a conflicting utility wins</h3>")
+//line theming.gsx:180:6
 			_gsxgw.S("<p>Every component's fallthrough ")
-//line theming.gsx:192:37
+//line theming.gsx:181:37
 			_gsxgw.S("<code>attrs</code> can carry a")
-//line theming.gsx:193:7
+//line theming.gsx:182:7
 			_gsxgw.S("<code>class</code>, and it doesn't just get appended — ")
-//line theming.gsx:194:46
+//line theming.gsx:183:46
 			_gsxgw.S("<code>gsx.toml</code>'s")
-//line theming.gsx:196:7
+//line theming.gsx:185:7
 			_gsxgw.S("<code>class_merger</code> (vendored to ")
-//line theming.gsx:196:46
+//line theming.gsx:185:46
 			_gsxgw.S("<code>ui/merge/merge.go</code> by")
-//line theming.gsx:197:7
+//line theming.gsx:186:7
 			_gsxgw.S("<code>gsxui init</code>, backed by ")
-//line theming.gsx:198:19
+//line theming.gsx:187:19
 			_gsxgw.S("<code>tailwind-merge-go</code>) resolves conflicts the way Tailwind itself would: whichever utility comes last in the same category wins, structural classes that aren't in that category are untouched.</p>")
-//line theming.gsx:201:6
-			_gsxgw.S("<pre class=\"overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground\">")
-//line theming.gsx:203:7
+//line theming.gsx:190:6
+			_gsxgw.S("<pre>")
+//line theming.gsx:190:11
 			_gsxgw.S("<code>")
-//line theming.gsx:203:13
+//line theming.gsx:190:17
 			_gsxgw.Text(string(themeMergeSnippet))
 			_gsxgw.S("</code></pre>")
-//line theming.gsx:204:6
+//line theming.gsx:191:6
 			_gsxgw.S("<p>")
-//line theming.gsx:205:7
+//line theming.gsx:192:7
 			_gsxgw.S("<code>Button</code>'s default size class is")
-//line theming.gsx:207:7
+//line theming.gsx:194:7
 			_gsxgw.S("<code>h-9 px-4 py-2 has-[&gt;svg]:px-3</code>. The caller's")
-//line theming.gsx:209:7
+//line theming.gsx:196:7
 			_gsxgw.S("<code>h-12</code> is in the same height category as ")
-//line theming.gsx:209:59
+//line theming.gsx:196:59
 			_gsxgw.S("<code>h-9</code>, so it drops ")
-//line theming.gsx:210:21
+//line theming.gsx:197:21
 			_gsxgw.S("<code>h-9</code> and wins; ")
-//line theming.gsx:210:48
+//line theming.gsx:197:48
 			_gsxgw.S("<code>px-4 py-2</code> and the structural base classes (")
-//line theming.gsx:211:7
+//line theming.gsx:198:7
 			_gsxgw.S("<code>inline-flex</code>,")
-//line theming.gsx:213:7
+//line theming.gsx:200:7
 			_gsxgw.S("<code>items-center</code>, ")
-//line theming.gsx:214:9
+//line theming.gsx:201:9
 			_gsxgw.S("<code>rounded-md</code>, …) survive because nothing the caller passed conflicts with them.</p></div>")
-//line theming.gsx:218:5
+//line theming.gsx:205:5
 			_gsxgw.S("<div class=\"flex flex-col gap-3\">")
-//line theming.gsx:219:6
-			_gsxgw.S("<h3 class=\"font-medium\">Attrs fallthrough: id, aria-*, data-*, hx-*</h3>")
-//line theming.gsx:220:6
+//line theming.gsx:206:6
+			_gsxgw.S("<h3>Attrs fallthrough: id, aria-*, data-*, hx-*</h3>")
+//line theming.gsx:207:6
 			_gsxgw.S("<p>Beyond ")
-//line theming.gsx:221:14
+//line theming.gsx:208:14
 			_gsxgw.S("<code>class</code>, every attribute a caller passes that isn't one of the component's own named parameters lands on the rendered element untouched — ids, ARIA attributes, arbitrary")
-//line theming.gsx:223:7
+//line theming.gsx:210:7
 			_gsxgw.S("<code>data-*</code>, and HTMX's ")
-//line theming.gsx:224:20
+//line theming.gsx:211:20
 			_gsxgw.S("<code>hx-*</code> attributes all pass straight through:</p>")
-//line theming.gsx:226:6
-			_gsxgw.S("<pre class=\"overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground\">")
-//line theming.gsx:228:7
+//line theming.gsx:213:6
+			_gsxgw.S("<pre>")
+//line theming.gsx:213:11
 			_gsxgw.S("<code>")
-//line theming.gsx:228:13
+//line theming.gsx:213:17
 			_gsxgw.Text(string(themeAttrsSnippet))
 			_gsxgw.S("</code></pre></div>")
-//line theming.gsx:230:5
+//line theming.gsx:215:5
 			_gsxgw.S("<div class=\"flex flex-col gap-3\">")
-//line theming.gsx:231:6
-			_gsxgw.S("<h3 class=\"font-medium\">Data-attribute idiom: attaching behavior to your own markup</h3>")
-//line theming.gsx:232:6
+//line theming.gsx:216:6
+			_gsxgw.S("<h3>Data-attribute idiom: attaching behavior to your own markup</h3>")
+//line theming.gsx:217:6
 			_gsxgw.S("<p>Interactive components (dialog, dropdown, tabs, tooltip, …) don't use React's ")
-//line theming.gsx:233:87
+//line theming.gsx:218:87
 			_gsxgw.S("<code>asChild</code>/Slot pattern — gsx has no dynamic tag-swapping. Instead, each interactive component's")
-//line theming.gsx:235:7
+//line theming.gsx:220:7
 			_gsxgw.S("<code>data-gsxui-*</code> attribute is its public contract, and fallthrough ")
-//line theming.gsx:235:83
+//line theming.gsx:220:83
 			_gsxgw.S("<code>attrs</code> deliver it to ")
-//line theming.gsx:237:29
+//line theming.gsx:222:29
 			_gsxgw.S("<em>any</em> element or component, no cloning and no wrapper required. A plain styled")
-//line theming.gsx:238:7
+//line theming.gsx:223:7
 			_gsxgw.S("<code>Button</code> becomes a dialog trigger just by carrying the attribute:</p>")
-//line theming.gsx:240:6
-			_gsxgw.S("<pre class=\"overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground\">")
-//line theming.gsx:242:7
+//line theming.gsx:225:6
+			_gsxgw.S("<pre>")
+//line theming.gsx:225:11
 			_gsxgw.S("<code>")
-//line theming.gsx:242:13
+//line theming.gsx:225:17
 			_gsxgw.Text(string(themeDataAttrSnippet))
 			_gsxgw.S("</code></pre>")
-//line theming.gsx:243:6
+//line theming.gsx:226:6
 			_gsxgw.S("<p>The same idiom covers every interactive component's public hooks —")
-//line theming.gsx:245:7
+//line theming.gsx:228:7
 			_gsxgw.S("<code>data-gsxui-dialog-close</code>,")
-//line theming.gsx:247:7
+//line theming.gsx:230:7
 			_gsxgw.S("<code>data-gsxui-dropdown-trigger</code>, and so on — see each component's page for its specific attribute names.</p></div></section></div>")
 			return _gsxgw.Err()
 		})))

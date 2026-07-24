@@ -78,25 +78,19 @@ component (g GettingStarted) Page() {
 				</p>
 			</div>
 			<section class="flex flex-col gap-3">
-				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">1. Install the CLI</h2>
-				<pre
-					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
-				><code>{ gsInstallSnippet }</code></pre>
+				<h2>1. Install the CLI</h2>
+				<pre><code>{ gsInstallSnippet }</code></pre>
 			</section>
 			<section class="flex flex-col gap-3">
-				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">2. Initialize your project</h2>
+				<h2>2. Initialize your project</h2>
 				<p>In your project (a Go module):</p>
-				<pre
-					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
-				><code>{ gsInitSnippet }</code></pre>
-				<pre
-					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
-				><code>{ gsInitOutput }</code></pre>
+				<pre><code>{ gsInitSnippet }</code></pre>
+				<pre><code>{ gsInitOutput }</code></pre>
 				<p>
 					This vendors the theme tokens (<code>web/gsxui.css</code>), the JS runtime and behavior
 					barrel (<code>web/gsxui/</code>), and the class merger (<code>ui/merge/merge.go</code>), then
 					points <code>gsx.toml</code>'s <code>class_merger</code> at it — the seam that makes
-					caller-class-merge work (see <a href={Theming{} |> url} class="underline underline-offset-4 hover:text-foreground">Theming</a>).
+					caller-class-merge work (see <a href={Theming{} |> url}>Theming</a>).
 					It also <code>go get</code> <code>gsx</code> and <code>tailwind-merge-go</code>, and installs
 					the <code>gsx</code> tool via <code>go get -tool</code>.
 				</p>
@@ -109,13 +103,9 @@ component (g GettingStarted) Page() {
 				</p>
 			</section>
 			<section class="flex flex-col gap-3">
-				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">3. Add components</h2>
-				<pre
-					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
-				><code>{ gsAddSnippet }</code></pre>
-				<pre
-					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
-				><code>{ gsAddOutput }</code></pre>
+				<h2>3. Add components</h2>
+				<pre><code>{ gsAddSnippet }</code></pre>
+				<pre><code>{ gsAddOutput }</code></pre>
 				<p>
 					<code>card</code> has no dependencies of its own, but a component that does
 					(e.g. <code>select</code>, which needs <code>icon</code>) pulls its dependency in
@@ -127,37 +117,27 @@ component (g GettingStarted) Page() {
 				</p>
 			</section>
 			<section class="flex flex-col gap-3">
-				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">4. Your first page</h2>
+				<h2>4. Your first page</h2>
 				<p>
 					A tiny two-file app: <code>home.gsx</code> renders a <code>Card</code> around
 					a <code>Button</code>, and <code>main.go</code> serves it.
 				</p>
-				<pre
-					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
-				><code>{ gsPageGsx }</code></pre>
-				<pre
-					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
-				><code>{ gsMainGo }</code></pre>
+				<pre><code>{ gsPageGsx }</code></pre>
+				<pre><code>{ gsMainGo }</code></pre>
 				<p>
 					Compile the <code>.gsx</code> file to plain Go, then run it:
 				</p>
-				<pre
-					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
-				><code>{ gsGenerateSnippet }</code></pre>
+				<pre><code>{ gsGenerateSnippet }</code></pre>
 				<p>
 					(silent on success — it writes <code>home.x.go</code> next
 					to <code>home.gsx</code> and exits 0)
 				</p>
-				<pre
-					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
-				><code>{ gsRunSnippet }</code></pre>
-				<pre
-					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
-				><code>{ gsRunOutput }</code></pre>
+				<pre><code>{ gsRunSnippet }</code></pre>
+				<pre><code>{ gsRunOutput }</code></pre>
 				<p>
 					Open <code>http://localhost:8080</code> — a styled Card with a Button inside, rendered with
 					gsxui's default light theme.
-					Next: <a href={Theming{} |> url} class="underline underline-offset-4 hover:text-foreground">restyle it</a>.
+					Next: <a href={Theming{} |> url}>restyle it</a>.
 				</p>
 			</section>
 		</div>

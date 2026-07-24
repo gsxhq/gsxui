@@ -124,16 +124,51 @@
     @apply bg-background text-foreground;
   }
 
-  /* Doc prose (containers opting in via data-doc, e.g. getting-started and
-     theming). Matches ui.shadcn.com's docs typography: roomier leading-7
-     body text and muted-chip inline code so dense technical paragraphs stay
-     scannable. Base layer, so page-level utilities (a lede's
-     text-muted-foreground, a pre's own code styling) still win. */
+  /* Doc prose — containers opting in via data-doc (getting-started,
+     theming) get ui.shadcn.com's docs typography wholesale, so doc pages
+     read like the reference site and new doc pages inherit it with no
+     per-element classes. Values measured off ui.shadcn.com/docs (2026-07):
+     15px/1.75 body; h2 1.25em/600, h3 1.125em/600, no uppercase/border;
+     16px muted lede; weight-500 links underlined at 30% opacity; 0.85em
+     inline code on bg-muted; borderless code blocks on a whisper of muted.
+     Em-based sizes ride the 15px base exactly as shadcn's prose CSS does.
+     Base layer, so page-level utilities still override. */
+  [data-doc] {
+    font-size: 15px;
+  }
+  [data-doc] h1 {
+    @apply text-3xl font-semibold tracking-tight;
+  }
+  [data-doc] h1 + p {
+    @apply text-base leading-6 text-muted-foreground;
+  }
+  [data-doc] h2 {
+    font-size: 1.25em;
+    line-height: 1.4;
+    @apply font-semibold;
+  }
+  [data-doc] h3 {
+    font-size: 1.125em;
+    line-height: 1.45;
+    @apply font-semibold;
+  }
   [data-doc] p {
-    @apply leading-7;
+    line-height: 1.75;
+  }
+  [data-doc] strong {
+    @apply font-semibold;
+  }
+  [data-doc] p a {
+    @apply font-medium underline decoration-foreground/30 hover:decoration-foreground;
   }
   [data-doc] :not(pre) > code {
-    @apply rounded-md bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm;
+    font-size: 0.85em;
+    padding: 0.125em 0.3em;
+    @apply rounded bg-muted font-mono;
+  }
+  [data-doc] pre {
+    line-height: 1.75;
+    @apply overflow-x-auto rounded-2xl bg-muted/50 px-4 py-3.5 font-mono text-sm;
   }
 }
 

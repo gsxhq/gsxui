@@ -109,7 +109,7 @@ component (t Theming) Page() {
 				</p>
 			</div>
 			<section class="flex flex-col gap-3">
-				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">The token model</h2>
+				<h2>The token model</h2>
 				<p>
 					<code>gsxui init</code> vendors <code>web/gsxui.css</code> with 19 color tokens plus <code>
 						--radius
@@ -126,9 +126,7 @@ component (t Theming) Page() {
 					<code>border-input</code>
 					, and friends all resolve to a token, not a hard-coded value:
 				</p>
-				<pre
-					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
-				><code>{ themeTokensCSS }</code></pre>
+				<pre><code>{ themeTokensCSS }</code></pre>
 				<p>
 					The eight paired tokens (
 					<code>background</code>
@@ -155,15 +153,13 @@ component (t Theming) Page() {
 				</p>
 			</section>
 			<section class="flex flex-col gap-3">
-				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">How to restyle</h2>
+				<h2>How to restyle</h2>
 				<p>
 					<code>web/gsxui.css</code> is vendored, not imported — it's yours the moment <code>
 						gsxui init
 					</code> writes it. Restyling is editing the values inside <code>:root</code> and <code>.dark</code> directly:
 				</p>
-				<pre
-					class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
-				><code>{ themeRestyleSnippet }</code></pre>
+				<pre><code>{ themeRestyleSnippet }</code></pre>
 				<p>
 					Because the variable names (
 					<code>--primary</code>
@@ -171,23 +167,16 @@ component (t Theming) Page() {
 					<code>--primary-foreground</code>
 					, …) match shadcn/ui's own convention exactly, the file is <strong>tweakcn-compatible</strong>
 					: generate a theme at
-					<a
-						href="https://tweakcn.com"
-						target="_blank"
-						rel="noreferrer"
-						class="underline underline-offset-4 hover:text-foreground"
-					>
-						tweakcn.com
-					</a>
+					<a href="https://tweakcn.com" target="_blank" rel="noreferrer">tweakcn.com</a>
 					(or any other shadcn theme tool) and paste its <code>:root</code>
 					/
 					<code>.dark</code> blocks over gsxui's own — no renaming, no translation layer.
 				</p>
 			</section>
 			<section class="flex flex-col gap-6">
-				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Customizing components</h2>
+				<h2>Customizing components</h2>
 				<div class="flex flex-col gap-3">
-					<h3 class="font-medium">Caller class merge: a conflicting utility wins</h3>
+					<h3>Caller class merge: a conflicting utility wins</h3>
 					<p>
 						Every component's fallthrough <code>attrs</code> can carry a
 						<code>class</code>
@@ -198,9 +187,7 @@ component (t Theming) Page() {
 						, backed by <code>tailwind-merge-go</code>
 						) resolves conflicts the way Tailwind itself would: whichever utility comes last in the same category wins, structural classes that aren't in that category are untouched.
 					</p>
-					<pre
-						class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
-					><code>{ themeMergeSnippet }</code></pre>
+					<pre><code>{ themeMergeSnippet }</code></pre>
 					<p>
 						<code>Button</code>
 						's default size class is
@@ -216,19 +203,17 @@ component (t Theming) Page() {
 					</p>
 				</div>
 				<div class="flex flex-col gap-3">
-					<h3 class="font-medium">Attrs fallthrough: id, aria-*, data-*, hx-*</h3>
+					<h3>Attrs fallthrough: id, aria-*, data-*, hx-*</h3>
 					<p>
 						Beyond <code>class</code>
 						, every attribute a caller passes that isn't one of the component's own named parameters lands on the rendered element untouched — ids, ARIA attributes, arbitrary
 						<code>data-*</code>
 						, and HTMX's <code>hx-*</code> attributes all pass straight through:
 					</p>
-					<pre
-						class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
-					><code>{ themeAttrsSnippet }</code></pre>
+					<pre><code>{ themeAttrsSnippet }</code></pre>
 				</div>
 				<div class="flex flex-col gap-3">
-					<h3 class="font-medium">Data-attribute idiom: attaching behavior to your own markup</h3>
+					<h3>Data-attribute idiom: attaching behavior to your own markup</h3>
 					<p>
 						Interactive components (dialog, dropdown, tabs, tooltip, …) don't use React's <code>asChild</code>
 						/Slot pattern — gsx has no dynamic tag-swapping. Instead, each interactive component's
@@ -237,9 +222,7 @@ component (t Theming) Page() {
 						</code> deliver it to <em>any</em> element or component, no cloning and no wrapper required. A plain styled
 						<code>Button</code> becomes a dialog trigger just by carrying the attribute:
 					</p>
-					<pre
-						class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
-					><code>{ themeDataAttrSnippet }</code></pre>
+					<pre><code>{ themeDataAttrSnippet }</code></pre>
 					<p>
 						The same idiom covers every interactive component's public hooks —
 						<code>data-gsxui-dialog-close</code>
