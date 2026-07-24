@@ -54,6 +54,10 @@ on("contextmenu", "[data-gsxui-contextmenu-trigger]", (e, trigger) => {
   const openAt = () => {
     content.style.position = "fixed";
     content.style.inset = "auto";
+    // Stamp open BEFORE showing — the toggle event that also stamps it is a
+    // queued task, and a paint in the gap flashes one closed-state frame
+    // before the enter animation restarts (see dropdown.js's comment).
+    content.dataset.state = "open";
     content.showPopover();
     // Position numerically AFTER showing (hidden popovers have no box) and
     // never via transform: the animate-in enter keyframes animate transform,

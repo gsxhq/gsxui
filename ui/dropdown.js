@@ -35,6 +35,14 @@ on("click", "[data-gsxui-dropdown-trigger]", (_e, trigger) => {
   content.style.inset = "auto";
   content.style.left = `${r.left}px`;
   content.style.top = `${r.bottom + 4}px`;
+  // Stamp open BEFORE showing: the toggle event that also stamps it is
+  // queued as a separate task (spec: "queue a popover toggle event task"),
+  // and a paint can land in the gap — one frame of the menu fully visible
+  // in its closed state, then the enter animation restarting from opacity
+  // 0 reads as a flash (routinely visible when the window is inactive and
+  // task scheduling is throttled, occasionally on an active window too).
+  // The toggle handler's own stamp stays as reconciliation for closes.
+  content.dataset.state = "open";
   content.showPopover();
 });
 
