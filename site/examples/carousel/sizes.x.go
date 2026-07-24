@@ -55,7 +55,7 @@ func Sizes() _gsxrt.Node {
 						}), nil))
 						_gsxgw.S("</div>")
 						return _gsxgw.Err()
-					}), _gsxrt.Attrs{{Key: "class", Value: "pl-1 md:basis-1/2 lg:basis-1/3"}}))
+					}), _gsxrt.Attrs{{Key: "class", Value: "pl-1 -scroll-ml-1 md:basis-1/2 lg:basis-1/3"}}))
 				}
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "-ml-1"}}))

@@ -131,27 +131,32 @@ func CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs) _gs
 }
 
 //line carousel.gsx:86:1
-// The `last:snap-end` on CarouselItem is the native-snap equivalent of
-// embla's `containScroll: "trimSnaps"` default: the flex track's spacing
-// scheme (-ml-4 on the track, pl-4 on every item) leaves a trailing 16px of
-// pure padding after the last item's content, so a start-aligned last snap
-// rests at max-scroll − 16px — clipping the last slide by 16px AND leaving
-// the Next button un-greyed (updateDisabled's `pos >= max − EPS` never
-// fires; user-reported on the single-per-view demos, where multi-per-view
-// layouts mask it by clamping at max anyway). End-aligning the last item
-// makes its rest position exactly max-scroll: content fully visible,
-// disabled-state exact, and a no-op for multi-per-view layouts (their end
-// rest was already max).
+// The negative scroll-margin (`-scroll-ml-4`/`-scroll-mt-4`, matching the
+// item's own `pl-4`/`pt-4`) makes every snap position CONTENT-aligned, the
+// way embla's transform steps behave: embla translates by one whole slide
+// box per step, preserving the track's `-ml-4` offset at every stop, so
+// each slide's content (after its leading gap padding) sits flush with the
+// viewport and its trailing edge stays visible. A bare `snap-start` instead
+// aligns the item's BOX edge, shoving the content 16px off the far edge on
+// every non-first slide (user-reported) and leaving the last rest position
+// 16px short of max-scroll — which also kept the Next button un-greyed
+// (`pos >= max − EPS` unreachable). Content-aligned, the last slide's rest
+// IS exactly max-scroll: full visibility and exact disabled-state on every
+// layout. `last:snap-end` stays as a safety net for callers who override
+// the spacing padding but forget the matching scroll-margin override (a
+// caller tightening the gap must override BOTH, e.g. `pl-1 -scroll-ml-1` —
+// see site/examples/carousel/sizes.gsx).
 //
-// CarouselItem adds `snap-start` to shadcn's own class string — also NEW,
-// not in shadcn's source, required for native scroll-snap to have any snap
-// points at all (embla needed none: it never scrolls, it transforms).
+// CarouselItem adds `snap-start` (+ the scroll-margin) to shadcn's own
+// class string — also NEW, not in shadcn's source, required for native
+// scroll-snap to have any snap points at all (embla needed none: it never
+// scrolls, it transforms).
 
-//line carousel.gsx:101:1
+//line carousel.gsx:106:1
 func CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:102:2
+//line carousel.gsx:107:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"group\"")
@@ -165,9 +170,9 @@ func CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt
 		_gsxv3 := "min-w-0 shrink-0 grow-0 basis-full snap-start last:snap-end"
 		var _gsxv4 string
 		if orientation == "vertical" {
-			_gsxv4 = "pt-4"
+			_gsxv4 = "pt-4 -scroll-mt-4"
 		} else {
-			_gsxv4 = "pl-4"
+			_gsxv4 = "pl-4 -scroll-ml-4"
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv3), _gsxrt.Class(_gsxv4), _gsxrt.Class(attrs.Class()))
@@ -175,14 +180,14 @@ func CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line carousel.gsx:112:3
+//line carousel.gsx:117:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line carousel.gsx:116:1
+//line carousel.gsx:121:1
 // CarouselPrevious/CarouselNext compose Button (variant="outline"
 // size="icon") exactly like shadcn's own versions, plus
 // data-gsxui-carousel-prev/-next for carousel.js's delegated click wiring.
@@ -212,11 +217,11 @@ func CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt
 // not). carousel.js's own init pass recomputes and corrects both from the
 // real DOM immediately on load either way — see its own header comment.
 
-//line carousel.gsx:144:1
+//line carousel.gsx:149:1
 func CarouselPrevious(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:145:2
+//line carousel.gsx:150:2
 		_gsxv5 := "absolute size-8 rounded-full"
 		var _gsxv6 string
 		if orientation == "vertical" {
@@ -226,9 +231,9 @@ func CarouselPrevious(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 		}
 		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:161:3
+//line carousel.gsx:166:3
 			_gsxgw.Node(ctx, icon.ArrowLeft())
-//line carousel.gsx:162:3
+//line carousel.gsx:167:3
 			_gsxgw.S("<span class=\"sr-only\">Previous slide</span>")
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-slot", Value: "carousel-previous"}}, _gsxrt.Attrs{{Key: "data-gsxui-carousel-prev", Value: true}}, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv5), _gsxrt.Class(_gsxv6))}}, attrs)))
@@ -236,11 +241,11 @@ func CarouselPrevious(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line carousel.gsx:166:1
+//line carousel.gsx:171:1
 func CarouselNext(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:167:2
+//line carousel.gsx:172:2
 		_gsxv7 := "absolute size-8 rounded-full"
 		var _gsxv8 string
 		if orientation == "vertical" {
@@ -250,9 +255,9 @@ func CarouselNext(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 		}
 		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:182:3
+//line carousel.gsx:187:3
 			_gsxgw.Node(ctx, icon.ArrowRight())
-//line carousel.gsx:183:3
+//line carousel.gsx:188:3
 			_gsxgw.S("<span class=\"sr-only\">Next slide</span>")
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-slot", Value: "carousel-next"}}, _gsxrt.Attrs{{Key: "data-gsxui-carousel-next", Value: true}}, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv7), _gsxrt.Class(_gsxv8))}}, attrs)))

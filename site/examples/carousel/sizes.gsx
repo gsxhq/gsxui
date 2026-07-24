@@ -15,7 +15,7 @@ component Sizes() {
 	<ui.Carousel orientation="" class="mx-auto w-full max-w-sm">
 		<ui.CarouselContent orientation="" class="-ml-1">
 			{ for _, n := range sizeSlides {
-				<ui.CarouselItem orientation="" class="pl-1 md:basis-1/2 lg:basis-1/3">
+				<ui.CarouselItem orientation="" class="pl-1 -scroll-ml-1 md:basis-1/2 lg:basis-1/3">
 					<div class="p-1">
 						<ui.Card>
 							<ui.CardContent class="flex aspect-square items-center justify-center p-6">

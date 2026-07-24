@@ -83,21 +83,26 @@ component CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs
 	</div>
 }
 
-// The `last:snap-end` on CarouselItem is the native-snap equivalent of
-// embla's `containScroll: "trimSnaps"` default: the flex track's spacing
-// scheme (-ml-4 on the track, pl-4 on every item) leaves a trailing 16px of
-// pure padding after the last item's content, so a start-aligned last snap
-// rests at max-scroll − 16px — clipping the last slide by 16px AND leaving
-// the Next button un-greyed (updateDisabled's `pos >= max − EPS` never
-// fires; user-reported on the single-per-view demos, where multi-per-view
-// layouts mask it by clamping at max anyway). End-aligning the last item
-// makes its rest position exactly max-scroll: content fully visible,
-// disabled-state exact, and a no-op for multi-per-view layouts (their end
-// rest was already max).
+// The negative scroll-margin (`-scroll-ml-4`/`-scroll-mt-4`, matching the
+// item's own `pl-4`/`pt-4`) makes every snap position CONTENT-aligned, the
+// way embla's transform steps behave: embla translates by one whole slide
+// box per step, preserving the track's `-ml-4` offset at every stop, so
+// each slide's content (after its leading gap padding) sits flush with the
+// viewport and its trailing edge stays visible. A bare `snap-start` instead
+// aligns the item's BOX edge, shoving the content 16px off the far edge on
+// every non-first slide (user-reported) and leaving the last rest position
+// 16px short of max-scroll — which also kept the Next button un-greyed
+// (`pos >= max − EPS` unreachable). Content-aligned, the last slide's rest
+// IS exactly max-scroll: full visibility and exact disabled-state on every
+// layout. `last:snap-end` stays as a safety net for callers who override
+// the spacing padding but forget the matching scroll-margin override (a
+// caller tightening the gap must override BOTH, e.g. `pl-1 -scroll-ml-1` —
+// see site/examples/carousel/sizes.gsx).
 //
-// CarouselItem adds `snap-start` to shadcn's own class string — also NEW,
-// not in shadcn's source, required for native scroll-snap to have any snap
-// points at all (embla needed none: it never scrolls, it transforms).
+// CarouselItem adds `snap-start` (+ the scroll-margin) to shadcn's own
+// class string — also NEW, not in shadcn's source, required for native
+// scroll-snap to have any snap points at all (embla needed none: it never
+// scrolls, it transforms).
 component CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="group"
@@ -105,7 +110,7 @@ component CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) {
 		data-slot="carousel-item"
 		class={
 			"min-w-0 shrink-0 grow-0 basis-full snap-start last:snap-end",
-			if orientation == "vertical" { "pt-4" } else { "pl-4" },
+			if orientation == "vertical" { "pt-4 -scroll-mt-4" } else { "pl-4 -scroll-ml-4" },
 		}
 		{ attrs... }
 	>

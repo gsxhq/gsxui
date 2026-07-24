@@ -700,17 +700,23 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   snap-mandatory` (or the vertical `-y`/`snap-y` pair) on `CarouselContent`'s
   outer viewport div — REPLACING shadcn's own bare `overflow-hidden`, since
   a scroll container needs `overflow: auto` to scroll at all — plus
-  `snap-start` on every `CarouselItem` plus `last:snap-end` (all three
-  classes are **new**, present in neither shadcn's source nor nova's own
-  CSS). `last:snap-end` is the native equivalent of embla's
-  `containScroll: "trimSnaps"` default (2026-07-24 fix, user-reported): the
-  track's -ml-4/pl-4 spacing scheme leaves a trailing 16px after the last
-  item's content, so a start-aligned last snap rests at max−16px — clipping
-  the last slide and never satisfying the Next button's `pos >= max − EPS`
-  disabled check on single-per-view layouts (multi-per-view masks it by
-  clamping at max). End-aligning the last item makes its rest position
-  exactly max: full visibility, exact disabled-state, no-op for
-  multi-per-view. `ui/carousel.js` supplies
+  `snap-start` + `-scroll-ml-4`/`-scroll-mt-4` + `last:snap-end` on every
+  `CarouselItem` (all **new**, present in neither shadcn's source nor
+  nova's own CSS). The negative scroll-margin — matching the item's own
+  `pl-4`/`pt-4` — makes every snap position CONTENT-aligned, which is what
+  embla's transform steps actually do (each step preserves the track's
+  `-ml-4` offset, so a slide's content sits flush with the viewport at
+  every stop). A bare `snap-start` box-aligns instead: every non-first
+  slide's content gets shoved one gap-width off the far edge (clipping its
+  trailing edge, user-reported 2026-07-24) and the last rest position lands
+  one gap short of max-scroll, so the Next button's `pos >= max − EPS`
+  disabled check never fired on single-per-view layouts. Content-aligned,
+  the last slide rests at exactly max (verified: rest positions k·(W+gap),
+  content right edge at 0px delta, end == max). CALLER CONTRACT: a spacing
+  override must change padding AND scroll-margin together (`pl-1
+  -scroll-ml-1`, see the sizes example). `last:snap-end` stays as a safety
+  net for callers who override the padding but forget the scroll-margin.
+  `ui/carousel.js` supplies
   only the prev/next scroll-by-one-item calls and disabled-state/
   current-index bookkeeping; there is no drag-physics/momentum engine to
   port because the browser's own native scroll input now supplies it.
