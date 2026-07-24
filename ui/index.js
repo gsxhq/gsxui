@@ -10,3 +10,4 @@ import "./toggle.js";
 import "./popover.js";
 import "./hover-card.js";
 import "./context-menu.js";
+import "./command.js";

@@ -33,7 +33,9 @@ function wireA11y(root, dialog) {
 // animations start, then release the top layer when they finish. With no
 // active animations (buildless page, prefers-reduced-motion) this closes
 // immediately.
-function requestClose(dialog) {
+// Exported for sibling behaviors that drive a dialog themselves (command.js's
+// ⌘K toggle) so every close path shares the animated-close machinery.
+export function requestClose(dialog) {
   if (!dialog.open) return;
   dialog.dataset.state = "closed";
   // Wait only for the dialog's OWN exit animations — never the subtree's:

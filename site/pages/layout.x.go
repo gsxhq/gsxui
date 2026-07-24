@@ -8,19 +8,28 @@ import (
 	_gsxrt "github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/internal/registry"
 	_gsxcm "github.com/gsxhq/gsxui/merge"
+	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/ui/icon"
 	"github.com/gsxhq/vite"
 	_gsxf0 "github.com/jackielii/structpages"
 	_gsxio "io"
 )
 
-//line layout.gsx:9:1
+//line layout.gsx:11:1
 // Layout is the shared page shell every site page renders through: header
-// (wordmark + GitHub link), sidebar (component list from the registry —
-// derived, so it can never drift from what `ui/` actually ships), and
-// footer. active names the component whose sidebar entry should highlight;
-// pages outside /components/ pass "".
+// (wordmark + doc search + GitHub link), sidebar (component list from the
+// registry — derived, so it can never drift from what `ui/` actually
+// ships), and footer. active names the component whose sidebar entry
+// should highlight; pages outside /components/ pass "".
+//
+// Doc search: an outer ui.Dialog root wires the header trigger button to
+// CommandDialog's nested dialog element by proximity (dialog.js's
+// root.querySelector reaches through the inner root), and command.js's
+// global Cmd-K/Ctrl-K hotkey toggles the same dialog. The search index is
+// the registry component list plus the static pages — derived, no manual
+// list to drift.
 
-//line layout.gsx:14:1
+//line layout.gsx:23:1
 func Layout(title string, active string, children gsx.Node) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -33,51 +42,51 @@ func _gsxrenderLayout(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title string, 
 		return _gsxerr
 	}
 	_gsxgw.S("<!DOCTYPE html>")
-//line layout.gsx:16:2
+//line layout.gsx:25:2
 	_gsxgw.S("<html lang=\"en\">")
-//line layout.gsx:17:3
+//line layout.gsx:26:3
 	_gsxgw.S("<head>")
-//line layout.gsx:18:4
+//line layout.gsx:27:4
 	_gsxgw.S("<meta charset=\"UTF-8\">")
-//line layout.gsx:19:4
+//line layout.gsx:28:4
 	_gsxgw.S("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">")
-//line layout.gsx:20:4
+//line layout.gsx:29:4
 	_gsxgw.S("<title>")
-//line layout.gsx:20:11
+//line layout.gsx:29:11
 	_gsxgw.Text(string(title))
 	_gsxgw.S(" · gsxui</title>")
-//line layout.gsx:21:4
+//line layout.gsx:30:4
 	v := vite.FromContext(ctx)
-//line layout.gsx:22:4
+//line layout.gsx:31:4
 	if v.Dev() {
-//line layout.gsx:23:5
+//line layout.gsx:32:5
 		_gsxgw.S("<style")
 		_gsxgw.Nonce(ctx)
 		_gsxgw.S(">\nhtml[data-loading] body {\n\tvisibility: hidden;\n}\n\nhtml[data-loading] * {\n\ttransition: none !important;\n}\n</style>")
-//line layout.gsx:32:5
+//line layout.gsx:41:5
 		_gsxgw.S("<script")
 		_gsxgw.Nonce(ctx)
 		_gsxgw.S(">\n// Dev-only FOUC gate. Vite injects CSS via JS after the HTML\n// loads, so hide the page until every module script has run\n// (DOMContentLoaded) and one paint has landed (double rAF),\n// then reveal. Prod ships real <link rel=stylesheet> tags\n// below, so no gate is emitted there.\ndocument.documentElement.dataset.loading = \"true\";\nvar unhide = function () {\n\tdocument.documentElement.removeAttribute(\"data-loading\");\n};\nvar reveal = function () {\n\trequestAnimationFrame(function () { requestAnimationFrame(unhide); });\n};\nif (document.readyState === \"loading\") {\n\tdocument.addEventListener(\"DOMContentLoaded\", reveal);\n} else {\n\treveal();\n}\n// Safety net (rAF pauses in background tabs).\nsetTimeout(unhide, 5000);\n</script>")
 	}
-//line layout.gsx:54:4
+//line layout.gsx:63:4
 	assets := v.Entry("web/main.js")
-//line layout.gsx:55:4
+//line layout.gsx:64:4
 	for _, href := range assets.CSS {
-//line layout.gsx:56:5
+//line layout.gsx:65:5
 		_gsxgw.S("<link rel=\"stylesheet\" href=\"")
 		_gsxgw.URL(string(href))
 		_gsxgw.S("\">")
 	}
-//line layout.gsx:58:4
+//line layout.gsx:67:4
 	for _, src := range assets.Preloads {
-//line layout.gsx:59:5
+//line layout.gsx:68:5
 		_gsxgw.S("<link rel=\"modulepreload\" href=\"")
 		_gsxgw.URL(string(src))
 		_gsxgw.S("\">")
 	}
-//line layout.gsx:61:4
+//line layout.gsx:70:4
 	for _, src := range assets.JS {
-//line layout.gsx:62:5
+//line layout.gsx:71:5
 		_gsxgw.S("<script type=\"module\" src=\"")
 		_gsxgw.URL(string(src))
 		_gsxgw.S("\"")
@@ -85,13 +94,13 @@ func _gsxrenderLayout(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title string, 
 		_gsxgw.S("></script>")
 	}
 	_gsxgw.S("</head>")
-//line layout.gsx:65:3
+//line layout.gsx:74:3
 	_gsxgw.S("<body class=\"min-h-svh bg-background text-foreground antialiased\">")
-//line layout.gsx:66:4
+//line layout.gsx:75:4
 	_gsxgw.S("<header class=\"sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur\">")
-//line layout.gsx:67:5
+//line layout.gsx:76:5
 	_gsxgw.S("<div class=\"mx-auto flex h-14 max-w-6xl items-center justify-between px-4\">")
-//line layout.gsx:68:6
+//line layout.gsx:77:6
 	_gsxgw.S("<a")
 	_gsxv0, _gsxerr := _gsxf0.URLFor(ctx, (Home{}))
 	if _gsxerr != nil {
@@ -100,78 +109,188 @@ func _gsxrenderLayout(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title string, 
 	_gsxgw.S(" href=\"")
 	_gsxgw.URL(string(_gsxv0))
 	_gsxgw.S("\" class=\"font-mono text-sm font-semibold tracking-tight\">gsxui</a>")
-//line layout.gsx:69:6
+//line layout.gsx:78:6
 	_gsxgw.S("<nav class=\"flex items-center gap-4\">")
-//line layout.gsx:70:7
+//line layout.gsx:79:7
+	_gsxgw.Node(ctx, ui.Dialog(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line layout.gsx:80:8
+		_gsxgw.S("<button")
+		_gsxgw.BoolAttr("data-gsxui-dialog-trigger", true)
+		_gsxgw.S(" type=\"button\" aria-haspopup=\"dialog\" class=\"hidden h-8 w-56 items-center gap-2 rounded-lg border bg-muted/50 px-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted sm:inline-flex\">")
+//line layout.gsx:86:9
+		_gsxgw.Node(ctx, icon.Search(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
+//line layout.gsx:87:9
+		_gsxgw.S("<span class=\"flex-1 text-left\">Search docs...</span>")
+//line layout.gsx:88:9
+		_gsxgw.Node(ctx, ui.Kbd(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
+			_gsxgw.S("⌘K")
+			return _gsxgw.Err()
+		}), nil))
+		_gsxgw.S("</button>")
+//line layout.gsx:90:8
+		_gsxgw.Node(ctx, ui.CommandDialog("Search documentation", "Search components and pages...", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
+//line layout.gsx:91:9
+			_gsxgw.Node(ctx, ui.CommandInput("Search documentation...", nil))
+//line layout.gsx:92:9
+			_gsxgw.Node(ctx, ui.CommandList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+//line layout.gsx:93:10
+				_gsxgw.Node(ctx, ui.CommandEmpty(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+					_gsxgw.S("No results found.")
+					return _gsxgw.Err()
+				}), nil))
+//line layout.gsx:94:10
+				_gsxgw.Node(ctx, ui.CommandGroup("Components", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+//line layout.gsx:95:11
+					searchNames, _ := registry.Components()
+//line layout.gsx:96:11
+					for _, name := range searchNames {
+//line layout.gsx:97:12
+						_gsxgw.Node(ctx, ui.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+							_gsxgw := _gsxrt.W(_gsxw)
+//line layout.gsx:97:81
+							_gsxgw.Text(string(name))
+							return _gsxgw.Err()
+						}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-href", Value: "/components/" + name}}, _gsxrt.Attrs{{Key: "class", Value: "capitalize"}})))
+					}
+					return _gsxgw.Err()
+				}), nil))
+//line layout.gsx:100:10
+				_gsxgw.Node(ctx, ui.CommandGroup("Pages", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+//line layout.gsx:101:11
+					_gsxv1, _gsxerr := _gsxf0.URLFor(ctx, (Home{}))
+					if _gsxerr != nil {
+						return _gsxerr
+					}
+					_gsxgw.Node(ctx, ui.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+						_gsxgw.S("Home")
+						return _gsxgw.Err()
+					}), _gsxrt.Attrs{{Key: "data-href", Value: _gsxv1}}))
+//line layout.gsx:102:11
+					_gsxv2, _gsxerr := _gsxf0.URLFor(ctx, (ComponentsIndex{}))
+					if _gsxerr != nil {
+						return _gsxerr
+					}
+					_gsxgw.Node(ctx, ui.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+						_gsxgw.S("Components")
+						return _gsxgw.Err()
+					}), _gsxrt.Attrs{{Key: "data-href", Value: _gsxv2}}))
+//line layout.gsx:103:11
+					_gsxv3, _gsxerr := _gsxf0.URLFor(ctx, (GettingStarted{}))
+					if _gsxerr != nil {
+						return _gsxerr
+					}
+					_gsxgw.Node(ctx, ui.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+						_gsxgw.S("Getting Started")
+						return _gsxgw.Err()
+					}), _gsxrt.Attrs{{Key: "data-href", Value: _gsxv3}}))
+//line layout.gsx:104:11
+					_gsxv4, _gsxerr := _gsxf0.URLFor(ctx, (Theming{}))
+					if _gsxerr != nil {
+						return _gsxerr
+					}
+					_gsxgw.Node(ctx, ui.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+						_gsxgw.S("Theming")
+						return _gsxgw.Err()
+					}), _gsxrt.Attrs{{Key: "data-href", Value: _gsxv4}}))
+//line layout.gsx:105:11
+					_gsxv5, _gsxerr := _gsxf0.URLFor(ctx, (Theme{}))
+					if _gsxerr != nil {
+						return _gsxerr
+					}
+					_gsxgw.Node(ctx, ui.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+						_gsxgw.S("Theme Editor")
+						return _gsxgw.Err()
+					}), _gsxrt.Attrs{{Key: "data-href", Value: _gsxv5}}))
+					return _gsxgw.Err()
+				}), nil))
+				return _gsxgw.Err()
+			}), nil))
+			return _gsxgw.Err()
+		}), nil))
+		return _gsxgw.Err()
+	}), nil))
+//line layout.gsx:110:7
 	_gsxgw.S("<a")
-	_gsxv1, _gsxerr := _gsxf0.URLFor(ctx, (Theme{}))
+	_gsxv6, _gsxerr := _gsxf0.URLFor(ctx, (Theme{}))
 	if _gsxerr != nil {
 		return _gsxerr
 	}
 	_gsxgw.S(" href=\"")
-	_gsxgw.URL(string(_gsxv1))
+	_gsxgw.URL(string(_gsxv6))
 	_gsxgw.S("\" class=\"text-sm text-muted-foreground transition-colors hover:text-foreground\">Theme</a>")
-//line layout.gsx:76:7
+//line layout.gsx:116:7
 	_gsxgw.S("<a href=\"https://github.com/gsxhq/gsxui\" target=\"_blank\" rel=\"noreferrer\" class=\"text-sm text-muted-foreground transition-colors hover:text-foreground\">GitHub</a></nav></div></header>")
-//line layout.gsx:87:4
+//line layout.gsx:127:4
 	_gsxgw.S("<div class=\"mx-auto flex max-w-6xl gap-10 px-4 py-10\">")
-//line layout.gsx:88:5
+//line layout.gsx:128:5
 	_gsxgw.S("<aside class=\"hidden w-44 shrink-0 md:block\">")
-//line layout.gsx:89:6
+//line layout.gsx:129:6
 	_gsxgw.S("<nav class=\"sticky top-20 flex flex-col gap-4 text-sm\">")
-//line layout.gsx:90:7
+//line layout.gsx:130:7
 	_gsxgw.S("<div class=\"flex flex-col gap-1\">")
-//line layout.gsx:91:8
+//line layout.gsx:131:8
 	_gsxgw.S("<h3 class=\"px-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground\">Docs</h3>")
-//line layout.gsx:92:8
+//line layout.gsx:132:8
 	_gsxgw.S("<a")
-	_gsxv2, _gsxerr := _gsxf0.URLFor(ctx, (GettingStarted{}))
+	_gsxv7, _gsxerr := _gsxf0.URLFor(ctx, (GettingStarted{}))
 	if _gsxerr != nil {
 		return _gsxerr
 	}
 	_gsxgw.S(" href=\"")
-	_gsxgw.URL(string(_gsxv2))
+	_gsxgw.URL(string(_gsxv7))
 	_gsxgw.S("\" class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("rounded-md px-2 py-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"), _gsxrt.ClassIf("bg-accent text-accent-foreground", active == "getting-started"))
 	_gsxgw.S("\">Getting Started</a>")
-//line layout.gsx:101:8
+//line layout.gsx:141:8
 	_gsxgw.S("<a")
-	_gsxv3, _gsxerr := _gsxf0.URLFor(ctx, (Theming{}))
+	_gsxv8, _gsxerr := _gsxf0.URLFor(ctx, (Theming{}))
 	if _gsxerr != nil {
 		return _gsxerr
 	}
 	_gsxgw.S(" href=\"")
-	_gsxgw.URL(string(_gsxv3))
+	_gsxgw.URL(string(_gsxv8))
 	_gsxgw.S("\" class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("rounded-md px-2 py-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"), _gsxrt.ClassIf("bg-accent text-accent-foreground", active == "theming"))
 	_gsxgw.S("\">Theming</a></div>")
-//line layout.gsx:111:7
+//line layout.gsx:151:7
 	_gsxgw.S("<div class=\"flex flex-col gap-1\">")
-//line layout.gsx:112:8
+//line layout.gsx:152:8
 	_gsxgw.S("<h3 class=\"px-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground\">Components</h3>")
-//line layout.gsx:113:8
+//line layout.gsx:153:8
 	names, _ := registry.Components()
-//line layout.gsx:114:8
+//line layout.gsx:154:8
 	for _, name := range names {
-//line layout.gsx:115:9
+//line layout.gsx:155:9
 		_gsxgw.S("<a href=\"")
 		_gsxgw.URL(string("/components/" + name))
 		_gsxgw.S("\" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("rounded-md px-2 py-1 capitalize text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"), _gsxrt.ClassIf("bg-accent text-accent-foreground", active == name))
 		_gsxgw.S("\">")
-//line layout.gsx:122:10
+//line layout.gsx:162:10
 		_gsxgw.Text(string(name))
 		_gsxgw.S("</a>")
 	}
 	_gsxgw.S("</div></nav></aside>")
-//line layout.gsx:128:5
+//line layout.gsx:168:5
 	_gsxgw.S("<main class=\"min-w-0 flex-1\">")
-//line layout.gsx:128:34
+//line layout.gsx:168:34
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</main></div>")
-//line layout.gsx:130:4
+//line layout.gsx:170:4
 	_gsxgw.S("<footer class=\"border-t border-border\">")
-//line layout.gsx:131:5
+//line layout.gsx:171:5
 	_gsxgw.S("<div class=\"mx-auto max-w-6xl px-4 py-6 text-sm text-muted-foreground\">gsxui — shadcn-style components for gsx. Copy-in, type-checked, server-rendered.</div></footer></body></html>")
 	return _gsxgw.Err()
 }

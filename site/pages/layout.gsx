@@ -3,14 +3,23 @@ package pages
 import (
 	"github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/internal/registry"
+	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/ui/icon"
 	"github.com/gsxhq/vite"
 )
 
 // Layout is the shared page shell every site page renders through: header
-// (wordmark + GitHub link), sidebar (component list from the registry —
-// derived, so it can never drift from what `ui/` actually ships), and
-// footer. active names the component whose sidebar entry should highlight;
-// pages outside /components/ pass "".
+// (wordmark + doc search + GitHub link), sidebar (component list from the
+// registry — derived, so it can never drift from what `ui/` actually
+// ships), and footer. active names the component whose sidebar entry
+// should highlight; pages outside /components/ pass "".
+//
+// Doc search: an outer ui.Dialog root wires the header trigger button to
+// CommandDialog's nested dialog element by proximity (dialog.js's
+// root.querySelector reaches through the inner root), and command.js's
+// global Cmd-K/Ctrl-K hotkey toggles the same dialog. The search index is
+// the registry component list plus the static pages — derived, no manual
+// list to drift.
 component Layout(title string, active string, children gsx.Node) {
 	<!DOCTYPE html>
 	<html lang="en">
@@ -67,6 +76,37 @@ component Layout(title string, active string, children gsx.Node) {
 				<div class="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
 					<a href={Home{} |> url} class="font-mono text-sm font-semibold tracking-tight">gsxui</a>
 					<nav class="flex items-center gap-4">
+						<ui.Dialog>
+							<button
+								data-gsxui-dialog-trigger
+								type="button"
+								aria-haspopup="dialog"
+								class="hidden h-8 w-56 items-center gap-2 rounded-lg border bg-muted/50 px-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted sm:inline-flex"
+							>
+								<icon.Search class="size-4"/>
+								<span class="flex-1 text-left">Search docs...</span>
+								<ui.Kbd>⌘K</ui.Kbd>
+							</button>
+							<ui.CommandDialog title="Search documentation" description="Search components and pages...">
+								<ui.CommandInput placeholder="Search documentation..."/>
+								<ui.CommandList>
+									<ui.CommandEmpty>No results found.</ui.CommandEmpty>
+									<ui.CommandGroup heading="Components">
+										{{ searchNames, _ := registry.Components() }}
+										{ for _, name := range searchNames {
+											<ui.CommandItem data-href={"/components/" + name} class="capitalize">{ name }</ui.CommandItem>
+										} }
+									</ui.CommandGroup>
+									<ui.CommandGroup heading="Pages">
+										<ui.CommandItem data-href={Home{} |> url}>Home</ui.CommandItem>
+										<ui.CommandItem data-href={ComponentsIndex{} |> url}>Components</ui.CommandItem>
+										<ui.CommandItem data-href={GettingStarted{} |> url}>Getting Started</ui.CommandItem>
+										<ui.CommandItem data-href={Theming{} |> url}>Theming</ui.CommandItem>
+										<ui.CommandItem data-href={Theme{} |> url}>Theme Editor</ui.CommandItem>
+									</ui.CommandGroup>
+								</ui.CommandList>
+							</ui.CommandDialog>
+						</ui.Dialog>
 						<a
 							href={Theme{} |> url}
 							class="text-sm text-muted-foreground transition-colors hover:text-foreground"
