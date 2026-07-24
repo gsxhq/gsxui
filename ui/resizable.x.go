@@ -3,6 +3,8 @@
 package ui
 
 import (
+	"strings"
+
 	_gsxctx "context"
 	"github.com/gsxhq/gsx"
 	_gsxrt "github.com/gsxhq/gsx"
@@ -11,7 +13,7 @@ import (
 	_gsxio "io"
 )
 
-//line resizable.gsx:5:1
+//line resizable.gsx:9:1
 // ResizablePanelGroup, ResizablePanel, and ResizableHandle are the
 // shadcn/ui Resizable (registry/new-york-v4/ui/resizable.tsx), which wraps
 // react-resizable-panels' Group/Panel/Separator. That library is absent
@@ -38,32 +40,60 @@ import (
 // Callers reason only about the group's own orientation; ResizableHandle
 // inverts it internally so the caller never has to.
 //
-// MECHANISM (sizes are server-rendered inline flex-basis, not JS-computed):
+// MECHANISM (sizes are server-rendered inline flex, not JS-computed):
 // react-resizable-panels itself sets pixel/percentage sizing imperatively
 // after mount — ResizablePanel's own upstream class string is empty (no
 // `cn()` call at all, confirmed by the source map), because the library
 // supplies 100% of its layout at runtime. gsxui has no client-side layout
 // pass before first paint, so ResizablePanel instead renders `defaultSize`
 // (a percentage string like "50%", "" meaning unset) as a real inline
-// `style="flex-basis: <defaultSize>"` — the split is correct on first
-// paint with JS disabled. minSize/maxSize are NOT rendered as styles (they
-// don't constrain anything visually at rest); they're stamped as
-// `data-min-size`/`data-max-size`, read only by resizable.js's drag/
-// keyboard clamping, and otherwise absent from the DOM if unset.
+// style — the split is correct on first paint with JS disabled. minSize/
+// maxSize are NOT rendered as styles (they don't constrain anything
+// visually at rest); they're stamped as `data-min-size`/`data-max-size`,
+// read only by resizable.js's drag/keyboard clamping, and otherwise absent
+// from the DOM if unset.
 //
-// NEW (flex-1 min-w-0 min-h-0, not in shadcn's source at all): since
-// ResizablePanel carries no upstream class, an unsized panel here needs
-// SOMETHING to make it share remaining space — `flex-1` (`flex: 1 1 0%`)
-// sets flex-grow/flex-shrink to 1 while leaving flex-basis at the
-// stylesheet layer, which a caller-supplied inline `style="flex-basis:
-// ..."` cleanly overrides (inline beats an ordinary class rule for that
-// one longhand, grow/shrink from the class still apply) — so `flex-1` is
-// unconditional on every panel, sized or not. `min-w-0 min-h-0` counters
-// the flexbox default `min-width:auto`/`min-height:auto` floor (a flex
-// item won't shrink below its content's intrinsic size otherwise,
-// regardless of flex-basis/flex-shrink) along BOTH axes, since
-// ResizablePanel itself has no `orientation` param to know which axis
-// matters — harmless on the axis that doesn't apply.
+// FIX (2026-07-24 review round 2, CRITICAL — supersedes round 1's
+// grow-0/flex-1 class split below, which treated a symptom of this bug):
+// the inline style is `flex: <n> 1 0px` — a proportional GROW weight
+// against a zero LENGTH basis — not `flex-basis: <defaultSize>` as
+// originally shipped. A PERCENTAGE flex-basis cannot resolve against a
+// container whose main-axis size is indefinite (confirmed on the live
+// deployed page: `site/examples/resizable/vertical.gsx`'s standalone
+// vertical group, sized only by `min-h-[200px]`, rendered its 25%/75%
+// panels as 72px/72px — content-height fallback, not the intended split —
+// while a NESTED vertical group inside an already `max-w-md`-sized
+// horizontal panel worked correctly, because only the outer group's WIDTH
+// was ever definite). `0px` is a real LENGTH, always resolvable, so grow
+// distributes 100% of the free space correctly regardless of whether the
+// group's own cross/main size is definite — verified live against both
+// this fix (`flex: 25 1 0px` / `flex: 75 1 0px` renders exactly 49px/148px
+// on the previously-broken vertical example) and against ui.shadcn.com's
+// own rendered inline style (`flex: 50 1 0px` / `flex: 25 1 0px`, same
+// `<n> 1 0px` shape) — this also converges ON the reference rather than
+// diverging further from it. `0%` is NOT an acceptable substitute for
+// `0px` — same percentage-resolution failure, verified live
+// (`flex: 25 1 0%` measured 85px/112px, still wrong). `<n>` is the numeric
+// part of `defaultSize` (`"25%"` → `25`); an unsized panel renders
+// `flex: 1 1 0px`, an equal-weight share. `ui/resizable.js`'s
+// `applyDeltaPct` writes `style.flexGrow` (not `style.flexBasis`) to
+// match, and every pixel-to-percentage conversion in that file is now
+// against the group's PANELS' summed px size, not its own
+// clientWidth/clientHeight (see that file's own header comment) — with a
+// `0px` basis, grow only ever distributes space left over AFTER every
+// handle's own rendered width/height, so the full group box is the wrong
+// denominator by exactly that amount.
+//
+// NEW (`min-w-0 min-h-0 overflow-hidden`, not in shadcn's source at all):
+// `min-w-0 min-h-0` counters the flexbox default `min-width:auto`/
+// `min-height:auto` floor (a flex item won't shrink below its content's
+// intrinsic size otherwise, regardless of flex-basis/flex-shrink) along
+// BOTH axes, since ResizablePanel itself has no `orientation` param to
+// know which axis matters — harmless on the axis that doesn't apply.
+// `overflow-hidden` matches ui.shadcn.com's own live-rendered panel
+// (`overflow: hidden` inline, alongside the same `min-width/height: 0`
+// pair) — content that briefly exceeds a panel's shrinking box during a
+// drag is clipped rather than pushing the layout around.
 //
 // GAP (`autoSaveId` dropped, `gsxui:change` instead): react-resizable-
 // panels' own `autoSaveId` persists layout to localStorage internally, one
@@ -83,11 +113,11 @@ import (
 // (resizable-demo/-demo-with-handle/-handle/-vertical) exercises either,
 // same accepted-gap shape as `## carousel`'s own `loop`/`align` GAPs.
 
-//line resizable.gsx:75:1
+//line resizable.gsx:107:1
 func ResizablePanelGroup(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line resizable.gsx:76:2
+//line resizable.gsx:108:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"resizable-panel-group\"")
@@ -106,91 +136,74 @@ func ResizablePanelGroup(orientation string, children gsx.Node, attrs gsx.Attrs)
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line resizable.gsx:83:3
+//line resizable.gsx:115:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line resizable.gsx:87:1
-// ResizablePanel — see the package doc comment's MECHANISM/NEW entries
+//line resizable.gsx:119:1
+// ResizablePanel — see the package doc comment's MECHANISM/NEW/FIX entries
 // above for why this carries a class at all (upstream's own ResizablePanel
-// has none) and why defaultSize becomes a real inline style instead of a
-// data attribute.
+// has none), why `defaultSize` becomes a real inline `flex: <n> 1 0px`
+// instead of a data attribute, and why the basis is a `0px` LENGTH rather
+// than a percentage.
 //
-// FIX (2026-07-24 review round 1, CRITICAL): `flex-1` is `flex: 1 1 0%` —
-// grow AND shrink, not just shrink. A sized panel's inline `flex-basis`
-// wins over the class's own basis component, but flex-GROW survives
-// unchallenged, so any leftover space in the group still gets
-// redistributed evenly across every panel at layout time regardless of
-// its `defaultSize` — silently discarding the server-rendered split the
-// MECHANISM entry above promises (caught only because every SHIPPED
-// example happens to sum its `defaultSize`s to 100%, leaving no leftover
-// space to misdistribute; two panels both `defaultSize="20%"` in a 1000px
-// group rendered 499.5/499.5, not 200/200). A sized panel must render
-// `grow-0` instead of `flex-1` (grow suppressed; shrink stays at its CSS
-// initial value of 1, same as `flex-1` already had, so the panel can still
-// give up space under real constraint) — `flex-1` stays exclusive to the
-// unsized case, which has no basis of its own to protect and genuinely
-// wants to grow.
-//
-// NOTE (contradictory min/max, ledgered per review item 9): if a panel's
-// own minSize exceeds its neighbour's maxSize (or vice versa),
+// NOTE (contradictory min/max, ledgered per review round 1 item 9): if a
+// panel's own minSize exceeds its neighbour's maxSize (or vice versa),
 // resizable.js's drag/keyboard clamp silently prefers the tighter (max)
 // bound and the looser constraint (min) is violated — no error, no
 // warning; authoring non-conflicting min/max pairs is the caller's
 // responsibility.
 
-//line resizable.gsx:114:1
+//line resizable.gsx:131:1
 func ResizablePanel(defaultSize string, minSize string, maxSize string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line resizable.gsx:115:2
-		_gsxv0 := _gsxrt.Attrs{{Key: "data-slot", Value: _gsxrt.RawURL("resizable-panel")}}
-		_gsxv1, _gsxerr := _gsxrt.AttrsCond(minSize != "", func() (_gsxrt.Attrs, error) {
-			return _gsxrt.Attrs{{Key: "data-min-size", Value: minSize}}, nil
-		}, nil)
-		if _gsxerr != nil {
-			return _gsxerr
-		}
-		_gsxv2 := _gsxrt.ConcatAttrs(_gsxv0, _gsxv1)
-		_gsxv3, _gsxerr := _gsxrt.AttrsCond(maxSize != "", func() (_gsxrt.Attrs, error) {
-			return _gsxrt.Attrs{{Key: "data-max-size", Value: maxSize}}, nil
-		}, nil)
-		if _gsxerr != nil {
-			return _gsxerr
-		}
-		_gsxv4 := _gsxrt.ConcatAttrs(_gsxv2, _gsxv3)
-		_gsxv6, _gsxerr := _gsxrt.AttrsCond(defaultSize != "", func() (_gsxrt.Attrs, error) {
-			_gsxv5 := _gsxrt.FilterCSS(string(defaultSize))
-			return _gsxrt.Attrs{{Key: "style", Value: "flex-basis: " + _gsxv5}}, nil
-		}, nil)
-		if _gsxerr != nil {
-			return _gsxerr
-		}
-		_gsxv7 := _gsxrt.ConcatAttrs(_gsxv4, _gsxv6)
-		var _gsxv8 string
+//line resizable.gsx:132:2
+		grow := "1"
 		if defaultSize != "" {
-			_gsxv8 = "grow-0"
-		} else {
-			_gsxv8 = "flex-1"
+			grow = strings.TrimSuffix(defaultSize, "%")
 		}
-		_gsxv9 := "min-w-0 min-h-0"
-		_gsxv10 := _gsxrt.ConcatAttrs(_gsxv7, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv8), _gsxrt.Class(_gsxv9))}}, attrs)
+//line resizable.gsx:138:2
 		_gsxgw.S("<div")
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv10.Class())
-		_gsxgw.StyleMerged("", _gsxv10.Style())
-		_gsxgw.Spread(ctx, _gsxv10, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		if !attrs.Has("data-slot") {
+			_gsxgw.S(" data-slot=\"resizable-panel\"")
+		}
+		if minSize != "" {
+			if !attrs.Has("data-min-size") {
+				_gsxgw.S(" data-min-size=\"")
+				_gsxgw.AttrValue(string(minSize))
+				_gsxgw.S("\"")
+			}
+		}
+		if maxSize != "" {
+			if !attrs.Has("data-max-size") {
+				_gsxgw.S(" data-max-size=\"")
+				_gsxgw.AttrValue(string(maxSize))
+				_gsxgw.S("\"")
+			}
+		}
+		if !attrs.Has("style") {
+			_gsxgw.S(" style=\"flex: ")
+			_gsxgw.AttrValue(_gsxrt.StyleValue(string(grow)))
+			_gsxgw.S(" 1 0px\"")
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("min-w-0 min-h-0 overflow-hidden"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line resizable.gsx:132:3
+//line resizable.gsx:150:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line resizable.gsx:136:1
+//line resizable.gsx:154:1
 // ResizableHandle — see the package doc comment's ADAPT entry above for
 // the inverted-aria-orientation derivation.
 //
@@ -206,17 +219,39 @@ func ResizablePanel(defaultSize string, minSize string, maxSize string, children
 // disagreement per the house rule, so this port drops the
 // `GripVerticalIcon` import/render entirely — the resulting dependency-free
 // `Deps("resizable") == []` is a direct consequence, not a coincidence.
+//
+// ADAPT (`shrink-0` + resize cursor, review round 2 — added to, not
+// substituted for, the pinned class string above, which stays verbatim):
+// the handle itself must not flex — a bare `flex` item defaults to
+// `flex-shrink: 1`, and ui.shadcn.com's own live-rendered handle pins
+// `flex-grow: 0; flex-shrink: 0` inline; `flex-grow: 0` is already this
+// handle's CSS initial value (it carries no `flex`/`grow-*` class of its
+// own), but `shrink-0` is added explicitly since the initial
+// `flex-shrink` is 1. Neither new-york-v4's class string nor nova's CSS
+// carries a cursor (confirmed directly; also confirmed via CSSOM against
+// ui.shadcn.com's own stylesheets — no resize-cursor rule exists there
+// either) because react-resizable-panels injects `cursor: col-resize` /
+// `row-resize` onto the separator itself at drag time, at runtime, from
+// JS this port doesn't have. `cursor-col-resize` (group `orientation` is
+// horizontal or unset — the handle is the full-height VERTICAL rule, and
+// dragging it moves the boundary left/right) or `cursor-row-resize`
+// (group `orientation="vertical"` — the handle is the full-width
+// HORIZONTAL rule, dragging moves it up/down) is rendered statically
+// instead, keyed off the same `orientation` param the aria-inversion
+// above already uses — deliberately BETTER than the reference here, not
+// just equivalent: a static class works before JS has loaded, where the
+// library's own runtime injection would not.
 
-//line resizable.gsx:151:1
+//line resizable.gsx:191:1
 func ResizableHandle(orientation string, withHandle bool, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line resizable.gsx:152:2
+//line resizable.gsx:192:2
 		handleOrientation := "vertical"
 		if orientation == "vertical" {
 			handleOrientation = "horizontal"
 		}
-//line resizable.gsx:158:2
+//line resizable.gsx:198:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"resizable-handle\"")
@@ -232,15 +267,23 @@ func ResizableHandle(orientation string, withHandle bool, attrs gsx.Attrs) _gsxr
 		if !attrs.Has("tabindex") {
 			_gsxgw.S(" tabindex=\"0\"")
 		}
+		_gsxv0 := "relative flex w-px items-center justify-center bg-border after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:outline-hidden aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:w-full aria-[orientation=horizontal]:after:left-0 aria-[orientation=horizontal]:after:h-1 aria-[orientation=horizontal]:after:w-full aria-[orientation=horizontal]:after:translate-x-0 aria-[orientation=horizontal]:after:-translate-y-1/2 [&[aria-orientation=horizontal]>div]:rotate-90"
+		_gsxv1 := "shrink-0"
+		var _gsxv2 string
+		if orientation == "vertical" {
+			_gsxv2 = "cursor-row-resize"
+		} else {
+			_gsxv2 = "cursor-col-resize"
+		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative flex w-px items-center justify-center bg-border after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:outline-hidden aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:w-full aria-[orientation=horizontal]:after:left-0 aria-[orientation=horizontal]:after:h-1 aria-[orientation=horizontal]:after:w-full aria-[orientation=horizontal]:after:translate-x-0 aria-[orientation=horizontal]:after:-translate-y-1/2 [&[aria-orientation=horizontal]>div]:rotate-90"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line resizable.gsx:166:3
+//line resizable.gsx:210:3
 		if withHandle {
-//line resizable.gsx:167:4
+//line resizable.gsx:211:4
 			_gsxgw.S("<div class=\"z-10 flex shrink-0 h-6 w-1 rounded-lg bg-border\"></div>")
 		}
 		_gsxgw.S("</div>")

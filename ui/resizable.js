@@ -6,9 +6,29 @@
 // further away are untouched, matching a real splitter, not a
 // redistribute-everything model. Percentages, not pixels, are the unit of
 // record (data-min-size/data-max-size and the emitted gsxui:change sizes
-// are all percentages of the group's own content-box size along its main
-// axis), so a later viewport resize doesn't invalidate a size a caller
-// persisted from a gsxui:change payload.
+// are all percentages of the group's own PANELS' combined px size — see
+// FIX below, not the group's own box), so a later viewport resize doesn't
+// invalidate a size a caller persisted from a gsxui:change payload.
+//
+// FIX (2026-07-24 review round 2, CRITICAL): panels are laid out via
+// `flex: <n> 1 0px` (see ui/resizable.gsx's own doc comment) — a LENGTH
+// zero basis, not a percentage one, because a percentage flex-basis can't
+// resolve against an indefinite main-axis container size (e.g. a vertical
+// group sized only by `min-h-[...]`), which made every non-`max-w`-pinned
+// example simply not resizable at all: a written percentage flex-basis
+// silently failed to apply, panels fell back to content size, and nothing
+// moved. With a `0px` basis, grow distributes 100% of the FREE space
+// (content-box size minus every panel's own 0px basis, i.e. minus nothing
+// panel-side but STILL minus every handle's own rendered width/height) —
+// so applyDeltaPct below writes `style.flexGrow`, not `style.flexBasis`,
+// and every percentage computed FROM pixels in this file (drag start,
+// pointermove, keyboard step/Home/End, aria sync) is computed against the
+// PANELS' OWN summed px size (panelsTotalPx), not the group's full
+// clientWidth/clientHeight — using the full box would introduce a scaling
+// error proportional to total handle thickness, since grow only ever
+// distributes what's left AFTER the handles' own space is already spoken
+// for. currentSizes() already worked this way (round 1's own fix); this
+// round makes the drag/keyboard math consistent with it.
 import { on, emit } from "./gsxui.js";
 
 const rootOf = (el) => el.closest("[data-gsxui-resizable]");
@@ -30,16 +50,21 @@ function isVertical(root) {
   return root.getAttribute("aria-orientation") === "vertical";
 }
 
-// Main-axis content-box size of the group itself — clientWidth/Height
-// (excludes border, includes padding; the group is expected to carry no
-// padding of its own, so this is effectively the content box).
-function groupSize(root, vertical) {
-  return vertical ? root.clientHeight : root.clientWidth;
+function panelsOf(root) {
+  return [...root.children].filter(isPanel);
 }
 
 function panelSize(panel, vertical) {
   const rect = panel.getBoundingClientRect();
   return vertical ? rect.height : rect.width;
+}
+
+// Summed px size of root's own direct-child PANELS (handles excluded) —
+// the one denominator used everywhere a pixel needs to become a percentage
+// in this file. See the FIX note in the module header comment for why this
+// replaces the group's own clientWidth/clientHeight.
+function panelsTotalPx(root, vertical) {
+  return panelsOf(root).reduce((sum, p) => sum + panelSize(p, vertical), 0);
 }
 
 function readPct(el, key, fallback) {
@@ -50,16 +75,15 @@ function readPct(el, key, fallback) {
 
 // One entry per direct-child panel of root, in DOM order — the shape
 // gsxui:change's own `sizes` payload documents. Normalized against the
-// PANELS' OWN total (excluding handle widths, unlike the drag/keyboard
-// math above which deliberately works in fractions of the group's full
-// content box) and rounded to 2 decimal places, so a caller persisting
-// this payload gets clean numbers that actually sum to 100 — reporting
-// raw panel-size/group-size fractions instead would leak every handle's
-// few px as missing space (e.g. two panels either side of one handle
-// reporting ~49.95/49.95) and carry binary-float noise forever.
+// PANELS' OWN total (excluding handle widths) and rounded to 2 decimal
+// places, so a caller persisting this payload gets clean numbers that
+// actually sum to 100 — reporting raw panel-size/group-size fractions
+// instead would leak every handle's few px as missing space (e.g. two
+// panels either side of one handle reporting ~49.95/49.95) and carry
+// binary-float noise forever.
 function currentSizes(root) {
   const vertical = isVertical(root);
-  const rawSizes = [...root.children].filter(isPanel).map((panel) => panelSize(panel, vertical));
+  const rawSizes = panelsOf(root).map((panel) => panelSize(panel, vertical));
   const total = rawSizes.reduce((sum, s) => sum + s, 0);
   if (!total) return rawSizes.map(() => 0);
   return rawSizes.map((s) => Math.round((s / total) * 100 * 100) / 100);
@@ -78,8 +102,8 @@ function syncHandleAria(handle) {
   const root = rootOf(handle);
   if (!neighbours || !root) return;
   const vertical = isVertical(root);
-  const size = groupSize(root, vertical);
-  const prevSizePct = size ? (panelSize(neighbours.prev, vertical) / size) * 100 : 0;
+  const total = panelsTotalPx(root, vertical);
+  const prevSizePct = total ? (panelSize(neighbours.prev, vertical) / total) * 100 : 0;
   syncAria(handle, prevSizePct, readPct(neighbours.prev, "minSize", 0), readPct(neighbours.prev, "maxSize", 100));
 }
 
@@ -110,8 +134,12 @@ function applyDeltaPct(handle, prev, next, prevStartPct, nextStartPct, deltaPct)
   const d = Math.min(dMax, Math.max(dMin, deltaPct));
   const prevSize = prevStartPct + d;
   const nextSize = nextStartPct - d;
-  prev.style.flexBasis = `${prevSize}%`;
-  next.style.flexBasis = `${nextSize}%`;
+  // flex-GROW, not flex-basis (review round 2 FIX — see the module header
+  // comment): every panel's basis is a fixed `0px` (server-rendered), so
+  // the boundary moves by reweighting how the two panels split the group's
+  // free space, not by resizing either panel's own basis length.
+  prev.style.flexGrow = String(prevSize);
+  next.style.flexGrow = String(nextSize);
   syncAria(handle, prevSize, prevMin, prevMax);
 }
 
@@ -124,8 +152,8 @@ on("pointerdown", '[data-slot="resizable-handle"]', (e, handle) => {
   const root = rootOf(handle);
   if (!neighbours || !root) return;
   const vertical = isVertical(root);
-  const size = groupSize(root, vertical);
-  if (!size) return;
+  const total = panelsTotalPx(root, vertical);
+  if (!total) return;
   handle.setPointerCapture(e.pointerId);
   // Capture succeeded: this gesture belongs to the handle now, not to
   // whatever native gesture the browser would otherwise start (text
@@ -138,10 +166,10 @@ on("pointerdown", '[data-slot="resizable-handle"]', (e, handle) => {
     handle,
     root,
     vertical,
-    groupSize: size,
+    panelsTotalPx: total,
     ...neighbours,
-    prevStartPct: (panelSize(neighbours.prev, vertical) / size) * 100,
-    nextStartPct: (panelSize(neighbours.next, vertical) / size) * 100,
+    prevStartPct: (panelSize(neighbours.prev, vertical) / total) * 100,
+    nextStartPct: (panelSize(neighbours.next, vertical) / total) * 100,
     pointerStart: vertical ? e.clientY : e.clientX,
   };
 });
@@ -154,7 +182,7 @@ on("pointerdown", '[data-slot="resizable-handle"]', (e, handle) => {
 on("pointermove", '[data-slot="resizable-handle"]', (e, handle) => {
   if (!drag || drag.handle !== handle || drag.pointerId !== e.pointerId) return;
   const pos = drag.vertical ? e.clientY : e.clientX;
-  const deltaPct = ((pos - drag.pointerStart) / drag.groupSize) * 100;
+  const deltaPct = ((pos - drag.pointerStart) / drag.panelsTotalPx) * 100;
   applyDeltaPct(drag.handle, drag.prev, drag.next, drag.prevStartPct, drag.nextStartPct, deltaPct);
 });
 
@@ -184,12 +212,12 @@ on("keydown", '[data-slot="resizable-handle"]', (e, handle) => {
   if (!neighbours || !root) return;
   const { prev, next } = neighbours;
   const vertical = isVertical(root);
-  const size = groupSize(root, vertical);
-  if (!size) return;
+  const total = panelsTotalPx(root, vertical);
+  if (!total) return;
 
   const stepKeys = vertical ? { ArrowUp: -STEP, ArrowDown: STEP } : { ArrowLeft: -STEP, ArrowRight: STEP };
-  const prevStartPct = (panelSize(prev, vertical) / size) * 100;
-  const nextStartPct = (panelSize(next, vertical) / size) * 100;
+  const prevStartPct = (panelSize(prev, vertical) / total) * 100;
+  const nextStartPct = (panelSize(next, vertical) / total) * 100;
 
   let deltaPct;
   if (e.key in stepKeys) {

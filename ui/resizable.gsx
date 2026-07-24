@@ -1,6 +1,10 @@
 package ui
 
-import "github.com/gsxhq/gsx"
+import (
+	"strings"
+
+	"github.com/gsxhq/gsx"
+)
 
 // ResizablePanelGroup, ResizablePanel, and ResizableHandle are the
 // shadcn/ui Resizable (registry/new-york-v4/ui/resizable.tsx), which wraps
@@ -28,32 +32,60 @@ import "github.com/gsxhq/gsx"
 // Callers reason only about the group's own orientation; ResizableHandle
 // inverts it internally so the caller never has to.
 //
-// MECHANISM (sizes are server-rendered inline flex-basis, not JS-computed):
+// MECHANISM (sizes are server-rendered inline flex, not JS-computed):
 // react-resizable-panels itself sets pixel/percentage sizing imperatively
 // after mount — ResizablePanel's own upstream class string is empty (no
 // `cn()` call at all, confirmed by the source map), because the library
 // supplies 100% of its layout at runtime. gsxui has no client-side layout
 // pass before first paint, so ResizablePanel instead renders `defaultSize`
 // (a percentage string like "50%", "" meaning unset) as a real inline
-// `style="flex-basis: <defaultSize>"` — the split is correct on first
-// paint with JS disabled. minSize/maxSize are NOT rendered as styles (they
-// don't constrain anything visually at rest); they're stamped as
-// `data-min-size`/`data-max-size`, read only by resizable.js's drag/
-// keyboard clamping, and otherwise absent from the DOM if unset.
+// style — the split is correct on first paint with JS disabled. minSize/
+// maxSize are NOT rendered as styles (they don't constrain anything
+// visually at rest); they're stamped as `data-min-size`/`data-max-size`,
+// read only by resizable.js's drag/keyboard clamping, and otherwise absent
+// from the DOM if unset.
 //
-// NEW (flex-1 min-w-0 min-h-0, not in shadcn's source at all): since
-// ResizablePanel carries no upstream class, an unsized panel here needs
-// SOMETHING to make it share remaining space — `flex-1` (`flex: 1 1 0%`)
-// sets flex-grow/flex-shrink to 1 while leaving flex-basis at the
-// stylesheet layer, which a caller-supplied inline `style="flex-basis:
-// ..."` cleanly overrides (inline beats an ordinary class rule for that
-// one longhand, grow/shrink from the class still apply) — so `flex-1` is
-// unconditional on every panel, sized or not. `min-w-0 min-h-0` counters
-// the flexbox default `min-width:auto`/`min-height:auto` floor (a flex
-// item won't shrink below its content's intrinsic size otherwise,
-// regardless of flex-basis/flex-shrink) along BOTH axes, since
-// ResizablePanel itself has no `orientation` param to know which axis
-// matters — harmless on the axis that doesn't apply.
+// FIX (2026-07-24 review round 2, CRITICAL — supersedes round 1's
+// grow-0/flex-1 class split below, which treated a symptom of this bug):
+// the inline style is `flex: <n> 1 0px` — a proportional GROW weight
+// against a zero LENGTH basis — not `flex-basis: <defaultSize>` as
+// originally shipped. A PERCENTAGE flex-basis cannot resolve against a
+// container whose main-axis size is indefinite (confirmed on the live
+// deployed page: `site/examples/resizable/vertical.gsx`'s standalone
+// vertical group, sized only by `min-h-[200px]`, rendered its 25%/75%
+// panels as 72px/72px — content-height fallback, not the intended split —
+// while a NESTED vertical group inside an already `max-w-md`-sized
+// horizontal panel worked correctly, because only the outer group's WIDTH
+// was ever definite). `0px` is a real LENGTH, always resolvable, so grow
+// distributes 100% of the free space correctly regardless of whether the
+// group's own cross/main size is definite — verified live against both
+// this fix (`flex: 25 1 0px` / `flex: 75 1 0px` renders exactly 49px/148px
+// on the previously-broken vertical example) and against ui.shadcn.com's
+// own rendered inline style (`flex: 50 1 0px` / `flex: 25 1 0px`, same
+// `<n> 1 0px` shape) — this also converges ON the reference rather than
+// diverging further from it. `0%` is NOT an acceptable substitute for
+// `0px` — same percentage-resolution failure, verified live
+// (`flex: 25 1 0%` measured 85px/112px, still wrong). `<n>` is the numeric
+// part of `defaultSize` (`"25%"` → `25`); an unsized panel renders
+// `flex: 1 1 0px`, an equal-weight share. `ui/resizable.js`'s
+// `applyDeltaPct` writes `style.flexGrow` (not `style.flexBasis`) to
+// match, and every pixel-to-percentage conversion in that file is now
+// against the group's PANELS' summed px size, not its own
+// clientWidth/clientHeight (see that file's own header comment) — with a
+// `0px` basis, grow only ever distributes space left over AFTER every
+// handle's own rendered width/height, so the full group box is the wrong
+// denominator by exactly that amount.
+//
+// NEW (`min-w-0 min-h-0 overflow-hidden`, not in shadcn's source at all):
+// `min-w-0 min-h-0` counters the flexbox default `min-width:auto`/
+// `min-height:auto` floor (a flex item won't shrink below its content's
+// intrinsic size otherwise, regardless of flex-basis/flex-shrink) along
+// BOTH axes, since ResizablePanel itself has no `orientation` param to
+// know which axis matters — harmless on the axis that doesn't apply.
+// `overflow-hidden` matches ui.shadcn.com's own live-rendered panel
+// (`overflow: hidden` inline, alongside the same `min-width/height: 0`
+// pair) — content that briefly exceeds a panel's shrinking box during a
+// drag is clipped rather than pushing the layout around.
 //
 // GAP (`autoSaveId` dropped, `gsxui:change` instead): react-resizable-
 // panels' own `autoSaveId` persists layout to localStorage internally, one
@@ -84,34 +116,25 @@ component ResizablePanelGroup(orientation string, children gsx.Node, attrs gsx.A
 	</div>
 }
 
-// ResizablePanel — see the package doc comment's MECHANISM/NEW entries
+// ResizablePanel — see the package doc comment's MECHANISM/NEW/FIX entries
 // above for why this carries a class at all (upstream's own ResizablePanel
-// has none) and why defaultSize becomes a real inline style instead of a
-// data attribute.
+// has none), why `defaultSize` becomes a real inline `flex: <n> 1 0px`
+// instead of a data attribute, and why the basis is a `0px` LENGTH rather
+// than a percentage.
 //
-// FIX (2026-07-24 review round 1, CRITICAL): `flex-1` is `flex: 1 1 0%` —
-// grow AND shrink, not just shrink. A sized panel's inline `flex-basis`
-// wins over the class's own basis component, but flex-GROW survives
-// unchallenged, so any leftover space in the group still gets
-// redistributed evenly across every panel at layout time regardless of
-// its `defaultSize` — silently discarding the server-rendered split the
-// MECHANISM entry above promises (caught only because every SHIPPED
-// example happens to sum its `defaultSize`s to 100%, leaving no leftover
-// space to misdistribute; two panels both `defaultSize="20%"` in a 1000px
-// group rendered 499.5/499.5, not 200/200). A sized panel must render
-// `grow-0` instead of `flex-1` (grow suppressed; shrink stays at its CSS
-// initial value of 1, same as `flex-1` already had, so the panel can still
-// give up space under real constraint) — `flex-1` stays exclusive to the
-// unsized case, which has no basis of its own to protect and genuinely
-// wants to grow.
-//
-// NOTE (contradictory min/max, ledgered per review item 9): if a panel's
-// own minSize exceeds its neighbour's maxSize (or vice versa),
+// NOTE (contradictory min/max, ledgered per review round 1 item 9): if a
+// panel's own minSize exceeds its neighbour's maxSize (or vice versa),
 // resizable.js's drag/keyboard clamp silently prefers the tighter (max)
 // bound and the looser constraint (min) is violated — no error, no
 // warning; authoring non-conflicting min/max pairs is the caller's
 // responsibility.
 component ResizablePanel(defaultSize string, minSize string, maxSize string, children gsx.Node, attrs gsx.Attrs) {
+	{{
+		grow := "1"
+		if defaultSize != "" {
+			grow = strings.TrimSuffix(defaultSize, "%")
+		}
+	}}
 	<div
 		data-slot="resizable-panel"
 		{ if minSize != "" {
@@ -120,13 +143,8 @@ component ResizablePanel(defaultSize string, minSize string, maxSize string, chi
 		{ if maxSize != "" {
 			data-max-size={maxSize}
 		} }
-		{ if defaultSize != "" {
-			style=css`flex-basis: @{defaultSize}`
-		} }
-		class={
-			if defaultSize != "" { "grow-0" } else { "flex-1" },
-			"min-w-0 min-h-0",
-		}
+		style=css`flex: @{grow} 1 0px`
+		class="min-w-0 min-h-0 overflow-hidden"
 		{ attrs... }
 	>
 		{ children }
@@ -148,6 +166,28 @@ component ResizablePanel(defaultSize string, minSize string, maxSize string, chi
 // disagreement per the house rule, so this port drops the
 // `GripVerticalIcon` import/render entirely — the resulting dependency-free
 // `Deps("resizable") == []` is a direct consequence, not a coincidence.
+//
+// ADAPT (`shrink-0` + resize cursor, review round 2 — added to, not
+// substituted for, the pinned class string above, which stays verbatim):
+// the handle itself must not flex — a bare `flex` item defaults to
+// `flex-shrink: 1`, and ui.shadcn.com's own live-rendered handle pins
+// `flex-grow: 0; flex-shrink: 0` inline; `flex-grow: 0` is already this
+// handle's CSS initial value (it carries no `flex`/`grow-*` class of its
+// own), but `shrink-0` is added explicitly since the initial
+// `flex-shrink` is 1. Neither new-york-v4's class string nor nova's CSS
+// carries a cursor (confirmed directly; also confirmed via CSSOM against
+// ui.shadcn.com's own stylesheets — no resize-cursor rule exists there
+// either) because react-resizable-panels injects `cursor: col-resize` /
+// `row-resize` onto the separator itself at drag time, at runtime, from
+// JS this port doesn't have. `cursor-col-resize` (group `orientation` is
+// horizontal or unset — the handle is the full-height VERTICAL rule, and
+// dragging it moves the boundary left/right) or `cursor-row-resize`
+// (group `orientation="vertical"` — the handle is the full-width
+// HORIZONTAL rule, dragging moves it up/down) is rendered statically
+// instead, keyed off the same `orientation` param the aria-inversion
+// above already uses — deliberately BETTER than the reference here, not
+// just equivalent: a static class works before JS has loaded, where the
+// library's own runtime injection would not.
 component ResizableHandle(orientation string, withHandle bool, attrs gsx.Attrs) {
 	{{
 		handleOrientation := "vertical"
@@ -160,7 +200,11 @@ component ResizableHandle(orientation string, withHandle bool, attrs gsx.Attrs) 
 		role="separator"
 		aria-orientation={handleOrientation}
 		tabindex="0"
-		class="relative flex w-px items-center justify-center bg-border after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:outline-hidden aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:w-full aria-[orientation=horizontal]:after:left-0 aria-[orientation=horizontal]:after:h-1 aria-[orientation=horizontal]:after:w-full aria-[orientation=horizontal]:after:translate-x-0 aria-[orientation=horizontal]:after:-translate-y-1/2 [&[aria-orientation=horizontal]>div]:rotate-90"
+		class={
+			"relative flex w-px items-center justify-center bg-border after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:outline-hidden aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:w-full aria-[orientation=horizontal]:after:left-0 aria-[orientation=horizontal]:after:h-1 aria-[orientation=horizontal]:after:w-full aria-[orientation=horizontal]:after:translate-x-0 aria-[orientation=horizontal]:after:-translate-y-1/2 [&[aria-orientation=horizontal]>div]:rotate-90",
+			"shrink-0",
+			if orientation == "vertical" { "cursor-row-resize" } else { "cursor-col-resize" },
+		}
 		{ attrs... }
 	>
 		{ if withHandle {
