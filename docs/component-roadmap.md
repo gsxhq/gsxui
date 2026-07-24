@@ -65,11 +65,24 @@ the start; per-component ledger entries in `docs/jsx-parity.md`.
 
 ## Tier 4 — hard / composite
 
+**command SHIPPED out-of-band 2026-07-24** (built for the site's ⌘K doc
+search, ahead of its tier: verbatim port of cmdk's `command-score` ranking
++ cmdk's selection model, `ui/command.{gsx,js}`). It was listed here as
+depending on combobox; in practice the dependency ran the other way —
+combobox can now build on `command`'s filtering/keyboard model plus the
+custom `select`'s value/typeahead machinery, both shipped.
+
+Remaining, roughly easiest → hardest for this codebase:
+
 | component | approach |
 |---|---|
-| combobox | input + filtered listbox on popover anchoring; builds on custom select |
-| command | command palette (cmdk equivalent): filtering, groups, keyboard nav; builds on combobox |
+| combobox | input + filtered listbox on popover anchoring; now a composition of shipped parts (`command` filtering + `select` value model + `popover` anchoring) rather than new machinery |
+| resizable | drag-resized split panes + keyboard resize (pointer-drag + ARIA `separator`; no shipped analog, but self-contained) |
 | navigation-menu | hover mega-menu with viewport panel transitions |
+| menubar | nested menus, submenu positioning, full keyboard model — note the deferred `dropdown` submenu work (README backlog) is the same machinery; do them together |
+| sidebar | large composite (collapsible rail, mobile sheet mode, provider state); depends on sheet + tooltip + collapsible (all shipped) |
+| calendar | month grid, range selection (react-day-picker equivalent — the single largest port on this list: date math, multi-month, range/multiple modes, full keyboard grid). `<input type="date">` is NOT a viable ADAPT for the docs demos (they exercise range selection, disabled dates, and custom day rendering, none of which a native date input can express); it stays a real from-scratch port. Consider scoping v1 to single-date + range, ledgering the rest |
+| chart | recharts wrapper in shadcn — needs a whole Go/JS charting answer; defer until demanded |
 | menubar | nested menus, submenu positioning, full keyboard model |
 | calendar | month grid, range selection (react-day-picker equivalent — large); consider `<input type="date">` ADAPT as stopgap |
 | resizable | drag-resized split panes + keyboard resize |
