@@ -8,10 +8,11 @@ import (
 	_gsxrt "github.com/gsxhq/gsx"
 	_gsxstd "github.com/gsxhq/gsx/std"
 	_gsxcm "github.com/gsxhq/gsxui/merge"
+	"github.com/gsxhq/gsxui/ui/icon"
 	_gsxio "io"
 )
 
-//line carousel.gsx:5:1
+//line carousel.gsx:8:1
 // Carousel and its parts are the shadcn/ui Carousel (registry/new-york-v4/
 // ui/carousel.tsx). shadcn's version wraps embla-carousel-react, a
 // JS-transform carousel (it drags a flex track with
@@ -40,11 +41,11 @@ import (
 // ordinary class-merge mechanism — no separate spacing param, matching the
 // upstream demo's own proof that gap is entirely a `className` override.
 
-//line carousel.gsx:32:1
+//line carousel.gsx:35:1
 func Carousel(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:33:2
+//line carousel.gsx:36:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"region\"")
@@ -69,14 +70,14 @@ func Carousel(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Nod
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line carousel.gsx:42:3
+//line carousel.gsx:45:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line carousel.gsx:46:1
+//line carousel.gsx:49:1
 // CarouselContent renders BOTH divs from shadcn's own source: the outer div
 // is embla's `carouselRef` viewport target, ported here as the REAL native
 // scroll container (`overflow-x-auto`/`-y-auto` + `snap-x`/`snap-y
@@ -92,11 +93,11 @@ func Carousel(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Nod
 // otherwise show a visible scrollbar embla's transform-based approach never
 // had anything analogous to.
 
-//line carousel.gsx:60:1
+//line carousel.gsx:63:1
 func CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:61:2
+//line carousel.gsx:64:2
 		_gsxgw.S("<div data-slot=\"carousel-content\"")
 		var _gsxv0 string
 		if orientation == "vertical" {
@@ -107,7 +108,7 @@ func CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs) _gs
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0))
 		_gsxgw.S("\">")
-//line carousel.gsx:71:3
+//line carousel.gsx:74:3
 		_gsxgw.S("<div")
 		_gsxv1 := "flex"
 		var _gsxv2 string
@@ -122,23 +123,23 @@ func CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs) _gs
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line carousel.gsx:78:4
+//line carousel.gsx:81:4
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div></div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line carousel.gsx:83:1
+//line carousel.gsx:86:1
 // CarouselItem adds `snap-start` to shadcn's own class string — also NEW,
 // not in shadcn's source, required for native scroll-snap to have any snap
 // points at all (embla needed none: it never scrolls, it transforms).
 
-//line carousel.gsx:86:1
+//line carousel.gsx:89:1
 func CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:87:2
+//line carousel.gsx:90:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"group\"")
@@ -162,24 +163,17 @@ func CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line carousel.gsx:97:3
+//line carousel.gsx:100:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line carousel.gsx:101:1
+//line carousel.gsx:104:1
 // CarouselPrevious/CarouselNext compose Button (variant="outline"
 // size="icon") exactly like shadcn's own versions, plus
 // data-gsxui-carousel-prev/-next for carousel.js's delegated click wiring.
-// The arrow icons are inlined raw SVGs (Lucide's arrow-left/arrow-right
-// path data, ui/icon/icon_data.go's own byte-identical source) rather than
-// `<icon.ArrowLeft/>`/`<icon.ArrowRight/>` — the same inline-not-imported
-// choice dialog.gsx's own close-button X icon already makes, keeping
-// `registry.Deps("carousel")` at just `["button"]` (no `ui/icon` edge).
-// Button's own base class's `[&_svg:not([class*='size-'])]:size-4` sizes
-// the raw 24x24 SVG down without the icon package's svgIcon wrapper.
 // shadcn computes `disabled={!canScrollPrev}`/`!canScrollNext` from embla's
 // live scroll-progress state, unavailable at Go render time — the initial
 // server-rendered `disabled` value is chosen per button since the two are
@@ -193,11 +187,11 @@ func CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt
 // not). carousel.js's own init pass recomputes and corrects both from the
 // real DOM immediately on load either way — see its own header comment.
 
-//line carousel.gsx:123:1
+//line carousel.gsx:119:1
 func CarouselPrevious(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:124:2
+//line carousel.gsx:120:2
 		_gsxv5 := "absolute size-8 rounded-full"
 		var _gsxv6 string
 		if orientation == "vertical" {
@@ -207,13 +201,9 @@ func CarouselPrevious(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 		}
 		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:140:3
-			_gsxgw.S("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">")
-//line carousel.gsx:151:4
-			_gsxgw.S("<path d=\"m12 19-7-7 7-7\"></path>")
-//line carousel.gsx:152:4
-			_gsxgw.S("<path d=\"M19 12H5\"></path></svg>")
-//line carousel.gsx:154:3
+//line carousel.gsx:136:3
+			_gsxgw.Node(ctx, icon.ArrowLeft())
+//line carousel.gsx:137:3
 			_gsxgw.S("<span class=\"sr-only\">Previous slide</span>")
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-slot", Value: "carousel-previous"}}, _gsxrt.Attrs{{Key: "data-gsxui-carousel-prev", Value: true}}, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv5), _gsxrt.Class(_gsxv6))}}, attrs)))
@@ -221,11 +211,11 @@ func CarouselPrevious(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line carousel.gsx:158:1
+//line carousel.gsx:141:1
 func CarouselNext(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:159:2
+//line carousel.gsx:142:2
 		_gsxv7 := "absolute size-8 rounded-full"
 		var _gsxv8 string
 		if orientation == "vertical" {
@@ -235,13 +225,9 @@ func CarouselNext(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 		}
 		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:174:3
-			_gsxgw.S("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">")
-//line carousel.gsx:185:4
-			_gsxgw.S("<path d=\"M5 12h14\"></path>")
-//line carousel.gsx:186:4
-			_gsxgw.S("<path d=\"m12 5 7 7-7 7\"></path></svg>")
-//line carousel.gsx:188:3
+//line carousel.gsx:157:3
+			_gsxgw.Node(ctx, icon.ArrowRight())
+//line carousel.gsx:158:3
 			_gsxgw.S("<span class=\"sr-only\">Next slide</span>")
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-slot", Value: "carousel-next"}}, _gsxrt.Attrs{{Key: "data-gsxui-carousel-next", Value: true}}, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv7), _gsxrt.Class(_gsxv8))}}, attrs)))

@@ -83,15 +83,16 @@ func TestDeps(t *testing.T) {
 
 	// carousel.gsx composes Button (CarouselPrevious/CarouselNext) — an
 	// intra-package edge with no import to scan, same resolution shape as
-	// dialog's own Deps entry above. No ui/icon edge: the arrow icons are
-	// inlined raw SVGs (dialog.gsx's own close-button precedent), not
-	// `<icon.ArrowLeft/>`/`<icon.ArrowRight/>`.
+	// dialog's own Deps entry above — AND imports ui/icon
+	// (CarouselPrevious/CarouselNext's ArrowLeft/ArrowRight), the ordinary
+	// house default (accordion/breadcrumb/pagination/spinner all do the
+	// same). Deps sorts its result, so button < icon alphabetically.
 	deps, err = registry.Deps("carousel")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(deps, []string{"button"}) {
-		t.Fatalf("carousel deps = %v, want [button]", deps)
+	if !reflect.DeepEqual(deps, []string{"button", "icon"}) {
+		t.Fatalf("carousel deps = %v, want [button icon]", deps)
 	}
 
 	// kbd.gsx, aspect-ratio.gsx, and progress.gsx have no icon import and no

@@ -1,6 +1,9 @@
 package ui
 
-import "github.com/gsxhq/gsx"
+import (
+	"github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/ui/icon"
+)
 
 // Carousel and its parts are the shadcn/ui Carousel (registry/new-york-v4/
 // ui/carousel.tsx). shadcn's version wraps embla-carousel-react, a
@@ -101,13 +104,6 @@ component CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) {
 // CarouselPrevious/CarouselNext compose Button (variant="outline"
 // size="icon") exactly like shadcn's own versions, plus
 // data-gsxui-carousel-prev/-next for carousel.js's delegated click wiring.
-// The arrow icons are inlined raw SVGs (Lucide's arrow-left/arrow-right
-// path data, ui/icon/icon_data.go's own byte-identical source) rather than
-// `<icon.ArrowLeft/>`/`<icon.ArrowRight/>` — the same inline-not-imported
-// choice dialog.gsx's own close-button X icon already makes, keeping
-// `registry.Deps("carousel")` at just `["button"]` (no `ui/icon` edge).
-// Button's own base class's `[&_svg:not([class*='size-'])]:size-4` sizes
-// the raw 24x24 SVG down without the icon package's svgIcon wrapper.
 // shadcn computes `disabled={!canScrollPrev}`/`!canScrollNext` from embla's
 // live scroll-progress state, unavailable at Go render time — the initial
 // server-rendered `disabled` value is chosen per button since the two are
@@ -137,20 +133,7 @@ component CarouselPrevious(orientation string, attrs gsx.Attrs) {
 		}
 		{ attrs... }
 	>
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			width="24"
-			height="24"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			stroke-linecap="round"
-			stroke-linejoin="round"
-		>
-			<path d="m12 19-7-7 7-7"/>
-			<path d="M19 12H5"/>
-		</svg>
+		<icon.ArrowLeft/>
 		<span class="sr-only">Previous slide</span>
 	</Button>
 }
@@ -171,20 +154,7 @@ component CarouselNext(orientation string, attrs gsx.Attrs) {
 		}
 		{ attrs... }
 	>
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			width="24"
-			height="24"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			stroke-linecap="round"
-			stroke-linejoin="round"
-		>
-			<path d="M5 12h14"/>
-			<path d="m12 5 7 7-7 7"/>
-		</svg>
+		<icon.ArrowRight/>
 		<span class="sr-only">Next slide</span>
 	</Button>
 }

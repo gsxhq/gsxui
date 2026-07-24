@@ -768,15 +768,6 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
   `carousel-spacing.tsx`, proves gap is entirely a `className` override in
   shadcn's own source — ported as-is via the ordinary class-merge
   mechanism, no separate `spacing` param invented.
-- ADAPT (arrow icons inlined, not `ui/icon`): `CarouselPrevious`/
-  `CarouselNext`'s `ArrowLeft`/`ArrowRight` are inlined raw SVGs (Lucide's
-  own `arrow-left`/`arrow-right` path data, byte-identical to
-  `ui/icon/icon_data.go`'s own source) rather than
-  `<icon.ArrowLeft/>`/`<icon.ArrowRight/>` — the same inline-not-imported
-  choice `## dialog`'s own close-button X icon already makes. Keeps
-  `registry.Deps("carousel")` at just `["button"]`, no `ui/icon` edge;
-  Button's own base class's `[&_svg:not([class*='size-'])]:size-4` sizes
-  the raw 24x24 SVG down without the icon package's `svgIcon` wrapper.
 - ADAPT (API-surface reduction, deliberate, ledgered): embla's `CarouselApi`
   (`scrollTo(i)`, `scrollPrev()`, `scrollNext()`, `canScrollPrev()`,
   `canScrollNext()`, `selectedScrollSnap()`, `scrollSnapList()`,
@@ -836,9 +827,9 @@ directions. Full audit: gsxhq docs repo, specs/2026-07-22-gsx-over-jsx-audit.md.
   `command.js`'s `filter()` loop already establish. A carousel added later
   via an HTMX swap after this module has already run is not picked up; the
   same accepted limitation those two modules' own init loops carry.
-- Registry: `carousel.gsx` imports nothing from `ui/icon` (see the inlined-
-  icon ADAPT above); `CarouselPrevious`/`CarouselNext` compose `Button` —
-  `registry.Deps("carousel") == ["button"]`, pinned in
+- Registry: `carousel.gsx` imports `ui/icon` (`CarouselPrevious`/
+  `CarouselNext`'s `icon.ArrowLeft`/`icon.ArrowRight`) and composes `Button`
+  — `registry.Deps("carousel") == ["button", "icon"]`, pinned in
   `internal/registry/registry_test.go`. `HasJS("carousel")` is `true` — real
   new interactive JS (`ui/carousel.js`), unlike `sheet`/`alert-dialog`/
   `drawer`'s own JS-free reuse of `ui/dialog.js`.
