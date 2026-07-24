@@ -25,8 +25,10 @@ check: test
 # `gsx dev` warm-generates .x.go, builds-then-swaps the site/ binary (see
 # gsx.toml [dev]), and runs Vite as the front door (proxying everything but
 # its own /__vite/ namespace to the Go server).
+# Backend output lands in tmp/dev.log via gsx.toml's [dev] log key (gsx dev
+# tees it itself — no shell pipe, so the console keeps its exit status too).
 site-dev:
-	go tool gsx dev | tee tmp/gsxui-dev.log
+	go tool gsx dev
 
 # site builds the production bundle (Vite assets embedded by site/main.go)
 # and runs the server in prod mode (no VITE_DEV_URL → gsxhq/vite serves the

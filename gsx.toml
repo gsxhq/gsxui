@@ -9,3 +9,7 @@ url = "github.com/jackielii/structpages.URLFor"
 [dev]
 build = ["go", "build", "-o", "tmp/gsxui-site", "./site"]
 run = ["tmp/gsxui-site"]
+# gsx dev tees backend output here itself (no manual `| tee` needed); the
+# resolved absolute path rides the dev env bus as GSX_DEV_LOG for the vite
+# plugin / dev panel to read.
+log = "tmp/dev.log"
