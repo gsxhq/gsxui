@@ -35,14 +35,19 @@ The showcase site and theme editor are in progress.
 
 ## Components
 
-**Form controls:** button, checkbox, input, label, native-select, radio,
-switch, textarea
+**Form controls:** button, button-group, checkbox, combobox, field, input,
+input-group, input-otp, label, native-select, radio, select, slider, switch,
+textarea, toggle, toggle-group
 
-**Display:** alert, avatar, badge, card, separator, skeleton, table
+**Display:** alert, avatar, badge, card, empty, item, kbd, progress,
+separator, skeleton, spinner, table
 
-**Overlay:** dialog, dropdown, tooltip
+**Overlay:** alert-dialog, context-menu, dialog, drawer, dropdown,
+hover-card, popover, sheet, sonner, tooltip
 
-**Navigation:** accordion, tabs
+**Navigation:** accordion, breadcrumb, command, pagination, sidebar, tabs
+
+**Layout:** aspect-ratio, carousel, collapsible, resizable, scroll-area
 
 **Primitives:** icon (Lucide, generated — a dependency of native-select,
 accordion, and dropdown's own future items, not usually added directly)
@@ -107,10 +112,6 @@ deploys to Cloud Run in one Cloud Build config — pattern-matched from
 Deferred out of v1 scope, tracked here rather than in the parity ledger's
 per-component GAP notes (see those for the detailed rationale):
 
-- **Custom listbox select** — shadcn's full Radix `Select` (floating panel,
-  check-mark item indicator, keyboard typeahead). v1 ships a styled native
-  `<select>` instead (`ui/select.gsx`); the Radix-equivalent listbox visual
-  is not built.
 - **Dropdown checkbox/radio items + submenus** — `DropdownMenuCheckboxItem`,
   `DropdownMenuRadioGroup`/`DropdownMenuRadioItem`,
   `DropdownMenuSub`/`SubTrigger`/`SubContent`, `DropdownMenuGroup`. Only the
@@ -123,13 +124,6 @@ per-component GAP notes (see those for the detailed rationale):
   calculation in JS. Once CSS anchor positioning (`anchor()`/
   `position-anchor`) reaches Baseline across browsers, both can drop that
   JS for native, collision-aware placement.
-- **Popover exit-animation strategy** — verified inert, strategy TBD:
-  dropdown/tooltip's native popover is already `display: none` at the
-  moment the `toggle` (newState=closed) handler stamps
-  `data-state="closed"`, so `data-[state=closed]:animate-out` never runs
-  and closing snaps (open-path `animate-in` unaffected); accepted for v1.
-  An animated-close strategy (`beforetoggle`/`allow-discrete`, or
-  dialog-style `requestClose`) remains adoptable once designed.
 - **Checkbox checkmark theming (currentColor mask)** — the check glyph is a
   data-URI with hard-coded `stroke="white"`; data-URIs are static text and
   can't reference CSS variables, so the mark doesn't follow
@@ -144,11 +138,6 @@ per-component GAP notes (see those for the detailed rationale):
   it reuse the calling project's own Tailwind build (accurate to that
   project's tokens, but requires shelling out to its build tooling). Needs
   a decision before implementation.
-- **gsx syntax highlighting for source blocks** — the component pages'
-  `<pre><code>` source panels (`site/pages/component.gsx`) render escaped
-  plain text; no `.gsx`-aware highlighter exists yet. Revisit once/if one
-  does (or a generic JS-family highlighter proves good enough for gsx's
-  JSX-in-Go syntax).
 - **Icon search** — the icon gallery page (`site/examples/icon`) ships v1
   as a static grid of ~40 popular icons plus a "1,748 total" note; a
   searchable/filterable index over the full Lucide set is not built.

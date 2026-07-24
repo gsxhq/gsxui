@@ -72,22 +72,34 @@ depending on combobox; in practice the dependency ran the other way —
 combobox can now build on `command`'s filtering/keyboard model plus the
 custom `select`'s value/typeahead machinery, both shipped.
 
+**resizable, combobox and sidebar SHIPPED 2026-07-24**, per
+`docs/superpowers/plans/2026-07-24-tier4-batch-a.md` (source map
+`docs/superpowers/plans/2026-07-24-tier4-source-map.md`); nova density from
+the start, per-component ledger entries in `docs/jsx-parity.md`.
+
+| component | shipped as | deferred sub-features (v1 gaps, ledgered) |
+|---|---|---|
+| resizable | `ResizablePanelGroup`/`ResizablePanel`/`ResizableHandle`; server-rendered `flex: <n> 1 0px` panels (correct split pre-JS, any container) + `resizable.js` pointer/keyboard drag with ARIA `separator` sync | `autoSaveId` persistence (emits `gsxui:change` instead, caller owns storage); collapsible/collapsedSize panels; imperative panel resize/collapse/expand API |
+| combobox | `Combobox` + 11 parts: popover-anchored input/listbox composing `command`'s highlight-cursor model and `select`'s value/form-bridge machinery; `contains()` filter (boolean match, no fuzzy ranking) | multi-select chips (`ComboboxChips`/`Chip`/`ChipsInput`); no shared JS with `command.js` (an import edge invisible to `registry.Deps`'s Go-only parse, ledgered) |
+| sidebar | `SidebarProvider` + 22 parts: `open`-driven collapsible rail/icon modes + always-rendered mobile `Sheet` tree, CSS-gated; `sidebar.js` click/rail/`Cmd`/`Ctrl+B` toggle | persistence is the caller's (no cookie shipped; `persisted.gsx` is the recipe); `children` renders twice (dual-tree ADAPT — no `id`s inside a `Sidebar`'s children); tooltip `side`/delay-group params not carried |
+
 Remaining, roughly easiest → hardest for this codebase:
 
 | component | approach |
 |---|---|
-| combobox | input + filtered listbox on popover anchoring; now a composition of shipped parts (`command` filtering + `select` value model + `popover` anchoring) rather than new machinery |
-| resizable | drag-resized split panes + keyboard resize (pointer-drag + ARIA `separator`; no shipped analog, but self-contained) |
 | navigation-menu | hover mega-menu with viewport panel transitions |
 | menubar | nested menus, submenu positioning, full keyboard model — note the deferred `dropdown` submenu work (README backlog) is the same machinery; do them together |
-| sidebar | large composite (collapsible rail, mobile sheet mode, provider state); depends on sheet + tooltip + collapsible (all shipped) |
 | calendar | month grid, range selection (react-day-picker equivalent — the single largest port on this list: date math, multi-month, range/multiple modes, full keyboard grid). `<input type="date">` is NOT a viable ADAPT for the docs demos (they exercise range selection, disabled dates, and custom day rendering, none of which a native date input can express); it stays a real from-scratch port. Consider scoping v1 to single-date + range, ledgering the rest |
 | chart | recharts wrapper in shadcn — needs a whole Go/JS charting answer; defer until demanded |
-| menubar | nested menus, submenu positioning, full keyboard model |
-| calendar | month grid, range selection (react-day-picker equivalent — large); consider `<input type="date">` ADAPT as stopgap |
-| resizable | drag-resized split panes + keyboard resize |
-| sidebar | large composite (collapsible rail, mobile sheet mode, provider state); depends on sheet + tooltip + collapsible |
-| chart | recharts wrapper in shadcn — needs a whole Go/JS charting answer; defer until demanded |
+
+**Registry-fork note (§0 finding, Task 0 of the 2026-07-24 tier4-batch-a
+plan):** shadcn's own docs now default to a Base UI variant, and the
+registry itself has split into `registry/bases/{radix,base,aria}/`.
+`new-york-v4` stays this project's markup reference regardless — it's the
+only remaining registry family still expressed as inline Tailwind
+utilities, the form every ADAPT/MECHANISM entry in `docs/jsx-parity.md`
+already assumes. This is a naming/structure observation only; no re-sync
+of any already-shipped component is implied.
 
 ## Not ported (deliberate)
 
