@@ -47,7 +47,21 @@ component PopoverContent(children gsx.Node, attrs gsx.Attrs) {
 		data-state="closed"
 		data-side="bottom"
 		tabindex="-1"
-		class="z-50 w-72 origin-top rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-hidden data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95"
+		class={
+			"z-50 w-72 origin-top rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-hidden",
+			// ADAPT: shadcn's tw-animate keyframe pair is replaced with discrete
+			// transitions — hidePopover() flips the UA's display:none in the same
+			// breath, so an exit KEYFRAME never gets a frame to play (the enter
+			// half worked; the exit half was silently dead). Transitions listing
+			// display+overlay with transition-behavior:allow-discrete keep the
+			// element rendered and in the top layer until the fade/zoom-out
+			// finishes, and @starting-style (`starting:`) supplies the
+			// enter-from state — Tailwind's `open:` matches :popover-open both
+			// ways. Same fade-in-0/zoom-in-95/slide-2 and fade-out-0/zoom-out-95
+			// geometry as the shadcn tokens; see docs/jsx-parity.md ## animations.
+			"opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95",
+			"data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2"
+		}
 		{ attrs... }
 	>
 		{ children }

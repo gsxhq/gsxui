@@ -60,9 +60,10 @@ on("contextmenu", "[data-gsxui-contextmenu-trigger]", (e, trigger) => {
     content.dataset.state = "open";
     content.showPopover();
     // Position numerically AFTER showing (hidden popovers have no box) and
-    // never via transform: the animate-in enter keyframes animate transform,
-    // so a positioning translate would be overridden for the animation's
-    // duration (same rationale as dropdown.js/popover.js's own comment).
+    // never via translate/transform: the discrete-transition enter/exit
+    // animates the `translate` and `scale` properties (see popover.gsx's
+    // ADAPT comment), so a positioning translate would be fought by the
+    // transition in both directions.
     // Clamp to the viewport edges (the ADAPT from the siblings' no-clamp
     // precedent, see the header comment above) so a right-click near the
     // right/bottom edge doesn't spawn an offscreen menu. clientWidth/Height,

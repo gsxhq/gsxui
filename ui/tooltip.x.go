@@ -112,14 +112,18 @@ func TooltipContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" data-side=\"top\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("z-50 w-fit origin-bottom animate-in rounded-md bg-foreground px-3 py-1.5 text-xs text-balance text-background overflow-visible fade-in-0 zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("z-50 w-fit origin-bottom rounded-md bg-foreground px-3 py-1.5 text-xs text-balance text-background overflow-visible"), _gsxrt.Class( // Discrete-transition enter/exit replacing the tw-animate keyframe
+			// pair — a popover's exit keyframe never gets to play (hide is
+			// instant display:none); see popover.gsx's ADAPT comment and
+			// docs/jsx-parity.md ## animations for the full mechanism.
+			"opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95"), _gsxrt.Class("data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line tooltip.gsx:46:3
+//line tooltip.gsx:54:3
 		_gsxgw.Node(ctx, children)
-//line tooltip.gsx:47:3
+//line tooltip.gsx:55:3
 		_gsxgw.S("<span data-slot=\"tooltip-arrow\" class=\"absolute top-full left-1/2 z-50 size-2.5 -translate-x-1/2 -translate-y-[calc(50%+2px)] rotate-45 rounded-[2px] bg-foreground\"></span></div>")
 		return _gsxgw.Err()
 	})

@@ -46,11 +46,11 @@ on("click", "[data-gsxui-popover-trigger]", (_e, trigger) => {
   content.dataset.state = "open";
   content.showPopover();
   // Position numerically AFTER showing (hidden popovers have no box) and
-  // never via transform: the animate-in enter keyframes animate transform,
-  // so a positioning translate would be overridden for the animation's
-  // duration — the popover would enter at the untranslated spot and snap
-  // (same rationale as tooltip.js's own comment). offsetWidth is a layout
-  // size, unaffected by the in-flight enter scale.
+  // never via translate/transform: the discrete-transition enter/exit
+  // animates the `translate` and `scale` properties (see popover.gsx's
+  // ADAPT comment), so a positioning translate would be fought by the
+  // transition in both directions. offsetWidth is a layout size,
+  // unaffected by the in-flight enter scale.
   //
   // Centered below the trigger (Radix's own Popover default is side=bottom
   // align=center — dropdown.js's left-aligned `r.left` is NOT reused here):
