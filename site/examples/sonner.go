@@ -15,4 +15,10 @@ func init() {
 		Node:       examplesonner.Types(),
 		SourcePath: "sonner/types.gsx",
 	})
+	Register("sonner", Example{
+		Name:       "server",
+		Title:      "Server flashes",
+		Node:       examplesonner.Server(),
+		SourcePath: "sonner/server.gsx",
+	})
 }

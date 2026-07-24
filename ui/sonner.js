@@ -1,18 +1,22 @@
-// Sonner (toasts) behavior — the codebase's first CLIENT-CONSTRUCTED-DOM
-// module. Every other gsxui behavior (dialog/dropdown/command/…) attaches
-// delegated behavior to server-rendered markup; a toast has no server
-// markup to attach to (a toast is definitionally a client-triggered
-// response to some JS event), so this module BUILDS each toast <li> from
-// scratch and appends it into ui.Toaster's one static <ol data-gsxui-toaster>
-// region, then owns its whole lifecycle: mount → stack → timer → dismiss.
+// Sonner (toasts). Unlike every other gsxui behavior module (which attaches
+// delegated behavior to server-rendered markup), sonner's card markup is
+// still authored server-side — as the ui.Toast component — but shipped as
+// inert per-type <template>s inside ui.Toaster. This module CLONES the
+// matching type's template on each toast() call (never builds card DOM from
+// JS string concatenation), then owns the whole lifecycle: mount → stack →
+// timer → dismiss.
 //
-// There is no Tailwind source upstream to port (sonner ships a non-Tailwind
-// stylesheet), so the toast card's classes below are the synthesized spec
-// from docs/superpowers/plans/2026-07-24-tier3-source-map-wrapped.md
-// `## sonner`, reconstructed to match our popover/card surfaces.
+// Because the card is server markup, the same lifecycle is applied to rows
+// the SERVER inserts, not just JS-triggered ones. A MutationObserver on the
+// <ol> adopts any inserted `li[data-slot="toast"]` — so a full-page-load
+// flash rendered inline, an HTMX out-of-band swap
+// (`hx-swap-oob="beforeend:#gsxui-toaster"`), an HTMX partial append, or an
+// SSE-driven insert all animate/stack/auto-dismiss with ZERO HTMX-specific
+// code here. This is the one-viewport-per-page server-flash model
+// (docs/jsx-parity.md ## sonner): the server is the single source of toast
+// markup and the observer is the single adoption path.
 //
-// Public imperative API (first in this codebase to be re-exported through
-// the ui/index.js barrel for page authors, not just sibling modules):
+// Public imperative API (re-exported through the ui/index.js barrel):
 //   import { toast } from "gsxui";
 //   toast(msg, opts); toast.success/.info/.warning/.error/.loading(msg, opts);
 //   toast.promise(promiseOrFn, { loading, success, error }); toast.dismiss(id?);
@@ -20,32 +24,6 @@
 // Also reachable as window.gsxui.toast for inline <script> demo pages that
 // cannot import the barrel.
 import { on, emit } from "./gsxui.js";
-
-// --- Icon glyphs -----------------------------------------------------------
-// Hand-copied SVG path data from ui/icon/icon_data.go (Lucide, ISC) — the
-// toast <li> is built in JS, so icon.CircleCheck (a server-side Go call) is
-// unreachable here; these strings are the same "static data ported into a
-// JS module" precedent as command.js's commandScore port. MAINTENANCE SEAM:
-// if ui/icon's glyphs are ever regenerated from a newer Lucide, these copies
-// do NOT update automatically (ledgered in docs/jsx-parity.md ## sonner).
-// Provenance (icon_data.go keys): circle-check / info / triangle-alert /
-// octagon-x / loader-circle / x.
-const GLYPHS = {
-  success: '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
-  info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
-  warning:
-    '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
-  error:
-    '<path d="m15 9-6 6"/><path d="M2.586 16.726A2 2 0 0 1 2 15.312V8.688a2 2 0 0 1 .586-1.414l4.688-4.688A2 2 0 0 1 8.688 2h6.624a2 2 0 0 1 1.414.586l4.688 4.688A2 2 0 0 1 22 8.688v6.624a2 2 0 0 1-.586 1.414l-4.688 4.688a2 2 0 0 1-1.414.586H8.688a2 2 0 0 1-1.414-.586z"/><path d="m9 9 6 6"/>',
-  loading: '<path d="M21 12a9 9 0 1 1-6.219-8.56"/>',
-};
-const X_GLYPH = '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>';
-
-// Lucide's shared <svg> wrapper attributes (matches ui/icon's own output and
-// the theme-toggle glyph in site/pages/layout.gsx).
-function svg(paths, cls) {
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"${cls ? ` class="${cls}"` : ""}>${paths}</svg>`;
-}
 
 // --- Stacking / timing constants -------------------------------------------
 const DEFAULT_DURATION = 4000; // ms; a loading toast overrides this to Infinity
@@ -57,7 +35,7 @@ const REMOVE_CAP = 600; // ms fallback if transitionend never fires (dialog.js's
 const HOVER_LEAVE_MS = 80; // debounce so crossing a gap between toasts doesn't collapse
 // Closed (enter/exit) visual state — the discrete-transition start/end point
 // the CSS transition on the <li> animates to/from (docs/jsx-parity.md
-// ## animations, adapted to a JS-constructed node: set closed state, force a
+// ## animations, adapted to a template-cloned node: set closed state, force a
 // frame, flip to open; exit reverses it). Bottom position → slide up on
 // enter, back down on exit.
 const CLOSED_TRANSFORM = "translateY(20px) scale(0.9)";
@@ -65,15 +43,20 @@ const CLOSED_TRANSFORM = "translateY(20px) scale(0.9)";
 // --- State -----------------------------------------------------------------
 // A plain array of toast records (oldest first, newest last = the front),
 // NOT sonner's CSS-custom-property machine — we ship fixed Tailwind classes
-// and recompute the scale/translate stack per toast via inline style.
-const toasts = []; // { id, el, type, duration, remaining, timer, startedAt }
+// and recompute the scale/translate stack per toast via inline style. A
+// WeakSet marks every <li> already owned by a record, so the observer never
+// double-adopts a row the imperative API just inserted.
+const toasts = []; // { id, el, type, duration, remaining, timer, startedAt, onAction, onCancel }
+const registered = new WeakSet();
 let uid = 0;
 let expanded = false; // hover-expands the stack AND pauses every timer
 let leaveTimer = null;
 
 // --- Toaster region --------------------------------------------------------
 // Uses ui.Toaster's server-rendered region if present; otherwise builds a
-// fallback so toast() works on any page (matches Toaster's classes).
+// fallback so the region always exists (the imperative API still needs the
+// per-type <template>s ui.Toaster ships — a page firing toast() must mount
+// <ui.Toaster/>).
 let olEl = null;
 function ol() {
   if (olEl && olEl.isConnected) return olEl;
@@ -85,6 +68,7 @@ function ol() {
     olEl = document.createElement("ol");
     olEl.dataset.slot = "toaster";
     olEl.setAttribute("data-gsxui-toaster", "");
+    olEl.id = "gsxui-toaster";
     olEl.className =
       "pointer-events-none fixed z-100 flex flex-col gap-2 p-6 bottom-0 right-0";
     section.appendChild(olEl);
@@ -93,110 +77,118 @@ function ol() {
   return olEl;
 }
 
-// --- Toast construction ----------------------------------------------------
-const TOAST_CLASS =
-  // Card surface — synthesized spec (see header). rounded-2xl / bg-popover /
-  // w-[356px] verbatim from the map; `relative` → `absolute bottom-6 right-6`
-  // + a transform transition are gsxui's stacking additions (the map's card
-  // string has no positioning of its own — sonner's own stylesheet owned it).
-  "pointer-events-auto absolute bottom-6 right-6 flex w-[356px] items-start gap-3 rounded-2xl border border-border bg-popover p-4 text-sm text-popover-foreground shadow-lg origin-bottom transition-[transform,opacity] duration-300 ease-out " +
-  "data-[type=success]:[&>[data-icon]]:text-emerald-500 data-[type=info]:[&>[data-icon]]:text-sky-500 data-[type=warning]:[&>[data-icon]]:text-amber-500 data-[type=error]:[&>[data-icon]]:text-destructive";
-
-function iconHTML(type) {
-  const glyph = GLYPHS[type];
-  if (!glyph) return ""; // default type has no icon (sonner's own default)
-  return svg(glyph, type === "loading" ? "animate-spin" : "");
+// --- Template clone --------------------------------------------------------
+// The server ships one inert <template data-gsxui-toast-template="TYPE"> per
+// type inside ui.Toaster; each wraps a pre-rendered ui.Toast card. Cloning
+// the matching template is how a card is created — the card markup (classes,
+// icons, aria) is authored ONCE, in the Go ui.Toast component.
+function tpl(type) {
+  return document.querySelector(
+    `template[data-gsxui-toast-template="${type}"]`,
+  );
 }
 
-function setIcon(el, type) {
-  let slot = el.querySelector("[data-icon]");
-  const html = iconHTML(type);
-  if (!html) {
+// Replace el's icon slot with the target type's template icon (used by
+// promise-morph). The loading→success/error cards have different glyphs; a
+// default card has none.
+function setIconFromTemplate(el, type) {
+  const template = tpl(type);
+  const srcIcon = template
+    ? template.content.querySelector("[data-icon]")
+    : null;
+  const slot = el.querySelector("[data-icon]");
+  if (!srcIcon) {
     if (slot) slot.remove();
     return;
   }
-  if (!slot) {
-    slot = document.createElement("div");
-    slot.setAttribute("data-icon", "");
-    slot.className = "mt-0.5 shrink-0 [&>svg]:size-4";
-    el.insertBefore(slot, el.firstChild);
-  }
-  slot.innerHTML = html;
+  const fresh = srcIcon.cloneNode(true);
+  if (slot) slot.replaceWith(fresh);
+  else el.insertBefore(fresh, el.firstChild);
 }
 
+// --- Toast construction (clone + fill) -------------------------------------
+// Clone the matching type template's card, then fill or remove the
+// title/description/action/cancel parts to match opts. Returns null when the
+// template is missing (ui.Toaster not mounted) — show() then no-ops.
 function build(rec, opts) {
-  const el = document.createElement("li");
-  el.className = TOAST_CLASS;
-  el.dataset.slot = "toast";
-  el.setAttribute("data-gsxui-toast", "");
+  const template = tpl(rec.type) || tpl("default");
+  if (!template) return null;
+  const el = template.content.firstElementChild.cloneNode(true);
   el.dataset.type = rec.type;
-  el.setAttribute("role", "status");
-  el.setAttribute("aria-live", rec.type === "error" ? "assertive" : "polite");
-  el.setAttribute("aria-atomic", "true");
 
-  setIcon(el, rec.type);
+  const title = el.querySelector("[data-title]");
+  if (title) title.textContent = opts.message ?? "";
 
-  const content = document.createElement("div");
-  content.setAttribute("data-content", "");
-  content.className = "flex flex-1 flex-col gap-1";
-  const title = document.createElement("div");
-  title.setAttribute("data-title", "");
-  title.className = "font-medium text-foreground";
-  title.textContent = opts.message ?? "";
-  content.appendChild(title);
-  if (opts.description) {
-    const desc = document.createElement("div");
-    desc.setAttribute("data-description", "");
-    desc.className = "text-muted-foreground";
-    desc.textContent = opts.description;
-    content.appendChild(desc);
-  }
-  el.appendChild(content);
-
-  if (opts.action && opts.action.label) {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.setAttribute("data-action", "");
-    btn.className =
-      "shrink-0 self-center text-sm font-medium underline-offset-4 hover:underline";
-    btn.textContent = opts.action.label;
-    btn.addEventListener("click", () => {
-      emit(el, "gsxui:toast-action", { id: rec.id });
-      if (typeof opts.action.onClick === "function") opts.action.onClick();
-      dismiss(rec.id);
-    });
-    el.appendChild(btn);
-  }
-  if (opts.cancel && opts.cancel.label) {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.setAttribute("data-cancel", "");
-    btn.className =
-      "shrink-0 self-center text-sm text-muted-foreground underline-offset-4 hover:underline";
-    btn.textContent = opts.cancel.label;
-    btn.addEventListener("click", () => {
-      if (typeof opts.cancel.onClick === "function") opts.cancel.onClick();
-      dismiss(rec.id);
-    });
-    el.appendChild(btn);
+  const desc = el.querySelector("[data-description]");
+  if (desc) {
+    if (opts.description) desc.textContent = opts.description;
+    else desc.remove();
   }
 
-  const close = document.createElement("button");
-  close.type = "button";
-  close.setAttribute("data-close-button", "");
-  close.setAttribute("aria-label", "Close");
-  close.className =
-    "absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm";
-  close.innerHTML = svg(X_GLYPH, "size-3");
-  close.addEventListener("click", () => dismiss(rec.id));
-  el.appendChild(close);
+  const actionBtn = el.querySelector("[data-action]");
+  if (actionBtn) {
+    if (opts.action && opts.action.label) {
+      actionBtn.textContent = opts.action.label;
+      rec.onAction = opts.action.onClick;
+    } else {
+      actionBtn.remove();
+    }
+  }
 
-  // Hover the toast → expand the whole stack + pause every timer; leave →
-  // collapse + resume (debounced so crossing a gap doesn't flicker).
-  el.addEventListener("pointerenter", () => setExpanded(true));
-  el.addEventListener("pointerleave", () => setExpanded(false));
+  const cancelBtn = el.querySelector("[data-cancel]");
+  if (cancelBtn) {
+    if (opts.cancel && opts.cancel.label) {
+      cancelBtn.textContent = opts.cancel.label;
+      rec.onCancel = opts.cancel.onClick;
+    } else {
+      cancelBtn.remove();
+    }
+  }
 
   return el;
+}
+
+// Wire a card's interactive parts to a record. Applied to BOTH imperative
+// cards (build) and server-adopted rows — the only difference is that
+// server rows carry no JS onClick callbacks (action/cancel still emit +
+// dismiss). Hover any toast → expand the whole stack + pause every timer;
+// leave → collapse + resume (debounced so crossing a gap doesn't flicker).
+function wire(el, rec) {
+  const close = el.querySelector("[data-close-button]");
+  if (close) close.addEventListener("click", () => dismiss(rec.id));
+
+  const actionBtn = el.querySelector("[data-action]");
+  if (actionBtn) {
+    actionBtn.addEventListener("click", () => {
+      emit(el, "gsxui:toast-action", { id: rec.id });
+      if (typeof rec.onAction === "function") rec.onAction();
+      dismiss(rec.id);
+    });
+  }
+
+  const cancelBtn = el.querySelector("[data-cancel]");
+  if (cancelBtn) {
+    cancelBtn.addEventListener("click", () => {
+      if (typeof rec.onCancel === "function") rec.onCancel();
+      dismiss(rec.id);
+    });
+  }
+
+  el.addEventListener("pointerenter", () => setExpanded(true));
+  el.addEventListener("pointerleave", () => setExpanded(false));
+}
+
+// Enter: stamp the closed visual state, force one frame so the transition has
+// a start point, then let refresh() set the open transform — the <li>'s CSS
+// transition animates the slide-up/fade-in (and shifts the rest of the stack
+// in the same frame).
+function enter(el) {
+  el.dataset.state = "closed";
+  el.style.opacity = "0";
+  el.style.transform = CLOSED_TRANSFORM;
+  void el.offsetHeight;
+  el.dataset.state = "open";
+  refresh();
 }
 
 // --- Stack layout ----------------------------------------------------------
@@ -300,22 +292,52 @@ function show(opts) {
     remaining: 0,
     timer: null,
     startedAt: 0,
+    onAction: undefined,
+    onCancel: undefined,
   };
   rec.remaining = rec.duration;
   rec.el = build(rec, opts);
+  if (!rec.el) return rec.id; // ui.Toaster (and its templates) not mounted
+  registered.add(rec.el); // mark BEFORE insertion so the observer skips it
   toasts.push(rec);
+  wire(rec.el, rec);
   ol().appendChild(rec.el);
+  enter(rec.el);
+  return rec.id;
+}
 
-  // Enter: stamp the closed visual state, force one frame so the transition
-  // has a start point, then let refresh() set the open transform — the <li>'s
-  // CSS transition animates the slide-up/fade-in (and shifts the rest of the
-  // stack in the same frame).
-  rec.el.dataset.state = "closed";
-  rec.el.style.opacity = "0";
-  rec.el.style.transform = CLOSED_TRANSFORM;
-  void rec.el.offsetHeight;
-  rec.el.dataset.state = "open";
-  refresh();
+// Adopt a server-inserted (or otherwise externally-appended) toast row into
+// the same lifecycle as an imperative one: assign an id, read data-type and
+// optional data-duration (loading defaults to no auto-dismiss), wire the
+// interactive parts, run the enter animation, and register it. Idempotent —
+// a row already owned by a record is skipped (the imperative path marks its
+// own rows before insertion).
+function adopt(el) {
+  if (registered.has(el)) return;
+  const type = el.dataset.type || "default";
+  let duration;
+  const durAttr = el.dataset.duration;
+  if (durAttr != null && durAttr !== "") {
+    duration = Number(durAttr);
+    if (Number.isNaN(duration)) duration = DEFAULT_DURATION;
+  } else {
+    duration = type === "loading" ? Infinity : DEFAULT_DURATION;
+  }
+  const rec = {
+    id: ++uid,
+    el,
+    type,
+    duration,
+    remaining: duration,
+    timer: null,
+    startedAt: 0,
+    onAction: undefined,
+    onCancel: undefined,
+  };
+  registered.add(el);
+  toasts.push(rec);
+  wire(el, rec);
+  enter(el);
   return rec.id;
 }
 
@@ -353,14 +375,15 @@ function dismiss(id) {
 }
 
 // Promise: render a loading toast, then MORPH THE SAME NODE in place on
-// settle — swap icon/type/title, restart the dismiss timer, no re-animation
+// settle — swap data-type, replace the icon slot with the target type's
+// template icon, swap the title, restart the dismiss timer. No re-animation
 // and no stack reflow (a dismiss-old/spawn-new approach would visibly jump).
 function morph(id, type, message) {
   const rec = byId(id);
   if (!rec) return;
   rec.type = type;
   rec.el.dataset.type = type;
-  setIcon(rec.el, type);
+  setIconFromTemplate(rec.el, type);
   const title = rec.el.querySelector("[data-title]");
   if (title && message != null) title.textContent = message;
   clearTimeout(rec.timer);
@@ -385,9 +408,18 @@ toast.warning = (message, opts = {}) =>
   show({ ...opts, message, type: "warning" });
 toast.error = (message, opts = {}) => show({ ...opts, message, type: "error" });
 toast.loading = (message, opts = {}) =>
-  show({ ...opts, message, type: "loading", duration: opts.duration ?? Infinity });
+  show({
+    ...opts,
+    message,
+    type: "loading",
+    duration: opts.duration ?? Infinity,
+  });
 toast.promise = (promiseOrFn, msgs = {}) => {
-  const id = show({ message: resolveMsg(msgs.loading), type: "loading", duration: Infinity });
+  const id = show({
+    message: resolveMsg(msgs.loading),
+    type: "loading",
+    duration: Infinity,
+  });
   const p = typeof promiseOrFn === "function" ? promiseOrFn() : promiseOrFn;
   Promise.resolve(p).then(
     (value) => morph(id, "success", resolveMsg(msgs.success, value)),
@@ -407,8 +439,8 @@ toast.dismiss = (id) => {
 // Any element with a NON-EMPTY data-gsxui-toast fires a toast on click,
 // reading the same fields the imperative API takes — mirrors the
 // data-gsxui-dialog-trigger idiom so a docs page needs no page-specific
-// <script>. The constructed toast <li> also carries data-gsxui-toast (an
-// empty slot marker, per the map's markup), so the empty-value guard is what
+// <script>. The cloned toast <li> also carries data-gsxui-toast (an empty
+// slot marker, per the Toast card markup), so the empty-value guard is what
 // stops a click INSIDE a toast from spawning a blank one.
 on("click", "[data-gsxui-toast]", (_event, el) => {
   if (!el.dataset.gsxuiToast) return;
@@ -420,6 +452,46 @@ on("click", "[data-gsxui-toast]", (_event, el) => {
     action: label ? { label } : undefined,
   });
 });
+
+// --- Server-flash adoption -------------------------------------------------
+// A MutationObserver on the <ol> adopts any externally-inserted toast row
+// (server full-load flash, HTMX OOB/partial append, SSE insert). Rows the
+// imperative API inserts are pre-marked in `registered`, so they are never
+// double-adopted. Rows already present at module init (full-page-load
+// flashes drained server-side into the <ol>) are adopted once at startup.
+const observer =
+  typeof MutationObserver !== "undefined"
+    ? new MutationObserver((mutations) => {
+        for (const m of mutations) {
+          for (const node of m.addedNodes) {
+            if (
+              node.nodeType === 1 &&
+              node.matches &&
+              node.matches('li[data-slot="toast"]') &&
+              !registered.has(node)
+            ) {
+              adopt(node);
+            }
+          }
+        }
+      })
+    : null;
+
+function init() {
+  const region = ol();
+  if (observer) observer.observe(region, { childList: true });
+  region.querySelectorAll('li[data-slot="toast"]').forEach((el) => {
+    if (!registered.has(el)) adopt(el);
+  });
+}
+
+if (typeof document !== "undefined") {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+}
 
 // Barrel re-export makes `import { toast } from "gsxui"` work; the window
 // global covers inline <script> demo pages that cannot import the barrel.

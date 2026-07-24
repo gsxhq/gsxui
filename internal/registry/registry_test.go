@@ -370,16 +370,16 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("select deps = %v, want [icon]", deps)
 	}
 
-	// sonner.gsx (Toaster) is a plain <section>/<ol> — no ui/icon import
-	// (the toast icons are hand-copied SVG-path strings inside ui/sonner.js,
-	// not icon.* Go calls) and no intra-package reference to another
-	// component, so Deps is empty, same shape as popover/slider/context-menu.
+	// sonner.gsx imports ui/icon: the server-rendered ui.Toast card (the
+	// single source of the toast <li> markup, shipped as inert per-type
+	// <template>s and cloned by ui/sonner.js) renders its type glyph and the
+	// close X via icon.* Go calls — so Deps is [icon], no longer empty.
 	deps, err = registry.Deps("sonner")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(deps) != 0 {
-		t.Fatalf("sonner deps = %v, want none", deps)
+	if !reflect.DeepEqual(deps, []string{"icon"}) {
+		t.Fatalf("sonner deps = %v, want [icon]", deps)
 	}
 
 	if _, err := registry.Deps("nosuch"); err == nil || !strings.Contains(err.Error(), "gsxui list") {
@@ -616,13 +616,13 @@ func TestResolveTransitive(t *testing.T) {
 		t.Fatalf("got %v want %v", got, want)
 	}
 
-	// sonner has no deps of its own — Resolve returns just itself, same
-	// shape as popover/slider/context-menu's own entries above.
+	// sonner depends on icon (ui.Toast renders Lucide glyphs) — Resolve pulls
+	// icon in ahead of it, same shape as select/native-select above.
 	got, err = registry.Resolve([]string{"sonner"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	want = []string{"sonner"}
+	want = []string{"icon", "sonner"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
