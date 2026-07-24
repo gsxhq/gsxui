@@ -11,10 +11,17 @@ is `apps/v4/registry/new-york-v4/ui/<name>.tsx` — the only remaining
 inline-Tailwind-utility form, gsxui's own authoring model. `registry/bases/
 {radix,base,aria}/ui/<name>.tsx` (`.cn-*` named classes, utilities extracted
 into `registry/styles/style-*.css`) are NOT ported from directly, but are
-used below, cited explicitly, wherever nova's CSS changes a class name that
-doesn't exist in the DOM at all — a markup-structure question nova's
-stylesheet alone cannot answer. Visual reference is `registry/styles/
-style-nova.css`; where it and new-york-v4 disagree, nova wins.
+available as a structure tiebreak wherever nova's CSS changes a class name
+that doesn't exist in the DOM at all — a markup-structure question nova's
+stylesheet alone cannot answer. In this pass that tiebreak was actually
+needed, and cited inline, only once: resizable's handle-icon shape (§6 of
+`## resizable`, via `bases/base/ui/resizable.tsx`). Combobox and sidebar
+raised no structure question nova's CSS couldn't answer on its own, so
+their `bases/base/ui/*.tsx` counterparts were read for corroboration
+(confirmed structurally identical to new-york-v4, differences noted where
+found) but are not load-bearing citations anywhere in those two sections.
+Visual reference is `registry/styles/style-nova.css`; where it and
+new-york-v4 disagree, nova wins.
 
 **Inputs read** (byte-read in full unless noted): `registry/new-york-v4/ui/
 {resizable,combobox,sidebar}.tsx`; `registry/new-york-v4/examples/
@@ -23,8 +30,10 @@ resizable-*.tsx` (all 4); `registry/new-york-v4/examples/combobox-*.tsx`
 combobox` FINDING); `apps/v4/examples/base/combobox-*.tsx` (all 11 — the
 actual demos for `ui/combobox.tsx`); `registry/styles/style-nova.css`
 (`.cn-resizable*`, `.cn-combobox*`, `.cn-sidebar*` sections); `registry/
-bases/base/ui/{resizable,combobox,sidebar}.tsx` (structure tiebreak, cited
-inline where used); `content/docs/components/base/{resizable,combobox}.mdx`
+bases/base/ui/{resizable,combobox,sidebar}.tsx` (structure tiebreak — read
+for all three, but only load-bearing/cited inline for resizable's
+handle-icon shape; see the Reference-source rule paragraph above);
+`content/docs/components/base/{resizable,combobox}.mdx`
 (shadcn's own prose docs, including a `react-resizable-panels` v3→v4
 migration table — real documentation, still not the library's own built
 output, cited and hedged accordingly); `docs/jsx-parity.md` (`## nova
@@ -140,53 +149,59 @@ for the exact mechanism, but corroborated by the doc's own migration table.
 
 ### 3. The handle's inverted orientation — mapping table
 
-The handle's **base** state (no `aria-orientation` override matching) is
-`w-px` — a **vertical** hairline, i.e. a handle that divides panels
-side-by-side (a **horizontal**-orientation group). Its
-`aria-[orientation=horizontal]:` variants (`h-px w-full`, plus flipping the
-`after:` pseudo-element's own axis) switch it to a **horizontal** hairline —
-a handle that divides panels stacked top/bottom (a **vertical**-orientation
-group). This is inverted from what the name suggests at a glance; state it
-as an explicit table, not prose alone:
+The mapping between the **group's** `orientation` prop and the **handle's**
+`aria-orientation` is inverted — and this is fully derivable from sources
+already read in full (the two class strings + the demos), without needing
+the library's own attribute-stamping code:
 
-| Group's `orientation` prop | Group stamps `aria-orientation=` | Handle's `aria-orientation` match | Handle renders as |
+1. **ARIA semantics of `role="separator"`**: `aria-orientation` on a
+   separator describes the separator itself, not the layout it sits in. A
+   separator dividing two side-by-side (left/right) panels is, by that
+   convention, a **vertical** separator (it's the panels that are arranged
+   horizontally; the dividing line between them runs vertically).
+2. **Group class**, read directly: `flex h-full w-full aria-[orientation=
+   vertical]:flex-col` — the group is a `flex` **row** (panels side-by-side)
+   unless its own `aria-orientation` is `vertical`, in which case it becomes
+   `flex-col` (panels stacked). `resizable-demo-with-handle.tsx` passes
+   `orientation="horizontal"` for its side-by-side "One"/"Two"+"Three"
+   layout — confirming group `orientation="horizontal"` ⇒ `flex-row` ⇒
+   panels side-by-side.
+3. **Handle's base class**, read directly: `w-px` (no `aria-[orientation=
+   horizontal]:` match) — a full-height, 1px-**wide** rule: a **vertical**
+   line, which is exactly what divides side-by-side panels. Base classes
+   apply whenever the `aria-[orientation=horizontal]:` variant does **not**
+   match.
+4. Chaining 1–3: side-by-side panels ⇒ group `orientation="horizontal"` ⇒
+   the divider between them must be a vertical rule ⇒ the handle's base
+   (unmatched) classes must be in effect ⇒ the handle's `aria-orientation`
+   is **not** `"horizontal"` in this case — by ARIA semantics (point 1) it
+   is `"vertical"`. Symmetrically, a `vertical`-orientation group
+   (`flex-col`, panels stacked) needs a horizontal divider between them,
+   which is exactly the `aria-[orientation=horizontal]:h-px
+   aria-[orientation=horizontal]:w-full` branch — so the handle's
+   `aria-orientation` is `"horizontal"` precisely when the group's own
+   `orientation` is `"vertical"`.
+5. **Corroborating detail**, read directly: `[&[aria-orientation=horizontal]
+   >div]:rotate-90` — the `withHandle` grip icon rotates 90° exactly when
+   the handle's own `aria-orientation` is `"horizontal"`, i.e. exactly when
+   the rule itself has turned into a horizontal bar. A grip that was
+   vertical-dots-shaped (three dots in a vertical line, `GripVerticalIcon`)
+   rotated 90° becomes horizontal-dots-shaped — consistent with sitting on
+   a horizontal rule, not a vertical one.
+
+| Group's `orientation` prop | Group's own layout | Handle's `aria-orientation` | Handle renders as |
 |---|---|---|---|
-| `"horizontal"` (panels side-by-side) | `horizontal` | *(none — base classes apply)* | `w-px` — a **vertical** rule |
-| `"vertical"` (panels stacked) | `vertical` | `aria-[orientation=horizontal]:*` | `h-px w-full` — a **horizontal** rule |
+| `"horizontal"` (default — panels side-by-side) | `flex-row` | `"vertical"` | base classes: `w-px` — a full-height **vertical** rule |
+| `"vertical"` (panels stacked) | `flex-col` | `"horizontal"` | `aria-[orientation=horizontal]:*` branch: `h-px w-full` — a full-width **horizontal** rule |
 
-Read that middle column carefully: a `horizontal`-orientation **group**
-does **not** put the handle in its `aria-[orientation=horizontal]:` branch —
-the handle's own `aria-orientation` tracks the group's orientation directly
-(both say `horizontal`, or both say `vertical`), but the *base* (unmatched)
-classes are what apply when the shared value is `horizontal`, and the
-`aria-[orientation=horizontal]:` selector fires precisely then. In other
-words: the selector name matches the shared attribute value, but the
-**visual shape** it produces (`h-px w-full`, a horizontal bar) is only
-sensible for the *vertical*-stacked group case — which is exactly what
-happens, because `aria-[orientation=horizontal]:` fires when the shared
-value is `horizontal`, and `horizontal`-orientation means "panels arranged
-horizontally," which needs a **vertical** divider between them normally...
-
-This is the one place worth double-checking against a live render rather
-than trusting the table above from class names alone (flagging for Task
-1–3's own verification pass, per the "author-origin fights" precedent in
-`docs/jsx-parity.md` `## sheet`): the two demo files below are the ground
-truth for "what actually looks right" —
-`resizable-demo.tsx`'s outer group is `orientation="horizontal"` (panels
-"One" | "Two/Three" side by side) using an unqualified handle (base `w-px`
-vertical rule — correct, divides side-by-side panels) while its **nested**
-group is `orientation="vertical"` (panels "Two" over "Three" stacked) also
-using an unqualified `<ResizableHandle/>` — meaning the *same* component,
-rendered inside a `vertical` group, must be the one that picks up
-`aria-[orientation=horizontal]:h-px w-full` (a horizontal rule, correctly
-dividing stacked panels). This confirms the table above is self-consistent:
-**the handle's `aria-orientation` equals the group's `orientation` prop
-value**, and it's specifically the `aria-[orientation=horizontal]:` branch
-that produces the *horizontal-bar* look needed inside a *vertical* (stacked)
-group — the "inverted" part is only in how the selector name maps to the
-resulting shape, not in the attribute's value itself. `derived-not-read` for
-the underlying attribute-stamping mechanism; the shape/selector mapping
-above is read directly from `resizable.tsx`'s own class string.
+`derived-not-read`, stated narrowly: `react-resizable-panels`' own code
+that actually sets the `aria-orientation` attribute on the `Separator` was
+not read (library absent from this checkout, § Library presence check).
+The table above is derived entirely from the ARIA `separator` role
+convention plus the class strings and demos, all read directly — it assumes
+the library follows that convention (which the corroborating rotate-90
+detail in point 5 supports) rather than confirming it from the library's
+own source.
 
 ### 4. `defaultSize` format
 
@@ -1103,12 +1118,36 @@ function SidebarMenuButton({ asChild = false, isActive = false, variant = "defau
 }
 ```
 
+A full `grep -c "\.cn-sidebar"` pass on `style-nova.css` returns **28**
+hits, not 27: the block above quotes 27 of them, deliberately omitting
+`.cn-sidebar-menu-button-aria` (line 1170, sitting directly between
+`.cn-sidebar-menu-button` and `.cn-sidebar-menu-button-variant-default`):
+
+```css
+.cn-sidebar-menu-button-aria {
+  @apply aria-expanded:hover:bg-sidebar-accent aria-expanded:hover:text-sidebar-accent-foreground;
+}
+```
+
+Excluded for the same provenance reason `## combobox` §5 excludes
+`.cn-combobox-item-aria`/`.cn-combobox-content-aria`: confirmed via
+`registry/bases/{radix,base,aria}/ui/sidebar.tsx` that only the
+`aria`-flavored base (`bases/aria/ui/sidebar.tsx:479`) appends the
+`cn-sidebar-menu-button-aria` token to `SidebarMenuButton`'s class list —
+`bases/radix` and `bases/base` (the two families structurally matching
+new-york-v4, our actual reference) never do. It targets react-aria-
+components' own `aria-expanded` convention for an open submenu trigger, not
+anything Radix's `SidebarMenuButton` (or new-york-v4's, which has no
+built-in submenu-trigger concept at all) stamps. Not adopted; named here
+only so the 28-vs-27 count is accounted for, not silently short.
+
 **No nova counterpart at all** for: `sidebar` (the root/wrapper itself —
 neither `sidebar-wrapper` nor the desktop root's own class), `sidebar-
 trigger`, `sidebar-container`, `sidebar-menu-item`, `sidebar-menu-sub-item`
-— confirmed by a full `grep -n "\.cn-sidebar"` pass (28 hits total, all
-enumerated above, none matching those 5 names). These 5 parts' new-york-v4
-values stand unreviewed by the nova retarget.
+— confirmed by the same 28-hit pass: 27 quoted in the main block, 1
+(`-aria`) quoted and excluded just above, none of the 28 matching those 5
+names. These 5 parts' new-york-v4 values stand unreviewed by the nova
+retarget.
 
 Metric deltas worth naming: `rounded-lg + ring-1 ring-sidebar-border` (nova,
 inner floating variant) replaces new-york-v4's `rounded-lg border border-
