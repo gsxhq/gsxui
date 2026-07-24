@@ -46,18 +46,22 @@ site example pages, browser verification against the shadcn docs.
 | popover | click-triggered `popover="auto"`; anchoring/animation ADAPTs already solved in tooltip/dropdown |
 | context-menu | dropdown content machinery, opened at cursor from `contextmenu` event |
 
-## Tier 3 — new interactive machinery, moderate JS
+## Tier 3 — new interactive machinery, moderate JS — SHIPPED 2026-07-24
 
-| component | approach |
-|---|---|
-| toggle-group | toggle + single/multi selection state, roving focus (dropdown has the roving-focus pattern) |
-| slider | styled native `<input type="range">` (form-native; cross-browser track/thumb CSS is the work) |
-| scroll-area | ADAPT: CSS `scrollbar-width`/`scrollbar-color` styling first; Radix-style custom thumbs only if that falls short |
-| select (custom listbox) | **user-promoted from backlog**: dropdown machinery + value selection, check indicator, keyboard typeahead; the native port (renamed `Select`/`select` → `NativeSelect`/`native-select` 2026-07-24 to mirror shadcn naming, see naming-delta note above) stays alongside |
-| sonner (toasts) | own toast module: stacking, timers, exit animations; no Radix/sonner dependency |
-| drawer | sheet variant; v1 without vaul's drag-to-dismiss gesture (ledger the gap) |
-| carousel | ADAPT: CSS scroll-snap + prev/next JS (shadcn wraps embla; snap covers the docs demos) |
-| input-otp | segmented code input: paste splitting, focus advance, hidden real input |
+All eight ported per `docs/superpowers/plans/2026-07-24-tier3-components.md`
+(source maps `…-tier3-source-map-{controls,wrapped}.md`), nova density from
+the start; per-component ledger entries in `docs/jsx-parity.md`.
+
+| component | shipped as | deferred sub-features (v1 gaps, ledgered) |
+|---|---|---|
+| toggle-group | toggle composition + `toggle-group.js` roving focus | vertical orientation; RTL arrow swap |
+| slider | native `<input type=range>` + `slider.js` gradient fill | multi-thumb/range, vertical, inverted, minStepsBetweenThumbs; nova's ::after hit-target compensation (unreachable on thumb pseudo-elements) |
+| scroll-area | one collapsed div, standard + webkit scrollbar CSS | Corner (no Firefox concept); `type` visibility timing (OS policy wins) |
+| select (custom listbox) | dropdown machinery + `select.js` value model / prefix typeahead / hidden form bridge; `NativeSelect` stays alongside | scroll up/down buttons (popper-equivalent anchoring); no-JS form submit carries empty value (bridge is JS-filled) |
+| sonner (toasts) | `Toaster` + client-constructed toasts in `sonner.js`; `toast()` via barrel export | positions other than bottom-right; swipe-to-dismiss |
+| drawer | sheet-style `<dialog>` variant, four directions | vaul drag-to-dismiss, snap points, background scaling |
+| carousel | CSS scroll-snap + `carousel.js` | embla `loop` wraparound; plugin ecosystem (autoplay ships as a data attribute) |
+| input-otp | one hidden real input + presentational slots (`input-otp.js`) | first-paint slot values (JS-populated); anchored-regex pattern constants (per-char class instead) |
 
 ## Tier 4 — hard / composite
 
