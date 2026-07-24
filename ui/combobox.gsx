@@ -73,14 +73,20 @@ import (
 // --available-height/--transform-origin custom properties at runtime for
 // ComboboxContent/List to consume (registry/new-york-v4/ui/combobox.tsx's
 // own w-(--anchor-width), max-w-(--available-width),
-// origin-(--transform-origin), and List's
-// calc(var(--available-height)-...) tokens). combobox.js implements fixed
-// positioning below the input instead (ui/select.js's own openContent
-// model, not a full anchor-positioning engine), so those vars are never
-// set; the tokens that depend on them are dropped in favor of plain
-// nova-retargeted values (min-w-36 origin-top-left on Content, a flat
-// max-h-72 on List) — the exact same substitution ## select's own ADAPT
-// entry documents for SelectContent's min-w-[8rem]->min-w-36. duration-100
+// origin-(--transform-origin), and List's own
+// min(calc(--spacing(72)---spacing(9)),calc(var(--available-height)-
+// -spacing(9))) tokens). combobox.js implements fixed positioning below the
+// input instead (ui/select.js's own openContent model, not a full
+// anchor-positioning engine), so those vars are never set; the tokens that
+// depend on them are dropped in favor of plain nova-retargeted values
+// (min-w-36 origin-top-left on Content) — the exact same substitution ##
+// select's own ADAPT entry documents for SelectContent's
+// min-w-[8rem]->min-w-36. List keeps the FIRST arm of its own min() (the
+// only one that doesn't depend on the dropped var) rather than collapsing
+// to a flat max-h-72: max-h-72 alone is 288px, but spacing(72)-spacing(9)
+// is 252px — a real, review-caught difference (a prior draft's flat
+// max-h-72 clipped the bottom ~40px of a full list against ComboboxContent's
+// own max-h-72 + overflow-hidden with no way to scroll to it). duration-100
 // (nova's one-off value for this component) is dropped the same way ##
 // select's own entry rejects it: duration-150 is the popover family's
 // shared standard, supplied by the discrete-transition block below.
@@ -101,31 +107,38 @@ component Combobox(name string, value string, children gsx.Node, attrs gsx.Attrs
 	</div>
 }
 
-// ComboboxInput composes ui.InputGroup/ui.InputGroupInput/ui.InputGroupAddon/
-// ui.InputGroupButton directly rather than calling ComboboxTrigger/
-// ComboboxClear as nested components: shadcn's own source polymorphically
-// merges ComboboxTrigger's props onto InputGroupButton's own <button> via
-// Base UI's `render` prop (one DOM button, two logical components layered
-// on it) — gsx has no clone-element merge, so nesting two real
-// <button>/<InputGroupButton> calls would emit an invalid button-in-button.
-// This inlines the same single button shadcn's merge produces instead,
-// stamping combobox-trigger's/combobox-clear's own data-slot via the
-// explicit-non-parameter-attribute override mechanism (the same one
-// ui/input-group.gsx's InputGroupButton doc comment documents for
-// data-size). The standalone ComboboxTrigger/ComboboxClear parts below
-// still exist for direct use (the "popup" composition variant, out of this
-// port's shipped examples) — see their own doc comments.
+// ComboboxInput composes ui.InputGroup/ui.InputGroupInput/ui.InputGroupAddon
+// directly, and calls ComboboxClear (not a nested InputGroupButton) for the
+// clear button, but INLINES the trigger button rather than calling
+// ComboboxTrigger: shadcn's own source polymorphically merges
+// ComboboxTrigger's props onto InputGroupButton's own <button> via Base
+// UI's `render` prop (one DOM button, two logical components layered on
+// it) — gsx has no clone-element merge, so nesting ComboboxTrigger's own
+// (independently real) <button> inside another button-producing call would
+// emit an invalid button-in-button. ComboboxClear has no such conflict:
+// per the source map, ComboboxClear itself is ALWAYS composed of
+// InputGroupButton (`render={<InputGroupButton variant="ghost"
+// size="icon-xs" />}`, "no base class of its own at all, purely a merge
+// passthrough") — it never independently renders a bare <button> the way
+// ComboboxTrigger's own standalone shape does — so calling it here produces
+// exactly one <button>, not two. See ComboboxTrigger's and ComboboxClear's
+// own doc comments below.
 //
-// data-slot="input-group-input" (not InputGroupInput's own default
-// "input-group-control") is this port's own naming call for the actual
-// text control, since ARIA anatomy here has no traced Base UI source to
-// copy a slot name from (`derived-not-read`) — the underlying
-// data-slot="input-group-control" InputGroupInput itself stamps is
-// overridden the same way. showTrigger/showClear are independent booleans:
-// both true renders both buttons, with the trigger hidden via
+// InputGroupInput keeps its OWN default data-slot="input-group-control"
+// (not overridden): ui/input-group.gsx's InputGroup keys its focus ring off
+// has-[[data-slot=input-group-control]:focus-visible] — overriding the slot
+// here (an earlier draft of this port did, to `"input-group-input"`, before
+// review) silently killed the only focus indicator on the control, a WCAG
+// 2.4.7 failure. showTrigger/showClear are independent booleans: both true
+// renders both buttons, with the trigger hidden via
 // group-has-data-[slot=combobox-clear]/input-group:hidden whenever a clear
 // button is also present (clear wins visually), matching shadcn's own
 // composition table exactly (source map ## combobox §2).
+//
+// aria-haspopup="listbox" is a permanent, server-rendered fact (APG expects
+// it present regardless of open/closed state); aria-controls is the
+// counterpart JS stamps once at init (also permanent — see combobox.js's
+// own init()), pointing at ComboboxList's id.
 //
 // ADAPT (attrs split class vs. everything else, matching source's own
 // `{className, ...props}` destructure): the source sends `className` into
@@ -141,11 +154,11 @@ component Combobox(name string, value string, children gsx.Node, attrs gsx.Attrs
 component ComboboxInput(placeholder string, showTrigger bool, showClear bool, disabled bool, children gsx.Node, attrs gsx.Attrs) {
 	<InputGroup class={ "w-auto", attrs.Class() }>
 		<InputGroupInput
-			data-slot="input-group-input"
 			data-gsxui-combobox-input
 			type="text"
 			role="combobox"
 			aria-expanded="false"
+			aria-haspopup="listbox"
 			aria-autocomplete="list"
 			autocomplete="off"
 			spellcheck="false"
@@ -167,15 +180,7 @@ component ComboboxInput(placeholder string, showTrigger bool, showClear bool, di
 				</InputGroupButton>
 			} }
 			{ if showClear {
-				<InputGroupButton
-					size="icon-xs"
-					variant="ghost"
-					data-slot="combobox-clear"
-					data-gsxui-combobox-clear
-					disabled={disabled}
-				>
-					<icon.X class="pointer-events-none"/>
-				</InputGroupButton>
+				<ComboboxClear disabled={disabled}/>
 			} }
 		</InputGroupAddon>
 		{ children }
@@ -200,19 +205,35 @@ component ComboboxTrigger(attrs gsx.Attrs) {
 	</button>
 }
 
-// ComboboxClear is the standalone clear button — see ComboboxTrigger's own
-// doc comment for why ComboboxInput's addon inlines the equivalent markup
-// instead of calling this.
+// ComboboxClear composes ui.InputGroupButton (variant="ghost"
+// size="icon-xs") directly — per the source map, this part is ALWAYS an
+// InputGroupButton composition (no independent bare-button shape the way
+// ComboboxTrigger has), "no base class of its own at all, purely a merge
+// passthrough" (`cn(className)` in the source). A prior draft of this port
+// gave it its own `[&_svg:not(size-)]:size-4` class and a hand-rolled
+// <button>, which both diverged from the source AND left a standalone
+// `<ui.ComboboxClear/>` completely unstyled — fixed in review. Safe for
+// ComboboxInput's own addon to call directly (see its doc comment): unlike
+// ComboboxTrigger, this never independently emits a bare <button> that
+// could nest inside another one.
+// disabled has no declared param — the brief's own signature is
+// `ComboboxClear(attrs gsx.Attrs)` only, matching source's plain
+// `{...props}` spread (Base UI's Combobox has no explicit `disabled` prop
+// on this part either). ComboboxInput passes its own `disabled` bool
+// through the attrs bag (`disabled={disabled}` as a plain non-parameter
+// attribute), which InputGroupButton forwards to ui.Button's own typed
+// `disabled` param the same way — the established override mechanism (see
+// ui/input-group.gsx's InputGroupButton doc comment on data-size).
 component ComboboxClear(attrs gsx.Attrs) {
-	<button
-		type="button"
+	<InputGroupButton
+		variant="ghost"
+		size="icon-xs"
 		data-slot="combobox-clear"
 		data-gsxui-combobox-clear
-		class="[&_svg:not([class*='size-'])]:size-4"
 		{ attrs... }
 	>
 		<icon.X class="pointer-events-none"/>
-	</button>
+	</InputGroupButton>
 }
 
 // ComboboxContent is the popover listbox surface. See the package doc
@@ -253,13 +274,24 @@ component ComboboxContent(children gsx.Node, attrs gsx.Attrs) {
 // element's own padding when combobox.js reports zero visible items (a
 // second, independent data-empty target from ComboboxContent's own group
 // selector — see ComboboxContent's doc comment).
+//
+// max-h-[calc(--spacing(72)---spacing(9))]: the source/nova token is
+// `max-h-[min(calc(--spacing(72)---spacing(9)),calc(var(--available-height)-
+// -spacing(9)))]` — a min() of two arms, the second depending on the
+// --available-height var this port's fixed-positioning ADAPT never sets
+// (see the package doc comment). Only the FIRST arm survives; a flat
+// `max-h-72` (a prior draft's mistake, caught in review) is a DIFFERENT,
+// larger number — 288px vs. this arm's 252px (spacing(72) minus
+// spacing(9), i.e. 18rem - 2.25rem at the default --spacing: 0.25rem) —
+// and clips the last ~40px of a full list against ComboboxContent's own
+// max-h-72 + overflow-hidden with no way to scroll to it.
 component ComboboxList(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-slot="combobox-list"
 		data-gsxui-combobox-list
 		role="listbox"
 		tabindex="-1"
-		class="no-scrollbar max-h-72 scroll-py-1 overflow-y-auto p-1 data-empty:p-0"
+		class="no-scrollbar max-h-[calc(--spacing(72)---spacing(9))] scroll-py-1 overflow-y-auto p-1 data-empty:p-0"
 		{ attrs... }
 	>
 		{ children }

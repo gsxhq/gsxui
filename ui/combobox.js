@@ -9,6 +9,20 @@
 // DOM focus): a data-highlighted + aria-activedescendant highlight cursor,
 // and an `input`-event filter.
 //
+// FIX (review round 1, CRITICAL, live-browser-traced): the popover used to
+// open on the input's "focus" event. `popover="auto"` light-dismisses on
+// the pointer gesture that is ALREADY IN FLIGHT when focus fires mid-click
+// (pointerdown -> focus -> the browser's own light-dismiss evaluation ->
+// mouseup -> click, all on the SAME gesture) — opening from focus opens the
+// popover mid-gesture, so the completion of that same gesture immediately
+// closes it again: click the input, watch the list flash open and vanish.
+// The trigger chevron never had this bug because it opens on "click", which
+// lands AFTER light-dismiss has already been evaluated for that gesture —
+// the fix is to open the input the same way: on "click", not "focus". This
+// also matches Base UI's own real behavior (opens on click/typing, not
+// focus) and stops Tab-through from popping the list open on every combobox
+// it passes.
+//
 // FILTER (ADAPT, web-verified, not read from @base-ui/react's own source —
 // see ui/combobox.gsx's package doc comment): Base UI's default Combobox
 // filter is `useFilter().contains`, an Intl.Collator-backed BOOLEAN match at
@@ -53,12 +67,20 @@ function contains(string, substring) {
 
 // --- highlight cursor (NOT real DOM focus — command.js's model) ----------
 
+// FIX (review round 1, CRITICAL): aria-activedescendant must never survive
+// on a CLOSED combobox — clearValue()'s own filter() pass used to stamp it
+// unconditionally, leaving the input pointing at an option inside a hidden
+// popover while aria-expanded="false". highlight() now only stamps
+// data-highlighted/aria-activedescendant while the popover is actually
+// open; closed, it clears both regardless of what item was asked for.
 function highlight(root, item) {
   const input = inputOf(root);
+  const open = contentOf(root)?.matches(":popover-open") ?? false;
   for (const other of itemsOf(root)) {
     if (other !== item) delete other.dataset.highlighted;
   }
-  if (!item) {
+  if (!item || !open) {
+    if (item) delete item.dataset.highlighted;
     input?.removeAttribute("aria-activedescendant");
     return;
   }
@@ -75,9 +97,17 @@ function highlight(root, item) {
 // group-data-empty/combobox-content: selector) and the list (its own
 // data-empty:p-0 selector, an independent target — see ui/combobox.gsx's
 // ComboboxList doc comment).
-function filter(root) {
+//
+// queryOverride lets openContent() force an EMPTY query on reopen when the
+// input's current text came from a commit/init/reset rather than the user
+// typing — see the gsxuiCommitted flag below (FIX, review round 1,
+// CRITICAL: reopening used to always filter against input.value, so after
+// picking "Remix" every other option stayed hidden on the next open —
+// reopening a combobox that already has a value must show every option,
+// not just the one whose label happens to be sitting in the input).
+function filter(root, queryOverride) {
   const input = inputOf(root);
-  const query = (input?.value ?? "").trim();
+  const query = queryOverride !== undefined ? queryOverride : (input?.value ?? "").trim();
   let any = false;
   for (const item of itemsOf(root)) {
     const match = contains(labelOf(item), query);
@@ -102,6 +132,11 @@ function filter(root) {
 
 // --- value model: commit (pick) / clear -----------------------------------
 
+// FIX (review round 1, IMPORTANT): mouse commit used to leave real DOM
+// focus wherever the click landed (usually document.body, since items are
+// never tab stops) — subsequent typing/arrowing was dead. Restore focus to
+// the input on every commit, the same as ui/command.js:255's own activate()
+// does for its selection.
 function commit(root, item) {
   if (!item || isDisabled(item)) return;
   for (const other of itemsOf(root)) {
@@ -111,7 +146,12 @@ function commit(root, item) {
   }
   const value = item.dataset.value ?? "";
   const input = inputOf(root);
-  if (input) input.value = labelOf(item);
+  if (input) {
+    input.value = labelOf(item);
+    // This text came from US, not the user typing — the next reopen must
+    // show every option, not just this one (see filter()'s own header).
+    input.dataset.gsxuiCommitted = "true";
+  }
   const bridge = bridgeOf(root);
   if (bridge) {
     bridge.value = value;
@@ -119,6 +159,7 @@ function commit(root, item) {
   }
   emit(root, "gsxui:select", { value });
   contentOf(root)?.hidePopover();
+  input?.focus();
 }
 
 function clearValue(root) {
@@ -127,7 +168,10 @@ function clearValue(root) {
     item.setAttribute("aria-selected", "false");
   }
   const input = inputOf(root);
-  if (input) input.value = "";
+  if (input) {
+    input.value = "";
+    delete input.dataset.gsxuiCommitted;
+  }
   const bridge = bridgeOf(root);
   if (bridge) {
     bridge.value = "";
@@ -138,7 +182,42 @@ function clearValue(root) {
   input?.focus();
 }
 
-// --- init: group aria-labelledby wiring, reflect a server-checked item ---
+// FIX (review round 1, IMPORTANT): a native <form>.reset() reverts the
+// hidden bridge's .value to its content-attribute default (Combobox's own
+// server-rendered `value` param) automatically — but the browser has no
+// idea the VISIBLE input and every item's data-state/aria-selected are
+// separate elements that need to follow it. Re-derive them from the
+// bridge's own (already-reset, by the time this runs) value. Chosen over
+// keeping a second copy of the value in the bridge's `value` ATTRIBUTE in
+// parallel with the property: this rides the browser's own native reset
+// semantics instead of duplicating them.
+function reflectFromBridge(root) {
+  const bridge = bridgeOf(root);
+  const input = inputOf(root);
+  const value = bridge?.value ?? "";
+  let matched = null;
+  for (const item of itemsOf(root)) {
+    const isIt = value !== "" && (item.dataset.value ?? "") === value;
+    item.dataset.state = isIt ? "checked" : "unchecked";
+    item.setAttribute("aria-selected", isIt ? "true" : "false");
+    if (isIt) matched = item;
+  }
+  if (input) {
+    input.value = matched ? labelOf(matched) : "";
+    if (matched) input.dataset.gsxuiCommitted = "true";
+    else delete input.dataset.gsxuiCommitted;
+  }
+}
+
+on("reset", "form", (_e, form) => {
+  for (const root of form.querySelectorAll("[data-gsxui-combobox]")) {
+    reflectFromBridge(root);
+  }
+});
+
+// --- init: group aria-labelledby wiring, reflect a server-checked item,
+// wire the permanent aria-controls (APG expects it present regardless of
+// open/closed state — see ui/combobox.gsx's ComboboxInput doc comment) ----
 
 function init(root) {
   for (const group of root.querySelectorAll('[data-slot="combobox-group"]')) {
@@ -148,9 +227,17 @@ function init(root) {
     if (!label.id) label.id = `gsxui-combobox-label-${++uid}`;
     group.setAttribute("aria-labelledby", label.id);
   }
-  const checked = root.querySelector('[data-gsxui-combobox-item][data-state="checked"]');
   const input = inputOf(root);
-  if (checked && input && !input.value) input.value = labelOf(checked);
+  const list = listOf(root);
+  if (input && list) {
+    if (!list.id) list.id = `gsxui-combobox-list-${++uid}`;
+    input.setAttribute("aria-controls", list.id);
+  }
+  const checked = root.querySelector('[data-gsxui-combobox-item][data-state="checked"]');
+  if (checked && input && !input.value) {
+    input.value = labelOf(checked);
+    input.dataset.gsxuiCommitted = "true";
+  }
 }
 
 for (const root of document.querySelectorAll("[data-gsxui-combobox]")) init(root);
@@ -175,13 +262,20 @@ function openContent(root) {
   // state (same fix select.js/dropdown.js document).
   content.dataset.state = "open";
   content.showPopover();
-  filter(root);
+  // Reopening after a commit/init/reset shows every option, not just the
+  // one whose label happens to be sitting in the input — see filter()'s and
+  // commit()'s own headers (FIX, review round 1, CRITICAL).
+  filter(root, input?.dataset.gsxuiCommitted ? "" : undefined);
 }
 
 function closeContent(root) {
   contentOf(root)?.hidePopover();
 }
 
+// aria-controls is now a PERMANENT attribute wired once at init() (APG
+// expects it present regardless of open/closed state — see
+// ui/combobox.gsx's own ComboboxInput doc comment); this handler only
+// tracks open/closed state and clears the highlight cursor on close.
 on("toggle", "[data-gsxui-combobox-content]", (e, content) => {
   const open = e.newState === "open";
   content.dataset.state = open ? "open" : "closed";
@@ -189,15 +283,8 @@ on("toggle", "[data-gsxui-combobox-content]", (e, content) => {
   const input = inputOf(root);
   input?.setAttribute("aria-expanded", open ? "true" : "false");
   if (open) {
-    // aria-controls points at the listbox (role="listbox" lives on
-    // ComboboxList, not on this popover surface), falling back to the
-    // content itself if a caller omitted ComboboxList.
-    const list = listOf(root) ?? content;
-    if (!list.id) list.id = `gsxui-combobox-list-${++uid}`;
-    input?.setAttribute("aria-controls", list.id);
     emit(content, "gsxui:open");
   } else {
-    input?.removeAttribute("aria-controls");
     input?.removeAttribute("aria-activedescendant");
     for (const item of itemsOf(root)) delete item.dataset.highlighted;
     emit(content, "gsxui:close");
@@ -237,18 +324,24 @@ on("click", "[data-gsxui-combobox-clear]", (_e, clear) => {
   clearValue(rootOf(clear));
 });
 
-// --- the input: opens on focus, filters on input, keyboard nav -----------
+// --- the input: opens on click, filters on input, keyboard nav -----------
 
-on(
-  "focus",
-  "[data-gsxui-combobox-input]",
-  (_e, input) => {
-    openContent(rootOf(input));
-  },
-  { capture: true },
-);
+// FIX (review round 1, CRITICAL — see the file header for the full trace):
+// opening from "focus" opened the popover MID-GESTURE, so the pointer
+// gesture that focused the input also light-dismissed the popover it just
+// opened — click the input, watch the list flash open and vanish. "click"
+// fires after light-dismiss has already been evaluated for that gesture,
+// the same reason the trigger chevron (which always opened on "click")
+// never had this bug.
+on("click", "[data-gsxui-combobox-input]", (_e, input) => {
+  openContent(rootOf(input));
+});
 
 on("input", "[data-gsxui-combobox-input]", (_e, input) => {
+  // The user is typing now — any earlier commit/init/reset-seeded text no
+  // longer applies; a real, query-driven filter pass is always correct
+  // from here (see filter()'s and openContent()'s own headers).
+  delete input.dataset.gsxuiCommitted;
   const root = rootOf(input);
   const content = contentOf(root);
   if (content && !content.matches(":popover-open")) {
