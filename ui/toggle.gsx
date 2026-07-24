@@ -2,6 +2,36 @@ package ui
 
 import "github.com/gsxhq/gsx"
 
+// toggleBase/toggleVariantClass/toggleSizeClass are Toggle's own
+// toggleVariants(variant, size) computation, split into package-private
+// helpers (the button.gsx base/variantClass/sizeClass shape) so
+// ToggleGroupItem (ui/toggle-group.gsx) can compose the identical
+// nova-retargeted classes onto its own <button> rather than re-deriving
+// them — the same pagination.gsx -> button.gsx dependency shape, and the
+// mechanism internal/registry's declIndex derives the toggle-group -> toggle
+// dependency from.
+const toggleBase = "inline-flex items-center justify-center gap-1 rounded-lg text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-muted hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+
+func toggleVariantClass(variant string) string {
+	switch variant {
+	case "outline":
+		return "border border-input bg-transparent hover:bg-accent hover:text-accent-foreground"
+	default:
+		return "bg-transparent"
+	}
+}
+
+func toggleSizeClass(size string) string {
+	switch size {
+	case "sm":
+		return "h-7 min-w-7 rounded-[min(var(--radius-md),12px)] px-2.5 has-[>svg]:px-1.5 text-[0.8rem] [&_svg:not([class*='size-'])]:size-3.5"
+	case "lg":
+		return "h-9 min-w-9 px-2.5 has-[>svg]:px-2"
+	default:
+		return "h-8 min-w-8 px-2.5 has-[>svg]:px-2"
+	}
+}
+
 // Toggle is the shadcn/ui Toggle (registry/new-york-v4/ui/toggle.tsx),
 // ported as a plain <button type="button"> carrying a server-visible
 // `pressed` bool in place of Radix's TogglePrimitive.Root uncontrolled
@@ -63,11 +93,7 @@ component Toggle(pressed bool, variant string, size string, children gsx.Node, a
 		data-size={size |> default("default")}
 		data-state={state}
 		aria-pressed={pressed}
-		class={
-			"inline-flex items-center justify-center gap-1 rounded-lg text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-muted hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-			switch variant { case "outline": "border border-input bg-transparent hover:bg-accent hover:text-accent-foreground" default: "bg-transparent" },
-			switch size { case "sm": "h-7 min-w-7 rounded-[min(var(--radius-md),12px)] px-2.5 has-[>svg]:px-1.5 text-[0.8rem] [&_svg:not([class*='size-'])]:size-3.5" case "lg": "h-9 min-w-9 px-2.5 has-[>svg]:px-2" default: "h-8 min-w-8 px-2.5 has-[>svg]:px-2" }
-		}
+		class={ toggleBase, toggleVariantClass(variant), toggleSizeClass(size) }
 		{ attrs... }
 	>
 		{ children }

@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "collapsible", "command", "context-menu", "dialog", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "item", "kbd", "label", "pagination", "popover", "progress", "radio", "select", "separator", "sheet", "skeleton", "spinner", "switch", "table", "tabs", "textarea", "toggle", "tooltip"}
+	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "checkbox", "collapsible", "command", "context-menu", "dialog", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "item", "kbd", "label", "pagination", "popover", "progress", "radio", "select", "separator", "sheet", "skeleton", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -242,6 +242,18 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("toggle deps = %v, want none", deps)
 	}
 
+	// toggle-group.gsx has no icon import; ToggleGroupItem calls toggle.gsx's
+	// package-private toggleBase/toggleVariantClass/toggleSizeClass directly
+	// (flat package intra-package edge, same declIndex-resolved shape as
+	// pagination's own button dep above).
+	deps, err = registry.Deps("toggle-group")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(deps, []string{"toggle"}) {
+		t.Fatalf("toggle-group deps = %v, want [toggle]", deps)
+	}
+
 	// popover.gsx has no icon import and no intra-package reference to
 	// another component — Popover/PopoverTrigger/PopoverContent are all
 	// plain elements, same shape as toggle's own deps entry.
@@ -312,6 +324,13 @@ func TestHasJS(t *testing.T) {
 	// toggle has its own ui/toggle.js (click flips aria-pressed/data-state).
 	if !registry.HasJS("toggle") {
 		t.Error("toggle should have JS")
+	}
+	// toggle-group has its own ui/toggle-group.js (roving tabindex, arrow-key
+	// nav, click activation) — a separate behavior module from toggle.js
+	// despite the toggle-group -> toggle CLASS dependency above; the two
+	// components' interaction models don't overlap enough to share JS.
+	if !registry.HasJS("toggle-group") {
+		t.Error("toggle-group should have JS")
 	}
 	// popover has its own ui/popover.js (anchored positioning + state/aria
 	// sync, adapted from dropdown.js).
