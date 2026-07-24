@@ -163,7 +163,7 @@ component SheetContent(side string, hideCloseButton bool, children gsx.Node, att
 			// new-york-v4's 500ms-in/300ms-out pair read visibly sluggish next
 			// to the live site. Backdrop rides the same 200ms so its exit never
 			// ends before the panel's (fill-mode none would snap it back).
-			"fixed z-50 m-0 max-h-none open:flex flex-col gap-4 bg-background text-foreground shadow-lg transition ease-in-out duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-black/10 backdrop:duration-200 supports-backdrop-filter:backdrop:backdrop-blur-xs data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0",
+			"fixed z-50 m-0 max-h-none open:flex flex-col gap-4 text-sm bg-background text-foreground shadow-lg transition ease-in-out duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-black/10 backdrop:duration-200 supports-backdrop-filter:backdrop:backdrop-blur-xs data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0",
 			switch side {
 			case "left":
 				"inset-y-0 left-0 right-auto h-full w-3/4 border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm"
@@ -184,7 +184,7 @@ component SheetContent(side string, hideCloseButton bool, children gsx.Node, att
 				data-slot="sheet-close"
 				data-gsxui-dialog-close
 				aria-label="Close"
-				class="absolute top-4 right-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none data-[state=open]:bg-secondary"
+				class="absolute top-3 right-3 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none data-[state=open]:bg-secondary"
 			>
 				<svg
 					class="size-4"
@@ -207,7 +207,7 @@ component SheetContent(side string, hideCloseButton bool, children gsx.Node, att
 }
 
 component SheetHeader(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="sheet-header" class="flex flex-col gap-1.5 p-4" { attrs... }>{ children }</div>
+	<div data-slot="sheet-header" class="flex flex-col gap-0.5 p-4" { attrs... }>{ children }</div>
 }
 
 component SheetFooter(children gsx.Node, attrs gsx.Attrs) {
@@ -215,7 +215,7 @@ component SheetFooter(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component SheetTitle(children gsx.Node, attrs gsx.Attrs) {
-	<h2 data-slot="sheet-title" class="font-semibold text-foreground" { attrs... }>{ children }</h2>
+	<h2 data-slot="sheet-title" class="text-base font-medium text-foreground" { attrs... }>{ children }</h2>
 }
 
 component SheetDescription(children gsx.Node, attrs gsx.Attrs) {

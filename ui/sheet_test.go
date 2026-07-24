@@ -76,7 +76,7 @@ func TestSheetTriggerPinned(t *testing.T) {
 // (dialog's own ADAPT, reused here).
 func TestSheetContentPinnedDefaultSide(t *testing.T) {
 	got := render(t, ui.SheetContent("", false, gsx.Raw("x"), nil))
-	want := `<dialog data-slot="sheet-content" data-gsxui-dialog-content data-state="closed" data-side="right" class="fixed z-50 m-0 max-h-none open:flex flex-col gap-4 bg-background text-foreground shadow-lg transition ease-in-out duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-black/10 backdrop:duration-200 supports-backdrop-filter:backdrop:backdrop-blur-xs data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 inset-y-0 right-0 left-auto h-full w-3/4 border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm">x<button type="button" data-slot="sheet-close" data-gsxui-dialog-close aria-label="Close" class="absolute top-4 right-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none data-[state=open]:bg-secondary"><svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></dialog>`
+	want := `<dialog data-slot="sheet-content" data-gsxui-dialog-content data-state="closed" data-side="right" class="fixed z-50 m-0 max-h-none open:flex flex-col gap-4 text-sm bg-background text-foreground shadow-lg transition ease-in-out duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-black/10 backdrop:duration-200 supports-backdrop-filter:backdrop:backdrop-blur-xs data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 inset-y-0 right-0 left-auto h-full w-3/4 border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm">x<button type="button" data-slot="sheet-close" data-gsxui-dialog-close aria-label="Close" class="absolute top-3 right-3 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none data-[state=open]:bg-secondary"><svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></dialog>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -170,7 +170,7 @@ func TestSheetContentAttrsFallThrough(t *testing.T) {
 
 func TestSheetHeaderPinned(t *testing.T) {
 	got := render(t, ui.SheetHeader(gsx.Raw("x"), nil))
-	want := `<div data-slot="sheet-header" class="flex flex-col gap-1.5 p-4">x</div>`
+	want := `<div data-slot="sheet-header" class="flex flex-col gap-0.5 p-4">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -186,7 +186,7 @@ func TestSheetFooterPinned(t *testing.T) {
 
 func TestSheetTitlePinned(t *testing.T) {
 	got := render(t, ui.SheetTitle(gsx.Raw("Edit profile"), nil))
-	want := `<h2 data-slot="sheet-title" class="font-semibold text-foreground">Edit profile</h2>`
+	want := `<h2 data-slot="sheet-title" class="text-base font-medium text-foreground">Edit profile</h2>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -194,11 +194,11 @@ func TestSheetTitlePinned(t *testing.T) {
 
 // TestSheetTitleCallerClassMerges proves the fallthrough class merge path
 // (representative pin per the task's test requirements): a caller class
-// conflicting on the `font-semibold` utility must win.
+// conflicting on the `font-medium` utility must win.
 func TestSheetTitleCallerClassMerges(t *testing.T) {
 	got := render(t, ui.SheetTitle(gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "font-bold"}}))
-	if strings.Contains(got, "font-semibold") {
-		t.Errorf("base font-semibold should be dropped by caller font-bold\nin: %s", got)
+	if strings.Contains(got, "font-medium") {
+		t.Errorf("base font-medium should be dropped by caller font-bold\nin: %s", got)
 	}
 	for _, want := range []string{"font-bold", "text-foreground"} {
 		if !strings.Contains(got, want) {

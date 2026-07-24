@@ -85,7 +85,7 @@ func TestAlertDialogTriggerPinned(t *testing.T) {
 // DialogContent render.
 func TestAlertDialogContentPinned(t *testing.T) {
 	got := render(t, ui.AlertDialogContent(gsx.Raw("x"), nil))
-	want := `<dialog data-gsxui-dialog-content data-state="closed" class="fixed top-[50%] left-[50%] z-50 open:grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border bg-background p-6 text-foreground shadow-lg duration-200 outline-none sm:max-w-lg data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 backdrop:bg-black/10 backdrop:duration-200 supports-backdrop-filter:backdrop:backdrop-blur-xs data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0" data-slot="alert-dialog-content" role="alertdialog" data-gsxui-dialog-static="true">x</dialog>`
+	want := `<dialog data-gsxui-dialog-content data-state="closed" class="fixed top-[50%] left-[50%] z-50 open:grid w-full translate-x-[-50%] translate-y-[-50%] gap-4 rounded-xl ring-1 bg-background p-4 text-sm text-foreground duration-200 outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 backdrop:bg-black/10 backdrop:duration-200 supports-backdrop-filter:backdrop:backdrop-blur-xs data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 max-w-xs sm:max-w-sm" data-slot="alert-dialog-content" role="alertdialog" data-gsxui-dialog-static="true">x</dialog>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -126,7 +126,7 @@ func TestAlertDialogHeaderPinned(t *testing.T) {
 
 func TestAlertDialogFooterPinned(t *testing.T) {
 	got := render(t, ui.AlertDialogFooter(gsx.Raw("x"), nil))
-	want := `<div data-slot="alert-dialog-footer" class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">x</div>`
+	want := `<div data-slot="alert-dialog-footer" class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end -mx-4 -mb-4 rounded-b-xl border-t p-4">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -134,7 +134,7 @@ func TestAlertDialogFooterPinned(t *testing.T) {
 
 func TestAlertDialogTitlePinned(t *testing.T) {
 	got := render(t, ui.AlertDialogTitle(gsx.Raw("Are you absolutely sure?"), nil))
-	want := `<h2 data-slot="alert-dialog-title" class="text-lg font-semibold">Are you absolutely sure?</h2>`
+	want := `<h2 data-slot="alert-dialog-title" class="text-base font-medium">Are you absolutely sure?</h2>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -142,13 +142,13 @@ func TestAlertDialogTitlePinned(t *testing.T) {
 
 // TestAlertDialogTitleCallerClassMerges proves the fallthrough class merge
 // path (representative pin per the task's test requirements): a caller
-// class conflicting on the `text-lg` font-size utility must win.
+// class conflicting on the `text-base` font-size utility must win.
 func TestAlertDialogTitleCallerClassMerges(t *testing.T) {
 	got := render(t, ui.AlertDialogTitle(gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "text-xl"}}))
-	if strings.Contains(got, "text-lg") {
-		t.Errorf("base text-lg should be dropped by caller text-xl\nin: %s", got)
+	if strings.Contains(got, "text-base") {
+		t.Errorf("base text-base should be dropped by caller text-xl\nin: %s", got)
 	}
-	for _, want := range []string{"text-xl", "font-semibold"} {
+	for _, want := range []string{"text-xl", "font-medium"} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}

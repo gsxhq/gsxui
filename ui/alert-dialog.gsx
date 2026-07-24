@@ -57,44 +57,55 @@ component AlertDialogTrigger(children gsx.Node, attrs gsx.Attrs) {
 
 // AlertDialogContent composes ui.DialogContent with hideCloseButton always
 // true (shadcn's AlertDialog never renders the injected X — there is no
-// showCloseButton-equivalent prop on AlertDialogContent at all) plus three
+// showCloseButton-equivalent prop on AlertDialogContent at all) plus four
 // attrs layered on via the same override mechanism as AlertDialog's own
 // data-slot: data-slot="alert-dialog-content" (shadcn's own slot name),
 // role="alertdialog" (the one a11y difference from a plain Dialog — it
-// tells assistive tech this dialog demands a response), and
+// tells assistive tech this dialog demands a response),
 // data-gsxui-dialog-static (opts this content out of dialog.js's
-// backdrop-click light dismiss — see this file's header comment).
+// backdrop-click light dismiss — see this file's header comment), and a
+// class override.
 //
-// No class attr is passed here (there is no third, merged class string).
 // Diffed token-for-token against DialogContent's own base class, every
 // non-variant utility alert-dialog.tsx's content class carries (bg-
 // background, fixed, top-[50%], left-[50%], z-50, w-full, max-w-[calc(100%-
-// 2rem)], translate-x/y-[-50%], gap-4, rounded-lg, border, p-6, shadow-lg,
-// duration-200, sm:max-w-lg) and all six data-[state=…]:animate-in/out,
-// fade-*, zoom-* tokens are already there — both dialogs share one
-// centered-card recipe upstream (see the ledger NOTE on which revision).
-// The one token that is NOT shared, a bare `grid`, is dropped rather than
-// re-supplied: DialogContent's own `open:grid` exists specifically so the
-// content stays display:none while the native <dialog> is closed (ui/
-// dialog.gsx's own ADAPT); passing an unscoped `grid` alongside a
-// `open:`-scoped one would not be resolved as a tailwind-merge conflict
-// (variant scope is part of the conflict key — the same non-collision
-// documented for accordion's rotate override, docs/jsx-parity.md
-// `## accordion`) and, worse, the configured merger doesn't recognize the
-// tw-animate-css tokens (`animate-in`/`fade-*`/`zoom-*`) as a conflict
-// group at all (see `## animations`'s FINDING), so re-supplying any of
-// them would literally duplicate them in the output rather than merge.
-// Net effect: AlertDialogContent's rendered class is exactly DialogContent's
-// own default, unchanged — pinned as such in alert-dialog_test.go, itself
-// the parity claim (only role="alertdialog", data-gsxui-dialog-static, and
-// hideCloseButton's injected-X/backdrop-dismiss suppression distinguish an
-// alert dialog from a plain one).
+// 2rem)], translate-x/y-[-50%], gap-4, rounded-xl, ring-1, p-4, text-sm,
+// duration-200) and all six data-[state=…]:animate-in/out, fade-*, zoom-*
+// tokens are already there — both dialogs share one centered-card recipe
+// upstream (see the ledger NOTE on which revision). The one token that is
+// NOT shared, a bare `grid`, is dropped rather than re-supplied:
+// DialogContent's own `open:grid` exists specifically so the content stays
+// display:none while the native <dialog> is closed (ui/dialog.gsx's own
+// ADAPT); passing an unscoped `grid` alongside a `open:`-scoped one would
+// not be resolved as a tailwind-merge conflict (variant scope is part of
+// the conflict key — the same non-collision documented for accordion's
+// rotate override, docs/jsx-parity.md `## accordion`) and, worse, the
+// configured merger doesn't recognize the tw-animate-css tokens
+// (`animate-in`/`fade-*`/`zoom-*`) as a conflict group at all (see
+// `## animations`'s FINDING), so re-supplying any of them would literally
+// duplicate them in the output rather than merge.
+//
+// The one token that IS overridden: `max-w-xs sm:max-w-sm` replaces
+// DialogContent's own `max-w-[calc(100%-2rem)] ... sm:max-w-sm` width pair
+// via the class="..." attr's tailwind-merge pass (same merge path
+// FieldSeparator's `<Separator class="...">` composition uses) — alert
+// dialogs render narrower than plain dialogs (upstream gates this behind a
+// `size` variant this port does not carry; `max-w-xs`/`sm:max-w-sm` is that
+// variant's `default`-size value, applied unconditionally since there is no
+// `size` prop here — see docs/jsx-parity.md `## alert-dialog` GAP). Net
+// effect: AlertDialogContent's rendered class matches DialogContent's own
+// default except for that narrower max-width — pinned as such in
+// alert-dialog_test.go, itself the parity claim (role="alertdialog",
+// data-gsxui-dialog-static, hideCloseButton's injected-X/backdrop-dismiss
+// suppression, and the max-width override distinguish an alert dialog from
+// a plain one).
 component AlertDialogContent(children gsx.Node, attrs gsx.Attrs) {
 	<DialogContent
 		hideCloseButton={true}
 		data-slot="alert-dialog-content"
 		role="alertdialog"
 		data-gsxui-dialog-static
+		class="max-w-xs sm:max-w-sm"
 		{ attrs... }
 	>
 		{ children }
@@ -125,11 +136,11 @@ component AlertDialogHeader(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component AlertDialogFooter(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="alert-dialog-footer" class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end" { attrs... }>{ children }</div>
+	<div data-slot="alert-dialog-footer" class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end -mx-4 -mb-4 rounded-b-xl border-t p-4" { attrs... }>{ children }</div>
 }
 
 component AlertDialogTitle(children gsx.Node, attrs gsx.Attrs) {
-	<h2 data-slot="alert-dialog-title" class="text-lg font-semibold" { attrs... }>{ children }</h2>
+	<h2 data-slot="alert-dialog-title" class="text-base font-medium" { attrs... }>{ children }</h2>
 }
 
 // class token order (`text-sm text-muted-foreground`) matches the current
