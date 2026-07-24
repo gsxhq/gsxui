@@ -12,8 +12,12 @@ github.com/gsxhq/gsx v0.0.0-20260724092639-66ed604307a9 h1:H+ED/TI3gl4PUyPYLjaqb
 github.com/gsxhq/gsx v0.0.0-20260724092639-66ed604307a9/go.mod h1:/jf9pgYLIm/iWTHKFDaSvcSXGL9uj8xZlO+nAP7ZeCU=
 github.com/gsxhq/gsx v0.0.0-20260724111019-88694f5228a9 h1:un3vB7sW8hOMJf+1dVl6Yfq+b1AmxW9CUMHIZb7KQfM=
 github.com/gsxhq/gsx v0.0.0-20260724111019-88694f5228a9/go.mod h1:/jf9pgYLIm/iWTHKFDaSvcSXGL9uj8xZlO+nAP7ZeCU=
+github.com/gsxhq/gsx v0.0.0-20260724160502-9bb55ae38eec h1:epfH0YymiIEaKXyIEb5oJYrENvB0BVVC3Nnzr8WZSBw=
+github.com/gsxhq/gsx v0.0.0-20260724160502-9bb55ae38eec/go.mod h1:/jf9pgYLIm/iWTHKFDaSvcSXGL9uj8xZlO+nAP7ZeCU=
 github.com/gsxhq/vite v0.3.1 h1:XkdmrYkidP0wENeE+kSL5BpJCOB2Iti7CxTfHjgyzs0=
 github.com/gsxhq/vite v0.3.1/go.mod h1:tDUvkK2CbjwYex6b5+kHL0tK2vIwS0h3kJQLroxs2PY=
+github.com/gsxhq/vite v0.3.2 h1:7gcoJHDow/xlrHG11UKc/bGg9zYtSuWaDCMKpaI0JnI=
+github.com/gsxhq/vite v0.3.2/go.mod h1:tDUvkK2CbjwYex6b5+kHL0tK2vIwS0h3kJQLroxs2PY=
 github.com/jackielii/ctxkey v1.0.1 h1:CcgbR+fQbrzZJWxI/7Ec4EhzUbmTU1sfI1gV7MAgjIg=
 github.com/jackielii/ctxkey v1.0.1/go.mod h1:fo4HOwrvSnc3n8o5qZ5L+FVcSyQn+d67CCnlEbH24uc=
 github.com/jackielii/structpages v0.6.6 h1:oYrg1p6e1b+O7B3giutoAMEJz1Ie1uowlO1vSiMRUOM=
