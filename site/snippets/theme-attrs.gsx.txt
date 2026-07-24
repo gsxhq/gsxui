@@ -1,0 +1,9 @@
+<ui.Button
+	id="submit"
+	aria-label="Submit the form"
+	data-testid="submit-btn"
+	hx-post="/submit"
+	hx-target="#result"
+>
+	Submit
+</ui.Button>

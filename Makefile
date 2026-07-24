@@ -1,7 +1,21 @@
-.PHONY: generate test check icons site-dev site
+.PHONY: generate test check icons site-dev site highlight
 
 generate:
 	go tool gsx generate
+
+# highlight regenerates site/hl/blocks.gen.go — every component example and
+# doc snippet pre-rendered to highlighted HTML. Run it after adding, renaming
+# or editing anything under site/examples/ or site/snippets/; TestBlocksCoverSources
+# and TestBlocksMatchSourceText fail when the committed output goes stale.
+#
+# The generator is a SEPARATE module (site/hl/gen/go.mod) because tree-sitter
+# is C: keeping it out of gsxui's module is what lets site/main.go keep
+# building CGO_ENABLED=0 into a distroless/static image. It resolves the
+# grammar and highlighter from sibling checkouts via replace directives, so
+# it needs ../tree-sitter-gsx and ../gsxhl next to this repo — nothing else
+# does, including CI and the Docker build, which consume the committed output.
+highlight:
+	cd site/hl/gen && go run .
 
 # icons regenerates ui/icon/icon_data.go and ui/icon/icon_defs.go from a
 # local Lucide checkout. See internal/lucidegen and Task 1's brief for the

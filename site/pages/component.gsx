@@ -6,6 +6,7 @@ import (
 
 	"github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/site/examples"
+	"github.com/gsxhq/gsxui/site/hl"
 )
 
 // Component is the /components/{name} page — the harness that proves
@@ -22,13 +23,15 @@ type ComponentProps struct {
 	Examples []exampleProps
 }
 
-// exampleProps pairs a registered examples.Example with its loaded source
-// text — loaded once in Props (which can error) so Page itself never has
-// to handle an error mid-render.
+// exampleProps pairs a registered examples.Example with the key its
+// highlighted source is stored under. The source text itself is no longer
+// loaded here: site/hl holds every example pre-rendered to highlighted HTML
+// (generated from these same files, see site/hl/gen), so the page looks the
+// block up by SourcePath instead of reading and escaping it per request.
 type exampleProps struct {
-	Title  string
-	Node   gsx.Node
-	Source string
+	Title      string
+	Node       gsx.Node
+	SourcePath string
 }
 
 // Props resolves the {name} path param against the examples registry.
@@ -46,11 +49,7 @@ func (Component) Props(r *http.Request) (ComponentProps, error) {
 	}
 	eps := make([]exampleProps, len(exs))
 	for i, ex := range exs {
-		src, err := examples.Source(ex.SourcePath)
-		if err != nil {
-			return ComponentProps{}, err
-		}
-		eps[i] = exampleProps{Title: ex.Title, Node: ex.Node, Source: src}
+		eps[i] = exampleProps{Title: ex.Title, Node: ex.Node, SourcePath: ex.SourcePath}
 	}
 	return ComponentProps{Name: name, Title: capitalize(name), Examples: eps}, nil
 }
@@ -93,8 +92,8 @@ component (c Component) Page(props ComponentProps) {
 					</div>
 					<div class="relative" data-site-example>
 						<pre
-							class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
-						><code>{ ex.Source }</code></pre>
+							class="overflow-x-auto rounded-2xl bg-muted/50 px-4 py-3.5 font-mono text-sm"
+						><code>{ hl.Node(ex.SourcePath) }</code></pre>
 						<button
 							type="button"
 							data-site-copy

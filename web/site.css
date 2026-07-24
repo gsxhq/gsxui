@@ -172,6 +172,118 @@
   }
 }
 
+/* Syntax highlighting for docs code blocks.
+   Tokens are emitted at build time by site/hl (see site/hl/gen) as spans
+   carrying tree-sitter capture classes, so color lives entirely here and one
+   stylesheet serves both themes — no re-highlighting on theme toggle, no
+   client-side highlighter. Palette carried over from jackieli.dev's
+   gsx-highlight.css so gsx source reads the same across our sites, retargeted
+   from that site's body.colorscheme-dark onto gsxui's .dark class.
+
+   Captures not listed fall back to the block's own color, which is the point
+   of the ts- classes being semantic: an unstyled capture is plain text, never
+   invisible text. */
+code .ts-keyword,
+code .ts-keyword-conditional,
+code .ts-keyword-directive {
+  color: #7c3aed;
+}
+code .ts-function,
+code .ts-function-builtin,
+code .ts-function-method {
+  color: #2563eb;
+}
+code .ts-type,
+code .ts-type-builtin {
+  color: #0e7490;
+}
+code .ts-constructor {
+  color: #b45309;
+}
+code .ts-tag {
+  color: #1e3a8a;
+}
+code .ts-attribute,
+code .ts-property {
+  color: #b91c1c;
+  font-style: italic;
+}
+code .ts-string,
+code .ts-string-special {
+  color: #15803d;
+}
+code .ts-string-escape {
+  color: #0f766e;
+}
+code .ts-number,
+code .ts-constant,
+code .ts-constant-builtin {
+  color: #b45309;
+}
+code .ts-comment {
+  color: #8a8a8a;
+  font-style: italic;
+}
+code .ts-operator,
+code .ts-punctuation-bracket,
+code .ts-punctuation-delimiter,
+code .ts-punctuation-special,
+code .ts-tag-delimiter {
+  color: #4e4e4e;
+}
+code .ts-embedded,
+code .ts-variable,
+code .ts-variable-builtin {
+  color: inherit;
+}
+
+.dark code .ts-keyword,
+.dark code .ts-keyword-conditional,
+.dark code .ts-keyword-directive {
+  color: #c792ea;
+}
+.dark code .ts-function,
+.dark code .ts-function-builtin,
+.dark code .ts-function-method {
+  color: #82aaff;
+}
+.dark code .ts-type,
+.dark code .ts-type-builtin {
+  color: #4ec9b0;
+}
+.dark code .ts-constructor {
+  color: #d2a86a;
+}
+.dark code .ts-tag {
+  color: #7aa2f7;
+}
+.dark code .ts-attribute,
+.dark code .ts-property {
+  color: #f7768e;
+}
+.dark code .ts-string,
+.dark code .ts-string-special {
+  color: #9ece6a;
+}
+.dark code .ts-string-escape {
+  color: #2ec4b6;
+}
+.dark code .ts-number,
+.dark code .ts-constant,
+.dark code .ts-constant-builtin {
+  color: #ff9e64;
+}
+.dark code .ts-comment {
+  color: #7f848e;
+}
+.dark code .ts-operator,
+.dark code .ts-punctuation-bracket,
+.dark code .ts-punctuation-delimiter,
+.dark code .ts-punctuation-special,
+.dark code .ts-tag-delimiter {
+  color: #89ddff;
+}
+
 /* Accordion open/close animation — pure CSS over the native <details>
    mechanism. ::details-content wraps everything but the summary; animating
    its grid row 0fr -> 1fr animates height-to-auto with no interpolate-size

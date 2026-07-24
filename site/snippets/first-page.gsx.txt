@@ -1,0 +1,23 @@
+package main
+
+import "example.com/myapp/ui"
+
+component Home() {
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<link rel="stylesheet" href="/web/gsxui.css"/>
+		</head>
+		<body class="flex min-h-svh items-center justify-center bg-background p-8 text-foreground">
+			<ui.Card class="w-full max-w-sm">
+				<ui.CardHeader>
+					<ui.CardTitle>Hello, gsxui</ui.CardTitle>
+					<ui.CardDescription>Your first page.</ui.CardDescription>
+				</ui.CardHeader>
+				<ui.CardContent>
+					<ui.Button>Click me</ui.Button>
+				</ui.CardContent>
+			</ui.Card>
+		</body>
+	</html>
+}

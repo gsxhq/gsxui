@@ -1,0 +1,15 @@
+package main
+
+import (
+	"log"
+	"net/http"
+)
+
+func main() {
+	http.Handle("/web/", http.StripPrefix("/web/", http.FileServer(http.Dir("web"))))
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		Home().Render(r.Context(), w)
+	})
+	log.Println("listening on http://localhost:8080")
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}

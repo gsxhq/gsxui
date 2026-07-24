@@ -3,3 +3,4 @@ site/dist/*
 !site/dist/.gitkeep
 /tmp/
 .env
+/site/hl/gen/gen

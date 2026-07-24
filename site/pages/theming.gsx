@@ -1,5 +1,7 @@
 package pages
 
+import "github.com/gsxhq/gsxui/site/hl"
+
 // Theming is the /docs/theming page: the token model (20 shadcn-compatible
 // CSS custom properties, light + .dark), how to restyle a project's vendored
 // gsxui.css, and the three-part customization story from
@@ -7,97 +9,6 @@ package pages
 // entries — caller class merge, attrs fallthrough, and the data-attribute
 // idiom for behavior attachment.
 type Theming struct{}
-
-const themeTokensCSS = `@theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-}
-
-:root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0% 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0% 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0% 0 0);
-  --primary: oklch(0% 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.97 0.01 17);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --ring: oklch(0.556 0 0);
-  /* …and the rest of the pairs above, each with a dark-mode value */
-}`
-
-const themeRestyleSnippet = `/* web/gsxui.css — yours after 'gsxui init'; edit the values in place */
-:root {
-  --radius: 0.5rem;                  /* squarer corners, every component */
-  --primary: oklch(0.55 0.2 265);    /* brand blue instead of near-black */
-  --primary-foreground: oklch(0.98 0 0);
-}
-
-.dark {
-  --primary: oklch(0.72 0.15 265);
-}`
-
-const themeMergeSnippet = `<ui.Button class="h-12">Tall</ui.Button>`
-
-const themeAttrsSnippet = `<ui.Button
-	id="submit"
-	aria-label="Submit the form"
-	data-testid="submit-btn"
-	hx-post="/submit"
-	hx-target="#result"
->
-	Submit
-</ui.Button>`
-
-const themeDataAttrSnippet = `<ui.Dialog>
-	<ui.Button variant="outline" data-gsxui-dialog-trigger>
-		Open
-	</ui.Button>
-	<ui.DialogContent>
-		...
-	</ui.DialogContent>
-</ui.Dialog>`
 
 component (t Theming) Page() {
 	<Layout title="Theming" active="theming">
@@ -126,7 +37,7 @@ component (t Theming) Page() {
 					<code>border-input</code>
 					, and friends all resolve to a token, not a hard-coded value:
 				</p>
-				<pre><code>{ themeTokensCSS }</code></pre>
+				<pre><code>{ hl.Node("snippets/theme-tokens.css") }</code></pre>
 				<p>
 					The eight paired tokens (
 					<code>background</code>
@@ -159,7 +70,7 @@ component (t Theming) Page() {
 						gsxui init
 					</code> writes it. Restyling is editing the values inside <code>:root</code> and <code>.dark</code> directly:
 				</p>
-				<pre><code>{ themeRestyleSnippet }</code></pre>
+				<pre><code>{ hl.Node("snippets/theme-restyle.css") }</code></pre>
 				<p>
 					Because the variable names (
 					<code>--primary</code>
@@ -187,7 +98,7 @@ component (t Theming) Page() {
 						, backed by <code>tailwind-merge-go</code>
 						) resolves conflicts the way Tailwind itself would: whichever utility comes last in the same category wins, structural classes that aren't in that category are untouched.
 					</p>
-					<pre><code>{ themeMergeSnippet }</code></pre>
+					<pre><code>{ hl.Node("snippets/theme-merge.gsx") }</code></pre>
 					<p>
 						<code>Button</code>
 						's default size class is
@@ -210,7 +121,7 @@ component (t Theming) Page() {
 						<code>data-*</code>
 						, and HTMX's <code>hx-*</code> attributes all pass straight through:
 					</p>
-					<pre><code>{ themeAttrsSnippet }</code></pre>
+					<pre><code>{ hl.Node("snippets/theme-attrs.gsx") }</code></pre>
 				</div>
 				<div class="flex flex-col gap-3">
 					<h3>Data-attribute idiom: attaching behavior to your own markup</h3>
@@ -222,7 +133,7 @@ component (t Theming) Page() {
 						</code> deliver it to <em>any</em> element or component, no cloning and no wrapper required. A plain styled
 						<code>Button</code> becomes a dialog trigger just by carrying the attribute:
 					</p>
-					<pre><code>{ themeDataAttrSnippet }</code></pre>
+					<pre><code>{ hl.Node("snippets/theme-dataattr.gsx") }</code></pre>
 					<p>
 						The same idiom covers every interactive component's public hooks —
 						<code>data-gsxui-dialog-close</code>

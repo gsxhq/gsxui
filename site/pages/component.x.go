@@ -10,6 +10,7 @@ import (
 	"github.com/gsxhq/gsx"
 	_gsxrt "github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/site/examples"
+	"github.com/gsxhq/gsxui/site/hl"
 	_gsxio "io"
 )
 
@@ -19,7 +20,7 @@ import (
 // exact source text that produced it. Unknown/unregistered names 404 (see
 // Props below and ErrorWithStatus in pages.go).
 //
-//line component.gsx:11:1
+//line component.gsx:12:1
 type Component struct{}
 
 // ComponentProps is Component's Props result.
@@ -29,13 +30,15 @@ type ComponentProps struct {
 	Examples []exampleProps
 }
 
-// exampleProps pairs a registered examples.Example with its loaded source
-// text — loaded once in Props (which can error) so Page itself never has
-// to handle an error mid-render.
+// exampleProps pairs a registered examples.Example with the key its
+// highlighted source is stored under. The source text itself is no longer
+// loaded here: site/hl holds every example pre-rendered to highlighted HTML
+// (generated from these same files, see site/hl/gen), so the page looks the
+// block up by SourcePath instead of reading and escaping it per request.
 type exampleProps struct {
-	Title  string
-	Node   gsx.Node
-	Source string
+	Title      string
+	Node       gsx.Node
+	SourcePath string
 }
 
 // Props resolves the {name} path param against the examples registry.
@@ -53,11 +56,7 @@ func (Component) Props(r *http.Request) (ComponentProps, error) {
 	}
 	eps := make([]exampleProps, len(exs))
 	for i, ex := range exs {
-		src, err := examples.Source(ex.SourcePath)
-		if err != nil {
-			return ComponentProps{}, err
-		}
-		eps[i] = exampleProps{Title: ex.Title, Node: ex.Node, Source: src}
+		eps[i] = exampleProps{Title: ex.Title, Node: ex.Node, SourcePath: ex.SourcePath}
 	}
 	return ComponentProps{Name: name, Title: capitalize(name), Examples: eps}, nil
 }
@@ -88,65 +87,65 @@ func shadcnName(name string) string {
 	return name
 }
 
-//line component.gsx:84:1
+//line component.gsx:83:1
 func (c Component) Page(props ComponentProps) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line component.gsx:85:2
+//line component.gsx:84:2
 		_gsxgw.NodeResult(_gsxrenderLayout(ctx, _gsxgw, props.Title, props.Name, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line component.gsx:86:3
+//line component.gsx:85:3
 			_gsxgw.S("<div class=\"flex flex-col gap-10 py-10\">")
-//line component.gsx:87:4
+//line component.gsx:86:4
 			_gsxgw.S("<h1 class=\"text-3xl font-semibold tracking-tight\">")
-//line component.gsx:87:54
+//line component.gsx:86:54
 			_gsxgw.Text(string(props.Title))
 			_gsxgw.S("</h1>")
-//line component.gsx:88:4
+//line component.gsx:87:4
 			for _, ex := range props.Examples {
-//line component.gsx:89:5
+//line component.gsx:88:5
 				_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line component.gsx:90:6
+//line component.gsx:89:6
 				_gsxgw.S("<h2 class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">")
-//line component.gsx:90:84
+//line component.gsx:89:84
 				_gsxgw.Text(string(ex.Title))
 				_gsxgw.S("</h2>")
-//line component.gsx:91:6
+//line component.gsx:90:6
 				_gsxgw.S("<div class=\"border rounded-lg p-8 bg-background\">")
-//line component.gsx:92:7
+//line component.gsx:91:7
 				_gsxgw.Node(ctx, ex.Node)
 				_gsxgw.S("</div>")
-//line component.gsx:94:6
+//line component.gsx:93:6
 				_gsxgw.S("<div class=\"relative\"")
 				_gsxgw.BoolAttr("data-site-example", true)
 				_gsxgw.S(">")
-//line component.gsx:95:7
-				_gsxgw.S("<pre class=\"overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground\">")
-//line component.gsx:97:8
+//line component.gsx:94:7
+				_gsxgw.S("<pre class=\"overflow-x-auto rounded-2xl bg-muted/50 px-4 py-3.5 font-mono text-sm\">")
+//line component.gsx:96:8
 				_gsxgw.S("<code>")
-//line component.gsx:97:14
-				_gsxgw.Text(string(ex.Source))
+//line component.gsx:96:14
+				_gsxgw.Node(ctx, hl.Node(ex.SourcePath))
 				_gsxgw.S("</code></pre>")
-//line component.gsx:98:7
+//line component.gsx:97:7
 				_gsxgw.S("<button type=\"button\"")
 				_gsxgw.BoolAttr("data-site-copy", true)
 				_gsxgw.S(" class=\"absolute right-2 top-2 rounded-md border border-border bg-background px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground\">Copy</button></div></section>")
 			}
-//line component.gsx:108:4
+//line component.gsx:107:4
 			_gsxgw.S("<footer class=\"flex flex-col gap-3 border-t border-border pt-6 text-sm text-muted-foreground\">")
-//line component.gsx:109:5
+//line component.gsx:108:5
 			_gsxgw.S("<pre class=\"overflow-x-auto rounded-lg border border-border bg-card p-4 text-card-foreground\">")
-//line component.gsx:111:6
+//line component.gsx:110:6
 			_gsxgw.S("<code>")
-//line component.gsx:111:12
+//line component.gsx:110:12
 			_gsxgw.Text(string("gsxui add " + props.Name))
 			_gsxgw.S("</code></pre>")
-//line component.gsx:112:5
+//line component.gsx:111:5
 			if props.Name == "icon" {
-//line component.gsx:113:6
+//line component.gsx:112:6
 				_gsxgw.S("<a href=\"https://lucide.dev\" target=\"_blank\" rel=\"noreferrer\" class=\"underline underline-offset-4 hover:text-foreground\">View the icon set on lucide.dev</a>")
 			} else {
-//line component.gsx:122:6
+//line component.gsx:121:6
 				_gsxgw.S("<a href=\"")
 				_gsxgw.URL(string("https://ui.shadcn.com/docs/components/" + shadcnName(props.Name)))
 				_gsxgw.S("\" target=\"_blank\" rel=\"noreferrer\" class=\"underline underline-offset-4 hover:text-foreground\">View the original on shadcn/ui</a>")

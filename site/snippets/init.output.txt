@@ -1,0 +1,4 @@
+gsxui initialized.
+  css:  web/gsxui.css (import it from your entry point)
+  js:   web/gsxui/index.js (import it from your entry point)
+  next: gsxui add button

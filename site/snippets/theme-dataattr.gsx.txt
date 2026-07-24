@@ -1,0 +1,8 @@
+<ui.Dialog>
+	<ui.Button variant="outline" data-gsxui-dialog-trigger>
+		Open
+	</ui.Button>
+	<ui.DialogContent>
+		...
+	</ui.DialogContent>
+</ui.Dialog>
