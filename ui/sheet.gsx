@@ -158,7 +158,12 @@ component SheetContent(side string, hideCloseButton bool, children gsx.Node, att
 		data-state="closed"
 		data-side={side |> default("right")}
 		class={
-			"fixed z-50 m-0 max-h-none open:flex flex-col gap-4 bg-background text-foreground shadow-lg transition ease-in-out data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:animate-in data-[state=open]:duration-500 backdrop:bg-black/10 supports-backdrop-filter:backdrop:backdrop-blur-xs data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=open]:backdrop:duration-500 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 data-[state=closed]:backdrop:duration-300",
+			// duration-200 both directions is nova's sheet timing (style-nova.css
+			// .cn-sheet-content: `transition duration-200 ease-in-out`) —
+			// new-york-v4's 500ms-in/300ms-out pair read visibly sluggish next
+			// to the live site. Backdrop rides the same 200ms so its exit never
+			// ends before the panel's (fill-mode none would snap it back).
+			"fixed z-50 m-0 max-h-none open:flex flex-col gap-4 bg-background text-foreground shadow-lg transition ease-in-out duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-black/10 backdrop:duration-200 supports-backdrop-filter:backdrop:backdrop-blur-xs data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0",
 			switch side {
 			case "left":
 				"inset-y-0 left-0 right-auto h-full w-3/4 border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm"
