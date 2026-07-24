@@ -51,7 +51,14 @@ function requestClose(dialog) {
   }
   const done = Promise.allSettled(anims.map((a) => a.finished));
   const cap = new Promise((resolve) => setTimeout(resolve, 600));
-  Promise.race([done, cap]).then(() => dialog.close());
+  // Re-check state when the wait settles: a rapid reopen during the exit
+  // window stamps data-state="open" (the trigger handler below), and this
+  // pending close must then abort — without the guard it lands ~200ms into
+  // the NEW dialog's life and slams it shut (visible as a flash under
+  // rapid open/close, e.g. holding Space on the trigger).
+  Promise.race([done, cap]).then(() => {
+    if (dialog.dataset.state === "closed") dialog.close();
+  });
 }
 
 const rootOf = (el) => el.closest("[data-gsxui-dialog]");
@@ -61,6 +68,13 @@ on("click", "[data-gsxui-dialog-trigger]", (_event, trigger) => {
   const dialog = root?.querySelector("dialog[data-gsxui-dialog-content]");
   if (!dialog || dialog.open) return;
   wireA11y(root, dialog);
+  // Stamp open BEFORE showing, same reasoning as dropdown.js: the toggle
+  // event that also stamps it is a queued task, and a paint in the gap
+  // renders one frame in the closed state — here that's worse than a
+  // flash, because data-[state=closed] matches the EXIT animation, which
+  // starts playing on a freshly opened dialog until the task flips it.
+  // Stamping now also aborts any pending delayed close (see requestClose).
+  dialog.dataset.state = "open";
   dialog.showModal();
 });
 
