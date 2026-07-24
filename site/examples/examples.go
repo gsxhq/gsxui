@@ -13,10 +13,12 @@ var files embed.FS
 
 // Source returns the embedded source at site/examples/{sourcePath} (an
 // Example's SourcePath field). SourcePath is keyed by the example's actual
-// directory — for select/switch that's the "selectbox"/"switchctl" dirs
-// (Go-keyword workarounds), which differ from those components' registered
-// name ("select"/"switch"), so Source can't reconstruct the path from the
-// registered component name the way it once could.
+// directory — for switch that's the "switchctl" dir (a Go-keyword
+// workaround) and for native-select it's the "nativeselect" dir (a hyphen
+// can't appear in a Go package name, same as button-group's buttongroup /
+// context-menu's contextmenu), both of which differ from those components'
+// registered name ("switch"/"native-select"), so Source can't reconstruct
+// the path from the registered component name the way it once could.
 func Source(sourcePath string) (string, error) {
 	b, err := files.ReadFile(sourcePath)
 	if err != nil {

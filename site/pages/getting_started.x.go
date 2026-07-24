@@ -136,12 +136,12 @@ func (g GettingStarted) Page() _gsxrt.Node {
 //line getting_started.gsx:52:6
 			_gsxgw.S("<code>card</code> has no dependencies of its own, but a component that does (e.g. ")
 //line getting_started.gsx:53:12
-			_gsxgw.S("<code>select</code>, which needs ")
-//line getting_started.gsx:53:45
+			_gsxgw.S("<code>native-select</code>, which needs ")
+//line getting_started.gsx:53:52
 			_gsxgw.S("<code>icon</code>) pulls its dependency in automatically — ")
 //line getting_started.gsx:54:24
-			_gsxgw.S("<code>gsxui add select</code> vendors ")
-//line getting_started.gsx:54:62
+			_gsxgw.S("<code>gsxui add native-select</code> vendors ")
+//line getting_started.gsx:54:69
 			_gsxgw.S("<code>icon</code> too. You own every file this writes: ")
 //line getting_started.gsx:55:24
 			_gsxgw.S("<code>gsxui add</code> never touches one you've already modified unless you pass ")

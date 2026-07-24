@@ -36,9 +36,9 @@ fallback (image `display:none`). The image covers the fallback via
 `absolute inset-0`, so no-JS/pre-load rendering is correct; avatar.js
 handles only the error path (hide broken image).
 
-checkbox/radio/switch/select are zero-JS (native `<input>`/`<select>`
+checkbox/radio/switch/native-select are zero-JS (native `<input>`/`<select>`
 + browser truth — `:checked`/`:disabled` for the former three, native
-picker/`:disabled` for select — no delegation/behavior JS to smoke-test) so
+picker/`:disabled` for native-select — no delegation/behavior JS to smoke-test) so
 they are intentionally absent from this harness — it verifies buildless
 JS-behavior only, and these components' correctness is entirely in their
 Tailwind class recipes, which need a Tailwind'd site to render meaningfully

@@ -50,8 +50,8 @@ component (g GettingStarted) Page() {
 				<pre><code>{ hl.Node("snippets/add.output") }</code></pre>
 				<p>
 					<code>card</code> has no dependencies of its own, but a component that does
-					(e.g. <code>select</code>, which needs <code>icon</code>) pulls its dependency in
-					automatically — <code>gsxui add select</code> vendors <code>icon</code> too. You own every
+					(e.g. <code>native-select</code>, which needs <code>icon</code>) pulls its dependency in
+					automatically — <code>gsxui add native-select</code> vendors <code>icon</code> too. You own every
 					file this writes: <code>gsxui add</code> never touches one you've already modified unless
 					you pass <code>--overwrite</code>. After upgrading the <code>gsxui</code> binary,
 					re-run <code>gsxui add &lt;name&gt; --overwrite</code> to refresh vendored components —

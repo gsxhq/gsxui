@@ -13,11 +13,11 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "carousel", "checkbox", "collapsible", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "input-otp", "item", "kbd", "label", "pagination", "popover", "progress", "radio", "scroll-area", "select", "separator", "sheet", "skeleton", "slider", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
+	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "carousel", "checkbox", "collapsible", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "input-otp", "item", "kbd", "label", "native-select", "pagination", "popover", "progress", "radio", "scroll-area", "separator", "sheet", "skeleton", "slider", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
-	for _, unwanted := range []string{"core", "gsxui", "index", "selectbox", "switchctl"} {
+	for _, unwanted := range []string{"core", "gsxui", "index", "nativeselect", "switchctl"} {
 		if slicesContains(got, unwanted) {
 			t.Fatalf("Components() = %v, should not contain %q", got, unwanted)
 		}
@@ -53,13 +53,13 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("accordion deps = %v, want [icon]", deps)
 	}
 
-	// select.gsx imports ui/icon (the chevron).
-	deps, err = registry.Deps("select")
+	// native-select.gsx imports ui/icon (the chevron).
+	deps, err = registry.Deps("native-select")
 	if err != nil {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(deps, []string{"icon"}) {
-		t.Fatalf("select deps = %v, want [icon]", deps)
+		t.Fatalf("native-select deps = %v, want [icon]", deps)
 	}
 
 	// spinner.gsx imports ui/icon (icon.LoaderCircle).
@@ -347,8 +347,8 @@ func TestDeps(t *testing.T) {
 	}
 
 	// input-otp.gsx imports ui/icon (InputOTPSeparator's icon.Minus) — same
-	// shape as accordion's/select's/spinner's/breadcrumb's own deps entries
-	// above; no intra-package reference to another component (it does NOT
+	// shape as accordion's/native-select's/spinner's/breadcrumb's own deps
+	// entries above; no intra-package reference to another component (it does NOT
 	// compose ui.Input, see ui/input-otp.gsx's own doc comment).
 	deps, err = registry.Deps("input-otp")
 	if err != nil {
@@ -413,7 +413,7 @@ func TestHasJS(t *testing.T) {
 	// <basename>.js, so the file is named ui/hover-card.js (hyphenated,
 	// matching the component basename) even though the site example
 	// package directory strips the hyphen to "hovercard" (Go package name
-	// constraint, same selectbox/switchctl precedent).
+	// constraint, same nativeselect/switchctl precedent).
 	if !registry.HasJS("hover-card") {
 		t.Error("hover-card should have JS")
 	}
@@ -454,11 +454,11 @@ func TestResolveTransitive(t *testing.T) {
 		t.Fatalf("got %v want %v", got, want)
 	}
 
-	got, err = registry.Resolve([]string{"select"})
+	got, err = registry.Resolve([]string{"native-select"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	want = []string{"icon", "select"}
+	want = []string{"icon", "native-select"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}

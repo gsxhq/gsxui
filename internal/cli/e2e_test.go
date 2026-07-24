@@ -41,15 +41,15 @@ func TestEndToEnd(t *testing.T) {
 	}
 	mustRun(t, dir, "go", "build", "./...")
 
-	if err := Run([]string{"add", "select", "tabs"}); err != nil {
+	if err := Run([]string{"add", "native-select", "tabs"}); err != nil {
 		t.Fatal(err)
 	}
-	// select depends on icon (chevron); icon vendors as its own ui/icon/
-	// directory package. tabs is JS-backed: its behavior module lands under
-	// the JS root (web/gsxui by default) and the barrel must be regenerated
-	// to import it.
+	// native-select depends on icon (chevron); icon vendors as its own
+	// ui/icon/ directory package. tabs is JS-backed: its behavior module
+	// lands under the JS root (web/gsxui by default) and the barrel must be
+	// regenerated to import it.
 	for _, p := range []string{
-		"ui/select.x.go",
+		"ui/native-select.x.go",
 		"ui/icon/icon.x.go",
 		"ui/icon/icon_data.go",
 		"ui/tabs.x.go",

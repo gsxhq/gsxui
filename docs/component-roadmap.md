@@ -2,9 +2,11 @@
 
 Audited 2026-07-23 against `shadcn-ui/apps/v4/registry/new-york-v4/ui`
 (57 registry components). gsxui ships 20 (naming deltas: our `dropdown` =
-their `dropdown-menu`, `radio` = `radio-group`, `select` = their
-`native-select` — shadcn now ships the same div-wrapped-native-select
-design we ported, which is the alignment target for its class string).
+their `dropdown-menu`, `radio` = `radio-group`; our native `<select>`
+port was renamed `select` → `native-select` on 2026-07-24 to match
+shadcn's own name for the same div-wrapped-native-select design — no
+naming delta there anymore — freeing `Select`/`select` for the Tier 3
+custom listbox below).
 
 Ordering is easy → hard **for this codebase**: difficulty is judged
 against the machinery gsxui already has (native popover API anchoring
@@ -51,7 +53,7 @@ site example pages, browser verification against the shadcn docs.
 | toggle-group | toggle + single/multi selection state, roving focus (dropdown has the roving-focus pattern) |
 | slider | styled native `<input type="range">` (form-native; cross-browser track/thumb CSS is the work) |
 | scroll-area | ADAPT: CSS `scrollbar-width`/`scrollbar-color` styling first; Radix-style custom thumbs only if that falls short |
-| select (custom listbox) | **user-promoted from backlog**: dropdown machinery + value selection, check indicator, keyboard typeahead; the native port stays alongside (rename decision: ours → `NativeSelect` to mirror shadcn naming) |
+| select (custom listbox) | **user-promoted from backlog**: dropdown machinery + value selection, check indicator, keyboard typeahead; the native port (renamed `Select`/`select` → `NativeSelect`/`native-select` 2026-07-24 to mirror shadcn naming, see naming-delta note above) stays alongside |
 | sonner (toasts) | own toast module: stacking, timers, exit animations; no Radix/sonner dependency |
 | drawer | sheet variant; v1 without vaul's drag-to-dismiss gesture (ledger the gap) |
 | carousel | ADAPT: CSS scroll-snap + prev/next JS (shadcn wraps embla; snap covers the docs demos) |

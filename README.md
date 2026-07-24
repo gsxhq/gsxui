@@ -35,7 +35,7 @@ The showcase site and theme editor are in progress.
 
 ## Components
 
-**Form controls:** button, checkbox, input, label, radio, select,
+**Form controls:** button, checkbox, input, label, native-select, radio,
 switch, textarea
 
 **Display:** alert, avatar, badge, card, separator, skeleton, table
@@ -44,10 +44,10 @@ switch, textarea
 
 **Navigation:** accordion, tabs
 
-**Primitives:** icon (Lucide, generated — a dependency of select,
+**Primitives:** icon (Lucide, generated — a dependency of native-select,
 accordion, and dropdown's own future items, not usually added directly)
 
-Some native-first components (checkbox, radio, switch, select,
+Some native-first components (checkbox, radio, switch, native-select,
 accordion) trade a slice of shadcn's Radix-driven behavior for a real
 `<input>`/`<select>`/`<details>` element — zero client JS, browser-native
 `:checked`/`:disabled`/exclusivity semantics. dropdown and tooltip trade

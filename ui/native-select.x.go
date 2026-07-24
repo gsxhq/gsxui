@@ -11,15 +11,15 @@ import (
 	_gsxio "io"
 )
 
-//line select.gsx:14:1
-// Select is the shadcn/ui Select, ported (ADAPT, native-select-v1,
+//line native-select.gsx:20:1
+// NativeSelect is the shadcn/ui Select, ported (ADAPT, native-select-v1,
 // prominent) as a styled native <select>: form-native, mobile-superior,
 // zero JS. shadcn's custom listbox (Trigger/Content/Item/portal machinery
 // on top of Radix's SelectPrimitive) is post-v1 backlog; the shadcn *look*
 // comes from porting SelectTrigger's classes onto the real <select>
 // element, minus the Radix-only/dead-selector tokens ledgered in
 // docs/jsx-parity.md. The chevron is rendered via ui/icon (icon.ChevronDown)
-// — this import is the select → icon dependency internal/registry
+// — this import is the native-select → icon dependency internal/registry
 // derives and internal/registry/registry_test.go pins.
 //
 // The chevron overlays the <select> from a positioned wrapper (a native
@@ -32,19 +32,19 @@ import (
 // edge. Non-class attrs still land on the <select> (name, id, aria-*,
 // disabled are form-control concerns).
 
-//line select.gsx:33:1
-func Select(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+//line native-select.gsx:39:1
+func NativeSelect(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line select.gsx:34:2
-		_gsxgw.S("<div data-slot=\"select\" class=\"")
+//line native-select.gsx:40:2
+		_gsxgw.S("<div data-slot=\"native-select-wrapper\" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative w-fit"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\">")
-//line select.gsx:35:3
+//line native-select.gsx:41:3
 		_gsxv0 := attrs.Without("class")
 		_gsxgw.S("<select")
 		if !_gsxv0.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"select-trigger\"")
+			_gsxgw.S(" data-slot=\"native-select\"")
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex w-full items-center justify-between gap-2 rounded-lg border border-input bg-transparent pl-2.5 py-1 text-sm whitespace-nowrap transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 h-8 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40 appearance-none pr-8"), _gsxrt.Class(_gsxv0.Class()))
@@ -52,27 +52,28 @@ func Select(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", _gsxv0.Style())
 		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line select.gsx:40:4
+//line native-select.gsx:46:4
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</select>")
-//line select.gsx:42:3
+//line native-select.gsx:48:3
 		_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.Attrs{{Key: "class", Value: "pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 opacity-50"}}...))
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line select.gsx:46:1
-// SelectOption is a native <option>. selected/disabled are HTML boolean
-// attributes (gsx.IsBooleanAttr classifies both "selected" and "disabled"):
-// zero value (false) renders absent, matching browser selectedness/disabled
-// truth — no data-state plumbing needed, unlike Radix's SelectItem.
+//line native-select.gsx:52:1
+// NativeSelectOption is a native <option>. selected/disabled are HTML
+// boolean attributes (gsx.IsBooleanAttr classifies both "selected" and
+// "disabled"): zero value (false) renders absent, matching browser
+// selectedness/disabled truth — no data-state plumbing needed, unlike
+// Radix's SelectItem.
 
-//line select.gsx:50:1
-func SelectOption(value string, selected bool, disabled bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+//line native-select.gsx:57:1
+func NativeSelectOption(value string, selected bool, disabled bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line select.gsx:51:2
+//line native-select.gsx:58:2
 		_gsxgw.S("<option")
 		if !attrs.Has("value") {
 			_gsxgw.S(" value=\"")
@@ -89,26 +90,26 @@ func SelectOption(value string, selected bool, disabled bool, children gsx.Node,
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line select.gsx:51:77
+//line native-select.gsx:58:77
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</option>")
 		return _gsxgw.Err()
 	})
 }
 
-//line select.gsx:54:1
-// SelectGroup is a native <optgroup>. shadcn's separate SelectGroup
+//line native-select.gsx:61:1
+// NativeSelectGroup is a native <optgroup>. shadcn's separate SelectGroup
 // (wrapper) + SelectLabel (child text) collapse into the one native element
 // that already carries a label as an attribute (ADAPT — see
 // docs/jsx-parity.md): <optgroup> has no equivalent of an arbitrary label
 // child, only the label attribute, so there is nothing to port SelectLabel's
 // own class string onto.
 
-//line select.gsx:60:1
-func SelectGroup(label string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+//line native-select.gsx:67:1
+func NativeSelectGroup(label string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line select.gsx:61:2
+//line native-select.gsx:68:2
 		_gsxgw.S("<optgroup")
 		if !attrs.Has("label") {
 			_gsxgw.S(" label=\"")
@@ -119,7 +120,7 @@ func SelectGroup(label string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line select.gsx:61:39
+//line native-select.gsx:68:39
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</optgroup>")
 		return _gsxgw.Err()
