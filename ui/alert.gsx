@@ -10,7 +10,7 @@ component Alert(variant string, children gsx.Node, attrs gsx.Attrs) {
 		data-slot="alert"
 		role="alert"
 		class={
-			"relative grid w-full grid-cols-[0_1fr] items-start gap-y-0.5 rounded-lg border px-4 py-3 text-sm has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] has-[>svg]:gap-x-3 [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current",
+			"relative grid w-full items-start gap-y-0.5 rounded-lg border px-2.5 py-2 text-sm has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2 *:[svg]:row-span-2 *:[svg:not([class*='size-'])]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current",
 			switch variant {
 			case "destructive":
 				"bg-card text-destructive *:data-[slot=alert-description]:text-destructive/90 [&>svg]:text-current"
@@ -25,7 +25,7 @@ component Alert(variant string, children gsx.Node, attrs gsx.Attrs) {
 }
 
 component AlertTitle(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="alert-title" class="col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight" { attrs... }>
+	<div data-slot="alert-title" class="col-start-2 font-medium" { attrs... }>
 		{ children }
 	</div>
 }
@@ -33,7 +33,7 @@ component AlertTitle(children gsx.Node, attrs gsx.Attrs) {
 component AlertDescription(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-slot="alert-description"
-		class="col-start-2 grid justify-items-start gap-1 text-sm text-muted-foreground [&_p]:leading-relaxed"
+		class="col-start-2 grid justify-items-start text-sm text-muted-foreground [&_p]:leading-relaxed [&_p:not(:last-child)]:mb-4"
 		{ attrs... }
 	>
 		{ children }

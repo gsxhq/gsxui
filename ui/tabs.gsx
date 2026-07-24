@@ -28,6 +28,14 @@ import "github.com/gsxhq/gsx"
 // unwraps to an unconditional data-[state=active]:shadow-sm. Root and list
 // no longer stamp data-orientation/orientation/data-variant — nothing reads
 // them. See docs/jsx-parity.md.
+//
+// Retargeted to nova density (2026-07-24 nova density map, `## tabs`).
+// ADAPT: nova keys the trigger's directional icon padding off
+// `data-icon="inline-start|inline-end"` stamps this component doesn't emit;
+// ported instead onto gsxui's existing has-[>svg]:px-* selector mechanism
+// (the same substitution button.gsx's sizeClass and toggle.gsx make — see
+// their own doc comments), collapsing nova's matching inline-start/
+// inline-end value (both px-1) into one has-[>svg]:px-1.
 component Tabs(value string, children gsx.Node, attrs gsx.Attrs) {
 	<div data-slot="tabs" data-gsxui-tabs data-value={value} class="flex flex-col gap-2" { attrs... }>{ children }</div>
 }
@@ -36,7 +44,7 @@ component TabsList(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-slot="tabs-list"
 		role="tablist"
-		class="bg-muted text-muted-foreground inline-flex h-9 w-fit items-center justify-center rounded-lg p-[3px]"
+		class="bg-muted text-muted-foreground inline-flex h-8 w-fit items-center justify-center rounded-lg p-[3px]"
 		{ attrs... }
 	>
 		{ children }
@@ -66,7 +74,7 @@ component TabsTrigger(value string, selected bool, children gsx.Node, attrs gsx.
 		data-state={state}
 		aria-selected={selected}
 		tabindex={tabindex}
-		class="relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm dark:text-muted-foreground dark:hover:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-[state=active]:bg-background data-[state=active]:text-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 dark:data-[state=active]:text-foreground"
+		class="relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-1.5 py-0.5 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-1 data-[state=active]:shadow-sm dark:text-muted-foreground dark:hover:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-[state=active]:bg-background data-[state=active]:text-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 dark:data-[state=active]:text-foreground"
 		{ attrs... }
 	>
 		{ children }
@@ -88,7 +96,7 @@ component TabsContent(value string, selected bool, children gsx.Node, attrs gsx.
 		data-value={value}
 		data-state={state}
 		hidden={!selected}
-		class="flex-1 outline-none"
+		class="flex-1 text-sm outline-none"
 		{ attrs... }
 	>
 		{ children }

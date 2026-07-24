@@ -9,7 +9,7 @@ import "github.com/gsxhq/gsx"
 component Empty(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-slot="empty"
-		class="flex min-w-0 flex-1 flex-col items-center justify-center gap-6 rounded-lg border-dashed p-6 text-center text-balance md:p-12"
+		class="flex min-w-0 flex-1 flex-col items-center justify-center gap-4 rounded-xl border-dashed p-6 text-center text-balance"
 		{ attrs... }
 	>
 		{ children }
@@ -40,7 +40,7 @@ component EmptyMedia(variant string, children gsx.Node, attrs gsx.Attrs) {
 			"mb-2 flex shrink-0 items-center justify-center [&_svg]:pointer-events-none [&_svg]:shrink-0",
 			switch variant {
 			case "icon":
-				"flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground [&_svg:not([class*='size-'])]:size-6"
+				"flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground [&_svg:not([class*='size-'])]:size-4"
 			default:
 				"bg-transparent"
 			}
@@ -52,7 +52,7 @@ component EmptyMedia(variant string, children gsx.Node, attrs gsx.Attrs) {
 }
 
 component EmptyTitle(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="empty-title" class="text-lg font-medium tracking-tight" { attrs... }>
+	<div data-slot="empty-title" class="text-sm font-medium tracking-tight" { attrs... }>
 		{ children }
 	</div>
 }
@@ -75,7 +75,7 @@ component EmptyDescription(children gsx.Node, attrs gsx.Attrs) {
 component EmptyContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-slot="empty-content"
-		class="flex w-full max-w-sm min-w-0 flex-col items-center gap-4 text-sm text-balance"
+		class="flex w-full max-w-sm min-w-0 flex-col items-center gap-2.5 text-sm text-balance"
 		{ attrs... }
 	>
 		{ children }

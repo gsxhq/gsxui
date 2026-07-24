@@ -15,12 +15,20 @@ import (
 // Badge is the shadcn/ui Badge. variant: "" (default) | "secondary" |
 // "destructive" | "outline" | "ghost" | "link". Extra attributes fall
 // through to the <span>; caller classes merge (caller wins per property).
+//
+// Retargeted to nova density (2026-07-24 nova density map, `## badge`).
+// ADAPT: nova keys directional icon padding off `data-icon="inline-start|
+// inline-end"` stamps this component doesn't emit; ported instead onto
+// gsxui's existing has-[>svg]:px-* selector mechanism (the same
+// substitution button.gsx/toggle.gsx make — see their own doc comments),
+// collapsing nova's matching inline-start/inline-end value (both px-1.5)
+// into one has-[>svg]:px-1.5.
 
-//line badge.gsx:8:1
+//line badge.gsx:16:1
 func Badge(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line badge.gsx:9:2
+//line badge.gsx:17:2
 		_gsxgw.S("<span")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"badge\"")
@@ -30,7 +38,7 @@ func Badge(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
 			_gsxgw.S("\"")
 		}
-		_gsxv0 := "inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-full border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3"
+		_gsxv0 := "inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-[color,box-shadow] has-[>svg]:px-1.5 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3!"
 		var _gsxv1 string
 		switch variant {
 		case "secondary":
@@ -52,7 +60,7 @@ func Badge(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line badge.gsx:31:3
+//line badge.gsx:39:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()

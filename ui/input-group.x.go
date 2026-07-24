@@ -26,12 +26,20 @@ import (
 // equivalent here — zero client JS for this component, per the Tier 1 plan's
 // Tech Stack constraint. Dropped; the addon still renders and styles
 // identically, it just isn't click-to-focus.
+//
+// Retargeted to nova density (2026-07-24 nova density map, `## input-group`).
+// InputGroupButton's xs/icon-xs radius arithmetic moves from
+// rounded-[calc(var(--radius)-5px)] to rounded-[calc(var(--radius)-3px)],
+// matching nova's smaller inset from the control radius; its sm size and
+// InputGroupAddon's own [&>kbd]:rounded-[calc(var(--radius)-5px)] have no
+// nova counterpart and are left unchanged (nova ships only xs/icon-xs/
+// icon-sm for this button; the kbd radius is a separate, untouched token).
 
-//line input-group.gsx:19:1
+//line input-group.gsx:27:1
 func InputGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line input-group.gsx:20:2
+//line input-group.gsx:28:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"input-group\"")
@@ -40,19 +48,19 @@ func InputGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" role=\"group\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/input-group relative flex w-full items-center rounded-md border border-input shadow-xs transition-[color,box-shadow] outline-none dark:bg-input/30"), _gsxrt.Class("h-9 min-w-0 has-[>textarea]:h-auto"), _gsxrt.Class("has-[>[data-align=inline-start]]:[&>input]:pl-2 has-[>[data-align=inline-end]]:[&>input]:pr-2 has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-end]]:[&>input]:pt-3"), _gsxrt.Class("has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-[3px] has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50"), _gsxrt.Class("has-[[data-slot][aria-invalid=true]]:border-destructive has-[[data-slot][aria-invalid=true]]:ring-destructive/20 dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/input-group relative flex w-full items-center rounded-lg border border-input transition-[color,box-shadow] outline-none dark:bg-input/30"), _gsxrt.Class("h-8 min-w-0 has-[>textarea]:h-auto"), _gsxrt.Class("has-[>[data-align=inline-start]]:[&>input]:pl-1.5 has-[>[data-align=inline-end]]:[&>input]:pr-1.5 has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-end]]:[&>input]:pt-3"), _gsxrt.Class("has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-[3px] has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50"), _gsxrt.Class("has-[[data-slot][aria-invalid=true]]:border-destructive has-[[data-slot][aria-invalid=true]]:ring-destructive/20 dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line input-group.gsx:32:3
+//line input-group.gsx:40:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line input-group.gsx:36:1
+//line input-group.gsx:44:1
 // InputGroupAddon's inputGroupAddonVariants cva map picks between four
 // static class blocks by the JS-resolved align value — no
 // data-[align=...]: selectors in the source to preserve for THIS class
@@ -62,11 +70,11 @@ func InputGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // pattern, |> default) since InputGroup's own has-[>[data-align=...]] rules
 // depend on it.
 
-//line input-group.gsx:44:1
+//line input-group.gsx:52:1
 func InputGroupAddon(align string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line input-group.gsx:45:2
+//line input-group.gsx:53:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"group\"")
@@ -83,13 +91,13 @@ func InputGroupAddon(align string, children gsx.Node, attrs gsx.Attrs) _gsxrt.No
 		var _gsxv1 string
 		switch align {
 		case "inline-end":
-			_gsxv1 = "order-last pr-3 has-[>button]:mr-[-0.45rem] has-[>kbd]:mr-[-0.35rem]"
+			_gsxv1 = "order-last pr-2 has-[>button]:mr-[-0.3rem] has-[>kbd]:mr-[-0.15rem]"
 		case "block-start":
-			_gsxv1 = "order-first w-full justify-start px-3 pt-3 group-has-[>input]/input-group:pt-2.5 [.border-b]:pb-3"
+			_gsxv1 = "order-first w-full justify-start px-2.5 pt-2 group-has-[>input]/input-group:pt-2 [.border-b]:pb-2"
 		case "block-end":
-			_gsxv1 = "order-last w-full justify-start px-3 pb-3 group-has-[>input]/input-group:pb-2.5 [.border-t]:pt-3"
+			_gsxv1 = "order-last w-full justify-start px-2.5 pb-2 group-has-[>input]/input-group:pb-2 [.border-t]:pt-2"
 		default:
-			_gsxv1 = "order-first pl-3 has-[>button]:ml-[-0.45rem] has-[>kbd]:ml-[-0.35rem]"
+			_gsxv1 = "order-first pl-2 has-[>button]:ml-[-0.3rem] has-[>kbd]:ml-[-0.15rem]"
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
@@ -97,14 +105,14 @@ func InputGroupAddon(align string, children gsx.Node, attrs gsx.Attrs) _gsxrt.No
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line input-group.gsx:64:3
+//line input-group.gsx:72:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line input-group.gsx:68:1
+//line input-group.gsx:76:1
 // InputGroupButton composes ui.Button — the input-group -> button
 // dependency. shadcn's own version deliberately does NOT pass its `size`
 // prop through to the underlying Button's own `size` (its type is
@@ -123,11 +131,11 @@ func InputGroupAddon(align string, children gsx.Node, attrs gsx.Attrs) _gsxrt.No
 // competing-defaults override mechanism as ItemSeparator/ButtonGroupSeparator
 // overriding Separator's data-slot (see ui/item.gsx, ui/button-group.gsx).
 
-//line input-group.gsx:85:1
+//line input-group.gsx:93:1
 func InputGroupButton(variant string, size string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line input-group.gsx:86:2
+//line input-group.gsx:94:2
 		_gsxa4 := _gsxrt.Attrs{{Key: "data-size", Value: _gsxstd.Default((size), "xs")}}
 		_gsxa5 := _gsxstd.Default((variant), "ghost")
 		_gsxv2 := "flex items-center gap-2 text-sm shadow-none"
@@ -136,15 +144,15 @@ func InputGroupButton(variant string, size string, children gsx.Node, attrs gsx.
 		case "sm":
 			_gsxv3 = "h-8 gap-1.5 rounded-md px-2.5 has-[>svg]:px-2.5"
 		case "icon-xs":
-			_gsxv3 = "size-6 rounded-[calc(var(--radius)-5px)] p-0 has-[>svg]:p-0"
+			_gsxv3 = "size-6 rounded-[calc(var(--radius)-3px)] p-0 has-[>svg]:p-0"
 		case "icon-sm":
 			_gsxv3 = "size-8 p-0 has-[>svg]:p-0"
 		default:
-			_gsxv3 = "h-6 gap-1 rounded-[calc(var(--radius)-5px)] px-2 has-[>svg]:px-2 [&>svg:not([class*='size-'])]:size-3.5"
+			_gsxv3 = "h-6 gap-1 rounded-[calc(var(--radius)-3px)] px-1.5 has-[>svg]:px-1.5 [&>svg:not([class*='size-'])]:size-3.5"
 		}
 		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, _gsxa5, "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line input-group.gsx:104:3
+//line input-group.gsx:112:3
 			_gsxgw.Node(ctx, children)
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxa4, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv2), _gsxrt.Class(_gsxv3))}}, attrs)))
@@ -152,58 +160,58 @@ func InputGroupButton(variant string, size string, children gsx.Node, attrs gsx.
 	})
 }
 
-//line input-group.gsx:108:1
+//line input-group.gsx:116:1
 // InputGroupText carries no data-slot in shadcn's own source (unlike every
 // other input-group part) — ported as-is, the same unmatched-data-slot call
 // as ButtonGroupText (see ui/button-group.gsx).
 
-//line input-group.gsx:111:1
+//line input-group.gsx:119:1
 func InputGroupText(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line input-group.gsx:112:2
+//line input-group.gsx:120:2
 		_gsxgw.S("<span class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex items-center gap-2 text-sm text-muted-foreground [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line input-group.gsx:116:3
+//line input-group.gsx:124:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()
 	})
 }
 
-//line input-group.gsx:120:1
+//line input-group.gsx:128:1
 // InputGroupInput composes ui.Input directly (flat package). data-slot is
 // overridden from Input's own "input" to "input-group-control" as an
 // explicit non-parameter attribute on the call — same override mechanism as
 // InputGroupButton's data-size above — so InputGroup's own
 // has-[[data-slot=input-group-control]:focus-visible] rules can key off it.
 
-//line input-group.gsx:125:1
+//line input-group.gsx:133:1
 func InputGroupInput(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line input-group.gsx:126:2
+//line input-group.gsx:134:2
 		_gsxgw.NodeResult(_gsxrenderInput(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-slot", Value: "input-group-control"}}, _gsxrt.Attrs{{Key: "class", Value: "flex-1 rounded-none border-0 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent"}}, attrs)))
 		return _gsxgw.Err()
 	})
 }
 
-//line input-group.gsx:133:1
+//line input-group.gsx:141:1
 // InputGroupTextarea composes ui.Textarea directly (flat package), forwarding
 // `value` into Textarea's own `value` param (Textarea's text-child ADAPT,
 // see ui/textarea.gsx) the same way ItemSeparator forwards `orientation`
 // into Separator's own param.
 
-//line input-group.gsx:137:1
+//line input-group.gsx:145:1
 func InputGroupTextarea(value string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line input-group.gsx:138:2
-		_gsxgw.NodeResult(_gsxrenderTextarea(ctx, _gsxgw, value, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-slot", Value: "input-group-control"}}, _gsxrt.Attrs{{Key: "class", Value: "flex-1 resize-none rounded-none border-0 bg-transparent py-3 shadow-none focus-visible:ring-0 dark:bg-transparent"}}, attrs)))
+//line input-group.gsx:146:2
+		_gsxgw.NodeResult(_gsxrenderTextarea(ctx, _gsxgw, value, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-slot", Value: "input-group-control"}}, _gsxrt.Attrs{{Key: "class", Value: "flex-1 resize-none rounded-none border-0 bg-transparent py-2 shadow-none focus-visible:ring-0 dark:bg-transparent"}}, attrs)))
 		return _gsxgw.Err()
 	})
 }

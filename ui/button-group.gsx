@@ -12,18 +12,40 @@ import "github.com/gsxhq/gsx"
 // button.gsx/dropdown.gsx) for consistency with every other data-variant
 // stamp in this codebase — an ADAPT: shadcn leaves the attribute entirely
 // unset when `orientation` is undefined (see docs/jsx-parity.md).
+//
+// Retargeted to nova density (2026-07-24 nova density map, `## button-group`).
+// DEVIATION from the map's own notes: the map frames nova's corner mechanism
+// as inner-corner zeroing REPLACED by outer-corner restoration
+// (`[&>[data-slot]:not(:has(~[data-slot]))]:rounded-r-lg!` /
+// `rounded-b-lg!`). Checked against the actual nova source
+// (shadcn-ui/apps/v4/registry/bases/radix/ui/button-group.tsx +
+// styles/style-nova.css): the radix base's `buttonGroupVariants` — shared by
+// every style, nova included — still carries the zero-inner-corner classes
+// (`[&>*:not(:first-child)]:rounded-l-none/border-l-0
+// [&>*:not(:last-child)]:rounded-r-none`) verbatim; nova's stylesheet only
+// ADDS the restore rule as a supplementary `!important` override for the one
+// case the zero rule gets wrong — a trailing non-slotted element (e.g. a
+// visually-hidden `<select aria-hidden>`, see the root class's own
+// `has-[select[aria-hidden=true]:last-child]` rule) that makes the true last
+// *visible* child fail `:last-child`. Dropping the zero rule outright (a
+// literal read of "replace") would leave every button at full `rounded-lg`
+// on all four corners — no flush seam between group members, a real visual
+// regression, not nova's actual behavior. Ported as ADD: the zero-corner
+// selectors are kept unchanged and the outer-corner restore is layered on
+// top, matching what nova really ships.
+
 component ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="group"
 		data-slot="button-group"
 		data-orientation={orientation |> default("horizontal")}
 		class={
-			"flex w-fit items-stretch has-[>[data-slot=button-group]]:gap-2 [&>*]:focus-visible:relative [&>*]:focus-visible:z-10 has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-md [&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit [&>input]:flex-1",
+			"flex w-fit items-stretch has-[>[data-slot=button-group]]:gap-2 [&>*]:focus-visible:relative [&>*]:focus-visible:z-10 has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-lg [&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit [&>input]:flex-1",
 			switch orientation {
 			case "vertical":
-				"flex-col [&>*:not(:first-child)]:rounded-t-none [&>*:not(:first-child)]:border-t-0 [&>*:not(:last-child)]:rounded-b-none"
+				"flex-col [&>*:not(:first-child)]:rounded-t-none [&>*:not(:first-child)]:border-t-0 [&>*:not(:last-child)]:rounded-b-none [&>[data-slot]:not(:has(~[data-slot]))]:rounded-b-lg!"
 			default:
-				"[&>*:not(:first-child)]:rounded-l-none [&>*:not(:first-child)]:border-l-0 [&>*:not(:last-child)]:rounded-r-none"
+				"[&>*:not(:first-child)]:rounded-l-none [&>*:not(:first-child)]:border-l-0 [&>*:not(:last-child)]:rounded-r-none [&>[data-slot]:not(:has(~[data-slot]))]:rounded-r-lg!"
 			}
 		}
 		{ attrs... }
@@ -38,7 +60,7 @@ component ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) {
 // part); ported as-is rather than "fixed", per the token-for-token rule.
 component ButtonGroupText(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class="flex items-center gap-2 rounded-md border bg-muted px-4 text-sm font-medium shadow-xs [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4"
+		class="flex items-center gap-2 rounded-lg border bg-muted px-2.5 text-sm font-medium [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4"
 		{ attrs... }
 	>
 		{ children }

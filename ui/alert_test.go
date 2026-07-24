@@ -40,8 +40,8 @@ func TestAlertVariants(t *testing.T) {
 
 func TestAlertCallerClassMerges(t *testing.T) {
 	got := render(t, ui.Alert("", gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "px-8"}}))
-	if strings.Contains(got, "px-4") {
-		t.Errorf("base px-4 should be dropped by caller px-8\nin: %s", got)
+	if strings.Contains(got, "px-2.5") {
+		t.Errorf("base px-2.5 should be dropped by caller px-8\nin: %s", got)
 	}
 	if !strings.Contains(got, "px-8") {
 		t.Errorf("missing caller class px-8\nin: %s", got)
@@ -54,7 +54,7 @@ func TestAlertPinned(t *testing.T) {
 	// (registry/new-york-v4/ui/alert.tsx) — straight port, cva() replaced by
 	// a switch (see docs/jsx-parity.md).
 	got := render(t, ui.Alert("", gsx.Raw("Heads up"), nil))
-	want := `<div data-slot="alert" role="alert" class="relative grid w-full grid-cols-[0_1fr] items-start gap-y-0.5 rounded-lg border px-4 py-3 text-sm has-[&gt;svg]:grid-cols-[calc(var(--spacing)*4)_1fr] has-[&gt;svg]:gap-x-3 [&amp;&gt;svg]:size-4 [&amp;&gt;svg]:translate-y-0.5 [&amp;&gt;svg]:text-current bg-card text-card-foreground">Heads up</div>`
+	want := `<div data-slot="alert" role="alert" class="relative grid w-full items-start gap-y-0.5 rounded-lg border px-2.5 py-2 text-sm has-[&gt;svg]:grid-cols-[auto_1fr] has-[&gt;svg]:gap-x-2 *:[svg]:row-span-2 *:[svg:not([class*=&#39;size-&#39;])]:size-4 [&amp;&gt;svg]:translate-y-0.5 [&amp;&gt;svg]:text-current bg-card text-card-foreground">Heads up</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

@@ -10,7 +10,7 @@ import (
 
 func TestInputGroupPinned(t *testing.T) {
 	got := render(t, ui.InputGroup(gsx.Raw("x"), nil))
-	want := `<div data-slot="input-group" role="group" class="group/input-group relative flex w-full items-center rounded-md border border-input shadow-xs transition-[color,box-shadow] outline-none dark:bg-input/30 h-9 min-w-0 has-[&gt;textarea]:h-auto has-[&gt;[data-align=inline-start]]:[&amp;&gt;input]:pl-2 has-[&gt;[data-align=inline-end]]:[&amp;&gt;input]:pr-2 has-[&gt;[data-align=block-start]]:h-auto has-[&gt;[data-align=block-start]]:flex-col has-[&gt;[data-align=block-start]]:[&amp;&gt;input]:pb-3 has-[&gt;[data-align=block-end]]:h-auto has-[&gt;[data-align=block-end]]:flex-col has-[&gt;[data-align=block-end]]:[&amp;&gt;input]:pt-3 has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-[3px] has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50 has-[[data-slot][aria-invalid=true]]:border-destructive has-[[data-slot][aria-invalid=true]]:ring-destructive/20 dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40">x</div>`
+	want := `<div data-slot="input-group" role="group" class="group/input-group relative flex w-full items-center rounded-lg border border-input transition-[color,box-shadow] outline-none dark:bg-input/30 h-8 min-w-0 has-[&gt;textarea]:h-auto has-[&gt;[data-align=inline-start]]:[&amp;&gt;input]:pl-1.5 has-[&gt;[data-align=inline-end]]:[&amp;&gt;input]:pr-1.5 has-[&gt;[data-align=block-start]]:h-auto has-[&gt;[data-align=block-start]]:flex-col has-[&gt;[data-align=block-start]]:[&amp;&gt;input]:pb-3 has-[&gt;[data-align=block-end]]:h-auto has-[&gt;[data-align=block-end]]:flex-col has-[&gt;[data-align=block-end]]:[&amp;&gt;input]:pt-3 has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-[3px] has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50 has-[[data-slot][aria-invalid=true]]:border-destructive has-[[data-slot][aria-invalid=true]]:ring-destructive/20 dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -33,7 +33,7 @@ func TestInputGroupCallerClassMerges(t *testing.T) {
 // TestInputGroupAddonDefaultPinned pins the zero-value ("inline-start") align.
 func TestInputGroupAddonDefaultPinned(t *testing.T) {
 	got := render(t, ui.InputGroupAddon("", gsx.Raw("x"), nil))
-	want := `<div role="group" data-slot="input-group-addon" data-align="inline-start" class="flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium text-muted-foreground select-none group-data-[disabled=true]/input-group:opacity-50 [&amp;&gt;kbd]:rounded-[calc(var(--radius)-5px)] [&amp;&gt;svg:not([class*=&#39;size-&#39;])]:size-4 order-first pl-3 has-[&gt;button]:ml-[-0.45rem] has-[&gt;kbd]:ml-[-0.35rem]">x</div>`
+	want := `<div role="group" data-slot="input-group-addon" data-align="inline-start" class="flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium text-muted-foreground select-none group-data-[disabled=true]/input-group:opacity-50 [&amp;&gt;kbd]:rounded-[calc(var(--radius)-5px)] [&amp;&gt;svg:not([class*=&#39;size-&#39;])]:size-4 order-first pl-2 has-[&gt;button]:ml-[-0.3rem] has-[&gt;kbd]:ml-[-0.15rem]">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -41,7 +41,7 @@ func TestInputGroupAddonDefaultPinned(t *testing.T) {
 
 func TestInputGroupAddonInlineEndPinned(t *testing.T) {
 	got := render(t, ui.InputGroupAddon("inline-end", gsx.Raw("x"), nil))
-	for _, want := range []string{`data-align="inline-end"`, "order-last pr-3", "has-[&gt;button]:mr-[-0.45rem]"} {
+	for _, want := range []string{`data-align="inline-end"`, "order-last pr-2", "has-[&gt;button]:mr-[-0.3rem]"} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
@@ -50,7 +50,7 @@ func TestInputGroupAddonInlineEndPinned(t *testing.T) {
 
 func TestInputGroupAddonBlockStartPinned(t *testing.T) {
 	got := render(t, ui.InputGroupAddon("block-start", gsx.Raw("x"), nil))
-	want := `<div role="group" data-slot="input-group-addon" data-align="block-start" class="flex h-auto cursor-text items-center gap-2 py-1.5 text-sm font-medium text-muted-foreground select-none group-data-[disabled=true]/input-group:opacity-50 [&amp;&gt;kbd]:rounded-[calc(var(--radius)-5px)] [&amp;&gt;svg:not([class*=&#39;size-&#39;])]:size-4 order-first w-full justify-start px-3 pt-3 group-has-[&gt;input]/input-group:pt-2.5 [.border-b]:pb-3">x</div>`
+	want := `<div role="group" data-slot="input-group-addon" data-align="block-start" class="flex h-auto cursor-text items-center gap-2 py-1.5 text-sm font-medium text-muted-foreground select-none group-data-[disabled=true]/input-group:opacity-50 [&amp;&gt;kbd]:rounded-[calc(var(--radius)-5px)] [&amp;&gt;svg:not([class*=&#39;size-&#39;])]:size-4 order-first w-full justify-start px-2.5 pt-2 group-has-[&gt;input]/input-group:pt-2 [.border-b]:pb-2">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -61,7 +61,7 @@ func TestInputGroupAddonBlockStartPinned(t *testing.T) {
 
 func TestInputGroupAddonBlockEndPinned(t *testing.T) {
 	got := render(t, ui.InputGroupAddon("block-end", gsx.Raw("x"), nil))
-	for _, want := range []string{`data-align="block-end"`, "order-last w-full justify-start px-3 pb-3", "group-has-[&gt;input]/input-group:pb-2.5", "[.border-t]:pt-3"} {
+	for _, want := range []string{`data-align="block-end"`, "order-last w-full justify-start px-2.5 pb-2", "group-has-[&gt;input]/input-group:pb-2", "[.border-t]:pt-2"} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
@@ -78,18 +78,19 @@ func TestInputGroupAddonAttrsFallThrough(t *testing.T) {
 // TestInputGroupButtonDefaultPinned proves InputGroupButton actually
 // composes ui.Button (data-slot="button" and Button's own base/variant
 // classes all come through) and that the "xs" overlay classes win their
-// tailwind-merge conflicts against Button's own default size classes: h-9 ->
-// h-6, rounded-md -> rounded-[calc(var(--radius)-5px)], px-4 -> px-2,
-// has-[>svg]:px-3 -> has-[>svg]:px-2. py-2 (Button's own default size class,
-// which the xs overlay never mentions) survives untouched, matching
-// shadcn's own cn() merge exactly (see ui/input-group.gsx's own comment).
+// tailwind-merge conflicts against Button's own default size classes: h-8 ->
+// h-6, rounded-lg -> rounded-[calc(var(--radius)-3px)], px-2.5 -> px-1.5,
+// has-data-[icon=...]:p{l,r}-2 -> has-[>svg]:px-1.5. gap-1.5 (Button's own
+// default size class, which the xs overlay overrides to gap-1) does not
+// survive, matching shadcn's own cn() merge exactly (see
+// ui/input-group.gsx's own comment).
 func TestInputGroupButtonDefaultPinned(t *testing.T) {
 	got := render(t, ui.InputGroupButton("", "", gsx.Raw("x"), nil))
-	want := `<button data-slot="button" data-variant="ghost" type="button" class="shrink-0 justify-center border border-transparent bg-clip-padding font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 flex items-center text-sm shadow-none h-6 gap-1 rounded-[calc(var(--radius)-5px)] px-2 has-[&gt;svg]:px-2 [&amp;&gt;svg:not([class*=&#39;size-&#39;])]:size-3.5" data-size="xs">x</button>`
+	want := `<button data-slot="button" data-variant="ghost" type="button" class="shrink-0 justify-center border border-transparent bg-clip-padding font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 flex items-center text-sm shadow-none h-6 gap-1 rounded-[calc(var(--radius)-3px)] px-1.5 has-[&gt;svg]:px-1.5 [&amp;&gt;svg:not([class*=&#39;size-&#39;])]:size-3.5" data-size="xs">x</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
-	if strings.Contains(got, "h-9") || strings.Contains(got, "px-4") || strings.Contains(got, "rounded-md\"") {
+	if strings.Contains(got, "h-8 ") || strings.Contains(got, "px-2.5") || strings.Contains(got, "gap-1.5") {
 		t.Errorf("Button's own default size classes should be overridden by the xs overlay\nin: %s", got)
 	}
 }
@@ -105,7 +106,7 @@ func TestInputGroupButtonSmPinned(t *testing.T) {
 
 func TestInputGroupButtonIconXsPinned(t *testing.T) {
 	got := render(t, ui.InputGroupButton("", "icon-xs", gsx.Raw("x"), nil))
-	for _, want := range []string{`data-size="icon-xs"`, "size-6 rounded-[calc(var(--radius)-5px)] p-0 has-[&gt;svg]:p-0"} {
+	for _, want := range []string{`data-size="icon-xs"`, "size-6 rounded-[calc(var(--radius)-3px)] p-0 has-[&gt;svg]:p-0"} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
@@ -197,7 +198,7 @@ func TestInputGroupInputAttrsFallThrough(t *testing.T) {
 // InputGroupInput above.
 func TestInputGroupTextareaPinned(t *testing.T) {
 	got := render(t, ui.InputGroupTextarea("hi", nil))
-	want := `<textarea class="flex field-sizing-content min-h-16 w-full border-input px-2.5 text-base transition-[color,box-shadow] outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 md:text-sm dark:aria-invalid:ring-destructive/40 flex-1 resize-none rounded-none border-0 bg-transparent py-3 shadow-none focus-visible:ring-0 dark:bg-transparent" data-slot="input-group-control">hi</textarea>`
+	want := `<textarea class="flex field-sizing-content min-h-16 w-full border-input px-2.5 text-base transition-[color,box-shadow] outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 md:text-sm dark:aria-invalid:ring-destructive/40 flex-1 resize-none rounded-none border-0 bg-transparent py-2 shadow-none focus-visible:ring-0 dark:bg-transparent" data-slot="input-group-control">hi</textarea>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

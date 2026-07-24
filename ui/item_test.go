@@ -36,7 +36,7 @@ func TestItemGroupCallerClassMerges(t *testing.T) {
 // Separator's own data-[orientation=...] base classes both come through.
 func TestItemSeparatorDefaultPinned(t *testing.T) {
 	got := render(t, ui.ItemSeparator("", nil))
-	want := `<div role="none" data-orientation="horizontal" class="shrink-0 bg-border data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px my-0" data-slot="item-separator"></div>`
+	want := `<div role="none" data-orientation="horizontal" class="shrink-0 bg-border data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px my-2" data-slot="item-separator"></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -63,7 +63,7 @@ func TestItemSeparatorAttrsFallThrough(t *testing.T) {
 // TestItemDefaultPinned pins the zero-value (variant="default", size="default").
 func TestItemDefaultPinned(t *testing.T) {
 	got := render(t, ui.Item("", "", gsx.Raw("x"), nil))
-	want := `<div data-slot="item" data-variant="default" data-size="default" class="group/item flex flex-wrap items-center rounded-md border border-transparent text-sm transition-colors duration-100 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 [a]:transition-colors [a]:hover:bg-accent/50 bg-transparent gap-4 p-4">x</div>`
+	want := `<div data-slot="item" data-variant="default" data-size="default" class="group/item flex flex-wrap items-center rounded-lg border border-transparent text-sm transition-colors duration-100 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 [a]:transition-colors [a]:hover:bg-accent/50 bg-transparent gap-2.5 px-3 py-2.5">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -76,7 +76,7 @@ func TestItemDefaultPinned(t *testing.T) {
 // utility is untouched).
 func TestItemOutlineSmPinned(t *testing.T) {
 	got := render(t, ui.Item("outline", "sm", gsx.Raw("x"), nil))
-	want := `<div data-slot="item" data-variant="outline" data-size="sm" class="group/item flex flex-wrap items-center rounded-md border text-sm transition-colors duration-100 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 [a]:transition-colors [a]:hover:bg-accent/50 border-border gap-2.5 px-4 py-3">x</div>`
+	want := `<div data-slot="item" data-variant="outline" data-size="sm" class="group/item flex flex-wrap items-center rounded-lg border text-sm transition-colors duration-100 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 [a]:transition-colors [a]:hover:bg-accent/50 border-border gap-2.5 px-3 py-2.5">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

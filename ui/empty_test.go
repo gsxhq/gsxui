@@ -10,7 +10,7 @@ import (
 
 func TestEmptyPinned(t *testing.T) {
 	got := render(t, ui.Empty(gsx.Raw("x"), nil))
-	want := `<div data-slot="empty" class="flex min-w-0 flex-1 flex-col items-center justify-center gap-6 rounded-lg border-dashed p-6 text-center text-balance md:p-12">x</div>`
+	want := `<div data-slot="empty" class="flex min-w-0 flex-1 flex-col items-center justify-center gap-4 rounded-xl border-dashed p-6 text-center text-balance">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -25,8 +25,8 @@ func TestEmptyAttrsFallThrough(t *testing.T) {
 
 func TestEmptyCallerClassMerges(t *testing.T) {
 	got := render(t, ui.Empty(nil, gsx.Attrs{{Key: "class", Value: "gap-2"}}))
-	if strings.Contains(got, "gap-6") {
-		t.Errorf("base gap-6 should be dropped by caller gap-2\nin: %s", got)
+	if strings.Contains(got, "gap-4") {
+		t.Errorf("base gap-4 should be dropped by caller gap-2\nin: %s", got)
 	}
 	if !strings.Contains(got, "gap-2") {
 		t.Errorf("missing caller class gap-2\nin: %s", got)
@@ -63,7 +63,7 @@ func TestEmptyMediaDefaultPinned(t *testing.T) {
 
 func TestEmptyMediaIconPinned(t *testing.T) {
 	got := render(t, ui.EmptyMedia("icon", gsx.Raw("x"), nil))
-	want := `<div data-slot="empty-icon" data-variant="icon" class="mb-2 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground [&amp;_svg:not([class*=&#39;size-&#39;])]:size-6">x</div>`
+	want := `<div data-slot="empty-icon" data-variant="icon" class="mb-2 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -78,7 +78,7 @@ func TestEmptyMediaAttrsFallThrough(t *testing.T) {
 
 func TestEmptyTitlePinned(t *testing.T) {
 	got := render(t, ui.EmptyTitle(gsx.Raw("x"), nil))
-	want := `<div data-slot="empty-title" class="text-lg font-medium tracking-tight">x</div>`
+	want := `<div data-slot="empty-title" class="text-sm font-medium tracking-tight">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -111,7 +111,7 @@ func TestEmptyDescriptionAttrsFallThrough(t *testing.T) {
 
 func TestEmptyContentPinned(t *testing.T) {
 	got := render(t, ui.EmptyContent(gsx.Raw("x"), nil))
-	want := `<div data-slot="empty-content" class="flex w-full max-w-sm min-w-0 flex-col items-center gap-4 text-sm text-balance">x</div>`
+	want := `<div data-slot="empty-content" class="flex w-full max-w-sm min-w-0 flex-col items-center gap-2.5 text-sm text-balance">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

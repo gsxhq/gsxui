@@ -9,7 +9,7 @@ package ui
 
 import "github.com/gsxhq/gsx"
 
-const itemBase = "group/item flex flex-wrap items-center rounded-md border border-transparent text-sm transition-colors duration-100 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 [a]:transition-colors [a]:hover:bg-accent/50"
+const itemBase = "group/item flex flex-wrap items-center rounded-lg border border-transparent text-sm transition-colors duration-100 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 [a]:transition-colors [a]:hover:bg-accent/50"
 
 component ItemGroup(children gsx.Node, attrs gsx.Attrs) {
 	<div role="list" data-slot="item-group" class="group/item-group flex flex-col" { attrs... }>
@@ -32,7 +32,7 @@ component ItemSeparator(orientation string, attrs gsx.Attrs) {
 	<Separator
 		data-slot="item-separator"
 		orientation={orientation |> default("horizontal")}
-		class="my-0"
+		class="my-2"
 		{ attrs... }
 	/>
 }
@@ -55,7 +55,7 @@ component Item(variant string, size string, children gsx.Node, attrs gsx.Attrs) 
 		class={
 			itemBase,
 			switch variant { case "outline": "border-border" case "muted": "bg-muted/50" default: "bg-transparent" },
-			switch size { case "sm": "gap-2.5 px-4 py-3" default: "gap-4 p-4" }
+			switch size { case "sm": "gap-2.5 px-3 py-2.5" default: "gap-2.5 px-3 py-2.5" }
 		}
 		{ attrs... }
 	>
@@ -65,6 +65,15 @@ component Item(variant string, size string, children gsx.Node, attrs gsx.Attrs) 
 
 // ItemMedia's variant cva map (itemMediaVariants), same static-block shape
 // as Item's own — ported as a switch inside class={}.
+//
+// Retargeted to nova density (2026-07-24 nova density map, `## item`).
+// DEVIATION: nova's icon-media variant drops the bordered/muted size-8 box
+// entirely (bare `size-4` svg, no container) and the image variant gains
+// group-data-[size=…]/item: responsive sizing tied to a `size=xs` axis this
+// package doesn't ship — both left as-is here: the box drop bundles a
+// color/border removal (border, bg-muted) the retarget is scoped to leave
+// alone, and the responsive image sizing is half dead weight without a real
+// xs size param (Item's `size` axis stays sm/default only, per task scope).
 component ItemMedia(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-slot="item-media"

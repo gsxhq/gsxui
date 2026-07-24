@@ -14,13 +14,13 @@ func TestCardParts(t *testing.T) {
 		node gsx.Node
 		want []string
 	}{
-		{"Card", ui.Card(gsx.Raw("x"), nil), []string{`data-slot="card"`, "flex flex-col gap-6 rounded-xl border bg-card"}},
+		{"Card", ui.Card(gsx.Raw("x"), nil), []string{`data-slot="card"`, "flex flex-col gap-4 rounded-xl border bg-card"}},
 		{"CardHeader", ui.CardHeader(gsx.Raw("x"), nil), []string{`data-slot="card-header"`, "@container/card-header"}},
-		{"CardTitle", ui.CardTitle(gsx.Raw("x"), nil), []string{`data-slot="card-title"`, "leading-none font-semibold"}},
+		{"CardTitle", ui.CardTitle(gsx.Raw("x"), nil), []string{`data-slot="card-title"`, "leading-snug font-semibold"}},
 		{"CardDescription", ui.CardDescription(gsx.Raw("x"), nil), []string{`data-slot="card-description"`, "text-muted-foreground"}},
 		{"CardAction", ui.CardAction(gsx.Raw("x"), nil), []string{`data-slot="card-action"`, "col-start-2 row-span-2"}},
-		{"CardContent", ui.CardContent(gsx.Raw("x"), nil), []string{`data-slot="card-content"`, "px-6"}},
-		{"CardFooter", ui.CardFooter(gsx.Raw("x"), nil), []string{`data-slot="card-footer"`, "flex items-center px-6"}},
+		{"CardContent", ui.CardContent(gsx.Raw("x"), nil), []string{`data-slot="card-content"`, "px-4"}},
+		{"CardFooter", ui.CardFooter(gsx.Raw("x"), nil), []string{`data-slot="card-footer"`, "flex items-center border-t p-4"}},
 	}
 	for _, tc := range cases {
 		got := render(t, tc.node)
@@ -37,7 +37,7 @@ func TestCardPinned(t *testing.T) {
 	// (registry/new-york-v4/ui/card.tsx) and docs/jsx-parity.md — a straight
 	// port, no divergences.
 	got := render(t, ui.Card(gsx.Raw("Content"), nil))
-	want := `<div data-slot="card" class="flex flex-col gap-6 rounded-xl border bg-card py-6 text-card-foreground shadow-sm">Content</div>`
+	want := `<div data-slot="card" class="flex flex-col gap-4 rounded-xl border bg-card py-4 text-sm text-card-foreground has-data-[slot=card-footer]:pb-0">Content</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -56,7 +56,7 @@ func TestCardComposition(t *testing.T) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
 	}
-	if strings.Contains(got, "py-6") {
-		t.Errorf("caller py-8 must drop default py-6\nin: %s", got)
+	if strings.Contains(got, "py-4") {
+		t.Errorf("caller py-8 must drop default py-4\nin: %s", got)
 	}
 }

@@ -15,7 +15,7 @@ import (
 // idiom badge.gsx uses for its own variant map.
 func TestButtonGroupDefaultPinned(t *testing.T) {
 	got := render(t, ui.ButtonGroup("", gsx.Raw("x"), nil))
-	want := `<div role="group" data-slot="button-group" data-orientation="horizontal" class="flex w-fit items-stretch has-[&gt;[data-slot=button-group]]:gap-2 [&amp;&gt;*]:focus-visible:relative [&amp;&gt;*]:focus-visible:z-10 has-[select[aria-hidden=true]:last-child]:[&amp;&gt;[data-slot=select-trigger]:last-of-type]:rounded-r-md [&amp;&gt;[data-slot=select-trigger]:not([class*=&#39;w-&#39;])]:w-fit [&amp;&gt;input]:flex-1 [&amp;&gt;*:not(:first-child)]:rounded-l-none [&amp;&gt;*:not(:first-child)]:border-l-0 [&amp;&gt;*:not(:last-child)]:rounded-r-none">x</div>`
+	want := `<div role="group" data-slot="button-group" data-orientation="horizontal" class="flex w-fit items-stretch has-[&gt;[data-slot=button-group]]:gap-2 [&amp;&gt;*]:focus-visible:relative [&amp;&gt;*]:focus-visible:z-10 has-[select[aria-hidden=true]:last-child]:[&amp;&gt;[data-slot=select-trigger]:last-of-type]:rounded-r-lg [&amp;&gt;[data-slot=select-trigger]:not([class*=&#39;w-&#39;])]:w-fit [&amp;&gt;input]:flex-1 [&amp;&gt;*:not(:first-child)]:rounded-l-none [&amp;&gt;*:not(:first-child)]:border-l-0 [&amp;&gt;*:not(:last-child)]:rounded-r-none [&amp;&gt;[data-slot]:not(:has(~[data-slot]))]:rounded-r-lg!">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -23,7 +23,7 @@ func TestButtonGroupDefaultPinned(t *testing.T) {
 
 func TestButtonGroupVerticalPinned(t *testing.T) {
 	got := render(t, ui.ButtonGroup("vertical", gsx.Raw("x"), nil))
-	want := `<div role="group" data-slot="button-group" data-orientation="vertical" class="flex w-fit items-stretch has-[&gt;[data-slot=button-group]]:gap-2 [&amp;&gt;*]:focus-visible:relative [&amp;&gt;*]:focus-visible:z-10 has-[select[aria-hidden=true]:last-child]:[&amp;&gt;[data-slot=select-trigger]:last-of-type]:rounded-r-md [&amp;&gt;[data-slot=select-trigger]:not([class*=&#39;w-&#39;])]:w-fit [&amp;&gt;input]:flex-1 flex-col [&amp;&gt;*:not(:first-child)]:rounded-t-none [&amp;&gt;*:not(:first-child)]:border-t-0 [&amp;&gt;*:not(:last-child)]:rounded-b-none">x</div>`
+	want := `<div role="group" data-slot="button-group" data-orientation="vertical" class="flex w-fit items-stretch has-[&gt;[data-slot=button-group]]:gap-2 [&amp;&gt;*]:focus-visible:relative [&amp;&gt;*]:focus-visible:z-10 has-[select[aria-hidden=true]:last-child]:[&amp;&gt;[data-slot=select-trigger]:last-of-type]:rounded-r-lg [&amp;&gt;[data-slot=select-trigger]:not([class*=&#39;w-&#39;])]:w-fit [&amp;&gt;input]:flex-1 flex-col [&amp;&gt;*:not(:first-child)]:rounded-t-none [&amp;&gt;*:not(:first-child)]:border-t-0 [&amp;&gt;*:not(:last-child)]:rounded-b-none [&amp;&gt;[data-slot]:not(:has(~[data-slot]))]:rounded-b-lg!">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -47,7 +47,7 @@ func TestButtonGroupCallerClassMerges(t *testing.T) {
 // other button-group part) — ported as-is, see docs/jsx-parity.md.
 func TestButtonGroupTextPinned(t *testing.T) {
 	got := render(t, ui.ButtonGroupText(gsx.Raw("x"), nil))
-	want := `<div class="flex items-center gap-2 rounded-md border bg-muted px-4 text-sm font-medium shadow-xs [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4">x</div>`
+	want := `<div class="flex items-center gap-2 rounded-lg border bg-muted px-2.5 text-sm font-medium [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

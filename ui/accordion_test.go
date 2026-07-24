@@ -107,18 +107,18 @@ func TestAccordionAttrsFallThrough(t *testing.T) {
 // TestAccordionContentCallerClassRoutesToInner covers the shadcn parity fix:
 // rest props land on the OUTER Content element (class hardcoded to
 // "overflow-hidden text-sm"), while a caller's className merges onto the
-// INNER `pt-0 pb-4` wrapper div — matching shadcn's cn() split between the
+// INNER `pt-0 pb-2.5` wrapper div — matching shadcn's cn() split between the
 // two divs, expressed here via attrs.Without("class") / attrs.Class().
 func TestAccordionContentCallerClassRoutesToInner(t *testing.T) {
 	got := render(t, ui.AccordionContent(gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "pb-8"}}))
 
-	// pb-8 conflicts with the inner pt-0 pb-4's pb-4 (both set
+	// pb-8 conflicts with the inner pt-0 pb-2.5's pb-2.5 (both set
 	// padding-bottom) and must win there; pt-0 survives untouched.
 	if !strings.Contains(got, `<div class="pt-0 pb-8">x</div>`) {
-		t.Errorf("caller class must merge onto the INNER wrapper, dropping pb-4\nin: %s", got)
+		t.Errorf("caller class must merge onto the INNER wrapper, dropping pb-2.5\nin: %s", got)
 	}
-	if strings.Contains(got, "pb-4") {
-		t.Errorf("pb-4 should have been dropped by caller's pb-8\nin: %s", got)
+	if strings.Contains(got, "pb-2.5") {
+		t.Errorf("pb-2.5 should have been dropped by caller's pb-8\nin: %s", got)
 	}
 	// The outer div's class is the hardcoded shadcn constant only — no
 	// caller class landed there.
@@ -136,7 +136,7 @@ func TestAccordionContentNonClassAttrsRouteToOuter(t *testing.T) {
 	if !strings.Contains(got, `<div data-slot="accordion-content" class="overflow-hidden text-sm" id="panel-1">`) {
 		t.Errorf("id must land on the OUTER div\nin: %s", got)
 	}
-	if !strings.Contains(got, `<div class="pt-0 pb-4">x</div>`) {
+	if !strings.Contains(got, `<div class="pt-0 pb-2.5">x</div>`) {
 		t.Errorf("inner wrapper must be unaffected by non-class attrs\nin: %s", got)
 	}
 }

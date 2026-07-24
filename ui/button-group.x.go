@@ -22,12 +22,33 @@ import (
 // button.gsx/dropdown.gsx) for consistency with every other data-variant
 // stamp in this codebase — an ADAPT: shadcn leaves the attribute entirely
 // unset when `orientation` is undefined (see docs/jsx-parity.md).
+//
+// Retargeted to nova density (2026-07-24 nova density map, `## button-group`).
+// DEVIATION from the map's own notes: the map frames nova's corner mechanism
+// as inner-corner zeroing REPLACED by outer-corner restoration
+// (`[&>[data-slot]:not(:has(~[data-slot]))]:rounded-r-lg!` /
+// `rounded-b-lg!`). Checked against the actual nova source
+// (shadcn-ui/apps/v4/registry/bases/radix/ui/button-group.tsx +
+// styles/style-nova.css): the radix base's `buttonGroupVariants` — shared by
+// every style, nova included — still carries the zero-inner-corner classes
+// (`[&>*:not(:first-child)]:rounded-l-none/border-l-0
+// [&>*:not(:last-child)]:rounded-r-none`) verbatim; nova's stylesheet only
+// ADDS the restore rule as a supplementary `!important` override for the one
+// case the zero rule gets wrong — a trailing non-slotted element (e.g. a
+// visually-hidden `<select aria-hidden>`, see the root class's own
+// `has-[select[aria-hidden=true]:last-child]` rule) that makes the true last
+// *visible* child fail `:last-child`. Dropping the zero rule outright (a
+// literal read of "replace") would leave every button at full `rounded-lg`
+// on all four corners — no flush seam between group members, a real visual
+// regression, not nova's actual behavior. Ported as ADD: the zero-corner
+// selectors are kept unchanged and the outer-corner restore is layered on
+// top, matching what nova really ships.
 
-//line button-group.gsx:15:1
+//line button-group.gsx:37:1
 func ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line button-group.gsx:16:2
+//line button-group.gsx:38:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"group\"")
@@ -40,13 +61,13 @@ func ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
 			_gsxgw.S("\"")
 		}
-		_gsxv0 := "flex w-fit items-stretch has-[>[data-slot=button-group]]:gap-2 [&>*]:focus-visible:relative [&>*]:focus-visible:z-10 has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-md [&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit [&>input]:flex-1"
+		_gsxv0 := "flex w-fit items-stretch has-[>[data-slot=button-group]]:gap-2 [&>*]:focus-visible:relative [&>*]:focus-visible:z-10 has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-lg [&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit [&>input]:flex-1"
 		var _gsxv1 string
 		switch orientation {
 		case "vertical":
-			_gsxv1 = "flex-col [&>*:not(:first-child)]:rounded-t-none [&>*:not(:first-child)]:border-t-0 [&>*:not(:last-child)]:rounded-b-none"
+			_gsxv1 = "flex-col [&>*:not(:first-child)]:rounded-t-none [&>*:not(:first-child)]:border-t-0 [&>*:not(:last-child)]:rounded-b-none [&>[data-slot]:not(:has(~[data-slot]))]:rounded-b-lg!"
 		default:
-			_gsxv1 = "[&>*:not(:first-child)]:rounded-l-none [&>*:not(:first-child)]:border-l-0 [&>*:not(:last-child)]:rounded-r-none"
+			_gsxv1 = "[&>*:not(:first-child)]:rounded-l-none [&>*:not(:first-child)]:border-l-0 [&>*:not(:last-child)]:rounded-r-none [&>[data-slot]:not(:has(~[data-slot]))]:rounded-r-lg!"
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
@@ -54,38 +75,38 @@ func ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line button-group.gsx:31:3
+//line button-group.gsx:53:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line button-group.gsx:35:1
+//line button-group.gsx:57:1
 // ButtonGroupText's asChild tag-swap is dropped (GAP, always a <div>) — same
 // narrow gap as Button's own asChild. Note this element carries no
 // data-slot in shadcn's own source either (unlike every other button-group
 // part); ported as-is rather than "fixed", per the token-for-token rule.
 
-//line button-group.gsx:39:1
+//line button-group.gsx:61:1
 func ButtonGroupText(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line button-group.gsx:40:2
+//line button-group.gsx:62:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex items-center gap-2 rounded-md border bg-muted px-4 text-sm font-medium shadow-xs [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex items-center gap-2 rounded-lg border bg-muted px-2.5 text-sm font-medium [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line button-group.gsx:44:3
+//line button-group.gsx:66:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line button-group.gsx:48:1
+//line button-group.gsx:70:1
 // ButtonGroupSeparator wraps ui.Separator directly (flat package, no
 // re-implementation) — the button-group -> separator dependency
 // internal/registry derives and registry_test.go pins. orientation defaults
@@ -97,11 +118,11 @@ func ButtonGroupText(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // the ordinary caller-class-merge position (attrs after base, see
 // docs/jsx-parity.md styling notes).
 
-//line button-group.gsx:58:1
+//line button-group.gsx:80:1
 func ButtonGroupSeparator(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line button-group.gsx:59:2
+//line button-group.gsx:81:2
 		_gsxgw.NodeResult(_gsxrenderSeparator(ctx, _gsxgw, _gsxstd.Default((orientation), "vertical"), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-slot", Value: "button-group-separator"}}, _gsxrt.Attrs{{Key: "class", Value: "relative m-0! self-stretch bg-input data-[orientation=vertical]:h-auto"}}, attrs)))
 		return _gsxgw.Err()
 	})

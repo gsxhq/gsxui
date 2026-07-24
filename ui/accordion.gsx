@@ -64,7 +64,7 @@ component AccordionItem(name string, open bool, children gsx.Node, attrs gsx.Att
 component AccordionTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<summary
 		data-slot="accordion-trigger"
-		class="flex items-start justify-between gap-4 rounded-md py-4 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 list-none [&::-webkit-details-marker]:hidden"
+		class="flex items-start justify-between rounded-lg py-2.5 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 list-none [&::-webkit-details-marker]:hidden"
 		{ attrs... }
 	>
 		{ children }
@@ -90,6 +90,6 @@ component AccordionTrigger(children gsx.Node, attrs gsx.Attrs) {
 // min-height:0 on accordion-content is what lets the 0fr row collapse.
 component AccordionContent(children gsx.Node, attrs gsx.Attrs) {
 	<div data-slot="accordion-content" class="overflow-hidden text-sm" { attrs.Without("class")... }>
-		<div class={ "pt-0 pb-4", attrs.Class() }>{ children }</div>
+		<div class={ "pt-0 pb-2.5", attrs.Class() }>{ children }</div>
 	</div>
 }
