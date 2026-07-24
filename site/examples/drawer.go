@@ -9,4 +9,10 @@ func init() {
 		Node:       exampledrawer.Basic(),
 		SourcePath: "drawer/basic.gsx",
 	})
+	Register("drawer", Example{
+		Name:       "directions",
+		Title:      "Directions",
+		Node:       exampledrawer.Directions(),
+		SourcePath: "drawer/directions.gsx",
+	})
 }
