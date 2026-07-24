@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "carousel", "checkbox", "collapsible", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "input-otp", "item", "kbd", "label", "native-select", "pagination", "popover", "progress", "radio", "scroll-area", "select", "separator", "sheet", "skeleton", "slider", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
+	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "carousel", "checkbox", "collapsible", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "input-otp", "item", "kbd", "label", "native-select", "pagination", "popover", "progress", "radio", "scroll-area", "select", "separator", "sheet", "skeleton", "slider", "sonner", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -370,6 +370,18 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("select deps = %v, want [icon]", deps)
 	}
 
+	// sonner.gsx (Toaster) is a plain <section>/<ol> — no ui/icon import
+	// (the toast icons are hand-copied SVG-path strings inside ui/sonner.js,
+	// not icon.* Go calls) and no intra-package reference to another
+	// component, so Deps is empty, same shape as popover/slider/context-menu.
+	deps, err = registry.Deps("sonner")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(deps) != 0 {
+		t.Fatalf("sonner deps = %v, want none", deps)
+	}
+
 	if _, err := registry.Deps("nosuch"); err == nil || !strings.Contains(err.Error(), "gsxui list") {
 		t.Fatalf("Deps(nosuch) err = %v, want error mentioning 'gsxui list'", err)
 	}
@@ -464,6 +476,14 @@ func TestHasJS(t *testing.T) {
 	}
 	if registry.HasJS("native-select") {
 		t.Error("native-select should not have JS")
+	}
+	// sonner has its own ui/sonner.js — the codebase's first client-
+	// constructed-DOM module (it builds every toast <li> from scratch and
+	// owns the stacking/timer/pause-on-hover/promise-morph lifecycle). The
+	// server-rendered ui/sonner.gsx (Toaster) is just the mount region;
+	// HasJS derives from the <basename>.js match, so the file is ui/sonner.js.
+	if !registry.HasJS("sonner") {
+		t.Error("sonner should have JS")
 	}
 }
 
@@ -592,6 +612,17 @@ func TestResolveTransitive(t *testing.T) {
 		t.Fatal(err)
 	}
 	want = []string{"icon", "select"}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("got %v want %v", got, want)
+	}
+
+	// sonner has no deps of its own — Resolve returns just itself, same
+	// shape as popover/slider/context-menu's own entries above.
+	got, err = registry.Resolve([]string{"sonner"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want = []string{"sonner"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}

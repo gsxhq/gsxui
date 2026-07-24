@@ -16,3 +16,9 @@ import "./command.js";
 import "./carousel.js";
 import "./input-otp.js";
 import "./select.js";
+import "./sonner.js";
+
+// First public imperative API re-exported through the barrel for page
+// authors (every other module only exports internals for sibling use):
+// `import { toast } from "gsxui"`.
+export { toast } from "./sonner.js";

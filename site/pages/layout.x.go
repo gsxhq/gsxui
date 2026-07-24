@@ -320,6 +320,9 @@ func _gsxrenderLayout(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title string, 
 //line layout.gsx:217:4
 	_gsxgw.S("<footer class=\"border-t border-border\">")
 //line layout.gsx:218:5
-	_gsxgw.S("<div class=\"mx-auto max-w-6xl px-4 py-6 text-sm text-muted-foreground\">gsxui — shadcn-style components for gsx. Copy-in, type-checked, server-rendered.</div></footer></body></html>")
+	_gsxgw.S("<div class=\"mx-auto max-w-6xl px-4 py-6 text-sm text-muted-foreground\">gsxui — shadcn-style components for gsx. Copy-in, type-checked, server-rendered.</div></footer>")
+//line layout.gsx:224:4
+	_gsxgw.Node(ctx, ui.Toaster(nil))
+	_gsxgw.S("</body></html>")
 	return _gsxgw.Err()
 }

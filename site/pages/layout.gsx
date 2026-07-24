@@ -219,6 +219,9 @@ component Layout(title string, active string, children gsx.Node) {
 					gsxui — shadcn-style components for gsx. Copy-in, type-checked, server-rendered.
 				</div>
 			</footer>
+			{/* Mounted once per page: the bottom-right region ui/sonner.js
+			   appends every client-constructed toast <li> into. */}
+			<ui.Toaster/>
 		</body>
 	</html>
 }

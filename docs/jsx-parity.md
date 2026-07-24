@@ -970,3 +970,98 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
 - Registry: `input-otp.gsx` imports `ui/icon` (`InputOTPSeparator`'s
   `icon.Minus`) — `registry.Deps("input-otp") == ["icon"]`, pinned in
   `internal/registry/registry_test.go`. `HasJS("input-otp")` is `true`.
+
+## sonner
+- MECHANISM (the codebase's FIRST client-constructed-DOM module — stated
+  plainly): every other gsxui behavior (`dialog`/`dropdown`/`command`/
+  `carousel`/`input-otp`/…) attaches delegated behavior to server-rendered
+  markup already in the DOM. Sonner has **no server markup for the toast
+  itself** — a toast is definitionally a client-triggered response to a JS
+  event (a fetch resolving, a form saving), so `ui/sonner.js` **constructs**
+  each toast `<li>` from scratch (`document.createElement` tree) on every
+  `toast()` call, appends it into the one static `<ol data-gsxui-toaster>`
+  region `ui.Toaster` server-renders, and owns its whole lifecycle: mount →
+  stacking → dismiss timer → animated remove. This is the single largest
+  new-architecture item in the Tier 3 batch; the server surface is *only*
+  the empty positioned region (`ui.Toaster`), pinned by `TestToasterPinned`
+  in `ui/sonner_test.go` (`command.js`'s precedent: Go-pin only the server-
+  rendered surface, exercise the JS via examples + a browser pass).
+- SYNTHESIZED CLASSES (no Tailwind source upstream — the map IS the spec):
+  shadcn's own `sonner.tsx` renders nothing but a re-themed `<Sonner>`
+  passthrough; the toast library owns 100% of the toast DOM and ships its
+  look from a **non-Tailwind** stylesheet (`sonner/dist/styles.css`) re-
+  themed through four CSS custom properties. There is therefore no class
+  string to transcribe — the toast card's classes in `ui/sonner.js`
+  (`rounded-2xl border border-border bg-popover w-[356px] text-popover-
+  foreground shadow-lg`, type-tinted icons via `data-[type=…]:[&>[data-
+  icon]]:text-{emerald,sky,amber,destructive}`) are the synthesized spec
+  from the wrapped source map's `## sonner`, reconstructed to match our
+  popover/card surfaces. This is a genuine simplification (WIN): none of
+  sonner's `--normal-bg`/`--normal-text`/`--border-radius` indirection is
+  reproduced — the surface tokens are hardcoded Tailwind classes.
+- DECISION (type-tinted icons are a house choice, not new-york-v4's literal
+  default): shadcn's own `sonner.tsx` does NOT pass `richColors`, so strict
+  new-york-v4 parity would render monochrome icons. The tinted convention
+  (emerald/sky/amber/destructive) tracks ui.shadcn.com's live nova site and
+  is more legible; a monochrome `text-foreground` alternative is equally
+  defensible. Chosen deliberately per the brief, ledgered here.
+- MAINTENANCE SEAM (icon paths hand-copied into JS): the toast `<li>` is
+  built by client JS, so `icon.CircleCheck` (a server-side Go call) is
+  unreachable. The five type glyphs (`circle-check`/`info`/`triangle-alert`/
+  `octagon-x`/`loader-circle`) plus the close `x` are duplicated as literal
+  SVG-path strings in `ui/sonner.js`'s `GLYPHS`/`X_GLYPH` (with a provenance
+  comment naming `ui/icon/icon_data.go`) — the same "static data ported into
+  a JS module" precedent as `command.js`'s `commandScore`. If `ui/icon`'s
+  glyphs are ever regenerated from a newer Lucide, these copies do NOT
+  update automatically.
+- BARREL-EXPORT PRECEDENT (first public imperative API): `ui/index.js` gains
+  both `import "./sonner.js"` (side-effect: the declarative trigger + the
+  window global) AND `export { toast } from "./sonner.js"`, so
+  `import { toast } from "gsxui"` works for page authors. Every prior module
+  only exported internals for sibling-module use (`dialog.js`'s
+  `requestClose` for `command.js`); `toast` is the first public
+  imperative surface re-exported through the barrel. Because an inline
+  `<script>` on a demo page cannot import the barrel, `ui/sonner.js` also
+  attaches `window.gsxui = Object.assign(window.gsxui ?? {}, { toast })` —
+  `site/examples/sonner/types.gsx`'s promise button uses
+  `window.gsxui.toast.promise` (documented choice).
+- ADAPT (declarative trigger for zero-JS pages): mirroring the
+  `data-gsxui-dialog-trigger` idiom, a click-delegated
+  `data-gsxui-toast="message"` (+ `-description`, `-type`, `-action` for the
+  label) on any element calls the same internal `show()` the imperative API
+  uses — the docs demos need no page-specific `<script>`. The constructed
+  toast `<li>` ALSO carries `data-gsxui-toast` (an empty slot marker, per
+  the map's markup), so the delegated handler guards on a non-empty value —
+  that guard is what stops a click INSIDE a toast from spawning a blank one.
+- STACKING/TIMERS (fresh design, no source to port): a plain array of toast
+  records (`{id, el, type, duration, remaining, timer, startedAt}`), NOT
+  sonner's own CSS-custom-property machine (we ship fixed Tailwind classes,
+  not a themeable third-party stylesheet). At most `MAX_VISIBLE=3` show
+  collapsed; each older toast peeks `COLLAPSE_PEEK=16px` up and shrinks
+  `SCALE_STEP=0.05` per level via an inline `transform` recomputed per
+  layout (`origin-bottom` keeps bottoms aligned, descending `z-index` paints
+  the front on top); a 4th+ toast is hidden until a dismiss promotes it.
+  Hovering any toast expands the whole stack (toasts separate upward by
+  their measured `offsetHeight` + `EXPAND_GAP=14px`) AND pauses every timer
+  (remaining-time resume on leave, debounced `HOVER_LEAVE_MS=80` so crossing
+  a gap doesn't collapse). Default duration `4000ms`; a `loading` toast has
+  `Infinity` until its promise settles. Enter/exit follow the house
+  discrete-transition idiom adapted to a JS-constructed node (set the closed
+  visual state, force one frame, flip to open; exit reverses and removes on
+  `transitionend`, capped at `600ms` — the same race-against-a-cap idea as
+  `dialog.js`'s `requestClose`, for backgrounded tabs with a frozen
+  transition clock). `toast.promise` MORPHS THE SAME NODE in place on settle
+  (swap icon/type/title, restart the timer, no re-animation, no stack
+  reflow) — a naive dismiss-old/spawn-new would visibly jump the stack.
+- GAP (positions): v1 ships only the default `bottom-right` region. The
+  other five sonner positions (`top-left`/`top-center`/`top-right`/
+  `bottom-left`/`bottom-center`) are a real feature reduction, ledgered —
+  none of the docs demos exercise anything but the default.
+- GAP (swipe-dismiss): sonner is touch swipe-dismissible (drag past a
+  threshold). gsxui v1 ships no gesture layer — dismissal is the close
+  button, the action button, the auto-dismiss timer, or `toast.dismiss(id?)`.
+- Registry: `sonner.gsx` (Toaster) is a plain `<section>`/`<ol>` — no
+  `ui/icon` import (icons live as SVG-path strings in `ui/sonner.js`) and no
+  intra-package component reference, so `registry.Deps("sonner")` is empty,
+  pinned in `internal/registry/registry_test.go`. `HasJS("sonner")` is
+  `true` (`ui/sonner.js`, exact-basename match).
