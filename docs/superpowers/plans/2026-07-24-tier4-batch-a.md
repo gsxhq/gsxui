@@ -196,7 +196,8 @@ git commit -m "docs(plan): Tier 4 Batch A source map — resizable, combobox, si
 - Modify: `site/main.go` or the site's component registry — follow how `carousel` is wired; grep for `"carousel"` under `site/` and mirror every hit.
 
 **Interfaces:**
-- Consumes: nothing from other tasks. `ui/icon`'s `GripVertical`.
+- Consumes: nothing from other tasks, and — per decision 6 below — **no
+  `ui/icon` dependency**. `resizable` has no `Deps` at all.
 - Produces:
 
 ```go
@@ -234,6 +235,22 @@ strings like `"50%"`; `""` means unset.
    map found the library's real step, use that value instead and note it.
 5. **`gsx.Attrs` merge**: `class` passed by the caller merges through the
    house class-merge, same as every other component. Do not hand-concatenate.
+6. **The grip is a nova pill, not new-york-v4's icon-in-a-box.** The source
+   map (`## resizable`, "Handle icon") established via the `bases/base`
+   structure tiebreak that nova's `.cn-resizable-handle-icon` applies to an
+   **empty** `div` — `{withHandle && <div className="cn-resizable-handle-icon z-10 flex shrink-0" />}`
+   — and the rule is `@apply bg-border h-6 w-1 rounded-lg`. So `withHandle`
+   renders exactly:
+
+```html
+<div class="z-10 flex shrink-0 h-6 w-1 rounded-lg bg-border"></div>
+```
+
+   NOT new-york-v4's bordered `h-4 w-3` box containing a `size-2.5`
+   `GripVerticalIcon`. Nova wins on visual disagreement, and this is a
+   structural delta rather than a token swap, so it is called out here
+   explicitly. **Consequence: do not import `ui/icon`** — `resizable` has no
+   dependencies. Ledger it as an ADAPT citing the source map.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -296,23 +313,26 @@ func TestResizableHandleOrientationIsInverted(t *testing.T) {
 	}
 }
 
-func TestResizableHandleWithHandleRendersGrip(t *testing.T) {
+func TestResizableHandleWithHandleRendersNovaPill(t *testing.T) {
+	// nova's grip is an empty pill, not new-york-v4's icon-in-a-box.
 	got := render(t, ui.ResizableHandle("horizontal", true, nil))
 	for _, want := range []string{
 		`role="separator"`,
 		`tabindex="0"`,
-		"z-10 flex h-4 w-3 items-center justify-center rounded-xs border bg-border",
-		"size-2.5",
+		"h-6 w-1 rounded-lg bg-border",
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("want %q\nin: %s", want, got)
 		}
 	}
+	if strings.Contains(got, "svg") {
+		t.Errorf("nova's grip carries no icon glyph\nin: %s", got)
+	}
 }
 
 func TestResizableHandleWithoutHandleHasNoGrip(t *testing.T) {
 	got := render(t, ui.ResizableHandle("horizontal", false, nil))
-	if strings.Contains(got, "rounded-xs border bg-border") {
+	if strings.Contains(got, "h-6 w-1 rounded-lg bg-border") {
 		t.Errorf("withHandle=false must not render the grip\nin: %s", got)
 	}
 }
@@ -386,7 +406,7 @@ go test ./...
 ```
 
 Expected: both clean. `TestRegistry*` should pick up `resizable` with
-`HasJS` true and `Deps` including `icon`.
+`HasJS` true and **empty `Deps`** (no `icon` — see decision 6).
 
 - [ ] **Step 7: Write the three site examples**
 
@@ -410,9 +430,10 @@ deploy silently does not happen.
 - [ ] **Step 9: Ledger the divergences**
 
 Append a `## resizable` section to `docs/jsx-parity.md` in the existing
-style: the inverted-orientation ADAPT, the server-rendered `flex-basis`
-MECHANISM, and GAPs for `autoSaveId` (replaced by `gsxui:change`),
-collapsible panels, and the imperative panel API.
+style: the inverted-orientation ADAPT, the nova-pill grip ADAPT (decision 6,
+citing the source map's `bases/base` tiebreak), the server-rendered
+`flex-basis` MECHANISM, and GAPs for `autoSaveId` (replaced by
+`gsxui:change`), collapsible panels, and the imperative panel API.
 
 - [ ] **Step 10: Commit**
 
@@ -463,14 +484,36 @@ func ComboboxValue(children gsx.Node, attrs gsx.Attrs) gsx.Node
 2. **No shared JS with `command`.** `combobox.js` gets its own matcher.
    Importing `command.js`'s scorer would create a dependency invisible to
    `registry.Deps` and silently break vendoring. Duplicate if needed.
-3. **Filter semantics follow the source map's `## combobox` finding.** If
-   the map read Base UI and found a collator-based contains matcher, build
-   that. If the map marked it `derived-not-read`, build a case- and
-   accent-insensitive substring matcher using
-   `Intl.Collator(undefined, { sensitivity: "base" })`-equivalent
-   normalization (`String.prototype.normalize("NFD")` + combining-mark
-   strip + `toLowerCase()`), and ledger it as a `derived-not-read` ADAPT.
-   Either way, ledger the divergence from cmdk's `command-score` ranking.
+3. **Filter semantics: an `Intl.Collator`-backed boolean `contains`.**
+   RESOLVED — the source map correctly marked this `derived-not-read`
+   (`@base-ui/react` is absent from the local checkout), and the controller
+   then resolved it from Base UI's published docs and issue tracker: the
+   default filter is `contains` from Base UI's `useFilter()` hook, which
+   does case- and accent-insensitive matching via `Intl.Collator` with
+   `sensitivity: "base"`. It returns a **boolean**, not a score — there is
+   no ranking and no result reordering.
+
+   Implement it as the collator scan that Base UI's `useFilter` mirrors
+   from React Aria:
+
+```js
+const collator = new Intl.Collator(undefined, { usage: "search", sensitivity: "base" });
+
+function contains(string, substring) {
+  if (substring.length === 0) return true;
+  const s = string.normalize("NFC");
+  const q = substring.normalize("NFC");
+  for (let i = 0; i <= s.length - q.length; i++) {
+    if (collator.compare(s.slice(i, i + q.length), q) === 0) return true;
+  }
+  return false;
+}
+```
+
+   Because items are never reordered, `combobox.js` only hides and shows
+   them — do NOT port `command.js`'s DOM-reordering pass. Ledger this as a
+   `web-verified` ADAPT (docs + issue tracker, not the package source) and
+   record the divergence from cmdk's `command-score` ranking.
 4. **Value model and form bridge come from `ui/select.js`'s pattern**: a
    hidden `sr-only` real control carries the value so non-JS form posts and
    `FormData` both work, populated by JS at init. `Combobox`'s `name`
