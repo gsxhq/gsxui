@@ -3,6 +3,7 @@
 export * from "./gsxui.js";
 import "./avatar.js";
 import "./carousel.js";
+import "./combobox.js";
 import "./command.js";
 import "./context-menu.js";
 import "./dialog.js";

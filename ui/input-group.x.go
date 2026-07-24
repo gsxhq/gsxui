@@ -39,25 +39,32 @@ import (
 func InputGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line input-group.gsx:28:2
-		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"input-group\"")
-		}
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"group\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/input-group relative flex w-full items-center rounded-lg border border-input transition-[color,box-shadow] outline-none dark:bg-input/30"), _gsxrt.Class("h-8 min-w-0 has-[>textarea]:h-auto"), _gsxrt.Class("has-[>[data-align=inline-start]]:[&>input]:pl-1.5 has-[>[data-align=inline-end]]:[&>input]:pr-1.5 has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-end]]:[&>input]:pt-3"), _gsxrt.Class("has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-[3px] has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50"), _gsxrt.Class("has-[[data-slot][aria-invalid=true]]:border-destructive has-[[data-slot][aria-invalid=true]]:ring-destructive/20 dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
-		_gsxgw.S(">")
-//line input-group.gsx:40:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderInputGroup(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderInputGroup(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line input-group.gsx:28:2
+	_gsxgw.S("<div")
+	if !attrs.Has("data-slot") {
+		_gsxgw.S(" data-slot=\"input-group\"")
+	}
+	if !attrs.Has("role") {
+		_gsxgw.S(" role=\"group\"")
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/input-group relative flex w-full items-center rounded-lg border border-input transition-[color,box-shadow] outline-none dark:bg-input/30"), _gsxrt.Class("h-8 min-w-0 has-[>textarea]:h-auto"), _gsxrt.Class("has-[>[data-align=inline-start]]:[&>input]:pl-1.5 has-[>[data-align=inline-end]]:[&>input]:pr-1.5 has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-end]]:[&>input]:pt-3"), _gsxrt.Class("has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-[3px] has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50"), _gsxrt.Class("has-[[data-slot][aria-invalid=true]]:border-destructive has-[[data-slot][aria-invalid=true]]:ring-destructive/20 dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.S(">")
+//line input-group.gsx:40:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line input-group.gsx:44:1
@@ -74,42 +81,49 @@ func InputGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func InputGroupAddon(align string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line input-group.gsx:53:2
-		_gsxgw.S("<div")
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"group\"")
-		}
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"input-group-addon\"")
-		}
-		if !attrs.Has("data-align") {
-			_gsxgw.S(" data-align=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((align), "inline-start")))
-			_gsxgw.S("\"")
-		}
-		_gsxv0 := "flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium text-muted-foreground select-none group-data-[disabled=true]/input-group:opacity-50 [&>kbd]:rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-4"
-		var _gsxv1 string
-		switch align {
-		case "inline-end":
-			_gsxv1 = "order-last pr-2 has-[>button]:mr-[-0.3rem] has-[>kbd]:mr-[-0.15rem]"
-		case "block-start":
-			_gsxv1 = "order-first w-full justify-start px-2.5 pt-2 group-has-[>input]/input-group:pt-2 [.border-b]:pb-2"
-		case "block-end":
-			_gsxv1 = "order-last w-full justify-start px-2.5 pb-2 group-has-[>input]/input-group:pb-2 [.border-t]:pt-2"
-		default:
-			_gsxv1 = "order-first pl-2 has-[>button]:ml-[-0.3rem] has-[>kbd]:ml-[-0.15rem]"
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
-		_gsxgw.S(">")
-//line input-group.gsx:72:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderInputGroupAddon(ctx, _gsxgw, align, children, attrs)
 	})
+}
+
+func _gsxrenderInputGroupAddon(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, align string, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line input-group.gsx:53:2
+	_gsxgw.S("<div")
+	if !attrs.Has("role") {
+		_gsxgw.S(" role=\"group\"")
+	}
+	if !attrs.Has("data-slot") {
+		_gsxgw.S(" data-slot=\"input-group-addon\"")
+	}
+	if !attrs.Has("data-align") {
+		_gsxgw.S(" data-align=\"")
+		_gsxgw.AttrValue(string(_gsxstd.Default((align), "inline-start")))
+		_gsxgw.S("\"")
+	}
+	_gsxv0 := "flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium text-muted-foreground select-none group-data-[disabled=true]/input-group:opacity-50 [&>kbd]:rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-4"
+	var _gsxv1 string
+	switch align {
+	case "inline-end":
+		_gsxv1 = "order-last pr-2 has-[>button]:mr-[-0.3rem] has-[>kbd]:mr-[-0.15rem]"
+	case "block-start":
+		_gsxv1 = "order-first w-full justify-start px-2.5 pt-2 group-has-[>input]/input-group:pt-2 [.border-b]:pb-2"
+	case "block-end":
+		_gsxv1 = "order-last w-full justify-start px-2.5 pb-2 group-has-[>input]/input-group:pb-2 [.border-t]:pt-2"
+	default:
+		_gsxv1 = "order-first pl-2 has-[>button]:ml-[-0.3rem] has-[>kbd]:ml-[-0.15rem]"
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.S(">")
+//line input-group.gsx:72:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line input-group.gsx:76:1
@@ -135,29 +149,36 @@ func InputGroupAddon(align string, children gsx.Node, attrs gsx.Attrs) _gsxrt.No
 func InputGroupButton(variant string, size string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line input-group.gsx:94:2
-		_gsxa4 := _gsxrt.Attrs{{Key: "data-size", Value: _gsxstd.Default((size), "xs")}}
-		_gsxa5 := _gsxstd.Default((variant), "ghost")
-		_gsxv2 := "flex items-center gap-2 text-sm shadow-none"
-		var _gsxv3 string
-		switch size {
-		case "sm":
-			_gsxv3 = "h-8 gap-1.5 rounded-md px-2.5 has-[>svg]:px-2.5"
-		case "icon-xs":
-			_gsxv3 = "size-6 rounded-[calc(var(--radius)-3px)] p-0 has-[>svg]:p-0"
-		case "icon-sm":
-			_gsxv3 = "size-8 p-0 has-[>svg]:p-0"
-		default:
-			_gsxv3 = "h-6 gap-1 rounded-[calc(var(--radius)-3px)] px-1.5 has-[>svg]:px-1.5 [&>svg:not([class*='size-'])]:size-3.5"
-		}
-		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, _gsxa5, "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-			_gsxgw := _gsxrt.W(_gsxw)
-//line input-group.gsx:112:3
-			_gsxgw.Node(ctx, children)
-			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxa4, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv2), _gsxrt.Class(_gsxv3))}}, attrs)))
-		return _gsxgw.Err()
+		return _gsxrenderInputGroupButton(ctx, _gsxgw, variant, size, children, attrs)
 	})
+}
+
+func _gsxrenderInputGroupButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string, size string, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line input-group.gsx:94:2
+	_gsxa4 := _gsxrt.Attrs{{Key: "data-size", Value: _gsxstd.Default((size), "xs")}}
+	_gsxa5 := _gsxstd.Default((variant), "ghost")
+	_gsxv2 := "flex items-center gap-2 text-sm shadow-none"
+	var _gsxv3 string
+	switch size {
+	case "sm":
+		_gsxv3 = "h-8 gap-1.5 rounded-md px-2.5 has-[>svg]:px-2.5"
+	case "icon-xs":
+		_gsxv3 = "size-6 rounded-[calc(var(--radius)-3px)] p-0 has-[>svg]:p-0"
+	case "icon-sm":
+		_gsxv3 = "size-8 p-0 has-[>svg]:p-0"
+	default:
+		_gsxv3 = "h-6 gap-1 rounded-[calc(var(--radius)-3px)] px-1.5 has-[>svg]:px-1.5 [&>svg:not([class*='size-'])]:size-3.5"
+	}
+	_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, _gsxa5, "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line input-group.gsx:112:3
+		_gsxgw.Node(ctx, children)
+		return _gsxgw.Err()
+	}), _gsxrt.ConcatAttrs(_gsxa4, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv2), _gsxrt.Class(_gsxv3))}}, attrs)))
+	return _gsxgw.Err()
 }
 
 //line input-group.gsx:116:1
@@ -194,10 +215,17 @@ func InputGroupText(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func InputGroupInput(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line input-group.gsx:134:2
-		_gsxgw.NodeResult(_gsxrenderInput(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-slot", Value: "input-group-control"}}, _gsxrt.Attrs{{Key: "class", Value: "flex-1 rounded-none border-0 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent"}}, attrs)))
-		return _gsxgw.Err()
+		return _gsxrenderInputGroupInput(ctx, _gsxgw, attrs)
 	})
+}
+
+func _gsxrenderInputGroupInput(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line input-group.gsx:134:2
+	_gsxgw.NodeResult(_gsxrenderInput(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-slot", Value: "input-group-control"}}, _gsxrt.Attrs{{Key: "class", Value: "flex-1 rounded-none border-0 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent"}}, attrs)))
+	return _gsxgw.Err()
 }
 
 //line input-group.gsx:141:1

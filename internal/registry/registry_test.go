@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "carousel", "checkbox", "collapsible", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "input-otp", "item", "kbd", "label", "native-select", "pagination", "popover", "progress", "radio", "resizable", "scroll-area", "select", "separator", "sheet", "skeleton", "slider", "sonner", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
+	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "carousel", "checkbox", "collapsible", "combobox", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "input-otp", "item", "kbd", "label", "native-select", "pagination", "popover", "progress", "radio", "resizable", "scroll-area", "select", "separator", "sheet", "skeleton", "slider", "sonner", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -394,6 +394,20 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("sonner deps = %v, want [icon]", deps)
 	}
 
+	// combobox.gsx imports ui/icon (ComboboxItem's Check, ComboboxTrigger's
+	// ChevronDown, ComboboxClear's X) and composes ui.InputGroup/
+	// InputGroupInput/InputGroupAddon/InputGroupButton directly (flat
+	// package intra-package edges, same declIndex-resolved shape as
+	// input-group's own button/input/textarea deps above) — Deps sorts its
+	// result, so icon < input-group alphabetically.
+	deps, err = registry.Deps("combobox")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(deps, []string{"icon", "input-group"}) {
+		t.Fatalf("combobox deps = %v, want [icon input-group]", deps)
+	}
+
 	if _, err := registry.Deps("nosuch"); err == nil || !strings.Contains(err.Error(), "gsxui list") {
 		t.Fatalf("Deps(nosuch) err = %v, want error mentioning 'gsxui list'", err)
 	}
@@ -506,6 +520,16 @@ func TestHasJS(t *testing.T) {
 	// <basename>.js match, so the file is ui/sonner.js.
 	if !registry.HasJS("sonner") {
 		t.Error("sonner should have JS")
+	}
+	// combobox has its own ui/combobox.js — filter-as-you-type (hide/show,
+	// no reordering; see its own header ADAPT), a data-highlighted +
+	// aria-activedescendant highlight cursor (command.js's focus-stays-in-
+	// the-input model), and select.js's own value model/form bridge/
+	// popover machinery restated for an input trigger. A real behavior
+	// module of its own, not a reuse of select.js or command.js (## combobox
+	// GAP: no shared JS with command, registry.Deps reasoning).
+	if !registry.HasJS("combobox") {
+		t.Error("combobox should have JS")
 	}
 }
 
@@ -645,6 +669,18 @@ func TestResolveTransitive(t *testing.T) {
 		t.Fatal(err)
 	}
 	want = []string{"icon", "sonner"}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("got %v want %v", got, want)
+	}
+
+	// combobox resolves transitively through input-group to button/input/
+	// textarea, plus its own direct icon dep — the same transitive-closure
+	// shape as alert-dialog/sheet/drawer's own dialog chains above.
+	got, err = registry.Resolve([]string{"combobox"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want = []string{"button", "combobox", "icon", "input", "input-group", "textarea"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
