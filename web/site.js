@@ -11,3 +11,17 @@ on("click", "[data-site-copy]", (_event, el) => {
   if (!code) return;
   navigator.clipboard.writeText(code.textContent ?? "");
 });
+
+// Header theme toggle (shadcn's site model: one click flips the resolved
+// theme, no system/menu step). The stored choice is what the layout's
+// paint-blocking head script applies on the next load; clearing storage
+// would fall back to the OS preference there.
+on("click", "[data-site-theme-toggle]", () => {
+  const dark = document.documentElement.classList.toggle("dark");
+  try {
+    localStorage.setItem("gsxui-theme", dark ? "dark" : "light");
+  } catch {
+    // storage unavailable (private mode etc.) — the toggle still works
+    // for this page view, it just won't persist.
+  }
+});

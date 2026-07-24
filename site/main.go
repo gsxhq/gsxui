@@ -73,8 +73,7 @@ func pageCache(next http.Handler) http.Handler {
 // underlying fault (or missing route) is fixed.
 func errorHandler(w http.ResponseWriter, r *http.Request, err error) {
 	w.Header().Del("Cache-Control")
-	var se pages.ErrorWithStatus
-	if errors.As(err, &se) {
+	if se, ok := errors.AsType[pages.ErrorWithStatus](err); ok {
 		http.Error(w, se.Message, se.Status)
 		return
 	}

@@ -27,6 +27,19 @@ component Layout(title string, active string, children gsx.Node) {
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<title>{ title } · gsxui</title>
+			<script>
+				// Theme init — runs before first paint (blocking head script) so
+				// a stored dark preference never flashes light. Explicit choice
+				// (localStorage) wins; otherwise follow the OS preference. The
+				// header's data-site-theme-toggle button (web/site.js) flips the
+				// class and stores the choice.
+				try {
+					var gsxuiTheme = localStorage.getItem("gsxui-theme");
+					if (gsxuiTheme === "dark" || (!gsxuiTheme && matchMedia("(prefers-color-scheme: dark)").matches)) {
+						document.documentElement.classList.add("dark");
+					}
+				} catch (e) {}
+			</script>
 			{{ v := vite.FromContext(ctx) }}
 			{ if v.Dev() {
 				<style>
@@ -121,6 +134,15 @@ component Layout(title string, active string, children gsx.Node) {
 						>
 							GitHub
 						</a>
+						<button
+							type="button"
+							data-site-theme-toggle
+							aria-label="Toggle theme"
+							title="Toggle theme"
+							class="inline-flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+						>
+							<icon.Contrast class="size-4"/>
+						</button>
 					</nav>
 				</div>
 			</header>
