@@ -26,7 +26,7 @@ component CardHeader(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component CardTitle(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="card-title" class="text-base leading-snug font-semibold" { attrs... }>{ children }</div>
+	<div data-slot="card-title" class="text-base leading-snug font-medium" { attrs... }>{ children }</div>
 }
 
 component CardDescription(children gsx.Node, attrs gsx.Attrs) {
@@ -44,5 +44,5 @@ component CardContent(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component CardFooter(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="card-footer" class="flex items-center border-t p-4" { attrs... }>{ children }</div>
+	<div data-slot="card-footer" class="flex items-center rounded-b-xl border-t p-4" { attrs... }>{ children }</div>
 }

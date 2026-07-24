@@ -16,11 +16,11 @@ func TestCardParts(t *testing.T) {
 	}{
 		{"Card", ui.Card(gsx.Raw("x"), nil), []string{`data-slot="card"`, "flex flex-col gap-4 rounded-xl border bg-card"}},
 		{"CardHeader", ui.CardHeader(gsx.Raw("x"), nil), []string{`data-slot="card-header"`, "@container/card-header"}},
-		{"CardTitle", ui.CardTitle(gsx.Raw("x"), nil), []string{`data-slot="card-title"`, "leading-snug font-semibold"}},
+		{"CardTitle", ui.CardTitle(gsx.Raw("x"), nil), []string{`data-slot="card-title"`, "leading-snug font-medium"}},
 		{"CardDescription", ui.CardDescription(gsx.Raw("x"), nil), []string{`data-slot="card-description"`, "text-muted-foreground"}},
 		{"CardAction", ui.CardAction(gsx.Raw("x"), nil), []string{`data-slot="card-action"`, "col-start-2 row-span-2"}},
 		{"CardContent", ui.CardContent(gsx.Raw("x"), nil), []string{`data-slot="card-content"`, "px-4"}},
-		{"CardFooter", ui.CardFooter(gsx.Raw("x"), nil), []string{`data-slot="card-footer"`, "flex items-center border-t p-4"}},
+		{"CardFooter", ui.CardFooter(gsx.Raw("x"), nil), []string{`data-slot="card-footer"`, "flex items-center rounded-b-xl border-t p-4"}},
 	}
 	for _, tc := range cases {
 		got := render(t, tc.node)
