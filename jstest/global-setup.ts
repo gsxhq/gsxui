@@ -1,5 +1,13 @@
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync, readdirSync, readFileSync, symlinkSync, unlinkSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  statSync,
+  symlinkSync,
+  unlinkSync,
+} from "node:fs";
 import path from "node:path";
 import { cssPath, manifestPath, repoRoot, tmpDir } from "./support/paths";
 
@@ -46,6 +54,21 @@ export default function globalSetup() {
  * node_modules/@fontsource-variable/<package>/files/. That makes the
  * relative url()s the browser sends resolve, without touching Tailwind's
  * output or the harness's /static/ mount.
+ *
+ * Why this function verifies its own output rather than trusting the link
+ * step: each Geist/Geist Mono subset in the compiled CSS carries a
+ * unicode-range, and Chromium only fetches a @font-face src when the page
+ * actually needs a glyph in that subset — it does not eagerly fetch every
+ * declared-but-unused source. gsxui's examples are Latin-only, so a page
+ * load (and smoke.spec.ts's "no failed subresource requests" check) only
+ * ever exercises the latin subset; the other nine files (cyrillic,
+ * cyrillic-ext, vietnamese, latin-ext, and the four -mono equivalents) are
+ * never requested by any browser navigation in this suite. A broken link
+ * among those nine — a typo'd package directory, a filename collision
+ * that picks the wrong @fontsource-variable package — would stay green
+ * forever if this function only checked the subset a browser happens to
+ * ask for. So it checks all of them, at setup time, regardless of what
+ * any page requests.
  */
 function linkFontAssets() {
   const css = readFileSync(cssPath, "utf8");
@@ -65,14 +88,23 @@ function linkFontAssets() {
     const source = packages
       .map((pkg) => path.join(fontsourceDir, pkg, "files", name))
       .find((candidate) => existsSync(candidate));
-    if (!source) {
-      throw new Error(
-        `compiled stylesheet at ${cssPath} references font file "${name}" but it was ` +
-          `not found under any package in ${fontsourceDir}`,
-      );
-    }
+    if (!source) continue; // reported below, together with any broken link
     const link = path.join(filesDir, name);
     if (existsSync(link)) unlinkSync(link);
     symlinkSync(source, link);
+  }
+
+  const unresolved = [...names].filter((name) => {
+    try {
+      return !statSync(path.join(filesDir, name)).isFile();
+    } catch {
+      return true; // missing entirely, or a dangling symlink
+    }
+  });
+  if (unresolved.length > 0) {
+    throw new Error(
+      `compiled stylesheet at ${cssPath} references font files that did not resolve to a ` +
+        `readable file under ${fontsourceDir}/*/files: ${unresolved.join(", ")}`,
+    );
   }
 }
