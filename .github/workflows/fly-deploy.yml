@@ -39,11 +39,20 @@ jobs:
       - if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
       - run: go test ./...
-      - run: make test-js
+      - id: test-js
+        run: make test-js
       # The HTML reporter (jstest/playwright.config.ts) is what actually
       # populates this directory with traces; upload-artifact's default
       # if-no-files-found: warn would otherwise silently no-op.
-      - if: failure()
+      #
+      # Gated on the JS step specifically, not a bare `if: failure()`: that
+      # fires for ANY prior failure, so a `go test ./...` failure would run
+      # this step with no jstest/playwright-report/ to find and turn
+      # if-no-files-found: error into a second red step pointing at the wrong
+      # thing. `failure()` is still needed as the leading term — without a
+      # status function GitHub ANDs in an implicit success(), which is false
+      # once any step has failed, so the step would never run at all.
+      - if: ${{ failure() && steps.test-js.conclusion == 'failure' }}
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
