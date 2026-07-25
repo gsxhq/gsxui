@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "carousel", "checkbox", "collapsible", "combobox", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "input-otp", "item", "kbd", "label", "menubar", "native-select", "navigation-menu", "pagination", "popover", "progress", "radio", "resizable", "scroll-area", "select", "separator", "sheet", "sidebar", "skeleton", "slider", "sonner", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
+	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "calendar", "card", "carousel", "checkbox", "collapsible", "combobox", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "input-otp", "item", "kbd", "label", "menubar", "native-select", "navigation-menu", "pagination", "popover", "progress", "radio", "resizable", "scroll-area", "select", "separator", "sheet", "sidebar", "skeleton", "slider", "sonner", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
