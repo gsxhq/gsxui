@@ -23,7 +23,21 @@ import (
 // `.rdp-button_previous`, and gsxui does not port react-day-picker's bare
 // `rdp-*` hook classes at all, so the selectors would never match anything
 // in this port. See source map §2's note for the full reasoning.
-const calendarRootClass = "w-fit group/calendar bg-background p-2 [--cell-size:--spacing(7)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent"
+//
+// `relative` (Task 3 review-fix pass, added here — not in either upstream
+// `root` row above): the `nav` slot (§2) is `absolute inset-x-0 top-0 ...`,
+// positioned against the nearest `relative` ancestor. Upstream's own
+// positioned ancestor for this is the `months` slot's own `<div>`
+// (§2: `relative flex flex-col gap-4 md:flex-row`) — but gsxui doesn't
+// render `months`/`month` wrapper elements at all (§9: out of scope, single-
+// month only), so this root `<div>` is the only element left standing in
+// for that responsibility. Without this token the nav's two buttons would
+// position against whatever ancestor happens to be `relative` further up
+// the CONSUMING page (or the viewport itself) instead of sitting over the
+// caption row, on every render — not a cosmetic gap. Ledgered as: root
+// absorbs `months`'s own `relative` token, since `months` itself is not
+// rendered.
+const calendarRootClass = "relative w-fit group/calendar bg-background p-2 [--cell-size:--spacing(7)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent"
 
 // calendarGridClass is the `month_grid` slot, verbatim (source map §2).
 const calendarGridClass = "w-full border-collapse"
@@ -134,12 +148,24 @@ const calendarCaptionLabelClass = "font-medium select-none text-sm"
 // calendarDropdownsClass is the `dropdowns` slot, verbatim (source map §2).
 const calendarDropdownsClass = "flex h-(--cell-size) w-full items-center justify-center gap-1.5 text-sm font-medium"
 
-// calendarDropdownRootClass is the `dropdown_root` slot, verbatim (source
-// map §2). Passed as ui.NativeSelect's own `class` attr at each call site,
+// calendarDropdownRootClass is the `dropdown_root` slot, retargeted to nova
+// density (source map §6, `.cn-calendar-dropdown-root`) the same way Task 1's
+// calendarRootClass retargeted the `root`/top-level className (p-3→p-2,
+// --spacing(8)→(7)): new-york-v4's own value (source map §2) is `relative
+// rounded-md border border-input shadow-xs has-focus:border-ring
+// has-focus:ring-[3px] has-focus:ring-ring/50`; nova's rule drops
+// `shadow-xs` entirely (shadow-presence removal, not a value swap) and
+// respells `ring-[3px]`→`ring-3` (same value, nova's own spelling — the same
+// substitution the menus/combobox source maps already made for this exact
+// token). `rounded-md` is unchanged: nova's rule has no `rounded-*` token at
+// all, so there is nothing to retarget there (§1/§6 already reject porting
+// `bases/base`'s own `--cell-radius` substitution). Every token nova speaks
+// to has a nova counterpart here — none silently left at the new-york-v4
+// value. Passed as ui.NativeSelect's own `class` attr at each call site,
 // merging onto NativeSelect's wrapper `<div>`'s hardcoded "relative w-fit"
 // (ui/native-select.gsx) — the wrapper is the analogue of upstream's
 // `Dropdown.js` `<span data-disabled className={DropdownRoot}>`.
-const calendarDropdownRootClass = "relative rounded-md border border-input shadow-xs has-focus:border-ring has-focus:ring-[3px] has-focus:ring-ring/50"
+const calendarDropdownRootClass = "relative rounded-md border border-input has-focus:border-ring has-focus:ring-3 has-focus:ring-ring/50"
 
 // calendarMonthNames are the twelve month names for the dropdown
 // captionLayout's month <select>, matching upstream's own default

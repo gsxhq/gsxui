@@ -574,3 +574,71 @@ func TestCalendarNoNameRendersNoHiddenInput(t *testing.T) {
 		t.Error("no name given, so no hidden input should render")
 	}
 }
+
+// rootClassAttr returns the root <div data-slot="calendar" ...>'s own class
+// attribute value, anchored on the data-slot marker (not just "the first
+// class= in the whole document") so this stays correct even if some earlier
+// element ever grows a class attribute of its own.
+func rootClassAttr(t *testing.T, html string) string {
+	t.Helper()
+	i := strings.Index(html, `data-slot="calendar"`)
+	if i < 0 {
+		t.Fatal("no root element (data-slot=\"calendar\") in the rendered markup")
+	}
+	tagEnd := strings.Index(html[i:], ">")
+	if tagEnd < 0 {
+		t.Fatal("root element's opening tag is never closed")
+	}
+	tag := html[i : i+tagEnd]
+	ci := strings.Index(tag, `class="`)
+	if ci < 0 {
+		t.Fatal("root element has no class attribute")
+	}
+	rest := tag[ci+len(`class="`):]
+	ce := strings.Index(rest, `"`)
+	if ce < 0 {
+		t.Fatal("root element's class attribute is never closed")
+	}
+	return rest[:ce]
+}
+
+// The `nav` slot (source map §2) is `absolute inset-x-0 top-0 ...`, meant to
+// position against a `relative` ancestor — upstream's own `months` wrapper
+// div (§2: "relative flex flex-col gap-4 md:flex-row"). gsxui doesn't render
+// `months`/`month` wrapper elements at all (§9, single-month only), so the
+// root <div> is the only element left to carry that `relative` token; drop
+// it and the prev/next buttons position against whatever `relative`
+// ancestor the CONSUMING page happens to have further up the DOM (or the
+// viewport), landing nowhere near the caption row, on every single render.
+// This test checks both halves of the contract — root has "relative" AND
+// nav still has "absolute" — so it can't pass vacuously if either token is
+// ever dropped or the markup is restructured out from under it.
+func TestCalendarNavHasARelativePositioningAncestor(t *testing.T) {
+	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "", nil))
+
+	rootClass := rootClassAttr(t, got)
+	var rootIsRelative bool
+	for _, tok := range strings.Fields(rootClass) {
+		if tok == "relative" {
+			rootIsRelative = true
+		}
+	}
+	if !rootIsRelative {
+		t.Errorf("root has no bare \"relative\" class token — nav's absolute positioning has no ancestor to position against\nroot class: %s", rootClass)
+	}
+
+	navIdx := strings.Index(got, "<nav")
+	if navIdx < 0 {
+		t.Fatal("no <nav> element rendered")
+	}
+	navTagEnd := strings.Index(got[navIdx:], ">")
+	if navTagEnd < 0 {
+		t.Fatal("<nav> element's opening tag is never closed")
+	}
+	navTag := got[navIdx : navIdx+navTagEnd]
+	if !strings.Contains(navTag, "absolute") {
+		t.Errorf("nav is no longer absolute — the root's relative token is no longer load-bearing for anything\nnav tag: %s", navTag)
+	}
+}
