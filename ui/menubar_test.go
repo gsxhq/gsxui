@@ -28,6 +28,22 @@ func TestMenubarTriggerRovingAndAria(t *testing.T) {
 	}
 }
 
+func TestMenubarTriggerDisabledRendersNativeAttr(t *testing.T) {
+	// A fix-round finding: menubar.js's roving-tabindex normalize() and
+	// arrow-key walk filter to ENABLED triggers only (enabledTriggersOf) —
+	// without it, a bar whose FIRST trigger is disabled would hand it
+	// tabIndex=0 in normalize(), an unfocusable disabled button, leaving the
+	// whole bar with no reachable tab stop at all. That JS-side `.disabled`
+	// read depends on MenubarTrigger being a real <button> that renders the
+	// native boolean attribute here — same "prove the render contract the
+	// JS depends on, at the layer Go can test" shape as toggle-group_test.go's
+	// own TestToggleGroupDisabledCascade.
+	got := render(t, ui.MenubarTrigger(gsx.Raw("File"), gsx.Attrs{{Key: "disabled", Value: true}}))
+	if !strings.Contains(got, "disabled") {
+		t.Errorf("want disabled attribute\nin: %s", got)
+	}
+}
+
 func TestMenubarRootIsAMenubar(t *testing.T) {
 	got := render(t, ui.Menubar(gsx.Raw("x"), nil))
 	for _, want := range []string{`role="menubar"`, `data-slot="menubar"`, `data-gsxui-menubar`} {
@@ -235,6 +251,9 @@ func TestMenubarCheckboxItemPinned(t *testing.T) {
 	// DropdownMenuCheckboxItem's own pinned class — new-york-v4's one real
 	// delta (rounded-xs vs dropdown/context's rounded-sm) is erased by nova,
 	// which unifies all four onto rounded-md (source map's own finding).
+	// This is a DELIBERATE OVERRIDE of nova's own menubar-specific rule, not
+	// agreement with it — nova's own .cn-menubar-checkbox-item actually puts
+	// the indicator on the LEFT (see the component's own doc comment).
 	got := render(t, ui.MenubarCheckboxItem(true, "show-toolbar", gsx.Raw("Toolbar"), nil))
 	want := `<div data-slot="menubar-checkbox-item" data-gsxui-menubar-checkbox-item role="menuitemcheckbox" data-value="show-toolbar" aria-checked="true" data-state="checked" tabindex="-1" class="relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4"><span class="pointer-events-none absolute right-2 hidden size-4 items-center justify-center [[data-state=checked]_&amp;]:flex"><svg data-slot="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M20 6 9 17l-5-5"/></svg></span>Toolbar</div>`
 	if got != want {
@@ -261,7 +280,15 @@ func TestMenubarSubTriggerPinned(t *testing.T) {
 	// component's own doc comment), data-[state=open]: kept (house
 	// exception), trailing icon ported as size-4 (not new-york-v4's literal
 	// h-4 w-4 — a no-op spelling divergence, same call as context-menu's own
-	// SubTrigger icon).
+	// SubTrigger icon). NOT byte-identical to DropdownMenuSubTrigger's/
+	// ContextMenuSubTrigger's own pinned class, unlike the CheckboxItem/
+	// RadioItem tests above: this class also lacks
+	// [&_svg]:pointer-events-none/[&_svg]:shrink-0/
+	// [&_svg:not([class*='text-'])]:text-muted-foreground, so its chevron
+	// renders in the default foreground color, not muted — see the
+	// component's own doc comment for why (menubar.tsx's own source never
+	// had those three tokens, and nova is silent on them for every
+	// SubTrigger in this menu family).
 	got := render(t, ui.MenubarSubTrigger(gsx.Raw("More Tools"), nil))
 	want := `<div data-slot="menubar-sub-trigger" data-gsxui-menubar-sub-trigger role="menuitem" aria-haspopup="menu" aria-expanded="false" data-state="closed" tabindex="-1" class="flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4">More Tools<svg data-slot="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-auto size-4"><path d="m9 18 6-6-6-6"/></svg></div>`
 	if got != want {
@@ -331,6 +358,33 @@ func TestMenubarRootPinned(t *testing.T) {
 func TestMenubarMenuPinned(t *testing.T) {
 	got := render(t, ui.MenubarMenu(gsx.Raw("x"), nil))
 	want := `<div data-slot="menubar-menu" data-gsxui-menubar-menu class="contents">x</div>`
+	if got != want {
+		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
+	}
+}
+
+func TestMenubarGroupPinned(t *testing.T) {
+	// No prior test rendered MenubarGroup at all — a11y-only wrapper,
+	// role="group" added here (derived-not-read, same call as
+	// DropdownMenuGroup/ContextMenuGroup), no data-gsxui-* hook since
+	// nothing in menubar.js binds to it.
+	got := render(t, ui.MenubarGroup(gsx.Raw("x"), nil))
+	want := `<div data-slot="menubar-group" role="group">x</div>`
+	if got != want {
+		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
+	}
+}
+
+func TestMenubarRadioGroupPinned(t *testing.T) {
+	// No prior test rendered MenubarRadioGroup or asserted
+	// data-gsxui-menubar-radio-group at all, despite it being load-bearing:
+	// menubar.js's radio-item click handler scopes its "clear every OTHER
+	// item" sibling walk to `closest("[data-gsxui-menubar-radio-group]")`
+	// (menubar.js's own radio-item click handler) — without this hook
+	// rendering, two independent MenubarRadioGroups on the same page would
+	// cross-clear each other's selections.
+	got := render(t, ui.MenubarRadioGroup("benoit", gsx.Raw("x"), nil))
+	want := `<div data-slot="menubar-radio-group" data-gsxui-menubar-radio-group role="group" data-value="benoit">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

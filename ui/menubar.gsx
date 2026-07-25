@@ -71,22 +71,50 @@ import (
 // does NOT close the menu — the same deliberate ADAPT as dropdown/
 // context-menu's own CheckboxItem, not a Radix default.
 //
-// NOVA METRICS: every item-shaped part below (Item, CheckboxItem,
-// RadioItem, SubTrigger) ends up BYTE-IDENTICAL, modulo the component-name
-// prefix, to its already-shipped DropdownMenuItem/CheckboxItem/RadioItem/
-// SubTrigger counterpart — new-york-v4's own menubar.tsx carries two real
-// per-component deltas from dropdown-menu/context-menu (CheckboxItem/
-// RadioItem's rounded-xs vs their rounded-sm, and SubTrigger's total
-// absence of a gap-* token), but nova's own style-nova.css independently
-// erases both: `.cn-menubar-checkbox-item`/`.cn-menubar-radio-item` land on
-// the same rounded-md every other item-shaped part uses, and
-// `.cn-menubar-sub-trigger` carries gap-1.5 same as its dropdown/
-// context-menu siblings (the same "nova harmonizes an upstream asymmetry"
-// call already made for context-menu's own SubTrigger, source map `##
-// menubar` §1's own "Metric deltas worth naming" paragraph). Check/dot
-// indicator at the right edge (right-2, size-4), rows pr-8 pl-1.5 — follows
-// ui/select.gsx's SelectItem, the same precedent dropdown/context-menu's
-// own CheckboxItem/RadioItem doc comments cite.
+// NOVA METRICS: Item and CheckboxItem/RadioItem below end up BYTE-IDENTICAL,
+// modulo the component-name prefix, to their already-shipped
+// DropdownMenuItem/CheckboxItem/RadioItem counterparts — new-york-v4's own
+// menubar.tsx carries a real per-component delta from dropdown-menu/
+// context-menu (CheckboxItem/RadioItem's rounded-xs vs their rounded-sm),
+// which nova's own style-nova.css erases: `.cn-menubar-checkbox-item`/
+// `.cn-menubar-radio-item` land on the same rounded-md every other
+// item-shaped part in this whole menu family uses.
+//
+// CORRECTION (indicator side is a DELIBERATE OVERRIDE, not agreement with
+// nova — an earlier version of this comment claimed nova made menubar's
+// CheckboxItem/RadioItem identical to dropdown's own; that was wrong on the
+// indicator geometry specifically): nova's own `.cn-menubar-checkbox-item`/
+// `.cn-menubar-radio-item` are `py-1 pr-1.5 pl-7`, and
+// `.cn-menubar-checkbox-item-indicator`/`-radio-item-indicator` are
+// `left-1.5 size-4` — nova genuinely keeps MENUBAR's own indicator on the
+// LEFT, unlike its dropdown/context-menu rules (both `right-2`). This port
+// does NOT follow nova here: the indicator stays at the RIGHT edge
+// (`right-2`, `size-4`, `pr-8 pl-1.5` rows), matching DropdownMenuCheckboxItem/
+// ContextMenuCheckboxItem and following ui/select.gsx's SelectItem — a
+// deliberate ADAPT for cross-menu-family visual consistency (all three menu
+// components' checkbox/radio rows read the same way), not nova's own
+// per-component value for menubar specifically. Ledgered so a future reader
+// diffing against style-nova.css doesn't find this port "wrong" by nova's
+// own menubar-specific rule.
+//
+// SubTrigger does NOT join the byte-identical set above: new-york-v4's own
+// menubar.tsx SubTrigger carries no gap-* token AND, unlike dropdown-menu.tsx/
+// context-menu.tsx's own SubTrigger, no `[&_svg]:pointer-events-none`/
+// `[&_svg]:shrink-0`/`[&_svg:not([class*='text-'])]:text-muted-foreground`
+// at all — confirmed by re-reading the source map's own `## menubar` §1
+// quote (no svg selectors present). nova's own `.cn-menubar-sub-trigger`
+// adds `gap-1.5` (ported, harmonizing the same upstream asymmetry already
+// fixed for context-menu's own SubTrigger) but is SILENT on the
+// pointer-events/shrink/muted-color triple — as is EVERY nova SubTrigger
+// rule in this menu family, `.cn-dropdown-menu-sub-trigger`/
+// `.cn-context-menu-sub-trigger` included, so nova is not the source of
+// dropdown/context-menu's own three tokens either; those come from
+// dropdown-menu.tsx/context-menu.tsx's own (non-menubar) source, which
+// menubar.tsx's own source never had to begin with. RULING: ported
+// source-faithfully — MenubarSubTrigger's chevron renders in the default
+// foreground color, NOT muted like DropdownMenuSubTrigger's/
+// ContextMenuSubTrigger's own chevrons — a genuine, deliberate-per-source
+// divergence, not an oversight or a nova disagreement to fix.
 //
 // TWO DELIBERATE DIVERGENCES FROM new-york-v4's OWN menubar.tsx (both
 // flagged by the source map, both ruled on here rather than silently
@@ -274,8 +302,13 @@ component MenubarGroup(children gsx.Node, attrs gsx.Attrs) {
 // (rounded-xs vs dropdown/context's rounded-sm) is erased by nova, which
 // unifies checkbox/radio/item/sub-trigger all onto rounded-md (source
 // map's own "Metric deltas worth naming" finding) — see
-// DropdownMenuCheckboxItem's own doc comment for the full nova-metrics/
-// right-side-indicator ADAPT rationale, not re-derived here.
+// DropdownMenuCheckboxItem's own doc comment for the full nova-metrics
+// rationale, not re-derived here. The right-side indicator is NOT what
+// nova's own menubar rule specifies, though — see the file header's own
+// CORRECTION paragraph: nova's `.cn-menubar-checkbox-item`/`-indicator`
+// keep the indicator on the LEFT (`pl-7`/`left-1.5`); this port overrides
+// that with dropdown/context-menu/select's own right-side geometry
+// deliberately, for cross-menu-family consistency, not because nova agrees.
 component MenubarCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-slot="menubar-checkbox-item"
@@ -317,8 +350,9 @@ component MenubarRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) {
 // reflects whether THIS item's value equals its MenubarRadioGroup's current
 // value — the caller computes that comparison (gsx has no context to do it
 // implicitly). Selecting a radio item DOES close the menu, same as a plain
-// Item (only CheckboxItem stays open). Same nova metrics + right-side
-// indicator ADAPT as MenubarCheckboxItem's own doc comment.
+// Item (only CheckboxItem stays open). Same nova metrics + deliberate
+// right-side-indicator override (NOT nova's own left-side menubar value) as
+// MenubarCheckboxItem's own doc comment.
 component MenubarRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-slot="menubar-radio-item"
@@ -356,6 +390,16 @@ component MenubarSeparator(attrs gsx.Attrs) {
 	<div data-slot="menubar-separator" role="separator" class="-mx-1 my-1 h-px bg-border" { attrs... }></div>
 }
 
+// ml-auto is KEPT even though nova's own .cn-menubar-shortcut rule omits it
+// (`text-muted-foreground group-focus/menubar-item:text-accent-foreground
+// text-xs tracking-widest` — no ml-auto token) — undisclosed until now, not
+// a metric token so not itself in scope for the nova retarget, and dropping
+// it would break the shortcut's own push-to-the-right layout inside the
+// item row (every sibling Shortcut in this codebase keeps it). The
+// group-focus/menubar-item: color-on-focus addition nova's rule carries is
+// NOT ported either — no `group/menubar-item` marker class exists anywhere
+// in this file for it to key off, the same scope call as every other
+// dropdown/context-menu Shortcut in this codebase.
 component MenubarShortcut(children gsx.Node, attrs gsx.Attrs) {
 	<span data-slot="menubar-shortcut" class="ml-auto text-xs tracking-widest text-muted-foreground" { attrs... }>
 		{ children }
@@ -392,6 +436,19 @@ component MenubarSub(children gsx.Node, attrs gsx.Attrs) {
 // rounded-md/px-1.5/py-1 metrics, same as MenubarItem's own.
 // data-[state=open]: kept, not nova's data-open: (standing house
 // exception).
+//
+// NOT byte-identical to DropdownMenuSubTrigger/ContextMenuSubTrigger (an
+// earlier version of this comment implied it was, via the file header's own
+// now-corrected "NOVA METRICS" paragraph — see that CORRECTION): this class
+// carries no `[&_svg]:pointer-events-none`, `[&_svg]:shrink-0`, or
+// `[&_svg:not([class*='text-'])]:text-muted-foreground` — new-york-v4's own
+// menubar.tsx SubTrigger never had those three tokens to begin with (unlike
+// dropdown-menu.tsx/context-menu.tsx's own), and nova's `.cn-menubar-sub-
+// trigger` rule is silent on them too (so is EVERY nova SubTrigger rule in
+// this menu family — nova isn't where dropdown/context-menu's own three
+// tokens came from either). Ported source-faithfully: this chevron renders
+// in the default foreground color, not muted like its dropdown/context-menu
+// siblings — a real, deliberate divergence, not an oversight.
 component MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-slot="menubar-sub-trigger"

@@ -81,19 +81,31 @@ const triggersOf = (bar) =>
     (t) => t.closest("[data-gsxui-menubar]") === bar,
   );
 
+// Enabled-only view, same "who can become the tab stop / arrow-key
+// destination" filter toggle-group.js's own normalize()/keydown handler
+// apply via `items.filter(i => !i.disabled)`. Without this, a bar whose
+// FIRST trigger is disabled would hand it tabIndex=0 in normalize() below —
+// an unfocusable disabled button, leaving the whole bar with no reachable
+// tab stop at all — and the arrow walk could land focus on a disabled
+// trigger mid-bar.
+const enabledTriggersOf = (bar) => triggersOf(bar).filter((t) => !t.disabled);
+
 // Exactly one trigger (the current tab stop) gets tabindex="0"; every other
 // trigger gets "-1" — same invariant toggle-group.js's own setActiveTabStop
 // maintains, restated here rather than imported (no shared JS module, see
-// the file header).
+// the file header). Iterates the FULL (not enabled-only) list: a disabled
+// trigger still needs its own tabindex explicitly set to -1, same as every
+// other non-active trigger.
 function setActiveTrigger(bar, trigger) {
   for (const t of triggersOf(bar)) t.tabIndex = t === trigger ? 0 : -1;
 }
 
 // Entry-tabstop assignment for bars rendered without JS having run yet
 // (server renders every trigger as a plain tab stop) — one-time init scan,
-// same shape as toggle-group.js's own normalize().
+// same shape as toggle-group.js's own normalize(). Enabled-only: the first
+// trigger might be disabled.
 function normalize(bar) {
-  const triggers = triggersOf(bar);
+  const triggers = enabledTriggersOf(bar);
   if (triggers.length) setActiveTrigger(bar, triggers[0]);
 }
 for (const bar of document.querySelectorAll("[data-gsxui-menubar]")) normalize(bar);
@@ -137,6 +149,24 @@ function openMenu(trigger) {
   content.showPopover();
 }
 
+// switchBarMenu moves the roving tab stop to the adjacent ENABLED trigger
+// (wrapping) and opens its menu unconditionally — the shared step both (a)'s
+// own trigger-level ArrowLeft/ArrowRight and the real "arrow-switch between
+// open menus" behavior (wired at the CONTENT level below — see that
+// handler's own comment for why the trigger level alone can't carry it)
+// call into.
+function switchBarMenu(trigger, dir) {
+  const bar = trigger.closest("[data-gsxui-menubar]");
+  if (!bar) return;
+  const triggers = enabledTriggersOf(bar);
+  const i = triggers.indexOf(trigger);
+  if (i === -1 || !triggers.length) return;
+  const next = triggers[(i + dir + triggers.length) % triggers.length];
+  setActiveTrigger(bar, next);
+  next.focus();
+  openMenu(next);
+}
+
 // A pointerdown on the trigger records whether ITS OWN menu was open at
 // that instant: popover="auto" light-dismisses on outside pointerdown (the
 // trigger is outside the content), so by click time the popover may already
@@ -175,24 +205,38 @@ on("pointerover", "[data-gsxui-menubar-trigger]", (_e, trigger) => {
   openMenu(trigger);
 });
 
-// (a) roving tabindex + open-follows-hover's own keyboard equivalent: if a
-// menu is already open in this bar, ArrowLeft/ArrowRight also switches
-// which one is showing (the same "connected bar" feel (b) gives the mouse),
-// otherwise they only move the roving tab stop. ArrowDown/Enter/Space open
-// the focused trigger's own menu — the explicit-open path a menubar
-// requires before hover-follow (isAnyOpen above) ever activates.
+// (a) roving tabindex, focused ON A TRIGGER: ArrowLeft/ArrowRight move the
+// tab stop (opening the destination's menu too, IF one was already open in
+// this bar — the trigger-level echo of (b)'s "connected bar" feel). This
+// branch is reachable while focus is actually on a trigger element — the
+// common "arrow through an OPEN menu's own items" case is NOT this: opening
+// a menu moves focus onto its first ITEM (the toggle handler below), so a
+// subsequent arrow keydown targets that item, not the trigger — see the
+// CONTENT-level keydown handler's own ArrowLeft/ArrowRight branch, where
+// that case is actually handled. This handler still matters on its own for
+// a menu with zero items (focus never left the trigger) and for a trigger
+// refocused after Shift+Tab. ArrowDown/Enter/Space open the focused
+// trigger's own menu — the explicit-open path a menubar requires before
+// hover-follow (isAnyOpen above) ever activates.
 on("keydown", "[data-gsxui-menubar-trigger]", (e, trigger) => {
+  // A held modifier suppresses the whole handler (Radix's own guard,
+  // ported verbatim from ui/toggle-group.js's own keydown handler) — e.g.
+  // Cmd+ArrowRight is a browser/OS shortcut, not a request to rove.
+  if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
   const bar = trigger.closest("[data-gsxui-menubar]");
   if (!bar) return;
   const dir = { ArrowLeft: -1, ArrowRight: 1 }[e.key];
   if (dir) {
     e.preventDefault();
-    const triggers = triggersOf(bar);
+    const triggers = enabledTriggersOf(bar);
     const i = triggers.indexOf(trigger);
     if (i === -1 || !triggers.length) return;
     const next = triggers[(i + dir + triggers.length) % triggers.length];
     setActiveTrigger(bar, next);
     next.focus();
+    // Only switch which menu is SHOWING if one already was — a bare rove
+    // must not auto-open the first menu (a menubar requires an explicit
+    // click/Enter/Space/ArrowDown, see (b)'s own isAnyOpen gate above).
     if (isAnyOpen(bar)) openMenu(next);
     return;
   }
@@ -255,18 +299,43 @@ on("keydown", CONTENT_SELECTOR, (e, content) => {
     item.click();
     return;
   }
+  // ArrowRight: opening a highlighted sub-trigger's own submenu takes
+  // priority (WAI-ARIA submenu convention) — only once that doesn't apply
+  // AND we're not already inside a submenu does ArrowRight mean "switch to
+  // the NEXT top-level menu in the bar," the actual reachable path for the
+  // arrow-switch-between-open-menus behavior (a held modifier is not
+  // checked here, unlike the trigger-level handler above: these are
+  // WAI-ARIA menu navigation keys operating on already-open menu content,
+  // not the bar's own roving-tabindex entry point a browser/OS shortcut
+  // could plausibly intercept).
   if (e.key === "ArrowRight") {
-    const trigger = e.target.closest("[data-gsxui-menubar-sub-trigger]");
-    if (!trigger) return;
+    const subTrigger = e.target.closest("[data-gsxui-menubar-sub-trigger]");
+    if (subTrigger) {
+      e.preventDefault();
+      openSubAndFocusFirst(subTrigger);
+      return;
+    }
+    if (content.matches("[data-gsxui-menubar-sub-content]")) return; // no meaning for a plain item inside a submenu
     e.preventDefault();
-    openSubAndFocusFirst(trigger);
+    const trigger = content.closest("[data-gsxui-menubar-menu]")?.querySelector("[data-gsxui-menubar-trigger]");
+    if (trigger) switchBarMenu(trigger, 1);
     return;
   }
-  if (e.key === "ArrowLeft" && content.matches("[data-gsxui-menubar-sub-content]")) {
+  // ArrowLeft: closing the CURRENT submenu and returning focus to its own
+  // sub-trigger takes priority when content IS a sub-content (unchanged
+  // meaning) — otherwise (top-level content), it's the mirror of
+  // ArrowRight above: switch to the PREVIOUS top-level menu in the bar.
+  if (e.key === "ArrowLeft") {
+    if (content.matches("[data-gsxui-menubar-sub-content]")) {
+      e.preventDefault();
+      const trigger = subTriggerOf(content);
+      content.hidePopover();
+      trigger?.focus();
+      return;
+    }
     e.preventDefault();
-    const trigger = subTriggerOf(content);
-    content.hidePopover();
-    trigger?.focus();
+    const trigger = content.closest("[data-gsxui-menubar-menu]")?.querySelector("[data-gsxui-menubar-trigger]");
+    if (trigger) switchBarMenu(trigger, -1);
     return;
   }
   const dir = { ArrowDown: 1, ArrowUp: -1 }[e.key];
