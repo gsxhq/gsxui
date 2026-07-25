@@ -4,3 +4,6 @@ site/dist/*
 /tmp/
 .env
 /site/hl/gen/gen
+jstest/.tmp/
+jstest/test-results/
+jstest/playwright-report/
