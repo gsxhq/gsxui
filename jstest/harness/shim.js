@@ -11,7 +11,7 @@
 // but a module that calls emit at import time must not throw.
 //
 // SCOPE — read "the registry" as "the DELEGATED registry", not "everything
-// the library binds. Only what a module routes through gsxui.js's on() is
+// the library binds." Only what a module routes through gsxui.js's on() is
 // recorded here, so only that is visible to the checks built on this data
 // (selector disjointness, selector coverage, selector parseability).
 //
