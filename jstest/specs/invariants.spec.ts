@@ -25,23 +25,32 @@ for (const example of examples()) {
     expect.soft(pageErrors, "uncaught exceptions").toEqual([]);
     expect.soft(consoleErrors, "console errors").toEqual([]);
 
-    // Invariant 2: no ghost boxes. A closed popover must compute
-    // `display: none`. An author display utility (a bare `block`/`grid`)
-    // beats the UA stylesheet's closed-popover rule and leaves an invisible
-    // but hit-testable box — this shipped in both dialog and sidebar, and
-    // the fix is to gate the utility on `:open` (`open:grid`).
-    const ghosts = await page.evaluate(() =>
-      [...document.querySelectorAll("[popover]")]
+    // Invariant 2: no ghost boxes. This is one defect class with two UA
+    // mechanisms: a closed `[popover]` must compute `display: none` (the
+    // UA's closed-popover rule), and a `<dialog>` without the `open`
+    // attribute must too (the UA's `dialog:not([open])` rule). An author
+    // display utility (a bare `block`/`grid`) beats either UA rule and
+    // leaves an invisible but hit-testable box — this shipped in both
+    // dialog (a `<dialog>`) and sidebar (a `[popover]`), and the fix is to
+    // gate the utility on `:open` (`open:grid`).
+    const ghosts = await page.evaluate(() => {
+      const describe = (el: Element, mechanism: string) => ({
+        mechanism,
+        slot: (el as HTMLElement).dataset.slot ?? null,
+        id: el.id || null,
+        display: getComputedStyle(el).display,
+        classes: el.className,
+      });
+      const closedPopovers = [...document.querySelectorAll("[popover]")]
         .filter((el) => !el.matches(":popover-open"))
         .filter((el) => getComputedStyle(el).display !== "none")
-        .map((el) => ({
-          slot: (el as HTMLElement).dataset.slot ?? null,
-          id: el.id || null,
-          display: getComputedStyle(el).display,
-          classes: el.className,
-        })),
-    );
-    expect.soft(ghosts, "closed popovers computing a display other than none").toEqual([]);
+        .map((el) => describe(el, "popover"));
+      const closedDialogs = [...document.querySelectorAll("dialog:not([open])")]
+        .filter((el) => getComputedStyle(el).display !== "none")
+        .map((el) => describe(el, "dialog"));
+      return [...closedPopovers, ...closedDialogs];
+    });
+    expect.soft(ghosts, "closed overlays computing a display other than none").toEqual([]);
 
     // Invariant 3: no duplicate ids. One example renders alone on the page,
     // so any collision is within a single example's own markup — either the
