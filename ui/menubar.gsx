@@ -1,0 +1,443 @@
+package ui
+
+import (
+	"github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/ui/icon"
+)
+
+// Menubar is the shadcn/ui Menubar on the native popover API — the same
+// dropdown.gsx/context-menu.gsx mechanism (top layer replaces Radix's
+// Portal, light dismiss and Esc are browser-native, role="menu" content,
+// role="menuitem" items, submenu popover nesting) reused verbatim for the
+// seven item parts this component shares with Task 1/2's own (Item,
+// CheckboxItem, RadioGroup, RadioItem, Sub, SubTrigger, SubContent — see
+// each part's own doc comment for anything genuinely menubar-specific).
+// What's new here is the BAR: Menubar renders a row of MenubarTrigger
+// buttons, each paired 1:1 with its own MenubarContent inside a
+// MenubarMenu wrapper (the "root" proximity scope for that one menu, the
+// same role DropdownMenu's own root plays for its single trigger/content
+// pair) — and menubar.js layers two behaviors on top that neither dropdown
+// nor context-menu need: roving tabindex across the triggers (the whole bar
+// is one tab stop; ArrowLeft/ArrowRight move it) and open-follows-hover
+// (once one menu is open, hovering a sibling trigger switches to it with no
+// click). Both are DERIVED-NOT-READ from the public Radix Menubar contract
+// per the source map (`docs/superpowers/plans/2026-07-25-tier4-source-map-
+// menus.md` `## menubar` §2/§3) — no `@radix-ui/react-menubar` dist exists
+// in the reference checkout to trace, so this is built to the documented
+// public behavior, not verified against Radix's own runtime. Requires the
+// menubar behavior module (ui/menubar.js).
+//
+// HOOK NAMESPACING (load-bearing, THE fix from the prior round): every
+// selector menubar.js registers is `data-gsxui-menubar-*`, never a prefix
+// shared with dropdown.js's `data-gsxui-dropdown-*` or context-menu.js's
+// `data-gsxui-contextmenu-*`. ui/gsxui.js's delegation registry is keyed
+// only by `${type}:${capture}` and dispatches to EVERY handler whose
+// selector matches the event target, regardless of which module registered
+// it — ui/index.js imports all three menu modules, so an identical selector
+// across two of them double-fires on one event (measured live on an
+// earlier round: one click on a checkbox item fired two gsxui:change events
+// and net-zeroed the toggle back to its starting state; click-to-open
+// submenus opened then immediately closed; arrow keys skipped every other
+// item). See docs/jsx-parity.md's ## dropdown ledger MECHANISM entry for
+// the full incident writeup.
+//
+// SUBMENUS — POPOVER NESTING, NOT PORTALLING (ADAPT, load-bearing): same
+// mechanism, same measurement, as dropdown.gsx's own file header — reused
+// verbatim, not re-derived:
+//
+//	child popover DOM-nested inside parent, opened with showPopover()      -> parent STAYS OPEN
+//	child not nested, opened via a real popovertarget invoker click        -> parent STAYS OPEN
+//	child not nested, opened programmatically with showPopover()           -> parent LIGHT-DISMISSES
+//
+// menubar.js opens submenus on pointerenter and on ArrowRight — not only on
+// click — so every open is programmatic; DOM nesting is therefore the only
+// robust option here too. MenubarSubContent renders nested inside its
+// MenubarSub, which itself sits inside the parent MenubarContent (pinned by
+// TestMenubarSubNestsContentInsideParentContentPinned). Unlike dropdown/
+// context-menu's own top-level Content, MenubarContent is NOT a scrollable
+// clipped container (overflow-hidden only, no max-h/overflow-y-auto — see
+// MenubarContent's own doc comment and the source map's `## shared-items`
+// §5), so the nested-submenu-gets-clipped-by-its-scrolling-ancestor risk
+// that section flags for dropdown/context-menu doesn't apply here at all.
+//
+// SERVER-RENDERED CHECKED STATE (MECHANISM): same contract as dropdown.gsx's
+// own — MenubarCheckboxItem/MenubarRadioItem take a `checked bool` that
+// stamps both aria-checked and data-state="checked"|"unchecked" on first
+// paint. The check/circle indicator icon is always rendered (no server-side
+// conditional mount) and its visibility is purely CSS via the
+// ancestor-selector arbitrary variant `[[data-state=checked]_&]:flex`,
+// keyed off the item's own data-state — see dropdown.gsx's own doc comment
+// for the full rationale, not re-derived here. Selecting a checkbox item
+// does NOT close the menu — the same deliberate ADAPT as dropdown/
+// context-menu's own CheckboxItem, not a Radix default.
+//
+// NOVA METRICS: every item-shaped part below (Item, CheckboxItem,
+// RadioItem, SubTrigger) ends up BYTE-IDENTICAL, modulo the component-name
+// prefix, to its already-shipped DropdownMenuItem/CheckboxItem/RadioItem/
+// SubTrigger counterpart — new-york-v4's own menubar.tsx carries two real
+// per-component deltas from dropdown-menu/context-menu (CheckboxItem/
+// RadioItem's rounded-xs vs their rounded-sm, and SubTrigger's total
+// absence of a gap-* token), but nova's own style-nova.css independently
+// erases both: `.cn-menubar-checkbox-item`/`.cn-menubar-radio-item` land on
+// the same rounded-md every other item-shaped part uses, and
+// `.cn-menubar-sub-trigger` carries gap-1.5 same as its dropdown/
+// context-menu siblings (the same "nova harmonizes an upstream asymmetry"
+// call already made for context-menu's own SubTrigger, source map `##
+// menubar` §1's own "Metric deltas worth naming" paragraph). Check/dot
+// indicator at the right edge (right-2, size-4), rows pr-8 pl-1.5 — follows
+// ui/select.gsx's SelectItem, the same precedent dropdown/context-menu's
+// own CheckboxItem/RadioItem doc comments cite.
+//
+// TWO DELIBERATE DIVERGENCES FROM new-york-v4's OWN menubar.tsx (both
+// flagged by the source map, both ruled on here rather than silently
+// ported or silently fixed):
+//   - MenubarSubTrigger's class carries `outline-hidden`, NOT new-york-v4's
+//     own `outline-none` (menubar.tsx's one-off spelling — every other
+//     Item/SubTrigger class in this whole codebase, across all three menu
+//     families, uses outline-hidden). The source map calls this a real,
+//     if narrow, accessibility delta: `outline-none` removes the focus
+//     ring in forced-colors/high-contrast modes too, `outline-hidden` is
+//     Tailwind v4's own "hidden but still present for forced-colors" idiom.
+//     RULING: port outline-hidden — matching this port's own existing
+//     house-wide convention beats reproducing a one-off, less-accessible
+//     upstream spelling, and every other menubar part (Item, CheckboxItem,
+//     etc.) already uses outline-hidden a few lines away in the very same
+//     source file, so outline-none reads as menubar.tsx's own copy-paste
+//     drift, not a deliberate per-component choice worth preserving.
+//   - MenubarSubTrigger's trailing chevron is ported as `size-4`, not
+//     new-york-v4's own literal `h-4 w-4` (menubar's own third distinct
+//     spelling for the same 16px icon, alongside dropdown's `size-4` and
+//     context-menu's bare/unstyled one). Same no-op-divergence call already
+//     ledgered for context-menu's own SubTrigger icon: the class's own
+//     `[&_svg:not([class*='size-'])]:size-4` descendant selector already
+//     stamps size-4 onto any child svg lacking its own size-* class, so
+//     h-4/w-4 and size-4 render pixel-identical either way — porting
+//     size-4 directly keeps the markup consistent with every other icon
+//     literal in this codebase instead of introducing Tailwind v3-style
+//     `h-* w-*` pairs nowhere else in gsxui.
+//
+// MenubarContent's animate-out RULING: the source map flags that
+// MenubarContent's own class string (unlike every sibling Content/
+// SubContent in this whole menu family, including menubar's own
+// SubContent) omits `data-[state=closed]:animate-out` from its otherwise-
+// standard six-token animate-in/out/fade/zoom set — corroborated as
+// deliberate, not a transcription slip, since nova's independently-authored
+// `.cn-menubar-content` has the identical omission. This port's own ADAPT
+// (already established by dropdown.gsx/context-menu.gsx, see popover.gsx
+// and docs/jsx-parity.md ## animations) replaces that ENTIRE six-token
+// tw-animate-css family, on every popover-based Content/SubContent in this
+// codebase without exception, with one discrete-transition CSS block keyed
+// off Tailwind's `open:`/`starting:open:` variants instead — a mechanism
+// that has no equivalent to a standalone "closed-state token" to omit in
+// the first place: the SAME `open:opacity-100`/base-`opacity-0` pair drives
+// both directions, there is no separate switch for "animate the close" a
+// port could selectively leave off. RULING: MenubarContent gets the
+// identical discrete-transition block every other Content part gets, same
+// as MenubarSubContent — new-york-v4's own omission is recorded here as
+// what the source says, per the task's own instruction, but has zero
+// representation in this port's markup, because the token it omits was
+// already replaced site-wide before this component existed.
+component Menubar(children gsx.Node, attrs gsx.Attrs) {
+	<div
+		data-slot="menubar"
+		data-gsxui-menubar
+		role="menubar"
+		class="flex h-8 items-center gap-0.5 rounded-lg border bg-background p-[3px]"
+		{ attrs... }
+	>
+		{ children }
+	</div>
+}
+
+// MenubarMenu is the non-rendering root pairing ONE MenubarTrigger with its
+// own MenubarContent — layout-neutral (class="contents", same idiom as
+// DropdownMenu's own root) so the pair sits inline in the bar's normal flex
+// row. data-gsxui-menubar-menu is the proximity anchor menubar.js uses to
+// resolve "this trigger's own content" (closest("[data-gsxui-menubar-
+// menu]")), the same shape DropdownMenu's own root plays for its single
+// trigger/content pair — Menubar itself (the outer bar) is the SEPARATE
+// scope roving tabindex and open-follows-hover coordinate across every
+// MenubarMenu's trigger.
+component MenubarMenu(children gsx.Node, attrs gsx.Attrs) {
+	<div data-slot="menubar-menu" data-gsxui-menubar-menu class="contents" { attrs... }>{ children }</div>
+}
+
+// MenubarTrigger is one pill in the bar. Unlike DropdownMenuTrigger (which
+// carries no class at all — callers style their own button), MenubarTrigger
+// IS the visible, styled control shadcn's own menubar.tsx renders directly
+// (no asChild wrapping in the reference demo), so its class string is
+// ported for real. No tabindex is server-rendered — roving tabindex is
+// JS-normalized-at-init (ui/toggle-group.js's own MECHANISM, reused here):
+// every trigger is its own tab stop until menubar.js collapses the bar to
+// exactly one on module load, the graceful no-JS fallback. data-state is
+// server-rendered "closed" and kept in sync by menubar.js on the toggle
+// event — MenubarTrigger's own class keys :open highlighting off
+// data-state (nova's rounded-sm/px-1.5/py-[2px] metrics, NOT bumped to
+// rounded-md — nova's own .cn-menubar-trigger literally keeps rounded-sm,
+// unlike every item-shaped part in this file), unlike DropdownMenuTrigger,
+// which has no such selector to key at all.
+component MenubarTrigger(children gsx.Node, attrs gsx.Attrs) {
+	<button
+		data-slot="menubar-trigger"
+		data-gsxui-menubar-trigger
+		type="button"
+		aria-haspopup="menu"
+		aria-expanded="false"
+		data-state="closed"
+		class="flex items-center rounded-sm px-1.5 py-[2px] text-sm font-medium outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
+		{ attrs... }
+	>
+		{ children }
+	</button>
+}
+
+// MenubarContent renders the popover for one MenubarMenu. popover="auto"
+// gives top layer, light dismiss, and free Esc; data-state is
+// server-rendered "closed" and kept in sync by menubar.js on the toggle
+// event. data-side="bottom" is server-rendered statically — menubar.js
+// always anchors below the trigger, same hand-rolled-fixed-position
+// stopgap as dropdown's own (see docs/jsx-parity.md ## dropdown NOTE).
+// overflow-hidden only (NOT dropdown's own overflow-x-hidden/
+// overflow-y-auto): new-york-v4's own MenubarContent carries no max-h/
+// overflow-y-auto at all, unlike DropdownMenuContent/ContextMenuContent —
+// it is not a scrollable clipped container, so the nested-submenu-clipped-
+// by-a-scrolling-ancestor risk the source map flags for dropdown/
+// context-menu's own SubContent (`## shared-items` §5) never arises here.
+// min-w-36 is nova's own genuine delta from new-york-v4's min-w-[12rem]
+// (12rem -> 9rem, a real narrowing, not a spelling variance — contrast
+// MenubarSubContent's own min-w-[8rem], where nova's value and
+// new-york-v4's coincide exactly and no delta applies). See the file
+// header's own RULING for why this class carries the identical discrete-
+// transition block every sibling Content/SubContent in this codebase
+// carries, despite new-york-v4's own class omitting
+// data-[state=closed]:animate-out.
+component MenubarContent(children gsx.Node, attrs gsx.Attrs) {
+	<div
+		data-slot="menubar-content"
+		data-gsxui-menubar-content
+		popover="auto"
+		role="menu"
+		tabindex="-1"
+		data-state="closed"
+		data-side="bottom"
+		class={
+			"z-50 min-w-36 origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-md",
+			"opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95",
+			"data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2"
+		}
+		{ attrs... }
+	>
+		{ children }
+	</div>
+}
+
+// MenubarItem is byte-identical, modulo the data-slot/data-gsxui-* prefix,
+// to DropdownMenuItem's own already-shipped pinned class — the source
+// map's own finding that plain Item is identical across all three menu
+// families, and this port's own nova retarget already applied uniformly to
+// dropdown/context-menu's own Item. variant: "" (default) | "destructive".
+// inset is dropped (see docs/jsx-parity.md), same call as dropdown/
+// context-menu's own Item — the data-[inset]:pl-8 selector is removed with
+// it.
+component MenubarItem(variant string, children gsx.Node, attrs gsx.Attrs) {
+	<div
+		data-slot="menubar-item"
+		data-gsxui-menubar-item
+		data-variant={variant |> default("default")}
+		role="menuitem"
+		tabindex="-1"
+		class="relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive!"
+		{ attrs... }
+	>
+		{ children }
+	</div>
+}
+
+// MenubarGroup wraps a set of items for a11y grouping. shadcn's own Group
+// carries no class string at all (source map `## menubar` §1) — role="group"
+// is added here, not in the .tsx, same derived-not-read WAI-ARIA menu
+// authoring practice as DropdownMenuGroup's own doc comment. No
+// data-gsxui-* hook: nothing in menubar.js binds to or scopes by this
+// element, same call as DropdownMenuGroup/ContextMenuGroup.
+component MenubarGroup(children gsx.Node, attrs gsx.Attrs) {
+	<div data-slot="menubar-group" role="group" { attrs... }>{ children }</div>
+}
+
+// MenubarCheckboxItem is the shadcn/ui MenubarCheckboxItem. checked is
+// server-rendered (see the file header MECHANISM); value is the item's own
+// identity, stamped as data-value and echoed on menubar.js's gsxui:change
+// event. Selecting a checkbox item does NOT close the menu — the same
+// deliberate ADAPT as dropdown/context-menu's own CheckboxItem.
+//
+// Ends up byte-identical, modulo the prefix, to DropdownMenuCheckboxItem's
+// own pinned class: new-york-v4's one real per-component delta here
+// (rounded-xs vs dropdown/context's rounded-sm) is erased by nova, which
+// unifies checkbox/radio/item/sub-trigger all onto rounded-md (source
+// map's own "Metric deltas worth naming" finding) — see
+// DropdownMenuCheckboxItem's own doc comment for the full nova-metrics/
+// right-side-indicator ADAPT rationale, not re-derived here.
+component MenubarCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
+	<div
+		data-slot="menubar-checkbox-item"
+		data-gsxui-menubar-checkbox-item
+		role="menuitemcheckbox"
+		data-value={value}
+		{ if checked {
+			aria-checked="true"
+			data-state="checked"
+		} else {
+			aria-checked="false"
+			data-state="unchecked"
+		} }
+		tabindex="-1"
+		class="relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+		{ attrs... }
+	>
+		<span class="pointer-events-none absolute right-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex">
+			<icon.Check class="size-4"/>
+		</span>
+		{ children }
+	</div>
+}
+
+// MenubarRadioGroup wraps a set of MenubarRadioItems. value is the
+// server-rendered current value, stamped as data-value on the root — the
+// same server-rendered-checked contract as CheckboxItem, kept in sync by
+// menubar.js on selection and echoed on the group's own gsxui:change event.
+// data-gsxui-menubar-radio-group is the proximity anchor menubar.js uses to
+// scope "clear every OTHER item in this group" to this group alone.
+component MenubarRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) {
+	<div data-slot="menubar-radio-group" data-gsxui-menubar-radio-group role="group" data-value={value} { attrs... }>
+		{ children }
+	</div>
+}
+
+// MenubarRadioItem is the shadcn/ui MenubarRadioItem — same shape/class as
+// CheckboxItem, swapping the check indicator for a filled dot. checked
+// reflects whether THIS item's value equals its MenubarRadioGroup's current
+// value — the caller computes that comparison (gsx has no context to do it
+// implicitly). Selecting a radio item DOES close the menu, same as a plain
+// Item (only CheckboxItem stays open). Same nova metrics + right-side
+// indicator ADAPT as MenubarCheckboxItem's own doc comment.
+component MenubarRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
+	<div
+		data-slot="menubar-radio-item"
+		data-gsxui-menubar-radio-item
+		role="menuitemradio"
+		data-value={value}
+		{ if checked {
+			aria-checked="true"
+			data-state="checked"
+		} else {
+			aria-checked="false"
+			data-state="unchecked"
+		} }
+		tabindex="-1"
+		class="relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+		{ attrs... }
+	>
+		<span class="pointer-events-none absolute right-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex">
+			<icon.Circle class="size-2 fill-current"/>
+		</span>
+		{ children }
+	</div>
+}
+
+// MenubarLabel's inset prop is dropped along with MenubarItem's (see
+// docs/jsx-parity.md) — the data-[inset]:pl-8 selector is removed.
+// text-sm, NOT DropdownMenuLabel's own text-xs: nova's own
+// .cn-menubar-label rule is genuinely text-sm, a real per-component nova
+// value, not a copy of dropdown's own (already-shipped) Label metrics.
+component MenubarLabel(children gsx.Node, attrs gsx.Attrs) {
+	<div data-slot="menubar-label" class="px-1.5 py-1 text-sm font-medium" { attrs... }>{ children }</div>
+}
+
+component MenubarSeparator(attrs gsx.Attrs) {
+	<div data-slot="menubar-separator" role="separator" class="-mx-1 my-1 h-px bg-border" { attrs... }></div>
+}
+
+component MenubarShortcut(children gsx.Node, attrs gsx.Attrs) {
+	<span data-slot="menubar-shortcut" class="ml-auto text-xs tracking-widest text-muted-foreground" { attrs... }>
+		{ children }
+	</span>
+}
+
+// MenubarSub is the non-rendering submenu root — layout-neutral
+// (class="contents", same idiom as MenubarMenu's own root) so its
+// SubTrigger/SubContent children sit inline in the parent content's normal
+// item flow. data-gsxui-menubar-sub is the proximity anchor menubar.js uses
+// to pair a SubTrigger with its own SubContent (closest("[data-gsxui-
+// menubar-sub]")) and to scope the pointer-leave grace-period boundary
+// check to "the whole sub" — same shape as DropdownMenuSub's own doc
+// comment.
+component MenubarSub(children gsx.Node, attrs gsx.Attrs) {
+	<div data-slot="menubar-sub" data-gsxui-menubar-sub class="contents" { attrs... }>{ children }</div>
+}
+
+// MenubarSubTrigger opens/closes its sibling MenubarSubContent (menubar.js:
+// pointerenter, ArrowRight, click). aria-haspopup/aria-expanded are
+// server-rendered closed (derived-not-read ARIA anatomy, source map `##
+// shared-items` §3); menubar.js keeps aria-expanded and data-state in step
+// on every open/close, stamping data-state="open" BEFORE showPopover() (the
+// same flash-avoidance rule DropdownMenuContent's own trigger click handler
+// documents). ADAPT: the data-[inset]:pl-8 token is dropped, same call as
+// MenubarItem/MenubarLabel's own ADAPT. See the file header's own "TWO
+// DELIBERATE DIVERGENCES" paragraph for the outline-hidden (not
+// new-york-v4's own outline-none) and size-4 (not h-4 w-4) rulings — both
+// unique to menubar.tsx among the three menu family sources, both decided
+// here rather than silently ported or silently fixed. gap-1.5 is nova's own
+// addition (new-york-v4's own MenubarSubTrigger carries no gap-* token at
+// all, the "third" version of the same asymmetry context-menu's own
+// SubTrigger already got harmonized for — see the file header). nova's
+// rounded-md/px-1.5/py-1 metrics, same as MenubarItem's own.
+// data-[state=open]: kept, not nova's data-open: (standing house
+// exception).
+component MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) {
+	<div
+		data-slot="menubar-sub-trigger"
+		data-gsxui-menubar-sub-trigger
+		role="menuitem"
+		aria-haspopup="menu"
+		aria-expanded="false"
+		data-state="closed"
+		tabindex="-1"
+		class="flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg:not([class*='size-'])]:size-4"
+		{ attrs... }
+	>
+		{ children }
+		<icon.ChevronRight class="ml-auto size-4"/>
+	</div>
+}
+
+// MenubarSubContent is the submenu popover — see the file header's
+// SUBMENUS comment for why it must render DOM-nested (not portalled) inside
+// its MenubarSub. Has the FULL data-[state=…]:animate-in/out/fade/zoom
+// six-token set in new-york-v4's own source (unlike MenubarContent's own,
+// see the file header's animate-out RULING) — moot for this port either
+// way, since both get the identical discrete-transition block. min-w-[8rem]
+// is KEPT (not narrowed): nova's own min-w-32 is exactly 8rem, the same
+// value new-york-v4 already carries — no genuine delta here, unlike
+// MenubarContent's own min-w-36 (a real 12rem -> 9rem narrowing) or
+// DropdownMenuSubContent's own min-w-[96px] (a real 8rem -> 6rem
+// narrowing). rounded-lg (nova), shadow-lg (matches both), border kept
+// (house exception, not nova's ring-1) — same ADAPT list as
+// DropdownMenuSubContent's own doc comment, not repeated in full here.
+component MenubarSubContent(children gsx.Node, attrs gsx.Attrs) {
+	<div
+		data-slot="menubar-sub-content"
+		data-gsxui-menubar-sub-content
+		popover="auto"
+		role="menu"
+		tabindex="-1"
+		data-state="closed"
+		data-side="right"
+		class={
+			"z-50 min-w-[8rem] origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg",
+			"opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95",
+			"data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2"
+		}
+		{ attrs... }
+	>
+		{ children }
+	</div>
+}

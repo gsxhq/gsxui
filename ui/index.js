@@ -10,6 +10,7 @@ import "./dialog.js";
 import "./dropdown.js";
 import "./hover-card.js";
 import "./input-otp.js";
+import "./menubar.js";
 import "./popover.js";
 import "./resizable.js";
 import "./select.js";

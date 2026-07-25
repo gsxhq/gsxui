@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "carousel", "checkbox", "collapsible", "combobox", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "input-otp", "item", "kbd", "label", "native-select", "pagination", "popover", "progress", "radio", "resizable", "scroll-area", "select", "separator", "sheet", "sidebar", "skeleton", "slider", "sonner", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
+	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "carousel", "checkbox", "collapsible", "combobox", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "input-otp", "item", "kbd", "label", "menubar", "native-select", "pagination", "popover", "progress", "radio", "resizable", "scroll-area", "select", "separator", "sheet", "sidebar", "skeleton", "slider", "sonner", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -331,6 +331,18 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("context-menu deps = %v, want [icon]", deps)
 	}
 
+	// menubar.gsx imports ui/icon (Tier 4 Batch B Task 3: MenubarCheckboxItem's
+	// Check, MenubarRadioItem's Circle, MenubarSubTrigger's ChevronRight) —
+	// same shape as dropdown.gsx's/context-menu.gsx's own equivalent icon
+	// usage, no intra-package ui.* reference otherwise.
+	deps, err = registry.Deps("menubar")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(deps, []string{"icon"}) {
+		t.Fatalf("menubar deps = %v, want [icon]", deps)
+	}
+
 	// slider.gsx has no icon import and no intra-package reference to
 	// another component (the site example composes nothing from another
 	// ui.* component either) — same shape as toggle's/popover's/hover-
@@ -485,6 +497,15 @@ func TestHasJS(t *testing.T) {
 	// contextmenu, adapted from dropdown.js's menu semantics).
 	if !registry.HasJS("context-menu") {
 		t.Error("context-menu should have JS")
+	}
+	// menubar has its own ui/menubar.js — roving tabindex across triggers
+	// (ui/toggle-group.js's own JS-normalized-at-init model) and
+	// open-follows-hover once one menu is open, layered on dropdown.js's
+	// reused item/submenu machinery (duplicated with menubar's own
+	// data-gsxui-menubar-* selectors, not imported — no shared JS module,
+	// same MECHANISM as context-menu.js's own).
+	if !registry.HasJS("menubar") {
+		t.Error("menubar should have JS")
 	}
 	// slider has its own ui/slider.js (delegated `input` listener that
 	// resyncs the --fill custom property while the user drags/keys the
@@ -648,6 +669,18 @@ func TestResolveTransitive(t *testing.T) {
 		t.Fatal(err)
 	}
 	want = []string{"context-menu", "icon"}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("got %v want %v", got, want)
+	}
+
+	// menubar resolves transitively through icon (Tier 4 Batch B Task 3 —
+	// see this file's own TestDeps entry) — same shape as context-menu's own
+	// entry above; "icon" < "menubar" lexically, so it sorts first.
+	got, err = registry.Resolve([]string{"menubar"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want = []string{"icon", "menubar"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
