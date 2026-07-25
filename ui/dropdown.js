@@ -152,7 +152,12 @@ on("keydown", CONTENT_SELECTOR, (e, content) => {
   if (!dir) return;
   const items = ownItems(content);
   const i = items.indexOf(document.activeElement);
-  const next = items[(i + dir + items.length) % items.length];
+  // When nothing in this content is currently focused (i === -1, e.g. focus
+  // is parked on the content itself), (i + dir) % length lands one short of
+  // the intended end (ArrowUp: -1 + -1 = -2, wrapping to the SECOND-to-last
+  // item, not the last) — special-case the no-selection start explicitly
+  // instead of relying on the wraparound arithmetic to do it by accident.
+  const next = i === -1 ? (dir === 1 ? items[0] : items[items.length - 1]) : items[(i + dir + items.length) % items.length];
   if (next) {
     // Moving keyboard focus to a different item at this same level closes
     // any OTHER open submenu among this level's own sub-triggers — without
@@ -173,13 +178,21 @@ on("keydown", CONTENT_SELECTOR, (e, content) => {
 
 on("click", "[data-gsxui-dropdown-item]", (_e, item) => {
   if (item.getAttribute("aria-disabled") === "true" || "disabled" in item.dataset) return;
-  const content = item.closest(CONTENT_SELECTOR);
+  // Always hide the ROOT content, not item.closest(CONTENT_SELECTOR) — from
+  // inside a submenu, that resolves to the SUB-content, closing only the
+  // submenu and leaving the root open with the sub-trigger still
+  // highlighted. One call on the root is enough: the measured popover
+  // stack cascade (see dropdown.gsx's file header) closes any nested-open
+  // submenu along with it.
+  const content = contentOf(item);
   emit(item, "gsxui:select");
   content?.hidePopover();
 });
 
-// A checkbox item flips in place and does NOT close its menu (Radix's own
-// contract — see dropdown.gsx's DropdownMenuCheckboxItem doc comment).
+// A checkbox item flips in place and does NOT close its menu — a deliberate
+// ADAPT per the task brief, not a Radix default (Radix's actual CheckboxItem
+// onSelect closes unless preventDefault is called; this port simply never
+// closes on a checkbox select).
 on("click", "[data-gsxui-menu-checkbox-item]", (_e, item) => {
   if (item.getAttribute("aria-disabled") === "true" || "disabled" in item.dataset) return;
   const checked = item.dataset.state !== "checked";
@@ -205,7 +218,8 @@ on("click", "[data-gsxui-menu-radio-item]", (_e, item) => {
   const value = item.dataset.value ?? "";
   if (group) group.dataset.value = value;
   emit(group ?? item, "gsxui:change", { value });
-  const content = item.closest(CONTENT_SELECTOR);
+  // Same root-not-nearest-content fix as the plain item click handler above.
+  const content = contentOf(item);
   content?.hidePopover();
 });
 
@@ -307,10 +321,17 @@ on("pointerout", "[data-gsxui-menu-sub-content]", (e, content) => {
   if (trigger) scheduleCloseSub(trigger);
 });
 
-// Click opens (idempotently) and moves focus in, the same as ArrowRight —
-// covers touch/no-hover pointer types, which never fire the pointerover
-// open above.
+// Click toggles: closed -> open (idempotent-safe, moving focus in, same as
+// ArrowRight — covers touch/no-hover pointer types, which never fire the
+// pointerover open above); already-open -> closed. Without the open branch
+// checking current state first, clicking an ALREADY-open sub-trigger (e.g.
+// one opened by hover) would re-focus its first item and steal the hover
+// highlight instead of acting as a close toggle.
 on("click", "[data-gsxui-menu-sub-trigger]", (_e, trigger) => {
   if (trigger.getAttribute("aria-disabled") === "true" || "disabled" in trigger.dataset) return;
+  if (trigger.dataset.state === "open") {
+    closeSub(trigger);
+    return;
+  }
   openSubAndFocusFirst(trigger);
 });

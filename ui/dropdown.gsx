@@ -124,17 +124,35 @@ component DropdownMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 // role="group" is added here, not in the .tsx: Radix's Group primitive
 // stamps it at runtime (derived-not-read, well-known WAI-ARIA menu
 // authoring practice — a set of role="menuitemradio" items in particular
-// must be wrapped by a role="group" container).
+// must be wrapped by a role="group" container). No data-gsxui-* hook: unlike
+// DropdownMenuRadioGroup/DropdownMenuSub, nothing in dropdown.js binds to or
+// scopes by this element — it's purely a11y markup.
 component DropdownMenuGroup(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="dropdown-menu-group" data-gsxui-menu-group role="group" { attrs... }>{ children }</div>
+	<div data-slot="dropdown-menu-group" role="group" { attrs... }>{ children }</div>
 }
 
 // DropdownMenuCheckboxItem is the shadcn/ui DropdownMenuCheckboxItem.
 // checked is server-rendered (see the file header MECHANISM); value is the
 // item's own identity, stamped as data-value and echoed on dropdown.js's
-// gsxui:change event. Selecting a checkbox item does NOT close the menu
-// (Radix's own contract — confirmed against the source map's derived ARIA
-// anatomy, ## shared-items §3 — a checkbox toggles in place).
+// gsxui:change event. Selecting a checkbox item does NOT close the menu — a
+// deliberate ADAPT per the task brief, not a Radix default (Radix's actual
+// CheckboxItem onSelect closes unless preventDefault is called; this port
+// simply never closes on a checkbox select — see dropdown.js).
+//
+// ADAPT (nova metrics + indicator side, matches DropdownMenuItem's own
+// already-shipped nova pass): new-york-v4's gap-2/rounded-sm/py-1.5-pr-2-pl-8
+// -> nova's gap-1.5/rounded-md/py-1-pr-8-pl-1.5 (source map lines 327/330) —
+// otherwise a checkbox/radio row renders a different height and radius than
+// a plain DropdownMenuItem in the same menu. The indicator side-swap
+// (new-york-v4: left, pl-8 reserved; nova: right, pr-8 reserved) is real
+// structure, not a metric bump (source map's own note on
+// .cn-dropdown-menu-item-indicator) — resolved by following ui/select.gsx's
+// SelectItem, the shipped house precedent for a nova-metric item carrying a
+// check indicator: right-2, size-4 indicator span (not new-york-v4's
+// size-3.5). Visibility still gates on the ancestor-selector arbitrary
+// variant `[[data-state=checked]_&]:flex` (not select.gsx's named
+// `group/select-item:` marker) — keeps the item's own base class free of an
+// extra prepended token; the two mechanisms are visually equivalent.
 component DropdownMenuCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-slot="dropdown-menu-checkbox-item"
@@ -149,10 +167,10 @@ component DropdownMenuCheckboxItem(checked bool, value string, children gsx.Node
 			data-state="unchecked"
 		} }
 		tabindex="-1"
-		class="relative flex cursor-default items-center gap-2 rounded-sm py-1.5 pr-2 pl-8 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+		class="relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
 		{ attrs... }
 	>
-		<span class="pointer-events-none absolute left-2 hidden size-3.5 items-center justify-center [[data-state=checked]_&]:flex">
+		<span class="pointer-events-none absolute right-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex">
 			<icon.Check class="size-4"/>
 		</span>
 		{ children }
@@ -179,7 +197,8 @@ component DropdownMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attr
 // current value — the caller computes that comparison (gsx has no context to
 // do it implicitly, same no-context shape as ## toggle-group's group→item
 // params). Selecting a radio item DOES close the menu, same as a plain Item
-// (only CheckboxItem stays open).
+// (only CheckboxItem stays open). Nova metrics + right-side indicator: same
+// ADAPT as DropdownMenuCheckboxItem's own doc comment, not repeated here.
 component DropdownMenuRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-slot="dropdown-menu-radio-item"
@@ -194,10 +213,10 @@ component DropdownMenuRadioItem(checked bool, value string, children gsx.Node, a
 			data-state="unchecked"
 		} }
 		tabindex="-1"
-		class="relative flex cursor-default items-center gap-2 rounded-sm py-1.5 pr-2 pl-8 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+		class="relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
 		{ attrs... }
 	>
-		<span class="pointer-events-none absolute left-2 hidden size-3.5 items-center justify-center [[data-state=checked]_&]:flex">
+		<span class="pointer-events-none absolute right-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex">
 			<icon.Circle class="size-2 fill-current"/>
 		</span>
 		{ children }
@@ -240,7 +259,12 @@ component DropdownMenuSub(children gsx.Node, attrs gsx.Attrs) {
 // documents). ADAPT: the data-[inset]:pl-8 token is dropped from the pinned
 // class, same call as DropdownMenuItem/DropdownMenuLabel's own ADAPT —
 // gsxui's dropdown scope has no inset prop anywhere in this file, so the
-// selector would be permanently dead CSS.
+// selector would be permanently dead CSS. ADAPT (nova metrics): gap-2/
+// rounded-sm/px-2-py-1.5 -> nova's gap-1.5/rounded-md/px-1.5-py-1 (source map
+// line 345), matching DropdownMenuItem's own already-shipped nova pass —
+// otherwise a sub-trigger row renders taller/more-rounded than a plain
+// DropdownMenuItem in the same menu. data-[state=open]: kept, not nova's
+// data-open: (standing house exception).
 component DropdownMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-slot="dropdown-menu-sub-trigger"
@@ -250,7 +274,7 @@ component DropdownMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 		aria-expanded="false"
 		data-state="closed"
 		tabindex="-1"
-		class="flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
+		class="flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
 		{ attrs... }
 	>
 		{ children }
