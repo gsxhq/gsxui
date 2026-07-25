@@ -11,8 +11,14 @@ import "github.com/gsxhq/gsxui/ui"
 var avatarSVG = []byte("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect width='64' height='64' fill='#6d28d9'/><text x='32' y='34' text-anchor='middle' dominant-baseline='central' font-family='sans-serif' font-weight='600' font-size='26' fill='#fff'>AL</text></svg>")
 
 // Basic renders two Avatars side by side: one whose image loads (a data
-// URI), one whose image 404s and falls back to initials — avatar.js
-// toggles which of image/fallback is visible on the image's load/error.
+// URI), one whose image fails to decode and falls back to initials —
+// avatar.js toggles which of image/fallback is visible on the image's
+// load/error. The broken one uses an empty-payload data: URI rather than
+// a real 404: a data: URI never hits the network, so the img still fires
+// its native "error" event (exercising the same fallback path) without
+// Chromium logging a "Failed to load resource" console error — which
+// would otherwise trip the site-wide clean-console invariant for what is,
+// by design, a demonstration of the fallback state rather than a defect.
 component Basic() {
 	<div class="flex items-center gap-4">
 		<ui.Avatar>
@@ -20,7 +26,7 @@ component Basic() {
 			<ui.AvatarFallback>AL</ui.AvatarFallback>
 		</ui.Avatar>
 		<ui.Avatar>
-			<ui.AvatarImage src="/broken-image.jpg" alt="Broken avatar"/>
+			<ui.AvatarImage src="data:image/png;base64," alt="Broken avatar"/>
 			<ui.AvatarFallback>JD</ui.AvatarFallback>
 		</ui.Avatar>
 	</div>

@@ -20,21 +20,27 @@ import (
 var avatarSVG = []byte("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect width='64' height='64' fill='#6d28d9'/><text x='32' y='34' text-anchor='middle' dominant-baseline='central' font-family='sans-serif' font-weight='600' font-size='26' fill='#fff'>AL</text></svg>")
 
 // Basic renders two Avatars side by side: one whose image loads (a data
-// URI), one whose image 404s and falls back to initials — avatar.js
-// toggles which of image/fallback is visible on the image's load/error.
+// URI), one whose image fails to decode and falls back to initials —
+// avatar.js toggles which of image/fallback is visible on the image's
+// load/error. The broken one uses an empty-payload data: URI rather than
+// a real 404: a data: URI never hits the network, so the img still fires
+// its native "error" event (exercising the same fallback path) without
+// Chromium logging a "Failed to load resource" console error — which
+// would otherwise trip the site-wide clean-console invariant for what is,
+// by design, a demonstration of the fallback state rather than a defect.
 
-//line basic.gsx:16:1
+//line basic.gsx:22:1
 func Basic() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:17:2
+//line basic.gsx:23:2
 		_gsxgw.S("<div class=\"flex items-center gap-4\">")
-//line basic.gsx:18:3
+//line basic.gsx:24:3
 		_gsxgw.Node(ctx, ui.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:19:4
+//line basic.gsx:25:4
 			_gsxgw.Node(ctx, ui.AvatarImage(_gsxstd.DataURL((avatarSVG), "image/svg+xml"), "Ada Lovelace", nil))
-//line basic.gsx:20:4
+//line basic.gsx:26:4
 			_gsxgw.Node(ctx, ui.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("AL")
@@ -42,12 +48,12 @@ func Basic() _gsxrt.Node {
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
-//line basic.gsx:22:3
+//line basic.gsx:28:3
 		_gsxgw.Node(ctx, ui.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:23:4
-			_gsxgw.Node(ctx, ui.AvatarImage("/broken-image.jpg", "Broken avatar", nil))
-//line basic.gsx:24:4
+//line basic.gsx:29:4
+			_gsxgw.Node(ctx, ui.AvatarImage("data:image/png;base64,", "Broken avatar", nil))
+//line basic.gsx:30:4
 			_gsxgw.Node(ctx, ui.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("JD")
