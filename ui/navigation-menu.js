@@ -34,6 +34,35 @@
 // — Content is left shrink-to-fit at every breakpoint instead, needing no
 // JS-computed width to match.
 //
+// FIX ROUND 3 (focusin/click race on the trigger, measured live): this file
+// is the only one in the whole menu family combining BOTH a click toggle
+// AND focusin-open on the same element (dropdown.js/menubar.js have click
+// toggles but no focusin-open; hover-card.js has focusin-open but no click
+// toggle) — no earlier task's own trigger hit this shape. Instrumented with
+// document-level capture listeners (beforetoggle/toggle plus focusin/
+// mousedown/pointerdown/click) against the real shipped page rather than
+// guessed: a real mouse click on a previously-unfocused trigger fires, in
+// order, pointerdown -> mousedown -> focusin (activeElement becomes the
+// trigger BEFORE click) -> [focusin handler synchronously calls open(),
+// firing beforetoggle closed->open] -> pointerup -> mouseup -> click ->
+// [click handler reads the NOW-open state open()'s own focusin call just
+// produced and calls close(), firing beforetoggle open->closed]. One click
+// gesture, two synchronous toggles, netting CLOSED — click could never
+// leave the panel open on its own. (A prior symptom report described the
+// inverse net effect, open-and-stuck; either way the ROOT CAUSE measured
+// here is the same: click's own open/closed decision reads state that
+// focusin already mutated within the identical gesture, so click can never
+// reliably act as its own toggle for a mouse user.) Also measured:
+// `trigger.matches(":focus-visible")` at focusin time is `false` for the
+// mouse-driven case above and `true` for a real keyboard Tab into the
+// trigger — Chrome's own focus-visible heuristic already distinguishes
+// exactly the two cases that matter here. Fixed by gating focusin-open on
+// that check (below): a keyboard Tab still opens on focus (measured,
+// unaffected), a mouse click no longer opens via focusin at all, leaving
+// the click handler as the SOLE open/close authority for pointer users —
+// verified afterward with no focus race in play, click toggles correctly
+// in both directions.
+//
 // No Escape/outside-pointerdown light dismiss — same deliberate choice as
 // hover-card.js's own (hover/focus drive it, not outside clicks or Esc).
 import { on, emit } from "./gsxui.js";
@@ -173,7 +202,15 @@ on("pointerout", "[data-gsxui-navigation-menu-trigger]", (e, t) => {
   if (stillWithin(t, e.relatedTarget)) return;
   scheduleClose(t);
 });
-on("focusin", "[data-gsxui-navigation-menu-trigger]", (_e, t) => open(t));
+// FIX ROUND 3: gated on :focus-visible, not every focusin — see the
+// preceding file-header paragraph for the measured race this fixes. A
+// keyboard Tab lands with :focus-visible true (measured), so this path is
+// unaffected for keyboard users; a mouse click's own focusin lands with
+// :focus-visible false (measured), so the click handler below becomes the
+// sole open/close authority for pointer users instead of racing it.
+on("focusin", "[data-gsxui-navigation-menu-trigger]", (_e, t) => {
+  if (t.matches(":focus-visible")) open(t);
+});
 on("focusout", "[data-gsxui-navigation-menu-trigger]", (e, t) => {
   if (stillWithin(t, e.relatedTarget)) return;
   scheduleClose(t);

@@ -35,21 +35,30 @@ import (
 // itself is DROPPED, not kept as a no-op: the viewport={false} path this
 // port ships never renders it in upstream shadcn either.
 //
-// data-viewport="false" is stamped UNCONDITIONALLY (FIX ROUND 2 — a
+// data-viewport="false" is stamped by DEFAULT (FIX ROUND 2 — a
 // stripped-prefix version of this file previously computed
 // NavigationMenuContent's chrome tokens with the
 // group-data-[viewport=false]/navigation-menu: prefix removed, reasoning
 // that a gate which can never toggle is dead weight; reviewed and reverted:
-// stamping the real ancestor attribute keeps Content's class string
-// character-identical to upstream's own viewport=false rendering, and
-// keeps this root's own group/navigation-menu marker a live selector target
-// instead of an inert one).
+// stamping the real ancestor attribute keeps Content's chrome-gating
+// selector — the group-data-[viewport=false]/navigation-menu: structure
+// itself, not every token behind it (see NavigationMenuContent's own doc
+// comment) — verbatim against upstream, and keeps this root's own
+// group/navigation-menu marker a live selector target instead of an inert
+// one). Like every other server-authored attribute here, codegen wraps this
+// in the standard `if !attrs.Has("data-viewport")` hatch (FIX ROUND 3,
+// correcting an earlier "unconditionally" overstatement) — a caller passing
+// their own data-viewport attr overrides it same as any other attr, and
+// since Content's entire chrome block is gated on
+// group-data-[viewport=false]/navigation-menu:, a caller-supplied
+// data-viewport with any other value silently strips that chrome. Not
+// guarded against; callers overriding this attribute are on their own.
 
-//line navigation-menu.gsx:40:1
+//line navigation-menu.gsx:49:1
 func NavigationMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line navigation-menu.gsx:41:2
+//line navigation-menu.gsx:50:2
 		_gsxgw.S("<nav")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"navigation-menu\"")
@@ -66,24 +75,24 @@ func NavigationMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line navigation-menu.gsx:48:3
+//line navigation-menu.gsx:57:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</nav>")
 		return _gsxgw.Err()
 	})
 }
 
-//line navigation-menu.gsx:52:1
+//line navigation-menu.gsx:61:1
 // NavigationMenuList is the <ul> holding NavigationMenuItems (and,
 // optionally, a trailing NavigationMenuIndicator — ui/navigation-menu.js
 // positions it relative to this element). gap-0 is nova's own metric
 // (`.cn-navigation-menu-list`), replacing new-york-v4's own gap-1.
 
-//line navigation-menu.gsx:56:1
+//line navigation-menu.gsx:65:1
 func NavigationMenuList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line navigation-menu.gsx:57:2
+//line navigation-menu.gsx:66:2
 		_gsxgw.S("<ul")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"navigation-menu-list\"")
@@ -97,25 +106,25 @@ func NavigationMenuList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line navigation-menu.gsx:58:3
+//line navigation-menu.gsx:67:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</ul>")
 		return _gsxgw.Err()
 	})
 }
 
-//line navigation-menu.gsx:62:1
+//line navigation-menu.gsx:71:1
 // NavigationMenuItem is the <li> pairing one NavigationMenuTrigger with its
 // own NavigationMenuContent — data-gsxui-navigation-menu-item is the
 // proximity anchor ui/navigation-menu.js uses to resolve "this trigger's
 // own content" (closest("[data-gsxui-navigation-menu-item]")), the same
 // role DropdownMenu's own root plays for its single trigger/content pair.
 
-//line navigation-menu.gsx:67:1
+//line navigation-menu.gsx:76:1
 func NavigationMenuItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line navigation-menu.gsx:68:2
+//line navigation-menu.gsx:77:2
 		_gsxgw.S("<li")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"navigation-menu-item\"")
@@ -129,7 +138,7 @@ func NavigationMenuItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line navigation-menu.gsx:69:3
+//line navigation-menu.gsx:78:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</li>")
 		return _gsxgw.Err()
@@ -164,7 +173,7 @@ func NavigationMenuItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // explicitly says otherwise (as it does, narrowly, for bg-background
 // alone).
 //
-//line navigation-menu.gsx:73:1
+//line navigation-menu.gsx:82:1
 func NavigationMenuTriggerStyle() string {
 	return "group inline-flex h-9 w-max items-center justify-center rounded-lg px-2.5 py-1.5 text-sm font-medium transition-all outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-accent/50 data-[state=open]:text-accent-foreground data-[state=open]:hover:bg-accent data-[state=open]:focus:bg-accent"
 }
@@ -189,11 +198,11 @@ func NavigationMenuTriggerStyle() string {
 // source map's own provenance note and has no Radix data-state equivalent
 // to key off here.
 
-//line navigation-menu.gsx:123:1
+//line navigation-menu.gsx:132:1
 func NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line navigation-menu.gsx:124:2
+//line navigation-menu.gsx:133:2
 		_gsxgw.S("<button")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"navigation-menu-trigger\"")
@@ -216,18 +225,18 @@ func NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line navigation-menu.gsx:133:3
+//line navigation-menu.gsx:142:3
 		_gsxgw.Node(ctx, children)
-//line navigation-menu.gsx:134:3
+//line navigation-menu.gsx:143:3
 		_gsxgw.Text(string(" "))
-//line navigation-menu.gsx:135:3
+//line navigation-menu.gsx:144:3
 		_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.Attrs{{Key: "class", Value: "relative top-[1px] ml-1 size-3 transition duration-300 group-data-[state=open]:rotate-180"}}...))
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line navigation-menu.gsx:139:1
+//line navigation-menu.gsx:148:1
 // NavigationMenuContent is the panel a NavigationMenuTrigger opens — see
 // the file header's own GAP paragraph for why this is the shadcn
 // `viewport={false}` configuration: independently popover="manual",
@@ -240,12 +249,19 @@ func NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // rendered statically, the same hand-rolled-fixed-position stopgap as every
 // sibling popover in this codebase (see docs/jsx-parity.md ## dropdown
 // NOTE). The chrome block (border/bg/shadow/rounded) keeps new-york-v4's
-// own group-data-[viewport=false]/navigation-menu: prefix VERBATIM (FIX
-// ROUND 2 — see the file header's own note on NavigationMenu's
-// data-viewport="false" stamp): the ancestor attribute this selector
-// depends on is always present, so the class string is character-identical
-// to upstream's own viewport=false rendering, not a stripped-down
-// approximation of it.
+// own group-data-[viewport=false]/navigation-menu: GATING STRUCTURE
+// verbatim (FIX ROUND 2 — see the file header's own note on NavigationMenu's
+// default data-viewport="false" stamp): the selector prefix itself, and the
+// ancestor attribute it depends on, are both unchanged from upstream. The
+// TOKENS behind that prefix are NOT byte-identical, by design, and are
+// ledgered as ADAPTs of their own, not silently reproduced: rounded-lg
+// (nova) where upstream has rounded-md, p-1 (nova) where upstream's own
+// first block has p-2 pr-2.5, and no duration-200/300 at all (superseded by
+// the discrete-transition block's own duration-150, see below) — plus
+// w-full/md:w-auto dropped entirely from the first, unconditional block
+// (the CRITICAL fix below). "Verbatim" describes the GATE, not the whole
+// class string (FIX ROUND 3, correcting an earlier overstatement that
+// implied the latter).
 //
 // FIX ROUND 2, CRITICAL (mobile-width overflow, found and fixed): the FIRST
 // block's own w-full/md:w-auto pair is DROPPED — new-york-v4 is safe
@@ -285,11 +301,11 @@ func NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // border is kept, not swapped for nova's own ring-1 (standing house
 // exception); rounded-md -> rounded-lg is nova's own metric.
 
-//line navigation-menu.gsx:195:1
+//line navigation-menu.gsx:211:1
 func NavigationMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line navigation-menu.gsx:196:2
+//line navigation-menu.gsx:212:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"navigation-menu-content\"")
@@ -316,14 +332,14 @@ func NavigationMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line navigation-menu.gsx:214:3
+//line navigation-menu.gsx:230:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line navigation-menu.gsx:218:1
+//line navigation-menu.gsx:234:1
 // NavigationMenuLink is a single item inside a NavigationMenuContent (or,
 // styled with NavigationMenuTriggerStyle() instead, a plain top-level nav
 // link with no dropdown at all). active mirrors Radix's own data-active
@@ -344,11 +360,11 @@ func NavigationMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // on accent, not nova's own muted rewrite — same out-of-scope ruling as
 // NavigationMenuTriggerStyle's own doc comment.
 
-//line navigation-menu.gsx:237:1
+//line navigation-menu.gsx:253:1
 func NavigationMenuLink(active bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line navigation-menu.gsx:238:2
+//line navigation-menu.gsx:254:2
 		_gsxgw.S("<a")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"navigation-menu-link\"")
@@ -371,14 +387,14 @@ func NavigationMenuLink(active bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line navigation-menu.gsx:249:3
+//line navigation-menu.gsx:265:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</a>")
 		return _gsxgw.Err()
 	})
 }
 
-//line navigation-menu.gsx:253:1
+//line navigation-menu.gsx:269:1
 // NavigationMenuIndicator is the small rotated-square pointer tracking the
 // active trigger, positioned under NavigationMenuList's own last child (the
 // caller places it there, matching Radix's own composition) by
@@ -398,12 +414,20 @@ func NavigationMenuLink(active bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 // family's discrete-transition block: Indicator is not popover-attached (no
 // :popover-open state to key open: off), so the byte-identical block
 // NavigationMenuContent reuses does not apply here.
+//
+// pointer-events-none (FIX ROUND 3, not upstream's own class — added):
+// unlike Radix's own Indicator, which unmounts via Presence when hidden,
+// this port keeps Indicator permanently in the layout (data-state alone
+// toggles its opacity — see the ADAPT above), so once ui/navigation-menu.js
+// absolutizes it under the list there is a real, hit-testable strip sitting
+// just below the trigger bar even at opacity-0. Purely decorative in every
+// state, so it should never intercept a pointer event either way.
 
-//line navigation-menu.gsx:272:1
+//line navigation-menu.gsx:296:1
 func NavigationMenuIndicator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line navigation-menu.gsx:273:2
+//line navigation-menu.gsx:297:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"navigation-menu-indicator\"")
@@ -415,12 +439,12 @@ func NavigationMenuIndicator(attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" data-state=\"hidden\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden opacity-0 transition-opacity duration-200 data-[state=visible]:opacity-100"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pointer-events-none top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden opacity-0 transition-opacity duration-200 data-[state=visible]:opacity-100"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line navigation-menu.gsx:280:3
+//line navigation-menu.gsx:304:3
 		_gsxgw.S("<div class=\"relative top-[60%] h-2 w-2 rotate-45 rounded-tl-sm bg-border shadow-md\"></div></div>")
 		return _gsxgw.Err()
 	})

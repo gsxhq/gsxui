@@ -32,10 +32,15 @@ func TestNavigationMenuListIsAList(t *testing.T) {
 }
 
 func TestNavigationMenuRootPinned(t *testing.T) {
-	// FIX ROUND 2: data-viewport="false" is stamped unconditionally (a
-	// FIX ROUND 1 version stamped nothing at all) — this keeps
-	// NavigationMenuContent's own group-data-[viewport=false]/navigation-menu:
-	// chrome selectors byte-identical to upstream and live, not stripped.
+	// FIX ROUND 2: data-viewport="false" is stamped by default (a FIX ROUND 1
+	// version stamped nothing at all) — this keeps NavigationMenuContent's
+	// own group-data-[viewport=false]/navigation-menu: chrome GATE live
+	// (verbatim against upstream's own selector prefix; the tokens behind it
+	// are their own ledgered ADAPTs, not byte-identical — see
+	// ui/navigation-menu.gsx's own doc comments). Like every server-authored
+	// attribute here, a caller-supplied data-viewport overrides this default
+	// (codegen's standard attrs.Has hatch), which would silently strip
+	// Content's chrome since it's gated on this exact attribute.
 	got := render(t, ui.NavigationMenu(gsx.Raw("x"), nil))
 	want := `<nav data-slot="navigation-menu" data-gsxui-navigation-menu data-viewport="false" class="group/navigation-menu relative flex max-w-max flex-1 items-center justify-center">x</nav>`
 	if got != want {
@@ -106,8 +111,8 @@ func TestNavigationMenuTriggerStyleHelper(t *testing.T) {
 func TestNavigationMenuContentPinned(t *testing.T) {
 	// FIX ROUND 2: the chrome block's group-data-[viewport=false]/
 	// navigation-menu: prefix is back (NavigationMenu now stamps
-	// data-viewport="false" unconditionally, so the selector is always
-	// live — see TestNavigationMenuRootPinned), and p-1 replaces
+	// data-viewport="false" by default, so the selector is live absent a
+	// caller override — see TestNavigationMenuRootPinned), and p-1 replaces
 	// new-york-v4's own p-2 pr-2.5 (nova metric, previously omitted).
 	// w-full/md:w-auto are GONE — the CRITICAL mobile-overflow fix: a
 	// fixed-positioned element's containing block is the viewport, not its
@@ -196,8 +201,12 @@ func TestNavigationMenuLinkActive(t *testing.T) {
 }
 
 func TestNavigationMenuIndicatorPinned(t *testing.T) {
+	// FIX ROUND 3: pointer-events-none added — the indicator stays
+	// permanently in the layout (only opacity toggles), so once JS
+	// absolutizes it under the list it would otherwise be a real,
+	// hit-testable strip even while visually hidden at opacity-0.
 	got := render(t, ui.NavigationMenuIndicator(nil))
-	want := `<div data-slot="navigation-menu-indicator" data-gsxui-navigation-menu-indicator data-state="hidden" class="top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden opacity-0 transition-opacity duration-200 data-[state=visible]:opacity-100"><div class="relative top-[60%] h-2 w-2 rotate-45 rounded-tl-sm bg-border shadow-md"></div></div>`
+	want := `<div data-slot="navigation-menu-indicator" data-gsxui-navigation-menu-indicator data-state="hidden" class="pointer-events-none top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden opacity-0 transition-opacity duration-200 data-[state=visible]:opacity-100"><div class="relative top-[60%] h-2 w-2 rotate-45 rounded-tl-sm bg-border shadow-md"></div></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

@@ -28,15 +28,24 @@ import (
 // itself is DROPPED, not kept as a no-op: the viewport={false} path this
 // port ships never renders it in upstream shadcn either.
 //
-// data-viewport="false" is stamped UNCONDITIONALLY (FIX ROUND 2 — a
+// data-viewport="false" is stamped by DEFAULT (FIX ROUND 2 — a
 // stripped-prefix version of this file previously computed
 // NavigationMenuContent's chrome tokens with the
 // group-data-[viewport=false]/navigation-menu: prefix removed, reasoning
 // that a gate which can never toggle is dead weight; reviewed and reverted:
-// stamping the real ancestor attribute keeps Content's class string
-// character-identical to upstream's own viewport=false rendering, and
-// keeps this root's own group/navigation-menu marker a live selector target
-// instead of an inert one).
+// stamping the real ancestor attribute keeps Content's chrome-gating
+// selector — the group-data-[viewport=false]/navigation-menu: structure
+// itself, not every token behind it (see NavigationMenuContent's own doc
+// comment) — verbatim against upstream, and keeps this root's own
+// group/navigation-menu marker a live selector target instead of an inert
+// one). Like every other server-authored attribute here, codegen wraps this
+// in the standard `if !attrs.Has("data-viewport")` hatch (FIX ROUND 3,
+// correcting an earlier "unconditionally" overstatement) — a caller passing
+// their own data-viewport attr overrides it same as any other attr, and
+// since Content's entire chrome block is gated on
+// group-data-[viewport=false]/navigation-menu:, a caller-supplied
+// data-viewport with any other value silently strips that chrome. Not
+// guarded against; callers overriding this attribute are on their own.
 component NavigationMenu(children gsx.Node, attrs gsx.Attrs) {
 	<nav
 		data-slot="navigation-menu"
@@ -148,12 +157,19 @@ component NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 // rendered statically, the same hand-rolled-fixed-position stopgap as every
 // sibling popover in this codebase (see docs/jsx-parity.md ## dropdown
 // NOTE). The chrome block (border/bg/shadow/rounded) keeps new-york-v4's
-// own group-data-[viewport=false]/navigation-menu: prefix VERBATIM (FIX
-// ROUND 2 — see the file header's own note on NavigationMenu's
-// data-viewport="false" stamp): the ancestor attribute this selector
-// depends on is always present, so the class string is character-identical
-// to upstream's own viewport=false rendering, not a stripped-down
-// approximation of it.
+// own group-data-[viewport=false]/navigation-menu: GATING STRUCTURE
+// verbatim (FIX ROUND 2 — see the file header's own note on NavigationMenu's
+// default data-viewport="false" stamp): the selector prefix itself, and the
+// ancestor attribute it depends on, are both unchanged from upstream. The
+// TOKENS behind that prefix are NOT byte-identical, by design, and are
+// ledgered as ADAPTs of their own, not silently reproduced: rounded-lg
+// (nova) where upstream has rounded-md, p-1 (nova) where upstream's own
+// first block has p-2 pr-2.5, and no duration-200/300 at all (superseded by
+// the discrete-transition block's own duration-150, see below) — plus
+// w-full/md:w-auto dropped entirely from the first, unconditional block
+// (the CRITICAL fix below). "Verbatim" describes the GATE, not the whole
+// class string (FIX ROUND 3, correcting an earlier overstatement that
+// implied the latter).
 //
 // FIX ROUND 2, CRITICAL (mobile-width overflow, found and fixed): the FIRST
 // block's own w-full/md:w-auto pair is DROPPED — new-york-v4 is safe
@@ -269,12 +285,20 @@ component NavigationMenuLink(active bool, children gsx.Node, attrs gsx.Attrs) {
 // family's discrete-transition block: Indicator is not popover-attached (no
 // :popover-open state to key open: off), so the byte-identical block
 // NavigationMenuContent reuses does not apply here.
+//
+// pointer-events-none (FIX ROUND 3, not upstream's own class — added):
+// unlike Radix's own Indicator, which unmounts via Presence when hidden,
+// this port keeps Indicator permanently in the layout (data-state alone
+// toggles its opacity — see the ADAPT above), so once ui/navigation-menu.js
+// absolutizes it under the list there is a real, hit-testable strip sitting
+// just below the trigger bar even at opacity-0. Purely decorative in every
+// state, so it should never intercept a pointer event either way.
 component NavigationMenuIndicator(attrs gsx.Attrs) {
 	<div
 		data-slot="navigation-menu-indicator"
 		data-gsxui-navigation-menu-indicator
 		data-state="hidden"
-		class="top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden opacity-0 transition-opacity duration-200 data-[state=visible]:opacity-100"
+		class="pointer-events-none top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden opacity-0 transition-opacity duration-200 data-[state=visible]:opacity-100"
 		{ attrs... }
 	>
 		<div class="relative top-[60%] h-2 w-2 rotate-45 rounded-tl-sm bg-border shadow-md"></div>
