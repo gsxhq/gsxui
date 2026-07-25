@@ -199,7 +199,7 @@ func DropdownMenuSubContent(children gsx.Node, attrs gsx.Attrs) gsx.Node
    `gsxui:change` with `{ checked, value }` from a checkbox item, and
    `{ value }` on the radio group from a radio item.
 3. **`data-gsxui-*` hooks are required** on every part the JS binds to:
-   `data-gsxui-menu-checkbox-item`, `-radio-item`, `-sub-trigger`,
+   `data-gsxui-dropdown-checkbox-item`, `-radio-item`, `-sub-trigger`,
    `-sub-content`. JS may also match `data-slot`, but the hook must exist.
 4. **The parent content must not clip the submenu.** Check the shipped
    `DropdownMenuContent`'s overflow; if it clips, the fix is scoped to
@@ -218,7 +218,7 @@ func TestDropdownMenuCheckboxItemCheckedServerRendered(t *testing.T) {
 	for _, want := range []string{
 		`role="menuitemcheckbox"`,
 		`aria-checked="true"`,
-		`data-gsxui-menu-checkbox-item`,
+		`data-gsxui-dropdown-checkbox-item`,
 		`data-value="show-toolbar"`,
 	} {
 		if !strings.Contains(on, want) {
@@ -245,7 +245,7 @@ func TestDropdownMenuSubTriggerAria(t *testing.T) {
 	for _, want := range []string{
 		`aria-haspopup="menu"`,
 		`aria-expanded="false"`,
-		`data-gsxui-menu-sub-trigger`,
+		`data-gsxui-dropdown-sub-trigger`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("want %q\nin: %s", want, got)
@@ -257,7 +257,7 @@ func TestDropdownMenuSubContentIsANestedPopover(t *testing.T) {
 	// Spec §1: a non-nested popover opened programmatically light-dismisses
 	// its parent, so submenu content MUST be a popover nested in the parent.
 	got := render(t, ui.DropdownMenuSubContent(gsx.Raw("x"), nil))
-	for _, want := range []string{`popover="auto"`, `role="menu"`, `data-gsxui-menu-sub-content`} {
+	for _, want := range []string{`popover="auto"`, `role="menu"`, `data-gsxui-dropdown-sub-content`} {
 		if !strings.Contains(got, want) {
 			t.Errorf("want %q\nin: %s", want, got)
 		}
@@ -384,7 +384,7 @@ git commit -m "feat(dropdown): checkbox/radio items and nested submenus"
 - [ ] **Step 1: Write the failing tests**
 
 Mirror Task 1's five tests against the `ContextMenu*` parts, with
-`data-gsxui-menu-*` hooks and the same nesting assertion. Repeat the code —
+`data-gsxui-contextmenu-*` hooks and the same nesting assertion. Repeat the code —
 do not write "same as Task 1"; the implementer may be reading this alone.
 
 ```go
@@ -393,7 +393,7 @@ func TestContextMenuCheckboxItemCheckedServerRendered(t *testing.T) {
 	for _, want := range []string{
 		`role="menuitemcheckbox"`,
 		`aria-checked="true"`,
-		`data-gsxui-menu-checkbox-item`,
+		`data-gsxui-contextmenu-checkbox-item`,
 		`data-value="show-grid"`,
 	} {
 		if !strings.Contains(on, want) {
@@ -408,7 +408,7 @@ func TestContextMenuCheckboxItemCheckedServerRendered(t *testing.T) {
 
 func TestContextMenuSubContentIsANestedPopover(t *testing.T) {
 	got := render(t, ui.ContextMenuSubContent(gsx.Raw("x"), nil))
-	for _, want := range []string{`popover="auto"`, `role="menu"`, `data-gsxui-menu-sub-content`} {
+	for _, want := range []string{`popover="auto"`, `role="menu"`, `data-gsxui-contextmenu-sub-content`} {
 		if !strings.Contains(got, want) {
 			t.Errorf("want %q\nin: %s", want, got)
 		}
