@@ -6,20 +6,20 @@ import (
 	"github.com/gsxhq/gsx"
 )
 
-// calendarRootClass is the Calendar root slot ("w-fit", `## calendar` source
-// map §2) plus the outer DayPicker className new-york-v4 sets alongside it
-// ("group/calendar bg-background p-3 [--cell-size:--spacing(8)]
-// [[data-slot=card-content]_&]:bg-transparent
-// [[data-slot=popover-content]_&]:bg-transparent", source map §1) — gsxui
+// calendarRootClass is the Calendar `root` slot ("w-fit") plus the outer
+// DayPicker top-level `className` new-york-v4 sets alongside it — both
+// quoted byte-verbatim, as the two `root` rows, in source map §2 (the second
+// row and its explanatory note were added in the Task 1 review-fix pass;
+// §1 covers only the `--cell-size` token of that second string). gsxui
 // collapses both onto the single root <div> since there is no separate
 // DayPicker wrapper (`## calendar` element-structure decision). Retargeted to
 // nova density (source map §6, `.cn-calendar`): p-3→p-2,
 // --cell-size:--spacing(8)→--spacing(7). DROPPED, not carried: new-york-v4's
-// two `rtl:**:[.rdp-button\_next>svg]:rotate-180`-shaped selectors — they
-// target `.rdp-button_next`/`.rdp-button_previous`, and gsxui does not port
-// react-day-picker's bare `rdp-*` hook classes at all (source map §2, "not
-// resolved here" — resolved here as: don't port them), so the selectors would
-// never match anything in this port. Ledgered for Task 7.
+// two `rtl:**:[.rdp-button\_next>svg]:rotate-180`-shaped selectors (quoted in
+// full in source map §2's note) — they target `.rdp-button_next`/
+// `.rdp-button_previous`, and gsxui does not port react-day-picker's bare
+// `rdp-*` hook classes at all, so the selectors would never match anything
+// in this port. See source map §2's note for the full reasoning.
 const calendarRootClass = "w-fit group/calendar bg-background p-2 [--cell-size:--spacing(7)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent"
 
 // calendarGridClass is the `month_grid` slot, verbatim (source map §2).
@@ -109,6 +109,11 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 			return i
 		}
 	}
+	// Unreachable in practice: monthGrid always straddles the 1st of (year,
+	// month) with six full weeks either side, so the grid always contains
+	// every day of that month — at least 28 of the 42 cells satisfy
+	// !dayOutside. Kept only so the function has a defensive, well-typed
+	// return for the compiler; it is not a live code path.
 	return 0
 }
 

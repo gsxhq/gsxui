@@ -13,20 +13,20 @@ import (
 	_gsxio "io"
 )
 
-// calendarRootClass is the Calendar root slot ("w-fit", `## calendar` source
-// map §2) plus the outer DayPicker className new-york-v4 sets alongside it
-// ("group/calendar bg-background p-3 [--cell-size:--spacing(8)]
-// [[data-slot=card-content]_&]:bg-transparent
-// [[data-slot=popover-content]_&]:bg-transparent", source map §1) — gsxui
+// calendarRootClass is the Calendar `root` slot ("w-fit") plus the outer
+// DayPicker top-level `className` new-york-v4 sets alongside it — both
+// quoted byte-verbatim, as the two `root` rows, in source map §2 (the second
+// row and its explanatory note were added in the Task 1 review-fix pass;
+// §1 covers only the `--cell-size` token of that second string). gsxui
 // collapses both onto the single root <div> since there is no separate
 // DayPicker wrapper (`## calendar` element-structure decision). Retargeted to
 // nova density (source map §6, `.cn-calendar`): p-3→p-2,
 // --cell-size:--spacing(8)→--spacing(7). DROPPED, not carried: new-york-v4's
-// two `rtl:**:[.rdp-button\_next>svg]:rotate-180`-shaped selectors — they
-// target `.rdp-button_next`/`.rdp-button_previous`, and gsxui does not port
-// react-day-picker's bare `rdp-*` hook classes at all (source map §2, "not
-// resolved here" — resolved here as: don't port them), so the selectors would
-// never match anything in this port. Ledgered for Task 7.
+// two `rtl:**:[.rdp-button\_next>svg]:rotate-180`-shaped selectors (quoted in
+// full in source map §2's note) — they target `.rdp-button_next`/
+// `.rdp-button_previous`, and gsxui does not port react-day-picker's bare
+// `rdp-*` hook classes at all, so the selectors would never match anything
+// in this port. See source map §2's note for the full reasoning.
 //
 //line calendar.gsx:9:1
 const calendarRootClass = "w-fit group/calendar bg-background p-2 [--cell-size:--spacing(7)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent"
@@ -118,6 +118,11 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 			return i
 		}
 	}
+	// Unreachable in practice: monthGrid always straddles the 1st of (year,
+	// month) with six full weeks either side, so the grid always contains
+	// every day of that month — at least 28 of the 42 cells satisfy
+	// !dayOutside. Kept only so the function has a defensive, well-typed
+	// return for the compiler; it is not a live code path.
 	return 0
 }
 
@@ -145,7 +150,7 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 // time.Now().UTC()'s calendar date, computed once per render so a render
 // straddling local midnight is internally consistent.
 
-//line calendar.gsx:138:1
+//line calendar.gsx:143:1
 func Calendar(mode string,
 	month time.Time,
 	selected []time.Time,
@@ -165,14 +170,14 @@ func Calendar(mode string,
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 		var _gsxnum [32]byte
-//line calendar.gsx:156:2
+//line calendar.gsx:161:2
 		year := month.Year()
 		monthOfYear := month.Month()
 		grid := monthGrid(year, monthOfYear, weekStartsOn)
 		today := time.Now().UTC()
 		focusIdx := firstFocusableIndex(grid, year, monthOfYear)
 		multiselectable := mode == "range" || mode == "multiple"
-//line calendar.gsx:164:2
+//line calendar.gsx:169:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"calendar\"")
@@ -201,7 +206,7 @@ func Calendar(mode string,
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line calendar.gsx:173:3
+//line calendar.gsx:178:3
 		_gsxgw.S("<table")
 		_gsxgw.BoolAttr("data-gsxui-calendar-grid", true)
 		_gsxgw.S(" role=\"grid\"")
@@ -211,36 +216,36 @@ func Calendar(mode string,
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarGridClass))
 		_gsxgw.S("\">")
-//line calendar.gsx:181:4
+//line calendar.gsx:186:4
 		_gsxgw.S("<thead aria-hidden=\"true\">")
-//line calendar.gsx:182:5
+//line calendar.gsx:187:5
 		_gsxgw.S("<tr class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarWeekdaysClass))
 		_gsxgw.S("\">")
-//line calendar.gsx:183:6
+//line calendar.gsx:188:6
 		for i := 0; i < 7; i++ {
-//line calendar.gsx:184:7
+//line calendar.gsx:189:7
 			wd := time.Weekday((int(weekStartsOn) + i) % 7)
-//line calendar.gsx:185:7
+//line calendar.gsx:190:7
 			_gsxgw.S("<th scope=\"col\" class=\"")
 			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarWeekdayClass))
 			_gsxgw.S("\">")
-//line calendar.gsx:185:54
+//line calendar.gsx:190:54
 			_gsxgw.Text(string(wd.String()[:2]))
 			_gsxgw.S("</th>")
 		}
 		_gsxgw.S("</tr></thead>")
-//line calendar.gsx:189:4
+//line calendar.gsx:194:4
 		_gsxgw.S("<tbody>")
-//line calendar.gsx:190:5
+//line calendar.gsx:195:5
 		for week := 0; week < 6; week++ {
-//line calendar.gsx:191:6
+//line calendar.gsx:196:6
 			_gsxgw.S("<tr class=\"")
 			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarWeekClass))
 			_gsxgw.S("\">")
-//line calendar.gsx:192:7
+//line calendar.gsx:197:7
 			for day := 0; day < 7; day++ {
-//line calendar.gsx:193:8
+//line calendar.gsx:198:8
 				idx := week*7 + day
 				d := grid[idx]
 				outside := dayOutside(d, year, monthOfYear)
@@ -249,7 +254,7 @@ func Calendar(mode string,
 				if idx == focusIdx {
 					tabindex = "0"
 				}
-//line calendar.gsx:203:8
+//line calendar.gsx:208:8
 				_gsxgw.S("<td role=\"gridcell\" data-date=\"")
 				_gsxgw.AttrValue(string(d.Format("2006-01-02")))
 				_gsxgw.S("\"")
@@ -258,7 +263,7 @@ func Calendar(mode string,
 				_gsxgw.S(" aria-selected=\"false\" class=\"")
 				_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarDayClass))
 				_gsxgw.S("\">")
-//line calendar.gsx:211:9
+//line calendar.gsx:216:9
 				_gsxgw.S("<button type=\"button\"")
 				_gsxgw.BoolAttr("data-gsxui-calendar-day", true)
 				_gsxgw.S(" tabindex=\"")
@@ -268,7 +273,7 @@ func Calendar(mode string,
 				_gsxgw.S("\" class=\"")
 				_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(base), _gsxrt.Class(variantClass("ghost")), _gsxrt.Class(sizeClass("icon")), _gsxrt.Class(calendarDayButtonClass))
 				_gsxgw.S("\">")
-//line calendar.gsx:218:10
+//line calendar.gsx:223:10
 				_gsxgw.IntInto(_gsxnum[:], int64(d.Day()))
 				_gsxgw.S("</button></td>")
 			}

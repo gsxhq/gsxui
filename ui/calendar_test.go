@@ -1,6 +1,7 @@
 package ui_test
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 	"time"
@@ -167,5 +168,50 @@ func TestCalendarRootAttributes(t *testing.T) {
 		if !strings.Contains(got, want) {
 			t.Errorf("root missing %q", want)
 		}
+	}
+}
+
+// todayCellMarker is the exact substring a day cell renders when it carries
+// data-today: the bare attribute immediately followed by aria-selected, per
+// the cell's fixed attribute order (data-date, data-outside?, data-today?,
+// aria-selected). data-today also appears inside every cell's own (always-
+// present) data-today:* Tailwind-variant class tokens, so a bare
+// strings.Count(got, "data-today") would over-count; anchoring on the
+// aria-selected neighbor isolates the real attribute.
+func todayCellMarker(dateISO string) string {
+	return fmt.Sprintf(`data-date="%s" data-today aria-selected="false"`, dateISO)
+}
+
+// data-today is driven by time.Now().UTC(), not a fixed date (source map's
+// "today" modifier; Task 6 builds on this attribute) — asserting against a
+// literal date would freeze the moment this test was written and go stale
+// immediately after. Rendering the CURRENT UTC month and checking against
+// time.Now().UTC() keeps this test correct on every day it runs.
+func TestCalendarTodayIsMarkedExactlyOnce(t *testing.T) {
+	now := time.Now().UTC()
+	got := render(t, ui.Calendar("single", now,
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "", nil))
+
+	if n := strings.Count(got, "data-today aria-selected"); n != 1 {
+		t.Fatalf("got %d data-today cells in the current month's grid, want exactly 1", n)
+	}
+	want := todayCellMarker(now.Format("2006-01-02"))
+	if !strings.Contains(got, want) {
+		t.Errorf("today's own cell (%s) is not the one marked data-today\nin: %s", now.Format("2006-01-02"), got)
+	}
+}
+
+// A grid nowhere near today's date carries no data-today cell at all — the
+// half of the contract a same-month-only comparison bug (e.g. matching on
+// day-of-month while ignoring year/month) would not catch on its own.
+func TestCalendarTodayAbsentFarFromToday(t *testing.T) {
+	farMonth := time.Now().UTC().AddDate(5, 0, 0)
+	got := render(t, ui.Calendar("single", farMonth,
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "", nil))
+
+	if strings.Contains(got, "data-today aria-selected") {
+		t.Errorf("grid for %s wrongly contains a data-today cell\nin: %s", farMonth.Format("2006-01"), got)
 	}
 }

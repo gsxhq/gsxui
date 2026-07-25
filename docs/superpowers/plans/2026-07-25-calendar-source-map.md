@@ -77,7 +77,10 @@ Set once, on the `Root` element's own class string, in new-york-v4:
 [--cell-size:--spacing(8)]
 ```
 (`calendar.tsx` line 36, inside the `cn(...)` call building the `DayPicker`'s
-own top-level `className`.) Nova overrides the value (not the mechanism) via
+own top-level `className` — quoted in full, byte-verbatim, as the second
+`root` row in §2's table, added in the Task 1 review-fix pass; this paragraph
+only ever carried the one `--cell-size` token out of that string, not the
+whole thing). Nova overrides the value (not the mechanism) via
 `.cn-calendar` (§6): `[--cell-size:--spacing(7)]`, and additionally
 introduces a second custom property new-york-v4 does not have at all:
 `--cell-radius: var(--radius-md)`, used by `bases/base/ui/calendar.tsx`
@@ -105,6 +108,7 @@ read directly from source. Zero are `derived-not-read`.**
 | Slot | Class string |
 |---|---|
 | `root` | `w-fit` |
+| `root` (DayPicker top-level `className`, distinct — see note below) | `group/calendar bg-background p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent rtl:**:[.rdp-button\_next>svg]:rotate-180 rtl:**:[.rdp-button\_previous>svg]:rotate-180` |
 | `months` | `relative flex flex-col gap-4 md:flex-row` |
 | `month` | `flex w-full flex-col gap-4` |
 | `nav` | `absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1` |
@@ -129,6 +133,44 @@ read directly from source. Zero are `derived-not-read`.**
 | `outside` | `text-muted-foreground aria-selected:text-muted-foreground` |
 | `disabled` | `text-muted-foreground opacity-50` |
 | `hidden` | `invisible` |
+
+**The two `root` rows above are two different strings on two different props,
+byte-verified against `calendar.tsx` lines 33–40 (added in the Task 1
+review-fix pass — this distinction existed in §1's prose but was never
+quoted in full here, which is what this table now fixes).** `classNames.root`
+(first row, `w-fit`) is the `DayPicker`'s `classNames` prop, consumed the same
+way as every other slot in this table. Separately, `calendar.tsx`'s own
+`<DayPicker className={cn(...)}>` call (line 35, the component's *own*
+top-level `className` prop, a sibling of `classNames`, not a member of it)
+passes:
+```
+cn(
+  "group/calendar bg-background p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
+  String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
+  String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
+  className
+)
+```
+(`calendar.tsx` lines 35–40, byte-read). react-day-picker merges this
+top-level `className` onto the same physical root `<div>` that
+`classNames.root` also targets — there is exactly one root element in the
+rendered DOM, so gsxui's single root `<div>` carries both strings' tokens
+concatenated. §1's `[--cell-size:--spacing(8)]` citation is the one token
+from this second string that already had its own paragraph; the rest
+(`group/calendar`, `bg-background`, `p-3`, both `[[data-slot=…]_&]:` scoping
+selectors, and the two `rtl:**:[...]:rotate-180` selectors) had never been
+quoted anywhere in this document before this pass — this table row is now
+the citation for all of it.
+
+**gsxui does not port the two `rtl:**:[...]:rotate-180` selectors.** Both
+target `.rdp-button_next`/`.rdp-button_previous` — react-day-picker's own
+bare `rdp-*` hook classes (`getDefaultClassNames.js`, cited in the Inputs-read
+list above) — and this document's own §2 intro already flags that gsxui does
+not port any bare `rdp-*` token (open question there, resolved here): since
+`.rdp-button_next`/`.rdp-button_previous` never appear in gsxui's markup, an
+`rtl:**:[.rdp-button_next>svg]:rotate-180`-style selector can never match
+anything in this port and is dead on arrival. Drop both, keep everything
+else in the top-level-`className` row above.
 
 Every slot's *final* class value at runtime is
 `cn(<string above>, defaultClassNames[key], ...(caller classNames[key]))` —
