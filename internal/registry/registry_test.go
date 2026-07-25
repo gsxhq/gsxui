@@ -319,24 +319,22 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("hover-card deps = %v, want none", deps)
 	}
 
-	// context-menu.gsx has no icon import and no intra-package reference to
-	// another component — ContextMenu/ContextMenuTrigger/ContextMenuContent/
-	// ContextMenuItem/ContextMenuLabel/ContextMenuSeparator/
-	// ContextMenuShortcut are all plain elements, same shape as popover's own
-	// deps entry (the site example composes nothing from another ui.*
-	// component either).
+	// context-menu.gsx imports ui/icon (Tier 4 Batch B Task 2:
+	// ContextMenuCheckboxItem's Check, ContextMenuRadioItem's Circle,
+	// ContextMenuSubTrigger's ChevronRight) — same shape as dropdown.gsx's
+	// own equivalent icon usage, no intra-package ui.* reference otherwise.
 	deps, err = registry.Deps("context-menu")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(deps) != 0 {
-		t.Fatalf("context-menu deps = %v, want none", deps)
+	if !reflect.DeepEqual(deps, []string{"icon"}) {
+		t.Fatalf("context-menu deps = %v, want [icon]", deps)
 	}
 
 	// slider.gsx has no icon import and no intra-package reference to
 	// another component (the site example composes nothing from another
 	// ui.* component either) — same shape as toggle's/popover's/hover-
-	// card's/context-menu's own deps entries above.
+	// card's own deps entries above.
 	deps, err = registry.Deps("slider")
 	if err != nil {
 		t.Fatal(err)
@@ -348,8 +346,8 @@ func TestDeps(t *testing.T) {
 	// scroll-area.gsx has no icon import and no intra-package reference to
 	// another component (the site examples compose ui.Separator, but
 	// internal/registry only scans ui/*.gsx, not site/examples/) — same
-	// shape as toggle's/popover's/hover-card's/context-menu's/slider's own
-	// deps entries above.
+	// shape as toggle's/popover's/hover-card's/slider's own deps entries
+	// above.
 	deps, err = registry.Deps("scroll-area")
 	if err != nil {
 		t.Fatal(err)
@@ -642,19 +640,20 @@ func TestResolveTransitive(t *testing.T) {
 		t.Fatalf("got %v want %v", got, want)
 	}
 
-	// context-menu has no deps of its own — Resolve returns just itself,
-	// same shape as popover/hover-card's own entries above.
+	// context-menu resolves transitively through icon (Tier 4 Batch B Task 2
+	// — see this file's own TestDeps entry) — same shape as native-select's
+	// own entry above; "context-menu" < "icon" lexically, so it sorts first.
 	got, err = registry.Resolve([]string{"context-menu"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	want = []string{"context-menu"}
+	want = []string{"context-menu", "icon"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
 
 	// slider has no deps of its own — Resolve returns just itself, same
-	// shape as popover/hover-card/context-menu's own entries above.
+	// shape as popover/hover-card's own entries above.
 	got, err = registry.Resolve([]string{"slider"})
 	if err != nil {
 		t.Fatal(err)
@@ -665,8 +664,7 @@ func TestResolveTransitive(t *testing.T) {
 	}
 
 	// scroll-area has no deps of its own — Resolve returns just itself,
-	// same shape as popover/hover-card/context-menu/slider's own entries
-	// above.
+	// same shape as popover/hover-card/slider's own entries above.
 	got, err = registry.Resolve([]string{"scroll-area"})
 	if err != nil {
 		t.Fatal(err)

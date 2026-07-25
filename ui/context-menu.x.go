@@ -8,10 +8,11 @@ import (
 	_gsxrt "github.com/gsxhq/gsx"
 	_gsxstd "github.com/gsxhq/gsx/std"
 	_gsxcm "github.com/gsxhq/gsxui/merge"
+	"github.com/gsxhq/gsxui/ui/icon"
 	_gsxio "io"
 )
 
-//line context-menu.gsx:5:1
+//line context-menu.gsx:8:1
 // ContextMenu is the shadcn/ui ContextMenu on the native popover API: the
 // top layer replaces Radix's Portal, light dismiss and Esc are browser-
 // native. This is dropdown.gsx's own mechanism — reused verbatim for menu
@@ -22,12 +23,55 @@ import (
 // anchored to the trigger's own rect. Trigger and content are wired by
 // proximity — closest("[data-gsxui-contextmenu]") — no ids. Requires the
 // context-menu behavior module (ui/context-menu.js).
+//
+// SUBMENUS — POPOVER NESTING, NOT PORTALLING (ADAPT, load-bearing): same
+// mechanism, same measurement, as dropdown.gsx's own file header (source
+// map ## shared-items §5, "spec §1" below) — reused verbatim, not
+// re-derived, since both components sit on the identical native-popover
+// substrate:
+//
+//	child popover DOM-nested inside parent, opened with showPopover()      -> parent STAYS OPEN
+//	child not nested, opened via a real popovertarget invoker click        -> parent STAYS OPEN
+//	child not nested, opened programmatically with showPopover()           -> parent LIGHT-DISMISSES
+//
+// context-menu.js opens submenus on pointerenter and on ArrowRight — not
+// only on click — so every open is programmatic; DOM nesting is therefore
+// the only robust option here too. ContextMenuSubContent renders nested
+// inside its ContextMenuSub, which itself sits inside the parent
+// ContextMenuContent (pinned by
+// TestContextMenuSubNestsContentInsideParentContentPinned).
+//
+// SERVER-RENDERED CHECKED STATE (MECHANISM): same contract as dropdown.gsx's
+// own — ContextMenuCheckboxItem/ContextMenuRadioItem take a `checked bool`
+// that stamps both aria-checked and data-state="checked"|"unchecked" on
+// first paint. The check/circle indicator icon is always rendered (no
+// server-side conditional mount) and its visibility is purely CSS via the
+// ancestor-selector arbitrary variant `[[data-state=checked]_&]:flex`,
+// keyed off the item's own data-state — see dropdown.gsx's own doc comment
+// for the full rationale (same idiom, not re-derived here).
+//
+// THE ONE REAL SHARED-ITEMS DELTA (source map ## shared-items §2): every
+// other shared part below (Group, CheckboxItem, RadioGroup, RadioItem, Sub,
+// SubContent) is byte-identical, modulo the dropdown-menu/context-menu
+// prefix substitution, to its dropdown.gsx counterpart — ported
+// mechanically. SubTrigger alone has two real, deliberate-looking-but-
+// verbatim deltas in shadcn's own two sources: dropdown-menu's SubTrigger
+// class carries `gap-2`, context-menu's lacks it; dropdown-menu's trailing
+// ChevronRightIcon carries an explicit `size-4`, context-menu's does not.
+// nova's own style-nova.css harmonizes the gap on BOTH to `gap-1.5`
+// (nova wins on visual disagreement, the adjudicated house rule), so
+// ContextMenuSubTrigger below takes the gap. The missing `size-4` on the
+// icon is preserved as a no-op divergence from dropdown's own version — the
+// class's own `[&_svg:not([class*='size-'])]:size-4` descendant selector
+// already stamps size-4 onto it regardless, so there is no visual
+// difference to fix and no reason to deviate from context-menu's own
+// source here.
 
-//line context-menu.gsx:15:1
+//line context-menu.gsx:61:1
 func ContextMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line context-menu.gsx:16:2
+//line context-menu.gsx:62:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"context-menu\"")
@@ -41,14 +85,14 @@ func ContextMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line context-menu.gsx:16:85
+//line context-menu.gsx:62:85
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line context-menu.gsx:19:1
+//line context-menu.gsx:65:1
 // ContextMenuTrigger renders the drop-zone AREA a user right-clicks inside
 // — shadcn's own demo renders a dashed-border div, not a button (unlike
 // DropdownMenuTrigger, which IS the clickable control). context-menu.js
@@ -56,11 +100,11 @@ func ContextMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // via closest(), so any descendant right-click counts) rather than a click
 // on the element itself.
 
-//line context-menu.gsx:25:1
+//line context-menu.gsx:71:1
 func ContextMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line context-menu.gsx:26:2
+//line context-menu.gsx:72:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"context-menu-trigger\"")
@@ -72,14 +116,14 @@ func ContextMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line context-menu.gsx:26:84
+//line context-menu.gsx:72:84
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line context-menu.gsx:29:1
+//line context-menu.gsx:75:1
 // ContextMenuContent renders the popover. popover="auto" gives top layer,
 // light dismiss, and free Esc; data-state is server-rendered "closed" and
 // kept in sync by context-menu.js on the toggle event. Unlike
@@ -93,11 +137,11 @@ func ContextMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // live) — kept for future-proofing per dropdown's own precedent, see
 // docs/jsx-parity.md's ## context-menu ledger.
 
-//line context-menu.gsx:41:1
+//line context-menu.gsx:87:1
 func ContextMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line context-menu.gsx:42:2
+//line context-menu.gsx:88:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"context-menu-content\"")
@@ -130,14 +174,14 @@ func ContextMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line context-menu.gsx:63:3
+//line context-menu.gsx:109:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line context-menu.gsx:67:1
+//line context-menu.gsx:113:1
 // ContextMenuItem is the shadcn/ui ContextMenuItem, ported as a real menu
 // item on a <div role="menuitem">, identical shape to
 // DropdownMenuItem — context-menu.js's arrow-key roving focus walks these
@@ -145,11 +189,11 @@ func ContextMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // inset is dropped (see docs/jsx-parity.md), same call as dropdown's own —
 // the data-[inset]:pl-8 selector is removed with it.
 
-//line context-menu.gsx:73:1
+//line context-menu.gsx:119:1
 func ContextMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line context-menu.gsx:74:2
+//line context-menu.gsx:120:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"context-menu-item\"")
@@ -174,14 +218,223 @@ func ContextMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line context-menu.gsx:83:3
+//line context-menu.gsx:129:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line context-menu.gsx:87:1
+//line context-menu.gsx:133:1
+// ContextMenuGroup wraps a set of items for a11y grouping. shadcn's own
+// Group carries no class string at all in either source (source map ##
+// shared-items §1) — role="group" is added here, not in the .tsx (same
+// derived-not-read WAI-ARIA menu authoring practice as DropdownMenuGroup's
+// own doc comment). No data-gsxui-* hook: nothing in context-menu.js binds
+// to or scopes by this element — it's purely a11y markup, same call as
+// DropdownMenuGroup.
+
+//line context-menu.gsx:140:1
+func ContextMenuGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line context-menu.gsx:141:2
+		_gsxgw.S("<div")
+		if !attrs.Has("data-slot") {
+			_gsxgw.S(" data-slot=\"context-menu-group\"")
+		}
+		if !attrs.Has("role") {
+			_gsxgw.S(" role=\"group\"")
+		}
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line context-menu.gsx:141:64
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}
+
+//line context-menu.gsx:144:1
+// ContextMenuCheckboxItem is the shadcn/ui ContextMenuCheckboxItem. checked
+// is server-rendered (see the file header MECHANISM); value is the item's
+// own identity, stamped as data-value and echoed on context-menu.js's
+// gsxui:change event. Selecting a checkbox item does NOT close the menu —
+// same deliberate ADAPT as DropdownMenuCheckboxItem's own doc comment, not
+// a Radix default.
+//
+// Class string, nova metrics, and right-side indicator are byte-identical
+// to DropdownMenuCheckboxItem's own (source map ## shared-items §1: verbatim
+// modulo the component-name prefix) — see that component's own doc comment
+// for the full ADAPT rationale (nova's gap-1.5/rounded-md/py-1-pr-8-pl-1.5
+// over new-york-v4's gap-2/rounded-sm/py-1.5-pr-2-pl-8, right-side indicator
+// following ui/select.gsx's SelectItem precedent), not re-derived here.
+
+//line context-menu.gsx:157:1
+func ContextMenuCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line context-menu.gsx:158:2
+		_gsxgw.S("<div")
+		if !attrs.Has("data-slot") {
+			_gsxgw.S(" data-slot=\"context-menu-checkbox-item\"")
+		}
+		if !attrs.Has("data-gsxui-menu-checkbox-item") {
+			_gsxgw.BoolAttr("data-gsxui-menu-checkbox-item", true)
+		}
+		if !attrs.Has("role") {
+			_gsxgw.S(" role=\"menuitemcheckbox\"")
+		}
+		if !attrs.Has("data-value") {
+			_gsxgw.S(" data-value=\"")
+			_gsxgw.AttrValue(string(value))
+			_gsxgw.S("\"")
+		}
+		if checked {
+			if !attrs.Has("aria-checked") {
+				_gsxgw.S(" aria-checked=\"true\"")
+			}
+			if !attrs.Has("data-state") {
+				_gsxgw.S(" data-state=\"checked\"")
+			}
+		} else {
+			if !attrs.Has("aria-checked") {
+				_gsxgw.S(" aria-checked=\"false\"")
+			}
+			if !attrs.Has("data-state") {
+				_gsxgw.S(" data-state=\"unchecked\"")
+			}
+		}
+		if !attrs.Has("tabindex") {
+			_gsxgw.S(" tabindex=\"-1\"")
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line context-menu.gsx:174:3
+		_gsxgw.S("<span class=\"pointer-events-none absolute right-2 hidden size-4 items-center justify-center [[data-state=checked]_&amp;]:flex\">")
+//line context-menu.gsx:175:4
+		_gsxgw.Node(ctx, icon.Check(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
+		_gsxgw.S("</span>")
+//line context-menu.gsx:177:3
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}
+
+//line context-menu.gsx:181:1
+// ContextMenuRadioGroup wraps a set of ContextMenuRadioItems. value is the
+// server-rendered current value, stamped as data-value on the root — same
+// server-rendered-checked contract as CheckboxItem, kept in sync by
+// context-menu.js on selection and echoed on the group's own gsxui:change
+// event. data-gsxui-menu-radio-group is the proximity anchor context-menu.js
+// uses to scope "clear every OTHER item in this group" to this group alone.
+
+//line context-menu.gsx:187:1
+func ContextMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line context-menu.gsx:188:2
+		_gsxgw.S("<div")
+		if !attrs.Has("data-slot") {
+			_gsxgw.S(" data-slot=\"context-menu-radio-group\"")
+		}
+		if !attrs.Has("data-gsxui-menu-radio-group") {
+			_gsxgw.BoolAttr("data-gsxui-menu-radio-group", true)
+		}
+		if !attrs.Has("role") {
+			_gsxgw.S(" role=\"group\"")
+		}
+		if !attrs.Has("data-value") {
+			_gsxgw.S(" data-value=\"")
+			_gsxgw.AttrValue(string(value))
+			_gsxgw.S("\"")
+		}
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line context-menu.gsx:189:3
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}
+
+//line context-menu.gsx:193:1
+// ContextMenuRadioItem is the shadcn/ui ContextMenuRadioItem — same shape/
+// class as CheckboxItem (source map ## shared-items §1: byte-identical base
+// style, own finding, true in both files), swapping the check indicator for
+// a filled dot. checked reflects whether THIS item's value equals its
+// ContextMenuRadioGroup's current value — the caller computes that
+// comparison (gsx has no context to do it implicitly). Selecting a radio
+// item DOES close the menu, same as a plain Item (only CheckboxItem stays
+// open). Nova metrics + right-side indicator: same ADAPT as
+// ContextMenuCheckboxItem's own doc comment, not repeated here.
+
+//line context-menu.gsx:202:1
+func ContextMenuRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line context-menu.gsx:203:2
+		_gsxgw.S("<div")
+		if !attrs.Has("data-slot") {
+			_gsxgw.S(" data-slot=\"context-menu-radio-item\"")
+		}
+		if !attrs.Has("data-gsxui-menu-radio-item") {
+			_gsxgw.BoolAttr("data-gsxui-menu-radio-item", true)
+		}
+		if !attrs.Has("role") {
+			_gsxgw.S(" role=\"menuitemradio\"")
+		}
+		if !attrs.Has("data-value") {
+			_gsxgw.S(" data-value=\"")
+			_gsxgw.AttrValue(string(value))
+			_gsxgw.S("\"")
+		}
+		if checked {
+			if !attrs.Has("aria-checked") {
+				_gsxgw.S(" aria-checked=\"true\"")
+			}
+			if !attrs.Has("data-state") {
+				_gsxgw.S(" data-state=\"checked\"")
+			}
+		} else {
+			if !attrs.Has("aria-checked") {
+				_gsxgw.S(" aria-checked=\"false\"")
+			}
+			if !attrs.Has("data-state") {
+				_gsxgw.S(" data-state=\"unchecked\"")
+			}
+		}
+		if !attrs.Has("tabindex") {
+			_gsxgw.S(" tabindex=\"-1\"")
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line context-menu.gsx:219:3
+		_gsxgw.S("<span class=\"pointer-events-none absolute right-2 hidden size-4 items-center justify-center [[data-state=checked]_&amp;]:flex\">")
+//line context-menu.gsx:220:4
+		_gsxgw.Node(ctx, icon.Circle(_gsxrt.Attrs{{Key: "class", Value: "size-2 fill-current"}}...))
+		_gsxgw.S("</span>")
+//line context-menu.gsx:222:3
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}
+
+//line context-menu.gsx:226:1
 // ContextMenuLabel's inset prop is dropped along with ContextMenuItem's
 // (see docs/jsx-parity.md) — the data-[inset]:pl-8 selector is removed.
 // Unlike DropdownMenuLabel, shadcn's own context-menu.tsx class carries
@@ -189,11 +442,11 @@ func ContextMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 // the shadcn source, not a copy error (see docs/jsx-parity.md ##
 // context-menu).
 
-//line context-menu.gsx:93:1
+//line context-menu.gsx:232:1
 func ContextMenuLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line context-menu.gsx:94:2
+//line context-menu.gsx:233:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"context-menu-label\"")
@@ -204,18 +457,18 @@ func ContextMenuLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line context-menu.gsx:94:107
+//line context-menu.gsx:233:107
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line context-menu.gsx:97:1
+//line context-menu.gsx:236:1
 func ContextMenuSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line context-menu.gsx:98:2
+//line context-menu.gsx:237:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"context-menu-separator\"")
@@ -233,11 +486,11 @@ func ContextMenuSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line context-menu.gsx:101:1
+//line context-menu.gsx:240:1
 func ContextMenuShortcut(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line context-menu.gsx:102:2
+//line context-menu.gsx:241:2
 		_gsxgw.S("<span")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"context-menu-shortcut\"")
@@ -248,9 +501,156 @@ func ContextMenuShortcut(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line context-menu.gsx:103:3
+//line context-menu.gsx:242:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</span>")
+		return _gsxgw.Err()
+	})
+}
+
+//line context-menu.gsx:246:1
+// ContextMenuSub is the non-rendering submenu root — layout-neutral
+// (class="contents", same idiom as ContextMenu's own root and
+// DropdownMenuSub) so its SubTrigger/SubContent children sit inline in the
+// parent content's normal item flow. data-gsxui-menu-sub is the proximity
+// anchor context-menu.js uses to pair a SubTrigger with its own SubContent
+// and to scope the pointer-leave grace-period boundary check to "the whole
+// sub" — same shape as DropdownMenuSub's own doc comment.
+
+//line context-menu.gsx:253:1
+func ContextMenuSub(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line context-menu.gsx:254:2
+		_gsxgw.S("<div")
+		if !attrs.Has("data-slot") {
+			_gsxgw.S(" data-slot=\"context-menu-sub\"")
+		}
+		if !attrs.Has("data-gsxui-menu-sub") {
+			_gsxgw.BoolAttr("data-gsxui-menu-sub", true)
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("contents"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line context-menu.gsx:254:86
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}
+
+//line context-menu.gsx:257:1
+// ContextMenuSubTrigger opens/closes its sibling ContextMenuSubContent
+// (context-menu.js: pointerenter, ArrowRight, click). aria-haspopup/
+// aria-expanded are server-rendered closed (derived-not-read ARIA anatomy,
+// source map ## shared-items §3); context-menu.js keeps aria-expanded and
+// data-state in step on every open/close, stamping data-state="open" BEFORE
+// showPopover() (same flash-avoidance rule as ContextMenuContent's own
+// opener). ADAPT: the data-[inset]:pl-8 token is dropped, same call as
+// ContextMenuItem/ContextMenuLabel's own ADAPT — gsxui's context-menu scope
+// has no inset prop anywhere in this file. ADAPT (nova metrics + the one
+// real shared-items delta): gap-1.5/rounded-md/px-1.5-py-1 — see the file
+// header's "THE ONE REAL SHARED-ITEMS DELTA" paragraph for the gap-2->
+// gap-1.5 harmonization and the deliberately-preserved missing icon size-4.
+// data-[state=open]: kept, not nova's data-open: (standing house exception).
+
+//line context-menu.gsx:270:1
+func ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line context-menu.gsx:271:2
+		_gsxgw.S("<div")
+		if !attrs.Has("data-slot") {
+			_gsxgw.S(" data-slot=\"context-menu-sub-trigger\"")
+		}
+		if !attrs.Has("data-gsxui-menu-sub-trigger") {
+			_gsxgw.BoolAttr("data-gsxui-menu-sub-trigger", true)
+		}
+		if !attrs.Has("role") {
+			_gsxgw.S(" role=\"menuitem\"")
+		}
+		if !attrs.Has("aria-haspopup") {
+			_gsxgw.S(" aria-haspopup=\"menu\"")
+		}
+		if !attrs.Has("aria-expanded") {
+			_gsxgw.S(" aria-expanded=\"false\"")
+		}
+		if !attrs.Has("data-state") {
+			_gsxgw.S(" data-state=\"closed\"")
+		}
+		if !attrs.Has("tabindex") {
+			_gsxgw.S(" tabindex=\"-1\"")
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line context-menu.gsx:282:3
+		_gsxgw.Node(ctx, children)
+//line context-menu.gsx:283:3
+		_gsxgw.Node(ctx, icon.ChevronRight(_gsxrt.Attrs{{Key: "class", Value: "ml-auto"}}...))
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}
+
+//line context-menu.gsx:287:1
+// ContextMenuSubContent is the submenu popover — see the file header's
+// SUBMENUS comment for why it must render DOM-nested (not portalled) inside
+// its ContextMenuSub. Class string is byte-identical, modulo the
+// dropdown-menu/context-menu CSS-var-name prefix in
+// origin-(--radix-*-content-transform-origin) (source map ## shared-items
+// §1), to DropdownMenuSubContent's own — same ADAPT list applies verbatim,
+// not repeated here: origin-top-left (no Radix runtime CSS var),
+// data-side="right" server-rendered statically (the SubTrigger, unlike the
+// cursor-positioned top-level ContextMenuContent, IS a fixed anchor —
+// context-menu.js always opens its submenus to the right of their
+// trigger), the discrete-transition enter/exit block replacing the six
+// data-[state=…]:animate-*/fade/zoom tokens, and nova's min-w-[96px]/
+// rounded-lg metrics (border kept, not nova's ring-1 — standing house
+// exception).
+
+//line context-menu.gsx:301:1
+func ContextMenuSubContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line context-menu.gsx:302:2
+		_gsxgw.S("<div")
+		if !attrs.Has("data-slot") {
+			_gsxgw.S(" data-slot=\"context-menu-sub-content\"")
+		}
+		if !attrs.Has("data-gsxui-menu-sub-content") {
+			_gsxgw.BoolAttr("data-gsxui-menu-sub-content", true)
+		}
+		if !attrs.Has("popover") {
+			_gsxgw.S(" popover=\"auto\"")
+		}
+		if !attrs.Has("role") {
+			_gsxgw.S(" role=\"menu\"")
+		}
+		if !attrs.Has("tabindex") {
+			_gsxgw.S(" tabindex=\"-1\"")
+		}
+		if !attrs.Has("data-state") {
+			_gsxgw.S(" data-state=\"closed\"")
+		}
+		if !attrs.Has("data-side") {
+			_gsxgw.S(" data-side=\"right\"")
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("z-50 min-w-[96px] origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg"), _gsxrt.Class("opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95"), _gsxrt.Class("data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line context-menu.gsx:317:3
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }

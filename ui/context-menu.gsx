@@ -1,6 +1,9 @@
 package ui
 
-import "github.com/gsxhq/gsx"
+import (
+	"github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/ui/icon"
+)
 
 // ContextMenu is the shadcn/ui ContextMenu on the native popover API: the
 // top layer replaces Radix's Portal, light dismiss and Esc are browser-
@@ -12,6 +15,49 @@ import "github.com/gsxhq/gsx"
 // anchored to the trigger's own rect. Trigger and content are wired by
 // proximity — closest("[data-gsxui-contextmenu]") — no ids. Requires the
 // context-menu behavior module (ui/context-menu.js).
+//
+// SUBMENUS — POPOVER NESTING, NOT PORTALLING (ADAPT, load-bearing): same
+// mechanism, same measurement, as dropdown.gsx's own file header (source
+// map ## shared-items §5, "spec §1" below) — reused verbatim, not
+// re-derived, since both components sit on the identical native-popover
+// substrate:
+//
+//	child popover DOM-nested inside parent, opened with showPopover()      -> parent STAYS OPEN
+//	child not nested, opened via a real popovertarget invoker click        -> parent STAYS OPEN
+//	child not nested, opened programmatically with showPopover()           -> parent LIGHT-DISMISSES
+//
+// context-menu.js opens submenus on pointerenter and on ArrowRight — not
+// only on click — so every open is programmatic; DOM nesting is therefore
+// the only robust option here too. ContextMenuSubContent renders nested
+// inside its ContextMenuSub, which itself sits inside the parent
+// ContextMenuContent (pinned by
+// TestContextMenuSubNestsContentInsideParentContentPinned).
+//
+// SERVER-RENDERED CHECKED STATE (MECHANISM): same contract as dropdown.gsx's
+// own — ContextMenuCheckboxItem/ContextMenuRadioItem take a `checked bool`
+// that stamps both aria-checked and data-state="checked"|"unchecked" on
+// first paint. The check/circle indicator icon is always rendered (no
+// server-side conditional mount) and its visibility is purely CSS via the
+// ancestor-selector arbitrary variant `[[data-state=checked]_&]:flex`,
+// keyed off the item's own data-state — see dropdown.gsx's own doc comment
+// for the full rationale (same idiom, not re-derived here).
+//
+// THE ONE REAL SHARED-ITEMS DELTA (source map ## shared-items §2): every
+// other shared part below (Group, CheckboxItem, RadioGroup, RadioItem, Sub,
+// SubContent) is byte-identical, modulo the dropdown-menu/context-menu
+// prefix substitution, to its dropdown.gsx counterpart — ported
+// mechanically. SubTrigger alone has two real, deliberate-looking-but-
+// verbatim deltas in shadcn's own two sources: dropdown-menu's SubTrigger
+// class carries `gap-2`, context-menu's lacks it; dropdown-menu's trailing
+// ChevronRightIcon carries an explicit `size-4`, context-menu's does not.
+// nova's own style-nova.css harmonizes the gap on BOTH to `gap-1.5`
+// (nova wins on visual disagreement, the adjudicated house rule), so
+// ContextMenuSubTrigger below takes the gap. The missing `size-4` on the
+// icon is preserved as a no-op divergence from dropdown's own version — the
+// class's own `[&_svg:not([class*='size-'])]:size-4` descendant selector
+// already stamps size-4 onto it regardless, so there is no visual
+// difference to fix and no reason to deviate from context-menu's own
+// source here.
 component ContextMenu(children gsx.Node, attrs gsx.Attrs) {
 	<div data-slot="context-menu" data-gsxui-contextmenu class="contents" { attrs... }>{ children }</div>
 }
@@ -84,6 +130,99 @@ component ContextMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 	</div>
 }
 
+// ContextMenuGroup wraps a set of items for a11y grouping. shadcn's own
+// Group carries no class string at all in either source (source map ##
+// shared-items §1) — role="group" is added here, not in the .tsx (same
+// derived-not-read WAI-ARIA menu authoring practice as DropdownMenuGroup's
+// own doc comment). No data-gsxui-* hook: nothing in context-menu.js binds
+// to or scopes by this element — it's purely a11y markup, same call as
+// DropdownMenuGroup.
+component ContextMenuGroup(children gsx.Node, attrs gsx.Attrs) {
+	<div data-slot="context-menu-group" role="group" { attrs... }>{ children }</div>
+}
+
+// ContextMenuCheckboxItem is the shadcn/ui ContextMenuCheckboxItem. checked
+// is server-rendered (see the file header MECHANISM); value is the item's
+// own identity, stamped as data-value and echoed on context-menu.js's
+// gsxui:change event. Selecting a checkbox item does NOT close the menu —
+// same deliberate ADAPT as DropdownMenuCheckboxItem's own doc comment, not
+// a Radix default.
+//
+// Class string, nova metrics, and right-side indicator are byte-identical
+// to DropdownMenuCheckboxItem's own (source map ## shared-items §1: verbatim
+// modulo the component-name prefix) — see that component's own doc comment
+// for the full ADAPT rationale (nova's gap-1.5/rounded-md/py-1-pr-8-pl-1.5
+// over new-york-v4's gap-2/rounded-sm/py-1.5-pr-2-pl-8, right-side indicator
+// following ui/select.gsx's SelectItem precedent), not re-derived here.
+component ContextMenuCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
+	<div
+		data-slot="context-menu-checkbox-item"
+		data-gsxui-menu-checkbox-item
+		role="menuitemcheckbox"
+		data-value={value}
+		{ if checked {
+			aria-checked="true"
+			data-state="checked"
+		} else {
+			aria-checked="false"
+			data-state="unchecked"
+		} }
+		tabindex="-1"
+		class="relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+		{ attrs... }
+	>
+		<span class="pointer-events-none absolute right-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex">
+			<icon.Check class="size-4"/>
+		</span>
+		{ children }
+	</div>
+}
+
+// ContextMenuRadioGroup wraps a set of ContextMenuRadioItems. value is the
+// server-rendered current value, stamped as data-value on the root — same
+// server-rendered-checked contract as CheckboxItem, kept in sync by
+// context-menu.js on selection and echoed on the group's own gsxui:change
+// event. data-gsxui-menu-radio-group is the proximity anchor context-menu.js
+// uses to scope "clear every OTHER item in this group" to this group alone.
+component ContextMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) {
+	<div data-slot="context-menu-radio-group" data-gsxui-menu-radio-group role="group" data-value={value} { attrs... }>
+		{ children }
+	</div>
+}
+
+// ContextMenuRadioItem is the shadcn/ui ContextMenuRadioItem — same shape/
+// class as CheckboxItem (source map ## shared-items §1: byte-identical base
+// style, own finding, true in both files), swapping the check indicator for
+// a filled dot. checked reflects whether THIS item's value equals its
+// ContextMenuRadioGroup's current value — the caller computes that
+// comparison (gsx has no context to do it implicitly). Selecting a radio
+// item DOES close the menu, same as a plain Item (only CheckboxItem stays
+// open). Nova metrics + right-side indicator: same ADAPT as
+// ContextMenuCheckboxItem's own doc comment, not repeated here.
+component ContextMenuRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
+	<div
+		data-slot="context-menu-radio-item"
+		data-gsxui-menu-radio-item
+		role="menuitemradio"
+		data-value={value}
+		{ if checked {
+			aria-checked="true"
+			data-state="checked"
+		} else {
+			aria-checked="false"
+			data-state="unchecked"
+		} }
+		tabindex="-1"
+		class="relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+		{ attrs... }
+	>
+		<span class="pointer-events-none absolute right-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex">
+			<icon.Circle class="size-2 fill-current"/>
+		</span>
+		{ children }
+	</div>
+}
+
 // ContextMenuLabel's inset prop is dropped along with ContextMenuItem's
 // (see docs/jsx-parity.md) — the data-[inset]:pl-8 selector is removed.
 // Unlike DropdownMenuLabel, shadcn's own context-menu.tsx class carries
@@ -102,4 +241,79 @@ component ContextMenuShortcut(children gsx.Node, attrs gsx.Attrs) {
 	<span data-slot="context-menu-shortcut" class="ml-auto text-xs tracking-widest text-muted-foreground" { attrs... }>
 		{ children }
 	</span>
+}
+
+// ContextMenuSub is the non-rendering submenu root — layout-neutral
+// (class="contents", same idiom as ContextMenu's own root and
+// DropdownMenuSub) so its SubTrigger/SubContent children sit inline in the
+// parent content's normal item flow. data-gsxui-menu-sub is the proximity
+// anchor context-menu.js uses to pair a SubTrigger with its own SubContent
+// and to scope the pointer-leave grace-period boundary check to "the whole
+// sub" — same shape as DropdownMenuSub's own doc comment.
+component ContextMenuSub(children gsx.Node, attrs gsx.Attrs) {
+	<div data-slot="context-menu-sub" data-gsxui-menu-sub class="contents" { attrs... }>{ children }</div>
+}
+
+// ContextMenuSubTrigger opens/closes its sibling ContextMenuSubContent
+// (context-menu.js: pointerenter, ArrowRight, click). aria-haspopup/
+// aria-expanded are server-rendered closed (derived-not-read ARIA anatomy,
+// source map ## shared-items §3); context-menu.js keeps aria-expanded and
+// data-state in step on every open/close, stamping data-state="open" BEFORE
+// showPopover() (same flash-avoidance rule as ContextMenuContent's own
+// opener). ADAPT: the data-[inset]:pl-8 token is dropped, same call as
+// ContextMenuItem/ContextMenuLabel's own ADAPT — gsxui's context-menu scope
+// has no inset prop anywhere in this file. ADAPT (nova metrics + the one
+// real shared-items delta): gap-1.5/rounded-md/px-1.5-py-1 — see the file
+// header's "THE ONE REAL SHARED-ITEMS DELTA" paragraph for the gap-2->
+// gap-1.5 harmonization and the deliberately-preserved missing icon size-4.
+// data-[state=open]: kept, not nova's data-open: (standing house exception).
+component ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
+	<div
+		data-slot="context-menu-sub-trigger"
+		data-gsxui-menu-sub-trigger
+		role="menuitem"
+		aria-haspopup="menu"
+		aria-expanded="false"
+		data-state="closed"
+		tabindex="-1"
+		class="flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
+		{ attrs... }
+	>
+		{ children }
+		<icon.ChevronRight class="ml-auto"/>
+	</div>
+}
+
+// ContextMenuSubContent is the submenu popover — see the file header's
+// SUBMENUS comment for why it must render DOM-nested (not portalled) inside
+// its ContextMenuSub. Class string is byte-identical, modulo the
+// dropdown-menu/context-menu CSS-var-name prefix in
+// origin-(--radix-*-content-transform-origin) (source map ## shared-items
+// §1), to DropdownMenuSubContent's own — same ADAPT list applies verbatim,
+// not repeated here: origin-top-left (no Radix runtime CSS var),
+// data-side="right" server-rendered statically (the SubTrigger, unlike the
+// cursor-positioned top-level ContextMenuContent, IS a fixed anchor —
+// context-menu.js always opens its submenus to the right of their
+// trigger), the discrete-transition enter/exit block replacing the six
+// data-[state=…]:animate-*/fade/zoom tokens, and nova's min-w-[96px]/
+// rounded-lg metrics (border kept, not nova's ring-1 — standing house
+// exception).
+component ContextMenuSubContent(children gsx.Node, attrs gsx.Attrs) {
+	<div
+		data-slot="context-menu-sub-content"
+		data-gsxui-menu-sub-content
+		popover="auto"
+		role="menu"
+		tabindex="-1"
+		data-state="closed"
+		data-side="right"
+		class={
+			"z-50 min-w-[96px] origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg",
+			"opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95",
+			"data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2"
+		}
+		{ attrs... }
+	>
+		{ children }
+	</div>
 }

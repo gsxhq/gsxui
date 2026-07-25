@@ -9,4 +9,10 @@ func init() {
 		Node:       examplecontextmenu.Basic(),
 		SourcePath: "contextmenu/basic.gsx",
 	})
+	Register("context-menu", Example{
+		Name:       "full",
+		Title:      "Checkboxes, radios, and a submenu",
+		Node:       examplecontextmenu.Full(),
+		SourcePath: "contextmenu/full.gsx",
+	})
 }
