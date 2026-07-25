@@ -1,8 +1,8 @@
 # Deploys the showcase site (ui.gsxhq.dev) on every push to main: run the
-# Go test suite, then `flyctl deploy` with Fly's remote builder (the Docker
-# build itself — vite build + go build — is the compile gate; see
-# site/Dockerfile). Auth is an app-scoped deploy token in the FLY_API_TOKEN
-# repo secret (`flyctl tokens create deploy`).
+# Go test suite and the Playwright suite, then `flyctl deploy` with Fly's
+# remote builder (the Docker build itself — vite build + go build — is the
+# compile gate; see site/Dockerfile). Auth is an app-scoped deploy token in
+# the FLY_API_TOKEN repo secret (`flyctl tokens create deploy`).
 name: fly-deploy
 
 on:
@@ -17,7 +17,28 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # Browser binaries live outside node_modules, so npm's cache doesn't
+      # cover them. Key on the lockfile: a Playwright version bump invalidates.
+      - uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
       - run: go test ./...
+      - run: make test-js
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: jstest/playwright-report/
+          retention-days: 7
 
   deploy:
     needs: test

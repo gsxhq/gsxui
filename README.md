@@ -30,8 +30,14 @@ set. The showcase site and theme editor are live at
   component is imported the same way: `import "github.com/gsxhq/gsxui/ui"`,
   used as `ui.Button`, `ui.CardHeader`, `ui.DialogContent`, etc. — see
   `docs/jsx-parity.md`'s packaging note for why.
-- `make test` regenerates and tests everything; `make check` adds JS syntax
-  and gofmt checks.
+- `make test` regenerates and runs the Go suite; `make test-js` runs the
+  browser suite (Playwright against real Chromium — `npx playwright install
+  chromium` once per machine); `make check` runs both plus JS syntax and
+  gofmt checks. CI gates deploys on both suites.
+- Component behavior (`ui/*.js`) is tested in `jstest/`: a Go harness serves
+  one example per page with the real modules loaded as native ES modules,
+  and four invariants sweep every example — clean load, no ghost popovers,
+  no duplicate ids, and no element claimed by two modules for one event.
 - Divergences from the shadcn/ui reference: `docs/jsx-parity.md`.
 
 ## Components

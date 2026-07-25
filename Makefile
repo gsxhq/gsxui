@@ -1,4 +1,4 @@
-.PHONY: generate test check icons site-dev site highlight
+.PHONY: generate test test-js check icons site-dev site highlight
 
 generate:
 	go tool gsx generate
@@ -28,11 +28,22 @@ test: generate
 	go vet ./...
 	go test ./...
 
-check: test
+# test-js runs the Playwright suite in jstest/ against real Chromium. It is
+# deliberately NOT part of `make test` — a Go-only edit should not pay for a
+# browser boot. Playwright's globalSetup writes the example manifest and
+# compiles web/site.css into jstest/.tmp/ (gitignored), and its webServer
+# block starts jstest/harness on 127.0.0.1:7799 — clear of the dev loop's
+# 7777 and Vite's 5173, so `make site-dev` can keep running.
+#
+# First run on a new machine needs the browser: `npx playwright install chromium`.
+test-js:
+	npx playwright test --config jstest/playwright.config.ts
+
+check: test test-js
 	@git diff --exit-code -- '*.x.go' || { echo "error: generated .x.go drifted — commit regenerated output"; exit 1; }
 	@test -z "$$(git status --porcelain -- '*.x.go' | grep '^??')" || { echo "error: untracked .x.go files"; exit 1; }
 	@test -f site/dist/.gitkeep || { echo "error: site/dist/.gitkeep missing (vite build deletes it — restore before commit)"; exit 1; }
-	@for f in $$(find ui -name '*.js'); do node --check $$f || exit 1; done
+	@for f in $$(find ui jstest -name '*.js'); do node --check $$f || exit 1; done
 	gofmt -l . | (! grep .)
 
 # site-dev runs the two-command dev loop: `npm install` once, then this.
