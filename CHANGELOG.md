@@ -2,6 +2,17 @@
 
 Notable changes to gsxui's component set, newest first.
 
+## 2026-07-25
+
+### Added
+
+- **menubar** — application-style menu bar with nested submenus and full keyboard navigation.
+- **navigation-menu** — hover-driven top nav with panel content.
+
+### Changed
+
+- **dropdown** and **context-menu** gained checkbox items, radio groups, and submenus.
+
 ## 2026-07-24
 
 ### Added

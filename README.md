@@ -19,8 +19,9 @@ you pass `--overwrite`.
 After upgrading the gsxui binary, re-run `gsxui add <name> --overwrite` to
 refresh vendored components — this discards local edits to those files.
 
-**Status: pre-release.** v1 component set (20 components + icon) is complete.
-The showcase site and theme editor are in progress.
+**Status: pre-release.** 52 components + icon, covering most of shadcn/ui's
+set. The showcase site and theme editor are live at
+[ui.gsxhq.dev](https://ui.gsxhq.dev).
 
 - Components live flat in `ui/` — one `package ui`, each component its own
   `<name>.gsx` source (JSX-style, named parameters, fallthrough attrs) plus
@@ -43,9 +44,10 @@ textarea, toggle, toggle-group
 separator, skeleton, spinner, table
 
 **Overlay:** alert-dialog, context-menu, dialog, drawer, dropdown,
-hover-card, popover, sheet, sonner, tooltip
+hover-card, menubar, popover, sheet, sonner, tooltip
 
-**Navigation:** accordion, breadcrumb, command, pagination, sidebar, tabs
+**Navigation:** accordion, breadcrumb, command, navigation-menu,
+pagination, sidebar, tabs
 
 **Layout:** aspect-ratio, carousel, collapsible, resizable, scroll-area
 
@@ -112,10 +114,6 @@ deploys to Cloud Run in one Cloud Build config — pattern-matched from
 Deferred out of v1 scope, tracked here rather than in the parity ledger's
 per-component GAP notes (see those for the detailed rationale):
 
-- **Dropdown checkbox/radio items + submenus** — `DropdownMenuCheckboxItem`,
-  `DropdownMenuRadioGroup`/`DropdownMenuRadioItem`,
-  `DropdownMenuSub`/`SubTrigger`/`SubContent`, `DropdownMenuGroup`. Only the
-  base item/label/separator/shortcut set ships in v1.
 - **Tooltip delay-groups** — `TooltipProvider`'s shared `delayDuration`/
   skip-delay-group coordination across multiple tooltips on a page. v1
   hard-codes a fixed per-trigger open delay, no cross-tooltip grouping.

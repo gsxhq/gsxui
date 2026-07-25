@@ -83,12 +83,26 @@ the start, per-component ledger entries in `docs/jsx-parity.md`.
 | combobox | `Combobox` + 11 parts: popover-anchored input/listbox composing `command`'s highlight-cursor model and `select`'s value/form-bridge machinery; `contains()` filter (boolean match, no fuzzy ranking) | multi-select chips (`ComboboxChips`/`Chip`/`ChipsInput`); no shared JS with `command.js` (an import edge invisible to `registry.Deps`'s Go-only parse, ledgered) |
 | sidebar | `SidebarProvider` + 22 parts: `open`-driven collapsible rail/icon modes + always-rendered mobile `Sheet` tree, CSS-gated; `sidebar.js` click/rail/`Cmd`/`Ctrl+B` toggle | persistence is the caller's (no cookie shipped; `persisted.gsx` is the recipe); `children` renders twice (dual-tree ADAPT — no `id`s inside a `Sidebar`'s children); tooltip `side`/delay-group params not carried |
 
+**menubar and navigation-menu SHIPPED 2026-07-25**, per
+`docs/superpowers/plans/2026-07-25-tier4-batch-b.md` (source map
+`docs/superpowers/plans/2026-07-25-tier4-source-map-menus.md`); nova
+density from the start, per-component ledger entries in
+`docs/jsx-parity.md`. The same batch also closed out `dropdown` and
+`context-menu`: both gained `Group`, `CheckboxItem`, `RadioGroup`/
+`RadioItem`, and `Sub`/`SubTrigger`/`SubContent` — the seven parts the
+README's former "Dropdown checkbox/radio items + submenus" Post-v1
+backlog entry tracked — reaching **full parity** with shadcn's
+`dropdown-menu`/`context-menu`.
+
+| component | shipped as | deferred sub-features (v1 gaps, ledgered) |
+|---|---|---|
+| menubar | `Menubar`/`MenubarMenu`/`MenubarTrigger` + the same seven shared item parts, reusing `dropdown.gsx`/`dropdown.js`'s popover machinery a third time; `menubar.js` roving-tabindex bar, open-follows-hover between sibling menus, DOM-nested submenus | no RTL arrow-key swap (codebase-wide gap, not menubar-specific); menu and submenu positioning are both a hand-rolled fixed anchor, not collision-aware flip/shift |
+| navigation-menu | `NavigationMenu` + `Item`/`Trigger`/`Content`/`Link`/`Indicator`/`List`; ships `viewport={false}` only — each `Content` renders as its own chromed panel (gsx has no portal, so upstream's shared-viewport architecture doesn't fit) | shared-viewport mode (`viewport=true`, one portalled panel morphing between panel sizes); the six-token `data-[motion=…]` direction-aware slide animation, replaced by the codebase's standard discrete-transition block |
+
 Remaining, roughly easiest → hardest for this codebase:
 
 | component | approach |
 |---|---|
-| navigation-menu | hover mega-menu with viewport panel transitions |
-| menubar | nested menus, submenu positioning, full keyboard model — note the deferred `dropdown` submenu work (README backlog) is the same machinery; do them together |
 | calendar | month grid, range selection (react-day-picker equivalent — the single largest port on this list: date math, multi-month, range/multiple modes, full keyboard grid). `<input type="date">` is NOT a viable ADAPT for the docs demos (they exercise range selection, disabled dates, and custom day rendering, none of which a native date input can express); it stays a real from-scratch port. Consider scoping v1 to single-date + range, ledgering the rest |
 | chart | recharts wrapper in shadcn — needs a whole Go/JS charting answer; defer until demanded |
 
