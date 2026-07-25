@@ -1,5 +1,6 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../support/fixtures";
 import { examples } from "../support/manifest";
+import { allowedOverlaps } from "../support/selector-allowlist";
 
 /**
  * One test per example, each asserting every invariant with expect.soft so a
@@ -10,7 +11,7 @@ import { examples } from "../support/manifest";
  * classes that have actually shipped here.
  */
 for (const example of examples()) {
-  test(`${example.component}/${example.example}`, async ({ page }) => {
+  test(`${example.component}/${example.example}`, async ({ page, registrations }) => {
     const consoleErrors: string[] = [];
     const pageErrors: string[] = [];
     page.on("console", (msg) => {
@@ -63,5 +64,61 @@ for (const example of examples()) {
       return [...counts].filter(([, n]) => n > 1).map(([id, n]) => ({ id, count: n }));
     });
     expect.soft(duplicateIds, "duplicate element ids").toEqual([]);
+
+    // Invariant 4: selector disjointness. ui/gsxui.js keys its registry by
+    // `${type}:${capture}` alone and dispatches to EVERY handler whose
+    // selector matches, so if two modules both match one element for one
+    // (type, capture) pair, both handlers run on a single event. That is
+    // exactly the hook-prefix collision that shipped in Tier 4 Batch B:
+    // dropdown.js and context-menu.js both matched data-gsxui-menu-*, so
+    // one click on a checkbox item fired two gsxui:change events and left
+    // the state unchanged.
+    //
+    // The check is same-element, not ancestor-chain, and that is deliberate.
+    // gsxui.js dispatches via target.closest(selector); when one element
+    // matches two modules' selectors, an event on it resolves to that same
+    // element for both. Nested elements matching different modules is
+    // ordinary composition (a dialog inside a dropdown) and is not a defect.
+    const overlaps = await page.evaluate((regs) => {
+      const found: { key: string; tag: string; modules: string[]; selectors: string[] }[] = [];
+      for (const el of document.querySelectorAll("*")) {
+        const byKey = new Map<string, Map<string, string>>();
+        for (const reg of regs) {
+          let matches = false;
+          try {
+            matches = el.matches(reg.selector);
+          } catch {
+            continue; // an unparseable selector is Task 2's problem, not this one
+          }
+          if (!matches) continue;
+          const key = `${reg.type}:${reg.capture}`;
+          if (!byKey.has(key)) byKey.set(key, new Map());
+          byKey.get(key)!.set(reg.module, reg.selector);
+        }
+        for (const [key, mods] of byKey) {
+          if (mods.size > 1) {
+            found.push({
+              key,
+              tag: el.tagName.toLowerCase(),
+              modules: [...mods.keys()].sort(),
+              selectors: [...mods.values()],
+            });
+          }
+        }
+      }
+      return found;
+    }, registrations);
+
+    const unexpected = overlaps.filter(
+      (o) =>
+        !allowedOverlaps.some(
+          (a) =>
+            a.key === o.key &&
+            o.modules.length === 2 &&
+            a.modules[0] === o.modules[0] &&
+            a.modules[1] === o.modules[1],
+        ),
+    );
+    expect.soft(unexpected, "elements claimed by two modules for one event").toEqual([]);
   });
 }
