@@ -327,8 +327,12 @@ func TestCalendarRangeMarksStartMiddleEnd(t *testing.T) {
 	// the cell's own data-selected/aria-selected="true".
 	for _, date := range []string{"2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08"} {
 		cell := cellFor(t, got, date)
-		if !strings.Contains(cell, `data-selected`) {
-			t.Errorf("%s: cell missing data-selected", date)
+		// The exact value, not a bare Contains(cell, "data-selected"): that
+		// substring is also a prefix of the button's own always-present
+		// data-selected-single="true"/"false", so a bare check would pass
+		// against any rendered cell whatsoever and prove nothing.
+		if !strings.Contains(cell, `data-selected="true"`) {
+			t.Errorf("%s: cell missing data-selected=\"true\"\nin: %s", date, cell)
 		}
 		if !strings.Contains(cell, `aria-selected="true"`) {
 			t.Errorf("%s: cell missing aria-selected=\"true\"\nin: %s", date, cell)
@@ -361,8 +365,15 @@ func TestCalendarRangeWrappingARowMarksBothRowEdgesSelected(t *testing.T) {
 
 	for _, date := range []string{"2026-01-09", "2026-01-10", "2026-01-11", "2026-01-12"} {
 		cell := cellFor(t, got, date)
-		if !strings.Contains(cell, `data-selected`) {
-			t.Errorf("%s: cell missing data-selected — the row-wrap rounding selectors need this", date)
+		// The exact value, not a bare Contains(cell, "data-selected"): every
+		// cell's button unconditionally emits data-selected-single="true"/
+		// "false", and "data-selected" is a substring of "data-selected-
+		// single" too, so a bare presence check passes against any rendered
+		// cell whatsoever regardless of whether the cell itself is marked —
+		// it would have passed identically against the mode-scoped code
+		// this test exists to catch. Anchor on the cell's own literal value.
+		if !strings.Contains(cell, `data-selected="true"`) {
+			t.Errorf("%s: cell missing data-selected=\"true\" — the row-wrap rounding selectors need this\nin: %s", date, cell)
 		}
 	}
 }
