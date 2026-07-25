@@ -182,19 +182,33 @@ test("loaded survives a next/prev round trip back to its own initial month", asy
 // not just the two ends) are otherwise never reached client-side, since
 // basic.gsx and loaded.gsx above are both single-mode. Task 4 review's
 // Important finding 2.
-test("Go and JS agree on loaded-range 2026-02 (range flags, Monday week start)", async ({
+//
+// Compares JANUARY 2026, not February: with weekStartsOn=Monday,
+// monthGrid(2026, February, Monday) spans 2026-01-26..2026-03-08, which
+// does not contain LoadedRange's own from=2026-01-09/to=2026-01-14 at
+// all — an earlier version of this test compared February and passed
+// vacuously, every range-related field uniformly false/absent on both
+// sides (Task 4 review round 3's finding: the diff compared nothing to
+// nothing). monthGrid(2026, January, Monday) spans
+// 2025-12-29..2026-02-08, which does contain the whole range. A
+// next-then-prev round trip (not a bare page load) still forces two live
+// repaints, the same "exercise real JS, not just the server's initial
+// render" discipline the round-trip test above uses for loaded.gsx.
+test("Go and JS agree on loaded-range 2026-01 (range flags, Monday week start)", async ({
   page,
 }) => {
   await page.goto(LOADED_RANGE);
+
   await page.click("[data-gsxui-calendar-next]");
+  await page.click("[data-gsxui-calendar-prev]");
 
   await expect(page.locator("[data-gsxui-calendar]")).toHaveAttribute(
     "data-gsxui-calendar-month",
-    "2026-02",
+    "2026-01",
   );
   const clientCells = await gridCells(page);
 
-  await page.goto(`${LOADED_RANGE}?month=2026-02`);
+  await page.goto(`${LOADED_RANGE}?month=2026-01`);
   const serverCells = await gridCells(page);
 
   expect(clientCells).toEqual(serverCells);
