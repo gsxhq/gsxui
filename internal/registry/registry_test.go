@@ -446,6 +446,20 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("sidebar deps = %v, want [button icon input separator sheet skeleton tooltip]", deps)
 	}
 
+	// calendar.gsx imports ui/icon (nav chevrons) and composes button.gsx's
+	// package-private base/variantClass helpers directly (the nav buttons,
+	// flat-package intra-package edge, same declIndex-resolved shape as
+	// pagination's own button dep) plus ui.NativeSelect/NativeSelectOption
+	// (the dropdown captionLayout's month/year pickers, Tier 4 calendar
+	// Task 3) — three deps, Deps sorts its result.
+	deps, err = registry.Deps("calendar")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(deps, []string{"button", "icon", "native-select"}) {
+		t.Fatalf("calendar deps = %v, want [button icon native-select]", deps)
+	}
+
 	if _, err := registry.Deps("nosuch"); err == nil || !strings.Contains(err.Error(), "gsxui list") {
 		t.Fatalf("Deps(nosuch) err = %v, want error mentioning 'gsxui list'", err)
 	}
@@ -768,6 +782,19 @@ func TestResolveTransitive(t *testing.T) {
 		t.Fatal(err)
 	}
 	want = []string{"button", "dialog", "icon", "input", "separator", "sheet", "sidebar", "skeleton", "tooltip"}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("got %v want %v", got, want)
+	}
+
+	// calendar resolves to itself plus its three direct deps (button, icon,
+	// native-select) — native-select itself transitively depends on icon
+	// too, but icon is already in the seen set by the time native-select is
+	// visited, so the flattened result has no duplicate.
+	got, err = registry.Resolve([]string{"calendar"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want = []string{"button", "calendar", "icon", "native-select"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}

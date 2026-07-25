@@ -431,3 +431,146 @@ func TestCalendarDisabledDaysStayInTheGrid(t *testing.T) {
 		t.Errorf("got %d cells, want 42 — disabled days must still render", n)
 	}
 }
+
+func TestCalendarLabelCaption(t *testing.T) {
+	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "", nil))
+
+	if !strings.Contains(got, "January 2026") {
+		t.Error("label caption missing the month and year")
+	}
+	for _, want := range []string{
+		`data-gsxui-calendar-prev`,
+		`data-gsxui-calendar-next`,
+		`aria-label="Previous month"`,
+		`aria-label="Next month"`,
+		// The caption announces month changes. Source map §8 correction 4.
+		`role="status"`,
+		`aria-live="polite"`,
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("missing %q", want)
+		}
+	}
+	if strings.Contains(got, "<select") {
+		t.Error("label caption must not render selects")
+	}
+}
+
+// hasBareDisabledAttr reports whether tag contains a real, bare HTML
+// `disabled` attribute (rendered by gsx as literal " disabled" with nothing
+// else — see gsx's Writer.BoolAttr) as opposed to a `disabled:`-prefixed
+// Tailwind variant token such as "disabled:pointer-events-none", which also
+// contains the substring " disabled" but is always immediately followed by
+// ':', never by a space or '>'. button.gsx's own `base` class constant (used
+// by every nav button, since these compose base/variantClass("ghost")
+// directly) unconditionally contains "disabled:pointer-events-none
+// disabled:opacity-50" — a bare strings.Contains(tag, " disabled") check
+// would match that class token on every render regardless of whether a real
+// disabled attribute is present, which is exactly the "assertion string is a
+// substring of a different, always-present attribute" failure mode this
+// project has already rejected once (see this file's own todayCellMarker
+// comment for the same class of bug). Anchoring on the character
+// immediately after "disabled" is what makes this check able to fail.
+func hasBareDisabledAttr(tag string) bool {
+	for i := 0; ; {
+		idx := strings.Index(tag[i:], " disabled")
+		if idx < 0 {
+			return false
+		}
+		pos := i + idx + len(" disabled")
+		if pos >= len(tag) || tag[pos] != ':' {
+			return true
+		}
+		i = pos
+	}
+}
+
+// Nav buttons never take a native disabled attribute, at any bound, under
+// any configuration — only aria-disabled + tabindex="-1", which keeps them
+// reachable by keyboard. Source map §7.5 and §8 correction 6.
+func TestCalendarNavBoundsUseAriaDisabledNotDisabled(t *testing.T) {
+	// fromYear == toYear == 2026 pins navigation to a single year, so
+	// January 2026 has no previous month.
+	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 2026, 2026,
+		time.Time{}, time.Time{}, nil, nil, "", nil))
+
+	prev := got[strings.Index(got, "data-gsxui-calendar-prev"):]
+	prev = prev[:strings.Index(prev, ">")]
+	if !strings.Contains(prev, `aria-disabled="true"`) {
+		t.Errorf("prev at the navigation bound should be aria-disabled\ngot: %s", prev)
+	}
+	if !strings.Contains(prev, `tabindex="-1"`) {
+		t.Errorf("prev at the navigation bound should be tabindex=-1\ngot: %s", prev)
+	}
+	if hasBareDisabledAttr(prev) {
+		t.Errorf("prev must not take the native disabled attribute\ngot: %s", prev)
+	}
+}
+
+func TestCalendarDropdownCaption(t *testing.T) {
+	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "dropdown", 2020, 2030,
+		time.Time{}, time.Time{}, nil, nil, "", nil))
+
+	for _, want := range []string{
+		`data-gsxui-calendar-month-select`,
+		`data-gsxui-calendar-year-select`,
+		`<option value="0"`,  // January
+		`<option value="11"`, // December
+		`<option value="2020"`,
+		`<option value="2030"`,
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("missing %q", want)
+		}
+	}
+	// 11 years inclusive, not 10.
+	if n := strings.Count(got, `data-gsxui-calendar-year-option`); n != 11 {
+		t.Errorf("got %d year options, want 11", n)
+	}
+	if n := strings.Count(got, `data-gsxui-calendar-month-option`); n != 12 {
+		t.Errorf("got %d month options, want 12", n)
+	}
+}
+
+func TestCalendarHiddenInputSingle(t *testing.T) {
+	sel := []time.Time{time.Date(2026, 1, 15, 0, 0, 0, 0, time.UTC)}
+	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		sel, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "booking", nil))
+
+	if !strings.Contains(got, `<input type="hidden" name="booking" value="2026-01-15"`) {
+		t.Errorf("hidden input missing or wrong\nin: %s", got)
+	}
+}
+
+func TestCalendarHiddenInputsRange(t *testing.T) {
+	got := render(t, ui.Calendar("range", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil,
+		time.Date(2026, 1, 5, 0, 0, 0, 0, time.UTC),
+		time.Date(2026, 1, 8, 0, 0, 0, 0, time.UTC),
+		time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "stay", nil))
+
+	for _, want := range []string{
+		`name="stay" value="2026-01-05"`,
+		`name="stay-to" value="2026-01-08"`,
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("missing %q", want)
+		}
+	}
+}
+
+func TestCalendarNoNameRendersNoHiddenInput(t *testing.T) {
+	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "", nil))
+
+	if strings.Contains(got, `type="hidden"`) {
+		t.Error("no name given, so no hidden input should render")
+	}
+}

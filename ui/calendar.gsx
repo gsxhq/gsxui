@@ -1,10 +1,12 @@
 package ui
 
 import (
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/ui/icon"
 )
 
 // calendarRootClass is the Calendar `root` slot ("w-fit") plus the outer
@@ -86,6 +88,103 @@ const calendarDayClass = "group/day relative aspect-square h-full w-full p-0 tex
 // already establish (internal/registry's declIndex derives a calendar ->
 // button dependency from this, the same shape as pagination -> button).
 const calendarDayButtonClass = "flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-[3px] group-data-[focused=true]/day:ring-ring/50 data-[range-end=true]:rounded-md data-[range-end=true]:rounded-r-md data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:rounded-md data-[range-start=true]:rounded-l-md data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-accent-foreground [&>span]:text-xs [&>span]:opacity-70"
+
+// calendarNavClass is the `nav` slot, verbatim (source map §2).
+const calendarNavClass = "absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1"
+
+// calendarNavButtonClass is button_previous/button_next's own trailing
+// classes, verbatim (source map §2: `size-(--cell-size) p-0 select-none
+// aria-disabled:opacity-50`) — the `buttonVariants({variant: buttonVariant})`
+// portion of that slot is supplied separately at the call site via this
+// file's own base/variantClass("ghost") (upstream's buttonVariant default,
+// `calendar.tsx` line 23), not duplicated into this constant. Deliberately
+// NOT composed with button.gsx's sizeClass(...): upstream's own size-(--cell-
+// size) here overrides buttonVariants' default size class entirely (cn()'s
+// tailwind-merge resolves the conflict at render time); gsxui has no
+// runtime class-merge, so the port resolves the same conflict at author
+// time instead, by never emitting a sizeClass(...) token for this button in
+// the first place — the button.gsx nav buttons are Button-shaped but not
+// literal Button calls (see the Calendar component's own doc comment for why
+// ui.Button itself is not used here).
+const calendarNavButtonClass = "size-(--cell-size) p-0 select-none aria-disabled:opacity-50"
+
+// calendarMonthCaptionClass is the `month_caption` slot, verbatim (source map §2).
+const calendarMonthCaptionClass = "flex h-(--cell-size) w-full items-center justify-center px-(--cell-size)"
+
+// calendarCaptionLabelClass is the `caption_label` slot's plain-"label"-
+// layout branch only, verbatim (source map §2: "font-medium select-none" +
+// the captionLayout==="label" ternary arm "text-sm"). The dropdown-layout
+// ternary arm ("flex h-8 items-center gap-1 rounded-md pr-1 pl-2 text-sm
+// [&>svg]:size-3.5 [&>svg]:text-muted-foreground") styled upstream's own
+// semi-transparent-overlay trick (`Dropdown.js`: a visible, aria-hidden
+// `<span>` showing the selected option's label + a chevron, layered over a
+// second, fully invisible `<select>` — `classNames[UI.Dropdown]` is
+// literally `absolute inset-0 bg-popover opacity-0`, source map §2's
+// `dropdown` row). gsxui's captionLayout="dropdown" instead uses
+// ui.NativeSelect as-is: a real, always-visible, styled `<select>` — there
+// is no second invisible control and no faux label span in this port's DOM,
+// so neither the `caption_label` dropdown arm nor the `dropdown` slot
+// (`absolute inset-0 bg-popover opacity-0`) has anywhere to attach. Both are
+// DROPPED, not carried — ledgered in the Task 3 report, not silently
+// dropped. Porting them here would either do nothing (no matching element)
+// or actively break the select's own visibility, which defeats the reason
+// gsxui chose the simpler real-select design in the first place.
+const calendarCaptionLabelClass = "font-medium select-none text-sm"
+
+// calendarDropdownsClass is the `dropdowns` slot, verbatim (source map §2).
+const calendarDropdownsClass = "flex h-(--cell-size) w-full items-center justify-center gap-1.5 text-sm font-medium"
+
+// calendarDropdownRootClass is the `dropdown_root` slot, verbatim (source
+// map §2). Passed as ui.NativeSelect's own `class` attr at each call site,
+// merging onto NativeSelect's wrapper `<div>`'s hardcoded "relative w-fit"
+// (ui/native-select.gsx) — the wrapper is the analogue of upstream's
+// `Dropdown.js` `<span data-disabled className={DropdownRoot}>`.
+const calendarDropdownRootClass = "relative rounded-md border border-input shadow-xs has-focus:border-ring has-focus:ring-[3px] has-focus:ring-ring/50"
+
+// calendarMonthNames are the twelve month names for the dropdown
+// captionLayout's month <select>, matching upstream's own default
+// formatMonthDropdown formatter (`date.toLocaleString("default", {month:
+// "short"})`, `calendar.tsx` lines 43-45): three-letter abbreviations — a
+// different formatting choice from the day button's own full-month
+// aria-label ("Monday, January 2, 2006").
+var calendarMonthNames = [12]string{
+	"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+}
+
+// calendarNavBounds resolves fromYear/toYear into the effective navigation
+// bounds, defaulting when the caller passes zero. react-day-picker's own
+// getYearOptions (source map §7.4) requires an explicit navStart/navEnd for
+// captionLayout="dropdown" and renders no year options at all without one;
+// gsxui defaults instead (source map §10 item 2) so callers aren't forced to
+// pick a range just to get a dropdown calendar. currentYear anchors the
+// default to "now", not a fixed year, so the default keeps working as time
+// passes. Source map §7.5 establishes this is the ONE bounds contract behind
+// both the dropdown year list and the prev/next nav buttons' aria-disabled
+// state — not two separate mechanisms.
+func calendarNavBounds(fromYear, toYear, currentYear int) (int, int) {
+	if fromYear == 0 {
+		fromYear = currentYear - 100
+	}
+	if toYear == 0 {
+		toYear = currentYear + 10
+	}
+	return fromYear, toYear
+}
+
+// calendarPrevDisabled/calendarNextDisabled report whether the previous/next
+// nav button is at its navigation bound for the displayed (year, month) —
+// source map §7.5's getPreviousMonth/getNextMonth contract: previousMonth/
+// nextMonth become undefined once navigation would cross navStart/navEnd,
+// which is what drives Nav.js's aria-disabled/tabIndex-only branch (never a
+// native disabled attribute, at either button, under any configuration).
+func calendarPrevDisabled(year int, month time.Month, fromYear int) bool {
+	return year < fromYear || (year == fromYear && month <= time.January)
+}
+
+func calendarNextDisabled(year int, month time.Month, toYear int) bool {
+	return year > toYear || (year == toYear && month >= time.December)
+}
 
 // sameDay reports whether a and b fall on the same UTC calendar day.
 func sameDay(a, b time.Time) bool {
@@ -243,15 +342,59 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 // docs/superpowers/plans/2026-07-25-calendar-source-map.md for the
 // class-string and DOM/ARIA authority this port cites throughout.
 //
-// Task 1 rendered the month grid only. Task 2 (this pass) adds all
-// server-computed day state: selection (`single`/`multiple` via `selected`,
-// `range` via `from`/`to`) and the four disabled rules
+// Task 1 rendered the month grid only. Task 2 added all server-computed day
+// state: selection (`single`/`multiple` via `selected`, `range` via
+// `from`/`to`) and the four disabled rules
 // (`disabledBefore`/`disabledAfter`/`disabledDates`/`disabledWeekdays`),
 // entirely as data attributes — never as conditional Go class-building, so
 // Tasks 4-6's JavaScript can update the same attributes without knowing
-// about classes. captionLayout/fromYear/toYear/name are still accepted and
-// unused; Task 3 wires up the caption and the hidden form inputs — no
-// placeholder markup for those yet.
+// about classes.
+//
+// Task 3 (this pass) adds the caption and the prev/next nav buttons above
+// the grid, plus the hidden-input form bridge:
+//
+//   - captionLayout="label": the month/year as text ("January 2006"),
+//     flanked by two icon-only nav buttons. captionLayout="dropdown": two
+//     ui.NativeSelect month/year pickers instead of the text, still flanked
+//     by the same two nav buttons. Any other captionLayout value (including
+//     "") renders the label layout, matching upstream's own
+//     captionLayout="label" default.
+//   - The nav buttons are NOT ui.Button calls: ui.Button's `disabled bool`
+//     param always renders a native `disabled` attribute, but source map
+//     §7.5 traces that upstream's own nav buttons NEVER take native
+//     `disabled`, at any navigation bound — only `aria-disabled="true"` +
+//     `tabindex="-1"`, which is what keeps a disabled-at-the-bound button
+//     reachable by Tab. So the buttons here are hand-built `<button>`
+//     elements composed from button.gsx's own base/variantClass("ghost")
+//     package-private helpers (the same flat-package reuse pagination.gsx
+//     and toggle-group.gsx already establish) plus calendarNavButtonClass —
+//     never through ui.Button, and never emitting `disabled`.
+//   - fromYear/toYear default when zero (calendarNavBounds:
+//     currentYear-100/currentYear+10) — source map §7.4/§10 item 2's already
+//     -decided deviation from upstream's own requirement that the caller
+//     supply an explicit range for captionLayout="dropdown". The resolved
+//     bounds also drive the nav buttons' aria-disabled state in EVERY
+//     captionLayout, not just "dropdown" — source map §7.5 is explicit that
+//     this is one bounds contract, not two.
+//   - The caption is a live region (source map §8 finding 4): `role="status"
+//     aria-live="polite"`, so a month change gets announced. In "label"
+//     layout that's the visible caption `<span>` itself. In "dropdown"
+//     layout the visible control is a `<select>`, not a natural announcement
+//     target, so — matching upstream's own second, separate mechanism for
+//     this exact case (`DayPicker.js`'s dropdown branch renders an
+//     additional visually-hidden `<span role="status" aria-live="polite">`
+//     carrying the same formatted caption text, alongside the dropdowns, not
+//     instead of them) — gsxui renders a `class="sr-only"` span carrying the
+//     identical text. Both the label span and the dropdown sr-only span also
+//     carry `data-gsxui-calendar-caption`, the one hook Task 4's calendar.js
+//     needs regardless of layout to update the announced text on navigation.
+//   - Hidden inputs render only when `name != ""`: single/multiple mode gets
+//     one `<input type="hidden" name={name}>` carrying the first selected
+//     date (ISO); range mode gets that plus a second
+//     `name="{name}-to"` input for `to`. Both live inside the root element so
+//     Tasks 4-6's JavaScript can find them by DOM scope
+//     (`closest("[data-gsxui-calendar]")`), the same proximity idiom
+//     ui.Select/ui.Combobox already use for their own hidden-input bridges.
 //
 // The weekday header row is `aria-hidden`, matching upstream: every day
 // button's own aria-label already leads with the weekday name (source map
@@ -335,6 +478,16 @@ component Calendar(
 			selectedISOParts = append(selectedISOParts, s.Format("2006-01-02"))
 		}
 		selectedISO := strings.Join(selectedISOParts, ",")
+
+		navFromYear, navToYear := calendarNavBounds(fromYear, toYear, today.Year())
+		prevDisabled := calendarPrevDisabled(year, monthOfYear, navFromYear)
+		nextDisabled := calendarNextDisabled(year, monthOfYear, navToYear)
+		dropdownLayout := captionLayout == "dropdown"
+		captionText := month.Format("January 2006")
+
+		showHiddenSingle := name != "" && mode != "range" && len(selected) > 0
+		showHiddenFrom := name != "" && mode == "range" && !from.IsZero()
+		showHiddenTo := name != "" && mode == "range" && !to.IsZero()
 	}}
 	<div
 		data-slot="calendar"
@@ -354,6 +507,55 @@ component Calendar(
 		class={ calendarRootClass }
 		{ attrs... }
 	>
+		<nav class={ calendarNavClass }>
+			<button
+				type="button"
+				data-gsxui-calendar-prev
+				aria-label="Previous month"
+				{ if prevDisabled {
+					aria-disabled="true"
+					tabindex="-1"
+				} }
+				class={ base, variantClass("ghost"), calendarNavButtonClass }
+			>
+				<icon.ChevronLeft/>
+			</button>
+			<button
+				type="button"
+				data-gsxui-calendar-next
+				aria-label="Next month"
+				{ if nextDisabled {
+					aria-disabled="true"
+					tabindex="-1"
+				} }
+				class={ base, variantClass("ghost"), calendarNavButtonClass }
+			>
+				<icon.ChevronRight/>
+			</button>
+		</nav>
+		<div class={ calendarMonthCaptionClass }>
+			{ if dropdownLayout {
+				<div class={ calendarDropdownsClass }>
+					<NativeSelect data-gsxui-calendar-month-select aria-label="Month" class={ calendarDropdownRootClass }>
+						{ for i := 0; i < 12; i++ {
+							<NativeSelectOption value={ strconv.Itoa(i) } selected={ i == int(monthOfYear)-1 } data-gsxui-calendar-month-option>
+								{ calendarMonthNames[i] }
+							</NativeSelectOption>
+						} }
+					</NativeSelect>
+					<NativeSelect data-gsxui-calendar-year-select aria-label="Year" class={ calendarDropdownRootClass }>
+						{ for y := navFromYear; y <= navToYear; y++ {
+							<NativeSelectOption value={ strconv.Itoa(y) } selected={ y == year } data-gsxui-calendar-year-option>
+								{ strconv.Itoa(y) }
+							</NativeSelectOption>
+						} }
+					</NativeSelect>
+				</div>
+				<span class="sr-only" data-gsxui-calendar-caption role="status" aria-live="polite">{ captionText }</span>
+			} else {
+				<span data-gsxui-calendar-caption role="status" aria-live="polite" class={ calendarCaptionLabelClass }>{ captionText }</span>
+			} }
+		</div>
 		<table
 			data-gsxui-calendar-grid
 			role="grid"
@@ -421,5 +623,14 @@ component Calendar(
 				} }
 			</tbody>
 		</table>
+		{ if showHiddenSingle {
+			<input type="hidden" name={ name } value={ selected[0].Format("2006-01-02") }/>
+		} }
+		{ if showHiddenFrom {
+			<input type="hidden" name={ name } value={ from.Format("2006-01-02") }/>
+		} }
+		{ if showHiddenTo {
+			<input type="hidden" name={ name + "-to" } value={ to.Format("2006-01-02") }/>
+		} }
 	</div>
 }
