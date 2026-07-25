@@ -8,10 +8,11 @@ import (
 	_gsxrt "github.com/gsxhq/gsx"
 	_gsxstd "github.com/gsxhq/gsx/std"
 	_gsxcm "github.com/gsxhq/gsxui/merge"
+	"github.com/gsxhq/gsxui/ui/icon"
 	_gsxio "io"
 )
 
-//line dropdown.gsx:5:1
+//line dropdown.gsx:8:1
 // DropdownMenu is the shadcn/ui DropdownMenu on the native popover API: the
 // top layer replaces Radix's Portal, light dismiss and Esc are browser-
 // native. Trigger and content are wired by proximity — DropdownMenuTrigger
@@ -20,12 +21,52 @@ import (
 // not yet Baseline — see docs/jsx-parity.md), state/aria sync, arrow-key
 // roving focus, and close-on-select. Requires the dropdown behavior module
 // (ui/dropdown/dropdown.js).
+//
+// SUBMENUS — POPOVER NESTING, NOT PORTALLING (ADAPT, load-bearing): Radix
+// portals DropdownMenuSubContent to document.body, same as top-level
+// Content. That does not work on the native popover API. Measured in Chrome
+// (docs/superpowers/plans/2026-07-25-tier4-source-map-menus.md ## shared-
+// items §5, "spec §1" below):
+//
+//	child popover DOM-nested inside parent, opened with showPopover()      -> parent STAYS OPEN
+//	child not nested, opened via a real popovertarget invoker click        -> parent STAYS OPEN
+//	child not nested, opened programmatically with showPopover()           -> parent LIGHT-DISMISSES
+//
+// A popover="auto" establishes its ancestor chain by DOM containment OR by
+// invoker relationship. dropdown.js opens submenus on pointerenter and on
+// ArrowRight — not only on click — so every open is programmatic; DOM
+// nesting is therefore the only robust option, not a style preference.
+// DropdownMenuSubContent renders nested inside its DropdownMenuSub, which
+// itself sits inside the parent DropdownMenuContent (pinned by
+// TestDropdownMenuSubNestsContentInsideParentContent). The parent content's
+// own overflow-x-hidden/overflow-y-auto (TestDropdownContentPinned) does NOT
+// clip the nested submenu: once shown, a popover is promoted to the
+// browser's top layer for painting/stacking purposes, exempting it from any
+// DOM ancestor's overflow/clip/transform — the same mechanism that already
+// lets DropdownMenuContent itself skip Radix's Portal. No overflow fix was
+// needed on DropdownMenuContent's pinned class.
+//
+// SERVER-RENDERED CHECKED STATE (MECHANISM): DropdownMenuCheckboxItem/
+// DropdownMenuRadioItem take a `checked bool` that stamps both aria-checked
+// and data-state="checked"|"unchecked" on first paint — the menu is correct
+// with JS disabled. The check/circle indicator icon is always rendered (no
+// server-side conditional mount, unlike Radix's own ItemIndicator, which
+// mounts/unmounts by React state) and its visibility is purely CSS, gated by
+// an ancestor-selector arbitrary variant, `[[data-state=checked]_&]:flex`,
+// keyed off the item's own data-state — the same `[[…]_&]` idiom already
+// used by sidebar.gsx/kbd.gsx/collapsible.gsx, chosen over a named
+// `group/…:` marker specifically so the item's own pinned base class string
+// needs no extra token prepended to it (verbatim per the source map).
+// dropdown.js's click handlers only ever flip aria-checked/data-state; they
+// never touch the indicator's own markup, so no icon markup needs to be
+// duplicated into dropdown.js (which would be an invisible-to-registry.Deps
+// dependency — forbidden).
 
-//line dropdown.gsx:13:1
+//line dropdown.gsx:56:1
 func DropdownMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dropdown.gsx:14:2
+//line dropdown.gsx:57:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dropdown-menu\"")
@@ -39,18 +80,18 @@ func DropdownMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line dropdown.gsx:14:83
+//line dropdown.gsx:57:83
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line dropdown.gsx:17:1
+//line dropdown.gsx:60:1
 func DropdownMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dropdown.gsx:18:2
+//line dropdown.gsx:61:2
 		_gsxgw.S("<button")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dropdown-menu-trigger\"")
@@ -71,14 +112,14 @@ func DropdownMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line dropdown.gsx:26:3
+//line dropdown.gsx:69:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line dropdown.gsx:30:1
+//line dropdown.gsx:73:1
 // DropdownMenuContent renders the popover. popover="auto" gives top layer,
 // light dismiss, and free Esc; data-state is server-rendered "closed" and
 // kept in sync by dropdown.js on the toggle event. data-side="bottom" is
@@ -86,11 +127,11 @@ func DropdownMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // trigger, so shadcn's data-[side=bottom]:slide-in-from-top-2 enter slide
 // applies without Radix's runtime side tracking (same ADAPT as tooltip).
 
-//line dropdown.gsx:36:1
+//line dropdown.gsx:79:1
 func DropdownMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dropdown.gsx:37:2
+//line dropdown.gsx:80:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dropdown-menu-content\"")
@@ -123,25 +164,25 @@ func DropdownMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line dropdown.gsx:56:3
+//line dropdown.gsx:99:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line dropdown.gsx:60:1
+//line dropdown.gsx:103:1
 // DropdownMenuItem is the shadcn/ui DropdownMenuItem, ported as a real menu
 // item on a <div role="menuitem">: dropdown.js's arrow-key roving focus
 // walks these. variant: "" (default) | "destructive". inset is dropped
 // (see docs/jsx-parity.md) — the data-[inset]:pl-8 selector is removed with
 // it.
 
-//line dropdown.gsx:65:1
+//line dropdown.gsx:108:1
 func DropdownMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dropdown.gsx:66:2
+//line dropdown.gsx:109:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dropdown-menu-item\"")
@@ -166,22 +207,226 @@ func DropdownMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line dropdown.gsx:75:3
+//line dropdown.gsx:118:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line dropdown.gsx:79:1
+//line dropdown.gsx:122:1
+// DropdownMenuGroup wraps a set of items for a11y grouping. shadcn's own
+// Group carries no class string at all (source map ## shared-items §1) —
+// role="group" is added here, not in the .tsx: Radix's Group primitive
+// stamps it at runtime (derived-not-read, well-known WAI-ARIA menu
+// authoring practice — a set of role="menuitemradio" items in particular
+// must be wrapped by a role="group" container).
+
+//line dropdown.gsx:128:1
+func DropdownMenuGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line dropdown.gsx:129:2
+		_gsxgw.S("<div")
+		if !attrs.Has("data-slot") {
+			_gsxgw.S(" data-slot=\"dropdown-menu-group\"")
+		}
+		if !attrs.Has("data-gsxui-menu-group") {
+			_gsxgw.BoolAttr("data-gsxui-menu-group", true)
+		}
+		if !attrs.Has("role") {
+			_gsxgw.S(" role=\"group\"")
+		}
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line dropdown.gsx:129:87
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}
+
+//line dropdown.gsx:132:1
+// DropdownMenuCheckboxItem is the shadcn/ui DropdownMenuCheckboxItem.
+// checked is server-rendered (see the file header MECHANISM); value is the
+// item's own identity, stamped as data-value and echoed on dropdown.js's
+// gsxui:change event. Selecting a checkbox item does NOT close the menu
+// (Radix's own contract — confirmed against the source map's derived ARIA
+// anatomy, ## shared-items §3 — a checkbox toggles in place).
+
+//line dropdown.gsx:138:1
+func DropdownMenuCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line dropdown.gsx:139:2
+		_gsxgw.S("<div")
+		if !attrs.Has("data-slot") {
+			_gsxgw.S(" data-slot=\"dropdown-menu-checkbox-item\"")
+		}
+		if !attrs.Has("data-gsxui-menu-checkbox-item") {
+			_gsxgw.BoolAttr("data-gsxui-menu-checkbox-item", true)
+		}
+		if !attrs.Has("role") {
+			_gsxgw.S(" role=\"menuitemcheckbox\"")
+		}
+		if !attrs.Has("data-value") {
+			_gsxgw.S(" data-value=\"")
+			_gsxgw.AttrValue(string(value))
+			_gsxgw.S("\"")
+		}
+		if checked {
+			if !attrs.Has("aria-checked") {
+				_gsxgw.S(" aria-checked=\"true\"")
+			}
+			if !attrs.Has("data-state") {
+				_gsxgw.S(" data-state=\"checked\"")
+			}
+		} else {
+			if !attrs.Has("aria-checked") {
+				_gsxgw.S(" aria-checked=\"false\"")
+			}
+			if !attrs.Has("data-state") {
+				_gsxgw.S(" data-state=\"unchecked\"")
+			}
+		}
+		if !attrs.Has("tabindex") {
+			_gsxgw.S(" tabindex=\"-1\"")
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative flex cursor-default items-center gap-2 rounded-sm py-1.5 pr-2 pl-8 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line dropdown.gsx:155:3
+		_gsxgw.S("<span class=\"pointer-events-none absolute left-2 hidden size-3.5 items-center justify-center [[data-state=checked]_&amp;]:flex\">")
+//line dropdown.gsx:156:4
+		_gsxgw.Node(ctx, icon.Check(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
+		_gsxgw.S("</span>")
+//line dropdown.gsx:158:3
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}
+
+//line dropdown.gsx:162:1
+// DropdownMenuRadioGroup wraps a set of DropdownMenuRadioItems. value is the
+// server-rendered current value, stamped as data-value on the root — the
+// same "checked state is server-rendered" contract as CheckboxItem, kept in
+// sync by dropdown.js on selection and echoed on the group's own
+// gsxui:change event. data-gsxui-menu-radio-group is the proximity anchor
+// dropdown.js uses to scope "clear every OTHER item in this group" to this
+// group alone, not every radio item on the page.
+
+//line dropdown.gsx:169:1
+func DropdownMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line dropdown.gsx:170:2
+		_gsxgw.S("<div")
+		if !attrs.Has("data-slot") {
+			_gsxgw.S(" data-slot=\"dropdown-menu-radio-group\"")
+		}
+		if !attrs.Has("data-gsxui-menu-radio-group") {
+			_gsxgw.BoolAttr("data-gsxui-menu-radio-group", true)
+		}
+		if !attrs.Has("role") {
+			_gsxgw.S(" role=\"group\"")
+		}
+		if !attrs.Has("data-value") {
+			_gsxgw.S(" data-value=\"")
+			_gsxgw.AttrValue(string(value))
+			_gsxgw.S("\"")
+		}
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line dropdown.gsx:171:3
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}
+
+//line dropdown.gsx:175:1
+// DropdownMenuRadioItem is the shadcn/ui DropdownMenuRadioItem — same
+// shape/class as CheckboxItem (source map ## shared-items §1: byte-identical
+// base style, own finding), swapping the check indicator for a filled dot.
+// checked reflects whether THIS item's value equals its DropdownMenuRadioGroup's
+// current value — the caller computes that comparison (gsx has no context to
+// do it implicitly, same no-context shape as ## toggle-group's group→item
+// params). Selecting a radio item DOES close the menu, same as a plain Item
+// (only CheckboxItem stays open).
+
+//line dropdown.gsx:183:1
+func DropdownMenuRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line dropdown.gsx:184:2
+		_gsxgw.S("<div")
+		if !attrs.Has("data-slot") {
+			_gsxgw.S(" data-slot=\"dropdown-menu-radio-item\"")
+		}
+		if !attrs.Has("data-gsxui-menu-radio-item") {
+			_gsxgw.BoolAttr("data-gsxui-menu-radio-item", true)
+		}
+		if !attrs.Has("role") {
+			_gsxgw.S(" role=\"menuitemradio\"")
+		}
+		if !attrs.Has("data-value") {
+			_gsxgw.S(" data-value=\"")
+			_gsxgw.AttrValue(string(value))
+			_gsxgw.S("\"")
+		}
+		if checked {
+			if !attrs.Has("aria-checked") {
+				_gsxgw.S(" aria-checked=\"true\"")
+			}
+			if !attrs.Has("data-state") {
+				_gsxgw.S(" data-state=\"checked\"")
+			}
+		} else {
+			if !attrs.Has("aria-checked") {
+				_gsxgw.S(" aria-checked=\"false\"")
+			}
+			if !attrs.Has("data-state") {
+				_gsxgw.S(" data-state=\"unchecked\"")
+			}
+		}
+		if !attrs.Has("tabindex") {
+			_gsxgw.S(" tabindex=\"-1\"")
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative flex cursor-default items-center gap-2 rounded-sm py-1.5 pr-2 pl-8 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line dropdown.gsx:200:3
+		_gsxgw.S("<span class=\"pointer-events-none absolute left-2 hidden size-3.5 items-center justify-center [[data-state=checked]_&amp;]:flex\">")
+//line dropdown.gsx:201:4
+		_gsxgw.Node(ctx, icon.Circle(_gsxrt.Attrs{{Key: "class", Value: "size-2 fill-current"}}...))
+		_gsxgw.S("</span>")
+//line dropdown.gsx:203:3
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}
+
+//line dropdown.gsx:207:1
 // DropdownMenuLabel's inset prop is dropped along with DropdownMenuItem's
 // (see docs/jsx-parity.md) — the data-[inset]:pl-8 selector is removed.
 
-//line dropdown.gsx:81:1
+//line dropdown.gsx:209:1
 func DropdownMenuLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dropdown.gsx:82:2
+//line dropdown.gsx:210:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dropdown-menu-label\"")
@@ -192,18 +437,18 @@ func DropdownMenuLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line dropdown.gsx:82:92
+//line dropdown.gsx:210:92
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line dropdown.gsx:85:1
+//line dropdown.gsx:213:1
 func DropdownMenuSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dropdown.gsx:86:2
+//line dropdown.gsx:214:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dropdown-menu-separator\"")
@@ -221,11 +466,11 @@ func DropdownMenuSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line dropdown.gsx:89:1
+//line dropdown.gsx:217:1
 func DropdownMenuShortcut(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dropdown.gsx:90:2
+//line dropdown.gsx:218:2
 		_gsxgw.S("<span")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dropdown-menu-shortcut\"")
@@ -236,9 +481,161 @@ func DropdownMenuShortcut(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line dropdown.gsx:91:3
+//line dropdown.gsx:219:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</span>")
+		return _gsxgw.Err()
+	})
+}
+
+//line dropdown.gsx:223:1
+// DropdownMenuSub is the non-rendering submenu root — layout-neutral
+// (class="contents", same idiom as DropdownMenu's own root) so its
+// SubTrigger/SubContent children sit inline in the parent content's normal
+// item flow. data-gsxui-menu-sub is the proximity anchor dropdown.js uses to
+// pair a SubTrigger with its own SubContent (closest("[data-gsxui-menu-sub]")
+// — same shape as DropdownMenu's own data-gsxui-dropdown root) and to scope
+// the pointer-leave grace-period boundary check to "the whole sub."
+
+//line dropdown.gsx:230:1
+func DropdownMenuSub(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line dropdown.gsx:231:2
+		_gsxgw.S("<div")
+		if !attrs.Has("data-slot") {
+			_gsxgw.S(" data-slot=\"dropdown-menu-sub\"")
+		}
+		if !attrs.Has("data-gsxui-menu-sub") {
+			_gsxgw.BoolAttr("data-gsxui-menu-sub", true)
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("contents"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line dropdown.gsx:231:87
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}
+
+//line dropdown.gsx:234:1
+// DropdownMenuSubTrigger opens/closes its sibling DropdownMenuSubContent
+// (dropdown.js: pointerenter, ArrowRight, click). aria-haspopup/aria-expanded
+// are server-rendered closed (derived-not-read ARIA anatomy, source map
+// ## shared-items §3); dropdown.js keeps aria-expanded and data-state in step
+// on every open/close, stamping data-state="open" BEFORE showPopover() (the
+// same flash-avoidance rule DropdownMenuContent's own trigger click handler
+// documents). ADAPT: the data-[inset]:pl-8 token is dropped from the pinned
+// class, same call as DropdownMenuItem/DropdownMenuLabel's own ADAPT —
+// gsxui's dropdown scope has no inset prop anywhere in this file, so the
+// selector would be permanently dead CSS.
+
+//line dropdown.gsx:244:1
+func DropdownMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line dropdown.gsx:245:2
+		_gsxgw.S("<div")
+		if !attrs.Has("data-slot") {
+			_gsxgw.S(" data-slot=\"dropdown-menu-sub-trigger\"")
+		}
+		if !attrs.Has("data-gsxui-menu-sub-trigger") {
+			_gsxgw.BoolAttr("data-gsxui-menu-sub-trigger", true)
+		}
+		if !attrs.Has("role") {
+			_gsxgw.S(" role=\"menuitem\"")
+		}
+		if !attrs.Has("aria-haspopup") {
+			_gsxgw.S(" aria-haspopup=\"menu\"")
+		}
+		if !attrs.Has("aria-expanded") {
+			_gsxgw.S(" aria-expanded=\"false\"")
+		}
+		if !attrs.Has("data-state") {
+			_gsxgw.S(" data-state=\"closed\"")
+		}
+		if !attrs.Has("tabindex") {
+			_gsxgw.S(" tabindex=\"-1\"")
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line dropdown.gsx:256:3
+		_gsxgw.Node(ctx, children)
+//line dropdown.gsx:257:3
+		_gsxgw.Node(ctx, icon.ChevronRight(_gsxrt.Attrs{{Key: "class", Value: "ml-auto size-4"}}...))
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}
+
+//line dropdown.gsx:261:1
+// DropdownMenuSubContent is the submenu popover — see the file header's
+// SUBMENUS comment for why it must render DOM-nested (not portalled) inside
+// its DropdownMenuSub. ADAPT (mirrors DropdownMenuContent's own, verbatim
+// class deviations from the source map, each already established elsewhere
+// in this file):
+//   - origin-(--radix-dropdown-menu-content-transform-origin) -> origin-top-left:
+//     no Radix runtime CSS var to read; dropdown.js always anchors the
+//     submenu to the right of its trigger (data-side="right", server-
+//     rendered statically — same hand-rolled-fixed-position stopgap as the
+//     top-level content's "always below," see docs/jsx-parity.md ## dropdown
+//     NOTE; not Floating-UI collision-aware placement).
+//   - the six data-[state=open|closed]:animate-in/out/fade/zoom tokens ->
+//     the same discrete-transition block DropdownMenuContent uses (a
+//     popover's exit keyframe never gets to play — see popover.gsx's ADAPT
+//     and docs/jsx-parity.md ## animations).
+//   - min-w-[8rem] -> min-w-[96px], rounded-md -> rounded-lg: nova's own
+//     .cn-dropdown-menu-sub-content metrics win over new-york-v4's per the
+//     visual-reference rule (nova also drops the min-w value new-york-v4
+//     shares with the top-level Content, making the submenu narrower).
+//     border is KEPT, not swapped for nova's ring-1 (standing house
+//     exception — border->ring-1 swaps are not adopted anywhere in this
+//     codebase).
+
+//line dropdown.gsx:283:1
+func DropdownMenuSubContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line dropdown.gsx:284:2
+		_gsxgw.S("<div")
+		if !attrs.Has("data-slot") {
+			_gsxgw.S(" data-slot=\"dropdown-menu-sub-content\"")
+		}
+		if !attrs.Has("data-gsxui-menu-sub-content") {
+			_gsxgw.BoolAttr("data-gsxui-menu-sub-content", true)
+		}
+		if !attrs.Has("popover") {
+			_gsxgw.S(" popover=\"auto\"")
+		}
+		if !attrs.Has("role") {
+			_gsxgw.S(" role=\"menu\"")
+		}
+		if !attrs.Has("tabindex") {
+			_gsxgw.S(" tabindex=\"-1\"")
+		}
+		if !attrs.Has("data-state") {
+			_gsxgw.S(" data-state=\"closed\"")
+		}
+		if !attrs.Has("data-side") {
+			_gsxgw.S(" data-side=\"right\"")
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("z-50 min-w-[96px] origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg"), _gsxrt.Class("opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95"), _gsxrt.Class("data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line dropdown.gsx:299:3
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }

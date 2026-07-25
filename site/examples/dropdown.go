@@ -15,4 +15,22 @@ func init() {
 		Node:       exampledropdown.Destructive(),
 		SourcePath: "dropdown/destructive.gsx",
 	})
+	Register("dropdown", Example{
+		Name:       "checkboxes",
+		Title:      "Checkbox items",
+		Node:       exampledropdown.Checkboxes(),
+		SourcePath: "dropdown/checkboxes.gsx",
+	})
+	Register("dropdown", Example{
+		Name:       "radios",
+		Title:      "Radio items",
+		Node:       exampledropdown.Radios(),
+		SourcePath: "dropdown/radios.gsx",
+	})
+	Register("dropdown", Example{
+		Name:       "submenu",
+		Title:      "Submenu",
+		Node:       exampledropdown.Submenu(),
+		SourcePath: "dropdown/submenu.gsx",
+	})
 }

@@ -106,6 +106,71 @@ func TestDropdownPopoverAttrOverridable(t *testing.T) {
 	}
 }
 
+func TestDropdownMenuCheckboxItemCheckedServerRendered(t *testing.T) {
+	on := render(t, ui.DropdownMenuCheckboxItem(true, "show-toolbar", gsx.Raw("Toolbar"), nil))
+	for _, want := range []string{
+		`role="menuitemcheckbox"`,
+		`aria-checked="true"`,
+		`data-gsxui-menu-checkbox-item`,
+		`data-value="show-toolbar"`,
+	} {
+		if !strings.Contains(on, want) {
+			t.Errorf("want %q\nin: %s", want, on)
+		}
+	}
+	off := render(t, ui.DropdownMenuCheckboxItem(false, "show-toolbar", gsx.Raw("Toolbar"), nil))
+	if !strings.Contains(off, `aria-checked="false"`) {
+		t.Errorf("want aria-checked=false\nin: %s", off)
+	}
+}
+
+func TestDropdownMenuRadioItemCheckedServerRendered(t *testing.T) {
+	got := render(t, ui.DropdownMenuRadioItem(true, "top", gsx.Raw("Top"), nil))
+	for _, want := range []string{`role="menuitemradio"`, `aria-checked="true"`, `data-value="top"`} {
+		if !strings.Contains(got, want) {
+			t.Errorf("want %q\nin: %s", want, got)
+		}
+	}
+}
+
+func TestDropdownMenuSubTriggerAria(t *testing.T) {
+	got := render(t, ui.DropdownMenuSubTrigger(gsx.Raw("More"), nil))
+	for _, want := range []string{
+		`aria-haspopup="menu"`,
+		`aria-expanded="false"`,
+		`data-gsxui-menu-sub-trigger`,
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("want %q\nin: %s", want, got)
+		}
+	}
+}
+
+func TestDropdownMenuSubContentIsANestedPopover(t *testing.T) {
+	// Spec §1: a non-nested popover opened programmatically light-dismisses
+	// its parent, so submenu content MUST be a popover nested in the parent.
+	got := render(t, ui.DropdownMenuSubContent(gsx.Raw("x"), nil))
+	for _, want := range []string{`popover="auto"`, `role="menu"`, `data-gsxui-menu-sub-content`} {
+		if !strings.Contains(got, want) {
+			t.Errorf("want %q\nin: %s", want, got)
+		}
+	}
+}
+
+func TestDropdownMenuSubNestsContentInsideParentContent(t *testing.T) {
+	got := render(t, ui.DropdownMenuContent(
+		ui.DropdownMenuSub(
+			gsx.Fragment(
+				ui.DropdownMenuSubTrigger(gsx.Raw("More"), nil),
+				ui.DropdownMenuSubContent(gsx.Raw("INNER"), nil),
+			), nil), nil))
+	outer := strings.Index(got, `data-slot="dropdown-menu-content"`)
+	inner := strings.Index(got, "INNER")
+	if outer < 0 || inner < 0 || inner < outer {
+		t.Errorf("sub-content must render INSIDE the parent content\nin: %s", got)
+	}
+}
+
 func TestDropdownPinned(t *testing.T) {
 	// Exact full-render pin for DropdownMenuItem's default variant, verified
 	// token-by-token against shadcn's DropdownMenuItem
