@@ -2,10 +2,16 @@
 // and Esc are free. Adapted from dropdown.js: same role="menu" reads,
 // arrow-key roving focus, close-on-select, and toggle-driven state/aria
 // sync — reused (mostly verbatim, see the shared block below) for the
-// data-gsxui-menu-* shared-items parts (CheckboxItem/RadioItem/Sub/
-// SubTrigger/SubContent — same generic hook names dropdown.js uses, see
-// ui/context-menu.gsx's own doc comments) this task adds. What's different
-// is how the menu OPENS:
+// shared-items parts (CheckboxItem/RadioItem/Sub/SubTrigger/SubContent)
+// this task adds. Their `data-gsxui-contextmenu-*` hooks are namespaced to
+// THIS component, not shared with dropdown.js's own `data-gsxui-dropdown-*`
+// equivalents — see this file's own MECHANISM note further down and
+// docs/jsx-parity.md's ## dropdown ledger entry for why a shared
+// `data-gsxui-menu-*` prefix across modules was tried and reverted (fix
+// round 1: gsxui.js's delegation registry dispatches to every handler whose
+// selector matches, regardless of which module registered it — an
+// unnamespaced shared selector fires BOTH modules' handlers on one click).
+// What's different is how the menu OPENS:
 //   - dropdown.js opens on a `click` on the trigger BUTTON; context-menu.js
 //     opens on a `contextmenu` (right-click) event anywhere inside the
 //     trigger AREA (event delegation via closest(), same as every other
@@ -64,7 +70,7 @@ const contentOf = (el) =>
 // submenu's own content — wherever a keydown/toggle handler must resolve
 // "which content level is this happening at," picking the NEAREST one via
 // closest().
-const CONTENT_SELECTOR = "[data-gsxui-contextmenu-content],[data-gsxui-menu-sub-content]";
+const CONTENT_SELECTOR = "[data-gsxui-contextmenu-content],[data-gsxui-contextmenu-sub-content]";
 const ITEM_SELECTOR =
   '[role="menuitem"]:not([aria-disabled]),[role="menuitemcheckbox"]:not([aria-disabled]),[role="menuitemradio"]:not([aria-disabled])';
 
@@ -80,9 +86,9 @@ function ownItems(content) {
   );
 }
 
-const subRootOf = (el) => el.closest("[data-gsxui-menu-sub]");
-const subContentOf = (trigger) => subRootOf(trigger)?.querySelector("[data-gsxui-menu-sub-content]");
-const subTriggerOf = (content) => subRootOf(content)?.querySelector("[data-gsxui-menu-sub-trigger]");
+const subRootOf = (el) => el.closest("[data-gsxui-contextmenu-sub]");
+const subContentOf = (trigger) => subRootOf(trigger)?.querySelector("[data-gsxui-contextmenu-sub-content]");
+const subTriggerOf = (content) => subRootOf(content)?.querySelector("[data-gsxui-contextmenu-sub-trigger]");
 
 on("contextmenu", "[data-gsxui-contextmenu-trigger]", (e, trigger) => {
   const content = contentOf(trigger);
@@ -135,12 +141,20 @@ on("contextmenu", "[data-gsxui-contextmenu-trigger]", (e, trigger) => {
 });
 
 // Everything below is dropdown.js's own menu-semantics block, adapted for
-// the data-gsxui-contextmenu-* selectors (top-level parts) and the shared
-// data-gsxui-menu-* selectors (CheckboxItem/RadioItem/Sub-family, same hook
-// names as dropdown.js — see ui/context-menu.gsx's own doc comments) —
-// duplicated here, not imported, per the task brief's own "no shared JS
-// module" constraint (registry.Deps is derived by go/parser over the
-// generated .x.go, so a JS-only shared module would be invisible to
+// this component's own `data-gsxui-contextmenu-*` selectors throughout —
+// including the shared-items parts (CheckboxItem/RadioItem/Sub-family),
+// which use `data-gsxui-contextmenu-checkbox-item` etc, NOT a prefix shared
+// with dropdown.js's own `data-gsxui-dropdown-checkbox-item` etc (fix round
+// 1: gsxui.js's single delegation registry, keyed only by `${type}:
+// ${capture}`, dispatches to EVERY handler whose selector matches the
+// target regardless of which module registered it — ui/index.js imports
+// both dropdown.js and context-menu.js, so an identical selector in both
+// files double-fires on one event; measured live: a checkbox item's
+// data-state/aria-checked net-zeroed back to its starting value and
+// gsxui:change fired twice). Duplicated here, not imported, per the task
+// brief's own "no shared JS module" constraint (registry.Deps is derived by
+// go/parser over the generated .x.go, so a JS-only shared module would be
+// invisible to
 // vendoring).
 
 on(
@@ -149,7 +163,7 @@ on(
   (e, content) => {
     const open = e.newState === "open";
     content.dataset.state = open ? "open" : "closed";
-    const isSub = content.matches("[data-gsxui-menu-sub-content]");
+    const isSub = content.matches("[data-gsxui-contextmenu-sub-content]");
     // Only a SubTrigger has aria-expanded/data-state to sync — the
     // top-level ContextMenuTrigger is a passive AREA with neither (see this
     // file's own header comment).
@@ -173,7 +187,7 @@ on(
 );
 
 const ACTIVATABLE_SELECTOR =
-  "[data-gsxui-contextmenu-item],[data-gsxui-menu-checkbox-item],[data-gsxui-menu-radio-item],[data-gsxui-menu-sub-trigger]";
+  "[data-gsxui-contextmenu-item],[data-gsxui-contextmenu-checkbox-item],[data-gsxui-contextmenu-radio-item],[data-gsxui-contextmenu-sub-trigger]";
 
 on("keydown", CONTENT_SELECTOR, (e, content) => {
   // Items are <div role="menuitem...">, not buttons — Enter/Space produce
@@ -185,7 +199,7 @@ on("keydown", CONTENT_SELECTOR, (e, content) => {
     const item = e.target.closest(ACTIVATABLE_SELECTOR);
     if (!item) return;
     e.preventDefault();
-    if (item.matches("[data-gsxui-menu-sub-trigger]")) {
+    if (item.matches("[data-gsxui-contextmenu-sub-trigger]")) {
       openSubAndFocusFirst(item);
       return;
     }
@@ -193,13 +207,13 @@ on("keydown", CONTENT_SELECTOR, (e, content) => {
     return;
   }
   if (e.key === "ArrowRight") {
-    const trigger = e.target.closest("[data-gsxui-menu-sub-trigger]");
+    const trigger = e.target.closest("[data-gsxui-contextmenu-sub-trigger]");
     if (!trigger) return;
     e.preventDefault();
     openSubAndFocusFirst(trigger);
     return;
   }
-  if (e.key === "ArrowLeft" && content.matches("[data-gsxui-menu-sub-content]")) {
+  if (e.key === "ArrowLeft" && content.matches("[data-gsxui-contextmenu-sub-content]")) {
     e.preventDefault();
     const trigger = subTriggerOf(content);
     content.hidePopover();
@@ -225,7 +239,7 @@ on("keydown", CONTENT_SELECTOR, (e, content) => {
     // sub-trigger by an actual pointer movement already fires pointerout on
     // it, which schedules the same close via the grace-period timer below.
     for (const item of items) {
-      if (item !== next && item.matches("[data-gsxui-menu-sub-trigger]") && item.dataset.state === "open") {
+      if (item !== next && item.matches("[data-gsxui-contextmenu-sub-trigger]") && item.dataset.state === "open") {
         closeSub(item);
       }
     }
@@ -251,7 +265,7 @@ on("click", "[data-gsxui-contextmenu-item]", (_e, item) => {
 // ADAPT per the task brief, not a Radix default (Radix's actual CheckboxItem
 // onSelect closes unless preventDefault is called; this port simply never
 // closes on a checkbox select).
-on("click", "[data-gsxui-menu-checkbox-item]", (_e, item) => {
+on("click", "[data-gsxui-contextmenu-checkbox-item]", (_e, item) => {
   if (item.getAttribute("aria-disabled") === "true" || "disabled" in item.dataset) return;
   const checked = item.dataset.state !== "checked";
   item.dataset.state = checked ? "checked" : "unchecked";
@@ -260,13 +274,13 @@ on("click", "[data-gsxui-menu-checkbox-item]", (_e, item) => {
 });
 
 // A radio item sets itself checked, clears every OTHER item in the SAME
-// radio group (data-gsxui-menu-radio-group scopes the sibling walk — a page
+// radio group (data-gsxui-contextmenu-radio-group scopes the sibling walk — a page
 // may have more than one group), and closes the menu like a plain Item.
-on("click", "[data-gsxui-menu-radio-item]", (_e, item) => {
+on("click", "[data-gsxui-contextmenu-radio-item]", (_e, item) => {
   if (item.getAttribute("aria-disabled") === "true" || "disabled" in item.dataset) return;
-  const group = item.closest("[data-gsxui-menu-radio-group]");
+  const group = item.closest("[data-gsxui-contextmenu-radio-group]");
   const siblings = group
-    ? [...group.querySelectorAll("[data-gsxui-menu-radio-item]")]
+    ? [...group.querySelectorAll("[data-gsxui-contextmenu-radio-item]")]
     : [item];
   for (const sibling of siblings) {
     const isThis = sibling === item;
@@ -287,7 +301,7 @@ on("click", "[data-gsxui-menu-radio-item]", (_e, item) => {
 // participates in roving focus, including a sub-trigger (its OWN open-on-
 // hover is wired separately below).
 const HOVERABLE_SELECTOR =
-  "[data-gsxui-contextmenu-item],[data-gsxui-menu-checkbox-item],[data-gsxui-menu-radio-item],[data-gsxui-menu-sub-trigger]";
+  "[data-gsxui-contextmenu-item],[data-gsxui-contextmenu-checkbox-item],[data-gsxui-contextmenu-radio-item],[data-gsxui-contextmenu-sub-trigger]";
 on("pointerover", HOVERABLE_SELECTOR, (_e, item) => {
   if (item.getAttribute("aria-disabled") === "true" || "disabled" in item.dataset) return;
   item.focus();
@@ -356,11 +370,11 @@ function openSubAndFocusFirst(trigger) {
   if (content) ownItems(content)[0]?.focus();
 }
 
-on("pointerover", "[data-gsxui-menu-sub-trigger]", (_e, trigger) => {
+on("pointerover", "[data-gsxui-contextmenu-sub-trigger]", (_e, trigger) => {
   if (trigger.getAttribute("aria-disabled") === "true" || "disabled" in trigger.dataset) return;
   openSub(trigger);
 });
-on("pointerout", "[data-gsxui-menu-sub-trigger]", (e, trigger) => {
+on("pointerout", "[data-gsxui-contextmenu-sub-trigger]", (e, trigger) => {
   const root = subRootOf(trigger);
   // Moving from the trigger into its OWN content (the gap between them, or
   // the content itself) is not a leave — same "moved within" guard as
@@ -368,11 +382,11 @@ on("pointerout", "[data-gsxui-menu-sub-trigger]", (e, trigger) => {
   if (root && e.relatedTarget instanceof Element && root.contains(e.relatedTarget)) return;
   scheduleCloseSub(trigger);
 });
-on("pointerover", "[data-gsxui-menu-sub-content]", (_e, content) => {
+on("pointerover", "[data-gsxui-contextmenu-sub-content]", (_e, content) => {
   const trigger = subTriggerOf(content);
   if (trigger) clearSubTimer(trigger);
 });
-on("pointerout", "[data-gsxui-menu-sub-content]", (e, content) => {
+on("pointerout", "[data-gsxui-contextmenu-sub-content]", (e, content) => {
   const root = subRootOf(content);
   if (root && e.relatedTarget instanceof Element && root.contains(e.relatedTarget)) return;
   const trigger = subTriggerOf(content);
@@ -385,7 +399,7 @@ on("pointerout", "[data-gsxui-menu-sub-content]", (e, content) => {
 // checking current state first, clicking an ALREADY-open sub-trigger (e.g.
 // one opened by hover) would re-focus its first item and steal the hover
 // highlight instead of acting as a close toggle.
-on("click", "[data-gsxui-menu-sub-trigger]", (_e, trigger) => {
+on("click", "[data-gsxui-contextmenu-sub-trigger]", (_e, trigger) => {
   if (trigger.getAttribute("aria-disabled") === "true" || "disabled" in trigger.dataset) return;
   if (trigger.dataset.state === "open") {
     closeSub(trigger);

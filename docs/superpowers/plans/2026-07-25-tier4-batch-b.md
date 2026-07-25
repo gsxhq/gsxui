@@ -44,9 +44,21 @@ Every task's requirements implicitly include this section.
   bare `block`/`grid` beats the UA's closed-popover `display: none` and
   leaves hit-testable ghost boxes. This has now bitten `dialog` and
   `sidebar`; do not make it three.
-- **Public JS hook attributes are `data-gsxui-*`.** `data-slot` is markup
-  identity, not a behavior contract. JS may match both, but every part JS
-  binds to must carry a `data-gsxui-*` hook.
+- **Public JS hook attributes are `data-gsxui-*`, and MUST be namespaced per
+  component.** `data-slot` is markup identity, not a behavior contract. JS
+  may match both, but every part JS binds to must carry a `data-gsxui-*`
+  hook.
+
+  **Namespacing is not cosmetic — it is required for correctness.**
+  `ui/gsxui.js`'s registry is keyed only by `${type}:${capture}`, and
+  `dispatch` invokes EVERY registered handler whose selector matches the
+  event target. Two modules registering the same selector both run. This
+  plan originally prescribed shared `data-gsxui-menu-*` hooks across
+  dropdown, context-menu and menubar; that shipped and was measured live —
+  one click on a checkbox item fired two `gsxui:change` events and left the
+  item unchanged, because the second handler read the state the first had
+  just written and flipped it back. Use `data-gsxui-dropdown-*`,
+  `data-gsxui-contextmenu-*`, `data-gsxui-menubar-*`. Never a shared prefix.
 - **Components render state, never own persistence.** Take state as a
   parameter, reflect it, emit via `emit()` in `ui/gsxui.js`: `gsxui:change`
   with a detail payload for state-carrying parts, `gsxui:open`/`gsxui:close`

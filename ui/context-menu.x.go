@@ -281,8 +281,8 @@ func ContextMenuCheckboxItem(checked bool, value string, children gsx.Node, attr
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"context-menu-checkbox-item\"")
 		}
-		if !attrs.Has("data-gsxui-menu-checkbox-item") {
-			_gsxgw.BoolAttr("data-gsxui-menu-checkbox-item", true)
+		if !attrs.Has("data-gsxui-contextmenu-checkbox-item") {
+			_gsxgw.BoolAttr("data-gsxui-contextmenu-checkbox-item", true)
 		}
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitemcheckbox\"")
@@ -333,7 +333,7 @@ func ContextMenuCheckboxItem(checked bool, value string, children gsx.Node, attr
 // server-rendered current value, stamped as data-value on the root — same
 // server-rendered-checked contract as CheckboxItem, kept in sync by
 // context-menu.js on selection and echoed on the group's own gsxui:change
-// event. data-gsxui-menu-radio-group is the proximity anchor context-menu.js
+// event. data-gsxui-contextmenu-radio-group is the proximity anchor context-menu.js
 // uses to scope "clear every OTHER item in this group" to this group alone.
 
 //line context-menu.gsx:187:1
@@ -345,8 +345,8 @@ func ContextMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) _gs
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"context-menu-radio-group\"")
 		}
-		if !attrs.Has("data-gsxui-menu-radio-group") {
-			_gsxgw.BoolAttr("data-gsxui-menu-radio-group", true)
+		if !attrs.Has("data-gsxui-contextmenu-radio-group") {
+			_gsxgw.BoolAttr("data-gsxui-contextmenu-radio-group", true)
 		}
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"group\"")
@@ -387,8 +387,8 @@ func ContextMenuRadioItem(checked bool, value string, children gsx.Node, attrs g
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"context-menu-radio-item\"")
 		}
-		if !attrs.Has("data-gsxui-menu-radio-item") {
-			_gsxgw.BoolAttr("data-gsxui-menu-radio-item", true)
+		if !attrs.Has("data-gsxui-contextmenu-radio-item") {
+			_gsxgw.BoolAttr("data-gsxui-contextmenu-radio-item", true)
 		}
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitemradio\"")
@@ -512,7 +512,7 @@ func ContextMenuShortcut(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // ContextMenuSub is the non-rendering submenu root — layout-neutral
 // (class="contents", same idiom as ContextMenu's own root and
 // DropdownMenuSub) so its SubTrigger/SubContent children sit inline in the
-// parent content's normal item flow. data-gsxui-menu-sub is the proximity
+// parent content's normal item flow. data-gsxui-contextmenu-sub is the proximity
 // anchor context-menu.js uses to pair a SubTrigger with its own SubContent
 // and to scope the pointer-leave grace-period boundary check to "the whole
 // sub" — same shape as DropdownMenuSub's own doc comment.
@@ -526,8 +526,8 @@ func ContextMenuSub(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"context-menu-sub\"")
 		}
-		if !attrs.Has("data-gsxui-menu-sub") {
-			_gsxgw.BoolAttr("data-gsxui-menu-sub", true)
+		if !attrs.Has("data-gsxui-contextmenu-sub") {
+			_gsxgw.BoolAttr("data-gsxui-contextmenu-sub", true)
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("contents"), _gsxrt.Class(attrs.Class()))
@@ -535,7 +535,7 @@ func ContextMenuSub(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line context-menu.gsx:254:86
+//line context-menu.gsx:254:93
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
@@ -566,8 +566,8 @@ func ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"context-menu-sub-trigger\"")
 		}
-		if !attrs.Has("data-gsxui-menu-sub-trigger") {
-			_gsxgw.BoolAttr("data-gsxui-menu-sub-trigger", true)
+		if !attrs.Has("data-gsxui-contextmenu-sub-trigger") {
+			_gsxgw.BoolAttr("data-gsxui-contextmenu-sub-trigger", true)
 		}
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitem\"")
@@ -624,8 +624,8 @@ func ContextMenuSubContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"context-menu-sub-content\"")
 		}
-		if !attrs.Has("data-gsxui-menu-sub-content") {
-			_gsxgw.BoolAttr("data-gsxui-menu-sub-content", true)
+		if !attrs.Has("data-gsxui-contextmenu-sub-content") {
+			_gsxgw.BoolAttr("data-gsxui-contextmenu-sub-content", true)
 		}
 		if !attrs.Has("popover") {
 			_gsxgw.S(" popover=\"auto\"")

@@ -280,8 +280,8 @@ func DropdownMenuCheckboxItem(checked bool, value string, children gsx.Node, att
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dropdown-menu-checkbox-item\"")
 		}
-		if !attrs.Has("data-gsxui-menu-checkbox-item") {
-			_gsxgw.BoolAttr("data-gsxui-menu-checkbox-item", true)
+		if !attrs.Has("data-gsxui-dropdown-checkbox-item") {
+			_gsxgw.BoolAttr("data-gsxui-dropdown-checkbox-item", true)
 		}
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitemcheckbox\"")
@@ -332,7 +332,7 @@ func DropdownMenuCheckboxItem(checked bool, value string, children gsx.Node, att
 // server-rendered current value, stamped as data-value on the root — the
 // same "checked state is server-rendered" contract as CheckboxItem, kept in
 // sync by dropdown.js on selection and echoed on the group's own
-// gsxui:change event. data-gsxui-menu-radio-group is the proximity anchor
+// gsxui:change event. data-gsxui-dropdown-radio-group is the proximity anchor
 // dropdown.js uses to scope "clear every OTHER item in this group" to this
 // group alone, not every radio item on the page.
 
@@ -345,8 +345,8 @@ func DropdownMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) _g
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dropdown-menu-radio-group\"")
 		}
-		if !attrs.Has("data-gsxui-menu-radio-group") {
-			_gsxgw.BoolAttr("data-gsxui-menu-radio-group", true)
+		if !attrs.Has("data-gsxui-dropdown-radio-group") {
+			_gsxgw.BoolAttr("data-gsxui-dropdown-radio-group", true)
 		}
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"group\"")
@@ -387,8 +387,8 @@ func DropdownMenuRadioItem(checked bool, value string, children gsx.Node, attrs 
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dropdown-menu-radio-item\"")
 		}
-		if !attrs.Has("data-gsxui-menu-radio-item") {
-			_gsxgw.BoolAttr("data-gsxui-menu-radio-item", true)
+		if !attrs.Has("data-gsxui-dropdown-radio-item") {
+			_gsxgw.BoolAttr("data-gsxui-dropdown-radio-item", true)
 		}
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitemradio\"")
@@ -508,8 +508,8 @@ func DropdownMenuShortcut(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // DropdownMenuSub is the non-rendering submenu root — layout-neutral
 // (class="contents", same idiom as DropdownMenu's own root) so its
 // SubTrigger/SubContent children sit inline in the parent content's normal
-// item flow. data-gsxui-menu-sub is the proximity anchor dropdown.js uses to
-// pair a SubTrigger with its own SubContent (closest("[data-gsxui-menu-sub]")
+// item flow. data-gsxui-dropdown-sub is the proximity anchor dropdown.js uses to
+// pair a SubTrigger with its own SubContent (closest("[data-gsxui-dropdown-sub]")
 // — same shape as DropdownMenu's own data-gsxui-dropdown root) and to scope
 // the pointer-leave grace-period boundary check to "the whole sub."
 
@@ -522,8 +522,8 @@ func DropdownMenuSub(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dropdown-menu-sub\"")
 		}
-		if !attrs.Has("data-gsxui-menu-sub") {
-			_gsxgw.BoolAttr("data-gsxui-menu-sub", true)
+		if !attrs.Has("data-gsxui-dropdown-sub") {
+			_gsxgw.BoolAttr("data-gsxui-dropdown-sub", true)
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("contents"), _gsxrt.Class(attrs.Class()))
@@ -531,7 +531,7 @@ func DropdownMenuSub(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line dropdown.gsx:250:87
+//line dropdown.gsx:250:91
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
@@ -564,8 +564,8 @@ func DropdownMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dropdown-menu-sub-trigger\"")
 		}
-		if !attrs.Has("data-gsxui-menu-sub-trigger") {
-			_gsxgw.BoolAttr("data-gsxui-menu-sub-trigger", true)
+		if !attrs.Has("data-gsxui-dropdown-sub-trigger") {
+			_gsxgw.BoolAttr("data-gsxui-dropdown-sub-trigger", true)
 		}
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitem\"")
@@ -630,8 +630,8 @@ func DropdownMenuSubContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"dropdown-menu-sub-content\"")
 		}
-		if !attrs.Has("data-gsxui-menu-sub-content") {
-			_gsxgw.BoolAttr("data-gsxui-menu-sub-content", true)
+		if !attrs.Has("data-gsxui-dropdown-sub-content") {
+			_gsxgw.BoolAttr("data-gsxui-dropdown-sub-content", true)
 		}
 		if !attrs.Has("popover") {
 			_gsxgw.S(" popover=\"auto\"")

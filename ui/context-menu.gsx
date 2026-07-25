@@ -157,7 +157,7 @@ component ContextMenuGroup(children gsx.Node, attrs gsx.Attrs) {
 component ContextMenuCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-slot="context-menu-checkbox-item"
-		data-gsxui-menu-checkbox-item
+		data-gsxui-contextmenu-checkbox-item
 		role="menuitemcheckbox"
 		data-value={value}
 		{ if checked {
@@ -182,10 +182,10 @@ component ContextMenuCheckboxItem(checked bool, value string, children gsx.Node,
 // server-rendered current value, stamped as data-value on the root — same
 // server-rendered-checked contract as CheckboxItem, kept in sync by
 // context-menu.js on selection and echoed on the group's own gsxui:change
-// event. data-gsxui-menu-radio-group is the proximity anchor context-menu.js
+// event. data-gsxui-contextmenu-radio-group is the proximity anchor context-menu.js
 // uses to scope "clear every OTHER item in this group" to this group alone.
 component ContextMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="context-menu-radio-group" data-gsxui-menu-radio-group role="group" data-value={value} { attrs... }>
+	<div data-slot="context-menu-radio-group" data-gsxui-contextmenu-radio-group role="group" data-value={value} { attrs... }>
 		{ children }
 	</div>
 }
@@ -202,7 +202,7 @@ component ContextMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs
 component ContextMenuRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-slot="context-menu-radio-item"
-		data-gsxui-menu-radio-item
+		data-gsxui-contextmenu-radio-item
 		role="menuitemradio"
 		data-value={value}
 		{ if checked {
@@ -246,12 +246,12 @@ component ContextMenuShortcut(children gsx.Node, attrs gsx.Attrs) {
 // ContextMenuSub is the non-rendering submenu root — layout-neutral
 // (class="contents", same idiom as ContextMenu's own root and
 // DropdownMenuSub) so its SubTrigger/SubContent children sit inline in the
-// parent content's normal item flow. data-gsxui-menu-sub is the proximity
+// parent content's normal item flow. data-gsxui-contextmenu-sub is the proximity
 // anchor context-menu.js uses to pair a SubTrigger with its own SubContent
 // and to scope the pointer-leave grace-period boundary check to "the whole
 // sub" — same shape as DropdownMenuSub's own doc comment.
 component ContextMenuSub(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="context-menu-sub" data-gsxui-menu-sub class="contents" { attrs... }>{ children }</div>
+	<div data-slot="context-menu-sub" data-gsxui-contextmenu-sub class="contents" { attrs... }>{ children }</div>
 }
 
 // ContextMenuSubTrigger opens/closes its sibling ContextMenuSubContent
@@ -270,7 +270,7 @@ component ContextMenuSub(children gsx.Node, attrs gsx.Attrs) {
 component ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-slot="context-menu-sub-trigger"
-		data-gsxui-menu-sub-trigger
+		data-gsxui-contextmenu-sub-trigger
 		role="menuitem"
 		aria-haspopup="menu"
 		aria-expanded="false"
@@ -301,7 +301,7 @@ component ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 component ContextMenuSubContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-slot="context-menu-sub-content"
-		data-gsxui-menu-sub-content
+		data-gsxui-contextmenu-sub-content
 		popover="auto"
 		role="menu"
 		tabindex="-1"
