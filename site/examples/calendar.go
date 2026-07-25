@@ -31,4 +31,50 @@ func init() {
 			return examplecalendar.Basic(month)
 		},
 	})
+	Register("calendar", Example{
+		Name:       "bounded",
+		Title:      "Bounded",
+		Node:       examplecalendar.Bounded(),
+		SourcePath: "calendar/bounded.gsx",
+		// No Query hook: the bounded-navigation browser tests never re-render
+		// the server at a different month, they only click prev/next and
+		// assert the client-side bound-enforcement calendar.js now has.
+	})
+	Register("calendar", Example{
+		Name:       "loaded",
+		Title:      "Loaded",
+		Node:       examplecalendar.Loaded(examplecalendar.LoadedDefaultMonth),
+		SourcePath: "calendar/loaded.gsx",
+		// Query answers ?month= the same way basic's own hook does — Task 4
+		// review's Important finding 2 needs a genuine client-vs-server
+		// agreement diff for an example that actually carries a selection
+		// and disabled rules, not just basic's empty ones.
+		Query: func(q url.Values) gsx.Node {
+			month := examplecalendar.LoadedDefaultMonth
+			if v := q.Get("month"); v != "" {
+				if t, err := time.Parse("2006-01", v); err == nil {
+					month = t
+				}
+			}
+			return examplecalendar.Loaded(month)
+		},
+	})
+	Register("calendar", Example{
+		Name:       "loadedrange",
+		Title:      "Loaded range",
+		Node:       examplecalendar.LoadedRange(examplecalendar.LoadedRangeDefaultMonth),
+		SourcePath: "calendar/loaded.gsx",
+		// Same reason as loaded's own Query hook, for mode="range" instead —
+		// Task 4 review's Important finding 2 also named range flags
+		// specifically as zero-coverage.
+		Query: func(q url.Values) gsx.Node {
+			month := examplecalendar.LoadedRangeDefaultMonth
+			if v := q.Get("month"); v != "" {
+				if t, err := time.Parse("2006-01", v); err == nil {
+					month = t
+				}
+			}
+			return examplecalendar.LoadedRange(month)
+		},
+	})
 }

@@ -114,6 +114,58 @@ function sameUTCDay(a, b) {
   return a !== null && b !== null && a.getTime() === b.getTime();
 }
 
+// navBounds reads the root's resolved nav-year bounds (calendar.gsx's own
+// calendarNavBounds, always present — see that file's doc comment on why
+// this pair is unconditional rather than omit-when-unset like the other
+// root attributes).
+function navBounds(root) {
+  return {
+    fromYear: Number(root.dataset.gsxuiCalendarNavFromYear),
+    toYear: Number(root.dataset.gsxuiCalendarNavToYear),
+  };
+}
+
+// prevDisabledAt/nextDisabledAt port calendar.gsx's own
+// calendarPrevDisabled/calendarNextDisabled. month here is 0-based (JS
+// Date convention, January = 0), unlike Go's 1-based time.Month — so the
+// bound compares against 0/11 instead of Go's time.January/time.December.
+function prevDisabledAt(year, month, fromYear) {
+  return year < fromYear || (year === fromYear && month <= 0);
+}
+function nextDisabledAt(year, month, toYear) {
+  return year > toYear || (year === toYear && month >= 11);
+}
+
+// setNavDisabled mirrors calendar.gsx's own `{ if prevDisabled/nextDisabled
+// { aria-disabled="true" tabindex="-1" } }` — both attributes present only
+// while at the bound, both entirely ABSENT otherwise (never a native
+// disabled attribute, never aria-disabled="false"/tabindex="0" — that is
+// not what the server ever writes, and the button must stay reachable by
+// Tab at a bound, per calendar.gsx's own doc comment on this exact point).
+function setNavDisabled(button, atBound) {
+  if (!button) return;
+  if (atBound) {
+    button.setAttribute("aria-disabled", "true");
+    button.setAttribute("tabindex", "-1");
+  } else {
+    button.removeAttribute("aria-disabled");
+    button.removeAttribute("tabindex");
+  }
+}
+
+// syncNavButtons re-evaluates the prev/next buttons' aria-disabled/tabindex
+// for the just-navigated-to (year, month) against the root's own nav-bounds
+// attributes. Task 3 rendered this correctly for the server's own initial
+// month only; without recomputing it here, a caller with a narrow
+// fromYear/toYear range (e.g. both 2026) could click straight past the
+// declared bound into a month calendar.gsx can never render for this
+// component — Task 4 review's Important finding 1.
+function syncNavButtons(root, year, month) {
+  const { fromYear, toYear } = navBounds(root);
+  setNavDisabled(root.querySelector("[data-gsxui-calendar-prev]"), prevDisabledAt(year, month, fromYear));
+  setNavDisabled(root.querySelector("[data-gsxui-calendar-next]"), nextDisabledAt(year, month, toYear));
+}
+
 // disabledRules reads the root's four disabled-rule attributes (calendar.gsx,
 // Task 4) into the shape dayDisabled below expects.
 function disabledRules(root) {
@@ -247,15 +299,16 @@ function syncDropdowns(root, year, month) {
 }
 
 // goTo is the one path every navigation handler below funnels through:
-// write the new month onto the root, repaint the 42 cells, and sync the
-// caption/dropdowns to match — the same four things calendar.gsx's own
-// render computes from a fresh (year, month), just applied in place instead
-// of rebuilt.
+// write the new month onto the root, repaint the 42 cells, sync the
+// caption/dropdowns, and re-evaluate the nav buttons' own bound state —
+// the same things calendar.gsx's own render computes from a fresh
+// (year, month), just applied in place instead of rebuilt.
 function goTo(root, year, month) {
   root.dataset.gsxuiCalendarMonth = formatMonth(year, month);
   repaint(root, year, month);
   updateCaption(root, year, month);
   syncDropdowns(root, year, month);
+  syncNavButtons(root, year, month);
 }
 
 on("click", "[data-gsxui-calendar-prev]", (_event, el) => {

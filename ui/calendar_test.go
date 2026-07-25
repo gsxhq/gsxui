@@ -14,9 +14,10 @@ import (
 // "every data-date in the document" split. The <td> cell carries its own
 // data-date too (Task 1), so a naive split would double-count once Task 4
 // adds the button's own copy (see calendar.gsx's own comment on why the
-// button needs it: jstest/specs/calendar.spec.ts's browser-side gridDates
-// reads it directly off [data-gsxui-calendar-day], the one selector that
-// is unambiguously one-per-cell).
+// button needs it — Task 5's click handler matches the button and needs
+// its date without walking up to the cell, not any uniqueness argument):
+// jstest/specs/calendar.spec.ts's browser-side gridDates/gridCells helpers
+// read it directly off [data-gsxui-calendar-day] for the same reason.
 func gridDates(t *testing.T, html string) []string {
 	t.Helper()
 	var out []string
@@ -414,12 +415,12 @@ func TestCalendarDisabledBounds(t *testing.T) {
 }
 
 // The day button carries its own data-date, additive to (not instead of) the
-// enclosing <td>'s copy — Task 4's addition, so calendar.js and the browser
-// suite can read/write a day's date from the one selector
-// ([data-gsxui-calendar-day]) that is unambiguously one-per-cell. Anchored
-// on the button's own opening tag specifically, so this can't pass merely
-// because the (different) enclosing <td> element happens to carry the same
-// attribute already.
+// enclosing <td>'s copy — Task 4's addition, so Task 5's click handler and
+// calendar.js's own in-place update can read a day's date straight off the
+// button the user actually interacts with, without walking up to the
+// enclosing cell first. Anchored on the button's own opening tag
+// specifically, so this can't pass merely because the (different) enclosing
+// <td> element happens to carry the same attribute already.
 func TestCalendarDayButtonCarriesItsOwnDate(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
@@ -481,6 +482,49 @@ func TestCalendarRootOmitsDisabledRulesWhenUnset(t *testing.T) {
 		if strings.Contains(got, unwanted) {
 			t.Errorf("root should omit %s when unset\nin: %s", unwanted, got)
 		}
+	}
+}
+
+// Nav bounds are unconditionally on the root — Task 4 review's Important
+// finding 1: without them, calendar.js has no way to recompute
+// calendarPrevDisabled/calendarNextDisabled after a client-side navigation,
+// so a caller with a narrow fromYear/toYear range could be clicked straight
+// past the declared bound into a month the server can never render for
+// this component (and, in captionLayout="dropdown", past the year
+// <select>'s own last <option>).
+func TestCalendarRootCarriesResolvedNavBounds(t *testing.T) {
+	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 2020, 2030,
+		time.Time{}, time.Time{}, nil, nil, "", nil))
+
+	for _, want := range []string{
+		`data-gsxui-calendar-nav-from-year="2020"`,
+		`data-gsxui-calendar-nav-to-year="2030"`,
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("root missing %q\nin: %s", want, got)
+		}
+	}
+}
+
+// A zero fromYear/toYear resolves through calendarNavBounds's own default
+// (currentYear-100/currentYear+10) — the root must carry that RESOLVED
+// value, not a bare "0" or an omitted attribute (unlike -selected/-from/-to/
+// the disabled rules, a nav bound always has a value, so it is never
+// omitted), since calendar.js has no other way to learn the default bound.
+func TestCalendarRootCarriesDefaultNavBoundsWhenUnset(t *testing.T) {
+	currentYear := time.Now().UTC().Year()
+	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "", nil))
+
+	wantFrom := fmt.Sprintf(`data-gsxui-calendar-nav-from-year="%d"`, currentYear-100)
+	wantTo := fmt.Sprintf(`data-gsxui-calendar-nav-to-year="%d"`, currentYear+10)
+	if !strings.Contains(got, wantFrom) {
+		t.Errorf("root missing %q\nin: %s", wantFrom, got)
+	}
+	if !strings.Contains(got, wantTo) {
+		t.Errorf("root missing %q\nin: %s", wantTo, got)
 	}
 }
 

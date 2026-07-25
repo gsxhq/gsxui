@@ -449,6 +449,22 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 // application — have to reach the client too. Same omit-when-empty
 // convention as -selected/-from/-to.
 //
+// data-gsxui-calendar-nav-from-year/-nav-to-year carry calendarNavBounds'
+// own resolved (navFromYear, navToYear) — unconditionally, never omitted,
+// since a bound always has a value (calendarNavBounds defaults it when the
+// caller passes zero). Task 4 review found that without this, calendar.js
+// had no way to recompute calendarPrevDisabled/calendarNextDisabled after a
+// client-side navigation: prevDisabled/nextDisabled above are only ever
+// true for the SERVER's initial (year, month), so a caller who configures a
+// narrow fromYear/toYear range (e.g. both 2026) could click past the
+// declared bound into a month the server can never render for this
+// component, and — in captionLayout="dropdown" — past the year <select>'s
+// own last <option>, leaving it holding a value with no matching option.
+// calendar.js ports calendarPrevDisabled/calendarNextDisabled themselves and
+// re-applies the aria-disabled/tabindex pair to the nav buttons on every
+// navigation, exactly mirroring the { if prevDisabled/nextDisabled { ... } }
+// omit-otherwise shape below.
+//
 // Two distinct data-attribute sets, on two elements, per source map §8
 // finding 3 and the brief's DOM contract — not collapsed onto one element:
 // the cell carries data-disabled/data-selected/aria-selected (alongside
@@ -464,15 +480,24 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 //
 // Task 4 adds one exception to "the cell owns data-date, the button doesn't":
 // the button ALSO carries its own data-date (identical value, additive —
-// the cell's copy is untouched). calendar.js's selector for "one per day" is
-// [data-gsxui-calendar-day] (the button, the only element that's uniquely
-// and unambiguously one-per-cell without also matching the <thead> row), so
-// the browser suite (jstest/specs/calendar.spec.ts's gridDates helper) and
-// calendar.js's own in-place update both read/write data-date there rather
-// than walking up to the enclosing <td>. ui/calendar_test.go's gridDates
-// helper was updated in lockstep to read the button's copy specifically
-// (scoped to the data-gsxui-calendar-day tag), not a bare "count every
-// data-date in the document" split, which would now double-count.
+// the cell's copy is untouched). NOT because [data-gsxui-calendar-day] is
+// the only one-per-cell selector — td[role="gridcell"] already was, just as
+// uniquely (the header row's cells are <th>, never <td>) — but because
+// Task 5's click handler (day selection) matches the BUTTON, the thing the
+// user actually clicks, and needs that day's date to act on. Reading it
+// off the button directly is one property access; reading it off the
+// enclosing cell is a walk (`closest("td")`) for information the clicked
+// element could have carried itself. calendar.js's own in-place update and
+// jstest/specs/calendar.spec.ts's gridDates/gridCells helpers follow the
+// same button-first convention for consistency, not because any of them
+// individually required it.
+//
+// This makes data-date one fact recorded in two places, not two facts —
+// keep them equal on every write. calendar.js's repaint already writes both
+// (cell.dataset.date and button.dataset.date) from the same loop-local
+// dateISO; a future change that updates only one of the two copies (on
+// either the Go or the JS side) desyncs them silently, since nothing else
+// here cross-checks the pair.
 //
 // The cell's data-selected/aria-selected fire in EVERY mode, including
 // range: react-day-picker's own modifiers.selected (source map §4) is true
@@ -584,6 +609,8 @@ component Calendar(
 		{ if disabledWeekdaysAttr != "" {
 			data-gsxui-calendar-disabled-weekdays={ disabledWeekdaysAttr }
 		} }
+		data-gsxui-calendar-nav-from-year={ strconv.Itoa(navFromYear) }
+		data-gsxui-calendar-nav-to-year={ strconv.Itoa(navToYear) }
 		class={ calendarRootClass }
 		{ attrs... }
 	>
