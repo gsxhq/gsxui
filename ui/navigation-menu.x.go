@@ -20,64 +20,49 @@ import (
 // reference checkout to trace, per docs/superpowers/plans/2026-07-25-tier4-
 // source-map-menus.md ## navigation-menu; a <nav> landmark is the
 // well-established public Radix/WAI-ARIA convention for this component).
-// viewport: "" (default, true — the shared measuring panel described
-// below) | "false" (each Content becomes its own self-contained floating
-// panel instead, via the group-data-[viewport=false]/navigation-menu:
-// selectors baked into NavigationMenuContent's own class).
 //
-// ARCHITECTURE (ADAPT, load-bearing — no portal, and no DOM-node-moving
-// either, a genuinely new shape among this codebase's menu family): Radix's
-// own NavigationMenuContent, when a shared Viewport exists, portals into it
-// so only the active panel's real DOM lives inside the one bordered/
-// shadowed box, which is how Viewport gets to measure and resize itself
-// off whatever child happens to be mounted — the CSS custom properties
-// that drive that sizing (--radix-navigation-menu-viewport-width/height)
-// are set by Radix's own Viewport runtime, absent from the reference
-// checkout (derived-not-read, source map ## navigation-menu §2). gsx has
-// no portal. This port does not simulate one by reparenting DOM nodes at
-// runtime either — instead every NavigationMenuContent renders DOM-nested
-// inside its own NavigationMenuItem (never moved), matching the
-// DOM-nesting-not-portalling ADAPT every sibling submenu in this codebase
-// already uses, and is independently popover="manual", escaping overflow/
-// clipping via the native top layer exactly like every other popover here.
-// NavigationMenuViewport, when data-viewport!="false", is a SEPARATE,
-// second popover="manual" panel shown/positioned/sized in lockstep with
-// whichever Content is currently active — coincident, not containing: both
-// open at the identical fixed left/top rect (computed off the List's own
-// boundingClientRect, so every item's panel appears at the same on-screen
-// spot — the actual "shared viewport" visual contract), Viewport supplies
-// the chrome (border/bg/shadow) and is resized to the active Content's own
-// measured width/height (ui/navigation-menu.js), Content itself stays
-// unchromed in this mode (its own group-data-[viewport=false] chrome block
-// simply never matches, same as upstream). Two coincident top-layer
-// popovers, not one containing the other — chosen over a DOM-move because
-// every show/hide stays a single, independent, idempotent call, the same
-// shape as every other popover pair in this codebase, with no
-// node-reparenting bookkeeping to get wrong.
-//
-// SIZING (source map ## navigation-menu §3, decisive): discrete,
-// event-driven state is sufficient — no CSS in any of the eight
-// independently-authored nova-family stylesheets transitions width/height
-// on the viewport, only a scale transform gated on open/close. Viewport is
-// therefore sized ONCE on activation (a plain getBoundingClientRect read
-// off the newly-active Content) plus a ResizeObserver on that same Content
-// for late-arriving resizes (an image finishing loading, dynamically
-// populated content) — explicitly NOT a requestAnimationFrame tweening
-// loop between panel sizes, which the reference does not have.
-//
-// Hover and focus both open; popover="manual" gives the top layer without
-// light dismiss/Esc — modeled on ui/hover-card.js's own deliberate choice
-// (hover/focus alone drive open/close), not dropdown.js's own click+toggle-
-// event model, since this is hover-driven the same way a hover card is.
-// data-state drives the discrete-transition open/close, reused
-// byte-identically from the popover family (ui/dropdown.gsx's own block).
-// Requires the navigation-menu behavior module (ui/navigation-menu.js).
+// GAP (shared-viewport mode not shipped — FIX ROUND 1, reverted from a
+// broken v1 attempt): shadcn's own NavigationMenu takes a `viewport` prop,
+// defaulting true, which portals every NavigationMenuContent into one
+// shared NavigationMenuViewport panel that morphs between differently-sized
+// menus. This port ships ONLY the `viewport={false}` configuration — the
+// OTHER first-class mode new-york-v4's own navigation-menu.tsx supports,
+// with its own real class strings, not an invented fallback. Each
+// NavigationMenuContent below is unconditionally its own fully-chromed
+// panel (border/bg/shadow/radius baked in, no group-data-[viewport=false]
+// gate — there is no second mode to gate against). Two reasons, not one:
+// (1) gsx has no portal, and reproducing Radix's Content-portals-into-
+// Viewport model without one means moving a live popover between DOM
+// parents at runtime — a v1 of this component tried the alternative (two
+// COINCIDENT popovers, Content and a separate Viewport shown/positioned at
+// the same rect instead of one containing the other) and it does not work:
+// once both are promoted to the top layer, whichever is shown second
+// paints an OPAQUE surface directly over the other — the viewport becomes
+// a lid over the content, not a frame around it, and the mega-menu rendered
+// as an empty box with the links completely unreachable (confirmed live,
+// `elementFromPoint` returned the viewport at every sampled point inside
+// the panel). (2) The shared viewport's only real visual advantage is that
+// morph between differently-sized panels, and the source map's own decisive
+// finding (`## navigation-menu` §3) already established that none of the
+// eight nova-family stylesheets transitions width or height on the
+// viewport — only a scale transform on open/close. The shared viewport
+// buys essentially nothing this port doesn't already get from each
+// Content's own independent open/close scale transition. Adopting the
+// shared-viewport mode later would need genuine runtime relocation of the
+// Content node into a Viewport node (an appendChild-based move, which does
+// not lose the node's own listeners/state) — deliberately not attempted
+// here. `NavigationMenuViewport` itself is DROPPED, not kept as a no-op:
+// the viewport={false} path this port actually ships never renders it at
+// all (`{viewport && <NavigationMenuViewport />}` in shadcn's own source),
+// so there is nothing left for it to do — shipping it anyway would be
+// exactly the "hook nothing binds to" mistake already caught and reverted
+// once earlier in this batch.
 
-//line navigation-menu.gsx:68:1
-func NavigationMenu(viewport string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+//line navigation-menu.gsx:53:1
+func NavigationMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line navigation-menu.gsx:69:2
+//line navigation-menu.gsx:54:2
 		_gsxgw.S("<nav")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"navigation-menu\"")
@@ -85,43 +70,29 @@ func NavigationMenu(viewport string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 		if !attrs.Has("data-gsxui-navigation-menu") {
 			_gsxgw.BoolAttr("data-gsxui-navigation-menu", true)
 		}
-		if viewport == "false" {
-			if !attrs.Has("data-viewport") {
-				_gsxgw.S(" data-viewport=\"false\"")
-			}
-		} else {
-			if !attrs.Has("data-viewport") {
-				_gsxgw.S(" data-viewport=\"true\"")
-			}
-		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/navigation-menu relative flex max-w-max flex-1 items-center justify-center"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line navigation-menu.gsx:80:3
+//line navigation-menu.gsx:60:3
 		_gsxgw.Node(ctx, children)
-//line navigation-menu.gsx:81:3
-		if viewport != "false" {
-//line navigation-menu.gsx:82:4
-			_gsxgw.NodeResult(_gsxrenderNavigationMenuViewport(ctx, _gsxgw, nil))
-		}
 		_gsxgw.S("</nav>")
 		return _gsxgw.Err()
 	})
 }
 
-//line navigation-menu.gsx:87:1
+//line navigation-menu.gsx:64:1
 // NavigationMenuList is the <ul> holding NavigationMenuItems (and,
 // optionally, a trailing NavigationMenuIndicator — ui/navigation-menu.js
 // positions it relative to this element).
 
-//line navigation-menu.gsx:90:1
+//line navigation-menu.gsx:67:1
 func NavigationMenuList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line navigation-menu.gsx:91:2
+//line navigation-menu.gsx:68:2
 		_gsxgw.S("<ul")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"navigation-menu-list\"")
@@ -135,25 +106,25 @@ func NavigationMenuList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line navigation-menu.gsx:92:3
+//line navigation-menu.gsx:69:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</ul>")
 		return _gsxgw.Err()
 	})
 }
 
-//line navigation-menu.gsx:96:1
+//line navigation-menu.gsx:73:1
 // NavigationMenuItem is the <li> pairing one NavigationMenuTrigger with its
 // own NavigationMenuContent — data-gsxui-navigation-menu-item is the
 // proximity anchor ui/navigation-menu.js uses to resolve "this trigger's
 // own content" (closest("[data-gsxui-navigation-menu-item]")), the same
 // role DropdownMenu's own root plays for its single trigger/content pair.
 
-//line navigation-menu.gsx:101:1
+//line navigation-menu.gsx:78:1
 func NavigationMenuItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line navigation-menu.gsx:102:2
+//line navigation-menu.gsx:79:2
 		_gsxgw.S("<li")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"navigation-menu-item\"")
@@ -167,7 +138,7 @@ func NavigationMenuItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line navigation-menu.gsx:103:3
+//line navigation-menu.gsx:80:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</li>")
 		return _gsxgw.Err()
@@ -192,7 +163,7 @@ func NavigationMenuItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // retarget except where a source-map finding explicitly says otherwise (as
 // it does, narrowly, for bg-background alone).
 //
-//line navigation-menu.gsx:107:1
+//line navigation-menu.gsx:84:1
 func NavigationMenuTriggerStyle() string {
 	return "group inline-flex h-9 w-max items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-[color,box-shadow] outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-accent/50 data-[state=open]:text-accent-foreground data-[state=open]:hover:bg-accent data-[state=open]:focus:bg-accent"
 }
@@ -203,18 +174,20 @@ func NavigationMenuTriggerStyle() string {
 // cn(NavigationMenuTriggerStyle(), "group", className) verbatim — the base
 // string already starts with "group"; shadcn's own cn() call adds a second,
 // redundant "group" token as a separate argument (source map ## navigation-
-// menu §1: "verbatim, not a transcription error"). The trailing chevron
-// keeps new-york-v4's own selector spelling (group-data-[state=open]:, the
-// standing house exception) rather than nova's own group-data-open:/
-// group-data-popup-open: shorthand pair — the second of which belongs to
-// Base UI's differently-shaped primitive per the source map's own
-// provenance note and has no Radix data-state equivalent to key off here.
+// menu §1: "verbatim, not a transcription error") — this port's own class
+// merge does not dedupe it, so it renders twice, matching the literal
+// source. The trailing chevron keeps new-york-v4's own selector spelling
+// (group-data-[state=open]:, the standing house exception) rather than
+// nova's own group-data-open:/group-data-popup-open: shorthand pair — the
+// second of which belongs to Base UI's differently-shaped primitive per the
+// source map's own provenance note and has no Radix data-state equivalent
+// to key off here.
 
-//line navigation-menu.gsx:140:1
+//line navigation-menu.gsx:119:1
 func NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line navigation-menu.gsx:141:2
+//line navigation-menu.gsx:120:2
 		_gsxgw.S("<button")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"navigation-menu-trigger\"")
@@ -237,42 +210,51 @@ func NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line navigation-menu.gsx:150:3
+//line navigation-menu.gsx:129:3
 		_gsxgw.Node(ctx, children)
-//line navigation-menu.gsx:151:3
+//line navigation-menu.gsx:130:3
 		_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.Attrs{{Key: "class", Value: "relative top-[1px] ml-1 size-3 transition duration-300 group-data-[state=open]:rotate-180"}}...))
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line navigation-menu.gsx:155:1
+//line navigation-menu.gsx:134:1
 // NavigationMenuContent is the panel a NavigationMenuTrigger opens — see
-// the file header's own ARCHITECTURE paragraph for why it is independently
-// popover="manual", DOM-nested inside its own NavigationMenuItem rather
-// than portalled or moved. data-side="bottom" is server-rendered
-// statically — ui/navigation-menu.js always opens below the list, the same
-// hand-rolled-fixed-position stopgap as every sibling popover in this
-// codebase (see docs/jsx-parity.md ## dropdown NOTE). The six-token
-// data-[motion=…]/animate-in/out/fade-in/out slide mechanism (new-york-v4's
-// own direction-aware "which side did this panel enter from" animation,
-// driven by Radix's own runtime index tracking) is NOT reproduced — GAP,
-// ledgered per the task's own binding decision to reuse the popover
-// family's discrete-transition block byte-identically instead, the same
-// six-tokens-replaced-by-one-mechanism RULING ## menubar's own
+// the file header's own GAP paragraph for why this is the shadcn
+// `viewport={false}` configuration, unconditionally: independently
+// popover="manual", DOM-nested inside its own NavigationMenuItem (not
+// portalled, not moved — the DOM-nesting-not-portalling ADAPT every
+// sibling submenu in this codebase already uses), positioned by
+// ui/navigation-menu.js under ITS OWN trigger's rect (top-full/mt-1.5,
+// matching new-york-v4's own viewport=false positioning, which anchors to
+// the trigger's own NavigationMenuItem — class="relative" — not a shared
+// panel location). data-side="bottom" is server-rendered statically, the
+// same hand-rolled-fixed-position stopgap as every sibling popover in this
+// codebase (see docs/jsx-parity.md ## dropdown NOTE).
+//
+// The six-token data-[motion=…]/animate-in/out/fade-in/out slide mechanism
+// (new-york-v4's own direction-aware "which side did this panel enter
+// from" animation, driven by Radix's own runtime index tracking) is NOT
+// reproduced — GAP, per the task's own binding decision to reuse the
+// popover family's discrete-transition block byte-identically instead, the
+// same six-tokens-replaced-by-one-mechanism RULING ## menubar's own
 // MenubarContent already made for its own (differently-shaped) omission.
-// The group-data-[viewport=false]/navigation-menu: chrome block (border/
-// bg/shadow/rounded) is ONLY live when the ancestor NavigationMenu's own
-// data-viewport="false" — in the default (true) mode Content stays
-// unchromed, its own coincident Viewport supplies the box instead (file
-// header). border is kept, not swapped for nova's own ring-1 (standing
+//
+// The border/bg/shadow/rounded chrome — new-york-v4's own
+// group-data-[viewport=false]/navigation-menu: block — is applied
+// unconditionally, its group-data-[viewport=false]/navigation-menu: prefix
+// stripped from every token: there is only one mode in this port, so the
+// gate would never toggle and the selector would be permanently dead CSS,
+// the same "drop the selector, don't ship dead CSS" call as dropdown's own
+// inset ADAPT. border is kept, not swapped for nova's own ring-1 (standing
 // house exception); rounded-md -> rounded-lg is nova's own metric.
 
-//line navigation-menu.gsx:175:1
+//line navigation-menu.gsx:163:1
 func NavigationMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line navigation-menu.gsx:176:2
+//line navigation-menu.gsx:164:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"navigation-menu-content\"")
@@ -290,7 +272,7 @@ func NavigationMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" data-side=\"bottom\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("top-0 left-0 w-full p-2 pr-2.5 md:absolute md:w-auto"), _gsxrt.Class("group-data-[viewport=false]/navigation-menu:top-full group-data-[viewport=false]/navigation-menu:mt-1.5 group-data-[viewport=false]/navigation-menu:overflow-hidden group-data-[viewport=false]/navigation-menu:rounded-lg group-data-[viewport=false]/navigation-menu:border group-data-[viewport=false]/navigation-menu:bg-popover group-data-[viewport=false]/navigation-menu:text-popover-foreground group-data-[viewport=false]/navigation-menu:shadow **:data-[slot=navigation-menu-link]:focus:ring-0 **:data-[slot=navigation-menu-link]:focus:outline-none"), _gsxrt.Class( // Discrete-transition enter/exit, reused byte-identically from the
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("top-0 left-0 w-full p-2 pr-2.5 md:absolute md:w-auto"), _gsxrt.Class("top-full mt-1.5 overflow-hidden rounded-lg border bg-popover text-popover-foreground shadow **:data-[slot=navigation-menu-link]:focus:ring-0 **:data-[slot=navigation-menu-link]:focus:outline-none"), _gsxrt.Class( // Discrete-transition enter/exit, reused byte-identically from the
 			// popover family (ui/dropdown.gsx's own block) per the task's own
 			// binding decision — see the doc comment above for the six-token
 			// data-motion slide this replaces.
@@ -299,82 +281,14 @@ func NavigationMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line navigation-menu.gsx:194:3
+//line navigation-menu.gsx:182:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line navigation-menu.gsx:198:1
-// NavigationMenuViewport is the shared measuring panel — see the file
-// header's own ARCHITECTURE paragraph for the coincident-popover mechanism
-// this port uses in place of Radix's Content-portals-into-Viewport model.
-// Two nested elements, matching shadcn's own structure verbatim (source map
-// ## navigation-menu §1): an outer plain <div> (no data-slot) and the inner
-// data-slot="navigation-menu-viewport" div, which is the one
-// ui/navigation-menu.js actually positions/sizes/shows — the outer
-// wrapper's own absolute/top-full/left-0 CSS-relative-to-<nav> positioning
-// is superseded by the inner's own JS-driven position:fixed (dead weight,
-// kept per this codebase's own "some selectors are inert until real
-// placement logic lands" precedent, docs/jsx-parity.md ## dropdown NOTE),
-// but isolate/z-50/flex/justify-center still do real work centering the
-// inner viewport horizontally.
-//
-// The h-[var(--radix-navigation-menu-viewport-height)]/
-// md:w-[var(--radix-navigation-menu-viewport-width)] CSS-custom-property
-// sizing is replaced with direct inline width/height set by
-// ui/navigation-menu.js (the source map's own explicitly-offered
-// alternative to a custom property, ## navigation-menu §3) — no Radix
-// runtime exists to set those two variables in this checkout
-// (derived-not-read, ## navigation-menu §2), the same
-// no-runtime-var-to-read substitution as every sibling popover's own
-// origin-* ADAPT. rounded-md -> rounded-lg is nova's own metric; border is
-// kept (standing house exception, not nova's own ring-1/ring-foreground).
-// Discrete-transition enter/exit is reused byte-identically from the
-// popover family, same as NavigationMenuContent's own.
-
-//line navigation-menu.gsx:224:1
-func NavigationMenuViewport(attrs gsx.Attrs) _gsxrt.Node {
-	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-		_gsxgw := _gsxrt.W(_gsxw)
-		return _gsxrenderNavigationMenuViewport(ctx, _gsxgw, attrs)
-	})
-}
-
-func _gsxrenderNavigationMenuViewport(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs gsx.Attrs) error {
-	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
-		return _gsxerr
-	}
-//line navigation-menu.gsx:225:2
-	_gsxgw.S("<div class=\"absolute top-full left-0 isolate z-50 flex justify-center\">")
-//line navigation-menu.gsx:226:3
-	_gsxgw.S("<div")
-	if !attrs.Has("data-slot") {
-		_gsxgw.S(" data-slot=\"navigation-menu-viewport\"")
-	}
-	if !attrs.Has("data-gsxui-navigation-menu-viewport") {
-		_gsxgw.BoolAttr("data-gsxui-navigation-menu-viewport", true)
-	}
-	if !attrs.Has("popover") {
-		_gsxgw.S(" popover=\"manual\"")
-	}
-	if !attrs.Has("data-state") {
-		_gsxgw.S(" data-state=\"closed\"")
-	}
-	if !attrs.Has("data-side") {
-		_gsxgw.S(" data-side=\"bottom\"")
-	}
-	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("origin-top relative mt-1.5 w-full overflow-hidden rounded-lg border bg-popover text-popover-foreground shadow md:w-auto"), _gsxrt.Class("opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95"), _gsxrt.Class("data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2"), _gsxrt.Class(attrs.Class()))
-	_gsxgw.S("\"")
-	_gsxgw.StyleMerged("", attrs.Style())
-	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
-	_gsxgw.S("></div></div>")
-	return _gsxgw.Err()
-}
-
-//line navigation-menu.gsx:242:1
+//line navigation-menu.gsx:186:1
 // NavigationMenuLink is a single item inside a NavigationMenuContent (or,
 // styled with NavigationMenuTriggerStyle() instead, a plain top-level nav
 // link with no dropdown at all). active mirrors Radix's own data-active
@@ -395,11 +309,11 @@ func _gsxrenderNavigationMenuViewport(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer
 // on accent, not nova's own muted rewrite — same out-of-scope ruling as
 // NavigationMenuTriggerStyle's own doc comment.
 
-//line navigation-menu.gsx:261:1
+//line navigation-menu.gsx:205:1
 func NavigationMenuLink(active bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line navigation-menu.gsx:262:2
+//line navigation-menu.gsx:206:2
 		_gsxgw.S("<a")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"navigation-menu-link\"")
@@ -422,14 +336,14 @@ func NavigationMenuLink(active bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line navigation-menu.gsx:273:3
+//line navigation-menu.gsx:217:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</a>")
 		return _gsxgw.Err()
 	})
 }
 
-//line navigation-menu.gsx:277:1
+//line navigation-menu.gsx:221:1
 // NavigationMenuIndicator is the small rotated-square pointer tracking the
 // active trigger, positioned under NavigationMenuList's own last child (the
 // caller places it there, matching Radix's own composition) by
@@ -439,18 +353,20 @@ func NavigationMenuLink(active bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 // nova's carries a position token for either element — Radix's own runtime
 // sets that inline, the same "computed position via JS, not baked into the
 // class" idiom every fixed-positioned popover in this codebase already
-// uses). ADAPT: the data-[state=hidden|visible]:animate-out/in fade-out/in
-// pair (tw-animate-css, GAP category — see ## animations) is replaced with
-// a plain CSS opacity transition instead of the popover family's discrete-
-// transition block: Indicator is not popover-attached (no :popover-open
-// state to key open: off), so the byte-identical block reused by
-// Content/Viewport does not apply here.
+// uses). Unaffected by this file's own viewport={false} GAP — the
+// indicator tracks the active TRIGGER, not the (now-removed) shared
+// viewport panel. ADAPT: the data-[state=hidden|visible]:animate-out/in
+// fade-out/in pair (tw-animate-css, GAP category — see ## animations) is
+// replaced with a plain CSS opacity transition instead of the popover
+// family's discrete-transition block: Indicator is not popover-attached (no
+// :popover-open state to key open: off), so the byte-identical block
+// NavigationMenuContent reuses does not apply here.
 
-//line navigation-menu.gsx:292:1
+//line navigation-menu.gsx:238:1
 func NavigationMenuIndicator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line navigation-menu.gsx:293:2
+//line navigation-menu.gsx:239:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"navigation-menu-indicator\"")
@@ -467,7 +383,7 @@ func NavigationMenuIndicator(attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line navigation-menu.gsx:300:3
+//line navigation-menu.gsx:246:3
 		_gsxgw.S("<div class=\"relative top-[60%] h-2 w-2 rotate-45 rounded-tl-sm bg-border shadow-md\"></div></div>")
 		return _gsxgw.Err()
 	})

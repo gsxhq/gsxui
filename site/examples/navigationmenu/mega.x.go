@@ -10,89 +10,91 @@ import (
 )
 
 //line mega.gsx:7:1
-// Mega demonstrates the shared viewport actually doing its job: Products
-// opens a wide three-column grid, Solutions opens a narrow single-column
-// list — switching between the two triggers snaps the one shared,
-// JS-measured viewport panel from wide to narrow and back (ui/navigation-
-// menu.js's own sizeViewport, re-run via ResizeObserver too), not two
-// independently-sized dropdowns. Resources is a plain link with no
-// dropdown at all, styled via NavigationMenuTriggerStyle() directly.
+// Mega demonstrates two independently-sized floating panels: Products opens
+// a wide three-column grid, Solutions opens a narrow single-column list —
+// each is its own self-contained, fully-chromed NavigationMenuContent,
+// positioned under its own trigger (this port ships shadcn's
+// viewport={false} configuration only; see ui/navigation-menu.gsx's own
+// file header GAP paragraph for why there is no shared, JS-measured
+// viewport panel morphing between the two instead). Resources is a plain
+// link with no dropdown at all, styled via NavigationMenuTriggerStyle()
+// directly.
 
-//line mega.gsx:14:1
+//line mega.gsx:16:1
 func Mega() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line mega.gsx:15:2
-		_gsxgw.Node(ctx, ui.NavigationMenu("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line mega.gsx:17:2
+		_gsxgw.Node(ctx, ui.NavigationMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line mega.gsx:16:3
+//line mega.gsx:18:3
 			_gsxgw.Node(ctx, ui.NavigationMenuList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line mega.gsx:17:4
+//line mega.gsx:19:4
 				_gsxgw.Node(ctx, ui.NavigationMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line mega.gsx:18:5
+//line mega.gsx:20:5
 					_gsxgw.Node(ctx, ui.NavigationMenuTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Products")
 						return _gsxgw.Err()
 					}), nil))
-//line mega.gsx:19:5
+//line mega.gsx:21:5
 					_gsxgw.Node(ctx, ui.NavigationMenuContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line mega.gsx:20:6
+//line mega.gsx:22:6
 						_gsxgw.S("<div class=\"grid w-[36rem] grid-cols-3 gap-2\">")
-//line mega.gsx:21:7
+//line mega.gsx:23:7
 						_gsxgw.Node(ctx, ui.NavigationMenuLink(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line mega.gsx:22:8
+//line mega.gsx:24:8
 							_gsxgw.S("<div class=\"text-sm font-medium\">Analytics</div>")
-//line mega.gsx:23:8
+//line mega.gsx:25:8
 							_gsxgw.S("<div class=\"text-muted-foreground\">Track usage and conversion across every surface.</div>")
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "href", Value: "#"}}))
-//line mega.gsx:25:7
+//line mega.gsx:27:7
 						_gsxgw.Node(ctx, ui.NavigationMenuLink(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line mega.gsx:26:8
+//line mega.gsx:28:8
 							_gsxgw.S("<div class=\"text-sm font-medium\">Automation</div>")
-//line mega.gsx:27:8
+//line mega.gsx:29:8
 							_gsxgw.S("<div class=\"text-muted-foreground\">Wire triggers to actions without writing glue code.</div>")
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "href", Value: "#"}}))
-//line mega.gsx:29:7
+//line mega.gsx:31:7
 						_gsxgw.Node(ctx, ui.NavigationMenuLink(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line mega.gsx:30:8
+//line mega.gsx:32:8
 							_gsxgw.S("<div class=\"text-sm font-medium\">Billing</div>")
-//line mega.gsx:31:8
+//line mega.gsx:33:8
 							_gsxgw.S("<div class=\"text-muted-foreground\">Usage-based invoices, taxes, and dunning handled for you.</div>")
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "href", Value: "#"}}))
-//line mega.gsx:33:7
+//line mega.gsx:35:7
 						_gsxgw.Node(ctx, ui.NavigationMenuLink(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line mega.gsx:34:8
+//line mega.gsx:36:8
 							_gsxgw.S("<div class=\"text-sm font-medium\">Search</div>")
-//line mega.gsx:35:8
+//line mega.gsx:37:8
 							_gsxgw.S("<div class=\"text-muted-foreground\">Full-text and vector search over your own data.</div>")
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "href", Value: "#"}}))
-//line mega.gsx:37:7
+//line mega.gsx:39:7
 						_gsxgw.Node(ctx, ui.NavigationMenuLink(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line mega.gsx:38:8
+//line mega.gsx:40:8
 							_gsxgw.S("<div class=\"text-sm font-medium\">Storage</div>")
-//line mega.gsx:39:8
+//line mega.gsx:41:8
 							_gsxgw.S("<div class=\"text-muted-foreground\">Durable object storage with signed upload URLs.</div>")
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "href", Value: "#"}}))
-//line mega.gsx:41:7
+//line mega.gsx:43:7
 						_gsxgw.Node(ctx, ui.NavigationMenuLink(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line mega.gsx:42:8
+//line mega.gsx:44:8
 							_gsxgw.S("<div class=\"text-sm font-medium\">Workflows</div>")
-//line mega.gsx:43:8
+//line mega.gsx:45:8
 							_gsxgw.S("<div class=\"text-muted-foreground\">Durable, retryable multi-step background jobs.</div>")
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "href", Value: "#"}}))
@@ -101,33 +103,33 @@ func Mega() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line mega.gsx:48:4
+//line mega.gsx:50:4
 				_gsxgw.Node(ctx, ui.NavigationMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line mega.gsx:49:5
+//line mega.gsx:51:5
 					_gsxgw.Node(ctx, ui.NavigationMenuTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Solutions")
 						return _gsxgw.Err()
 					}), nil))
-//line mega.gsx:50:5
+//line mega.gsx:52:5
 					_gsxgw.Node(ctx, ui.NavigationMenuContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line mega.gsx:51:6
+//line mega.gsx:53:6
 						_gsxgw.S("<div class=\"grid w-56 gap-2\">")
-//line mega.gsx:52:7
+//line mega.gsx:54:7
 						_gsxgw.Node(ctx, ui.NavigationMenuLink(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Startups")
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "href", Value: "#"}}))
-//line mega.gsx:53:7
+//line mega.gsx:55:7
 						_gsxgw.Node(ctx, ui.NavigationMenuLink(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Enterprise")
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "href", Value: "#"}}))
-//line mega.gsx:54:7
+//line mega.gsx:56:7
 						_gsxgw.Node(ctx, ui.NavigationMenuLink(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Agencies")
@@ -138,10 +140,10 @@ func Mega() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line mega.gsx:58:4
+//line mega.gsx:60:4
 				_gsxgw.Node(ctx, ui.NavigationMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line mega.gsx:59:5
+//line mega.gsx:61:5
 					_gsxgw.Node(ctx, ui.NavigationMenuLink(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Resources")

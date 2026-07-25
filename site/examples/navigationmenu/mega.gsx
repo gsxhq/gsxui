@@ -4,13 +4,15 @@ import (
 	"github.com/gsxhq/gsxui/ui"
 )
 
-// Mega demonstrates the shared viewport actually doing its job: Products
-// opens a wide three-column grid, Solutions opens a narrow single-column
-// list — switching between the two triggers snaps the one shared,
-// JS-measured viewport panel from wide to narrow and back (ui/navigation-
-// menu.js's own sizeViewport, re-run via ResizeObserver too), not two
-// independently-sized dropdowns. Resources is a plain link with no
-// dropdown at all, styled via NavigationMenuTriggerStyle() directly.
+// Mega demonstrates two independently-sized floating panels: Products opens
+// a wide three-column grid, Solutions opens a narrow single-column list —
+// each is its own self-contained, fully-chromed NavigationMenuContent,
+// positioned under its own trigger (this port ships shadcn's
+// viewport={false} configuration only; see ui/navigation-menu.gsx's own
+// file header GAP paragraph for why there is no shared, JS-measured
+// viewport panel morphing between the two instead). Resources is a plain
+// link with no dropdown at all, styled via NavigationMenuTriggerStyle()
+// directly.
 component Mega() {
 	<ui.NavigationMenu>
 		<ui.NavigationMenuList>

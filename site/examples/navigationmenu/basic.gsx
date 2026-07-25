@@ -8,10 +8,12 @@ import (
 
 // Basic mirrors the shape of shadcn's own navigation-menu-demo.tsx: a plain
 // top-level link (Home), a trigger opening a small grid of description
-// links (Components), and another plain link (Docs) — the default
-// data-viewport="true" mode, so Home/Docs each render via
-// ui.NavigationMenuTriggerStyle() directly (no dropdown of their own) while
-// Components opens the shared, JS-measured viewport panel.
+// links (Components), and another plain link (Docs). Home/Docs render via
+// ui.NavigationMenuTriggerStyle() directly (no dropdown of their own);
+// Components opens its own fully-chromed floating panel, positioned under
+// its own trigger — this port ships shadcn's viewport={false} configuration
+// only (see ui/navigation-menu.gsx's own file header GAP paragraph), so
+// there is no shared viewport panel to open instead.
 component Basic() {
 	<ui.NavigationMenu>
 		<ui.NavigationMenuList>

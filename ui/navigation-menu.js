@@ -9,30 +9,20 @@
 // ui/navigation-menu.gsx's own file header and docs/jsx-parity.md
 // ## navigation-menu).
 //
-// ARCHITECTURE (no portal, no DOM-node-moving either — see
-// ui/navigation-menu.gsx's own file header for the full rationale): every
-// NavigationMenuContent is independently popover="manual", DOM-nested
-// inside its own NavigationMenuItem (never moved or portalled). When a
-// shared NavigationMenuViewport exists (data-viewport!="false"), it is a
-// SEPARATE, second popover="manual" panel shown/positioned/sized in
-// lockstep with whichever Content is currently active — coincident, not
-// containing: both open at the identical fixed left/top rect (computed off
-// the List's own boundingClientRect), Viewport supplies the chrome and is
-// resized to the active Content's own measured width/height, Content stays
-// unchromed in this mode.
-//
-// SIZING (source map ## navigation-menu §3, decisive): one measurement on
-// activation (a getBoundingClientRect read off the newly-active Content)
-// plus a ResizeObserver on that same Content for late-arriving resizes —
-// explicitly NOT a per-frame tween between panel sizes, since no CSS in any
-// of the eight nova-family stylesheets transitions width/height on the
-// viewport, only a scale transform gated on open/close.
-//
-// data-motion (new-york-v4's own direction-aware "which side did this panel
-// enter from" slide) is NOT reproduced — GAP, ledgered in
-// ui/navigation-menu.gsx's own NavigationMenuContent doc comment: the
-// task's own binding decision reuses the popover family's discrete-
-// transition block byte-identically instead.
+// FIX ROUND 1 (shared viewport removed, not reworked): a v1 of this file
+// positioned/sized a SEPARATE NavigationMenuViewport popover in lockstep
+// with the active Content, both shown at the same rect. That does not
+// work: two coincident top-layer popovers stack, and whichever is shown
+// second paints an OPAQUE surface directly over the other — confirmed live
+// (the panel rendered as an empty box, `elementFromPoint` returned the
+// viewport at every sampled point inside it, the content's own links were
+// completely unreachable). This file now drives shadcn's own
+// `viewport={false}` configuration instead (see ui/navigation-menu.gsx's
+// own file header GAP paragraph for the full rationale): each
+// NavigationMenuContent is independently popover="manual", DOM-nested in
+// its own NavigationMenuItem, carries its own full chrome, and is
+// positioned under ITS OWN trigger's rect — no shared viewport element
+// exists to position, size, or occlude anything.
 //
 // No Escape/outside-pointerdown light dismiss — same deliberate choice as
 // hover-card.js's own (hover/focus drive it, not outside clicks or Esc).
@@ -45,7 +35,6 @@ const contentOf = (trigger) =>
   itemOf(trigger)?.querySelector(":scope > [data-gsxui-navigation-menu-content]");
 const triggerOf = (content) =>
   itemOf(content)?.querySelector(":scope > [data-gsxui-navigation-menu-trigger]");
-const viewportOf = (menu) => menu?.querySelector("[data-gsxui-navigation-menu-viewport]");
 
 // Radix's own real delayDuration is unread (no dist in the reference
 // checkout) — reusing hover-card.js's own OPEN_DELAY/CLOSE_DELAY (100ms
@@ -54,7 +43,6 @@ const viewportOf = (menu) => menu?.querySelector("[data-gsxui-navigation-menu-vi
 const OPEN_DELAY = 100;
 const CLOSE_DELAY = 100;
 const timers = new WeakMap(); // trigger -> pending open/close setTimeout id
-const resizeObservers = new WeakMap(); // viewport -> ResizeObserver
 
 function clearTimer(trigger) {
   clearTimeout(timers.get(trigger));
@@ -67,25 +55,6 @@ function isAnyOpen(menu) {
   );
 }
 
-function sizeViewport(viewport, content) {
-  const r = content.getBoundingClientRect();
-  viewport.style.width = `${r.width}px`;
-  viewport.style.height = `${r.height}px`;
-}
-
-// One measurement on activation, plus a ResizeObserver for content that
-// changes size AFTER it's already active (an image finishing loading, etc) —
-// the source map's own decisive "discrete state, not a per-frame tween" scope.
-function observeViewport(viewport, content) {
-  let ro = resizeObservers.get(viewport);
-  if (ro) ro.disconnect();
-  else {
-    ro = new ResizeObserver(() => sizeViewport(viewport, content));
-    resizeObservers.set(viewport, ro);
-  }
-  ro.observe(content);
-}
-
 function positionAt(el, rect, offset) {
   el.style.position = "fixed";
   el.style.inset = "auto";
@@ -95,10 +64,7 @@ function positionAt(el, rect, offset) {
 
 function stillWithin(trigger, related) {
   if (!(related instanceof Element)) return false;
-  const item = itemOf(trigger);
-  if (item?.contains(related)) return true;
-  const viewport = viewportOf(menuOf(trigger));
-  return !!viewport?.contains(related);
+  return !!itemOf(trigger)?.contains(related);
 }
 
 function positionIndicator(menu, trigger) {
@@ -129,8 +95,6 @@ function open(trigger) {
   if (!content || content.matches(":popover-open")) return; // idempotent
   const menu = menuOf(trigger);
   if (!menu) return;
-  const list = listOf(menu) ?? menu;
-  const rect = list.getBoundingClientRect();
 
   // Close any OTHER open panel in this menu first — sibling panels are
   // never DOM-nested in one another, so switching is close-then-open, the
@@ -139,7 +103,10 @@ function open(trigger) {
     if (other !== content && other.matches(":popover-open")) close(triggerOf(other));
   }
 
-  positionAt(content, rect, 6);
+  // Positioned under THIS trigger's own rect (viewport={false} semantics —
+  // each panel is its own self-contained floating panel, not a shared,
+  // list-anchored one).
+  positionAt(content, trigger.getBoundingClientRect(), 6);
   // Stamp open BEFORE showing — same flash-avoidance rule as every other
   // popover in this codebase (a queued toggle event can otherwise leave one
   // frame painted in the stale closed state).
@@ -149,14 +116,6 @@ function open(trigger) {
   trigger.setAttribute("aria-expanded", "true");
   emit(content, "gsxui:open");
 
-  const viewport = viewportOf(menu);
-  if (viewport) {
-    positionAt(viewport, rect, 6);
-    sizeViewport(viewport, content); // AFTER showPopover — a hidden popover has no layout box
-    viewport.dataset.state = "open";
-    if (!viewport.matches(":popover-open")) viewport.showPopover();
-    observeViewport(viewport, content);
-  }
   positionIndicator(menu, trigger);
 }
 
@@ -172,14 +131,7 @@ function close(trigger) {
   emit(content, "gsxui:close");
 
   const menu = menuOf(trigger);
-  if (menu && !isAnyOpen(menu)) {
-    const viewport = viewportOf(menu);
-    if (viewport?.matches(":popover-open")) {
-      viewport.hidePopover();
-      viewport.dataset.state = "closed";
-    }
-    hideIndicator(menu);
-  }
+  if (menu && !isAnyOpen(menu)) hideIndicator(menu);
 }
 
 // Switching between two ALREADY-open triggers in the same menu is
