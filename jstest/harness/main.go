@@ -79,5 +79,7 @@ func newMux(root string) http.Handler {
 		http.NotFound(w, r)
 	})
 
+	registerModuleRoutes(mux, root)
+
 	return mux
 }
