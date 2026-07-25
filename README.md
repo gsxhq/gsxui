@@ -34,10 +34,16 @@ set. The showcase site and theme editor are live at
   browser suite (Playwright against real Chromium — `npx playwright install
   chromium` once per machine); `make check` runs both plus JS syntax and
   gofmt checks. CI gates deploys on both suites.
-- Component behavior (`ui/*.js`) is tested in `jstest/`: a Go harness serves
-  one example per page with the real modules loaded as native ES modules,
-  and four invariants sweep every example — clean load, no ghost overlays,
-  no duplicate ids, and no element claimed by two modules for one event.
+- `jstest/` is the browser test layer: a Go harness serves one example per
+  page with the real `ui/*.js` loaded as native ES modules, and structural
+  invariants sweep every example — clean load (no uncaught exception, no
+  console error), no ghost overlays (a closed `[popover]`/`<dialog>` must
+  compute `display: none`), no duplicate ids, and no element claimed by two
+  modules for one event. Two corpus-wide checks guard the delegation
+  registry itself: every registered selector parses, and every registered
+  selector matches something on some example page. These are load-time and
+  structural — per-component behavior specs (keyboard models, open/close
+  lifecycles, emitted events) are still to come.
 - Divergences from the shadcn/ui reference: `docs/jsx-parity.md`.
 
 ## Components

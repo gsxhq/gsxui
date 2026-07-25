@@ -9,6 +9,30 @@
 //
 // emit() is the real implementation, unchanged — nothing depends on it here,
 // but a module that calls emit at import time must not throw.
+//
+// SCOPE — read "the registry" as "the DELEGATED registry", not "everything
+// the library binds. Only what a module routes through gsxui.js's on() is
+// recorded here, so only that is visible to the checks built on this data
+// (selector disjointness, selector coverage, selector parseability).
+//
+// A module that calls addEventListener directly is invisible to all of
+// them. That is correct code where it appears, not an oversight, but it is
+// the hole in this file's picture. Two shapes exist in ui/ today:
+//
+//   1. Document/window-level signals with no selector to delegate on —
+//      ui/input-otp.js's document "selectionchange" (the case the review
+//      called out), ui/command.js's ⌘K "keydown", ui/sidebar.js's shortcut
+//      "keydown", ui/avatar.js's window "load" sweep, ui/sonner.js's
+//      "DOMContentLoaded" init.
+//   2. Listeners bound to a specific element the module already holds a
+//      reference to — ui/carousel.js's per-root pointer/focus pause,
+//      ui/sonner.js's per-toast buttons, ui/context-menu.js's one-shot
+//      "pointerup".
+//
+// Neither shape can collide the way delegated selectors can, which is why
+// their absence does not weaken the disjointness invariant. It does mean
+// selector coverage cannot speak for them: if a .gsx renamed an attribute
+// only a direct listener reads, nothing here would notice.
 
 const registrations = [];
 window.__gsxuiRegistrations = registrations;
