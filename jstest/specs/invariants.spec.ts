@@ -80,7 +80,7 @@ for (const example of examples()) {
     // element for both. Nested elements matching different modules is
     // ordinary composition (a dialog inside a dropdown) and is not a defect.
     const overlaps = await page.evaluate((regs) => {
-      const found: { key: string; tag: string; modules: string[]; selectors: string[] }[] = [];
+      const found: { key: string; tag: string; pairs: [string, string][] }[] = [];
       for (const el of document.querySelectorAll("*")) {
         const byKey = new Map<string, Map<string, string>>();
         for (const reg of regs) {
@@ -88,7 +88,11 @@ for (const example of examples()) {
           try {
             matches = el.matches(reg.selector);
           } catch {
-            continue; // an unparseable selector is Task 2's problem, not this one
+            // Backstop only. Unparseable selectors are asserted empty, once
+            // per run, by selector-coverage.spec.ts — this catch is what
+            // keeps one bad selector from aborting the whole sweep, not the
+            // thing that reports it.
+            continue;
           }
           if (!matches) continue;
           const key = `${reg.type}:${reg.capture}`;
@@ -97,11 +101,16 @@ for (const example of examples()) {
         }
         for (const [key, mods] of byKey) {
           if (mods.size > 1) {
+            // [module, selector] pairs, sorted together. Sorting the two as
+            // independent arrays lets the failure output pair the wrong
+            // selector with the wrong module — and that output is the entire
+            // value of this check when it finally fires.
             found.push({
               key,
               tag: el.tagName.toLowerCase(),
-              modules: [...mods.keys()].sort(),
-              selectors: [...mods.values()],
+              pairs: [...mods].sort((a, b) =>
+                a[0] === b[0] ? a[1].localeCompare(b[1]) : a[0].localeCompare(b[0]),
+              ),
             });
           }
         }
@@ -109,16 +118,16 @@ for (const example of examples()) {
       return found;
     }, registrations);
 
-    const unexpected = overlaps.filter(
-      (o) =>
-        !allowedOverlaps.some(
-          (a) =>
-            a.key === o.key &&
-            o.modules.length === 2 &&
-            a.modules[0] === o.modules[0] &&
-            a.modules[1] === o.modules[1],
-        ),
-    );
+    const unexpected = overlaps.filter((o) => {
+      const modules = o.pairs.map(([module]) => module);
+      return !allowedOverlaps.some(
+        (a) =>
+          a.key === o.key &&
+          modules.length === 2 &&
+          a.modules[0] === modules[0] &&
+          a.modules[1] === modules[1],
+      );
+    });
     expect.soft(unexpected, "elements claimed by two modules for one event").toEqual([]);
   });
 }

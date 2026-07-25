@@ -3,6 +3,7 @@ package main
 import (
 	_ "embed"
 	"html/template"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -56,6 +57,8 @@ func registerModuleRoutes(mux *http.ServeMux, root string) {
 	// the shim, so window.__gsxuiRegistrations holds the full registry.
 	mux.HandleFunc("GET /registrations", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		renderShell(w, "registrations", "/shim/index.js", template.HTML(""))
+		if err := renderShell(w, "registrations", "/shim/index.js", template.HTML("")); err != nil {
+			log.Printf("rendering shell for registrations: %v", err)
+		}
 	})
 }
