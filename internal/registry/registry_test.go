@@ -13,7 +13,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "carousel", "checkbox", "collapsible", "combobox", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "input-otp", "item", "kbd", "label", "menubar", "native-select", "pagination", "popover", "progress", "radio", "resizable", "scroll-area", "select", "separator", "sheet", "sidebar", "skeleton", "slider", "sonner", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
+	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "card", "carousel", "checkbox", "collapsible", "combobox", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "input-otp", "item", "kbd", "label", "menubar", "native-select", "navigation-menu", "pagination", "popover", "progress", "radio", "resizable", "scroll-area", "select", "separator", "sheet", "sidebar", "skeleton", "slider", "sonner", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -343,6 +343,18 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("menubar deps = %v, want [icon]", deps)
 	}
 
+	// navigation-menu.gsx imports ui/icon (Tier 4 Batch B Task 4:
+	// NavigationMenuTrigger's ChevronDown) — same shape as dropdown.gsx's/
+	// context-menu.gsx's/menubar.gsx's own equivalent icon usage, no
+	// intra-package ui.* reference otherwise.
+	deps, err = registry.Deps("navigation-menu")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(deps, []string{"icon"}) {
+		t.Fatalf("navigation-menu deps = %v, want [icon]", deps)
+	}
+
 	// slider.gsx has no icon import and no intra-package reference to
 	// another component (the site example composes nothing from another
 	// ui.* component either) — same shape as toggle's/popover's/hover-
@@ -506,6 +518,12 @@ func TestHasJS(t *testing.T) {
 	// same MECHANISM as context-menu.js's own).
 	if !registry.HasJS("menubar") {
 		t.Error("menubar should have JS")
+	}
+	// navigation-menu has its own ui/navigation-menu.js — hover/focus open
+	// with a hover-card-shaped grace-period close, and the shared viewport's
+	// own discrete-measurement + ResizeObserver sizing.
+	if !registry.HasJS("navigation-menu") {
+		t.Error("navigation-menu should have JS")
 	}
 	// slider has its own ui/slider.js (delegated `input` listener that
 	// resyncs the --fill custom property while the user drags/keys the

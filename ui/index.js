@@ -11,6 +11,7 @@ import "./dropdown.js";
 import "./hover-card.js";
 import "./input-otp.js";
 import "./menubar.js";
+import "./navigation-menu.js";
 import "./popover.js";
 import "./resizable.js";
 import "./select.js";
