@@ -51,12 +51,14 @@ the table structure. Tasks 1–3 build markup against this.
   `Nav.js`, `PreviousMonthButton.js`, `DropdownNav.js`, `Dropdown.js`,
   `Select.js`, `WeekNumberHeader.js`, `WeekNumber.js`, `Chevron.js`, `CaptionLabel.js`,
   `Footer.js` (each ≤30 lines, full).
-- Not read this pass, no attempt made: `useCalendar.js`'s `getNavMonths`/
-  `getInitialMonth`/`getDisplayMonths`/`getDates`/`getPreviousMonth`/
-  `getNextMonth` internals (grepped only, for the navStart/navEnd/dropdown
-  year-range context in §7.4) — nothing in this document depends on their
-  internals beyond what the grep already shows (that `getYearOptions`
-  returns `undefined` without `navStart`/`navEnd`).
+- `useCalendar.js` (full, 110 lines), `helpers/getNavMonth.js`,
+  `helpers/getPreviousMonth.js`, `helpers/getNextMonth.js` (all full) — added
+  in the Task 0 review-fix pass, for the nav-button disabled contract in
+  §7.5 and the `fromYear`/`toYear` bounds question it raises.
+- Not read this pass, no attempt made: `useCalendar.js`'s `getInitialMonth`/
+  `getDisplayMonths`/`getDates` internals, and `utils/addToRange.js` —
+  nothing in this document depends on their internals beyond what's already
+  stated inline wherever they're mentioned.
 
 ## Legend
 
@@ -93,11 +95,9 @@ rule; do not silently absorb it while borrowing the tiebreak for §6.
 
 ## 2. Every className slot, exact string (`calendar.tsx`, byte-read in full)
 
-The brief's own item 2 enumerates 25 slot names under the heading "24
-className slots" — an off-by-one in the brief's prose, not a citation of a
-real 24-item source list; the object literal in `calendar.tsx` itself has
-exactly 25 keys, all quoted below verbatim from the `cn(...)` call building
-each one (i.e. the value *before* `defaultClassNames[key]` and any caller
+The object literal in `calendar.tsx` itself has exactly 25 keys — every one
+cross-checked against the authoritative `UI` enum in `UI.js` below — all
+quoted below verbatim from the `cn(...)` call building each one (i.e. the value *before* `defaultClassNames[key]` and any caller
 `classNames` override are appended — those two are handled generically by
 every slot, not repeated per-slot below). **All 25 have real class strings,
 read directly from source. Zero are `derived-not-read`.**
@@ -108,8 +108,8 @@ read directly from source. Zero are `derived-not-read`.**
 | `months` | `relative flex flex-col gap-4 md:flex-row` |
 | `month` | `flex w-full flex-col gap-4` |
 | `nav` | `absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1` |
-| `button_previous` | `buttonVariants({variant: buttonVariant})` + `size-(--cell-size) p-0 select-none aria-disabled:opacity-50` |
-| `button_next` | `buttonVariants({variant: buttonVariant})` + `size-(--cell-size) p-0 select-none aria-disabled:opacity-50` |
+| `button_previous` | `buttonVariants({variant: buttonVariant})` + `size-(--cell-size) p-0 select-none aria-disabled:opacity-50` — disabled/focus **contract in §7.5**, not carried by the class string alone |
+| `button_next` | `buttonVariants({variant: buttonVariant})` + `size-(--cell-size) p-0 select-none aria-disabled:opacity-50` — disabled/focus **contract in §7.5**, not carried by the class string alone |
 | `month_caption` | `flex h-(--cell-size) w-full items-center justify-center px-(--cell-size)` |
 | `dropdowns` | `flex h-(--cell-size) w-full items-center justify-center gap-1.5 text-sm font-medium` |
 | `dropdown_root` | `relative rounded-md border border-input shadow-xs has-focus:border-ring has-focus:ring-[3px] has-focus:ring-ring/50` |
@@ -323,20 +323,33 @@ Confirmed target + how each nova rule maps onto new-york-v4's own value:
   branch (`"text-sm"`) is untouched by nova** — port it exactly as
   new-york-v4 has it.
 
-**Flag for Task 1–3, not resolved here**: `bases/base/ui/calendar.tsx`'s own
-inline utilities for `range_start`/`range_middle`/`range_end`/`today`/
-`CalendarDayButton` use `bg-muted`/`text-foreground` throughout instead of
-new-york-v4's `bg-accent`/`text-accent-foreground` (`range_start`/`middle`/
-`end`) or `bg-primary`/`text-primary-foreground` (the button's own
-data-attribute variants) — a real, different color choice. **This is
-`bases/base`'s own family-wide design language, not a `style-nova.css`
-directive** — none of the three nova rules above touch color, and the
-muted/accent/primary swap is baked directly into `bases/base`'s `.tsx` as
-plain Tailwind utilities, sitting alongside (not sourced from) its
+**Flag for Task 1–3, not resolved here** — narrowed to what is actually true
+after re-checking both files token-by-token (an earlier draft of this
+section overstated this as a blanket "throughout" swap; corrected):
+- At the `Calendar` component's own `classNames`-slot level (§2):
+  `bases/base`'s `range_start` and `range_end` use `bg-muted` where
+  new-york-v4 uses `bg-accent`; `bases/base`'s `today` uses `bg-muted
+  text-foreground` where new-york-v4 uses `bg-accent text-accent-foreground`.
+  `range_middle` is **not** part of this divergence — both files leave it
+  colorless (`"rounded-none"`, no `bg-*`/`text-*` token, in both).
+- At `CalendarDayButton`'s own data-attribute level (§3): **only**
+  `data-range-middle` differs (`bg-muted text-foreground` in `bases/base` vs.
+  `bg-accent text-accent-foreground` in new-york-v4), plus the trailing
+  `dark:hover:text-foreground` (`bases/base`) vs. `dark:hover:text-accent-
+  foreground` (new-york-v4). `data-range-start`, `data-range-end`, and
+  `data-selected-single` are **byte-identical** in both files (`bg-primary
+  text-primary-foreground` in every case) — no divergence there at all.
+
+**This is `bases/base`'s own family-wide design language, not a
+`style-nova.css` directive** — none of the three nova rules above touch
+color, and the muted/accent swap is baked directly into `bases/base`'s
+`.tsx` as plain Tailwind utilities, sitting alongside (not sourced from) its
 `cn-calendar-*` class names. Per the reference-source rule, `bases/base` is
 consulted here **only** as a structure tiebreak for where the three real
 nova rules attach — its own color choices carry no authority and must not
-leak into the port. Keep new-york-v4's `bg-accent`/`bg-primary` values.
+leak into the port. Keep new-york-v4's `bg-accent`/`bg-primary` values
+throughout; the port recommendation is unchanged by this correction, only
+the size of the claim is.
 
 ## 7. Behavior traces
 
@@ -478,12 +491,77 @@ ref.current?.focus() }, [modifiers.focused])` (§3), reacting to the new
 `undefined` outright if either `navStart` or `navEnd` is falsy — i.e.
 upstream's `captionLayout="dropdown"` produces **no year options at all**
 unless the caller supplies `startMonth`/`endMonth` (which `useCalendar.js`
-turns into `navStart`/`navEnd` — grepped only, not read in full, per Inputs
-read above). This is the upstream behavior the plan's already-adopted
-deviation (gsxui defaults a year range instead of requiring the caller pass
-one) diverges from — recorded here so Task 4/5 knows what upstream actually
-requires and why the default is a real behavior change, not just a
-convenience wrapper around an optional prop.
+turns into `navStart`/`navEnd` via `getNavMonth.js`, both now read in full —
+see §7.5 for what else that same function does). This is the upstream
+behavior the plan's already-adopted deviation (gsxui defaults a year range
+instead of requiring the caller pass one) diverges from — recorded here so
+Task 4/5 knows what upstream actually requires and why the default is a real
+behavior change, not just a convenience wrapper around an optional prop.
+
+### 7.5 Nav button (`button_previous`/`button_next`) disabled contract — added in the Task 0 review-fix pass
+
+The same architectural pattern that governs the day button's `disabled`/
+`aria-disabled` split (§7.2) also governs the nav buttons at the navigation
+bounds, and it was previously missing from this document even though §2
+lists both buttons' class strings. Read directly off `Nav.js` (full file,
+the only call site that builds these two buttons — `DayPicker.js`'s own
+`Nav` instantiation for the `navLayout==="around"`/`"after"` cases
+duplicates the identical four props verbatim, confirmed at lines 255–256/
+282–283/318–322 of `DayPicker.js`):
+
+```
+tabIndex: previousMonth ? undefined : -1,
+"aria-disabled": previousMonth ? undefined : true,
+```
+(`button_previous`; the mirror image, keyed on `nextMonth`, applies to
+`button_next`). **No native `disabled` prop is set anywhere in `Nav.js`, nor
+at any of `DayPicker.js`'s three call sites for these buttons** — confirmed
+by reading every prop passed at all four locations; there is no branch that
+ever adds `disabled` to either button. This is a **stricter** contract than
+the day button's (§7.2's `disabled`/`aria-disabled` split at least sometimes
+sets native `disabled`): the nav buttons never get native `disabled` at all,
+under any condition — only `aria-disabled` plus `tabIndex={-1}`.
+
+**What gsxui should do** (not merely what upstream does, per the review
+finding): render `button_previous`/`button_next` **without** a native
+`disabled` attribute at a month boundary. Setting native `disabled` would
+remove the button from the tab order and from the accessibility tree's
+"disabled but present" state, which is exactly the behavior `aria-disabled`
++ `tabIndex={-1}` is chosen over — a `tabIndex={-1}` element without
+`disabled` is skipped by sequential Tab navigation (matching upstream's
+intent that it not be a stop in the tab sequence) while still being
+present, focusable programmatically, and correctly announced as disabled to
+assistive tech via `aria-disabled`, rather than vanishing from the
+accessibility tree the way a native `disabled` button would. Task 3 should
+implement this as: `aria-disabled={true}` + `tabIndex={-1}` at a bound,
+`aria-disabled` omitted + `tabIndex` left at its natural value (`0`, or
+unset) otherwise — never a native `disabled` attribute on either nav
+button, at any bound.
+
+**`fromYear`/`toYear` (and `startMonth`/`endMonth`) bounds do interact with
+this — they're not a separate mechanism from the "data bounds."** Read
+`helpers/getNavMonth.js` (full file) and `useCalendar.js` (full file)
+together: `getNavMonths(props, dateLib)` resolves `navStart`/`navEnd` from
+`startMonth`/`endMonth` (preferred) or the deprecated `fromMonth`/`toMonth`/
+`fromYear`/`toYear` props, and — a detail with no equivalent anywhere else
+in this document — **if `captionLayout` is `"dropdown"` or
+`"dropdown-years"` and no explicit bound was given at all, `getNavMonth.js`
+itself defaults `navStart`/`navEnd` to `today ± 100 years`**
+(`startOfYear(addYears(today, -100))` through `endOfYear(today)`, lines
+33–35/42–44 of `getNavMonth.js`). `useCalendar.js` then feeds that same
+`navStart`/`navEnd` pair straight into `getPreviousMonth`/`getNextMonth`
+(both full files), which return `undefined` once the currently-displayed
+month reaches either bound — and `previousMonth`/`nextMonth` being
+`undefined` is precisely what drives `tabIndex`/`aria-disabled` in `Nav.js`
+above. So there is exactly **one** disabled mechanism, not two: `navStart`/
+`navEnd` already incorporates whatever `startMonth`/`endMonth`/`fromYear`/
+`toYear` config the caller supplies (or the dropdown-mode ±100-year default,
+§7.4), and the nav buttons go `aria-disabled` whenever the calendar reaches
+*that* bound — configured or defaulted — with no distinct "data bounds"
+concept beyond it. (`getPreviousMonth`/`getNextMonth` also independently
+return `undefined` whenever `props.disableNavigation` is set, and adjust
+their step size under `pagedNavigation`, both unrelated to the
+`fromYear`/`toYear` question but visible in the same two files.)
 
 ---
 
@@ -578,6 +656,21 @@ be wrong for this one edge case (a day that becomes disabled while it
 already holds live focus, e.g. via a controlled `disabled` prop update).
 Flagging explicitly per the brief's instruction to record anything the plan
 assumed that the sources contradict.
+
+**6. New finding, added in the Task 0 review-fix pass — the nav buttons had
+no written disabled contract at all.** Full trace in §7.5. Summary: neither
+`button_previous` nor `button_next` ever receives a native `disabled`
+attribute, at any navigation bound, under any configuration — only
+`aria-disabled={true}` + `tabIndex={-1}`, confirmed by reading every prop at
+all four places `Nav.js`/`DayPicker.js` construct these buttons. Task 3 had
+no citation to build against and could plausibly have reached for native
+`disabled` at a month boundary, which would remove the button from the tab
+order entirely — exactly what upstream's `aria-disabled`-only approach is
+designed to avoid. §7.5 also traces that `fromYear`/`toYear`/`startMonth`/
+`endMonth` are not a separate "configured bounds" concept from the buttons'
+"data bounds" — they all resolve into the same `navStart`/`navEnd` pair
+that `getPreviousMonth`/`getNextMonth` test against, so the one contract
+above covers both.
 
 ---
 
