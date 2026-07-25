@@ -32,12 +32,12 @@ func TestNavigationMenuListIsAList(t *testing.T) {
 }
 
 func TestNavigationMenuRootPinned(t *testing.T) {
-	// FIX ROUND 1: the shared-viewport mode (and its `viewport` param) is
-	// gone — see ui/navigation-menu.gsx's own file header GAP paragraph. The
-	// root no longer takes a viewport param, stamps no data-viewport
-	// attribute, and never auto-renders a NavigationMenuViewport child.
+	// FIX ROUND 2: data-viewport="false" is stamped unconditionally (a
+	// FIX ROUND 1 version stamped nothing at all) — this keeps
+	// NavigationMenuContent's own group-data-[viewport=false]/navigation-menu:
+	// chrome selectors byte-identical to upstream and live, not stripped.
 	got := render(t, ui.NavigationMenu(gsx.Raw("x"), nil))
-	want := `<nav data-slot="navigation-menu" data-gsxui-navigation-menu class="group/navigation-menu relative flex max-w-max flex-1 items-center justify-center">x</nav>`
+	want := `<nav data-slot="navigation-menu" data-gsxui-navigation-menu data-viewport="false" class="group/navigation-menu relative flex max-w-max flex-1 items-center justify-center">x</nav>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -51,10 +51,7 @@ func TestNavigationMenuViewportPartRemoved(t *testing.T) {
 	// the paint order), making every link inside unreachable. The part is
 	// removed outright, not kept as a no-op — the viewport={false}
 	// configuration this port now ships never renders it at all in
-	// upstream shadcn either. This test asserts the removal stays
-	// removed: no navigation-menu-viewport slot exists anywhere a fully
-	// composed menu renders (see TestNavigationMenuOnlyOnePopoverPerItem
-	// below for the "nothing occludes Content" half of this guarantee).
+	// upstream shadcn either.
 	got := render(t, ui.NavigationMenuItem(gsx.Fragment(
 		ui.NavigationMenuTrigger(gsx.Raw("Products"), nil),
 		ui.NavigationMenuContent(gsx.Raw("links"), nil),
@@ -65,8 +62,10 @@ func TestNavigationMenuViewportPartRemoved(t *testing.T) {
 }
 
 func TestNavigationMenuListPinned(t *testing.T) {
+	// gap-0 is nova's own metric (.cn-navigation-menu-list), FIX ROUND 2 —
+	// previously omitted (new-york-v4's own gap-1 was carried instead).
 	got := render(t, ui.NavigationMenuList(gsx.Raw("x"), nil))
-	want := `<ul data-slot="navigation-menu-list" data-gsxui-navigation-menu-list class="group flex flex-1 list-none items-center justify-center gap-1">x</ul>`
+	want := `<ul data-slot="navigation-menu-list" data-gsxui-navigation-menu-list class="group flex flex-1 list-none items-center justify-center gap-0">x</ul>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -81,8 +80,13 @@ func TestNavigationMenuItemPinned(t *testing.T) {
 }
 
 func TestNavigationMenuTriggerPinned(t *testing.T) {
+	// FIX ROUND 2: rounded-lg/px-2.5 py-1.5/transition-all are nova's own
+	// metrics (previously the port under-adopted them, carrying
+	// new-york-v4's own px-4 py-2/transition-[color,box-shadow] instead).
+	// A literal space text node now separates {children} from the chevron,
+	// matching new-york-v4's own {children}{" "} (navigation-menu.tsx:76).
 	got := render(t, ui.NavigationMenuTrigger(gsx.Raw("Products"), nil))
-	want := `<button data-slot="navigation-menu-trigger" data-gsxui-navigation-menu-trigger type="button" aria-expanded="false" data-state="closed" class="group inline-flex h-9 w-max items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-[color,box-shadow] outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-accent/50 data-[state=open]:text-accent-foreground data-[state=open]:hover:bg-accent data-[state=open]:focus:bg-accent group">Products<svg data-slot="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="relative top-[1px] ml-1 size-3 transition duration-300 group-data-[state=open]:rotate-180"><path d="m6 9 6 6 6-6"/></svg></button>`
+	want := `<button data-slot="navigation-menu-trigger" data-gsxui-navigation-menu-trigger type="button" aria-expanded="false" data-state="closed" class="group inline-flex h-9 w-max items-center justify-center rounded-lg px-2.5 py-1.5 text-sm font-medium transition-all outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-accent/50 data-[state=open]:text-accent-foreground data-[state=open]:hover:bg-accent data-[state=open]:focus:bg-accent group">Products <svg data-slot="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="relative top-[1px] ml-1 size-3 transition duration-300 group-data-[state=open]:rotate-180"><path d="m6 9 6 6 6-6"/></svg></button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -90,7 +94,7 @@ func TestNavigationMenuTriggerPinned(t *testing.T) {
 
 func TestNavigationMenuTriggerStyleHelper(t *testing.T) {
 	got := ui.NavigationMenuTriggerStyle()
-	want := "group inline-flex h-9 w-max items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-[color,box-shadow] outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-accent/50 data-[state=open]:text-accent-foreground data-[state=open]:hover:bg-accent data-[state=open]:focus:bg-accent"
+	want := "group inline-flex h-9 w-max items-center justify-center rounded-lg px-2.5 py-1.5 text-sm font-medium transition-all outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-accent/50 data-[state=open]:text-accent-foreground data-[state=open]:hover:bg-accent data-[state=open]:focus:bg-accent"
 	if got != want {
 		t.Errorf("got %q\nwant %q", got, want)
 	}
@@ -100,43 +104,74 @@ func TestNavigationMenuTriggerStyleHelper(t *testing.T) {
 }
 
 func TestNavigationMenuContentPinned(t *testing.T) {
-	// FIX ROUND 1: the border/bg/shadow/rounded chrome is now UNCONDITIONAL
-	// — no group-data-[viewport=false]/navigation-menu: gate, since there is
-	// only one mode. This IS the "each Content carries the panel chrome"
-	// pin the coordinator asked for: bg-popover/border/shadow/rounded-lg all
-	// appear in the base class, live on every render, not behind a selector
-	// that depends on an ancestor state this port never stamps.
+	// FIX ROUND 2: the chrome block's group-data-[viewport=false]/
+	// navigation-menu: prefix is back (NavigationMenu now stamps
+	// data-viewport="false" unconditionally, so the selector is always
+	// live — see TestNavigationMenuRootPinned), and p-1 replaces
+	// new-york-v4's own p-2 pr-2.5 (nova metric, previously omitted).
+	// w-full/md:w-auto are GONE — the CRITICAL mobile-overflow fix: a
+	// fixed-positioned element's containing block is the viewport, not its
+	// DOM ancestor, so w-full below md resolved to ~100vw. See
+	// TestNavigationMenuContentHasNoFixedWidthUtility below for the
+	// regression guard on that fix specifically.
 	got := render(t, ui.NavigationMenuContent(gsx.Raw("x"), nil))
-	// tailwind-merge drops the earlier same-group "top-0" in favor of the
-	// later "top-full" (both are `top-*` utilities) — a real conflict
-	// resolution, not a bug: the class string's own authoring order (block
-	// 1's top-0 written before block 2's top-full) already decided the
-	// winner, matching what the ORIGINAL two-block shadcn source already
-	// did whenever its own viewport=false ancestor state was active.
-	want := `<div data-slot="navigation-menu-content" data-gsxui-navigation-menu-content popover="manual" data-state="closed" data-side="bottom" class="left-0 w-full p-2 pr-2.5 md:absolute md:w-auto top-full mt-1.5 overflow-hidden rounded-lg border bg-popover text-popover-foreground shadow **:data-[slot=navigation-menu-link]:focus:ring-0 **:data-[slot=navigation-menu-link]:focus:outline-none opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95 data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2">x</div>`
+	want := `<div data-slot="navigation-menu-content" data-gsxui-navigation-menu-content popover="manual" data-state="closed" data-side="bottom" class="top-0 left-0 p-1 md:absolute group-data-[viewport=false]/navigation-menu:top-full group-data-[viewport=false]/navigation-menu:mt-1.5 group-data-[viewport=false]/navigation-menu:overflow-hidden group-data-[viewport=false]/navigation-menu:rounded-lg group-data-[viewport=false]/navigation-menu:border group-data-[viewport=false]/navigation-menu:bg-popover group-data-[viewport=false]/navigation-menu:text-popover-foreground group-data-[viewport=false]/navigation-menu:shadow **:data-[slot=navigation-menu-link]:focus:ring-0 **:data-[slot=navigation-menu-link]:focus:outline-none opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95 data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
 	for _, chrome := range []string{"bg-popover", "border", "shadow", "rounded-lg", "overflow-hidden"} {
 		if !strings.Contains(got, chrome) {
-			t.Errorf("Content must carry its own panel chrome unconditionally — missing %q\nin: %s", chrome, got)
+			t.Errorf("Content must carry its own panel chrome — missing %q\nin: %s", chrome, got)
+		}
+	}
+}
+
+// TestNavigationMenuContentHasNoFixedWidthUtility is the CRITICAL FIX ROUND 2
+// regression guard: NavigationMenuContent must never carry a `w-full` (or
+// any bare `w-*`) utility. ui/navigation-menu.js sets position:fixed on
+// Content at every breakpoint — for a fixed element the containing block is
+// the viewport itself, not the NavigationMenuItem <li> — so a `w-full`
+// authored to mean "100% of the li" below new-york-v4's own md breakpoint
+// instead resolves to ~100% of the VIEWPORT, overflowing the right edge and
+// forcing horizontal page scroll (measured live on the built site before
+// this fix). Go can't execute CSS layout, so this test asserts the
+// render-contract half of the fix — the utility token itself is gone — not
+// the computed layout; the file header's own doc comment on
+// NavigationMenuContent records the live measurement.
+func TestNavigationMenuContentHasNoFixedWidthUtility(t *testing.T) {
+	got := render(t, ui.NavigationMenuContent(gsx.Raw("x"), nil))
+	for _, dead := range []string{"w-full", "md:w-auto"} {
+		if strings.Contains(got, dead) {
+			t.Errorf("Content must not carry %q — fixed positioning makes it resolve against the viewport, not the trigger's own <li>\nin: %s", dead, got)
 		}
 	}
 }
 
 // TestNavigationMenuOnlyOnePopoverPerItem is the "nothing occludes Content"
-// half of FIX ROUND 1's verification: a fully composed Trigger+Content pair
-// (the only two parts that can ever be popover-backed in this port now that
-// NavigationMenuViewport is gone) renders exactly one popover="..." — no
-// second top-layer element exists that could paint an opaque surface over
-// Content the way the removed Viewport did.
+// half of FIX ROUND 1's verification, corrected in FIX ROUND 2 to actually
+// guard the bug it names: an earlier version of this test composed only
+// NavigationMenuItem(Trigger, Content) directly, which never exercises
+// NavigationMenu's own root — but the v1 bug this guards against was the
+// ROOT auto-rendering a NavigationMenuViewport child
+// ({viewport && <NavigationMenuViewport/>}), a path that composition never
+// reaches. Reintroducing that exact regression at the root would have left
+// the old test green. This version renders the full
+// NavigationMenu>List>Item>Trigger+Content tree and counts popover="..."
+// across the WHOLE tree, so a reintroduced root-level Viewport (or any
+// other stray popover-backed element) would push the count to 2 and fail.
 func TestNavigationMenuOnlyOnePopoverPerItem(t *testing.T) {
-	got := render(t, ui.NavigationMenuItem(gsx.Fragment(
-		ui.NavigationMenuTrigger(gsx.Raw("Products"), nil),
-		ui.NavigationMenuContent(gsx.Raw(`<a>Dialog</a>`), nil),
-	), nil))
+	got := render(t, ui.NavigationMenu(
+		ui.NavigationMenuList(
+			ui.NavigationMenuItem(gsx.Fragment(
+				ui.NavigationMenuTrigger(gsx.Raw("Products"), nil),
+				ui.NavigationMenuContent(gsx.Raw(`<a>Dialog</a>`), nil),
+			), nil),
+			nil,
+		),
+		nil,
+	))
 	if n := strings.Count(got, `popover="`); n != 1 {
-		t.Errorf("want exactly 1 popover-backed element (Content itself), got %d\nin: %s", n, got)
+		t.Errorf("want exactly 1 popover-backed element (Content itself) across the whole tree, got %d\nin: %s", n, got)
 	}
 	if !strings.Contains(got, "Dialog") {
 		t.Errorf("Content's own children must render, unoccluded\nin: %s", got)
@@ -169,12 +204,15 @@ func TestNavigationMenuIndicatorPinned(t *testing.T) {
 }
 
 func TestNavigationMenuCallerClassMerges(t *testing.T) {
-	got := render(t, ui.NavigationMenuContent(gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "w-96"}}))
-	if strings.Contains(got, "w-full") {
-		t.Errorf("caller w-96 must drop default w-full\nin: %s", got)
+	// Content carries no width utility any more (the CRITICAL fix above), so
+	// the merge-drops-the-default check uses padding instead: p-1 is
+	// Content's own nova-metric default.
+	got := render(t, ui.NavigationMenuContent(gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "p-8"}}))
+	if strings.Contains(got, "p-1 ") || strings.HasSuffix(got, "p-1") {
+		t.Errorf("caller p-8 must drop default p-1\nin: %s", got)
 	}
-	if !strings.Contains(got, "w-96") || !strings.Contains(got, "p-2") {
-		t.Errorf("want w-96 plus surviving structural classes\nin: %s", got)
+	if !strings.Contains(got, "p-8") || !strings.Contains(got, "md:absolute") {
+		t.Errorf("want p-8 plus surviving structural classes\nin: %s", got)
 	}
 }
 

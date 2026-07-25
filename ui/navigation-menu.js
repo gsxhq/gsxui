@@ -24,6 +24,16 @@
 // positioned under ITS OWN trigger's rect — no shared viewport element
 // exists to position, size, or occlude anything.
 //
+// FIX ROUND 2: the positioning offset below dropped from 6 to 0 (the
+// class's own mt-1.5 margin already supplies that 6px gap; stacking both
+// doubled it to 12px) — see open()'s own comment. No width is set here:
+// ui/navigation-menu.gsx's own FIX ROUND 2 CRITICAL comment explains why
+// Content's class no longer carries w-full/md:w-auto at all (a fixed-
+// positioned element's containing block is the viewport, not its DOM
+// ancestor, so w-full below md resolved to ~100vw and overflowed the page)
+// — Content is left shrink-to-fit at every breakpoint instead, needing no
+// JS-computed width to match.
+//
 // No Escape/outside-pointerdown light dismiss — same deliberate choice as
 // hover-card.js's own (hover/focus drive it, not outside clicks or Esc).
 import { on, emit } from "./gsxui.js";
@@ -105,8 +115,12 @@ function open(trigger) {
 
   // Positioned under THIS trigger's own rect (viewport={false} semantics —
   // each panel is its own self-contained floating panel, not a shared,
-  // list-anchored one).
-  positionAt(content, trigger.getBoundingClientRect(), 6);
+  // list-anchored one). Offset 0, not 6 — FIX ROUND 2: the class's own
+  // group-data-[viewport=false]/navigation-menu:mt-1.5 margin already
+  // supplies the 6px gap (margin still offsets a fixed-positioned box's own
+  // top edge from its computed `top`); an additional +6 offset here was
+  // double-counting it, rendering a 12px gap where upstream has 6px.
+  positionAt(content, trigger.getBoundingClientRect(), 0);
   // Stamp open BEFORE showing — same flash-avoidance rule as every other
   // popover in this codebase (a queued toggle event can otherwise leave one
   // frame painted in the stale closed state).

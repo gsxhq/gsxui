@@ -11,7 +11,7 @@ func init() {
 	})
 	Register("navigation-menu", Example{
 		Name:       "mega",
-		Title:      "Mega menu with a shared, JS-measured viewport",
+		Title:      "Mega menu with independently-sized panels",
 		Node:       examplenavigationmenu.Mega(),
 		SourcePath: "navigationmenu/mega.gsx",
 	})
