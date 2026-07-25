@@ -439,6 +439,16 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 // data-gsxui-calendar-from/-to (range mode). Each is omitted entirely when
 // empty, never emitted as ="".
 //
+// Task 4 adds the four disabled rules to the root the same way, for the same
+// reason: data-gsxui-calendar-disabled-before/-after (ISO), -disabled-dates
+// (comma-separated ISO), -disabled-weekdays (comma-separated
+// time.Weekday ints, Sunday=0). Task 3 baked dayDisabled's result into each
+// of the initial month's 42 cells and stopped there; that snapshot goes
+// stale the moment calendar.js navigates to a month the server never
+// rendered, so the RULES themselves — not just their initial-month
+// application — have to reach the client too. Same omit-when-empty
+// convention as -selected/-from/-to.
+//
 // Two distinct data-attribute sets, on two elements, per source map §8
 // finding 3 and the brief's DOM contract — not collapsed onto one element:
 // the cell carries data-disabled/data-selected/aria-selected (alongside
@@ -451,6 +461,18 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 // calendarDayClass already carries [data-selected=true]-based selectors
 // from Task 1 (the row-edge rounding and the today+selected interaction)
 // that only fire on an exact value match, not mere attribute presence.
+//
+// Task 4 adds one exception to "the cell owns data-date, the button doesn't":
+// the button ALSO carries its own data-date (identical value, additive —
+// the cell's copy is untouched). calendar.js's selector for "one per day" is
+// [data-gsxui-calendar-day] (the button, the only element that's uniquely
+// and unambiguously one-per-cell without also matching the <thead> row), so
+// the browser suite (jstest/specs/calendar.spec.ts's gridDates helper) and
+// calendar.js's own in-place update both read/write data-date there rather
+// than walking up to the enclosing <td>. ui/calendar_test.go's gridDates
+// helper was updated in lockstep to read the button's copy specifically
+// (scoped to the data-gsxui-calendar-day tag), not a bare "count every
+// data-date in the document" split, which would now double-count.
 //
 // The cell's data-selected/aria-selected fire in EVERY mode, including
 // range: react-day-picker's own modifiers.selected (source map §4) is true
@@ -514,6 +536,26 @@ component Calendar(
 		showHiddenSingle := name != "" && mode != "range" && len(selected) > 0
 		showHiddenFrom := name != "" && mode == "range" && !from.IsZero()
 		showHiddenTo := name != "" && mode == "range" && !to.IsZero()
+
+		// The four disabled rules, serialized onto the root so calendar.js
+		// (Task 4) can re-derive dayDisabled for a client-navigated month
+		// without the server rendering it — Task 3 only ever rendered these
+		// rules baked into the initial month's 42 cells, which goes stale
+		// the instant JS navigates away from that month. Comma-separated,
+		// same ISO/int encoding as the per-day comparisons above; omitted
+		// entirely when the rule is unset, never emitted empty (matching
+		// -selected/-from/-to's own omit-when-empty convention just above).
+		var disabledDatesISO []string
+		for _, dd := range disabledDates {
+			disabledDatesISO = append(disabledDatesISO, dd.Format("2006-01-02"))
+		}
+		disabledDatesAttr := strings.Join(disabledDatesISO, ",")
+
+		var disabledWeekdaysStr []string
+		for _, wd := range disabledWeekdays {
+			disabledWeekdaysStr = append(disabledWeekdaysStr, strconv.Itoa(int(wd)))
+		}
+		disabledWeekdaysAttr := strings.Join(disabledWeekdaysStr, ",")
 	}}
 	<div
 		data-slot="calendar"
@@ -529,6 +571,18 @@ component Calendar(
 		} }
 		{ if !to.IsZero() {
 			data-gsxui-calendar-to={ to.Format("2006-01-02") }
+		} }
+		{ if !disabledBefore.IsZero() {
+			data-gsxui-calendar-disabled-before={ disabledBefore.Format("2006-01-02") }
+		} }
+		{ if !disabledAfter.IsZero() {
+			data-gsxui-calendar-disabled-after={ disabledAfter.Format("2006-01-02") }
+		} }
+		{ if disabledDatesAttr != "" {
+			data-gsxui-calendar-disabled-dates={ disabledDatesAttr }
+		} }
+		{ if disabledWeekdaysAttr != "" {
+			data-gsxui-calendar-disabled-weekdays={ disabledWeekdaysAttr }
 		} }
 		class={ calendarRootClass }
 		{ attrs... }
@@ -632,6 +686,7 @@ component Calendar(
 								<button
 									type="button"
 									data-gsxui-calendar-day
+									data-date={ d.Format("2006-01-02") }
 									tabindex={ tabindex }
 									aria-label={ d.Format("Monday, January 2, 2006") }
 									data-selected-single={ boolStr(selSingle) }

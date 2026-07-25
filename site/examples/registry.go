@@ -1,6 +1,10 @@
 package examples
 
-import "github.com/gsxhq/gsx"
+import (
+	"net/url"
+
+	"github.com/gsxhq/gsx"
+)
 
 // Example is one live demo on a component page. Name/SourcePath key the
 // embedded source file (SourcePath is "{component}/{Name}.gsx", relative
@@ -14,6 +18,20 @@ type Example struct {
 	Title      string
 	Node       gsx.Node
 	SourcePath string
+
+	// Query, when non-nil, re-renders the example per-request from the
+	// request's raw query parameters instead of using the static Node —
+	// for an example whose content depends on request state (the calendar
+	// examples' own ?month=, read by jstest/harness's /x/{component}/
+	// {example} handler). This mechanism knows nothing about "month" or
+	// "calendar": it is a generic url.Values -> gsx.Node hook, and the
+	// interpretation of any given query key lives entirely in the example
+	// package that sets this field (see site/examples/calendar.go).
+	// Node must still be set for every example, Query or not — it backs
+	// the static/default render (the site's own component pages, the
+	// manifest, the drift and render-smoke tests in examples_test.go, and
+	// any request with no matching query parameter).
+	Query func(url.Values) gsx.Node
 }
 
 var (

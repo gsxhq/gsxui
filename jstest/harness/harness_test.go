@@ -93,6 +93,87 @@ func TestExampleRouteRendersTheExample(t *testing.T) {
 	}
 }
 
+// firstCalendarDayDate returns the data-date attribute of the first
+// [data-gsxui-calendar-day] element in page, in DOM order — the button's own
+// copy specifically (ui/calendar.gsx and its test file's own gridDates
+// helper explain why the button, not just the enclosing <td>, carries this
+// attribute: it's the one selector that's unambiguously one-per-cell).
+func firstCalendarDayDate(t *testing.T, page string) string {
+	t.Helper()
+	i := strings.Index(page, "data-gsxui-calendar-day")
+	if i < 0 {
+		t.Fatal("no [data-gsxui-calendar-day] element in page")
+	}
+	tagEnd := strings.Index(page[i:], ">")
+	if tagEnd < 0 {
+		t.Fatal("unterminated day button tag")
+	}
+	tag := page[i : i+tagEnd]
+	j := strings.Index(tag, `data-date="`)
+	if j < 0 {
+		t.Fatalf("day button missing data-date\ntag: %s", tag)
+	}
+	rest := tag[j+len(`data-date="`):]
+	end := strings.Index(rest, `"`)
+	if end < 0 {
+		t.Fatalf("unterminated data-date\ntag: %s", tag)
+	}
+	return rest[:end]
+}
+
+// TestCalendarMonthQueryParamRendersTheRequestedMonth covers the ?month=
+// override jstest/harness/main.go's /x/{component}/{example} handler passes
+// through generically via Example.Query (site/examples/registry.go) —
+// jstest/specs/calendar.spec.ts's "Go and JS agree on …" tests need the
+// server able to render an arbitrary month, not just calendar/basic's own
+// default. The handler itself never mentions "calendar" or "month"; both
+// interpretations live in site/examples/calendar.go's Query hook.
+func TestCalendarMonthQueryParamRendersTheRequestedMonth(t *testing.T) {
+	srv := httptest.NewServer(newMux(repoRoot(t)))
+	defer srv.Close()
+
+	// Default: no ?month=, so calendar/basic renders its own pinned
+	// DefaultMonth (2026-01, Sunday week start) — the grid opens on
+	// 2025-12-28 (Jan 1 2026 is a Thursday, four days after the preceding
+	// Sunday).
+	res, err := http.Get(srv.URL + "/x/calendar/basic")
+	if err != nil {
+		t.Fatalf("GET /x/calendar/basic: %v", err)
+	}
+	body, _ := io.ReadAll(res.Body)
+	res.Body.Close()
+	if got := firstCalendarDayDate(t, string(body)); got != "2025-12-28" {
+		t.Errorf("default month: first day = %q, want 2025-12-28", got)
+	}
+
+	// Override: ?month=2026-02 — February 1 2026 is itself a Sunday, so the
+	// grid opens exactly on 2026-02-01 (no leading padding days at all).
+	res, err = http.Get(srv.URL + "/x/calendar/basic?month=2026-02")
+	if err != nil {
+		t.Fatalf("GET /x/calendar/basic?month=2026-02: %v", err)
+	}
+	body, _ = io.ReadAll(res.Body)
+	res.Body.Close()
+	if got := firstCalendarDayDate(t, string(body)); got != "2026-02-01" {
+		t.Errorf("?month=2026-02: first day = %q, want 2026-02-01", got)
+	}
+
+	// An unparseable ?month= falls back to DefaultMonth rather than 500ing
+	// or rendering a wrong/zero month — same as no query param at all.
+	res, err = http.Get(srv.URL + "/x/calendar/basic?month=not-a-month")
+	if err != nil {
+		t.Fatalf("GET /x/calendar/basic?month=not-a-month: %v", err)
+	}
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("?month=not-a-month: status = %d, want 200", res.StatusCode)
+	}
+	body, _ = io.ReadAll(res.Body)
+	res.Body.Close()
+	if got := firstCalendarDayDate(t, string(body)); got != "2025-12-28" {
+		t.Errorf("?month=not-a-month: first day = %q, want fallback 2025-12-28", got)
+	}
+}
+
 func TestUnknownExampleIs404(t *testing.T) {
 	srv := httptest.NewServer(newMux(repoRoot(t)))
 	defer srv.Close()

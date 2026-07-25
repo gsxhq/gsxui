@@ -64,8 +64,18 @@ func newMux(root string) http.Handler {
 			if ex.Name != name {
 				continue
 			}
+			// ex.Query, when the example sets one, re-renders from the
+			// request's own query parameters (site/examples/registry.go's
+			// Example.Query doc comment) — generic across every component;
+			// this handler forwards the raw query values without ever
+			// inspecting component or name itself. An example with no Query
+			// hook (the common case) always falls through to its static Node.
+			node := ex.Node
+			if ex.Query != nil {
+				node = ex.Query(r.URL.Query())
+			}
 			var buf bytes.Buffer
-			if err := ex.Node.Render(r.Context(), &buf); err != nil {
+			if err := node.Render(r.Context(), &buf); err != nil {
 				http.Error(w, "render: "+err.Error(), http.StatusInternalServerError)
 				return
 			}

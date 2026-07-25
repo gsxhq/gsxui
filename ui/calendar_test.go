@@ -9,16 +9,33 @@ import (
 	"github.com/gsxhq/gsxui/ui"
 )
 
-// grid returns the data-date values of every day button, in DOM order.
+// grid returns the data-date values of every day BUTTON, in DOM order —
+// scoped to the data-gsxui-calendar-day tag specifically, not a bare
+// "every data-date in the document" split. The <td> cell carries its own
+// data-date too (Task 1), so a naive split would double-count once Task 4
+// adds the button's own copy (see calendar.gsx's own comment on why the
+// button needs it: jstest/specs/calendar.spec.ts's browser-side gridDates
+// reads it directly off [data-gsxui-calendar-day], the one selector that
+// is unambiguously one-per-cell).
 func gridDates(t *testing.T, html string) []string {
 	t.Helper()
 	var out []string
-	for _, part := range strings.Split(html, `data-date="`)[1:] {
-		end := strings.Index(part, `"`)
-		if end < 0 {
-			t.Fatalf("unterminated data-date in %s", html)
+	for _, part := range strings.Split(html, `data-gsxui-calendar-day`)[1:] {
+		tagEnd := strings.Index(part, ">")
+		if tagEnd < 0 {
+			t.Fatalf("unterminated day button tag in %s", html)
 		}
-		out = append(out, part[:end])
+		tag := part[:tagEnd]
+		i := strings.Index(tag, `data-date="`)
+		if i < 0 {
+			t.Fatalf("day button missing data-date\nbutton tag: %s", tag)
+		}
+		rest := tag[i+len(`data-date="`):]
+		end := strings.Index(rest, `"`)
+		if end < 0 {
+			t.Fatalf("unterminated data-date in button tag: %s", tag)
+		}
+		out = append(out, rest[:end])
 	}
 	return out
 }
@@ -393,6 +410,77 @@ func TestCalendarDisabledBounds(t *testing.T) {
 	}
 	if !strings.Contains(got, `data-date="2026-01-21" data-disabled`) {
 		t.Error("2026-01-21 should be disabled (after the bound)")
+	}
+}
+
+// The day button carries its own data-date, additive to (not instead of) the
+// enclosing <td>'s copy — Task 4's addition, so calendar.js and the browser
+// suite can read/write a day's date from the one selector
+// ([data-gsxui-calendar-day]) that is unambiguously one-per-cell. Anchored
+// on the button's own opening tag specifically, so this can't pass merely
+// because the (different) enclosing <td> element happens to carry the same
+// attribute already.
+func TestCalendarDayButtonCarriesItsOwnDate(t *testing.T) {
+	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "", nil))
+
+	cell := cellFor(t, got, "2026-01-15")
+	btnStart := strings.Index(cell, "<button")
+	if btnStart < 0 {
+		t.Fatal("cell has no button")
+	}
+	btnTagEnd := strings.Index(cell[btnStart:], ">")
+	if btnTagEnd < 0 {
+		t.Fatal("button's opening tag is never closed")
+	}
+	btnTag := cell[btnStart : btnStart+btnTagEnd]
+	if !strings.Contains(btnTag, `data-date="2026-01-15"`) {
+		t.Errorf("day button missing its own data-date\nbutton tag: %s", btnTag)
+	}
+}
+
+// The four disabled rules land on the root as data attributes (Task 4) so
+// calendar.js can re-derive dayDisabled for a month the server never
+// rendered — Task 3's per-cell data-disabled only ever reflected the
+// initial month.
+func TestCalendarRootCarriesDisabledRules(t *testing.T) {
+	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Date(2026, 1, 10, 0, 0, 0, 0, time.UTC),
+		time.Date(2026, 1, 20, 0, 0, 0, 0, time.UTC),
+		[]time.Time{time.Date(2026, 1, 14, 0, 0, 0, 0, time.UTC)},
+		[]time.Weekday{time.Saturday, time.Sunday},
+		"", nil))
+
+	for _, want := range []string{
+		`data-gsxui-calendar-disabled-before="2026-01-10"`,
+		`data-gsxui-calendar-disabled-after="2026-01-20"`,
+		`data-gsxui-calendar-disabled-dates="2026-01-14"`,
+		`data-gsxui-calendar-disabled-weekdays="6,0"`,
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("root missing %q\nin: %s", want, got)
+		}
+	}
+}
+
+// Each disabled-rule attribute is omitted entirely when unset, matching
+// -selected/-from/-to's own convention — never emitted as ="".
+func TestCalendarRootOmitsDisabledRulesWhenUnset(t *testing.T) {
+	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "", nil))
+
+	for _, unwanted := range []string{
+		"data-gsxui-calendar-disabled-before",
+		"data-gsxui-calendar-disabled-after",
+		"data-gsxui-calendar-disabled-dates",
+		"data-gsxui-calendar-disabled-weekdays",
+	} {
+		if strings.Contains(got, unwanted) {
+			t.Errorf("root should omit %s when unset\nin: %s", unwanted, got)
+		}
 	}
 }
 

@@ -2,6 +2,7 @@
 // behaviors (side-effect modules) for tree-shaken selective loading.
 export * from "./gsxui.js";
 import "./avatar.js";
+import "./calendar.js";
 import "./carousel.js";
 import "./combobox.js";
 import "./command.js";

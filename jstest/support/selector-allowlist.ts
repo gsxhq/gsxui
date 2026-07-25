@@ -62,4 +62,22 @@ export const allowedUnmatched: AllowedUnmatched[] = [
       "emitted (ui/command.gsx's CommandDialog, on the DialogContent <dialog>, covered " +
       "by TestCommandDialogComposition), so this is an unexercised part, not drift.",
   },
+  {
+    module: "calendar.js",
+    selector: "[data-gsxui-calendar-month-select]",
+    reason:
+      "site/examples/calendar/basic.gsx (the only calendar example so far, Task 4) uses " +
+      "captionLayout=\"label\", which renders the text caption, not the dropdown pair — so " +
+      "no example page composes a <select data-gsxui-calendar-month-select> yet. The " +
+      "attribute is still real and emitted by ui/calendar.gsx's dropdown branch (covered " +
+      "by ui/calendar_test.go's TestCalendarDropdownCaption); an unexercised part, not drift.",
+  },
+  {
+    module: "calendar.js",
+    selector: "[data-gsxui-calendar-year-select]",
+    reason:
+      "Same cause as [data-gsxui-calendar-month-select] just above: captionLayout=\"dropdown\" " +
+      "has no example yet, only ui/calendar_test.go coverage. Expected to leave this list once " +
+      "a calendar/dropdown.gsx-shaped example lands.",
+  },
 ];
