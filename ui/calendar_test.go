@@ -318,6 +318,53 @@ func TestCalendarRangeMarksStartMiddleEnd(t *testing.T) {
 	if strings.Contains(got, `data-selected-single="true"`) {
 		t.Error("range mode must not mark any day selected-single")
 	}
+
+	// modifiers.selected (source map §4) is true for every day from/to
+	// inclusive in range mode too — range_start/range_middle/range_end
+	// layer on top of selected, they don't replace it (useRange.js's
+	// isSelected calls rangeIncludesDate(selected, date, false, dateLib),
+	// excludeEnds=false). Both ends and the two middle days must all carry
+	// the cell's own data-selected/aria-selected="true".
+	for _, date := range []string{"2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08"} {
+		cell := cellFor(t, got, date)
+		if !strings.Contains(cell, `data-selected`) {
+			t.Errorf("%s: cell missing data-selected", date)
+		}
+		if !strings.Contains(cell, `aria-selected="true"`) {
+			t.Errorf("%s: cell missing aria-selected=\"true\"\nin: %s", date, cell)
+		}
+	}
+	if n := strings.Count(got, `aria-selected="true"`); n != 4 {
+		t.Errorf("got %d aria-selected=true cells, want 4 (the whole range, both ends included)", n)
+	}
+}
+
+// TestCalendarRangeWrappingARowMarksBothRowEdgesSelected exercises
+// calendarDayClass's three [data-selected=true]-gated row-wrap rounding
+// selectors ([&:last-child…]/[&:first-child…]/today+selected), which only
+// fire when the cell itself (not just the button) carries data-selected.
+// TestCalendarRangeMarksStartMiddleEnd alone never reaches a row wrap (its
+// range sits inside a single week), so it can't catch a regression here.
+//
+// With weekStartsOn=Sunday, the January 2026 grid's second row runs
+// 2026-01-04 (Sun) through 2026-01-10 (Sat); the third row runs 2026-01-11
+// (Sun) through 2026-01-17 (Sat). A range from 2026-01-09 to 2026-01-12
+// straddles that row boundary: 2026-01-10 is the last cell of its row,
+// 2026-01-11 is the first cell of the next.
+func TestCalendarRangeWrappingARowMarksBothRowEdgesSelected(t *testing.T) {
+	got := render(t, ui.Calendar("range", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil,
+		time.Date(2026, 1, 9, 0, 0, 0, 0, time.UTC),
+		time.Date(2026, 1, 12, 0, 0, 0, 0, time.UTC),
+		time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "", nil))
+
+	for _, date := range []string{"2026-01-09", "2026-01-10", "2026-01-11", "2026-01-12"} {
+		cell := cellFor(t, got, date)
+		if !strings.Contains(cell, `data-selected`) {
+			t.Errorf("%s: cell missing data-selected — the row-wrap rounding selectors need this", date)
+		}
+	}
 }
 
 func TestCalendarDisabledBounds(t *testing.T) {

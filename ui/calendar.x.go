@@ -126,8 +126,13 @@ func boolStr(b bool) string {
 
 // daySelected reports whether d is one of the caller's selected dates.
 // Meaningful in single/multiple mode only (source map §7.1): range mode's
-// selection is carried by from/to and marked per-day by rangeFlags instead,
-// per this task's brief ("data-selected applies in single/multiple only").
+// selection is carried by from/to instead, via rangeFlags. daySelected is
+// combined with rangeFlags' three booleans at the call site to get the
+// cell's real selected state across all three modes (source map §4:
+// modifiers.selected is true for every day from/to inclusive in range mode
+// too, layered under range_start/range_middle/range_end rather than
+// replaced by them) — daySelected alone is deliberately narrower than that,
+// it only ever answers the single/multiple half.
 func daySelected(mode string, d time.Time, selected []time.Time) bool {
 	if mode != "single" && mode != "multiple" {
 		return false
@@ -287,6 +292,21 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 // from Task 1 (the row-edge rounding and the today+selected interaction)
 // that only fire on an exact value match, not mere attribute presence.
 //
+// The cell's data-selected/aria-selected fire in EVERY mode, including
+// range: react-day-picker's own modifiers.selected (source map §4) is true
+// for every day from from through to inclusive, both ends included
+// (confirmed directly against useRange.js's own isSelected, which calls
+// rangeIncludesDate(selected, date, false, dateLib) — the third argument is
+// excludeEnds, and it is false). range_start/range_middle/range_end layer
+// on top of selected; they do not replace it. Getting this wrong silences
+// aria-selected for an entire range (a real accessibility regression) and
+// leaves calendarDayClass's three [data-selected=true]-gated row-wrap
+// rounding selectors permanently dead for any range that wraps a <tr>
+// boundary. The button's own data-selected-single stays mode-sensitive
+// exactly as before — it means "selected and not any range flag," so it
+// must stay "false" for every day of a range even though the cell right
+// above it is "selected".
+//
 // data-focused is not emitted here at all: nothing holds live focus on the
 // server, so first paint never has a focused day. Task 6 owns setting it
 // client-side. Likewise, source map §8 finding 5's degraded-to-aria-disabled
@@ -294,7 +314,7 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 // attribute off) never applies on first paint — every disabled day gets the
 // native `disabled` attribute here, unconditionally.
 
-//line calendar.gsx:287:1
+//line calendar.gsx:307:1
 func Calendar(mode string,
 	month time.Time,
 	selected []time.Time,
@@ -314,7 +334,7 @@ func Calendar(mode string,
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 		var _gsxnum [32]byte
-//line calendar.gsx:305:2
+//line calendar.gsx:325:2
 		year := month.Year()
 		monthOfYear := month.Month()
 		grid := monthGrid(year, monthOfYear, weekStartsOn)
@@ -327,7 +347,7 @@ func Calendar(mode string,
 			selectedISOParts = append(selectedISOParts, s.Format("2006-01-02"))
 		}
 		selectedISO := strings.Join(selectedISOParts, ",")
-//line calendar.gsx:319:2
+//line calendar.gsx:339:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"calendar\"")
@@ -377,7 +397,7 @@ func Calendar(mode string,
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line calendar.gsx:337:3
+//line calendar.gsx:357:3
 		_gsxgw.S("<table")
 		_gsxgw.BoolAttr("data-gsxui-calendar-grid", true)
 		_gsxgw.S(" role=\"grid\"")
@@ -387,36 +407,36 @@ func Calendar(mode string,
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarGridClass))
 		_gsxgw.S("\">")
-//line calendar.gsx:345:4
+//line calendar.gsx:365:4
 		_gsxgw.S("<thead aria-hidden=\"true\">")
-//line calendar.gsx:346:5
+//line calendar.gsx:366:5
 		_gsxgw.S("<tr class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarWeekdaysClass))
 		_gsxgw.S("\">")
-//line calendar.gsx:347:6
+//line calendar.gsx:367:6
 		for i := 0; i < 7; i++ {
-//line calendar.gsx:348:7
+//line calendar.gsx:368:7
 			wd := time.Weekday((int(weekStartsOn) + i) % 7)
-//line calendar.gsx:349:7
+//line calendar.gsx:369:7
 			_gsxgw.S("<th scope=\"col\" class=\"")
 			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarWeekdayClass))
 			_gsxgw.S("\">")
-//line calendar.gsx:349:54
+//line calendar.gsx:369:54
 			_gsxgw.Text(string(wd.String()[:2]))
 			_gsxgw.S("</th>")
 		}
 		_gsxgw.S("</tr></thead>")
-//line calendar.gsx:353:4
+//line calendar.gsx:373:4
 		_gsxgw.S("<tbody>")
-//line calendar.gsx:354:5
+//line calendar.gsx:374:5
 		for week := 0; week < 6; week++ {
-//line calendar.gsx:355:6
+//line calendar.gsx:375:6
 			_gsxgw.S("<tr class=\"")
 			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarWeekClass))
 			_gsxgw.S("\">")
-//line calendar.gsx:356:7
+//line calendar.gsx:376:7
 			for day := 0; day < 7; day++ {
-//line calendar.gsx:357:8
+//line calendar.gsx:377:8
 				idx := week*7 + day
 				d := grid[idx]
 				outside := dayOutside(d, year, monthOfYear)
@@ -429,22 +449,23 @@ func Calendar(mode string,
 				daySel := daySelected(mode, d, selected)
 				rStart, rMiddle, rEnd := rangeFlags(mode, d, from, to)
 				selSingle := daySel && !rStart && !rMiddle && !rEnd
-//line calendar.gsx:371:8
+				cellSel := daySel || rStart || rMiddle || rEnd
+//line calendar.gsx:392:8
 				_gsxgw.S("<td role=\"gridcell\" data-date=\"")
 				_gsxgw.AttrValue(string(d.Format("2006-01-02")))
 				_gsxgw.S("\"")
 				_gsxgw.BoolAttr("data-outside", bool(gsx.Toggle(outside)))
 				_gsxgw.BoolAttr("data-today", bool(gsx.Toggle(isToday)))
 				_gsxgw.BoolAttr("data-disabled", bool(gsx.Toggle(dayDis)))
-				if daySel {
+				if cellSel {
 					_gsxgw.S(" data-selected=\"true\"")
 				}
 				_gsxgw.S(" aria-selected=\"")
-				_gsxgw.AttrValue(string(boolStr(daySel)))
+				_gsxgw.AttrValue(string(boolStr(cellSel)))
 				_gsxgw.S("\" class=\"")
 				_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarDayClass))
 				_gsxgw.S("\">")
-//line calendar.gsx:383:9
+//line calendar.gsx:404:9
 				_gsxgw.S("<button type=\"button\"")
 				_gsxgw.BoolAttr("data-gsxui-calendar-day", true)
 				_gsxgw.S(" tabindex=\"")
@@ -464,7 +485,7 @@ func Calendar(mode string,
 				_gsxgw.S(" class=\"")
 				_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(base), _gsxrt.Class(variantClass("ghost")), _gsxrt.Class(sizeClass("icon")), _gsxrt.Class(calendarDayButtonClass))
 				_gsxgw.S("\">")
-//line calendar.gsx:395:10
+//line calendar.gsx:416:10
 				_gsxgw.IntInto(_gsxnum[:], int64(d.Day()))
 				_gsxgw.S("</button></td>")
 			}

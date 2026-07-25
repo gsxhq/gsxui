@@ -117,8 +117,13 @@ func boolStr(b bool) string {
 
 // daySelected reports whether d is one of the caller's selected dates.
 // Meaningful in single/multiple mode only (source map §7.1): range mode's
-// selection is carried by from/to and marked per-day by rangeFlags instead,
-// per this task's brief ("data-selected applies in single/multiple only").
+// selection is carried by from/to instead, via rangeFlags. daySelected is
+// combined with rangeFlags' three booleans at the call site to get the
+// cell's real selected state across all three modes (source map §4:
+// modifiers.selected is true for every day from/to inclusive in range mode
+// too, layered under range_start/range_middle/range_end rather than
+// replaced by them) — daySelected alone is deliberately narrower than that,
+// it only ever answers the single/multiple half.
 func daySelected(mode string, d time.Time, selected []time.Time) bool {
 	if mode != "single" && mode != "multiple" {
 		return false
@@ -278,6 +283,21 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 // from Task 1 (the row-edge rounding and the today+selected interaction)
 // that only fire on an exact value match, not mere attribute presence.
 //
+// The cell's data-selected/aria-selected fire in EVERY mode, including
+// range: react-day-picker's own modifiers.selected (source map §4) is true
+// for every day from from through to inclusive, both ends included
+// (confirmed directly against useRange.js's own isSelected, which calls
+// rangeIncludesDate(selected, date, false, dateLib) — the third argument is
+// excludeEnds, and it is false). range_start/range_middle/range_end layer
+// on top of selected; they do not replace it. Getting this wrong silences
+// aria-selected for an entire range (a real accessibility regression) and
+// leaves calendarDayClass's three [data-selected=true]-gated row-wrap
+// rounding selectors permanently dead for any range that wraps a <tr>
+// boundary. The button's own data-selected-single stays mode-sensitive
+// exactly as before — it means "selected and not any range flag," so it
+// must stay "false" for every day of a range even though the cell right
+// above it is "selected".
+//
 // data-focused is not emitted here at all: nothing holds live focus on the
 // server, so first paint never has a focused day. Task 6 owns setting it
 // client-side. Likewise, source map §8 finding 5's degraded-to-aria-disabled
@@ -367,6 +387,7 @@ component Calendar(
 								daySel := daySelected(mode, d, selected)
 								rStart, rMiddle, rEnd := rangeFlags(mode, d, from, to)
 								selSingle := daySel && !rStart && !rMiddle && !rEnd
+								cellSel := daySel || rStart || rMiddle || rEnd
 							}}
 							<td
 								role="gridcell"
@@ -374,10 +395,10 @@ component Calendar(
 								data-outside={ gsx.Toggle(outside) }
 								data-today={ gsx.Toggle(isToday) }
 								data-disabled={ gsx.Toggle(dayDis) }
-								{ if daySel {
+								{ if cellSel {
 									data-selected="true"
 								} }
-								aria-selected={ boolStr(daySel) }
+								aria-selected={ boolStr(cellSel) }
 								class={ calendarDayClass }
 							>
 								<button
