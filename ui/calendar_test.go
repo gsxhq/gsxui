@@ -215,3 +215,161 @@ func TestCalendarTodayAbsentFarFromToday(t *testing.T) {
 		t.Errorf("grid for %s wrongly contains a data-today cell\nin: %s", farMonth.Format("2006-01"), got)
 	}
 }
+
+// cellFor returns the <td>…</td> substring for the given ISO date, so a test
+// can assert on both the cell's own state attributes and the day button
+// nested inside it.
+func cellFor(t *testing.T, html, isoDate string) string {
+	t.Helper()
+	anchor := `data-date="` + isoDate + `"`
+	i := strings.Index(html, anchor)
+	if i < 0 {
+		t.Fatalf("no cell for %s", isoDate)
+	}
+	start := strings.LastIndex(html[:i], "<td")
+	if start < 0 {
+		t.Fatalf("cell for %s has no opening <td", isoDate)
+	}
+	end := strings.Index(html[start:], "</td>")
+	if end < 0 {
+		t.Fatalf("cell for %s has no closing </td>", isoDate)
+	}
+	return html[start : start+end+len("</td>")]
+}
+
+func TestCalendarSingleSelection(t *testing.T) {
+	sel := []time.Time{time.Date(2026, 1, 15, 0, 0, 0, 0, time.UTC)}
+	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		sel, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "", nil))
+
+	if !strings.Contains(got, `data-gsxui-calendar-selected="2026-01-15"`) {
+		t.Error("root does not carry the selection")
+	}
+	if n := strings.Count(got, `aria-selected="true"`); n != 1 {
+		t.Errorf("got %d aria-selected=true, want 1", n)
+	}
+
+	cell := cellFor(t, got, "2026-01-15")
+	if !strings.Contains(cell, `data-selected`) {
+		t.Error("selected cell missing data-selected")
+	}
+	// Single selection is neither an end nor a middle of a range.
+	if !strings.Contains(cell, `data-selected-single="true"`) {
+		t.Errorf("day button missing data-selected-single=\"true\"\nin: %s", cell)
+	}
+}
+
+func TestCalendarMultipleSelection(t *testing.T) {
+	sel := []time.Time{
+		time.Date(2026, 1, 5, 0, 0, 0, 0, time.UTC),
+		time.Date(2026, 1, 9, 0, 0, 0, 0, time.UTC),
+	}
+	got := render(t, ui.Calendar("multiple", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		sel, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "", nil))
+
+	if !strings.Contains(got, `data-gsxui-calendar-selected="2026-01-05,2026-01-09"`) {
+		t.Error("root does not carry both selections comma-separated")
+	}
+	if n := strings.Count(got, `aria-selected="true"`); n != 2 {
+		t.Errorf("got %d aria-selected=true, want 2", n)
+	}
+	// Multiple selection is not a range, so each selected day is "single".
+	if n := strings.Count(got, `data-selected-single="true"`); n != 2 {
+		t.Errorf("got %d data-selected-single=true, want 2", n)
+	}
+}
+
+func TestCalendarRangeMarksStartMiddleEnd(t *testing.T) {
+	got := render(t, ui.Calendar("range", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil,
+		time.Date(2026, 1, 5, 0, 0, 0, 0, time.UTC),
+		time.Date(2026, 1, 8, 0, 0, 0, 0, time.UTC),
+		time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "", nil))
+
+	for _, want := range []string{
+		`data-gsxui-calendar-from="2026-01-05"`,
+		`data-gsxui-calendar-to="2026-01-08"`,
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("root missing %q", want)
+		}
+	}
+
+	// The range attributes are on the day button and carry "true"/"false" —
+	// shadcn styles them with data-[range-start=true]: selectors.
+	for date, want := range map[string]string{
+		"2026-01-05": `data-range-start="true"`,
+		"2026-01-06": `data-range-middle="true"`,
+		"2026-01-07": `data-range-middle="true"`,
+		"2026-01-08": `data-range-end="true"`,
+	} {
+		if cell := cellFor(t, got, date); !strings.Contains(cell, want) {
+			t.Errorf("%s: missing %s\nin: %s", date, want, cell)
+		}
+	}
+	// The ends are ends, not middles.
+	if n := strings.Count(got, `data-range-middle="true"`); n != 2 {
+		t.Errorf("got %d range-middle days, want 2", n)
+	}
+	// A range selection is never "selected-single".
+	if strings.Contains(got, `data-selected-single="true"`) {
+		t.Error("range mode must not mark any day selected-single")
+	}
+}
+
+func TestCalendarDisabledBounds(t *testing.T) {
+	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Date(2026, 1, 10, 0, 0, 0, 0, time.UTC), // disabledBefore
+		time.Date(2026, 1, 20, 0, 0, 0, 0, time.UTC), // disabledAfter
+		nil, nil, "", nil))
+
+	if !strings.Contains(got, `data-date="2026-01-09" data-disabled`) {
+		t.Error("2026-01-09 should be disabled (before the bound)")
+	}
+	if strings.Contains(got, `data-date="2026-01-15" data-disabled`) {
+		t.Error("2026-01-15 is inside the bounds and must not be disabled")
+	}
+	if !strings.Contains(got, `data-date="2026-01-21" data-disabled`) {
+		t.Error("2026-01-21 should be disabled (after the bound)")
+	}
+}
+
+func TestCalendarDisabledWeekdaysAndDates(t *testing.T) {
+	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{},
+		[]time.Time{time.Date(2026, 1, 14, 0, 0, 0, 0, time.UTC)},
+		[]time.Weekday{time.Saturday},
+		"", nil))
+
+	if !strings.Contains(got, `data-date="2026-01-14" data-disabled`) {
+		t.Error("the explicitly disabled date is not marked")
+	}
+	// 2026-01-03 is a Saturday.
+	if !strings.Contains(got, `data-date="2026-01-03" data-disabled`) {
+		t.Error("Saturdays should be disabled")
+	}
+}
+
+// Disabled days stay in the grid so keyboard users are not stranded either
+// side of a disabled span.
+//
+// Upstream's rule (source map §8 correction 5) is that the NATIVE disabled
+// attribute is set only while the day is not the live-focused one; a
+// disabled day that holds focus degrades to aria-disabled so focus is never
+// yanked out of the grid. On the server nothing holds focus yet, so first
+// paint always uses the native attribute. Task 6 owns the focused case.
+func TestCalendarDisabledDaysStayInTheGrid(t *testing.T) {
+	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Date(2026, 1, 10, 0, 0, 0, 0, time.UTC), time.Time{},
+		nil, nil, "", nil))
+
+	if n := len(gridDates(t, got)); n != 42 {
+		t.Errorf("got %d cells, want 42 — disabled days must still render", n)
+	}
+}

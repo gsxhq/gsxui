@@ -3,6 +3,7 @@
 package ui
 
 import (
+	"strings"
 	"time"
 
 	_gsxctx "context"
@@ -28,7 +29,7 @@ import (
 // `rdp-*` hook classes at all, so the selectors would never match anything
 // in this port. See source map §2's note for the full reasoning.
 //
-//line calendar.gsx:9:1
+//line calendar.gsx:10:1
 const calendarRootClass = "w-fit group/calendar bg-background p-2 [--cell-size:--spacing(7)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent"
 
 // calendarGridClass is the `month_grid` slot, verbatim (source map §2).
@@ -48,17 +49,40 @@ const calendarWeekClass = "mt-2 flex w-full"
 
 // calendarDayClass is the `<td>`'s always-on class: the `day` slot verbatim
 // (source map §2, showWeekNumber's false branch — gsxui doesn't port
-// week-number, source map §9), plus the `outside`/`today` slots (§2)
-// rewritten as data-attribute Tailwind variants instead of conditional Go
-// class-building, per this task's brief. `disabled`/`hidden` and the
-// selection-driven `range_start`/`range_middle`/`range_end` slots are NOT
-// folded in here — Task 1 computes no disabled/selection state at all, and
-// pre-baking their data-variant classes now (before any task ever emits the
-// matching data attribute) is speculative rather than settled; Tasks 2/3 add
-// those tokens to this same constant when they wire up the attributes they
-// gate on. Ledgered as an incremental (not full) class-string carryover for
-// Task 7.
-const calendarDayClass = "group/day relative aspect-square h-full w-full p-0 text-center select-none [&:last-child[data-selected=true]_button]:rounded-r-md [&:first-child[data-selected=true]_button]:rounded-l-md data-outside:text-muted-foreground data-outside:aria-selected:text-muted-foreground data-today:rounded-md data-today:bg-accent data-today:text-accent-foreground data-today:data-[selected=true]:rounded-none"
+// week-number, source map §9), plus the `outside`/`today`/`disabled` slots
+// (§2) rewritten as data-attribute Tailwind variants instead of conditional
+// Go class-building, per this task's brief. This task adds the `disabled`
+// slot (`text-muted-foreground opacity-50`, §2) as `data-disabled:…`, gated
+// by the bare-presence `data-disabled` attribute this task starts emitting
+// on the cell (the same presence-only pattern Task 1 used for
+// `data-outside`/`data-today` — there is no `data-[disabled=true]` value-based
+// selector anywhere in this string, so presence alone is sufficient).
+//
+// `range_start`/`range_middle`/`range_end` (§2) are deliberately NOT folded
+// in here, even though Task 1's own comment flagged them as pending: the
+// brief's DOM contract (task-1-brief.md) gives the cell no `data-range-*`
+// attribute of its own — only the button carries those (source map §8
+// finding 3) — so there is no cell-level attribute left to gate a
+// cell-level range variant on. Porting §2's `range_start`/`range_middle`/
+// `range_end` classNames values onto the cell would require adding a
+// `data-range-*` attribute to the cell that contradicts the fixed DOM
+// contract. Recorded as a deviation for Task 7's ledger: cell-level range
+// coloring is dropped, the button's own range pill classes (§3, already
+// live via `calendarDayButtonClass`) carry all the range-day styling
+// instead. `hidden` (§2, `invisible`) is likewise not ported — no
+// `data-hidden` attribute exists in the DOM contract either, and
+// `showOutsideDays`/hiding is not in this task's scope.
+//
+// The pre-existing `[data-selected=true]` tokens below (both the
+// `[&:last-child…]`/`[&:first-child…]` row-edge selectors and
+// `data-today:data-[selected=true]:rounded-none`) were already present from
+// Task 1, unconditionally dead until this task starts emitting the cell's
+// own `data-selected="true"` (see the component body) — a value-based
+// attribute, not a bare Toggle, precisely because these selectors require
+// the literal value "true" to match (a bare `data-selected` attribute's
+// value is the empty string for `[attr=value]` matching purposes, which
+// would never satisfy `[data-selected=true]`).
+const calendarDayClass = "group/day relative aspect-square h-full w-full p-0 text-center select-none [&:last-child[data-selected=true]_button]:rounded-r-md [&:first-child[data-selected=true]_button]:rounded-l-md data-outside:text-muted-foreground data-outside:aria-selected:text-muted-foreground data-today:rounded-md data-today:bg-accent data-today:text-accent-foreground data-today:data-[selected=true]:rounded-none data-disabled:text-muted-foreground data-disabled:opacity-50"
 
 // calendarDayButtonClass is CalendarDayButton's own class string, verbatim
 // (source map §3) — already expressed entirely as data-attribute variants
@@ -71,6 +95,98 @@ const calendarDayClass = "group/day relative aspect-square h-full w-full p-0 tex
 // already establish (internal/registry's declIndex derives a calendar ->
 // button dependency from this, the same shape as pagination -> button).
 const calendarDayButtonClass = "flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-[3px] group-data-[focused=true]/day:ring-ring/50 data-[range-end=true]:rounded-md data-[range-end=true]:rounded-r-md data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:rounded-md data-[range-start=true]:rounded-l-md data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-accent-foreground [&>span]:text-xs [&>span]:opacity-70"
+
+// sameDay reports whether a and b fall on the same UTC calendar day.
+func sameDay(a, b time.Time) bool {
+	ay, am, ad := a.UTC().Date()
+	by, bm, bd := b.UTC().Date()
+	return ay == by && am == bm && ad == bd
+}
+
+// dayOnly normalizes t to a UTC midnight time.Time, so calendar days can be
+// ordered with Before/After without a non-midnight or non-UTC caller's
+// time-of-day leaking into the comparison — the same UTC-calendar-day
+// discipline sameDay applies to equality, applied to ordering instead.
+func dayOnly(t time.Time) time.Time {
+	y, m, d := t.UTC().Date()
+	return time.Date(y, m, d, 0, 0, 0, 0, time.UTC)
+}
+
+// boolStr renders b as the literal string "true"/"false". Required wherever
+// a Tailwind selector matches on the attribute's exact value rather than
+// its mere presence — CalendarDayButton's data-selected-single/data-range-*
+// attributes (source map §3, `data-[range-start=true]:…`) always carry one
+// of these two literal strings, never bare presence and never omitted.
+func boolStr(b bool) string {
+	if b {
+		return "true"
+	}
+	return "false"
+}
+
+// daySelected reports whether d is one of the caller's selected dates.
+// Meaningful in single/multiple mode only (source map §7.1): range mode's
+// selection is carried by from/to and marked per-day by rangeFlags instead,
+// per this task's brief ("data-selected applies in single/multiple only").
+func daySelected(mode string, d time.Time, selected []time.Time) bool {
+	if mode != "single" && mode != "multiple" {
+		return false
+	}
+	for _, s := range selected {
+		if sameDay(d, s) {
+			return true
+		}
+	}
+	return false
+}
+
+// dayDisabled reports whether d is disabled under any of the four rules
+// this task ports as typed Calendar parameters: strictly before
+// disabledBefore, strictly after disabledAfter, an exact match in
+// disabledDates, or a weekday in disabledWeekdays (source map §7.2's full
+// upstream Matcher taxonomy covers more shapes — DateInterval, arbitrary
+// predicate, etc. — none of which this Calendar signature exposes). A zero
+// time.Time for disabledBefore/disabledAfter means that bound is unset.
+func dayDisabled(d, disabledBefore, disabledAfter time.Time, disabledDates []time.Time, disabledWeekdays []time.Weekday) bool {
+	if !disabledBefore.IsZero() && dayOnly(d).Before(dayOnly(disabledBefore)) {
+		return true
+	}
+	if !disabledAfter.IsZero() && dayOnly(d).After(dayOnly(disabledAfter)) {
+		return true
+	}
+	for _, dd := range disabledDates {
+		if sameDay(d, dd) {
+			return true
+		}
+	}
+	for _, wd := range disabledWeekdays {
+		if d.Weekday() == wd {
+			return true
+		}
+	}
+	return false
+}
+
+// rangeFlags computes the range-start/middle/end modifiers for d — range
+// mode only (source map §7.1's useRange.js selection model; source map §3
+// for how the three flags drive CalendarDayButton's own pill classes). A
+// zero from or to means that bound isn't set yet (an in-progress range);
+// rangeMiddle requires both bounds set and d strictly between them.
+func rangeFlags(mode string, d, from, to time.Time) (start, middle, end bool) {
+	if mode != "range" {
+		return false, false, false
+	}
+	if !from.IsZero() && sameDay(d, from) {
+		start = true
+	}
+	if !to.IsZero() && sameDay(d, to) {
+		end = true
+	}
+	if !from.IsZero() && !to.IsZero() && dayOnly(d).After(dayOnly(from)) && dayOnly(d).Before(dayOnly(to)) {
+		middle = true
+	}
+	return
+}
 
 // monthGrid returns the 42 dates of the six-week grid that displays the
 // given month: seven columns starting at weekStartsOn, six rows, beginning
@@ -131,15 +247,15 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 // docs/superpowers/plans/2026-07-25-calendar-source-map.md for the
 // class-string and DOM/ARIA authority this port cites throughout.
 //
-// Task 1 renders the month grid only: the root, the aria-hidden weekday
-// header row, and the six week rows (always six — source map §10, a settled
-// deviation from upstream's 4-6 row sizing). mode/selected/from/to/
-// captionLayout/fromYear/toYear/disabledBefore/disabledAfter/disabledDates/
-// disabledWeekdays/name are all part of the sixteen-parameter signature every
-// later task and example depends on (call-site positional order is load-
-// bearing), but stay unused until Tasks 2/3 wire up selection, the caption,
-// disabled-day computation, and the hidden form inputs — no placeholder
-// markup for any of them here.
+// Task 1 rendered the month grid only. Task 2 (this pass) adds all
+// server-computed day state: selection (`single`/`multiple` via `selected`,
+// `range` via `from`/`to`) and the four disabled rules
+// (`disabledBefore`/`disabledAfter`/`disabledDates`/`disabledWeekdays`),
+// entirely as data attributes — never as conditional Go class-building, so
+// Tasks 4-6's JavaScript can update the same attributes without knowing
+// about classes. captionLayout/fromYear/toYear/name are still accepted and
+// unused; Task 3 wires up the caption and the hidden form inputs — no
+// placeholder markup for those yet.
 //
 // The weekday header row is `aria-hidden`, matching upstream: every day
 // button's own aria-label already leads with the weekday name (source map
@@ -148,9 +264,37 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 //
 // Grid dates are UTC throughout (monthGrid's own doc comment); "today" is
 // time.Now().UTC()'s calendar date, computed once per render so a render
-// straddling local midnight is internally consistent.
+// straddling local midnight is internally consistent. Selection/disabled
+// comparisons are UTC-calendar-day comparisons too (sameDay/dayOnly), never
+// time.Time equality — a caller may pass a non-midnight or non-UTC time.
+//
+// The root carries the selection as data attributes so calendar.js (Tasks
+// 4-6) can read the server's initial state without re-deriving it:
+// data-gsxui-calendar-selected (comma-separated ISO dates, single/multiple),
+// data-gsxui-calendar-from/-to (range mode). Each is omitted entirely when
+// empty, never emitted as ="".
+//
+// Two distinct data-attribute sets, on two elements, per source map §8
+// finding 3 and the brief's DOM contract — not collapsed onto one element:
+// the cell carries data-disabled/data-selected/aria-selected (alongside
+// Task 1's data-date/data-outside/data-today), in that fixed order; the
+// button carries shadcn's own data-selected-single/data-range-start/
+// data-range-middle/data-range-end, always present as the literal strings
+// "true"/"false" (source map §3 — the class selectors match on the literal
+// value, e.g. data-[range-start=true]:…). The cell's data-selected is
+// likewise a literal "true" (omitted when false) rather than a bare Toggle:
+// calendarDayClass already carries [data-selected=true]-based selectors
+// from Task 1 (the row-edge rounding and the today+selected interaction)
+// that only fire on an exact value match, not mere attribute presence.
+//
+// data-focused is not emitted here at all: nothing holds live focus on the
+// server, so first paint never has a focused day. Task 6 owns setting it
+// client-side. Likewise, source map §8 finding 5's degraded-to-aria-disabled
+// case (a disabled day that already holds focus keeps the native disabled
+// attribute off) never applies on first paint — every disabled day gets the
+// native `disabled` attribute here, unconditionally.
 
-//line calendar.gsx:143:1
+//line calendar.gsx:287:1
 func Calendar(mode string,
 	month time.Time,
 	selected []time.Time,
@@ -170,14 +314,20 @@ func Calendar(mode string,
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 		var _gsxnum [32]byte
-//line calendar.gsx:161:2
+//line calendar.gsx:305:2
 		year := month.Year()
 		monthOfYear := month.Month()
 		grid := monthGrid(year, monthOfYear, weekStartsOn)
 		today := time.Now().UTC()
 		focusIdx := firstFocusableIndex(grid, year, monthOfYear)
 		multiselectable := mode == "range" || mode == "multiple"
-//line calendar.gsx:169:2
+
+		var selectedISOParts []string
+		for _, s := range selected {
+			selectedISOParts = append(selectedISOParts, s.Format("2006-01-02"))
+		}
+		selectedISO := strings.Join(selectedISOParts, ",")
+//line calendar.gsx:319:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"calendar\"")
@@ -200,13 +350,34 @@ func Calendar(mode string,
 			_gsxgw.IntInto(_gsxnum[:], int64(int(weekStartsOn)))
 			_gsxgw.S("\"")
 		}
+		if selectedISO != "" {
+			if !attrs.Has("data-gsxui-calendar-selected") {
+				_gsxgw.S(" data-gsxui-calendar-selected=\"")
+				_gsxgw.AttrValue(string(selectedISO))
+				_gsxgw.S("\"")
+			}
+		}
+		if !from.IsZero() {
+			if !attrs.Has("data-gsxui-calendar-from") {
+				_gsxgw.S(" data-gsxui-calendar-from=\"")
+				_gsxgw.AttrValue(string(from.Format("2006-01-02")))
+				_gsxgw.S("\"")
+			}
+		}
+		if !to.IsZero() {
+			if !attrs.Has("data-gsxui-calendar-to") {
+				_gsxgw.S(" data-gsxui-calendar-to=\"")
+				_gsxgw.AttrValue(string(to.Format("2006-01-02")))
+				_gsxgw.S("\"")
+			}
+		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarRootClass), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line calendar.gsx:178:3
+//line calendar.gsx:337:3
 		_gsxgw.S("<table")
 		_gsxgw.BoolAttr("data-gsxui-calendar-grid", true)
 		_gsxgw.S(" role=\"grid\"")
@@ -216,36 +387,36 @@ func Calendar(mode string,
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarGridClass))
 		_gsxgw.S("\">")
-//line calendar.gsx:186:4
+//line calendar.gsx:345:4
 		_gsxgw.S("<thead aria-hidden=\"true\">")
-//line calendar.gsx:187:5
+//line calendar.gsx:346:5
 		_gsxgw.S("<tr class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarWeekdaysClass))
 		_gsxgw.S("\">")
-//line calendar.gsx:188:6
+//line calendar.gsx:347:6
 		for i := 0; i < 7; i++ {
-//line calendar.gsx:189:7
+//line calendar.gsx:348:7
 			wd := time.Weekday((int(weekStartsOn) + i) % 7)
-//line calendar.gsx:190:7
+//line calendar.gsx:349:7
 			_gsxgw.S("<th scope=\"col\" class=\"")
 			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarWeekdayClass))
 			_gsxgw.S("\">")
-//line calendar.gsx:190:54
+//line calendar.gsx:349:54
 			_gsxgw.Text(string(wd.String()[:2]))
 			_gsxgw.S("</th>")
 		}
 		_gsxgw.S("</tr></thead>")
-//line calendar.gsx:194:4
+//line calendar.gsx:353:4
 		_gsxgw.S("<tbody>")
-//line calendar.gsx:195:5
+//line calendar.gsx:354:5
 		for week := 0; week < 6; week++ {
-//line calendar.gsx:196:6
+//line calendar.gsx:355:6
 			_gsxgw.S("<tr class=\"")
 			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarWeekClass))
 			_gsxgw.S("\">")
-//line calendar.gsx:197:7
+//line calendar.gsx:356:7
 			for day := 0; day < 7; day++ {
-//line calendar.gsx:198:8
+//line calendar.gsx:357:8
 				idx := week*7 + day
 				d := grid[idx]
 				outside := dayOutside(d, year, monthOfYear)
@@ -254,26 +425,46 @@ func Calendar(mode string,
 				if idx == focusIdx {
 					tabindex = "0"
 				}
-//line calendar.gsx:208:8
+				dayDis := dayDisabled(d, disabledBefore, disabledAfter, disabledDates, disabledWeekdays)
+				daySel := daySelected(mode, d, selected)
+				rStart, rMiddle, rEnd := rangeFlags(mode, d, from, to)
+				selSingle := daySel && !rStart && !rMiddle && !rEnd
+//line calendar.gsx:371:8
 				_gsxgw.S("<td role=\"gridcell\" data-date=\"")
 				_gsxgw.AttrValue(string(d.Format("2006-01-02")))
 				_gsxgw.S("\"")
 				_gsxgw.BoolAttr("data-outside", bool(gsx.Toggle(outside)))
 				_gsxgw.BoolAttr("data-today", bool(gsx.Toggle(isToday)))
-				_gsxgw.S(" aria-selected=\"false\" class=\"")
+				_gsxgw.BoolAttr("data-disabled", bool(gsx.Toggle(dayDis)))
+				if daySel {
+					_gsxgw.S(" data-selected=\"true\"")
+				}
+				_gsxgw.S(" aria-selected=\"")
+				_gsxgw.AttrValue(string(boolStr(daySel)))
+				_gsxgw.S("\" class=\"")
 				_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarDayClass))
 				_gsxgw.S("\">")
-//line calendar.gsx:216:9
+//line calendar.gsx:383:9
 				_gsxgw.S("<button type=\"button\"")
 				_gsxgw.BoolAttr("data-gsxui-calendar-day", true)
 				_gsxgw.S(" tabindex=\"")
 				_gsxgw.AttrValue(string(tabindex))
 				_gsxgw.S("\" aria-label=\"")
 				_gsxgw.AttrValue(string(d.Format("Monday, January 2, 2006")))
-				_gsxgw.S("\" class=\"")
+				_gsxgw.S("\" data-selected-single=\"")
+				_gsxgw.AttrValue(string(boolStr(selSingle)))
+				_gsxgw.S("\" data-range-start=\"")
+				_gsxgw.AttrValue(string(boolStr(rStart)))
+				_gsxgw.S("\" data-range-middle=\"")
+				_gsxgw.AttrValue(string(boolStr(rMiddle)))
+				_gsxgw.S("\" data-range-end=\"")
+				_gsxgw.AttrValue(string(boolStr(rEnd)))
+				_gsxgw.S("\"")
+				_gsxgw.BoolAttr("disabled", bool(dayDis))
+				_gsxgw.S(" class=\"")
 				_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(base), _gsxrt.Class(variantClass("ghost")), _gsxrt.Class(sizeClass("icon")), _gsxrt.Class(calendarDayButtonClass))
 				_gsxgw.S("\">")
-//line calendar.gsx:223:10
+//line calendar.gsx:395:10
 				_gsxgw.IntInto(_gsxnum[:], int64(d.Day()))
 				_gsxgw.S("</button></td>")
 			}
