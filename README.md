@@ -36,7 +36,7 @@ set. The showcase site and theme editor are live at
   gofmt checks. CI gates deploys on both suites.
 - Component behavior (`ui/*.js`) is tested in `jstest/`: a Go harness serves
   one example per page with the real modules loaded as native ES modules,
-  and four invariants sweep every example — clean load, no ghost popovers,
+  and four invariants sweep every example — clean load, no ghost overlays,
   no duplicate ids, and no element claimed by two modules for one event.
 - Divergences from the shadcn/ui reference: `docs/jsx-parity.md`.
 

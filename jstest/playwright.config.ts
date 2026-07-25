@@ -14,7 +14,17 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
-  reporter: process.env.CI ? "github" : "list",
+  // CI gets "github" for inline annotations plus "html" — the html reporter
+  // is what actually copies trace attachments into its output folder, so
+  // the workflow's on-failure artifact upload has real content to find.
+  // Local runs stay on plain "list"; forcing an html report there would
+  // leave an untracked jstest/playwright-report/ directory to open manually.
+  reporter: process.env.CI
+    ? [
+        ["github"],
+        ["html", { outputFolder: path.join(jstestDir, "playwright-report"), open: "never" }],
+      ]
+    : "list",
   use: {
     baseURL,
     trace: "on-first-retry",
