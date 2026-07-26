@@ -557,8 +557,9 @@ func TestCalendarDisabledWeekdaysAndDates(t *testing.T) {
 // Upstream's rule (source map §8 correction 5) is that the NATIVE disabled
 // attribute is set only while the day is not the live-focused one; a
 // disabled day that holds focus degrades to aria-disabled so focus is never
-// yanked out of the grid. On the server nothing holds focus yet, so first
-// paint always uses the native attribute. Task 6 owns the focused case.
+// yanked out of the grid. The initial roving tab stop uses the same
+// aria-disabled degradation so Tab can enter the grid; every other disabled
+// day keeps the native attribute.
 // The earlier version of this test asserted only `len(gridDates) == 42`,
 // which is true of EVERY possible render of this component (the grid is a
 // fixed 42 cells by construction — see monthGrid) and so could never go red
@@ -598,8 +599,13 @@ func TestCalendarDisabledDaysStayInTheGrid(t *testing.T) {
 		if !hasBareAttr(cellTag(t, got, d), "data-disabled") {
 			t.Errorf("%s: cell is not marked data-disabled\ntag: %s", d, cellTag(t, got, d))
 		}
-		if !hasBareDisabledAttr(buttonTag(t, got, d)) {
-			t.Errorf("%s: day button carries no native disabled attribute\ntag: %s", d, buttonTag(t, got, d))
+		button := buttonTag(t, got, d)
+		if d == "2026-01-01" {
+			if hasBareDisabledAttr(button) || !strings.Contains(button, `aria-disabled="true"`) {
+				t.Errorf("%s: disabled roving stop must use aria-disabled without native disabled\ntag: %s", d, button)
+			}
+		} else if !hasBareDisabledAttr(button) {
+			t.Errorf("%s: non-tab-stop disabled day carries no native disabled attribute\ntag: %s", d, button)
 		}
 	}
 
@@ -1121,6 +1127,101 @@ func TestCalendarNoNameRendersNoHiddenInput(t *testing.T) {
 
 	if strings.Contains(got, `type="hidden"`) {
 		t.Error("no name given, so no hidden input should render")
+	}
+}
+
+func TestCalendarZeroMonthDefaultsFromSelection(t *testing.T) {
+	jst := time.FixedZone("JST", 9*60*60)
+	selected := []time.Time{time.Date(2031, 4, 1, 2, 0, 0, 0, jst)} // 2031-03-31 UTC
+
+	got := render(t, ui.Calendar("single", time.Time{},
+		selected, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "", nil))
+
+	if !strings.Contains(got, `data-gsxui-calendar-month="2031-03"`) {
+		t.Errorf("zero month did not default to the selected UTC month\nin: %s", got)
+	}
+	if !strings.Contains(cellFor(t, got, "2031-03-31"), `data-selected="true"`) {
+		t.Error("selected UTC day is not present and marked in the defaulted month")
+	}
+}
+
+func TestCalendarZeroMonthDefaultsFromRangeStart(t *testing.T) {
+	from := time.Date(2042, 8, 17, 0, 0, 0, 0, time.UTC)
+
+	got := render(t, ui.Calendar("range", time.Time{},
+		nil, from, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "", nil))
+
+	if !strings.Contains(got, `data-gsxui-calendar-month="2042-08"`) {
+		t.Errorf("zero month did not default to the range start\nin: %s", got)
+	}
+}
+
+func TestCalendarZeroMonthDefaultsToToday(t *testing.T) {
+	before := time.Now().UTC()
+	got := render(t, ui.Calendar("single", time.Time{},
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "", nil))
+	after := time.Now().UTC()
+
+	beforeMonth := before.Format("2006-01")
+	afterMonth := after.Format("2006-01")
+	if !strings.Contains(got, `data-gsxui-calendar-month="`+beforeMonth+`"`) &&
+		!strings.Contains(got, `data-gsxui-calendar-month="`+afterMonth+`"`) {
+		t.Errorf("zero month did not default to today's UTC month (%s or %s)\nin: %s",
+			beforeMonth, afterMonth, got)
+	}
+}
+
+func TestCalendarDisabledInitialTabStopUsesAriaDisabled(t *testing.T) {
+	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Date(2026, 1, 10, 0, 0, 0, 0, time.UTC), time.Time{}, nil, nil, "", nil))
+
+	tabStop := buttonTag(t, got, "2026-01-01")
+	if !strings.Contains(tabStop, `tabindex="0"`) {
+		t.Fatalf("first in-month day is not the initial roving tab stop\nbutton: %s", tabStop)
+	}
+	if hasBareDisabledAttr(tabStop) {
+		t.Errorf("disabled roving tab stop is natively disabled and cannot receive focus\nbutton: %s", tabStop)
+	}
+	if !strings.Contains(tabStop, `aria-disabled="true"`) {
+		t.Errorf("disabled roving tab stop does not expose aria-disabled\nbutton: %s", tabStop)
+	}
+
+	nonTabStop := buttonTag(t, got, "2026-01-02")
+	if !hasBareDisabledAttr(nonTabStop) {
+		t.Errorf("a disabled day outside the roving tab stop should remain natively disabled\nbutton: %s", nonTabStop)
+	}
+}
+
+func TestCalendarMultipleHiddenInputsCarryEveryValue(t *testing.T) {
+	selected := []time.Time{
+		time.Date(2026, 1, 5, 0, 0, 0, 0, time.UTC),
+		time.Date(2026, 1, 8, 0, 0, 0, 0, time.UTC),
+	}
+	got := render(t, ui.Calendar("multiple", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		selected, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "dates", nil))
+
+	if n := strings.Count(got, `<input type="hidden" name="dates"`); n != 2 {
+		t.Fatalf("got %d multiple-mode hidden inputs, want one per selected date\nin: %s", n, got)
+	}
+	for _, value := range []string{"2026-01-05", "2026-01-08"} {
+		if !strings.Contains(got, `name="dates" value="`+value+`" data-gsxui-calendar-hidden-multiple`) {
+			t.Errorf("missing repeated multiple-mode input for %s\nin: %s", value, got)
+		}
+	}
+}
+
+func TestCalendarMultipleHiddenInputKeepsEmptyPlaceholder(t *testing.T) {
+	got := render(t, ui.Calendar("multiple", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "dates", nil))
+
+	if !strings.Contains(got, `<input type="hidden" name="dates" value="" data-gsxui-calendar-hidden-multiple`) {
+		t.Errorf("unselected multiple calendar must preserve an empty form field\nin: %s", got)
 	}
 }
 

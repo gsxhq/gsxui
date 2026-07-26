@@ -10,13 +10,14 @@ import (
 // time.Now()) — same reason as Range's own RangeDefaultMonth.
 var MultipleDefaultMonth = time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 
-// Multiple renders a multiple-mode calendar with no initial selection —
-// Task 5's browser tests toggle days on and off directly and check that
-// each click only ever flips the ONE clicked day, never the rest of an
-// existing selection.
+// Multiple renders a multiple-mode calendar with no initial selection.
+// The form and name make the repeated-value bridge observable as ordinary
+// FormData: every selected date is submitted under the same "dates" key.
 component Multiple(month time.Time) {
 	{{ if month.IsZero() {
 		month = MultipleDefaultMonth
 	} }}
-	<ui.Calendar mode="multiple" month={month} weekStartsOn={time.Sunday} showOutsideDays={true} captionLayout="label"/>
+	<form>
+		<ui.Calendar mode="multiple" month={month} name="dates" weekStartsOn={time.Sunday} showOutsideDays={true} captionLayout="label"/>
+	</form>
 }

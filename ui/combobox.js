@@ -222,9 +222,14 @@ function reflectFromBridge(root) {
 // reset handler already uses — is what keeps every future form-bridge
 // module from having to relitigate the same overlap.
 on("reset", "form:has([data-gsxui-combobox])", (_e, form) => {
-  for (const root of form.querySelectorAll("[data-gsxui-combobox]")) {
-    reflectFromBridge(root);
-  }
+  // Native controls reset after the reset event and its microtask
+  // checkpoint. Reflect in the next task, when the bridge carries its
+  // restored default value.
+  setTimeout(() => {
+    for (const root of form.querySelectorAll("[data-gsxui-combobox]")) {
+      reflectFromBridge(root);
+    }
+  }, 0);
 });
 
 // --- init: group aria-labelledby wiring, reflect a server-checked item,

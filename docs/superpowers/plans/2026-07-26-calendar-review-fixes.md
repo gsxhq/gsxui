@@ -208,9 +208,10 @@ live-focused or the current roving tab stop. During reset, restore the
 selection snapshot, clear `liveFocused` and `tabStop`, synchronize inputs,
 then call `goTo` with `clientToday()`'s year/month.
 
-If the mixed Calendar/Combobox test demonstrates pre-reset bridge state,
-defer each module's reflection to a microtask so it runs after native form
-control reset while keeping one delegated listener per module.
+The mixed Calendar/Combobox test demonstrates that both the reset handler
+and its microtask checkpoint still see pre-reset bridge state. Defer each
+module's reflection to the next task so it runs after native form-control
+reset while keeping one delegated listener per module.
 
 - [ ] **Step 6: Generate examples and verify GREEN**
 

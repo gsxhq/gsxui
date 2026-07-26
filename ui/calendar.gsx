@@ -579,10 +579,11 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 //
 // data-focused is not emitted here at all: nothing holds live focus on the
 // server, so first paint never has a focused day. Task 6 owns setting it
-// client-side. Likewise, source map §8 finding 5's degraded-to-aria-disabled
-// case (a disabled day that already holds focus keeps the native disabled
-// attribute off) never applies on first paint — every disabled day gets the
-// native `disabled` attribute here, unconditionally.
+// client-side. A disabled day that owns the initial roving tabindex is the
+// one server-side exception to native `disabled`: it carries
+// aria-disabled="true" so Tab can enter the grid. Other disabled days keep
+// native `disabled`; calendar.js preserves the same split for the live
+// focused day and the sticky roving stop.
 //
 // The final-review fix wave adds three things to the contract above:
 //
@@ -646,10 +647,21 @@ component Calendar(
 			mode = "single"
 		}
 
+		today := time.Now().UTC()
+		if month.IsZero() {
+			switch {
+			case mode == "range" && !from.IsZero():
+				month = dayOnly(from)
+			case len(selected) > 0:
+				month = dayOnly(selected[0])
+			default:
+				month = today
+			}
+		}
+
 		year := month.Year()
 		monthOfYear := month.Month()
 		grid := monthGrid(year, monthOfYear, weekStartsOn)
-		today := time.Now().UTC()
 		focusIdx := firstFocusableIndex(grid, year, monthOfYear)
 		multiselectable := mode == "range" || mode == "multiple"
 
@@ -686,13 +698,18 @@ component Calendar(
 		// there's something real to put in them; the input itself still
 		// renders either way, so a form submits an (empty) field rather
 		// than silently dropping it.
-		showHiddenSingle := name != "" && mode != "range"
+		showHiddenSingle := name != "" && mode == "single"
+		showHiddenMultiple := name != "" && mode == "multiple"
 		showHiddenFrom := name != "" && mode == "range"
 		showHiddenTo := name != "" && mode == "range"
 
 		hiddenSingleValue := ""
 		if len(selected) > 0 {
 			hiddenSingleValue = dayOnly(selected[0]).Format("2006-01-02")
+		}
+		multipleHiddenValues := selectedISOParts
+		if len(multipleHiddenValues) == 0 {
+			multipleHiddenValues = []string{""}
 		}
 		hiddenFromValue := ""
 		if !from.IsZero() {
@@ -857,6 +874,7 @@ component Calendar(
 									dayText = strconv.Itoa(d.Day())
 								}
 								dayDis := dayDisabled(d, disabledBefore, disabledAfter, disabledDates, disabledWeekdays)
+								tabStopDisabled := dayDis && tabindex == "0" && !hiddenDay
 								daySel := daySelected(mode, d, selected)
 								rStart, rMiddle, rEnd := rangeFlags(mode, d, from, to)
 								selSingle := daySel && !rStart && !rMiddle && !rEnd
@@ -884,11 +902,14 @@ component Calendar(
 									{ if hiddenDay {
 										aria-hidden="true"
 									} }
+									{ if tabStopDisabled {
+										aria-disabled="true"
+									} }
 									data-selected-single={ boolStr(selSingle) }
 									data-range-start={ boolStr(rStart) }
 									data-range-middle={ boolStr(rMiddle) }
 									data-range-end={ boolStr(rEnd) }
-									disabled={ dayDis || hiddenDay }
+									disabled={ (dayDis && !tabStopDisabled) || hiddenDay }
 									class={ base, variantClass("ghost"), sizeClass("icon"), calendarDayButtonClass }
 								>
 									{ dayText }
@@ -902,6 +923,11 @@ component Calendar(
 		</div>
 		{ if showHiddenSingle {
 			<input type="hidden" name={ name } value={ hiddenSingleValue }/>
+		} }
+		{ if showHiddenMultiple {
+			{ for _, value := range multipleHiddenValues {
+				<input type="hidden" name={ name } value={ value } data-gsxui-calendar-hidden-multiple/>
+			} }
 		} }
 		{ if showHiddenFrom {
 			<input type="hidden" name={ name } value={ hiddenFromValue }/>

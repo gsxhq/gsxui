@@ -18,16 +18,26 @@ import { on, emit } from "./gsxui.js";
 
 const ROOT = "[data-gsxui-calendar]";
 
+// Date.UTC treats years 0..99 as 1900..1999. Setting the full year on an
+// existing UTC date preserves the caller's exact year while retaining the
+// useful month/day overflow normalization calendar arithmetic relies on.
+function utcDate(year, month, day) {
+  const date = new Date(0);
+  date.setUTCHours(0, 0, 0, 0);
+  date.setUTCFullYear(year, month, day);
+  return date;
+}
+
 // monthGrid is the twin of calendar.gsx's monthGrid: 42 dates, six rows of
 // seven, starting at the week start on or before the 1st. month is 0-based
 // (JS Date convention — January is 0), matching every other date this module
 // touches.
 function monthGrid(year, month, weekStartsOn) {
-  const first = new Date(Date.UTC(year, month, 1));
+  const first = utcDate(year, month, 1);
   const offset = (first.getUTCDay() - weekStartsOn + 7) % 7;
   const grid = [];
   for (let i = 0; i < 42; i++) {
-    grid.push(new Date(Date.UTC(year, month, 1 - offset + i)));
+    grid.push(utcDate(year, month, 1 - offset + i));
   }
   return grid;
 }
@@ -42,9 +52,11 @@ function iso(date) {
 // since each is omitted entirely rather than emitted empty.
 function parseISO(value) {
   if (!value) return null;
-  const [y, m, d] = value.split("-").map(Number);
-  if (!y || !m || !d) return null;
-  const date = new Date(Date.UTC(y, m - 1, d));
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return null;
+  const [, year, month, day] = match;
+  const [y, m, d] = [year, month, day].map(Number);
+  const date = utcDate(y, m - 1, d);
   return date.getUTCFullYear() === y && date.getUTCMonth() === m - 1 && date.getUTCDate() === d
     ? date
     : null;
@@ -92,11 +104,12 @@ const MONTH_NAMES = [
 function ariaLabel(date) {
   const weekday = WEEKDAY_NAMES[date.getUTCDay()];
   const month = MONTH_NAMES[date.getUTCMonth()];
-  return `${weekday}, ${month} ${date.getUTCDate()}, ${date.getUTCFullYear()}`;
+  const year = String(date.getUTCFullYear()).padStart(4, "0");
+  return `${weekday}, ${month} ${date.getUTCDate()}, ${year}`;
 }
 
 function captionText(year, month) {
-  return `${MONTH_NAMES[month]} ${year}`;
+  return `${MONTH_NAMES[month]} ${String(year).padStart(4, "0")}`;
 }
 
 // commaList reads a comma-separated data attribute into an array of
@@ -239,7 +252,7 @@ function toggleAttr(el, name, present) {
 // bug exactly, just a no-op that could never reconcile anything.
 function clientToday() {
   const now = new Date();
-  return new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+  return utcDate(now.getFullYear(), now.getMonth(), now.getDate());
 }
 
 // repaint updates every one of the 42 day cells/buttons in place for
@@ -366,7 +379,8 @@ function repaint(root, year, month) {
     button.setAttribute("aria-label", ariaLabel(date));
     if (hidden) button.setAttribute("aria-hidden", "true");
     else button.removeAttribute("aria-hidden");
-    button.setAttribute("tabindex", i === focusIdx && !hidden ? "0" : "-1");
+    const isRovingStop = i === focusIdx && !hidden;
+    button.setAttribute("tabindex", isRovingStop ? "0" : "-1");
     button.setAttribute("data-selected-single", selectedSingle ? "true" : "false");
     button.setAttribute("data-range-start", rangeStart ? "true" : "false");
     button.setAttribute("data-range-middle", rangeMiddle ? "true" : "false");
@@ -383,7 +397,7 @@ function repaint(root, year, month) {
     // degrade-to-aria-disabled branch exists so a focused day never loses
     // focus, and a hidden day can never be the focused one — it is out of
     // the roving sequence entirely, by exactly the reasoning above.
-    if (disabled && isFocused && !hidden) {
+    if (disabled && (isFocused || isRovingStop) && !hidden) {
       button.disabled = false;
       button.setAttribute("aria-disabled", "true");
     } else {
@@ -558,11 +572,11 @@ function commitRange(root, dateISO) {
   return { from: nextFrom, to: nextTo };
 }
 
-// syncHiddenInputs mirrors calendar.gsx's own showHiddenSingle/-From/-To:
-// a plain <input type="hidden" name={name}> for single/multiple (carrying
-// the FIRST selected date, same as the server — calendar.gsx's own
-// showHiddenSingle reads selected[0], not the whole list, even in multiple
-// mode), and a name/name+"-to" pair for range. Each input renders whenever
+// syncHiddenInputs mirrors calendar.gsx's hidden form bridge: one input for
+// single, repeated same-name inputs for every multiple selection, and a
+// name/name+"-to" pair for range. Each mode keeps an empty placeholder when
+// unselected so the caller's field remains present in FormData.
+// Each input renders whenever
 // the caller passed `name` — unconditionally, value empty until there's a
 // real selection (Task 5 review, Critical: an earlier revision on both the
 // Go and JS sides only synced/rendered once something was already selected,
@@ -580,16 +594,33 @@ function commitRange(root, dateISO) {
 // "-to" (e.g. name="valid-to"), and a suffix check would then misidentify
 // that caller's FROM input as the TO input.
 function syncHiddenInputs(root, mode, selected, from, to) {
-  const inputs = root.querySelectorAll('input[type="hidden"]');
-  if (!inputs.length) return;
   if (mode === "range") {
+    const inputs = root.querySelectorAll('input[type="hidden"]');
     for (const input of inputs) {
       if ("gsxuiCalendarHiddenTo" in input.dataset) input.value = to ?? "";
       else input.value = from ?? "";
     }
-  } else {
-    inputs[0].value = selected[0] ?? "";
+    return;
   }
+  if (mode === "multiple") {
+    const inputs = [...root.querySelectorAll("[data-gsxui-calendar-hidden-multiple]")];
+    if (!inputs.length) return;
+    const values = selected.length ? selected : [""];
+    const name = inputs[0].name;
+    while (inputs.length < values.length) {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = name;
+      input.setAttribute("data-gsxui-calendar-hidden-multiple", "");
+      root.append(input);
+      inputs.push(input);
+    }
+    for (let i = 0; i < values.length; i++) inputs[i].value = values[i];
+    for (let i = values.length; i < inputs.length; i++) inputs[i].remove();
+    return;
+  }
+  const input = root.querySelector('input[type="hidden"]');
+  if (input) input.value = selected[0] ?? "";
 }
 
 function currentMonth(root) {
@@ -744,21 +775,23 @@ function currentTabStop(root) {
 // the way plain Date.UTC(year, month + delta, day) arithmetic would (Jan 31
 // PageDown would otherwise land on Mar 3, not Feb 28).
 function addDaysUTC(date, delta) {
-  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + delta));
+  return utcDate(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + delta);
 }
 
 // lastDayOfMonthUTC returns the number of days in (year, month) — day 0 of
 // the FOLLOWING month is always the last day of THIS one, in any calendar
 // arithmetic that normalizes automatically (JS Date.UTC does).
 function lastDayOfMonthUTC(year, month) {
-  return new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+  return utcDate(year, month + 1, 0).getUTCDate();
 }
 
 function addMonthsUTC(date, delta) {
   const targetMonthIndex = date.getUTCMonth() + delta;
   const lastDay = lastDayOfMonthUTC(date.getUTCFullYear(), targetMonthIndex);
-  return new Date(
-    Date.UTC(date.getUTCFullYear(), targetMonthIndex, Math.min(date.getUTCDate(), lastDay)),
+  return utcDate(
+    date.getUTCFullYear(),
+    targetMonthIndex,
+    Math.min(date.getUTCDate(), lastDay),
   );
 }
 
@@ -799,8 +832,8 @@ function endOfWeekUTC(date, weekStartsOn) {
 // fromYear's January and the last day of toYear's December.
 function clampToNavBounds(date, fromYear, toYear) {
   const year = date.getUTCFullYear();
-  if (year < fromYear) return new Date(Date.UTC(fromYear, 0, 1));
-  if (year > toYear) return new Date(Date.UTC(toYear, 11, lastDayOfMonthUTC(toYear, 11)));
+  if (year < fromYear) return utcDate(fromYear, 0, 1);
+  if (year > toYear) return utcDate(toYear, 11, lastDayOfMonthUTC(toYear, 11));
   return date;
 }
 
@@ -940,35 +973,41 @@ function captureDefaults(root) {
 for (const root of document.querySelectorAll(ROOT)) captureDefaults(root);
 
 // Scoped to a form that actually contains a calendar (`:has()`), not a bare
-// "form" — ui/combobox.js's own reset handler already claims plain "form"
-// for this exact (type, capture) pair, and gsxui.js's registry dispatches
-// to EVERY handler whose selector matches a given element, so two modules
-// both claiming literal "form" would double-fire on ANY form's reset,
-// combobox or not (jstest/specs/invariants.spec.ts's own Invariant 4 — the
-// same hook-prefix-collision defect class that shipped in Tier 4 Batch B
-// between dropdown.js and context-menu.js, caught here for "reset" instead
-// of "click"). Scoping to :has([data-gsxui-calendar]) keeps the two modules
-// disjoint on every existing example page — none combine a calendar and a
-// combobox/input inside one shared <form> — while still matching the form
-// this handler actually needs.
+// "form". A form may also contain a combobox and then intentionally matches
+// both modules for reset:false: each handler restores disjoint descendants.
+// That exact pair is reviewed in selector-allowlist.ts and exercised by the
+// mixed calendar/form example; all other forms remain module-scoped.
 on("reset", "form:has([data-gsxui-calendar])", (_event, form) => {
-  for (const root of form.querySelectorAll(ROOT)) {
-    const snapshot = defaults.get(root);
-    if (!snapshot) continue;
+  // The reset event and its microtask checkpoint both run before the
+  // browser's default reset action. Reconcile in the next task, once native
+  // controls and this component's custom DOM can reach one final state.
+  setTimeout(() => {
+    for (const root of form.querySelectorAll(ROOT)) {
+      const snapshot = defaults.get(root);
+      if (!snapshot) continue;
 
-    if (snapshot.selected) root.dataset.gsxuiCalendarSelected = snapshot.selected;
-    else delete root.dataset.gsxuiCalendarSelected;
-    if (snapshot.from) root.dataset.gsxuiCalendarFrom = snapshot.from;
-    else delete root.dataset.gsxuiCalendarFrom;
-    if (snapshot.to) root.dataset.gsxuiCalendarTo = snapshot.to;
-    else delete root.dataset.gsxuiCalendarTo;
-    delete root.dataset.gsxuiCalendarHover;
+      if (snapshot.selected) root.dataset.gsxuiCalendarSelected = snapshot.selected;
+      else delete root.dataset.gsxuiCalendarSelected;
+      if (snapshot.from) root.dataset.gsxuiCalendarFrom = snapshot.from;
+      else delete root.dataset.gsxuiCalendarFrom;
+      if (snapshot.to) root.dataset.gsxuiCalendarTo = snapshot.to;
+      else delete root.dataset.gsxuiCalendarTo;
+      delete root.dataset.gsxuiCalendarHover;
+      liveFocused.delete(root);
+      tabStop.delete(root);
 
-    const mode = root.dataset.gsxuiCalendarMode || "single";
-    syncHiddenInputs(root, mode, commaList(snapshot.selected), snapshot.from || null, snapshot.to || null);
-    const { year, month } = currentMonth(root);
-    repaint(root, year, month);
-  }
+      const mode = root.dataset.gsxuiCalendarMode || "single";
+      syncHiddenInputs(
+        root,
+        mode,
+        commaList(snapshot.selected),
+        snapshot.from || null,
+        snapshot.to || null,
+      );
+      const today = clientToday();
+      goTo(root, today.getUTCFullYear(), today.getUTCMonth());
+    }
+  }, 0);
 });
 
 // --- today reconciliation (Task 6) ------------------------------------------

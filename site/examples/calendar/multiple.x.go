@@ -18,21 +18,23 @@ import (
 //line multiple.gsx:9:1
 var MultipleDefaultMonth = time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 
-// Multiple renders a multiple-mode calendar with no initial selection —
-// Task 5's browser tests toggle days on and off directly and check that
-// each click only ever flips the ONE clicked day, never the rest of an
-// existing selection.
+// Multiple renders a multiple-mode calendar with no initial selection.
+// The form and name make the repeated-value bridge observable as ordinary
+// FormData: every selected date is submitted under the same "dates" key.
 
-//line multiple.gsx:17:1
+//line multiple.gsx:16:1
 func Multiple(month time.Time) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line multiple.gsx:18:2
+//line multiple.gsx:17:2
 		if month.IsZero() {
 			month = MultipleDefaultMonth
 		}
-//line multiple.gsx:21:2
-		_gsxgw.Node(ctx, ui.Calendar("multiple", month, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", nil))
+//line multiple.gsx:20:2
+		_gsxgw.S("<form>")
+//line multiple.gsx:21:3
+		_gsxgw.Node(ctx, ui.Calendar("multiple", month, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "dates", nil))
+		_gsxgw.S("</form>")
 		return _gsxgw.Err()
 	})
 }

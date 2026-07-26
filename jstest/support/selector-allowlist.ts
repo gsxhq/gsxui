@@ -24,7 +24,15 @@ export type AllowedOverlap = {
   reason: string;
 };
 
-export const allowedOverlaps: AllowedOverlap[] = [];
+export const allowedOverlaps: AllowedOverlap[] = [
+  {
+    modules: ["calendar.js", "combobox.js"],
+    key: "reset:false",
+    reason:
+      "A form may intentionally contain both components. Their reset handlers restore " +
+      "disjoint calendar and combobox descendants, and calendar/form.gsx exercises both.",
+  },
+];
 
 /**
  * Reviewed exceptions to selector coverage.

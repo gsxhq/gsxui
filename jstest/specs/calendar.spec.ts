@@ -144,6 +144,24 @@ for (const { clicks, month, why } of AGREEMENT_MONTHS) {
   });
 }
 
+for (const year of ["0000", "0099"]) {
+  test(`Go and JS agree for exact year ${year}`, async ({ page }) => {
+    await page.goto(`${BASIC}?month=${year}-01`);
+    await page.click("[data-gsxui-calendar-next]");
+
+    await expect(page.locator("[data-gsxui-calendar]")).toHaveAttribute(
+      "data-gsxui-calendar-month",
+      `${year}-02`,
+    );
+    const clientCells = await gridCells(page);
+
+    await page.goto(`${BASIC}?month=${year}-02`);
+    const serverCells = await gridCells(page);
+
+    expect(clientCells).toEqual(serverCells);
+  });
+}
+
 // Loaded carries a real selection and all four disabled rules, in single
 // mode, with a Monday week start — basic.gsx has none of these (empty
 // selection, no disabled rules, Sunday week start), so every one of
@@ -444,6 +462,22 @@ test("multiple mode toggles days", async ({ page }) => {
   expect(events[2]).toEqual({ mode: "multiple", selected: ["2026-01-09"] });
 });
 
+test("multiple mode submits every selected date as a repeated form value", async ({ page }) => {
+  await page.goto(MULTIPLE);
+  const form = page.locator("form");
+
+  expect(
+    await form.evaluate((el) => new FormData(el as HTMLFormElement).getAll("dates")),
+  ).toEqual([""]);
+
+  await dayFor(page, "2026-01-05").click();
+  await dayFor(page, "2026-01-09").click();
+
+  expect(
+    await form.evaluate((el) => new FormData(el as HTMLFormElement).getAll("dates")),
+  ).toEqual(["2026-01-05", "2026-01-09"]);
+});
+
 test("range takes two clicks and swaps when the second precedes the first", async ({ page }) => {
   await page.goto(RANGE);
   const root = page.locator("[data-gsxui-calendar]");
@@ -567,12 +601,60 @@ test("form reset clears the selection and the hidden input", async ({ page }) =>
   await expect(input).toHaveValue("2026-01-15");
 
   await page.locator('button[type="reset"]').click();
-  await expect(cellFor(page, "2026-01-15")).toHaveAttribute("aria-selected", "false");
   await expect(input).toHaveValue("");
   await expect(page.locator("[data-gsxui-calendar]")).not.toHaveAttribute(
     "data-gsxui-calendar-selected",
     /.*/,
   );
+  expect(await page.$$eval('[data-gsxui-calendar] [aria-selected="true"]', (els) => els.length)).toBe(
+    0,
+  );
+});
+
+test("form reset restores the client-current month", async ({ page }) => {
+  await page.goto(FORM);
+  const root = page.locator("[data-gsxui-calendar]");
+  const currentMonth = await page.evaluate(() => {
+    const now = new Date();
+    return `${String(now.getFullYear()).padStart(4, "0")}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  });
+
+  await page.click("[data-gsxui-calendar-next]");
+  await expect(root).toHaveAttribute("data-gsxui-calendar-month", "2026-02");
+
+  await page.locator('button[type="reset"]').click();
+  await expect(root).toHaveAttribute("data-gsxui-calendar-month", currentMonth);
+});
+
+test("one form reset restores both calendar and combobox state", async ({ page }) => {
+  await page.goto(FORM);
+  const calendarInput = page.locator('input[name="date"]');
+  const comboInput = page.locator("[data-gsxui-combobox-input]");
+  const comboBridge = page.locator("[data-gsxui-combobox-bridge]");
+  const comboItem = page.locator('[data-gsxui-combobox-item][data-value="sveltekit"]');
+
+  await dayFor(page, "2026-01-15").click();
+  await comboInput.click();
+  await comboItem.click();
+
+  await expect(calendarInput).toHaveValue("2026-01-15");
+  await expect(comboInput).toHaveValue("SvelteKit");
+  await expect(comboBridge).toHaveValue("sveltekit");
+  await expect(comboItem).toHaveAttribute("aria-selected", "true");
+
+  await page.locator('button[type="reset"]').click();
+
+  await expect(calendarInput).toHaveValue("");
+  await expect(page.locator("[data-gsxui-calendar]")).not.toHaveAttribute(
+    "data-gsxui-calendar-selected",
+    /.*/,
+  );
+  expect(await page.$$eval('[data-gsxui-calendar] [aria-selected="true"]', (els) => els.length)).toBe(
+    0,
+  );
+  await expect(comboInput).toHaveValue("");
+  await expect(comboBridge).toHaveValue("");
+  await expect(comboItem).toHaveAttribute("aria-selected", "false");
 });
 
 // Task 5 review, Important 3: captureDefaults used to run exactly once, at
@@ -602,17 +684,20 @@ test("form reset restores a calendar added after the page's own initial load", a
   });
 
   const added = page.locator("[data-gsxui-calendar]").nth(1);
-  const addedCell = added.locator('td[data-date="2026-01-15"]');
   const addedDay = added.locator('[data-gsxui-calendar-day][data-date="2026-01-15"]');
   const addedInput = added.locator('input[name="date"]');
 
   await addedDay.click();
-  await expect(addedCell).toHaveAttribute("aria-selected", "true");
+  await expect(added.locator('td[data-date="2026-01-15"]')).toHaveAttribute(
+    "aria-selected",
+    "true",
+  );
   await expect(addedInput).toHaveValue("2026-01-15");
 
   await added.evaluate((el) => (el.closest("form") as HTMLFormElement).reset());
-  await expect(addedCell).toHaveAttribute("aria-selected", "false");
   await expect(addedInput).toHaveValue("");
+  await expect(added).not.toHaveAttribute("data-gsxui-calendar-selected", /.*/);
+  expect(await added.locator('[aria-selected="true"]').count()).toBe(0);
 });
 
 // --- Task 6: keyboard grid and today reconciliation -------------------------
@@ -796,6 +881,16 @@ test("exactly one day is tabbable at any time", async ({ page }) => {
   await dayFor(page, "2026-01-15").focus();
   await page.keyboard.press("ArrowRight");
   expect(await count()).toBe(1);
+});
+
+test("Tab enters the grid when its roving stop is disabled", async ({ page }) => {
+  await page.goto(LOADED);
+  await page.locator("[data-gsxui-calendar-next]").focus();
+  await page.keyboard.press("Tab");
+
+  expect(await focusedDate(page)).toBe("2026-01-01");
+  await expect(dayFor(page, "2026-01-01")).toHaveJSProperty("disabled", false);
+  await expect(dayFor(page, "2026-01-01")).toHaveAttribute("aria-disabled", "true");
 });
 
 // Source map §7.2/§8 finding 5, the first of the two behaviors the Task 6

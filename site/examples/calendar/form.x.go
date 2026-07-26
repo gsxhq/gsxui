@@ -19,34 +19,73 @@ import (
 //line form.gsx:9:1
 var FormDefaultMonth = time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 
-// Form is real corpus coverage for the hidden-input form bridge Task 5
-// review's Critical fix restored: name="date" with NOTHING preselected
-// still renders an (empty-valued) hidden input from first paint — the
-// single most likely way a caller wires ui.Calendar into a form — and
-// ui/calendar.js's own reset handler (registered on
-// "form:has([data-gsxui-calendar])") restores both the visible selection
-// and that input when Reset is clicked. Before this example existed, that
-// selector matched nothing anywhere in the static corpus and
-// jstest/support/selector-allowlist.ts carried it as an allowedUnmatched
-// entry (Task 5 review, Important 1) — this example is what removes it.
+// Form is real corpus coverage for Calendar's hidden-input bridge and for a
+// mixed form whose reset event is intentionally handled by two modules.
+// Calendar and Combobox restore disjoint descendants of the same form; the
+// selector invariant records that overlap explicitly and this composition
+// proves both restorations survive one native reset.
 
-//line form.gsx:24:1
+//line form.gsx:19:1
 func Form() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line form.gsx:25:2
+//line form.gsx:20:2
 		_gsxgw.S("<form class=\"flex max-w-xs flex-col gap-4\">")
-//line form.gsx:26:3
+//line form.gsx:21:3
 		_gsxgw.Node(ctx, ui.Calendar("single", FormDefaultMonth, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "date", nil))
-//line form.gsx:27:3
+//line form.gsx:22:3
+		_gsxgw.S("<div class=\"flex flex-col gap-2\">")
+//line form.gsx:23:4
+		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
+			_gsxgw.S("Framework")
+			return _gsxgw.Err()
+		}), _gsxrt.Attrs{{Key: "for", Value: "calendar-form-framework"}}))
+//line form.gsx:24:4
+		_gsxgw.Node(ctx, ui.Combobox("framework", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
+//line form.gsx:25:5
+			_gsxgw.Node(ctx, ui.ComboboxInput("Search framework...", true, false, false, nil, _gsxrt.Attrs{{Key: "id", Value: "calendar-form-framework"}}))
+//line form.gsx:26:5
+			_gsxgw.Node(ctx, ui.ComboboxContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+//line form.gsx:27:6
+				_gsxgw.Node(ctx, ui.ComboboxList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+//line form.gsx:28:7
+					_gsxgw.Node(ctx, ui.ComboboxEmpty(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+						_gsxgw.S("No framework found.")
+						return _gsxgw.Err()
+					}), nil))
+//line form.gsx:29:7
+					_gsxgw.Node(ctx, ui.ComboboxItem("next.js", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+						_gsxgw.S("Next.js")
+						return _gsxgw.Err()
+					}), nil))
+//line form.gsx:30:7
+					_gsxgw.Node(ctx, ui.ComboboxItem("sveltekit", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+						_gsxgw.S("SvelteKit")
+						return _gsxgw.Err()
+					}), nil))
+					return _gsxgw.Err()
+				}), nil))
+				return _gsxgw.Err()
+			}), nil))
+			return _gsxgw.Err()
+		}), nil))
+		_gsxgw.S("</div>")
+//line form.gsx:35:3
 		_gsxgw.S("<div class=\"flex gap-2\">")
-//line form.gsx:28:4
+//line form.gsx:36:4
 		_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Continue")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "type", Value: "submit"}}))
-//line form.gsx:29:4
+//line form.gsx:37:4
 		_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Reset")
