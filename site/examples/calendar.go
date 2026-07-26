@@ -78,6 +78,25 @@ func init() {
 		},
 	})
 	Register("calendar", Example{
+		Name:       "hiddenoutside",
+		Title:      "Hidden outside days",
+		Node:       examplecalendar.HiddenOutside(examplecalendar.HiddenOutsideDefaultMonth),
+		SourcePath: "calendar/outside.gsx",
+		// Query answers ?month= the same way basic's and loaded's hooks do —
+		// the final review's Important 1 needs a genuine client-vs-server
+		// agreement diff for showOutsideDays={false}, since calendar.js
+		// re-derives `hidden` for every month the server never rendered.
+		Query: func(q url.Values) gsx.Node {
+			month := examplecalendar.HiddenOutsideDefaultMonth
+			if v := q.Get("month"); v != "" {
+				if t, err := time.Parse("2006-01", v); err == nil {
+					month = t
+				}
+			}
+			return examplecalendar.HiddenOutside(month)
+		},
+	})
+	Register("calendar", Example{
 		Name:       "range",
 		Title:      "Range",
 		Node:       examplecalendar.Range(examplecalendar.RangeDefaultMonth),

@@ -7,6 +7,9 @@ const LOADED_RANGE = "/x/calendar/loadedrange";
 const RANGE = "/x/calendar/range";
 const MULTIPLE = "/x/calendar/multiple";
 const FORM = "/x/calendar/form";
+// The only example passing showOutsideDays={false} — see
+// site/examples/calendar/outside.gsx.
+const HIDDEN_OUTSIDE = "/x/calendar/hiddenoutside";
 
 // The grid's 42 data-date values, in DOM order.
 async function gridDates(page: import("@playwright/test").Page) {
@@ -24,6 +27,12 @@ async function gridDates(page: import("@playwright/test").Page) {
 // native disabled property) and its enclosing <td> (data-outside/-today/
 // -disabled presence, data-selected's literal value, aria-selected) — the
 // same split calendar.gsx and calendar.js both use.
+//
+// The final review added three more fields, all of them showOutsideDays'
+// (Important 1): the cell's own `data-hidden`, the button's `aria-hidden`,
+// and the button's TEXT — a hidden day is blanked rather than removed, and
+// none of the pre-existing fields would notice if calendar.js forgot any part
+// of that on a client-navigated month.
 async function gridCells(page: import("@playwright/test").Page) {
   return page.$$eval("[data-gsxui-calendar-day]", (buttons) =>
     buttons.map((btn) => {
@@ -31,7 +40,10 @@ async function gridCells(page: import("@playwright/test").Page) {
       const cell = button.closest("td")!;
       return {
         date: button.getAttribute("data-date"),
+        text: button.textContent,
         outside: cell.hasAttribute("data-outside"),
+        hidden: cell.hasAttribute("data-hidden"),
+        ariaHidden: button.getAttribute("aria-hidden"),
         today: cell.hasAttribute("data-today"),
         cellDisabled: cell.hasAttribute("data-disabled"),
         cellSelected: cell.getAttribute("data-selected"),
@@ -215,6 +227,88 @@ test("Go and JS agree on loaded-range 2026-01 (range flags, Monday week start)",
   const serverCells = await gridCells(page);
 
   expect(clientCells).toEqual(serverCells);
+});
+
+// --- final review, Important 1: showOutsideDays -----------------------------
+//
+// The parameter was declared and read nowhere, so passing false had no
+// observable effect. Upstream's semantics are not "drop the cell"
+// (react-day-picker 9.14.0, helpers/createGetModifiers.js): showOutsideDays
+// false sets modifiers.hidden, the <td> stays for layout, classNames.hidden
+// is "invisible", and no DayButton renders inside it. gsxui keeps the button
+// (calendar.js may never create or destroy one) and blanks it instead.
+test("outside days are hidden without their cells leaving the grid", async ({ page }) => {
+  await page.goto(HIDDEN_OUTSIDE);
+
+  const cells = await gridCells(page);
+  expect(cells).toHaveLength(42);
+
+  // January 2026, Sunday week start: 2025-12-28..2026-02-07, so four leading
+  // and seven trailing padding days.
+  const hidden = cells.filter((c) => c.hidden);
+  expect(hidden).toHaveLength(11);
+  // Hidden and outside coincide exactly when showOutsideDays is false.
+  expect(cells.filter((c) => c.outside).map((c) => c.date)).toEqual(hidden.map((c) => c.date));
+
+  // Each hidden day is blanked: no text, no tab stop, hidden from assistive
+  // tech, not activatable.
+  for (const c of hidden) {
+    expect(c.text).toBe("");
+    expect(c.ariaHidden).toBe("true");
+    expect(c.tabindex).toBe("-1");
+    expect(c.disabled).toBe(true);
+  }
+
+  // In-month days are untouched, and the roving tab stop is still exactly
+  // one, on an in-month day — hidden days are OUT of the tab sequence, the
+  // opposite of the deliberate call made for disabled days.
+  const shown = cells.filter((c) => !c.hidden);
+  expect(shown.every((c) => c.text !== "" && c.ariaHidden === null)).toBe(true);
+  const stops = cells.filter((c) => c.tabindex === "0");
+  expect(stops.map((c) => c.date)).toEqual(["2026-01-01"]);
+});
+
+// The client half of the same fix: calendar.js re-derives `hidden` from the
+// root's own data-gsxui-calendar-show-outside-days for every month the server
+// never rendered, so it needs the same agreement diff every other example
+// gets. A next click lands on February 2026, whose own padding set is
+// completely different from January's.
+//
+// One-line mutation that turns this red: delete the
+// `toggleAttr(cell, "data-hidden", hidden)` line from calendar.js's repaint
+// (see the report for the captured failure).
+test("Go and JS agree on hidden-outside 2026-02 (showOutsideDays=false)", async ({ page }) => {
+  await page.goto(HIDDEN_OUTSIDE);
+  await page.click("[data-gsxui-calendar-next]");
+
+  await expect(page.locator("[data-gsxui-calendar]")).toHaveAttribute(
+    "data-gsxui-calendar-month",
+    "2026-02",
+  );
+  const clientCells = await gridCells(page);
+  // Not a vacuous diff: February 2026 really does have padding days to hide.
+  expect(clientCells.filter((c) => c.hidden).length).toBeGreaterThan(0);
+
+  await page.goto(`${HIDDEN_OUTSIDE}?month=2026-02`);
+  const serverCells = await gridCells(page);
+
+  expect(clientCells).toEqual(serverCells);
+});
+
+// role="grid" suppresses a <table>'s implicit naming, so the grid needs an
+// explicit accessible name — upstream's labelGrid, defaulting to the
+// formatted month/year. calendar.js's repaint has to keep it in step with
+// navigation or it keeps announcing the server-rendered month forever.
+test("the grid's accessible name follows the displayed month", async ({ page }) => {
+  await page.goto(BASIC);
+  const grid = page.locator("[data-gsxui-calendar-grid]");
+  await expect(grid).toHaveAttribute("aria-label", "January 2026");
+
+  await page.click("[data-gsxui-calendar-next]");
+  await expect(grid).toHaveAttribute("aria-label", "February 2026");
+
+  await page.click("[data-gsxui-calendar-prev]");
+  await expect(grid).toHaveAttribute("aria-label", "January 2026");
 });
 
 // Bounded pins fromYear=toYear=2026 — the narrowest possible navigation
@@ -627,10 +721,15 @@ test("keyboard month/year moves stop at the declared navigation bound instead of
   await expect(root).toHaveAttribute("data-gsxui-calendar-month", "2026-12");
   await expect(next).toHaveAttribute("aria-disabled", "true");
   await expect(yearSelect).toHaveValue("2026");
-  // Clamped, not stranded: the day-of-month survives the clamp (15 is a
-  // valid December day) and focus lands INSIDE the clamped month, not left
-  // behind in January.
-  expect(await focusedDate(page)).toBe("2026-12-15");
+  // Clamped to the BOUND ITSELF — the last day of toYear's December —
+  // not to the out-of-range target's day-of-month transplanted into that
+  // month. Upstream's getFocusableDate ends with `min([navEnd,
+  // focusableDate])`, which returns navEnd, and the final review found the
+  // earlier clamp doing the transplant instead (it landed on 2026-12-15
+  // here, which happened to look plausible only because 15 is a valid
+  // December day — the "arrow keys at a bound" test below is where the same
+  // bug jumped focus 24 days in the WRONG DIRECTION).
+  expect(await focusedDate(page)).toBe("2026-12-31");
 
   // Already sitting at the bound — one more month-forward press must stay
   // a no-op, the same "attempt it anyway" discipline the mouse-path test
@@ -638,7 +737,44 @@ test("keyboard month/year moves stop at the declared navigation bound instead of
   await page.keyboard.press("PageDown");
   await expect(root).toHaveAttribute("data-gsxui-calendar-month", "2026-12");
   await expect(yearSelect).toHaveValue("2026");
-  expect(await focusedDate(page)).toBe("2026-12-15");
+  expect(await focusedDate(page)).toBe("2026-12-31");
+});
+
+// Final review, Important 4: clampToNavBounds jumped focus forward instead of
+// clamping. It landed on `Date.UTC(fromYear, 0, min(date.getUTCDate(), 31))`
+// — the OUT-OF-RANGE TARGET's day-of-month — while its own comment claimed
+// January 1st of fromYear. On this very page (fromYear=toYear=2026, January
+// displayed): focus 2026-01-01, press ArrowUp, raw target 2025-12-25, clamped
+// to 2026-01-25 — focus jumped 24 days FORWARD out of a backward move.
+//
+// The Shift+PageDown test above never caught it because at the upper bound
+// its own day-of-month (15) happened to survive the transplant unchanged.
+// Arrow keys at a bound are where the two behaviors visibly diverge, so this
+// test presses one at each bound.
+//
+// One-line mutation that turns this red: restore the day-of-month transplant
+// in clampToNavBounds (see the report for the captured failure).
+test("arrow keys at a navigation bound clamp to the bound, not past it", async ({ page }) => {
+  await page.goto(BOUNDED);
+  const root = page.locator("[data-gsxui-calendar]");
+
+  // Lower bound. A week backward from 2026-01-01 leaves fromYear entirely.
+  await dayFor(page, "2026-01-01").focus();
+  await page.keyboard.press("ArrowUp");
+  expect(await focusedDate(page)).toBe("2026-01-01");
+  await expect(root).toHaveAttribute("data-gsxui-calendar-month", "2026-01");
+
+  // Upper bound, the mirror image: a week forward from 2026-12-31 leaves
+  // toYear. Reached through the public nav control, same as the mouse-path
+  // bound test above.
+  const next = page.locator("[data-gsxui-calendar-next]");
+  for (let i = 0; i < 11; i++) await next.click();
+  await expect(root).toHaveAttribute("data-gsxui-calendar-month", "2026-12");
+
+  await dayFor(page, "2026-12-31").focus();
+  await page.keyboard.press("ArrowDown");
+  expect(await focusedDate(page)).toBe("2026-12-31");
+  await expect(root).toHaveAttribute("data-gsxui-calendar-month", "2026-12");
 });
 
 test("Enter and Space select the focused day", async ({ page }) => {
