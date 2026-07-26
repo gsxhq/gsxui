@@ -96,6 +96,55 @@ Events dispatched from descendants are resolved to their closest owning
 `dialog[data-gsxui-dialog-content]`, matching the existing delegated-listener
 model.
 
+## Target identity and native controls
+
+Proximity remains the zero-configuration path: a
+`data-gsxui-dialog-trigger` opens the dialog owned by its nearest
+`[data-gsxui-dialog]` root. Resolution must exclude dialogs and triggers owned
+by nested roots.
+
+When a trigger lives outside that root, or application code controls one of
+many dialogs, the dialog content must have an authored stable `id`. Native
+Invoker Commands are the primary declarative form:
+
+```html
+<button commandfor="delete-dialog" command="show-modal">Open</button>
+<dialog id="delete-dialog" data-gsxui-dialog-content>
+  <button commandfor="delete-dialog" command="request-close">Cancel</button>
+</dialog>
+```
+
+`show-modal` and `request-close` are standards-based commands targeted by
+exact ID. The latter enters the dialog's cancel path, which gsxui translates
+to the animated, cancelable `gsxui:close-dialog` command. Native
+`command="close"` remains available when an immediate close is intended.
+
+Programmatic helpers require the exact `HTMLDialogElement`; they never select
+the nearest or first dialog:
+
+```js
+const dialog = document.getElementById("delete-dialog")
+openDialog(dialog)
+closeDialog(dialog)
+```
+
+Passing anything other than an `HTMLDialogElement` throws `TypeError`.
+Generated accessibility IDs are not a public lookup contract: external
+control requires an authored ID.
+
+The native escape hatches remain fully supported and reconcile through
+`beforetoggle`/`toggle`:
+
+```js
+dialog.showModal() // immediate native modal open
+dialog.show()      // immediate native non-modal open
+dialog.close()     // immediate native close
+```
+
+`beforetoggle` stamps the impending `data-state` before paint, including for
+native `showModal()` and `command="show-modal"` paths. `toggle` remains the
+confirmed-state notification source.
+
 ## DOM-only state and identity
 
 `data-state` is the idempotency and transition guard:
@@ -152,6 +201,8 @@ openDialog(dialog, detail?)
 
 with the equivalent `gsxui:open-dialog` behavior. Sibling modules such as
 `command.js` use these exports rather than manipulating dialog state directly.
+Both helpers require an `HTMLDialogElement` and are re-exported from
+`ui/index.js` as the public programmatic API.
 
 Private default-action functions may be asynchronous, but they retain no state
 after their invocation settles.
@@ -171,7 +222,13 @@ Use the existing Playwright layer against real Chromium:
 8. generated title, description, and dialog IDs are unique, stable in the
    DOM, and reflected by ARIA attributes;
 9. authored IDs and authored ARIA relationships remain unchanged;
-10. direct `showModal()`/`close()` still reconcile state and notifications.
+10. proximity ignores dialogs and triggers owned by nested dialog roots;
+11. authored-ID `commandfor="…" command="show-modal"` opens the exact dialog;
+12. authored-ID `commandfor="…" command="request-close"` uses the animated
+    close path;
+13. direct `showModal()`/`show()`/`close()` still reconcile state and
+    notifications through `beforetoggle`/`toggle`;
+14. helpers reject non-dialog targets with `TypeError`.
 
 The existing Go render pins and generated-drift check remain unchanged because
 their review findings are already fixed on `main`.
