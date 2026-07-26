@@ -1,4 +1,5 @@
 node_modules/
+.worktrees/
 site/dist/*
 !site/dist/.gitkeep
 /tmp/
