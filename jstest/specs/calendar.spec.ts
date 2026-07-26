@@ -914,6 +914,33 @@ test("dropdown caption is one row, one border", async ({ page }) => {
   expect(geom.selectHeight).toBeLessThanOrEqual(geom.rowHeight);
 });
 
+// ui.NativeSelect ships py-1 for its h-8 standalone form-control shape. At the
+// caption's h-6 that leaves a 16px content box for a 20px line — the line
+// cannot fit, so no browser can centre it and the text renders visibly low.
+// The invariant is that the line fits and the padding is symmetric; the
+// browser centres it from there.
+test("dropdown caption text can be vertically centred", async ({ page }) => {
+  await page.goto("/x/calendar/dropdown");
+
+  const m = await page.evaluate(() => {
+    const sel = document.querySelector("[data-gsxui-calendar-month-select]")!;
+    const cs = getComputedStyle(sel);
+    const px = (v: string) => parseFloat(v);
+    return {
+      height: sel.getBoundingClientRect().height,
+      padTop: px(cs.paddingTop),
+      padBottom: px(cs.paddingBottom),
+      lineHeight: px(cs.lineHeight),
+      borderTop: px(cs.borderTopWidth),
+      borderBottom: px(cs.borderBottomWidth),
+    };
+  });
+
+  expect(m.padTop).toBe(m.padBottom);
+  const contentBox = m.height - m.padTop - m.padBottom - m.borderTop - m.borderBottom;
+  expect(contentBox).toBeGreaterThanOrEqual(m.lineHeight);
+});
+
 // The chevron is absolutely positioned inside the select, so its clearance is
 // reserved with right padding rather than by flex flow the way upstream's
 // caption label does it. Over-reserve and the controls crowd the nav buttons
