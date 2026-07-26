@@ -3,48 +3,49 @@
 shadcn-style components for [gsx](https://github.com/gsxhq/gsx) — copy-in,
 type-checked, server-rendered.
 
+Browse every component, live, at [ui.gsxhq.dev](https://ui.gsxhq.dev),
+along with the theme editor.
+
+**Status: pre-release.** 53 components + icon, covering most of shadcn/ui's
+set.
+
 ## Install
 
     go install github.com/gsxhq/gsxui/cmd/gsxui@latest
 
-In your project (a Go module):
+Then, from your Go module:
 
     gsxui init          # tokens css, js runtime, class merger, gsx.toml wiring
-    gsxui add dialog    # vendors dialog + its deps (button), regenerates
+    gsxui add dialog    # vendors dialog + its deps (button)
     gsxui list          # what's available
 
-You own the vendored code. `gsxui add` never touches a modified file unless
-you pass `--overwrite`.
+`gsxui init` prints the CSS and JS entry points to import from your
+bundler. It also adds the gsx toolchain and class merger to your `go.mod`.
 
-After upgrading the gsxui binary, re-run `gsxui add <name> --overwrite` to
-refresh vendored components — this discards local edits to those files.
+## Use
 
-**Status: pre-release.** 53 components + icon, covering most of shadcn/ui's
-set. The showcase site and theme editor are live at
-[ui.gsxhq.dev](https://ui.gsxhq.dev).
+Components land in your module as one flat `package ui`:
 
-- Components live flat in `ui/` — one `package ui`, each component its own
-  `<name>.gsx` source (JSX-style, named parameters, fallthrough attrs) plus
-  a behavior `<name>.js` when interactive. `icon` is the one exception,
-  staying its own `ui/icon` package (generated Lucide data). Every
-  component is imported the same way: `import "github.com/gsxhq/gsxui/ui"`,
-  used as `ui.Button`, `ui.CardHeader`, `ui.DialogContent`, etc. — see
-  `docs/jsx-parity.md`'s packaging note for why.
-- `make test` regenerates and runs the Go suite; `make test-js` runs the
-  browser suite (Playwright against real Chromium — `npx playwright install
-  chromium` once per machine); `make check` runs both plus JS syntax and
-  gofmt checks. CI gates deploys on both suites.
-- `jstest/` is the browser test layer: a Go harness serves one example per
-  page with the real `ui/*.js` loaded as native ES modules, and structural
-  invariants sweep every example — clean load (no uncaught exception, no
-  console error), no ghost overlays (a closed `[popover]`/`<dialog>` must
-  compute `display: none`), no duplicate ids, and no element claimed by two
-  modules for one event. Two corpus-wide checks guard the delegation
-  registry itself: every registered selector parses, and every registered
-  selector matches something on some example page. These are load-time and
-  structural — per-component behavior specs (keyboard models, open/close
-  lifecycles, emitted events) are still to come.
-- Divergences from the shadcn/ui reference: `docs/jsx-parity.md`.
+```go
+import "yourmodule/ui"
+
+component Actions() {
+	<div class="flex gap-3">
+		<ui.Button>Save</ui.Button>
+		<ui.Button variant="outline">Cancel</ui.Button>
+	</div>
+}
+```
+
+Each component is a `<name>.gsx` source — JSX-style, named parameters,
+fallthrough attrs — plus a `<name>.js` behavior file when it's
+interactive. `icon` is the one exception, vendored as its own `ui/icon`
+package (generated Lucide data).
+
+You own the vendored code. `gsxui add` never touches a modified file
+unless you pass `--overwrite`. After upgrading the `gsxui` binary, re-run
+`gsxui add <name> --overwrite` to refresh components — that discards your
+local edits to those files.
 
 ## Components
 
@@ -63,95 +64,36 @@ pagination, sidebar, tabs
 
 **Layout:** aspect-ratio, carousel, collapsible, resizable, scroll-area
 
-**Primitives:** icon (Lucide, generated — a dependency of native-select,
-accordion, and dropdown's own future items, not usually added directly)
+**Primitives:** icon (Lucide, generated — pulled in as a dependency of
+other components, rarely added directly)
 
-Some native-first components (checkbox, radio, switch, native-select,
-accordion) trade a slice of shadcn's Radix-driven behavior for a real
+## Differences from shadcn/ui
+
+Some components are native-first: checkbox, radio, switch, native-select
+and accordion trade a slice of shadcn's Radix-driven behavior for a real
 `<input>`/`<select>`/`<details>` element — zero client JS, browser-native
 `:checked`/`:disabled`/exclusivity semantics. dropdown and tooltip trade
-Radix's Portal for the native popover API. Every divergence, with its
-rationale, is ledgered in `docs/jsx-parity.md`.
+Radix's Portal for the native popover API.
 
-### Vendored layout compatibility note
+Every divergence, with its rationale, is ledgered in
+[`docs/jsx-parity.md`](docs/jsx-parity.md).
 
-`gsxui add` now vendors components flat into `ui/<name>.gsx`, one
-`package ui` (a v1.0-era CLI instead vendored one package per component,
-e.g. `ui/button/button.gsx` as `package button`). The two layouts don't
-coexist — an old per-component-directory vendor tree is obsolete, not
-migrated in place: delete your project's vendored `ui/` directory and
-re-run `gsxui add <name>...` against a current `gsxui` binary to get the
-flat layout back.
+## Upgrading from v1.0
 
-## Running the site
+v1.0 vendored one package per component (`ui/button/button.gsx` as
+`package button`); current versions vendor flat into `ui/<name>.gsx`, one
+`package ui`. The two layouts don't coexist and there's no in-place
+migration: delete your vendored `ui/` directory and re-run
+`gsxui add <name>...` with a current binary.
 
-The showcase site (`site/`) is a gsx-built, server-rendered Go app that
-imports `ui/` directly — it's the proof the components work, plus the
-theme editor. Two commands from a fresh clone:
+## Contributing
 
-    npm install
+    npm install                       # once
+    npx playwright install chromium   # once, for the browser suite
 
-then, for the dev loop (Vite HMR proxied in front of a live-reloading Go
-server):
+    make check      # go tests + browser tests + fmt/syntax checks
+    make site-dev   # showcase site with live reload
 
-    make site-dev
-
-or, to build the production bundle and run it (Vite assets embedded into
-the binary, served without a dev proxy):
-
-    make site
-
-Either way, open the printed URL (`make site-dev` prints Vite's dev URL;
-`make site` serves directly on `$GO_PORT`, falling back to `$PORT`, then
-7777 — the same default the dev loop's Vite proxy assumes — if neither is
-set).
-
-### Deploying
-
-`site/Dockerfile` is a three-stage build (Vite production build → `go
-build` against the committed `.x.go` + built `dist/` → distroless static
-run stage) that binds `$PORT` (Cloud Run's convention; the image sets
-`PORT=8080` explicitly).
-Build it from the **repo root** as context:
-
-    docker build -f site/Dockerfile -t gsxui-site .
-    docker run -p 8080:8080 gsxui-site
-
-`cloudbuild.yaml` (repo root) builds, pushes to Artifact Registry, and
-deploys to Cloud Run in one Cloud Build config — pattern-matched from
-[gsx's playground deploy](https://github.com/gsxhq/gsx/blob/main/cloudbuild.yaml).
-
-## Post-v1 backlog
-
-Deferred out of v1 scope, tracked here rather than in the parity ledger's
-per-component GAP notes (see those for the detailed rationale):
-
-- **Tooltip delay-groups** — `TooltipProvider`'s shared `delayDuration`/
-  skip-delay-group coordination across multiple tooltips on a page. v1
-  hard-codes a fixed per-trigger open delay, no cross-tooltip grouping.
-- **CSS anchor positioning migration** — dropdown and tooltip currently
-  position via a hand-rolled `getBoundingClientRect()` + `position: fixed`
-  calculation in JS. Once CSS anchor positioning (`anchor()`/
-  `position-anchor`) reaches Baseline across browsers, both can drop that
-  JS for native, collision-aware placement.
-- **Checkbox checkmark theming (currentColor mask)** — the check glyph is a
-  data-URI with hard-coded `stroke="white"`; data-URIs are static text and
-  can't reference CSS variables, so the mark doesn't follow
-  `--primary-foreground` and is wrong/low-contrast for themes where that
-  color isn't near-white. Swap to a `currentColor` CSS-mask
-  (`mask-image`/`-webkit-mask-image` painted via `background-color:
-  currentColor`) in the Plan 4 theming work.
-- **`gsxui theme` (local)** — the theme editor ships remote (on the site,
-  `/theme`) for v1; a local `gsxui theme` command was deferred, open
-  question: embed a built CSS artifact in the CLI binary (stays in sync
-  with the site's editor, but bloats/staleness-risks the binary) vs. have
-  it reuse the calling project's own Tailwind build (accurate to that
-  project's tokens, but requires shelling out to its build tooling). Needs
-  a decision before implementation.
-- **Icon search** — the icon gallery page (`site/examples/icon`) ships v1
-  as a static grid of ~40 popular icons plus a "1,748 total" note; a
-  searchable/filterable index over the full Lucide set is not built.
-- **Copy-button success feedback** — the site's copy-to-clipboard button
-  (`data-site-copy`, wired in `web/site.js`) copies but gives no
-  success/failure affordance (e.g. a checkmark swap or toast); noted during
-  Plan 4 Task 2 review as a minor deferred to here.
+See [`docs/backlog.md`](docs/backlog.md) for what's deferred and
+[`docs/component-roadmap.md`](docs/component-roadmap.md) for coverage
+plans.
