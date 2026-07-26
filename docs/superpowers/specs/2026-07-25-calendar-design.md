@@ -4,7 +4,8 @@ The last component of Tier 4 that we are building. `chart` stays deferred:
 shadcn's `chart.tsx` is a themed shell around Recharts — two of its six
 exports are literal re-exports of Recharts components — and gsxui's copy-in
 model has no way to vendor an npm dependency. Coverage after this ships is
-60 of shadcn's 61.
+53 of shadcn's 61 (`ls ui/*.gsx | wc -l`; an earlier draft of this line said
+60, which was never right).
 
 `calendar` is the largest single port in the project. shadcn's `calendar.tsx`
 contains **no date logic at all**: it maps 24 className slots and overrides
