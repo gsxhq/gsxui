@@ -13,76 +13,99 @@
 // lazily here (authored ids and aria-* attributes are always respected).
 import { on, emit } from "./gsxui.js";
 
-let uid = 0;
-const ensureId = (el, prefix) => el.id || (el.id = `gsxui-${prefix}-${++uid}`);
+const DIALOG = "dialog[data-gsxui-dialog-content]";
+
+function generatedId(prefix) {
+  for (;;) {
+    const words = crypto.getRandomValues(new Uint32Array(4));
+    const suffix = [...words]
+      .map((word) => word.toString(16).padStart(8, "0"))
+      .join("");
+    const id = `gsxui-${prefix}-${suffix}`;
+    if (!document.getElementById(id)) return id;
+  }
+}
+
+function ensureId(element, prefix) {
+  if (!element.id) element.id = generatedId(prefix);
+  return element.id;
+}
+
+const rootOf = (element) => element.closest("[data-gsxui-dialog]");
+
+function owned(root, selector) {
+  return [...root.querySelectorAll(selector)].filter(
+    (element) => rootOf(element) === root,
+  );
+}
+
+function dialogOf(root) {
+  return owned(root, DIALOG)[0];
+}
 
 // Idempotent: name/describe the dialog and point triggers at it.
 function wireA11y(root, dialog) {
-  const title = dialog.querySelector('[data-slot="dialog-title"]');
-  const desc = dialog.querySelector('[data-slot="dialog-description"]');
+  const title = owned(root, '[data-slot="dialog-title"]')[0];
+  const desc = owned(root, '[data-slot="dialog-description"]')[0];
   if (title && !dialog.hasAttribute("aria-labelledby"))
     dialog.setAttribute("aria-labelledby", ensureId(title, "title"));
   if (desc && !dialog.hasAttribute("aria-describedby"))
     dialog.setAttribute("aria-describedby", ensureId(desc, "desc"));
-  for (const t of root.querySelectorAll("[data-gsxui-dialog-trigger]"))
+  for (const t of owned(root, "[data-gsxui-dialog-trigger]"))
     if (!t.hasAttribute("aria-controls"))
       t.setAttribute("aria-controls", ensureId(dialog, "dialog"));
 }
 
-// Animated close: stamp the closed state first so data-[state=closed] exit
-// animations start, then release the top layer when they finish. With no
-// active animations (buildless page, prefers-reduced-motion) this closes
-// immediately.
-// Exported for sibling behaviors that drive a dialog themselves (command.js's
-// ⌘K toggle) so every close path shares the animated-close machinery.
-export function requestClose(dialog) {
-  if (!dialog.open) return;
-  dialog.dataset.state = "closed";
-  // Wait only for the dialog's OWN exit animations — never the subtree's:
-  // a child may run an unbounded animation (ui.Spinner's animate-spin has
-  // iterations:Infinity, so its `finished` promise never resolves and a
-  // subtree-wide wait would keep the dialog open forever). And because a
-  // backgrounded/occluded tab freezes animation clocks entirely, the wait
-  // is raced against a hard cap comfortably above every exit duration
-  // the components ship (dialog/alert-dialog 200ms, sheet 300ms), so
-  // the dialog always closes, animation or not.
-  const anims = dialog.getAnimations();
-  if (!anims.length) {
-    dialog.close();
-    return;
-  }
-  const done = Promise.allSettled(anims.map((a) => a.finished));
-  const cap = new Promise((resolve) => setTimeout(resolve, 600));
-  // Re-check state when the wait settles: a rapid reopen during the exit
-  // window stamps data-state="open" (the trigger handler below), and this
-  // pending close must then abort — without the guard it lands ~200ms into
-  // the NEW dialog's life and slams it shut (visible as a flash under
-  // rapid open/close, e.g. holding Space on the trigger).
-  Promise.race([done, cap]).then(() => {
-    if (dialog.dataset.state === "closed") dialog.close();
-  });
+function performOpen(dialog) {
+  const root = rootOf(dialog);
+  if (root) wireA11y(root, dialog);
+  // Stamping open also aborts an in-flight close before its animation settles.
+  dialog.dataset.state = "open";
+  if (!dialog.open) dialog.showModal();
 }
 
-const rootOf = (el) => el.closest("[data-gsxui-dialog]");
+async function performClose(dialog) {
+  if (!dialog.open || dialog.dataset.state === "closed") return;
+  dialog.dataset.state = "closed";
+  const animations = dialog.getAnimations().filter((animation) => {
+    const endTime = animation.effect?.getComputedTiming().endTime;
+    return typeof endTime === "number" && Number.isFinite(endTime);
+  });
+  await Promise.allSettled(animations.map((animation) => animation.finished));
+  if (dialog.open && dialog.dataset.state === "closed") dialog.close();
+}
+
+function request(dialog, type, detail) {
+  return emit(dialog, type, detail);
+}
+
+// Transitional sibling entry point. command.js switches to the request event
+// directly in its own task; state remains exclusively in the dialog DOM.
+export function requestClose(dialog) {
+  return request(dialog, "gsxui:request-close", { reason: "cancel" });
+}
+
+on("gsxui:request-open", DIALOG, (event, dialog) => {
+  queueMicrotask(() => {
+    if (!event.defaultPrevented) performOpen(dialog);
+  });
+});
+
+on("gsxui:request-close", DIALOG, (event, dialog) => {
+  queueMicrotask(() => {
+    if (!event.defaultPrevented) void performClose(dialog);
+  });
+});
 
 on("click", "[data-gsxui-dialog-trigger]", (_event, trigger) => {
   const root = rootOf(trigger);
-  const dialog = root?.querySelector("dialog[data-gsxui-dialog-content]");
-  if (!dialog || dialog.open) return;
-  wireA11y(root, dialog);
-  // Stamp open BEFORE showing, same reasoning as dropdown.js: the toggle
-  // event that also stamps it is a queued task, and a paint in the gap
-  // renders one frame in the closed state — here that's worse than a
-  // flash, because data-[state=closed] matches the EXIT animation, which
-  // starts playing on a freshly opened dialog until the task flips it.
-  // Stamping now also aborts any pending delayed close (see requestClose).
-  dialog.dataset.state = "open";
-  dialog.showModal();
+  const dialog = root && dialogOf(root);
+  if (dialog) request(dialog, "gsxui:request-open", { reason: "trigger" });
 });
 
 on("click", "[data-gsxui-dialog-close]", (_event, closer) => {
-  const dialog = closer.closest("dialog[data-gsxui-dialog-content]");
-  if (dialog) requestClose(dialog);
+  const dialog = closer.closest(DIALOG);
+  if (dialog) request(dialog, "gsxui:request-close", { reason: "close-button" });
 });
 
 // Light dismiss: only a click outside the dialog's own box — i.e. on the
@@ -101,7 +124,7 @@ on("click", "dialog[data-gsxui-dialog-content]", (event, dialog) => {
   const inBox =
     event.clientX >= r.left && event.clientX <= r.right &&
     event.clientY >= r.top && event.clientY <= r.bottom;
-  if (!inBox) requestClose(dialog);
+  if (!inBox) request(dialog, "gsxui:request-close", { reason: "backdrop" });
 });
 
 // Esc: intercept the native cancel so the exit animation can run; the
@@ -111,7 +134,7 @@ on(
   "dialog[data-gsxui-dialog-content]",
   (event, dialog) => {
     event.preventDefault();
-    requestClose(dialog);
+    request(dialog, "gsxui:request-close", { reason: "cancel" });
   },
   { capture: true },
 );
@@ -126,7 +149,7 @@ on(
     dialog.dataset.state = open ? "open" : "closed";
     const root = rootOf(dialog);
     if (root) {
-      for (const t of root.querySelectorAll("[data-gsxui-dialog-trigger]"))
+      for (const t of owned(root, "[data-gsxui-dialog-trigger]"))
         t.setAttribute("aria-expanded", open ? "true" : "false");
       if (open) wireA11y(root, dialog);
     }
