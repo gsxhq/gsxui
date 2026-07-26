@@ -1155,27 +1155,55 @@ func rootClassAttr(t *testing.T, html string) string {
 // position against a `relative` ancestor — upstream's own `months` wrapper
 // div (§2: "relative flex flex-col gap-4 md:flex-row"). gsxui doesn't render
 // `months`/`month` wrapper elements at all (§9, single-month only), so the
-// root <div> is the only element left to carry that `relative` token; drop
-// it and the prev/next buttons position against whatever `relative`
-// ancestor the CONSUMING page happens to have further up the DOM (or the
-// viewport), landing nowhere near the caption row, on every single render.
-// This test checks both halves of the contract — root has "relative" AND
-// nav still has "absolute" — so it can't pass vacuously if either token is
-// ever dropped or the markup is restructured out from under it.
+// port collapses both into one wrapper div, and that wrapper — NOT the root —
+// carries `relative`.
+//
+// Which element carries it is load-bearing, not incidental. An absolutely
+// positioned element resolves against its containing block's PADDING box, and
+// the root carries `p-2`. With `relative` on the root, nav's `top-0` pins 8px
+// above the caption row it labels (measured: buttons at y=40 vs row at y=54
+// centre). The wrapper sits inside the padding, so `top-0` there coincides
+// with the caption. Drop the token entirely and the buttons position against
+// whatever `relative` ancestor the CONSUMING page happens to have, or the
+// viewport.
+//
+// This test checks all three halves of the contract — the wrapper has
+// "relative", the root does NOT, and nav still has "absolute" — so it cannot
+// pass vacuously if any of them is dropped or the markup is restructured.
+// The resulting geometry is asserted in jstest/specs/calendar.spec.ts's
+// "dropdown caption is one row, one border".
 func TestCalendarNavHasARelativePositioningAncestor(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
 		time.Time{}, time.Time{}, nil, nil, "", nil))
 
 	rootClass := rootClassAttr(t, got)
-	var rootIsRelative bool
 	for _, tok := range strings.Fields(rootClass) {
 		if tok == "relative" {
-			rootIsRelative = true
+			t.Errorf("root carries \"relative\", but it also carries p-2 — nav's top-0 would resolve against the padding box and sit above the caption row\nroot class: %s", rootClass)
 		}
 	}
-	if !rootIsRelative {
-		t.Errorf("root has no bare \"relative\" class token — nav's absolute positioning has no ancestor to position against\nroot class: %s", rootClass)
+
+	// The months wrapper is the first <div> inside the root, and it is the
+	// element nav is positioned against.
+	wrapperIdx := strings.Index(got, "<div class=")
+	if wrapperIdx < 0 {
+		t.Fatal("no months wrapper <div> rendered inside the root")
+	}
+	wrapperTagEnd := strings.Index(got[wrapperIdx:], ">")
+	wrapperTag := got[wrapperIdx : wrapperIdx+wrapperTagEnd]
+	wrapperClass := wrapperTag[len(`<div class="`):]
+	if q := strings.Index(wrapperClass, `"`); q >= 0 {
+		wrapperClass = wrapperClass[:q]
+	}
+	var wrapperIsRelative bool
+	for _, tok := range strings.Fields(wrapperClass) {
+		if tok == "relative" {
+			wrapperIsRelative = true
+		}
+	}
+	if !wrapperIsRelative {
+		t.Errorf("months wrapper has no bare \"relative\" token — nav's absolute positioning has no ancestor inside the root's padding\nwrapper class: %s", wrapperClass)
 	}
 
 	navIdx := strings.Index(got, "<nav")

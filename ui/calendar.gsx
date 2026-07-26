@@ -37,7 +37,23 @@ import (
 // caption row, on every render — not a cosmetic gap. Ledgered as: root
 // absorbs `months`'s own `relative` token, since `months` itself is not
 // rendered.
-const calendarRootClass = "relative w-fit group/calendar bg-background p-2 [--cell-size:--spacing(7)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent"
+const calendarRootClass = "w-fit group/calendar bg-background p-2 [--cell-size:--spacing(7)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent"
+
+// calendarMonthsClass collapses upstream's `months` and `month` slots (source
+// map §2: `relative flex flex-col gap-4 md:flex-row` and `flex w-full flex-col
+// gap-4`) into the single wrapper this port needs. The multi-month responsive
+// row (`md:flex-row`) is dropped with `numberOfMonths` itself — one month means
+// one column, always.
+//
+// The `relative` MUST live here rather than on the root, even though the root
+// is the only other candidate once `months`/`month` collapse. `nav` is
+// `absolute inset-x-0 top-0`, and an absolutely positioned element resolves
+// against its containing block's PADDING box — so with `relative` on the root,
+// nav pins 8px above the caption row it is supposed to sit on, because the
+// root carries `p-2` and the caption flows after that padding. Upstream has no
+// such problem: its `months` sits inside the root's padding. Measured before
+// the fix: nav buttons at y=32, caption row at y=40.
+const calendarMonthsClass = "relative flex w-full flex-col gap-4"
 
 // calendarGridClass is the `month_grid` slot, verbatim (source map §2).
 const calendarGridClass = "w-full border-collapse"
@@ -180,7 +196,27 @@ const calendarDropdownsClass = "flex h-(--cell-size) w-full items-center justify
 // merging onto NativeSelect's wrapper `<div>`'s hardcoded "relative w-fit"
 // (ui/native-select.gsx) — the wrapper is the analogue of upstream's
 // `Dropdown.js` `<span data-disabled className={DropdownRoot}>`.
-const calendarDropdownRootClass = "relative rounded-md border border-input has-focus:border-ring has-focus:ring-3 has-focus:ring-ring/50"
+//
+// The `[&>select]`/`[&>svg]` block neutralises ui.NativeSelect's own standalone
+// chrome so this reads as a caption control rather than a form field. Upstream
+// never needs it: its `<select>` carries the `dropdown` slot's `opacity-0` and
+// is fully invisible, so only `dropdown_root`'s border ever paints. Ours is a
+// real, visible select (see the ADAPT above), so without this the wrapper's
+// border and the select's own `rounded-lg border border-input` paint as two
+// concentric rounded rectangles, and the select's hardcoded `h-8` (32px, plus
+// 2px of border) overflows the `dropdowns` row's `h-(--cell-size)` (28px at
+// nova density) and sits 5px below the nav buttons. Both were measured in the
+// browser, both are visible in `/x/calendar/dropdown`.
+//
+// It has to be expressed as child selectors because ui/native-select.gsx
+// routes its `class` attr to the wrapper `<div>` and hardcodes the `<select>`'s
+// own classes — see that file's header for why. Heights follow nova's caption
+// scale (`.cn-calendar-caption-label`, source map §6: `h-6 pr-1 pl-1.5`), and
+// the chevron drops to `size-3.5` per new-york-v4's own `caption_label`
+// dropdown arm (source map §2).
+const calendarDropdownRootClass = "relative rounded-md border border-input has-focus:border-ring has-focus:ring-3 has-focus:ring-ring/50" +
+	" [&>select]:h-6 [&>select]:rounded-none [&>select]:border-0 [&>select]:bg-transparent [&>select]:pl-1.5 [&>select]:pr-6 [&>select]:focus-visible:border-transparent [&>select]:focus-visible:ring-0 [&>select]:dark:bg-transparent [&>select]:dark:hover:bg-transparent" +
+	" [&>svg]:size-3.5 [&>svg]:right-1.5"
 
 // calendarMonthNames are the twelve month names for the dropdown
 // captionLayout's month <select>, matching upstream's own default
@@ -720,6 +756,7 @@ component Calendar(
 		class={ calendarRootClass }
 		{ attrs... }
 	>
+		<div class={ calendarMonthsClass }>
 		<nav class={ calendarNavClass }>
 			<button
 				type="button"
@@ -862,6 +899,7 @@ component Calendar(
 				} }
 			</tbody>
 		</table>
+		</div>
 		{ if showHiddenSingle {
 			<input type="hidden" name={ name } value={ hiddenSingleValue }/>
 		} }

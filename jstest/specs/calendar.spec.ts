@@ -870,3 +870,46 @@ test("today is marked from the client's date", async ({ page }) => {
   );
   expect(marked).toEqual([today]);
 });
+
+// The dropdown caption is the one place this port renders a real, visible
+// <select> where upstream renders an invisible one under a styled label. Two
+// things went wrong there and neither is visible to any attribute assertion:
+// ui.NativeSelect's own border painted a second concentric rounded rect inside
+// dropdown_root's, and its hardcoded h-8 overflowed the caption row. A third
+// came from `relative` living on the padded root, so `nav`'s `top-0` resolved
+// against the padding box and pinned the buttons above the row they label.
+//
+// Geometry is the only way to catch any of them, so assert it.
+test("dropdown caption is one row, one border", async ({ page }) => {
+  await page.goto("/x/calendar/dropdown");
+
+  const geom = await page.evaluate(() => {
+    const mid = (el: Element | null) =>
+      el ? Math.round(el.getBoundingClientRect().top + el.getBoundingClientRect().height / 2) : null;
+    const select = document.querySelector("[data-gsxui-calendar-month-select]")!;
+    const wrapper = select.closest("[data-slot=native-select-wrapper]")!;
+    const row = wrapper.parentElement!;
+    return {
+      rowMid: mid(row),
+      wrapperMid: mid(wrapper),
+      prevMid: mid(document.querySelector("[data-gsxui-calendar-prev]")),
+      nextMid: mid(document.querySelector("[data-gsxui-calendar-next]")),
+      selectBorder: getComputedStyle(select).borderTopWidth,
+      wrapperBorder: getComputedStyle(wrapper).borderTopWidth,
+      selectHeight: Math.round(select.getBoundingClientRect().height),
+      rowHeight: Math.round(row.getBoundingClientRect().height),
+    };
+  });
+
+  // Everything in the caption shares one vertical centre line.
+  expect(geom.wrapperMid).toBe(geom.rowMid);
+  expect(geom.prevMid).toBe(geom.rowMid);
+  expect(geom.nextMid).toBe(geom.rowMid);
+
+  // Exactly one border: dropdown_root's, on the wrapper.
+  expect(geom.wrapperBorder).toBe("1px");
+  expect(geom.selectBorder).toBe("0px");
+
+  // The control fits the row rather than overflowing it.
+  expect(geom.selectHeight).toBeLessThanOrEqual(geom.rowHeight);
+});
