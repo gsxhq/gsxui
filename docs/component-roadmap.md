@@ -99,12 +99,19 @@ backlog entry tracked — reaching **full parity** with shadcn's
 | menubar | `Menubar`/`MenubarMenu`/`MenubarTrigger` + the same seven shared item parts, reusing `dropdown.gsx`/`dropdown.js`'s popover machinery a third time; `menubar.js` roving-tabindex bar, open-follows-hover between sibling menus, DOM-nested submenus | no RTL arrow-key swap (codebase-wide gap, not menubar-specific); menu and submenu positioning are both a hand-rolled fixed anchor, not collision-aware flip/shift |
 | navigation-menu | `NavigationMenu` + `Item`/`Trigger`/`Content`/`Link`/`Indicator`/`List`; ships `viewport={false}` only — each `Content` renders as its own chromed panel (gsx has no portal, so upstream's shared-viewport architecture doesn't fit) | shared-viewport mode (`viewport=true`, one portalled panel morphing between panel sizes); the six-token `data-[motion=…]` direction-aware slide animation, replaced by the codebase's standard discrete-transition block |
 
+**calendar SHIPPED 2026-07-26**, per `docs/superpowers/plans/2026-07-25-calendar.md`
+(source map `docs/superpowers/plans/2026-07-25-calendar-source-map.md`); nova
+density from the start, per-component ledger entry in `docs/jsx-parity.md`.
+
+| component | shipped as | deferred sub-features (v1 gaps, ledgered) |
+|---|---|---|
+| calendar | `Calendar` — a from-scratch month-grid/date-math engine (react-day-picker is not vendored), fixed six-row grid with a Go/JS `monthGrid` twin pair and an agreement test, single/multiple/range selection (`resetOnSelect` semantics), disabled-date rules, label and dropdown caption layouts, form binding via hidden inputs, full keyboard grid (arrows/Home/End/PageUp/PageDown/Shift-variants), client-side today reconciliation | multi-month (`numberOfMonths`), week numbers, custom modifiers, locales/i18n (needs a real locale parameter threaded through both the Go and JS twins, not a client-only `Intl` call — the server-rendered month must match what the client repaints), the footer slot; cell-level `range_start`/`range_middle`/`range_end`/`hidden` className slots (the button carries range/selection styling instead) |
+
 Remaining, roughly easiest → hardest for this codebase:
 
 | component | approach |
 |---|---|
-| calendar | month grid, range selection (react-day-picker equivalent — the single largest port on this list: date math, multi-month, range/multiple modes, full keyboard grid). `<input type="date">` is NOT a viable ADAPT for the docs demos (they exercise range selection, disabled dates, and custom day rendering, none of which a native date input can express); it stays a real from-scratch port. Consider scoping v1 to single-date + range, ledgering the rest |
-| chart | recharts wrapper in shadcn — needs a whole Go/JS charting answer; defer until demanded |
+| chart | recharts wrapper in shadcn — stays deferred: shadcn's `chart.tsx` is a themed shell around Recharts, not a from-scratch engine the way calendar's month grid turned out to be — two of its six exports are literal re-exports of Recharts components, and gsxui's copy-in vendoring model has no mechanism to vendor an npm dependency the way it vendors a `.tsx`/`.gsx` file; porting this needs a whole Go/JS charting answer of its own, not a token-for-token translation. Defer until demanded |
 
 **Registry-fork note (§0 finding, Task 0 of the 2026-07-24 tier4-batch-a
 plan):** shadcn's own docs now default to a Base UI variant, and the

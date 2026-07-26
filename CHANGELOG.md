@@ -8,6 +8,7 @@ Notable changes to gsxui's component set, newest first.
 
 - **menubar** — application-style menu bar with nested submenus and full keyboard navigation.
 - **navigation-menu** — hover-driven top nav with panel content.
+- **calendar** — month grid with single, range and multiple selection, keyboard grid, and no react-day-picker.
 - **JS test layer** — Playwright suite in `jstest/` over a Go example harness; four invariants sweep every example, gated in CI.
 
 ### Changed

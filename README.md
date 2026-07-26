@@ -19,7 +19,7 @@ you pass `--overwrite`.
 After upgrading the gsxui binary, re-run `gsxui add <name> --overwrite` to
 refresh vendored components — this discards local edits to those files.
 
-**Status: pre-release.** 52 components + icon, covering most of shadcn/ui's
+**Status: pre-release.** 53 components + icon, covering most of shadcn/ui's
 set. The showcase site and theme editor are live at
 [ui.gsxhq.dev](https://ui.gsxhq.dev).
 
@@ -48,9 +48,9 @@ set. The showcase site and theme editor are live at
 
 ## Components
 
-**Form controls:** button, button-group, checkbox, combobox, field, input,
-input-group, input-otp, label, native-select, radio, select, slider, switch,
-textarea, toggle, toggle-group
+**Form controls:** button, button-group, calendar, checkbox, combobox, field,
+input, input-group, input-otp, label, native-select, radio, select, slider,
+switch, textarea, toggle, toggle-group
 
 **Display:** alert, avatar, badge, card, empty, item, kbd, progress,
 separator, skeleton, spinner, table

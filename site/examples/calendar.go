@@ -123,4 +123,19 @@ func init() {
 		// browser test (jstest/specs/calendar.spec.ts), which never
 		// re-renders the server at a different month.
 	})
+	Register("calendar", Example{
+		Name:       "dropdown",
+		Title:      "Dropdown",
+		Node:       examplecalendar.Dropdown(),
+		SourcePath: "calendar/dropdown.gsx",
+		// No Query hook: same reason as Bounded's and Form's own — no
+		// ?month= browser test exercises this example directly.
+	})
+	Register("calendar", Example{
+		Name:       "datepicker",
+		Title:      "Date Picker",
+		Node:       examplecalendar.DatePicker(),
+		SourcePath: "calendar/datepicker.gsx",
+		// No Query hook: same reason as Dropdown's own.
+	})
 }
