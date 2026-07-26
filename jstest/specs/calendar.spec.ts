@@ -913,3 +913,30 @@ test("dropdown caption is one row, one border", async ({ page }) => {
   // The control fits the row rather than overflowing it.
   expect(geom.selectHeight).toBeLessThanOrEqual(geom.rowHeight);
 });
+
+// The chevron is absolutely positioned inside the select, so its clearance is
+// reserved with right padding rather than by flex flow the way upstream's
+// caption label does it. Over-reserve and the controls crowd the nav buttons
+// until they nearly touch — 2px of gap at pr-6, against the 6px that separates
+// the two controls from each other. Assert the caption breathes evenly.
+test("dropdown caption does not crowd the nav buttons", async ({ page }) => {
+  await page.goto("/x/calendar/dropdown");
+
+  const gaps = await page.evaluate(() => {
+    const r = (el: Element) => el.getBoundingClientRect();
+    const wraps = [...document.querySelectorAll("[data-slot=native-select-wrapper]")];
+    const prev = document.querySelector("[data-gsxui-calendar-prev]")!;
+    const next = document.querySelector("[data-gsxui-calendar-next]")!;
+    return {
+      beforeFirst: Math.round(r(wraps[0]).left - r(prev).right),
+      between: Math.round(r(wraps[1]).left - r(wraps[0]).right),
+      afterLast: Math.round(r(next).left - r(wraps[wraps.length - 1]).right),
+    };
+  });
+
+  // gap-1.5 between the controls is the reference spacing; the outer gaps must
+  // be at least as generous, and equal to each other.
+  expect(gaps.beforeFirst).toBeGreaterThanOrEqual(gaps.between);
+  expect(gaps.afterLast).toBeGreaterThanOrEqual(gaps.between);
+  expect(gaps.beforeFirst).toBe(gaps.afterLast);
+});

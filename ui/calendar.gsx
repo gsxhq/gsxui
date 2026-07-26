@@ -215,8 +215,8 @@ const calendarDropdownsClass = "flex h-(--cell-size) w-full items-center justify
 // the chevron drops to `size-3.5` per new-york-v4's own `caption_label`
 // dropdown arm (source map §2).
 const calendarDropdownRootClass = "relative rounded-md border border-input has-focus:border-ring has-focus:ring-3 has-focus:ring-ring/50" +
-	" [&>select]:h-6 [&>select]:rounded-none [&>select]:border-0 [&>select]:bg-transparent [&>select]:pl-1.5 [&>select]:pr-6 [&>select]:focus-visible:border-transparent [&>select]:focus-visible:ring-0 [&>select]:dark:bg-transparent [&>select]:dark:hover:bg-transparent" +
-	" [&>svg]:size-3.5 [&>svg]:right-1.5"
+	" [&>select]:h-6 [&>select]:rounded-none [&>select]:border-0 [&>select]:bg-transparent [&>select]:pl-1.5 [&>select]:pr-5 [&>select]:focus-visible:border-transparent [&>select]:focus-visible:ring-0 [&>select]:dark:bg-transparent [&>select]:dark:hover:bg-transparent" +
+	" [&>svg]:size-3.5 [&>svg]:right-1"
 
 // calendarMonthNames are the twelve month names for the dropdown
 // captionLayout's month <select>, matching upstream's own default
