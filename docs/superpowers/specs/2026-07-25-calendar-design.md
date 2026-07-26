@@ -30,13 +30,17 @@ model is good and we take four things from it:
 - **ISO date strings as the DOM state format.** `data-…-selected="2026-07-25"`
   and friends. Server-renderable, timezone-unambiguous, and every visual
   state derives from them.
-- **UTC-only date arithmetic.** `Date.UTC(...)` throughout. Local-midnight
-  arithmetic is where off-by-one-day bugs breed.
+- **UTC-only date arithmetic.** Local-midnight arithmetic is where
+  off-by-one-day bugs breed. The JavaScript side uses one exact-year UTC
+  constructor built from `setUTCFullYear`, not `Date.UTC(year, ...)`:
+  ECMAScript deliberately remaps numeric years 0–99 to 1900–1999, while Go's
+  `time.Time` represents those years literally.
 - **Range hover preview as DOM state.** Hovering sets a `hover` attribute;
   the renderer computes the preview range from it and swaps the ends if the
   hover precedes the start. The two-click commit machine is the same shape.
-- **Form `reset` handling** that clears the bound inputs and returns the view
-  to today — `ui/combobox.js` already does this, so it is house style.
+- **Form `reset` handling** that restores the server-rendered values and
+  returns the view to today — `ui/combobox.js` already reflects native reset
+  state back into its visible control, so this is house style.
 
 What we do not take: classes emitted from JavaScript, `innerHTML +=` in a
 loop, a full grid rebuild on every `mouseover`, an Alpine dependency for the
@@ -100,7 +104,7 @@ react-day-picker needs a component reference, and has no gsx equivalent).
 | `mode` | `single` (default), `range`, `multiple` |
 | `selected` | `[]time.Time` — one entry for single, N for multiple |
 | `from`, `to` | range ends, `range` mode only |
-| `month` | a `time.Time` whose year and month select the displayed grid; the day is ignored. Defaults to the month of the first selection, else today |
+| `month` | a `time.Time` whose year and month select the displayed grid; the day is ignored. Defaults to `from` in range mode, else the first `selected` date, else today |
 | `weekStartsOn` | `time.Weekday`, default Sunday |
 | `showOutsideDays` | default true |
 | `captionLayout` | `label` (default) or `dropdown` |
@@ -140,15 +144,30 @@ Per-cell state, all set by Go on first paint and by JS thereafter:
 `data-date`, `data-outside`, `data-today`, `data-selected`,
 `data-range-start`, `data-range-middle`, `data-range-end`, `data-disabled`.
 
-With `name` set, a hidden input carries the ISO value — the same bridge
-`select` and `combobox` use. In `range` mode a second input takes
-`name + "-to"`. Form `reset` clears them and returns the view to today.
+With `name` set, hidden inputs carry the ISO value — the same bridge `select`
+and `combobox` use. Single mode renders one input. Range mode renders a
+`name` / `name + "-to"` pair. Multiple mode renders one input per selected
+date, all with the same `name`, which is the native form representation of a
+multi-valued field. JavaScript may create and remove these hidden form
+controls as the selection changes; the fixed-DOM rule applies to the 42 day
+cells, whose identity preserves focus, not to unrelated form bridge nodes.
+
+Form `reset` restores the server-rendered selection values, clears live and
+sticky focus bookkeeping, and returns the displayed view to the client's
+current month.
 
 **Hook attributes are namespaced `data-gsxui-calendar-*`**, per the Batch B
 collision. `ui/gsxui.js` dispatches to every handler whose selector matches,
-regardless of module, so a shared prefix silently runs two components'
-handlers on one event. The selector-disjointness invariant in
-`jstest/specs/invariants.spec.ts` now enforces this.
+regardless of module, so a shared component hook prefix silently runs two
+components' handlers on one event. The selector-disjointness invariant in
+`jstest/specs/invariants.spec.ts` enforces this by default.
+
+Form reset is one reviewed exception: a form composed from both Calendar and
+Combobox intentionally matches both modules' reset handlers, and both must
+run because each owns different descendant state. The exact
+`["calendar.js", "combobox.js"]` / `"reset:false"` pair belongs in
+`allowedOverlaps` with this reason; a mixed-form regression proves both
+components reset correctly together.
 
 ## 5. Keyboard and ARIA
 
@@ -171,7 +190,10 @@ button. Roving tabindex: exactly one day carries `tabindex="0"`.
 Movement that crosses a month boundary navigates the grid and lands focus on
 the target day. Disabled days are focusable but not selectable, per the ARIA
 grid pattern — skipping them strands keyboard users on either side of a
-disabled span.
+disabled span. Consequently, if the one roving `tabindex="0"` target is
+disabled, it uses `aria-disabled="true"` rather than native `disabled`; this
+keeps the grid reachable by Tab even when the first in-month day (or every
+in-month day) is disabled.
 
 ## 6. Timezone
 
@@ -201,8 +223,16 @@ and focus landing.
 clicks, swaps when the second precedes the first, and previews on hover.
 Each emits exactly one `gsxui:change`.
 
+**Review regressions.** The public zero-value month follows the fallback
+order in §3; years below 100 survive a Go → JS navigation round trip without
+the ECMAScript 1900 offset; a disabled initial roving stop is reachable by
+Tab; multiple-mode form data contains every selected date; reset returns the
+view to the client's current month; and a form containing Calendar plus
+Combobox resets both descendants.
+
 The four existing invariants apply automatically once examples are
-registered — including selector disjointness against all 21 other modules.
+registered — including selector disjointness against all 21 other modules,
+subject only to reviewed entries in `allowedOverlaps`.
 
 ## 8. Scope
 
