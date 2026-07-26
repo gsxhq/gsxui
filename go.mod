@@ -6,7 +6,7 @@ require (
 	github.com/gsxhq/gsx v0.0.0-20260724160502-9bb55ae38eec
 	github.com/gsxhq/vite v0.3.2
 	github.com/jackielii/structpages v0.6.6
-	github.com/jackielii/tailwind-merge-go v0.0.0-20260517071107-a44bd10e01e0
+	github.com/jackielii/tailwind-merge-go v0.0.0-20260726184505-8a911ed0cf9a
 )
 
 require (
