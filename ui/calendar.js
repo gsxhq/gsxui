@@ -14,7 +14,7 @@
 // agree; jstest/specs/calendar.spec.ts's "Go and JS agree on …" tests are
 // exactly that agreement, checked by navigating client-side to a month and
 // diffing against the server's own render of that same month.
-import { on } from "./gsxui.js";
+import { on, emit } from "./gsxui.js";
 
 const ROOT = "[data-gsxui-calendar]";
 
@@ -193,9 +193,10 @@ function dayDisabled(date, rules) {
 }
 
 // selection reads the root's server-carried selection (calendar.gsx, Tasks
-// 2-3) — Task 4 only navigates months, it never changes the selection
-// itself (Task 5's job), but every navigated month still has to reflect
-// whatever was selected before the click.
+// 2-3) plus Task 5's own client-only hover-preview attribute. Every
+// navigated month still has to reflect whatever was selected before the
+// click (Task 4), and every repaint after a click/hover has to reflect the
+// selection as it stands right now (Task 5's job).
 function selection(root) {
   return {
     selected: commaList(root.dataset.gsxuiCalendarSelected)
@@ -203,6 +204,11 @@ function selection(root) {
       .filter((d) => d !== null),
     from: parseISO(root.dataset.gsxuiCalendarFrom),
     to: parseISO(root.dataset.gsxuiCalendarTo),
+    // hover is set only while range mode has a from and no to yet (the
+    // in-progress half of the two-click machine) — see the mouseover/
+    // mouseleave handlers below. Never server-rendered, never present
+    // once a real `to` exists.
+    hover: parseISO(root.dataset.gsxuiCalendarHover),
   };
 }
 
@@ -225,7 +231,7 @@ function repaint(root, year, month) {
   const mode = root.dataset.gsxuiCalendarMode || "single";
   const grid = monthGrid(year, month, weekStartsOn);
   const rules = disabledRules(root);
-  const { selected, from, to } = selection(root);
+  const { selected, from, to, hover } = selection(root);
 
   const now = new Date();
   const today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
@@ -255,7 +261,21 @@ function repaint(root, year, month) {
       (mode === "single" || mode === "multiple") && selected.some((s) => sameUTCDay(s, date));
     const rangeStart = mode === "range" && sameUTCDay(from, date);
     const rangeEnd = mode === "range" && sameUTCDay(to, date);
-    const rangeMiddle = mode === "range" && from !== null && to !== null && date > from && date < to;
+    // rangeMiddle uses the real `to` once it's set; while only `from` is set,
+    // it falls back to the hover preview (`other`) so hovering ahead of or
+    // behind `from` both preview correctly — sorted into lo/hi since a hover
+    // can land on either side, unlike the committed from/to pair (always
+    // from <= to by the time both are set — the click handler's own swap).
+    // rangeStart/rangeEnd deliberately stay tied to the real from/to only:
+    // the brief's own instruction is to recompute the MIDDLE markers on
+    // hover, not to relabel the hovered day itself as a start/end.
+    const other = to !== null ? to : hover;
+    const rangeMiddle =
+      mode === "range" &&
+      from !== null &&
+      other !== null &&
+      date > (from < other ? from : other) &&
+      date < (from < other ? other : from);
     const cellSelected = daySelected || rangeStart || rangeMiddle || rangeEnd;
     const selectedSingle = daySelected && !rangeStart && !rangeMiddle && !rangeEnd;
 
@@ -305,6 +325,12 @@ function syncDropdowns(root, year, month) {
 // (year, month), just applied in place instead of rebuilt.
 function goTo(root, year, month) {
   root.dataset.gsxuiCalendarMonth = formatMonth(year, month);
+  // A hover preview left over from before the navigation would otherwise
+  // bleed into the newly-painted month's rangeMiddle computation — clear it
+  // defensively; the mouseleave handler below normally does this, but a
+  // click on prev/next while a preview is live doesn't fire mouseleave on
+  // the root at all (the pointer never actually left it).
+  delete root.dataset.gsxuiCalendarHover;
   repaint(root, year, month);
   updateCaption(root, year, month);
   syncDropdowns(root, year, month);
@@ -347,4 +373,239 @@ on("change", "[data-gsxui-calendar-year-select]", (_event, el) => {
   if (!root) return;
   const { month } = parseMonth(root.dataset.gsxuiCalendarMonth);
   goTo(root, Number(el.value), month);
+});
+
+// --- selection (Task 5) ----------------------------------------------------
+//
+// Three independent state machines, one per mode (source map §7.1's own
+// useSingle/useMulti/useRange, simplified to what the brief's Step 4 spells
+// out verbatim rather than every upstream resetOnSelect/excludeDisabled
+// nuance — those are real props react-day-picker exposes that gsxui's own
+// ui.Calendar never surfaces, so there is no caller-visible knob to wire):
+//
+// - single: replace outright; re-clicking the selected day clears it.
+// - multiple: toggle the clicked day into/out of a sorted list.
+// - range: no from -> set from, clear to; from set, no to -> set to
+//   (swapping if the click precedes from); both set -> start over with a
+//   new from.
+//
+// Each mutator writes ISO strings straight onto the root's own
+// data-gsxui-calendar-selected/-from/-to — the same attributes repaint()
+// already reads via selection() above, so committing a selection is just
+// "write the attribute, then repaint" (Task 4's own goTo shape, minus the
+// month/caption/dropdown/nav-button steps that only apply to navigation).
+// Absent, never empty-string, matching calendar.gsx's own
+// omit-when-unset convention for these same three attributes.
+
+function setSelected(root, list) {
+  if (list.length) root.dataset.gsxuiCalendarSelected = list.join(",");
+  else delete root.dataset.gsxuiCalendarSelected;
+}
+
+// commitSingle: clicking the already-selected day clears the selection;
+// clicking any other day replaces it outright. Returns the new selected list
+// (0 or 1 ISO string) for the gsxui:change detail.
+function commitSingle(root, dateISO) {
+  const current = commaList(root.dataset.gsxuiCalendarSelected);
+  const next = current.length === 1 && current[0] === dateISO ? [] : [dateISO];
+  setSelected(root, next);
+  return next;
+}
+
+// commitMultiple: toggle the clicked day in the comma-separated list, kept
+// sorted — ISO "YYYY-MM-DD" strings sort lexically in date order, so a
+// plain Array#sort is exact date order too, no Date parsing needed.
+function commitMultiple(root, dateISO) {
+  const current = commaList(root.dataset.gsxuiCalendarSelected);
+  const idx = current.indexOf(dateISO);
+  const next = idx === -1 ? [...current, dateISO] : current.filter((d) => d !== dateISO);
+  next.sort();
+  setSelected(root, next);
+  return next;
+}
+
+// commitRange: the two-click machine. Returns { from, to } (to is null while
+// only the first click has landed) for the gsxui:change detail.
+function commitRange(root, dateISO) {
+  const from = root.dataset.gsxuiCalendarFrom || null;
+  const to = root.dataset.gsxuiCalendarTo || null;
+
+  let nextFrom, nextTo;
+  if (from === null) {
+    nextFrom = dateISO;
+    nextTo = null;
+  } else if (to === null) {
+    // Swap if the click precedes `from` — ISO strings compare lexically in
+    // date order, same reasoning as commitMultiple's sort above.
+    if (dateISO < from) {
+      nextFrom = dateISO;
+      nextTo = from;
+    } else {
+      nextFrom = from;
+      nextTo = dateISO;
+    }
+  } else {
+    // Both already set: start over with a new from.
+    nextFrom = dateISO;
+    nextTo = null;
+  }
+
+  root.dataset.gsxuiCalendarFrom = nextFrom;
+  if (nextTo !== null) root.dataset.gsxuiCalendarTo = nextTo;
+  else delete root.dataset.gsxuiCalendarTo;
+  return { from: nextFrom, to: nextTo };
+}
+
+// syncHiddenInputs mirrors calendar.gsx's own showHiddenSingle/-From/-To:
+// a plain <input type="hidden" name={name}> for single/multiple (carrying
+// the FIRST selected date, same as the server — calendar.gsx's own
+// showHiddenSingle reads selected[0], not the whole list, even in multiple
+// mode), and a name/name+"-to" pair for range. Each input only exists in the
+// DOM at all when the caller passed `name` (and, per calendar.gsx's own
+// showHidden* guards, only once there's something to put in it) — Task 5
+// never creates one; if none was server-rendered there is nothing to sync,
+// same "never creates or destroys" discipline the day cells themselves are
+// held to.
+function syncHiddenInputs(root, mode, selected, from, to) {
+  const inputs = root.querySelectorAll('input[type="hidden"]');
+  if (!inputs.length) return;
+  if (mode === "range") {
+    for (const input of inputs) {
+      if (input.name.endsWith("-to")) input.value = to ?? "";
+      else input.value = from ?? "";
+    }
+  } else {
+    inputs[0].value = selected[0] ?? "";
+  }
+}
+
+function currentMonth(root) {
+  return parseMonth(root.dataset.gsxuiCalendarMonth);
+}
+
+on("click", "[data-gsxui-calendar-day]", (_event, el) => {
+  // Disabled days ignore the click entirely and emit nothing. Real browsers
+  // never dispatch "click" on a native-disabled button in the first place
+  // (repaint() sets button.disabled = disabled for exactly this reason) —
+  // this check is the defense-in-depth twin of that, not the only thing
+  // standing between a disabled day and a selection.
+  if (el.disabled) return;
+  const root = el.closest(ROOT);
+  if (!root) return;
+  const mode = root.dataset.gsxuiCalendarMode || "single";
+  const dateISO = el.dataset.date;
+
+  let detail;
+  if (mode === "multiple") {
+    const selected = commitMultiple(root, dateISO);
+    syncHiddenInputs(root, mode, selected, null, null);
+    detail = { mode: "multiple", selected };
+  } else if (mode === "range") {
+    const { from, to } = commitRange(root, dateISO);
+    syncHiddenInputs(root, mode, [], from, to);
+    detail = { mode: "range", from, to };
+  } else {
+    const selected = commitSingle(root, dateISO);
+    syncHiddenInputs(root, mode, selected, null, null);
+    detail = { mode: "single", selected };
+  }
+
+  // A committed click always supersedes whatever hover preview was live —
+  // clear it before repainting so the just-committed from/to (not a stale
+  // preview) drives this repaint's rangeMiddle.
+  delete root.dataset.gsxuiCalendarHover;
+  const { year, month } = currentMonth(root);
+  repaint(root, year, month);
+  emit(root, "gsxui:change", detail);
+});
+
+// --- range hover preview (range mode only, while from is set and to is not)
+
+on("mouseover", "[data-gsxui-calendar-day]", (_event, el) => {
+  const root = el.closest(ROOT);
+  if (!root) return;
+  const mode = root.dataset.gsxuiCalendarMode || "single";
+  if (mode !== "range") return;
+  const from = root.dataset.gsxuiCalendarFrom;
+  const to = root.dataset.gsxuiCalendarTo;
+  if (!from || to) return;
+  const dateISO = el.dataset.date;
+  if (root.dataset.gsxuiCalendarHover === dateISO) return;
+  root.dataset.gsxuiCalendarHover = dateISO;
+  const { year, month } = currentMonth(root);
+  repaint(root, year, month);
+});
+
+// mouseleave doesn't bubble — registered with { capture: true } per
+// ui/gsxui.js's own header comment on exactly this case. Delegation via
+// closest() still matches every mouseleave fired on any descendant of the
+// root (each day button fires its own mouseleave when the pointer moves to
+// a DIFFERENT day, since it leaves that button specifically even though it
+// never leaves the root) — event.target !== root filters those out, the
+// same guard ui/dialog.js's own backdrop-click handler uses for an
+// analogous "only when it's really this element" check.
+on(
+  "mouseleave",
+  ROOT,
+  (event, root) => {
+    if (event.target !== root) return;
+    if (!("gsxuiCalendarHover" in root.dataset)) return;
+    delete root.dataset.gsxuiCalendarHover;
+    const { year, month } = currentMonth(root);
+    repaint(root, year, month);
+  },
+  { capture: true },
+);
+
+// --- form reset (ui/combobox.js's own reflectFromBridge shape) -------------
+//
+// A native <form>.reset() has nothing to revert here — data-gsxui-calendar-*
+// attributes aren't form-control state a browser knows how to snapshot the
+// way it does an <input>'s defaultValue, so Task 5 keeps its own snapshot:
+// captureDefaults below runs once per root at module load (the same "walk
+// every root once at import time" shape ui/combobox.js's own init() loop
+// uses), before any click has had a chance to mutate it.
+const defaults = new WeakMap();
+
+function captureDefaults(root) {
+  if (defaults.has(root)) return;
+  defaults.set(root, {
+    selected: root.dataset.gsxuiCalendarSelected || "",
+    from: root.dataset.gsxuiCalendarFrom || "",
+    to: root.dataset.gsxuiCalendarTo || "",
+  });
+}
+
+for (const root of document.querySelectorAll(ROOT)) captureDefaults(root);
+
+// Scoped to a form that actually contains a calendar (`:has()`), not a bare
+// "form" — ui/combobox.js's own reset handler already claims plain "form"
+// for this exact (type, capture) pair, and gsxui.js's registry dispatches
+// to EVERY handler whose selector matches a given element, so two modules
+// both claiming literal "form" would double-fire on ANY form's reset,
+// combobox or not (jstest/specs/invariants.spec.ts's own Invariant 4 — the
+// same hook-prefix-collision defect class that shipped in Tier 4 Batch B
+// between dropdown.js and context-menu.js, caught here for "reset" instead
+// of "click"). Scoping to :has([data-gsxui-calendar]) keeps the two modules
+// disjoint on every existing example page — none combine a calendar and a
+// combobox/input inside one shared <form> — while still matching the form
+// this handler actually needs.
+on("reset", "form:has([data-gsxui-calendar])", (_event, form) => {
+  for (const root of form.querySelectorAll(ROOT)) {
+    const snapshot = defaults.get(root);
+    if (!snapshot) continue;
+
+    if (snapshot.selected) root.dataset.gsxuiCalendarSelected = snapshot.selected;
+    else delete root.dataset.gsxuiCalendarSelected;
+    if (snapshot.from) root.dataset.gsxuiCalendarFrom = snapshot.from;
+    else delete root.dataset.gsxuiCalendarFrom;
+    if (snapshot.to) root.dataset.gsxuiCalendarTo = snapshot.to;
+    else delete root.dataset.gsxuiCalendarTo;
+    delete root.dataset.gsxuiCalendarHover;
+
+    const mode = root.dataset.gsxuiCalendarMode || "single";
+    syncHiddenInputs(root, mode, commaList(snapshot.selected), snapshot.from || null, snapshot.to || null);
+    const { year, month } = currentMonth(root);
+    repaint(root, year, month);
+  }
 });

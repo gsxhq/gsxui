@@ -77,4 +77,41 @@ func init() {
 			return examplecalendar.LoadedRange(month)
 		},
 	})
+	Register("calendar", Example{
+		Name:       "range",
+		Title:      "Range",
+		Node:       examplecalendar.Range(examplecalendar.RangeDefaultMonth),
+		SourcePath: "calendar/range.gsx",
+		// Query mirrors basic's own hook — Task 5's browser tests don't use
+		// it directly (they click through the two-click range machine
+		// starting from RangeDefaultMonth), but keeping the same ?month=
+		// override every other example carries means a later task can add a
+		// Go/JS agreement test for range selection without touching this
+		// file again.
+		Query: func(q url.Values) gsx.Node {
+			month := examplecalendar.RangeDefaultMonth
+			if v := q.Get("month"); v != "" {
+				if t, err := time.Parse("2006-01", v); err == nil {
+					month = t
+				}
+			}
+			return examplecalendar.Range(month)
+		},
+	})
+	Register("calendar", Example{
+		Name:       "multiple",
+		Title:      "Multiple",
+		Node:       examplecalendar.Multiple(examplecalendar.MultipleDefaultMonth),
+		SourcePath: "calendar/multiple.gsx",
+		// Same reason as range's own Query hook above.
+		Query: func(q url.Values) gsx.Node {
+			month := examplecalendar.MultipleDefaultMonth
+			if v := q.Get("month"); v != "" {
+				if t, err := time.Parse("2006-01", v); err == nil {
+					month = t
+				}
+			}
+			return examplecalendar.Multiple(month)
+		},
+	})
 }

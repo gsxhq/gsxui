@@ -4,6 +4,8 @@ const BASIC = "/x/calendar/basic";
 const BOUNDED = "/x/calendar/bounded";
 const LOADED = "/x/calendar/loaded";
 const LOADED_RANGE = "/x/calendar/loadedrange";
+const RANGE = "/x/calendar/range";
+const MULTIPLE = "/x/calendar/multiple";
 
 // The grid's 42 data-date values, in DOM order.
 async function gridDates(page: import("@playwright/test").Page) {
@@ -265,4 +267,189 @@ test("prev is disabled at the lower bound from the start and stays a no-op", asy
   // never happens.
   await prev.click({ force: true });
   await expect(root).toHaveAttribute("data-gsxui-calendar-month", "2026-01");
+});
+
+// --- Task 5: selection behavior ---------------------------------------------
+//
+// Both the <td role="gridcell"> and its <button data-gsxui-calendar-day>
+// carry their own data-date (calendar.gsx and calendar.js's own repaint
+// agree on that split — see gridCells() above), so a bare
+// `[data-date="…"]` locator resolves to TWO elements and trips Playwright's
+// strict mode the moment an assertion runs against it. cellFor/dayFor scope
+// to whichever one actually owns the attribute under test: aria-selected/
+// data-selected live on the cell, everything else (click target,
+// data-range-*, data-selected-single, disabled) lives on the button.
+function cellFor(page: import("@playwright/test").Page, iso: string) {
+  return page.locator(`td[data-date="${iso}"]`);
+}
+function dayFor(page: import("@playwright/test").Page, iso: string) {
+  return page.locator(`[data-gsxui-calendar-day][data-date="${iso}"]`);
+}
+
+// listenForChanges wires up the same window.__changes collection every test
+// below reads from — a bare gsxui:change listener on the document, since the
+// event bubbles (ui/gsxui.js's own emit()) all the way up from the root.
+async function listenForChanges(page: import("@playwright/test").Page) {
+  await page.evaluate(() => {
+    (window as any).__changes = [];
+    document.addEventListener("gsxui:change", (e) =>
+      (window as any).__changes.push((e as CustomEvent).detail),
+    );
+  });
+}
+
+async function changes(page: import("@playwright/test").Page) {
+  return page.evaluate(() => (window as any).__changes);
+}
+
+test("single mode replaces the selection and emits once", async ({ page }) => {
+  await page.goto(BASIC);
+  await listenForChanges(page);
+
+  await dayFor(page, "2026-01-15").click();
+  await expect(cellFor(page, "2026-01-15")).toHaveAttribute("aria-selected", "true");
+
+  await dayFor(page, "2026-01-20").click();
+  await expect(cellFor(page, "2026-01-15")).toHaveAttribute("aria-selected", "false");
+  await expect(cellFor(page, "2026-01-20")).toHaveAttribute("aria-selected", "true");
+
+  const events = await changes(page);
+  expect(events).toHaveLength(2);
+  expect(events[1]).toEqual({ mode: "single", selected: ["2026-01-20"] });
+
+  // Re-clicking the now-selected day clears it outright (single mode's own
+  // "clicking the already-selected day clears the selection" rule) — a
+  // third click the brief's own test doesn't cover, added here because
+  // without it a commitSingle that always REPLACED (never cleared) would
+  // still satisfy every assertion above.
+  await dayFor(page, "2026-01-20").click();
+  await expect(cellFor(page, "2026-01-20")).toHaveAttribute("aria-selected", "false");
+  expect(await changes(page)).toHaveLength(3);
+  expect((await changes(page))[2]).toEqual({ mode: "single", selected: [] });
+});
+
+test("multiple mode toggles days", async ({ page }) => {
+  await page.goto(MULTIPLE);
+  await listenForChanges(page);
+
+  await dayFor(page, "2026-01-05").click();
+  await dayFor(page, "2026-01-09").click();
+  expect(await page.$$eval('[aria-selected="true"]', (e) => e.length)).toBe(2);
+
+  await dayFor(page, "2026-01-05").click();
+  expect(await page.$$eval('[aria-selected="true"]', (e) => e.length)).toBe(1);
+  await expect(cellFor(page, "2026-01-09")).toHaveAttribute("aria-selected", "true");
+
+  // The toggle-off left the OTHER day selected, sorted, not just "count
+  // dropped by one" — a commitMultiple that removed the wrong entry (e.g.
+  // always dropping the first list element) would still pass the length
+  // assertions above.
+  const events = await changes(page);
+  expect(events).toHaveLength(3);
+  expect(events[2]).toEqual({ mode: "multiple", selected: ["2026-01-09"] });
+});
+
+test("range takes two clicks and swaps when the second precedes the first", async ({ page }) => {
+  await page.goto(RANGE);
+  const root = page.locator("[data-gsxui-calendar]");
+
+  await dayFor(page, "2026-01-20").click();
+  await expect(root).toHaveAttribute("data-gsxui-calendar-from", "2026-01-20");
+  await expect(root).not.toHaveAttribute("data-gsxui-calendar-to", /.*/);
+
+  await dayFor(page, "2026-01-15").click();
+  await expect(root).toHaveAttribute("data-gsxui-calendar-from", "2026-01-15");
+  await expect(root).toHaveAttribute("data-gsxui-calendar-to", "2026-01-20");
+  await expect(dayFor(page, "2026-01-17")).toHaveAttribute("data-range-middle", "true");
+  // The two endpoints themselves are NOT the middle — rangeStart/rangeEnd
+  // own the boundary days instead; a rangeMiddle computed as a closed
+  // interval (>= / <=, not > / <) would also mark these true.
+  await expect(dayFor(page, "2026-01-15")).toHaveAttribute("data-range-middle", "false");
+  await expect(dayFor(page, "2026-01-20")).toHaveAttribute("data-range-middle", "false");
+  await expect(dayFor(page, "2026-01-15")).toHaveAttribute("data-range-start", "true");
+  await expect(dayFor(page, "2026-01-20")).toHaveAttribute("data-range-end", "true");
+});
+
+test("range previews on hover while only the start is set", async ({ page }) => {
+  await page.goto(RANGE);
+
+  await dayFor(page, "2026-01-10").click();
+  await dayFor(page, "2026-01-14").hover();
+  await expect(dayFor(page, "2026-01-12")).toHaveAttribute("data-range-middle", "true");
+
+  // Hovering elsewhere moves the preview rather than accumulating it.
+  await dayFor(page, "2026-01-11").hover();
+  await expect(dayFor(page, "2026-01-12")).toHaveAttribute("data-range-middle", "false");
+
+  // Leaving the whole calendar clears the preview entirely — re-hovering
+  // 2026-01-14 after a mouseleave should reproduce the same preview as the
+  // very first hover, not leave 2026-01-12 stuck in whatever state the
+  // in-between hover left it in.
+  await dayFor(page, "2026-01-14").hover();
+  await page.mouse.move(0, 0);
+  await expect(dayFor(page, "2026-01-12")).toHaveAttribute("data-range-middle", "false");
+
+  // Hovering never emits gsxui:change — only a committed click does.
+  await listenForChanges(page);
+  await dayFor(page, "2026-01-14").hover();
+  await dayFor(page, "2026-01-11").hover();
+  expect(await changes(page)).toHaveLength(0);
+});
+
+// Ambiguity resolution (per the task-5 brief's own note): rather than
+// fabricating a disabled day on BASIC via evaluate() and clicking it with
+// force:true, this exercises a day LOADED already disables server-side
+// (2026-01-20 is in Loaded's own disabledDates — see calendar/loaded.gsx) —
+// a test that fabricates the state it then checks proves less than one that
+// exercises the real render.
+//
+// The next/prev round trip before clicking is load-bearing, not decoration:
+// on a bare page load, 2026-01-20's disabled <button> attribute comes
+// straight from calendar.gsx's own server render, so a real browser refuses
+// to dispatch "click" on it at all regardless of what ui/calendar.js does —
+// a click attempted against that untouched server HTML can't tell a correct
+// repaint() apart from one that forgot `button.disabled = disabled`, since
+// repaint() never even runs. Forcing one live repaint (Task 4's own
+// "exercise real JS, not just the server's initial render" discipline) means
+// the disabled state under test is JS-computed, so the assertion actually
+// depends on ui/calendar.js getting it right.
+test("a disabled day cannot be selected", async ({ page }) => {
+  await page.goto(LOADED);
+  await page.click("[data-gsxui-calendar-next]");
+  await page.click("[data-gsxui-calendar-prev]");
+  await expect(page.locator("[data-gsxui-calendar]")).toHaveAttribute(
+    "data-gsxui-calendar-month",
+    "2026-01",
+  );
+  await listenForChanges(page);
+
+  await expect(cellFor(page, "2026-01-20")).toHaveAttribute("aria-selected", "false");
+  await expect(dayFor(page, "2026-01-20")).toBeDisabled();
+
+  // force: true — Playwright's own actionability check refuses to click a
+  // genuinely disabled button; the point of this test is that even an
+  // attempted click changes nothing, not that Playwright politely declines.
+  await dayFor(page, "2026-01-20").click({ force: true });
+
+  await expect(cellFor(page, "2026-01-20")).toHaveAttribute("aria-selected", "false");
+  expect(await changes(page)).toHaveLength(0);
+});
+
+test("form reset clears the selection and the hidden input", async ({ page }) => {
+  await page.goto(BASIC);
+  await dayFor(page, "2026-01-15").click();
+  await expect(cellFor(page, "2026-01-15")).toHaveAttribute("aria-selected", "true");
+
+  await page.evaluate(() => {
+    const root = document.querySelector("[data-gsxui-calendar]")!;
+    const form = document.createElement("form");
+    root.parentNode!.insertBefore(form, root);
+    form.appendChild(root);
+    form.reset();
+  });
+  await expect(cellFor(page, "2026-01-15")).toHaveAttribute("aria-selected", "false");
+  await expect(page.locator("[data-gsxui-calendar]")).not.toHaveAttribute(
+    "data-gsxui-calendar-selected",
+    /.*/,
+  );
 });
