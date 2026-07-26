@@ -520,3 +520,167 @@ test("form reset restores a calendar added after the page's own initial load", a
   await expect(addedCell).toHaveAttribute("aria-selected", "false");
   await expect(addedInput).toHaveValue("");
 });
+
+// --- Task 6: keyboard grid and today reconciliation -------------------------
+//
+// document.activeElement is the one thing no locator search can stand in
+// for: several tests below exist specifically to discover WHICH day ended
+// up holding focus after a key press, not to assert a guessed one already
+// has it.
+async function focusedDate(page: import("@playwright/test").Page) {
+  return page.evaluate(() => document.activeElement?.getAttribute("data-date") ?? null);
+}
+
+// The brief's own selectors here are bare `[data-date="…"]`, which — same
+// strict-mode ambiguity as every Task 5 test above — resolve to both a
+// `<td>` and a `<button>` and throw the moment Playwright tries to act on
+// them. dayFor is the button half (the one that's actually focusable), used
+// throughout in place of the brief's bare selector.
+test("arrows move by day and by week", async ({ page }) => {
+  await page.goto(BASIC);
+  await dayFor(page, "2026-01-15").click();
+  await dayFor(page, "2026-01-15").focus();
+
+  await page.keyboard.press("ArrowRight");
+  expect(await focusedDate(page)).toBe("2026-01-16");
+
+  await page.keyboard.press("ArrowLeft");
+  expect(await focusedDate(page)).toBe("2026-01-15");
+
+  await page.keyboard.press("ArrowDown");
+  expect(await focusedDate(page)).toBe("2026-01-22");
+
+  await page.keyboard.press("ArrowUp");
+  expect(await focusedDate(page)).toBe("2026-01-15");
+});
+
+test("Home and End go to the bounds of the focused week", async ({ page }) => {
+  await page.goto(BASIC);
+  await dayFor(page, "2026-01-15").focus(); // a Thursday
+
+  await page.keyboard.press("Home");
+  expect(await focusedDate(page)).toBe("2026-01-11"); // Sunday
+
+  await page.keyboard.press("End");
+  expect(await focusedDate(page)).toBe("2026-01-17"); // Saturday
+});
+
+test("PageUp and PageDown move by month, with Shift by year", async ({ page }) => {
+  await page.goto(BASIC);
+  await dayFor(page, "2026-01-15").focus();
+
+  await page.keyboard.press("PageDown");
+  expect(await focusedDate(page)).toBe("2026-02-15");
+
+  await page.keyboard.press("PageUp");
+  expect(await focusedDate(page)).toBe("2026-01-15");
+
+  await page.keyboard.press("Shift+PageDown");
+  expect(await focusedDate(page)).toBe("2027-01-15");
+});
+
+test("arrowing past the month edge navigates and keeps focus on the target", async ({ page }) => {
+  await page.goto(BASIC);
+  await dayFor(page, "2026-01-31").focus();
+
+  await page.keyboard.press("ArrowRight");
+  expect(await focusedDate(page)).toBe("2026-02-01");
+  await expect(page.locator("[data-gsxui-calendar]")).toHaveAttribute(
+    "data-gsxui-calendar-month",
+    "2026-02",
+  );
+});
+
+test("Enter and Space select the focused day", async ({ page }) => {
+  await page.goto(BASIC);
+  await dayFor(page, "2026-01-15").focus();
+  await page.keyboard.press("Enter");
+  await expect(cellFor(page, "2026-01-15")).toHaveAttribute("aria-selected", "true");
+
+  await dayFor(page, "2026-01-16").focus();
+  await page.keyboard.press(" ");
+  await expect(cellFor(page, "2026-01-16")).toHaveAttribute("aria-selected", "true");
+});
+
+test("exactly one day is tabbable at any time", async ({ page }) => {
+  await page.goto(BASIC);
+  const count = () => page.$$eval('[data-gsxui-calendar-day][tabindex="0"]', (e) => e.length);
+  expect(await count()).toBe(1);
+
+  await dayFor(page, "2026-01-15").focus();
+  await page.keyboard.press("ArrowRight");
+  expect(await count()).toBe(1);
+});
+
+// Source map §7.2/§8 finding 5, the first of the two behaviors the Task 6
+// brief flags as easy to miss: a disabled day carries the NATIVE `disabled`
+// attribute only while it is not the live-focused day; the moment it becomes
+// the focused day it degrades to aria-disabled instead, so focus is never
+// yanked back out of the grid. Loaded's own 2026-01-20 is disabled
+// server-side (disabledDates, calendar/loaded.gsx) — arrowing onto it from
+// the adjacent, non-disabled 2026-01-19 (a Monday; 2026-01-20's own
+// Saturday-weekday rule and disabledDates entry don't touch it) is what
+// actually puts the split under test, not fabricating disabled state via
+// evaluate(). The round trip before focusing is the same "force one real
+// repaint" discipline the pre-existing "a disabled day cannot be selected"
+// test above already uses.
+test("a disabled day keeps focus (aria-disabled, not native) and Enter is a no-op on it", async ({
+  page,
+}) => {
+  await page.goto(LOADED);
+  await page.click("[data-gsxui-calendar-next]");
+  await page.click("[data-gsxui-calendar-prev]");
+  await expect(page.locator("[data-gsxui-calendar]")).toHaveAttribute(
+    "data-gsxui-calendar-month",
+    "2026-01",
+  );
+  await listenForChanges(page);
+
+  await dayFor(page, "2026-01-19").focus();
+  await page.keyboard.press("ArrowRight");
+  expect(await focusedDate(page)).toBe("2026-01-20");
+
+  // Not .not.toBeDisabled() — Playwright's own accessibility-tree-backed
+  // "disabled" state treats aria-disabled="true" as disabled too (correctly:
+  // that is the entire point of the attribute), so that matcher can't tell
+  // native disabled apart from the aria-disabled degradation this test
+  // exists to prove. toHaveJSProperty reads the raw DOM `disabled` property
+  // directly instead.
+  const day = dayFor(page, "2026-01-20");
+  await expect(day).toHaveJSProperty("disabled", false);
+  await expect(day).toHaveAttribute("aria-disabled", "true");
+
+  await page.keyboard.press("Enter");
+  await expect(cellFor(page, "2026-01-20")).toHaveAttribute("aria-selected", "false");
+  expect(await changes(page)).toHaveLength(0);
+});
+
+// The second of the two behaviors the Task 6 brief flags as easy to miss:
+// upstream lands focus imperatively (a ref.current?.focus() call, source map
+// §3/§7.3) — moving tabindex alone would leave the browser's own focus
+// wherever it already was. basic.gsx is pinned to January 2026 (Basic's own
+// DefaultMonth, calendar/basic.gsx); navigating to the client's real current
+// month (whatever that is when this test runs) through the public prev/next
+// controls only, per the Task 6 brief's own ambiguity resolution, rather
+// than reaching for a private hook — is what actually exercises the client
+// path, since basic.gsx's own server render can never contain the real
+// "today" for a fixed, unrelated month.
+test("today is marked from the client's date", async ({ page }) => {
+  await page.goto(BASIC);
+
+  const { today, delta } = await page.evaluate(() => {
+    const now = new Date();
+    const iso = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    // Months from January 2026 to the client's current month.
+    const months = (now.getFullYear() - 2026) * 12 + now.getMonth();
+    return { today: iso, delta: months };
+  });
+
+  const button = delta >= 0 ? "[data-gsxui-calendar-next]" : "[data-gsxui-calendar-prev]";
+  for (let i = 0; i < Math.abs(delta); i++) await page.click(button);
+
+  const marked = await page.$$eval("[data-today]", (els) =>
+    els.map((el) => el.getAttribute("data-date")),
+  );
+  expect(marked).toEqual([today]);
+});

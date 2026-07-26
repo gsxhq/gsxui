@@ -220,6 +220,23 @@ function toggleAttr(el, name, present) {
   else el.removeAttribute(name);
 }
 
+// clientToday returns the CLIENT's own local calendar date, as a
+// UTC-midnight Date so it compares directly against the UTC-midnight grid
+// dates monthGrid produces (sameUTCDay below). Deliberately reads the local
+// getters (getFullYear/getMonth/getDate), not the UTC ones — calendar.gsx's
+// own doc comment on the Calendar component is explicit that its "today" is
+// computed in the SERVER's timezone, and this is "the one place the two
+// implementations may legitimately disagree" (Task 6 brief): a client in a
+// different zone can already be on a different calendar date the instant
+// the page loads. Reading getUTCFullYear/getUTCMonth/getUTCDate off `new
+// Date()` here would silently compute today's date AT UTC, not the client's
+// own local date — a different, also-wrong value that just happens to
+// coincide with the client's local date for clients already in UTC.
+function clientToday() {
+  const now = new Date();
+  return new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+}
+
 // repaint updates every one of the 42 day cells/buttons in place for
 // (year, month) — never adding or removing a cell, never touching a class
 // string. Mirrors calendar.gsx's own per-day computation (outside/today/
@@ -233,17 +250,26 @@ function repaint(root, year, month) {
   const rules = disabledRules(root);
   const { selected, from, to, hover } = selection(root);
 
-  const now = new Date();
-  const today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  const today = clientToday();
+  const focusedISO = currentFocusedDate(root);
 
   const cells = root.querySelectorAll('td[role="gridcell"]');
   const buttons = root.querySelectorAll("[data-gsxui-calendar-day]");
 
-  let focusIdx = -1;
-  for (let i = 0; i < grid.length; i++) {
-    if (grid[i].getUTCFullYear() === year && grid[i].getUTCMonth() === month) {
-      focusIdx = i;
-      break;
+  // The roving tabindex's single tab stop (source map §7.3's
+  // isFocusTarget): the sticky tabStop day if one has ever been set for
+  // this root (ui/toggle-group.js's own setActiveTabStop discipline — stays
+  // where the user left it, even across blur), else calendar.gsx's own
+  // "first day of the displayed month" fallback (firstFocusableIndex),
+  // unchanged from Tasks 1-5.
+  const stickyISO = currentTabStop(root);
+  let focusIdx = stickyISO ? grid.findIndex((d) => iso(d) === stickyISO) : -1;
+  if (focusIdx === -1) {
+    for (let i = 0; i < grid.length; i++) {
+      if (grid[i].getUTCFullYear() === year && grid[i].getUTCMonth() === month) {
+        focusIdx = i;
+        break;
+      }
     }
   }
 
@@ -256,6 +282,7 @@ function repaint(root, year, month) {
     const outside = date.getUTCFullYear() !== year || date.getUTCMonth() !== month;
     const isToday = sameUTCDay(date, today);
     const disabled = dayDisabled(date, rules);
+    const isFocused = focusedISO !== null && dateISO === focusedISO;
 
     const daySelected =
       (mode === "single" || mode === "multiple") && selected.some((s) => sameUTCDay(s, date));
@@ -283,6 +310,11 @@ function repaint(root, year, month) {
     toggleAttr(cell, "data-outside", outside);
     toggleAttr(cell, "data-today", isToday);
     toggleAttr(cell, "data-disabled", disabled);
+    // data-focused drives the button's own group-data-[focused=true]/day:
+    // ring styling (source map §3) via the cell's group/day class — set
+    // only while this day holds LIVE DOM focus (cleared on blur, see the
+    // focusin/focusout handlers below), not the sticky tab-stop day.
+    toggleAttr(cell, "data-focused", isFocused);
     if (cellSelected) cell.setAttribute("data-selected", "true");
     else cell.removeAttribute("data-selected");
     cell.setAttribute("aria-selected", cellSelected ? "true" : "false");
@@ -295,7 +327,19 @@ function repaint(root, year, month) {
     button.setAttribute("data-range-start", rangeStart ? "true" : "false");
     button.setAttribute("data-range-middle", rangeMiddle ? "true" : "false");
     button.setAttribute("data-range-end", rangeEnd ? "true" : "false");
-    button.disabled = disabled;
+    // Source map §7.2/§8 finding 5: a disabled day carries the native
+    // `disabled` attribute only while it is NOT the live-focused day. A
+    // disabled day that IS currently focused degrades to aria-disabled
+    // instead, so focus is never yanked out of the grid — the click
+    // handler below checks aria-disabled explicitly for exactly this case,
+    // since a native-disabled=false button dispatches "click" normally.
+    if (disabled && isFocused) {
+      button.disabled = false;
+      button.setAttribute("aria-disabled", "true");
+    } else {
+      button.disabled = disabled;
+      button.removeAttribute("aria-disabled");
+    }
   }
 }
 
@@ -499,8 +543,14 @@ on("click", "[data-gsxui-calendar-day]", (_event, el) => {
   // never dispatch "click" on a native-disabled button in the first place
   // (repaint() sets button.disabled = disabled for exactly this reason) —
   // this check is the defense-in-depth twin of that, not the only thing
-  // standing between a disabled day and a selection.
-  if (el.disabled) return;
+  // standing between a disabled day and a selection. The aria-disabled
+  // check covers the one case el.disabled can't: a disabled day that
+  // currently holds live focus degrades to aria-disabled instead of
+  // native disabled (source map §7.2/§8 finding 5, repaint() above), so a
+  // real click (or the Enter/Space activation the native <button> element
+  // synthesizes into one) DOES reach this handler for that day and has to
+  // be turned away explicitly.
+  if (el.disabled || el.getAttribute("aria-disabled") === "true") return;
   const root = el.closest(ROOT);
   if (!root) return;
   // A no-op the first time any given root is clicked (captureDefaults
@@ -581,6 +631,175 @@ on(
   { capture: true },
 );
 
+// --- keyboard grid (Task 6) -------------------------------------------------
+//
+// Roving tabindex + arrow-key navigation, ported from source map §7.3
+// (`useFocus.js`, `helpers/{calculateFocusTarget,getFocusableDate,
+// getNextFocus}.js`, `DayPicker.js`'s own `handleDayKeyDown`).
+//
+// Two distinct per-root flags, easy to conflate (source map §7.3's own
+// warning) — kept as two separate WeakMaps rather than one, precisely
+// because they react to different events and drive different attributes:
+//
+// - liveFocused: which day currently holds REAL DOM focus right now,
+//   cleared the moment it blurs. Drives the cell's data-focused (hence the
+//   button's own group-data-[focused=true]/day: ring, source map §3) and
+//   the disabled/aria-disabled split in repaint() above (source map §7.2/
+//   §8 finding 5).
+// - tabStop: the roving-tabindex's single tabindex="0" day. Sticky across
+//   blur — once a day has held focus it stays the sole tab stop until
+//   another one takes over, the same "stays where the user left it"
+//   discipline ui/toggle-group.js's own setActiveTabStop already uses, so
+//   re-tabbing into the grid lands back where the user was, not always the
+//   first day of the month. This is source map §7.3's own `lastFocused`,
+//   simplified: gsxui exposes no controlled `modifiers` prop, so the
+//   "explicit modifiers.focused" priority level above lastFocused never
+//   applies here, and this port does not implement the "selected day" /
+//   "today" fallback levels below lastFocused either — no test exercises
+//   them, and calendar.gsx's own firstFocusableIndex (Tasks 1-5, still the
+//   fallback once tabStop is unset) was already scoped to "first day of
+//   the displayed month" rather than the full upstream priority chain.
+const liveFocused = new WeakMap();
+const tabStop = new WeakMap();
+
+function currentFocusedDate(root) {
+  return liveFocused.get(root) ?? null;
+}
+function currentTabStop(root) {
+  return tabStop.get(root) ?? null;
+}
+
+// addDaysUTC/addMonthsUTC/addYearsUTC port getFocusableDate's own date
+// arithmetic (source map §7.3): day/week moves are exact ±N-day shifts;
+// month/year moves clamp the resulting day-of-month to the last day of the
+// target month (date-fns' own addMonths/addYears semantics — the dateLib
+// getFocusableDate itself delegates to) rather than letting it roll over
+// the way plain Date.UTC(year, month + delta, day) arithmetic would (Jan 31
+// PageDown would otherwise land on Mar 3, not Feb 28).
+function addDaysUTC(date, delta) {
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + delta));
+}
+
+function addMonthsUTC(date, delta) {
+  const targetMonthIndex = date.getUTCMonth() + delta;
+  const lastDay = new Date(Date.UTC(date.getUTCFullYear(), targetMonthIndex + 1, 0)).getUTCDate();
+  return new Date(
+    Date.UTC(date.getUTCFullYear(), targetMonthIndex, Math.min(date.getUTCDate(), lastDay)),
+  );
+}
+
+function addYearsUTC(date, delta) {
+  return addMonthsUTC(date, delta * 12);
+}
+
+function startOfWeekUTC(date, weekStartsOn) {
+  const diff = (date.getUTCDay() - weekStartsOn + 7) % 7;
+  return addDaysUTC(date, -diff);
+}
+
+function endOfWeekUTC(date, weekStartsOn) {
+  return addDaysUTC(startOfWeekUTC(date, weekStartsOn), 6);
+}
+
+// KEY_MOVES ports handleDayKeyDown's own keyMap verbatim (source map §7.3's
+// table). gsxui exposes no rtl/dir prop, so ArrowLeft/ArrowRight always take
+// the table's non-rtl branch. Every key NOT in this map is left completely
+// untouched — no preventDefault, no handling — matching upstream's own `if
+// (keyMap[e.key])` guard; this is also what lets Enter/Space fall through
+// to the native <button> element's own default activation (which
+// synthesizes a "click", handled by the day-click handler above) rather
+// than being reimplemented here.
+const KEY_MOVES = {
+  ArrowLeft: (date, shift) => (shift ? addMonthsUTC(date, -1) : addDaysUTC(date, -1)),
+  ArrowRight: (date, shift) => (shift ? addMonthsUTC(date, 1) : addDaysUTC(date, 1)),
+  ArrowDown: (date, shift) => (shift ? addYearsUTC(date, 1) : addDaysUTC(date, 7)),
+  ArrowUp: (date, shift) => (shift ? addYearsUTC(date, -1) : addDaysUTC(date, -7)),
+  PageDown: (date, shift) => (shift ? addYearsUTC(date, 1) : addMonthsUTC(date, 1)),
+  PageUp: (date, shift) => (shift ? addYearsUTC(date, -1) : addMonthsUTC(date, -1)),
+  Home: (date, _shift, weekStartsOn) => startOfWeekUTC(date, weekStartsOn),
+  End: (date, _shift, weekStartsOn) => endOfWeekUTC(date, weekStartsOn),
+};
+
+// Disabled days deliberately stay IN the roving sequence (ambiguity
+// resolved by the Task 6 brief, a deviation from upstream's own
+// getNextFocus, which recurses past them): arrow keys move onto a disabled
+// day same as any other, and the day-click handler's own aria-disabled
+// check is what keeps Enter/Space on one a no-op. Skipping them here would
+// strand a keyboard user on whichever side of a disabled span they
+// approached from.
+on("keydown", "[data-gsxui-calendar-day]", (event, el) => {
+  const move = KEY_MOVES[event.key];
+  if (!move) return;
+  const root = el.closest(ROOT);
+  if (!root) return;
+  const current = parseISO(el.dataset.date);
+  if (!current) return;
+  event.preventDefault();
+
+  const weekStartsOn = Number(root.dataset.gsxuiCalendarWeekStart ?? "0");
+  const target = move(current, event.shiftKey, weekStartsOn);
+  const targetISO = iso(target);
+
+  // Pre-register the target as this root's live-focused/tab-stop day BEFORE
+  // the repaint below runs, not after — a target that's a disabled day
+  // needs its OWN repaint to already see itself as focused, so it takes the
+  // aria-disabled branch (source map §7.2/§8 finding 5) instead of the
+  // native-disabled one. A native-disabled button cannot receive .focus()
+  // at all; calling it while still native-disabled would silently strand
+  // focus on the day the user started the move from instead of landing it
+  // on the target.
+  liveFocused.set(root, targetISO);
+  tabStop.set(root, targetISO);
+
+  // Crossing a month boundary navigates the grid FIRST (source map §7.3:
+  // moveFocus also calls calendar.goToDay(nextFocus) whenever the resolved
+  // target falls outside the currently-shown month) — goTo's own repaint
+  // both paints the target's own month (so its button exists at all, since
+  // the target's data-date must actually appear among the 42 cells before
+  // the imperative focus() call below can find it) and, since liveFocused/
+  // tabStop are already set above, gets the target's focused/tabindex/
+  // disabled state right in that same pass. Staying within the same month
+  // still needs its own repaint for that second part, hence the else.
+  const { year, month } = currentMonth(root);
+  if (target.getUTCFullYear() !== year || target.getUTCMonth() !== month) {
+    goTo(root, target.getUTCFullYear(), target.getUTCMonth());
+  } else {
+    repaint(root, year, month);
+  }
+
+  // Focus lands imperatively (source map §3/§7.3: upstream calls
+  // ref.current?.focus() whenever a day becomes the focused one — moving
+  // tabindex alone does not move focus).
+  const targetButton = root.querySelector(`[data-gsxui-calendar-day][data-date="${targetISO}"]`);
+  if (targetButton) targetButton.focus();
+});
+
+on("focusin", "[data-gsxui-calendar-day]", (_event, el) => {
+  const root = el.closest(ROOT);
+  if (!root) return;
+  const dateISO = el.dataset.date;
+  liveFocused.set(root, dateISO);
+  tabStop.set(root, dateISO);
+  const { year, month } = currentMonth(root);
+  repaint(root, year, month);
+});
+
+on("focusout", "[data-gsxui-calendar-day]", (_event, el) => {
+  const root = el.closest(ROOT);
+  if (!root) return;
+  // A stale event: this root's live-focused day has already moved on (the
+  // keydown handler's own goTo repaint, when a move crosses a month
+  // boundary, rewrites every button's data-date — including this one —
+  // before the new target is ever focused, so by the time this button's
+  // blur fires its data-date no longer matches what liveFocused still
+  // holds). Nothing to clear in that case; the focusin firing right after
+  // this one, for the new target, will set liveFocused correctly.
+  if (liveFocused.get(root) !== el.dataset.date) return;
+  liveFocused.delete(root);
+  const { year, month } = currentMonth(root);
+  repaint(root, year, month);
+});
+
 // --- form reset (ui/combobox.js's own reflectFromBridge shape) -------------
 //
 // A native <form>.reset() has nothing to revert here — data-gsxui-calendar-*
@@ -633,3 +852,29 @@ on("reset", "form:has([data-gsxui-calendar])", (_event, form) => {
     repaint(root, year, month);
   }
 });
+
+// --- today reconciliation (Task 6) ------------------------------------------
+//
+// calendar.gsx's own doc comment: the server computes "today" in the
+// SERVER's timezone; nothing about a client's own local date is knowable
+// there. repaint() above already recomputes "today" from clientToday() (the
+// client's own clock) on every call it makes — every subsequent navigation,
+// click, hover, or focus change already self-corrects. This loop is what
+// makes that correction land on the FIRST render too, before any of those
+// have to happen: every root already on the page at module load gets one
+// repaint of whatever month it's already showing, so a client already on a
+// different calendar date than the server sees the right "today" marker
+// immediately, not only after its first interaction.
+//
+// Safe to run unconditionally alongside the server's own initial render:
+// every OTHER field repaint() computes (outside/selected/range/disabled/
+// tabindex) is re-derived from the same root data attributes the server
+// itself wrote, and reproduces the server's own values exactly — proven
+// already by jstest/specs/calendar.spec.ts's "loaded survives a next/prev
+// round trip back to its own initial month" test, which diffs a
+// repainted-twice grid against the untouched server render and requires
+// them equal.
+for (const root of document.querySelectorAll(ROOT)) {
+  const { year, month } = currentMonth(root);
+  repaint(root, year, month);
+}
