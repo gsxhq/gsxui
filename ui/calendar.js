@@ -223,15 +223,20 @@ function toggleAttr(el, name, present) {
 // clientToday returns the CLIENT's own local calendar date, as a
 // UTC-midnight Date so it compares directly against the UTC-midnight grid
 // dates monthGrid produces (sameUTCDay below). Deliberately reads the local
-// getters (getFullYear/getMonth/getDate), not the UTC ones — calendar.gsx's
-// own doc comment on the Calendar component is explicit that its "today" is
-// computed in the SERVER's timezone, and this is "the one place the two
-// implementations may legitimately disagree" (Task 6 brief): a client in a
-// different zone can already be on a different calendar date the instant
-// the page loads. Reading getUTCFullYear/getUTCMonth/getUTCDate off `new
-// Date()` here would silently compute today's date AT UTC, not the client's
-// own local date — a different, also-wrong value that just happens to
-// coincide with the client's local date for clients already in UTC.
+// getters (getFullYear/getMonth/getDate), not the UTC ones.
+//
+// Task 6 review, Minor 3: the server's own "today" (calendar.gsx:557,
+// `time.Now().UTC()`) is the UTC calendar date, not "the server's own
+// timezone" — the server has no timezone of its own in this computation at
+// all, it's pinned to UTC unconditionally. The two implementations can
+// still legitimately disagree, just not for the reason an earlier version
+// of this comment claimed: any CLIENT whose local zone isn't UTC can
+// already be on a different calendar date than the UTC one the instant the
+// page loads (e.g. a client west of UTC, still on "yesterday" at 8pm local
+// while UTC has already rolled over to today). Reading
+// getUTCFullYear/getUTCMonth/getUTCDate off `new Date()` here would
+// silently recompute the SAME UTC date the server already used — not a
+// bug exactly, just a no-op that could never reconcile anything.
 function clientToday() {
   const now = new Date();
   return new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
@@ -262,8 +267,30 @@ function repaint(root, year, month) {
   // where the user left it, even across blur), else calendar.gsx's own
   // "first day of the displayed month" fallback (firstFocusableIndex),
   // unchanged from Tasks 1-5.
+  //
+  // Task 6 review, Minor 4: the sticky day is only honored while it's
+  // still INSIDE the displayed month. A day that was the tab stop before a
+  // navigation can end up rendered as an OUTSIDE padding cell of the newly
+  // displayed month (e.g. focus 2026-01-31, then click next on a Monday-
+  // week-start calendar — February's own grid still contains 2026-01-31 as
+  // a greyed leading day) — calendar.gsx's own firstFocusableIndex would
+  // never place tabindex="0" on an outside day for a fresh render of that
+  // month, so honoring a stale sticky value there is a real Go/JS
+  // divergence, not a cosmetic one (tabindex is part of the agreement
+  // tuple gridCells() reads). Deliberately NOT also rejecting a sticky day
+  // for being disabled: calendar.gsx's own firstFocusableIndex doesn't
+  // filter disabled either (Tasks 1-5's already-narrower-than-upstream
+  // scope), and the "a disabled day keeps focus" test above depends on a
+  // day the user just arrowed onto staying the sticky tab stop even though
+  // dayDisabled(day, rules) is true for it.
   const stickyISO = currentTabStop(root);
-  let focusIdx = stickyISO ? grid.findIndex((d) => iso(d) === stickyISO) : -1;
+  let focusIdx = -1;
+  if (stickyISO) {
+    const idx = grid.findIndex((d) => iso(d) === stickyISO);
+    if (idx !== -1 && grid[idx].getUTCFullYear() === year && grid[idx].getUTCMonth() === month) {
+      focusIdx = idx;
+    }
+  }
   if (focusIdx === -1) {
     for (let i = 0; i < grid.length; i++) {
       if (grid[i].getUTCFullYear() === year && grid[i].getUTCMonth() === month) {
@@ -680,9 +707,16 @@ function addDaysUTC(date, delta) {
   return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + delta));
 }
 
+// lastDayOfMonthUTC returns the number of days in (year, month) — day 0 of
+// the FOLLOWING month is always the last day of THIS one, in any calendar
+// arithmetic that normalizes automatically (JS Date.UTC does).
+function lastDayOfMonthUTC(year, month) {
+  return new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+}
+
 function addMonthsUTC(date, delta) {
   const targetMonthIndex = date.getUTCMonth() + delta;
-  const lastDay = new Date(Date.UTC(date.getUTCFullYear(), targetMonthIndex + 1, 0)).getUTCDate();
+  const lastDay = lastDayOfMonthUTC(date.getUTCFullYear(), targetMonthIndex);
   return new Date(
     Date.UTC(date.getUTCFullYear(), targetMonthIndex, Math.min(date.getUTCDate(), lastDay)),
   );
@@ -699,6 +733,29 @@ function startOfWeekUTC(date, weekStartsOn) {
 
 function endOfWeekUTC(date, weekStartsOn) {
   return addDaysUTC(startOfWeekUTC(date, weekStartsOn), 6);
+}
+
+// clampToNavBounds ports getFocusableDate's own clamp-to-navStart/navEnd
+// behavior (source map §7.3: "clamped to navStart/navEnd if the move would
+// cross them") — Task 6 review's Important finding: without this, a
+// keyboard move could carry the displayed month straight past a caller's
+// declared fromYear/toYear range (calendar.gsx's own calendarNavBounds,
+// mirrored client-side by navBounds() above), exactly the defect Task 4's
+// review fixed for the mouse path (syncNavButtons/prev/next's own
+// aria-disabled guard). Only the YEAR can actually go out of bounds here —
+// month is always normalized to 0-11 by every KEY_MOVES entry — so clamping
+// lands on January 1st of fromYear or December <original day, clamped> of
+// toYear, the same day-of-month clamp addMonthsUTC already uses for an
+// end-of-month overflow.
+function clampToNavBounds(date, fromYear, toYear) {
+  const year = date.getUTCFullYear();
+  if (year < fromYear) {
+    return new Date(Date.UTC(fromYear, 0, Math.min(date.getUTCDate(), lastDayOfMonthUTC(fromYear, 0))));
+  }
+  if (year > toYear) {
+    return new Date(Date.UTC(toYear, 11, Math.min(date.getUTCDate(), lastDayOfMonthUTC(toYear, 11))));
+  }
+  return date;
 }
 
 // KEY_MOVES ports handleDayKeyDown's own keyMap verbatim (source map §7.3's
@@ -737,7 +794,15 @@ on("keydown", "[data-gsxui-calendar-day]", (event, el) => {
   event.preventDefault();
 
   const weekStartsOn = Number(root.dataset.gsxuiCalendarWeekStart ?? "0");
-  const target = move(current, event.shiftKey, weekStartsOn);
+  const raw = move(current, event.shiftKey, weekStartsOn);
+  // Task 6 review, Important: clamp to the SAME nav bounds the prev/next
+  // buttons already enforce (navBounds() reads calendar.gsx's own resolved
+  // data-gsxui-calendar-nav-from-year/-to-year) before this move is allowed
+  // to change the displayed month at all — PageDown/Shift+PageDown could
+  // otherwise carry a caller's narrow fromYear/toYear range (bounded.gsx:
+  // fromYear=toYear=2026) straight past its declared bound in one keystroke.
+  const { fromYear, toYear } = navBounds(root);
+  const target = clampToNavBounds(raw, fromYear, toYear);
   const targetISO = iso(target);
 
   // Pre-register the target as this root's live-focused/tab-stop day BEFORE
@@ -855,26 +920,47 @@ on("reset", "form:has([data-gsxui-calendar])", (_event, form) => {
 
 // --- today reconciliation (Task 6) ------------------------------------------
 //
-// calendar.gsx's own doc comment: the server computes "today" in the
-// SERVER's timezone; nothing about a client's own local date is knowable
-// there. repaint() above already recomputes "today" from clientToday() (the
-// client's own clock) on every call it makes — every subsequent navigation,
-// click, hover, or focus change already self-corrects. This loop is what
-// makes that correction land on the FIRST render too, before any of those
-// have to happen: every root already on the page at module load gets one
-// repaint of whatever month it's already showing, so a client already on a
-// different calendar date than the server sees the right "today" marker
-// immediately, not only after its first interaction.
+// repaint() above already recomputes "today" from clientToday() (the
+// client's own local date, Minor 3's corrected doc comment on clientToday()
+// explains what can actually disagree) on every call it makes — every
+// subsequent navigation, click, hover, or focus change already
+// self-corrects. This loop is what makes that correction land on the FIRST
+// render too, before any of those have to happen.
 //
-// Safe to run unconditionally alongside the server's own initial render:
-// every OTHER field repaint() computes (outside/selected/range/disabled/
-// tabindex) is re-derived from the same root data attributes the server
-// itself wrote, and reproduces the server's own values exactly — proven
-// already by jstest/specs/calendar.spec.ts's "loaded survives a next/prev
-// round trip back to its own initial month" test, which diffs a
-// repainted-twice grid against the untouched server render and requires
-// them equal.
+// Task 6 review, CRITICAL finding: an earlier version of this loop called
+// the FULL repaint(root, year, month) here, not just a data-today
+// reconciliation — which repaints every field (outside/selected/range/
+// disabled/tabindex), not just today, for every root on EVERY page at
+// module load, before any test ever interacts with the page. That broke
+// jstest/specs/calendar.spec.ts's own "Go and JS agree" tests without
+// making any of them fail: gridCells() reads only fields repaint() writes,
+// so once the page underneath every "serverCells" snapshot was ALREADY a
+// JS repaint (not the server's own untouched render), every one of those
+// tests degenerated into comparing repaint(root, y, m) against itself on
+// identical inputs — a tautology that can no longer catch monthGrid's two
+// twins (this file's own and calendar.gsx's) diverging, which is this
+// design's single largest named risk. (The safety argument that version's
+// comment made — citing the "loaded survives a next/prev round trip" test
+// as proof repaint() reproduces the server's own render exactly — was
+// circular for the same reason: that test's own "untouched server render"
+// baseline was itself already repainted by this loop.)
+//
+// reconcileToday fixes this by touching ONLY data-today, on the 42 cells
+// of whatever month a root already has server-rendered, leaving every
+// other field (outside/selected/range/disabled/tabindex) exactly as the
+// server wrote it — genuinely untouched, so the agreement tests stay real
+// diffs against a real server render.
+function reconcileToday(root, year, month) {
+  const weekStartsOn = Number(root.dataset.gsxuiCalendarWeekStart ?? "0");
+  const grid = monthGrid(year, month, weekStartsOn);
+  const today = clientToday();
+  const cells = root.querySelectorAll('td[role="gridcell"]');
+  for (let i = 0; i < 42; i++) {
+    toggleAttr(cells[i], "data-today", sameUTCDay(grid[i], today));
+  }
+}
+
 for (const root of document.querySelectorAll(ROOT)) {
   const { year, month } = currentMonth(root);
-  repaint(root, year, month);
+  reconcileToday(root, year, month);
 }

@@ -579,16 +579,66 @@ test("PageUp and PageDown move by month, with Shift by year", async ({ page }) =
   expect(await focusedDate(page)).toBe("2027-01-15");
 });
 
+// Task 6 review, Minor 5: the original version of this test moved
+// ArrowRight from 2026-01-31 to 2026-02-01 — a date already present in
+// BASIC's own January grid as trailing outside-day padding (the grid spans
+// 2025-12-28..2026-02-07). Its focusedDate assertion had no teeth: a
+// mutation that skips the goTo() navigation entirely still let .focus()
+// find and land on that already-rendered padding-day button, so only the
+// SECOND assertion (the month attribute) ever caught anything — disclosed
+// honestly in the Task 6 report's own mutation-4 write-up. Retargeted at
+// Shift+PageDown from 2026-01-31 to 2027-01-31 instead: that date is
+// nowhere in the 42-cell window at the moment the key is pressed, so
+// .focus() can only succeed AFTER a real navigation actually repaints a
+// button carrying that date into existence — the first assertion now means
+// what the test's name claims.
 test("arrowing past the month edge navigates and keeps focus on the target", async ({ page }) => {
   await page.goto(BASIC);
   await dayFor(page, "2026-01-31").focus();
 
-  await page.keyboard.press("ArrowRight");
-  expect(await focusedDate(page)).toBe("2026-02-01");
+  await page.keyboard.press("Shift+PageDown");
+  expect(await focusedDate(page)).toBe("2027-01-31");
   await expect(page.locator("[data-gsxui-calendar]")).toHaveAttribute(
     "data-gsxui-calendar-month",
-    "2026-02",
+    "2027-01",
   );
+});
+
+// Task 6 review, Important: the mouse-path twin of this ("next stops at the
+// declared navigation bound instead of crossing it", above) already
+// enforces fromYear/toYear against prev/next clicks; keyboard month/year
+// moves (PageUp/PageDown, Shift+Page) had no equivalent clamp, so a single
+// Shift+PageDown from Bounded's own January 2026 (fromYear=toYear=2026)
+// could reach 2027-01 in one keystroke — a month the server can never
+// render for this component, and (captionLayout="dropdown" here too) a
+// year <select> left holding a value with no matching <option>, verbatim
+// the defect the mouse-path test above exists to prevent.
+test("keyboard month/year moves stop at the declared navigation bound instead of crossing it", async ({
+  page,
+}) => {
+  await page.goto(BOUNDED);
+  const root = page.locator("[data-gsxui-calendar]");
+  const next = page.locator("[data-gsxui-calendar-next]");
+  const yearSelect = page.locator("[data-gsxui-calendar-year-select]");
+
+  await dayFor(page, "2026-01-15").focus();
+  await page.keyboard.press("Shift+PageDown");
+
+  await expect(root).toHaveAttribute("data-gsxui-calendar-month", "2026-12");
+  await expect(next).toHaveAttribute("aria-disabled", "true");
+  await expect(yearSelect).toHaveValue("2026");
+  // Clamped, not stranded: the day-of-month survives the clamp (15 is a
+  // valid December day) and focus lands INSIDE the clamped month, not left
+  // behind in January.
+  expect(await focusedDate(page)).toBe("2026-12-15");
+
+  // Already sitting at the bound — one more month-forward press must stay
+  // a no-op, the same "attempt it anyway" discipline the mouse-path test
+  // above uses for its own 12th click.
+  await page.keyboard.press("PageDown");
+  await expect(root).toHaveAttribute("data-gsxui-calendar-month", "2026-12");
+  await expect(yearSelect).toHaveValue("2026");
+  expect(await focusedDate(page)).toBe("2026-12-15");
 });
 
 test("Enter and Space select the focused day", async ({ page }) => {
