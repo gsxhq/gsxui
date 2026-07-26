@@ -27,7 +27,10 @@ function generatedId(prefix) {
 }
 
 function ensureId(element, prefix) {
-  if (!element.id) element.id = generatedId(prefix);
+  if (!element.id) {
+    element.id = generatedId(prefix);
+    if (element.matches(DIALOG)) element.setAttribute("data-gsxui-dialog-generated-id", "");
+  }
   return element.id;
 }
 
@@ -44,7 +47,7 @@ function dialogOf(root) {
 }
 
 function authoredInvokers(dialog) {
-  if (!dialog.id) return [];
+  if (!dialog.id || dialog.hasAttribute("data-gsxui-dialog-generated-id")) return [];
   const target = CSS.escape(dialog.id);
   return [...document.querySelectorAll(`[commandfor="${target}"][command="show-modal"]`)];
 }

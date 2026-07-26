@@ -218,10 +218,24 @@ test("dialog identity and trigger ownership stay within their nearest roots", as
   expect(await page.evaluate(() => (window as any).__nestedCloseTarget)).toBe("nested-root");
 
   const stableGeneratedID = await generated.getAttribute("id");
+  await page.evaluate((generatedID) => {
+    document.body.insertAdjacentHTML(
+      "beforeend",
+      `<button id="generated-id-invoker" commandfor="${generatedID}" command="show-modal" aria-expanded="unchanged">Generated ID invoker</button>`,
+    );
+  }, stableGeneratedID);
   await page.locator("#generated-root > dialog > [data-gsxui-dialog-close]").click();
   await expect(generated).toHaveJSProperty("open", false);
+  await expect(page.locator("#generated-id-invoker")).toHaveAttribute(
+    "aria-expanded",
+    "unchanged",
+  );
   await page.locator("#generated-trigger").click();
   await expect(generated).toHaveAttribute("id", stableGeneratedID!);
+  await expect(page.locator("#generated-id-invoker")).toHaveAttribute(
+    "aria-expanded",
+    "unchanged",
+  );
   await page.locator("#generated-root > dialog > [data-gsxui-dialog-close]").click();
   await expect(generated).toHaveJSProperty("open", false);
 
