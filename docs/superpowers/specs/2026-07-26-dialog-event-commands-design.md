@@ -45,8 +45,8 @@ Two new command events are handled on a dialog content element:
 
 | Event | Meaning | Default action |
 |---|---|---|
-| `gsxui:request-open` | Request that the dialog enter its open state | stamp `data-state="open"`, wire ARIA, call `showModal()` when needed |
-| `gsxui:request-close` | Request that the dialog enter its closed state | stamp `data-state="closed"`, wait for finite exit animations, call `close()` |
+| `gsxui:open-dialog` | Command the dialog to enter its open state | stamp `data-state="open"`, wire ARIA, call `showModal()` when needed |
+| `gsxui:close-dialog` | Command the dialog to enter its closed state | stamp `data-state="closed"`, wait for finite exit animations, call `close()` |
 
 Both events are ordinary bubbling, cancelable `CustomEvent`s. `detail` is an
 optional plain object. Built-in controls supply a stable `reason`:
@@ -79,7 +79,7 @@ The contract requires no special integration:
 ```html
 <button
   x-data
-  @click="$dispatch('gsxui:request-close', { reason: 'cancel' })"
+  @click="$dispatch('gsxui:close-dialog', { reason: 'cancel' })"
 >
   Cancel
 </button>
@@ -88,8 +88,8 @@ The contract requires no special integration:
 ```
 
 ```js
-htmx.trigger(dialog, "gsxui:request-open", { reason: "server-response" })
-htmx.trigger(dialog, "gsxui:request-close", { reason: "saved" })
+htmx.trigger(dialog, "gsxui:open-dialog", { reason: "server-response" })
+htmx.trigger(dialog, "gsxui:close-dialog", { reason: "saved" })
 ```
 
 Events dispatched from descendants are resolved to their closest owning
@@ -135,22 +135,22 @@ No timeout estimates animation duration.
 
 ## Internal interfaces
 
-`dialog.js` continues to export:
+`dialog.js` renames its existing `requestClose` export to:
 
 ```js
-requestClose(dialog, detail?)
+closeDialog(dialog, detail?)
 ```
 
-It now dispatches `gsxui:request-close` and returns the event's boolean
+It now dispatches `gsxui:close-dialog` and returns the event's boolean
 dispatch result. It does not close directly.
 
 It additionally exports:
 
 ```js
-requestOpen(dialog, detail?)
+openDialog(dialog, detail?)
 ```
 
-with the equivalent `gsxui:request-open` behavior. Sibling modules such as
+with the equivalent `gsxui:open-dialog` behavior. Sibling modules such as
 `command.js` use these exports rather than manipulating dialog state directly.
 
 Private default-action functions may be asynchronous, but they retain no state
@@ -160,14 +160,14 @@ after their invocation settles.
 
 Use the existing Playwright layer against real Chromium:
 
-1. trigger dispatches `gsxui:request-open` with reason `trigger`;
+1. trigger dispatches `gsxui:open-dialog` with reason `trigger`;
 2. Alpine-style descendant dispatch opens and closes a dialog;
 3. HTMX-style dispatch on the dialog opens and closes it;
 4. a late ancestor/document listener can cancel either request;
 5. close-button, backdrop, and Escape requests carry their stable reasons;
 6. `data-state` is `closed` while the exit animation runs, then native
    `open` becomes false and one `gsxui:close` notification fires;
-7. a request-open during exit leaves the dialog open;
+7. an `open-dialog` command during exit leaves the dialog open;
 8. generated title, description, and dialog IDs are unique, stable in the
    DOM, and reflected by ARIA attributes;
 9. authored IDs and authored ARIA relationships remain unchanged;
