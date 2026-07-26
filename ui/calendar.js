@@ -460,18 +460,29 @@ function commitRange(root, dateISO) {
 // a plain <input type="hidden" name={name}> for single/multiple (carrying
 // the FIRST selected date, same as the server — calendar.gsx's own
 // showHiddenSingle reads selected[0], not the whole list, even in multiple
-// mode), and a name/name+"-to" pair for range. Each input only exists in the
-// DOM at all when the caller passed `name` (and, per calendar.gsx's own
-// showHidden* guards, only once there's something to put in it) — Task 5
-// never creates one; if none was server-rendered there is nothing to sync,
-// same "never creates or destroys" discipline the day cells themselves are
-// held to.
+// mode), and a name/name+"-to" pair for range. Each input renders whenever
+// the caller passed `name` — unconditionally, value empty until there's a
+// real selection (Task 5 review, Critical: an earlier revision on both the
+// Go and JS sides only synced/rendered once something was already selected,
+// so `<ui.Calendar mode="single" name="date"/>` with nothing preselected —
+// the single most likely way a caller wires this into a form — submitted
+// with no "date" field at all; range mode had the same hole for "-to"
+// whenever only `from` was set). Task 5 still never CREATES an input if the
+// caller never passed `name` at all — same "never creates or destroys"
+// discipline the day cells themselves are held to — this only stopped
+// requiring a pre-existing selection to sync the one(s) that do exist.
+//
+// The range pair is told apart by the `to` input's own
+// data-gsxui-calendar-hidden-to marker, not by `input.name.endsWith("-to")`
+// (Task 5 review, Minor 1): a caller's own `name` can legitimately end in
+// "-to" (e.g. name="valid-to"), and a suffix check would then misidentify
+// that caller's FROM input as the TO input.
 function syncHiddenInputs(root, mode, selected, from, to) {
   const inputs = root.querySelectorAll('input[type="hidden"]');
   if (!inputs.length) return;
   if (mode === "range") {
     for (const input of inputs) {
-      if (input.name.endsWith("-to")) input.value = to ?? "";
+      if ("gsxuiCalendarHiddenTo" in input.dataset) input.value = to ?? "";
       else input.value = from ?? "";
     }
   } else {
@@ -492,6 +503,19 @@ on("click", "[data-gsxui-calendar-day]", (_event, el) => {
   if (el.disabled) return;
   const root = el.closest(ROOT);
   if (!root) return;
+  // A no-op the first time any given root is clicked (captureDefaults
+  // itself guards on the WeakMap already having an entry) — but the FIRST
+  // time matters for a root that didn't exist at module load, e.g. one an
+  // HTMX swap inserted after the page's own initial captureDefaults sweep
+  // (Task 5 review, Important 3: ui/gsxui.js's own header promises elements
+  // added later just work; a snapshot taken once at import time and never
+  // revisited broke that promise for form reset specifically — a calendar
+  // added post-load had no snapshot at all, so resetting its form silently
+  // left the user's selection and hidden input(s) untouched instead of
+  // reverting them). Capturing here, before commitSingle/commitMultiple/
+  // commitRange mutate anything below, guarantees the snapshot is always
+  // this root's PRISTINE state, never a post-click one.
+  captureDefaults(root);
   const mode = root.dataset.gsxuiCalendarMode || "single";
   const dateISO = el.dataset.date;
 

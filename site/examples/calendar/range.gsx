@@ -17,9 +17,15 @@ var RangeDefaultMonth = time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 // machine (first click sets from, second sets to, swapping if it precedes
 // from, starting over once both are set) and the hover preview that fills in
 // data-range-middle while from is set and to is not.
+//
+// name="stay" (Task 5 review, Minor 1 verification): before this, no range
+// example carried a `name`, so ui/calendar.js's own range branch of
+// syncHiddenInputs — the one that has to tell its two hidden inputs apart
+// by the "to" input's own data-gsxui-calendar-hidden-to marker rather than
+// a name-suffix guess — had zero live-browser coverage at all.
 component Range(month time.Time) {
 	{{ if month.IsZero() {
 		month = RangeDefaultMonth
 	} }}
-	<ui.Calendar mode="range" month={month} weekStartsOn={time.Sunday} showOutsideDays={true} captionLayout="label"/>
+	<ui.Calendar mode="range" month={month} name="stay" weekStartsOn={time.Sunday} showOutsideDays={true} captionLayout="label"/>
 }

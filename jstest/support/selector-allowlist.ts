@@ -54,22 +54,6 @@ export type AllowedUnmatched = {
 
 export const allowedUnmatched: AllowedUnmatched[] = [
   {
-    module: "calendar.js",
-    selector: "form:has([data-gsxui-calendar])",
-    reason:
-      "No example wraps ui.Calendar in a <form> — every calendar/*.gsx renders it " +
-      "standalone (basic/bounded/loaded/loadedrange/range/multiple all skip a wrapping " +
-      "form, same as ui/combobox.js's own bare-form reset handler has no wrapped-form " +
-      "example either). The selector is scoped to :has([data-gsxui-calendar]) instead " +
-      "of a bare \"form\" specifically to stay disjoint from combobox.js's own reset " +
-      "handler (invariants.spec.ts's Invariant 4 — two modules both claiming a bare " +
-      "\"form\" for the same event would double-fire on every reset). Exercised by " +
-      "jstest/specs/calendar.spec.ts's own \"form reset clears the selection and the " +
-      "hidden input\" test, which builds the wrapping <form> at runtime via " +
-      "page.evaluate() — real coverage, just not from static example markup this " +
-      "corpus-wide sweep can see.",
-  },
-  {
     module: "command.js",
     selector: "dialog[data-gsxui-command-dialog]",
     reason:

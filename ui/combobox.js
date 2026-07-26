@@ -209,7 +209,19 @@ function reflectFromBridge(root) {
   }
 }
 
-on("reset", "form", (_e, form) => {
+// Scoped to a form that actually contains a combobox — a bare "form" would
+// otherwise claim every <form> on every page for "reset:false", colliding
+// with any OTHER module that also wants a reset hook on its own component
+// (ui/calendar.js's own reset handler, added in Task 5, hit exactly this:
+// jstest/specs/invariants.spec.ts's Invariant 4 flagged calendar/form.gsx's
+// plain <form> — no combobox in sight — as "claimed by two modules for one
+// event" the moment both modules used unscoped "form"). Each handler is a
+// no-op on a form that doesn't contain its own component regardless (both
+// scope internally via `form.querySelectorAll(...)`), so the collision was
+// harmless in practice, but scoping here — the same fix calendar.js's own
+// reset handler already uses — is what keeps every future form-bridge
+// module from having to relitigate the same overlap.
+on("reset", "form:has([data-gsxui-combobox])", (_e, form) => {
   for (const root of form.querySelectorAll("[data-gsxui-combobox]")) {
     reflectFromBridge(root);
   }

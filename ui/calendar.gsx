@@ -414,11 +414,23 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 //     identical text. Both the label span and the dropdown sr-only span also
 //     carry `data-gsxui-calendar-caption`, the one hook Task 4's calendar.js
 //     needs regardless of layout to update the announced text on navigation.
-//   - Hidden inputs render only when `name != ""`: single/multiple mode gets
-//     one `<input type="hidden" name={name}>` carrying the first selected
-//     date (ISO); range mode gets that plus a second
-//     `name="{name}-to"` input for `to`. Both live inside the root element so
-//     Tasks 4-6's JavaScript can find them by DOM scope
+//   - Hidden inputs render whenever `name != ""` — unconditionally, NOT
+//     gated on there being a selection yet (Task 5 review, Critical: an
+//     earlier revision also required `len(selected) > 0`/`!from.IsZero()`,
+//     which meant `<ui.Calendar mode="single" name="date"/>` with nothing
+//     preselected emitted no input at all; the user would click a day,
+//     calendar.js's own syncHiddenInputs would find nothing to update, and
+//     the form would submit with no `date` field whatsoever — a real hole
+//     in the single most likely way a caller wires this component into a
+//     form). Single/multiple mode gets one `<input type="hidden"
+//     name={name}>`, value empty until something is selected. Range mode
+//     gets that plus a second `name="{name}-to"` input for `to`, marked
+//     with a bare `data-gsxui-calendar-hidden-to` so calendar.js can tell
+//     the two apart by something other than the `name` string itself (a
+//     caller passing `name="valid-to"` in range mode would otherwise make
+//     an `endsWith("-to")` check misidentify its OWN `from` input as the
+//     `to` input — Task 5 review, Minor 1). Both live inside the root
+//     element so Tasks 4-6's JavaScript can find them by DOM scope
 //     (`closest("[data-gsxui-calendar]")`), the same proximity idiom
 //     ui.Select/ui.Combobox already use for their own hidden-input bridges.
 //
@@ -558,9 +570,28 @@ component Calendar(
 		dropdownLayout := captionLayout == "dropdown"
 		captionText := month.Format("January 2006")
 
-		showHiddenSingle := name != "" && mode != "range" && len(selected) > 0
-		showHiddenFrom := name != "" && mode == "range" && !from.IsZero()
-		showHiddenTo := name != "" && mode == "range" && !to.IsZero()
+		// Unconditional on there being a selection yet (Task 5 review,
+		// Critical) — only on `name` and `mode`. hiddenSingleValue/
+		// hiddenFromValue/hiddenToValue default to "" and stay "" until
+		// there's something real to put in them; the input itself still
+		// renders either way, so a form submits an (empty) field rather
+		// than silently dropping it.
+		showHiddenSingle := name != "" && mode != "range"
+		showHiddenFrom := name != "" && mode == "range"
+		showHiddenTo := name != "" && mode == "range"
+
+		hiddenSingleValue := ""
+		if len(selected) > 0 {
+			hiddenSingleValue = selected[0].Format("2006-01-02")
+		}
+		hiddenFromValue := ""
+		if !from.IsZero() {
+			hiddenFromValue = from.Format("2006-01-02")
+		}
+		hiddenToValue := ""
+		if !to.IsZero() {
+			hiddenToValue = to.Format("2006-01-02")
+		}
 
 		// The four disabled rules, serialized onto the root so calendar.js
 		// (Task 4) can re-derive dayDisabled for a client-navigated month
@@ -732,13 +763,13 @@ component Calendar(
 			</tbody>
 		</table>
 		{ if showHiddenSingle {
-			<input type="hidden" name={ name } value={ selected[0].Format("2006-01-02") }/>
+			<input type="hidden" name={ name } value={ hiddenSingleValue }/>
 		} }
 		{ if showHiddenFrom {
-			<input type="hidden" name={ name } value={ from.Format("2006-01-02") }/>
+			<input type="hidden" name={ name } value={ hiddenFromValue }/>
 		} }
 		{ if showHiddenTo {
-			<input type="hidden" name={ name + "-to" } value={ to.Format("2006-01-02") }/>
+			<input type="hidden" name={ name + "-to" } value={ hiddenToValue } data-gsxui-calendar-hidden-to/>
 		} }
 	</div>
 }

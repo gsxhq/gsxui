@@ -6,6 +6,7 @@ const LOADED = "/x/calendar/loaded";
 const LOADED_RANGE = "/x/calendar/loadedrange";
 const RANGE = "/x/calendar/range";
 const MULTIPLE = "/x/calendar/multiple";
+const FORM = "/x/calendar/form";
 
 // The grid's 42 data-date values, in DOM order.
 async function gridDates(page: import("@playwright/test").Page) {
@@ -352,10 +353,20 @@ test("multiple mode toggles days", async ({ page }) => {
 test("range takes two clicks and swaps when the second precedes the first", async ({ page }) => {
   await page.goto(RANGE);
   const root = page.locator("[data-gsxui-calendar]");
+  // range.gsx renders name="stay" specifically so this test also exercises
+  // syncHiddenInputs's range branch — Task 5 review, Minor 1 verification:
+  // the "-to" input has to be told apart from the "from" input by its own
+  // data-gsxui-calendar-hidden-to marker, not a name-suffix guess.
+  const from = page.locator('input[name="stay"]');
+  const to = page.locator('input[name="stay-to"]');
+  await expect(from).toHaveValue("");
+  await expect(to).toHaveValue("");
 
   await dayFor(page, "2026-01-20").click();
   await expect(root).toHaveAttribute("data-gsxui-calendar-from", "2026-01-20");
   await expect(root).not.toHaveAttribute("data-gsxui-calendar-to", /.*/);
+  await expect(from).toHaveValue("2026-01-20");
+  await expect(to).toHaveValue("");
 
   await dayFor(page, "2026-01-15").click();
   await expect(root).toHaveAttribute("data-gsxui-calendar-from", "2026-01-15");
@@ -368,6 +379,11 @@ test("range takes two clicks and swaps when the second precedes the first", asyn
   await expect(dayFor(page, "2026-01-20")).toHaveAttribute("data-range-middle", "false");
   await expect(dayFor(page, "2026-01-15")).toHaveAttribute("data-range-start", "true");
   await expect(dayFor(page, "2026-01-20")).toHaveAttribute("data-range-end", "true");
+  // Swapped: the FROM input carries the earlier date even though it was
+  // clicked SECOND — proof the swap flows into the hidden inputs too, not
+  // just the root's own data-* attributes.
+  await expect(from).toHaveValue("2026-01-15");
+  await expect(to).toHaveValue("2026-01-20");
 });
 
 test("range previews on hover while only the start is set", async ({ page }) => {
@@ -435,21 +451,72 @@ test("a disabled day cannot be selected", async ({ page }) => {
   expect(await changes(page)).toHaveLength(0);
 });
 
+// calendar/form.gsx (Task 5 review, Important 1) renders name="date" with
+// NOTHING preselected — real corpus coverage for the Critical fix: the
+// hidden input exists (empty) from first paint, and clicking a day has to
+// actually flow into it. Asserting the input's own value (not just
+// aria-selected) is Important 2 — the test used to be named "…and the
+// hidden input" while never once looking at one, and with the input
+// existing conditionally on a selection (the pre-fix behavior), the
+// BASIC-based version of this test never had one to check in the first
+// place. One-line mutation that turns this from a real assertion back into
+// exactly that no-op: replace syncHiddenInputs's body with a bare `return;`
+// — every other assertion in this test still passes (see the report for
+// the captured failure).
 test("form reset clears the selection and the hidden input", async ({ page }) => {
-  await page.goto(BASIC);
+  await page.goto(FORM);
+  const input = page.locator('input[name="date"]');
+  await expect(input).toHaveValue("");
+
   await dayFor(page, "2026-01-15").click();
   await expect(cellFor(page, "2026-01-15")).toHaveAttribute("aria-selected", "true");
+  await expect(input).toHaveValue("2026-01-15");
 
-  await page.evaluate(() => {
-    const root = document.querySelector("[data-gsxui-calendar]")!;
-    const form = document.createElement("form");
-    root.parentNode!.insertBefore(form, root);
-    form.appendChild(root);
-    form.reset();
-  });
+  await page.locator('button[type="reset"]').click();
   await expect(cellFor(page, "2026-01-15")).toHaveAttribute("aria-selected", "false");
+  await expect(input).toHaveValue("");
   await expect(page.locator("[data-gsxui-calendar]")).not.toHaveAttribute(
     "data-gsxui-calendar-selected",
     /.*/,
   );
+});
+
+// Task 5 review, Important 3: captureDefaults used to run exactly once, at
+// module load, over whatever calendar roots already existed — a root an
+// HTMX swap (or any other post-load insertion) adds afterward had no
+// snapshot at all, so resetting ITS form silently left the user's
+// selection and hidden input untouched instead of reverting them.
+// ui/gsxui.js's own header promises elements added later just work; this
+// is the one place calendar.js broke that promise. Simulated here by
+// cloning the FORM example's own pristine calendar root into a brand-new
+// <form> well after calendar.js's module-load sweep has already run — the
+// clone is a distinct node instance the WeakMap has never seen. One-line
+// mutation that reproduces the bug: delete the `captureDefaults(root);`
+// call at the top of the day-click handler (see the report for the
+// captured failure).
+test("form reset restores a calendar added after the page's own initial load", async ({
+  page,
+}) => {
+  await page.goto(FORM);
+
+  await page.evaluate(() => {
+    const original = document.querySelector("[data-gsxui-calendar]")!;
+    const clone = original.cloneNode(true) as HTMLElement;
+    const form = document.createElement("form");
+    form.appendChild(clone);
+    document.body.appendChild(form);
+  });
+
+  const added = page.locator("[data-gsxui-calendar]").nth(1);
+  const addedCell = added.locator('td[data-date="2026-01-15"]');
+  const addedDay = added.locator('[data-gsxui-calendar-day][data-date="2026-01-15"]');
+  const addedInput = added.locator('input[name="date"]');
+
+  await addedDay.click();
+  await expect(addedCell).toHaveAttribute("aria-selected", "true");
+  await expect(addedInput).toHaveValue("2026-01-15");
+
+  await added.evaluate((el) => (el.closest("form") as HTMLFormElement).reset());
+  await expect(addedCell).toHaveAttribute("aria-selected", "false");
+  await expect(addedInput).toHaveValue("");
 });

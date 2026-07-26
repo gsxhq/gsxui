@@ -697,6 +697,69 @@ func TestCalendarHiddenInputsRange(t *testing.T) {
 	}
 }
 
+// TestCalendarHiddenInputSingleRendersEmptyWhenUnselected is Task 5 review's
+// Critical fix, pinned: `<ui.Calendar mode="single" name="date"/>` with
+// nothing preselected — the single most likely way a caller wires this
+// component into a form — used to render NO hidden input at all (the
+// earlier showHiddenSingle also required len(selected) > 0), so the form
+// would submit with no "date" field whatsoever regardless of what the user
+// clicked. The input must exist from first paint, with an empty value,
+// exactly like ui.Select/ui.Combobox's own hidden bridges always exist.
+func TestCalendarHiddenInputSingleRendersEmptyWhenUnselected(t *testing.T) {
+	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "date", nil))
+
+	if !strings.Contains(got, `<input type="hidden" name="date" value=""`) {
+		t.Errorf("expected an empty-valued hidden input to render unconditionally\nin: %s", got)
+	}
+}
+
+// TestCalendarHiddenInputsRangeRenderBothEvenWithOnlyFromSet is the range
+// half of the same Critical fix: `to` unset used to mean no "date-to" input
+// at all (showHiddenTo also required !to.IsZero()), so a range-mode form
+// with only a `from` chosen submitted with the "-to" field entirely absent
+// instead of present-but-empty.
+func TestCalendarHiddenInputsRangeRenderBothEvenWithOnlyFromSet(t *testing.T) {
+	got := render(t, ui.Calendar("range", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil,
+		time.Date(2026, 1, 5, 0, 0, 0, 0, time.UTC),
+		time.Time{},
+		time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "stay", nil))
+
+	for _, want := range []string{
+		`name="stay" value="2026-01-05"`,
+		`name="stay-to" value=""`,
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("missing %q\nin: %s", want, got)
+		}
+	}
+}
+
+// TestCalendarHiddenToInputCarriesItsOwnMarker is Task 5 review's Minor 1:
+// the "-to" input must be identifiable by something other than its own
+// `name` string, since a caller's own `name` could legitimately end in
+// "-to" (e.g. name="valid-to") and calendar.js's own endsWith("-to") check
+// would then misidentify the FROM input as the TO input.
+func TestCalendarHiddenToInputCarriesItsOwnMarker(t *testing.T) {
+	got := render(t, ui.Calendar("range", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil,
+		time.Date(2026, 1, 5, 0, 0, 0, 0, time.UTC),
+		time.Date(2026, 1, 8, 0, 0, 0, 0, time.UTC),
+		time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "valid-to", nil))
+
+	if !strings.Contains(got, `<input type="hidden" name="valid-to" value="2026-01-05">`) {
+		t.Errorf("the FROM input (name=%q, an unlucky collision with the -to naming convention) "+
+			"must not carry the -to marker\nin: %s", "valid-to", got)
+	}
+	if !strings.Contains(got, `<input type="hidden" name="valid-to-to" value="2026-01-08" data-gsxui-calendar-hidden-to>`) {
+		t.Errorf("the TO input must carry the -to marker regardless of what name collides with it\nin: %s", got)
+	}
+}
+
 func TestCalendarNoNameRendersNoHiddenInput(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,

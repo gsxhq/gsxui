@@ -756,3 +756,18 @@ questions for this document or for Tasks 1–7 to revisit:
    requiring `startMonth`/`endMonth` from the caller, contra upstream's own
    requirement traced in §7.4 (`getYearOptions` returns `undefined` without
    them).
+3. **Range click sequencing is upstream's `resetOnSelect: true` shape, not
+   the default `addToRange` one.** §7.1 traces `useRange.js`'s own default
+   as delegating every click to `addToRange` (extend/replace the existing
+   `{from, to}` by date-arithmetic rules that file owns, not read in this
+   pass) — a strict two-click machine (no `from` → set `from`; `from` set,
+   no `to` → set `to`, swapping if the click precedes `from`; both already
+   set → **start over with a new `from`**, `resetOnSelect`'s own behavior,
+   not `addToRange`'s extend-in-place one) is what Task 5's brief specified
+   verbatim and what `ui/calendar.js`'s `commitRange` implements. gsxui's
+   `ui.Calendar` has no `resetOnSelect`/`excludeDisabled`/`min`/`max` props
+   to switch this at the call site — there is one range behavior, and it is
+   upstream's opt-in one, not its default. Recorded here (Task 5 review,
+   Minor 3) rather than only in `commitRange`'s own JS comment, since it's a
+   real, deliberate divergence from upstream's *default* config, the same
+   class of decision items 1–2 above are.

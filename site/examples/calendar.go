@@ -114,4 +114,13 @@ func init() {
 			return examplecalendar.Multiple(month)
 		},
 	})
+	Register("calendar", Example{
+		Name:       "form",
+		Title:      "Form",
+		Node:       examplecalendar.Form(),
+		SourcePath: "calendar/form.gsx",
+		// No Query hook: this example exists for the hidden-input/form-reset
+		// browser test (jstest/specs/calendar.spec.ts), which never
+		// re-renders the server at a different month.
+	})
 }

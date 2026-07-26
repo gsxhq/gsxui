@@ -25,17 +25,23 @@ var RangeDefaultMonth = time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 // machine (first click sets from, second sets to, swapping if it precedes
 // from, starting over once both are set) and the hover preview that fills in
 // data-range-middle while from is set and to is not.
+//
+// name="stay" (Task 5 review, Minor 1 verification): before this, no range
+// example carried a `name`, so ui/calendar.js's own range branch of
+// syncHiddenInputs — the one that has to tell its two hidden inputs apart
+// by the "to" input's own data-gsxui-calendar-hidden-to marker rather than
+// a name-suffix guess — had zero live-browser coverage at all.
 
-//line range.gsx:20:1
+//line range.gsx:26:1
 func Range(month time.Time) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line range.gsx:21:2
+//line range.gsx:27:2
 		if month.IsZero() {
 			month = RangeDefaultMonth
 		}
-//line range.gsx:24:2
-		_gsxgw.Node(ctx, ui.Calendar("range", month, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", nil))
+//line range.gsx:30:2
+		_gsxgw.Node(ctx, ui.Calendar("range", month, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "stay", nil))
 		return _gsxgw.Err()
 	})
 }
