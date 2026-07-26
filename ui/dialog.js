@@ -76,11 +76,18 @@ function performOpen(dialog) {
 async function performClose(dialog) {
   if (!dialog.open || dialog.dataset.state === "closed") return;
   dialog.dataset.state = "closed";
-  const animations = dialog.getAnimations().filter((animation) => {
-    const endTime = animation.effect?.getComputedTiming().endTime;
-    return typeof endTime === "number" && Number.isFinite(endTime);
-  });
-  await Promise.allSettled(animations.map((animation) => animation.finished));
+  while (dialog.open && dialog.dataset.state === "closed") {
+    const animations = dialog.getAnimations().filter((animation) => {
+      const endTime = animation.effect?.getComputedTiming().endTime;
+      return (
+        animation.playState !== "finished" &&
+        typeof endTime === "number" &&
+        Number.isFinite(endTime)
+      );
+    });
+    if (animations.length === 0) break;
+    await Promise.allSettled(animations.map((animation) => animation.finished));
+  }
   if (dialog.open && dialog.dataset.state === "closed") dialog.close();
 }
 

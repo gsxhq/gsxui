@@ -219,8 +219,14 @@ test("the finite exit stays open while closed and emits one notification after n
 }) => {
   await page.goto(BASIC);
   await page.evaluate(() => {
-    (window as any).__dialogCloses = 0;
-    document.addEventListener("gsxui:close", () => ((window as any).__dialogCloses += 1));
+    (window as any).__dialogCloses = [];
+    document.addEventListener("gsxui:close", (event) => {
+      const dialog = event.target as HTMLDialogElement;
+      (window as any).__dialogCloses.push({
+        open: dialog.open,
+        state: dialog.dataset.state,
+      });
+    });
   });
 
   await open(page);
@@ -229,7 +235,9 @@ test("the finite exit stays open while closed and emits one notification after n
   await expect(page.locator(DIALOG)).toHaveAttribute("data-state", "closed");
   await expect(page.locator(DIALOG)).toHaveJSProperty("open", true);
   await expect(page.locator(DIALOG)).toHaveJSProperty("open", false);
-  expect(await page.evaluate(() => (window as any).__dialogCloses)).toBe(1);
+  expect(await page.evaluate(() => (window as any).__dialogCloses)).toEqual([
+    { open: false, state: "closed" },
+  ]);
 });
 
 test("an open request during exit aborts the pending close", async ({ page }) => {
@@ -244,6 +252,59 @@ test("an open request during exit aborts the pending close", async ({ page }) =>
   await expect(page.locator(DIALOG)).toHaveAttribute("data-state", "open");
   await page.waitForTimeout(350);
   await expect(page.locator(DIALOG)).toHaveJSProperty("open", true);
+});
+
+test("overlapping close generations wait for the latest finite dialog animation", async ({
+  page,
+}) => {
+  await page.goto(BASIC);
+  const dialog = page.locator(DIALOG);
+
+  await open(page);
+  await dialog.evaluate((element) => {
+    const animation = element.animate([{ opacity: 1 }, { opacity: 0 }], {
+      duration: 60_000,
+    });
+    animation.pause();
+    animation.currentTime = 0;
+    (window as any).__dialogAnimationA = animation;
+  });
+  await dispatch(page, DIALOG, "gsxui:request-close");
+  await expect(dialog).toHaveAttribute("data-state", "closed");
+  await expect(dialog).toHaveJSProperty("open", true);
+
+  await dispatch(page, DIALOG, "gsxui:request-open");
+  await expect(dialog).toHaveAttribute("data-state", "open");
+  await dialog.evaluate((element) => {
+    (window as any).__dialogAnimationB = element.animate(
+      [{ opacity: 1 }, { opacity: 0 }],
+      { duration: 60_000 },
+    );
+  });
+  await dispatch(page, DIALOG, "gsxui:request-close");
+  await expect(dialog).toHaveAttribute("data-state", "closed");
+  await expect(dialog).toHaveJSProperty("open", true);
+
+  await page.evaluate(async () => {
+    const animation = (window as any).__dialogAnimationA as Animation;
+    animation.finish();
+    await animation.finished;
+    await Promise.resolve();
+  });
+  expect(
+    await dialog.evaluate((element) => ({
+      open: (element as HTMLDialogElement).open,
+      state: (element as HTMLElement).dataset.state,
+      latestAnimation: ((window as any).__dialogAnimationB as Animation).playState,
+    })),
+  ).toEqual({
+    open: true,
+    state: "closed",
+    latestAnimation: "running",
+  });
+
+  await page.evaluate(() => ((window as any).__dialogAnimationB as Animation).finish());
+  await expect(dialog).toHaveJSProperty("open", false);
 });
 
 test("dialog identity and trigger ownership stay within their nearest roots", async ({ page }) => {
