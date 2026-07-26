@@ -169,6 +169,7 @@ test("dialog identity and trigger ownership stay within their nearest roots", as
             <button data-gsxui-dialog-close>Close generated</button>
             <div data-gsxui-dialog id="nested-root">
               <button id="nested-trigger" data-gsxui-dialog-trigger aria-expanded="false">Nested</button>
+              <button id="nested-root-close" data-gsxui-dialog-close>Close nested</button>
               <dialog data-gsxui-dialog-content data-state="closed">
                 <h2 data-slot="dialog-title">Nested title</h2>
                 <p data-slot="dialog-description">Nested description</p>
@@ -204,12 +205,24 @@ test("dialog identity and trigger ownership stay within their nearest roots", as
   await expect(page.locator("#generated-trigger")).toHaveAttribute("aria-expanded", "true");
   await expect(page.locator("#nested-trigger")).toHaveAttribute("aria-expanded", "false");
 
+  await page.evaluate(() => {
+    document.addEventListener("gsxui:request-close", (event) => {
+      const target = event.target as Element;
+      (window as any).__nestedCloseTarget = target
+        .closest("[data-gsxui-dialog]")
+        ?.id;
+    });
+  });
+  await page.locator("#nested-root-close").click();
+  await expect(generated).toHaveJSProperty("open", true);
+  expect(await page.evaluate(() => (window as any).__nestedCloseTarget)).toBe("nested-root");
+
   const stableGeneratedID = await generated.getAttribute("id");
-  await page.locator("#generated-root [data-gsxui-dialog-close]").click();
+  await page.locator("#generated-root > dialog > [data-gsxui-dialog-close]").click();
   await expect(generated).toHaveJSProperty("open", false);
   await page.locator("#generated-trigger").click();
   await expect(generated).toHaveAttribute("id", stableGeneratedID!);
-  await page.locator("#generated-root [data-gsxui-dialog-close]").click();
+  await page.locator("#generated-root > dialog > [data-gsxui-dialog-close]").click();
   await expect(generated).toHaveJSProperty("open", false);
 
   await page.locator("#second-trigger").click();

@@ -104,7 +104,8 @@ on("click", "[data-gsxui-dialog-trigger]", (_event, trigger) => {
 });
 
 on("click", "[data-gsxui-dialog-close]", (_event, closer) => {
-  const dialog = closer.closest(DIALOG);
+  const root = rootOf(closer);
+  const dialog = root && dialogOf(root);
   if (dialog) request(dialog, "gsxui:request-close", { reason: "close-button" });
 });
 
