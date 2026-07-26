@@ -4,6 +4,7 @@ import { expect, test } from "../support/fixtures";
 const BASIC = "/x/dialog/basic";
 const DIALOG = "dialog[data-gsxui-dialog-content]";
 const TRIGGER = "[data-gsxui-dialog-trigger]";
+const COMMAND_DIALOG = "dialog[data-gsxui-command-dialog]";
 
 async function dispatch(page: Page, selector: string, type: string, detail = {}) {
   return page.locator(selector).evaluate(
@@ -57,6 +58,96 @@ test("descendant request events drive the native dialog state", async ({ page })
 
   await dispatch(page, source, "gsxui:request-close", { reason: "application" });
   await expect(page.locator(DIALOG)).toHaveJSProperty("open", false);
+});
+
+test("command palette shortcuts and navigable selections request dialog transitions", async ({ page }) => {
+  await page.goto(BASIC);
+  await page.evaluate(() => {
+    document.body.insertAdjacentHTML(
+      "beforeend",
+      `
+        <div data-gsxui-dialog>
+          <dialog data-gsxui-dialog-content data-gsxui-command-dialog data-state="closed">
+            <div data-gsxui-command>
+              <input data-gsxui-command-input>
+              <div data-gsxui-command-list>
+                <button data-gsxui-command-item data-href="/command-selected">Open selected page</button>
+              </div>
+            </div>
+          </dialog>
+        </div>
+      `,
+    );
+    (window as any).__commandDialogEvents = [];
+    document.addEventListener("gsxui:request-open", (event) => {
+      if ((event.target as Element).matches("dialog[data-gsxui-command-dialog]")) {
+        (window as any).__commandDialogEvents.push({
+          type: event.type,
+          detail: (event as CustomEvent).detail,
+          target: (event.target as Element).matches("dialog[data-gsxui-command-dialog]"),
+        });
+      }
+    });
+    document.addEventListener("gsxui:request-close", (event) => {
+      if ((event.target as Element).matches("dialog[data-gsxui-command-dialog]")) {
+        (window as any).__commandDialogEvents.push({
+          type: event.type,
+          detail: (event as CustomEvent).detail,
+          target: (event.target as Element).matches("dialog[data-gsxui-command-dialog]"),
+        });
+      }
+    });
+  });
+
+  const dialog = page.locator(COMMAND_DIALOG);
+  await page.keyboard.press("Control+k");
+  await expect(dialog).toHaveJSProperty("open", true);
+  expect(await page.evaluate(() => (window as any).__commandDialogEvents)).toEqual([
+    { type: "gsxui:request-open", detail: { reason: "shortcut" }, target: true },
+  ]);
+
+  await dialog.evaluate((element) => {
+    element.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 120 });
+  });
+  await page.keyboard.press("Control+k");
+  await expect(dialog).toHaveAttribute("data-state", "closed");
+  await expect(dialog).toHaveJSProperty("open", true);
+  await expect(dialog).toHaveJSProperty("open", false);
+  expect(await page.evaluate(() => (window as any).__commandDialogEvents)).toEqual([
+    { type: "gsxui:request-open", detail: { reason: "shortcut" }, target: true },
+    { type: "gsxui:request-close", detail: { reason: "shortcut" }, target: true },
+  ]);
+
+  await page.keyboard.press("Control+k");
+  await expect(dialog).toHaveJSProperty("open", true);
+  await page.locator(`${COMMAND_DIALOG} [data-gsxui-command-item][data-href]`).first().evaluate((item) => {
+    item.setAttribute("data-href", "#command-selected");
+    (window as any).__commandNavigationOrder = [];
+    document.addEventListener(
+      "gsxui:request-close",
+      (event) => {
+        if ((event.target as Element).matches("dialog[data-gsxui-command-dialog]"))
+          (window as any).__commandNavigationOrder.push("request-close");
+      },
+      { once: true },
+    );
+    window.addEventListener(
+      "hashchange",
+      () => (window as any).__commandNavigationOrder.push("navigation"),
+      { once: true },
+    );
+  });
+  await page.locator(`${COMMAND_DIALOG} [data-gsxui-command-item][data-href]`).first().click();
+  await expect.poll(() => page.evaluate(() => (window as any).__commandNavigationOrder)).toEqual([
+    "request-close",
+    "navigation",
+  ]);
+  expect(await page.evaluate(() => (window as any).__commandDialogEvents)).toEqual([
+    { type: "gsxui:request-open", detail: { reason: "shortcut" }, target: true },
+    { type: "gsxui:request-close", detail: { reason: "shortcut" }, target: true },
+    { type: "gsxui:request-open", detail: { reason: "shortcut" }, target: true },
+    { type: "gsxui:request-close", detail: { reason: "select" }, target: true },
+  ]);
 });
 
 test("a late document listener can cancel both deferred request defaults", async ({ page }) => {

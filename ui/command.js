@@ -7,7 +7,6 @@
 // the first dialog marked data-gsxui-command-dialog (see command.gsx),
 // riding dialog.js's machinery for open state and animated close.
 import { on, emit } from "./gsxui.js";
-import { requestClose } from "./dialog.js";
 
 // ---------------------------------------------------------------------------
 // commandScore — verbatim port of command-score 0.1.2 (MIT, (c) Superhuman
@@ -183,7 +182,7 @@ function activate(item) {
   emit(item, "gsxui:select");
   if (item.dataset.href) {
     const dialog = item.closest("dialog[data-gsxui-dialog-content]");
-    if (dialog) requestClose(dialog);
+    if (dialog) emit(dialog, "gsxui:request-close", { reason: "select" });
     window.location.assign(item.dataset.href);
   }
 }
@@ -224,21 +223,16 @@ on("pointerover", "[data-gsxui-command-item]", (_e, item) => {
 // (server renders every item visible; this stamps the first selection).
 for (const root of document.querySelectorAll("[data-gsxui-command]")) filter(root);
 
-// ⌘K / Ctrl-K toggles the first command dialog on the page. Opening mirrors
-// dialog.js's trigger path (stamp data-state BEFORE showModal — the queued
-// toggle task alone paints a closed-state frame, the flash class of bugs);
-// closing rides requestClose so the exit animation runs.
+// ⌘K / Ctrl-K requests a transition on the first command dialog. dialog.js
+// owns the default action, including state stamping and animated close.
 addEventListener("keydown", (e) => {
   if (e.key.toLowerCase() !== "k" || !(e.metaKey || e.ctrlKey)) return;
   const dialog = document.querySelector("dialog[data-gsxui-command-dialog]");
   if (!dialog) return;
   e.preventDefault();
-  if (dialog.open) {
-    requestClose(dialog);
-  } else {
-    dialog.dataset.state = "open";
-    dialog.showModal();
-  }
+  emit(dialog, dialog.open ? "gsxui:request-close" : "gsxui:request-open", {
+    reason: "shortcut",
+  });
 });
 
 // A fresh open starts a fresh search: clear the query and re-rank when the

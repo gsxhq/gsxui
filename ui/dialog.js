@@ -88,12 +88,6 @@ function request(dialog, type, detail) {
   return emit(dialog, type, detail);
 }
 
-// Transitional sibling entry point. command.js switches to the request event
-// directly in its own task; state remains exclusively in the dialog DOM.
-export function requestClose(dialog) {
-  return request(dialog, "gsxui:request-close", { reason: "cancel" });
-}
-
 on("gsxui:request-open", DIALOG, (event, dialog) => {
   queueMicrotask(() => {
     if (!event.defaultPrevented) performOpen(dialog);
@@ -138,7 +132,7 @@ on("click", "dialog[data-gsxui-dialog-content]", (event, dialog) => {
 });
 
 // Esc: intercept the native cancel so the exit animation can run; the
-// requestClose path ends in close(), which still fires toggle below.
+// The request-close path ends in close(), which still fires toggle below.
 on(
   "cancel",
   "dialog[data-gsxui-dialog-content]",
