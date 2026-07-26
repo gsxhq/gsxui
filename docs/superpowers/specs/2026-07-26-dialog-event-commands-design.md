@@ -54,7 +54,8 @@ optional plain object. Built-in controls supply a stable `reason`:
 - trigger: `{ reason: "trigger" }`
 - injected or authored close control: `{ reason: "close-button" }`
 - backdrop: `{ reason: "backdrop" }`
-- native cancel/Escape: `{ reason: "escape" }`
+- native cancel path (Escape, `requestClose()`, or
+  `command="request-close"`): `{ reason: "cancel" }`
 
 Application code may supply any string or omit `reason`; behavior must not
 branch on application-provided reason values.
@@ -191,7 +192,8 @@ Use the existing Playwright layer against real Chromium:
 2. Alpine-style descendant dispatch opens and closes a dialog;
 3. HTMX-style dispatch on the dialog opens and closes it;
 4. a late ancestor/document listener can cancel either request;
-5. close-button, backdrop, and Escape requests carry their stable reasons;
+5. close-button, backdrop, and native cancel requests carry their stable
+   reasons;
 6. `data-state` is `closed` while the exit animation runs, then native
    `open` becomes false and one `gsxui:close` notification fires;
 7. a `request-open` command during exit leaves the dialog open;
