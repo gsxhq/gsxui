@@ -26,7 +26,7 @@ func Events() _gsxrt.Node {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Open")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "data-gsxui-dialog-trigger", Value: true}}))
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "commandfor", Value: "events-dialog"}}, _gsxrt.Attrs{{Key: "command", Value: "show-modal"}})))
 //line events.gsx:13:3
 			_gsxgw.Node(ctx, ui.DialogContent(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -42,11 +42,17 @@ func Events() _gsxrt.Node {
 					_gsxgw.S("Its open/close events log below.")
 					return _gsxgw.Err()
 				}), nil))
+//line events.gsx:16:4
+				_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+					_gsxgw.S("Close")
+					return _gsxgw.Err()
+				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "commandfor", Value: "events-dialog"}}, _gsxrt.Attrs{{Key: "command", Value: "request-close"}})))
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "id", Value: "events-dialog"}}))
-//line events.gsx:17:3
+//line events.gsx:24:3
 			_gsxgw.S("<output id=\"events-log\" class=\"mt-4 block text-sm text-muted-foreground\">closed</output>")
-//line events.gsx:18:3
+//line events.gsx:25:3
 			_gsxgw.S("<script")
 			_gsxgw.Nonce(ctx)
 			_gsxgw.S(">\ndocument.addEventListener(\"gsxui:open\", (e) => {\n\tif (e.target.id === \"events-dialog\") document.getElementById(\"events-log\").textContent = \"open\";\n});\ndocument.addEventListener(\"gsxui:close\", (e) => {\n\tif (e.target.id === \"events-dialog\") document.getElementById(\"events-log\").textContent = \"closed\";\n});\n</script>")

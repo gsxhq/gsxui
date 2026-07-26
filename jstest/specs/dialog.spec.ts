@@ -305,3 +305,148 @@ test("infinite child and dialog animations do not keep a request close open", as
   await dispatch(page, DIALOG, "gsxui:request-close");
   await expect(dialog).toHaveJSProperty("open", false, { timeout: 350 });
 });
+
+test("native invokers address authored dialogs exactly and synchronize their ARIA state", async ({
+  page,
+}) => {
+  await page.goto(BASIC);
+  await page.evaluate(() => {
+    document.body.insertAdjacentHTML(
+      "beforeend",
+      `
+        <button id="open-first" commandfor="native-first" command="show-modal">Open first</button>
+        <button id="open-second" commandfor="native-second" command="show-modal">Open second</button>
+        <dialog id="native-first" data-gsxui-dialog-content data-state="closed"><p>First</p></dialog>
+        <dialog id="native-second" data-gsxui-dialog-content data-state="closed"><p>Second</p></dialog>
+      `,
+    );
+  });
+
+  await page.locator("#open-first").click();
+  await expect(page.locator("#native-first")).toHaveJSProperty("open", true);
+  await expect(page.locator("#native-second")).toHaveJSProperty("open", false);
+  await expect(page.locator("#open-first")).toHaveAttribute("aria-expanded", "true");
+
+  await page.locator("#native-first").evaluate((dialog: HTMLDialogElement) => dialog.close());
+  await expect(page.locator("#open-first")).toHaveAttribute("aria-expanded", "false");
+  await page.locator("#open-second").click();
+  await expect(page.locator("#native-first")).toHaveJSProperty("open", false);
+  await expect(page.locator("#native-second")).toHaveJSProperty("open", true);
+  await expect(page.locator("#open-second")).toHaveAttribute("aria-expanded", "true");
+});
+
+test("native request-close enters the animated cancel path while close remains immediate", async ({
+  page,
+}) => {
+  await page.goto(BASIC);
+  await page.evaluate(() => {
+    document.body.insertAdjacentHTML(
+      "beforeend",
+      `
+        <button id="native-open" commandfor="native-close" command="show-modal">Open</button>
+        <dialog id="native-close" data-gsxui-dialog-content data-state="closed">
+          <p>Closable</p>
+          <button id="native-request-close" commandfor="native-close" command="request-close">Request close</button>
+          <button id="native-close-now" commandfor="native-close" command="close">Close</button>
+        </dialog>
+      `,
+    );
+    (window as any).__nativeCloseRequests = [];
+    document.addEventListener("gsxui:request-close", (event) => {
+      (window as any).__nativeCloseRequests.push((event as CustomEvent).detail);
+    });
+  });
+
+  const dialog = page.locator("#native-close");
+  await page.locator("#native-open").click();
+  await dialog.evaluate((element) => {
+    element.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 120 });
+  });
+  await page.locator("#native-request-close").click();
+  await expect(dialog).toHaveAttribute("data-state", "closed");
+  await expect(dialog).toHaveJSProperty("open", true);
+  await expect(dialog).toHaveJSProperty("open", false);
+  expect(await page.evaluate(() => (window as any).__nativeCloseRequests)).toEqual([
+    { reason: "cancel" },
+  ]);
+
+  await page.locator("#native-open").click();
+  await page.locator("#native-close-now").click();
+  await expect(dialog).toHaveJSProperty("open", false);
+  expect(await page.evaluate(() => (window as any).__nativeCloseRequests)).toEqual([
+    { reason: "cancel" },
+  ]);
+});
+
+test("native lifecycle methods stamp state before toggle and bypass cancelable requests", async ({
+  page,
+}) => {
+  await page.goto(BASIC);
+  const observed = await page.locator(DIALOG).evaluate(async (dialog: HTMLDialogElement) => {
+    const beforetoggle: Array<{ state: string | undefined; newState: string }> = [];
+    let closes = 0;
+    const requests: string[] = [];
+    dialog.addEventListener("beforetoggle", (event) => {
+      beforetoggle.push({
+        state: dialog.dataset.state,
+        newState: (event as ToggleEvent).newState,
+      });
+    });
+    dialog.addEventListener("gsxui:close", () => closes++);
+    document.addEventListener("gsxui:request-open", (event) => {
+      requests.push(event.type);
+      event.preventDefault();
+    });
+    document.addEventListener("gsxui:request-close", (event) => {
+      requests.push(event.type);
+      event.preventDefault();
+    });
+
+    const nextTask = () => new Promise((resolve) => setTimeout(resolve, 0));
+    dialog.showModal();
+    await nextTask();
+    dialog.close();
+    await nextTask();
+    dialog.show();
+    await nextTask();
+    dialog.close();
+    await nextTask();
+    return { beforetoggle, closes, requests };
+  });
+
+  expect(observed).toEqual({
+    beforetoggle: [
+      { state: "open", newState: "open" },
+      { state: "closed", newState: "closed" },
+      { state: "open", newState: "open" },
+      { state: "closed", newState: "closed" },
+    ],
+    closes: 2,
+    requests: [],
+  });
+  await expect(page.locator(DIALOG)).toHaveJSProperty("open", false);
+  await expect(page.locator(DIALOG)).toHaveAttribute("data-state", "closed");
+});
+
+test("direct requestClose follows the cancelable animated request path", async ({ page }) => {
+  await page.goto(BASIC);
+  const dialog = page.locator(DIALOG);
+  await page.evaluate(() => {
+    (window as any).__directRequestClose = [];
+    document.addEventListener("gsxui:request-close", (event) => {
+      (window as any).__directRequestClose.push((event as CustomEvent).detail);
+    });
+  });
+
+  await dialog.evaluate((element: HTMLDialogElement) => element.showModal());
+  await dialog.evaluate((element) => {
+    element.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 120 });
+    (element as HTMLDialogElement).requestClose();
+  });
+  await expect(dialog).toHaveAttribute("data-state", "closed");
+  await expect(dialog).toHaveJSProperty("open", true);
+  await expect(dialog).toHaveJSProperty("open", false);
+  expect(await page.evaluate(() => (window as any).__directRequestClose)).toEqual([
+    { reason: "cancel" },
+  ]);
+});

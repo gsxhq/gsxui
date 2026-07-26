@@ -43,6 +43,12 @@ function dialogOf(root) {
   return owned(root, DIALOG)[0];
 }
 
+function authoredInvokers(dialog) {
+  if (!dialog.id) return [];
+  const target = CSS.escape(dialog.id);
+  return [...document.querySelectorAll(`[commandfor="${target}"][command="show-modal"]`)];
+}
+
 // Idempotent: name/describe the dialog and point triggers at it.
 function wireA11y(root, dialog) {
   const title = owned(root, '[data-slot="dialog-title"]')[0];
@@ -140,6 +146,21 @@ on(
   { capture: true },
 );
 
+// Native dialog methods and Invoker Commands transition asynchronously: stamp
+// the impending state before the browser can paint, then leave `toggle` to
+// confirm it and notify observers.
+on(
+  "beforetoggle",
+  "dialog[data-gsxui-dialog-content]",
+  (event, dialog) => {
+    const open = event.newState === "open";
+    const root = rootOf(dialog);
+    if (open && root) wireA11y(root, dialog);
+    dialog.dataset.state = open ? "open" : "closed";
+  },
+  { capture: true },
+);
+
 // Single source of truth for state, events, and aria-expanded sync — covers
 // programmatic showModal()/close() too.
 on(
@@ -154,6 +175,8 @@ on(
         t.setAttribute("aria-expanded", open ? "true" : "false");
       if (open) wireA11y(root, dialog);
     }
+    for (const invoker of authoredInvokers(dialog))
+      invoker.setAttribute("aria-expanded", open ? "true" : "false");
     emit(dialog, open ? "gsxui:open" : "gsxui:close");
   },
   { capture: true },
