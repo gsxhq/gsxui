@@ -209,6 +209,13 @@ Use the existing Playwright layer against real Chromium:
 14. direct `requestClose()` enters the native cancel path and therefore the
     animated request-close flow.
 
+These tests assert public behavior and DOM contracts only: request and
+notification events, native `open`, `data-state`, ARIA relationships, and
+exact targeting. They do not pin utility classes, class strings, or computed
+visual styles, so moving styles into CSS component layers does not turn into
+a behavior-test migration. Animation timing is exercised with controlled Web
+Animations created by the test.
+
 The existing Go render pins and generated-drift check remain unchanged because
 their review findings are already fixed on `main`.
 

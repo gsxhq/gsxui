@@ -19,6 +19,9 @@
 - Built-in close requests animate; native `close` and `command="close"` remain immediate.
 - Only finite animations attached to the dialog element itself may delay close.
 - Never hand-edit generated `.x.go` or highlighted example output.
+- Browser tests assert behavior and DOM contracts, never utility classes,
+  class strings, or computed visual styles. Use controlled Web Animations for
+  transition behavior without pinning CSS implementation.
 - `make check` must pass end to end before completion.
 
 ---
