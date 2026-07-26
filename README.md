@@ -78,14 +78,6 @@ Radix's Portal for the native popover API.
 Every divergence, with its rationale, is ledgered in
 [`docs/jsx-parity.md`](docs/jsx-parity.md).
 
-## Upgrading from v1.0
-
-v1.0 vendored one package per component (`ui/button/button.gsx` as
-`package button`); current versions vendor flat into `ui/<name>.gsx`, one
-`package ui`. The two layouts don't coexist and there's no in-place
-migration: delete your vendored `ui/` directory and re-run
-`gsxui add <name>...` with a current binary.
-
 ## Contributing
 
     npm install                       # once
