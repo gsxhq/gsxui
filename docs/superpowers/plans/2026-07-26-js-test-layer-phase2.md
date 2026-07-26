@@ -15,6 +15,18 @@ native browser popover/dialog APIs.
 
 **Source spec:** `docs/superpowers/specs/2026-07-25-js-test-layer-design.md`
 
+## Seed checkpoint (complete)
+
+Before Task 1, land the two regressions already paid for:
+
+- `jstest/specs/dropdown.spec.ts` pins exactly-once checkbox behavior.
+- `jstest/specs/navigation-menu.spec.ts` pins mouse-click toggling and
+  keyboard-focus opening.
+
+Both are red-validated against the mutations named in Tasks 2 and 3. The
+remaining work starts at Task 1; Tasks 2 and 3 extend these files into the
+full component contracts below.
+
 ## Global constraints
 
 - Load the real `/ui/index.js`; no mocks, bundler, jsdom, or global animation
@@ -73,7 +85,7 @@ native browser popover/dialog APIs.
 
 **Files**
 
-- Create: `jstest/specs/dropdown.spec.ts`
+- Modify: `jstest/specs/dropdown.spec.ts`
 - Create: `jstest/specs/context-menu.spec.ts`
 
 **Dropdown contract**
@@ -110,7 +122,7 @@ Commit as `test(js): cover dropdown and context-menu behavior`.
 **Files**
 
 - Create: `jstest/specs/menubar.spec.ts`
-- Create: `jstest/specs/navigation-menu.spec.ts`
+- Modify: `jstest/specs/navigation-menu.spec.ts`
 
 **Menubar contract**
 
