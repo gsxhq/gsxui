@@ -76,9 +76,24 @@ const calendarWeekClass = "mt-2 flex w-full"
 // contract. Recorded as a deviation for Task 7's ledger: cell-level range
 // coloring is dropped, the button's own range pill classes (§3, already
 // live via `calendarDayButtonClass`) carry all the range-day styling
-// instead. `hidden` (§2, `invisible`) is likewise not ported — no
-// `data-hidden` attribute exists in the DOM contract either, and
-// `showOutsideDays`/hiding is not in this task's scope.
+// instead.
+//
+// `hidden` (§2, `invisible`) IS ported, as `data-hidden:invisible` — the
+// final-review fix wave wired `showOutsideDays` up (a declared but unread
+// parameter until then). Upstream's semantics, read off react-day-picker
+// 9.14.0's own `helpers/createGetModifiers.js`, are NOT "drop the cell":
+// `showOutsideDays: false` sets `modifiers.hidden` on the outside days,
+// `DayPicker.js` still renders the `<td>` (carrying `data-hidden=
+// {modifiers.hidden || undefined}` — a bare-presence attribute, exactly
+// like `data-outside`/`data-today`/`data-disabled` here) so the row keeps
+// its seven columns, and only the DayButton inside it is skipped
+// (`!modifiers.hidden && isInteractive ? DayButton : …`). `classNames.
+// hidden` is `invisible` rather than `hidden` precisely because the cell is
+// still occupying layout. That maps onto this port's fixed-42-cell design,
+// which likewise never adds or removes a cell: gsxui emits the same bare
+// `data-hidden` on the cell and BLANKS the button inside it (empty text,
+// `tabindex="-1" aria-hidden="true" disabled`) instead of omitting it,
+// since calendar.js may never create or destroy an element.
 //
 // The pre-existing `[data-selected=true]` tokens below (both the
 // `[&:last-child…]`/`[&:first-child…]` row-edge selectors and
@@ -89,7 +104,7 @@ const calendarWeekClass = "mt-2 flex w-full"
 // the literal value "true" to match (a bare `data-selected` attribute's
 // value is the empty string for `[attr=value]` matching purposes, which
 // would never satisfy `[data-selected=true]`).
-const calendarDayClass = "group/day relative aspect-square h-full w-full p-0 text-center select-none [&:last-child[data-selected=true]_button]:rounded-r-md [&:first-child[data-selected=true]_button]:rounded-l-md data-outside:text-muted-foreground data-outside:aria-selected:text-muted-foreground data-today:rounded-md data-today:bg-accent data-today:text-accent-foreground data-today:data-[selected=true]:rounded-none data-disabled:text-muted-foreground data-disabled:opacity-50"
+const calendarDayClass = "group/day relative aspect-square h-full w-full p-0 text-center select-none [&:last-child[data-selected=true]_button]:rounded-r-md [&:first-child[data-selected=true]_button]:rounded-l-md data-outside:text-muted-foreground data-outside:aria-selected:text-muted-foreground data-today:rounded-md data-today:bg-accent data-today:text-accent-foreground data-today:data-[selected=true]:rounded-none data-disabled:text-muted-foreground data-disabled:opacity-50 data-hidden:invisible"
 
 // calendarDayButtonClass is CalendarDayButton's own class string, verbatim
 // (source map §3) — already expressed entirely as data-attribute variants
@@ -532,6 +547,30 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 // case (a disabled day that already holds focus keeps the native disabled
 // attribute off) never applies on first paint — every disabled day gets the
 // native `disabled` attribute here, unconditionally.
+//
+// The final-review fix wave adds three things to the contract above:
+//
+//   - `showOutsideDays` is finally read (it was declared and unused). false
+//     marks each outside cell `data-hidden` and blanks the button inside it
+//     (empty text, tabindex="-1", aria-hidden="true", native disabled); the
+//     cell itself stays, so the row keeps its seven columns and calendar.js
+//     still never creates or destroys anything. The resolved flag is
+//     serialized to the root as `data-gsxui-calendar-show-outside-days`
+//     ("true"/"false", unconditional — like the nav bounds, a bool always
+//     has a value), because calendar.js has to re-derive `hidden` for every
+//     month the server never rendered. Note the DEFAULT differs from
+//     shadcn's `showOutsideDays = true` prop default: Go's bool zero value
+//     is false, so a caller who omits the parameter gets outside days
+//     hidden. Ledgered in docs/jsx-parity.md; every shipped example passes
+//     it explicitly.
+//   - `mode` is defaulted to "single" once, at the top of the block, so the
+//     rendered body and the root attribute can never disagree (see the
+//     block's own comment).
+//   - The `<table role="grid">` carries `aria-label={captionText}` —
+//     upstream's `labelGrid`, which defaults to the formatted month/year.
+//     role="grid" suppresses a `<table>`'s implicit naming, so without it
+//     the grid is announced unnamed on entry. calendar.js's repaint rewrites
+//     it on every navigation, so the name follows the displayed month.
 component Calendar(
 	mode string,
 	month time.Time,
@@ -551,6 +590,26 @@ component Calendar(
 	attrs gsx.Attrs,
 ) {
 	{{
+		// mode's zero value is defaulted ONCE, here, before anything reads
+		// it — not only on the way out to data-gsxui-calendar-mode (final
+		// review, Important 2). An earlier revision defaulted the root
+		// attribute alone (`mode |> default("single")`) while the body kept
+		// reading the bare parameter, so `<ui.Calendar selected={…}
+		// name="d"/>` (mode omitted, the Go zero value "") rendered the
+		// selected day UNSELECTED — daySelected returns false for any mode
+		// that is neither "single" nor "multiple" — while the root attribute
+		// and the hidden input both carried that same date. calendar.js's
+		// own `root.dataset.gsxuiCalendarMode || "single"` does default, so
+		// the first client repaint silently flipped the day to selected:
+		// server and client disagreed on first paint, and a screen reader
+		// was told the selected day was not selected. aria-multiselectable
+		// below is NOT affected by the same class of bug either way ("" and
+		// "single" both yield false), but it now reads the defaulted value
+		// for the same single-source-of-truth reason.
+		if mode == "" {
+			mode = "single"
+		}
+
 		year := month.Year()
 		monthOfYear := month.Month()
 		grid := monthGrid(year, monthOfYear, weekStartsOn)
@@ -558,9 +617,24 @@ component Calendar(
 		focusIdx := firstFocusableIndex(grid, year, monthOfYear)
 		multiselectable := mode == "range" || mode == "multiple"
 
+		// Every date below is serialized through dayOnly (final review,
+		// Important 3), never t.Format("2006-01-02") on the caller's own
+		// time.Time. sameDay/dayOnly compare UTC calendar days; a bare
+		// Format renders the date in the VALUE's own location. A server in
+		// Asia/Tokyo handed `selected = time.Now()` at 2026-01-15 07:00 JST
+		// would then mark 2026-01-14 (the UTC day sameDay compares) while
+		// the root attribute and the hidden input both said 2026-01-15 —
+		// highlight on one day, form value on another, and the first client
+		// repaint (which re-derives selection from the root attribute)
+		// silently moved the highlight. This component's own doc comment
+		// promises non-UTC callers are handled; before this, they were
+		// handled for comparison only. `month` is exempt and stays a plain
+		// Format: it is only ever compared against itself (year/monthOfYear
+		// come from the same value), so it is self-consistent by
+		// construction.
 		var selectedISOParts []string
 		for _, s := range selected {
-			selectedISOParts = append(selectedISOParts, s.Format("2006-01-02"))
+			selectedISOParts = append(selectedISOParts, dayOnly(s).Format("2006-01-02"))
 		}
 		selectedISO := strings.Join(selectedISOParts, ",")
 
@@ -582,15 +656,15 @@ component Calendar(
 
 		hiddenSingleValue := ""
 		if len(selected) > 0 {
-			hiddenSingleValue = selected[0].Format("2006-01-02")
+			hiddenSingleValue = dayOnly(selected[0]).Format("2006-01-02")
 		}
 		hiddenFromValue := ""
 		if !from.IsZero() {
-			hiddenFromValue = from.Format("2006-01-02")
+			hiddenFromValue = dayOnly(from).Format("2006-01-02")
 		}
 		hiddenToValue := ""
 		if !to.IsZero() {
-			hiddenToValue = to.Format("2006-01-02")
+			hiddenToValue = dayOnly(to).Format("2006-01-02")
 		}
 
 		// The four disabled rules, serialized onto the root so calendar.js
@@ -603,7 +677,7 @@ component Calendar(
 		// -selected/-from/-to's own omit-when-empty convention just above).
 		var disabledDatesISO []string
 		for _, dd := range disabledDates {
-			disabledDatesISO = append(disabledDatesISO, dd.Format("2006-01-02"))
+			disabledDatesISO = append(disabledDatesISO, dayOnly(dd).Format("2006-01-02"))
 		}
 		disabledDatesAttr := strings.Join(disabledDatesISO, ",")
 
@@ -617,22 +691,23 @@ component Calendar(
 		data-slot="calendar"
 		data-gsxui-calendar
 		data-gsxui-calendar-month={ month.Format("2006-01") }
-		data-gsxui-calendar-mode={ mode |> default("single") }
+		data-gsxui-calendar-mode={ mode }
 		data-gsxui-calendar-week-start={ int(weekStartsOn) }
+		data-gsxui-calendar-show-outside-days={ boolStr(showOutsideDays) }
 		{ if selectedISO != "" {
 			data-gsxui-calendar-selected={ selectedISO }
 		} }
 		{ if !from.IsZero() {
-			data-gsxui-calendar-from={ from.Format("2006-01-02") }
+			data-gsxui-calendar-from={ dayOnly(from).Format("2006-01-02") }
 		} }
 		{ if !to.IsZero() {
-			data-gsxui-calendar-to={ to.Format("2006-01-02") }
+			data-gsxui-calendar-to={ dayOnly(to).Format("2006-01-02") }
 		} }
 		{ if !disabledBefore.IsZero() {
-			data-gsxui-calendar-disabled-before={ disabledBefore.Format("2006-01-02") }
+			data-gsxui-calendar-disabled-before={ dayOnly(disabledBefore).Format("2006-01-02") }
 		} }
 		{ if !disabledAfter.IsZero() {
-			data-gsxui-calendar-disabled-after={ disabledAfter.Format("2006-01-02") }
+			data-gsxui-calendar-disabled-after={ dayOnly(disabledAfter).Format("2006-01-02") }
 		} }
 		{ if disabledDatesAttr != "" {
 			data-gsxui-calendar-disabled-dates={ disabledDatesAttr }
@@ -697,6 +772,7 @@ component Calendar(
 		<table
 			data-gsxui-calendar-grid
 			role="grid"
+			aria-label={ captionText }
 			{ if multiselectable {
 				aria-multiselectable="true"
 			} }
@@ -718,10 +794,30 @@ component Calendar(
 								idx := week*7 + day
 								d := grid[idx]
 								outside := dayOutside(d, year, monthOfYear)
+								// showOutsideDays=false hides the padding days
+								// without removing their cells (upstream's
+								// modifiers.hidden — see calendarDayClass's own
+								// comment). A hidden day is always an outside
+								// day, so it is never the tab stop
+								// (firstFocusableIndex only ever returns an
+								// in-month index); the `&& !hiddenDay` term
+								// below is belt-and-braces, and its twin in
+								// calendar.js's repaint says the same thing.
+								// Hidden days are deliberately OUT of the
+								// roving sequence, the opposite of the call
+								// made for DISABLED days (which stay in it) —
+								// an invisible but focusable button is a
+								// screen-reader trap, whereas a visible
+								// disabled one is a legitimate stop.
+								hiddenDay := outside && !showOutsideDays
 								isToday := d.Year() == today.Year() && d.Month() == today.Month() && d.Day() == today.Day()
 								tabindex := "-1"
-								if idx == focusIdx {
+								if idx == focusIdx && !hiddenDay {
 									tabindex = "0"
+								}
+								dayText := ""
+								if !hiddenDay {
+									dayText = strconv.Itoa(d.Day())
 								}
 								dayDis := dayDisabled(d, disabledBefore, disabledAfter, disabledDates, disabledWeekdays)
 								daySel := daySelected(mode, d, selected)
@@ -733,6 +829,7 @@ component Calendar(
 								role="gridcell"
 								data-date={ d.Format("2006-01-02") }
 								data-outside={ gsx.Toggle(outside) }
+								data-hidden={ gsx.Toggle(hiddenDay) }
 								data-today={ gsx.Toggle(isToday) }
 								data-disabled={ gsx.Toggle(dayDis) }
 								{ if cellSel {
@@ -747,14 +844,17 @@ component Calendar(
 									data-date={ d.Format("2006-01-02") }
 									tabindex={ tabindex }
 									aria-label={ d.Format("Monday, January 2, 2006") }
+									{ if hiddenDay {
+										aria-hidden="true"
+									} }
 									data-selected-single={ boolStr(selSingle) }
 									data-range-start={ boolStr(rStart) }
 									data-range-middle={ boolStr(rMiddle) }
 									data-range-end={ boolStr(rEnd) }
-									disabled={ dayDis }
+									disabled={ dayDis || hiddenDay }
 									class={ base, variantClass("ghost"), sizeClass("icon"), calendarDayButtonClass }
 								>
-									{ d.Day() }
+									{ dayText }
 								</button>
 							</td>
 						} }

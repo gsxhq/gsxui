@@ -251,6 +251,11 @@ function clientToday() {
 function repaint(root, year, month) {
   const weekStartsOn = Number(root.dataset.gsxuiCalendarWeekStart ?? "0");
   const mode = root.dataset.gsxuiCalendarMode || "single";
+  // calendar.gsx serializes the resolved flag unconditionally as the literal
+  // "true"/"false" (its own boolStr), so an exact === "true" test is the
+  // faithful twin — no `|| default` fallback, because there is no
+  // omit-when-unset case to fall back FROM.
+  const showOutsideDays = root.dataset.gsxuiCalendarShowOutsideDays === "true";
   const grid = monthGrid(year, month, weekStartsOn);
   const rules = disabledRules(root);
   const { selected, from, to, hover } = selection(root);
@@ -307,6 +312,8 @@ function repaint(root, year, month) {
     const dateISO = iso(date);
 
     const outside = date.getUTCFullYear() !== year || date.getUTCMonth() !== month;
+    // calendar.gsx's own `hiddenDay := outside && !showOutsideDays`.
+    const hidden = outside && !showOutsideDays;
     const isToday = sameUTCDay(date, today);
     const disabled = dayDisabled(date, rules);
     const isFocused = focusedISO !== null && dateISO === focusedISO;
@@ -335,6 +342,7 @@ function repaint(root, year, month) {
 
     cell.dataset.date = dateISO;
     toggleAttr(cell, "data-outside", outside);
+    toggleAttr(cell, "data-hidden", hidden);
     toggleAttr(cell, "data-today", isToday);
     toggleAttr(cell, "data-disabled", disabled);
     // data-focused drives the button's own group-data-[focused=true]/day:
@@ -347,9 +355,18 @@ function repaint(root, year, month) {
     cell.setAttribute("aria-selected", cellSelected ? "true" : "false");
 
     button.dataset.date = dateISO;
-    button.textContent = String(date.getUTCDate());
+    // A hidden day's button is blanked, not removed (calendar.js never
+    // creates or destroys an element; upstream simply skips rendering the
+    // DayButton, which this port cannot do). Empty text + aria-hidden +
+    // native disabled + tabindex="-1" is the closest reachable equivalent:
+    // nothing to read, nothing to click, and — unlike DISABLED days, which
+    // deliberately stay in the roving sequence — nothing to tab onto either.
+    // An invisible focusable button is a screen-reader trap.
+    button.textContent = hidden ? "" : String(date.getUTCDate());
     button.setAttribute("aria-label", ariaLabel(date));
-    button.setAttribute("tabindex", i === focusIdx ? "0" : "-1");
+    if (hidden) button.setAttribute("aria-hidden", "true");
+    else button.removeAttribute("aria-hidden");
+    button.setAttribute("tabindex", i === focusIdx && !hidden ? "0" : "-1");
     button.setAttribute("data-selected-single", selectedSingle ? "true" : "false");
     button.setAttribute("data-range-start", rangeStart ? "true" : "false");
     button.setAttribute("data-range-middle", rangeMiddle ? "true" : "false");
@@ -360,14 +377,28 @@ function repaint(root, year, month) {
     // instead, so focus is never yanked out of the grid — the click
     // handler below checks aria-disabled explicitly for exactly this case,
     // since a native-disabled=false button dispatches "click" normally.
-    if (disabled && isFocused) {
+    //
+    // A HIDDEN day always takes the native attribute regardless (mirroring
+    // calendar.gsx's own `disabled={ dayDis || hiddenDay }`): the
+    // degrade-to-aria-disabled branch exists so a focused day never loses
+    // focus, and a hidden day can never be the focused one — it is out of
+    // the roving sequence entirely, by exactly the reasoning above.
+    if (disabled && isFocused && !hidden) {
       button.disabled = false;
       button.setAttribute("aria-disabled", "true");
     } else {
-      button.disabled = disabled;
+      button.disabled = disabled || hidden;
       button.removeAttribute("aria-disabled");
     }
   }
+
+  // Upstream sets the grid's accessible name from labelGrid (the formatted
+  // month/year) — calendar.gsx renders it as aria-label={captionText}, and
+  // it has to follow a client-side navigation the same way the caption text
+  // itself does, or the grid keeps announcing the month it was
+  // server-rendered for.
+  const gridEl = root.querySelector("[data-gsxui-calendar-grid]");
+  if (gridEl) gridEl.setAttribute("aria-label", captionText(year, month));
 }
 
 // updateCaption writes the same text to every element carrying
@@ -623,6 +654,15 @@ on("click", "[data-gsxui-calendar-day]", (_event, el) => {
 // --- range hover preview (range mode only, while from is set and to is not)
 
 on("mouseover", "[data-gsxui-calendar-day]", (_event, el) => {
+  // The same guard the day-click handler opens with, for the same reason:
+  // a day that cannot be SELECTED must not paint a preview of a range that
+  // ending on it would produce. Without this, hovering a disabled (or
+  // hidden) day dragged a data-range-middle band right through it, promising
+  // a selection the click path would then refuse. Native-disabled buttons
+  // don't dispatch mouse events in most browsers, but the aria-disabled
+  // degradation (a disabled day holding focus) and the hidden days both
+  // reach here otherwise.
+  if (el.disabled || el.getAttribute("aria-disabled") === "true") return;
   const root = el.closest(ROOT);
   if (!root) return;
   const mode = root.dataset.gsxuiCalendarMode || "single";
@@ -742,19 +782,25 @@ function endOfWeekUTC(date, weekStartsOn) {
 // declared fromYear/toYear range (calendar.gsx's own calendarNavBounds,
 // mirrored client-side by navBounds() above), exactly the defect Task 4's
 // review fixed for the mouse path (syncNavButtons/prev/next's own
-// aria-disabled guard). Only the YEAR can actually go out of bounds here —
-// month is always normalized to 0-11 by every KEY_MOVES entry — so clamping
-// lands on January 1st of fromYear or December <original day, clamped> of
-// toYear, the same day-of-month clamp addMonthsUTC already uses for an
-// end-of-month overflow.
+// aria-disabled guard).
+//
+// This is a CLAMP, not a re-projection: upstream's getFocusableDate ends with
+// `focusableDate = max([navStart, focusableDate])` (moving backward) or
+// `min([navEnd, focusableDate])` (moving forward) — it returns the BOUND
+// ITSELF, not the out-of-range target's day-of-month transplanted into the
+// bound month. The final review caught the earlier version doing the latter:
+// it landed on `Date.UTC(fromYear, 0, min(date.getUTCDate(), 31))`, so on the
+// shipped /x/calendar/bounded (fromYear=toYear=2026, January displayed),
+// focusing 2026-01-01 and pressing ArrowUp produced a raw 2025-12-25 that
+// "clamped" to 2026-01-25 — jumping focus 24 days FORWARD out of a backward
+// move, and past the very bound it was meant to hold. Same shape at the
+// upper bound. Only the YEAR can go out of range here (month is normalized
+// to 0-11 by every KEY_MOVES entry), so the two bounds are the first day of
+// fromYear's January and the last day of toYear's December.
 function clampToNavBounds(date, fromYear, toYear) {
   const year = date.getUTCFullYear();
-  if (year < fromYear) {
-    return new Date(Date.UTC(fromYear, 0, Math.min(date.getUTCDate(), lastDayOfMonthUTC(fromYear, 0))));
-  }
-  if (year > toYear) {
-    return new Date(Date.UTC(toYear, 11, Math.min(date.getUTCDate(), lastDayOfMonthUTC(toYear, 11))));
-  }
+  if (year < fromYear) return new Date(Date.UTC(fromYear, 0, 1));
+  if (year > toYear) return new Date(Date.UTC(toYear, 11, lastDayOfMonthUTC(toYear, 11)));
   return date;
 }
 
@@ -784,6 +830,13 @@ const KEY_MOVES = {
 // check is what keeps Enter/Space on one a no-op. Skipping them here would
 // strand a keyboard user on whichever side of a disabled span they
 // approached from.
+//
+// HIDDEN days (showOutsideDays=false) are the opposite call, and never come
+// up here anyway: a hidden day is by definition an outside day, so any move
+// that resolves onto one crosses a month boundary and goTo repaints it as an
+// ordinary in-month day of the newly displayed month before focus lands. The
+// roving sequence they are excluded from is the TAB one (tabindex="0"), in
+// repaint above — not this one.
 on("keydown", "[data-gsxui-calendar-day]", (event, el) => {
   const move = KEY_MOVES[event.key];
   if (!move) return;

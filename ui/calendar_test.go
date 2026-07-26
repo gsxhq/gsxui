@@ -269,8 +269,14 @@ func TestCalendarSingleSelection(t *testing.T) {
 	}
 
 	cell := cellFor(t, got, "2026-01-15")
-	if !strings.Contains(cell, `data-selected`) {
-		t.Error("selected cell missing data-selected")
+	// The exact value, not a bare Contains(cell, "data-selected"): the
+	// button inside every cell unconditionally emits
+	// data-selected-single="true"/"false", and "data-selected" is a prefix
+	// of that, so the bare check passed against any rendered cell whatsoever
+	// and could never go red. (The Task 2 fix round tightened the identical
+	// pattern in the two range tests below and missed this one.)
+	if !strings.Contains(cell, `data-selected="true"`) {
+		t.Errorf("selected cell missing data-selected=\"true\"\nin: %s", cell)
 	}
 	// Single selection is neither an end nor a middle of a range.
 	if !strings.Contains(cell, `data-selected-single="true"`) {
@@ -553,14 +559,325 @@ func TestCalendarDisabledWeekdaysAndDates(t *testing.T) {
 // disabled day that holds focus degrades to aria-disabled so focus is never
 // yanked out of the grid. On the server nothing holds focus yet, so first
 // paint always uses the native attribute. Task 6 owns the focused case.
+// The earlier version of this test asserted only `len(gridDates) == 42`,
+// which is true of EVERY possible render of this component (the grid is a
+// fixed 42 cells by construction — see monthGrid) and so could never go red
+// for the property the name claims. It now checks the actual contract: the
+// days the disabledBefore bound rules out are still present as cells, still
+// carry their date, and are marked disabled rather than omitted.
 func TestCalendarDisabledDaysStayInTheGrid(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
 		time.Date(2026, 1, 10, 0, 0, 0, 0, time.UTC), time.Time{},
 		nil, nil, "", nil))
 
-	if n := len(gridDates(t, got)); n != 42 {
-		t.Errorf("got %d cells, want 42 — disabled days must still render", n)
+	dates := gridDates(t, got)
+	if len(dates) != 42 {
+		t.Fatalf("got %d cells, want 42", len(dates))
+	}
+
+	// disabledBefore=2026-01-10 rules out the grid's first thirteen days:
+	// 2025-12-28..2025-12-31 (four padding days) plus 2026-01-01..2026-01-09.
+	var wantDisabled []string
+	for d := time.Date(2025, 12, 28, 0, 0, 0, 0, time.UTC); d.Before(time.Date(2026, 1, 10, 0, 0, 0, 0, time.UTC)); d = d.AddDate(0, 0, 1) {
+		wantDisabled = append(wantDisabled, d.Format("2006-01-02"))
+	}
+	if len(wantDisabled) != 13 {
+		t.Fatalf("test setup: expected 13 disabled days, computed %d", len(wantDisabled))
+	}
+
+	present := make(map[string]bool, len(dates))
+	for _, d := range dates {
+		present[d] = true
+	}
+	for _, d := range wantDisabled {
+		if !present[d] {
+			t.Errorf("%s was dropped from the grid instead of being rendered disabled", d)
+			continue
+		}
+		if !hasBareAttr(cellTag(t, got, d), "data-disabled") {
+			t.Errorf("%s: cell is not marked data-disabled\ntag: %s", d, cellTag(t, got, d))
+		}
+		if !hasBareDisabledAttr(buttonTag(t, got, d)) {
+			t.Errorf("%s: day button carries no native disabled attribute\ntag: %s", d, buttonTag(t, got, d))
+		}
+	}
+
+	// Exactly those thirteen, and no more — a dayDisabled that disabled the
+	// whole grid would satisfy every assertion above.
+	var disabledCount int
+	for _, d := range dates {
+		if hasBareAttr(cellTag(t, got, d), "data-disabled") {
+			disabledCount++
+		}
+	}
+	if disabledCount != len(wantDisabled) {
+		t.Errorf("got %d disabled cells, want %d", disabledCount, len(wantDisabled))
+	}
+
+	// The first day inside the bound is untouched — the `<` vs `<=` boundary.
+	if hasBareAttr(cellTag(t, got, "2026-01-10"), "data-disabled") {
+		t.Error("2026-01-10 is the bound itself and must not be disabled")
+	}
+}
+
+// --- final review, Important 1: showOutsideDays -----------------------------
+//
+// The parameter was declared in the fourteen-parameter signature and read
+// nowhere: every cell rendered regardless, so `showOutsideDays={false}` had
+// no observable effect at all. Upstream's semantics (react-day-picker
+// 9.14.0, helpers/createGetModifiers.js) are not "drop the cell" —
+// showOutsideDays:false sets modifiers.hidden, the <td> stays for layout
+// (carrying its own data-hidden), classNames.hidden is "invisible", and no
+// DayButton renders inside it. gsxui keeps the button element (calendar.js
+// may never create or destroy one) and blanks it instead.
+
+func TestCalendarShowOutsideDaysFalseHidesPaddingDaysKeepingTheirCells(t *testing.T) {
+	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil, time.Time{}, time.Time{}, time.Sunday, false, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "", nil))
+
+	dates := gridDates(t, got)
+	if len(dates) != 42 {
+		t.Fatalf("got %d cells, want 42 — hiding must not remove cells", len(dates))
+	}
+
+	// January 2026 with a Sunday week start spans 2025-12-28..2026-02-07:
+	// four leading padding days and seven trailing ones, eleven in total.
+	var hiddenCount int
+	for _, d := range dates {
+		tag := cellTag(t, got, d)
+		outside := hasBareAttr(tag, "data-outside")
+		hidden := hasBareAttr(tag, "data-hidden")
+		if outside != hidden {
+			t.Errorf("%s: data-outside=%v but data-hidden=%v — with showOutsideDays=false the two must coincide", d, outside, hidden)
+		}
+		if hidden {
+			hiddenCount++
+		}
+	}
+	if hiddenCount != 11 {
+		t.Errorf("got %d hidden cells, want 11", hiddenCount)
+	}
+
+	// The hidden day's button is blanked, not removed: no text, out of the
+	// tab order, hidden from assistive tech, and not activatable.
+	btn := buttonTag(t, got, "2025-12-28")
+	if !strings.Contains(btn, `tabindex="-1"`) {
+		t.Errorf("hidden day's button is not tabindex=-1\ntag: %s", btn)
+	}
+	if !strings.Contains(btn, `aria-hidden="true"`) {
+		t.Errorf("hidden day's button is not aria-hidden\ntag: %s", btn)
+	}
+	if !hasBareDisabledAttr(btn) {
+		t.Errorf("hidden day's button carries no native disabled attribute\ntag: %s", btn)
+	}
+	if cell := cellFor(t, got, "2025-12-28"); !strings.Contains(cell, "></button>") {
+		t.Errorf("hidden day's button still renders its day number\nin: %s", cell)
+	}
+
+	// An in-month day is entirely untouched by any of this.
+	inMonth := buttonTag(t, got, "2026-01-15")
+	if strings.Contains(inMonth, "aria-hidden") {
+		t.Errorf("an in-month day must not be aria-hidden\ntag: %s", inMonth)
+	}
+	if hasBareDisabledAttr(inMonth) {
+		t.Errorf("an in-month day must not be disabled by hiding\ntag: %s", inMonth)
+	}
+	if cell := cellFor(t, got, "2026-01-15"); !strings.Contains(cell, ">15</button>") {
+		t.Errorf("an in-month day must still render its day number\nin: %s", cell)
+	}
+
+	// Hidden days are OUT of the roving sequence (unlike disabled days,
+	// which stay in it) — exactly one tab stop remains, and it is an
+	// in-month day.
+	if n := strings.Count(got, `tabindex="0"`); n != 1 {
+		t.Errorf("got %d tabindex=\"0\" buttons, want exactly 1", n)
+	}
+	if !strings.Contains(buttonTag(t, got, "2026-01-01"), `tabindex="0"`) {
+		t.Error("the sole tab stop is not the first day of the displayed month")
+	}
+}
+
+func TestCalendarShowOutsideDaysTrueMarksNothingHidden(t *testing.T) {
+	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "", nil))
+
+	for _, d := range gridDates(t, got) {
+		if hasBareAttr(cellTag(t, got, d), "data-hidden") {
+			t.Errorf("%s: marked data-hidden even though showOutsideDays is true", d)
+		}
+	}
+	if !strings.Contains(cellFor(t, got, "2025-12-28"), ">28</button>") {
+		t.Error("an outside day must still render its day number when showOutsideDays is true")
+	}
+}
+
+// The resolved flag reaches the client on the root, unconditionally (like the
+// nav bounds, and unlike the omit-when-unset selection/disabled attributes —
+// a bool always has a value). calendar.js re-derives `hidden` for every month
+// the server never rendered and has no other source for it.
+func TestCalendarRootCarriesShowOutsideDays(t *testing.T) {
+	for _, tc := range []struct {
+		show bool
+		want string
+	}{
+		{true, `data-gsxui-calendar-show-outside-days="true"`},
+		{false, `data-gsxui-calendar-show-outside-days="false"`},
+	} {
+		got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+			nil, time.Time{}, time.Time{}, time.Sunday, tc.show, "label", 0, 0,
+			time.Time{}, time.Time{}, nil, nil, "", nil))
+		if !strings.Contains(got, tc.want) {
+			t.Errorf("showOutsideDays=%v: root missing %q", tc.show, tc.want)
+		}
+	}
+}
+
+// --- final review, Important 2: mode's zero value ---------------------------
+//
+// data-gsxui-calendar-mode was defaulted to "single" on the way out while the
+// body kept reading the bare parameter, and daySelected returns false for any
+// mode that is neither "single" nor "multiple". So a caller who omitted
+// `mode` (Go's zero value "") got the selected day rendered UNSELECTED while
+// the root attribute and the hidden input both carried that same date — and
+// calendar.js's own `|| "single"` default then flipped it on the first
+// repaint. Server and client disagreed on first paint.
+func TestCalendarZeroModeRendersAsSingleEverywhereNotJustOnTheRoot(t *testing.T) {
+	sel := []time.Time{time.Date(2026, 1, 15, 0, 0, 0, 0, time.UTC)}
+	got := render(t, ui.Calendar("", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		sel, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "d", nil))
+
+	if !strings.Contains(got, `data-gsxui-calendar-mode="single"`) {
+		t.Error("root does not carry the defaulted mode")
+	}
+	cell := cellFor(t, got, "2026-01-15")
+	if !strings.Contains(cell, `data-selected="true"`) {
+		t.Errorf("the selected day's cell is not marked selected\nin: %s", cell)
+	}
+	if !strings.Contains(cell, `aria-selected="true"`) {
+		t.Errorf("the selected day's cell is not aria-selected\nin: %s", cell)
+	}
+	if !strings.Contains(cell, `data-selected-single="true"`) {
+		t.Errorf("the selected day's button is not data-selected-single\nin: %s", cell)
+	}
+	// The three carriers of the same fact agree.
+	if !strings.Contains(got, `data-gsxui-calendar-selected="2026-01-15"`) {
+		t.Error("root does not carry the selection")
+	}
+	if !strings.Contains(got, `<input type="hidden" name="d" value="2026-01-15"`) {
+		t.Errorf("hidden input does not carry the selection\nin: %s", got)
+	}
+	// aria-multiselectable is not affected by the same bug either way ("" and
+	// "single" both yield false), pinned here so a future refactor that reads
+	// mode before defaulting it can't silently regress this one too.
+	if strings.Contains(got, `aria-multiselectable`) {
+		t.Error("single mode must not be aria-multiselectable")
+	}
+}
+
+// --- final review, Important 3: UTC comparison, local-zone serialization ----
+//
+// sameDay/dayOnly normalize through .UTC(), but every serialization used to
+// be t.Format("2006-01-02") in the VALUE's own location. A server in
+// Asia/Tokyo handed selected = 2026-01-15 07:00 JST (= 2026-01-14 22:00 UTC)
+// marked 2026-01-14 in the grid while the root attribute and the hidden
+// input both said 2026-01-15: highlight on one day, form value on another,
+// and the first client repaint (which re-derives selection from the root
+// attribute) silently moved the highlight. The component's own doc comment
+// promises non-UTC callers are handled; before this they were handled for
+// comparison only.
+func TestCalendarSerializesTheSameUTCDayItCompares(t *testing.T) {
+	jst := time.FixedZone("JST", 9*60*60)
+	// Each of these is a UTC-calendar-day BEHIND its own local date.
+	sel := time.Date(2026, 1, 15, 7, 0, 0, 0, jst)   // 2026-01-14 UTC
+	from := time.Date(2026, 1, 9, 3, 0, 0, 0, jst)   // 2026-01-08 UTC
+	to := time.Date(2026, 1, 13, 5, 0, 0, 0, jst)    // 2026-01-12 UTC
+	before := time.Date(2026, 1, 6, 2, 0, 0, 0, jst) // 2026-01-05 UTC
+	after := time.Date(2026, 1, 26, 8, 0, 0, 0, jst) // 2026-01-25 UTC
+	dd := time.Date(2026, 1, 21, 4, 0, 0, 0, jst)    // 2026-01-20 UTC
+
+	// Single mode first: the marked day and both serializations must agree.
+	single := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		[]time.Time{sel}, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		before, after, []time.Time{dd}, nil, "d", nil))
+
+	if !strings.Contains(cellFor(t, single, "2026-01-14"), `data-selected="true"`) {
+		t.Error("2026-01-14 (the UTC day sameDay compares) is not the marked day")
+	}
+	for _, want := range []string{
+		`data-gsxui-calendar-selected="2026-01-14"`,
+		`data-gsxui-calendar-disabled-before="2026-01-05"`,
+		`data-gsxui-calendar-disabled-after="2026-01-25"`,
+		`data-gsxui-calendar-disabled-dates="2026-01-20"`,
+		`<input type="hidden" name="d" value="2026-01-14"`,
+	} {
+		if !strings.Contains(single, want) {
+			t.Errorf("missing %q — serialized in the caller's own zone instead of through dayOnly", want)
+		}
+	}
+	// The local-zone dates must appear nowhere as a serialized value.
+	for _, unwanted := range []string{`="2026-01-15"`, `="2026-01-06"`, `="2026-01-26"`, `="2026-01-21"`} {
+		if strings.Contains(single, `data-gsxui-calendar-selected`+unwanted) ||
+			strings.Contains(single, `data-gsxui-calendar-disabled-before`+unwanted) ||
+			strings.Contains(single, `data-gsxui-calendar-disabled-after`+unwanted) ||
+			strings.Contains(single, `data-gsxui-calendar-disabled-dates`+unwanted) {
+			t.Errorf("a root attribute was serialized in the caller's own zone: %s", unwanted)
+		}
+	}
+	// The disabled RULES the client re-derives must rule out the same days
+	// the server itself marked.
+	if !hasBareAttr(cellTag(t, single, "2026-01-20"), "data-disabled") {
+		t.Error("the disabled date's own UTC day is not marked disabled")
+	}
+
+	// Range mode: from/to on the root and in both hidden inputs.
+	rng := render(t, ui.Calendar("range", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil, from, to, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "stay", nil))
+
+	for _, want := range []string{
+		`data-gsxui-calendar-from="2026-01-08"`,
+		`data-gsxui-calendar-to="2026-01-12"`,
+		`name="stay" value="2026-01-08"`,
+		`name="stay-to" value="2026-01-12"`,
+	} {
+		if !strings.Contains(rng, want) {
+			t.Errorf("missing %q — serialized in the caller's own zone instead of through dayOnly", want)
+		}
+	}
+	if !strings.Contains(cellFor(t, rng, "2026-01-08"), `data-range-start="true"`) {
+		t.Error("2026-01-08 (from's own UTC day) is not the range start")
+	}
+	if !strings.Contains(cellFor(t, rng, "2026-01-12"), `data-range-end="true"`) {
+		t.Error("2026-01-12 (to's own UTC day) is not the range end")
+	}
+}
+
+// --- final review, minor: the grid's accessible name ------------------------
+//
+// role="grid" suppresses a <table>'s own implicit naming, so without this the
+// grid is announced unnamed on entry. Upstream sets aria-label={labelGrid(…)},
+// which defaults to the formatted month/year — the same string the caption
+// already shows.
+func TestCalendarGridIsNamedAfterTheDisplayedMonth(t *testing.T) {
+	got := render(t, ui.Calendar("single", time.Date(2026, 7, 4, 0, 0, 0, 0, time.UTC),
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "", nil))
+
+	i := strings.Index(got, "<table")
+	if i < 0 {
+		t.Fatal("no <table> rendered")
+	}
+	end := strings.Index(got[i:], ">")
+	if end < 0 {
+		t.Fatal("the <table>'s opening tag is never closed")
+	}
+	tag := got[i : i+end]
+	if !strings.Contains(tag, `aria-label="July 2026"`) {
+		t.Errorf("the grid has no accessible name naming the displayed month\ntag: %s", tag)
 	}
 }
 
@@ -590,33 +907,70 @@ func TestCalendarLabelCaption(t *testing.T) {
 	}
 }
 
-// hasBareDisabledAttr reports whether tag contains a real, bare HTML
-// `disabled` attribute (rendered by gsx as literal " disabled" with nothing
-// else — see gsx's Writer.BoolAttr) as opposed to a `disabled:`-prefixed
-// Tailwind variant token such as "disabled:pointer-events-none", which also
-// contains the substring " disabled" but is always immediately followed by
-// ':', never by a space or '>'. button.gsx's own `base` class constant (used
-// by every nav button, since these compose base/variantClass("ghost")
-// directly) unconditionally contains "disabled:pointer-events-none
-// disabled:opacity-50" — a bare strings.Contains(tag, " disabled") check
-// would match that class token on every render regardless of whether a real
-// disabled attribute is present, which is exactly the "assertion string is a
+// hasBareAttr reports whether tag contains a real, bare HTML attribute named
+// `name` (rendered by gsx as a literal " name" with nothing else — see gsx's
+// Writer.BoolAttr), as opposed to a same-named Tailwind variant token such as
+// "disabled:pointer-events-none" or "data-hidden:invisible" (always followed
+// by ':'), a longer attribute that merely starts with the same characters
+// ("data-selected-single", followed by '-'), or a valued attribute of the
+// same name (followed by '='). button.gsx's own `base` class constant, on
+// every button here, unconditionally contains "disabled:pointer-events-none
+// disabled:opacity-50", and calendarDayClass contains "data-disabled:…" and
+// "data-hidden:invisible" — a bare strings.Contains(tag, " disabled") check
+// would match those class tokens on every render regardless of whether a
+// real attribute is present, which is exactly the "assertion string is a
 // substring of a different, always-present attribute" failure mode this
-// project has already rejected once (see this file's own todayCellMarker
-// comment for the same class of bug). Anchoring on the character
-// immediately after "disabled" is what makes this check able to fail.
-func hasBareDisabledAttr(tag string) bool {
+// project has already rejected repeatedly (see this file's own
+// todayCellMarker comment for the same class of bug). Anchoring on the
+// character immediately after the name is what makes this check able to fail.
+func hasBareAttr(tag, name string) bool {
 	for i := 0; ; {
-		idx := strings.Index(tag[i:], " disabled")
+		idx := strings.Index(tag[i:], " "+name)
 		if idx < 0 {
 			return false
 		}
-		pos := i + idx + len(" disabled")
-		if pos >= len(tag) || tag[pos] != ':' {
+		pos := i + idx + len(" ") + len(name)
+		if pos >= len(tag) {
 			return true
 		}
-		i = pos
+		switch tag[pos] {
+		case ':', '-', '=':
+			i = pos
+		default:
+			return true
+		}
 	}
+}
+
+func hasBareDisabledAttr(tag string) bool { return hasBareAttr(tag, "disabled") }
+
+// cellTag returns just the opening `<td …>` tag for the given ISO date, so a
+// test can check the CELL's own attributes without the nested button's (or
+// the class attribute's Tailwind variant tokens) coming along.
+func cellTag(t *testing.T, html, isoDate string) string {
+	t.Helper()
+	cell := cellFor(t, html, isoDate)
+	end := strings.Index(cell, ">")
+	if end < 0 {
+		t.Fatalf("cell for %s has no closing '>' on its opening tag", isoDate)
+	}
+	return cell[:end]
+}
+
+// buttonTag returns just the opening `<button …>` tag of the day button
+// inside the given ISO date's cell.
+func buttonTag(t *testing.T, html, isoDate string) string {
+	t.Helper()
+	cell := cellFor(t, html, isoDate)
+	start := strings.Index(cell, "<button")
+	if start < 0 {
+		t.Fatalf("cell for %s has no button", isoDate)
+	}
+	end := strings.Index(cell[start:], ">")
+	if end < 0 {
+		t.Fatalf("button in cell for %s has no closing '>' on its opening tag", isoDate)
+	}
+	return cell[start : start+end]
 }
 
 // Nav buttons never take a native disabled attribute, at any bound, under
