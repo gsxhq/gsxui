@@ -173,11 +173,9 @@ Components expose stable, namespaced slot attributes:
 
 ```gsx
 <button
-	data-gsxui-slot="button"
 	data-variant={variant |> default("default")}
 	data-size={size |> default("default")}
-	class={attrs.Class()}
-	{ attrs... }
+	{ withSlot("button", attrs)... }
 >
 	{ children }
 </button>
@@ -187,11 +185,11 @@ The style pack targets those attributes:
 
 ```css
 @layer components {
-  [data-gsxui-slot="button"] {
+  [data-gsxui-slot~="button"] {
     @apply inline-flex h-8 items-center justify-center rounded-lg px-2.5;
   }
 
-  [data-gsxui-slot="button"][data-variant="outline"] {
+  [data-gsxui-slot~="button"][data-variant="outline"] {
     @apply border border-border bg-background;
   }
 }
@@ -202,19 +200,39 @@ styling namespace. Existing component-specific behavior hooks such as
 `data-gsxui-calendar-*` remain behavior hooks; styles may read reflected
 state, but JavaScript must never toggle presentation classes.
 
+The attribute is a space-separated token set, not a scalar override.
+Ordinary elements carry one token, while composed components retain every
+semantic styling role. For example, `AlertDialogAction` composes `Button`
+and renders:
+
+```html
+<button data-gsxui-slot="button alert-dialog-action">...</button>
+```
+
+Every CSS selector therefore uses the `~=` token operator. The unexported
+`withSlot` helper prepends the component's own token, preserves the
+composition order from inner primitive to outer semantic part, removes
+duplicates, and forwards the caller's remaining attributes unchanged.
+Tokenized composition is the CSS-only replacement for the base classes a
+composed component currently inherits before overriding `data-slot`; it
+prevents every style pack from duplicating Button, Input, Label, Separator,
+and Dialog rules into their composed parts.
+
 The contract has these rules:
 
 1. Slot names are global within gsxui and use kebab-case.
 2. A slot identifies a semantic component part, not one CSS declaration.
-3. Public presentation axes are reflected as attributes with explicit
+3. A component always retains its own slot token when another component
+   composes it; an outer component adds a token instead of replacing one.
+4. Public presentation axes are reflected as attributes with explicit
    values, such as `data-variant`, `data-size`, `aria-invalid`, or
    `data-state`.
-4. Component templates contain no library-owned presentation utilities
+5. Component templates contain no library-owned presentation utilities
    after migration. Their `class` output is the caller-supplied class.
-5. Inline styles are permitted only for dynamic values computed by behavior,
+6. Inline styles are permitted only for dynamic values computed by behavior,
    such as a slider's live fill percentage or a resizable panel's flex
    value. Style CSS consumes those custom properties.
-6. A style may select a slot, its declared states, its pseudo-elements, and
+7. A style may select a slot, its declared states, its pseudo-elements, and
    documented descendants. It may not depend on undocumented DOM depth or
    site/page selectors.
 
@@ -232,10 +250,12 @@ contract is the source of truth for:
 
 The manifest is serialized for the editor and validators, but authored as
 typed Go data so the registry and Go tests consume it directly. Contract
-tests render every declared case and prove both directions:
+tests render the registered component examples with an HTML parser and prove
+both directions:
 
 - every emitted `data-gsxui-slot` and declared state exists in the contract;
-- every contract entry has a rendering fixture.
+- every contract slot and declared state value is emitted by at least one
+  registered rendering fixture.
 
 The CSS validator parses selectors into an AST. It rejects unknown slots or
 state values, selectors outside the gsxui namespace, forbidden global
@@ -490,7 +510,7 @@ style:
 ```css
 @layer components {
   body[data-gsxui-preview-style="default"]
-    [data-gsxui-slot="button"] {
+    [data-gsxui-slot~="button"] {
     /* compiled default style declarations */
   }
 }
