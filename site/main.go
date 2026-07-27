@@ -50,8 +50,8 @@ func registerIcons(mux *http.ServeMux) {
 
 // listenPort resolves the bind port. GO_PORT (dev): set via .env / matched
 // by vite.config.ts's proxy target — wins so the dev loop stays coherent.
-// PORT (containers): the Dockerfile sets ENV PORT=8080 and Cloud Run injects
-// it. Final fallback is 7777 — the SAME default vite.config.ts and `gsx dev`
+// PORT (containers): the Dockerfile sets ENV PORT=8080, matching fly.toml's
+// internal_port. Final fallback is 7777 — the SAME default vite.config.ts and `gsx dev`
 // assume — so a fresh checkout's `make site-dev` works with no .env at all;
 // an 8080-style fallback here desynchronizes the proxy and shows the
 // "backend unavailable" interstitial forever.
