@@ -10,7 +10,7 @@ import (
 
 func TestResizablePanelGroupPinned(t *testing.T) {
 	got := render(t, ui.ResizablePanelGroup("", gsx.Raw("x"), nil))
-	want := `<div data-slot="resizable-panel-group" data-gsxui-resizable aria-orientation="horizontal" class="flex h-full w-full aria-[orientation=vertical]:flex-col">x</div>`
+	want := `<div data-gsxui-resizable aria-orientation="horizontal" data-gsxui-slot="resizable-panel-group">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -42,7 +42,7 @@ func TestResizablePanelSizedPanelPinned(t *testing.T) {
 	// the numeric part of defaultSize is the grow weight, 1 is shrink, 0px
 	// is the (always-resolvable) basis.
 	got := render(t, ui.ResizablePanel("20%", "", "", gsx.Raw("x"), nil))
-	want := `<div data-slot="resizable-panel" style="flex: 20 1 0px" class="min-w-0 min-h-0 overflow-hidden">x</div>`
+	want := `<div data-gsxui-resizable-panel style="flex: 20 1 0px" data-gsxui-slot="resizable-panel">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -53,7 +53,7 @@ func TestResizablePanelUnsizedPanelPinned(t *testing.T) {
 	// equal-weight share (no class-based flex-1/grow-0 split as of round 2
 	// — see the FIX entry in the package doc comment).
 	got := render(t, ui.ResizablePanel("", "", "", gsx.Raw("x"), nil))
-	want := `<div data-slot="resizable-panel" style="flex: 1 1 0px" class="min-w-0 min-h-0 overflow-hidden">x</div>`
+	want := `<div data-gsxui-resizable-panel style="flex: 1 1 0px" data-gsxui-slot="resizable-panel">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -79,7 +79,7 @@ func TestResizableHandleWithHandleRendersNovaPill(t *testing.T) {
 	for _, want := range []string{
 		`role="separator"`,
 		`tabindex="0"`,
-		"h-6 w-1 rounded-lg bg-border",
+		`data-gsxui-slot="resizable-handle-grip"`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("want %q\nin: %s", want, got)
@@ -92,7 +92,7 @@ func TestResizableHandleWithHandleRendersNovaPill(t *testing.T) {
 
 func TestResizableHandleWithoutHandleHasNoGrip(t *testing.T) {
 	got := render(t, ui.ResizableHandle("horizontal", false, nil))
-	if strings.Contains(got, "h-6 w-1 rounded-lg bg-border") {
+	if strings.Contains(got, "resizable-handle-grip") {
 		t.Errorf("withHandle=false must not render the grip\nin: %s", got)
 	}
 }
@@ -104,7 +104,7 @@ func TestResizableHandlePinnedHorizontal(t *testing.T) {
 	// invisible to CI — the group's own string already gets this
 	// treatment, matching house style (ui/toggle-group_test.go).
 	got := render(t, ui.ResizableHandle("horizontal", false, nil))
-	want := `<div data-slot="resizable-handle" data-gsxui-resizable-handle role="separator" aria-orientation="vertical" tabindex="0" class="relative flex w-px items-center justify-center bg-border after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:outline-hidden aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:w-full aria-[orientation=horizontal]:after:left-0 aria-[orientation=horizontal]:after:h-1 aria-[orientation=horizontal]:after:w-full aria-[orientation=horizontal]:after:translate-x-0 aria-[orientation=horizontal]:after:-translate-y-1/2 [&amp;[aria-orientation=horizontal]&gt;div]:rotate-90 shrink-0 cursor-col-resize"></div>`
+	want := `<div data-gsxui-resizable-handle role="separator" aria-orientation="vertical" tabindex="0" data-gsxui-slot="resizable-handle"></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -112,8 +112,27 @@ func TestResizableHandlePinnedHorizontal(t *testing.T) {
 
 func TestResizableHandlePinnedVertical(t *testing.T) {
 	got := render(t, ui.ResizableHandle("vertical", false, nil))
-	want := `<div data-slot="resizable-handle" data-gsxui-resizable-handle role="separator" aria-orientation="horizontal" tabindex="0" class="relative flex w-px items-center justify-center bg-border after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:outline-hidden aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:w-full aria-[orientation=horizontal]:after:left-0 aria-[orientation=horizontal]:after:h-1 aria-[orientation=horizontal]:after:w-full aria-[orientation=horizontal]:after:translate-x-0 aria-[orientation=horizontal]:after:-translate-y-1/2 [&amp;[aria-orientation=horizontal]&gt;div]:rotate-90 shrink-0 cursor-row-resize"></div>`
+	want := `<div data-gsxui-resizable-handle role="separator" aria-orientation="horizontal" tabindex="0" data-gsxui-slot="resizable-handle"></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
+	}
+}
+
+func TestResizableCallerClassesAndBoundsRemainDynamic(t *testing.T) {
+	group := render(t, ui.ResizablePanelGroup("", nil, gsx.Attrs{{Key: "class", Value: "max-w-md"}}))
+	if !strings.Contains(group, `class="max-w-md" data-gsxui-slot="resizable-panel-group"`) {
+		t.Errorf("group caller class is not the only class\nin: %s", group)
+	}
+
+	panel := render(t, ui.ResizablePanel("25%", "10%", "80%", nil, gsx.Attrs{{Key: "class", Value: "bg-card"}}))
+	for _, want := range []string{
+		`data-min-size="10%"`,
+		`data-max-size="80%"`,
+		`style="flex: 25 1 0px"`,
+		`class="bg-card" data-gsxui-slot="resizable-panel"`,
+	} {
+		if !strings.Contains(panel, want) {
+			t.Errorf("panel missing %q\nin: %s", want, panel)
+		}
 	}
 }

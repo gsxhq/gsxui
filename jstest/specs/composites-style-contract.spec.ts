@@ -1,0 +1,126 @@
+import { expect, test } from "../support/fixtures";
+
+test("Carousel keeps native-scroll mechanics and caller spacing overrides", async ({ page }) => {
+  const response = await page.goto("/x/carousel/sizes");
+  expect(response?.status()).toBe(200);
+
+  const root = page.locator("[data-gsxui-carousel]");
+  const viewport = page.locator("[data-gsxui-carousel-content]");
+  const track = page.locator('[data-gsxui-slot~="carousel-track"]');
+  const item = page.locator("[data-gsxui-carousel-item]").first();
+
+  expect(
+    await viewport.evaluate((el) => {
+      const css = getComputedStyle(el);
+      return { overflowX: css.overflowX, snap: css.scrollSnapType };
+    }),
+  ).toEqual({ overflowX: "auto", snap: "x mandatory" });
+  expect(
+    await track.evaluate((el) => {
+      const css = getComputedStyle(el);
+      return { display: css.display, marginLeft: css.marginLeft };
+    }),
+  ).toEqual({ display: "flex", marginLeft: "-4px" });
+  expect(
+    await item.evaluate((el) => {
+      const css = getComputedStyle(el);
+      return {
+        flexBasis: css.flexBasis,
+        flexGrow: css.flexGrow,
+        flexShrink: css.flexShrink,
+        paddingLeft: css.paddingLeft,
+      };
+    }),
+  ).toEqual({
+    flexBasis: "33.3333%",
+    flexGrow: "0",
+    flexShrink: "0",
+    paddingLeft: "4px",
+  });
+
+  await expect(root).toHaveAttribute("data-current-index", "0");
+  await root.evaluate((el: HTMLElement & { gsxuiCarousel: { scrollTo(index: number): void } }) =>
+    el.gsxuiCarousel.scrollTo(1),
+  );
+  await expect(root).toHaveAttribute("data-current-index", "1");
+});
+
+test("registered vertical Carousel covers every oriented style slot", async ({ page }) => {
+  const response = await page.goto("/x/carousel/vertical");
+  expect(response?.status()).toBe(200);
+
+  const orientedSlots = [
+    "carousel",
+    "carousel-content",
+    "carousel-track",
+    "carousel-item",
+    "carousel-previous",
+    "carousel-next",
+  ];
+  for (const slot of orientedSlots) {
+    await expect(
+      page.locator(`[data-gsxui-slot~="${slot}"]`).first(),
+      `${slot} must reflect the production example's vertical axis`,
+    ).toHaveAttribute("data-orientation", "vertical");
+  }
+
+  const viewport = page.locator("[data-gsxui-carousel-content]");
+  const track = page.locator('[data-gsxui-slot~="carousel-track"]');
+  expect(
+    await viewport.evaluate((el) => {
+      const css = getComputedStyle(el);
+      return { overflowY: css.overflowY, snap: css.scrollSnapType };
+    }),
+  ).toEqual({ overflowY: "auto", snap: "y mandatory" });
+  await expect
+    .poll(() => track.evaluate((el) => getComputedStyle(el).flexDirection))
+    .toBe("column");
+});
+
+test("Resizable consumes dynamic flex values and remains keyboard operable", async ({ page }) => {
+  const response = await page.goto("/x/resizable/handle");
+  expect(response?.status()).toBe(200);
+
+  const group = page.locator("[data-gsxui-resizable]").first();
+  const panels = group.locator(":scope > [data-gsxui-resizable-panel]");
+  const handle = group.locator(":scope > [data-gsxui-resizable-handle]");
+  await expect(panels).toHaveCount(2);
+
+  expect(
+    await group.evaluate((el) => getComputedStyle(el).display),
+  ).toBe("flex");
+  expect(
+    await panels.first().evaluate((el) => {
+      const css = getComputedStyle(el);
+      return { basis: css.flexBasis, grow: css.flexGrow, overflow: css.overflow };
+    }),
+  ).toEqual({ basis: "0px", grow: "25", overflow: "hidden" });
+
+  await handle.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(handle).toHaveAttribute("aria-valuenow", "35");
+  await expect
+    .poll(() => panels.first().evaluate((el: HTMLElement) => el.style.flexGrow))
+    .toBe("35");
+});
+
+test("ScrollArea keeps native overflow while caller utilities win", async ({ page }) => {
+  const response = await page.goto("/x/scroll-area/basic");
+  expect(response?.status()).toBe(200);
+
+  const area = page.locator('[data-gsxui-slot~="scroll-area"]');
+  expect(
+    await area.evaluate((el) => {
+      const css = getComputedStyle(el);
+      return {
+        overflowX: css.overflowX,
+        overflowY: css.overflowY,
+        radius: css.borderRadius,
+      };
+    }),
+  ).toEqual({
+    overflowX: "auto",
+    overflowY: "auto",
+    radius: "8px",
+  });
+});

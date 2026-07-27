@@ -16,6 +16,12 @@ func init() {
 		SourcePath: "carousel/sizes.gsx",
 	})
 	Register("carousel", Example{
+		Name:       "vertical",
+		Title:      "Vertical",
+		Node:       examplecarousel.Vertical(),
+		SourcePath: "carousel/vertical.gsx",
+	})
+	Register("carousel", Example{
 		Name:       "api",
 		Title:      "API",
 		Node:       examplecarousel.Api(),

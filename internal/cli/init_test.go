@@ -64,7 +64,7 @@ func TestInitWritesEverything(t *testing.T) {
 		t.Error("foundation.css does not contain the Tailwind theme mapping")
 	}
 	styleCSS, _ := os.ReadFile(filepath.Join(dir, "web/gsxui/style.css"))
-	if !strings.Contains(string(styleCSS), "[data-slot=\"scroll-area\"]::-webkit-scrollbar") {
+	if !strings.Contains(string(styleCSS), "[data-gsxui-slot~=\"scroll-area\"]::-webkit-scrollbar") {
 		t.Error("style.css does not contain the ScrollArea pseudo-element rules")
 	}
 	// dependency commands went through the seam

@@ -49,37 +49,40 @@ func _gsxrenderNativeSelect(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children
 	if class, ok := attrs.Get("class"); ok {
 		wrapperAttrs = gsx.Attrs{{Key: "class", Value: class}}
 	}
-//line native-select.gsx:46:2
+	if slots, ok := attrs.Get("data-gsxui-slot"); ok {
+		wrapperAttrs = append(wrapperAttrs, gsx.Attr{Key: "data-gsxui-slot", Value: slots})
+	}
+//line native-select.gsx:49:2
 	_gsxv0 := withSlot("native-select-wrapper", wrapperAttrs)
 	_gsxgw.S("<div")
 	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
 	_gsxgw.StyleMerged("", _gsxv0.Style())
 	_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 	_gsxgw.S(">")
-//line native-select.gsx:47:3
-	_gsxv1 := withSlot("native-select", attrs.Without("class"))
+//line native-select.gsx:50:3
+	_gsxv1 := withSlot("native-select", attrs.Without("class").Without("data-gsxui-slot"))
 	_gsxgw.S("<select")
 	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
 	_gsxgw.StyleMerged("", _gsxv1.Style())
 	_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 	_gsxgw.S(">")
-//line native-select.gsx:50:4
+//line native-select.gsx:53:4
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</select>")
-//line native-select.gsx:52:3
+//line native-select.gsx:55:3
 	_gsxgw.Node(ctx, icon.ChevronDown())
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
 
-//line native-select.gsx:56:1
+//line native-select.gsx:59:1
 // NativeSelectOption is a native <option>. selected/disabled are HTML
 // boolean attributes (gsx.IsBooleanAttr classifies both "selected" and
 // "disabled"): zero value (false) renders absent, matching browser
 // selectedness/disabled truth — no data-state plumbing needed, unlike
 // Radix's SelectItem.
 
-//line native-select.gsx:61:1
+//line native-select.gsx:64:1
 func NativeSelectOption(value string, selected bool, disabled bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -91,7 +94,7 @@ func _gsxrenderNativeSelectOption(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, va
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line native-select.gsx:62:2
+//line native-select.gsx:65:2
 	_gsxgw.S("<option")
 	if !attrs.Has("value") {
 		_gsxgw.S(" value=\"")
@@ -108,13 +111,13 @@ func _gsxrenderNativeSelectOption(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, va
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 	_gsxgw.S(">")
-//line native-select.gsx:62:77
+//line native-select.gsx:65:77
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</option>")
 	return _gsxgw.Err()
 }
 
-//line native-select.gsx:65:1
+//line native-select.gsx:68:1
 // NativeSelectGroup is a native <optgroup>. shadcn's separate SelectGroup
 // (wrapper) + SelectLabel (child text) collapse into the one native element
 // that already carries a label as an attribute (ADAPT — see
@@ -122,11 +125,11 @@ func _gsxrenderNativeSelectOption(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, va
 // child, only the label attribute, so there is nothing to port SelectLabel's
 // own class string onto.
 
-//line native-select.gsx:71:1
+//line native-select.gsx:74:1
 func NativeSelectGroup(label string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line native-select.gsx:72:2
+//line native-select.gsx:75:2
 		_gsxgw.S("<optgroup")
 		if !attrs.Has("label") {
 			_gsxgw.S(" label=\"")
@@ -137,7 +140,7 @@ func NativeSelectGroup(label string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line native-select.gsx:72:39
+//line native-select.gsx:75:39
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</optgroup>")
 		return _gsxgw.Err()

@@ -2647,14 +2647,259 @@
     }
   }
 
-  [data-slot="scroll-area"]::-webkit-scrollbar {
+  /* Calendar */
+  :where([data-gsxui-slot~="calendar"]) {
+    @apply w-fit bg-background p-2;
+    --cell-size: calc(var(--spacing) * 7);
+  }
+  :where([data-gsxui-slot~="card-content"])
+    :where([data-gsxui-slot~="calendar"]),
+  :where([data-gsxui-slot~="popover-content"])
+    :where([data-gsxui-slot~="calendar"]) {
+    @apply bg-transparent;
+  }
+  :where([data-gsxui-slot~="calendar-months"]) {
+    @apply relative flex w-full flex-col gap-4;
+  }
+  :where([data-gsxui-slot~="calendar-nav"]) {
+    @apply absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1;
+  }
+  :where([data-gsxui-slot~="button"])[data-gsxui-slot~="calendar-nav-button"] {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    @apply p-0 select-none;
+  }
+  :where([data-gsxui-slot~="calendar-nav-button"])[aria-disabled="true"] {
+    @apply opacity-50;
+  }
+  :where([data-gsxui-slot~="calendar-month-caption"]) {
+    height: var(--cell-size);
+    padding-inline: var(--cell-size);
+    @apply flex w-full items-center justify-center;
+  }
+  :where([data-gsxui-slot~="calendar-dropdowns"]) {
+    height: var(--cell-size);
+    @apply flex w-full items-center justify-center gap-1.5 text-sm font-medium;
+  }
+  :where([data-gsxui-slot~="calendar-caption"]) {
+    @apply text-sm font-medium select-none;
+  }
+  :where([data-gsxui-slot~="calendar-dropdown-root"]) {
+    @apply relative rounded-md border border-input;
+  }
+  :where([data-gsxui-slot~="calendar-dropdown-root"]):has(
+      > [data-gsxui-slot~="native-select"]:focus
+    ) {
+    @apply border-ring ring-3 ring-ring/50;
+  }
+  :where([data-gsxui-slot~="calendar-dropdown-root"])
+    > :where([data-gsxui-slot~="native-select"]) {
+    @apply h-6 rounded-none border-0 bg-transparent py-0 pr-5 pl-1.5;
+  }
+  :where([data-gsxui-slot~="calendar-dropdown-root"])
+    > :where([data-gsxui-slot~="native-select"]):focus-visible {
+    @apply border-transparent ring-0;
+  }
+  .dark
+    :where([data-gsxui-slot~="calendar-dropdown-root"])
+    > :where([data-gsxui-slot~="native-select"]),
+  .dark
+    :where([data-gsxui-slot~="calendar-dropdown-root"])
+    > :where([data-gsxui-slot~="native-select"]):hover {
+    @apply bg-transparent;
+  }
+  :where([data-gsxui-slot~="calendar-dropdown-root"]) > svg {
+    @apply right-1 size-3.5;
+  }
+  :where([data-gsxui-slot~="calendar-grid"]) {
+    @apply w-full border-collapse;
+  }
+  :where([data-gsxui-slot~="calendar-weekdays"]) {
+    @apply flex;
+  }
+  :where([data-gsxui-slot~="calendar-weekday"]) {
+    @apply flex-1 rounded-md text-[0.8rem] font-normal text-muted-foreground select-none;
+  }
+  :where([data-gsxui-slot~="calendar-week"]) {
+    @apply mt-2 flex w-full;
+  }
+  :where([data-gsxui-slot~="calendar-day"]) {
+    @apply relative aspect-square h-full w-full p-0 text-center select-none;
+  }
+  :where([data-gsxui-slot~="calendar-day"])[data-outside] {
+    @apply text-muted-foreground;
+  }
+  :where([data-gsxui-slot~="calendar-day"])[data-outside][aria-selected="true"] {
+    @apply text-muted-foreground;
+  }
+  :where([data-gsxui-slot~="calendar-day"])[data-today] {
+    @apply rounded-md bg-accent text-accent-foreground;
+  }
+  :where(
+      [data-gsxui-slot~="calendar-day"][data-today][data-selected="true"]
+    ) {
+    @apply rounded-none;
+  }
+  :where([data-gsxui-slot~="calendar-day"])[data-disabled] {
+    @apply text-muted-foreground opacity-50;
+  }
+  :where([data-gsxui-slot~="calendar-day"])[data-hidden] {
+    @apply invisible;
+  }
+  :where(
+      [data-gsxui-slot~="calendar-day"]:first-child[data-selected="true"]
+    )
+    > :where([data-gsxui-slot~="calendar-day-button"]) {
+    @apply rounded-l-md;
+  }
+  :where(
+      [data-gsxui-slot~="calendar-day"]:last-child[data-selected="true"]
+    )
+    > :where([data-gsxui-slot~="calendar-day-button"]) {
+    @apply rounded-r-md;
+  }
+  :where([data-gsxui-slot~="button"])[data-gsxui-slot~="calendar-day-button"] {
+    min-width: var(--cell-size);
+    @apply flex aspect-square h-auto w-full flex-col gap-1 leading-none font-normal;
+  }
+  :where([data-gsxui-slot~="calendar-day"][data-focused])
+    > :where([data-gsxui-slot~="calendar-day-button"]) {
+    @apply relative z-10 border-ring ring-[3px] ring-ring/50;
+  }
+  :where([data-gsxui-slot~="calendar-day-button"])[data-range-end="true"] {
+    @apply rounded-md rounded-r-md bg-primary text-primary-foreground;
+  }
+  :where([data-gsxui-slot~="calendar-day-button"])[data-range-middle="true"] {
+    @apply rounded-none bg-accent text-accent-foreground;
+  }
+  :where([data-gsxui-slot~="calendar-day-button"])[data-range-start="true"] {
+    @apply rounded-md rounded-l-md bg-primary text-primary-foreground;
+  }
+  :where(
+      [data-gsxui-slot~="calendar-day-button"][data-selected-single="true"]
+    ) {
+    @apply bg-primary text-primary-foreground;
+  }
+  .dark :where([data-gsxui-slot~="calendar-day-button"]):hover {
+    @apply text-accent-foreground;
+  }
+  :where([data-gsxui-slot~="calendar-day-button"]) > span {
+    @apply text-xs opacity-70;
+  }
+
+  /* Carousel */
+  :where([data-gsxui-slot~="carousel"]) {
+    @apply relative;
+  }
+  :where([data-gsxui-slot~="carousel-content"]) {
+    scrollbar-width: none;
+  }
+  :where([data-gsxui-slot~="carousel-content"])::-webkit-scrollbar {
+    display: none;
+  }
+  :where(
+      [data-gsxui-slot~="carousel-track"][data-orientation="horizontal"]
+    ) {
+    @apply -ml-4;
+  }
+  :where([data-gsxui-slot~="carousel-track"][data-orientation="vertical"]) {
+    @apply -mt-4;
+  }
+  :where([data-gsxui-slot~="carousel-item"][data-orientation="horizontal"]) {
+    @apply pl-4 -scroll-ml-4;
+  }
+  :where([data-gsxui-slot~="carousel-item"][data-orientation="vertical"]) {
+    @apply pt-4 -scroll-mt-4;
+  }
+  :where(
+      [data-gsxui-slot~="carousel-previous"],
+      [data-gsxui-slot~="carousel-next"]
+    ) {
+    @apply absolute size-8 rounded-full;
+  }
+  :where(
+      [data-gsxui-slot~="carousel-previous"][data-orientation="horizontal"],
+      [data-gsxui-slot~="carousel-next"][data-orientation="horizontal"]
+    ) {
+    @apply top-1/2 -translate-y-1/2;
+  }
+  :where(
+      [data-gsxui-slot~="carousel-previous"][data-orientation="horizontal"]
+    ) {
+    @apply -left-12;
+  }
+  :where(
+      [data-gsxui-slot~="carousel-next"][data-orientation="horizontal"]
+    ) {
+    @apply -right-12;
+  }
+  :where(
+      [data-gsxui-slot~="carousel-previous"][data-orientation="horizontal"],
+      [data-gsxui-slot~="carousel-next"][data-orientation="horizontal"]
+    ):active:not([aria-haspopup]) {
+    @apply translate-y-[calc(1px_-_50%)];
+  }
+  :where(
+      [data-gsxui-slot~="carousel-previous"][data-orientation="vertical"],
+      [data-gsxui-slot~="carousel-next"][data-orientation="vertical"]
+    ) {
+    @apply left-1/2 -translate-x-1/2 rotate-90;
+  }
+  :where(
+      [data-gsxui-slot~="carousel-previous"][data-orientation="vertical"]
+    ) {
+    @apply -top-12;
+  }
+  :where(
+      [data-gsxui-slot~="carousel-next"][data-orientation="vertical"]
+    ) {
+    @apply -bottom-12;
+  }
+
+  /* Resizable */
+  :where([data-gsxui-slot~="resizable-handle"]) {
+    @apply bg-border;
+  }
+  :where([data-gsxui-slot~="resizable-handle"]):focus-visible {
+    @apply ring-1 ring-ring ring-offset-1 outline-hidden;
+  }
+  :where(
+      [data-gsxui-slot~="resizable-handle"][aria-orientation="vertical"]
+    ) {
+    @apply cursor-col-resize;
+  }
+  :where(
+      [data-gsxui-slot~="resizable-handle"][aria-orientation="horizontal"]
+    ) {
+    @apply cursor-row-resize;
+  }
+  :where([data-gsxui-slot~="resizable-handle-grip"]) {
+    @apply z-10 flex h-6 w-1 shrink-0 rounded-lg bg-border;
+  }
+  :where(
+      [data-gsxui-slot~="resizable-handle"][aria-orientation="horizontal"]
+    )
+    > :where([data-gsxui-slot~="resizable-handle-grip"]) {
+    @apply rotate-90;
+  }
+
+  /* ScrollArea */
+  :where([data-gsxui-slot~="scroll-area"]) {
+    @apply relative rounded-[inherit] outline-none transition-[color,box-shadow];
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  :where([data-gsxui-slot~="scroll-area"]):focus-visible {
+    @apply ring-[3px] ring-ring/50 outline-1;
+  }
+  [data-gsxui-slot~="scroll-area"]::-webkit-scrollbar {
     width: 0.625rem;
     height: 0.625rem;
   }
-  [data-slot="scroll-area"]::-webkit-scrollbar-track {
+  [data-gsxui-slot~="scroll-area"]::-webkit-scrollbar-track {
     background: transparent;
   }
-  [data-slot="scroll-area"]::-webkit-scrollbar-thumb {
+  [data-gsxui-slot~="scroll-area"]::-webkit-scrollbar-thumb {
     background-color: var(--border);
     background-clip: padding-box;
     border: 1px solid transparent;

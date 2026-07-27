@@ -30,17 +30,15 @@ import (
 // shape `## toggle-group`'s groupType/variant/size/spacing already
 // establishes. Spacing (embla's `-ml-4`/`pl-4` default gap, overridden to
 // `-ml-1`/`pl-1` by `carousel-spacing.tsx`) stays caller-controlled via the
-// ordinary class-merge mechanism — no separate spacing param, matching the
+// caller utility layer — no separate spacing param, matching the
 // upstream demo's own proof that gap is entirely a `className` override.
 component Carousel(orientation string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="region"
 		aria-roledescription="carousel"
-		data-slot="carousel"
 		data-gsxui-carousel
 		data-orientation={orientation |> default("horizontal")}
-		class="relative"
-		{ attrs... }
+		{ withSlot("carousel", attrs)... }
 	>
 		{ children }
 	</div>
@@ -62,21 +60,13 @@ component Carousel(orientation string, children gsx.Node, attrs gsx.Attrs) {
 // had anything analogous to.
 component CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="carousel-content"
-		class={
-			if orientation == "vertical" {
-				"overflow-y-auto snap-y snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-			} else {
-				"overflow-x-auto snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-			},
-		}
+		data-gsxui-carousel-content
+		data-orientation={orientation |> default("horizontal")}
+		{ withSlot("carousel-content", nil)... }
 	>
 		<div
-			class={
-				"flex",
-				if orientation == "vertical" { "-mt-4 flex-col" } else { "-ml-4" },
-			}
-			{ attrs... }
+			data-orientation={orientation |> default("horizontal")}
+			{ withSlot("carousel-track", attrs)... }
 		>
 			{ children }
 		</div>
@@ -99,20 +89,17 @@ component CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs
 // caller tightening the gap must override BOTH, e.g. `pl-1 -scroll-ml-1` —
 // see site/examples/carousel/sizes.gsx).
 //
-// CarouselItem adds `snap-start` (+ the scroll-margin) to shadcn's own
-// class string — also NEW, not in shadcn's source, required for native
-// scroll-snap to have any snap points at all (embla needed none: it never
-// scrolls, it transforms).
+// CarouselItem's foundation rule adds `snap-start` (+ the scroll-margin) to
+// shadcn's presentation — also NEW, not in shadcn's source, required for
+// native scroll-snap to have any snap points at all (embla needed none: it
+// never scrolls, it transforms).
 component CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="group"
 		aria-roledescription="slide"
-		data-slot="carousel-item"
-		class={
-			"min-w-0 shrink-0 grow-0 basis-full snap-start last:snap-end",
-			if orientation == "vertical" { "pt-4 -scroll-mt-4" } else { "pl-4 -scroll-ml-4" },
-		}
-		{ attrs... }
+		data-gsxui-carousel-item
+		data-orientation={orientation |> default("horizontal")}
+		{ withSlot("carousel-item", attrs)... }
 	>
 		{ children }
 	</div>
@@ -148,43 +135,27 @@ component CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) {
 // real DOM immediately on load either way — see its own header comment.
 component CarouselPrevious(orientation string, attrs gsx.Attrs) {
 	<Button
-		data-slot="carousel-previous"
 		data-gsxui-carousel-prev
+		data-orientation={orientation |> default("horizontal")}
 		variant="outline"
 		size="icon"
 		disabled={true}
-		class={
-			"absolute size-8 rounded-full",
-			if orientation == "vertical" {
-				"-top-12 left-1/2 -translate-x-1/2 rotate-90"
-			} else {
-				"top-1/2 -left-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
-			},
-		}
-		{ attrs... }
+		{ withSlot("carousel-previous", attrs)... }
 	>
 		<icon.ArrowLeft/>
-		<span class="sr-only">Previous slide</span>
+		<span { withSlot("carousel-control-label", nil)... }>Previous slide</span>
 	</Button>
 }
 
 component CarouselNext(orientation string, attrs gsx.Attrs) {
 	<Button
-		data-slot="carousel-next"
 		data-gsxui-carousel-next
+		data-orientation={orientation |> default("horizontal")}
 		variant="outline"
 		size="icon"
-		class={
-			"absolute size-8 rounded-full",
-			if orientation == "vertical" {
-				"-bottom-12 left-1/2 -translate-x-1/2 rotate-90"
-			} else {
-				"top-1/2 -right-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
-			},
-		}
-		{ attrs... }
+		{ withSlot("carousel-next", attrs)... }
 	>
 		<icon.ArrowRight/>
-		<span class="sr-only">Next slide</span>
+		<span { withSlot("carousel-control-label", nil)... }>Next slide</span>
 	</Button>
 }

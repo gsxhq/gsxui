@@ -12,8 +12,8 @@
 import { on, emit } from "./gsxui.js";
 
 const rootOf = (el) => el.closest("[data-gsxui-carousel]");
-const viewportOf = (root) => root.querySelector('[data-slot="carousel-content"]');
-const itemsOf = (root) => [...root.querySelectorAll('[data-slot="carousel-item"]')];
+const viewportOf = (root) => root.querySelector("[data-gsxui-carousel-content]");
+const itemsOf = (root) => [...root.querySelectorAll("[data-gsxui-carousel-item]")];
 const isVertical = (root) => root.dataset.orientation === "vertical";
 
 // Sub-pixel rounding epsilon for the scrollLeft/scrollTop-vs-bounds
@@ -207,7 +207,7 @@ on("keydown", "[data-gsxui-carousel]", (e, root) => {
 const scheduled = new WeakSet();
 on(
   "scroll",
-  '[data-slot="carousel-content"]',
+  "[data-gsxui-carousel-content]",
   (_e, viewport) => {
     const root = rootOf(viewport);
     if (!root) return;

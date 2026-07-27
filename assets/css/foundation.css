@@ -51,7 +51,11 @@
   :where([data-gsxui-slot~="dialog-close-label"]),
   :where([data-gsxui-slot~="sheet-close-label"]),
   :where([data-gsxui-slot~="command-dialog-header"]),
-  :where([data-gsxui-slot~="combobox-bridge"]) {
+  :where([data-gsxui-slot~="combobox-bridge"]),
+  :where([data-gsxui-slot~="carousel-control-label"]),
+  :where(
+      [data-gsxui-slot~="calendar-caption"][data-caption-layout="dropdown"]
+    ) {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -61,6 +65,94 @@
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border-width: 0;
+  }
+}
+
+@layer components {
+  /* Carousel's native-scroll algorithm requires a scroll viewport, one flex
+     track, and fixed snap items. Spacing and scrollbar treatment remain style. */
+  :where([data-gsxui-slot~="carousel-content"]) {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+  :where(
+      [data-gsxui-slot~="carousel-content"][data-orientation="vertical"]
+    ) {
+    overflow-x: visible;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+  }
+  :where([data-gsxui-slot~="carousel-track"]) {
+    display: flex;
+  }
+  :where([data-gsxui-slot~="carousel-track"][data-orientation="vertical"]) {
+    flex-direction: column;
+  }
+  :where([data-gsxui-slot~="carousel-item"]) {
+    min-width: 0;
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+  }
+  :where([data-gsxui-slot~="carousel-item"]:last-child) {
+    scroll-snap-align: end;
+  }
+
+  /* Resizable's live flex-grow algorithm consumes these invariant mechanics.
+     The handle pseudo-element is its operable pointer hit target. */
+  :where([data-gsxui-slot~="resizable-panel-group"]) {
+    display: flex;
+    width: 100%;
+    height: 100%;
+  }
+  :where(
+      [data-gsxui-slot~="resizable-panel-group"][aria-orientation="vertical"]
+    ) {
+    flex-direction: column;
+  }
+  :where([data-gsxui-slot~="resizable-panel"]) {
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+  }
+  :where([data-gsxui-slot~="resizable-handle"]) {
+    position: relative;
+    display: flex;
+    flex: none;
+    width: 1px;
+    align-items: center;
+    justify-content: center;
+  }
+  :where([data-gsxui-slot~="resizable-handle"])::after {
+    position: absolute;
+    inset-block: 0;
+    left: 50%;
+    width: 4px;
+    content: "";
+    transform: translateX(-50%);
+  }
+  :where(
+      [data-gsxui-slot~="resizable-handle"][aria-orientation="horizontal"]
+    ) {
+    width: 100%;
+    height: 1px;
+  }
+  :where(
+      [data-gsxui-slot~="resizable-handle"][aria-orientation="horizontal"]
+    )::after {
+    inset-block: auto;
+    inset-inline: 0;
+    top: 50%;
+    width: 100%;
+    height: 4px;
+    transform: translateY(-50%);
+  }
+
+  /* ScrollArea intentionally uses the browser's native scrolling surface. */
+  :where([data-gsxui-slot~="scroll-area"][data-orientation="vertical"]) {
+    overflow: auto;
+  }
+  :where([data-gsxui-slot~="scroll-area"][data-orientation="horizontal"]) {
+    overflow-x: auto;
   }
 }
 

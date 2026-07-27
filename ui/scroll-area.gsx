@@ -22,7 +22,7 @@ import "github.com/gsxhq/gsx"
 // platform-dependent width) — no radius/inset/border control at all. Full
 // WebKit/Chromium shape fidelity (`rounded-full` thumb, the `p-px` track
 // inset) is layered on separately as a hand-authored `::-webkit-scrollbar-*`
-// block in assets/gsxui.css/web/site.css; Firefox has never implemented
+// block in assets/css/styles/default.css; Firefox has never implemented
 // those pseudo-elements, so `scrollbar-color` is what it gets there.
 //
 // GAP (no ScrollAreaCorner): `::-webkit-scrollbar-corner` is WebKit/Blink
@@ -40,9 +40,9 @@ import "github.com/gsxhq/gsx"
 // platform-policy override.
 //
 // orientation: "" (default, vertical — `overflow-auto`) | "horizontal"
-// (`overflow-x-auto`) — the axis switch needs no second component the way
+// (`overflow-x: auto`) — the axis switch needs no second component the way
 // Radix needs a literal `<ScrollBar orientation="horizontal"/>` element; it
-// is just a different overflow utility on the same collapsed div.
+// is just a different foundation rule on the same collapsed div.
 // `[scrollbar-color:var(--border)_transparent]` needs no separate `dark:`
 // variant: `--border` is itself a theme token that already changes value
 // under `.dark` (assets/gsxui.css), so the property tracks the theme for
@@ -50,17 +50,8 @@ import "github.com/gsxhq/gsx"
 // `var(--token)` usage relies on.
 component ScrollArea(orientation string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="scroll-area"
-		class={
-			"relative rounded-[inherit] outline-none transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 [scrollbar-width:thin] [scrollbar-color:var(--border)_transparent]",
-			switch orientation {
-			case "horizontal":
-				"overflow-x-auto"
-			default:
-				"overflow-auto"
-			}
-		}
-		{ attrs... }
+		data-orientation={orientation |> default("vertical")}
+		{ withSlot("scroll-area", attrs)... }
 	>
 		{ children }
 	</div>

@@ -31,17 +31,11 @@
 // round makes the drag/keyboard math consistent with it.
 import { on, emit } from "./gsxui.js";
 
-// Matched by EITHER data-slot="resizable-handle" (the shipped
-// ResizableHandle markup) OR data-gsxui-resizable-handle (the documented
-// public hook — see ui/resizable.gsx's own doc comment on ResizableHandle,
-// and docs/jsx-parity.md `## dialog` MECHANISM for the house-wide
-// data-gsxui-* convention) — a caller's own styled handle wires up with
-// either attribute.
-const HANDLE_SELECTOR = '[data-slot="resizable-handle"], [data-gsxui-resizable-handle]';
+const HANDLE_SELECTOR = "[data-gsxui-resizable-handle]";
 
 const rootOf = (el) => el.closest("[data-gsxui-resizable]");
 
-const isPanel = (el) => !!el && el.dataset.slot === "resizable-panel";
+const isPanel = (el) => !!el && el.hasAttribute("data-gsxui-resizable-panel");
 
 // The handle's two neighbours are its immediate DOM siblings — true
 // regardless of nesting, since a nested ResizablePanelGroup always sits

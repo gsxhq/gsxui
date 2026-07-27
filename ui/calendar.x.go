@@ -15,7 +15,8 @@ import (
 	_gsxio "io"
 )
 
-// calendarRootClass is the Calendar `root` slot ("w-fit") plus the outer
+//line calendar.gsx:12:1
+// The `calendar` style rule is the Calendar `root` slot ("w-fit") plus the outer
 // DayPicker top-level `className` new-york-v4 sets alongside it — both
 // quoted byte-verbatim, as the two `root` rows, in source map §2 (the second
 // row and its explanatory note were added in the Task 1 review-fix pass;
@@ -43,11 +44,8 @@ import (
 // caption row, on every render — not a cosmetic gap. Ledgered as: root
 // absorbs `months`'s own `relative` token, since `months` itself is not
 // rendered.
-//
-//line calendar.gsx:12:1
-const calendarRootClass = "w-fit group/calendar bg-background p-2 [--cell-size:--spacing(7)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent"
 
-// calendarMonthsClass collapses upstream's `months` and `month` slots (source
+// The `calendar-months` style rule collapses upstream's `months` and `month` slots (source
 // map §2: `relative flex flex-col gap-4 md:flex-row` and `flex w-full flex-col
 // gap-4`) into the single wrapper this port needs. The multi-month responsive
 // row (`md:flex-row`) is dropped with `numberOfMonths` itself — one month means
@@ -61,24 +59,19 @@ const calendarRootClass = "w-fit group/calendar bg-background p-2 [--cell-size:-
 // root carries `p-2` and the caption flows after that padding. Upstream has no
 // such problem: its `months` sits inside the root's padding. Measured before
 // the fix: nav buttons at y=32, caption row at y=40.
-const calendarMonthsClass = "relative flex w-full flex-col gap-4"
 
-// calendarGridClass is the `month_grid` slot, verbatim (source map §2).
-const calendarGridClass = "w-full border-collapse"
+// The `calendar-grid` style rule is the `month_grid` slot (source map §2).
 
-// calendarWeekdaysClass is the `weekdays` slot, verbatim (source map §2) —
+// The `calendar-weekdays` style rule is the `weekdays` slot (source map §2) —
 // applied to the `<tr>` inside `<thead aria-hidden>` (Weekdays.js renders
 // both; classNames.weekdays lands on the inner `<tr>`, confirmed by reading
 // Weekdays.js itself: `<thead aria-hidden><tr {...props}/></thead>`).
-const calendarWeekdaysClass = "flex"
 
-// calendarWeekdayClass is the `weekday` slot, verbatim (source map §2).
-const calendarWeekdayClass = "flex-1 rounded-md text-[0.8rem] font-normal text-muted-foreground select-none"
+// The `calendar-weekday` style rule is the `weekday` slot (source map §2).
 
-// calendarWeekClass is the `week` slot, verbatim (source map §2).
-const calendarWeekClass = "mt-2 flex w-full"
+// The `calendar-week` style rule is the `week` slot (source map §2).
 
-// calendarDayClass is the `<td>`'s always-on class: the `day` slot verbatim
+// The `calendar-day` style rule replaces the `<td>`'s old always-on class:
 // (source map §2, showWeekNumber's false branch — gsxui doesn't port
 // week-number, source map §9), plus the `outside`/`today`/`disabled` slots
 // (§2) rewritten as data-attribute Tailwind variants instead of conditional
@@ -99,7 +92,7 @@ const calendarWeekClass = "mt-2 flex w-full"
 // `data-range-*` attribute to the cell that contradicts the fixed DOM
 // contract. Recorded as a deviation for Task 7's ledger: cell-level range
 // coloring is dropped, the button's own range pill classes (§3, already
-// live via `calendarDayButtonClass`) carry all the range-day styling
+// live on the `calendar-day-button` slot) carry all the range-day styling
 // instead.
 //
 // `hidden` (§2, `invisible`) IS ported, as `data-hidden:invisible` — the
@@ -128,43 +121,27 @@ const calendarWeekClass = "mt-2 flex w-full"
 // the literal value "true" to match (a bare `data-selected` attribute's
 // value is the empty string for `[attr=value]` matching purposes, which
 // would never satisfy `[data-selected=true]`).
-const calendarDayClass = "group/day relative aspect-square h-full w-full p-0 text-center select-none [&:last-child[data-selected=true]_button]:rounded-r-md [&:first-child[data-selected=true]_button]:rounded-l-md data-outside:text-muted-foreground data-outside:aria-selected:text-muted-foreground data-today:rounded-md data-today:bg-accent data-today:text-accent-foreground data-today:data-[selected=true]:rounded-none data-disabled:text-muted-foreground data-disabled:opacity-50 data-hidden:invisible"
 
-// calendarDayButtonClass is CalendarDayButton's own class string, verbatim
+// The `calendar-day-button` rule carries CalendarDayButton's presentation
 // (source map §3) — already expressed entirely as data-attribute variants
 // upstream (`data-[range-start=true]:…`, `group-data-[focused=true]/day:…`),
 // so no rewriting is needed here; Tasks 2/3 make it live by emitting the
-// matching data attributes on this button. Composed onto button.gsx's own
-// base/variantClass("ghost")/sizeClass("icon") — CalendarDayButton wraps
-// gsxui's Button-equivalent with variant="ghost" size="icon" (source map §3)
-// — the same package-private-helper reuse pagination.gsx and toggle-group.gsx
-// already establish (internal/registry's declIndex derives a calendar ->
-// button dependency from this, the same shape as pagination -> button).
-const calendarDayButtonClass = "flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-[3px] group-data-[focused=true]/day:ring-ring/50 data-[range-end=true]:rounded-md data-[range-end=true]:rounded-r-md data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:rounded-md data-[range-start=true]:rounded-l-md data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-accent-foreground [&>span]:text-xs [&>span]:opacity-70"
+// matching data attributes on this button. The element composes the public
+// `button` and `calendar-day-button` slots and reflects variant="ghost" and
+// size="icon", so the CSS layers own both sides of the composition without a
+// Go dependency on Button's implementation.
 
-// calendarNavClass is the `nav` slot, verbatim (source map §2).
-const calendarNavClass = "absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1"
+// The `calendar-nav` style rule is the `nav` slot (source map §2).
 
-// calendarNavButtonClass is button_previous/button_next's own trailing
-// classes, verbatim (source map §2: `size-(--cell-size) p-0 select-none
-// aria-disabled:opacity-50`) — the `buttonVariants({variant: buttonVariant})`
-// portion of that slot is supplied separately at the call site via this
-// file's own base/variantClass("ghost") (upstream's buttonVariant default,
-// `calendar.tsx` line 23), not duplicated into this constant. Deliberately
-// NOT composed with button.gsx's sizeClass(...): upstream's own size-(--cell-
-// size) here overrides buttonVariants' default size class entirely (cn()'s
-// tailwind-merge resolves the conflict at render time); gsxui has no
-// runtime class-merge, so the port resolves the same conflict at author
-// time instead, by never emitting a sizeClass(...) token for this button in
-// the first place — the button.gsx nav buttons are Button-shaped but not
-// literal Button calls (see the Calendar component's own doc comment for why
-// ui.Button itself is not used here).
-const calendarNavButtonClass = "size-(--cell-size) p-0 select-none aria-disabled:opacity-50"
+// The `calendar-nav-button` rule carries button_previous/button_next's own
+// trailing presentation (source map §2). It composes with the public `button`
+// slot and reflects variant="ghost" and size="icon". A later, equally
+// specific calendar rule owns the cell-sized override that upstream resolves
+// with tailwind-merge.
 
-// calendarMonthCaptionClass is the `month_caption` slot, verbatim (source map §2).
-const calendarMonthCaptionClass = "flex h-(--cell-size) w-full items-center justify-center px-(--cell-size)"
+// The `calendar-month-caption` style rule is the `month_caption` slot (source map §2).
 
-// calendarCaptionLabelClass is the `caption_label` slot's plain-"label"-
+// The `calendar-caption` style rule is the `caption_label` slot's plain-"label"-
 // layout branch only, verbatim (source map §2: "font-medium select-none" +
 // the captionLayout==="label" ternary arm "text-sm"). The dropdown-layout
 // ternary arm ("flex h-8 items-center gap-1 rounded-md pr-1 pl-2 text-sm
@@ -182,14 +159,12 @@ const calendarMonthCaptionClass = "flex h-(--cell-size) w-full items-center just
 // dropped. Porting them here would either do nothing (no matching element)
 // or actively break the select's own visibility, which defeats the reason
 // gsxui chose the simpler real-select design in the first place.
-const calendarCaptionLabelClass = "font-medium select-none text-sm"
 
-// calendarDropdownsClass is the `dropdowns` slot, verbatim (source map §2).
-const calendarDropdownsClass = "flex h-(--cell-size) w-full items-center justify-center gap-1.5 text-sm font-medium"
+// The `calendar-dropdowns` style rule is the `dropdowns` slot (source map §2).
 
-// calendarDropdownRootClass is the `dropdown_root` slot, retargeted to nova
+// The `calendar-dropdown-root` style rule is the `dropdown_root` slot, retargeted to nova
 // density (source map §6, `.cn-calendar-dropdown-root`) the same way Task 1's
-// calendarRootClass retargeted the `root`/top-level className (p-3→p-2,
+// the calendar root rule retargeted the `root`/top-level className (p-3→p-2,
 // --spacing(8)→(7)): new-york-v4's own value (source map §2) is `relative
 // rounded-md border border-input shadow-xs has-focus:border-ring
 // has-focus:ring-[3px] has-focus:ring-ring/50`; nova's rule drops
@@ -222,9 +197,6 @@ const calendarDropdownsClass = "flex h-(--cell-size) w-full items-center justify
 // scale (`.cn-calendar-caption-label`, source map §6: `h-6 pr-1 pl-1.5`), and
 // the chevron drops to `size-3.5` per new-york-v4's own `caption_label`
 // dropdown arm (source map §2).
-const calendarDropdownRootClass = "relative rounded-md border border-input has-focus:border-ring has-focus:ring-3 has-focus:ring-ring/50" +
-	" [&>select]:h-6 [&>select]:py-0 [&>select]:rounded-none [&>select]:border-0 [&>select]:bg-transparent [&>select]:pl-1.5 [&>select]:pr-5 [&>select]:focus-visible:border-transparent [&>select]:focus-visible:ring-0 [&>select]:dark:bg-transparent [&>select]:dark:hover:bg-transparent" +
-	" [&>svg]:size-3.5 [&>svg]:right-1"
 
 // calendarMonthNames are the twelve month names for the dropdown
 // captionLayout's month <select>, matching upstream's own default
@@ -450,10 +422,9 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 //     `disabled`, at any navigation bound — only `aria-disabled="true"` +
 //     `tabindex="-1"`, which is what keeps a disabled-at-the-bound button
 //     reachable by Tab. So the buttons here are hand-built `<button>`
-//     elements composed from button.gsx's own base/variantClass("ghost")
-//     package-private helpers (the same flat-package reuse pagination.gsx
-//     and toggle-group.gsx already establish) plus calendarNavButtonClass —
-//     never through ui.Button, and never emitting `disabled`.
+//     elements that compose the public `button` and `calendar-nav-button`
+//     slots and reflect variant="ghost" and size="icon" — never through
+//     ui.Button, and never emitting `disabled`.
 //   - fromYear/toYear default when zero (calendarNavBounds:
 //     currentYear-100/currentYear+10) — source map §7.4/§10 item 2's already
 //     -decided deviation from upstream's own requirement that the caller
@@ -469,8 +440,9 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 //     this exact case (`DayPicker.js`'s dropdown branch renders an
 //     additional visually-hidden `<span role="status" aria-live="polite">`
 //     carrying the same formatted caption text, alongside the dropdowns, not
-//     instead of them) — gsxui renders a `class="sr-only"` span carrying the
-//     identical text. Both the label span and the dropdown sr-only span also
+//     instead of them) — gsxui renders a `calendar-caption` span whose
+//     screen-reader mechanics live in foundation CSS. Both the label span and
+//     the dropdown visually-hidden span also
 //     carry `data-gsxui-calendar-caption`, the one hook Task 4's calendar.js
 //     needs regardless of layout to update the announced text on navigation.
 //   - Hidden inputs render whenever `name != ""` — unconditionally, NOT
@@ -545,7 +517,7 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 // "true"/"false" (source map §3 — the class selectors match on the literal
 // value, e.g. data-[range-start=true]:…). The cell's data-selected is
 // likewise a literal "true" (omitted when false) rather than a bare Toggle:
-// calendarDayClass already carries [data-selected=true]-based selectors
+// the `calendar-day` rule carries [data-selected=true]-based selectors
 // from Task 1 (the row-edge rounding and the today+selected interaction)
 // that only fire on an exact value match, not mere attribute presence.
 //
@@ -578,7 +550,7 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 // excludeEnds, and it is false). range_start/range_middle/range_end layer
 // on top of selected; they do not replace it. Getting this wrong silences
 // aria-selected for an entire range (a real accessibility regression) and
-// leaves calendarDayClass's three [data-selected=true]-gated row-wrap
+// leaves the `calendar-day` rule's three [data-selected=true]-gated row-wrap
 // rounding selectors permanently dead for any range that wraps a <tr>
 // boundary. The button's own data-selected-single stays mode-sensitive
 // exactly as before — it means "selected and not any range flag," so it
@@ -617,7 +589,7 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 //     the grid is announced unnamed on entry. calendar.js's repaint rewrites
 //     it on every navigation, so the name follows the displayed month.
 
-//line calendar.gsx:611:1
+//line calendar.gsx:584:1
 func Calendar(mode string,
 	month time.Time,
 	selected []time.Time,
@@ -637,7 +609,7 @@ func Calendar(mode string,
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 		var _gsxnum [32]byte
-//line calendar.gsx:629:2
+//line calendar.gsx:602:2
 		// mode's zero value is defaulted ONCE, here, before anything reads
 		// it — not only on the way out to data-gsxui-calendar-mode (final
 		// review, Important 2). An earlier revision defaulted the root
@@ -700,6 +672,9 @@ func Calendar(mode string,
 		navFromYear, navToYear := calendarNavBounds(fromYear, toYear, today.Year())
 		prevDisabled := calendarPrevDisabled(year, monthOfYear, navFromYear)
 		nextDisabled := calendarNextDisabled(year, monthOfYear, navToYear)
+		if captionLayout != "dropdown" {
+			captionLayout = "label"
+		}
 		dropdownLayout := captionLayout == "dropdown"
 		captionText := month.Format("January 2006")
 
@@ -750,241 +725,345 @@ func Calendar(mode string,
 			disabledWeekdaysStr = append(disabledWeekdaysStr, strconv.Itoa(int(wd)))
 		}
 		disabledWeekdaysAttr := strings.Join(disabledWeekdaysStr, ",")
-//line calendar.gsx:743:2
+//line calendar.gsx:719:2
+		_gsxv0 := withSlot("calendar", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"calendar\"")
-		}
-		if !attrs.Has("data-gsxui-calendar") {
+		if !_gsxv0.Has("data-gsxui-calendar") {
 			_gsxgw.BoolAttr("data-gsxui-calendar", true)
 		}
-		if !attrs.Has("data-gsxui-calendar-month") {
+		if !_gsxv0.Has("data-gsxui-calendar-month") {
 			_gsxgw.S(" data-gsxui-calendar-month=\"")
 			_gsxgw.AttrValue(string(month.Format("2006-01")))
 			_gsxgw.S("\"")
 		}
-		if !attrs.Has("data-gsxui-calendar-mode") {
+		if !_gsxv0.Has("data-gsxui-calendar-mode") {
 			_gsxgw.S(" data-gsxui-calendar-mode=\"")
 			_gsxgw.AttrValue(string(mode))
 			_gsxgw.S("\"")
 		}
-		if !attrs.Has("data-gsxui-calendar-week-start") {
+		if !_gsxv0.Has("data-gsxui-calendar-week-start") {
 			_gsxgw.S(" data-gsxui-calendar-week-start=\"")
 			_gsxgw.IntInto(_gsxnum[:], int64(int(weekStartsOn)))
 			_gsxgw.S("\"")
 		}
-		if !attrs.Has("data-gsxui-calendar-show-outside-days") {
+		if !_gsxv0.Has("data-gsxui-calendar-show-outside-days") {
 			_gsxgw.S(" data-gsxui-calendar-show-outside-days=\"")
 			_gsxgw.AttrValue(string(boolStr(showOutsideDays)))
 			_gsxgw.S("\"")
 		}
+		if !_gsxv0.Has("data-caption-layout") {
+			_gsxgw.S(" data-caption-layout=\"")
+			_gsxgw.AttrValue(string(captionLayout))
+			_gsxgw.S("\"")
+		}
 		if selectedISO != "" {
-			if !attrs.Has("data-gsxui-calendar-selected") {
+			if !_gsxv0.Has("data-gsxui-calendar-selected") {
 				_gsxgw.S(" data-gsxui-calendar-selected=\"")
 				_gsxgw.AttrValue(string(selectedISO))
 				_gsxgw.S("\"")
 			}
 		}
 		if !from.IsZero() {
-			if !attrs.Has("data-gsxui-calendar-from") {
+			if !_gsxv0.Has("data-gsxui-calendar-from") {
 				_gsxgw.S(" data-gsxui-calendar-from=\"")
 				_gsxgw.AttrValue(string(dayOnly(from).Format("2006-01-02")))
 				_gsxgw.S("\"")
 			}
 		}
 		if !to.IsZero() {
-			if !attrs.Has("data-gsxui-calendar-to") {
+			if !_gsxv0.Has("data-gsxui-calendar-to") {
 				_gsxgw.S(" data-gsxui-calendar-to=\"")
 				_gsxgw.AttrValue(string(dayOnly(to).Format("2006-01-02")))
 				_gsxgw.S("\"")
 			}
 		}
 		if !disabledBefore.IsZero() {
-			if !attrs.Has("data-gsxui-calendar-disabled-before") {
+			if !_gsxv0.Has("data-gsxui-calendar-disabled-before") {
 				_gsxgw.S(" data-gsxui-calendar-disabled-before=\"")
 				_gsxgw.AttrValue(string(dayOnly(disabledBefore).Format("2006-01-02")))
 				_gsxgw.S("\"")
 			}
 		}
 		if !disabledAfter.IsZero() {
-			if !attrs.Has("data-gsxui-calendar-disabled-after") {
+			if !_gsxv0.Has("data-gsxui-calendar-disabled-after") {
 				_gsxgw.S(" data-gsxui-calendar-disabled-after=\"")
 				_gsxgw.AttrValue(string(dayOnly(disabledAfter).Format("2006-01-02")))
 				_gsxgw.S("\"")
 			}
 		}
 		if disabledDatesAttr != "" {
-			if !attrs.Has("data-gsxui-calendar-disabled-dates") {
+			if !_gsxv0.Has("data-gsxui-calendar-disabled-dates") {
 				_gsxgw.S(" data-gsxui-calendar-disabled-dates=\"")
 				_gsxgw.AttrValue(string(disabledDatesAttr))
 				_gsxgw.S("\"")
 			}
 		}
 		if disabledWeekdaysAttr != "" {
-			if !attrs.Has("data-gsxui-calendar-disabled-weekdays") {
+			if !_gsxv0.Has("data-gsxui-calendar-disabled-weekdays") {
 				_gsxgw.S(" data-gsxui-calendar-disabled-weekdays=\"")
 				_gsxgw.AttrValue(string(disabledWeekdaysAttr))
 				_gsxgw.S("\"")
 			}
 		}
-		if !attrs.Has("data-gsxui-calendar-nav-from-year") {
+		if !_gsxv0.Has("data-gsxui-calendar-nav-from-year") {
 			_gsxgw.S(" data-gsxui-calendar-nav-from-year=\"")
 			_gsxgw.AttrValue(string(strconv.Itoa(navFromYear)))
 			_gsxgw.S("\"")
 		}
-		if !attrs.Has("data-gsxui-calendar-nav-to-year") {
+		if !_gsxv0.Has("data-gsxui-calendar-nav-to-year") {
 			_gsxgw.S(" data-gsxui-calendar-nav-to-year=\"")
 			_gsxgw.AttrValue(string(strconv.Itoa(navToYear)))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarRootClass), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
+		_gsxgw.StyleMerged("", _gsxv0.Style())
+		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line calendar.gsx:776:3
-		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarMonthsClass))
-		_gsxgw.S("\">")
-//line calendar.gsx:777:3
-		_gsxgw.S("<nav class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarNavClass))
-		_gsxgw.S("\">")
-//line calendar.gsx:778:4
-		_gsxgw.S("<button type=\"button\"")
-		_gsxgw.BoolAttr("data-gsxui-calendar-prev", true)
-		_gsxgw.S(" aria-label=\"Previous month\"")
-		if prevDisabled {
-			_gsxgw.S(" aria-disabled=\"true\" tabindex=\"-1\"")
+//line calendar.gsx:751:3
+		_gsxv1 := withSlot("calendar-months", nil)
+		_gsxgw.S("<div")
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
+		_gsxgw.StyleMerged("", _gsxv1.Style())
+		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line calendar.gsx:752:3
+		_gsxv2 := withSlot("calendar-nav", nil)
+		_gsxgw.S("<nav")
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
+		_gsxgw.StyleMerged("", _gsxv2.Style())
+		_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line calendar.gsx:753:4
+		_gsxv3 := withSlot("button", withSlot("calendar-nav-button", withSlot("calendar-previous", nil)))
+		_gsxgw.S("<button")
+		if !_gsxv3.Has("type") {
+			_gsxgw.S(" type=\"button\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(base), _gsxrt.Class(variantClass("ghost")), _gsxrt.Class(calendarNavButtonClass))
-		_gsxgw.S("\">")
-//line calendar.gsx:788:5
+		if !_gsxv3.Has("data-variant") {
+			_gsxgw.S(" data-variant=\"ghost\"")
+		}
+		if !_gsxv3.Has("data-size") {
+			_gsxgw.S(" data-size=\"icon\"")
+		}
+		if !_gsxv3.Has("data-gsxui-calendar-prev") {
+			_gsxgw.BoolAttr("data-gsxui-calendar-prev", true)
+		}
+		if !_gsxv3.Has("aria-label") {
+			_gsxgw.S(" aria-label=\"Previous month\"")
+		}
+		if prevDisabled {
+			if !_gsxv3.Has("aria-disabled") {
+				_gsxgw.S(" aria-disabled=\"true\"")
+			}
+			if !_gsxv3.Has("tabindex") {
+				_gsxgw.S(" tabindex=\"-1\"")
+			}
+		}
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv3.Class())
+		_gsxgw.StyleMerged("", _gsxv3.Style())
+		_gsxgw.Spread(ctx, _gsxv3, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line calendar.gsx:765:5
 		_gsxgw.Node(ctx, icon.ChevronLeft())
 		_gsxgw.S("</button>")
-//line calendar.gsx:790:4
-		_gsxgw.S("<button type=\"button\"")
-		_gsxgw.BoolAttr("data-gsxui-calendar-next", true)
-		_gsxgw.S(" aria-label=\"Next month\"")
-		if nextDisabled {
-			_gsxgw.S(" aria-disabled=\"true\" tabindex=\"-1\"")
+//line calendar.gsx:767:4
+		_gsxv4 := withSlot("button", withSlot("calendar-nav-button", withSlot("calendar-next", nil)))
+		_gsxgw.S("<button")
+		if !_gsxv4.Has("type") {
+			_gsxgw.S(" type=\"button\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(base), _gsxrt.Class(variantClass("ghost")), _gsxrt.Class(calendarNavButtonClass))
-		_gsxgw.S("\">")
-//line calendar.gsx:800:5
+		if !_gsxv4.Has("data-variant") {
+			_gsxgw.S(" data-variant=\"ghost\"")
+		}
+		if !_gsxv4.Has("data-size") {
+			_gsxgw.S(" data-size=\"icon\"")
+		}
+		if !_gsxv4.Has("data-gsxui-calendar-next") {
+			_gsxgw.BoolAttr("data-gsxui-calendar-next", true)
+		}
+		if !_gsxv4.Has("aria-label") {
+			_gsxgw.S(" aria-label=\"Next month\"")
+		}
+		if nextDisabled {
+			if !_gsxv4.Has("aria-disabled") {
+				_gsxgw.S(" aria-disabled=\"true\"")
+			}
+			if !_gsxv4.Has("tabindex") {
+				_gsxgw.S(" tabindex=\"-1\"")
+			}
+		}
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv4.Class())
+		_gsxgw.StyleMerged("", _gsxv4.Style())
+		_gsxgw.Spread(ctx, _gsxv4, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line calendar.gsx:779:5
 		_gsxgw.Node(ctx, icon.ChevronRight())
 		_gsxgw.S("</button></nav>")
-//line calendar.gsx:803:3
-		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarMonthCaptionClass))
-		_gsxgw.S("\">")
-//line calendar.gsx:804:4
+//line calendar.gsx:782:3
+		_gsxv5 := withSlot("calendar-month-caption", nil)
+		_gsxgw.S("<div")
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv5.Class())
+		_gsxgw.StyleMerged("", _gsxv5.Style())
+		_gsxgw.Spread(ctx, _gsxv5, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line calendar.gsx:783:4
 		if dropdownLayout {
-//line calendar.gsx:805:5
-			_gsxgw.S("<div class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarDropdownsClass))
-			_gsxgw.S("\">")
-//line calendar.gsx:806:6
+//line calendar.gsx:784:5
+			_gsxv6 := withSlot("calendar-dropdowns", nil)
+			_gsxgw.S("<div")
+			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv6.Class())
+			_gsxgw.StyleMerged("", _gsxv6.Style())
+			_gsxgw.Spread(ctx, _gsxv6, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.S(">")
+//line calendar.gsx:785:6
 			_gsxgw.NodeResult(_gsxrenderNativeSelect(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line calendar.gsx:807:7
+//line calendar.gsx:786:7
 				for i := 0; i < 12; i++ {
-//line calendar.gsx:808:8
+//line calendar.gsx:787:8
 					_gsxgw.NodeResult(_gsxrenderNativeSelectOption(ctx, _gsxgw, strconv.Itoa(i), i == int(monthOfYear)-1, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line calendar.gsx:809:9
+//line calendar.gsx:788:9
 						_gsxgw.Text(string(calendarMonthNames[i]))
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "data-gsxui-calendar-month-option", Value: true}}))
 				}
 				return _gsxgw.Err()
-			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-calendar-month-select", Value: true}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Month"}}, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(calendarDropdownRootClass))}})))
-//line calendar.gsx:813:6
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-calendar-month-select", Value: true}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Month"}}, _gsxrt.Attrs{{Key: "data-gsxui-slot", Value: "calendar-dropdown-root"}})))
+//line calendar.gsx:792:6
 			_gsxgw.NodeResult(_gsxrenderNativeSelect(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line calendar.gsx:814:7
+//line calendar.gsx:793:7
 				for y := navFromYear; y <= navToYear; y++ {
-//line calendar.gsx:815:8
+//line calendar.gsx:794:8
 					_gsxgw.NodeResult(_gsxrenderNativeSelectOption(ctx, _gsxgw, strconv.Itoa(y), y == year, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line calendar.gsx:816:9
+//line calendar.gsx:795:9
 						_gsxgw.Text(string(strconv.Itoa(y)))
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "data-gsxui-calendar-year-option", Value: true}}))
 				}
 				return _gsxgw.Err()
-			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-calendar-year-select", Value: true}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Year"}}, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(calendarDropdownRootClass))}})))
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-calendar-year-select", Value: true}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Year"}}, _gsxrt.Attrs{{Key: "data-gsxui-slot", Value: "calendar-dropdown-root"}})))
 			_gsxgw.S("</div>")
-//line calendar.gsx:821:5
-			_gsxgw.S("<span class=\"sr-only\"")
-			_gsxgw.BoolAttr("data-gsxui-calendar-caption", true)
-			_gsxgw.S(" role=\"status\" aria-live=\"polite\">")
-//line calendar.gsx:821:88
+//line calendar.gsx:800:5
+			_gsxv7 := withSlot("calendar-caption", nil)
+			_gsxgw.S("<span")
+			if !_gsxv7.Has("data-gsxui-calendar-caption") {
+				_gsxgw.BoolAttr("data-gsxui-calendar-caption", true)
+			}
+			if !_gsxv7.Has("role") {
+				_gsxgw.S(" role=\"status\"")
+			}
+			if !_gsxv7.Has("aria-live") {
+				_gsxgw.S(" aria-live=\"polite\"")
+			}
+			if !_gsxv7.Has("data-caption-layout") {
+				_gsxgw.S(" data-caption-layout=\"dropdown\"")
+			}
+			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv7.Class())
+			_gsxgw.StyleMerged("", _gsxv7.Style())
+			_gsxgw.Spread(ctx, _gsxv7, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.S(">")
+//line calendar.gsx:806:6
 			_gsxgw.Text(string(captionText))
 			_gsxgw.S("</span>")
 		} else {
-//line calendar.gsx:823:5
+//line calendar.gsx:808:5
+			_gsxv8 := withSlot("calendar-caption", nil)
 			_gsxgw.S("<span")
-			_gsxgw.BoolAttr("data-gsxui-calendar-caption", true)
-			_gsxgw.S(" role=\"status\" aria-live=\"polite\" class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarCaptionLabelClass))
-			_gsxgw.S("\">")
-//line calendar.gsx:823:108
+			if !_gsxv8.Has("data-gsxui-calendar-caption") {
+				_gsxgw.BoolAttr("data-gsxui-calendar-caption", true)
+			}
+			if !_gsxv8.Has("role") {
+				_gsxgw.S(" role=\"status\"")
+			}
+			if !_gsxv8.Has("aria-live") {
+				_gsxgw.S(" aria-live=\"polite\"")
+			}
+			if !_gsxv8.Has("data-caption-layout") {
+				_gsxgw.S(" data-caption-layout=\"label\"")
+			}
+			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv8.Class())
+			_gsxgw.StyleMerged("", _gsxv8.Style())
+			_gsxgw.Spread(ctx, _gsxv8, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.S(">")
+//line calendar.gsx:814:6
 			_gsxgw.Text(string(captionText))
 			_gsxgw.S("</span>")
 		}
 		_gsxgw.S("</div>")
-//line calendar.gsx:826:3
+//line calendar.gsx:817:3
+		_gsxv9 := withSlot("calendar-grid", nil)
 		_gsxgw.S("<table")
-		_gsxgw.BoolAttr("data-gsxui-calendar-grid", true)
-		_gsxgw.S(" role=\"grid\" aria-label=\"")
-		_gsxgw.AttrValue(string(captionText))
-		_gsxgw.S("\"")
-		if multiselectable {
-			_gsxgw.S(" aria-multiselectable=\"true\"")
+		if !_gsxv9.Has("data-gsxui-calendar-grid") {
+			_gsxgw.BoolAttr("data-gsxui-calendar-grid", true)
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarGridClass))
-		_gsxgw.S("\">")
-//line calendar.gsx:835:4
+		if !_gsxv9.Has("role") {
+			_gsxgw.S(" role=\"grid\"")
+		}
+		if !_gsxv9.Has("aria-label") {
+			_gsxgw.S(" aria-label=\"")
+			_gsxgw.AttrValue(string(captionText))
+			_gsxgw.S("\"")
+		}
+		if multiselectable {
+			if !_gsxv9.Has("aria-multiselectable") {
+				_gsxgw.S(" aria-multiselectable=\"true\"")
+			}
+		}
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv9.Class())
+		_gsxgw.StyleMerged("", _gsxv9.Style())
+		_gsxgw.Spread(ctx, _gsxv9, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line calendar.gsx:826:4
 		_gsxgw.S("<thead aria-hidden=\"true\">")
-//line calendar.gsx:836:5
-		_gsxgw.S("<tr class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarWeekdaysClass))
-		_gsxgw.S("\">")
-//line calendar.gsx:837:6
+//line calendar.gsx:827:5
+		_gsxv10 := withSlot("calendar-weekdays", nil)
+		_gsxgw.S("<tr")
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv10.Class())
+		_gsxgw.StyleMerged("", _gsxv10.Style())
+		_gsxgw.Spread(ctx, _gsxv10, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line calendar.gsx:828:6
 		for i := 0; i < 7; i++ {
-//line calendar.gsx:838:7
+//line calendar.gsx:829:7
 			wd := time.Weekday((int(weekStartsOn) + i) % 7)
-//line calendar.gsx:839:7
-			_gsxgw.S("<th scope=\"col\" class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarWeekdayClass))
-			_gsxgw.S("\">")
-//line calendar.gsx:839:54
+//line calendar.gsx:830:7
+			_gsxv11 := withSlot("calendar-weekday", nil)
+			_gsxgw.S("<th")
+			if !_gsxv11.Has("scope") {
+				_gsxgw.S(" scope=\"col\"")
+			}
+			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv11.Class())
+			_gsxgw.StyleMerged("", _gsxv11.Style())
+			_gsxgw.Spread(ctx, _gsxv11, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.S(">")
+//line calendar.gsx:830:64
 			_gsxgw.Text(string(wd.String()[:2]))
 			_gsxgw.S("</th>")
 		}
 		_gsxgw.S("</tr></thead>")
-//line calendar.gsx:843:4
+//line calendar.gsx:834:4
 		_gsxgw.S("<tbody>")
-//line calendar.gsx:844:5
+//line calendar.gsx:835:5
 		for week := 0; week < 6; week++ {
-//line calendar.gsx:845:6
-			_gsxgw.S("<tr class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarWeekClass))
-			_gsxgw.S("\">")
-//line calendar.gsx:846:7
+//line calendar.gsx:836:6
+			_gsxv12 := withSlot("calendar-week", nil)
+			_gsxgw.S("<tr")
+			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv12.Class())
+			_gsxgw.StyleMerged("", _gsxv12.Style())
+			_gsxgw.Spread(ctx, _gsxv12, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.S(">")
+//line calendar.gsx:837:7
 			for day := 0; day < 7; day++ {
-//line calendar.gsx:847:8
+//line calendar.gsx:838:8
 				idx := week*7 + day
 				d := grid[idx]
 				outside := dayOutside(d, year, monthOfYear)
 				// showOutsideDays=false hides the padding days
 				// without removing their cells (upstream's
-				// modifiers.hidden — see calendarDayClass's own
+				// modifiers.hidden — see the calendar-day rule's
 				// comment). A hidden day is always an outside
 				// day, so it is never the tab stop
 				// (firstFocusableIndex only ever returns an
@@ -1013,72 +1092,131 @@ func Calendar(mode string,
 				rStart, rMiddle, rEnd := rangeFlags(mode, d, from, to)
 				selSingle := daySel && !rStart && !rMiddle && !rEnd
 				cellSel := daySel || rStart || rMiddle || rEnd
-//line calendar.gsx:883:8
-				_gsxgw.S("<td role=\"gridcell\" data-date=\"")
-				_gsxgw.AttrValue(string(d.Format("2006-01-02")))
-				_gsxgw.S("\"")
-				_gsxgw.BoolAttr("data-outside", bool(gsx.Toggle(outside)))
-				_gsxgw.BoolAttr("data-hidden", bool(gsx.Toggle(hiddenDay)))
-				_gsxgw.BoolAttr("data-today", bool(gsx.Toggle(isToday)))
-				_gsxgw.BoolAttr("data-disabled", bool(gsx.Toggle(dayDis)))
-				if cellSel {
-					_gsxgw.S(" data-selected=\"true\"")
+//line calendar.gsx:874:8
+				_gsxv13 := withSlot("calendar-day", nil)
+				_gsxgw.S("<td")
+				if !_gsxv13.Has("role") {
+					_gsxgw.S(" role=\"gridcell\"")
 				}
-				_gsxgw.S(" aria-selected=\"")
-				_gsxgw.AttrValue(string(boolStr(cellSel)))
-				_gsxgw.S("\" class=\"")
-				_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendarDayClass))
-				_gsxgw.S("\">")
-//line calendar.gsx:896:9
-				_gsxgw.S("<button type=\"button\"")
-				_gsxgw.BoolAttr("data-gsxui-calendar-day", true)
-				_gsxgw.S(" data-date=\"")
-				_gsxgw.AttrValue(string(d.Format("2006-01-02")))
-				_gsxgw.S("\" tabindex=\"")
-				_gsxgw.AttrValue(string(tabindex))
-				_gsxgw.S("\" aria-label=\"")
-				_gsxgw.AttrValue(string(d.Format("Monday, January 2, 2006")))
-				_gsxgw.S("\"")
+				if !_gsxv13.Has("data-date") {
+					_gsxgw.S(" data-date=\"")
+					_gsxgw.AttrValue(string(d.Format("2006-01-02")))
+					_gsxgw.S("\"")
+				}
+				if !_gsxv13.Has("data-outside") {
+					_gsxgw.BoolAttr("data-outside", bool(gsx.Toggle(outside)))
+				}
+				if !_gsxv13.Has("data-hidden") {
+					_gsxgw.BoolAttr("data-hidden", bool(gsx.Toggle(hiddenDay)))
+				}
+				if !_gsxv13.Has("data-today") {
+					_gsxgw.BoolAttr("data-today", bool(gsx.Toggle(isToday)))
+				}
+				if !_gsxv13.Has("data-disabled") {
+					_gsxgw.BoolAttr("data-disabled", bool(gsx.Toggle(dayDis)))
+				}
+				if cellSel {
+					if !_gsxv13.Has("data-selected") {
+						_gsxgw.S(" data-selected=\"true\"")
+					}
+				}
+				if !_gsxv13.Has("aria-selected") {
+					_gsxgw.S(" aria-selected=\"")
+					_gsxgw.AttrValue(string(boolStr(cellSel)))
+					_gsxgw.S("\"")
+				}
+				_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv13.Class())
+				_gsxgw.StyleMerged("", _gsxv13.Style())
+				_gsxgw.Spread(ctx, _gsxv13, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+				_gsxgw.S(">")
+//line calendar.gsx:887:9
+				_gsxv14 := withSlot("button", withSlot("calendar-day-button", nil))
+				_gsxgw.S("<button")
+				if !_gsxv14.Has("type") {
+					_gsxgw.S(" type=\"button\"")
+				}
+				if !_gsxv14.Has("data-variant") {
+					_gsxgw.S(" data-variant=\"ghost\"")
+				}
+				if !_gsxv14.Has("data-size") {
+					_gsxgw.S(" data-size=\"icon\"")
+				}
+				if !_gsxv14.Has("data-gsxui-calendar-day") {
+					_gsxgw.BoolAttr("data-gsxui-calendar-day", true)
+				}
+				if !_gsxv14.Has("data-date") {
+					_gsxgw.S(" data-date=\"")
+					_gsxgw.AttrValue(string(d.Format("2006-01-02")))
+					_gsxgw.S("\"")
+				}
+				if !_gsxv14.Has("tabindex") {
+					_gsxgw.S(" tabindex=\"")
+					_gsxgw.AttrValue(string(tabindex))
+					_gsxgw.S("\"")
+				}
+				if !_gsxv14.Has("aria-label") {
+					_gsxgw.S(" aria-label=\"")
+					_gsxgw.AttrValue(string(d.Format("Monday, January 2, 2006")))
+					_gsxgw.S("\"")
+				}
 				if hiddenDay {
-					_gsxgw.S(" aria-hidden=\"true\"")
+					if !_gsxv14.Has("aria-hidden") {
+						_gsxgw.S(" aria-hidden=\"true\"")
+					}
 				}
 				if tabStopDisabled {
-					_gsxgw.S(" aria-disabled=\"true\"")
+					if !_gsxv14.Has("aria-disabled") {
+						_gsxgw.S(" aria-disabled=\"true\"")
+					}
 				}
-				_gsxgw.S(" data-selected-single=\"")
-				_gsxgw.AttrValue(string(boolStr(selSingle)))
-				_gsxgw.S("\" data-range-start=\"")
-				_gsxgw.AttrValue(string(boolStr(rStart)))
-				_gsxgw.S("\" data-range-middle=\"")
-				_gsxgw.AttrValue(string(boolStr(rMiddle)))
-				_gsxgw.S("\" data-range-end=\"")
-				_gsxgw.AttrValue(string(boolStr(rEnd)))
-				_gsxgw.S("\"")
-				_gsxgw.BoolAttr("disabled", bool((dayDis && !tabStopDisabled) || hiddenDay))
-				_gsxgw.S(" class=\"")
-				_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(base), _gsxrt.Class(variantClass("ghost")), _gsxrt.Class(sizeClass("icon")), _gsxrt.Class(calendarDayButtonClass))
-				_gsxgw.S("\">")
-//line calendar.gsx:915:10
+				if !_gsxv14.Has("data-selected-single") {
+					_gsxgw.S(" data-selected-single=\"")
+					_gsxgw.AttrValue(string(boolStr(selSingle)))
+					_gsxgw.S("\"")
+				}
+				if !_gsxv14.Has("data-range-start") {
+					_gsxgw.S(" data-range-start=\"")
+					_gsxgw.AttrValue(string(boolStr(rStart)))
+					_gsxgw.S("\"")
+				}
+				if !_gsxv14.Has("data-range-middle") {
+					_gsxgw.S(" data-range-middle=\"")
+					_gsxgw.AttrValue(string(boolStr(rMiddle)))
+					_gsxgw.S("\"")
+				}
+				if !_gsxv14.Has("data-range-end") {
+					_gsxgw.S(" data-range-end=\"")
+					_gsxgw.AttrValue(string(boolStr(rEnd)))
+					_gsxgw.S("\"")
+				}
+				if !_gsxv14.Has("disabled") {
+					_gsxgw.BoolAttr("disabled", bool((dayDis && !tabStopDisabled) || hiddenDay))
+				}
+				_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv14.Class())
+				_gsxgw.StyleMerged("", _gsxv14.Style())
+				_gsxgw.Spread(ctx, _gsxv14, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+				_gsxgw.S(">")
+//line calendar.gsx:908:10
 				_gsxgw.Text(string(dayText))
 				_gsxgw.S("</button></td>")
 			}
 			_gsxgw.S("</tr>")
 		}
 		_gsxgw.S("</tbody></table></div>")
-//line calendar.gsx:924:3
+//line calendar.gsx:917:3
 		if showHiddenSingle {
-//line calendar.gsx:925:4
+//line calendar.gsx:918:4
 			_gsxgw.S("<input type=\"hidden\" name=\"")
 			_gsxgw.AttrValue(string(name))
 			_gsxgw.S("\" value=\"")
 			_gsxgw.AttrValue(string(hiddenSingleValue))
 			_gsxgw.S("\">")
 		}
-//line calendar.gsx:927:3
+//line calendar.gsx:920:3
 		if showHiddenMultiple {
-//line calendar.gsx:928:4
+//line calendar.gsx:921:4
 			for _, value := range multipleHiddenValues {
-//line calendar.gsx:929:5
+//line calendar.gsx:922:5
 				_gsxgw.S("<input type=\"hidden\" name=\"")
 				_gsxgw.AttrValue(string(name))
 				_gsxgw.S("\" value=\"")
@@ -1088,18 +1226,18 @@ func Calendar(mode string,
 				_gsxgw.S(">")
 			}
 		}
-//line calendar.gsx:932:3
+//line calendar.gsx:925:3
 		if showHiddenFrom {
-//line calendar.gsx:933:4
+//line calendar.gsx:926:4
 			_gsxgw.S("<input type=\"hidden\" name=\"")
 			_gsxgw.AttrValue(string(name))
 			_gsxgw.S("\" value=\"")
 			_gsxgw.AttrValue(string(hiddenFromValue))
 			_gsxgw.S("\">")
 		}
-//line calendar.gsx:935:3
+//line calendar.gsx:928:3
 		if showHiddenTo {
-//line calendar.gsx:936:4
+//line calendar.gsx:929:4
 			_gsxgw.S("<input type=\"hidden\" name=\"")
 			_gsxgw.AttrValue(string(name + "-to"))
 			_gsxgw.S("\" value=\"")

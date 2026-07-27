@@ -16,7 +16,7 @@ import (
 // gsxui-authored from ui/resizable.js, not ported 1:1 from the library.
 //
 // ADAPT (handle aria-orientation is inverted from the group's own
-// orientation — forced by shadcn's own class string, not a gsxui choice):
+// orientation — forced by shadcn's own presentation, not a gsxui choice):
 // `orientation` on ResizablePanelGroup/ResizableHandle always names the
 // GROUP's layout ("horizontal" = panels side-by-side, the default; the Go
 // zero value "" also means horizontal). But `role="separator"`'s own
@@ -34,7 +34,7 @@ import (
 //
 // MECHANISM (sizes are server-rendered inline flex, not JS-computed):
 // react-resizable-panels itself sets pixel/percentage sizing imperatively
-// after mount — ResizablePanel's own upstream class string is empty (no
+// after mount — ResizablePanel's own upstream presentation is empty (no
 // `cn()` call at all, confirmed by the source map), because the library
 // supplies 100% of its layout at runtime. gsxui has no client-side layout
 // pass before first paint, so ResizablePanel instead renders `defaultSize`
@@ -106,19 +106,18 @@ import (
 // same accepted-gap shape as `## carousel`'s own `loop`/`align` GAPs.
 component ResizablePanelGroup(orientation string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="resizable-panel-group"
 		data-gsxui-resizable
 		aria-orientation={orientation |> default("horizontal")}
-		class="flex h-full w-full aria-[orientation=vertical]:flex-col"
-		{ attrs... }
+		{ withSlot("resizable-panel-group", attrs)... }
 	>
 		{ children }
 	</div>
 }
 
 // ResizablePanel — see the package doc comment's MECHANISM/NEW/FIX entries
-// above for why this carries a class at all (upstream's own ResizablePanel
-// has none), why `defaultSize` becomes a real inline `flex: <n> 1 0px`
+// above for why this has a mechanical foundation rule (upstream's own
+// ResizablePanel has no presentation), why `defaultSize` becomes a real
+// inline `flex: <n> 1 0px`
 // instead of a data attribute, and why the basis is a `0px` LENGTH rather
 // than a percentage.
 //
@@ -136,7 +135,7 @@ component ResizablePanel(defaultSize string, minSize string, maxSize string, chi
 		}
 	}}
 	<div
-		data-slot="resizable-panel"
+		data-gsxui-resizable-panel
 		{ if minSize != "" {
 			data-min-size={minSize}
 		} }
@@ -144,8 +143,7 @@ component ResizablePanel(defaultSize string, minSize string, maxSize string, chi
 			data-max-size={maxSize}
 		} }
 		style=css`flex: @{grow} 1 0px`
-		class="min-w-0 min-h-0 overflow-hidden"
-		{ attrs... }
+		{ withSlot("resizable-panel", attrs)... }
 	>
 		{ children }
 	</div>
@@ -167,12 +165,12 @@ component ResizablePanel(defaultSize string, minSize string, maxSize string, chi
 // `GripVerticalIcon` import/render entirely — the resulting dependency-free
 // `Deps("resizable") == []` is a direct consequence, not a coincidence.
 //
-// ADAPT (`shrink-0` + resize cursor, review round 2 — added to, not
-// substituted for, the pinned class string above, which stays verbatim):
+// ADAPT (non-shrinking handle + resize cursor, review round 2 — added to,
+// not substituted for, the reference presentation above):
 // the handle itself must not flex — a bare `flex` item defaults to
 // `flex-shrink: 1`, and ui.shadcn.com's own live-rendered handle pins
 // `flex-grow: 0; flex-shrink: 0` inline; `flex-grow: 0` is already this
-// handle's CSS initial value (it carries no `flex`/`grow-*` class of its
+// handle's CSS initial value (it carries no grow rule of its
 // own), but `shrink-0` is added explicitly since the initial
 // `flex-shrink` is 1. Neither new-york-v4's class string nor nova's CSS
 // carries a cursor (confirmed directly; also confirmed via CSSOM against
@@ -186,18 +184,11 @@ component ResizablePanel(defaultSize string, minSize string, maxSize string, chi
 // HORIZONTAL rule, dragging moves it up/down) is rendered statically
 // instead, keyed off the same `orientation` param the aria-inversion
 // above already uses — deliberately BETTER than the reference here, not
-// just equivalent: a static class works before JS has loaded, where the
+// just equivalent: a foundation rule works before JS has loaded, where the
 // library's own runtime injection would not.
 //
-// FIX (review round 2, IMPORTANT): resizable.js used to bind pointer/
-// keyboard behavior off data-slot="resizable-handle" alone — the only
-// interactive gsxui component whose public JS-attachment hook wasn't a
-// data-gsxui-* attribute (docs/jsx-parity.md `## dialog` MECHANISM: "the
-// data-gsxui-* attributes are each interactive component's PUBLIC
-// contract"). data-gsxui-resizable-handle is now stamped here and matched
-// by resizable.js ALONGSIDE data-slot, so a caller's own styled handle can
-// use the documented idiom and nothing already written against data-slot
-// breaks.
+// Behavior attaches only through data-gsxui-resizable-handle. The styling
+// token is deliberately separate and is never a JavaScript selector.
 component ResizableHandle(orientation string, withHandle bool, attrs gsx.Attrs) {
 	{{
 		handleOrientation := "vertical"
@@ -206,20 +197,14 @@ component ResizableHandle(orientation string, withHandle bool, attrs gsx.Attrs) 
 		}
 	}}
 	<div
-		data-slot="resizable-handle"
 		data-gsxui-resizable-handle
 		role="separator"
 		aria-orientation={handleOrientation}
 		tabindex="0"
-		class={
-			"relative flex w-px items-center justify-center bg-border after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:outline-hidden aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:w-full aria-[orientation=horizontal]:after:left-0 aria-[orientation=horizontal]:after:h-1 aria-[orientation=horizontal]:after:w-full aria-[orientation=horizontal]:after:translate-x-0 aria-[orientation=horizontal]:after:-translate-y-1/2 [&[aria-orientation=horizontal]>div]:rotate-90",
-			"shrink-0",
-			if orientation == "vertical" { "cursor-row-resize" } else { "cursor-col-resize" },
-		}
-		{ attrs... }
+		{ withSlot("resizable-handle", attrs)... }
 	>
 		{ if withHandle {
-			<div class="z-10 flex shrink-0 h-6 w-1 rounded-lg bg-border"></div>
+			<div { withSlot("resizable-handle-grip", nil)... }></div>
 		} }
 	</div>
 }

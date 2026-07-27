@@ -6,6 +6,7 @@ import (
 	_gsxctx "context"
 	"github.com/gsxhq/gsx"
 	_gsxrt "github.com/gsxhq/gsx"
+	_gsxstd "github.com/gsxhq/gsx/std"
 	_gsxcm "github.com/gsxhq/gsxui/merge"
 	_gsxio "io"
 )
@@ -31,7 +32,7 @@ import (
 // platform-dependent width) — no radius/inset/border control at all. Full
 // WebKit/Chromium shape fidelity (`rounded-full` thumb, the `p-px` track
 // inset) is layered on separately as a hand-authored `::-webkit-scrollbar-*`
-// block in assets/gsxui.css/web/site.css; Firefox has never implemented
+// block in assets/css/styles/default.css; Firefox has never implemented
 // those pseudo-elements, so `scrollbar-color` is what it gets there.
 //
 // GAP (no ScrollAreaCorner): `::-webkit-scrollbar-corner` is WebKit/Blink
@@ -49,9 +50,9 @@ import (
 // platform-policy override.
 //
 // orientation: "" (default, vertical — `overflow-auto`) | "horizontal"
-// (`overflow-x-auto`) — the axis switch needs no second component the way
+// (`overflow-x: auto`) — the axis switch needs no second component the way
 // Radix needs a literal `<ScrollBar orientation="horizontal"/>` element; it
-// is just a different overflow utility on the same collapsed div.
+// is just a different foundation rule on the same collapsed div.
 // `[scrollbar-color:var(--border)_transparent]` needs no separate `dark:`
 // variant: `--border` is itself a theme token that already changes value
 // under `.dark` (assets/gsxui.css), so the property tracks the theme for
@@ -63,25 +64,18 @@ func ScrollArea(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.N
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line scroll-area.gsx:52:2
+		_gsxv0 := withSlot("scroll-area", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"scroll-area\"")
+		if !_gsxv0.Has("data-orientation") {
+			_gsxgw.S(" data-orientation=\"")
+			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "vertical")))
+			_gsxgw.S("\"")
 		}
-		_gsxv0 := "relative rounded-[inherit] outline-none transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 [scrollbar-width:thin] [scrollbar-color:var(--border)_transparent]"
-		var _gsxv1 string
-		switch orientation {
-		case "horizontal":
-			_gsxv1 = "overflow-x-auto"
-		default:
-			_gsxv1 = "overflow-auto"
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
+		_gsxgw.StyleMerged("", _gsxv0.Style())
+		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line scroll-area.gsx:65:3
+//line scroll-area.gsx:56:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

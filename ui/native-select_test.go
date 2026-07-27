@@ -63,6 +63,21 @@ func TestNativeSelectAttrsFallThrough(t *testing.T) {
 	}
 }
 
+func TestNativeSelectComposesOuterSlotOnWrapperOnly(t *testing.T) {
+	got := render(t, ui.NativeSelect(nil, gsx.Attrs{
+		{Key: "data-gsxui-slot", Value: "calendar-dropdown-root"},
+		{Key: "id", Value: "month"},
+		{Key: "aria-label", Value: "Month"},
+	}))
+	want := `<div data-gsxui-slot="native-select-wrapper calendar-dropdown-root"><select data-gsxui-slot="native-select" id="month" aria-label="Month"></select><svg`
+	if !strings.Contains(got, want) {
+		t.Errorf("outer slot did not compose deterministically on the wrapper while ordinary attrs reached the select\n got: %s\nwant substring: %s", got, want)
+	}
+	if strings.Count(got, "calendar-dropdown-root") != 1 {
+		t.Errorf("outer slot leaked beyond the wrapper\nin: %s", got)
+	}
+}
+
 func TestNativeSelectOptionDefault(t *testing.T) {
 	got := render(t, ui.NativeSelectOption("us", false, false, gsx.Raw("United States"), nil))
 	want := `<option value="us">United States</option>`

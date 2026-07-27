@@ -38,7 +38,7 @@ import (
 // shape `## toggle-group`'s groupType/variant/size/spacing already
 // establishes. Spacing (embla's `-ml-4`/`pl-4` default gap, overridden to
 // `-ml-1`/`pl-1` by `carousel-spacing.tsx`) stays caller-controlled via the
-// ordinary class-merge mechanism — no separate spacing param, matching the
+// caller utility layer — no separate spacing param, matching the
 // upstream demo's own proof that gap is entirely a `className` override.
 
 //line carousel.gsx:35:1
@@ -46,38 +46,34 @@ func Carousel(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Nod
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line carousel.gsx:36:2
+		_gsxv0 := withSlot("carousel", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("role") {
+		if !_gsxv0.Has("role") {
 			_gsxgw.S(" role=\"region\"")
 		}
-		if !attrs.Has("aria-roledescription") {
+		if !_gsxv0.Has("aria-roledescription") {
 			_gsxgw.S(" aria-roledescription=\"carousel\"")
 		}
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"carousel\"")
-		}
-		if !attrs.Has("data-gsxui-carousel") {
+		if !_gsxv0.Has("data-gsxui-carousel") {
 			_gsxgw.BoolAttr("data-gsxui-carousel", true)
 		}
-		if !attrs.Has("data-orientation") {
+		if !_gsxv0.Has("data-orientation") {
 			_gsxgw.S(" data-orientation=\"")
 			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
+		_gsxgw.StyleMerged("", _gsxv0.Style())
+		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line carousel.gsx:45:3
+//line carousel.gsx:43:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line carousel.gsx:49:1
+//line carousel.gsx:47:1
 // CarouselContent renders BOTH divs from shadcn's own source: the outer div
 // is embla's `carouselRef` viewport target, ported here as the REAL native
 // scroll container (`overflow-x-auto`/`-y-auto` + `snap-x`/`snap-y
@@ -93,44 +89,45 @@ func Carousel(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Nod
 // otherwise show a visible scrollbar embla's transform-based approach never
 // had anything analogous to.
 
-//line carousel.gsx:63:1
+//line carousel.gsx:61:1
 func CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:64:2
-		_gsxgw.S("<div data-slot=\"carousel-content\"")
-		var _gsxv0 string
-		if orientation == "vertical" {
-			_gsxv0 = "overflow-y-auto snap-y snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-		} else {
-			_gsxv0 = "overflow-x-auto snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0))
-		_gsxgw.S("\">")
-//line carousel.gsx:74:3
+//line carousel.gsx:62:2
+		_gsxv1 := withSlot("carousel-content", nil)
 		_gsxgw.S("<div")
-		_gsxv1 := "flex"
-		var _gsxv2 string
-		if orientation == "vertical" {
-			_gsxv2 = "-mt-4 flex-col"
-		} else {
-			_gsxv2 = "-ml-4"
+		if !_gsxv1.Has("data-gsxui-carousel-content") {
+			_gsxgw.BoolAttr("data-gsxui-carousel-content", true)
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		if !_gsxv1.Has("data-orientation") {
+			_gsxgw.S(" data-orientation=\"")
+			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
+			_gsxgw.S("\"")
+		}
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
+		_gsxgw.StyleMerged("", _gsxv1.Style())
+		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line carousel.gsx:81:4
+//line carousel.gsx:67:3
+		_gsxv2 := withSlot("carousel-track", attrs)
+		_gsxgw.S("<div")
+		if !_gsxv2.Has("data-orientation") {
+			_gsxgw.S(" data-orientation=\"")
+			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
+			_gsxgw.S("\"")
+		}
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
+		_gsxgw.StyleMerged("", _gsxv2.Style())
+		_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line carousel.gsx:71:4
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div></div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line carousel.gsx:86:1
+//line carousel.gsx:76:1
 // The negative scroll-margin (`-scroll-ml-4`/`-scroll-mt-4`, matching the
 // item's own `pl-4`/`pt-4`) makes every snap position CONTENT-aligned, the
 // way embla's transform steps behave: embla translates by one whole slide
@@ -147,47 +144,44 @@ func CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs) _gs
 // caller tightening the gap must override BOTH, e.g. `pl-1 -scroll-ml-1` —
 // see site/examples/carousel/sizes.gsx).
 //
-// CarouselItem adds `snap-start` (+ the scroll-margin) to shadcn's own
-// class string — also NEW, not in shadcn's source, required for native
-// scroll-snap to have any snap points at all (embla needed none: it never
-// scrolls, it transforms).
+// CarouselItem's foundation rule adds `snap-start` (+ the scroll-margin) to
+// shadcn's presentation — also NEW, not in shadcn's source, required for
+// native scroll-snap to have any snap points at all (embla needed none: it
+// never scrolls, it transforms).
 
-//line carousel.gsx:106:1
+//line carousel.gsx:96:1
 func CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:107:2
+//line carousel.gsx:97:2
+		_gsxv3 := withSlot("carousel-item", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("role") {
+		if !_gsxv3.Has("role") {
 			_gsxgw.S(" role=\"group\"")
 		}
-		if !attrs.Has("aria-roledescription") {
+		if !_gsxv3.Has("aria-roledescription") {
 			_gsxgw.S(" aria-roledescription=\"slide\"")
 		}
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"carousel-item\"")
+		if !_gsxv3.Has("data-gsxui-carousel-item") {
+			_gsxgw.BoolAttr("data-gsxui-carousel-item", true)
 		}
-		_gsxv3 := "min-w-0 shrink-0 grow-0 basis-full snap-start last:snap-end"
-		var _gsxv4 string
-		if orientation == "vertical" {
-			_gsxv4 = "pt-4 -scroll-mt-4"
-		} else {
-			_gsxv4 = "pl-4 -scroll-ml-4"
+		if !_gsxv3.Has("data-orientation") {
+			_gsxgw.S(" data-orientation=\"")
+			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
+			_gsxgw.S("\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv3), _gsxrt.Class(_gsxv4), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv3.Class())
+		_gsxgw.StyleMerged("", _gsxv3.Style())
+		_gsxgw.Spread(ctx, _gsxv3, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line carousel.gsx:117:3
+//line carousel.gsx:104:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line carousel.gsx:121:1
+//line carousel.gsx:108:1
 // CarouselPrevious/CarouselNext compose Button (variant="outline"
 // size="icon") exactly like shadcn's own versions, plus
 // data-gsxui-carousel-prev/-next for carousel.js's delegated click wiring.
@@ -217,50 +211,46 @@ func CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt
 // not). carousel.js's own init pass recomputes and corrects both from the
 // real DOM immediately on load either way — see its own header comment.
 
-//line carousel.gsx:149:1
+//line carousel.gsx:136:1
 func CarouselPrevious(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:150:2
-		_gsxv5 := "absolute size-8 rounded-full"
-		var _gsxv6 string
-		if orientation == "vertical" {
-			_gsxv6 = "-top-12 left-1/2 -translate-x-1/2 rotate-90"
-		} else {
-			_gsxv6 = "top-1/2 -left-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
-		}
+//line carousel.gsx:137:2
 		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:166:3
+//line carousel.gsx:145:3
 			_gsxgw.Node(ctx, icon.ArrowLeft())
-//line carousel.gsx:167:3
-			_gsxgw.S("<span class=\"sr-only\">Previous slide</span>")
+//line carousel.gsx:146:3
+			_gsxv4 := withSlot("carousel-control-label", nil)
+			_gsxgw.S("<span")
+			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv4.Class())
+			_gsxgw.StyleMerged("", _gsxv4.Style())
+			_gsxgw.Spread(ctx, _gsxv4, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.S(">Previous slide</span>")
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-slot", Value: "carousel-previous"}}, _gsxrt.Attrs{{Key: "data-gsxui-carousel-prev", Value: true}}, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv5), _gsxrt.Class(_gsxv6))}}, attrs)))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-carousel-prev", Value: true}}, _gsxrt.Attrs{{Key: "data-orientation", Value: _gsxstd.Default((orientation), "horizontal")}}, withSlot("carousel-previous", attrs))))
 		return _gsxgw.Err()
 	})
 }
 
-//line carousel.gsx:171:1
+//line carousel.gsx:150:1
 func CarouselNext(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:172:2
-		_gsxv7 := "absolute size-8 rounded-full"
-		var _gsxv8 string
-		if orientation == "vertical" {
-			_gsxv8 = "-bottom-12 left-1/2 -translate-x-1/2 rotate-90"
-		} else {
-			_gsxv8 = "top-1/2 -right-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
-		}
+//line carousel.gsx:151:2
 		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:187:3
+//line carousel.gsx:158:3
 			_gsxgw.Node(ctx, icon.ArrowRight())
-//line carousel.gsx:188:3
-			_gsxgw.S("<span class=\"sr-only\">Next slide</span>")
+//line carousel.gsx:159:3
+			_gsxv5 := withSlot("carousel-control-label", nil)
+			_gsxgw.S("<span")
+			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv5.Class())
+			_gsxgw.StyleMerged("", _gsxv5.Style())
+			_gsxgw.Spread(ctx, _gsxv5, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.S(">Next slide</span>")
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-slot", Value: "carousel-next"}}, _gsxrt.Attrs{{Key: "data-gsxui-carousel-next", Value: true}}, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv7), _gsxrt.Class(_gsxv8))}}, attrs)))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-carousel-next", Value: true}}, _gsxrt.Attrs{{Key: "data-orientation", Value: _gsxstd.Default((orientation), "horizontal")}}, withSlot("carousel-next", attrs))))
 		return _gsxgw.Err()
 	})
 }
