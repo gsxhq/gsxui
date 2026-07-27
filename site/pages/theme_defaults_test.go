@@ -11,9 +11,8 @@ import (
 	"github.com/gsxhq/gsxui/site/pages"
 )
 
-// TestThemeDefaultsDriftPin ensures the Go themeGroups defaults stay in sync
-// with the library's authored default theme. This pins the Go-map ↔ CSS sync
-// in CI without requiring the theme editor to expose every library token.
+// TestThemeDefaultsDriftPin ensures the Go themeGroups defaults and the
+// library-only theme tokens stay in sync with the authored default theme.
 func TestThemeDefaultsDriftPin(t *testing.T) {
 	// Get the directory of this test file
 	_, testFile, _, _ := runtime.Caller(0)
@@ -84,6 +83,46 @@ func TestThemeDefaultsDriftPin(t *testing.T) {
 		}
 		if cssValue != goValue {
 			t.Errorf("dark mode: %s = %q (Go) vs %q (CSS) mismatch", varName, goValue, cssValue)
+		}
+	}
+
+	libraryOnly := map[string]map[string]string{
+		"light": {
+			"--sidebar":                    "oklch(0.985 0 0)",
+			"--sidebar-foreground":         "oklch(0% 0 0)",
+			"--sidebar-primary":            "oklch(0.205 0 0)",
+			"--sidebar-primary-foreground": "oklch(0.985 0 0)",
+			"--sidebar-accent":             "oklch(0.97 0 0)",
+			"--sidebar-accent-foreground":  "oklch(0.205 0 0)",
+			"--sidebar-border":             "oklch(0.922 0 0)",
+			"--sidebar-ring":               "oklch(0.708 0 0)",
+			"--success":                    "oklch(69.6% 0.17 162.48)",
+			"--info":                       "oklch(68.5% 0.169 237.323)",
+			"--warning":                    "oklch(76.9% 0.188 70.08)",
+			"--overlay":                    "oklch(0% 0 0 / 10%)",
+			"--contrast":                   "oklch(100% 0 0)",
+		},
+		"dark": {
+			"--sidebar":                    "oklch(0.205 0 0)",
+			"--sidebar-foreground":         "oklch(0.985 0 0)",
+			"--sidebar-primary":            "oklch(0.488 0.243 264.376)",
+			"--sidebar-primary-foreground": "oklch(0.985 0 0)",
+			"--sidebar-accent":             "oklch(0.269 0 0)",
+			"--sidebar-accent-foreground":  "oklch(0.985 0 0)",
+			"--sidebar-border":             "oklch(1 0 0 / 10%)",
+			"--sidebar-ring":               "oklch(0.439 0 0)",
+			"--success":                    "oklch(69.6% 0.17 162.48)",
+			"--info":                       "oklch(68.5% 0.169 237.323)",
+			"--warning":                    "oklch(76.9% 0.188 70.08)",
+			"--overlay":                    "oklch(0% 0 0 / 10%)",
+			"--contrast":                   "oklch(100% 0 0)",
+		},
+	}
+	for mode, expected := range libraryOnly {
+		for name, want := range expected {
+			if got := cssVars[mode][name]; got != want {
+				t.Errorf("%s mode: %s = %q, want %q", mode, name, got, want)
+			}
 		}
 	}
 

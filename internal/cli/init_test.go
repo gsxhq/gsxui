@@ -83,6 +83,57 @@ func TestInitWritesEverything(t *testing.T) {
 	}
 }
 
+func TestInitVendorsCSSAssetsBesideCustomEntry(t *testing.T) {
+	dir, _ := initTestModule(t)
+	cfg := Config{UI: "ui", JS: "web/gsxui", CSS: "web/styles/brand.css"}
+	if err := cfg.Save(dir); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := Run([]string{"init"}); err != nil {
+		t.Fatal(err)
+	}
+
+	for _, path := range []string{
+		"web/styles/brand.css",
+		"web/styles/foundation.css",
+		"web/styles/theme.css",
+		"web/styles/style.css",
+	} {
+		if _, err := os.Stat(filepath.Join(dir, path)); err != nil {
+			t.Errorf("missing %s: %v", path, err)
+		}
+	}
+}
+
+func TestInitRejectsModifiedCustomCSSSibling(t *testing.T) {
+	dir, _ := initTestModule(t)
+	cfg := Config{UI: "ui", JS: "web/gsxui", CSS: "web/styles/brand.css"}
+	if err := cfg.Save(dir); err != nil {
+		t.Fatal(err)
+	}
+	if err := Run([]string{"init"}); err != nil {
+		t.Fatal(err)
+	}
+
+	themePath := filepath.Join(dir, "web/styles/theme.css")
+	const modified = "/* local theme */\n"
+	if err := os.WriteFile(themePath, []byte(modified), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	err := Run([]string{"init"})
+	if err == nil || !strings.Contains(err.Error(), themePath) || !strings.Contains(err.Error(), "--overwrite") {
+		t.Fatalf("want custom sibling overwrite-refusal error, got %v", err)
+	}
+	got, err := os.ReadFile(themePath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(got) != modified {
+		t.Errorf("modified sibling was overwritten:\n%s", got)
+	}
+}
+
 func TestInitPreservesExistingGsxToml(t *testing.T) {
 	dir, _ := initTestModule(t)
 	existing := "[minify]\ncss = true\n"

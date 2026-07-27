@@ -27,7 +27,7 @@
     height: 0.75rem;
     border-radius: 9999px;
     border: 1px solid var(--primary);
-    background: #fff;
+    background: var(--contrast);
     margin-top: calc((0.25rem - 0.75rem) / 2);
     transition: box-shadow 150ms;
   }
@@ -36,7 +36,7 @@
     height: 0.75rem;
     border-radius: 9999px;
     border: 1px solid var(--primary);
-    background: #fff;
+    background: var(--contrast);
     transition: box-shadow 150ms;
   }
   input[type="range"]:hover::-webkit-slider-thumb,
