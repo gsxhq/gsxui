@@ -14,49 +14,36 @@ import (
 // Checkbox is the shadcn/ui Checkbox, ported as a real native <input
 // type="checkbox">: form-native, zero JS, :checked/:disabled browser truth
 // replaces Radix's button-role + hidden-input + Indicator part (ledger
-// ADAPT). The Indicator's CheckIcon child becomes a checked:bg-[url(...)]
-// data-URI background — a void, childless element opts into fallthrough via
-// the explicit { attrs... } spread, same as every other component here.
+// ADAPT). The Indicator's CheckIcon child becomes a checked-state data-URI
+// background in the default stylesheet.
 //
 // NOTE: the data-URI payloads are base64 — deliberately, after every
-// richer encoding lost to some layer of the toolchain in turn: literal
-// spaces are class-token boundaries (torn by tailwind-merge); Tailwind's
-// `_` whitespace escape is NOT converted inside url() values, so it
-// reached the browser as invalid XML (<svg_xmlns=...>) and the checkmark
-// silently never painted; and percent-encoding with parens (the dark
-// stroke's oklch(...)) broke the postcss parse of Tailwind's emitted CSS
-// under vite. Base64 is [A-Za-z0-9+/=] only — nothing for any layer to
-// split, convert, or mis-parse. Pinned by
-// TestCheckboxDataURIDecodesToValidSVG, which base64-decodes the rendered
-// URIs and XML-parses them. See docs/jsx-parity.md.
+// richer encoding lost to some layer of the CSS toolchain. Base64 is
+// [A-Za-z0-9+/=] only, so neither PostCSS nor the browser reparses payload
+// punctuation. TestCheckboxDataURIDecodesToValidSVG reads the stylesheet,
+// decodes both URIs, and XML-parses them.
 //
-// The dark:checked:* trio mirrors shadcn's explicit
-// dark:data-[state=checked]:bg-primary — NOT redundant: the dark custom
-// variant (:is(.dark *)) carries class specificity that beats a bare
-// :checked, so without it dark:bg-input/30 wins over checked:bg-primary in
-// dark mode. The dark check URI strokes the dark --primary-foreground
+// The explicit dark checked rule mirrors shadcn's dark checked state and
+// follows the dark unchecked paint in source order. The dark check URI
+// strokes the dark --primary-foreground
 // value (oklch(0.205 0 0)) because primary flips near-white there and the
 // light URI's white stroke would vanish; both strokes are static text — a
 // data-URI can't read CSS variables — so custom themes that move
 // primary-foreground still need the ledgered currentColor-mask follow-up.
 
-//line checkbox.gsx:33:1
+//line checkbox.gsx:24:1
 func Checkbox(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line checkbox.gsx:34:2
+//line checkbox.gsx:25:2
+		_gsxv0 := withSlot("checkbox", attrs)
 		_gsxgw.S("<input")
-		if !attrs.Has("type") {
+		if !_gsxv0.Has("type") {
 			_gsxgw.S(" type=\"checkbox\"")
 		}
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"checkbox\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("peer size-4 shrink-0 appearance-none rounded-[4px] border border-input transition-shadow outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:bg-input/30 checked:bg-primary checked:border-primary checked:bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0yMCA2IDkgMTdsLTUtNSIvPjwvc3ZnPg==')] checked:bg-center checked:bg-no-repeat checked:bg-[length:14px_14px] dark:checked:bg-primary dark:checked:border-primary dark:checked:bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJva2xjaCgwLjIwNSAwIDApIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTIwIDYgOSAxN2wtNS01Ii8+PC9zdmc+')]"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "xlink:href"}, []string{"background", "src"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
+		_gsxgw.StyleMerged("", _gsxv0.Style())
+		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "xlink:href"}, []string{"background", "src"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
 		return _gsxgw.Err()
 	})

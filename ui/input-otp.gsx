@@ -94,16 +94,14 @@ import (
 // icon.Minus already defaults to size-4, kept regardless per the map).
 component InputOTP(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="input-otp"
 		data-gsxui-input-otp
-		class="relative flex items-center gap-2 has-[input:disabled]:opacity-50"
+		{ withSlot("input-otp", nil)... }
 	>
 		<input
 			data-gsxui-input-otp-input
 			inputmode="numeric"
 			autocomplete="one-time-code"
-			class="absolute inset-0 z-10 h-full w-full cursor-text opacity-0 disabled:cursor-not-allowed"
-			{ attrs... }
+			{ withSlot("input-otp-input", attrs)... }
 		/>
 		{ children }
 	</div>
@@ -114,9 +112,7 @@ component InputOTP(children gsx.Node, attrs gsx.Attrs) {
 // InputOTP's own doc comment).
 component InputOTPGroup(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="input-otp-group"
-		class="flex items-center has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 has-aria-invalid:border-destructive rounded-lg has-aria-invalid:ring-3"
-		{ attrs... }
+		{ withSlot("input-otp-group", attrs)... }
 	>
 		{ children }
 	</div>
@@ -128,16 +124,15 @@ component InputOTPGroup(children gsx.Node, attrs gsx.Attrs) {
 // content after mount.
 component InputOTPSlot(attrs gsx.Attrs) {
 	<div
-		data-slot="input-otp-slot"
+		data-gsxui-input-otp-slot
 		data-active="false"
-		class="relative flex size-8 items-center justify-center border-y border-r border-input text-sm transition-all outline-none first:rounded-l-lg first:border-l last:rounded-r-lg aria-invalid:border-destructive data-[active=true]:z-10 data-[active=true]:border-ring data-[active=true]:ring-3 data-[active=true]:ring-ring/50 data-[active=true]:aria-invalid:border-destructive data-[active=true]:aria-invalid:ring-destructive/20 dark:bg-input/30 dark:data-[active=true]:aria-invalid:ring-destructive/40"
-		{ attrs... }
+		{ withSlot("input-otp-slot", attrs)... }
 	></div>
 }
 
 // InputOTPSeparator: icon.Minus, static, unchanged from shadcn.
 component InputOTPSeparator(attrs gsx.Attrs) {
-	<div data-slot="input-otp-separator" role="separator" class="[&_svg:not([class*='size-'])]:size-4" { attrs... }>
+	<div role="separator" { withSlot("input-otp-separator", attrs)... }>
 		<icon.Minus/>
 	</div>
 }

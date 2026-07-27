@@ -91,12 +91,10 @@ func TestValidateAcceptsPresenceOnlyAxis(t *testing.T) {
 }
 
 func TestAllReturnsSortedCopy(t *testing.T) {
-	originalPrimitives := primitiveContracts
-	defer func() { primitiveContracts = originalPrimitives }()
-	primitiveContracts = []Component{
+	onlyPrimitiveContracts(t, []Component{
 		{Name: "Zebra"},
 		{Name: "Alert"},
-	}
+	})
 
 	got := All()
 	want := []Component{
@@ -114,9 +112,7 @@ func TestAllReturnsSortedCopy(t *testing.T) {
 }
 
 func TestAllReturnsDeepSnapshot(t *testing.T) {
-	originalPrimitives := primitiveContracts
-	defer func() { primitiveContracts = originalPrimitives }()
-	primitiveContracts = []Component{{
+	onlyPrimitiveContracts(t, []Component{{
 		Name: "Button",
 		Slots: []Slot{{
 			Name: "button",
@@ -125,7 +121,7 @@ func TestAllReturnsDeepSnapshot(t *testing.T) {
 				Values:    []string{"sm"},
 			}},
 		}},
-	}}
+	}})
 	want := []Component{{
 		Name: "Button",
 		Slots: []Slot{{
@@ -146,6 +142,33 @@ func TestAllReturnsDeepSnapshot(t *testing.T) {
 	if again := All(); !reflect.DeepEqual(again, want) {
 		t.Fatalf("All() returned an aliased nested value: got %#v, want %#v", again, want)
 	}
+}
+
+func onlyPrimitiveContracts(t *testing.T, components []Component) {
+	t.Helper()
+	originalPrimitives := primitiveContracts
+	originalForms := formContracts
+	originalOverlays := overlayContracts
+	originalMenus := menuContracts
+	originalComposites := compositeContracts
+	originalSidebar := sidebarContracts
+	originalSonner := sonnerContracts
+	t.Cleanup(func() {
+		primitiveContracts = originalPrimitives
+		formContracts = originalForms
+		overlayContracts = originalOverlays
+		menuContracts = originalMenus
+		compositeContracts = originalComposites
+		sidebarContracts = originalSidebar
+		sonnerContracts = originalSonner
+	})
+	primitiveContracts = components
+	formContracts = nil
+	overlayContracts = nil
+	menuContracts = nil
+	compositeContracts = nil
+	sidebarContracts = nil
+	sonnerContracts = nil
 }
 
 func TestAllPreservesSliceNilness(t *testing.T) {

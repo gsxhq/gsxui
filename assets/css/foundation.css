@@ -77,5 +77,35 @@
 
 /* Normalize the range input before its presentation rules. */
 input[type="range"] {
+  appearance: none;
+  background: transparent;
   outline: none;
+}
+
+/* InputOTP's one real input must cover the visual slots while remaining
+   focusable and clickable in every style. */
+:where([data-gsxui-slot~="input-otp"]) {
+  position: relative;
+}
+:where([data-gsxui-slot~="input-otp-input"]) {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+/* Select's native form bridge remains available to forms and labels without
+   becoming a second visible control. */
+:where([data-gsxui-slot~="select-bridge"]) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }

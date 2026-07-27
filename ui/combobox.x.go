@@ -213,7 +213,7 @@ func ComboboxInput(placeholder string, showTrigger bool, showClear bool, disable
 //line combobox.gsx:186:3
 			_gsxgw.Node(ctx, children)
 			return _gsxgw.Err()
-		}), _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("w-auto"), _gsxrt.Class(attrs.Class()))}}))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-combobox-input-group", Value: true}}, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("w-auto"), _gsxrt.Class(attrs.Class()))}})))
 		return _gsxgw.Err()
 	})
 }
@@ -510,13 +510,16 @@ func ComboboxLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"combobox-label\"")
 		}
+		if !attrs.Has("data-gsxui-combobox-label") {
+			_gsxgw.BoolAttr("data-gsxui-combobox-label", true)
+		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("px-2 py-1.5 text-xs text-muted-foreground pointer-coarse:px-3 pointer-coarse:py-2 pointer-coarse:text-sm"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line combobox.gsx:349:160
+//line combobox.gsx:349:186
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
@@ -563,6 +566,9 @@ func ComboboxSeparator(attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.S("<div")
 		if !attrs.Has("data-slot") {
 			_gsxgw.S(" data-slot=\"combobox-separator\"")
+		}
+		if !attrs.Has("data-gsxui-combobox-separator") {
+			_gsxgw.BoolAttr("data-gsxui-combobox-separator", true)
 		}
 		if !attrs.Has("aria-hidden") {
 			_gsxgw.S(" aria-hidden=\"true\"")

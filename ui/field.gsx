@@ -22,28 +22,17 @@ import "github.com/gsxhq/gsx"
 // errors-array-to-list plumbing.
 component FieldSet(children gsx.Node, attrs gsx.Attrs) {
 	<fieldset
-		data-slot="field-set"
-		class="flex flex-col gap-4 has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3"
-		{ attrs... }
+		{ withSlot("field-set", attrs)... }
 	>
 		{ children }
 	</fieldset>
 }
 
-// FieldLegend's variant cva only ever types `variant` — both
-// `data-[variant=legend]:text-base` and `data-[variant=label]:text-sm` are
-// present unconditionally in shadcn's own class string; data-variant plus
-// Tailwind's data-[variant=...] selectors are what actually pick one, the
-// same "no switch needed, single verbatim class string dispatches on the
-// stamped attribute" shape as Separator's data-orientation (see
-// ui/separator.gsx), not a static-block switch like item/button-group's cva
-// maps.
+// data-variant is the public CSS axis for legend and label metrics.
 component FieldLegend(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<legend
-		data-slot="field-legend"
 		data-variant={variant |> default("legend")}
-		class="mb-1.5 font-medium data-[variant=legend]:text-base data-[variant=label]:text-sm"
-		{ attrs... }
+		{ withSlot("field-legend", attrs)... }
 	>
 		{ children }
 	</legend>
@@ -51,41 +40,19 @@ component FieldLegend(variant string, children gsx.Node, attrs gsx.Attrs) {
 
 component FieldGroup(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="field-group"
-		class="group/field-group @container/field-group flex w-full flex-col gap-5 data-[slot=checkbox-group]:gap-3 [&>[data-slot=field-group]]:gap-4"
-		{ attrs... }
+		{ withSlot("field-group", attrs)... }
 	>
 		{ children }
 	</div>
 }
 
-// Field's fieldVariants cva map picks between three static class blocks by
-// the JS-resolved orientation value (WIN: switch inside class={}, same idiom
-// as item/button-group/empty) — but UNLIKE button-group's orientation
-// (nothing downstream ever reads button-group's data-orientation), Field's
-// own data-orientation IS read by a sibling: FieldDescription's
-// `group-has-[[data-orientation=horizontal]]/field:text-balance` selector
-// keys directly off it. So both apply here: the switch picks Field's own
-// class blocks, AND data-orientation is stamped (not merely for
-// stamp-everything consistency, but because it's structurally load-bearing
-// for FieldDescription).
+// data-orientation is the public CSS axis for layout and is also read by
+// FieldDescription's relational text-balance rule.
 component Field(orientation string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="group"
-		data-slot="field"
 		data-orientation={orientation |> default("vertical")}
-		class={
-			"group/field flex w-full gap-2 data-[invalid=true]:text-destructive",
-			switch orientation {
-			case "horizontal":
-				"flex-row items-center [&>[data-slot=field-label]]:flex-auto has-[>[data-slot=field-content]]:items-start has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px"
-			case "responsive":
-				"flex-col @md/field-group:flex-row @md/field-group:items-center [&>*]:w-full @md/field-group:[&>*]:w-auto [&>.sr-only]:w-auto @md/field-group:[&>[data-slot=field-label]]:flex-auto @md/field-group:has-[>[data-slot=field-content]]:items-start @md/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px"
-			default:
-				"flex-col [&>*]:w-full [&>.sr-only]:w-auto"
-			}
-		}
-		{ attrs... }
+		{ withSlot("field", attrs)... }
 	>
 		{ children }
 	</div>
@@ -93,40 +60,27 @@ component Field(orientation string, children gsx.Node, attrs gsx.Attrs) {
 
 component FieldContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="field-content"
-		class="group/field-content flex flex-1 flex-col gap-0.5 leading-snug"
-		{ attrs... }
+		{ withSlot("field-content", attrs)... }
 	>
 		{ children }
 	</div>
 }
 
-// FieldLabel composes ui.Label directly (flat package) — the field -> label
-// dependency. data-slot is overridden from Label's own "label" to
-// "field-label" as an explicit non-parameter attribute on the call, the
-// same override mechanism as ItemSeparator/ButtonGroupSeparator overriding
-// Separator's data-slot (see ui/item.gsx, ui/button-group.gsx).
+// FieldLabel composes ui.Label directly, preserving ordered styling tokens
+// "label field-label".
 component FieldLabel(children gsx.Node, attrs gsx.Attrs) {
 	<Label
-		data-slot="field-label"
-		class="group/field-label peer/field-label flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:opacity-50 has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col has-[>[data-slot=field]]:rounded-lg has-[>[data-slot=field]]:border [&>*]:data-[slot=field]:p-2.5 has-data-[state=checked]:border-primary has-data-[state=checked]:bg-primary/5 dark:has-data-[state=checked]:bg-primary/10"
-		{ attrs... }
+		{ withSlot("field-label", attrs)... }
 	>
 		{ children }
 	</Label>
 }
 
-// FieldTitle renders a <div>, matching shadcn's own actual returned element
-// (its TypeScript prop type reads React.ComponentProps<"div">, consistent
-// with the tag). Its data-slot is "field-label" — the SAME value FieldLabel
-// itself stamps — in shadcn's own source; ported as-is (token-for-token),
-// the same unmatched/shared-data-slot call as EmptyMedia's "empty-icon" (see
-// ## empty) and ButtonGroupText's missing data-slot (see ## button-group).
+// FieldTitle renders a <div> with a distinct token so themes can address it
+// independently from the composed FieldLabel.
 component FieldTitle(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="field-label"
-		class="flex w-fit items-center gap-2 text-sm leading-snug font-medium group-data-[disabled=true]/field:opacity-50"
-		{ attrs... }
+		{ withSlot("field-title", attrs)... }
 	>
 		{ children }
 	</div>
@@ -134,32 +88,29 @@ component FieldTitle(children gsx.Node, attrs gsx.Attrs) {
 
 component FieldDescription(children gsx.Node, attrs gsx.Attrs) {
 	<p
-		data-slot="field-description"
-		class="text-sm leading-normal font-normal text-muted-foreground group-has-[[data-orientation=horizontal]]/field:text-balance last:mt-0 [[data-variant=legend]+&]:-mt-1.5 [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary"
-		{ attrs... }
+		{ withSlot("field-description", attrs)... }
 	>
 		{ children }
 	</p>
 }
 
-// FieldSeparator composes ui.Separator directly (flat package) — the field
-// -> separator dependency. data-content mirrors shadcn's `data-content={!!
+// FieldSeparator composes ui.Separator with ordered tokens
+// "separator field-separator". The wrapper has its own token because it
+// owns layout while the nested separator owns the rule. data-content mirrors
+// shadcn's `data-content={!!
 // children}` boolean stamp (gsx renders a bool expression as "true"/"false"
 // text directly, the same mechanism as pagination.gsx's data-active — see
 // ui/pagination.gsx); the optional label span only renders when children is
 // present.
 component FieldSeparator(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="field-separator"
 		data-content={children != nil}
-		class="relative -my-2 h-5 text-sm group-data-[variant=outline]/field-group:-mb-2"
-		{ attrs... }
+		{ withSlot("field-separator-wrapper", attrs)... }
 	>
-		<Separator class="absolute inset-0 top-1/2"/>
+		<Separator { withSlot("field-separator", nil)... }/>
 		{ if children != nil {
 			<span
-				class="relative mx-auto block w-fit bg-background px-2 text-muted-foreground"
-				data-slot="field-separator-content"
+				{ withSlot("field-separator-content", nil)... }
 			>
 				{ children }
 			</span>
@@ -172,7 +123,7 @@ component FieldSeparator(children gsx.Node, attrs gsx.Attrs) {
 // the file-level ADAPT comment above for the dropped errors prop).
 component FieldError(children gsx.Node, attrs gsx.Attrs) {
 	{ if children != nil {
-		<div role="alert" data-slot="field-error" class="text-sm font-normal text-destructive" { attrs... }>
+		<div role="alert" { withSlot("field-error", attrs)... }>
 			{ children }
 		</div>
 	} }

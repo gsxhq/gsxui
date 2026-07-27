@@ -73,7 +73,6 @@ component ToggleGroup(groupType string, variant string, size string, spacing str
 		}
 	}}
 	<div
-		data-slot="toggle-group"
 		data-gsxui-toggle-group
 		data-variant={variant |> default("default")}
 		data-size={size |> default("default")}
@@ -81,22 +80,15 @@ component ToggleGroup(groupType string, variant string, size string, spacing str
 		data-orientation="horizontal"
 		role={role}
 		style=css`--gap: @{sp}`
-		class="group/toggle-group flex w-fit items-center gap-[--spacing(var(--gap))] rounded-lg data-[size=sm]:rounded-[min(var(--radius-md),10px)]"
-		{ attrs... }
+		{ withSlot("toggle-group", attrs)... }
 	>
 		{ children }
 	</div>
 }
 
-// ToggleGroupItem composes toggle.gsx's own toggleBase/toggleVariantClass/
-// toggleSizeClass — the identical nova-retargeted toggleVariants(variant,
-// size) computation Toggle itself uses, not a re-derivation — plus the
-// toggle-group-item-only class additions (join-pill layout: w-auto px-3,
-// spacing=0 squared-off corners, spacing=0 outline hairline collapse,
-// horizontal end-corner rounding). Both type="single" and type="multiple"
-// share data-state="on"|"off" (what the shared data-[state=on]:bg-accent
-// selector in toggleBase keys off); only the ARIA attribute pair differs —
-// see the package doc comment above ToggleGroup.
+// ToggleGroupItem composes ordered tokens "toggle toggle-group-item".
+// Variant, size, spacing, orientation, and state are public CSS axes; only
+// the ARIA attribute pair differs between single and multiple groups.
 //
 // MECHANISM (single-type replace-on-activate): clicking a new item in a
 // type="single" group simply sets a new single value — there is no
@@ -121,7 +113,6 @@ component ToggleGroupItem(groupType string, variant string, size string, spacing
 	}}
 	<button
 		type="button"
-		data-slot="toggle-group-item"
 		data-gsxui-toggle-group-item
 		data-variant={variant |> default("default")}
 		data-size={size |> default("default")}
@@ -135,13 +126,7 @@ component ToggleGroupItem(groupType string, variant string, size string, spacing
 		} else {
 			aria-pressed={pressed}
 		} }
-		class={
-			toggleBase,
-			toggleVariantClass(variant),
-			toggleSizeClass(size),
-			"w-auto min-w-0 shrink-0 px-3 focus:z-10 focus-visible:z-10 data-[spacing=0]:rounded-none data-[spacing=0]:shadow-none data-[spacing=0]:data-[variant=outline]:border-l-0 data-[spacing=0]:data-[variant=outline]:first:border-l data-[orientation=horizontal]:data-[spacing=0]:first:rounded-l-lg data-[orientation=horizontal]:data-[spacing=0]:last:rounded-r-lg",
-		}
-		{ attrs... }
+		{ withSlot("toggle", withSlot("toggle-group-item", attrs))... }
 	>
 		{ children }
 	</button>

@@ -26,36 +26,52 @@ func Select(name string, required bool, disabled bool, form string, children gsx
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line select.gsx:44:2
+		_gsxv0 := withSlot("select", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"select\"")
-		}
-		if !attrs.Has("data-gsxui-select") {
+		if !_gsxv0.Has("data-gsxui-select") {
 			_gsxgw.BoolAttr("data-gsxui-select", true)
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("contents"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
+		_gsxgw.StyleMerged("", _gsxv0.Style())
+		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
 //line select.gsx:45:3
 		_gsxgw.Node(ctx, children)
 //line select.gsx:46:3
 		if name != "" {
 //line select.gsx:47:4
+			_gsxv1 := withSlot("select-bridge", nil)
 			_gsxgw.S("<select")
-			_gsxgw.BoolAttr("data-gsxui-select-bridge", true)
-			_gsxgw.S(" aria-hidden=\"true\" tabindex=\"-1\" class=\"sr-only\" name=\"")
-			_gsxgw.AttrValue(string(name))
-			_gsxgw.S("\"")
-			_gsxgw.BoolAttr("required", bool(required))
-			_gsxgw.BoolAttr("disabled", bool(disabled))
-			if form != "" {
-				_gsxgw.S(" form=\"")
-				_gsxgw.AttrValue(string(form))
+			if !_gsxv1.Has("data-gsxui-select-bridge") {
+				_gsxgw.BoolAttr("data-gsxui-select-bridge", true)
+			}
+			if !_gsxv1.Has("aria-hidden") {
+				_gsxgw.S(" aria-hidden=\"true\"")
+			}
+			if !_gsxv1.Has("tabindex") {
+				_gsxgw.S(" tabindex=\"-1\"")
+			}
+			if !_gsxv1.Has("name") {
+				_gsxgw.S(" name=\"")
+				_gsxgw.AttrValue(string(name))
 				_gsxgw.S("\"")
 			}
+			if !_gsxv1.Has("required") {
+				_gsxgw.BoolAttr("required", bool(required))
+			}
+			if !_gsxv1.Has("disabled") {
+				_gsxgw.BoolAttr("disabled", bool(disabled))
+			}
+			if form != "" {
+				if !_gsxv1.Has("form") {
+					_gsxgw.S(" form=\"")
+					_gsxgw.AttrValue(string(form))
+					_gsxgw.S("\"")
+				}
+			}
+			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
+			_gsxgw.StyleMerged("", _gsxv1.Style())
+			_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 			_gsxgw.S(">")
 //line select.gsx:59:5
 			_gsxgw.S("<option value=\"\"></option></select>")
@@ -81,82 +97,74 @@ func SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node 
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line select.gsx:75:2
+		_gsxv2 := withSlot("select-trigger", attrs)
 		_gsxgw.S("<button")
-		if !attrs.Has("type") {
+		if !_gsxv2.Has("type") {
 			_gsxgw.S(" type=\"button\"")
 		}
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"select-trigger\"")
-		}
-		if !attrs.Has("data-gsxui-select-trigger") {
+		if !_gsxv2.Has("data-gsxui-select-trigger") {
 			_gsxgw.BoolAttr("data-gsxui-select-trigger", true)
 		}
-		if !attrs.Has("role") {
+		if !_gsxv2.Has("role") {
 			_gsxgw.S(" role=\"combobox\"")
 		}
-		if !attrs.Has("aria-expanded") {
+		if !_gsxv2.Has("aria-expanded") {
 			_gsxgw.S(" aria-expanded=\"false\"")
 		}
-		if !attrs.Has("aria-autocomplete") {
+		if !_gsxv2.Has("aria-autocomplete") {
 			_gsxgw.S(" aria-autocomplete=\"none\"")
 		}
-		if !attrs.Has("data-state") {
+		if !_gsxv2.Has("data-state") {
 			_gsxgw.S(" data-state=\"closed\"")
 		}
-		if !attrs.Has("data-size") {
+		if !_gsxv2.Has("data-size") {
 			_gsxgw.S(" data-size=\"")
 			_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
 			_gsxgw.S("\"")
 		}
-		if !attrs.Has("data-placeholder") {
+		if !_gsxv2.Has("data-placeholder") {
 			_gsxgw.BoolAttr("data-placeholder", true)
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex w-fit items-center justify-between gap-1.5 rounded-lg border border-input bg-transparent pr-2 pl-2.5 py-2 text-sm whitespace-nowrap transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground data-[size=default]:h-8 data-[size=sm]:h-7 data-[size=sm]:rounded-[min(var(--radius-md),10px)] *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
+		_gsxgw.StyleMerged("", _gsxv2.Style())
+		_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line select.gsx:88:3
+//line select.gsx:86:3
 		_gsxgw.Node(ctx, children)
-//line select.gsx:89:3
-		_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.Attrs{{Key: "class", Value: "size-4 opacity-50"}}...))
+//line select.gsx:87:3
+		_gsxgw.Node(ctx, icon.ChevronDown())
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line select.gsx:93:1
+//line select.gsx:91:1
 // SelectValue displays the current value, or the placeholder when nothing is
-// selected. select.js overwrites its text content on selection. pointer-
-// events:none keeps the span from becoming the click target inside the
-// button (Radix's own SelectValue carries the same inline style).
+// selected. select.js overwrites its text content on selection. The default
+// stylesheet applies pointer-events:none.
 
-//line select.gsx:97:1
+//line select.gsx:94:1
 func SelectValue(placeholder string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line select.gsx:98:2
+//line select.gsx:95:2
+		_gsxv3 := withSlot("select-value", attrs)
 		_gsxgw.S("<span")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"select-value\"")
+		if !_gsxv3.Has("data-gsxui-select-value") {
+			_gsxgw.BoolAttr("data-gsxui-select-value", true)
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
-		if attrs.Has("style") {
-			_gsxgw.StyleMerged("pointer-events: none", attrs.Style())
-		} else {
-			_gsxgw.S(" style=\"pointer-events: none\"")
-		}
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv3.Class())
+		_gsxgw.StyleMerged("", _gsxv3.Style())
+		_gsxgw.Spread(ctx, _gsxv3, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line select.gsx:98:75
+//line select.gsx:95:71
 		_gsxgw.Text(string(placeholder))
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()
 	})
 }
 
-//line select.gsx:101:1
+//line select.gsx:98:1
 // SelectContent is the popover listbox. It rides the exact dropdown.js
 // popover machinery: popover="auto" (top layer, light dismiss, free Esc),
 // server-rendered data-state="closed" + data-side="bottom" (select.js always
@@ -167,40 +175,67 @@ func SelectValue(placeholder string, attrs gsx.Attrs) _gsxrt.Node {
 // the viewport's own overflow-y-auto scrolls natively (GAP, see the parity
 // ledger).
 
-//line select.gsx:110:1
+//line select.gsx:107:1
 func SelectContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line select.gsx:111:2
+//line select.gsx:108:2
+		_gsxv4 := withSlot("select-content", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"select-content\"")
-		}
-		if !attrs.Has("data-gsxui-select-content") {
+		if !_gsxv4.Has("data-gsxui-select-content") {
 			_gsxgw.BoolAttr("data-gsxui-select-content", true)
 		}
-		if !attrs.Has("popover") {
+		if !_gsxv4.Has("popover") {
 			_gsxgw.S(" popover=\"auto\"")
 		}
-		if !attrs.Has("role") {
+		if !_gsxv4.Has("role") {
 			_gsxgw.S(" role=\"listbox\"")
 		}
-		if !attrs.Has("tabindex") {
+		if !_gsxv4.Has("tabindex") {
 			_gsxgw.S(" tabindex=\"-1\"")
 		}
-		if !attrs.Has("data-state") {
+		if !_gsxv4.Has("data-state") {
 			_gsxgw.S(" data-state=\"closed\"")
 		}
-		if !attrs.Has("data-side") {
+		if !_gsxv4.Has("data-side") {
 			_gsxgw.S(" data-side=\"bottom\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("z-50 max-h-96 min-w-36 origin-top-left overflow-x-hidden overflow-y-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md"), _gsxrt.Class("opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95"), _gsxrt.Class("data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv4.Class())
+		_gsxgw.StyleMerged("", _gsxv4.Style())
+		_gsxgw.Spread(ctx, _gsxv4, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line select.gsx:126:3
+//line select.gsx:117:3
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}
+
+//line select.gsx:121:1
+// SelectGroup wraps a set of items under a SelectLabel. Unlike
+// ui.NativeSelect's SelectGroup (which collapses onto native <optgroup
+// label=...>), the custom listbox can hold an arbitrary styled label child,
+// so this ports as a real role="group" div. select.js wires aria-labelledby
+// to the contained SelectLabel's generated id at init.
+
+//line select.gsx:126:1
+func SelectGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line select.gsx:127:2
+		_gsxv5 := withSlot("select-group", attrs)
+		_gsxgw.S("<div")
+		if !_gsxv5.Has("data-gsxui-select-group") {
+			_gsxgw.BoolAttr("data-gsxui-select-group", true)
+		}
+		if !_gsxv5.Has("role") {
+			_gsxgw.S(" role=\"group\"")
+		}
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv5.Class())
+		_gsxgw.StyleMerged("", _gsxv5.Style())
+		_gsxgw.Spread(ctx, _gsxv5, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line select.gsx:127:83
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
@@ -208,65 +243,31 @@ func SelectContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 }
 
 //line select.gsx:130:1
-// SelectGroup wraps a set of items under a SelectLabel. Unlike
-// ui.NativeSelect's SelectGroup (which collapses onto native <optgroup
-// label=...>), the custom listbox can hold an arbitrary styled label child,
-// so this ports as a real role="group" div. select.js wires aria-labelledby
-// to the contained SelectLabel's generated id at init.
-
-//line select.gsx:135:1
-func SelectGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
-	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-		_gsxgw := _gsxrt.W(_gsxw)
-//line select.gsx:136:2
-		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"select-group\"")
-		}
-		if !attrs.Has("data-gsxui-select-group") {
-			_gsxgw.BoolAttr("data-gsxui-select-group", true)
-		}
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"group\"")
-		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
-		_gsxgw.S(">")
-//line select.gsx:136:82
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
-	})
-}
-
-//line select.gsx:139:1
 // SelectLabel is the group heading (select.js stamps its id and the group's
 // aria-labelledby at init).
 
-//line select.gsx:141:1
+//line select.gsx:132:1
 func SelectLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line select.gsx:142:2
+//line select.gsx:133:2
+		_gsxv6 := withSlot("select-label", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"select-label\"")
+		if !_gsxv6.Has("data-gsxui-select-label") {
+			_gsxgw.BoolAttr("data-gsxui-select-label", true)
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("px-1.5 py-1 text-xs text-muted-foreground"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv6.Class())
+		_gsxgw.StyleMerged("", _gsxv6.Style())
+		_gsxgw.Spread(ctx, _gsxv6, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line select.gsx:142:95
+//line select.gsx:133:70
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line select.gsx:145:1
+//line select.gsx:136:1
 // SelectItem is one option. value is the form value (data-value, synced into
 // the hidden bridge); disabled skips it in focus/typeahead/selection;
 // selected server-renders the initial value (data-state="checked"). Two
@@ -278,90 +279,95 @@ func SelectLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 //     value but is not the highlighted item reports aria-selected="false".
 // items are always tabindex="-1"; select.js moves real DOM focus among them.
 
-//line select.gsx:155:1
+//line select.gsx:146:1
 func SelectItem(value string, selected bool, disabled bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line select.gsx:156:2
+//line select.gsx:147:2
+		_gsxv7 := withSlot("select-item", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"select-item\"")
-		}
-		if !attrs.Has("data-gsxui-select-item") {
+		if !_gsxv7.Has("data-gsxui-select-item") {
 			_gsxgw.BoolAttr("data-gsxui-select-item", true)
 		}
-		if !attrs.Has("role") {
+		if !_gsxv7.Has("role") {
 			_gsxgw.S(" role=\"option\"")
 		}
-		if !attrs.Has("data-value") {
+		if !_gsxv7.Has("data-value") {
 			_gsxgw.S(" data-value=\"")
 			_gsxgw.AttrValue(string(value))
 			_gsxgw.S("\"")
 		}
 		if selected {
-			if !attrs.Has("data-state") {
+			if !_gsxv7.Has("data-state") {
 				_gsxgw.S(" data-state=\"checked\"")
 			}
 		} else {
-			if !attrs.Has("data-state") {
+			if !_gsxv7.Has("data-state") {
 				_gsxgw.S(" data-state=\"unchecked\"")
 			}
 		}
-		if !attrs.Has("aria-selected") {
+		if !_gsxv7.Has("aria-selected") {
 			_gsxgw.S(" aria-selected=\"false\"")
 		}
-		if !attrs.Has("tabindex") {
+		if !_gsxv7.Has("tabindex") {
 			_gsxgw.S(" tabindex=\"-1\"")
 		}
 		if disabled {
-			if !attrs.Has("data-disabled") {
+			if !_gsxv7.Has("data-disabled") {
 				_gsxgw.S(" data-disabled=\"true\"")
 			}
-			if !attrs.Has("aria-disabled") {
+			if !_gsxv7.Has("aria-disabled") {
 				_gsxgw.S(" aria-disabled=\"true\"")
 			}
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/select-item relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv7.Class())
+		_gsxgw.StyleMerged("", _gsxv7.Style())
+		_gsxgw.Spread(ctx, _gsxv7, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line select.gsx:175:3
-		_gsxgw.S("<span data-slot=\"select-item-indicator\" class=\"pointer-events-none absolute right-2 hidden size-4 items-center justify-center group-data-[state=checked]/select-item:flex\">")
-//line select.gsx:176:4
-		_gsxgw.Node(ctx, icon.Check(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
+//line select.gsx:164:3
+		_gsxv8 := withSlot("select-item-indicator", nil)
+		_gsxgw.S("<span")
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv8.Class())
+		_gsxgw.StyleMerged("", _gsxv8.Style())
+		_gsxgw.Spread(ctx, _gsxv8, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line select.gsx:165:4
+		_gsxgw.Node(ctx, icon.Check())
 		_gsxgw.S("</span>")
-//line select.gsx:178:3
-		_gsxgw.S("<span data-slot=\"select-item-text\">")
-//line select.gsx:178:38
+//line select.gsx:167:3
+		_gsxv9 := withSlot("select-item-text", nil)
+		_gsxgw.S("<span")
+		if !_gsxv9.Has("data-gsxui-select-item-text") {
+			_gsxgw.BoolAttr("data-gsxui-select-item-text", true)
+		}
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv9.Class())
+		_gsxgw.StyleMerged("", _gsxv9.Style())
+		_gsxgw.Spread(ctx, _gsxv9, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line select.gsx:167:78
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</span></div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line select.gsx:182:1
+//line select.gsx:171:1
 // SelectSeparator divides groups. aria-hidden per Radix's own SelectSeparator
 // (a decorative rule, not a role="separator" like DropdownMenuSeparator).
 
-//line select.gsx:184:1
+//line select.gsx:173:1
 func SelectSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line select.gsx:185:2
+//line select.gsx:174:2
+		_gsxv10 := withSlot("select-separator", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"select-separator\"")
-		}
-		if !attrs.Has("aria-hidden") {
+		if !_gsxv10.Has("aria-hidden") {
 			_gsxgw.S(" aria-hidden=\"true\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-border -mx-1 my-1 h-px"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv10.Class())
+		_gsxgw.StyleMerged("", _gsxv10.Style())
+		_gsxgw.Spread(ctx, _gsxv10, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S("></div>")
 		return _gsxgw.Err()
 	})

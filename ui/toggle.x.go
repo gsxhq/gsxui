@@ -12,38 +12,7 @@ import (
 	_gsxsc "strconv"
 )
 
-// toggleBase/toggleVariantClass/toggleSizeClass are Toggle's own
-// toggleVariants(variant, size) computation, split into package-private
-// helpers (the button.gsx base/variantClass/sizeClass shape) so
-// ToggleGroupItem (ui/toggle-group.gsx) can compose the identical
-// nova-retargeted classes onto its own <button> rather than re-deriving
-// them — the same pagination.gsx -> button.gsx dependency shape, and the
-// mechanism internal/registry's declIndex derives the toggle-group -> toggle
-// dependency from.
-//
 //line toggle.gsx:5:1
-const toggleBase = "inline-flex items-center justify-center gap-1 rounded-lg text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-muted hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
-
-func toggleVariantClass(variant string) string {
-	switch variant {
-	case "outline":
-		return "border border-input bg-transparent hover:bg-accent hover:text-accent-foreground"
-	default:
-		return "bg-transparent"
-	}
-}
-
-func toggleSizeClass(size string) string {
-	switch size {
-	case "sm":
-		return "h-7 min-w-7 rounded-[min(var(--radius-md),12px)] px-2.5 has-[>svg]:px-1.5 text-[0.8rem] [&_svg:not([class*='size-'])]:size-3.5"
-	case "lg":
-		return "h-9 min-w-9 px-2.5 has-[>svg]:px-2"
-	default:
-		return "h-8 min-w-8 px-2.5 has-[>svg]:px-2"
-	}
-}
-
 // Toggle is the shadcn/ui Toggle (registry/new-york-v4/ui/toggle.tsx),
 // ported as a plain <button type="button"> carrying a server-visible
 // `pressed` bool in place of Radix's TogglePrimitive.Root uncontrolled
@@ -66,22 +35,11 @@ func toggleSizeClass(size string) string {
 // Tabs does, rather than riding free on browser :checked state the way
 // Switch/Checkbox do.
 //
-// variant/size are toggleVariants' cva map (default/outline,
-// default/sm/lg), each a static class block picked by the JS-resolved prop
-// value — no data-[variant=]:/data-[size=]: selectors exist upstream to
-// preserve, so both port as a `switch` inside class={}, the same idiom as
-// Button's variantClass/sizeClass pair (inlined here, like Item's own pair,
-// since only Toggle uses it). The one data-keyed selector upstream DOES
-// have, data-[state=on]:bg-accent/text-accent-foreground, carries verbatim
-// in the shared base string below — it lights up once toggle.js flips
-// data-state on click.
+// variant, size, and state are public CSS axes. toggle.js flips data-state
+// and aria-pressed on interaction.
 //
 // ADAPT: data-variant/data-size are stamped via the house `|> default(...)`
-// pattern (see button.gsx/dropdown.gsx, and button-group.gsx's own ADAPT
-// note) for consistency with every other cva-backed component in this
-// codebase, even though shadcn's own Toggle stamps neither — Radix's
-// TogglePrimitive.Root receives only data-slot; toggleVariants resolves
-// straight to className, no data attrs of its own to port.
+// pattern for consistency with every other variant-backed component.
 //
 // Retargeted to nova density (2026-07-24 nova density map, `## toggle`).
 // ADAPT: nova keys directional icon padding off `data-icon="inline-start|
@@ -91,53 +49,49 @@ func toggleSizeClass(size string) string {
 // nova's matching inline-start/inline-end values into one has-[>svg]:px-*
 // per size.
 
-//line toggle.gsx:81:1
+//line toggle.gsx:40:1
 func Toggle(pressed bool, variant string, size string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line toggle.gsx:82:2
+//line toggle.gsx:41:2
 		state := "off"
 		if pressed {
 			state = "on"
 		}
-//line toggle.gsx:88:2
+//line toggle.gsx:47:2
+		_gsxv0 := withSlot("toggle", attrs)
 		_gsxgw.S("<button")
-		if !attrs.Has("type") {
+		if !_gsxv0.Has("type") {
 			_gsxgw.S(" type=\"button\"")
 		}
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"toggle\"")
-		}
-		if !attrs.Has("data-gsxui-toggle") {
+		if !_gsxv0.Has("data-gsxui-toggle") {
 			_gsxgw.BoolAttr("data-gsxui-toggle", true)
 		}
-		if !attrs.Has("data-variant") {
+		if !_gsxv0.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
 			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
 			_gsxgw.S("\"")
 		}
-		if !attrs.Has("data-size") {
+		if !_gsxv0.Has("data-size") {
 			_gsxgw.S(" data-size=\"")
 			_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
 			_gsxgw.S("\"")
 		}
-		if !attrs.Has("data-state") {
+		if !_gsxv0.Has("data-state") {
 			_gsxgw.S(" data-state=\"")
 			_gsxgw.AttrValue(string(state))
 			_gsxgw.S("\"")
 		}
-		if !attrs.Has("aria-pressed") {
+		if !_gsxv0.Has("aria-pressed") {
 			_gsxgw.S(" aria-pressed=\"")
 			_gsxgw.S(_gsxsc.FormatBool(bool(pressed)))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(toggleBase), _gsxrt.Class(toggleVariantClass(variant)), _gsxrt.Class(toggleSizeClass(size)), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
+		_gsxgw.StyleMerged("", _gsxv0.Style())
+		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line toggle.gsx:99:3
+//line toggle.gsx:56:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()

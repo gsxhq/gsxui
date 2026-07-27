@@ -73,14 +73,12 @@ component Slider(value float64, min float64, max float64, step float64, attrs gs
 	}}
 	<input
 		type="range"
-		data-slot="slider"
 		data-gsxui-slider
 		min={min}
 		max={maxV}
 		step={stepV}
 		value={value}
 		style=css`--fill: @{fill}%`
-		class="appearance-none bg-transparent w-full cursor-pointer outline-none disabled:cursor-not-allowed disabled:opacity-50"
-		{ attrs... }
+		{ withSlot("slider", attrs)... }
 	/>
 }

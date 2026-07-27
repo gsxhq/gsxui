@@ -110,8 +110,8 @@ func TestComponentPageRoute(t *testing.T) {
 		if !strings.Contains(body, "border rounded-lg p-8 bg-background") {
 			t.Errorf("response missing preview panel marker; body:\n%s", body)
 		}
-		if !strings.Contains(body, `data-slot="input"`) {
-			t.Errorf(`response missing rendered example (data-slot="input"); body:\n%s`, body)
+		if !strings.Contains(body, `data-gsxui-slot="input"`) {
+			t.Errorf(`response missing rendered example (data-gsxui-slot="input"); body:\n%s`, body)
 		}
 		// A distinctive identifier from basic.gsx's literal source — proves
 		// the displayed source is the exact embedded file, not paraphrased.
@@ -288,8 +288,8 @@ func TestThemePageRoute(t *testing.T) {
 	if !strings.Contains(body, `data-gsxui-slot="button"`) {
 		t.Errorf(`response missing data-gsxui-slot="button" in preview; body:\n%s`, body)
 	}
-	if !strings.Contains(body, `data-slot="checkbox"`) {
-		t.Errorf(`response missing data-slot="checkbox" in preview; body:\n%s`, body)
+	if !strings.Contains(body, `data-gsxui-slot="checkbox"`) {
+		t.Errorf(`response missing data-gsxui-slot="checkbox" in preview; body:\n%s`, body)
 	}
 	if !strings.Contains(body, `role="alert"`) {
 		t.Errorf(`response missing role="alert" in preview; body:\n%s`, body)

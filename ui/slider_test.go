@@ -13,7 +13,7 @@ func TestSliderPinned(t *testing.T) {
 	// the shadcn slider-demo shape (defaultValue={[50]} max={100} step={1}).
 	// --fill is server-computed exact arithmetic: (50-0)/(100-0)*100 = 50.
 	got := render(t, ui.Slider(50, 0, 100, 1, nil))
-	want := `<input type="range" data-slot="slider" data-gsxui-slider min="0" max="100" step="1" value="50" style="--fill: 50%" class="appearance-none bg-transparent w-full cursor-pointer outline-none disabled:cursor-not-allowed disabled:opacity-50">`
+	want := `<input type="range" data-gsxui-slider min="0" max="100" step="1" value="50" style="--fill: 50%" data-gsxui-slot="slider">`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -83,10 +83,7 @@ func TestSliderAttrsFallThrough(t *testing.T) {
 
 func TestSliderCallerClassMerges(t *testing.T) {
 	got := render(t, ui.Slider(50, 0, 100, 1, gsx.Attrs{{Key: "class", Value: "w-[60%]"}}))
-	if strings.Contains(got, "w-full") {
-		t.Errorf("caller w-[60%%] must drop default w-full\nin: %s", got)
-	}
-	if !strings.Contains(got, "w-[60%]") || !strings.Contains(got, "appearance-none") {
-		t.Errorf("want w-[60%%] plus surviving structural classes\nin: %s", got)
+	if strings.Count(got, `class="w-[60%]"`) != 1 {
+		t.Errorf("caller class must be forwarded exactly once\nin: %s", got)
 	}
 }

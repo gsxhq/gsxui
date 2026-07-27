@@ -152,7 +152,7 @@ component Combobox(name string, value string, children gsx.Node, attrs gsx.Attrs
 // precedence), while `id`/`aria-invalid`/etc. land on the actual `<input>`,
 // e.g. for a <label for> pairing (site/examples/combobox/form.gsx).
 component ComboboxInput(placeholder string, showTrigger bool, showClear bool, disabled bool, children gsx.Node, attrs gsx.Attrs) {
-	<InputGroup class={ "w-auto", attrs.Class() }>
+	<InputGroup data-gsxui-combobox-input-group class={ "w-auto", attrs.Class() }>
 		<InputGroupInput
 			data-gsxui-combobox-input
 			type="text"
@@ -346,7 +346,7 @@ component ComboboxGroup(children gsx.Node, attrs gsx.Attrs) {
 // new (non-metric) addition nova's own CSS carries for this part — ported
 // verbatim, not a retarget.
 component ComboboxLabel(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="combobox-label" class="px-2 py-1.5 text-xs text-muted-foreground pointer-coarse:px-3 pointer-coarse:py-2 pointer-coarse:text-sm" { attrs... }>{ children }</div>
+	<div data-slot="combobox-label" data-gsxui-combobox-label class="px-2 py-1.5 text-xs text-muted-foreground pointer-coarse:px-3 pointer-coarse:py-2 pointer-coarse:text-sm" { attrs... }>{ children }</div>
 }
 
 // ComboboxEmpty is server-rendered hidden; combobox.js reveals it via the
@@ -360,7 +360,7 @@ component ComboboxEmpty(children gsx.Node, attrs gsx.Attrs) {
 // ComboboxSeparator divides groups. aria-hidden, matching ## select's own
 // SelectSeparator (a decorative rule, not a role="separator").
 component ComboboxSeparator(attrs gsx.Attrs) {
-	<div data-slot="combobox-separator" aria-hidden="true" class="-mx-1 my-1 h-px bg-border" { attrs... }></div>
+	<div data-slot="combobox-separator" data-gsxui-combobox-separator aria-hidden="true" class="-mx-1 my-1 h-px bg-border" { attrs... }></div>
 }
 
 // ComboboxValue is a plain display slot for the current value/label —

@@ -30,18 +30,15 @@ import (
 component Progress(value float64, attrs gsx.Attrs) {
 	{{ remaining := strconv.FormatFloat(100-value, 'f', -1, 64) }}
 	<div
-		data-slot="progress"
 		role="progressbar"
 		aria-valuemin="0"
 		aria-valuemax="100"
 		aria-valuenow={value}
-		class="relative h-1 w-full overflow-hidden rounded-full bg-primary/20"
-		{ attrs... }
+		{ withSlot("progress", attrs)... }
 	>
 		<div
-			data-slot="progress-indicator"
-			class="h-full w-full flex-1 bg-primary transition-all"
 			style={ "transform: translateX(-" + gsx.RawCSS(remaining) + "%)" }
+			{ withSlot("progress-indicator", nil)... }
 		></div>
 	</div>
 }

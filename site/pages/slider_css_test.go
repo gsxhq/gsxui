@@ -16,8 +16,8 @@ func TestSliderCSSUsesSemanticContrast(t *testing.T) {
 		t.Fatalf("os.ReadFile(%s): %v", path, err)
 	}
 	for _, selector := range []string{
-		`input[type="range"]::-webkit-slider-thumb`,
-		`input[type="range"]::-moz-range-thumb`,
+		`:where([data-gsxui-slot~="slider"])::-webkit-slider-thumb`,
+		`:where([data-gsxui-slot~="slider"])::-moz-range-thumb`,
 	} {
 		contrast := regexp.MustCompile(regexp.QuoteMeta(selector) + `\s*\{[^}]*background:\s*var\(--contrast\);`)
 		if !contrast.Match(b) {

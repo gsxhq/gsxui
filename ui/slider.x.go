@@ -83,46 +83,42 @@ func Slider(value float64, min float64, max float64, step float64, attrs gsx.Att
 		}
 		fill := strconv.FormatFloat(fillPct, 'f', -1, 64)
 //line slider.gsx:74:2
+		_gsxv0 := withSlot("slider", attrs)
 		_gsxgw.S("<input")
-		if !attrs.Has("type") {
+		if !_gsxv0.Has("type") {
 			_gsxgw.S(" type=\"range\"")
 		}
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"slider\"")
-		}
-		if !attrs.Has("data-gsxui-slider") {
+		if !_gsxv0.Has("data-gsxui-slider") {
 			_gsxgw.BoolAttr("data-gsxui-slider", true)
 		}
-		if !attrs.Has("min") {
+		if !_gsxv0.Has("min") {
 			_gsxgw.S(" min=\"")
 			_gsxgw.FloatInto(_gsxnum[:], float64(min))
 			_gsxgw.S("\"")
 		}
-		if !attrs.Has("max") {
+		if !_gsxv0.Has("max") {
 			_gsxgw.S(" max=\"")
 			_gsxgw.FloatInto(_gsxnum[:], float64(maxV))
 			_gsxgw.S("\"")
 		}
-		if !attrs.Has("step") {
+		if !_gsxv0.Has("step") {
 			_gsxgw.S(" step=\"")
 			_gsxgw.FloatInto(_gsxnum[:], float64(stepV))
 			_gsxgw.S("\"")
 		}
-		if !attrs.Has("value") {
+		if !_gsxv0.Has("value") {
 			_gsxgw.S(" value=\"")
 			_gsxgw.FloatInto(_gsxnum[:], float64(value))
 			_gsxgw.S("\"")
 		}
-		if !attrs.Has("style") {
+		if !_gsxv0.Has("style") {
 			_gsxgw.S(" style=\"--fill: ")
 			_gsxgw.AttrValue(_gsxrt.StyleValue(string(fill)))
 			_gsxgw.S("%\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("appearance-none bg-transparent w-full cursor-pointer outline-none disabled:cursor-not-allowed disabled:opacity-50"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "xlink:href"}, []string{"background", "src"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
+		_gsxgw.StyleMerged("", _gsxv0.Style())
+		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "xlink:href"}, []string{"background", "src"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
 		return _gsxgw.Err()
 	})

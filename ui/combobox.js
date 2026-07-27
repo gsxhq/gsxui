@@ -114,11 +114,11 @@ function filter(root, queryOverride) {
     item.hidden = !match;
     if (match) any = true;
   }
-  for (const group of root.querySelectorAll('[data-slot="combobox-group"]')) {
+  for (const group of root.querySelectorAll("[data-gsxui-combobox-group]")) {
     const items = [...group.querySelectorAll("[data-gsxui-combobox-item]")];
     group.hidden = items.length > 0 && items.every((i) => i.hidden);
   }
-  for (const sep of root.querySelectorAll('[data-slot="combobox-separator"]')) {
+  for (const sep of root.querySelectorAll("[data-gsxui-combobox-separator]")) {
     sep.hidden = query !== "";
   }
   contentOf(root)?.toggleAttribute("data-empty", !any);
@@ -237,9 +237,9 @@ on("reset", "form:has([data-gsxui-combobox])", (_e, form) => {
 // open/closed state — see ui/combobox.gsx's ComboboxInput doc comment) ----
 
 function init(root) {
-  for (const group of root.querySelectorAll('[data-slot="combobox-group"]')) {
+  for (const group of root.querySelectorAll("[data-gsxui-combobox-group]")) {
     if (group.getAttribute("aria-labelledby")) continue;
-    const label = group.querySelector('[data-slot="combobox-label"]');
+    const label = group.querySelector("[data-gsxui-combobox-label]");
     if (!label) continue;
     if (!label.id) label.id = `gsxui-combobox-label-${++uid}`;
     group.setAttribute("aria-labelledby", label.id);
@@ -279,7 +279,7 @@ function openContent(root) {
   const content = contentOf(root);
   const input = inputOf(root);
   if (!content || content.matches(":popover-open")) return;
-  const anchor = input?.closest('[data-slot="input-group"]') ?? input;
+  const anchor = input?.closest("[data-gsxui-combobox-input-group]") ?? input;
   if (anchor) {
     const r = anchor.getBoundingClientRect();
     content.style.position = "fixed";

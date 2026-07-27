@@ -43,34 +43,39 @@ func Progress(value float64, attrs gsx.Attrs) _gsxrt.Node {
 //line progress.gsx:31:2
 		remaining := strconv.FormatFloat(100-value, 'f', -1, 64)
 //line progress.gsx:32:2
+		_gsxv0 := withSlot("progress", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"progress\"")
-		}
-		if !attrs.Has("role") {
+		if !_gsxv0.Has("role") {
 			_gsxgw.S(" role=\"progressbar\"")
 		}
-		if !attrs.Has("aria-valuemin") {
+		if !_gsxv0.Has("aria-valuemin") {
 			_gsxgw.S(" aria-valuemin=\"0\"")
 		}
-		if !attrs.Has("aria-valuemax") {
+		if !_gsxv0.Has("aria-valuemax") {
 			_gsxgw.S(" aria-valuemax=\"100\"")
 		}
-		if !attrs.Has("aria-valuenow") {
+		if !_gsxv0.Has("aria-valuenow") {
 			_gsxgw.S(" aria-valuenow=\"")
 			_gsxgw.FloatInto(_gsxnum[:], float64(value))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative h-1 w-full overflow-hidden rounded-full bg-primary/20"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
+		_gsxgw.StyleMerged("", _gsxv0.Style())
+		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line progress.gsx:41:3
-		_gsxgw.S("<div data-slot=\"progress-indicator\" class=\"h-full w-full flex-1 bg-primary transition-all\" style=\"")
-		_gsxgw.Style(_gsxrt.Class(_gsxrt.StyleValue("transform: translateX(-" + gsx.RawCSS(remaining) + "%)")))
-		_gsxgw.S("\"></div></div>")
+//line progress.gsx:39:3
+		_gsxv1 := withSlot("progress-indicator", nil)
+		_gsxgw.S("<div")
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
+		if _gsxv1.Has("style") {
+			_gsxgw.StyleMerged(_gsxrt.StyleString(_gsxrt.Class(_gsxrt.StyleValue("transform: translateX(-"+gsx.RawCSS(remaining)+"%)"))), _gsxv1.Style())
+		} else {
+			_gsxgw.S(" style=\"")
+			_gsxgw.Style(_gsxrt.Class(_gsxrt.StyleValue("transform: translateX(-" + gsx.RawCSS(remaining) + "%)")))
+			_gsxgw.S("\"")
+		}
+		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S("></div></div>")
 		return _gsxgw.Err()
 	})
 }

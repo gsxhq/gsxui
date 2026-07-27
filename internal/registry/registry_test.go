@@ -283,16 +283,15 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("toggle deps = %v, want none", deps)
 	}
 
-	// toggle-group.gsx has no icon import; ToggleGroupItem calls toggle.gsx's
-	// package-private toggleBase/toggleVariantClass/toggleSizeClass directly
-	// (flat package intra-package edge, same declIndex-resolved shape as
-	// pagination's contract-level Button composition above).
+	// ToggleGroupItem composes Toggle's styling token, but the CSS pack owns
+	// that token's declarations and toggle-group.js owns group interaction.
+	// There is no source or behavior dependency on toggle.gsx.
 	deps, err = registry.Deps("toggle-group")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(deps, []string{"toggle"}) {
-		t.Fatalf("toggle-group deps = %v, want [toggle]", deps)
+	if len(deps) != 0 {
+		t.Fatalf("toggle-group deps = %v, want none", deps)
 	}
 
 	// popover.gsx has no icon import and no intra-package reference to

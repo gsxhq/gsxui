@@ -45,38 +45,41 @@ func _gsxrenderNativeSelect(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children
 		return _gsxerr
 	}
 //line native-select.gsx:40:2
-	_gsxgw.S("<div data-slot=\"native-select-wrapper\" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative w-fit"), _gsxrt.Class(attrs.Class()))
-	_gsxgw.S("\">")
-//line native-select.gsx:41:3
-	_gsxv0 := attrs.Without("class")
-	_gsxgw.S("<select")
-	if !_gsxv0.Has("data-slot") {
-		_gsxgw.S(" data-slot=\"native-select\"")
+	var wrapperAttrs gsx.Attrs
+	if class, ok := attrs.Get("class"); ok {
+		wrapperAttrs = gsx.Attrs{{Key: "class", Value: class}}
 	}
-	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex w-full items-center justify-between gap-2 rounded-lg border border-input bg-transparent pl-2.5 py-1 text-sm whitespace-nowrap transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 h-8 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40 appearance-none pr-8"), _gsxrt.Class(_gsxv0.Class()))
-	_gsxgw.S("\"")
+//line native-select.gsx:46:2
+	_gsxv0 := withSlot("native-select-wrapper", wrapperAttrs)
+	_gsxgw.S("<div")
+	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
 	_gsxgw.StyleMerged("", _gsxv0.Style())
 	_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 	_gsxgw.S(">")
-//line native-select.gsx:46:4
+//line native-select.gsx:47:3
+	_gsxv1 := withSlot("native-select", attrs.Without("class"))
+	_gsxgw.S("<select")
+	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
+	_gsxgw.StyleMerged("", _gsxv1.Style())
+	_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.S(">")
+//line native-select.gsx:50:4
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</select>")
-//line native-select.gsx:48:3
-	_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.Attrs{{Key: "class", Value: "pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 opacity-50"}}...))
+//line native-select.gsx:52:3
+	_gsxgw.Node(ctx, icon.ChevronDown())
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
 
-//line native-select.gsx:52:1
+//line native-select.gsx:56:1
 // NativeSelectOption is a native <option>. selected/disabled are HTML
 // boolean attributes (gsx.IsBooleanAttr classifies both "selected" and
 // "disabled"): zero value (false) renders absent, matching browser
 // selectedness/disabled truth — no data-state plumbing needed, unlike
 // Radix's SelectItem.
 
-//line native-select.gsx:57:1
+//line native-select.gsx:61:1
 func NativeSelectOption(value string, selected bool, disabled bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -88,7 +91,7 @@ func _gsxrenderNativeSelectOption(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, va
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line native-select.gsx:58:2
+//line native-select.gsx:62:2
 	_gsxgw.S("<option")
 	if !attrs.Has("value") {
 		_gsxgw.S(" value=\"")
@@ -105,13 +108,13 @@ func _gsxrenderNativeSelectOption(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, va
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 	_gsxgw.S(">")
-//line native-select.gsx:58:77
+//line native-select.gsx:62:77
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</option>")
 	return _gsxgw.Err()
 }
 
-//line native-select.gsx:61:1
+//line native-select.gsx:65:1
 // NativeSelectGroup is a native <optgroup>. shadcn's separate SelectGroup
 // (wrapper) + SelectLabel (child text) collapse into the one native element
 // that already carries a label as an attribute (ADAPT — see
@@ -119,11 +122,11 @@ func _gsxrenderNativeSelectOption(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, va
 // child, only the label attribute, so there is nothing to port SelectLabel's
 // own class string onto.
 
-//line native-select.gsx:67:1
+//line native-select.gsx:71:1
 func NativeSelectGroup(label string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line native-select.gsx:68:2
+//line native-select.gsx:72:2
 		_gsxgw.S("<optgroup")
 		if !attrs.Has("label") {
 			_gsxgw.S(" label=\"")
@@ -134,7 +137,7 @@ func NativeSelectGroup(label string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line native-select.gsx:68:39
+//line native-select.gsx:72:39
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</optgroup>")
 		return _gsxgw.Err()

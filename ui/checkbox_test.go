@@ -3,6 +3,7 @@ package ui_test
 import (
 	"encoding/base64"
 	"encoding/xml"
+	"os"
 	"strings"
 	"testing"
 
@@ -14,13 +15,7 @@ func TestCheckboxDefault(t *testing.T) {
 	got := render(t, ui.Checkbox(nil))
 	for _, want := range []string{
 		`<input type="checkbox"`,
-		`data-slot="checkbox"`,
-		"peer size-4 shrink-0 appearance-none rounded-[4px]",
-		"disabled:cursor-not-allowed disabled:opacity-50",
-		"aria-invalid:border-destructive aria-invalid:ring-destructive/20",
-		"checked:bg-primary checked:border-primary",
-		"checked:bg-[url(&#39;data:image/svg+xml",
-		"checked:bg-center checked:bg-no-repeat checked:bg-[length:14px_14px]",
+		`data-gsxui-slot="checkbox"`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
@@ -29,21 +24,17 @@ func TestCheckboxDefault(t *testing.T) {
 }
 
 func TestCheckboxDataURIDecodesToValidSVG(t *testing.T) {
-	// The check glyph is a data-URI SVG in a checked:bg-[url(...)] arbitrary
-	// value, and its payload must be base64: every richer encoding lost to
-	// some layer of the toolchain in turn — literal spaces are class-token
-	// boundaries (torn by tailwind-merge), Tailwind's `_` escape is NOT
-	// converted inside url() (reached the browser as <svg_xmlns=...>, the
-	// shipped-broken-checkmark bug), and percent-encoded payloads with
-	// parens broke the vite postcss parse of Tailwind's emitted CSS. Base64
-	// is [A-Za-z0-9+/=] only: nothing for any layer to split, convert, or
-	// mis-parse. Prove the browser's view: extract each rendered URI,
-	// base64-decode it, and parse it as XML.
+	// The check glyph now lives in the stylesheet. Its payload remains
+	// base64 so CSS parsing cannot corrupt the SVG.
 	// TWO check URIs: the light one strokes white (primary is near-black),
 	// the dark: variant strokes the dark theme's --primary-foreground value
 	// (primary flips near-white, where a white check would vanish).
-	got := render(t, ui.Checkbox(nil))
-	const pre, post = "data:image/svg+xml;base64,", "&#39;)]"
+	cssBytes, err := os.ReadFile("../assets/css/styles/default.css")
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := string(cssBytes)
+	const pre, post = "data:image/svg+xml;base64,", `")`
 	var strokes []string
 	rest := got
 	for {
@@ -82,13 +73,15 @@ func TestCheckboxDataURIDecodesToValidSVG(t *testing.T) {
 }
 
 func TestCheckboxDarkCheckedOverrides(t *testing.T) {
-	// shadcn's dark:data-[state=checked]:bg-primary is NOT redundant: the
-	// dark custom variant (:is(.dark *)) carries class specificity (0,2,0),
-	// which beats plain :checked (0,1,1) — without the explicit dark:checked
-	// overrides, dark:bg-input/30 wins in dark mode and a checked box
-	// renders 4.5%-alpha instead of primary (found live, dark-mode sweep).
-	got := render(t, ui.Checkbox(nil))
-	for _, want := range []string{"dark:checked:bg-primary", "dark:checked:bg-[url("} {
+	cssBytes, err := os.ReadFile("../assets/css/styles/default.css")
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := string(cssBytes)
+	for _, want := range []string{
+		`.dark :where([data-gsxui-slot~="checkbox"]):checked`,
+		`background-image: url("data:image/svg+xml;base64,`,
+	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
@@ -97,11 +90,8 @@ func TestCheckboxDarkCheckedOverrides(t *testing.T) {
 
 func TestCheckboxCallerClassMerges(t *testing.T) {
 	got := render(t, ui.Checkbox(gsx.Attrs{{Key: "class", Value: "size-6"}}))
-	if strings.Contains(got, "size-4") {
-		t.Errorf("base size-4 should be dropped by caller size-6\nin: %s", got)
-	}
-	if !strings.Contains(got, "size-6") {
-		t.Errorf("missing caller class size-6\nin: %s", got)
+	if strings.Count(got, `class="size-6"`) != 1 {
+		t.Errorf("caller class must be forwarded exactly once\nin: %s", got)
 	}
 }
 
@@ -139,13 +129,9 @@ func TestCheckboxDisabledAttr(t *testing.T) {
 }
 
 func TestCheckboxPinned(t *testing.T) {
-	// Exact full-render pin. Token-by-token verified against shadcn's
-	// Checkbox (registry/new-york-v4/ui/checkbox.tsx) plus the ledgered
-	// ADAPT: Radix Root/Indicator/CheckIcon replaced by a native
-	// <input type="checkbox"> whose checked-state visuals move to a
-	// checked:bg-[url(...)] data-URI background. See docs/jsx-parity.md.
+	// Presentation lives in the stylesheet; the render pin covers structure.
 	got := render(t, ui.Checkbox(nil))
-	want := `<input type="checkbox" data-slot="checkbox" class="peer size-4 shrink-0 appearance-none rounded-[4px] border border-input transition-shadow outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:bg-input/30 checked:bg-primary checked:border-primary checked:bg-[url(&#39;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0yMCA2IDkgMTdsLTUtNSIvPjwvc3ZnPg==&#39;)] checked:bg-center checked:bg-no-repeat checked:bg-[length:14px_14px] dark:checked:bg-primary dark:checked:border-primary dark:checked:bg-[url(&#39;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJva2xjaCgwLjIwNSAwIDApIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTIwIDYgOSAxN2wtNS01Ii8+PC9zdmc+&#39;)]">`
+	want := `<input type="checkbox" data-gsxui-slot="checkbox">`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

@@ -12,14 +12,8 @@ func TestSwitchDefault(t *testing.T) {
 	got := render(t, ui.Switch(nil))
 	for _, want := range []string{
 		`<input type="checkbox"`,
-		`data-slot="switch"`,
-		"peer inline-flex shrink-0 items-center appearance-none rounded-full",
-		"h-[1.15rem] w-8",
-		"bg-input checked:bg-primary dark:bg-input/80",
-		"disabled:cursor-not-allowed disabled:opacity-50",
-		"before:block before:size-4 before:rounded-full before:bg-background",
-		"before:content-[&#39;&#39;]",
-		"checked:before:translate-x-[calc(100%-2px)]",
+		`role="switch"`,
+		`data-gsxui-slot="switch"`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
@@ -33,18 +27,15 @@ func TestSwitchRolePin(t *testing.T) {
 	// which stamps role="switch" itself. Pinned separately from the full
 	// render pin so a future edit can't silently drop it.
 	got := render(t, ui.Switch(nil))
-	if !strings.Contains(got, `<input type="checkbox" role="switch" data-slot="switch"`) {
+	if !strings.Contains(got, `<input type="checkbox" role="switch" data-gsxui-slot="switch"`) {
 		t.Errorf("missing role=\"switch\" in expected position\nin: %s", got)
 	}
 }
 
 func TestSwitchCallerClassMerges(t *testing.T) {
 	got := render(t, ui.Switch(gsx.Attrs{{Key: "class", Value: "w-12"}}))
-	if strings.Contains(got, "w-8") {
-		t.Errorf("base w-8 should be dropped by caller w-12\nin: %s", got)
-	}
-	if !strings.Contains(got, "w-12") {
-		t.Errorf("missing caller class w-12\nin: %s", got)
+	if strings.Count(got, `class="w-12"`) != 1 {
+		t.Errorf("caller class must be forwarded exactly once\nin: %s", got)
 	}
 }
 
@@ -77,31 +68,17 @@ func TestSwitchDisabledAttr(t *testing.T) {
 }
 
 func TestSwitchPinned(t *testing.T) {
-	// Exact full-render pin. Token-by-token verified against shadcn's
-	// Switch (registry/new-york-v4/ui/switch.tsx) plus the ledgered
-	// ADAPTs: native <input type="checkbox" role="switch"> replaces Root,
-	// and the Thumb span becomes a before: pseudo-element on the same
-	// input. shadcn's Thumb has no shadow at all (ring-0, nothing else) —
-	// before:shadow-lg is not sourced from anywhere and is intentionally
-	// absent here. See docs/jsx-parity.md.
+	// Presentation lives in the stylesheet; the render pin covers structure.
 	got := render(t, ui.Switch(nil))
-	want := `<input type="checkbox" role="switch" data-slot="switch" class="peer inline-flex shrink-0 items-center appearance-none rounded-full border border-transparent transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 h-[1.15rem] w-8 bg-input checked:bg-primary dark:bg-input/80 dark:checked:bg-primary before:pointer-events-none before:block before:size-4 before:rounded-full before:bg-background before:transition-transform before:content-[&#39;&#39;] checked:before:translate-x-[calc(100%-2px)] dark:before:bg-foreground dark:checked:before:bg-primary-foreground">`
+	want := `<input type="checkbox" role="switch" data-gsxui-slot="switch">`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
 }
 
 func TestSwitchDarkCheckedOverride(t *testing.T) {
-	// Same cascade trap as checkbox's dark:checked:bg-primary (see
-	// checkbox_test.go): the dark custom variant (:is(.dark *)) carries
-	// class specificity (0,2,0) that beats bare :checked (0,1,1), so
-	// without an explicit dark:checked override the ungated
-	// dark:bg-input/80 wins in dark mode and a checked track loses its
-	// primary fill. shadcn avoids it by gating the dark track color to
-	// data-[state=unchecked]; our native port keeps the explicit-override
-	// idiom instead.
 	got := render(t, ui.Switch(nil))
-	if !strings.Contains(got, "dark:checked:bg-primary") {
-		t.Errorf("missing dark:checked:bg-primary override\nin: %s", got)
+	if strings.Contains(got, "dark:") {
+		t.Errorf("presentation classes must not be rendered\nin: %s", got)
 	}
 }

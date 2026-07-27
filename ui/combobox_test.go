@@ -47,13 +47,11 @@ func TestComboboxRootRendersFormBridge(t *testing.T) {
 func TestComboboxInputComposesInputGroup(t *testing.T) {
 	got := render(t, ui.ComboboxInput("Search framework...", true, false, false, nil, nil))
 	for _, want := range []string{
-		`data-slot="input-group"`,
-		// NOT overridden to "input-group-input" — ui/input-group.gsx's
-		// InputGroup keys its focus ring off
-		// has-[[data-slot=input-group-control]:focus-visible]; overriding
-		// the slot silently killed the only focus indicator on the control
-		// (WCAG 2.4.7), caught in review round 1.
-		`data-slot="input-group-control"`,
+		`data-gsxui-combobox-input-group`,
+		`data-gsxui-slot="input-group"`,
+		// InputGroupInput composes both styling tokens; the group keys its
+		// focus ring off input-group-control.
+		`data-gsxui-slot="input input-group-control"`,
 		`data-slot="combobox-trigger"`,
 		`role="combobox"`,
 		`aria-expanded="false"`,
@@ -158,6 +156,25 @@ func TestComboboxListHasListboxRole(t *testing.T) {
 	}
 	if !strings.Contains(got, `data-slot="combobox-list"`) {
 		t.Errorf("want data-slot=combobox-list\nin: %s", got)
+	}
+}
+
+func TestComboboxBehaviorPartsHaveDedicatedHooks(t *testing.T) {
+	got := render(t, ui.ComboboxGroup(
+		gsx.Fragment(
+			ui.ComboboxLabel(gsx.Raw("Framework"), nil),
+			ui.ComboboxSeparator(nil),
+		),
+		nil,
+	))
+	for _, want := range []string{
+		`data-gsxui-combobox-group`,
+		`data-gsxui-combobox-label`,
+		`data-gsxui-combobox-separator`,
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("want %q\nin: %s", want, got)
+		}
 	}
 }
 
