@@ -1,0 +1,114 @@
+package stylecontract
+
+import (
+	"reflect"
+	"testing"
+)
+
+func TestValidateRejectsInvalidContracts(t *testing.T) {
+	tests := []struct {
+		name       string
+		components []Component
+		want       string
+	}{
+		{
+			name:       "empty component name",
+			components: []Component{{}},
+			want:       "component 0: empty component name",
+		},
+		{
+			name: "duplicate component name",
+			components: []Component{
+				{Name: "Button"},
+				{Name: "Button"},
+			},
+			want: "component \"Button\": duplicate component name",
+		},
+		{
+			name: "empty slot name",
+			components: []Component{{
+				Name:  "Button",
+				Slots: []Slot{{}},
+			}},
+			want: "component \"Button\": slot 0: empty slot name",
+		},
+		{
+			name: "duplicate slot token globally",
+			components: []Component{
+				{Name: "Button", Slots: []Slot{{Name: "button"}}},
+				{Name: "AlertDialogAction", Slots: []Slot{{Name: "button"}}},
+			},
+			want: "component \"AlertDialogAction\": slot \"button\": duplicate slot token (already declared by component \"Button\")",
+		},
+		{
+			name: "empty axis attribute",
+			components: []Component{{
+				Name: "Button",
+				Slots: []Slot{{
+					Name: "button",
+					Axes: []Axis{{}},
+				}},
+			}},
+			want: "component \"Button\": slot \"button\": axis 0: empty attribute",
+		},
+		{
+			name: "duplicate axis value",
+			components: []Component{{
+				Name: "Button",
+				Slots: []Slot{{
+					Name: "button",
+					Axes: []Axis{{Attribute: "data-size", Values: []string{"sm", "lg", "sm"}}},
+				}},
+			}},
+			want: "component \"Button\": slot \"button\": axis \"data-size\": duplicate value \"sm\"",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := Validate(tt.components)
+			if err == nil {
+				t.Fatal("Validate() error = nil")
+			}
+			if err.Error() != tt.want {
+				t.Fatalf("Validate() error = %q, want %q", err, tt.want)
+			}
+		})
+	}
+}
+
+func TestValidateAcceptsPresenceOnlyAxis(t *testing.T) {
+	err := Validate([]Component{{
+		Name: "Button",
+		Slots: []Slot{{
+			Name: "button",
+			Axes: []Axis{{Attribute: "data-disabled"}},
+		}},
+	}})
+	if err != nil {
+		t.Fatalf("Validate() error = %v", err)
+	}
+}
+
+func TestAllReturnsSortedCopy(t *testing.T) {
+	originalPrimitives := primitiveContracts
+	defer func() { primitiveContracts = originalPrimitives }()
+	primitiveContracts = []Component{
+		{Name: "Zebra"},
+		{Name: "Alert"},
+	}
+
+	got := All()
+	want := []Component{
+		{Name: "Alert"},
+		{Name: "Zebra"},
+	}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("All() = %#v, want %#v", got, want)
+	}
+
+	got[0].Name = "Changed"
+	if again := All(); again[0].Name != "Alert" {
+		t.Fatalf("All() returned an aliased slice: %#v", again)
+	}
+}
