@@ -18,8 +18,8 @@ const ensureId = (el, prefix) => el.id || (el.id = `gsxui-${prefix}-${++uid}`);
 
 // Idempotent: name/describe the dialog and point triggers at it.
 function wireA11y(root, dialog) {
-  const title = dialog.querySelector('[data-slot="dialog-title"]');
-  const desc = dialog.querySelector('[data-slot="dialog-description"]');
+  const title = dialog.querySelector("[data-gsxui-dialog-title]");
+  const desc = dialog.querySelector("[data-gsxui-dialog-description]");
   if (title && !dialog.hasAttribute("aria-labelledby"))
     dialog.setAttribute("aria-labelledby", ensureId(title, "title"));
   if (desc && !dialog.hasAttribute("aria-describedby"))

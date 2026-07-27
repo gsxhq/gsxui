@@ -2,74 +2,39 @@ package ui
 
 import "github.com/gsxhq/gsx"
 
-// Dialog is the shadcn/ui Dialog on the native <dialog> element: the top
-// layer replaces Radix's Portal, ::backdrop replaces Overlay, and Esc-to-
-// close is browser-native. Trigger and content are wired by proximity —
-// DialogTrigger opens the <dialog> inside the same Dialog root, no ids.
-// Requires the dialog behavior module (ui/dialog/dialog.js).
-
+// Dialog uses the native <dialog> top layer. Trigger/content wiring is scoped
+// by the dedicated root hook and implemented by ui/dialog.js.
 component Dialog(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="dialog" data-gsxui-dialog class="contents" { attrs... }>{ children }</div>
+	<div data-gsxui-dialog { withSlot("dialog", attrs)... }>{ children }</div>
 }
 
-// DialogTrigger renders its own <button>, so its children must be phrasing
-// content — never a Button or other interactive element. HTML forbids
-// nested buttons: the parser hoists the inner one out as a sibling, leaving
-// this (wired) button empty and unclickable while the visible button is
-// orphaned from the dialog wiring. For a styled trigger, skip the wrapper
-// and put the data attribute on the Button itself — the documented idiom:
-// <ui.Button data-gsxui-dialog-trigger>Open</ui.Button> (docs/jsx-parity.md
-// dialog MECHANISM; TestNoNestedButtons guards the site against this).
 component DialogTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<button
-		data-slot="dialog-trigger"
 		data-gsxui-dialog-trigger
 		type="button"
 		aria-haspopup="dialog"
 		aria-expanded="false"
-		{ attrs... }
+		{ withSlot("dialog-trigger", attrs)... }
 	>
 		{ children }
 	</button>
 }
 
-// DialogContent renders the native <dialog>. hideCloseButton omits the
-// injected top-right X button (shadcn's showCloseButton default-true,
-// inverted so the gsx zero value keeps the shadcn default).
 component DialogContent(hideCloseButton bool, children gsx.Node, attrs gsx.Attrs) {
 	<dialog
-		data-slot="dialog-content"
 		data-gsxui-dialog-content
 		data-state="closed"
-		class={
-			"fixed top-[50%] left-[50%] z-50 open:grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-xl border bg-background p-4 text-sm text-foreground duration-200 outline-none sm:max-w-sm",
-			"data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
-			// ADAPT: the registry overlay is a plain bg-black/50 fade, but the
-			// live shadcn site's current default style (nova) pairs a light
-			// bg-black/10 scrim with backdrop-blur-xs — matched here (visual
-			// parity target is the site; note Tailwind v4's renamed blur scale:
-			// blur-sm is 8px now, and it read far heavier than nova's 4px).
-			// The fade runs on ::backdrop off the same data-state dialog.js
-			// stamps for the panel. backdrop:duration-200 is load-bearing:
-			// tw-animate-css reads --tw-duration, registered inherits:false,
-			// so the panel's own duration-200 never reaches the pseudo-element
-			// — without it the backdrop's exit would end at the .15s default,
-			// snap back to opaque (fill-mode none), and flash until the
-			// panel's 200ms exit lets dialog.js call close().
-			"backdrop:bg-black/10 backdrop:duration-200 supports-backdrop-filter:backdrop:backdrop-blur-xs data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0"
-		}
-		{ attrs... }
+		{ withSlot("dialog-content", attrs)... }
 	>
 		{ children }
 		{ if !hideCloseButton {
 			<button
 				type="button"
-				data-slot="dialog-close"
 				data-gsxui-dialog-close
-				aria-label="Close"
-				class="absolute top-2 right-2 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+				{ withSlot("dialog-close", withSlot("dialog-close-button", nil))... }
 			>
 				<svg
+					aria-hidden="true"
 					xmlns="http://www.w3.org/2000/svg"
 					width="24"
 					height="24"
@@ -79,39 +44,44 @@ component DialogContent(hideCloseButton bool, children gsx.Node, attrs gsx.Attrs
 					stroke-width="2"
 					stroke-linecap="round"
 					stroke-linejoin="round"
+					{ withSlot("dialog-close-icon", nil)... }
 				>
 					<path d="M18 6 6 18"/>
 					<path d="m6 6 12 12"/>
 				</svg>
+				<span { withSlot("dialog-close-label", nil)... }>Close</span>
 			</button>
 		} }
 	</dialog>
 }
 
 component DialogHeader(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="dialog-header" class="flex flex-col gap-2 text-center sm:text-left" { attrs... }>{ children }</div>
+	<div { withSlot("dialog-header", attrs)... }>{ children }</div>
 }
 
-// DialogFooter is the shadcn/ui DialogFooter. showCloseButton (zero value
-// false, matching shadcn's default) appends an outline Close button — the
-// data-attribute idiom standing in for shadcn's <DialogClose asChild>.
 component DialogFooter(showCloseButton bool, children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="dialog-footer" class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end bg-muted/50 -mx-4 -mb-4 rounded-b-xl border-t p-4" { attrs... }>
+	<div { withSlot("dialog-footer", attrs)... }>
 		{ children }
 		{ if showCloseButton {
-			<Button variant="outline" data-gsxui-dialog-close>Close</Button>
+			<Button
+				variant="outline"
+				data-gsxui-dialog-close
+				{ withSlot("dialog-footer-close", nil)... }
+			>
+				Close
+			</Button>
 		} }
 	</div>
 }
 
 component DialogTitle(children gsx.Node, attrs gsx.Attrs) {
-	<h2 data-slot="dialog-title" class="text-base leading-none font-medium" { attrs... }>{ children }</h2>
+	<h2 data-gsxui-dialog-title { withSlot("dialog-title", attrs)... }>{ children }</h2>
 }
 
 component DialogDescription(children gsx.Node, attrs gsx.Attrs) {
-	<p data-slot="dialog-description" class="text-sm text-muted-foreground" { attrs... }>{ children }</p>
+	<p data-gsxui-dialog-description { withSlot("dialog-description", attrs)... }>{ children }</p>
 }
 
 component DialogClose(children gsx.Node, attrs gsx.Attrs) {
-	<button data-slot="dialog-close" data-gsxui-dialog-close type="button" { attrs... }>{ children }</button>
+	<button data-gsxui-dialog-close type="button" { withSlot("dialog-close", attrs)... }>{ children }</button>
 }

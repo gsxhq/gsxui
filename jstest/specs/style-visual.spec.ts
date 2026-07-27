@@ -320,6 +320,130 @@ test("an outline FieldGroup applies the separator overlap", async ({ page }) => 
   ).toBe("-8px");
 });
 
+test("Dialog keeps dedicated a11y hooks, semantic backdrop, and caller cascade", async ({
+  page,
+}) => {
+  const response = await page.goto("/f/style-contract");
+  expect(response?.status(), "style contract fixture response").toBe(200);
+
+  await page.getByRole("button", { name: "Open contract dialog" }).click();
+  const dialog = page.locator('[data-style-contract="dialog-caller"]');
+  await expect(dialog).toBeVisible();
+  await expect(dialog).toHaveAttribute("data-state", "open");
+
+  expect(
+    await dialog.evaluate((element) => {
+      const title = element.querySelector("[data-gsxui-dialog-title]");
+      const description = element.querySelector("[data-gsxui-dialog-description]");
+      const css = getComputedStyle(element);
+      return {
+        labelledBy: element.getAttribute("aria-labelledby"),
+        titleID: title?.id,
+        describedBy: element.getAttribute("aria-describedby"),
+        descriptionID: description?.id,
+        borderRadius: css.borderRadius,
+        display: css.display,
+        backdrop: getComputedStyle(element, "::backdrop").backgroundColor,
+      };
+    }),
+  ).toEqual({
+    labelledBy: expect.any(String),
+    titleID: expect.any(String),
+    describedBy: expect.any(String),
+    descriptionID: expect.any(String),
+    borderRadius: "0px",
+    display: "grid",
+    backdrop: await page
+      .locator('[data-style-contract-reference="overlay"]')
+      .evaluate((element) => getComputedStyle(element).backgroundColor),
+  });
+  const relationships = await dialog.evaluate((element) => ({
+    labelledBy: element.getAttribute("aria-labelledby"),
+    titleID: element.querySelector("[data-gsxui-dialog-title]")?.id,
+    describedBy: element.getAttribute("aria-describedby"),
+    descriptionID: element.querySelector("[data-gsxui-dialog-description]")?.id,
+  }));
+  expect(relationships.labelledBy).toBe(relationships.titleID);
+  expect(relationships.describedBy).toBe(relationships.descriptionID);
+});
+
+test("bottom Drawer uses Dialog mechanics and content-side header alignment", async ({
+  page,
+}) => {
+  const response = await page.goto("/f/style-contract");
+  expect(response?.status(), "style contract fixture response").toBe(200);
+
+  await page.getByRole("button", { name: "Open contract drawer" }).click();
+  const drawer = page.locator('[data-style-contract="drawer-bottom"]');
+  await expect(drawer).toBeVisible();
+  await expect(drawer).toHaveAttribute("data-state", "open");
+  await page.evaluate(() => {
+    for (const animation of document.getAnimations()) animation.finish();
+  });
+
+  expect(
+    await drawer.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      const header = element.querySelector('[data-style-contract="drawer-header"]');
+      return {
+        display: getComputedStyle(element).display,
+        side: element.getAttribute("data-side"),
+        left: rect.left,
+        right: rect.right,
+        bottom: rect.bottom,
+        viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight,
+        headerAlign: header ? getComputedStyle(header).textAlign : null,
+      };
+    }),
+  ).toEqual({
+    display: "flex",
+    side: "bottom",
+    left: 0,
+    right: 1280,
+    bottom: 900,
+    viewportWidth: 1280,
+    viewportHeight: 900,
+    headerAlign: "center",
+  });
+});
+
+test("Tooltip Kbd relationship and Accordion native open mechanics compute", async ({
+  page,
+}) => {
+  const response = await page.goto("/f/style-contract");
+  expect(response?.status(), "style contract fixture response").toBe(200);
+
+  await page.getByRole("button", { name: "Show contract tooltip" }).focus();
+  const tooltip = page.locator('[data-style-contract="tooltip-kbd"]');
+  await expect(tooltip).toBeVisible();
+  expect(
+    await tooltip.evaluate((element) => getComputedStyle(element).paddingRight),
+  ).toBe("6px");
+
+  const trigger = page.getByText("Contract accordion", { exact: true });
+  await trigger.click();
+  const details = trigger.locator("..");
+  await expect(details).toHaveAttribute("open", "");
+  await page.evaluate(() => {
+    for (const animation of document.getAnimations()) animation.finish();
+  });
+  expect(
+    await details.evaluate((element) => {
+      const icon = element.querySelector(
+        '[data-gsxui-slot~="accordion-trigger-icon"]',
+      );
+      return {
+        detailsContentDisplay: getComputedStyle(element, "::details-content").display,
+        iconRotate: icon ? getComputedStyle(icon).rotate : null,
+      };
+    }),
+  ).toEqual({
+    detailsContentDisplay: "grid",
+    iconRotate: "180deg",
+  });
+});
+
 for (const route of desktopRoutes) {
   test(`${route} keeps its desktop light and dark visual contract`, async ({ page }) => {
     for (const theme of ["light", "dark"] as const) {

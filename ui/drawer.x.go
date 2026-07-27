@@ -12,338 +12,189 @@ import (
 )
 
 //line drawer.gsx:5:1
-// Drawer and its parts are the shadcn/ui Drawer (registry/new-york-v4/ui/
-// drawer.tsx): upstream is a bare `vaul` passthrough, structurally
-// identical in shape to dialog.tsx/sheet.tsx. This port follows
-// ui/sheet.gsx's own composition pattern exactly rather than deriving from
-// vaul: Drawer composes ui.Dialog directly (data-slot override "dialog" ->
-// "drawer", the same mechanism as Sheet/AlertDialog), so drawer -> dialog
-// derives and ui/dialog.js is pulled in transitively — trigger/content
-// wiring by proximity, Esc-to-close, data-state stamping, and the
-// getAnimations-gated exit-animation wait are all reused unmodified, zero
-// new dialog.js code (HasJS("drawer") is false, same conclusion as
-// ## sheet's own Registry note). DrawerContent, like SheetContent, does
-// NOT compose ui.DialogContent or ui.SheetContent — the centered-card
-// recipe and each side-anchored recipe target the same CSS properties with
-// materially different values, so there is no single class string that
-// merges them (see ui/sheet.gsx's own header comment). DrawerContent
-// renders its own <dialog data-slot="drawer-content" data-gsxui-dialog-
-// content data-state="closed" data-side="...">, still using the exact same
-// data-gsxui-dialog-content contract dialog.js selects on. Unlike
-// Dialog/Sheet, upstream drawer.tsx's own DrawerContent never injects a
-// close X button (no showCloseButton-equivalent prop) — dismissal is
-// backdrop-click/Esc, or an explicit DrawerClose the caller places
-// wherever the design wants it (see the footer Cancel button in
-// site/examples/drawer/basic.gsx), so DrawerContent has no
-// hideCloseButton param.
-//
-// direction (vaul's own vocabulary, distinct from Sheet's "side") is the Go
-// param: default "bottom" (vaul's conventional anchor, the mobile
-// bottom-sheet pattern — a real behavioral difference from Sheet's own
-// "right" default), also stamped as data-side (reusing Sheet's own internal
-// attribute name for any future shared tooling/CSS that keys off it
-// generically, rather than inventing a second attribute). Direction
-// selection happens server-side via a Go switch in class={}, the same
-// idiom as Sheet's side switch — dialog.js never reads data-side, the
-// slide direction is fully determined by which static class block was
-// selected.
-//
-// Nova adopted (docs/superpowers/plans/2026-07-24-tier3-source-map-wrapped.md
-// `## drawer`): rounded-*-xl on all four directions, including left/right's
-// free (non-anchored) edge — new-york-v4 only rounds top/bottom, left/right
-// get a plain border with no rounding at all; nova rounds every direction.
-// bg-popover/text-popover-foreground is the one deliberate NOT-adopted-
-// elsewhere exception: unlike every retargeted component, drawer has no
-// prior new-york-v4-based gsxui version to stay consistent with, so there
-// is no existing bg-background baseline to preserve. Backdrop is identical
-// to Sheet's own (bg-black/10 + supports-backdrop-filter:backdrop:backdrop-
-// blur-xs, duration-200 both directions).
-//
-// Per-direction class strings apply Sheet's own already-solved <dialog>-
-// vs-UA-defaults fixes (m-0, the opposite-edge -auto utility, open:flex)
-// to drawer.tsx's values. TOP/BOTTOM carry their own explicit
-// max-h-[80vh] (author-origin, already beats Chrome's UA max-height safety
-// net) so they do NOT need Sheet's max-h-none escape hatch; LEFT/RIGHT use
-// h-full like Sheet's own left/right and DO need max-h-none, copied
-// verbatim from Sheet's fix. TOP/BOTTOM also carry Sheet's own w-full
-// max-w-none pair (the plain-<div> auto-width edge-to-edge stretch does not
-// reproduce on a native <dialog>, see ui/sheet.gsx's own three-part ADAPT).
-// These strings are transcribed-not-verified per the map's own caveat —
-// Sheet's six ADAPTs were only found by rendering in a real browser tab;
-// the controller runs that same verification pass for all four drawer
-// directions before this task is marked complete.
-//
-// Handle bar: upstream renders an unconditional inline <div> (not a named
-// sub-component), visible only for the bottom direction via a
-// group-data-[vaul-drawer-direction=bottom]/drawer-content:block override
-// on a base `hidden` class. gsxui has no vaul underneath and direction is
-// server-known, so the visibility rule is ported as a Go `if` on the
-// already-resolved direction instead of a client CSS group-data selector —
-// the div (data-slot="drawer-handle") is rendered only when direction is
-// "bottom", and simply absent (not merely hidden) otherwise. h-1 (nova; the
-// h-2 new-york-v4 handle is thinner). Kept as pure decoration: v1 ships no
-// drag gesture, so a "drag me" affordance that doesn't actually drag is a
-// real, if minor, UX mismatch — accepted GAP (visual parity over silently
-// dropping it), ledgered in docs/jsx-parity.md `## drawer`.
-//
-// MECHANISM: DrawerHeader's upstream class also carries a direction-
-// conditional text alignment (centered for bottom/top at every breakpoint,
-// left-aligned at md+ for left/right) via
-// group-data-[vaul-drawer-direction=...]/drawer-content. gsxui has no vaul
-// underneath, but DrawerContent already stamps data-side (always non-empty
-// — direction |> default("bottom")) and carries the named group class
-// group/drawer-content, so the same selector shape ports directly with
-// only the attribute/group name swapped: data-side replaces
-// data-vaul-drawer-direction, drawer-content (already DrawerContent's own
-// data-slot) is the group name. DrawerHeader needs no direction param of
-// its own — the selector reads the ancestor <dialog>'s stamped attribute
-// at the CSS layer, the same group-data-[...]/name idiom `## item`/
-// `## field`/`## input-group`/`## tabs`/`## toggle-group` already use
-// elsewhere in this codebase.
-//
-// GAP: drag-to-dismiss, snap points, and background scaling (all vaul
-// gesture/physics features) are not ported — v1 replaces vaul's live-
-// transform drag entirely with the same <dialog> + Tailwind-keyframe
-// slide-in/out architecture Sheet already uses, per the roadmap's own
-// Tier 3 listing ("sheet variant; v1 without vaul's drag-to-dismiss
-// gesture, ledger the gap").
+// Drawer composes Dialog's root and behavior while exposing a directional
+// side-anchored content role. Drag-to-dismiss remains outside this component.
 
-//line drawer.gsx:100:1
+//line drawer.gsx:7:1
 func Drawer(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line drawer.gsx:101:2
+//line drawer.gsx:8:2
 		_gsxgw.NodeResult(_gsxrenderDialog(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line drawer.gsx:101:42
+//line drawer.gsx:8:43
 			_gsxgw.Node(ctx, children)
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-slot", Value: "drawer"}}, attrs)))
+		}), withSlot("drawer", attrs)))
 		return _gsxgw.Err()
 	})
 }
 
-//line drawer.gsx:104:1
-// DrawerTrigger renders its own <button>, same reasoning and the same
-// button-in-button HTML trap as SheetTrigger/DialogTrigger (see
-// ui/dialog.gsx's DialogTrigger doc comment and docs/jsx-parity.md
-// `## dialog` FINDING): its children must be phrasing content, never a
-// Button or other interactive element. For a styled trigger, skip the
-// wrapper and put the data attribute on the Button itself:
-// <ui.Button data-gsxui-dialog-trigger>Open</ui.Button>.
-
-//line drawer.gsx:111:1
+//line drawer.gsx:11:1
 func DrawerTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line drawer.gsx:112:2
+//line drawer.gsx:12:2
+		_gsxv0 := withSlot("drawer-trigger", attrs)
 		_gsxgw.S("<button")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"drawer-trigger\"")
-		}
-		if !attrs.Has("data-gsxui-dialog-trigger") {
+		if !_gsxv0.Has("data-gsxui-dialog-trigger") {
 			_gsxgw.BoolAttr("data-gsxui-dialog-trigger", true)
 		}
-		if !attrs.Has("type") {
+		if !_gsxv0.Has("type") {
 			_gsxgw.S(" type=\"button\"")
 		}
-		if !attrs.Has("aria-haspopup") {
+		if !_gsxv0.Has("aria-haspopup") {
 			_gsxgw.S(" aria-haspopup=\"dialog\"")
 		}
-		if !attrs.Has("aria-expanded") {
+		if !_gsxv0.Has("aria-expanded") {
 			_gsxgw.S(" aria-expanded=\"false\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
+		_gsxgw.StyleMerged("", _gsxv0.Style())
+		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line drawer.gsx:120:3
+//line drawer.gsx:19:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line drawer.gsx:124:1
-// DrawerContent renders the native <dialog> directly (see this file's own
-// header comment for why it does not compose ui.DialogContent or
-// ui.SheetContent). direction |> default("bottom") stamps data-side on the
-// element; the raw direction switch below selects one of the four static
-// class blocks, falling through to the bottom case (its default:) for both
-// "" and "bottom". The handle-bar if-condition spells out
-// direction == "" || direction == "bottom" explicitly rather than reusing
-// the |> default(...) pipeline: an if-condition is a plain Go boolean
-// expression, not the pipe-aware attribute-expression form the |> operator
-// is scoped to.
-
-//line drawer.gsx:134:1
+//line drawer.gsx:23:1
 func DrawerContent(direction string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line drawer.gsx:135:2
+//line drawer.gsx:24:2
+		_gsxv1 := withSlot("dialog-content", withSlot("drawer-content", attrs))
 		_gsxgw.S("<dialog")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"drawer-content\"")
-		}
-		if !attrs.Has("data-gsxui-dialog-content") {
+		if !_gsxv1.Has("data-gsxui-dialog-content") {
 			_gsxgw.BoolAttr("data-gsxui-dialog-content", true)
 		}
-		if !attrs.Has("data-state") {
+		if !_gsxv1.Has("data-state") {
 			_gsxgw.S(" data-state=\"closed\"")
 		}
-		if !attrs.Has("data-side") {
+		if !_gsxv1.Has("data-side") {
 			_gsxgw.S(" data-side=\"")
 			_gsxgw.AttrValue(string(_gsxstd.Default((direction), "bottom")))
 			_gsxgw.S("\"")
 		}
-		_gsxv0 := "group/drawer-content fixed z-50 m-0 open:flex flex-col gap-4 bg-popover text-popover-foreground text-sm shadow-lg transition ease-in-out duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-black/10 backdrop:duration-200 supports-backdrop-filter:backdrop:backdrop-blur-xs data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0"
-		var _gsxv1 string
-		switch direction {
-		case "top":
-			_gsxv1 = "inset-x-0 top-0 bottom-auto w-full max-w-none h-auto mb-24 max-h-[80vh] rounded-b-xl border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top"
-		case "left":
-			_gsxv1 = "inset-y-0 left-0 right-auto h-full max-h-none w-3/4 rounded-r-xl border-r sm:max-w-sm data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left"
-		case "right":
-			_gsxv1 = "inset-y-0 right-0 left-auto h-full max-h-none w-3/4 rounded-l-xl border-l sm:max-w-sm data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right"
-		default:
-			_gsxv1 = "inset-x-0 bottom-0 top-auto w-full max-w-none h-auto mt-24 max-h-[80vh] rounded-t-xl border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom"
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
+		_gsxgw.StyleMerged("", _gsxv1.Style())
+		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line drawer.gsx:155:3
+//line drawer.gsx:30:3
 		if direction == "" || direction == "bottom" {
-//line drawer.gsx:156:4
-			_gsxgw.S("<div data-slot=\"drawer-handle\" class=\"mx-auto mt-4 h-1 w-[100px] shrink-0 rounded-full bg-muted\"></div>")
+//line drawer.gsx:31:4
+			_gsxv2 := withSlot("drawer-handle", nil)
+			_gsxgw.S("<div")
+			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
+			_gsxgw.StyleMerged("", _gsxv2.Style())
+			_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.S("></div>")
 		}
-//line drawer.gsx:158:3
+//line drawer.gsx:33:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</dialog>")
 		return _gsxgw.Err()
 	})
 }
 
-//line drawer.gsx:162:1
-// DrawerHeader's text alignment is direction-conditional, ported faithfully
-// via the data-side/group-drawer-content selector — see this file's own
-// header comment MECHANISM note. gap-0.5 is nova at every breakpoint (no
-// md: bump; new-york-v4's own DrawerHeader bumps to md:gap-1.5).
-
-//line drawer.gsx:166:1
+//line drawer.gsx:37:1
 func DrawerHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line drawer.gsx:167:2
+//line drawer.gsx:38:2
+		_gsxv3 := withSlot("drawer-header", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"drawer-header\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-col gap-0.5 p-4 group-data-[side=bottom]/drawer-content:text-center group-data-[side=top]/drawer-content:text-center md:text-left"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv3.Class())
+		_gsxgw.StyleMerged("", _gsxv3.Style())
+		_gsxgw.Spread(ctx, _gsxv3, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line drawer.gsx:172:3
+//line drawer.gsx:38:47
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line drawer.gsx:176:1
-// DrawerFooter is byte-identical to SheetFooter's own (upstream drawer.tsx
-// and sheet.tsx happen to share this class string exactly).
-
-//line drawer.gsx:178:1
+//line drawer.gsx:41:1
 func DrawerFooter(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line drawer.gsx:179:2
+//line drawer.gsx:42:2
+		_gsxv4 := withSlot("drawer-footer", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"drawer-footer\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("mt-auto flex flex-col gap-2 p-4"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv4.Class())
+		_gsxgw.StyleMerged("", _gsxv4.Style())
+		_gsxgw.Spread(ctx, _gsxv4, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line drawer.gsx:179:86
+//line drawer.gsx:42:47
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line drawer.gsx:182:1
+//line drawer.gsx:45:1
 func DrawerTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line drawer.gsx:183:2
+//line drawer.gsx:46:2
+		_gsxv5 := withSlot("drawer-title", attrs)
 		_gsxgw.S("<h2")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"drawer-title\"")
+		if !_gsxv5.Has("data-gsxui-dialog-title") {
+			_gsxgw.BoolAttr("data-gsxui-dialog-title", true)
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("font-medium text-foreground"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv5.Class())
+		_gsxgw.StyleMerged("", _gsxv5.Style())
+		_gsxgw.Spread(ctx, _gsxv5, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line drawer.gsx:183:80
+//line drawer.gsx:46:69
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</h2>")
 		return _gsxgw.Err()
 	})
 }
 
-//line drawer.gsx:186:1
+//line drawer.gsx:49:1
 func DrawerDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line drawer.gsx:187:2
+//line drawer.gsx:50:2
+		_gsxv6 := withSlot("drawer-description", attrs)
 		_gsxgw.S("<p")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"drawer-description\"")
+		if !_gsxv6.Has("data-gsxui-dialog-description") {
+			_gsxgw.BoolAttr("data-gsxui-dialog-description", true)
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-sm text-muted-foreground"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv6.Class())
+		_gsxgw.StyleMerged("", _gsxv6.Style())
+		_gsxgw.Spread(ctx, _gsxv6, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line drawer.gsx:187:87
+//line drawer.gsx:50:80
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</p>")
 		return _gsxgw.Err()
 	})
 }
 
-//line drawer.gsx:190:1
+//line drawer.gsx:53:1
 func DrawerClose(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line drawer.gsx:191:2
+//line drawer.gsx:54:2
+		_gsxv7 := withSlot("drawer-close", attrs)
 		_gsxgw.S("<button")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"drawer-close\"")
-		}
-		if !attrs.Has("data-gsxui-dialog-close") {
+		if !_gsxv7.Has("data-gsxui-dialog-close") {
 			_gsxgw.BoolAttr("data-gsxui-dialog-close", true)
 		}
-		if !attrs.Has("type") {
+		if !_gsxv7.Has("type") {
 			_gsxgw.S(" type=\"button\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv7.Class())
+		_gsxgw.StyleMerged("", _gsxv7.Style())
+		_gsxgw.Spread(ctx, _gsxv7, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line drawer.gsx:191:86
+//line drawer.gsx:54:87
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()

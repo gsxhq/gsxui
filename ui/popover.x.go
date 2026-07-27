@@ -11,125 +11,84 @@ import (
 )
 
 //line popover.gsx:5:1
-// Popover is the shadcn/ui Popover on the native popover API: the top layer
-// replaces Radix's Portal, light dismiss and Esc are browser-native.
-// Trigger and content are wired by proximity — PopoverTrigger opens the
-// popover inside the same Popover root, no ids. This is dropdown.gsx's
-// mechanism with the menu semantics stripped: no role="menu", no arrow-key
-// roving focus, no close-on-select — a popover holds arbitrary content (a
-// form, free text), not a list of selectable items. JS adds fixed-position
-// anchoring CENTERED below the trigger rect (Radix's own Popover default is
-// side=bottom align=center, unlike DropdownMenuContent's align=start) and
-// state/aria sync. Requires the popover behavior module (ui/popover.js).
+// Popover uses the native auto-popover top layer with light dismissal and
+// proximity-scoped behavior in ui/popover.js.
 
-//line popover.gsx:15:1
+//line popover.gsx:7:1
 func Popover(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line popover.gsx:16:2
+//line popover.gsx:8:2
+		_gsxv0 := withSlot("popover", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"popover\"")
-		}
-		if !attrs.Has("data-gsxui-popover") {
+		if !_gsxv0.Has("data-gsxui-popover") {
 			_gsxgw.BoolAttr("data-gsxui-popover", true)
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("contents"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
+		_gsxgw.StyleMerged("", _gsxv0.Style())
+		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line popover.gsx:16:76
+//line popover.gsx:8:60
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line popover.gsx:19:1
+//line popover.gsx:11:1
 func PopoverTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line popover.gsx:20:2
+//line popover.gsx:12:2
+		_gsxv1 := withSlot("popover-trigger", attrs)
 		_gsxgw.S("<button")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"popover-trigger\"")
-		}
-		if !attrs.Has("data-gsxui-popover-trigger") {
+		if !_gsxv1.Has("data-gsxui-popover-trigger") {
 			_gsxgw.BoolAttr("data-gsxui-popover-trigger", true)
 		}
-		if !attrs.Has("type") {
+		if !_gsxv1.Has("type") {
 			_gsxgw.S(" type=\"button\"")
 		}
-		if !attrs.Has("aria-expanded") {
+		if !_gsxv1.Has("aria-expanded") {
 			_gsxgw.S(" aria-expanded=\"false\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
+		_gsxgw.StyleMerged("", _gsxv1.Style())
+		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line popover.gsx:27:3
+//line popover.gsx:18:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line popover.gsx:31:1
-// PopoverContent renders the popover. popover="auto" gives top layer, light
-// dismiss, and free Esc; data-state is server-rendered "closed" and kept in
-// sync by popover.js on the toggle event. data-side="bottom" is
-// server-rendered statically — popover.js always anchors below the
-// trigger, so shadcn's data-[side=bottom]:slide-in-from-top-2 enter slide
-// applies without Radix's runtime side tracking (same ADAPT as dropdown/
-// tooltip). origin-top replaces shadcn's Radix runtime transform-origin var
-// (--radix-popover-content-transform-origin) — the content is always
-// centered below the trigger, so its scale/fade animation always
-// originates from top-center (same substitution shape as dropdown's
-// origin-top-left, adjusted for centered rather than start alignment).
-
-//line popover.gsx:42:1
+//line popover.gsx:22:1
 func PopoverContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line popover.gsx:43:2
+//line popover.gsx:23:2
+		_gsxv2 := withSlot("popover-content", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"popover-content\"")
-		}
-		if !attrs.Has("data-gsxui-popover-content") {
+		if !_gsxv2.Has("data-gsxui-popover-content") {
 			_gsxgw.BoolAttr("data-gsxui-popover-content", true)
 		}
-		if !attrs.Has("popover") {
+		if !_gsxv2.Has("popover") {
 			_gsxgw.S(" popover=\"auto\"")
 		}
-		if !attrs.Has("data-state") {
+		if !_gsxv2.Has("data-state") {
 			_gsxgw.S(" data-state=\"closed\"")
 		}
-		if !attrs.Has("data-side") {
+		if !_gsxv2.Has("data-side") {
 			_gsxgw.S(" data-side=\"bottom\"")
 		}
-		if !attrs.Has("tabindex") {
+		if !_gsxv2.Has("tabindex") {
 			_gsxgw.S(" tabindex=\"-1\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("z-50 w-72 origin-top gap-2.5 rounded-lg border bg-popover p-2.5 text-sm text-popover-foreground shadow-md outline-hidden"), _gsxrt.Class( // ADAPT: shadcn's tw-animate keyframe pair is replaced with discrete
-			// transitions — hidePopover() flips the UA's display:none in the same
-			// breath, so an exit KEYFRAME never gets a frame to play (the enter
-			// half worked; the exit half was silently dead). Transitions listing
-			// display+overlay with transition-behavior:allow-discrete keep the
-			// element rendered and in the top layer until the fade/zoom-out
-			// finishes, and @starting-style (`starting:`) supplies the
-			// enter-from state — Tailwind's `open:` matches :popover-open both
-			// ways. Same fade-in-0/zoom-in-95/slide-2 and fade-out-0/zoom-out-95
-			// geometry as the shadcn tokens; see docs/jsx-parity.md ## animations.
-			"opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95"), _gsxrt.Class("data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
+		_gsxgw.StyleMerged("", _gsxv2.Style())
+		_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line popover.gsx:67:3
+//line popover.gsx:31:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

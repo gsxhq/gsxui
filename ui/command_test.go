@@ -70,15 +70,14 @@ func TestCommandEmptyHidden(t *testing.T) {
 	}
 }
 
-// CommandDialog composes DialogContent (command → dialog dep) with the p-0
-// override winning the merge, the sr-only a11y header inside the dialog for
-// wireA11y, and the hotkey hook attribute.
+// CommandDialog composes DialogContent (command → dialog dep), keeps p-0 as
+// caller-owned styling, and renders the sr-only a11y header for wireA11y.
 func TestCommandDialogComposition(t *testing.T) {
 	got := render(t, ui.CommandDialog("", "", gsx.Raw("x"), nil))
 	for _, want := range []string{
 		`data-gsxui-command-dialog`,
 		`data-gsxui-dialog-content`,
-		`<div data-slot="dialog-header" class="flex flex-col gap-2 text-center sm:text-left sr-only">`,
+		`<div class="sr-only" data-gsxui-slot="dialog-header">`,
 		">Command Palette</h2>",
 		">Search for a command to run...</p>",
 		`data-slot="command"`,
@@ -86,9 +85,6 @@ func TestCommandDialogComposition(t *testing.T) {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
-	}
-	if strings.Contains(got, " p-4 ") {
-		t.Errorf("dialog base p-4 must lose to CommandDialog's p-0: %s", got)
 	}
 	if !strings.Contains(got, " p-0") {
 		t.Errorf("CommandDialog's p-0 override missing: %s", got)

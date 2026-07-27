@@ -1543,6 +1543,473 @@
     @apply rounded-r-lg;
   }
 
+  /* Accordion */
+  :where([data-gsxui-slot~="accordion-item"]) {
+    @apply border-b;
+  }
+  :where([data-gsxui-slot~="accordion-item"]):last-child {
+    @apply border-b-0;
+  }
+  :where([data-gsxui-slot~="accordion-trigger"]) {
+    @apply flex list-none items-start justify-between rounded-lg py-2.5 text-left text-sm font-medium transition-all outline-none;
+  }
+  :where([data-gsxui-slot~="accordion-trigger"])::-webkit-details-marker {
+    display: none;
+  }
+  :where([data-gsxui-slot~="accordion-trigger"]):hover {
+    @apply underline;
+  }
+  :where([data-gsxui-slot~="accordion-trigger"]):focus-visible {
+    @apply border-ring ring-[3px] ring-ring/50;
+  }
+  :where([data-gsxui-slot~="accordion-trigger"]):disabled {
+    @apply pointer-events-none opacity-50;
+  }
+  :where([data-gsxui-slot~="accordion-trigger-icon"]) {
+    @apply size-4 shrink-0 text-muted-foreground transition-transform duration-200;
+  }
+  :where([data-gsxui-slot~="accordion-item"])[open]
+    > :where([data-gsxui-slot~="accordion-trigger"])
+    :where([data-gsxui-slot~="accordion-trigger-icon"]) {
+    @apply rotate-180;
+  }
+  :where([data-gsxui-slot~="accordion-content"]) {
+    @apply overflow-hidden text-sm;
+  }
+  :where([data-gsxui-slot~="accordion-content-inner"]) {
+    @apply pt-0 pb-2.5;
+  }
+
+  /* Collapsible */
+  :where([data-gsxui-slot~="collapsible-trigger"]) {
+    @apply list-none;
+  }
+  :where([data-gsxui-slot~="collapsible-trigger"])::-webkit-details-marker {
+    display: none;
+  }
+
+  /* Dialog */
+  :where([data-gsxui-slot~="dialog"]) {
+    @apply contents;
+  }
+  :where(dialog[data-gsxui-slot~="dialog-content"]) {
+    @apply fixed z-50 text-sm duration-200 outline-none;
+  }
+  :where(dialog[data-gsxui-slot~="dialog-content"])[data-state="closed"] {
+    @apply animate-out;
+  }
+  :where(dialog[data-gsxui-slot~="dialog-content"])[data-state="open"] {
+    @apply animate-in;
+  }
+  :where(dialog[data-gsxui-slot~="dialog-content"])::backdrop {
+    background-color: var(--overlay);
+    @apply backdrop-blur-xs duration-200;
+  }
+  :where(
+      dialog[data-gsxui-slot~="dialog-content"][data-state="open"]
+    )::backdrop {
+    @apply animate-in fade-in-0;
+  }
+  :where(
+      dialog[data-gsxui-slot~="dialog-content"][data-state="closed"]
+    )::backdrop {
+    @apply animate-out fade-out-0;
+  }
+  :where(
+      dialog[data-gsxui-slot~="dialog-content"]:not(
+          [data-gsxui-slot~="drawer-content"]
+        ):not([data-gsxui-slot~="sheet-content"])
+    ) {
+    @apply top-1/2 left-1/2 w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl border bg-background p-4 text-foreground;
+  }
+  :where(
+      dialog[data-gsxui-slot~="dialog-content"]:not(
+          [data-gsxui-slot~="drawer-content"]
+        ):not([data-gsxui-slot~="sheet-content"])[open]
+    ) {
+    display: grid;
+  }
+  :where(
+      dialog[data-gsxui-slot~="dialog-content"]:not(
+          [data-gsxui-slot~="drawer-content"]
+        ):not([data-gsxui-slot~="sheet-content"])[data-state="closed"]
+    ) {
+    @apply fade-out-0 zoom-out-95;
+  }
+  :where(
+      dialog[data-gsxui-slot~="dialog-content"]:not(
+          [data-gsxui-slot~="drawer-content"]
+        ):not([data-gsxui-slot~="sheet-content"])[data-state="open"]
+    ) {
+    @apply fade-in-0 zoom-in-95;
+  }
+  @media (width >= 40rem) {
+    :where(
+        dialog[data-gsxui-slot~="dialog-content"]:not(
+            [data-gsxui-slot~="drawer-content"]
+          ):not([data-gsxui-slot~="sheet-content"])
+      ) {
+      @apply max-w-sm;
+    }
+  }
+  :where(
+      dialog[data-gsxui-slot~="dialog-content"][data-gsxui-slot~="alert-dialog-content"]
+    ) {
+    @apply max-w-xs;
+  }
+  @media (width >= 40rem) {
+    :where(
+        dialog[data-gsxui-slot~="dialog-content"][data-gsxui-slot~="alert-dialog-content"]
+      ) {
+      @apply max-w-sm;
+    }
+  }
+  :where([data-gsxui-slot~="dialog-close-button"]) {
+    @apply absolute top-2 right-2 rounded-xs opacity-70 ring-offset-background transition-opacity;
+  }
+  :where([data-gsxui-slot~="dialog-close-button"]):hover {
+    @apply opacity-100;
+  }
+  :where([data-gsxui-slot~="dialog-close-button"]):focus {
+    @apply ring-2 ring-ring ring-offset-2 outline-hidden;
+  }
+  :where([data-gsxui-slot~="dialog-close-button"]):disabled {
+    @apply pointer-events-none;
+  }
+  :where([data-gsxui-slot~="dialog-close-icon"]) {
+    @apply size-4 shrink-0 pointer-events-none;
+  }
+  :where([data-gsxui-slot~="dialog-header"]) {
+    @apply flex flex-col gap-2 text-center;
+  }
+  @media (width >= 40rem) {
+    :where([data-gsxui-slot~="dialog-header"]) {
+      @apply text-left;
+    }
+  }
+  :where([data-gsxui-slot~="dialog-footer"]),
+  :where([data-gsxui-slot~="alert-dialog-footer"]) {
+    @apply -mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4;
+  }
+  @media (width >= 40rem) {
+    :where([data-gsxui-slot~="dialog-footer"]),
+    :where([data-gsxui-slot~="alert-dialog-footer"]) {
+      @apply flex-row justify-end;
+    }
+  }
+  :where([data-gsxui-slot~="dialog-title"]) {
+    @apply text-base leading-none font-medium;
+  }
+  :where([data-gsxui-slot~="dialog-description"]) {
+    @apply text-sm text-muted-foreground;
+  }
+
+  /* AlertDialog */
+  :where([data-gsxui-slot~="alert-dialog-header"]) {
+    @apply grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center;
+  }
+  :where([data-gsxui-slot~="alert-dialog-title"]) {
+    @apply text-base font-medium;
+  }
+  :where([data-gsxui-slot~="alert-dialog-description"]) {
+    @apply text-sm text-muted-foreground;
+  }
+
+  /* Drawer and Sheet share Dialog state/backdrop mechanics above. */
+  :where(
+      dialog[data-gsxui-slot~="dialog-content"]:is(
+          [data-gsxui-slot~="drawer-content"],
+          [data-gsxui-slot~="sheet-content"]
+        )
+    ) {
+    @apply m-0 flex-col gap-4 shadow-lg transition ease-in-out;
+  }
+  :where(
+      dialog[data-gsxui-slot~="dialog-content"]:is(
+          [data-gsxui-slot~="drawer-content"],
+          [data-gsxui-slot~="sheet-content"]
+        )[open]
+    ) {
+    display: flex;
+  }
+
+  /* Drawer */
+  :where(dialog[data-gsxui-slot~="drawer-content"]) {
+    @apply bg-popover text-popover-foreground;
+  }
+  :where(dialog[data-gsxui-slot~="drawer-content"])[data-side="bottom"] {
+    @apply inset-x-0 bottom-0 top-auto mt-24 h-auto max-h-[80vh] w-full max-w-none rounded-t-xl border-t;
+  }
+  :where(dialog[data-gsxui-slot~="drawer-content"])[data-side="top"] {
+    @apply inset-x-0 top-0 bottom-auto mb-24 h-auto max-h-[80vh] w-full max-w-none rounded-b-xl border-b;
+  }
+  :where(dialog[data-gsxui-slot~="drawer-content"])[data-side="left"] {
+    @apply inset-y-0 left-0 right-auto h-full max-h-none w-3/4 rounded-r-xl border-r;
+  }
+  :where(dialog[data-gsxui-slot~="drawer-content"])[data-side="right"] {
+    @apply inset-y-0 right-0 left-auto h-full max-h-none w-3/4 rounded-l-xl border-l;
+  }
+  @media (width >= 40rem) {
+    :where(dialog[data-gsxui-slot~="drawer-content"]):is(
+        [data-side="left"],
+        [data-side="right"]
+      ) {
+      @apply max-w-sm;
+    }
+  }
+  :where(
+      dialog[data-gsxui-slot~="drawer-content"][data-side="bottom"][data-state="closed"]
+    ) {
+    @apply slide-out-to-bottom;
+  }
+  :where(
+      dialog[data-gsxui-slot~="drawer-content"][data-side="bottom"][data-state="open"]
+    ) {
+    @apply slide-in-from-bottom;
+  }
+  :where(
+      dialog[data-gsxui-slot~="drawer-content"][data-side="top"][data-state="closed"]
+    ) {
+    @apply slide-out-to-top;
+  }
+  :where(
+      dialog[data-gsxui-slot~="drawer-content"][data-side="top"][data-state="open"]
+    ) {
+    @apply slide-in-from-top;
+  }
+  :where(
+      dialog[data-gsxui-slot~="drawer-content"][data-side="left"][data-state="closed"]
+    ) {
+    @apply slide-out-to-left;
+  }
+  :where(
+      dialog[data-gsxui-slot~="drawer-content"][data-side="left"][data-state="open"]
+    ) {
+    @apply slide-in-from-left;
+  }
+  :where(
+      dialog[data-gsxui-slot~="drawer-content"][data-side="right"][data-state="closed"]
+    ) {
+    @apply slide-out-to-right;
+  }
+  :where(
+      dialog[data-gsxui-slot~="drawer-content"][data-side="right"][data-state="open"]
+    ) {
+    @apply slide-in-from-right;
+  }
+  :where([data-gsxui-slot~="drawer-handle"]) {
+    @apply mx-auto mt-4 h-1 w-[100px] shrink-0 rounded-full bg-muted;
+  }
+  :where([data-gsxui-slot~="drawer-header"]) {
+    @apply flex flex-col gap-0.5 p-4;
+  }
+  :where(dialog[data-gsxui-slot~="drawer-content"]):is(
+      [data-side="bottom"],
+      [data-side="top"]
+    )
+    :where([data-gsxui-slot~="drawer-header"]) {
+    @apply text-center;
+  }
+  @media (width >= 48rem) {
+    :where(dialog[data-gsxui-slot~="drawer-content"]):is(
+        [data-side="left"],
+        [data-side="right"]
+      )
+      :where([data-gsxui-slot~="drawer-header"]) {
+      @apply text-left;
+    }
+  }
+  :where([data-gsxui-slot~="drawer-footer"]) {
+    @apply mt-auto flex flex-col gap-2 p-4;
+  }
+  :where([data-gsxui-slot~="drawer-title"]) {
+    @apply font-medium text-foreground;
+  }
+  :where([data-gsxui-slot~="drawer-description"]) {
+    @apply text-sm text-muted-foreground;
+  }
+
+  /* Sheet */
+  :where(dialog[data-gsxui-slot~="sheet-content"]) {
+    @apply max-h-none bg-background text-foreground;
+  }
+  :where(dialog[data-gsxui-slot~="sheet-content"])[data-side="right"] {
+    @apply inset-y-0 right-0 left-auto h-full w-3/4 border-l;
+  }
+  :where(dialog[data-gsxui-slot~="sheet-content"])[data-side="left"] {
+    @apply inset-y-0 left-0 right-auto h-full w-3/4 border-r;
+  }
+  :where(dialog[data-gsxui-slot~="sheet-content"])[data-side="top"] {
+    @apply inset-x-0 top-0 bottom-auto h-auto w-full max-w-none border-b;
+  }
+  :where(dialog[data-gsxui-slot~="sheet-content"])[data-side="bottom"] {
+    @apply inset-x-0 bottom-0 top-auto h-auto w-full max-w-none border-t;
+  }
+  @media (width >= 40rem) {
+    :where(dialog[data-gsxui-slot~="sheet-content"]):is(
+        [data-side="left"],
+        [data-side="right"]
+      ) {
+      @apply max-w-sm;
+    }
+  }
+  :where(
+      dialog[data-gsxui-slot~="sheet-content"][data-side="right"][data-state="closed"]
+    ) {
+    @apply slide-out-to-right;
+  }
+  :where(
+      dialog[data-gsxui-slot~="sheet-content"][data-side="right"][data-state="open"]
+    ) {
+    @apply slide-in-from-right;
+  }
+  :where(
+      dialog[data-gsxui-slot~="sheet-content"][data-side="left"][data-state="closed"]
+    ) {
+    @apply slide-out-to-left;
+  }
+  :where(
+      dialog[data-gsxui-slot~="sheet-content"][data-side="left"][data-state="open"]
+    ) {
+    @apply slide-in-from-left;
+  }
+  :where(
+      dialog[data-gsxui-slot~="sheet-content"][data-side="top"][data-state="closed"]
+    ) {
+    @apply slide-out-to-top;
+  }
+  :where(
+      dialog[data-gsxui-slot~="sheet-content"][data-side="top"][data-state="open"]
+    ) {
+    @apply slide-in-from-top;
+  }
+  :where(
+      dialog[data-gsxui-slot~="sheet-content"][data-side="bottom"][data-state="closed"]
+    ) {
+    @apply slide-out-to-bottom;
+  }
+  :where(
+      dialog[data-gsxui-slot~="sheet-content"][data-side="bottom"][data-state="open"]
+    ) {
+    @apply slide-in-from-bottom;
+  }
+  :where([data-gsxui-slot~="sheet-close-button"]) {
+    @apply absolute top-3 right-3 rounded-xs opacity-70 ring-offset-background transition-opacity;
+  }
+  :where([data-gsxui-slot~="sheet-close-button"]):hover {
+    @apply opacity-100;
+  }
+  :where([data-gsxui-slot~="sheet-close-button"]):focus {
+    @apply ring-2 ring-ring ring-offset-2 outline-hidden;
+  }
+  :where([data-gsxui-slot~="sheet-close-button"]):disabled {
+    @apply pointer-events-none;
+  }
+  :where([data-gsxui-slot~="sheet-close-icon"]) {
+    @apply size-4;
+  }
+  :where([data-gsxui-slot~="sheet-header"]) {
+    @apply flex flex-col gap-0.5 p-4;
+  }
+  :where([data-gsxui-slot~="sheet-footer"]) {
+    @apply mt-auto flex flex-col gap-2 p-4;
+  }
+  :where([data-gsxui-slot~="sheet-title"]) {
+    @apply text-base font-medium text-foreground;
+  }
+  :where([data-gsxui-slot~="sheet-description"]) {
+    @apply text-sm text-muted-foreground;
+  }
+
+  /* Popover */
+  :where([data-gsxui-slot~="popover"]) {
+    @apply contents;
+  }
+  :where([data-gsxui-slot~="popover-content"]) {
+    @apply z-50 w-72 origin-top gap-2.5 rounded-lg border bg-popover p-2.5 text-sm text-popover-foreground shadow-md outline-hidden;
+  }
+
+  /* HoverCard */
+  :where([data-gsxui-slot~="hover-card"]) {
+    @apply contents;
+  }
+  :where([data-gsxui-slot~="hover-card-content"]) {
+    @apply z-50 w-64 origin-top rounded-lg border bg-popover p-2.5 text-sm text-popover-foreground shadow-md outline-hidden;
+  }
+
+  /* Tooltip */
+  :where([data-gsxui-slot~="tooltip"]) {
+    @apply contents;
+  }
+  :where([data-gsxui-slot~="tooltip-content"]) {
+    @apply z-50 w-fit origin-bottom gap-1.5 overflow-visible rounded-md bg-foreground px-3 py-1.5 text-xs text-balance text-background;
+  }
+  :where([data-gsxui-slot~="tooltip-content"]):has(
+      [data-gsxui-slot~="kbd"]
+    ) {
+    @apply pr-1.5;
+  }
+  :where([data-gsxui-slot~="tooltip-content"])
+    :where([data-gsxui-slot~="kbd"]) {
+    @apply rounded-sm;
+  }
+  :where([data-gsxui-slot~="tooltip-arrow"]) {
+    @apply absolute top-full left-1/2 z-50 size-2.5 -translate-x-1/2 -translate-y-[calc(50%+2px)] rotate-45 rounded-[2px] bg-foreground;
+  }
+
+  /* Native popover transition shared by Popover, HoverCard, and Tooltip. */
+  :where(
+      [data-gsxui-slot~="popover-content"],
+      [data-gsxui-slot~="hover-card-content"],
+      [data-gsxui-slot~="tooltip-content"]
+    ) {
+    @apply opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150;
+  }
+  :where(
+      [data-gsxui-slot~="popover-content"],
+      [data-gsxui-slot~="hover-card-content"],
+      [data-gsxui-slot~="tooltip-content"]
+    ):popover-open {
+    @apply opacity-100 scale-100;
+  }
+  @starting-style {
+    :where(
+        [data-gsxui-slot~="popover-content"],
+        [data-gsxui-slot~="hover-card-content"],
+        [data-gsxui-slot~="tooltip-content"]
+      ):popover-open {
+      @apply opacity-0 scale-95;
+    }
+    :where(
+        [data-gsxui-slot~="popover-content"],
+        [data-gsxui-slot~="hover-card-content"],
+        [data-gsxui-slot~="tooltip-content"]
+      )[data-side="bottom"]:popover-open {
+      @apply -translate-y-2;
+    }
+    :where(
+        [data-gsxui-slot~="popover-content"],
+        [data-gsxui-slot~="hover-card-content"],
+        [data-gsxui-slot~="tooltip-content"]
+      )[data-side="left"]:popover-open {
+      @apply translate-x-2;
+    }
+    :where(
+        [data-gsxui-slot~="popover-content"],
+        [data-gsxui-slot~="hover-card-content"],
+        [data-gsxui-slot~="tooltip-content"]
+      )[data-side="right"]:popover-open {
+      @apply -translate-x-2;
+    }
+    :where(
+        [data-gsxui-slot~="popover-content"],
+        [data-gsxui-slot~="hover-card-content"],
+        [data-gsxui-slot~="tooltip-content"]
+      )[data-side="top"]:popover-open {
+      @apply translate-y-2;
+    }
+  }
+
   [data-slot="scroll-area"]::-webkit-scrollbar {
     width: 0.625rem;
     height: 0.625rem;

@@ -47,13 +47,14 @@ func TestSidebarRendersBothTrees(t *testing.T) {
 
 // TestSidebarMobileGateOnSheetRootNotContent is the regression test for
 // review round 1's IMPORTANT 3: md:hidden must live on the Sheet root
-// (class="contents md:hidden"), never on SheetContent's own <dialog> class,
-// where it lost a specificity fight against the dialog's own open:flex
+// (class="md:hidden"; Sheet's layout-neutral contents now comes from CSS),
+// never on SheetContent's own <dialog> class, where it lost a specificity
+// fight against the dialog's own open display
 // rule once the sheet was open — see ui/sidebar.gsx's own package doc
 // comment FIX entry for the full trace.
 func TestSidebarMobileGateOnSheetRootNotContent(t *testing.T) {
 	got := render(t, ui.Sidebar(true, "", "", "", gsx.Raw("x"), nil))
-	if !strings.Contains(got, `class="contents md:hidden"`) {
+	if !strings.Contains(got, `class="md:hidden" data-gsxui-slot="dialog sheet"`) {
 		t.Errorf("want md:hidden on the Sheet root's contents class\nin: %s", got)
 	}
 	dialogStart := strings.Index(got, "<dialog")
@@ -211,13 +212,13 @@ func TestSidebarMenuButtonActiveAndTooltip(t *testing.T) {
 	for _, want := range []string{
 		`data-slot="sidebar-menu-button"`,
 		`data-active="true"`,
-		// A non-empty tooltip must wrap in ui.Tooltip (data-slot="tooltip")
+		// A non-empty tooltip must wrap in ui.Tooltip
 		// and put data-gsxui-tooltip-trigger directly on the button itself
 		// — no nested ui.TooltipTrigger, the same button-in-button trap as
 		// DialogTrigger (see ui/sidebar.gsx's own MECHANISM doc comment).
-		`data-slot="tooltip"`,
+		`data-gsxui-slot="tooltip"`,
 		`data-gsxui-tooltip-trigger`,
-		`data-slot="tooltip-content"`,
+		`data-gsxui-slot="tooltip-content"`,
 		">Inbox<",
 		// The collapsed-AND-desktop-only gating has no state/isMobile param
 		// here, so it's pure CSS: only visible while an ancestor .group

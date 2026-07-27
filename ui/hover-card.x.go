@@ -11,124 +11,75 @@ import (
 )
 
 //line hover-card.gsx:5:1
-// HoverCard is the shadcn/ui HoverCard on the native popover API:
-// popover="manual" puts the content in the top layer without light dismiss
-// (hover/focus drive it, not outside clicks or Esc) — this is tooltip.gsx's
-// mechanism, minus the arrow (hover-card has none) and anchored BELOW the
-// trigger instead of above (Radix's own HoverCard default side is bottom;
-// Tooltip's is top). Trigger and content are wired by proximity —
-// HoverCardTrigger shows the popover inside the same HoverCard root, no
-// ids. JS adds fixed-position anchoring centered below the trigger rect,
-// Radix HoverCard's own open/close delays (700ms/300ms — not tooltip's flat
-// 300ms-open/immediate-close), and state/event sync. Requires the
-// hover-card behavior module (ui/hover-card.js).
+// HoverCard uses a manual native popover so pointer/focus behavior, rather
+// than light dismissal, controls its top-layer lifetime.
 
-//line hover-card.gsx:16:1
+//line hover-card.gsx:7:1
 func HoverCard(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line hover-card.gsx:17:2
+//line hover-card.gsx:8:2
+		_gsxv0 := withSlot("hover-card", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"hover-card\"")
-		}
-		if !attrs.Has("data-gsxui-hovercard") {
+		if !_gsxv0.Has("data-gsxui-hovercard") {
 			_gsxgw.BoolAttr("data-gsxui-hovercard", true)
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("contents"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
+		_gsxgw.StyleMerged("", _gsxv0.Style())
+		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line hover-card.gsx:17:81
+//line hover-card.gsx:8:65
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line hover-card.gsx:20:1
-// HoverCardTrigger renders a <span> phrasing wrapper, not a <button> —
-// shadcn's own @nextjs demo asChild-wraps a link-styled <Button
-// variant="link">, and Radix's own HoverCardTrigger typically renders as an
-// <a> (a hover card almost always previews a link's target). children
-// carry the real interactive element (an <a>, or a
-// <ui.Button variant="link">, styled as a link); asChild itself is not
-// ported (ledgered, docs/jsx-parity.md ## hover-card) — same data-attribute-
-// free composition as collapsible's trigger, since a <span> imposes no
-// button-in-button trap (unlike DialogTrigger/TooltipTrigger's own
-// button-shaped wrappers) and needs no data-gsxui-*-trigger attribute on
-// the child at all: HoverCardTrigger's own root already carries the hook.
-
-//line hover-card.gsx:31:1
+//line hover-card.gsx:11:1
 func HoverCardTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line hover-card.gsx:32:2
+//line hover-card.gsx:12:2
+		_gsxv1 := withSlot("hover-card-trigger", attrs)
 		_gsxgw.S("<span")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"hover-card-trigger\"")
-		}
-		if !attrs.Has("data-gsxui-hovercard-trigger") {
+		if !_gsxv1.Has("data-gsxui-hovercard-trigger") {
 			_gsxgw.BoolAttr("data-gsxui-hovercard-trigger", true)
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
+		_gsxgw.StyleMerged("", _gsxv1.Style())
+		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line hover-card.gsx:32:81
+//line hover-card.gsx:12:82
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()
 	})
 }
 
-//line hover-card.gsx:35:1
-// HoverCardContent renders the popover. popover="manual" is load-bearing:
-// "auto" popovers light-dismiss on outside pointerdown, which would race
-// hover-card.js's own pointerout/focusout hide logic (same rationale as
-// TooltipContent). data-state is server-rendered "closed" and kept in sync
-// by hover-card.js. data-side="bottom" is server-rendered statically —
-// hover-card.js always anchors below the trigger (Radix HoverCard's own
-// default side, unlike Tooltip's top), so shadcn's
-// data-[side=bottom]:slide-in-from-top-2 enter slide applies without
-// Radix's runtime side tracking. origin-top replaces shadcn's Radix runtime
-// transform-origin var, same substitution as PopoverContent's own (both
-// are centered-below, align=center by Radix default).
-
-//line hover-card.gsx:46:1
+//line hover-card.gsx:15:1
 func HoverCardContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line hover-card.gsx:47:2
+//line hover-card.gsx:16:2
+		_gsxv2 := withSlot("hover-card-content", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"hover-card-content\"")
-		}
-		if !attrs.Has("data-gsxui-hovercard-content") {
+		if !_gsxv2.Has("data-gsxui-hovercard-content") {
 			_gsxgw.BoolAttr("data-gsxui-hovercard-content", true)
 		}
-		if !attrs.Has("popover") {
+		if !_gsxv2.Has("popover") {
 			_gsxgw.S(" popover=\"manual\"")
 		}
-		if !attrs.Has("data-state") {
+		if !_gsxv2.Has("data-state") {
 			_gsxgw.S(" data-state=\"closed\"")
 		}
-		if !attrs.Has("data-side") {
+		if !_gsxv2.Has("data-side") {
 			_gsxgw.S(" data-side=\"bottom\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("z-50 w-64 origin-top rounded-lg border bg-popover p-2.5 text-sm text-popover-foreground shadow-md outline-hidden"), _gsxrt.Class( // Discrete-transition enter/exit replacing the tw-animate keyframe
-			// pair — a popover's exit keyframe never gets to play (hide is
-			// instant display:none); see popover.gsx's ADAPT comment and
-			// docs/jsx-parity.md ## animations for the full mechanism.
-			"opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95"), _gsxrt.Class("data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
+		_gsxgw.StyleMerged("", _gsxv2.Style())
+		_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line hover-card.gsx:64:3
+//line hover-card.gsx:23:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

@@ -28,6 +28,7 @@ component StyleContractFixture() {
 			<div class="border border-destructive ring-3 ring-destructive/40" data-style-contract-reference="otp-invalid-dark"></div>
 			<div class="bg-input/50" data-style-contract-reference="dark-outline-hover"></div>
 			<div class="bg-accent/50" data-style-contract-reference="dark-ghost-hover"></div>
+			<div class="bg-overlay" data-style-contract-reference="overlay"></div>
 		</div>
 		<div class="flex gap-2">
 			<ui.PaginationPrevious href="#" data-style-contract="pagination-previous"/>
@@ -60,5 +61,29 @@ component StyleContractFixture() {
 		<ui.FieldGroup data-variant="outline">
 			<ui.FieldSeparator data-style-contract="field-outline-separator"/>
 		</ui.FieldGroup>
+		<ui.Dialog>
+			<ui.DialogTrigger>Open contract dialog</ui.DialogTrigger>
+			<ui.DialogContent class="rounded-none" data-style-contract="dialog-caller">
+				<ui.DialogTitle>Contract dialog title</ui.DialogTitle>
+				<ui.DialogDescription>Contract dialog description</ui.DialogDescription>
+			</ui.DialogContent>
+		</ui.Dialog>
+		<ui.Drawer>
+			<ui.DrawerTrigger>Open contract drawer</ui.DrawerTrigger>
+			<ui.DrawerContent data-style-contract="drawer-bottom">
+				<ui.DrawerHeader data-style-contract="drawer-header">
+					<ui.DrawerTitle>Contract drawer title</ui.DrawerTitle>
+					<ui.DrawerDescription>Contract drawer description</ui.DrawerDescription>
+				</ui.DrawerHeader>
+			</ui.DrawerContent>
+		</ui.Drawer>
+		<ui.Tooltip>
+			<ui.TooltipTrigger>Show contract tooltip</ui.TooltipTrigger>
+			<ui.TooltipContent data-style-contract="tooltip-kbd">Press <ui.Kbd>K</ui.Kbd></ui.TooltipContent>
+		</ui.Tooltip>
+		<ui.AccordionItem name="contract-accordion">
+			<ui.AccordionTrigger>Contract accordion</ui.AccordionTrigger>
+			<ui.AccordionContent>Contract accordion body</ui.AccordionContent>
+		</ui.AccordionItem>
 	</div>
 }

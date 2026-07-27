@@ -9,8 +9,8 @@ import (
 )
 
 // accordionCSSRe extracts the accordion animation block: from its marker
-// comment through the [data-slot="accordion-content"] rule that closes it.
-var accordionCSSRe = regexp.MustCompile(`(?s)/\* Accordion open/close animation.*?\[data-slot="accordion-content"\] \{\n  min-height: 0;\n\}`)
+// comment through the namespaced accordion-content rule that closes it.
+var accordionCSSRe = regexp.MustCompile(`(?s)/\* Accordion open/close animation.*?\[data-gsxui-slot~="accordion-content"\]\) \{\n  min-height: 0;\n\}`)
 
 // TestAccordionAnimationCSSDriftPin ensures the library's single authored
 // foundation contains the native <details> open/close animation once.

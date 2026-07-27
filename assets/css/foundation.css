@@ -47,7 +47,9 @@
     @apply bg-background text-foreground;
   }
   :where([data-gsxui-slot~="breadcrumb-ellipsis-label"]),
-  :where([data-gsxui-slot~="pagination-ellipsis-label"]) {
+  :where([data-gsxui-slot~="pagination-ellipsis-label"]),
+  :where([data-gsxui-slot~="dialog-close-label"]),
+  :where([data-gsxui-slot~="sheet-close-label"]) {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -61,18 +63,23 @@
 }
 
 /* Accordion open/close animation over native <details>. */
-[data-slot="accordion-item"]::details-content {
+:where([data-gsxui-slot~="accordion-item"])::details-content {
   display: grid;
   grid-template-rows: 0fr;
   transition:
     grid-template-rows 200ms ease-out,
     content-visibility 200ms allow-discrete;
 }
-[data-slot="accordion-item"][open]::details-content {
+:where([data-gsxui-slot~="accordion-item"])[open]::details-content {
   grid-template-rows: 1fr;
 }
-[data-slot="accordion-content"] {
+:where([data-gsxui-slot~="accordion-content"]) {
   min-height: 0;
+}
+
+/* Author presentation must never defeat the native closed-dialog state. */
+:where(dialog[data-gsxui-dialog-content]:not([open])) {
+  display: none;
 }
 
 /* Normalize the range input before its presentation rules. */

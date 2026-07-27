@@ -11,133 +11,60 @@ import (
 )
 
 //line collapsible.gsx:5:1
-// Collapsible, CollapsibleTrigger, and CollapsibleContent are the shadcn/ui
-// Collapsible, ported onto the same native <details>/<summary> mechanism as
-// Accordion (see ui/accordion.gsx) instead of Radix's client state machine
-// (WIN): a single un-grouped <details> IS a disclosure — no name attribute,
-// no type="single"/collapsible/open/onOpenChange props, no JS. Unlike
-// Accordion, there is no exclusive-group behavior to model (shadcn's
-// collapsible.tsx is a lone Radix Root/Trigger/Content triple, not a
-// Root+Item pair), so there is nothing here shaped like AccordionItem's
-// `name` grouping param.
-//
-// shadcn's collapsible.tsx (registry/new-york-v4/ui/collapsible.tsx) is a
-// bare data-slot passthrough — none of its three parts carry a single class
-// string. That "no classes" fact is itself the token-for-token baseline:
-// Collapsible and CollapsibleContent port with zero classes of their own.
-// CollapsibleTrigger is the one ADAPT (see its own doc comment below).
-//
-// GAP: no data-state is stamped anywhere in this port (there is no
-// collapsible.js — none exists, same as Accordion). CSS consumers who would
-// reach for shadcn's `data-[state=open]`/`data-[state=closed]` selectors
-// have nothing to key off; target the ancestor <details>'s native `[open]`
-// attribute instead (the same substitution Accordion's trigger chevron
-// uses: `[[open]_&]:...`-shaped selectors, not `data-[state=open]:...`).
+// Collapsible is a native ungrouped <details>/<summary> disclosure. Its open
+// parameter is the server-visible initial state; interaction remains native.
 
-// Collapsible's open bool is the explicit, server-visible initial state —
-// the Go zero value (false) renders collapsed, matching shadcn's Radix
-// default (defaultOpen unset). It is shadcn's `defaultOpen`, not a
-// controlled `open`/`onOpenChange` pair: opening and closing thereafter are
-// entirely native <details> behavior, no hydration step to reconcile.
-
-//line collapsible.gsx:33:1
+//line collapsible.gsx:7:1
 func Collapsible(open bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line collapsible.gsx:34:2
+//line collapsible.gsx:8:2
+		_gsxv0 := withSlot("collapsible", attrs)
 		_gsxgw.S("<details")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"collapsible\"")
-		}
-		if !attrs.Has("open") {
+		if !_gsxv0.Has("open") {
 			_gsxgw.BoolAttr("open", bool(open))
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
+		_gsxgw.StyleMerged("", _gsxv0.Style())
+		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line collapsible.gsx:35:3
+//line collapsible.gsx:9:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</details>")
 		return _gsxgw.Err()
 	})
 }
 
-//line collapsible.gsx:39:1
-// CollapsibleTrigger drops Radix's asChild — the whole reason shadcn's own
-// demo (registry/new-york-v4/examples/collapsible-demo.tsx) wraps a real
-// <Button> inside <CollapsibleTrigger asChild> is to make an actual button
-// element the clickable trigger while Radix's own Trigger contributes only
-// behavior. Here the data-attribute idiom doesn't apply and neither does
-// composing a real button: a bare <summary> already IS the clickable
-// disclosure control, and activating a NESTED interactive element (a
-// <button>, <a>, <input>…) inside it is that element's own activation, not
-// the summary's — the click is swallowed and the details never toggles. So
-// callers style NON-interactive children to look like shadcn's trigger
-// button instead (the summary carries the focus/keyboard semantics; the
-// visual "button" is decoration):
-//
-//	<ui.CollapsibleTrigger>
-//		<span aria-hidden="true" class="…ghost icon-button classes…"><icon.ChevronsUpDown/></span>
-//	</ui.CollapsibleTrigger>
-//
-// (site/examples/collapsible/basic.gsx is the full worked shape.)
-//
-// ADAPT: shadcn's CollapsibleTrigger carries no classes at all (nothing to
-// carry token-for-token) — list-none and the webkit marker selector below
-// are ADDED, not ported, for the same reason Accordion's trigger adds them:
-// a real <summary> draws a native disclosure triangle marker (both the
-// standard `::marker`, suppressed by `list-none`, and WebKit's separate
-// `::-webkit-details-marker`) that Radix's <button>-based trigger never
-// had. Without suppressing both, callers get shadcn's chevron icon PLUS a
-// browser-drawn triangle.
-
-//line collapsible.gsx:66:1
+//line collapsible.gsx:13:1
 func CollapsibleTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line collapsible.gsx:67:2
+//line collapsible.gsx:14:2
+		_gsxv1 := withSlot("collapsible-trigger", attrs)
 		_gsxgw.S("<summary")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"collapsible-trigger\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("list-none [&::-webkit-details-marker]:hidden"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
+		_gsxgw.StyleMerged("", _gsxv1.Style())
+		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line collapsible.gsx:68:3
+//line collapsible.gsx:15:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</summary>")
 		return _gsxgw.Err()
 	})
 }
 
-//line collapsible.gsx:72:1
-// CollapsibleContent is a plain div, no classes (shadcn ships none) and no
-// animation block: shadcn's own collapsible.tsx has no
-// data-[state=open]:animate-* pair to port in the first place (unlike
-// Accordion's Radix-sourced animate-accordion-down/up, which motivated
-// Accordion's CSS-only ::details-content replacement) — there is nothing to
-// adapt here, so nothing is added. A caller wanting an open/close
-// transition reaches for the same ::details-content technique Accordion
-// documents, keyed off this component's ancestor <details>'s [open].
-
-//line collapsible.gsx:80:1
+//line collapsible.gsx:19:1
 func CollapsibleContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line collapsible.gsx:81:2
+//line collapsible.gsx:20:2
+		_gsxv2 := withSlot("collapsible-content", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"collapsible-content\"")
-		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
+		_gsxgw.StyleMerged("", _gsxv2.Style())
+		_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line collapsible.gsx:82:3
+//line collapsible.gsx:21:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
