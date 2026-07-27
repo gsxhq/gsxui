@@ -14,8 +14,8 @@ import (
 // Table and its parts are the shadcn/ui Table compound set. Parts are plain
 // sibling components — compose them in markup; no shared state, no context.
 //
-// Table renders a scroll-container <div data-slot="table-container"> wrapping
-// the <table data-slot="table">; attrs land on the <table>, not the
+// Table renders a scroll-container <div data-gsxui-slot="table-container">
+// wrapping the <table data-gsxui-slot="table">; attrs land on the <table>, not the
 // container (see docs/jsx-parity.md).
 
 //line table.gsx:12:1
@@ -23,19 +23,20 @@ func Table(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line table.gsx:13:2
-		_gsxgw.S("<div data-slot=\"table-container\" class=\"relative w-full overflow-x-auto\">")
-//line table.gsx:14:3
-		_gsxgw.S("<table")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"table\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("w-full caption-bottom text-sm"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxv0 := withSlot("table-container", nil)
+		_gsxgw.S("<div")
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
+		_gsxgw.StyleMerged("", _gsxv0.Style())
+		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line table.gsx:14:79
+//line table.gsx:14:3
+		_gsxv1 := withSlot("table", attrs)
+		_gsxgw.S("<table")
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
+		_gsxgw.StyleMerged("", _gsxv1.Style())
+		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line table.gsx:14:42
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</table></div>")
 		return _gsxgw.Err()
@@ -47,17 +48,13 @@ func TableHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line table.gsx:19:2
+		_gsxv2 := withSlot("table-header", attrs)
 		_gsxgw.S("<thead")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"table-header\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("[&_tr]:border-b"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
+		_gsxgw.StyleMerged("", _gsxv2.Style())
+		_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line table.gsx:19:71
+//line table.gsx:19:48
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</thead>")
 		return _gsxgw.Err()
@@ -69,17 +66,13 @@ func TableBody(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line table.gsx:23:2
+		_gsxv3 := withSlot("table-body", attrs)
 		_gsxgw.S("<tbody")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"table-body\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("[&_tr:last-child]:border-0"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv3.Class())
+		_gsxgw.StyleMerged("", _gsxv3.Style())
+		_gsxgw.Spread(ctx, _gsxv3, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line table.gsx:23:80
+//line table.gsx:23:46
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</tbody>")
 		return _gsxgw.Err()
@@ -91,15 +84,11 @@ func TableFooter(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line table.gsx:27:2
+		_gsxv4 := withSlot("table-footer", attrs)
 		_gsxgw.S("<tfoot")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"table-footer\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("border-t bg-muted/50 font-medium [&>tr]:last:border-b-0"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv4.Class())
+		_gsxgw.StyleMerged("", _gsxv4.Style())
+		_gsxgw.Spread(ctx, _gsxv4, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
 //line table.gsx:28:3
 		_gsxgw.Node(ctx, children)
@@ -113,83 +102,67 @@ func TableRow(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line table.gsx:33:2
+		_gsxv5 := withSlot("table-row", attrs)
 		_gsxgw.S("<tr")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"table-row\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("border-b transition-colors hover:bg-muted/50 has-aria-expanded:bg-muted/50 data-[state=selected]:bg-muted"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv5.Class())
+		_gsxgw.StyleMerged("", _gsxv5.Style())
+		_gsxgw.Spread(ctx, _gsxv5, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line table.gsx:38:3
+//line table.gsx:34:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</tr>")
 		return _gsxgw.Err()
 	})
 }
 
-//line table.gsx:42:1
+//line table.gsx:38:1
 func TableHead(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line table.gsx:43:2
+//line table.gsx:39:2
+		_gsxv6 := withSlot("table-head", attrs)
 		_gsxgw.S("<th")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"table-head\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv6.Class())
+		_gsxgw.StyleMerged("", _gsxv6.Style())
+		_gsxgw.Spread(ctx, _gsxv6, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line table.gsx:48:3
+//line table.gsx:40:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</th>")
 		return _gsxgw.Err()
 	})
 }
 
-//line table.gsx:52:1
+//line table.gsx:44:1
 func TableCell(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line table.gsx:53:2
+//line table.gsx:45:2
+		_gsxv7 := withSlot("table-cell", attrs)
 		_gsxgw.S("<td")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"table-cell\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv7.Class())
+		_gsxgw.StyleMerged("", _gsxv7.Style())
+		_gsxgw.Spread(ctx, _gsxv7, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line table.gsx:58:3
+//line table.gsx:46:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</td>")
 		return _gsxgw.Err()
 	})
 }
 
-//line table.gsx:62:1
+//line table.gsx:50:1
 func TableCaption(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line table.gsx:63:2
+//line table.gsx:51:2
+		_gsxv8 := withSlot("table-caption", attrs)
 		_gsxgw.S("<caption")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"table-caption\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("mt-4 text-sm text-muted-foreground"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv8.Class())
+		_gsxgw.StyleMerged("", _gsxv8.Style())
+		_gsxgw.Spread(ctx, _gsxv8, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line table.gsx:63:93
+//line table.gsx:51:51
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</caption>")
 		return _gsxgw.Err()

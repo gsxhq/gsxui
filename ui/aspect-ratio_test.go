@@ -11,7 +11,7 @@ import (
 func TestAspectRatioDefault(t *testing.T) {
 	got := render(t, ui.AspectRatio("16 / 9", gsx.Raw(`<img src="x.png"/>`), nil))
 	for _, want := range []string{
-		`data-slot="aspect-ratio"`,
+		`data-gsxui-slot="aspect-ratio"`,
 		`style="aspect-ratio: 16 / 9"`,
 		`<img src="x.png"/>`,
 	} {
@@ -46,7 +46,7 @@ func TestAspectRatioPinned(t *testing.T) {
 	// CSS aspect-ratio property directly on a single div (ADAPT, see
 	// docs/jsx-parity.md).
 	got := render(t, ui.AspectRatio("16 / 9", gsx.Raw(`<img src="x.png"/>`), nil))
-	want := `<div data-slot="aspect-ratio" style="aspect-ratio: 16 / 9"><img src="x.png"/></div>`
+	want := `<div style="aspect-ratio: 16 / 9" data-gsxui-slot="aspect-ratio"><img src="x.png"/></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

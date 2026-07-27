@@ -27,15 +27,11 @@ func _gsxrenderSkeleton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs gsx.At
 		return _gsxerr
 	}
 //line skeleton.gsx:8:2
+	_gsxv0 := withSlot("skeleton", attrs)
 	_gsxgw.S("<div")
-	if !attrs.Has("data-slot") {
-		_gsxgw.S(" data-slot=\"skeleton\"")
-	}
-	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("animate-pulse rounded-md bg-accent"), _gsxrt.Class(attrs.Class()))
-	_gsxgw.S("\"")
-	_gsxgw.StyleMerged("", attrs.Style())
-	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
+	_gsxgw.StyleMerged("", _gsxv0.Style())
+	_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 	_gsxgw.S("></div>")
 	return _gsxgw.Err()
 }

@@ -70,7 +70,7 @@ func TestAccordionTriggerChevron(t *testing.T) {
 		`data-slot="accordion-trigger"`,
 		"list-none",
 		"[&amp;::-webkit-details-marker]:hidden", // native marker suppressed both engines
-		`data-slot="icon"`,                       // the chevron
+		`data-gsxui-slot="icon"`,                 // the chevron
 		"[[open]&gt;summary_&amp;]:rotate-180",   // ancestor-[open] arbitrary variant, HTML-escaped
 		">Section<",
 	} {

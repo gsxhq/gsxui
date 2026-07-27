@@ -22,7 +22,6 @@ component Spinner(attrs gsx.Attrs) {
 		role="status"
 		aria-label="Loading"
 		aria-hidden="false"
-		class="size-4 animate-spin"
-		{ attrs... }
+		{ withSlot("spinner", attrs)... }
 	/>
 }

@@ -7,58 +7,55 @@ import (
 	"github.com/gsxhq/gsx"
 	_gsxrt "github.com/gsxhq/gsx"
 	_gsxcm "github.com/gsxhq/gsxui/merge"
+	"github.com/gsxhq/gsxui/ui/internal/slotattr"
 	_gsxio "io"
 )
 
-//line icon.gsx:5:1
+//line icon.gsx:8:1
 // svgIcon renders a Lucide icon's <svg> wrapper: 24x24 viewBox, the Lucide
-// stroke defaults, default class="size-4" (caller-overridable via tailwind
-// class merge), data-slot="icon", and aria-hidden="true" unless the caller
+// stroke defaults, no default class, data-gsxui-slot="icon", and
+// aria-hidden="true" unless the caller
 // already supplies an aria-hidden attribute — literal attributes authored
 // before { attrs... } only render when attrs doesn't already set that exact
 // key, so a caller's own aria-hidden (or, via the same fallthrough, other
 // aria-* attributes alongside it) wins.
 
-//line icon.gsx:12:1
+//line icon.gsx:15:1
 func svgIcon(name string, inner gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line icon.gsx:13:2
+//line icon.gsx:16:2
+		_gsxv0 := slotattr.With("icon", attrs)
 		_gsxgw.S("<svg")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"icon\"")
-		}
-		if !attrs.Has("aria-hidden") {
+		if !_gsxv0.Has("aria-hidden") {
 			_gsxgw.S(" aria-hidden=\"true\"")
 		}
-		if !attrs.Has("xmlns") {
+		if !_gsxv0.Has("xmlns") {
 			_gsxgw.S(" xmlns=\"http://www.w3.org/2000/svg\"")
 		}
-		if !attrs.Has("viewBox") {
+		if !_gsxv0.Has("viewBox") {
 			_gsxgw.S(" viewBox=\"0 0 24 24\"")
 		}
-		if !attrs.Has("fill") {
+		if !_gsxv0.Has("fill") {
 			_gsxgw.S(" fill=\"none\"")
 		}
-		if !attrs.Has("stroke") {
+		if !_gsxv0.Has("stroke") {
 			_gsxgw.S(" stroke=\"currentColor\"")
 		}
-		if !attrs.Has("stroke-width") {
+		if !_gsxv0.Has("stroke-width") {
 			_gsxgw.S(" stroke-width=\"2\"")
 		}
-		if !attrs.Has("stroke-linecap") {
+		if !_gsxv0.Has("stroke-linecap") {
 			_gsxgw.S(" stroke-linecap=\"round\"")
 		}
-		if !attrs.Has("stroke-linejoin") {
+		if !_gsxv0.Has("stroke-linejoin") {
 			_gsxgw.S(" stroke-linejoin=\"round\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("size-4"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
+		_gsxgw.StyleMerged("", _gsxv0.Style())
+		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line icon.gsx:26:3
+//line icon.gsx:27:3
 		_gsxgw.Node(ctx, inner)
 		_gsxgw.S("</svg>")
 		return _gsxgw.Err()

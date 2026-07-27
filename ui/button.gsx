@@ -2,6 +2,8 @@ package ui
 
 import "github.com/gsxhq/gsx"
 
+// Retained until the Calendar family migrates: its Button-shaped internal
+// controls still compose these package-private class blocks.
 const base = "inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
 
 func variantClass(variant string) string {
@@ -9,12 +11,6 @@ func variantClass(variant string) string {
 	case "destructive":
 		return "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40"
 	case "outline":
-		// border-border (nova .cn-button-variant-outline), not bare `border`:
-		// the base's border-transparent is a same-specificity color utility
-		// that survives the merge (width vs color — different conflict
-		// groups), so a width-only `border` here renders an INVISIBLE
-		// outline in light mode. The CSS base-layer border-color rule can't
-		// save it — utilities beat base layer. Found in visual verification.
 		return "border-border bg-background hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
 	case "secondary":
 		return "bg-secondary text-secondary-foreground hover:bg-secondary/80"
@@ -62,24 +58,20 @@ func sizeClass(size string) string {
 component Button(variant string, size string, href string, disabled bool, children gsx.Node, attrs gsx.Attrs) {
 	{ if href != "" && !disabled {
 		<a
-			data-slot="button"
 			data-variant={variant |> default("default")}
 			data-size={size |> default("default")}
 			href={href}
-			class={ base, variantClass(variant), sizeClass(size) }
-			{ attrs... }
+			{ withSlot("button", attrs)... }
 		>
 			{ children }
 		</a>
 	} else {
 		<button
-			data-slot="button"
 			data-variant={variant |> default("default")}
 			data-size={size |> default("default")}
 			type="button"
-			class={ base, variantClass(variant), sizeClass(size) }
 			disabled={disabled}
-			{ attrs... }
+			{ withSlot("button", attrs)... }
 		>
 			{ children }
 		</button>

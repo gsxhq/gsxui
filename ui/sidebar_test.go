@@ -239,7 +239,7 @@ func TestSidebarMenuButtonActiveAndTooltip(t *testing.T) {
 func TestSidebarMenuSkeletonShowIcon(t *testing.T) {
 	with := render(t, ui.SidebarMenuSkeleton(true, nil))
 	without := render(t, ui.SidebarMenuSkeleton(false, nil))
-	if strings.Count(with, `data-slot="skeleton"`) <= strings.Count(without, `data-slot="skeleton"`) {
+	if strings.Count(with, `data-gsxui-slot="skeleton"`) <= strings.Count(without, `data-gsxui-slot="skeleton"`) {
 		t.Errorf("showIcon must add a skeleton\n with: %s\nwithout: %s", with, without)
 	}
 }

@@ -54,8 +54,8 @@ func TestSiteRoutes(t *testing.T) {
 	if rec.Code != http.StatusOK {
 		t.Fatalf("GET / = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
 	}
-	if !strings.Contains(rec.Body.String(), `data-slot="button"`) {
-		t.Errorf(`response missing data-slot="button"; body:\n%s`, rec.Body.String())
+	if !strings.Contains(rec.Body.String(), `data-gsxui-slot="button"`) {
+		t.Errorf(`response missing data-gsxui-slot="button"; body:\n%s`, rec.Body.String())
 	}
 }
 
@@ -79,8 +79,8 @@ func TestComponentPageRoute(t *testing.T) {
 		if !strings.Contains(body, "border rounded-lg p-8 bg-background") {
 			t.Errorf("response missing preview panel marker; body:\n%s", body)
 		}
-		if !strings.Contains(body, `data-slot="button"`) {
-			t.Errorf(`response missing rendered example (data-slot="button"); body:\n%s`, body)
+		if !strings.Contains(body, `data-gsxui-slot="button"`) {
+			t.Errorf(`response missing rendered example (data-gsxui-slot="button"); body:\n%s`, body)
 		}
 		// A distinctive identifier from basic.gsx's literal source — proves
 		// the displayed source is the exact embedded file, not paraphrased.
@@ -285,8 +285,8 @@ func TestThemePageRoute(t *testing.T) {
 	// Preview panel renders the representative component set: button
 	// variants, badges, a Card+Label+Input+Checkbox form row, and both
 	// Alert variants — all live gsxui components, not static markup.
-	if !strings.Contains(body, `data-slot="button"`) {
-		t.Errorf(`response missing data-slot="button" in preview; body:\n%s`, body)
+	if !strings.Contains(body, `data-gsxui-slot="button"`) {
+		t.Errorf(`response missing data-gsxui-slot="button" in preview; body:\n%s`, body)
 	}
 	if !strings.Contains(body, `data-slot="checkbox"`) {
 		t.Errorf(`response missing data-slot="checkbox" in preview; body:\n%s`, body)

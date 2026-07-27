@@ -112,7 +112,7 @@ func TestInputOTPSeparatorPinned(t *testing.T) {
 	// icon.Minus already defaults to size-4, carried regardless per the
 	// map's nova deltas table).
 	got := render(t, ui.InputOTPSeparator(nil))
-	want := `<div data-slot="input-otp-separator" role="separator" class="[&amp;_svg:not([class*=&#39;size-&#39;])]:size-4"><svg data-slot="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M5 12h14"/></svg></div>`
+	want := `<div data-slot="input-otp-separator" role="separator" class="[&amp;_svg:not([class*=&#39;size-&#39;])]:size-4"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot="icon"><path d="M5 12h14"/></svg></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

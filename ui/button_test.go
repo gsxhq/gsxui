@@ -18,9 +18,8 @@ var disabledAttr = regexp.MustCompile(`disabled(>|\s)`)
 func TestButtonDefault(t *testing.T) {
 	got := render(t, ui.Button("", "", "", false, gsx.Raw("Save"), nil))
 	for _, want := range []string{
-		"<button", `data-slot="button"`, `type="button"`,
+		"<button", `data-gsxui-slot="button"`, `type="button"`,
 		`data-variant="default"`, `data-size="default"`,
-		"bg-primary text-primary-foreground", "h-8 gap-1.5 px-2.5",
 		">Save</button>",
 	} {
 		if !strings.Contains(got, want) {
@@ -38,27 +37,38 @@ func TestButtonPinned(t *testing.T) {
 	// (registry/new-york-v4/ui/button.tsx) and docs/jsx-parity.md — no ADAPT
 	// deviations apply to the default button.
 	got := render(t, ui.Button("", "", "", false, gsx.Raw("Save"), nil))
-	want := `<button data-slot="button" data-variant="default" data-size="default" type="button" class="inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 bg-primary text-primary-foreground hover:bg-primary/90 h-8 gap-1.5 px-2.5 has-[&gt;svg]:px-2">Save</button>`
+	want := `<button data-variant="default" data-size="default" type="button" data-gsxui-slot="button">Save</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
 }
 
-func TestButtonVariantSize(t *testing.T) {
-	got := render(t, ui.Button("outline", "sm", "", false, gsx.Raw("x"), nil))
-	for _, want := range []string{
-		"border bg-background", "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5",
-		`data-variant="outline"`, `data-size="sm"`,
-	} {
-		if !strings.Contains(got, want) {
-			t.Errorf("missing %q\nin: %s", want, got)
+func TestButtonVariantAndSizeAxes(t *testing.T) {
+	for _, variant := range []string{"default", "destructive", "outline", "secondary", "ghost", "link"} {
+		input := variant
+		if variant == "default" {
+			input = ""
+		}
+		got := render(t, ui.Button(input, "", "", false, gsx.Raw("x"), nil))
+		if !strings.Contains(got, `data-variant="`+variant+`"`) {
+			t.Errorf("variant %s: missing reflected value\nin: %s", variant, got)
+		}
+	}
+	for _, size := range []string{"default", "xs", "sm", "lg", "icon", "icon-xs", "icon-sm", "icon-lg"} {
+		input := size
+		if size == "default" {
+			input = ""
+		}
+		got := render(t, ui.Button("", input, "", false, gsx.Raw("x"), nil))
+		if !strings.Contains(got, `data-size="`+size+`"`) {
+			t.Errorf("size %s: missing reflected value\nin: %s", size, got)
 		}
 	}
 }
 
 func TestButtonHrefRendersAnchor(t *testing.T) {
 	got := render(t, ui.Button("", "", "/docs", false, gsx.Raw("Docs"), nil))
-	for _, want := range []string{"<a", `href="/docs"`, `data-slot="button"`, ">Docs</a>"} {
+	for _, want := range []string{"<a", `href="/docs"`, `data-gsxui-slot="button"`, ">Docs</a>"} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
@@ -90,12 +100,9 @@ func TestButtonTypeIsOverridableDefault(t *testing.T) {
 	}
 }
 
-func TestButtonCallerClassMerges(t *testing.T) {
+func TestButtonCallerClassIsForwardedOnce(t *testing.T) {
 	got := render(t, ui.Button("", "", "", false, gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "h-12"}}))
-	if strings.Contains(got, "h-9") {
-		t.Errorf("caller h-12 must drop default h-9\nin: %s", got)
-	}
-	if !strings.Contains(got, "h-12") || !strings.Contains(got, "inline-flex") {
-		t.Errorf("want h-12 plus surviving structural classes\nin: %s", got)
+	if strings.Count(got, `class="h-12"`) != 1 {
+		t.Errorf("caller class must be the only class and render once\nin: %s", got)
 	}
 }

@@ -9,10 +9,8 @@ import "github.com/gsxhq/gsx"
 // default true) is not ported — see docs/jsx-parity.md.
 component Separator(orientation string, attrs gsx.Attrs) {
 	<div
-		data-slot="separator"
 		role="none"
 		data-orientation={orientation |> default("horizontal")}
-		class="shrink-0 bg-border data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px"
-		{ attrs... }
+		{ withSlot("separator", attrs)... }
 	></div>
 }

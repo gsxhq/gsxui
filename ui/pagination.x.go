@@ -16,88 +16,75 @@ import (
 // Pagination and its parts are the shadcn/ui Pagination
 // (registry/new-york-v4/ui/pagination.tsx) — no Radix primitive underneath;
 // every part is already a plain styled element (nav/ul/li/a/span). The one
-// real dependency is PaginationLink, which composes button.gsx's own
-// package-private base/variantClass/sizeClass helpers (flat package, directly
-// callable) instead of duplicating buttonVariants — this is the
-// pagination -> button dependency internal/registry derives from those
-// identifiers and registry_test.go pins. ChevronLeft/ChevronRight/Ellipsis
+// real dependency is PaginationLink, which composes Button's stable styling
+// token and reflected variant/size axes instead of duplicating presentation.
+// ChevronLeft/ChevronRight/Ellipsis
 // (Lucide's MoreHorizontal, see breadcrumb.gsx) come from ui/icon — the
 // pagination -> icon dependency, also derived and pinned.
 
-//line pagination.gsx:18:1
+//line pagination.gsx:16:1
 func Pagination(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line pagination.gsx:19:2
+//line pagination.gsx:17:2
+		_gsxv0 := withSlot("pagination", attrs)
 		_gsxgw.S("<nav")
-		if !attrs.Has("role") {
+		if !_gsxv0.Has("role") {
 			_gsxgw.S(" role=\"navigation\"")
 		}
-		if !attrs.Has("aria-label") {
+		if !_gsxv0.Has("aria-label") {
 			_gsxgw.S(" aria-label=\"pagination\"")
 		}
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"pagination\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("mx-auto flex w-full justify-center"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
+		_gsxgw.StyleMerged("", _gsxv0.Style())
+		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line pagination.gsx:26:3
+//line pagination.gsx:22:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</nav>")
 		return _gsxgw.Err()
 	})
 }
 
-//line pagination.gsx:30:1
+//line pagination.gsx:26:1
 func PaginationContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line pagination.gsx:31:2
+//line pagination.gsx:27:2
+		_gsxv1 := withSlot("pagination-content", attrs)
 		_gsxgw.S("<ul")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"pagination-content\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-row items-center gap-0.5"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
+		_gsxgw.StyleMerged("", _gsxv1.Style())
+		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line pagination.gsx:32:3
+//line pagination.gsx:28:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</ul>")
 		return _gsxgw.Err()
 	})
 }
 
-//line pagination.gsx:36:1
+//line pagination.gsx:32:1
 func PaginationItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line pagination.gsx:37:2
+//line pagination.gsx:33:2
+		_gsxv2 := withSlot("pagination-item", attrs)
 		_gsxgw.S("<li")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"pagination-item\"")
-		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
+		_gsxgw.StyleMerged("", _gsxv2.Style())
+		_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line pagination.gsx:37:47
+//line pagination.gsx:33:48
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</li>")
 		return _gsxgw.Err()
 	})
 }
 
-//line pagination.gsx:40:1
+//line pagination.gsx:36:1
 // PaginationLink renders the shadcn/ui PaginationLink onto a real <a>,
-// composed from button.gsx's base/variantClass/sizeClass — the same
-// buttonVariants({variant, size}) computation Button itself uses. isActive
+// composed from Button's token and axes. isActive
 // selects the "outline" variant (else "ghost") and stamps data-active plus,
 // when true, aria-current="page" — the conditional-attribute mechanism
 // (see docs/guide "conditional attributes") standing in for shadcn's
@@ -106,7 +93,7 @@ func PaginationItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // (PaginationLinkProps' own `size = "icon"` default), distinct from
 // Button's own "default" zero-value size.
 
-//line pagination.gsx:50:1
+//line pagination.gsx:45:1
 func PaginationLink(href string, isActive bool, size string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -118,7 +105,7 @@ func _gsxrenderPaginationLink(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, href s
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line pagination.gsx:51:2
+//line pagination.gsx:46:2
 	variant := "ghost"
 	if isActive {
 		variant = "outline"
@@ -126,100 +113,117 @@ func _gsxrenderPaginationLink(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, href s
 	if size == "" {
 		size = "icon"
 	}
-//line pagination.gsx:60:2
+//line pagination.gsx:55:2
+	_gsxv3 := withSlot("button", withSlot("pagination-link", attrs))
 	_gsxgw.S("<a")
 	if isActive {
-		if !attrs.Has("aria-current") {
+		if !_gsxv3.Has("aria-current") {
 			_gsxgw.S(" aria-current=\"page\"")
 		}
 	}
-	if !attrs.Has("data-slot") {
-		_gsxgw.S(" data-slot=\"pagination-link\"")
-	}
-	if !attrs.Has("data-active") {
+	if !_gsxv3.Has("data-active") {
 		_gsxgw.S(" data-active=\"")
 		_gsxgw.S(_gsxsc.FormatBool(bool(isActive)))
 		_gsxgw.S("\"")
 	}
-	if !attrs.Has("href") {
+	if !_gsxv3.Has("data-variant") {
+		_gsxgw.S(" data-variant=\"")
+		_gsxgw.AttrValue(string(variant))
+		_gsxgw.S("\"")
+	}
+	if !_gsxv3.Has("data-size") {
+		_gsxgw.S(" data-size=\"")
+		_gsxgw.AttrValue(string(size))
+		_gsxgw.S("\"")
+	}
+	if !_gsxv3.Has("href") {
 		_gsxgw.S(" href=\"")
 		_gsxgw.URL(string(href))
 		_gsxgw.S("\"")
 	}
-	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(base), _gsxrt.Class(variantClass(variant)), _gsxrt.Class(sizeClass(size)), _gsxrt.Class(attrs.Class()))
-	_gsxgw.S("\"")
-	_gsxgw.StyleMerged("", attrs.Style())
-	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv3.Class())
+	_gsxgw.StyleMerged("", _gsxv3.Style())
+	_gsxgw.Spread(ctx, _gsxv3, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 	_gsxgw.S(">")
-//line pagination.gsx:70:3
+//line pagination.gsx:65:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</a>")
 	return _gsxgw.Err()
 }
 
-//line pagination.gsx:74:1
+//line pagination.gsx:69:1
 // PaginationPrevious/PaginationNext hardcode their own content (icon + a
 // sm:-only label) exactly like shadcn's versions — there is no children
 // slot to override it, matching React's behavior where PaginationLink's
 // literal JSX children always win over anything spread from ...props.
 
-//line pagination.gsx:78:1
+//line pagination.gsx:73:1
 func PaginationPrevious(href string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line pagination.gsx:79:2
+//line pagination.gsx:74:2
 		_gsxgw.NodeResult(_gsxrenderPaginationLink(ctx, _gsxgw, href, false, "default", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line pagination.gsx:86:3
+//line pagination.gsx:80:3
 			_gsxgw.Node(ctx, icon.ChevronLeft())
-//line pagination.gsx:87:3
-			_gsxgw.S("<span class=\"hidden sm:block\">Previous</span>")
+//line pagination.gsx:81:3
+			_gsxv4 := withSlot("pagination-previous-label", nil)
+			_gsxgw.S("<span")
+			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv4.Class())
+			_gsxgw.StyleMerged("", _gsxv4.Style())
+			_gsxgw.Spread(ctx, _gsxv4, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.S(">Previous</span>")
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: "Go to previous page"}}, _gsxrt.Attrs{{Key: "class", Value: "pl-1.5!"}}, attrs)))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: "Go to previous page"}}, withSlot("pagination-previous", attrs))))
 		return _gsxgw.Err()
 	})
 }
 
-//line pagination.gsx:91:1
+//line pagination.gsx:85:1
 func PaginationNext(href string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line pagination.gsx:92:2
+//line pagination.gsx:86:2
 		_gsxgw.NodeResult(_gsxrenderPaginationLink(ctx, _gsxgw, href, false, "default", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line pagination.gsx:99:3
-			_gsxgw.S("<span class=\"hidden sm:block\">Next</span>")
-//line pagination.gsx:100:3
+//line pagination.gsx:92:3
+			_gsxv5 := withSlot("pagination-next-label", nil)
+			_gsxgw.S("<span")
+			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv5.Class())
+			_gsxgw.StyleMerged("", _gsxv5.Style())
+			_gsxgw.Spread(ctx, _gsxv5, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.S(">Next</span>")
+//line pagination.gsx:93:3
 			_gsxgw.Node(ctx, icon.ChevronRight())
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: "Go to next page"}}, _gsxrt.Attrs{{Key: "class", Value: "pr-1.5!"}}, attrs)))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: "Go to next page"}}, withSlot("pagination-next", attrs))))
 		return _gsxgw.Err()
 	})
 }
 
-//line pagination.gsx:104:1
+//line pagination.gsx:97:1
 func PaginationEllipsis(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line pagination.gsx:105:2
+//line pagination.gsx:98:2
+		_gsxv6 := withSlot("pagination-ellipsis", attrs)
 		_gsxgw.S("<span")
-		if !attrs.Has("aria-hidden") {
+		if !_gsxv6.Has("aria-hidden") {
 			_gsxgw.S(" aria-hidden=\"true\"")
 		}
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"pagination-ellipsis\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex size-8 items-center justify-center"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv6.Class())
+		_gsxgw.StyleMerged("", _gsxv6.Style())
+		_gsxgw.Spread(ctx, _gsxv6, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line pagination.gsx:111:3
-		_gsxgw.Node(ctx, icon.Ellipsis(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
-//line pagination.gsx:112:3
-		_gsxgw.S("<span class=\"sr-only\">More pages</span></span>")
+//line pagination.gsx:102:3
+		_gsxgw.Node(ctx, icon.Ellipsis())
+//line pagination.gsx:103:3
+		_gsxv7 := withSlot("pagination-ellipsis-label", nil)
+		_gsxgw.S("<span")
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv7.Class())
+		_gsxgw.StyleMerged("", _gsxv7.Style())
+		_gsxgw.Spread(ctx, _gsxv7, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">More pages</span></span>")
 		return _gsxgw.Err()
 	})
 }

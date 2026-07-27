@@ -14,10 +14,10 @@ func TestAlertStructure(t *testing.T) {
 		ui.AlertDescription(gsx.Raw("You can add components here."), nil),
 	), nil))
 	for _, want := range []string{
-		`data-slot="alert"`,
+		`data-gsxui-slot="alert"`, `data-variant="default"`,
 		`role="alert"`,
-		`data-slot="alert-title"`, ">Heads up<",
-		`data-slot="alert-description"`, ">You can add components here.<",
+		`data-gsxui-slot="alert-title"`, ">Heads up<",
+		`data-gsxui-slot="alert-description"`, ">You can add components here.<",
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
@@ -26,25 +26,24 @@ func TestAlertStructure(t *testing.T) {
 }
 
 func TestAlertVariants(t *testing.T) {
-	cases := map[string]string{
-		"":            "bg-card text-card-foreground",
-		"destructive": "bg-card text-destructive",
-	}
-	for variant, wantClass := range cases {
-		got := render(t, ui.Alert(variant, gsx.Raw("x"), nil))
-		if !strings.Contains(got, wantClass) {
-			t.Errorf("variant %q: missing %q\nin: %s", variant, wantClass, got)
+	for _, tc := range []struct {
+		input string
+		want  string
+	}{
+		{want: "default"},
+		{input: "destructive", want: "destructive"},
+	} {
+		got := render(t, ui.Alert(tc.input, gsx.Raw("x"), nil))
+		if !strings.Contains(got, `data-variant="`+tc.want+`"`) {
+			t.Errorf("variant %q: missing reflected value %q\nin: %s", tc.input, tc.want, got)
 		}
 	}
 }
 
-func TestAlertCallerClassMerges(t *testing.T) {
+func TestAlertCallerClassIsForwardedOnce(t *testing.T) {
 	got := render(t, ui.Alert("", gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "px-8"}}))
-	if strings.Contains(got, "px-2.5") {
-		t.Errorf("base px-2.5 should be dropped by caller px-8\nin: %s", got)
-	}
-	if !strings.Contains(got, "px-8") {
-		t.Errorf("missing caller class px-8\nin: %s", got)
+	if strings.Count(got, `class="px-8"`) != 1 {
+		t.Errorf("caller class must be the only class and render once\nin: %s", got)
 	}
 }
 
@@ -54,7 +53,7 @@ func TestAlertPinned(t *testing.T) {
 	// (registry/new-york-v4/ui/alert.tsx) — straight port, cva() replaced by
 	// a switch (see docs/jsx-parity.md).
 	got := render(t, ui.Alert("", gsx.Raw("Heads up"), nil))
-	want := `<div data-slot="alert" role="alert" class="relative grid w-full items-start gap-y-0.5 rounded-lg border px-2.5 py-2 text-sm has-[&gt;svg]:grid-cols-[auto_1fr] has-[&gt;svg]:gap-x-2 *:[svg]:row-span-2 *:[svg:not([class*=&#39;size-&#39;])]:size-4 [&amp;&gt;svg]:translate-y-0.5 [&amp;&gt;svg]:text-current bg-card text-card-foreground">Heads up</div>`
+	want := `<div role="alert" data-variant="default" data-gsxui-slot="alert">Heads up</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

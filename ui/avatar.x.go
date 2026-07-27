@@ -25,15 +25,14 @@ func Avatar(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line avatar.gsx:15:2
+		_gsxv0 := withSlot("avatar", attrs)
 		_gsxgw.S("<span")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"avatar\"")
+		if !_gsxv0.Has("data-gsxui-avatar") {
+			_gsxgw.BoolAttr("data-gsxui-avatar", true)
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative flex size-8 shrink-0 overflow-hidden rounded-full select-none"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
+		_gsxgw.StyleMerged("", _gsxv0.Style())
+		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
 //line avatar.gsx:16:3
 		_gsxgw.Node(ctx, children)
@@ -47,49 +46,44 @@ func AvatarImage(src string, alt string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line avatar.gsx:21:2
+		_gsxv1 := withSlot("avatar-image", attrs)
 		_gsxgw.S("<img")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"avatar-image\"")
-		}
-		if !attrs.Has("data-gsxui-avatar-image") {
+		if !_gsxv1.Has("data-gsxui-avatar-image") {
 			_gsxgw.BoolAttr("data-gsxui-avatar-image", true)
 		}
-		if !attrs.Has("src") {
+		if !_gsxv1.Has("src") {
 			_gsxgw.S(" src=\"")
 			_gsxgw.URLImage(string(src))
 			_gsxgw.S("\"")
 		}
-		if !attrs.Has("alt") {
+		if !_gsxv1.Has("alt") {
 			_gsxgw.S(" alt=\"")
 			_gsxgw.AttrValue(string(alt))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("aspect-square size-full absolute inset-0"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "xlink:href"}, []string{"background", "src"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
+		_gsxgw.StyleMerged("", _gsxv1.Style())
+		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "xlink:href"}, []string{"background", "src"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
 		return _gsxgw.Err()
 	})
 }
 
-//line avatar.gsx:31:1
+//line avatar.gsx:29:1
 func AvatarFallback(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line avatar.gsx:32:2
+//line avatar.gsx:30:2
+		_gsxv2 := withSlot("avatar-fallback", attrs)
 		_gsxgw.S("<span")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"avatar-fallback\"")
+		if !_gsxv2.Has("data-gsxui-avatar-fallback") {
+			_gsxgw.BoolAttr("data-gsxui-avatar-fallback", true)
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex size-full items-center justify-center rounded-full bg-muted text-sm text-muted-foreground"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
+		_gsxgw.StyleMerged("", _gsxv2.Style())
+		_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line avatar.gsx:37:3
+//line avatar.gsx:34:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()

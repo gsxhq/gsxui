@@ -11,8 +11,7 @@ import (
 func TestSkeletonDefault(t *testing.T) {
 	got := render(t, ui.Skeleton(nil))
 	for _, want := range []string{
-		`data-slot="skeleton"`,
-		"animate-pulse rounded-md bg-accent",
+		`data-gsxui-slot="skeleton"`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
@@ -20,12 +19,10 @@ func TestSkeletonDefault(t *testing.T) {
 	}
 }
 
-func TestSkeletonCallerClassMerges(t *testing.T) {
+func TestSkeletonCallerClassIsForwardedOnce(t *testing.T) {
 	got := render(t, ui.Skeleton(gsx.Attrs{{Key: "class", Value: "h-4 w-full rounded-md"}}))
-	for _, want := range []string{"h-4 w-full rounded-md", "animate-pulse"} {
-		if !strings.Contains(got, want) {
-			t.Errorf("missing %q\nin: %s", want, got)
-		}
+	if strings.Count(got, `class="h-4 w-full rounded-md"`) != 1 {
+		t.Errorf("caller class must be the only class and render once\nin: %s", got)
 	}
 }
 
@@ -34,7 +31,7 @@ func TestSkeletonPinned(t *testing.T) {
 	// Skeleton (registry/new-york-v4/ui/skeleton.tsx) — straight port, no
 	// divergences.
 	got := render(t, ui.Skeleton(nil))
-	want := `<div data-slot="skeleton" class="animate-pulse rounded-md bg-accent"></div>`
+	want := `<div data-gsxui-slot="skeleton"></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

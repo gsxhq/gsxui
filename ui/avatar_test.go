@@ -14,12 +14,13 @@ func TestAvatarStructure(t *testing.T) {
 		ui.AvatarFallback(gsx.Raw("CN"), nil),
 	), nil))
 	for _, want := range []string{
-		`data-slot="avatar"`,
-		`data-slot="avatar-image"`,
+		`data-gsxui-slot="avatar"`,
+		`data-gsxui-avatar`,
+		`data-gsxui-slot="avatar-image"`,
 		`data-gsxui-avatar-image`,
 		`src="/broken.jpg"`,
 		`alt="shadcn"`,
-		`data-slot="avatar-fallback"`, ">CN<",
+		`data-gsxui-slot="avatar-fallback"`, `data-gsxui-avatar-fallback`, ">CN<",
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
@@ -27,20 +28,20 @@ func TestAvatarStructure(t *testing.T) {
 	}
 	// ADAPT: fallback renders with no `hidden` attribute — load state isn't
 	// known server-side; JS (avatar.js) toggles display on load/error.
-	fallbackStart := strings.Index(got, `data-slot="avatar-fallback"`)
+	fallbackStart := strings.Index(got, `data-gsxui-slot="avatar-fallback"`)
+	if fallbackStart < 0 {
+		t.Fatal("missing avatar fallback slot")
+	}
 	fallbackTag := got[fallbackStart : fallbackStart+strings.Index(got[fallbackStart:], ">")]
 	if strings.Contains(fallbackTag, "hidden") {
 		t.Errorf("fallback must not render with a hidden attribute\nin: %s", fallbackTag)
 	}
 }
 
-func TestAvatarCallerClassMerges(t *testing.T) {
+func TestAvatarCallerClassIsForwardedOnce(t *testing.T) {
 	got := render(t, ui.Avatar(gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "size-12"}}))
-	if strings.Contains(got, "size-8") {
-		t.Errorf("base size-8 should be dropped by caller size-12\nin: %s", got)
-	}
-	if !strings.Contains(got, "size-12") {
-		t.Errorf("missing caller class size-12\nin: %s", got)
+	if strings.Count(got, `class="size-12"`) != 1 {
+		t.Errorf("caller class must be the only class and render once\nin: %s", got)
 	}
 }
 
@@ -50,7 +51,7 @@ func TestAvatarPinned(t *testing.T) {
 	// and docs/jsx-parity.md's ADAPT: AvatarImage adds absolute inset-0
 	// to overlay the fallback (no-JS rendering correct).
 	got := render(t, ui.AvatarImage("/shadcn.jpg", "shadcn", nil))
-	want := `<img data-slot="avatar-image" data-gsxui-avatar-image src="/shadcn.jpg" alt="shadcn" class="aspect-square size-full absolute inset-0">`
+	want := `<img data-gsxui-avatar-image src="/shadcn.jpg" alt="shadcn" data-gsxui-slot="avatar-image">`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

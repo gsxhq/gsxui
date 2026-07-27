@@ -17,21 +17,17 @@ import (
 // breadcrumb -> icon dependency internal/registry derives and
 // internal/registry/registry_test.go pins.
 component Breadcrumb(children gsx.Node, attrs gsx.Attrs) {
-	<nav aria-label="breadcrumb" data-slot="breadcrumb" { attrs... }>{ children }</nav>
+	<nav aria-label="breadcrumb" { withSlot("breadcrumb", attrs)... }>{ children }</nav>
 }
 
 component BreadcrumbList(children gsx.Node, attrs gsx.Attrs) {
-	<ol
-		data-slot="breadcrumb-list"
-		class="flex flex-wrap items-center gap-1.5 text-sm break-words text-muted-foreground"
-		{ attrs... }
-	>
+	<ol { withSlot("breadcrumb-list", attrs)... }>
 		{ children }
 	</ol>
 }
 
 component BreadcrumbItem(children gsx.Node, attrs gsx.Attrs) {
-	<li data-slot="breadcrumb-item" class="inline-flex items-center gap-1" { attrs... }>
+	<li { withSlot("breadcrumb-item", attrs)... }>
 		{ children }
 	</li>
 }
@@ -44,19 +40,17 @@ component BreadcrumbItem(children gsx.Node, attrs gsx.Attrs) {
 // docs/jsx-parity.md). Behavior-attachment uses of asChild are covered by
 // the data-attribute mechanism (see dialog).
 component BreadcrumbLink(href string, children gsx.Node, attrs gsx.Attrs) {
-	<a data-slot="breadcrumb-link" href={href} class="transition-colors hover:text-foreground" { attrs... }>
+	<a href={href} { withSlot("breadcrumb-link", attrs)... }>
 		{ children }
 	</a>
 }
 
 component BreadcrumbPage(children gsx.Node, attrs gsx.Attrs) {
 	<span
-		data-slot="breadcrumb-page"
 		role="link"
 		aria-disabled="true"
 		aria-current="page"
-		class="font-normal text-foreground"
-		{ attrs... }
+		{ withSlot("breadcrumb-page", attrs)... }
 	>
 		{ children }
 	</span>
@@ -67,11 +61,9 @@ component BreadcrumbPage(children gsx.Node, attrs gsx.Attrs) {
 // children to override with any other glyph or text.
 component BreadcrumbSeparator(children gsx.Node, attrs gsx.Attrs) {
 	<li
-		data-slot="breadcrumb-separator"
 		role="presentation"
 		aria-hidden="true"
-		class="[&>svg]:size-3.5"
-		{ attrs... }
+		{ withSlot("breadcrumb-separator", attrs)... }
 	>
 		{ if children != nil {
 			{ children }
@@ -86,13 +78,11 @@ component BreadcrumbSeparator(children gsx.Node, attrs gsx.Attrs) {
 // not a caller-supplied slot.
 component BreadcrumbEllipsis(attrs gsx.Attrs) {
 	<span
-		data-slot="breadcrumb-ellipsis"
 		role="presentation"
 		aria-hidden="true"
-		class="flex size-5 items-center justify-center"
-		{ attrs... }
+		{ withSlot("breadcrumb-ellipsis", attrs)... }
 	>
-		<icon.Ellipsis class="size-4"/>
-		<span class="sr-only">More</span>
+		<icon.Ellipsis/>
+		<span { withSlot("breadcrumb-ellipsis-label", nil)... }>More</span>
 	</span>
 }

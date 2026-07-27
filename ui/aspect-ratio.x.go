@@ -41,19 +41,17 @@ func AspectRatio(ratio string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line aspect-ratio.gsx:30:2
+		_gsxv0 := withSlot("aspect-ratio", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"aspect-ratio\"")
-		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
-		if attrs.Has("style") {
-			_gsxgw.StyleMerged(_gsxrt.StyleString(_gsxrt.Class(_gsxrt.StyleValue("aspect-ratio: "+gsx.RawCSS(ratio)))), attrs.Style())
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
+		if _gsxv0.Has("style") {
+			_gsxgw.StyleMerged(_gsxrt.StyleString(_gsxrt.Class(_gsxrt.StyleValue("aspect-ratio: "+gsx.RawCSS(ratio)))), _gsxv0.Style())
 		} else {
 			_gsxgw.S(" style=\"")
 			_gsxgw.Style(_gsxrt.Class(_gsxrt.StyleValue("aspect-ratio: " + gsx.RawCSS(ratio))))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
 //line aspect-ratio.gsx:31:3
 		_gsxgw.Node(ctx, children)

@@ -15,7 +15,7 @@ import (
 // idiom badge.gsx uses for its own variant map.
 func TestButtonGroupDefaultPinned(t *testing.T) {
 	got := render(t, ui.ButtonGroup("", gsx.Raw("x"), nil))
-	want := `<div role="group" data-slot="button-group" data-orientation="horizontal" class="flex w-fit items-stretch has-[&gt;[data-slot=button-group]]:gap-2 [&amp;&gt;*]:focus-visible:relative [&amp;&gt;*]:focus-visible:z-10 has-[select[aria-hidden=true]:last-child]:[&amp;&gt;[data-slot=select-trigger]:last-of-type]:rounded-r-lg [&amp;&gt;[data-slot=select-trigger]:not([class*=&#39;w-&#39;])]:w-fit [&amp;&gt;input]:flex-1 [&amp;&gt;*:not(:first-child)]:rounded-l-none [&amp;&gt;*:not(:first-child)]:border-l-0 [&amp;&gt;*:not(:last-child)]:rounded-r-none [&amp;&gt;[data-slot]:not(:has(~[data-slot]))]:rounded-r-lg!">x</div>`
+	want := `<div role="group" data-orientation="horizontal" data-gsxui-slot="button-group">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -23,7 +23,7 @@ func TestButtonGroupDefaultPinned(t *testing.T) {
 
 func TestButtonGroupVerticalPinned(t *testing.T) {
 	got := render(t, ui.ButtonGroup("vertical", gsx.Raw("x"), nil))
-	want := `<div role="group" data-slot="button-group" data-orientation="vertical" class="flex w-fit items-stretch has-[&gt;[data-slot=button-group]]:gap-2 [&amp;&gt;*]:focus-visible:relative [&amp;&gt;*]:focus-visible:z-10 has-[select[aria-hidden=true]:last-child]:[&amp;&gt;[data-slot=select-trigger]:last-of-type]:rounded-r-lg [&amp;&gt;[data-slot=select-trigger]:not([class*=&#39;w-&#39;])]:w-fit [&amp;&gt;input]:flex-1 flex-col [&amp;&gt;*:not(:first-child)]:rounded-t-none [&amp;&gt;*:not(:first-child)]:border-t-0 [&amp;&gt;*:not(:last-child)]:rounded-b-none [&amp;&gt;[data-slot]:not(:has(~[data-slot]))]:rounded-b-lg!">x</div>`
+	want := `<div role="group" data-orientation="vertical" data-gsxui-slot="button-group">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -36,23 +36,18 @@ func TestButtonGroupAttrsFallThrough(t *testing.T) {
 	}
 }
 
-func TestButtonGroupCallerClassMerges(t *testing.T) {
+func TestButtonGroupCallerClassIsForwardedOnce(t *testing.T) {
 	got := render(t, ui.ButtonGroup("", nil, gsx.Attrs{{Key: "class", Value: "gap-2"}}))
-	if !strings.Contains(got, "gap-2") {
-		t.Errorf("missing caller class gap-2\nin: %s", got)
+	if strings.Count(got, `class="gap-2"`) != 1 {
+		t.Errorf("caller class must be the only class and render once\nin: %s", got)
 	}
 }
 
-// ButtonGroupText carries no data-slot in shadcn's own source (unlike every
-// other button-group part) — ported as-is, see docs/jsx-parity.md.
 func TestButtonGroupTextPinned(t *testing.T) {
 	got := render(t, ui.ButtonGroupText(gsx.Raw("x"), nil))
-	want := `<div class="flex items-center gap-2 rounded-lg border bg-muted px-2.5 text-sm font-medium [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4">x</div>`
+	want := `<div data-gsxui-slot="button-group-text">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
-	}
-	if strings.Contains(got, "data-slot") {
-		t.Errorf("ButtonGroupText must not carry data-slot, matching shadcn's own source\nin: %s", got)
 	}
 }
 
@@ -70,7 +65,7 @@ func TestButtonGroupTextAttrsFallThrough(t *testing.T) {
 // (data-[orientation=vertical]:h-full, bg-border — both dropped).
 func TestButtonGroupSeparatorDefaultPinned(t *testing.T) {
 	got := render(t, ui.ButtonGroupSeparator("", nil))
-	want := `<div role="none" data-orientation="vertical" class="shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-px relative m-0! self-stretch bg-input data-[orientation=vertical]:h-auto" data-slot="button-group-separator"></div>`
+	want := `<div role="none" data-orientation="vertical" data-gsxui-slot="separator button-group-separator"></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -96,7 +91,7 @@ func TestButtonGroupSeparatorAttrsFallThrough(t *testing.T) {
 // button-group -> separator dependency internal/registry derives.
 func TestButtonGroupSeparatorComposesSeparator(t *testing.T) {
 	got := render(t, ui.ButtonGroupSeparator("", nil))
-	for _, want := range []string{`role="none"`, "data-[orientation=horizontal]:h-px"} {
+	for _, want := range []string{`role="none"`, `data-gsxui-slot="separator button-group-separator"`} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q (expected from ui.Separator)\nin: %s", want, got)
 		}
@@ -115,9 +110,9 @@ func TestButtonGroupWithSeparator(t *testing.T) {
 		nil,
 	))
 	for _, want := range []string{
-		`data-slot="button-group"`,
+		`data-gsxui-slot="button-group"`,
 		`>Copy</button>`,
-		`data-slot="button-group-separator"`,
+		`data-gsxui-slot="separator button-group-separator"`,
 		`>Paste</button>`,
 	} {
 		if !strings.Contains(got, want) {

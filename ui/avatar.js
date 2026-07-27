@@ -5,8 +5,8 @@ import { on } from "./gsxui.js";
 const sync = (img, ok) => {
   img.style.display = ok ? "" : "none";
   const fallback = img
-    .closest('[data-slot="avatar"]')
-    ?.querySelector('[data-slot="avatar-fallback"]');
+    .closest("[data-gsxui-avatar]")
+    ?.querySelector("[data-gsxui-avatar-fallback]");
   if (fallback) fallback.style.display = ok ? "none" : "";
 };
 

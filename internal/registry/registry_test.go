@@ -141,16 +141,15 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("button deps = %v, want none", deps)
 	}
 
-	// pagination.gsx imports ui/icon (ChevronLeft/ChevronRight/Ellipsis) and
-	// PaginationLink calls button.gsx's package-private base/variantClass/
-	// sizeClass helpers directly (flat package, no import needed for that
-	// edge — resolved via declIndex, same shape as dialog's button dep).
+	// pagination.gsx imports ui/icon (ChevronLeft/ChevronRight/Ellipsis).
+	// Its Button relationship is now token composition in the shared style
+	// contract, not a Go code dependency for the vendored source graph.
 	deps, err = registry.Deps("pagination")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(deps, []string{"button", "icon"}) {
-		t.Fatalf("pagination deps = %v, want [button icon]", deps)
+	if !reflect.DeepEqual(deps, []string{"icon"}) {
+		t.Fatalf("pagination deps = %v, want [icon]", deps)
 	}
 
 	// button-group.gsx has no icon import; ButtonGroupSeparator calls
@@ -287,7 +286,7 @@ func TestDeps(t *testing.T) {
 	// toggle-group.gsx has no icon import; ToggleGroupItem calls toggle.gsx's
 	// package-private toggleBase/toggleVariantClass/toggleSizeClass directly
 	// (flat package intra-package edge, same declIndex-resolved shape as
-	// pagination's own button dep above).
+	// pagination's contract-level Button composition above).
 	deps, err = registry.Deps("toggle-group")
 	if err != nil {
 		t.Fatal(err)
@@ -449,7 +448,7 @@ func TestDeps(t *testing.T) {
 	// calendar.gsx imports ui/icon (nav chevrons) and composes button.gsx's
 	// package-private base/variantClass helpers directly (the nav buttons,
 	// flat-package intra-package edge, same declIndex-resolved shape as
-	// pagination's own button dep) plus ui.NativeSelect/NativeSelectOption
+	// dialog's button dep) plus ui.NativeSelect/NativeSelectOption
 	// (the dropdown captionLayout's month/year pickers, Tier 4 calendar
 	// Task 3) — three deps, Deps sorts its result.
 	deps, err = registry.Deps("calendar")

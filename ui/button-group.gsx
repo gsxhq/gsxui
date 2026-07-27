@@ -3,12 +3,9 @@ package ui
 import "github.com/gsxhq/gsx"
 
 // ButtonGroup and its parts are the shadcn/ui ButtonGroup
-// (registry/new-york-v4/ui/button-group.tsx). shadcn's `buttonGroupVariants`
-// cva map picks between two entirely static class blocks by the JS-resolved
-// `orientation` value — there are no `data-[orientation=...]:` selectors in
-// the source to preserve, so the port mirrors Badge's `switch` inside
-// `class={}` (WIN, same idiom), not a CSS-side data-attribute selector.
-// data-orientation is still stamped via the house `|> default` pattern (see
+// (registry/new-york-v4/ui/button-group.tsx). Its public orientation is
+// reflected for the style pack and defaults via the house `|> default`
+// pattern (see
 // button.gsx/dropdown.gsx) for consistency with every other data-variant
 // stamp in this codebase — an ADAPT: shadcn leaves the attribute entirely
 // unset when `orientation` is undefined (see docs/jsx-parity.md).
@@ -23,7 +20,7 @@ import "github.com/gsxhq/gsx"
 // every style, nova included — still carries the zero-inner-corner classes
 // (`[&>*:not(:first-child)]:rounded-l-none/border-l-0
 // [&>*:not(:last-child)]:rounded-r-none`) verbatim; nova's stylesheet only
-// ADDS the restore rule as a supplementary `!important` override for the one
+// ADDS a restore rule for the one
 // case the zero rule gets wrong — a trailing non-slotted element (e.g. a
 // visually-hidden `<select aria-hidden>`, see the root class's own
 // `has-[select[aria-hidden=true]:last-child]` rule) that makes the true last
@@ -37,18 +34,8 @@ import "github.com/gsxhq/gsx"
 component ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="group"
-		data-slot="button-group"
 		data-orientation={orientation |> default("horizontal")}
-		class={
-			"flex w-fit items-stretch has-[>[data-slot=button-group]]:gap-2 [&>*]:focus-visible:relative [&>*]:focus-visible:z-10 has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-lg [&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit [&>input]:flex-1",
-			switch orientation {
-			case "vertical":
-				"flex-col [&>*:not(:first-child)]:rounded-t-none [&>*:not(:first-child)]:border-t-0 [&>*:not(:last-child)]:rounded-b-none [&>[data-slot]:not(:has(~[data-slot]))]:rounded-b-lg!"
-			default:
-				"[&>*:not(:first-child)]:rounded-l-none [&>*:not(:first-child)]:border-l-0 [&>*:not(:last-child)]:rounded-r-none [&>[data-slot]:not(:has(~[data-slot]))]:rounded-r-lg!"
-			}
-		}
-		{ attrs... }
+		{ withSlot("button-group", attrs)... }
 	>
 		{ children }
 	</div>
@@ -59,10 +46,7 @@ component ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) {
 // data-slot in shadcn's own source either (unlike every other button-group
 // part); ported as-is rather than "fixed", per the token-for-token rule.
 component ButtonGroupText(children gsx.Node, attrs gsx.Attrs) {
-	<div
-		class="flex items-center gap-2 rounded-lg border bg-muted px-2.5 text-sm font-medium [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4"
-		{ attrs... }
-	>
+	<div { withSlot("button-group-text", attrs)... }>
 		{ children }
 	</div>
 }
@@ -79,9 +63,7 @@ component ButtonGroupText(children gsx.Node, attrs gsx.Attrs) {
 // docs/jsx-parity.md styling notes).
 component ButtonGroupSeparator(orientation string, attrs gsx.Attrs) {
 	<Separator
-		data-slot="button-group-separator"
 		orientation={orientation |> default("vertical")}
-		class="relative m-0! self-stretch bg-input data-[orientation=vertical]:h-auto"
-		{ attrs... }
+		{ withSlot("button-group-separator", attrs)... }
 	/>
 }

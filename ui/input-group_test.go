@@ -75,23 +75,17 @@ func TestInputGroupAddonAttrsFallThrough(t *testing.T) {
 	}
 }
 
-// TestInputGroupButtonDefaultPinned proves InputGroupButton actually
-// composes ui.Button (data-slot="button" and Button's own base/variant
-// classes all come through) and that the "xs" overlay classes win their
-// tailwind-merge conflicts against Button's own default size classes: h-8 ->
-// h-6, rounded-lg -> rounded-[calc(var(--radius)-3px)], px-2.5 -> px-1.5,
-// has-[>svg]:px-2 -> has-[>svg]:px-1.5. gap-1.5 (Button's own
-// default size class, which the xs overlay overrides to gap-1) does not
-// survive, matching shadcn's own cn() merge exactly (see
-// ui/input-group.gsx's own comment).
+// TestInputGroupButtonDefaultPinned proves InputGroupButton composes the
+// CSS-owned Button seam: Button contributes its stable token and public axes,
+// while InputGroupButton's caller classes remain the only rendered classes.
 func TestInputGroupButtonDefaultPinned(t *testing.T) {
 	got := render(t, ui.InputGroupButton("", "", gsx.Raw("x"), nil))
-	want := `<button data-slot="button" data-variant="ghost" type="button" class="shrink-0 justify-center border border-transparent bg-clip-padding font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 flex items-center text-sm shadow-none h-6 gap-1 rounded-[calc(var(--radius)-3px)] px-1.5 has-[&gt;svg]:px-1.5 [&amp;&gt;svg:not([class*=&#39;size-&#39;])]:size-3.5" data-size="xs">x</button>`
+	want := `<button data-variant="ghost" type="button" class="flex items-center text-sm shadow-none h-6 gap-1 rounded-[calc(var(--radius)-3px)] px-1.5 has-[&gt;svg]:px-1.5 [&amp;&gt;svg:not([class*=&#39;size-&#39;])]:size-3.5" data-gsxui-slot="button" data-size="xs">x</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
-	if strings.Contains(got, "h-8 ") || strings.Contains(got, "px-2.5") || strings.Contains(got, "gap-1.5") {
-		t.Errorf("Button's own default size classes should be overridden by the xs overlay\nin: %s", got)
+	if strings.Contains(got, "focus-visible:ring") || strings.Contains(got, "hover:bg-accent") {
+		t.Errorf("Button presentation classes must be owned by CSS\nin: %s", got)
 	}
 }
 
@@ -122,15 +116,15 @@ func TestInputGroupButtonIconSmPinned(t *testing.T) {
 	}
 }
 
-// TestInputGroupButtonVariantOverride proves variant is forwarded to
-// Button's own variant param (default "ghost" per shadcn's own passthrough).
+// TestInputGroupButtonVariantOverride proves variant is forwarded as Button's
+// public styling axis. The variant's presentation is owned by CSS.
 func TestInputGroupButtonVariantOverride(t *testing.T) {
 	got := render(t, ui.InputGroupButton("outline", "", gsx.Raw("x"), nil))
 	if !strings.Contains(got, `data-variant="outline"`) {
 		t.Errorf("missing data-variant=outline override\nin: %s", got)
 	}
-	if !strings.Contains(got, "dark:border-input dark:bg-input/30") {
-		t.Errorf("missing outline variant classes\nin: %s", got)
+	if strings.Contains(got, "dark:border-input dark:bg-input/30") {
+		t.Errorf("outline variant presentation must not render inline\nin: %s", got)
 	}
 }
 
@@ -229,7 +223,7 @@ func TestInputGroupSearchComposition(t *testing.T) {
 		`data-slot="input-group-control"`,
 		`placeholder="Search..."`,
 		`data-align="inline-end"`,
-		`data-slot="button"`,
+		`data-gsxui-slot="button"`,
 		`data-size="icon-xs"`,
 		`aria-label="Send"`,
 	} {

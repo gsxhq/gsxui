@@ -133,7 +133,7 @@ func TestFieldContentAttrsFallThrough(t *testing.T) {
 // leading-none.
 func TestFieldLabelPinned(t *testing.T) {
 	got := render(t, ui.FieldLabel(gsx.Raw("x"), nil))
-	want := `<label class="items-center text-sm font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50 group/field-label peer/field-label flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:opacity-50 has-[&gt;[data-slot=field]]:w-full has-[&gt;[data-slot=field]]:flex-col has-[&gt;[data-slot=field]]:rounded-lg has-[&gt;[data-slot=field]]:border [&amp;&gt;*]:data-[slot=field]:p-2.5 has-data-[state=checked]:border-primary has-data-[state=checked]:bg-primary/5 dark:has-data-[state=checked]:bg-primary/10" data-slot="field-label">x</label>`
+	want := `<label class="group/field-label peer/field-label flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:opacity-50 has-[&gt;[data-slot=field]]:w-full has-[&gt;[data-slot=field]]:flex-col has-[&gt;[data-slot=field]]:rounded-lg has-[&gt;[data-slot=field]]:border [&amp;&gt;*]:data-[slot=field]:p-2.5 has-data-[state=checked]:border-primary has-data-[state=checked]:bg-primary/5 dark:has-data-[state=checked]:bg-primary/10" data-gsxui-slot="label" data-slot="field-label">x</label>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -190,7 +190,7 @@ func TestFieldDescriptionAttrsFallThrough(t *testing.T) {
 // — when no children are given; no field-separator-content span renders.
 func TestFieldSeparatorNoChildrenPinned(t *testing.T) {
 	got := render(t, ui.FieldSeparator(nil, nil))
-	want := `<div data-slot="field-separator" data-content="false" class="relative -my-2 h-5 text-sm group-data-[variant=outline]/field-group:-mb-2"><div data-slot="separator" role="none" data-orientation="horizontal" class="shrink-0 bg-border data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px absolute inset-0 top-1/2"></div></div>`
+	want := `<div data-slot="field-separator" data-content="false" class="relative -my-2 h-5 text-sm group-data-[variant=outline]/field-group:-mb-2"><div role="none" data-orientation="horizontal" class="absolute inset-0 top-1/2" data-gsxui-slot="separator"></div></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -198,7 +198,7 @@ func TestFieldSeparatorNoChildrenPinned(t *testing.T) {
 
 func TestFieldSeparatorWithChildrenPinned(t *testing.T) {
 	got := render(t, ui.FieldSeparator(gsx.Raw("Or"), nil))
-	want := `<div data-slot="field-separator" data-content="true" class="relative -my-2 h-5 text-sm group-data-[variant=outline]/field-group:-mb-2"><div data-slot="separator" role="none" data-orientation="horizontal" class="shrink-0 bg-border data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px absolute inset-0 top-1/2"></div><span class="relative mx-auto block w-fit bg-background px-2 text-muted-foreground" data-slot="field-separator-content">Or</span></div>`
+	want := `<div data-slot="field-separator" data-content="true" class="relative -my-2 h-5 text-sm group-data-[variant=outline]/field-group:-mb-2"><div role="none" data-orientation="horizontal" class="absolute inset-0 top-1/2" data-gsxui-slot="separator"></div><span class="relative mx-auto block w-fit bg-background px-2 text-muted-foreground" data-slot="field-separator-content">Or</span></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

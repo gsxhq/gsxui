@@ -29,18 +29,16 @@ func Breadcrumb(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line breadcrumb.gsx:20:2
+		_gsxv0 := withSlot("breadcrumb", attrs)
 		_gsxgw.S("<nav")
-		if !attrs.Has("aria-label") {
+		if !_gsxv0.Has("aria-label") {
 			_gsxgw.S(" aria-label=\"breadcrumb\"")
 		}
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"breadcrumb\"")
-		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
+		_gsxgw.StyleMerged("", _gsxv0.Style())
+		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line breadcrumb.gsx:20:67
+//line breadcrumb.gsx:20:68
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</nav>")
 		return _gsxgw.Err()
@@ -52,46 +50,38 @@ func BreadcrumbList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line breadcrumb.gsx:24:2
+		_gsxv1 := withSlot("breadcrumb-list", attrs)
 		_gsxgw.S("<ol")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"breadcrumb-list\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-wrap items-center gap-1.5 text-sm break-words text-muted-foreground"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
+		_gsxgw.StyleMerged("", _gsxv1.Style())
+		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line breadcrumb.gsx:29:3
+//line breadcrumb.gsx:25:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</ol>")
 		return _gsxgw.Err()
 	})
 }
 
-//line breadcrumb.gsx:33:1
+//line breadcrumb.gsx:29:1
 func BreadcrumbItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line breadcrumb.gsx:34:2
+//line breadcrumb.gsx:30:2
+		_gsxv2 := withSlot("breadcrumb-item", attrs)
 		_gsxgw.S("<li")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"breadcrumb-item\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("inline-flex items-center gap-1"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
+		_gsxgw.StyleMerged("", _gsxv2.Style())
+		_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line breadcrumb.gsx:35:3
+//line breadcrumb.gsx:31:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</li>")
 		return _gsxgw.Err()
 	})
 }
 
-//line breadcrumb.gsx:39:1
+//line breadcrumb.gsx:35:1
 // BreadcrumbLink renders a real <a> unconditionally — shadcn's own default
 // (`const Comp = asChild ? Slot.Root : "a"`) already resolves to "a" for the
 // dominant/only realistic use; the asChild tag-swap itself is GAP (narrow,
@@ -100,96 +90,84 @@ func BreadcrumbItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // docs/jsx-parity.md). Behavior-attachment uses of asChild are covered by
 // the data-attribute mechanism (see dialog).
 
-//line breadcrumb.gsx:46:1
+//line breadcrumb.gsx:42:1
 func BreadcrumbLink(href string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line breadcrumb.gsx:47:2
+//line breadcrumb.gsx:43:2
+		_gsxv3 := withSlot("breadcrumb-link", attrs)
 		_gsxgw.S("<a")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"breadcrumb-link\"")
-		}
-		if !attrs.Has("href") {
+		if !_gsxv3.Has("href") {
 			_gsxgw.S(" href=\"")
 			_gsxgw.URL(string(href))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("transition-colors hover:text-foreground"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv3.Class())
+		_gsxgw.StyleMerged("", _gsxv3.Style())
+		_gsxgw.Spread(ctx, _gsxv3, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line breadcrumb.gsx:48:3
+//line breadcrumb.gsx:44:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</a>")
 		return _gsxgw.Err()
 	})
 }
 
-//line breadcrumb.gsx:52:1
+//line breadcrumb.gsx:48:1
 func BreadcrumbPage(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line breadcrumb.gsx:53:2
+//line breadcrumb.gsx:49:2
+		_gsxv4 := withSlot("breadcrumb-page", attrs)
 		_gsxgw.S("<span")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"breadcrumb-page\"")
-		}
-		if !attrs.Has("role") {
+		if !_gsxv4.Has("role") {
 			_gsxgw.S(" role=\"link\"")
 		}
-		if !attrs.Has("aria-disabled") {
+		if !_gsxv4.Has("aria-disabled") {
 			_gsxgw.S(" aria-disabled=\"true\"")
 		}
-		if !attrs.Has("aria-current") {
+		if !_gsxv4.Has("aria-current") {
 			_gsxgw.S(" aria-current=\"page\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("font-normal text-foreground"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv4.Class())
+		_gsxgw.StyleMerged("", _gsxv4.Style())
+		_gsxgw.Spread(ctx, _gsxv4, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line breadcrumb.gsx:61:3
+//line breadcrumb.gsx:55:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()
 	})
 }
 
-//line breadcrumb.gsx:65:1
+//line breadcrumb.gsx:59:1
 // BreadcrumbSeparator defaults to a ChevronRight icon when the caller passes
 // no children, exactly like shadcn's `{children ?? <ChevronRight />}` — pass
 // children to override with any other glyph or text.
 
-//line breadcrumb.gsx:68:1
+//line breadcrumb.gsx:62:1
 func BreadcrumbSeparator(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line breadcrumb.gsx:69:2
+//line breadcrumb.gsx:63:2
+		_gsxv5 := withSlot("breadcrumb-separator", attrs)
 		_gsxgw.S("<li")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"breadcrumb-separator\"")
-		}
-		if !attrs.Has("role") {
+		if !_gsxv5.Has("role") {
 			_gsxgw.S(" role=\"presentation\"")
 		}
-		if !attrs.Has("aria-hidden") {
+		if !_gsxv5.Has("aria-hidden") {
 			_gsxgw.S(" aria-hidden=\"true\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("[&>svg]:size-3.5"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv5.Class())
+		_gsxgw.StyleMerged("", _gsxv5.Style())
+		_gsxgw.Spread(ctx, _gsxv5, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line breadcrumb.gsx:76:3
+//line breadcrumb.gsx:68:3
 		if children != nil {
-//line breadcrumb.gsx:77:4
+//line breadcrumb.gsx:69:4
 			_gsxgw.Node(ctx, children)
 		} else {
-//line breadcrumb.gsx:79:4
+//line breadcrumb.gsx:71:4
 			_gsxgw.Node(ctx, icon.ChevronRight())
 		}
 		_gsxgw.S("</li>")
@@ -197,36 +175,37 @@ func BreadcrumbSeparator(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line breadcrumb.gsx:84:1
+//line breadcrumb.gsx:76:1
 // BreadcrumbEllipsis takes no children — like shadcn's own version, its
 // content is the fixed MoreHorizontal icon plus a screen-reader-only label,
 // not a caller-supplied slot.
 
-//line breadcrumb.gsx:87:1
+//line breadcrumb.gsx:79:1
 func BreadcrumbEllipsis(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line breadcrumb.gsx:88:2
+//line breadcrumb.gsx:80:2
+		_gsxv6 := withSlot("breadcrumb-ellipsis", attrs)
 		_gsxgw.S("<span")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"breadcrumb-ellipsis\"")
-		}
-		if !attrs.Has("role") {
+		if !_gsxv6.Has("role") {
 			_gsxgw.S(" role=\"presentation\"")
 		}
-		if !attrs.Has("aria-hidden") {
+		if !_gsxv6.Has("aria-hidden") {
 			_gsxgw.S(" aria-hidden=\"true\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex size-5 items-center justify-center"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv6.Class())
+		_gsxgw.StyleMerged("", _gsxv6.Style())
+		_gsxgw.Spread(ctx, _gsxv6, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line breadcrumb.gsx:95:3
-		_gsxgw.Node(ctx, icon.Ellipsis(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
-//line breadcrumb.gsx:96:3
-		_gsxgw.S("<span class=\"sr-only\">More</span></span>")
+//line breadcrumb.gsx:85:3
+		_gsxgw.Node(ctx, icon.Ellipsis())
+//line breadcrumb.gsx:86:3
+		_gsxv7 := withSlot("breadcrumb-ellipsis-label", nil)
+		_gsxgw.S("<span")
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv7.Class())
+		_gsxgw.StyleMerged("", _gsxv7.Style())
+		_gsxgw.Spread(ctx, _gsxv7, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">More</span></span>")
 		return _gsxgw.Err()
 	})
 }

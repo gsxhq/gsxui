@@ -26,7 +26,12 @@ func TestEndToEnd(t *testing.T) {
 		t.Fatal(err)
 	}
 	// generate ran for real: generated files exist
-	for _, p := range []string{"ui/dialog.x.go", "ui/button.x.go"} {
+	for _, p := range []string{
+		"ui/dialog.x.go",
+		"ui/button.x.go",
+		"ui/slots.go",
+		"ui/internal/slotattr/slotattr.go",
+	} {
 		if _, err := os.Stat(filepath.Join(dir, p)); err != nil {
 			t.Fatalf("missing generated %s: %v", p, err)
 		}

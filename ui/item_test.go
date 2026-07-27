@@ -10,7 +10,7 @@ import (
 
 func TestItemGroupPinned(t *testing.T) {
 	got := render(t, ui.ItemGroup(gsx.Raw("x"), nil))
-	want := `<div role="list" data-slot="item-group" class="group/item-group flex flex-col">x</div>`
+	want := `<div role="list" data-gsxui-slot="item-group">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -23,10 +23,10 @@ func TestItemGroupAttrsFallThrough(t *testing.T) {
 	}
 }
 
-func TestItemGroupCallerClassMerges(t *testing.T) {
+func TestItemGroupCallerClassIsForwardedOnce(t *testing.T) {
 	got := render(t, ui.ItemGroup(nil, gsx.Attrs{{Key: "class", Value: "gap-4"}}))
-	if !strings.Contains(got, "gap-4") {
-		t.Errorf("missing caller class gap-4\nin: %s", got)
+	if strings.Count(got, `class="gap-4"`) != 1 {
+		t.Errorf("caller class must be the only class and render once\nin: %s", got)
 	}
 }
 
@@ -36,7 +36,7 @@ func TestItemGroupCallerClassMerges(t *testing.T) {
 // Separator's own data-[orientation=...] base classes both come through.
 func TestItemSeparatorDefaultPinned(t *testing.T) {
 	got := render(t, ui.ItemSeparator("", nil))
-	want := `<div role="none" data-orientation="horizontal" class="shrink-0 bg-border data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px my-2" data-slot="item-separator"></div>`
+	want := `<div role="none" data-orientation="horizontal" data-gsxui-slot="separator item-separator"></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -63,7 +63,7 @@ func TestItemSeparatorAttrsFallThrough(t *testing.T) {
 // TestItemDefaultPinned pins the zero-value (variant="default", size="default").
 func TestItemDefaultPinned(t *testing.T) {
 	got := render(t, ui.Item("", "", gsx.Raw("x"), nil))
-	want := `<div data-slot="item" data-variant="default" data-size="default" class="group/item flex flex-wrap items-center rounded-lg border border-transparent text-sm transition-colors duration-100 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 [a]:transition-colors [a]:hover:bg-accent/50 bg-transparent gap-2.5 px-3 py-2.5">x</div>`
+	want := `<div data-variant="default" data-size="default" data-gsxui-slot="item">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -76,19 +76,32 @@ func TestItemDefaultPinned(t *testing.T) {
 // utility is untouched).
 func TestItemOutlineSmPinned(t *testing.T) {
 	got := render(t, ui.Item("outline", "sm", gsx.Raw("x"), nil))
-	want := `<div data-slot="item" data-variant="outline" data-size="sm" class="group/item flex flex-wrap items-center rounded-lg border text-sm transition-colors duration-100 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 [a]:transition-colors [a]:hover:bg-accent/50 border-border gap-2.5 px-3 py-2.5">x</div>`
+	want := `<div data-variant="outline" data-size="sm" data-gsxui-slot="item">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
-	if strings.Contains(got, "border-transparent") {
-		t.Errorf("border-transparent should be dropped by border-border\nin: %s", got)
-	}
 }
 
-func TestItemMutedPinned(t *testing.T) {
-	got := render(t, ui.Item("muted", "", gsx.Raw("x"), nil))
-	if !strings.Contains(got, `data-variant="muted"`) || !strings.Contains(got, "bg-muted/50") {
-		t.Errorf("missing muted variant class\nin: %s", got)
+func TestItemVariantAndSizeAxes(t *testing.T) {
+	for _, variant := range []string{"default", "outline", "muted"} {
+		input := variant
+		if variant == "default" {
+			input = ""
+		}
+		got := render(t, ui.Item(input, "", gsx.Raw("x"), nil))
+		if !strings.Contains(got, `data-variant="`+variant+`"`) {
+			t.Errorf("variant %s: missing reflected value\nin: %s", variant, got)
+		}
+	}
+	for _, size := range []string{"default", "sm"} {
+		input := size
+		if size == "default" {
+			input = ""
+		}
+		got := render(t, ui.Item("", input, gsx.Raw("x"), nil))
+		if !strings.Contains(got, `data-size="`+size+`"`) {
+			t.Errorf("size %s: missing reflected value\nin: %s", size, got)
+		}
 	}
 }
 
@@ -99,16 +112,16 @@ func TestItemAttrsFallThrough(t *testing.T) {
 	}
 }
 
-func TestItemCallerClassMerges(t *testing.T) {
+func TestItemCallerClassIsForwardedOnce(t *testing.T) {
 	got := render(t, ui.Item("", "", nil, gsx.Attrs{{Key: "class", Value: "gap-8"}}))
-	if !strings.Contains(got, "gap-8") {
-		t.Errorf("missing caller class gap-8\nin: %s", got)
+	if strings.Count(got, `class="gap-8"`) != 1 {
+		t.Errorf("caller class must be the only class and render once\nin: %s", got)
 	}
 }
 
 func TestItemMediaDefaultPinned(t *testing.T) {
 	got := render(t, ui.ItemMedia("", gsx.Raw("x"), nil))
-	want := `<div data-slot="item-media" data-variant="default" class="flex shrink-0 items-center justify-center gap-2 group-has-[[data-slot=item-description]]/item:translate-y-0.5 group-has-[[data-slot=item-description]]/item:self-start [&amp;_svg]:pointer-events-none bg-transparent">x</div>`
+	want := `<div data-variant="default" data-gsxui-slot="item-media">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -116,7 +129,7 @@ func TestItemMediaDefaultPinned(t *testing.T) {
 
 func TestItemMediaIconPinned(t *testing.T) {
 	got := render(t, ui.ItemMedia("icon", gsx.Raw("x"), nil))
-	want := `<div data-slot="item-media" data-variant="icon" class="flex shrink-0 items-center justify-center gap-2 group-has-[[data-slot=item-description]]/item:translate-y-0.5 group-has-[[data-slot=item-description]]/item:self-start [&amp;_svg]:pointer-events-none size-8 rounded-sm border bg-muted [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4">x</div>`
+	want := `<div data-variant="icon" data-gsxui-slot="item-media">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -124,7 +137,7 @@ func TestItemMediaIconPinned(t *testing.T) {
 
 func TestItemMediaImagePinned(t *testing.T) {
 	got := render(t, ui.ItemMedia("image", gsx.Raw("x"), nil))
-	want := `<div data-slot="item-media" data-variant="image" class="flex shrink-0 items-center justify-center gap-2 group-has-[[data-slot=item-description]]/item:translate-y-0.5 group-has-[[data-slot=item-description]]/item:self-start [&amp;_svg]:pointer-events-none size-10 overflow-hidden rounded-sm [&amp;_img]:size-full [&amp;_img]:object-cover">x</div>`
+	want := `<div data-variant="image" data-gsxui-slot="item-media">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -139,7 +152,7 @@ func TestItemMediaAttrsFallThrough(t *testing.T) {
 
 func TestItemContentPinned(t *testing.T) {
 	got := render(t, ui.ItemContent(gsx.Raw("x"), nil))
-	want := `<div data-slot="item-content" class="flex flex-1 flex-col gap-1 [&amp;+[data-slot=item-content]]:flex-none">x</div>`
+	want := `<div data-gsxui-slot="item-content">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -154,7 +167,7 @@ func TestItemContentAttrsFallThrough(t *testing.T) {
 
 func TestItemTitlePinned(t *testing.T) {
 	got := render(t, ui.ItemTitle(gsx.Raw("x"), nil))
-	want := `<div data-slot="item-title" class="flex w-fit items-center gap-2 text-sm leading-snug font-medium">x</div>`
+	want := `<div data-gsxui-slot="item-title">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -172,7 +185,7 @@ func TestItemTitleAttrsFallThrough(t *testing.T) {
 // says "p" but whose actual element is a div — see ui/item.gsx's comment).
 func TestItemDescriptionPinned(t *testing.T) {
 	got := render(t, ui.ItemDescription(gsx.Raw("x"), nil))
-	want := `<p data-slot="item-description" class="line-clamp-2 text-sm leading-normal font-normal text-balance text-muted-foreground [&amp;&gt;a]:underline [&amp;&gt;a]:underline-offset-4 [&amp;&gt;a:hover]:text-primary">x</p>`
+	want := `<p data-gsxui-slot="item-description">x</p>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -187,7 +200,7 @@ func TestItemDescriptionAttrsFallThrough(t *testing.T) {
 
 func TestItemActionsPinned(t *testing.T) {
 	got := render(t, ui.ItemActions(gsx.Raw("x"), nil))
-	want := `<div data-slot="item-actions" class="flex items-center gap-2">x</div>`
+	want := `<div data-gsxui-slot="item-actions">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -202,7 +215,7 @@ func TestItemActionsAttrsFallThrough(t *testing.T) {
 
 func TestItemHeaderPinned(t *testing.T) {
 	got := render(t, ui.ItemHeader(gsx.Raw("x"), nil))
-	want := `<div data-slot="item-header" class="flex basis-full items-center justify-between gap-2">x</div>`
+	want := `<div data-gsxui-slot="item-header">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -217,7 +230,7 @@ func TestItemHeaderAttrsFallThrough(t *testing.T) {
 
 func TestItemFooterPinned(t *testing.T) {
 	got := render(t, ui.ItemFooter(gsx.Raw("x"), nil))
-	want := `<div data-slot="item-footer" class="flex basis-full items-center justify-between gap-2">x</div>`
+	want := `<div data-gsxui-slot="item-footer">x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -256,17 +269,17 @@ func TestItemGroupWithSeparatorComposition(t *testing.T) {
 		nil,
 	))
 	for _, want := range []string{
-		`data-slot="item-group"`,
-		`data-slot="item" data-variant="outline"`,
-		`data-slot="item-media" data-variant="icon"`,
-		`data-slot="item-content"`,
-		`data-slot="item-title"`,
+		`data-gsxui-slot="item-group"`,
+		`data-variant="outline" data-size="default" data-gsxui-slot="item"`,
+		`data-variant="icon" data-gsxui-slot="item-media"`,
+		`data-gsxui-slot="item-content"`,
+		`data-gsxui-slot="item-title"`,
 		`>Invoice #1234</div>`,
-		`data-slot="item-description"`,
+		`data-gsxui-slot="item-description"`,
 		`>Paid on Jan 4</p>`,
-		`data-slot="item-actions"`,
+		`data-gsxui-slot="item-actions"`,
 		`<button>View</button>`,
-		`data-slot="item-separator"`,
+		`data-gsxui-slot="separator item-separator"`,
 		`second item`,
 	} {
 		if !strings.Contains(got, want) {
