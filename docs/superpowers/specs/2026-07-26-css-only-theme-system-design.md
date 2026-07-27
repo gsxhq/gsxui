@@ -1,6 +1,9 @@
 # CSS-only theme system and configurator architecture
 
-**Status:** architecture approved; implementation is not scheduled.
+**Status:** architecture approved. The structural Phase 1 boundary is
+implemented with the original packed slot encoding; the presence-marker
+revision below is approved and in progress. The configurator roadmap remains
+unscheduled.
 
 This document defines the boundary we want before replacing the current
 theme editor. It is deliberately an architecture and roadmap, not a promise
@@ -167,15 +170,17 @@ regardless of visual treatment, it is foundation.
 
 ## 6. The component styling contract
 
-### Namespaced slots
+### Namespaced slot markers
 
-Components expose stable, namespaced slot attributes:
+Components expose one stable, namespaced presence attribute per styling
+role:
 
 ```gsx
 <button
 	data-variant={variant |> default("default")}
 	data-size={size |> default("default")}
-	{ withSlot("button", attrs)... }
+	{ attrs... }
+	data-gsxui-slot-button
 >
 	{ children }
 </button>
@@ -185,54 +190,71 @@ The style pack targets those attributes:
 
 ```css
 @layer components {
-  [data-gsxui-slot~="button"] {
+  [data-gsxui-slot-button] {
     @apply inline-flex h-8 items-center justify-center rounded-lg px-2.5;
   }
 
-  [data-gsxui-slot~="button"][data-variant="outline"] {
+  [data-gsxui-slot-button][data-variant="outline"] {
     @apply border border-border bg-background;
   }
 }
 ```
 
-`data-gsxui-slot` replaces the current generic `data-slot` as the public
-styling namespace. Existing component-specific behavior hooks such as
-`data-gsxui-calendar-*` remain behavior hooks; styles may read reflected
-state, but JavaScript must never toggle presentation classes.
+The `data-gsxui-slot-<name>` prefix replaces the current generic `data-slot`
+as the public styling namespace. Existing component-specific behavior hooks
+such as `data-gsxui-calendar-*` remain behavior hooks; styles may read
+reflected state, but JavaScript must never toggle presentation classes.
 
-The attribute is a space-separated token set, not a scalar override.
-Ordinary elements carry one token, while composed components retain every
-semantic styling role. For example, `AlertDialogAction` composes `Button`
-and renders:
+Each role has its own valueless presence attribute instead of sharing a
+space-separated scalar value. CSS uses only exact presence selectors such as
+`[data-gsxui-slot-button]`; value and token operators are not part of the
+contract. Composed components therefore rely on GSX's normal fallthrough
+attribute merge. For example, `AlertDialogAction` adds its role to `Button`:
 
-```html
-<button data-gsxui-slot="button alert-dialog-action">...</button>
+```gsx
+<Button { attrs... } data-gsxui-slot-alert-dialog-action>
+	{ children }
+</Button>
 ```
 
-Every CSS selector therefore uses the `~=` token operator. The unexported
-`withSlot` helper prepends the component's own token, preserves the
-composition order from inner primitive to outer semantic part, removes
-duplicates, and forwards the caller's remaining attributes unchanged.
-Tokenized composition is the CSS-only replacement for the base classes a
-composed component currently inherits before overriding `data-slot`; it
-prevents every style pack from duplicating Button, Input, Label, Separator,
-and Dialog rules into their composed parts.
+`Button` forwards that distinct key and forces its own invariant marker
+after the spread, so the result is:
+
+```html
+<button
+  data-gsxui-slot-alert-dialog-action
+  data-gsxui-slot-button
+>...</button>
+```
+
+This representation deliberately matches GSX's attribute semantics.
+`class` and `style` aggregate, while other duplicate scalar keys are
+last-wins. Packing several roles into one scalar would require a private
+token-merging helper in every vendored project. Giving every role a distinct
+key lets ordinary forwarding accumulate roles without parsing, allocation,
+deduplication, an internal support package, or a gsxui-specific merge API.
+It also prevents every style pack from duplicating Button, Input, Label,
+Separator, and Dialog rules into their composed parts.
 
 The contract has these rules:
 
-1. Slot names are global within gsxui and use kebab-case.
+1. A slot marker is the valueless presence attribute
+   `data-gsxui-slot-<name>`; `<name>` is globally unique within gsxui and
+   uses kebab-case.
 2. A slot identifies a semantic component part, not one CSS declaration.
-3. A component always retains its own slot token when another component
-   composes it; an outer component adds a token instead of replacing one.
-4. Public presentation axes are reflected as attributes with explicit
+3. A component places its own marker after its fallthrough spread so callers
+   cannot remove the component's styling identity.
+4. A composed component adds another distinct marker; GSX forwarding keeps
+   every styling role on the final element without a helper.
+5. Public presentation axes are reflected as attributes with explicit
    values, such as `data-variant`, `data-size`, `aria-invalid`, or
    `data-state`.
-5. Component templates contain no library-owned presentation utilities
+6. Component templates contain no library-owned presentation utilities
    after migration. Their `class` output is the caller-supplied class.
-6. Inline styles are permitted only for dynamic values computed by behavior,
+7. Inline styles are permitted only for dynamic values computed by behavior,
    such as a slider's live fill percentage or a resizable panel's flex
    value. Style CSS consumes those custom properties.
-7. A style may select a slot, its declared states, its pseudo-elements, and
+8. A style may select a slot, its declared states, its pseudo-elements, and
    documented descendants. It may not depend on undocumented DOM depth or
    site/page selectors.
 
@@ -253,9 +275,24 @@ typed Go data so the registry and Go tests consume it directly. Contract
 tests render the registered component examples with an HTML parser and prove
 both directions:
 
-- every emitted `data-gsxui-slot` and declared state exists in the contract;
+- every emitted `data-gsxui-slot-<name>` marker and declared state exists in
+  the contract;
 - every contract slot and declared state value is emitted by at least one
-  registered rendering fixture.
+  registered rendering fixture;
+- every rendered marker is valueless and every style selector uses exact
+  presence matching rather than a value operator;
+- declared composition relationships are co-located on one rendered element,
+  such as `data-gsxui-slot-alert-dialog-action` and
+  `data-gsxui-slot-button`;
+- a caller-supplied value for a component's own marker cannot suppress or
+  replace the valueless invariant marker, while a distinct caller role
+  survives forwarding.
+
+The source tree, embedded manifest, generators, and fresh `gsxui add` output
+contain no `ui/slots.go`, `ui/internal/slotattr`, or dependency edge to either.
+Automatically deleting those paths from an already-vendored external project
+is a separate destructive migration policy and is not implied by this source
+contract.
 
 The CSS validator parses selectors into an AST. It rejects unknown slots or
 state values, selectors outside the gsxui namespace, forbidden global
@@ -510,7 +547,7 @@ style:
 ```css
 @layer components {
   body[data-gsxui-preview-style="default"]
-    [data-gsxui-slot~="button"] {
+    [data-gsxui-slot-button] {
     /* compiled default style declarations */
   }
 }
