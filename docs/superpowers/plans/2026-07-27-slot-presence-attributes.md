@@ -411,6 +411,9 @@ Playwright 1.62, existing typed style contract and generated-source checks.
 
 - Consumes: all presence-marker output, CSS, tests, docs, and clean vendoring.
 - Produces: a clean generated tree and authoritative CI evidence.
+- Consumes: reviewed GSX compiler fix
+  `5d3cbfb9129266405e4b390ce4f67e75c51ee9ee` through an untracked temporary
+  Go workspace until a published version can be pinned.
 
 - [ ] **Step 1: Prove no current packed contract remains.**
 
@@ -428,12 +431,15 @@ Playwright 1.62, existing typed style contract and generated-source checks.
 
 - [ ] **Step 2: Verify generated output is current.**
 
-  Run:
+  With the exact reviewed GSX compiler selected through the untracked
+  workspace, run:
 
   ```bash
-  make generate
+  go run github.com/gsxhq/gsx/cmd/gsx generate
   make verify-generated
   git diff --exit-code -- '*.x.go' jstest/runtime-style-contract.json
+  ! rg 'data-gsxui-slot-[a-z0-9-]+", Value: true' \
+    ui site/examples site/pages jstest/harness -g '*.x.go'
   ```
 
 - [ ] **Step 3: Run the authoritative gate.**
@@ -441,11 +447,15 @@ Playwright 1.62, existing typed style contract and generated-source checks.
   Run:
 
   ```bash
-  make ci
+  GOWORK=<temporary-workspace> make ci
   ```
 
   Expected: Go tests, generated checks, CSS audit, 236 Chromium behavior
   tests, JavaScript syntax checks, and formatting all pass.
+
+  Record separately that external CI remains blocked until the reviewed GSX
+  commit is published and `go.mod` pins that version; a tracked local replace
+  is forbidden.
 
 - [ ] **Step 4: Inspect representative rendered composition.**
 

@@ -15,6 +15,8 @@ func TestEndToEnd(t *testing.T) {
 	if testing.Short() {
 		t.Skip("network-dependent e2e; run without -short")
 	}
+	// This temporary consumer is intentionally outside the test runner's workspace.
+	t.Setenv("GOWORK", "off")
 	dir := t.TempDir()
 	mustRun(t, dir, "go", "mod", "init", "example.com/app")
 	t.Chdir(dir)
@@ -108,6 +110,8 @@ func TestEndToEndCustomUIPath(t *testing.T) {
 	if testing.Short() {
 		t.Skip("network-dependent e2e; run without -short")
 	}
+	// This temporary consumer is intentionally outside the test runner's workspace.
+	t.Setenv("GOWORK", "off")
 	dir := t.TempDir()
 	mustRun(t, dir, "go", "mod", "init", "example.com/app")
 	t.Chdir(dir)
