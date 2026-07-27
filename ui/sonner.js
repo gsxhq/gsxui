@@ -364,7 +364,7 @@ function dismiss(id) {
 
   // Remove after the exit transition, capped so a backgrounded tab (frozen
   // transition clock) or a missing transitionend still cleans up — the same
-  // race-against-a-hard-cap idea as dialog.js's requestClose.
+  // hard-cap strategy, unlike dialog.js's finite-own-animation completion.
   const cap = setTimeout(() => finalize(el), REMOVE_CAP);
   el.addEventListener(
     "transitionend",

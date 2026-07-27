@@ -9,10 +9,17 @@ import (
 // dismiss, and programmatic showModal()/close() alike.
 component Events() {
 	<ui.Dialog>
-		<ui.Button data-gsxui-dialog-trigger>Open</ui.Button>
+		<ui.Button commandfor="events-dialog" command="show-modal">Open</ui.Button>
 		<ui.DialogContent id="events-dialog">
 			<ui.DialogTitle>Watched dialog</ui.DialogTitle>
 			<ui.DialogDescription>Its open/close events log below.</ui.DialogDescription>
+			<ui.Button
+				variant="outline"
+				commandfor="events-dialog"
+				command="request-close"
+			>
+				Close
+			</ui.Button>
 		</ui.DialogContent>
 		<output id="events-log" class="mt-4 block text-sm text-muted-foreground">closed</output>
 		<script>
