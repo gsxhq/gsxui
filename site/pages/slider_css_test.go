@@ -8,8 +8,6 @@ import (
 	"testing"
 )
 
-var sliderThumbContrastRe = regexp.MustCompile(`(?s)input\[type="range"\]::-(?:webkit-slider-thumb|moz-range-thumb) \{[^}]*background: var\(--contrast\);`)
-
 func TestSliderCSSUsesSemanticContrast(t *testing.T) {
 	_, testFile, _, _ := runtime.Caller(0)
 	path := filepath.Join(filepath.Dir(testFile), "..", "..", "assets", "css", "styles", "default.css")
@@ -17,7 +15,17 @@ func TestSliderCSSUsesSemanticContrast(t *testing.T) {
 	if err != nil {
 		t.Fatalf("os.ReadFile(%s): %v", path, err)
 	}
-	if got := len(sliderThumbContrastRe.FindAll(b, -1)); got != 2 {
-		t.Errorf("semantic Slider thumb backgrounds = %d, want 2", got)
+	for _, selector := range []string{
+		`input[type="range"]::-webkit-slider-thumb`,
+		`input[type="range"]::-moz-range-thumb`,
+	} {
+		contrast := regexp.MustCompile(regexp.QuoteMeta(selector) + `\s*\{[^}]*background:\s*var\(--contrast\);`)
+		if !contrast.Match(b) {
+			t.Errorf("%s does not use background: var(--contrast)", selector)
+		}
+		literalWhite := regexp.MustCompile(regexp.QuoteMeta(selector) + `\s*\{[^}]*background:\s*#fff;`)
+		if literalWhite.Match(b) {
+			t.Errorf("%s bypasses the contrast token with a literal white background", selector)
+		}
 	}
 }
