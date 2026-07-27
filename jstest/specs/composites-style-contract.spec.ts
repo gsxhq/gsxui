@@ -1,5 +1,82 @@
 import { expect, test } from "../support/fixtures";
 
+test("horizontal ButtonGroup separators stay on the cross-axis", async ({ page }) => {
+  const response = await page.goto("/x/button-group/basic");
+  expect(response?.status()).toBe(200);
+
+  const groups = page.locator('[data-gsxui-slot~="button-group"]');
+  await expect(groups).toHaveCount(4);
+  const clipboard = groups.nth(1);
+  const separator = clipboard.locator(
+    ':scope > [data-gsxui-slot~="button-group-separator"]',
+  );
+
+  await expect(separator).toHaveAttribute("data-orientation", "vertical");
+  expect(
+    await clipboard.evaluate((group) => {
+      const groupRect = group.getBoundingClientRect();
+      const separatorRect = group
+        .querySelector('[data-gsxui-slot~="button-group-separator"]')!
+        .getBoundingClientRect();
+      return {
+        separatorWidth: separatorRect.width,
+        separatorHeight: separatorRect.height,
+        groupHeight: groupRect.height,
+        childrenInside: [...group.children].every((child) => {
+          const rect = child.getBoundingClientRect();
+          return (
+            rect.left >= groupRect.left &&
+            rect.right <= groupRect.right &&
+            rect.top >= groupRect.top &&
+            rect.bottom <= groupRect.bottom
+          );
+        }),
+      };
+    }),
+  ).toEqual({
+    separatorWidth: 1,
+    separatorHeight: 32,
+    groupHeight: 32,
+    childrenInside: true,
+  });
+});
+
+test("vertical ButtonGroup separators stay on the cross-axis", async ({ page }) => {
+  const response = await page.goto("/x/button-group/basic");
+  expect(response?.status()).toBe(200);
+
+  const group = page.getByRole("group", { name: "Media controls" });
+  const children = group.locator(":scope > *");
+  await expect(children).toHaveCount(3);
+  const separator = group.locator(
+    ':scope > [data-gsxui-slot~="button-group-separator"]',
+  );
+  await expect(separator).toHaveAttribute("data-orientation", "horizontal");
+  expect(
+    await group.evaluate((element) => {
+      const groupRect = element.getBoundingClientRect();
+      const separatorRect = element
+        .querySelector('[data-gsxui-slot~="button-group-separator"]')!
+        .getBoundingClientRect();
+      const button = element.lastElementChild!;
+      const css = getComputedStyle(button);
+      return {
+        separatorWidth: separatorRect.width,
+        separatorHeight: separatorRect.height,
+        groupWidth: groupRect.width,
+        bottomLeft: css.borderBottomLeftRadius,
+        bottomRight: css.borderBottomRightRadius,
+      };
+    }),
+  ).toEqual({
+    separatorWidth: 32,
+    separatorHeight: 1,
+    groupWidth: 32,
+    bottomLeft: "10px",
+    bottomRight: "10px",
+  });
+});
+
 test("Carousel keeps native-scroll mechanics and caller spacing overrides", async ({ page }) => {
   const response = await page.goto("/x/carousel/sizes");
   expect(response?.status()).toBe(200);
