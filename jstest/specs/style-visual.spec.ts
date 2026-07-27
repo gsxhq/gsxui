@@ -208,6 +208,118 @@ test("Pagination edge padding overrides Button defaults and remains caller-overr
   });
 });
 
+test("an active invalid InputOTP slot keeps destructive border and ring semantics", async ({
+  page,
+}) => {
+  const response = await page.goto("/f/style-contract");
+  expect(response?.status(), "style contract fixture response").toBe(200);
+
+  const colors = async (selector: string) =>
+    page.locator(selector).evaluate((element) => {
+      const css = getComputedStyle(element);
+      return { borderColor: css.borderColor, boxShadow: css.boxShadow };
+    });
+
+  const slot = '[data-style-contract="otp-active-invalid"]';
+  expect(await colors(slot)).toEqual(
+    await colors('[data-style-contract-reference="otp-invalid-light"]'),
+  );
+
+  await page.evaluate(() => document.documentElement.classList.add("dark"));
+  await page.evaluate(() => {
+    for (const animation of document.getAnimations()) {
+      animation.finish();
+    }
+  });
+  expect(await colors(slot)).toEqual(
+    await colors('[data-style-contract-reference="otp-invalid-dark"]'),
+  );
+});
+
+test("joined ToggleGroup items override composed Toggle sizing and borders", async ({
+  page,
+}) => {
+  const response = await page.goto("/f/style-contract");
+  expect(response?.status(), "style contract fixture response").toBe(200);
+
+  const metrics = async (selector: string) =>
+    page.locator(selector).evaluate((element) => {
+      const css = getComputedStyle(element);
+      const box = element.getBoundingClientRect();
+      return {
+        x: box.x,
+        width: box.width,
+        height: css.height,
+        paddingLeft: css.paddingLeft,
+        paddingRight: css.paddingRight,
+        borderLeftWidth: css.borderLeftWidth,
+        borderTopLeftRadius: css.borderTopLeftRadius,
+        borderTopRightRadius: css.borderTopRightRadius,
+      };
+    });
+
+  const first = await metrics('[data-style-contract="toggle-group-sm-first"]');
+  const iconItem = await metrics('[data-style-contract="toggle-group-sm-icon"]');
+  const last = await metrics('[data-style-contract="toggle-group-sm-last"]');
+  expect(first).toMatchObject({
+    height: "28px",
+    paddingLeft: "12px",
+    paddingRight: "12px",
+    borderLeftWidth: "1px",
+    borderTopRightRadius: "0px",
+  });
+  expect(iconItem).toMatchObject({
+    height: "28px",
+    paddingLeft: "6px",
+    paddingRight: "6px",
+    borderLeftWidth: "0px",
+    borderTopLeftRadius: "0px",
+    borderTopRightRadius: "0px",
+  });
+  expect(last).toMatchObject({
+    height: "28px",
+    paddingLeft: "12px",
+    paddingRight: "12px",
+    borderLeftWidth: "0px",
+    borderTopLeftRadius: "0px",
+  });
+  expect(iconItem.x).toBeCloseTo(first.x + first.width, 5);
+  expect(last.x).toBeCloseTo(iconItem.x + iconItem.width, 5);
+
+  expect(
+    await metrics('[data-style-contract="toggle-group-default"]'),
+  ).toMatchObject({
+    height: "32px",
+    paddingLeft: "12px",
+    paddingRight: "12px",
+  });
+  expect(
+    await metrics('[data-style-contract="toggle-group-large"]'),
+  ).toMatchObject({
+    height: "36px",
+    paddingLeft: "12px",
+    paddingRight: "12px",
+  });
+  expect(
+    await metrics('[data-style-contract="toggle-group-caller"]'),
+  ).toMatchObject({
+    height: "28px",
+    paddingLeft: "32px",
+    paddingRight: "32px",
+  });
+});
+
+test("an outline FieldGroup applies the separator overlap", async ({ page }) => {
+  const response = await page.goto("/f/style-contract");
+  expect(response?.status(), "style contract fixture response").toBe(200);
+
+  expect(
+    await page
+      .locator('[data-style-contract="field-outline-separator"]')
+      .evaluate((element) => getComputedStyle(element).marginBottom),
+  ).toBe("-8px");
+});
+
 for (const route of desktopRoutes) {
   test(`${route} keeps its desktop light and dark visual contract`, async ({ page }) => {
     for (const theme of ["light", "dark"] as const) {

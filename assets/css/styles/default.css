@@ -816,6 +816,10 @@
   :where([data-gsxui-slot~="field-separator-wrapper"]) {
     @apply relative -my-2 h-5 text-sm;
   }
+  :where([data-gsxui-slot~="field-group"])[data-variant="outline"]
+    :where([data-gsxui-slot~="field-separator-wrapper"]) {
+    @apply -mb-2;
+  }
   :where(
       [data-gsxui-slot~="separator"][data-gsxui-slot~="field-separator"]
     ) {
@@ -1104,18 +1108,14 @@
   :where([data-gsxui-slot~="input-otp-slot"])[data-active="true"] {
     @apply z-10 border-ring ring-3 ring-ring/50;
   }
-  :where(
-      [data-gsxui-slot~="input-otp-slot"][data-active="true"][aria-invalid="true"]
-    ) {
+  :where([data-gsxui-slot~="input-otp-slot"])[data-active="true"][aria-invalid="true"] {
     @apply border-destructive ring-destructive/20;
   }
   .dark :where([data-gsxui-slot~="input-otp-slot"]) {
     @apply bg-input/30;
   }
   .dark
-    :where(
-      [data-gsxui-slot~="input-otp-slot"][data-active="true"][aria-invalid="true"]
-    ) {
+    :where([data-gsxui-slot~="input-otp-slot"])[data-active="true"][aria-invalid="true"] {
     @apply ring-destructive/40;
   }
   :where([data-gsxui-slot~="input-otp-separator"])
@@ -1501,55 +1501,45 @@
   :where([data-gsxui-slot~="toggle-group"])[data-size="sm"] {
     @apply rounded-[min(var(--radius-md),10px)];
   }
-  :where(
-      [data-gsxui-slot~="toggle"][data-gsxui-slot~="toggle-group-item"]
-    ) {
+  :where([data-gsxui-slot~="toggle-group"])
+    > [data-gsxui-slot~="toggle-group-item"] {
     @apply w-auto min-w-0 shrink-0 px-3;
   }
-  :where(
-      [data-gsxui-slot~="toggle"][data-gsxui-slot~="toggle-group-item"]:is(
-        [data-size="default"],
-        [data-size="lg"]
-      )
-    ):has(> svg) {
+  :where([data-gsxui-slot~="toggle-group"]):is(
+      [data-size="default"],
+      [data-size="lg"]
+    )
+    > [data-gsxui-slot~="toggle-group-item"]:has(> svg) {
     @apply px-2;
   }
-  :where(
-      [data-gsxui-slot~="toggle"][data-gsxui-slot~="toggle-group-item"][data-size="sm"]
-    ):has(> svg) {
+  :where([data-gsxui-slot~="toggle-group"])[data-size="sm"]
+    > [data-gsxui-slot~="toggle-group-item"]:has(> svg) {
     @apply px-1.5;
   }
-  :where(
-      [data-gsxui-slot~="toggle"][data-gsxui-slot~="toggle-group-item"]
-    ):focus,
-  :where(
-      [data-gsxui-slot~="toggle"][data-gsxui-slot~="toggle-group-item"]
-    ):focus-visible {
+  :where([data-gsxui-slot~="toggle-group"])
+    > [data-gsxui-slot~="toggle-group-item"]:focus,
+  :where([data-gsxui-slot~="toggle-group"])
+    > [data-gsxui-slot~="toggle-group-item"]:focus-visible {
     @apply z-10;
   }
-  :where(
-      [data-gsxui-slot~="toggle"][data-gsxui-slot~="toggle-group-item"][data-spacing="0"]
-    ) {
+  :where([data-gsxui-slot~="toggle-group"])[data-spacing="0"]
+    > [data-gsxui-slot~="toggle-group-item"] {
     @apply rounded-none shadow-none;
   }
-  :where(
-      [data-gsxui-slot~="toggle"][data-gsxui-slot~="toggle-group-item"][data-spacing="0"][data-variant="outline"]
-    ) {
+  :where([data-gsxui-slot~="toggle-group"])[data-spacing="0"][data-variant="outline"]
+    > [data-gsxui-slot~="toggle-group-item"] {
     @apply border-l-0;
   }
-  :where(
-      [data-gsxui-slot~="toggle"][data-gsxui-slot~="toggle-group-item"][data-spacing="0"][data-variant="outline"]
-    ):first-child {
+  :where([data-gsxui-slot~="toggle-group"])[data-spacing="0"][data-variant="outline"]
+    > [data-gsxui-slot~="toggle-group-item"]:first-child {
     @apply border-l;
   }
-  :where(
-      [data-gsxui-slot~="toggle"][data-gsxui-slot~="toggle-group-item"][data-orientation="horizontal"][data-spacing="0"]
-    ):first-child {
+  :where([data-gsxui-slot~="toggle-group"])[data-orientation="horizontal"][data-spacing="0"]
+    > [data-gsxui-slot~="toggle-group-item"]:first-child {
     @apply rounded-l-lg;
   }
-  :where(
-      [data-gsxui-slot~="toggle"][data-gsxui-slot~="toggle-group-item"][data-orientation="horizontal"][data-spacing="0"]
-    ):last-child {
+  :where([data-gsxui-slot~="toggle-group"])[data-orientation="horizontal"][data-spacing="0"]
+    > [data-gsxui-slot~="toggle-group-item"]:last-child {
     @apply rounded-r-lg;
   }
 

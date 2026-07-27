@@ -17,10 +17,11 @@ var formContracts = []Component{
 		Slots: []Slot{
 			{Name: "field-set"},
 			{Name: "field-legend", Axes: []Axis{{Attribute: "data-variant", Values: []string{"legend", "label"}}}},
-			{Name: "field-group"},
+			{Name: "field-group", Axes: []Axis{{Attribute: "data-variant", Values: []string{"outline"}}}},
 			{Name: "field", Axes: []Axis{
 				{Attribute: "data-orientation", Values: []string{"vertical", "horizontal", "responsive"}},
 				{Attribute: "data-invalid", Values: []string{"true"}},
+				{Attribute: "data-disabled", Values: []string{"true"}},
 			}},
 			{Name: "field-content"},
 			{Name: "field-label"},

@@ -1,6 +1,9 @@
 package main
 
-import "github.com/gsxhq/gsxui/ui"
+import (
+	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/ui/icon"
+)
 
 component StyleContractFixture() {
 	<div class="grid gap-4 p-6">
@@ -21,6 +24,8 @@ component StyleContractFixture() {
 			<div class="bg-destructive/60" data-style-contract-reference="dark-destructive"></div>
 			<div class="bg-destructive/90" data-style-contract-reference="destructive-hover"></div>
 			<div class="ring-[3px] ring-destructive/40" data-style-contract-reference="dark-invalid-ring"></div>
+			<div class="border border-destructive ring-3 ring-destructive/20" data-style-contract-reference="otp-invalid-light"></div>
+			<div class="border border-destructive ring-3 ring-destructive/40" data-style-contract-reference="otp-invalid-dark"></div>
 			<div class="bg-input/50" data-style-contract-reference="dark-outline-hover"></div>
 			<div class="bg-accent/50" data-style-contract-reference="dark-ghost-hover"></div>
 		</div>
@@ -29,5 +34,31 @@ component StyleContractFixture() {
 			<ui.PaginationNext href="#" data-style-contract="pagination-next"/>
 			<ui.PaginationPrevious href="#" class="pl-12" data-style-contract="pagination-previous-caller"/>
 		</div>
+		<div>
+			<ui.InputOTPGroup>
+				<ui.InputOTPSlot data-active="true" aria-invalid="true" data-style-contract="otp-active-invalid"/>
+			</ui.InputOTPGroup>
+		</div>
+		<div>
+			<ui.ToggleGroup groupType="multiple" variant="outline" size="sm" spacing="0" aria-label="Joined formatting">
+				<ui.ToggleGroupItem groupType="multiple" variant="outline" size="sm" spacing="0" value="text" data-style-contract="toggle-group-sm-first">Text</ui.ToggleGroupItem>
+				<ui.ToggleGroupItem groupType="multiple" variant="outline" size="sm" spacing="0" value="icon" data-style-contract="toggle-group-sm-icon" aria-label="Icon"><icon.Bold/></ui.ToggleGroupItem>
+				<ui.ToggleGroupItem groupType="multiple" variant="outline" size="sm" spacing="0" value="last" data-style-contract="toggle-group-sm-last">Last</ui.ToggleGroupItem>
+			</ui.ToggleGroup>
+		</div>
+		<div class="flex gap-2">
+			<ui.ToggleGroup groupType="multiple" size="default" spacing="2">
+				<ui.ToggleGroupItem groupType="multiple" size="default" spacing="2" value="default" data-style-contract="toggle-group-default">Default</ui.ToggleGroupItem>
+			</ui.ToggleGroup>
+			<ui.ToggleGroup groupType="multiple" size="lg" spacing="2">
+				<ui.ToggleGroupItem groupType="multiple" size="lg" spacing="2" value="large" data-style-contract="toggle-group-large">Large</ui.ToggleGroupItem>
+			</ui.ToggleGroup>
+			<ui.ToggleGroup groupType="multiple" size="sm" spacing="2">
+				<ui.ToggleGroupItem groupType="multiple" size="sm" spacing="2" value="caller" class="px-8" data-style-contract="toggle-group-caller">Caller</ui.ToggleGroupItem>
+			</ui.ToggleGroup>
+		</div>
+		<ui.FieldGroup data-variant="outline">
+			<ui.FieldSeparator data-style-contract="field-outline-separator"/>
+		</ui.FieldGroup>
 	</div>
 }
