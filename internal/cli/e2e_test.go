@@ -78,6 +78,54 @@ func TestEndToEnd(t *testing.T) {
 	mustRun(t, dir, "go", "build", "./...")
 }
 
+func TestEndToEndCustomUIPath(t *testing.T) {
+	if testing.Short() {
+		t.Skip("network-dependent e2e; run without -short")
+	}
+	dir := t.TempDir()
+	mustRun(t, dir, "go", "mod", "init", "example.com/app")
+	t.Chdir(dir)
+
+	cfg := DefaultConfig()
+	cfg.UI = "components/ui"
+	if err := cfg.Save(dir); err != nil {
+		t.Fatal(err)
+	}
+	if err := Run([]string{"init"}); err != nil {
+		t.Fatal(err)
+	}
+	if err := Run([]string{"add", "spinner"}); err != nil {
+		t.Fatal(err)
+	}
+
+	for _, path := range []string{
+		"components/ui/spinner.x.go",
+		"components/ui/icon/icon.x.go",
+		"components/ui/slots.go",
+		"components/ui/internal/slotattr/slotattr.go",
+	} {
+		if _, err := os.Stat(filepath.Join(dir, path)); err != nil {
+			t.Fatalf("missing generated/vendored %s: %v", path, err)
+		}
+	}
+
+	for _, path := range []string{
+		"components/ui/slots.go",
+		"components/ui/icon/icon.gsx",
+	} {
+		src, err := os.ReadFile(filepath.Join(dir, path))
+		if err != nil {
+			t.Fatal(err)
+		}
+		want := `"example.com/app/components/ui/internal/slotattr"`
+		if !strings.Contains(string(src), want) {
+			t.Fatalf("%s missing rewritten internal import %s:\n%s", path, want, src)
+		}
+	}
+
+	mustRun(t, dir, "go", "build", "./...")
+}
+
 func mustRun(t *testing.T, dir, name string, args ...string) {
 	t.Helper()
 	cmd := exec.Command(name, args...)

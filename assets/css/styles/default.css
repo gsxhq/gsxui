@@ -61,7 +61,8 @@
   :where([data-gsxui-slot~="badge"])[aria-invalid="true"] {
     @apply border-destructive ring-destructive/20;
   }
-  :where(.dark [data-gsxui-slot~="badge"][aria-invalid="true"]) {
+  .dark
+    :where([data-gsxui-slot~="badge"][aria-invalid="true"]) {
     @apply ring-destructive/40;
   }
   :where([data-gsxui-slot~="badge"]) > svg {
@@ -85,10 +86,14 @@
   :where([data-gsxui-slot~="badge"])[data-variant="destructive"]:focus-visible {
     @apply ring-destructive/20;
   }
-  :where(.dark [data-gsxui-slot~="badge"][data-variant="destructive"]) {
+  .dark
+    :where([data-gsxui-slot~="badge"][data-variant="destructive"]) {
     @apply bg-destructive/60;
   }
-  :where(.dark [data-gsxui-slot~="badge"][data-variant="destructive"]):focus-visible {
+  .dark
+    :where(
+      [data-gsxui-slot~="badge"][data-variant="destructive"]
+    ):focus-visible {
     @apply ring-destructive/40;
   }
   :is(a[data-gsxui-slot~="badge"][data-variant="destructive"]):hover {
@@ -150,7 +155,8 @@
   :where([data-gsxui-slot~="button"])[aria-invalid="true"] {
     @apply border-destructive ring-destructive/20;
   }
-  :where(.dark [data-gsxui-slot~="button"][aria-invalid="true"]) {
+  .dark
+    :where([data-gsxui-slot~="button"][aria-invalid="true"]) {
     @apply ring-destructive/40;
   }
   :where([data-gsxui-slot~="button"]) svg {
@@ -174,10 +180,14 @@
   :where([data-gsxui-slot~="button"])[data-variant="destructive"]:focus-visible {
     @apply ring-destructive/20;
   }
-  :where(.dark [data-gsxui-slot~="button"][data-variant="destructive"]) {
+  .dark
+    :where([data-gsxui-slot~="button"][data-variant="destructive"]) {
     @apply bg-destructive/60;
   }
-  :where(.dark [data-gsxui-slot~="button"][data-variant="destructive"]):focus-visible {
+  .dark
+    :where(
+      [data-gsxui-slot~="button"][data-variant="destructive"]
+    ):focus-visible {
     @apply ring-destructive/40;
   }
   :where([data-gsxui-slot~="button"])[data-variant="outline"] {
@@ -186,10 +196,12 @@
   :where([data-gsxui-slot~="button"])[data-variant="outline"]:hover {
     @apply bg-accent text-accent-foreground;
   }
-  :where(.dark [data-gsxui-slot~="button"][data-variant="outline"]) {
+  .dark
+    :where([data-gsxui-slot~="button"][data-variant="outline"]) {
     @apply border-input bg-input/30;
   }
-  :where(.dark [data-gsxui-slot~="button"][data-variant="outline"]):hover {
+  .dark
+    :where([data-gsxui-slot~="button"][data-variant="outline"]):hover {
     @apply bg-input/50;
   }
   :where([data-gsxui-slot~="button"])[data-variant="secondary"] {
@@ -201,7 +213,8 @@
   :where([data-gsxui-slot~="button"])[data-variant="ghost"]:hover {
     @apply bg-accent text-accent-foreground;
   }
-  :where(.dark [data-gsxui-slot~="button"][data-variant="ghost"]):hover {
+  .dark
+    :where([data-gsxui-slot~="button"][data-variant="ghost"]):hover {
     @apply bg-accent/50;
   }
   :where([data-gsxui-slot~="button"])[data-variant="link"] {
@@ -551,10 +564,14 @@
   :where([data-gsxui-slot~="pagination-content"]) {
     @apply flex flex-row items-center gap-0.5;
   }
-  :where([data-gsxui-slot~="pagination-previous"]) {
+  :is(
+    [data-gsxui-slot~="pagination-link"][data-gsxui-slot~="pagination-previous"]
+  ):where([data-gsxui-slot~="button"]) {
     @apply pl-1.5;
   }
-  :where([data-gsxui-slot~="pagination-next"]) {
+  :is(
+    [data-gsxui-slot~="pagination-link"][data-gsxui-slot~="pagination-next"]
+  ):where([data-gsxui-slot~="button"]) {
     @apply pr-1.5;
   }
   :where([data-gsxui-slot~="pagination-previous-label"]),

@@ -60,6 +60,66 @@ func StyleContractFixture() _gsxrt.Node {
 			_gsxgw.S("Badge")
 			return _gsxgw.Err()
 		}), nil))
+		_gsxgw.S("</div>")
+//line style_contract.gsx:12:3
+		_gsxgw.S("<div class=\"flex flex-wrap gap-2\">")
+//line style_contract.gsx:13:4
+		_gsxgw.Node(ctx, ui.Button("destructive", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
+			_gsxgw.S("Destructive")
+			return _gsxgw.Err()
+		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "dark-button-destructive"}}))
+//line style_contract.gsx:14:4
+		_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
+			_gsxgw.S("Invalid")
+			return _gsxgw.Err()
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}}, _gsxrt.Attrs{{Key: "data-style-contract", Value: "dark-button-invalid"}})))
+//line style_contract.gsx:15:4
+		_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
+			_gsxgw.S("Outline")
+			return _gsxgw.Err()
+		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "dark-button-outline"}}))
+//line style_contract.gsx:16:4
+		_gsxgw.Node(ctx, ui.Button("ghost", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
+			_gsxgw.S("Ghost")
+			return _gsxgw.Err()
+		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "dark-button-ghost"}}))
+//line style_contract.gsx:17:4
+		_gsxgw.Node(ctx, ui.Badge("destructive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
+			_gsxgw.S("Destructive badge")
+			return _gsxgw.Err()
+		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "dark-badge-destructive"}}))
+//line style_contract.gsx:18:4
+		_gsxgw.Node(ctx, ui.Badge("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
+			_gsxgw.S("Invalid badge")
+			return _gsxgw.Err()
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}}, _gsxrt.Attrs{{Key: "tabindex", Value: "0"}}, _gsxrt.Attrs{{Key: "data-style-contract", Value: "dark-badge-invalid"}})))
+		_gsxgw.S("</div>")
+//line style_contract.gsx:20:3
+		_gsxgw.S("<div class=\"hidden\">")
+//line style_contract.gsx:21:4
+		_gsxgw.S("<div class=\"bg-destructive/60\" data-style-contract-reference=\"dark-destructive\"></div>")
+//line style_contract.gsx:22:4
+		_gsxgw.S("<div class=\"bg-destructive/90\" data-style-contract-reference=\"destructive-hover\"></div>")
+//line style_contract.gsx:23:4
+		_gsxgw.S("<div class=\"ring-[3px] ring-destructive/40\" data-style-contract-reference=\"dark-invalid-ring\"></div>")
+//line style_contract.gsx:24:4
+		_gsxgw.S("<div class=\"bg-input/50\" data-style-contract-reference=\"dark-outline-hover\"></div>")
+//line style_contract.gsx:25:4
+		_gsxgw.S("<div class=\"bg-accent/50\" data-style-contract-reference=\"dark-ghost-hover\"></div></div>")
+//line style_contract.gsx:27:3
+		_gsxgw.S("<div class=\"flex gap-2\">")
+//line style_contract.gsx:28:4
+		_gsxgw.Node(ctx, ui.PaginationPrevious("#", _gsxrt.Attrs{{Key: "data-style-contract", Value: "pagination-previous"}}))
+//line style_contract.gsx:29:4
+		_gsxgw.Node(ctx, ui.PaginationNext("#", _gsxrt.Attrs{{Key: "data-style-contract", Value: "pagination-next"}}))
+//line style_contract.gsx:30:4
+		_gsxgw.Node(ctx, ui.PaginationPrevious("#", _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: "pl-12"}}, _gsxrt.Attrs{{Key: "data-style-contract", Value: "pagination-previous-caller"}})))
 		_gsxgw.S("</div></div>")
 		return _gsxgw.Err()
 	})

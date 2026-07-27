@@ -195,3 +195,25 @@ func TestAllPreservesSliceNilness(t *testing.T) {
 		t.Fatal("empty Values became nil")
 	}
 }
+
+func TestPaginationLinkContractIncludesCurrentPageAxis(t *testing.T) {
+	for _, component := range All() {
+		if component.Name != "Pagination" {
+			continue
+		}
+		for _, slot := range component.Slots {
+			if slot.Name != "pagination-link" {
+				continue
+			}
+			for _, axis := range slot.Axes {
+				if axis.Attribute == "aria-current" &&
+					reflect.DeepEqual(axis.Values, []string{"page"}) {
+					return
+				}
+			}
+			t.Fatal(`pagination-link missing aria-current values ["page"]`)
+		}
+		t.Fatal("Pagination missing pagination-link slot")
+	}
+	t.Fatal("missing Pagination contract")
+}

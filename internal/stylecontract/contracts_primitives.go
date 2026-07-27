@@ -204,6 +204,10 @@ var primitiveContracts = []Component{
 						Attribute: "data-size",
 						Values:    []string{"default", "xs", "sm", "lg", "icon", "icon-xs", "icon-sm", "icon-lg"},
 					},
+					{
+						Attribute: "aria-current",
+						Values:    []string{"page"},
+					},
 				},
 			},
 			{Name: "pagination-previous"},
