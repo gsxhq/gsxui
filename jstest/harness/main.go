@@ -63,6 +63,18 @@ func newMux(root string) http.Handler {
 		}
 	})
 
+	mux.HandleFunc("GET /f/sidebar-contract", func(w http.ResponseWriter, r *http.Request) {
+		var buf bytes.Buffer
+		if err := SidebarContractFixture(r.URL.Query().Get("case")).Render(r.Context(), &buf); err != nil {
+			http.Error(w, "render: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		if err := renderShell(w, "sidebar-contract", "/ui/index.js", template.HTML(buf.String())); err != nil {
+			log.Printf("rendering sidebar-contract fixture: %v", err)
+		}
+	})
+
 	// /static/ serves the repo tree read-only. The compiled stylesheet lands
 	// at jstest/.tmp/site.css, and Tailwind's bundled @fontsource imports
 	// carry url() references relative to that output file — serving from the

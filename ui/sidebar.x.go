@@ -16,126 +16,15 @@ import (
 	_gsxsc "strconv"
 )
 
-// Sidebar and its ~25 parts are the shadcn/ui Sidebar (registry/new-york-v4/
-// ui/sidebar.tsx, 727 lines) — the widest single component in gsxui, but
-// shallow: almost every part below is a plain markup wrapper carrying one
-// verbatim class string. The two places with real design work are STATE and
-// MOBILE (2026-07-24 tier4 source map, `## sidebar`); everything else is a
-// straight port.
+// Sidebar uses one semantic component tree and two responsive render
+// branches. A server cannot know the browser viewport, so non-flat sidebars
+// render one native Sheet tree for mobile and one fixed tree for desktop.
+// CSS exposes exactly one tree at a time. Consequently children render twice;
+// callers must not put IDs inside them.
 //
-// 1. STATE. SidebarProvider takes `open bool` and stamps
-// data-state="expanded"|"collapsed" server-side on its own sidebar-wrapper
-// div — no flash, no hydration step, and no cookie/localStorage inside the
-// component (shadcn's own React version mirrors state into a
-// non-HttpOnly `sidebar_state` cookie on every toggle; gsxui deliberately
-// does not). sidebar.js flips that data-state on click and emits
-// gsxui:change ({ open }) via ui/gsxui.js's shared emit() helper — it never
-// touches document.cookie or localStorage. Persisting across reloads is the
-// CALLER's job: site/examples/sidebar/persisted.gsx is the documented
-// cookie round-trip (a Go handler reading sidebar_state into `open`, plus a
-// gsxui:change listener writing it back — target-guarded against
-// [data-slot="sidebar-wrapper"], since gsxui:change is also emitted by
-// tabs/toggle/toggle-group/resizable; see that example's own doc comment).
-//
-// FIX (review round 1, CRITICAL — supersedes the task brief's own Sidebar
-// signature, which omitted `open`): every state-driven visual in this
-// component — the gap's width, the container's offcanvas slide, icon-
-// collapsed sizing, SidebarInset's peer-data-[state=collapsed]:ml-2, the
-// rail's cursor, and all eight group-data-[collapsible=...] consumers —
-// roots at the DESKTOP ROOT div, never at SidebarProvider's own wrapper
-// (confirmed: no selector anywhere in this component reads
-// [data-slot=sidebar-wrapper]'s own data-state). A Sidebar with no `open`
-// parameter therefore had no way to ever render collapsed — not a flash,
-// a PERMANENT bug: SidebarProvider(false, ...) rendered a fully expanded
-// sidebar, full stop, and the first click/rail-press/Cmd+B had to fight
-// its way past a `data-state="expanded"` it was never told to start from
-// (sidebar.js's toggle reads the CURRENT data-state to decide the new one,
-// so a wrongly-expanded root swallowed the first press entirely). `Sidebar`
-// now takes `open bool` as its first parameter — the same value the
-// caller already passes to `SidebarProvider`, following this codebase's
-// established explicit-param pattern for values React context would
-// otherwise thread (see ui/toggle-group.gsx's own doc comment on
-// `groupType`/`variant`/`size`/`spacing` — "the caller, which already has
-// the value in scope, passes it explicitly"). `data-state` renders from
-// `open` directly; `data-collapsible` is the configured mode when
-// collapsed, `""` when expanded — exactly the reference's own
-// `state === "collapsed" ? collapsible : ""` ternary. The Go-invisible
-// configured collapse MODE ("offcanvas"/"icon"/"none") is separately
-// stamped as data-gsxui-sidebar-collapsible so sidebar.js can restore it
-// on a later collapse after the user has expanded it client-side (see
-// MECHANISM below) — that attribute is unaffected by this fix.
-//
-// 2. MOBILE. React swaps the whole sidebar for a Sheet via a client-only
-// useIsMobile() media query; a server render cannot branch on viewport.
-// Sidebar instead renders BOTH trees unconditionally and lets CSS gate
-// them: the desktop tree keeps shadcn's own `hidden … md:block` root and
-// `hidden … md:flex` container, and the mobile tree is the Sheet branch,
-// carrying the reference's own data-mobile="true", the
-// --sidebar-width: 18rem override, and the sr-only header/title/
-// description. No media-query JS anywhere. collapsible="none" still
-// short-circuits to the reference's single flat div branch, Sheet and all.
-//
-// FIX (review round 1, mobile gate specificity): the `md:hidden` that
-// CSS-gates the mobile tree (a gsxui ADAPT — upstream never needs it,
-// since it only ever renders one branch) lives on the Sheet ROOT
-// (`<Sheet class="md:hidden">`, a plain `class="contents"` div with no
-// competing display utility of its own), NOT on the `<dialog>` element
-// itself. It was originally on SheetContent's own class, where it lost to
-// the dialog's own `open:flex` (compiled `:is([open],:popover-open,
-// :open){display:flex}`, specificity (0,2,0) against `.md\:hidden`'s
-// (0,1,0)) — opening the sheet at a narrow viewport and then resizing to
-// >=md left BOTH trees visible at once, since a media query adds no
-// specificity to win that fight. An ancestor `display:none` still hides a
-// `<dialog>` promoted to the top layer via showModal() (top-layer
-// promotion escapes stacking/overflow/clipping containment, not ordinary
-// CSS box generation from an ancestor's own `display`), and the Sheet
-// root's plain `contents`/`md:hidden` pair has no such specificity fight
-// to lose, since neither `[open]`/`:popover-open`/`:open` pseudo-classes
-// ever match a plain wrapper div.
-//
-// CONSEQUENCE (children renders TWICE — read this before nesting anything
-// with an id inside a Sidebar): every non-"none" Sidebar renders `children`
-// once inside the mobile Sheet and once inside the desktop tree. This is a
-// known, accepted cost of the CSS-gated dual-tree design, not a bug. DO NOT
-// put `id` attributes anywhere inside a Sidebar's children (or in attrs
-// passed to Sidebar/SidebarProvider themselves, which forward onto both the
-// Sheet root and the desktop container) — they would be duplicated and the
-// document invalid. Use classes and data-* attributes instead. Ledgered as
-// a GAP in docs/jsx-parity.md `## sidebar`.
-//
-// 5. NO CONTEXT SUBSTITUTE. data-state/data-collapsible/data-variant/
-// data-side are stamped on the desktop root and consumed by descendants
-// entirely through group-data-*/peer-data-* selectors — already pure CSS in
-// the reference, so nothing needs threading through Go params.
-// SidebarTrigger and SidebarRail resolve "the provider" from the DOM
-// (closest('[data-slot="sidebar-wrapper"]')) at click time, not an
-// imperative handle — matching dialog.js's own proximity-wiring
-// convention.
-//
-// 6. Cmd/Ctrl+B toggles (SIDEBAR_KEYBOARD_SHORTCUT), registered once at
-// module scope in sidebar.js, guarded against key-repeat, preventDefault'd.
-//
-// MECHANISM (upstream's six constants): SIDEBAR_WIDTH/-_MOBILE/-_ICON
-// become the unexported sidebarWidth/sidebarWidthMobile/sidebarWidthIcon
-// consts below; SIDEBAR_COOKIE_NAME/-_MAX_AGE are not gsxui constants at
-// all (no cookie in the component, see decision 1 above) — the cookie name
-// only appears, as a literal, in site/examples/sidebar/persisted.gsx's own
-// Go handler snippet. SIDEBAR_KEYBOARD_SHORTCUT lives in sidebar.js only.
-//
-// ADAPT (TooltipProvider dropped, not a gap in this port): the source map's
-// own dependency list names Tooltip+TooltipContent+TooltipProvider+
-// TooltipTrigger, but gsxui's ui/tooltip.gsx never ports TooltipProvider at
-// all (see docs/jsx-parity.md `## tooltip` GAP: "shared delayDuration/
-// skip-delay-group machinery across multiple tooltips is not ported —
-// tooltip.js hard-codes a 300ms open delay per trigger"). SidebarProvider
-// therefore does NOT wrap children in a TooltipProvider (there is nothing
-// to wrap them in) — a correction to the source map's dependency framing,
-// not a new gap this component introduces.
-//
-// asChild/Slot polymorphism (SidebarGroupLabel/SidebarGroupAction/
-// SidebarMenuButton/SidebarMenuSubButton in the reference) is dropped
-// throughout, same as every other gsxui port — each part always renders
-// its own tag.
+// State is server-rendered from open. JavaScript reflects later changes onto
+// SidebarProvider and the desktop root, emits gsxui:change, and opens the
+// native mobile dialog. Persistence remains caller-owned.
 //
 //line sidebar.gsx:11:1
 const (
@@ -144,65 +33,48 @@ const (
 	sidebarWidthIcon   = "3rem"
 )
 
-// SidebarProvider wraps a page's sidebar + inset content in the
-// data-slot="sidebar-wrapper" div every group-data-*/peer-data-* selector
-// in this component ultimately roots against — see the package doc
-// comment's STATE section. No TooltipProvider wrapper (see the package doc
-// comment's own ADAPT) — gsxui's Tooltip needs none.
-
-//line sidebar.gsx:142:1
+//line sidebar.gsx:26:1
 func SidebarProvider(open bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:143:2
+//line sidebar.gsx:27:2
 		state := "collapsed"
 		if open {
 			state = "expanded"
 		}
-//line sidebar.gsx:149:2
+//line sidebar.gsx:33:2
+		_gsxv0 := withSlot("sidebar-wrapper", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"sidebar-wrapper\"")
-		}
-		if !attrs.Has("data-state") {
+		if !_gsxv0.Has("data-state") {
 			_gsxgw.S(" data-state=\"")
 			_gsxgw.AttrValue(string(state))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		if attrs.Has("style") {
-			_gsxgw.StyleMerged(_gsxrt.StyleString(_gsxrt.Class("--sidebar-width:"+_gsxrt.StyleValue(sidebarWidth)), _gsxrt.Class("--sidebar-width-icon:"+_gsxrt.StyleValue(sidebarWidthIcon))), attrs.Style())
+		if !_gsxv0.Has("data-gsxui-sidebar-wrapper") {
+			_gsxgw.BoolAttr("data-gsxui-sidebar-wrapper", true)
+		}
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
+		if _gsxv0.Has("style") {
+			_gsxgw.StyleMerged(_gsxrt.StyleString(_gsxrt.Class("--sidebar-width:"+_gsxrt.StyleValue(sidebarWidth)), _gsxrt.Class("--sidebar-width-icon:"+_gsxrt.StyleValue(sidebarWidthIcon))), _gsxv0.Style())
 		} else {
 			_gsxgw.S(" style=\"")
 			_gsxgw.Style(_gsxrt.Class("--sidebar-width:"+_gsxrt.StyleValue(sidebarWidth)), _gsxrt.Class("--sidebar-width-icon:"+_gsxrt.StyleValue(sidebarWidthIcon)))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line sidebar.gsx:156:3
+//line sidebar.gsx:39:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:160:1
-// Sidebar renders the reference's three branches — see the package doc
-// comment's MOBILE section for why the offcanvas/icon branches below are
-// TWO trees (mobile Sheet + desktop group/peer), not the upstream
-// isMobile-gated either/or, and its own FIX entry for why `open` is now
-// this component's first parameter, matching SidebarProvider's own value.
-// collapsible="none" still renders the reference's single flat div,
-// unconditionally, exactly once, and ignores `open` entirely (matching the
-// reference, whose own collapsible="none" branch never reads `state`).
-
-//line sidebar.gsx:168:1
+//line sidebar.gsx:43:1
 func Sidebar(open bool, side string, variant string, collapsible string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:169:2
+//line sidebar.gsx:44:2
 		s := side
 		if s == "" {
 			s = "left"
@@ -216,115 +88,133 @@ func Sidebar(open bool, side string, variant string, collapsible string, childre
 			c = "offcanvas"
 		}
 		state := "collapsed"
-		collapsibleAttr := c
+		activeCollapsible := c
 		if open {
 			state = "expanded"
-			collapsibleAttr = ""
+			activeCollapsible = ""
 		}
-//line sidebar.gsx:189:2
+//line sidebar.gsx:64:2
 		if collapsible == "none" {
-//line sidebar.gsx:190:3
+//line sidebar.gsx:65:3
+			_gsxv1 := withSlot("sidebar", attrs)
 			_gsxgw.S("<div")
-			if !attrs.Has("data-slot") {
-				_gsxgw.S(" data-slot=\"sidebar\"")
+			if !_gsxv1.Has("data-side") {
+				_gsxgw.S(" data-side=\"")
+				_gsxgw.AttrValue(string(s))
+				_gsxgw.S("\"")
 			}
-			_gsxgw.S(" class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex h-full w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground"), _gsxrt.Class(attrs.Class()))
-			_gsxgw.S("\"")
-			_gsxgw.StyleMerged("", attrs.Style())
-			_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			if !_gsxv1.Has("data-variant") {
+				_gsxgw.S(" data-variant=\"")
+				_gsxgw.AttrValue(string(v))
+				_gsxgw.S("\"")
+			}
+			if !_gsxv1.Has("data-collapsible") {
+				_gsxgw.S(" data-collapsible=\"none\"")
+			}
+			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
+			_gsxgw.StyleMerged("", _gsxv1.Style())
+			_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 			_gsxgw.S(">")
-//line sidebar.gsx:195:4
+//line sidebar.gsx:71:4
 			_gsxgw.Node(ctx, children)
 			_gsxgw.S("</div>")
 		} else {
-//line sidebar.gsx:199:4
+//line sidebar.gsx:75:4
 			_gsxgw.NodeResult(_gsxrenderSheet(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:200:5
-				_gsxa1 := s
-				_gsxv0 := _gsxrt.FilterCSS(string(sidebarWidthMobile))
-				_gsxgw.NodeResult(_gsxrenderSheetContent(ctx, _gsxgw, _gsxa1, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line sidebar.gsx:76:5
+				_gsxa3 := s
+				_gsxv2 := _gsxrt.FilterCSS(string(sidebarWidthMobile))
+				_gsxgw.NodeResult(_gsxrenderSheetContent(ctx, _gsxgw, _gsxa3, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:208:6
+//line sidebar.gsx:83:6
 					_gsxgw.NodeResult(_gsxrenderSheetHeader(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:209:7
+//line sidebar.gsx:84:7
 						_gsxgw.NodeResult(_gsxrenderSheetTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Sidebar")
 							return _gsxgw.Err()
-						}), nil))
-//line sidebar.gsx:210:7
+						}), withSlot("sidebar-mobile-title", nil)))
+//line sidebar.gsx:85:7
 						_gsxgw.NodeResult(_gsxrenderSheetDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Displays the mobile sidebar.")
 							return _gsxgw.Err()
-						}), nil))
+						}), withSlot("sidebar-mobile-description", nil)))
 						return _gsxgw.Err()
-					}), _gsxrt.Attrs{{Key: "class", Value: "sr-only"}}))
-//line sidebar.gsx:212:6
-					_gsxgw.S("<div class=\"flex h-full w-full flex-col\">")
-//line sidebar.gsx:212:47
+					}), withSlot("sidebar-mobile-header", nil)))
+//line sidebar.gsx:89:6
+					_gsxv4 := withSlot("sidebar-mobile-inner", nil)
+					_gsxgw.S("<div")
+					_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv4.Class())
+					_gsxgw.StyleMerged("", _gsxv4.Style())
+					_gsxgw.Spread(ctx, _gsxv4, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+					_gsxgw.S(">")
+//line sidebar.gsx:89:56
 					_gsxgw.Node(ctx, children)
 					_gsxgw.S("</div>")
 					return _gsxgw.Err()
-				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-slot", Value: "sidebar"}}, _gsxrt.Attrs{{Key: "data-sidebar", Value: "sidebar"}}, _gsxrt.Attrs{{Key: "data-mobile", Value: "true"}}, _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("--sidebar-width:" + _gsxv0)}}, _gsxrt.Attrs{{Key: "class", Value: "w-(--sidebar-width) bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"}})))
+				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-mobile", Value: "true"}}, _gsxrt.Attrs{{Key: "data-gsxui-sidebar-mobile-dialog", Value: true}}, _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("--sidebar-width:" + _gsxv2)}}, withSlot("sidebar", withSlot("sidebar-mobile-content", nil)))))
 				return _gsxgw.Err()
-			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: "md:hidden"}}, attrs)))
-//line sidebar.gsx:215:4
-			_gsxgw.S("<div class=\"group peer hidden text-sidebar-foreground md:block\" data-state=\"")
-			_gsxgw.AttrValue(string(state))
-			_gsxgw.S("\" data-collapsible=\"")
-			_gsxgw.AttrValue(string(collapsibleAttr))
-			_gsxgw.S("\" data-gsxui-sidebar-collapsible=\"")
-			_gsxgw.AttrValue(string(c))
-			_gsxgw.S("\" data-variant=\"")
-			_gsxgw.AttrValue(string(v))
-			_gsxgw.S("\" data-side=\"")
-			_gsxgw.AttrValue(string(s))
-			_gsxgw.S("\" data-slot=\"sidebar\">")
-//line sidebar.gsx:224:5
-			_gsxgw.S("<div data-slot=\"sidebar-gap\"")
-			_gsxv2 := "relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear"
-			_gsxv3 := "group-data-[collapsible=offcanvas]:w-0"
-			_gsxv4 := "group-data-[side=right]:rotate-180"
-			var _gsxv5 string
-			if v == "floating" || v == "inset" {
-				_gsxv5 = "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]"
-			} else {
-				_gsxv5 = "group-data-[collapsible=icon]:w-(--sidebar-width-icon)"
-			}
-			_gsxgw.S(" class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv2), _gsxrt.Class(_gsxv3), _gsxrt.Class(_gsxv4), _gsxrt.Class(_gsxv5))
-			_gsxgw.S("\"></div>")
-//line sidebar.gsx:237:5
+			}), withSlot("sidebar-mobile-root", attrs)))
+//line sidebar.gsx:92:4
+			_gsxv5 := withSlot("sidebar", withSlot("sidebar-desktop", nil))
 			_gsxgw.S("<div")
-			if !attrs.Has("data-slot") {
-				_gsxgw.S(" data-slot=\"sidebar-container\"")
+			if !_gsxv5.Has("data-state") {
+				_gsxgw.S(" data-state=\"")
+				_gsxgw.AttrValue(string(state))
+				_gsxgw.S("\"")
 			}
-			_gsxv6 := "fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex"
-			var _gsxv7 string
-			if s == "left" {
-				_gsxv7 = "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
-			} else {
-				_gsxv7 = "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]"
+			if !_gsxv5.Has("data-collapsible") {
+				_gsxgw.S(" data-collapsible=\"")
+				_gsxgw.AttrValue(string(activeCollapsible))
+				_gsxgw.S("\"")
 			}
-			var _gsxv8 string
-			if v == "floating" || v == "inset" {
-				_gsxv8 = "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
-			} else {
-				_gsxv8 = "group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l"
+			if !_gsxv5.Has("data-gsxui-sidebar-collapsible") {
+				_gsxgw.S(" data-gsxui-sidebar-collapsible=\"")
+				_gsxgw.AttrValue(string(c))
+				_gsxgw.S("\"")
 			}
-			_gsxgw.S(" class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv6), _gsxrt.Class(_gsxv7), _gsxrt.Class(_gsxv8), _gsxrt.Class(attrs.Class()))
-			_gsxgw.S("\"")
-			_gsxgw.StyleMerged("", attrs.Style())
-			_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			if !_gsxv5.Has("data-variant") {
+				_gsxgw.S(" data-variant=\"")
+				_gsxgw.AttrValue(string(v))
+				_gsxgw.S("\"")
+			}
+			if !_gsxv5.Has("data-side") {
+				_gsxgw.S(" data-side=\"")
+				_gsxgw.AttrValue(string(s))
+				_gsxgw.S("\"")
+			}
+			if !_gsxv5.Has("data-gsxui-sidebar-desktop") {
+				_gsxgw.BoolAttr("data-gsxui-sidebar-desktop", true)
+			}
+			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv5.Class())
+			_gsxgw.StyleMerged("", _gsxv5.Style())
+			_gsxgw.Spread(ctx, _gsxv5, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 			_gsxgw.S(">")
-//line sidebar.gsx:254:6
-			_gsxgw.S("<div data-sidebar=\"sidebar\" data-slot=\"sidebar-inner\" class=\"flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow-sm\">")
-//line sidebar.gsx:259:7
+//line sidebar.gsx:101:5
+			_gsxv6 := withSlot("sidebar-gap", nil)
+			_gsxgw.S("<div")
+			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv6.Class())
+			_gsxgw.StyleMerged("", _gsxv6.Style())
+			_gsxgw.Spread(ctx, _gsxv6, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.S("></div>")
+//line sidebar.gsx:102:5
+			_gsxv7 := withSlot("sidebar-container", attrs)
+			_gsxgw.S("<div")
+			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv7.Class())
+			_gsxgw.StyleMerged("", _gsxv7.Style())
+			_gsxgw.Spread(ctx, _gsxv7, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.S(">")
+//line sidebar.gsx:103:6
+			_gsxv8 := withSlot("sidebar-inner", nil)
+			_gsxgw.S("<div")
+			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv8.Class())
+			_gsxgw.StyleMerged("", _gsxv8.Style())
+			_gsxgw.Spread(ctx, _gsxv8, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.S(">")
+//line sidebar.gsx:104:7
 			_gsxgw.Node(ctx, children)
 			_gsxgw.S("</div></div></div>")
 		}
@@ -332,740 +222,480 @@ func Sidebar(open bool, side string, variant string, collapsible string, childre
 	})
 }
 
-//line sidebar.gsx:267:1
-// SidebarTrigger composes ui.Button (variant="ghost" size="icon") — click
-// handling (toggle desktop state or open the mobile Sheet, resolved by
-// sidebar.js at click time) is entirely JS; see ui/sidebar.js.
-//
-// FIX (review round 2, IMPORTANT): sidebar.js used to bind this click
-// handler off data-slot="sidebar-trigger" alone — the ONLY interactive
-// gsxui component whose public JS-attachment hook wasn't a data-gsxui-*
-// attribute (docs/jsx-parity.md `## dialog` MECHANISM: "the data-gsxui-*
-// attributes are each interactive component's PUBLIC contract"). A caller
-// wiring their own styled trigger (`<ui.Button data-gsxui-sidebar-trigger>`,
-// the documented idiom) had to stamp data-slot instead, contradicting every
-// other component in this package. data-gsxui-sidebar-trigger is now
-// stamped here and matched by sidebar.js ALONGSIDE data-slot (either
-// selector wires the click), so nothing already written against data-slot
-// breaks.
-
-//line sidebar.gsx:282:1
+//line sidebar.gsx:112:1
 func SidebarTrigger(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:283:2
+//line sidebar.gsx:113:2
 		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "ghost", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:292:3
+//line sidebar.gsx:119:3
 			_gsxgw.Node(ctx, icon.PanelLeft())
-//line sidebar.gsx:293:3
-			_gsxgw.S("<span class=\"sr-only\">Toggle Sidebar</span>")
+//line sidebar.gsx:120:3
+			_gsxv9 := withSlot("sidebar-trigger-label", nil)
+			_gsxgw.S("<span")
+			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv9.Class())
+			_gsxgw.StyleMerged("", _gsxv9.Style())
+			_gsxgw.Spread(ctx, _gsxv9, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.S(">Toggle Sidebar</span>")
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-sidebar", Value: "trigger"}}, _gsxrt.Attrs{{Key: "data-slot", Value: "sidebar-trigger"}}, _gsxrt.Attrs{{Key: "data-gsxui-sidebar-trigger", Value: true}}, _gsxrt.Attrs{{Key: "class", Value: "size-7"}}, attrs)))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-sidebar-trigger", Value: true}}, withSlot("sidebar-trigger", attrs))))
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:297:1
-// SidebarRail is a pointer-only affordance (tabindex="-1", deliberately not
-// a keyboard tab stop, matching the reference exactly — no drag is wired,
-// only a click) that shares SidebarTrigger's toggle mechanism.
-//
-// FIX (review round 2, IMPORTANT — same data-gsxui-* hook gap as
-// SidebarTrigger, see its own doc comment): data-gsxui-sidebar-rail is now
-// stamped here and matched by sidebar.js alongside data-slot="sidebar-rail".
-//
-// ADAPT (review round 1, MINOR 6 — [[data-mobile]_&]:hidden added, not in
-// upstream): callers place SidebarRail as a child of Sidebar, same as
-// every shadcn block does (registry/new-york-v4/blocks/sidebar-*/
-// components/app-sidebar.tsx all render it as Sidebar's own last child) —
-// but `children` renders TWICE in this port (see the package doc
-// comment's MOBILE section), so a rail placed that way also lands inside
-// the mobile Sheet tree, where it has no desktop group/peer ancestor to
-// read data-* off, its click is a no-op (isMobile() routes clicks inside
-// the mobile tree to openMobile(), not toggleDesktop()), and its own
-// `sm:flex` would make it visibly overlay Sheet content between the sm and
-// md breakpoints. `[[data-mobile]_&]:hidden` (the same ancestor-selector
-// arbitrary-variant idiom this class already uses for the data-side/
-// data-state/data-collapsible combinators above) unconditionally hides it
-// whenever nested under a data-mobile ancestor — its compiled selector
-// (`[data-mobile] &`, specificity (0,2,0)) beats the plain `sm:flex`
-// utility (0,1,0) at every viewport, no !important needed.
+//line sidebar.gsx:124:1
+// SidebarRail is a pointer affordance matching the reference: it is not a
+// keyboard tab stop and activates the same state transition as the trigger.
 
-//line sidebar.gsx:321:1
+//line sidebar.gsx:126:1
 func SidebarRail(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:322:2
+//line sidebar.gsx:127:2
+		_gsxv10 := withSlot("sidebar-rail", attrs)
 		_gsxgw.S("<button")
-		if !attrs.Has("type") {
+		if !_gsxv10.Has("type") {
 			_gsxgw.S(" type=\"button\"")
 		}
-		if !attrs.Has("data-sidebar") {
-			_gsxgw.S(" data-sidebar=\"rail\"")
-		}
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"sidebar-rail\"")
-		}
-		if !attrs.Has("data-gsxui-sidebar-rail") {
+		if !_gsxv10.Has("data-gsxui-sidebar-rail") {
 			_gsxgw.BoolAttr("data-gsxui-sidebar-rail", true)
 		}
-		if !attrs.Has("aria-label") {
+		if !_gsxv10.Has("aria-label") {
 			_gsxgw.S(" aria-label=\"Toggle Sidebar\"")
 		}
-		if !attrs.Has("tabindex") {
+		if !_gsxv10.Has("tabindex") {
 			_gsxgw.S(" tabindex=\"-1\"")
 		}
-		if !attrs.Has("title") {
+		if !_gsxv10.Has("title") {
 			_gsxgw.S(" title=\"Toggle Sidebar\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:after:bg-sidebar-border sm:flex in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize [[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize group-data-[collapsible=offcanvas]:translate-x-0 group-data-[collapsible=offcanvas]:after:left-full hover:group-data-[collapsible=offcanvas]:bg-sidebar [[data-side=left][data-collapsible=offcanvas]_&]:-right-2 [[data-side=right][data-collapsible=offcanvas]_&]:-left-2 [[data-mobile]_&]:hidden"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv10.Class())
+		_gsxgw.StyleMerged("", _gsxv10.Style())
+		_gsxgw.Spread(ctx, _gsxv10, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S("></button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:335:1
+//line sidebar.gsx:137:1
 func SidebarInset(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:336:2
+//line sidebar.gsx:138:2
+		_gsxv11 := withSlot("sidebar-inset", attrs)
 		_gsxgw.S("<main")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"sidebar-inset\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative flex w-full flex-1 flex-col bg-background md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv11.Class())
+		_gsxgw.StyleMerged("", _gsxv11.Style())
+		_gsxgw.Spread(ctx, _gsxv11, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line sidebar.gsx:341:3
+//line sidebar.gsx:138:48
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</main>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:345:1
+//line sidebar.gsx:141:1
 func SidebarInput(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:346:2
-		_gsxgw.NodeResult(_gsxrenderInput(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-slot", Value: "sidebar-input"}}, _gsxrt.Attrs{{Key: "data-sidebar", Value: "input"}}, _gsxrt.Attrs{{Key: "class", Value: "h-8 w-full bg-background shadow-none"}}, attrs)))
+//line sidebar.gsx:142:2
+		_gsxgw.NodeResult(_gsxrenderInput(ctx, _gsxgw, withSlot("sidebar-input", attrs)))
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:349:1
+//line sidebar.gsx:145:1
 func SidebarHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:350:2
+//line sidebar.gsx:146:2
+		_gsxv12 := withSlot("sidebar-header", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"sidebar-header\"")
-		}
-		if !attrs.Has("data-sidebar") {
-			_gsxgw.S(" data-sidebar=\"header\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-col gap-2 p-2"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv12.Class())
+		_gsxgw.StyleMerged("", _gsxv12.Style())
+		_gsxgw.Spread(ctx, _gsxv12, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line sidebar.gsx:351:3
+//line sidebar.gsx:146:48
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:355:1
+//line sidebar.gsx:149:1
 func SidebarFooter(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:356:2
+//line sidebar.gsx:150:2
+		_gsxv13 := withSlot("sidebar-footer", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"sidebar-footer\"")
-		}
-		if !attrs.Has("data-sidebar") {
-			_gsxgw.S(" data-sidebar=\"footer\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-col gap-2 p-2"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv13.Class())
+		_gsxgw.StyleMerged("", _gsxv13.Style())
+		_gsxgw.Spread(ctx, _gsxv13, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line sidebar.gsx:357:3
+//line sidebar.gsx:150:48
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:361:1
+//line sidebar.gsx:153:1
 func SidebarSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:362:2
-		_gsxgw.NodeResult(_gsxrenderSeparator(ctx, _gsxgw, "", _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-slot", Value: "sidebar-separator"}}, _gsxrt.Attrs{{Key: "data-sidebar", Value: "separator"}}, _gsxrt.Attrs{{Key: "class", Value: "mx-2 w-auto bg-sidebar-border"}}, attrs)))
+//line sidebar.gsx:154:2
+		_gsxgw.NodeResult(_gsxrenderSeparator(ctx, _gsxgw, "", withSlot("sidebar-separator", attrs)))
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:365:1
-// SidebarContent picks up nova's own gap-0 (new-york-v4 has gap-2) plus
-// no-scrollbar (new, matching carousel/input-otp's own scrollbar-hiding
-// convention) — the two real metric deltas nova's `.cn-sidebar-content`
-// carries; see the 2026-07-24 tier4 source map `## sidebar` §6. Nova's
-// border→ring swap on the floating inner surface is NOT adopted (house
-// standing exception) — see SidebarMenuItem below... actually see the
-// sidebar-inner div inside Sidebar, which keeps new-york-v4's `border`
-// verbatim.
-
-//line sidebar.gsx:373:1
+//line sidebar.gsx:157:1
 func SidebarContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:374:2
+//line sidebar.gsx:158:2
+		_gsxv14 := withSlot("sidebar-content", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"sidebar-content\"")
-		}
-		if !attrs.Has("data-sidebar") {
-			_gsxgw.S(" data-sidebar=\"content\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex min-h-0 flex-1 flex-col gap-0 overflow-auto no-scrollbar group-data-[collapsible=icon]:overflow-hidden"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv14.Class())
+		_gsxgw.StyleMerged("", _gsxv14.Style())
+		_gsxgw.Spread(ctx, _gsxv14, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line sidebar.gsx:380:3
+//line sidebar.gsx:158:49
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:384:1
+//line sidebar.gsx:161:1
 func SidebarGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:385:2
+//line sidebar.gsx:162:2
+		_gsxv15 := withSlot("sidebar-group", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"sidebar-group\"")
-		}
-		if !attrs.Has("data-sidebar") {
-			_gsxgw.S(" data-sidebar=\"group\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative flex w-full min-w-0 flex-col p-2"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv15.Class())
+		_gsxgw.StyleMerged("", _gsxv15.Style())
+		_gsxgw.Spread(ctx, _gsxv15, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line sidebar.gsx:386:3
+//line sidebar.gsx:162:47
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:390:1
-// SidebarGroupLabel drops asChild (see the package doc comment) — always a
-// <div>.
-
-//line sidebar.gsx:392:1
+//line sidebar.gsx:165:1
 func SidebarGroupLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:393:2
+//line sidebar.gsx:166:2
+		_gsxv16 := withSlot("sidebar-group-label", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"sidebar-group-label\"")
-		}
-		if !attrs.Has("data-sidebar") {
-			_gsxgw.S(" data-sidebar=\"group-label\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-sidebar-foreground/70 ring-sidebar-ring outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0 group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv16.Class())
+		_gsxgw.StyleMerged("", _gsxv16.Style())
+		_gsxgw.Spread(ctx, _gsxv16, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line sidebar.gsx:399:3
+//line sidebar.gsx:166:53
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:403:1
-// SidebarGroupAction drops asChild (see the package doc comment) — always a
-// <button>; type="button" added per this codebase's house convention for
-// every native, non-form button (upstream's own plain "button" string tag
-// carries no explicit type prop, unlike a Radix Primitive.button, which
-// defaults to type="button" internally).
-
-//line sidebar.gsx:408:1
+//line sidebar.gsx:169:1
 func SidebarGroupAction(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:409:2
+//line sidebar.gsx:170:2
+		_gsxv17 := withSlot("sidebar-group-action", attrs)
 		_gsxgw.S("<button")
-		if !attrs.Has("type") {
+		if !_gsxv17.Has("type") {
 			_gsxgw.S(" type=\"button\"")
 		}
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"sidebar-group-action\"")
-		}
-		if !attrs.Has("data-sidebar") {
-			_gsxgw.S(" data-sidebar=\"group-action\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("absolute top-3.5 right-3 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0 after:absolute after:-inset-2 md:after:hidden group-data-[collapsible=icon]:hidden"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv17.Class())
+		_gsxgw.StyleMerged("", _gsxv17.Style())
+		_gsxgw.Spread(ctx, _gsxv17, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line sidebar.gsx:416:3
+//line sidebar.gsx:171:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:420:1
+//line sidebar.gsx:175:1
 func SidebarGroupContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:421:2
+//line sidebar.gsx:176:2
+		_gsxv18 := withSlot("sidebar-group-content", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"sidebar-group-content\"")
-		}
-		if !attrs.Has("data-sidebar") {
-			_gsxgw.S(" data-sidebar=\"group-content\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("w-full text-sm"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv18.Class())
+		_gsxgw.StyleMerged("", _gsxv18.Style())
+		_gsxgw.Spread(ctx, _gsxv18, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line sidebar.gsx:422:3
+//line sidebar.gsx:176:55
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:426:1
+//line sidebar.gsx:179:1
 func SidebarMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:427:2
+//line sidebar.gsx:180:2
+		_gsxv19 := withSlot("sidebar-menu", attrs)
 		_gsxgw.S("<ul")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"sidebar-menu\"")
-		}
-		if !attrs.Has("data-sidebar") {
-			_gsxgw.S(" data-sidebar=\"menu\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex w-full min-w-0 flex-col gap-0"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv19.Class())
+		_gsxgw.StyleMerged("", _gsxv19.Style())
+		_gsxgw.Spread(ctx, _gsxv19, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line sidebar.gsx:428:3
+//line sidebar.gsx:180:45
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</ul>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:432:1
+//line sidebar.gsx:183:1
 func SidebarMenuItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:433:2
+//line sidebar.gsx:184:2
+		_gsxv20 := withSlot("sidebar-menu-item", attrs)
 		_gsxgw.S("<li")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"sidebar-menu-item\"")
-		}
-		if !attrs.Has("data-sidebar") {
-			_gsxgw.S(" data-sidebar=\"menu-item\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/menu-item relative"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv20.Class())
+		_gsxgw.StyleMerged("", _gsxv20.Style())
+		_gsxgw.Spread(ctx, _gsxv20, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line sidebar.gsx:434:3
+//line sidebar.gsx:184:50
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</li>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:438:1
-const sidebarMenuButtonBase = "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm ring-sidebar-ring outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0"
-
-func sidebarMenuButtonVariantClass(variant string) string {
-	switch variant {
-	case "outline":
-		return "bg-background shadow-[0_0_0_1px_var(--sidebar-border)] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_var(--sidebar-accent)]"
-	default:
-		return "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-	}
-}
-
-func sidebarMenuButtonSizeClass(size string) string {
-	switch size {
-	case "sm":
-		return "h-7 text-xs"
-	case "lg":
-		return "h-12 text-sm group-data-[collapsible=icon]:p-0!"
-	default:
-		return "h-8 text-sm"
-	}
-}
-
-// SidebarMenuButton drops asChild (see the package doc comment) — always a
-// <button>, type="button" added per house convention (see
-// SidebarGroupAction's own doc comment).
-//
-// Tooltip gating (source map §5): `tooltip` absent (the Go zero value, "")
-// renders a plain button, no Tooltip wrapper at all. A non-empty tooltip
-// wraps in ui.Tooltip and puts data-gsxui-tooltip-trigger directly on THIS
-// button — not a nested ui.TooltipTrigger, which would be the same
-// button-in-button HTML trap documented on DialogTrigger/SheetTrigger (see
-// docs/jsx-parity.md `## dialog` FINDING); ui.Tooltip's own doc comment
-// establishes this exact idiom. TooltipContent always anchors ABOVE the
-// trigger (gsxui's Tooltip has no side/align params at all — see
-// tooltip.gsx's own doc comment — unlike the reference's side="right"),
-// and gating "only ever shown when collapsed AND on desktop" has no
-// isMobile/state param to read here either, so it is reproduced in pure
-// CSS instead: `hidden group-data-[collapsible=icon]:open:block` only
-// matches while SOME ancestor `.group` carries data-collapsible="icon" —
-// which, per the package doc comment's MOBILE section, is true for the
-// DESKTOP copy of this button exactly when the sidebar is icon-collapsed,
-// and never true for the MOBILE Sheet copy (whose ancestor tree carries no
-// data-collapsible at all) — mobile is suppressed for free, no separate
-// isMobile check needed.
-//
-// FIX (review round 2, BLOCKING): the `open:` gate above is load-bearing,
-// not decorative — `TooltipContent` is a `popover="manual"` element that
-// stays in the DOM closed (no Radix unmount, same as `## dialog`'s own
-// native <dialog>), so a bare `group-data-[collapsible=icon]:block` beats
-// the UA's own closed-popover `display:none` the instant the sidebar
-// icon-collapses, regardless of whether the popover is actually open —
-// every closed desktop tooltip becomes a hit-testable, `position:fixed`,
-// `opacity-0`, `z-50` ghost box parked at the viewport corner. Gating on
-// `:open` too (`hidden group-data-[collapsible=icon]:open:block`) is the
-// exact idiom `docs/jsx-parity.md`'s `## dialog` ADAPT entry already
-// documents for the identical class of bug (`open:grid` instead of a bare
-// `grid`) — matching CSS `:open`/`::backdrop` shape, popover instead of
-// dialog.
-
-//line sidebar.gsx:496:1
+//line sidebar.gsx:187:1
 func SidebarMenuButton(isActive bool, variant string, size string, tooltip string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:497:2
+//line sidebar.gsx:188:2
 		if tooltip == "" {
-//line sidebar.gsx:498:3
+//line sidebar.gsx:189:3
+			_gsxv21 := withSlot("sidebar-menu-button", attrs)
 			_gsxgw.S("<button")
-			if !attrs.Has("type") {
+			if !_gsxv21.Has("type") {
 				_gsxgw.S(" type=\"button\"")
 			}
-			if !attrs.Has("data-slot") {
-				_gsxgw.S(" data-slot=\"sidebar-menu-button\"")
+			if !_gsxv21.Has("data-variant") {
+				_gsxgw.S(" data-variant=\"")
+				_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
+				_gsxgw.S("\"")
 			}
-			if !attrs.Has("data-sidebar") {
-				_gsxgw.S(" data-sidebar=\"menu-button\"")
-			}
-			if !attrs.Has("data-size") {
+			if !_gsxv21.Has("data-size") {
 				_gsxgw.S(" data-size=\"")
 				_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
 				_gsxgw.S("\"")
 			}
-			if !attrs.Has("data-active") {
+			if !_gsxv21.Has("data-active") {
 				_gsxgw.S(" data-active=\"")
 				_gsxgw.S(_gsxsc.FormatBool(bool(isActive)))
 				_gsxgw.S("\"")
 			}
-			_gsxgw.S(" class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebarMenuButtonBase), _gsxrt.Class(sidebarMenuButtonVariantClass(variant)), _gsxrt.Class(sidebarMenuButtonSizeClass(size)), _gsxrt.Class(attrs.Class()))
-			_gsxgw.S("\"")
-			_gsxgw.StyleMerged("", attrs.Style())
-			_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv21.Class())
+			_gsxgw.StyleMerged("", _gsxv21.Style())
+			_gsxgw.Spread(ctx, _gsxv21, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 			_gsxgw.S(">")
-//line sidebar.gsx:507:4
+//line sidebar.gsx:196:4
 			_gsxgw.Node(ctx, children)
 			_gsxgw.S("</button>")
 		} else {
-//line sidebar.gsx:510:3
+//line sidebar.gsx:199:3
 			_gsxgw.NodeResult(_gsxrenderTooltip(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:511:4
+//line sidebar.gsx:200:4
+				_gsxv22 := withSlot("sidebar-menu-button", attrs)
 				_gsxgw.S("<button")
-				if !attrs.Has("type") {
+				if !_gsxv22.Has("type") {
 					_gsxgw.S(" type=\"button\"")
 				}
-				if !attrs.Has("data-slot") {
-					_gsxgw.S(" data-slot=\"sidebar-menu-button\"")
+				if !_gsxv22.Has("data-variant") {
+					_gsxgw.S(" data-variant=\"")
+					_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
+					_gsxgw.S("\"")
 				}
-				if !attrs.Has("data-sidebar") {
-					_gsxgw.S(" data-sidebar=\"menu-button\"")
-				}
-				if !attrs.Has("data-size") {
+				if !_gsxv22.Has("data-size") {
 					_gsxgw.S(" data-size=\"")
 					_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
 					_gsxgw.S("\"")
 				}
-				if !attrs.Has("data-active") {
+				if !_gsxv22.Has("data-active") {
 					_gsxgw.S(" data-active=\"")
 					_gsxgw.S(_gsxsc.FormatBool(bool(isActive)))
 					_gsxgw.S("\"")
 				}
-				if !attrs.Has("data-gsxui-tooltip-trigger") {
+				if !_gsxv22.Has("data-gsxui-tooltip-trigger") {
 					_gsxgw.BoolAttr("data-gsxui-tooltip-trigger", true)
 				}
-				_gsxgw.S(" class=\"")
-				_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebarMenuButtonBase), _gsxrt.Class(sidebarMenuButtonVariantClass(variant)), _gsxrt.Class(sidebarMenuButtonSizeClass(size)), _gsxrt.Class(attrs.Class()))
-				_gsxgw.S("\"")
-				_gsxgw.StyleMerged("", attrs.Style())
-				_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+				_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv22.Class())
+				_gsxgw.StyleMerged("", _gsxv22.Style())
+				_gsxgw.Spread(ctx, _gsxv22, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 				_gsxgw.S(">")
-//line sidebar.gsx:521:5
+//line sidebar.gsx:208:5
 				_gsxgw.Node(ctx, children)
 				_gsxgw.S("</button>")
-//line sidebar.gsx:523:4
+//line sidebar.gsx:210:4
 				_gsxgw.NodeResult(_gsxrenderTooltipContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:523:76
+//line sidebar.gsx:211:5
 					_gsxgw.Text(string(tooltip))
 					return _gsxgw.Err()
-				}), _gsxrt.Attrs{{Key: "class", Value: "hidden group-data-[collapsible=icon]:open:block"}}))
+				}), withSlot("sidebar-menu-button-tooltip-content", nil)))
 				return _gsxgw.Err()
-			}), nil))
+			}), withSlot("sidebar-menu-button-tooltip", nil)))
 		}
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:528:1
-// SidebarMenuAction drops asChild (see the package doc comment) — always a
-// <button>, type="button" added per house convention. showOnHover (default
-// false) adds the reference's md:opacity-0 + focus/hover-visible class
-// block as one more entry in the composable class list.
-
-//line sidebar.gsx:532:1
+//line sidebar.gsx:217:1
 func SidebarMenuAction(showOnHover bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:533:2
+//line sidebar.gsx:218:2
+		_gsxv23 := withSlot("sidebar-menu-action", attrs)
 		_gsxgw.S("<button")
-		if !attrs.Has("type") {
+		if !_gsxv23.Has("type") {
 			_gsxgw.S(" type=\"button\"")
 		}
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"sidebar-menu-action\"")
+		if !_gsxv23.Has("data-show-on-hover") {
+			_gsxgw.S(" data-show-on-hover=\"")
+			_gsxgw.S(_gsxsc.FormatBool(bool(showOnHover)))
+			_gsxgw.S("\"")
 		}
-		if !attrs.Has("data-sidebar") {
-			_gsxgw.S(" data-sidebar=\"menu-action\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform peer-hover/menu-button:text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0"), _gsxrt.Class("after:absolute after:-inset-2 md:after:hidden"), _gsxrt.Class("peer-data-[size=sm]/menu-button:top-1 peer-data-[size=default]/menu-button:top-1.5 peer-data-[size=lg]/menu-button:top-2.5"), _gsxrt.Class("group-data-[collapsible=icon]:hidden"), _gsxrt.ClassIf("group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground data-[state=open]:opacity-100 md:opacity-0", showOnHover), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv23.Class())
+		_gsxgw.StyleMerged("", _gsxv23.Style())
+		_gsxgw.Spread(ctx, _gsxv23, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line sidebar.gsx:546:3
+//line sidebar.gsx:223:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:550:1
+//line sidebar.gsx:227:1
 func SidebarMenuBadge(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:551:2
+//line sidebar.gsx:228:2
+		_gsxv24 := withSlot("sidebar-menu-badge", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"sidebar-menu-badge\"")
-		}
-		if !attrs.Has("data-sidebar") {
-			_gsxgw.S(" data-sidebar=\"menu-badge\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pointer-events-none absolute right-1 flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-xs font-medium text-sidebar-foreground tabular-nums select-none peer-hover/menu-button:text-sidebar-accent-foreground peer-data-[active=true]/menu-button:text-sidebar-accent-foreground peer-data-[size=sm]/menu-button:top-1 peer-data-[size=default]/menu-button:top-1.5 peer-data-[size=lg]/menu-button:top-2.5 group-data-[collapsible=icon]:hidden"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv24.Class())
+		_gsxgw.StyleMerged("", _gsxv24.Style())
+		_gsxgw.Spread(ctx, _gsxv24, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line sidebar.gsx:557:3
+//line sidebar.gsx:228:52
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:561:1
-// SidebarMenuSkeleton's text width is a random 50-90% in the reference,
-// computed once via React.useMemo so it never changes across re-renders of
-// the SAME mounted component. gsx has no client-side "compute once at
-// mount" equivalent for a server-rendered page (design decision flagged,
-// not resolved, by the source map's own §2 entry) — this port computes it
-// server-side, once per render call, which is fixed for the page's
-// lifetime exactly like useMemo(() => …, []) is, and (a difference from
-// upstream worth naming) varies independently between multiple
-// SidebarMenuSkeleton instances on the same page, which upstream's
-// per-instance useMemo also does. No children param — matches the
-// reference, whose own JSX never renders {children} either.
+//line sidebar.gsx:231:1
+// The randomized width is the one dynamic presentation value in this part.
+// It is chosen once per server render, then consumed by style CSS.
 
-//line sidebar.gsx:572:1
+//line sidebar.gsx:233:1
 func SidebarMenuSkeleton(showIcon bool, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:573:2
+//line sidebar.gsx:234:2
 		width := strconv.Itoa(rand.Intn(40)+50) + "%"
-//line sidebar.gsx:576:2
+//line sidebar.gsx:237:2
+		_gsxv25 := withSlot("sidebar-menu-skeleton", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"sidebar-menu-skeleton\"")
-		}
-		if !attrs.Has("data-sidebar") {
-			_gsxgw.S(" data-sidebar=\"menu-skeleton\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex h-8 items-center gap-2 rounded-md px-2"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv25.Class())
+		_gsxgw.StyleMerged("", _gsxv25.Style())
+		_gsxgw.Spread(ctx, _gsxv25, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line sidebar.gsx:577:3
+//line sidebar.gsx:238:3
 		if showIcon {
-//line sidebar.gsx:578:4
-			_gsxgw.NodeResult(_gsxrenderSkeleton(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: "size-4 rounded-md"}}, _gsxrt.Attrs{{Key: "data-sidebar", Value: "menu-skeleton-icon"}})))
+//line sidebar.gsx:239:4
+			_gsxgw.NodeResult(_gsxrenderSkeleton(ctx, _gsxgw, withSlot("sidebar-menu-skeleton-icon", nil)))
 		}
-//line sidebar.gsx:580:3
-		_gsxv9 := _gsxrt.FilterCSS(string(width))
-		_gsxgw.NodeResult(_gsxrenderSkeleton(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: "h-4 max-w-(--skeleton-width) flex-1"}}, _gsxrt.Attrs{{Key: "data-sidebar", Value: "menu-skeleton-text"}}, _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("--skeleton-width:" + _gsxv9)}})))
+//line sidebar.gsx:241:3
+		_gsxv26 := _gsxrt.FilterCSS(string(width))
+		_gsxgw.NodeResult(_gsxrenderSkeleton(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("--skeleton-width:" + _gsxv26)}}, withSlot("sidebar-menu-skeleton-text", nil))))
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:588:1
+//line sidebar.gsx:248:1
 func SidebarMenuSub(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:589:2
+//line sidebar.gsx:249:2
+		_gsxv27 := withSlot("sidebar-menu-sub", attrs)
 		_gsxgw.S("<ul")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"sidebar-menu-sub\"")
-		}
-		if !attrs.Has("data-sidebar") {
-			_gsxgw.S(" data-sidebar=\"menu-sub\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l border-sidebar-border px-2.5 py-0.5 group-data-[collapsible=icon]:hidden"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv27.Class())
+		_gsxgw.StyleMerged("", _gsxv27.Style())
+		_gsxgw.Spread(ctx, _gsxv27, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line sidebar.gsx:595:3
+//line sidebar.gsx:249:49
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</ul>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:599:1
+//line sidebar.gsx:252:1
 func SidebarMenuSubItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:600:2
+//line sidebar.gsx:253:2
+		_gsxv28 := withSlot("sidebar-menu-sub-item", attrs)
 		_gsxgw.S("<li")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"sidebar-menu-sub-item\"")
-		}
-		if !attrs.Has("data-sidebar") {
-			_gsxgw.S(" data-sidebar=\"menu-sub-item\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/menu-sub-item relative"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv28.Class())
+		_gsxgw.StyleMerged("", _gsxv28.Style())
+		_gsxgw.Spread(ctx, _gsxv28, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line sidebar.gsx:601:3
+//line sidebar.gsx:253:54
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</li>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:605:1
-// SidebarMenuSubButton drops asChild (see the package doc comment) —
-// always an <a> (matching the reference's own Comp = asChild ? Slot.Root :
-// "a"), so a caller supplies href via attrs like any other native anchor.
-
-//line sidebar.gsx:608:1
+//line sidebar.gsx:256:1
 func SidebarMenuSubButton(size string, isActive bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:609:2
+//line sidebar.gsx:257:2
+		_gsxv29 := withSlot("sidebar-menu-sub-button", attrs)
 		_gsxgw.S("<a")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"sidebar-menu-sub-button\"")
-		}
-		if !attrs.Has("data-sidebar") {
-			_gsxgw.S(" data-sidebar=\"menu-sub-button\"")
-		}
-		if !attrs.Has("data-size") {
+		if !_gsxv29.Has("data-size") {
 			_gsxgw.S(" data-size=\"")
 			_gsxgw.AttrValue(string(_gsxstd.Default((size), "md")))
 			_gsxgw.S("\"")
 		}
-		if !attrs.Has("data-active") {
+		if !_gsxv29.Has("data-active") {
 			_gsxgw.S(" data-active=\"")
 			_gsxgw.S(_gsxsc.FormatBool(bool(isActive)))
 			_gsxgw.S("\"")
 		}
-		_gsxv10 := "flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 text-sidebar-foreground ring-sidebar-ring outline-hidden hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:text-sidebar-accent-foreground"
-		_gsxv11 := "data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground"
-		var _gsxv12 string
-		switch size {
-		case "sm":
-			_gsxv12 = "text-xs"
-		default:
-			_gsxv12 = "text-sm"
-		}
-		_gsxv13 := "group-data-[collapsible=icon]:hidden"
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv10), _gsxrt.Class(_gsxv11), _gsxrt.Class(_gsxv12), _gsxrt.Class(_gsxv13), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv29.Class())
+		_gsxgw.StyleMerged("", _gsxv29.Style())
+		_gsxgw.Spread(ctx, _gsxv29, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line sidebar.gsx:627:3
+//line sidebar.gsx:262:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</a>")
 		return _gsxgw.Err()

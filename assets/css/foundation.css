@@ -172,6 +172,184 @@
   min-height: 0;
 }
 
+/* Sidebar state-machine mechanics. Presentation remains in style.css. */
+@layer components {
+  :where([data-gsxui-slot~="sidebar-wrapper"]) {
+    display: flex;
+    min-height: 100svh;
+    width: 100%;
+  }
+  :where([data-gsxui-slot~="sidebar"][data-collapsible="none"]) {
+    display: flex;
+    width: var(--sidebar-width);
+    height: 100%;
+    flex-direction: column;
+  }
+  :where([data-gsxui-slot~="sidebar-mobile-root"]) {
+    display: contents;
+  }
+  :where([data-gsxui-slot~="sidebar-desktop"]) {
+    display: none;
+  }
+  :where([data-gsxui-slot~="sidebar-gap"]) {
+    position: relative;
+    width: var(--sidebar-width);
+    flex: none;
+  }
+  :where(
+      [data-gsxui-slot~="sidebar-desktop"][data-collapsible="offcanvas"]
+    )
+    > :where([data-gsxui-slot~="sidebar-gap"]) {
+    width: 0;
+  }
+  :where(
+      [data-gsxui-slot~="sidebar-desktop"][data-collapsible="icon"][data-variant="sidebar"]
+    )
+    > :where([data-gsxui-slot~="sidebar-gap"]) {
+    width: var(--sidebar-width-icon);
+  }
+  :where(
+      [data-gsxui-slot~="sidebar-desktop"][data-collapsible="icon"]:is(
+          [data-variant="floating"],
+          [data-variant="inset"]
+        )
+    )
+    > :where([data-gsxui-slot~="sidebar-gap"]) {
+    width: calc(var(--sidebar-width-icon) + 1rem);
+  }
+  :where([data-gsxui-slot~="sidebar-container"]) {
+    position: fixed;
+    inset-block: 0;
+    z-index: 10;
+    display: none;
+    width: var(--sidebar-width);
+    height: 100svh;
+  }
+  :where([data-gsxui-slot~="sidebar-desktop"][data-side="left"])
+    > :where([data-gsxui-slot~="sidebar-container"]) {
+    left: 0;
+  }
+  :where([data-gsxui-slot~="sidebar-desktop"][data-side="right"])
+    > :where([data-gsxui-slot~="sidebar-container"]) {
+    right: 0;
+  }
+  :where(
+      [data-gsxui-slot~="sidebar-desktop"][data-side="left"][data-collapsible="offcanvas"]
+    )
+    > :where([data-gsxui-slot~="sidebar-container"]) {
+    left: calc(var(--sidebar-width) * -1);
+  }
+  :where(
+      [data-gsxui-slot~="sidebar-desktop"][data-side="right"][data-collapsible="offcanvas"]
+    )
+    > :where([data-gsxui-slot~="sidebar-container"]) {
+    right: calc(var(--sidebar-width) * -1);
+  }
+  :where(
+      [data-gsxui-slot~="sidebar-desktop"][data-collapsible="icon"][data-variant="sidebar"]
+    )
+    > :where([data-gsxui-slot~="sidebar-container"]) {
+    width: var(--sidebar-width-icon);
+  }
+  :where(
+      [data-gsxui-slot~="sidebar-desktop"][data-collapsible="icon"]:is(
+          [data-variant="floating"],
+          [data-variant="inset"]
+        )
+    )
+    > :where([data-gsxui-slot~="sidebar-container"]) {
+    width: calc(var(--sidebar-width-icon) + 1rem + 2px);
+  }
+  :where([data-gsxui-slot~="sidebar-inner"]),
+  :where([data-gsxui-slot~="sidebar-mobile-inner"]) {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+  }
+  :where([data-gsxui-slot~="sidebar-inset"]) {
+    display: flex;
+    width: 100%;
+    flex: 1 1 0%;
+    flex-direction: column;
+  }
+  :where([data-gsxui-slot~="sidebar-content"]) {
+    display: flex;
+    min-height: 0;
+    flex: 1 1 0%;
+    flex-direction: column;
+    overflow: auto;
+  }
+  :where(
+      [data-gsxui-slot~="sidebar-desktop"][data-collapsible="icon"]
+    )
+    :where([data-gsxui-slot~="sidebar-content"]) {
+    overflow: hidden;
+  }
+  :where([data-gsxui-slot~="sidebar-rail"]) {
+    position: absolute;
+    inset-block: 0;
+    z-index: 20;
+    display: none;
+    width: 1rem;
+    transform: translateX(-50%);
+  }
+  :where([data-gsxui-slot~="sidebar-rail"])::after {
+    position: absolute;
+    inset-block: 0;
+    left: 50%;
+    width: 2px;
+    content: "";
+  }
+  :where([data-gsxui-slot~="sidebar-mobile-content"])
+    :where([data-gsxui-slot~="sidebar-rail"]) {
+    display: none;
+  }
+  :where([data-gsxui-slot~="sidebar-group-action"])::after,
+  :where([data-gsxui-slot~="sidebar-menu-action"])::after {
+    position: absolute;
+    inset: -0.5rem;
+    content: "";
+  }
+
+  /* A Sidebar tooltip may enter the top layer only for the collapsed-icon
+     desktop tree. This state gate prevents closed or expanded ghost boxes. */
+  :is(
+      [data-gsxui-slot~="sidebar-menu-button-tooltip-content"]:popover-open
+    ) {
+    display: none;
+  }
+  :is(
+      [data-gsxui-slot~="sidebar-desktop"][data-collapsible="icon"]
+    )
+    :is(
+      [data-gsxui-slot~="sidebar-menu-button-tooltip-content"]:popover-open
+    ) {
+    display: block;
+  }
+
+  @media (width >= 40rem) {
+    :where([data-gsxui-slot~="sidebar-rail"]) {
+      display: flex;
+    }
+    :where([data-gsxui-slot~="sidebar-group-action"])::after,
+    :where([data-gsxui-slot~="sidebar-menu-action"])::after {
+      display: none;
+    }
+  }
+  @media (width >= 48rem) {
+    :is([data-gsxui-slot~="sidebar-mobile-root"]) {
+      display: none;
+    }
+    :where([data-gsxui-slot~="sidebar-desktop"]) {
+      display: block;
+    }
+    :where([data-gsxui-slot~="sidebar-container"]) {
+      display: flex;
+    }
+  }
+}
+
 /* Author presentation must never defeat the native closed-dialog state. */
 :where(dialog[data-gsxui-dialog-content]:not([open])) {
   display: none;

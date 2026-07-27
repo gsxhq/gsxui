@@ -88,34 +88,18 @@ func TestThemeDefaultsDriftPin(t *testing.T) {
 
 	libraryOnly := map[string]map[string]string{
 		"light": {
-			"--sidebar":                    "oklch(0.985 0 0)",
-			"--sidebar-foreground":         "oklch(0% 0 0)",
-			"--sidebar-primary":            "oklch(0.205 0 0)",
-			"--sidebar-primary-foreground": "oklch(0.985 0 0)",
-			"--sidebar-accent":             "oklch(0.97 0 0)",
-			"--sidebar-accent-foreground":  "oklch(0.205 0 0)",
-			"--sidebar-border":             "oklch(0.922 0 0)",
-			"--sidebar-ring":               "oklch(0.708 0 0)",
-			"--success":                    "oklch(69.6% 0.17 162.48)",
-			"--info":                       "oklch(68.5% 0.169 237.323)",
-			"--warning":                    "oklch(76.9% 0.188 70.08)",
-			"--overlay":                    "oklch(0% 0 0 / 10%)",
-			"--contrast":                   "oklch(100% 0 0)",
+			"--success":  "oklch(69.6% 0.17 162.48)",
+			"--info":     "oklch(68.5% 0.169 237.323)",
+			"--warning":  "oklch(76.9% 0.188 70.08)",
+			"--overlay":  "oklch(0% 0 0 / 10%)",
+			"--contrast": "oklch(100% 0 0)",
 		},
 		"dark": {
-			"--sidebar":                    "oklch(0.205 0 0)",
-			"--sidebar-foreground":         "oklch(0.985 0 0)",
-			"--sidebar-primary":            "oklch(0.488 0.243 264.376)",
-			"--sidebar-primary-foreground": "oklch(0.985 0 0)",
-			"--sidebar-accent":             "oklch(0.269 0 0)",
-			"--sidebar-accent-foreground":  "oklch(0.985 0 0)",
-			"--sidebar-border":             "oklch(1 0 0 / 10%)",
-			"--sidebar-ring":               "oklch(0.439 0 0)",
-			"--success":                    "oklch(69.6% 0.17 162.48)",
-			"--info":                       "oklch(68.5% 0.169 237.323)",
-			"--warning":                    "oklch(76.9% 0.188 70.08)",
-			"--overlay":                    "oklch(0% 0 0 / 10%)",
-			"--contrast":                   "oklch(100% 0 0)",
+			"--success":  "oklch(69.6% 0.17 162.48)",
+			"--info":     "oklch(68.5% 0.169 237.323)",
+			"--warning":  "oklch(76.9% 0.188 70.08)",
+			"--overlay":  "oklch(0% 0 0 / 10%)",
+			"--contrast": "oklch(100% 0 0)",
 		},
 	}
 	for mode, expected := range libraryOnly {
@@ -126,6 +110,36 @@ func TestThemeDefaultsDriftPin(t *testing.T) {
 		}
 	}
 
+}
+
+func TestThemeDefaultsExposeEverySidebarTokenInTheEditor(t *testing.T) {
+	want := map[string][2]string{
+		"--sidebar":                    {"oklch(0.985 0 0)", "oklch(0.205 0 0)"},
+		"--sidebar-foreground":         {"oklch(0% 0 0)", "oklch(0.985 0 0)"},
+		"--sidebar-primary":            {"oklch(0.205 0 0)", "oklch(0.488 0.243 264.376)"},
+		"--sidebar-primary-foreground": {"oklch(0.985 0 0)", "oklch(0.985 0 0)"},
+		"--sidebar-accent":             {"oklch(0.97 0 0)", "oklch(0.269 0 0)"},
+		"--sidebar-accent-foreground":  {"oklch(0.205 0 0)", "oklch(0.985 0 0)"},
+		"--sidebar-border":             {"oklch(0.922 0 0)", "oklch(1 0 0 / 10%)"},
+		"--sidebar-ring":               {"oklch(0.708 0 0)", "oklch(0.439 0 0)"},
+	}
+
+	got := make(map[string][2]string)
+	for _, group := range pages.ThemeGroups() {
+		for _, variable := range group.Vars {
+			if _, ok := want[variable.Name]; ok {
+				got[variable.Name] = [2]string{variable.Light, variable.Dark}
+			}
+		}
+	}
+	if len(got) != len(want) {
+		t.Fatalf("editor sidebar tokens = %#v, want %#v", got, want)
+	}
+	for name, values := range want {
+		if got[name] != values {
+			t.Errorf("%s editor defaults = %#v, want %#v", name, got[name], values)
+		}
+	}
 }
 
 // extractCSSBlock extracts the content of a CSS block (e.g., ":root { ... }" or ".dark { ... }")

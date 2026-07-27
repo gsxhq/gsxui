@@ -9,7 +9,7 @@ import { on } from "../ui/gsxui.js";
 
 const preview = document.querySelector("[data-theme-preview]");
 
-// Canonical var order for export — matches assets/gsxui.css's :root block.
+// Canonical var order for export — matches assets/css/themes/default.css.
 // --radius has no .dark override there (it's not a light/dark switch), so
 // it's dropped from the exported .dark block below.
 const VAR_ORDER = [
@@ -33,6 +33,14 @@ const VAR_ORDER = [
   "--border",
   "--input",
   "--ring",
+  "--sidebar",
+  "--sidebar-foreground",
+  "--sidebar-primary",
+  "--sidebar-primary-foreground",
+  "--sidebar-accent",
+  "--sidebar-accent-foreground",
+  "--sidebar-border",
+  "--sidebar-ring",
 ];
 
 if (preview) {
@@ -126,6 +134,14 @@ if (preview) {
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 }
 
 :root {
@@ -205,7 +221,7 @@ ${darkLines}
 
   function applyParsed(parsed, mode) {
     for (const [name, value] of Object.entries(parsed)) {
-      if (!(name in vars[mode])) continue; // only the 20 tracked vars
+      if (!(name in vars[mode])) continue;
       vars[mode][name] = value;
       const input = document.querySelector(
         `[data-theme-var="${name}"][data-theme-mode="${mode}"]`,

@@ -4,7 +4,7 @@ import (
 	"github.com/gsxhq/gsxui/ui"
 )
 
-// Theme is the /theme route: a live editor over the 20 shadcn-compatible
+// Theme is the /theme route: a live editor over the shadcn-compatible
 // CSS custom properties every gsxui component reads. Entirely client-side
 // once loaded (web/theme.js) — the Go side only server-renders the default
 // light/dark values so the page works before any JS runs.
@@ -25,11 +25,10 @@ type themeGroup struct {
 	Vars  []themeVar
 }
 
-// themeGroups holds the DEFAULT light/dark values for all 20 editable
+// themeGroups holds the default light/dark values for every editable
 // tokens, grouped the way the editor displays them. Source of truth:
-// web/site.css's :root/.dark blocks (which mirror assets/gsxui.css, the
-// file `gsxui init` vendors into consumer projects) — keep all three in
-// sync when shadcn/tailwind bump the base palette.
+// assets/css/themes/default.css. The drift test keeps the editor and the
+// vendored default theme byte-for-byte aligned.
 var themeGroups = []themeGroup{
 	{
 		Title: "Base",
@@ -71,6 +70,19 @@ var themeGroups = []themeGroup{
 			{Name: "--radius", Light: "0.625rem", Dark: "0.625rem"},
 		},
 	},
+	{
+		Title: "Sidebar",
+		Vars: []themeVar{
+			{Name: "--sidebar", Light: "oklch(0.985 0 0)", Dark: "oklch(0.205 0 0)"},
+			{Name: "--sidebar-foreground", Light: "oklch(0% 0 0)", Dark: "oklch(0.985 0 0)"},
+			{Name: "--sidebar-primary", Light: "oklch(0.205 0 0)", Dark: "oklch(0.488 0.243 264.376)"},
+			{Name: "--sidebar-primary-foreground", Light: "oklch(0.985 0 0)", Dark: "oklch(0.985 0 0)"},
+			{Name: "--sidebar-accent", Light: "oklch(0.97 0 0)", Dark: "oklch(0.269 0 0)"},
+			{Name: "--sidebar-accent-foreground", Light: "oklch(0.205 0 0)", Dark: "oklch(0.985 0 0)"},
+			{Name: "--sidebar-border", Light: "oklch(0.922 0 0)", Dark: "oklch(1 0 0 / 10%)"},
+			{Name: "--sidebar-ring", Light: "oklch(0.708 0 0)", Dark: "oklch(0.439 0 0)"},
+		},
+	},
 }
 
 // ThemeGroups returns the default theme group definitions for testing purposes.
@@ -94,7 +106,7 @@ component (t Theme) Page() {
 			<div>
 				<h1 class="text-3xl font-semibold tracking-tight">Theme editor</h1>
 				<p class="mt-2 max-w-2xl text-sm text-muted-foreground">
-					Edit the 20 CSS custom properties gsxui's components read (mirrors assets/gsxui.css). Paste a tweakcn/shadcn theme's root and dark blocks into Import to try it, or export what you build here as a ready-to-drop-in gsxui.css.
+					Edit the semantic CSS custom properties gsxui's components read. Paste a tweakcn/shadcn theme's root and dark blocks into Import to try it, or export what you build here as a ready-to-drop-in theme.
 				</p>
 			</div>
 			<div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
