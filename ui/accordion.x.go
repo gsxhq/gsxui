@@ -86,28 +86,34 @@ func AccordionTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 }
 
 //line accordion.gsx:28:1
-// The inner token keeps content padding independently styleable while all
-// caller attributes, including class, are forwarded once to the public part.
+// The outer token owns disclosure mechanics and non-class attributes. Caller
+// classes join the inner padding token so utilities override its defaults on
+// the same box.
 
-//line accordion.gsx:30:1
+//line accordion.gsx:31:1
 func AccordionContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line accordion.gsx:31:2
-		_gsxv3 := withSlot("accordion-content", attrs)
+//line accordion.gsx:32:2
+		var innerAttrs gsx.Attrs
+		if class, ok := attrs.Get("class"); ok {
+			innerAttrs = gsx.Attrs{{Key: "class", Value: class}}
+		}
+//line accordion.gsx:38:2
+		_gsxv3 := withSlot("accordion-content", attrs.Without("class"))
 		_gsxgw.S("<div")
 		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv3.Class())
 		_gsxgw.StyleMerged("", _gsxv3.Style())
 		_gsxgw.Spread(ctx, _gsxv3, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line accordion.gsx:32:3
-		_gsxv4 := withSlot("accordion-content-inner", nil)
+//line accordion.gsx:39:3
+		_gsxv4 := withSlot("accordion-content-inner", innerAttrs)
 		_gsxgw.S("<div")
 		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv4.Class())
 		_gsxgw.StyleMerged("", _gsxv4.Style())
 		_gsxgw.Spread(ctx, _gsxv4, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line accordion.gsx:32:56
+//line accordion.gsx:39:63
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div></div>")
 		return _gsxgw.Err()

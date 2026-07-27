@@ -25,10 +25,17 @@ component AccordionTrigger(children gsx.Node, attrs gsx.Attrs) {
 	</summary>
 }
 
-// The inner token keeps content padding independently styleable while all
-// caller attributes, including class, are forwarded once to the public part.
+// The outer token owns disclosure mechanics and non-class attributes. Caller
+// classes join the inner padding token so utilities override its defaults on
+// the same box.
 component AccordionContent(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("accordion-content", attrs)... }>
-		<div { withSlot("accordion-content-inner", nil)... }>{ children }</div>
+	{{
+		var innerAttrs gsx.Attrs
+		if class, ok := attrs.Get("class"); ok {
+			innerAttrs = gsx.Attrs{{Key: "class", Value: class}}
+		}
+	}}
+	<div { withSlot("accordion-content", attrs.Without("class"))... }>
+		<div { withSlot("accordion-content-inner", innerAttrs)... }>{ children }</div>
 	</div>
 }

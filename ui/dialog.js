@@ -44,7 +44,7 @@ export function requestClose(dialog) {
   // subtree-wide wait would keep the dialog open forever). And because a
   // backgrounded/occluded tab freezes animation clocks entirely, the wait
   // is raced against a hard cap comfortably above every exit duration
-  // the components ship (dialog/alert-dialog 200ms, sheet 300ms), so
+  // the components ship (dialog, alert-dialog, drawer, and sheet: 200ms), so
   // the dialog always closes, animation or not.
   const anims = dialog.getAnimations();
   if (!anims.length) {

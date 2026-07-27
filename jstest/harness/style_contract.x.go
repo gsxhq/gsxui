@@ -11,40 +11,156 @@ import (
 )
 
 //line style_contract.gsx:8:1
+func DirectionalDrawerFixture(name string, direction string) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+		return _gsxrenderDirectionalDrawerFixture(ctx, _gsxgw, name, direction)
+	})
+}
+
+func _gsxrenderDirectionalDrawerFixture(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, name string, direction string) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line style_contract.gsx:9:2
+	_gsxgw.Node(ctx, ui.Drawer(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line style_contract.gsx:10:3
+		_gsxgw.Node(ctx, ui.DrawerTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
+//line style_contract.gsx:10:21
+			_gsxgw.Text(string("Open drawer " + name))
+			return _gsxgw.Err()
+		}), nil))
+//line style_contract.gsx:11:3
+		_gsxgw.Node(ctx, ui.DrawerContent(direction, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
+//line style_contract.gsx:12:4
+			_gsxgw.Node(ctx, ui.DrawerHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+//line style_contract.gsx:13:5
+				_gsxgw.Node(ctx, ui.DrawerTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+//line style_contract.gsx:13:21
+					_gsxgw.Text(string("Drawer " + name))
+					return _gsxgw.Err()
+				}), nil))
+//line style_contract.gsx:14:5
+				_gsxgw.Node(ctx, ui.DrawerDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+//line style_contract.gsx:14:27
+					_gsxgw.Text(string("Drawer " + name + " description"))
+					return _gsxgw.Err()
+				}), nil))
+				return _gsxgw.Err()
+			}), nil))
+//line style_contract.gsx:16:4
+			_gsxgw.Node(ctx, ui.DrawerClose(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+//line style_contract.gsx:16:20
+				_gsxgw.Text(string("Close drawer " + name))
+				return _gsxgw.Err()
+			}), nil))
+			return _gsxgw.Err()
+		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "drawer-" + name}}))
+		return _gsxgw.Err()
+	}), nil))
+	return _gsxgw.Err()
+}
+
+//line style_contract.gsx:21:1
+func DirectionalSheetFixture(name string, side string) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+		return _gsxrenderDirectionalSheetFixture(ctx, _gsxgw, name, side)
+	})
+}
+
+func _gsxrenderDirectionalSheetFixture(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, name string, side string) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line style_contract.gsx:22:2
+	_gsxgw.Node(ctx, ui.Sheet(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line style_contract.gsx:23:3
+		_gsxgw.Node(ctx, ui.SheetTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
+//line style_contract.gsx:23:20
+			_gsxgw.Text(string("Open sheet " + name))
+			return _gsxgw.Err()
+		}), nil))
+//line style_contract.gsx:24:3
+		_gsxgw.Node(ctx, ui.SheetContent(side, true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
+//line style_contract.gsx:25:4
+			_gsxgw.Node(ctx, ui.SheetHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+//line style_contract.gsx:26:5
+				_gsxgw.Node(ctx, ui.SheetTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+//line style_contract.gsx:26:20
+					_gsxgw.Text(string("Sheet " + name))
+					return _gsxgw.Err()
+				}), nil))
+//line style_contract.gsx:27:5
+				_gsxgw.Node(ctx, ui.SheetDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+//line style_contract.gsx:27:26
+					_gsxgw.Text(string("Sheet " + name + " description"))
+					return _gsxgw.Err()
+				}), nil))
+				return _gsxgw.Err()
+			}), nil))
+//line style_contract.gsx:29:4
+			_gsxgw.Node(ctx, ui.SheetClose(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+//line style_contract.gsx:29:19
+				_gsxgw.Text(string("Close sheet " + name))
+				return _gsxgw.Err()
+			}), nil))
+			return _gsxgw.Err()
+		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "sheet-" + name}}))
+		return _gsxgw.Err()
+	}), nil))
+	return _gsxgw.Err()
+}
+
+//line style_contract.gsx:34:1
 func StyleContractFixture() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:9:2
+//line style_contract.gsx:35:2
 		_gsxgw.S("<div class=\"grid gap-4 p-6\">")
-//line style_contract.gsx:10:3
+//line style_contract.gsx:36:3
 		_gsxgw.S("<div>")
-//line style_contract.gsx:10:8
+//line style_contract.gsx:36:8
 		_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Default")
 			return _gsxgw.Err()
 		}), nil))
 		_gsxgw.S("</div>")
-//line style_contract.gsx:11:3
+//line style_contract.gsx:37:3
 		_gsxgw.S("<div>")
-//line style_contract.gsx:11:8
+//line style_contract.gsx:37:8
 		_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Caller override")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "class", Value: "h-12 rounded-none"}}))
 		_gsxgw.S("</div>")
-//line style_contract.gsx:12:3
+//line style_contract.gsx:38:3
 		_gsxgw.S("<div>")
-//line style_contract.gsx:12:8
+//line style_contract.gsx:38:8
 		_gsxgw.Node(ctx, ui.Input(_gsxrt.Attrs{{Key: "value", Value: "Ada"}}))
 		_gsxgw.S("</div>")
-//line style_contract.gsx:13:3
+//line style_contract.gsx:39:3
 		_gsxgw.S("<div>")
-//line style_contract.gsx:13:8
+//line style_contract.gsx:39:8
 		_gsxgw.Node(ctx, ui.Card(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:13:17
+//line style_contract.gsx:39:17
 			_gsxgw.Node(ctx, ui.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Card")
@@ -53,110 +169,110 @@ func StyleContractFixture() _gsxrt.Node {
 			return _gsxgw.Err()
 		}), nil))
 		_gsxgw.S("</div>")
-//line style_contract.gsx:14:3
+//line style_contract.gsx:40:3
 		_gsxgw.S("<div>")
-//line style_contract.gsx:14:8
+//line style_contract.gsx:40:8
 		_gsxgw.Node(ctx, ui.Badge("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Badge")
 			return _gsxgw.Err()
 		}), nil))
 		_gsxgw.S("</div>")
-//line style_contract.gsx:15:3
+//line style_contract.gsx:41:3
 		_gsxgw.S("<div class=\"flex flex-wrap gap-2\">")
-//line style_contract.gsx:16:4
+//line style_contract.gsx:42:4
 		_gsxgw.Node(ctx, ui.Button("destructive", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Destructive")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "dark-button-destructive"}}))
-//line style_contract.gsx:17:4
+//line style_contract.gsx:43:4
 		_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Invalid")
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}}, _gsxrt.Attrs{{Key: "data-style-contract", Value: "dark-button-invalid"}})))
-//line style_contract.gsx:18:4
+//line style_contract.gsx:44:4
 		_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Outline")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "dark-button-outline"}}))
-//line style_contract.gsx:19:4
+//line style_contract.gsx:45:4
 		_gsxgw.Node(ctx, ui.Button("ghost", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Ghost")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "dark-button-ghost"}}))
-//line style_contract.gsx:20:4
+//line style_contract.gsx:46:4
 		_gsxgw.Node(ctx, ui.Badge("destructive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Destructive badge")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "dark-badge-destructive"}}))
-//line style_contract.gsx:21:4
+//line style_contract.gsx:47:4
 		_gsxgw.Node(ctx, ui.Badge("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Invalid badge")
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}}, _gsxrt.Attrs{{Key: "tabindex", Value: "0"}}, _gsxrt.Attrs{{Key: "data-style-contract", Value: "dark-badge-invalid"}})))
 		_gsxgw.S("</div>")
-//line style_contract.gsx:23:3
+//line style_contract.gsx:49:3
 		_gsxgw.S("<div class=\"hidden\">")
-//line style_contract.gsx:24:4
+//line style_contract.gsx:50:4
 		_gsxgw.S("<div class=\"bg-destructive/60\" data-style-contract-reference=\"dark-destructive\"></div>")
-//line style_contract.gsx:25:4
+//line style_contract.gsx:51:4
 		_gsxgw.S("<div class=\"bg-destructive/90\" data-style-contract-reference=\"destructive-hover\"></div>")
-//line style_contract.gsx:26:4
+//line style_contract.gsx:52:4
 		_gsxgw.S("<div class=\"ring-[3px] ring-destructive/40\" data-style-contract-reference=\"dark-invalid-ring\"></div>")
-//line style_contract.gsx:27:4
+//line style_contract.gsx:53:4
 		_gsxgw.S("<div class=\"border border-destructive ring-3 ring-destructive/20\" data-style-contract-reference=\"otp-invalid-light\"></div>")
-//line style_contract.gsx:28:4
+//line style_contract.gsx:54:4
 		_gsxgw.S("<div class=\"border border-destructive ring-3 ring-destructive/40\" data-style-contract-reference=\"otp-invalid-dark\"></div>")
-//line style_contract.gsx:29:4
+//line style_contract.gsx:55:4
 		_gsxgw.S("<div class=\"bg-input/50\" data-style-contract-reference=\"dark-outline-hover\"></div>")
-//line style_contract.gsx:30:4
+//line style_contract.gsx:56:4
 		_gsxgw.S("<div class=\"bg-accent/50\" data-style-contract-reference=\"dark-ghost-hover\"></div>")
-//line style_contract.gsx:31:4
+//line style_contract.gsx:57:4
 		_gsxgw.S("<div class=\"bg-overlay\" data-style-contract-reference=\"overlay\"></div></div>")
-//line style_contract.gsx:33:3
+//line style_contract.gsx:59:3
 		_gsxgw.S("<div class=\"flex gap-2\">")
-//line style_contract.gsx:34:4
+//line style_contract.gsx:60:4
 		_gsxgw.Node(ctx, ui.PaginationPrevious("#", _gsxrt.Attrs{{Key: "data-style-contract", Value: "pagination-previous"}}))
-//line style_contract.gsx:35:4
+//line style_contract.gsx:61:4
 		_gsxgw.Node(ctx, ui.PaginationNext("#", _gsxrt.Attrs{{Key: "data-style-contract", Value: "pagination-next"}}))
-//line style_contract.gsx:36:4
+//line style_contract.gsx:62:4
 		_gsxgw.Node(ctx, ui.PaginationPrevious("#", _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: "pl-12"}}, _gsxrt.Attrs{{Key: "data-style-contract", Value: "pagination-previous-caller"}})))
 		_gsxgw.S("</div>")
-//line style_contract.gsx:38:3
+//line style_contract.gsx:64:3
 		_gsxgw.S("<div>")
-//line style_contract.gsx:39:4
+//line style_contract.gsx:65:4
 		_gsxgw.Node(ctx, ui.InputOTPGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:40:5
+//line style_contract.gsx:66:5
 			_gsxgw.Node(ctx, ui.InputOTPSlot(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-active", Value: "true"}}, _gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}}, _gsxrt.Attrs{{Key: "data-style-contract", Value: "otp-active-invalid"}})))
 			return _gsxgw.Err()
 		}), nil))
 		_gsxgw.S("</div>")
-//line style_contract.gsx:43:3
+//line style_contract.gsx:69:3
 		_gsxgw.S("<div>")
-//line style_contract.gsx:44:4
+//line style_contract.gsx:70:4
 		_gsxgw.Node(ctx, ui.ToggleGroup("multiple", "outline", "sm", "0", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:45:5
+//line style_contract.gsx:71:5
 			_gsxgw.Node(ctx, ui.ToggleGroupItem("multiple", "outline", "sm", "0", false, "text", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Text")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "toggle-group-sm-first"}}))
-//line style_contract.gsx:46:5
+//line style_contract.gsx:72:5
 			_gsxgw.Node(ctx, ui.ToggleGroupItem("multiple", "outline", "sm", "0", false, "icon", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:46:160
+//line style_contract.gsx:72:160
 				_gsxgw.Node(ctx, icon.Bold())
 				return _gsxgw.Err()
 			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-style-contract", Value: "toggle-group-sm-icon"}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Icon"}})))
-//line style_contract.gsx:47:5
+//line style_contract.gsx:73:5
 			_gsxgw.Node(ctx, ui.ToggleGroupItem("multiple", "outline", "sm", "0", false, "last", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Last")
@@ -165,12 +281,12 @@ func StyleContractFixture() _gsxrt.Node {
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "aria-label", Value: "Joined formatting"}}))
 		_gsxgw.S("</div>")
-//line style_contract.gsx:50:3
+//line style_contract.gsx:76:3
 		_gsxgw.S("<div class=\"flex gap-2\">")
-//line style_contract.gsx:51:4
+//line style_contract.gsx:77:4
 		_gsxgw.Node(ctx, ui.ToggleGroup("multiple", "", "default", "2", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:52:5
+//line style_contract.gsx:78:5
 			_gsxgw.Node(ctx, ui.ToggleGroupItem("multiple", "", "default", "2", false, "default", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Default")
@@ -178,10 +294,10 @@ func StyleContractFixture() _gsxrt.Node {
 			}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "toggle-group-default"}}))
 			return _gsxgw.Err()
 		}), nil))
-//line style_contract.gsx:54:4
+//line style_contract.gsx:80:4
 		_gsxgw.Node(ctx, ui.ToggleGroup("multiple", "", "lg", "2", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:55:5
+//line style_contract.gsx:81:5
 			_gsxgw.Node(ctx, ui.ToggleGroupItem("multiple", "", "lg", "2", false, "large", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Large")
@@ -189,10 +305,10 @@ func StyleContractFixture() _gsxrt.Node {
 			}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "toggle-group-large"}}))
 			return _gsxgw.Err()
 		}), nil))
-//line style_contract.gsx:57:4
+//line style_contract.gsx:83:4
 		_gsxgw.Node(ctx, ui.ToggleGroup("multiple", "", "sm", "2", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:58:5
+//line style_contract.gsx:84:5
 			_gsxgw.Node(ctx, ui.ToggleGroupItem("multiple", "", "sm", "2", false, "caller", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Caller")
@@ -201,32 +317,32 @@ func StyleContractFixture() _gsxrt.Node {
 			return _gsxgw.Err()
 		}), nil))
 		_gsxgw.S("</div>")
-//line style_contract.gsx:61:3
+//line style_contract.gsx:87:3
 		_gsxgw.Node(ctx, ui.FieldGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:62:4
+//line style_contract.gsx:88:4
 			_gsxgw.Node(ctx, ui.FieldSeparator(nil, _gsxrt.Attrs{{Key: "data-style-contract", Value: "field-outline-separator"}}))
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "data-variant", Value: "outline"}}))
-//line style_contract.gsx:64:3
+//line style_contract.gsx:90:3
 		_gsxgw.Node(ctx, ui.Dialog(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:65:4
+//line style_contract.gsx:91:4
 			_gsxgw.Node(ctx, ui.DialogTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Open contract dialog")
 				return _gsxgw.Err()
 			}), nil))
-//line style_contract.gsx:66:4
+//line style_contract.gsx:92:4
 			_gsxgw.Node(ctx, ui.DialogContent(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:67:5
+//line style_contract.gsx:93:5
 				_gsxgw.Node(ctx, ui.DialogTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Contract dialog title")
 					return _gsxgw.Err()
 				}), nil))
-//line style_contract.gsx:68:5
+//line style_contract.gsx:94:5
 				_gsxgw.Node(ctx, ui.DialogDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Contract dialog description")
@@ -236,28 +352,28 @@ func StyleContractFixture() _gsxrt.Node {
 			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: "rounded-none"}}, _gsxrt.Attrs{{Key: "data-style-contract", Value: "dialog-caller"}})))
 			return _gsxgw.Err()
 		}), nil))
-//line style_contract.gsx:71:3
+//line style_contract.gsx:97:3
 		_gsxgw.Node(ctx, ui.Drawer(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:72:4
+//line style_contract.gsx:98:4
 			_gsxgw.Node(ctx, ui.DrawerTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Open contract drawer")
 				return _gsxgw.Err()
 			}), nil))
-//line style_contract.gsx:73:4
+//line style_contract.gsx:99:4
 			_gsxgw.Node(ctx, ui.DrawerContent("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:74:5
+//line style_contract.gsx:100:5
 				_gsxgw.Node(ctx, ui.DrawerHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:75:6
+//line style_contract.gsx:101:6
 					_gsxgw.Node(ctx, ui.DrawerTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Contract drawer title")
 						return _gsxgw.Err()
 					}), nil))
-//line style_contract.gsx:76:6
+//line style_contract.gsx:102:6
 					_gsxgw.Node(ctx, ui.DrawerDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Contract drawer description")
@@ -269,20 +385,39 @@ func StyleContractFixture() _gsxrt.Node {
 			}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "drawer-bottom"}}))
 			return _gsxgw.Err()
 		}), nil))
-//line style_contract.gsx:80:3
+//line style_contract.gsx:106:3
+		_gsxgw.S("<div class=\"flex flex-wrap gap-2\">")
+//line style_contract.gsx:107:4
+		_gsxgw.NodeResult(_gsxrenderDirectionalDrawerFixture(ctx, _gsxgw, "default", ""))
+//line style_contract.gsx:108:4
+		_gsxgw.NodeResult(_gsxrenderDirectionalDrawerFixture(ctx, _gsxgw, "top", "top"))
+//line style_contract.gsx:109:4
+		_gsxgw.NodeResult(_gsxrenderDirectionalDrawerFixture(ctx, _gsxgw, "left", "left"))
+//line style_contract.gsx:110:4
+		_gsxgw.NodeResult(_gsxrenderDirectionalDrawerFixture(ctx, _gsxgw, "right", "right"))
+//line style_contract.gsx:111:4
+		_gsxgw.NodeResult(_gsxrenderDirectionalSheetFixture(ctx, _gsxgw, "default", ""))
+//line style_contract.gsx:112:4
+		_gsxgw.NodeResult(_gsxrenderDirectionalSheetFixture(ctx, _gsxgw, "left", "left"))
+//line style_contract.gsx:113:4
+		_gsxgw.NodeResult(_gsxrenderDirectionalSheetFixture(ctx, _gsxgw, "top", "top"))
+//line style_contract.gsx:114:4
+		_gsxgw.NodeResult(_gsxrenderDirectionalSheetFixture(ctx, _gsxgw, "bottom", "bottom"))
+		_gsxgw.S("</div>")
+//line style_contract.gsx:116:3
 		_gsxgw.Node(ctx, ui.Tooltip(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:81:4
+//line style_contract.gsx:117:4
 			_gsxgw.Node(ctx, ui.TooltipTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Show contract tooltip")
 				return _gsxgw.Err()
 			}), nil))
-//line style_contract.gsx:82:4
+//line style_contract.gsx:118:4
 			_gsxgw.Node(ctx, ui.TooltipContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Press ")
-//line style_contract.gsx:82:63
+//line style_contract.gsx:118:63
 				_gsxgw.Node(ctx, ui.Kbd(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("K")
@@ -292,21 +427,21 @@ func StyleContractFixture() _gsxrt.Node {
 			}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "tooltip-kbd"}}))
 			return _gsxgw.Err()
 		}), nil))
-//line style_contract.gsx:84:3
+//line style_contract.gsx:120:3
 		_gsxgw.Node(ctx, ui.AccordionItem("contract-accordion", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:85:4
+//line style_contract.gsx:121:4
 			_gsxgw.Node(ctx, ui.AccordionTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Contract accordion")
 				return _gsxgw.Err()
 			}), nil))
-//line style_contract.gsx:86:4
+//line style_contract.gsx:122:4
 			_gsxgw.Node(ctx, ui.AccordionContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Contract accordion body")
 				return _gsxgw.Err()
-			}), nil))
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "accordion-caller-content"}}, _gsxrt.Attrs{{Key: "class", Value: "pb-8"}}, _gsxrt.Attrs{{Key: "data-style-contract", Value: "accordion-caller-content"}})))
 			return _gsxgw.Err()
 		}), nil))
 		_gsxgw.S("</div>")

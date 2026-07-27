@@ -5,6 +5,32 @@ import (
 	"github.com/gsxhq/gsxui/ui/icon"
 )
 
+component DirectionalDrawerFixture(name string, direction string) {
+	<ui.Drawer>
+		<ui.DrawerTrigger>{ "Open drawer " + name }</ui.DrawerTrigger>
+		<ui.DrawerContent direction={direction} data-style-contract={"drawer-" + name}>
+			<ui.DrawerHeader>
+				<ui.DrawerTitle>{ "Drawer " + name }</ui.DrawerTitle>
+				<ui.DrawerDescription>{ "Drawer " + name + " description" }</ui.DrawerDescription>
+			</ui.DrawerHeader>
+			<ui.DrawerClose>{ "Close drawer " + name }</ui.DrawerClose>
+		</ui.DrawerContent>
+	</ui.Drawer>
+}
+
+component DirectionalSheetFixture(name string, side string) {
+	<ui.Sheet>
+		<ui.SheetTrigger>{ "Open sheet " + name }</ui.SheetTrigger>
+		<ui.SheetContent side={side} hideCloseButton={true} data-style-contract={"sheet-" + name}>
+			<ui.SheetHeader>
+				<ui.SheetTitle>{ "Sheet " + name }</ui.SheetTitle>
+				<ui.SheetDescription>{ "Sheet " + name + " description" }</ui.SheetDescription>
+			</ui.SheetHeader>
+			<ui.SheetClose>{ "Close sheet " + name }</ui.SheetClose>
+		</ui.SheetContent>
+	</ui.Sheet>
+}
+
 component StyleContractFixture() {
 	<div class="grid gap-4 p-6">
 		<div><ui.Button>Default</ui.Button></div>
@@ -77,13 +103,25 @@ component StyleContractFixture() {
 				</ui.DrawerHeader>
 			</ui.DrawerContent>
 		</ui.Drawer>
+		<div class="flex flex-wrap gap-2">
+			<DirectionalDrawerFixture name="default"/>
+			<DirectionalDrawerFixture name="top" direction="top"/>
+			<DirectionalDrawerFixture name="left" direction="left"/>
+			<DirectionalDrawerFixture name="right" direction="right"/>
+			<DirectionalSheetFixture name="default"/>
+			<DirectionalSheetFixture name="left" side="left"/>
+			<DirectionalSheetFixture name="top" side="top"/>
+			<DirectionalSheetFixture name="bottom" side="bottom"/>
+		</div>
 		<ui.Tooltip>
 			<ui.TooltipTrigger>Show contract tooltip</ui.TooltipTrigger>
 			<ui.TooltipContent data-style-contract="tooltip-kbd">Press <ui.Kbd>K</ui.Kbd></ui.TooltipContent>
 		</ui.Tooltip>
 		<ui.AccordionItem name="contract-accordion">
 			<ui.AccordionTrigger>Contract accordion</ui.AccordionTrigger>
-			<ui.AccordionContent>Contract accordion body</ui.AccordionContent>
+			<ui.AccordionContent id="accordion-caller-content" class="pb-8" data-style-contract="accordion-caller-content">
+				Contract accordion body
+			</ui.AccordionContent>
 		</ui.AccordionItem>
 	</div>
 }

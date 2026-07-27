@@ -30,13 +30,13 @@ func TestAccordionItemNativeState(t *testing.T) {
 	}
 }
 
-func TestAccordionCallerAttrsStayOnPublicPart(t *testing.T) {
+func TestAccordionCallerClassRoutesToInnerContent(t *testing.T) {
 	got := render(t, ui.AccordionContent(gsx.Raw("x"), gsx.Attrs{
 		{Key: "id", Value: "panel"},
 		{Key: "class", Value: "pb-8"},
 	}))
-	want := `<div class="pb-8" data-gsxui-slot="accordion-content" id="panel"><div data-gsxui-slot="accordion-content-inner">x</div></div>`
+	want := `<div data-gsxui-slot="accordion-content" id="panel"><div class="pb-8" data-gsxui-slot="accordion-content-inner">x</div></div>`
 	if got != want {
-		t.Errorf("caller attrs must render once on content\n got: %s\nwant: %s", got, want)
+		t.Errorf("non-class attrs must stay outer and caller class must render once on inner content\n got: %s\nwant: %s", got, want)
 	}
 }

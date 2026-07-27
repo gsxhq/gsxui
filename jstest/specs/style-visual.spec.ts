@@ -408,6 +408,211 @@ test("bottom Drawer uses Dialog mechanics and content-side header alignment", as
   });
 });
 
+test("Accordion caller padding overrides the inner content default", async ({
+  page,
+}) => {
+  const response = await page.goto("/f/style-contract");
+  expect(response?.status(), "style contract fixture response").toBe(200);
+
+  const content = page.locator(
+    '[data-style-contract="accordion-caller-content"]',
+  );
+  const inner = content.locator(
+    ':scope > [data-gsxui-slot~="accordion-content-inner"]',
+  );
+
+  await expect(content).toHaveAttribute("id", "accordion-caller-content");
+  await expect(content).not.toHaveClass(/\bpb-8\b/);
+  await expect(inner).toHaveClass(/\bpb-8\b/);
+  expect(
+    await content.evaluate((element) => getComputedStyle(element).paddingBottom),
+  ).toBe("0px");
+  expect(
+    await inner.evaluate((element) => getComputedStyle(element).paddingBottom),
+  ).toBe("32px");
+});
+
+const directionalOverlayCases = [
+  {
+    family: "drawer",
+    fixture: "default",
+    side: "bottom",
+    enterProperty: "--tw-enter-translate-y",
+    enterValue: "100%",
+  },
+  {
+    family: "drawer",
+    fixture: "top",
+    side: "top",
+    enterProperty: "--tw-enter-translate-y",
+    enterValue: "-100%",
+  },
+  {
+    family: "drawer",
+    fixture: "left",
+    side: "left",
+    enterProperty: "--tw-enter-translate-x",
+    enterValue: "-100%",
+  },
+  {
+    family: "drawer",
+    fixture: "right",
+    side: "right",
+    enterProperty: "--tw-enter-translate-x",
+    enterValue: "100%",
+  },
+  {
+    family: "sheet",
+    fixture: "default",
+    side: "right",
+    enterProperty: "--tw-enter-translate-x",
+    enterValue: "100%",
+  },
+  {
+    family: "sheet",
+    fixture: "left",
+    side: "left",
+    enterProperty: "--tw-enter-translate-x",
+    enterValue: "-100%",
+  },
+  {
+    family: "sheet",
+    fixture: "top",
+    side: "top",
+    enterProperty: "--tw-enter-translate-y",
+    enterValue: "-100%",
+  },
+  {
+    family: "sheet",
+    fixture: "bottom",
+    side: "bottom",
+    enterProperty: "--tw-enter-translate-y",
+    enterValue: "100%",
+  },
+] as const;
+
+for (const overlay of directionalOverlayCases) {
+  test(`${overlay.family} ${overlay.fixture} opens on ${overlay.side} and closes through its control`, async ({
+    page,
+  }) => {
+    const response = await page.goto("/f/style-contract");
+    expect(response?.status(), "style contract fixture response").toBe(200);
+
+    const dialog = page.locator(
+      `[data-style-contract="${overlay.family}-${overlay.fixture}"]`,
+    );
+    await expect(dialog).toBeHidden();
+    expect(
+      await dialog.evaluate((element: HTMLDialogElement) => ({
+        open: element.open,
+        state: element.dataset.state,
+        display: getComputedStyle(element).display,
+      })),
+    ).toEqual({
+      open: false,
+      state: "closed",
+      display: "none",
+    });
+
+    await page
+      .getByRole("button", {
+        name: `Open ${overlay.family} ${overlay.fixture}`,
+      })
+      .click();
+    await expect(dialog).toBeVisible();
+    await expect(dialog).toHaveAttribute("open", "");
+    await expect(dialog).toHaveAttribute("data-state", "open");
+    await dialog.evaluate((element) => {
+      for (const animation of element.getAnimations()) animation.finish();
+    });
+
+    const geometry = await dialog.evaluate(
+      (element, enterProperty) => {
+        const rect = element.getBoundingClientRect();
+        const css = getComputedStyle(element);
+        return {
+          side: element.getAttribute("data-side"),
+          display: css.display,
+          animationName: css.animationName,
+          enterValue: css.getPropertyValue(enterProperty).trim(),
+          left: rect.left,
+          right: rect.right,
+          top: rect.top,
+          bottom: rect.bottom,
+          width: rect.width,
+          height: rect.height,
+          viewportWidth: window.innerWidth,
+          viewportHeight: window.innerHeight,
+        };
+      },
+      overlay.enterProperty,
+    );
+    expect(geometry.side).toBe(overlay.side);
+    expect(geometry.display).toBe("flex");
+    expect(geometry.animationName).toContain("enter");
+    expect(geometry.enterValue).toBe(overlay.enterValue);
+
+    const subpixelEdgeTolerance = 0.5;
+    const expectAtEdge = (actual: number, expected: number) =>
+      expect(Math.abs(actual - expected)).toBeLessThanOrEqual(
+        subpixelEdgeTolerance,
+      );
+    if (overlay.side === "top" || overlay.side === "bottom") {
+      expectAtEdge(geometry.left, 0);
+      expectAtEdge(geometry.right, geometry.viewportWidth);
+      expectAtEdge(geometry.width, geometry.viewportWidth);
+      expect(geometry.height).toBeGreaterThan(0);
+      expect(geometry.height).toBeLessThan(geometry.viewportHeight);
+      if (overlay.side === "top") {
+        expectAtEdge(geometry.top, 0);
+      } else {
+        expectAtEdge(geometry.bottom, geometry.viewportHeight);
+      }
+    } else {
+      expectAtEdge(geometry.top, 0);
+      expectAtEdge(geometry.bottom, geometry.viewportHeight);
+      expectAtEdge(geometry.height, geometry.viewportHeight);
+      expectAtEdge(geometry.width, 384);
+      if (overlay.side === "left") {
+        expectAtEdge(geometry.left, 0);
+      } else {
+        expectAtEdge(geometry.right, geometry.viewportWidth);
+      }
+    }
+
+    await page
+      .getByRole("button", {
+        name: `Close ${overlay.family} ${overlay.fixture}`,
+      })
+      .click();
+    await expect(dialog).toHaveAttribute("data-state", "closed");
+    const closing = await dialog.evaluate(
+      (element: HTMLDialogElement, exitProperty) => {
+        const css = getComputedStyle(element);
+        return {
+          open: element.open,
+          animationName: css.animationName,
+          exitValue: css.getPropertyValue(exitProperty).trim(),
+        };
+      },
+      overlay.enterProperty.replace("--tw-enter-", "--tw-exit-"),
+    );
+    expect(closing.open).toBe(true);
+    expect(closing.animationName).toContain("exit");
+    expect(closing.exitValue).toBe(overlay.enterValue);
+    await expect(dialog).toBeHidden();
+    expect(
+      await dialog.evaluate((element: HTMLDialogElement) => ({
+        open: element.open,
+        display: getComputedStyle(element).display,
+      })),
+    ).toEqual({
+      open: false,
+      display: "none",
+    });
+  });
+}
+
 test("Tooltip Kbd relationship and Accordion native open mechanics compute", async ({
   page,
 }) => {
