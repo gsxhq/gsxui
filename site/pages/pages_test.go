@@ -2,6 +2,7 @@ package pages_test
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -10,6 +11,7 @@ import (
 	"github.com/gsxhq/gsxui/site/pages"
 	"github.com/gsxhq/vite"
 	"github.com/jackielii/structpages"
+	"golang.org/x/net/html"
 )
 
 // newTestHandler mounts the real page tree on a real mux the same way
@@ -57,13 +59,97 @@ func TestSiteRoutes(t *testing.T) {
 	if !strings.Contains(rec.Body.String(), `data-gsxui-slot-button`) {
 		t.Errorf(`response missing data-gsxui-slot-button; body:\n%s`, rec.Body.String())
 	}
-	body := rec.Body.String()
-	if !strings.Contains(body, `data-gsxui-slot-dialog-trigger`) {
-		t.Errorf(`response missing dialog trigger slot marker; body:\n%s`, body)
+	document, err := html.Parse(strings.NewReader(rec.Body.String()))
+	if err != nil {
+		t.Fatalf("parse home response: %v", err)
 	}
-	if strings.Contains(body, `data-gsxui-slot-dialog-trigger=`) {
-		t.Errorf(`response gives dialog trigger slot marker a value; body:\n%s`, body)
+	if err := validateDialogTriggerSlotMarkers(document, 2); err != nil {
+		t.Errorf("home response has invalid dialog trigger slot markers: %v", err)
 	}
+}
+
+func TestDialogTriggerSlotMarkers(t *testing.T) {
+	tests := []struct {
+		name string
+		html string
+		want string
+	}{
+		{
+			name: "two exact empty markers",
+			html: `<button data-gsxui-dialog-trigger data-gsxui-slot-dialog-trigger></button><button data-gsxui-dialog-trigger data-gsxui-slot-dialog-trigger></button>`,
+		},
+		{
+			name: "suffix marker does not satisfy the contract",
+			html: `<button data-gsxui-dialog-trigger data-gsxui-slot-dialog-trigger-extra></button><button data-gsxui-dialog-trigger data-gsxui-slot-dialog-trigger></button>`,
+			want: "missing data-gsxui-slot-dialog-trigger",
+		},
+		{
+			name: "valued marker does not satisfy the contract",
+			html: `<button data-gsxui-dialog-trigger data-gsxui-slot-dialog-trigger = "true"></button><button data-gsxui-dialog-trigger data-gsxui-slot-dialog-trigger></button>`,
+			want: `data-gsxui-slot-dialog-trigger has value "true"`,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			document, err := html.Parse(strings.NewReader(tt.html))
+			if err != nil {
+				t.Fatalf("parse fixture: %v", err)
+			}
+			err = validateDialogTriggerSlotMarkers(document, 2)
+			if tt.want == "" {
+				if err != nil {
+					t.Fatalf("validateDialogTriggerSlotMarkers: %v", err)
+				}
+				return
+			}
+			if err == nil || !strings.Contains(err.Error(), tt.want) {
+				t.Fatalf("validateDialogTriggerSlotMarkers error = %v, want %q", err, tt.want)
+			}
+		})
+	}
+}
+
+func validateDialogTriggerSlotMarkers(document *html.Node, want int) error {
+	var triggers []*html.Node
+	var visit func(*html.Node)
+	visit = func(node *html.Node) {
+		if node.Type == html.ElementNode && hasHTMLAttribute(node, "data-gsxui-dialog-trigger") {
+			triggers = append(triggers, node)
+		}
+		for child := node.FirstChild; child != nil; child = child.NextSibling {
+			visit(child)
+		}
+	}
+	visit(document)
+
+	if len(triggers) != want {
+		return fmt.Errorf("found %d dialog triggers, want %d", len(triggers), want)
+	}
+	for index, trigger := range triggers {
+		value, ok := htmlAttribute(trigger, "data-gsxui-slot-dialog-trigger")
+		if !ok {
+			return fmt.Errorf("dialog trigger %d missing data-gsxui-slot-dialog-trigger", index+1)
+		}
+		if value != "" {
+			return fmt.Errorf("dialog trigger %d data-gsxui-slot-dialog-trigger has value %q", index+1, value)
+		}
+	}
+	return nil
+}
+
+func hasHTMLAttribute(node *html.Node, name string) bool {
+	_, ok := htmlAttribute(node, name)
+	return ok
+}
+
+func htmlAttribute(node *html.Node, name string) (string, bool) {
+	for _, attr := range node.Attr {
+		if attr.Key == name {
+			return attr.Val, true
+		}
+	}
+	return "", false
 }
 
 // TestComponentPageRoute is the Task 2 integration smoke test for
