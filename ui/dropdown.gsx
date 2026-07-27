@@ -46,8 +46,8 @@ import (
 // mounts/unmounts by React state) and its visibility is purely CSS, gated by
 // an ancestor-selector arbitrary variant, `[[data-state=checked]_&]:flex`,
 // keyed off the item's own data-state — the same `[[…]_&]` idiom already
-// used by sidebar.gsx/kbd.gsx/collapsible.gsx, chosen over a named
-// `group/…:` marker specifically so the item's own pinned base class string
+// used by sidebar.gsx/kbd.gsx/collapsible.gsx, chosen over a named ancestor
+// marker specifically so the item's own pinned base class string
 // needs no extra token prepended to it (verbatim per the source map).
 // dropdown.js's click handlers only ever flip aria-checked/data-state; they
 // never touch the indicator's own markup, so no icon markup needs to be
@@ -136,8 +136,8 @@ component DropdownMenuGroup(children gsx.Node, attrs gsx.Attrs) {
 // SelectItem, the shipped house precedent for a nova-metric item carrying a
 // check indicator: right-2, size-4 indicator span (not new-york-v4's
 // size-3.5). Visibility still gates on the ancestor-selector arbitrary
-// variant `[[data-state=checked]_&]:flex` (not select.gsx's named
-// `group/select-item:` marker) — keeps the item's own base class free of an
+// checked-state ancestor variant (not select.gsx's named ancestor marker)
+// — keeps the item's own base class free of an
 // extra prepended token; the two mechanisms are visually equivalent.
 component DropdownMenuCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div

@@ -2,6 +2,7 @@ package cli
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"io/fs"
 	"os"
@@ -44,8 +45,13 @@ func cssAssetTargets(entry string) []cssAssetTarget {
 }
 
 func runInit(args []string) error {
-	if len(args) != 0 {
-		return fmt.Errorf("usage: gsxui init")
+	flags := flag.NewFlagSet("init", flag.ContinueOnError)
+	overwrite := flags.Bool("overwrite", false, "replace locally modified support files")
+	if err := flags.Parse(args); err != nil {
+		return err
+	}
+	if len(flags.Args()) != 0 {
+		return fmt.Errorf("usage: gsxui init [--overwrite]")
 	}
 	dir, err := os.Getwd()
 	if err != nil {
@@ -72,7 +78,7 @@ func runInit(args []string) error {
 		if err != nil {
 			return err
 		}
-		if err := writeVendored(filepath.Join(dir, asset.target), css, false); err != nil {
+		if err := writeVendored(filepath.Join(dir, asset.target), css, *overwrite); err != nil {
 			return err
 		}
 	}
@@ -81,7 +87,7 @@ func runInit(args []string) error {
 	if err != nil {
 		return err
 	}
-	if err := writeVendored(filepath.Join(dir, cfg.JS, "gsxui.js"), core, false); err != nil {
+	if err := writeVendored(filepath.Join(dir, cfg.JS, "gsxui.js"), core, *overwrite); err != nil {
 		return err
 	}
 	indexPath := filepath.Join(dir, cfg.JS, "index.js")
@@ -95,7 +101,7 @@ func runInit(args []string) error {
 	if err != nil {
 		return err
 	}
-	if err := writeVendored(filepath.Join(dir, cfg.UI, "merge", "merge.go"), merge, false); err != nil {
+	if err := writeVendored(filepath.Join(dir, cfg.UI, "merge", "merge.go"), merge, *overwrite); err != nil {
 		return err
 	}
 

@@ -4,8 +4,8 @@ import "github.com/gsxhq/gsxui/ui"
 
 // Clear mirrors shadcn's own combobox-clear.tsx: showClear renders the X
 // button instead of the chevron trigger (ComboboxInput's own
-// group-has-data-[slot=combobox-clear]/input-group:hidden rule hides the
-// trigger whenever a clear button is present), and a pre-selected value
+// input group's clear-button descendant rule hides the trigger whenever a
+// clear button is present), and a pre-selected value
 // server-renders the checked item.
 //
 // FIX (review round 2, IMPORTANT): a server-selected value must REFLECT in

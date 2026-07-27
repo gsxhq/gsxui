@@ -117,7 +117,7 @@ import (
 
 // The `calendar-day-button` rule carries CalendarDayButton's presentation
 // (source map §3) — already expressed entirely as data-attribute variants
-// upstream (`data-[range-start=true]:…`, `group-data-[focused=true]/day:…`),
+// upstream (range-start state and ancestor-focused state),
 // so no rewriting is needed here; Tasks 2/3 make it live by emitting the
 // matching data attributes on this button. The element composes the public
 // `button` and `calendar-day-button` slots and reflects variant="ghost" and

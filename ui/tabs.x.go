@@ -29,13 +29,11 @@ import (
 // param for either. Every class token whose sole purpose was to key off one
 // of those two Radix-only accessed states is dropped as dead weight, same
 // "drop the selector, don't ship dead CSS" call as avatar's size prop and
-// dialog's close-button data-[state=open]: pair: the two
-// group-data-[orientation=vertical]/tabs: tokens on Tabs' root and
-// TabsTrigger, the data-[variant=line]/group-data-[variant=line]/tabs-list:
-// family on TabsList/TabsTrigger (rounding, background, the after:
-// indicator — invisible under the only variant we ship), and
-// group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm
-// unwraps to an unconditional data-[state=active]:shadow-sm. Root and list
+// dialog's close-button open-state pair: the ancestor-orientation rules on
+// Tabs' root and TabsTrigger, the line-variant family on
+// TabsList/TabsTrigger (rounding, background, the after-element indicator
+// — invisible under the only variant we ship), and the default-list active
+// shadow rule, which unwraps to an unconditional active-state shadow. Root and list
 // no longer stamp data-orientation/orientation/data-variant — nothing reads
 // them. See docs/jsx-parity.md.
 //
@@ -47,11 +45,11 @@ import (
 // their own doc comments), collapsing nova's matching inline-start/
 // inline-end value (both px-1) into one has-[>svg]:px-1.
 
-//line tabs.gsx:39:1
+//line tabs.gsx:37:1
 func Tabs(value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line tabs.gsx:40:2
+//line tabs.gsx:38:2
 		_gsxv0 := withSlot("tabs", attrs)
 		_gsxgw.S("<div")
 		if !_gsxv0.Has("data-gsxui-tabs") {
@@ -66,18 +64,18 @@ func Tabs(value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", _gsxv0.Style())
 		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line tabs.gsx:40:73
+//line tabs.gsx:38:73
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line tabs.gsx:43:1
+//line tabs.gsx:41:1
 func TabsList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line tabs.gsx:44:2
+//line tabs.gsx:42:2
 		_gsxv1 := withSlot("tabs-list", attrs)
 		_gsxgw.S("<div")
 		if !_gsxv1.Has("role") {
@@ -87,14 +85,14 @@ func TabsList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", _gsxv1.Style())
 		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line tabs.gsx:48:3
+//line tabs.gsx:46:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line tabs.gsx:52:1
+//line tabs.gsx:50:1
 // TabsTrigger's selected bool is the explicit, server-visible stand-in for
 // "does my value match the root's" — the caller (which already has both
 // values in scope when building the tree) resolves the comparison; this
@@ -102,18 +100,18 @@ func TabsList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // inactive state, matching a caller who forgets to pass it — never
 // accidentally active.
 
-//line tabs.gsx:58:1
+//line tabs.gsx:56:1
 func TabsTrigger(value string, selected bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 		var _gsxnum [32]byte
-//line tabs.gsx:59:2
+//line tabs.gsx:57:2
 		state := "inactive"
 		tabindex := -1
 		if selected {
 			state, tabindex = "active", 0
 		}
-//line tabs.gsx:66:2
+//line tabs.gsx:64:2
 		_gsxv2 := withSlot("tabs-trigger", attrs)
 		_gsxgw.S("<button")
 		if !_gsxv2.Has("type") {
@@ -149,27 +147,27 @@ func TabsTrigger(value string, selected bool, children gsx.Node, attrs gsx.Attrs
 		_gsxgw.StyleMerged("", _gsxv2.Style())
 		_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line tabs.gsx:76:3
+//line tabs.gsx:74:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line tabs.gsx:80:1
+//line tabs.gsx:78:1
 // TabsContent's selected bool mirrors TabsTrigger's — same value-comparison
 // contract, same zero-value-is-inactive default.
 
-//line tabs.gsx:82:1
+//line tabs.gsx:80:1
 func TabsContent(value string, selected bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line tabs.gsx:83:2
+//line tabs.gsx:81:2
 		state := "inactive"
 		if selected {
 			state = "active"
 		}
-//line tabs.gsx:89:2
+//line tabs.gsx:87:2
 		_gsxv3 := withSlot("tabs-content", attrs)
 		_gsxgw.S("<div")
 		if !_gsxv3.Has("role") {
@@ -192,7 +190,7 @@ func TabsContent(value string, selected bool, children gsx.Node, attrs gsx.Attrs
 		_gsxgw.StyleMerged("", _gsxv3.Style())
 		_gsxgw.Spread(ctx, _gsxv3, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line tabs.gsx:96:3
+//line tabs.gsx:94:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

@@ -1,0 +1,5 @@
+@import "../web/site.css";
+
+/* The full-style browser harness adds only its authored fixtures to the
+   production site's explicit source boundary. */
+@source "./harness/**/*.gsx";

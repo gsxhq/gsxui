@@ -12,8 +12,8 @@ import (
 // (aria-activedescendant, not tab focus), Enter/click activation, group
 // hiding, DOM reordering by score — is reimplemented in ui/command.js,
 // including a faithful port of cmdk's own ranking algorithm (command-score,
-// MIT). Markup follows shadcn's data-slot structure with cmdk's private
-// [cmdk-*] attribute selectors mapped onto the equivalent data-slot
+// MIT). Markup follows shadcn's generic slot structure with cmdk's private
+// [cmdk-*] attribute selectors mapped onto equivalent public slot
 // selectors (ADAPT — cmdk stamps those attributes at runtime; we own the
 // markup, so the slots are the stable hooks). Nova density metrics applied
 // per the 2026-07-24 retarget (rounded-xl + p-1 root, max-h-72 list).
@@ -98,8 +98,8 @@ component CommandEmpty(children gsx.Node, attrs gsx.Attrs) {
 
 // CommandGroup's heading is a real child div (slot command-group-heading)
 // rather than cmdk's heading prop + [cmdk-group-heading] runtime stamp —
-// the classes shadcn applies through the group's arbitrary selectors land
-// on it via the mapped data-slot selectors (see Command's doc comment).
+// the styles shadcn applies through the group's descendant selectors land
+// on it via the mapped public slot selectors (see Command's doc comment).
 component CommandGroup(heading string, children gsx.Node, attrs gsx.Attrs) {
 	<div data-gsxui-command-group role="group" { withSlot("command-group", attrs)... }>
 		{ if heading != "" {

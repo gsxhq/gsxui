@@ -9,6 +9,7 @@ import {
   unlinkSync,
 } from "node:fs";
 import path from "node:path";
+import { auditCompiledCSSFile } from "./support/compiled-css-audit.ts";
 import {
   cssPath,
   foundationCSSPath,
@@ -22,11 +23,10 @@ import {
  * read the manifest synchronously and still work under a bare
  * `npx playwright test`.
  *
- * The stylesheet is compiled from web/site.css — the production entry — so
- * every class a component can emit is present (site.css already declares
- * `@source "../ui/**\/*.gsx"`). Real CSS is not optional here: the ghost-box
- * invariant is a computed-style assertion, and it caught shipped defects in
- * both dialog and sidebar.
+ * The full stylesheet imports web/site.css — the production entry — and adds
+ * the harness's own authored fixtures to its explicit source boundary. Real
+ * CSS is not optional here: the ghost-box invariant is a computed-style
+ * assertion, and it caught shipped defects in both dialog and sidebar.
  */
 export default function globalSetup() {
   mkdirSync(tmpDir, { recursive: true });
@@ -36,7 +36,7 @@ export default function globalSetup() {
     stdio: "inherit",
   });
 
-  execFileSync("npx", ["@tailwindcss/cli", "-i", "web/site.css", "-o", cssPath], {
+  execFileSync("npx", ["@tailwindcss/cli", "-i", "jstest/full.css", "-o", cssPath], {
     cwd: repoRoot,
     stdio: "inherit",
   });
@@ -49,6 +49,8 @@ export default function globalSetup() {
     },
   );
 
+  auditCompiledCSSFile(cssPath);
+  auditCompiledCSSFile(foundationCSSPath);
   linkFontAssets();
 }
 

@@ -249,7 +249,7 @@ component MenubarContent(children gsx.Node, attrs gsx.Attrs) {
 	</div>
 }
 
-// MenubarItem is byte-identical, modulo the data-slot/data-gsxui-* prefix,
+// MenubarItem is byte-identical, modulo the slot-attribute prefix,
 // to DropdownMenuItem's own already-shipped pinned class — the source
 // map's own finding that plain Item is identical across all three menu
 // families, and this port's own nova retarget already applied uniformly to
@@ -372,14 +372,14 @@ component MenubarSeparator(attrs gsx.Attrs) {
 	<div role="separator" { withSlot("menubar-separator", attrs)... }></div>
 }
 
-// ml-auto is KEPT even though nova's own .cn-menubar-shortcut rule omits it
-// (`text-muted-foreground group-focus/menubar-item:text-accent-foreground
-// text-xs tracking-widest` — no ml-auto token) — undisclosed until now, not
+// The automatic leading margin is KEPT even though nova's own shortcut rule
+// omits it (its focus color, text size, and tracking rule has no automatic
+// margin) — undisclosed until now, not
 // a metric token so not itself in scope for the nova retarget, and dropping
 // it would break the shortcut's own push-to-the-right layout inside the
 // item row (every sibling Shortcut in this codebase keeps it). The
-// group-focus/menubar-item: color-on-focus addition nova's rule carries is
-// NOT ported either — no `group/menubar-item` marker class exists anywhere
+// The named-ancestor focus color addition nova carries is NOT ported either
+// — no corresponding named ancestor marker exists anywhere
 // in this file for it to key off, the same scope call as every other
 // dropdown/context-menu Shortcut in this codebase.
 component MenubarShortcut(children gsx.Node, attrs gsx.Attrs) {

@@ -1,10 +1,14 @@
 package cli
 
 import (
+	"io/fs"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	gsxui "github.com/gsxhq/gsxui"
 )
 
 // initTestModule creates a fake module root and stubs the command runner.
@@ -131,6 +135,188 @@ func TestInitRejectsModifiedCustomCSSSibling(t *testing.T) {
 	}
 	if string(got) != modified {
 		t.Errorf("modified sibling was overwritten:\n%s", got)
+	}
+}
+
+func TestInitOverwriteRefreshesOnlyVersionedSupportFiles(t *testing.T) {
+	dir, _ := initTestModule(t)
+	cfg := Config{
+		UI:  "components/ui",
+		JS:  "web/behavior",
+		CSS: "web/styles/brand.css",
+	}
+	if err := cfg.Save(dir); err != nil {
+		t.Fatal(err)
+	}
+	indexPath := filepath.Join(dir, cfg.JS, "index.js")
+	if err := os.MkdirAll(filepath.Dir(indexPath), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	const customBarrel = "// consumer-owned behavior barrel\n"
+	if err := os.WriteFile(indexPath, []byte(customBarrel), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	const customGsxTOML = "class_merger = \"example.com/custom.Merge\"\n\n[minify]\ncss = true\n"
+	if err := os.WriteFile(filepath.Join(dir, "gsx.toml"), []byte(customGsxTOML), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := Run([]string{"init"}); err != nil {
+		t.Fatal(err)
+	}
+
+	type supportTarget struct {
+		path   string
+		source string
+	}
+	targets := []supportTarget{
+		{path: cfg.CSS, source: "assets/css/index.css"},
+		{path: "web/styles/foundation.css", source: "assets/css/foundation.css"},
+		{path: "web/styles/theme.css", source: "assets/css/themes/default.css"},
+		{path: "web/styles/style.css", source: "assets/css/styles/default.css"},
+		{path: filepath.Join(cfg.JS, "gsxui.js"), source: "ui/gsxui.js"},
+		{path: filepath.Join(cfg.UI, "merge", "merge.go"), source: "merge/merge.go"},
+	}
+	for _, target := range targets {
+		if err := os.WriteFile(
+			filepath.Join(dir, target.path),
+			[]byte("locally modified "+target.path+"\n"),
+			0o644,
+		); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	preservedPaths := []string{"gsxui.json", cfg.JS + "/index.js", "gsx.toml"}
+	preserved := make(map[string][]byte, len(preservedPaths))
+	for _, path := range preservedPaths {
+		content, err := os.ReadFile(filepath.Join(dir, path))
+		if err != nil {
+			t.Fatal(err)
+		}
+		preserved[path] = content
+	}
+
+	err := Run([]string{"init"})
+	if err == nil || !strings.Contains(err.Error(), "--overwrite") {
+		t.Fatalf("plain init must refuse locally modified support files, got %v", err)
+	}
+	for _, target := range targets {
+		got, readErr := os.ReadFile(filepath.Join(dir, target.path))
+		if readErr != nil {
+			t.Fatal(readErr)
+		}
+		want := "locally modified " + target.path + "\n"
+		if string(got) != want {
+			t.Errorf("plain init changed %s:\n%s", target.path, got)
+		}
+	}
+
+	if err := Run([]string{"init", "--overwrite"}); err != nil {
+		t.Fatalf("init --overwrite: %v", err)
+	}
+	for _, target := range targets {
+		want, readErr := fs.ReadFile(gsxui.Files, target.source)
+		if readErr != nil {
+			t.Fatal(readErr)
+		}
+		got, readErr := os.ReadFile(filepath.Join(dir, target.path))
+		if readErr != nil {
+			t.Fatal(readErr)
+		}
+		if string(got) != string(want) {
+			t.Errorf("init --overwrite did not refresh %s from %s", target.path, target.source)
+		}
+	}
+	for _, path := range preservedPaths {
+		got, readErr := os.ReadFile(filepath.Join(dir, path))
+		if readErr != nil {
+			t.Fatal(readErr)
+		}
+		if string(got) != string(preserved[path]) {
+			t.Errorf("init --overwrite changed preserved %s:\n got: %q\nwant: %q", path, got, preserved[path])
+		}
+	}
+}
+
+func TestInitRejectsUnexpectedArgumentsWithOverwriteUsage(t *testing.T) {
+	_, _ = initTestModule(t)
+	err := Run([]string{"init", "unexpected"})
+	if err == nil || !strings.Contains(err.Error(), "usage: gsxui init [--overwrite]") {
+		t.Fatalf("unexpected init argument error = %v", err)
+	}
+}
+
+func TestInitializedConsumerCSSHasNoLegacySlotOrImportantUtility(t *testing.T) {
+	repoRoot, err := filepath.Abs(filepath.Join("..", ".."))
+	if err != nil {
+		t.Fatal(err)
+	}
+	tailwind := filepath.Join(repoRoot, "node_modules", ".bin", "tailwindcss")
+	postcss := filepath.Join(repoRoot, "node_modules", "postcss", "package.json")
+	if _, err := exec.LookPath("node"); err != nil {
+		t.Skip("requires npm install")
+	}
+	if _, err := os.Stat(tailwind); err != nil {
+		t.Skip("requires npm install")
+	}
+	if _, err := os.Stat(postcss); err != nil {
+		t.Skip("requires npm install")
+	}
+	dir, _ := initTestModule(t)
+	cfg := Config{
+		UI:  "components/ui",
+		JS:  "web/behavior",
+		CSS: "web/styles/brand.css",
+	}
+	if err := cfg.Save(dir); err != nil {
+		t.Fatal(err)
+	}
+	if err := Run([]string{"init"}); err != nil {
+		t.Fatal(err)
+	}
+	if err := Run([]string{"add", "button-group", "combobox", "command", "menubar"}); err != nil {
+		t.Fatal(err)
+	}
+
+	nodeModules := filepath.Join(dir, "node_modules")
+	if err := os.Symlink(filepath.Join(repoRoot, "node_modules"), nodeModules); err != nil {
+		t.Fatal(err)
+	}
+	input := filepath.Join(dir, "consumer.css")
+	if err := os.WriteFile(input, []byte(`
+@import "./web/styles/brand.css";
+@source "./components/ui/**/*.gsx";
+`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	output := filepath.Join(dir, "consumer.out.css")
+	command := exec.Command(tailwind, "-i", input, "-o", output)
+	command.Dir = dir
+	if combined, runErr := command.CombinedOutput(); runErr != nil {
+		t.Fatalf("compile clean consumer CSS: %v\n%s", runErr, combined)
+	}
+
+	audit := filepath.Join(repoRoot, "jstest", "support", "compiled-css-audit.ts")
+	command = exec.Command("node", audit, output)
+	command.Dir = dir
+	if combined, runErr := command.CombinedOutput(); runErr != nil {
+		t.Fatalf("audit clean consumer CSS: %v\n%s", runErr, combined)
+	}
+
+	compiled, err := os.ReadFile(output)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, selector := range []string{
+		`[data-gsxui-slot~="button"]`,
+		`[data-gsxui-slot~="combobox-content"]`,
+		`[data-gsxui-slot~="command"]`,
+		`[data-gsxui-slot~="menubar"]`,
+	} {
+		if !strings.Contains(string(compiled), selector) {
+			t.Errorf("clean consumer CSS missing canonical selector %s", selector)
+		}
 	}
 }
 

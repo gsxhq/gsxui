@@ -12,9 +12,8 @@ import "github.com/gsxhq/gsx"
 //
 // Retargeted to nova density (2026-07-24 nova density map, `## button-group`).
 // DEVIATION from the map's own notes: the map frames nova's corner mechanism
-// as inner-corner zeroing REPLACED by outer-corner restoration
-// (`[&>[data-slot]:not(:has(~[data-slot]))]:rounded-r-lg!` /
-// `rounded-b-lg!`). Checked against the actual nova source
+// as inner-corner zeroing REPLACED by priority outer-corner restoration
+// based on the last visible slotted child. Checked against the actual nova source
 // (shadcn-ui/apps/v4/registry/bases/radix/ui/button-group.tsx +
 // styles/style-nova.css): the radix base's `buttonGroupVariants` — shared by
 // every style, nova included — still carries the zero-inner-corner classes
@@ -42,9 +41,9 @@ component ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) {
 }
 
 // ButtonGroupText's asChild tag-swap is dropped (GAP, always a <div>) — same
-// narrow gap as Button's own asChild. Note this element carries no
-// data-slot in shadcn's own source either (unlike every other button-group
-// part); ported as-is rather than "fixed", per the token-for-token rule.
+// narrow gap as Button's own asChild. Note this element carries no generic
+// shadcn slot hook either (unlike every other button-group part); ported
+// as-is rather than "fixed", per the token-for-token rule.
 component ButtonGroupText(children gsx.Node, attrs gsx.Attrs) {
 	<div { withSlot("button-group-text", attrs)... }>
 		{ children }

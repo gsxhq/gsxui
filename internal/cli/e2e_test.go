@@ -44,7 +44,33 @@ func TestEndToEnd(t *testing.T) {
 	if !strings.Contains(string(dialogSrc), "package ui") {
 		t.Fatalf("vendored dialog.gsx missing package ui clause:\n%s", dialogSrc)
 	}
-	mustRun(t, dir, "go", "build", "./...")
+	const renderTest = `package app_test
+
+import (
+	"bytes"
+	"context"
+	"strings"
+	"testing"
+
+	"github.com/gsxhq/gsx"
+	"example.com/app/ui"
+)
+
+func TestVendoredButtonRenders(t *testing.T) {
+	var output bytes.Buffer
+	if err := ui.Button("", "", "", false, gsx.Text("Save"), nil).Render(context.Background(), &output); err != nil {
+		t.Fatal(err)
+	}
+	html := output.String()
+	if !strings.Contains(html, "data-gsxui-slot=\"button\"") || !strings.Contains(html, ">Save</button>") {
+		t.Fatalf("unexpected vendored Button output: %s", html)
+	}
+}
+`
+	if err := os.WriteFile(filepath.Join(dir, "render_test.go"), []byte(renderTest), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	mustRun(t, dir, "go", "test", "./...")
 
 	if err := Run([]string{"add", "native-select", "tabs"}); err != nil {
 		t.Fatal(err)

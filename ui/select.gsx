@@ -138,7 +138,7 @@ component SelectLabel(children gsx.Node, attrs gsx.Attrs) {
 // selected server-renders the initial value (data-state="checked"). Two
 // separate attributes track distinct facts, per the traced Radix contract:
 //   - data-state="checked"|"unchecked" tracks the VALUE alone and drives the
-//     check indicator's CSS visibility (group-data-[state=checked] gating).
+//     check indicator's CSS visibility through an ancestor-state gate.
 //   - aria-selected is server-rendered "false" and recomputed by select.js
 //     as (isValue AND isFocused) on every focus change — an item that IS the
 //     value but is not the highlighted item reports aria-selected="false".

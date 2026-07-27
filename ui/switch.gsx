@@ -14,8 +14,8 @@ import "github.com/gsxhq/gsx"
 // input[type=checkbox][role=switch] correctly; the checked state itself is
 // still native).
 //
-// The Thumb is no longer a sibling element to target via Radix's
-// group-data-[size]/switch selector — it is this element's own ::before
+// The Thumb is no longer a sibling element targeted through Radix's
+// ancestor size state — it is this element's own ::before
 // pseudo-element (MECHANISM: thumb-span→before:). A generated pseudo-
 // element renders nothing without an explicit content utility, unlike a
 // real child element, so before:content-[''] is required (not present on

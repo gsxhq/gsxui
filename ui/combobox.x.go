@@ -170,15 +170,15 @@ func Combobox(name string, value string, children gsx.Node, attrs gsx.Attrs) _gs
 // exactly one <button>, not two. See ComboboxTrigger's and ComboboxClear's
 // own doc comments below.
 //
-// InputGroupInput keeps its OWN default data-slot="input-group-control"
+// InputGroupInput keeps its OWN default generic input-control slot hook
 // (not overridden): ui/input-group.gsx's InputGroup keys its focus ring off
-// has-[[data-slot=input-group-control]:focus-visible] — overriding the slot
+// that descendant hook's focus-visible state — overriding the slot
 // here (an earlier draft of this port did, to `"input-group-input"`, before
 // review) silently killed the only focus indicator on the control, a WCAG
 // 2.4.7 failure. showTrigger/showClear are independent booleans: both true
-// renders both buttons, with the trigger hidden via
-// group-has-data-[slot=combobox-clear]/input-group:hidden whenever a clear
-// button is also present (clear wins visually), matching shadcn's own
+// renders both buttons, with the trigger hidden by the input group's
+// clear-button descendant condition whenever a clear button is also present
+// (clear wins visually), matching shadcn's own
 // composition table exactly (source map ## combobox §2).
 //
 // aria-haspopup="listbox" is a permanent, server-rendered fact (APG expects
@@ -318,8 +318,8 @@ func _gsxrenderComboboxClear(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs g
 //line combobox.gsx:241:1
 // ComboboxContent is the popover listbox surface. See the package doc
 // comment for the popover-machinery MECHANISM and the CSS-var-drop ADAPT.
-// group/combobox-content is the named group ComboboxEmpty's own
-// group-data-empty/combobox-content:flex selector targets;
+// ComboboxContent is the named ancestor targeted by ComboboxEmpty's
+// empty-state visibility rule;
 // combobox.js stamps data-empty on this element (and, separately, on
 // ComboboxList, whose own data-empty:p-0 selector is a different
 // attribute-presence target) whenever a filter pass leaves zero visible
@@ -413,7 +413,7 @@ func ComboboxList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // initial pick. Two attributes track two different facts, the same split
 // ## select documents for SelectItem: data-state="checked"|"unchecked"
 // tracks the VALUE alone and drives the checkmark's CSS visibility
-// (group-data-[state=checked]/combobox-item: gating, the same
+// through the same checked-state ancestor gate that
 // mount-gating-in-CSS MECHANISM ## select's own entry names); aria-selected
 // tracks the value too here (NOT isValue&&isFocused like Select's own
 // aria-selected — Combobox's separate highlight cursor is
@@ -536,7 +536,7 @@ func ComboboxLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 
 //line combobox.gsx:344:1
 // ComboboxEmpty is server-rendered hidden; combobox.js reveals it via the
-// group-data-empty/combobox-content: selector when a filter pass leaves
+// content ancestor's empty-state selector when a filter pass leaves
 // zero visible items — see ComboboxContent's own doc comment for exactly
 // which element combobox.js stamps data-empty on.
 

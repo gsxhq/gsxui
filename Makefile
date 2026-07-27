@@ -1,4 +1,4 @@
-.PHONY: generate verify-generated test test-js audit check ci icons site-dev site highlight
+.PHONY: generate verify-generated test test-js test-css-audit audit check ci icons site-dev site highlight
 
 generate:
 	go tool gsx generate
@@ -42,14 +42,19 @@ test: generate
 test-js:
 	npx playwright test --config jstest/playwright.config.ts
 
+test-css-audit:
+	node --test jstest/support/compiled-css-audit.test.ts
+
 audit:
 	@! rg -n '^[[:space:]]*<[^>]*data-slot=|^[[:space:]]+data-slot=' ui site/examples site/pages web dev -g '!*.x.go' -g '!*.gen.go'
 	@! rg -n 'data-slot|className[[:space:]]*=|[.]classList|setAttribute[(][^)]*class|[.]className[[:space:]]*=' ui -g '*.js'
+	@! rg -n 'data-slot|group/|peer/|(group|peer)-(data|has|focus|hover|active|disabled|aria|open|checked)[^[:space:]]*/' ui -g '*.gsx'
+	@! rg -n -P '[\w./:\[\]&>-]+!' ui -g '*.gsx'
 	@! rg -n '^[[:space:]]+class=' ui -g '*.gsx'
 	@! rg -n '^[[:space:]]*<[^>]*class=' ui -g '*.gsx'
 	@! rg -n '!important' assets/css/foundation.css assets/css/styles/default.css
 
-check: audit
+check: audit test-css-audit
 	@$(MAKE) --no-print-directory verify-generated
 	go vet ./...
 	go test ./...
@@ -61,7 +66,7 @@ check: audit
 # ci is the authoritative uncached gate. It mirrors check without reusing
 # Go's test-result cache and keeps the browser, generation, syntax,
 # structural, and formatting checks in the same run.
-ci: audit
+ci: audit test-css-audit
 	@$(MAKE) --no-print-directory verify-generated
 	go vet ./...
 	go test -count=1 ./...

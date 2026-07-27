@@ -30,20 +30,18 @@ import (
 //
 // data-viewport="false" is stamped by DEFAULT (FIX ROUND 2 — a
 // stripped-prefix version of this file previously computed
-// NavigationMenuContent's chrome tokens with the
-// group-data-[viewport=false]/navigation-menu: prefix removed, reasoning
+// NavigationMenuContent's chrome tokens with the ancestor viewport-state
+// condition removed, reasoning
 // that a gate which can never toggle is dead weight; reviewed and reverted:
 // stamping the real ancestor attribute keeps Content's chrome-gating
-// selector — the group-data-[viewport=false]/navigation-menu: structure
-// itself, not every token behind it (see NavigationMenuContent's own doc
-// comment) — verbatim against upstream, and keeps this root's own
-// group/navigation-menu marker a live selector target instead of an inert
+// selector — the ancestor viewport-state structure itself, not every token
+// behind it (see NavigationMenuContent's own doc comment) — verbatim
+// against upstream, and keeps this root's own named ancestor marker live instead of inert
 // one). Like every other server-authored attribute here, codegen wraps this
 // in the standard `if !attrs.Has("data-viewport")` hatch (FIX ROUND 3,
 // correcting an earlier "unconditionally" overstatement) — a caller passing
 // their own data-viewport attr overrides it same as any other attr, and
-// since Content's entire chrome block is gated on
-// group-data-[viewport=false]/navigation-menu:, a caller-supplied
+// since Content's entire chrome block is gated on that ancestor state, a caller-supplied
 // data-viewport with any other value silently strips that chrome. Not
 // guarded against; callers overriding this attribute are on their own.
 component NavigationMenu(children gsx.Node, attrs gsx.Attrs) {
@@ -112,9 +110,9 @@ component NavigationMenuItem(children gsx.Node, attrs gsx.Attrs) {
 // own ml-1 provides the visual gap either way, but the text node is ported
 // for a byte-faithful accessible-name/text-content match, same call as
 // every other {" "}-separated icon pairing in this codebase would make. The
-// trailing chevron keeps new-york-v4's own selector spelling
-// (group-data-[state=open]:, the standing house exception) rather than
-// nova's own group-data-open:/group-data-popup-open: shorthand pair — the
+// trailing chevron keeps new-york-v4's own explicit open-state ancestor
+// spelling, the standing house exception, rather than nova's two shorthand
+// open-state spellings — the
 // second of which belongs to Base UI's differently-shaped primitive per the
 // source map's own provenance note and has no Radix data-state equivalent
 // to key off here.
@@ -144,7 +142,7 @@ component NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 // rendered statically, the same hand-rolled-fixed-position stopgap as every
 // sibling popover in this codebase (see docs/jsx-parity.md ## dropdown
 // NOTE). The chrome block (border/bg/shadow/rounded) keeps new-york-v4's
-// own group-data-[viewport=false]/navigation-menu: GATING STRUCTURE
+// own ancestor viewport-state GATING STRUCTURE
 // verbatim (FIX ROUND 2 — see the file header's own note on NavigationMenu's
 // default data-viewport="false" stamp): the selector prefix itself, and the
 // ancestor attribute it depends on, are both unchanged from upstream. The
@@ -263,7 +261,7 @@ component NavigationMenuLink(active bool, variant string, children gsx.Node, att
 // uses). Unaffected by this file's own viewport={false} GAP — the
 // indicator tracks the active TRIGGER, not the (never-shipped) shared
 // viewport panel; it survives here because it is mode-independent upstream
-// too (Indicator has no group-data-[viewport=false] selectors of its own to
+// too (Indicator has no ancestor viewport-state selectors of its own to
 // begin with). ADAPT: the data-[state=hidden|visible]:animate-out/in
 // fade-out/in pair (tw-animate-css, GAP category — see ## animations) is
 // replaced with a plain CSS opacity transition instead of the popover

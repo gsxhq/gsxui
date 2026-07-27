@@ -19,13 +19,11 @@ import "github.com/gsxhq/gsx"
 // param for either. Every class token whose sole purpose was to key off one
 // of those two Radix-only accessed states is dropped as dead weight, same
 // "drop the selector, don't ship dead CSS" call as avatar's size prop and
-// dialog's close-button data-[state=open]: pair: the two
-// group-data-[orientation=vertical]/tabs: tokens on Tabs' root and
-// TabsTrigger, the data-[variant=line]/group-data-[variant=line]/tabs-list:
-// family on TabsList/TabsTrigger (rounding, background, the after:
-// indicator — invisible under the only variant we ship), and
-// group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm
-// unwraps to an unconditional data-[state=active]:shadow-sm. Root and list
+// dialog's close-button open-state pair: the ancestor-orientation rules on
+// Tabs' root and TabsTrigger, the line-variant family on
+// TabsList/TabsTrigger (rounding, background, the after-element indicator
+// — invisible under the only variant we ship), and the default-list active
+// shadow rule, which unwraps to an unconditional active-state shadow. Root and list
 // no longer stamp data-orientation/orientation/data-variant — nothing reads
 // them. See docs/jsx-parity.md.
 //

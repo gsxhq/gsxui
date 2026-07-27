@@ -98,8 +98,8 @@ func Item(variant string, size string, children gsx.Node, attrs gsx.Attrs) _gsxr
 //
 // Retargeted to nova density (2026-07-24 nova density map, `## item`).
 // DEVIATION: nova's icon-media variant drops the bordered/muted size-8 box
-// entirely (bare `size-4` svg, no container) and the image variant gains
-// group-data-[size=…]/item: responsive sizing tied to a `size=xs` axis this
+// entirely (bare 1rem svg, no container) and the image variant gains
+// ancestor-size responsive sizing tied to a `size=xs` axis this
 // package doesn't ship — both left as-is here: the box drop bundles a
 // color/border removal (border, bg-muted) the retarget is scoped to leave
 // alone, and the responsive image sizing is half dead weight without a real

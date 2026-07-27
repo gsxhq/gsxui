@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
 @import "tw-animate-css";
 @import "../assets/css/foundation.css";
 @import "../assets/css/themes/default.css";
@@ -12,10 +12,9 @@
   --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, monospace;
 }
 
-/* Scan gsxui's own component sources and the site's pages for class names —
-   .gsx is not one of Tailwind's default-recognized extensions, so without
-   these the automatic content heuristic may miss classes assembled inside
-   .gsx components (e.g. button.gsx's variantClass/sizeClass switches). */
+/* These are the complete source boundary for the site build. Automatic
+   discovery is disabled above, and .gsx is not one of Tailwind's
+   default-recognized extensions. */
 @source "../ui/**/*.gsx";
 @source "../site/**/*.gsx";
 
