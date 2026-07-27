@@ -46,15 +46,15 @@
   body {
     @apply bg-background text-foreground;
   }
-  :where([data-gsxui-slot~="breadcrumb-ellipsis-label"]),
-  :where([data-gsxui-slot~="pagination-ellipsis-label"]),
-  :where([data-gsxui-slot~="dialog-close-label"]),
-  :where([data-gsxui-slot~="sheet-close-label"]),
-  :where([data-gsxui-slot~="command-dialog-header"]),
-  :where([data-gsxui-slot~="combobox-bridge"]),
-  :where([data-gsxui-slot~="carousel-control-label"]),
+  :where([data-gsxui-slot-breadcrumb-ellipsis-label]),
+  :where([data-gsxui-slot-pagination-ellipsis-label]),
+  :where([data-gsxui-slot-dialog-close-label]),
+  :where([data-gsxui-slot-sheet-close-label]),
+  :where([data-gsxui-slot-command-dialog-header]),
+  :where([data-gsxui-slot-combobox-bridge]),
+  :where([data-gsxui-slot-carousel-control-label]),
   :where(
-      [data-gsxui-slot~="calendar-caption"][data-caption-layout="dropdown"]
+      [data-gsxui-slot-calendar-caption][data-caption-layout="dropdown"]
     ) {
     position: absolute;
     width: 1px;
@@ -66,7 +66,7 @@
     white-space: nowrap;
     border-width: 0;
   }
-  :where([data-gsxui-slot~="icon"]) {
+  :where([data-gsxui-slot-icon]) {
     width: 1em;
     height: 1em;
   }
@@ -75,60 +75,60 @@
 @layer components {
   /* Carousel's native-scroll algorithm requires a scroll viewport, one flex
      track, and fixed snap items. Spacing and scrollbar treatment remain style. */
-  :where([data-gsxui-slot~="carousel-content"]) {
+  :where([data-gsxui-slot-carousel-content]) {
     overflow-x: auto;
     scroll-snap-type: x mandatory;
   }
   :where(
-      [data-gsxui-slot~="carousel-content"][data-orientation="vertical"]
+      [data-gsxui-slot-carousel-content][data-orientation="vertical"]
     ) {
     overflow-x: visible;
     overflow-y: auto;
     scroll-snap-type: y mandatory;
   }
-  :where([data-gsxui-slot~="carousel-track"]) {
+  :where([data-gsxui-slot-carousel-track]) {
     display: flex;
   }
-  :where([data-gsxui-slot~="carousel-track"][data-orientation="vertical"]) {
+  :where([data-gsxui-slot-carousel-track][data-orientation="vertical"]) {
     flex-direction: column;
   }
-  :where([data-gsxui-slot~="carousel-item"]) {
+  :where([data-gsxui-slot-carousel-item]) {
     min-width: 0;
     flex: 0 0 100%;
     scroll-snap-align: start;
   }
-  :where([data-gsxui-slot~="carousel-item"][data-orientation="vertical"]) {
+  :where([data-gsxui-slot-carousel-item][data-orientation="vertical"]) {
     min-height: 0;
   }
-  :where([data-gsxui-slot~="carousel-item"]:last-child) {
+  :where([data-gsxui-slot-carousel-item]:last-child) {
     scroll-snap-align: end;
   }
 
   /* Resizable's live flex-grow algorithm consumes these invariant mechanics.
      The handle pseudo-element is its operable pointer hit target. */
-  :where([data-gsxui-slot~="resizable-panel-group"]) {
+  :where([data-gsxui-slot-resizable-panel-group]) {
     display: flex;
     width: 100%;
     height: 100%;
   }
   :where(
-      [data-gsxui-slot~="resizable-panel-group"][aria-orientation="vertical"]
+      [data-gsxui-slot-resizable-panel-group][aria-orientation="vertical"]
     ) {
     flex-direction: column;
   }
-  :where([data-gsxui-slot~="resizable-panel"]) {
+  :where([data-gsxui-slot-resizable-panel]) {
     min-width: 0;
     min-height: 0;
     overflow: hidden;
   }
-  :where([data-gsxui-slot~="resizable-handle"]) {
+  :where([data-gsxui-slot-resizable-handle]) {
     position: relative;
     display: flex;
     flex: none;
     align-items: center;
     justify-content: center;
   }
-  :where([data-gsxui-slot~="resizable-handle"])::after {
+  :where([data-gsxui-slot-resizable-handle])::after {
     position: absolute;
     inset-block: 0;
     left: 50%;
@@ -137,12 +137,12 @@
     transform: translateX(-50%);
   }
   :where(
-      [data-gsxui-slot~="resizable-handle"][aria-orientation="horizontal"]
+      [data-gsxui-slot-resizable-handle][aria-orientation="horizontal"]
     ) {
     width: 100%;
   }
   :where(
-      [data-gsxui-slot~="resizable-handle"][aria-orientation="horizontal"]
+      [data-gsxui-slot-resizable-handle][aria-orientation="horizontal"]
     )::after {
     inset-block: auto;
     inset-inline: 0;
@@ -153,69 +153,69 @@
   }
 
   /* ScrollArea intentionally uses the browser's native scrolling surface. */
-  :where([data-gsxui-slot~="scroll-area"][data-orientation="vertical"]) {
+  :where([data-gsxui-slot-scroll-area][data-orientation="vertical"]) {
     overflow: auto;
   }
-  :where([data-gsxui-slot~="scroll-area"][data-orientation="horizontal"]) {
+  :where([data-gsxui-slot-scroll-area][data-orientation="horizontal"]) {
     overflow-x: auto;
   }
 }
 
 /* Accordion open/close animation over native <details>. */
-:where([data-gsxui-slot~="accordion-item"])::details-content {
+:where([data-gsxui-slot-accordion-item])::details-content {
   display: grid;
   grid-template-rows: 0fr;
   transition:
     grid-template-rows 200ms ease-out,
     content-visibility 200ms allow-discrete;
 }
-:where([data-gsxui-slot~="accordion-item"])[open]::details-content {
+:where([data-gsxui-slot-accordion-item])[open]::details-content {
   grid-template-rows: 1fr;
 }
-:where([data-gsxui-slot~="accordion-content"]) {
+:where([data-gsxui-slot-accordion-content]) {
   min-height: 0;
 }
 
 /* Sidebar state-machine mechanics. Presentation remains in style.css. */
 @layer components {
-  :where([data-gsxui-slot~="sidebar-wrapper"]) {
+  :where([data-gsxui-slot-sidebar-wrapper]) {
     display: flex;
     min-height: 100svh;
     width: 100%;
   }
-  :where([data-gsxui-slot~="sidebar"][data-collapsible="none"]) {
+  :where([data-gsxui-slot-sidebar][data-collapsible="none"]) {
     display: flex;
     width: var(--sidebar-width);
     height: 100%;
     flex-direction: column;
   }
-  :where([data-gsxui-slot~="sidebar-mobile-root"]) {
+  :where([data-gsxui-slot-sidebar-mobile-root]) {
     display: contents;
   }
-  :where([data-gsxui-slot~="sidebar-desktop"]) {
+  :where([data-gsxui-slot-sidebar-desktop]) {
     display: none;
   }
-  :where([data-gsxui-slot~="sidebar-gap"]) {
+  :where([data-gsxui-slot-sidebar-gap]) {
     position: relative;
     width: var(--sidebar-width);
     flex: none;
   }
   :where(
-      [data-gsxui-slot~="sidebar-desktop"][data-collapsible="offcanvas"]
+      [data-gsxui-slot-sidebar-desktop][data-collapsible="offcanvas"]
     )
-    > :where([data-gsxui-slot~="sidebar-gap"]) {
+    > :where([data-gsxui-slot-sidebar-gap]) {
     width: 0;
   }
   :where(
-      [data-gsxui-slot~="sidebar-desktop"][data-collapsible="icon"]
+      [data-gsxui-slot-sidebar-desktop][data-collapsible="icon"]
     )
-    > :where([data-gsxui-slot~="sidebar-gap"]) {
+    > :where([data-gsxui-slot-sidebar-gap]) {
     width: var(
       --gsxui-sidebar-collapsed-gap-width,
       var(--sidebar-width-icon)
     );
   }
-  :where([data-gsxui-slot~="sidebar-container"]) {
+  :where([data-gsxui-slot-sidebar-container]) {
     position: fixed;
     inset-block: 0;
     z-index: 10;
@@ -223,49 +223,49 @@
     width: var(--sidebar-width);
     height: 100svh;
   }
-  :where([data-gsxui-slot~="sidebar-desktop"][data-side="left"])
-    > :where([data-gsxui-slot~="sidebar-container"]) {
+  :where([data-gsxui-slot-sidebar-desktop][data-side="left"])
+    > :where([data-gsxui-slot-sidebar-container]) {
     left: 0;
   }
-  :where([data-gsxui-slot~="sidebar-desktop"][data-side="right"])
-    > :where([data-gsxui-slot~="sidebar-container"]) {
+  :where([data-gsxui-slot-sidebar-desktop][data-side="right"])
+    > :where([data-gsxui-slot-sidebar-container]) {
     right: 0;
   }
   :where(
-      [data-gsxui-slot~="sidebar-desktop"][data-side="left"][data-collapsible="offcanvas"]
+      [data-gsxui-slot-sidebar-desktop][data-side="left"][data-collapsible="offcanvas"]
     )
-    > :where([data-gsxui-slot~="sidebar-container"]) {
+    > :where([data-gsxui-slot-sidebar-container]) {
     left: calc(var(--sidebar-width) * -1);
   }
   :where(
-      [data-gsxui-slot~="sidebar-desktop"][data-side="right"][data-collapsible="offcanvas"]
+      [data-gsxui-slot-sidebar-desktop][data-side="right"][data-collapsible="offcanvas"]
     )
-    > :where([data-gsxui-slot~="sidebar-container"]) {
+    > :where([data-gsxui-slot-sidebar-container]) {
     right: calc(var(--sidebar-width) * -1);
   }
   :where(
-      [data-gsxui-slot~="sidebar-desktop"][data-collapsible="icon"]
+      [data-gsxui-slot-sidebar-desktop][data-collapsible="icon"]
     )
-    > :where([data-gsxui-slot~="sidebar-container"]) {
+    > :where([data-gsxui-slot-sidebar-container]) {
     width: var(
       --gsxui-sidebar-collapsed-container-width,
       var(--sidebar-width-icon)
     );
   }
-  :where([data-gsxui-slot~="sidebar-inner"]),
-  :where([data-gsxui-slot~="sidebar-mobile-inner"]) {
+  :where([data-gsxui-slot-sidebar-inner]),
+  :where([data-gsxui-slot-sidebar-mobile-inner]) {
     display: flex;
     width: 100%;
     height: 100%;
     flex-direction: column;
   }
-  :where([data-gsxui-slot~="sidebar-inset"]) {
+  :where([data-gsxui-slot-sidebar-inset]) {
     display: flex;
     width: 100%;
     flex: 1 1 0%;
     flex-direction: column;
   }
-  :where([data-gsxui-slot~="sidebar-content"]) {
+  :where([data-gsxui-slot-sidebar-content]) {
     display: flex;
     min-height: 0;
     flex: 1 1 0%;
@@ -273,12 +273,12 @@
     overflow: auto;
   }
   :where(
-      [data-gsxui-slot~="sidebar-desktop"][data-collapsible="icon"]
+      [data-gsxui-slot-sidebar-desktop][data-collapsible="icon"]
     )
-    :where([data-gsxui-slot~="sidebar-content"]) {
+    :where([data-gsxui-slot-sidebar-content]) {
     overflow: hidden;
   }
-  :where([data-gsxui-slot~="sidebar-rail"]) {
+  :where([data-gsxui-slot-sidebar-rail]) {
     position: absolute;
     inset-block: 0;
     z-index: 20;
@@ -286,19 +286,19 @@
     width: 1rem;
     transform: translateX(-50%);
   }
-  :where([data-gsxui-slot~="sidebar-rail"])::after {
+  :where([data-gsxui-slot-sidebar-rail])::after {
     position: absolute;
     inset-block: 0;
     left: 50%;
     width: 2px;
     content: "";
   }
-  :where([data-gsxui-slot~="sidebar-mobile-content"])
-    :where([data-gsxui-slot~="sidebar-rail"]) {
+  :where([data-gsxui-slot-sidebar-mobile-content])
+    :where([data-gsxui-slot-sidebar-rail]) {
     display: none;
   }
-  :where([data-gsxui-slot~="sidebar-group-action"])::after,
-  :where([data-gsxui-slot~="sidebar-menu-action"])::after {
+  :where([data-gsxui-slot-sidebar-group-action])::after,
+  :where([data-gsxui-slot-sidebar-menu-action])::after {
     position: absolute;
     inset: -0.5rem;
     content: "";
@@ -307,37 +307,37 @@
   /* A Sidebar tooltip may enter the top layer only for the collapsed-icon
      desktop tree. This state gate prevents closed or expanded ghost boxes. */
   :is(
-      [data-gsxui-slot~="sidebar-menu-button-tooltip-content"]:popover-open
+      [data-gsxui-slot-sidebar-menu-button-tooltip-content]:popover-open
     ) {
     display: none;
   }
   :is(
-      [data-gsxui-slot~="sidebar-desktop"][data-collapsible="icon"]
+      [data-gsxui-slot-sidebar-desktop][data-collapsible="icon"]
     )
     :is(
-      [data-gsxui-slot~="sidebar-menu-button-tooltip-content"]:popover-open
+      [data-gsxui-slot-sidebar-menu-button-tooltip-content]:popover-open
     ) {
     display: block;
   }
 
   @media (width >= 40rem) {
-    :where([data-gsxui-slot~="sidebar-desktop"])
-      :where([data-gsxui-slot~="sidebar-rail"]) {
+    :where([data-gsxui-slot-sidebar-desktop])
+      :where([data-gsxui-slot-sidebar-rail]) {
       display: flex;
     }
-    :where([data-gsxui-slot~="sidebar-group-action"])::after,
-    :where([data-gsxui-slot~="sidebar-menu-action"])::after {
+    :where([data-gsxui-slot-sidebar-group-action])::after,
+    :where([data-gsxui-slot-sidebar-menu-action])::after {
       display: none;
     }
   }
   @media (width >= 48rem) {
-    :is([data-gsxui-slot~="sidebar-mobile-root"]) {
+    :is([data-gsxui-slot-sidebar-mobile-root]) {
       display: none;
     }
-    :where([data-gsxui-slot~="sidebar-desktop"]) {
+    :where([data-gsxui-slot-sidebar-desktop]) {
       display: block;
     }
-    :where([data-gsxui-slot~="sidebar-container"]) {
+    :where([data-gsxui-slot-sidebar-container]) {
       display: flex;
     }
   }
@@ -357,10 +357,10 @@ input[type="range"] {
 
 /* InputOTP's one real input must cover the visual slots while remaining
    focusable and clickable in every style. */
-:where([data-gsxui-slot~="input-otp"]) {
+:where([data-gsxui-slot-input-otp]) {
   position: relative;
 }
-:where([data-gsxui-slot~="input-otp-input"]) {
+:where([data-gsxui-slot-input-otp-input]) {
   position: absolute;
   inset: 0;
   z-index: 10;
@@ -371,7 +371,7 @@ input[type="range"] {
 
 /* Select's native form bridge remains available to forms and labels without
    becoming a second visible control. */
-:where([data-gsxui-slot~="select-bridge"]) {
+:where([data-gsxui-slot-select-bridge]) {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -387,14 +387,14 @@ input[type="range"] {
    transforms. These fixed/absolute anchors and hit-testing rules are the
    invariant mechanics shared by the server and client-created regions. */
 @layer components {
-  :where([data-gsxui-slot~="toaster"]) {
+  :where([data-gsxui-slot-toaster]) {
     position: fixed;
     right: 0;
     bottom: 0;
     z-index: 100;
     pointer-events: none;
   }
-  :where([data-gsxui-slot~="toast"]) {
+  :where([data-gsxui-slot-toast]) {
     position: absolute;
     right: var(--gsxui-toast-offset, 0);
     bottom: var(--gsxui-toast-offset, 0);

@@ -32,7 +32,7 @@ func Basic() _gsxrt.Node {
 //line basic.gsx:16:3
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")
 //line basic.gsx:17:4
-		_gsxgw.Node(ctx, ui.Switch(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "switch-basic-wifi"}}, _gsxrt.Attrs{{Key: "checked", Value: true}})))
+		_gsxgw.Node(ctx, ui.Switch(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "switch-basic-wifi"}}, _gsxrt.Attrs{{Key: "checked", Value: _gsxrt.Toggle(true)}})))
 //line basic.gsx:18:4
 		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)

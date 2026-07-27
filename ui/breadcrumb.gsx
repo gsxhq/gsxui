@@ -17,17 +17,17 @@ import (
 // breadcrumb -> icon dependency internal/registry derives and
 // internal/registry/registry_test.go pins.
 component Breadcrumb(children gsx.Node, attrs gsx.Attrs) {
-	<nav aria-label="breadcrumb" { withSlot("breadcrumb", attrs)... }>{ children }</nav>
+	<nav aria-label="breadcrumb" { attrs... } data-gsxui-slot-breadcrumb>{ children }</nav>
 }
 
 component BreadcrumbList(children gsx.Node, attrs gsx.Attrs) {
-	<ol { withSlot("breadcrumb-list", attrs)... }>
+	<ol { attrs... } data-gsxui-slot-breadcrumb-list>
 		{ children }
 	</ol>
 }
 
 component BreadcrumbItem(children gsx.Node, attrs gsx.Attrs) {
-	<li { withSlot("breadcrumb-item", attrs)... }>
+	<li { attrs... } data-gsxui-slot-breadcrumb-item>
 		{ children }
 	</li>
 }
@@ -40,7 +40,7 @@ component BreadcrumbItem(children gsx.Node, attrs gsx.Attrs) {
 // docs/jsx-parity.md). Behavior-attachment uses of asChild are covered by
 // the data-attribute mechanism (see dialog).
 component BreadcrumbLink(href string, children gsx.Node, attrs gsx.Attrs) {
-	<a href={href} { withSlot("breadcrumb-link", attrs)... }>
+	<a href={href} { attrs... } data-gsxui-slot-breadcrumb-link>
 		{ children }
 	</a>
 }
@@ -50,7 +50,7 @@ component BreadcrumbPage(children gsx.Node, attrs gsx.Attrs) {
 		role="link"
 		aria-disabled="true"
 		aria-current="page"
-		{ withSlot("breadcrumb-page", attrs)... }
+		{ attrs... } data-gsxui-slot-breadcrumb-page
 	>
 		{ children }
 	</span>
@@ -63,7 +63,7 @@ component BreadcrumbSeparator(children gsx.Node, attrs gsx.Attrs) {
 	<li
 		role="presentation"
 		aria-hidden="true"
-		{ withSlot("breadcrumb-separator", attrs)... }
+		{ attrs... } data-gsxui-slot-breadcrumb-separator
 	>
 		{ if children != nil {
 			{ children }
@@ -80,9 +80,9 @@ component BreadcrumbEllipsis(attrs gsx.Attrs) {
 	<span
 		role="presentation"
 		aria-hidden="true"
-		{ withSlot("breadcrumb-ellipsis", attrs)... }
+		{ attrs... } data-gsxui-slot-breadcrumb-ellipsis
 	>
 		<icon.Ellipsis/>
-		<span { withSlot("breadcrumb-ellipsis-label", nil)... }>More</span>
+		<span data-gsxui-slot-breadcrumb-ellipsis-label>More</span>
 	</span>
 }

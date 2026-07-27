@@ -13,7 +13,7 @@ component Basic() {
 		<ui.Button
 			variant="outline"
 			data-gsxui-dialog-trigger
-			data-gsxui-slot="dialog-trigger"
+			data-gsxui-slot-dialog-trigger
 			aria-haspopup="dialog"
 			aria-expanded="false"
 		>

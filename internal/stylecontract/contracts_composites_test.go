@@ -28,7 +28,6 @@ func TestCompositeContractsDeclareEverySlotAndPresentationAxis(t *testing.T) {
 				{Name: "calendar-next"},
 				{Name: "calendar-month-caption"},
 				{Name: "calendar-dropdowns"},
-				{Name: "calendar-dropdown-root"},
 				{Name: "calendar-caption", Axes: []Axis{{Attribute: "data-caption-layout", Values: []string{"dropdown", "label"}}}},
 				{Name: "calendar-grid", Axes: []Axis{{Attribute: "aria-multiselectable", Values: []string{"true"}}}},
 				{Name: "calendar-weekdays"},

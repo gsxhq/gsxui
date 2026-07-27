@@ -12,7 +12,7 @@ import "github.com/gsxhq/gsx"
 // (ui/avatar/avatar.js).
 
 component Avatar(children gsx.Node, attrs gsx.Attrs) {
-	<span data-gsxui-avatar { withSlot("avatar", attrs)... }>
+	<span data-gsxui-avatar { attrs... } data-gsxui-slot-avatar>
 		{ children }
 	</span>
 }
@@ -22,14 +22,14 @@ component AvatarImage(src string, alt string, attrs gsx.Attrs) {
 		data-gsxui-avatar-image
 		src={src}
 		alt={alt}
-		{ withSlot("avatar-image", attrs)... }
+		{ attrs... } data-gsxui-slot-avatar-image
 	/>
 }
 
 component AvatarFallback(children gsx.Node, attrs gsx.Attrs) {
 	<span
 		data-gsxui-avatar-fallback
-		{ withSlot("avatar-fallback", attrs)... }
+		{ attrs... } data-gsxui-slot-avatar-fallback
 	>
 		{ children }
 	</span>

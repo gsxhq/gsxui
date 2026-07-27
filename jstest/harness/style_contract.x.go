@@ -245,34 +245,55 @@ func StyleContractFixture() _gsxrt.Node {
 		_gsxgw.Node(ctx, ui.PaginationPrevious("#", _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: "pl-12"}}, _gsxrt.Attrs{{Key: "data-style-contract", Value: "pagination-previous-caller"}})))
 		_gsxgw.S("</div>")
 //line style_contract.gsx:64:3
-		_gsxgw.S("<div>")
+		_gsxgw.Node(ctx, ui.ButtonGroup("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
 //line style_contract.gsx:65:4
+			_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+				_gsxgw.S("Earlier")
+				return _gsxgw.Err()
+			}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "button-group-earlier"}}))
+//line style_contract.gsx:66:4
+			_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+				_gsxgw.S("Visible tail")
+				return _gsxgw.Err()
+			}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "button-group-visible-tail"}}))
+//line style_contract.gsx:67:4
+			_gsxgw.S("<select aria-hidden=\"true\">")
+//line style_contract.gsx:67:31
+			_gsxgw.S("<option>Hidden native tail</option></select>")
+			return _gsxgw.Err()
+		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "button-group-tail"}}))
+//line style_contract.gsx:69:3
+		_gsxgw.S("<div>")
+//line style_contract.gsx:70:4
 		_gsxgw.Node(ctx, ui.InputOTPGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:66:5
+//line style_contract.gsx:71:5
 			_gsxgw.Node(ctx, ui.InputOTPSlot(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-active", Value: "true"}}, _gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}}, _gsxrt.Attrs{{Key: "data-style-contract", Value: "otp-active-invalid"}})))
 			return _gsxgw.Err()
 		}), nil))
 		_gsxgw.S("</div>")
-//line style_contract.gsx:69:3
+//line style_contract.gsx:74:3
 		_gsxgw.S("<div>")
-//line style_contract.gsx:70:4
+//line style_contract.gsx:75:4
 		_gsxgw.Node(ctx, ui.ToggleGroup("multiple", "outline", "sm", "0", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:71:5
+//line style_contract.gsx:76:5
 			_gsxgw.Node(ctx, ui.ToggleGroupItem("multiple", "outline", "sm", "0", false, "text", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Text")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "toggle-group-sm-first"}}))
-//line style_contract.gsx:72:5
+//line style_contract.gsx:77:5
 			_gsxgw.Node(ctx, ui.ToggleGroupItem("multiple", "outline", "sm", "0", false, "icon", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:72:160
+//line style_contract.gsx:77:160
 				_gsxgw.Node(ctx, icon.Bold())
 				return _gsxgw.Err()
 			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-style-contract", Value: "toggle-group-sm-icon"}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Icon"}})))
-//line style_contract.gsx:73:5
+//line style_contract.gsx:78:5
 			_gsxgw.Node(ctx, ui.ToggleGroupItem("multiple", "outline", "sm", "0", false, "last", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Last")
@@ -281,12 +302,12 @@ func StyleContractFixture() _gsxrt.Node {
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "aria-label", Value: "Joined formatting"}}))
 		_gsxgw.S("</div>")
-//line style_contract.gsx:76:3
+//line style_contract.gsx:81:3
 		_gsxgw.S("<div class=\"flex gap-2\">")
-//line style_contract.gsx:77:4
+//line style_contract.gsx:82:4
 		_gsxgw.Node(ctx, ui.ToggleGroup("multiple", "", "default", "2", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:78:5
+//line style_contract.gsx:83:5
 			_gsxgw.Node(ctx, ui.ToggleGroupItem("multiple", "", "default", "2", false, "default", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Default")
@@ -294,10 +315,10 @@ func StyleContractFixture() _gsxrt.Node {
 			}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "toggle-group-default"}}))
 			return _gsxgw.Err()
 		}), nil))
-//line style_contract.gsx:80:4
+//line style_contract.gsx:85:4
 		_gsxgw.Node(ctx, ui.ToggleGroup("multiple", "", "lg", "2", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:81:5
+//line style_contract.gsx:86:5
 			_gsxgw.Node(ctx, ui.ToggleGroupItem("multiple", "", "lg", "2", false, "large", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Large")
@@ -305,10 +326,10 @@ func StyleContractFixture() _gsxrt.Node {
 			}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "toggle-group-large"}}))
 			return _gsxgw.Err()
 		}), nil))
-//line style_contract.gsx:83:4
+//line style_contract.gsx:88:4
 		_gsxgw.Node(ctx, ui.ToggleGroup("multiple", "", "sm", "2", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:84:5
+//line style_contract.gsx:89:5
 			_gsxgw.Node(ctx, ui.ToggleGroupItem("multiple", "", "sm", "2", false, "caller", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Caller")
@@ -317,32 +338,32 @@ func StyleContractFixture() _gsxrt.Node {
 			return _gsxgw.Err()
 		}), nil))
 		_gsxgw.S("</div>")
-//line style_contract.gsx:87:3
+//line style_contract.gsx:92:3
 		_gsxgw.Node(ctx, ui.FieldGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:88:4
+//line style_contract.gsx:93:4
 			_gsxgw.Node(ctx, ui.FieldSeparator(nil, _gsxrt.Attrs{{Key: "data-style-contract", Value: "field-outline-separator"}}))
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "data-variant", Value: "outline"}}))
-//line style_contract.gsx:90:3
+//line style_contract.gsx:95:3
 		_gsxgw.Node(ctx, ui.Dialog(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:91:4
+//line style_contract.gsx:96:4
 			_gsxgw.Node(ctx, ui.DialogTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Open contract dialog")
 				return _gsxgw.Err()
 			}), nil))
-//line style_contract.gsx:92:4
+//line style_contract.gsx:97:4
 			_gsxgw.Node(ctx, ui.DialogContent(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:93:5
+//line style_contract.gsx:98:5
 				_gsxgw.Node(ctx, ui.DialogTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Contract dialog title")
 					return _gsxgw.Err()
 				}), nil))
-//line style_contract.gsx:94:5
+//line style_contract.gsx:99:5
 				_gsxgw.Node(ctx, ui.DialogDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Contract dialog description")
@@ -352,28 +373,28 @@ func StyleContractFixture() _gsxrt.Node {
 			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: "rounded-none"}}, _gsxrt.Attrs{{Key: "data-style-contract", Value: "dialog-caller"}})))
 			return _gsxgw.Err()
 		}), nil))
-//line style_contract.gsx:97:3
+//line style_contract.gsx:102:3
 		_gsxgw.Node(ctx, ui.Drawer(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:98:4
+//line style_contract.gsx:103:4
 			_gsxgw.Node(ctx, ui.DrawerTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Open contract drawer")
 				return _gsxgw.Err()
 			}), nil))
-//line style_contract.gsx:99:4
+//line style_contract.gsx:104:4
 			_gsxgw.Node(ctx, ui.DrawerContent("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:100:5
+//line style_contract.gsx:105:5
 				_gsxgw.Node(ctx, ui.DrawerHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:101:6
+//line style_contract.gsx:106:6
 					_gsxgw.Node(ctx, ui.DrawerTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Contract drawer title")
 						return _gsxgw.Err()
 					}), nil))
-//line style_contract.gsx:102:6
+//line style_contract.gsx:107:6
 					_gsxgw.Node(ctx, ui.DrawerDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Contract drawer description")
@@ -385,39 +406,39 @@ func StyleContractFixture() _gsxrt.Node {
 			}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "drawer-bottom"}}))
 			return _gsxgw.Err()
 		}), nil))
-//line style_contract.gsx:106:3
+//line style_contract.gsx:111:3
 		_gsxgw.S("<div class=\"flex flex-wrap gap-2\">")
-//line style_contract.gsx:107:4
-		_gsxgw.NodeResult(_gsxrenderDirectionalDrawerFixture(ctx, _gsxgw, "default", ""))
-//line style_contract.gsx:108:4
-		_gsxgw.NodeResult(_gsxrenderDirectionalDrawerFixture(ctx, _gsxgw, "top", "top"))
-//line style_contract.gsx:109:4
-		_gsxgw.NodeResult(_gsxrenderDirectionalDrawerFixture(ctx, _gsxgw, "left", "left"))
-//line style_contract.gsx:110:4
-		_gsxgw.NodeResult(_gsxrenderDirectionalDrawerFixture(ctx, _gsxgw, "right", "right"))
-//line style_contract.gsx:111:4
-		_gsxgw.NodeResult(_gsxrenderDirectionalSheetFixture(ctx, _gsxgw, "default", ""))
 //line style_contract.gsx:112:4
-		_gsxgw.NodeResult(_gsxrenderDirectionalSheetFixture(ctx, _gsxgw, "left", "left"))
+		_gsxgw.NodeResult(_gsxrenderDirectionalDrawerFixture(ctx, _gsxgw, "default", ""))
 //line style_contract.gsx:113:4
-		_gsxgw.NodeResult(_gsxrenderDirectionalSheetFixture(ctx, _gsxgw, "top", "top"))
+		_gsxgw.NodeResult(_gsxrenderDirectionalDrawerFixture(ctx, _gsxgw, "top", "top"))
 //line style_contract.gsx:114:4
+		_gsxgw.NodeResult(_gsxrenderDirectionalDrawerFixture(ctx, _gsxgw, "left", "left"))
+//line style_contract.gsx:115:4
+		_gsxgw.NodeResult(_gsxrenderDirectionalDrawerFixture(ctx, _gsxgw, "right", "right"))
+//line style_contract.gsx:116:4
+		_gsxgw.NodeResult(_gsxrenderDirectionalSheetFixture(ctx, _gsxgw, "default", ""))
+//line style_contract.gsx:117:4
+		_gsxgw.NodeResult(_gsxrenderDirectionalSheetFixture(ctx, _gsxgw, "left", "left"))
+//line style_contract.gsx:118:4
+		_gsxgw.NodeResult(_gsxrenderDirectionalSheetFixture(ctx, _gsxgw, "top", "top"))
+//line style_contract.gsx:119:4
 		_gsxgw.NodeResult(_gsxrenderDirectionalSheetFixture(ctx, _gsxgw, "bottom", "bottom"))
 		_gsxgw.S("</div>")
-//line style_contract.gsx:116:3
+//line style_contract.gsx:121:3
 		_gsxgw.Node(ctx, ui.Tooltip(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:117:4
+//line style_contract.gsx:122:4
 			_gsxgw.Node(ctx, ui.TooltipTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Show contract tooltip")
 				return _gsxgw.Err()
 			}), nil))
-//line style_contract.gsx:118:4
+//line style_contract.gsx:123:4
 			_gsxgw.Node(ctx, ui.TooltipContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Press ")
-//line style_contract.gsx:118:63
+//line style_contract.gsx:123:63
 				_gsxgw.Node(ctx, ui.Kbd(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("K")
@@ -427,16 +448,16 @@ func StyleContractFixture() _gsxrt.Node {
 			}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "tooltip-kbd"}}))
 			return _gsxgw.Err()
 		}), nil))
-//line style_contract.gsx:120:3
+//line style_contract.gsx:125:3
 		_gsxgw.Node(ctx, ui.AccordionItem("contract-accordion", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:121:4
+//line style_contract.gsx:126:4
 			_gsxgw.Node(ctx, ui.AccordionTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Contract accordion")
 				return _gsxgw.Err()
 			}), nil))
-//line style_contract.gsx:122:4
+//line style_contract.gsx:127:4
 			_gsxgw.Node(ctx, ui.AccordionContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Contract accordion body")
@@ -444,18 +465,18 @@ func StyleContractFixture() _gsxrt.Node {
 			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "accordion-caller-content"}}, _gsxrt.Attrs{{Key: "class", Value: "pb-8"}}, _gsxrt.Attrs{{Key: "data-style-contract", Value: "accordion-caller-content"}})))
 			return _gsxgw.Err()
 		}), nil))
-//line style_contract.gsx:126:3
+//line style_contract.gsx:131:3
 		_gsxgw.Node(ctx, ui.CommandDialog("Contract command", "Command dialog style contract", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:131:4
+//line style_contract.gsx:136:4
 			_gsxgw.Node(ctx, ui.CommandInput("Search contract commands", nil))
-//line style_contract.gsx:132:4
+//line style_contract.gsx:137:4
 			_gsxgw.Node(ctx, ui.CommandList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:133:5
+//line style_contract.gsx:138:5
 				_gsxgw.Node(ctx, ui.CommandGroup("Suggestions", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:134:6
+//line style_contract.gsx:139:6
 					_gsxgw.Node(ctx, ui.CommandItem("alpha", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Alpha")
@@ -467,107 +488,107 @@ func StyleContractFixture() _gsxrt.Node {
 			}), nil))
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "command-dialog"}}))
-//line style_contract.gsx:138:3
+//line style_contract.gsx:143:3
 		_gsxgw.S("<div>")
-//line style_contract.gsx:139:4
+//line style_contract.gsx:144:4
 		_gsxgw.Node(ctx, ui.DropdownMenuItem("destructive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Delete dropdown item")
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "tabindex", Value: "0"}}, _gsxrt.Attrs{{Key: "data-style-contract", Value: "dropdown-destructive"}})))
-//line style_contract.gsx:142:4
+//line style_contract.gsx:147:4
 		_gsxgw.Node(ctx, ui.ContextMenuItem("destructive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Delete context item")
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "tabindex", Value: "0"}}, _gsxrt.Attrs{{Key: "data-style-contract", Value: "context-destructive"}})))
-//line style_contract.gsx:145:4
+//line style_contract.gsx:150:4
 		_gsxgw.Node(ctx, ui.MenubarItem("destructive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Delete menubar item")
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "tabindex", Value: "0"}}, _gsxrt.Attrs{{Key: "data-style-contract", Value: "menubar-destructive"}})))
-//line style_contract.gsx:148:4
+//line style_contract.gsx:153:4
 		_gsxgw.S("<div class=\"bg-destructive/10 text-destructive\" data-style-contract-reference=\"menu-destructive-focus\"></div></div>")
-//line style_contract.gsx:150:3
+//line style_contract.gsx:155:3
 		_gsxgw.S("<div>")
-//line style_contract.gsx:151:4
+//line style_contract.gsx:156:4
 		_gsxgw.Node(ctx, ui.DropdownMenuCheckboxItem(true, "dropdown-on", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Dropdown on")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "dropdown-checked"}}))
-//line style_contract.gsx:152:4
+//line style_contract.gsx:157:4
 		_gsxgw.Node(ctx, ui.DropdownMenuCheckboxItem(false, "dropdown-off", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Dropdown off")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "dropdown-unchecked"}}))
-//line style_contract.gsx:153:4
+//line style_contract.gsx:158:4
 		_gsxgw.Node(ctx, ui.ContextMenuRadioItem(true, "context-on", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Context on")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "context-checked"}}))
-//line style_contract.gsx:154:4
+//line style_contract.gsx:159:4
 		_gsxgw.Node(ctx, ui.ContextMenuRadioItem(false, "context-off", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Context off")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "context-unchecked"}}))
-//line style_contract.gsx:155:4
+//line style_contract.gsx:160:4
 		_gsxgw.Node(ctx, ui.MenubarCheckboxItem(true, "menubar-on", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Menubar on")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "menubar-checked"}}))
-//line style_contract.gsx:156:4
+//line style_contract.gsx:161:4
 		_gsxgw.Node(ctx, ui.MenubarCheckboxItem(false, "menubar-off", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Menubar off")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "menubar-unchecked"}}))
-//line style_contract.gsx:157:4
+//line style_contract.gsx:162:4
 		_gsxgw.Node(ctx, ui.ComboboxItem("combobox-on", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Combobox on")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "combobox-checked"}}))
-//line style_contract.gsx:158:4
+//line style_contract.gsx:163:4
 		_gsxgw.Node(ctx, ui.ComboboxItem("combobox-off", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Combobox off")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "combobox-unchecked"}}))
 		_gsxgw.S("</div>")
-//line style_contract.gsx:160:3
+//line style_contract.gsx:165:3
 		_gsxgw.S("<div>")
-//line style_contract.gsx:161:4
+//line style_contract.gsx:166:4
 		_gsxgw.Node(ctx, ui.DropdownMenuSubContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Right submenu")
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-side", Value: "right"}}, _gsxrt.Attrs{{Key: "data-style-contract", Value: "submenu-right"}})))
 		_gsxgw.S("</div>")
-//line style_contract.gsx:163:3
+//line style_contract.gsx:168:3
 		_gsxgw.Node(ctx, ui.NavigationMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:164:4
+//line style_contract.gsx:169:4
 			_gsxgw.Node(ctx, ui.NavigationMenuList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:165:5
+//line style_contract.gsx:170:5
 				_gsxgw.Node(ctx, ui.NavigationMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:166:6
+//line style_contract.gsx:171:6
 					_gsxgw.Node(ctx, ui.NavigationMenuTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Contract products")
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "navigation-trigger"}}))
-//line style_contract.gsx:167:6
+//line style_contract.gsx:172:6
 					_gsxgw.Node(ctx, ui.NavigationMenuContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line style_contract.gsx:168:7
+//line style_contract.gsx:173:7
 						_gsxgw.Node(ctx, ui.NavigationMenuLink(false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Contract product")
@@ -577,7 +598,7 @@ func StyleContractFixture() _gsxrt.Node {
 					}), _gsxrt.Attrs{{Key: "data-style-contract", Value: "navigation-content"}}))
 					return _gsxgw.Err()
 				}), nil))
-//line style_contract.gsx:171:5
+//line style_contract.gsx:176:5
 				_gsxgw.Node(ctx, ui.NavigationMenuIndicator(_gsxrt.Attrs{{Key: "data-style-contract", Value: "navigation-indicator"}}))
 				return _gsxgw.Err()
 			}), nil))

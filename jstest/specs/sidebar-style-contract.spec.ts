@@ -10,7 +10,7 @@ async function openFixture(
   expect(response?.status(), `${name} fixture response`).toBe(200);
 }
 
-const slot = (name: string) => `[data-gsxui-slot~="${name}"]`;
+const slot = (name: string) => `[data-gsxui-slot-${name}]`;
 
 test("desktop offcanvas state drives gap, fixed edge, rail cursor, event, and cookie ownership", async ({
   page,
@@ -43,7 +43,7 @@ test("desktop offcanvas state drives gap, fixed edge, rail cursor, event, and co
 
   await page.evaluate(() => {
     document.cookie = "sidebar_owner=caller; path=/";
-    const wrapper = document.querySelector('[data-gsxui-slot~="sidebar-wrapper"]')!;
+    const wrapper = document.querySelector('[data-gsxui-slot-sidebar-wrapper]')!;
     (window as typeof window & { sidebarChanges?: boolean[] }).sidebarChanges = [];
     wrapper.addEventListener("gsxui:change", (event) => {
       (window as typeof window & { sidebarChanges: boolean[] }).sidebarChanges.push(
@@ -361,7 +361,7 @@ test("custom style owns floating and inset collapsed density without foundation 
   const customDensity = `
     @layer components {
       :where(
-          [data-gsxui-slot~="sidebar-desktop"][data-collapsible="icon"]:is(
+          [data-gsxui-slot-sidebar-desktop][data-collapsible="icon"]:is(
               [data-variant="floating"],
               [data-variant="inset"]
             )
@@ -372,21 +372,21 @@ test("custom style owns floating and inset collapsed density without foundation 
         );
       }
       :where(
-          [data-gsxui-slot~="sidebar-desktop"]:is(
+          [data-gsxui-slot-sidebar-desktop]:is(
               [data-variant="floating"],
               [data-variant="inset"]
             )
         )
-        > :where([data-gsxui-slot~="sidebar-container"]) {
+        > :where([data-gsxui-slot-sidebar-container]) {
         padding: 12px;
       }
       :where(
-          [data-gsxui-slot~="sidebar-desktop"]:is(
+          [data-gsxui-slot-sidebar-desktop]:is(
               [data-variant="floating"],
               [data-variant="inset"]
             )
         )
-        :where([data-gsxui-slot~="sidebar-inner"]) {
+        :where([data-gsxui-slot-sidebar-inner]) {
         border: 4px solid var(--sidebar-border);
       }
     }
@@ -400,11 +400,11 @@ test("custom style owns floating and inset collapsed density without foundation 
     });
 
     const geometry = await page.locator(slot("sidebar-desktop")).evaluate((desktop) => {
-      const gap = desktop.querySelector<HTMLElement>('[data-gsxui-slot~="sidebar-gap"]')!;
+      const gap = desktop.querySelector<HTMLElement>('[data-gsxui-slot-sidebar-gap]')!;
       const container = desktop.querySelector<HTMLElement>(
-        '[data-gsxui-slot~="sidebar-container"]',
+        '[data-gsxui-slot-sidebar-container]',
       )!;
-      const inner = desktop.querySelector<HTMLElement>('[data-gsxui-slot~="sidebar-inner"]')!;
+      const inner = desktop.querySelector<HTMLElement>('[data-gsxui-slot-sidebar-inner]')!;
       const gapCSS = getComputedStyle(gap);
       const containerCSS = getComputedStyle(container);
       const innerCSS = getComputedStyle(inner);

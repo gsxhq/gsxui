@@ -9,21 +9,21 @@ for (const side of ["top", "bottom"]) {
 
     await page.getByRole("button", { name: side, exact: true }).click();
     const content = page.locator(
-      `[data-gsxui-slot~="sheet-content"][data-side="${side}"]`,
+      `[data-gsxui-slot-sheet-content][data-side="${side}"]`,
     );
     await expect(content).toBeVisible();
     await expect(
-      content.locator('[data-gsxui-slot~="sheet-header"]'),
+      content.locator('[data-gsxui-slot-sheet-header]'),
     ).toHaveCount(1);
     await expect(
-      content.locator('[data-gsxui-slot~="sheet-footer"]'),
+      content.locator('[data-gsxui-slot-sheet-footer]'),
     ).toHaveCount(1);
     await expect(content.locator("input")).toHaveCount(2);
 
     const geometry = await content.evaluate((element) => {
       const panel = element.getBoundingClientRect();
       const title = element
-        .querySelector('[data-gsxui-slot~="sheet-title"]')
+        .querySelector('[data-gsxui-slot-sheet-title]')
         ?.getBoundingClientRect();
       return {
         height: panel.height,

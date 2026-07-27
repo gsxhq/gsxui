@@ -10,7 +10,7 @@ package ui
 import "github.com/gsxhq/gsx"
 
 component ItemGroup(children gsx.Node, attrs gsx.Attrs) {
-	<div role="list" { withSlot("item-group", attrs)... }>
+	<div role="list" { attrs... } data-gsxui-slot-item-group>
 		{ children }
 	</div>
 }
@@ -29,7 +29,7 @@ component ItemGroup(children gsx.Node, attrs gsx.Attrs) {
 component ItemSeparator(orientation string, attrs gsx.Attrs) {
 	<Separator
 		orientation={orientation |> default("horizontal")}
-		{ withSlot("item-separator", attrs)... }
+		{ attrs... } data-gsxui-slot-item-separator
 	/>
 }
 
@@ -44,7 +44,7 @@ component Item(variant string, size string, children gsx.Node, attrs gsx.Attrs) 
 	<div
 		data-variant={variant |> default("default")}
 		data-size={size |> default("default")}
-		{ withSlot("item", attrs)... }
+		{ attrs... } data-gsxui-slot-item
 	>
 		{ children }
 	</div>
@@ -64,20 +64,20 @@ component Item(variant string, size string, children gsx.Node, attrs gsx.Attrs) 
 component ItemMedia(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-variant={variant |> default("default")}
-		{ withSlot("item-media", attrs)... }
+		{ attrs... } data-gsxui-slot-item-media
 	>
 		{ children }
 	</div>
 }
 
 component ItemContent(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("item-content", attrs)... }>
+	<div { attrs... } data-gsxui-slot-item-content>
 		{ children }
 	</div>
 }
 
 component ItemTitle(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("item-title", attrs)... }>
+	<div { attrs... } data-gsxui-slot-item-title>
 		{ children }
 	</div>
 }
@@ -86,25 +86,25 @@ component ItemTitle(children gsx.Node, attrs gsx.Attrs) {
 // (unlike EmptyDescription, whose type says "p" but whose element is a
 // <div> — see empty.gsx).
 component ItemDescription(children gsx.Node, attrs gsx.Attrs) {
-	<p { withSlot("item-description", attrs)... }>
+	<p { attrs... } data-gsxui-slot-item-description>
 		{ children }
 	</p>
 }
 
 component ItemActions(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("item-actions", attrs)... }>
+	<div { attrs... } data-gsxui-slot-item-actions>
 		{ children }
 	</div>
 }
 
 component ItemHeader(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("item-header", attrs)... }>
+	<div { attrs... } data-gsxui-slot-item-header>
 		{ children }
 	</div>
 }
 
 component ItemFooter(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("item-footer", attrs)... }>
+	<div { attrs... } data-gsxui-slot-item-footer>
 		{ children }
 	</div>
 }

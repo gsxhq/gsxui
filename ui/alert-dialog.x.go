@@ -21,10 +21,10 @@ func AlertDialog(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 //line alert-dialog.gsx:8:2
 		_gsxgw.NodeResult(_gsxrenderDialog(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line alert-dialog.gsx:8:49
+//line alert-dialog.gsx:8:52
 			_gsxgw.Node(ctx, children)
 			return _gsxgw.Err()
-		}), withSlot("alert-dialog", attrs)))
+		}), _gsxrt.ConcatAttrs(attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-alert-dialog", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }
@@ -34,23 +34,23 @@ func AlertDialogTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line alert-dialog.gsx:12:2
-		_gsxv0 := withSlot("alert-dialog-trigger", attrs)
 		_gsxgw.S("<button")
-		if !_gsxv0.Has("data-gsxui-dialog-trigger") {
+		if !attrs.Has("data-gsxui-dialog-trigger") {
 			_gsxgw.BoolAttr("data-gsxui-dialog-trigger", true)
 		}
-		if !_gsxv0.Has("type") {
+		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"button\"")
 		}
-		if !_gsxv0.Has("aria-haspopup") {
+		if !attrs.Has("aria-haspopup") {
 			_gsxgw.S(" aria-haspopup=\"dialog\"")
 		}
-		if !_gsxv0.Has("aria-expanded") {
+		if !attrs.Has("aria-expanded") {
 			_gsxgw.S(" aria-expanded=\"false\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
-		_gsxgw.StyleMerged("", _gsxv0.Style())
-		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-alert-dialog-trigger"})
+		_gsxgw.BoolAttr("data-gsxui-slot-alert-dialog-trigger", true)
 		_gsxgw.S(">")
 //line alert-dialog.gsx:19:3
 		_gsxgw.Node(ctx, children)
@@ -69,7 +69,7 @@ func AlertDialogContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 //line alert-dialog.gsx:30:3
 			_gsxgw.Node(ctx, children)
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "role", Value: "alertdialog"}}, _gsxrt.Attrs{{Key: "data-gsxui-dialog-static", Value: true}}, withSlot("alert-dialog-content", attrs))))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "role", Value: "alertdialog"}}, _gsxrt.Attrs{{Key: "data-gsxui-dialog-static", Value: _gsxrt.Toggle(true)}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-alert-dialog-content", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }
@@ -79,13 +79,13 @@ func AlertDialogHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line alert-dialog.gsx:35:2
-		_gsxv1 := withSlot("alert-dialog-header", attrs)
 		_gsxgw.S("<div")
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
-		_gsxgw.StyleMerged("", _gsxv1.Style())
-		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-alert-dialog-header"})
+		_gsxgw.BoolAttr("data-gsxui-slot-alert-dialog-header", true)
 		_gsxgw.S(">")
-//line alert-dialog.gsx:35:53
+//line alert-dialog.gsx:35:56
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
@@ -97,13 +97,13 @@ func AlertDialogFooter(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line alert-dialog.gsx:39:2
-		_gsxv2 := withSlot("alert-dialog-footer", attrs)
 		_gsxgw.S("<div")
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
-		_gsxgw.StyleMerged("", _gsxv2.Style())
-		_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-alert-dialog-footer"})
+		_gsxgw.BoolAttr("data-gsxui-slot-alert-dialog-footer", true)
 		_gsxgw.S(">")
-//line alert-dialog.gsx:39:53
+//line alert-dialog.gsx:39:56
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
@@ -115,16 +115,16 @@ func AlertDialogTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line alert-dialog.gsx:43:2
-		_gsxv3 := withSlot("alert-dialog-title", attrs)
 		_gsxgw.S("<h2")
-		if !_gsxv3.Has("data-gsxui-dialog-title") {
+		if !attrs.Has("data-gsxui-dialog-title") {
 			_gsxgw.BoolAttr("data-gsxui-dialog-title", true)
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv3.Class())
-		_gsxgw.StyleMerged("", _gsxv3.Style())
-		_gsxgw.Spread(ctx, _gsxv3, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-alert-dialog-title"})
+		_gsxgw.BoolAttr("data-gsxui-slot-alert-dialog-title", true)
 		_gsxgw.S(">")
-//line alert-dialog.gsx:43:75
+//line alert-dialog.gsx:43:78
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</h2>")
 		return _gsxgw.Err()
@@ -136,16 +136,16 @@ func AlertDialogDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line alert-dialog.gsx:47:2
-		_gsxv4 := withSlot("alert-dialog-description", attrs)
 		_gsxgw.S("<p")
-		if !_gsxv4.Has("data-gsxui-dialog-description") {
+		if !attrs.Has("data-gsxui-dialog-description") {
 			_gsxgw.BoolAttr("data-gsxui-dialog-description", true)
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv4.Class())
-		_gsxgw.StyleMerged("", _gsxv4.Style())
-		_gsxgw.Spread(ctx, _gsxv4, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-alert-dialog-description"})
+		_gsxgw.BoolAttr("data-gsxui-slot-alert-dialog-description", true)
 		_gsxgw.S(">")
-//line alert-dialog.gsx:47:86
+//line alert-dialog.gsx:47:89
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</p>")
 		return _gsxgw.Err()
@@ -159,10 +159,10 @@ func AlertDialogAction(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 //line alert-dialog.gsx:51:2
 		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line alert-dialog.gsx:51:80
+//line alert-dialog.gsx:51:83
 			_gsxgw.Node(ctx, children)
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-close", Value: true}}, withSlot("alert-dialog-action", attrs))))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-close", Value: _gsxrt.Toggle(true)}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-alert-dialog-action", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }
@@ -177,7 +177,7 @@ func AlertDialogCancel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 //line alert-dialog.gsx:60:3
 			_gsxgw.Node(ctx, children)
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-close", Value: true}}, withSlot("alert-dialog-cancel", attrs))))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-close", Value: _gsxrt.Toggle(true)}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-alert-dialog-cancel", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }

@@ -29,8 +29,6 @@ func TestEndToEnd(t *testing.T) {
 	for _, p := range []string{
 		"ui/dialog.x.go",
 		"ui/button.x.go",
-		"ui/slots.go",
-		"ui/internal/slotattr/slotattr.go",
 	} {
 		if _, err := os.Stat(filepath.Join(dir, p)); err != nil {
 			t.Fatalf("missing generated %s: %v", p, err)
@@ -62,7 +60,9 @@ func TestVendoredButtonRenders(t *testing.T) {
 		t.Fatal(err)
 	}
 	html := output.String()
-	if !strings.Contains(html, "data-gsxui-slot=\"button\"") || !strings.Contains(html, ">Save</button>") {
+	if strings.Contains(html, "data-gsxui-slot=") ||
+		!strings.Contains(html, "data-gsxui-slot-button") ||
+		!strings.Contains(html, ">Save</button>") {
 		t.Fatalf("unexpected vendored Button output: %s", html)
 	}
 }
@@ -127,8 +127,6 @@ func TestEndToEndCustomUIPath(t *testing.T) {
 	for _, path := range []string{
 		"components/ui/spinner.x.go",
 		"components/ui/icon/icon.x.go",
-		"components/ui/slots.go",
-		"components/ui/internal/slotattr/slotattr.go",
 	} {
 		if _, err := os.Stat(filepath.Join(dir, path)); err != nil {
 			t.Fatalf("missing generated/vendored %s: %v", path, err)
@@ -137,15 +135,10 @@ func TestEndToEndCustomUIPath(t *testing.T) {
 
 	for _, path := range []string{
 		"components/ui/slots.go",
-		"components/ui/icon/icon.gsx",
+		"components/ui/internal/slotattr/slotattr.go",
 	} {
-		src, err := os.ReadFile(filepath.Join(dir, path))
-		if err != nil {
-			t.Fatal(err)
-		}
-		want := `"example.com/app/components/ui/internal/slotattr"`
-		if !strings.Contains(string(src), want) {
-			t.Fatalf("%s missing rewritten internal import %s:\n%s", path, want, src)
+		if _, err := os.Stat(filepath.Join(dir, path)); !os.IsNotExist(err) {
+			t.Fatalf("retired support file %s was vendored: %v", path, err)
 		}
 	}
 

@@ -14,8 +14,8 @@ func TestNavigationMenuTriggerAria(t *testing.T) {
 		`aria-expanded="false"`,
 		`data-gsxui-navigation-menu-trigger`,
 		`data-state="closed"`,
-		`data-gsxui-slot="navigation-menu-trigger"`,
-		`data-gsxui-slot="icon navigation-menu-trigger-icon"`,
+		`data-gsxui-slot-navigation-menu-trigger`,
+		`data-gsxui-slot-navigation-menu-trigger-icon data-gsxui-slot-icon`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("want %q\nin: %s", want, got)
@@ -25,7 +25,7 @@ func TestNavigationMenuTriggerAria(t *testing.T) {
 
 func TestNavigationMenuListIsAList(t *testing.T) {
 	got := render(t, ui.NavigationMenuList(gsx.Raw("x"), nil))
-	if !strings.Contains(got, `data-gsxui-slot="navigation-menu-list"`) {
+	if !strings.Contains(got, `data-gsxui-slot-navigation-menu-list`) {
 		t.Errorf("want the list slot\nin: %s", got)
 	}
 	if !strings.HasPrefix(got, "<ul") {
@@ -35,7 +35,7 @@ func TestNavigationMenuListIsAList(t *testing.T) {
 
 func TestNavigationMenuRootPinned(t *testing.T) {
 	got := render(t, ui.NavigationMenu(gsx.Raw("x"), nil))
-	want := `<nav data-gsxui-navigation-menu data-viewport="false" data-gsxui-slot="navigation-menu">x</nav>`
+	want := `<nav data-gsxui-navigation-menu data-viewport="false" data-gsxui-slot-navigation-menu>x</nav>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -60,17 +60,17 @@ func TestNavigationMenuPinnedStructuralParts(t *testing.T) {
 		{
 			name: "list",
 			node: ui.NavigationMenuList(gsx.Raw("x"), nil),
-			want: `<ul data-gsxui-navigation-menu-list data-gsxui-slot="navigation-menu-list">x</ul>`,
+			want: `<ul data-gsxui-navigation-menu-list data-gsxui-slot-navigation-menu-list>x</ul>`,
 		},
 		{
 			name: "item",
 			node: ui.NavigationMenuItem(gsx.Raw("x"), nil),
-			want: `<li data-gsxui-navigation-menu-item data-gsxui-slot="navigation-menu-item">x</li>`,
+			want: `<li data-gsxui-navigation-menu-item data-gsxui-slot-navigation-menu-item>x</li>`,
 		},
 		{
 			name: "content",
 			node: ui.NavigationMenuContent(gsx.Raw("x"), nil),
-			want: `<div data-gsxui-navigation-menu-content popover="manual" data-state="closed" data-side="bottom" data-gsxui-slot="navigation-menu-content">x</div>`,
+			want: `<div data-gsxui-navigation-menu-content popover="manual" data-state="closed" data-side="bottom" data-gsxui-slot-navigation-menu-content>x</div>`,
 		},
 	}
 	for _, tt := range tests {
@@ -90,9 +90,9 @@ func TestNavigationMenuTriggerPinned(t *testing.T) {
 		`type="button"`,
 		`aria-expanded="false"`,
 		`data-state="closed"`,
-		`data-gsxui-slot="navigation-menu-trigger"`,
+		`data-gsxui-slot-navigation-menu-trigger`,
 		`>Products <svg`,
-		`data-gsxui-slot="icon navigation-menu-trigger-icon"`,
+		`data-gsxui-slot-navigation-menu-trigger-icon data-gsxui-slot-icon`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing trigger contract %q\nin: %s", want, got)
@@ -115,9 +115,9 @@ func TestNavigationMenuLinkVariantReplacesClassHelper(t *testing.T) {
 				t.Errorf("variant %q missing %q\nin: %s", input, want, got)
 			}
 		}
-		slot := `data-gsxui-slot="navigation-menu-link"`
+		slot := `data-gsxui-slot-navigation-menu-link`
 		if wantVariant == "trigger" {
-			slot = `data-gsxui-slot="navigation-menu-link navigation-menu-trigger"`
+			slot = `data-gsxui-slot-navigation-menu-trigger data-gsxui-slot-navigation-menu-link`
 		}
 		if !strings.Contains(got, slot) {
 			t.Errorf("variant %q missing slot order %q\nin: %s", input, slot, got)
@@ -168,8 +168,8 @@ func TestNavigationMenuIndicatorPinned(t *testing.T) {
 	for _, want := range []string{
 		`data-gsxui-navigation-menu-indicator`,
 		`data-state="hidden"`,
-		`data-gsxui-slot="navigation-menu-indicator"`,
-		`data-gsxui-slot="navigation-menu-indicator-arrow"`,
+		`data-gsxui-slot-navigation-menu-indicator`,
+		`data-gsxui-slot-navigation-menu-indicator-arrow`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("indicator missing %q\nin: %s", want, got)

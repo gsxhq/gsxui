@@ -13,7 +13,7 @@ func TestAccordionPinned(t *testing.T) {
 		ui.AccordionTrigger(gsx.Raw("Question"), nil),
 		ui.AccordionContent(gsx.Raw("Answer"), nil),
 	), nil), nil))
-	want := `<div data-name="faq" data-gsxui-slot="accordion"><details name="faq" open data-gsxui-slot="accordion-item"><summary data-gsxui-slot="accordion-trigger">Question<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot="icon accordion-trigger-icon"><path d="m6 9 6 6 6-6"/></svg></summary><div data-gsxui-slot="accordion-content"><div data-gsxui-slot="accordion-content-inner">Answer</div></div></details></div>`
+	want := `<div data-name="faq" data-gsxui-slot-accordion><details name="faq" open data-gsxui-slot-accordion-item><summary data-gsxui-slot-accordion-trigger>Question<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-accordion-trigger-icon data-gsxui-slot-icon><path d="m6 9 6 6 6-6"/></svg></summary><div data-gsxui-slot-accordion-content><div data-gsxui-slot-accordion-content-inner>Answer</div></div></details></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -35,7 +35,7 @@ func TestAccordionCallerClassRoutesToInnerContent(t *testing.T) {
 		{Key: "id", Value: "panel"},
 		{Key: "class", Value: "pb-8"},
 	}))
-	want := `<div data-gsxui-slot="accordion-content" id="panel"><div class="pb-8" data-gsxui-slot="accordion-content-inner">x</div></div>`
+	want := `<div id="panel" data-gsxui-slot-accordion-content><div class="pb-8" data-gsxui-slot-accordion-content-inner>x</div></div>`
 	if got != want {
 		t.Errorf("non-class attrs must stay outer and caller class must render once on inner content\n got: %s\nwant: %s", got, want)
 	}

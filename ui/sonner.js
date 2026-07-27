@@ -76,7 +76,7 @@ function createFallbackRegion() {
   fallbackSectionEl.setAttribute("aria-label", "Notifications");
   fallbackSectionEl.tabIndex = -1;
   fallbackRegionEl = document.createElement("ol");
-  fallbackRegionEl.dataset.gsxuiSlot = "toaster";
+  fallbackRegionEl.setAttribute("data-gsxui-slot-toaster", "");
   fallbackRegionEl.setAttribute("data-gsxui-toaster", "");
   fallbackRegionEl.id = "gsxui-toaster";
   fallbackSectionEl.appendChild(fallbackRegionEl);

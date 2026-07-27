@@ -10,7 +10,7 @@ component Footer() {
 	<ui.Dialog>
 		<ui.Button
 			data-gsxui-dialog-trigger
-			data-gsxui-slot="dialog-trigger"
+			data-gsxui-slot-dialog-trigger
 			aria-haspopup="dialog"
 			aria-expanded="false"
 		>

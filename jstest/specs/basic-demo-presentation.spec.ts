@@ -135,7 +135,7 @@ test("combobox/basic does not render a disconnected value label", async ({
   expect(response?.status(), "combobox/basic fixture response").toBe(200);
 
   await expect(
-    page.locator('[data-gsxui-slot~="combobox-value"]'),
+    page.locator('[data-gsxui-slot-combobox-value]'),
   ).toHaveCount(0);
   await expect(
     page.getByText("Choose a framework", { exact: true }),

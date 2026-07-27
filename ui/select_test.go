@@ -12,7 +12,7 @@ import (
 // attributes; presentation is owned by the stylesheet.
 func TestSelectTriggerPinnedDefault(t *testing.T) {
 	got := render(t, ui.SelectTrigger("", ui.SelectValue("Select a fruit", nil), nil))
-	want := `<button type="button" data-gsxui-select-trigger role="combobox" aria-expanded="false" aria-autocomplete="none" data-state="closed" data-size="default" data-placeholder data-gsxui-slot="select-trigger"><span data-gsxui-select-value data-gsxui-slot="select-value">Select a fruit</span><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot="icon"><path d="m6 9 6 6 6-6"/></svg></button>`
+	want := `<button type="button" data-gsxui-select-trigger role="combobox" aria-expanded="false" aria-autocomplete="none" data-state="closed" data-size="default" data-placeholder data-gsxui-slot-select-trigger><span data-gsxui-select-value data-gsxui-slot-select-value>Select a fruit</span><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="m6 9 6 6 6-6"/></svg></button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -41,7 +41,7 @@ func TestSelectTriggerDefaultSize(t *testing.T) {
 
 func TestSelectValuePinned(t *testing.T) {
 	got := render(t, ui.SelectValue("Select a fruit", nil))
-	want := `<span data-gsxui-select-value data-gsxui-slot="select-value">Select a fruit</span>`
+	want := `<span data-gsxui-select-value data-gsxui-slot-select-value>Select a fruit</span>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -50,7 +50,7 @@ func TestSelectValuePinned(t *testing.T) {
 // TestSelectContentPinned covers the listbox popover structure.
 func TestSelectContentPinned(t *testing.T) {
 	got := render(t, ui.SelectContent(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-select-content popover="auto" role="listbox" tabindex="-1" data-state="closed" data-side="bottom" data-gsxui-slot="select-content">x</div>`
+	want := `<div data-gsxui-select-content popover="auto" role="listbox" tabindex="-1" data-state="closed" data-side="bottom" data-gsxui-slot-select-content>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -58,7 +58,7 @@ func TestSelectContentPinned(t *testing.T) {
 
 func TestSelectGroupPinned(t *testing.T) {
 	got := render(t, ui.SelectGroup(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-select-group role="group" data-gsxui-slot="select-group">x</div>`
+	want := `<div data-gsxui-select-group role="group" data-gsxui-slot-select-group>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -66,7 +66,7 @@ func TestSelectGroupPinned(t *testing.T) {
 
 func TestSelectLabelPinned(t *testing.T) {
 	got := render(t, ui.SelectLabel(gsx.Raw("Fruits"), nil))
-	want := `<div data-gsxui-select-label data-gsxui-slot="select-label">Fruits</div>`
+	want := `<div data-gsxui-select-label data-gsxui-slot-select-label>Fruits</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -76,7 +76,7 @@ func TestSelectLabelPinned(t *testing.T) {
 // behavior-only text hook.
 func TestSelectItemUnchecked(t *testing.T) {
 	got := render(t, ui.SelectItem("apple", false, false, gsx.Raw("Apple"), nil))
-	want := `<div data-gsxui-select-item role="option" data-value="apple" data-state="unchecked" aria-selected="false" tabindex="-1" data-gsxui-slot="select-item"><span data-gsxui-slot="select-item-indicator"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot="icon"><path d="M20 6 9 17l-5-5"/></svg></span><span data-gsxui-select-item-text data-gsxui-slot="select-item-text">Apple</span></div>`
+	want := `<div data-gsxui-select-item role="option" data-value="apple" data-state="unchecked" aria-selected="false" tabindex="-1" data-gsxui-slot-select-item><span data-gsxui-slot-select-item-indicator><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="M20 6 9 17l-5-5"/></svg></span><span data-gsxui-select-item-text data-gsxui-slot-select-item-text>Apple</span></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -87,7 +87,7 @@ func TestSelectItemUnchecked(t *testing.T) {
 // stays "false" (not focused at server render).
 func TestSelectItemChecked(t *testing.T) {
 	got := render(t, ui.SelectItem("banana", true, false, gsx.Raw("Banana"), nil))
-	want := `<div data-gsxui-select-item role="option" data-value="banana" data-state="checked" aria-selected="false" tabindex="-1" data-gsxui-slot="select-item"><span data-gsxui-slot="select-item-indicator"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot="icon"><path d="M20 6 9 17l-5-5"/></svg></span><span data-gsxui-select-item-text data-gsxui-slot="select-item-text">Banana</span></div>`
+	want := `<div data-gsxui-select-item role="option" data-value="banana" data-state="checked" aria-selected="false" tabindex="-1" data-gsxui-slot-select-item><span data-gsxui-slot-select-item-indicator><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="M20 6 9 17l-5-5"/></svg></span><span data-gsxui-select-item-text data-gsxui-slot-select-item-text>Banana</span></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -111,7 +111,7 @@ func TestSelectItemDisabled(t *testing.T) {
 
 func TestSelectSeparatorPinned(t *testing.T) {
 	got := render(t, ui.SelectSeparator(nil))
-	want := `<div aria-hidden="true" data-gsxui-slot="select-separator"></div>`
+	want := `<div aria-hidden="true" data-gsxui-slot-select-separator></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -126,7 +126,7 @@ func TestSelectHiddenBridgePresent(t *testing.T) {
 		`data-gsxui-select-bridge`,
 		`aria-hidden="true"`,
 		`tabindex="-1"`,
-		`data-gsxui-slot="select-bridge"`,
+		`data-gsxui-slot-select-bridge`,
 		`name="fruit"`,
 		` required`,
 		`form="myform"`,
@@ -160,7 +160,7 @@ func TestSelectNoBridgeWithoutName(t *testing.T) {
 	if strings.Contains(got, "data-gsxui-select-bridge") {
 		t.Errorf("no name should render no bridge\nin: %s", got)
 	}
-	if !strings.Contains(got, `<div data-gsxui-select data-gsxui-slot="select">K</div>`) {
+	if !strings.Contains(got, `<div data-gsxui-select data-gsxui-slot-select>K</div>`) {
 		t.Errorf("root without a bridge should be just the wrapper\nin: %s", got)
 	}
 }
@@ -193,7 +193,7 @@ func TestSelectAttrsFallThrough(t *testing.T) {
 // (the select -> icon edge internal/registry derives), not merely imported.
 func TestSelectItemIconDependency(t *testing.T) {
 	got := render(t, ui.SelectItem("x", false, false, gsx.Raw("X"), nil))
-	if !strings.Contains(got, `data-gsxui-slot="icon"`) || !strings.Contains(got, `d="M20 6 9 17l-5-5"`) {
+	if !strings.Contains(got, `data-gsxui-slot-icon`) || !strings.Contains(got, `d="M20 6 9 17l-5-5"`) {
 		t.Errorf("expected the Check icon svg in the item render\nin: %s", got)
 	}
 }

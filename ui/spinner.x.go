@@ -29,7 +29,7 @@ func Spinner(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line spinner.gsx:21:2
-		_gsxgw.Node(ctx, icon.LoaderCircle(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "role", Value: "status"}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Loading"}}, _gsxrt.Attrs{{Key: "aria-hidden", Value: "false"}}, withSlot("spinner", attrs))...))
+		_gsxgw.Node(ctx, icon.LoaderCircle(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "role", Value: "status"}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Loading"}}, _gsxrt.Attrs{{Key: "aria-hidden", Value: "false"}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-spinner", Value: _gsxrt.Toggle(true)}})...))
 		return _gsxgw.Err()
 	})
 }

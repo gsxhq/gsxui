@@ -162,9 +162,9 @@ import (
 
 // The `calendar-dropdowns` style rule is the `dropdowns` slot (source map §2).
 
-// The `calendar-dropdown-root` style rule is the `dropdown_root` slot, retargeted to nova
-// density (source map §6, `.cn-calendar-dropdown-root`) the same way Task 1's
-// the calendar root rule retargeted the `root`/top-level className (p-3→p-2,
+// The nested native-select wrapper is the `dropdown_root` slot, retargeted to
+// nova density (source map §6, `.cn-calendar-dropdown-root`) the same way
+// Task 1's calendar root rule retargeted the `root`/top-level className (p-3→p-2,
 // --spacing(8)→(7)): new-york-v4's own value (source map §2) is `relative
 // rounded-md border border-input shadow-xs has-focus:border-ring
 // has-focus:ring-[3px] has-focus:ring-ring/50`; nova's rule drops
@@ -726,194 +726,144 @@ func Calendar(mode string,
 		}
 		disabledWeekdaysAttr := strings.Join(disabledWeekdaysStr, ",")
 //line calendar.gsx:719:2
-		_gsxv0 := withSlot("calendar", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv0.Has("data-gsxui-calendar") {
+		if !attrs.Has("data-gsxui-calendar") {
 			_gsxgw.BoolAttr("data-gsxui-calendar", true)
 		}
-		if !_gsxv0.Has("data-gsxui-calendar-month") {
+		if !attrs.Has("data-gsxui-calendar-month") {
 			_gsxgw.S(" data-gsxui-calendar-month=\"")
 			_gsxgw.AttrValue(string(month.Format("2006-01")))
 			_gsxgw.S("\"")
 		}
-		if !_gsxv0.Has("data-gsxui-calendar-mode") {
+		if !attrs.Has("data-gsxui-calendar-mode") {
 			_gsxgw.S(" data-gsxui-calendar-mode=\"")
 			_gsxgw.AttrValue(string(mode))
 			_gsxgw.S("\"")
 		}
-		if !_gsxv0.Has("data-gsxui-calendar-week-start") {
+		if !attrs.Has("data-gsxui-calendar-week-start") {
 			_gsxgw.S(" data-gsxui-calendar-week-start=\"")
 			_gsxgw.IntInto(_gsxnum[:], int64(int(weekStartsOn)))
 			_gsxgw.S("\"")
 		}
-		if !_gsxv0.Has("data-gsxui-calendar-show-outside-days") {
+		if !attrs.Has("data-gsxui-calendar-show-outside-days") {
 			_gsxgw.S(" data-gsxui-calendar-show-outside-days=\"")
 			_gsxgw.AttrValue(string(boolStr(showOutsideDays)))
 			_gsxgw.S("\"")
 		}
-		if !_gsxv0.Has("data-caption-layout") {
+		if !attrs.Has("data-caption-layout") {
 			_gsxgw.S(" data-caption-layout=\"")
 			_gsxgw.AttrValue(string(captionLayout))
 			_gsxgw.S("\"")
 		}
 		if selectedISO != "" {
-			if !_gsxv0.Has("data-gsxui-calendar-selected") {
+			if !attrs.Has("data-gsxui-calendar-selected") {
 				_gsxgw.S(" data-gsxui-calendar-selected=\"")
 				_gsxgw.AttrValue(string(selectedISO))
 				_gsxgw.S("\"")
 			}
 		}
 		if !from.IsZero() {
-			if !_gsxv0.Has("data-gsxui-calendar-from") {
+			if !attrs.Has("data-gsxui-calendar-from") {
 				_gsxgw.S(" data-gsxui-calendar-from=\"")
 				_gsxgw.AttrValue(string(dayOnly(from).Format("2006-01-02")))
 				_gsxgw.S("\"")
 			}
 		}
 		if !to.IsZero() {
-			if !_gsxv0.Has("data-gsxui-calendar-to") {
+			if !attrs.Has("data-gsxui-calendar-to") {
 				_gsxgw.S(" data-gsxui-calendar-to=\"")
 				_gsxgw.AttrValue(string(dayOnly(to).Format("2006-01-02")))
 				_gsxgw.S("\"")
 			}
 		}
 		if !disabledBefore.IsZero() {
-			if !_gsxv0.Has("data-gsxui-calendar-disabled-before") {
+			if !attrs.Has("data-gsxui-calendar-disabled-before") {
 				_gsxgw.S(" data-gsxui-calendar-disabled-before=\"")
 				_gsxgw.AttrValue(string(dayOnly(disabledBefore).Format("2006-01-02")))
 				_gsxgw.S("\"")
 			}
 		}
 		if !disabledAfter.IsZero() {
-			if !_gsxv0.Has("data-gsxui-calendar-disabled-after") {
+			if !attrs.Has("data-gsxui-calendar-disabled-after") {
 				_gsxgw.S(" data-gsxui-calendar-disabled-after=\"")
 				_gsxgw.AttrValue(string(dayOnly(disabledAfter).Format("2006-01-02")))
 				_gsxgw.S("\"")
 			}
 		}
 		if disabledDatesAttr != "" {
-			if !_gsxv0.Has("data-gsxui-calendar-disabled-dates") {
+			if !attrs.Has("data-gsxui-calendar-disabled-dates") {
 				_gsxgw.S(" data-gsxui-calendar-disabled-dates=\"")
 				_gsxgw.AttrValue(string(disabledDatesAttr))
 				_gsxgw.S("\"")
 			}
 		}
 		if disabledWeekdaysAttr != "" {
-			if !_gsxv0.Has("data-gsxui-calendar-disabled-weekdays") {
+			if !attrs.Has("data-gsxui-calendar-disabled-weekdays") {
 				_gsxgw.S(" data-gsxui-calendar-disabled-weekdays=\"")
 				_gsxgw.AttrValue(string(disabledWeekdaysAttr))
 				_gsxgw.S("\"")
 			}
 		}
-		if !_gsxv0.Has("data-gsxui-calendar-nav-from-year") {
+		if !attrs.Has("data-gsxui-calendar-nav-from-year") {
 			_gsxgw.S(" data-gsxui-calendar-nav-from-year=\"")
 			_gsxgw.AttrValue(string(strconv.Itoa(navFromYear)))
 			_gsxgw.S("\"")
 		}
-		if !_gsxv0.Has("data-gsxui-calendar-nav-to-year") {
+		if !attrs.Has("data-gsxui-calendar-nav-to-year") {
 			_gsxgw.S(" data-gsxui-calendar-nav-to-year=\"")
 			_gsxgw.AttrValue(string(strconv.Itoa(navToYear)))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
-		_gsxgw.StyleMerged("", _gsxv0.Style())
-		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-calendar"})
+		_gsxgw.BoolAttr("data-gsxui-slot-calendar", true)
 		_gsxgw.S(">")
 //line calendar.gsx:751:3
-		_gsxv1 := withSlot("calendar-months", nil)
 		_gsxgw.S("<div")
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
-		_gsxgw.StyleMerged("", _gsxv1.Style())
-		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.BoolAttr("data-gsxui-slot-calendar-months", true)
 		_gsxgw.S(">")
 //line calendar.gsx:752:3
-		_gsxv2 := withSlot("calendar-nav", nil)
 		_gsxgw.S("<nav")
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
-		_gsxgw.StyleMerged("", _gsxv2.Style())
-		_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.BoolAttr("data-gsxui-slot-calendar-nav", true)
 		_gsxgw.S(">")
 //line calendar.gsx:753:4
-		_gsxv3 := withSlot("button", withSlot("calendar-nav-button", withSlot("calendar-previous", nil)))
-		_gsxgw.S("<button")
-		if !_gsxv3.Has("type") {
-			_gsxgw.S(" type=\"button\"")
-		}
-		if !_gsxv3.Has("data-variant") {
-			_gsxgw.S(" data-variant=\"ghost\"")
-		}
-		if !_gsxv3.Has("data-size") {
-			_gsxgw.S(" data-size=\"icon\"")
-		}
-		if !_gsxv3.Has("data-gsxui-calendar-prev") {
-			_gsxgw.BoolAttr("data-gsxui-calendar-prev", true)
-		}
-		if !_gsxv3.Has("aria-label") {
-			_gsxgw.S(" aria-label=\"Previous month\"")
-		}
+		_gsxgw.S("<button type=\"button\" data-variant=\"ghost\" data-size=\"icon\"")
+		_gsxgw.BoolAttr("data-gsxui-calendar-prev", true)
+		_gsxgw.S(" aria-label=\"Previous month\"")
 		if prevDisabled {
-			if !_gsxv3.Has("aria-disabled") {
-				_gsxgw.S(" aria-disabled=\"true\"")
-			}
-			if !_gsxv3.Has("tabindex") {
-				_gsxgw.S(" tabindex=\"-1\"")
-			}
+			_gsxgw.S(" aria-disabled=\"true\" tabindex=\"-1\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv3.Class())
-		_gsxgw.StyleMerged("", _gsxv3.Style())
-		_gsxgw.Spread(ctx, _gsxv3, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.BoolAttr("data-gsxui-slot-calendar-previous", true)
+		_gsxgw.BoolAttr("data-gsxui-slot-calendar-nav-button", true)
+		_gsxgw.BoolAttr("data-gsxui-slot-button", true)
 		_gsxgw.S(">")
 //line calendar.gsx:765:5
 		_gsxgw.Node(ctx, icon.ChevronLeft())
 		_gsxgw.S("</button>")
 //line calendar.gsx:767:4
-		_gsxv4 := withSlot("button", withSlot("calendar-nav-button", withSlot("calendar-next", nil)))
-		_gsxgw.S("<button")
-		if !_gsxv4.Has("type") {
-			_gsxgw.S(" type=\"button\"")
-		}
-		if !_gsxv4.Has("data-variant") {
-			_gsxgw.S(" data-variant=\"ghost\"")
-		}
-		if !_gsxv4.Has("data-size") {
-			_gsxgw.S(" data-size=\"icon\"")
-		}
-		if !_gsxv4.Has("data-gsxui-calendar-next") {
-			_gsxgw.BoolAttr("data-gsxui-calendar-next", true)
-		}
-		if !_gsxv4.Has("aria-label") {
-			_gsxgw.S(" aria-label=\"Next month\"")
-		}
+		_gsxgw.S("<button type=\"button\" data-variant=\"ghost\" data-size=\"icon\"")
+		_gsxgw.BoolAttr("data-gsxui-calendar-next", true)
+		_gsxgw.S(" aria-label=\"Next month\"")
 		if nextDisabled {
-			if !_gsxv4.Has("aria-disabled") {
-				_gsxgw.S(" aria-disabled=\"true\"")
-			}
-			if !_gsxv4.Has("tabindex") {
-				_gsxgw.S(" tabindex=\"-1\"")
-			}
+			_gsxgw.S(" aria-disabled=\"true\" tabindex=\"-1\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv4.Class())
-		_gsxgw.StyleMerged("", _gsxv4.Style())
-		_gsxgw.Spread(ctx, _gsxv4, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.BoolAttr("data-gsxui-slot-calendar-next", true)
+		_gsxgw.BoolAttr("data-gsxui-slot-calendar-nav-button", true)
+		_gsxgw.BoolAttr("data-gsxui-slot-button", true)
 		_gsxgw.S(">")
 //line calendar.gsx:779:5
 		_gsxgw.Node(ctx, icon.ChevronRight())
 		_gsxgw.S("</button></nav>")
 //line calendar.gsx:782:3
-		_gsxv5 := withSlot("calendar-month-caption", nil)
 		_gsxgw.S("<div")
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv5.Class())
-		_gsxgw.StyleMerged("", _gsxv5.Style())
-		_gsxgw.Spread(ctx, _gsxv5, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.BoolAttr("data-gsxui-slot-calendar-month-caption", true)
 		_gsxgw.S(">")
 //line calendar.gsx:783:4
 		if dropdownLayout {
 //line calendar.gsx:784:5
-			_gsxv6 := withSlot("calendar-dropdowns", nil)
 			_gsxgw.S("<div")
-			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv6.Class())
-			_gsxgw.StyleMerged("", _gsxv6.Style())
-			_gsxgw.Spread(ctx, _gsxv6, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.BoolAttr("data-gsxui-slot-calendar-dropdowns", true)
 			_gsxgw.S(">")
 //line calendar.gsx:785:6
 			_gsxgw.NodeResult(_gsxrenderNativeSelect(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
@@ -926,10 +876,10 @@ func Calendar(mode string,
 //line calendar.gsx:788:9
 						_gsxgw.Text(string(calendarMonthNames[i]))
 						return _gsxgw.Err()
-					}), _gsxrt.Attrs{{Key: "data-gsxui-calendar-month-option", Value: true}}))
+					}), _gsxrt.Attrs{{Key: "data-gsxui-calendar-month-option", Value: _gsxrt.Toggle(true)}}))
 				}
 				return _gsxgw.Err()
-			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-calendar-month-select", Value: true}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Month"}}, _gsxrt.Attrs{{Key: "data-gsxui-slot", Value: "calendar-dropdown-root"}})))
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-calendar-month-select", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Month"}})))
 //line calendar.gsx:792:6
 			_gsxgw.NodeResult(_gsxrenderNativeSelect(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -941,52 +891,26 @@ func Calendar(mode string,
 //line calendar.gsx:795:9
 						_gsxgw.Text(string(strconv.Itoa(y)))
 						return _gsxgw.Err()
-					}), _gsxrt.Attrs{{Key: "data-gsxui-calendar-year-option", Value: true}}))
+					}), _gsxrt.Attrs{{Key: "data-gsxui-calendar-year-option", Value: _gsxrt.Toggle(true)}}))
 				}
 				return _gsxgw.Err()
-			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-calendar-year-select", Value: true}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Year"}}, _gsxrt.Attrs{{Key: "data-gsxui-slot", Value: "calendar-dropdown-root"}})))
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-calendar-year-select", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Year"}})))
 			_gsxgw.S("</div>")
 //line calendar.gsx:800:5
-			_gsxv7 := withSlot("calendar-caption", nil)
 			_gsxgw.S("<span")
-			if !_gsxv7.Has("data-gsxui-calendar-caption") {
-				_gsxgw.BoolAttr("data-gsxui-calendar-caption", true)
-			}
-			if !_gsxv7.Has("role") {
-				_gsxgw.S(" role=\"status\"")
-			}
-			if !_gsxv7.Has("aria-live") {
-				_gsxgw.S(" aria-live=\"polite\"")
-			}
-			if !_gsxv7.Has("data-caption-layout") {
-				_gsxgw.S(" data-caption-layout=\"dropdown\"")
-			}
-			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv7.Class())
-			_gsxgw.StyleMerged("", _gsxv7.Style())
-			_gsxgw.Spread(ctx, _gsxv7, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.BoolAttr("data-gsxui-calendar-caption", true)
+			_gsxgw.S(" role=\"status\" aria-live=\"polite\" data-caption-layout=\"dropdown\"")
+			_gsxgw.BoolAttr("data-gsxui-slot-calendar-caption", true)
 			_gsxgw.S(">")
 //line calendar.gsx:806:6
 			_gsxgw.Text(string(captionText))
 			_gsxgw.S("</span>")
 		} else {
 //line calendar.gsx:808:5
-			_gsxv8 := withSlot("calendar-caption", nil)
 			_gsxgw.S("<span")
-			if !_gsxv8.Has("data-gsxui-calendar-caption") {
-				_gsxgw.BoolAttr("data-gsxui-calendar-caption", true)
-			}
-			if !_gsxv8.Has("role") {
-				_gsxgw.S(" role=\"status\"")
-			}
-			if !_gsxv8.Has("aria-live") {
-				_gsxgw.S(" aria-live=\"polite\"")
-			}
-			if !_gsxv8.Has("data-caption-layout") {
-				_gsxgw.S(" data-caption-layout=\"label\"")
-			}
-			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv8.Class())
-			_gsxgw.StyleMerged("", _gsxv8.Style())
-			_gsxgw.Spread(ctx, _gsxv8, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.BoolAttr("data-gsxui-calendar-caption", true)
+			_gsxgw.S(" role=\"status\" aria-live=\"polite\" data-caption-layout=\"label\"")
+			_gsxgw.BoolAttr("data-gsxui-slot-calendar-caption", true)
 			_gsxgw.S(">")
 //line calendar.gsx:814:6
 			_gsxgw.Text(string(captionText))
@@ -994,52 +918,31 @@ func Calendar(mode string,
 		}
 		_gsxgw.S("</div>")
 //line calendar.gsx:817:3
-		_gsxv9 := withSlot("calendar-grid", nil)
 		_gsxgw.S("<table")
-		if !_gsxv9.Has("data-gsxui-calendar-grid") {
-			_gsxgw.BoolAttr("data-gsxui-calendar-grid", true)
-		}
-		if !_gsxv9.Has("role") {
-			_gsxgw.S(" role=\"grid\"")
-		}
-		if !_gsxv9.Has("aria-label") {
-			_gsxgw.S(" aria-label=\"")
-			_gsxgw.AttrValue(string(captionText))
-			_gsxgw.S("\"")
-		}
+		_gsxgw.BoolAttr("data-gsxui-calendar-grid", true)
+		_gsxgw.S(" role=\"grid\" aria-label=\"")
+		_gsxgw.AttrValue(string(captionText))
+		_gsxgw.S("\"")
 		if multiselectable {
-			if !_gsxv9.Has("aria-multiselectable") {
-				_gsxgw.S(" aria-multiselectable=\"true\"")
-			}
+			_gsxgw.S(" aria-multiselectable=\"true\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv9.Class())
-		_gsxgw.StyleMerged("", _gsxv9.Style())
-		_gsxgw.Spread(ctx, _gsxv9, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.BoolAttr("data-gsxui-slot-calendar-grid", true)
 		_gsxgw.S(">")
 //line calendar.gsx:826:4
 		_gsxgw.S("<thead aria-hidden=\"true\">")
 //line calendar.gsx:827:5
-		_gsxv10 := withSlot("calendar-weekdays", nil)
 		_gsxgw.S("<tr")
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv10.Class())
-		_gsxgw.StyleMerged("", _gsxv10.Style())
-		_gsxgw.Spread(ctx, _gsxv10, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.BoolAttr("data-gsxui-slot-calendar-weekdays", true)
 		_gsxgw.S(">")
 //line calendar.gsx:828:6
 		for i := 0; i < 7; i++ {
 //line calendar.gsx:829:7
 			wd := time.Weekday((int(weekStartsOn) + i) % 7)
 //line calendar.gsx:830:7
-			_gsxv11 := withSlot("calendar-weekday", nil)
-			_gsxgw.S("<th")
-			if !_gsxv11.Has("scope") {
-				_gsxgw.S(" scope=\"col\"")
-			}
-			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv11.Class())
-			_gsxgw.StyleMerged("", _gsxv11.Style())
-			_gsxgw.Spread(ctx, _gsxv11, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.S("<th scope=\"col\"")
+			_gsxgw.BoolAttr("data-gsxui-slot-calendar-weekday", true)
 			_gsxgw.S(">")
-//line calendar.gsx:830:64
+//line calendar.gsx:830:56
 			_gsxgw.Text(string(wd.String()[:2]))
 			_gsxgw.S("</th>")
 		}
@@ -1049,11 +952,8 @@ func Calendar(mode string,
 //line calendar.gsx:835:5
 		for week := 0; week < 6; week++ {
 //line calendar.gsx:836:6
-			_gsxv12 := withSlot("calendar-week", nil)
 			_gsxgw.S("<tr")
-			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv12.Class())
-			_gsxgw.StyleMerged("", _gsxv12.Style())
-			_gsxgw.Spread(ctx, _gsxv12, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.BoolAttr("data-gsxui-slot-calendar-week", true)
 			_gsxgw.S(">")
 //line calendar.gsx:837:7
 			for day := 0; day < 7; day++ {
@@ -1093,108 +993,49 @@ func Calendar(mode string,
 				selSingle := daySel && !rStart && !rMiddle && !rEnd
 				cellSel := daySel || rStart || rMiddle || rEnd
 //line calendar.gsx:874:8
-				_gsxv13 := withSlot("calendar-day", nil)
-				_gsxgw.S("<td")
-				if !_gsxv13.Has("role") {
-					_gsxgw.S(" role=\"gridcell\"")
-				}
-				if !_gsxv13.Has("data-date") {
-					_gsxgw.S(" data-date=\"")
-					_gsxgw.AttrValue(string(d.Format("2006-01-02")))
-					_gsxgw.S("\"")
-				}
-				if !_gsxv13.Has("data-outside") {
-					_gsxgw.BoolAttr("data-outside", bool(gsx.Toggle(outside)))
-				}
-				if !_gsxv13.Has("data-hidden") {
-					_gsxgw.BoolAttr("data-hidden", bool(gsx.Toggle(hiddenDay)))
-				}
-				if !_gsxv13.Has("data-today") {
-					_gsxgw.BoolAttr("data-today", bool(gsx.Toggle(isToday)))
-				}
-				if !_gsxv13.Has("data-disabled") {
-					_gsxgw.BoolAttr("data-disabled", bool(gsx.Toggle(dayDis)))
-				}
+				_gsxgw.S("<td role=\"gridcell\" data-date=\"")
+				_gsxgw.AttrValue(string(d.Format("2006-01-02")))
+				_gsxgw.S("\"")
+				_gsxgw.BoolAttr("data-outside", bool(gsx.Toggle(outside)))
+				_gsxgw.BoolAttr("data-hidden", bool(gsx.Toggle(hiddenDay)))
+				_gsxgw.BoolAttr("data-today", bool(gsx.Toggle(isToday)))
+				_gsxgw.BoolAttr("data-disabled", bool(gsx.Toggle(dayDis)))
 				if cellSel {
-					if !_gsxv13.Has("data-selected") {
-						_gsxgw.S(" data-selected=\"true\"")
-					}
+					_gsxgw.S(" data-selected=\"true\"")
 				}
-				if !_gsxv13.Has("aria-selected") {
-					_gsxgw.S(" aria-selected=\"")
-					_gsxgw.AttrValue(string(boolStr(cellSel)))
-					_gsxgw.S("\"")
-				}
-				_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv13.Class())
-				_gsxgw.StyleMerged("", _gsxv13.Style())
-				_gsxgw.Spread(ctx, _gsxv13, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+				_gsxgw.S(" aria-selected=\"")
+				_gsxgw.AttrValue(string(boolStr(cellSel)))
+				_gsxgw.S("\"")
+				_gsxgw.BoolAttr("data-gsxui-slot-calendar-day", true)
 				_gsxgw.S(">")
 //line calendar.gsx:887:9
-				_gsxv14 := withSlot("button", withSlot("calendar-day-button", nil))
-				_gsxgw.S("<button")
-				if !_gsxv14.Has("type") {
-					_gsxgw.S(" type=\"button\"")
-				}
-				if !_gsxv14.Has("data-variant") {
-					_gsxgw.S(" data-variant=\"ghost\"")
-				}
-				if !_gsxv14.Has("data-size") {
-					_gsxgw.S(" data-size=\"icon\"")
-				}
-				if !_gsxv14.Has("data-gsxui-calendar-day") {
-					_gsxgw.BoolAttr("data-gsxui-calendar-day", true)
-				}
-				if !_gsxv14.Has("data-date") {
-					_gsxgw.S(" data-date=\"")
-					_gsxgw.AttrValue(string(d.Format("2006-01-02")))
-					_gsxgw.S("\"")
-				}
-				if !_gsxv14.Has("tabindex") {
-					_gsxgw.S(" tabindex=\"")
-					_gsxgw.AttrValue(string(tabindex))
-					_gsxgw.S("\"")
-				}
-				if !_gsxv14.Has("aria-label") {
-					_gsxgw.S(" aria-label=\"")
-					_gsxgw.AttrValue(string(d.Format("Monday, January 2, 2006")))
-					_gsxgw.S("\"")
-				}
+				_gsxgw.S("<button type=\"button\" data-variant=\"ghost\" data-size=\"icon\"")
+				_gsxgw.BoolAttr("data-gsxui-calendar-day", true)
+				_gsxgw.S(" data-date=\"")
+				_gsxgw.AttrValue(string(d.Format("2006-01-02")))
+				_gsxgw.S("\" tabindex=\"")
+				_gsxgw.AttrValue(string(tabindex))
+				_gsxgw.S("\" aria-label=\"")
+				_gsxgw.AttrValue(string(d.Format("Monday, January 2, 2006")))
+				_gsxgw.S("\"")
 				if hiddenDay {
-					if !_gsxv14.Has("aria-hidden") {
-						_gsxgw.S(" aria-hidden=\"true\"")
-					}
+					_gsxgw.S(" aria-hidden=\"true\"")
 				}
 				if tabStopDisabled {
-					if !_gsxv14.Has("aria-disabled") {
-						_gsxgw.S(" aria-disabled=\"true\"")
-					}
+					_gsxgw.S(" aria-disabled=\"true\"")
 				}
-				if !_gsxv14.Has("data-selected-single") {
-					_gsxgw.S(" data-selected-single=\"")
-					_gsxgw.AttrValue(string(boolStr(selSingle)))
-					_gsxgw.S("\"")
-				}
-				if !_gsxv14.Has("data-range-start") {
-					_gsxgw.S(" data-range-start=\"")
-					_gsxgw.AttrValue(string(boolStr(rStart)))
-					_gsxgw.S("\"")
-				}
-				if !_gsxv14.Has("data-range-middle") {
-					_gsxgw.S(" data-range-middle=\"")
-					_gsxgw.AttrValue(string(boolStr(rMiddle)))
-					_gsxgw.S("\"")
-				}
-				if !_gsxv14.Has("data-range-end") {
-					_gsxgw.S(" data-range-end=\"")
-					_gsxgw.AttrValue(string(boolStr(rEnd)))
-					_gsxgw.S("\"")
-				}
-				if !_gsxv14.Has("disabled") {
-					_gsxgw.BoolAttr("disabled", bool((dayDis && !tabStopDisabled) || hiddenDay))
-				}
-				_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv14.Class())
-				_gsxgw.StyleMerged("", _gsxv14.Style())
-				_gsxgw.Spread(ctx, _gsxv14, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+				_gsxgw.S(" data-selected-single=\"")
+				_gsxgw.AttrValue(string(boolStr(selSingle)))
+				_gsxgw.S("\" data-range-start=\"")
+				_gsxgw.AttrValue(string(boolStr(rStart)))
+				_gsxgw.S("\" data-range-middle=\"")
+				_gsxgw.AttrValue(string(boolStr(rMiddle)))
+				_gsxgw.S("\" data-range-end=\"")
+				_gsxgw.AttrValue(string(boolStr(rEnd)))
+				_gsxgw.S("\"")
+				_gsxgw.BoolAttr("disabled", bool((dayDis && !tabStopDisabled) || hiddenDay))
+				_gsxgw.BoolAttr("data-gsxui-slot-calendar-day-button", true)
+				_gsxgw.BoolAttr("data-gsxui-slot-button", true)
 				_gsxgw.S(">")
 //line calendar.gsx:908:10
 				_gsxgw.Text(string(dayText))

@@ -8,7 +8,7 @@ import "github.com/gsxhq/gsx"
 // KbdGroup of Kbds). The style pack uses the stable tooltip-content ancestor
 // token for the corresponding nested presentation.
 component Kbd(children gsx.Node, attrs gsx.Attrs) {
-	<kbd { withSlot("kbd", attrs)... }>
+	<kbd { attrs... } data-gsxui-slot-kbd>
 		{ children }
 	</kbd>
 }
@@ -18,7 +18,7 @@ component Kbd(children gsx.Node, attrs gsx.Attrs) {
 // a <kbd> element (registry/new-york-v4/ui/kbd.tsx, verified) — ported
 // verbatim, tag included (see docs/jsx-parity.md).
 component KbdGroup(children gsx.Node, attrs gsx.Attrs) {
-	<kbd { withSlot("kbd-group", attrs)... }>
+	<kbd { attrs... } data-gsxui-slot-kbd-group>
 		{ children }
 	</kbd>
 }

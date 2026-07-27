@@ -169,7 +169,7 @@ component Menubar(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-gsxui-menubar
 		role="menubar"
-		{ withSlot("menubar", attrs)... }
+		{ attrs... } data-gsxui-slot-menubar
 	>
 		{ children }
 	</div>
@@ -185,7 +185,7 @@ component Menubar(children gsx.Node, attrs gsx.Attrs) {
 // scope roving tabindex and open-follows-hover coordinate across every
 // MenubarMenu's trigger.
 component MenubarMenu(children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-menubar-menu { withSlot("menubar-menu", attrs)... }>{ children }</div>
+	<div data-gsxui-menubar-menu { attrs... } data-gsxui-slot-menubar-menu>{ children }</div>
 }
 
 // MenubarTrigger is one pill in the bar. Unlike DropdownMenuTrigger (which
@@ -209,7 +209,7 @@ component MenubarTrigger(children gsx.Node, attrs gsx.Attrs) {
 		aria-haspopup="menu"
 		aria-expanded="false"
 		data-state="closed"
-		{ withSlot("menubar-trigger", attrs)... }
+		{ attrs... } data-gsxui-slot-menubar-trigger
 	>
 		{ children }
 	</button>
@@ -243,7 +243,7 @@ component MenubarContent(children gsx.Node, attrs gsx.Attrs) {
 		tabindex="-1"
 		data-state="closed"
 		data-side="bottom"
-		{ withSlot("menubar-content", attrs)... }
+		{ attrs... } data-gsxui-slot-menubar-content
 	>
 		{ children }
 	</div>
@@ -261,7 +261,7 @@ component MenubarItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 		data-variant={variant |> default("default")}
 		role="menuitem"
 		tabindex="-1"
-		{ withSlot("menubar-item", attrs)... }
+		{ attrs... } data-gsxui-slot-menubar-item
 	>
 		{ children }
 	</div>
@@ -274,7 +274,7 @@ component MenubarItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 // data-gsxui-* hook: nothing in menubar.js binds to or scopes by this
 // element, same call as DropdownMenuGroup/ContextMenuGroup.
 component MenubarGroup(children gsx.Node, attrs gsx.Attrs) {
-	<div role="group" { withSlot("menubar-group", attrs)... }>{ children }</div>
+	<div role="group" { attrs... } data-gsxui-slot-menubar-group>{ children }</div>
 }
 
 // MenubarCheckboxItem is the shadcn/ui MenubarCheckboxItem. checked is
@@ -308,9 +308,9 @@ component MenubarCheckboxItem(checked bool, value string, children gsx.Node, att
 			data-state="unchecked"
 		} }
 		tabindex="-1"
-		{ withSlot("menubar-checkbox-item", attrs)... }
+		{ attrs... } data-gsxui-slot-menubar-checkbox-item
 	>
-		<span data-gsxui-menubar-checkbox-indicator { withSlot("menubar-checkbox-item-indicator", nil)... }>
+		<span data-gsxui-menubar-checkbox-indicator data-gsxui-slot-menubar-checkbox-item-indicator>
 			<icon.Check/>
 		</span>
 		{ children }
@@ -324,7 +324,7 @@ component MenubarCheckboxItem(checked bool, value string, children gsx.Node, att
 // data-gsxui-menubar-radio-group is the proximity anchor menubar.js uses to
 // scope "clear every OTHER item in this group" to this group alone.
 component MenubarRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-menubar-radio-group role="group" data-value={value} { withSlot("menubar-radio-group", attrs)... }>
+	<div data-gsxui-menubar-radio-group role="group" data-value={value} { attrs... } data-gsxui-slot-menubar-radio-group>
 		{ children }
 	</div>
 }
@@ -350,9 +350,9 @@ component MenubarRadioItem(checked bool, value string, children gsx.Node, attrs 
 			data-state="unchecked"
 		} }
 		tabindex="-1"
-		{ withSlot("menubar-radio-item", attrs)... }
+		{ attrs... } data-gsxui-slot-menubar-radio-item
 	>
-		<span data-gsxui-menubar-radio-indicator { withSlot("menubar-radio-item-indicator", nil)... }>
+		<span data-gsxui-menubar-radio-indicator data-gsxui-slot-menubar-radio-item-indicator>
 			<icon.Circle/>
 		</span>
 		{ children }
@@ -365,11 +365,11 @@ component MenubarRadioItem(checked bool, value string, children gsx.Node, attrs 
 // .cn-menubar-label rule is genuinely text-sm, a real per-component nova
 // value, not a copy of dropdown's own (already-shipped) Label metrics.
 component MenubarLabel(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("menubar-label", attrs)... }>{ children }</div>
+	<div { attrs... } data-gsxui-slot-menubar-label>{ children }</div>
 }
 
 component MenubarSeparator(attrs gsx.Attrs) {
-	<div role="separator" { withSlot("menubar-separator", attrs)... }></div>
+	<div role="separator" { attrs... } data-gsxui-slot-menubar-separator></div>
 }
 
 // The automatic leading margin is KEPT even though nova's own shortcut rule
@@ -383,7 +383,7 @@ component MenubarSeparator(attrs gsx.Attrs) {
 // in this file for it to key off, the same scope call as every other
 // dropdown/context-menu Shortcut in this codebase.
 component MenubarShortcut(children gsx.Node, attrs gsx.Attrs) {
-	<span { withSlot("menubar-shortcut", attrs)... }>
+	<span { attrs... } data-gsxui-slot-menubar-shortcut>
 		{ children }
 	</span>
 }
@@ -397,7 +397,7 @@ component MenubarShortcut(children gsx.Node, attrs gsx.Attrs) {
 // check to "the whole sub" — same shape as DropdownMenuSub's own doc
 // comment.
 component MenubarSub(children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-menubar-sub { withSlot("menubar-sub", attrs)... }>{ children }</div>
+	<div data-gsxui-menubar-sub { attrs... } data-gsxui-slot-menubar-sub>{ children }</div>
 }
 
 // MenubarSubTrigger opens/closes its sibling MenubarSubContent (menubar.js:
@@ -439,7 +439,7 @@ component MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 		aria-expanded="false"
 		data-state="closed"
 		tabindex="-1"
-		{ withSlot("menubar-sub-trigger", attrs)... }
+		{ attrs... } data-gsxui-slot-menubar-sub-trigger
 	>
 		{ children }
 		<icon.ChevronRight/>
@@ -467,7 +467,7 @@ component MenubarSubContent(children gsx.Node, attrs gsx.Attrs) {
 		tabindex="-1"
 		data-state="closed"
 		data-side="right"
-		{ withSlot("menubar-sub-content", attrs)... }
+		{ attrs... } data-gsxui-slot-menubar-sub-content
 	>
 		{ children }
 	</div>

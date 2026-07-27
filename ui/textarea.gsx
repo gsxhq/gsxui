@@ -8,6 +8,6 @@ import "github.com/gsxhq/gsx"
 // as the (escaped) text child instead (ADAPT, see docs/jsx-parity.md).
 component Textarea(value string, attrs gsx.Attrs) {
 	<textarea
-		{ withSlot("textarea", attrs)... }
+		{ attrs... } data-gsxui-slot-textarea
 	>{ value }</textarea>
 }

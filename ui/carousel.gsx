@@ -38,7 +38,7 @@ component Carousel(orientation string, children gsx.Node, attrs gsx.Attrs) {
 		aria-roledescription="carousel"
 		data-gsxui-carousel
 		data-orientation={orientation |> default("horizontal")}
-		{ withSlot("carousel", attrs)... }
+		{ attrs... } data-gsxui-slot-carousel
 	>
 		{ children }
 	</div>
@@ -62,11 +62,11 @@ component CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs
 	<div
 		data-gsxui-carousel-content
 		data-orientation={orientation |> default("horizontal")}
-		{ withSlot("carousel-content", nil)... }
+		data-gsxui-slot-carousel-content
 	>
 		<div
 			data-orientation={orientation |> default("horizontal")}
-			{ withSlot("carousel-track", attrs)... }
+			{ attrs... } data-gsxui-slot-carousel-track
 		>
 			{ children }
 		</div>
@@ -99,7 +99,7 @@ component CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) {
 		aria-roledescription="slide"
 		data-gsxui-carousel-item
 		data-orientation={orientation |> default("horizontal")}
-		{ withSlot("carousel-item", attrs)... }
+		{ attrs... } data-gsxui-slot-carousel-item
 	>
 		{ children }
 	</div>
@@ -140,10 +140,10 @@ component CarouselPrevious(orientation string, attrs gsx.Attrs) {
 		variant="outline"
 		size="icon"
 		disabled={true}
-		{ withSlot("carousel-previous", attrs)... }
+		{ attrs... } data-gsxui-slot-carousel-previous
 	>
 		<icon.ArrowLeft/>
-		<span { withSlot("carousel-control-label", nil)... }>Previous slide</span>
+		<span data-gsxui-slot-carousel-control-label>Previous slide</span>
 	</Button>
 }
 
@@ -153,9 +153,9 @@ component CarouselNext(orientation string, attrs gsx.Attrs) {
 		data-orientation={orientation |> default("horizontal")}
 		variant="outline"
 		size="icon"
-		{ withSlot("carousel-next", attrs)... }
+		{ attrs... } data-gsxui-slot-carousel-next
 	>
 		<icon.ArrowRight/>
-		<span { withSlot("carousel-control-label", nil)... }>Next slide</span>
+		<span data-gsxui-slot-carousel-control-label>Next slide</span>
 	</Button>
 }

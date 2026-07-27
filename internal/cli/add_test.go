@@ -27,8 +27,6 @@ func TestAddVendorsWithDeps(t *testing.T) {
 	for _, p := range []string{
 		"ui/dialog.gsx",
 		"ui/button.gsx",
-		"ui/slots.go",
-		"ui/internal/slotattr/slotattr.go",
 		"web/gsxui/dialog.js",
 		"ui/NOTICE.md",
 	} {
@@ -74,7 +72,7 @@ func TestAddVendorsWithDeps(t *testing.T) {
 	}
 }
 
-func TestAddVendorsSupportToCustomUIPath(t *testing.T) {
+func TestAddDoesNotVendorRetiredSlotHelpers(t *testing.T) {
 	dir, _ := initTestModule(t)
 	cfg := DefaultConfig()
 	cfg.UI = "components/ui"
@@ -92,45 +90,9 @@ func TestAddVendorsSupportToCustomUIPath(t *testing.T) {
 		"components/ui/slots.go",
 		"components/ui/internal/slotattr/slotattr.go",
 	} {
-		if _, err := os.Stat(filepath.Join(dir, path)); err != nil {
-			t.Errorf("missing %s: %v", path, err)
+		if _, err := os.Stat(filepath.Join(dir, path)); !os.IsNotExist(err) {
+			t.Errorf("retired support file %s was vendored: %v", path, err)
 		}
-	}
-
-	slots, err := os.ReadFile(filepath.Join(dir, "components/ui/slots.go"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	if want := `"example.com/app/components/ui/internal/slotattr"`; !strings.Contains(string(slots), want) {
-		t.Errorf("support import was not rewritten to %s:\n%s", want, slots)
-	}
-	if strings.Contains(string(slots), "github.com/gsxhq/gsxui/ui") {
-		t.Errorf("unrewritten support import remains:\n%s", slots)
-	}
-}
-
-func TestAddRefusesModifiedSupportFile(t *testing.T) {
-	dir, _ := initedModule(t)
-	if err := Run([]string{"add", "badge"}); err != nil {
-		t.Fatal(err)
-	}
-
-	target := filepath.Join(dir, "ui", "slots.go")
-	const modified = "package ui // locally modified support\n"
-	if err := os.WriteFile(target, []byte(modified), 0o644); err != nil {
-		t.Fatal(err)
-	}
-
-	err := Run([]string{"add", "card"})
-	if err == nil || !strings.Contains(err.Error(), target) || !strings.Contains(err.Error(), "--overwrite") {
-		t.Fatalf("want support-file overwrite-refusal error, got %v", err)
-	}
-	got, readErr := os.ReadFile(target)
-	if readErr != nil {
-		t.Fatal(readErr)
-	}
-	if string(got) != modified {
-		t.Errorf("modified support file was overwritten:\n%s", got)
 	}
 }
 

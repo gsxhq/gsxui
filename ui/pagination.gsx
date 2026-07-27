@@ -17,20 +17,20 @@ component Pagination(children gsx.Node, attrs gsx.Attrs) {
 	<nav
 		role="navigation"
 		aria-label="pagination"
-		{ withSlot("pagination", attrs)... }
+		{ attrs... } data-gsxui-slot-pagination
 	>
 		{ children }
 	</nav>
 }
 
 component PaginationContent(children gsx.Node, attrs gsx.Attrs) {
-	<ul { withSlot("pagination-content", attrs)... }>
+	<ul { attrs... } data-gsxui-slot-pagination-content>
 		{ children }
 	</ul>
 }
 
 component PaginationItem(children gsx.Node, attrs gsx.Attrs) {
-	<li { withSlot("pagination-item", attrs)... }>{ children }</li>
+	<li { attrs... } data-gsxui-slot-pagination-item>{ children }</li>
 }
 
 // PaginationLink renders the shadcn/ui PaginationLink onto a real <a>,
@@ -60,7 +60,7 @@ component PaginationLink(href string, isActive bool, size string, children gsx.N
 		data-variant={variant}
 		data-size={size}
 		href={href}
-		{ withSlot("button", withSlot("pagination-link", attrs))... }
+		{ attrs... } data-gsxui-slot-pagination-link data-gsxui-slot-button
 	>
 		{ children }
 	</a>
@@ -75,10 +75,10 @@ component PaginationPrevious(href string, attrs gsx.Attrs) {
 		href={href}
 		size="default"
 		aria-label="Go to previous page"
-		{ withSlot("pagination-previous", attrs)... }
+		{ attrs... } data-gsxui-slot-pagination-previous
 	>
 		<icon.ChevronLeft/>
-		<span { withSlot("pagination-previous-label", nil)... }>Previous</span>
+		<span data-gsxui-slot-pagination-previous-label>Previous</span>
 	</PaginationLink>
 }
 
@@ -87,9 +87,9 @@ component PaginationNext(href string, attrs gsx.Attrs) {
 		href={href}
 		size="default"
 		aria-label="Go to next page"
-		{ withSlot("pagination-next", attrs)... }
+		{ attrs... } data-gsxui-slot-pagination-next
 	>
-		<span { withSlot("pagination-next-label", nil)... }>Next</span>
+		<span data-gsxui-slot-pagination-next-label>Next</span>
 		<icon.ChevronRight/>
 	</PaginationLink>
 }
@@ -97,9 +97,9 @@ component PaginationNext(href string, attrs gsx.Attrs) {
 component PaginationEllipsis(attrs gsx.Attrs) {
 	<span
 		aria-hidden="true"
-		{ withSlot("pagination-ellipsis", attrs)... }
+		{ attrs... } data-gsxui-slot-pagination-ellipsis
 	>
 		<icon.Ellipsis/>
-		<span { withSlot("pagination-ellipsis-label", nil)... }>More pages</span>
+		<span data-gsxui-slot-pagination-ellipsis-label>More pages</span>
 	</span>
 }

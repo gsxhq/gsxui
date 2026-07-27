@@ -24,6 +24,6 @@ import "github.com/gsxhq/gsx"
 component Checkbox(attrs gsx.Attrs) {
 	<input
 		type="checkbox"
-		{ withSlot("checkbox", attrs)... }
+		{ attrs... } data-gsxui-slot-checkbox
 	/>
 }

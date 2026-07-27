@@ -105,30 +105,25 @@ func InputOTP(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line input-otp.gsx:96:2
-		_gsxv0 := withSlot("input-otp", nil)
 		_gsxgw.S("<div")
-		if !_gsxv0.Has("data-gsxui-input-otp") {
-			_gsxgw.BoolAttr("data-gsxui-input-otp", true)
-		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
-		_gsxgw.StyleMerged("", _gsxv0.Style())
-		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.BoolAttr("data-gsxui-input-otp", true)
+		_gsxgw.BoolAttr("data-gsxui-slot-input-otp", true)
 		_gsxgw.S(">")
 //line input-otp.gsx:100:3
-		_gsxv1 := withSlot("input-otp-input", attrs)
 		_gsxgw.S("<input")
-		if !_gsxv1.Has("data-gsxui-input-otp-input") {
+		if !attrs.Has("data-gsxui-input-otp-input") {
 			_gsxgw.BoolAttr("data-gsxui-input-otp-input", true)
 		}
-		if !_gsxv1.Has("inputmode") {
+		if !attrs.Has("inputmode") {
 			_gsxgw.S(" inputmode=\"numeric\"")
 		}
-		if !_gsxv1.Has("autocomplete") {
+		if !attrs.Has("autocomplete") {
 			_gsxgw.S(" autocomplete=\"one-time-code\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
-		_gsxgw.StyleMerged("", _gsxv1.Style())
-		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "xlink:href"}, []string{"background", "src"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "xlink:href"}, []string{"background", "src"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-input-otp-input"})
+		_gsxgw.BoolAttr("data-gsxui-slot-input-otp-input", true)
 		_gsxgw.S(">")
 //line input-otp.gsx:106:3
 		_gsxgw.Node(ctx, children)
@@ -147,11 +142,11 @@ func InputOTPGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line input-otp.gsx:114:2
-		_gsxv2 := withSlot("input-otp-group", attrs)
 		_gsxgw.S("<div")
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
-		_gsxgw.StyleMerged("", _gsxv2.Style())
-		_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-input-otp-group"})
+		_gsxgw.BoolAttr("data-gsxui-slot-input-otp-group", true)
 		_gsxgw.S(">")
 //line input-otp.gsx:117:3
 		_gsxgw.Node(ctx, children)
@@ -171,17 +166,17 @@ func InputOTPSlot(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line input-otp.gsx:126:2
-		_gsxv3 := withSlot("input-otp-slot", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv3.Has("data-gsxui-input-otp-slot") {
+		if !attrs.Has("data-gsxui-input-otp-slot") {
 			_gsxgw.BoolAttr("data-gsxui-input-otp-slot", true)
 		}
-		if !_gsxv3.Has("data-active") {
+		if !attrs.Has("data-active") {
 			_gsxgw.S(" data-active=\"false\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv3.Class())
-		_gsxgw.StyleMerged("", _gsxv3.Style())
-		_gsxgw.Spread(ctx, _gsxv3, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-input-otp-slot"})
+		_gsxgw.BoolAttr("data-gsxui-slot-input-otp-slot", true)
 		_gsxgw.S("></div>")
 		return _gsxgw.Err()
 	})
@@ -195,14 +190,14 @@ func InputOTPSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line input-otp.gsx:135:2
-		_gsxv4 := withSlot("input-otp-separator", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv4.Has("role") {
+		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"separator\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv4.Class())
-		_gsxgw.StyleMerged("", _gsxv4.Style())
-		_gsxgw.Spread(ctx, _gsxv4, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-input-otp-separator"})
+		_gsxgw.BoolAttr("data-gsxui-slot-input-otp-separator", true)
 		_gsxgw.S(">")
 //line input-otp.gsx:136:3
 		_gsxgw.Node(ctx, icon.Minus())

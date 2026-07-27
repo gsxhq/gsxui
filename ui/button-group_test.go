@@ -15,7 +15,7 @@ import (
 // idiom badge.gsx uses for its own variant map.
 func TestButtonGroupDefaultPinned(t *testing.T) {
 	got := render(t, ui.ButtonGroup("", gsx.Raw("x"), nil))
-	want := `<div role="group" data-orientation="horizontal" data-gsxui-slot="button-group">x</div>`
+	want := `<div role="group" data-orientation="horizontal" data-gsxui-slot-button-group>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -23,7 +23,7 @@ func TestButtonGroupDefaultPinned(t *testing.T) {
 
 func TestButtonGroupVerticalPinned(t *testing.T) {
 	got := render(t, ui.ButtonGroup("vertical", gsx.Raw("x"), nil))
-	want := `<div role="group" data-orientation="vertical" data-gsxui-slot="button-group">x</div>`
+	want := `<div role="group" data-orientation="vertical" data-gsxui-slot-button-group>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -45,7 +45,7 @@ func TestButtonGroupCallerClassIsForwardedOnce(t *testing.T) {
 
 func TestButtonGroupTextPinned(t *testing.T) {
 	got := render(t, ui.ButtonGroupText(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot="button-group-text">x</div>`
+	want := `<div data-gsxui-slot-button-group-text>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -65,7 +65,7 @@ func TestButtonGroupTextAttrsFallThrough(t *testing.T) {
 // (data-[orientation=vertical]:h-full, bg-border — both dropped).
 func TestButtonGroupSeparatorDefaultPinned(t *testing.T) {
 	got := render(t, ui.ButtonGroupSeparator("", nil))
-	want := `<div role="none" data-orientation="vertical" data-gsxui-slot="separator button-group-separator"></div>`
+	want := `<div role="none" data-orientation="vertical" data-gsxui-slot-button-group-separator data-gsxui-slot-separator></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -91,7 +91,7 @@ func TestButtonGroupSeparatorAttrsFallThrough(t *testing.T) {
 // button-group -> separator dependency internal/registry derives.
 func TestButtonGroupSeparatorComposesSeparator(t *testing.T) {
 	got := render(t, ui.ButtonGroupSeparator("", nil))
-	for _, want := range []string{`role="none"`, `data-gsxui-slot="separator button-group-separator"`} {
+	for _, want := range []string{`role="none"`, `data-gsxui-slot-button-group-separator data-gsxui-slot-separator`} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q (expected from ui.Separator)\nin: %s", want, got)
 		}
@@ -110,9 +110,9 @@ func TestButtonGroupWithSeparator(t *testing.T) {
 		nil,
 	))
 	for _, want := range []string{
-		`data-gsxui-slot="button-group"`,
+		`data-gsxui-slot-button-group`,
 		`>Copy</button>`,
-		`data-gsxui-slot="separator button-group-separator"`,
+		`data-gsxui-slot-button-group-separator data-gsxui-slot-separator`,
 		`>Paste</button>`,
 	} {
 		if !strings.Contains(got, want) {

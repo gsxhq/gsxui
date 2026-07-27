@@ -155,9 +155,9 @@ import (
 
 // The `calendar-dropdowns` style rule is the `dropdowns` slot (source map §2).
 
-// The `calendar-dropdown-root` style rule is the `dropdown_root` slot, retargeted to nova
-// density (source map §6, `.cn-calendar-dropdown-root`) the same way Task 1's
-// the calendar root rule retargeted the `root`/top-level className (p-3→p-2,
+// The nested native-select wrapper is the `dropdown_root` slot, retargeted to
+// nova density (source map §6, `.cn-calendar-dropdown-root`) the same way
+// Task 1's calendar root rule retargeted the `root`/top-level className (p-3→p-2,
 // --spacing(8)→(7)): new-york-v4's own value (source map §2) is `relative
 // rounded-md border border-input shadow-xs has-focus:border-ring
 // has-focus:ring-[3px] has-focus:ring-ring/50`; nova's rule drops
@@ -746,10 +746,10 @@ component Calendar(
 		} }
 		data-gsxui-calendar-nav-from-year={ strconv.Itoa(navFromYear) }
 		data-gsxui-calendar-nav-to-year={ strconv.Itoa(navToYear) }
-		{ withSlot("calendar", attrs)... }
+		{ attrs... } data-gsxui-slot-calendar
 	>
-		<div { withSlot("calendar-months", nil)... }>
-		<nav { withSlot("calendar-nav", nil)... }>
+		<div data-gsxui-slot-calendar-months>
+		<nav data-gsxui-slot-calendar-nav>
 			<button
 				type="button"
 				data-variant="ghost"
@@ -760,7 +760,7 @@ component Calendar(
 					aria-disabled="true"
 					tabindex="-1"
 				} }
-				{ withSlot("button", withSlot("calendar-nav-button", withSlot("calendar-previous", nil)))... }
+				data-gsxui-slot-calendar-previous data-gsxui-slot-calendar-nav-button data-gsxui-slot-button
 			>
 				<icon.ChevronLeft/>
 			</button>
@@ -774,22 +774,22 @@ component Calendar(
 					aria-disabled="true"
 					tabindex="-1"
 				} }
-				{ withSlot("button", withSlot("calendar-nav-button", withSlot("calendar-next", nil)))... }
+				data-gsxui-slot-calendar-next data-gsxui-slot-calendar-nav-button data-gsxui-slot-button
 			>
 				<icon.ChevronRight/>
 			</button>
 		</nav>
-		<div { withSlot("calendar-month-caption", nil)... }>
+		<div data-gsxui-slot-calendar-month-caption>
 			{ if dropdownLayout {
-				<div { withSlot("calendar-dropdowns", nil)... }>
-					<NativeSelect data-gsxui-calendar-month-select aria-label="Month" data-gsxui-slot="calendar-dropdown-root">
+				<div data-gsxui-slot-calendar-dropdowns>
+					<NativeSelect data-gsxui-calendar-month-select aria-label="Month">
 						{ for i := 0; i < 12; i++ {
 							<NativeSelectOption value={ strconv.Itoa(i) } selected={ i == int(monthOfYear)-1 } data-gsxui-calendar-month-option>
 								{ calendarMonthNames[i] }
 							</NativeSelectOption>
 						} }
 					</NativeSelect>
-					<NativeSelect data-gsxui-calendar-year-select aria-label="Year" data-gsxui-slot="calendar-dropdown-root">
+					<NativeSelect data-gsxui-calendar-year-select aria-label="Year">
 						{ for y := navFromYear; y <= navToYear; y++ {
 							<NativeSelectOption value={ strconv.Itoa(y) } selected={ y == year } data-gsxui-calendar-year-option>
 								{ strconv.Itoa(y) }
@@ -802,7 +802,7 @@ component Calendar(
 					role="status"
 					aria-live="polite"
 					data-caption-layout="dropdown"
-					{ withSlot("calendar-caption", nil)... }
+					data-gsxui-slot-calendar-caption
 				>{ captionText }</span>
 			} else {
 				<span
@@ -810,7 +810,7 @@ component Calendar(
 					role="status"
 					aria-live="polite"
 					data-caption-layout="label"
-					{ withSlot("calendar-caption", nil)... }
+					data-gsxui-slot-calendar-caption
 				>{ captionText }</span>
 			} }
 		</div>
@@ -821,19 +821,19 @@ component Calendar(
 			{ if multiselectable {
 				aria-multiselectable="true"
 			} }
-			{ withSlot("calendar-grid", nil)... }
+			data-gsxui-slot-calendar-grid
 		>
 			<thead aria-hidden="true">
-				<tr { withSlot("calendar-weekdays", nil)... }>
+				<tr data-gsxui-slot-calendar-weekdays>
 					{ for i := 0; i < 7; i++ {
 						{{ wd := time.Weekday((int(weekStartsOn) + i) % 7) }}
-						<th scope="col" { withSlot("calendar-weekday", nil)... }>{ wd.String()[:2] }</th>
+						<th scope="col" data-gsxui-slot-calendar-weekday>{ wd.String()[:2] }</th>
 					} }
 				</tr>
 			</thead>
 			<tbody>
 				{ for week := 0; week < 6; week++ {
-					<tr { withSlot("calendar-week", nil)... }>
+					<tr data-gsxui-slot-calendar-week>
 						{ for day := 0; day < 7; day++ {
 							{{
 								idx := week*7 + day
@@ -882,7 +882,7 @@ component Calendar(
 									data-selected="true"
 								} }
 								aria-selected={ boolStr(cellSel) }
-								{ withSlot("calendar-day", nil)... }
+								data-gsxui-slot-calendar-day
 							>
 								<button
 									type="button"
@@ -903,7 +903,7 @@ component Calendar(
 									data-range-middle={ boolStr(rMiddle) }
 									data-range-end={ boolStr(rEnd) }
 									disabled={ (dayDis && !tabStopDisabled) || hiddenDay }
-									{ withSlot("button", withSlot("calendar-day-button", nil))... }
+									data-gsxui-slot-calendar-day-button data-gsxui-slot-button
 								>
 									{ dayText }
 								</button>

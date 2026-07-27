@@ -44,14 +44,14 @@ func _gsxrenderCommand(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.
 		return _gsxerr
 	}
 //line command.gsx:26:2
-	_gsxv0 := withSlot("command", attrs)
 	_gsxgw.S("<div")
-	if !_gsxv0.Has("data-gsxui-command") {
+	if !attrs.Has("data-gsxui-command") {
 		_gsxgw.BoolAttr("data-gsxui-command", true)
 	}
-	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
-	_gsxgw.StyleMerged("", _gsxv0.Style())
-	_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-command"})
+	_gsxgw.BoolAttr("data-gsxui-slot-command", true)
 	_gsxgw.S(">")
 //line command.gsx:30:3
 	_gsxgw.Node(ctx, children)
@@ -99,18 +99,18 @@ func CommandDialog(title string, description string, children gsx.Node, attrs gs
 						return _gsxgw.Err()
 					}), nil))
 					return _gsxgw.Err()
-				}), withSlot("command-dialog-header", nil)))
+				}), _gsxrt.Attrs{{Key: "data-gsxui-slot-command-dialog-header", Value: _gsxrt.Toggle(true)}}))
 //line command.gsx:54:4
 				_gsxgw.NodeResult(_gsxrenderCommand(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line command.gsx:55:5
 					_gsxgw.Node(ctx, children)
 					return _gsxgw.Err()
-				}), withSlot("command-dialog-command", nil)))
+				}), _gsxrt.Attrs{{Key: "data-gsxui-slot-command-dialog-command", Value: _gsxrt.Toggle(true)}}))
 				return _gsxgw.Err()
-			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-command-dialog", Value: true}}, withSlot("command-dialog-content", attrs))))
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-command-dialog", Value: _gsxrt.Toggle(true)}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-command-dialog-content", Value: _gsxrt.Toggle(true)}})))
 			return _gsxgw.Err()
-		}), withSlot("command-dialog", nil)))
+		}), _gsxrt.Attrs{{Key: "data-gsxui-slot-command-dialog", Value: _gsxrt.Toggle(true)}}))
 		return _gsxgw.Err()
 	})
 }
@@ -126,49 +126,44 @@ func CommandInput(placeholder string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line command.gsx:66:2
-		_gsxv1 := withSlot("command-input-wrapper", nil)
 		_gsxgw.S("<div")
-		if !_gsxv1.Has("data-gsxui-command-input-wrapper") {
-			_gsxgw.BoolAttr("data-gsxui-command-input-wrapper", true)
-		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
-		_gsxgw.StyleMerged("", _gsxv1.Style())
-		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.BoolAttr("data-gsxui-command-input-wrapper", true)
+		_gsxgw.BoolAttr("data-gsxui-slot-command-input-wrapper", true)
 		_gsxgw.S(">")
 //line command.gsx:67:3
 		_gsxgw.Node(ctx, icon.Search())
 //line command.gsx:68:3
-		_gsxv2 := withSlot("command-input", attrs)
 		_gsxgw.S("<input")
-		if !_gsxv2.Has("data-gsxui-command-input") {
+		if !attrs.Has("data-gsxui-command-input") {
 			_gsxgw.BoolAttr("data-gsxui-command-input", true)
 		}
-		if !_gsxv2.Has("type") {
+		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"text\"")
 		}
-		if !_gsxv2.Has("role") {
+		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"combobox\"")
 		}
-		if !_gsxv2.Has("aria-expanded") {
+		if !attrs.Has("aria-expanded") {
 			_gsxgw.S(" aria-expanded=\"true\"")
 		}
-		if !_gsxv2.Has("aria-autocomplete") {
+		if !attrs.Has("aria-autocomplete") {
 			_gsxgw.S(" aria-autocomplete=\"list\"")
 		}
-		if !_gsxv2.Has("autocomplete") {
+		if !attrs.Has("autocomplete") {
 			_gsxgw.S(" autocomplete=\"off\"")
 		}
-		if !_gsxv2.Has("spellcheck") {
+		if !attrs.Has("spellcheck") {
 			_gsxgw.S(" spellcheck=\"false\"")
 		}
-		if !_gsxv2.Has("placeholder") {
+		if !attrs.Has("placeholder") {
 			_gsxgw.S(" placeholder=\"")
 			_gsxgw.AttrValue(string(placeholder))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
-		_gsxgw.StyleMerged("", _gsxv2.Style())
-		_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "xlink:href"}, []string{"background", "src"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "xlink:href"}, []string{"background", "src"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-command-input"})
+		_gsxgw.BoolAttr("data-gsxui-slot-command-input", true)
 		_gsxgw.S("></div>")
 		return _gsxgw.Err()
 	})
@@ -179,17 +174,17 @@ func CommandList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line command.gsx:83:2
-		_gsxv3 := withSlot("command-list", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv3.Has("data-gsxui-command-list") {
+		if !attrs.Has("data-gsxui-command-list") {
 			_gsxgw.BoolAttr("data-gsxui-command-list", true)
 		}
-		if !_gsxv3.Has("role") {
+		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"listbox\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv3.Class())
-		_gsxgw.StyleMerged("", _gsxv3.Style())
-		_gsxgw.Spread(ctx, _gsxv3, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-command-list"})
+		_gsxgw.BoolAttr("data-gsxui-slot-command-list", true)
 		_gsxgw.S(">")
 //line command.gsx:88:3
 		_gsxgw.Node(ctx, children)
@@ -208,19 +203,19 @@ func CommandEmpty(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line command.gsx:96:2
-		_gsxv4 := withSlot("command-empty", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv4.Has("data-gsxui-command-empty") {
+		if !attrs.Has("data-gsxui-command-empty") {
 			_gsxgw.BoolAttr("data-gsxui-command-empty", true)
 		}
-		if !_gsxv4.Has("hidden") {
+		if !attrs.Has("hidden") {
 			_gsxgw.BoolAttr("hidden", true)
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv4.Class())
-		_gsxgw.StyleMerged("", _gsxv4.Style())
-		_gsxgw.Spread(ctx, _gsxv4, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-command-empty"})
+		_gsxgw.BoolAttr("data-gsxui-slot-command-empty", true)
 		_gsxgw.S(">")
-//line command.gsx:96:79
+//line command.gsx:96:82
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
@@ -238,31 +233,26 @@ func CommandGroup(heading string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Nod
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line command.gsx:104:2
-		_gsxv5 := withSlot("command-group", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv5.Has("data-gsxui-command-group") {
+		if !attrs.Has("data-gsxui-command-group") {
 			_gsxgw.BoolAttr("data-gsxui-command-group", true)
 		}
-		if !_gsxv5.Has("role") {
+		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"group\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv5.Class())
-		_gsxgw.StyleMerged("", _gsxv5.Style())
-		_gsxgw.Spread(ctx, _gsxv5, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-command-group"})
+		_gsxgw.BoolAttr("data-gsxui-slot-command-group", true)
 		_gsxgw.S(">")
 //line command.gsx:105:3
 		if heading != "" {
 //line command.gsx:106:4
-			_gsxv6 := withSlot("command-group-heading", nil)
 			_gsxgw.S("<div")
-			if !_gsxv6.Has("data-gsxui-command-group-heading") {
-				_gsxgw.BoolAttr("data-gsxui-command-group-heading", true)
-			}
-			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv6.Class())
-			_gsxgw.StyleMerged("", _gsxv6.Style())
-			_gsxgw.Spread(ctx, _gsxv6, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.BoolAttr("data-gsxui-command-group-heading", true)
+			_gsxgw.BoolAttr("data-gsxui-slot-command-group-heading", true)
 			_gsxgw.S(">")
-//line command.gsx:106:88
+//line command.gsx:106:80
 			_gsxgw.Text(string(heading))
 			_gsxgw.S("</div>")
 		}
@@ -278,17 +268,17 @@ func CommandSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line command.gsx:113:2
-		_gsxv7 := withSlot("command-separator", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv7.Has("data-gsxui-command-separator") {
+		if !attrs.Has("data-gsxui-command-separator") {
 			_gsxgw.BoolAttr("data-gsxui-command-separator", true)
 		}
-		if !_gsxv7.Has("role") {
+		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"separator\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv7.Class())
-		_gsxgw.StyleMerged("", _gsxv7.Style())
-		_gsxgw.Spread(ctx, _gsxv7, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-command-separator"})
+		_gsxgw.BoolAttr("data-gsxui-slot-command-separator", true)
 		_gsxgw.S("></div>")
 		return _gsxgw.Err()
 	})
@@ -308,25 +298,25 @@ func CommandItem(value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line command.gsx:124:2
-		_gsxv8 := withSlot("command-item", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv8.Has("data-gsxui-command-item") {
+		if !attrs.Has("data-gsxui-command-item") {
 			_gsxgw.BoolAttr("data-gsxui-command-item", true)
 		}
-		if !_gsxv8.Has("data-value") {
+		if !attrs.Has("data-value") {
 			_gsxgw.S(" data-value=\"")
 			_gsxgw.AttrValue(string(value))
 			_gsxgw.S("\"")
 		}
-		if !_gsxv8.Has("role") {
+		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"option\"")
 		}
-		if !_gsxv8.Has("aria-selected") {
+		if !attrs.Has("aria-selected") {
 			_gsxgw.S(" aria-selected=\"false\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv8.Class())
-		_gsxgw.StyleMerged("", _gsxv8.Style())
-		_gsxgw.Spread(ctx, _gsxv8, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-command-item"})
+		_gsxgw.BoolAttr("data-gsxui-slot-command-item", true)
 		_gsxgw.S(">")
 //line command.gsx:131:3
 		_gsxgw.Node(ctx, children)
@@ -340,11 +330,11 @@ func CommandShortcut(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line command.gsx:136:2
-		_gsxv9 := withSlot("command-shortcut", attrs)
 		_gsxgw.S("<span")
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv9.Class())
-		_gsxgw.StyleMerged("", _gsxv9.Style())
-		_gsxgw.Spread(ctx, _gsxv9, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-command-shortcut"})
+		_gsxgw.BoolAttr("data-gsxui-slot-command-shortcut", true)
 		_gsxgw.S(">")
 //line command.gsx:137:3
 		_gsxgw.Node(ctx, children)

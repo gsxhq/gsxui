@@ -42,13 +42,10 @@ component NativeSelect(children gsx.Node, attrs gsx.Attrs) {
 		if class, ok := attrs.Get("class"); ok {
 			wrapperAttrs = gsx.Attrs{{Key: "class", Value: class}}
 		}
-		if slots, ok := attrs.Get("data-gsxui-slot"); ok {
-			wrapperAttrs = append(wrapperAttrs, gsx.Attr{Key: "data-gsxui-slot", Value: slots})
-		}
 	}}
-	<div { withSlot("native-select-wrapper", wrapperAttrs)... }>
+	<div { wrapperAttrs... } data-gsxui-slot-native-select-wrapper>
 		<select
-			{ withSlot("native-select", attrs.Without("class").Without("data-gsxui-slot"))... }
+			{ attrs.Without("class")... } data-gsxui-slot-native-select
 		>
 			{ children }
 		</select>

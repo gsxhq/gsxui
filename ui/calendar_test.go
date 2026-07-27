@@ -178,7 +178,7 @@ func TestCalendarRootAttributes(t *testing.T) {
 		time.Time{}, time.Time{}, nil, nil, "", nil))
 
 	for _, want := range []string{
-		`data-gsxui-slot="calendar"`,
+		`data-gsxui-slot-calendar`,
 		`data-gsxui-calendar`,
 		`data-gsxui-calendar-month="2026-07"`,
 		`data-gsxui-calendar-mode="range"`,
@@ -201,25 +201,25 @@ func TestCalendarStyleContract(t *testing.T) {
 		time.Time{}, time.Time{}, nil, nil, "", gsx.Attrs{{Key: "class", Value: "rounded-none"}}))
 
 	for token, count := range map[string]int{
-		`data-gsxui-slot="calendar"`:                                     1,
-		`data-gsxui-slot="calendar-months"`:                              1,
-		`data-gsxui-slot="calendar-nav"`:                                 1,
-		`data-gsxui-slot="button calendar-nav-button calendar-previous"`: 1,
-		`data-gsxui-slot="button calendar-nav-button calendar-next"`:     1,
-		`data-gsxui-slot="calendar-month-caption"`:                       1,
-		`data-gsxui-slot="calendar-caption"`:                             1,
-		`data-gsxui-slot="calendar-grid"`:                                1,
-		`data-gsxui-slot="calendar-weekdays"`:                            1,
-		`data-gsxui-slot="calendar-weekday"`:                             7,
-		`data-gsxui-slot="calendar-week"`:                                6,
-		`data-gsxui-slot="calendar-day"`:                                 42,
-		`data-gsxui-slot="button calendar-day-button"`:                   42,
+		`data-gsxui-slot-calendar`:        1,
+		`data-gsxui-slot-calendar-months`: 1,
+		`data-gsxui-slot-calendar-nav`:    1,
+		`data-gsxui-slot-calendar-previous data-gsxui-slot-calendar-nav-button data-gsxui-slot-button`: 1,
+		`data-gsxui-slot-calendar-next data-gsxui-slot-calendar-nav-button data-gsxui-slot-button`:     1,
+		`data-gsxui-slot-calendar-month-caption`:                                                       1,
+		`data-gsxui-slot-calendar-caption`:                                                             1,
+		`data-gsxui-slot-calendar-grid`:                                                                1,
+		`data-gsxui-slot-calendar-weekdays`:                                                            1,
+		`data-gsxui-slot-calendar-weekday`:                                                             7,
+		`data-gsxui-slot-calendar-week`:                                                                6,
+		`data-gsxui-slot-calendar-day`:                                                                 42,
+		`data-gsxui-slot-calendar-day-button data-gsxui-slot-button`:                                   42,
 	} {
-		if n := strings.Count(got, token); n != count {
+		if n := countPresenceAttribute(got, token); n != count {
 			t.Errorf("%s count = %d, want %d", token, n, count)
 		}
 	}
-	rootStart := strings.Index(got, `data-gsxui-slot="calendar"`)
+	rootStart := strings.Index(got, `data-gsxui-slot-calendar`)
 	if rootStart < 0 {
 		t.Fatal("calendar root has no style slot")
 	}
@@ -232,6 +232,17 @@ func TestCalendarStyleContract(t *testing.T) {
 	if strings.Count(got, ` class="`) != 1 {
 		t.Errorf("calendar rendered a library-owned class\nin: %s", got)
 	}
+}
+
+func TestCalendarPreviousComposesAllPresenceMarkersOnButton(t *testing.T) {
+	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "", nil))
+	requirePresenceAttributesOnSameTag(t, got, "data-gsxui-calendar-prev",
+		"data-gsxui-slot-calendar-previous",
+		"data-gsxui-slot-calendar-nav-button",
+		"data-gsxui-slot-button",
+	)
 }
 
 // todayCellMarker is the exact substring a day cell renders when it carries
@@ -1055,9 +1066,9 @@ func TestCalendarDropdownCaption(t *testing.T) {
 	for _, want := range []string{
 		`data-gsxui-calendar-month-select`,
 		`data-gsxui-calendar-year-select`,
-		`data-gsxui-slot="native-select-wrapper calendar-dropdown-root"`,
-		`data-gsxui-slot="calendar-dropdowns"`,
-		`data-caption-layout="dropdown" data-gsxui-slot="calendar-caption"`,
+		`data-gsxui-slot-native-select-wrapper`,
+		`data-gsxui-slot-calendar-dropdowns`,
+		`data-caption-layout="dropdown" data-gsxui-slot-calendar-caption`,
 		`<option value="0"`,  // January
 		`<option value="11"`, // December
 		`<option value="2020"`,
@@ -1066,6 +1077,12 @@ func TestCalendarDropdownCaption(t *testing.T) {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q", want)
 		}
+	}
+	if strings.Contains(got, "calendar-dropdown-root") {
+		t.Errorf("redundant calendar dropdown root marker remains")
+	}
+	if n := strings.Count(got, `data-gsxui-slot-native-select-wrapper`); n != 2 {
+		t.Errorf("got %d native select wrappers, want 2", n)
 	}
 	// 11 years inclusive, not 10.
 	if n := strings.Count(got, `data-gsxui-calendar-year-option`); n != 11 {
@@ -1296,11 +1313,11 @@ func TestCalendarNavHasARelativePositioningAncestor(t *testing.T) {
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
 		time.Time{}, time.Time{}, nil, nil, "", nil))
 
-	wrapperIdx := strings.Index(got, `data-gsxui-slot="calendar-months"`)
+	wrapperIdx := strings.Index(got, `data-gsxui-slot-calendar-months`)
 	if wrapperIdx < 0 {
 		t.Fatal("no calendar-months wrapper rendered inside the root")
 	}
-	navIdx := strings.Index(got[wrapperIdx:], `data-gsxui-slot="calendar-nav"`)
+	navIdx := strings.Index(got[wrapperIdx:], `data-gsxui-slot-calendar-nav`)
 	if navIdx < 0 {
 		t.Fatal("calendar-nav is not nested under calendar-months")
 	}

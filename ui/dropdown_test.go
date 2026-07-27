@@ -25,17 +25,17 @@ func TestDropdownStructure(t *testing.T) {
 		nil,
 	))
 	for _, want := range []string{
-		`data-gsxui-slot="dropdown-menu"`, `data-gsxui-dropdown`,
-		`data-gsxui-slot="dropdown-menu-trigger"`, `data-gsxui-dropdown-trigger`,
+		`data-gsxui-slot-dropdown-menu`, `data-gsxui-dropdown`,
+		`data-gsxui-slot-dropdown-menu-trigger`, `data-gsxui-dropdown-trigger`,
 		`aria-haspopup="menu"`, `aria-expanded="false"`,
-		`data-gsxui-slot="dropdown-menu-content"`, `data-gsxui-dropdown-content`,
+		`data-gsxui-slot-dropdown-menu-content`, `data-gsxui-dropdown-content`,
 		`popover="auto"`, `role="menu"`, `data-state="closed"`, `data-side="bottom"`,
-		`data-gsxui-slot="dropdown-menu-label"`, ">Actions<",
-		`data-gsxui-slot="dropdown-menu-separator"`, `role="separator"`,
-		`data-gsxui-slot="dropdown-menu-item"`, `data-gsxui-dropdown-item`,
+		`data-gsxui-slot-dropdown-menu-label`, ">Actions<",
+		`data-gsxui-slot-dropdown-menu-separator`, `role="separator"`,
+		`data-gsxui-slot-dropdown-menu-item`, `data-gsxui-dropdown-item`,
 		`role="menuitem"`, `tabindex="-1"`,
 		`data-variant="default"`, ">Edit<",
-		`data-gsxui-slot="dropdown-menu-shortcut"`, ">⌘E<",
+		`data-gsxui-slot-dropdown-menu-shortcut`, ">⌘E<",
 		`data-variant="destructive"`, ">Delete<",
 	} {
 		if !strings.Contains(got, want) {
@@ -109,7 +109,7 @@ func TestDropdownMenuCheckedItemsStampIndicatorState(t *testing.T) {
 		`data-state="checked"`,
 		`data-gsxui-dropdown-checkbox-item`,
 		`data-value="show-toolbar"`,
-		`data-gsxui-slot="dropdown-menu-checkbox-item-indicator"`,
+		`data-gsxui-slot-dropdown-menu-checkbox-item-indicator`,
 	} {
 		if !strings.Contains(checkbox, want) {
 			t.Errorf("checkbox missing %q\nin: %s", want, checkbox)
@@ -121,7 +121,7 @@ func TestDropdownMenuCheckedItemsStampIndicatorState(t *testing.T) {
 		`aria-checked="true"`,
 		`data-state="checked"`,
 		`data-value="top"`,
-		`data-gsxui-slot="dropdown-menu-radio-item-indicator"`,
+		`data-gsxui-slot-dropdown-menu-radio-item-indicator`,
 	} {
 		if !strings.Contains(radio, want) {
 			t.Errorf("radio missing %q\nin: %s", want, radio)
@@ -147,14 +147,14 @@ func TestDropdownMenuSubNestsContentInsideParentContentPinned(t *testing.T) {
 		nil,
 	))
 	for _, want := range []string{
-		`data-gsxui-slot="dropdown-menu-content"`,
-		`data-gsxui-slot="dropdown-menu-sub"`,
-		`data-gsxui-slot="dropdown-menu-sub-trigger"`,
+		`data-gsxui-slot-dropdown-menu-content`,
+		`data-gsxui-slot-dropdown-menu-sub`,
+		`data-gsxui-slot-dropdown-menu-sub-trigger`,
 		`aria-haspopup="menu"`,
 		`aria-expanded="false"`,
 		`data-state="closed"`,
-		`data-gsxui-slot="icon"`,
-		`data-gsxui-slot="dropdown-menu-sub-content"`,
+		`data-gsxui-slot-icon`,
+		`data-gsxui-slot-dropdown-menu-sub-content`,
 		`data-side="right"`,
 		">INNER<",
 	} {
@@ -162,7 +162,7 @@ func TestDropdownMenuSubNestsContentInsideParentContentPinned(t *testing.T) {
 			t.Errorf("missing nested submenu contract %q\nin: %s", want, got)
 		}
 	}
-	if strings.Index(got, `data-gsxui-slot="dropdown-menu-sub-content"`) >
+	if strings.Index(got, `data-gsxui-slot-dropdown-menu-sub-content`) >
 		strings.LastIndex(got, "</div>") {
 		t.Errorf("submenu content must remain DOM-nested\nin: %s", got)
 	}
@@ -176,7 +176,7 @@ func TestDropdownMenuSubNestsContentInsideParentContentPinned(t *testing.T) {
 
 func TestDropdownPinned(t *testing.T) {
 	got := render(t, ui.DropdownMenuItem("", gsx.Raw("Edit"), nil))
-	want := `<div data-gsxui-dropdown-item data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot="dropdown-menu-item">Edit</div>`
+	want := `<div data-gsxui-dropdown-item data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-dropdown-menu-item>Edit</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -184,7 +184,7 @@ func TestDropdownPinned(t *testing.T) {
 
 func TestDropdownContentPinned(t *testing.T) {
 	got := render(t, ui.DropdownMenuContent(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-dropdown-content popover="auto" role="menu" tabindex="-1" data-state="closed" data-side="bottom" data-gsxui-slot="dropdown-menu-content">x</div>`
+	want := `<div data-gsxui-dropdown-content popover="auto" role="menu" tabindex="-1" data-state="closed" data-side="bottom" data-gsxui-slot-dropdown-menu-content>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

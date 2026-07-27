@@ -5,7 +5,7 @@ import "github.com/gsxhq/gsx"
 // AlertDialog composes Dialog's native top-layer and state machinery while
 // opting out of backdrop light dismissal.
 component AlertDialog(children gsx.Node, attrs gsx.Attrs) {
-	<Dialog { withSlot("alert-dialog", attrs)... }>{ children }</Dialog>
+	<Dialog { attrs... } data-gsxui-slot-alert-dialog>{ children }</Dialog>
 }
 
 component AlertDialogTrigger(children gsx.Node, attrs gsx.Attrs) {
@@ -14,7 +14,7 @@ component AlertDialogTrigger(children gsx.Node, attrs gsx.Attrs) {
 		type="button"
 		aria-haspopup="dialog"
 		aria-expanded="false"
-		{ withSlot("alert-dialog-trigger", attrs)... }
+		{ attrs... } data-gsxui-slot-alert-dialog-trigger
 	>
 		{ children }
 	</button>
@@ -25,37 +25,37 @@ component AlertDialogContent(children gsx.Node, attrs gsx.Attrs) {
 		hideCloseButton={true}
 		role="alertdialog"
 		data-gsxui-dialog-static
-		{ withSlot("alert-dialog-content", attrs)... }
+		{ attrs... } data-gsxui-slot-alert-dialog-content
 	>
 		{ children }
 	</DialogContent>
 }
 
 component AlertDialogHeader(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("alert-dialog-header", attrs)... }>{ children }</div>
+	<div { attrs... } data-gsxui-slot-alert-dialog-header>{ children }</div>
 }
 
 component AlertDialogFooter(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("alert-dialog-footer", attrs)... }>{ children }</div>
+	<div { attrs... } data-gsxui-slot-alert-dialog-footer>{ children }</div>
 }
 
 component AlertDialogTitle(children gsx.Node, attrs gsx.Attrs) {
-	<h2 data-gsxui-dialog-title { withSlot("alert-dialog-title", attrs)... }>{ children }</h2>
+	<h2 data-gsxui-dialog-title { attrs... } data-gsxui-slot-alert-dialog-title>{ children }</h2>
 }
 
 component AlertDialogDescription(children gsx.Node, attrs gsx.Attrs) {
-	<p data-gsxui-dialog-description { withSlot("alert-dialog-description", attrs)... }>{ children }</p>
+	<p data-gsxui-dialog-description { attrs... } data-gsxui-slot-alert-dialog-description>{ children }</p>
 }
 
 component AlertDialogAction(children gsx.Node, attrs gsx.Attrs) {
-	<Button data-gsxui-dialog-close { withSlot("alert-dialog-action", attrs)... }>{ children }</Button>
+	<Button data-gsxui-dialog-close { attrs... } data-gsxui-slot-alert-dialog-action>{ children }</Button>
 }
 
 component AlertDialogCancel(children gsx.Node, attrs gsx.Attrs) {
 	<Button
 		variant="outline"
 		data-gsxui-dialog-close
-		{ withSlot("alert-dialog-cancel", attrs)... }
+		{ attrs... } data-gsxui-slot-alert-dialog-cancel
 	>
 		{ children }
 	</Button>

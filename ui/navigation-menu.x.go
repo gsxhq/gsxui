@@ -57,17 +57,17 @@ func NavigationMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line navigation-menu.gsx:48:2
-		_gsxv0 := withSlot("navigation-menu", attrs)
 		_gsxgw.S("<nav")
-		if !_gsxv0.Has("data-gsxui-navigation-menu") {
+		if !attrs.Has("data-gsxui-navigation-menu") {
 			_gsxgw.BoolAttr("data-gsxui-navigation-menu", true)
 		}
-		if !_gsxv0.Has("data-viewport") {
+		if !attrs.Has("data-viewport") {
 			_gsxgw.S(" data-viewport=\"false\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
-		_gsxgw.StyleMerged("", _gsxv0.Style())
-		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-navigation-menu"})
+		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:53:3
 		_gsxgw.Node(ctx, children)
@@ -87,14 +87,14 @@ func NavigationMenuList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line navigation-menu.gsx:62:2
-		_gsxv1 := withSlot("navigation-menu-list", attrs)
 		_gsxgw.S("<ul")
-		if !_gsxv1.Has("data-gsxui-navigation-menu-list") {
+		if !attrs.Has("data-gsxui-navigation-menu-list") {
 			_gsxgw.BoolAttr("data-gsxui-navigation-menu-list", true)
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
-		_gsxgw.StyleMerged("", _gsxv1.Style())
-		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-navigation-menu-list"})
+		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-list", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:63:3
 		_gsxgw.Node(ctx, children)
@@ -115,14 +115,14 @@ func NavigationMenuItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line navigation-menu.gsx:73:2
-		_gsxv2 := withSlot("navigation-menu-item", attrs)
 		_gsxgw.S("<li")
-		if !_gsxv2.Has("data-gsxui-navigation-menu-item") {
+		if !attrs.Has("data-gsxui-navigation-menu-item") {
 			_gsxgw.BoolAttr("data-gsxui-navigation-menu-item", true)
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
-		_gsxgw.StyleMerged("", _gsxv2.Style())
-		_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-navigation-menu-item"})
+		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-item", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:74:3
 		_gsxgw.Node(ctx, children)
@@ -179,30 +179,30 @@ func NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line navigation-menu.gsx:120:2
-		_gsxv3 := withSlot("navigation-menu-trigger", attrs)
 		_gsxgw.S("<button")
-		if !_gsxv3.Has("data-gsxui-navigation-menu-trigger") {
+		if !attrs.Has("data-gsxui-navigation-menu-trigger") {
 			_gsxgw.BoolAttr("data-gsxui-navigation-menu-trigger", true)
 		}
-		if !_gsxv3.Has("type") {
+		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"button\"")
 		}
-		if !_gsxv3.Has("aria-expanded") {
+		if !attrs.Has("aria-expanded") {
 			_gsxgw.S(" aria-expanded=\"false\"")
 		}
-		if !_gsxv3.Has("data-state") {
+		if !attrs.Has("data-state") {
 			_gsxgw.S(" data-state=\"closed\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv3.Class())
-		_gsxgw.StyleMerged("", _gsxv3.Style())
-		_gsxgw.Spread(ctx, _gsxv3, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-navigation-menu-trigger"})
+		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-trigger", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:127:3
 		_gsxgw.Node(ctx, children)
 //line navigation-menu.gsx:128:3
 		_gsxgw.Text(string(" "))
 //line navigation-menu.gsx:129:3
-		_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-navigation-menu-trigger-icon", Value: true}}, withSlot("navigation-menu-trigger-icon", nil))...))
+		_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-navigation-menu-trigger-icon", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-navigation-menu-trigger-icon", Value: _gsxrt.Toggle(true)}})...))
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
@@ -278,23 +278,23 @@ func NavigationMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line navigation-menu.gsx:197:2
-		_gsxv4 := withSlot("navigation-menu-content", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv4.Has("data-gsxui-navigation-menu-content") {
+		if !attrs.Has("data-gsxui-navigation-menu-content") {
 			_gsxgw.BoolAttr("data-gsxui-navigation-menu-content", true)
 		}
-		if !_gsxv4.Has("popover") {
+		if !attrs.Has("popover") {
 			_gsxgw.S(" popover=\"manual\"")
 		}
-		if !_gsxv4.Has("data-state") {
+		if !attrs.Has("data-state") {
 			_gsxgw.S(" data-state=\"closed\"")
 		}
-		if !_gsxv4.Has("data-side") {
+		if !attrs.Has("data-side") {
 			_gsxgw.S(" data-side=\"bottom\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv4.Class())
-		_gsxgw.StyleMerged("", _gsxv4.Style())
-		_gsxgw.Spread(ctx, _gsxv4, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-navigation-menu-content"})
+		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-content", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:204:3
 		_gsxgw.Node(ctx, children)
@@ -333,33 +333,38 @@ func NavigationMenuLink(active bool, variant string, children gsx.Node, attrs gs
 		if linkVariant == "" {
 			linkVariant = "default"
 		}
-		linkAttrs := attrs
-		if linkVariant == "trigger" {
-			linkAttrs = withSlot("navigation-menu-trigger", linkAttrs)
-		}
-//line navigation-menu.gsx:238:2
-		_gsxv5 := withSlot("navigation-menu-link", linkAttrs)
+//line navigation-menu.gsx:234:2
 		_gsxgw.S("<a")
-		if !_gsxv5.Has("data-gsxui-navigation-menu-link") {
+		if !attrs.Has("data-gsxui-navigation-menu-link") {
 			_gsxgw.BoolAttr("data-gsxui-navigation-menu-link", true)
 		}
-		if !_gsxv5.Has("data-variant") {
+		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
 			_gsxgw.AttrValue(string(linkVariant))
 			_gsxgw.S("\"")
 		}
 		if active {
-			if !_gsxv5.Has("data-active") {
+			if !attrs.Has("data-active") {
 				_gsxgw.S(" data-active=\"true\"")
 			}
 		} else {
-			if !_gsxv5.Has("data-active") {
+			if !attrs.Has("data-active") {
 				_gsxgw.S(" data-active=\"false\"")
 			}
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv5.Class())
-		_gsxgw.StyleMerged("", _gsxv5.Style())
-		_gsxgw.Spread(ctx, _gsxv5, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxv0 := []string{"class", "style", "data-gsxui-slot-navigation-menu-link"}
+		var _gsxv1 bool
+		if linkVariant == "trigger" {
+			_gsxv1 = true
+			_gsxv0 = append(_gsxv0, "data-gsxui-slot-navigation-menu-trigger")
+		}
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, _gsxv0)
+		if _gsxv1 {
+			_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-trigger", true)
+		}
+		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-link", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:248:3
 		_gsxgw.Node(ctx, children)
@@ -402,24 +407,21 @@ func NavigationMenuIndicator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line navigation-menu.gsx:280:2
-		_gsxv6 := withSlot("navigation-menu-indicator", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv6.Has("data-gsxui-navigation-menu-indicator") {
+		if !attrs.Has("data-gsxui-navigation-menu-indicator") {
 			_gsxgw.BoolAttr("data-gsxui-navigation-menu-indicator", true)
 		}
-		if !_gsxv6.Has("data-state") {
+		if !attrs.Has("data-state") {
 			_gsxgw.S(" data-state=\"hidden\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv6.Class())
-		_gsxgw.StyleMerged("", _gsxv6.Style())
-		_gsxgw.Spread(ctx, _gsxv6, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-navigation-menu-indicator"})
+		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-indicator", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:285:3
-		_gsxv7 := withSlot("navigation-menu-indicator-arrow", nil)
 		_gsxgw.S("<div")
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv7.Class())
-		_gsxgw.StyleMerged("", _gsxv7.Style())
-		_gsxgw.Spread(ctx, _gsxv7, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-indicator-arrow", true)
 		_gsxgw.S("></div></div>")
 		return _gsxgw.Err()
 	})

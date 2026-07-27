@@ -15,7 +15,7 @@ func TestCheckboxDefault(t *testing.T) {
 	got := render(t, ui.Checkbox(nil))
 	for _, want := range []string{
 		`<input type="checkbox"`,
-		`data-gsxui-slot="checkbox"`,
+		`data-gsxui-slot-checkbox`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
@@ -79,7 +79,7 @@ func TestCheckboxDarkCheckedOverrides(t *testing.T) {
 	}
 	got := string(cssBytes)
 	for _, want := range []string{
-		`.dark :where([data-gsxui-slot~="checkbox"]):checked`,
+		`.dark :where([data-gsxui-slot-checkbox]):checked`,
 		`background-image: url("data:image/svg+xml;base64,`,
 	} {
 		if !strings.Contains(got, want) {
@@ -131,7 +131,7 @@ func TestCheckboxDisabledAttr(t *testing.T) {
 func TestCheckboxPinned(t *testing.T) {
 	// Presentation lives in the stylesheet; the render pin covers structure.
 	got := render(t, ui.Checkbox(nil))
-	want := `<input type="checkbox" data-gsxui-slot="checkbox">`
+	want := `<input type="checkbox" data-gsxui-slot-checkbox>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

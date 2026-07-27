@@ -97,7 +97,7 @@ func TestTabsAttrsFallThrough(t *testing.T) {
 
 func TestTabsTriggerPinned(t *testing.T) {
 	got := render(t, ui.TabsTrigger("a", true, gsx.Raw("Account"), nil))
-	want := `<button type="button" role="tab" data-gsxui-tabs-trigger data-value="a" data-state="active" aria-selected="true" tabindex="0" data-gsxui-slot="tabs-trigger">Account</button>`
+	want := `<button type="button" role="tab" data-gsxui-tabs-trigger data-value="a" data-state="active" aria-selected="true" tabindex="0" data-gsxui-slot-tabs-trigger>Account</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

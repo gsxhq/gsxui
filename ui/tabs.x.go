@@ -50,21 +50,21 @@ func Tabs(value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line tabs.gsx:38:2
-		_gsxv0 := withSlot("tabs", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv0.Has("data-gsxui-tabs") {
+		if !attrs.Has("data-gsxui-tabs") {
 			_gsxgw.BoolAttr("data-gsxui-tabs", true)
 		}
-		if !_gsxv0.Has("data-value") {
+		if !attrs.Has("data-value") {
 			_gsxgw.S(" data-value=\"")
 			_gsxgw.AttrValue(string(value))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
-		_gsxgw.StyleMerged("", _gsxv0.Style())
-		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-tabs"})
+		_gsxgw.BoolAttr("data-gsxui-slot-tabs", true)
 		_gsxgw.S(">")
-//line tabs.gsx:38:73
+//line tabs.gsx:38:76
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
@@ -76,14 +76,14 @@ func TabsList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line tabs.gsx:42:2
-		_gsxv1 := withSlot("tabs-list", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv1.Has("role") {
+		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"tablist\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
-		_gsxgw.StyleMerged("", _gsxv1.Style())
-		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-tabs-list"})
+		_gsxgw.BoolAttr("data-gsxui-slot-tabs-list", true)
 		_gsxgw.S(">")
 //line tabs.gsx:46:3
 		_gsxgw.Node(ctx, children)
@@ -112,40 +112,40 @@ func TabsTrigger(value string, selected bool, children gsx.Node, attrs gsx.Attrs
 			state, tabindex = "active", 0
 		}
 //line tabs.gsx:64:2
-		_gsxv2 := withSlot("tabs-trigger", attrs)
 		_gsxgw.S("<button")
-		if !_gsxv2.Has("type") {
+		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"button\"")
 		}
-		if !_gsxv2.Has("role") {
+		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"tab\"")
 		}
-		if !_gsxv2.Has("data-gsxui-tabs-trigger") {
+		if !attrs.Has("data-gsxui-tabs-trigger") {
 			_gsxgw.BoolAttr("data-gsxui-tabs-trigger", true)
 		}
-		if !_gsxv2.Has("data-value") {
+		if !attrs.Has("data-value") {
 			_gsxgw.S(" data-value=\"")
 			_gsxgw.AttrValue(string(value))
 			_gsxgw.S("\"")
 		}
-		if !_gsxv2.Has("data-state") {
+		if !attrs.Has("data-state") {
 			_gsxgw.S(" data-state=\"")
 			_gsxgw.AttrValue(string(state))
 			_gsxgw.S("\"")
 		}
-		if !_gsxv2.Has("aria-selected") {
+		if !attrs.Has("aria-selected") {
 			_gsxgw.S(" aria-selected=\"")
 			_gsxgw.S(_gsxsc.FormatBool(bool(selected)))
 			_gsxgw.S("\"")
 		}
-		if !_gsxv2.Has("tabindex") {
+		if !attrs.Has("tabindex") {
 			_gsxgw.S(" tabindex=\"")
 			_gsxgw.IntInto(_gsxnum[:], int64(tabindex))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
-		_gsxgw.StyleMerged("", _gsxv2.Style())
-		_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-tabs-trigger"})
+		_gsxgw.BoolAttr("data-gsxui-slot-tabs-trigger", true)
 		_gsxgw.S(">")
 //line tabs.gsx:74:3
 		_gsxgw.Node(ctx, children)
@@ -168,27 +168,27 @@ func TabsContent(value string, selected bool, children gsx.Node, attrs gsx.Attrs
 			state = "active"
 		}
 //line tabs.gsx:87:2
-		_gsxv3 := withSlot("tabs-content", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv3.Has("role") {
+		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"tabpanel\"")
 		}
-		if !_gsxv3.Has("data-value") {
+		if !attrs.Has("data-value") {
 			_gsxgw.S(" data-value=\"")
 			_gsxgw.AttrValue(string(value))
 			_gsxgw.S("\"")
 		}
-		if !_gsxv3.Has("data-state") {
+		if !attrs.Has("data-state") {
 			_gsxgw.S(" data-state=\"")
 			_gsxgw.AttrValue(string(state))
 			_gsxgw.S("\"")
 		}
-		if !_gsxv3.Has("hidden") {
+		if !attrs.Has("hidden") {
 			_gsxgw.BoolAttr("hidden", bool(!selected))
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv3.Class())
-		_gsxgw.StyleMerged("", _gsxv3.Style())
-		_gsxgw.Spread(ctx, _gsxv3, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-tabs-content"})
+		_gsxgw.BoolAttr("data-gsxui-slot-tabs-content", true)
 		_gsxgw.S(">")
 //line tabs.gsx:94:3
 		_gsxgw.Node(ctx, children)

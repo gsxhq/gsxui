@@ -25,6 +25,6 @@ component Switch(attrs gsx.Attrs) {
 	<input
 		type="checkbox"
 		role="switch"
-		{ withSlot("switch", attrs)... }
+		{ attrs... } data-gsxui-slot-switch
 	/>
 }

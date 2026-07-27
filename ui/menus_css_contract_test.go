@@ -17,8 +17,10 @@ func assertMenuCSSOnlyMarkup(t *testing.T, got string, slots ...string) {
 		t.Errorf("built-in presentation class must not render\nin: %s", got)
 	}
 	for _, slot := range slots {
-		if !strings.Contains(got, `data-gsxui-slot="`+slot+`"`) {
-			t.Errorf("missing slot token sequence %q\nin: %s", slot, got)
+		for name := range strings.FieldsSeq(slot) {
+			if !strings.Contains(got, `data-gsxui-slot-`+name) {
+				t.Errorf("missing slot marker %q\nin: %s", name, got)
+			}
 		}
 	}
 }

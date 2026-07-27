@@ -156,15 +156,15 @@
   {
     "component": "input-otp",
     "slot": "input-otp-caret",
-    "attribute": "data-gsxui-slot",
-    "value": "input-otp-caret",
+    "attribute": "data-gsxui-slot-input-otp-caret",
+    "value": "",
     "scenario": "input-otp-caret"
   },
   {
     "component": "input-otp",
     "slot": "input-otp-caret-overlay",
-    "attribute": "data-gsxui-slot",
-    "value": "input-otp-caret-overlay",
+    "attribute": "data-gsxui-slot-input-otp-caret-overlay",
+    "value": "",
     "scenario": "input-otp-caret"
   },
   {

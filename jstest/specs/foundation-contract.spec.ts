@@ -36,7 +36,7 @@ test("foundation mode excludes the default style and preserves overlay lifecycle
   await page.goto(foundation("/x/popover/basic"));
   const popover = page.locator("[data-gsxui-popover-content]");
   await expect.poll(() => popover.evaluate((el) => getComputedStyle(el).display)).toBe("none");
-  await page.locator("[data-gsxui-slot~='popover-trigger']").first().click();
+  await page.locator("[data-gsxui-slot-popover-trigger]").first().click();
   await expect.poll(() => popover.evaluate((el) => el.matches(":popover-open"))).toBe(true);
   expect(
     await popover.evaluate((el) => {

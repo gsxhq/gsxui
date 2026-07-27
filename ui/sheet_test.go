@@ -9,10 +9,10 @@ import (
 )
 
 func TestSheetPinnedParts(t *testing.T) {
-	if got, want := render(t, ui.Sheet(gsx.Raw("x"), nil)), `<div data-gsxui-dialog data-gsxui-slot="dialog sheet">x</div>`; got != want {
+	if got, want := render(t, ui.Sheet(gsx.Raw("x"), nil)), `<div data-gsxui-dialog data-gsxui-slot-sheet data-gsxui-slot-dialog>x</div>`; got != want {
 		t.Errorf("root mismatch\n got: %s\nwant: %s", got, want)
 	}
-	if got, want := render(t, ui.SheetTrigger(gsx.Raw("Open"), nil)), `<button data-gsxui-dialog-trigger type="button" aria-haspopup="dialog" aria-expanded="false" data-gsxui-slot="sheet-trigger">Open</button>`; got != want {
+	if got, want := render(t, ui.SheetTrigger(gsx.Raw("Open"), nil)), `<button data-gsxui-dialog-trigger type="button" aria-haspopup="dialog" aria-expanded="false" data-gsxui-slot-sheet-trigger>Open</button>`; got != want {
 		t.Errorf("trigger mismatch\n got: %s\nwant: %s", got, want)
 	}
 }
@@ -27,7 +27,7 @@ func TestSheetContentSideAxis(t *testing.T) {
 		for _, want := range []string{
 			`data-state="closed"`,
 			`data-side="` + side + `"`,
-			`data-gsxui-slot="dialog-content sheet-content"`,
+			`data-gsxui-slot-sheet-content data-gsxui-slot-dialog-content`,
 		} {
 			if !strings.Contains(got, want) {
 				t.Errorf("%s missing %q\nin: %s", side, want, got)
@@ -42,9 +42,9 @@ func TestSheetContentSideAxis(t *testing.T) {
 func TestSheetInjectedCloseParts(t *testing.T) {
 	got := render(t, ui.SheetContent("", false, gsx.Raw("x"), nil))
 	for _, want := range []string{
-		`data-gsxui-slot="sheet-close sheet-close-button"`,
-		`data-gsxui-slot="sheet-close-icon"`,
-		`data-gsxui-slot="sheet-close-label"`,
+		`data-gsxui-slot-sheet-close-button data-gsxui-slot-sheet-close`,
+		`data-gsxui-slot-sheet-close-icon`,
+		`data-gsxui-slot-sheet-close-label`,
 		`data-gsxui-dialog-close`,
 	} {
 		if !strings.Contains(got, want) {
@@ -70,9 +70,17 @@ func TestSheetSemanticParts(t *testing.T) {
 		{render(t, ui.SheetClose(gsx.Raw("x"), nil)), "sheet-close", "data-gsxui-dialog-close"},
 	}
 	for _, tt := range tests {
-		if !strings.Contains(tt.got, `data-gsxui-slot="`+tt.slot+`"`) ||
+		if !strings.Contains(tt.got, `data-gsxui-slot-`+tt.slot) ||
 			(tt.hook != "" && !strings.Contains(tt.got, tt.hook)) {
 			t.Errorf("%s semantic part mismatch\nin: %s", tt.slot, tt.got)
 		}
 	}
+}
+
+func TestSheetContentComposesPresenceMarkersOnDialog(t *testing.T) {
+	got := render(t, ui.SheetContent("", true, gsx.Raw("x"), nil))
+	requirePresenceAttributesOnSameTag(t, got, "data-gsxui-dialog-content",
+		"data-gsxui-slot-sheet-content",
+		"data-gsxui-slot-dialog-content",
+	)
 }

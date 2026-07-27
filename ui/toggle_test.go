@@ -13,7 +13,7 @@ func TestToggleOffPinned(t *testing.T) {
 	// default size) render — token-by-token against toggleVariants' base +
 	// default variant + default size (registry/new-york-v4/ui/toggle.tsx).
 	got := render(t, ui.Toggle(false, "", "", gsx.Raw("Bold"), nil))
-	want := `<button type="button" data-gsxui-toggle data-variant="default" data-size="default" data-state="off" aria-pressed="false" data-gsxui-slot="toggle">Bold</button>`
+	want := `<button type="button" data-gsxui-toggle data-variant="default" data-size="default" data-state="off" aria-pressed="false" data-gsxui-slot-toggle>Bold</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -23,7 +23,7 @@ func TestTogglePressedPinned(t *testing.T) {
 	// Exact full-render pin for pressed={true} — the server-visible initial
 	// "on" state (aria-pressed="true" data-state="on"), no click required.
 	got := render(t, ui.Toggle(true, "", "", gsx.Raw("Bold"), nil))
-	want := `<button type="button" data-gsxui-toggle data-variant="default" data-size="default" data-state="on" aria-pressed="true" data-gsxui-slot="toggle">Bold</button>`
+	want := `<button type="button" data-gsxui-toggle data-variant="default" data-size="default" data-state="on" aria-pressed="true" data-gsxui-slot-toggle>Bold</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

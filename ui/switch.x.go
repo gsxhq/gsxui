@@ -32,17 +32,17 @@ func Switch(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line switch.gsx:25:2
-		_gsxv0 := withSlot("switch", attrs)
 		_gsxgw.S("<input")
-		if !_gsxv0.Has("type") {
+		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"checkbox\"")
 		}
-		if !_gsxv0.Has("role") {
+		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"switch\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
-		_gsxgw.StyleMerged("", _gsxv0.Style())
-		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "xlink:href"}, []string{"background", "src"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "xlink:href"}, []string{"background", "src"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-switch"})
+		_gsxgw.BoolAttr("data-gsxui-slot-switch", true)
 		_gsxgw.S(">")
 		return _gsxgw.Err()
 	})

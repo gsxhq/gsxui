@@ -17,17 +17,17 @@ func TestDialogStructure(t *testing.T) {
 		), nil),
 	), nil))
 	for _, want := range []string{
-		`data-gsxui-slot="dialog"`,
-		`data-gsxui-slot="dialog-trigger"`,
+		`data-gsxui-slot-dialog`,
+		`data-gsxui-slot-dialog-trigger`,
 		`aria-haspopup="dialog"`,
 		`aria-expanded="false"`,
-		`data-gsxui-slot="dialog-content"`,
+		`data-gsxui-slot-dialog-content`,
 		`data-state="closed"`,
 		`data-gsxui-dialog-title`,
 		`data-gsxui-dialog-description`,
-		`data-gsxui-slot="dialog-close dialog-close-button"`,
-		`data-gsxui-slot="dialog-close-icon"`,
-		`data-gsxui-slot="dialog-close-label"`,
+		`data-gsxui-slot-dialog-close-button data-gsxui-slot-dialog-close`,
+		`data-gsxui-slot-dialog-close-icon`,
+		`data-gsxui-slot-dialog-close-label`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
@@ -48,8 +48,8 @@ func TestDialogHideCloseButton(t *testing.T) {
 func TestDialogFooterShowCloseButton(t *testing.T) {
 	got := render(t, ui.DialogFooter(true, gsx.Raw("x"), nil))
 	for _, want := range []string{
-		`data-gsxui-slot="dialog-footer"`,
-		`data-gsxui-slot="button dialog-footer-close"`,
+		`data-gsxui-slot-dialog-footer`,
+		`data-gsxui-slot-dialog-footer-close data-gsxui-slot-button`,
 		`data-variant="outline"`,
 		`data-gsxui-dialog-close`,
 		">Close<",

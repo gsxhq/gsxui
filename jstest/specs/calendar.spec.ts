@@ -982,7 +982,7 @@ test("dropdown caption is one row, one border", async ({ page }) => {
     const mid = (el: Element | null) =>
       el ? Math.round(el.getBoundingClientRect().top + el.getBoundingClientRect().height / 2) : null;
     const select = document.querySelector("[data-gsxui-calendar-month-select]")!;
-    const wrapper = select.closest('[data-gsxui-slot~="native-select-wrapper"]')!;
+    const wrapper = select.closest('[data-gsxui-slot-native-select-wrapper]')!;
     const row = wrapper.parentElement!;
     return {
       rowMid: mid(row),
@@ -1047,7 +1047,7 @@ test("dropdown caption does not crowd the nav buttons", async ({ page }) => {
   const gaps = await page.evaluate(() => {
     const r = (el: Element) => el.getBoundingClientRect();
     const wraps = [
-      ...document.querySelectorAll('[data-gsxui-slot~="native-select-wrapper"]'),
+      ...document.querySelectorAll('[data-gsxui-slot-native-select-wrapper]'),
     ];
     const prev = document.querySelector("[data-gsxui-calendar-prev]")!;
     const next = document.querySelector("[data-gsxui-calendar-next]")!;

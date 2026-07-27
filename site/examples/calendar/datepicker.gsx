@@ -42,7 +42,7 @@ component DatePicker() {
 			<ui.Button
 				variant="outline"
 				data-gsxui-popover-trigger
-				data-gsxui-slot="popover-trigger"
+				data-gsxui-slot-popover-trigger
 				aria-expanded="false"
 				class="w-[240px] justify-start text-left font-normal text-muted-foreground"
 			>

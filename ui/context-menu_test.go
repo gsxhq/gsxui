@@ -28,16 +28,16 @@ func TestContextMenuStructure(t *testing.T) {
 		nil,
 	))
 	for _, want := range []string{
-		`data-gsxui-slot="context-menu"`, `data-gsxui-contextmenu`,
-		`data-gsxui-slot="context-menu-trigger"`, `data-gsxui-contextmenu-trigger`,
-		`data-gsxui-slot="context-menu-content"`, `data-gsxui-contextmenu-content`,
+		`data-gsxui-slot-context-menu`, `data-gsxui-contextmenu`,
+		`data-gsxui-slot-context-menu-trigger`, `data-gsxui-contextmenu-trigger`,
+		`data-gsxui-slot-context-menu-content`, `data-gsxui-contextmenu-content`,
 		`popover="auto"`, `role="menu"`, `data-state="closed"`,
-		`data-gsxui-slot="context-menu-label"`, ">Actions<",
-		`data-gsxui-slot="context-menu-separator"`, `role="separator"`,
-		`data-gsxui-slot="context-menu-item"`, `data-gsxui-contextmenu-item`,
+		`data-gsxui-slot-context-menu-label`, ">Actions<",
+		`data-gsxui-slot-context-menu-separator`, `role="separator"`,
+		`data-gsxui-slot-context-menu-item`, `data-gsxui-contextmenu-item`,
 		`role="menuitem"`, `tabindex="-1"`,
 		`data-variant="default"`, ">Back<",
-		`data-gsxui-slot="context-menu-shortcut"`, ">⌘[<",
+		`data-gsxui-slot-context-menu-shortcut`, ">⌘[<",
 		`data-variant="destructive"`, ">Delete<",
 	} {
 		if !strings.Contains(got, want) {
@@ -100,7 +100,7 @@ func TestContextMenuPopoverAndSideAttrsOverridable(t *testing.T) {
 
 func TestContextMenuTriggerPinned(t *testing.T) {
 	got := render(t, ui.ContextMenuTrigger(gsx.Raw("Right click here"), nil))
-	want := `<div data-gsxui-contextmenu-trigger data-gsxui-slot="context-menu-trigger">Right click here</div>`
+	want := `<div data-gsxui-contextmenu-trigger data-gsxui-slot-context-menu-trigger>Right click here</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -108,7 +108,7 @@ func TestContextMenuTriggerPinned(t *testing.T) {
 
 func TestContextMenuContentPinned(t *testing.T) {
 	got := render(t, ui.ContextMenuContent(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-contextmenu-content popover="auto" role="menu" tabindex="-1" data-state="closed" data-gsxui-slot="context-menu-content">x</div>`
+	want := `<div data-gsxui-contextmenu-content popover="auto" role="menu" tabindex="-1" data-state="closed" data-gsxui-slot-context-menu-content>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -122,7 +122,7 @@ func TestContextMenuCheckedItemsStampIndicatorState(t *testing.T) {
 	for _, want := range []string{
 		`role="menuitemcheckbox"`, `aria-checked="true"`, `data-state="checked"`,
 		`data-gsxui-contextmenu-checkbox-item`,
-		`data-gsxui-slot="context-menu-checkbox-item-indicator"`,
+		`data-gsxui-slot-context-menu-checkbox-item-indicator`,
 	} {
 		if !strings.Contains(checkbox, want) {
 			t.Errorf("checkbox missing %q\nin: %s", want, checkbox)
@@ -132,7 +132,7 @@ func TestContextMenuCheckedItemsStampIndicatorState(t *testing.T) {
 	for _, want := range []string{
 		`role="menuitemradio"`, `aria-checked="true"`, `data-state="checked"`,
 		`data-gsxui-contextmenu-radio-item`,
-		`data-gsxui-slot="context-menu-radio-item-indicator"`,
+		`data-gsxui-slot-context-menu-radio-item-indicator`,
 	} {
 		if !strings.Contains(radio, want) {
 			t.Errorf("radio missing %q\nin: %s", want, radio)
@@ -152,14 +152,14 @@ func TestContextMenuSubNestsContentInsideParentContentPinned(t *testing.T) {
 		nil,
 	))
 	for _, want := range []string{
-		`data-gsxui-slot="context-menu-content"`,
-		`data-gsxui-slot="context-menu-sub"`,
-		`data-gsxui-slot="context-menu-sub-trigger"`,
+		`data-gsxui-slot-context-menu-content`,
+		`data-gsxui-slot-context-menu-sub`,
+		`data-gsxui-slot-context-menu-sub-trigger`,
 		`aria-haspopup="menu"`,
 		`aria-expanded="false"`,
 		`data-state="closed"`,
-		`data-gsxui-slot="icon"`,
-		`data-gsxui-slot="context-menu-sub-content"`,
+		`data-gsxui-slot-icon`,
+		`data-gsxui-slot-context-menu-sub-content`,
 		`data-side="right"`,
 		">INNER<",
 	} {
@@ -177,7 +177,7 @@ func TestContextMenuSubNestsContentInsideParentContentPinned(t *testing.T) {
 
 func TestContextMenuPinned(t *testing.T) {
 	got := render(t, ui.ContextMenuItem("", gsx.Raw("Back"), nil))
-	want := `<div data-gsxui-contextmenu-item data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot="context-menu-item">Back</div>`
+	want := `<div data-gsxui-contextmenu-item data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-context-menu-item>Back</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

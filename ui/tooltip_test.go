@@ -13,7 +13,7 @@ func TestTooltipPinned(t *testing.T) {
 		ui.TooltipTrigger(gsx.Raw("Open"), nil),
 		ui.TooltipContent(gsx.Raw("Body"), nil),
 	), nil))
-	want := `<div data-gsxui-tooltip data-gsxui-slot="tooltip"><button data-gsxui-tooltip-trigger type="button" data-gsxui-slot="tooltip-trigger">Open</button><div data-gsxui-tooltip-content popover="manual" role="tooltip" data-state="closed" data-side="top" data-gsxui-slot="tooltip-content">Body<span data-gsxui-slot="tooltip-arrow"></span></div></div>`
+	want := `<div data-gsxui-tooltip data-gsxui-slot-tooltip><button data-gsxui-tooltip-trigger type="button" data-gsxui-slot-tooltip-trigger>Open</button><div data-gsxui-tooltip-content popover="manual" role="tooltip" data-state="closed" data-side="top" data-gsxui-slot-tooltip-content>Body<span data-gsxui-slot-tooltip-arrow></span></div></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

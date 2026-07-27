@@ -14,7 +14,7 @@ func TestSpinnerDefault(t *testing.T) {
 		"<svg",
 		`role="status"`,
 		`aria-label="Loading"`,
-		`data-gsxui-slot="icon spinner"`,
+		`data-gsxui-slot-spinner data-gsxui-slot-icon`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
@@ -78,7 +78,7 @@ func TestSpinnerPinned(t *testing.T) {
 	// aria-label — the other attrs threaded through the same bag), not
 	// where svgIcon's own aria-hidden="true" default was authored.
 	got := render(t, ui.Spinner(nil))
-	want := `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot="icon spinner" role="status" aria-label="Loading" aria-hidden="false"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>`
+	want := `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="status" aria-label="Loading" aria-hidden="false" data-gsxui-slot-spinner data-gsxui-slot-icon><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

@@ -42,49 +42,49 @@ component Toast(toastType string, title string, description string, action strin
 		role="status"
 		aria-live={ariaLive}
 		aria-atomic="true"
-		{ withSlot("toast", attrs)... }
+		{ attrs... } data-gsxui-slot-toast
 	>
 		{ if t != "default" {
 			{ switch t {
 			case "success":
-				<icon.CircleCheck data-gsxui-toast-icon { withSlot("toast-icon", nil)... }/>
+				<icon.CircleCheck data-gsxui-toast-icon data-gsxui-slot-toast-icon/>
 			case "info":
-				<icon.Info data-gsxui-toast-icon { withSlot("toast-icon", nil)... }/>
+				<icon.Info data-gsxui-toast-icon data-gsxui-slot-toast-icon/>
 			case "warning":
-				<icon.TriangleAlert data-gsxui-toast-icon { withSlot("toast-icon", nil)... }/>
+				<icon.TriangleAlert data-gsxui-toast-icon data-gsxui-slot-toast-icon/>
 			case "error":
-				<icon.OctagonX data-gsxui-toast-icon { withSlot("toast-icon", nil)... }/>
+				<icon.OctagonX data-gsxui-toast-icon data-gsxui-slot-toast-icon/>
 			case "loading":
-				<icon.LoaderCircle data-gsxui-toast-icon { withSlot("toast-icon", nil)... }/>
+				<icon.LoaderCircle data-gsxui-toast-icon data-gsxui-slot-toast-icon/>
 			} }
 		} }
-		<div { withSlot("toast-content", nil)... }>
-			<div data-gsxui-toast-title { withSlot("toast-title", nil)... }>{ title }</div>
+		<div data-gsxui-slot-toast-content>
+			<div data-gsxui-toast-title data-gsxui-slot-toast-title>{ title }</div>
 			{ if description != "" {
-				<div data-gsxui-toast-description { withSlot("toast-description", nil)... }>{ description }</div>
+				<div data-gsxui-toast-description data-gsxui-slot-toast-description>{ description }</div>
 			} }
 		</div>
 		{ if action != "" {
 			<button
 				type="button"
 				data-gsxui-toast-action
-				{ withSlot("toast-action", nil)... }
+				data-gsxui-slot-toast-action
 			>{ action }</button>
 		} }
 		{ if cancel != "" {
 			<button
 				type="button"
 				data-gsxui-toast-cancel
-				{ withSlot("toast-cancel", nil)... }
+				data-gsxui-slot-toast-cancel
 			>{ cancel }</button>
 		} }
 		<button
 			type="button"
 			data-gsxui-toast-close
 			aria-label="Close"
-			{ withSlot("toast-close", nil)... }
+			data-gsxui-slot-toast-close
 		>
-			<icon.X { withSlot("toast-close-icon", nil)... }/>
+			<icon.X data-gsxui-slot-toast-close-icon/>
 		</button>
 	</li>
 }
@@ -117,7 +117,7 @@ component Toaster(attrs gsx.Attrs) {
 		<ol
 			id="gsxui-toaster"
 			data-gsxui-toaster
-			{ withSlot("toaster", attrs)... }
+			{ attrs... } data-gsxui-slot-toaster
 		></ol>
 		<template data-gsxui-toast-template="default">
 			<Toast toastType="default" title="Title" description="Description" action="Action" cancel="Cancel"/>

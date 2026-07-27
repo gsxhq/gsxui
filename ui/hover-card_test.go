@@ -13,7 +13,7 @@ func TestHoverCardPinned(t *testing.T) {
 		ui.HoverCardTrigger(gsx.Raw("Open"), nil),
 		ui.HoverCardContent(gsx.Raw("Body"), nil),
 	), nil))
-	want := `<div data-gsxui-hovercard data-gsxui-slot="hover-card"><span data-gsxui-hovercard-trigger data-gsxui-slot="hover-card-trigger">Open</span><div data-gsxui-hovercard-content popover="manual" data-state="closed" data-side="bottom" data-gsxui-slot="hover-card-content">Body</div></div>`
+	want := `<div data-gsxui-hovercard data-gsxui-slot-hover-card><span data-gsxui-hovercard-trigger data-gsxui-slot-hover-card-trigger>Open</span><div data-gsxui-hovercard-content popover="manual" data-state="closed" data-side="bottom" data-gsxui-slot-hover-card-content>Body</div></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

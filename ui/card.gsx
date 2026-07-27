@@ -6,35 +6,35 @@ import "github.com/gsxhq/gsx"
 // sibling components — compose them in markup; no shared state, no context.
 
 component Card(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("card", attrs)... }>
+	<div { attrs... } data-gsxui-slot-card>
 		{ children }
 	</div>
 }
 
 component CardHeader(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("card-header", attrs)... }>
+	<div { attrs... } data-gsxui-slot-card-header>
 		{ children }
 	</div>
 }
 
 component CardTitle(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("card-title", attrs)... }>{ children }</div>
+	<div { attrs... } data-gsxui-slot-card-title>{ children }</div>
 }
 
 component CardDescription(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("card-description", attrs)... }>{ children }</div>
+	<div { attrs... } data-gsxui-slot-card-description>{ children }</div>
 }
 
 component CardAction(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("card-action", attrs)... }>
+	<div { attrs... } data-gsxui-slot-card-action>
 		{ children }
 	</div>
 }
 
 component CardContent(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("card-content", attrs)... }>{ children }</div>
+	<div { attrs... } data-gsxui-slot-card-content>{ children }</div>
 }
 
 component CardFooter(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("card-footer", attrs)... }>{ children }</div>
+	<div { attrs... } data-gsxui-slot-card-footer>{ children }</div>
 }

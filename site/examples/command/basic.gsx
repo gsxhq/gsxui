@@ -27,7 +27,7 @@ component Basic() {
 					<icon.Smile/>
 					<span>Search Emoji</span>
 				</ui.CommandItem>
-				<ui.CommandItem data-disabled>
+				<ui.CommandItem data-disabled="true">
 					<icon.Calculator/>
 					<span>Calculator</span>
 				</ui.CommandItem>

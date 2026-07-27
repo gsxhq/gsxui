@@ -29,14 +29,14 @@ func _gsxrenderInput(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs gsx.Attrs
 		return _gsxerr
 	}
 //line input.gsx:10:2
-	_gsxv0 := withSlot("input", attrs)
 	_gsxgw.S("<input")
-	if !_gsxv0.Has("type") {
+	if !attrs.Has("type") {
 		_gsxgw.S(" type=\"text\"")
 	}
-	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
-	_gsxgw.StyleMerged("", _gsxv0.Style())
-	_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "xlink:href"}, []string{"background", "src"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "xlink:href"}, []string{"background", "src"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-input"})
+	_gsxgw.BoolAttr("data-gsxui-slot-input", true)
 	_gsxgw.S(">")
 	return _gsxgw.Err()
 }

@@ -83,42 +83,42 @@ func Slider(value float64, min float64, max float64, step float64, attrs gsx.Att
 		}
 		fill := strconv.FormatFloat(fillPct, 'f', -1, 64)
 //line slider.gsx:74:2
-		_gsxv0 := withSlot("slider", attrs)
 		_gsxgw.S("<input")
-		if !_gsxv0.Has("type") {
+		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"range\"")
 		}
-		if !_gsxv0.Has("data-gsxui-slider") {
+		if !attrs.Has("data-gsxui-slider") {
 			_gsxgw.BoolAttr("data-gsxui-slider", true)
 		}
-		if !_gsxv0.Has("min") {
+		if !attrs.Has("min") {
 			_gsxgw.S(" min=\"")
 			_gsxgw.FloatInto(_gsxnum[:], float64(min))
 			_gsxgw.S("\"")
 		}
-		if !_gsxv0.Has("max") {
+		if !attrs.Has("max") {
 			_gsxgw.S(" max=\"")
 			_gsxgw.FloatInto(_gsxnum[:], float64(maxV))
 			_gsxgw.S("\"")
 		}
-		if !_gsxv0.Has("step") {
+		if !attrs.Has("step") {
 			_gsxgw.S(" step=\"")
 			_gsxgw.FloatInto(_gsxnum[:], float64(stepV))
 			_gsxgw.S("\"")
 		}
-		if !_gsxv0.Has("value") {
+		if !attrs.Has("value") {
 			_gsxgw.S(" value=\"")
 			_gsxgw.FloatInto(_gsxnum[:], float64(value))
 			_gsxgw.S("\"")
 		}
-		if !_gsxv0.Has("style") {
+		if !attrs.Has("style") {
 			_gsxgw.S(" style=\"--fill: ")
 			_gsxgw.AttrValue(_gsxrt.StyleValue(string(fill)))
 			_gsxgw.S("%\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
-		_gsxgw.StyleMerged("", _gsxv0.Style())
-		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "xlink:href"}, []string{"background", "src"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "xlink:href"}, []string{"background", "src"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-slider"})
+		_gsxgw.BoolAttr("data-gsxui-slot-slider", true)
 		_gsxgw.S(">")
 		return _gsxgw.Err()
 	})

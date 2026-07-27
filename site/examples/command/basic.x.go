@@ -67,7 +67,7 @@ func Basic() _gsxrt.Node {
 //line basic.gsx:32:6
 						_gsxgw.S("<span>Calculator</span>")
 						return _gsxgw.Err()
-					}), _gsxrt.Attrs{{Key: "data-disabled", Value: true}}))
+					}), _gsxrt.Attrs{{Key: "data-disabled", Value: "true"}}))
 					return _gsxgw.Err()
 				}), nil))
 //line basic.gsx:35:4

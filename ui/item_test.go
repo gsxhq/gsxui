@@ -10,7 +10,7 @@ import (
 
 func TestItemGroupPinned(t *testing.T) {
 	got := render(t, ui.ItemGroup(gsx.Raw("x"), nil))
-	want := `<div role="list" data-gsxui-slot="item-group">x</div>`
+	want := `<div role="list" data-gsxui-slot-item-group>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -36,7 +36,7 @@ func TestItemGroupCallerClassIsForwardedOnce(t *testing.T) {
 // Separator's own data-[orientation=...] base classes both come through.
 func TestItemSeparatorDefaultPinned(t *testing.T) {
 	got := render(t, ui.ItemSeparator("", nil))
-	want := `<div role="none" data-orientation="horizontal" data-gsxui-slot="separator item-separator"></div>`
+	want := `<div role="none" data-orientation="horizontal" data-gsxui-slot-item-separator data-gsxui-slot-separator></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -63,7 +63,7 @@ func TestItemSeparatorAttrsFallThrough(t *testing.T) {
 // TestItemDefaultPinned pins the zero-value (variant="default", size="default").
 func TestItemDefaultPinned(t *testing.T) {
 	got := render(t, ui.Item("", "", gsx.Raw("x"), nil))
-	want := `<div data-variant="default" data-size="default" data-gsxui-slot="item">x</div>`
+	want := `<div data-variant="default" data-size="default" data-gsxui-slot-item>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -76,7 +76,7 @@ func TestItemDefaultPinned(t *testing.T) {
 // utility is untouched).
 func TestItemOutlineSmPinned(t *testing.T) {
 	got := render(t, ui.Item("outline", "sm", gsx.Raw("x"), nil))
-	want := `<div data-variant="outline" data-size="sm" data-gsxui-slot="item">x</div>`
+	want := `<div data-variant="outline" data-size="sm" data-gsxui-slot-item>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -121,7 +121,7 @@ func TestItemCallerClassIsForwardedOnce(t *testing.T) {
 
 func TestItemMediaDefaultPinned(t *testing.T) {
 	got := render(t, ui.ItemMedia("", gsx.Raw("x"), nil))
-	want := `<div data-variant="default" data-gsxui-slot="item-media">x</div>`
+	want := `<div data-variant="default" data-gsxui-slot-item-media>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -129,7 +129,7 @@ func TestItemMediaDefaultPinned(t *testing.T) {
 
 func TestItemMediaIconPinned(t *testing.T) {
 	got := render(t, ui.ItemMedia("icon", gsx.Raw("x"), nil))
-	want := `<div data-variant="icon" data-gsxui-slot="item-media">x</div>`
+	want := `<div data-variant="icon" data-gsxui-slot-item-media>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -137,7 +137,7 @@ func TestItemMediaIconPinned(t *testing.T) {
 
 func TestItemMediaImagePinned(t *testing.T) {
 	got := render(t, ui.ItemMedia("image", gsx.Raw("x"), nil))
-	want := `<div data-variant="image" data-gsxui-slot="item-media">x</div>`
+	want := `<div data-variant="image" data-gsxui-slot-item-media>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -152,7 +152,7 @@ func TestItemMediaAttrsFallThrough(t *testing.T) {
 
 func TestItemContentPinned(t *testing.T) {
 	got := render(t, ui.ItemContent(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot="item-content">x</div>`
+	want := `<div data-gsxui-slot-item-content>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -167,7 +167,7 @@ func TestItemContentAttrsFallThrough(t *testing.T) {
 
 func TestItemTitlePinned(t *testing.T) {
 	got := render(t, ui.ItemTitle(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot="item-title">x</div>`
+	want := `<div data-gsxui-slot-item-title>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -185,7 +185,7 @@ func TestItemTitleAttrsFallThrough(t *testing.T) {
 // says "p" but whose actual element is a div — see ui/item.gsx's comment).
 func TestItemDescriptionPinned(t *testing.T) {
 	got := render(t, ui.ItemDescription(gsx.Raw("x"), nil))
-	want := `<p data-gsxui-slot="item-description">x</p>`
+	want := `<p data-gsxui-slot-item-description>x</p>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -200,7 +200,7 @@ func TestItemDescriptionAttrsFallThrough(t *testing.T) {
 
 func TestItemActionsPinned(t *testing.T) {
 	got := render(t, ui.ItemActions(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot="item-actions">x</div>`
+	want := `<div data-gsxui-slot-item-actions>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -215,7 +215,7 @@ func TestItemActionsAttrsFallThrough(t *testing.T) {
 
 func TestItemHeaderPinned(t *testing.T) {
 	got := render(t, ui.ItemHeader(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot="item-header">x</div>`
+	want := `<div data-gsxui-slot-item-header>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -230,7 +230,7 @@ func TestItemHeaderAttrsFallThrough(t *testing.T) {
 
 func TestItemFooterPinned(t *testing.T) {
 	got := render(t, ui.ItemFooter(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot="item-footer">x</div>`
+	want := `<div data-gsxui-slot-item-footer>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -269,17 +269,17 @@ func TestItemGroupWithSeparatorComposition(t *testing.T) {
 		nil,
 	))
 	for _, want := range []string{
-		`data-gsxui-slot="item-group"`,
-		`data-variant="outline" data-size="default" data-gsxui-slot="item"`,
-		`data-variant="icon" data-gsxui-slot="item-media"`,
-		`data-gsxui-slot="item-content"`,
-		`data-gsxui-slot="item-title"`,
+		`data-gsxui-slot-item-group`,
+		`data-variant="outline" data-size="default" data-gsxui-slot-item`,
+		`data-variant="icon" data-gsxui-slot-item-media`,
+		`data-gsxui-slot-item-content`,
+		`data-gsxui-slot-item-title`,
 		`>Invoice #1234</div>`,
-		`data-gsxui-slot="item-description"`,
+		`data-gsxui-slot-item-description`,
 		`>Paid on Jan 4</p>`,
-		`data-gsxui-slot="item-actions"`,
+		`data-gsxui-slot-item-actions`,
 		`<button>View</button>`,
-		`data-gsxui-slot="separator item-separator"`,
+		`data-gsxui-slot-item-separator data-gsxui-slot-separator`,
 		`second item`,
 	} {
 		if !strings.Contains(got, want) {

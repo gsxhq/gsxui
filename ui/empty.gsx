@@ -7,13 +7,13 @@ import "github.com/gsxhq/gsx"
 // plain styled <div>, the same "package-namespaced compound parts" shape as
 // card/breadcrumb.
 component Empty(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("empty", attrs)... }>
+	<div { attrs... } data-gsxui-slot-empty>
 		{ children }
 	</div>
 }
 
 component EmptyHeader(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("empty-header", attrs)... }>
+	<div { attrs... } data-gsxui-slot-empty-header>
 		{ children }
 	</div>
 }
@@ -25,14 +25,14 @@ component EmptyHeader(children gsx.Node, attrs gsx.Attrs) {
 component EmptyMedia(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-variant={variant |> default("default")}
-		{ withSlot("empty-icon", attrs)... }
+		{ attrs... } data-gsxui-slot-empty-icon
 	>
 		{ children }
 	</div>
 }
 
 component EmptyTitle(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("empty-title", attrs)... }>
+	<div { attrs... } data-gsxui-slot-empty-title>
 		{ children }
 	</div>
 }
@@ -43,13 +43,13 @@ component EmptyTitle(children gsx.Node, attrs gsx.Attrs) {
 // for Kbd/KbdGroup (see docs/jsx-parity.md ## kbd); ported verbatim, tag
 // included, per the token-for-token rule.
 component EmptyDescription(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("empty-description", attrs)... }>
+	<div { attrs... } data-gsxui-slot-empty-description>
 		{ children }
 	</div>
 }
 
 component EmptyContent(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("empty-content", attrs)... }>
+	<div { attrs... } data-gsxui-slot-empty-content>
 		{ children }
 	</div>
 }

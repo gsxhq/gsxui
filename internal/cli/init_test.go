@@ -68,7 +68,7 @@ func TestInitWritesEverything(t *testing.T) {
 		t.Error("foundation.css does not contain the Tailwind theme mapping")
 	}
 	styleCSS, _ := os.ReadFile(filepath.Join(dir, "web/gsxui/style.css"))
-	if !strings.Contains(string(styleCSS), "[data-gsxui-slot~=\"scroll-area\"]::-webkit-scrollbar") {
+	if !strings.Contains(string(styleCSS), "[data-gsxui-slot-scroll-area]::-webkit-scrollbar") {
 		t.Error("style.css does not contain the ScrollArea pseudo-element rules")
 	}
 	// dependency commands went through the seam
@@ -309,10 +309,10 @@ func TestInitializedConsumerCSSHasNoLegacySlotOrImportantUtility(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, selector := range []string{
-		`[data-gsxui-slot~="button"]`,
-		`[data-gsxui-slot~="combobox-content"]`,
-		`[data-gsxui-slot~="command"]`,
-		`[data-gsxui-slot~="menubar"]`,
+		`[data-gsxui-slot-button]`,
+		`[data-gsxui-slot-combobox-content]`,
+		`[data-gsxui-slot-command]`,
+		`[data-gsxui-slot-menubar]`,
 	} {
 		if !strings.Contains(string(compiled), selector) {
 			t.Errorf("clean consumer CSS missing canonical selector %s", selector)

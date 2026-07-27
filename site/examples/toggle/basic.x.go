@@ -66,7 +66,7 @@ func Basic() _gsxrt.Node {
 //line basic.gsx:34:4
 			_gsxgw.Node(ctx, icon.Bold())
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "disabled", Value: true}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Toggle bold (disabled)"}})))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "disabled", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Toggle bold (disabled)"}})))
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

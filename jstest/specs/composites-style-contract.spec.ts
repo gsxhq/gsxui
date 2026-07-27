@@ -1,14 +1,41 @@
 import { expect, test } from "../support/fixtures";
 
+test("ButtonGroup restores only the visible tail before an aria-hidden select", async ({
+  page,
+}) => {
+  const response = await page.goto("/f/style-contract");
+  expect(response?.status()).toBe(200);
+
+  const group = page.locator('[data-style-contract="button-group-tail"]');
+  const radii = await group.evaluate((element) => {
+    const corners = (selector: string) => {
+      const css = getComputedStyle(element.querySelector(selector)!);
+      return {
+        topRight: css.borderTopRightRadius,
+        bottomRight: css.borderBottomRightRadius,
+      };
+    };
+    return {
+      earlier: corners('[data-style-contract="button-group-earlier"]'),
+      visibleTail: corners('[data-style-contract="button-group-visible-tail"]'),
+    };
+  });
+
+  expect(radii).toEqual({
+    earlier: { topRight: "0px", bottomRight: "0px" },
+    visibleTail: { topRight: "10px", bottomRight: "10px" },
+  });
+});
+
 test("horizontal ButtonGroup separators stay on the cross-axis", async ({ page }) => {
   const response = await page.goto("/x/button-group/basic");
   expect(response?.status()).toBe(200);
 
-  const groups = page.locator('[data-gsxui-slot~="button-group"]');
+  const groups = page.locator('[data-gsxui-slot-button-group]');
   await expect(groups).toHaveCount(4);
   const clipboard = groups.nth(1);
   const separator = clipboard.locator(
-    ':scope > [data-gsxui-slot~="button-group-separator"]',
+    ':scope > [data-gsxui-slot-button-group-separator]',
   );
 
   await expect(separator).toHaveAttribute("data-orientation", "vertical");
@@ -16,7 +43,7 @@ test("horizontal ButtonGroup separators stay on the cross-axis", async ({ page }
     await clipboard.evaluate((group) => {
       const groupRect = group.getBoundingClientRect();
       const separatorRect = group
-        .querySelector('[data-gsxui-slot~="button-group-separator"]')!
+        .querySelector('[data-gsxui-slot-button-group-separator]')!
         .getBoundingClientRect();
       return {
         separatorWidth: separatorRect.width,
@@ -49,14 +76,14 @@ test("vertical ButtonGroup separators stay on the cross-axis", async ({ page }) 
   const children = group.locator(":scope > *");
   await expect(children).toHaveCount(3);
   const separator = group.locator(
-    ':scope > [data-gsxui-slot~="button-group-separator"]',
+    ':scope > [data-gsxui-slot-button-group-separator]',
   );
   await expect(separator).toHaveAttribute("data-orientation", "horizontal");
   expect(
     await group.evaluate((element) => {
       const groupRect = element.getBoundingClientRect();
       const separatorRect = element
-        .querySelector('[data-gsxui-slot~="button-group-separator"]')!
+        .querySelector('[data-gsxui-slot-button-group-separator]')!
         .getBoundingClientRect();
       const button = element.lastElementChild!;
       const css = getComputedStyle(button);
@@ -83,7 +110,7 @@ test("Carousel keeps native-scroll mechanics and caller spacing overrides", asyn
 
   const root = page.locator("[data-gsxui-carousel]");
   const viewport = page.locator("[data-gsxui-carousel-content]");
-  const track = page.locator('[data-gsxui-slot~="carousel-track"]');
+  const track = page.locator('[data-gsxui-slot-carousel-track]');
   const item = page.locator("[data-gsxui-carousel-item]").first();
   const previous = page.locator("[data-gsxui-carousel-prev]");
   const next = page.locator("[data-gsxui-carousel-next]");
@@ -142,13 +169,13 @@ test("registered vertical Carousel covers every oriented style slot", async ({ p
   ];
   for (const slot of orientedSlots) {
     await expect(
-      page.locator(`[data-gsxui-slot~="${slot}"]`).first(),
+      page.locator(`[data-gsxui-slot-${slot}]`).first(),
       `${slot} must reflect the production example's vertical axis`,
     ).toHaveAttribute("data-orientation", "vertical");
   }
 
   const viewport = page.locator("[data-gsxui-carousel-content]");
-  const track = page.locator('[data-gsxui-slot~="carousel-track"]');
+  const track = page.locator('[data-gsxui-slot-carousel-track]');
   expect(
     await viewport.evaluate((el) => {
       const css = getComputedStyle(el);
@@ -193,7 +220,7 @@ test("Resizable consumes dynamic flex values and remains keyboard operable", asy
     content: `
       @layer components {
         :where(
-          [data-gsxui-slot~="resizable-handle"][aria-orientation="vertical"]
+          [data-gsxui-slot-resizable-handle][aria-orientation="vertical"]
         ) {
           width: 6px;
         }
@@ -220,7 +247,7 @@ test("ScrollArea keeps native overflow while caller utilities win", async ({ pag
   const response = await page.goto("/x/scroll-area/basic");
   expect(response?.status()).toBe(200);
 
-  const area = page.locator('[data-gsxui-slot~="scroll-area"]');
+  const area = page.locator('[data-gsxui-slot-scroll-area]');
   expect(
     await area.evaluate((el) => {
       const css = getComputedStyle(el);

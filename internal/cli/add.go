@@ -13,19 +13,6 @@ import (
 	"github.com/gsxhq/gsxui/internal/registry"
 )
 
-type authoredSupportSource struct {
-	embeddedPath string
-	uiPath       string
-}
-
-var authoredSupportSources = [...]authoredSupportSource{
-	{embeddedPath: "ui/slots.go", uiPath: "slots.go"},
-	{
-		embeddedPath: "ui/internal/slotattr/slotattr.go",
-		uiPath:       "internal/slotattr/slotattr.go",
-	},
-}
-
 // runAdd vendors the requested components (and their transitive deps) into
 // cfg.UI. Vendored .gsx files keep their "package ui" clause regardless of
 // cfg.UI's basename — Go allows a package's declared name to differ from
@@ -59,20 +46,6 @@ func runAdd(args []string) error {
 		return err
 	}
 	fmt.Printf("adding: %s\n", strings.Join(resolved, " "))
-
-	for _, support := range authoredSupportSources {
-		src, err := fs.ReadFile(gsxui.Files, support.embeddedPath)
-		if err != nil {
-			return err
-		}
-		if err := writeVendored(
-			filepath.Join(dir, cfg.UI, support.uiPath),
-			RewriteGsx(src, module, cfg.UI),
-			*overwrite,
-		); err != nil {
-			return err
-		}
-	}
 
 	for _, name := range resolved {
 		if fi, err := fs.Stat(gsxui.Files, "ui/"+name); err == nil && fi.IsDir() {

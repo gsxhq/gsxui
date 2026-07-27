@@ -31,19 +31,19 @@ func _gsxrenderSeparator(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, orientation
 		return _gsxerr
 	}
 //line separator.gsx:11:2
-	_gsxv0 := withSlot("separator", attrs)
 	_gsxgw.S("<div")
-	if !_gsxv0.Has("role") {
+	if !attrs.Has("role") {
 		_gsxgw.S(" role=\"none\"")
 	}
-	if !_gsxv0.Has("data-orientation") {
+	if !attrs.Has("data-orientation") {
 		_gsxgw.S(" data-orientation=\"")
 		_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
 		_gsxgw.S("\"")
 	}
-	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
-	_gsxgw.StyleMerged("", _gsxv0.Style())
-	_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-separator"})
+	_gsxgw.BoolAttr("data-gsxui-slot-separator", true)
 	_gsxgw.S("></div>")
 	return _gsxgw.Err()
 }

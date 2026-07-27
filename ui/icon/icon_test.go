@@ -25,7 +25,7 @@ func TestIconRenders(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := `<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot="icon"><path d="m6 9 6 6 6-6"/></svg>`
+	want := `<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="m6 9 6 6 6-6"/></svg>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -51,13 +51,22 @@ func TestIconCallerClassIsForwardedOnce(t *testing.T) {
 	}
 }
 
-func TestIconPrependsItsTokenToComposedRole(t *testing.T) {
-	got, err := render(t, icon.ChevronDown(gsx.Attr{Key: "data-gsxui-slot", Value: "spinner"}))
+func TestIconOwnPresenceMarkerWinsCollisionAndKeepsComposedMarker(t *testing.T) {
+	got, err := render(t, icon.ChevronDown(
+		gsx.Attr{Key: "data-gsxui-slot-icon", Value: "caller-value"},
+		gsx.Attr{Key: "data-gsxui-slot-spinner", Value: gsx.Toggle(true)},
+	))
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(got, `data-gsxui-slot="icon spinner"`) {
-		t.Errorf("composed slot tokens are not inner-to-outer\nin: %s", got)
+	tag := got[:strings.Index(got, ">")+1]
+	for _, attribute := range []string{"data-gsxui-slot-spinner", "data-gsxui-slot-icon"} {
+		if !strings.Contains(tag, " "+attribute) {
+			t.Errorf("svg tag missing presence attribute %q\ntag: %s", attribute, tag)
+		}
+		if strings.Contains(tag, attribute+`="`) {
+			t.Errorf("presence attribute %q has a value\ntag: %s", attribute, tag)
+		}
 	}
 }
 

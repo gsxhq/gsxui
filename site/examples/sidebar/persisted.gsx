@@ -38,7 +38,7 @@ import (
 //     "sidebar_state=undefined":
 //
 //     document.addEventListener("gsxui:change", (e) => {
-//       if (!e.target.matches?.('[data-gsxui-slot~="sidebar-wrapper"]')) return;
+//       if (!e.target.matches?.('[data-gsxui-slot-sidebar-wrapper]')) return;
 //       document.cookie = `sidebar_state=${e.detail.open}; path=/; max-age=604800`;
 //     });
 //
@@ -85,7 +85,7 @@ component Persisted() {
 		</ui.SidebarProvider>
 		<script>
 			document.addEventListener("gsxui:change", (e) => {
-				if (!e.target.matches?.('[data-gsxui-slot~="sidebar-wrapper"]')) return;
+				if (!e.target.matches?.('[data-gsxui-slot-sidebar-wrapper]')) return;
 				document.cookie = `sidebar_state=${e.detail.open}; path=/; max-age=604800`;
 			});
 		</script>

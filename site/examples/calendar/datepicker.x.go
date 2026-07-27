@@ -64,7 +64,7 @@ func DatePicker() _gsxrt.Node {
 				_gsxgw.BoolAttr("data-datepicker-label", true)
 				_gsxgw.S(">Pick a date</span>")
 				return _gsxgw.Err()
-			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-popover-trigger", Value: true}}, _gsxrt.Attrs{{Key: "data-gsxui-slot", Value: "popover-trigger"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}}, _gsxrt.Attrs{{Key: "class", Value: "w-[240px] justify-start text-left font-normal text-muted-foreground"}})))
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-popover-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-popover-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}}, _gsxrt.Attrs{{Key: "class", Value: "w-[240px] justify-start text-left font-normal text-muted-foreground"}})))
 //line datepicker.gsx:52:4
 			_gsxgw.Node(ctx, ui.PopoverContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)

@@ -35,7 +35,7 @@ func Directions() _gsxrt.Node {
 //line directions.gsx:24:6
 					_gsxgw.Text(string(dir))
 					return _gsxgw.Err()
-				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-trigger", Value: true}}, _gsxrt.Attrs{{Key: "data-gsxui-slot", Value: "drawer-trigger"}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}}, _gsxrt.Attrs{{Key: "class", Value: "capitalize"}})))
+				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-drawer-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}}, _gsxrt.Attrs{{Key: "class", Value: "capitalize"}})))
 //line directions.gsx:26:5
 				_gsxgw.Node(ctx, ui.DrawerContent(dir, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
@@ -74,7 +74,7 @@ func Directions() _gsxrt.Node {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Close")
 							return _gsxgw.Err()
-						}), _gsxrt.Attrs{{Key: "data-gsxui-dialog-close", Value: true}}))
+						}), _gsxrt.Attrs{{Key: "data-gsxui-dialog-close", Value: _gsxrt.Toggle(true)}}))
 						return _gsxgw.Err()
 					}), nil))
 					return _gsxgw.Err()

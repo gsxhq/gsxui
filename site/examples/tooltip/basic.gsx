@@ -11,7 +11,7 @@ component Basic() {
 		<ui.Button
 			variant="outline"
 			data-gsxui-tooltip-trigger
-			data-gsxui-slot="tooltip-trigger"
+			data-gsxui-slot-tooltip-trigger
 		>
 			Hover me
 		</ui.Button>

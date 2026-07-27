@@ -13,7 +13,7 @@ func TestSwitchDefault(t *testing.T) {
 	for _, want := range []string{
 		`<input type="checkbox"`,
 		`role="switch"`,
-		`data-gsxui-slot="switch"`,
+		`data-gsxui-slot-switch`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
@@ -27,7 +27,7 @@ func TestSwitchRolePin(t *testing.T) {
 	// which stamps role="switch" itself. Pinned separately from the full
 	// render pin so a future edit can't silently drop it.
 	got := render(t, ui.Switch(nil))
-	if !strings.Contains(got, `<input type="checkbox" role="switch" data-gsxui-slot="switch"`) {
+	if !strings.Contains(got, `<input type="checkbox" role="switch" data-gsxui-slot-switch`) {
 		t.Errorf("missing role=\"switch\" in expected position\nin: %s", got)
 	}
 }
@@ -70,7 +70,7 @@ func TestSwitchDisabledAttr(t *testing.T) {
 func TestSwitchPinned(t *testing.T) {
 	// Presentation lives in the stylesheet; the render pin covers structure.
 	got := render(t, ui.Switch(nil))
-	want := `<input type="checkbox" role="switch" data-gsxui-slot="switch">`
+	want := `<input type="checkbox" role="switch" data-gsxui-slot-switch>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

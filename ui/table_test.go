@@ -14,14 +14,14 @@ func TestTableParts(t *testing.T) {
 		node gsx.Node
 		want []string
 	}{
-		{"Table", ui.Table(gsx.Raw("x"), nil), []string{`data-gsxui-slot="table-container"`, `data-gsxui-slot="table"`}},
-		{"TableHeader", ui.TableHeader(gsx.Raw("x"), nil), []string{`data-gsxui-slot="table-header"`}},
-		{"TableBody", ui.TableBody(gsx.Raw("x"), nil), []string{`data-gsxui-slot="table-body"`}},
-		{"TableFooter", ui.TableFooter(gsx.Raw("x"), nil), []string{`data-gsxui-slot="table-footer"`}},
-		{"TableRow", ui.TableRow(gsx.Raw("x"), nil), []string{`data-gsxui-slot="table-row"`}},
-		{"TableHead", ui.TableHead(gsx.Raw("x"), nil), []string{`data-gsxui-slot="table-head"`}},
-		{"TableCell", ui.TableCell(gsx.Raw("x"), nil), []string{`data-gsxui-slot="table-cell"`}},
-		{"TableCaption", ui.TableCaption(gsx.Raw("x"), nil), []string{`data-gsxui-slot="table-caption"`}},
+		{"Table", ui.Table(gsx.Raw("x"), nil), []string{`data-gsxui-slot-table-container`, `data-gsxui-slot-table`}},
+		{"TableHeader", ui.TableHeader(gsx.Raw("x"), nil), []string{`data-gsxui-slot-table-header`}},
+		{"TableBody", ui.TableBody(gsx.Raw("x"), nil), []string{`data-gsxui-slot-table-body`}},
+		{"TableFooter", ui.TableFooter(gsx.Raw("x"), nil), []string{`data-gsxui-slot-table-footer`}},
+		{"TableRow", ui.TableRow(gsx.Raw("x"), nil), []string{`data-gsxui-slot-table-row`}},
+		{"TableHead", ui.TableHead(gsx.Raw("x"), nil), []string{`data-gsxui-slot-table-head`}},
+		{"TableCell", ui.TableCell(gsx.Raw("x"), nil), []string{`data-gsxui-slot-table-cell`}},
+		{"TableCaption", ui.TableCaption(gsx.Raw("x"), nil), []string{`data-gsxui-slot-table-caption`}},
 	}
 	for _, tc := range cases {
 		got := render(t, tc.node)
@@ -38,7 +38,7 @@ func TestTablePinned(t *testing.T) {
 	// (registry/new-york-v4/ui/table.tsx) and docs/jsx-parity.md — a straight
 	// port, no divergences. Covers both the container div and the table.
 	got := render(t, ui.Table(gsx.Raw("Content"), nil))
-	want := `<div data-gsxui-slot="table-container"><table data-gsxui-slot="table">Content</table></div>`
+	want := `<div data-gsxui-slot-table-container><table data-gsxui-slot-table>Content</table></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -72,13 +72,13 @@ func TestTableComposition(t *testing.T) {
 		nil,
 	))
 	for _, want := range []string{
-		`data-gsxui-slot="table-container"`,
-		`data-gsxui-slot="table"`,
-		`data-gsxui-slot="table-header"`,
-		`data-gsxui-slot="table-body"`,
-		`data-gsxui-slot="table-row"`,
-		`data-gsxui-slot="table-head"`,
-		`data-gsxui-slot="table-cell"`,
+		`data-gsxui-slot-table-container`,
+		`data-gsxui-slot-table`,
+		`data-gsxui-slot-table-header`,
+		`data-gsxui-slot-table-body`,
+		`data-gsxui-slot-table-row`,
+		`data-gsxui-slot-table-head`,
+		`data-gsxui-slot-table-cell`,
 		">Name<", ">Age<", ">Alice<", ">30<",
 	} {
 		if !strings.Contains(got, want) {
@@ -95,7 +95,7 @@ func TestTableCaption(t *testing.T) {
 		),
 		nil,
 	))
-	for _, want := range []string{`data-gsxui-slot="table-caption"`, ">A list of results.<"} {
+	for _, want := range []string{`data-gsxui-slot-table-caption`, ">A list of results.<"} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}

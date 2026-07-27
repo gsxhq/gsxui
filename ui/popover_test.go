@@ -13,7 +13,7 @@ func TestPopoverPinned(t *testing.T) {
 		ui.PopoverTrigger(gsx.Raw("Open"), nil),
 		ui.PopoverContent(gsx.Raw("Body"), nil),
 	), nil))
-	want := `<div data-gsxui-popover data-gsxui-slot="popover"><button data-gsxui-popover-trigger type="button" aria-expanded="false" data-gsxui-slot="popover-trigger">Open</button><div data-gsxui-popover-content popover="auto" data-state="closed" data-side="bottom" tabindex="-1" data-gsxui-slot="popover-content">Body</div></div>`
+	want := `<div data-gsxui-popover data-gsxui-slot-popover><button data-gsxui-popover-trigger type="button" aria-expanded="false" data-gsxui-slot-popover-trigger>Open</button><div data-gsxui-popover-content popover="auto" data-state="closed" data-side="bottom" tabindex="-1" data-gsxui-slot-popover-content>Body</div></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

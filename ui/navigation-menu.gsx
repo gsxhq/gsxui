@@ -48,7 +48,7 @@ component NavigationMenu(children gsx.Node, attrs gsx.Attrs) {
 	<nav
 		data-gsxui-navigation-menu
 		data-viewport="false"
-		{ withSlot("navigation-menu", attrs)... }
+		{ attrs... } data-gsxui-slot-navigation-menu
 	>
 		{ children }
 	</nav>
@@ -59,7 +59,7 @@ component NavigationMenu(children gsx.Node, attrs gsx.Attrs) {
 // positions it relative to this element). gap-0 is nova's own metric
 // (`.cn-navigation-menu-list`), replacing new-york-v4's own gap-1.
 component NavigationMenuList(children gsx.Node, attrs gsx.Attrs) {
-	<ul data-gsxui-navigation-menu-list { withSlot("navigation-menu-list", attrs)... }>
+	<ul data-gsxui-navigation-menu-list { attrs... } data-gsxui-slot-navigation-menu-list>
 		{ children }
 	</ul>
 }
@@ -70,7 +70,7 @@ component NavigationMenuList(children gsx.Node, attrs gsx.Attrs) {
 // own content" (closest("[data-gsxui-navigation-menu-item]")), the same
 // role DropdownMenu's own root plays for its single trigger/content pair.
 component NavigationMenuItem(children gsx.Node, attrs gsx.Attrs) {
-	<li data-gsxui-navigation-menu-item { withSlot("navigation-menu-item", attrs)... }>
+	<li data-gsxui-navigation-menu-item { attrs... } data-gsxui-slot-navigation-menu-item>
 		{ children }
 	</li>
 }
@@ -122,11 +122,11 @@ component NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 		type="button"
 		aria-expanded="false"
 		data-state="closed"
-		{ withSlot("navigation-menu-trigger", attrs)... }
+		{ attrs... } data-gsxui-slot-navigation-menu-trigger
 	>
 		{ children }
 		{ " " }
-		<icon.ChevronDown data-gsxui-navigation-menu-trigger-icon { withSlot("navigation-menu-trigger-icon", nil)... }/>
+		<icon.ChevronDown data-gsxui-navigation-menu-trigger-icon data-gsxui-slot-navigation-menu-trigger-icon/>
 	</button>
 }
 
@@ -199,7 +199,7 @@ component NavigationMenuContent(children gsx.Node, attrs gsx.Attrs) {
 		popover="manual"
 		data-state="closed"
 		data-side="bottom"
-		{ withSlot("navigation-menu-content", attrs)... }
+		{ attrs... } data-gsxui-slot-navigation-menu-content
 	>
 		{ children }
 	</div>
@@ -230,10 +230,6 @@ component NavigationMenuLink(active bool, variant string, children gsx.Node, att
 		if linkVariant == "" {
 			linkVariant = "default"
 		}
-		linkAttrs := attrs
-		if linkVariant == "trigger" {
-			linkAttrs = withSlot("navigation-menu-trigger", linkAttrs)
-		}
 	}}
 	<a
 		data-gsxui-navigation-menu-link
@@ -243,7 +239,11 @@ component NavigationMenuLink(active bool, variant string, children gsx.Node, att
 		} else {
 			data-active="false"
 		} }
-		{ withSlot("navigation-menu-link", linkAttrs)... }
+		{ attrs... }
+		{ if linkVariant == "trigger" {
+			data-gsxui-slot-navigation-menu-trigger
+		} }
+		data-gsxui-slot-navigation-menu-link
 	>
 		{ children }
 	</a>
@@ -280,8 +280,8 @@ component NavigationMenuIndicator(attrs gsx.Attrs) {
 	<div
 		data-gsxui-navigation-menu-indicator
 		data-state="hidden"
-		{ withSlot("navigation-menu-indicator", attrs)... }
+		{ attrs... } data-gsxui-slot-navigation-menu-indicator
 	>
-		<div { withSlot("navigation-menu-indicator-arrow", nil)... }></div>
+		<div data-gsxui-slot-navigation-menu-indicator-arrow></div>
 	</div>
 }

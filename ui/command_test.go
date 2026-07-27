@@ -10,7 +10,7 @@ import (
 
 func TestCommandPinned(t *testing.T) {
 	got := render(t, ui.Command(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-command data-gsxui-slot="command">x</div>`
+	want := `<div data-gsxui-command data-gsxui-slot-command>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -19,8 +19,8 @@ func TestCommandPinned(t *testing.T) {
 func TestCommandInputPinned(t *testing.T) {
 	got := render(t, ui.CommandInput("Search...", nil))
 	for _, want := range []string{
-		`<div data-gsxui-command-input-wrapper data-gsxui-slot="command-input-wrapper">`,
-		`data-gsxui-slot="command-input"`,
+		`<div data-gsxui-command-input-wrapper data-gsxui-slot-command-input-wrapper>`,
+		`data-gsxui-slot-command-input`,
 		`data-gsxui-command-input`,
 		`role="combobox"`,
 		`aria-autocomplete="list"`,
@@ -35,7 +35,7 @@ func TestCommandInputPinned(t *testing.T) {
 func TestCommandItemPinned(t *testing.T) {
 	got := render(t, ui.CommandItem("calendar", gsx.Raw("Calendar"), nil))
 	for _, want := range []string{
-		`data-gsxui-slot="command-item"`,
+		`data-gsxui-slot-command-item`,
 		`data-gsxui-command-item`,
 		`data-value="calendar"`,
 		`role="option"`,
@@ -50,7 +50,7 @@ func TestCommandItemPinned(t *testing.T) {
 // CommandGroup renders its heading child only when non-empty.
 func TestCommandGroupHeading(t *testing.T) {
 	with := render(t, ui.CommandGroup("Settings", gsx.Raw("x"), nil))
-	if !strings.Contains(with, `<div data-gsxui-command-group-heading data-gsxui-slot="command-group-heading">Settings</div>`) {
+	if !strings.Contains(with, `<div data-gsxui-command-group-heading data-gsxui-slot-command-group-heading>Settings</div>`) {
 		t.Errorf("missing heading in: %s", with)
 	}
 	without := render(t, ui.CommandGroup("", gsx.Raw("x"), nil))
@@ -75,14 +75,14 @@ func TestCommandDialogComposition(t *testing.T) {
 	for _, want := range []string{
 		`data-gsxui-command-dialog`,
 		`data-gsxui-dialog-content`,
-		`data-gsxui-slot="dialog command-dialog"`,
-		`data-gsxui-slot="dialog-content command-dialog-content"`,
-		`data-gsxui-slot="dialog-header command-dialog-header"`,
+		`data-gsxui-slot-command-dialog data-gsxui-slot-dialog`,
+		`data-gsxui-slot-command-dialog-content data-gsxui-slot-dialog-content`,
+		`data-gsxui-slot-command-dialog-header data-gsxui-slot-dialog-header`,
 		">Command Palette</h2>",
 		">Search for a command to run...</p>",
-		`data-gsxui-slot="command command-dialog-command"`,
-		`data-gsxui-slot="command-input-wrapper"`,
-		`data-gsxui-slot="command-input"`,
+		`data-gsxui-slot-command-dialog-command data-gsxui-slot-command`,
+		`data-gsxui-slot-command-input-wrapper`,
+		`data-gsxui-slot-command-input`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)

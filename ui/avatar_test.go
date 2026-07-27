@@ -14,13 +14,13 @@ func TestAvatarStructure(t *testing.T) {
 		ui.AvatarFallback(gsx.Raw("CN"), nil),
 	), nil))
 	for _, want := range []string{
-		`data-gsxui-slot="avatar"`,
+		`data-gsxui-slot-avatar`,
 		`data-gsxui-avatar`,
-		`data-gsxui-slot="avatar-image"`,
+		`data-gsxui-slot-avatar-image`,
 		`data-gsxui-avatar-image`,
 		`src="/broken.jpg"`,
 		`alt="shadcn"`,
-		`data-gsxui-slot="avatar-fallback"`, `data-gsxui-avatar-fallback`, ">CN<",
+		`data-gsxui-slot-avatar-fallback`, `data-gsxui-avatar-fallback`, ">CN<",
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
@@ -28,7 +28,7 @@ func TestAvatarStructure(t *testing.T) {
 	}
 	// ADAPT: fallback renders with no `hidden` attribute — load state isn't
 	// known server-side; JS (avatar.js) toggles display on load/error.
-	fallbackStart := strings.Index(got, `data-gsxui-slot="avatar-fallback"`)
+	fallbackStart := strings.Index(got, `data-gsxui-slot-avatar-fallback`)
 	if fallbackStart < 0 {
 		t.Fatal("missing avatar fallback slot")
 	}
@@ -51,7 +51,7 @@ func TestAvatarPinned(t *testing.T) {
 	// and docs/jsx-parity.md's ADAPT: AvatarImage adds absolute inset-0
 	// to overlay the fallback (no-JS rendering correct).
 	got := render(t, ui.AvatarImage("/shadcn.jpg", "shadcn", nil))
-	want := `<img data-gsxui-avatar-image src="/shadcn.jpg" alt="shadcn" data-gsxui-slot="avatar-image">`
+	want := `<img data-gsxui-avatar-image src="/shadcn.jpg" alt="shadcn" data-gsxui-slot-avatar-image>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

@@ -22,6 +22,6 @@ component Spinner(attrs gsx.Attrs) {
 		role="status"
 		aria-label="Loading"
 		aria-hidden="false"
-		{ withSlot("spinner", attrs)... }
+		{ attrs... } data-gsxui-slot-spinner
 	/>
 }

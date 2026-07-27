@@ -12,7 +12,7 @@ import (
 // orientation reflected explicitly for style and mechanism selectors.
 func TestScrollAreaVerticalPinned(t *testing.T) {
 	got := render(t, ui.ScrollArea("", gsx.Raw("x"), nil))
-	want := `<div data-orientation="vertical" data-gsxui-slot="scroll-area">x</div>`
+	want := `<div data-orientation="vertical" data-gsxui-slot-scroll-area>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -21,7 +21,7 @@ func TestScrollAreaVerticalPinned(t *testing.T) {
 // TestScrollAreaHorizontalPinned pins orientation="horizontal".
 func TestScrollAreaHorizontalPinned(t *testing.T) {
 	got := render(t, ui.ScrollArea("horizontal", gsx.Raw("x"), nil))
-	want := `<div data-orientation="horizontal" data-gsxui-slot="scroll-area">x</div>`
+	want := `<div data-orientation="horizontal" data-gsxui-slot-scroll-area>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -35,7 +35,7 @@ func TestScrollAreaHorizontalPinned(t *testing.T) {
 // fall-through as the only rendered class.
 func TestScrollAreaCallerClassMerges(t *testing.T) {
 	got := render(t, ui.ScrollArea("", nil, gsx.Attrs{{Key: "class", Value: "h-72 w-48 rounded-md border"}}))
-	if !strings.Contains(got, `class="h-72 w-48 rounded-md border" data-gsxui-slot="scroll-area"`) {
+	if !strings.Contains(got, `class="h-72 w-48 rounded-md border" data-gsxui-slot-scroll-area`) {
 		t.Errorf("caller class is not forwarded exactly\nin: %s", got)
 	}
 }

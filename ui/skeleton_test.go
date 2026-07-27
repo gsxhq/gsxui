@@ -11,7 +11,7 @@ import (
 func TestSkeletonDefault(t *testing.T) {
 	got := render(t, ui.Skeleton(nil))
 	for _, want := range []string{
-		`data-gsxui-slot="skeleton"`,
+		`data-gsxui-slot-skeleton`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
@@ -31,7 +31,7 @@ func TestSkeletonPinned(t *testing.T) {
 	// Skeleton (registry/new-york-v4/ui/skeleton.tsx) — straight port, no
 	// divergences.
 	got := render(t, ui.Skeleton(nil))
-	want := `<div data-gsxui-slot="skeleton"></div>`
+	want := `<div data-gsxui-slot-skeleton></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

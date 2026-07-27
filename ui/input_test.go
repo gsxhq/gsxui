@@ -11,7 +11,7 @@ import (
 func TestInputDefault(t *testing.T) {
 	got := render(t, ui.Input(nil))
 	for _, want := range []string{
-		"<input", `type="text"`, `data-gsxui-slot="input"`,
+		"<input", `type="text"`, `data-gsxui-slot-input`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
@@ -22,7 +22,7 @@ func TestInputDefault(t *testing.T) {
 func TestInputPinned(t *testing.T) {
 	// Presentation lives in the stylesheet; the render pin covers structure.
 	got := render(t, ui.Input(nil))
-	want := `<input type="text" data-gsxui-slot="input">`
+	want := `<input type="text" data-gsxui-slot-input>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

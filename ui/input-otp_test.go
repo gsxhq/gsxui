@@ -15,7 +15,7 @@ func TestInputOTPPinned(t *testing.T) {
 	// caller's slot markup. No maxlength/pattern/name here — see
 	// TestInputOTPAttrsFallThrough for those, all via attrs.
 	got := render(t, ui.InputOTP(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-input-otp data-gsxui-slot="input-otp"><input data-gsxui-input-otp-input inputmode="numeric" autocomplete="one-time-code" data-gsxui-slot="input-otp-input">x</div>`
+	want := `<div data-gsxui-input-otp data-gsxui-slot-input-otp><input data-gsxui-input-otp-input inputmode="numeric" autocomplete="one-time-code" data-gsxui-slot-input-otp-input>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -56,7 +56,7 @@ func TestInputOTPGroupPinned(t *testing.T) {
 	// aria-invalid styling) — adopted per the 2026-07-24 controls source
 	// map's `## input-otp` nova deltas table.
 	got := render(t, ui.InputOTPGroup(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot="input-otp-group">x</div>`
+	want := `<div data-gsxui-slot-input-otp-group>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -73,7 +73,7 @@ func TestInputOTPSlotPinned(t *testing.T) {
 	// ring-[3px]) — data-[active=true]:z-10 is KEPT regardless of nova's
 	// excerpt (functionally necessary, not a deliberate drop, see the map).
 	got := render(t, ui.InputOTPSlot(nil))
-	want := `<div data-gsxui-input-otp-slot data-active="false" data-gsxui-slot="input-otp-slot"></div>`
+	want := `<div data-gsxui-input-otp-slot data-active="false" data-gsxui-slot-input-otp-slot></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -112,7 +112,7 @@ func TestInputOTPSeparatorPinned(t *testing.T) {
 	// icon.Minus already defaults to size-4, carried regardless per the
 	// map's nova deltas table).
 	got := render(t, ui.InputOTPSeparator(nil))
-	want := `<div role="separator" data-gsxui-slot="input-otp-separator"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot="icon"><path d="M5 12h14"/></svg></div>`
+	want := `<div role="separator" data-gsxui-slot-input-otp-separator><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="M5 12h14"/></svg></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

@@ -26,52 +26,33 @@ func Select(name string, required bool, disabled bool, form string, children gsx
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line select.gsx:44:2
-		_gsxv0 := withSlot("select", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv0.Has("data-gsxui-select") {
+		if !attrs.Has("data-gsxui-select") {
 			_gsxgw.BoolAttr("data-gsxui-select", true)
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
-		_gsxgw.StyleMerged("", _gsxv0.Style())
-		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select"})
+		_gsxgw.BoolAttr("data-gsxui-slot-select", true)
 		_gsxgw.S(">")
 //line select.gsx:45:3
 		_gsxgw.Node(ctx, children)
 //line select.gsx:46:3
 		if name != "" {
 //line select.gsx:47:4
-			_gsxv1 := withSlot("select-bridge", nil)
 			_gsxgw.S("<select")
-			if !_gsxv1.Has("data-gsxui-select-bridge") {
-				_gsxgw.BoolAttr("data-gsxui-select-bridge", true)
-			}
-			if !_gsxv1.Has("aria-hidden") {
-				_gsxgw.S(" aria-hidden=\"true\"")
-			}
-			if !_gsxv1.Has("tabindex") {
-				_gsxgw.S(" tabindex=\"-1\"")
-			}
-			if !_gsxv1.Has("name") {
-				_gsxgw.S(" name=\"")
-				_gsxgw.AttrValue(string(name))
+			_gsxgw.BoolAttr("data-gsxui-select-bridge", true)
+			_gsxgw.S(" aria-hidden=\"true\" tabindex=\"-1\" name=\"")
+			_gsxgw.AttrValue(string(name))
+			_gsxgw.S("\"")
+			_gsxgw.BoolAttr("required", bool(required))
+			_gsxgw.BoolAttr("disabled", bool(disabled))
+			if form != "" {
+				_gsxgw.S(" form=\"")
+				_gsxgw.AttrValue(string(form))
 				_gsxgw.S("\"")
 			}
-			if !_gsxv1.Has("required") {
-				_gsxgw.BoolAttr("required", bool(required))
-			}
-			if !_gsxv1.Has("disabled") {
-				_gsxgw.BoolAttr("disabled", bool(disabled))
-			}
-			if form != "" {
-				if !_gsxv1.Has("form") {
-					_gsxgw.S(" form=\"")
-					_gsxgw.AttrValue(string(form))
-					_gsxgw.S("\"")
-				}
-			}
-			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
-			_gsxgw.StyleMerged("", _gsxv1.Style())
-			_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.BoolAttr("data-gsxui-slot-select-bridge", true)
 			_gsxgw.S(">")
 //line select.gsx:59:5
 			_gsxgw.S("<option value=\"\"></option></select>")
@@ -97,37 +78,37 @@ func SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node 
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line select.gsx:75:2
-		_gsxv2 := withSlot("select-trigger", attrs)
 		_gsxgw.S("<button")
-		if !_gsxv2.Has("type") {
+		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"button\"")
 		}
-		if !_gsxv2.Has("data-gsxui-select-trigger") {
+		if !attrs.Has("data-gsxui-select-trigger") {
 			_gsxgw.BoolAttr("data-gsxui-select-trigger", true)
 		}
-		if !_gsxv2.Has("role") {
+		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"combobox\"")
 		}
-		if !_gsxv2.Has("aria-expanded") {
+		if !attrs.Has("aria-expanded") {
 			_gsxgw.S(" aria-expanded=\"false\"")
 		}
-		if !_gsxv2.Has("aria-autocomplete") {
+		if !attrs.Has("aria-autocomplete") {
 			_gsxgw.S(" aria-autocomplete=\"none\"")
 		}
-		if !_gsxv2.Has("data-state") {
+		if !attrs.Has("data-state") {
 			_gsxgw.S(" data-state=\"closed\"")
 		}
-		if !_gsxv2.Has("data-size") {
+		if !attrs.Has("data-size") {
 			_gsxgw.S(" data-size=\"")
 			_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
 			_gsxgw.S("\"")
 		}
-		if !_gsxv2.Has("data-placeholder") {
+		if !attrs.Has("data-placeholder") {
 			_gsxgw.BoolAttr("data-placeholder", true)
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
-		_gsxgw.StyleMerged("", _gsxv2.Style())
-		_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select-trigger"})
+		_gsxgw.BoolAttr("data-gsxui-slot-select-trigger", true)
 		_gsxgw.S(">")
 //line select.gsx:86:3
 		_gsxgw.Node(ctx, children)
@@ -148,16 +129,16 @@ func SelectValue(placeholder string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line select.gsx:95:2
-		_gsxv3 := withSlot("select-value", attrs)
 		_gsxgw.S("<span")
-		if !_gsxv3.Has("data-gsxui-select-value") {
+		if !attrs.Has("data-gsxui-select-value") {
 			_gsxgw.BoolAttr("data-gsxui-select-value", true)
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv3.Class())
-		_gsxgw.StyleMerged("", _gsxv3.Style())
-		_gsxgw.Spread(ctx, _gsxv3, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select-value"})
+		_gsxgw.BoolAttr("data-gsxui-slot-select-value", true)
 		_gsxgw.S(">")
-//line select.gsx:95:71
+//line select.gsx:95:74
 		_gsxgw.Text(string(placeholder))
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()
@@ -180,29 +161,29 @@ func SelectContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line select.gsx:108:2
-		_gsxv4 := withSlot("select-content", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv4.Has("data-gsxui-select-content") {
+		if !attrs.Has("data-gsxui-select-content") {
 			_gsxgw.BoolAttr("data-gsxui-select-content", true)
 		}
-		if !_gsxv4.Has("popover") {
+		if !attrs.Has("popover") {
 			_gsxgw.S(" popover=\"auto\"")
 		}
-		if !_gsxv4.Has("role") {
+		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"listbox\"")
 		}
-		if !_gsxv4.Has("tabindex") {
+		if !attrs.Has("tabindex") {
 			_gsxgw.S(" tabindex=\"-1\"")
 		}
-		if !_gsxv4.Has("data-state") {
+		if !attrs.Has("data-state") {
 			_gsxgw.S(" data-state=\"closed\"")
 		}
-		if !_gsxv4.Has("data-side") {
+		if !attrs.Has("data-side") {
 			_gsxgw.S(" data-side=\"bottom\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv4.Class())
-		_gsxgw.StyleMerged("", _gsxv4.Style())
-		_gsxgw.Spread(ctx, _gsxv4, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select-content"})
+		_gsxgw.BoolAttr("data-gsxui-slot-select-content", true)
 		_gsxgw.S(">")
 //line select.gsx:117:3
 		_gsxgw.Node(ctx, children)
@@ -223,19 +204,19 @@ func SelectGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line select.gsx:127:2
-		_gsxv5 := withSlot("select-group", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv5.Has("data-gsxui-select-group") {
+		if !attrs.Has("data-gsxui-select-group") {
 			_gsxgw.BoolAttr("data-gsxui-select-group", true)
 		}
-		if !_gsxv5.Has("role") {
+		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"group\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv5.Class())
-		_gsxgw.StyleMerged("", _gsxv5.Style())
-		_gsxgw.Spread(ctx, _gsxv5, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select-group"})
+		_gsxgw.BoolAttr("data-gsxui-slot-select-group", true)
 		_gsxgw.S(">")
-//line select.gsx:127:83
+//line select.gsx:127:86
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
@@ -251,16 +232,16 @@ func SelectLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line select.gsx:133:2
-		_gsxv6 := withSlot("select-label", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv6.Has("data-gsxui-select-label") {
+		if !attrs.Has("data-gsxui-select-label") {
 			_gsxgw.BoolAttr("data-gsxui-select-label", true)
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv6.Class())
-		_gsxgw.StyleMerged("", _gsxv6.Style())
-		_gsxgw.Spread(ctx, _gsxv6, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select-label"})
+		_gsxgw.BoolAttr("data-gsxui-slot-select-label", true)
 		_gsxgw.S(">")
-//line select.gsx:133:70
+//line select.gsx:133:73
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
@@ -284,67 +265,59 @@ func SelectItem(value string, selected bool, disabled bool, children gsx.Node, a
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line select.gsx:147:2
-		_gsxv7 := withSlot("select-item", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv7.Has("data-gsxui-select-item") {
+		if !attrs.Has("data-gsxui-select-item") {
 			_gsxgw.BoolAttr("data-gsxui-select-item", true)
 		}
-		if !_gsxv7.Has("role") {
+		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"option\"")
 		}
-		if !_gsxv7.Has("data-value") {
+		if !attrs.Has("data-value") {
 			_gsxgw.S(" data-value=\"")
 			_gsxgw.AttrValue(string(value))
 			_gsxgw.S("\"")
 		}
 		if selected {
-			if !_gsxv7.Has("data-state") {
+			if !attrs.Has("data-state") {
 				_gsxgw.S(" data-state=\"checked\"")
 			}
 		} else {
-			if !_gsxv7.Has("data-state") {
+			if !attrs.Has("data-state") {
 				_gsxgw.S(" data-state=\"unchecked\"")
 			}
 		}
-		if !_gsxv7.Has("aria-selected") {
+		if !attrs.Has("aria-selected") {
 			_gsxgw.S(" aria-selected=\"false\"")
 		}
-		if !_gsxv7.Has("tabindex") {
+		if !attrs.Has("tabindex") {
 			_gsxgw.S(" tabindex=\"-1\"")
 		}
 		if disabled {
-			if !_gsxv7.Has("data-disabled") {
+			if !attrs.Has("data-disabled") {
 				_gsxgw.S(" data-disabled=\"true\"")
 			}
-			if !_gsxv7.Has("aria-disabled") {
+			if !attrs.Has("aria-disabled") {
 				_gsxgw.S(" aria-disabled=\"true\"")
 			}
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv7.Class())
-		_gsxgw.StyleMerged("", _gsxv7.Style())
-		_gsxgw.Spread(ctx, _gsxv7, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select-item"})
+		_gsxgw.BoolAttr("data-gsxui-slot-select-item", true)
 		_gsxgw.S(">")
 //line select.gsx:164:3
-		_gsxv8 := withSlot("select-item-indicator", nil)
 		_gsxgw.S("<span")
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv8.Class())
-		_gsxgw.StyleMerged("", _gsxv8.Style())
-		_gsxgw.Spread(ctx, _gsxv8, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.BoolAttr("data-gsxui-slot-select-item-indicator", true)
 		_gsxgw.S(">")
 //line select.gsx:165:4
 		_gsxgw.Node(ctx, icon.Check())
 		_gsxgw.S("</span>")
 //line select.gsx:167:3
-		_gsxv9 := withSlot("select-item-text", nil)
 		_gsxgw.S("<span")
-		if !_gsxv9.Has("data-gsxui-select-item-text") {
-			_gsxgw.BoolAttr("data-gsxui-select-item-text", true)
-		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv9.Class())
-		_gsxgw.StyleMerged("", _gsxv9.Style())
-		_gsxgw.Spread(ctx, _gsxv9, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.BoolAttr("data-gsxui-select-item-text", true)
+		_gsxgw.BoolAttr("data-gsxui-slot-select-item-text", true)
 		_gsxgw.S(">")
-//line select.gsx:167:78
+//line select.gsx:167:70
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</span></div>")
 		return _gsxgw.Err()
@@ -360,14 +333,14 @@ func SelectSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line select.gsx:174:2
-		_gsxv10 := withSlot("select-separator", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv10.Has("aria-hidden") {
+		if !attrs.Has("aria-hidden") {
 			_gsxgw.S(" aria-hidden=\"true\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv10.Class())
-		_gsxgw.StyleMerged("", _gsxv10.Style())
-		_gsxgw.Spread(ctx, _gsxv10, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select-separator"})
+		_gsxgw.BoolAttr("data-gsxui-slot-select-separator", true)
 		_gsxgw.S("></div>")
 		return _gsxgw.Err()
 	})

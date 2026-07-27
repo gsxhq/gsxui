@@ -10,7 +10,7 @@ import (
 
 func TestFieldSetPinned(t *testing.T) {
 	got := render(t, ui.FieldSet(gsx.Raw("x"), nil))
-	want := `<fieldset data-gsxui-slot="field-set">x</fieldset>`
+	want := `<fieldset data-gsxui-slot-field-set>x</fieldset>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -26,7 +26,7 @@ func TestFieldSetAttrsFallThrough(t *testing.T) {
 // TestFieldLegendDefaultPinned pins the zero-value ("legend") variant.
 func TestFieldLegendDefaultPinned(t *testing.T) {
 	got := render(t, ui.FieldLegend("", gsx.Raw("x"), nil))
-	want := `<legend data-variant="legend" data-gsxui-slot="field-legend">x</legend>`
+	want := `<legend data-variant="legend" data-gsxui-slot-field-legend>x</legend>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -48,7 +48,7 @@ func TestFieldLegendAttrsFallThrough(t *testing.T) {
 
 func TestFieldGroupPinned(t *testing.T) {
 	got := render(t, ui.FieldGroup(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot="field-group">x</div>`
+	want := `<div data-gsxui-slot-field-group>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -64,7 +64,7 @@ func TestFieldGroupAttrsFallThrough(t *testing.T) {
 // TestFieldDefaultPinned pins the zero-value ("vertical") orientation.
 func TestFieldDefaultPinned(t *testing.T) {
 	got := render(t, ui.Field("", gsx.Raw("x"), nil))
-	want := `<div role="group" data-orientation="vertical" data-gsxui-slot="field">x</div>`
+	want := `<div role="group" data-orientation="vertical" data-gsxui-slot-field>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -73,7 +73,7 @@ func TestFieldDefaultPinned(t *testing.T) {
 // TestFieldHorizontalPinned proves data-orientation remains load-bearing.
 func TestFieldHorizontalPinned(t *testing.T) {
 	got := render(t, ui.Field("horizontal", gsx.Raw("x"), nil))
-	want := `<div role="group" data-orientation="horizontal" data-gsxui-slot="field">x</div>`
+	want := `<div role="group" data-orientation="horizontal" data-gsxui-slot-field>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -81,7 +81,7 @@ func TestFieldHorizontalPinned(t *testing.T) {
 
 func TestFieldResponsivePinned(t *testing.T) {
 	got := render(t, ui.Field("responsive", gsx.Raw("x"), nil))
-	want := `<div role="group" data-orientation="responsive" data-gsxui-slot="field">x</div>`
+	want := `<div role="group" data-orientation="responsive" data-gsxui-slot-field>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -103,7 +103,7 @@ func TestFieldCallerClassMerges(t *testing.T) {
 
 func TestFieldContentPinned(t *testing.T) {
 	got := render(t, ui.FieldContent(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot="field-content">x</div>`
+	want := `<div data-gsxui-slot-field-content>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -119,7 +119,7 @@ func TestFieldContentAttrsFallThrough(t *testing.T) {
 // TestFieldLabelPinned proves FieldLabel composes the Label token.
 func TestFieldLabelPinned(t *testing.T) {
 	got := render(t, ui.FieldLabel(gsx.Raw("x"), nil))
-	want := `<label data-gsxui-slot="label field-label">x</label>`
+	want := `<label data-gsxui-slot-field-label data-gsxui-slot-label>x</label>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -135,7 +135,7 @@ func TestFieldLabelAttrsFallThrough(t *testing.T) {
 // FieldTitle has its own styling token.
 func TestFieldTitlePinned(t *testing.T) {
 	got := render(t, ui.FieldTitle(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot="field-title">x</div>`
+	want := `<div data-gsxui-slot-field-title>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -150,7 +150,7 @@ func TestFieldTitleAttrsFallThrough(t *testing.T) {
 
 func TestFieldDescriptionPinned(t *testing.T) {
 	got := render(t, ui.FieldDescription(gsx.Raw("x"), nil))
-	want := `<p data-gsxui-slot="field-description">x</p>`
+	want := `<p data-gsxui-slot-field-description>x</p>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -167,7 +167,7 @@ func TestFieldDescriptionAttrsFallThrough(t *testing.T) {
 // Separator token.
 func TestFieldSeparatorNoChildrenPinned(t *testing.T) {
 	got := render(t, ui.FieldSeparator(nil, nil))
-	want := `<div data-content="false" data-gsxui-slot="field-separator-wrapper"><div role="none" data-orientation="horizontal" data-gsxui-slot="separator field-separator"></div></div>`
+	want := `<div data-content="false" data-gsxui-slot-field-separator-wrapper><div role="none" data-orientation="horizontal" data-gsxui-slot-field-separator data-gsxui-slot-separator></div></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -175,7 +175,7 @@ func TestFieldSeparatorNoChildrenPinned(t *testing.T) {
 
 func TestFieldSeparatorWithChildrenPinned(t *testing.T) {
 	got := render(t, ui.FieldSeparator(gsx.Raw("Or"), nil))
-	want := `<div data-content="true" data-gsxui-slot="field-separator-wrapper"><div role="none" data-orientation="horizontal" data-gsxui-slot="separator field-separator"></div><span data-gsxui-slot="field-separator-content">Or</span></div>`
+	want := `<div data-content="true" data-gsxui-slot-field-separator-wrapper><div role="none" data-orientation="horizontal" data-gsxui-slot-field-separator data-gsxui-slot-separator></div><span data-gsxui-slot-field-separator-content>Or</span></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -200,7 +200,7 @@ func TestFieldErrorNilRendersNothing(t *testing.T) {
 
 func TestFieldErrorPinned(t *testing.T) {
 	got := render(t, ui.FieldError(gsx.Raw("This field is required."), nil))
-	want := `<div role="alert" data-gsxui-slot="field-error">This field is required.</div>`
+	want := `<div role="alert" data-gsxui-slot-field-error>This field is required.</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -240,20 +240,20 @@ func TestFieldFormComposition(t *testing.T) {
 		nil,
 	))
 	for _, want := range []string{
-		`data-gsxui-slot="field-set"`,
-		`data-gsxui-slot="field-legend"`,
+		`data-gsxui-slot-field-set`,
+		`data-gsxui-slot-field-legend`,
 		`>Profile</legend>`,
-		`data-gsxui-slot="field-group"`,
-		`data-gsxui-slot="field"`,
-		`data-gsxui-slot="label field-label"`,
+		`data-gsxui-slot-field-group`,
+		`data-gsxui-slot-field`,
+		`data-gsxui-slot-field-label data-gsxui-slot-label`,
 		`>Name</label>`,
 		`for="name"`,
-		`data-gsxui-slot="field-description"`,
+		`data-gsxui-slot-field-description`,
 		`>Your full name.</p>`,
-		`data-gsxui-slot="field-separator-wrapper"`,
+		`data-gsxui-slot-field-separator-wrapper`,
 		`>Email</label>`,
 		`for="email"`,
-		`data-gsxui-slot="field-error"`,
+		`data-gsxui-slot-field-error`,
 		`>Enter a valid email.</div>`,
 	} {
 		if !strings.Contains(got, want) {

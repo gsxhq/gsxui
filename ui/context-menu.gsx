@@ -59,7 +59,7 @@ import (
 // difference to fix and no reason to deviate from context-menu's own
 // source here.
 component ContextMenu(children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-contextmenu { withSlot("context-menu", attrs)... }>{ children }</div>
+	<div data-gsxui-contextmenu { attrs... } data-gsxui-slot-context-menu>{ children }</div>
 }
 
 // ContextMenuTrigger renders the drop-zone AREA a user right-clicks inside
@@ -69,7 +69,7 @@ component ContextMenu(children gsx.Node, attrs gsx.Attrs) {
 // via closest(), so any descendant right-click counts) rather than a click
 // on the element itself.
 component ContextMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-contextmenu-trigger { withSlot("context-menu-trigger", attrs)... }>{ children }</div>
+	<div data-gsxui-contextmenu-trigger { attrs... } data-gsxui-slot-context-menu-trigger>{ children }</div>
 }
 
 // ContextMenuContent renders the popover. popover="auto" gives top layer,
@@ -91,7 +91,7 @@ component ContextMenuContent(children gsx.Node, attrs gsx.Attrs) {
 		role="menu"
 		tabindex="-1"
 		data-state="closed"
-		{ withSlot("context-menu-content", attrs)... }
+		{ attrs... } data-gsxui-slot-context-menu-content
 	>
 		{ children }
 	</div>
@@ -108,7 +108,7 @@ component ContextMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 		data-variant={variant |> default("default")}
 		role="menuitem"
 		tabindex="-1"
-		{ withSlot("context-menu-item", attrs)... }
+		{ attrs... } data-gsxui-slot-context-menu-item
 	>
 		{ children }
 	</div>
@@ -122,7 +122,7 @@ component ContextMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 // to or scopes by this element — it's purely a11y markup, same call as
 // DropdownMenuGroup.
 component ContextMenuGroup(children gsx.Node, attrs gsx.Attrs) {
-	<div role="group" { withSlot("context-menu-group", attrs)... }>{ children }</div>
+	<div role="group" { attrs... } data-gsxui-slot-context-menu-group>{ children }</div>
 }
 
 // ContextMenuCheckboxItem is the shadcn/ui ContextMenuCheckboxItem. checked
@@ -151,9 +151,9 @@ component ContextMenuCheckboxItem(checked bool, value string, children gsx.Node,
 			data-state="unchecked"
 		} }
 		tabindex="-1"
-		{ withSlot("context-menu-checkbox-item", attrs)... }
+		{ attrs... } data-gsxui-slot-context-menu-checkbox-item
 	>
-		<span data-gsxui-contextmenu-checkbox-indicator { withSlot("context-menu-checkbox-item-indicator", nil)... }>
+		<span data-gsxui-contextmenu-checkbox-indicator data-gsxui-slot-context-menu-checkbox-item-indicator>
 			<icon.Check/>
 		</span>
 		{ children }
@@ -167,7 +167,7 @@ component ContextMenuCheckboxItem(checked bool, value string, children gsx.Node,
 // event. data-gsxui-contextmenu-radio-group is the proximity anchor context-menu.js
 // uses to scope "clear every OTHER item in this group" to this group alone.
 component ContextMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-contextmenu-radio-group role="group" data-value={value} { withSlot("context-menu-radio-group", attrs)... }>
+	<div data-gsxui-contextmenu-radio-group role="group" data-value={value} { attrs... } data-gsxui-slot-context-menu-radio-group>
 		{ children }
 	</div>
 }
@@ -194,9 +194,9 @@ component ContextMenuRadioItem(checked bool, value string, children gsx.Node, at
 			data-state="unchecked"
 		} }
 		tabindex="-1"
-		{ withSlot("context-menu-radio-item", attrs)... }
+		{ attrs... } data-gsxui-slot-context-menu-radio-item
 	>
-		<span data-gsxui-contextmenu-radio-indicator { withSlot("context-menu-radio-item-indicator", nil)... }>
+		<span data-gsxui-contextmenu-radio-indicator data-gsxui-slot-context-menu-radio-item-indicator>
 			<icon.Circle/>
 		</span>
 		{ children }
@@ -210,15 +210,15 @@ component ContextMenuRadioItem(checked bool, value string, children gsx.Node, at
 // the shadcn source, not a copy error (see docs/jsx-parity.md ##
 // context-menu).
 component ContextMenuLabel(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("context-menu-label", attrs)... }>{ children }</div>
+	<div { attrs... } data-gsxui-slot-context-menu-label>{ children }</div>
 }
 
 component ContextMenuSeparator(attrs gsx.Attrs) {
-	<div role="separator" { withSlot("context-menu-separator", attrs)... }></div>
+	<div role="separator" { attrs... } data-gsxui-slot-context-menu-separator></div>
 }
 
 component ContextMenuShortcut(children gsx.Node, attrs gsx.Attrs) {
-	<span { withSlot("context-menu-shortcut", attrs)... }>
+	<span { attrs... } data-gsxui-slot-context-menu-shortcut>
 		{ children }
 	</span>
 }
@@ -231,7 +231,7 @@ component ContextMenuShortcut(children gsx.Node, attrs gsx.Attrs) {
 // and to scope the pointer-leave grace-period boundary check to "the whole
 // sub" — same shape as DropdownMenuSub's own doc comment.
 component ContextMenuSub(children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-contextmenu-sub { withSlot("context-menu-sub", attrs)... }>{ children }</div>
+	<div data-gsxui-contextmenu-sub { attrs... } data-gsxui-slot-context-menu-sub>{ children }</div>
 }
 
 // ContextMenuSubTrigger opens/closes its sibling ContextMenuSubContent
@@ -254,7 +254,7 @@ component ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 		aria-expanded="false"
 		data-state="closed"
 		tabindex="-1"
-		{ withSlot("context-menu-sub-trigger", attrs)... }
+		{ attrs... } data-gsxui-slot-context-menu-sub-trigger
 	>
 		{ children }
 		<icon.ChevronRight/>
@@ -283,7 +283,7 @@ component ContextMenuSubContent(children gsx.Node, attrs gsx.Attrs) {
 		tabindex="-1"
 		data-state="closed"
 		data-side="right"
-		{ withSlot("context-menu-sub-content", attrs)... }
+		{ attrs... } data-gsxui-slot-context-menu-sub-content
 	>
 		{ children }
 	</div>

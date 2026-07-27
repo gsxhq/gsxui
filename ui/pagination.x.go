@@ -27,17 +27,17 @@ func Pagination(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line pagination.gsx:17:2
-		_gsxv0 := withSlot("pagination", attrs)
 		_gsxgw.S("<nav")
-		if !_gsxv0.Has("role") {
+		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"navigation\"")
 		}
-		if !_gsxv0.Has("aria-label") {
+		if !attrs.Has("aria-label") {
 			_gsxgw.S(" aria-label=\"pagination\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
-		_gsxgw.StyleMerged("", _gsxv0.Style())
-		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-pagination"})
+		_gsxgw.BoolAttr("data-gsxui-slot-pagination", true)
 		_gsxgw.S(">")
 //line pagination.gsx:22:3
 		_gsxgw.Node(ctx, children)
@@ -51,11 +51,11 @@ func PaginationContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line pagination.gsx:27:2
-		_gsxv1 := withSlot("pagination-content", attrs)
 		_gsxgw.S("<ul")
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
-		_gsxgw.StyleMerged("", _gsxv1.Style())
-		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-pagination-content"})
+		_gsxgw.BoolAttr("data-gsxui-slot-pagination-content", true)
 		_gsxgw.S(">")
 //line pagination.gsx:28:3
 		_gsxgw.Node(ctx, children)
@@ -69,13 +69,13 @@ func PaginationItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line pagination.gsx:33:2
-		_gsxv2 := withSlot("pagination-item", attrs)
 		_gsxgw.S("<li")
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
-		_gsxgw.StyleMerged("", _gsxv2.Style())
-		_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-pagination-item"})
+		_gsxgw.BoolAttr("data-gsxui-slot-pagination-item", true)
 		_gsxgw.S(">")
-//line pagination.gsx:33:48
+//line pagination.gsx:33:51
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</li>")
 		return _gsxgw.Err()
@@ -114,36 +114,37 @@ func _gsxrenderPaginationLink(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, href s
 		size = "icon"
 	}
 //line pagination.gsx:55:2
-	_gsxv3 := withSlot("button", withSlot("pagination-link", attrs))
 	_gsxgw.S("<a")
 	if isActive {
-		if !_gsxv3.Has("aria-current") {
+		if !attrs.Has("aria-current") {
 			_gsxgw.S(" aria-current=\"page\"")
 		}
 	}
-	if !_gsxv3.Has("data-active") {
+	if !attrs.Has("data-active") {
 		_gsxgw.S(" data-active=\"")
 		_gsxgw.S(_gsxsc.FormatBool(bool(isActive)))
 		_gsxgw.S("\"")
 	}
-	if !_gsxv3.Has("data-variant") {
+	if !attrs.Has("data-variant") {
 		_gsxgw.S(" data-variant=\"")
 		_gsxgw.AttrValue(string(variant))
 		_gsxgw.S("\"")
 	}
-	if !_gsxv3.Has("data-size") {
+	if !attrs.Has("data-size") {
 		_gsxgw.S(" data-size=\"")
 		_gsxgw.AttrValue(string(size))
 		_gsxgw.S("\"")
 	}
-	if !_gsxv3.Has("href") {
+	if !attrs.Has("href") {
 		_gsxgw.S(" href=\"")
 		_gsxgw.URL(string(href))
 		_gsxgw.S("\"")
 	}
-	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv3.Class())
-	_gsxgw.StyleMerged("", _gsxv3.Style())
-	_gsxgw.Spread(ctx, _gsxv3, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-pagination-link", "data-gsxui-slot-button"})
+	_gsxgw.BoolAttr("data-gsxui-slot-pagination-link", true)
+	_gsxgw.BoolAttr("data-gsxui-slot-button", true)
 	_gsxgw.S(">")
 //line pagination.gsx:65:3
 	_gsxgw.Node(ctx, children)
@@ -167,14 +168,11 @@ func PaginationPrevious(href string, attrs gsx.Attrs) _gsxrt.Node {
 //line pagination.gsx:80:3
 			_gsxgw.Node(ctx, icon.ChevronLeft())
 //line pagination.gsx:81:3
-			_gsxv4 := withSlot("pagination-previous-label", nil)
 			_gsxgw.S("<span")
-			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv4.Class())
-			_gsxgw.StyleMerged("", _gsxv4.Style())
-			_gsxgw.Spread(ctx, _gsxv4, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.BoolAttr("data-gsxui-slot-pagination-previous-label", true)
 			_gsxgw.S(">Previous</span>")
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: "Go to previous page"}}, withSlot("pagination-previous", attrs))))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: "Go to previous page"}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-pagination-previous", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }
@@ -187,16 +185,13 @@ func PaginationNext(href string, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.NodeResult(_gsxrenderPaginationLink(ctx, _gsxgw, href, false, "default", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line pagination.gsx:92:3
-			_gsxv5 := withSlot("pagination-next-label", nil)
 			_gsxgw.S("<span")
-			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv5.Class())
-			_gsxgw.StyleMerged("", _gsxv5.Style())
-			_gsxgw.Spread(ctx, _gsxv5, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.BoolAttr("data-gsxui-slot-pagination-next-label", true)
 			_gsxgw.S(">Next</span>")
 //line pagination.gsx:93:3
 			_gsxgw.Node(ctx, icon.ChevronRight())
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: "Go to next page"}}, withSlot("pagination-next", attrs))))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: "Go to next page"}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-pagination-next", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }
@@ -206,23 +201,20 @@ func PaginationEllipsis(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line pagination.gsx:98:2
-		_gsxv6 := withSlot("pagination-ellipsis", attrs)
 		_gsxgw.S("<span")
-		if !_gsxv6.Has("aria-hidden") {
+		if !attrs.Has("aria-hidden") {
 			_gsxgw.S(" aria-hidden=\"true\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv6.Class())
-		_gsxgw.StyleMerged("", _gsxv6.Style())
-		_gsxgw.Spread(ctx, _gsxv6, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-pagination-ellipsis"})
+		_gsxgw.BoolAttr("data-gsxui-slot-pagination-ellipsis", true)
 		_gsxgw.S(">")
 //line pagination.gsx:102:3
 		_gsxgw.Node(ctx, icon.Ellipsis())
 //line pagination.gsx:103:3
-		_gsxv7 := withSlot("pagination-ellipsis-label", nil)
 		_gsxgw.S("<span")
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv7.Class())
-		_gsxgw.StyleMerged("", _gsxv7.Style())
-		_gsxgw.Spread(ctx, _gsxv7, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.BoolAttr("data-gsxui-slot-pagination-ellipsis-label", true)
 		_gsxgw.S(">More pages</span></span>")
 		return _gsxgw.Err()
 	})

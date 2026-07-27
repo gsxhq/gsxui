@@ -35,7 +35,7 @@ func States() _gsxrt.Node {
 //line states.gsx:17:3
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")
 //line states.gsx:18:4
-		_gsxgw.Node(ctx, ui.Checkbox(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "checkbox-states-checked"}}, _gsxrt.Attrs{{Key: "checked", Value: true}})))
+		_gsxgw.Node(ctx, ui.Checkbox(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "checkbox-states-checked"}}, _gsxrt.Attrs{{Key: "checked", Value: _gsxrt.Toggle(true)}})))
 //line states.gsx:19:4
 		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
@@ -46,7 +46,7 @@ func States() _gsxrt.Node {
 //line states.gsx:21:3
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")
 //line states.gsx:22:4
-		_gsxgw.Node(ctx, ui.Checkbox(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "checkbox-states-disabled"}}, _gsxrt.Attrs{{Key: "checked", Value: true}}, _gsxrt.Attrs{{Key: "disabled", Value: true}})))
+		_gsxgw.Node(ctx, ui.Checkbox(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "checkbox-states-disabled"}}, _gsxrt.Attrs{{Key: "checked", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "disabled", Value: _gsxrt.Toggle(true)}})))
 //line states.gsx:23:4
 		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)

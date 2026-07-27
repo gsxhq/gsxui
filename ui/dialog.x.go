@@ -27,16 +27,16 @@ func _gsxrenderDialog(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.N
 		return _gsxerr
 	}
 //line dialog.gsx:8:2
-	_gsxv0 := withSlot("dialog", attrs)
 	_gsxgw.S("<div")
-	if !_gsxv0.Has("data-gsxui-dialog") {
+	if !attrs.Has("data-gsxui-dialog") {
 		_gsxgw.BoolAttr("data-gsxui-dialog", true)
 	}
-	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
-	_gsxgw.StyleMerged("", _gsxv0.Style())
-	_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-dialog"})
+	_gsxgw.BoolAttr("data-gsxui-slot-dialog", true)
 	_gsxgw.S(">")
-//line dialog.gsx:8:58
+//line dialog.gsx:8:61
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
@@ -47,23 +47,23 @@ func DialogTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line dialog.gsx:12:2
-		_gsxv1 := withSlot("dialog-trigger", attrs)
 		_gsxgw.S("<button")
-		if !_gsxv1.Has("data-gsxui-dialog-trigger") {
+		if !attrs.Has("data-gsxui-dialog-trigger") {
 			_gsxgw.BoolAttr("data-gsxui-dialog-trigger", true)
 		}
-		if !_gsxv1.Has("type") {
+		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"button\"")
 		}
-		if !_gsxv1.Has("aria-haspopup") {
+		if !attrs.Has("aria-haspopup") {
 			_gsxgw.S(" aria-haspopup=\"dialog\"")
 		}
-		if !_gsxv1.Has("aria-expanded") {
+		if !attrs.Has("aria-expanded") {
 			_gsxgw.S(" aria-expanded=\"false\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
-		_gsxgw.StyleMerged("", _gsxv1.Style())
-		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-dialog-trigger"})
+		_gsxgw.BoolAttr("data-gsxui-slot-dialog-trigger", true)
 		_gsxgw.S(">")
 //line dialog.gsx:19:3
 		_gsxgw.Node(ctx, children)
@@ -85,82 +85,39 @@ func _gsxrenderDialogContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, hideClo
 		return _gsxerr
 	}
 //line dialog.gsx:24:2
-	_gsxv2 := withSlot("dialog-content", attrs)
 	_gsxgw.S("<dialog")
-	if !_gsxv2.Has("data-gsxui-dialog-content") {
+	if !attrs.Has("data-gsxui-dialog-content") {
 		_gsxgw.BoolAttr("data-gsxui-dialog-content", true)
 	}
-	if !_gsxv2.Has("data-state") {
+	if !attrs.Has("data-state") {
 		_gsxgw.S(" data-state=\"closed\"")
 	}
-	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
-	_gsxgw.StyleMerged("", _gsxv2.Style())
-	_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-dialog-content"})
+	_gsxgw.BoolAttr("data-gsxui-slot-dialog-content", true)
 	_gsxgw.S(">")
 //line dialog.gsx:29:3
 	_gsxgw.Node(ctx, children)
 //line dialog.gsx:30:3
 	if !hideCloseButton {
 //line dialog.gsx:31:4
-		_gsxv3 := withSlot("dialog-close", withSlot("dialog-close-button", nil))
-		_gsxgw.S("<button")
-		if !_gsxv3.Has("type") {
-			_gsxgw.S(" type=\"button\"")
-		}
-		if !_gsxv3.Has("data-gsxui-dialog-close") {
-			_gsxgw.BoolAttr("data-gsxui-dialog-close", true)
-		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv3.Class())
-		_gsxgw.StyleMerged("", _gsxv3.Style())
-		_gsxgw.Spread(ctx, _gsxv3, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S("<button type=\"button\"")
+		_gsxgw.BoolAttr("data-gsxui-dialog-close", true)
+		_gsxgw.BoolAttr("data-gsxui-slot-dialog-close-button", true)
+		_gsxgw.BoolAttr("data-gsxui-slot-dialog-close", true)
 		_gsxgw.S(">")
 //line dialog.gsx:36:5
-		_gsxv4 := withSlot("dialog-close-icon", nil)
-		_gsxgw.S("<svg")
-		if !_gsxv4.Has("aria-hidden") {
-			_gsxgw.S(" aria-hidden=\"true\"")
-		}
-		if !_gsxv4.Has("xmlns") {
-			_gsxgw.S(" xmlns=\"http://www.w3.org/2000/svg\"")
-		}
-		if !_gsxv4.Has("width") {
-			_gsxgw.S(" width=\"24\"")
-		}
-		if !_gsxv4.Has("height") {
-			_gsxgw.S(" height=\"24\"")
-		}
-		if !_gsxv4.Has("viewBox") {
-			_gsxgw.S(" viewBox=\"0 0 24 24\"")
-		}
-		if !_gsxv4.Has("fill") {
-			_gsxgw.S(" fill=\"none\"")
-		}
-		if !_gsxv4.Has("stroke") {
-			_gsxgw.S(" stroke=\"currentColor\"")
-		}
-		if !_gsxv4.Has("stroke-width") {
-			_gsxgw.S(" stroke-width=\"2\"")
-		}
-		if !_gsxv4.Has("stroke-linecap") {
-			_gsxgw.S(" stroke-linecap=\"round\"")
-		}
-		if !_gsxv4.Has("stroke-linejoin") {
-			_gsxgw.S(" stroke-linejoin=\"round\"")
-		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv4.Class())
-		_gsxgw.StyleMerged("", _gsxv4.Style())
-		_gsxgw.Spread(ctx, _gsxv4, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S("<svg aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"")
+		_gsxgw.BoolAttr("data-gsxui-slot-dialog-close-icon", true)
 		_gsxgw.S(">")
 //line dialog.gsx:49:6
 		_gsxgw.S("<path d=\"M18 6 6 18\"></path>")
 //line dialog.gsx:50:6
 		_gsxgw.S("<path d=\"m6 6 12 12\"></path></svg>")
 //line dialog.gsx:52:5
-		_gsxv5 := withSlot("dialog-close-label", nil)
 		_gsxgw.S("<span")
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv5.Class())
-		_gsxgw.StyleMerged("", _gsxv5.Style())
-		_gsxgw.Spread(ctx, _gsxv5, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.BoolAttr("data-gsxui-slot-dialog-close-label", true)
 		_gsxgw.S(">Close</span></button>")
 	}
 	_gsxgw.S("</dialog>")
@@ -180,13 +137,13 @@ func _gsxrenderDialogHeader(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children
 		return _gsxerr
 	}
 //line dialog.gsx:59:2
-	_gsxv6 := withSlot("dialog-header", attrs)
 	_gsxgw.S("<div")
-	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv6.Class())
-	_gsxgw.StyleMerged("", _gsxv6.Style())
-	_gsxgw.Spread(ctx, _gsxv6, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-dialog-header"})
+	_gsxgw.BoolAttr("data-gsxui-slot-dialog-header", true)
 	_gsxgw.S(">")
-//line dialog.gsx:59:47
+//line dialog.gsx:59:50
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
@@ -197,11 +154,11 @@ func DialogFooter(showCloseButton bool, children gsx.Node, attrs gsx.Attrs) _gsx
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line dialog.gsx:63:2
-		_gsxv7 := withSlot("dialog-footer", attrs)
 		_gsxgw.S("<div")
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv7.Class())
-		_gsxgw.StyleMerged("", _gsxv7.Style())
-		_gsxgw.Spread(ctx, _gsxv7, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-dialog-footer"})
+		_gsxgw.BoolAttr("data-gsxui-slot-dialog-footer", true)
 		_gsxgw.S(">")
 //line dialog.gsx:64:3
 		_gsxgw.Node(ctx, children)
@@ -212,7 +169,7 @@ func DialogFooter(showCloseButton bool, children gsx.Node, attrs gsx.Attrs) _gsx
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Close")
 				return _gsxgw.Err()
-			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-close", Value: true}}, withSlot("dialog-footer-close", nil))))
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-close", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-dialog-footer-close", Value: _gsxrt.Toggle(true)}})))
 		}
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
@@ -232,16 +189,16 @@ func _gsxrenderDialogTitle(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children 
 		return _gsxerr
 	}
 //line dialog.gsx:78:2
-	_gsxv8 := withSlot("dialog-title", attrs)
 	_gsxgw.S("<h2")
-	if !_gsxv8.Has("data-gsxui-dialog-title") {
+	if !attrs.Has("data-gsxui-dialog-title") {
 		_gsxgw.BoolAttr("data-gsxui-dialog-title", true)
 	}
-	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv8.Class())
-	_gsxgw.StyleMerged("", _gsxv8.Style())
-	_gsxgw.Spread(ctx, _gsxv8, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-dialog-title"})
+	_gsxgw.BoolAttr("data-gsxui-slot-dialog-title", true)
 	_gsxgw.S(">")
-//line dialog.gsx:78:69
+//line dialog.gsx:78:72
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</h2>")
 	return _gsxgw.Err()
@@ -260,16 +217,16 @@ func _gsxrenderDialogDescription(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, chi
 		return _gsxerr
 	}
 //line dialog.gsx:82:2
-	_gsxv9 := withSlot("dialog-description", attrs)
 	_gsxgw.S("<p")
-	if !_gsxv9.Has("data-gsxui-dialog-description") {
+	if !attrs.Has("data-gsxui-dialog-description") {
 		_gsxgw.BoolAttr("data-gsxui-dialog-description", true)
 	}
-	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv9.Class())
-	_gsxgw.StyleMerged("", _gsxv9.Style())
-	_gsxgw.Spread(ctx, _gsxv9, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-dialog-description"})
+	_gsxgw.BoolAttr("data-gsxui-slot-dialog-description", true)
 	_gsxgw.S(">")
-//line dialog.gsx:82:80
+//line dialog.gsx:82:83
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</p>")
 	return _gsxgw.Err()
@@ -280,19 +237,19 @@ func DialogClose(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line dialog.gsx:86:2
-		_gsxv10 := withSlot("dialog-close", attrs)
 		_gsxgw.S("<button")
-		if !_gsxv10.Has("data-gsxui-dialog-close") {
+		if !attrs.Has("data-gsxui-dialog-close") {
 			_gsxgw.BoolAttr("data-gsxui-dialog-close", true)
 		}
-		if !_gsxv10.Has("type") {
+		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"button\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv10.Class())
-		_gsxgw.StyleMerged("", _gsxv10.Style())
-		_gsxgw.Spread(ctx, _gsxv10, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-dialog-close"})
+		_gsxgw.BoolAttr("data-gsxui-slot-dialog-close", true)
 		_gsxgw.S(">")
-//line dialog.gsx:86:87
+//line dialog.gsx:86:90
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()

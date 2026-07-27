@@ -227,13 +227,13 @@ func _gsxrenderThemeEditor(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 		_gsxgw.S("Copy CSS")
 		return _gsxgw.Err()
-	}), _gsxrt.Attrs{{Key: "data-theme-copy", Value: true}}))
+	}), _gsxrt.Attrs{{Key: "data-theme-copy", Value: _gsxrt.Toggle(true)}}))
 //line theme.gsx:173:8
 	_gsxgw.Node(ctx, ui.Button("outline", "sm", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 		_gsxgw.S("Download theme.css")
 		return _gsxgw.Err()
-	}), _gsxrt.Attrs{{Key: "data-theme-download", Value: true}}))
+	}), _gsxrt.Attrs{{Key: "data-theme-download", Value: _gsxrt.Toggle(true)}}))
 	_gsxgw.S("</div>")
 //line theme.gsx:175:7
 	_gsxgw.S("<textarea")
@@ -259,7 +259,7 @@ func _gsxrenderThemeEditor(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 		_gsxgw.S("Apply")
 		return _gsxgw.Err()
-	}), _gsxrt.Attrs{{Key: "data-theme-import-apply", Value: true}}))
+	}), _gsxrt.Attrs{{Key: "data-theme-import-apply", Value: _gsxrt.Toggle(true)}}))
 	_gsxgw.S("</div></section></div>")
 //line theme.gsx:198:5
 	_gsxgw.S("<div class=\"flex flex-col gap-4\">")
@@ -382,7 +382,7 @@ func _gsxrenderThemeEditor(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error {
 //line theme.gsx:243:10
 			_gsxgw.S("<div class=\"flex items-center gap-2\">")
 //line theme.gsx:244:11
-			_gsxgw.Node(ctx, ui.Checkbox(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "theme-preview-terms"}}, _gsxrt.Attrs{{Key: "checked", Value: true}})))
+			_gsxgw.Node(ctx, ui.Checkbox(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "theme-preview-terms"}}, _gsxrt.Attrs{{Key: "checked", Value: _gsxrt.Toggle(true)}})))
 //line theme.gsx:245:11
 			_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)

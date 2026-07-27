@@ -11,7 +11,7 @@ import (
 func TestLabelDefault(t *testing.T) {
 	got := render(t, ui.Label(gsx.Raw("Email"), nil))
 	for _, want := range []string{
-		"<label", `data-gsxui-slot="label"`,
+		"<label", `data-gsxui-slot-label`,
 		">Email</label>",
 	} {
 		if !strings.Contains(got, want) {
@@ -25,7 +25,7 @@ func TestLabelPinned(t *testing.T) {
 	// (registry/new-york-v4/ui/label.tsx) and docs/jsx-parity.md — straight
 	// port, no ADAPT deviations.
 	got := render(t, ui.Label(gsx.Raw("Email"), nil))
-	want := `<label data-gsxui-slot="label">Email</label>`
+	want := `<label data-gsxui-slot-label>Email</label>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

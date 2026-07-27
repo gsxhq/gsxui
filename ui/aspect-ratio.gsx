@@ -27,7 +27,7 @@ import "github.com/gsxhq/gsx"
 // class attribute receives no injection filtering either) — not sanitized
 // end-user request data.
 component AspectRatio(ratio string, children gsx.Node, attrs gsx.Attrs) {
-	<div style={ "aspect-ratio: " + gsx.RawCSS(ratio) } { withSlot("aspect-ratio", attrs)... }>
+	<div style={ "aspect-ratio: " + gsx.RawCSS(ratio) } { attrs... } data-gsxui-slot-aspect-ratio>
 		{ children }
 	</div>
 }

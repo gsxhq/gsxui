@@ -95,13 +95,13 @@ import (
 component InputOTP(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-gsxui-input-otp
-		{ withSlot("input-otp", nil)... }
+		data-gsxui-slot-input-otp
 	>
 		<input
 			data-gsxui-input-otp-input
 			inputmode="numeric"
 			autocomplete="one-time-code"
-			{ withSlot("input-otp-input", attrs)... }
+			{ attrs... } data-gsxui-slot-input-otp-input
 		/>
 		{ children }
 	</div>
@@ -112,7 +112,7 @@ component InputOTP(children gsx.Node, attrs gsx.Attrs) {
 // InputOTP's own doc comment).
 component InputOTPGroup(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		{ withSlot("input-otp-group", attrs)... }
+		{ attrs... } data-gsxui-slot-input-otp-group
 	>
 		{ children }
 	</div>
@@ -126,13 +126,13 @@ component InputOTPSlot(attrs gsx.Attrs) {
 	<div
 		data-gsxui-input-otp-slot
 		data-active="false"
-		{ withSlot("input-otp-slot", attrs)... }
+		{ attrs... } data-gsxui-slot-input-otp-slot
 	></div>
 }
 
 // InputOTPSeparator: icon.Minus, static, unchanged from shadcn.
 component InputOTPSeparator(attrs gsx.Attrs) {
-	<div role="separator" { withSlot("input-otp-separator", attrs)... }>
+	<div role="separator" { attrs... } data-gsxui-slot-input-otp-separator>
 		<icon.Minus/>
 	</div>
 }

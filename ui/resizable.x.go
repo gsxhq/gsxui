@@ -118,19 +118,19 @@ func ResizablePanelGroup(orientation string, children gsx.Node, attrs gsx.Attrs)
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line resizable.gsx:108:2
-		_gsxv0 := withSlot("resizable-panel-group", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv0.Has("data-gsxui-resizable") {
+		if !attrs.Has("data-gsxui-resizable") {
 			_gsxgw.BoolAttr("data-gsxui-resizable", true)
 		}
-		if !_gsxv0.Has("aria-orientation") {
+		if !attrs.Has("aria-orientation") {
 			_gsxgw.S(" aria-orientation=\"")
 			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
-		_gsxgw.StyleMerged("", _gsxv0.Style())
-		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-resizable-panel-group"})
+		_gsxgw.BoolAttr("data-gsxui-slot-resizable-panel-group", true)
 		_gsxgw.S(">")
 //line resizable.gsx:113:3
 		_gsxgw.Node(ctx, children)
@@ -164,33 +164,33 @@ func ResizablePanel(defaultSize string, minSize string, maxSize string, children
 			grow = strings.TrimSuffix(defaultSize, "%")
 		}
 //line resizable.gsx:137:2
-		_gsxv1 := withSlot("resizable-panel", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv1.Has("data-gsxui-resizable-panel") {
+		if !attrs.Has("data-gsxui-resizable-panel") {
 			_gsxgw.BoolAttr("data-gsxui-resizable-panel", true)
 		}
 		if minSize != "" {
-			if !_gsxv1.Has("data-min-size") {
+			if !attrs.Has("data-min-size") {
 				_gsxgw.S(" data-min-size=\"")
 				_gsxgw.AttrValue(string(minSize))
 				_gsxgw.S("\"")
 			}
 		}
 		if maxSize != "" {
-			if !_gsxv1.Has("data-max-size") {
+			if !attrs.Has("data-max-size") {
 				_gsxgw.S(" data-max-size=\"")
 				_gsxgw.AttrValue(string(maxSize))
 				_gsxgw.S("\"")
 			}
 		}
-		if !_gsxv1.Has("style") {
+		if !attrs.Has("style") {
 			_gsxgw.S(" style=\"flex: ")
 			_gsxgw.AttrValue(_gsxrt.StyleValue(string(grow)))
 			_gsxgw.S(" 1 0px\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
-		_gsxgw.StyleMerged("", _gsxv1.Style())
-		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-resizable-panel"})
+		_gsxgw.BoolAttr("data-gsxui-slot-resizable-panel", true)
 		_gsxgw.S(">")
 //line resizable.gsx:148:3
 		_gsxgw.Node(ctx, children)
@@ -251,34 +251,31 @@ func ResizableHandle(orientation string, withHandle bool, attrs gsx.Attrs) _gsxr
 			handleOrientation = "horizontal"
 		}
 //line resizable.gsx:199:2
-		_gsxv2 := withSlot("resizable-handle", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv2.Has("data-gsxui-resizable-handle") {
+		if !attrs.Has("data-gsxui-resizable-handle") {
 			_gsxgw.BoolAttr("data-gsxui-resizable-handle", true)
 		}
-		if !_gsxv2.Has("role") {
+		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"separator\"")
 		}
-		if !_gsxv2.Has("aria-orientation") {
+		if !attrs.Has("aria-orientation") {
 			_gsxgw.S(" aria-orientation=\"")
 			_gsxgw.AttrValue(string(handleOrientation))
 			_gsxgw.S("\"")
 		}
-		if !_gsxv2.Has("tabindex") {
+		if !attrs.Has("tabindex") {
 			_gsxgw.S(" tabindex=\"0\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
-		_gsxgw.StyleMerged("", _gsxv2.Style())
-		_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-resizable-handle"})
+		_gsxgw.BoolAttr("data-gsxui-slot-resizable-handle", true)
 		_gsxgw.S(">")
 //line resizable.gsx:206:3
 		if withHandle {
 //line resizable.gsx:207:4
-			_gsxv3 := withSlot("resizable-handle-grip", nil)
 			_gsxgw.S("<div")
-			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv3.Class())
-			_gsxgw.StyleMerged("", _gsxv3.Style())
-			_gsxgw.Spread(ctx, _gsxv3, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.BoolAttr("data-gsxui-slot-resizable-handle-grip", true)
 			_gsxgw.S("></div>")
 		}
 		_gsxgw.S("</div>")

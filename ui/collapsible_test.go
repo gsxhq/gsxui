@@ -13,7 +13,7 @@ func TestCollapsiblePinned(t *testing.T) {
 		ui.CollapsibleTrigger(gsx.Raw("Toggle"), nil),
 		ui.CollapsibleContent(gsx.Raw("Body"), nil),
 	), nil))
-	want := `<details open data-gsxui-slot="collapsible"><summary data-gsxui-slot="collapsible-trigger">Toggle</summary><div data-gsxui-slot="collapsible-content">Body</div></details>`
+	want := `<details open data-gsxui-slot-collapsible><summary data-gsxui-slot-collapsible-trigger>Toggle</summary><div data-gsxui-slot-collapsible-content>Body</div></details>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -31,7 +31,7 @@ func TestCollapsibleCallerAttrs(t *testing.T) {
 		{Key: "id", Value: "panel"},
 		{Key: "class", Value: "caller"},
 	}))
-	want := `<div class="caller" data-gsxui-slot="collapsible-content" id="panel">x</div>`
+	want := `<div class="caller" id="panel" data-gsxui-slot-collapsible-content>x</div>`
 	if got != want {
 		t.Errorf("attrs mismatch\n got: %s\nwant: %s", got, want)
 	}

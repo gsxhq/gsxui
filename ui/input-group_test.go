@@ -10,7 +10,7 @@ import (
 
 func TestInputGroupPinned(t *testing.T) {
 	got := render(t, ui.InputGroup(gsx.Raw("x"), nil))
-	want := `<div role="group" data-gsxui-slot="input-group">x</div>`
+	want := `<div role="group" data-gsxui-slot-input-group>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -33,7 +33,7 @@ func TestInputGroupCallerClassMerges(t *testing.T) {
 // TestInputGroupAddonDefaultPinned pins the zero-value ("inline-start") align.
 func TestInputGroupAddonDefaultPinned(t *testing.T) {
 	got := render(t, ui.InputGroupAddon("", gsx.Raw("x"), nil))
-	want := `<div role="group" data-align="inline-start" data-gsxui-slot="input-group-addon">x</div>`
+	want := `<div role="group" data-align="inline-start" data-gsxui-slot-input-group-addon>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -41,7 +41,7 @@ func TestInputGroupAddonDefaultPinned(t *testing.T) {
 
 func TestInputGroupAddonInlineEndPinned(t *testing.T) {
 	got := render(t, ui.InputGroupAddon("inline-end", gsx.Raw("x"), nil))
-	for _, want := range []string{`data-align="inline-end"`, `data-gsxui-slot="input-group-addon"`} {
+	for _, want := range []string{`data-align="inline-end"`, `data-gsxui-slot-input-group-addon`} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
@@ -50,7 +50,7 @@ func TestInputGroupAddonInlineEndPinned(t *testing.T) {
 
 func TestInputGroupAddonBlockStartPinned(t *testing.T) {
 	got := render(t, ui.InputGroupAddon("block-start", gsx.Raw("x"), nil))
-	want := `<div role="group" data-align="block-start" data-gsxui-slot="input-group-addon">x</div>`
+	want := `<div role="group" data-align="block-start" data-gsxui-slot-input-group-addon>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -58,7 +58,7 @@ func TestInputGroupAddonBlockStartPinned(t *testing.T) {
 
 func TestInputGroupAddonBlockEndPinned(t *testing.T) {
 	got := render(t, ui.InputGroupAddon("block-end", gsx.Raw("x"), nil))
-	for _, want := range []string{`data-align="block-end"`, `data-gsxui-slot="input-group-addon"`} {
+	for _, want := range []string{`data-align="block-end"`, `data-gsxui-slot-input-group-addon`} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
@@ -77,7 +77,7 @@ func TestInputGroupAddonAttrsFallThrough(t *testing.T) {
 // while InputGroupButton's caller classes remain the only rendered classes.
 func TestInputGroupButtonDefaultPinned(t *testing.T) {
 	got := render(t, ui.InputGroupButton("", "", gsx.Raw("x"), nil))
-	want := `<button data-variant="ghost" type="button" data-gsxui-slot="button input-group-button" data-size="xs">x</button>`
+	want := `<button data-variant="ghost" type="button" data-size="xs" data-gsxui-slot-input-group-button data-gsxui-slot-button>x</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -141,7 +141,7 @@ func TestInputGroupButtonCallerClassMerges(t *testing.T) {
 
 func TestInputGroupTextPinned(t *testing.T) {
 	got := render(t, ui.InputGroupText(gsx.Raw("x"), nil))
-	want := `<span data-gsxui-slot="input-group-text">x</span>`
+	want := `<span data-gsxui-slot-input-group-text>x</span>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -157,7 +157,7 @@ func TestInputGroupTextAttrsFallThrough(t *testing.T) {
 // InputGroupInput composes Input's token with the group-control token.
 func TestInputGroupInputPinned(t *testing.T) {
 	got := render(t, ui.InputGroupInput(nil))
-	want := `<input type="text" data-gsxui-slot="input input-group-control">`
+	want := `<input type="text" data-gsxui-slot-input-group-control data-gsxui-slot-input>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -173,7 +173,7 @@ func TestInputGroupInputAttrsFallThrough(t *testing.T) {
 // InputGroupTextarea composes Textarea's token with the group-control token.
 func TestInputGroupTextareaPinned(t *testing.T) {
 	got := render(t, ui.InputGroupTextarea("hi", nil))
-	want := `<textarea data-gsxui-slot="textarea input-group-control">hi</textarea>`
+	want := `<textarea data-gsxui-slot-input-group-control data-gsxui-slot-textarea>hi</textarea>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -199,12 +199,12 @@ func TestInputGroupSearchComposition(t *testing.T) {
 		nil,
 	))
 	for _, want := range []string{
-		`data-gsxui-slot="input-group"`,
+		`data-gsxui-slot-input-group`,
 		`data-align="inline-start"`,
-		`data-gsxui-slot="input input-group-control"`,
+		`data-gsxui-slot-input-group-control data-gsxui-slot-input`,
 		`placeholder="Search..."`,
 		`data-align="inline-end"`,
-		`data-gsxui-slot="button input-group-button"`,
+		`data-gsxui-slot-input-group-button data-gsxui-slot-button`,
 		`data-size="icon-xs"`,
 		`aria-label="Send"`,
 	} {

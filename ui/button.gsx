@@ -19,7 +19,7 @@ component Button(variant string, size string, href string, disabled bool, childr
 			data-variant={variant |> default("default")}
 			data-size={size |> default("default")}
 			href={href}
-			{ withSlot("button", attrs)... }
+			{ attrs... } data-gsxui-slot-button
 		>
 			{ children }
 		</a>
@@ -29,7 +29,7 @@ component Button(variant string, size string, href string, disabled bool, childr
 			data-size={size |> default("default")}
 			type="button"
 			disabled={disabled}
-			{ withSlot("button", attrs)... }
+			{ attrs... } data-gsxui-slot-button
 		>
 			{ children }
 		</button>

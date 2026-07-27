@@ -58,8 +58,10 @@ func TestFormControlsExposeCSSOnlySlots(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := render(t, tt.node)
 			for _, slot := range tt.slots {
-				if !strings.Contains(got, `data-gsxui-slot="`+slot+`"`) {
-					t.Errorf("missing slot token sequence %q\nin: %s", slot, got)
+				for name := range strings.FieldsSeq(slot) {
+					if !strings.Contains(got, `data-gsxui-slot-`+name) {
+						t.Errorf("missing slot marker %q\nin: %s", name, got)
+					}
 				}
 			}
 			if strings.Contains(got, `data-slot=`) {
@@ -81,27 +83,27 @@ func TestFormControlCompositionTokenOrder(t *testing.T) {
 		{
 			name: "InputGroupInput",
 			node: ui.InputGroupInput(nil),
-			want: `<input type="text" data-gsxui-slot="input input-group-control">`,
+			want: `<input type="text" data-gsxui-slot-input-group-control data-gsxui-slot-input>`,
 		},
 		{
 			name: "InputGroupTextarea",
 			node: ui.InputGroupTextarea("hello", nil),
-			want: `<textarea data-gsxui-slot="textarea input-group-control">hello</textarea>`,
+			want: `<textarea data-gsxui-slot-input-group-control data-gsxui-slot-textarea>hello</textarea>`,
 		},
 		{
 			name: "FieldLabel",
 			node: ui.FieldLabel(gsx.Raw("Email"), nil),
-			want: `<label data-gsxui-slot="label field-label">Email</label>`,
+			want: `<label data-gsxui-slot-field-label data-gsxui-slot-label>Email</label>`,
 		},
 		{
 			name: "FieldSeparator",
 			node: ui.FieldSeparator(gsx.Raw("Or"), nil),
-			want: `<div data-content="true" data-gsxui-slot="field-separator-wrapper"><div role="none" data-orientation="horizontal" data-gsxui-slot="separator field-separator"></div><span data-gsxui-slot="field-separator-content">Or</span></div>`,
+			want: `<div data-content="true" data-gsxui-slot-field-separator-wrapper><div role="none" data-orientation="horizontal" data-gsxui-slot-field-separator data-gsxui-slot-separator></div><span data-gsxui-slot-field-separator-content>Or</span></div>`,
 		},
 		{
 			name: "ToggleGroupItem",
 			node: ui.ToggleGroupItem("multiple", "", "", "", false, "bold", gsx.Raw("B"), nil),
-			want: `<button type="button" data-gsxui-toggle-group-item data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" data-state="off" data-value="bold" aria-pressed="false" data-gsxui-slot="toggle toggle-group-item">B</button>`,
+			want: `<button type="button" data-gsxui-toggle-group-item data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" data-state="off" data-value="bold" aria-pressed="false" data-gsxui-slot-toggle-group-item data-gsxui-slot-toggle>B</button>`,
 		},
 	}
 

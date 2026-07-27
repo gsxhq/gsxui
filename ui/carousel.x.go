@@ -46,25 +46,25 @@ func Carousel(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Nod
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line carousel.gsx:36:2
-		_gsxv0 := withSlot("carousel", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv0.Has("role") {
+		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"region\"")
 		}
-		if !_gsxv0.Has("aria-roledescription") {
+		if !attrs.Has("aria-roledescription") {
 			_gsxgw.S(" aria-roledescription=\"carousel\"")
 		}
-		if !_gsxv0.Has("data-gsxui-carousel") {
+		if !attrs.Has("data-gsxui-carousel") {
 			_gsxgw.BoolAttr("data-gsxui-carousel", true)
 		}
-		if !_gsxv0.Has("data-orientation") {
+		if !attrs.Has("data-orientation") {
 			_gsxgw.S(" data-orientation=\"")
 			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
-		_gsxgw.StyleMerged("", _gsxv0.Style())
-		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-carousel"})
+		_gsxgw.BoolAttr("data-gsxui-slot-carousel", true)
 		_gsxgw.S(">")
 //line carousel.gsx:43:3
 		_gsxgw.Node(ctx, children)
@@ -94,31 +94,24 @@ func CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs) _gs
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line carousel.gsx:62:2
-		_gsxv1 := withSlot("carousel-content", nil)
 		_gsxgw.S("<div")
-		if !_gsxv1.Has("data-gsxui-carousel-content") {
-			_gsxgw.BoolAttr("data-gsxui-carousel-content", true)
-		}
-		if !_gsxv1.Has("data-orientation") {
-			_gsxgw.S(" data-orientation=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
-			_gsxgw.S("\"")
-		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
-		_gsxgw.StyleMerged("", _gsxv1.Style())
-		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.BoolAttr("data-gsxui-carousel-content", true)
+		_gsxgw.S(" data-orientation=\"")
+		_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
+		_gsxgw.S("\"")
+		_gsxgw.BoolAttr("data-gsxui-slot-carousel-content", true)
 		_gsxgw.S(">")
 //line carousel.gsx:67:3
-		_gsxv2 := withSlot("carousel-track", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv2.Has("data-orientation") {
+		if !attrs.Has("data-orientation") {
 			_gsxgw.S(" data-orientation=\"")
 			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
-		_gsxgw.StyleMerged("", _gsxv2.Style())
-		_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-carousel-track"})
+		_gsxgw.BoolAttr("data-gsxui-slot-carousel-track", true)
 		_gsxgw.S(">")
 //line carousel.gsx:71:4
 		_gsxgw.Node(ctx, children)
@@ -154,25 +147,25 @@ func CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line carousel.gsx:97:2
-		_gsxv3 := withSlot("carousel-item", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv3.Has("role") {
+		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"group\"")
 		}
-		if !_gsxv3.Has("aria-roledescription") {
+		if !attrs.Has("aria-roledescription") {
 			_gsxgw.S(" aria-roledescription=\"slide\"")
 		}
-		if !_gsxv3.Has("data-gsxui-carousel-item") {
+		if !attrs.Has("data-gsxui-carousel-item") {
 			_gsxgw.BoolAttr("data-gsxui-carousel-item", true)
 		}
-		if !_gsxv3.Has("data-orientation") {
+		if !attrs.Has("data-orientation") {
 			_gsxgw.S(" data-orientation=\"")
 			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv3.Class())
-		_gsxgw.StyleMerged("", _gsxv3.Style())
-		_gsxgw.Spread(ctx, _gsxv3, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-carousel-item"})
+		_gsxgw.BoolAttr("data-gsxui-slot-carousel-item", true)
 		_gsxgw.S(">")
 //line carousel.gsx:104:3
 		_gsxgw.Node(ctx, children)
@@ -221,14 +214,11 @@ func CarouselPrevious(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 //line carousel.gsx:145:3
 			_gsxgw.Node(ctx, icon.ArrowLeft())
 //line carousel.gsx:146:3
-			_gsxv4 := withSlot("carousel-control-label", nil)
 			_gsxgw.S("<span")
-			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv4.Class())
-			_gsxgw.StyleMerged("", _gsxv4.Style())
-			_gsxgw.Spread(ctx, _gsxv4, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.BoolAttr("data-gsxui-slot-carousel-control-label", true)
 			_gsxgw.S(">Previous slide</span>")
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-carousel-prev", Value: true}}, _gsxrt.Attrs{{Key: "data-orientation", Value: _gsxstd.Default((orientation), "horizontal")}}, withSlot("carousel-previous", attrs))))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-carousel-prev", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-orientation", Value: _gsxstd.Default((orientation), "horizontal")}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-carousel-previous", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }
@@ -243,14 +233,11 @@ func CarouselNext(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 //line carousel.gsx:158:3
 			_gsxgw.Node(ctx, icon.ArrowRight())
 //line carousel.gsx:159:3
-			_gsxv5 := withSlot("carousel-control-label", nil)
 			_gsxgw.S("<span")
-			_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv5.Class())
-			_gsxgw.StyleMerged("", _gsxv5.Style())
-			_gsxgw.Spread(ctx, _gsxv5, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+			_gsxgw.BoolAttr("data-gsxui-slot-carousel-control-label", true)
 			_gsxgw.S(">Next slide</span>")
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-carousel-next", Value: true}}, _gsxrt.Attrs{{Key: "data-orientation", Value: _gsxstd.Default((orientation), "horizontal")}}, withSlot("carousel-next", attrs))))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-carousel-next", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-orientation", Value: _gsxstd.Default((orientation), "horizontal")}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-carousel-next", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }

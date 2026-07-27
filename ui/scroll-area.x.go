@@ -64,16 +64,16 @@ func ScrollArea(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.N
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line scroll-area.gsx:52:2
-		_gsxv0 := withSlot("scroll-area", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv0.Has("data-orientation") {
+		if !attrs.Has("data-orientation") {
 			_gsxgw.S(" data-orientation=\"")
 			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "vertical")))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
-		_gsxgw.StyleMerged("", _gsxv0.Style())
-		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-scroll-area"})
+		_gsxgw.BoolAttr("data-gsxui-slot-scroll-area", true)
 		_gsxgw.S(">")
 //line scroll-area.gsx:56:3
 		_gsxgw.Node(ctx, children)

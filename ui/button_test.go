@@ -18,7 +18,7 @@ var disabledAttr = regexp.MustCompile(`disabled(>|\s)`)
 func TestButtonDefault(t *testing.T) {
 	got := render(t, ui.Button("", "", "", false, gsx.Raw("Save"), nil))
 	for _, want := range []string{
-		"<button", `data-gsxui-slot="button"`, `type="button"`,
+		"<button", `data-gsxui-slot-button`, `type="button"`,
 		`data-variant="default"`, `data-size="default"`,
 		">Save</button>",
 	} {
@@ -37,7 +37,7 @@ func TestButtonPinned(t *testing.T) {
 	// (registry/new-york-v4/ui/button.tsx) and docs/jsx-parity.md — no ADAPT
 	// deviations apply to the default button.
 	got := render(t, ui.Button("", "", "", false, gsx.Raw("Save"), nil))
-	want := `<button data-variant="default" data-size="default" type="button" data-gsxui-slot="button">Save</button>`
+	want := `<button data-variant="default" data-size="default" type="button" data-gsxui-slot-button>Save</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -68,7 +68,7 @@ func TestButtonVariantAndSizeAxes(t *testing.T) {
 
 func TestButtonHrefRendersAnchor(t *testing.T) {
 	got := render(t, ui.Button("", "", "/docs", false, gsx.Raw("Docs"), nil))
-	for _, want := range []string{"<a", `href="/docs"`, `data-gsxui-slot="button"`, ">Docs</a>"} {
+	for _, want := range []string{"<a", `href="/docs"`, `data-gsxui-slot-button`, ">Docs</a>"} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
@@ -105,4 +105,15 @@ func TestButtonCallerClassIsForwardedOnce(t *testing.T) {
 	if strings.Count(got, `class="h-12"`) != 1 {
 		t.Errorf("caller class must be the only class and render once\nin: %s", got)
 	}
+}
+
+func TestButtonOwnPresenceMarkerWinsCollisionAndKeepsComposedMarker(t *testing.T) {
+	got := render(t, ui.Button("", "", "", false, gsx.Raw("x"), gsx.Attrs{
+		{Key: "data-gsxui-slot-button", Value: "caller-value"},
+		{Key: "data-gsxui-slot-pagination-link", Value: gsx.Toggle(true)},
+	}))
+	requirePresenceAttributesOnSameTag(t, got, "<button",
+		"data-gsxui-slot-pagination-link",
+		"data-gsxui-slot-button",
+	)
 }

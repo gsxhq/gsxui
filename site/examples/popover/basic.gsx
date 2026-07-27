@@ -14,7 +14,7 @@ component Basic() {
 		<ui.Button
 			variant="outline"
 			data-gsxui-popover-trigger
-			data-gsxui-slot="popover-trigger"
+			data-gsxui-slot-popover-trigger
 			aria-expanded="false"
 		>
 			Open popover

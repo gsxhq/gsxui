@@ -11,7 +11,7 @@ import (
 func TestTextareaDefault(t *testing.T) {
 	got := render(t, ui.Textarea("", nil))
 	for _, want := range []string{
-		"<textarea", `data-gsxui-slot="textarea"`,
+		"<textarea", `data-gsxui-slot-textarea`,
 		"></textarea>",
 	} {
 		if !strings.Contains(got, want) {
@@ -23,7 +23,7 @@ func TestTextareaDefault(t *testing.T) {
 func TestTextareaPinned(t *testing.T) {
 	// Presentation lives in the stylesheet; the render pin covers structure.
 	got := render(t, ui.Textarea("", nil))
-	want := `<textarea data-gsxui-slot="textarea"></textarea>`
+	want := `<textarea data-gsxui-slot-textarea></textarea>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

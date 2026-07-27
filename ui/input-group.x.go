@@ -48,14 +48,14 @@ func _gsxrenderInputGroup(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children g
 		return _gsxerr
 	}
 //line input-group.gsx:28:2
-	_gsxv0 := withSlot("input-group", attrs)
 	_gsxgw.S("<div")
-	if !_gsxv0.Has("role") {
+	if !attrs.Has("role") {
 		_gsxgw.S(" role=\"group\"")
 	}
-	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
-	_gsxgw.StyleMerged("", _gsxv0.Style())
-	_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-input-group"})
+	_gsxgw.BoolAttr("data-gsxui-slot-input-group", true)
 	_gsxgw.S(">")
 //line input-group.gsx:32:3
 	_gsxgw.Node(ctx, children)
@@ -80,19 +80,19 @@ func _gsxrenderInputGroupAddon(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, align
 		return _gsxerr
 	}
 //line input-group.gsx:39:2
-	_gsxv1 := withSlot("input-group-addon", attrs)
 	_gsxgw.S("<div")
-	if !_gsxv1.Has("role") {
+	if !attrs.Has("role") {
 		_gsxgw.S(" role=\"group\"")
 	}
-	if !_gsxv1.Has("data-align") {
+	if !attrs.Has("data-align") {
 		_gsxgw.S(" data-align=\"")
 		_gsxgw.AttrValue(string(_gsxstd.Default((align), "inline-start")))
 		_gsxgw.S("\"")
 	}
-	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
-	_gsxgw.StyleMerged("", _gsxv1.Style())
-	_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-input-group-addon"})
+	_gsxgw.BoolAttr("data-gsxui-slot-input-group-addon", true)
 	_gsxgw.S(">")
 //line input-group.gsx:44:3
 	_gsxgw.Node(ctx, children)
@@ -119,14 +119,14 @@ func _gsxrenderInputGroupButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, vari
 		return _gsxerr
 	}
 //line input-group.gsx:53:2
-	_gsxa2 := _gsxrt.Attrs{{Key: "data-size", Value: _gsxstd.Default((size), "xs")}}
-	_gsxa3 := _gsxstd.Default((variant), "ghost")
-	_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, _gsxa3, "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+	_gsxa0 := _gsxrt.Attrs{{Key: "data-size", Value: _gsxstd.Default((size), "xs")}}
+	_gsxa1 := _gsxstd.Default((variant), "ghost")
+	_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, _gsxa1, "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line input-group.gsx:58:3
 		_gsxgw.Node(ctx, children)
 		return _gsxgw.Err()
-	}), _gsxrt.ConcatAttrs(_gsxa2, withSlot("input-group-button", attrs))))
+	}), _gsxrt.ConcatAttrs(_gsxa0, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-input-group-button", Value: _gsxrt.Toggle(true)}})))
 	return _gsxgw.Err()
 }
 
@@ -138,11 +138,11 @@ func InputGroupText(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line input-group.gsx:64:2
-		_gsxv4 := withSlot("input-group-text", attrs)
 		_gsxgw.S("<span")
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv4.Class())
-		_gsxgw.StyleMerged("", _gsxv4.Style())
-		_gsxgw.Spread(ctx, _gsxv4, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-input-group-text"})
+		_gsxgw.BoolAttr("data-gsxui-slot-input-group-text", true)
 		_gsxgw.S(">")
 //line input-group.gsx:67:3
 		_gsxgw.Node(ctx, children)
@@ -168,7 +168,7 @@ func _gsxrenderInputGroupInput(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs
 		return _gsxerr
 	}
 //line input-group.gsx:74:2
-	_gsxgw.NodeResult(_gsxrenderInput(ctx, _gsxgw, withSlot("input-group-control", attrs)))
+	_gsxgw.NodeResult(_gsxrenderInput(ctx, _gsxgw, _gsxrt.ConcatAttrs(attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-input-group-control", Value: _gsxrt.Toggle(true)}})))
 	return _gsxgw.Err()
 }
 
@@ -183,7 +183,7 @@ func InputGroupTextarea(value string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line input-group.gsx:84:2
-		_gsxgw.NodeResult(_gsxrenderTextarea(ctx, _gsxgw, value, withSlot("input-group-control", attrs)))
+		_gsxgw.NodeResult(_gsxrenderTextarea(ctx, _gsxgw, value, _gsxrt.ConcatAttrs(attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-input-group-control", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }

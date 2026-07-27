@@ -11,7 +11,7 @@ component Wide() {
 		<ui.Button
 			variant="outline"
 			data-gsxui-tooltip-trigger
-			data-gsxui-slot="tooltip-trigger"
+			data-gsxui-slot-tooltip-trigger
 		>
 			Info
 		</ui.Button>

@@ -22,7 +22,7 @@ func TestSidebarProviderReflectsStateWidthsAndBehaviorHook(t *testing.T) {
 	requireContainsAll(t, open,
 		`data-state="expanded"`,
 		`data-gsxui-sidebar-wrapper`,
-		`data-gsxui-slot="sidebar-wrapper"`,
+		`data-gsxui-slot-sidebar-wrapper`,
 		`--sidebar-width:16rem`,
 		`--sidebar-width-icon:3rem`,
 		`class="caller"`,
@@ -49,25 +49,25 @@ func TestSidebarRendersTwoExplicitResponsiveTrees(t *testing.T) {
 		t.Fatalf("children count = %d, want mobile and desktop copies\nin: %s", count, got)
 	}
 	requireContainsAll(t, got,
-		`data-gsxui-slot="dialog sheet sidebar-mobile-root"`,
-		`data-gsxui-slot="dialog-content sheet-content sidebar sidebar-mobile-content"`,
+		`data-gsxui-slot-sidebar-mobile-root data-gsxui-slot-sheet data-gsxui-slot-dialog`,
+		`data-gsxui-slot-sidebar-mobile-content data-gsxui-slot-sidebar data-gsxui-slot-sheet-content data-gsxui-slot-dialog-content`,
 		`data-mobile="true"`,
 		`data-side="right"`,
 		`data-gsxui-sidebar-mobile-dialog`,
 		`--sidebar-width:18rem`,
-		`data-gsxui-slot="sheet-header sidebar-mobile-header"`,
-		`data-gsxui-slot="sheet-title sidebar-mobile-title"`,
-		`data-gsxui-slot="sheet-description sidebar-mobile-description"`,
-		`data-gsxui-slot="sidebar-mobile-inner"`,
-		`data-gsxui-slot="sidebar sidebar-desktop"`,
+		`data-gsxui-slot-sidebar-mobile-header data-gsxui-slot-sheet-header`,
+		`data-gsxui-slot-sidebar-mobile-title data-gsxui-slot-sheet-title`,
+		`data-gsxui-slot-sidebar-mobile-description data-gsxui-slot-sheet-description`,
+		`data-gsxui-slot-sidebar-mobile-inner`,
+		`data-gsxui-slot-sidebar-desktop data-gsxui-slot-sidebar`,
 		`data-state="collapsed"`,
 		`data-collapsible="icon"`,
 		`data-gsxui-sidebar-collapsible="icon"`,
 		`data-variant="floating"`,
 		`data-gsxui-sidebar-desktop`,
-		`data-gsxui-slot="sidebar-gap"`,
-		`data-gsxui-slot="sidebar-container"`,
-		`data-gsxui-slot="sidebar-inner"`,
+		`data-gsxui-slot-sidebar-gap`,
+		`data-gsxui-slot-sidebar-container`,
+		`data-gsxui-slot-sidebar-inner`,
 	)
 	if count := strings.Count(got, `class="caller"`); count != 2 {
 		t.Fatalf("caller class count = %d, want one on each responsive tree\nin: %s", count, got)
@@ -80,7 +80,7 @@ func TestSidebarRendersTwoExplicitResponsiveTrees(t *testing.T) {
 func TestSidebarExpandedDesktopClearsActiveCollapsibleMode(t *testing.T) {
 	got := render(t, ui.Sidebar(true, "", "", "icon", gsx.Raw("x"), nil))
 	requireContainsAll(t, got,
-		`data-gsxui-slot="sidebar sidebar-desktop"`,
+		`data-gsxui-slot-sidebar-desktop data-gsxui-slot-sidebar`,
 		`data-state="expanded"`,
 		`data-collapsible=""`,
 		`data-gsxui-sidebar-collapsible="icon"`,
@@ -102,7 +102,7 @@ func TestSidebarCollapsibleNoneIsOneCanonicalFlatTree(t *testing.T) {
 		t.Fatalf("children count = %d, want 1\nin: %s", count, got)
 	}
 	requireContainsAll(t, got,
-		`data-gsxui-slot="sidebar"`,
+		`data-gsxui-slot-sidebar`,
 		`data-side="right"`,
 		`data-variant="inset"`,
 		`data-collapsible="none"`,
@@ -122,17 +122,17 @@ func TestSidebarPrimitiveCompositionAndCallerClassPlacement(t *testing.T) {
 		{
 			name: "trigger button",
 			got:  render(t, ui.SidebarTrigger(gsx.Attrs{{Key: "class", Value: "caller"}})),
-			want: `data-gsxui-slot="button sidebar-trigger"`,
+			want: `data-gsxui-slot-sidebar-trigger data-gsxui-slot-button`,
 		},
 		{
 			name: "input",
 			got:  render(t, ui.SidebarInput(gsx.Attrs{{Key: "class", Value: "caller"}})),
-			want: `data-gsxui-slot="input sidebar-input"`,
+			want: `data-gsxui-slot-sidebar-input data-gsxui-slot-input`,
 		},
 		{
 			name: "separator",
 			got:  render(t, ui.SidebarSeparator(gsx.Attrs{{Key: "class", Value: "caller"}})),
-			want: `data-gsxui-slot="separator sidebar-separator"`,
+			want: `data-gsxui-slot-sidebar-separator data-gsxui-slot-separator`,
 		},
 	}
 	for _, tc := range cases {
@@ -152,8 +152,16 @@ func TestSidebarPrimitiveCompositionAndCallerClassPlacement(t *testing.T) {
 		`data-variant="ghost"`,
 		`data-size="icon"`,
 		`data-gsxui-sidebar-trigger`,
-		`data-gsxui-slot="icon"`,
-		`data-gsxui-slot="sidebar-trigger-label"`,
+		`data-gsxui-slot-icon`,
+		`data-gsxui-slot-sidebar-trigger-label`,
+	)
+}
+
+func TestSidebarTriggerComposesPresenceMarkersOnButton(t *testing.T) {
+	got := render(t, ui.SidebarTrigger(nil))
+	requirePresenceAttributesOnSameTag(t, got, "data-gsxui-sidebar-trigger",
+		"data-gsxui-slot-sidebar-trigger",
+		"data-gsxui-slot-button",
 	)
 }
 
@@ -180,7 +188,7 @@ func TestSidebarPlainPartsExposeNamespacedSlotsWithoutPresentationClasses(t *tes
 	}
 	for _, part := range parts {
 		t.Run(part.name, func(t *testing.T) {
-			requireContainsAll(t, part.got, `data-gsxui-slot="`+part.slot+`"`)
+			requireContainsAll(t, part.got, `data-gsxui-slot-`+part.slot)
 			if strings.Contains(part.got, ` class=`) {
 				t.Fatalf("library presentation class remains\nin: %s", part.got)
 			}
@@ -226,7 +234,7 @@ func TestSidebarMenuButtonReflectsEveryPresentationAxis(t *testing.T) {
 			size = "default"
 		}
 		requireContainsAll(t, got,
-			`data-gsxui-slot="sidebar-menu-button"`,
+			`data-gsxui-slot-sidebar-menu-button`,
 			`data-variant="`+variant+`"`,
 			`data-size="`+size+`"`,
 			`data-active="`+map[bool]string{false: "false", true: "true"}[tc.active]+`"`,
@@ -286,11 +294,11 @@ func TestSidebarMenuButtonComposesTooltipTokens(t *testing.T) {
 		nil,
 	))
 	requireContainsAll(t, got,
-		`data-gsxui-slot="tooltip sidebar-menu-button-tooltip"`,
-		`data-gsxui-slot="sidebar-menu-button"`,
+		`data-gsxui-slot-sidebar-menu-button-tooltip data-gsxui-slot-tooltip`,
+		`data-gsxui-slot-sidebar-menu-button`,
 		`data-gsxui-tooltip-trigger`,
-		`data-gsxui-slot="tooltip-content sidebar-menu-button-tooltip-content"`,
-		`data-gsxui-slot="tooltip-arrow"`,
+		`data-gsxui-slot-sidebar-menu-button-tooltip-content data-gsxui-slot-tooltip-content`,
+		`data-gsxui-slot-tooltip-arrow`,
 		`data-variant="outline"`,
 		`data-size="lg"`,
 		`data-active="true"`,
@@ -305,7 +313,7 @@ func TestSidebarMenuActionReflectsShowOnHover(t *testing.T) {
 	for _, show := range []bool{false, true} {
 		got := render(t, ui.SidebarMenuAction(show, gsx.Raw("x"), nil))
 		requireContainsAll(t, got,
-			`data-gsxui-slot="sidebar-menu-action"`,
+			`data-gsxui-slot-sidebar-menu-action`,
 			`data-show-on-hover="`+map[bool]string{false: "false", true: "true"}[show]+`"`,
 		)
 		if strings.Contains(got, ` class=`) {
@@ -322,7 +330,7 @@ func TestSidebarMenuSubButtonReflectsSizeActiveAndCallerClass(t *testing.T) {
 		gsx.Attrs{{Key: "class", Value: "caller"}},
 	))
 	requireContainsAll(t, got,
-		`data-gsxui-slot="sidebar-menu-sub-button"`,
+		`data-gsxui-slot-sidebar-menu-sub-button`,
 		`data-size="sm"`,
 		`data-active="true"`,
 		`class="caller"`,
@@ -332,9 +340,9 @@ func TestSidebarMenuSubButtonReflectsSizeActiveAndCallerClass(t *testing.T) {
 func TestSidebarMenuSkeletonComposesSkeletonPartsAndKeepsDynamicWidth(t *testing.T) {
 	got := render(t, ui.SidebarMenuSkeleton(true, nil))
 	requireContainsAll(t, got,
-		`data-gsxui-slot="sidebar-menu-skeleton"`,
-		`data-gsxui-slot="skeleton sidebar-menu-skeleton-icon"`,
-		`data-gsxui-slot="skeleton sidebar-menu-skeleton-text"`,
+		`data-gsxui-slot-sidebar-menu-skeleton`,
+		`data-gsxui-slot-sidebar-menu-skeleton-icon data-gsxui-slot-skeleton`,
+		`data-gsxui-slot-sidebar-menu-skeleton-text data-gsxui-slot-skeleton`,
 		`--skeleton-width:`,
 	)
 	if strings.Contains(got, ` class=`) || strings.Contains(got, `data-sidebar=`) || strings.Contains(got, `data-slot=`) {
@@ -345,5 +353,5 @@ func TestSidebarMenuSkeletonComposesSkeletonPartsAndKeepsDynamicWidth(t *testing
 	if strings.Contains(without, "sidebar-menu-skeleton-icon") {
 		t.Fatalf("showIcon=false rendered icon part\nin: %s", without)
 	}
-	requireContainsAll(t, without, `data-gsxui-slot="skeleton sidebar-menu-skeleton-text"`)
+	requireContainsAll(t, without, `data-gsxui-slot-sidebar-menu-skeleton-text data-gsxui-slot-skeleton`)
 }

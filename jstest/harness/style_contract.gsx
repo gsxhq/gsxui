@@ -61,6 +61,11 @@ component StyleContractFixture() {
 			<ui.PaginationNext href="#" data-style-contract="pagination-next"/>
 			<ui.PaginationPrevious href="#" class="pl-12" data-style-contract="pagination-previous-caller"/>
 		</div>
+		<ui.ButtonGroup data-style-contract="button-group-tail">
+			<ui.Button data-style-contract="button-group-earlier">Earlier</ui.Button>
+			<ui.Button data-style-contract="button-group-visible-tail">Visible tail</ui.Button>
+			<select aria-hidden="true"><option>Hidden native tail</option></select>
+		</ui.ButtonGroup>
 		<div>
 			<ui.InputOTPGroup>
 				<ui.InputOTPSlot data-active="true" aria-invalid="true" data-style-contract="otp-active-invalid"/>

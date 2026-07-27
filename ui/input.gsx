@@ -9,6 +9,6 @@ import "github.com/gsxhq/gsx"
 component Input(attrs gsx.Attrs) {
 	<input
 		type="text"
-		{ withSlot("input", attrs)... }
+		{ attrs... } data-gsxui-slot-input
 	/>
 }

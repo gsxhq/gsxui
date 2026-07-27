@@ -12,7 +12,7 @@ func TestRadioDefault(t *testing.T) {
 	got := render(t, ui.Radio(nil))
 	for _, want := range []string{
 		`<input type="radio"`,
-		`data-gsxui-slot="radio"`,
+		`data-gsxui-slot-radio`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
@@ -58,7 +58,7 @@ func TestRadioDisabledAttr(t *testing.T) {
 func TestRadioPinned(t *testing.T) {
 	// Presentation lives in the stylesheet; the render pin covers structure.
 	got := render(t, ui.Radio(nil))
-	want := `<input type="radio" data-gsxui-slot="radio">`
+	want := `<input type="radio" data-gsxui-slot-radio>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

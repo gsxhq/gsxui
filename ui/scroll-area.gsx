@@ -51,7 +51,7 @@ import "github.com/gsxhq/gsx"
 component ScrollArea(orientation string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-orientation={orientation |> default("vertical")}
-		{ withSlot("scroll-area", attrs)... }
+		{ attrs... } data-gsxui-slot-scroll-area
 	>
 		{ children }
 	</div>

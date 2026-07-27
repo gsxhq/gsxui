@@ -30,7 +30,7 @@ func TestSonnerToasterContract(t *testing.T) {
 	got := render(t, ui.Toaster(nil))
 	requireMarkup(t, got,
 		`<section aria-label="Notifications" tabindex="-1">`,
-		`<ol id="gsxui-toaster" data-gsxui-toaster data-gsxui-slot="toaster"></ol>`,
+		`<ol id="gsxui-toaster" data-gsxui-toaster data-gsxui-slot-toaster></ol>`,
 		`<template data-gsxui-toast-template="default">`,
 		`<template data-gsxui-toast-template="success">`,
 		`<template data-gsxui-toast-template="info">`,
@@ -48,13 +48,13 @@ func TestSonnerToasterAttrsMergeAndCallerClass(t *testing.T) {
 	got := render(t, ui.Toaster(gsx.Attrs{
 		{Key: "id", Value: "my-toaster"},
 		{Key: "class", Value: "caller-region"},
-		{Key: "data-gsxui-slot", Value: "caller-token"},
+		{Key: "data-gsxui-slot-caller-token", Value: gsx.Toggle(true)},
 	}))
 	requireMarkup(t, got,
 		`id="my-toaster"`,
 		`data-gsxui-toaster`,
 		`class="caller-region"`,
-		`data-gsxui-slot="toaster caller-token"`,
+		`data-gsxui-slot-caller-token data-gsxui-slot-toaster`,
 	)
 	forbidMarkup(t, got, `id="gsxui-toaster"`)
 }
@@ -62,16 +62,16 @@ func TestSonnerToasterAttrsMergeAndCallerClass(t *testing.T) {
 func TestSonnerToastContract(t *testing.T) {
 	got := render(t, ui.Toast("error", "Failed", "Try again", "Retry", "Dismiss", nil))
 	requireMarkup(t, got,
-		`<li data-gsxui-toast data-type="error" role="status" aria-live="assertive" aria-atomic="true" data-gsxui-slot="toast">`,
+		`<li data-gsxui-toast data-type="error" role="status" aria-live="assertive" aria-atomic="true" data-gsxui-slot-toast>`,
 		`data-gsxui-toast-icon`,
-		`data-gsxui-slot="icon toast-icon"`,
-		`<div data-gsxui-slot="toast-content">`,
-		`<div data-gsxui-toast-title data-gsxui-slot="toast-title">Failed</div>`,
-		`<div data-gsxui-toast-description data-gsxui-slot="toast-description">Try again</div>`,
-		`<button type="button" data-gsxui-toast-action data-gsxui-slot="toast-action">Retry</button>`,
-		`<button type="button" data-gsxui-toast-cancel data-gsxui-slot="toast-cancel">Dismiss</button>`,
-		`<button type="button" data-gsxui-toast-close aria-label="Close" data-gsxui-slot="toast-close">`,
-		`data-gsxui-slot="icon toast-close-icon"`,
+		`data-gsxui-slot-toast-icon data-gsxui-slot-icon`,
+		`<div data-gsxui-slot-toast-content>`,
+		`<div data-gsxui-toast-title data-gsxui-slot-toast-title>Failed</div>`,
+		`<div data-gsxui-toast-description data-gsxui-slot-toast-description>Try again</div>`,
+		`<button type="button" data-gsxui-toast-action data-gsxui-slot-toast-action>Retry</button>`,
+		`<button type="button" data-gsxui-toast-cancel data-gsxui-slot-toast-cancel>Dismiss</button>`,
+		`<button type="button" data-gsxui-toast-close aria-label="Close" data-gsxui-slot-toast-close>`,
+		`data-gsxui-slot-toast-close-icon data-gsxui-slot-icon`,
 	)
 	forbidMarkup(t, got,
 		`data-slot=`,
@@ -89,11 +89,11 @@ func TestSonnerToastContract(t *testing.T) {
 func TestSonnerToastCallerClassAndSlotComposition(t *testing.T) {
 	got := render(t, ui.Toast("default", "Hello", "", "", "", gsx.Attrs{
 		{Key: "class", Value: "caller-toast"},
-		{Key: "data-gsxui-slot", Value: "caller-token"},
+		{Key: "data-gsxui-slot-caller-token", Value: gsx.Toggle(true)},
 	}))
 	requireMarkup(t, got,
 		`class="caller-toast"`,
-		`data-gsxui-slot="toast caller-token"`,
+		`data-gsxui-slot-caller-token data-gsxui-slot-toast`,
 	)
 }
 

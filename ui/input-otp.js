@@ -46,10 +46,10 @@ function renderSlot(slot, char, active) {
   }
   if (!active) return;
   const overlay = document.createElement("div");
-  overlay.setAttribute("data-gsxui-slot", "input-otp-caret-overlay");
+  overlay.setAttribute("data-gsxui-slot-input-otp-caret-overlay", "");
   overlay.toggleAttribute("data-gsxui-input-otp-caret-overlay", true);
   const caret = document.createElement("div");
-  caret.setAttribute("data-gsxui-slot", "input-otp-caret");
+  caret.setAttribute("data-gsxui-slot-input-otp-caret", "");
   caret.toggleAttribute("data-gsxui-input-otp-caret", true);
   overlay.appendChild(caret);
   slot.appendChild(overlay);

@@ -27,11 +27,11 @@ func _gsxrenderSkeleton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs gsx.At
 		return _gsxerr
 	}
 //line skeleton.gsx:8:2
-	_gsxv0 := withSlot("skeleton", attrs)
 	_gsxgw.S("<div")
-	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
-	_gsxgw.StyleMerged("", _gsxv0.Style())
-	_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-skeleton"})
+	_gsxgw.BoolAttr("data-gsxui-slot-skeleton", true)
 	_gsxgw.S("></div>")
 	return _gsxgw.Err()
 }

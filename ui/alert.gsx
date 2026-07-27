@@ -9,20 +9,20 @@ component Alert(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="alert"
 		data-variant={variant |> default("default")}
-		{ withSlot("alert", attrs)... }
+		{ attrs... } data-gsxui-slot-alert
 	>
 		{ children }
 	</div>
 }
 
 component AlertTitle(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("alert-title", attrs)... }>
+	<div { attrs... } data-gsxui-slot-alert-title>
 		{ children }
 	</div>
 }
 
 component AlertDescription(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("alert-description", attrs)... }>
+	<div { attrs... } data-gsxui-slot-alert-description>
 		{ children }
 	</div>
 }

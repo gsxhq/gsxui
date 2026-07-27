@@ -418,7 +418,7 @@ test("Accordion caller padding overrides the inner content default", async ({
     '[data-style-contract="accordion-caller-content"]',
   );
   const inner = content.locator(
-    ':scope > [data-gsxui-slot~="accordion-content-inner"]',
+    ':scope > [data-gsxui-slot-accordion-content-inner]',
   );
 
   await expect(content).toHaveAttribute("id", "accordion-caller-content");
@@ -636,7 +636,7 @@ test("Tooltip Kbd relationship and Accordion native open mechanics compute", asy
   expect(
     await details.evaluate((element) => {
       const icon = element.querySelector(
-        '[data-gsxui-slot~="accordion-trigger-icon"]',
+        '[data-gsxui-slot-accordion-trigger-icon]',
       );
       return {
         detailsContentDisplay: getComputedStyle(element, "::details-content").display,

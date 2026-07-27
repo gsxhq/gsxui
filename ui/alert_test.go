@@ -14,10 +14,10 @@ func TestAlertStructure(t *testing.T) {
 		ui.AlertDescription(gsx.Raw("You can add components here."), nil),
 	), nil))
 	for _, want := range []string{
-		`data-gsxui-slot="alert"`, `data-variant="default"`,
+		`data-gsxui-slot-alert`, `data-variant="default"`,
 		`role="alert"`,
-		`data-gsxui-slot="alert-title"`, ">Heads up<",
-		`data-gsxui-slot="alert-description"`, ">You can add components here.<",
+		`data-gsxui-slot-alert-title`, ">Heads up<",
+		`data-gsxui-slot-alert-description`, ">You can add components here.<",
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
@@ -53,7 +53,7 @@ func TestAlertPinned(t *testing.T) {
 	// (registry/new-york-v4/ui/alert.tsx) — straight port, cva() replaced by
 	// a switch (see docs/jsx-parity.md).
 	got := render(t, ui.Alert("", gsx.Raw("Heads up"), nil))
-	want := `<div role="alert" data-variant="default" data-gsxui-slot="alert">Heads up</div>`
+	want := `<div role="alert" data-variant="default" data-gsxui-slot-alert>Heads up</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

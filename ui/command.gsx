@@ -25,7 +25,7 @@ import (
 component Command(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-gsxui-command
-		{ withSlot("command", attrs)... }
+		{ attrs... } data-gsxui-slot-command
 	>
 		{ children }
 	</div>
@@ -42,16 +42,16 @@ component Command(children gsx.Node, attrs gsx.Attrs) {
 // data-gsxui-command-dialog on the content is command.js's global-hotkey
 // hook: ⌘K/Ctrl-K toggles the first such dialog on the page.
 component CommandDialog(title string, description string, children gsx.Node, attrs gsx.Attrs) {
-	<Dialog { withSlot("command-dialog", nil)... }>
+	<Dialog data-gsxui-slot-command-dialog>
 		<DialogContent
 			data-gsxui-command-dialog
-			{ withSlot("command-dialog-content", attrs)... }
+			{ attrs... } data-gsxui-slot-command-dialog-content
 		>
-			<DialogHeader { withSlot("command-dialog-header", nil)... }>
+			<DialogHeader data-gsxui-slot-command-dialog-header>
 				<DialogTitle>{ title |> default("Command Palette") }</DialogTitle>
 				<DialogDescription>{ description |> default("Search for a command to run...") }</DialogDescription>
 			</DialogHeader>
-			<Command { withSlot("command-dialog-command", nil)... }>
+			<Command data-gsxui-slot-command-dialog-command>
 				{ children }
 			</Command>
 		</DialogContent>
@@ -63,7 +63,7 @@ component CommandDialog(title string, description string, children gsx.Node, att
 // moves selection on ArrowUp/ArrowDown, and activates on Enter, all while
 // focus stays here (aria-activedescendant tracks the selected option).
 component CommandInput(placeholder string, attrs gsx.Attrs) {
-	<div data-gsxui-command-input-wrapper { withSlot("command-input-wrapper", nil)... }>
+	<div data-gsxui-command-input-wrapper data-gsxui-slot-command-input-wrapper>
 		<icon.Search/>
 		<input
 			data-gsxui-command-input
@@ -74,7 +74,7 @@ component CommandInput(placeholder string, attrs gsx.Attrs) {
 			autocomplete="off"
 			spellcheck="false"
 			placeholder={placeholder}
-			{ withSlot("command-input", attrs)... }
+			{ attrs... } data-gsxui-slot-command-input
 		/>
 	</div>
 }
@@ -83,7 +83,7 @@ component CommandList(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-gsxui-command-list
 		role="listbox"
-		{ withSlot("command-list", attrs)... }
+		{ attrs... } data-gsxui-slot-command-list
 	>
 		{ children }
 	</div>
@@ -93,7 +93,7 @@ component CommandList(children gsx.Node, attrs gsx.Attrs) {
 // query matches nothing (cmdk's Empty renders conditionally — same net
 // visual, inverted mechanism since there is no VDOM to unmount).
 component CommandEmpty(children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-command-empty hidden { withSlot("command-empty", attrs)... }>{ children }</div>
+	<div data-gsxui-command-empty hidden { attrs... } data-gsxui-slot-command-empty>{ children }</div>
 }
 
 // CommandGroup's heading is a real child div (slot command-group-heading)
@@ -101,16 +101,16 @@ component CommandEmpty(children gsx.Node, attrs gsx.Attrs) {
 // the styles shadcn applies through the group's descendant selectors land
 // on it via the mapped public slot selectors (see Command's doc comment).
 component CommandGroup(heading string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-command-group role="group" { withSlot("command-group", attrs)... }>
+	<div data-gsxui-command-group role="group" { attrs... } data-gsxui-slot-command-group>
 		{ if heading != "" {
-			<div data-gsxui-command-group-heading { withSlot("command-group-heading", nil)... }>{ heading }</div>
+			<div data-gsxui-command-group-heading data-gsxui-slot-command-group-heading>{ heading }</div>
 		} }
 		{ children }
 	</div>
 }
 
 component CommandSeparator(attrs gsx.Attrs) {
-	<div data-gsxui-command-separator role="separator" { withSlot("command-separator", attrs)... }></div>
+	<div data-gsxui-command-separator role="separator" { attrs... } data-gsxui-slot-command-separator></div>
 }
 
 // CommandItem is a role="option" div (cmdk's own role), NOT focusable —
@@ -126,14 +126,14 @@ component CommandItem(value string, children gsx.Node, attrs gsx.Attrs) {
 		data-value={value}
 		role="option"
 		aria-selected="false"
-		{ withSlot("command-item", attrs)... }
+		{ attrs... } data-gsxui-slot-command-item
 	>
 		{ children }
 	</div>
 }
 
 component CommandShortcut(children gsx.Node, attrs gsx.Attrs) {
-	<span { withSlot("command-shortcut", attrs)... }>
+	<span { attrs... } data-gsxui-slot-command-shortcut>
 		{ children }
 	</span>
 }

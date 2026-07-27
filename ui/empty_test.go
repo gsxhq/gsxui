@@ -10,7 +10,7 @@ import (
 
 func TestEmptyPinned(t *testing.T) {
 	got := render(t, ui.Empty(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot="empty">x</div>`
+	want := `<div data-gsxui-slot-empty>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -32,7 +32,7 @@ func TestEmptyCallerClassIsForwardedOnce(t *testing.T) {
 
 func TestEmptyHeaderPinned(t *testing.T) {
 	got := render(t, ui.EmptyHeader(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot="empty-header">x</div>`
+	want := `<div data-gsxui-slot-empty-header>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -52,7 +52,7 @@ func TestEmptyHeaderAttrsFallThrough(t *testing.T) {
 // same idiom as badge/button-group.
 func TestEmptyMediaDefaultPinned(t *testing.T) {
 	got := render(t, ui.EmptyMedia("", gsx.Raw("x"), nil))
-	want := `<div data-variant="default" data-gsxui-slot="empty-icon">x</div>`
+	want := `<div data-variant="default" data-gsxui-slot-empty-icon>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -60,7 +60,7 @@ func TestEmptyMediaDefaultPinned(t *testing.T) {
 
 func TestEmptyMediaIconPinned(t *testing.T) {
 	got := render(t, ui.EmptyMedia("icon", gsx.Raw("x"), nil))
-	want := `<div data-variant="icon" data-gsxui-slot="empty-icon">x</div>`
+	want := `<div data-variant="icon" data-gsxui-slot-empty-icon>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -75,7 +75,7 @@ func TestEmptyMediaAttrsFallThrough(t *testing.T) {
 
 func TestEmptyTitlePinned(t *testing.T) {
 	got := render(t, ui.EmptyTitle(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot="empty-title">x</div>`
+	want := `<div data-gsxui-slot-empty-title>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -93,7 +93,7 @@ func TestEmptyTitleAttrsFallThrough(t *testing.T) {
 // JSX returns a div — see ui/empty.gsx's own comment and docs/jsx-parity.md).
 func TestEmptyDescriptionPinned(t *testing.T) {
 	got := render(t, ui.EmptyDescription(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot="empty-description">x</div>`
+	want := `<div data-gsxui-slot-empty-description>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -108,7 +108,7 @@ func TestEmptyDescriptionAttrsFallThrough(t *testing.T) {
 
 func TestEmptyContentPinned(t *testing.T) {
 	got := render(t, ui.EmptyContent(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot="empty-content">x</div>`
+	want := `<div data-gsxui-slot-empty-content>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -140,14 +140,14 @@ func TestEmptyFullComposition(t *testing.T) {
 		nil,
 	))
 	for _, want := range []string{
-		`data-gsxui-slot="empty"`,
-		`data-gsxui-slot="empty-header"`,
-		`data-variant="icon" data-gsxui-slot="empty-icon"`,
-		`data-gsxui-slot="empty-title"`,
+		`data-gsxui-slot-empty`,
+		`data-gsxui-slot-empty-header`,
+		`data-variant="icon" data-gsxui-slot-empty-icon`,
+		`data-gsxui-slot-empty-title`,
 		`>No results</div>`,
-		`data-gsxui-slot="empty-description"`,
+		`data-gsxui-slot-empty-description`,
 		`>Try a different search.</div>`,
-		`data-gsxui-slot="empty-content"`,
+		`data-gsxui-slot-empty-content`,
 		`<button>Clear filters</button>`,
 	} {
 		if !strings.Contains(got, want) {

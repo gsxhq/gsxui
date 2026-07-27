@@ -11,7 +11,7 @@ import (
 func TestSeparatorDefault(t *testing.T) {
 	got := render(t, ui.Separator("", nil))
 	for _, want := range []string{
-		`data-gsxui-slot="separator"`,
+		`data-gsxui-slot-separator`,
 		`role="none"`,
 		`data-orientation="horizontal"`,
 	} {
@@ -40,7 +40,7 @@ func TestSeparatorPinned(t *testing.T) {
 	// Separator (registry/new-york-v4/ui/separator.tsx) and
 	// docs/jsx-parity.md — decorative is dropped (ADAPT), role="none" always.
 	got := render(t, ui.Separator("", nil))
-	want := `<div role="none" data-orientation="horizontal" data-gsxui-slot="separator"></div>`
+	want := `<div role="none" data-orientation="horizontal" data-gsxui-slot-separator></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

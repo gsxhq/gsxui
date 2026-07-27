@@ -5,5 +5,5 @@ import "github.com/gsxhq/gsx"
 // Skeleton is the shadcn/ui Skeleton loading placeholder. Straight port; no
 // divergences.
 component Skeleton(attrs gsx.Attrs) {
-	<div { withSlot("skeleton", attrs)... }></div>
+	<div { attrs... } data-gsxui-slot-skeleton></div>
 }

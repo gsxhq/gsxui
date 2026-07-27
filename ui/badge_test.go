@@ -11,7 +11,7 @@ import (
 func TestBadgeDefault(t *testing.T) {
 	got := render(t, ui.Badge("", gsx.Raw("New"), nil))
 	for _, want := range []string{
-		`data-gsxui-slot="badge"`,
+		`data-gsxui-slot-badge`,
 		`data-variant="default"`,
 		">New</span>",
 	} {
@@ -46,7 +46,7 @@ func TestBadgePinned(t *testing.T) {
 	// badgeVariants base + default variant (registry/new-york-v4/ui/badge.tsx)
 	// and docs/jsx-parity.md — no ADAPT deviations apply to the default badge.
 	got := render(t, ui.Badge("", gsx.Raw("New"), nil))
-	want := `<span data-variant="default" data-gsxui-slot="badge">New</span>`
+	want := `<span data-variant="default" data-gsxui-slot-badge>New</span>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

@@ -14,7 +14,7 @@ var hasDisabledAttr = regexp.MustCompile(`\sdisabled(\s|>)`)
 
 func TestCarouselRootHorizontalPinned(t *testing.T) {
 	got := render(t, ui.Carousel("", gsx.Raw("x"), nil))
-	want := `<div role="region" aria-roledescription="carousel" data-gsxui-carousel data-orientation="horizontal" data-gsxui-slot="carousel">x</div>`
+	want := `<div role="region" aria-roledescription="carousel" data-gsxui-carousel data-orientation="horizontal" data-gsxui-slot-carousel>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -29,7 +29,7 @@ func TestCarouselRootVerticalOrientation(t *testing.T) {
 
 func TestCarouselContentHorizontalPinned(t *testing.T) {
 	got := render(t, ui.CarouselContent("", gsx.Raw("x"), nil))
-	want := `<div data-gsxui-carousel-content data-orientation="horizontal" data-gsxui-slot="carousel-content"><div data-orientation="horizontal" data-gsxui-slot="carousel-track">x</div></div>`
+	want := `<div data-gsxui-carousel-content data-orientation="horizontal" data-gsxui-slot-carousel-content><div data-orientation="horizontal" data-gsxui-slot-carousel-track>x</div></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -37,7 +37,7 @@ func TestCarouselContentHorizontalPinned(t *testing.T) {
 
 func TestCarouselContentVerticalPinned(t *testing.T) {
 	got := render(t, ui.CarouselContent("vertical", gsx.Raw("x"), nil))
-	want := `<div data-gsxui-carousel-content data-orientation="vertical" data-gsxui-slot="carousel-content"><div data-orientation="vertical" data-gsxui-slot="carousel-track">x</div></div>`
+	want := `<div data-gsxui-carousel-content data-orientation="vertical" data-gsxui-slot-carousel-content><div data-orientation="vertical" data-gsxui-slot-carousel-track>x</div></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -45,14 +45,14 @@ func TestCarouselContentVerticalPinned(t *testing.T) {
 
 func TestCarouselContentCallerClassMerges(t *testing.T) {
 	got := render(t, ui.CarouselContent("", gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "-ml-1"}}))
-	if !strings.Contains(got, `class="-ml-1" data-gsxui-slot="carousel-track"`) {
+	if !strings.Contains(got, `class="-ml-1" data-gsxui-slot-carousel-track`) {
 		t.Errorf("caller class must remain on the track and be the only class\nin: %s", got)
 	}
 }
 
 func TestCarouselItemHorizontalPinned(t *testing.T) {
 	got := render(t, ui.CarouselItem("", gsx.Raw("x"), nil))
-	want := `<div role="group" aria-roledescription="slide" data-gsxui-carousel-item data-orientation="horizontal" data-gsxui-slot="carousel-item">x</div>`
+	want := `<div role="group" aria-roledescription="slide" data-gsxui-carousel-item data-orientation="horizontal" data-gsxui-slot-carousel-item>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -60,7 +60,7 @@ func TestCarouselItemHorizontalPinned(t *testing.T) {
 
 func TestCarouselItemVerticalPinned(t *testing.T) {
 	got := render(t, ui.CarouselItem("vertical", gsx.Raw("x"), nil))
-	want := `<div role="group" aria-roledescription="slide" data-gsxui-carousel-item data-orientation="vertical" data-gsxui-slot="carousel-item">x</div>`
+	want := `<div role="group" aria-roledescription="slide" data-gsxui-carousel-item data-orientation="vertical" data-gsxui-slot-carousel-item>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -68,14 +68,14 @@ func TestCarouselItemVerticalPinned(t *testing.T) {
 
 func TestCarouselItemCallerClassMerges(t *testing.T) {
 	got := render(t, ui.CarouselItem("", gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "md:basis-1/2"}}))
-	if !strings.Contains(got, `class="md:basis-1/2" data-gsxui-slot="carousel-item"`) {
+	if !strings.Contains(got, `class="md:basis-1/2" data-gsxui-slot-carousel-item`) {
 		t.Errorf("caller class must be the only rendered class\nin: %s", got)
 	}
 }
 
 func TestCarouselPreviousHorizontalPinned(t *testing.T) {
 	got := render(t, ui.CarouselPrevious("", nil))
-	want := `<button data-variant="outline" data-size="icon" type="button" disabled data-gsxui-slot="button carousel-previous" data-gsxui-carousel-prev="true" data-orientation="horizontal"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot="icon"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg><span data-gsxui-slot="carousel-control-label">Previous slide</span></button>`
+	want := `<button data-variant="outline" data-size="icon" type="button" disabled data-gsxui-carousel-prev data-orientation="horizontal" data-gsxui-slot-carousel-previous data-gsxui-slot-button><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg><span data-gsxui-slot-carousel-control-label>Previous slide</span></button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -83,7 +83,7 @@ func TestCarouselPreviousHorizontalPinned(t *testing.T) {
 
 func TestCarouselPreviousVerticalPositioning(t *testing.T) {
 	got := render(t, ui.CarouselPrevious("vertical", nil))
-	for _, want := range []string{`data-orientation="vertical"`, "data-gsxui-carousel-prev", `data-variant="outline"`, `data-gsxui-slot="button carousel-previous"`} {
+	for _, want := range []string{`data-orientation="vertical"`, "data-gsxui-carousel-prev", `data-variant="outline"`, `data-gsxui-slot-carousel-previous data-gsxui-slot-button`} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
@@ -95,7 +95,7 @@ func TestCarouselPreviousVerticalPositioning(t *testing.T) {
 
 func TestCarouselNextHorizontalPinned(t *testing.T) {
 	got := render(t, ui.CarouselNext("", nil))
-	want := `<button data-variant="outline" data-size="icon" type="button" data-gsxui-slot="button carousel-next" data-gsxui-carousel-next="true" data-orientation="horizontal"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot="icon"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span data-gsxui-slot="carousel-control-label">Next slide</span></button>`
+	want := `<button data-variant="outline" data-size="icon" type="button" data-gsxui-carousel-next data-orientation="horizontal" data-gsxui-slot-carousel-next data-gsxui-slot-button><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span data-gsxui-slot-carousel-control-label>Next slide</span></button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -106,7 +106,7 @@ func TestCarouselNextHorizontalPinned(t *testing.T) {
 
 func TestCarouselNextVerticalPositioning(t *testing.T) {
 	got := render(t, ui.CarouselNext("vertical", nil))
-	for _, want := range []string{`data-orientation="vertical"`, "data-gsxui-carousel-next", `data-gsxui-slot="button carousel-next"`} {
+	for _, want := range []string{`data-orientation="vertical"`, "data-gsxui-carousel-next", `data-gsxui-slot-carousel-next data-gsxui-slot-button`} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}

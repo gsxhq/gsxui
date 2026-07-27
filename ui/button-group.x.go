@@ -23,17 +23,17 @@ import (
 // Retargeted to nova density (2026-07-24 nova density map, `## button-group`).
 // DEVIATION from the map's own notes: the map frames nova's corner mechanism
 // as inner-corner zeroing REPLACED by priority outer-corner restoration
-// based on the last visible slotted child. Checked against the actual nova source
+// based on the last visible child. Checked against the actual nova source
 // (shadcn-ui/apps/v4/registry/bases/radix/ui/button-group.tsx +
 // styles/style-nova.css): the radix base's `buttonGroupVariants` — shared by
 // every style, nova included — still carries the zero-inner-corner classes
 // (`[&>*:not(:first-child)]:rounded-l-none/border-l-0
 // [&>*:not(:last-child)]:rounded-r-none`) verbatim; nova's stylesheet only
 // ADDS a restore rule for the one
-// case the zero rule gets wrong — a trailing non-slotted element (e.g. a
-// visually-hidden `<select aria-hidden>`, see the root class's own
+// case the zero rule gets wrong — a trailing visually-hidden
+// `<select aria-hidden>` (see the root class's own
 // `has-[select[aria-hidden=true]:last-child]` rule) that makes the true last
-// *visible* child fail `:last-child`. Dropping the zero rule outright (a
+// visible child fail `:last-child`. Dropping the zero rule outright (a
 // literal read of "replace") would leave every button at full `rounded-lg`
 // on all four corners — no flush seam between group members, a real visual
 // regression, not nova's actual behavior. Ported as ADD: the zero-corner
@@ -45,19 +45,19 @@ func ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line button-group.gsx:34:2
-		_gsxv0 := withSlot("button-group", attrs)
 		_gsxgw.S("<div")
-		if !_gsxv0.Has("role") {
+		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"group\"")
 		}
-		if !_gsxv0.Has("data-orientation") {
+		if !attrs.Has("data-orientation") {
 			_gsxgw.S(" data-orientation=\"")
 			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
-		_gsxgw.StyleMerged("", _gsxv0.Style())
-		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-button-group"})
+		_gsxgw.BoolAttr("data-gsxui-slot-button-group", true)
 		_gsxgw.S(">")
 //line button-group.gsx:39:3
 		_gsxgw.Node(ctx, children)
@@ -77,11 +77,11 @@ func ButtonGroupText(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line button-group.gsx:48:2
-		_gsxv1 := withSlot("button-group-text", attrs)
 		_gsxgw.S("<div")
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
-		_gsxgw.StyleMerged("", _gsxv1.Style())
-		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-button-group-text"})
+		_gsxgw.BoolAttr("data-gsxui-slot-button-group-text", true)
 		_gsxgw.S(">")
 //line button-group.gsx:49:3
 		_gsxgw.Node(ctx, children)
@@ -107,7 +107,7 @@ func ButtonGroupSeparator(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line button-group.gsx:64:2
-		_gsxgw.NodeResult(_gsxrenderSeparator(ctx, _gsxgw, _gsxstd.Default((orientation), "vertical"), withSlot("button-group-separator", attrs)))
+		_gsxgw.NodeResult(_gsxrenderSeparator(ctx, _gsxgw, _gsxstd.Default((orientation), "vertical"), _gsxrt.ConcatAttrs(attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-button-group-separator", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }

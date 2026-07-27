@@ -6,8 +6,8 @@ test("Select trigger state follows open and every native close path", async ({
   const response = await page.goto("/x/select/basic");
   expect(response?.status(), "select example response").toBe(200);
 
-  const trigger = page.locator("[data-gsxui-slot~='select-trigger']");
-  const content = page.locator("[data-gsxui-slot~='select-content']");
+  const trigger = page.locator("[data-gsxui-slot-select-trigger]");
+  const content = page.locator("[data-gsxui-slot-select-content]");
 
   await expect(trigger).toHaveAttribute("data-state", "closed");
   await expect(trigger).toHaveAttribute("aria-expanded", "false");
@@ -26,7 +26,7 @@ test("Select trigger state follows open and every native close path", async ({
   };
 
   await open();
-  await page.locator("[data-gsxui-slot~='select-item']").first().click();
+  await page.locator("[data-gsxui-slot-select-item]").first().click();
   await expectClosed();
 
   await open();

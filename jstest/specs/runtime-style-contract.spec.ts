@@ -42,11 +42,8 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   ) {
     const entry = { component, slot, attribute, value, scenario };
     expect(manifest.map(key)).toContain(key(entry));
-    if (attribute === "data-gsxui-slot") {
-      await expect(locator).toHaveAttribute(
-        attribute,
-        new RegExp(`(?:^|\\s)${slot}(?:\\s|$)`),
-      );
+    if (value === "") {
+      await expect(locator).toHaveAttribute(attribute, "");
     } else {
       await expect(locator).toHaveAttribute(attribute, value);
     }
@@ -62,10 +59,10 @@ test("real interactions cover the exact runtime-owned style contract", async ({
     contentSlot: string,
   ) {
     await page.goto(route);
-    const trigger = page.locator(`[data-gsxui-slot~="${triggerSlot}"]`).filter({
+    const trigger = page.locator(`[data-gsxui-slot-${triggerSlot}]`).filter({
       hasText: triggerName,
     });
-    const content = page.locator(`[data-gsxui-slot~="${contentSlot}"]`).first();
+    const content = page.locator(`[data-gsxui-slot-${contentSlot}]`).first();
     await trigger.click();
     await observe(
       scenario,
@@ -120,7 +117,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
 
   await page.goto("/x/hover-card/basic");
   const hoverTrigger = page.locator("[data-gsxui-hovercard-trigger]");
-  const hoverContent = page.locator("[data-gsxui-slot~='hover-card-content']");
+  const hoverContent = page.locator("[data-gsxui-slot-hover-card-content]");
   await hoverTrigger.hover();
   await observe(
     "hover-card-lifecycle",
@@ -133,9 +130,9 @@ test("real interactions cover the exact runtime-owned style contract", async ({
 
   await page.goto("/x/popover/basic");
   const popoverTrigger = page
-    .locator("[data-gsxui-slot~='popover-trigger']")
+    .locator("[data-gsxui-slot-popover-trigger]")
     .first();
-  const popoverContent = page.locator("[data-gsxui-slot~='popover-content']");
+  const popoverContent = page.locator("[data-gsxui-slot-popover-content]");
   await popoverTrigger.click();
   await observe(
     "popover-lifecycle",
@@ -156,9 +153,9 @@ test("real interactions cover the exact runtime-owned style contract", async ({
 
   await page.goto("/x/tooltip/basic");
   const tooltipTrigger = page
-    .locator("[data-gsxui-slot~='tooltip-trigger']")
+    .locator("[data-gsxui-slot-tooltip-trigger]")
     .first();
-  const tooltipContent = page.locator("[data-gsxui-slot~='tooltip-content']");
+  const tooltipContent = page.locator("[data-gsxui-slot-tooltip-content]");
   await tooltipTrigger.hover();
   await observe(
     "tooltip-lifecycle",
@@ -170,7 +167,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   );
 
   await page.goto("/x/command/basic");
-  const commandItem = page.locator("[data-gsxui-slot~='command-item']").first();
+  const commandItem = page.locator("[data-gsxui-slot-command-item]").first();
   await observe(
     "command-runtime",
     "command",
@@ -189,11 +186,11 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   );
 
   await page.goto("/x/combobox/basic");
-  const comboboxInput = page.locator("[data-gsxui-slot~='combobox-input']");
-  const comboboxContent = page.locator("[data-gsxui-slot~='combobox-content']");
+  const comboboxInput = page.locator("[data-gsxui-slot-combobox-input]");
+  const comboboxContent = page.locator("[data-gsxui-slot-combobox-content]");
   await comboboxInput.click();
   const comboboxItem = page
-    .locator("[data-gsxui-slot~='combobox-item']")
+    .locator("[data-gsxui-slot-combobox-item]")
     .first();
   await comboboxItem.hover();
   await observe(
@@ -233,7 +230,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   await page.goto("/x/dropdown/submenu");
   const dropdownTrigger = page.locator("[data-gsxui-dropdown-trigger]").first();
   const dropdownContent = page.locator(
-    "[data-gsxui-slot~='dropdown-menu-content']",
+    "[data-gsxui-slot-dropdown-menu-content]",
   );
   await dropdownTrigger.click();
   await observe(
@@ -253,10 +250,10 @@ test("real interactions cover the exact runtime-owned style contract", async ({
     "open",
   );
   const dropdownSubTrigger = page.locator(
-    "[data-gsxui-slot~='dropdown-menu-sub-trigger']",
+    "[data-gsxui-slot-dropdown-menu-sub-trigger]",
   );
   const dropdownSubContent = page.locator(
-    "[data-gsxui-slot~='dropdown-menu-sub-content']",
+    "[data-gsxui-slot-dropdown-menu-sub-content]",
   );
   await dropdownSubTrigger.hover();
   await observe(
@@ -289,7 +286,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
     button: "right",
   });
   const contextContent = page.locator(
-    "[data-gsxui-slot~='context-menu-content']",
+    "[data-gsxui-slot-context-menu-content]",
   );
   await observe(
     "context-menu-lifecycle",
@@ -300,10 +297,10 @@ test("real interactions cover the exact runtime-owned style contract", async ({
     "open",
   );
   const contextSubTrigger = page.locator(
-    "[data-gsxui-slot~='context-menu-sub-trigger']",
+    "[data-gsxui-slot-context-menu-sub-trigger]",
   );
   const contextSubContent = page.locator(
-    "[data-gsxui-slot~='context-menu-sub-content']",
+    "[data-gsxui-slot-context-menu-sub-content]",
   );
   await contextSubTrigger.hover();
   await observe(
@@ -333,10 +330,10 @@ test("real interactions cover the exact runtime-owned style contract", async ({
 
   await page.goto("/x/menubar/full");
   const menubarTrigger = page
-    .locator("[data-gsxui-slot~='menubar-trigger']")
+    .locator("[data-gsxui-slot-menubar-trigger]")
     .first();
   const menubarContent = page
-    .locator("[data-gsxui-slot~='menubar-content']")
+    .locator("[data-gsxui-slot-menubar-content]")
     .first();
   await menubarTrigger.click();
   await observe(
@@ -364,10 +361,10 @@ test("real interactions cover the exact runtime-owned style contract", async ({
     "open",
   );
   const menubarSubTrigger = page
-    .locator("[data-gsxui-slot~='menubar-sub-trigger']")
+    .locator("[data-gsxui-slot-menubar-sub-trigger]")
     .first();
   const menubarSubContent = page
-    .locator("[data-gsxui-slot~='menubar-sub-content']")
+    .locator("[data-gsxui-slot-menubar-sub-content]")
     .first();
   await menubarSubTrigger.hover();
   await observe(
@@ -400,10 +397,10 @@ test("real interactions cover the exact runtime-owned style contract", async ({
     "button[data-gsxui-navigation-menu-trigger]",
   );
   const navigationContent = page.locator(
-    "[data-gsxui-slot~='navigation-menu-content']",
+    "[data-gsxui-slot-navigation-menu-content]",
   );
   const navigationIndicator = page.locator(
-    "[data-gsxui-slot~='navigation-menu-indicator']",
+    "[data-gsxui-slot-navigation-menu-indicator]",
   );
   await navigationTrigger.click();
   await observe(
@@ -449,8 +446,8 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   );
 
   await page.goto("/x/select/basic");
-  const selectTrigger = page.locator("[data-gsxui-slot~='select-trigger']");
-  const selectContent = page.locator("[data-gsxui-slot~='select-content']");
+  const selectTrigger = page.locator("[data-gsxui-slot-select-trigger]");
+  const selectContent = page.locator("[data-gsxui-slot-select-content]");
   await selectTrigger.click();
   await observe(
     "select-lifecycle",
@@ -472,7 +469,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
     "select-lifecycle",
     "select",
     "select-item",
-    page.locator("[data-gsxui-slot~='select-item']").first(),
+    page.locator("[data-gsxui-slot-select-item]").first(),
     "aria-selected",
     "true",
   );
@@ -480,7 +477,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   await page.goto("/x/input-otp/basic");
   await page.locator("[data-gsxui-input-otp-input]").focus();
   const activeSlot = page.locator(
-    "[data-gsxui-slot~='input-otp-slot'][data-active='true']",
+    "[data-gsxui-slot-input-otp-slot][data-active='true']",
   );
   await observe(
     "input-otp-caret",
@@ -494,17 +491,17 @@ test("real interactions cover the exact runtime-owned style contract", async ({
     "input-otp-caret",
     "input-otp",
     "input-otp-caret-overlay",
-    activeSlot.locator("[data-gsxui-slot~='input-otp-caret-overlay']"),
-    "data-gsxui-slot",
-    "input-otp-caret-overlay",
+    activeSlot.locator("[data-gsxui-slot-input-otp-caret-overlay]"),
+    "data-gsxui-slot-input-otp-caret-overlay",
+    "",
   );
   await observe(
     "input-otp-caret",
     "input-otp",
     "input-otp-caret",
-    activeSlot.locator("[data-gsxui-slot~='input-otp-caret']"),
-    "data-gsxui-slot",
-    "input-otp-caret",
+    activeSlot.locator("[data-gsxui-slot-input-otp-caret]"),
+    "data-gsxui-slot-input-otp-caret",
+    "",
   );
 
   await page.goto("/x/sonner/types");
@@ -513,11 +510,11 @@ test("real interactions cover the exact runtime-owned style contract", async ({
       window.gsxui.toast(`Runtime queue ${index}`, { duration: 60_000 });
     }
   });
-  const toaster = page.locator("[data-gsxui-slot~='toaster']").first();
-  const toast = toaster.locator("[data-gsxui-slot~='toast']", {
+  const toaster = page.locator("[data-gsxui-slot-toaster]").first();
+  const toast = toaster.locator("[data-gsxui-slot-toast]", {
     hasText: "Runtime queue 3",
   });
-  const queuedToast = toaster.locator("[data-gsxui-slot~='toast']", {
+  const queuedToast = toaster.locator("[data-gsxui-slot-toast]", {
     hasText: "Runtime queue 0",
   });
   await observe(

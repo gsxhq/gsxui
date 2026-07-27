@@ -105,7 +105,7 @@ test("fallback toaster matches the server region contract", async ({ page }) => 
 
   const region = page.locator("#gsxui-toaster");
   await expect(region).toHaveAttribute("data-gsxui-toaster", "");
-  await expect(region).toHaveAttribute("data-gsxui-slot", "toaster");
+  await expect(region).toHaveAttribute("data-gsxui-slot-toaster", "");
   await expect(region).not.toHaveAttribute("class", /.+/);
   await expect(region.locator("li[data-gsxui-toast]")).toHaveCount(2);
   await expect(
@@ -162,9 +162,10 @@ test("every toast type uses semantic icon color and dedicated hooks", async ({ p
       }
       return {
         type,
-        slot: element.getAttribute("data-gsxui-slot"),
+        toastSlot: element.hasAttribute("data-gsxui-slot-toast"),
         className: element.getAttribute("class"),
-        iconSlot: icon?.getAttribute("data-gsxui-slot") ?? null,
+        toastIconSlot: icon?.hasAttribute("data-gsxui-slot-toast-icon") ?? false,
+        primitiveIconSlot: icon?.hasAttribute("data-gsxui-slot-icon") ?? false,
         iconColor: icon ? getComputedStyle(icon).color : null,
         semanticColor,
       };
@@ -179,10 +180,11 @@ test("every toast type uses semantic icon color and dedicated hooks", async ({ p
     "loading",
   ]);
   for (const card of result) {
-    expect(card.slot).toBe("toast");
+    expect(card.toastSlot).toBe(true);
     expect(card.className).toBeNull();
     if (card.semanticColor) {
-      expect(card.iconSlot).toBe("icon toast-icon");
+      expect(card.toastIconSlot).toBe(true);
+      expect(card.primitiveIconSlot).toBe(true);
       expect(card.iconColor).toBe(card.semanticColor);
     }
   }
@@ -276,7 +278,7 @@ test("region replacement reconciles nested adoption without duplicate ownership"
     section.tabIndex = -1;
     const region = document.createElement("ol");
     region.id = "gsxui-toaster";
-    region.dataset.gsxuiSlot = "toaster";
+    region.setAttribute("data-gsxui-slot-toaster", "");
     region.setAttribute("data-gsxui-toaster", "");
     region.append(clone("preexisting"));
     section.append(region);
@@ -382,7 +384,7 @@ test("region replacement reconciles nested adoption without duplicate ownership"
     .toBe(1);
 
   const fallback = page.locator("#gsxui-toaster");
-  await expect(fallback).toHaveAttribute("data-gsxui-slot", "toaster");
+  await expect(fallback).toHaveAttribute("data-gsxui-slot-toaster", "");
   await expect
     .poll(() =>
       page.evaluate(() => (window as any).__sonnerTimerProbe.active.size),
@@ -428,7 +430,7 @@ test("region replacement reconciles nested adoption without duplicate ownership"
     section.tabIndex = -1;
     const region = document.createElement("ol");
     region.id = "gsxui-toaster";
-    region.dataset.gsxuiSlot = "toaster";
+    region.setAttribute("data-gsxui-slot-toaster", "");
     region.setAttribute("data-gsxui-toaster", "");
     region.append(probe.clone("replacement-preexisting"));
     section.append(region);
@@ -576,7 +578,7 @@ test("same-turn server insertion moves imperative ownership off the fallback", a
     section.tabIndex = -1;
     const serverRegion = document.createElement("ol");
     serverRegion.id = "gsxui-toaster";
-    serverRegion.dataset.gsxuiSlot = "toaster";
+    serverRegion.setAttribute("data-gsxui-slot-toaster", "");
     serverRegion.setAttribute("data-gsxui-toaster", "");
     section.append(serverRegion);
     document.body.append(section);

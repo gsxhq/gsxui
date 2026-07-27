@@ -13,7 +13,7 @@ component Basic() {
 		<ui.Button
 			variant="outline"
 			data-gsxui-dropdown-trigger
-			data-gsxui-slot="dropdown-menu-trigger"
+			data-gsxui-slot-dropdown-menu-trigger
 			aria-haspopup="menu"
 			aria-expanded="false"
 		>

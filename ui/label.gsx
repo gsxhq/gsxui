@@ -8,7 +8,7 @@ import "github.com/gsxhq/gsx"
 // already carries select-none, so the JS guard's effect is redundant here —
 // see docs/jsx-parity.md).
 component Label(children gsx.Node, attrs gsx.Attrs) {
-	<label { withSlot("label", attrs)... }>
+	<label { attrs... } data-gsxui-slot-label>
 		{ children }
 	</label>
 }

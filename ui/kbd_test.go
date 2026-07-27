@@ -11,7 +11,7 @@ import (
 func TestKbdDefault(t *testing.T) {
 	got := render(t, ui.Kbd(gsx.Raw("Ctrl"), nil))
 	for _, want := range []string{
-		`<kbd data-gsxui-slot="kbd"`,
+		`<kbd data-gsxui-slot-kbd`,
 		">Ctrl</kbd>",
 	} {
 		if !strings.Contains(got, want) {
@@ -40,7 +40,7 @@ func TestKbdPinned(t *testing.T) {
 	// Exact full-render pin. Token-for-token against shadcn's Kbd
 	// (registry/new-york-v4/ui/kbd.tsx) — no dropped tokens.
 	got := render(t, ui.Kbd(gsx.Raw("Ctrl"), nil))
-	want := `<kbd data-gsxui-slot="kbd">Ctrl</kbd>`
+	want := `<kbd data-gsxui-slot-kbd>Ctrl</kbd>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -48,7 +48,7 @@ func TestKbdPinned(t *testing.T) {
 
 func TestKbdGroupDefault(t *testing.T) {
 	got := render(t, ui.KbdGroup(gsx.Raw("<kbd>Ctrl</kbd><kbd>C</kbd>"), nil))
-	want := `<kbd data-gsxui-slot="kbd-group"><kbd>Ctrl</kbd><kbd>C</kbd></kbd>`
+	want := `<kbd data-gsxui-slot-kbd-group><kbd>Ctrl</kbd><kbd>C</kbd></kbd>`
 	if got != want {
 		t.Errorf("got %s want %s", got, want)
 	}
@@ -63,7 +63,7 @@ func TestKbdGroupAttrsFallThrough(t *testing.T) {
 
 func TestKbdGroupPinned(t *testing.T) {
 	got := render(t, ui.KbdGroup(gsx.Raw("<kbd>Ctrl</kbd>"), nil))
-	want := `<kbd data-gsxui-slot="kbd-group"><kbd>Ctrl</kbd></kbd>`
+	want := `<kbd data-gsxui-slot-kbd-group><kbd>Ctrl</kbd></kbd>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

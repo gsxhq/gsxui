@@ -27,6 +27,6 @@ import "github.com/gsxhq/gsx"
 component Radio(attrs gsx.Attrs) {
 	<input
 		type="radio"
-		{ withSlot("radio", attrs)... }
+		{ attrs... } data-gsxui-slot-radio
 	/>
 }

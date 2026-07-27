@@ -69,7 +69,7 @@ func Basic() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line basic.gsx:31:4
-			_gsxgw.Node(ctx, ui.InputGroupInput(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "disabled", Value: true}}, _gsxrt.Attrs{{Key: "placeholder", Value: "Disabled"}})))
+			_gsxgw.Node(ctx, ui.InputGroupInput(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "disabled", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "placeholder", Value: "Disabled"}})))
 //line basic.gsx:32:4
 			_gsxgw.Node(ctx, ui.InputGroupAddon("block-end", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)

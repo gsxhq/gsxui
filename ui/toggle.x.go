@@ -59,37 +59,37 @@ func Toggle(pressed bool, variant string, size string, children gsx.Node, attrs 
 			state = "on"
 		}
 //line toggle.gsx:47:2
-		_gsxv0 := withSlot("toggle", attrs)
 		_gsxgw.S("<button")
-		if !_gsxv0.Has("type") {
+		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"button\"")
 		}
-		if !_gsxv0.Has("data-gsxui-toggle") {
+		if !attrs.Has("data-gsxui-toggle") {
 			_gsxgw.BoolAttr("data-gsxui-toggle", true)
 		}
-		if !_gsxv0.Has("data-variant") {
+		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
 			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
 			_gsxgw.S("\"")
 		}
-		if !_gsxv0.Has("data-size") {
+		if !attrs.Has("data-size") {
 			_gsxgw.S(" data-size=\"")
 			_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
 			_gsxgw.S("\"")
 		}
-		if !_gsxv0.Has("data-state") {
+		if !attrs.Has("data-state") {
 			_gsxgw.S(" data-state=\"")
 			_gsxgw.AttrValue(string(state))
 			_gsxgw.S("\"")
 		}
-		if !_gsxv0.Has("aria-pressed") {
+		if !attrs.Has("aria-pressed") {
 			_gsxgw.S(" aria-pressed=\"")
 			_gsxgw.S(_gsxsc.FormatBool(bool(pressed)))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
-		_gsxgw.StyleMerged("", _gsxv0.Style())
-		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-toggle"})
+		_gsxgw.BoolAttr("data-gsxui-slot-toggle", true)
 		_gsxgw.S(">")
 //line toggle.gsx:56:3
 		_gsxgw.Node(ctx, children)

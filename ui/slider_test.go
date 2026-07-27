@@ -13,7 +13,7 @@ func TestSliderPinned(t *testing.T) {
 	// the shadcn slider-demo shape (defaultValue={[50]} max={100} step={1}).
 	// --fill is server-computed exact arithmetic: (50-0)/(100-0)*100 = 50.
 	got := render(t, ui.Slider(50, 0, 100, 1, nil))
-	want := `<input type="range" data-gsxui-slider min="0" max="100" step="1" value="50" style="--fill: 50%" data-gsxui-slot="slider">`
+	want := `<input type="range" data-gsxui-slider min="0" max="100" step="1" value="50" style="--fill: 50%" data-gsxui-slot-slider>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

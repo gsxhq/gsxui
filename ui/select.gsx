@@ -41,7 +41,7 @@ import (
 // ui.NativeSelect's own form params so the two components share an
 // option-authoring shape.
 component Select(name string, required bool, disabled bool, form string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-select { withSlot("select", attrs)... }>
+	<div data-gsxui-select { attrs... } data-gsxui-slot-select>
 		{ children }
 		{ if name != "" {
 			<select
@@ -54,7 +54,7 @@ component Select(name string, required bool, disabled bool, form string, childre
 				{ if form != "" {
 					form={form}
 				} }
-				{ withSlot("select-bridge", nil)... }
+				data-gsxui-slot-select-bridge
 			>
 				<option value=""></option>
 			</select>
@@ -81,7 +81,7 @@ component SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) {
 		data-state="closed"
 		data-size={size |> default("default")}
 		data-placeholder
-		{ withSlot("select-trigger", attrs)... }
+		{ attrs... } data-gsxui-slot-select-trigger
 	>
 		{ children }
 		<icon.ChevronDown/>
@@ -92,7 +92,7 @@ component SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) {
 // selected. select.js overwrites its text content on selection. The default
 // stylesheet applies pointer-events:none.
 component SelectValue(placeholder string, attrs gsx.Attrs) {
-	<span data-gsxui-select-value { withSlot("select-value", attrs)... }>{ placeholder }</span>
+	<span data-gsxui-select-value { attrs... } data-gsxui-slot-select-value>{ placeholder }</span>
 }
 
 // SelectContent is the popover listbox. It rides the exact dropdown.js
@@ -112,7 +112,7 @@ component SelectContent(children gsx.Node, attrs gsx.Attrs) {
 		tabindex="-1"
 		data-state="closed"
 		data-side="bottom"
-		{ withSlot("select-content", attrs)... }
+		{ attrs... } data-gsxui-slot-select-content
 	>
 		{ children }
 	</div>
@@ -124,13 +124,13 @@ component SelectContent(children gsx.Node, attrs gsx.Attrs) {
 // so this ports as a real role="group" div. select.js wires aria-labelledby
 // to the contained SelectLabel's generated id at init.
 component SelectGroup(children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-select-group role="group" { withSlot("select-group", attrs)... }>{ children }</div>
+	<div data-gsxui-select-group role="group" { attrs... } data-gsxui-slot-select-group>{ children }</div>
 }
 
 // SelectLabel is the group heading (select.js stamps its id and the group's
 // aria-labelledby at init).
 component SelectLabel(children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-select-label { withSlot("select-label", attrs)... }>{ children }</div>
+	<div data-gsxui-select-label { attrs... } data-gsxui-slot-select-label>{ children }</div>
 }
 
 // SelectItem is one option. value is the form value (data-value, synced into
@@ -159,17 +159,17 @@ component SelectItem(value string, selected bool, disabled bool, children gsx.No
 			data-disabled="true"
 			aria-disabled="true"
 		} }
-		{ withSlot("select-item", attrs)... }
+		{ attrs... } data-gsxui-slot-select-item
 	>
-		<span { withSlot("select-item-indicator", nil)... }>
+		<span data-gsxui-slot-select-item-indicator>
 			<icon.Check/>
 		</span>
-		<span data-gsxui-select-item-text { withSlot("select-item-text", nil)... }>{ children }</span>
+		<span data-gsxui-select-item-text data-gsxui-slot-select-item-text>{ children }</span>
 	</div>
 }
 
 // SelectSeparator divides groups. aria-hidden per Radix's own SelectSeparator
 // (a decorative rule, not a role="separator" like DropdownMenuSeparator).
 component SelectSeparator(attrs gsx.Attrs) {
-	<div aria-hidden="true" { withSlot("select-separator", attrs)... }></div>
+	<div aria-hidden="true" { attrs... } data-gsxui-slot-select-separator></div>
 }

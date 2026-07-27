@@ -7,55 +7,54 @@ import (
 	"github.com/gsxhq/gsx"
 	_gsxrt "github.com/gsxhq/gsx"
 	_gsxcm "github.com/gsxhq/gsxui/merge"
-	"github.com/gsxhq/gsxui/ui/internal/slotattr"
 	_gsxio "io"
 )
 
-//line icon.gsx:8:1
+//line icon.gsx:5:1
 // svgIcon renders a Lucide icon's <svg> wrapper: 24x24 viewBox, the Lucide
-// stroke defaults, no default class, data-gsxui-slot="icon", and
+// stroke defaults, no default class, data-gsxui-slot-icon, and
 // aria-hidden="true" unless the caller
 // already supplies an aria-hidden attribute — literal attributes authored
 // before { attrs... } only render when attrs doesn't already set that exact
 // key, so a caller's own aria-hidden (or, via the same fallthrough, other
 // aria-* attributes alongside it) wins.
 
-//line icon.gsx:15:1
+//line icon.gsx:12:1
 func svgIcon(name string, inner gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line icon.gsx:16:2
-		_gsxv0 := slotattr.With("icon", attrs)
+//line icon.gsx:13:2
 		_gsxgw.S("<svg")
-		if !_gsxv0.Has("aria-hidden") {
+		if !attrs.Has("aria-hidden") {
 			_gsxgw.S(" aria-hidden=\"true\"")
 		}
-		if !_gsxv0.Has("xmlns") {
+		if !attrs.Has("xmlns") {
 			_gsxgw.S(" xmlns=\"http://www.w3.org/2000/svg\"")
 		}
-		if !_gsxv0.Has("viewBox") {
+		if !attrs.Has("viewBox") {
 			_gsxgw.S(" viewBox=\"0 0 24 24\"")
 		}
-		if !_gsxv0.Has("fill") {
+		if !attrs.Has("fill") {
 			_gsxgw.S(" fill=\"none\"")
 		}
-		if !_gsxv0.Has("stroke") {
+		if !attrs.Has("stroke") {
 			_gsxgw.S(" stroke=\"currentColor\"")
 		}
-		if !_gsxv0.Has("stroke-width") {
+		if !attrs.Has("stroke-width") {
 			_gsxgw.S(" stroke-width=\"2\"")
 		}
-		if !_gsxv0.Has("stroke-linecap") {
+		if !attrs.Has("stroke-linecap") {
 			_gsxgw.S(" stroke-linecap=\"round\"")
 		}
-		if !_gsxv0.Has("stroke-linejoin") {
+		if !attrs.Has("stroke-linejoin") {
 			_gsxgw.S(" stroke-linejoin=\"round\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
-		_gsxgw.StyleMerged("", _gsxv0.Style())
-		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-icon"})
+		_gsxgw.BoolAttr("data-gsxui-slot-icon", true)
 		_gsxgw.S(">")
-//line icon.gsx:27:3
+//line icon.gsx:25:3
 		_gsxgw.Node(ctx, inner)
 		_gsxgw.S("</svg>")
 		return _gsxgw.Err()

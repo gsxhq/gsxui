@@ -13,17 +13,17 @@ import "github.com/gsxhq/gsx"
 // Retargeted to nova density (2026-07-24 nova density map, `## button-group`).
 // DEVIATION from the map's own notes: the map frames nova's corner mechanism
 // as inner-corner zeroing REPLACED by priority outer-corner restoration
-// based on the last visible slotted child. Checked against the actual nova source
+// based on the last visible child. Checked against the actual nova source
 // (shadcn-ui/apps/v4/registry/bases/radix/ui/button-group.tsx +
 // styles/style-nova.css): the radix base's `buttonGroupVariants` — shared by
 // every style, nova included — still carries the zero-inner-corner classes
 // (`[&>*:not(:first-child)]:rounded-l-none/border-l-0
 // [&>*:not(:last-child)]:rounded-r-none`) verbatim; nova's stylesheet only
 // ADDS a restore rule for the one
-// case the zero rule gets wrong — a trailing non-slotted element (e.g. a
-// visually-hidden `<select aria-hidden>`, see the root class's own
+// case the zero rule gets wrong — a trailing visually-hidden
+// `<select aria-hidden>` (see the root class's own
 // `has-[select[aria-hidden=true]:last-child]` rule) that makes the true last
-// *visible* child fail `:last-child`. Dropping the zero rule outright (a
+// visible child fail `:last-child`. Dropping the zero rule outright (a
 // literal read of "replace") would leave every button at full `rounded-lg`
 // on all four corners — no flush seam between group members, a real visual
 // regression, not nova's actual behavior. Ported as ADD: the zero-corner
@@ -34,7 +34,7 @@ component ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="group"
 		data-orientation={orientation |> default("horizontal")}
-		{ withSlot("button-group", attrs)... }
+		{ attrs... } data-gsxui-slot-button-group
 	>
 		{ children }
 	</div>
@@ -45,7 +45,7 @@ component ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) {
 // shadcn slot hook either (unlike every other button-group part); ported
 // as-is rather than "fixed", per the token-for-token rule.
 component ButtonGroupText(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("button-group-text", attrs)... }>
+	<div { attrs... } data-gsxui-slot-button-group-text>
 		{ children }
 	</div>
 }
@@ -63,6 +63,6 @@ component ButtonGroupText(children gsx.Node, attrs gsx.Attrs) {
 component ButtonGroupSeparator(orientation string, attrs gsx.Attrs) {
 	<Separator
 		orientation={orientation |> default("vertical")}
-		{ withSlot("button-group-separator", attrs)... }
+		{ attrs... } data-gsxui-slot-button-group-separator
 	/>
 }

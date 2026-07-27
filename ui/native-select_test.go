@@ -11,8 +11,8 @@ import (
 func TestNativeSelectDefault(t *testing.T) {
 	got := render(t, ui.NativeSelect(gsx.Raw("<option>x</option>"), nil))
 	for _, want := range []string{
-		`<div data-gsxui-slot="native-select-wrapper">`,
-		`<select data-gsxui-slot="native-select"`,
+		`<div data-gsxui-slot-native-select-wrapper>`,
+		`<select data-gsxui-slot-native-select`,
 		"<option>x</option></select>",
 		"</div>",
 	} {
@@ -32,7 +32,7 @@ func TestNativeSelectIconDependency(t *testing.T) {
 		t.Errorf("expected chevron svg in render\nin: %s", got)
 	}
 	for _, want := range []string{
-		`data-gsxui-slot="icon"`,
+		`data-gsxui-slot-icon`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
@@ -46,7 +46,7 @@ func TestNativeSelectIconDependency(t *testing.T) {
 // fills the wrapper with w-full.
 func TestNativeSelectCallerClassMerges(t *testing.T) {
 	got := render(t, ui.NativeSelect(nil, gsx.Attrs{{Key: "class", Value: "w-full"}}))
-	if !strings.Contains(got, `<div class="w-full" data-gsxui-slot="native-select-wrapper">`) {
+	if !strings.Contains(got, `<div class="w-full" data-gsxui-slot-native-select-wrapper>`) {
 		t.Errorf("caller w-full should land on the wrapper\nin: %s", got)
 	}
 	if strings.Count(got, `class="w-full"`) != 1 {
@@ -63,18 +63,20 @@ func TestNativeSelectAttrsFallThrough(t *testing.T) {
 	}
 }
 
-func TestNativeSelectComposesOuterSlotOnWrapperOnly(t *testing.T) {
+func TestNativeSelectForwardsCallerPresenceMarkerToSelectWithoutPrefixFiltering(t *testing.T) {
 	got := render(t, ui.NativeSelect(nil, gsx.Attrs{
-		{Key: "data-gsxui-slot", Value: "calendar-dropdown-root"},
+		{Key: "data-gsxui-slot-calendar-dropdown", Value: gsx.Toggle(true)},
 		{Key: "id", Value: "month"},
 		{Key: "aria-label", Value: "Month"},
 	}))
-	want := `<div data-gsxui-slot="native-select-wrapper calendar-dropdown-root"><select data-gsxui-slot="native-select" id="month" aria-label="Month"></select><svg`
-	if !strings.Contains(got, want) {
-		t.Errorf("outer slot did not compose deterministically on the wrapper while ordinary attrs reached the select\n got: %s\nwant substring: %s", got, want)
-	}
-	if strings.Count(got, "calendar-dropdown-root") != 1 {
-		t.Errorf("outer slot leaked beyond the wrapper\nin: %s", got)
+	requirePresenceAttributesOnSameTag(t, got, "<div", "data-gsxui-slot-native-select-wrapper")
+	requirePresenceAttributesOnSameTag(t, got, `id="month"`,
+		"data-gsxui-slot-calendar-dropdown",
+		"data-gsxui-slot-native-select",
+	)
+	wrapper := openingTagContaining(t, got, "<div")
+	if strings.Contains(wrapper, "data-gsxui-slot-calendar-dropdown") {
+		t.Errorf("caller select marker leaked onto wrapper\ntag: %s", wrapper)
 	}
 }
 
@@ -135,7 +137,7 @@ func TestNativeSelectGroupAttrsFallThrough(t *testing.T) {
 func TestNativeSelectPinned(t *testing.T) {
 	// Presentation lives in the stylesheet; the render pin covers structure.
 	got := render(t, ui.NativeSelect(gsx.Raw(`<option value="us">United States</option>`), nil))
-	want := `<div data-gsxui-slot="native-select-wrapper"><select data-gsxui-slot="native-select"><option value="us">United States</option></select><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot="icon"><path d="m6 9 6 6 6-6"/></svg></div>`
+	want := `<div data-gsxui-slot-native-select-wrapper><select data-gsxui-slot-native-select><option value="us">United States</option></select><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="m6 9 6 6 6-6"/></svg></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

@@ -16,8 +16,8 @@ func TestProgressDefault(t *testing.T) {
 		`aria-valuemin="0"`,
 		`aria-valuemax="100"`,
 		`aria-valuenow="60"`,
-		`data-gsxui-slot="progress"`,
-		`data-gsxui-slot="progress-indicator"`,
+		`data-gsxui-slot-progress`,
+		`data-gsxui-slot-progress-indicator`,
 		`style="transform: translateX(-40%)"`,
 	} {
 		if !strings.Contains(got, want) {
@@ -59,7 +59,7 @@ func TestProgressPinned(t *testing.T) {
 	// Presentation lives in the stylesheet; only the dynamic transform
 	// remains inline.
 	got := render(t, ui.Progress(25, nil))
-	want := `<div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="25" data-gsxui-slot="progress"><div style="transform: translateX(-75%)" data-gsxui-slot="progress-indicator"></div></div>`
+	want := `<div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="25" data-gsxui-slot-progress><div style="transform: translateX(-75%)" data-gsxui-slot-progress-indicator></div></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

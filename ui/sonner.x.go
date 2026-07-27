@@ -55,30 +55,30 @@ func _gsxrenderToast(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, toastType strin
 		ariaLive = "assertive"
 	}
 //line sonner.gsx:39:2
-	_gsxv0 := withSlot("toast", attrs)
 	_gsxgw.S("<li")
-	if !_gsxv0.Has("data-gsxui-toast") {
+	if !attrs.Has("data-gsxui-toast") {
 		_gsxgw.BoolAttr("data-gsxui-toast", true)
 	}
-	if !_gsxv0.Has("data-type") {
+	if !attrs.Has("data-type") {
 		_gsxgw.S(" data-type=\"")
 		_gsxgw.AttrValue(string(t))
 		_gsxgw.S("\"")
 	}
-	if !_gsxv0.Has("role") {
+	if !attrs.Has("role") {
 		_gsxgw.S(" role=\"status\"")
 	}
-	if !_gsxv0.Has("aria-live") {
+	if !attrs.Has("aria-live") {
 		_gsxgw.S(" aria-live=\"")
 		_gsxgw.AttrValue(string(ariaLive))
 		_gsxgw.S("\"")
 	}
-	if !_gsxv0.Has("aria-atomic") {
+	if !attrs.Has("aria-atomic") {
 		_gsxgw.S(" aria-atomic=\"true\"")
 	}
-	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
-	_gsxgw.StyleMerged("", _gsxv0.Style())
-	_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-toast"})
+	_gsxgw.BoolAttr("data-gsxui-slot-toast", true)
 	_gsxgw.S(">")
 //line sonner.gsx:47:3
 	if t != "default" {
@@ -86,54 +86,41 @@ func _gsxrenderToast(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, toastType strin
 		switch t {
 		case "success":
 //line sonner.gsx:50:5
-			_gsxgw.Node(ctx, icon.CircleCheck(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-toast-icon", Value: true}}, withSlot("toast-icon", nil))...))
+			_gsxgw.Node(ctx, icon.CircleCheck(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-toast-icon", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-toast-icon", Value: _gsxrt.Toggle(true)}})...))
 		case "info":
 //line sonner.gsx:52:5
-			_gsxgw.Node(ctx, icon.Info(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-toast-icon", Value: true}}, withSlot("toast-icon", nil))...))
+			_gsxgw.Node(ctx, icon.Info(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-toast-icon", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-toast-icon", Value: _gsxrt.Toggle(true)}})...))
 		case "warning":
 //line sonner.gsx:54:5
-			_gsxgw.Node(ctx, icon.TriangleAlert(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-toast-icon", Value: true}}, withSlot("toast-icon", nil))...))
+			_gsxgw.Node(ctx, icon.TriangleAlert(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-toast-icon", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-toast-icon", Value: _gsxrt.Toggle(true)}})...))
 		case "error":
 //line sonner.gsx:56:5
-			_gsxgw.Node(ctx, icon.OctagonX(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-toast-icon", Value: true}}, withSlot("toast-icon", nil))...))
+			_gsxgw.Node(ctx, icon.OctagonX(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-toast-icon", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-toast-icon", Value: _gsxrt.Toggle(true)}})...))
 		case "loading":
 //line sonner.gsx:58:5
-			_gsxgw.Node(ctx, icon.LoaderCircle(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-toast-icon", Value: true}}, withSlot("toast-icon", nil))...))
+			_gsxgw.Node(ctx, icon.LoaderCircle(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-toast-icon", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-toast-icon", Value: _gsxrt.Toggle(true)}})...))
 		}
 	}
 //line sonner.gsx:61:3
-	_gsxv1 := withSlot("toast-content", nil)
 	_gsxgw.S("<div")
-	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
-	_gsxgw.StyleMerged("", _gsxv1.Style())
-	_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.BoolAttr("data-gsxui-slot-toast-content", true)
 	_gsxgw.S(">")
 //line sonner.gsx:62:4
-	_gsxv2 := withSlot("toast-title", nil)
 	_gsxgw.S("<div")
-	if !_gsxv2.Has("data-gsxui-toast-title") {
-		_gsxgw.BoolAttr("data-gsxui-toast-title", true)
-	}
-	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
-	_gsxgw.StyleMerged("", _gsxv2.Style())
-	_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.BoolAttr("data-gsxui-toast-title", true)
+	_gsxgw.BoolAttr("data-gsxui-slot-toast-title", true)
 	_gsxgw.S(">")
-//line sonner.gsx:62:68
+//line sonner.gsx:62:60
 	_gsxgw.Text(string(title))
 	_gsxgw.S("</div>")
 //line sonner.gsx:63:4
 	if description != "" {
 //line sonner.gsx:64:5
-		_gsxv3 := withSlot("toast-description", nil)
 		_gsxgw.S("<div")
-		if !_gsxv3.Has("data-gsxui-toast-description") {
-			_gsxgw.BoolAttr("data-gsxui-toast-description", true)
-		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv3.Class())
-		_gsxgw.StyleMerged("", _gsxv3.Style())
-		_gsxgw.Spread(ctx, _gsxv3, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.BoolAttr("data-gsxui-toast-description", true)
+		_gsxgw.BoolAttr("data-gsxui-slot-toast-description", true)
 		_gsxgw.S(">")
-//line sonner.gsx:64:81
+//line sonner.gsx:64:73
 		_gsxgw.Text(string(description))
 		_gsxgw.S("</div>")
 	}
@@ -141,17 +128,9 @@ func _gsxrenderToast(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, toastType strin
 //line sonner.gsx:67:3
 	if action != "" {
 //line sonner.gsx:68:4
-		_gsxv4 := withSlot("toast-action", nil)
-		_gsxgw.S("<button")
-		if !_gsxv4.Has("type") {
-			_gsxgw.S(" type=\"button\"")
-		}
-		if !_gsxv4.Has("data-gsxui-toast-action") {
-			_gsxgw.BoolAttr("data-gsxui-toast-action", true)
-		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv4.Class())
-		_gsxgw.StyleMerged("", _gsxv4.Style())
-		_gsxgw.Spread(ctx, _gsxv4, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S("<button type=\"button\"")
+		_gsxgw.BoolAttr("data-gsxui-toast-action", true)
+		_gsxgw.BoolAttr("data-gsxui-slot-toast-action", true)
 		_gsxgw.S(">")
 //line sonner.gsx:72:5
 		_gsxgw.Text(string(action))
@@ -160,40 +139,22 @@ func _gsxrenderToast(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, toastType strin
 //line sonner.gsx:74:3
 	if cancel != "" {
 //line sonner.gsx:75:4
-		_gsxv5 := withSlot("toast-cancel", nil)
-		_gsxgw.S("<button")
-		if !_gsxv5.Has("type") {
-			_gsxgw.S(" type=\"button\"")
-		}
-		if !_gsxv5.Has("data-gsxui-toast-cancel") {
-			_gsxgw.BoolAttr("data-gsxui-toast-cancel", true)
-		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv5.Class())
-		_gsxgw.StyleMerged("", _gsxv5.Style())
-		_gsxgw.Spread(ctx, _gsxv5, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S("<button type=\"button\"")
+		_gsxgw.BoolAttr("data-gsxui-toast-cancel", true)
+		_gsxgw.BoolAttr("data-gsxui-slot-toast-cancel", true)
 		_gsxgw.S(">")
 //line sonner.gsx:79:5
 		_gsxgw.Text(string(cancel))
 		_gsxgw.S("</button>")
 	}
 //line sonner.gsx:81:3
-	_gsxv6 := withSlot("toast-close", nil)
-	_gsxgw.S("<button")
-	if !_gsxv6.Has("type") {
-		_gsxgw.S(" type=\"button\"")
-	}
-	if !_gsxv6.Has("data-gsxui-toast-close") {
-		_gsxgw.BoolAttr("data-gsxui-toast-close", true)
-	}
-	if !_gsxv6.Has("aria-label") {
-		_gsxgw.S(" aria-label=\"Close\"")
-	}
-	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv6.Class())
-	_gsxgw.StyleMerged("", _gsxv6.Style())
-	_gsxgw.Spread(ctx, _gsxv6, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.S("<button type=\"button\"")
+	_gsxgw.BoolAttr("data-gsxui-toast-close", true)
+	_gsxgw.S(" aria-label=\"Close\"")
+	_gsxgw.BoolAttr("data-gsxui-slot-toast-close", true)
 	_gsxgw.S(">")
 //line sonner.gsx:87:4
-	_gsxgw.Node(ctx, icon.X(withSlot("toast-close-icon", nil)...))
+	_gsxgw.Node(ctx, icon.X(_gsxrt.Attrs{{Key: "data-gsxui-slot-toast-close-icon", Value: _gsxrt.Toggle(true)}}...))
 	_gsxgw.S("</button></li>")
 	return _gsxgw.Err()
 }
@@ -230,17 +191,17 @@ func Toaster(attrs gsx.Attrs) _gsxrt.Node {
 //line sonner.gsx:116:2
 		_gsxgw.S("<section aria-label=\"Notifications\" tabindex=\"-1\">")
 //line sonner.gsx:117:3
-		_gsxv7 := withSlot("toaster", attrs)
 		_gsxgw.S("<ol")
-		if !_gsxv7.Has("id") {
+		if !attrs.Has("id") {
 			_gsxgw.S(" id=\"gsxui-toaster\"")
 		}
-		if !_gsxv7.Has("data-gsxui-toaster") {
+		if !attrs.Has("data-gsxui-toaster") {
 			_gsxgw.BoolAttr("data-gsxui-toaster", true)
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv7.Class())
-		_gsxgw.StyleMerged("", _gsxv7.Style())
-		_gsxgw.Spread(ctx, _gsxv7, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-toaster"})
+		_gsxgw.BoolAttr("data-gsxui-slot-toaster", true)
 		_gsxgw.S("></ol>")
 //line sonner.gsx:122:3
 		_gsxgw.S("<template data-gsxui-toast-template=\"default\">")

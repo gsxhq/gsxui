@@ -54,7 +54,7 @@ import (
 // duplicated into dropdown.js (which would be an invisible-to-registry.Deps
 // dependency — forbidden).
 component DropdownMenu(children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-dropdown { withSlot("dropdown-menu", attrs)... }>{ children }</div>
+	<div data-gsxui-dropdown { attrs... } data-gsxui-slot-dropdown-menu>{ children }</div>
 }
 
 component DropdownMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
@@ -63,7 +63,7 @@ component DropdownMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 		type="button"
 		aria-haspopup="menu"
 		aria-expanded="false"
-		{ withSlot("dropdown-menu-trigger", attrs)... }
+		{ attrs... } data-gsxui-slot-dropdown-menu-trigger
 	>
 		{ children }
 	</button>
@@ -83,7 +83,7 @@ component DropdownMenuContent(children gsx.Node, attrs gsx.Attrs) {
 		tabindex="-1"
 		data-state="closed"
 		data-side="bottom"
-		{ withSlot("dropdown-menu-content", attrs)... }
+		{ attrs... } data-gsxui-slot-dropdown-menu-content
 	>
 		{ children }
 	</div>
@@ -99,7 +99,7 @@ component DropdownMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 		data-variant={variant |> default("default")}
 		role="menuitem"
 		tabindex="-1"
-		{ withSlot("dropdown-menu-item", attrs)... }
+		{ attrs... } data-gsxui-slot-dropdown-menu-item
 	>
 		{ children }
 	</div>
@@ -114,7 +114,7 @@ component DropdownMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 // DropdownMenuRadioGroup/DropdownMenuSub, nothing in dropdown.js binds to or
 // scopes by this element — it's purely a11y markup.
 component DropdownMenuGroup(children gsx.Node, attrs gsx.Attrs) {
-	<div role="group" { withSlot("dropdown-menu-group", attrs)... }>{ children }</div>
+	<div role="group" { attrs... } data-gsxui-slot-dropdown-menu-group>{ children }</div>
 }
 
 // DropdownMenuCheckboxItem is the shadcn/ui DropdownMenuCheckboxItem.
@@ -152,9 +152,9 @@ component DropdownMenuCheckboxItem(checked bool, value string, children gsx.Node
 			data-state="unchecked"
 		} }
 		tabindex="-1"
-		{ withSlot("dropdown-menu-checkbox-item", attrs)... }
+		{ attrs... } data-gsxui-slot-dropdown-menu-checkbox-item
 	>
-		<span data-gsxui-dropdown-checkbox-indicator { withSlot("dropdown-menu-checkbox-item-indicator", nil)... }>
+		<span data-gsxui-dropdown-checkbox-indicator data-gsxui-slot-dropdown-menu-checkbox-item-indicator>
 			<icon.Check/>
 		</span>
 		{ children }
@@ -169,7 +169,7 @@ component DropdownMenuCheckboxItem(checked bool, value string, children gsx.Node
 // dropdown.js uses to scope "clear every OTHER item in this group" to this
 // group alone, not every radio item on the page.
 component DropdownMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-dropdown-radio-group role="group" data-value={value} { withSlot("dropdown-menu-radio-group", attrs)... }>
+	<div data-gsxui-dropdown-radio-group role="group" data-value={value} { attrs... } data-gsxui-slot-dropdown-menu-radio-group>
 		{ children }
 	</div>
 }
@@ -196,9 +196,9 @@ component DropdownMenuRadioItem(checked bool, value string, children gsx.Node, a
 			data-state="unchecked"
 		} }
 		tabindex="-1"
-		{ withSlot("dropdown-menu-radio-item", attrs)... }
+		{ attrs... } data-gsxui-slot-dropdown-menu-radio-item
 	>
-		<span data-gsxui-dropdown-radio-indicator { withSlot("dropdown-menu-radio-item-indicator", nil)... }>
+		<span data-gsxui-dropdown-radio-indicator data-gsxui-slot-dropdown-menu-radio-item-indicator>
 			<icon.Circle/>
 		</span>
 		{ children }
@@ -208,15 +208,15 @@ component DropdownMenuRadioItem(checked bool, value string, children gsx.Node, a
 // DropdownMenuLabel supports the same caller-reflected data-inset axis as
 // DropdownMenuItem.
 component DropdownMenuLabel(children gsx.Node, attrs gsx.Attrs) {
-	<div { withSlot("dropdown-menu-label", attrs)... }>{ children }</div>
+	<div { attrs... } data-gsxui-slot-dropdown-menu-label>{ children }</div>
 }
 
 component DropdownMenuSeparator(attrs gsx.Attrs) {
-	<div role="separator" { withSlot("dropdown-menu-separator", attrs)... }></div>
+	<div role="separator" { attrs... } data-gsxui-slot-dropdown-menu-separator></div>
 }
 
 component DropdownMenuShortcut(children gsx.Node, attrs gsx.Attrs) {
-	<span { withSlot("dropdown-menu-shortcut", attrs)... }>
+	<span { attrs... } data-gsxui-slot-dropdown-menu-shortcut>
 		{ children }
 	</span>
 }
@@ -229,7 +229,7 @@ component DropdownMenuShortcut(children gsx.Node, attrs gsx.Attrs) {
 // — same shape as DropdownMenu's own data-gsxui-dropdown root) and to scope
 // the pointer-leave grace-period boundary check to "the whole sub."
 component DropdownMenuSub(children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-dropdown-sub { withSlot("dropdown-menu-sub", attrs)... }>{ children }</div>
+	<div data-gsxui-dropdown-sub { attrs... } data-gsxui-slot-dropdown-menu-sub>{ children }</div>
 }
 
 // DropdownMenuSubTrigger opens/closes its sibling DropdownMenuSubContent
@@ -253,7 +253,7 @@ component DropdownMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 		aria-expanded="false"
 		data-state="closed"
 		tabindex="-1"
-		{ withSlot("dropdown-menu-sub-trigger", attrs)... }
+		{ attrs... } data-gsxui-slot-dropdown-menu-sub-trigger
 	>
 		{ children }
 		<icon.ChevronRight/>
@@ -290,7 +290,7 @@ component DropdownMenuSubContent(children gsx.Node, attrs gsx.Attrs) {
 		tabindex="-1"
 		data-state="closed"
 		data-side="right"
-		{ withSlot("dropdown-menu-sub-content", attrs)... }
+		{ attrs... } data-gsxui-slot-dropdown-menu-sub-content
 	>
 		{ children }
 	</div>

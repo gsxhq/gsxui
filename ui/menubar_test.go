@@ -52,16 +52,16 @@ func TestMenubarStructure(t *testing.T) {
 		nil,
 	))
 	for _, want := range []string{
-		`data-gsxui-slot="menubar"`, `role="menubar"`, `data-gsxui-menubar`,
-		`data-gsxui-slot="menubar-menu"`, `data-gsxui-menubar-menu`,
-		`data-gsxui-slot="menubar-trigger"`, `data-gsxui-menubar-trigger`,
+		`data-gsxui-slot-menubar`, `role="menubar"`, `data-gsxui-menubar`,
+		`data-gsxui-slot-menubar-menu`, `data-gsxui-menubar-menu`,
+		`data-gsxui-slot-menubar-trigger`, `data-gsxui-menubar-trigger`,
 		`aria-haspopup="menu"`, `aria-expanded="false"`,
-		`data-gsxui-slot="menubar-content"`, `data-gsxui-menubar-content`,
+		`data-gsxui-slot-menubar-content`, `data-gsxui-menubar-content`,
 		`popover="auto"`, `role="menu"`, `data-state="closed"`, `data-side="bottom"`,
-		`data-gsxui-slot="menubar-item"`, `data-gsxui-menubar-item`,
+		`data-gsxui-slot-menubar-item`, `data-gsxui-menubar-item`,
 		`role="menuitem"`, `tabindex="-1"`, `data-variant="default"`,
-		">New Tab<", `data-gsxui-slot="menubar-shortcut"`, ">⌘T<",
-		`data-gsxui-slot="menubar-separator"`, `role="separator"`,
+		">New Tab<", `data-gsxui-slot-menubar-shortcut`, ">⌘T<",
+		`data-gsxui-slot-menubar-separator`, `role="separator"`,
 		`data-variant="destructive"`, ">Delete<",
 	} {
 		if !strings.Contains(got, want) {
@@ -127,7 +127,7 @@ func TestMenubarCheckedItemsStampIndicatorState(t *testing.T) {
 	for _, want := range []string{
 		`role="menuitemcheckbox"`, `aria-checked="true"`, `data-state="checked"`,
 		`data-gsxui-menubar-checkbox-item`,
-		`data-gsxui-slot="menubar-checkbox-item-indicator"`,
+		`data-gsxui-slot-menubar-checkbox-item-indicator`,
 	} {
 		if !strings.Contains(checkbox, want) {
 			t.Errorf("checkbox missing %q\nin: %s", want, checkbox)
@@ -137,7 +137,7 @@ func TestMenubarCheckedItemsStampIndicatorState(t *testing.T) {
 	for _, want := range []string{
 		`role="menuitemradio"`, `aria-checked="true"`, `data-state="checked"`,
 		`data-gsxui-menubar-radio-item`,
-		`data-gsxui-slot="menubar-radio-item-indicator"`,
+		`data-gsxui-slot-menubar-radio-item-indicator`,
 	} {
 		if !strings.Contains(radio, want) {
 			t.Errorf("radio missing %q\nin: %s", want, radio)
@@ -157,14 +157,14 @@ func TestMenubarSubNestsContentInsideParentContentPinned(t *testing.T) {
 		nil,
 	))
 	for _, want := range []string{
-		`data-gsxui-slot="menubar-content"`,
-		`data-gsxui-slot="menubar-sub"`,
-		`data-gsxui-slot="menubar-sub-trigger"`,
+		`data-gsxui-slot-menubar-content`,
+		`data-gsxui-slot-menubar-sub`,
+		`data-gsxui-slot-menubar-sub-trigger`,
 		`aria-haspopup="menu"`,
 		`aria-expanded="false"`,
 		`data-state="closed"`,
-		`data-gsxui-slot="icon"`,
-		`data-gsxui-slot="menubar-sub-content"`,
+		`data-gsxui-slot-icon`,
+		`data-gsxui-slot-menubar-sub-content`,
 		`data-side="right"`,
 		">INNER<",
 	} {
@@ -189,47 +189,47 @@ func TestMenubarPinnedParts(t *testing.T) {
 		{
 			name: "root",
 			node: ui.Menubar(gsx.Raw("x"), nil),
-			want: `<div data-gsxui-menubar role="menubar" data-gsxui-slot="menubar">x</div>`,
+			want: `<div data-gsxui-menubar role="menubar" data-gsxui-slot-menubar>x</div>`,
 		},
 		{
 			name: "menu",
 			node: ui.MenubarMenu(gsx.Raw("x"), nil),
-			want: `<div data-gsxui-menubar-menu data-gsxui-slot="menubar-menu">x</div>`,
+			want: `<div data-gsxui-menubar-menu data-gsxui-slot-menubar-menu>x</div>`,
 		},
 		{
 			name: "item",
 			node: ui.MenubarItem("", gsx.Raw("Print"), nil),
-			want: `<div data-gsxui-menubar-item data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot="menubar-item">Print</div>`,
+			want: `<div data-gsxui-menubar-item data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-menubar-item>Print</div>`,
 		},
 		{
 			name: "content",
 			node: ui.MenubarContent(gsx.Raw("x"), nil),
-			want: `<div data-gsxui-menubar-content popover="auto" role="menu" tabindex="-1" data-state="closed" data-side="bottom" data-gsxui-slot="menubar-content">x</div>`,
+			want: `<div data-gsxui-menubar-content popover="auto" role="menu" tabindex="-1" data-state="closed" data-side="bottom" data-gsxui-slot-menubar-content>x</div>`,
 		},
 		{
 			name: "label",
 			node: ui.MenubarLabel(gsx.Raw("People"), nil),
-			want: `<div data-gsxui-slot="menubar-label">People</div>`,
+			want: `<div data-gsxui-slot-menubar-label>People</div>`,
 		},
 		{
 			name: "separator",
 			node: ui.MenubarSeparator(nil),
-			want: `<div role="separator" data-gsxui-slot="menubar-separator"></div>`,
+			want: `<div role="separator" data-gsxui-slot-menubar-separator></div>`,
 		},
 		{
 			name: "shortcut",
 			node: ui.MenubarShortcut(gsx.Raw("⌘T"), nil),
-			want: `<span data-gsxui-slot="menubar-shortcut">⌘T</span>`,
+			want: `<span data-gsxui-slot-menubar-shortcut>⌘T</span>`,
 		},
 		{
 			name: "group",
 			node: ui.MenubarGroup(gsx.Raw("x"), nil),
-			want: `<div role="group" data-gsxui-slot="menubar-group">x</div>`,
+			want: `<div role="group" data-gsxui-slot-menubar-group>x</div>`,
 		},
 		{
 			name: "radio-group",
 			node: ui.MenubarRadioGroup("benoit", gsx.Raw("x"), nil),
-			want: `<div data-gsxui-menubar-radio-group role="group" data-value="benoit" data-gsxui-slot="menubar-radio-group">x</div>`,
+			want: `<div data-gsxui-menubar-radio-group role="group" data-value="benoit" data-gsxui-slot-menubar-radio-group>x</div>`,
 		},
 	}
 	for _, tt := range tests {

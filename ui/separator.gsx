@@ -11,6 +11,6 @@ component Separator(orientation string, attrs gsx.Attrs) {
 	<div
 		role="none"
 		data-orientation={orientation |> default("horizontal")}
-		{ withSlot("separator", attrs)... }
+		{ attrs... } data-gsxui-slot-separator
 	></div>
 }
