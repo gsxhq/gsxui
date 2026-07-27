@@ -1,8 +1,13 @@
 package main
 
 import (
+	"bytes"
+	"context"
+	"fmt"
 	"html/template"
 	"io"
+
+	"github.com/gsxhq/gsxui/ui"
 )
 
 // shellTmpl is the minimal page every harness route renders into. It
@@ -25,19 +30,30 @@ var shellTmpl = template.Must(template.New("shell").Parse(
 </head>
 <body class="min-h-svh bg-background text-foreground antialiased">
 <main data-harness-root class="p-8">{{.Body}}</main>
+{{.Toaster}}
 </body>
 </html>
 `))
 
 type shellData struct {
-	Title  string
-	Script string
-	Body   template.HTML
+	Title   string
+	Script  string
+	Body    template.HTML
+	Toaster template.HTML
 }
 
 // renderShell writes the shell around already-rendered markup. body is
 // trusted: it comes from a gsx component's own Render, which escapes its
 // own interpolations.
 func renderShell(w io.Writer, title, script string, body template.HTML) error {
-	return shellTmpl.Execute(w, shellData{Title: title, Script: script, Body: body})
+	var toaster bytes.Buffer
+	if err := ui.Toaster(nil).Render(context.Background(), &toaster); err != nil {
+		return fmt.Errorf("rendering toaster: %w", err)
+	}
+	return shellTmpl.Execute(w, shellData{
+		Title:   title,
+		Script:  script,
+		Body:    body,
+		Toaster: template.HTML(toaster.String()),
+	})
 }

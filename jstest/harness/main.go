@@ -49,6 +49,20 @@ func newMux(root string) http.Handler {
 		w.Write([]byte("ok"))
 	})
 
+	// /f/ contains fixtures that exercise real GSX components without adding
+	// synthetic entries to the production example registry.
+	mux.HandleFunc("GET /f/style-contract", func(w http.ResponseWriter, r *http.Request) {
+		var buf bytes.Buffer
+		if err := StyleContractFixture().Render(r.Context(), &buf); err != nil {
+			http.Error(w, "render: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		if err := renderShell(w, "style-contract", "/ui/index.js", template.HTML(buf.String())); err != nil {
+			log.Printf("rendering style-contract fixture: %v", err)
+		}
+	})
+
 	// /static/ serves the repo tree read-only. The compiled stylesheet lands
 	// at jstest/.tmp/site.css, and Tailwind's bundled @fontsource imports
 	// carry url() references relative to that output file — serving from the
