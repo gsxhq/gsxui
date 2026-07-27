@@ -212,6 +212,7 @@ on(
     const open = e.newState === "open";
     content.dataset.state = open ? "open" : "closed";
     const trigger = triggerOf(content);
+    if (trigger) trigger.dataset.state = open ? "open" : "closed";
     trigger?.setAttribute("aria-expanded", open ? "true" : "false");
     if (open) {
       if (!content.id) content.id = `gsxui-select-content-${++uid}`;

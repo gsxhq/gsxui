@@ -197,6 +197,12 @@ func TestRegisteredExamplesCoverStyleContract(t *testing.T) {
 				if _, isAxis := axisAttributes[attr.Key]; !isAxis {
 					continue
 				}
+				if rejectsUnownedCustomAxis(tokens, attr.Key, axisAttributes, declaredSlots) {
+					t.Errorf(
+						"%s emits globally known custom axis %s=%q on slots %q, but none owns the attribute",
+						source, attr.Key, attr.Val, slotText,
+					)
+				}
 				for _, token := range tokens {
 					slot, declared := declaredSlots[token]
 					if !declared {
@@ -257,6 +263,59 @@ func TestRegisteredExamplesCoverStyleContract(t *testing.T) {
 				}
 			}
 		}
+	}
+}
+
+// rejectsUnownedCustomAxis enforces the library-owned custom state namespace
+// globally. Native, ARIA, and role attributes also carry intrinsic semantics,
+// so they are value-checked only when the emitting slot declares them.
+func rejectsUnownedCustomAxis(
+	tokens []string,
+	attribute string,
+	axisAttributes map[string]struct{},
+	declaredSlots map[string]stylecontract.Slot,
+) bool {
+	if _, known := axisAttributes[attribute]; !known || !strings.HasPrefix(attribute, "data-") {
+		return false
+	}
+	for _, token := range tokens {
+		for _, axis := range declaredSlots[token].Axes {
+			if axis.Attribute == attribute {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+func TestRejectsUnownedCustomAxisGlobally(t *testing.T) {
+	knownAxes := map[string]struct{}{
+		"data-size":     {},
+		"data-state":    {},
+		"aria-expanded": {},
+	}
+	slots := map[string]stylecontract.Slot{
+		"first": {
+			Name: "first",
+			Axes: []stylecontract.Axis{{Attribute: "data-size", Values: []string{"sm"}}},
+		},
+		"second": {
+			Name: "second",
+			Axes: []stylecontract.Axis{{Attribute: "data-state", Values: []string{"closed", "open"}}},
+		},
+	}
+
+	if !rejectsUnownedCustomAxis([]string{"first"}, "data-state", knownAxes, slots) {
+		t.Fatal("globally known data-state on an unrelated contracted slot was accepted")
+	}
+	if rejectsUnownedCustomAxis([]string{"second"}, "data-state", knownAxes, slots) {
+		t.Fatal("slot-owned data-state was rejected")
+	}
+	if rejectsUnownedCustomAxis([]string{"first"}, "data-unknown", knownAxes, slots) {
+		t.Fatal("unknown custom attribute was treated as a contract axis")
+	}
+	if rejectsUnownedCustomAxis([]string{"first"}, "aria-expanded", knownAxes, slots) {
+		t.Fatal("intrinsic ARIA semantics were treated as globally owned custom state")
 	}
 }
 

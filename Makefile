@@ -4,13 +4,7 @@ generate:
 	go tool gsx generate
 
 verify-generated:
-	@before="$$(find . -type f -name '*.x.go' -print0 | LC_ALL=C sort -z | xargs -0 shasum -a 256)"; \
-	go tool gsx generate; \
-	after="$$(find . -type f -name '*.x.go' -print0 | LC_ALL=C sort -z | xargs -0 shasum -a 256)"; \
-	if [ "$$before" != "$$after" ]; then \
-		echo "error: generated .x.go drifted — commit regenerated output"; \
-		exit 1; \
-	fi
+	go run ./internal/generatedcheck/cmd
 
 # highlight regenerates site/hl/blocks.gen.go — every component example and
 # doc snippet pre-rendered to highlighted HTML. Run it after adding, renaming

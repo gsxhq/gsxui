@@ -120,6 +120,7 @@ func TestFormContractsDeclareEverySlotAndPresentationAxis(t *testing.T) {
 				{Name: "select"},
 				{Name: "select-bridge"},
 				{Name: "select-trigger", Axes: []Axis{
+					{Attribute: "data-state", Values: []string{"closed", "open"}, RuntimeValues: []string{"open"}},
 					{Attribute: "data-size", Values: []string{"default", "sm"}},
 					{Attribute: "data-placeholder"},
 					{Attribute: "disabled"},

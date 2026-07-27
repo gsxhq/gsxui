@@ -455,6 +455,14 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   await observe(
     "select-lifecycle",
     "select",
+    "select-trigger",
+    selectTrigger,
+    "data-state",
+    "open",
+  );
+  await observe(
+    "select-lifecycle",
+    "select",
     "select-content",
     selectContent,
     "data-state",

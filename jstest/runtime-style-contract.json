@@ -280,6 +280,13 @@
     "scenario": "select-lifecycle"
   },
   {
+    "component": "select",
+    "slot": "select-trigger",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "select-lifecycle"
+  },
+  {
     "component": "sheet",
     "slot": "sheet-content",
     "attribute": "data-state",

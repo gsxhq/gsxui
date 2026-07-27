@@ -89,8 +89,8 @@ func Select(name string, required bool, disabled bool, form string, children gsx
 // state = no value, placeholder shown, muted via
 // data-[placeholder]:text-muted-foreground); select.js removes it on the
 // first selection (and at init if an item is server-rendered checked).
-// aria-expanded starts "false"; select.js syncs it, aria-controls, and
-// aria-required (copied from the bridge) on open/close.
+// data-state and aria-expanded start closed/"false"; select.js syncs both,
+// aria-controls, and aria-required (copied from the bridge) on open/close.
 
 //line select.gsx:74:1
 func SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
