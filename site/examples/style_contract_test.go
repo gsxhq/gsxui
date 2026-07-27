@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"regexp"
 	"slices"
 	"strings"
 	"testing"
@@ -28,8 +29,29 @@ type runtimeContractEntry struct {
 
 const slotAttributePrefix = "data-gsxui-slot-"
 
+var slotNamePattern = regexp.MustCompile(`^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$`)
+
 func slotAttribute(name string) string {
 	return slotAttributePrefix + name
+}
+
+func TestSlotNameRejectsMalformedSlotAttributes(t *testing.T) {
+	for _, name := range []string{"button_primary", "Button", "button--primary", "button-", "-button"} {
+		if _, ok := slotName(slotAttribute(name)); ok {
+			t.Errorf("slot marker %q was accepted", name)
+		}
+	}
+	if got, ok := slotName(slotAttribute("button-primary")); !ok || got != "button-primary" {
+		t.Errorf("valid slot marker parsed as %q, %t", got, ok)
+	}
+}
+
+func slotName(attribute string) (string, bool) {
+	if !strings.HasPrefix(attribute, slotAttributePrefix) {
+		return "", false
+	}
+	name := strings.TrimPrefix(attribute, slotAttributePrefix)
+	return name, slotNamePattern.MatchString(name)
 }
 
 var runtimeScenarioByComponent = map[string]string{
@@ -192,9 +214,13 @@ func TestRegisteredExamplesCoverStyleContract(t *testing.T) {
 				if !strings.HasPrefix(attr.Key, slotAttributePrefix) {
 					continue
 				}
-				slot := strings.TrimPrefix(attr.Key, slotAttributePrefix)
-				if slot == "" {
-					t.Errorf("%s emits empty slot marker %q", source, attr.Key)
+				slot, valid := slotName(attr.Key)
+				if !valid {
+					if slot == "" {
+						t.Errorf("%s emits empty slot marker %q", source, attr.Key)
+					} else {
+						t.Errorf("%s emits malformed slot marker %q", source, attr.Key)
+					}
 					continue
 				}
 				if attr.Val != "" {

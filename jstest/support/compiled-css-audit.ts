@@ -31,10 +31,15 @@ function selectorUsesAttribute(selector: string, attribute: string): boolean {
   return attributeSelector.test(selector);
 }
 
+function selectorUsesValuedPresenceMarker(selector: string): boolean {
+  return /\[\s*data-gsxui-slot-[^\s~|^$*=\]]+\s*[~|^$*]?=/i.test(selector);
+}
+
 export function compiledCSSViolations(css: string): CompiledCSSViolation[] {
   const root = parse(css);
   const legacySlots: string[] = [];
   const packedGSXUISlots: string[] = [];
+  const valuedPresenceMarkers: string[] = [];
   const importantDeclarations: string[] = [];
 
   root.walkRules((rule) => {
@@ -43,6 +48,9 @@ export function compiledCSSViolations(css: string): CompiledCSSViolation[] {
     }
     if (selectorUsesAttribute(rule.selector, "data-gsxui-slot")) {
       packedGSXUISlots.push(rule.selector);
+    }
+    if (selectorUsesValuedPresenceMarker(rule.selector)) {
+      valuedPresenceMarkers.push(rule.selector);
     }
   });
   root.walkDecls((declaration) => {
@@ -65,6 +73,11 @@ export function compiledCSSViolations(css: string): CompiledCSSViolation[] {
       label: "obsolete packed [data-gsxui-slot] selector",
       count: packedGSXUISlots.length,
       samples: [...new Set(packedGSXUISlots)].slice(0, 3),
+    },
+    {
+      label: "valued [data-gsxui-slot-*] selector",
+      count: valuedPresenceMarkers.length,
+      samples: [...new Set(valuedPresenceMarkers)].slice(0, 3),
     },
     {
       label: "!important declaration",
