@@ -17,6 +17,7 @@ import (
 	"strings"
 
 	"github.com/gsxhq/gsxui/site/examples"
+	"github.com/gsxhq/gsxui/site/pages"
 )
 
 func main() {
@@ -58,7 +59,7 @@ func newMux(root string) http.Handler {
 			return
 		}
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		if err := renderShell(w, "style-contract", "/ui/index.js", template.HTML(buf.String())); err != nil {
+		if err := renderShell(w, "style-contract", stylesheetFor(r), "/ui/index.js", template.HTML(buf.String())); err != nil {
 			log.Printf("rendering style-contract fixture: %v", err)
 		}
 	})
@@ -70,8 +71,20 @@ func newMux(root string) http.Handler {
 			return
 		}
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		if err := renderShell(w, "sidebar-contract", "/ui/index.js", template.HTML(buf.String())); err != nil {
+		if err := renderShell(w, "sidebar-contract", stylesheetFor(r), "/ui/index.js", template.HTML(buf.String())); err != nil {
 			log.Printf("rendering sidebar-contract fixture: %v", err)
+		}
+	})
+
+	mux.HandleFunc("GET /theme", func(w http.ResponseWriter, r *http.Request) {
+		var buf bytes.Buffer
+		if err := pages.ThemeEditor().Render(r.Context(), &buf); err != nil {
+			http.Error(w, "render: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		if err := renderShell(w, "theme", stylesheetFor(r), "/web/theme.js", template.HTML(buf.String())); err != nil {
+			log.Printf("rendering theme editor: %v", err)
 		}
 	})
 
@@ -107,7 +120,7 @@ func newMux(root string) http.Handler {
 			}
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
 			title := component + "/" + name
-			if err := renderShell(w, title, "/ui/index.js", template.HTML(buf.String())); err != nil {
+			if err := renderShell(w, title, stylesheetFor(r), "/ui/index.js", template.HTML(buf.String())); err != nil {
 				log.Printf("rendering shell for %s: %v", title, err)
 			}
 			return
@@ -118,4 +131,11 @@ func newMux(root string) http.Handler {
 	registerModuleRoutes(mux, root)
 
 	return mux
+}
+
+func stylesheetFor(r *http.Request) string {
+	if r.URL.Query().Get("css") == "foundation" {
+		return "/static/jstest/.tmp/foundation.css"
+	}
+	return "/static/jstest/.tmp/site.css"
 }

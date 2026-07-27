@@ -52,25 +52,21 @@ func Tabs(value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line tabs.gsx:40:2
+		_gsxv0 := withSlot("tabs", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"tabs\"")
-		}
-		if !attrs.Has("data-gsxui-tabs") {
+		if !_gsxv0.Has("data-gsxui-tabs") {
 			_gsxgw.BoolAttr("data-gsxui-tabs", true)
 		}
-		if !attrs.Has("data-value") {
+		if !_gsxv0.Has("data-value") {
 			_gsxgw.S(" data-value=\"")
 			_gsxgw.AttrValue(string(value))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-col gap-2"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
+		_gsxgw.StyleMerged("", _gsxv0.Style())
+		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line tabs.gsx:40:100
+//line tabs.gsx:40:73
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
@@ -82,27 +78,23 @@ func TabsList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line tabs.gsx:44:2
+		_gsxv1 := withSlot("tabs-list", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"tabs-list\"")
-		}
-		if !attrs.Has("role") {
+		if !_gsxv1.Has("role") {
 			_gsxgw.S(" role=\"tablist\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-muted text-muted-foreground inline-flex h-8 w-fit items-center justify-center rounded-lg p-[3px]"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
+		_gsxgw.StyleMerged("", _gsxv1.Style())
+		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line tabs.gsx:50:3
+//line tabs.gsx:48:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line tabs.gsx:54:1
+//line tabs.gsx:52:1
 // TabsTrigger's selected bool is the explicit, server-visible stand-in for
 // "does my value match the root's" — the caller (which already has both
 // values in scope when building the tree) resolves the comparison; this
@@ -110,105 +102,97 @@ func TabsList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // inactive state, matching a caller who forgets to pass it — never
 // accidentally active.
 
-//line tabs.gsx:60:1
+//line tabs.gsx:58:1
 func TabsTrigger(value string, selected bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 		var _gsxnum [32]byte
-//line tabs.gsx:61:2
+//line tabs.gsx:59:2
 		state := "inactive"
 		tabindex := -1
 		if selected {
 			state, tabindex = "active", 0
 		}
-//line tabs.gsx:68:2
+//line tabs.gsx:66:2
+		_gsxv2 := withSlot("tabs-trigger", attrs)
 		_gsxgw.S("<button")
-		if !attrs.Has("type") {
+		if !_gsxv2.Has("type") {
 			_gsxgw.S(" type=\"button\"")
 		}
-		if !attrs.Has("role") {
+		if !_gsxv2.Has("role") {
 			_gsxgw.S(" role=\"tab\"")
 		}
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"tabs-trigger\"")
-		}
-		if !attrs.Has("data-gsxui-tabs-trigger") {
+		if !_gsxv2.Has("data-gsxui-tabs-trigger") {
 			_gsxgw.BoolAttr("data-gsxui-tabs-trigger", true)
 		}
-		if !attrs.Has("data-value") {
+		if !_gsxv2.Has("data-value") {
 			_gsxgw.S(" data-value=\"")
 			_gsxgw.AttrValue(string(value))
 			_gsxgw.S("\"")
 		}
-		if !attrs.Has("data-state") {
+		if !_gsxv2.Has("data-state") {
 			_gsxgw.S(" data-state=\"")
 			_gsxgw.AttrValue(string(state))
 			_gsxgw.S("\"")
 		}
-		if !attrs.Has("aria-selected") {
+		if !_gsxv2.Has("aria-selected") {
 			_gsxgw.S(" aria-selected=\"")
 			_gsxgw.S(_gsxsc.FormatBool(bool(selected)))
 			_gsxgw.S("\"")
 		}
-		if !attrs.Has("tabindex") {
+		if !_gsxv2.Has("tabindex") {
 			_gsxgw.S(" tabindex=\"")
 			_gsxgw.IntInto(_gsxnum[:], int64(tabindex))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-1.5 py-0.5 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-1 data-[state=active]:shadow-sm dark:text-muted-foreground dark:hover:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-[state=active]:bg-background data-[state=active]:text-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 dark:data-[state=active]:text-foreground"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
+		_gsxgw.StyleMerged("", _gsxv2.Style())
+		_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line tabs.gsx:80:3
+//line tabs.gsx:76:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line tabs.gsx:84:1
+//line tabs.gsx:80:1
 // TabsContent's selected bool mirrors TabsTrigger's — same value-comparison
 // contract, same zero-value-is-inactive default.
 
-//line tabs.gsx:86:1
+//line tabs.gsx:82:1
 func TabsContent(value string, selected bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line tabs.gsx:87:2
+//line tabs.gsx:83:2
 		state := "inactive"
 		if selected {
 			state = "active"
 		}
-//line tabs.gsx:93:2
+//line tabs.gsx:89:2
+		_gsxv3 := withSlot("tabs-content", attrs)
 		_gsxgw.S("<div")
-		if !attrs.Has("role") {
+		if !_gsxv3.Has("role") {
 			_gsxgw.S(" role=\"tabpanel\"")
 		}
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"tabs-content\"")
-		}
-		if !attrs.Has("data-value") {
+		if !_gsxv3.Has("data-value") {
 			_gsxgw.S(" data-value=\"")
 			_gsxgw.AttrValue(string(value))
 			_gsxgw.S("\"")
 		}
-		if !attrs.Has("data-state") {
+		if !_gsxv3.Has("data-state") {
 			_gsxgw.S(" data-state=\"")
 			_gsxgw.AttrValue(string(state))
 			_gsxgw.S("\"")
 		}
-		if !attrs.Has("hidden") {
+		if !_gsxv3.Has("hidden") {
 			_gsxgw.BoolAttr("hidden", bool(!selected))
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex-1 text-sm outline-none"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv3.Class())
+		_gsxgw.StyleMerged("", _gsxv3.Style())
+		_gsxgw.Spread(ctx, _gsxv3, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
-//line tabs.gsx:102:3
+//line tabs.gsx:96:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

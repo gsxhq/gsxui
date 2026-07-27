@@ -11,7 +11,7 @@ import (
 component States() {
 	<div class="flex flex-col gap-3">
 		<div class="flex items-center gap-2">
-			<ui.Checkbox id="checkbox-states-unchecked"/>
+			<ui.Checkbox id="checkbox-states-unchecked" aria-invalid="true"/>
 			<ui.Label for="checkbox-states-unchecked">Unchecked</ui.Label>
 		</div>
 		<div class="flex items-center gap-2">

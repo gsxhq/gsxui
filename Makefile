@@ -1,7 +1,16 @@
-.PHONY: generate test test-js check icons site-dev site highlight
+.PHONY: generate verify-generated test test-js audit check ci icons site-dev site highlight
 
 generate:
 	go tool gsx generate
+
+verify-generated:
+	@before="$$(find . -type f -name '*.x.go' -print0 | LC_ALL=C sort -z | xargs -0 shasum -a 256)"; \
+	go tool gsx generate; \
+	after="$$(find . -type f -name '*.x.go' -print0 | LC_ALL=C sort -z | xargs -0 shasum -a 256)"; \
+	if [ "$$before" != "$$after" ]; then \
+		echo "error: generated .x.go drifted — commit regenerated output"; \
+		exit 1; \
+	fi
 
 # highlight regenerates site/hl/blocks.gen.go — every component example and
 # doc snippet pre-rendered to highlighted HTML. Run it after adding, renaming
@@ -39,9 +48,30 @@ test: generate
 test-js:
 	npx playwright test --config jstest/playwright.config.ts
 
-check: test test-js
-	@git diff --exit-code -- '*.x.go' || { echo "error: generated .x.go drifted — commit regenerated output"; exit 1; }
-	@test -z "$$(git status --porcelain -- '*.x.go' | grep '^??')" || { echo "error: untracked .x.go files"; exit 1; }
+audit:
+	@! rg -n '^[[:space:]]*<[^>]*data-slot=|^[[:space:]]+data-slot=' ui site/examples site/pages web dev -g '!*.x.go' -g '!*.gen.go'
+	@! rg -n 'data-slot|className[[:space:]]*=|[.]classList|setAttribute[(][^)]*class|[.]className[[:space:]]*=' ui -g '*.js'
+	@! rg -n '^[[:space:]]+class=' ui -g '*.gsx'
+	@! rg -n '^[[:space:]]*<[^>]*class=' ui -g '*.gsx'
+	@! rg -n '!important' assets/css/foundation.css assets/css/styles/default.css
+
+check: audit
+	@$(MAKE) --no-print-directory verify-generated
+	go vet ./...
+	go test ./...
+	npx playwright test --config jstest/playwright.config.ts
+	@test -f site/dist/.gitkeep || { echo "error: site/dist/.gitkeep missing (vite build deletes it — restore before commit)"; exit 1; }
+	@for f in $$(find ui jstest -name '*.js'); do node --check $$f || exit 1; done
+	gofmt -l . | (! grep .)
+
+# ci is the authoritative uncached gate. It mirrors check without reusing
+# Go's test-result cache and keeps the browser, generation, syntax,
+# structural, and formatting checks in the same run.
+ci: audit
+	@$(MAKE) --no-print-directory verify-generated
+	go vet ./...
+	go test -count=1 ./...
+	npx playwright test --config jstest/playwright.config.ts
 	@test -f site/dist/.gitkeep || { echo "error: site/dist/.gitkeep missing (vite build deletes it — restore before commit)"; exit 1; }
 	@for f in $$(find ui jstest -name '*.js'); do node --check $$f || exit 1; done
 	gofmt -l . | (! grep .)

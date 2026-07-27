@@ -9,7 +9,8 @@ func TestCompositeContractsDeclareEverySlotAndPresentationAxis(t *testing.T) {
 	orientation := []Axis{{Attribute: "data-orientation", Values: []string{"horizontal", "vertical"}}}
 	want := []Component{
 		{
-			Name: "Calendar",
+			Name:         "Calendar",
+			RegistryName: "calendar",
 			Slots: []Slot{
 				{Name: "calendar", Axes: []Axis{
 					{Attribute: "data-caption-layout", Values: []string{"dropdown", "label"}},
@@ -56,7 +57,8 @@ func TestCompositeContractsDeclareEverySlotAndPresentationAxis(t *testing.T) {
 			},
 		},
 		{
-			Name: "Carousel",
+			Name:         "Carousel",
+			RegistryName: "carousel",
 			Slots: []Slot{
 				{Name: "carousel", Axes: orientation},
 				{Name: "carousel-content", Axes: orientation},
@@ -78,7 +80,8 @@ func TestCompositeContractsDeclareEverySlotAndPresentationAxis(t *testing.T) {
 			},
 		},
 		{
-			Name: "Resizable",
+			Name:         "Resizable",
+			RegistryName: "resizable",
 			Slots: []Slot{
 				{Name: "resizable-panel-group", Axes: []Axis{{Attribute: "aria-orientation", Values: []string{"horizontal", "vertical"}}}},
 				{Name: "resizable-panel"},
@@ -87,8 +90,9 @@ func TestCompositeContractsDeclareEverySlotAndPresentationAxis(t *testing.T) {
 			},
 		},
 		{
-			Name:  "ScrollArea",
-			Slots: []Slot{{Name: "scroll-area", Axes: orientation}},
+			Name:         "ScrollArea",
+			RegistryName: "scroll-area",
+			Slots:        []Slot{{Name: "scroll-area", Axes: orientation}},
 		},
 	}
 

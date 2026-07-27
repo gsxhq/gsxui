@@ -19,10 +19,12 @@ component Full() {
 			Right click here
 		</ui.ContextMenuTrigger>
 		<ui.ContextMenuContent class="w-52">
+			<ui.ContextMenuGroup>
 			<ui.ContextMenuItem>
 				Back
 				<ui.ContextMenuShortcut>⌘[</ui.ContextMenuShortcut>
 			</ui.ContextMenuItem>
+			</ui.ContextMenuGroup>
 			<ui.ContextMenuItem aria-disabled="true" data-disabled="true">
 				Forward
 				<ui.ContextMenuShortcut>⌘]</ui.ContextMenuShortcut>

@@ -20,12 +20,18 @@ func Basic() _gsxrt.Node {
 		_gsxgw.Node(ctx, ui.Tooltip(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:11:3
+			_gsxgw.Node(ctx, ui.TooltipTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+				_gsxgw.S("Hover for tooltip")
+				return _gsxgw.Err()
+			}), nil))
+//line basic.gsx:12:3
 			_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Hover me")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "data-gsxui-tooltip-trigger", Value: true}}))
-//line basic.gsx:12:3
+//line basic.gsx:13:3
 			_gsxgw.Node(ctx, ui.TooltipContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Add to library")

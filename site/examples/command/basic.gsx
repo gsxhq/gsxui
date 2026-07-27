@@ -13,6 +13,7 @@ import (
 // stays in the input; Enter or click activates (these demo items emit
 // gsxui:select only — they carry no data-href).
 component Basic() {
+	<div>
 	<ui.Command class="max-w-md rounded-lg border shadow-md">
 		<ui.CommandInput placeholder="Type a command or search..."/>
 		<ui.CommandList>
@@ -51,4 +52,9 @@ component Basic() {
 			</ui.CommandGroup>
 		</ui.CommandList>
 	</ui.Command>
+	<ui.CommandDialog title="Command palette" description="Search commands">
+		<ui.CommandInput placeholder="Search commands..."/>
+		<ui.CommandList><ui.CommandItem>Open settings</ui.CommandItem></ui.CommandList>
+	</ui.CommandDialog>
+	</div>
 }

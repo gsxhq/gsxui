@@ -6,18 +6,21 @@ import (
 )
 
 type Axis struct {
-	Attribute string
-	Values    []string
+	Attribute     string
+	Values        []string
+	RuntimeValues []string
 }
 
 type Slot struct {
-	Name string
-	Axes []Axis
+	Name    string
+	Runtime bool
+	Axes    []Axis
 }
 
 type Component struct {
-	Name  string
-	Slots []Slot
+	Name         string
+	RegistryName string
+	Slots        []Slot
 }
 
 func All() []Component {
@@ -49,13 +52,14 @@ func All() []Component {
 }
 
 func cloneComponent(component Component) Component {
-	clone := Component{Name: component.Name}
+	clone := Component{Name: component.Name, RegistryName: component.RegistryName}
 	if component.Slots == nil {
 		return clone
 	}
 	clone.Slots = make([]Slot, len(component.Slots))
 	for slotIndex, slot := range component.Slots {
 		clone.Slots[slotIndex].Name = slot.Name
+		clone.Slots[slotIndex].Runtime = slot.Runtime
 		if slot.Axes == nil {
 			continue
 		}
@@ -66,6 +70,10 @@ func cloneComponent(component Component) Component {
 				clone.Slots[slotIndex].Axes[axisIndex].Values = make([]string, len(axis.Values))
 				copy(clone.Slots[slotIndex].Axes[axisIndex].Values, axis.Values)
 			}
+			if axis.RuntimeValues != nil {
+				clone.Slots[slotIndex].Axes[axisIndex].RuntimeValues = make([]string, len(axis.RuntimeValues))
+				copy(clone.Slots[slotIndex].Axes[axisIndex].RuntimeValues, axis.RuntimeValues)
+			}
 		}
 	}
 	return clone
@@ -73,6 +81,7 @@ func cloneComponent(component Component) Component {
 
 func Validate(components []Component) error {
 	componentNames := make(map[string]struct{}, len(components))
+	registryNames := make(map[string]struct{}, len(components))
 	slotComponents := make(map[string]string)
 	for componentIndex, component := range components {
 		if component.Name == "" {
@@ -82,6 +91,13 @@ func Validate(components []Component) error {
 			return fmt.Errorf("component %q: duplicate component name", component.Name)
 		}
 		componentNames[component.Name] = struct{}{}
+		if component.RegistryName == "" {
+			return fmt.Errorf("component %q: empty registry name", component.Name)
+		}
+		if _, ok := registryNames[component.RegistryName]; ok {
+			return fmt.Errorf("component %q: duplicate registry name %q", component.Name, component.RegistryName)
+		}
+		registryNames[component.RegistryName] = struct{}{}
 
 		for slotIndex, slot := range component.Slots {
 			if slot.Name == "" {
@@ -102,6 +118,16 @@ func Validate(components []Component) error {
 						return fmt.Errorf("component %q: slot %q: axis %q: duplicate value %q", component.Name, slot.Name, axis.Attribute, value)
 					}
 					values[value] = struct{}{}
+				}
+				runtimeValues := make(map[string]struct{}, len(axis.RuntimeValues))
+				for _, value := range axis.RuntimeValues {
+					if _, ok := runtimeValues[value]; ok {
+						return fmt.Errorf("component %q: slot %q: axis %q: duplicate runtime value %q", component.Name, slot.Name, axis.Attribute, value)
+					}
+					runtimeValues[value] = struct{}{}
+					if _, ok := values[value]; !ok {
+						return fmt.Errorf("component %q: slot %q: axis %q: runtime value %q is not declared in Values", component.Name, slot.Name, axis.Attribute, value)
+					}
 				}
 			}
 		}

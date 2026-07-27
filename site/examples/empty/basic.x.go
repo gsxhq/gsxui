@@ -25,19 +25,25 @@ func Basic() _gsxrt.Node {
 			_gsxgw.Node(ctx, ui.EmptyHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:14:4
+				_gsxgw.Node(ctx, ui.EmptyMedia("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+					_gsxgw.S("Default media")
+					return _gsxgw.Err()
+				}), nil))
+//line basic.gsx:15:4
 				_gsxgw.Node(ctx, ui.EmptyMedia("icon", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:15:5
+//line basic.gsx:16:5
 					_gsxgw.Node(ctx, icon.Inbox())
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:17:4
+//line basic.gsx:18:4
 				_gsxgw.Node(ctx, ui.EmptyTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("No messages")
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:18:4
+//line basic.gsx:19:4
 				_gsxgw.Node(ctx, ui.EmptyDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("You're all caught up. New messages will appear here.")
@@ -45,10 +51,10 @@ func Basic() _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line basic.gsx:22:3
+//line basic.gsx:23:3
 			_gsxgw.Node(ctx, ui.EmptyContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:23:4
+//line basic.gsx:24:4
 				_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Compose message")

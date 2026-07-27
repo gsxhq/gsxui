@@ -18,10 +18,11 @@ per-component GAP notes (see `jsx-parity.md` for the detailed rationale).
   color isn't near-white. Swap to a `currentColor` CSS-mask
   (`mask-image`/`-webkit-mask-image` painted via `background-color:
   currentColor`) in the Plan 4 theming work.
-- **Theme system and configurator** — the remote `/theme` token form is due
-  for replacement, but a local editor server is not part of the design.
-  The approved CSS-only architecture, safe CLI handoff, phased work, and
-  explicit no-promise gate for any second component style are tracked in
+- **Preset configurator** — the current `/theme` editor correctly imports,
+  previews, copies, and downloads variables-only `theme.css`. Replacing it
+  with the full preset configurator remains an uncommitted possibility.
+  The shipped CSS-only boundary and the no-promise gate for any second
+  component style are tracked in
   [`theme-system-roadmap.md`](theme-system-roadmap.md).
 - **Icon search** — the icon gallery page (`site/examples/icon`) ships v1
   as a static grid of ~40 popular icons plus a "1,748 total" note; a

@@ -9,7 +9,13 @@ import {
   unlinkSync,
 } from "node:fs";
 import path from "node:path";
-import { cssPath, manifestPath, repoRoot, tmpDir } from "./support/paths";
+import {
+  cssPath,
+  foundationCSSPath,
+  manifestPath,
+  repoRoot,
+  tmpDir,
+} from "./support/paths";
 
 /**
  * Runs once before any worker imports a spec file, which is what lets specs
@@ -34,6 +40,14 @@ export default function globalSetup() {
     cwd: repoRoot,
     stdio: "inherit",
   });
+  execFileSync(
+    "npx",
+    ["@tailwindcss/cli", "-i", "jstest/foundation.css", "-o", foundationCSSPath],
+    {
+      cwd: repoRoot,
+      stdio: "inherit",
+    },
+  );
 
   linkFontAssets();
 }

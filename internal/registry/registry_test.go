@@ -2,10 +2,12 @@ package registry_test
 
 import (
 	"reflect"
+	"slices"
 	"strings"
 	"testing"
 
 	"github.com/gsxhq/gsxui/internal/registry"
+	"github.com/gsxhq/gsxui/internal/stylecontract"
 )
 
 func TestComponents(t *testing.T) {
@@ -21,6 +23,21 @@ func TestComponents(t *testing.T) {
 		if slicesContains(got, unwanted) {
 			t.Fatalf("Components() = %v, should not contain %q", got, unwanted)
 		}
+	}
+}
+
+func TestComponentsMatchTypedStyleContract(t *testing.T) {
+	components, err := registry.Components()
+	if err != nil {
+		t.Fatal(err)
+	}
+	contractComponents := make([]string, 0, len(stylecontract.All()))
+	for _, component := range stylecontract.All() {
+		contractComponents = append(contractComponents, component.RegistryName)
+	}
+	slices.Sort(contractComponents)
+	if !slices.Equal(components, contractComponents) {
+		t.Fatalf("registry components = %v; typed style contract = %v", components, contractComponents)
 	}
 }
 

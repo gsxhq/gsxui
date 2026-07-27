@@ -8,11 +8,12 @@ import (
 func TestSidebarContracts(t *testing.T) {
 	want := []Component{
 		{
-			Name: "Sidebar",
+			Name:         "Sidebar",
+			RegistryName: "sidebar",
 			Slots: []Slot{
 				{Name: "sidebar-wrapper", Axes: []Axis{{Attribute: "data-state", Values: []string{"collapsed", "expanded"}}}},
 				{Name: "sidebar", Axes: []Axis{
-					{Attribute: "data-collapsible", Values: []string{"none"}},
+					{Attribute: "data-collapsible", Values: []string{"", "icon", "none", "offcanvas"}},
 					{Attribute: "data-side", Values: []string{"left", "right"}},
 					{Attribute: "data-variant", Values: []string{"floating", "inset", "sidebar"}},
 				}},
@@ -56,7 +57,6 @@ func TestSidebarContracts(t *testing.T) {
 					{Attribute: "data-variant", Values: []string{"default", "outline"}},
 					{Attribute: "data-size", Values: []string{"default", "lg", "sm"}},
 					{Attribute: "data-active", Values: []string{"false", "true"}},
-					{Attribute: "data-state", Values: []string{"open"}},
 					{Attribute: "disabled"},
 					{Attribute: "aria-disabled"},
 				}},
@@ -64,7 +64,6 @@ func TestSidebarContracts(t *testing.T) {
 				{Name: "sidebar-menu-button-tooltip-content"},
 				{Name: "sidebar-menu-action", Axes: []Axis{
 					{Attribute: "data-show-on-hover", Values: []string{"false", "true"}},
-					{Attribute: "data-state", Values: []string{"open"}},
 				}},
 				{Name: "sidebar-menu-badge"},
 				{Name: "sidebar-menu-skeleton"},

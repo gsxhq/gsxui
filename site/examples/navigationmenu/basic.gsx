@@ -18,7 +18,7 @@ component Basic() {
 	<ui.NavigationMenu>
 		<ui.NavigationMenuList>
 			<ui.NavigationMenuItem>
-				<ui.NavigationMenuLink variant="trigger" href="#">Home</ui.NavigationMenuLink>
+				<ui.NavigationMenuLink variant="trigger" active={true} href="#">Home</ui.NavigationMenuLink>
 			</ui.NavigationMenuItem>
 			<ui.NavigationMenuItem>
 				<ui.NavigationMenuTrigger>Components</ui.NavigationMenuTrigger>
@@ -42,6 +42,7 @@ component Basic() {
 			<ui.NavigationMenuItem>
 				<ui.NavigationMenuLink variant="trigger" href="#">Docs</ui.NavigationMenuLink>
 			</ui.NavigationMenuItem>
+			<ui.NavigationMenuIndicator/>
 		</ui.NavigationMenuList>
 	</ui.NavigationMenu>
 }

@@ -2,7 +2,8 @@ package stylecontract
 
 var formContracts = []Component{
 	{
-		Name: "Checkbox",
+		Name:         "Checkbox",
+		RegistryName: "checkbox",
 		Slots: []Slot{{
 			Name: "checkbox",
 			Axes: []Axis{
@@ -13,7 +14,8 @@ var formContracts = []Component{
 		}},
 	},
 	{
-		Name: "Field",
+		Name:         "Field",
+		RegistryName: "field",
 		Slots: []Slot{
 			{Name: "field-set"},
 			{Name: "field-legend", Axes: []Axis{{Attribute: "data-variant", Values: []string{"legend", "label"}}}},
@@ -34,7 +36,8 @@ var formContracts = []Component{
 		},
 	},
 	{
-		Name: "Input",
+		Name:         "Input",
+		RegistryName: "input",
 		Slots: []Slot{{
 			Name: "input",
 			Axes: []Axis{
@@ -44,7 +47,8 @@ var formContracts = []Component{
 		}},
 	},
 	{
-		Name: "InputGroup",
+		Name:         "InputGroup",
+		RegistryName: "input-group",
 		Slots: []Slot{
 			{Name: "input-group", Axes: []Axis{{Attribute: "data-disabled", Values: []string{"true"}}}},
 			{Name: "input-group-addon", Axes: []Axis{{Attribute: "data-align", Values: []string{"inline-start", "inline-end", "block-start", "block-end"}}}},
@@ -57,22 +61,24 @@ var formContracts = []Component{
 		},
 	},
 	{
-		Name: "InputOTP",
+		Name:         "InputOTP",
+		RegistryName: "input-otp",
 		Slots: []Slot{
 			{Name: "input-otp"},
 			{Name: "input-otp-input", Axes: []Axis{{Attribute: "disabled"}}},
 			{Name: "input-otp-group"},
 			{Name: "input-otp-slot", Axes: []Axis{
-				{Attribute: "data-active", Values: []string{"false", "true"}},
+				{Attribute: "data-active", Values: []string{"false", "true"}, RuntimeValues: []string{"true"}},
 				{Attribute: "aria-invalid", Values: []string{"true"}},
 			}},
 			{Name: "input-otp-separator"},
-			{Name: "input-otp-caret-overlay"},
-			{Name: "input-otp-caret"},
+			{Name: "input-otp-caret-overlay", Runtime: true},
+			{Name: "input-otp-caret", Runtime: true},
 		},
 	},
 	{
-		Name: "NativeSelect",
+		Name:         "NativeSelect",
+		RegistryName: "native-select",
 		Slots: []Slot{
 			{Name: "native-select-wrapper"},
 			{Name: "native-select", Axes: []Axis{
@@ -82,14 +88,16 @@ var formContracts = []Component{
 		},
 	},
 	{
-		Name: "Progress",
+		Name:         "Progress",
+		RegistryName: "progress",
 		Slots: []Slot{
 			{Name: "progress"},
 			{Name: "progress-indicator"},
 		},
 	},
 	{
-		Name: "Radio",
+		Name:         "Radio",
+		RegistryName: "radio",
 		Slots: []Slot{{
 			Name: "radio",
 			Axes: []Axis{
@@ -100,28 +108,28 @@ var formContracts = []Component{
 		}},
 	},
 	{
-		Name: "Select",
+		Name:         "Select",
+		RegistryName: "select",
 		Slots: []Slot{
 			{Name: "select"},
 			{Name: "select-bridge"},
 			{Name: "select-trigger", Axes: []Axis{
 				{Attribute: "data-size", Values: []string{"default", "sm"}},
-				{Attribute: "data-state", Values: []string{"closed", "open"}},
 				{Attribute: "data-placeholder"},
 				{Attribute: "disabled"},
 				{Attribute: "aria-invalid", Values: []string{"true"}},
 			}},
 			{Name: "select-value"},
 			{Name: "select-content", Axes: []Axis{
-				{Attribute: "data-state", Values: []string{"closed", "open"}},
-				{Attribute: "data-side", Values: []string{"bottom", "left", "right", "top"}},
+				{Attribute: "data-state", Values: []string{"closed", "open"}, RuntimeValues: []string{"open"}},
+				{Attribute: "data-side", Values: []string{"bottom"}},
 			}},
 			{Name: "select-group"},
 			{Name: "select-label"},
 			{Name: "select-item", Axes: []Axis{
 				{Attribute: "data-state", Values: []string{"unchecked", "checked"}},
 				{Attribute: "data-disabled", Values: []string{"true"}},
-				{Attribute: "aria-selected", Values: []string{"false", "true"}},
+				{Attribute: "aria-selected", Values: []string{"false", "true"}, RuntimeValues: []string{"true"}},
 			}},
 			{Name: "select-item-indicator"},
 			{Name: "select-item-text"},
@@ -129,11 +137,13 @@ var formContracts = []Component{
 		},
 	},
 	{
-		Name:  "Slider",
-		Slots: []Slot{{Name: "slider", Axes: []Axis{{Attribute: "disabled"}}}},
+		Name:         "Slider",
+		RegistryName: "slider",
+		Slots:        []Slot{{Name: "slider", Axes: []Axis{{Attribute: "disabled"}}}},
 	},
 	{
-		Name: "Switch",
+		Name:         "Switch",
+		RegistryName: "switch",
 		Slots: []Slot{{
 			Name: "switch",
 			Axes: []Axis{
@@ -143,7 +153,8 @@ var formContracts = []Component{
 		}},
 	},
 	{
-		Name: "Textarea",
+		Name:         "Textarea",
+		RegistryName: "textarea",
 		Slots: []Slot{{
 			Name: "textarea",
 			Axes: []Axis{
@@ -153,7 +164,8 @@ var formContracts = []Component{
 		}},
 	},
 	{
-		Name: "Toggle",
+		Name:         "Toggle",
+		RegistryName: "toggle",
 		Slots: []Slot{{
 			Name: "toggle",
 			Axes: []Axis{
@@ -166,7 +178,8 @@ var formContracts = []Component{
 		}},
 	},
 	{
-		Name: "ToggleGroup",
+		Name:         "ToggleGroup",
+		RegistryName: "toggle-group",
 		Slots: []Slot{
 			{Name: "toggle-group", Axes: []Axis{
 				{Attribute: "data-variant", Values: []string{"default", "outline"}},

@@ -14,10 +14,13 @@ component Basic() {
 		<ui.Sidebar open={true}>
 			<ui.SidebarHeader>
 				<div class="px-2 py-1 text-sm font-semibold">Acme Inc</div>
+				<ui.SidebarInput placeholder="Search navigation"/>
 			</ui.SidebarHeader>
+			<ui.SidebarSeparator/>
 			<ui.SidebarContent>
 				<ui.SidebarGroup>
 					<ui.SidebarGroupLabel>Application</ui.SidebarGroupLabel>
+					<ui.SidebarGroupAction aria-label="Add item"><icon.Plus/></ui.SidebarGroupAction>
 					<ui.SidebarGroupContent>
 						<ui.SidebarMenu>
 							<ui.SidebarMenuItem>
@@ -27,14 +30,24 @@ component Basic() {
 								</ui.SidebarMenuButton>
 							</ui.SidebarMenuItem>
 							<ui.SidebarMenuItem>
-								<ui.SidebarMenuButton tooltip="Inbox">
+								<ui.SidebarMenuButton variant="outline" size="sm" tooltip="Inbox">
 									<icon.Inbox/>
 									<span>Inbox</span>
 								</ui.SidebarMenuButton>
+								<ui.SidebarMenuAction showOnHover={true} aria-label="More"><icon.Plus/></ui.SidebarMenuAction>
+								<ui.SidebarMenuAction aria-label="Pin"><icon.Plus/></ui.SidebarMenuAction>
 								<ui.SidebarMenuBadge>24</ui.SidebarMenuBadge>
+								<ui.SidebarMenuSub>
+									<ui.SidebarMenuSubItem>
+										<ui.SidebarMenuSubButton size="sm" isActive={true}>Unread</ui.SidebarMenuSubButton>
+									</ui.SidebarMenuSubItem>
+									<ui.SidebarMenuSubItem>
+										<ui.SidebarMenuSubButton size="md">Archived</ui.SidebarMenuSubButton>
+									</ui.SidebarMenuSubItem>
+								</ui.SidebarMenuSub>
 							</ui.SidebarMenuItem>
 							<ui.SidebarMenuItem>
-								<ui.SidebarMenuButton tooltip="Calendar">
+								<ui.SidebarMenuButton size="lg" tooltip="Calendar">
 									<icon.Calendar/>
 									<span>Calendar</span>
 								</ui.SidebarMenuButton>
@@ -46,6 +59,8 @@ component Basic() {
 								</ui.SidebarMenuButton>
 							</ui.SidebarMenuItem>
 						</ui.SidebarMenu>
+						<ui.SidebarMenuSkeleton showIcon={true}/>
+						<ui.SidebarMenuSkeleton/>
 					</ui.SidebarGroupContent>
 				</ui.SidebarGroup>
 			</ui.SidebarContent>

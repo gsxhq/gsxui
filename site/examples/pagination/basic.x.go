@@ -77,6 +77,72 @@ func Basic() _gsxrt.Node {
 					_gsxgw.Node(ctx, ui.PaginationNext("#", nil))
 					return _gsxgw.Err()
 				}), nil))
+//line basic.gsx:30:4
+				_gsxgw.Node(ctx, ui.PaginationItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:30:23
+					_gsxgw.Node(ctx, ui.PaginationLink("#", false, "xs", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+						_gsxgw.S("xs")
+						return _gsxgw.Err()
+					}), nil))
+					return _gsxgw.Err()
+				}), nil))
+//line basic.gsx:31:4
+				_gsxgw.Node(ctx, ui.PaginationItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:31:23
+					_gsxgw.Node(ctx, ui.PaginationLink("#", false, "sm", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+						_gsxgw.S("sm")
+						return _gsxgw.Err()
+					}), nil))
+					return _gsxgw.Err()
+				}), nil))
+//line basic.gsx:32:4
+				_gsxgw.Node(ctx, ui.PaginationItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:32:23
+					_gsxgw.Node(ctx, ui.PaginationLink("#", false, "lg", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+						_gsxgw.S("lg")
+						return _gsxgw.Err()
+					}), nil))
+					return _gsxgw.Err()
+				}), nil))
+//line basic.gsx:33:4
+				_gsxgw.Node(ctx, ui.PaginationItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:33:23
+					_gsxgw.Node(ctx, ui.PaginationLink("#", false, "icon-xs", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+						_gsxgw.S("x")
+						return _gsxgw.Err()
+					}), _gsxrt.Attrs{{Key: "aria-label", Value: "Icon extra small"}}))
+					return _gsxgw.Err()
+				}), nil))
+//line basic.gsx:34:4
+				_gsxgw.Node(ctx, ui.PaginationItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:34:23
+					_gsxgw.Node(ctx, ui.PaginationLink("#", false, "icon-sm", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+						_gsxgw.S("s")
+						return _gsxgw.Err()
+					}), _gsxrt.Attrs{{Key: "aria-label", Value: "Icon small"}}))
+					return _gsxgw.Err()
+				}), nil))
+//line basic.gsx:35:4
+				_gsxgw.Node(ctx, ui.PaginationItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:35:23
+					_gsxgw.Node(ctx, ui.PaginationLink("#", false, "icon-lg", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+						_gsxgw.S("l")
+						return _gsxgw.Err()
+					}), _gsxrt.Attrs{{Key: "aria-label", Value: "Icon large"}}))
+					return _gsxgw.Err()
+				}), nil))
 				return _gsxgw.Err()
 			}), nil))
 			return _gsxgw.Err()

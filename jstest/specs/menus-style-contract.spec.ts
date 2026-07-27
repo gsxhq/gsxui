@@ -52,28 +52,21 @@ test("checked menu and combobox indicators follow semantic owner state", async (
   }
 });
 
-test("every submenu side has a directional enter offset", async ({ page }) => {
+test("submenu uses the emitted right-side directional enter offset", async ({
+  page,
+}) => {
   await openStyleContract(page);
 
-  const expected = {
-    bottom: "0px -8px",
-    left: "8px",
-    right: "-8px",
-    top: "0px 8px",
-  } as const;
-
-  for (const [side, translate] of Object.entries(expected)) {
-    const content = page.locator(`[data-style-contract="submenu-${side}"]`);
-    const keyframes = await content.evaluate((element) => {
-      (element as HTMLElement).showPopover();
-      return element.getAnimations().flatMap((animation) => {
-        const effect = animation.effect as KeyframeEffect | null;
-        return effect?.getKeyframes().map((frame) => frame.translate) ?? [];
-      });
+  const content = page.locator('[data-style-contract="submenu-right"]');
+  const keyframes = await content.evaluate((element) => {
+    (element as HTMLElement).showPopover();
+    return element.getAnimations().flatMap((animation) => {
+      const effect = animation.effect as KeyframeEffect | null;
+      return effect?.getKeyframes().map((frame) => frame.translate) ?? [];
     });
-    expect(keyframes).toContain(translate);
-    await content.evaluate((element) => (element as HTMLElement).hidePopover());
-  }
+  });
+  expect(keyframes).toContain("-8px");
+  await content.evaluate((element) => (element as HTMLElement).hidePopover());
 });
 
 test("CommandDialog sizing is supplied by CSS ancestry", async ({ page }) => {

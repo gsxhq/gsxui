@@ -8,7 +8,7 @@ import "github.com/gsxhq/gsxui/ui"
 // Basic renders a NativeSelect with plain NativeSelectOption children, one
 // pre-selected.
 component Basic() {
-	<ui.NativeSelect name="fruit">
+	<ui.NativeSelect name="fruit" aria-invalid="true">
 		<ui.NativeSelectOption value="apple">Apple</ui.NativeSelectOption>
 		<ui.NativeSelectOption value="banana" selected>Banana</ui.NativeSelectOption>
 		<ui.NativeSelectOption value="cherry">Cherry</ui.NativeSelectOption>

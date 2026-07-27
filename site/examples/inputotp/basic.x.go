@@ -30,7 +30,7 @@ func Basic() _gsxrt.Node {
 			_gsxgw.Node(ctx, ui.InputOTPGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:21:4
-				_gsxgw.Node(ctx, ui.InputOTPSlot(nil))
+				_gsxgw.Node(ctx, ui.InputOTPSlot(_gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}}))
 //line basic.gsx:22:4
 				_gsxgw.Node(ctx, ui.InputOTPSlot(nil))
 //line basic.gsx:23:4
@@ -51,7 +51,7 @@ func Basic() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 			return _gsxgw.Err()
-		}), _gsxrt.Attrs{{Key: "maxlength", Value: "6"}}))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "maxlength", Value: "6"}}, _gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}})))
 		return _gsxgw.Err()
 	})
 }

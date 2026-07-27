@@ -17,14 +17,14 @@ import (
 // context, the caller resolves and passes down). groupType, not type — see
 // ToggleGroup's own doc comment on the Go-keyword param rename.
 component Basic() {
-	<ui.ToggleGroup groupType="multiple" variant="outline" aria-label="Text formatting">
-		<ui.ToggleGroupItem groupType="multiple" variant="outline" value="bold" aria-label="Toggle bold">
+	<ui.ToggleGroup groupType="multiple" variant="outline" size="lg" aria-label="Text formatting">
+		<ui.ToggleGroupItem groupType="multiple" variant="outline" size="lg" value="bold" aria-label="Toggle bold">
 			<icon.Bold/>
 		</ui.ToggleGroupItem>
-		<ui.ToggleGroupItem groupType="multiple" variant="outline" value="italic" aria-label="Toggle italic">
+		<ui.ToggleGroupItem groupType="multiple" variant="outline" size="lg" value="italic" aria-label="Toggle italic">
 			<icon.Italic/>
 		</ui.ToggleGroupItem>
-		<ui.ToggleGroupItem groupType="multiple" variant="outline" value="underline" aria-label="Toggle underline">
+		<ui.ToggleGroupItem groupType="multiple" variant="outline" size="lg" value="underline" aria-label="Toggle underline" aria-invalid="true">
 			<icon.Underline/>
 		</ui.ToggleGroupItem>
 	</ui.ToggleGroup>

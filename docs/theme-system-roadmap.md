@@ -1,6 +1,6 @@
 # Theme system and configurator roadmap
 
-**Status:** architecture approved; delivery uncommitted.
+**Status:** Phase 1 shipped; later phases are uncommitted possibilities.
 
 This is dependency ordering, not a release promise. Work starts only when a
 phase is explicitly prioritized. A later phase does not imply that gsxui
@@ -28,9 +28,9 @@ Production projects install one unscoped style. The editor may build scoped
 copies for preview. Structural differences are separate components or a
 future structural base, never style-specific `.gsx` templates.
 
-## Phase 1 — correct the styling boundary
+## Phase 1 — correct the styling boundary (shipped)
 
-**Relative size:** extra large; this is the dominant refactor.
+Shipped as one CSS-only boundary:
 
 - Introduce the typed slot/state contract.
 - Replace generic `data-slot` with `data-gsxui-slot`.
@@ -43,9 +43,9 @@ future structural base, never style-specific `.gsx` templates.
 - Make the site, browser harness, and `gsxui init` consume the same assets.
 - Remove the old combined/copy-based styling path in the same change.
 
-**Exit gate:** every component has unchanged public behavior and
-accessibility, current visual baselines match in light/dark and
-desktop/mobile, and caller utilities override style defaults.
+The shipped gate covers the exact component/style contract, real finite
+examples, runtime-created states, foundation-only behavior, light/dark and
+responsive visual baselines, and caller utility precedence.
 
 ## Phase 2 — make CSS a checked API
 

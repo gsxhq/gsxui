@@ -33,7 +33,7 @@ func States() _gsxrt.Node {
 //line states.gsx:15:3
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")
 //line states.gsx:16:4
-		_gsxgw.Node(ctx, ui.Radio(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "radio-states-yearly"}}, _gsxrt.Attrs{{Key: "name", Value: "radio-states-billing"}})))
+		_gsxgw.Node(ctx, ui.Radio(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "radio-states-yearly"}}, _gsxrt.Attrs{{Key: "name", Value: "radio-states-billing"}}, _gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}})))
 //line states.gsx:17:4
 		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)

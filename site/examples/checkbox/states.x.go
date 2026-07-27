@@ -24,7 +24,7 @@ func States() _gsxrt.Node {
 //line states.gsx:13:3
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")
 //line states.gsx:14:4
-		_gsxgw.Node(ctx, ui.Checkbox(_gsxrt.Attrs{{Key: "id", Value: "checkbox-states-unchecked"}}))
+		_gsxgw.Node(ctx, ui.Checkbox(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "checkbox-states-unchecked"}}, _gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}})))
 //line states.gsx:15:4
 		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)

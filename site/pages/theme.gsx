@@ -71,6 +71,16 @@ var themeGroups = []themeGroup{
 		},
 	},
 	{
+		Title: "Status and overlay",
+		Vars: []themeVar{
+			{Name: "--success", Light: "oklch(69.6% 0.17 162.48)", Dark: "oklch(69.6% 0.17 162.48)"},
+			{Name: "--info", Light: "oklch(68.5% 0.169 237.323)", Dark: "oklch(68.5% 0.169 237.323)"},
+			{Name: "--warning", Light: "oklch(76.9% 0.188 70.08)", Dark: "oklch(76.9% 0.188 70.08)"},
+			{Name: "--overlay", Light: "oklch(0% 0 0 / 10%)", Dark: "oklch(0% 0 0 / 10%)"},
+			{Name: "--contrast", Light: "oklch(100% 0 0)", Dark: "oklch(100% 0 0)"},
+		},
+	},
+	{
 		Title: "Sidebar",
 		Vars: []themeVar{
 			{Name: "--sidebar", Light: "oklch(0.985 0 0)", Dark: "oklch(0.205 0 0)"},
@@ -102,11 +112,18 @@ const themeImportPlaceholder = `:root {
 
 component (t Theme) Page() {
 	<Layout title="Theme" active="">
-		<div class="flex flex-col gap-6 py-10">
+		<ThemeEditor/>
+	</Layout>
+}
+
+// ThemeEditor is the editor body without the site Layout, so the browser
+// harness can exercise the production controls and web/theme.js directly.
+component ThemeEditor() {
+	<div class="flex flex-col gap-6 py-10">
 			<div>
 				<h1 class="text-3xl font-semibold tracking-tight">Theme editor</h1>
 				<p class="mt-2 max-w-2xl text-sm text-muted-foreground">
-					Edit the semantic CSS custom properties gsxui's components read. Paste a tweakcn/shadcn theme's root and dark blocks into Import to try it, or export what you build here as a ready-to-drop-in theme.
+					Edit the semantic CSS custom properties gsxui's components read. Paste a tweakcn/shadcn theme's root and dark blocks into Import to try it, or export a variables-only <code>theme.css</code>. Your project's entry, foundation, and component style files stay unchanged.
 				</p>
 			</div>
 			<div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
@@ -153,7 +170,7 @@ component (t Theme) Page() {
 						<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Export</h2>
 						<div class="flex flex-wrap gap-2">
 							<ui.Button data-theme-copy variant="outline" size="sm">Copy CSS</ui.Button>
-							<ui.Button data-theme-download variant="outline" size="sm">Download gsxui.css</ui.Button>
+							<ui.Button data-theme-download variant="outline" size="sm">Download theme.css</ui.Button>
 						</div>
 						<textarea
 							data-theme-export-output
@@ -241,6 +258,5 @@ component (t Theme) Page() {
 					</div>
 				</div>
 			</div>
-		</div>
-	</Layout>
+	</div>
 }

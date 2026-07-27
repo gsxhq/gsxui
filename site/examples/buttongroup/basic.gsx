@@ -23,7 +23,7 @@ component Basic() {
 		</ui.ButtonGroup>
 		<ui.ButtonGroup>
 			<ui.Button variant="secondary">Copy</ui.Button>
-			<ui.ButtonGroupSeparator/>
+			<ui.ButtonGroupSeparator orientation="horizontal"/>
 			<ui.Button variant="secondary">Paste</ui.Button>
 		</ui.ButtonGroup>
 		<ui.ButtonGroup aria-label="Quantity">
@@ -42,6 +42,7 @@ component Basic() {
 			<ui.Button variant="outline" size="icon">
 				<icon.Minus/>
 			</ui.Button>
+			<ui.ButtonGroupSeparator orientation="vertical"/>
 		</ui.ButtonGroup>
 	</div>
 }

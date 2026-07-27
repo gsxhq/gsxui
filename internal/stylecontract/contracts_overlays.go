@@ -2,7 +2,8 @@ package stylecontract
 
 var overlayContracts = []Component{
 	{
-		Name: "Accordion",
+		Name:         "Accordion",
+		RegistryName: "accordion",
 		Slots: []Slot{
 			{Name: "accordion"},
 			{Name: "accordion-item", Axes: []Axis{{Attribute: "open"}}},
@@ -13,16 +14,17 @@ var overlayContracts = []Component{
 		},
 	},
 	{
-		Name: "AlertDialog",
+		Name:         "AlertDialog",
+		RegistryName: "alert-dialog",
 		Slots: []Slot{
 			{Name: "alert-dialog"},
 			{Name: "alert-dialog-trigger", Axes: []Axis{
 				{Attribute: "aria-haspopup", Values: []string{"dialog"}},
-				{Attribute: "aria-expanded", Values: []string{"false", "true"}},
+				{Attribute: "aria-expanded", Values: []string{"false", "true"}, RuntimeValues: []string{"true"}},
 			}},
 			{Name: "alert-dialog-content", Axes: []Axis{
 				{Attribute: "role", Values: []string{"alertdialog"}},
-				{Attribute: "data-state", Values: []string{"closed", "open"}},
+				{Attribute: "data-state", Values: []string{"closed", "open"}, RuntimeValues: []string{"open"}},
 				{Attribute: "open"},
 			}},
 			{Name: "alert-dialog-header"},
@@ -40,7 +42,8 @@ var overlayContracts = []Component{
 		},
 	},
 	{
-		Name: "Collapsible",
+		Name:         "Collapsible",
+		RegistryName: "collapsible",
 		Slots: []Slot{
 			{Name: "collapsible", Axes: []Axis{{Attribute: "open"}}},
 			{Name: "collapsible-trigger"},
@@ -48,15 +51,16 @@ var overlayContracts = []Component{
 		},
 	},
 	{
-		Name: "Dialog",
+		Name:         "Dialog",
+		RegistryName: "dialog",
 		Slots: []Slot{
 			{Name: "dialog"},
 			{Name: "dialog-trigger", Axes: []Axis{
 				{Attribute: "aria-haspopup", Values: []string{"dialog"}},
-				{Attribute: "aria-expanded", Values: []string{"false", "true"}},
+				{Attribute: "aria-expanded", Values: []string{"false", "true"}, RuntimeValues: []string{"true"}},
 			}},
 			{Name: "dialog-content", Axes: []Axis{
-				{Attribute: "data-state", Values: []string{"closed", "open"}},
+				{Attribute: "data-state", Values: []string{"closed", "open"}, RuntimeValues: []string{"open"}},
 				{Attribute: "open"},
 			}},
 			{Name: "dialog-close"},
@@ -71,15 +75,16 @@ var overlayContracts = []Component{
 		},
 	},
 	{
-		Name: "Drawer",
+		Name:         "Drawer",
+		RegistryName: "drawer",
 		Slots: []Slot{
 			{Name: "drawer"},
 			{Name: "drawer-trigger", Axes: []Axis{
 				{Attribute: "aria-haspopup", Values: []string{"dialog"}},
-				{Attribute: "aria-expanded", Values: []string{"false", "true"}},
+				{Attribute: "aria-expanded", Values: []string{"false", "true"}, RuntimeValues: []string{"true"}},
 			}},
 			{Name: "drawer-content", Axes: []Axis{
-				{Attribute: "data-state", Values: []string{"closed", "open"}},
+				{Attribute: "data-state", Values: []string{"closed", "open"}, RuntimeValues: []string{"open"}},
 				{Attribute: "data-side", Values: []string{"bottom", "left", "right", "top"}},
 				{Attribute: "open"},
 			}},
@@ -92,39 +97,42 @@ var overlayContracts = []Component{
 		},
 	},
 	{
-		Name: "HoverCard",
+		Name:         "HoverCard",
+		RegistryName: "hover-card",
 		Slots: []Slot{
 			{Name: "hover-card"},
 			{Name: "hover-card-trigger"},
 			{Name: "hover-card-content", Axes: []Axis{
 				{Attribute: "popover", Values: []string{"manual"}},
-				{Attribute: "data-state", Values: []string{"closed", "open"}},
-				{Attribute: "data-side", Values: []string{"bottom", "left", "right", "top"}},
+				{Attribute: "data-state", Values: []string{"closed", "open"}, RuntimeValues: []string{"open"}},
+				{Attribute: "data-side", Values: []string{"bottom"}},
 			}},
 		},
 	},
 	{
-		Name: "Popover",
+		Name:         "Popover",
+		RegistryName: "popover",
 		Slots: []Slot{
 			{Name: "popover"},
-			{Name: "popover-trigger", Axes: []Axis{{Attribute: "aria-expanded", Values: []string{"false", "true"}}}},
+			{Name: "popover-trigger", Axes: []Axis{{Attribute: "aria-expanded", Values: []string{"false", "true"}, RuntimeValues: []string{"true"}}}},
 			{Name: "popover-content", Axes: []Axis{
 				{Attribute: "popover", Values: []string{"auto"}},
-				{Attribute: "data-state", Values: []string{"closed", "open"}},
-				{Attribute: "data-side", Values: []string{"bottom", "left", "right", "top"}},
+				{Attribute: "data-state", Values: []string{"closed", "open"}, RuntimeValues: []string{"open"}},
+				{Attribute: "data-side", Values: []string{"bottom"}},
 			}},
 		},
 	},
 	{
-		Name: "Sheet",
+		Name:         "Sheet",
+		RegistryName: "sheet",
 		Slots: []Slot{
 			{Name: "sheet"},
 			{Name: "sheet-trigger", Axes: []Axis{
 				{Attribute: "aria-haspopup", Values: []string{"dialog"}},
-				{Attribute: "aria-expanded", Values: []string{"false", "true"}},
+				{Attribute: "aria-expanded", Values: []string{"false", "true"}, RuntimeValues: []string{"true"}},
 			}},
 			{Name: "sheet-content", Axes: []Axis{
-				{Attribute: "data-state", Values: []string{"closed", "open"}},
+				{Attribute: "data-state", Values: []string{"closed", "open"}, RuntimeValues: []string{"open"}},
 				{Attribute: "data-side", Values: []string{"bottom", "left", "right", "top"}},
 				{Attribute: "open"},
 			}},
@@ -139,15 +147,16 @@ var overlayContracts = []Component{
 		},
 	},
 	{
-		Name: "Tooltip",
+		Name:         "Tooltip",
+		RegistryName: "tooltip",
 		Slots: []Slot{
 			{Name: "tooltip"},
 			{Name: "tooltip-trigger"},
 			{Name: "tooltip-content", Axes: []Axis{
 				{Attribute: "popover", Values: []string{"manual"}},
 				{Attribute: "role", Values: []string{"tooltip"}},
-				{Attribute: "data-state", Values: []string{"closed", "open"}},
-				{Attribute: "data-side", Values: []string{"bottom", "left", "right", "top"}},
+				{Attribute: "data-state", Values: []string{"closed", "open"}, RuntimeValues: []string{"open"}},
+				{Attribute: "data-side", Values: []string{"top"}},
 			}},
 			{Name: "tooltip-arrow"},
 		},

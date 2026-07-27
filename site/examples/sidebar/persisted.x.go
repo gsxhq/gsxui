@@ -44,7 +44,7 @@ import (
 //     "sidebar_state=undefined":
 //
 //     document.addEventListener("gsxui:change", (e) => {
-//       if (!e.target.matches?.('[data-slot="sidebar-wrapper"]')) return;
+//       if (!e.target.matches?.('[data-gsxui-slot~="sidebar-wrapper"]')) return;
 //       document.cookie = `sidebar_state=${e.detail.open}; path=/; max-age=604800`;
 //     });
 //
@@ -138,7 +138,7 @@ func Persisted() _gsxrt.Node {
 //line persisted.gsx:86:3
 		_gsxgw.S("<script")
 		_gsxgw.Nonce(ctx)
-		_gsxgw.S(">\ndocument.addEventListener(\"gsxui:change\", (e) => {\n\tif (!e.target.matches?.('[data-slot=\"sidebar-wrapper\"]')) return;\n\tdocument.cookie = `sidebar_state=${e.detail.open}; path=/; max-age=604800`;\n});\n</script></div>")
+		_gsxgw.S(">\ndocument.addEventListener(\"gsxui:change\", (e) => {\n\tif (!e.target.matches?.('[data-gsxui-slot~=\"sidebar-wrapper\"]')) return;\n\tdocument.cookie = `sidebar_state=${e.detail.open}; path=/; max-age=604800`;\n});\n</script></div>")
 		return _gsxgw.Err()
 	})
 }

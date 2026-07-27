@@ -19,7 +19,9 @@ import (
 // <ui.Button data-gsxui-dialog-close> idiom rather than nesting inside
 // DialogClose).
 component Basic() {
+	<div class="flex gap-2">
 	<ui.Sheet>
+		<ui.SheetTrigger>Open plain sheet trigger</ui.SheetTrigger>
 		<ui.Button variant="outline" data-gsxui-dialog-trigger>Edit Profile</ui.Button>
 		<ui.SheetContent side="" hideCloseButton={false}>
 			<ui.SheetHeader>
@@ -33,4 +35,13 @@ component Basic() {
 			</ui.SheetFooter>
 		</ui.SheetContent>
 	</ui.Sheet>
+	<ui.Sheet>
+		<ui.SheetTrigger>Open top sheet</ui.SheetTrigger>
+		<ui.SheetContent side="top"><ui.SheetTitle>Top sheet</ui.SheetTitle></ui.SheetContent>
+	</ui.Sheet>
+	<ui.Sheet>
+		<ui.SheetTrigger>Open bottom sheet</ui.SheetTrigger>
+		<ui.SheetContent side="bottom"><ui.SheetTitle>Bottom sheet</ui.SheetTitle></ui.SheetContent>
+	</ui.Sheet>
+	</div>
 }

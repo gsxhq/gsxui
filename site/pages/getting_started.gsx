@@ -28,15 +28,16 @@ component (g GettingStarted) Page() {
 				<pre><code>{ hl.Node("snippets/init.sh") }</code></pre>
 				<pre><code>{ hl.Node("snippets/init.output") }</code></pre>
 				<p>
-					This vendors the theme tokens (<code>web/gsxui.css</code>), the JS runtime and behavior barrel (
-					<code>web/gsxui/</code>), and the class merger (<code>ui/merge/merge.go</code>), then
+					This vendors the CSS entry (<code>web/gsxui/index.css</code>) plus its sibling
+					<code>foundation.css</code>, <code>theme.css</code>, and <code>style.css</code>; the JS runtime and behavior barrel (
+					<code>web/gsxui/</code>); and the class merger (<code>ui/merge/merge.go</code>), then
 					points <code>gsx.toml</code>'s <code>class_merger</code> at it — the seam that makes caller-class-merge work
 					(see <a href={Theming{} |> url}>Theming</a>). It
 					also <code>go get</code> <code>gsx</code> and <code>tailwind-merge-go</code>, and installs
 					the <code>gsx</code> tool via <code>go get -tool</code>.
 				</p>
 				<p>
-					<code>web/gsxui.css</code> begins
+					Import <code>web/gsxui/index.css</code> from your app's CSS entry. It begins
 					with <code>@import "tailwindcss"</code> and <code>@import "tw-animate-css"</code> — your Tailwind build
 					resolves both from npm, so make sure they're
 					installed: <code>npm install tailwindcss @tailwindcss/vite tw-animate-css</code>.

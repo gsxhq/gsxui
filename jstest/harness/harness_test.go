@@ -95,6 +95,25 @@ func TestExampleRouteRendersTheExample(t *testing.T) {
 	}
 }
 
+func TestFoundationQueryLoadsOnlyFoundationStylesheet(t *testing.T) {
+	srv := httptest.NewServer(newMux(repoRoot(t)))
+	defer srv.Close()
+
+	res, err := http.Get(srv.URL + "/x/dialog/basic?css=foundation")
+	if err != nil {
+		t.Fatalf("GET foundation route: %v", err)
+	}
+	defer res.Body.Close()
+	body, _ := io.ReadAll(res.Body)
+	page := string(body)
+	if !strings.Contains(page, `<link rel="stylesheet" href="/static/jstest/.tmp/foundation.css">`) {
+		t.Errorf("foundation page missing foundation stylesheet link")
+	}
+	if strings.Contains(page, `<link rel="stylesheet" href="/static/jstest/.tmp/site.css">`) {
+		t.Errorf("foundation page also loads full site stylesheet")
+	}
+}
+
 // firstCalendarDayDate returns the data-date attribute of the first
 // [data-gsxui-calendar-day] element in page, in DOM order — the button's own
 // copy specifically (ui/calendar.gsx and its test file's own gridDates

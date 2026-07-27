@@ -11,6 +11,7 @@ import (
 // PopoverContent's own default w-72 via tailwind-merge.
 component Basic() {
 	<ui.Popover>
+		<ui.PopoverTrigger>Open popover</ui.PopoverTrigger>
 		<ui.Button variant="outline" data-gsxui-popover-trigger>Open popover</ui.Button>
 		<ui.PopoverContent class="w-80">
 			<div class="grid gap-4">

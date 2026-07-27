@@ -53,7 +53,7 @@ func Basic() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line basic.gsx:26:4
-			_gsxgw.Node(ctx, ui.ButtonGroupSeparator("", nil))
+			_gsxgw.Node(ctx, ui.ButtonGroupSeparator("horizontal", nil))
 //line basic.gsx:27:4
 			_gsxgw.Node(ctx, ui.Button("secondary", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -104,6 +104,8 @@ func Basic() _gsxrt.Node {
 				_gsxgw.Node(ctx, icon.Minus())
 				return _gsxgw.Err()
 			}), nil))
+//line basic.gsx:45:4
+			_gsxgw.Node(ctx, ui.ButtonGroupSeparator("vertical", nil))
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: "Media controls"}}, _gsxrt.Attrs{{Key: "class", Value: "h-fit"}})))
 		_gsxgw.S("</div>")

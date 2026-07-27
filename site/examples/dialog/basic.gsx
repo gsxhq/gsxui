@@ -10,6 +10,7 @@ import (
 // no DialogTrigger wrapper needed (see docs/jsx-parity.md).
 component Basic() {
 	<ui.Dialog>
+		<ui.DialogTrigger>Open dialog</ui.DialogTrigger>
 		<ui.Button variant="outline" data-gsxui-dialog-trigger>Delete account</ui.Button>
 		<ui.DialogContent>
 			<ui.DialogHeader>

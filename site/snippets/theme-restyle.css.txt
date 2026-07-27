@@ -1,4 +1,4 @@
-/* web/gsxui.css — yours after 'gsxui init'; edit the values in place */
+/* web/gsxui/theme.css — semantic variables only */
 :root {
   --radius: 0.5rem;                  /* squarer corners, every component */
   --primary: oklch(0.55 0.2 265);    /* brand blue instead of near-black */

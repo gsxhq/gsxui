@@ -23,66 +23,72 @@ func Basic() _gsxrt.Node {
 		_gsxgw.Node(ctx, ui.Popover(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:14:3
+			_gsxgw.Node(ctx, ui.PopoverTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+				_gsxgw.S("Open popover")
+				return _gsxgw.Err()
+			}), nil))
+//line basic.gsx:15:3
 			_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Open popover")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "data-gsxui-popover-trigger", Value: true}}))
-//line basic.gsx:15:3
+//line basic.gsx:16:3
 			_gsxgw.Node(ctx, ui.PopoverContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:16:4
+//line basic.gsx:17:4
 				_gsxgw.S("<div class=\"grid gap-4\">")
-//line basic.gsx:17:5
+//line basic.gsx:18:5
 				_gsxgw.S("<div class=\"space-y-2\">")
-//line basic.gsx:18:6
-				_gsxgw.S("<h4 class=\"leading-none font-medium\">Dimensions</h4>")
 //line basic.gsx:19:6
+				_gsxgw.S("<h4 class=\"leading-none font-medium\">Dimensions</h4>")
+//line basic.gsx:20:6
 				_gsxgw.S("<p class=\"text-sm text-muted-foreground\">Set the dimensions for the layer.</p></div>")
-//line basic.gsx:21:5
+//line basic.gsx:22:5
 				_gsxgw.S("<div class=\"grid gap-2\">")
-//line basic.gsx:22:6
+//line basic.gsx:23:6
 				_gsxgw.S("<div class=\"grid grid-cols-3 items-center gap-4\">")
-//line basic.gsx:23:7
+//line basic.gsx:24:7
 				_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Width")
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "for", Value: "width"}}))
-//line basic.gsx:24:7
+//line basic.gsx:25:7
 				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "width"}}, _gsxrt.Attrs{{Key: "value", Value: "100%"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-2"}})))
 				_gsxgw.S("</div>")
-//line basic.gsx:26:6
+//line basic.gsx:27:6
 				_gsxgw.S("<div class=\"grid grid-cols-3 items-center gap-4\">")
-//line basic.gsx:27:7
+//line basic.gsx:28:7
 				_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Max. width")
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "for", Value: "maxWidth"}}))
-//line basic.gsx:28:7
+//line basic.gsx:29:7
 				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "maxWidth"}}, _gsxrt.Attrs{{Key: "value", Value: "300px"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-2"}})))
 				_gsxgw.S("</div>")
-//line basic.gsx:30:6
+//line basic.gsx:31:6
 				_gsxgw.S("<div class=\"grid grid-cols-3 items-center gap-4\">")
-//line basic.gsx:31:7
+//line basic.gsx:32:7
 				_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Height")
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "for", Value: "height"}}))
-//line basic.gsx:32:7
+//line basic.gsx:33:7
 				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "height"}}, _gsxrt.Attrs{{Key: "value", Value: "25px"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-2"}})))
 				_gsxgw.S("</div>")
-//line basic.gsx:34:6
+//line basic.gsx:35:6
 				_gsxgw.S("<div class=\"grid grid-cols-3 items-center gap-4\">")
-//line basic.gsx:35:7
+//line basic.gsx:36:7
 				_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Max. height")
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "for", Value: "maxHeight"}}))
-//line basic.gsx:36:7
+//line basic.gsx:37:7
 				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "maxHeight"}}, _gsxrt.Attrs{{Key: "value", Value: "none"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-2"}})))
 				_gsxgw.S("</div></div></div>")
 				return _gsxgw.Err()

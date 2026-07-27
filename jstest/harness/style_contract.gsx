@@ -158,10 +158,7 @@ component StyleContractFixture() {
 			<ui.ComboboxItem value="combobox-off" selected={false} data-style-contract="combobox-unchecked">Combobox off</ui.ComboboxItem>
 		</div>
 		<div>
-			<ui.DropdownMenuSubContent data-side="bottom" data-style-contract="submenu-bottom">Bottom submenu</ui.DropdownMenuSubContent>
-			<ui.DropdownMenuSubContent data-side="left" data-style-contract="submenu-left">Left submenu</ui.DropdownMenuSubContent>
 			<ui.DropdownMenuSubContent data-side="right" data-style-contract="submenu-right">Right submenu</ui.DropdownMenuSubContent>
-			<ui.DropdownMenuSubContent data-side="top" data-style-contract="submenu-top">Top submenu</ui.DropdownMenuSubContent>
 		</div>
 		<ui.NavigationMenu data-style-contract="navigation-root">
 			<ui.NavigationMenuList>

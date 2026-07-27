@@ -1,0 +1,9 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "../assets/css/foundation.css";
+@import "../assets/css/themes/default.css";
+
+@source "../ui/**/*.gsx";
+@source "../site/examples/**/*.gsx";
+@source "./harness/**/*.gsx";
+@source "./specs/**/*.ts";

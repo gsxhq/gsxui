@@ -8,6 +8,7 @@ import (
 // Basic shows a tooltip on hover/focus of a Button trigger.
 component Basic() {
 	<ui.Tooltip>
+		<ui.TooltipTrigger>Hover for tooltip</ui.TooltipTrigger>
 		<ui.Button variant="outline" data-gsxui-tooltip-trigger>Hover me</ui.Button>
 		<ui.TooltipContent>Add to library</ui.TooltipContent>
 	</ui.Tooltip>

@@ -31,7 +31,7 @@ func Basic() _gsxrt.Node {
 			_gsxgw.Node(ctx, icon.Bold())
 			_gsxgw.S("Bold")
 			return _gsxgw.Err()
-		}), _gsxrt.Attrs{{Key: "aria-label", Value: "Toggle bold"}}))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: "Toggle bold"}}, _gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}})))
 //line basic.gsx:21:3
 		_gsxgw.Node(ctx, ui.Toggle(false, "outline", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)

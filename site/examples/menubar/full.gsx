@@ -19,6 +19,8 @@ component Full() {
 		<ui.MenubarMenu>
 			<ui.MenubarTrigger>File</ui.MenubarTrigger>
 			<ui.MenubarContent>
+				<ui.MenubarGroup>
+				<ui.MenubarLabel>File actions</ui.MenubarLabel>
 				<ui.MenubarItem>
 					New Tab
 					<ui.MenubarShortcut>⌘T</ui.MenubarShortcut>
@@ -27,7 +29,8 @@ component Full() {
 					New Window
 					<ui.MenubarShortcut>⌘N</ui.MenubarShortcut>
 				</ui.MenubarItem>
-				<ui.MenubarItem aria-disabled="true" data-disabled="true">New Incognito Window</ui.MenubarItem>
+				<ui.MenubarItem variant="destructive" aria-disabled="true" data-disabled="true">New Incognito Window</ui.MenubarItem>
+				</ui.MenubarGroup>
 				<ui.MenubarSub>
 					<ui.MenubarSubTrigger>Share</ui.MenubarSubTrigger>
 					<ui.MenubarSubContent>

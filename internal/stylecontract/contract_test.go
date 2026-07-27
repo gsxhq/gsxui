@@ -17,33 +17,48 @@ func TestValidateRejectsInvalidContracts(t *testing.T) {
 			want:       "component 0: empty component name",
 		},
 		{
+			name:       "empty registry name",
+			components: []Component{{Name: "Button"}},
+			want:       `component "Button": empty registry name`,
+		},
+		{
+			name: "duplicate registry name",
+			components: []Component{
+				{Name: "DropdownMenu", RegistryName: "dropdown"},
+				{Name: "Dropdown", RegistryName: "dropdown"},
+			},
+			want: `component "Dropdown": duplicate registry name "dropdown"`,
+		},
+		{
 			name: "duplicate component name",
 			components: []Component{
-				{Name: "Button"},
-				{Name: "Button"},
+				{Name: "Button", RegistryName: "button"},
+				{Name: "Button", RegistryName: "other-button"},
 			},
 			want: "component \"Button\": duplicate component name",
 		},
 		{
 			name: "empty slot name",
 			components: []Component{{
-				Name:  "Button",
-				Slots: []Slot{{}},
+				Name:         "Button",
+				RegistryName: "button",
+				Slots:        []Slot{{}},
 			}},
 			want: "component \"Button\": slot 0: empty slot name",
 		},
 		{
 			name: "duplicate slot token globally",
 			components: []Component{
-				{Name: "Button", Slots: []Slot{{Name: "button"}}},
-				{Name: "AlertDialogAction", Slots: []Slot{{Name: "button"}}},
+				{Name: "Button", RegistryName: "button", Slots: []Slot{{Name: "button"}}},
+				{Name: "AlertDialogAction", RegistryName: "alert-dialog", Slots: []Slot{{Name: "button"}}},
 			},
 			want: "component \"AlertDialogAction\": slot \"button\": duplicate slot token (already declared by component \"Button\")",
 		},
 		{
 			name: "empty axis attribute",
 			components: []Component{{
-				Name: "Button",
+				Name:         "Button",
+				RegistryName: "button",
 				Slots: []Slot{{
 					Name: "button",
 					Axes: []Axis{{}},
@@ -54,13 +69,46 @@ func TestValidateRejectsInvalidContracts(t *testing.T) {
 		{
 			name: "duplicate axis value",
 			components: []Component{{
-				Name: "Button",
+				Name:         "Button",
+				RegistryName: "button",
 				Slots: []Slot{{
 					Name: "button",
 					Axes: []Axis{{Attribute: "data-size", Values: []string{"sm", "lg", "sm"}}},
 				}},
 			}},
 			want: "component \"Button\": slot \"button\": axis \"data-size\": duplicate value \"sm\"",
+		},
+		{
+			name: "duplicate runtime axis value",
+			components: []Component{{
+				Name:         "Dialog",
+				RegistryName: "dialog",
+				Slots: []Slot{{
+					Name: "dialog-content",
+					Axes: []Axis{{
+						Attribute:     "data-state",
+						Values:        []string{"closed", "open"},
+						RuntimeValues: []string{"open", "open"},
+					}},
+				}},
+			}},
+			want: `component "Dialog": slot "dialog-content": axis "data-state": duplicate runtime value "open"`,
+		},
+		{
+			name: "runtime value not declared",
+			components: []Component{{
+				Name:         "Dialog",
+				RegistryName: "dialog",
+				Slots: []Slot{{
+					Name: "dialog-content",
+					Axes: []Axis{{
+						Attribute:     "data-state",
+						Values:        []string{"closed"},
+						RuntimeValues: []string{"open"},
+					}},
+				}},
+			}},
+			want: `component "Dialog": slot "dialog-content": axis "data-state": runtime value "open" is not declared in Values`,
 		},
 	}
 
@@ -79,7 +127,8 @@ func TestValidateRejectsInvalidContracts(t *testing.T) {
 
 func TestValidateAcceptsPresenceOnlyAxis(t *testing.T) {
 	err := Validate([]Component{{
-		Name: "Button",
+		Name:         "Button",
+		RegistryName: "button",
 		Slots: []Slot{{
 			Name: "button",
 			Axes: []Axis{{Attribute: "data-disabled"}},
@@ -115,20 +164,24 @@ func TestAllReturnsDeepSnapshot(t *testing.T) {
 	onlyPrimitiveContracts(t, []Component{{
 		Name: "Button",
 		Slots: []Slot{{
-			Name: "button",
+			Name:    "button",
+			Runtime: true,
 			Axes: []Axis{{
-				Attribute: "data-size",
-				Values:    []string{"sm"},
+				Attribute:     "data-size",
+				Values:        []string{"sm", "lg"},
+				RuntimeValues: []string{"lg"},
 			}},
 		}},
 	}})
 	want := []Component{{
 		Name: "Button",
 		Slots: []Slot{{
-			Name: "button",
+			Name:    "button",
+			Runtime: true,
 			Axes: []Axis{{
-				Attribute: "data-size",
-				Values:    []string{"sm"},
+				Attribute:     "data-size",
+				Values:        []string{"sm", "lg"},
+				RuntimeValues: []string{"lg"},
 			}},
 		}},
 	}}
@@ -138,6 +191,7 @@ func TestAllReturnsDeepSnapshot(t *testing.T) {
 	got[0].Slots[0].Name = "changed"
 	got[0].Slots[0].Axes[0].Attribute = "data-changed"
 	got[0].Slots[0].Axes[0].Values[0] = "changed"
+	got[0].Slots[0].Axes[0].RuntimeValues[0] = "changed"
 
 	if again := All(); !reflect.DeepEqual(again, want) {
 		t.Fatalf("All() returned an aliased nested value: got %#v, want %#v", again, want)

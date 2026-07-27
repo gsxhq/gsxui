@@ -23,29 +23,29 @@ func Basic() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:20:2
-		_gsxgw.Node(ctx, ui.ToggleGroup("multiple", "outline", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.ToggleGroup("multiple", "outline", "lg", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:21:3
-			_gsxgw.Node(ctx, ui.ToggleGroupItem("multiple", "outline", "", "", false, "bold", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.ToggleGroupItem("multiple", "outline", "lg", "", false, "bold", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:22:4
 				_gsxgw.Node(ctx, icon.Bold())
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "aria-label", Value: "Toggle bold"}}))
 //line basic.gsx:24:3
-			_gsxgw.Node(ctx, ui.ToggleGroupItem("multiple", "outline", "", "", false, "italic", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.ToggleGroupItem("multiple", "outline", "lg", "", false, "italic", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:25:4
 				_gsxgw.Node(ctx, icon.Italic())
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "aria-label", Value: "Toggle italic"}}))
 //line basic.gsx:27:3
-			_gsxgw.Node(ctx, ui.ToggleGroupItem("multiple", "outline", "", "", false, "underline", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.ToggleGroupItem("multiple", "outline", "lg", "", false, "underline", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:28:4
 				_gsxgw.Node(ctx, icon.Underline())
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "aria-label", Value: "Toggle underline"}}))
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: "Toggle underline"}}, _gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}})))
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "aria-label", Value: "Text formatting"}}))
 		return _gsxgw.Err()

@@ -14,6 +14,7 @@ import (
 // (see ui/alert-dialog.gsx's AlertDialogTrigger doc comment).
 component Basic() {
 	<ui.AlertDialog>
+		<ui.AlertDialogTrigger>Open alert dialog</ui.AlertDialogTrigger>
 		<ui.Button variant="outline" data-gsxui-dialog-trigger>Show dialog</ui.Button>
 		<ui.AlertDialogContent>
 			<ui.AlertDialogHeader>

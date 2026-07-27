@@ -2,7 +2,8 @@ package stylecontract
 
 var primitiveContracts = []Component{
 	{
-		Name: "Alert",
+		Name:         "Alert",
+		RegistryName: "alert",
 		Slots: []Slot{
 			{
 				Name: "alert",
@@ -16,11 +17,13 @@ var primitiveContracts = []Component{
 		},
 	},
 	{
-		Name:  "AspectRatio",
-		Slots: []Slot{{Name: "aspect-ratio"}},
+		Name:         "AspectRatio",
+		RegistryName: "aspect-ratio",
+		Slots:        []Slot{{Name: "aspect-ratio"}},
 	},
 	{
-		Name: "Avatar",
+		Name:         "Avatar",
+		RegistryName: "avatar",
 		Slots: []Slot{
 			{Name: "avatar"},
 			{Name: "avatar-image"},
@@ -28,7 +31,8 @@ var primitiveContracts = []Component{
 		},
 	},
 	{
-		Name: "Badge",
+		Name:         "Badge",
+		RegistryName: "badge",
 		Slots: []Slot{{
 			Name: "badge",
 			Axes: []Axis{
@@ -44,7 +48,8 @@ var primitiveContracts = []Component{
 		}},
 	},
 	{
-		Name: "Breadcrumb",
+		Name:         "Breadcrumb",
+		RegistryName: "breadcrumb",
 		Slots: []Slot{
 			{Name: "breadcrumb"},
 			{Name: "breadcrumb-list"},
@@ -63,7 +68,8 @@ var primitiveContracts = []Component{
 		},
 	},
 	{
-		Name: "Button",
+		Name:         "Button",
+		RegistryName: "button",
 		Slots: []Slot{{
 			Name: "button",
 			Axes: []Axis{
@@ -81,7 +87,8 @@ var primitiveContracts = []Component{
 		}},
 	},
 	{
-		Name: "ButtonGroup",
+		Name:         "ButtonGroup",
+		RegistryName: "button-group",
 		Slots: []Slot{
 			{
 				Name: "button-group",
@@ -101,7 +108,8 @@ var primitiveContracts = []Component{
 		},
 	},
 	{
-		Name: "Card",
+		Name:         "Card",
+		RegistryName: "card",
 		Slots: []Slot{
 			{Name: "card"},
 			{Name: "card-header"},
@@ -113,7 +121,8 @@ var primitiveContracts = []Component{
 		},
 	},
 	{
-		Name: "Empty",
+		Name:         "Empty",
+		RegistryName: "empty",
 		Slots: []Slot{
 			{Name: "empty"},
 			{Name: "empty-header"},
@@ -130,11 +139,13 @@ var primitiveContracts = []Component{
 		},
 	},
 	{
-		Name:  "Icon",
-		Slots: []Slot{{Name: "icon"}},
+		Name:         "Icon",
+		RegistryName: "icon",
+		Slots:        []Slot{{Name: "icon"}},
 	},
 	{
-		Name: "Item",
+		Name:         "Item",
+		RegistryName: "item",
 		Slots: []Slot{
 			{Name: "item-group"},
 			{
@@ -173,18 +184,21 @@ var primitiveContracts = []Component{
 		},
 	},
 	{
-		Name: "Kbd",
+		Name:         "Kbd",
+		RegistryName: "kbd",
 		Slots: []Slot{
 			{Name: "kbd"},
 			{Name: "kbd-group"},
 		},
 	},
 	{
-		Name:  "Label",
-		Slots: []Slot{{Name: "label"}},
+		Name:         "Label",
+		RegistryName: "label",
+		Slots:        []Slot{{Name: "label"}},
 	},
 	{
-		Name: "Pagination",
+		Name:         "Pagination",
+		RegistryName: "pagination",
 		Slots: []Slot{
 			{Name: "pagination"},
 			{Name: "pagination-content"},
@@ -219,7 +233,8 @@ var primitiveContracts = []Component{
 		},
 	},
 	{
-		Name: "Separator",
+		Name:         "Separator",
+		RegistryName: "separator",
 		Slots: []Slot{{
 			Name: "separator",
 			Axes: []Axis{{
@@ -229,15 +244,18 @@ var primitiveContracts = []Component{
 		}},
 	},
 	{
-		Name:  "Skeleton",
-		Slots: []Slot{{Name: "skeleton"}},
+		Name:         "Skeleton",
+		RegistryName: "skeleton",
+		Slots:        []Slot{{Name: "skeleton"}},
 	},
 	{
-		Name:  "Spinner",
-		Slots: []Slot{{Name: "spinner"}},
+		Name:         "Spinner",
+		RegistryName: "spinner",
+		Slots:        []Slot{{Name: "spinner"}},
 	},
 	{
-		Name: "Table",
+		Name:         "Table",
+		RegistryName: "table",
 		Slots: []Slot{
 			{Name: "table-container"},
 			{Name: "table"},
@@ -253,6 +271,23 @@ var primitiveContracts = []Component{
 			{Name: "table-head"},
 			{Name: "table-cell"},
 			{Name: "table-caption"},
+		},
+	},
+	{
+		Name:         "Tabs",
+		RegistryName: "tabs",
+		Slots: []Slot{
+			{Name: "tabs"},
+			{Name: "tabs-list"},
+			{Name: "tabs-trigger", Axes: []Axis{
+				{Attribute: "data-state", Values: []string{"active", "inactive"}},
+				{Attribute: "aria-selected", Values: []string{"false", "true"}},
+				{Attribute: "disabled"},
+			}},
+			{Name: "tabs-content", Axes: []Axis{
+				{Attribute: "data-state", Values: []string{"active", "inactive"}},
+				{Attribute: "hidden"},
+			}},
 		},
 	},
 }

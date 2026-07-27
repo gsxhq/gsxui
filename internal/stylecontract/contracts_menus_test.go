@@ -7,8 +7,12 @@ import (
 
 func TestMenuContracts(t *testing.T) {
 	openSideAxes := []Axis{
-		{Attribute: "data-state", Values: []string{"closed", "open"}},
-		{Attribute: "data-side", Values: []string{"bottom", "left", "right", "top"}},
+		{Attribute: "data-state", Values: []string{"closed", "open"}, RuntimeValues: []string{"open"}},
+		{Attribute: "data-side", Values: []string{"bottom"}},
+	}
+	subOpenSideAxes := []Axis{
+		{Attribute: "data-state", Values: []string{"closed", "open"}, RuntimeValues: []string{"open"}},
+		{Attribute: "data-side", Values: []string{"right"}},
 	}
 	checkedAxes := []Axis{
 		{Attribute: "data-state", Values: []string{"unchecked", "checked"}},
@@ -21,14 +25,15 @@ func TestMenuContracts(t *testing.T) {
 		{Attribute: "data-disabled"},
 	}
 	subTriggerAxes := []Axis{
-		{Attribute: "data-state", Values: []string{"closed", "open"}},
-		{Attribute: "aria-expanded", Values: []string{"false", "true"}},
+		{Attribute: "data-state", Values: []string{"closed", "open"}, RuntimeValues: []string{"open"}},
+		{Attribute: "aria-expanded", Values: []string{"false", "true"}, RuntimeValues: []string{"true"}},
 		{Attribute: "data-inset"},
 		{Attribute: "data-disabled"},
 	}
 	want := []Component{
 		{
-			Name: "Command",
+			Name:         "Command",
+			RegistryName: "command",
 			Slots: []Slot{
 				{Name: "command"},
 				{Name: "command-dialog"},
@@ -43,37 +48,38 @@ func TestMenuContracts(t *testing.T) {
 				{Name: "command-group-heading"},
 				{Name: "command-separator"},
 				{Name: "command-item", Axes: []Axis{
-					{Attribute: "data-selected", Values: []string{"true"}},
+					{Attribute: "data-selected", Values: []string{"true"}, RuntimeValues: []string{"true"}},
 					{Attribute: "data-disabled", Values: []string{"true"}},
-					{Attribute: "aria-selected", Values: []string{"false", "true"}},
+					{Attribute: "aria-selected", Values: []string{"false", "true"}, RuntimeValues: []string{"true"}},
 				}},
 				{Name: "command-shortcut"},
 			},
 		},
 		{
-			Name: "Combobox",
+			Name:         "Combobox",
+			RegistryName: "combobox",
 			Slots: []Slot{
 				{Name: "combobox"},
 				{Name: "combobox-bridge"},
 				{Name: "combobox-input-group"},
 				{Name: "combobox-input", Axes: []Axis{
 					{Attribute: "disabled"},
-					{Attribute: "aria-expanded", Values: []string{"false", "true"}},
+					{Attribute: "aria-expanded", Values: []string{"false", "true"}, RuntimeValues: []string{"true"}},
 				}},
 				{Name: "combobox-trigger", Axes: []Axis{{Attribute: "disabled"}}},
 				{Name: "combobox-trigger-icon"},
 				{Name: "combobox-clear", Axes: []Axis{{Attribute: "disabled"}}},
 				{Name: "combobox-content", Axes: []Axis{
-					{Attribute: "data-state", Values: []string{"closed", "open"}},
-					{Attribute: "data-side", Values: []string{"bottom", "left", "right", "top"}},
+					{Attribute: "data-state", Values: []string{"closed", "open"}, RuntimeValues: []string{"open"}},
+					{Attribute: "data-side", Values: []string{"bottom"}},
 					{Attribute: "data-empty"},
 				}},
 				{Name: "combobox-list", Axes: []Axis{{Attribute: "data-empty"}}},
 				{Name: "combobox-item", Axes: []Axis{
 					{Attribute: "data-state", Values: []string{"unchecked", "checked"}},
-					{Attribute: "data-highlighted", Values: []string{"true"}},
+					{Attribute: "data-highlighted", Values: []string{"true"}, RuntimeValues: []string{"true"}},
 					{Attribute: "data-disabled"},
-					{Attribute: "aria-selected", Values: []string{"false", "true"}},
+					{Attribute: "aria-selected", Values: []string{"false", "true"}, RuntimeValues: []string{"true"}},
 				}},
 				{Name: "combobox-item-indicator"},
 				{Name: "combobox-group"},
@@ -84,11 +90,12 @@ func TestMenuContracts(t *testing.T) {
 			},
 		},
 		{
-			Name: "DropdownMenu",
+			Name:         "DropdownMenu",
+			RegistryName: "dropdown",
 			Slots: []Slot{
 				{Name: "dropdown-menu"},
 				{Name: "dropdown-menu-trigger", Axes: []Axis{
-					{Attribute: "aria-expanded", Values: []string{"false", "true"}},
+					{Attribute: "aria-expanded", Values: []string{"false", "true"}, RuntimeValues: []string{"true"}},
 					{Attribute: "disabled"},
 				}},
 				{Name: "dropdown-menu-content", Axes: openSideAxes},
@@ -104,17 +111,17 @@ func TestMenuContracts(t *testing.T) {
 				{Name: "dropdown-menu-shortcut"},
 				{Name: "dropdown-menu-sub"},
 				{Name: "dropdown-menu-sub-trigger", Axes: subTriggerAxes},
-				{Name: "dropdown-menu-sub-content", Axes: openSideAxes},
+				{Name: "dropdown-menu-sub-content", Axes: subOpenSideAxes},
 			},
 		},
 		{
-			Name: "ContextMenu",
+			Name:         "ContextMenu",
+			RegistryName: "context-menu",
 			Slots: []Slot{
 				{Name: "context-menu"},
 				{Name: "context-menu-trigger"},
 				{Name: "context-menu-content", Axes: []Axis{
-					{Attribute: "data-state", Values: []string{"closed", "open"}},
-					{Attribute: "data-side", Values: []string{"bottom", "left", "right", "top"}},
+					{Attribute: "data-state", Values: []string{"closed", "open"}, RuntimeValues: []string{"open"}},
 				}},
 				{Name: "context-menu-group"},
 				{Name: "context-menu-item", Axes: menuItemAxes},
@@ -128,17 +135,18 @@ func TestMenuContracts(t *testing.T) {
 				{Name: "context-menu-shortcut"},
 				{Name: "context-menu-sub"},
 				{Name: "context-menu-sub-trigger", Axes: subTriggerAxes},
-				{Name: "context-menu-sub-content", Axes: openSideAxes},
+				{Name: "context-menu-sub-content", Axes: subOpenSideAxes},
 			},
 		},
 		{
-			Name: "Menubar",
+			Name:         "Menubar",
+			RegistryName: "menubar",
 			Slots: []Slot{
 				{Name: "menubar"},
 				{Name: "menubar-menu"},
 				{Name: "menubar-trigger", Axes: []Axis{
-					{Attribute: "data-state", Values: []string{"closed", "open"}},
-					{Attribute: "aria-expanded", Values: []string{"false", "true"}},
+					{Attribute: "data-state", Values: []string{"closed", "open"}, RuntimeValues: []string{"open"}},
+					{Attribute: "aria-expanded", Values: []string{"false", "true"}, RuntimeValues: []string{"true"}},
 					{Attribute: "disabled"},
 				}},
 				{Name: "menubar-content", Axes: openSideAxes},
@@ -154,18 +162,19 @@ func TestMenuContracts(t *testing.T) {
 				{Name: "menubar-shortcut"},
 				{Name: "menubar-sub"},
 				{Name: "menubar-sub-trigger", Axes: subTriggerAxes},
-				{Name: "menubar-sub-content", Axes: openSideAxes},
+				{Name: "menubar-sub-content", Axes: subOpenSideAxes},
 			},
 		},
 		{
-			Name: "NavigationMenu",
+			Name:         "NavigationMenu",
+			RegistryName: "navigation-menu",
 			Slots: []Slot{
 				{Name: "navigation-menu", Axes: []Axis{{Attribute: "data-viewport", Values: []string{"false"}}}},
 				{Name: "navigation-menu-list"},
 				{Name: "navigation-menu-item"},
 				{Name: "navigation-menu-trigger", Axes: []Axis{
-					{Attribute: "data-state", Values: []string{"closed", "open"}},
-					{Attribute: "aria-expanded", Values: []string{"false", "true"}},
+					{Attribute: "data-state", Values: []string{"closed", "open"}, RuntimeValues: []string{"open"}},
+					{Attribute: "aria-expanded", Values: []string{"false", "true"}, RuntimeValues: []string{"true"}},
 					{Attribute: "disabled"},
 				}},
 				{Name: "navigation-menu-trigger-icon"},
@@ -174,7 +183,7 @@ func TestMenuContracts(t *testing.T) {
 					{Attribute: "data-variant", Values: []string{"default", "trigger"}},
 					{Attribute: "data-active", Values: []string{"false", "true"}},
 				}},
-				{Name: "navigation-menu-indicator", Axes: []Axis{{Attribute: "data-state", Values: []string{"hidden", "visible"}}}},
+				{Name: "navigation-menu-indicator", Axes: []Axis{{Attribute: "data-state", Values: []string{"hidden", "visible"}, RuntimeValues: []string{"hidden", "visible"}}}},
 				{Name: "navigation-menu-indicator-arrow"},
 			},
 		},

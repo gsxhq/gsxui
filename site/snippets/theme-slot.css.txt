@@ -1,0 +1,9 @@
+/* Tokens are space-separated: always use ~= membership. */
+[data-gsxui-slot~="button"] {
+  /* project-specific addition */
+}
+
+/* Composed parts keep every token on the same element. */
+[data-gsxui-slot~="alert-dialog-action"] {
+  /* action-specific addition */
+}

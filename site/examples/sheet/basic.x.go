@@ -29,27 +29,35 @@ func Basic() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:22:2
+		_gsxgw.S("<div class=\"flex gap-2\">")
+//line basic.gsx:23:2
 		_gsxgw.Node(ctx, ui.Sheet(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:23:3
+//line basic.gsx:24:3
+			_gsxgw.Node(ctx, ui.SheetTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+				_gsxgw.S("Open plain sheet trigger")
+				return _gsxgw.Err()
+			}), nil))
+//line basic.gsx:25:3
 			_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Edit Profile")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "data-gsxui-dialog-trigger", Value: true}}))
-//line basic.gsx:24:3
+//line basic.gsx:26:3
 			_gsxgw.Node(ctx, ui.SheetContent("", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:25:4
+//line basic.gsx:27:4
 				_gsxgw.Node(ctx, ui.SheetHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:26:5
+//line basic.gsx:28:5
 					_gsxgw.Node(ctx, ui.SheetTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Edit profile")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:27:5
+//line basic.gsx:29:5
 					_gsxgw.Node(ctx, ui.SheetDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Make changes to your profile here. Click save when you're done.")
@@ -57,10 +65,10 @@ func Basic() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:31:4
+//line basic.gsx:33:4
 				_gsxgw.Node(ctx, ui.SheetFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:32:5
+//line basic.gsx:34:5
 					_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Save changes")
@@ -72,6 +80,51 @@ func Basic() _gsxrt.Node {
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
+//line basic.gsx:38:2
+		_gsxgw.Node(ctx, ui.Sheet(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:39:3
+			_gsxgw.Node(ctx, ui.SheetTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+				_gsxgw.S("Open top sheet")
+				return _gsxgw.Err()
+			}), nil))
+//line basic.gsx:40:3
+			_gsxgw.Node(ctx, ui.SheetContent("top", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:40:31
+				_gsxgw.Node(ctx, ui.SheetTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+					_gsxgw.S("Top sheet")
+					return _gsxgw.Err()
+				}), nil))
+				return _gsxgw.Err()
+			}), nil))
+			return _gsxgw.Err()
+		}), nil))
+//line basic.gsx:42:2
+		_gsxgw.Node(ctx, ui.Sheet(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:43:3
+			_gsxgw.Node(ctx, ui.SheetTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+				_gsxgw.S("Open bottom sheet")
+				return _gsxgw.Err()
+			}), nil))
+//line basic.gsx:44:3
+			_gsxgw.Node(ctx, ui.SheetContent("bottom", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:44:34
+				_gsxgw.Node(ctx, ui.SheetTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+					_gsxgw.S("Bottom sheet")
+					return _gsxgw.Err()
+				}), nil))
+				return _gsxgw.Err()
+			}), nil))
+			return _gsxgw.Err()
+		}), nil))
+		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }

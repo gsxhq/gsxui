@@ -1,4 +1,8 @@
 @layer components {
+  :root {
+    --gsxui-default-style: default;
+  }
+
   /* Alert */
   :where([data-gsxui-slot~="alert"]) {
     @apply relative grid w-full items-start gap-y-0.5 rounded-lg border bg-card px-2.5 py-2 text-sm text-card-foreground;
@@ -3339,6 +3343,47 @@
   }
   :where([data-gsxui-slot~="sidebar-menu-sub-button"]) > svg {
     @apply size-4 shrink-0 text-sidebar-accent-foreground;
+  }
+
+  /* Tabs */
+  :where([data-gsxui-slot~="tabs"]) {
+    @apply flex flex-col gap-2;
+  }
+  :where([data-gsxui-slot~="tabs-list"]) {
+    @apply inline-flex h-8 w-fit items-center justify-center rounded-lg bg-muted p-[3px] text-muted-foreground;
+  }
+  :where([data-gsxui-slot~="tabs-trigger"]) {
+    @apply relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-1.5 py-0.5 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all;
+  }
+  :where([data-gsxui-slot~="tabs-trigger"]):hover {
+    @apply text-foreground;
+  }
+  :where([data-gsxui-slot~="tabs-trigger"]):focus-visible {
+    @apply border-ring ring-[3px] ring-ring/50 outline-1 outline-ring;
+  }
+  :where([data-gsxui-slot~="tabs-trigger"]):disabled {
+    @apply pointer-events-none opacity-50;
+  }
+  :where([data-gsxui-slot~="tabs-trigger"]):has(> svg) {
+    @apply px-1;
+  }
+  :where([data-gsxui-slot~="tabs-trigger"][data-state="active"]) {
+    @apply bg-background text-foreground shadow-sm;
+  }
+  :where([data-gsxui-slot~="tabs-trigger"]) > svg {
+    @apply size-4 shrink-0 pointer-events-none;
+  }
+  .dark :where([data-gsxui-slot~="tabs-trigger"]) {
+    @apply text-muted-foreground;
+  }
+  .dark :where([data-gsxui-slot~="tabs-trigger"]):hover {
+    @apply text-foreground;
+  }
+  .dark :where([data-gsxui-slot~="tabs-trigger"][data-state="active"]) {
+    @apply border-input bg-input/30 text-foreground;
+  }
+  :where([data-gsxui-slot~="tabs-content"]) {
+    @apply flex-1 text-sm outline-none;
   }
 
   /* Sonner */

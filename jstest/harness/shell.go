@@ -25,7 +25,7 @@ var shellTmpl = template.Must(template.New("shell").Parse(
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{.Title}}</title>
-<link rel="stylesheet" href="/static/jstest/.tmp/site.css">
+<link rel="stylesheet" href="{{.Stylesheet}}">
 <script type="module" src="{{.Script}}"></script>
 </head>
 <body class="min-h-svh bg-background text-foreground antialiased">
@@ -36,24 +36,26 @@ var shellTmpl = template.Must(template.New("shell").Parse(
 `))
 
 type shellData struct {
-	Title   string
-	Script  string
-	Body    template.HTML
-	Toaster template.HTML
+	Title      string
+	Stylesheet string
+	Script     string
+	Body       template.HTML
+	Toaster    template.HTML
 }
 
 // renderShell writes the shell around already-rendered markup. body is
 // trusted: it comes from a gsx component's own Render, which escapes its
 // own interpolations.
-func renderShell(w io.Writer, title, script string, body template.HTML) error {
+func renderShell(w io.Writer, title, stylesheet, script string, body template.HTML) error {
 	var toaster bytes.Buffer
 	if err := ui.Toaster(nil).Render(context.Background(), &toaster); err != nil {
 		return fmt.Errorf("rendering toaster: %w", err)
 	}
 	return shellTmpl.Execute(w, shellData{
-		Title:   title,
-		Script:  script,
-		Body:    body,
-		Toaster: template.HTML(toaster.String()),
+		Title:      title,
+		Stylesheet: stylesheet,
+		Script:     script,
+		Body:       body,
+		Toaster:    template.HTML(toaster.String()),
 	})
 }

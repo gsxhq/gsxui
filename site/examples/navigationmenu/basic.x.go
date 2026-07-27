@@ -33,7 +33,7 @@ func Basic() _gsxrt.Node {
 				_gsxgw.Node(ctx, ui.NavigationMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:21:5
-					_gsxgw.Node(ctx, ui.NavigationMenuLink(false, "trigger", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.NavigationMenuLink(true, "trigger", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Home")
 						return _gsxgw.Err()
@@ -97,6 +97,8 @@ func Basic() _gsxrt.Node {
 					}), _gsxrt.Attrs{{Key: "href", Value: "#"}}))
 					return _gsxgw.Err()
 				}), nil))
+//line basic.gsx:45:4
+				_gsxgw.Node(ctx, ui.NavigationMenuIndicator(nil))
 				return _gsxgw.Err()
 			}), nil))
 			return _gsxgw.Err()

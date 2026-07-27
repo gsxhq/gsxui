@@ -41,60 +41,71 @@ func Full() _gsxrt.Node {
 				_gsxgw.Node(ctx, ui.MenubarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line full.gsx:22:5
-					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.MenubarGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-						_gsxgw.S("New Tab")
-//line full.gsx:24:6
-						_gsxgw.Node(ctx, ui.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line full.gsx:23:5
+						_gsxgw.Node(ctx, ui.MenubarLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-							_gsxgw.S("⌘T")
+							_gsxgw.S("File actions")
 							return _gsxgw.Err()
 						}), nil))
-						return _gsxgw.Err()
-					}), nil))
-//line full.gsx:26:5
-					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-						_gsxgw := _gsxrt.W(_gsxw)
-						_gsxgw.S("New Window")
-//line full.gsx:28:6
-						_gsxgw.Node(ctx, ui.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line full.gsx:24:5
+						_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-							_gsxgw.S("⌘N")
+							_gsxgw.S("New Tab")
+//line full.gsx:26:6
+							_gsxgw.Node(ctx, ui.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+								_gsxgw := _gsxrt.W(_gsxw)
+								_gsxgw.S("⌘T")
+								return _gsxgw.Err()
+							}), nil))
 							return _gsxgw.Err()
 						}), nil))
+//line full.gsx:28:5
+						_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+							_gsxgw := _gsxrt.W(_gsxw)
+							_gsxgw.S("New Window")
+//line full.gsx:30:6
+							_gsxgw.Node(ctx, ui.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+								_gsxgw := _gsxrt.W(_gsxw)
+								_gsxgw.S("⌘N")
+								return _gsxgw.Err()
+							}), nil))
+							return _gsxgw.Err()
+						}), nil))
+//line full.gsx:32:5
+						_gsxgw.Node(ctx, ui.MenubarItem("destructive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+							_gsxgw := _gsxrt.W(_gsxw)
+							_gsxgw.S("New Incognito Window")
+							return _gsxgw.Err()
+						}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-disabled", Value: "true"}}, _gsxrt.Attrs{{Key: "data-disabled", Value: "true"}})))
 						return _gsxgw.Err()
 					}), nil))
-//line full.gsx:30:5
-					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-						_gsxgw := _gsxrt.W(_gsxw)
-						_gsxgw.S("New Incognito Window")
-						return _gsxgw.Err()
-					}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-disabled", Value: "true"}}, _gsxrt.Attrs{{Key: "data-disabled", Value: "true"}})))
-//line full.gsx:31:5
+//line full.gsx:34:5
 					_gsxgw.Node(ctx, ui.MenubarSub(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line full.gsx:32:6
+//line full.gsx:35:6
 						_gsxgw.Node(ctx, ui.MenubarSubTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Share")
 							return _gsxgw.Err()
 						}), nil))
-//line full.gsx:33:6
+//line full.gsx:36:6
 						_gsxgw.Node(ctx, ui.MenubarSubContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line full.gsx:34:7
+//line full.gsx:37:7
 							_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("Email Link")
 								return _gsxgw.Err()
 							}), nil))
-//line full.gsx:35:7
+//line full.gsx:38:7
 							_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("Messages")
 								return _gsxgw.Err()
 							}), nil))
-//line full.gsx:36:7
+//line full.gsx:39:7
 							_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("Notes")
@@ -104,13 +115,13 @@ func Full() _gsxrt.Node {
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line full.gsx:39:5
+//line full.gsx:42:5
 					_gsxgw.Node(ctx, ui.MenubarSeparator(nil))
-//line full.gsx:40:5
+//line full.gsx:43:5
 					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Print...")
-//line full.gsx:42:6
+//line full.gsx:45:6
 						_gsxgw.Node(ctx, ui.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⌘P")
@@ -122,23 +133,23 @@ func Full() _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line full.gsx:46:3
+//line full.gsx:49:3
 			_gsxgw.Node(ctx, ui.MenubarMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line full.gsx:47:4
+//line full.gsx:50:4
 				_gsxgw.Node(ctx, ui.MenubarTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Edit")
 					return _gsxgw.Err()
 				}), nil))
-//line full.gsx:48:4
+//line full.gsx:51:4
 				_gsxgw.Node(ctx, ui.MenubarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line full.gsx:49:5
+//line full.gsx:52:5
 					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Undo")
-//line full.gsx:51:6
+//line full.gsx:54:6
 						_gsxgw.Node(ctx, ui.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⌘Z")
@@ -146,11 +157,11 @@ func Full() _gsxrt.Node {
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line full.gsx:53:5
+//line full.gsx:56:5
 					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Redo")
-//line full.gsx:55:6
+//line full.gsx:58:6
 						_gsxgw.Node(ctx, ui.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⇧⌘Z")
@@ -158,41 +169,41 @@ func Full() _gsxrt.Node {
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line full.gsx:57:5
+//line full.gsx:60:5
 					_gsxgw.Node(ctx, ui.MenubarSeparator(nil))
-//line full.gsx:58:5
+//line full.gsx:61:5
 					_gsxgw.Node(ctx, ui.MenubarSub(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line full.gsx:59:6
+//line full.gsx:62:6
 						_gsxgw.Node(ctx, ui.MenubarSubTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Find")
 							return _gsxgw.Err()
 						}), nil))
-//line full.gsx:60:6
+//line full.gsx:63:6
 						_gsxgw.Node(ctx, ui.MenubarSubContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line full.gsx:61:7
+//line full.gsx:64:7
 							_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("Search the web")
 								return _gsxgw.Err()
 							}), nil))
-//line full.gsx:62:7
+//line full.gsx:65:7
 							_gsxgw.Node(ctx, ui.MenubarSeparator(nil))
-//line full.gsx:63:7
+//line full.gsx:66:7
 							_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("Find...")
 								return _gsxgw.Err()
 							}), nil))
-//line full.gsx:64:7
+//line full.gsx:67:7
 							_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("Find Next")
 								return _gsxgw.Err()
 							}), nil))
-//line full.gsx:65:7
+//line full.gsx:68:7
 							_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("Find Previous")
@@ -202,21 +213,21 @@ func Full() _gsxrt.Node {
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line full.gsx:68:5
+//line full.gsx:71:5
 					_gsxgw.Node(ctx, ui.MenubarSeparator(nil))
-//line full.gsx:69:5
+//line full.gsx:72:5
 					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Cut")
 						return _gsxgw.Err()
 					}), nil))
-//line full.gsx:70:5
+//line full.gsx:73:5
 					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Copy")
 						return _gsxgw.Err()
 					}), nil))
-//line full.gsx:71:5
+//line full.gsx:74:5
 					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Paste")
@@ -226,37 +237,37 @@ func Full() _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line full.gsx:74:3
+//line full.gsx:77:3
 			_gsxgw.Node(ctx, ui.MenubarMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line full.gsx:75:4
+//line full.gsx:78:4
 				_gsxgw.Node(ctx, ui.MenubarTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("View")
 					return _gsxgw.Err()
 				}), nil))
-//line full.gsx:76:4
+//line full.gsx:79:4
 				_gsxgw.Node(ctx, ui.MenubarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line full.gsx:77:5
+//line full.gsx:80:5
 					_gsxgw.Node(ctx, ui.MenubarCheckboxItem(true, "bookmarks", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Always Show Bookmarks Bar")
 						return _gsxgw.Err()
 					}), nil))
-//line full.gsx:78:5
+//line full.gsx:81:5
 					_gsxgw.Node(ctx, ui.MenubarCheckboxItem(false, "full-urls", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Always Show Full URLs")
 						return _gsxgw.Err()
 					}), nil))
-//line full.gsx:79:5
+//line full.gsx:82:5
 					_gsxgw.Node(ctx, ui.MenubarSeparator(nil))
-//line full.gsx:80:5
+//line full.gsx:83:5
 					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Reload")
-//line full.gsx:82:6
+//line full.gsx:85:6
 						_gsxgw.Node(ctx, ui.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⌘R")
@@ -264,11 +275,11 @@ func Full() _gsxrt.Node {
 						}), nil))
 						return _gsxgw.Err()
 					}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-disabled", Value: "true"}}, _gsxrt.Attrs{{Key: "data-disabled", Value: "true"}})))
-//line full.gsx:84:5
+//line full.gsx:87:5
 					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Force Reload")
-//line full.gsx:86:6
+//line full.gsx:89:6
 						_gsxgw.Node(ctx, ui.MenubarShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⇧⌘R")
@@ -280,34 +291,34 @@ func Full() _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line full.gsx:90:3
+//line full.gsx:93:3
 			_gsxgw.Node(ctx, ui.MenubarMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line full.gsx:91:4
+//line full.gsx:94:4
 				_gsxgw.Node(ctx, ui.MenubarTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Profiles")
 					return _gsxgw.Err()
 				}), nil))
-//line full.gsx:92:4
+//line full.gsx:95:4
 				_gsxgw.Node(ctx, ui.MenubarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line full.gsx:93:5
+//line full.gsx:96:5
 					_gsxgw.Node(ctx, ui.MenubarRadioGroup("benoit", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line full.gsx:94:6
+//line full.gsx:97:6
 						_gsxgw.Node(ctx, ui.MenubarRadioItem(false, "andy", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Andy")
 							return _gsxgw.Err()
 						}), nil))
-//line full.gsx:95:6
+//line full.gsx:98:6
 						_gsxgw.Node(ctx, ui.MenubarRadioItem(true, "benoit", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Benoit")
 							return _gsxgw.Err()
 						}), nil))
-//line full.gsx:96:6
+//line full.gsx:99:6
 						_gsxgw.Node(ctx, ui.MenubarRadioItem(false, "luis", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Luis")
@@ -315,17 +326,17 @@ func Full() _gsxrt.Node {
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line full.gsx:98:5
+//line full.gsx:101:5
 					_gsxgw.Node(ctx, ui.MenubarSeparator(nil))
-//line full.gsx:99:5
+//line full.gsx:102:5
 					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Edit...")
 						return _gsxgw.Err()
 					}), nil))
-//line full.gsx:100:5
+//line full.gsx:103:5
 					_gsxgw.Node(ctx, ui.MenubarSeparator(nil))
-//line full.gsx:101:5
+//line full.gsx:104:5
 					_gsxgw.Node(ctx, ui.MenubarItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Add Profile...")

@@ -7,7 +7,8 @@ var compositeOrientationAxes = []Axis{{
 
 var compositeContracts = []Component{
 	{
-		Name: "Calendar",
+		Name:         "Calendar",
+		RegistryName: "calendar",
 		Slots: []Slot{
 			{Name: "calendar", Axes: []Axis{
 				{Attribute: "data-caption-layout", Values: []string{"dropdown", "label"}},
@@ -54,7 +55,8 @@ var compositeContracts = []Component{
 		},
 	},
 	{
-		Name: "Carousel",
+		Name:         "Carousel",
+		RegistryName: "carousel",
 		Slots: []Slot{
 			{Name: "carousel", Axes: compositeOrientationAxes},
 			{Name: "carousel-content", Axes: compositeOrientationAxes},
@@ -76,7 +78,8 @@ var compositeContracts = []Component{
 		},
 	},
 	{
-		Name: "Resizable",
+		Name:         "Resizable",
+		RegistryName: "resizable",
 		Slots: []Slot{
 			{Name: "resizable-panel-group", Axes: []Axis{{Attribute: "aria-orientation", Values: []string{"horizontal", "vertical"}}}},
 			{Name: "resizable-panel"},
@@ -85,7 +88,8 @@ var compositeContracts = []Component{
 		},
 	},
 	{
-		Name:  "ScrollArea",
-		Slots: []Slot{{Name: "scroll-area", Axes: compositeOrientationAxes}},
+		Name:         "ScrollArea",
+		RegistryName: "scroll-area",
+		Slots:        []Slot{{Name: "scroll-area", Axes: compositeOrientationAxes}},
 	},
 }

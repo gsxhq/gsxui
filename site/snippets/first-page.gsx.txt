@@ -6,7 +6,7 @@ component Home() {
 	<html lang="en">
 		<head>
 			<meta charset="UTF-8"/>
-			<link rel="stylesheet" href="/web/gsxui.css"/>
+			<link rel="stylesheet" href="/web/gsxui/index.css"/>
 		</head>
 		<body class="flex min-h-svh items-center justify-center bg-background p-8 text-foreground">
 			<ui.Card class="w-full max-w-sm">

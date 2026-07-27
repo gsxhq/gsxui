@@ -21,6 +21,9 @@ Then, from your Go module:
 
 `gsxui init` prints the CSS and JS entry points to import from your
 bundler. It also adds the gsx toolchain and class merger to your `go.mod`.
+Import `web/gsxui/index.css`; it composes the behavior-critical foundation,
+semantic `theme.css`, and replaceable component `style.css`. Recoloring a
+project means changing only `theme.css`.
 
 ## Use
 
@@ -77,6 +80,18 @@ Radix's Portal for the native popover API.
 
 Every divergence, with its rationale, is ledgered in
 [`docs/jsx-parity.md`](docs/jsx-parity.md).
+
+## Migrating the CSS boundary
+
+The split CSS entry is intentionally breaking; there is no legacy selector
+or combined-file compatibility layer.
+
+1. Change `web/gsxui.css` to `web/gsxui/index.css`.
+2. Review the four-file diff, then run `gsxui init --overwrite`.
+3. Run `gsxui add <component> --overwrite` for vendored components you want
+   to refresh.
+4. Replace intentional `data-slot` project selectors with
+   `[data-gsxui-slot~="<token>"]`.
 
 ## Contributing
 

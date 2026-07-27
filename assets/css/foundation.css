@@ -66,6 +66,10 @@
     white-space: nowrap;
     border-width: 0;
   }
+  :where([data-gsxui-slot~="icon"]) {
+    width: 1em;
+    height: 1em;
+  }
 }
 
 @layer components {

@@ -11,6 +11,7 @@ export const jstestDir = path.join(repoRoot, "jstest");
 export const tmpDir = path.join(jstestDir, ".tmp");
 export const manifestPath = path.join(tmpDir, "examples.json");
 export const cssPath = path.join(tmpDir, "site.css");
+export const foundationCSSPath = path.join(tmpDir, "foundation.css");
 
 /**
  * 7799 is deliberately clear of the dev loop's 7777 and Vite's 5173, so a
