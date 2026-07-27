@@ -49,7 +49,9 @@
   :where([data-gsxui-slot~="breadcrumb-ellipsis-label"]),
   :where([data-gsxui-slot~="pagination-ellipsis-label"]),
   :where([data-gsxui-slot~="dialog-close-label"]),
-  :where([data-gsxui-slot~="sheet-close-label"]) {
+  :where([data-gsxui-slot~="sheet-close-label"]),
+  :where([data-gsxui-slot~="command-dialog-header"]),
+  :where([data-gsxui-slot~="combobox-bridge"]) {
     position: absolute;
     width: 1px;
     height: 1px;

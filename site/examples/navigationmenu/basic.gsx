@@ -8,8 +8,8 @@ import (
 
 // Basic mirrors the shape of shadcn's own navigation-menu-demo.tsx: a plain
 // top-level link (Home), a trigger opening a small grid of description
-// links (Components), and another plain link (Docs). Home/Docs render via
-// ui.NavigationMenuTriggerStyle() directly (no dropdown of their own);
+// links (Components), and another plain link (Docs). Home/Docs use
+// variant="trigger" directly (no dropdown of their own);
 // Components opens its own fully-chromed floating panel, positioned under
 // its own trigger — this port ships shadcn's viewport={false} configuration
 // only (see ui/navigation-menu.gsx's own file header GAP paragraph), so
@@ -18,7 +18,7 @@ component Basic() {
 	<ui.NavigationMenu>
 		<ui.NavigationMenuList>
 			<ui.NavigationMenuItem>
-				<ui.NavigationMenuLink class={ ui.NavigationMenuTriggerStyle() } href="#">Home</ui.NavigationMenuLink>
+				<ui.NavigationMenuLink variant="trigger" href="#">Home</ui.NavigationMenuLink>
 			</ui.NavigationMenuItem>
 			<ui.NavigationMenuItem>
 				<ui.NavigationMenuTrigger>Components</ui.NavigationMenuTrigger>
@@ -40,7 +40,7 @@ component Basic() {
 				</ui.NavigationMenuContent>
 			</ui.NavigationMenuItem>
 			<ui.NavigationMenuItem>
-				<ui.NavigationMenuLink class={ ui.NavigationMenuTriggerStyle() } href="#">Docs</ui.NavigationMenuLink>
+				<ui.NavigationMenuLink variant="trigger" href="#">Docs</ui.NavigationMenuLink>
 			</ui.NavigationMenuItem>
 		</ui.NavigationMenuList>
 	</ui.NavigationMenu>

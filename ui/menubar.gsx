@@ -167,11 +167,9 @@ import (
 // already replaced site-wide before this component existed.
 component Menubar(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="menubar"
 		data-gsxui-menubar
 		role="menubar"
-		class="flex h-8 items-center gap-0.5 rounded-lg border bg-background p-[3px]"
-		{ attrs... }
+		{ withSlot("menubar", attrs)... }
 	>
 		{ children }
 	</div>
@@ -187,7 +185,7 @@ component Menubar(children gsx.Node, attrs gsx.Attrs) {
 // scope roving tabindex and open-follows-hover coordinate across every
 // MenubarMenu's trigger.
 component MenubarMenu(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="menubar-menu" data-gsxui-menubar-menu class="contents" { attrs... }>{ children }</div>
+	<div data-gsxui-menubar-menu { withSlot("menubar-menu", attrs)... }>{ children }</div>
 }
 
 // MenubarTrigger is one pill in the bar. Unlike DropdownMenuTrigger (which
@@ -206,14 +204,12 @@ component MenubarMenu(children gsx.Node, attrs gsx.Attrs) {
 // which has no such selector to key at all.
 component MenubarTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<button
-		data-slot="menubar-trigger"
 		data-gsxui-menubar-trigger
 		type="button"
 		aria-haspopup="menu"
 		aria-expanded="false"
 		data-state="closed"
-		class="flex items-center rounded-sm px-1.5 py-[2px] text-sm font-medium outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
-		{ attrs... }
+		{ withSlot("menubar-trigger", attrs)... }
 	>
 		{ children }
 	</button>
@@ -241,19 +237,13 @@ component MenubarTrigger(children gsx.Node, attrs gsx.Attrs) {
 // data-[state=closed]:animate-out.
 component MenubarContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="menubar-content"
 		data-gsxui-menubar-content
 		popover="auto"
 		role="menu"
 		tabindex="-1"
 		data-state="closed"
 		data-side="bottom"
-		class={
-			"z-50 min-w-36 origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-md",
-			"opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95",
-			"data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2"
-		}
-		{ attrs... }
+		{ withSlot("menubar-content", attrs)... }
 	>
 		{ children }
 	</div>
@@ -264,18 +254,14 @@ component MenubarContent(children gsx.Node, attrs gsx.Attrs) {
 // map's own finding that plain Item is identical across all three menu
 // families, and this port's own nova retarget already applied uniformly to
 // dropdown/context-menu's own Item. variant: "" (default) | "destructive".
-// inset is dropped (see docs/jsx-parity.md), same call as dropdown/
-// context-menu's own Item — the data-[inset]:pl-8 selector is removed with
-// it.
+// Callers reflect the CSS-only inset axis with data-inset through attrs.
 component MenubarItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="menubar-item"
 		data-gsxui-menubar-item
 		data-variant={variant |> default("default")}
 		role="menuitem"
 		tabindex="-1"
-		class="relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive!"
-		{ attrs... }
+		{ withSlot("menubar-item", attrs)... }
 	>
 		{ children }
 	</div>
@@ -288,7 +274,7 @@ component MenubarItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 // data-gsxui-* hook: nothing in menubar.js binds to or scopes by this
 // element, same call as DropdownMenuGroup/ContextMenuGroup.
 component MenubarGroup(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="menubar-group" role="group" { attrs... }>{ children }</div>
+	<div role="group" { withSlot("menubar-group", attrs)... }>{ children }</div>
 }
 
 // MenubarCheckboxItem is the shadcn/ui MenubarCheckboxItem. checked is
@@ -311,7 +297,6 @@ component MenubarGroup(children gsx.Node, attrs gsx.Attrs) {
 // deliberately, for cross-menu-family consistency, not because nova agrees.
 component MenubarCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="menubar-checkbox-item"
 		data-gsxui-menubar-checkbox-item
 		role="menuitemcheckbox"
 		data-value={value}
@@ -323,11 +308,10 @@ component MenubarCheckboxItem(checked bool, value string, children gsx.Node, att
 			data-state="unchecked"
 		} }
 		tabindex="-1"
-		class="relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
-		{ attrs... }
+		{ withSlot("menubar-checkbox-item", attrs)... }
 	>
-		<span class="pointer-events-none absolute right-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex">
-			<icon.Check class="size-4"/>
+		<span data-gsxui-menubar-checkbox-indicator { withSlot("menubar-checkbox-item-indicator", nil)... }>
+			<icon.Check/>
 		</span>
 		{ children }
 	</div>
@@ -340,7 +324,7 @@ component MenubarCheckboxItem(checked bool, value string, children gsx.Node, att
 // data-gsxui-menubar-radio-group is the proximity anchor menubar.js uses to
 // scope "clear every OTHER item in this group" to this group alone.
 component MenubarRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="menubar-radio-group" data-gsxui-menubar-radio-group role="group" data-value={value} { attrs... }>
+	<div data-gsxui-menubar-radio-group role="group" data-value={value} { withSlot("menubar-radio-group", attrs)... }>
 		{ children }
 	</div>
 }
@@ -355,7 +339,6 @@ component MenubarRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) {
 // MenubarCheckboxItem's own doc comment.
 component MenubarRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="menubar-radio-item"
 		data-gsxui-menubar-radio-item
 		role="menuitemradio"
 		data-value={value}
@@ -367,27 +350,26 @@ component MenubarRadioItem(checked bool, value string, children gsx.Node, attrs 
 			data-state="unchecked"
 		} }
 		tabindex="-1"
-		class="relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
-		{ attrs... }
+		{ withSlot("menubar-radio-item", attrs)... }
 	>
-		<span class="pointer-events-none absolute right-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex">
-			<icon.Circle class="size-2 fill-current"/>
+		<span data-gsxui-menubar-radio-indicator { withSlot("menubar-radio-item-indicator", nil)... }>
+			<icon.Circle/>
 		</span>
 		{ children }
 	</div>
 }
 
-// MenubarLabel's inset prop is dropped along with MenubarItem's (see
-// docs/jsx-parity.md) — the data-[inset]:pl-8 selector is removed.
+// MenubarLabel supports the same caller-reflected data-inset axis as
+// MenubarItem.
 // text-sm, NOT DropdownMenuLabel's own text-xs: nova's own
 // .cn-menubar-label rule is genuinely text-sm, a real per-component nova
 // value, not a copy of dropdown's own (already-shipped) Label metrics.
 component MenubarLabel(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="menubar-label" class="px-1.5 py-1 text-sm font-medium" { attrs... }>{ children }</div>
+	<div { withSlot("menubar-label", attrs)... }>{ children }</div>
 }
 
 component MenubarSeparator(attrs gsx.Attrs) {
-	<div data-slot="menubar-separator" role="separator" class="-mx-1 my-1 h-px bg-border" { attrs... }></div>
+	<div role="separator" { withSlot("menubar-separator", attrs)... }></div>
 }
 
 // ml-auto is KEPT even though nova's own .cn-menubar-shortcut rule omits it
@@ -401,7 +383,7 @@ component MenubarSeparator(attrs gsx.Attrs) {
 // in this file for it to key off, the same scope call as every other
 // dropdown/context-menu Shortcut in this codebase.
 component MenubarShortcut(children gsx.Node, attrs gsx.Attrs) {
-	<span data-slot="menubar-shortcut" class="ml-auto text-xs tracking-widest text-muted-foreground" { attrs... }>
+	<span { withSlot("menubar-shortcut", attrs)... }>
 		{ children }
 	</span>
 }
@@ -415,7 +397,7 @@ component MenubarShortcut(children gsx.Node, attrs gsx.Attrs) {
 // check to "the whole sub" — same shape as DropdownMenuSub's own doc
 // comment.
 component MenubarSub(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="menubar-sub" data-gsxui-menubar-sub class="contents" { attrs... }>{ children }</div>
+	<div data-gsxui-menubar-sub { withSlot("menubar-sub", attrs)... }>{ children }</div>
 }
 
 // MenubarSubTrigger opens/closes its sibling MenubarSubContent (menubar.js:
@@ -424,8 +406,8 @@ component MenubarSub(children gsx.Node, attrs gsx.Attrs) {
 // shared-items` §3); menubar.js keeps aria-expanded and data-state in step
 // on every open/close, stamping data-state="open" BEFORE showPopover() (the
 // same flash-avoidance rule DropdownMenuContent's own trigger click handler
-// documents). ADAPT: the data-[inset]:pl-8 token is dropped, same call as
-// MenubarItem/MenubarLabel's own ADAPT. See the file header's own "TWO
+// documents). The CSS-only data-inset axis remains caller-reflectable
+// through attrs. See the file header's own "TWO
 // DELIBERATE DIVERGENCES" paragraph for the outline-hidden (not
 // new-york-v4's own outline-none) and size-4 (not h-4 w-4) rulings — both
 // unique to menubar.tsx among the three menu family sources, both decided
@@ -451,18 +433,16 @@ component MenubarSub(children gsx.Node, attrs gsx.Attrs) {
 // siblings — a real, deliberate divergence, not an oversight.
 component MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="menubar-sub-trigger"
 		data-gsxui-menubar-sub-trigger
 		role="menuitem"
 		aria-haspopup="menu"
 		aria-expanded="false"
 		data-state="closed"
 		tabindex="-1"
-		class="flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg:not([class*='size-'])]:size-4"
-		{ attrs... }
+		{ withSlot("menubar-sub-trigger", attrs)... }
 	>
 		{ children }
-		<icon.ChevronRight class="ml-auto size-4"/>
+		<icon.ChevronRight/>
 	</div>
 }
 
@@ -481,19 +461,13 @@ component MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 // DropdownMenuSubContent's own doc comment, not repeated in full here.
 component MenubarSubContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="menubar-sub-content"
 		data-gsxui-menubar-sub-content
 		popover="auto"
 		role="menu"
 		tabindex="-1"
 		data-state="closed"
 		data-side="right"
-		class={
-			"z-50 min-w-[8rem] origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg",
-			"opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95",
-			"data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2"
-		}
-		{ attrs... }
+		{ withSlot("menubar-sub-content", attrs)... }
 	>
 		{ children }
 	</div>

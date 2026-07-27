@@ -123,5 +123,56 @@ component StyleContractFixture() {
 				Contract accordion body
 			</ui.AccordionContent>
 		</ui.AccordionItem>
+		<ui.CommandDialog
+			title="Contract command"
+			description="Command dialog style contract"
+			data-style-contract="command-dialog"
+		>
+			<ui.CommandInput placeholder="Search contract commands"/>
+			<ui.CommandList>
+				<ui.CommandGroup heading="Suggestions">
+					<ui.CommandItem value="alpha">Alpha</ui.CommandItem>
+				</ui.CommandGroup>
+			</ui.CommandList>
+		</ui.CommandDialog>
+		<div>
+			<ui.DropdownMenuItem variant="destructive" tabindex="0" data-style-contract="dropdown-destructive">
+				Delete dropdown item
+			</ui.DropdownMenuItem>
+			<ui.ContextMenuItem variant="destructive" tabindex="0" data-style-contract="context-destructive">
+				Delete context item
+			</ui.ContextMenuItem>
+			<ui.MenubarItem variant="destructive" tabindex="0" data-style-contract="menubar-destructive">
+				Delete menubar item
+			</ui.MenubarItem>
+			<div class="bg-destructive/10 text-destructive" data-style-contract-reference="menu-destructive-focus"></div>
+		</div>
+		<div>
+			<ui.DropdownMenuCheckboxItem checked={true} value="dropdown-on" data-style-contract="dropdown-checked">Dropdown on</ui.DropdownMenuCheckboxItem>
+			<ui.DropdownMenuCheckboxItem checked={false} value="dropdown-off" data-style-contract="dropdown-unchecked">Dropdown off</ui.DropdownMenuCheckboxItem>
+			<ui.ContextMenuRadioItem checked={true} value="context-on" data-style-contract="context-checked">Context on</ui.ContextMenuRadioItem>
+			<ui.ContextMenuRadioItem checked={false} value="context-off" data-style-contract="context-unchecked">Context off</ui.ContextMenuRadioItem>
+			<ui.MenubarCheckboxItem checked={true} value="menubar-on" data-style-contract="menubar-checked">Menubar on</ui.MenubarCheckboxItem>
+			<ui.MenubarCheckboxItem checked={false} value="menubar-off" data-style-contract="menubar-unchecked">Menubar off</ui.MenubarCheckboxItem>
+			<ui.ComboboxItem value="combobox-on" selected={true} data-style-contract="combobox-checked">Combobox on</ui.ComboboxItem>
+			<ui.ComboboxItem value="combobox-off" selected={false} data-style-contract="combobox-unchecked">Combobox off</ui.ComboboxItem>
+		</div>
+		<div>
+			<ui.DropdownMenuSubContent data-side="bottom" data-style-contract="submenu-bottom">Bottom submenu</ui.DropdownMenuSubContent>
+			<ui.DropdownMenuSubContent data-side="left" data-style-contract="submenu-left">Left submenu</ui.DropdownMenuSubContent>
+			<ui.DropdownMenuSubContent data-side="right" data-style-contract="submenu-right">Right submenu</ui.DropdownMenuSubContent>
+			<ui.DropdownMenuSubContent data-side="top" data-style-contract="submenu-top">Top submenu</ui.DropdownMenuSubContent>
+		</div>
+		<ui.NavigationMenu data-style-contract="navigation-root">
+			<ui.NavigationMenuList>
+				<ui.NavigationMenuItem>
+					<ui.NavigationMenuTrigger data-style-contract="navigation-trigger">Contract products</ui.NavigationMenuTrigger>
+					<ui.NavigationMenuContent data-style-contract="navigation-content">
+						<ui.NavigationMenuLink href="#">Contract product</ui.NavigationMenuLink>
+					</ui.NavigationMenuContent>
+				</ui.NavigationMenuItem>
+				<ui.NavigationMenuIndicator data-style-contract="navigation-indicator"/>
+			</ui.NavigationMenuList>
+		</ui.NavigationMenu>
 	</div>
 }

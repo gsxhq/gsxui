@@ -48,11 +48,9 @@ import (
 // guarded against; callers overriding this attribute are on their own.
 component NavigationMenu(children gsx.Node, attrs gsx.Attrs) {
 	<nav
-		data-slot="navigation-menu"
 		data-gsxui-navigation-menu
 		data-viewport="false"
-		class="group/navigation-menu relative flex max-w-max flex-1 items-center justify-center"
-		{ attrs... }
+		{ withSlot("navigation-menu", attrs)... }
 	>
 		{ children }
 	</nav>
@@ -63,7 +61,7 @@ component NavigationMenu(children gsx.Node, attrs gsx.Attrs) {
 // positions it relative to this element). gap-0 is nova's own metric
 // (`.cn-navigation-menu-list`), replacing new-york-v4's own gap-1.
 component NavigationMenuList(children gsx.Node, attrs gsx.Attrs) {
-	<ul data-slot="navigation-menu-list" data-gsxui-navigation-menu-list class="group flex flex-1 list-none items-center justify-center gap-0" { attrs... }>
+	<ul data-gsxui-navigation-menu-list { withSlot("navigation-menu-list", attrs)... }>
 		{ children }
 	</ul>
 }
@@ -74,16 +72,16 @@ component NavigationMenuList(children gsx.Node, attrs gsx.Attrs) {
 // own content" (closest("[data-gsxui-navigation-menu-item]")), the same
 // role DropdownMenu's own root plays for its single trigger/content pair.
 component NavigationMenuItem(children gsx.Node, attrs gsx.Attrs) {
-	<li data-slot="navigation-menu-item" data-gsxui-navigation-menu-item class="relative" { attrs... }>
+	<li data-gsxui-navigation-menu-item { withSlot("navigation-menu-item", attrs)... }>
 		{ children }
 	</li>
 }
 
-// NavigationMenuTriggerStyle is the shadcn/ui navigationMenuTriggerStyle
-// cva, exported standalone (source map ## navigation-menu §1) so a plain
-// <a>/NavigationMenuLink styled as a top-level item that isn't a real
-// Trigger — no dropdown attached — can reuse the identical visual, the same
-// way shadcn's own demo composes it.
+// NavigationMenuTrigger and NavigationMenuLink variant="trigger" share the
+// shadcn/ui navigationMenuTriggerStyle presentation through their semantic
+// navigation-menu-trigger token. The reflected variant replaces the former
+// exported class-string helper, keeping library-owned tokens out of caller
+// markup while preserving the standalone top-level link composition.
 //
 // ADAPT (nova metrics — FIX ROUND 2: the source map's own per-part "metric
 // deltas worth naming" lists are illustrative, not exhaustive, the same
@@ -106,19 +104,10 @@ component NavigationMenuItem(children gsx.Node, attrs gsx.Attrs) {
 // metric-tokens-only nova retarget except where a source-map finding
 // explicitly says otherwise (as it does, narrowly, for bg-background
 // alone).
-func NavigationMenuTriggerStyle() string {
-	return "group inline-flex h-9 w-max items-center justify-center rounded-lg px-2.5 py-1.5 text-sm font-medium transition-all outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-accent/50 data-[state=open]:text-accent-foreground data-[state=open]:hover:bg-accent data-[state=open]:focus:bg-accent"
-}
-
 // NavigationMenuTrigger opens/closes its sibling NavigationMenuContent
 // (ui/navigation-menu.js: pointerover/focusin open, pointerout/focusout
-// schedule a hover-card-shaped grace-period close, click toggles). class is
-// cn(NavigationMenuTriggerStyle(), "group", className) verbatim — the base
-// string already starts with "group"; shadcn's own cn() call adds a second,
-// redundant "group" token as a separate argument (source map ## navigation-
-// menu §1: "verbatim, not a transcription error") — this port's own class
-// merge does not dedupe it, so it renders twice, matching the literal
-// source. A literal space between {children} and the chevron matches
+// schedule a hover-card-shaped grace-period close, click toggles). A literal
+// space between {children} and the chevron matches
 // new-york-v4's own `{children}{" "}` (navigation-menu.tsx:76) — the icon's
 // own ml-1 provides the visual gap either way, but the text node is ported
 // for a byte-faithful accessible-name/text-content match, same call as
@@ -131,17 +120,15 @@ func NavigationMenuTriggerStyle() string {
 // to key off here.
 component NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<button
-		data-slot="navigation-menu-trigger"
 		data-gsxui-navigation-menu-trigger
 		type="button"
 		aria-expanded="false"
 		data-state="closed"
-		class={ NavigationMenuTriggerStyle(), "group" }
-		{ attrs... }
+		{ withSlot("navigation-menu-trigger", attrs)... }
 	>
 		{ children }
 		{ " " }
-		<icon.ChevronDown class="relative top-[1px] ml-1 size-3 transition duration-300 group-data-[state=open]:rotate-180"/>
+		<icon.ChevronDown data-gsxui-navigation-menu-trigger-icon { withSlot("navigation-menu-trigger-icon", nil)... }/>
 	</button>
 }
 
@@ -191,7 +178,7 @@ component NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 // ADAPT (nova metric, FIX ROUND 2): p-1 replaces new-york-v4's own
 // p-2 pr-2.5, straight from `.cn-navigation-menu-content` — same
 // "the source map's delta list is illustrative, not exhaustive" ruling as
-// NavigationMenuTriggerStyle's own doc comment.
+// NavigationMenuTrigger's own shared-token doc comment.
 //
 // The six-token data-[motion=…]/animate-in/out/fade-in/out slide mechanism
 // (new-york-v4's own direction-aware "which side did this panel enter
@@ -210,30 +197,19 @@ component NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 // exception); rounded-md -> rounded-lg is nova's own metric.
 component NavigationMenuContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="navigation-menu-content"
 		data-gsxui-navigation-menu-content
 		popover="manual"
 		data-state="closed"
 		data-side="bottom"
-		class={
-			"top-0 left-0 p-1 md:absolute",
-			"group-data-[viewport=false]/navigation-menu:top-full group-data-[viewport=false]/navigation-menu:mt-1.5 group-data-[viewport=false]/navigation-menu:overflow-hidden group-data-[viewport=false]/navigation-menu:rounded-lg group-data-[viewport=false]/navigation-menu:border group-data-[viewport=false]/navigation-menu:bg-popover group-data-[viewport=false]/navigation-menu:text-popover-foreground group-data-[viewport=false]/navigation-menu:shadow **:data-[slot=navigation-menu-link]:focus:ring-0 **:data-[slot=navigation-menu-link]:focus:outline-none",
-			// Discrete-transition enter/exit, reused byte-identically from the
-			// popover family (ui/dropdown.gsx's own block) per the task's own
-			// binding decision — see the doc comment above for the six-token
-			// data-motion slide (and its own duration-200/300) this replaces.
-			"opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95",
-			"data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2"
-		}
-		{ attrs... }
+		{ withSlot("navigation-menu-content", attrs)... }
 	>
 		{ children }
 	</div>
 }
 
 // NavigationMenuLink is a single item inside a NavigationMenuContent (or,
-// styled with NavigationMenuTriggerStyle() instead, a plain top-level nav
-// link with no dropdown at all). active mirrors Radix's own data-active
+// with variant="trigger", a plain top-level nav link with no dropdown at
+// all). active mirrors Radix's own data-active
 // convention — the caller computes whether this link's own destination
 // matches the current page (gsx has no router to do it implicitly, the same
 // no-context shape as ## toggle-group's group→item params). Clicking a
@@ -249,18 +225,27 @@ component NavigationMenuContent(children gsx.Node, attrs gsx.Attrs) {
 // plain single-line list-item shape for a differently-composed nav-menu
 // variant, not a metric bump. hover:/focus:/data-[active=true]: colors stay
 // on accent, not nova's own muted rewrite — same out-of-scope ruling as
-// NavigationMenuTriggerStyle's own doc comment.
-component NavigationMenuLink(active bool, children gsx.Node, attrs gsx.Attrs) {
+// NavigationMenuTrigger's own shared-token doc comment.
+component NavigationMenuLink(active bool, variant string, children gsx.Node, attrs gsx.Attrs) {
+	{{
+		linkVariant := variant
+		if linkVariant == "" {
+			linkVariant = "default"
+		}
+		linkAttrs := attrs
+		if linkVariant == "trigger" {
+			linkAttrs = withSlot("navigation-menu-trigger", linkAttrs)
+		}
+	}}
 	<a
-		data-slot="navigation-menu-link"
 		data-gsxui-navigation-menu-link
+		data-variant={linkVariant}
 		{ if active {
 			data-active="true"
 		} else {
 			data-active="false"
 		} }
-		class="flex flex-col gap-1 rounded-lg p-2 text-sm transition-all outline-none in-data-[slot=navigation-menu-content]:rounded-md hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 data-[active=true]:bg-accent/50 data-[active=true]:text-accent-foreground data-[active=true]:hover:bg-accent data-[active=true]:focus:bg-accent [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
-		{ attrs... }
+		{ withSlot("navigation-menu-link", linkAttrs)... }
 	>
 		{ children }
 	</a>
@@ -295,12 +280,10 @@ component NavigationMenuLink(active bool, children gsx.Node, attrs gsx.Attrs) {
 // state, so it should never intercept a pointer event either way.
 component NavigationMenuIndicator(attrs gsx.Attrs) {
 	<div
-		data-slot="navigation-menu-indicator"
 		data-gsxui-navigation-menu-indicator
 		data-state="hidden"
-		class="pointer-events-none top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden opacity-0 transition-opacity duration-200 data-[state=visible]:opacity-100"
-		{ attrs... }
+		{ withSlot("navigation-menu-indicator", attrs)... }
 	>
-		<div class="relative top-[60%] h-2 w-2 rotate-45 rounded-tl-sm bg-border shadow-md"></div>
+		<div { withSlot("navigation-menu-indicator-arrow", nil)... }></div>
 	</div>
 }

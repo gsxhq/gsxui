@@ -1,0 +1,186 @@
+package stylecontract
+
+import (
+	"reflect"
+	"testing"
+)
+
+func TestMenuContracts(t *testing.T) {
+	openSideAxes := []Axis{
+		{Attribute: "data-state", Values: []string{"closed", "open"}},
+		{Attribute: "data-side", Values: []string{"bottom", "left", "right", "top"}},
+	}
+	checkedAxes := []Axis{
+		{Attribute: "data-state", Values: []string{"unchecked", "checked"}},
+		{Attribute: "data-disabled"},
+		{Attribute: "aria-checked", Values: []string{"false", "true"}},
+	}
+	menuItemAxes := []Axis{
+		{Attribute: "data-variant", Values: []string{"default", "destructive"}},
+		{Attribute: "data-inset"},
+		{Attribute: "data-disabled"},
+	}
+	subTriggerAxes := []Axis{
+		{Attribute: "data-state", Values: []string{"closed", "open"}},
+		{Attribute: "aria-expanded", Values: []string{"false", "true"}},
+		{Attribute: "data-inset"},
+		{Attribute: "data-disabled"},
+	}
+	want := []Component{
+		{
+			Name: "Command",
+			Slots: []Slot{
+				{Name: "command"},
+				{Name: "command-dialog"},
+				{Name: "command-dialog-content"},
+				{Name: "command-dialog-header"},
+				{Name: "command-dialog-command"},
+				{Name: "command-input-wrapper"},
+				{Name: "command-input", Axes: []Axis{{Attribute: "disabled"}}},
+				{Name: "command-list"},
+				{Name: "command-empty"},
+				{Name: "command-group"},
+				{Name: "command-group-heading"},
+				{Name: "command-separator"},
+				{Name: "command-item", Axes: []Axis{
+					{Attribute: "data-selected", Values: []string{"true"}},
+					{Attribute: "data-disabled", Values: []string{"true"}},
+					{Attribute: "aria-selected", Values: []string{"false", "true"}},
+				}},
+				{Name: "command-shortcut"},
+			},
+		},
+		{
+			Name: "Combobox",
+			Slots: []Slot{
+				{Name: "combobox"},
+				{Name: "combobox-bridge"},
+				{Name: "combobox-input-group"},
+				{Name: "combobox-input", Axes: []Axis{
+					{Attribute: "disabled"},
+					{Attribute: "aria-expanded", Values: []string{"false", "true"}},
+				}},
+				{Name: "combobox-trigger", Axes: []Axis{{Attribute: "disabled"}}},
+				{Name: "combobox-trigger-icon"},
+				{Name: "combobox-clear", Axes: []Axis{{Attribute: "disabled"}}},
+				{Name: "combobox-content", Axes: []Axis{
+					{Attribute: "data-state", Values: []string{"closed", "open"}},
+					{Attribute: "data-side", Values: []string{"bottom", "left", "right", "top"}},
+					{Attribute: "data-empty"},
+				}},
+				{Name: "combobox-list", Axes: []Axis{{Attribute: "data-empty"}}},
+				{Name: "combobox-item", Axes: []Axis{
+					{Attribute: "data-state", Values: []string{"unchecked", "checked"}},
+					{Attribute: "data-highlighted", Values: []string{"true"}},
+					{Attribute: "data-disabled"},
+					{Attribute: "aria-selected", Values: []string{"false", "true"}},
+				}},
+				{Name: "combobox-item-indicator"},
+				{Name: "combobox-group"},
+				{Name: "combobox-label"},
+				{Name: "combobox-empty"},
+				{Name: "combobox-separator"},
+				{Name: "combobox-value"},
+			},
+		},
+		{
+			Name: "DropdownMenu",
+			Slots: []Slot{
+				{Name: "dropdown-menu"},
+				{Name: "dropdown-menu-trigger", Axes: []Axis{
+					{Attribute: "aria-expanded", Values: []string{"false", "true"}},
+					{Attribute: "disabled"},
+				}},
+				{Name: "dropdown-menu-content", Axes: openSideAxes},
+				{Name: "dropdown-menu-group"},
+				{Name: "dropdown-menu-item", Axes: menuItemAxes},
+				{Name: "dropdown-menu-checkbox-item", Axes: checkedAxes},
+				{Name: "dropdown-menu-checkbox-item-indicator"},
+				{Name: "dropdown-menu-radio-group"},
+				{Name: "dropdown-menu-radio-item", Axes: checkedAxes},
+				{Name: "dropdown-menu-radio-item-indicator"},
+				{Name: "dropdown-menu-label", Axes: []Axis{{Attribute: "data-inset"}}},
+				{Name: "dropdown-menu-separator"},
+				{Name: "dropdown-menu-shortcut"},
+				{Name: "dropdown-menu-sub"},
+				{Name: "dropdown-menu-sub-trigger", Axes: subTriggerAxes},
+				{Name: "dropdown-menu-sub-content", Axes: openSideAxes},
+			},
+		},
+		{
+			Name: "ContextMenu",
+			Slots: []Slot{
+				{Name: "context-menu"},
+				{Name: "context-menu-trigger"},
+				{Name: "context-menu-content", Axes: []Axis{
+					{Attribute: "data-state", Values: []string{"closed", "open"}},
+					{Attribute: "data-side", Values: []string{"bottom", "left", "right", "top"}},
+				}},
+				{Name: "context-menu-group"},
+				{Name: "context-menu-item", Axes: menuItemAxes},
+				{Name: "context-menu-checkbox-item", Axes: checkedAxes},
+				{Name: "context-menu-checkbox-item-indicator"},
+				{Name: "context-menu-radio-group"},
+				{Name: "context-menu-radio-item", Axes: checkedAxes},
+				{Name: "context-menu-radio-item-indicator"},
+				{Name: "context-menu-label", Axes: []Axis{{Attribute: "data-inset"}}},
+				{Name: "context-menu-separator"},
+				{Name: "context-menu-shortcut"},
+				{Name: "context-menu-sub"},
+				{Name: "context-menu-sub-trigger", Axes: subTriggerAxes},
+				{Name: "context-menu-sub-content", Axes: openSideAxes},
+			},
+		},
+		{
+			Name: "Menubar",
+			Slots: []Slot{
+				{Name: "menubar"},
+				{Name: "menubar-menu"},
+				{Name: "menubar-trigger", Axes: []Axis{
+					{Attribute: "data-state", Values: []string{"closed", "open"}},
+					{Attribute: "aria-expanded", Values: []string{"false", "true"}},
+					{Attribute: "disabled"},
+				}},
+				{Name: "menubar-content", Axes: openSideAxes},
+				{Name: "menubar-group"},
+				{Name: "menubar-item", Axes: menuItemAxes},
+				{Name: "menubar-checkbox-item", Axes: checkedAxes},
+				{Name: "menubar-checkbox-item-indicator"},
+				{Name: "menubar-radio-group"},
+				{Name: "menubar-radio-item", Axes: checkedAxes},
+				{Name: "menubar-radio-item-indicator"},
+				{Name: "menubar-label", Axes: []Axis{{Attribute: "data-inset"}}},
+				{Name: "menubar-separator"},
+				{Name: "menubar-shortcut"},
+				{Name: "menubar-sub"},
+				{Name: "menubar-sub-trigger", Axes: subTriggerAxes},
+				{Name: "menubar-sub-content", Axes: openSideAxes},
+			},
+		},
+		{
+			Name: "NavigationMenu",
+			Slots: []Slot{
+				{Name: "navigation-menu", Axes: []Axis{{Attribute: "data-viewport", Values: []string{"false"}}}},
+				{Name: "navigation-menu-list"},
+				{Name: "navigation-menu-item"},
+				{Name: "navigation-menu-trigger", Axes: []Axis{
+					{Attribute: "data-state", Values: []string{"closed", "open"}},
+					{Attribute: "aria-expanded", Values: []string{"false", "true"}},
+					{Attribute: "disabled"},
+				}},
+				{Name: "navigation-menu-trigger-icon"},
+				{Name: "navigation-menu-content", Axes: openSideAxes},
+				{Name: "navigation-menu-link", Axes: []Axis{
+					{Attribute: "data-variant", Values: []string{"default", "trigger"}},
+					{Attribute: "data-active", Values: []string{"false", "true"}},
+				}},
+				{Name: "navigation-menu-indicator", Axes: []Axis{{Attribute: "data-state", Values: []string{"hidden", "visible"}}}},
+				{Name: "navigation-menu-indicator-arrow"},
+			},
+		},
+	}
+
+	if !reflect.DeepEqual(menuContracts, want) {
+		t.Fatalf("menuContracts = %#v\nwant %#v", menuContracts, want)
+	}
+}

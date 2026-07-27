@@ -59,7 +59,7 @@ import (
 // difference to fix and no reason to deviate from context-menu's own
 // source here.
 component ContextMenu(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="context-menu" data-gsxui-contextmenu class="contents" { attrs... }>{ children }</div>
+	<div data-gsxui-contextmenu { withSlot("context-menu", attrs)... }>{ children }</div>
 }
 
 // ContextMenuTrigger renders the drop-zone AREA a user right-clicks inside
@@ -69,7 +69,7 @@ component ContextMenu(children gsx.Node, attrs gsx.Attrs) {
 // via closest(), so any descendant right-click counts) rather than a click
 // on the element itself.
 component ContextMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="context-menu-trigger" data-gsxui-contextmenu-trigger { attrs... }>{ children }</div>
+	<div data-gsxui-contextmenu-trigger { withSlot("context-menu-trigger", attrs)... }>{ children }</div>
 }
 
 // ContextMenuContent renders the popover. popover="auto" gives top layer,
@@ -86,25 +86,12 @@ component ContextMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 // docs/jsx-parity.md's ## context-menu ledger.
 component ContextMenuContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="context-menu-content"
 		data-gsxui-contextmenu-content
 		popover="auto"
 		role="menu"
 		tabindex="-1"
 		data-state="closed"
-		class={
-			"z-50 max-h-96 min-w-36 origin-top-left overflow-x-hidden overflow-y-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md",
-			// Discrete-transition enter/exit replacing the tw-animate keyframe
-			// pair — a popover's exit keyframe never gets to play (hide is
-			// instant display:none); see popover.gsx's ADAPT comment and
-			// docs/jsx-parity.md ## animations for the full mechanism. The
-			// data-[side=…] starting slides stay inert here exactly as the
-			// slide-in-from-* tokens they replace were: no data-side is ever
-			// stamped (see this file's header comment).
-			"opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95",
-			"data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2"
-		}
-		{ attrs... }
+		{ withSlot("context-menu-content", attrs)... }
 	>
 		{ children }
 	</div>
@@ -114,17 +101,14 @@ component ContextMenuContent(children gsx.Node, attrs gsx.Attrs) {
 // item on a <div role="menuitem">, identical shape to
 // DropdownMenuItem — context-menu.js's arrow-key roving focus walks these
 // the same way dropdown.js's does. variant: "" (default) | "destructive".
-// inset is dropped (see docs/jsx-parity.md), same call as dropdown's own —
-// the data-[inset]:pl-8 selector is removed with it.
+// Callers reflect the CSS-only inset axis with data-inset through attrs.
 component ContextMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="context-menu-item"
 		data-gsxui-contextmenu-item
 		data-variant={variant |> default("default")}
 		role="menuitem"
 		tabindex="-1"
-		class="relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive!"
-		{ attrs... }
+		{ withSlot("context-menu-item", attrs)... }
 	>
 		{ children }
 	</div>
@@ -138,7 +122,7 @@ component ContextMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 // to or scopes by this element — it's purely a11y markup, same call as
 // DropdownMenuGroup.
 component ContextMenuGroup(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="context-menu-group" role="group" { attrs... }>{ children }</div>
+	<div role="group" { withSlot("context-menu-group", attrs)... }>{ children }</div>
 }
 
 // ContextMenuCheckboxItem is the shadcn/ui ContextMenuCheckboxItem. checked
@@ -156,7 +140,6 @@ component ContextMenuGroup(children gsx.Node, attrs gsx.Attrs) {
 // following ui/select.gsx's SelectItem precedent), not re-derived here.
 component ContextMenuCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="context-menu-checkbox-item"
 		data-gsxui-contextmenu-checkbox-item
 		role="menuitemcheckbox"
 		data-value={value}
@@ -168,11 +151,10 @@ component ContextMenuCheckboxItem(checked bool, value string, children gsx.Node,
 			data-state="unchecked"
 		} }
 		tabindex="-1"
-		class="relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
-		{ attrs... }
+		{ withSlot("context-menu-checkbox-item", attrs)... }
 	>
-		<span class="pointer-events-none absolute right-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex">
-			<icon.Check class="size-4"/>
+		<span data-gsxui-contextmenu-checkbox-indicator { withSlot("context-menu-checkbox-item-indicator", nil)... }>
+			<icon.Check/>
 		</span>
 		{ children }
 	</div>
@@ -185,7 +167,7 @@ component ContextMenuCheckboxItem(checked bool, value string, children gsx.Node,
 // event. data-gsxui-contextmenu-radio-group is the proximity anchor context-menu.js
 // uses to scope "clear every OTHER item in this group" to this group alone.
 component ContextMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="context-menu-radio-group" data-gsxui-contextmenu-radio-group role="group" data-value={value} { attrs... }>
+	<div data-gsxui-contextmenu-radio-group role="group" data-value={value} { withSlot("context-menu-radio-group", attrs)... }>
 		{ children }
 	</div>
 }
@@ -201,7 +183,6 @@ component ContextMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs
 // ContextMenuCheckboxItem's own doc comment, not repeated here.
 component ContextMenuRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="context-menu-radio-item"
 		data-gsxui-contextmenu-radio-item
 		role="menuitemradio"
 		data-value={value}
@@ -213,32 +194,31 @@ component ContextMenuRadioItem(checked bool, value string, children gsx.Node, at
 			data-state="unchecked"
 		} }
 		tabindex="-1"
-		class="relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
-		{ attrs... }
+		{ withSlot("context-menu-radio-item", attrs)... }
 	>
-		<span class="pointer-events-none absolute right-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex">
-			<icon.Circle class="size-2 fill-current"/>
+		<span data-gsxui-contextmenu-radio-indicator { withSlot("context-menu-radio-item-indicator", nil)... }>
+			<icon.Circle/>
 		</span>
 		{ children }
 	</div>
 }
 
-// ContextMenuLabel's inset prop is dropped along with ContextMenuItem's
-// (see docs/jsx-parity.md) — the data-[inset]:pl-8 selector is removed.
+// ContextMenuLabel supports the same caller-reflected data-inset axis as
+// ContextMenuItem.
 // Unlike DropdownMenuLabel, shadcn's own context-menu.tsx class carries
 // text-foreground — ported verbatim, a genuine per-component difference in
 // the shadcn source, not a copy error (see docs/jsx-parity.md ##
 // context-menu).
 component ContextMenuLabel(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="context-menu-label" class="px-1.5 py-1 text-xs font-medium text-foreground" { attrs... }>{ children }</div>
+	<div { withSlot("context-menu-label", attrs)... }>{ children }</div>
 }
 
 component ContextMenuSeparator(attrs gsx.Attrs) {
-	<div data-slot="context-menu-separator" role="separator" class="-mx-1 my-1 h-px bg-border" { attrs... }></div>
+	<div role="separator" { withSlot("context-menu-separator", attrs)... }></div>
 }
 
 component ContextMenuShortcut(children gsx.Node, attrs gsx.Attrs) {
-	<span data-slot="context-menu-shortcut" class="ml-auto text-xs tracking-widest text-muted-foreground" { attrs... }>
+	<span { withSlot("context-menu-shortcut", attrs)... }>
 		{ children }
 	</span>
 }
@@ -251,7 +231,7 @@ component ContextMenuShortcut(children gsx.Node, attrs gsx.Attrs) {
 // and to scope the pointer-leave grace-period boundary check to "the whole
 // sub" — same shape as DropdownMenuSub's own doc comment.
 component ContextMenuSub(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="context-menu-sub" data-gsxui-contextmenu-sub class="contents" { attrs... }>{ children }</div>
+	<div data-gsxui-contextmenu-sub { withSlot("context-menu-sub", attrs)... }>{ children }</div>
 }
 
 // ContextMenuSubTrigger opens/closes its sibling ContextMenuSubContent
@@ -260,27 +240,24 @@ component ContextMenuSub(children gsx.Node, attrs gsx.Attrs) {
 // source map ## shared-items §3); context-menu.js keeps aria-expanded and
 // data-state in step on every open/close, stamping data-state="open" BEFORE
 // showPopover() (same flash-avoidance rule as ContextMenuContent's own
-// opener). ADAPT: the data-[inset]:pl-8 token is dropped, same call as
-// ContextMenuItem/ContextMenuLabel's own ADAPT — gsxui's context-menu scope
-// has no inset prop anywhere in this file. ADAPT (nova metrics + the one
+// opener). The CSS-only data-inset axis remains caller-reflectable through
+// attrs. ADAPT (nova metrics + the one
 // real shared-items delta): gap-1.5/rounded-md/px-1.5-py-1 — see the file
 // header's "THE ONE REAL SHARED-ITEMS DELTA" paragraph for the gap-2->
 // gap-1.5 harmonization and the deliberately-preserved missing icon size-4.
 // data-[state=open]: kept, not nova's data-open: (standing house exception).
 component ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="context-menu-sub-trigger"
 		data-gsxui-contextmenu-sub-trigger
 		role="menuitem"
 		aria-haspopup="menu"
 		aria-expanded="false"
 		data-state="closed"
 		tabindex="-1"
-		class="flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
-		{ attrs... }
+		{ withSlot("context-menu-sub-trigger", attrs)... }
 	>
 		{ children }
-		<icon.ChevronRight class="ml-auto"/>
+		<icon.ChevronRight/>
 	</div>
 }
 
@@ -300,19 +277,13 @@ component ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 // exception).
 component ContextMenuSubContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="context-menu-sub-content"
 		data-gsxui-contextmenu-sub-content
 		popover="auto"
 		role="menu"
 		tabindex="-1"
 		data-state="closed"
 		data-side="right"
-		class={
-			"z-50 min-w-[96px] origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg",
-			"opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 open:opacity-100 open:scale-100 starting:open:opacity-0 starting:open:scale-95",
-			"data-[side=bottom]:starting:open:-translate-y-2 data-[side=left]:starting:open:translate-x-2 data-[side=right]:starting:open:-translate-x-2 data-[side=top]:starting:open:translate-y-2"
-		}
-		{ attrs... }
+		{ withSlot("context-menu-sub-content", attrs)... }
 	>
 		{ children }
 	</div>

@@ -25,7 +25,7 @@ const contentOf = (el) =>
 // closest().
 const CONTENT_SELECTOR = "[data-gsxui-dropdown-content],[data-gsxui-dropdown-sub-content]";
 const ITEM_SELECTOR =
-  '[role="menuitem"]:not([aria-disabled]),[role="menuitemcheckbox"]:not([aria-disabled]),[role="menuitemradio"]:not([aria-disabled])';
+  "[data-gsxui-dropdown-item]:not([aria-disabled]),[data-gsxui-dropdown-checkbox-item]:not([aria-disabled]),[data-gsxui-dropdown-radio-item]:not([aria-disabled]),[data-gsxui-dropdown-sub-trigger]:not([aria-disabled])";
 
 // Items belonging to THIS content alone. content.querySelectorAll would also
 // recurse into a DOM-nested submenu's own items — that nesting is exactly

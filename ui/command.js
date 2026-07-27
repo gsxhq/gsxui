@@ -153,7 +153,7 @@ function filter(root) {
 
   // Items reorder within their group every pass (appendChild preserves
   // element identity, so listeners/state survive the moves).
-  for (const group of root.querySelectorAll('[data-slot="command-group"]')) {
+  for (const group of root.querySelectorAll("[data-gsxui-command-group]")) {
     const inGroup = items.filter((i) => group.contains(i));
     const ranked = [...inGroup].sort((a, b) => scores.get(b) - scores.get(a) || sourceOrder(a, b));
     for (const item of ranked) group.appendChild(item);
@@ -168,10 +168,10 @@ function filter(root) {
   const kids = [...list.children].sort((a, b) => rank(b) - rank(a) || sourceOrder(a, b));
   for (const kid of kids) list.appendChild(kid);
 
-  for (const sep of root.querySelectorAll('[data-slot="command-separator"]')) {
+  for (const sep of root.querySelectorAll("[data-gsxui-command-separator]")) {
     sep.hidden = query !== "";
   }
-  const empty = root.querySelector('[data-slot="command-empty"]');
+  const empty = root.querySelector("[data-gsxui-command-empty]");
   if (empty) empty.hidden = any;
 
   // Selection follows the ranking: top visible item after every keystroke.

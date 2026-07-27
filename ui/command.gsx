@@ -24,10 +24,8 @@ import (
 // anything else listens for the gsxui:select CustomEvent on the item.
 component Command(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="command"
 		data-gsxui-command
-		class="flex h-full w-full flex-col overflow-hidden rounded-xl bg-popover p-1 text-popover-foreground"
-		{ attrs... }
+		{ withSlot("command", attrs)... }
 	>
 		{ children }
 	</div>
@@ -44,17 +42,16 @@ component Command(children gsx.Node, attrs gsx.Attrs) {
 // data-gsxui-command-dialog on the content is command.js's global-hotkey
 // hook: ⌘K/Ctrl-K toggles the first such dialog on the page.
 component CommandDialog(title string, description string, children gsx.Node, attrs gsx.Attrs) {
-	<Dialog data-slot="command-dialog">
+	<Dialog { withSlot("command-dialog", nil)... }>
 		<DialogContent
 			data-gsxui-command-dialog
-			class="overflow-hidden p-0"
-			{ attrs... }
+			{ withSlot("command-dialog-content", attrs)... }
 		>
-			<DialogHeader class="sr-only">
+			<DialogHeader { withSlot("command-dialog-header", nil)... }>
 				<DialogTitle>{ title |> default("Command Palette") }</DialogTitle>
 				<DialogDescription>{ description |> default("Search for a command to run...") }</DialogDescription>
 			</DialogHeader>
-			<Command class="**:data-[slot=command-input-wrapper]:h-12 [&_[data-slot=command-group-heading]]:px-2 [&_[data-slot=command-group-heading]]:font-medium [&_[data-slot=command-group-heading]]:text-muted-foreground [&_[data-slot=command-group]]:px-2 [&_[data-slot=command-group]:not([hidden])_~[data-slot=command-group]]:pt-0 [&_[data-slot=command-input-wrapper]_svg]:h-5 [&_[data-slot=command-input-wrapper]_svg]:w-5 [&_[data-slot=command-input]]:h-12 [&_[data-slot=command-item]]:px-2 [&_[data-slot=command-item]]:py-3 [&_[data-slot=command-item]_svg]:h-5 [&_[data-slot=command-item]_svg]:w-5">
+			<Command { withSlot("command-dialog-command", nil)... }>
 				{ children }
 			</Command>
 		</DialogContent>
@@ -66,10 +63,9 @@ component CommandDialog(title string, description string, children gsx.Node, att
 // moves selection on ArrowUp/ArrowDown, and activates on Enter, all while
 // focus stays here (aria-activedescendant tracks the selected option).
 component CommandInput(placeholder string, attrs gsx.Attrs) {
-	<div data-slot="command-input-wrapper" class="flex h-9 items-center gap-2 border-b px-3">
-		<icon.Search class="size-4 shrink-0 opacity-50"/>
+	<div data-gsxui-command-input-wrapper { withSlot("command-input-wrapper", nil)... }>
+		<icon.Search/>
 		<input
-			data-slot="command-input"
 			data-gsxui-command-input
 			type="text"
 			role="combobox"
@@ -78,19 +74,16 @@ component CommandInput(placeholder string, attrs gsx.Attrs) {
 			autocomplete="off"
 			spellcheck="false"
 			placeholder={placeholder}
-			class="flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
-			{ attrs... }
+			{ withSlot("command-input", attrs)... }
 		/>
 	</div>
 }
 
 component CommandList(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="command-list"
 		data-gsxui-command-list
 		role="listbox"
-		class="max-h-72 scroll-py-1 overflow-x-hidden overflow-y-auto"
-		{ attrs... }
+		{ withSlot("command-list", attrs)... }
 	>
 		{ children }
 	</div>
@@ -100,7 +93,7 @@ component CommandList(children gsx.Node, attrs gsx.Attrs) {
 // query matches nothing (cmdk's Empty renders conditionally — same net
 // visual, inverted mechanism since there is no VDOM to unmount).
 component CommandEmpty(children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="command-empty" hidden class="py-6 text-center text-sm" { attrs... }>{ children }</div>
+	<div data-gsxui-command-empty hidden { withSlot("command-empty", attrs)... }>{ children }</div>
 }
 
 // CommandGroup's heading is a real child div (slot command-group-heading)
@@ -108,16 +101,16 @@ component CommandEmpty(children gsx.Node, attrs gsx.Attrs) {
 // the classes shadcn applies through the group's arbitrary selectors land
 // on it via the mapped data-slot selectors (see Command's doc comment).
 component CommandGroup(heading string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-slot="command-group" role="group" class="overflow-hidden p-1 text-foreground" { attrs... }>
+	<div data-gsxui-command-group role="group" { withSlot("command-group", attrs)... }>
 		{ if heading != "" {
-			<div data-slot="command-group-heading" class="px-2 py-1.5 text-xs font-medium text-muted-foreground">{ heading }</div>
+			<div data-gsxui-command-group-heading { withSlot("command-group-heading", nil)... }>{ heading }</div>
 		} }
 		{ children }
 	</div>
 }
 
 component CommandSeparator(attrs gsx.Attrs) {
-	<div data-slot="command-separator" role="separator" class="-mx-1 h-px bg-border" { attrs... }></div>
+	<div data-gsxui-command-separator role="separator" { withSlot("command-separator", attrs)... }></div>
 }
 
 // CommandItem is a role="option" div (cmdk's own role), NOT focusable —
@@ -129,20 +122,18 @@ component CommandSeparator(attrs gsx.Attrs) {
 // the same contract as DropdownMenuItem).
 component CommandItem(value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-slot="command-item"
 		data-gsxui-command-item
 		data-value={value}
 		role="option"
 		aria-selected="false"
-		class="relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
-		{ attrs... }
+		{ withSlot("command-item", attrs)... }
 	>
 		{ children }
 	</div>
 }
 
 component CommandShortcut(children gsx.Node, attrs gsx.Attrs) {
-	<span data-slot="command-shortcut" class="ml-auto text-xs tracking-widest text-muted-foreground" { attrs... }>
+	<span { withSlot("command-shortcut", attrs)... }>
 		{ children }
 	</span>
 }
