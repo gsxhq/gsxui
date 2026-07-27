@@ -63,7 +63,8 @@ func cloneComponent(component Component) Component {
 		for axisIndex, axis := range slot.Axes {
 			clone.Slots[slotIndex].Axes[axisIndex].Attribute = axis.Attribute
 			if axis.Values != nil {
-				clone.Slots[slotIndex].Axes[axisIndex].Values = append([]string(nil), axis.Values...)
+				clone.Slots[slotIndex].Axes[axisIndex].Values = make([]string, len(axis.Values))
+				copy(clone.Slots[slotIndex].Axes[axisIndex].Values, axis.Values)
 			}
 		}
 	}

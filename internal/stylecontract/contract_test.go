@@ -147,3 +147,51 @@ func TestAllReturnsDeepSnapshot(t *testing.T) {
 		t.Fatalf("All() returned an aliased nested value: got %#v, want %#v", again, want)
 	}
 }
+
+func TestAllPreservesSliceNilness(t *testing.T) {
+	originalPrimitives := primitiveContracts
+	defer func() { primitiveContracts = originalPrimitives }()
+	primitiveContracts = []Component{
+		{Name: "NilSlots"},
+		{Name: "EmptySlots", Slots: []Slot{}},
+		{
+			Name: "Axes",
+			Slots: []Slot{
+				{Name: "nil-axes"},
+				{Name: "empty-axes", Axes: []Axis{}},
+				{
+					Name: "values",
+					Axes: []Axis{
+						{Attribute: "data-presence"},
+						{Attribute: "data-empty", Values: []string{}},
+					},
+				},
+			},
+		},
+	}
+
+	components := make(map[string]Component)
+	for _, component := range All() {
+		components[component.Name] = component
+	}
+	if components["NilSlots"].Slots != nil {
+		t.Fatalf("nil Slots = %#v, want nil", components["NilSlots"].Slots)
+	}
+	if components["EmptySlots"].Slots == nil {
+		t.Fatal("empty Slots became nil")
+	}
+
+	slots := components["Axes"].Slots
+	if slots[0].Axes != nil {
+		t.Fatalf("nil Axes = %#v, want nil", slots[0].Axes)
+	}
+	if slots[1].Axes == nil {
+		t.Fatal("empty Axes became nil")
+	}
+	if slots[2].Axes[0].Values != nil {
+		t.Fatalf("presence-only Values = %#v, want nil", slots[2].Axes[0].Values)
+	}
+	if slots[2].Axes[1].Values == nil {
+		t.Fatal("empty Values became nil")
+	}
+}
