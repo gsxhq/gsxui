@@ -85,7 +85,6 @@ var menuContracts = []Component{
 			{Name: "combobox-label"},
 			{Name: "combobox-empty"},
 			{Name: "combobox-separator"},
-			{Name: "combobox-value"},
 		},
 	},
 	{

@@ -16,17 +16,22 @@ import (
 // styling (ui.Button variant="outline" size="icon" rounded-full) as a
 // visual stand-in around the fixed goal number.
 //
-// The trigger is a real Button carrying data-gsxui-dialog-trigger — the
-// documented idiom for a styled trigger, no DrawerTrigger wrapper needed
-// (see ui/drawer.gsx's DrawerTrigger doc comment, itself following
-// SheetTrigger's own). The footer's Cancel button is a real Button
+// The trigger is one real Button carrying the drawer trigger style slot plus
+// Dialog's behavior/ARIA contract. The footer's Cancel button is a real Button
 // carrying data-gsxui-dialog-close directly rather than wrapped in
 // DrawerClose, the same button-in-button reasoning as
 // site/examples/sheet/basic.gsx's own Save-changes button.
 component Basic() {
 	<ui.Drawer>
-		<ui.DrawerTrigger>Open plain drawer trigger</ui.DrawerTrigger>
-		<ui.Button variant="outline" data-gsxui-dialog-trigger>Open Drawer</ui.Button>
+		<ui.Button
+			variant="outline"
+			data-gsxui-dialog-trigger
+			data-gsxui-slot="drawer-trigger"
+			aria-haspopup="dialog"
+			aria-expanded="false"
+		>
+			Open Drawer
+		</ui.Button>
 		<ui.DrawerContent direction="">
 			<div class="mx-auto w-full max-w-sm">
 				<ui.DrawerHeader>

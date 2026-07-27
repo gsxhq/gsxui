@@ -169,7 +169,6 @@ func TestComboboxBehaviorPartsHaveDedicatedHooks(t *testing.T) {
 			ui.ComboboxLabel(gsx.Raw("Framework"), nil),
 			ui.ComboboxEmpty(gsx.Raw("Empty"), nil),
 			ui.ComboboxSeparator(nil),
-			ui.ComboboxValue(gsx.Raw("Framework"), nil),
 		),
 		nil,
 	))
@@ -178,7 +177,6 @@ func TestComboboxBehaviorPartsHaveDedicatedHooks(t *testing.T) {
 		`data-gsxui-combobox-label`,
 		`data-gsxui-combobox-separator`,
 		`data-gsxui-combobox-empty`,
-		`data-gsxui-combobox-value`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("want %q\nin: %s", want, got)

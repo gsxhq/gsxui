@@ -19,10 +19,10 @@ import (
 // (registry/new-york-v4/examples/combobox-*.tsx is that older pattern and is
 // NOT this component's demo; the real demos, verified against
 // content/docs/components/base/combobox.mdx, live at apps/v4/examples/base/
-// combobox-*.tsx — see 2026-07-24 tier4 source map `## combobox`). Twelve
+// combobox-*.tsx — see 2026-07-24 tier4 source map `## combobox`). Eleven
 // parts ship here: Combobox, ComboboxInput, ComboboxTrigger, ComboboxClear,
 // ComboboxContent, ComboboxList, ComboboxItem, ComboboxGroup, ComboboxLabel,
-// ComboboxEmpty, ComboboxSeparator, ComboboxValue.
+// ComboboxEmpty, ComboboxSeparator.
 //
 // MECHANISM (open/close + value model, ported from ui/select.gsx/select.js):
 // ComboboxContent rides the same popover machinery as SelectContent —
@@ -582,37 +582,6 @@ func ComboboxSeparator(attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.StyleMerged("", _gsxv10.Style())
 		_gsxgw.Spread(ctx, _gsxv10, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S("></div>")
-		return _gsxgw.Err()
-	})
-}
-
-//line combobox.gsx:358:1
-// ComboboxValue is a plain display slot for the current value/label —
-// used by the "trigger a popup from a button" composition variant
-// (ComboboxTrigger wraps a ui.Button, ComboboxValue supplies its visible
-// text) rather than ComboboxInput's own addon, which reads/writes the
-// input's own .value directly instead. No placeholder param (unlike
-// ui.SelectValue): children is caller-supplied initial content;
-// combobox.js does not touch this element at all in the shipped
-// ComboboxInput composition.
-
-//line combobox.gsx:366:1
-func ComboboxValue(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
-	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-		_gsxgw := _gsxrt.W(_gsxw)
-//line combobox.gsx:367:2
-		_gsxv11 := withSlot("combobox-value", attrs)
-		_gsxgw.S("<span")
-		if !_gsxv11.Has("data-gsxui-combobox-value") {
-			_gsxgw.BoolAttr("data-gsxui-combobox-value", true)
-		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv11.Class())
-		_gsxgw.StyleMerged("", _gsxv11.Style())
-		_gsxgw.Spread(ctx, _gsxv11, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
-		_gsxgw.S(">")
-//line combobox.gsx:367:75
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</span>")
 		return _gsxgw.Err()
 	})
 }

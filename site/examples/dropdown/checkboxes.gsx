@@ -10,7 +10,15 @@ import (
 // gsxui:change on the item.
 component Checkboxes() {
 	<ui.DropdownMenu>
-		<ui.Button variant="outline" data-gsxui-dropdown-trigger>View</ui.Button>
+		<ui.Button
+			variant="outline"
+			data-gsxui-dropdown-trigger
+			data-gsxui-slot="dropdown-menu-trigger"
+			aria-haspopup="menu"
+			aria-expanded="false"
+		>
+			View
+		</ui.Button>
 		<ui.DropdownMenuContent>
 			<ui.DropdownMenuLabel>Appearance</ui.DropdownMenuLabel>
 			<ui.DropdownMenuSeparator/>

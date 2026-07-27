@@ -17,7 +17,6 @@ var frameworks = []struct{ Value, Label string }{
 component Basic() {
 	<ui.Combobox name="framework" value="">
 		<ui.ComboboxInput placeholder="Search framework..." showTrigger class="w-[220px]"/>
-		<ui.ComboboxValue>Choose a framework</ui.ComboboxValue>
 		<ui.ComboboxContent>
 			<ui.ComboboxList>
 				<ui.ComboboxEmpty>No framework found.</ui.ComboboxEmpty>

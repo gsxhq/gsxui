@@ -82,7 +82,15 @@ component (h Home) Page() {
 				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Dialog</h2>
 				<div class="mt-4">
 					<ui.Dialog>
-						<ui.Button variant="outline" data-gsxui-dialog-trigger>Open dialog</ui.Button>
+						<ui.Button
+							variant="outline"
+							data-gsxui-dialog-trigger
+							data-gsxui-slot="dialog-trigger"
+							aria-haspopup="dialog"
+							aria-expanded="false"
+						>
+							Open dialog
+						</ui.Button>
 						<ui.DialogContent>
 							<ui.DialogHeader>
 								<ui.DialogTitle>Edit profile</ui.DialogTitle>

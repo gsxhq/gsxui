@@ -11,10 +11,10 @@ import (
 // (registry/new-york-v4/examples/combobox-*.tsx is that older pattern and is
 // NOT this component's demo; the real demos, verified against
 // content/docs/components/base/combobox.mdx, live at apps/v4/examples/base/
-// combobox-*.tsx — see 2026-07-24 tier4 source map `## combobox`). Twelve
+// combobox-*.tsx — see 2026-07-24 tier4 source map `## combobox`). Eleven
 // parts ship here: Combobox, ComboboxInput, ComboboxTrigger, ComboboxClear,
 // ComboboxContent, ComboboxList, ComboboxItem, ComboboxGroup, ComboboxLabel,
-// ComboboxEmpty, ComboboxSeparator, ComboboxValue.
+// ComboboxEmpty, ComboboxSeparator.
 //
 // MECHANISM (open/close + value model, ported from ui/select.gsx/select.js):
 // ComboboxContent rides the same popover machinery as SelectContent —
@@ -353,16 +353,4 @@ component ComboboxEmpty(children gsx.Node, attrs gsx.Attrs) {
 // SelectSeparator (a decorative rule, not a role="separator").
 component ComboboxSeparator(attrs gsx.Attrs) {
 	<div data-gsxui-combobox-separator aria-hidden="true" { withSlot("combobox-separator", attrs)... }></div>
-}
-
-// ComboboxValue is a plain display slot for the current value/label —
-// used by the "trigger a popup from a button" composition variant
-// (ComboboxTrigger wraps a ui.Button, ComboboxValue supplies its visible
-// text) rather than ComboboxInput's own addon, which reads/writes the
-// input's own .value directly instead. No placeholder param (unlike
-// ui.SelectValue): children is caller-supplied initial content;
-// combobox.js does not touch this element at all in the shipped
-// ComboboxInput composition.
-component ComboboxValue(children gsx.Node, attrs gsx.Attrs) {
-	<span data-gsxui-combobox-value { withSlot("combobox-value", attrs)... }>{ children }</span>
 }

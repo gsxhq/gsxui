@@ -33,29 +33,23 @@ func Basic() _gsxrt.Node {
 //line basic.gsx:19:3
 			_gsxgw.Node(ctx, ui.ComboboxInput("Search framework...", true, false, false, nil, _gsxrt.Attrs{{Key: "class", Value: "w-[220px]"}}))
 //line basic.gsx:20:3
-			_gsxgw.Node(ctx, ui.ComboboxValue(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-				_gsxgw := _gsxrt.W(_gsxw)
-				_gsxgw.S("Choose a framework")
-				return _gsxgw.Err()
-			}), nil))
-//line basic.gsx:21:3
 			_gsxgw.Node(ctx, ui.ComboboxContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:22:4
+//line basic.gsx:21:4
 				_gsxgw.Node(ctx, ui.ComboboxList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:23:5
+//line basic.gsx:22:5
 					_gsxgw.Node(ctx, ui.ComboboxEmpty(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("No framework found.")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:24:5
+//line basic.gsx:23:5
 					for _, f := range frameworks {
-//line basic.gsx:25:6
+//line basic.gsx:24:6
 						_gsxgw.Node(ctx, ui.ComboboxItem(f.Value, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:25:56
+//line basic.gsx:24:56
 							_gsxgw.Text(string(f.Label))
 							return _gsxgw.Err()
 						}), nil))

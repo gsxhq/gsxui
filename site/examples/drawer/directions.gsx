@@ -13,7 +13,16 @@ component Directions() {
 	<div class="flex flex-wrap gap-2">
 		{ for _, dir := range []string{"bottom", "top", "left", "right"} {
 			<ui.Drawer>
-				<ui.Button variant="outline" data-gsxui-dialog-trigger class="capitalize">{ dir }</ui.Button>
+				<ui.Button
+					variant="outline"
+					data-gsxui-dialog-trigger
+					data-gsxui-slot="drawer-trigger"
+					aria-haspopup="dialog"
+					aria-expanded="false"
+					class="capitalize"
+				>
+					{ dir }
+				</ui.Button>
 				<ui.DrawerContent direction={dir}>
 					<ui.DrawerHeader>
 						<ui.DrawerTitle class="capitalize">{ dir } drawer</ui.DrawerTitle>

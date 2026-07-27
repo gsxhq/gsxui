@@ -89,7 +89,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
     "alert-dialog-lifecycle",
     "alert-dialog",
     "/x/alert-dialog/basic",
-    "Open alert dialog",
+    "Show dialog",
     "alert-dialog-trigger",
     "alert-dialog-content",
   );
@@ -97,7 +97,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
     "dialog-lifecycle",
     "dialog",
     "/x/dialog/basic",
-    "Open dialog",
+    "Delete account",
     "dialog-trigger",
     "dialog-content",
   );
@@ -105,7 +105,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
     "drawer-lifecycle",
     "drawer",
     "/x/drawer/basic",
-    "Open plain drawer trigger",
+    "Open Drawer",
     "drawer-trigger",
     "drawer-content",
   );
@@ -113,7 +113,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
     "sheet-lifecycle",
     "sheet",
     "/x/sheet/basic",
-    "Open plain sheet trigger",
+    "Edit Profile",
     "sheet-trigger",
     "sheet-content",
   );

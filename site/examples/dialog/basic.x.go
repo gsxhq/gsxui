@@ -10,9 +10,9 @@ import (
 )
 
 //line basic.gsx:8:1
-// Basic renders a confirm dialog. The trigger is a real Button carrying
-// data-gsxui-dialog-trigger — the documented idiom for a styled trigger,
-// no DialogTrigger wrapper needed (see docs/jsx-parity.md).
+// Basic renders a confirm dialog. One real Button carries both the dialog
+// trigger style slot and the behavior/ARIA contract, so there is no
+// button-in-button wrapper or duplicate control.
 
 //line basic.gsx:11:1
 func Basic() _gsxrt.Node {
@@ -22,30 +22,24 @@ func Basic() _gsxrt.Node {
 		_gsxgw.Node(ctx, ui.Dialog(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:13:3
-			_gsxgw.Node(ctx, ui.DialogTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-				_gsxgw := _gsxrt.W(_gsxw)
-				_gsxgw.S("Open dialog")
-				return _gsxgw.Err()
-			}), nil))
-//line basic.gsx:14:3
 			_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Delete account")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "data-gsxui-dialog-trigger", Value: true}}))
-//line basic.gsx:15:3
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-trigger", Value: true}}, _gsxrt.Attrs{{Key: "data-gsxui-slot", Value: "dialog-trigger"}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
+//line basic.gsx:22:3
 			_gsxgw.Node(ctx, ui.DialogContent(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:16:4
+//line basic.gsx:23:4
 				_gsxgw.Node(ctx, ui.DialogHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:17:5
+//line basic.gsx:24:5
 					_gsxgw.Node(ctx, ui.DialogTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Are you absolutely sure?")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:18:5
+//line basic.gsx:25:5
 					_gsxgw.Node(ctx, ui.DialogDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("This will permanently delete your account.")
@@ -53,16 +47,16 @@ func Basic() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:20:4
+//line basic.gsx:27:4
 				_gsxgw.Node(ctx, ui.DialogFooter(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:21:5
+//line basic.gsx:28:5
 					_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Cancel")
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "data-gsxui-dialog-close", Value: true}}))
-//line basic.gsx:22:5
+//line basic.gsx:29:5
 					_gsxgw.Node(ctx, ui.Button("destructive", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Continue")

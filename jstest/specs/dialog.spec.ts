@@ -40,7 +40,7 @@ test("the proximity trigger requests one targeted open with its stable reason", 
     });
   });
 
-  await page.getByRole("button", { name: "Open dialog", exact: true }).click();
+  await page.getByRole("button", { name: "Delete account", exact: true }).click();
 
   await expect(page.locator(DIALOG)).toHaveJSProperty("open", true);
   expect(await page.evaluate(() => (window as any).__dialogRequests)).toEqual([
@@ -159,7 +159,7 @@ test("a late document listener can cancel both deferred request defaults", async
     });
   });
 
-  await page.getByRole("button", { name: "Open dialog", exact: true }).click();
+  await page.getByRole("button", { name: "Delete account", exact: true }).click();
   await expect(page.locator(DIALOG)).toHaveJSProperty("open", false);
 
   await page.evaluate(() => {

@@ -21,48 +21,40 @@ import (
 // styling (ui.Button variant="outline" size="icon" rounded-full) as a
 // visual stand-in around the fixed goal number.
 //
-// The trigger is a real Button carrying data-gsxui-dialog-trigger — the
-// documented idiom for a styled trigger, no DrawerTrigger wrapper needed
-// (see ui/drawer.gsx's DrawerTrigger doc comment, itself following
-// SheetTrigger's own). The footer's Cancel button is a real Button
+// The trigger is one real Button carrying the drawer trigger style slot plus
+// Dialog's behavior/ARIA contract. The footer's Cancel button is a real Button
 // carrying data-gsxui-dialog-close directly rather than wrapped in
 // DrawerClose, the same button-in-button reasoning as
 // site/examples/sheet/basic.gsx's own Save-changes button.
 
-//line basic.gsx:26:1
+//line basic.gsx:24:1
 func Basic() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:27:2
+//line basic.gsx:25:2
 		_gsxgw.Node(ctx, ui.Drawer(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:28:3
-			_gsxgw.Node(ctx, ui.DrawerTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-				_gsxgw := _gsxrt.W(_gsxw)
-				_gsxgw.S("Open plain drawer trigger")
-				return _gsxgw.Err()
-			}), nil))
-//line basic.gsx:29:3
+//line basic.gsx:26:3
 			_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Open Drawer")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "data-gsxui-dialog-trigger", Value: true}}))
-//line basic.gsx:30:3
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-trigger", Value: true}}, _gsxrt.Attrs{{Key: "data-gsxui-slot", Value: "drawer-trigger"}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
+//line basic.gsx:35:3
 			_gsxgw.Node(ctx, ui.DrawerContent("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:31:4
+//line basic.gsx:36:4
 				_gsxgw.S("<div class=\"mx-auto w-full max-w-sm\">")
-//line basic.gsx:32:5
+//line basic.gsx:37:5
 				_gsxgw.Node(ctx, ui.DrawerHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:33:6
+//line basic.gsx:38:6
 					_gsxgw.Node(ctx, ui.DrawerTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Move Goal")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:34:6
+//line basic.gsx:39:6
 					_gsxgw.Node(ctx, ui.DrawerDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Set your daily activity goal.")
@@ -70,75 +62,75 @@ func Basic() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:36:5
+//line basic.gsx:41:5
 				_gsxgw.Node(ctx, ui.DrawerClose(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Close drawer")
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:37:5
+//line basic.gsx:42:5
 				_gsxgw.S("<div class=\"p-4 pb-0\">")
-//line basic.gsx:38:6
+//line basic.gsx:43:6
 				_gsxgw.S("<div class=\"flex items-center justify-center gap-2\">")
-//line basic.gsx:39:7
+//line basic.gsx:44:7
 				_gsxgw.Node(ctx, ui.Button("outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:40:8
+//line basic.gsx:45:8
 					_gsxgw.Node(ctx, icon.Minus())
 					return _gsxgw.Err()
 				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: "size-8 shrink-0 rounded-full"}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Decrease goal"}})))
-//line basic.gsx:42:7
+//line basic.gsx:47:7
 				_gsxgw.S("<div class=\"flex-1 text-center\">")
-//line basic.gsx:43:8
+//line basic.gsx:48:8
 				_gsxgw.S("<div class=\"text-7xl font-bold tracking-tighter\">350</div>")
-//line basic.gsx:44:8
+//line basic.gsx:49:8
 				_gsxgw.S("<div class=\"text-[0.70rem] text-muted-foreground uppercase\">Calories/day</div></div>")
-//line basic.gsx:46:7
+//line basic.gsx:51:7
 				_gsxgw.Node(ctx, ui.Button("outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:47:8
+//line basic.gsx:52:8
 					_gsxgw.Node(ctx, icon.Plus())
 					return _gsxgw.Err()
 				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: "size-8 shrink-0 rounded-full"}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Increase goal"}})))
 				_gsxgw.S("</div>")
-//line basic.gsx:50:6
+//line basic.gsx:55:6
 				_gsxgw.S("<div class=\"mt-3 flex h-[120px] items-end gap-1\">")
-//line basic.gsx:51:7
-				_gsxgw.S("<div class=\"h-[40%] flex-1 rounded-sm bg-foreground/20\"></div>")
-//line basic.gsx:52:7
-				_gsxgw.S("<div class=\"h-[65%] flex-1 rounded-sm bg-foreground/20\"></div>")
-//line basic.gsx:53:7
-				_gsxgw.S("<div class=\"h-[45%] flex-1 rounded-sm bg-foreground/20\"></div>")
-//line basic.gsx:54:7
-				_gsxgw.S("<div class=\"h-[80%] flex-1 rounded-sm bg-foreground\"></div>")
-//line basic.gsx:55:7
-				_gsxgw.S("<div class=\"h-[55%] flex-1 rounded-sm bg-foreground/20\"></div>")
 //line basic.gsx:56:7
-				_gsxgw.S("<div class=\"h-[70%] flex-1 rounded-sm bg-foreground/20\"></div>")
+				_gsxgw.S("<div class=\"h-[40%] flex-1 rounded-sm bg-foreground/20\"></div>")
 //line basic.gsx:57:7
-				_gsxgw.S("<div class=\"h-[35%] flex-1 rounded-sm bg-foreground/20\"></div>")
+				_gsxgw.S("<div class=\"h-[65%] flex-1 rounded-sm bg-foreground/20\"></div>")
 //line basic.gsx:58:7
-				_gsxgw.S("<div class=\"h-[60%] flex-1 rounded-sm bg-foreground/20\"></div>")
+				_gsxgw.S("<div class=\"h-[45%] flex-1 rounded-sm bg-foreground/20\"></div>")
 //line basic.gsx:59:7
-				_gsxgw.S("<div class=\"h-[50%] flex-1 rounded-sm bg-foreground/20\"></div>")
+				_gsxgw.S("<div class=\"h-[80%] flex-1 rounded-sm bg-foreground\"></div>")
 //line basic.gsx:60:7
-				_gsxgw.S("<div class=\"h-[75%] flex-1 rounded-sm bg-foreground/20\"></div>")
+				_gsxgw.S("<div class=\"h-[55%] flex-1 rounded-sm bg-foreground/20\"></div>")
 //line basic.gsx:61:7
-				_gsxgw.S("<div class=\"h-[42%] flex-1 rounded-sm bg-foreground/20\"></div>")
+				_gsxgw.S("<div class=\"h-[70%] flex-1 rounded-sm bg-foreground/20\"></div>")
 //line basic.gsx:62:7
-				_gsxgw.S("<div class=\"h-[58%] flex-1 rounded-sm bg-foreground/20\"></div>")
+				_gsxgw.S("<div class=\"h-[35%] flex-1 rounded-sm bg-foreground/20\"></div>")
 //line basic.gsx:63:7
+				_gsxgw.S("<div class=\"h-[60%] flex-1 rounded-sm bg-foreground/20\"></div>")
+//line basic.gsx:64:7
+				_gsxgw.S("<div class=\"h-[50%] flex-1 rounded-sm bg-foreground/20\"></div>")
+//line basic.gsx:65:7
+				_gsxgw.S("<div class=\"h-[75%] flex-1 rounded-sm bg-foreground/20\"></div>")
+//line basic.gsx:66:7
+				_gsxgw.S("<div class=\"h-[42%] flex-1 rounded-sm bg-foreground/20\"></div>")
+//line basic.gsx:67:7
+				_gsxgw.S("<div class=\"h-[58%] flex-1 rounded-sm bg-foreground/20\"></div>")
+//line basic.gsx:68:7
 				_gsxgw.S("<div class=\"h-[38%] flex-1 rounded-sm bg-foreground/20\"></div></div></div>")
-//line basic.gsx:66:5
+//line basic.gsx:71:5
 				_gsxgw.Node(ctx, ui.DrawerFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:67:6
+//line basic.gsx:72:6
 					_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Submit")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:68:6
+//line basic.gsx:73:6
 					_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Cancel")

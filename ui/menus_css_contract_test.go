@@ -112,7 +112,6 @@ func TestComboboxCSSOnlyContract(t *testing.T) {
 						),
 						ui.ComboboxEmpty(gsx.Raw("Empty"), nil),
 						ui.ComboboxSeparator(nil),
-						ui.ComboboxValue(gsx.Raw("Next"), nil),
 					),
 					nil,
 				),
@@ -137,7 +136,6 @@ func TestComboboxCSSOnlyContract(t *testing.T) {
 		"combobox-item-indicator",
 		"combobox-empty",
 		"combobox-separator",
-		"combobox-value",
 	)
 	for _, hook := range []string{
 		`data-gsxui-combobox-group`,
@@ -145,7 +143,6 @@ func TestComboboxCSSOnlyContract(t *testing.T) {
 		`data-gsxui-combobox-item`,
 		`data-gsxui-combobox-empty`,
 		`data-gsxui-combobox-separator`,
-		`data-gsxui-combobox-value`,
 	} {
 		if !strings.Contains(got, hook) {
 			t.Errorf("missing Combobox behavior hook %q\nin: %s", hook, got)

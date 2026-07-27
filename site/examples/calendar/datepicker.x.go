@@ -57,24 +57,24 @@ func DatePicker() _gsxrt.Node {
 //line datepicker.gsx:42:4
 			_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line datepicker.gsx:47:5
+//line datepicker.gsx:49:5
 				_gsxgw.Node(ctx, icon.Calendar())
-//line datepicker.gsx:48:5
+//line datepicker.gsx:50:5
 				_gsxgw.S("<span")
 				_gsxgw.BoolAttr("data-datepicker-label", true)
 				_gsxgw.S(">Pick a date</span>")
 				return _gsxgw.Err()
-			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-popover-trigger", Value: true}}, _gsxrt.Attrs{{Key: "class", Value: "w-[240px] justify-start text-left font-normal text-muted-foreground"}})))
-//line datepicker.gsx:50:4
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-popover-trigger", Value: true}}, _gsxrt.Attrs{{Key: "data-gsxui-slot", Value: "popover-trigger"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}}, _gsxrt.Attrs{{Key: "class", Value: "w-[240px] justify-start text-left font-normal text-muted-foreground"}})))
+//line datepicker.gsx:52:4
 			_gsxgw.Node(ctx, ui.PopoverContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line datepicker.gsx:51:5
+//line datepicker.gsx:53:5
 				_gsxgw.Node(ctx, ui.Calendar("single", DatePickerDefaultMonth, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", _gsxrt.Attrs{{Key: "id", Value: "datepicker-calendar"}}))
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "w-auto p-0"}}))
 			return _gsxgw.Err()
 		}), nil))
-//line datepicker.gsx:61:3
+//line datepicker.gsx:63:3
 		_gsxgw.S("<script")
 		_gsxgw.Nonce(ctx)
 		_gsxgw.S(">\ndocument.addEventListener(\"gsxui:change\", (e) => {\n\tif (e.target.id !== \"datepicker-calendar\") return;\n\tconst button = e.target.closest(\"[data-gsxui-popover]\")?.querySelector(\"[data-gsxui-popover-trigger]\");\n\tconst label = button?.querySelector(\"[data-datepicker-label]\");\n\tif (!label) return;\n\tconst picked = e.detail.selected[0];\n\tlabel.textContent = picked ?? \"Pick a date\";\n\tbutton.classList.toggle(\"text-muted-foreground\", !picked);\n});\n</script></div>")

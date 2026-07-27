@@ -9,7 +9,15 @@ import (
 // and the click handler (see ui/dropdown/dropdown.js).
 component Destructive() {
 	<ui.DropdownMenu>
-		<ui.Button variant="outline" data-gsxui-dropdown-trigger>Manage</ui.Button>
+		<ui.Button
+			variant="outline"
+			data-gsxui-dropdown-trigger
+			data-gsxui-slot="dropdown-menu-trigger"
+			aria-haspopup="menu"
+			aria-expanded="false"
+		>
+			Manage
+		</ui.Button>
 		<ui.DropdownMenuContent>
 			<ui.DropdownMenuItem>Rename</ui.DropdownMenuItem>
 			<ui.DropdownMenuItem aria-disabled="true" data-disabled="true">Archive (unavailable)</ui.DropdownMenuItem>

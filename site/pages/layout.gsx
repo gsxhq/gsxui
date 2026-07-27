@@ -100,8 +100,10 @@ component Layout(title string, active string, children gsx.Node) {
 						<ui.Dialog>
 							<button
 								data-gsxui-dialog-trigger
+								data-gsxui-slot="dialog-trigger"
 								type="button"
 								aria-haspopup="dialog"
+								aria-expanded="false"
 								class="hidden h-8 w-56 items-center gap-2 rounded-lg border bg-muted/50 px-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted sm:inline-flex"
 							>
 								<icon.Search class="size-4"/>

@@ -5,10 +5,20 @@ import (
 	"github.com/gsxhq/gsxui/ui"
 )
 
-// Basic renders a menu with a label, separator, and plain items.
+// Basic renders a menu with a label, separator, and plain items. Its one
+// trigger Button carries both Button styling and DropdownMenu's trigger
+// behavior/state contract.
 component Basic() {
 	<ui.DropdownMenu>
-		<ui.DropdownMenuTrigger>Options</ui.DropdownMenuTrigger>
+		<ui.Button
+			variant="outline"
+			data-gsxui-dropdown-trigger
+			data-gsxui-slot="dropdown-menu-trigger"
+			aria-haspopup="menu"
+			aria-expanded="false"
+		>
+			Options
+		</ui.Button>
 		<ui.DropdownMenuContent>
 			<ui.DropdownMenuGroup>
 			<ui.DropdownMenuLabel>My Account</ui.DropdownMenuLabel>
