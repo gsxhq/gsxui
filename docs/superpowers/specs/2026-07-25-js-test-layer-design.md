@@ -192,10 +192,10 @@ against the reverted fix:
 
 **No global animation disabling.** The obvious move — inject
 `* { transition: none !important }` for determinism — is wrong here.
-`dialog.js` and `sonner.js` wait on `transitionend` with a 600ms fallback
-cap; with transitions off, `transitionend` never fires and both fall through
-to the cap. That makes the suite slower and, worse, means a real
-transition-timing bug can no longer be observed.
+`dialog.js` awaits finite own Web Animations, while `sonner.js` waits on
+`transitionend` with a 600ms fallback cap. With animations off, dialog loses
+the exit boundary under test and Sonner falls through to its cap. That hides
+real timing bugs and makes the suite slower.
 
 Playwright's retrying assertions handle the waiting instead. Tests assert on
 settled state and let the runner poll.

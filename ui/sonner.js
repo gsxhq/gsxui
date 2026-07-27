@@ -31,7 +31,7 @@ const MAX_VISIBLE = 3; // sonner's VISIBLE_TOASTS_AMOUNT — 4th+ is queued
 const EXPAND_GAP = 14; // px between toasts when the stack is hover-expanded
 const COLLAPSE_PEEK = 16; // px each stacked toast peeks above the front when collapsed
 const SCALE_STEP = 0.05; // scale reduction per stack level when collapsed
-const REMOVE_CAP = 600; // ms fallback if transitionend never fires (dialog.js's cap idea)
+const REMOVE_CAP = 600; // ms fallback if transitionend never fires
 const HOVER_LEAVE_MS = 80; // debounce so crossing a gap between toasts doesn't collapse
 // Closed (enter/exit) visual state — the discrete-transition start/end point
 // the CSS transition on the <li> animates to/from (docs/jsx-parity.md
@@ -516,7 +516,7 @@ function dismiss(id) {
 
   // Remove after the exit transition, capped so a backgrounded tab (frozen
   // transition clock) or a missing transitionend still cleans up — the same
-  // race-against-a-hard-cap idea as dialog.js's requestClose.
+  // hard-cap strategy, unlike dialog.js's finite-own-animation completion.
   rec.removeTimer = setTimeout(() => finalize(rec), REMOVE_CAP);
   el.addEventListener(
     "transitionend",
