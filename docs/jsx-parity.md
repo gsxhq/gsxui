@@ -1125,23 +1125,29 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   (the Go component; the templates and every `ui.Toast` call render it),
   never a JS copy. Pinned by the `TestSonner*` render tests and the real
   browser lifecycle probes in `jstest/specs/sonner.spec.ts`.
-- ADOPTION MECHANISM (this is what serves server-driven flashes): a
-  `MutationObserver` on the `<ol>` adopts ANY inserted
-  `li[data-gsxui-toast]`
-  not already owned by a record — assigns an id, reads `data-type` and
-  optional `data-duration` (default `4000ms`, `loading` = `Infinity`), wires
-  close/action/cancel + hover, and runs the enter animation. Rows present at
-  module init (full-page-load flashes drained server-side into the `<ol>`)
-  are adopted the same way at startup. Consequence: **HTMX out-of-band swaps
+- ADOPTION MECHANISM (this is what serves server-driven flashes): one
+  document-level `MutationObserver` detects Toaster region replacement
+  without polling, while one separately rebound region observer adopts every
+  `li[data-gsxui-toast]` in the active region. Binding a region reconciles
+  rows already present; subtree observation handles direct rows, rows inside
+  an inserted wrapper/fragment, and descendants inserted into a wrapper
+  later. Adoption assigns an id, reads `data-type` and optional
+  `data-duration` (default `4000ms`, `loading` = `Infinity`), wires
+  close/action/cancel + hover, and runs the enter animation. Consequence:
+  **HTMX out-of-band swaps
   (`hx-swap-oob="beforeend:#gsxui-toaster"`), HTMX partial appends, and
-  SSE-driven inserts all work with ZERO HTMX-specific code** — the observer
-  is the single adoption path and it only cares that a toast `<li>` appeared
-  in the region. This is the one-viewport-per-page server-flash model (a
+  SSE-driven inserts all work with ZERO HTMX-specific code** — adoption only
+  cares that a toast `<li>` appeared in the current region. This is the
+  one-viewport-per-page server-flash model (a
   fixed `ui.Toaster` mounted once, appends flowing in from the server on full
-  loads and partials alike). Idempotency: imperative rows are marked in a
-  `WeakSet` before insertion, so the observer never double-adopts a row
-  `toast()` just built. The `<ol>` carries a stable `id="gsxui-toaster"`
-  (caller-overridable via attrs) as the OOB/partial target.
+  loads and partials alike). Explicit element-to-record ownership makes
+  imperative insertion, reconciliation, and DOM moves idempotent. Rebinding
+  disconnects the old region observer, aborts its record listeners, clears
+  timers/removal caps, removes stale targets, and adopts the replacement's
+  rows once. A tracked fallback yields to a later server region by object
+  identity, without adding a private DOM marker. The `<ol>` carries a stable
+  `id="gsxui-toaster"` (caller-overridable via attrs) as the OOB/partial
+  target.
 - SYNTHESIZED STYLE (no Tailwind source upstream — the map IS the spec):
   shadcn's own `sonner.tsx` renders nothing but a re-themed `<Sonner>`
   passthrough; the toast library owns 100% of the toast DOM and ships its
@@ -1198,9 +1204,11 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   static/flash render.
 - STACKING/TIMERS (fresh design, no source to port): a plain array of toast
   records (`{id, el, type, duration, remaining, timer, startedAt, onAction,
-  onCancel}`), NOT
-  sonner's own CSS-custom-property machine (we ship fixed Tailwind classes,
-  not a themeable third-party stylesheet). At most `MAX_VISIBLE=3` show
+  onCancel, controller, removeTimer}`) plus an explicit element-to-record
+  ownership map, NOT sonner's own CSS-custom-property machine. Static
+  presentation is themeable CSS through the slots above; JavaScript owns only
+  live lifecycle geometry/state through inline `transform`, `opacity`,
+  `z-index`, and `pointer-events`. At most `MAX_VISIBLE=3` show
   collapsed; each older toast peeks `COLLAPSE_PEEK=16px` up and shrinks
   `SCALE_STEP=0.05` per level via an inline `transform` recomputed per
   layout (`origin-bottom` keeps bottoms aligned, descending `z-index` paints

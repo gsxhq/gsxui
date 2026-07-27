@@ -43,40 +43,164 @@ const CLOSED_TRANSFORM = "translateY(20px) scale(0.9)";
 // --- State -----------------------------------------------------------------
 // A plain array of toast records (oldest first, newest last = the front),
 // NOT sonner's CSS-custom-property machine — we recompute the
-// scale/translate stack per toast via inline style. A
-// WeakSet marks every <li> already owned by a record, so the observer never
-// double-adopts a row the imperative API just inserted.
+// scale/translate stack per toast via inline style.
+// The record map is the ownership boundary for every wired card, including a
+// card in its exit transition. Region replacement explicitly disposes these
+// records, which is what lets timers, listeners, and detached targets be
+// reconciled instead of leaking behind a WeakSet marker.
 const toasts = []; // { id, el, type, duration, remaining, timer, startedAt, onAction, onCancel }
-const registered = new WeakSet();
+const records = new Map();
 let uid = 0;
 let expanded = false; // hover-expands the stack AND pauses every timer
 let leaveTimer = null;
+let regionEl = null;
+let fallbackSectionEl = null;
+let fallbackRegionEl = null;
+
+const regionObserver =
+  typeof MutationObserver !== "undefined"
+    ? new MutationObserver(handleRegionMutations)
+    : null;
+const documentObserver =
+  typeof MutationObserver !== "undefined"
+    ? new MutationObserver(handleDocumentMutations)
+    : null;
 
 // --- Toaster region --------------------------------------------------------
-// Uses ui.Toaster's server-rendered region if present; otherwise builds an
-// empty fallback region. The fallback does NOT rescue the imperative API —
-// toast() needs the per-type <template>s only ui.Toaster ships (build()
-// returns null without them and show() no-ops), so a page firing toast()
-// must mount <ui.Toaster/>. What the fallback DOES back is the adoption
-// path: it carries id="gsxui-toaster", so a server-side OOB/partial append
-// can still land and be adopted on a page without a mounted Toaster.
-let olEl = null;
-function ol() {
-  if (olEl && olEl.isConnected) return olEl;
-  olEl = document.querySelector("[data-gsxui-toaster]");
-  if (!olEl) {
-    const section = document.createElement("section");
-    section.setAttribute("aria-label", "Notifications");
-    section.tabIndex = -1;
-    olEl = document.createElement("ol");
-    olEl.dataset.gsxuiSlot = "toaster";
-    olEl.setAttribute("data-gsxui-toaster", "");
-    olEl.id = "gsxui-toaster";
-    section.appendChild(olEl);
-    document.body.appendChild(section);
-    if (observer) observer.observe(olEl, { childList: true });
+// One document observer discovers region replacement. One region observer is
+// rebound to exactly one current viewport and owns row adoption. A fallback
+// is tracked by object identity, so a later server viewport can replace it
+// without adding a private DOM marker or guessing from markup.
+function createFallbackRegion() {
+  fallbackSectionEl = document.createElement("section");
+  fallbackSectionEl.setAttribute("aria-label", "Notifications");
+  fallbackSectionEl.tabIndex = -1;
+  fallbackRegionEl = document.createElement("ol");
+  fallbackRegionEl.dataset.gsxuiSlot = "toaster";
+  fallbackRegionEl.setAttribute("data-gsxui-toaster", "");
+  fallbackRegionEl.id = "gsxui-toaster";
+  fallbackSectionEl.appendChild(fallbackRegionEl);
+  document.body.appendChild(fallbackSectionEl);
+  return fallbackRegionEl;
+}
+
+function desiredRegion() {
+  if (regionEl && regionEl.isConnected) {
+    if (regionEl !== fallbackRegionEl) return regionEl;
+    const serverRegion = [
+      ...document.querySelectorAll("[data-gsxui-toaster]"),
+    ].find((candidate) => candidate !== fallbackRegionEl);
+    return serverRegion || regionEl;
   }
-  return olEl;
+
+  const serverRegion = [
+    ...document.querySelectorAll("[data-gsxui-toaster]"),
+  ].find((candidate) => candidate !== fallbackRegionEl);
+  if (serverRegion) return serverRegion;
+  if (fallbackRegionEl && fallbackRegionEl.isConnected) {
+    return fallbackRegionEl;
+  }
+  return createFallbackRegion();
+}
+
+function ensureRegion() {
+  const next = desiredRegion();
+  if (next !== regionEl) bindRegion(next);
+  return regionEl;
+}
+
+function ol() {
+  return ensureRegion();
+}
+
+function disposeRecord(rec, removeTarget) {
+  pauseTimer(rec);
+  if (rec.removeTimer) {
+    clearTimeout(rec.removeTimer);
+    rec.removeTimer = null;
+  }
+  rec.controller.abort();
+  const index = toasts.indexOf(rec);
+  if (index >= 0) toasts.splice(index, 1);
+  records.delete(rec.el);
+  if (removeTarget && rec.el.parentNode) rec.el.remove();
+}
+
+function reconcileRows(root) {
+  if (root.nodeType !== 1) return;
+  if (root.matches("li[data-gsxui-toast]")) adopt(root);
+  root.querySelectorAll("li[data-gsxui-toast]").forEach((row) => adopt(row));
+}
+
+function bindRegion(next) {
+  const previous = regionEl;
+  regionObserver?.disconnect();
+
+  if (leaveTimer) {
+    clearTimeout(leaveTimer);
+    leaveTimer = null;
+  }
+  expanded = false;
+
+  // All records belonged to the previous viewport. If a row was physically
+  // moved into the replacement before this callback, keep its DOM but release
+  // its old ownership; reconciliation below will wire it once for the new
+  // viewport. Every other stale target is removed with its record.
+  for (const rec of [...records.values()]) {
+    disposeRecord(rec, !next.contains(rec.el));
+  }
+
+  regionEl = next;
+  if (previous === fallbackRegionEl && next !== fallbackRegionEl) {
+    const fallbackSection = fallbackSectionEl;
+    fallbackSectionEl = null;
+    fallbackRegionEl = null;
+    fallbackSection?.remove();
+  }
+
+  regionObserver?.observe(regionEl, { childList: true, subtree: true });
+  reconcileRows(regionEl);
+  refresh();
+}
+
+function handleRegionMutations(mutations) {
+  for (const mutation of mutations) {
+    for (const node of mutation.addedNodes) reconcileRows(node);
+  }
+
+  // A server may remove or move a row without dismissing it. Mutation records
+  // are delivered after the whole DOM operation, so a row moved elsewhere
+  // inside the current viewport remains owned while a genuinely detached row
+  // is disposed.
+  let disposed = false;
+  for (const rec of [...records.values()]) {
+    if (!regionEl?.contains(rec.el)) {
+      disposeRecord(rec, false);
+      disposed = true;
+    }
+  }
+  if (disposed) refresh();
+}
+
+function handleDocumentMutations(mutations) {
+  if (!regionEl?.isConnected) {
+    ensureRegion();
+    return;
+  }
+  if (regionEl !== fallbackRegionEl) return;
+
+  for (const mutation of mutations) {
+    for (const node of mutation.addedNodes) {
+      if (
+        node.nodeType === 1 &&
+        (node.matches("[data-gsxui-toaster]") ||
+          node.querySelector("[data-gsxui-toaster]"))
+      ) {
+        ensureRegion();
+        return;
+      }
+    }
+  }
 }
 
 // --- Template clone --------------------------------------------------------
@@ -156,28 +280,47 @@ function build(rec, opts) {
 // dismiss). Hover any toast → expand the whole stack + pause every timer;
 // leave → collapse + resume (debounced so crossing a gap doesn't flicker).
 function wire(el, rec) {
+  const listenerOptions = { signal: rec.controller.signal };
   const close = el.querySelector("[data-gsxui-toast-close]");
-  if (close) close.addEventListener("click", () => dismiss(rec.id));
+  if (close) {
+    close.addEventListener("click", () => dismiss(rec.id), listenerOptions);
+  }
 
   const actionBtn = el.querySelector("[data-gsxui-toast-action]");
   if (actionBtn) {
-    actionBtn.addEventListener("click", () => {
-      emit(el, "gsxui:toast-action", { id: rec.id });
-      if (typeof rec.onAction === "function") rec.onAction();
-      dismiss(rec.id);
-    });
+    actionBtn.addEventListener(
+      "click",
+      () => {
+        emit(el, "gsxui:toast-action", { id: rec.id });
+        if (typeof rec.onAction === "function") rec.onAction();
+        dismiss(rec.id);
+      },
+      listenerOptions,
+    );
   }
 
   const cancelBtn = el.querySelector("[data-gsxui-toast-cancel]");
   if (cancelBtn) {
-    cancelBtn.addEventListener("click", () => {
-      if (typeof rec.onCancel === "function") rec.onCancel();
-      dismiss(rec.id);
-    });
+    cancelBtn.addEventListener(
+      "click",
+      () => {
+        if (typeof rec.onCancel === "function") rec.onCancel();
+        dismiss(rec.id);
+      },
+      listenerOptions,
+    );
   }
 
-  el.addEventListener("pointerenter", () => setExpanded(true));
-  el.addEventListener("pointerleave", () => setExpanded(false));
+  el.addEventListener(
+    "pointerenter",
+    () => setExpanded(true),
+    listenerOptions,
+  );
+  el.addEventListener(
+    "pointerleave",
+    () => setExpanded(false),
+    listenerOptions,
+  );
 }
 
 // Enter: stamp the closed visual state, force one frame so the transition has
@@ -234,7 +377,10 @@ function layout() {
 function startTimer(rec) {
   if (rec.timer || rec.duration === Infinity || rec.remaining <= 0) return;
   rec.startedAt = Date.now();
-  rec.timer = setTimeout(() => dismiss(rec.id), rec.remaining);
+  rec.timer = setTimeout(() => {
+    rec.timer = null;
+    dismiss(rec.id);
+  }, rec.remaining);
 }
 function pauseTimer(rec) {
   if (!rec.timer) return;
@@ -296,11 +442,13 @@ function show(opts) {
     startedAt: 0,
     onAction: undefined,
     onCancel: undefined,
+    controller: new AbortController(),
+    removeTimer: null,
   };
   rec.remaining = rec.duration;
   rec.el = build(rec, opts);
   if (!rec.el) return rec.id; // ui.Toaster (and its templates) not mounted
-  registered.add(rec.el); // mark BEFORE insertion so the observer skips it
+  records.set(rec.el, rec); // own BEFORE insertion so the observer skips it
   toasts.push(rec);
   wire(rec.el, rec);
   ol().appendChild(rec.el);
@@ -312,10 +460,10 @@ function show(opts) {
 // the same lifecycle as an imperative one: assign an id, read data-type and
 // optional data-duration (loading defaults to no auto-dismiss), wire the
 // interactive parts, run the enter animation, and register it. Idempotent —
-// a row already owned by a record is skipped (the imperative path marks its
-// own rows before insertion).
+// a row already owned by a record is skipped (the imperative path records
+// its own rows before insertion).
 function adopt(el) {
-  if (registered.has(el)) return;
+  if (records.has(el)) return;
   const type = el.dataset.type || "default";
   let duration;
   const durAttr = el.dataset.duration;
@@ -335,16 +483,18 @@ function adopt(el) {
     startedAt: 0,
     onAction: undefined,
     onCancel: undefined,
+    controller: new AbortController(),
+    removeTimer: null,
   };
-  registered.add(el);
+  records.set(el, rec);
   toasts.push(rec);
   wire(el, rec);
   enter(el);
   return rec.id;
 }
 
-function finalize(el) {
-  if (el.parentNode) el.remove();
+function finalize(rec) {
+  disposeRecord(rec, true);
   refresh();
 }
 
@@ -364,15 +514,14 @@ function dismiss(id) {
   // Remove after the exit transition, capped so a backgrounded tab (frozen
   // transition clock) or a missing transitionend still cleans up — the same
   // race-against-a-hard-cap idea as dialog.js's requestClose.
-  const cap = setTimeout(() => finalize(el), REMOVE_CAP);
+  rec.removeTimer = setTimeout(() => finalize(rec), REMOVE_CAP);
   el.addEventListener(
     "transitionend",
     (e) => {
       if (e.target !== el) return;
-      clearTimeout(cap);
-      finalize(el);
+      finalize(rec);
     },
-    { once: true },
+    { once: true, signal: rec.controller.signal },
   );
 }
 
@@ -456,35 +605,17 @@ on("click", "[data-gsxui-toast]", (_event, el) => {
 });
 
 // --- Server-flash adoption -------------------------------------------------
-// A MutationObserver on the <ol> adopts any externally-inserted toast row
-// (server full-load flash, HTMX OOB/partial append, SSE insert). Rows the
-// imperative API inserts are pre-marked in `registered`, so they are never
-// double-adopted. Rows already present at module init (full-page-load
-// flashes drained server-side into the <ol>) are adopted once at startup.
-const observer =
-  typeof MutationObserver !== "undefined"
-    ? new MutationObserver((mutations) => {
-        for (const m of mutations) {
-          for (const node of m.addedNodes) {
-            if (
-              node.nodeType === 1 &&
-              node.matches &&
-              node.matches("li[data-gsxui-toast]") &&
-              !registered.has(node)
-            ) {
-              adopt(node);
-            }
-          }
-        }
-      })
-    : null;
-
+// The document observer detects viewport replacement without polling. Binding
+// the viewport reconciles preexisting rows, while the subtree region observer
+// adopts direct rows, rows inside inserted wrappers/fragments, and descendants
+// added to an existing wrapper later. Explicit record ownership makes both
+// paths idempotent.
 function init() {
-  const region = ol();
-  if (observer) observer.observe(region, { childList: true });
-  region.querySelectorAll("li[data-gsxui-toast]").forEach((el) => {
-    if (!registered.has(el)) adopt(el);
+  documentObserver?.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
   });
+  ensureRegion();
 }
 
 if (typeof document !== "undefined") {

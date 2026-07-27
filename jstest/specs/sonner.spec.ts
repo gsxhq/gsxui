@@ -137,6 +137,247 @@ test("server rows are adopted through li[data-gsxui-toast]", async ({ page }) =>
   });
 });
 
+test("region replacement reconciles nested adoption without duplicate ownership", async ({
+  page,
+}) => {
+  await page.goto(route);
+  await page.evaluate(() => {
+    const nativeSetTimeout = window.setTimeout.bind(window);
+    const nativeClearTimeout = window.clearTimeout.bind(window);
+    const active = new Set<number>();
+    const removalCaps = new Set<number>();
+    let created = 0;
+    window.setTimeout = ((handler: TimerHandler, timeout?: number, ...args: unknown[]) => {
+      const id = nativeSetTimeout(handler, timeout, ...args);
+      if (timeout != null && timeout >= 59_000) {
+        active.add(id);
+        created++;
+      }
+      if (timeout === 600) removalCaps.add(id);
+      return id;
+    }) as typeof window.setTimeout;
+    window.clearTimeout = ((id?: number) => {
+      if (id != null) {
+        active.delete(id);
+        removalCaps.delete(id);
+      }
+      nativeClearTimeout(id);
+    }) as typeof window.clearTimeout;
+    (window as any).__sonnerTimerProbe = {
+      active,
+      removalCaps,
+      get created() {
+        return created;
+      },
+    };
+
+    const oldSection = document.querySelector<HTMLElement>(
+      '[aria-label="Notifications"]',
+    )!;
+    const templates = [...oldSection.querySelectorAll("template")];
+    for (const template of templates) document.body.append(template);
+
+    const clone = (label: string) => {
+      const template = document.querySelector<HTMLTemplateElement>(
+        'template[data-gsxui-toast-template="default"]',
+      )!;
+      const row = template.content.firstElementChild!.cloneNode(true) as HTMLElement;
+      row.dataset.duration = "60000";
+      row.dataset.lifecycleProbe = label;
+      row.querySelector("[data-gsxui-toast-title]")!.textContent = label;
+      return row;
+    };
+
+    const section = document.createElement("section");
+    section.setAttribute("aria-label", "Notifications");
+    section.tabIndex = -1;
+    const region = document.createElement("ol");
+    region.id = "gsxui-toaster";
+    region.dataset.gsxuiSlot = "toaster";
+    region.setAttribute("data-gsxui-toaster", "");
+    region.append(clone("preexisting"));
+    section.append(region);
+    oldSection.replaceWith(section);
+
+    (window as any).__sonnerLifecycleProbe = {
+      clone,
+      oldSection,
+      section,
+      region,
+      rows: [] as HTMLElement[],
+      actionEvents: 0,
+    };
+    document.addEventListener("gsxui:toast-action", () => {
+      (window as any).__sonnerLifecycleProbe.actionEvents++;
+    });
+  });
+
+  const preexisting = page.locator('[data-lifecycle-probe="preexisting"]');
+  await expect(preexisting).toHaveAttribute("data-state", "open");
+  await expect(preexisting).toHaveAttribute("data-visible", "true");
+
+  await page.evaluate(() => {
+    const probe = (window as any).__sonnerLifecycleProbe;
+    const fragment = document.createDocumentFragment();
+    const direct = probe.clone("fragment-direct");
+    probe.rows.push(direct);
+    fragment.append(direct);
+    probe.region.append(fragment);
+
+    const nestedWrapper = document.createElement("div");
+    const nested = probe.clone("wrapper-nested");
+    probe.rows.push(nested);
+    nestedWrapper.append(nested);
+    probe.region.append(nestedWrapper);
+
+    const laterWrapper = document.createElement("div");
+    probe.region.append(laterWrapper);
+    const later = probe.clone("later-descendant");
+    probe.rows.push(later);
+    laterWrapper.append(later);
+  });
+
+  for (const label of [
+    "fragment-direct",
+    "wrapper-nested",
+    "later-descendant",
+  ]) {
+    await expect(page.locator(`[data-lifecycle-probe="${label}"]`)).toHaveAttribute(
+      "data-state",
+      "open",
+    );
+  }
+  await expect
+    .poll(() =>
+      page.evaluate(() => (window as any).__sonnerTimerProbe.active.size),
+    )
+    .toBe(3);
+  await expect
+    .poll(() =>
+      page.evaluate(() => (window as any).__sonnerTimerProbe.created),
+    )
+    .toBe(4);
+
+  await page.evaluate(() => {
+    const probe = (window as any).__sonnerLifecycleProbe;
+    const moved = probe.rows[0] as HTMLElement;
+    const wrapper = document.createElement("div");
+    wrapper.append(moved);
+    probe.region.append(wrapper);
+  });
+  await expect
+    .poll(() =>
+      page.evaluate(() => (window as any).__sonnerTimerProbe.active.size),
+    )
+    .toBe(3);
+  await expect
+    .poll(() =>
+      page.evaluate(() => (window as any).__sonnerTimerProbe.created),
+    )
+    .toBe(4);
+
+  await page.evaluate(() => {
+    const probe = (window as any).__sonnerLifecycleProbe;
+    const moved = probe.rows[0] as HTMLElement;
+    moved
+      .querySelector<HTMLButtonElement>("[data-gsxui-toast-action]")!
+      .click();
+    probe.oldRows = [
+      ...probe.region.querySelectorAll("li[data-gsxui-toast]"),
+    ];
+    probe.staleRow = moved;
+    probe.staleActionEvents = 0;
+    moved.addEventListener("gsxui:toast-action", () => {
+      probe.staleActionEvents++;
+    });
+    probe.section.remove();
+  });
+  await expect
+    .poll(() =>
+      page.evaluate(() => (window as any).__sonnerLifecycleProbe.actionEvents),
+    )
+    .toBe(1);
+
+  const fallback = page.locator("#gsxui-toaster");
+  await expect(fallback).toHaveAttribute("data-gsxui-slot", "toaster");
+  await expect
+    .poll(() =>
+      page.evaluate(() => (window as any).__sonnerTimerProbe.active.size),
+    )
+    .toBe(0);
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => (window as any).__sonnerTimerProbe.removalCaps.size,
+      ),
+    )
+    .toBe(0);
+  expect(
+    await page.evaluate(() => {
+      const probe = (window as any).__sonnerLifecycleProbe;
+      return probe.oldRows.map((row: HTMLElement) => ({
+        connected: row.isConnected,
+        parent: row.parentNode,
+      }));
+    }),
+  ).toEqual([
+    { connected: false, parent: null },
+    { connected: false, parent: null },
+    { connected: false, parent: null },
+    { connected: false, parent: null },
+  ]);
+  await page.evaluate(() => {
+    const probe = (window as any).__sonnerLifecycleProbe;
+    probe.staleRow
+      .querySelector<HTMLButtonElement>("[data-gsxui-toast-action]")!
+      .click();
+  });
+  expect(
+    await page.evaluate(
+      () => (window as any).__sonnerLifecycleProbe.staleActionEvents,
+    ),
+  ).toBe(0);
+
+  await page.evaluate(() => {
+    const probe = (window as any).__sonnerLifecycleProbe;
+    const section = document.createElement("section");
+    section.setAttribute("aria-label", "Notifications");
+    section.tabIndex = -1;
+    const region = document.createElement("ol");
+    region.id = "gsxui-toaster";
+    region.dataset.gsxuiSlot = "toaster";
+    region.setAttribute("data-gsxui-toaster", "");
+    region.append(probe.clone("replacement-preexisting"));
+    section.append(region);
+    document.body.append(section);
+    probe.replacementSection = section;
+  });
+
+  const replacement = page.locator('[data-lifecycle-probe="replacement-preexisting"]');
+  await expect(replacement).toHaveAttribute("data-state", "open");
+  await expect(page.locator("#gsxui-toaster")).toHaveCount(1);
+  await expect
+    .poll(() =>
+      page.evaluate(() => (window as any).__sonnerTimerProbe.active.size),
+    )
+    .toBe(1);
+  await expect
+    .poll(() =>
+      page.evaluate(() => (window as any).__sonnerTimerProbe.created),
+    )
+    .toBe(6);
+
+  await page.evaluate(() => {
+    (window as any).__sonnerLifecycleProbe.replacementSection.remove();
+  });
+  await expect(page.locator("#gsxui-toaster")).toHaveCount(1);
+  await expect
+    .poll(() =>
+      page.evaluate(() => (window as any).__sonnerTimerProbe.active.size),
+    )
+    .toBe(0);
+});
+
 test("controls, promise morph, queue, expansion, and dismiss keep working", async ({
   page,
 }) => {
