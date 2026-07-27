@@ -32,7 +32,10 @@ func TestInitWritesEverything(t *testing.T) {
 	}
 	for _, p := range []string{
 		"gsxui.json",
-		"web/gsxui.css",
+		"web/gsxui/index.css",
+		"web/gsxui/foundation.css",
+		"web/gsxui/theme.css",
+		"web/gsxui/style.css",
 		"web/gsxui/gsxui.js",
 		"web/gsxui/index.js",
 		"ui/merge/merge.go",
@@ -46,9 +49,23 @@ func TestInitWritesEverything(t *testing.T) {
 	if want := `class_merger = "example.com/app/ui/merge.Merge"`; !strings.Contains(string(toml), want) {
 		t.Errorf("gsx.toml missing %q:\n%s", want, toml)
 	}
-	css, _ := os.ReadFile(filepath.Join(dir, "web/gsxui.css"))
-	if !strings.Contains(string(css), "--primary") {
-		t.Error("css does not look like the token file")
+	indexCSS, _ := os.ReadFile(filepath.Join(dir, "web/gsxui/index.css"))
+	for _, want := range []string{"./foundation.css", "./theme.css", "./style.css"} {
+		if !strings.Contains(string(indexCSS), want) {
+			t.Errorf("index.css missing import %q:\n%s", want, indexCSS)
+		}
+	}
+	themeCSS, _ := os.ReadFile(filepath.Join(dir, "web/gsxui/theme.css"))
+	if !strings.Contains(string(themeCSS), "--primary") {
+		t.Error("theme.css does not look like the token file")
+	}
+	foundationCSS, _ := os.ReadFile(filepath.Join(dir, "web/gsxui/foundation.css"))
+	if !strings.Contains(string(foundationCSS), "@theme inline") {
+		t.Error("foundation.css does not contain the Tailwind theme mapping")
+	}
+	styleCSS, _ := os.ReadFile(filepath.Join(dir, "web/gsxui/style.css"))
+	if !strings.Contains(string(styleCSS), "[data-slot=\"scroll-area\"]::-webkit-scrollbar") {
+		t.Error("style.css does not contain the ScrollArea pseudo-element rules")
 	}
 	// dependency commands went through the seam
 	joined := ""

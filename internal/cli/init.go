@@ -28,6 +28,21 @@ func writeVendored(path string, content []byte, overwrite bool) error {
 	return os.WriteFile(path, content, 0o644)
 }
 
+type cssAssetTarget struct {
+	source string
+	target string
+}
+
+func cssAssetTargets(entry string) []cssAssetTarget {
+	dir := filepath.Dir(entry)
+	return []cssAssetTarget{
+		{source: "assets/css/index.css", target: entry},
+		{source: "assets/css/foundation.css", target: filepath.Join(dir, "foundation.css")},
+		{source: "assets/css/themes/default.css", target: filepath.Join(dir, "theme.css")},
+		{source: "assets/css/styles/default.css", target: filepath.Join(dir, "style.css")},
+	}
+}
+
 func runInit(args []string) error {
 	if len(args) != 0 {
 		return fmt.Errorf("usage: gsxui init")
@@ -52,12 +67,14 @@ func runInit(args []string) error {
 		return err // unparsable or unreadable: never overwrite
 	}
 
-	css, err := fs.ReadFile(gsxui.Files, "assets/gsxui.css")
-	if err != nil {
-		return err
-	}
-	if err := writeVendored(filepath.Join(dir, cfg.CSS), css, false); err != nil {
-		return err
+	for _, asset := range cssAssetTargets(cfg.CSS) {
+		css, err := fs.ReadFile(gsxui.Files, asset.source)
+		if err != nil {
+			return err
+		}
+		if err := writeVendored(filepath.Join(dir, asset.target), css, false); err != nil {
+			return err
+		}
 	}
 
 	core, err := fs.ReadFile(gsxui.Files, "ui/gsxui.js")

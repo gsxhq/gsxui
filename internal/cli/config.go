@@ -24,7 +24,7 @@ type Config struct {
 }
 
 func DefaultConfig() Config {
-	return Config{UI: "ui", JS: "web/gsxui", CSS: "web/gsxui.css"}
+	return Config{UI: "ui", JS: "web/gsxui", CSS: "web/gsxui/index.css"}
 }
 
 func LoadConfig(dir string) (Config, error) {

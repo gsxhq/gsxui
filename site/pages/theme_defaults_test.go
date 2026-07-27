@@ -12,15 +12,14 @@ import (
 )
 
 // TestThemeDefaultsDriftPin ensures the Go themeGroups defaults stay in sync
-// with web/site.css's :root and .dark blocks byte-for-byte. This pins the
-// Go-map ↔ CSS sync in CI.
+// with the library's authored default theme. This pins the Go-map ↔ CSS sync
+// in CI without requiring the theme editor to expose every library token.
 func TestThemeDefaultsDriftPin(t *testing.T) {
 	// Get the directory of this test file
 	_, testFile, _, _ := runtime.Caller(0)
 	testDir := filepath.Dir(testFile)
 
-	// Read web/site.css relative to this test file (../../web/site.css)
-	cssPath := filepath.Join(testDir, "..", "..", "web", "site.css")
+	cssPath := filepath.Join(testDir, "..", "..", "assets", "css", "themes", "default.css")
 
 	cssBytes, err := os.ReadFile(cssPath)
 	if err != nil {
@@ -33,10 +32,10 @@ func TestThemeDefaultsDriftPin(t *testing.T) {
 	darkBlock := extractCSSBlock(cssText, ".dark")
 
 	if rootBlock == "" {
-		t.Fatal("failed to extract :root block from site.css")
+		t.Fatal("failed to extract :root block from default.css")
 	}
 	if darkBlock == "" {
-		t.Fatal("failed to extract .dark block from site.css")
+		t.Fatal("failed to extract .dark block from default.css")
 	}
 
 	// Parse the CSS blocks into maps of var -> value
@@ -88,17 +87,6 @@ func TestThemeDefaultsDriftPin(t *testing.T) {
 		}
 	}
 
-	// Also verify that all CSS vars are accounted for in the Go defaults
-	for varName := range cssVars["light"] {
-		if _, ok := goDefaults["light"][varName]; !ok && varName != "--radius" {
-			t.Errorf("CSS :root contains %s which is not in Go defaults", varName)
-		}
-	}
-	for varName := range cssVars["dark"] {
-		if _, ok := goDefaults["dark"][varName]; !ok {
-			t.Errorf("CSS .dark contains %s which is not in Go defaults", varName)
-		}
-	}
 }
 
 // extractCSSBlock extracts the content of a CSS block (e.g., ":root { ... }" or ".dark { ... }")
