@@ -16,16 +16,14 @@ func withSlot(name string, attrs gsx.Attrs) gsx.Attrs {
 	tokens := []string{name}
 	seen := map[string]struct{}{name: {}}
 	if value, ok := attrs.Get(slotAttribute); ok {
-		slotValue, err := gsx.AttrString(value)
-		if err != nil {
-			panic(err)
-		}
-		for token := range strings.FieldsSeq(slotValue) {
-			if _, ok := seen[token]; ok {
-				continue
+		if slotValue, err := gsx.AttrString(value); err == nil {
+			for token := range strings.FieldsSeq(slotValue) {
+				if _, ok := seen[token]; ok {
+					continue
+				}
+				seen[token] = struct{}{}
+				tokens = append(tokens, token)
 			}
-			seen[token] = struct{}{}
-			tokens = append(tokens, token)
 		}
 	}
 

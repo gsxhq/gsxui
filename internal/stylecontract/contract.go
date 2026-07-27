@@ -30,17 +30,44 @@ func All() []Component {
 			len(sidebarContracts)+
 			len(sonnerContracts),
 	)
-	all = append(all, primitiveContracts...)
-	all = append(all, formContracts...)
-	all = append(all, overlayContracts...)
-	all = append(all, menuContracts...)
-	all = append(all, compositeContracts...)
-	all = append(all, sidebarContracts...)
-	all = append(all, sonnerContracts...)
+	appendComponents := func(components []Component) {
+		for _, component := range components {
+			all = append(all, cloneComponent(component))
+		}
+	}
+	appendComponents(primitiveContracts)
+	appendComponents(formContracts)
+	appendComponents(overlayContracts)
+	appendComponents(menuContracts)
+	appendComponents(compositeContracts)
+	appendComponents(sidebarContracts)
+	appendComponents(sonnerContracts)
 	sort.Slice(all, func(i, j int) bool {
 		return all[i].Name < all[j].Name
 	})
 	return all
+}
+
+func cloneComponent(component Component) Component {
+	clone := Component{Name: component.Name}
+	if component.Slots == nil {
+		return clone
+	}
+	clone.Slots = make([]Slot, len(component.Slots))
+	for slotIndex, slot := range component.Slots {
+		clone.Slots[slotIndex].Name = slot.Name
+		if slot.Axes == nil {
+			continue
+		}
+		clone.Slots[slotIndex].Axes = make([]Axis, len(slot.Axes))
+		for axisIndex, axis := range slot.Axes {
+			clone.Slots[slotIndex].Axes[axisIndex].Attribute = axis.Attribute
+			if axis.Values != nil {
+				clone.Slots[slotIndex].Axes[axisIndex].Values = append([]string(nil), axis.Values...)
+			}
+		}
+	}
+	return clone
 }
 
 func Validate(components []Component) error {

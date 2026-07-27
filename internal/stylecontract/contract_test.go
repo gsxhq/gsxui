@@ -112,3 +112,38 @@ func TestAllReturnsSortedCopy(t *testing.T) {
 		t.Fatalf("All() returned an aliased slice: %#v", again)
 	}
 }
+
+func TestAllReturnsDeepSnapshot(t *testing.T) {
+	originalPrimitives := primitiveContracts
+	defer func() { primitiveContracts = originalPrimitives }()
+	primitiveContracts = []Component{{
+		Name: "Button",
+		Slots: []Slot{{
+			Name: "button",
+			Axes: []Axis{{
+				Attribute: "data-size",
+				Values:    []string{"sm"},
+			}},
+		}},
+	}}
+	want := []Component{{
+		Name: "Button",
+		Slots: []Slot{{
+			Name: "button",
+			Axes: []Axis{{
+				Attribute: "data-size",
+				Values:    []string{"sm"},
+			}},
+		}},
+	}}
+
+	got := All()
+	got[0].Name = "Changed"
+	got[0].Slots[0].Name = "changed"
+	got[0].Slots[0].Axes[0].Attribute = "data-changed"
+	got[0].Slots[0].Axes[0].Values[0] = "changed"
+
+	if again := All(); !reflect.DeepEqual(again, want) {
+		t.Fatalf("All() returned an aliased nested value: got %#v, want %#v", again, want)
+	}
+}

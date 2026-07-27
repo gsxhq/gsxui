@@ -49,6 +49,36 @@ func TestWithSlotUsesAttrsRenderingSemantics(t *testing.T) {
 	}
 }
 
+func TestWithSlotIgnoresUnrenderableExistingSlot(t *testing.T) {
+	tests := []struct {
+		name  string
+		value any
+	}{
+		{name: "nil", value: nil},
+		{name: "unsupported", value: struct{}{}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			attrs := gsx.Attrs{
+				{Key: "data-gsxui-slot", Value: tt.value},
+				{Key: "class", Value: "h-12"},
+				{Key: "id", Value: "save"},
+			}
+
+			got := withSlot("button", attrs)
+			if v, _ := got.Get("data-gsxui-slot"); v != "button" {
+				t.Fatalf("slot tokens = %q", v)
+			}
+			if got.Class() != "h-12" {
+				t.Fatalf("class = %q", got.Class())
+			}
+			if v, _ := got.Get("id"); v != "save" {
+				t.Fatalf("id = %q", v)
+			}
+		})
+	}
+}
+
 func TestWithSlotDoesNotMutateInput(t *testing.T) {
 	attrs := gsx.Attrs{
 		{Key: "data-gsxui-slot", Value: "alert-dialog-action button"},
