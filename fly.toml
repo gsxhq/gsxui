@@ -1,8 +1,8 @@
 # fly.toml — deploys the gsxui showcase site (ui.gsxhq.dev) to Fly.io.
 #
-# Reuses site/Dockerfile unchanged (build context = repo root, same as the
-# Cloud Run path documented in that file's header — Fly builds from the
-# directory holding this file and honors .dockerignore). The container binds
+# Reuses site/Dockerfile unchanged (build context = repo root, as that file's
+# header documents — Fly builds from the directory holding this file and
+# honors .dockerignore). The container binds
 # $PORT (Dockerfile sets ENV PORT=8080; site/main.go reads it with a 7777
 # fallback), matching internal_port below.
 #

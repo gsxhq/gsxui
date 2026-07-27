@@ -1,4 +1,5 @@
-# site/Dockerfile — builds the gsxui showcase site for Cloud Run.
+# site/Dockerfile — builds the gsxui showcase site (deployed to Fly.io, see
+# fly.toml).
 #
 # Build context is the repo root (the Vite build reads ui/**/*.gsx and
 # site/**/*.gsx for Tailwind's @source scan, and the Go module lives at the
@@ -35,9 +36,9 @@ RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /gsxui-site ./site
 # ---- run stage: distroless static, non-root ----
 FROM gcr.io/distroless/static-debian12:nonroot AS run
 COPY --from=build /gsxui-site /gsxui-site
-# Cloud Run injects $PORT (defaults to 8080) and expects the container to
-# bind it; site/main.go reads PORT with an 8080 fallback (GO_PORT still
-# takes precedence, for parity with the local dev loop — see main.go).
+# $PORT is the container port contract (Fly's internal_port matches 8080);
+# site/main.go reads PORT with a 7777 fallback, and GO_PORT still takes
+# precedence, for parity with the local dev loop — see main.go.
 ENV PORT=8080
 EXPOSE 8080
 ENTRYPOINT ["/gsxui-site"]
