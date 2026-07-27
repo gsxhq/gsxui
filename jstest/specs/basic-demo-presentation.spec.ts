@@ -116,13 +116,11 @@ for (const demo of triggerDemos) {
     const triggers = page.locator(`[${demo.behaviorAttribute}]`);
     await expect(triggers).toHaveCount(demo.count);
     for (let index = 0; index < demo.count; index++) {
-      await expect(triggers.nth(index)).toHaveAttribute(
-        "data-gsxui-slot",
-        /(?:^|\s)button(?:\s|$)/,
-      );
-      await expect(triggers.nth(index)).toHaveAttribute(
-        "data-gsxui-slot",
-        new RegExp(`(?:^|\\s)${demo.triggerSlot}(?:\\s|$)`),
+      const trigger = triggers.nth(index);
+      await expect(trigger).toHaveAttribute("data-gsxui-slot-button", "");
+      await expect(trigger).toHaveAttribute(
+        `data-gsxui-slot-${demo.triggerSlot}`,
+        "",
       );
     }
   });
