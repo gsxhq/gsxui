@@ -1,9 +1,9 @@
-/* Tokens are space-separated: always use ~= membership. */
-[data-gsxui-slot~="button"] {
+/* Each semantic role has its own presence attribute. */
+[data-gsxui-slot-button] {
   /* project-specific addition */
 }
 
-/* Composed parts keep every token on the same element. */
-[data-gsxui-slot~="alert-dialog-action"] {
+/* Composed parts forward each role as another attribute. */
+[data-gsxui-slot-alert-dialog-action] {
   /* action-specific addition */
 }

@@ -82,11 +82,11 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:40:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line theming.gsx:41:5
-			_gsxgw.S("<h2>Stable component tokens</h2>")
+			_gsxgw.S("<h2>Stable component markers</h2>")
 //line theming.gsx:42:5
-			_gsxgw.S("<p>Components expose space-separated part tokens through ")
-//line theming.gsx:43:60
-			_gsxgw.S("<code>data-gsxui-slot</code>. Because an element can compose several parts, selectors use token membership:</p>")
+			_gsxgw.S("<p>Components expose one bare ")
+//line theming.gsx:43:33
+			_gsxgw.S("<code>data-gsxui-slot-&lt;name&gt;</code> attribute per semantic part. Composed parts forward each distinct attribute onto the same element, so selectors use exact presence matching:</p>")
 //line theming.gsx:45:5
 			_gsxgw.S("<pre>")
 //line theming.gsx:45:10
@@ -95,7 +95,7 @@ func (t Theming) Page() _gsxrt.Node {
 			_gsxgw.Node(ctx, hl.Node("snippets/theme-slot.css"))
 			_gsxgw.S("</code></pre>")
 //line theming.gsx:46:5
-			_gsxgw.S("<p>Use the same membership form in project CSS. Equality selectors are incorrect for composed elements.</p></section>")
+			_gsxgw.S("<p>Use the same exact presence form in project CSS. Value and token operators are not part of the contract.</p></section>")
 //line theming.gsx:51:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line theming.gsx:52:5
@@ -149,9 +149,9 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:69:6
 			_gsxgw.S("<li>Replace intentional project ")
 //line theming.gsx:69:38
-			_gsxgw.S("<code>data-slot</code> selectors with ")
-//line theming.gsx:69:76
-			_gsxgw.S("<code>[data-gsxui-slot~=\"&lt;token&gt;\"]</code>.</li></ol>")
+			_gsxgw.S("<code>data-slot</code> selectors with exact presence selectors such as ")
+//line theming.gsx:69:109
+			_gsxgw.S("<code>[data-gsxui-slot-button]</code>.</li></ol>")
 //line theming.gsx:71:5
 			_gsxgw.S("<p>This is a one-time breaking migration. There is no legacy selector or combined-file compatibility layer.</p></section></div>")
 			return _gsxgw.Err()

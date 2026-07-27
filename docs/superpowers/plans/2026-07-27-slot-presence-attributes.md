@@ -308,64 +308,47 @@ Playwright 1.62, existing typed style contract and generated-source checks.
   git commit -m "refactor: compose styling roles as attributes"
   ```
 
-### Task 3: Remove vendored support and update public documentation
+### Task 3: Update the public styling contract and site artifacts
 
 **Files:**
 
-- Modify: `internal/cli/add.go`
-- Modify: `internal/cli/add_test.go`
-- Modify: `internal/cli/e2e_test.go`
 - Modify: `README.md`
 - Modify: `NOTICE.md`
 - Modify: `docs/theme-system-roadmap.md`
 - Modify: `docs/jsx-parity.md`
+- Modify:
+  `docs/superpowers/specs/2026-07-26-css-only-theme-system-design.md`
 - Modify: `site/pages/theming.gsx`
 - Modify: `site/snippets/theme-slot.css.txt`
-- Modify: all `site/examples/**/*.gsx` files containing packed
-  `data-gsxui-slot`
 - Modify: `site/pages/home.gsx`
 - Modify: `site/pages/layout.gsx`
 - Modify: `site/pages/pages_test.go`
-- Modify: `site/examples/sidebar/persisted.gsx`
 - Modify: committed generated `.x.go` and `site/hl/blocks.gen.go` only through
   their owning generators
 
 **Interfaces:**
 
-- Produces: `runAdd` that copies only resolved component sources, JavaScript,
-  icons, and NOTICE; there is no `authoredSupportSources`.
-- Produces: custom UI path vendoring with no rewritten internal slot-helper
-  import.
-- Produces: public examples and theming guidance using presence attributes.
+- Consumes: component, registered-example, helper-deletion, and CLI vendoring
+  work completed together in Task 2 because they form one green repository
+  boundary.
+- Produces: public theming guidance and site-owned trigger markup using exact
+  presence attributes.
+- Produces: regenerated page/example source and highlighted blocks.
 
-- [ ] **Step 1: Change CLI expectations first.**
-
-  Make `TestAddVendorsWithDeps` and both real end-to-end tests assert that
-  `slots.go` and `internal/slotattr/slotattr.go` do not exist after `add`.
-  Replace `TestAddVendorsSupportToCustomUIPath` with a custom-path test that
-  proves Button and Icon compile without any slot support import. Delete
-  `TestAddRefusesModifiedSupportFile`, because the product no longer owns a
-  support file.
-
-- [ ] **Step 2: Run CLI tests and record RED.**
+- [ ] **Step 1: Record the remaining public-surface RED.**
 
   Run:
 
   ```bash
-  go test ./internal/cli -run \
-    'TestAdd(VendorsWithDeps|VendorsToCustomUIPath|RefusesModifiedSupportFile)' \
-    -count=1
+  make audit
+  go test ./site/pages -count=1
   ```
 
-  Expected: current `runAdd` still writes both support files.
+  Expected: `make audit` reports the packed trigger markers in
+  `site/pages/home.gsx` and `site/pages/layout.gsx`; page tests still expect
+  the packed rendered contract.
 
-- [ ] **Step 3: Remove support vendoring.**
-
-  Delete `authoredSupportSource`, `authoredSupportSources`, and the support
-  copy loop. Do not replace them with conditional copies or generated helper
-  code.
-
-- [ ] **Step 4: Migrate current documentation and examples.**
+- [ ] **Step 2: Migrate current documentation and site chrome.**
 
   Explain that composition is ordinary attribute forwarding:
 
@@ -381,37 +364,40 @@ Playwright 1.62, existing typed style contract and generated-source checks.
   [data-gsxui-slot-button] { ... }
   ```
 
-  Update all current examples and site-owned trigger markup. Keep historical
-  plan files unchanged.
+  Update current public docs, migration instructions, and the two site-owned
+  trigger call sites. Update page tests to require exact empty presence
+  attributes. Mark the architecture spec's presence-marker revision
+  implemented while keeping the configurator roadmap unscheduled. Keep
+  historical implementation plans unchanged.
 
-- [ ] **Step 5: Regenerate documentation artifacts.**
+- [ ] **Step 3: Regenerate documentation artifacts.**
 
-  Run:
+  Use the exact reviewed GSX compiler commit `5d3cbfb9` through an untracked
+  Go workspace, then run:
 
   ```bash
-  make generate
+  go run github.com/gsxhq/gsx/cmd/gsx generate
   make highlight
   ```
 
   Restore `site/dist/.gitkeep` if the build tooling removes it.
 
-- [ ] **Step 6: Run focused CLI/site gates and diagnostics.**
+- [ ] **Step 4: Run focused public-surface gates and diagnostics.**
 
   Run:
 
   ```bash
-  go test ./internal/cli ./site/pages ./site/examples -count=1
-  gopls check -severity=hint internal/cli/add.go \
-    internal/cli/add_test.go internal/cli/e2e_test.go \
-    site/pages/pages_test.go site/examples/style_contract_test.go
+  go test ./site/pages ./site/examples -count=1
+  gopls check -severity=hint site/pages/pages_test.go
   make audit
+  git diff --check
   ```
 
-- [ ] **Step 7: Commit.**
+- [ ] **Step 5: Commit.**
 
   ```bash
-  git add internal/cli README.md NOTICE.md docs site ui jstest
-  git commit -m "refactor: remove vendored slot support"
+  git add README.md NOTICE.md docs site
+  git commit -m "docs: document composable slot markers"
   ```
 
 ### Task 4: Verify the whole migration

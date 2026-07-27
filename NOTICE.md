@@ -3,7 +3,8 @@
 The components under `ui/` are ports of **shadcn/ui**
 ([shadcn-ui/ui](https://github.com/shadcn-ui/ui), MIT © shadcn) from React/JSX
 to gsx: component structure and presentation recipes follow the shadcn v4
-"new-york" registry. gsxui's token-membership `data-gsxui-slot` contract,
+"new-york" registry. gsxui's namespaced presence-marker
+`data-gsxui-slot-<name>` contract,
 CSS-only style packs, and event-delegation JS architecture are adaptations
 for server-rendered gsx.
 

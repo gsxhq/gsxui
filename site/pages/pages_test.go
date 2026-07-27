@@ -57,6 +57,13 @@ func TestSiteRoutes(t *testing.T) {
 	if !strings.Contains(rec.Body.String(), `data-gsxui-slot-button`) {
 		t.Errorf(`response missing data-gsxui-slot-button; body:\n%s`, rec.Body.String())
 	}
+	body := rec.Body.String()
+	if !strings.Contains(body, `data-gsxui-slot-dialog-trigger`) {
+		t.Errorf(`response missing dialog trigger slot marker; body:\n%s`, body)
+	}
+	if strings.Contains(body, `data-gsxui-slot-dialog-trigger=`) {
+		t.Errorf(`response gives dialog trigger slot marker a value; body:\n%s`, body)
+	}
 }
 
 // TestComponentPageRoute is the Task 2 integration smoke test for
@@ -248,6 +255,9 @@ func TestDocsRoutes(t *testing.T) {
 		}
 		if !strings.Contains(body, "data-gsxui-dialog-trigger") {
 			t.Errorf("response missing data-attribute idiom example (data-gsxui-dialog-trigger); body:\n%s", body)
+		}
+		if !strings.Contains(body, `[<span class="ts-attribute">data-gsxui-slot-button</span>]`) {
+			t.Errorf("response missing exact slot presence selector; body:\n%s", body)
 		}
 		if !strings.Contains(body, "/docs/getting-started") {
 			t.Errorf("response missing sidebar link to /docs/getting-started; body:\n%s", body)

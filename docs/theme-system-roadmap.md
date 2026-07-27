@@ -13,7 +13,7 @@ The architecture and acceptance criteria live in
 
 ```text
 canonical component markup + behavior
-                  │ stable data-gsxui-slot contract
+                  │ stable data-gsxui-slot-<name> contract
                   ▼
           foundation mechanics
                   +
@@ -33,7 +33,8 @@ future structural base, never style-specific `.gsx` templates.
 Shipped as one CSS-only boundary:
 
 - Introduce the typed slot/state contract.
-- Replace generic `data-slot` with `data-gsxui-slot`.
+- Replace generic `data-slot` with one `data-gsxui-slot-<name>` presence
+  attribute per semantic role.
 - Split the CSS source of truth into index, foundation, theme, and default
   style assets.
 - Move current Nova presentation out of every `.gsx` file and into

@@ -38,13 +38,13 @@ component (t Theming) Page() {
 			</section>
 
 			<section class="flex flex-col gap-3">
-				<h2>Stable component tokens</h2>
+				<h2>Stable component markers</h2>
 				<p>
-					Components expose space-separated part tokens through <code>data-gsxui-slot</code>. Because an element can compose several parts, selectors use token membership:
+					Components expose one bare <code>data-gsxui-slot-&lt;name&gt;</code> attribute per semantic part. Composed parts forward each distinct attribute onto the same element, so selectors use exact presence matching:
 				</p>
 				<pre><code>{ hl.Node("snippets/theme-slot.css") }</code></pre>
 				<p>
-					Use the same membership form in project CSS. Equality selectors are incorrect for composed elements.
+					Use the same exact presence form in project CSS. Value and token operators are not part of the contract.
 				</p>
 			</section>
 
@@ -66,7 +66,7 @@ component (t Theming) Page() {
 					<li>Change the CSS entry from <code>web/gsxui.css</code> to <code>web/gsxui/index.css</code>.</li>
 					<li>Review the four-file diff, then run <code>gsxui init --overwrite</code>.</li>
 					<li>Run <code>gsxui add &lt;component&gt; --overwrite</code> for each vendored component you want to refresh.</li>
-					<li>Replace intentional project <code>data-slot</code> selectors with <code>[data-gsxui-slot~="&lt;token&gt;"]</code>.</li>
+					<li>Replace intentional project <code>data-slot</code> selectors with exact presence selectors such as <code>[data-gsxui-slot-button]</code>.</li>
 				</ol>
 				<p>
 					This is a one-time breaking migration. There is no legacy selector or combined-file compatibility layer.

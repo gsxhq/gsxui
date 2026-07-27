@@ -1,8 +1,7 @@
 # CSS-only theme system and configurator architecture
 
-**Status:** architecture approved. The structural Phase 1 boundary is
-implemented with the original packed slot encoding; the presence-marker
-revision below is approved and in progress. The configurator roadmap remains
+**Status:** architecture approved. The structural Phase 1 boundary and its
+presence-marker revision are implemented. The configurator roadmap remains
 unscheduled.
 
 This document defines the boundary we want before replacing the current

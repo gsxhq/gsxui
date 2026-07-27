@@ -86,12 +86,21 @@ Every divergence, with its rationale, is ledgered in
 The split CSS entry is intentionally breaking; there is no legacy selector
 or combined-file compatibility layer.
 
+Each semantic styling role is a bare presence attribute. Roles compose through
+ordinary fallthrough attribute forwarding—no token-merging helper is needed:
+
+```gsx
+<ui.Button data-gsxui-dialog-trigger data-gsxui-slot-dialog-trigger>
+	Open
+</ui.Button>
+```
+
 1. Change `web/gsxui.css` to `web/gsxui/index.css`.
 2. Review the four-file diff, then run `gsxui init --overwrite`.
 3. Run `gsxui add <component> --overwrite` for vendored components you want
    to refresh.
-4. Replace intentional `data-slot` project selectors with
-   `[data-gsxui-slot~="<token>"]`.
+4. Replace intentional `data-slot` project selectors with their exact
+   presence selector, for example `[data-gsxui-slot-button]`.
 
 ## Contributing
 

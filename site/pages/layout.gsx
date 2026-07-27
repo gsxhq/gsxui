@@ -100,7 +100,7 @@ component Layout(title string, active string, children gsx.Node) {
 						<ui.Dialog>
 							<button
 								data-gsxui-dialog-trigger
-								data-gsxui-slot="dialog-trigger"
+								data-gsxui-slot-dialog-trigger
 								type="button"
 								aria-haspopup="dialog"
 								aria-expanded="false"

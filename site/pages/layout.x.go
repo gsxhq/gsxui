@@ -130,7 +130,8 @@ func _gsxrenderLayout(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title string, 
 //line layout.gsx:101:8
 		_gsxgw.S("<button")
 		_gsxgw.BoolAttr("data-gsxui-dialog-trigger", true)
-		_gsxgw.S(" data-gsxui-slot=\"dialog-trigger\" type=\"button\" aria-haspopup=\"dialog\" aria-expanded=\"false\" class=\"hidden h-8 w-56 items-center gap-2 rounded-lg border bg-muted/50 px-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted sm:inline-flex\">")
+		_gsxgw.BoolAttr("data-gsxui-slot-dialog-trigger", true)
+		_gsxgw.S(" type=\"button\" aria-haspopup=\"dialog\" aria-expanded=\"false\" class=\"hidden h-8 w-56 items-center gap-2 rounded-lg border bg-muted/50 px-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted sm:inline-flex\">")
 //line layout.gsx:109:9
 		_gsxgw.Node(ctx, icon.Search(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
 //line layout.gsx:110:9
