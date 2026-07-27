@@ -203,19 +203,13 @@
     width: 0;
   }
   :where(
-      [data-gsxui-slot~="sidebar-desktop"][data-collapsible="icon"][data-variant="sidebar"]
+      [data-gsxui-slot~="sidebar-desktop"][data-collapsible="icon"]
     )
     > :where([data-gsxui-slot~="sidebar-gap"]) {
-    width: var(--sidebar-width-icon);
-  }
-  :where(
-      [data-gsxui-slot~="sidebar-desktop"][data-collapsible="icon"]:is(
-          [data-variant="floating"],
-          [data-variant="inset"]
-        )
-    )
-    > :where([data-gsxui-slot~="sidebar-gap"]) {
-    width: calc(var(--sidebar-width-icon) + 1rem);
+    width: var(
+      --gsxui-sidebar-collapsed-gap-width,
+      var(--sidebar-width-icon)
+    );
   }
   :where([data-gsxui-slot~="sidebar-container"]) {
     position: fixed;
@@ -246,19 +240,13 @@
     right: calc(var(--sidebar-width) * -1);
   }
   :where(
-      [data-gsxui-slot~="sidebar-desktop"][data-collapsible="icon"][data-variant="sidebar"]
+      [data-gsxui-slot~="sidebar-desktop"][data-collapsible="icon"]
     )
     > :where([data-gsxui-slot~="sidebar-container"]) {
-    width: var(--sidebar-width-icon);
-  }
-  :where(
-      [data-gsxui-slot~="sidebar-desktop"][data-collapsible="icon"]:is(
-          [data-variant="floating"],
-          [data-variant="inset"]
-        )
-    )
-    > :where([data-gsxui-slot~="sidebar-container"]) {
-    width: calc(var(--sidebar-width-icon) + 1rem + 2px);
+    width: var(
+      --gsxui-sidebar-collapsed-container-width,
+      var(--sidebar-width-icon)
+    );
   }
   :where([data-gsxui-slot~="sidebar-inner"]),
   :where([data-gsxui-slot~="sidebar-mobile-inner"]) {
@@ -329,7 +317,8 @@
   }
 
   @media (width >= 40rem) {
-    :where([data-gsxui-slot~="sidebar-rail"]) {
+    :where([data-gsxui-slot~="sidebar-desktop"])
+      :where([data-gsxui-slot~="sidebar-rail"]) {
       display: flex;
     }
     :where([data-gsxui-slot~="sidebar-group-action"])::after,

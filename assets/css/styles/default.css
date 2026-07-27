@@ -2931,7 +2931,22 @@
     @apply hidden;
   }
   :where([data-gsxui-slot~="sidebar-desktop"]) {
+    --gsxui-sidebar-collapsed-gap-width: var(--sidebar-width-icon);
+    --gsxui-sidebar-collapsed-container-width: var(--sidebar-width-icon);
     @apply text-sidebar-foreground;
+  }
+  :where(
+      [data-gsxui-slot~="sidebar-desktop"]:is(
+          [data-variant="floating"],
+          [data-variant="inset"]
+        )
+    ) {
+    --gsxui-sidebar-collapsed-gap-width: calc(
+      var(--sidebar-width-icon) + 1rem
+    );
+    --gsxui-sidebar-collapsed-container-width: calc(
+      var(--sidebar-width-icon) + 1rem + 2px
+    );
   }
   :where([data-gsxui-slot~="sidebar-gap"]) {
     @apply bg-transparent transition-[width] duration-200 ease-linear;

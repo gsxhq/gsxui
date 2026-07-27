@@ -313,6 +313,124 @@ test("mobile trigger opens the native Sheet tree and desktop resize keeps one vi
   await expect(dialog).toBeHidden();
 });
 
+test("mobile rail stays non-interactive through the sm breakpoint and only the md tree operates", async ({
+  page,
+}) => {
+  for (const width of [639, 640, 700, 767]) {
+    await openFixture(page, "mobile", { width, height: 844 });
+    const desktopContainer = page.locator(slot("sidebar-container"));
+    const dialog = page.locator("dialog[data-gsxui-sidebar-mobile-dialog]");
+    const mobileRail = dialog.locator(slot("sidebar-rail"));
+
+    await page.getByRole("button", { name: "Toggle Sidebar" }).first().click();
+    await expect(dialog, `mobile dialog at ${width}px`).toBeVisible();
+    await expect(desktopContainer, `desktop container at ${width}px`).toBeHidden();
+    await expect(mobileRail, `mobile rail at ${width}px`).toBeHidden();
+    expect(
+      await mobileRail.evaluate((rail) => {
+        const rect = rail.getBoundingClientRect();
+        const hit = document.elementFromPoint(0, window.innerHeight / 2);
+        return {
+          display: getComputedStyle(rail).display,
+          width: rect.width,
+          height: rect.height,
+          ownsViewportEdge: hit === rail || rail.contains(hit),
+        };
+      }),
+    ).toEqual({ display: "none", width: 0, height: 0, ownsViewportEdge: false });
+  }
+
+  await openFixture(page, "mobile", { width: 768, height: 844 });
+  const wrapper = page.locator(slot("sidebar-wrapper"));
+  const desktopContainer = page.locator(slot("sidebar-container"));
+  const desktopRail = page.locator(slot("sidebar-desktop")).locator(slot("sidebar-rail"));
+  const dialog = page.locator("dialog[data-gsxui-sidebar-mobile-dialog]");
+  const mobileRail = dialog.locator(slot("sidebar-rail"));
+
+  await expect(dialog).toBeHidden();
+  await expect(mobileRail).toBeHidden();
+  await expect(desktopContainer).toBeVisible();
+  await expect(desktopRail).toBeVisible();
+  await desktopRail.click();
+  await expect(wrapper).toHaveAttribute("data-state", "collapsed");
+});
+
+test("custom style owns floating and inset collapsed density without foundation shrink", async ({
+  page,
+}) => {
+  const customDensity = `
+    @layer components {
+      :where(
+          [data-gsxui-slot~="sidebar-desktop"][data-collapsible="icon"]:is(
+              [data-variant="floating"],
+              [data-variant="inset"]
+            )
+        ) {
+        --gsxui-sidebar-collapsed-gap-width: calc(var(--sidebar-width-icon) + 1.5rem);
+        --gsxui-sidebar-collapsed-container-width: calc(
+          var(--sidebar-width-icon) + 1.5rem + 8px
+        );
+      }
+      :where(
+          [data-gsxui-slot~="sidebar-desktop"]:is(
+              [data-variant="floating"],
+              [data-variant="inset"]
+            )
+        )
+        > :where([data-gsxui-slot~="sidebar-container"]) {
+        padding: 12px;
+      }
+      :where(
+          [data-gsxui-slot~="sidebar-desktop"]:is(
+              [data-variant="floating"],
+              [data-variant="inset"]
+            )
+        )
+        :where([data-gsxui-slot~="sidebar-inner"]) {
+        border: 4px solid var(--sidebar-border);
+      }
+    }
+  `;
+
+  for (const fixture of ["icon-floating", "inset-collapsed"]) {
+    await openFixture(page, fixture);
+    await page.addStyleTag({ content: customDensity });
+    await page.evaluate(() => {
+      for (const animation of document.getAnimations()) animation.finish();
+    });
+
+    const geometry = await page.locator(slot("sidebar-desktop")).evaluate((desktop) => {
+      const gap = desktop.querySelector<HTMLElement>('[data-gsxui-slot~="sidebar-gap"]')!;
+      const container = desktop.querySelector<HTMLElement>(
+        '[data-gsxui-slot~="sidebar-container"]',
+      )!;
+      const inner = desktop.querySelector<HTMLElement>('[data-gsxui-slot~="sidebar-inner"]')!;
+      const gapCSS = getComputedStyle(gap);
+      const containerCSS = getComputedStyle(container);
+      const innerCSS = getComputedStyle(inner);
+      return {
+        gapWidth: gap.getBoundingClientRect().width,
+        containerWidth: container.getBoundingClientRect().width,
+        containerPadding: containerCSS.padding,
+        innerBorder: innerCSS.borderLeftWidth,
+        innerBorderBoxWidth: inner.getBoundingClientRect().width,
+        innerContentWidth: inner.clientWidth,
+        gapVariable: gapCSS.width,
+      };
+    });
+
+    expect(geometry, fixture).toEqual({
+      gapWidth: 72,
+      containerWidth: 80,
+      containerPadding: "12px",
+      innerBorder: "4px",
+      innerBorderBoxWidth: 56,
+      innerContentWidth: 48,
+      gapVariable: "72px",
+    });
+  }
+});
+
 test("keyboard shortcut uses the first wrapper, ignores typing targets and repeats", async ({
   page,
 }) => {
