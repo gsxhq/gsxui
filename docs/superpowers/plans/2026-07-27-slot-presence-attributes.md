@@ -450,8 +450,10 @@ Playwright 1.62, existing typed style contract and generated-source checks.
   GOWORK=<temporary-workspace> make ci
   ```
 
-  Expected: Go tests, generated checks, CSS audit, 236 Chromium behavior
-  tests, JavaScript syntax checks, and formatting all pass.
+  Expected: Go tests, generated checks, CSS audit, every discovered Chromium
+  behavior test, JavaScript syntax checks, and formatting all pass. Record the
+  actual Chromium count in the verification report rather than treating it as
+  a fixed invariant.
 
   Record separately that external CI remains blocked until the reviewed GSX
   commit is published and `go.mod` pins that version; a tracked local replace
