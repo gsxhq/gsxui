@@ -16,25 +16,24 @@ import (
 // the toast <li> markup. shadcn's own sonner.tsx renders nothing but a
 // re-themed <Sonner> passthrough (the toast library owns 100% of the toast
 // DOM from a non-Tailwind stylesheet), so there is no upstream markup to
-// port; gsxui reconstructs the look as plain Tailwind classes here. This is
-// the ONE place the card is authored: ui/sonner.js clones a pre-rendered
+// port. This is the ONE place the card is authored: ui/sonner.js clones a pre-rendered
 // Toast (one per type, shipped as inert <template>s by Toaster) rather than
 // building the card from JS string DOM — the old "icon paths hand-copied
 // into a JS module" maintenance seam is gone (docs/jsx-parity.md ## sonner).
 //
 // toastType is one of default/success/info/warning/error/loading (the Go
 // keyword `type` forces the param name); empty is normalised to "default".
-// The type drives the icon (via ui/icon), the data-type attribute (which the
-// class list tints the icon from), and the aria-live level: an error toast
+// The type drives the icon (via ui/icon), the data-type styling axis, and
+// the aria-live level: an error toast
 // announces assertively, every other type politely. description/action/
 // cancel are optional — an empty string renders the part absent, matching
 // the JS `toast(msg, { description, action, cancel })` option surface; the
-// action/cancel buttons carry the data-action/data-cancel hooks ui/sonner.js
-// wires clicks onto. A custom auto-dismiss is a data-duration attr passed
+// action/cancel buttons carry dedicated behavior hooks ui/sonner.js wires
+// clicks onto. A custom auto-dismiss is a data-duration attr passed
 // through attrs (ui/sonner.js reads it on adoption; loading defaults to no
 // auto-dismiss).
 
-//line sonner.gsx:29:1
+//line sonner.gsx:28:1
 func Toast(toastType string, title string, description string, action string, cancel string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -46,7 +45,7 @@ func _gsxrenderToast(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, toastType strin
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line sonner.gsx:30:2
+//line sonner.gsx:29:2
 	t := toastType
 	if t == "" {
 		t = "default"
@@ -55,115 +54,151 @@ func _gsxrenderToast(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, toastType strin
 	if t == "error" {
 		ariaLive = "assertive"
 	}
-//line sonner.gsx:40:2
+//line sonner.gsx:39:2
+	_gsxv0 := withSlot("toast", attrs)
 	_gsxgw.S("<li")
-	if !attrs.Has("data-slot") {
-		_gsxgw.S(" data-slot=\"toast\"")
-	}
-	if !attrs.Has("data-gsxui-toast") {
+	if !_gsxv0.Has("data-gsxui-toast") {
 		_gsxgw.BoolAttr("data-gsxui-toast", true)
 	}
-	if !attrs.Has("data-type") {
+	if !_gsxv0.Has("data-type") {
 		_gsxgw.S(" data-type=\"")
 		_gsxgw.AttrValue(string(t))
 		_gsxgw.S("\"")
 	}
-	if !attrs.Has("role") {
+	if !_gsxv0.Has("role") {
 		_gsxgw.S(" role=\"status\"")
 	}
-	if !attrs.Has("aria-live") {
+	if !_gsxv0.Has("aria-live") {
 		_gsxgw.S(" aria-live=\"")
 		_gsxgw.AttrValue(string(ariaLive))
 		_gsxgw.S("\"")
 	}
-	if !attrs.Has("aria-atomic") {
+	if !_gsxv0.Has("aria-atomic") {
 		_gsxgw.S(" aria-atomic=\"true\"")
 	}
-	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pointer-events-auto absolute bottom-6 right-6 flex w-[356px] items-start gap-3 rounded-2xl border border-border bg-popover p-4 text-sm text-popover-foreground shadow-lg origin-bottom transition-[transform,opacity] duration-300 ease-out data-[type=success]:[&>[data-icon]]:text-emerald-500 data-[type=info]:[&>[data-icon]]:text-sky-500 data-[type=warning]:[&>[data-icon]]:text-amber-500 data-[type=error]:[&>[data-icon]]:text-destructive"), _gsxrt.Class(attrs.Class()))
-	_gsxgw.S("\"")
-	_gsxgw.StyleMerged("", attrs.Style())
-	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv0.Class())
+	_gsxgw.StyleMerged("", _gsxv0.Style())
+	_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 	_gsxgw.S(">")
-//line sonner.gsx:50:3
+//line sonner.gsx:47:3
 	if t != "default" {
-//line sonner.gsx:51:4
-		_gsxgw.S("<div")
-		_gsxgw.BoolAttr("data-icon", true)
-		_gsxgw.S(" class=\"mt-0.5 shrink-0 [&amp;&gt;svg]:size-4\">")
-//line sonner.gsx:52:5
+//line sonner.gsx:48:4
 		switch t {
 		case "success":
-//line sonner.gsx:54:6
-			_gsxgw.Node(ctx, icon.CircleCheck())
+//line sonner.gsx:50:5
+			_gsxgw.Node(ctx, icon.CircleCheck(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-toast-icon", Value: true}}, withSlot("toast-icon", nil))...))
 		case "info":
-//line sonner.gsx:56:6
-			_gsxgw.Node(ctx, icon.Info())
+//line sonner.gsx:52:5
+			_gsxgw.Node(ctx, icon.Info(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-toast-icon", Value: true}}, withSlot("toast-icon", nil))...))
 		case "warning":
-//line sonner.gsx:58:6
-			_gsxgw.Node(ctx, icon.TriangleAlert())
+//line sonner.gsx:54:5
+			_gsxgw.Node(ctx, icon.TriangleAlert(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-toast-icon", Value: true}}, withSlot("toast-icon", nil))...))
 		case "error":
-//line sonner.gsx:60:6
-			_gsxgw.Node(ctx, icon.OctagonX())
+//line sonner.gsx:56:5
+			_gsxgw.Node(ctx, icon.OctagonX(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-toast-icon", Value: true}}, withSlot("toast-icon", nil))...))
 		case "loading":
-//line sonner.gsx:62:6
-			_gsxgw.Node(ctx, icon.LoaderCircle(_gsxrt.Attrs{{Key: "class", Value: "animate-spin"}}...))
+//line sonner.gsx:58:5
+			_gsxgw.Node(ctx, icon.LoaderCircle(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-toast-icon", Value: true}}, withSlot("toast-icon", nil))...))
 		}
-		_gsxgw.S("</div>")
 	}
-//line sonner.gsx:66:3
+//line sonner.gsx:61:3
+	_gsxv1 := withSlot("toast-content", nil)
 	_gsxgw.S("<div")
-	_gsxgw.BoolAttr("data-content", true)
-	_gsxgw.S(" class=\"flex flex-1 flex-col gap-1\">")
-//line sonner.gsx:67:4
+	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv1.Class())
+	_gsxgw.StyleMerged("", _gsxv1.Style())
+	_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.S(">")
+//line sonner.gsx:62:4
+	_gsxv2 := withSlot("toast-title", nil)
 	_gsxgw.S("<div")
-	_gsxgw.BoolAttr("data-title", true)
-	_gsxgw.S(" class=\"font-medium text-foreground\">")
-//line sonner.gsx:67:56
+	if !_gsxv2.Has("data-gsxui-toast-title") {
+		_gsxgw.BoolAttr("data-gsxui-toast-title", true)
+	}
+	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv2.Class())
+	_gsxgw.StyleMerged("", _gsxv2.Style())
+	_gsxgw.Spread(ctx, _gsxv2, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.S(">")
+//line sonner.gsx:62:68
 	_gsxgw.Text(string(title))
 	_gsxgw.S("</div>")
-//line sonner.gsx:68:4
+//line sonner.gsx:63:4
 	if description != "" {
-//line sonner.gsx:69:5
+//line sonner.gsx:64:5
+		_gsxv3 := withSlot("toast-description", nil)
 		_gsxgw.S("<div")
-		_gsxgw.BoolAttr("data-description", true)
-		_gsxgw.S(" class=\"text-muted-foreground\">")
-//line sonner.gsx:69:57
+		if !_gsxv3.Has("data-gsxui-toast-description") {
+			_gsxgw.BoolAttr("data-gsxui-toast-description", true)
+		}
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv3.Class())
+		_gsxgw.StyleMerged("", _gsxv3.Style())
+		_gsxgw.Spread(ctx, _gsxv3, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line sonner.gsx:64:81
 		_gsxgw.Text(string(description))
 		_gsxgw.S("</div>")
 	}
 	_gsxgw.S("</div>")
-//line sonner.gsx:72:3
+//line sonner.gsx:67:3
 	if action != "" {
-//line sonner.gsx:73:4
-		_gsxgw.S("<button type=\"button\"")
-		_gsxgw.BoolAttr("data-action", true)
-		_gsxgw.S(" class=\"shrink-0 self-center text-sm font-medium underline-offset-4 hover:underline\">")
-//line sonner.gsx:77:5
+//line sonner.gsx:68:4
+		_gsxv4 := withSlot("toast-action", nil)
+		_gsxgw.S("<button")
+		if !_gsxv4.Has("type") {
+			_gsxgw.S(" type=\"button\"")
+		}
+		if !_gsxv4.Has("data-gsxui-toast-action") {
+			_gsxgw.BoolAttr("data-gsxui-toast-action", true)
+		}
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv4.Class())
+		_gsxgw.StyleMerged("", _gsxv4.Style())
+		_gsxgw.Spread(ctx, _gsxv4, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line sonner.gsx:72:5
 		_gsxgw.Text(string(action))
 		_gsxgw.S("</button>")
 	}
-//line sonner.gsx:79:3
+//line sonner.gsx:74:3
 	if cancel != "" {
-//line sonner.gsx:80:4
-		_gsxgw.S("<button type=\"button\"")
-		_gsxgw.BoolAttr("data-cancel", true)
-		_gsxgw.S(" class=\"shrink-0 self-center text-sm text-muted-foreground underline-offset-4 hover:underline\">")
-//line sonner.gsx:84:5
+//line sonner.gsx:75:4
+		_gsxv5 := withSlot("toast-cancel", nil)
+		_gsxgw.S("<button")
+		if !_gsxv5.Has("type") {
+			_gsxgw.S(" type=\"button\"")
+		}
+		if !_gsxv5.Has("data-gsxui-toast-cancel") {
+			_gsxgw.BoolAttr("data-gsxui-toast-cancel", true)
+		}
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv5.Class())
+		_gsxgw.StyleMerged("", _gsxv5.Style())
+		_gsxgw.Spread(ctx, _gsxv5, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line sonner.gsx:79:5
 		_gsxgw.Text(string(cancel))
 		_gsxgw.S("</button>")
 	}
-//line sonner.gsx:86:3
-	_gsxgw.S("<button type=\"button\"")
-	_gsxgw.BoolAttr("data-close-button", true)
-	_gsxgw.S(" aria-label=\"Close\" class=\"absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm\">")
-//line sonner.gsx:92:4
-	_gsxgw.Node(ctx, icon.X(_gsxrt.Attrs{{Key: "class", Value: "size-3"}}...))
+//line sonner.gsx:81:3
+	_gsxv6 := withSlot("toast-close", nil)
+	_gsxgw.S("<button")
+	if !_gsxv6.Has("type") {
+		_gsxgw.S(" type=\"button\"")
+	}
+	if !_gsxv6.Has("data-gsxui-toast-close") {
+		_gsxgw.BoolAttr("data-gsxui-toast-close", true)
+	}
+	if !_gsxv6.Has("aria-label") {
+		_gsxgw.S(" aria-label=\"Close\"")
+	}
+	_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv6.Class())
+	_gsxgw.StyleMerged("", _gsxv6.Style())
+	_gsxgw.Spread(ctx, _gsxv6, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.S(">")
+//line sonner.gsx:87:4
+	_gsxgw.Node(ctx, icon.X(withSlot("toast-close-icon", nil)...))
 	_gsxgw.S("</button></li>")
 	return _gsxgw.Err()
 }
 
-//line sonner.gsx:97:1
+//line sonner.gsx:92:1
 // Toaster is the always-present, positioned toast region. Mount it ONCE per
 // page (typically the root layout, same convention as shadcn's <Toaster/> in
 // app/layout.tsx). v1 ships only the default bottom-right position — the
@@ -178,8 +213,8 @@ func _gsxrenderToast(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, toastType strin
 // lands here and is adopted by a MutationObserver into the same stacking /
 // timer / dismiss lifecycle. It carries a stable id="gsxui-toaster" (caller-
 // overridable via attrs) so server OOB/partial appends have a fixed target,
-// and pointer-events-none so clicks fall through the empty gutter (each toast
-// re-enables pointer-events on itself).
+// and pointer events pass through the empty gutter (each toast re-enables
+// pointer events on itself through live lifecycle state).
 //
 // After the <ol> come six inert <template>s, one per type — the same idiom as
 // a server flash viewport's per-severity templates. ui/sonner.js clones the
@@ -188,57 +223,53 @@ func _gsxrenderToast(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, toastType strin
 // one place (the Toast component above), never duplicated in JS. Their
 // placeholder texts are always overwritten or removed on clone.
 
-//line sonner.gsx:120:1
+//line sonner.gsx:115:1
 func Toaster(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sonner.gsx:121:2
+//line sonner.gsx:116:2
 		_gsxgw.S("<section aria-label=\"Notifications\" tabindex=\"-1\">")
-//line sonner.gsx:122:3
+//line sonner.gsx:117:3
+		_gsxv7 := withSlot("toaster", attrs)
 		_gsxgw.S("<ol")
-		if !attrs.Has("id") {
+		if !_gsxv7.Has("id") {
 			_gsxgw.S(" id=\"gsxui-toaster\"")
 		}
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"toaster\"")
-		}
-		if !attrs.Has("data-gsxui-toaster") {
+		if !_gsxv7.Has("data-gsxui-toaster") {
 			_gsxgw.BoolAttr("data-gsxui-toaster", true)
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pointer-events-none fixed z-100 flex flex-col gap-2 p-6 bottom-0 right-0"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.ClassMerged(_gsxcm.Merge, _gsxv7.Class())
+		_gsxgw.StyleMerged("", _gsxv7.Style())
+		_gsxgw.Spread(ctx, _gsxv7, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S("></ol>")
-//line sonner.gsx:129:3
+//line sonner.gsx:122:3
 		_gsxgw.S("<template data-gsxui-toast-template=\"default\">")
-//line sonner.gsx:130:4
+//line sonner.gsx:123:4
 		_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "default", "Title", "Description", "Action", "Cancel", nil))
 		_gsxgw.S("</template>")
-//line sonner.gsx:132:3
+//line sonner.gsx:125:3
 		_gsxgw.S("<template data-gsxui-toast-template=\"success\">")
-//line sonner.gsx:133:4
+//line sonner.gsx:126:4
 		_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "success", "Title", "Description", "Action", "Cancel", nil))
 		_gsxgw.S("</template>")
-//line sonner.gsx:135:3
+//line sonner.gsx:128:3
 		_gsxgw.S("<template data-gsxui-toast-template=\"info\">")
-//line sonner.gsx:136:4
+//line sonner.gsx:129:4
 		_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "info", "Title", "Description", "Action", "Cancel", nil))
 		_gsxgw.S("</template>")
-//line sonner.gsx:138:3
+//line sonner.gsx:131:3
 		_gsxgw.S("<template data-gsxui-toast-template=\"warning\">")
-//line sonner.gsx:139:4
+//line sonner.gsx:132:4
 		_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "warning", "Title", "Description", "Action", "Cancel", nil))
 		_gsxgw.S("</template>")
-//line sonner.gsx:141:3
+//line sonner.gsx:134:3
 		_gsxgw.S("<template data-gsxui-toast-template=\"error\">")
-//line sonner.gsx:142:4
+//line sonner.gsx:135:4
 		_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "error", "Title", "Description", "Action", "Cancel", nil))
 		_gsxgw.S("</template>")
-//line sonner.gsx:144:3
+//line sonner.gsx:137:3
 		_gsxgw.S("<template data-gsxui-toast-template=\"loading\">")
-//line sonner.gsx:145:4
+//line sonner.gsx:138:4
 		_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "loading", "Title", "Description", "Action", "Cancel", nil))
 		_gsxgw.S("</template></section>")
 		return _gsxgw.Err()

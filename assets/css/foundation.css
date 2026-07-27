@@ -378,3 +378,23 @@ input[type="range"] {
   white-space: nowrap;
   border-width: 0;
 }
+
+/* Sonner's lifecycle computes a bottom-right overlapping stack with inline
+   transforms. These fixed/absolute anchors and hit-testing rules are the
+   invariant mechanics shared by the server and client-created regions. */
+@layer components {
+  :where([data-gsxui-slot~="toaster"]) {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    pointer-events: none;
+  }
+  :where([data-gsxui-slot~="toast"]) {
+    position: absolute;
+    right: var(--gsxui-toast-offset, 0);
+    bottom: var(--gsxui-toast-offset, 0);
+    transform-origin: bottom;
+    pointer-events: auto;
+  }
+}

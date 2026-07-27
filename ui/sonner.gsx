@@ -9,21 +9,20 @@ import (
 // the toast <li> markup. shadcn's own sonner.tsx renders nothing but a
 // re-themed <Sonner> passthrough (the toast library owns 100% of the toast
 // DOM from a non-Tailwind stylesheet), so there is no upstream markup to
-// port; gsxui reconstructs the look as plain Tailwind classes here. This is
-// the ONE place the card is authored: ui/sonner.js clones a pre-rendered
+// port. This is the ONE place the card is authored: ui/sonner.js clones a pre-rendered
 // Toast (one per type, shipped as inert <template>s by Toaster) rather than
 // building the card from JS string DOM — the old "icon paths hand-copied
 // into a JS module" maintenance seam is gone (docs/jsx-parity.md ## sonner).
 //
 // toastType is one of default/success/info/warning/error/loading (the Go
 // keyword `type` forces the param name); empty is normalised to "default".
-// The type drives the icon (via ui/icon), the data-type attribute (which the
-// class list tints the icon from), and the aria-live level: an error toast
+// The type drives the icon (via ui/icon), the data-type styling axis, and
+// the aria-live level: an error toast
 // announces assertively, every other type politely. description/action/
 // cancel are optional — an empty string renders the part absent, matching
 // the JS `toast(msg, { description, action, cancel })` option surface; the
-// action/cancel buttons carry the data-action/data-cancel hooks ui/sonner.js
-// wires clicks onto. A custom auto-dismiss is a data-duration attr passed
+// action/cancel buttons carry dedicated behavior hooks ui/sonner.js wires
+// clicks onto. A custom auto-dismiss is a data-duration attr passed
 // through attrs (ui/sonner.js reads it on adoption; loading defaults to no
 // auto-dismiss).
 component Toast(toastType string, title string, description string, action string, cancel string, attrs gsx.Attrs) {
@@ -38,58 +37,54 @@ component Toast(toastType string, title string, description string, action strin
 		}
 	}}
 	<li
-		data-slot="toast"
 		data-gsxui-toast
 		data-type={t}
 		role="status"
 		aria-live={ariaLive}
 		aria-atomic="true"
-		class="pointer-events-auto absolute bottom-6 right-6 flex w-[356px] items-start gap-3 rounded-2xl border border-border bg-popover p-4 text-sm text-popover-foreground shadow-lg origin-bottom transition-[transform,opacity] duration-300 ease-out data-[type=success]:[&>[data-icon]]:text-emerald-500 data-[type=info]:[&>[data-icon]]:text-sky-500 data-[type=warning]:[&>[data-icon]]:text-amber-500 data-[type=error]:[&>[data-icon]]:text-destructive"
-		{ attrs... }
+		{ withSlot("toast", attrs)... }
 	>
 		{ if t != "default" {
-			<div data-icon class="mt-0.5 shrink-0 [&>svg]:size-4">
-				{ switch t {
-				case "success":
-					<icon.CircleCheck/>
-				case "info":
-					<icon.Info/>
-				case "warning":
-					<icon.TriangleAlert/>
-				case "error":
-					<icon.OctagonX/>
-				case "loading":
-					<icon.LoaderCircle class="animate-spin"/>
-				} }
-			</div>
+			{ switch t {
+			case "success":
+				<icon.CircleCheck data-gsxui-toast-icon { withSlot("toast-icon", nil)... }/>
+			case "info":
+				<icon.Info data-gsxui-toast-icon { withSlot("toast-icon", nil)... }/>
+			case "warning":
+				<icon.TriangleAlert data-gsxui-toast-icon { withSlot("toast-icon", nil)... }/>
+			case "error":
+				<icon.OctagonX data-gsxui-toast-icon { withSlot("toast-icon", nil)... }/>
+			case "loading":
+				<icon.LoaderCircle data-gsxui-toast-icon { withSlot("toast-icon", nil)... }/>
+			} }
 		} }
-		<div data-content class="flex flex-1 flex-col gap-1">
-			<div data-title class="font-medium text-foreground">{ title }</div>
+		<div { withSlot("toast-content", nil)... }>
+			<div data-gsxui-toast-title { withSlot("toast-title", nil)... }>{ title }</div>
 			{ if description != "" {
-				<div data-description class="text-muted-foreground">{ description }</div>
+				<div data-gsxui-toast-description { withSlot("toast-description", nil)... }>{ description }</div>
 			} }
 		</div>
 		{ if action != "" {
 			<button
 				type="button"
-				data-action
-				class="shrink-0 self-center text-sm font-medium underline-offset-4 hover:underline"
+				data-gsxui-toast-action
+				{ withSlot("toast-action", nil)... }
 			>{ action }</button>
 		} }
 		{ if cancel != "" {
 			<button
 				type="button"
-				data-cancel
-				class="shrink-0 self-center text-sm text-muted-foreground underline-offset-4 hover:underline"
+				data-gsxui-toast-cancel
+				{ withSlot("toast-cancel", nil)... }
 			>{ cancel }</button>
 		} }
 		<button
 			type="button"
-			data-close-button
+			data-gsxui-toast-close
 			aria-label="Close"
-			class="absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm"
+			{ withSlot("toast-close", nil)... }
 		>
-			<icon.X class="size-3"/>
+			<icon.X { withSlot("toast-close-icon", nil)... }/>
 		</button>
 	</li>
 }
@@ -108,8 +103,8 @@ component Toast(toastType string, title string, description string, action strin
 // lands here and is adopted by a MutationObserver into the same stacking /
 // timer / dismiss lifecycle. It carries a stable id="gsxui-toaster" (caller-
 // overridable via attrs) so server OOB/partial appends have a fixed target,
-// and pointer-events-none so clicks fall through the empty gutter (each toast
-// re-enables pointer-events on itself).
+// and pointer events pass through the empty gutter (each toast re-enables
+// pointer events on itself through live lifecycle state).
 //
 // After the <ol> come six inert <template>s, one per type — the same idiom as
 // a server flash viewport's per-severity templates. ui/sonner.js clones the
@@ -121,10 +116,8 @@ component Toaster(attrs gsx.Attrs) {
 	<section aria-label="Notifications" tabindex="-1">
 		<ol
 			id="gsxui-toaster"
-			data-slot="toaster"
 			data-gsxui-toaster
-			class="pointer-events-none fixed z-100 flex flex-col gap-2 p-6 bottom-0 right-0"
-			{ attrs... }
+			{ withSlot("toaster", attrs)... }
 		></ol>
 		<template data-gsxui-toast-template="default">
 			<Toast toastType="default" title="Title" description="Description" action="Action" cancel="Cancel"/>

@@ -1111,21 +1111,23 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
 ## sonner
 - MECHANISM (server markup is the single source; the client CLONES it): the
   toast card is authored ONCE, server-side, as the `ui.Toast` component (the
-  `<li data-slot="toast">` with its classes, type icon via `ui/icon`, aria,
-  content, action/cancel, close button). `ui.Toaster` ships six inert
+  `<li data-gsxui-slot="toast" data-gsxui-toast>` with type icon via
+  `ui/icon`, aria, content, action/cancel, and close button). `ui.Toaster`
+  ships six inert
   `<template data-gsxui-toast-template="TYPE">`s (default/success/info/
   warning/error/loading), one per type, each wrapping a placeholder
   `ui.Toast`. `ui/sonner.js` no longer builds card DOM from string
   concatenation — its `build()` **clones** the matching type's template
-  content and fills/removes the `data-title`/`data-description`/
-  `[data-action]`/`[data-cancel]` parts, then owns the lifecycle (mount →
+  content and fills/removes the dedicated `data-gsxui-toast-title`/
+  `-description`/`-action`/`-cancel` parts, then owns the lifecycle (mount →
   stacking → dismiss timer → animated remove). This replaces the earlier
   first-client-constructed-DOM design: there is exactly one card code path
   (the Go component; the templates and every `ui.Toast` call render it),
-  never a JS copy. Pinned by `TestToasterPinned` (region id + six templates)
-  and the `TestToast*` pins in `ui/sonner_test.go`.
+  never a JS copy. Pinned by the `TestSonner*` render tests and the real
+  browser lifecycle probes in `jstest/specs/sonner.spec.ts`.
 - ADOPTION MECHANISM (this is what serves server-driven flashes): a
-  `MutationObserver` on the `<ol>` adopts ANY inserted `li[data-slot="toast"]`
+  `MutationObserver` on the `<ol>` adopts ANY inserted
+  `li[data-gsxui-toast]`
   not already owned by a record — assigns an id, reads `data-type` and
   optional `data-duration` (default `4000ms`, `loading` = `Infinity`), wires
   close/action/cancel + hover, and runs the enter animation. Rows present at
@@ -1140,24 +1142,23 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   `WeakSet` before insertion, so the observer never double-adopts a row
   `toast()` just built. The `<ol>` carries a stable `id="gsxui-toaster"`
   (caller-overridable via attrs) as the OOB/partial target.
-- SYNTHESIZED CLASSES (no Tailwind source upstream — the map IS the spec):
+- SYNTHESIZED STYLE (no Tailwind source upstream — the map IS the spec):
   shadcn's own `sonner.tsx` renders nothing but a re-themed `<Sonner>`
   passthrough; the toast library owns 100% of the toast DOM and ships its
   look from a **non-Tailwind** stylesheet (`sonner/dist/styles.css`) re-
   themed through four CSS custom properties. There is therefore no class
-  string to transcribe — the toast card's classes now live on the `ui.Toast`
-  component (`rounded-2xl border border-border bg-popover w-[356px]
-  text-popover-foreground shadow-lg`, type-tinted icons via
-  `data-[type=…]:[&>[data-icon]]:text-{emerald,sky,amber,destructive}`),
-  the synthesized spec from the wrapped source map's `## sonner`,
-  reconstructed to match our popover/card surfaces. This is a genuine
-  simplification (WIN): none of sonner's `--normal-bg`/`--normal-text`/
-  `--border-radius` indirection is reproduced — the surface tokens are
-  hardcoded Tailwind classes.
+  string to transcribe. The CSS-only theme contract exposes explicit
+  `toaster`, `toast`, icon/content/title/description/action/cancel/close,
+  and close-icon slots. Foundation owns only the fixed overlapping stack
+  mechanics; the default style owns card width, spacing, surfaces, border,
+  typography, controls, transition, and shape. Type-tinted icons use the
+  semantic `success`, `info`, `warning`, and `destructive` theme colors.
+  None of sonner's `--normal-bg`/`--normal-text`/`--border-radius`
+  indirection is reproduced.
 - DECISION (type-tinted icons are a house choice, not new-york-v4's literal
   default): shadcn's own `sonner.tsx` does NOT pass `richColors`, so strict
   new-york-v4 parity would render monochrome icons. The tinted convention
-  (emerald/sky/amber/destructive) tracks ui.shadcn.com's live nova site and
+  (success/info/warning/destructive) tracks ui.shadcn.com's live nova site and
   is more legible; a monochrome `text-foreground` alternative is equally
   defensible. Chosen deliberately per the brief, ledgered here.
 - ICON SEAM GONE (WIN): because the card is now server markup, its icons are

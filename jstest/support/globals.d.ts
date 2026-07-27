@@ -8,5 +8,7 @@ export type Registration = {
 declare global {
   interface Window {
     __gsxuiRegistrations: Registration[];
+    __sonnerAction: number;
+    __sonnerCancel: number;
   }
 }

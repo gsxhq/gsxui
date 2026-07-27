@@ -8,7 +8,7 @@
 //
 // Because the card is server markup, the same lifecycle is applied to rows
 // the SERVER inserts, not just JS-triggered ones. A MutationObserver on the
-// <ol> adopts any inserted `li[data-slot="toast"]` — so a full-page-load
+// <ol> adopts any inserted `li[data-gsxui-toast]` — so a full-page-load
 // flash rendered inline, an HTMX out-of-band swap
 // (`hx-swap-oob="beforeend:#gsxui-toaster"`), an HTMX partial append, or an
 // SSE-driven insert all animate/stack/auto-dismiss with ZERO HTMX-specific
@@ -42,8 +42,8 @@ const CLOSED_TRANSFORM = "translateY(20px) scale(0.9)";
 
 // --- State -----------------------------------------------------------------
 // A plain array of toast records (oldest first, newest last = the front),
-// NOT sonner's CSS-custom-property machine — we ship fixed Tailwind classes
-// and recompute the scale/translate stack per toast via inline style. A
+// NOT sonner's CSS-custom-property machine — we recompute the
+// scale/translate stack per toast via inline style. A
 // WeakSet marks every <li> already owned by a record, so the observer never
 // double-adopts a row the imperative API just inserted.
 const toasts = []; // { id, el, type, duration, remaining, timer, startedAt, onAction, onCancel }
@@ -69,13 +69,12 @@ function ol() {
     section.setAttribute("aria-label", "Notifications");
     section.tabIndex = -1;
     olEl = document.createElement("ol");
-    olEl.dataset.slot = "toaster";
+    olEl.dataset.gsxuiSlot = "toaster";
     olEl.setAttribute("data-gsxui-toaster", "");
     olEl.id = "gsxui-toaster";
-    olEl.className =
-      "pointer-events-none fixed z-100 flex flex-col gap-2 p-6 bottom-0 right-0";
     section.appendChild(olEl);
     document.body.appendChild(section);
+    if (observer) observer.observe(olEl, { childList: true });
   }
   return olEl;
 }
@@ -83,8 +82,8 @@ function ol() {
 // --- Template clone --------------------------------------------------------
 // The server ships one inert <template data-gsxui-toast-template="TYPE"> per
 // type inside ui.Toaster; each wraps a pre-rendered ui.Toast card. Cloning
-// the matching template is how a card is created — the card markup (classes,
-// icons, aria) is authored ONCE, in the Go ui.Toast component.
+// the matching template is how a card is created — the card markup (slots,
+// behavior hooks, icons, aria) is authored ONCE, in the Go ui.Toast component.
 function tpl(type) {
   return document.querySelector(
     `template[data-gsxui-toast-template="${type}"]`,
@@ -97,9 +96,9 @@ function tpl(type) {
 function setIconFromTemplate(el, type) {
   const template = tpl(type);
   const srcIcon = template
-    ? template.content.querySelector("[data-icon]")
+    ? template.content.querySelector("[data-gsxui-toast-icon]")
     : null;
-  const slot = el.querySelector("[data-icon]");
+  const slot = el.querySelector("[data-gsxui-toast-icon]");
   if (!srcIcon) {
     if (slot) slot.remove();
     return;
@@ -119,16 +118,16 @@ function build(rec, opts) {
   const el = template.content.firstElementChild.cloneNode(true);
   el.dataset.type = rec.type;
 
-  const title = el.querySelector("[data-title]");
+  const title = el.querySelector("[data-gsxui-toast-title]");
   if (title) title.textContent = opts.message ?? "";
 
-  const desc = el.querySelector("[data-description]");
+  const desc = el.querySelector("[data-gsxui-toast-description]");
   if (desc) {
     if (opts.description) desc.textContent = opts.description;
     else desc.remove();
   }
 
-  const actionBtn = el.querySelector("[data-action]");
+  const actionBtn = el.querySelector("[data-gsxui-toast-action]");
   if (actionBtn) {
     if (opts.action && opts.action.label) {
       actionBtn.textContent = opts.action.label;
@@ -138,7 +137,7 @@ function build(rec, opts) {
     }
   }
 
-  const cancelBtn = el.querySelector("[data-cancel]");
+  const cancelBtn = el.querySelector("[data-gsxui-toast-cancel]");
   if (cancelBtn) {
     if (opts.cancel && opts.cancel.label) {
       cancelBtn.textContent = opts.cancel.label;
@@ -157,10 +156,10 @@ function build(rec, opts) {
 // dismiss). Hover any toast → expand the whole stack + pause every timer;
 // leave → collapse + resume (debounced so crossing a gap doesn't flicker).
 function wire(el, rec) {
-  const close = el.querySelector("[data-close-button]");
+  const close = el.querySelector("[data-gsxui-toast-close]");
   if (close) close.addEventListener("click", () => dismiss(rec.id));
 
-  const actionBtn = el.querySelector("[data-action]");
+  const actionBtn = el.querySelector("[data-gsxui-toast-action]");
   if (actionBtn) {
     actionBtn.addEventListener("click", () => {
       emit(el, "gsxui:toast-action", { id: rec.id });
@@ -169,7 +168,7 @@ function wire(el, rec) {
     });
   }
 
-  const cancelBtn = el.querySelector("[data-cancel]");
+  const cancelBtn = el.querySelector("[data-gsxui-toast-cancel]");
   if (cancelBtn) {
     cancelBtn.addEventListener("click", () => {
       if (typeof rec.onCancel === "function") rec.onCancel();
@@ -387,7 +386,7 @@ function morph(id, type, message) {
   rec.type = type;
   rec.el.dataset.type = type;
   setIconFromTemplate(rec.el, type);
-  const title = rec.el.querySelector("[data-title]");
+  const title = rec.el.querySelector("[data-gsxui-toast-title]");
   if (title && message != null) title.textContent = message;
   clearTimeout(rec.timer);
   rec.timer = null;
@@ -470,7 +469,7 @@ const observer =
             if (
               node.nodeType === 1 &&
               node.matches &&
-              node.matches('li[data-slot="toast"]') &&
+              node.matches("li[data-gsxui-toast]") &&
               !registered.has(node)
             ) {
               adopt(node);
@@ -483,7 +482,7 @@ const observer =
 function init() {
   const region = ol();
   if (observer) observer.observe(region, { childList: true });
-  region.querySelectorAll('li[data-slot="toast"]').forEach((el) => {
+  region.querySelectorAll("li[data-gsxui-toast]").forEach((el) => {
     if (!registered.has(el)) adopt(el);
   });
 }
