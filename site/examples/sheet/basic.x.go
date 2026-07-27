@@ -10,11 +10,10 @@ import (
 )
 
 //line basic.gsx:8:1
-// Basic mirrors shadcn's own sheet demo shape: a right-side (the default
-// side) profile-edit drawer with a header/title/description and a footer
-// close button. Each trigger is one real Button carrying the sheet trigger
-// style slot plus Dialog's behavior/ARIA contract. The footer button is a
-// real Button carrying
+// Basic mirrors shadcn's default sheet demo: a right-side profile editor
+// with header, form fields, and footer. The trigger is one real Button
+// carrying the sheet trigger style slot plus Dialog's behavior/ARIA
+// contract. The footer button is a real Button carrying
 // data-gsxui-dialog-close directly rather than wrapped in SheetClose, for
 // the same button-in-button reason: SheetClose renders its own <button>,
 // and nesting a real Button inside it hits the exact HTML trap
@@ -23,34 +22,32 @@ import (
 // <ui.Button data-gsxui-dialog-close> idiom rather than nesting inside
 // DialogClose).
 
-//line basic.gsx:20:1
+//line basic.gsx:19:1
 func Basic() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:21:2
-		_gsxgw.S("<div class=\"flex gap-2\">")
-//line basic.gsx:22:2
+//line basic.gsx:20:2
 		_gsxgw.Node(ctx, ui.Sheet(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:23:3
+//line basic.gsx:21:3
 			_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Edit Profile")
 				return _gsxgw.Err()
 			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-trigger", Value: true}}, _gsxrt.Attrs{{Key: "data-gsxui-slot", Value: "sheet-trigger"}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
-//line basic.gsx:32:3
+//line basic.gsx:30:3
 			_gsxgw.Node(ctx, ui.SheetContent("", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:33:4
+//line basic.gsx:31:4
 				_gsxgw.Node(ctx, ui.SheetHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:34:5
+//line basic.gsx:32:5
 					_gsxgw.Node(ctx, ui.SheetTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Edit profile")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:35:5
+//line basic.gsx:33:5
 					_gsxgw.Node(ctx, ui.SheetDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Make changes to your profile here. Click save when you're done.")
@@ -58,11 +55,35 @@ func Basic() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:39:4
+//line basic.gsx:37:4
+				_gsxgw.S("<div class=\"grid gap-4 px-4\">")
+//line basic.gsx:38:5
+				_gsxgw.S("<div class=\"grid grid-cols-4 items-center gap-4\">")
+//line basic.gsx:39:6
+				_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+					_gsxgw.S("Name")
+					return _gsxgw.Err()
+				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "for", Value: "sheet-basic-name"}}, _gsxrt.Attrs{{Key: "class", Value: "text-right"}})))
+//line basic.gsx:40:6
+				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "sheet-basic-name"}}, _gsxrt.Attrs{{Key: "value", Value: "Pedro Duarte"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-3"}})))
+				_gsxgw.S("</div>")
+//line basic.gsx:42:5
+				_gsxgw.S("<div class=\"grid grid-cols-4 items-center gap-4\">")
+//line basic.gsx:43:6
+				_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+					_gsxgw.S("Username")
+					return _gsxgw.Err()
+				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "for", Value: "sheet-basic-username"}}, _gsxrt.Attrs{{Key: "class", Value: "text-right"}})))
+//line basic.gsx:44:6
+				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "sheet-basic-username"}}, _gsxrt.Attrs{{Key: "value", Value: "@peduarte"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-3"}})))
+				_gsxgw.S("</div></div>")
+//line basic.gsx:47:4
 				_gsxgw.Node(ctx, ui.SheetFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:40:5
-					_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line basic.gsx:48:5
+					_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Save changes")
 						return _gsxgw.Err()
@@ -73,51 +94,6 @@ func Basic() _gsxrt.Node {
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
-//line basic.gsx:44:2
-		_gsxgw.Node(ctx, ui.Sheet(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:45:3
-			_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-				_gsxgw := _gsxrt.W(_gsxw)
-				_gsxgw.S("Open top sheet")
-				return _gsxgw.Err()
-			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-trigger", Value: true}}, _gsxrt.Attrs{{Key: "data-gsxui-slot", Value: "sheet-trigger"}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
-//line basic.gsx:54:3
-			_gsxgw.Node(ctx, ui.SheetContent("top", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:54:31
-				_gsxgw.Node(ctx, ui.SheetTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-					_gsxgw := _gsxrt.W(_gsxw)
-					_gsxgw.S("Top sheet")
-					return _gsxgw.Err()
-				}), nil))
-				return _gsxgw.Err()
-			}), nil))
-			return _gsxgw.Err()
-		}), nil))
-//line basic.gsx:56:2
-		_gsxgw.Node(ctx, ui.Sheet(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:57:3
-			_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-				_gsxgw := _gsxrt.W(_gsxw)
-				_gsxgw.S("Open bottom sheet")
-				return _gsxgw.Err()
-			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-trigger", Value: true}}, _gsxrt.Attrs{{Key: "data-gsxui-slot", Value: "sheet-trigger"}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
-//line basic.gsx:66:3
-			_gsxgw.Node(ctx, ui.SheetContent("bottom", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:66:34
-				_gsxgw.Node(ctx, ui.SheetTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-					_gsxgw := _gsxrt.W(_gsxw)
-					_gsxgw.S("Bottom sheet")
-					return _gsxgw.Err()
-				}), nil))
-				return _gsxgw.Err()
-			}), nil))
-			return _gsxgw.Err()
-		}), nil))
-		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }

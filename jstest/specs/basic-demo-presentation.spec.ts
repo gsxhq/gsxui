@@ -84,7 +84,13 @@ const triggerDemos: TriggerDemo[] = [
     route: "sheet/basic",
     behaviorAttribute: "data-gsxui-dialog-trigger",
     triggerSlot: "sheet-trigger",
-    count: 3,
+    count: 1,
+  },
+  {
+    route: "sheet/directions",
+    behaviorAttribute: "data-gsxui-dialog-trigger",
+    triggerSlot: "sheet-trigger",
+    count: 4,
   },
   {
     route: "tooltip/basic",
