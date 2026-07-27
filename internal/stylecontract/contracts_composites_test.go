@@ -72,6 +72,7 @@ func TestCompositeContractsDeclareEverySlotAndPresentationAxis(t *testing.T) {
 					{Attribute: "data-orientation", Values: []string{"horizontal", "vertical"}},
 					{Attribute: "data-variant", Values: []string{"outline"}},
 					{Attribute: "data-size", Values: []string{"icon"}},
+					{Attribute: "disabled"},
 				}},
 				{Name: "carousel-control-label"},
 			},

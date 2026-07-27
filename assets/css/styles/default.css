@@ -2866,11 +2866,13 @@
   :where(
       [data-gsxui-slot~="resizable-handle"][aria-orientation="vertical"]
     ) {
+    width: 1px;
     @apply cursor-col-resize;
   }
   :where(
       [data-gsxui-slot~="resizable-handle"][aria-orientation="horizontal"]
     ) {
+    height: 1px;
     @apply cursor-row-resize;
   }
   :where([data-gsxui-slot~="resizable-handle-grip"]) {

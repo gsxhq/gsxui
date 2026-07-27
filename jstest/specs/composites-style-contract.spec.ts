@@ -8,6 +8,8 @@ test("Carousel keeps native-scroll mechanics and caller spacing overrides", asyn
   const viewport = page.locator("[data-gsxui-carousel-content]");
   const track = page.locator('[data-gsxui-slot~="carousel-track"]');
   const item = page.locator("[data-gsxui-carousel-item]").first();
+  const previous = page.locator("[data-gsxui-carousel-prev]");
+  const next = page.locator("[data-gsxui-carousel-next]");
 
   expect(
     await viewport.evaluate((el) => {
@@ -39,10 +41,14 @@ test("Carousel keeps native-scroll mechanics and caller spacing overrides", asyn
   });
 
   await expect(root).toHaveAttribute("data-current-index", "0");
-  await root.evaluate((el: HTMLElement & { gsxuiCarousel: { scrollTo(index: number): void } }) =>
-    el.gsxuiCarousel.scrollTo(1),
+  await expect(previous).toBeDisabled();
+  await expect(next).toBeEnabled();
+  await root.evaluate(
+    (el: HTMLElement & { gsxuiCarousel: { scrollTo(index: number): void } }) =>
+      el.gsxuiCarousel.scrollTo(4),
   );
-  await expect(root).toHaveAttribute("data-current-index", "1");
+  await expect(previous).toBeEnabled();
+  await expect(next).toBeDisabled();
 });
 
 test("registered vertical Carousel covers every oriented style slot", async ({ page }) => {
@@ -75,6 +81,15 @@ test("registered vertical Carousel covers every oriented style slot", async ({ p
   await expect
     .poll(() => track.evaluate((el) => getComputedStyle(el).flexDirection))
     .toBe("column");
+
+  const itemGeometry = await page
+    .locator("[data-gsxui-carousel-item]")
+    .evaluateAll((items) =>
+      items.slice(0, 2).map((item) => item.getBoundingClientRect().height),
+    );
+  expect(itemGeometry).toHaveLength(2);
+  expect(itemGeometry[0]).toBeCloseTo(100, 0);
+  expect(itemGeometry[1]).toBeCloseTo(100, 0);
 });
 
 test("Resizable consumes dynamic flex values and remains keyboard operable", async ({ page }) => {
@@ -95,6 +110,26 @@ test("Resizable consumes dynamic flex values and remains keyboard operable", asy
       return { basis: css.flexBasis, grow: css.flexGrow, overflow: css.overflow };
     }),
   ).toEqual({ basis: "0px", grow: "25", overflow: "hidden" });
+
+  await expect.poll(() => handle.evaluate((el) => el.getBoundingClientRect().width)).toBe(1);
+  await page.addStyleTag({
+    content: `
+      @layer components {
+        :where(
+          [data-gsxui-slot~="resizable-handle"][aria-orientation="vertical"]
+        ) {
+          width: 6px;
+        }
+      }
+    `,
+  });
+  await expect.poll(() => handle.evaluate((el) => el.getBoundingClientRect().width)).toBe(6);
+  expect(
+    await handle.evaluate((el) => {
+      const hitTarget = getComputedStyle(el, "::after");
+      return { flex: getComputedStyle(el).flex, hitTargetWidth: hitTarget.width };
+    }),
+  ).toEqual({ flex: "0 0 auto", hitTargetWidth: "4px" });
 
   await handle.focus();
   await page.keyboard.press("ArrowRight");
