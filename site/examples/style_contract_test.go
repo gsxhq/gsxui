@@ -26,6 +26,12 @@ type runtimeContractEntry struct {
 	Scenario  string `json:"scenario"`
 }
 
+const slotAttributePrefix = "data-gsxui-slot-"
+
+func slotAttribute(name string) string {
+	return slotAttributePrefix + name
+}
+
 var runtimeScenarioByComponent = map[string]string{
 	"alert-dialog":    "alert-dialog-lifecycle",
 	"combobox":        "combobox-lifecycle",
@@ -60,8 +66,8 @@ func TestRuntimeStyleContractManifestMatchesTypedContract(t *testing.T) {
 				want = append(want, runtimeContractEntry{
 					Component: component.RegistryName,
 					Slot:      slot.Name,
-					Attribute: "data-gsxui-slot",
-					Value:     slot.Name,
+					Attribute: slotAttribute(slot.Name),
+					Value:     "",
 					Scenario:  scenario,
 				})
 			}
@@ -181,30 +187,41 @@ func TestRegisteredExamplesCoverStyleContract(t *testing.T) {
 			return
 		}
 		walkElements(document, func(node *html.Node) {
-			slotText, ok := attribute(node, "data-gsxui-slot")
-			if !ok {
-				return
-			}
-			tokens := strings.Fields(slotText)
-			for _, token := range tokens {
-				emittedSlots[token] = struct{}{}
-				if _, ok := declaredSlots[token]; !ok {
-					t.Errorf("%s emits undeclared slot %q", source, token)
+			slots := make([]string, 0)
+			for _, attr := range node.Attr {
+				if !strings.HasPrefix(attr.Key, slotAttributePrefix) {
+					continue
 				}
+				slot := strings.TrimPrefix(attr.Key, slotAttributePrefix)
+				if slot == "" {
+					t.Errorf("%s emits empty slot marker %q", source, attr.Key)
+					continue
+				}
+				if attr.Val != "" {
+					t.Errorf("%s emits valued slot marker %s=%q", source, attr.Key, attr.Val)
+				}
+				slots = append(slots, slot)
+				emittedSlots[slot] = struct{}{}
+				if _, ok := declaredSlots[slot]; !ok {
+					t.Errorf("%s emits undeclared slot %q", source, slot)
+				}
+			}
+			if len(slots) == 0 {
+				return
 			}
 
 			for _, attr := range node.Attr {
 				if _, isAxis := axisAttributes[attr.Key]; !isAxis {
 					continue
 				}
-				if rejectsUnownedCustomAxis(tokens, attr.Key, axisAttributes, declaredSlots) {
+				if rejectsUnownedCustomAxis(slots, attr.Key, axisAttributes, declaredSlots) {
 					t.Errorf(
 						"%s emits globally known custom axis %s=%q on slots %q, but none owns the attribute",
-						source, attr.Key, attr.Val, slotText,
+						source, attr.Key, attr.Val, slots,
 					)
 				}
-				for _, token := range tokens {
-					slot, declared := declaredSlots[token]
+				for _, name := range slots {
+					slot, declared := declaredSlots[name]
 					if !declared {
 						continue
 					}
@@ -215,16 +232,16 @@ func TestRegisteredExamplesCoverStyleContract(t *testing.T) {
 						if axis.Values != nil && !slices.Contains(axis.Values, attr.Val) {
 							t.Errorf(
 								"%s slot %q emits %s=%q; declared values are %v",
-								source, token, attr.Key, attr.Val, axis.Values,
+								source, name, attr.Key, attr.Val, axis.Values,
 							)
 						}
-						if emittedValues[token] == nil {
-							emittedValues[token] = make(map[string]map[string]struct{})
+						if emittedValues[name] == nil {
+							emittedValues[name] = make(map[string]map[string]struct{})
 						}
-						if emittedValues[token][attr.Key] == nil {
-							emittedValues[token][attr.Key] = make(map[string]struct{})
+						if emittedValues[name][attr.Key] == nil {
+							emittedValues[name][attr.Key] = make(map[string]struct{})
 						}
-						emittedValues[token][attr.Key][attr.Val] = struct{}{}
+						emittedValues[name][attr.Key][attr.Val] = struct{}{}
 					}
 				}
 			}
@@ -326,13 +343,4 @@ func walkElements(node *html.Node, visit func(*html.Node)) {
 	for child := node.FirstChild; child != nil; child = child.NextSibling {
 		walkElements(child, visit)
 	}
-}
-
-func attribute(node *html.Node, name string) (string, bool) {
-	for _, attr := range node.Attr {
-		if attr.Key == name {
-			return attr.Val, true
-		}
-	}
-	return "", false
 }

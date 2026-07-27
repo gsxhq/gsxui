@@ -46,9 +46,13 @@ test-css-audit:
 	node --test jstest/support/compiled-css-audit.test.ts
 
 audit:
-	@! rg -n '^[[:space:]]*<[^>]*data-slot=|^[[:space:]]+data-slot=' ui site/examples site/pages web dev -g '!*.x.go' -g '!*.gen.go'
+	@! rg -n '^[[:space:]]*<[^>]*data-slot=|^[[:space:]]+data-slot=' ui site/examples site/pages web -g '!*.x.go' -g '!*.gen.go'
 	@! rg -n 'data-slot|className[[:space:]]*=|[.]classList|setAttribute[(][^)]*class|[.]className[[:space:]]*=' ui -g '*.js'
 	@! rg -n 'data-slot|group/|peer/|(group|peer)-(data|has|focus|hover|active|disabled|aria|open|checked)[^[:space:]]*/' ui -g '*.gsx'
+	@! rg -n -P '\bwithSlot[[:space:]]*\(|\bslotattr[[:space:]]*\.[[:space:]]*With[[:space:]]*\(' ui -g '*.gsx'
+	@! rg -n -U -P '(?s)<[^>]*\bdata-gsxui-slot(?=[[:space:]]*(?:=|/?>))' ui site/examples site/pages web -g '*.gsx' -g '!*.x.go' -g '!*.gen.go'
+	@! rg -n -P '(?:\bKey[[:space:]]*:[[:space:]]*|[.]SetAttribute\([[:space:]]*|\bsetAttribute\([[:space:]]*)["\x27\x60]data-gsxui-slot["\x27\x60]' ui site/examples site/pages web -g '*.go' -g '*.js' -g '!*.x.go' -g '!*.gen.go' -g '!*_test.go'
+	@! rg -n -P '\[[[:space:]]*data-gsxui-slot(?=[[:space:]]*(?:[~|^$*]?=|\]))' assets/css site web -g '*.css'
 	@! rg -n -P '[\w./:\[\]&>-]+!' ui -g '*.gsx'
 	@! rg -n '^[[:space:]]+class=' ui -g '*.gsx'
 	@! rg -n '^[[:space:]]*<[^>]*class=' ui -g '*.gsx'

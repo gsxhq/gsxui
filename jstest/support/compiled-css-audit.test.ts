@@ -31,15 +31,21 @@ test("rejects an important utility declaration", () => {
   assert.equal(violations[0].count, 1);
 });
 
-test("rejects legacy slot selectors without rejecting the gsxui slot namespace", () => {
+test("rejects legacy and packed slot selectors without rejecting presence selectors", () => {
   const violations = compiledCSSViolations(`
     [data-slot="button"] { display: inline-flex; }
     [data-gsxui-slot~="button"] { display: inline-flex; }
+    [data-gsxui-slot-button] { display: inline-flex; }
   `);
 
-  assert.equal(violations.length, 1);
+  assert.equal(violations.length, 2);
   assert.equal(violations[0].label, "legacy [data-slot selector");
   assert.equal(violations[0].count, 1);
+  assert.equal(
+    violations[1].label,
+    "obsolete packed [data-gsxui-slot] selector",
+  );
+  assert.equal(violations[1].count, 1);
 });
 
 test("rejects important declarations hidden behind the preflight selector", () => {

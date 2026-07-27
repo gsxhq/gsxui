@@ -23,14 +23,26 @@ function isTailwindHiddenPreflight(declaration: Declaration): boolean {
   );
 }
 
+function selectorUsesAttribute(selector: string, attribute: string): boolean {
+  const attributeSelector = new RegExp(
+    String.raw`\[\s*${attribute}(?=\s*(?:[~|^$*]?=|\]))`,
+    "i",
+  );
+  return attributeSelector.test(selector);
+}
+
 export function compiledCSSViolations(css: string): CompiledCSSViolation[] {
   const root = parse(css);
   const legacySlots: string[] = [];
+  const packedGSXUISlots: string[] = [];
   const importantDeclarations: string[] = [];
 
   root.walkRules((rule) => {
-    if (/\[data-slot(?:[~|^$*]?=|\])/.test(rule.selector)) {
+    if (selectorUsesAttribute(rule.selector, "data-slot")) {
       legacySlots.push(rule.selector);
+    }
+    if (selectorUsesAttribute(rule.selector, "data-gsxui-slot")) {
+      packedGSXUISlots.push(rule.selector);
     }
   });
   root.walkDecls((declaration) => {
@@ -48,6 +60,11 @@ export function compiledCSSViolations(css: string): CompiledCSSViolation[] {
       label: "legacy [data-slot selector",
       count: legacySlots.length,
       samples: [...new Set(legacySlots)].slice(0, 3),
+    },
+    {
+      label: "obsolete packed [data-gsxui-slot] selector",
+      count: packedGSXUISlots.length,
+      samples: [...new Set(packedGSXUISlots)].slice(0, 3),
     },
     {
       label: "!important declaration",
