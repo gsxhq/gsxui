@@ -1141,13 +1141,16 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   one-viewport-per-page server-flash model (a
   fixed `ui.Toaster` mounted once, appends flowing in from the server on full
   loads and partials alike). Explicit element-to-record ownership makes
-  imperative insertion, reconciliation, and DOM moves idempotent. Rebinding
-  disconnects the old region observer, aborts its record listeners, clears
-  timers/removal caps, removes stale targets, and adopts the replacement's
-  rows once. A tracked fallback yields to a later server region by object
-  identity, without adding a private DOM marker. The `<ol>` carries a stable
-  `id="gsxui-toaster"` (caller-overridable via attrs) as the OOB/partial
-  target.
+  imperative insertion, reconciliation, and DOM moves idempotent. Imperative
+  `show()` first resolves and binds one active region, then builds, owns,
+  wires, and appends its row through that captured region identity. This
+  ordering keeps same-turn server removal/replacement from disposing a new
+  unconnected record during rebinding. Rebinding disconnects the old region
+  observer, aborts its record listeners, clears timers/removal caps, removes
+  stale targets, and adopts the replacement's rows once. A tracked fallback
+  yields to a later server region by object identity, without adding a private
+  DOM marker. The `<ol>` carries a stable `id="gsxui-toaster"`
+  (caller-overridable via attrs) as the OOB/partial target.
 - SYNTHESIZED STYLE (no Tailwind source upstream — the map IS the spec):
   shadcn's own `sonner.tsx` renders nothing but a re-themed `<Sonner>`
   passthrough; the toast library owns 100% of the toast DOM and ships its

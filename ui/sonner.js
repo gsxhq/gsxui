@@ -430,6 +430,9 @@ function byId(id) {
 }
 
 function show(opts) {
+  // Region binding reconciles and disposes ownership from the previous
+  // viewport, so it must finish before this toast creates its record.
+  const region = ol();
   const type = opts.type || "default";
   const rec = {
     id: opts.id ?? ++uid,
@@ -451,7 +454,7 @@ function show(opts) {
   records.set(rec.el, rec); // own BEFORE insertion so the observer skips it
   toasts.push(rec);
   wire(rec.el, rec);
-  ol().appendChild(rec.el);
+  region.appendChild(rec.el);
   enter(rec.el);
   return rec.id;
 }

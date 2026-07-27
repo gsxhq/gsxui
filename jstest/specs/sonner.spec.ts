@@ -1,6 +1,89 @@
+import type { Page } from "@playwright/test";
+
 import { expect, test } from "../support/fixtures";
 
 const route = "/x/sonner/types";
+
+async function expectSameTurnToastLifecycle(page: Page, label: string) {
+  const card = page.locator(`[data-same-turn-toast="${label}"]`);
+  await expect(card).toHaveAttribute("data-state", "open");
+  await expect(card).toHaveAttribute("data-visible", "true");
+  expect(
+    await card.evaluate((element) => {
+      const probe = (window as any).__sonnerSameTurnProbe;
+      const row = element as HTMLElement;
+      return {
+        expectedParent: row.parentElement === probe.expectedRegion,
+        opacity: row.style.opacity,
+        transform: row.style.transform,
+        pointerEvents: row.style.pointerEvents,
+      };
+    }),
+  ).toEqual({
+    expectedParent: true,
+    opacity: "1",
+    transform: "translateY(0px) scale(1)",
+    pointerEvents: "auto",
+  });
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => (window as any).__sonnerSameTurnProbe.activeTimers.size,
+      ),
+    )
+    .toBe(1);
+  expect(
+    await page.evaluate(
+      () => (window as any).__sonnerSameTurnProbe.createdTimers,
+    ),
+  ).toBe(1);
+
+  await page.evaluate(() => {
+    const probe = (window as any).__sonnerSameTurnProbe;
+    probe.row.addEventListener("gsxui:toast-action", () => {
+      probe.directActionEvents++;
+    });
+    probe.actionButton.click();
+  });
+  await expect
+    .poll(() =>
+      page.evaluate(() => (window as any).__sonnerSameTurnProbe.actionCalls),
+    )
+    .toBe(1);
+  await expect
+    .poll(() =>
+      page.evaluate(() => (window as any).__sonnerSameTurnProbe.actionEvents),
+    )
+    .toBe(1);
+  await expect(card).toHaveCount(0);
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => (window as any).__sonnerSameTurnProbe.activeTimers.size,
+      ),
+    )
+    .toBe(0);
+
+  await page.evaluate(() => {
+    (window as any).__sonnerSameTurnProbe.actionButton.click();
+  });
+  expect(
+    await page.evaluate(() => {
+      const probe = (window as any).__sonnerSameTurnProbe;
+      return {
+        actionCalls: probe.actionCalls,
+        directActionEvents: probe.directActionEvents,
+        connected: probe.row.isConnected,
+        parent: probe.row.parentNode,
+      };
+    }),
+  ).toEqual({
+    actionCalls: 1,
+    directActionEvents: 1,
+    connected: false,
+    parent: null,
+  });
+}
 
 test("fallback toaster matches the server region contract", async ({ page }) => {
   await page.goto(route);
@@ -376,6 +459,174 @@ test("region replacement reconciles nested adoption without duplicate ownership"
       page.evaluate(() => (window as any).__sonnerTimerProbe.active.size),
     )
     .toBe(0);
+});
+
+test("same-turn server removal binds imperative ownership to the fallback", async ({
+  page,
+}) => {
+  await page.goto(route);
+  await page.evaluate(() => {
+    const nativeSetTimeout = window.setTimeout.bind(window);
+    const nativeClearTimeout = window.clearTimeout.bind(window);
+    const activeTimers = new Set<number>();
+    let createdTimers = 0;
+    window.setTimeout = ((handler: TimerHandler, timeout?: number, ...args: unknown[]) => {
+      const id = nativeSetTimeout(handler, timeout, ...args);
+      if (timeout != null && timeout >= 59_000) {
+        activeTimers.add(id);
+        createdTimers++;
+      }
+      return id;
+    }) as typeof window.setTimeout;
+    window.clearTimeout = ((id?: number) => {
+      if (id != null) activeTimers.delete(id);
+      nativeClearTimeout(id);
+    }) as typeof window.clearTimeout;
+
+    const retiredRegion = document.querySelector<HTMLElement>(
+      "[data-gsxui-toaster]",
+    )!;
+    retiredRegion.remove();
+
+    const probe = {
+      activeTimers,
+      get createdTimers() {
+        return createdTimers;
+      },
+      actionCalls: 0,
+      actionEvents: 0,
+      directActionEvents: 0,
+      retiredRegion,
+      expectedRegion: null as HTMLElement | null,
+      row: null as HTMLElement | null,
+      actionButton: null as HTMLButtonElement | null,
+    };
+    (window as any).__sonnerSameTurnProbe = probe;
+    document.addEventListener("gsxui:toast-action", () => {
+      probe.actionEvents++;
+    });
+
+    window.gsxui.toast.success("Same-turn fallback", {
+      duration: 60_000,
+      action: {
+        label: "Act",
+        onClick: () => {
+          probe.actionCalls++;
+        },
+      },
+    });
+    probe.expectedRegion = document.querySelector("[data-gsxui-toaster]")!;
+    probe.row = probe.expectedRegion.querySelector("li[data-gsxui-toast]")!;
+    probe.row.dataset.sameTurnToast = "fallback";
+    probe.actionButton = probe.row.querySelector("[data-gsxui-toast-action]")!;
+  });
+
+  await expect(page.locator("[data-gsxui-toaster]")).toHaveCount(1);
+  expect(
+    await page.evaluate(() => {
+      const probe = (window as any).__sonnerSameTurnProbe;
+      return {
+        regionConnected: probe.expectedRegion.isConnected,
+        retiredConnected: probe.retiredRegion.isConnected,
+      };
+    }),
+  ).toEqual({
+    regionConnected: true,
+    retiredConnected: false,
+  });
+  await expectSameTurnToastLifecycle(page, "fallback");
+});
+
+test("same-turn server insertion moves imperative ownership off the fallback", async ({
+  page,
+}) => {
+  await page.goto(route);
+  await page.evaluate(() => {
+    const retiredRegion = document.querySelector<HTMLElement>(
+      "[data-gsxui-toaster]",
+    )!;
+    (window as any).__sonnerRetiredRegion = retiredRegion;
+    retiredRegion.remove();
+  });
+  await expect(page.locator("[data-gsxui-toaster]")).toHaveCount(1);
+
+  await page.evaluate(() => {
+    const nativeSetTimeout = window.setTimeout.bind(window);
+    const nativeClearTimeout = window.clearTimeout.bind(window);
+    const activeTimers = new Set<number>();
+    let createdTimers = 0;
+    window.setTimeout = ((handler: TimerHandler, timeout?: number, ...args: unknown[]) => {
+      const id = nativeSetTimeout(handler, timeout, ...args);
+      if (timeout != null && timeout >= 59_000) {
+        activeTimers.add(id);
+        createdTimers++;
+      }
+      return id;
+    }) as typeof window.setTimeout;
+    window.clearTimeout = ((id?: number) => {
+      if (id != null) activeTimers.delete(id);
+      nativeClearTimeout(id);
+    }) as typeof window.clearTimeout;
+
+    const fallbackRegion = document.querySelector<HTMLElement>(
+      "[data-gsxui-toaster]",
+    )!;
+    const section = document.createElement("section");
+    section.setAttribute("aria-label", "Notifications");
+    section.tabIndex = -1;
+    const serverRegion = document.createElement("ol");
+    serverRegion.id = "gsxui-toaster";
+    serverRegion.dataset.gsxuiSlot = "toaster";
+    serverRegion.setAttribute("data-gsxui-toaster", "");
+    section.append(serverRegion);
+    document.body.append(section);
+
+    const probe = {
+      activeTimers,
+      get createdTimers() {
+        return createdTimers;
+      },
+      actionCalls: 0,
+      actionEvents: 0,
+      directActionEvents: 0,
+      fallbackRegion,
+      expectedRegion: serverRegion,
+      row: null as HTMLElement | null,
+      actionButton: null as HTMLButtonElement | null,
+    };
+    (window as any).__sonnerSameTurnProbe = probe;
+    document.addEventListener("gsxui:toast-action", () => {
+      probe.actionEvents++;
+    });
+
+    window.gsxui.toast.success("Same-turn server", {
+      duration: 60_000,
+      action: {
+        label: "Act",
+        onClick: () => {
+          probe.actionCalls++;
+        },
+      },
+    });
+    probe.row = serverRegion.querySelector("li[data-gsxui-toast]")!;
+    probe.row.dataset.sameTurnToast = "server";
+    probe.actionButton = probe.row.querySelector("[data-gsxui-toast-action]")!;
+  });
+
+  await expect(page.locator("[data-gsxui-toaster]")).toHaveCount(1);
+  expect(
+    await page.evaluate(() => {
+      const probe = (window as any).__sonnerSameTurnProbe;
+      return {
+        regionConnected: probe.expectedRegion.isConnected,
+        fallbackConnected: probe.fallbackRegion.isConnected,
+      };
+    }),
+  ).toEqual({
+    regionConnected: true,
+    fallbackConnected: false,
+  });
+  await expectSameTurnToastLifecycle(page, "server");
 });
 
 test("controls, promise morph, queue, expansion, and dismiss keep working", async ({
