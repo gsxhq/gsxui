@@ -106,27 +106,7 @@ func inspectRecipeTokens(filename string, src []byte, recipes *Recipes) (inspect
 		recipes:  recipes,
 		used:     make(map[string]struct{}),
 	}
-	gsxast.Inspect(file, func(node gsxast.Node) bool {
-		if r.err != nil {
-			return false
-		}
-		switch node := node.(type) {
-		case *gsxast.ClassAttr:
-			r.inspectClassAttr(node)
-			return false
-		case *gsxast.StaticAttr:
-			r.inspectStaticAttr(node)
-		case *gsxast.ExprAttr:
-			r.inspectNonClassExpr(node.Expr, node.ExprPos, node.Name)
-		case *gsxast.EmbeddedAttr:
-			r.inspectEmbeddedAttr(node)
-			return false
-		case *gsxast.Interp:
-			r.inspectNonClassExpr(node.Expr, node.ExprPos, "interpolation")
-			r.inspectPipelineStages(node.Stages, "interpolation pipeline stage")
-		}
-		return r.err == nil
-	})
+	gsxast.Inspect(file, r.inspectNode)
 	if r.err != nil {
 		return inspectionResult{}, r.err
 	}
@@ -137,6 +117,32 @@ func inspectRecipeTokens(filename string, src []byte, recipes *Recipes) (inspect
 	}
 	sort.Strings(tokens)
 	return inspectionResult{tokens: tokens, edits: r.edits}, nil
+}
+
+func (r *resolver) inspectNode(node gsxast.Node) bool {
+	if r.err != nil {
+		return false
+	}
+	switch node := node.(type) {
+	case *gsxast.ClassAttr:
+		r.inspectClassAttr(node)
+		return false
+	case *gsxast.StaticAttr:
+		r.inspectStaticAttr(node)
+	case *gsxast.ExprAttr:
+		r.inspectNonClassExpr(node.Expr, node.ExprPos, node.Name)
+	case *gsxast.EmbeddedAttr:
+		r.inspectEmbeddedAttr(node)
+		return false
+	case *gsxast.EmbeddedInterp:
+		r.inspectEmbeddedSegments(node.Segments, node.Pos(), "embedded interpolation")
+		r.inspectPipelineStages(node.Stages, "embedded interpolation pipeline stage")
+		return false
+	case *gsxast.Interp:
+		r.inspectNonClassExpr(node.Expr, node.ExprPos, "interpolation")
+		r.inspectPipelineStages(node.Stages, "interpolation pipeline stage")
+	}
+	return r.err == nil
 }
 
 func (r *resolver) inspectClassAttr(attr *gsxast.ClassAttr) {
@@ -288,28 +294,79 @@ func (r *resolver) inspectNonClassExpr(expr string, exprPos token.Pos, context s
 	if r.err != nil || expr == "" {
 		return
 	}
-	parsed, err := goparser.ParseExpr(expr)
-	if err != nil {
-		r.err = r.positionedError(exprPos, "cannot parse non-class %s expression: %v", context, err)
-		return
-	}
-	if recipe, ok := recipeLiteralInExpr(parsed); ok {
-		r.err = r.positionedError(exprPos, "recipe token %q appears in non-class %s expression", recipe, context)
-	}
+	r.inspectNonClassGo(expr, exprPos, context, false)
 }
 
 func (r *resolver) inspectNonClassExprList(exprs string, exprPos token.Pos, context string) {
 	if r.err != nil || exprs == "" {
 		return
 	}
-	parsed, err := goparser.ParseExpr("scan(" + exprs + ")")
-	if err != nil {
-		r.err = r.positionedError(exprPos, "cannot parse non-class %s expression list: %v", context, err)
+	r.inspectNonClassGo(exprs, exprPos, context, true)
+}
+
+func (r *resolver) inspectNonClassGo(src string, srcPos token.Pos, context string, expressionList bool) goast.Expr {
+	parse := func(value string) (goast.Expr, error) {
+		if expressionList {
+			value = "scan(" + value + ")"
+		}
+		return goparser.ParseExpr(value)
+	}
+
+	parsed, err := parse(src)
+	if err == nil {
+		r.rejectRecipeInNonClassExpr(parsed, srcPos, context)
+		return parsed
+	}
+
+	parts, splitErrs := gsxparser.SplitGoExprElements(r.fset, src, srcPos, nil)
+	if len(splitErrs) != 0 {
+		first := splitErrs[0]
+		r.err = r.positionedError(first.Pos, "cannot parse non-class %s expression: %s", context, first.Msg)
+		return nil
+	}
+	if len(parts) == 0 {
+		// The containing file already passed the public GSX parser. Some raw GSX
+		// metadata is intentionally not a standalone Go expression, so a failed
+		// go/parser.ParseExpr is not itself grounds for rejecting valid GSX.
+		return nil
+	}
+
+	normalized := normalizeGoParts(parts)
+	parsed, err = parse(normalized)
+	if err == nil {
+		r.rejectRecipeInNonClassExpr(parsed, srcPos, context)
+	}
+	for _, part := range parts {
+		if _, ok := part.(gsxast.GoText); ok {
+			continue
+		}
+		gsxast.Inspect(part, r.inspectNode)
+		if r.err != nil {
+			return parsed
+		}
+	}
+	return parsed
+}
+
+func (r *resolver) rejectRecipeInNonClassExpr(expr goast.Expr, exprPos token.Pos, context string) {
+	if r.err != nil || expr == nil {
 		return
 	}
-	if recipe, ok := recipeLiteralInExpr(parsed); ok {
+	if recipe, ok := recipeLiteralInExpr(expr); ok {
 		r.err = r.positionedError(exprPos, "recipe token %q appears in non-class %s expression", recipe, context)
 	}
+}
+
+func normalizeGoParts(parts []gsxast.GoPart) string {
+	var normalized strings.Builder
+	for _, part := range parts {
+		if text, ok := part.(gsxast.GoText); ok {
+			normalized.WriteString(text.Src)
+			continue
+		}
+		normalized.WriteString("gsxDialectValue")
+	}
+	return normalized.String()
 }
 
 func (r *resolver) inspectPipelineStages(stages []gsxast.PipeStage, context string) {
@@ -376,23 +433,17 @@ func (r *resolver) inspectEmbeddedSegments(segments []gsxast.Markup, pos token.P
 		case *gsxast.Text:
 			assembled.WriteString(segment.Value)
 		case *gsxast.Interp:
-			parsed, err := goparser.ParseExpr(segment.Expr)
-			if err != nil {
-				r.err = r.positionedError(segment.ExprPos, "cannot parse non-class %s expression: %v", context, err)
-				return
-			}
-			if recipe, ok := recipeLiteralInExpr(parsed); ok {
-				r.err = r.positionedError(
-					segment.ExprPos,
-					"recipe token %q must be a whole class string literal; found in non-class %s",
-					recipe,
-					context,
-				)
+			parsed := r.inspectNonClassGo(segment.Expr, segment.ExprPos, context, false)
+			if r.err != nil {
 				return
 			}
 			r.inspectPipelineStages(segment.Stages, context+" pipeline stage")
 			if r.err != nil {
 				return
+			}
+			if parsed == nil {
+				assembled.Reset()
+				continue
 			}
 			prefix, suffix, fullyConstant := constantBoundaryFragments(parsed)
 			assembled.WriteString(prefix)

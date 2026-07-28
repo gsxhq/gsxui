@@ -193,20 +193,108 @@ func TestRecipeTokensRejectsRecipeUseOutsideClassValues(t *testing.T) {
 	}
 }
 
-func TestRecipeTokensRejectsUnparseableSupportedMetadata(t *testing.T) {
+func TestResolveAcceptsElementValuedExpressions(t *testing.T) {
 	t.Parallel()
 
-	src := []byte(resolveComponent(`<div data-value={x := 1}></div>`))
-	if _, err := gsxparser.ParseFile(token.NewFileSet(), "unparseable-metadata.gsx", src, 0); err != nil {
-		t.Fatalf("fixture must reach resolver metadata validation: %v", err)
+	tests := []struct {
+		name string
+		body string
+		want string
+	}{
+		{
+			name: "element-valued attribute",
+			body: `<div title={<strong>Bold</strong>}></div>`,
+			want: `<strong>Bold</strong>`,
+		},
+		{
+			name: "element-valued call argument",
+			body: `{wrap(<b>hi</b>)}`,
+			want: `wrap(<b>hi</b>)`,
+		},
 	}
-	if _, err := RecipeTokens("unparseable-metadata.gsx", src); err == nil {
-		t.Fatal("RecipeTokens() error = nil, want metadata parse error")
-	} else if !strings.Contains(err.Error(), "parse") {
-		t.Errorf("RecipeTokens() error %q does not identify metadata parse failure", err)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			src := []byte(resolveComponent(tt.body))
+			if _, err := gsxparser.ParseFile(token.NewFileSet(), "element-valued.gsx", src, 0); err != nil {
+				t.Fatalf("fixture does not parse: %v", err)
+			}
+			tokens, err := RecipeTokens("element-valued.gsx", src)
+			if err != nil {
+				t.Fatalf("RecipeTokens() error = %v", err)
+			}
+			if len(tokens) != 0 {
+				t.Fatalf("RecipeTokens() = %q, want none", tokens)
+			}
+			got, report, err := Resolve("element-valued.gsx", src, Recipes{})
+			if err != nil {
+				t.Fatalf("Resolve() error = %v", err)
+			}
+			if len(report.UsedTokens) != 0 {
+				t.Errorf("ResolveReport.UsedTokens = %q, want none", report.UsedTokens)
+			}
+			if !bytes.Contains(got, []byte(tt.want)) {
+				t.Errorf("Resolve() output does not preserve %q:\n%s", tt.want, got)
+			}
+			if bytes.Contains(got, []byte(RecipePrefix)) {
+				t.Errorf("Resolve() output still contains %q", RecipePrefix)
+			}
+		})
 	}
-	if got, _, err := Resolve("unparseable-metadata.gsx", src, Recipes{}); err == nil {
-		t.Fatalf("Resolve() = %s, nil error; want metadata parse error", got)
+}
+
+func TestRecipeTokensRejectsRecipeUseInsideElementValuedExpressions(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name string
+		body string
+		want string
+	}{
+		{
+			name: "nested element attribute",
+			body: `<div title={<strong data-token={"gsxui-recipe-button"}>Bold</strong>}></div>`,
+			want: "data-token",
+		},
+		{
+			name: "nested element interpolation",
+			body: `{wrap(<b>{"gsxui-recipe-button"}</b>)}`,
+			want: "interpolation",
+		},
+		{
+			name: "go argument beside element",
+			body: `{wrap("gsxui-recipe-button", <b>hi</b>)}`,
+			want: "interpolation",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			filename := "element-valued-recipe.gsx"
+			source := []byte(resolveComponent(tt.body))
+			if _, err := gsxparser.ParseFile(token.NewFileSet(), filename, source, 0); err != nil {
+				t.Fatalf("fixture does not parse: %v", err)
+			}
+			if _, err := RecipeTokens(filename, source); err == nil {
+				t.Fatal("RecipeTokens() error = nil, want structural recipe-use error")
+			} else {
+				for _, want := range []string{"recipe token", tt.want} {
+					if !strings.Contains(err.Error(), want) {
+						t.Errorf("RecipeTokens() error %q does not contain %q", err, want)
+					}
+				}
+			}
+			got, _, err := Resolve(filename, source, Recipes{})
+			if err == nil {
+				t.Fatal("Resolve() error = nil, want structural recipe-use error")
+			}
+			if !strings.Contains(err.Error(), "recipe token") {
+				t.Errorf("Resolve() error %q does not identify recipe-token misuse", err)
+			}
+			if bytes.Contains(got, []byte(RecipePrefix)) {
+				t.Errorf("Resolve() returned output containing %q: %s", RecipePrefix, got)
+			}
+		})
 	}
 }
 
