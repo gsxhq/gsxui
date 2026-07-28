@@ -1,17 +1,22 @@
 package cli
 
 import (
+	"bytes"
+	"io/fs"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	gsxui "github.com/gsxhq/gsxui"
+	"github.com/gsxhq/gsxui/internal/preset"
 )
 
-// TestEndToEnd exercises the real flow: temp module → init → add dialog →
-// go build. Needs network (go get) and the real gsx toolchain; skipped with
-// -short.
-func TestEndToEnd(t *testing.T) {
+// TestE2E exercises the real flow: temp module → init → Button style
+// round-trip → add Dialog → go build. It needs network (go get) and the real
+// gsx toolchain; skipped with -short.
+func TestE2E(t *testing.T) {
 	if testing.Short() {
 		t.Skip("network-dependent e2e; run without -short")
 	}
@@ -28,6 +33,43 @@ func TestEndToEnd(t *testing.T) {
 	if err := Run([]string{"init"}); err != nil {
 		t.Fatal(err)
 	}
+	if err := Run([]string{"add", "button"}); err != nil {
+		t.Fatal(err)
+	}
+	if err := Run([]string{
+		"apply",
+		"--preset", presetCode(t, preset.Default(preset.StyleMaia)),
+		"--yes",
+	}); err != nil {
+		t.Fatal(err)
+	}
+	maiaButton, err := fs.ReadFile(gsxui.Files, "registry/generated/maia/button.gsx")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got, err := os.ReadFile(filepath.Join(dir, "ui", "button.gsx")); err != nil {
+		t.Fatal(err)
+	} else if !bytes.Equal(got, maiaButton) {
+		t.Fatal("e2e apply did not install exact Maia Button")
+	}
+	mustRun(t, dir, "go", "build", "./...")
+	if err := Run([]string{
+		"apply",
+		"--preset", presetCode(t, preset.Default(preset.StyleNova)),
+		"--yes",
+	}); err != nil {
+		t.Fatal(err)
+	}
+	novaButton, err := fs.ReadFile(gsxui.Files, "registry/generated/nova/button.gsx")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got, err := os.ReadFile(filepath.Join(dir, "ui", "button.gsx")); err != nil {
+		t.Fatal(err)
+	} else if !bytes.Equal(got, novaButton) {
+		t.Fatal("e2e apply did not reinstall exact Nova Button")
+	}
+	mustRun(t, dir, "go", "build", "./...")
 	if err := Run([]string{"add", "dialog"}); err != nil {
 		t.Fatal(err)
 	}
@@ -135,7 +177,7 @@ func TestVendoredDialogFooterCloseComposesButtonMarker(t *testing.T) {
 	mustRun(t, dir, "go", "build", "./...")
 }
 
-func TestEndToEndCustomUIPath(t *testing.T) {
+func TestE2ECustomUIPath(t *testing.T) {
 	if testing.Short() {
 		t.Skip("network-dependent e2e; run without -short")
 	}

@@ -103,6 +103,7 @@ func TestInitWritesEverything(t *testing.T) {
 		"go get github.com/gsxhq/gsx@latest",
 		"go get github.com/jackielii/tailwind-merge-go@latest",
 		"go get -tool github.com/gsxhq/gsx/cmd/gsx@latest",
+		"go tool gsx generate",
 	} {
 		if !strings.Contains(joined, want) {
 			t.Errorf("missing command %q in:\n%s", want, joined)
@@ -396,6 +397,7 @@ func TestInitHardlinkAliasIsPreservedAcrossRefusalAndCommandFailure(t *testing.T
 	if err != nil {
 		t.Fatal(err)
 	}
+	beforeFailure := treeDigest(t, dir)
 	previousRunner := runCommand
 	runCommand = func(_ string, _ string, _ ...string) error {
 		return errors.New("forced dependency command failure")
@@ -413,16 +415,12 @@ func TestInitHardlinkAliasIsPreservedAcrossRefusalAndCommandFailure(t *testing.T
 	if string(gotAlias) != userContent {
 		t.Fatalf("command failure changed user hardlink alias:\n%s", gotAlias)
 	}
-	wantTarget, err := preset.ThemeCSS(preset.Default(preset.StyleNova))
-	if err != nil {
-		t.Fatal(err)
-	}
 	gotTarget, err := os.ReadFile(target)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !bytes.Equal(gotTarget, wantTarget) {
-		t.Fatal("command failure did not leave the generated theme at its planned path")
+	if string(gotTarget) != userContent {
+		t.Fatal("command failure did not restore the prior theme bytes")
 	}
 	targetInfo, err := os.Stat(target)
 	if err != nil {
@@ -432,8 +430,8 @@ func TestInitHardlinkAliasIsPreservedAcrossRefusalAndCommandFailure(t *testing.T
 	if err != nil {
 		t.Fatal(err)
 	}
-	if os.SameFile(targetInfo, aliasInfo) {
-		t.Fatal("overwrite left generated theme sharing the user-owned inode")
+	if !os.SameFile(targetInfo, aliasInfo) {
+		t.Fatal("command failure did not restore the prior theme hardlink identity")
 	}
 	configAfter, err := os.ReadFile(filepath.Join(dir, "gsxui.json"))
 	if err != nil {
@@ -442,6 +440,39 @@ func TestInitHardlinkAliasIsPreservedAcrossRefusalAndCommandFailure(t *testing.T
 	if !bytes.Equal(configAfter, configBefore) {
 		t.Fatal("command failure persisted managed config changes")
 	}
+	if got := treeDigest(t, dir); got != beforeFailure {
+		t.Fatalf("command failure did not restore exact tree:\n before %s\n  after %s", beforeFailure, got)
+	}
+	assertNoTransactionArtifacts(t, dir)
+}
+
+func TestInitGenerationFailureRollsBackAndRegeneratesRestoredSources(t *testing.T) {
+	dir, _ := initTestModule(t)
+	before := treeDigest(t, dir)
+	originalRunner := runCommand
+	var generateCalls int
+	runCommand = func(_ string, name string, args ...string) error {
+		if name == "go" && len(args) >= 2 && args[0] == "tool" && args[1] == "gsx" {
+			generateCalls++
+			if generateCalls == 1 {
+				return errors.New("injected init generation failure")
+			}
+		}
+		return nil
+	}
+	t.Cleanup(func() { runCommand = originalRunner })
+
+	err := Run([]string{"init"})
+	if err == nil || !strings.Contains(err.Error(), "injected init generation failure") {
+		t.Fatalf("init generation error = %v", err)
+	}
+	if generateCalls != 2 {
+		t.Fatalf("generation calls = %d, want failed apply plus restored-source regeneration", generateCalls)
+	}
+	if got := treeDigest(t, dir); got != before {
+		t.Fatalf("init generation failure did not restore exact tree:\n before %s\n  after %s", before, got)
+	}
+	assertNoTransactionArtifacts(t, dir)
 }
 
 func TestInitRejectsLeafSymlinkWithAndWithoutOverwrite(t *testing.T) {

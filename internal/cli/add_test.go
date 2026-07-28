@@ -262,11 +262,16 @@ func TestAddUnknown(t *testing.T) {
 	}
 }
 
-func TestAddGenerateFailureHint(t *testing.T) {
+func TestAddGenerateFailureRollsBackAndRegeneratesRestoredSources(t *testing.T) {
 	dir, _ := initedModule(t)
+	before := treeDigest(t, dir)
 	orig := runCommand
+	var generateCalls int
 	runCommand = func(dir, name string, args ...string) error {
-		if name == "go" && len(args) > 0 && args[0] == "tool" {
+		if name == "go" && len(args) >= 2 && args[0] == "tool" && args[1] == "gsx" {
+			generateCalls++
+		}
+		if generateCalls == 1 {
 			return fmt.Errorf("exit status 1")
 		}
 		return nil
@@ -279,16 +284,13 @@ func TestAddGenerateFailureHint(t *testing.T) {
 	if !strings.Contains(err.Error(), "gsx generate:") || !strings.Contains(err.Error(), "gsxui init") {
 		t.Fatalf("want actionable hint, got %v", err)
 	}
-	cfg, loadErr := LoadConfig(dir)
-	if loadErr != nil {
-		t.Fatal(loadErr)
+	if generateCalls != 2 {
+		t.Fatalf("generation calls = %d, want failed apply plus restored-source regeneration", generateCalls)
 	}
-	if _, recorded := cfg.Managed["ui/badge.gsx"]; recorded {
-		t.Fatal("generation failure recorded a managed hash for badge.gsx")
+	if got := treeDigest(t, dir); got != before {
+		t.Fatalf("generation failure did not restore exact tree:\n before %s\n  after %s", before, got)
 	}
-	if _, statErr := os.Stat(filepath.Join(dir, "ui/badge.gsx")); statErr != nil {
-		t.Fatalf("Task 6 generation failure should expose the written file for Task 7 rollback: %v", statErr)
-	}
+	assertNoTransactionArtifacts(t, dir)
 }
 
 func TestAddHardlinkAliasIsPreservedAcrossRefusalAndGenerationFailure(t *testing.T) {
@@ -344,12 +346,8 @@ func TestAddHardlinkAliasIsPreservedAcrossRefusalAndGenerationFailure(t *testing
 	if err != nil {
 		t.Fatal(err)
 	}
-	wantTarget, err := fs.ReadFile(gsxui.Files, "registry/generated/nova/button.gsx")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if !bytes.Equal(gotTarget, wantTarget) {
-		t.Fatal("generation failure did not leave the selected Button at its planned path")
+	if string(gotTarget) != userContent {
+		t.Fatal("generation failure did not restore the prior Button bytes")
 	}
 	targetInfo, err := os.Stat(target)
 	if err != nil {
@@ -359,8 +357,8 @@ func TestAddHardlinkAliasIsPreservedAcrossRefusalAndGenerationFailure(t *testing
 	if err != nil {
 		t.Fatal(err)
 	}
-	if os.SameFile(targetInfo, aliasInfo) {
-		t.Fatal("overwrite left planned Button sharing the user-owned inode")
+	if !os.SameFile(targetInfo, aliasInfo) {
+		t.Fatal("generation failure did not restore the prior Button hardlink identity")
 	}
 	configAfter, err := os.ReadFile(filepath.Join(dir, "gsxui.json"))
 	if err != nil {
@@ -369,6 +367,7 @@ func TestAddHardlinkAliasIsPreservedAcrossRefusalAndGenerationFailure(t *testing
 	if !bytes.Equal(configAfter, configBefore) {
 		t.Fatal("generation failure persisted managed config changes")
 	}
+	assertNoTransactionArtifacts(t, dir)
 }
 
 func TestAddRejectsLeafSymlinkWithAndWithoutOverwrite(t *testing.T) {

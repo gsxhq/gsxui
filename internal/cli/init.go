@@ -43,6 +43,9 @@ func runInit(args []string) error {
 	if err != nil {
 		return err
 	}
+	if err := recoverArtifactTransaction(dir); err != nil {
+		return err
+	}
 	module, err := modulePath(dir)
 	if err != nil {
 		return err
@@ -64,28 +67,29 @@ func runInit(args []string) error {
 	if err != nil {
 		return err
 	}
-	nextConfig, completePlan, err := artifactPlanWithConfig(cfg, artifacts)
+	_, completePlan, err := artifactPlanWithConfig(cfg, artifacts)
 	if err != nil {
 		return err
 	}
 	if err := validateArtifactPlan(dir, cfg, completePlan, *overwrite); err != nil {
 		return err
 	}
-	if err := writeArtifactPlan(dir, artifacts); err != nil {
-		return err
-	}
-
-	for _, c := range [][]string{
+	commands := [][]string{
 		{"go", "get", "github.com/gsxhq/gsx@latest"},
 		{"go", "get", "github.com/jackielii/tailwind-merge-go@latest"},
 		{"go", "get", "-tool", "github.com/gsxhq/gsx/cmd/gsx@latest"},
-	} {
-		if err := runCommand(dir, c[0], c[1:]...); err != nil {
-			return fmt.Errorf("%v: %w", c, err)
+	}
+	for _, command := range commands {
+		if err := runCommand(dir, command[0], command[1:]...); err != nil {
+			return fmt.Errorf("%v: %w", command, err)
 		}
 	}
-
-	if err := nextConfig.Save(dir); err != nil {
+	if err := executeArtifactTransaction(
+		dir,
+		completePlan,
+		func() error { return generateProject(dir) },
+		func() error { return generateProject(dir) },
+	); err != nil {
 		return err
 	}
 

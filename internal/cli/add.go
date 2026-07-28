@@ -39,6 +39,11 @@ func runAdd(args []string) error {
 	if err != nil {
 		return err
 	}
+	if !*diff {
+		if err := recoverArtifactTransaction(dir); err != nil {
+			return err
+		}
+	}
 	cfg, err := LoadConfig(dir)
 	if err != nil {
 		return err
@@ -70,7 +75,7 @@ func runAdd(args []string) error {
 	if *diff {
 		return printArtifactDiff(dir, artifacts)
 	}
-	nextConfig, completePlan, err := artifactPlanWithConfig(cfg, artifacts)
+	_, completePlan, err := artifactPlanWithConfig(cfg, artifacts)
 	if err != nil {
 		return err
 	}
@@ -79,16 +84,22 @@ func runAdd(args []string) error {
 	}
 
 	fmt.Printf("adding: %s\n", strings.Join(resolved, " "))
-	if err := writeArtifactPlan(dir, artifacts); err != nil {
-		return err
-	}
-	if err := runCommand(dir, "go", "tool", "gsx", "generate"); err != nil {
-		return fmt.Errorf("gsx generate: %w — if the gsx tool is missing, run 'gsxui init' (or 'go get -tool github.com/gsxhq/gsx/cmd/gsx@latest')", err)
-	}
-	if err := nextConfig.Save(dir); err != nil {
+	if err := executeArtifactTransaction(
+		dir,
+		completePlan,
+		func() error { return generateProject(dir) },
+		func() error { return generateProject(dir) },
+	); err != nil {
 		return err
 	}
 	fmt.Println("done — build with: go build ./...")
+	return nil
+}
+
+func generateProject(dir string) error {
+	if err := runCommand(dir, "go", "tool", "gsx", "generate"); err != nil {
+		return fmt.Errorf("gsx generate: %w — if the gsx tool is missing, run 'gsxui init' (or 'go get -tool github.com/gsxhq/gsx/cmd/gsx@latest')", err)
+	}
 	return nil
 }
 
@@ -141,23 +152,28 @@ func addArtifacts(dir, module string, cfg Config, selected preset.Preset, resolv
 				})
 			}
 		} else {
-			sourcePath := "ui/" + name + ".gsx"
 			if name == "button" {
-				sourcePath = "registry/generated/" + string(selected.Style) + "/button.gsx"
+				button, err := selectedButtonArtifact(module, cfg, selected.Style)
+				if err != nil {
+					return nil, err
+				}
+				artifacts = append(artifacts, button)
+			} else {
+				sourcePath := "ui/" + name + ".gsx"
+				src, err := fs.ReadFile(gsxui.Files, sourcePath)
+				if err != nil {
+					return nil, err
+				}
+				rewritten, err := RewriteGsx(src, module, cfg.UI)
+				if err != nil {
+					return nil, fmt.Errorf("rewrite %s: %w", sourcePath, err)
+				}
+				artifacts = append(artifacts, artifact{
+					RelativePath: filepath.ToSlash(filepath.Join(cfg.UI, name+".gsx")),
+					Content:      rewritten,
+					Managed:      true,
+				})
 			}
-			src, err := fs.ReadFile(gsxui.Files, sourcePath)
-			if err != nil {
-				return nil, err
-			}
-			rewritten, err := RewriteGsx(src, module, cfg.UI)
-			if err != nil {
-				return nil, fmt.Errorf("rewrite %s: %w", sourcePath, err)
-			}
-			artifacts = append(artifacts, artifact{
-				RelativePath: filepath.ToSlash(filepath.Join(cfg.UI, name+".gsx")),
-				Content:      rewritten,
-				Managed:      true,
-			})
 		}
 		if registry.HasJS(name) {
 			src, err := fs.ReadFile(gsxui.Files, "ui/"+name+".js")
