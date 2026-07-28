@@ -100,6 +100,179 @@ component C() {
 	}
 }
 
+func TestRecipeTokensRejectsRecipeUseOutsideClassValues(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name string
+		body string
+		want string
+	}{
+		{
+			name: "value if condition",
+			body: `<div class={
+				if mode == "gsxui-recipe-button" {
+					"safe"
+				} else {
+					"other"
+				},
+			}></div>`,
+			want: "value-if condition",
+		},
+		{
+			name: "value switch tag",
+			body: `<div class={
+				switch "gsxui-recipe-button" {
+				default:
+					"safe"
+				},
+			}></div>`,
+			want: "switch tag",
+		},
+		{
+			name: "value switch case expression",
+			body: `<div class={
+				switch mode {
+				case "gsxui-recipe-button":
+					"safe"
+				default:
+					"other"
+				},
+			}></div>`,
+			want: "switch case",
+		},
+		{
+			name: "pipeline stage argument",
+			body: `<div class={
+				"safe" |> decorate("gsxui-recipe-button", args...),
+			}></div>`,
+			want: "pipeline stage",
+		},
+		{
+			name: "css segment",
+			body: "<div style={ \"display:none\", css`color:gsxui-recipe-button` }></div>",
+			want: "CSS segment",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assertRecipeRejectedByBothAPIs(t, resolveComponent(tt.body), tt.want)
+		})
+	}
+}
+
+func TestRecipeTokensRejectsPartiallyDynamicRecipeConcatenation(t *testing.T) {
+	t.Parallel()
+
+	src := resolveComponent(`<div class={ "gsxui-" + "recipe-" + suffix }></div>`)
+	assertRecipeRejectedByBothAPIs(t, src, "concatenation")
+}
+
+func TestRecipeTokensRejectsRecipeAssembledAcrossEmbeddedSegments(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name string
+		src  string
+	}{
+		{
+			name: "constant expression segment",
+			src:  "<div class={f`gsxui-@{\"recipe-button\"}`}></div>",
+		},
+		{
+			name: "partially dynamic expression segment",
+			src:  "<div class={f`gsxui-@{\"recipe-\" + suffix}`}></div>",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assertRecipeRejectedByBothAPIs(t, resolveComponent(tt.src), "interpolation")
+		})
+	}
+}
+
+func TestResolveRejectsRecipeTokenIntroducedByUtility(t *testing.T) {
+	t.Parallel()
+
+	src := []byte(resolveComponent(`<div class={ "gsxui-recipe-button" }></div>`))
+	recipes := testRecipes(
+		Recipe{Token: "gsxui-recipe-button", Utilities: []string{"gsxui-recipe-leaked"}},
+	)
+	got, _, err := Resolve("introduced-token.gsx", src, recipes)
+	if err == nil {
+		t.Fatal("Resolve() error = nil, want structural output-invariant error")
+	}
+	if !strings.Contains(err.Error(), "gsxui-recipe-leaked") {
+		t.Errorf("Resolve() error %q does not identify introduced token", err)
+	}
+	if bytes.Contains(got, []byte(RecipePrefix)) {
+		t.Errorf("Resolve() returned output containing %q: %s", RecipePrefix, got)
+	}
+}
+
+func TestResolveAcceptsUnrelatedDynamicClassSurfaces(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name string
+		body string
+	}{
+		{
+			name: "class expressions and metadata",
+			body: `<div class={
+				className,
+				"safe" |> decorate(fallback),
+				if enabled {
+					enabledClass
+				} else {
+					"disabled"
+				},
+				switch mode {
+				case alternate:
+					alternateClass |> decorate(fallback)
+				default:
+					"other"
+				},
+			}></div>`,
+		},
+		{
+			name: "interpolated class",
+			body: "<div class={f`prefix-@{suffix}`}></div>",
+		},
+		{
+			name: "css segments",
+			body: "<div style={ \"display:none\", css`color:@{color}` }></div>",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			src := []byte(resolveComponent(tt.body))
+			if _, err := gsxparser.ParseFile(token.NewFileSet(), "dynamic.gsx", src, 0); err != nil {
+				t.Fatalf("fixture does not parse: %v", err)
+			}
+			tokens, err := RecipeTokens("dynamic.gsx", src)
+			if err != nil {
+				t.Fatalf("RecipeTokens() error = %v", err)
+			}
+			if len(tokens) != 0 {
+				t.Fatalf("RecipeTokens() = %q, want none", tokens)
+			}
+			got, report, err := Resolve("dynamic.gsx", src, Recipes{})
+			if err != nil {
+				t.Fatalf("Resolve() error = %v", err)
+			}
+			if len(report.UsedTokens) != 0 {
+				t.Errorf("ResolveReport.UsedTokens = %q, want none", report.UsedTokens)
+			}
+			if _, err := gsxparser.ParseFile(token.NewFileSet(), "dynamic.gsx", got, 0); err != nil {
+				t.Fatalf("resolved output does not parse: %v", err)
+			}
+		})
+	}
+}
+
 func TestResolveRejectsInvalidRecipeUse(t *testing.T) {
 	t.Parallel()
 
@@ -229,6 +402,33 @@ func testRecipes(recipes ...Recipe) Recipes {
 
 func resolveComponent(body string) string {
 	return "package p\ncomponent C() {\n\t" + body + "\n}\n"
+}
+
+func assertRecipeRejectedByBothAPIs(t *testing.T, src, want string) {
+	t.Helper()
+
+	filename := "invalid-recipe-use.gsx"
+	source := []byte(src)
+	if _, err := gsxparser.ParseFile(token.NewFileSet(), filename, source, 0); err != nil {
+		t.Fatalf("fixture does not parse: %v", err)
+	}
+
+	if _, err := RecipeTokens(filename, source); err == nil {
+		t.Fatal("RecipeTokens() error = nil, want structural recipe-use error")
+	} else if !strings.Contains(err.Error(), want) {
+		t.Errorf("RecipeTokens() error %q does not contain %q", err, want)
+	}
+
+	got, _, err := Resolve(filename, source, Recipes{})
+	if err == nil {
+		t.Fatal("Resolve() error = nil, want structural recipe-use error")
+	}
+	if bytes.Contains(got, []byte(RecipePrefix)) {
+		t.Errorf("Resolve() returned output containing %q: %s", RecipePrefix, got)
+	}
+	if !strings.Contains(err.Error(), want) {
+		t.Errorf("Resolve() error %q does not contain %q", err, want)
+	}
 }
 
 func resolvedElementClassExpressions(t *testing.T, filename string, src []byte) ([]byte, []byte) {

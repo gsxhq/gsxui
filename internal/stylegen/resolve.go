@@ -66,6 +66,13 @@ func Resolve(filename string, src []byte, recipes Recipes) ([]byte, ResolveRepor
 	if _, err := gsxparser.ParseFile(token.NewFileSet(), filename, formatted, 0); err != nil {
 		return nil, ResolveReport{}, fmt.Errorf("%s: reparse resolved GSX: %w", filename, err)
 	}
+	remaining, err := RecipeTokens(filename, formatted)
+	if err != nil {
+		return nil, ResolveReport{}, fmt.Errorf("%s: validate resolved GSX recipe use: %w", filename, err)
+	}
+	if len(remaining) != 0 {
+		return nil, ResolveReport{}, fmt.Errorf("%s: resolved GSX still contains recipe tokens %q", filename, remaining)
+	}
 	return formatted, ResolveReport{UsedTokens: result.tokens}, nil
 }
 
@@ -128,37 +135,30 @@ func inspectRecipeTokens(filename string, src []byte, recipes *Recipes) (inspect
 }
 
 func (r *resolver) inspectClassAttr(attr *gsxast.ClassAttr) {
-	if attr.Name != "class" {
-		for i := range attr.Parts {
-			part := &attr.Parts[i]
-			if part.Expr != "" {
-				r.inspectNonClassExpr(part.Expr, part.ExprPos, attr.Name)
-			}
-			r.inspectNonClassValueCF(part.CF, attr.Name)
-		}
-		return
-	}
-
 	for i := range attr.Parts {
 		part := &attr.Parts[i]
 		if part.Expr != "" {
-			r.inspectClassExpr(part.Expr, part.ExprPos)
+			if attr.Name == "class" {
+				r.inspectClassExpr(part.Expr, part.ExprPos)
+			} else {
+				r.inspectNonClassExpr(part.Expr, part.ExprPos, attr.Name)
+			}
 		}
 		if part.Cond != "" {
-			r.inspectNonClassExpr(part.Cond, part.CondPos, "class condition")
+			r.inspectNonClassExpr(part.Cond, part.CondPos, attr.Name+" condition")
+		}
+		r.inspectPipelineStages(part.Stages, attr.Name+" pipeline stage")
+		if len(part.CSSSegments) != 0 {
+			r.inspectEmbeddedSegments(part.CSSSegments, part.Pos(), attr.Name+" CSS segment")
 		}
 		if part.CF == nil {
 			continue
 		}
-		if part.CF.Switch != nil {
-			for _, classCase := range part.CF.Switch.Cases {
-				if classCase.Value != nil {
-					r.inspectClassExpr(classCase.Value.Expr, classCase.Value.ExprPos)
-				}
-			}
-		}
 		if part.CF.If != nil {
-			r.inspectNonClassValueIf(part.CF.If)
+			r.inspectValueIf(part.CF.If, attr.Name)
+		}
+		if part.CF.Switch != nil {
+			r.inspectValueSwitch(part.CF.Switch, attr.Name)
 		}
 	}
 }
@@ -275,19 +275,8 @@ func (r *resolver) inspectStaticAttr(attr *gsxast.StaticAttr) {
 }
 
 func (r *resolver) inspectEmbeddedAttr(attr *gsxast.EmbeddedAttr) {
-	recipe, ok := recipeInEmbeddedSegments(attr.Segments)
-	if !ok {
-		return
-	}
-	if attr.Name == "class" {
-		r.err = r.positionedError(
-			attr.Pos(),
-			"recipe token %q must be one whole string literal; interpolation is not allowed",
-			recipe,
-		)
-		return
-	}
-	r.err = r.positionedError(attr.Pos(), "recipe token %q appears in non-class attribute %q", recipe, attr.Name)
+	r.inspectEmbeddedSegments(attr.Segments, attr.Pos(), attr.Name+" interpolation")
+	r.inspectPipelineStages(attr.Stages, attr.Name+" pipeline stage")
 }
 
 func (r *resolver) inspectNonClassExpr(expr string, exprPos token.Pos, context string) {
@@ -303,32 +292,70 @@ func (r *resolver) inspectNonClassExpr(expr string, exprPos token.Pos, context s
 	}
 }
 
-func (r *resolver) inspectNonClassValueCF(cf *gsxast.ValueCF, context string) {
-	if cf == nil {
+func (r *resolver) inspectNonClassExprList(exprs string, exprPos token.Pos, context string) {
+	if r.err != nil || exprs == "" {
 		return
 	}
-	if cf.Switch != nil {
-		for _, classCase := range cf.Switch.Cases {
-			if classCase.Value != nil {
-				r.inspectNonClassExpr(classCase.Value.Expr, classCase.Value.ExprPos, context)
-			}
-		}
+	parsed, err := goparser.ParseExpr("scan(" + exprs + ")")
+	if err != nil {
+		return
 	}
-	if cf.If != nil {
-		r.inspectNonClassValueIf(cf.If)
+	if recipe, ok := recipeLiteralInExpr(parsed); ok {
+		r.err = r.positionedError(exprPos, "recipe token %q appears in non-class %s expression", recipe, context)
 	}
 }
 
-func (r *resolver) inspectNonClassValueIf(valueIf *gsxast.ValueIf) {
+func (r *resolver) inspectPipelineStages(stages []gsxast.PipeStage, context string) {
+	for _, stage := range stages {
+		if !stage.HasArgs || stage.Args == "" {
+			continue
+		}
+		r.inspectNonClassExprList(stage.Args, stage.ArgsPos, context)
+	}
+}
+
+func (r *resolver) inspectValueArm(arm *gsxast.ValueArm, transform bool, context string) {
+	if arm == nil {
+		return
+	}
+	if transform {
+		r.inspectClassExpr(arm.Expr, arm.ExprPos)
+	} else {
+		r.inspectNonClassExpr(arm.Expr, arm.ExprPos, context)
+	}
+	r.inspectPipelineStages(arm.Stages, context+" pipeline stage")
+}
+
+func (r *resolver) inspectValueIf(valueIf *gsxast.ValueIf, attrName string) {
 	for valueIf != nil {
-		if valueIf.Then != nil {
-			r.inspectNonClassExpr(valueIf.Then.Expr, valueIf.Then.ExprPos, "class value-form if")
-		}
-		if valueIf.Else != nil {
-			r.inspectNonClassExpr(valueIf.Else.Expr, valueIf.Else.ExprPos, "class value-form if")
-		}
+		r.inspectNonClassExpr(valueIf.Cond, valueIf.CondPos, attrName+" value-if condition")
+		r.inspectValueArm(valueIf.Then, false, attrName+" value-if arm")
+		r.inspectValueArm(valueIf.Else, false, attrName+" value-if arm")
 		valueIf = valueIf.ElseIf
 	}
+}
+
+func (r *resolver) inspectValueSwitch(valueSwitch *gsxast.ValueSwitch, attrName string) {
+	r.inspectNonClassExpr(valueSwitch.Tag, valueSwitch.TagPos, attrName+" switch tag")
+	for _, classCase := range valueSwitch.Cases {
+		if classCase.List != "" {
+			r.inspectNonClassExprList(classCase.List, classCase.ListPos, attrName+" switch case")
+		}
+		r.inspectValueArm(classCase.Value, attrName == "class", attrName+" switch arm")
+	}
+}
+
+func (r *resolver) inspectEmbeddedSegments(segments []gsxast.Markup, pos token.Pos, context string) {
+	recipe, ok := recipeInEmbeddedSegments(segments)
+	if !ok {
+		return
+	}
+	r.err = r.positionedError(
+		pos,
+		"recipe token %q must be a whole class string literal; found in non-class %s",
+		recipe,
+		context,
+	)
 }
 
 func (r *resolver) positionedError(pos token.Pos, format string, args ...any) error {
@@ -376,11 +403,85 @@ func recipeLiteralInExpr(expr goast.Expr) (string, bool) {
 		return true
 	})
 	if found == "" {
-		if value, ok := constantStringValue(expr); ok && strings.Contains(value, RecipePrefix) {
+		if value, ok := constantRecipeAssembly(expr); ok {
 			found = value
 		}
 	}
 	return found, found != ""
+}
+
+func constantRecipeAssembly(expr goast.Expr) (string, bool) {
+	var found string
+	goast.Inspect(expr, func(node goast.Node) bool {
+		if found != "" {
+			return false
+		}
+		binary, ok := node.(*goast.BinaryExpr)
+		if !ok || binary.Op != token.ADD {
+			return true
+		}
+		var operands []goast.Expr
+		flattenAddition(binary, &operands)
+		var run strings.Builder
+		for _, operand := range operands {
+			value, ok := constantStringValue(operand)
+			if !ok {
+				run.Reset()
+				continue
+			}
+			run.WriteString(value)
+			if strings.Contains(run.String(), RecipePrefix) {
+				found = run.String()
+				return false
+			}
+		}
+		return true
+	})
+	return found, found != ""
+}
+
+func flattenAddition(expr goast.Expr, operands *[]goast.Expr) {
+	if parenthesized, ok := expr.(*goast.ParenExpr); ok {
+		flattenAddition(parenthesized.X, operands)
+		return
+	}
+	binary, ok := expr.(*goast.BinaryExpr)
+	if !ok || binary.Op != token.ADD {
+		*operands = append(*operands, expr)
+		return
+	}
+	flattenAddition(binary.X, operands)
+	flattenAddition(binary.Y, operands)
+}
+
+func constantBoundaryFragments(expr goast.Expr) (prefix, suffix string, fullyConstant bool) {
+	if value, ok := constantStringValue(expr); ok {
+		return value, value, true
+	}
+
+	var operands []goast.Expr
+	flattenAddition(expr, &operands)
+	var leading strings.Builder
+	for _, operand := range operands {
+		value, ok := constantStringValue(operand)
+		if !ok {
+			break
+		}
+		leading.WriteString(value)
+	}
+	var trailing []string
+	for i := len(operands) - 1; i >= 0; i-- {
+		value, ok := constantStringValue(operands[i])
+		if !ok {
+			break
+		}
+		trailing = append(trailing, value)
+	}
+	var trailingText strings.Builder
+	for i := len(trailing) - 1; i >= 0; i-- {
+		trailingText.WriteString(trailing[i])
+	}
+	return leading.String(), trailingText.String(), false
 }
 
 func constantStringValue(expr goast.Expr) (string, bool) {
@@ -421,19 +522,36 @@ func expressionUsesConcatenation(expr goast.Expr) bool {
 }
 
 func recipeInEmbeddedSegments(segments []gsxast.Markup) (string, bool) {
+	var assembled strings.Builder
 	for _, segment := range segments {
 		switch segment := segment.(type) {
 		case *gsxast.Text:
-			if strings.Contains(segment.Value, RecipePrefix) {
-				return segment.Value, true
-			}
+			assembled.WriteString(segment.Value)
 		case *gsxast.Interp:
 			parsed, err := goparser.ParseExpr(segment.Expr)
-			if err == nil {
-				if recipe, ok := recipeLiteralInExpr(parsed); ok {
-					return recipe, true
-				}
+			if err != nil {
+				assembled.Reset()
+				continue
 			}
+			if recipe, ok := recipeLiteralInExpr(parsed); ok {
+				return recipe, true
+			}
+			prefix, suffix, fullyConstant := constantBoundaryFragments(parsed)
+			assembled.WriteString(prefix)
+			if strings.Contains(assembled.String(), RecipePrefix) {
+				return assembled.String(), true
+			}
+			if fullyConstant {
+				continue
+			}
+			assembled.Reset()
+			assembled.WriteString(suffix)
+		default:
+			assembled.Reset()
+			continue
+		}
+		if strings.Contains(assembled.String(), RecipePrefix) {
+			return assembled.String(), true
 		}
 	}
 	return "", false
