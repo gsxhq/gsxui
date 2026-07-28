@@ -26,8 +26,8 @@ type importLiteralEdit struct {
 // RewriteGsx retargets exact gsxui UI imports at the user's module. It parses
 // the GSX file and the Go chunks that can own import declarations, then edits
 // only import-path BasicLits identified by their token positions. Comments,
-// ordinary string literals, escaped import spellings, and lookalike paths are
-// not rewrite candidates.
+// ordinary string literals, and decoded lookalike paths are not rewrite
+// candidates.
 func RewriteGsx(src []byte, modulePath, uiDir string) ([]byte, error) {
 	destination, err := rewriteDestination(modulePath, uiDir)
 	if err != nil {
@@ -122,12 +122,6 @@ func importEditsForChunk(src []byte, gsxFileSet *token.FileSet, chunk *gsxast.Go
 			importPath, err := strconv.Unquote(spec.Path.Value)
 			if err != nil {
 				return nil, err
-			}
-			// Escaped and raw spellings are left verbatim. Registry sources use
-			// canonical interpreted literals, and exact spelling keeps a
-			// lookalike escape from becoming a rewrite target after decoding.
-			if strconv.Quote(importPath) != spec.Path.Value {
-				continue
 			}
 			if importPath != gsxuiUIImport && !strings.HasPrefix(importPath, gsxuiUIImport+"/") {
 				continue

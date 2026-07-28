@@ -291,6 +291,122 @@ func TestAddGenerateFailureHint(t *testing.T) {
 	}
 }
 
+func TestAddHardlinkAliasIsPreservedAcrossRefusalAndGenerationFailure(t *testing.T) {
+	dir, commands := initedModule(t)
+	target := filepath.Join(dir, "ui", "button.gsx")
+	alias := filepath.Join(dir, "user-button.gsx")
+	const userContent = "package userbutton // user-owned hardlink\n"
+	if err := os.WriteFile(alias, []byte(userContent), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Link(alias, target); err != nil {
+		t.Fatal(err)
+	}
+
+	commandCount := len(*commands)
+	beforeRefusal := treeDigest(t, dir)
+	err := Run([]string{"add", "button"})
+	if err == nil || !strings.Contains(err.Error(), "--overwrite") {
+		t.Fatalf("plain add error = %v, want overwrite refusal", err)
+	}
+	if got := treeDigest(t, dir); got != beforeRefusal {
+		t.Fatalf("plain add changed hardlinked project tree:\n before %s\n  after %s", beforeRefusal, got)
+	}
+	if len(*commands) != commandCount {
+		t.Fatalf("plain add ran commands: %v", (*commands)[commandCount:])
+	}
+
+	configBefore, err := os.ReadFile(filepath.Join(dir, "gsxui.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	previousRunner := runCommand
+	runCommand = func(_ string, name string, args ...string) error {
+		if name == "go" && len(args) >= 2 && args[0] == "tool" && args[1] == "gsx" {
+			return fmt.Errorf("forced generation failure")
+		}
+		return nil
+	}
+	t.Cleanup(func() { runCommand = previousRunner })
+
+	err = Run([]string{"add", "--overwrite", "button"})
+	if err == nil || !strings.Contains(err.Error(), "gsx generate") {
+		t.Fatalf("overwrite add error = %v, want generation failure", err)
+	}
+	gotAlias, err := os.ReadFile(alias)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(gotAlias) != userContent {
+		t.Fatalf("generation failure changed user hardlink alias:\n%s", gotAlias)
+	}
+	gotTarget, err := os.ReadFile(target)
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantTarget, err := fs.ReadFile(gsxui.Files, "registry/generated/nova/button.gsx")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(gotTarget, wantTarget) {
+		t.Fatal("generation failure did not leave the selected Button at its planned path")
+	}
+	targetInfo, err := os.Stat(target)
+	if err != nil {
+		t.Fatal(err)
+	}
+	aliasInfo, err := os.Stat(alias)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if os.SameFile(targetInfo, aliasInfo) {
+		t.Fatal("overwrite left planned Button sharing the user-owned inode")
+	}
+	configAfter, err := os.ReadFile(filepath.Join(dir, "gsxui.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(configAfter, configBefore) {
+		t.Fatal("generation failure persisted managed config changes")
+	}
+}
+
+func TestAddRejectsLeafSymlinkWithAndWithoutOverwrite(t *testing.T) {
+	for _, overwrite := range []bool{false, true} {
+		name := "plain"
+		args := []string{"add", "button"}
+		if overwrite {
+			name = "overwrite"
+			args = []string{"add", "--overwrite", "button"}
+		}
+		t.Run(name, func(t *testing.T) {
+			dir, commands := initedModule(t)
+			alias := filepath.Join(dir, "user-button.gsx")
+			const userContent = "package userbutton // symlink target\n"
+			if err := os.WriteFile(alias, []byte(userContent), 0o640); err != nil {
+				t.Fatal(err)
+			}
+			target := filepath.Join(dir, "ui", "button.gsx")
+			if err := os.Symlink(alias, target); err != nil {
+				t.Fatal(err)
+			}
+			before := treeDigest(t, dir)
+			commandCount := len(*commands)
+
+			err := Run(args)
+			if err == nil || !strings.Contains(err.Error(), "unsafe symlink") {
+				t.Fatalf("add error = %v, want leaf-symlink rejection", err)
+			}
+			if got := treeDigest(t, dir); got != before {
+				t.Fatalf("leaf-symlink rejection changed project tree:\n before %s\n  after %s", before, got)
+			}
+			if len(*commands) != commandCount {
+				t.Fatalf("leaf-symlink rejection ran commands: %v", (*commands)[commandCount:])
+			}
+		})
+	}
+}
+
 func TestAddRejectsCore(t *testing.T) {
 	_, _ = initedModule(t)
 	err := Run([]string{"add", "core"})

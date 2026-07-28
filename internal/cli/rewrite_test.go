@@ -48,7 +48,7 @@ import (
 	"github.com/gsxhq/gsxui/ui2"
 	"github.com/gsxhq/gsxui/ui?variant=maia"
 	"github.com/gsxhq/gsxui/ui%2Ficon"
-	"github.com/gsxhq/gsxui/u\x69/icon"
+	"github.com/gsxhq/gsxui/u\x69x/icon"
 )
 `)
 
@@ -58,6 +58,39 @@ import (
 	}
 	if !bytes.Equal(got, in) {
 		t.Fatalf("lookalike imports changed:\n%s\nwant:\n%s", got, in)
+	}
+}
+
+func TestRewriteGsxDecodesRawAndEscapedExactImports(t *testing.T) {
+	in := []byte("package ui\n\n" +
+		"import (\n" +
+		"\traw `github.com/gsxhq/gsxui/ui/icon`\n" +
+		"\thex \"github.com/gsxhq/gsxui/u\\x69\"\n" +
+		"\tescapedSlash \"github.com/gsxhq/gsxui/ui\\x2fhelpers\"\n" +
+		")\n\n" +
+		"const unrelated = `github.com/gsxhq/gsxui/ui/icon`\n")
+
+	once, err := RewriteGsx(in, "example.com/app", "components/ui")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, want := range []string{
+		`raw "example.com/app/components/ui/icon"`,
+		`hex "example.com/app/components/ui"`,
+		`escapedSlash "example.com/app/components/ui/helpers"`,
+		"const unrelated = `github.com/gsxhq/gsxui/ui/icon`",
+	} {
+		if !strings.Contains(string(once), want) {
+			t.Errorf("rewritten GSX missing %q:\n%s", want, once)
+		}
+	}
+
+	twice, err := RewriteGsx(once, "example.com/app", "components/ui")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(twice, once) {
+		t.Fatalf("decoded-literal rewrite is not idempotent:\nsecond:\n%s\nfirst:\n%s", twice, once)
 	}
 }
 
@@ -85,14 +118,19 @@ import (
 }
 
 func TestRewriteGsxRejectsMalformedSource(t *testing.T) {
-	in := []byte(`package ui
+	tests := [][]byte{
+		[]byte(`package ui
 
 import "github.com/gsxhq/gsxui/ui"
 
 component Broken( {
-`)
-	if _, err := RewriteGsx(in, "example.com/app", "ui"); err == nil {
-		t.Fatal("RewriteGsx accepted malformed GSX")
+`),
+		[]byte("package ui\n\nimport \"github.com/gsxhq/gsxui/u\\q\"\n"),
+	}
+	for _, in := range tests {
+		if _, err := RewriteGsx(in, "example.com/app", "ui"); err == nil {
+			t.Fatalf("RewriteGsx accepted malformed GSX:\n%s", in)
+		}
 	}
 }
 

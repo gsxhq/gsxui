@@ -66,7 +66,7 @@ func (c Config) Save(dir string) error {
 	if err != nil {
 		return fmt.Errorf("saving gsxui.json: %w", err)
 	}
-	return os.WriteFile(configPath, data, 0o644)
+	return writeFileAtomic(configPath, data, 0o644)
 }
 
 func (c Config) canonicalJSON() ([]byte, error) {

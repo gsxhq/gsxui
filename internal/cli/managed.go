@@ -67,6 +67,14 @@ func validateManagedPath(relative string) error {
 }
 
 func artifactPath(root, relative string) (string, error) {
+	return safeProjectPath(root, relative, false)
+}
+
+func artifactDirectoryPath(root, relative string) (string, error) {
+	return safeProjectPath(root, relative, true)
+}
+
+func safeProjectPath(root, relative string, directory bool) (string, error) {
 	if err := validateManagedPath(relative); err != nil {
 		return "", fmt.Errorf("artifact path %q: %w", relative, err)
 	}
@@ -80,40 +88,34 @@ func artifactPath(root, relative string) (string, error) {
 		return "", fmt.Errorf("resolve module root: %w", err)
 	}
 
-	target := filepath.Join(rootAbsolute, filepath.FromSlash(relative))
-	existing := target
-	var missing []string
-	for {
-		_, err := os.Lstat(existing)
-		if err == nil {
-			break
+	target := filepath.Join(rootResolved, filepath.FromSlash(relative))
+	current := rootResolved
+	segments := strings.Split(relative, "/")
+	for index, segment := range segments {
+		current = filepath.Join(current, segment)
+		info, err := os.Lstat(current)
+		if os.IsNotExist(err) {
+			continue
 		}
-		if !os.IsNotExist(err) {
+		if err != nil {
 			return "", fmt.Errorf("inspect artifact path %q: %w", relative, err)
 		}
-		parent := filepath.Dir(existing)
-		if parent == existing {
-			return "", fmt.Errorf("inspect artifact path %q: no existing ancestor", relative)
+		if info.Mode()&os.ModeSymlink != 0 {
+			return "", fmt.Errorf("artifact path %q contains unsafe symlink %s", relative, current)
 		}
-		missing = append(missing, filepath.Base(existing))
-		existing = parent
+		if index < len(segments)-1 && !info.IsDir() {
+			return "", fmt.Errorf("artifact path %q has non-directory ancestor %s", relative, current)
+		}
+		if index == len(segments)-1 {
+			switch {
+			case directory && !info.IsDir():
+				return "", fmt.Errorf("artifact directory %q is not a directory", relative)
+			case !directory && !info.Mode().IsRegular():
+				return "", fmt.Errorf("artifact destination %q is not a regular file", relative)
+			}
+		}
 	}
-
-	resolved, err := filepath.EvalSymlinks(existing)
-	if err != nil {
-		return "", fmt.Errorf("resolve artifact path %q: %w", relative, err)
-	}
-	for index := len(missing) - 1; index >= 0; index-- {
-		resolved = filepath.Join(resolved, missing[index])
-	}
-	within, err := filepath.Rel(rootResolved, resolved)
-	if err != nil {
-		return "", fmt.Errorf("compare artifact path %q with module root: %w", relative, err)
-	}
-	if within == ".." || strings.HasPrefix(within, ".."+string(filepath.Separator)) || filepath.IsAbs(within) {
-		return "", fmt.Errorf("artifact path %q escapes module root through a symlink", relative)
-	}
-	return resolved, nil
+	return target, nil
 }
 
 func validateArtifactPlan(root string, cfg Config, artifacts []artifact, overwrite bool) error {
@@ -140,6 +142,20 @@ func validateArtifactPlan(root string, cfg Config, artifacts []artifact, overwri
 					"artifact paths %q and %q resolve to the same destination",
 					existing.relative,
 					planned.RelativePath,
+				)
+			}
+			switch {
+			case pathIsAncestor(existing.path, target):
+				return fmt.Errorf(
+					"planned file %q is an ancestor of destination %q",
+					existing.relative,
+					planned.RelativePath,
+				)
+			case pathIsAncestor(target, existing.path):
+				return fmt.Errorf(
+					"planned file %q is an ancestor of destination %q",
+					planned.RelativePath,
+					existing.relative,
 				)
 			}
 		}
@@ -177,6 +193,14 @@ func validateArtifactPlan(root string, cfg Config, artifacts []artifact, overwri
 	return nil
 }
 
+func pathIsAncestor(ancestor, descendant string) bool {
+	relative, err := filepath.Rel(ancestor, descendant)
+	if err != nil || relative == "." || relative == ".." || filepath.IsAbs(relative) {
+		return false
+	}
+	return !strings.HasPrefix(relative, ".."+string(filepath.Separator))
+}
+
 func writeArtifactPlan(root string, artifacts []artifact) error {
 	for _, planned := range artifacts {
 		target, err := artifactPath(root, planned.RelativePath)
@@ -193,9 +217,53 @@ func writeArtifactPlan(root string, artifacts []artifact) error {
 		if err := os.MkdirAll(filepath.Dir(target), 0o755); err != nil {
 			return fmt.Errorf("create artifact directory for %s: %w", target, err)
 		}
-		if err := os.WriteFile(target, planned.Content, 0o644); err != nil {
+		if err := writeFileAtomic(target, planned.Content, 0o644); err != nil {
 			return fmt.Errorf("write artifact %s: %w", target, err)
 		}
+	}
+	return nil
+}
+
+func writeFileAtomic(target string, content []byte, defaultMode fs.FileMode) error {
+	mode := defaultMode
+	info, err := os.Lstat(target)
+	switch {
+	case err == nil:
+		if !info.Mode().IsRegular() {
+			return fmt.Errorf("destination is not a regular file")
+		}
+		mode = info.Mode().Perm()
+	case os.IsNotExist(err):
+	default:
+		return fmt.Errorf("inspect destination: %w", err)
+	}
+
+	temp, err := os.CreateTemp(filepath.Dir(target), "."+filepath.Base(target)+".tmp-*")
+	if err != nil {
+		return fmt.Errorf("create temporary file: %w", err)
+	}
+	tempPath := temp.Name()
+	defer os.Remove(tempPath)
+	defer temp.Close()
+
+	if err := temp.Chmod(mode); err != nil {
+		return fmt.Errorf("set temporary file mode: %w", err)
+	}
+	written, err := temp.Write(content)
+	if err != nil {
+		return fmt.Errorf("write temporary file: %w", err)
+	}
+	if written != len(content) {
+		return fmt.Errorf("write temporary file: wrote %d of %d bytes", written, len(content))
+	}
+	if err := temp.Sync(); err != nil {
+		return fmt.Errorf("sync temporary file: %w", err)
+	}
+	if err := temp.Close(); err != nil {
+		return fmt.Errorf("close temporary file: %w", err)
+	}
+	if err := os.Rename(tempPath, target); err != nil {
+		return fmt.Errorf("replace destination: %w", err)
 	}
 	return nil
 }

@@ -299,7 +299,11 @@ func TestInitRejectsConfigAliasedToPlannedArtifactBeforeWrites(t *testing.T) {
 			before := snapshotFiles(t, dir)
 
 			err = Run([]string{"init", "--overwrite"})
-			if err == nil || !strings.Contains(err.Error(), "same destination") {
+			wantError := "same destination"
+			if alias == "symlink" {
+				wantError = "unsafe symlink"
+			}
+			if err == nil || !strings.Contains(err.Error(), wantError) {
 				t.Fatalf("init error = %v, want config/artifact alias rejection", err)
 			}
 			if len(*commands) != 0 {
@@ -308,6 +312,147 @@ func TestInitRejectsConfigAliasedToPlannedArtifactBeforeWrites(t *testing.T) {
 			after := snapshotFiles(t, dir)
 			if !equalFileSnapshots(before, after) {
 				t.Fatal("aliased config rejection changed project files")
+			}
+		})
+	}
+}
+
+func TestInitRejectsPlannedFileAncestorBeforeAnyWrite(t *testing.T) {
+	dir, commands := initTestModule(t)
+	cfg := Config{
+		UI:  "generated/merge.go",
+		JS:  "web/gsxui",
+		CSS: "generated/merge.go",
+	}
+	if err := cfg.Save(dir); err != nil {
+		t.Fatal(err)
+	}
+	before := treeDigest(t, dir)
+
+	err := Run([]string{"init", "--overwrite"})
+	if err == nil || !strings.Contains(err.Error(), "ancestor") {
+		t.Errorf("init error = %v, want planned-file ancestor rejection", err)
+	}
+	if len(*commands) != 0 {
+		t.Errorf("ancestor conflict ran commands: %v", *commands)
+	}
+	after := treeDigest(t, dir)
+	if after != before {
+		t.Fatalf("ancestor conflict changed complete project tree:\n before %s\n  after %s", before, after)
+	}
+}
+
+func TestInitHardlinkAliasIsPreservedAcrossRefusalAndCommandFailure(t *testing.T) {
+	dir, commands := initedModule(t)
+	target := filepath.Join(dir, "web", "gsxui", "theme.css")
+	alias := filepath.Join(dir, "user-theme.css")
+	if err := os.Link(target, alias); err != nil {
+		t.Fatal(err)
+	}
+	const userContent = "/* user-owned shared theme */\n"
+	if err := os.WriteFile(alias, []byte(userContent), 0o640); err != nil {
+		t.Fatal(err)
+	}
+
+	commandCount := len(*commands)
+	beforeRefusal := treeDigest(t, dir)
+	err := Run([]string{"init"})
+	if err == nil || !strings.Contains(err.Error(), "--overwrite") {
+		t.Fatalf("plain init error = %v, want overwrite refusal", err)
+	}
+	if got := treeDigest(t, dir); got != beforeRefusal {
+		t.Fatalf("plain init changed hardlinked project tree:\n before %s\n  after %s", beforeRefusal, got)
+	}
+	if len(*commands) != commandCount {
+		t.Fatalf("plain init ran commands: %v", (*commands)[commandCount:])
+	}
+
+	configBefore, err := os.ReadFile(filepath.Join(dir, "gsxui.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	previousRunner := runCommand
+	runCommand = func(_ string, _ string, _ ...string) error {
+		return errors.New("forced dependency command failure")
+	}
+	t.Cleanup(func() { runCommand = previousRunner })
+
+	err = Run([]string{"init", "--overwrite"})
+	if err == nil || !strings.Contains(err.Error(), "forced dependency command failure") {
+		t.Fatalf("overwrite init error = %v, want command failure", err)
+	}
+	gotAlias, err := os.ReadFile(alias)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(gotAlias) != userContent {
+		t.Fatalf("command failure changed user hardlink alias:\n%s", gotAlias)
+	}
+	wantTarget, err := preset.ThemeCSS(preset.Default(preset.StyleNova))
+	if err != nil {
+		t.Fatal(err)
+	}
+	gotTarget, err := os.ReadFile(target)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(gotTarget, wantTarget) {
+		t.Fatal("command failure did not leave the generated theme at its planned path")
+	}
+	targetInfo, err := os.Stat(target)
+	if err != nil {
+		t.Fatal(err)
+	}
+	aliasInfo, err := os.Stat(alias)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if os.SameFile(targetInfo, aliasInfo) {
+		t.Fatal("overwrite left generated theme sharing the user-owned inode")
+	}
+	configAfter, err := os.ReadFile(filepath.Join(dir, "gsxui.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(configAfter, configBefore) {
+		t.Fatal("command failure persisted managed config changes")
+	}
+}
+
+func TestInitRejectsLeafSymlinkWithAndWithoutOverwrite(t *testing.T) {
+	for _, overwrite := range []bool{false, true} {
+		name := "plain"
+		args := []string{"init"}
+		if overwrite {
+			name = "overwrite"
+			args = []string{"init", "--overwrite"}
+		}
+		t.Run(name, func(t *testing.T) {
+			dir, commands := initedModule(t)
+			target := filepath.Join(dir, "web", "gsxui", "theme.css")
+			if err := os.Remove(target); err != nil {
+				t.Fatal(err)
+			}
+			alias := filepath.Join(dir, "user-theme.css")
+			const userContent = "/* user-owned symlink target */\n"
+			if err := os.WriteFile(alias, []byte(userContent), 0o640); err != nil {
+				t.Fatal(err)
+			}
+			if err := os.Symlink(alias, target); err != nil {
+				t.Fatal(err)
+			}
+			before := treeDigest(t, dir)
+			commandCount := len(*commands)
+
+			err := Run(args)
+			if err == nil || !strings.Contains(err.Error(), "unsafe symlink") {
+				t.Fatalf("init error = %v, want leaf-symlink rejection", err)
+			}
+			if got := treeDigest(t, dir); got != before {
+				t.Fatalf("leaf-symlink rejection changed project tree:\n before %s\n  after %s", before, got)
+			}
+			if len(*commands) != commandCount {
+				t.Fatalf("leaf-symlink rejection ran commands: %v", (*commands)[commandCount:])
 			}
 		})
 	}
@@ -400,6 +545,49 @@ func equalFileSnapshots(left, right fileSnapshot) bool {
 		}
 	}
 	return true
+}
+
+func treeDigest(t *testing.T, root string) string {
+	t.Helper()
+	hash := sha256.New()
+	err := filepath.WalkDir(root, func(path string, entry fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		relative, err := filepath.Rel(root, path)
+		if err != nil {
+			return err
+		}
+		info, err := entry.Info()
+		if err != nil {
+			return err
+		}
+		if _, err := io.WriteString(hash, filepath.ToSlash(relative)+"\x00"+info.Mode().String()+"\x00"); err != nil {
+			return err
+		}
+		switch {
+		case info.Mode()&os.ModeSymlink != 0:
+			target, err := os.Readlink(path)
+			if err != nil {
+				return err
+			}
+			_, err = io.WriteString(hash, target)
+			return err
+		case info.Mode().IsRegular():
+			content, err := os.ReadFile(path)
+			if err != nil {
+				return err
+			}
+			_, err = hash.Write(content)
+			return err
+		default:
+			return nil
+		}
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return hex.EncodeToString(hash.Sum(nil))
 }
 
 func TestInitVendorsCSSAssetsBesideCustomEntry(t *testing.T) {

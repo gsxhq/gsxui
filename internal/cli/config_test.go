@@ -171,10 +171,50 @@ func TestConfigRejectsSymlinkEscapeOnLoadAndSave(t *testing.T) {
 			} else {
 				err = DefaultConfig().Save(dir)
 			}
-			if err == nil || !strings.Contains(err.Error(), "escapes module root") {
+			if err == nil || !strings.Contains(err.Error(), "unsafe symlink") {
 				t.Fatalf("%s error = %v, want symlink escape", operation, err)
 			}
 		})
+	}
+}
+
+func TestConfigSaveAtomicallyReplacesOnlyItsHardlink(t *testing.T) {
+	dir := t.TempDir()
+	cfg := DefaultConfig()
+	if err := cfg.Save(dir); err != nil {
+		t.Fatal(err)
+	}
+	configPath := filepath.Join(dir, "gsxui.json")
+	alias := filepath.Join(dir, "user-config-backup.json")
+	if err := os.Link(configPath, alias); err != nil {
+		t.Fatal(err)
+	}
+	aliasBefore, err := os.ReadFile(alias)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	cfg.Managed["ui/button.gsx"] = contentHash([]byte("button"))
+	if err := cfg.Save(dir); err != nil {
+		t.Fatal(err)
+	}
+	aliasAfter, err := os.ReadFile(alias)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(aliasAfter, aliasBefore) {
+		t.Fatal("config save changed the user-owned hardlink alias")
+	}
+	configInfo, err := os.Stat(configPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	aliasInfo, err := os.Stat(alias)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if os.SameFile(configInfo, aliasInfo) {
+		t.Fatal("config save left gsxui.json sharing the user-owned inode")
 	}
 }
 

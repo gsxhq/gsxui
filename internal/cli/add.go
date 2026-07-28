@@ -192,7 +192,7 @@ func addArtifacts(dir, module string, cfg Config, selected preset.Preset, resolv
 
 func behaviorBarrelArtifact(dir string, cfg Config, resolved []string) (artifact, error) {
 	jsRelative := filepath.ToSlash(cfg.JS)
-	jsDir, err := artifactPath(dir, jsRelative)
+	jsDir, err := artifactDirectoryPath(dir, jsRelative)
 	if err != nil {
 		return artifact{}, err
 	}
