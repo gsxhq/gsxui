@@ -11,7 +11,7 @@
 ## Global Constraints
 
 - Stop after Button. Do not migrate another component or advertise Maia as catalogue-wide.
-- Use `/Users/jackieli/personal/gsxhq/gsx` at merged commit `6f2ee7e67907f56a97560a84507fa79afe28526c` and module version `v0.0.0-20260728065017-6f2ee7e67907` so bare attribute presence and the public GSX AST/formatter are the tested implementation.
+- Use `/Users/jackieli/personal/gsxhq/gsx` at merged commit `ef72f5eba066d7e87adf7dcadc2db62d00f22efe` and module version `v0.0.0-20260728095825-ef72f5eba066` so bare attribute presence, computed boolean presence semantics, and the public GSX AST/formatter are the tested implementation.
 - Preserve `class_merger = "github.com/gsxhq/gsxui/merge.Merge"` in `gsx.toml`. `merge.Merge` is already the genuine Tailwind-aware runtime merger; do not add another merge helper or pre-merge caller classes.
 - Do not use regular expressions, selector string splitting, or text replacement to parse CSS, GSX, JSON, or imported theme CSS.
 - Do not add style-specific authored templates. Nova and Maia `.gsx` files are generated artifacts from one canonical structure.
@@ -53,6 +53,110 @@ web/
   theme-state.js         pure resolved/draft state and transport
   theme-preview.js       iframe receiver and synchronization
   site-button.css        site-only canonical Button fallback
+```
+
+---
+
+### Task 0: Migrate valued boolean data axes to explicit strings
+
+GSX core `ef72f5eb` intentionally changes a Go `bool` attribute expression to
+HTML presence semantics: false omits the attribute and true emits it bare,
+except for native HTML attributes whose specification requires the strings
+`"true"`/`"false"`. gsxui slot markers and native boolean attributes want that
+new default. Five component-presentation axes do not: their style contracts
+explicitly require valued `data-*="false|true"` output. Migrate only those
+axes before building the pilot on the new core.
+
+**Files:**
+- Modify: `go.mod`
+- Modify: `go.sum`
+- Modify: `ui/field.gsx`
+- Generated: `ui/field.x.go`
+- Modify: `ui/pagination.gsx`
+- Generated: `ui/pagination.x.go`
+- Modify: `ui/sidebar.gsx`
+- Generated: `ui/sidebar.x.go`
+
+- [ ] **Step 1: Verify the dependency-change RED state**
+
+Create a temporary `go.work` selecting this worktree and
+`/Users/jackieli/personal/gsxhq/gsx`, then run generation and the focused
+contracts with that workspace:
+
+```bash
+presence_workspace="$(mktemp -d)"
+(cd "$presence_workspace" && go work init \
+  /Users/jackieli/personal/gsxhq/gsxui/.worktrees/css-only-theme-architecture \
+  /Users/jackieli/personal/gsxhq/gsx)
+GOWORK="$presence_workspace/go.work" go tool gsx generate
+GOWORK="$presence_workspace/go.work" go test \
+  ./ui ./site/examples -run \
+  'Test(FieldSeparator|FormControlCompositionTokenOrder|Pagination|Sidebar|RegisteredExamplesCoverStyleContract)' \
+  -count=1
+```
+
+Expected RED: the generated diff changes only `ui/field.x.go`,
+`ui/pagination.x.go`, and `ui/sidebar.x.go`; focused tests show that false
+omits and true bares `data-content`, `data-active`, or
+`data-show-on-hover`, conflicting with their declared valued axes.
+
+- [ ] **Step 2: Pin the merged GSX core**
+
+Run:
+
+```bash
+go get github.com/gsxhq/gsx@v0.0.0-20260728095825-ef72f5eba066
+go get -tool github.com/gsxhq/gsx/cmd/gsx@v0.0.0-20260728095825-ef72f5eba066
+go list -m -json github.com/gsxhq/gsx
+```
+
+Require `Origin.Hash` to equal
+`ef72f5eba066d7e87adf7dcadc2db62d00f22efe`.
+
+- [ ] **Step 3: Make valued axes string-typed at the authored source**
+
+Import standard-library `strconv` in the three authored files and replace only:
+
+```gsx
+data-content={strconv.FormatBool(children != nil)}
+data-active={strconv.FormatBool(isActive)}
+data-show-on-hover={strconv.FormatBool(showOnHover)}
+```
+
+Keep every `data-gsxui-slot-*`, native `disabled`, and other boolean presence
+attribute as a `bool`. Do not change style contracts or expected HTML: they
+already pin the intended distinction.
+
+- [ ] **Step 4: Regenerate and verify GREEN**
+
+```bash
+go tool gsx generate
+go test ./ui ./site/examples -run \
+  'Test(FieldSeparator|FormControlCompositionTokenOrder|Pagination|Sidebar|RegisteredExamplesCoverStyleContract)' \
+  -count=1
+gopls check -severity=hint \
+  ui/field.x.go ui/pagination.x.go ui/sidebar.x.go
+```
+
+Expected: focused tests pass; generated output uses string attribute emission
+for the five valued expressions while slot/native boolean output remains
+presence-based.
+
+- [ ] **Step 5: Run the authoritative gate**
+
+```bash
+make ci
+git diff --check
+```
+
+- [ ] **Step 6: Commit Task 0**
+
+```bash
+git add go.mod go.sum \
+  ui/field.gsx ui/field.x.go \
+  ui/pagination.gsx ui/pagination.x.go \
+  ui/sidebar.gsx ui/sidebar.x.go
+git commit -m "fix: preserve valued boolean data axes"
 ```
 
 ---
@@ -379,8 +483,6 @@ git commit -m "feat: parse strict component style recipes"
 - Create: `internal/stylegen/resolve_test.go`
 - Create: `internal/stylegen/testdata/resolve-input.gsx`
 - Create: `internal/stylegen/testdata/resolve-nova.golden.gsx`
-- Modify: `go.mod`
-- Modify: `go.sum`
 
 **Interfaces:**
 
@@ -393,23 +495,18 @@ func Resolve(filename string, src []byte, recipes Recipes) ([]byte, ResolveRepor
 func RecipeTokens(filename string, src []byte) ([]string, error)
 ```
 
-- [ ] **Step 1: Update to the merged GSX core**
+- [ ] **Step 1: Verify the merged GSX core pin**
 
 Run:
-
-```bash
-go get github.com/gsxhq/gsx@v0.0.0-20260728065017-6f2ee7e67907
-go get -tool github.com/gsxhq/gsx/cmd/gsx@v0.0.0-20260728065017-6f2ee7e67907
-```
-
-Confirm:
 
 ```bash
 go list -m -json github.com/gsxhq/gsx
 ```
 
+Confirm:
+
 shows `Origin.Hash` equal to
-`6f2ee7e67907f56a97560a84507fa79afe28526c`.
+`ef72f5eba066d7e87adf7dcadc2db62d00f22efe`.
 
 - [ ] **Step 2: Write the successful golden transform**
 
@@ -482,7 +579,7 @@ branch.
 ```bash
 go test ./internal/stylegen -count=1
 gopls check -severity=hint internal/stylegen/*.go
-git add go.mod go.sum internal/stylegen
+git add internal/stylegen
 git commit -m "feat: resolve inline styles through gsx ast"
 ```
 
@@ -1450,5 +1547,5 @@ The plan is complete only when:
 - generated output and all `.x.go` are drift-free;
 - the browser matrix and generated consumer agree on pinned computed styles;
 - `make ci` passes against GSX core
-  `6f2ee7e67907f56a97560a84507fa79afe28526c`; and
+  `ef72f5eba066d7e87adf7dcadc2db62d00f22efe`; and
 - the evidence-backed review pauses before any second component.
