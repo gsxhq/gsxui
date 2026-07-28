@@ -120,9 +120,30 @@ func TestRecipeTokensRejectsRecipeUseOutsideClassValues(t *testing.T) {
 			want: "value-if condition",
 		},
 		{
+			name: "value if init condition",
+			body: `<div class={
+				if x := "gsxui-recipe-button"; x != "" {
+					"safe"
+				} else {
+					"other"
+				},
+			}></div>`,
+			want: "value-if condition",
+		},
+		{
 			name: "value switch tag",
 			body: `<div class={
 				switch "gsxui-recipe-button" {
+				default:
+					"safe"
+				},
+			}></div>`,
+			want: "switch tag",
+		},
+		{
+			name: "value switch init tag",
+			body: `<div class={
+				switch x := "gsxui-recipe-button"; x {
 				default:
 					"safe"
 				},
@@ -153,12 +174,39 @@ func TestRecipeTokensRejectsRecipeUseOutsideClassValues(t *testing.T) {
 			body: "<div style={ \"display:none\", css`color:gsxui-recipe-button` }></div>",
 			want: "CSS segment",
 		},
+		{
+			name: "css interpolation pipeline stage",
+			body: "<div style={ \"display:none\", css`color:@{value |> decorate(\"gsxui-recipe-button\")}` }></div>",
+			want: "CSS segment pipeline stage",
+		},
+		{
+			name: "embedded interpolation pipeline stage",
+			body: "<div class={f`prefix-@{value |> decorate(\"gsxui-recipe-button\")}`}></div>",
+			want: "class interpolation pipeline stage",
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assertRecipeRejectedByBothAPIs(t, resolveComponent(tt.body), tt.want)
 		})
+	}
+}
+
+func TestRecipeTokensRejectsUnparseableSupportedMetadata(t *testing.T) {
+	t.Parallel()
+
+	src := []byte(resolveComponent(`<div data-value={x := 1}></div>`))
+	if _, err := gsxparser.ParseFile(token.NewFileSet(), "unparseable-metadata.gsx", src, 0); err != nil {
+		t.Fatalf("fixture must reach resolver metadata validation: %v", err)
+	}
+	if _, err := RecipeTokens("unparseable-metadata.gsx", src); err == nil {
+		t.Fatal("RecipeTokens() error = nil, want metadata parse error")
+	} else if !strings.Contains(err.Error(), "parse") {
+		t.Errorf("RecipeTokens() error %q does not identify metadata parse failure", err)
+	}
+	if got, _, err := Resolve("unparseable-metadata.gsx", src, Recipes{}); err == nil {
+		t.Fatalf("Resolve() = %s, nil error; want metadata parse error", got)
 	}
 }
 
@@ -211,6 +259,27 @@ func TestResolveRejectsRecipeTokenIntroducedByUtility(t *testing.T) {
 	}
 }
 
+func TestResolveNoPrefixInvariantIsIndependentOfRecipeScanner(t *testing.T) {
+	t.Parallel()
+
+	src := []byte(resolveComponent(`{/* gsxui-recipe-output-invariant */}
+		<div class={ "safe" }></div>`))
+	tokens, err := RecipeTokens("output-invariant.gsx", src)
+	if err != nil {
+		t.Fatalf("RecipeTokens() error = %v", err)
+	}
+	if len(tokens) != 0 {
+		t.Fatalf("RecipeTokens() = %q, want none for source-only comment", tokens)
+	}
+	got, _, err := Resolve("output-invariant.gsx", src, Recipes{})
+	if err == nil {
+		t.Fatal("Resolve() error = nil, want independent no-prefix invariant error")
+	}
+	if bytes.Contains(got, []byte(RecipePrefix)) {
+		t.Errorf("Resolve() returned output containing %q: %s", RecipePrefix, got)
+	}
+}
+
 func TestResolveAcceptsUnrelatedDynamicClassSurfaces(t *testing.T) {
 	t.Parallel()
 
@@ -223,12 +292,12 @@ func TestResolveAcceptsUnrelatedDynamicClassSurfaces(t *testing.T) {
 			body: `<div class={
 				className,
 				"safe" |> decorate(fallback),
-				if enabled {
+				if active := enabled; active {
 					enabledClass
 				} else {
 					"disabled"
 				},
-				switch mode {
+				switch selected := mode; selected {
 				case alternate:
 					alternateClass |> decorate(fallback)
 				default:
@@ -238,11 +307,11 @@ func TestResolveAcceptsUnrelatedDynamicClassSurfaces(t *testing.T) {
 		},
 		{
 			name: "interpolated class",
-			body: "<div class={f`prefix-@{suffix}`}></div>",
+			body: "<div class={f`prefix-@{suffix |> decorate(fallback)}`}></div>",
 		},
 		{
 			name: "css segments",
-			body: "<div style={ \"display:none\", css`color:@{color}` }></div>",
+			body: "<div style={ \"display:none\", css`color:@{color |> decorate(fallback)}` }></div>",
 		},
 	}
 
