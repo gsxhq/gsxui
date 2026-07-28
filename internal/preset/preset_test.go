@@ -105,6 +105,46 @@ func TestStylesAndTokenNamesReturnOrderedCopies(t *testing.T) {
 	}
 }
 
+func TestPresentationMetadataReturnsIndependentDefaults(t *testing.T) {
+	t.Parallel()
+
+	groups := GroupNames()
+	wantGroups := []string{"Base", "Brand", "Feedback", "Structure", "Status and overlay", "Sidebar"}
+	if !slices.Equal(groups, wantGroups) {
+		t.Fatalf("GroupNames = %#v, want %#v", groups, wantGroups)
+	}
+	groups[0] = "Changed"
+	if got := GroupNames()[0]; got != "Base" {
+		t.Fatalf("GroupNames returned shared storage: %q", got)
+	}
+
+	definitions := TokenDefinitions()
+	if len(definitions) != len(expectedTokenNames) {
+		t.Fatalf("TokenDefinitions length = %d, want %d", len(definitions), len(expectedTokenNames))
+	}
+	for i, definition := range definitions {
+		if definition.Name != expectedTokenNames[i] {
+			t.Fatalf("TokenDefinitions[%d].Name = %q, want %q", i, definition.Name, expectedTokenNames[i])
+		}
+		if definition.Group == "" {
+			t.Fatalf("TokenDefinitions[%d].Group is empty", i)
+		}
+	}
+	definitions[0].Name = "changed"
+	definitions[0].Group = "Changed"
+	if got := TokenDefinitions()[0]; got.Name != "background" || got.Group != "Base" {
+		t.Fatalf("TokenDefinitions returned shared storage: %#v", got)
+	}
+
+	radius := RadiusDefinition()
+	if radius.Name != "radius" ||
+		radius.Group != "Structure" ||
+		radius.Light != "0.625rem" ||
+		radius.Dark != "0.625rem" {
+		t.Fatalf("RadiusDefinition = %#v", radius)
+	}
+}
+
 func TestDefaultReturnsIndependentValidPresets(t *testing.T) {
 	t.Parallel()
 

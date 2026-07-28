@@ -56,6 +56,9 @@ func DecodeShare(code string) (Preset, error) {
 	if err != nil {
 		return Preset{}, fmt.Errorf("decode share: invalid base64: %w", err)
 	}
+	if parts[2] != base64.RawURLEncoding.EncodeToString(payload) {
+		return Preset{}, errors.New("decode share: base64 spelling is not canonical")
+	}
 	if !utf8.Valid(payload) {
 		return Preset{}, errors.New("decode share: payload is not valid UTF-8")
 	}

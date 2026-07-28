@@ -16,6 +16,11 @@ import (
 const SchemaVersion = 1
 const SchemaURL = "https://ui.gsxhq.dev/schemas/preset-v1.json"
 
+const (
+	defaultRadius = "0.625rem"
+	radiusGroup   = "Structure"
+)
+
 type Style string
 
 const (
@@ -46,6 +51,15 @@ type TokenDefinition struct {
 }
 
 var styles = []Style{StyleNova, StyleMaia}
+
+var presentationGroups = []string{
+	"Base",
+	"Brand",
+	"Feedback",
+	"Structure",
+	"Status and overlay",
+	"Sidebar",
+}
 
 var tokenDefinitions = []TokenDefinition{
 	{Name: "background", Group: "Base", Light: "oklch(1 0 0)", Dark: "oklch(0.145 0 0)"},
@@ -102,6 +116,23 @@ func TokenNames() []string {
 	return names
 }
 
+func GroupNames() []string {
+	return slices.Clone(presentationGroups)
+}
+
+func TokenDefinitions() []TokenDefinition {
+	return slices.Clone(tokenDefinitions)
+}
+
+func RadiusDefinition() TokenDefinition {
+	return TokenDefinition{
+		Name:  "radius",
+		Group: radiusGroup,
+		Light: defaultRadius,
+		Dark:  defaultRadius,
+	}
+}
+
 func Default(style Style) Preset {
 	light := make(ThemeValues, len(tokenDefinitions))
 	dark := make(ThemeValues, len(tokenDefinitions))
@@ -113,7 +144,7 @@ func Default(style Style) Preset {
 		Schema:        SchemaURL,
 		SchemaVersion: SchemaVersion,
 		Style:         style,
-		Radius:        "0.625rem",
+		Radius:        defaultRadius,
 		Theme: Theme{
 			Light: light,
 			Dark:  dark,

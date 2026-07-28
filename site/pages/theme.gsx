@@ -1,6 +1,7 @@
 package pages
 
 import (
+	"github.com/gsxhq/gsxui/internal/preset"
 	"github.com/gsxhq/gsxui/ui"
 )
 
@@ -25,80 +26,39 @@ type themeGroup struct {
 	Vars  []themeVar
 }
 
-// themeGroups holds the default light/dark values for every editable
-// tokens, grouped the way the editor displays them. Source of truth:
-// assets/css/themes/default.css. The drift test keeps the editor and the
-// vendored default theme byte-for-byte aligned.
-var themeGroups = []themeGroup{
-	{
-		Title: "Base",
-		Vars: []themeVar{
-			{Name: "--background", Light: "oklch(1 0 0)", Dark: "oklch(0.145 0 0)"},
-			{Name: "--foreground", Light: "oklch(0% 0 0)", Dark: "oklch(0.985 0 0)"},
-			{Name: "--card", Light: "oklch(1 0 0)", Dark: "oklch(0.205 0 0)"},
-			{Name: "--card-foreground", Light: "oklch(0% 0 0)", Dark: "oklch(0.985 0 0)"},
-			{Name: "--popover", Light: "oklch(1 0 0)", Dark: "oklch(0.205 0 0)"},
-			{Name: "--popover-foreground", Light: "oklch(0% 0 0)", Dark: "oklch(0.985 0 0)"},
-		},
-	},
-	{
-		Title: "Brand",
-		Vars: []themeVar{
-			{Name: "--primary", Light: "oklch(0% 0 0)", Dark: "oklch(0.922 0 0)"},
-			{Name: "--primary-foreground", Light: "oklch(0.985 0 0)", Dark: "oklch(0.205 0 0)"},
-			{Name: "--secondary", Light: "oklch(0.97 0 0)", Dark: "oklch(0.269 0 0)"},
-			{Name: "--secondary-foreground", Light: "oklch(0.205 0 0)", Dark: "oklch(0.985 0 0)"},
-			{Name: "--accent", Light: "oklch(0.97 0 0)", Dark: "oklch(0.371 0 0)"},
-			{Name: "--accent-foreground", Light: "oklch(0.205 0 0)", Dark: "oklch(0.985 0 0)"},
-		},
-	},
-	{
-		Title: "Feedback",
-		Vars: []themeVar{
-			{Name: "--muted", Light: "oklch(0.97 0 0)", Dark: "oklch(0.269 0 0)"},
-			{Name: "--muted-foreground", Light: "oklch(0.556 0 0)", Dark: "oklch(0.708 0 0)"},
-			{Name: "--destructive", Light: "oklch(0.577 0.245 27.325)", Dark: "oklch(0.704 0.191 22.216)"},
-			{Name: "--destructive-foreground", Light: "oklch(0.97 0.01 17)", Dark: "oklch(0.58 0.22 27)"},
-		},
-	},
-	{
-		Title: "Structure",
-		Vars: []themeVar{
-			{Name: "--border", Light: "oklch(0.922 0 0)", Dark: "oklch(1 0 0 / 10%)"},
-			{Name: "--input", Light: "oklch(0.922 0 0)", Dark: "oklch(1 0 0 / 15%)"},
-			{Name: "--ring", Light: "oklch(0.708 0 0)", Dark: "oklch(0.556 0 0)"},
-			{Name: "--radius", Light: "0.625rem", Dark: "0.625rem"},
-		},
-	},
-	{
-		Title: "Status and overlay",
-		Vars: []themeVar{
-			{Name: "--success", Light: "oklch(69.6% 0.17 162.48)", Dark: "oklch(69.6% 0.17 162.48)"},
-			{Name: "--info", Light: "oklch(68.5% 0.169 237.323)", Dark: "oklch(68.5% 0.169 237.323)"},
-			{Name: "--warning", Light: "oklch(76.9% 0.188 70.08)", Dark: "oklch(76.9% 0.188 70.08)"},
-			{Name: "--overlay", Light: "oklch(0% 0 0 / 10%)", Dark: "oklch(0% 0 0 / 10%)"},
-			{Name: "--contrast", Light: "oklch(100% 0 0)", Dark: "oklch(100% 0 0)"},
-		},
-	},
-	{
-		Title: "Sidebar",
-		Vars: []themeVar{
-			{Name: "--sidebar", Light: "oklch(0.985 0 0)", Dark: "oklch(0.205 0 0)"},
-			{Name: "--sidebar-foreground", Light: "oklch(0% 0 0)", Dark: "oklch(0.985 0 0)"},
-			{Name: "--sidebar-primary", Light: "oklch(0.205 0 0)", Dark: "oklch(0.488 0.243 264.376)"},
-			{Name: "--sidebar-primary-foreground", Light: "oklch(0.985 0 0)", Dark: "oklch(0.985 0 0)"},
-			{Name: "--sidebar-accent", Light: "oklch(0.97 0 0)", Dark: "oklch(0.269 0 0)"},
-			{Name: "--sidebar-accent-foreground", Light: "oklch(0.205 0 0)", Dark: "oklch(0.985 0 0)"},
-			{Name: "--sidebar-border", Light: "oklch(0.922 0 0)", Dark: "oklch(1 0 0 / 10%)"},
-			{Name: "--sidebar-ring", Light: "oklch(0.708 0 0)", Dark: "oklch(0.439 0 0)"},
-		},
-	},
-}
-
-// ThemeGroups returns the default theme group definitions for testing purposes.
-// This allows tests to verify that Go defaults stay in sync with CSS values.
+// ThemeGroups derives the editor's presentation groups and server-rendered
+// defaults from the authoritative preset schema.
 func ThemeGroups() []themeGroup {
-	return themeGroups
+	defaults := preset.Default(preset.StyleNova)
+	groupIndexes := make(map[string]int)
+	groups := make([]themeGroup, 0, len(preset.GroupNames()))
+	for _, name := range preset.GroupNames() {
+		groupIndexes[name] = len(groups)
+		groups = append(groups, themeGroup{Title: name})
+	}
+	add := func(definition preset.TokenDefinition, light, dark string) {
+		index, ok := groupIndexes[definition.Group]
+		if !ok {
+			index = len(groups)
+			groupIndexes[definition.Group] = index
+			groups = append(groups, themeGroup{Title: definition.Group})
+		}
+		groups[index].Vars = append(groups[index].Vars, themeVar{
+			Name:  "--" + definition.Name,
+			Light: light,
+			Dark:  dark,
+		})
+	}
+	for _, definition := range preset.TokenDefinitions() {
+		add(
+			definition,
+			defaults.Theme.Light[definition.Name],
+			defaults.Theme.Dark[definition.Name],
+		)
+	}
+	radius := preset.RadiusDefinition()
+	add(radius, defaults.Radius, defaults.Radius)
+	return groups
 }
 
 const tabBtnBase = "rounded-md border border-border px-3 py-1.5 text-sm font-medium transition-colors"
@@ -130,7 +90,7 @@ component ThemeEditor() {
 		</div>
 		<div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
 			<div class="flex flex-col gap-6">
-				{ for _, g := range themeGroups {
+				{ for _, g := range ThemeGroups() {
 					<section class="flex flex-col gap-3">
 						<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">{ g.Title }</h2>
 						<div class="flex flex-col gap-2">

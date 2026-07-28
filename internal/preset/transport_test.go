@@ -50,6 +50,14 @@ func TestDecodeShareRejectsInvalidTransport(t *testing.T) {
 	encoded := base64.RawURLEncoding.EncodeToString(canonical)
 	minified := bytes.ReplaceAll(canonical, []byte("\n"), nil)
 	invalidUTF8 := base64.RawURLEncoding.EncodeToString([]byte{0xff, 0xfe})
+	trailingBitsPreset := Default(StyleNova)
+	trailingBitsPreset.Theme.Light["primary"] = "red"
+	trailingBitsPayload, err := CanonicalJSON(trailingBitsPreset)
+	if err != nil {
+		t.Fatal(err)
+	}
+	trailingBitsEncoded := base64.RawURLEncoding.EncodeToString(trailingBitsPayload)
+	trailingBitsAlternate := nonCanonicalTrailingBits(t, trailingBitsEncoded, trailingBitsPayload)
 
 	tests := []struct {
 		name string
@@ -60,6 +68,21 @@ func TestDecodeShareRejectsInvalidTransport(t *testing.T) {
 		{name: "missing prefix", code: "v1:" + encoded, want: "prefix"},
 		{name: "padded base64", code: "gsxui:v1:" + encoded + "=", want: "base64"},
 		{name: "invalid base64", code: "gsxui:v1:not+url", want: "base64"},
+		{
+			name: "embedded carriage return",
+			code: "gsxui:v1:" + encoded[:12] + "\r" + encoded[12:],
+			want: "canonical",
+		},
+		{
+			name: "embedded line feed",
+			code: "gsxui:v1:" + encoded[:12] + "\n" + encoded[12:],
+			want: "canonical",
+		},
+		{
+			name: "non-zero unused trailing bits",
+			code: "gsxui:v1:" + trailingBitsAlternate,
+			want: "canonical",
+		},
 		{name: "invalid UTF-8", code: "gsxui:v1:" + invalidUTF8, want: "UTF-8"},
 		{
 			name: "non-canonical valid JSON",
@@ -77,6 +100,27 @@ func TestDecodeShareRejectsInvalidTransport(t *testing.T) {
 			}
 		})
 	}
+}
+
+func nonCanonicalTrailingBits(t *testing.T, encoded string, payload []byte) string {
+	t.Helper()
+	if remainder := len(payload) % 3; remainder != 1 && remainder != 2 {
+		t.Fatalf("payload length %d has no unused trailing base64 bits", len(payload))
+	}
+	const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+	last := strings.IndexByte(alphabet, encoded[len(encoded)-1])
+	if last == -1 {
+		t.Fatalf("last encoded byte %q is outside base64url alphabet", encoded[len(encoded)-1])
+	}
+	alternate := encoded[:len(encoded)-1] + string(alphabet[last+1])
+	decoded, err := base64.RawURLEncoding.DecodeString(alternate)
+	if err != nil {
+		t.Fatalf("alternate base64 spelling did not decode: %v", err)
+	}
+	if !bytes.Equal(decoded, payload) {
+		t.Fatal("alternate base64 spelling changed decoded payload")
+	}
+	return alternate
 }
 
 func TestInputResolverResolvesFileStdinRawJSONAndShare(t *testing.T) {

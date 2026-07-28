@@ -1,115 +1,143 @@
 package pages_test
 
 import (
-	"os"
-	"path/filepath"
-	"regexp"
-	"runtime"
+	"context"
+	"reflect"
 	"strings"
 	"testing"
 
+	"github.com/gsxhq/gsxui/internal/preset"
 	"github.com/gsxhq/gsxui/site/pages"
+	"golang.org/x/net/html"
 )
 
-// TestThemeDefaultsDriftPin ensures the Go themeGroups defaults and the
-// library-only theme tokens stay in sync with the authored default theme.
-func TestThemeDefaultsDriftPin(t *testing.T) {
-	// Get the directory of this test file
-	_, testFile, _, _ := runtime.Caller(0)
-	testDir := filepath.Dir(testFile)
+func TestThemeEditorRendersPresetGroupNamesAndDefaults(t *testing.T) {
+	t.Parallel()
 
-	cssPath := filepath.Join(testDir, "..", "..", "assets", "css", "themes", "default.css")
-
-	cssBytes, err := os.ReadFile(cssPath)
+	var output strings.Builder
+	if err := pages.ThemeEditor().Render(context.Background(), &output); err != nil {
+		t.Fatalf("ThemeEditor.Render: %v", err)
+	}
+	document, err := html.Parse(strings.NewReader(output.String()))
 	if err != nil {
-		t.Fatalf("os.ReadFile(%s): %v", cssPath, err)
-	}
-	cssText := string(cssBytes)
-
-	// Extract :root and .dark blocks using regex
-	rootBlock := extractCSSBlock(cssText, ":root")
-	darkBlock := extractCSSBlock(cssText, ".dark")
-
-	if rootBlock == "" {
-		t.Fatal("failed to extract :root block from default.css")
-	}
-	if darkBlock == "" {
-		t.Fatal("failed to extract .dark block from default.css")
+		t.Fatalf("html.Parse: %v", err)
 	}
 
-	// Parse the CSS blocks into maps of var -> value
-	cssVars := map[string]map[string]string{
-		"light": parseCSSVars(rootBlock),
-		"dark":  parseCSSVars(darkBlock),
+	got := renderedThemeGroups(document)
+	want := presetThemeGroups()
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("server-rendered theme groups drifted from preset\n got: %#v\nwant: %#v", got, want)
 	}
+}
 
-	// Build the Go defaults map from themeGroups
-	goDefaults := map[string]map[string]string{
-		"light": {},
-		"dark":  {},
+type themeGroupSnapshot struct {
+	Name string
+	Vars []themeVarSnapshot
+}
+
+type themeVarSnapshot struct {
+	Name  string
+	Light string
+	Dark  string
+}
+
+func presetThemeGroups() []themeGroupSnapshot {
+	defaults := preset.Default(preset.StyleNova)
+	groupIndexes := make(map[string]int)
+	groups := make([]themeGroupSnapshot, 0, len(preset.GroupNames()))
+	for _, name := range preset.GroupNames() {
+		groupIndexes[name] = len(groups)
+		groups = append(groups, themeGroupSnapshot{Name: name})
 	}
-
-	// Iterate through all theme vars in the Go definitions
-	for _, g := range pages.ThemeGroups() {
-		for _, v := range g.Vars {
-			goDefaults["light"][v.Name] = v.Light
-			goDefaults["dark"][v.Name] = v.Dark
-		}
-	}
-
-	// Assert byte-for-byte match for light mode
-	for varName, goValue := range goDefaults["light"] {
-		cssValue, ok := cssVars["light"][varName]
+	add := func(definition preset.TokenDefinition, light, dark string) {
+		index, ok := groupIndexes[definition.Group]
 		if !ok {
-			t.Errorf("light mode: %s missing in CSS :root block", varName)
-			continue
+			panic("preset definition references unknown presentation group " + definition.Group)
 		}
-		if cssValue != goValue {
-			t.Errorf("light mode: %s = %q (Go) vs %q (CSS) mismatch", varName, goValue, cssValue)
-		}
+		groups[index].Vars = append(groups[index].Vars, themeVarSnapshot{
+			Name:  "--" + definition.Name,
+			Light: light,
+			Dark:  dark,
+		})
 	}
+	for _, definition := range preset.TokenDefinitions() {
+		add(
+			definition,
+			defaults.Theme.Light[definition.Name],
+			defaults.Theme.Dark[definition.Name],
+		)
+	}
+	radius := preset.RadiusDefinition()
+	add(radius, defaults.Radius, defaults.Radius)
+	return groups
+}
 
-	// Assert byte-for-byte match for dark mode
-	// Note: --radius is only in :root, not in .dark
-	for varName, goValue := range goDefaults["dark"] {
-		if varName == "--radius" {
-			// --radius is theme-invariant, so it's only in :root
-			continue
-		}
-		cssValue, ok := cssVars["dark"][varName]
-		if !ok {
-			t.Errorf("dark mode: %s missing in CSS .dark block", varName)
-			continue
-		}
-		if cssValue != goValue {
-			t.Errorf("dark mode: %s = %q (Go) vs %q (CSS) mismatch", varName, goValue, cssValue)
-		}
-	}
-
-	libraryOnly := map[string]map[string]string{
-		"light": {
-			"--success":  "oklch(69.6% 0.17 162.48)",
-			"--info":     "oklch(68.5% 0.169 237.323)",
-			"--warning":  "oklch(76.9% 0.188 70.08)",
-			"--overlay":  "oklch(0% 0 0 / 10%)",
-			"--contrast": "oklch(100% 0 0)",
-		},
-		"dark": {
-			"--success":  "oklch(69.6% 0.17 162.48)",
-			"--info":     "oklch(68.5% 0.169 237.323)",
-			"--warning":  "oklch(76.9% 0.188 70.08)",
-			"--overlay":  "oklch(0% 0 0 / 10%)",
-			"--contrast": "oklch(100% 0 0)",
-		},
-	}
-	for mode, expected := range libraryOnly {
-		for name, want := range expected {
-			if got := cssVars[mode][name]; got != want {
-				t.Errorf("%s mode: %s = %q, want %q", mode, name, got, want)
+func renderedThemeGroups(document *html.Node) []themeGroupSnapshot {
+	var groups []themeGroupSnapshot
+	var visit func(*html.Node)
+	visit = func(node *html.Node) {
+		if node.Type == html.ElementNode && node.Data == "section" {
+			if group, ok := renderedThemeGroup(node); ok {
+				groups = append(groups, group)
+				return
 			}
 		}
+		for child := node.FirstChild; child != nil; child = child.NextSibling {
+			visit(child)
+		}
 	}
+	visit(document)
+	return groups
+}
 
+func renderedThemeGroup(section *html.Node) (themeGroupSnapshot, bool) {
+	var group themeGroupSnapshot
+	varIndexes := make(map[string]int)
+	var visit func(*html.Node)
+	visit = func(node *html.Node) {
+		if node.Type == html.ElementNode && node.Data == "h2" && group.Name == "" {
+			group.Name = strings.TrimSpace(htmlNodeText(node))
+		}
+		if node.Type == html.ElementNode && node.Data == "input" {
+			name, hasName := htmlAttribute(node, "data-theme-var")
+			mode, hasMode := htmlAttribute(node, "data-theme-mode")
+			value, hasValue := htmlAttribute(node, "value")
+			if hasName && hasMode && hasValue {
+				index, ok := varIndexes[name]
+				if !ok {
+					index = len(group.Vars)
+					varIndexes[name] = index
+					group.Vars = append(group.Vars, themeVarSnapshot{Name: name})
+				}
+				switch mode {
+				case "light":
+					group.Vars[index].Light = value
+				case "dark":
+					group.Vars[index].Dark = value
+				}
+			}
+		}
+		for child := node.FirstChild; child != nil; child = child.NextSibling {
+			visit(child)
+		}
+	}
+	visit(section)
+	return group, len(group.Vars) != 0
+}
+
+func htmlNodeText(node *html.Node) string {
+	var text strings.Builder
+	var visit func(*html.Node)
+	visit = func(node *html.Node) {
+		if node.Type == html.TextNode {
+			text.WriteString(node.Data)
+		}
+		for child := node.FirstChild; child != nil; child = child.NextSibling {
+			visit(child)
+		}
+	}
+	visit(node)
+	return text.String()
 }
 
 func TestThemeDefaultsExposeEverySidebarTokenInTheEditor(t *testing.T) {
@@ -140,38 +168,4 @@ func TestThemeDefaultsExposeEverySidebarTokenInTheEditor(t *testing.T) {
 			t.Errorf("%s editor defaults = %#v, want %#v", name, got[name], values)
 		}
 	}
-}
-
-// extractCSSBlock extracts the content of a CSS block (e.g., ":root { ... }" or ".dark { ... }")
-func extractCSSBlock(cssText, selector string) string {
-	// Match the selector followed by { ... } (greedy match for the closing brace)
-	pattern := regexp.MustCompile(regexp.QuoteMeta(selector) + `\s*\{([^}]*)\}`)
-	match := pattern.FindStringSubmatch(cssText)
-	if len(match) < 2 {
-		return ""
-	}
-	return match[1]
-}
-
-// parseCSSVars parses CSS variable declarations from a block of text
-func parseCSSVars(blockText string) map[string]string {
-	result := make(map[string]string)
-	if blockText == "" {
-		return result
-	}
-
-	// Match --var-name: value; pairs
-	// The value can span multiple tokens and may contain slashes, parentheses, etc.
-	pattern := regexp.MustCompile(`--([a-zA-Z0-9-]+)\s*:\s*([^;]+);`)
-	matches := pattern.FindAllStringSubmatch(blockText, -1)
-
-	for _, match := range matches {
-		if len(match) >= 3 {
-			varName := "--" + match[1]
-			value := strings.TrimSpace(match[2])
-			result[varName] = value
-		}
-	}
-
-	return result
 }
