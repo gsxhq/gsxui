@@ -133,6 +133,13 @@ func RadiusDefinition() TokenDefinition {
 	}
 }
 
+// RadiusUnits returns the exact CSS length-unit allowlist used by Validate.
+// The web editor serializes it into its server-authored schema so browser
+// drafts cannot accept a radius the CLI would later reject.
+func RadiusUnits() []string {
+	return slices.Clone(lengthUnits)
+}
+
 func Default(style Style) Preset {
 	light := make(ThemeValues, len(tokenDefinitions))
 	dark := make(ThemeValues, len(tokenDefinitions))

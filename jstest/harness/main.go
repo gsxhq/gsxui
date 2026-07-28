@@ -78,7 +78,7 @@ func newMux(root string) http.Handler {
 
 	mux.HandleFunc("GET /theme", func(w http.ResponseWriter, r *http.Request) {
 		var buf bytes.Buffer
-		if err := pages.ThemeEditor().Render(r.Context(), &buf); err != nil {
+		if err := pages.ThemeEditor("/theme/preview/button").Render(r.Context(), &buf); err != nil {
 			http.Error(w, "render: "+err.Error(), http.StatusInternalServerError)
 			return
 		}

@@ -1,4 +1,4 @@
-.PHONY: generate generate-styles verify-generated verify-generated-styles test test-js test-css-audit audit check ci icons site-dev site highlight
+.PHONY: generate generate-styles verify-generated verify-generated-styles test test-js test-theme-state test-css-audit audit check ci icons site-dev site highlight
 
 audit-source-dirs := ui site/examples site/pages web $(wildcard dev)
 audit-css-source-dirs := assets/css site web $(wildcard dev)
@@ -54,6 +54,9 @@ test-js:
 test-css-audit:
 	node --test jstest/support/compiled-css-audit.test.ts
 
+test-theme-state:
+	node --test web/theme-state.test.js
+
 audit:
 	@! rg -n '^[[:space:]]*<[^>]*data-slot=|^[[:space:]]+data-slot=' $(audit-source-dirs) -g '!*.x.go' -g '!*.gen.go'
 	@! rg -n 'data-slot|className[[:space:]]*=|[.]classList|setAttribute[(][^)]*class|[.]className[[:space:]]*=' ui $(wildcard dev) -g '*.js'
@@ -70,25 +73,25 @@ audit:
 	@! rg -n -P '^[[:space:]]+"(?!(?:group/button|gsxui-recipe-[^"]*|)"[,]?[[:space:]]*$$)' ui/button.gsx
 	@! rg -n '!important' assets/css/foundation.css assets/css/styles/default.css
 
-check: audit test-css-audit verify-generated-styles
+check: audit test-css-audit test-theme-state verify-generated-styles
 	@$(MAKE) --no-print-directory verify-generated
 	go vet ./...
 	go test ./...
 	npx playwright test --config jstest/playwright.config.ts
 	@test -f site/dist/.gitkeep || { echo "error: site/dist/.gitkeep missing (vite build deletes it — restore before commit)"; exit 1; }
-	@for f in $$(find ui jstest -name '*.js'); do node --check $$f || exit 1; done
+	@for f in $$(find ui jstest web -name '*.js'); do node --check $$f || exit 1; done
 	gofmt -l . | (! grep .)
 
 # ci is the authoritative uncached gate. It mirrors check without reusing
 # Go's test-result cache and keeps the browser, generation, syntax,
 # structural, and formatting checks in the same run.
-ci: audit test-css-audit verify-generated-styles
+ci: audit test-css-audit test-theme-state verify-generated-styles
 	@$(MAKE) --no-print-directory verify-generated
 	go vet ./...
 	go test -count=1 ./...
 	npx playwright test --config jstest/playwright.config.ts
 	@test -f site/dist/.gitkeep || { echo "error: site/dist/.gitkeep missing (vite build deletes it — restore before commit)"; exit 1; }
-	@for f in $$(find ui jstest -name '*.js'); do node --check $$f || exit 1; done
+	@for f in $$(find ui jstest web -name '*.js'); do node --check $$f || exit 1; done
 	gofmt -l . | (! grep .)
 
 # site-dev runs the two-command dev loop: `npm install` once, then this.

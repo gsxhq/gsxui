@@ -15,10 +15,17 @@ if (previewDocument) {
       section,
     ]),
   );
+  let hasAppliedState = false;
 
   function fail(message) {
     if (parent !== window) {
       parent.postMessage({ type: ERROR_MESSAGE, message }, location.origin);
+    }
+  }
+
+  function ready() {
+    if (parent !== window) {
+      parent.postMessage({ type: READY_MESSAGE }, location.origin);
     }
   }
 
@@ -106,12 +113,17 @@ if (previewDocument) {
     }
     try {
       applyState(validatedState(event.data));
+      if (!hasAppliedState) {
+        hasAppliedState = true;
+        // Repeat ready after the first accepted state. This closes the race
+        // where the initial ready message lands before the parent module has
+        // installed its listener, without creating an acknowledgement loop.
+        ready();
+      }
     } catch (error) {
       fail(error instanceof Error ? error.message : "invalid preview state");
     }
   });
 
-  if (parent !== window) {
-    parent.postMessage({ type: READY_MESSAGE }, location.origin);
-  }
+  ready();
 }

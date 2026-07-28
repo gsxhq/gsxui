@@ -26,6 +26,14 @@ var shellTmpl = template.Must(template.New("shell").Parse(
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{.Title}}</title>
 <link rel="stylesheet" href="{{.Stylesheet}}">
+<script type="importmap">{"imports":{
+  "jsonc-parser":"/static/node_modules/jsonc-parser/lib/esm/main.js",
+  "/static/node_modules/jsonc-parser/lib/esm/impl/edit":"/static/node_modules/jsonc-parser/lib/esm/impl/edit.js",
+  "/static/node_modules/jsonc-parser/lib/esm/impl/format":"/static/node_modules/jsonc-parser/lib/esm/impl/format.js",
+  "/static/node_modules/jsonc-parser/lib/esm/impl/parser":"/static/node_modules/jsonc-parser/lib/esm/impl/parser.js",
+  "/static/node_modules/jsonc-parser/lib/esm/impl/scanner":"/static/node_modules/jsonc-parser/lib/esm/impl/scanner.js",
+  "/static/node_modules/jsonc-parser/lib/esm/impl/string-intern":"/static/node_modules/jsonc-parser/lib/esm/impl/string-intern.js"
+}}</script>
 <script type="module" src="{{.Script}}"></script>
 </head>
 <body class="min-h-svh bg-background text-foreground antialiased">

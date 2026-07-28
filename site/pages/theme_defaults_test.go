@@ -15,7 +15,7 @@ func TestThemeEditorRendersPresetGroupNamesAndDefaults(t *testing.T) {
 	t.Parallel()
 
 	var output strings.Builder
-	if err := pages.ThemeEditor().Render(context.Background(), &output); err != nil {
+	if err := pages.ThemeEditor("/theme/preview/button").Render(context.Background(), &output); err != nil {
 		t.Fatalf("ThemeEditor.Render: %v", err)
 	}
 	document, err := html.Parse(strings.NewReader(output.String()))
@@ -27,6 +27,17 @@ func TestThemeEditorRendersPresetGroupNamesAndDefaults(t *testing.T) {
 	want := presetThemeGroups()
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("server-rendered theme groups drifted from preset\n got: %#v\nwant: %#v", got, want)
+	}
+	radius := findElementWithAttribute(document, "data-theme-field")
+	if radius == nil {
+		t.Fatal("theme editor has no radius input")
+	}
+	if field, _ := htmlAttribute(radius, "data-theme-field"); field != "radius" {
+		t.Fatalf("first data-theme-field = %q, want radius", field)
+	}
+	value, _ := htmlAttribute(radius, "value")
+	if value != preset.Default(preset.StyleNova).Radius {
+		t.Errorf("radius input = %q, want %q", value, preset.Default(preset.StyleNova).Radius)
 	}
 }
 
@@ -67,8 +78,6 @@ func presetThemeGroups() []themeGroupSnapshot {
 			defaults.Theme.Dark[definition.Name],
 		)
 	}
-	radius := preset.RadiusDefinition()
-	add(radius, defaults.Radius, defaults.Radius)
 	return groups
 }
 
