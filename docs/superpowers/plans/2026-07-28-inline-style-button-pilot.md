@@ -585,9 +585,9 @@ Use a temporary `go.work` containing this worktree and the exact merged core:
 
 ```bash
 pilot_workspace="$(mktemp -d)"
-go work init -o "$pilot_workspace/go.work" \
+(cd "$pilot_workspace" && go work init \
   /Users/jackieli/personal/gsxhq/gsxui/.worktrees/css-only-theme-architecture \
-  /Users/jackieli/personal/gsxhq/gsx
+  /Users/jackieli/personal/gsxhq/gsx)
 GOWORK="$pilot_workspace/go.work" go run ./cmd/stylegen
 GOWORK="$pilot_workspace/go.work" go tool gsx generate
 GOWORK="$pilot_workspace/go.work" go test ./internal/stylegen ./ui -count=1
@@ -1380,7 +1380,11 @@ Create a fresh temporary workspace selecting this gsxui worktree and exact
 merged core, then run:
 
 ```bash
-GOWORK="$pilot_workspace/go.work" make ci
+pilot_ci_workspace="$(mktemp -d)"
+(cd "$pilot_ci_workspace" && go work init \
+  /Users/jackieli/personal/gsxhq/gsxui/.worktrees/css-only-theme-architecture \
+  /Users/jackieli/personal/gsxhq/gsx)
+GOWORK="$pilot_ci_workspace/go.work" make ci
 git status --short
 ```
 
