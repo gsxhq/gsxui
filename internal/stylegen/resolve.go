@@ -25,6 +25,13 @@ type literalEdit struct {
 	value string
 }
 
+type inspectionMode uint8
+
+const (
+	canonicalClassInspection inspectionMode = iota
+	validationOnlyInspection
+)
+
 type resolver struct {
 	filename string
 	src      []byte
@@ -106,7 +113,7 @@ func inspectRecipeTokens(filename string, src []byte, recipes *Recipes) (inspect
 		recipes:  recipes,
 		used:     make(map[string]struct{}),
 	}
-	gsxast.Inspect(file, r.inspectNode)
+	gsxast.Inspect(file, r.inspectVisitor(canonicalClassInspection))
 	if r.err != nil {
 		return inspectionResult{}, r.err
 	}
@@ -119,13 +126,19 @@ func inspectRecipeTokens(filename string, src []byte, recipes *Recipes) (inspect
 	return inspectionResult{tokens: tokens, edits: r.edits}, nil
 }
 
-func (r *resolver) inspectNode(node gsxast.Node) bool {
+func (r *resolver) inspectVisitor(mode inspectionMode) func(gsxast.Node) bool {
+	return func(node gsxast.Node) bool {
+		return r.inspectNode(node, mode)
+	}
+}
+
+func (r *resolver) inspectNode(node gsxast.Node, mode inspectionMode) bool {
 	if r.err != nil {
 		return false
 	}
 	switch node := node.(type) {
 	case *gsxast.ClassAttr:
-		r.inspectClassAttr(node)
+		r.inspectClassAttr(node, mode)
 		return false
 	case *gsxast.StaticAttr:
 		r.inspectStaticAttr(node)
@@ -141,35 +154,44 @@ func (r *resolver) inspectNode(node gsxast.Node) bool {
 	case *gsxast.Interp:
 		r.inspectNonClassExpr(node.Expr, node.ExprPos, "interpolation")
 		r.inspectPipelineStages(node.Stages, "interpolation pipeline stage")
+	case *gsxast.Text:
+		if mode == validationOnlyInspection {
+			r.inspectNestedText(node)
+		}
 	}
 	return r.err == nil
 }
 
-func (r *resolver) inspectClassAttr(attr *gsxast.ClassAttr) {
+func (r *resolver) inspectClassAttr(attr *gsxast.ClassAttr, mode inspectionMode) {
+	canonicalClass := mode == canonicalClassInspection && attr.Name == "class"
+	context := attr.Name
+	if mode == validationOnlyInspection {
+		context = "nested " + context
+	}
 	for i := range attr.Parts {
 		part := &attr.Parts[i]
 		if part.Expr != "" {
-			if attr.Name == "class" {
+			if canonicalClass {
 				r.inspectClassExpr(part.Expr, part.ExprPos)
 			} else {
-				r.inspectNonClassExpr(part.Expr, part.ExprPos, attr.Name)
+				r.inspectNonClassExpr(part.Expr, part.ExprPos, context)
 			}
 		}
 		if part.Cond != "" {
-			r.inspectNonClassExpr(part.Cond, part.CondPos, attr.Name+" condition")
+			r.inspectNonClassExpr(part.Cond, part.CondPos, context+" condition")
 		}
-		r.inspectPipelineStages(part.Stages, attr.Name+" pipeline stage")
+		r.inspectPipelineStages(part.Stages, context+" pipeline stage")
 		if len(part.CSSSegments) != 0 {
-			r.inspectEmbeddedSegments(part.CSSSegments, part.Pos(), attr.Name+" CSS segment")
+			r.inspectEmbeddedSegments(part.CSSSegments, part.Pos(), context+" CSS segment")
 		}
 		if part.CF == nil {
 			continue
 		}
 		if part.CF.If != nil {
-			r.inspectValueIf(part.CF.If, attr.Name)
+			r.inspectValueIf(part.CF.If, context)
 		}
 		if part.CF.Switch != nil {
-			r.inspectValueSwitch(part.CF.Switch, attr.Name)
+			r.inspectValueSwitch(part.CF.Switch, context, canonicalClass)
 		}
 	}
 }
@@ -285,6 +307,13 @@ func (r *resolver) inspectStaticAttr(attr *gsxast.StaticAttr) {
 	r.err = r.positionedError(attr.Pos(), "recipe token %q appears in non-class attribute %q", attr.Value, attr.Name)
 }
 
+func (r *resolver) inspectNestedText(text *gsxast.Text) {
+	if !strings.Contains(text.Value, RecipePrefix) {
+		return
+	}
+	r.err = r.positionedError(text.Pos(), "recipe token %q appears in nested element text", text.Value)
+}
+
 func (r *resolver) inspectEmbeddedAttr(attr *gsxast.EmbeddedAttr) {
 	r.inspectEmbeddedSegments(attr.Segments, attr.Pos(), attr.Name+" interpolation")
 	r.inspectPipelineStages(attr.Stages, attr.Name+" pipeline stage")
@@ -340,7 +369,7 @@ func (r *resolver) inspectNonClassGo(src string, srcPos token.Pos, context strin
 		if _, ok := part.(gsxast.GoText); ok {
 			continue
 		}
-		gsxast.Inspect(part, r.inspectNode)
+		gsxast.Inspect(part, r.inspectVisitor(validationOnlyInspection))
 		if r.err != nil {
 			return parsed
 		}
@@ -399,7 +428,7 @@ func (r *resolver) inspectValueIf(valueIf *gsxast.ValueIf, attrName string) {
 	}
 }
 
-func (r *resolver) inspectValueSwitch(valueSwitch *gsxast.ValueSwitch, attrName string) {
+func (r *resolver) inspectValueSwitch(valueSwitch *gsxast.ValueSwitch, attrName string, transform bool) {
 	if valueSwitch.Tag != "" {
 		r.inspectControlClause("switch", valueSwitch.Tag, valueSwitch.TagPos, attrName+" switch tag")
 	}
@@ -407,7 +436,7 @@ func (r *resolver) inspectValueSwitch(valueSwitch *gsxast.ValueSwitch, attrName 
 		if classCase.List != "" {
 			r.inspectNonClassExprList(classCase.List, classCase.ListPos, attrName+" switch case")
 		}
-		r.inspectValueArm(classCase.Value, attrName == "class", attrName+" switch arm")
+		r.inspectValueArm(classCase.Value, transform, attrName+" switch arm")
 	}
 }
 

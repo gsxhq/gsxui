@@ -211,6 +211,11 @@ func TestResolveAcceptsElementValuedExpressions(t *testing.T) {
 			body: `{wrap(<b>hi</b>)}`,
 			want: `wrap(<b>hi</b>)`,
 		},
+		{
+			name: "element-valued call argument with nested class",
+			body: `{wrap(<b class={"safe"}>hi</b>)}`,
+			want: `wrap(<b class={"safe"}>hi</b>)`,
+		},
 	}
 
 	for _, tt := range tests {
@@ -226,12 +231,19 @@ func TestResolveAcceptsElementValuedExpressions(t *testing.T) {
 			if len(tokens) != 0 {
 				t.Fatalf("RecipeTokens() = %q, want none", tokens)
 			}
+			wantFormatted, err := gen.Format("element-valued.gsx", src)
+			if err != nil {
+				t.Fatalf("gen.Format() error = %v", err)
+			}
 			got, report, err := Resolve("element-valued.gsx", src, Recipes{})
 			if err != nil {
 				t.Fatalf("Resolve() error = %v", err)
 			}
 			if len(report.UsedTokens) != 0 {
 				t.Errorf("ResolveReport.UsedTokens = %q, want none", report.UsedTokens)
+			}
+			if !bytes.Equal(got, wantFormatted) {
+				t.Errorf("Resolve() changed recipe-free element-valued expression\n--- got ---\n%s\n--- want ---\n%s", got, wantFormatted)
 			}
 			if !bytes.Contains(got, []byte(tt.want)) {
 				t.Errorf("Resolve() output does not preserve %q:\n%s", tt.want, got)
@@ -293,6 +305,66 @@ func TestRecipeTokensRejectsRecipeUseInsideElementValuedExpressions(t *testing.T
 			}
 			if bytes.Contains(got, []byte(RecipePrefix)) {
 				t.Errorf("Resolve() returned output containing %q: %s", RecipePrefix, got)
+			}
+		})
+	}
+}
+
+func TestRecipeTokensRejectsRecipeContentInNestedElementValuedExpressions(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name string
+		body string
+		want string
+	}{
+		{
+			name: "nested element class literal",
+			body: `{wrap(<b class={"gsxui-recipe-button"}>hi</b>)}`,
+			want: "nested class expression",
+		},
+		{
+			name: "nested element text",
+			body: `{wrap(<b>gsxui-recipe-button</b>)}`,
+			want: "nested element text",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			filename := "nested-element-recipe.gsx"
+			source := []byte(resolveComponent(tt.body))
+			if _, err := gsxparser.ParseFile(token.NewFileSet(), filename, source, 0); err != nil {
+				t.Fatalf("fixture does not parse: %v", err)
+			}
+
+			if _, err := RecipeTokens(filename, source); err == nil {
+				t.Fatal("RecipeTokens() error = nil, want nested recipe-use error")
+			} else {
+				for _, want := range []string{"recipe token", tt.want} {
+					if !strings.Contains(err.Error(), want) {
+						t.Errorf("RecipeTokens() error %q does not contain %q", err, want)
+					}
+				}
+			}
+
+			recipes := testRecipes(
+				Recipe{Token: "gsxui-recipe-button", Utilities: []string{"resolved-utility"}},
+			)
+			got, report, err := Resolve(filename, source, recipes)
+			if err == nil {
+				t.Fatal("Resolve() error = nil, want nested recipe-use error")
+			}
+			for _, want := range []string{"recipe token", tt.want} {
+				if !strings.Contains(err.Error(), want) {
+					t.Errorf("Resolve() error %q does not contain %q", err, want)
+				}
+			}
+			if got != nil {
+				t.Errorf("Resolve() output = %q, want nil on nested recipe misuse", got)
+			}
+			if len(report.UsedTokens) != 0 {
+				t.Errorf("ResolveReport.UsedTokens = %q, want none on nested recipe misuse", report.UsedTokens)
 			}
 		})
 	}
