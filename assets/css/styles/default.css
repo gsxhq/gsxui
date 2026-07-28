@@ -3019,12 +3019,12 @@
     @apply pointer-events-none opacity-50;
   }
   :where(
-      [data-gsxui-slot-sidebar-menu-button][data-active="true"]
+      [data-gsxui-slot-sidebar-menu-button][data-active]
     ) {
     @apply bg-sidebar-primary font-medium text-sidebar-primary-foreground;
   }
   :where(
-      [data-gsxui-slot-sidebar-menu-button][data-active="true"]
+      [data-gsxui-slot-sidebar-menu-button][data-active]
     ):hover {
     @apply bg-sidebar-primary/90 text-sidebar-primary-foreground;
   }
@@ -3123,29 +3123,29 @@
   }
   @media (width >= 48rem) {
     :where(
-        [data-gsxui-slot-sidebar-menu-action][data-show-on-hover="true"]
+        [data-gsxui-slot-sidebar-menu-action][data-show-on-hover]
       ) {
       @apply opacity-0;
     }
     :where([data-gsxui-slot-sidebar-menu-item]):hover
       > :where(
-        [data-gsxui-slot-sidebar-menu-action][data-show-on-hover="true"]
+        [data-gsxui-slot-sidebar-menu-action][data-show-on-hover]
       ),
     :where([data-gsxui-slot-sidebar-menu-item]):focus-within
       > :where(
-        [data-gsxui-slot-sidebar-menu-action][data-show-on-hover="true"]
+        [data-gsxui-slot-sidebar-menu-action][data-show-on-hover]
       ),
     :where(
-        [data-gsxui-slot-sidebar-menu-action][data-show-on-hover="true"][data-state="open"]
+        [data-gsxui-slot-sidebar-menu-action][data-show-on-hover][data-state="open"]
       ) {
       @apply opacity-100;
     }
   }
   :where(
-      [data-gsxui-slot-sidebar-menu-button][data-active="true"]
+      [data-gsxui-slot-sidebar-menu-button][data-active]
     )
     ~ :where(
-      [data-gsxui-slot-sidebar-menu-action][data-show-on-hover="true"]
+      [data-gsxui-slot-sidebar-menu-action][data-show-on-hover]
     ) {
     @apply text-sidebar-primary-foreground;
   }
@@ -3160,7 +3160,7 @@
     @apply text-sidebar-accent-foreground;
   }
   :where(
-      [data-gsxui-slot-sidebar-menu-button][data-active="true"]
+      [data-gsxui-slot-sidebar-menu-button][data-active]
     )
     ~ :where([data-gsxui-slot-sidebar-menu-badge]) {
     @apply text-sidebar-primary-foreground;
@@ -3185,7 +3185,7 @@
   :where([data-gsxui-slot-sidebar-menu-sub-button]):hover,
   :where([data-gsxui-slot-sidebar-menu-sub-button]):active,
   :where(
-      [data-gsxui-slot-sidebar-menu-sub-button][data-active="true"]
+      [data-gsxui-slot-sidebar-menu-sub-button][data-active]
     ) {
     @apply bg-sidebar-accent text-sidebar-accent-foreground;
   }

@@ -64,15 +64,16 @@ web/
 
 ---
 
-### Task 0: Migrate valued boolean data axes to explicit strings
+### Task 0: Adopt presence semantics for binary data markers
 
 GSX core `ef72f5eb` intentionally changes a Go `bool` attribute expression to
 HTML presence semantics: false omits the attribute and true emits it bare,
-except for native HTML attributes whose specification requires the strings
-`"true"`/`"false"`. gsxui slot markers and native boolean attributes want that
-new default. Five component-presentation axes do not: their style contracts
-explicitly require valued `data-*="false|true"` output. Migrate only those
-axes before building the pilot on the new core.
+except for attributes whose platform-defined value vocabulary requires the
+strings `"true"`/`"false"` (notably ARIA boolean states). This is also gsxui's
+default construction rule: a binary custom state is a presence marker unless
+false must remain observable as a distinct value. `data-content`,
+`data-active`, and `data-show-on-hover` do not need an observable false value,
+so false is absent and true is bare.
 
 **Files:**
 - Modify: `go.mod`
@@ -83,6 +84,10 @@ axes before building the pilot on the new core.
 - Generated: `ui/pagination.x.go`
 - Modify: `ui/sidebar.gsx`
 - Generated: `ui/sidebar.x.go`
+- Modify: `internal/stylecontract/contracts_forms.go`
+- Modify: `internal/stylecontract/contracts_sidebar.go`
+- Modify: `internal/stylecontract/contracts_primitives.go`
+- Modify: `assets/css/styles/default.css`
 
 - [ ] **Step 1: Verify the dependency-change RED state**
 
@@ -102,10 +107,10 @@ GOWORK="$presence_workspace/go.work" go test \
   -count=1
 ```
 
-Expected RED: the generated diff changes only `ui/field.x.go`,
-`ui/pagination.x.go`, and `ui/sidebar.x.go`; focused tests show that false
-omits and true bares `data-content`, `data-active`, or
-`data-show-on-hover`, conflicting with their declared valued axes.
+Expected RED before updating the tests and contracts: the generated diff changes
+only `ui/field.x.go`, `ui/pagination.x.go`, and `ui/sidebar.x.go`; existing
+expectations still require `"false"`/`"true"` even though these states do not
+need valued false output.
 
 - [ ] **Step 2: Pin the merged GSX core**
 
@@ -120,19 +125,21 @@ go list -m -json github.com/gsxhq/gsx
 Require `Origin.Hash` to equal
 `ef72f5eba066d7e87adf7dcadc2db62d00f22efe`.
 
-- [ ] **Step 3: Make valued axes string-typed at the authored source**
+- [ ] **Step 3: Keep binary markers bool-typed**
 
-Import standard-library `strconv` in the three authored files and replace only:
+Use plain bool expressions:
 
 ```gsx
-data-content={strconv.FormatBool(children != nil)}
-data-active={strconv.FormatBool(isActive)}
-data-show-on-hover={strconv.FormatBool(showOnHover)}
+data-content={children != nil}
+data-active={isActive}
+data-show-on-hover={showOnHover}
 ```
 
-Keep every `data-gsxui-slot-*`, native `disabled`, and other boolean presence
-attribute as a `bool`. Do not change style contracts or expected HTML: they
-already pin the intended distinction.
+Update their style-contract axes to presence-only, update Sidebar selectors
+from `[data-active="true"]` / `[data-show-on-hover="true"]` to
+`[data-active]` / `[data-show-on-hover]`, and pin absent-false/bare-true HTML.
+Use `strconv.FormatBool` only when false is a load-bearing value rather than
+the absence of a marker.
 
 - [ ] **Step 4: Regenerate and verify GREEN**
 
@@ -145,9 +152,9 @@ gopls check -severity=hint \
   ui/field.x.go ui/pagination.x.go ui/sidebar.x.go
 ```
 
-Expected: focused tests pass; generated output uses string attribute emission
-for the five valued expressions while slot/native boolean output remains
-presence-based.
+Expected: focused tests pass; generated output omits false and emits true bare
+for the five binary marker expressions. Attributes such as `aria-selected`
+whose own vocabulary requires `"false"`/`"true"` remain valued automatically.
 
 - [ ] **Step 5: Run the authoritative gate**
 
@@ -160,10 +167,15 @@ git diff --check
 
 ```bash
 git add go.mod go.sum \
+  assets/css/styles/default.css \
+  internal/stylecontract \
+  jstest/support/compiled-css-audit.test.ts \
   ui/field.gsx ui/field.x.go \
+  ui/field_test.go ui/forms_css_contract_test.go \
   ui/pagination.gsx ui/pagination.x.go \
-  ui/sidebar.gsx ui/sidebar.x.go
-git commit -m "fix: preserve valued boolean data axes"
+  ui/pagination_test.go \
+  ui/sidebar.gsx ui/sidebar.x.go ui/sidebar_test.go
+git commit -m "fix: use presence semantics for binary data markers"
 ```
 
 ---

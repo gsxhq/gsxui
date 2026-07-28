@@ -42,22 +42,22 @@ func TestPaginationItemPinned(t *testing.T) {
 // TestPaginationLinkDefaultPinned is the token-for-token pin against shadcn's
 // PaginationLink: isActive false -> "ghost" variant, size zero-value ->
 // "icon" (PaginationLinkProps' own size="icon" default, not Button's
-// "default"), no aria-current, data-active="false".
+// "default"), no aria-current, and no data-active presence marker.
 func TestPaginationLinkDefaultPinned(t *testing.T) {
 	got := render(t, ui.PaginationLink("/p/1", false, "", gsx.Raw("1"), nil))
-	want := `<a data-active="false" data-variant="ghost" data-size="icon" href="/p/1" data-gsxui-slot-pagination-link data-gsxui-slot-button>1</a>`
+	want := `<a data-variant="ghost" data-size="icon" href="/p/1" data-gsxui-slot-pagination-link data-gsxui-slot-button>1</a>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
 }
 
 // TestPaginationLinkActivePinned proves isActive selects the "outline"
-// variant, stamps data-active="true", and adds aria-current="page" — the
+// variant, stamps bare data-active, and adds aria-current="page" — the
 // conditional-attribute mechanism replacing shadcn's
 // `aria-current={isActive ? "page" : undefined}`.
 func TestPaginationLinkActivePinned(t *testing.T) {
 	got := render(t, ui.PaginationLink("/p/2", true, "", gsx.Raw("2"), nil))
-	want := `<a aria-current="page" data-active="true" data-variant="outline" data-size="icon" href="/p/2" data-gsxui-slot-pagination-link data-gsxui-slot-button>2</a>`
+	want := `<a aria-current="page" data-active data-variant="outline" data-size="icon" href="/p/2" data-gsxui-slot-pagination-link data-gsxui-slot-button>2</a>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -106,7 +106,7 @@ func TestPaginationLinkCallerClassIsForwardedOnce(t *testing.T) {
 // anything a caller could otherwise pass.
 func TestPaginationPreviousPinned(t *testing.T) {
 	got := render(t, ui.PaginationPrevious("/p/1", nil))
-	want := `<a data-active="false" data-variant="ghost" data-size="default" href="/p/1" aria-label="Go to previous page" data-gsxui-slot-pagination-previous data-gsxui-slot-pagination-link data-gsxui-slot-button><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="m15 18-6-6 6-6"/></svg><span data-gsxui-slot-pagination-previous-label>Previous</span></a>`
+	want := `<a data-variant="ghost" data-size="default" href="/p/1" aria-label="Go to previous page" data-gsxui-slot-pagination-previous data-gsxui-slot-pagination-link data-gsxui-slot-button><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="m15 18-6-6 6-6"/></svg><span data-gsxui-slot-pagination-previous-label>Previous</span></a>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -123,7 +123,7 @@ func TestPaginationPreviousComposesAllPresenceMarkersOnLink(t *testing.T) {
 
 func TestPaginationNextPinned(t *testing.T) {
 	got := render(t, ui.PaginationNext("/p/3", nil))
-	want := `<a data-active="false" data-variant="ghost" data-size="default" href="/p/3" aria-label="Go to next page" data-gsxui-slot-pagination-next data-gsxui-slot-pagination-link data-gsxui-slot-button><span data-gsxui-slot-pagination-next-label>Next</span><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="m9 18 6-6-6-6"/></svg></a>`
+	want := `<a data-variant="ghost" data-size="default" href="/p/3" aria-label="Go to next page" data-gsxui-slot-pagination-next data-gsxui-slot-pagination-link data-gsxui-slot-button><span data-gsxui-slot-pagination-next-label>Next</span><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="m9 18 6-6-6-6"/></svg></a>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -183,7 +183,7 @@ func TestPaginationFullTrail(t *testing.T) {
 		`data-gsxui-slot-pagination-content`,
 		`aria-label="Go to previous page"`,
 		`>1</a>`,
-		`aria-current="page" data-active="true" data-variant="outline" data-size="icon"`,
+		`aria-current="page" data-active data-variant="outline" data-size="icon"`,
 		`>3</a>`,
 		`data-gsxui-slot-pagination-ellipsis`,
 		`aria-label="Go to next page"`,

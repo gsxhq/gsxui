@@ -102,7 +102,7 @@ func TestFormControlCompositionTokenOrder(t *testing.T) {
 		{
 			name: "FieldSeparator",
 			node: ui.FieldSeparator(gsx.Raw("Or"), nil),
-			want: `<div data-content="true" data-gsxui-slot-field-separator-wrapper><div role="none" data-orientation="horizontal" data-gsxui-slot-field-separator data-gsxui-slot-separator></div><span data-gsxui-slot-field-separator-content>Or</span></div>`,
+			want: `<div data-content data-gsxui-slot-field-separator-wrapper><div role="none" data-orientation="horizontal" data-gsxui-slot-field-separator data-gsxui-slot-separator></div><span data-gsxui-slot-field-separator-content>Or</span></div>`,
 		},
 		{
 			name: "ToggleGroupItem",

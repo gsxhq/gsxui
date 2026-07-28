@@ -35,7 +35,7 @@ func TestFormContractsDeclareEverySlotAndPresentationAxis(t *testing.T) {
 				{Name: "field-label"},
 				{Name: "field-title"},
 				{Name: "field-description"},
-				{Name: "field-separator-wrapper", Axes: []Axis{{Attribute: "data-content", Values: []string{"false", "true"}}}},
+				{Name: "field-separator-wrapper", Axes: []Axis{{Attribute: "data-content"}}},
 				{Name: "field-separator"},
 				{Name: "field-separator-content"},
 				{Name: "field-error"},

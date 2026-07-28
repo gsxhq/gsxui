@@ -241,9 +241,16 @@ func TestSidebarMenuButtonReflectsEveryPresentationAxis(t *testing.T) {
 			`data-gsxui-slot-sidebar-menu-button`,
 			`data-variant="`+variant+`"`,
 			`data-size="`+size+`"`,
-			`data-active="`+map[bool]string{false: "false", true: "true"}[tc.active]+`"`,
 			`class="caller"`,
 		)
+		if tc.active {
+			requireContainsAll(t, got, ` data-active`)
+			if strings.Contains(got, `data-active=`) {
+				t.Fatalf("active button must render data-active as a bare marker\nin: %s", got)
+			}
+		} else if strings.Contains(got, `data-active`) {
+			t.Fatalf("inactive button must omit data-active\nin: %s", got)
+		}
 		if strings.Count(got, `class="caller"`) != 1 {
 			t.Fatalf("caller class not forwarded exactly once\nin: %s", got)
 		}
@@ -305,9 +312,12 @@ func TestSidebarMenuButtonComposesTooltipTokens(t *testing.T) {
 		`data-gsxui-slot-tooltip-arrow`,
 		`data-variant="outline"`,
 		`data-size="lg"`,
-		`data-active="true"`,
+		`data-active`,
 		">Inbox<",
 	)
+	if strings.Contains(got, `data-active=`) {
+		t.Fatalf("active tooltip button must render data-active as a bare marker\nin: %s", got)
+	}
 	if strings.Contains(got, ` class=`) || strings.Contains(got, `data-slot=`) || strings.Contains(got, `data-sidebar=`) {
 		t.Fatalf("tooltip composition retained presentation classes or legacy styling hooks\nin: %s", got)
 	}
@@ -316,10 +326,15 @@ func TestSidebarMenuButtonComposesTooltipTokens(t *testing.T) {
 func TestSidebarMenuActionReflectsShowOnHover(t *testing.T) {
 	for _, show := range []bool{false, true} {
 		got := render(t, ui.SidebarMenuAction(show, gsx.Raw("x"), nil))
-		requireContainsAll(t, got,
-			`data-gsxui-slot-sidebar-menu-action`,
-			`data-show-on-hover="`+map[bool]string{false: "false", true: "true"}[show]+`"`,
-		)
+		requireContainsAll(t, got, `data-gsxui-slot-sidebar-menu-action`)
+		if show {
+			requireContainsAll(t, got, ` data-show-on-hover`)
+			if strings.Contains(got, `data-show-on-hover=`) {
+				t.Fatalf("showOnHover=true must render data-show-on-hover as a bare marker\nin: %s", got)
+			}
+		} else if strings.Contains(got, `data-show-on-hover`) {
+			t.Fatalf("showOnHover=false must omit data-show-on-hover\nin: %s", got)
+		}
 		if strings.Contains(got, ` class=`) {
 			t.Fatalf("library presentation class remains\nin: %s", got)
 		}
@@ -336,9 +351,12 @@ func TestSidebarMenuSubButtonReflectsSizeActiveAndCallerClass(t *testing.T) {
 	requireContainsAll(t, got,
 		`data-gsxui-slot-sidebar-menu-sub-button`,
 		`data-size="sm"`,
-		`data-active="true"`,
+		`data-active`,
 		`class="caller"`,
 	)
+	if strings.Contains(got, `data-active=`) {
+		t.Fatalf("active sub-button must render data-active as a bare marker\nin: %s", got)
+	}
 }
 
 func TestSidebarMenuSkeletonComposesSkeletonPartsAndKeepsDynamicWidth(t *testing.T) {

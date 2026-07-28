@@ -56,14 +56,14 @@ func TestSidebarContracts(t *testing.T) {
 				{Name: "sidebar-menu-button", Axes: []Axis{
 					{Attribute: "data-variant", Values: []string{"default", "outline"}},
 					{Attribute: "data-size", Values: []string{"default", "lg", "sm"}},
-					{Attribute: "data-active", Values: []string{"false", "true"}},
+					{Attribute: "data-active"},
 					{Attribute: "disabled"},
 					{Attribute: "aria-disabled"},
 				}},
 				{Name: "sidebar-menu-button-tooltip"},
 				{Name: "sidebar-menu-button-tooltip-content"},
 				{Name: "sidebar-menu-action", Axes: []Axis{
-					{Attribute: "data-show-on-hover", Values: []string{"false", "true"}},
+					{Attribute: "data-show-on-hover"},
 				}},
 				{Name: "sidebar-menu-badge"},
 				{Name: "sidebar-menu-skeleton"},
@@ -73,7 +73,7 @@ func TestSidebarContracts(t *testing.T) {
 				{Name: "sidebar-menu-sub-item"},
 				{Name: "sidebar-menu-sub-button", Axes: []Axis{
 					{Attribute: "data-size", Values: []string{"md", "sm"}},
-					{Attribute: "data-active", Values: []string{"false", "true"}},
+					{Attribute: "data-active"},
 					{Attribute: "disabled"},
 					{Attribute: "aria-disabled"},
 				}},

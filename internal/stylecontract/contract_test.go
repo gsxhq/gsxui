@@ -302,7 +302,7 @@ func TestAllPreservesSliceNilness(t *testing.T) {
 	}
 }
 
-func TestPaginationLinkContractIncludesCurrentPageAxis(t *testing.T) {
+func TestPaginationLinkContractIncludesStateAxes(t *testing.T) {
 	for _, component := range All() {
 		if component.Name != "Pagination" {
 			continue
@@ -311,13 +311,24 @@ func TestPaginationLinkContractIncludesCurrentPageAxis(t *testing.T) {
 			if slot.Name != "pagination-link" {
 				continue
 			}
+			currentPage := false
+			activePresence := false
 			for _, axis := range slot.Axes {
 				if axis.Attribute == "aria-current" &&
 					reflect.DeepEqual(axis.Values, []string{"page"}) {
-					return
+					currentPage = true
+				}
+				if axis.Attribute == "data-active" && axis.Values == nil {
+					activePresence = true
 				}
 			}
-			t.Fatal(`pagination-link missing aria-current values ["page"]`)
+			if !currentPage {
+				t.Fatal(`pagination-link missing aria-current values ["page"]`)
+			}
+			if !activePresence {
+				t.Fatal("pagination-link data-active must be a presence axis")
+			}
+			return
 		}
 		t.Fatal("Pagination missing pagination-link slot")
 	}

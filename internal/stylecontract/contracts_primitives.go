@@ -208,7 +208,6 @@ var primitiveContracts = []Component{
 				Axes: []Axis{
 					{
 						Attribute: "data-active",
-						Values:    []string{"false", "true"},
 					},
 					{
 						Attribute: "data-variant",

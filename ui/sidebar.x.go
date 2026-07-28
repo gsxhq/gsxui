@@ -471,9 +471,7 @@ func SidebarMenuButton(isActive bool, variant string, size string, tooltip strin
 				_gsxgw.S("\"")
 			}
 			if !attrs.Has("data-active") {
-				_gsxgw.S(" data-active=\"")
-				_gsxgw.AttrValue(string(strconv.FormatBool(isActive)))
-				_gsxgw.S("\"")
+				_gsxgw.BoolAttr("data-active", bool(isActive))
 			}
 			_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 			_gsxgw.StyleMerged("", attrs.Style())
@@ -503,9 +501,7 @@ func SidebarMenuButton(isActive bool, variant string, size string, tooltip strin
 					_gsxgw.S("\"")
 				}
 				if !attrs.Has("data-active") {
-					_gsxgw.S(" data-active=\"")
-					_gsxgw.AttrValue(string(strconv.FormatBool(isActive)))
-					_gsxgw.S("\"")
+					_gsxgw.BoolAttr("data-active", bool(isActive))
 				}
 				if !attrs.Has("data-gsxui-tooltip-trigger") {
 					_gsxgw.BoolAttr("data-gsxui-tooltip-trigger", true)
@@ -542,9 +538,7 @@ func SidebarMenuAction(showOnHover bool, children gsx.Node, attrs gsx.Attrs) _gs
 			_gsxgw.S(" type=\"button\"")
 		}
 		if !attrs.Has("data-show-on-hover") {
-			_gsxgw.S(" data-show-on-hover=\"")
-			_gsxgw.AttrValue(string(strconv.FormatBool(showOnHover)))
-			_gsxgw.S("\"")
+			_gsxgw.BoolAttr("data-show-on-hover", bool(showOnHover))
 		}
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
@@ -654,9 +648,7 @@ func SidebarMenuSubButton(size string, isActive bool, children gsx.Node, attrs g
 			_gsxgw.S("\"")
 		}
 		if !attrs.Has("data-active") {
-			_gsxgw.S(" data-active=\"")
-			_gsxgw.AttrValue(string(strconv.FormatBool(isActive)))
-			_gsxgw.S("\"")
+			_gsxgw.BoolAttr("data-active", bool(isActive))
 		}
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())

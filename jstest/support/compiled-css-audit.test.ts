@@ -142,6 +142,50 @@ test("consumer composition selectors retain their owning marker specificity", ()
   assert.equal(calendarDayGeometry, true);
 });
 
+test("binary Sidebar markers use presence selectors", () => {
+  const root = parse(
+    readFileSync(
+      join(repositoryRoot, "assets/css/styles/default.css"),
+      "utf8",
+    ),
+  );
+  const markers = new Map([
+    ["data-active", false],
+    ["data-show-on-hover", false],
+  ]);
+
+  root.walkRules((rule) => {
+    const selectorRoot = selectorParser().astSync(rule.selector);
+    for (const selector of selectorRoot.nodes) {
+      const attributes: import("postcss-selector-parser").Attribute[] = [];
+      selector.walkAttributes((attribute) => attributes.push(attribute));
+      if (
+        !attributes.some((attribute) =>
+          attribute.attribute
+            .toLowerCase()
+            .startsWith("data-gsxui-slot-sidebar-"),
+        )
+      ) {
+        continue;
+      }
+      for (const attribute of attributes) {
+        const name = attribute.attribute.toLowerCase();
+        if (!markers.has(name)) continue;
+        assert.equal(
+          attribute.operator,
+          undefined,
+          `${name} must be selected by presence: ${selector.toString()}`,
+        );
+        markers.set(name, true);
+      }
+    }
+  });
+
+  for (const [marker, found] of markers) {
+    assert.equal(found, true, `default CSS has no [${marker}] selector`);
+  }
+});
+
 test("allows only Tailwind's exact hidden preflight important declaration", () => {
   const css = `
     [hidden]:where(:not([hidden="until-found"])) {

@@ -1,10 +1,6 @@
 package ui
 
-import (
-	"strconv"
-
-	"github.com/gsxhq/gsx"
-)
+import "github.com/gsxhq/gsx"
 
 // FieldSet, FieldLegend, FieldGroup, Field, FieldContent, FieldLabel,
 // FieldTitle, FieldDescription, FieldSeparator, and FieldError are the
@@ -108,14 +104,12 @@ component FieldDescription(children gsx.Node, attrs gsx.Attrs) {
 
 // FieldSeparator composes ui.Separator with ordered tokens
 // "separator field-separator". The wrapper has its own token because it
-// owns layout while the nested separator owns the rule. data-content mirrors
-// shadcn's `data-content={!!
-// children}` boolean stamp, using strconv.FormatBool to retain its valued
-// "true"/"false" contract. The optional label span only renders when children
-// is present.
+// owns layout while the nested separator owns the rule. data-content is a
+// presence marker: children emits it bare and no children omits it. The
+// optional label span only renders when children is present.
 component FieldSeparator(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-content={strconv.FormatBool(children != nil)}
+		data-content={children != nil}
 		{ attrs... }
 		data-gsxui-slot-field-separator-wrapper
 	>
