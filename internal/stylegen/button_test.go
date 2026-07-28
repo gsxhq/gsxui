@@ -91,13 +91,14 @@ func TestCanonicalButtonBranchesUseIdenticalInlineRoleSwitches(t *testing.T) {
 			t.Errorf("<%s> has no class expression", tag)
 			continue
 		}
-		if len(class.Parts) != 3 {
-			t.Errorf("<%s> class parts = %d, want base + variant switch + size switch", tag, len(class.Parts))
+		if len(class.Parts) != 4 {
+			t.Errorf("<%s> class parts = %d, want structural marker + base + variant switch + size switch", tag, len(class.Parts))
 			continue
 		}
-		assertButtonRoleLiteral(t, tag+" base", class.Parts[0].Expr, "gsxui-recipe-button")
-		assertButtonRoleSwitch(t, tag+" variant", class.Parts[1].CF, "variant", buttonVariantRoles)
-		assertButtonRoleSwitch(t, tag+" size", class.Parts[2].CF, "size", buttonSizeRoles)
+		assertButtonStructuralLiteral(t, tag+" structural marker", class.Parts[0].Expr)
+		assertButtonRoleLiteral(t, tag+" base", class.Parts[1].Expr, "gsxui-recipe-button")
+		assertButtonRoleSwitch(t, tag+" variant", class.Parts[2].CF, "variant", buttonVariantRoles)
+		assertButtonRoleSwitch(t, tag+" size", class.Parts[3].CF, "size", buttonSizeRoles)
 	}
 }
 
@@ -478,9 +479,16 @@ func assertGeneratedButtonSource(t *testing.T, filename string, src []byte) {
 
 	classes := buttonClassAttrs(t, filename, src)
 	for _, tag := range []string{"a", "button"} {
-		if classes[tag] == nil {
+		class := classes[tag]
+		if class == nil {
 			t.Errorf("%s has no <%s> class expression", filename, tag)
+			continue
 		}
+		if len(class.Parts) == 0 {
+			t.Errorf("%s <%s> class expression is empty", filename, tag)
+			continue
+		}
+		assertButtonStructuralLiteral(t, filename+" <"+tag+"> structural marker", class.Parts[0].Expr)
 	}
 }
 
@@ -593,6 +601,29 @@ func assertButtonRoleLiteral(t *testing.T, name, expr, want string) {
 	}
 	if got != "" && !strings.HasPrefix(got, RecipePrefix) {
 		t.Errorf("%s contains concrete presentation utility %q", name, got)
+	}
+}
+
+func assertButtonStructuralLiteral(t *testing.T, name, expr string) {
+	t.Helper()
+
+	parsed, err := goparser.ParseExpr(expr)
+	if err != nil {
+		t.Errorf("%s expression %q does not parse: %v", name, expr, err)
+		return
+	}
+	literal, ok := parsed.(*goast.BasicLit)
+	if !ok || literal.Kind != token.STRING {
+		t.Errorf("%s expression = %q, want one string literal", name, expr)
+		return
+	}
+	got, err := strconv.Unquote(literal.Value)
+	if err != nil {
+		t.Errorf("%s expression %q does not unquote: %v", name, expr, err)
+		return
+	}
+	if got != "group/button" {
+		t.Errorf("%s = %q, want sole invariant structural marker %q", name, got, "group/button")
 	}
 }
 

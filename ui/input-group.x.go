@@ -102,9 +102,9 @@ func _gsxrenderInputGroupAddon(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, align
 
 //line input-group.gsx:50:1
 // InputGroupButton composes ui.Button — the input-group -> button
-// dependency. Its styling token composes after Button's token. `size` is
-// intentionally an InputGroupButton axis rather than Button's size param;
-// `variant` still forwards to Button and defaults to ghost.
+// dependency. It forwards both public styling axes into Button, defaulting
+// size to xs and variant to ghost, so Button's rendered data axes and concrete
+// generated variant/size classes always describe the same state.
 
 //line input-group.gsx:54:1
 func InputGroupButton(variant string, size string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
@@ -119,14 +119,14 @@ func _gsxrenderInputGroupButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, vari
 		return _gsxerr
 	}
 //line input-group.gsx:55:2
-	_gsxa0 := _gsxrt.Attrs{{Key: "data-size", Value: _gsxstd.Default((size), "xs")}}
+	_gsxa0 := _gsxstd.Default((size), "xs")
 	_gsxa1 := _gsxstd.Default((variant), "ghost")
-	_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, _gsxa1, "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+	_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, _gsxa1, _gsxa0, "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line input-group.gsx:61:3
 		_gsxgw.Node(ctx, children)
 		return _gsxgw.Err()
-	}), _gsxrt.ConcatAttrs(_gsxa0, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-input-group-button", Value: _gsxrt.Toggle(true)}})))
+	}), _gsxrt.ConcatAttrs(attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-input-group-button", Value: _gsxrt.Toggle(true)}})))
 	return _gsxgw.Err()
 }
 

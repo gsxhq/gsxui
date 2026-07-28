@@ -1,6 +1,41 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
+import { dirname, join, resolve } from "node:path";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 import { compiledCSSViolations } from "./compiled-css-audit.ts";
+
+const repositoryRoot = resolve(
+  dirname(fileURLToPath(import.meta.url)),
+  "../..",
+);
+
+for (const style of ["nova", "maia"]) {
+  test(`compiles the authored ${style} Button recipe with Tailwind`, () => {
+    const input = [
+      '@import "tailwindcss" source(none);',
+      '@import "./assets/css/foundation.css";',
+      '@import "./assets/css/themes/default.css";',
+      `@import "./registry/styles/${style}/button.css";`,
+    ].join("\n");
+    const result = spawnSync(
+      join(repositoryRoot, "node_modules", ".bin", "tailwindcss"),
+      ["-i", "-", "--cwd", repositoryRoot, "--silent"],
+      {
+        cwd: repositoryRoot,
+        encoding: "utf8",
+        input,
+      },
+    );
+
+    assert.equal(
+      result.status,
+      0,
+      `Tailwind failed to compile ${style} Button recipe:\n${result.stderr}`,
+    );
+    assert.deepEqual(compiledCSSViolations(result.stdout), []);
+  });
+}
 
 test("allows only Tailwind's exact hidden preflight important declaration", () => {
   const css = `

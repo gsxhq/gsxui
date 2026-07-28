@@ -15,6 +15,7 @@ component Button(variant string, size string, href string, disabled bool, childr
 			data-size={size |> default("default")}
 			href={href}
 			class={
+				"group/button",
 				"gsxui-recipe-button",
 				switch variant {
 				case "", "default":
@@ -65,6 +66,7 @@ component Button(variant string, size string, href string, disabled bool, childr
 			type="button"
 			disabled={disabled}
 			class={
+				"group/button",
 				"gsxui-recipe-button",
 				switch variant {
 				case "", "default":

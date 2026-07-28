@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	gsx "github.com/gsxhq/gsx"
+	maiaui "github.com/gsxhq/gsxui/registry/generated/maia"
+	novaui "github.com/gsxhq/gsxui/registry/generated/nova"
 	"github.com/gsxhq/gsxui/ui"
 )
 
@@ -74,11 +76,10 @@ func TestInputGroupAddonAttrsFallThrough(t *testing.T) {
 
 // TestInputGroupButtonDefaultPinned proves InputGroupButton composes the
 // Button seam: Button contributes its canonical recipe roles and public axes.
-// InputGroupButton's own size remains a CSS-owned data axis, so the canonical
-// Button size parameter retains its default role in this pre-consumer source.
+// InputGroupButton defaults and forwards Button's size axis to xs.
 func TestInputGroupButtonDefaultPinned(t *testing.T) {
 	got := render(t, ui.InputGroupButton("", "", gsx.Raw("x"), nil))
-	want := `<button data-variant="ghost" type="button" ` + canonicalButtonClass("ghost", "default") + ` data-size="xs" data-gsxui-slot-input-group-button data-gsxui-slot-button>x</button>`
+	want := `<button data-variant="ghost" data-size="xs" type="button" ` + canonicalButtonClass("ghost", "xs") + ` data-gsxui-slot-input-group-button data-gsxui-slot-button>x</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -87,30 +88,65 @@ func TestInputGroupButtonDefaultPinned(t *testing.T) {
 	}
 }
 
-func TestInputGroupButtonSmPinned(t *testing.T) {
-	got := render(t, ui.InputGroupButton("", "sm", gsx.Raw("x"), nil))
-	for _, want := range []string{`data-size="sm"`, canonicalButtonClass("ghost", "default")} {
-		if !strings.Contains(got, want) {
-			t.Errorf("missing %q\nin: %s", want, got)
-		}
+func TestInputGroupButtonSizeAxisMatchesCanonicalButtonClass(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  string
+	}{
+		{name: "default", input: "", want: "xs"},
+		{name: "xs", input: "xs", want: "xs"},
+		{name: "sm", input: "sm", want: "sm"},
+		{name: "icon-xs", input: "icon-xs", want: "icon-xs"},
+		{name: "icon-sm", input: "icon-sm", want: "icon-sm"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := render(t, ui.InputGroupButton("", tt.input, gsx.Raw("x"), nil))
+			for _, want := range []string{
+				`data-size="` + tt.want + `"`,
+				canonicalButtonClass("ghost", tt.want),
+			} {
+				if !strings.Contains(got, want) {
+					t.Errorf("missing aligned Button size contract %q\nin: %s", want, got)
+				}
+			}
+			if strings.Contains(got, "gsxui-recipe-button-size-default") {
+				t.Errorf("InputGroupButton %s rendered contradictory default Button size role\nin: %s", tt.name, got)
+			}
+		})
 	}
 }
 
-func TestInputGroupButtonIconXsPinned(t *testing.T) {
-	got := render(t, ui.InputGroupButton("", "icon-xs", gsx.Raw("x"), nil))
-	for _, want := range []string{`data-size="icon-xs"`, canonicalButtonClass("ghost", "default")} {
-		if !strings.Contains(got, want) {
-			t.Errorf("missing %q\nin: %s", want, got)
-		}
+func TestGeneratedButtonSizeContractsForInputGroupComposition(t *testing.T) {
+	tests := []struct {
+		name       string
+		node       gsx.Node
+		dataSize   string
+		wantClass  string
+		rejectSize string
+	}{
+		{name: "nova/xs", node: novaui.Button("ghost", "xs", "", false, gsx.Raw("x"), nil), dataSize: "xs", wantClass: "h-6", rejectSize: "h-8"},
+		{name: "nova/sm", node: novaui.Button("ghost", "sm", "", false, gsx.Raw("x"), nil), dataSize: "sm", wantClass: "h-7", rejectSize: "h-8"},
+		{name: "nova/icon-xs", node: novaui.Button("ghost", "icon-xs", "", false, gsx.Raw("x"), nil), dataSize: "icon-xs", wantClass: "size-6", rejectSize: "size-8"},
+		{name: "nova/icon-sm", node: novaui.Button("ghost", "icon-sm", "", false, gsx.Raw("x"), nil), dataSize: "icon-sm", wantClass: "size-7", rejectSize: "size-8"},
+		{name: "maia/xs", node: maiaui.Button("ghost", "xs", "", false, gsx.Raw("x"), nil), dataSize: "xs", wantClass: "h-6", rejectSize: "h-9"},
+		{name: "maia/sm", node: maiaui.Button("ghost", "sm", "", false, gsx.Raw("x"), nil), dataSize: "sm", wantClass: "h-8", rejectSize: "h-9"},
+		{name: "maia/icon-xs", node: maiaui.Button("ghost", "icon-xs", "", false, gsx.Raw("x"), nil), dataSize: "icon-xs", wantClass: "size-6", rejectSize: "size-9"},
+		{name: "maia/icon-sm", node: maiaui.Button("ghost", "icon-sm", "", false, gsx.Raw("x"), nil), dataSize: "icon-sm", wantClass: "size-8", rejectSize: "size-9"},
 	}
-}
-
-func TestInputGroupButtonIconSmPinned(t *testing.T) {
-	got := render(t, ui.InputGroupButton("", "icon-sm", gsx.Raw("x"), nil))
-	for _, want := range []string{`data-size="icon-sm"`, canonicalButtonClass("ghost", "default")} {
-		if !strings.Contains(got, want) {
-			t.Errorf("missing %q\nin: %s", want, got)
-		}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := render(t, tt.node)
+			for _, want := range []string{`data-size="` + tt.dataSize + `"`, tt.wantClass} {
+				if !strings.Contains(got, want) {
+					t.Errorf("generated Button lacks concrete size contract %q\nin: %s", want, got)
+				}
+			}
+			if strings.Contains(got, tt.rejectSize) {
+				t.Errorf("generated Button retained contradictory default geometry %q\nin: %s", tt.rejectSize, got)
+			}
+		})
 	}
 }
 
@@ -119,7 +155,7 @@ func TestInputGroupButtonIconSmPinned(t *testing.T) {
 // recipe role while concrete presentation remains generated.
 func TestInputGroupButtonVariantOverride(t *testing.T) {
 	got := render(t, ui.InputGroupButton("outline", "", gsx.Raw("x"), nil))
-	for _, want := range []string{`data-variant="outline"`, canonicalButtonClass("outline", "default")} {
+	for _, want := range []string{`data-variant="outline"`, canonicalButtonClass("outline", "xs")} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
@@ -138,7 +174,7 @@ func TestInputGroupButtonAttrsFallThrough(t *testing.T) {
 
 func TestInputGroupButtonCallerClassMerges(t *testing.T) {
 	got := render(t, ui.InputGroupButton("", "", nil, gsx.Attrs{{Key: "class", Value: "w-full"}}))
-	want := canonicalButtonClass("ghost", "default", "w-full")
+	want := canonicalButtonClass("ghost", "xs", "w-full")
 	if strings.Count(got, want) != 1 || strings.Count(got, `class=`) != 1 {
 		t.Errorf("caller class must follow exact canonical Button roles once\nwant: %s\nin: %s", want, got)
 	}

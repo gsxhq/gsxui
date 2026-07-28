@@ -133,6 +133,7 @@ func TestButtonOwnPresenceMarkerWinsCollisionAndKeepsComposedMarker(t *testing.T
 
 func canonicalButtonClass(variant, size string, caller ...string) string {
 	classes := []string{
+		"group/button",
 		"gsxui-recipe-button",
 		"gsxui-recipe-button-variant-" + variant,
 		"gsxui-recipe-button-size-" + size,

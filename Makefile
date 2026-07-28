@@ -57,7 +57,8 @@ test-css-audit:
 audit:
 	@! rg -n '^[[:space:]]*<[^>]*data-slot=|^[[:space:]]+data-slot=' $(audit-source-dirs) -g '!*.x.go' -g '!*.gen.go'
 	@! rg -n 'data-slot|className[[:space:]]*=|[.]classList|setAttribute[(][^)]*class|[.]className[[:space:]]*=' ui $(wildcard dev) -g '*.js'
-	@! rg -n 'data-slot|group/|peer/|(group|peer)-(data|has|focus|hover|active|disabled|aria|open|checked)[^[:space:]]*/' ui $(wildcard dev) -g '*.gsx'
+	@! rg -n 'data-slot|group/|peer/|(group|peer)-(data|has|focus|hover|active|disabled|aria|open|checked)[^[:space:]]*/' ui $(wildcard dev) -g '*.gsx' -g '!button.gsx'
+	@! rg -n 'data-slot|peer/|(group|peer)-(data|has|focus|hover|active|disabled|aria|open|checked)[^[:space:]]*/' ui/button.gsx
 	@! rg -n -P '\bwithSlot[[:space:]]*\(|\bslotattr[[:space:]]*\.[[:space:]]*With[[:space:]]*\(' ui $(wildcard dev) -g '*.gsx'
 	@! rg -n -U -P '(?s)<[^>]*\bdata-gsxui-slot(?=[[:space:]]*(?:=|/?>))' $(audit-source-dirs) -g '*.gsx' -g '!*.x.go' -g '!*.gen.go'
 	@! rg -n -P '(?:\bKey[[:space:]]*:[[:space:]]*|[.]SetAttribute\([[:space:]]*|\bsetAttribute\([[:space:]]*)["\x27\x60]data-gsxui-slot["\x27\x60]' $(audit-source-dirs) -g '*.go' -g '*.js' -g '!*.x.go' -g '!*.gen.go' -g '!*_test.go'
@@ -66,6 +67,7 @@ audit:
 	@! rg -n 'gsxui-recipe-' ui -g '*.gsx' -g '!button.gsx'
 	@! rg -n '^[[:space:]]+class=' ui -g '*.gsx' -g '!button.gsx'
 	@! rg -n '^[[:space:]]*<[^>]*class=' ui -g '*.gsx' -g '!button.gsx'
+	@! rg -n -P '^[[:space:]]+"(?!(?:group/button|gsxui-recipe-[^"]*|)"[,]?[[:space:]]*$$)' ui/button.gsx
 	@! rg -n '!important' assets/css/foundation.css assets/css/styles/default.css
 
 check: audit test-css-audit verify-generated-styles

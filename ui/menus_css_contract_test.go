@@ -28,7 +28,7 @@ func assertMenuCSSOnlyMarkup(t *testing.T, got string, slots ...string) {
 func assertComboboxCanonicalButtonRoles(t *testing.T, got string) {
 	t.Helper()
 
-	want := canonicalButtonClass("ghost", "default")
+	want := canonicalButtonClass("ghost", "icon-xs")
 	if strings.Count(got, want) != 2 || strings.Count(got, `class=`) != 2 {
 		t.Errorf("Combobox trigger and clear must each render exact canonical Button roles\nwant: %s\nin: %s", want, got)
 	}

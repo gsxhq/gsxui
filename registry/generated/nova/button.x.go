@@ -42,57 +42,58 @@ func Button(variant string, size string, href string, disabled bool, children gs
 				_gsxgw.URL(string(href))
 				_gsxgw.S("\"")
 			}
-			_gsxv0 := "inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:shrink-0 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4"
-			var _gsxv1 string
+			_gsxv0 := "group/button"
+			_gsxv1 := "inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:shrink-0 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4"
+			var _gsxv2 string
 			switch variant {
 			case "", "default":
-				_gsxv1 = "bg-primary text-primary-foreground hover:bg-primary/90"
+				_gsxv2 = "bg-primary text-primary-foreground hover:bg-primary/90"
 			case "destructive":
-				_gsxv1 = "bg-destructive text-contrast hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40"
+				_gsxv2 = "bg-destructive text-contrast hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40"
 			case "outline":
-				_gsxv1 = "border-border bg-background hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
+				_gsxv2 = "border-border bg-background hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
 			case "secondary":
-				_gsxv1 = "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+				_gsxv2 = "bg-secondary text-secondary-foreground hover:bg-secondary/80"
 			case "ghost":
-				_gsxv1 = "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50"
+				_gsxv2 = "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50"
 			case "link":
-				_gsxv1 = "text-primary underline-offset-4 hover:underline"
-			default:
-				_gsxv1 = ""
-			}
-			var _gsxv2 string
-			switch size {
-			case "", "default":
-				_gsxv2 = "h-8 gap-1.5 px-2.5 has-[>svg]:px-2"
-			case "xs":
-				_gsxv2 = "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3"
-			case "sm":
-				_gsxv2 = "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3.5"
-			case "lg":
-				_gsxv2 = "h-9 gap-1.5 px-2.5 has-[>svg]:px-2"
-			case "icon":
-				_gsxv2 = "size-8"
-			case "icon-xs":
-				_gsxv2 = "size-6 rounded-[min(var(--radius-md),10px)] [&_svg:not([class*='size-'])]:size-3"
-			case "icon-sm":
-				_gsxv2 = "size-7 rounded-[min(var(--radius-md),12px)]"
-			case "icon-lg":
-				_gsxv2 = "size-9"
+				_gsxv2 = "text-primary underline-offset-4 hover:underline"
 			default:
 				_gsxv2 = ""
 			}
+			var _gsxv3 string
+			switch size {
+			case "", "default":
+				_gsxv3 = "h-8 gap-1.5 px-2.5 has-[>svg]:px-2"
+			case "xs":
+				_gsxv3 = "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3"
+			case "sm":
+				_gsxv3 = "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3.5"
+			case "lg":
+				_gsxv3 = "h-9 gap-1.5 px-2.5 has-[>svg]:px-2"
+			case "icon":
+				_gsxv3 = "size-8"
+			case "icon-xs":
+				_gsxv3 = "size-6 rounded-[min(var(--radius-md),10px)] [&_svg:not([class*='size-'])]:size-3"
+			case "icon-sm":
+				_gsxv3 = "size-7 rounded-[min(var(--radius-md),12px)]"
+			case "icon-lg":
+				_gsxv3 = "size-9"
+			default:
+				_gsxv3 = ""
+			}
 			_gsxgw.S(" class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(attrs.Class()))
+			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(_gsxv3), _gsxrt.Class(attrs.Class()))
 			_gsxgw.S("\"")
 			_gsxgw.StyleMerged("", attrs.Style())
 			_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-button"})
 			_gsxgw.BoolAttr("data-gsxui-slot-button", true)
 			_gsxgw.S(">")
-//line button.gsx:59:4
+//line button.gsx:60:4
 			_gsxgw.Node(ctx, children)
 			_gsxgw.S("</a>")
 		} else {
-//line button.gsx:62:3
+//line button.gsx:63:3
 			_gsxgw.S("<button")
 			if !attrs.Has("data-variant") {
 				_gsxgw.S(" data-variant=\"")
@@ -110,53 +111,54 @@ func Button(variant string, size string, href string, disabled bool, children gs
 			if !attrs.Has("disabled") {
 				_gsxgw.BoolAttr("disabled", bool(disabled))
 			}
-			_gsxv3 := "inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:shrink-0 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4"
-			var _gsxv4 string
+			_gsxv4 := "group/button"
+			_gsxv5 := "inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:shrink-0 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4"
+			var _gsxv6 string
 			switch variant {
 			case "", "default":
-				_gsxv4 = "bg-primary text-primary-foreground hover:bg-primary/90"
+				_gsxv6 = "bg-primary text-primary-foreground hover:bg-primary/90"
 			case "destructive":
-				_gsxv4 = "bg-destructive text-contrast hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40"
+				_gsxv6 = "bg-destructive text-contrast hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40"
 			case "outline":
-				_gsxv4 = "border-border bg-background hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
+				_gsxv6 = "border-border bg-background hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
 			case "secondary":
-				_gsxv4 = "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+				_gsxv6 = "bg-secondary text-secondary-foreground hover:bg-secondary/80"
 			case "ghost":
-				_gsxv4 = "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50"
+				_gsxv6 = "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50"
 			case "link":
-				_gsxv4 = "text-primary underline-offset-4 hover:underline"
+				_gsxv6 = "text-primary underline-offset-4 hover:underline"
 			default:
-				_gsxv4 = ""
+				_gsxv6 = ""
 			}
-			var _gsxv5 string
+			var _gsxv7 string
 			switch size {
 			case "", "default":
-				_gsxv5 = "h-8 gap-1.5 px-2.5 has-[>svg]:px-2"
+				_gsxv7 = "h-8 gap-1.5 px-2.5 has-[>svg]:px-2"
 			case "xs":
-				_gsxv5 = "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3"
+				_gsxv7 = "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3"
 			case "sm":
-				_gsxv5 = "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3.5"
+				_gsxv7 = "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3.5"
 			case "lg":
-				_gsxv5 = "h-9 gap-1.5 px-2.5 has-[>svg]:px-2"
+				_gsxv7 = "h-9 gap-1.5 px-2.5 has-[>svg]:px-2"
 			case "icon":
-				_gsxv5 = "size-8"
+				_gsxv7 = "size-8"
 			case "icon-xs":
-				_gsxv5 = "size-6 rounded-[min(var(--radius-md),10px)] [&_svg:not([class*='size-'])]:size-3"
+				_gsxv7 = "size-6 rounded-[min(var(--radius-md),10px)] [&_svg:not([class*='size-'])]:size-3"
 			case "icon-sm":
-				_gsxv5 = "size-7 rounded-[min(var(--radius-md),12px)]"
+				_gsxv7 = "size-7 rounded-[min(var(--radius-md),12px)]"
 			case "icon-lg":
-				_gsxv5 = "size-9"
+				_gsxv7 = "size-9"
 			default:
-				_gsxv5 = ""
+				_gsxv7 = ""
 			}
 			_gsxgw.S(" class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv3), _gsxrt.Class(_gsxv4), _gsxrt.Class(_gsxv5), _gsxrt.Class(attrs.Class()))
+			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv4), _gsxrt.Class(_gsxv5), _gsxrt.Class(_gsxv6), _gsxrt.Class(_gsxv7), _gsxrt.Class(attrs.Class()))
 			_gsxgw.S("\"")
 			_gsxgw.StyleMerged("", attrs.Style())
 			_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-button"})
 			_gsxgw.BoolAttr("data-gsxui-slot-button", true)
 			_gsxgw.S(">")
-//line button.gsx:109:4
+//line button.gsx:111:4
 			_gsxgw.Node(ctx, children)
 			_gsxgw.S("</button>")
 		}

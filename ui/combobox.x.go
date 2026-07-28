@@ -272,7 +272,7 @@ func ComboboxTrigger(attrs gsx.Attrs) _gsxrt.Node {
 // through the attrs bag (`disabled={disabled}` as a plain non-parameter
 // attribute), which InputGroupButton forwards to ui.Button's own typed
 // `disabled` param the same way — the established override mechanism (see
-// ui/input-group.gsx's InputGroupButton doc comment on data-size).
+// ui/input-group.gsx's InputGroupButton composition contract).
 
 //line combobox.gsx:232:1
 func ComboboxClear(attrs gsx.Attrs) _gsxrt.Node {

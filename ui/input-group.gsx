@@ -48,12 +48,12 @@ component InputGroupAddon(align string, children gsx.Node, attrs gsx.Attrs) {
 }
 
 // InputGroupButton composes ui.Button — the input-group -> button
-// dependency. Its styling token composes after Button's token. `size` is
-// intentionally an InputGroupButton axis rather than Button's size param;
-// `variant` still forwards to Button and defaults to ghost.
+// dependency. It forwards both public styling axes into Button, defaulting
+// size to xs and variant to ghost, so Button's rendered data axes and concrete
+// generated variant/size classes always describe the same state.
 component InputGroupButton(variant string, size string, children gsx.Node, attrs gsx.Attrs) {
 	<Button
-		data-size={size |> default("xs")}
+		size={size |> default("xs")}
 		variant={variant |> default("ghost")}
 		{ attrs... }
 		data-gsxui-slot-input-group-button
