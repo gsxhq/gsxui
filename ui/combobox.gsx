@@ -170,7 +170,8 @@ component ComboboxInput(placeholder string, showTrigger bool, showClear bool, di
 			spellcheck="false"
 			placeholder={placeholder}
 			disabled={disabled}
-			{ attrs.Without("class")... } data-gsxui-slot-combobox-input
+			{ attrs.Without("class")... }
+			data-gsxui-slot-combobox-input
 		/>
 		<InputGroupAddon align="inline-end">
 			{ if showTrigger {
@@ -202,7 +203,8 @@ component ComboboxTrigger(attrs gsx.Attrs) {
 	<button
 		type="button"
 		data-gsxui-combobox-trigger
-		{ attrs... } data-gsxui-slot-combobox-trigger
+		{ attrs... }
+		data-gsxui-slot-combobox-trigger
 	>
 		<icon.ChevronDown data-gsxui-slot-combobox-trigger-icon/>
 	</button>
@@ -232,7 +234,8 @@ component ComboboxClear(attrs gsx.Attrs) {
 		variant="ghost"
 		size="icon-xs"
 		data-gsxui-combobox-clear
-		{ attrs... } data-gsxui-slot-combobox-clear
+		{ attrs... }
+		data-gsxui-slot-combobox-clear
 	>
 		<icon.X/>
 	</InputGroupButton>
@@ -254,7 +257,8 @@ component ComboboxContent(children gsx.Node, attrs gsx.Attrs) {
 		popover="auto"
 		data-state="closed"
 		data-side="bottom"
-		{ attrs... } data-gsxui-slot-combobox-content
+		{ attrs... }
+		data-gsxui-slot-combobox-content
 	>
 		{ children }
 	</div>
@@ -286,7 +290,8 @@ component ComboboxList(children gsx.Node, attrs gsx.Attrs) {
 		data-gsxui-combobox-list
 		role="listbox"
 		tabindex="-1"
-		{ attrs... } data-gsxui-slot-combobox-list
+		{ attrs... }
+		data-gsxui-slot-combobox-list
 	>
 		{ children }
 	</div>
@@ -315,7 +320,8 @@ component ComboboxItem(value string, selected bool, children gsx.Node, attrs gsx
 			data-state="unchecked"
 		} }
 		aria-selected={selected}
-		{ attrs... } data-gsxui-slot-combobox-item
+		{ attrs... }
+		data-gsxui-slot-combobox-item
 	>
 		{ children }
 		<span data-gsxui-combobox-item-indicator data-gsxui-slot-combobox-item-indicator>

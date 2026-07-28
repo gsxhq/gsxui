@@ -14,7 +14,8 @@ component DialogTrigger(children gsx.Node, attrs gsx.Attrs) {
 		type="button"
 		aria-haspopup="dialog"
 		aria-expanded="false"
-		{ attrs... } data-gsxui-slot-dialog-trigger
+		{ attrs... }
+		data-gsxui-slot-dialog-trigger
 	>
 		{ children }
 	</button>
@@ -24,14 +25,16 @@ component DialogContent(hideCloseButton bool, children gsx.Node, attrs gsx.Attrs
 	<dialog
 		data-gsxui-dialog-content
 		data-state="closed"
-		{ attrs... } data-gsxui-slot-dialog-content
+		{ attrs... }
+		data-gsxui-slot-dialog-content
 	>
 		{ children }
 		{ if !hideCloseButton {
 			<button
 				type="button"
 				data-gsxui-dialog-close
-				data-gsxui-slot-dialog-close-button data-gsxui-slot-dialog-close
+				data-gsxui-slot-dialog-close-button
+				data-gsxui-slot-dialog-close
 			>
 				<svg
 					aria-hidden="true"

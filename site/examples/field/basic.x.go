@@ -85,7 +85,7 @@ func Basic() _gsxrt.Node {
 //line basic.gsx:27:5
 					_gsxgw.Node(ctx, ui.FieldContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:27:22
+//line basic.gsx:28:6
 						_gsxgw.Node(ctx, ui.FieldTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Responsive disabled field")
@@ -95,18 +95,18 @@ func Basic() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "data-disabled", Value: "true"}}))
-//line basic.gsx:29:4
+//line basic.gsx:31:4
 				_gsxgw.Node(ctx, ui.Field("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:30:5
+//line basic.gsx:32:5
 					_gsxgw.Node(ctx, ui.FieldLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Bio")
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "for", Value: "bio"}}))
-//line basic.gsx:31:5
+//line basic.gsx:33:5
 					_gsxgw.Node(ctx, ui.Textarea("", _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "bio"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "Tell us about yourself"}})))
-//line basic.gsx:32:5
+//line basic.gsx:34:5
 					_gsxgw.Node(ctx, ui.FieldDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Shown to other members on your public profile.")

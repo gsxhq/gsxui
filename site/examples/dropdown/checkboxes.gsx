@@ -24,7 +24,9 @@ component Checkboxes() {
 			<ui.DropdownMenuSeparator/>
 			<ui.DropdownMenuCheckboxItem checked={true} value="toolbar">Show Toolbar</ui.DropdownMenuCheckboxItem>
 			<ui.DropdownMenuCheckboxItem checked={false} value="statusbar">Show Status Bar</ui.DropdownMenuCheckboxItem>
-			<ui.DropdownMenuCheckboxItem checked={false} value="sidebar" aria-disabled="true" data-disabled="true">Show Sidebar</ui.DropdownMenuCheckboxItem>
+			<ui.DropdownMenuCheckboxItem checked={false} value="sidebar" aria-disabled="true" data-disabled="true">
+				Show Sidebar
+			</ui.DropdownMenuCheckboxItem>
 		</ui.DropdownMenuContent>
 	</ui.DropdownMenu>
 }

@@ -12,17 +12,27 @@ component Basic() {
 	<div class="flex flex-col gap-6">
 		<ui.Item variant="muted" size="sm">
 			<ui.ItemHeader>Compact notification</ui.ItemHeader>
-			<ui.ItemMedia><icon.Bell/></ui.ItemMedia>
-			<ui.ItemContent><ui.ItemTitle>Muted item</ui.ItemTitle></ui.ItemContent>
+			<ui.ItemMedia>
+				<icon.Bell/>
+			</ui.ItemMedia>
+			<ui.ItemContent>
+				<ui.ItemTitle>Muted item</ui.ItemTitle>
+			</ui.ItemContent>
 			<ui.ItemFooter>Just now</ui.ItemFooter>
 		</ui.Item>
 		<ui.Item>
-			<ui.ItemMedia variant="default"><icon.User/></ui.ItemMedia>
-			<ui.ItemContent><ui.ItemTitle>Default media</ui.ItemTitle></ui.ItemContent>
+			<ui.ItemMedia variant="default">
+				<icon.User/>
+			</ui.ItemMedia>
+			<ui.ItemContent>
+				<ui.ItemTitle>Default media</ui.ItemTitle>
+			</ui.ItemContent>
 		</ui.Item>
 		<ui.Item>
 			<ui.ItemMedia variant="image"><img src="https://placehold.co/40x40" alt="Profile"/></ui.ItemMedia>
-			<ui.ItemContent><ui.ItemTitle>Image media</ui.ItemTitle></ui.ItemContent>
+			<ui.ItemContent>
+				<ui.ItemTitle>Image media</ui.ItemTitle>
+			</ui.ItemContent>
 		</ui.Item>
 		<ui.Item variant="outline">
 			<ui.ItemMedia variant="icon">

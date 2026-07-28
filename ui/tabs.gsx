@@ -41,7 +41,8 @@ component Tabs(value string, children gsx.Node, attrs gsx.Attrs) {
 component TabsList(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="tablist"
-		{ attrs... } data-gsxui-slot-tabs-list
+		{ attrs... }
+		data-gsxui-slot-tabs-list
 	>
 		{ children }
 	</div>
@@ -69,7 +70,8 @@ component TabsTrigger(value string, selected bool, children gsx.Node, attrs gsx.
 		data-state={state}
 		aria-selected={selected}
 		tabindex={tabindex}
-		{ attrs... } data-gsxui-slot-tabs-trigger
+		{ attrs... }
+		data-gsxui-slot-tabs-trigger
 	>
 		{ children }
 	</button>
@@ -89,7 +91,8 @@ component TabsContent(value string, selected bool, children gsx.Node, attrs gsx.
 		data-value={value}
 		data-state={state}
 		hidden={!selected}
-		{ attrs... } data-gsxui-slot-tabs-content
+		{ attrs... }
+		data-gsxui-slot-tabs-content
 	>
 		{ children }
 	</div>

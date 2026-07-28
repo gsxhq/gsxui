@@ -124,14 +124,14 @@ func ToggleGroup(groupType string, variant string, size string, spacing string, 
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-toggle-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-toggle-group", true)
 		_gsxgw.S(">")
-//line toggle-group.gsx:85:3
+//line toggle-group.gsx:86:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line toggle-group.gsx:89:1
+//line toggle-group.gsx:90:1
 // ToggleGroupItem composes ordered tokens "toggle toggle-group-item".
 // Variant, size, spacing, orientation, and state are public CSS axes; only
 // the ARIA attribute pair differs between single and multiple groups.
@@ -147,11 +147,11 @@ func ToggleGroup(groupType string, variant string, size string, spacing string, 
 // single group toggles it off (Radix allows an empty single value unless a
 // caller opts otherwise) — port the same replace-on-activate mechanic.
 
-//line toggle-group.gsx:103:1
+//line toggle-group.gsx:104:1
 func ToggleGroupItem(groupType string, variant string, size string, spacing string, pressed bool, value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line toggle-group.gsx:104:2
+//line toggle-group.gsx:105:2
 		sp := spacing
 		if sp == "" {
 			sp = "0"
@@ -160,7 +160,7 @@ func ToggleGroupItem(groupType string, variant string, size string, spacing stri
 		if pressed {
 			state = "on"
 		}
-//line toggle-group.gsx:114:2
+//line toggle-group.gsx:115:2
 		_gsxgw.S("<button")
 		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"button\"")
@@ -218,7 +218,7 @@ func ToggleGroupItem(groupType string, variant string, size string, spacing stri
 		_gsxgw.BoolAttr("data-gsxui-slot-toggle-group-item", true)
 		_gsxgw.BoolAttr("data-gsxui-slot-toggle", true)
 		_gsxgw.S(">")
-//line toggle-group.gsx:131:3
+//line toggle-group.gsx:134:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()

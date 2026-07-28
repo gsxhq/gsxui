@@ -27,8 +27,7 @@ component Basic() {
 			<ui.AlertDialogHeader>
 				<ui.AlertDialogTitle>Are you absolutely sure?</ui.AlertDialogTitle>
 				<ui.AlertDialogDescription>
-					This action cannot be undone. This will permanently delete your
-					account and remove your data from our servers.
+					This action cannot be undone. This will permanently delete your account and remove your data from our servers.
 				</ui.AlertDialogDescription>
 			</ui.AlertDialogHeader>
 			<ui.AlertDialogFooter>

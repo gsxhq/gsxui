@@ -14,7 +14,8 @@ component AlertDialogTrigger(children gsx.Node, attrs gsx.Attrs) {
 		type="button"
 		aria-haspopup="dialog"
 		aria-expanded="false"
-		{ attrs... } data-gsxui-slot-alert-dialog-trigger
+		{ attrs... }
+		data-gsxui-slot-alert-dialog-trigger
 	>
 		{ children }
 	</button>
@@ -25,7 +26,8 @@ component AlertDialogContent(children gsx.Node, attrs gsx.Attrs) {
 		hideCloseButton={true}
 		role="alertdialog"
 		data-gsxui-dialog-static
-		{ attrs... } data-gsxui-slot-alert-dialog-content
+		{ attrs... }
+		data-gsxui-slot-alert-dialog-content
 	>
 		{ children }
 	</DialogContent>
@@ -55,7 +57,8 @@ component AlertDialogCancel(children gsx.Node, attrs gsx.Attrs) {
 	<Button
 		variant="outline"
 		data-gsxui-dialog-close
-		{ attrs... } data-gsxui-slot-alert-dialog-cancel
+		{ attrs... }
+		data-gsxui-slot-alert-dialog-cancel
 	>
 		{ children }
 	</Button>

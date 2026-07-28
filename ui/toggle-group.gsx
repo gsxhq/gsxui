@@ -80,7 +80,8 @@ component ToggleGroup(groupType string, variant string, size string, spacing str
 		data-orientation="horizontal"
 		role={role}
 		style=css`--gap: @{sp}`
-		{ attrs... } data-gsxui-slot-toggle-group
+		{ attrs... }
+		data-gsxui-slot-toggle-group
 	>
 		{ children }
 	</div>
@@ -126,7 +127,9 @@ component ToggleGroupItem(groupType string, variant string, size string, spacing
 		} else {
 			aria-pressed={pressed}
 		} }
-		{ attrs... } data-gsxui-slot-toggle-group-item data-gsxui-slot-toggle
+		{ attrs... }
+		data-gsxui-slot-toggle-group-item
+		data-gsxui-slot-toggle
 	>
 		{ children }
 	</button>

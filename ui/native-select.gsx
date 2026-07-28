@@ -45,7 +45,8 @@ component NativeSelect(children gsx.Node, attrs gsx.Attrs) {
 	}}
 	<div { wrapperAttrs... } data-gsxui-slot-native-select-wrapper>
 		<select
-			{ attrs.Without("class")... } data-gsxui-slot-native-select
+			{ attrs.Without("class")... }
+			data-gsxui-slot-native-select
 		>
 			{ children }
 		</select>

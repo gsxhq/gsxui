@@ -35,7 +35,7 @@ func _gsxrenderTextarea(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, value string
 	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-textarea"})
 	_gsxgw.BoolAttr("data-gsxui-slot-textarea", true)
 	_gsxgw.S(">")
-//line textarea.gsx:12:3
+//line textarea.gsx:13:3
 	_gsxgw.Text(string(value))
 	_gsxgw.S("</textarea>")
 	return _gsxgw.Err()

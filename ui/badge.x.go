@@ -40,7 +40,7 @@ func Badge(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-badge"})
 		_gsxgw.BoolAttr("data-gsxui-slot-badge", true)
 		_gsxgw.S(">")
-//line badge.gsx:21:3
+//line badge.gsx:22:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()

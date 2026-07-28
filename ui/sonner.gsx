@@ -42,7 +42,8 @@ component Toast(toastType string, title string, description string, action strin
 		role="status"
 		aria-live={ariaLive}
 		aria-atomic="true"
-		{ attrs... } data-gsxui-slot-toast
+		{ attrs... }
+		data-gsxui-slot-toast
 	>
 		{ if t != "default" {
 			{ switch t {
@@ -69,14 +70,18 @@ component Toast(toastType string, title string, description string, action strin
 				type="button"
 				data-gsxui-toast-action
 				data-gsxui-slot-toast-action
-			>{ action }</button>
+			>
+				{ action }
+			</button>
 		} }
 		{ if cancel != "" {
 			<button
 				type="button"
 				data-gsxui-toast-cancel
 				data-gsxui-slot-toast-cancel
-			>{ cancel }</button>
+			>
+				{ cancel }
+			</button>
 		} }
 		<button
 			type="button"
@@ -117,7 +122,8 @@ component Toaster(attrs gsx.Attrs) {
 		<ol
 			id="gsxui-toaster"
 			data-gsxui-toaster
-			{ attrs... } data-gsxui-slot-toaster
+			{ attrs... }
+			data-gsxui-slot-toaster
 		></ol>
 		<template data-gsxui-toast-template="default">
 			<Toast toastType="default" title="Title" description="Description" action="Action" cancel="Cancel"/>

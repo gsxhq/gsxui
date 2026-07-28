@@ -34,7 +34,8 @@ component ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="group"
 		data-orientation={orientation |> default("horizontal")}
-		{ attrs... } data-gsxui-slot-button-group
+		{ attrs... }
+		data-gsxui-slot-button-group
 	>
 		{ children }
 	</div>
@@ -63,6 +64,7 @@ component ButtonGroupText(children gsx.Node, attrs gsx.Attrs) {
 component ButtonGroupSeparator(orientation string, attrs gsx.Attrs) {
 	<Separator
 		orientation={orientation |> default("vertical")}
-		{ attrs... } data-gsxui-slot-button-group-separator
+		{ attrs... }
+		data-gsxui-slot-button-group-separator
 	/>
 }

@@ -40,7 +40,7 @@ func Range(month time.Time) _gsxrt.Node {
 		if month.IsZero() {
 			month = RangeDefaultMonth
 		}
-//line range.gsx:30:2
+//line range.gsx:32:2
 		_gsxgw.Node(ctx, ui.Calendar("range", month, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "stay", nil))
 		return _gsxgw.Err()
 	})

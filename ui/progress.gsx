@@ -34,7 +34,8 @@ component Progress(value float64, attrs gsx.Attrs) {
 		aria-valuemin="0"
 		aria-valuemax="100"
 		aria-valuenow={value}
-		{ attrs... } data-gsxui-slot-progress
+		{ attrs... }
+		data-gsxui-slot-progress
 	>
 		<div
 			style={ "transform: translateX(-" + gsx.RawCSS(remaining) + "%)" }

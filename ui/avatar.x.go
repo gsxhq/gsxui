@@ -69,11 +69,11 @@ func AvatarImage(src string, alt string, attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line avatar.gsx:29:1
+//line avatar.gsx:30:1
 func AvatarFallback(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line avatar.gsx:30:2
+//line avatar.gsx:31:2
 		_gsxgw.S("<span")
 		if !attrs.Has("data-gsxui-avatar-fallback") {
 			_gsxgw.BoolAttr("data-gsxui-avatar-fallback", true)
@@ -83,7 +83,7 @@ func AvatarFallback(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-avatar-fallback"})
 		_gsxgw.BoolAttr("data-gsxui-slot-avatar-fallback", true)
 		_gsxgw.S(">")
-//line avatar.gsx:34:3
+//line avatar.gsx:36:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()

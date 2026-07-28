@@ -33,11 +33,23 @@ component DirectionalSheetFixture(name string, side string) {
 
 component StyleContractFixture() {
 	<div class="grid gap-4 p-6">
-		<div><ui.Button>Default</ui.Button></div>
-		<div><ui.Button class="h-12 rounded-none">Caller override</ui.Button></div>
-		<div><ui.Input value="Ada"/></div>
-		<div><ui.Card><ui.CardContent>Card</ui.CardContent></ui.Card></div>
-		<div><ui.Badge>Badge</ui.Badge></div>
+		<div>
+			<ui.Button>Default</ui.Button>
+		</div>
+		<div>
+			<ui.Button class="h-12 rounded-none">Caller override</ui.Button>
+		</div>
+		<div>
+			<ui.Input value="Ada"/>
+		</div>
+		<div>
+			<ui.Card>
+				<ui.CardContent>Card</ui.CardContent>
+			</ui.Card>
+		</div>
+		<div>
+			<ui.Badge>Badge</ui.Badge>
+		</div>
 		<div class="flex flex-wrap gap-2">
 			<ui.Button variant="destructive" data-style-contract="dark-button-destructive">Destructive</ui.Button>
 			<ui.Button aria-invalid="true" data-style-contract="dark-button-invalid">Invalid</ui.Button>
@@ -50,8 +62,14 @@ component StyleContractFixture() {
 			<div class="bg-destructive/60" data-style-contract-reference="dark-destructive"></div>
 			<div class="bg-destructive/90" data-style-contract-reference="destructive-hover"></div>
 			<div class="ring-[3px] ring-destructive/40" data-style-contract-reference="dark-invalid-ring"></div>
-			<div class="border border-destructive ring-3 ring-destructive/20" data-style-contract-reference="otp-invalid-light"></div>
-			<div class="border border-destructive ring-3 ring-destructive/40" data-style-contract-reference="otp-invalid-dark"></div>
+			<div
+				class="border border-destructive ring-3 ring-destructive/20"
+				data-style-contract-reference="otp-invalid-light"
+			></div>
+			<div
+				class="border border-destructive ring-3 ring-destructive/40"
+				data-style-contract-reference="otp-invalid-dark"
+			></div>
 			<div class="bg-input/50" data-style-contract-reference="dark-outline-hover"></div>
 			<div class="bg-accent/50" data-style-contract-reference="dark-ghost-hover"></div>
 			<div class="bg-overlay" data-style-contract-reference="overlay"></div>
@@ -64,7 +82,9 @@ component StyleContractFixture() {
 		<ui.ButtonGroup data-style-contract="button-group-tail">
 			<ui.Button data-style-contract="button-group-earlier">Earlier</ui.Button>
 			<ui.Button data-style-contract="button-group-visible-tail">Visible tail</ui.Button>
-			<select aria-hidden="true"><option>Hidden native tail</option></select>
+			<select aria-hidden="true">
+				<option>Hidden native tail</option>
+			</select>
 		</ui.ButtonGroup>
 		<div>
 			<ui.InputOTPGroup>
@@ -73,20 +93,73 @@ component StyleContractFixture() {
 		</div>
 		<div>
 			<ui.ToggleGroup groupType="multiple" variant="outline" size="sm" spacing="0" aria-label="Joined formatting">
-				<ui.ToggleGroupItem groupType="multiple" variant="outline" size="sm" spacing="0" value="text" data-style-contract="toggle-group-sm-first">Text</ui.ToggleGroupItem>
-				<ui.ToggleGroupItem groupType="multiple" variant="outline" size="sm" spacing="0" value="icon" data-style-contract="toggle-group-sm-icon" aria-label="Icon"><icon.Bold/></ui.ToggleGroupItem>
-				<ui.ToggleGroupItem groupType="multiple" variant="outline" size="sm" spacing="0" value="last" data-style-contract="toggle-group-sm-last">Last</ui.ToggleGroupItem>
+				<ui.ToggleGroupItem
+					groupType="multiple"
+					variant="outline"
+					size="sm"
+					spacing="0"
+					value="text"
+					data-style-contract="toggle-group-sm-first"
+				>
+					Text
+				</ui.ToggleGroupItem>
+				<ui.ToggleGroupItem
+					groupType="multiple"
+					variant="outline"
+					size="sm"
+					spacing="0"
+					value="icon"
+					data-style-contract="toggle-group-sm-icon"
+					aria-label="Icon"
+				>
+					<icon.Bold/>
+				</ui.ToggleGroupItem>
+				<ui.ToggleGroupItem
+					groupType="multiple"
+					variant="outline"
+					size="sm"
+					spacing="0"
+					value="last"
+					data-style-contract="toggle-group-sm-last"
+				>
+					Last
+				</ui.ToggleGroupItem>
 			</ui.ToggleGroup>
 		</div>
 		<div class="flex gap-2">
 			<ui.ToggleGroup groupType="multiple" size="default" spacing="2">
-				<ui.ToggleGroupItem groupType="multiple" size="default" spacing="2" value="default" data-style-contract="toggle-group-default">Default</ui.ToggleGroupItem>
+				<ui.ToggleGroupItem
+					groupType="multiple"
+					size="default"
+					spacing="2"
+					value="default"
+					data-style-contract="toggle-group-default"
+				>
+					Default
+				</ui.ToggleGroupItem>
 			</ui.ToggleGroup>
 			<ui.ToggleGroup groupType="multiple" size="lg" spacing="2">
-				<ui.ToggleGroupItem groupType="multiple" size="lg" spacing="2" value="large" data-style-contract="toggle-group-large">Large</ui.ToggleGroupItem>
+				<ui.ToggleGroupItem
+					groupType="multiple"
+					size="lg"
+					spacing="2"
+					value="large"
+					data-style-contract="toggle-group-large"
+				>
+					Large
+				</ui.ToggleGroupItem>
 			</ui.ToggleGroup>
 			<ui.ToggleGroup groupType="multiple" size="sm" spacing="2">
-				<ui.ToggleGroupItem groupType="multiple" size="sm" spacing="2" value="caller" class="px-8" data-style-contract="toggle-group-caller">Caller</ui.ToggleGroupItem>
+				<ui.ToggleGroupItem
+					groupType="multiple"
+					size="sm"
+					spacing="2"
+					value="caller"
+					class="px-8"
+					data-style-contract="toggle-group-caller"
+				>
+					Caller
+				</ui.ToggleGroupItem>
 			</ui.ToggleGroup>
 		</div>
 		<ui.FieldGroup data-variant="outline">
@@ -120,7 +193,9 @@ component StyleContractFixture() {
 		</div>
 		<ui.Tooltip>
 			<ui.TooltipTrigger>Show contract tooltip</ui.TooltipTrigger>
-			<ui.TooltipContent data-style-contract="tooltip-kbd">Press <ui.Kbd>K</ui.Kbd></ui.TooltipContent>
+			<ui.TooltipContent data-style-contract="tooltip-kbd">
+				Press <ui.Kbd>K</ui.Kbd>
+			</ui.TooltipContent>
 		</ui.Tooltip>
 		<ui.AccordionItem name="contract-accordion">
 			<ui.AccordionTrigger>Contract accordion</ui.AccordionTrigger>
@@ -153,22 +228,42 @@ component StyleContractFixture() {
 			<div class="bg-destructive/10 text-destructive" data-style-contract-reference="menu-destructive-focus"></div>
 		</div>
 		<div>
-			<ui.DropdownMenuCheckboxItem checked={true} value="dropdown-on" data-style-contract="dropdown-checked">Dropdown on</ui.DropdownMenuCheckboxItem>
-			<ui.DropdownMenuCheckboxItem checked={false} value="dropdown-off" data-style-contract="dropdown-unchecked">Dropdown off</ui.DropdownMenuCheckboxItem>
-			<ui.ContextMenuRadioItem checked={true} value="context-on" data-style-contract="context-checked">Context on</ui.ContextMenuRadioItem>
-			<ui.ContextMenuRadioItem checked={false} value="context-off" data-style-contract="context-unchecked">Context off</ui.ContextMenuRadioItem>
-			<ui.MenubarCheckboxItem checked={true} value="menubar-on" data-style-contract="menubar-checked">Menubar on</ui.MenubarCheckboxItem>
-			<ui.MenubarCheckboxItem checked={false} value="menubar-off" data-style-contract="menubar-unchecked">Menubar off</ui.MenubarCheckboxItem>
-			<ui.ComboboxItem value="combobox-on" selected={true} data-style-contract="combobox-checked">Combobox on</ui.ComboboxItem>
-			<ui.ComboboxItem value="combobox-off" selected={false} data-style-contract="combobox-unchecked">Combobox off</ui.ComboboxItem>
+			<ui.DropdownMenuCheckboxItem checked={true} value="dropdown-on" data-style-contract="dropdown-checked">
+				Dropdown on
+			</ui.DropdownMenuCheckboxItem>
+			<ui.DropdownMenuCheckboxItem checked={false} value="dropdown-off" data-style-contract="dropdown-unchecked">
+				Dropdown off
+			</ui.DropdownMenuCheckboxItem>
+			<ui.ContextMenuRadioItem checked={true} value="context-on" data-style-contract="context-checked">
+				Context on
+			</ui.ContextMenuRadioItem>
+			<ui.ContextMenuRadioItem checked={false} value="context-off" data-style-contract="context-unchecked">
+				Context off
+			</ui.ContextMenuRadioItem>
+			<ui.MenubarCheckboxItem checked={true} value="menubar-on" data-style-contract="menubar-checked">
+				Menubar on
+			</ui.MenubarCheckboxItem>
+			<ui.MenubarCheckboxItem checked={false} value="menubar-off" data-style-contract="menubar-unchecked">
+				Menubar off
+			</ui.MenubarCheckboxItem>
+			<ui.ComboboxItem value="combobox-on" selected={true} data-style-contract="combobox-checked">
+				Combobox on
+			</ui.ComboboxItem>
+			<ui.ComboboxItem value="combobox-off" selected={false} data-style-contract="combobox-unchecked">
+				Combobox off
+			</ui.ComboboxItem>
 		</div>
 		<div>
-			<ui.DropdownMenuSubContent data-side="right" data-style-contract="submenu-right">Right submenu</ui.DropdownMenuSubContent>
+			<ui.DropdownMenuSubContent data-side="right" data-style-contract="submenu-right">
+				Right submenu
+			</ui.DropdownMenuSubContent>
 		</div>
 		<ui.NavigationMenu data-style-contract="navigation-root">
 			<ui.NavigationMenuList>
 				<ui.NavigationMenuItem>
-					<ui.NavigationMenuTrigger data-style-contract="navigation-trigger">Contract products</ui.NavigationMenuTrigger>
+					<ui.NavigationMenuTrigger data-style-contract="navigation-trigger">
+						Contract products
+					</ui.NavigationMenuTrigger>
 					<ui.NavigationMenuContent data-style-contract="navigation-content">
 						<ui.NavigationMenuLink href="#">Contract product</ui.NavigationMenuLink>
 					</ui.NavigationMenuContent>

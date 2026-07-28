@@ -26,7 +26,9 @@ component Basic() {
 					<div class="grid w-80 gap-2">
 						<ui.NavigationMenuLink href="#">
 							<div class="text-sm font-medium">Dialog</div>
-							<div class="text-muted-foreground">A window overlaid on the page, rendered with the native &lt;dialog&gt; element.</div>
+							<div class="text-muted-foreground">
+								A window overlaid on the page, rendered with the native &lt;dialog&gt; element.
+							</div>
 						</ui.NavigationMenuLink>
 						<ui.NavigationMenuLink href="#">
 							<div class="text-sm font-medium">Dropdown Menu</div>

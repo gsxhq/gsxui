@@ -48,7 +48,7 @@ func HiddenOutside(month time.Time) _gsxrt.Node {
 		if month.IsZero() {
 			month = HiddenOutsideDefaultMonth
 		}
-//line outside.gsx:38:2
+//line outside.gsx:40:2
 		_gsxgw.Node(ctx, ui.Calendar("single", month, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, false, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", nil))
 		return _gsxgw.Err()
 	})

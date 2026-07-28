@@ -32,8 +32,10 @@ var HiddenOutsideDefaultMonth = time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 // other examples do — the one thing that keeps calendar.js's own `hidden`
 // computation honest against calendar.gsx's.
 component HiddenOutside(month time.Time) {
-	{{ if month.IsZero() {
-		month = HiddenOutsideDefaultMonth
-	} }}
+	{{
+		if month.IsZero() {
+			month = HiddenOutsideDefaultMonth
+		}
+	}}
 	<ui.Calendar mode="single" month={month} weekStartsOn={time.Sunday} showOutsideDays={false} captionLayout="label"/>
 }

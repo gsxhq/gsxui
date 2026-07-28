@@ -43,21 +43,21 @@ func FieldSet(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-field-set"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field-set", true)
 		_gsxgw.S(">")
-//line field.gsx:27:3
+//line field.gsx:28:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</fieldset>")
 		return _gsxgw.Err()
 	})
 }
 
-//line field.gsx:31:1
+//line field.gsx:32:1
 // data-variant is the public CSS axis for legend and label metrics.
 
-//line field.gsx:32:1
+//line field.gsx:33:1
 func FieldLegend(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line field.gsx:33:2
+//line field.gsx:34:2
 		_gsxgw.S("<legend")
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
@@ -69,40 +69,40 @@ func FieldLegend(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-field-legend"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field-legend", true)
 		_gsxgw.S(">")
-//line field.gsx:37:3
+//line field.gsx:39:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</legend>")
 		return _gsxgw.Err()
 	})
 }
 
-//line field.gsx:41:1
+//line field.gsx:43:1
 func FieldGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line field.gsx:42:2
+//line field.gsx:44:2
 		_gsxgw.S("<div")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-field-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field-group", true)
 		_gsxgw.S(">")
-//line field.gsx:45:3
+//line field.gsx:48:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line field.gsx:49:1
+//line field.gsx:52:1
 // data-orientation is the public CSS axis for layout and is also read by
 // FieldDescription's relational text-balance rule.
 
-//line field.gsx:51:1
+//line field.gsx:54:1
 func Field(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line field.gsx:52:2
+//line field.gsx:55:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"group\"")
@@ -117,43 +117,43 @@ func Field(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-field"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field", true)
 		_gsxgw.S(">")
-//line field.gsx:57:3
+//line field.gsx:61:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line field.gsx:61:1
+//line field.gsx:65:1
 func FieldContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line field.gsx:62:2
+//line field.gsx:66:2
 		_gsxgw.S("<div")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-field-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field-content", true)
 		_gsxgw.S(">")
-//line field.gsx:65:3
+//line field.gsx:70:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line field.gsx:69:1
+//line field.gsx:74:1
 // FieldLabel composes ui.Label directly, preserving ordered styling tokens
 // "label field-label".
 
-//line field.gsx:71:1
+//line field.gsx:76:1
 func FieldLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line field.gsx:72:2
+//line field.gsx:77:2
 		_gsxgw.NodeResult(_gsxrenderLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line field.gsx:75:3
+//line field.gsx:81:3
 			_gsxgw.Node(ctx, children)
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-field-label", Value: _gsxrt.Toggle(true)}})))
@@ -161,47 +161,47 @@ func FieldLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line field.gsx:79:1
+//line field.gsx:85:1
 // FieldTitle renders a <div> with a distinct token so themes can address it
 // independently from the composed FieldLabel.
 
-//line field.gsx:81:1
+//line field.gsx:87:1
 func FieldTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line field.gsx:82:2
+//line field.gsx:88:2
 		_gsxgw.S("<div")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-field-title"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field-title", true)
 		_gsxgw.S(">")
-//line field.gsx:85:3
+//line field.gsx:92:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line field.gsx:89:1
+//line field.gsx:96:1
 func FieldDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line field.gsx:90:2
+//line field.gsx:97:2
 		_gsxgw.S("<p")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-field-description"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field-description", true)
 		_gsxgw.S(">")
-//line field.gsx:93:3
+//line field.gsx:101:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</p>")
 		return _gsxgw.Err()
 	})
 }
 
-//line field.gsx:97:1
+//line field.gsx:105:1
 // FieldSeparator composes ui.Separator with ordered tokens
 // "separator field-separator". The wrapper has its own token because it
 // owns layout while the nested separator owns the rule. data-content mirrors
@@ -211,11 +211,11 @@ func FieldDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // ui/pagination.gsx); the optional label span only renders when children is
 // present.
 
-//line field.gsx:105:1
+//line field.gsx:113:1
 func FieldSeparator(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line field.gsx:106:2
+//line field.gsx:114:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-content") {
 			_gsxgw.S(" data-content=\"")
@@ -227,15 +227,15 @@ func FieldSeparator(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-field-separator-wrapper"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field-separator-wrapper", true)
 		_gsxgw.S(">")
-//line field.gsx:110:3
+//line field.gsx:119:3
 		_gsxgw.NodeResult(_gsxrenderSeparator(ctx, _gsxgw, "", _gsxrt.Attrs{{Key: "data-gsxui-slot-field-separator", Value: _gsxrt.Toggle(true)}}))
-//line field.gsx:111:3
+//line field.gsx:120:3
 		if children != nil {
-//line field.gsx:112:4
+//line field.gsx:121:4
 			_gsxgw.S("<span")
 			_gsxgw.BoolAttr("data-gsxui-slot-field-separator-content", true)
 			_gsxgw.S(">")
-//line field.gsx:115:5
+//line field.gsx:124:5
 			_gsxgw.Node(ctx, children)
 			_gsxgw.S("</span>")
 		}
@@ -244,18 +244,18 @@ func FieldSeparator(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line field.gsx:121:1
+//line field.gsx:130:1
 // FieldError renders nothing when children is nil — the gsx equivalent of
 // shadcn's `if (!content) return null`, now driven by children alone (see
 // the file-level ADAPT comment above for the dropped errors prop).
 
-//line field.gsx:124:1
+//line field.gsx:133:1
 func FieldError(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line field.gsx:125:2
+//line field.gsx:134:2
 		if children != nil {
-//line field.gsx:126:3
+//line field.gsx:135:3
 			_gsxgw.S("<div")
 			if !attrs.Has("role") {
 				_gsxgw.S(" role=\"alert\"")
@@ -265,7 +265,7 @@ func FieldError(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-field-error"})
 			_gsxgw.BoolAttr("data-gsxui-slot-field-error", true)
 			_gsxgw.S(">")
-//line field.gsx:127:4
+//line field.gsx:136:4
 			_gsxgw.Node(ctx, children)
 			_gsxgw.S("</div>")
 		}

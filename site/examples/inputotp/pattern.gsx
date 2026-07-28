@@ -26,7 +26,8 @@ component Pattern() {
 			</ui.InputOTPGroup>
 		</ui.InputOTP>
 		<p class="text-sm text-muted-foreground">
-			Digits only. data-gsxui-input-otp-pattern takes an unanchored per-character class, not a whole-string-anchored regex — see ui/input-otp.gsx's own doc comment for why.
+			Digits only. data-gsxui-input-otp-pattern takes an unanchored per-character class, not a whole-string-anchored
+			regex — see ui/input-otp.gsx's own doc comment for why.
 		</p>
 	</div>
 }

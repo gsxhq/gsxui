@@ -19,7 +19,8 @@ component TooltipContent(children gsx.Node, attrs gsx.Attrs) {
 		role="tooltip"
 		data-state="closed"
 		data-side="top"
-		{ attrs... } data-gsxui-slot-tooltip-content
+		{ attrs... }
+		data-gsxui-slot-tooltip-content
 	>
 		{ children }
 		<span data-gsxui-slot-tooltip-arrow></span>

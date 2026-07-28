@@ -18,7 +18,8 @@ component HoverCardContent(children gsx.Node, attrs gsx.Attrs) {
 		popover="manual"
 		data-state="closed"
 		data-side="bottom"
-		{ attrs... } data-gsxui-slot-hover-card-content
+		{ attrs... }
+		data-gsxui-slot-hover-card-content
 	>
 		{ children }
 	</div>

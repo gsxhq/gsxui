@@ -64,9 +64,11 @@ var LoadedRangeDefaultMonth = time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 // single-mode, so mode === "range" was never reached client-side.
 // weekStartsOn=Monday for the same reason as Loaded.
 component LoadedRange(month time.Time) {
-	{{ if month.IsZero() {
-		month = LoadedRangeDefaultMonth
-	} }}
+	{{
+		if month.IsZero() {
+			month = LoadedRangeDefaultMonth
+		}
+	}}
 	<ui.Calendar
 		mode="range"
 		month={month}

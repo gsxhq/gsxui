@@ -100,9 +100,9 @@ func _gsxrenderTooltipContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childr
 	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-tooltip-content"})
 	_gsxgw.BoolAttr("data-gsxui-slot-tooltip-content", true)
 	_gsxgw.S(">")
-//line tooltip.gsx:24:3
-	_gsxgw.Node(ctx, children)
 //line tooltip.gsx:25:3
+	_gsxgw.Node(ctx, children)
+//line tooltip.gsx:26:3
 	_gsxgw.S("<span")
 	_gsxgw.BoolAttr("data-gsxui-slot-tooltip-arrow", true)
 	_gsxgw.S("></span></div>")

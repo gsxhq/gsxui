@@ -24,65 +24,65 @@ func Basic() _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:16:2
 		_gsxgw.S("<div>")
-//line basic.gsx:17:2
+//line basic.gsx:17:3
 		_gsxgw.Node(ctx, ui.Command(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:18:3
+//line basic.gsx:18:4
 			_gsxgw.Node(ctx, ui.CommandInput("Type a command or search...", nil))
-//line basic.gsx:19:3
+//line basic.gsx:19:4
 			_gsxgw.Node(ctx, ui.CommandList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:20:4
+//line basic.gsx:20:5
 				_gsxgw.Node(ctx, ui.CommandEmpty(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("No results found.")
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:21:4
+//line basic.gsx:21:5
 				_gsxgw.Node(ctx, ui.CommandGroup("Suggestions", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:22:5
+//line basic.gsx:22:6
 					_gsxgw.Node(ctx, ui.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:23:6
+//line basic.gsx:23:7
 						_gsxgw.Node(ctx, icon.Calendar())
-//line basic.gsx:24:6
+//line basic.gsx:24:7
 						_gsxgw.S("<span>Calendar</span>")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:26:5
+//line basic.gsx:26:6
 					_gsxgw.Node(ctx, ui.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:27:6
+//line basic.gsx:27:7
 						_gsxgw.Node(ctx, icon.Smile())
-//line basic.gsx:28:6
+//line basic.gsx:28:7
 						_gsxgw.S("<span>Search Emoji</span>")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:30:5
+//line basic.gsx:30:6
 					_gsxgw.Node(ctx, ui.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:31:6
+//line basic.gsx:31:7
 						_gsxgw.Node(ctx, icon.Calculator())
-//line basic.gsx:32:6
+//line basic.gsx:32:7
 						_gsxgw.S("<span>Calculator</span>")
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "data-disabled", Value: "true"}}))
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:35:4
+//line basic.gsx:35:5
 				_gsxgw.Node(ctx, ui.CommandSeparator(nil))
-//line basic.gsx:36:4
+//line basic.gsx:36:5
 				_gsxgw.Node(ctx, ui.CommandGroup("Settings", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:37:5
+//line basic.gsx:37:6
 					_gsxgw.Node(ctx, ui.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:38:6
+//line basic.gsx:38:7
 						_gsxgw.Node(ctx, icon.User())
-//line basic.gsx:39:6
+//line basic.gsx:39:7
 						_gsxgw.S("<span>Profile</span>")
-//line basic.gsx:40:6
+//line basic.gsx:40:7
 						_gsxgw.Node(ctx, ui.CommandShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⌘P")
@@ -90,14 +90,14 @@ func Basic() _gsxrt.Node {
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:42:5
+//line basic.gsx:42:6
 					_gsxgw.Node(ctx, ui.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:43:6
+//line basic.gsx:43:7
 						_gsxgw.Node(ctx, icon.CreditCard())
-//line basic.gsx:44:6
+//line basic.gsx:44:7
 						_gsxgw.S("<span>Billing</span>")
-//line basic.gsx:45:6
+//line basic.gsx:45:7
 						_gsxgw.Node(ctx, ui.CommandShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⌘B")
@@ -105,14 +105,14 @@ func Basic() _gsxrt.Node {
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:47:5
+//line basic.gsx:47:6
 					_gsxgw.Node(ctx, ui.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:48:6
+//line basic.gsx:48:7
 						_gsxgw.Node(ctx, icon.Settings())
-//line basic.gsx:49:6
+//line basic.gsx:49:7
 						_gsxgw.S("<span>Settings</span>")
-//line basic.gsx:50:6
+//line basic.gsx:50:7
 						_gsxgw.Node(ctx, ui.CommandShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⌘S")
@@ -126,15 +126,15 @@ func Basic() _gsxrt.Node {
 			}), nil))
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "class", Value: "max-w-md rounded-lg border shadow-md"}}))
-//line basic.gsx:55:2
+//line basic.gsx:55:3
 		_gsxgw.Node(ctx, ui.CommandDialog("Command palette", "Search commands", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:56:3
+//line basic.gsx:56:4
 			_gsxgw.Node(ctx, ui.CommandInput("Search commands...", nil))
-//line basic.gsx:57:3
+//line basic.gsx:57:4
 			_gsxgw.Node(ctx, ui.CommandList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:57:19
+//line basic.gsx:58:5
 				_gsxgw.Node(ctx, ui.CommandItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Open settings")

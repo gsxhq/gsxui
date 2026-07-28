@@ -24,7 +24,9 @@ component Basic() {
 				</ui.FieldContent>
 			</ui.Field>
 			<ui.Field orientation="responsive" data-disabled="true">
-				<ui.FieldContent><ui.FieldTitle>Responsive disabled field</ui.FieldTitle></ui.FieldContent>
+				<ui.FieldContent>
+					<ui.FieldTitle>Responsive disabled field</ui.FieldTitle>
+				</ui.FieldContent>
 			</ui.Field>
 			<ui.Field>
 				<ui.FieldLabel for="bio">Bio</ui.FieldLabel>

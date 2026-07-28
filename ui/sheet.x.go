@@ -59,14 +59,14 @@ func SheetTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sheet-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sheet-trigger", true)
 		_gsxgw.S(">")
-//line sheet.gsx:18:3
+//line sheet.gsx:19:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sheet.gsx:22:1
+//line sheet.gsx:23:1
 func SheetContent(side string, hideCloseButton bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -78,7 +78,7 @@ func _gsxrenderSheetContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, side str
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line sheet.gsx:23:2
+//line sheet.gsx:24:2
 	_gsxgw.S("<dialog")
 	if !attrs.Has("data-gsxui-dialog-content") {
 		_gsxgw.BoolAttr("data-gsxui-dialog-content", true)
@@ -97,25 +97,25 @@ func _gsxrenderSheetContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, side str
 	_gsxgw.BoolAttr("data-gsxui-slot-sheet-content", true)
 	_gsxgw.BoolAttr("data-gsxui-slot-dialog-content", true)
 	_gsxgw.S(">")
-//line sheet.gsx:29:3
+//line sheet.gsx:32:3
 	_gsxgw.Node(ctx, children)
-//line sheet.gsx:30:3
+//line sheet.gsx:33:3
 	if !hideCloseButton {
-//line sheet.gsx:31:4
+//line sheet.gsx:34:4
 		_gsxgw.S("<button type=\"button\"")
 		_gsxgw.BoolAttr("data-gsxui-dialog-close", true)
 		_gsxgw.BoolAttr("data-gsxui-slot-sheet-close-button", true)
 		_gsxgw.BoolAttr("data-gsxui-slot-sheet-close", true)
 		_gsxgw.S(">")
-//line sheet.gsx:36:5
+//line sheet.gsx:40:5
 		_gsxgw.S("<svg aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-sheet-close-icon", true)
 		_gsxgw.S(">")
-//line sheet.gsx:49:6
+//line sheet.gsx:53:6
 		_gsxgw.S("<path d=\"M18 6 6 18\"></path>")
-//line sheet.gsx:50:6
+//line sheet.gsx:54:6
 		_gsxgw.S("<path d=\"m6 6 12 12\"></path></svg>")
-//line sheet.gsx:52:5
+//line sheet.gsx:56:5
 		_gsxgw.S("<span")
 		_gsxgw.BoolAttr("data-gsxui-slot-sheet-close-label", true)
 		_gsxgw.S(">Close</span></button>")
@@ -124,7 +124,7 @@ func _gsxrenderSheetContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, side str
 	return _gsxgw.Err()
 }
 
-//line sheet.gsx:58:1
+//line sheet.gsx:62:1
 func SheetHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -136,38 +136,38 @@ func _gsxrenderSheetHeader(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children 
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line sheet.gsx:59:2
+//line sheet.gsx:63:2
 	_gsxgw.S("<div")
 	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sheet-header"})
 	_gsxgw.BoolAttr("data-gsxui-slot-sheet-header", true)
 	_gsxgw.S(">")
-//line sheet.gsx:59:49
+//line sheet.gsx:63:49
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
 
-//line sheet.gsx:62:1
+//line sheet.gsx:66:1
 func SheetFooter(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sheet.gsx:63:2
+//line sheet.gsx:67:2
 		_gsxgw.S("<div")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sheet-footer"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sheet-footer", true)
 		_gsxgw.S(">")
-//line sheet.gsx:63:49
+//line sheet.gsx:67:49
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sheet.gsx:66:1
+//line sheet.gsx:70:1
 func SheetTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -179,7 +179,7 @@ func _gsxrenderSheetTitle(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children g
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line sheet.gsx:67:2
+//line sheet.gsx:71:2
 	_gsxgw.S("<h2")
 	if !attrs.Has("data-gsxui-dialog-title") {
 		_gsxgw.BoolAttr("data-gsxui-dialog-title", true)
@@ -189,13 +189,13 @@ func _gsxrenderSheetTitle(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children g
 	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sheet-title"})
 	_gsxgw.BoolAttr("data-gsxui-slot-sheet-title", true)
 	_gsxgw.S(">")
-//line sheet.gsx:67:71
+//line sheet.gsx:71:71
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</h2>")
 	return _gsxgw.Err()
 }
 
-//line sheet.gsx:70:1
+//line sheet.gsx:74:1
 func SheetDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -207,7 +207,7 @@ func _gsxrenderSheetDescription(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, chil
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line sheet.gsx:71:2
+//line sheet.gsx:75:2
 	_gsxgw.S("<p")
 	if !attrs.Has("data-gsxui-dialog-description") {
 		_gsxgw.BoolAttr("data-gsxui-dialog-description", true)
@@ -217,17 +217,17 @@ func _gsxrenderSheetDescription(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, chil
 	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sheet-description"})
 	_gsxgw.BoolAttr("data-gsxui-slot-sheet-description", true)
 	_gsxgw.S(">")
-//line sheet.gsx:71:82
+//line sheet.gsx:75:82
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</p>")
 	return _gsxgw.Err()
 }
 
-//line sheet.gsx:74:1
+//line sheet.gsx:78:1
 func SheetClose(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sheet.gsx:75:2
+//line sheet.gsx:79:2
 		_gsxgw.S("<button")
 		if !attrs.Has("data-gsxui-dialog-close") {
 			_gsxgw.BoolAttr("data-gsxui-dialog-close", true)
@@ -240,7 +240,7 @@ func SheetClose(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sheet-close"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sheet-close", true)
 		_gsxgw.S(">")
-//line sheet.gsx:75:89
+//line sheet.gsx:79:89
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()

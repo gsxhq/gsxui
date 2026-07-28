@@ -29,7 +29,8 @@ component (g GettingStarted) Page() {
 				<pre><code>{ hl.Node("snippets/init.output") }</code></pre>
 				<p>
 					This vendors the CSS entry (<code>web/gsxui/index.css</code>) plus its sibling
-					<code>foundation.css</code>, <code>theme.css</code>, and <code>style.css</code>; the JS runtime and behavior barrel (
+					<code>foundation.css</code>, <code>theme.css</code>, and <code>style.css</code>; the JS runtime and behavior
+					barrel (
 					<code>web/gsxui/</code>); and the class merger (<code>ui/merge/merge.go</code>), then
 					points <code>gsx.toml</code>'s <code>class_merger</code> at it — the seam that makes caller-class-merge work
 					(see <a href={Theming{} |> url}>Theming</a>). It

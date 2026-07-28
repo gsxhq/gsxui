@@ -14,10 +14,19 @@ var MultipleDefaultMonth = time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 // The form and name make the repeated-value bridge observable as ordinary
 // FormData: every selected date is submitted under the same "dates" key.
 component Multiple(month time.Time) {
-	{{ if month.IsZero() {
-		month = MultipleDefaultMonth
-	} }}
+	{{
+		if month.IsZero() {
+			month = MultipleDefaultMonth
+		}
+	}}
 	<form>
-		<ui.Calendar mode="multiple" month={month} name="dates" weekStartsOn={time.Sunday} showOutsideDays={true} captionLayout="label"/>
+		<ui.Calendar
+			mode="multiple"
+			month={month}
+			name="dates"
+			weekStartsOn={time.Sunday}
+			showOutsideDays={true}
+			captionLayout="label"
+		/>
 	</form>
 }

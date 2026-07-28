@@ -75,7 +75,7 @@ func ScrollArea(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.N
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-scroll-area"})
 		_gsxgw.BoolAttr("data-gsxui-slot-scroll-area", true)
 		_gsxgw.S(">")
-//line scroll-area.gsx:56:3
+//line scroll-area.gsx:57:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

@@ -52,21 +52,21 @@ func AlertDialogTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-alert-dialog-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-alert-dialog-trigger", true)
 		_gsxgw.S(">")
-//line alert-dialog.gsx:19:3
+//line alert-dialog.gsx:20:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line alert-dialog.gsx:23:1
+//line alert-dialog.gsx:24:1
 func AlertDialogContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line alert-dialog.gsx:24:2
+//line alert-dialog.gsx:25:2
 		_gsxgw.NodeResult(_gsxrenderDialogContent(ctx, _gsxgw, true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line alert-dialog.gsx:30:3
+//line alert-dialog.gsx:32:3
 			_gsxgw.Node(ctx, children)
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "role", Value: "alertdialog"}}, _gsxrt.Attrs{{Key: "data-gsxui-dialog-static", Value: _gsxrt.Toggle(true)}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-alert-dialog-content", Value: _gsxrt.Toggle(true)}})))
@@ -74,47 +74,47 @@ func AlertDialogContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line alert-dialog.gsx:34:1
+//line alert-dialog.gsx:36:1
 func AlertDialogHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line alert-dialog.gsx:35:2
+//line alert-dialog.gsx:37:2
 		_gsxgw.S("<div")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-alert-dialog-header"})
 		_gsxgw.BoolAttr("data-gsxui-slot-alert-dialog-header", true)
 		_gsxgw.S(">")
-//line alert-dialog.gsx:35:56
+//line alert-dialog.gsx:37:56
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line alert-dialog.gsx:38:1
+//line alert-dialog.gsx:40:1
 func AlertDialogFooter(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line alert-dialog.gsx:39:2
+//line alert-dialog.gsx:41:2
 		_gsxgw.S("<div")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-alert-dialog-footer"})
 		_gsxgw.BoolAttr("data-gsxui-slot-alert-dialog-footer", true)
 		_gsxgw.S(">")
-//line alert-dialog.gsx:39:56
+//line alert-dialog.gsx:41:56
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line alert-dialog.gsx:42:1
+//line alert-dialog.gsx:44:1
 func AlertDialogTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line alert-dialog.gsx:43:2
+//line alert-dialog.gsx:45:2
 		_gsxgw.S("<h2")
 		if !attrs.Has("data-gsxui-dialog-title") {
 			_gsxgw.BoolAttr("data-gsxui-dialog-title", true)
@@ -124,18 +124,18 @@ func AlertDialogTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-alert-dialog-title"})
 		_gsxgw.BoolAttr("data-gsxui-slot-alert-dialog-title", true)
 		_gsxgw.S(">")
-//line alert-dialog.gsx:43:78
+//line alert-dialog.gsx:45:78
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</h2>")
 		return _gsxgw.Err()
 	})
 }
 
-//line alert-dialog.gsx:46:1
+//line alert-dialog.gsx:48:1
 func AlertDialogDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line alert-dialog.gsx:47:2
+//line alert-dialog.gsx:49:2
 		_gsxgw.S("<p")
 		if !attrs.Has("data-gsxui-dialog-description") {
 			_gsxgw.BoolAttr("data-gsxui-dialog-description", true)
@@ -145,21 +145,21 @@ func AlertDialogDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-alert-dialog-description"})
 		_gsxgw.BoolAttr("data-gsxui-slot-alert-dialog-description", true)
 		_gsxgw.S(">")
-//line alert-dialog.gsx:47:89
+//line alert-dialog.gsx:49:89
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</p>")
 		return _gsxgw.Err()
 	})
 }
 
-//line alert-dialog.gsx:50:1
+//line alert-dialog.gsx:52:1
 func AlertDialogAction(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line alert-dialog.gsx:51:2
+//line alert-dialog.gsx:53:2
 		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line alert-dialog.gsx:51:83
+//line alert-dialog.gsx:53:83
 			_gsxgw.Node(ctx, children)
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-close", Value: _gsxrt.Toggle(true)}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-alert-dialog-action", Value: _gsxrt.Toggle(true)}})))
@@ -167,14 +167,14 @@ func AlertDialogAction(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line alert-dialog.gsx:54:1
+//line alert-dialog.gsx:56:1
 func AlertDialogCancel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line alert-dialog.gsx:55:2
+//line alert-dialog.gsx:57:2
 		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line alert-dialog.gsx:60:3
+//line alert-dialog.gsx:63:3
 			_gsxgw.Node(ctx, children)
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-close", Value: _gsxrt.Toggle(true)}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-alert-dialog-cancel", Value: _gsxrt.Toggle(true)}})))

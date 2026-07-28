@@ -25,7 +25,8 @@ import (
 component Command(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-gsxui-command
-		{ attrs... } data-gsxui-slot-command
+		{ attrs... }
+		data-gsxui-slot-command
 	>
 		{ children }
 	</div>
@@ -45,7 +46,8 @@ component CommandDialog(title string, description string, children gsx.Node, att
 	<Dialog data-gsxui-slot-command-dialog>
 		<DialogContent
 			data-gsxui-command-dialog
-			{ attrs... } data-gsxui-slot-command-dialog-content
+			{ attrs... }
+			data-gsxui-slot-command-dialog-content
 		>
 			<DialogHeader data-gsxui-slot-command-dialog-header>
 				<DialogTitle>{ title |> default("Command Palette") }</DialogTitle>
@@ -74,7 +76,8 @@ component CommandInput(placeholder string, attrs gsx.Attrs) {
 			autocomplete="off"
 			spellcheck="false"
 			placeholder={placeholder}
-			{ attrs... } data-gsxui-slot-command-input
+			{ attrs... }
+			data-gsxui-slot-command-input
 		/>
 	</div>
 }
@@ -83,7 +86,8 @@ component CommandList(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-gsxui-command-list
 		role="listbox"
-		{ attrs... } data-gsxui-slot-command-list
+		{ attrs... }
+		data-gsxui-slot-command-list
 	>
 		{ children }
 	</div>
@@ -126,7 +130,8 @@ component CommandItem(value string, children gsx.Node, attrs gsx.Attrs) {
 		data-value={value}
 		role="option"
 		aria-selected="false"
-		{ attrs... } data-gsxui-slot-command-item
+		{ attrs... }
+		data-gsxui-slot-command-item
 	>
 		{ children }
 	</div>

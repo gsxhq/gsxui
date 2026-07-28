@@ -55,18 +55,18 @@ func PopoverTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-popover-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-popover-trigger", true)
 		_gsxgw.S(">")
-//line popover.gsx:18:3
+//line popover.gsx:19:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line popover.gsx:22:1
+//line popover.gsx:23:1
 func PopoverContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line popover.gsx:23:2
+//line popover.gsx:24:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-gsxui-popover-content") {
 			_gsxgw.BoolAttr("data-gsxui-popover-content", true)
@@ -88,7 +88,7 @@ func PopoverContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-popover-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-popover-content", true)
 		_gsxgw.S(">")
-//line popover.gsx:31:3
+//line popover.gsx:33:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

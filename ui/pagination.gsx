@@ -17,7 +17,8 @@ component Pagination(children gsx.Node, attrs gsx.Attrs) {
 	<nav
 		role="navigation"
 		aria-label="pagination"
-		{ attrs... } data-gsxui-slot-pagination
+		{ attrs... }
+		data-gsxui-slot-pagination
 	>
 		{ children }
 	</nav>
@@ -60,7 +61,9 @@ component PaginationLink(href string, isActive bool, size string, children gsx.N
 		data-variant={variant}
 		data-size={size}
 		href={href}
-		{ attrs... } data-gsxui-slot-pagination-link data-gsxui-slot-button
+		{ attrs... }
+		data-gsxui-slot-pagination-link
+		data-gsxui-slot-button
 	>
 		{ children }
 	</a>
@@ -75,7 +78,8 @@ component PaginationPrevious(href string, attrs gsx.Attrs) {
 		href={href}
 		size="default"
 		aria-label="Go to previous page"
-		{ attrs... } data-gsxui-slot-pagination-previous
+		{ attrs... }
+		data-gsxui-slot-pagination-previous
 	>
 		<icon.ChevronLeft/>
 		<span data-gsxui-slot-pagination-previous-label>Previous</span>
@@ -87,7 +91,8 @@ component PaginationNext(href string, attrs gsx.Attrs) {
 		href={href}
 		size="default"
 		aria-label="Go to next page"
-		{ attrs... } data-gsxui-slot-pagination-next
+		{ attrs... }
+		data-gsxui-slot-pagination-next
 	>
 		<span data-gsxui-slot-pagination-next-label>Next</span>
 		<icon.ChevronRight/>
@@ -97,7 +102,8 @@ component PaginationNext(href string, attrs gsx.Attrs) {
 component PaginationEllipsis(attrs gsx.Attrs) {
 	<span
 		aria-hidden="true"
-		{ attrs... } data-gsxui-slot-pagination-ellipsis
+		{ attrs... }
+		data-gsxui-slot-pagination-ellipsis
 	>
 		<icon.Ellipsis/>
 		<span data-gsxui-slot-pagination-ellipsis-label>More pages</span>

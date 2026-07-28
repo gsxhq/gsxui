@@ -14,7 +14,8 @@ component DrawerTrigger(children gsx.Node, attrs gsx.Attrs) {
 		type="button"
 		aria-haspopup="dialog"
 		aria-expanded="false"
-		{ attrs... } data-gsxui-slot-drawer-trigger
+		{ attrs... }
+		data-gsxui-slot-drawer-trigger
 	>
 		{ children }
 	</button>
@@ -25,7 +26,9 @@ component DrawerContent(direction string, children gsx.Node, attrs gsx.Attrs) {
 		data-gsxui-dialog-content
 		data-state="closed"
 		data-side={direction |> default("bottom")}
-		{ attrs... } data-gsxui-slot-drawer-content data-gsxui-slot-dialog-content
+		{ attrs... }
+		data-gsxui-slot-drawer-content
+		data-gsxui-slot-dialog-content
 	>
 		{ if direction == "" || direction == "bottom" {
 			<div data-gsxui-slot-drawer-handle></div>

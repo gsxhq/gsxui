@@ -79,7 +79,7 @@ func HoverCardContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-hover-card-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-hover-card-content", true)
 		_gsxgw.S(">")
-//line hover-card.gsx:23:3
+//line hover-card.gsx:24:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

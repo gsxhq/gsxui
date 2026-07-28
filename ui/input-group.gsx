@@ -27,7 +27,8 @@ import "github.com/gsxhq/gsx"
 component InputGroup(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="group"
-		{ attrs... } data-gsxui-slot-input-group
+		{ attrs... }
+		data-gsxui-slot-input-group
 	>
 		{ children }
 	</div>
@@ -39,7 +40,8 @@ component InputGroupAddon(align string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="group"
 		data-align={align |> default("inline-start")}
-		{ attrs... } data-gsxui-slot-input-group-addon
+		{ attrs... }
+		data-gsxui-slot-input-group-addon
 	>
 		{ children }
 	</div>
@@ -53,7 +55,8 @@ component InputGroupButton(variant string, size string, children gsx.Node, attrs
 	<Button
 		data-size={size |> default("xs")}
 		variant={variant |> default("ghost")}
-		{ attrs... } data-gsxui-slot-input-group-button
+		{ attrs... }
+		data-gsxui-slot-input-group-button
 	>
 		{ children }
 	</Button>
@@ -62,7 +65,8 @@ component InputGroupButton(variant string, size string, children gsx.Node, attrs
 // InputGroupText has its own theme token.
 component InputGroupText(children gsx.Node, attrs gsx.Attrs) {
 	<span
-		{ attrs... } data-gsxui-slot-input-group-text
+		{ attrs... }
+		data-gsxui-slot-input-group-text
 	>
 		{ children }
 	</span>
@@ -72,7 +76,8 @@ component InputGroupText(children gsx.Node, attrs gsx.Attrs) {
 // InputGroup keys focus and invalid relations off the latter.
 component InputGroupInput(attrs gsx.Attrs) {
 	<Input
-		{ attrs... } data-gsxui-slot-input-group-control
+		{ attrs... }
+		data-gsxui-slot-input-group-control
 	/>
 }
 
@@ -83,6 +88,7 @@ component InputGroupInput(attrs gsx.Attrs) {
 component InputGroupTextarea(value string, attrs gsx.Attrs) {
 	<Textarea
 		value={value}
-		{ attrs... } data-gsxui-slot-input-group-control
+		{ attrs... }
+		data-gsxui-slot-input-group-control
 	/>
 }

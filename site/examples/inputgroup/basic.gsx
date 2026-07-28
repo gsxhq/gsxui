@@ -27,9 +27,13 @@ component Basic() {
 			</ui.InputGroupAddon>
 		</ui.InputGroup>
 		<ui.InputGroup data-disabled="true">
-			<ui.InputGroupAddon align="block-start"><ui.InputGroupText>URL</ui.InputGroupText></ui.InputGroupAddon>
+			<ui.InputGroupAddon align="block-start">
+				<ui.InputGroupText>URL</ui.InputGroupText>
+			</ui.InputGroupAddon>
 			<ui.InputGroupInput disabled placeholder="Disabled"/>
-			<ui.InputGroupAddon align="block-end"><ui.InputGroupText>Required</ui.InputGroupText></ui.InputGroupAddon>
+			<ui.InputGroupAddon align="block-end">
+				<ui.InputGroupText>Required</ui.InputGroupText>
+			</ui.InputGroupAddon>
 		</ui.InputGroup>
 		<div class="flex flex-wrap gap-2">
 			<ui.InputGroupButton variant="default">Default</ui.InputGroupButton>
@@ -38,7 +42,9 @@ component Basic() {
 			<ui.InputGroupButton variant="secondary">Secondary</ui.InputGroupButton>
 			<ui.InputGroupButton variant="link">Link</ui.InputGroupButton>
 			<ui.InputGroupButton size="sm">Small</ui.InputGroupButton>
-			<ui.InputGroupButton size="icon-sm" aria-label="Icon"><icon.Send/></ui.InputGroupButton>
+			<ui.InputGroupButton size="icon-sm" aria-label="Icon">
+				<icon.Send/>
+			</ui.InputGroupButton>
 		</div>
 		<ui.InputGroup>
 			<ui.InputGroupInput aria-invalid="true" value="Invalid value"/>

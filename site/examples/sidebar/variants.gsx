@@ -76,7 +76,14 @@ component Variants() {
 		<demo label="variant=inset" side="" variant="inset" collapsible="" open={true} rail={true}/>
 		<demo label="collapsible=offcanvas (default)" side="" variant="" collapsible="offcanvas" open={true} rail={true}/>
 		<demo label="collapsible=icon" side="" variant="" collapsible="icon" open={true} rail={true}/>
-		<demo label="collapsible=none (always expanded, no rail)" side="" variant="" collapsible="none" open={true} rail={false}/>
+		<demo
+			label="collapsible=none (always expanded, no rail)"
+			side=""
+			variant=""
+			collapsible="none"
+			open={true}
+			rail={false}
+		/>
 		<demo label="right side, collapsed" side="right" variant="" collapsible="offcanvas" open={false} rail={true}/>
 		<demo label="icon collapsed" side="" variant="" collapsible="icon" open={false} rail={true}/>
 	</div>

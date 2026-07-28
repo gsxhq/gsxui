@@ -91,7 +91,7 @@ func Toggle(pressed bool, variant string, size string, children gsx.Node, attrs 
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-toggle"})
 		_gsxgw.BoolAttr("data-gsxui-slot-toggle", true)
 		_gsxgw.S(">")
-//line toggle.gsx:56:3
+//line toggle.gsx:57:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()

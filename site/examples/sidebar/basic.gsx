@@ -20,7 +20,9 @@ component Basic() {
 			<ui.SidebarContent>
 				<ui.SidebarGroup>
 					<ui.SidebarGroupLabel>Application</ui.SidebarGroupLabel>
-					<ui.SidebarGroupAction aria-label="Add item"><icon.Plus/></ui.SidebarGroupAction>
+					<ui.SidebarGroupAction aria-label="Add item">
+						<icon.Plus/>
+					</ui.SidebarGroupAction>
 					<ui.SidebarGroupContent>
 						<ui.SidebarMenu>
 							<ui.SidebarMenuItem>
@@ -34,8 +36,12 @@ component Basic() {
 									<icon.Inbox/>
 									<span>Inbox</span>
 								</ui.SidebarMenuButton>
-								<ui.SidebarMenuAction showOnHover={true} aria-label="More"><icon.Plus/></ui.SidebarMenuAction>
-								<ui.SidebarMenuAction aria-label="Pin"><icon.Plus/></ui.SidebarMenuAction>
+								<ui.SidebarMenuAction showOnHover={true} aria-label="More">
+									<icon.Plus/>
+								</ui.SidebarMenuAction>
+								<ui.SidebarMenuAction aria-label="Pin">
+									<icon.Plus/>
+								</ui.SidebarMenuAction>
 								<ui.SidebarMenuBadge>24</ui.SidebarMenuBadge>
 								<ui.SidebarMenuSub>
 									<ui.SidebarMenuSubItem>

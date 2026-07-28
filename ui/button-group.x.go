@@ -59,38 +59,38 @@ func ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-button-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-button-group", true)
 		_gsxgw.S(">")
-//line button-group.gsx:39:3
+//line button-group.gsx:40:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line button-group.gsx:43:1
+//line button-group.gsx:44:1
 // ButtonGroupText's asChild tag-swap is dropped (GAP, always a <div>) — same
 // narrow gap as Button's own asChild. Note this element carries no generic
 // shadcn slot hook either (unlike every other button-group part); ported
 // as-is rather than "fixed", per the token-for-token rule.
 
-//line button-group.gsx:47:1
+//line button-group.gsx:48:1
 func ButtonGroupText(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line button-group.gsx:48:2
+//line button-group.gsx:49:2
 		_gsxgw.S("<div")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-button-group-text"})
 		_gsxgw.BoolAttr("data-gsxui-slot-button-group-text", true)
 		_gsxgw.S(">")
-//line button-group.gsx:49:3
+//line button-group.gsx:50:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line button-group.gsx:53:1
+//line button-group.gsx:54:1
 // ButtonGroupSeparator wraps ui.Separator directly (flat package, no
 // re-implementation) — the button-group -> separator dependency
 // internal/registry derives and registry_test.go pins. orientation defaults
@@ -102,11 +102,11 @@ func ButtonGroupText(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // the ordinary caller-class-merge position (attrs after base, see
 // docs/jsx-parity.md styling notes).
 
-//line button-group.gsx:63:1
+//line button-group.gsx:64:1
 func ButtonGroupSeparator(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line button-group.gsx:64:2
+//line button-group.gsx:65:2
 		_gsxgw.NodeResult(_gsxrenderSeparator(ctx, _gsxgw, _gsxstd.Default((orientation), "vertical"), _gsxrt.ConcatAttrs(attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-button-group-separator", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})

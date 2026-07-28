@@ -101,7 +101,8 @@ component InputOTP(children gsx.Node, attrs gsx.Attrs) {
 			data-gsxui-input-otp-input
 			inputmode="numeric"
 			autocomplete="one-time-code"
-			{ attrs... } data-gsxui-slot-input-otp-input
+			{ attrs... }
+			data-gsxui-slot-input-otp-input
 		/>
 		{ children }
 	</div>
@@ -112,7 +113,8 @@ component InputOTP(children gsx.Node, attrs gsx.Attrs) {
 // InputOTP's own doc comment).
 component InputOTPGroup(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		{ attrs... } data-gsxui-slot-input-otp-group
+		{ attrs... }
+		data-gsxui-slot-input-otp-group
 	>
 		{ children }
 	</div>
@@ -126,7 +128,8 @@ component InputOTPSlot(attrs gsx.Attrs) {
 	<div
 		data-gsxui-input-otp-slot
 		data-active="false"
-		{ attrs... } data-gsxui-slot-input-otp-slot
+		{ attrs... }
+		data-gsxui-slot-input-otp-slot
 	></div>
 }
 

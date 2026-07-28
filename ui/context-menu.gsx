@@ -91,7 +91,8 @@ component ContextMenuContent(children gsx.Node, attrs gsx.Attrs) {
 		role="menu"
 		tabindex="-1"
 		data-state="closed"
-		{ attrs... } data-gsxui-slot-context-menu-content
+		{ attrs... }
+		data-gsxui-slot-context-menu-content
 	>
 		{ children }
 	</div>
@@ -108,7 +109,8 @@ component ContextMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 		data-variant={variant |> default("default")}
 		role="menuitem"
 		tabindex="-1"
-		{ attrs... } data-gsxui-slot-context-menu-item
+		{ attrs... }
+		data-gsxui-slot-context-menu-item
 	>
 		{ children }
 	</div>
@@ -151,7 +153,8 @@ component ContextMenuCheckboxItem(checked bool, value string, children gsx.Node,
 			data-state="unchecked"
 		} }
 		tabindex="-1"
-		{ attrs... } data-gsxui-slot-context-menu-checkbox-item
+		{ attrs... }
+		data-gsxui-slot-context-menu-checkbox-item
 	>
 		<span data-gsxui-contextmenu-checkbox-indicator data-gsxui-slot-context-menu-checkbox-item-indicator>
 			<icon.Check/>
@@ -167,7 +170,13 @@ component ContextMenuCheckboxItem(checked bool, value string, children gsx.Node,
 // event. data-gsxui-contextmenu-radio-group is the proximity anchor context-menu.js
 // uses to scope "clear every OTHER item in this group" to this group alone.
 component ContextMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-contextmenu-radio-group role="group" data-value={value} { attrs... } data-gsxui-slot-context-menu-radio-group>
+	<div
+		data-gsxui-contextmenu-radio-group
+		role="group"
+		data-value={value}
+		{ attrs... }
+		data-gsxui-slot-context-menu-radio-group
+	>
 		{ children }
 	</div>
 }
@@ -194,7 +203,8 @@ component ContextMenuRadioItem(checked bool, value string, children gsx.Node, at
 			data-state="unchecked"
 		} }
 		tabindex="-1"
-		{ attrs... } data-gsxui-slot-context-menu-radio-item
+		{ attrs... }
+		data-gsxui-slot-context-menu-radio-item
 	>
 		<span data-gsxui-contextmenu-radio-indicator data-gsxui-slot-context-menu-radio-item-indicator>
 			<icon.Circle/>
@@ -254,7 +264,8 @@ component ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 		aria-expanded="false"
 		data-state="closed"
 		tabindex="-1"
-		{ attrs... } data-gsxui-slot-context-menu-sub-trigger
+		{ attrs... }
+		data-gsxui-slot-context-menu-sub-trigger
 	>
 		{ children }
 		<icon.ChevronRight/>
@@ -283,7 +294,8 @@ component ContextMenuSubContent(children gsx.Node, attrs gsx.Attrs) {
 		tabindex="-1"
 		data-state="closed"
 		data-side="right"
-		{ attrs... } data-gsxui-slot-context-menu-sub-content
+		{ attrs... }
+		data-gsxui-slot-context-menu-sub-content
 	>
 		{ children }
 	</div>

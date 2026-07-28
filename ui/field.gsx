@@ -22,7 +22,8 @@ import "github.com/gsxhq/gsx"
 // errors-array-to-list plumbing.
 component FieldSet(children gsx.Node, attrs gsx.Attrs) {
 	<fieldset
-		{ attrs... } data-gsxui-slot-field-set
+		{ attrs... }
+		data-gsxui-slot-field-set
 	>
 		{ children }
 	</fieldset>
@@ -32,7 +33,8 @@ component FieldSet(children gsx.Node, attrs gsx.Attrs) {
 component FieldLegend(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<legend
 		data-variant={variant |> default("legend")}
-		{ attrs... } data-gsxui-slot-field-legend
+		{ attrs... }
+		data-gsxui-slot-field-legend
 	>
 		{ children }
 	</legend>
@@ -40,7 +42,8 @@ component FieldLegend(variant string, children gsx.Node, attrs gsx.Attrs) {
 
 component FieldGroup(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		{ attrs... } data-gsxui-slot-field-group
+		{ attrs... }
+		data-gsxui-slot-field-group
 	>
 		{ children }
 	</div>
@@ -52,7 +55,8 @@ component Field(orientation string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="group"
 		data-orientation={orientation |> default("vertical")}
-		{ attrs... } data-gsxui-slot-field
+		{ attrs... }
+		data-gsxui-slot-field
 	>
 		{ children }
 	</div>
@@ -60,7 +64,8 @@ component Field(orientation string, children gsx.Node, attrs gsx.Attrs) {
 
 component FieldContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		{ attrs... } data-gsxui-slot-field-content
+		{ attrs... }
+		data-gsxui-slot-field-content
 	>
 		{ children }
 	</div>
@@ -70,7 +75,8 @@ component FieldContent(children gsx.Node, attrs gsx.Attrs) {
 // "label field-label".
 component FieldLabel(children gsx.Node, attrs gsx.Attrs) {
 	<Label
-		{ attrs... } data-gsxui-slot-field-label
+		{ attrs... }
+		data-gsxui-slot-field-label
 	>
 		{ children }
 	</Label>
@@ -80,7 +86,8 @@ component FieldLabel(children gsx.Node, attrs gsx.Attrs) {
 // independently from the composed FieldLabel.
 component FieldTitle(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		{ attrs... } data-gsxui-slot-field-title
+		{ attrs... }
+		data-gsxui-slot-field-title
 	>
 		{ children }
 	</div>
@@ -88,7 +95,8 @@ component FieldTitle(children gsx.Node, attrs gsx.Attrs) {
 
 component FieldDescription(children gsx.Node, attrs gsx.Attrs) {
 	<p
-		{ attrs... } data-gsxui-slot-field-description
+		{ attrs... }
+		data-gsxui-slot-field-description
 	>
 		{ children }
 	</p>
@@ -105,7 +113,8 @@ component FieldDescription(children gsx.Node, attrs gsx.Attrs) {
 component FieldSeparator(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-content={children != nil}
-		{ attrs... } data-gsxui-slot-field-separator-wrapper
+		{ attrs... }
+		data-gsxui-slot-field-separator-wrapper
 	>
 		<Separator data-gsxui-slot-field-separator/>
 		{ if children != nil {

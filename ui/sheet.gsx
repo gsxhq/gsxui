@@ -13,7 +13,8 @@ component SheetTrigger(children gsx.Node, attrs gsx.Attrs) {
 		type="button"
 		aria-haspopup="dialog"
 		aria-expanded="false"
-		{ attrs... } data-gsxui-slot-sheet-trigger
+		{ attrs... }
+		data-gsxui-slot-sheet-trigger
 	>
 		{ children }
 	</button>
@@ -24,14 +25,17 @@ component SheetContent(side string, hideCloseButton bool, children gsx.Node, att
 		data-gsxui-dialog-content
 		data-state="closed"
 		data-side={side |> default("right")}
-		{ attrs... } data-gsxui-slot-sheet-content data-gsxui-slot-dialog-content
+		{ attrs... }
+		data-gsxui-slot-sheet-content
+		data-gsxui-slot-dialog-content
 	>
 		{ children }
 		{ if !hideCloseButton {
 			<button
 				type="button"
 				data-gsxui-dialog-close
-				data-gsxui-slot-sheet-close-button data-gsxui-slot-sheet-close
+				data-gsxui-slot-sheet-close-button
+				data-gsxui-slot-sheet-close
 			>
 				<svg
 					aria-hidden="true"

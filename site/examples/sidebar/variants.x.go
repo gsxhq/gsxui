@@ -178,9 +178,9 @@ func Variants() _gsxrt.Node {
 		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "collapsible=icon", "", "", "icon", true, true))
 //line variants.gsx:79:3
 		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "collapsible=none (always expanded, no rail)", "", "", "none", true, false))
-//line variants.gsx:80:3
+//line variants.gsx:87:3
 		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "right side, collapsed", "right", "", "offcanvas", false, true))
-//line variants.gsx:81:3
+//line variants.gsx:88:3
 		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "icon collapsed", "", "", "icon", false, true))
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

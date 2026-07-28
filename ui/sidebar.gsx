@@ -34,7 +34,8 @@ component SidebarProvider(open bool, children gsx.Node, attrs gsx.Attrs) {
 		data-state={state}
 		data-gsxui-sidebar-wrapper
 		style={ css`--sidebar-width:@{sidebarWidth}`, css`--sidebar-width-icon:@{sidebarWidthIcon}` }
-		{ attrs... } data-gsxui-slot-sidebar-wrapper
+		{ attrs... }
+		data-gsxui-slot-sidebar-wrapper
 	>
 		{ children }
 	</div>
@@ -66,7 +67,8 @@ component Sidebar(open bool, side string, variant string, collapsible string, ch
 			data-side={s}
 			data-variant={v}
 			data-collapsible="none"
-			{ attrs... } data-gsxui-slot-sidebar
+			{ attrs... }
+			data-gsxui-slot-sidebar
 		>
 			{ children }
 		</div>
@@ -78,7 +80,8 @@ component Sidebar(open bool, side string, variant string, collapsible string, ch
 					data-mobile="true"
 					data-gsxui-sidebar-mobile-dialog
 					style=css`--sidebar-width:@{sidebarWidthMobile}`
-					data-gsxui-slot-sidebar-mobile-content data-gsxui-slot-sidebar
+					data-gsxui-slot-sidebar-mobile-content
+					data-gsxui-slot-sidebar
 				>
 					<SheetHeader data-gsxui-slot-sidebar-mobile-header>
 						<SheetTitle data-gsxui-slot-sidebar-mobile-title>Sidebar</SheetTitle>
@@ -96,7 +99,8 @@ component Sidebar(open bool, side string, variant string, collapsible string, ch
 				data-variant={v}
 				data-side={s}
 				data-gsxui-sidebar-desktop
-				data-gsxui-slot-sidebar-desktop data-gsxui-slot-sidebar
+				data-gsxui-slot-sidebar-desktop
+				data-gsxui-slot-sidebar
 			>
 				<div data-gsxui-slot-sidebar-gap></div>
 				<div { attrs... } data-gsxui-slot-sidebar-container>
@@ -114,7 +118,8 @@ component SidebarTrigger(attrs gsx.Attrs) {
 		data-gsxui-sidebar-trigger
 		variant="ghost"
 		size="icon"
-		{ attrs... } data-gsxui-slot-sidebar-trigger
+		{ attrs... }
+		data-gsxui-slot-sidebar-trigger
 	>
 		<icon.PanelLeft/>
 		<span data-gsxui-slot-sidebar-trigger-label>Toggle Sidebar</span>
@@ -130,7 +135,8 @@ component SidebarRail(attrs gsx.Attrs) {
 		aria-label="Toggle Sidebar"
 		tabindex="-1"
 		title="Toggle Sidebar"
-		{ attrs... } data-gsxui-slot-sidebar-rail
+		{ attrs... }
+		data-gsxui-slot-sidebar-rail
 	></button>
 }
 
@@ -191,7 +197,8 @@ component SidebarMenuButton(isActive bool, variant string, size string, tooltip 
 			data-variant={variant |> default("default")}
 			data-size={size |> default("default")}
 			data-active={isActive}
-			{ attrs... } data-gsxui-slot-sidebar-menu-button
+			{ attrs... }
+			data-gsxui-slot-sidebar-menu-button
 		>
 			{ children }
 		</button>
@@ -203,7 +210,8 @@ component SidebarMenuButton(isActive bool, variant string, size string, tooltip 
 				data-size={size |> default("default")}
 				data-active={isActive}
 				data-gsxui-tooltip-trigger
-				{ attrs... } data-gsxui-slot-sidebar-menu-button
+				{ attrs... }
+				data-gsxui-slot-sidebar-menu-button
 			>
 				{ children }
 			</button>
@@ -218,7 +226,8 @@ component SidebarMenuAction(showOnHover bool, children gsx.Node, attrs gsx.Attrs
 	<button
 		type="button"
 		data-show-on-hover={showOnHover}
-		{ attrs... } data-gsxui-slot-sidebar-menu-action
+		{ attrs... }
+		data-gsxui-slot-sidebar-menu-action
 	>
 		{ children }
 	</button>
@@ -231,9 +240,7 @@ component SidebarMenuBadge(children gsx.Node, attrs gsx.Attrs) {
 // The randomized width is the one dynamic presentation value in this part.
 // It is chosen once per server render, then consumed by style CSS.
 component SidebarMenuSkeleton(showIcon bool, attrs gsx.Attrs) {
-	{{
-		width := strconv.Itoa(rand.Intn(40)+50) + "%"
-	}}
+	{{ width := strconv.Itoa(rand.Intn(40)+50) + "%" }}
 	<div { attrs... } data-gsxui-slot-sidebar-menu-skeleton>
 		{ if showIcon {
 			<Skeleton data-gsxui-slot-sidebar-menu-skeleton-icon/>
@@ -257,7 +264,8 @@ component SidebarMenuSubButton(size string, isActive bool, children gsx.Node, at
 	<a
 		data-size={size |> default("md")}
 		data-active={isActive}
-		{ attrs... } data-gsxui-slot-sidebar-menu-sub-button
+		{ attrs... }
+		data-gsxui-slot-sidebar-menu-sub-button
 	>
 		{ children }
 	</a>

@@ -25,7 +25,8 @@ component EmptyHeader(children gsx.Node, attrs gsx.Attrs) {
 component EmptyMedia(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-variant={variant |> default("default")}
-		{ attrs... } data-gsxui-slot-empty-icon
+		{ attrs... }
+		data-gsxui-slot-empty-icon
 	>
 		{ children }
 	</div>

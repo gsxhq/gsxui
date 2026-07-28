@@ -50,7 +50,8 @@ component BreadcrumbPage(children gsx.Node, attrs gsx.Attrs) {
 		role="link"
 		aria-disabled="true"
 		aria-current="page"
-		{ attrs... } data-gsxui-slot-breadcrumb-page
+		{ attrs... }
+		data-gsxui-slot-breadcrumb-page
 	>
 		{ children }
 	</span>
@@ -63,7 +64,8 @@ component BreadcrumbSeparator(children gsx.Node, attrs gsx.Attrs) {
 	<li
 		role="presentation"
 		aria-hidden="true"
-		{ attrs... } data-gsxui-slot-breadcrumb-separator
+		{ attrs... }
+		data-gsxui-slot-breadcrumb-separator
 	>
 		{ if children != nil {
 			{ children }
@@ -80,7 +82,8 @@ component BreadcrumbEllipsis(attrs gsx.Attrs) {
 	<span
 		role="presentation"
 		aria-hidden="true"
-		{ attrs... } data-gsxui-slot-breadcrumb-ellipsis
+		{ attrs... }
+		data-gsxui-slot-breadcrumb-ellipsis
 	>
 		<icon.Ellipsis/>
 		<span data-gsxui-slot-breadcrumb-ellipsis-label>More</span>

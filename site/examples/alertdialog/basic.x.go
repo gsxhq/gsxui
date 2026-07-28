@@ -50,16 +50,16 @@ func Basic() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:34:4
+//line basic.gsx:33:4
 				_gsxgw.Node(ctx, ui.AlertDialogFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:35:5
+//line basic.gsx:34:5
 					_gsxgw.Node(ctx, ui.AlertDialogCancel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Cancel")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:36:5
+//line basic.gsx:35:5
 					_gsxgw.Node(ctx, ui.AlertDialogAction(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Continue")

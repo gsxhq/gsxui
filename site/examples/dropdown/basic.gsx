@@ -21,11 +21,13 @@ component Basic() {
 		</ui.Button>
 		<ui.DropdownMenuContent>
 			<ui.DropdownMenuGroup>
-			<ui.DropdownMenuLabel>My Account</ui.DropdownMenuLabel>
-			<ui.DropdownMenuSeparator/>
-			<ui.DropdownMenuItem>Profile</ui.DropdownMenuItem>
-			<ui.DropdownMenuItem>Billing</ui.DropdownMenuItem>
-			<ui.DropdownMenuItem>Settings <ui.DropdownMenuShortcut>⌘,</ui.DropdownMenuShortcut></ui.DropdownMenuItem>
+				<ui.DropdownMenuLabel>My Account</ui.DropdownMenuLabel>
+				<ui.DropdownMenuSeparator/>
+				<ui.DropdownMenuItem>Profile</ui.DropdownMenuItem>
+				<ui.DropdownMenuItem>Billing</ui.DropdownMenuItem>
+				<ui.DropdownMenuItem>
+					Settings <ui.DropdownMenuShortcut>⌘,</ui.DropdownMenuShortcut>
+				</ui.DropdownMenuItem>
 			</ui.DropdownMenuGroup>
 		</ui.DropdownMenuContent>
 	</ui.DropdownMenu>

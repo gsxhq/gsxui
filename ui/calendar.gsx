@@ -581,24 +581,7 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 //     role="grid" suppresses a `<table>`'s implicit naming, so without it
 //     the grid is announced unnamed on entry. calendar.js's repaint rewrites
 //     it on every navigation, so the name follows the displayed month.
-component Calendar(
-	mode string,
-	month time.Time,
-	selected []time.Time,
-	from time.Time,
-	to time.Time,
-	weekStartsOn time.Weekday,
-	showOutsideDays bool,
-	captionLayout string,
-	fromYear int,
-	toYear int,
-	disabledBefore time.Time,
-	disabledAfter time.Time,
-	disabledDates []time.Time,
-	disabledWeekdays []time.Weekday,
-	name string,
-	attrs gsx.Attrs,
-) {
+component Calendar(mode string, month time.Time, selected []time.Time, from time.Time, to time.Time, weekStartsOn time.Weekday, showOutsideDays bool, captionLayout string, fromYear int, toYear int, disabledBefore time.Time, disabledAfter time.Time, disabledDates []time.Time, disabledWeekdays []time.Weekday, name string, attrs gsx.Attrs) {
 	{{
 		// mode's zero value is defaulted ONCE, here, before anything reads
 		// it — not only on the way out to data-gsxui-calendar-mode (final
@@ -718,215 +701,229 @@ component Calendar(
 	}}
 	<div
 		data-gsxui-calendar
-		data-gsxui-calendar-month={ month.Format("2006-01") }
-		data-gsxui-calendar-mode={ mode }
-		data-gsxui-calendar-week-start={ int(weekStartsOn) }
-		data-gsxui-calendar-show-outside-days={ boolStr(showOutsideDays) }
-		data-caption-layout={ captionLayout }
+		data-gsxui-calendar-month={month.Format("2006-01")}
+		data-gsxui-calendar-mode={mode}
+		data-gsxui-calendar-week-start={int(weekStartsOn)}
+		data-gsxui-calendar-show-outside-days={boolStr(showOutsideDays)}
+		data-caption-layout={captionLayout}
 		{ if selectedISO != "" {
-			data-gsxui-calendar-selected={ selectedISO }
+			data-gsxui-calendar-selected={selectedISO}
 		} }
 		{ if !from.IsZero() {
-			data-gsxui-calendar-from={ dayOnly(from).Format("2006-01-02") }
+			data-gsxui-calendar-from={dayOnly(from).Format("2006-01-02")}
 		} }
 		{ if !to.IsZero() {
-			data-gsxui-calendar-to={ dayOnly(to).Format("2006-01-02") }
+			data-gsxui-calendar-to={dayOnly(to).Format("2006-01-02")}
 		} }
 		{ if !disabledBefore.IsZero() {
-			data-gsxui-calendar-disabled-before={ dayOnly(disabledBefore).Format("2006-01-02") }
+			data-gsxui-calendar-disabled-before={dayOnly(disabledBefore).Format("2006-01-02")}
 		} }
 		{ if !disabledAfter.IsZero() {
-			data-gsxui-calendar-disabled-after={ dayOnly(disabledAfter).Format("2006-01-02") }
+			data-gsxui-calendar-disabled-after={dayOnly(disabledAfter).Format("2006-01-02")}
 		} }
 		{ if disabledDatesAttr != "" {
-			data-gsxui-calendar-disabled-dates={ disabledDatesAttr }
+			data-gsxui-calendar-disabled-dates={disabledDatesAttr}
 		} }
 		{ if disabledWeekdaysAttr != "" {
-			data-gsxui-calendar-disabled-weekdays={ disabledWeekdaysAttr }
+			data-gsxui-calendar-disabled-weekdays={disabledWeekdaysAttr}
 		} }
-		data-gsxui-calendar-nav-from-year={ strconv.Itoa(navFromYear) }
-		data-gsxui-calendar-nav-to-year={ strconv.Itoa(navToYear) }
-		{ attrs... } data-gsxui-slot-calendar
+		data-gsxui-calendar-nav-from-year={strconv.Itoa(navFromYear)}
+		data-gsxui-calendar-nav-to-year={strconv.Itoa(navToYear)}
+		{ attrs... }
+		data-gsxui-slot-calendar
 	>
 		<div data-gsxui-slot-calendar-months>
-		<nav data-gsxui-slot-calendar-nav>
-			<button
-				type="button"
-				data-variant="ghost"
-				data-size="icon"
-				data-gsxui-calendar-prev
-				aria-label="Previous month"
-				{ if prevDisabled {
-					aria-disabled="true"
-					tabindex="-1"
-				} }
-				data-gsxui-slot-calendar-previous data-gsxui-slot-calendar-nav-button data-gsxui-slot-button
-			>
-				<icon.ChevronLeft/>
-			</button>
-			<button
-				type="button"
-				data-variant="ghost"
-				data-size="icon"
-				data-gsxui-calendar-next
-				aria-label="Next month"
-				{ if nextDisabled {
-					aria-disabled="true"
-					tabindex="-1"
-				} }
-				data-gsxui-slot-calendar-next data-gsxui-slot-calendar-nav-button data-gsxui-slot-button
-			>
-				<icon.ChevronRight/>
-			</button>
-		</nav>
-		<div data-gsxui-slot-calendar-month-caption>
-			{ if dropdownLayout {
-				<div data-gsxui-slot-calendar-dropdowns>
-					<NativeSelect data-gsxui-calendar-month-select aria-label="Month">
-						{ for i := 0; i < 12; i++ {
-							<NativeSelectOption value={ strconv.Itoa(i) } selected={ i == int(monthOfYear)-1 } data-gsxui-calendar-month-option>
-								{ calendarMonthNames[i] }
-							</NativeSelectOption>
-						} }
-					</NativeSelect>
-					<NativeSelect data-gsxui-calendar-year-select aria-label="Year">
-						{ for y := navFromYear; y <= navToYear; y++ {
-							<NativeSelectOption value={ strconv.Itoa(y) } selected={ y == year } data-gsxui-calendar-year-option>
-								{ strconv.Itoa(y) }
-							</NativeSelectOption>
-						} }
-					</NativeSelect>
-				</div>
-				<span
-					data-gsxui-calendar-caption
-					role="status"
-					aria-live="polite"
-					data-caption-layout="dropdown"
-					data-gsxui-slot-calendar-caption
-				>{ captionText }</span>
-			} else {
-				<span
-					data-gsxui-calendar-caption
-					role="status"
-					aria-live="polite"
-					data-caption-layout="label"
-					data-gsxui-slot-calendar-caption
-				>{ captionText }</span>
-			} }
-		</div>
-		<table
-			data-gsxui-calendar-grid
-			role="grid"
-			aria-label={ captionText }
-			{ if multiselectable {
-				aria-multiselectable="true"
-			} }
-			data-gsxui-slot-calendar-grid
-		>
-			<thead aria-hidden="true">
-				<tr data-gsxui-slot-calendar-weekdays>
-					{ for i := 0; i < 7; i++ {
-						{{ wd := time.Weekday((int(weekStartsOn) + i) % 7) }}
-						<th scope="col" data-gsxui-slot-calendar-weekday>{ wd.String()[:2] }</th>
+			<nav data-gsxui-slot-calendar-nav>
+				<button
+					type="button"
+					data-variant="ghost"
+					data-size="icon"
+					data-gsxui-calendar-prev
+					aria-label="Previous month"
+					{ if prevDisabled {
+						aria-disabled="true"
+						tabindex="-1"
 					} }
-				</tr>
-			</thead>
-			<tbody>
-				{ for week := 0; week < 6; week++ {
-					<tr data-gsxui-slot-calendar-week>
-						{ for day := 0; day < 7; day++ {
-							{{
-								idx := week*7 + day
-								d := grid[idx]
-								outside := dayOutside(d, year, monthOfYear)
-								// showOutsideDays=false hides the padding days
-								// without removing their cells (upstream's
-								// modifiers.hidden — see the calendar-day rule's
-								// comment). A hidden day is always an outside
-								// day, so it is never the tab stop
-								// (firstFocusableIndex only ever returns an
-								// in-month index); the `&& !hiddenDay` term
-								// below is belt-and-braces, and its twin in
-								// calendar.js's repaint says the same thing.
-								// Hidden days are deliberately OUT of the
-								// roving sequence, the opposite of the call
-								// made for DISABLED days (which stay in it) —
-								// an invisible but focusable button is a
-								// screen-reader trap, whereas a visible
-								// disabled one is a legitimate stop.
-								hiddenDay := outside && !showOutsideDays
-								isToday := d.Year() == today.Year() && d.Month() == today.Month() && d.Day() == today.Day()
-								tabindex := "-1"
-								if idx == focusIdx && !hiddenDay {
-									tabindex = "0"
-								}
-								dayText := ""
-								if !hiddenDay {
-									dayText = strconv.Itoa(d.Day())
-								}
-								dayDis := dayDisabled(d, disabledBefore, disabledAfter, disabledDates, disabledWeekdays)
-								tabStopDisabled := dayDis && tabindex == "0" && !hiddenDay
-								daySel := daySelected(mode, d, selected)
-								rStart, rMiddle, rEnd := rangeFlags(mode, d, from, to)
-								selSingle := daySel && !rStart && !rMiddle && !rEnd
-								cellSel := daySel || rStart || rMiddle || rEnd
-							}}
-							<td
-								role="gridcell"
-								data-date={ d.Format("2006-01-02") }
-								data-outside={ gsx.Toggle(outside) }
-								data-hidden={ gsx.Toggle(hiddenDay) }
-								data-today={ gsx.Toggle(isToday) }
-								data-disabled={ gsx.Toggle(dayDis) }
-								{ if cellSel {
-									data-selected="true"
-								} }
-								aria-selected={ boolStr(cellSel) }
-								data-gsxui-slot-calendar-day
-							>
-								<button
-									type="button"
-									data-variant="ghost"
-									data-size="icon"
-									data-gsxui-calendar-day
-									data-date={ d.Format("2006-01-02") }
-									tabindex={ tabindex }
-									aria-label={ d.Format("Monday, January 2, 2006") }
-									{ if hiddenDay {
-										aria-hidden="true"
-									} }
-									{ if tabStopDisabled {
-										aria-disabled="true"
-									} }
-									data-selected-single={ boolStr(selSingle) }
-									data-range-start={ boolStr(rStart) }
-									data-range-middle={ boolStr(rMiddle) }
-									data-range-end={ boolStr(rEnd) }
-									disabled={ (dayDis && !tabStopDisabled) || hiddenDay }
-									data-gsxui-slot-calendar-day-button data-gsxui-slot-button
+					data-gsxui-slot-calendar-previous
+					data-gsxui-slot-calendar-nav-button
+					data-gsxui-slot-button
+				>
+					<icon.ChevronLeft/>
+				</button>
+				<button
+					type="button"
+					data-variant="ghost"
+					data-size="icon"
+					data-gsxui-calendar-next
+					aria-label="Next month"
+					{ if nextDisabled {
+						aria-disabled="true"
+						tabindex="-1"
+					} }
+					data-gsxui-slot-calendar-next
+					data-gsxui-slot-calendar-nav-button
+					data-gsxui-slot-button
+				>
+					<icon.ChevronRight/>
+				</button>
+			</nav>
+			<div data-gsxui-slot-calendar-month-caption>
+				{ if dropdownLayout {
+					<div data-gsxui-slot-calendar-dropdowns>
+						<NativeSelect data-gsxui-calendar-month-select aria-label="Month">
+							{ for i := 0; i < 12; i++ {
+								<NativeSelectOption
+									value={strconv.Itoa(i)}
+									selected={i == int(monthOfYear)-1}
+									data-gsxui-calendar-month-option
 								>
-									{ dayText }
-								</button>
-							</td>
+									{ calendarMonthNames[i] }
+								</NativeSelectOption>
+							} }
+						</NativeSelect>
+						<NativeSelect data-gsxui-calendar-year-select aria-label="Year">
+							{ for y := navFromYear; y <= navToYear; y++ {
+								<NativeSelectOption value={strconv.Itoa(y)} selected={y == year} data-gsxui-calendar-year-option>
+									{ strconv.Itoa(y) }
+								</NativeSelectOption>
+							} }
+						</NativeSelect>
+					</div>
+					<span
+						data-gsxui-calendar-caption
+						role="status"
+						aria-live="polite"
+						data-caption-layout="dropdown"
+						data-gsxui-slot-calendar-caption
+					>
+						{ captionText }
+					</span>
+				} else {
+					<span
+						data-gsxui-calendar-caption
+						role="status"
+						aria-live="polite"
+						data-caption-layout="label"
+						data-gsxui-slot-calendar-caption
+					>
+						{ captionText }
+					</span>
+				} }
+			</div>
+			<table
+				data-gsxui-calendar-grid
+				role="grid"
+				aria-label={captionText}
+				{ if multiselectable {
+					aria-multiselectable="true"
+				} }
+				data-gsxui-slot-calendar-grid
+			>
+				<thead aria-hidden="true">
+					<tr data-gsxui-slot-calendar-weekdays>
+						{ for i := 0; i < 7; i++ {
+							{{ wd := time.Weekday((int(weekStartsOn) + i) % 7) }}
+							<th scope="col" data-gsxui-slot-calendar-weekday>{ wd.String()[:2] }</th>
 						} }
 					</tr>
-				} }
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					{ for week := 0; week < 6; week++ {
+						<tr data-gsxui-slot-calendar-week>
+							{ for day := 0; day < 7; day++ {
+								{{
+									idx := week*7 + day
+									d := grid[idx]
+									outside := dayOutside(d, year, monthOfYear)
+									// showOutsideDays=false hides the padding days
+									// without removing their cells (upstream's
+									// modifiers.hidden — see the calendar-day rule's
+									// comment). A hidden day is always an outside
+									// day, so it is never the tab stop
+									// (firstFocusableIndex only ever returns an
+									// in-month index); the `&& !hiddenDay` term
+									// below is belt-and-braces, and its twin in
+									// calendar.js's repaint says the same thing.
+									// Hidden days are deliberately OUT of the
+									// roving sequence, the opposite of the call
+									// made for DISABLED days (which stay in it) —
+									// an invisible but focusable button is a
+									// screen-reader trap, whereas a visible
+									// disabled one is a legitimate stop.
+									hiddenDay := outside && !showOutsideDays
+									isToday := d.Year() == today.Year() && d.Month() == today.Month() && d.Day() == today.Day()
+									tabindex := "-1"
+									if idx == focusIdx && !hiddenDay {
+										tabindex = "0"
+									}
+									dayText := ""
+									if !hiddenDay {
+										dayText = strconv.Itoa(d.Day())
+									}
+									dayDis := dayDisabled(d, disabledBefore, disabledAfter, disabledDates, disabledWeekdays)
+									tabStopDisabled := dayDis && tabindex == "0" && !hiddenDay
+									daySel := daySelected(mode, d, selected)
+									rStart, rMiddle, rEnd := rangeFlags(mode, d, from, to)
+									selSingle := daySel && !rStart && !rMiddle && !rEnd
+									cellSel := daySel || rStart || rMiddle || rEnd
+								}}
+								<td
+									role="gridcell"
+									data-date={d.Format("2006-01-02")}
+									data-outside={gsx.Toggle(outside)}
+									data-hidden={gsx.Toggle(hiddenDay)}
+									data-today={gsx.Toggle(isToday)}
+									data-disabled={gsx.Toggle(dayDis)}
+									{ if cellSel {
+										data-selected="true"
+									} }
+									aria-selected={boolStr(cellSel)}
+									data-gsxui-slot-calendar-day
+								>
+									<button
+										type="button"
+										data-variant="ghost"
+										data-size="icon"
+										data-gsxui-calendar-day
+										data-date={d.Format("2006-01-02")}
+										tabindex={tabindex}
+										aria-label={d.Format("Monday, January 2, 2006")}
+										{ if hiddenDay {
+											aria-hidden="true"
+										} }
+										{ if tabStopDisabled {
+											aria-disabled="true"
+										} }
+										data-selected-single={boolStr(selSingle)}
+										data-range-start={boolStr(rStart)}
+										data-range-middle={boolStr(rMiddle)}
+										data-range-end={boolStr(rEnd)}
+										disabled={(dayDis && !tabStopDisabled) || hiddenDay}
+										data-gsxui-slot-calendar-day-button
+										data-gsxui-slot-button
+									>
+										{ dayText }
+									</button>
+								</td>
+							} }
+						</tr>
+					} }
+				</tbody>
+			</table>
 		</div>
 		{ if showHiddenSingle {
-			<input type="hidden" name={ name } value={ hiddenSingleValue }/>
+			<input type="hidden" name={name} value={hiddenSingleValue}/>
 		} }
 		{ if showHiddenMultiple {
 			{ for _, value := range multipleHiddenValues {
-				<input type="hidden" name={ name } value={ value } data-gsxui-calendar-hidden-multiple/>
+				<input type="hidden" name={name} value={value} data-gsxui-calendar-hidden-multiple/>
 			} }
 		} }
 		{ if showHiddenFrom {
-			<input type="hidden" name={ name } value={ hiddenFromValue }/>
+			<input type="hidden" name={name} value={hiddenFromValue}/>
 		} }
 		{ if showHiddenTo {
-			<input type="hidden" name={ name + "-to" } value={ hiddenToValue } data-gsxui-calendar-hidden-to/>
+			<input type="hidden" name={name + "-to"} value={hiddenToValue} data-gsxui-calendar-hidden-to/>
 		} }
 	</div>
 }

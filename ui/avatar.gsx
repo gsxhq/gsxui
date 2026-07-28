@@ -22,14 +22,16 @@ component AvatarImage(src string, alt string, attrs gsx.Attrs) {
 		data-gsxui-avatar-image
 		src={src}
 		alt={alt}
-		{ attrs... } data-gsxui-slot-avatar-image
+		{ attrs... }
+		data-gsxui-slot-avatar-image
 	/>
 }
 
 component AvatarFallback(children gsx.Node, attrs gsx.Attrs) {
 	<span
 		data-gsxui-avatar-fallback
-		{ attrs... } data-gsxui-slot-avatar-fallback
+		{ attrs... }
+		data-gsxui-slot-avatar-fallback
 	>
 		{ children }
 	</span>

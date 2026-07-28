@@ -81,7 +81,8 @@ component SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) {
 		data-state="closed"
 		data-size={size |> default("default")}
 		data-placeholder
-		{ attrs... } data-gsxui-slot-select-trigger
+		{ attrs... }
+		data-gsxui-slot-select-trigger
 	>
 		{ children }
 		<icon.ChevronDown/>
@@ -112,7 +113,8 @@ component SelectContent(children gsx.Node, attrs gsx.Attrs) {
 		tabindex="-1"
 		data-state="closed"
 		data-side="bottom"
-		{ attrs... } data-gsxui-slot-select-content
+		{ attrs... }
+		data-gsxui-slot-select-content
 	>
 		{ children }
 	</div>
@@ -159,7 +161,8 @@ component SelectItem(value string, selected bool, disabled bool, children gsx.No
 			data-disabled="true"
 			aria-disabled="true"
 		} }
-		{ attrs... } data-gsxui-slot-select-item
+		{ attrs... }
+		data-gsxui-slot-select-item
 	>
 		<span data-gsxui-slot-select-item-indicator>
 			<icon.Check/>

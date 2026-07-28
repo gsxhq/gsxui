@@ -18,7 +18,14 @@ var FormDefaultMonth = time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 // proves both restorations survive one native reset.
 component Form() {
 	<form class="flex max-w-xs flex-col gap-4">
-		<ui.Calendar mode="single" month={FormDefaultMonth} name="date" weekStartsOn={time.Sunday} showOutsideDays={true} captionLayout="label"/>
+		<ui.Calendar
+			mode="single"
+			month={FormDefaultMonth}
+			name="date"
+			weekStartsOn={time.Sunday}
+			showOutsideDays={true}
+			captionLayout="label"
+		/>
 		<div class="flex flex-col gap-2">
 			<ui.Label for="calendar-form-framework">Framework</ui.Label>
 			<ui.Combobox name="framework" value="">

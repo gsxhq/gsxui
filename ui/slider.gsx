@@ -79,6 +79,7 @@ component Slider(value float64, min float64, max float64, step float64, attrs gs
 		step={stepV}
 		value={value}
 		style=css`--fill: @{fill}%`
-		{ attrs... } data-gsxui-slot-slider
+		{ attrs... }
+		data-gsxui-slot-slider
 	/>
 }

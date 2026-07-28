@@ -108,7 +108,8 @@ component ResizablePanelGroup(orientation string, children gsx.Node, attrs gsx.A
 	<div
 		data-gsxui-resizable
 		aria-orientation={orientation |> default("horizontal")}
-		{ attrs... } data-gsxui-slot-resizable-panel-group
+		{ attrs... }
+		data-gsxui-slot-resizable-panel-group
 	>
 		{ children }
 	</div>
@@ -143,7 +144,8 @@ component ResizablePanel(defaultSize string, minSize string, maxSize string, chi
 			data-max-size={maxSize}
 		} }
 		style=css`flex: @{grow} 1 0px`
-		{ attrs... } data-gsxui-slot-resizable-panel
+		{ attrs... }
+		data-gsxui-slot-resizable-panel
 	>
 		{ children }
 	</div>
@@ -201,7 +203,8 @@ component ResizableHandle(orientation string, withHandle bool, attrs gsx.Attrs) 
 		role="separator"
 		aria-orientation={handleOrientation}
 		tabindex="0"
-		{ attrs... } data-gsxui-slot-resizable-handle
+		{ attrs... }
+		data-gsxui-slot-resizable-handle
 	>
 		{ if withHandle {
 			<div data-gsxui-slot-resizable-handle-grip></div>

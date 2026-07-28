@@ -13,7 +13,8 @@ component PopoverTrigger(children gsx.Node, attrs gsx.Attrs) {
 		data-gsxui-popover-trigger
 		type="button"
 		aria-expanded="false"
-		{ attrs... } data-gsxui-slot-popover-trigger
+		{ attrs... }
+		data-gsxui-slot-popover-trigger
 	>
 		{ children }
 	</button>
@@ -26,7 +27,8 @@ component PopoverContent(children gsx.Node, attrs gsx.Attrs) {
 		data-state="closed"
 		data-side="bottom"
 		tabindex="-1"
-		{ attrs... } data-gsxui-slot-popover-content
+		{ attrs... }
+		data-gsxui-slot-popover-content
 	>
 		{ children }
 	</div>

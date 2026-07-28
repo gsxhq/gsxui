@@ -60,11 +60,11 @@ func _gsxrenderButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-button"})
 		_gsxgw.BoolAttr("data-gsxui-slot-button", true)
 		_gsxgw.S(">")
-//line button.gsx:24:4
+//line button.gsx:25:4
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</a>")
 	} else {
-//line button.gsx:27:3
+//line button.gsx:28:3
 		_gsxgw.S("<button")
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
@@ -87,7 +87,7 @@ func _gsxrenderButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-button"})
 		_gsxgw.BoolAttr("data-gsxui-slot-button", true)
 		_gsxgw.S(">")
-//line button.gsx:34:4
+//line button.gsx:36:4
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 	}

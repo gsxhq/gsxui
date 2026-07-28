@@ -48,7 +48,8 @@ component NavigationMenu(children gsx.Node, attrs gsx.Attrs) {
 	<nav
 		data-gsxui-navigation-menu
 		data-viewport="false"
-		{ attrs... } data-gsxui-slot-navigation-menu
+		{ attrs... }
+		data-gsxui-slot-navigation-menu
 	>
 		{ children }
 	</nav>
@@ -122,10 +123,10 @@ component NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 		type="button"
 		aria-expanded="false"
 		data-state="closed"
-		{ attrs... } data-gsxui-slot-navigation-menu-trigger
+		{ attrs... }
+		data-gsxui-slot-navigation-menu-trigger
 	>
-		{ children }
-		{ " " }
+		{ children }{ " " }
 		<icon.ChevronDown data-gsxui-navigation-menu-trigger-icon data-gsxui-slot-navigation-menu-trigger-icon/>
 	</button>
 }
@@ -199,7 +200,8 @@ component NavigationMenuContent(children gsx.Node, attrs gsx.Attrs) {
 		popover="manual"
 		data-state="closed"
 		data-side="bottom"
-		{ attrs... } data-gsxui-slot-navigation-menu-content
+		{ attrs... }
+		data-gsxui-slot-navigation-menu-content
 	>
 		{ children }
 	</div>
@@ -280,7 +282,8 @@ component NavigationMenuIndicator(attrs gsx.Attrs) {
 	<div
 		data-gsxui-navigation-menu-indicator
 		data-state="hidden"
-		{ attrs... } data-gsxui-slot-navigation-menu-indicator
+		{ attrs... }
+		data-gsxui-slot-navigation-menu-indicator
 	>
 		<div data-gsxui-slot-navigation-menu-indicator-arrow></div>
 	</div>

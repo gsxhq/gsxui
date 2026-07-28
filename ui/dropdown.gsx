@@ -63,7 +63,8 @@ component DropdownMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 		type="button"
 		aria-haspopup="menu"
 		aria-expanded="false"
-		{ attrs... } data-gsxui-slot-dropdown-menu-trigger
+		{ attrs... }
+		data-gsxui-slot-dropdown-menu-trigger
 	>
 		{ children }
 	</button>
@@ -83,7 +84,8 @@ component DropdownMenuContent(children gsx.Node, attrs gsx.Attrs) {
 		tabindex="-1"
 		data-state="closed"
 		data-side="bottom"
-		{ attrs... } data-gsxui-slot-dropdown-menu-content
+		{ attrs... }
+		data-gsxui-slot-dropdown-menu-content
 	>
 		{ children }
 	</div>
@@ -99,7 +101,8 @@ component DropdownMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 		data-variant={variant |> default("default")}
 		role="menuitem"
 		tabindex="-1"
-		{ attrs... } data-gsxui-slot-dropdown-menu-item
+		{ attrs... }
+		data-gsxui-slot-dropdown-menu-item
 	>
 		{ children }
 	</div>
@@ -152,7 +155,8 @@ component DropdownMenuCheckboxItem(checked bool, value string, children gsx.Node
 			data-state="unchecked"
 		} }
 		tabindex="-1"
-		{ attrs... } data-gsxui-slot-dropdown-menu-checkbox-item
+		{ attrs... }
+		data-gsxui-slot-dropdown-menu-checkbox-item
 	>
 		<span data-gsxui-dropdown-checkbox-indicator data-gsxui-slot-dropdown-menu-checkbox-item-indicator>
 			<icon.Check/>
@@ -169,7 +173,13 @@ component DropdownMenuCheckboxItem(checked bool, value string, children gsx.Node
 // dropdown.js uses to scope "clear every OTHER item in this group" to this
 // group alone, not every radio item on the page.
 component DropdownMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-dropdown-radio-group role="group" data-value={value} { attrs... } data-gsxui-slot-dropdown-menu-radio-group>
+	<div
+		data-gsxui-dropdown-radio-group
+		role="group"
+		data-value={value}
+		{ attrs... }
+		data-gsxui-slot-dropdown-menu-radio-group
+	>
 		{ children }
 	</div>
 }
@@ -196,7 +206,8 @@ component DropdownMenuRadioItem(checked bool, value string, children gsx.Node, a
 			data-state="unchecked"
 		} }
 		tabindex="-1"
-		{ attrs... } data-gsxui-slot-dropdown-menu-radio-item
+		{ attrs... }
+		data-gsxui-slot-dropdown-menu-radio-item
 	>
 		<span data-gsxui-dropdown-radio-indicator data-gsxui-slot-dropdown-menu-radio-item-indicator>
 			<icon.Circle/>
@@ -253,7 +264,8 @@ component DropdownMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 		aria-expanded="false"
 		data-state="closed"
 		tabindex="-1"
-		{ attrs... } data-gsxui-slot-dropdown-menu-sub-trigger
+		{ attrs... }
+		data-gsxui-slot-dropdown-menu-sub-trigger
 	>
 		{ children }
 		<icon.ChevronRight/>
@@ -290,7 +302,8 @@ component DropdownMenuSubContent(children gsx.Node, attrs gsx.Attrs) {
 		tabindex="-1"
 		data-state="closed"
 		data-side="right"
-		{ attrs... } data-gsxui-slot-dropdown-menu-sub-content
+		{ attrs... }
+		data-gsxui-slot-dropdown-menu-sub-content
 	>
 		{ children }
 	</div>

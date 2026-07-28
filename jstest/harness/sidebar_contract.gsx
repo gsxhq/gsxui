@@ -68,7 +68,9 @@ component SidebarContractMenu() {
 }
 
 component SidebarTokenFixture() {
-	<div style="--sidebar:rgb(1,2,3);--sidebar-foreground:rgb(4,5,6);--sidebar-primary:rgb(7,8,9);--sidebar-primary-foreground:rgb(10,11,12);--sidebar-accent:rgb(13,14,15);--sidebar-accent-foreground:rgb(16,17,18);--sidebar-border:rgb(19,20,21);--sidebar-ring:rgb(22,23,24)">
+	<div
+		style="--sidebar:rgb(1,2,3);--sidebar-foreground:rgb(4,5,6);--sidebar-primary:rgb(7,8,9);--sidebar-primary-foreground:rgb(10,11,12);--sidebar-accent:rgb(13,14,15);--sidebar-accent-foreground:rgb(16,17,18);--sidebar-border:rgb(19,20,21);--sidebar-ring:rgb(22,23,24)"
+	>
 		<SidebarContractFrame open={true}>
 			<ui.SidebarHeader>
 				<ui.SidebarSeparator/>
@@ -95,7 +97,7 @@ component SidebarTokenFixture() {
 component SidebarCallerFixture() {
 	<SidebarContractFrame
 		open={true}
-		sidebarAttrs={ gsx.Attrs{{Key: "class", Value: "w-80"}} }
+		sidebarAttrs={gsx.Attrs{{Key: "class", Value: "w-80"}}}
 	>
 		<ui.SidebarHeader>
 			<ui.SidebarInput class="h-12" aria-label="Caller input"/>

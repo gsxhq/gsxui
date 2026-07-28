@@ -75,68 +75,68 @@ func EmptyMedia(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node 
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-empty-icon"})
 		_gsxgw.BoolAttr("data-gsxui-slot-empty-icon", true)
 		_gsxgw.S(">")
-//line empty.gsx:30:3
+//line empty.gsx:31:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line empty.gsx:34:1
+//line empty.gsx:35:1
 func EmptyTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line empty.gsx:35:2
+//line empty.gsx:36:2
 		_gsxgw.S("<div")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-empty-title"})
 		_gsxgw.BoolAttr("data-gsxui-slot-empty-title", true)
 		_gsxgw.S(">")
-//line empty.gsx:36:3
+//line empty.gsx:37:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line empty.gsx:40:1
+//line empty.gsx:41:1
 // EmptyDescription renders a <div>, matching shadcn's own actual element —
 // its TypeScript prop type reads React.ComponentProps<"p"> but the JSX it
 // returns is a <div>, the same shipped-type/element mismatch already noted
 // for Kbd/KbdGroup (see docs/jsx-parity.md ## kbd); ported verbatim, tag
 // included, per the token-for-token rule.
 
-//line empty.gsx:45:1
+//line empty.gsx:46:1
 func EmptyDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line empty.gsx:46:2
+//line empty.gsx:47:2
 		_gsxgw.S("<div")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-empty-description"})
 		_gsxgw.BoolAttr("data-gsxui-slot-empty-description", true)
 		_gsxgw.S(">")
-//line empty.gsx:47:3
+//line empty.gsx:48:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line empty.gsx:51:1
+//line empty.gsx:52:1
 func EmptyContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line empty.gsx:52:2
+//line empty.gsx:53:2
 		_gsxgw.S("<div")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-empty-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-empty-content", true)
 		_gsxgw.S(">")
-//line empty.gsx:53:3
+//line empty.gsx:54:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

@@ -33,31 +33,31 @@ func Basic() _gsxrt.Node {
 //line basic.gsx:23:4
 				_gsxgw.Node(ctx, ui.DropdownMenuGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:24:4
+//line basic.gsx:24:5
 					_gsxgw.Node(ctx, ui.DropdownMenuLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("My Account")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:25:4
+//line basic.gsx:25:5
 					_gsxgw.Node(ctx, ui.DropdownMenuSeparator(nil))
-//line basic.gsx:26:4
+//line basic.gsx:26:5
 					_gsxgw.Node(ctx, ui.DropdownMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Profile")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:27:4
+//line basic.gsx:27:5
 					_gsxgw.Node(ctx, ui.DropdownMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Billing")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:28:4
+//line basic.gsx:28:5
 					_gsxgw.Node(ctx, ui.DropdownMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Settings ")
-//line basic.gsx:28:34
+//line basic.gsx:29:15
 						_gsxgw.Node(ctx, ui.DropdownMenuShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⌘,")

@@ -169,7 +169,8 @@ component Menubar(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-gsxui-menubar
 		role="menubar"
-		{ attrs... } data-gsxui-slot-menubar
+		{ attrs... }
+		data-gsxui-slot-menubar
 	>
 		{ children }
 	</div>
@@ -209,7 +210,8 @@ component MenubarTrigger(children gsx.Node, attrs gsx.Attrs) {
 		aria-haspopup="menu"
 		aria-expanded="false"
 		data-state="closed"
-		{ attrs... } data-gsxui-slot-menubar-trigger
+		{ attrs... }
+		data-gsxui-slot-menubar-trigger
 	>
 		{ children }
 	</button>
@@ -243,7 +245,8 @@ component MenubarContent(children gsx.Node, attrs gsx.Attrs) {
 		tabindex="-1"
 		data-state="closed"
 		data-side="bottom"
-		{ attrs... } data-gsxui-slot-menubar-content
+		{ attrs... }
+		data-gsxui-slot-menubar-content
 	>
 		{ children }
 	</div>
@@ -261,7 +264,8 @@ component MenubarItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 		data-variant={variant |> default("default")}
 		role="menuitem"
 		tabindex="-1"
-		{ attrs... } data-gsxui-slot-menubar-item
+		{ attrs... }
+		data-gsxui-slot-menubar-item
 	>
 		{ children }
 	</div>
@@ -308,7 +312,8 @@ component MenubarCheckboxItem(checked bool, value string, children gsx.Node, att
 			data-state="unchecked"
 		} }
 		tabindex="-1"
-		{ attrs... } data-gsxui-slot-menubar-checkbox-item
+		{ attrs... }
+		data-gsxui-slot-menubar-checkbox-item
 	>
 		<span data-gsxui-menubar-checkbox-indicator data-gsxui-slot-menubar-checkbox-item-indicator>
 			<icon.Check/>
@@ -350,7 +355,8 @@ component MenubarRadioItem(checked bool, value string, children gsx.Node, attrs 
 			data-state="unchecked"
 		} }
 		tabindex="-1"
-		{ attrs... } data-gsxui-slot-menubar-radio-item
+		{ attrs... }
+		data-gsxui-slot-menubar-radio-item
 	>
 		<span data-gsxui-menubar-radio-indicator data-gsxui-slot-menubar-radio-item-indicator>
 			<icon.Circle/>
@@ -439,7 +445,8 @@ component MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 		aria-expanded="false"
 		data-state="closed"
 		tabindex="-1"
-		{ attrs... } data-gsxui-slot-menubar-sub-trigger
+		{ attrs... }
+		data-gsxui-slot-menubar-sub-trigger
 	>
 		{ children }
 		<icon.ChevronRight/>
@@ -467,7 +474,8 @@ component MenubarSubContent(children gsx.Node, attrs gsx.Attrs) {
 		tabindex="-1"
 		data-state="closed"
 		data-side="right"
-		{ attrs... } data-gsxui-slot-menubar-sub-content
+		{ attrs... }
+		data-gsxui-slot-menubar-sub-content
 	>
 		{ children }
 	</div>

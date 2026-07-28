@@ -53,18 +53,18 @@ func DrawerTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-drawer-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-drawer-trigger", true)
 		_gsxgw.S(">")
-//line drawer.gsx:19:3
+//line drawer.gsx:20:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line drawer.gsx:23:1
+//line drawer.gsx:24:1
 func DrawerContent(direction string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line drawer.gsx:24:2
+//line drawer.gsx:25:2
 		_gsxgw.S("<dialog")
 		if !attrs.Has("data-gsxui-dialog-content") {
 			_gsxgw.BoolAttr("data-gsxui-dialog-content", true)
@@ -83,61 +83,61 @@ func DrawerContent(direction string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 		_gsxgw.BoolAttr("data-gsxui-slot-drawer-content", true)
 		_gsxgw.BoolAttr("data-gsxui-slot-dialog-content", true)
 		_gsxgw.S(">")
-//line drawer.gsx:30:3
+//line drawer.gsx:33:3
 		if direction == "" || direction == "bottom" {
-//line drawer.gsx:31:4
+//line drawer.gsx:34:4
 			_gsxgw.S("<div")
 			_gsxgw.BoolAttr("data-gsxui-slot-drawer-handle", true)
 			_gsxgw.S("></div>")
 		}
-//line drawer.gsx:33:3
+//line drawer.gsx:36:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</dialog>")
 		return _gsxgw.Err()
 	})
 }
 
-//line drawer.gsx:37:1
+//line drawer.gsx:40:1
 func DrawerHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line drawer.gsx:38:2
+//line drawer.gsx:41:2
 		_gsxgw.S("<div")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-drawer-header"})
 		_gsxgw.BoolAttr("data-gsxui-slot-drawer-header", true)
 		_gsxgw.S(">")
-//line drawer.gsx:38:50
+//line drawer.gsx:41:50
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line drawer.gsx:41:1
+//line drawer.gsx:44:1
 func DrawerFooter(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line drawer.gsx:42:2
+//line drawer.gsx:45:2
 		_gsxgw.S("<div")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-drawer-footer"})
 		_gsxgw.BoolAttr("data-gsxui-slot-drawer-footer", true)
 		_gsxgw.S(">")
-//line drawer.gsx:42:50
+//line drawer.gsx:45:50
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line drawer.gsx:45:1
+//line drawer.gsx:48:1
 func DrawerTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line drawer.gsx:46:2
+//line drawer.gsx:49:2
 		_gsxgw.S("<h2")
 		if !attrs.Has("data-gsxui-dialog-title") {
 			_gsxgw.BoolAttr("data-gsxui-dialog-title", true)
@@ -147,18 +147,18 @@ func DrawerTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-drawer-title"})
 		_gsxgw.BoolAttr("data-gsxui-slot-drawer-title", true)
 		_gsxgw.S(">")
-//line drawer.gsx:46:72
+//line drawer.gsx:49:72
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</h2>")
 		return _gsxgw.Err()
 	})
 }
 
-//line drawer.gsx:49:1
+//line drawer.gsx:52:1
 func DrawerDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line drawer.gsx:50:2
+//line drawer.gsx:53:2
 		_gsxgw.S("<p")
 		if !attrs.Has("data-gsxui-dialog-description") {
 			_gsxgw.BoolAttr("data-gsxui-dialog-description", true)
@@ -168,18 +168,18 @@ func DrawerDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-drawer-description"})
 		_gsxgw.BoolAttr("data-gsxui-slot-drawer-description", true)
 		_gsxgw.S(">")
-//line drawer.gsx:50:83
+//line drawer.gsx:53:83
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</p>")
 		return _gsxgw.Err()
 	})
 }
 
-//line drawer.gsx:53:1
+//line drawer.gsx:56:1
 func DrawerClose(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line drawer.gsx:54:2
+//line drawer.gsx:57:2
 		_gsxgw.S("<button")
 		if !attrs.Has("data-gsxui-dialog-close") {
 			_gsxgw.BoolAttr("data-gsxui-dialog-close", true)
@@ -192,7 +192,7 @@ func DrawerClose(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-drawer-close"})
 		_gsxgw.BoolAttr("data-gsxui-slot-drawer-close", true)
 		_gsxgw.S(">")
-//line drawer.gsx:54:90
+//line drawer.gsx:57:90
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()

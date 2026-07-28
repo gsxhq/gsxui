@@ -85,14 +85,14 @@ func TabsList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-tabs-list"})
 		_gsxgw.BoolAttr("data-gsxui-slot-tabs-list", true)
 		_gsxgw.S(">")
-//line tabs.gsx:46:3
+//line tabs.gsx:47:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line tabs.gsx:50:1
+//line tabs.gsx:51:1
 // TabsTrigger's selected bool is the explicit, server-visible stand-in for
 // "does my value match the root's" — the caller (which already has both
 // values in scope when building the tree) resolves the comparison; this
@@ -100,18 +100,18 @@ func TabsList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // inactive state, matching a caller who forgets to pass it — never
 // accidentally active.
 
-//line tabs.gsx:56:1
+//line tabs.gsx:57:1
 func TabsTrigger(value string, selected bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 		var _gsxnum [32]byte
-//line tabs.gsx:57:2
+//line tabs.gsx:58:2
 		state := "inactive"
 		tabindex := -1
 		if selected {
 			state, tabindex = "active", 0
 		}
-//line tabs.gsx:64:2
+//line tabs.gsx:65:2
 		_gsxgw.S("<button")
 		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"button\"")
@@ -147,27 +147,27 @@ func TabsTrigger(value string, selected bool, children gsx.Node, attrs gsx.Attrs
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-tabs-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-tabs-trigger", true)
 		_gsxgw.S(">")
-//line tabs.gsx:74:3
+//line tabs.gsx:76:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line tabs.gsx:78:1
+//line tabs.gsx:80:1
 // TabsContent's selected bool mirrors TabsTrigger's — same value-comparison
 // contract, same zero-value-is-inactive default.
 
-//line tabs.gsx:80:1
+//line tabs.gsx:82:1
 func TabsContent(value string, selected bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line tabs.gsx:81:2
+//line tabs.gsx:83:2
 		state := "inactive"
 		if selected {
 			state = "active"
 		}
-//line tabs.gsx:87:2
+//line tabs.gsx:89:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"tabpanel\"")
@@ -190,7 +190,7 @@ func TabsContent(value string, selected bool, children gsx.Node, attrs gsx.Attrs
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-tabs-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-tabs-content", true)
 		_gsxgw.S(">")
-//line tabs.gsx:94:3
+//line tabs.gsx:97:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

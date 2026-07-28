@@ -191,14 +191,14 @@ func Menubar(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar", true)
 		_gsxgw.S(">")
-//line menubar.gsx:174:3
+//line menubar.gsx:175:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line menubar.gsx:178:1
+//line menubar.gsx:179:1
 // MenubarMenu is the non-rendering root pairing ONE MenubarTrigger with its
 // own MenubarContent — layout-neutral (class="contents", same idiom as
 // DropdownMenu's own root) so the pair sits inline in the bar's normal flex
@@ -209,11 +209,11 @@ func Menubar(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // scope roving tabindex and open-follows-hover coordinate across every
 // MenubarMenu's trigger.
 
-//line menubar.gsx:187:1
+//line menubar.gsx:188:1
 func MenubarMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line menubar.gsx:188:2
+//line menubar.gsx:189:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-gsxui-menubar-menu") {
 			_gsxgw.BoolAttr("data-gsxui-menubar-menu", true)
@@ -223,14 +223,14 @@ func MenubarMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-menu"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-menu", true)
 		_gsxgw.S(">")
-//line menubar.gsx:188:73
+//line menubar.gsx:189:73
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line menubar.gsx:191:1
+//line menubar.gsx:192:1
 // MenubarTrigger is one pill in the bar. Unlike DropdownMenuTrigger (which
 // carries no class at all — callers style their own button), MenubarTrigger
 // IS the visible, styled control shadcn's own menubar.tsx renders directly
@@ -246,11 +246,11 @@ func MenubarMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // unlike every item-shaped part in this file), unlike DropdownMenuTrigger,
 // which has no such selector to key at all.
 
-//line menubar.gsx:205:1
+//line menubar.gsx:206:1
 func MenubarTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line menubar.gsx:206:2
+//line menubar.gsx:207:2
 		_gsxgw.S("<button")
 		if !attrs.Has("data-gsxui-menubar-trigger") {
 			_gsxgw.BoolAttr("data-gsxui-menubar-trigger", true)
@@ -272,14 +272,14 @@ func MenubarTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-trigger", true)
 		_gsxgw.S(">")
-//line menubar.gsx:214:3
+//line menubar.gsx:216:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line menubar.gsx:218:1
+//line menubar.gsx:220:1
 // MenubarContent renders the popover for one MenubarMenu. popover="auto"
 // gives top layer, light dismiss, and free Esc; data-state is
 // server-rendered "closed" and kept in sync by menubar.js on the toggle
@@ -301,11 +301,11 @@ func MenubarTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // carries, despite new-york-v4's own class omitting
 // data-[state=closed]:animate-out.
 
-//line menubar.gsx:238:1
+//line menubar.gsx:240:1
 func MenubarContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line menubar.gsx:239:2
+//line menubar.gsx:241:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-gsxui-menubar-content") {
 			_gsxgw.BoolAttr("data-gsxui-menubar-content", true)
@@ -330,14 +330,14 @@ func MenubarContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-content", true)
 		_gsxgw.S(">")
-//line menubar.gsx:248:3
+//line menubar.gsx:251:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line menubar.gsx:252:1
+//line menubar.gsx:255:1
 // MenubarItem is byte-identical, modulo the slot-attribute prefix,
 // to DropdownMenuItem's own already-shipped pinned class — the source
 // map's own finding that plain Item is identical across all three menu
@@ -345,11 +345,11 @@ func MenubarContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // dropdown/context-menu's own Item. variant: "" (default) | "destructive".
 // Callers reflect the CSS-only inset axis with data-inset through attrs.
 
-//line menubar.gsx:258:1
+//line menubar.gsx:261:1
 func MenubarItem(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line menubar.gsx:259:2
+//line menubar.gsx:262:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-gsxui-menubar-item") {
 			_gsxgw.BoolAttr("data-gsxui-menubar-item", true)
@@ -370,14 +370,14 @@ func MenubarItem(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-item", true)
 		_gsxgw.S(">")
-//line menubar.gsx:266:3
+//line menubar.gsx:270:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line menubar.gsx:270:1
+//line menubar.gsx:274:1
 // MenubarGroup wraps a set of items for a11y grouping. shadcn's own Group
 // carries no class string at all (source map `## menubar` §1) — role="group"
 // is added here, not in the .tsx, same derived-not-read WAI-ARIA menu
@@ -385,11 +385,11 @@ func MenubarItem(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node
 // data-gsxui-* hook: nothing in menubar.js binds to or scopes by this
 // element, same call as DropdownMenuGroup/ContextMenuGroup.
 
-//line menubar.gsx:276:1
+//line menubar.gsx:280:1
 func MenubarGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line menubar.gsx:277:2
+//line menubar.gsx:281:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"group\"")
@@ -399,14 +399,14 @@ func MenubarGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-group", true)
 		_gsxgw.S(">")
-//line menubar.gsx:277:63
+//line menubar.gsx:281:63
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line menubar.gsx:280:1
+//line menubar.gsx:284:1
 // MenubarCheckboxItem is the shadcn/ui MenubarCheckboxItem. checked is
 // server-rendered (see the file header MECHANISM); value is the item's own
 // identity, stamped as data-value and echoed on menubar.js's gsxui:change
@@ -426,11 +426,11 @@ func MenubarGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // that with dropdown/context-menu/select's own right-side geometry
 // deliberately, for cross-menu-family consistency, not because nova agrees.
 
-//line menubar.gsx:298:1
+//line menubar.gsx:302:1
 func MenubarCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line menubar.gsx:299:2
+//line menubar.gsx:303:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-gsxui-menubar-checkbox-item") {
 			_gsxgw.BoolAttr("data-gsxui-menubar-checkbox-item", true)
@@ -466,22 +466,22 @@ func MenubarCheckboxItem(checked bool, value string, children gsx.Node, attrs gs
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-checkbox-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-checkbox-item", true)
 		_gsxgw.S(">")
-//line menubar.gsx:313:3
+//line menubar.gsx:318:3
 		_gsxgw.S("<span")
 		_gsxgw.BoolAttr("data-gsxui-menubar-checkbox-indicator", true)
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-checkbox-item-indicator", true)
 		_gsxgw.S(">")
-//line menubar.gsx:314:4
+//line menubar.gsx:319:4
 		_gsxgw.Node(ctx, icon.Check())
 		_gsxgw.S("</span>")
-//line menubar.gsx:316:3
+//line menubar.gsx:321:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line menubar.gsx:320:1
+//line menubar.gsx:325:1
 // MenubarRadioGroup wraps a set of MenubarRadioItems. value is the
 // server-rendered current value, stamped as data-value on the root — the
 // same server-rendered-checked contract as CheckboxItem, kept in sync by
@@ -489,11 +489,11 @@ func MenubarCheckboxItem(checked bool, value string, children gsx.Node, attrs gs
 // data-gsxui-menubar-radio-group is the proximity anchor menubar.js uses to
 // scope "clear every OTHER item in this group" to this group alone.
 
-//line menubar.gsx:326:1
+//line menubar.gsx:331:1
 func MenubarRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line menubar.gsx:327:2
+//line menubar.gsx:332:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-gsxui-menubar-radio-group") {
 			_gsxgw.BoolAttr("data-gsxui-menubar-radio-group", true)
@@ -511,14 +511,14 @@ func MenubarRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-radio-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-radio-group", true)
 		_gsxgw.S(">")
-//line menubar.gsx:328:3
+//line menubar.gsx:333:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line menubar.gsx:332:1
+//line menubar.gsx:337:1
 // MenubarRadioItem is the shadcn/ui MenubarRadioItem — same shape/class as
 // CheckboxItem, swapping the check indicator for a filled dot. checked
 // reflects whether THIS item's value equals its MenubarRadioGroup's current
@@ -528,11 +528,11 @@ func MenubarRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 // right-side-indicator override (NOT nova's own left-side menubar value) as
 // MenubarCheckboxItem's own doc comment.
 
-//line menubar.gsx:340:1
+//line menubar.gsx:345:1
 func MenubarRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line menubar.gsx:341:2
+//line menubar.gsx:346:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-gsxui-menubar-radio-item") {
 			_gsxgw.BoolAttr("data-gsxui-menubar-radio-item", true)
@@ -568,51 +568,51 @@ func MenubarRadioItem(checked bool, value string, children gsx.Node, attrs gsx.A
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-radio-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-radio-item", true)
 		_gsxgw.S(">")
-//line menubar.gsx:355:3
+//line menubar.gsx:361:3
 		_gsxgw.S("<span")
 		_gsxgw.BoolAttr("data-gsxui-menubar-radio-indicator", true)
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-radio-item-indicator", true)
 		_gsxgw.S(">")
-//line menubar.gsx:356:4
+//line menubar.gsx:362:4
 		_gsxgw.Node(ctx, icon.Circle())
 		_gsxgw.S("</span>")
-//line menubar.gsx:358:3
+//line menubar.gsx:364:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line menubar.gsx:362:1
+//line menubar.gsx:368:1
 // MenubarLabel supports the same caller-reflected data-inset axis as
 // MenubarItem.
 // text-sm, NOT DropdownMenuLabel's own text-xs: nova's own
 // .cn-menubar-label rule is genuinely text-sm, a real per-component nova
 // value, not a copy of dropdown's own (already-shipped) Label metrics.
 
-//line menubar.gsx:367:1
+//line menubar.gsx:373:1
 func MenubarLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line menubar.gsx:368:2
+//line menubar.gsx:374:2
 		_gsxgw.S("<div")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-label"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-label", true)
 		_gsxgw.S(">")
-//line menubar.gsx:368:50
+//line menubar.gsx:374:50
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line menubar.gsx:371:1
+//line menubar.gsx:377:1
 func MenubarSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line menubar.gsx:372:2
+//line menubar.gsx:378:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"separator\"")
@@ -626,7 +626,7 @@ func MenubarSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line menubar.gsx:375:1
+//line menubar.gsx:381:1
 // The automatic leading margin is KEPT even though nova's own shortcut rule
 // omits it (its focus color, text size, and tracking rule has no automatic
 // margin) — undisclosed until now, not
@@ -638,25 +638,25 @@ func MenubarSeparator(attrs gsx.Attrs) _gsxrt.Node {
 // in this file for it to key off, the same scope call as every other
 // dropdown/context-menu Shortcut in this codebase.
 
-//line menubar.gsx:385:1
+//line menubar.gsx:391:1
 func MenubarShortcut(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line menubar.gsx:386:2
+//line menubar.gsx:392:2
 		_gsxgw.S("<span")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-shortcut"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-shortcut", true)
 		_gsxgw.S(">")
-//line menubar.gsx:387:3
+//line menubar.gsx:393:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()
 	})
 }
 
-//line menubar.gsx:391:1
+//line menubar.gsx:397:1
 // MenubarSub is the non-rendering submenu root — layout-neutral
 // (class="contents", same idiom as MenubarMenu's own root) so its
 // SubTrigger/SubContent children sit inline in the parent content's normal
@@ -666,11 +666,11 @@ func MenubarShortcut(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // check to "the whole sub" — same shape as DropdownMenuSub's own doc
 // comment.
 
-//line menubar.gsx:399:1
+//line menubar.gsx:405:1
 func MenubarSub(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line menubar.gsx:400:2
+//line menubar.gsx:406:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-gsxui-menubar-sub") {
 			_gsxgw.BoolAttr("data-gsxui-menubar-sub", true)
@@ -680,14 +680,14 @@ func MenubarSub(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-sub"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-sub", true)
 		_gsxgw.S(">")
-//line menubar.gsx:400:71
+//line menubar.gsx:406:71
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line menubar.gsx:403:1
+//line menubar.gsx:409:1
 // MenubarSubTrigger opens/closes its sibling MenubarSubContent (menubar.js:
 // pointerenter, ArrowRight, click). aria-haspopup/aria-expanded are
 // server-rendered closed (derived-not-read ARIA anatomy, source map `##
@@ -720,11 +720,11 @@ func MenubarSub(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // in the default foreground color, not muted like its dropdown/context-menu
 // siblings — a real, deliberate divergence, not an oversight.
 
-//line menubar.gsx:434:1
+//line menubar.gsx:440:1
 func MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line menubar.gsx:435:2
+//line menubar.gsx:441:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-gsxui-menubar-sub-trigger") {
 			_gsxgw.BoolAttr("data-gsxui-menubar-sub-trigger", true)
@@ -749,16 +749,16 @@ func MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-sub-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-sub-trigger", true)
 		_gsxgw.S(">")
-//line menubar.gsx:444:3
+//line menubar.gsx:451:3
 		_gsxgw.Node(ctx, children)
-//line menubar.gsx:445:3
+//line menubar.gsx:452:3
 		_gsxgw.Node(ctx, icon.ChevronRight())
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line menubar.gsx:449:1
+//line menubar.gsx:456:1
 // MenubarSubContent is the submenu popover — see the file header's
 // SUBMENUS comment for why it must render DOM-nested (not portalled) inside
 // its MenubarSub. Has the FULL data-[state=…]:animate-in/out/fade/zoom
@@ -773,11 +773,11 @@ func MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // (house exception, not nova's ring-1) — same ADAPT list as
 // DropdownMenuSubContent's own doc comment, not repeated in full here.
 
-//line menubar.gsx:462:1
+//line menubar.gsx:469:1
 func MenubarSubContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line menubar.gsx:463:2
+//line menubar.gsx:470:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-gsxui-menubar-sub-content") {
 			_gsxgw.BoolAttr("data-gsxui-menubar-sub-content", true)
@@ -802,7 +802,7 @@ func MenubarSubContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-sub-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-sub-content", true)
 		_gsxgw.S(">")
-//line menubar.gsx:472:3
+//line menubar.gsx:480:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

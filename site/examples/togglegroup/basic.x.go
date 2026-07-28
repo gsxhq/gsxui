@@ -42,7 +42,7 @@ func Basic() _gsxrt.Node {
 //line basic.gsx:27:3
 			_gsxgw.Node(ctx, ui.ToggleGroupItem("multiple", "outline", "lg", "", false, "underline", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:28:4
+//line basic.gsx:35:4
 				_gsxgw.Node(ctx, icon.Underline())
 				return _gsxgw.Err()
 			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: "Toggle underline"}}, _gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}})))

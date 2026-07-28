@@ -32,14 +32,14 @@ func Basic() _gsxrt.Node {
 //line basic.gsx:15:4
 			_gsxgw.Node(ctx, ui.ItemMedia("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:15:18
+//line basic.gsx:16:5
 				_gsxgw.Node(ctx, icon.Bell())
 				return _gsxgw.Err()
 			}), nil))
-//line basic.gsx:16:4
+//line basic.gsx:18:4
 			_gsxgw.Node(ctx, ui.ItemContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:16:20
+//line basic.gsx:19:5
 				_gsxgw.Node(ctx, ui.ItemTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Muted item")
@@ -47,7 +47,7 @@ func Basic() _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line basic.gsx:17:4
+//line basic.gsx:21:4
 			_gsxgw.Node(ctx, ui.ItemFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Just now")
@@ -55,20 +55,20 @@ func Basic() _gsxrt.Node {
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
-//line basic.gsx:19:3
+//line basic.gsx:23:3
 		_gsxgw.Node(ctx, ui.Item("", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:20:4
+//line basic.gsx:24:4
 			_gsxgw.Node(ctx, ui.ItemMedia("default", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:20:36
+//line basic.gsx:25:5
 				_gsxgw.Node(ctx, icon.User())
 				return _gsxgw.Err()
 			}), nil))
-//line basic.gsx:21:4
+//line basic.gsx:27:4
 			_gsxgw.Node(ctx, ui.ItemContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:21:20
+//line basic.gsx:28:5
 				_gsxgw.Node(ctx, ui.ItemTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Default media")
@@ -78,20 +78,20 @@ func Basic() _gsxrt.Node {
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
-//line basic.gsx:23:3
+//line basic.gsx:31:3
 		_gsxgw.Node(ctx, ui.Item("", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:24:4
+//line basic.gsx:32:4
 			_gsxgw.Node(ctx, ui.ItemMedia("image", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:24:34
+//line basic.gsx:32:34
 				_gsxgw.S("<img src=\"https://placehold.co/40x40\" alt=\"Profile\">")
 				return _gsxgw.Err()
 			}), nil))
-//line basic.gsx:25:4
+//line basic.gsx:33:4
 			_gsxgw.Node(ctx, ui.ItemContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:25:20
+//line basic.gsx:34:5
 				_gsxgw.Node(ctx, ui.ItemTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Image media")
@@ -101,26 +101,26 @@ func Basic() _gsxrt.Node {
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
-//line basic.gsx:27:3
+//line basic.gsx:37:3
 		_gsxgw.Node(ctx, ui.Item("outline", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:28:4
+//line basic.gsx:38:4
 			_gsxgw.Node(ctx, ui.ItemMedia("icon", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:29:5
+//line basic.gsx:39:5
 				_gsxgw.Node(ctx, icon.Bell())
 				return _gsxgw.Err()
 			}), nil))
-//line basic.gsx:31:4
+//line basic.gsx:41:4
 			_gsxgw.Node(ctx, ui.ItemContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:32:5
+//line basic.gsx:42:5
 				_gsxgw.Node(ctx, ui.ItemTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("New comment on your post")
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:33:5
+//line basic.gsx:43:5
 				_gsxgw.Node(ctx, ui.ItemDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Sarah replied to \"Launch week recap\".")
@@ -128,10 +128,10 @@ func Basic() _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line basic.gsx:35:4
+//line basic.gsx:45:4
 			_gsxgw.Node(ctx, ui.ItemActions(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:36:5
+//line basic.gsx:46:5
 				_gsxgw.Node(ctx, ui.Button("outline", "sm", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("View")
@@ -141,29 +141,29 @@ func Basic() _gsxrt.Node {
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
-//line basic.gsx:39:3
+//line basic.gsx:49:3
 		_gsxgw.Node(ctx, ui.ItemGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:40:4
+//line basic.gsx:50:4
 			_gsxgw.Node(ctx, ui.Item("", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:41:5
+//line basic.gsx:51:5
 				_gsxgw.Node(ctx, ui.ItemMedia("icon", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:42:6
+//line basic.gsx:52:6
 					_gsxgw.Node(ctx, icon.User())
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:44:5
+//line basic.gsx:54:5
 				_gsxgw.Node(ctx, ui.ItemContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:45:6
+//line basic.gsx:55:6
 					_gsxgw.Node(ctx, ui.ItemTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Jamie Lee")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:46:6
+//line basic.gsx:56:6
 					_gsxgw.Node(ctx, ui.ItemDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("jamie@example.com")
@@ -171,10 +171,10 @@ func Basic() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:48:5
+//line basic.gsx:58:5
 				_gsxgw.Node(ctx, ui.ItemActions(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:49:6
+//line basic.gsx:59:6
 					_gsxgw.Node(ctx, ui.Button("ghost", "sm", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Remove")
@@ -184,30 +184,30 @@ func Basic() _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line basic.gsx:52:4
+//line basic.gsx:62:4
 			_gsxgw.Node(ctx, ui.ItemSeparator("", nil))
-//line basic.gsx:53:4
+//line basic.gsx:63:4
 			_gsxgw.Node(ctx, ui.ItemSeparator("vertical", nil))
-//line basic.gsx:54:4
+//line basic.gsx:64:4
 			_gsxgw.Node(ctx, ui.Item("", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:55:5
+//line basic.gsx:65:5
 				_gsxgw.Node(ctx, ui.ItemMedia("icon", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:56:6
+//line basic.gsx:66:6
 					_gsxgw.Node(ctx, icon.User())
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:58:5
+//line basic.gsx:68:5
 				_gsxgw.Node(ctx, ui.ItemContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:59:6
+//line basic.gsx:69:6
 					_gsxgw.Node(ctx, ui.ItemTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Alex Chen")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:60:6
+//line basic.gsx:70:6
 					_gsxgw.Node(ctx, ui.ItemDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("alex@example.com")
@@ -215,10 +215,10 @@ func Basic() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:62:5
+//line basic.gsx:72:5
 				_gsxgw.Node(ctx, ui.ItemActions(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:63:6
+//line basic.gsx:73:6
 					_gsxgw.Node(ctx, ui.Button("ghost", "sm", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Remove")

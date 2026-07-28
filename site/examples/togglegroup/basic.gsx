@@ -24,7 +24,14 @@ component Basic() {
 		<ui.ToggleGroupItem groupType="multiple" variant="outline" size="lg" value="italic" aria-label="Toggle italic">
 			<icon.Italic/>
 		</ui.ToggleGroupItem>
-		<ui.ToggleGroupItem groupType="multiple" variant="outline" size="lg" value="underline" aria-label="Toggle underline" aria-invalid="true">
+		<ui.ToggleGroupItem
+			groupType="multiple"
+			variant="outline"
+			size="lg"
+			value="underline"
+			aria-label="Toggle underline"
+			aria-invalid="true"
+		>
 			<icon.Underline/>
 		</ui.ToggleGroupItem>
 	</ui.ToggleGroup>

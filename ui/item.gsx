@@ -29,7 +29,8 @@ component ItemGroup(children gsx.Node, attrs gsx.Attrs) {
 component ItemSeparator(orientation string, attrs gsx.Attrs) {
 	<Separator
 		orientation={orientation |> default("horizontal")}
-		{ attrs... } data-gsxui-slot-item-separator
+		{ attrs... }
+		data-gsxui-slot-item-separator
 	/>
 }
 
@@ -44,7 +45,8 @@ component Item(variant string, size string, children gsx.Node, attrs gsx.Attrs) 
 	<div
 		data-variant={variant |> default("default")}
 		data-size={size |> default("default")}
-		{ attrs... } data-gsxui-slot-item
+		{ attrs... }
+		data-gsxui-slot-item
 	>
 		{ children }
 	</div>
@@ -64,7 +66,8 @@ component Item(variant string, size string, children gsx.Node, attrs gsx.Attrs) 
 component ItemMedia(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-variant={variant |> default("default")}
-		{ attrs... } data-gsxui-slot-item-media
+		{ attrs... }
+		data-gsxui-slot-item-media
 	>
 		{ children }
 	</div>

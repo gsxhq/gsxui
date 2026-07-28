@@ -63,7 +63,7 @@ func Progress(value float64, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-progress"})
 		_gsxgw.BoolAttr("data-gsxui-slot-progress", true)
 		_gsxgw.S(">")
-//line progress.gsx:39:3
+//line progress.gsx:40:3
 		_gsxgw.S("<div style=\"")
 		_gsxgw.Style(_gsxrt.Class(_gsxrt.StyleValue("transform: translateX(-" + gsx.RawCSS(remaining) + "%)")))
 		_gsxgw.S("\"")

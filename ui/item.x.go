@@ -55,7 +55,7 @@ func ItemSeparator(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line item.gsx:36:1
+//line item.gsx:37:1
 // Item's variant/size cva map (itemVariants) picks between static class
 // blocks by the JS-resolved prop values — no data-[variant=...]/
 // data-[size=...] selectors in registry/new-york-v4/ui/item.tsx to preserve,
@@ -64,11 +64,11 @@ func ItemSeparator(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 // asChild tag-swapping is dropped — always renders a <div> — the same
 // narrow gap as button's own asChild (see docs/jsx-parity.md ## button).
 
-//line item.gsx:43:1
+//line item.gsx:44:1
 func Item(variant string, size string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line item.gsx:44:2
+//line item.gsx:45:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
@@ -85,14 +85,14 @@ func Item(variant string, size string, children gsx.Node, attrs gsx.Attrs) _gsxr
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-item", true)
 		_gsxgw.S(">")
-//line item.gsx:49:3
+//line item.gsx:51:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line item.gsx:53:1
+//line item.gsx:55:1
 // ItemMedia's variant cva map (itemMediaVariants) is reflected through
 // data-variant for the style pack.
 //
@@ -105,11 +105,11 @@ func Item(variant string, size string, children gsx.Node, attrs gsx.Attrs) _gsxr
 // alone, and the responsive image sizing is half dead weight without a real
 // xs size param (Item's `size` axis stays sm/default only, per task scope).
 
-//line item.gsx:64:1
+//line item.gsx:66:1
 func ItemMedia(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line item.gsx:65:2
+//line item.gsx:67:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
@@ -121,120 +121,120 @@ func ItemMedia(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-item-media"})
 		_gsxgw.BoolAttr("data-gsxui-slot-item-media", true)
 		_gsxgw.S(">")
-//line item.gsx:69:3
+//line item.gsx:72:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line item.gsx:73:1
+//line item.gsx:76:1
 func ItemContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line item.gsx:74:2
+//line item.gsx:77:2
 		_gsxgw.S("<div")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-item-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-item-content", true)
 		_gsxgw.S(">")
-//line item.gsx:75:3
+//line item.gsx:78:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line item.gsx:79:1
+//line item.gsx:82:1
 func ItemTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line item.gsx:80:2
+//line item.gsx:83:2
 		_gsxgw.S("<div")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-item-title"})
 		_gsxgw.BoolAttr("data-gsxui-slot-item-title", true)
 		_gsxgw.S(">")
-//line item.gsx:81:3
+//line item.gsx:84:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line item.gsx:85:1
+//line item.gsx:88:1
 // ItemDescription renders a real <p>, matching shadcn's own source exactly
 // (unlike EmptyDescription, whose type says "p" but whose element is a
 // <div> — see empty.gsx).
 
-//line item.gsx:88:1
+//line item.gsx:91:1
 func ItemDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line item.gsx:89:2
+//line item.gsx:92:2
 		_gsxgw.S("<p")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-item-description"})
 		_gsxgw.BoolAttr("data-gsxui-slot-item-description", true)
 		_gsxgw.S(">")
-//line item.gsx:90:3
+//line item.gsx:93:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</p>")
 		return _gsxgw.Err()
 	})
 }
 
-//line item.gsx:94:1
+//line item.gsx:97:1
 func ItemActions(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line item.gsx:95:2
+//line item.gsx:98:2
 		_gsxgw.S("<div")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-item-actions"})
 		_gsxgw.BoolAttr("data-gsxui-slot-item-actions", true)
 		_gsxgw.S(">")
-//line item.gsx:96:3
+//line item.gsx:99:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line item.gsx:100:1
+//line item.gsx:103:1
 func ItemHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line item.gsx:101:2
+//line item.gsx:104:2
 		_gsxgw.S("<div")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-item-header"})
 		_gsxgw.BoolAttr("data-gsxui-slot-item-header", true)
 		_gsxgw.S(">")
-//line item.gsx:102:3
+//line item.gsx:105:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line item.gsx:106:1
+//line item.gsx:109:1
 func ItemFooter(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line item.gsx:107:2
+//line item.gsx:110:2
 		_gsxgw.S("<div")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-item-footer"})
 		_gsxgw.BoolAttr("data-gsxui-slot-item-footer", true)
 		_gsxgw.S(">")
-//line item.gsx:108:3
+//line item.gsx:111:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
