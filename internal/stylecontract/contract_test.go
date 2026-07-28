@@ -47,6 +47,24 @@ func TestValidateRejectsInvalidContracts(t *testing.T) {
 			want: "component \"Button\": slot 0: empty slot name",
 		},
 		{
+			name: "malformed non-runtime slot name",
+			components: []Component{{
+				Name:         "Button",
+				RegistryName: "button",
+				Slots:        []Slot{{Name: "button_primary"}},
+			}},
+			want: `component "Button": slot "button_primary": invalid slot name`,
+		},
+		{
+			name: "malformed runtime slot name",
+			components: []Component{{
+				Name:         "Button",
+				RegistryName: "button",
+				Slots:        []Slot{{Name: "Button", Runtime: true}},
+			}},
+			want: `component "Button": slot "Button": invalid slot name`,
+		},
+		{
 			name: "duplicate slot token globally",
 			components: []Component{
 				{Name: "Button", RegistryName: "button", Slots: []Slot{{Name: "button"}}},
@@ -122,6 +140,17 @@ func TestValidateRejectsInvalidContracts(t *testing.T) {
 				t.Fatalf("Validate() error = %q, want %q", err, tt.want)
 			}
 		})
+	}
+}
+
+func TestSlotAttributeParsing(t *testing.T) {
+	for _, name := range []string{"button_primary", "Button", "button--primary", "button-", "-button"} {
+		if _, ok := SlotName(SlotAttribute(name)); ok {
+			t.Errorf("slot marker %q was accepted", name)
+		}
+	}
+	if got, ok := SlotName(SlotAttribute("button-primary")); !ok || got != "button-primary" {
+		t.Errorf("valid slot marker parsed as %q, %t", got, ok)
 	}
 }
 

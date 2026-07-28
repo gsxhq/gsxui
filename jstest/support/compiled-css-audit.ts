@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import { parse, type Declaration } from "postcss";
+import selectorParser from "postcss-selector-parser";
 
 type CompiledCSSViolation = {
   label: string;
@@ -23,16 +24,42 @@ function isTailwindHiddenPreflight(declaration: Declaration): boolean {
   );
 }
 
-function selectorUsesAttribute(selector: string, attribute: string): boolean {
-  const attributeSelector = new RegExp(
-    String.raw`\[\s*${attribute}(?=\s*(?:[~|^$*]?=|\]))`,
-    "i",
-  );
-  return attributeSelector.test(selector);
-}
+type SelectorAttributeUsage = {
+  legacySlot: boolean;
+  packedGSXUISlot: boolean;
+  valuedPresenceMarker: boolean;
+};
 
-function selectorUsesValuedPresenceMarker(selector: string): boolean {
-  return /\[\s*data-gsxui-slot-[^\s~|^$*=\]]+\s*[~|^$*]?=/i.test(selector);
+function inspectSelectorAttributes(selector: string): SelectorAttributeUsage {
+  const usage: SelectorAttributeUsage = {
+    legacySlot: false,
+    packedGSXUISlot: false,
+    valuedPresenceMarker: false,
+  };
+  try {
+    const root = selectorParser().astSync(selector);
+    root.walkAttributes((attribute) => {
+      const name = attribute.attribute.toLowerCase();
+      if (name === "data-slot") {
+        usage.legacySlot = true;
+      }
+      if (name === "data-gsxui-slot") {
+        usage.packedGSXUISlot = true;
+      }
+      if (
+        name.startsWith("data-gsxui-slot-") &&
+        attribute.operator !== undefined
+      ) {
+        usage.valuedPresenceMarker = true;
+      }
+    });
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new Error(
+      `invalid CSS selector ${JSON.stringify(selector)}: ${detail}`,
+    );
+  }
+  return usage;
 }
 
 export function compiledCSSViolations(css: string): CompiledCSSViolation[] {
@@ -43,13 +70,14 @@ export function compiledCSSViolations(css: string): CompiledCSSViolation[] {
   const importantDeclarations: string[] = [];
 
   root.walkRules((rule) => {
-    if (selectorUsesAttribute(rule.selector, "data-slot")) {
+    const usage = inspectSelectorAttributes(rule.selector);
+    if (usage.legacySlot) {
       legacySlots.push(rule.selector);
     }
-    if (selectorUsesAttribute(rule.selector, "data-gsxui-slot")) {
+    if (usage.packedGSXUISlot) {
       packedGSXUISlots.push(rule.selector);
     }
-    if (selectorUsesValuedPresenceMarker(rule.selector)) {
+    if (usage.valuedPresenceMarker) {
       valuedPresenceMarkers.push(rule.selector);
     }
   });

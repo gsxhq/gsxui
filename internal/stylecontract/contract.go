@@ -2,8 +2,14 @@ package stylecontract
 
 import (
 	"fmt"
+	"regexp"
 	"sort"
+	"strings"
 )
+
+const slotAttributePrefix = "data-gsxui-slot-"
+
+var slotNamePattern = regexp.MustCompile(`^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$`)
 
 type Axis struct {
 	Attribute     string
@@ -21,6 +27,20 @@ type Component struct {
 	Name         string
 	RegistryName string
 	Slots        []Slot
+}
+
+// SlotAttribute returns the HTML presence-marker attribute for name.
+func SlotAttribute(name string) string {
+	return slotAttributePrefix + name
+}
+
+// SlotName returns the validated slot name encoded by an HTML presence-marker attribute.
+func SlotName(attribute string) (string, bool) {
+	if !strings.HasPrefix(attribute, slotAttributePrefix) {
+		return "", false
+	}
+	name := strings.TrimPrefix(attribute, slotAttributePrefix)
+	return name, slotNamePattern.MatchString(name)
 }
 
 func All() []Component {
@@ -102,6 +122,9 @@ func Validate(components []Component) error {
 		for slotIndex, slot := range component.Slots {
 			if slot.Name == "" {
 				return fmt.Errorf("component %q: slot %d: empty slot name", component.Name, slotIndex)
+			}
+			if !slotNamePattern.MatchString(slot.Name) {
+				return fmt.Errorf("component %q: slot %q: invalid slot name", component.Name, slot.Name)
 			}
 			if declaredBy, ok := slotComponents[slot.Name]; ok {
 				return fmt.Errorf("component %q: slot %q: duplicate slot token (already declared by component %q)", component.Name, slot.Name, declaredBy)

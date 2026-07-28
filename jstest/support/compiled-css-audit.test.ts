@@ -51,6 +51,29 @@ test("rejects legacy and packed slot selectors without rejecting presence select
   assert.equal(violations[2].count, 1);
 });
 
+test("rejects comments and escapes that encode forbidden slot selectors", () => {
+  const violations = compiledCSSViolations(`
+    [data-gsxui-slot-button/**/="x"] { display: inline-flex; }
+    [data-gsxui-slot-button\\2d icon="x"] { display: inline-flex; }
+    [data-gsxui\\2d slot~="button"] { display: inline-flex; }
+  `);
+
+  assert.deepEqual(
+    Object.fromEntries(violations.map(({ label, count }) => [label, count])),
+    {
+      "obsolete packed [data-gsxui-slot] selector": 1,
+      "valued [data-gsxui-slot-*] selector": 2,
+    },
+  );
+});
+
+test("fails the audit when a CSS rule has an invalid selector", () => {
+  assert.throws(
+    () => compiledCSSViolations(`a:: { color: red; }`),
+    /invalid CSS selector/,
+  );
+});
+
 test("rejects important declarations hidden behind the preflight selector", () => {
   const violations = compiledCSSViolations(`
     [hidden]:where(:not([hidden="until-found"])) {

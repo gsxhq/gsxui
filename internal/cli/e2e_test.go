@@ -15,10 +15,14 @@ func TestEndToEnd(t *testing.T) {
 	if testing.Short() {
 		t.Skip("network-dependent e2e; run without -short")
 	}
+	gsxModuleDir := activeModuleDir(t, "github.com/gsxhq/gsx")
 	// This temporary consumer is intentionally outside the test runner's workspace.
 	t.Setenv("GOWORK", "off")
 	dir := t.TempDir()
 	mustRun(t, dir, "go", "mod", "init", "example.com/app")
+	// The replace lives only in this disposable consumer so its generated
+	// output exercises the active compiler, including unpublished review work.
+	mustRun(t, dir, "go", "mod", "edit", "-replace", "github.com/gsxhq/gsx="+gsxModuleDir)
 	t.Chdir(dir)
 
 	if err := Run([]string{"init"}); err != nil {
@@ -66,6 +70,31 @@ func TestVendoredButtonRenders(t *testing.T) {
 		!strings.Contains(html, "data-gsxui-slot-button") ||
 		!strings.Contains(html, ">Save</button>") {
 		t.Fatalf("unexpected vendored Button output: %s", html)
+	}
+}
+
+func TestVendoredDialogFooterCloseComposesButtonMarker(t *testing.T) {
+	var output bytes.Buffer
+	if err := ui.DialogFooter(true, gsx.Text(""), nil).Render(context.Background(), &output); err != nil {
+		t.Fatal(err)
+	}
+	html := output.String()
+	buttonStart := strings.Index(html, "<button")
+	if buttonStart == -1 {
+		t.Fatalf("DialogFooter close action missing button: %s", html)
+	}
+	buttonEnd := strings.Index(html[buttonStart:], ">")
+	if buttonEnd == -1 {
+		t.Fatalf("DialogFooter close action has unterminated button: %s", html)
+	}
+	button := html[buttonStart : buttonStart+buttonEnd+1]
+	for _, marker := range []string{
+		"data-gsxui-slot-dialog-footer-close",
+		"data-gsxui-slot-button",
+	} {
+		if !strings.Contains(button, marker) || strings.Contains(button, marker+"=") {
+			t.Fatalf("DialogFooter close button missing bare %s: %s", marker, button)
+		}
 	}
 }
 `
@@ -157,4 +186,18 @@ func mustRun(t *testing.T, dir, name string, args ...string) {
 	if err != nil {
 		t.Fatalf("%s %v: %v\n%s", name, args, err, out)
 	}
+}
+
+func activeModuleDir(t *testing.T, module string) string {
+	t.Helper()
+	cmd := exec.Command("go", "list", "-m", "-f", "{{.Dir}}", module)
+	output, err := cmd.Output()
+	if err != nil {
+		t.Fatalf("locate %s: %v", module, err)
+	}
+	dir := strings.TrimSpace(string(output))
+	if dir == "" {
+		t.Fatalf("locate %s: empty module directory", module)
+	}
+	return dir
 }

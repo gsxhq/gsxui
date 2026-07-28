@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
-	"regexp"
 	"slices"
 	"strings"
 	"testing"
@@ -25,33 +24,6 @@ type runtimeContractEntry struct {
 	Attribute string `json:"attribute"`
 	Value     string `json:"value"`
 	Scenario  string `json:"scenario"`
-}
-
-const slotAttributePrefix = "data-gsxui-slot-"
-
-var slotNamePattern = regexp.MustCompile(`^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$`)
-
-func slotAttribute(name string) string {
-	return slotAttributePrefix + name
-}
-
-func TestSlotNameRejectsMalformedSlotAttributes(t *testing.T) {
-	for _, name := range []string{"button_primary", "Button", "button--primary", "button-", "-button"} {
-		if _, ok := slotName(slotAttribute(name)); ok {
-			t.Errorf("slot marker %q was accepted", name)
-		}
-	}
-	if got, ok := slotName(slotAttribute("button-primary")); !ok || got != "button-primary" {
-		t.Errorf("valid slot marker parsed as %q, %t", got, ok)
-	}
-}
-
-func slotName(attribute string) (string, bool) {
-	if !strings.HasPrefix(attribute, slotAttributePrefix) {
-		return "", false
-	}
-	name := strings.TrimPrefix(attribute, slotAttributePrefix)
-	return name, slotNamePattern.MatchString(name)
 }
 
 var runtimeScenarioByComponent = map[string]string{
@@ -88,7 +60,7 @@ func TestRuntimeStyleContractManifestMatchesTypedContract(t *testing.T) {
 				want = append(want, runtimeContractEntry{
 					Component: component.RegistryName,
 					Slot:      slot.Name,
-					Attribute: slotAttribute(slot.Name),
+					Attribute: stylecontract.SlotAttribute(slot.Name),
 					Value:     "",
 					Scenario:  scenario,
 				})
@@ -197,6 +169,7 @@ func TestRegisteredExamplesCoverStyleContract(t *testing.T) {
 
 	emittedSlots := make(map[string]struct{})
 	emittedValues := make(map[string]map[string]map[string]struct{})
+	slotAttributePrefix := stylecontract.SlotAttribute("")
 	recordNode := func(source string, node gsx.Node) {
 		var rendered bytes.Buffer
 		if err := node.Render(context.Background(), &rendered); err != nil {
@@ -211,14 +184,11 @@ func TestRegisteredExamplesCoverStyleContract(t *testing.T) {
 		walkElements(document, func(node *html.Node) {
 			slots := make([]string, 0)
 			for _, attr := range node.Attr {
-				if !strings.HasPrefix(attr.Key, slotAttributePrefix) {
-					continue
-				}
-				slot, valid := slotName(attr.Key)
+				slot, valid := stylecontract.SlotName(attr.Key)
 				if !valid {
-					if slot == "" {
+					if strings.HasPrefix(attr.Key, slotAttributePrefix) && slot == "" {
 						t.Errorf("%s emits empty slot marker %q", source, attr.Key)
-					} else {
+					} else if strings.HasPrefix(attr.Key, slotAttributePrefix) {
 						t.Errorf("%s emits malformed slot marker %q", source, attr.Key)
 					}
 					continue
