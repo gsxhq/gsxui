@@ -85,6 +85,12 @@ primary, primary foreground, secondary, secondary foreground, sidebar primary,
 and sidebar primary foreground. gsxui has no chart-token contract, so shadcn
 chart values are not added in this slice.
 
+Each base family therefore contributes two layers from the audited shadcn
+theme entry: its surface values form the Base Color layer, while its
+brand-related values form the same-named Theme choice. For example, Stone +
+Stone reproduces the overlapping values of shadcn Stone, while Stone + Blue
+uses Stone surfaces with Blue brand values.
+
 The existing gsxui-only status and overlay tokens remain stable unless a
 future catalog explicitly owns them:
 
@@ -99,14 +105,20 @@ future catalog explicitly owns them:
 
 Radius uses named choices:
 
-- Default
 - None (`0`)
 - Small (`0.45rem`)
-- Medium (`0.625rem`)
+- Medium (`0.625rem`, the built-in default)
 - Large (`0.875rem`)
 
 The selected preset still stores the resolved CSS length. An imported valid
 length outside the named set appears as Custom.
+
+shadcn can expose both Default and Medium because its configuration transports
+the radius choice name: Default is an empty override, while Medium explicitly
+selects `0.625rem`. Preset schema v1 transports only the resolved CSS length,
+so those two labels would be indistinguishable after export and import. gsxui
+therefore exposes the four unique resolved choices and calls the built-in
+`0.625rem` value Medium instead of adding hidden editor metadata.
 
 ## Catalog ownership
 
@@ -140,11 +152,14 @@ selected base definition, applies the selected theme definition, and finally
 sets radius. The result must pass the existing `preset.Validate`.
 
 Definitions contain only known tokens. Base definitions must resolve every
-token they claim to own in both modes. Theme definitions may override only the
-documented brand set. Startup/unit validation rejects incomplete, duplicate,
-unknown, or out-of-scope definitions. It also rejects two valid catalog
-combinations that resolve to the same complete palette, keeping reverse
-matching unambiguous. The browser never repairs catalog data.
+surface token they claim to supply in both modes. The same-named base Theme
+definitions and the 17 accent Theme definitions may override only the
+documented brand set. The secondary pair deliberately exists in both layers:
+the Theme layer wins, matching shadcn's ordered merge. Startup/unit validation
+rejects incomplete, duplicate, unknown, or out-of-scope definitions. It also
+rejects two valid catalog combinations that resolve to the same complete
+palette, keeping reverse matching unambiguous. The browser never repairs
+catalog data.
 
 The values are checked into gsxui with a provenance comment pointing to the
 audited shadcn registry source. Generation and tests never read
@@ -162,6 +177,12 @@ Preset schema v1 remains self-contained and unchanged:
 fields. This preserves CLI compatibility and ensures shared/imported presets
 remain reproducible even if the built-in catalog changes later.
 
+The audited shadcn Neutral values intentionally become the canonical built-in
+gsxui defaults for the overlapping token set. Existing gsxui-only status and
+overlay values remain unchanged. This changes the pinned default JSON/CSS/share
+golden values where the old defaults differed, but it does not change preset
+schema v1, canonical field ordering, validation rules, or round-trip behavior.
+
 When loading preset state, the editor compares its exact light/dark values
 against catalog resolutions:
 
@@ -170,9 +191,16 @@ against catalog resolutions:
 - matching ignores no fields and performs no color normalization; and
 - radius matching is independent from palette matching.
 
-Selecting either picker while the palette is Custom commits a complete catalog
-resolution. It does not merge arbitrary imported values with a built-in
-palette. Reset restores the canonical built-in selection for the active style.
+Selecting either color picker while the palette is Custom replaces the
+arbitrary imported palette with a complete catalog palette. Selecting a Base
+Color from Custom pairs it with that base's same-named Theme; selecting a Theme
+from Custom pairs it with Neutral. These rules are explicit and deterministic
+rather than relying on hidden pre-import state. Reset restores the canonical
+built-in selection for the active style.
+
+Palette and radius replacement remain independent. Choosing a built-in palette
+preserves an exact Custom radius, and choosing a named radius preserves an
+exact Custom palette. Only Reset replaces both.
 
 JSON, share code, share URL, CSS, download, and CLI command outputs continue to
 serialize the resolved preset exactly as they do today.
@@ -231,10 +259,11 @@ Go tests establish:
 3. base themes affect only their owned surface tokens;
 4. accent themes affect only the documented brand tokens;
 5. gsxui-only tokens remain present and valid;
-6. named radii resolve exactly;
+6. the four unique named radii resolve exactly;
 7. exact preset matching returns the correct names;
 8. one changed token produces Custom; and
-9. preset v1 canonical JSON and CSS round trips remain unchanged.
+9. preset v1 canonical JSON and CSS round-trip rules remain unchanged, with
+   intentionally updated built-in-default goldens.
 
 Browser and state tests establish:
 
