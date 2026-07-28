@@ -139,3 +139,53 @@ test("combobox/basic does not render a disconnected value label", async ({
     page.getByText("Choose a framework", { exact: true }),
   ).toHaveCount(0);
 });
+
+test("Button variants and sizes keep Nova presentation in normal site scope", async ({
+  page,
+}) => {
+  const response = await page.goto("/x/button/variants");
+  expect(response?.status(), "button/variants fixture response").toBe(200);
+  await expect(page.locator("body")).not.toHaveAttribute(
+    "data-theme-button-preview",
+  );
+
+  const box = async (name: string) =>
+    page.getByRole("button", { name, exact: true }).evaluate((element) => {
+      const css = getComputedStyle(element);
+      return {
+        width: css.width,
+        height: css.height,
+        backgroundColor: css.backgroundColor,
+        borderTopWidth: css.borderTopWidth,
+      };
+    });
+
+  const defaultButton = await box("Default");
+  expect(defaultButton.height).toBe("32px");
+  expect(defaultButton.backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
+  expect((await box("Large")).height).toBe("36px");
+  expect(await box("Small icon")).toMatchObject({
+    width: "28px",
+    height: "28px",
+  });
+  expect(await box("Large icon")).toMatchObject({
+    width: "36px",
+    height: "36px",
+  });
+  expect((await box("Outline")).borderTopWidth).toBe("1px");
+  expect((await box("Secondary")).backgroundColor).not.toBe(
+    defaultButton.backgroundColor,
+  );
+});
+
+test("Button fallback cannot style a theme-preview body", async ({ page }) => {
+  const response = await page.goto("/x/button/basic");
+  expect(response?.status(), "button/basic fixture response").toBe(200);
+
+  const button = page.getByRole("button", { name: "Button" });
+  await expect(button).toHaveCSS("display", "inline-flex");
+  await page.locator("body").evaluate((body) => {
+    body.setAttribute("data-theme-button-preview", "");
+  });
+  await expect(button).not.toHaveCSS("display", "inline-flex");
+});

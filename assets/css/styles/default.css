@@ -143,136 +143,6 @@
     @apply size-4;
   }
 
-  /* Button */
-  :where([data-gsxui-slot-button]) {
-    @apply inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none;
-  }
-  :where([data-gsxui-slot-button]):focus-visible {
-    @apply border-ring ring-[3px] ring-ring/50;
-  }
-  :where([data-gsxui-slot-button]):active:not([aria-haspopup]) {
-    @apply translate-y-px;
-  }
-  :where([data-gsxui-slot-button]):disabled {
-    @apply pointer-events-none opacity-50;
-  }
-  :where([data-gsxui-slot-button])[aria-invalid="true"] {
-    @apply border-destructive ring-destructive/20;
-  }
-  .dark
-    :where([data-gsxui-slot-button][aria-invalid="true"]) {
-    @apply ring-destructive/40;
-  }
-  :where([data-gsxui-slot-button]) svg {
-    @apply shrink-0 pointer-events-none;
-  }
-  :where([data-gsxui-slot-button]) svg:not([class*="size-"]) {
-    @apply size-4;
-  }
-  :where([data-gsxui-slot-button])[data-variant="default"] {
-    @apply bg-primary text-primary-foreground;
-  }
-  :where([data-gsxui-slot-button])[data-variant="default"]:hover {
-    @apply bg-primary/90;
-  }
-  :where([data-gsxui-slot-button])[data-variant="destructive"] {
-    @apply bg-destructive text-contrast;
-  }
-  :where([data-gsxui-slot-button])[data-variant="destructive"]:hover {
-    @apply bg-destructive/90;
-  }
-  :where([data-gsxui-slot-button])[data-variant="destructive"]:focus-visible {
-    @apply ring-destructive/20;
-  }
-  .dark
-    :where([data-gsxui-slot-button][data-variant="destructive"]) {
-    @apply bg-destructive/60;
-  }
-  .dark
-    :where(
-      [data-gsxui-slot-button][data-variant="destructive"]
-    ):focus-visible {
-    @apply ring-destructive/40;
-  }
-  :where([data-gsxui-slot-button])[data-variant="outline"] {
-    @apply border-border bg-background;
-  }
-  :where([data-gsxui-slot-button])[data-variant="outline"]:hover {
-    @apply bg-accent text-accent-foreground;
-  }
-  .dark
-    :where([data-gsxui-slot-button][data-variant="outline"]) {
-    @apply border-input bg-input/30;
-  }
-  .dark
-    :where([data-gsxui-slot-button][data-variant="outline"]):hover {
-    @apply bg-input/50;
-  }
-  :where([data-gsxui-slot-button])[data-variant="secondary"] {
-    @apply bg-secondary text-secondary-foreground;
-  }
-  :where([data-gsxui-slot-button])[data-variant="secondary"]:hover {
-    @apply bg-secondary/80;
-  }
-  :where([data-gsxui-slot-button])[data-variant="ghost"]:hover {
-    @apply bg-accent text-accent-foreground;
-  }
-  .dark
-    :where([data-gsxui-slot-button][data-variant="ghost"]):hover {
-    @apply bg-accent/50;
-  }
-  :where([data-gsxui-slot-button])[data-variant="link"] {
-    @apply text-primary underline-offset-4;
-  }
-  :where([data-gsxui-slot-button])[data-variant="link"]:hover {
-    @apply underline;
-  }
-  :where([data-gsxui-slot-button])[data-size="default"] {
-    @apply h-8 gap-1.5 px-2.5;
-  }
-  :where([data-gsxui-slot-button])[data-size="default"]:has(> svg) {
-    @apply px-2;
-  }
-  :where([data-gsxui-slot-button])[data-size="xs"] {
-    @apply h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs;
-  }
-  :where([data-gsxui-slot-button])[data-size="xs"]:has(> svg) {
-    @apply px-1.5;
-  }
-  :where([data-gsxui-slot-button])[data-size="xs"] svg:not([class*="size-"]) {
-    @apply size-3;
-  }
-  :where([data-gsxui-slot-button])[data-size="sm"] {
-    @apply h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem];
-  }
-  :where([data-gsxui-slot-button])[data-size="sm"]:has(> svg) {
-    @apply px-1.5;
-  }
-  :where([data-gsxui-slot-button])[data-size="sm"] svg:not([class*="size-"]) {
-    @apply size-3.5;
-  }
-  :where([data-gsxui-slot-button])[data-size="lg"] {
-    @apply h-9 gap-1.5 px-2.5;
-  }
-  :where([data-gsxui-slot-button])[data-size="lg"]:has(> svg) {
-    @apply px-2;
-  }
-  :where([data-gsxui-slot-button])[data-size="icon"] {
-    @apply size-8;
-  }
-  :where([data-gsxui-slot-button])[data-size="icon-xs"] {
-    @apply size-6 rounded-[min(var(--radius-md),10px)];
-  }
-  :where([data-gsxui-slot-button])[data-size="icon-xs"] svg:not([class*="size-"]) {
-    @apply size-3;
-  }
-  :where([data-gsxui-slot-button])[data-size="icon-sm"] {
-    @apply size-7 rounded-[min(var(--radius-md),12px)];
-  }
-  :where([data-gsxui-slot-button])[data-size="icon-lg"] {
-    @apply size-9;
-  }
-
   /* Separator */
   :where([data-gsxui-slot-separator]) {
     @apply shrink-0 bg-border;
@@ -340,12 +210,9 @@
     ) {
     @apply rounded-b-lg;
   }
-  :where([data-gsxui-slot-button-group])
-    :where([data-gsxui-slot-button])[data-size="xs"],
-  :where([data-gsxui-slot-button-group])
-    :where([data-gsxui-slot-button])[data-size="icon-xs"],
-  :where([data-gsxui-slot-button-group])
-    :where([data-gsxui-slot-button])[data-size="icon-sm"] {
+  :where([data-gsxui-slot-button-group]) > [data-size="xs"],
+  :where([data-gsxui-slot-button-group]) > [data-size="icon-xs"],
+  :where([data-gsxui-slot-button-group]) > [data-size="icon-sm"] {
     @apply rounded-lg;
   }
   :where([data-gsxui-slot-button-group-text]) {
@@ -574,12 +441,12 @@
   }
   :is(
     [data-gsxui-slot-pagination-link][data-gsxui-slot-pagination-previous]
-  ):where([data-gsxui-slot-button]) {
+  ) {
     @apply pl-1.5;
   }
   :is(
     [data-gsxui-slot-pagination-link][data-gsxui-slot-pagination-next]
-  ):where([data-gsxui-slot-button]) {
+  ) {
     @apply pr-1.5;
   }
   :where([data-gsxui-slot-pagination-previous-label]),
@@ -998,53 +865,37 @@
   :where([data-gsxui-slot-input-group-addon][data-align="block-end"].border-t) {
     @apply pt-2;
   }
-  :where(
-      [data-gsxui-slot-button][data-gsxui-slot-input-group-button]
-    ) {
+  :where([data-gsxui-slot-input-group-button]) {
     @apply flex items-center gap-2 text-sm shadow-none;
   }
-  :where(
-      [data-gsxui-slot-button][data-gsxui-slot-input-group-button]
-    )[data-size="xs"] {
+  :where([data-gsxui-slot-input-group-button])[data-size="xs"] {
     @apply h-6 gap-1 rounded-[calc(var(--radius)-3px)] px-1.5 text-sm;
   }
-  :where(
-      [data-gsxui-slot-button][data-gsxui-slot-input-group-button]
-    )[data-size="xs"]:has(> svg) {
+  :where([data-gsxui-slot-input-group-button])[data-size="xs"]:has(> svg) {
     @apply px-1.5;
   }
-  :where(
-      [data-gsxui-slot-button][data-gsxui-slot-input-group-button]
-    )[data-size="xs"]
+  :where([data-gsxui-slot-input-group-button])[data-size="xs"]
     > svg:not([class*="size-"]) {
     @apply size-3.5;
   }
-  :where(
-      [data-gsxui-slot-button][data-gsxui-slot-input-group-button]
-    )[data-size="sm"] {
+  :where([data-gsxui-slot-input-group-button])[data-size="sm"] {
     @apply h-8 gap-1.5 rounded-md px-2.5 text-sm;
   }
-  :where(
-      [data-gsxui-slot-button][data-gsxui-slot-input-group-button]
-    )[data-size="sm"]:has(> svg) {
+  :where([data-gsxui-slot-input-group-button])[data-size="sm"]:has(> svg) {
     @apply px-2.5;
   }
-  :where(
-      [data-gsxui-slot-button][data-gsxui-slot-input-group-button]
-    )[data-size="icon-xs"] {
+  :where([data-gsxui-slot-input-group-button])[data-size="icon-xs"] {
     @apply size-6 rounded-[calc(var(--radius)-3px)] p-0;
   }
-  :where(
-      [data-gsxui-slot-button][data-gsxui-slot-input-group-button]
-    )[data-size="icon-xs"]:has(> svg),
-  :where(
-      [data-gsxui-slot-button][data-gsxui-slot-input-group-button]
-    )[data-size="icon-sm"]:has(> svg) {
+  :where([data-gsxui-slot-input-group-button])[data-size="icon-xs"]:has(
+      > svg
+    ),
+  :where([data-gsxui-slot-input-group-button])[data-size="icon-sm"]:has(
+      > svg
+    ) {
     @apply p-0;
   }
-  :where(
-      [data-gsxui-slot-button][data-gsxui-slot-input-group-button]
-    )[data-size="icon-sm"] {
+  :where([data-gsxui-slot-input-group-button])[data-size="icon-sm"] {
     @apply size-8 p-0;
   }
   :where([data-gsxui-slot-input-group-text]) {
@@ -2672,7 +2523,7 @@
   :where([data-gsxui-slot-calendar-nav]) {
     @apply absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1;
   }
-  :where([data-gsxui-slot-button])[data-gsxui-slot-calendar-nav-button] {
+  [data-gsxui-slot-calendar-nav-button] {
     width: var(--cell-size);
     height: var(--cell-size);
     @apply p-0 select-none;
@@ -2774,7 +2625,7 @@
     > :where([data-gsxui-slot-calendar-day-button]) {
     @apply rounded-r-md;
   }
-  :where([data-gsxui-slot-button])[data-gsxui-slot-calendar-day-button] {
+  [data-gsxui-slot-calendar-day-button] {
     min-width: var(--cell-size);
     @apply flex aspect-square h-auto w-full flex-col gap-1 leading-none font-normal;
   }

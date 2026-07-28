@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"errors"
+	"io"
 	"io/fs"
 	"os"
 	"os/exec"
@@ -9,6 +11,8 @@ import (
 	"testing"
 
 	gsxui "github.com/gsxhq/gsxui"
+	parse "github.com/tdewolff/parse/v2"
+	"github.com/tdewolff/parse/v2/css"
 )
 
 // initTestModule creates a fake module root and stubs the command runner.
@@ -71,6 +75,9 @@ func TestInitWritesEverything(t *testing.T) {
 	if !strings.Contains(string(styleCSS), "[data-gsxui-slot-scroll-area]::-webkit-scrollbar") {
 		t.Error("style.css does not contain the ScrollArea pseudo-element rules")
 	}
+	if _, err := os.Stat(filepath.Join(dir, "web/gsxui/site-button.css")); !os.IsNotExist(err) {
+		t.Errorf("init vendored the site-only Button fallback: %v", err)
+	}
 	// dependency commands went through the seam
 	joined := ""
 	for _, c := range *commands {
@@ -106,6 +113,28 @@ func TestInitVendorsCSSAssetsBesideCustomEntry(t *testing.T) {
 	} {
 		if _, err := os.Stat(filepath.Join(dir, path)); err != nil {
 			t.Errorf("missing %s: %v", path, err)
+		}
+	}
+}
+
+func TestCSSAssetTargetsExcludeSiteButtonFallback(t *testing.T) {
+	targets := cssAssetTargets("web/styles/brand.css")
+	got := make(map[string]string, len(targets))
+	for _, target := range targets {
+		got[target.source] = target.target
+	}
+	want := map[string]string{
+		"assets/css/index.css":          "web/styles/brand.css",
+		"assets/css/foundation.css":     "web/styles/foundation.css",
+		"assets/css/themes/default.css": "web/styles/theme.css",
+		"assets/css/styles/default.css": "web/styles/style.css",
+	}
+	if len(got) != len(want) {
+		t.Fatalf("cssAssetTargets() has %d entries, want %d: %v", len(got), len(want), got)
+	}
+	for source, target := range want {
+		if got[source] != target {
+			t.Errorf("cssAssetTargets()[%q] = %q, want %q", source, got[source], target)
 		}
 	}
 }
@@ -247,7 +276,7 @@ func TestInitRejectsUnexpectedArgumentsWithOverwriteUsage(t *testing.T) {
 	}
 }
 
-func TestInitializedConsumerCSSHasNoLegacySlotOrImportantUtility(t *testing.T) {
+func TestInitializedConsumerCSSOmitsButtonPresentationAndKeepsRemainingStyle(t *testing.T) {
 	repoRoot, err := filepath.Abs(filepath.Join("..", ".."))
 	if err != nil {
 		t.Fatal(err)
@@ -308,14 +337,57 @@ func TestInitializedConsumerCSSHasNoLegacySlotOrImportantUtility(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, selector := range []string{
-		`[data-gsxui-slot-button]`,
-		`[data-gsxui-slot-combobox-content]`,
-		`[data-gsxui-slot-command]`,
-		`[data-gsxui-slot-menubar]`,
+	if len(compiled) == 0 {
+		t.Fatal("compiled consumer CSS is empty")
+	}
+	vendoredStyle, err := os.ReadFile(filepath.Join(dir, "web/styles/style.css"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	attributes := parsedSelectorAttributes(t, vendoredStyle)
+	if attributes["data-gsxui-slot-button"] {
+		t.Error("initialized consumer CSS still contains Button presentation")
+	}
+	for _, attribute := range []string{
+		"data-gsxui-slot-combobox-content",
+		"data-gsxui-slot-command",
+		"data-gsxui-slot-menubar",
 	} {
-		if !strings.Contains(string(compiled), selector) {
-			t.Errorf("clean consumer CSS missing canonical selector %s", selector)
+		if !attributes[attribute] {
+			t.Errorf("clean consumer CSS missing canonical selector [%s]", attribute)
+		}
+	}
+}
+
+func parsedSelectorAttributes(t *testing.T, src []byte) map[string]bool {
+	t.Helper()
+	attributes := make(map[string]bool)
+	parser := css.NewParser(parse.NewInputBytes(src), false)
+	for {
+		grammar, _, _ := parser.Next()
+		switch grammar {
+		case css.ErrorGrammar:
+			if err := parser.Err(); !errors.Is(err, io.EOF) {
+				t.Fatalf("parse compiled consumer CSS: %v", err)
+			}
+			return attributes
+		case css.BeginRulesetGrammar:
+			tokens := parser.Values()
+			for index, token := range tokens {
+				if token.TokenType != css.LeftBracketToken {
+					continue
+				}
+				for index++; index < len(tokens); index++ {
+					token = tokens[index]
+					switch token.TokenType {
+					case css.WhitespaceToken, css.CommentToken:
+						continue
+					case css.IdentToken:
+						attributes[strings.ToLower(string(token.Data))] = true
+					}
+					break
+				}
+			}
 		}
 	}
 }
