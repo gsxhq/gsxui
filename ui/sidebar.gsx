@@ -196,7 +196,7 @@ component SidebarMenuButton(isActive bool, variant string, size string, tooltip 
 			type="button"
 			data-variant={variant |> default("default")}
 			data-size={size |> default("default")}
-			data-active={isActive}
+			data-active={strconv.FormatBool(isActive)}
 			{ attrs... }
 			data-gsxui-slot-sidebar-menu-button
 		>
@@ -208,7 +208,7 @@ component SidebarMenuButton(isActive bool, variant string, size string, tooltip 
 				type="button"
 				data-variant={variant |> default("default")}
 				data-size={size |> default("default")}
-				data-active={isActive}
+				data-active={strconv.FormatBool(isActive)}
 				data-gsxui-tooltip-trigger
 				{ attrs... }
 				data-gsxui-slot-sidebar-menu-button
@@ -225,7 +225,7 @@ component SidebarMenuButton(isActive bool, variant string, size string, tooltip 
 component SidebarMenuAction(showOnHover bool, children gsx.Node, attrs gsx.Attrs) {
 	<button
 		type="button"
-		data-show-on-hover={showOnHover}
+		data-show-on-hover={strconv.FormatBool(showOnHover)}
 		{ attrs... }
 		data-gsxui-slot-sidebar-menu-action
 	>
@@ -263,7 +263,7 @@ component SidebarMenuSubItem(children gsx.Node, attrs gsx.Attrs) {
 component SidebarMenuSubButton(size string, isActive bool, children gsx.Node, attrs gsx.Attrs) {
 	<a
 		data-size={size |> default("md")}
-		data-active={isActive}
+		data-active={strconv.FormatBool(isActive)}
 		{ attrs... }
 		data-gsxui-slot-sidebar-menu-sub-button
 	>

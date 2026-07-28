@@ -1,6 +1,8 @@
 package ui
 
 import (
+	"strconv"
+
 	"github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/ui/icon"
 )
@@ -57,7 +59,7 @@ component PaginationLink(href string, isActive bool, size string, children gsx.N
 		{ if isActive {
 			aria-current="page"
 		} }
-		data-active={isActive}
+		data-active={strconv.FormatBool(isActive)}
 		data-variant={variant}
 		data-size={size}
 		href={href}

@@ -13,7 +13,6 @@ import (
 	_gsxcm "github.com/gsxhq/gsxui/merge"
 	"github.com/gsxhq/gsxui/ui/icon"
 	_gsxio "io"
-	_gsxsc "strconv"
 )
 
 // Sidebar uses one semantic component tree and two responsive render
@@ -473,7 +472,7 @@ func SidebarMenuButton(isActive bool, variant string, size string, tooltip strin
 			}
 			if !attrs.Has("data-active") {
 				_gsxgw.S(" data-active=\"")
-				_gsxgw.S(_gsxsc.FormatBool(bool(isActive)))
+				_gsxgw.AttrValue(string(strconv.FormatBool(isActive)))
 				_gsxgw.S("\"")
 			}
 			_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
@@ -505,7 +504,7 @@ func SidebarMenuButton(isActive bool, variant string, size string, tooltip strin
 				}
 				if !attrs.Has("data-active") {
 					_gsxgw.S(" data-active=\"")
-					_gsxgw.S(_gsxsc.FormatBool(bool(isActive)))
+					_gsxgw.AttrValue(string(strconv.FormatBool(isActive)))
 					_gsxgw.S("\"")
 				}
 				if !attrs.Has("data-gsxui-tooltip-trigger") {
@@ -544,7 +543,7 @@ func SidebarMenuAction(showOnHover bool, children gsx.Node, attrs gsx.Attrs) _gs
 		}
 		if !attrs.Has("data-show-on-hover") {
 			_gsxgw.S(" data-show-on-hover=\"")
-			_gsxgw.S(_gsxsc.FormatBool(bool(showOnHover)))
+			_gsxgw.AttrValue(string(strconv.FormatBool(showOnHover)))
 			_gsxgw.S("\"")
 		}
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
@@ -656,7 +655,7 @@ func SidebarMenuSubButton(size string, isActive bool, children gsx.Node, attrs g
 		}
 		if !attrs.Has("data-active") {
 			_gsxgw.S(" data-active=\"")
-			_gsxgw.S(_gsxsc.FormatBool(bool(isActive)))
+			_gsxgw.AttrValue(string(strconv.FormatBool(isActive)))
 			_gsxgw.S("\"")
 		}
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())

@@ -3,16 +3,17 @@
 package ui
 
 import (
+	"strconv"
+
 	_gsxctx "context"
 	"github.com/gsxhq/gsx"
 	_gsxrt "github.com/gsxhq/gsx"
 	_gsxcm "github.com/gsxhq/gsxui/merge"
 	"github.com/gsxhq/gsxui/ui/icon"
 	_gsxio "io"
-	_gsxsc "strconv"
 )
 
-//line pagination.gsx:8:1
+//line pagination.gsx:10:1
 // Pagination and its parts are the shadcn/ui Pagination
 // (registry/new-york-v4/ui/pagination.tsx) — no Radix primitive underneath;
 // every part is already a plain styled element (nav/ul/li/a/span). The one
@@ -22,11 +23,11 @@ import (
 // (Lucide's MoreHorizontal, see breadcrumb.gsx) come from ui/icon — the
 // pagination -> icon dependency, also derived and pinned.
 
-//line pagination.gsx:16:1
+//line pagination.gsx:18:1
 func Pagination(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line pagination.gsx:17:2
+//line pagination.gsx:19:2
 		_gsxgw.S("<nav")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"navigation\"")
@@ -39,50 +40,50 @@ func Pagination(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-pagination"})
 		_gsxgw.BoolAttr("data-gsxui-slot-pagination", true)
 		_gsxgw.S(">")
-//line pagination.gsx:23:3
+//line pagination.gsx:25:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</nav>")
 		return _gsxgw.Err()
 	})
 }
 
-//line pagination.gsx:27:1
+//line pagination.gsx:29:1
 func PaginationContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line pagination.gsx:28:2
+//line pagination.gsx:30:2
 		_gsxgw.S("<ul")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-pagination-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-pagination-content", true)
 		_gsxgw.S(">")
-//line pagination.gsx:29:3
+//line pagination.gsx:31:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</ul>")
 		return _gsxgw.Err()
 	})
 }
 
-//line pagination.gsx:33:1
+//line pagination.gsx:35:1
 func PaginationItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line pagination.gsx:34:2
+//line pagination.gsx:36:2
 		_gsxgw.S("<li")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-pagination-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-pagination-item", true)
 		_gsxgw.S(">")
-//line pagination.gsx:34:51
+//line pagination.gsx:36:51
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</li>")
 		return _gsxgw.Err()
 	})
 }
 
-//line pagination.gsx:37:1
+//line pagination.gsx:39:1
 // PaginationLink renders the shadcn/ui PaginationLink onto a real <a>,
 // composed from Button's token and axes. isActive
 // selects the "outline" variant (else "ghost") and stamps data-active plus,
@@ -93,7 +94,7 @@ func PaginationItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // (PaginationLinkProps' own `size = "icon"` default), distinct from
 // Button's own "default" zero-value size.
 
-//line pagination.gsx:46:1
+//line pagination.gsx:48:1
 func PaginationLink(href string, isActive bool, size string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -105,7 +106,7 @@ func _gsxrenderPaginationLink(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, href s
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line pagination.gsx:47:2
+//line pagination.gsx:49:2
 	variant := "ghost"
 	if isActive {
 		variant = "outline"
@@ -113,7 +114,7 @@ func _gsxrenderPaginationLink(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, href s
 	if size == "" {
 		size = "icon"
 	}
-//line pagination.gsx:56:2
+//line pagination.gsx:58:2
 	_gsxgw.S("<a")
 	if isActive {
 		if !attrs.Has("aria-current") {
@@ -122,7 +123,7 @@ func _gsxrenderPaginationLink(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, href s
 	}
 	if !attrs.Has("data-active") {
 		_gsxgw.S(" data-active=\"")
-		_gsxgw.S(_gsxsc.FormatBool(bool(isActive)))
+		_gsxgw.AttrValue(string(strconv.FormatBool(isActive)))
 		_gsxgw.S("\"")
 	}
 	if !attrs.Has("data-variant") {
@@ -146,28 +147,28 @@ func _gsxrenderPaginationLink(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, href s
 	_gsxgw.BoolAttr("data-gsxui-slot-pagination-link", true)
 	_gsxgw.BoolAttr("data-gsxui-slot-button", true)
 	_gsxgw.S(">")
-//line pagination.gsx:68:3
+//line pagination.gsx:70:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</a>")
 	return _gsxgw.Err()
 }
 
-//line pagination.gsx:72:1
+//line pagination.gsx:74:1
 // PaginationPrevious/PaginationNext hardcode their own content (icon + a
 // sm:-only label) exactly like shadcn's versions — there is no children
 // slot to override it, matching React's behavior where PaginationLink's
 // literal JSX children always win over anything spread from ...props.
 
-//line pagination.gsx:76:1
+//line pagination.gsx:78:1
 func PaginationPrevious(href string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line pagination.gsx:77:2
+//line pagination.gsx:79:2
 		_gsxgw.NodeResult(_gsxrenderPaginationLink(ctx, _gsxgw, href, false, "default", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line pagination.gsx:84:3
+//line pagination.gsx:86:3
 			_gsxgw.Node(ctx, icon.ChevronLeft())
-//line pagination.gsx:85:3
+//line pagination.gsx:87:3
 			_gsxgw.S("<span")
 			_gsxgw.BoolAttr("data-gsxui-slot-pagination-previous-label", true)
 			_gsxgw.S(">Previous</span>")
@@ -177,18 +178,18 @@ func PaginationPrevious(href string, attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line pagination.gsx:89:1
+//line pagination.gsx:91:1
 func PaginationNext(href string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line pagination.gsx:90:2
+//line pagination.gsx:92:2
 		_gsxgw.NodeResult(_gsxrenderPaginationLink(ctx, _gsxgw, href, false, "default", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line pagination.gsx:97:3
+//line pagination.gsx:99:3
 			_gsxgw.S("<span")
 			_gsxgw.BoolAttr("data-gsxui-slot-pagination-next-label", true)
 			_gsxgw.S(">Next</span>")
-//line pagination.gsx:98:3
+//line pagination.gsx:100:3
 			_gsxgw.Node(ctx, icon.ChevronRight())
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: "Go to next page"}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-pagination-next", Value: _gsxrt.Toggle(true)}})))
@@ -196,11 +197,11 @@ func PaginationNext(href string, attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line pagination.gsx:102:1
+//line pagination.gsx:104:1
 func PaginationEllipsis(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line pagination.gsx:103:2
+//line pagination.gsx:105:2
 		_gsxgw.S("<span")
 		if !attrs.Has("aria-hidden") {
 			_gsxgw.S(" aria-hidden=\"true\"")
@@ -210,9 +211,9 @@ func PaginationEllipsis(attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-pagination-ellipsis"})
 		_gsxgw.BoolAttr("data-gsxui-slot-pagination-ellipsis", true)
 		_gsxgw.S(">")
-//line pagination.gsx:108:3
+//line pagination.gsx:110:3
 		_gsxgw.Node(ctx, icon.Ellipsis())
-//line pagination.gsx:109:3
+//line pagination.gsx:111:3
 		_gsxgw.S("<span")
 		_gsxgw.BoolAttr("data-gsxui-slot-pagination-ellipsis-label", true)
 		_gsxgw.S(">More pages</span></span>")
