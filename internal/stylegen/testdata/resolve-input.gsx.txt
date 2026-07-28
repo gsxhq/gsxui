@@ -1,0 +1,49 @@
+package ui
+
+import "github.com/gsxhq/gsx" // fixture import comment must survive resolution
+
+const unrelatedRecipeDocumentation = "recipe names belong only in canonical class expressions"
+
+component Button(variant string, size string, href string, children gsx.Node, attrs gsx.Attrs) {
+	{ if href != "" {
+		<a
+			class={
+				"before gsxui-recipe-button middle sm:hover:[&>svg]:size-4",
+				switch variant {
+				case "outline":
+					"gsxui-recipe-button-variant-outline"
+				default:
+					"gsxui-recipe-button-variant-default"
+				},
+				"between",
+				switch size { case "icon": "gsxui-recipe-button-size-icon" default: "gsxui-recipe-button-size-default" },
+				"after"
+			} // Preserve this comment adjacent to the class switches.
+			href={href}
+			{ attrs... }
+			data-gsxui-slot-button
+		>
+			{ children }
+		</a>
+	} else {
+		<button
+			class={
+				"before gsxui-recipe-button middle sm:hover:[&>svg]:size-4",
+				switch variant {
+				case "outline":
+					"gsxui-recipe-button-variant-outline"
+				default:
+					"gsxui-recipe-button-variant-default"
+				},
+				"between",
+				switch size { case "icon": "gsxui-recipe-button-size-icon" default: "gsxui-recipe-button-size-default" },
+				"after"
+			} // Preserve this comment adjacent to the class switches.
+			type="button"
+			{ attrs... }
+			data-gsxui-slot-button
+		>
+			{ children }
+		</button>
+	} }
+}
