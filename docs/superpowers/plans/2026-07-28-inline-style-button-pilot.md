@@ -11,6 +11,11 @@
 ## Global Constraints
 
 - Stop after Button. Do not migrate another component or advertise Maia as catalogue-wide.
+- Validate only the standalone Button component/page and its theme-editor
+  preview. Do not refactor ButtonGroup, InputGroup, Pagination, Calendar, or
+  another component/demo page to consume inline Button styling in this pilot.
+  Cross-component cascade/composition findings are review evidence for the
+  post-pilot decision, not implementation scope.
 - Use `/Users/jackieli/personal/gsxhq/gsx` at merged commit `ef72f5eba066d7e87adf7dcadc2db62d00f22efe` and module version `v0.0.0-20260728095825-ef72f5eba066` so bare attribute presence, computed boolean presence semantics, and the public GSX AST/formatter are the tested implementation.
 - Preserve `class_merger = "github.com/gsxhq/gsxui/merge.Merge"` in `gsx.toml`. `merge.Merge` is already the genuine Tailwind-aware runtime merger; do not add another merge helper or pre-merge caller classes.
 - Do not use regular expressions, selector string splitting, or text replacement to parse CSS, GSX, JSON, or imported theme CSS.
@@ -18,7 +23,9 @@
 - Generated consumer Button source must contain concrete Tailwind utilities, no `gsxui-recipe-*` token, and no private styling helper.
 - Keep `data-gsxui-slot-button`, `data-variant`, and `data-size` in rendered output. Bare markers must remain bare through caller attribute bags.
 - Remove Button presentation from the consumer `assets/css/styles/default.css` in the same task that installs inline generated Button source. The documentation site may have a site-only Nova fallback, but it must not be vendored by `gsxui init`.
-- Preserve all non-Button component behavior and the current CSS-only presentation path.
+- Keep non-Button authored components on their current CSS-only path; do not
+  claim or test inline-Button composition inside those components as part of
+  this vertical slice.
 - Resolve every preset and every intended output byte before the first filesystem mutation. Never silently overwrite a modified managed component.
 - Authored `.gsx` files are the source of truth. Run GSX generation and commit generated `.x.go`; never hand-edit generated Go.
 - Use test-first steps. Verify each RED failure is caused by the missing behavior, not a broken fixture.
@@ -1030,8 +1037,8 @@ Assert one minimal same-origin document:
 - renders both exact generated style packages;
 - initially shows Nova and hides Maia;
 - contains every variant and size;
-- includes text/icon, disabled, link, focus-visible, invalid, Button Group
-  adjacency, and caller-composition cases;
+- includes text/icon, disabled, link, focus-visible, invalid, and direct
+  caller-composition cases;
 - includes no docs navigation/editor chrome; and
 - returns 404 for extra route segments.
 
@@ -1106,9 +1113,9 @@ bg-warning
 text-warning-foreground
 ```
 
-Composition classes such as `rounded-r-none` and `border-l-0` must survive when
-they do not conflict. Pin anchor behavior, disabled button behavior, the bare
-slot marker, and caller bare attrs.
+Representative caller classes such as `rounded-r-none` and `border-l-0` must
+survive when they do not conflict. Pin anchor behavior, disabled button
+behavior, the bare slot marker, and caller bare attrs.
 
 Benchmark:
 
@@ -1308,9 +1315,8 @@ the iframe.
 - [ ] **Step 2: Pin the complete preview matrix behavior**
 
 Exercise keyboard focus, Enter/Space activation, enabled link navigation
-prevention in the test harness, disabled Button non-activation, and Button
-Group adjacency for both style sections. Confirm the hidden style section is
-not focusable.
+prevention in the test harness, and disabled Button non-activation for both
+style sections. Confirm the hidden style section is not focusable.
 
 - [ ] **Step 3: Measure concrete source/recipe preview equivalence**
 

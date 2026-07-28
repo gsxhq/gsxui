@@ -83,6 +83,9 @@ The pilot is successful when:
 The pilot does not:
 
 - migrate a second component;
+- repair or validate Button composition inside ButtonGroup, InputGroup,
+  Pagination, Calendar, or their demo pages before the standalone Button
+  vertical slice is reviewed;
 - promise Nova/Maia support for the complete component catalogue;
 - add a third style or alternative primitive base;
 - intelligently merge upstream recipe changes with user-edited component
