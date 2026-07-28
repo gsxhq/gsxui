@@ -342,6 +342,31 @@ func TestInitRejectsPlannedFileAncestorBeforeAnyWrite(t *testing.T) {
 	}
 }
 
+func TestInitRejectsPortableCaseAliasBeforeAnyWrite(t *testing.T) {
+	dir, commands := initTestModule(t)
+	cfg := Config{
+		UI:  "ui",
+		JS:  "Web/GSXUI",
+		CSS: "web/gsxui/index.js",
+	}
+	if err := cfg.Save(dir); err != nil {
+		t.Fatal(err)
+	}
+	before := treeDigest(t, dir)
+
+	err := Run([]string{"init", "--overwrite"})
+	if err == nil || !strings.Contains(err.Error(), "portable") {
+		t.Errorf("init error = %v, want portable-alias rejection", err)
+	}
+	if len(*commands) != 0 {
+		t.Errorf("portable-alias conflict ran commands: %v", *commands)
+	}
+	after := treeDigest(t, dir)
+	if after != before {
+		t.Fatalf("portable-alias conflict changed complete project tree:\n before %s\n  after %s", before, after)
+	}
+}
+
 func TestInitHardlinkAliasIsPreservedAcrossRefusalAndCommandFailure(t *testing.T) {
 	dir, commands := initedModule(t)
 	target := filepath.Join(dir, "web", "gsxui", "theme.css")

@@ -145,6 +145,96 @@ func TestManagedArtifactPlanAncestorDetectionUsesWholePathSegments(t *testing.T)
 	}
 }
 
+func TestManagedArtifactPlanRejectsPortableExactAliases(t *testing.T) {
+	tests := []struct {
+		name  string
+		first string
+		last  string
+	}{
+		{
+			name:  "case only",
+			first: "Web/GSXUI/index.js",
+			last:  "web/gsxui/index.js",
+		},
+		{
+			name:  "canonical Unicode",
+			first: "web/caf\u00e9/index.js",
+			last:  "web/cafe\u0301/index.js",
+		},
+		{
+			name:  "full case fold expansion",
+			first: "web/Stra\u00dfe/index.js",
+			last:  "web/STRASSE/index.js",
+		},
+		{
+			name:  "folded final sigma",
+			first: "web/\u03a3/index.js",
+			last:  "web/\u03c2/index.js",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			artifacts := []artifact{
+				{RelativePath: tt.first, Content: []byte("first"), Managed: true},
+				{RelativePath: tt.last, Content: []byte("last"), Managed: true},
+			}
+			err := validateArtifactPlan(t.TempDir(), DefaultConfig(), artifacts, true)
+			if err == nil || !strings.Contains(err.Error(), "portable") {
+				t.Fatalf("validateArtifactPlan error = %v, want portable exact-alias rejection", err)
+			}
+		})
+	}
+}
+
+func TestManagedArtifactPlanRejectsPortableAncestorsInBothOrders(t *testing.T) {
+	ancestor := artifact{
+		RelativePath: "Web/Stra\u00dfe",
+		Content:      []byte("ancestor"),
+		Managed:      true,
+	}
+	descendant := artifact{
+		RelativePath: "web/STRASSE/cafe\u0301/button.gsx",
+		Content:      []byte("descendant"),
+		Managed:      true,
+	}
+	for _, artifacts := range [][]artifact{
+		{ancestor, descendant},
+		{descendant, ancestor},
+	} {
+		err := validateArtifactPlan(t.TempDir(), DefaultConfig(), artifacts, true)
+		if err == nil || !strings.Contains(err.Error(), "portable") ||
+			!strings.Contains(err.Error(), "ancestor") {
+			t.Fatalf("validateArtifactPlan error = %v, want portable ancestor rejection", err)
+		}
+	}
+}
+
+func TestManagedArtifactPlanPortableIdentityIncludesConfigDestination(t *testing.T) {
+	cfg := DefaultConfig()
+	_, complete, err := artifactPlanWithConfig(cfg, []artifact{{
+		RelativePath: "GSXUI.JSON",
+		Content:      []byte("component bytes"),
+		Managed:      true,
+	}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = validateArtifactPlan(t.TempDir(), cfg, complete, true)
+	if err == nil || !strings.Contains(err.Error(), "portable") {
+		t.Fatalf("validateArtifactPlan error = %v, want portable config alias rejection", err)
+	}
+}
+
+func TestManagedArtifactPlanAllowsPortablePrefixSiblings(t *testing.T) {
+	artifacts := []artifact{
+		{RelativePath: "Web/Stra\u00dfe/file", Content: []byte("first"), Managed: true},
+		{RelativePath: "web/STRASSEN/file", Content: []byte("last"), Managed: true},
+	}
+	if err := validateArtifactPlan(t.TempDir(), DefaultConfig(), artifacts, true); err != nil {
+		t.Fatalf("non-equivalent prefix siblings were rejected: %v", err)
+	}
+}
+
 func TestWriteArtifactPlanAtomicallyReplacesOnlyOneHardlinkAndPreservesMode(t *testing.T) {
 	root := t.TempDir()
 	target := filepath.Join(root, "ui", "button.gsx")

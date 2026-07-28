@@ -11,6 +11,9 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/unicode/norm"
 )
 
 type artifact struct {
@@ -18,6 +21,8 @@ type artifact struct {
 	Content      []byte
 	Managed      bool
 }
+
+var portableCaseFolder = cases.Fold()
 
 func contentHash(content []byte) string {
 	sum := sha256.Sum256(content)
@@ -122,6 +127,7 @@ func validateArtifactPlan(root string, cfg Config, artifacts []artifact, overwri
 	type destination struct {
 		relative string
 		path     string
+		portable []string
 		info     fs.FileInfo
 	}
 	destinations := make([]destination, 0, len(artifacts))
@@ -134,6 +140,7 @@ func validateArtifactPlan(root string, cfg Config, artifacts []artifact, overwri
 		if err != nil && !errorsIsNotExist(err) {
 			return fmt.Errorf("inspect artifact %s: %w", target, err)
 		}
+		portable := portableArtifactIdentity(planned.RelativePath)
 		for _, existing := range destinations {
 			samePath := existing.path == target
 			sameFile := info != nil && existing.info != nil && os.SameFile(info, existing.info)
@@ -145,15 +152,21 @@ func validateArtifactPlan(root string, cfg Config, artifacts []artifact, overwri
 				)
 			}
 			switch {
-			case pathIsAncestor(existing.path, target):
+			case portableArtifactIdentitiesEqual(existing.portable, portable):
 				return fmt.Errorf(
-					"planned file %q is an ancestor of destination %q",
+					"artifact paths %q and %q are portable aliases",
 					existing.relative,
 					planned.RelativePath,
 				)
-			case pathIsAncestor(target, existing.path):
+			case portableArtifactIdentityIsAncestor(existing.portable, portable):
 				return fmt.Errorf(
-					"planned file %q is an ancestor of destination %q",
+					"portable planned file %q is an ancestor of destination %q",
+					existing.relative,
+					planned.RelativePath,
+				)
+			case portableArtifactIdentityIsAncestor(portable, existing.portable):
+				return fmt.Errorf(
+					"portable planned file %q is an ancestor of destination %q",
 					planned.RelativePath,
 					existing.relative,
 				)
@@ -162,6 +175,7 @@ func validateArtifactPlan(root string, cfg Config, artifacts []artifact, overwri
 		destinations = append(destinations, destination{
 			relative: planned.RelativePath,
 			path:     target,
+			portable: portable,
 			info:     info,
 		})
 
@@ -193,12 +207,33 @@ func validateArtifactPlan(root string, cfg Config, artifacts []artifact, overwri
 	return nil
 }
 
-func pathIsAncestor(ancestor, descendant string) bool {
-	relative, err := filepath.Rel(ancestor, descendant)
-	if err != nil || relative == "." || relative == ".." || filepath.IsAbs(relative) {
+func portableArtifactIdentity(relative string) []string {
+	segments := strings.Split(relative, "/")
+	for index, segment := range segments {
+		canonical := norm.NFC.String(segment)
+		segments[index] = norm.NFC.String(portableCaseFolder.String(canonical))
+	}
+	return segments
+}
+
+func portableArtifactIdentitiesEqual(left, right []string) bool {
+	return len(left) == len(right) && portableArtifactIdentityIsPrefix(left, right)
+}
+
+func portableArtifactIdentityIsAncestor(ancestor, descendant []string) bool {
+	return len(ancestor) < len(descendant) && portableArtifactIdentityIsPrefix(ancestor, descendant)
+}
+
+func portableArtifactIdentityIsPrefix(prefix, full []string) bool {
+	if len(prefix) > len(full) {
 		return false
 	}
-	return !strings.HasPrefix(relative, ".."+string(filepath.Separator))
+	for index, segment := range prefix {
+		if segment != full[index] {
+			return false
+		}
+	}
+	return true
 }
 
 func writeArtifactPlan(root string, artifacts []artifact) error {

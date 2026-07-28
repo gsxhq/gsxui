@@ -12,6 +12,7 @@ require (
 	github.com/tdewolff/parse/v2 v2.8.13
 	golang.org/x/mod v0.37.0
 	golang.org/x/net v0.57.0
+	golang.org/x/text v0.40.0
 )
 
 require (
@@ -21,9 +22,9 @@ require (
 	github.com/jackielii/ctxkey v1.0.1 // indirect
 	github.com/tdewolff/minify/v2 v2.24.13 // indirect
 	golang.org/x/exp/typeparams v0.0.0-20260611194520-c48552f49976 // indirect
-	golang.org/x/sync v0.21.0 // indirect
+	golang.org/x/sync v0.22.0 // indirect
 	golang.org/x/sys v0.47.0 // indirect
-	golang.org/x/tools v0.46.0 // indirect
+	golang.org/x/tools v0.47.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 )
 
