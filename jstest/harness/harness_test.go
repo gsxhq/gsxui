@@ -129,13 +129,19 @@ func TestNamedPreviewRouteRendersOneExactCase(t *testing.T) {
 		t.Fatal("named floating preview does not render data-variant=floating")
 	}
 
-	res, err = http.Get(srv.URL + "/x/sidebar/variants?_preview=missing")
-	if err != nil {
-		t.Fatalf("GET unknown named preview: %v", err)
-	}
-	res.Body.Close()
-	if res.StatusCode != http.StatusNotFound {
-		t.Fatalf("unknown named preview status = %d, want 404", res.StatusCode)
+	for _, path := range []string{
+		"/x/sidebar/variants?_preview=missing",
+		"/x/sidebar/variants?_preview=",
+		"/x/sidebar/variants?_preview=floating&_preview=inset",
+	} {
+		res, err = http.Get(srv.URL + path)
+		if err != nil {
+			t.Fatalf("GET inexact named preview %s: %v", path, err)
+		}
+		res.Body.Close()
+		if res.StatusCode != http.StatusNotFound {
+			t.Fatalf("inexact named preview %s status = %d, want 404", path, res.StatusCode)
+		}
 	}
 }
 

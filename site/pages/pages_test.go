@@ -371,6 +371,8 @@ func TestExamplePreviewRoute(t *testing.T) {
 		"/examples/sidebar/missing",
 		"/examples/missing/basic",
 		"/examples/sidebar/variants?_preview=missing",
+		"/examples/sidebar/variants?_preview=",
+		"/examples/sidebar/variants?_preview=floating&_preview=inset",
 	} {
 		t.Run(path, func(t *testing.T) {
 			req := httptest.NewRequest(http.MethodGet, path, nil)

@@ -52,8 +52,9 @@ trees and duplicated source sections.
 
 The registry exposes an exact `(component, example, optional preview)` lookup.
 It returns only registered nodes and preserves each example's optional
-query-driven render hook. The reserved `_preview` query key selects one exact
-named preview; an unknown name returns 404.
+query-driven render hook. The reserved `_preview` query key selects exactly
+one non-empty named preview; an unknown, empty, or repeated selector returns
+404.
 
 ### Isolated route
 

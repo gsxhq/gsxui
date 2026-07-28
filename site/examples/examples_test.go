@@ -40,12 +40,14 @@ func TestFindResolvesOnlyRegisteredPreviewCases(t *testing.T) {
 		t.Fatalf("Find(sidebar, variants, floating) = %q, %#v, %t", title, node, ok)
 	}
 
-	if _, _, ok := examples.Find(
-		"sidebar",
-		"variants",
-		url.Values{examples.PreviewQueryKey: []string{"missing"}},
-	); ok {
-		t.Fatal("Find(sidebar, variants, missing) accepted an unregistered preview case")
+	for _, values := range []url.Values{
+		{examples.PreviewQueryKey: []string{"missing"}},
+		{examples.PreviewQueryKey: []string{""}},
+		{examples.PreviewQueryKey: []string{"floating", "inset"}},
+	} {
+		if _, _, ok := examples.Find("sidebar", "variants", values); ok {
+			t.Fatalf("Find(sidebar, variants, %v) accepted an inexact preview selector", values)
+		}
 	}
 }
 

@@ -134,7 +134,7 @@ func Persisted() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 			return _gsxgw.Err()
-		}), _gsxrt.Attrs{{Key: "class", Value: "h-64 min-h-0 overflow-hidden rounded-lg border"}}))
+		}), nil))
 //line persisted.gsx:86:3
 		_gsxgw.S("<script")
 		_gsxgw.Nonce(ctx)

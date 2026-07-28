@@ -40,4 +40,15 @@ test("sidebar documentation contains each app shell inside its own viewport", as
   );
   await expect(floating.locator("[data-gsxui-sidebar-wrapper]")).toHaveCount(1);
   await expect(floating.locator("[data-gsxui-slot-sidebar-container]")).toHaveCount(1);
+
+  const persistedFrame = page.locator('iframe[src="/examples/sidebar/persisted"]');
+  await persistedFrame.scrollIntoViewIfNeeded();
+  const persisted = page.frameLocator('iframe[src="/examples/sidebar/persisted"]');
+  const persistedHeight = await persisted
+    .locator("[data-gsxui-sidebar-wrapper]")
+    .evaluate((element) => ({
+      wrapper: element.getBoundingClientRect().height,
+      viewport: document.documentElement.clientHeight,
+    }));
+  expect(Math.abs(persistedHeight.wrapper - persistedHeight.viewport)).toBeLessThanOrEqual(1);
 });

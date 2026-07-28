@@ -51,7 +51,7 @@ import (
 // console.
 component Persisted() {
 	<div>
-		<ui.SidebarProvider open={true} class="h-64 min-h-0 overflow-hidden rounded-lg border">
+		<ui.SidebarProvider open={true}>
 			<ui.Sidebar open={true} collapsible="icon">
 				<ui.SidebarHeader>
 					<div class="px-2 py-1 text-sm font-semibold">Acme Inc</div>

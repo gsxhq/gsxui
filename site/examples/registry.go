@@ -77,17 +77,22 @@ func For(component string) []Example {
 	return registry[component]
 }
 
-// Find resolves one exact registered component/example pair. Query-backed
+// Find resolves one exact registered component/example pair and, when the
+// reserved selector is present, exactly one named preview. Query-backed
 // examples render from the supplied values; all others return their static
-// node. Unknown keys are rejected rather than normalized or reconstructed.
+// node. Unknown, empty, or ambiguous keys are rejected rather than normalized
+// or reconstructed.
 func Find(component string, name string, query url.Values) (string, gsx.Node, bool) {
 	for _, example := range registry[component] {
 		if example.Name != name {
 			continue
 		}
-		if previewName := query.Get(PreviewQueryKey); previewName != "" {
+		if previewNames, selected := query[PreviewQueryKey]; selected {
+			if len(previewNames) != 1 || previewNames[0] == "" {
+				return "", nil, false
+			}
 			for _, preview := range example.Previews {
-				if preview.Name == previewName {
+				if preview.Name == previewNames[0] {
 					return example.Title + " · " + preview.Title, preview.Node, true
 				}
 			}
