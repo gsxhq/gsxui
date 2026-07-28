@@ -140,7 +140,8 @@ remains present and usable; only active-section highlighting is absent.
 
 From `lg`, the theme editor fills the workspace below the header:
 
-- the customizer is a bounded left column wide enough for token values;
+- the customizer is a bounded left column for style, palette, radius, and
+  transport controls;
 - its detailed controls scroll independently;
 - the preview fills the remaining width and height; and
 - the single preview iframe fills its preview surface instead of relying on a
@@ -151,7 +152,7 @@ appear in this order:
 
 1. style picker;
 2. live preview;
-3. detailed theme controls.
+3. the remaining theme and transport controls.
 
 The desktop grid places the style picker and detailed controls in the left
 column and the preview in the right column. It never duplicates the iframe,
