@@ -3,6 +3,7 @@ package examples_test
 import (
 	"bytes"
 	"context"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -10,6 +11,42 @@ import (
 
 	"github.com/gsxhq/gsxui/site/examples"
 )
+
+func TestFindResolvesOnlyExactRegisteredExamples(t *testing.T) {
+	example, node, ok := examples.Find("button", "basic", nil)
+	if !ok || example.Name != "basic" || node == nil {
+		t.Fatalf("Find(button, basic) = %#v, %#v, %t", example, node, ok)
+	}
+
+	for _, key := range [][2]string{
+		{"button", "missing"},
+		{"missing", "basic"},
+		{"Button", "basic"},
+	} {
+		if _, _, ok := examples.Find(key[0], key[1], nil); ok {
+			t.Errorf("Find(%q, %q) accepted an unregistered key", key[0], key[1])
+		}
+	}
+}
+
+func TestFindUsesTheRegisteredQueryRenderer(t *testing.T) {
+	_, node, ok := examples.Find(
+		"calendar",
+		"basic",
+		url.Values{"month": []string{"2026-02"}},
+	)
+	if !ok {
+		t.Fatal("Find(calendar, basic) = not found")
+	}
+
+	var output bytes.Buffer
+	if err := node.Render(context.Background(), &output); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(output.String(), "February 2026") {
+		t.Fatalf("query-rendered calendar does not contain February 2026:\n%s", output.String())
+	}
+}
 
 // TestExampleSourceMatchesFile is the drift guard for
 // source-shown-is-source-run: for every registered example, the bytes

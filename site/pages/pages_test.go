@@ -292,6 +292,55 @@ func TestComponentPageRoute(t *testing.T) {
 	})
 }
 
+func TestExamplePreviewRoute(t *testing.T) {
+	handler := newTestHandler(t)
+
+	t.Run("registered example", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/examples/sidebar/basic", nil)
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+
+		if rec.Code != http.StatusOK {
+			t.Fatalf("GET /examples/sidebar/basic = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
+		}
+		body := rec.Body.String()
+		for _, marker := range []string{
+			`data-site-isolated-document`,
+			`data-gsxui-slot-sidebar-wrapper`,
+			`data-gsxui-slot-sidebar-container`,
+			`src="/__vite/@vite/client"`,
+			`src="/__vite/web/main.js"`,
+		} {
+			if !strings.Contains(body, marker) {
+				t.Errorf("preview response missing %q; body:\n%s", marker, body)
+			}
+		}
+		for _, forbidden := range []string{
+			`<iframe`,
+			`Search docs...`,
+			`View the original on shadcn/ui`,
+		} {
+			if strings.Contains(body, forbidden) {
+				t.Errorf("preview response unexpectedly contains %q; body:\n%s", forbidden, body)
+			}
+		}
+	})
+
+	for _, path := range []string{
+		"/examples/sidebar/missing",
+		"/examples/missing/basic",
+	} {
+		t.Run(path, func(t *testing.T) {
+			req := httptest.NewRequest(http.MethodGet, path, nil)
+			rec := httptest.NewRecorder()
+			handler.ServeHTTP(rec, req)
+			if rec.Code != http.StatusNotFound {
+				t.Fatalf("GET %s = %d, want %d; body:\n%s", path, rec.Code, http.StatusNotFound, rec.Body.String())
+			}
+		})
+	}
+}
+
 // TestDocsRoutes is the Task 4 smoke test for the two standalone docs
 // pages: both render 200 with a distinctive marker, and each links to the
 // other via the sidebar's Docs section so the active-state wiring is

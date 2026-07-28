@@ -11,6 +11,7 @@ type Pages struct {
 	Docs            `route:"/docs Docs"`
 	ComponentsIndex `route:"/components/{$} Components"`
 	Component       `route:"/components/{name} Component"`
+	ExamplePreview  `route:"/examples/{component}/{example} Example Preview"`
 	Theme           `route:"/theme Theme"`
 }
 

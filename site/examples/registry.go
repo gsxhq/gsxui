@@ -56,6 +56,23 @@ func For(component string) []Example {
 	return registry[component]
 }
 
+// Find resolves one exact registered component/example pair. Query-backed
+// examples render from the supplied values; all others return their static
+// node. Unknown keys are rejected rather than normalized or reconstructed.
+func Find(component string, name string, query url.Values) (Example, gsx.Node, bool) {
+	for _, example := range registry[component] {
+		if example.Name != name {
+			continue
+		}
+		node := example.Node
+		if example.Query != nil {
+			node = example.Query(query)
+		}
+		return example, node, true
+	}
+	return Example{}, nil, false
+}
+
 // Components returns the names of components with at least one registered
 // example, in registration order. This is a strict subset of
 // internal/registry.Components() (all shipped ui/ components) until every
