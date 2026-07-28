@@ -6,6 +6,20 @@ import (
 	"github.com/gsxhq/gsx"
 )
 
+// PreviewQueryKey selects one exact named preview document for an isolated
+// example with multiple cases. The leading underscore reserves it for the
+// gallery rather than an example's own request state.
+const PreviewQueryKey = "_preview"
+
+// Preview is one independently rendered document within a registered
+// example. It lets a single shared source block demonstrate multiple
+// viewport-owning cases without mounting those fixed layouts together.
+type Preview struct {
+	Name  string
+	Title string
+	Node  gsx.Node
+}
+
 // Example is one live demo on a component page. Name/SourcePath key the
 // embedded source file (SourcePath is "{component}/{Name}.gsx", relative
 // to this package — the same path Source reads), Title is the display
@@ -18,6 +32,13 @@ type Example struct {
 	Title      string
 	Node       gsx.Node
 	SourcePath string
+	// Isolated renders the live example in its own same-origin document.
+	// Use it for application-shell components that intentionally own the
+	// viewport; source display and registration otherwise stay unchanged.
+	Isolated bool
+	// Previews, when non-empty, renders one isolated document per named case
+	// while retaining this example's single title and source block.
+	Previews []Preview
 
 	// Query, when non-nil, re-renders the example per-request from the
 	// request's raw query parameters instead of using the static Node —
@@ -59,18 +80,26 @@ func For(component string) []Example {
 // Find resolves one exact registered component/example pair. Query-backed
 // examples render from the supplied values; all others return their static
 // node. Unknown keys are rejected rather than normalized or reconstructed.
-func Find(component string, name string, query url.Values) (Example, gsx.Node, bool) {
+func Find(component string, name string, query url.Values) (string, gsx.Node, bool) {
 	for _, example := range registry[component] {
 		if example.Name != name {
 			continue
+		}
+		if previewName := query.Get(PreviewQueryKey); previewName != "" {
+			for _, preview := range example.Previews {
+				if preview.Name == previewName {
+					return example.Title + " · " + preview.Title, preview.Node, true
+				}
+			}
+			return "", nil, false
 		}
 		node := example.Node
 		if example.Query != nil {
 			node = example.Query(query)
 		}
-		return example, node, true
+		return example.Title, node, true
 	}
-	return Example{}, nil, false
+	return "", nil, false
 }
 
 // Components returns the names of components with at least one registered

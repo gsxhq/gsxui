@@ -44,9 +44,16 @@ registered examples set it to true. The field is exported because the pages
 package consumes the registry contract; it is not part of the vendored
 component API.
 
-The registry exposes an exact `(component, example)` lookup. It returns only
-registered examples and preserves each example's optional query-driven render
-hook.
+An isolated example may also declare exact named `Previews`. This covers a
+source block such as Sidebar Variants that demonstrates several
+viewport-owning layouts: each case gets its own document while the parent
+still shows the shared source only once. It avoids both overlapping fixed
+trees and duplicated source sections.
+
+The registry exposes an exact `(component, example, optional preview)` lookup.
+It returns only registered nodes and preserves each example's optional
+query-driven render hook. The reserved `_preview` query key selects one exact
+named preview; an unknown name returns 404.
 
 ### Isolated route
 
@@ -54,6 +61,7 @@ The site adds:
 
 ```text
 GET /examples/{component}/{example}
+GET /examples/{component}/{example}?_preview={preview}
 ```
 
 The route resolves the two exact registry keys. Unknown pairs return 404. It
@@ -93,6 +101,12 @@ background. Its document may scroll internally when an example is taller
 than the preview viewport. The exact highlighted source and Copy control stay
 immediately below the iframe.
 
+When the example declares named previews, the parent renders a labelled,
+full-width iframe for each case. Full width is intentional: Sidebar switches
+to its mobile branch below the desktop breakpoint, so a two-column iframe
+grid would test a different responsive mode. All case frames remain under
+one example heading and one source block.
+
 ### Theme synchronization
 
 The isolated document reads the persisted theme before first paint. When the
@@ -105,22 +119,28 @@ theme when it loads.
 
 ### Go route tests
 
-- `/components/sidebar` contains three isolated iframes and does not render a
-  live `data-gsxui-slot-sidebar-container` in the parent document.
+- `/components/sidebar` contains ten isolated iframes: Basic, eight Variants
+  cases, and Persisted. It renders three source blocks and no live
+  `data-gsxui-slot-sidebar-container` in the parent document.
 - Ordinary component pages still contain inline rendered component markers.
 - `/examples/sidebar/basic` renders a minimal document with Sidebar markers
   and the Vite asset entry, without docs navigation or another iframe.
-- Unknown component/example pairs return 404.
+- A named Variants route renders exactly one Sidebar wrapper.
+- Unknown component/example/preview keys return 404.
 
 ### Browser regression
 
 - On `/components/sidebar`, every desktop Sidebar container belongs to an
-  iframe document; none appears in the parent page.
+  iframe document; none appears in the parent page, and each Variants frame
+  contains exactly one Sidebar wrapper.
 - The parent docs sidebar retains its normal position and content.
 - The Basic iframe's desktop Sidebar container is fixed to the iframe
   viewport, not the parent viewport.
 - Its trigger changes state inside that iframe.
 - Parent theme changes propagate to loaded Sidebar iframe documents.
+- The browser manifest expands named previews into unique corpus entries, and
+  visual snapshots cover every desktop Variants case independently. The
+  mobile default snapshot opens its native Sheet branch.
 
 ## Success criteria
 

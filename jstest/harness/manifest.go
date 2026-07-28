@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"net/url"
 	"os"
 
 	"github.com/gsxhq/gsxui/site/examples"
@@ -17,11 +18,27 @@ type entry struct {
 	URL       string `json:"url"`
 }
 
-// buildManifest enumerates every registered example, in registration order.
+// buildManifest enumerates every registered example in registration order.
+// Named previews replace their example's base node in the browser corpus:
+// each independently addressable node gets a unique test identity, while the
+// base route remains available to the site and focused tests.
 func buildManifest() []entry {
 	var out []entry
 	for _, component := range examples.Components() {
 		for _, ex := range examples.For(component) {
+			if len(ex.Previews) != 0 {
+				for _, preview := range ex.Previews {
+					query := url.Values{
+						examples.PreviewQueryKey: []string{preview.Name},
+					}
+					out = append(out, entry{
+						Component: component,
+						Example:   ex.Name + "/" + preview.Name,
+						URL:       "/x/" + component + "/" + ex.Name + "?" + query.Encode(),
+					})
+				}
+				continue
+			}
 			out = append(out, entry{
 				Component: component,
 				Example:   ex.Name,

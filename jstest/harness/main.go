@@ -99,36 +99,25 @@ func newMux(root string) http.Handler {
 		component := r.PathValue("component")
 		name := r.PathValue("example")
 
-		for _, ex := range examples.For(component) {
-			if ex.Name != name {
-				continue
-			}
-			// ex.Query, when the example sets one, re-renders from the
-			// request's own query parameters (site/examples/registry.go's
-			// Example.Query doc comment) — generic across every component;
-			// this handler forwards the raw query values without ever
-			// inspecting component or name itself. An example with no Query
-			// hook (the common case) always falls through to its static Node.
-			node := ex.Node
-			if ex.Query != nil {
-				node = ex.Query(r.URL.Query())
-			}
-			var buf bytes.Buffer
-			if err := node.Render(r.Context(), &buf); err != nil {
-				http.Error(w, "render: "+err.Error(), http.StatusInternalServerError)
-				return
-			}
-			w.Header().Set("Content-Type", "text/html; charset=utf-8")
-			title := component + "/" + name
-			if err := renderShell(w, title, stylesheetFor(r), "/ui/index.js", template.HTML(buf.String())); err != nil {
-				log.Printf("rendering shell for %s: %v", title, err)
-			}
+		title, node, ok := examples.Find(component, name, r.URL.Query())
+		if !ok {
+			http.NotFound(w, r)
 			return
 		}
-		http.NotFound(w, r)
+		var buf bytes.Buffer
+		if err := node.Render(r.Context(), &buf); err != nil {
+			http.Error(w, "render: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		documentTitle := component + "/" + name + " · " + title
+		if err := renderShell(w, documentTitle, stylesheetFor(r), "/ui/index.js", template.HTML(buf.String())); err != nil {
+			log.Printf("rendering shell for %s: %v", documentTitle, err)
+		}
 	})
 
 	registerModuleRoutes(mux, root)
+	registerSiteRoutes(mux)
 
 	return mux
 }

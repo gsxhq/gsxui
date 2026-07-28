@@ -4,7 +4,7 @@
 
 **Goal:** Render Sidebar examples in same-origin live iframes so their fixed application-shell layout cannot escape the component gallery.
 
-**Architecture:** Add exact registered-example lookup and a minimal `/examples/{component}/{example}` document that reuses the site's canonical head/assets. Extend example presentation metadata with `Isolated`; the component page renders only those examples as iframes while ordinary examples remain inline.
+**Architecture:** Add exact registered-example/preview lookup and a minimal `/examples/{component}/{example}` document that reuses the site's canonical head/assets. Extend example presentation metadata with `Isolated` and optional named `Previews`; the component page renders only those examples as iframes while ordinary examples remain inline.
 
 **Tech Stack:** Go 1.26, GSX, structpages, standard `net/http`, Vite, vanilla JavaScript, Playwright.
 
@@ -33,7 +33,7 @@
 - Generated: `site/pages/example_preview.x.go`
 
 **Interfaces:**
-- Produces: `examples.Find(component string, name string, query url.Values) (Example, gsx.Node, bool)`.
+- Produces: `examples.Find(component string, name string, query url.Values) (string, gsx.Node, bool)`.
 - Produces: `ExamplePreview` at `GET /examples/{component}/{example}`.
 - Produces: package-private `siteHead(title string)` used by both `Layout` and `ExamplePreview`.
 - Consumes: existing `Example.Node` and optional `Example.Query`.
@@ -45,9 +45,9 @@ and rejection of unknown component/example pairs:
 
 ```go
 func TestFindResolvesExactRegisteredExample(t *testing.T) {
-    got, node, ok := Find("button", "basic", nil)
-    if !ok || got.Name != "basic" || node == nil {
-        t.Fatalf("Find(button, basic) = %#v, %#v, %t", got, node, ok)
+    title, node, ok := Find("button", "basic", nil)
+    if !ok || title != "Basic" || node == nil {
+        t.Fatalf("Find(button, basic) = %q, %#v, %t", title, node, ok)
     }
     if _, _, ok := Find("button", "missing", nil); ok {
         t.Fatal("Find accepted an unregistered example")
@@ -90,7 +90,7 @@ route do not exist.
 Add:
 
 ```go
-func Find(component string, name string, query url.Values) (Example, gsx.Node, bool) {
+func Find(component string, name string, query url.Values) (string, gsx.Node, bool) {
     for _, example := range registry[component] {
         if example.Name != name {
             continue
@@ -99,9 +99,9 @@ func Find(component string, name string, query url.Values) (Example, gsx.Node, b
         if example.Query != nil {
             node = example.Query(query)
         }
-        return example, node, true
+        return example.Title, node, true
     }
-    return Example{}, nil, false
+    return "", nil, false
 }
 ```
 
@@ -188,22 +188,26 @@ git commit -m "feat: add isolated example documents"
 - Modify: `site/pages/component.gsx`
 - Modify: `site/pages/pages_test.go`
 - Modify: `web/site.js`
+- Modify: `jstest/harness/main.go`
+- Modify: `jstest/harness/manifest.go`
+- Modify: `jstest/specs/style-visual.spec.ts`
 - Create: `jstest/specs/sidebar-page.spec.ts`
 - Generated: `site/pages/component.x.go`
 
 **Interfaces:**
 - Consumes: `ExamplePreview` route from Task 1.
 - Produces: `Example.Isolated bool`.
+- Produces: optional exact named `Example.Previews`.
 - Produces: iframe marker `data-site-isolated-preview`.
-- Produces: iframe URLs `/examples/{component}/{example}`.
+- Produces: iframe URLs `/examples/{component}/{example}` and
+  `/examples/{component}/{example}?_preview={preview}`.
 
 - [ ] **Step 1: Write the failing parent-page tests**
 
 Request `/components/sidebar`, parse the returned HTML, and assert:
 
-- exactly three `iframe[data-site-isolated-preview]` elements;
-- exact sources `/examples/sidebar/basic`,
-  `/examples/sidebar/variants`, and `/examples/sidebar/persisted`;
+- exactly ten `iframe[data-site-isolated-preview]` elements;
+- exact sources for Basic, eight named Variants cases, and Persisted;
 - each iframe has a non-empty title;
 - the parent document contains no
   `data-gsxui-slot-sidebar-container` element;
@@ -245,13 +249,15 @@ sees no isolated iframe.
 
 - [ ] **Step 4: Add isolation metadata and iframe rendering**
 
-Add `Isolated bool` to `examples.Example` and set it true on all three Sidebar
-registrations.
+Add `Isolated bool` and optional named `Previews` to `examples.Example`; set
+Sidebar's three registrations to isolated. Register the eight Variants cases
+as exact named previews sharing the existing Variants source block.
 
 Extend `exampleProps` with `Name` and `Isolated`. In `Component.Props`, copy
 those fields exactly from the registered example.
 
-In `Component.Page`, render:
+In `Component.Page`, render a single iframe when `Previews` is empty, or one
+labelled full-width iframe per named preview when it is non-empty:
 
 ```gsx
 { if ex.Isolated {
@@ -270,6 +276,15 @@ In `Component.Page`, render:
 ```
 
 Do not wrap the iframe in the existing padded preview panel.
+
+Refactor `site/examples/sidebar/variants.gsx` so every named preview node
+contains exactly one SidebarProvider. Do not mount multiple fixed Sidebar
+containers in a single isolated document.
+
+Expand named previews into unique browser-manifest entries and route the
+harness through `examples.Find`. Replace the old composite Sidebar visual
+snapshot with one desktop snapshot per named case; keep one meaningful mobile
+snapshot by opening the default case's native Sheet branch.
 
 - [ ] **Step 5: Synchronize live theme changes**
 

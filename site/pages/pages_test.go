@@ -186,6 +186,47 @@ func TestComponentPageRoute(t *testing.T) {
 		if !strings.Contains(body, "gsxui add button") {
 			t.Errorf(`response missing install snippet "gsxui add button"; body:\n%s`, body)
 		}
+		if strings.Contains(body, `data-site-isolated-preview`) {
+			t.Errorf("ordinary button examples should render inline; body:\n%s", body)
+		}
+	})
+
+	t.Run("viewport-owned component uses isolated previews", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/components/sidebar", nil)
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+
+		if rec.Code != http.StatusOK {
+			t.Fatalf("GET /components/sidebar = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
+		}
+		body := rec.Body.String()
+		if got := strings.Count(body, `data-site-isolated-preview`); got != 10 {
+			t.Errorf("sidebar page has %d isolated previews, want 10; body:\n%s", got, body)
+		}
+		for _, marker := range []string{
+			`title="Basic preview"`,
+			`src="/examples/sidebar/basic"`,
+			`title="variant=sidebar (default) preview"`,
+			`src="/examples/sidebar/variants?_preview=sidebar"`,
+			`title="variant=floating preview"`,
+			`src="/examples/sidebar/variants?_preview=floating"`,
+			`title="icon collapsed preview"`,
+			`src="/examples/sidebar/variants?_preview=icon-collapsed"`,
+			`title="Persisted (cookie round-trip) preview"`,
+			`src="/examples/sidebar/persisted"`,
+			`ui.SidebarProvider`,
+			`data-site-copy`,
+		} {
+			if !strings.Contains(body, marker) {
+				t.Errorf("sidebar page missing %q; body:\n%s", marker, body)
+			}
+		}
+		if strings.Contains(body, `data-gsxui-slot-sidebar-container`) {
+			t.Errorf("sidebar implementation leaked into the parent document; body:\n%s", body)
+		}
+		if got := strings.Count(body, `data-site-copy`); got != 3 {
+			t.Errorf("sidebar page has %d source copy controls, want one per registered example (3)", got)
+		}
 	})
 
 	// Task 3a's representative: proves a form-control component (input)
@@ -329,6 +370,7 @@ func TestExamplePreviewRoute(t *testing.T) {
 	for _, path := range []string{
 		"/examples/sidebar/missing",
 		"/examples/missing/basic",
+		"/examples/sidebar/variants?_preview=missing",
 	} {
 		t.Run(path, func(t *testing.T) {
 			req := httptest.NewRequest(http.MethodGet, path, nil)

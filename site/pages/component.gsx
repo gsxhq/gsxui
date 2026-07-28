@@ -2,6 +2,7 @@ package pages
 
 import (
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/gsxhq/gsx"
@@ -29,9 +30,12 @@ type ComponentProps struct {
 // (generated from these same files, see site/hl/gen), so the page looks the
 // block up by SourcePath instead of reading and escaping it per request.
 type exampleProps struct {
+	Name       string
 	Title      string
 	Node       gsx.Node
 	SourcePath string
+	Isolated   bool
+	Previews   []examples.Preview
 }
 
 // Props resolves the {name} path param against the examples registry.
@@ -49,7 +53,14 @@ func (Component) Props(r *http.Request) (ComponentProps, error) {
 	}
 	eps := make([]exampleProps, len(exs))
 	for i, ex := range exs {
-		eps[i] = exampleProps{Title: ex.Title, Node: ex.Node, SourcePath: ex.SourcePath}
+		eps[i] = exampleProps{
+			Name:       ex.Name,
+			Title:      ex.Title,
+			Node:       ex.Node,
+			SourcePath: ex.SourcePath,
+			Isolated:   ex.Isolated,
+			Previews:   ex.Previews,
+		}
 	}
 	return ComponentProps{Name: name, Title: capitalize(name), Examples: eps}, nil
 }
@@ -80,6 +91,16 @@ func shadcnName(name string) string {
 	return name
 }
 
+func examplePreviewURL(componentName string, exampleName string, preview string) string {
+	path := "/examples/" + url.PathEscape(componentName) + "/" + url.PathEscape(exampleName)
+	if preview == "" {
+		return path
+	}
+	return path + "?" + url.Values{
+		examples.PreviewQueryKey: []string{preview},
+	}.Encode()
+}
+
 component (c Component) Page(props ComponentProps) {
 	<Layout title={props.Title} active={props.Name}>
 		<div class="flex flex-col gap-10 py-10">
@@ -87,9 +108,34 @@ component (c Component) Page(props ComponentProps) {
 			{ for _, ex := range props.Examples {
 				<section class="flex flex-col gap-3">
 					<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">{ ex.Title }</h2>
-					<div class="border rounded-lg p-8 bg-background">
-						{ ex.Node }
-					</div>
+					{ if ex.Isolated && len(ex.Previews) == 0 {
+						<iframe
+							data-site-isolated-preview
+							title={ex.Title + " preview"}
+							src={examplePreviewURL(props.Name, ex.Name, "")}
+							loading="lazy"
+							class="block h-[32rem] w-full rounded-lg border bg-background"
+						></iframe>
+					} else if ex.Isolated {
+						<div class="flex flex-col gap-6">
+							{ for _, preview := range ex.Previews {
+								<div class="flex flex-col gap-2">
+									<div class="text-sm font-medium">{ preview.Title }</div>
+									<iframe
+										data-site-isolated-preview
+										title={preview.Title + " preview"}
+										src={examplePreviewURL(props.Name, ex.Name, preview.Name)}
+										loading="lazy"
+										class="block h-80 w-full rounded-lg border bg-background"
+									></iframe>
+								</div>
+							} }
+						</div>
+					} else {
+						<div class="border rounded-lg p-8 bg-background">
+							{ ex.Node }
+						</div>
+					} }
 					<div class="relative" data-site-example>
 						<pre
 							class="overflow-x-auto rounded-2xl bg-muted/50 px-4 py-3.5 font-mono text-sm"

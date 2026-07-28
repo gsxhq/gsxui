@@ -43,6 +43,19 @@ func TestBuildManifestCoversRegisteredExamples(t *testing.T) {
 	if got.URL != "/x/dropdown/checkboxes" {
 		t.Errorf("URL = %q, want /x/dropdown/checkboxes", got.URL)
 	}
+
+	var preview *entry
+	for i := range m {
+		if m[i].Component == "sidebar" && m[i].Example == "variants/floating" {
+			preview = &m[i]
+		}
+	}
+	if preview == nil {
+		t.Fatal("sidebar/variants/floating missing from manifest")
+	}
+	if preview.URL != "/x/sidebar/variants?_preview=floating" {
+		t.Errorf("named preview URL = %q, want /x/sidebar/variants?_preview=floating", preview.URL)
+	}
 }
 
 // Hyphenated component names must survive into the manifest — the example
@@ -91,6 +104,64 @@ func TestExampleRouteRendersTheExample(t *testing.T) {
 	} {
 		if !strings.Contains(page, want) {
 			t.Errorf("page missing %q", want)
+		}
+	}
+}
+
+func TestNamedPreviewRouteRendersOneExactCase(t *testing.T) {
+	srv := httptest.NewServer(newMux(repoRoot(t)))
+	defer srv.Close()
+
+	res, err := http.Get(srv.URL + "/x/sidebar/variants?_preview=floating")
+	if err != nil {
+		t.Fatalf("GET named preview: %v", err)
+	}
+	body, _ := io.ReadAll(res.Body)
+	res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("status = %d, want 200", res.StatusCode)
+	}
+	page := string(body)
+	if got := strings.Count(page, `data-gsxui-sidebar-wrapper`); got != 1 {
+		t.Fatalf("named preview contains %d Sidebar wrappers, want 1", got)
+	}
+	if !strings.Contains(page, `data-variant="floating"`) {
+		t.Fatal("named floating preview does not render data-variant=floating")
+	}
+
+	res, err = http.Get(srv.URL + "/x/sidebar/variants?_preview=missing")
+	if err != nil {
+		t.Fatalf("GET unknown named preview: %v", err)
+	}
+	res.Body.Close()
+	if res.StatusCode != http.StatusNotFound {
+		t.Fatalf("unknown named preview status = %d, want 404", res.StatusCode)
+	}
+}
+
+func TestSiteRoutesUseTheRealPagesWithHarnessAssets(t *testing.T) {
+	srv := httptest.NewServer(newMux(repoRoot(t)))
+	defer srv.Close()
+
+	res, err := http.Get(srv.URL + "/components/sidebar")
+	if err != nil {
+		t.Fatalf("GET /components/sidebar: %v", err)
+	}
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("status = %d, want 200", res.StatusCode)
+	}
+	body, _ := io.ReadAll(res.Body)
+	page := string(body)
+
+	for _, want := range []string{
+		`<link rel="stylesheet" href="/static/jstest/.tmp/site.css">`,
+		`<script type="module" src="/static/jstest/harness-site.js"></script>`,
+		`data-site-isolated-preview`,
+		`src="/examples/sidebar/basic"`,
+	} {
+		if !strings.Contains(page, want) {
+			t.Errorf("site page missing %q", want)
 		}
 	}
 }

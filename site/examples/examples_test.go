@@ -9,13 +9,14 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/site/examples"
 )
 
 func TestFindResolvesOnlyExactRegisteredExamples(t *testing.T) {
-	example, node, ok := examples.Find("button", "basic", nil)
-	if !ok || example.Name != "basic" || node == nil {
-		t.Fatalf("Find(button, basic) = %#v, %#v, %t", example, node, ok)
+	title, node, ok := examples.Find("button", "basic", nil)
+	if !ok || title != "Basic" || node == nil {
+		t.Fatalf("Find(button, basic) = %q, %#v, %t", title, node, ok)
 	}
 
 	for _, key := range [][2]string{
@@ -26,6 +27,25 @@ func TestFindResolvesOnlyExactRegisteredExamples(t *testing.T) {
 		if _, _, ok := examples.Find(key[0], key[1], nil); ok {
 			t.Errorf("Find(%q, %q) accepted an unregistered key", key[0], key[1])
 		}
+	}
+}
+
+func TestFindResolvesOnlyRegisteredPreviewCases(t *testing.T) {
+	title, node, ok := examples.Find(
+		"sidebar",
+		"variants",
+		url.Values{examples.PreviewQueryKey: []string{"floating"}},
+	)
+	if !ok || title != "Variants · variant=floating" || node == nil {
+		t.Fatalf("Find(sidebar, variants, floating) = %q, %#v, %t", title, node, ok)
+	}
+
+	if _, _, ok := examples.Find(
+		"sidebar",
+		"variants",
+		url.Values{examples.PreviewQueryKey: []string{"missing"}},
+	); ok {
+		t.Fatal("Find(sidebar, variants, missing) accepted an unregistered preview case")
 	}
 }
 
@@ -85,14 +105,18 @@ func TestExamplesRender(t *testing.T) {
 	for _, component := range examples.Components() {
 		for _, ex := range examples.For(component) {
 			t.Run(component+"/"+ex.Name, func(t *testing.T) {
-				var buf bytes.Buffer
-				err := ex.Node.Render(context.Background(), &buf)
-				if err != nil {
-					t.Errorf("ex.Node.Render: %v", err)
+				nodes := []gsx.Node{ex.Node}
+				for _, preview := range ex.Previews {
+					nodes = append(nodes, preview.Node)
 				}
-				output := buf.String()
-				if strings.Contains(output, "about:invalid#gsx") {
-					t.Errorf("output contains blocked URL sentinel about:invalid#gsx")
+				for index, node := range nodes {
+					var buf bytes.Buffer
+					if err := node.Render(context.Background(), &buf); err != nil {
+						t.Errorf("node %d Render: %v", index, err)
+					}
+					if strings.Contains(buf.String(), "about:invalid#gsx") {
+						t.Errorf("node %d output contains blocked URL sentinel about:invalid#gsx", index)
+					}
 				}
 			})
 		}

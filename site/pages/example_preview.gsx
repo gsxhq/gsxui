@@ -20,7 +20,7 @@ type examplePreviewProps struct {
 func (ExamplePreview) Props(r *http.Request) (examplePreviewProps, error) {
 	component := r.PathValue("component")
 	name := r.PathValue("example")
-	example, node, ok := examples.Find(component, name, r.URL.Query())
+	title, node, ok := examples.Find(component, name, r.URL.Query())
 	if !ok {
 		return examplePreviewProps{}, ErrorWithStatus{
 			Status:  http.StatusNotFound,
@@ -28,7 +28,7 @@ func (ExamplePreview) Props(r *http.Request) (examplePreviewProps, error) {
 		}
 	}
 	return examplePreviewProps{
-		Title: component + " · " + example.Title,
+		Title: component + " · " + title,
 		Node:  node,
 	}, nil
 }

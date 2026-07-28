@@ -256,6 +256,9 @@ func TestRegisteredExamplesCoverStyleContract(t *testing.T) {
 		}
 		for _, example := range registeredExamples {
 			recordNode(component+"/"+example.Name, example.Node)
+			for _, preview := range example.Previews {
+				recordNode(component+"/"+example.Name+"/preview/"+preview.Name, preview.Node)
+			}
 		}
 	}
 

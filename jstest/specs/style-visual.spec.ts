@@ -13,6 +13,13 @@ const desktopRoutes = [
   "field/invalid",
   "navigation-menu/mega",
   "sidebar/variants",
+  "sidebar/variants?_preview=floating",
+  "sidebar/variants?_preview=inset",
+  "sidebar/variants?_preview=offcanvas",
+  "sidebar/variants?_preview=icon",
+  "sidebar/variants?_preview=none",
+  "sidebar/variants?_preview=right-collapsed",
+  "sidebar/variants?_preview=icon-collapsed",
   "sonner/types",
   "tabs/basic",
 ] as const;
@@ -31,6 +38,10 @@ const screenshotOptions = {
 };
 
 type VisualRoute = (typeof desktopRoutes)[number] | (typeof mobileRoutes)[number];
+
+function snapshotSlug(route: VisualRoute) {
+  return route.replace("?_preview=", "-").replace("/", "-");
+}
 
 async function prepareVisualRoute(
   page: import("@playwright/test").Page,
@@ -66,6 +77,11 @@ async function prepareVisualRoute(
     await expect(toasts).toHaveCount(5);
     await toasts.last().hover();
     await expect(toasts.nth(2)).toBeVisible();
+  }
+
+  if (route === "sidebar/variants" && (page.viewportSize()?.width ?? 0) < 768) {
+    await page.getByRole("button", { name: "Toggle Sidebar" }).first().click();
+    await expect(page.getByRole("dialog")).toBeVisible();
   }
 }
 
@@ -654,7 +670,7 @@ for (const route of desktopRoutes) {
     for (const theme of ["light", "dark"] as const) {
       await prepareVisualRoute(page, route, theme);
       await expect(page.locator("body")).toHaveScreenshot(
-        `desktop-${theme}-${route.replace("/", "-")}.png`,
+        `desktop-${theme}-${snapshotSlug(route)}.png`,
         screenshotOptions,
       );
     }
@@ -668,7 +684,7 @@ test.describe("mobile visual contracts", () => {
     test(`${route} keeps its mobile visual contract`, async ({ page }) => {
       await prepareVisualRoute(page, route, "light");
       await expect(page.locator("body")).toHaveScreenshot(
-        `mobile-light-${route.replace("/", "-")}.png`,
+        `mobile-light-${snapshotSlug(route)}.png`,
         screenshotOptions,
       );
     });
