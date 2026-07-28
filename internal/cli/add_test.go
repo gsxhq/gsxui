@@ -1,11 +1,19 @@
 package cli
 
 import (
+	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
+	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	gsxui "github.com/gsxhq/gsxui"
+	"github.com/gsxhq/gsxui/internal/preset"
 )
 
 // initedModule = initTestModule + a completed init (stubbed runner).
@@ -70,6 +78,126 @@ func TestAddVendorsWithDeps(t *testing.T) {
 	if !strings.Contains(joined, "go tool gsx generate") {
 		t.Errorf("generate not invoked:\n%s", joined)
 	}
+	button, err := os.ReadFile(filepath.Join(dir, "ui/button.gsx"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantButton, err := fs.ReadFile(gsxui.Files, "registry/generated/nova/button.gsx")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(button, wantButton) {
+		t.Fatalf("dependency Button is not exact Nova registry source")
+	}
+}
+
+func TestAddButtonUsesSelectedStyleExactSource(t *testing.T) {
+	tests := []struct {
+		style preset.Style
+	}{
+		{style: preset.StyleNova},
+		{style: preset.StyleMaia},
+	}
+	for _, tt := range tests {
+		t.Run(string(tt.style), func(t *testing.T) {
+			dir, _ := initedModuleWithStyle(t, tt.style)
+			if err := Run([]string{"add", "button"}); err != nil {
+				t.Fatal(err)
+			}
+			got, err := os.ReadFile(filepath.Join(dir, "ui/button.gsx"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			want, err := fs.ReadFile(gsxui.Files, "registry/generated/"+string(tt.style)+"/button.gsx")
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !bytes.Equal(got, want) {
+				t.Fatalf("button.gsx differs from exact %s registry artifact", tt.style)
+			}
+			assertManagedHashMatches(t, dir, "ui/button.gsx")
+		})
+	}
+}
+
+func TestAddNovaNonButtonUsesExistingUISource(t *testing.T) {
+	dir, _ := initedModuleWithStyle(t, preset.StyleNova)
+	if err := Run([]string{"add", "badge"}); err != nil {
+		t.Fatal(err)
+	}
+	got, err := os.ReadFile(filepath.Join(dir, "ui/badge.gsx"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	want, err := fs.ReadFile(gsxui.Files, "ui/badge.gsx")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(got, want) {
+		t.Fatal("Nova non-Button source did not come from ui/")
+	}
+}
+
+func TestAddMaiaRejectsAnyNonButtonClosureBeforeWrites(t *testing.T) {
+	dir, commands := initedModuleWithStyle(t, preset.StyleMaia)
+	before := snapshotFiles(t, dir)
+	commandCount := len(*commands)
+
+	err := Run([]string{"add", "dialog"})
+	if err == nil || !strings.Contains(strings.ToLower(err.Error()), "maia") ||
+		!strings.Contains(err.Error(), "Button") {
+		t.Fatalf("Maia dependency error = %v", err)
+	}
+	if !equalFileSnapshots(before, snapshotFiles(t, dir)) {
+		t.Fatal("Maia rejection changed project files")
+	}
+	if len(*commands) != commandCount {
+		t.Fatalf("Maia rejection ran commands: %v", (*commands)[commandCount:])
+	}
+}
+
+func TestAddRequiresValidProjectPresetBeforeResolutionOrWrites(t *testing.T) {
+	t.Run("missing", func(t *testing.T) {
+		dir, commands := initTestModule(t)
+		cfg := DefaultConfig()
+		if err := cfg.Save(dir); err != nil {
+			t.Fatal(err)
+		}
+		before := snapshotFiles(t, dir)
+		err := Run([]string{"add", "button"})
+		if err == nil || !strings.Contains(err.Error(), "gsxui.preset.json") {
+			t.Fatalf("missing preset error = %v", err)
+		}
+		if !equalFileSnapshots(before, snapshotFiles(t, dir)) {
+			t.Fatal("missing preset changed project files")
+		}
+		if len(*commands) != 0 {
+			t.Fatalf("missing preset ran commands: %v", *commands)
+		}
+	})
+
+	t.Run("invalid", func(t *testing.T) {
+		dir, commands := initedModule(t)
+		if err := os.WriteFile(
+			filepath.Join(dir, "gsxui.preset.json"),
+			[]byte(`{"style":"maia"}`),
+			0o644,
+		); err != nil {
+			t.Fatal(err)
+		}
+		before := snapshotFiles(t, dir)
+		commandCount := len(*commands)
+		err := Run([]string{"add", "button"})
+		if err == nil || !strings.Contains(err.Error(), "preset") {
+			t.Fatalf("invalid preset error = %v", err)
+		}
+		if !equalFileSnapshots(before, snapshotFiles(t, dir)) {
+			t.Fatal("invalid preset changed project files")
+		}
+		if len(*commands) != commandCount {
+			t.Fatalf("invalid preset ran commands: %v", (*commands)[commandCount:])
+		}
+	})
 }
 
 func TestAddDoesNotVendorRetiredSlotHelpers(t *testing.T) {
@@ -135,7 +263,7 @@ func TestAddUnknown(t *testing.T) {
 }
 
 func TestAddGenerateFailureHint(t *testing.T) {
-	_, _ = initedModule(t)
+	dir, _ := initedModule(t)
 	orig := runCommand
 	runCommand = func(dir, name string, args ...string) error {
 		if name == "go" && len(args) > 0 && args[0] == "tool" {
@@ -150,6 +278,16 @@ func TestAddGenerateFailureHint(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "gsx generate:") || !strings.Contains(err.Error(), "gsxui init") {
 		t.Fatalf("want actionable hint, got %v", err)
+	}
+	cfg, loadErr := LoadConfig(dir)
+	if loadErr != nil {
+		t.Fatal(loadErr)
+	}
+	if _, recorded := cfg.Managed["ui/badge.gsx"]; recorded {
+		t.Fatal("generation failure recorded a managed hash for badge.gsx")
+	}
+	if _, statErr := os.Stat(filepath.Join(dir, "ui/badge.gsx")); statErr != nil {
+		t.Fatalf("Task 6 generation failure should expose the written file for Task 7 rollback: %v", statErr)
 	}
 }
 
@@ -176,12 +314,114 @@ func TestAddRefusesCustomBarrel(t *testing.T) {
 	if string(got) != custom {
 		t.Errorf("custom index.js was modified:\n%s", got)
 	}
+	if _, err := os.Stat(filepath.Join(dir, "ui/badge.gsx")); !os.IsNotExist(err) {
+		t.Errorf("barrel conflict was discovered after writing badge.gsx: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(dir, "ui/NOTICE.md")); !os.IsNotExist(err) {
+		t.Errorf("barrel conflict was discovered after writing NOTICE.md: %v", err)
+	}
 	if err := Run([]string{"add", "--overwrite", "badge"}); err != nil {
 		t.Fatal(err)
 	}
 	got, _ = os.ReadFile(indexPath)
 	if !strings.HasPrefix(string(got), barrelHeader) {
 		t.Errorf("--overwrite should replace with the generated barrel:\n%s", got)
+	}
+}
+
+func TestAddPreflightsEveryTargetBeforeWriting(t *testing.T) {
+	dir, _ := initedModule(t)
+	if err := Run([]string{"add", "button"}); err != nil {
+		t.Fatal(err)
+	}
+	buttonPath := filepath.Join(dir, "ui/button.gsx")
+	const local = "package ui // local Button\n"
+	if err := os.WriteFile(buttonPath, []byte(local), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	err := Run([]string{"add", "badge", "button"})
+	if err == nil || !strings.Contains(err.Error(), "--overwrite") {
+		t.Fatalf("modified Button error = %v", err)
+	}
+	if _, statErr := os.Stat(filepath.Join(dir, "ui/badge.gsx")); !os.IsNotExist(statErr) {
+		t.Fatalf("preflight failure wrote badge.gsx: %v", statErr)
+	}
+	got, readErr := os.ReadFile(buttonPath)
+	if readErr != nil {
+		t.Fatal(readErr)
+	}
+	if string(got) != local {
+		t.Fatalf("preflight failure changed Button:\n%s", got)
+	}
+}
+
+func TestAddDiffIsReadOnlyForAbsentIdenticalAndDifferentTargets(t *testing.T) {
+	dir, commands := initedModule(t)
+
+	beforeAbsent := snapshotFiles(t, dir)
+	commandCount := len(*commands)
+	absentOutput, err := captureRunOutput(t, []string{"add", "--diff", "button"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(absentOutput, "+++ ui/button.gsx") ||
+		!strings.Contains(absentOutput, "+package ui") {
+		t.Fatalf("absent diff output:\n%s", absentOutput)
+	}
+	if !equalFileSnapshots(beforeAbsent, snapshotFiles(t, dir)) {
+		t.Fatal("absent diff changed project files")
+	}
+	if len(*commands) != commandCount {
+		t.Fatalf("absent diff ran commands: %v", (*commands)[commandCount:])
+	}
+
+	if err := Run([]string{"add", "button"}); err != nil {
+		t.Fatal(err)
+	}
+	identicalBefore := snapshotFiles(t, dir)
+	commandCount = len(*commands)
+	identicalOutput, err := captureRunOutput(t, []string{"add", "--diff", "button"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.TrimSpace(identicalOutput) != "(no changes)" {
+		t.Fatalf("identical diff output = %q", identicalOutput)
+	}
+	if !equalFileSnapshots(identicalBefore, snapshotFiles(t, dir)) {
+		t.Fatal("identical diff changed project files")
+	}
+	if len(*commands) != commandCount {
+		t.Fatalf("identical diff ran commands: %v", (*commands)[commandCount:])
+	}
+
+	buttonPath := filepath.Join(dir, "ui/button.gsx")
+	if err := os.WriteFile(buttonPath, []byte("package ui // local\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	differentBefore := snapshotFiles(t, dir)
+	commandCount = len(*commands)
+	differentOutput, err := captureRunOutput(t, []string{"add", "--diff", "button"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(differentOutput, "-package ui // local") ||
+		!strings.Contains(differentOutput, "+package ui") {
+		t.Fatalf("different diff output:\n%s", differentOutput)
+	}
+	if !equalFileSnapshots(differentBefore, snapshotFiles(t, dir)) {
+		t.Fatal("different diff changed project files")
+	}
+	if len(*commands) != commandCount {
+		t.Fatalf("different diff ran commands: %v", (*commands)[commandCount:])
+	}
+}
+
+func TestAddDiffAndOverwriteAreMutuallyExclusive(t *testing.T) {
+	_, _ = initedModule(t)
+	err := Run([]string{"add", "--diff", "--overwrite", "button"})
+	if err == nil || !strings.Contains(err.Error(), "mutually exclusive") {
+		t.Fatalf("diff+overwrite error = %v", err)
 	}
 }
 
@@ -196,4 +436,59 @@ func TestAddRegeneratesGeneratedBarrelWithoutOverwrite(t *testing.T) {
 	if !strings.Contains(string(index), `import "./dialog.js";`) {
 		t.Errorf("generated barrel not regenerated:\n%s", index)
 	}
+}
+
+func initedModuleWithStyle(t *testing.T, style preset.Style) (string, *[][]string) {
+	t.Helper()
+	dir, commands := initTestModule(t)
+	code, err := preset.EncodeShare(preset.Default(style))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := Run([]string{"init", "--preset", code}); err != nil {
+		t.Fatal(err)
+	}
+	return dir, commands
+}
+
+func assertManagedHashMatches(t *testing.T, dir, relative string) {
+	t.Helper()
+	cfg, err := LoadConfig(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	content, err := os.ReadFile(filepath.Join(dir, filepath.FromSlash(relative)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	sum := sha256.Sum256(content)
+	want := hex.EncodeToString(sum[:])
+	if cfg.Managed[relative] != want {
+		t.Fatalf("Managed[%q] = %q, want %q", relative, cfg.Managed[relative], want)
+	}
+}
+
+func captureRunOutput(t *testing.T, args []string) (string, error) {
+	t.Helper()
+	reader, writer, err := os.Pipe()
+	if err != nil {
+		t.Fatal(err)
+	}
+	original := os.Stdout
+	os.Stdout = writer
+	output := make(chan []byte, 1)
+	go func() {
+		content, _ := io.ReadAll(reader)
+		output <- content
+	}()
+	runErr := Run(args)
+	if err := writer.Close(); err != nil {
+		t.Fatal(err)
+	}
+	os.Stdout = original
+	content := <-output
+	if err := reader.Close(); err != nil {
+		t.Fatal(err)
+	}
+	return string(content), runErr
 }

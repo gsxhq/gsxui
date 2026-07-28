@@ -2,9 +2,12 @@ package cli
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 )
+
+var commandStdin io.Reader = os.Stdin
 
 // runCommand is the seam for external processes (go, gsx). Unit tests stub
 // it; the real implementation streams output through.

@@ -1,16 +1,18 @@
 package cli
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
 
 	gsxui "github.com/gsxhq/gsxui"
+	"github.com/gsxhq/gsxui/internal/preset"
 	"github.com/gsxhq/gsxui/internal/registry"
+	"github.com/pmezard/go-difflib/difflib"
 )
 
 // runAdd vendors the requested components (and their transitive deps) into
@@ -20,20 +22,28 @@ import (
 // still produces components/button.gsx starting with "package ui", and it
 // compiles and imports fine as "components".
 func runAdd(args []string) error {
-	fs2 := flag.NewFlagSet("add", flag.ContinueOnError)
-	overwrite := fs2.Bool("overwrite", false, "replace locally modified files")
-	if err := fs2.Parse(args); err != nil {
+	flags := flag.NewFlagSet("add", flag.ContinueOnError)
+	diff := flags.Bool("diff", false, "show selected source against local files without writing")
+	overwrite := flags.Bool("overwrite", false, "replace locally modified files")
+	if err := flags.Parse(args); err != nil {
 		return err
 	}
-	names := fs2.Args()
+	if *diff && *overwrite {
+		return fmt.Errorf("--diff and --overwrite are mutually exclusive")
+	}
+	names := flags.Args()
 	if len(names) == 0 {
-		return fmt.Errorf("usage: gsxui add [--overwrite] <component>...")
+		return fmt.Errorf("usage: gsxui add [--diff|--overwrite] <component>...")
 	}
 	dir, err := os.Getwd()
 	if err != nil {
 		return err
 	}
 	cfg, err := LoadConfig(dir)
+	if err != nil {
+		return err
+	}
+	selectedPreset, err := loadProjectPreset(dir)
 	if err != nil {
 		return err
 	}
@@ -45,8 +55,61 @@ func runAdd(args []string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("adding: %s\n", strings.Join(resolved, " "))
+	if selectedPreset.Style == preset.StyleMaia {
+		for _, name := range resolved {
+			if name != "button" {
+				return fmt.Errorf("style maia supports only the standalone Button; dependency closure contains %q", name)
+			}
+		}
+	}
 
+	artifacts, err := addArtifacts(dir, module, cfg, selectedPreset, resolved)
+	if err != nil {
+		return err
+	}
+	if *diff {
+		return printArtifactDiff(dir, artifacts)
+	}
+	nextConfig, completePlan, err := artifactPlanWithConfig(cfg, artifacts)
+	if err != nil {
+		return err
+	}
+	if err := validateArtifactPlan(dir, cfg, completePlan, *overwrite); err != nil {
+		return err
+	}
+
+	fmt.Printf("adding: %s\n", strings.Join(resolved, " "))
+	if err := writeArtifactPlan(dir, artifacts); err != nil {
+		return err
+	}
+	if err := runCommand(dir, "go", "tool", "gsx", "generate"); err != nil {
+		return fmt.Errorf("gsx generate: %w — if the gsx tool is missing, run 'gsxui init' (or 'go get -tool github.com/gsxhq/gsx/cmd/gsx@latest')", err)
+	}
+	if err := nextConfig.Save(dir); err != nil {
+		return err
+	}
+	fmt.Println("done — build with: go build ./...")
+	return nil
+}
+
+func loadProjectPreset(dir string) (preset.Preset, error) {
+	path := filepath.Join(dir, "gsxui.preset.json")
+	content, err := os.ReadFile(path)
+	if os.IsNotExist(err) {
+		return preset.Preset{}, fmt.Errorf("gsxui.preset.json not found — run 'gsxui init' first")
+	}
+	if err != nil {
+		return preset.Preset{}, fmt.Errorf("reading gsxui.preset.json: %w", err)
+	}
+	selected, err := preset.ParseJSON(content)
+	if err != nil {
+		return preset.Preset{}, fmt.Errorf("parsing gsxui.preset.json: %w", err)
+	}
+	return selected, nil
+}
+
+func addArtifacts(dir, module string, cfg Config, selected preset.Preset, resolved []string) ([]artifact, error) {
+	var artifacts []artifact
 	for _, name := range resolved {
 		if fi, err := fs.Stat(gsxui.Files, "ui/"+name); err == nil && fi.IsDir() {
 			// Directory component (icon): vendors as its own package under
@@ -54,7 +117,7 @@ func runAdd(args []string) error {
 			// generated data tables stay out of the user's ui namespace.
 			entries, err := fs.ReadDir(gsxui.Files, "ui/"+name)
 			if err != nil {
-				return err
+				return nil, err
 			}
 			for _, e := range entries {
 				fname := e.Name()
@@ -63,81 +126,143 @@ func runAdd(args []string) error {
 				}
 				src, err := fs.ReadFile(gsxui.Files, "ui/"+name+"/"+fname)
 				if err != nil {
-					return err
+					return nil, err
 				}
 				if strings.HasSuffix(fname, ".gsx") || strings.HasSuffix(fname, ".go") {
-					src = RewriteGsx(src, module, cfg.UI)
+					src, err = RewriteGsx(src, module, cfg.UI)
+					if err != nil {
+						return nil, fmt.Errorf("rewrite %s/%s: %w", name, fname, err)
+					}
 				}
-				if err := writeVendored(filepath.Join(dir, cfg.UI, name, fname), src, *overwrite); err != nil {
-					return err
-				}
+				artifacts = append(artifacts, artifact{
+					RelativePath: filepath.ToSlash(filepath.Join(cfg.UI, name, fname)),
+					Content:      src,
+					Managed:      true,
+				})
 			}
 		} else {
-			src, err := fs.ReadFile(gsxui.Files, "ui/"+name+".gsx")
+			sourcePath := "ui/" + name + ".gsx"
+			if name == "button" {
+				sourcePath = "registry/generated/" + string(selected.Style) + "/button.gsx"
+			}
+			src, err := fs.ReadFile(gsxui.Files, sourcePath)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			if err := writeVendored(filepath.Join(dir, cfg.UI, name+".gsx"), RewriteGsx(src, module, cfg.UI), *overwrite); err != nil {
-				return err
+			rewritten, err := RewriteGsx(src, module, cfg.UI)
+			if err != nil {
+				return nil, fmt.Errorf("rewrite %s: %w", sourcePath, err)
 			}
+			artifacts = append(artifacts, artifact{
+				RelativePath: filepath.ToSlash(filepath.Join(cfg.UI, name+".gsx")),
+				Content:      rewritten,
+				Managed:      true,
+			})
 		}
 		if registry.HasJS(name) {
 			src, err := fs.ReadFile(gsxui.Files, "ui/"+name+".js")
 			if err != nil {
-				return err
+				return nil, err
 			}
-			if err := writeVendored(filepath.Join(dir, cfg.JS, name+".js"), src, *overwrite); err != nil {
-				return err
-			}
+			artifacts = append(artifacts, artifact{
+				RelativePath: filepath.ToSlash(filepath.Join(cfg.JS, name+".js")),
+				Content:      src,
+				Managed:      true,
+			})
 		}
 	}
 
 	notice, err := fs.ReadFile(gsxui.Files, "NOTICE.md")
 	if err != nil {
-		return err
+		return nil, err
 	}
-	if err := writeVendored(filepath.Join(dir, cfg.UI, "NOTICE.md"), notice, true); err != nil {
-		return err
-	}
+	artifacts = append(artifacts, artifact{
+		RelativePath: filepath.ToSlash(filepath.Join(cfg.UI, "NOTICE.md")),
+		Content:      notice,
+		Managed:      true,
+	})
 
-	if err := regenBarrel(dir, cfg, *overwrite); err != nil {
-		return err
+	barrel, err := behaviorBarrelArtifact(dir, cfg, resolved)
+	if err != nil {
+		return nil, err
 	}
-	if err := runCommand(dir, "go", "tool", "gsx", "generate"); err != nil {
-		return fmt.Errorf("gsx generate: %w — if the gsx tool is missing, run 'gsxui init' (or 'go get -tool github.com/gsxhq/gsx/cmd/gsx@latest')", err)
+	artifacts = append(artifacts, barrel)
+	return artifacts, nil
+}
+
+func behaviorBarrelArtifact(dir string, cfg Config, resolved []string) (artifact, error) {
+	jsRelative := filepath.ToSlash(cfg.JS)
+	jsDir, err := artifactPath(dir, jsRelative)
+	if err != nil {
+		return artifact{}, err
 	}
-	fmt.Println("done — build with: go build ./...")
-	return nil
+	matches, err := filepath.Glob(filepath.Join(jsDir, "*.js"))
+	if err != nil {
+		return artifact{}, err
+	}
+	behaviorSet := make(map[string]bool)
+	for _, match := range matches {
+		name := strings.TrimSuffix(filepath.Base(match), ".js")
+		if name != "index" && name != "gsxui" {
+			behaviorSet[name] = true
+		}
+	}
+	for _, name := range resolved {
+		if registry.HasJS(name) {
+			behaviorSet[name] = true
+		}
+	}
+	behaviors := make([]string, 0, len(behaviorSet))
+	for name := range behaviorSet {
+		behaviors = append(behaviors, name)
+	}
+	return artifact{
+		RelativePath: filepath.ToSlash(filepath.Join(cfg.JS, "index.js")),
+		Content:      Barrel(behaviors),
+		Managed:      true,
+	}, nil
 }
 
 // barrelHeader is the first line Barrel emits — its presence marks index.js
 // as gsxui-generated and safe to regenerate freely.
 const barrelHeader = "// Generated by gsxui — edit by adding/removing components, not by hand."
 
-// regenBarrel rewrites index.js from the behaviors present on disk. A
-// user-authored index.js (one that doesn't start with barrelHeader) is left
-// alone unless overwrite is set, matching writeVendored's contract.
-func regenBarrel(dir string, cfg Config, overwrite bool) error {
-	indexPath := filepath.Join(dir, cfg.JS, "index.js")
-	if existing, err := os.ReadFile(indexPath); err == nil && !overwrite {
-		if !strings.HasPrefix(string(existing), barrelHeader) {
-			return fmt.Errorf("%s differs from the gsxui version — pass --overwrite to replace it", indexPath)
+func printArtifactDiff(dir string, artifacts []artifact) error {
+	var output bytes.Buffer
+	changed := false
+	for _, planned := range artifacts {
+		target, err := artifactPath(dir, planned.RelativePath)
+		if err != nil {
+			return err
 		}
-	}
-	matches, err := filepath.Glob(filepath.Join(dir, cfg.JS, "*.js"))
-	if err != nil {
-		return err
-	}
-	var behaviors []string
-	for _, m := range matches {
-		base := filepath.Base(m)
-		if base == "index.js" || base == "gsxui.js" {
+		existing, err := os.ReadFile(target)
+		if os.IsNotExist(err) {
+			existing = nil
+		} else if err != nil {
+			return fmt.Errorf("read artifact %s: %w", target, err)
+		}
+		if bytes.Equal(existing, planned.Content) {
 			continue
 		}
-		behaviors = append(behaviors, strings.TrimSuffix(base, ".js"))
+		diff, err := difflib.GetUnifiedDiffString(difflib.UnifiedDiff{
+			A:        difflib.SplitLines(string(existing)),
+			B:        difflib.SplitLines(string(planned.Content)),
+			FromFile: planned.RelativePath + " (local)",
+			ToFile:   planned.RelativePath + " (selected)",
+			Context:  3,
+		})
+		if err != nil {
+			return fmt.Errorf("diff %s: %w", planned.RelativePath, err)
+		}
+		output.WriteString(diff)
+		changed = true
 	}
-	sort.Strings(behaviors)
-	return os.WriteFile(indexPath, Barrel(behaviors), 0o644)
+	if !changed {
+		fmt.Println("(no changes)")
+		return nil
+	}
+	fmt.Print(output.String())
+	return nil
 }
 
 func runList(args []string) error {

@@ -1,6 +1,9 @@
 package cli
 
 import (
+	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"io"
 	"io/fs"
@@ -11,6 +14,7 @@ import (
 	"testing"
 
 	gsxui "github.com/gsxhq/gsxui"
+	"github.com/gsxhq/gsxui/internal/preset"
 	parse "github.com/tdewolff/parse/v2"
 	"github.com/tdewolff/parse/v2/css"
 )
@@ -40,6 +44,7 @@ func TestInitWritesEverything(t *testing.T) {
 	}
 	for _, p := range []string{
 		"gsxui.json",
+		"gsxui.preset.json",
 		"web/gsxui/index.css",
 		"web/gsxui/foundation.css",
 		"web/gsxui/theme.css",
@@ -53,6 +58,17 @@ func TestInitWritesEverything(t *testing.T) {
 			t.Errorf("missing %s: %v", p, err)
 		}
 	}
+	assertInitializedPreset(t, dir, preset.StyleNova)
+	assertManagedFilesMatch(t, dir, []string{
+		"gsxui.preset.json",
+		"ui/merge/merge.go",
+		"web/gsxui/foundation.css",
+		"web/gsxui/gsxui.js",
+		"web/gsxui/index.css",
+		"web/gsxui/index.js",
+		"web/gsxui/style.css",
+		"web/gsxui/theme.css",
+	})
 	toml, _ := os.ReadFile(filepath.Join(dir, "gsx.toml"))
 	if want := `class_merger = "example.com/app/ui/merge.Merge"`; !strings.Contains(string(toml), want) {
 		t.Errorf("gsx.toml missing %q:\n%s", want, toml)
@@ -92,6 +108,298 @@ func TestInitWritesEverything(t *testing.T) {
 			t.Errorf("missing command %q in:\n%s", want, joined)
 		}
 	}
+}
+
+func TestInitPresetInputsSelectMaia(t *testing.T) {
+	maiaJSON, err := preset.CanonicalJSON(preset.Default(preset.StyleMaia))
+	if err != nil {
+		t.Fatal(err)
+	}
+	maiaCode, err := preset.EncodeShare(preset.Default(preset.StyleMaia))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	tests := []struct {
+		name      string
+		argument  func(*testing.T, string) string
+		stdin     []byte
+		wantInput bool
+	}{
+		{
+			name: "file",
+			argument: func(t *testing.T, dir string) string {
+				path := filepath.Join(dir, "maia.json")
+				if err := os.WriteFile(path, maiaJSON, 0o644); err != nil {
+					t.Fatal(err)
+				}
+				return path
+			},
+		},
+		{
+			name: "stdin",
+			argument: func(*testing.T, string) string {
+				return "-"
+			},
+			stdin:     append(append([]byte(nil), maiaJSON...), '\n'),
+			wantInput: true,
+		},
+		{
+			name: "share code",
+			argument: func(*testing.T, string) string {
+				return maiaCode
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dir, _ := initTestModule(t)
+			if tt.wantInput {
+				original := commandStdin
+				commandStdin = bytes.NewReader(tt.stdin)
+				t.Cleanup(func() { commandStdin = original })
+			}
+			argument := tt.argument(t, dir)
+			if err := Run([]string{"init", "--preset", argument}); err != nil {
+				t.Fatal(err)
+			}
+			assertInitializedPreset(t, dir, preset.StyleMaia)
+		})
+	}
+}
+
+func TestInitMalformedPresetDoesNotWriteAnything(t *testing.T) {
+	dir, commands := initTestModule(t)
+	err := Run([]string{"init", "--preset", `{"style":"maia"}`})
+	if err == nil || !strings.Contains(err.Error(), "preset") {
+		t.Fatalf("init malformed preset error = %v", err)
+	}
+	entries, readErr := os.ReadDir(dir)
+	if readErr != nil {
+		t.Fatal(readErr)
+	}
+	if len(entries) != 1 || entries[0].Name() != "go.mod" {
+		var names []string
+		for _, entry := range entries {
+			names = append(names, entry.Name())
+		}
+		t.Fatalf("malformed preset wrote files: %v", names)
+	}
+	if len(*commands) != 0 {
+		t.Fatalf("malformed preset ran commands: %v", *commands)
+	}
+}
+
+func TestInitDifferentPresetRequiresOverwriteBeforeAnyWrite(t *testing.T) {
+	dir, _ := initTestModule(t)
+	if err := Run([]string{"init"}); err != nil {
+		t.Fatal(err)
+	}
+	before := snapshotFiles(t, dir)
+	maiaCode, err := preset.EncodeShare(preset.Default(preset.StyleMaia))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = Run([]string{"init", "--preset", maiaCode})
+	if err == nil || !strings.Contains(err.Error(), "--overwrite") ||
+		!strings.Contains(err.Error(), "gsxui.preset.json") {
+		t.Fatalf("different preset error = %v", err)
+	}
+	afterRefusal := snapshotFiles(t, dir)
+	if !equalFileSnapshots(before, afterRefusal) {
+		t.Fatal("different preset refusal changed project files")
+	}
+
+	if err := Run([]string{"init", "--preset", maiaCode, "--overwrite"}); err != nil {
+		t.Fatal(err)
+	}
+	assertInitializedPreset(t, dir, preset.StyleMaia)
+}
+
+func TestInitRejectsModifiedGeneratedBarrelWithoutAdoptingItsHash(t *testing.T) {
+	dir, _ := initTestModule(t)
+	if err := Run([]string{"init"}); err != nil {
+		t.Fatal(err)
+	}
+	cfgBefore, err := LoadConfig(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	indexPath := filepath.Join(dir, "web/gsxui/index.js")
+	modified := []byte(barrelHeader + "\n// locally modified but still generated-looking\n")
+	if err := os.WriteFile(indexPath, modified, 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	err = Run([]string{"init"})
+	if err == nil || !strings.Contains(err.Error(), "--overwrite") {
+		t.Fatalf("modified generated barrel error = %v", err)
+	}
+	got, readErr := os.ReadFile(indexPath)
+	if readErr != nil {
+		t.Fatal(readErr)
+	}
+	if !bytes.Equal(got, modified) {
+		t.Fatalf("plain init changed modified barrel:\n%s", got)
+	}
+	cfgAfter, loadErr := LoadConfig(dir)
+	if loadErr != nil {
+		t.Fatal(loadErr)
+	}
+	if cfgAfter.Managed["web/gsxui/index.js"] != cfgBefore.Managed["web/gsxui/index.js"] {
+		t.Fatal("plain init adopted the modified barrel hash")
+	}
+
+	if err := Run([]string{"init", "--overwrite"}); err != nil {
+		t.Fatal(err)
+	}
+	got, readErr = os.ReadFile(indexPath)
+	if readErr != nil {
+		t.Fatal(readErr)
+	}
+	if !bytes.Equal(got, Barrel(nil)) {
+		t.Fatalf("init --overwrite did not restore generated barrel:\n%s", got)
+	}
+	assertManagedFilesMatch(t, dir, []string{
+		"gsxui.preset.json",
+		"ui/merge/merge.go",
+		"web/gsxui/foundation.css",
+		"web/gsxui/gsxui.js",
+		"web/gsxui/index.css",
+		"web/gsxui/index.js",
+		"web/gsxui/style.css",
+		"web/gsxui/theme.css",
+	})
+}
+
+func TestInitRejectsConfigAliasedToPlannedArtifactBeforeWrites(t *testing.T) {
+	for _, alias := range []string{"symlink", "hardlink"} {
+		t.Run(alias, func(t *testing.T) {
+			dir, commands := initTestModule(t)
+			themePath := filepath.Join(dir, "web", "gsxui", "theme.css")
+			if err := os.MkdirAll(filepath.Dir(themePath), 0o755); err != nil {
+				t.Fatal(err)
+			}
+			legacyConfig := []byte(`{"ui":"ui","js":"web/gsxui","css":"web/gsxui/index.css"}`)
+			if err := os.WriteFile(themePath, legacyConfig, 0o644); err != nil {
+				t.Fatal(err)
+			}
+			configPath := filepath.Join(dir, "gsxui.json")
+			var err error
+			if alias == "symlink" {
+				err = os.Symlink(filepath.ToSlash(filepath.Join("web", "gsxui", "theme.css")), configPath)
+			} else {
+				err = os.Link(themePath, configPath)
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			before := snapshotFiles(t, dir)
+
+			err = Run([]string{"init", "--overwrite"})
+			if err == nil || !strings.Contains(err.Error(), "same destination") {
+				t.Fatalf("init error = %v, want config/artifact alias rejection", err)
+			}
+			if len(*commands) != 0 {
+				t.Fatalf("aliased config ran commands: %v", *commands)
+			}
+			after := snapshotFiles(t, dir)
+			if !equalFileSnapshots(before, after) {
+				t.Fatal("aliased config rejection changed project files")
+			}
+		})
+	}
+}
+
+func assertInitializedPreset(t *testing.T, dir string, style preset.Style) {
+	t.Helper()
+	wantPreset, err := preset.CanonicalJSON(preset.Default(style))
+	if err != nil {
+		t.Fatal(err)
+	}
+	gotPreset, err := os.ReadFile(filepath.Join(dir, "gsxui.preset.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(gotPreset, wantPreset) {
+		t.Fatalf("gsxui.preset.json:\n%s\nwant:\n%s", gotPreset, wantPreset)
+	}
+	wantTheme, err := preset.ThemeCSS(preset.Default(style))
+	if err != nil {
+		t.Fatal(err)
+	}
+	gotTheme, err := os.ReadFile(filepath.Join(dir, "web/gsxui/theme.css"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(gotTheme, wantTheme) {
+		t.Fatalf("theme.css:\n%s\nwant:\n%s", gotTheme, wantTheme)
+	}
+}
+
+func assertManagedFilesMatch(t *testing.T, dir string, wantPaths []string) {
+	t.Helper()
+	cfg, err := LoadConfig(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(cfg.Managed) != len(wantPaths) {
+		t.Fatalf("Managed has %d paths, want %d: %v", len(cfg.Managed), len(wantPaths), cfg.Managed)
+	}
+	for _, relative := range wantPaths {
+		content, err := os.ReadFile(filepath.Join(dir, filepath.FromSlash(relative)))
+		if err != nil {
+			t.Fatalf("read managed %s: %v", relative, err)
+		}
+		sum := sha256.Sum256(content)
+		wantHash := hex.EncodeToString(sum[:])
+		if cfg.Managed[relative] != wantHash {
+			t.Errorf("Managed[%q] = %q, want %q", relative, cfg.Managed[relative], wantHash)
+		}
+	}
+}
+
+type fileSnapshot map[string][]byte
+
+func snapshotFiles(t *testing.T, root string) fileSnapshot {
+	t.Helper()
+	snapshot := make(fileSnapshot)
+	err := filepath.WalkDir(root, func(path string, entry fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if entry.IsDir() {
+			return nil
+		}
+		relative, err := filepath.Rel(root, path)
+		if err != nil {
+			return err
+		}
+		content, err := os.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		snapshot[filepath.ToSlash(relative)] = content
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return snapshot
+}
+
+func equalFileSnapshots(left, right fileSnapshot) bool {
+	if len(left) != len(right) {
+		return false
+	}
+	for path, content := range left {
+		if !bytes.Equal(content, right[path]) {
+			return false
+		}
+	}
+	return true
 }
 
 func TestInitVendorsCSSAssetsBesideCustomEntry(t *testing.T) {
@@ -271,7 +579,7 @@ func TestInitOverwriteRefreshesOnlyVersionedSupportFiles(t *testing.T) {
 func TestInitRejectsUnexpectedArgumentsWithOverwriteUsage(t *testing.T) {
 	_, _ = initTestModule(t)
 	err := Run([]string{"init", "unexpected"})
-	if err == nil || !strings.Contains(err.Error(), "usage: gsxui init [--overwrite]") {
+	if err == nil || !strings.Contains(err.Error(), "usage: gsxui init [--preset <file|code|->] [--overwrite]") {
 		t.Fatalf("unexpected init argument error = %v", err)
 	}
 }

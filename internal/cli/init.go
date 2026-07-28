@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"context"
 	"errors"
 	"flag"
 	"fmt"
@@ -10,24 +11,8 @@ import (
 	"strings"
 
 	gsxui "github.com/gsxhq/gsxui"
+	"github.com/gsxhq/gsxui/internal/preset"
 )
-
-// writeVendored installs content at path: absent → write, identical → no-op,
-// different → error unless overwrite.
-func writeVendored(path string, content []byte, overwrite bool) error {
-	if existing, err := os.ReadFile(path); err == nil {
-		if string(existing) == string(content) {
-			return nil
-		}
-		if !overwrite {
-			return fmt.Errorf("%s differs from the gsxui version — pass --overwrite to replace it", path)
-		}
-	}
-	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
-		return err
-	}
-	return os.WriteFile(path, content, 0o644)
-}
 
 type cssAssetTarget struct {
 	source string
@@ -46,12 +31,13 @@ func cssAssetTargets(entry string) []cssAssetTarget {
 
 func runInit(args []string) error {
 	flags := flag.NewFlagSet("init", flag.ContinueOnError)
+	presetInput := flags.String("preset", "", "preset file, share code, raw JSON, URL, or - for stdin")
 	overwrite := flags.Bool("overwrite", false, "replace locally modified support files")
 	if err := flags.Parse(args); err != nil {
 		return err
 	}
 	if len(flags.Args()) != 0 {
-		return fmt.Errorf("usage: gsxui init [--overwrite]")
+		return fmt.Errorf("usage: gsxui init [--preset <file|code|->] [--overwrite]")
 	}
 	dir, err := os.Getwd()
 	if err != nil {
@@ -66,46 +52,26 @@ func runInit(args []string) error {
 	case err == nil:
 	case errors.Is(err, errConfigNotFound):
 		cfg = DefaultConfig()
-		if err := cfg.Save(dir); err != nil {
-			return err
-		}
 	default:
 		return err // unparsable or unreadable: never overwrite
 	}
 
-	for _, asset := range cssAssetTargets(cfg.CSS) {
-		css, err := fs.ReadFile(gsxui.Files, asset.source)
-		if err != nil {
-			return err
-		}
-		if err := writeVendored(filepath.Join(dir, asset.target), css, *overwrite); err != nil {
-			return err
-		}
-	}
-
-	core, err := fs.ReadFile(gsxui.Files, "ui/gsxui.js")
+	selectedPreset, err := resolveInitPreset(dir, *presetInput)
 	if err != nil {
 		return err
 	}
-	if err := writeVendored(filepath.Join(dir, cfg.JS, "gsxui.js"), core, *overwrite); err != nil {
-		return err
-	}
-	indexPath := filepath.Join(dir, cfg.JS, "index.js")
-	if _, err := os.Stat(indexPath); os.IsNotExist(err) {
-		if err := writeVendored(indexPath, Barrel(nil), false); err != nil {
-			return err
-		}
-	}
-
-	merge, err := fs.ReadFile(gsxui.Files, "merge/merge.go")
+	artifacts, err := initArtifacts(dir, module, cfg, selectedPreset)
 	if err != nil {
 		return err
 	}
-	if err := writeVendored(filepath.Join(dir, cfg.UI, "merge", "merge.go"), merge, *overwrite); err != nil {
+	nextConfig, completePlan, err := artifactPlanWithConfig(cfg, artifacts)
+	if err != nil {
 		return err
 	}
-
-	if err := ensureClassMerger(dir, module, cfg.UI); err != nil {
+	if err := validateArtifactPlan(dir, cfg, completePlan, *overwrite); err != nil {
+		return err
+	}
+	if err := writeArtifactPlan(dir, artifacts); err != nil {
 		return err
 	}
 
@@ -119,25 +85,143 @@ func runInit(args []string) error {
 		}
 	}
 
+	if err := nextConfig.Save(dir); err != nil {
+		return err
+	}
+
 	fmt.Printf("gsxui initialized.\n  css:  %s (import it from your entry point)\n  js:   %s/index.js (import it from your entry point)\n  next: gsxui add button\n", cfg.CSS, cfg.JS)
 	return nil
 }
 
-// ensureClassMerger makes gsx.toml name the vendored merger. Top-level keys
-// must precede any [table] header, so a missing directive is prepended.
-func ensureClassMerger(dir, module, uiDir string) error {
-	path := filepath.Join(dir, "gsx.toml")
+func resolveInitPreset(dir, input string) (preset.Preset, error) {
+	if input != "" {
+		resolved, err := (preset.InputResolver{Stdin: commandStdin}).Resolve(context.Background(), input)
+		if err != nil {
+			return preset.Preset{}, fmt.Errorf("resolve init preset: %w", err)
+		}
+		return resolved, nil
+	}
+
+	path := filepath.Join(dir, "gsxui.preset.json")
+	content, err := os.ReadFile(path)
+	if err == nil {
+		resolved, err := preset.ParseJSON(content)
+		if err != nil {
+			return preset.Preset{}, fmt.Errorf("load existing gsxui.preset.json: %w", err)
+		}
+		return resolved, nil
+	}
+	if !os.IsNotExist(err) {
+		return preset.Preset{}, fmt.Errorf("read existing gsxui.preset.json: %w", err)
+	}
+	return preset.Default(preset.StyleNova), nil
+}
+
+func initArtifacts(dir, module string, cfg Config, selected preset.Preset) ([]artifact, error) {
+	presetJSON, err := preset.CanonicalJSON(selected)
+	if err != nil {
+		return nil, err
+	}
+	themeCSS, err := preset.ThemeCSS(selected)
+	if err != nil {
+		return nil, err
+	}
+
+	artifacts := []artifact{{
+		RelativePath: "gsxui.preset.json",
+		Content:      presetJSON,
+		Managed:      true,
+	}}
+	for _, asset := range cssAssetTargets(cfg.CSS) {
+		var content []byte
+		if asset.source == "assets/css/themes/default.css" {
+			content = themeCSS
+		} else {
+			content, err = fs.ReadFile(gsxui.Files, asset.source)
+			if err != nil {
+				return nil, err
+			}
+		}
+		artifacts = append(artifacts, artifact{
+			RelativePath: filepath.ToSlash(asset.target),
+			Content:      content,
+			Managed:      true,
+		})
+	}
+
+	core, err := fs.ReadFile(gsxui.Files, "ui/gsxui.js")
+	if err != nil {
+		return nil, err
+	}
+	artifacts = append(artifacts, artifact{
+		RelativePath: filepath.ToSlash(filepath.Join(cfg.JS, "gsxui.js")),
+		Content:      core,
+		Managed:      true,
+	})
+
+	indexRelative := filepath.ToSlash(filepath.Join(cfg.JS, "index.js"))
+	indexPath, err := artifactPath(dir, indexRelative)
+	if err != nil {
+		return nil, err
+	}
+	index, err := os.ReadFile(indexPath)
+	switch {
+	case os.IsNotExist(err):
+		barrel, err := behaviorBarrelArtifact(dir, cfg, nil)
+		if err != nil {
+			return nil, err
+		}
+		artifacts = append(artifacts, barrel)
+	case err != nil:
+		return nil, fmt.Errorf("read behavior barrel: %w", err)
+	case strings.HasPrefix(string(index), barrelHeader):
+		barrel, err := behaviorBarrelArtifact(dir, cfg, nil)
+		if err != nil {
+			return nil, err
+		}
+		artifacts = append(artifacts, barrel)
+	}
+
+	merge, err := fs.ReadFile(gsxui.Files, "merge/merge.go")
+	if err != nil {
+		return nil, err
+	}
+	artifacts = append(artifacts, artifact{
+		RelativePath: filepath.ToSlash(filepath.Join(cfg.UI, "merge", "merge.go")),
+		Content:      merge,
+		Managed:      true,
+	})
+
+	classMerger, err := classMergerArtifact(dir, module, cfg.UI)
+	if err != nil {
+		return nil, err
+	}
+	if classMerger != nil {
+		artifacts = append(artifacts, *classMerger)
+	}
+	return artifacts, nil
+}
+
+func classMergerArtifact(dir, module, uiDir string) (*artifact, error) {
+	const relative = "gsx.toml"
+	path, err := artifactPath(dir, relative)
+	if err != nil {
+		return nil, err
+	}
 	line := fmt.Sprintf("class_merger = %q\n", module+"/"+uiDir+"/merge.Merge")
 	existing, err := os.ReadFile(path)
 	if os.IsNotExist(err) {
-		return os.WriteFile(path, []byte(line), 0o644)
+		return &artifact{RelativePath: relative, Content: []byte(line)}, nil
 	}
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if strings.Contains(string(existing), "class_merger") {
 		fmt.Println("gsx.toml already sets class_merger — left unchanged")
-		return nil
+		return nil, nil
 	}
-	return os.WriteFile(path, append([]byte(line+"\n"), existing...), 0o644)
+	return &artifact{
+		RelativePath: relative,
+		Content:      append([]byte(line+"\n"), existing...),
+	}, nil
 }
