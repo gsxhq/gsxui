@@ -148,7 +148,7 @@ func validateCSSStructure(src []byte) error {
 	lexer := css.NewLexer(parse.NewInputBytes(src))
 	var blocks []css.TokenType
 	for {
-		tokenType, _ := lexer.Next()
+		tokenType, data := lexer.Next()
 		switch tokenType {
 		case css.ErrorToken:
 			if err := lexer.Err(); !errors.Is(err, io.EOF) {
@@ -160,6 +160,10 @@ func validateCSSStructure(src []byte) error {
 			return nil
 		case css.BadStringToken, css.BadURLToken:
 			return fmt.Errorf("invalid %s", tokenType)
+		case css.CommentToken:
+			if !bytes.HasSuffix(data, []byte("*/")) {
+				return errors.New("unterminated comment")
+			}
 		case css.FunctionToken, css.LeftParenthesisToken:
 			blocks = append(blocks, css.LeftParenthesisToken)
 		case css.LeftBracketToken:

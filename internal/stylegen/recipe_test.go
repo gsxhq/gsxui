@@ -224,6 +224,14 @@ func TestParseRecipesRejectsInvalidGrammar(t *testing.T) {
   .gsxui-recipe-button { @apply flex; `,
 			want: recipe,
 		},
+		{
+			name: "unterminated trailing comment",
+			src: `@layer components {
+  .gsxui-recipe-button { @apply flex; }
+}
+/* unterminated`,
+			want: recipe,
+		},
 	}
 
 	for _, tt := range tests {
