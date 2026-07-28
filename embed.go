@@ -5,5 +5,5 @@ package gsxui
 
 import "embed"
 
-//go:embed ui assets merge NOTICE.md
+//go:embed ui assets registry merge NOTICE.md
 var Files embed.FS

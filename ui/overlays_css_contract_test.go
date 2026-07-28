@@ -133,10 +133,10 @@ func TestAlertDialogCSSOnlyContract(t *testing.T) {
 
 	action := render(t, ui.AlertDialogAction(gsx.Raw("Continue"), callerAttrs()))
 	assertCSSOnlyMarkup(t, action, "button alert-dialog-action")
-	assertCallerAttrsOnce(t, action)
+	assertButtonCallerAttrsOnce(t, action, "default", "default")
 	cancel := render(t, ui.AlertDialogCancel(gsx.Raw("Cancel"), callerAttrs()))
 	assertCSSOnlyMarkup(t, cancel, "button alert-dialog-cancel")
-	assertCallerAttrsOnce(t, cancel)
+	assertButtonCallerAttrsOnce(t, cancel, "outline", "default")
 	if !strings.Contains(cancel, `data-variant="outline"`) {
 		t.Errorf("cancel must retain the outline Button variant\nin: %s", cancel)
 	}

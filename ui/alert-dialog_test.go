@@ -21,8 +21,8 @@ func TestAlertDialogPinnedParts(t *testing.T) {
 		{"footer", render(t, ui.AlertDialogFooter(gsx.Raw("x"), nil)), `<div data-gsxui-slot-alert-dialog-footer>x</div>`},
 		{"title", render(t, ui.AlertDialogTitle(gsx.Raw("x"), nil)), `<h2 data-gsxui-dialog-title data-gsxui-slot-alert-dialog-title>x</h2>`},
 		{"description", render(t, ui.AlertDialogDescription(gsx.Raw("x"), nil)), `<p data-gsxui-dialog-description data-gsxui-slot-alert-dialog-description>x</p>`},
-		{"action", render(t, ui.AlertDialogAction(gsx.Raw("x"), nil)), `<button data-variant="default" data-size="default" type="button" data-gsxui-dialog-close data-gsxui-slot-alert-dialog-action data-gsxui-slot-button>x</button>`},
-		{"cancel", render(t, ui.AlertDialogCancel(gsx.Raw("x"), nil)), `<button data-variant="outline" data-size="default" type="button" data-gsxui-dialog-close data-gsxui-slot-alert-dialog-cancel data-gsxui-slot-button>x</button>`},
+		{"action", render(t, ui.AlertDialogAction(gsx.Raw("x"), nil)), `<button data-variant="default" data-size="default" type="button" ` + canonicalButtonClass("default", "default") + ` data-gsxui-dialog-close data-gsxui-slot-alert-dialog-action data-gsxui-slot-button>x</button>`},
+		{"cancel", render(t, ui.AlertDialogCancel(gsx.Raw("x"), nil)), `<button data-variant="outline" data-size="default" type="button" ` + canonicalButtonClass("outline", "default") + ` data-gsxui-dialog-close data-gsxui-slot-alert-dialog-cancel data-gsxui-slot-button>x</button>`},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

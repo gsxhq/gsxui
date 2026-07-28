@@ -1,13 +1,19 @@
-.PHONY: generate verify-generated test test-js test-css-audit audit check ci icons site-dev site highlight
+.PHONY: generate generate-styles verify-generated verify-generated-styles test test-js test-css-audit audit check ci icons site-dev site highlight
 
 audit-source-dirs := ui site/examples site/pages web $(wildcard dev)
 audit-css-source-dirs := assets/css site web $(wildcard dev)
 
-generate:
+generate: generate-styles
 	go tool gsx generate
+
+generate-styles:
+	go run ./cmd/stylegen
 
 verify-generated:
 	go run ./internal/generatedcheck/cmd
+
+verify-generated-styles:
+	go run ./cmd/stylegen --check
 
 # highlight regenerates site/hl/blocks.gen.go — every component example and
 # doc snippet pre-rendered to highlighted HTML. Run it after adding, renaming
@@ -57,11 +63,12 @@ audit:
 	@! rg -n -P '(?:\bKey[[:space:]]*:[[:space:]]*|[.]SetAttribute\([[:space:]]*|\bsetAttribute\([[:space:]]*)["\x27\x60]data-gsxui-slot["\x27\x60]' $(audit-source-dirs) -g '*.go' -g '*.js' -g '!*.x.go' -g '!*.gen.go' -g '!*_test.go'
 	@! rg -n -P '\[[[:space:]]*data-gsxui-slot(?=[[:space:]]*(?:[~|^$*]?=|\]))' $(audit-css-source-dirs) -g '*.css'
 	@! rg -n -P '[\w./:\[\]&>-]+!' ui -g '*.gsx'
-	@! rg -n '^[[:space:]]+class=' ui -g '*.gsx'
-	@! rg -n '^[[:space:]]*<[^>]*class=' ui -g '*.gsx'
+	@! rg -n 'gsxui-recipe-' ui -g '*.gsx' -g '!button.gsx'
+	@! rg -n '^[[:space:]]+class=' ui -g '*.gsx' -g '!button.gsx'
+	@! rg -n '^[[:space:]]*<[^>]*class=' ui -g '*.gsx' -g '!button.gsx'
 	@! rg -n '!important' assets/css/foundation.css assets/css/styles/default.css
 
-check: audit test-css-audit
+check: audit test-css-audit verify-generated-styles
 	@$(MAKE) --no-print-directory verify-generated
 	go vet ./...
 	go test ./...
@@ -73,7 +80,7 @@ check: audit test-css-audit
 # ci is the authoritative uncached gate. It mirrors check without reusing
 # Go's test-result cache and keeps the browser, generation, syntax,
 # structural, and formatting checks in the same run.
-ci: audit test-css-audit
+ci: audit test-css-audit verify-generated-styles
 	@$(MAKE) --no-print-directory verify-generated
 	go vet ./...
 	go test -count=1 ./...

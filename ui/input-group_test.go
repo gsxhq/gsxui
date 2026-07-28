@@ -73,22 +73,23 @@ func TestInputGroupAddonAttrsFallThrough(t *testing.T) {
 }
 
 // TestInputGroupButtonDefaultPinned proves InputGroupButton composes the
-// CSS-owned Button seam: Button contributes its stable token and public axes,
-// while InputGroupButton's caller classes remain the only rendered classes.
+// Button seam: Button contributes its canonical recipe roles and public axes.
+// InputGroupButton's own size remains a CSS-owned data axis, so the canonical
+// Button size parameter retains its default role in this pre-consumer source.
 func TestInputGroupButtonDefaultPinned(t *testing.T) {
 	got := render(t, ui.InputGroupButton("", "", gsx.Raw("x"), nil))
-	want := `<button data-variant="ghost" type="button" data-size="xs" data-gsxui-slot-input-group-button data-gsxui-slot-button>x</button>`
+	want := `<button data-variant="ghost" type="button" ` + canonicalButtonClass("ghost", "default") + ` data-size="xs" data-gsxui-slot-input-group-button data-gsxui-slot-button>x</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
 	if strings.Contains(got, "focus-visible:ring") || strings.Contains(got, "hover:bg-accent") {
-		t.Errorf("Button presentation classes must be owned by CSS\nin: %s", got)
+		t.Errorf("canonical Button must render roles, not concrete presentation\nin: %s", got)
 	}
 }
 
 func TestInputGroupButtonSmPinned(t *testing.T) {
 	got := render(t, ui.InputGroupButton("", "sm", gsx.Raw("x"), nil))
-	for _, want := range []string{`data-size="sm"`} {
+	for _, want := range []string{`data-size="sm"`, canonicalButtonClass("ghost", "default")} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
@@ -97,7 +98,7 @@ func TestInputGroupButtonSmPinned(t *testing.T) {
 
 func TestInputGroupButtonIconXsPinned(t *testing.T) {
 	got := render(t, ui.InputGroupButton("", "icon-xs", gsx.Raw("x"), nil))
-	for _, want := range []string{`data-size="icon-xs"`} {
+	for _, want := range []string{`data-size="icon-xs"`, canonicalButtonClass("ghost", "default")} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
@@ -106,7 +107,7 @@ func TestInputGroupButtonIconXsPinned(t *testing.T) {
 
 func TestInputGroupButtonIconSmPinned(t *testing.T) {
 	got := render(t, ui.InputGroupButton("", "icon-sm", gsx.Raw("x"), nil))
-	for _, want := range []string{`data-size="icon-sm"`} {
+	for _, want := range []string{`data-size="icon-sm"`, canonicalButtonClass("ghost", "default")} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
@@ -114,11 +115,14 @@ func TestInputGroupButtonIconSmPinned(t *testing.T) {
 }
 
 // TestInputGroupButtonVariantOverride proves variant is forwarded as Button's
-// public styling axis. The variant's presentation is owned by CSS.
+// public styling axis. The canonical source reflects it through a semantic
+// recipe role while concrete presentation remains generated.
 func TestInputGroupButtonVariantOverride(t *testing.T) {
 	got := render(t, ui.InputGroupButton("outline", "", gsx.Raw("x"), nil))
-	if !strings.Contains(got, `data-variant="outline"`) {
-		t.Errorf("missing data-variant=outline override\nin: %s", got)
+	for _, want := range []string{`data-variant="outline"`, canonicalButtonClass("outline", "default")} {
+		if !strings.Contains(got, want) {
+			t.Errorf("missing %q\nin: %s", want, got)
+		}
 	}
 	if strings.Contains(got, "dark:border-input dark:bg-input/30") {
 		t.Errorf("outline variant presentation must not render inline\nin: %s", got)
@@ -134,8 +138,9 @@ func TestInputGroupButtonAttrsFallThrough(t *testing.T) {
 
 func TestInputGroupButtonCallerClassMerges(t *testing.T) {
 	got := render(t, ui.InputGroupButton("", "", nil, gsx.Attrs{{Key: "class", Value: "w-full"}}))
-	if !strings.Contains(got, "w-full") {
-		t.Errorf("missing caller class w-full\nin: %s", got)
+	want := canonicalButtonClass("ghost", "default", "w-full")
+	if strings.Count(got, want) != 1 || strings.Count(got, `class=`) != 1 {
+		t.Errorf("caller class must follow exact canonical Button roles once\nwant: %s\nin: %s", want, got)
 	}
 }
 

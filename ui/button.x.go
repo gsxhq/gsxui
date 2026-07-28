@@ -12,19 +12,14 @@ import (
 )
 
 //line button.gsx:5:1
-// Button is the shadcn/ui Button, retargeted to nova density (2026-07-24
-// nova density map, `## button`). ADAPT: nova keys directional icon padding
-// off `data-icon="inline-start|inline-end"` stamps we don't emit; gsxui kept
-// its existing has-[>svg]:px-* selector mechanism and substituted nova's
-// inline-start numeric value (e.g. default has-[>svg]:px-3 → px-2). All
-// variants now carry a transparent 1px border in the base (box-size
-// consistency across variants) — outline just recolors that border and no
-// longer changes the box. A non-empty href on an enabled Button renders an
-// <a> (gsx's answer to asChild-wrapping a link); disabled always renders a
-// real disabled <button>. type="button" is an overridable default — pass
-// type="submit" at the call site to submit forms.
+// Button is the canonical Button structure. Its semantic recipe roles resolve
+// to concrete style source before consumers compile the generated component.
+// A non-empty href on an enabled Button renders an <a> (gsx's answer to
+// asChild-wrapping a link); disabled always renders a real disabled <button>.
+// type="button" is an overridable default — pass type="submit" at the call
+// site to submit forms.
 
-//line button.gsx:16:1
+//line button.gsx:11:1
 func Button(variant string, size string, href string, disabled bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -36,9 +31,9 @@ func _gsxrenderButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line button.gsx:17:2
+//line button.gsx:12:2
 	if href != "" && !disabled {
-//line button.gsx:18:3
+//line button.gsx:13:3
 		_gsxgw.S("<a")
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
@@ -55,16 +50,57 @@ func _gsxrenderButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string
 			_gsxgw.URL(string(href))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxv0 := "gsxui-recipe-button"
+		var _gsxv1 string
+		switch variant {
+		case "", "default":
+			_gsxv1 = "gsxui-recipe-button-variant-default"
+		case "destructive":
+			_gsxv1 = "gsxui-recipe-button-variant-destructive"
+		case "outline":
+			_gsxv1 = "gsxui-recipe-button-variant-outline"
+		case "secondary":
+			_gsxv1 = "gsxui-recipe-button-variant-secondary"
+		case "ghost":
+			_gsxv1 = "gsxui-recipe-button-variant-ghost"
+		case "link":
+			_gsxv1 = "gsxui-recipe-button-variant-link"
+		default:
+			_gsxv1 = ""
+		}
+		var _gsxv2 string
+		switch size {
+		case "", "default":
+			_gsxv2 = "gsxui-recipe-button-size-default"
+		case "xs":
+			_gsxv2 = "gsxui-recipe-button-size-xs"
+		case "sm":
+			_gsxv2 = "gsxui-recipe-button-size-sm"
+		case "lg":
+			_gsxv2 = "gsxui-recipe-button-size-lg"
+		case "icon":
+			_gsxv2 = "gsxui-recipe-button-size-icon"
+		case "icon-xs":
+			_gsxv2 = "gsxui-recipe-button-size-icon-xs"
+		case "icon-sm":
+			_gsxv2 = "gsxui-recipe-button-size-icon-sm"
+		case "icon-lg":
+			_gsxv2 = "gsxui-recipe-button-size-icon-lg"
+		default:
+			_gsxv2 = ""
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-button"})
 		_gsxgw.BoolAttr("data-gsxui-slot-button", true)
 		_gsxgw.S(">")
-//line button.gsx:25:4
+//line button.gsx:59:4
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</a>")
 	} else {
-//line button.gsx:28:3
+//line button.gsx:62:3
 		_gsxgw.S("<button")
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
@@ -82,12 +118,53 @@ func _gsxrenderButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string
 		if !attrs.Has("disabled") {
 			_gsxgw.BoolAttr("disabled", bool(disabled))
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxv3 := "gsxui-recipe-button"
+		var _gsxv4 string
+		switch variant {
+		case "", "default":
+			_gsxv4 = "gsxui-recipe-button-variant-default"
+		case "destructive":
+			_gsxv4 = "gsxui-recipe-button-variant-destructive"
+		case "outline":
+			_gsxv4 = "gsxui-recipe-button-variant-outline"
+		case "secondary":
+			_gsxv4 = "gsxui-recipe-button-variant-secondary"
+		case "ghost":
+			_gsxv4 = "gsxui-recipe-button-variant-ghost"
+		case "link":
+			_gsxv4 = "gsxui-recipe-button-variant-link"
+		default:
+			_gsxv4 = ""
+		}
+		var _gsxv5 string
+		switch size {
+		case "", "default":
+			_gsxv5 = "gsxui-recipe-button-size-default"
+		case "xs":
+			_gsxv5 = "gsxui-recipe-button-size-xs"
+		case "sm":
+			_gsxv5 = "gsxui-recipe-button-size-sm"
+		case "lg":
+			_gsxv5 = "gsxui-recipe-button-size-lg"
+		case "icon":
+			_gsxv5 = "gsxui-recipe-button-size-icon"
+		case "icon-xs":
+			_gsxv5 = "gsxui-recipe-button-size-icon-xs"
+		case "icon-sm":
+			_gsxv5 = "gsxui-recipe-button-size-icon-sm"
+		case "icon-lg":
+			_gsxv5 = "gsxui-recipe-button-size-icon-lg"
+		default:
+			_gsxv5 = ""
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv3), _gsxrt.Class(_gsxv4), _gsxrt.Class(_gsxv5), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-button"})
 		_gsxgw.BoolAttr("data-gsxui-slot-button", true)
 		_gsxgw.S(">")
-//line button.gsx:36:4
+//line button.gsx:109:4
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 	}

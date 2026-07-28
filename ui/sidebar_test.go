@@ -115,31 +115,35 @@ func TestSidebarCollapsibleNoneIsOneCanonicalFlatTree(t *testing.T) {
 
 func TestSidebarPrimitiveCompositionAndCallerClassPlacement(t *testing.T) {
 	cases := []struct {
-		name string
-		got  string
-		want string
+		name      string
+		got       string
+		want      string
+		wantClass string
 	}{
 		{
-			name: "trigger button",
-			got:  render(t, ui.SidebarTrigger(gsx.Attrs{{Key: "class", Value: "caller"}})),
-			want: `data-gsxui-slot-sidebar-trigger data-gsxui-slot-button`,
+			name:      "trigger button",
+			got:       render(t, ui.SidebarTrigger(gsx.Attrs{{Key: "class", Value: "caller"}})),
+			want:      `data-gsxui-slot-sidebar-trigger data-gsxui-slot-button`,
+			wantClass: canonicalButtonClass("ghost", "icon", "caller"),
 		},
 		{
-			name: "input",
-			got:  render(t, ui.SidebarInput(gsx.Attrs{{Key: "class", Value: "caller"}})),
-			want: `data-gsxui-slot-sidebar-input data-gsxui-slot-input`,
+			name:      "input",
+			got:       render(t, ui.SidebarInput(gsx.Attrs{{Key: "class", Value: "caller"}})),
+			want:      `data-gsxui-slot-sidebar-input data-gsxui-slot-input`,
+			wantClass: `class="caller"`,
 		},
 		{
-			name: "separator",
-			got:  render(t, ui.SidebarSeparator(gsx.Attrs{{Key: "class", Value: "caller"}})),
-			want: `data-gsxui-slot-sidebar-separator data-gsxui-slot-separator`,
+			name:      "separator",
+			got:       render(t, ui.SidebarSeparator(gsx.Attrs{{Key: "class", Value: "caller"}})),
+			want:      `data-gsxui-slot-sidebar-separator data-gsxui-slot-separator`,
+			wantClass: `class="caller"`,
 		},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			requireContainsAll(t, tc.got, tc.want, `class="caller"`)
-			if count := strings.Count(tc.got, `class="caller"`); count != 1 {
-				t.Fatalf("caller class count = %d, want 1\nin: %s", count, tc.got)
+			requireContainsAll(t, tc.got, tc.want, tc.wantClass)
+			if count := strings.Count(tc.got, tc.wantClass); count != 1 || strings.Count(tc.got, `class=`) != 1 {
+				t.Fatalf("exact class count = %d, want 1 for %s\nin: %s", count, tc.wantClass, tc.got)
 			}
 			if strings.Contains(tc.got, `data-slot=`) || strings.Contains(tc.got, `data-sidebar=`) {
 				t.Fatalf("legacy styling hook remains\nin: %s", tc.got)

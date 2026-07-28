@@ -25,6 +25,15 @@ func assertMenuCSSOnlyMarkup(t *testing.T, got string, slots ...string) {
 	}
 }
 
+func assertComboboxCanonicalButtonRoles(t *testing.T, got string) {
+	t.Helper()
+
+	want := canonicalButtonClass("ghost", "default")
+	if strings.Count(got, want) != 2 || strings.Count(got, `class=`) != 2 {
+		t.Errorf("Combobox trigger and clear must each render exact canonical Button roles\nwant: %s\nin: %s", want, got)
+	}
+}
+
 func TestCommandCSSOnlyContract(t *testing.T) {
 	got := render(t, ui.Command(
 		gsx.Fragment(
@@ -122,7 +131,7 @@ func TestComboboxCSSOnlyContract(t *testing.T) {
 		),
 		nil,
 	))
-	assertMenuCSSOnlyMarkup(t, got,
+	assertMenuMarkupSlots(t, got,
 		"combobox",
 		"combobox-bridge",
 		"input-group combobox-input-group",
@@ -139,6 +148,7 @@ func TestComboboxCSSOnlyContract(t *testing.T) {
 		"combobox-empty",
 		"combobox-separator",
 	)
+	assertComboboxCanonicalButtonRoles(t, got)
 	for _, hook := range []string{
 		`data-gsxui-combobox-group`,
 		`data-gsxui-combobox-label`,
@@ -148,6 +158,20 @@ func TestComboboxCSSOnlyContract(t *testing.T) {
 	} {
 		if !strings.Contains(got, hook) {
 			t.Errorf("missing Combobox behavior hook %q\nin: %s", hook, got)
+		}
+	}
+}
+
+func assertMenuMarkupSlots(t *testing.T, got string, slots ...string) {
+	t.Helper()
+	if strings.Contains(got, `data-slot=`) {
+		t.Errorf("legacy data-slot must not render\nin: %s", got)
+	}
+	for _, slot := range slots {
+		for name := range strings.FieldsSeq(slot) {
+			if !strings.Contains(got, `data-gsxui-slot-`+name) {
+				t.Errorf("missing slot marker %q\nin: %s", name, got)
+			}
 		}
 	}
 }

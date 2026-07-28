@@ -67,8 +67,12 @@ func TestFormControlsExposeCSSOnlySlots(t *testing.T) {
 			if strings.Contains(got, `data-slot=`) {
 				t.Errorf("legacy data-slot must not render\nin: %s", got)
 			}
-			if strings.Contains(got, ` class="`) {
-				t.Errorf("built-in presentation class must not render\nin: %s", got)
+			if tt.name == "InputGroupButton" {
+				if !strings.Contains(got, canonicalButtonClass("ghost", "default")) {
+					t.Errorf("InputGroupButton lost exact canonical Button roles\nin: %s", got)
+				}
+			} else if strings.Contains(got, ` class="`) {
+				t.Errorf("non-Button built-in presentation class must not render\nin: %s", got)
 			}
 		})
 	}
