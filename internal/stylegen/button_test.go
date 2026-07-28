@@ -2,6 +2,8 @@ package stylegen
 
 import (
 	"bytes"
+	"encoding/json"
+	"fmt"
 	goast "go/ast"
 	goparser "go/parser"
 	"go/token"
@@ -309,6 +311,22 @@ func TestGenerateButtonArtifactsMatchCommittedResolvedSources(t *testing.T) {
 	assertButtonStylesDifferVisibly(t, generated["nova"], generated["maia"])
 }
 
+func TestGenerateButtonPreviewFixturesMatchRegistryAST(t *testing.T) {
+	t.Parallel()
+
+	root := repositoryRoot(t)
+	for _, style := range []string{"nova", "maia"} {
+		registryPath := filepath.Join(root, "registry", "generated", style, "button.gsx")
+		previewPath := filepath.Join(root, "site", "stylepreview", style, "button.gsx")
+
+		registryAST := comparableButtonAST(t, registryPath, "preview")
+		previewAST := comparableButtonAST(t, previewPath, "preview")
+		if !bytes.Equal(previewAST, registryAST) {
+			t.Errorf("%s preview fixture differs from registry artifact after package normalization\n--- preview AST ---\n%s\n--- registry AST ---\n%s", style, previewAST, registryAST)
+		}
+	}
+}
+
 func TestGenerateButtonWritesDeterministicallyAndCheckNeverWrites(t *testing.T) {
 	t.Parallel()
 
@@ -344,6 +362,29 @@ func TestGenerateButtonWritesDeterministicallyAndCheckNeverWrites(t *testing.T) 
 	afterCheck := readGeneratedButtons(t, root)
 	if !reflect.DeepEqual(afterCheck, beforeCheck) {
 		t.Error("check mode mutated generated artifacts")
+	}
+
+	if err := GenerateButton(root, false); err != nil {
+		t.Fatalf("GenerateButton(restore) error = %v", err)
+	}
+	previewPath := filepath.Join(root, "site", "stylepreview", "nova", "button.gsx")
+	previewDrift := []byte("locally modified preview\n")
+	if err := os.WriteFile(previewPath, previewDrift, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	err = GenerateButton(root, true)
+	if err == nil {
+		t.Fatal("GenerateButton(preview drift check) error = nil, want drift")
+	}
+	if !strings.Contains(err.Error(), filepath.ToSlash("site/stylepreview/nova/button.gsx")) {
+		t.Errorf("GenerateButton(preview drift check) error %q does not identify Nova preview artifact", err)
+	}
+	afterPreviewCheck, readErr := os.ReadFile(previewPath)
+	if readErr != nil {
+		t.Fatal(readErr)
+	}
+	if !bytes.Equal(afterPreviewCheck, previewDrift) {
+		t.Error("check mode mutated generated preview artifact")
 	}
 }
 
@@ -489,6 +530,76 @@ func assertGeneratedButtonSource(t *testing.T, filename string, src []byte) {
 			continue
 		}
 		assertButtonStructuralLiteral(t, filename+" <"+tag+"> structural marker", class.Parts[0].Expr)
+	}
+}
+
+func comparableButtonAST(t *testing.T, filename, packageName string) []byte {
+	t.Helper()
+
+	src, err := os.ReadFile(filename)
+	if err != nil {
+		t.Fatal(err)
+	}
+	file, err := gsxparser.ParseFile(token.NewFileSet(), filename, src, 0)
+	if err != nil {
+		t.Fatalf("parser.ParseFile(%s) error = %v", filename, err)
+	}
+	file.Package = packageName
+	encoded, err := json.MarshalIndent(comparableASTValue(reflect.ValueOf(file)), "", "  ")
+	if err != nil {
+		t.Fatalf("json.MarshalIndent(%s AST) error = %v", filename, err)
+	}
+	return encoded
+}
+
+var tokenPositionType = reflect.TypeOf(token.Pos(0))
+
+func comparableASTValue(value reflect.Value) any {
+	if !value.IsValid() {
+		return nil
+	}
+	if value.Kind() == reflect.Interface {
+		if value.IsNil() {
+			return nil
+		}
+		return comparableASTValue(value.Elem())
+	}
+	if value.Kind() == reflect.Pointer {
+		if value.IsNil() {
+			return nil
+		}
+		return comparableASTValue(value.Elem())
+	}
+	if value.Type() == tokenPositionType {
+		return nil
+	}
+
+	switch value.Kind() {
+	case reflect.Struct:
+		result := map[string]any{"$type": value.Type().String()}
+		for i := range value.NumField() {
+			field := value.Type().Field(i)
+			if field.PkgPath != "" || field.Type == tokenPositionType {
+				continue
+			}
+			result[field.Name] = comparableASTValue(value.Field(i))
+		}
+		return result
+	case reflect.Slice, reflect.Array:
+		result := make([]any, value.Len())
+		for i := range value.Len() {
+			result[i] = comparableASTValue(value.Index(i))
+		}
+		return result
+	case reflect.Map:
+		result := make(map[string]any, value.Len())
+		iter := value.MapRange()
+		for iter.Next() {
+			result[fmt.Sprint(iter.Key().Interface())] = comparableASTValue(iter.Value())
+		}
+		return result
+	default:
+		return value.Interface()
 	}
 }
 

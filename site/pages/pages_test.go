@@ -385,6 +385,71 @@ func TestExamplePreviewRoute(t *testing.T) {
 	}
 }
 
+func TestThemePreviewButtonRoute(t *testing.T) {
+	handler := newTestHandler(t)
+
+	t.Run("isolated exact-style matrix", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/theme/preview/button", nil)
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+
+		if rec.Code != http.StatusOK {
+			t.Fatalf("GET /theme/preview/button = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
+		}
+		body := rec.Body.String()
+		for _, marker := range []string{
+			`<!DOCTYPE html>`,
+			`data-theme-button-preview`,
+			`src="/__vite/@vite/client"`,
+			`src="/__vite/web/main.js"`,
+			`data-theme-preview-style="nova"`,
+			`data-theme-preview-style="maia" hidden`,
+			`data-theme-preview-case="text"`,
+			`data-theme-preview-case="icon"`,
+			`data-theme-preview-case="disabled"`,
+			`data-theme-preview-case="link"`,
+			`data-theme-preview-case="focus-visible"`,
+			`data-theme-preview-case="invalid"`,
+			`data-theme-preview-case="caller-composition"`,
+			`aria-invalid="true"`,
+			`href="/docs/getting-started"`,
+		} {
+			if !strings.Contains(body, marker) {
+				t.Errorf("theme preview response missing %q; body:\n%s", marker, body)
+			}
+		}
+		for _, variant := range []string{"default", "secondary", "destructive", "outline", "ghost", "link"} {
+			if got := strings.Count(body, `data-variant="`+variant+`"`); got < 2 {
+				t.Errorf("theme preview has %d %q variants, want one per style; body:\n%s", got, variant, body)
+			}
+		}
+		for _, size := range []string{"default", "xs", "sm", "lg", "icon", "icon-xs", "icon-sm", "icon-lg"} {
+			if got := strings.Count(body, `data-size="`+size+`"`); got < 2 {
+				t.Errorf("theme preview has %d %q sizes, want one per style; body:\n%s", got, size, body)
+			}
+		}
+		for _, forbidden := range []string{
+			`<iframe`,
+			`Search docs...`,
+			`Theme editor`,
+			`data-theme-var=`,
+		} {
+			if strings.Contains(body, forbidden) {
+				t.Errorf("theme preview response unexpectedly contains %q; body:\n%s", forbidden, body)
+			}
+		}
+	})
+
+	t.Run("extra route segment is not accepted", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/theme/preview/button/extra", nil)
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+		if rec.Code != http.StatusNotFound {
+			t.Fatalf("GET /theme/preview/button/extra = %d, want %d; body:\n%s", rec.Code, http.StatusNotFound, rec.Body.String())
+		}
+	})
+}
+
 // TestDocsRoutes is the Task 4 smoke test for the two standalone docs
 // pages: both render 200 with a distinctive marker, and each links to the
 // other via the sidebar's Docs section so the active-state wiring is

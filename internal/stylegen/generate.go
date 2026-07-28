@@ -4,16 +4,21 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	goparser "go/parser"
+	"go/token"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
+
+	gsxparser "github.com/gsxhq/gsx/parser"
 )
 
 type buttonStyleSource struct {
-	name       string
-	recipePath string
-	outputPath string
+	name              string
+	recipePath        string
+	outputPath        string
+	previewOutputPath string
 }
 
 var buttonStyleSources = []buttonStyleSource{
@@ -21,11 +26,17 @@ var buttonStyleSources = []buttonStyleSource{
 		name:       "nova",
 		recipePath: filepath.Join("registry", "styles", "nova", "button.css"),
 		outputPath: filepath.Join("registry", "generated", "nova", "button.gsx"),
+		previewOutputPath: filepath.Join(
+			"site", "stylepreview", "nova", "button.gsx",
+		),
 	},
 	{
 		name:       "maia",
 		recipePath: filepath.Join("registry", "styles", "maia", "button.css"),
 		outputPath: filepath.Join("registry", "generated", "maia", "button.gsx"),
+		previewOutputPath: filepath.Join(
+			"site", "stylepreview", "maia", "button.gsx",
+		),
 	},
 }
 
@@ -59,7 +70,7 @@ func resolveButtonSources(root string) ([]generatedButtonSource, error) {
 		return nil, fmt.Errorf("read canonical Button %s: %w", canonicalPath, err)
 	}
 
-	outputs := make([]generatedButtonSource, 0, len(buttonStyleSources))
+	outputs := make([]generatedButtonSource, 0, 2*len(buttonStyleSources))
 	for _, style := range buttonStyleSources {
 		recipePath := filepath.Join(root, style.recipePath)
 		recipeSource, err := os.ReadFile(recipePath)
@@ -78,8 +89,43 @@ func resolveButtonSources(root string) ([]generatedButtonSource, error) {
 			relativePath: style.outputPath,
 			content:      resolved,
 		})
+		preview, err := rewriteGSXPackage(style.outputPath, resolved, style.name)
+		if err != nil {
+			return nil, fmt.Errorf("derive %s Button preview: %w", style.name, err)
+		}
+		outputs = append(outputs, generatedButtonSource{
+			relativePath: style.previewOutputPath,
+			content:      preview,
+		})
 	}
 	return outputs, nil
+}
+
+func rewriteGSXPackage(filename string, src []byte, packageName string) ([]byte, error) {
+	fset := token.NewFileSet()
+	file, err := goparser.ParseFile(fset, filename, src, goparser.PackageClauseOnly)
+	if err != nil {
+		return nil, fmt.Errorf("parse package declaration: %w", err)
+	}
+	start := fset.Position(file.Name.Pos()).Offset
+	end := fset.Position(file.Name.End()).Offset
+	if start < 0 || end < start || end > len(src) {
+		return nil, fmt.Errorf("package declaration range [%d:%d] is outside %d-byte source", start, end, len(src))
+	}
+
+	result := make([]byte, 0, len(src)-end+start+len(packageName))
+	result = append(result, src[:start]...)
+	result = append(result, packageName...)
+	result = append(result, src[end:]...)
+
+	parsed, err := gsxparser.ParseFile(token.NewFileSet(), filename, result, 0)
+	if err != nil {
+		return nil, fmt.Errorf("validate rewritten GSX: %w", err)
+	}
+	if parsed.Package != packageName {
+		return nil, fmt.Errorf("rewritten package = %q, want %q", parsed.Package, packageName)
+	}
+	return result, nil
 }
 
 func checkButtonSources(root string, outputs []generatedButtonSource) error {
