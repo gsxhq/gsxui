@@ -401,7 +401,7 @@ func TestThemePreviewButtonRoute(t *testing.T) {
 			`<!DOCTYPE html>`,
 			`data-theme-button-preview`,
 			`src="/__vite/@vite/client"`,
-			`src="/__vite/web/main.js"`,
+			`src="/__vite/web/preview.js"`,
 			`data-theme-preview-style="nova"`,
 			`data-theme-preview-style="maia" hidden`,
 			`data-theme-preview-case="text"`,
@@ -433,6 +433,7 @@ func TestThemePreviewButtonRoute(t *testing.T) {
 			`Search docs...`,
 			`Theme editor`,
 			`data-theme-var=`,
+			`src="/__vite/web/main.js"`,
 		} {
 			if strings.Contains(body, forbidden) {
 				t.Errorf("theme preview response unexpectedly contains %q; body:\n%s", forbidden, body)

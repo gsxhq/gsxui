@@ -36,7 +36,7 @@ func (ExamplePreview) Props(r *http.Request) (examplePreviewProps, error) {
 component (preview ExamplePreview) Page(props examplePreviewProps) {
 	<!DOCTYPE html>
 	<html lang="en">
-		<siteHead title={props.Title}/>
+		<siteHead title={props.Title} entry="web/main.js"/>
 		<body
 			data-site-isolated-document
 			class="h-svh overflow-auto bg-background text-foreground antialiased"

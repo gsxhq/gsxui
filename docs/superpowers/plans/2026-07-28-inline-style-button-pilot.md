@@ -1230,10 +1230,13 @@ unknown keys are rejected before conversion; do not use `JSON.parse` for
 imported text.
 
 The DOM controller provides a compatible-theme-CSS parser callback implemented
-with `CSSStyleSheet.replaceSync`. It walks `CSSStyleRule`/declaration objects
-and accepts only normalized exact `:root` and `.dark` owners for recognized
-properties. This is the browser counterpart to the authoritative Go parsers,
-not regex extraction.
+with a PostCSS stylesheet/declaration AST and css-tree's standards-based
+tokenizer. The AST must retain malformed syntax, duplicate declarations,
+implicit nesting, and declaration ownership; exact significant selector tokens
+classify only `:root` and `.dark` while ignoring comments without merging
+identifiers. `CSSStyleSheet.replaceSync` remains the browser acceptance pass,
+never the source of import values because CSSOM recovery is lossy. This is the
+browser counterpart to the authoritative Go parser, not regex extraction.
 
 - [ ] **Step 4: Replace the editor UI**
 

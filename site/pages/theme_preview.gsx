@@ -21,7 +21,7 @@ func themePreviewTokenNames() string {
 component (preview ThemePreviewButton) Page() {
 	<!DOCTYPE html>
 	<html lang="en">
-		<siteHead title="Button theme preview"/>
+		<siteHead title="Button theme preview" entry="web/preview.js"/>
 		<body
 			data-theme-button-preview
 			data-theme-preview-tokens={themePreviewTokenNames()}

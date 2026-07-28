@@ -33,7 +33,7 @@ func (preview ThemePreviewButton) Page() _gsxrt.Node {
 //line theme_preview.gsx:23:2
 		_gsxgw.S("<html lang=\"en\">")
 //line theme_preview.gsx:24:3
-		_gsxgw.NodeResult(_gsxrendersiteHead(ctx, _gsxgw, "Button theme preview"))
+		_gsxgw.NodeResult(_gsxrendersiteHead(ctx, _gsxgw, "Button theme preview", "web/preview.js"))
 //line theme_preview.gsx:25:3
 		_gsxgw.S("<body")
 		_gsxgw.BoolAttr("data-theme-button-preview", true)

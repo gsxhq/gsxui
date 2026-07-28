@@ -44,7 +44,7 @@ func _gsxrenderLayout(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title string, 
 //line layout.gsx:24:2
 	_gsxgw.S("<html lang=\"en\">")
 //line layout.gsx:25:3
-	_gsxgw.NodeResult(_gsxrendersiteHead(ctx, _gsxgw, title))
+	_gsxgw.NodeResult(_gsxrendersiteHead(ctx, _gsxgw, title, "web/main.js"))
 //line layout.gsx:26:3
 	_gsxgw.S("<body class=\"min-h-svh bg-background text-foreground antialiased\">")
 //line layout.gsx:27:4

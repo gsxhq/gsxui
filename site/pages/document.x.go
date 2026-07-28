@@ -10,19 +10,19 @@ import (
 )
 
 //line document.gsx:5:1
-// siteHead is the canonical document head for both full site pages and
-// isolated live previews. Keeping asset and theme bootstrap wiring here makes
-// an iframe run the same production frontend as its parent page.
+// siteHead is the canonical document head for full site pages and isolated
+// live previews. entry keeps the shared asset/theme bootstrap while allowing
+// previews to load only their handshake code.
 
 //line document.gsx:8:1
-func siteHead(title string) _gsxrt.Node {
+func siteHead(title string, entry string) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-		return _gsxrendersiteHead(ctx, _gsxgw, title)
+		return _gsxrendersiteHead(ctx, _gsxgw, title, entry)
 	})
 }
 
-func _gsxrendersiteHead(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title string) error {
+func _gsxrendersiteHead(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title string, entry string) error {
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
@@ -61,7 +61,7 @@ func _gsxrendersiteHead(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title string
 		_gsxgw.S(">\n// Dev-only FOUC gate. Vite injects CSS via JS after the HTML\n// loads, so hide the page until every module script has run\n// (DOMContentLoaded) and one paint has landed (double rAF),\n// then reveal. Prod ships real <link rel=stylesheet> tags\n// below, so no gate is emitted there.\ndocument.documentElement.dataset.loading = \"true\";\nvar unhide = function () {\n\tdocument.documentElement.removeAttribute(\"data-loading\");\n};\nvar reveal = function () {\n\trequestAnimationFrame(function () { requestAnimationFrame(unhide); });\n};\nif (document.readyState === \"loading\") {\n\tdocument.addEventListener(\"DOMContentLoaded\", reveal);\n} else {\n\treveal();\n}\n// Safety net (rAF pauses in background tabs).\nsetTimeout(unhide, 5000);\n</script>")
 	}
 //line document.gsx:65:3
-	assets := v.Entry("web/main.js")
+	assets := v.Entry(entry)
 //line document.gsx:66:3
 	for _, href := range assets.CSS {
 //line document.gsx:67:4

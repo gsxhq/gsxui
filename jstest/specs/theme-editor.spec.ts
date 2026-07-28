@@ -91,3 +91,132 @@ test("style and valid theme state drive the isolated Button preview", async ({
   await page.locator('[data-theme-mode-tab="dark"]').click();
   await expect(preview.locator("html")).toHaveClass(/\bdark\b/);
 });
+
+test("CSS import rejects duplicate recognized declarations atomically", async ({
+  page,
+}) => {
+  await page.goto("/theme");
+  const primary = page.locator('[data-theme-field="light.primary"]');
+  const original = await primary.inputValue();
+
+  await page
+    .locator('[data-theme-import="css"]')
+    .fill(":root { --primary: red; --primary: blue; }");
+  await page.locator('[data-theme-import-apply="css"]').click();
+
+  await expect(page.locator("[data-theme-status]")).toContainText("duplicated");
+  await expect(primary).toHaveValue(original);
+});
+
+test("CSS import rejects malformed unrelated syntax atomically", async ({
+  page,
+}) => {
+  await page.goto("/theme");
+  const primary = page.locator('[data-theme-field="light.primary"]');
+  const original = await primary.inputValue();
+
+  await page
+    .locator('[data-theme-import="css"]')
+    .fill("body { color red; } :root { --primary: green; }");
+  await page.locator('[data-theme-import-apply="css"]').click();
+
+  await expect(page.locator("[data-theme-status]")).toContainText("malformed");
+  await expect(primary).toHaveValue(original);
+});
+
+test("CSS import ignores valid unrelated CSS without mutating the preset", async ({
+  page,
+}) => {
+  await page.goto("/theme");
+  const primary = page.locator('[data-theme-field="light.primary"]');
+  const original = await primary.inputValue();
+
+  await page
+    .locator('[data-theme-import="css"]')
+    .fill("body { color: red; --unrelated: blue; }");
+  await page.locator('[data-theme-import-apply="css"]').click();
+
+  await expect(page.locator("[data-theme-status]")).toHaveText("Nova · light");
+  await expect(primary).toHaveValue(original);
+});
+
+test("CSS import accepts comments between supported selector tokens", async ({
+  page,
+}) => {
+  await page.goto("/theme");
+  const primary = page.locator('[data-theme-field="light.primary"]');
+
+  await page
+    .locator('[data-theme-import="css"]')
+    .fill(":/* comment */root { --primary: red; }");
+  await page.locator('[data-theme-import-apply="css"]').click();
+
+  await expect(primary).toHaveValue("red");
+});
+
+test("CSS import does not merge selector identifiers across comments", async ({
+  page,
+}) => {
+  await page.goto("/theme");
+  const primary = page.locator('[data-theme-field="light.primary"]');
+  const original = await primary.inputValue();
+
+  await page
+    .locator('[data-theme-import="css"]')
+    .fill(":r/**/oot { --primary: red; }");
+  await page.locator('[data-theme-import-apply="css"]').click();
+
+  await expect(page.locator("[data-theme-status]")).toContainText(
+    "must belong to :root or .dark",
+  );
+  await expect(primary).toHaveValue(original);
+});
+
+test("CSS import rejects important recognized declarations atomically", async ({
+  page,
+}) => {
+  await page.goto("/theme");
+  const primary = page.locator('[data-theme-field="light.primary"]');
+  const original = await primary.inputValue();
+
+  await page
+    .locator('[data-theme-import="css"]')
+    .fill(":root { --primary: red !important; }");
+  await page.locator('[data-theme-import-apply="css"]').click();
+
+  await expect(page.locator("[data-theme-status]")).toContainText(
+    "theme.light.primary",
+  );
+  await expect(primary).toHaveValue(original);
+});
+
+test("CSS import ignores valid unrelated implicit nesting", async ({ page }) => {
+  await page.goto("/theme");
+  const primary = page.locator('[data-theme-field="light.primary"]');
+
+  await page
+    .locator('[data-theme-import="css"]')
+    .fill(
+      "body { .nested { color: red; --unrelated: blue; } } :root { --primary: green; }",
+    );
+  await page.locator('[data-theme-import-apply="css"]').click();
+
+  await expect(primary).toHaveValue("green");
+});
+
+test("theme editor exposes Retry when the preview never handshakes", async ({
+  page,
+}) => {
+  await page.route("**/theme/preview/button", async (route) => {
+    await route.fulfill({
+      contentType: "text/html",
+      body: "<!doctype html><title>Unresponsive preview</title>",
+    });
+  });
+  await page.goto("/theme");
+
+  await expect(page.locator("[data-theme-preview-status]")).toHaveText(
+    "Preview did not respond.",
+  );
+  await expect(page.locator("[data-theme-preview-retry]")).toBeVisible();
+});

@@ -22,7 +22,7 @@ import (
 component Layout(title string, active string, children gsx.Node) {
 	<!DOCTYPE html>
 	<html lang="en">
-		<siteHead title={title}/>
+		<siteHead title={title} entry="web/main.js"/>
 		<body class="min-h-svh bg-background text-foreground antialiased">
 			<header class="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur">
 				<div class="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">

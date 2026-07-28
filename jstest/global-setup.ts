@@ -31,6 +31,22 @@ import {
 export default function globalSetup() {
   mkdirSync(tmpDir, { recursive: true });
 
+  execFileSync(
+    path.join(repoRoot, "node_modules", ".bin", "esbuild"),
+    [
+      "node_modules/postcss/lib/parse.js",
+      "--bundle",
+      "--platform=browser",
+      "--format=esm",
+      `--outfile=${path.join(tmpDir, "postcss-parse.mjs")}`,
+      "--log-level=warning",
+    ],
+    {
+      cwd: repoRoot,
+      stdio: "inherit",
+    },
+  );
+
   execFileSync("go", ["run", "./jstest/harness", "-manifest", manifestPath], {
     cwd: repoRoot,
     stdio: "inherit",

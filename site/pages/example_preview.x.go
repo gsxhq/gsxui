@@ -48,7 +48,7 @@ func (preview ExamplePreview) Page(props examplePreviewProps) _gsxrt.Node {
 //line example_preview.gsx:38:2
 		_gsxgw.S("<html lang=\"en\">")
 //line example_preview.gsx:39:3
-		_gsxgw.NodeResult(_gsxrendersiteHead(ctx, _gsxgw, props.Title))
+		_gsxgw.NodeResult(_gsxrendersiteHead(ctx, _gsxgw, props.Title, "web/main.js"))
 //line example_preview.gsx:40:3
 		_gsxgw.S("<body")
 		_gsxgw.BoolAttr("data-site-isolated-document", true)

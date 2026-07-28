@@ -22,6 +22,12 @@ var testSiteManifest fs.FS = fstest.MapFS{
 				"src": "web/main.js",
 				"isEntry": true,
 				"css": ["jstest/.tmp/site.css"]
+			},
+			"web/preview.js": {
+				"file": "jstest/harness-preview.js",
+				"src": "web/preview.js",
+				"isEntry": true,
+				"css": ["jstest/.tmp/site.css"]
 			}
 		}`),
 	},

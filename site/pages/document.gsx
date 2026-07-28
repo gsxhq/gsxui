@@ -2,10 +2,10 @@ package pages
 
 import "github.com/gsxhq/vite"
 
-// siteHead is the canonical document head for both full site pages and
-// isolated live previews. Keeping asset and theme bootstrap wiring here makes
-// an iframe run the same production frontend as its parent page.
-component siteHead(title string) {
+// siteHead is the canonical document head for full site pages and isolated
+// live previews. entry keeps the shared asset/theme bootstrap while allowing
+// previews to load only their handshake code.
+component siteHead(title string, entry string) {
 	<head>
 		<meta charset="UTF-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -62,7 +62,7 @@ component siteHead(title string) {
 				setTimeout(unhide, 5000);
 			</script>
 		} }
-		{{ assets := v.Entry("web/main.js") }}
+		{{ assets := v.Entry(entry) }}
 		{ for _, href := range assets.CSS {
 			<link rel="stylesheet" href={href}/>
 		} }
