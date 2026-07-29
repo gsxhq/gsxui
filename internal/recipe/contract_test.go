@@ -28,7 +28,7 @@ func TestBuildContractEmitsSharedShapeAndPerStyleUtilities(t *testing.T) {
 		t.Fatalf("contract is not valid JSON: %v", err)
 	}
 	for _, want := range []string{
-		`"version": 2`,
+		`"version": 1`,
 		`"slots"`,
 		`"components"`,
 		`"default": "default"`,

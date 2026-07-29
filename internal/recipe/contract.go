@@ -6,9 +6,11 @@ import (
 	"slices"
 )
 
-// ContractVersion is bumped whenever the emitted schema changes shape.
-// v2 introduced the slot axis.
-const ContractVersion = 2
+// ContractVersion identifies the shape of the emitted schema. A consumer
+// reads it to decide whether it understands the artifact, and should reject a
+// version it does not recognize. It is bumped whenever the schema changes
+// shape.
+const ContractVersion = 1
 
 // Contract is the serialized recipe model consumed by the theme editor. These
 // types are marshalled, so their fields are exported.

@@ -6,34 +6,29 @@
 
 **Extends:** [`2026-07-29-typed-recipe-model-design.md`](2026-07-29-typed-recipe-model-design.md).
 That design's principles, validation model, contract artifact, layer invariant
-(§9) and rejected alternatives (§8) all stand unchanged. This document adds the
-one axis it lacks and plans the migration of the remaining catalogue.
+(§9) and rejected alternatives (§8) all stand. This document specifies the slot
+axis and plans the migration of the remaining catalogue.
 
 ## 1. Purpose
 
-The typed recipe model shipped with Button. It does not generalize, because
-`Shape` describes **one styled element**:
-
-```go
-type Shape struct {
-    Component  string
-    Base       bool
-    Dimensions []Dimension
-}
-```
-
-Button fit that. Nothing else in the catalogue does:
+A component in this catalogue is rarely one styled element. It is a set of named
+elements, and presentation dimensions hang off those elements individually:
 
 | | slots | dimensions |
 |---|---|---|
-| Button (migrated) | 1 | variant, size |
+| Button | 1 | variant, size |
 | Card | 7 | none |
 | Sidebar | 38 | some, per slot |
-| Remaining catalogue | 291 markers over 1162 rules | 16 of 52 components have any |
+| Whole catalogue | 291 markers over 1162 rules | 16 of 52 components have any |
 
-There is no way to express `card.Header()` or `sidebar.MenuButton()`. Two thirds
-of the remaining components have no variant or size at all — for them the model
-buys validation, completeness and the contract, but no switch generation.
+`default.css` already carries per-slot dimensions such as
+`[data-gsxui-slot-badge][data-variant="destructive"]`, so the model has to name
+the slot to describe them at all. And the model has to reach `card.Header()` and
+`sidebar.MenuButton()`, not just a component's root element.
+
+Two thirds of the catalogue has no variant or size at all — for those components
+the model buys validation, completeness and the contract, but no switch
+generation.
 
 ## 2. The slot axis
 
@@ -50,18 +45,17 @@ type Slot struct {
 }
 ```
 
-Dimensions hang off a **slot**, not the component. This is required, not
-cosmetic: `default.css` already carries per-slot dimensions such as
-`[data-gsxui-slot-badge][data-variant="destructive"]`.
+Dimensions hang off a **slot**, not the component.
 
-Class encoding extends the existing scheme; the root slot is unchanged, so
-Button's emitted classes do not move:
+Class encoding names the component, then the slot, then the dimension and
+value. The root slot contributes no segment, so a single-element component's
+classes are as short as they would be without the axis:
 
 ```text
 gsxui-recipe-card                        root, base
 gsxui-recipe-card-header                 slot "header", base
 gsxui-recipe-card-header-variant-muted   slot "header", dimension variant
-gsxui-recipe-button-variant-outline      root, dimension variant  (unchanged)
+gsxui-recipe-button-variant-outline      root, dimension variant
 ```
 
 ### 2.1 Decoding is longest-match, and that is mandatory
@@ -85,14 +79,15 @@ and accessor in sync only by convention.
 
 ### 3.1 The bootstrap cycle, and why shapes move
 
-Generating accessors **into** `registry/canonical` cannot work as the package
-stands. `cmd/stylegen` imports `internal/stylegen`, which imported
-`registry/canonical` to read `Shapes()`; Go compiles a package as a unit; so if
-`card.gsx` calls a not-yet-generated `card.Header()`, the package fails to
-build, that import chain fails with it, and the generator binary cannot be
-built to produce the very methods it needs.
+Accessors are generated **into** `registry/canonical`, so the generator must be
+buildable while that package is not. `cmd/stylegen` imports
+`internal/stylegen`; Go compiles a package as a unit; so if `internal/stylegen`
+read shapes from `registry/canonical` and `card.gsx` called a not-yet-generated
+`card.Header()`, the package would fail to build, that import chain would fail
+with it, and the generator binary could not be built to produce the very
+methods it needs.
 
-Shapes therefore move to a leaf package that compiles on its own:
+Shapes therefore live in a leaf package that compiles on its own:
 
 ```text
 registry/canonical/shapes/         hand-written, pure data, no dependents
@@ -105,12 +100,11 @@ registry/canonical/card_recipe.gen.go     GENERATED accessors
 registry/canonical/card.gsx               authored structure
 ```
 
-As implemented, `internal/stylegen/generate.go` reads `shapes.All()` and
-`internal/stylegen` no longer imports `registry/canonical` at all;
-`canonical.Shapes()` was deleted. Leaving `stylegen` importing `canonical` for
-any reason would keep the cycle alive through `cmd/stylegen -> stylegen ->
-canonical`, so the leaf package only breaks the bootstrap if that import is
-gone entirely — which the architecture test now pins.
+`internal/stylegen/generate.go` reads `shapes.All()`, and `internal/stylegen`
+must not import `registry/canonical` in any form. Importing it for any reason
+would revive the cycle through `cmd/stylegen -> stylegen -> canonical`, so the
+leaf package only breaks the bootstrap while that import is absent entirely —
+which the architecture test pins.
 
 `registry/canonical` keeps its "never ships" property and its architecture test.
 `shapes` is pure data and inherits the same rule.
@@ -127,9 +121,6 @@ The root slot's base accessor is `Root()`.
 | slot `header`, base | `card.Header()` |
 | slot `menu-button`, dimension `size` | `sidebar.MenuButtonSize(v)` |
 
-Button's existing `Role()` is renamed to `Root()`. One line in one authored
-file plus regeneration; "role" reads wrong once slots exist.
-
 A generated accessor for a slot or dimension that the shape does not declare is
 impossible by construction, and a typo at a call site is a compile error.
 
@@ -145,25 +136,25 @@ manipulation — nothing in `MenuButtonSize` marks the boundary —
 each method name against that shape's own generated accessor names. A two-argument
 form cannot work.
 
-## 4. Consequences for the existing pipeline
+## 4. The pipeline on the slot axis
 
-Each is a localized change to code that already exists and is tested.
+Each unit of the pipeline is small and independently tested.
 
-| Unit | Change |
+| Unit | Responsibility |
 |---|---|
-| `recipe.Shape` | gains `Slots`; `Base`/`Dimensions` move onto `Slot` |
-| `Shape.Validate` | validates each slot; slot names unique and non-empty except the root |
-| `BaseClass`/`ValueClass` | take a slot |
+| `recipe.Shape` | carries `Slots []Slot`; `Base` and `Dimensions` live on a `Slot` |
+| `Shape.Validate` | validates each slot; slot names are unique and non-empty except the root |
+| `BaseClass`/`ValueClass` | encode a class for a given slot |
 | `DecodeClass` | longest-match slot resolution (§2.1) |
-| `Conform` | walks slots × dimensions × values, both directions; error names the slot |
-| `CheckConflicts` | per slot-and-value list; error names the slot |
-| `Contract` | `components[c].slots[s].dimensions[d]`; **schema version 2** |
-| `stylegen` matcher | method name resolves to `(slot, dimension)` via the shape, not `strings.ToLower` |
-| `recipe.Component` | fixed `Role`/`Variant`/`Size` methods replaced by `SlotClass`/`SlotValueClass`, with the typed API on the generated per-component accessor type |
-| generation | slot **coverage** is validated: a shape declaring a slot, a base rule, or a dimension the component never renders is an error, reported all at once |
+| `Conform` | walks slots × dimensions × values, both directions; the error names the slot |
+| `CheckConflicts` | checks each slot-and-value utility list; the error names the slot |
+| `Contract` | emits `components[c].slots[s].dimensions[d]` |
+| `stylegen` matcher | resolves a method name to `(slot, dimension)` against the shape |
+| `recipe.Component` | exposes the untyped primitives `SlotClass`/`SlotValueClass`; the typed API is the generated per-component accessor type |
+| generation | validates slot **coverage**: a shape declaring a slot, a base rule, or a dimension the component never renders is an error, reported all at once |
 
-The contract's shape-emitted-once property is preserved: slots live under
-`components`, styles still carry only utilities.
+The contract emits each shape once: slots live under `components`, and styles
+carry only utilities.
 
 ## 5. The layer hazard applies to every migration
 
@@ -200,9 +191,9 @@ catalogue's riskiest property from vigilance into a build failure. **Done** —
 Ordered by what each stage proves, not by component popularity.
 
 **Stage 0 — the model.** Slot axis, generated accessors, shapes sub-package,
-contract v2, matcher. Button is re-expressed through it (root slot only) and
-must emit byte-identical output. That byte-identity is the proof the axis is
-backward compatible.
+contract, matcher. Button is expressed through it (root slot only) and its
+generated output is pinned byte-for-byte, proving that a root-only shape adds
+nothing to what a single-element component emits.
 
 **Stage 1 — the layer gate.** Build the `make audit` rule and commit the sweep
 harness, before any bulk migration.
@@ -247,12 +238,13 @@ is what finds these.
 ## 9. Success criteria
 
 1. `Shape` expresses a multi-slot component with per-slot dimensions.
-2. Button, re-expressed on the slot axis, emits byte-identical generated output.
+2. Button, expressed on the slot axis with a root-only shape, has its
+   generated output pinned byte-for-byte.
 3. Slot decoding resolves `sidebar-menu-button-tooltip-content` correctly, and a
    test pins the longest-match rule against its shorter siblings.
 4. Accessors are generated from shapes with no bootstrap cycle, and a typo'd
    slot or dimension is a compile error.
-5. `recipes.json` v2 groups slots under their component; the editor can still
+5. `recipes.json` groups slots under their component; the editor can
    enumerate, diff per axis, and report completeness with no CSS access.
 6. A `make audit` rule fails the build on a components-layer rule that overrides
    a migrated component's presentation.
@@ -270,17 +262,18 @@ Shipped on this branch. Migration (Stages 2-4) is what remains.
   slot.
 - `BaseClass`/`ValueClass` take a slot. `DecodeClass` matches declared slot
   names longest-first (`TestShapeDecodeClassPrefersTheLongestSlot`).
-- Shapes moved to the leaf package `registry/canonical/shapes` (§3.1), and
-  `internal/stylegen` no longer imports `registry/canonical` in any form.
+- Shapes live in the leaf package `registry/canonical/shapes` (§3.1), and
+  `internal/stylegen` does not import `registry/canonical` in any form.
 - Per-slot accessors are generated into `registry/canonical/<c>_recipe.gen.go`
   as a per-component struct type. `HelperCalls` resolves method names against
   the shape, never by string splitting.
 - Generation validates slot coverage in both directions: an unrendered slot,
   base rule, or dimension is an error.
-- `registry/generated/recipes.json` is schema **version 2**: rules are grouped
-  under `components.<c>.slots.<s>`.
-- Button was re-expressed through the axis (root slot only) and emits
-  byte-identical output. `Role()` was renamed `Root()`.
+- `registry/generated/recipes.json` groups rules under
+  `components.<c>.slots.<s>` and carries a `version` field for consumers to
+  check.
+- Button is expressed through the axis (root slot only), reaching its root
+  through `Root()`, and its generated output is pinned byte-for-byte.
 
 **Stage 1 — the layer gate.**
 
@@ -292,11 +285,9 @@ Shipped on this branch. Migration (Stages 2-4) is what remains.
   `jstest/support/sweep-diff.mjs`, driven by `make sweep-baseline` and
   `make sweep-compare` (3,283 elements x 22 properties x light/dark).
 
-**Presentation changes shipped alongside**, both justified by the sweep:
-`data-gsxui-slot-sidebar-trigger` now renders at 28px (`size-7`, its own
-authored value and upstream shadcn's) instead of silently losing to Button's
-`size-8`; `data-gsxui-slot-input-group-button` is restored to 28x24, radius
-7px, font-size 14px after the Button migration demoted its rules a layer.
+**Presentation pinned by the sweep:** `data-gsxui-slot-sidebar-trigger`
+renders at 28px (`size-7`, its own authored value and upstream shadcn's), and
+`data-gsxui-slot-input-group-button` at 28x24, radius 7px, font-size 14px.
 
 **Not started:** Stage 2 (Card), Stage 3 (Badge, Alert), Stage 4 (the long
 tail, Sidebar last). The rule in §6 still applies — a stage does not begin

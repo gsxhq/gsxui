@@ -4,17 +4,15 @@ Notable changes to gsxui's component set, newest first.
 
 ## 2026-07-29
 
-### Fixed
+### Added
 
-- **button** — `gsxui init` now ships a `ui/button.gsx` whose Button renders concrete Tailwind utilities compiled from its style recipe, instead of `.gsxui-recipe-button*` classes that no shipped stylesheet defined (those rules lived only in the site-only `web/site-button.css`, never copied by `gsxui init`). Consumer-project buttons were unstyled at merge base; they are now styled out of the box.
-
-- **input-group** — `InputGroupButton` presentation restored: border-radius 7px, font-size 14px, width 28px. Migrating Button to compiled utilities had demoted InputGroupButton's rules a cascade layer, so its whole size ramp silently stopped applying.
+- **contract** — `registry/generated/recipes.json` publishes the recipe model: every component's slots, their dimensions and values, and each style's utilities for them (`components.<c>.slots.<s>.dimensions.<d>`, `styles.<style>.<c>.slots.<s>`). It carries a `version` field so a consumer can check it understands the schema.
 
 ### Changed
 
-- **contract (breaking)** — `registry/generated/recipes.json` is now schema version 2: a component's rules are grouped under named slots (`components.<c>.slots.<s>`), so multi-slot components can be expressed. Version 1 had no slot axis. Any consumer reading `components.<c>.dimensions` directly must move to `components.<c>.slots.<s>.dimensions`.
-- **sidebar** — `SidebarTrigger` now renders at 28px (`size-7`) instead of 32px, matching both its own authored CSS and upstream shadcn. It had been silently overridden by Button's `size-8`.
-- **button** — destructive buttons now lighten on hover in dark mode (`bg-destructive/90`), matching the documented style contract. This diverges from upstream shadcn, which keeps `/60` through hover; see `docs/jsx-parity.md`.
+- **button** — `gsxui init` ships a `ui/button.gsx` whose Button renders concrete Tailwind utilities compiled from its style recipe, so consumer-project buttons are styled out of the box with no extra stylesheet.
+- **sidebar** — `SidebarTrigger` renders at 28px (`size-7`), matching both its own authored CSS and upstream shadcn.
+- **button** — destructive buttons lighten on hover in dark mode (`bg-destructive/90`), matching the documented style contract. This diverges from upstream shadcn, which keeps `/60` through hover; see `docs/jsx-parity.md`.
 
 ## 2026-07-25
 

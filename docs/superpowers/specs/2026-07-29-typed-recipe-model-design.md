@@ -102,35 +102,27 @@ rewrite class expressions. It reads shapes by **importing**
 `registry/canonical/shapes` (no reading of Go declarations as data). These are
 different concerns and the split is deliberate.
 
-### 3.4 `registry/canonical/shapes` (slot axis)
+### 3.4 `registry/canonical/shapes`
 
-Shapes originally lived in `registry/canonical` behind a `Shapes()` accessor.
-Once accessors became generated *into* `registry/canonical`, that arrangement
-deadlocked: `cmd/stylegen` imports `internal/stylegen`, which imported
-`registry/canonical` for `Shapes()`; Go compiles a package as a unit; so a
-canonical `.gsx` calling a not-yet-generated accessor made `registry/canonical`
-unbuildable and the generator unable to run at all.
+Shapes live in a leaf package that always compiles on its own, and
+`internal/stylegen` must not import `registry/canonical` in any form.
 
-Shapes therefore moved to a leaf package that always compiles on its own.
-`generate.go` now reads `shapes.All()` and `internal/stylegen` no longer
-imports `registry/canonical` in any form; `canonical.Shapes()` was deleted.
-See §3 of the slot-axis design.
+The constraint is a bootstrap one. Accessors are generated *into*
+`registry/canonical`, and `cmd/stylegen` imports `internal/stylegen`; Go
+compiles a package as a unit. If `internal/stylegen` read shapes from
+`registry/canonical`, a canonical `.gsx` calling a not-yet-generated accessor
+would make `registry/canonical` unbuildable and the generator unable to run at
+all. `generate.go` reads `shapes.All()` instead. See §3 of the slot-axis
+design.
 
 ## 4. The recipe model
 
-**Superseded in part.** `Shape` gained a slot axis: `Base` and `Dimensions`
-moved onto a `Slot`, and a `Shape` carries `Slots []Slot`. See §2 of the
-slot-axis design for the current struct. Everything below about dimensions,
-defaults, conformance and conflicts still holds — it now applies per slot.
+A `Shape` names a component and its slots; each slot carries its own base flag
+and dimensions. See §2 of the slot-axis design for the struct. Everything below
+about dimensions, defaults, conformance and conflicts applies per slot.
 
 ```go
-// internal/recipe — as shipped in the Button pilot, before the slot axis
-type Shape struct {
-    Component  string
-    Base       bool // component has a base rule
-    Dimensions []Dimension
-}
-
+// internal/recipe
 type Dimension struct {
     Name    string
     Default string   // must be a member of Values
@@ -138,11 +130,11 @@ type Dimension struct {
 }
 ```
 
-Declared once, beside the canonical component whose public parameters it
-mirrors:
+A shape is declared once, beside the canonical component whose public
+parameters it mirrors:
 
 ```go
-// registry/canonical/shapes/button.go  (current form, slot axis)
+// registry/canonical/shapes/button.go
 var Button = recipe.Shape{
     Component: "button",
     Slots: []recipe.Slot{{
@@ -211,9 +203,8 @@ class={
 one method per declared (slot, dimension). `recipe.Component` itself carries
 only the untyped primitives `SlotClass(slot)` and
 `SlotValueClass(slot, dimension, value)`; the typed per-slot API is the
-generated accessor type, not fixed `Role`/`Variant`/`Size` methods. `Root()` is
-the root slot's base accessor (it was called `Role()` in the Button pilot).
-Both meanings are unchanged:
+generated accessor type. `Root()` is the root slot's base accessor. The two
+meanings are:
 
 | | `button.Root()` | `button.Variant(v)` |
 |---|---|---|
@@ -262,12 +253,10 @@ site.
 
 ## 6. Rewrite mechanics
 
-Today's resolver replaces string literals inside class parts. The new pass
-replaces whole class parts: a `ClassPart` whose `Expr` is a recipe helper call
-has its source span swapped for generated text.
+The pass replaces whole class parts: a `ClassPart` whose `Expr` is a recipe
+helper call has its source span swapped for generated text.
 
-The surrounding machinery is retained unchanged, because it is what makes the
-pass trustworthy:
+The surrounding machinery is what makes the pass trustworthy:
 
 1. parse the canonical with `gsxparser.ParseFile`
 2. collect edits as `(span, replacement)`, rejecting anything malformed at its
@@ -276,7 +265,7 @@ pass trustworthy:
 4. `gen.Format`, reparse with `gsxparser.ParseFile`, then verify that no helper
    call and no `gsxui-recipe-` prefix survives
 
-Rejection rules carry over from the current resolver: a helper call or recipe
+Rejection rules: a helper call or recipe
 token is illegal in a static class attribute, a non-class attribute, an
 interpolation, a pipeline argument, a switch tag, and nested markup.
 
@@ -295,23 +284,25 @@ span would silently delete it. See `recordPartEdit` and
 `registry/generated/recipes.json`, emitted by the same pass and drift-checked
 alongside the generated `.gsx` files:
 
-**Superseded: the artifact is now schema version 2.** A component's rules are
-grouped under named slots (`components.<c>.slots.<s>.dimensions.<d>`) so
-multi-slot components can be expressed. `recipe.ContractVersion` is `2`. The
-version-1 sketch below is retained because every property it argues for is
-unchanged — only the extra `slots` level was inserted.
+A component's rules are grouped under named slots, so multi-slot components can
+be expressed. The `version` field carries `recipe.ContractVersion`, which a
+consumer reads to decide whether it understands the schema. Abridged to the
+root slot for legibility:
 
 ```json
 { "version": 1,
-  "components": { "button": { "dimensions": {
-      "variant": { "default": "default",
-                   "values": ["default","destructive","outline","secondary","ghost","link"] },
-      "size":    { "default": "default",
-                   "values": ["default","xs","sm","lg","icon","icon-xs","icon-sm","icon-lg"] } } } },
-  "styles": { "nova": { "button": {
+  "components": { "button": { "slots": { "": {
+      "base": true,
+      "dimensions": {
+        "variant": { "default": "default",
+                     "values": ["default","destructive","outline","secondary","ghost","link"] },
+        "size":    { "default": "default",
+                     "values": ["default","xs","sm","lg","icon","icon-xs","icon-sm","icon-lg"] } } } } } },
+  "styles": { "nova": { "button": { "slots": { "": {
       "base": ["inline-flex","shrink-0","items-center"],
-      "variant": { "outline": ["border-border","bg-background","hover:bg-accent"] },
-      "size":    { "xs": ["h-6","gap-1","px-2"] } } },
+      "dimensions": {
+        "variant": { "outline": ["border-border","bg-background","hover:bg-accent"] },
+        "size":    { "xs": ["h-6","gap-1","px-2"] } } } } } },
               "maia": {} } }
 ```
 
@@ -344,17 +335,14 @@ stays at render time where `merge.Merge` already handles it correctly.
 
 ## 9. Compiled presentation vs. caller overrides: the layer invariant
 
-Compiling Button's presentation into concrete utilities changes what a caller
-override is competing against. Before this branch, every Button rule lived in
-`@layer components` as a single low-specificity block, and any caller or
-sibling-component rule placed in `@layer utilities` beat it automatically —
-Tailwind's cascade orders whole `@layer`s before it ever looks at selector
-specificity. After this branch, Button's own presentation arrives as plain
+Compiling Button's presentation into concrete utilities determines what a
+caller override is competing against. Button's presentation arrives as plain
 utility classes on the generated element, at ordinary utility specificity.
-Anything that needs to override part of a Button's compiled presentation —
-another component's CSS composing over a Button-rendered marker, not a
-one-off caller class — is now competing against those utilities directly, and
-losing by default if it is left in `@layer components`.
+Anything that needs to override part of it — another component's CSS composing
+over a Button-rendered marker, not a one-off caller class — competes against
+those utilities directly, and loses by default if it sits in
+`@layer components`, because Tailwind's cascade orders whole `@layer`s before
+it ever looks at selector specificity.
 
 **The invariant:**
 
@@ -393,27 +381,25 @@ explicit invariant rather than left implicit in the CSS.
   wrapped in `:where()`.
 - **Carousel arrows** (`@layer components` at `default.css:2610`,
   `@layer utilities` at `default.css:~3262`): geometry that doesn't compete
-  with Button (`absolute`, positioning) stays in the components layer exactly
-  as before; only the part that overrides Button's own compiled shape
-  (`size-8 rounded-full`, against Button's `rounded-lg`) had to move to the
-  utilities layer with unwrapped selectors. See the cross-reference comments
-  at both locations.
+  with Button (`absolute`, positioning) lives in the components layer; only
+  the part that overrides Button's own compiled shape (`size-8 rounded-full`,
+  against Button's `rounded-lg`) sits in the utilities layer with unwrapped
+  selectors. See the cross-reference comments at both locations.
 - **InputGroupButton** (`@layer utilities`, `default.css:~3270`): retunes a
   grouped Button's whole size ramp — type scale and radius — which again
-  means overriding utilities Button now renders concretely, not a
+  means overriding utilities Button renders concretely, not a
   low-specificity recipe class.
 
 See item 1 in the Follow-up work section (§15) for the one case where
-dropping `:where()` narrowed an existing caller-override guarantee. Item 2 —
+dropping `:where()` costs a caller-override guarantee. Item 2 —
 making this invariant a build-time check instead of a comment — is now done:
 `stylegen.CheckLayerPrecedence` runs from `make audit` via
 `go run ./cmd/stylegen --check-layers`.
 
 ## 10. Manifest-driven generation
 
-The current generator hardcodes Button: a literal `buttonStyleSources` slice, a
-`GenerateButton` entry point, and a `.button.gsx-*` temp file pattern.
-Generation becomes discovery-driven:
+Generation is discovery-driven — nothing in the generator names a specific
+component:
 
 ```text
 for each registry/canonical/<component>.gsx
@@ -431,11 +417,10 @@ consumer who applies Maia overwrites `ui/<component>.gsx` from
 `registry/generated/maia/`; the shape is identical, so the call sites do not
 change.
 
-The pilot remains Button-only in practice. The code stops being Button-shaped,
-because doing this during the second component's migration is strictly worse
-than doing it now.
+Only Button is migrated in practice, but the code is not Button-shaped:
+deferring that until the second component's migration would be strictly worse.
 
-Atomic write, `--check` drift mode, and the temp-file discipline are retained.
+Atomic write, `--check` drift mode, and the temp-file discipline all apply.
 
 ## 11. Error handling
 
@@ -486,7 +471,7 @@ pre-merge (§8); changes to theme values, presets, or the CLI apply flow.
 
 1. `registry/canonical/button.gsx` contains no concrete utility and no recipe
    token string — only `button.Root()`, `button.Variant()`, and `button.Size()`
-   calls. (`Role()` was renamed `Root()` with the slot axis.)
+   calls.
 2. The shape is declared once; Nova and Maia supply utilities only.
 3. Deleting a rule from either style fails the build naming the exact missing
    `(dimension, value)`.
@@ -496,39 +481,32 @@ pre-merge (§8); changes to theme values, presets, or the CLI apply flow.
 6. `recipes.json` is sufficient to enumerate every variant, diff Nova against
    Maia per axis, and report completeness — with no access to the CSS.
 7. Structure and behavior tests run once against the canonical and pass.
-8. Nothing imports `registry/canonical`. (Tightened by the slot axis: even
-   `stylegen` no longer does — it reads shapes from `registry/canonical/shapes`
-   and the components as files.)
+8. Nothing imports `registry/canonical` — not even `stylegen`, which reads
+   shapes from `registry/canonical/shapes` and the components as files.
 
 ## 15. Follow-up work
 
 Working notes from implementation lived in a gitignored scratch directory
 that will be deleted; the items below are captured here so they survive.
 
-1. **Dropping `:where()` on the Carousel arrow rule is a real (untested)
-   narrowing.** Promoted utilities-layer rules with real specificity now
-   outrank equal-specificity caller classes — a caller passing
-   `class="rounded-none"` to a Carousel arrow can no longer override it, a
-   regression relative to merge base. Untested. Needs its own spec so the gap
-   is known rather than assumed.
+1. **The Carousel arrow rule outranks caller classes.** It sits in
+   `@layer utilities` with real specificity, so a caller passing
+   `class="rounded-none"` to a Carousel arrow cannot override it. Untested,
+   and it needs its own spec so the gap is known rather than assumed.
 2. ~~**The components/utilities split in `default.css` is load-bearing but
    unenforced.**~~ Done: `stylegen.CheckLayerPrecedence` enforces both halves
    of the invariant and runs from `make audit` as
-   `go run ./cmd/stylegen --check-layers`. It found two further latent
-   instances on its first run (`data-gsxui-slot-sidebar-trigger`, in the wrong
-   layer; `data-gsxui-slot-input-group-button`, right layer, zero
-   specificity), both fixed in the same change.
+   `go run ./cmd/stylegen --check-layers`.
 3. **Mixed composition model.** Components that call `ui.Button` receive
    compiled utilities; components that merely stamp its `data-gsxui-slot-button`
-   marker (site-only surfaces) still fall back to `web/site-button.css`.
-   These two paths will keep drifting from each other until the
-   marker-stampers are converted to call `ui.Button` directly.
-4. **Nothing validates variant-combination completeness in recipes.** This is
-   exactly how nova's `dark:hover:bg-destructive/90` went missing before this
-   branch — the rule for `dark:` and the rule for `hover:` both existed, but
-   their combination didn't. A style-authoring lint ("a rule declaring both
-   `hover:X` and `dark:X` must also declare `dark:hover:X`") would catch this
-   class of gap mechanically.
+   marker (site-only surfaces) fall back to `web/site-button.css`. These two
+   paths will drift from each other until the marker-stampers are converted to
+   call `ui.Button` directly.
+4. **Nothing validates variant-combination completeness in recipes.** A rule
+   for `dark:` and a rule for `hover:` can both exist while their combination
+   is missing, and no check notices. A style-authoring lint ("a rule declaring
+   both `hover:X` and `dark:X` must also declare `dark:hover:X`") would catch
+   this class of gap mechanically.
 5. **`ui/button_test.go` derives its expected classes via `merge.Merge`**, so
    a regression in the merge logic itself cancels out between the expected
    and actual values and would not be caught by this test. Bounded risk: the
@@ -537,15 +515,13 @@ that will be deleted; the items below are captured here so they survive.
 6. **`registry/canonical/shapes`'s `All()` is a shallow copy** — the returned
    map is fresh, but each `Shape`'s `Slots`/`Dimensions`/`Values` slices are
    still shared with the package-level map, so a caller mutating them in
-   place would corrupt shared state. (Still open. `canonical.Shapes()`, where
-   this was first noted, no longer exists — the accessor moved to the leaf
-   `shapes` package, see §3.4.)
+   place would corrupt shared state. Open.
 7. **`ui/button_test.go` imports `internal/stylegen` only for the
    `DefaultStyle` constant**, which pulls `internal/stylegen` (and through it
-   `registry/canonical/shapes`) into `ui`'s test binary. Still open, but
-   narrower than first written: `stylegen` no longer imports
-   `registry/canonical` itself, so the never-ship package is not dragged in.
-   Moving `DefaultStyle` to `internal/recipe` would drop the import entirely.
+   `registry/canonical/shapes`) into `ui`'s test binary. The never-ship
+   `registry/canonical` package itself is not dragged in, since `stylegen` does
+   not import it. Moving `DefaultStyle` to `internal/recipe` would drop the
+   import entirely. Open.
 8. ~~**Adding a dimension requires three uncoupled edits**~~ Done. The
    accessor method is generated from the shape rather than hand-written on
    `recipe.Component`; the residue check derives its receiver list from
