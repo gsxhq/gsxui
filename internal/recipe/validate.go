@@ -9,53 +9,71 @@ import (
 // Resolved is a style proven to be a complete implementation of a shape.
 type Resolved struct {
 	Shape  Shape
-	Base   []string
-	Values map[string]map[string][]string // [dimension][value]
+	Base   map[string][]string                       // [slot]
+	Values map[string]map[string]map[string][]string // [slot][dimension][value]
 }
 
+// BaseUtilities returns the utilities a resolved recipe supplies for a slot's
+// base rule.
+func (r Resolved) BaseUtilities(slot string) []string { return slices.Clone(r.Base[slot]) }
+
 // Utilities returns the utilities a resolved recipe supplies for one value.
-func (r Resolved) Utilities(dimension, value string) []string {
-	return slices.Clone(r.Values[dimension][value])
+func (r Resolved) Utilities(slot, dimension, value string) []string {
+	return slices.Clone(r.Values[slot][dimension][value])
 }
 
 // Conform checks that style implements shape exactly: every declared
-// (dimension, value) has a rule, and every rule maps to a declared one.
+// (slot, dimension, value) has a rule, and every rule maps to a declared one.
 func Conform(filename string, shape Shape, style Style) (Resolved, error) {
 	if err := shape.Validate(); err != nil {
 		return Resolved{}, err
 	}
 
-	resolved := Resolved{Shape: shape, Values: make(map[string]map[string][]string, len(shape.Dimensions))}
-	for _, dimension := range shape.Dimensions {
-		resolved.Values[dimension.Name] = make(map[string][]string, len(dimension.Values))
+	resolved := Resolved{
+		Shape:  shape,
+		Base:   make(map[string][]string, len(shape.Slots)),
+		Values: make(map[string]map[string]map[string][]string, len(shape.Slots)),
+	}
+	for _, slot := range shape.Slots {
+		byDimension := make(map[string]map[string][]string, len(slot.Dimensions))
+		for _, dimension := range slot.Dimensions {
+			byDimension[dimension.Name] = make(map[string][]string, len(dimension.Values))
+		}
+		resolved.Values[slot.Name] = byDimension
 	}
 
 	// Style to shape: every rule must be declared.
 	for _, rule := range style.Rules() {
-		dimension, value, kind, err := shape.DecodeClass(rule.Class)
+		slot, dimension, value, kind, err := shape.DecodeClass(rule.Class)
 		if err != nil {
 			return Resolved{}, fmt.Errorf("%s: %w", filename, err)
 		}
 		if kind == ClassBase {
-			if !shape.Base {
-				return Resolved{}, fmt.Errorf("%s: component %q declares no base rule, found %s",
-					filename, shape.Component, rule.Class)
+			declared, _ := shape.Slot(slot)
+			if !declared.Base {
+				return Resolved{}, fmt.Errorf("%s: slot %q declares no base rule, found %s",
+					filename, slot, rule.Class)
 			}
-			resolved.Base = slices.Clone(rule.Utilities)
+			resolved.Base[slot] = slices.Clone(rule.Utilities)
 			continue
 		}
-		resolved.Values[dimension][value] = slices.Clone(rule.Utilities)
+		resolved.Values[slot][dimension][value] = slices.Clone(rule.Utilities)
 	}
 
 	// Shape to style: every declaration must be supplied.
-	if shape.Base && resolved.Base == nil {
-		return Resolved{}, fmt.Errorf("%s: missing base rule .%s", filename, shape.BaseClass())
-	}
-	for _, dimension := range shape.Dimensions {
-		for _, value := range dimension.Values {
-			if _, ok := resolved.Values[dimension.Name][value]; !ok {
-				return Resolved{}, fmt.Errorf("%s: dimension %q missing value %q",
-					filename, dimension.Name, value)
+	for _, slot := range shape.Slots {
+		if slot.Base {
+			if _, ok := resolved.Base[slot.Name]; !ok {
+				return Resolved{}, fmt.Errorf("%s: slot %q missing base rule .%s",
+					filename, slot.Name, shape.BaseClass(slot.Name))
+			}
+		}
+		for _, dimension := range slot.Dimensions {
+			for _, value := range dimension.Values {
+				if _, ok := resolved.Values[slot.Name][dimension.Name][value]; !ok {
+					return Resolved{}, fmt.Errorf("%s: slot %q dimension %q missing value %q",
+						filename, slot.Name, dimension.Name, value)
+				}
 			}
 		}
 	}
@@ -123,16 +141,18 @@ func CheckConflicts(filename string, resolved Resolved, merger func([]string) st
 		return nil
 	}
 
-	if resolved.Shape.Base {
-		if err := check(resolved.Shape.BaseClass(), resolved.Base); err != nil {
-			return err
-		}
-	}
-	for _, dimension := range resolved.Shape.Dimensions {
-		for _, value := range dimension.Values {
-			class := resolved.Shape.ValueClass(dimension.Name, value)
-			if err := check(class, resolved.Values[dimension.Name][value]); err != nil {
+	for _, slot := range resolved.Shape.Slots {
+		if slot.Base {
+			if err := check(resolved.Shape.BaseClass(slot.Name), resolved.Base[slot.Name]); err != nil {
 				return err
+			}
+		}
+		for _, dimension := range slot.Dimensions {
+			for _, value := range dimension.Values {
+				class := resolved.Shape.ValueClass(slot.Name, dimension.Name, value)
+				if err := check(class, resolved.Values[slot.Name][dimension.Name][value]); err != nil {
+					return err
+				}
 			}
 		}
 	}

@@ -10,10 +10,12 @@ import (
 func conformShape() Shape {
 	return Shape{
 		Component: "button",
-		Base:      true,
-		Dimensions: []Dimension{
-			{Name: "variant", Default: "default", Values: []string{"default", "outline"}},
-		},
+		Slots: []Slot{{
+			Name: "", Base: true,
+			Dimensions: []Dimension{
+				{Name: "variant", Default: "default", Values: []string{"default", "outline"}},
+			},
+		}},
 	}
 }
 
@@ -38,10 +40,10 @@ func TestConformAcceptsCompleteStyle(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Conform() error = %v", err)
 	}
-	if got, want := resolved.Base, []string{"inline-flex", "items-center"}; !reflect.DeepEqual(got, want) {
-		t.Errorf("Base = %q, want %q", got, want)
+	if got, want := resolved.BaseUtilities(""), []string{"inline-flex", "items-center"}; !reflect.DeepEqual(got, want) {
+		t.Errorf("BaseUtilities(root) = %q, want %q", got, want)
 	}
-	if got, want := resolved.Utilities("variant", "outline"), []string{"border-border", "bg-background"}; !reflect.DeepEqual(got, want) {
+	if got, want := resolved.Utilities("", "variant", "outline"), []string{"border-border", "bg-background"}; !reflect.DeepEqual(got, want) {
 		t.Errorf("Utilities() = %q, want %q", got, want)
 	}
 }
@@ -54,7 +56,7 @@ func TestConformRejectsMissingValue(t *testing.T) {
 	if err == nil {
 		t.Fatal("Conform() = nil error, want error")
 	}
-	want := `maia/button.css: dimension "variant" missing value "outline"`
+	want := `maia/button.css: slot "" dimension "variant" missing value "outline"`
 	if got := err.Error(); got != want {
 		t.Errorf("Conform() = %q, want %q", got, want)
 	}
@@ -68,7 +70,7 @@ func TestConformRejectsMissingBase(t *testing.T) {
 	if err == nil {
 		t.Fatal("Conform() = nil error, want error")
 	}
-	want := `maia/button.css: missing base rule .gsxui-recipe-button`
+	want := `maia/button.css: slot "" missing base rule .gsxui-recipe-button`
 	if got := err.Error(); got != want {
 		t.Errorf("Conform() = %q, want %q", got, want)
 	}
@@ -90,12 +92,12 @@ func TestConformRejectsUnknownRule(t *testing.T) {
 func TestConformRejectsInvalidShape(t *testing.T) {
 	t.Parallel()
 	shape := conformShape()
-	shape.Dimensions[0].Default = "ghost"
+	shape.Slots[0].Dimensions[0].Default = "ghost"
 	_, err := Conform("nova/button.css", shape, mustParse(t, conformCSS))
 	if err == nil {
 		t.Fatal("Conform() = nil error, want error")
 	}
-	if got, want := err.Error(), `button: dimension "variant" default "ghost" is not one of its values`; got != want {
+	if got, want := err.Error(), `button: slot "" dimension "variant" default "ghost" is not one of its values`; got != want {
 		t.Errorf("Conform() = %q, want %q", got, want)
 	}
 }
@@ -213,5 +215,98 @@ func TestCheckConflictsCombinedPrefersSuperseded(t *testing.T) {
 		if got := err.Error(); got != want {
 			t.Fatalf("CheckConflicts() = %q, want %q", got, want)
 		}
+	}
+}
+
+func slotConformShape() Shape {
+	return Shape{
+		Component: "card",
+		Slots: []Slot{
+			{Name: "", Base: true},
+			{Name: "header", Base: true, Dimensions: []Dimension{
+				{Name: "variant", Default: "default", Values: []string{"default", "muted"}},
+			}},
+		},
+	}
+}
+
+const slotConformCSS = `@layer components {
+  .gsxui-recipe-card { @apply rounded-xl border; }
+  .gsxui-recipe-card-header { @apply flex gap-1.5; }
+  .gsxui-recipe-card-header-variant-default { @apply text-foreground; }
+  .gsxui-recipe-card-header-variant-muted { @apply text-muted-foreground; }
+}`
+
+func TestConformAcceptsSlottedStyle(t *testing.T) {
+	t.Parallel()
+	resolved, err := Conform("nova/card.css", slotConformShape(), mustParse(t, slotConformCSS))
+	if err != nil {
+		t.Fatalf("Conform() error = %v", err)
+	}
+	if got, want := resolved.BaseUtilities(""), []string{"rounded-xl", "border"}; !reflect.DeepEqual(got, want) {
+		t.Errorf("BaseUtilities(root) = %q, want %q", got, want)
+	}
+	if got, want := resolved.BaseUtilities("header"), []string{"flex", "gap-1.5"}; !reflect.DeepEqual(got, want) {
+		t.Errorf("BaseUtilities(header) = %q, want %q", got, want)
+	}
+	if got, want := resolved.Utilities("header", "variant", "muted"), []string{"text-muted-foreground"}; !reflect.DeepEqual(got, want) {
+		t.Errorf("Utilities() = %q, want %q", got, want)
+	}
+}
+
+func TestConformRejectsMissingSlotBase(t *testing.T) {
+	t.Parallel()
+	src := strings.Replace(slotConformCSS,
+		"  .gsxui-recipe-card-header { @apply flex gap-1.5; }\n", "", 1)
+	_, err := Conform("maia/card.css", slotConformShape(), mustParse(t, src))
+	if err == nil {
+		t.Fatal("Conform() = nil, want error")
+	}
+	want := `maia/card.css: slot "header" missing base rule .gsxui-recipe-card-header`
+	if got := err.Error(); got != want {
+		t.Errorf("Conform() = %q, want %q", got, want)
+	}
+}
+
+func TestConformRejectsMissingSlotValue(t *testing.T) {
+	t.Parallel()
+	src := strings.Replace(slotConformCSS,
+		"  .gsxui-recipe-card-header-variant-muted { @apply text-muted-foreground; }\n", "", 1)
+	_, err := Conform("maia/card.css", slotConformShape(), mustParse(t, src))
+	if err == nil {
+		t.Fatal("Conform() = nil, want error")
+	}
+	want := `maia/card.css: slot "header" dimension "variant" missing value "muted"`
+	if got := err.Error(); got != want {
+		t.Errorf("Conform() = %q, want %q", got, want)
+	}
+}
+
+func TestCheckConflictsNamesTheSlot(t *testing.T) {
+	t.Parallel()
+	src := strings.Replace(slotConformCSS,
+		"  .gsxui-recipe-card-header { @apply flex gap-1.5; }",
+		"  .gsxui-recipe-card-header { @apply rounded-lg rounded-md; }", 1)
+	resolved, err := Conform("nova/card.css", slotConformShape(), mustParse(t, src))
+	if err != nil {
+		t.Fatal(err)
+	}
+	stub := func(classes []string) string {
+		var kept []string
+		for _, class := range classes {
+			if class == "rounded-lg" && slices.Contains(classes, "rounded-md") {
+				continue
+			}
+			kept = append(kept, class)
+		}
+		return strings.Join(kept, " ")
+	}
+	err = CheckConflicts("nova/card.css", resolved, stub)
+	if err == nil {
+		t.Fatal("CheckConflicts() = nil, want error")
+	}
+	want := "nova/card.css: .gsxui-recipe-card-header applies conflicting utilities: rounded-lg is superseded"
+	if got := err.Error(); got != want {
+		t.Errorf("CheckConflicts() = %q, want %q", got, want)
 	}
 }
