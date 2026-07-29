@@ -1,4 +1,4 @@
-.PHONY: generate generate-styles verify-generated verify-generated-styles test test-js test-theme-state test-css-audit audit check ci icons site-dev site highlight
+.PHONY: generate generate-styles verify-generated verify-generated-styles test test-js test-theme-state test-css-audit audit check ci icons site-dev site highlight sweep-baseline sweep-compare
 
 audit-source-dirs := ui registry/canonical site/examples site/pages web $(wildcard dev)
 audit-css-source-dirs := assets/css site web $(wildcard dev)
@@ -53,6 +53,19 @@ test-js:
 
 test-css-audit:
 	node --test jstest/support/compiled-css-audit.test.ts
+
+# sweep-baseline / sweep-compare: the computed-style sweep harness. It
+# records the resting computed style of every data-gsxui-slot-* element
+# across every fixture (both colour schemes) and diffs two such runs — the
+# only thing that reliably catches CSS-layer precedence regressions, which
+# change rendering without failing any assertion. Take a baseline before a
+# component migration, then compare after.
+sweep-baseline:
+	SWEEP_OUT=jstest/.tmp/sweep-baseline npx playwright test --config jstest/playwright.config.ts jstest/specs/layer-precedence.spec.ts
+
+sweep-compare:
+	SWEEP_OUT=jstest/.tmp/sweep-current npx playwright test --config jstest/playwright.config.ts jstest/specs/layer-precedence.spec.ts
+	node jstest/support/sweep-diff.mjs jstest/.tmp/sweep-baseline jstest/.tmp/sweep-current
 
 test-theme-state:
 	node --test web/theme-state.test.js
