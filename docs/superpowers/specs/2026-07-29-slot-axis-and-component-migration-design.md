@@ -251,6 +251,40 @@ is what finds these.
 7. Every migrated component has a committed before/after computed-style sweep
    showing no unexplained difference.
 
+## 11. Known gaps carried into the migration
+
+Each is a current limitation, not a historical note. None blocks starting the
+migration; all are worth closing as the catalogue grows.
+
+1. **The property oracle is variant-blind.** `contestedProperties` unions the
+   resolved property names of a component's utilities without regard to variant,
+   so a component utility such as `hover:bg-x` makes any unconditional
+   `background-color` declaration on that marker look contested. The only escape
+   hatch is a whole-file exemption, which is coarse. Expect this to bite once
+   Sidebar and Carousel migrate.
+
+2. **`checkAccessorNames` is unpinned at one of its three call sites.** It runs
+   in `GenerateAccessors`, `Resolve` and `HelperCalls`, but only the first two
+   are covered by tests — neutering the `Resolve` call leaves the suite green.
+
+3. **The sweep covers resting state at one viewport.** Interaction states
+   (`:hover`, `:focus-visible`, `[data-state=open]`) are not swept, and the
+   migration's remaining components carry many such overrides. Per-component
+   regression pins in `jstest/specs/layer-precedence.spec.ts` are the pattern to
+   follow, rather than relying on the sweep alone.
+
+4. **`shapes.All()` is a shallow copy.** The `Shape` structs are copied but the
+   `Slots` and `Values` backing arrays are shared. No caller mutates today.
+
+5. **The `web/site-button.css` exemption is checked for existence, not
+   correctness.** Its guard test requires at least one violation, so a genuinely
+   wrong new rule added to that file would stay invisible.
+
+6. **From the first migration that puts a compiled component under a foundation
+   mechanics rule, `make audit` and `go test ./internal/stylegen` require
+   `npm install`**, because the property oracle shells out to the Tailwind CLI.
+   It errors loudly when absent rather than passing silently.
+
 ## 10. Stage 0 and 1 complete
 
 Shipped on this branch. Migration (Stages 2-4) is what remains.
