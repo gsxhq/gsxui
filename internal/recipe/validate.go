@@ -104,7 +104,15 @@ func CheckConflicts(filename string, resolved Resolved, merger func([]string) st
 		}
 
 		// Check for utilities that were repeated (if no superseded utilities found).
-		for utility, inCount := range inputCounts {
+		// Iterate the original slice order, not the inputCounts map, so the
+		// reported utility is deterministic when a rule repeats more than one.
+		reported := make(map[string]struct{})
+		for _, utility := range utilities {
+			if _, ok := reported[utility]; ok {
+				continue
+			}
+			reported[utility] = struct{}{}
+			inCount := inputCounts[utility]
 			outCount := outputCounts[utility]
 			if outCount > 0 && outCount < inCount {
 				// Utility appeared multiple times in input but fewer in output: it was repeated.

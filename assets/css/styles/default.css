@@ -2606,6 +2606,11 @@
   :where([data-gsxui-slot-carousel-item][data-orientation="vertical"]) {
     @apply pt-4 -scroll-mt-4;
   }
+  /* Positioning only. The round shape (size-8 rounded-full) that overrides
+     Button's own compiled rounded-lg lives in @layer utilities below
+     (search "Carousel arrows" near line 3262) — it has to be there to beat
+     Button's compiled utilities; see the layer invariant in
+     docs/superpowers/specs/2026-07-29-typed-recipe-model-design.md §9. */
   :where(
       [data-gsxui-slot-carousel-previous],
       [data-gsxui-slot-carousel-next]

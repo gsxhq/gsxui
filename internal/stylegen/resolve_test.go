@@ -12,7 +12,6 @@ import (
 	"strings"
 	"testing"
 
-	gsxast "github.com/gsxhq/gsx/ast"
 	"github.com/gsxhq/gsx/gen"
 	gsxparser "github.com/gsxhq/gsx/parser"
 
@@ -564,37 +563,6 @@ func assertRecipeRejectedByBothAPIs(t *testing.T, src, want string) {
 	if !strings.Contains(err.Error(), want) {
 		t.Errorf("Resolve() error %q does not contain %q", err, want)
 	}
-}
-
-func resolvedElementClassExpressions(t *testing.T, filename string, src []byte) ([]byte, []byte) {
-	t.Helper()
-
-	fset := token.NewFileSet()
-	file, err := gsxparser.ParseFile(fset, filename, src, 0)
-	if err != nil {
-		t.Fatalf("parser.ParseFile() error = %v", err)
-	}
-	classes := make(map[string][]byte)
-	gsxast.Inspect(file, func(node gsxast.Node) bool {
-		element, ok := node.(*gsxast.Element)
-		if !ok || (element.Tag != "a" && element.Tag != "button") {
-			return true
-		}
-		for _, attr := range element.Attrs {
-			class, ok := attr.(*gsxast.ClassAttr)
-			if !ok || class.Name != "class" {
-				continue
-			}
-			start := fset.Position(class.Pos()).Offset
-			end := fset.Position(class.End()).Offset
-			classes[element.Tag] = append([]byte(nil), src[start:end]...)
-		}
-		return true
-	})
-	if classes["a"] == nil || classes["button"] == nil {
-		t.Fatalf("class expressions found = %v, want a and button", classes)
-	}
-	return classes["a"], classes["button"]
 }
 
 // testResolved builds the small Button-shaped fixture the helper-call tests

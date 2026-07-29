@@ -28,6 +28,16 @@ Production projects install one unscoped style. The editor may build scoped
 copies for preview. Structural differences are separate components or a
 future structural base, never style-specific `.gsx` templates.
 
+**Exception: Button.** The diagram above still holds for every component
+except Button. Button's canonical source is compiled against a typed style
+recipe at generation time, so `ui/button.gsx` ships concrete Tailwind
+utilities baked into its generated `.gsx` source rather than a
+`.gsxui-recipe-button*` class consumed from a components-layer stylesheet.
+The rest of the component set still follows the CSS-layer path described
+here. See
+[`docs/superpowers/specs/2026-07-29-typed-recipe-model-design.md`](superpowers/specs/2026-07-29-typed-recipe-model-design.md)
+for the compiled-presentation architecture and its invariants.
+
 ## Phase 1 — correct the styling boundary (shipped)
 
 Shipped as one CSS-only boundary:
@@ -38,7 +48,9 @@ Shipped as one CSS-only boundary:
 - Split the CSS source of truth into index, foundation, theme, and default
   style assets.
 - Move current Nova presentation out of every `.gsx` file and into
-  `@layer components`.
+  `@layer components`. (Superseded for Button only: Button's presentation
+  is now compiled back into concrete utilities in generated `.gsx` source —
+  see the exception noted above and the 2026-07-29 typed recipe model spec.)
 - Leave only semantics, accessibility, behavior state, stable hooks,
   dynamic mechanism values, and caller classes in components.
 - Make the site, browser harness, and `gsxui init` consume the same assets.

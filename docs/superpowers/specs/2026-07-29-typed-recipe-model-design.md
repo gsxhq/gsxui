@@ -281,7 +281,72 @@ conflicts are authoring mistakes that should be reported, not normalized.
 The useful half is therefore kept as validation (§4.2), and cross-part merging
 stays at render time where `merge.Merge` already handles it correctly.
 
-## 9. Manifest-driven generation
+## 9. Compiled presentation vs. caller overrides: the layer invariant
+
+Compiling Button's presentation into concrete utilities changes what a caller
+override is competing against. Before this branch, every Button rule lived in
+`@layer components` as a single low-specificity block, and any caller or
+sibling-component rule placed in `@layer utilities` beat it automatically —
+Tailwind's cascade orders whole `@layer`s before it ever looks at selector
+specificity. After this branch, Button's own presentation arrives as plain
+utility classes on the generated element, at ordinary utility specificity.
+Anything that needs to override part of a Button's compiled presentation —
+another component's CSS composing over a Button-rendered marker, not a
+one-off caller class — is now competing against those utilities directly, and
+losing by default if it is left in `@layer components`.
+
+**The invariant:**
+
+> A rule that overrides compiled Button presentation must live in
+> `@layer utilities` **and** carry specificity >= (0,1,0).
+
+Both halves are required, independently:
+
+- **Layer.** The cascade orders whole layers before specificity. A
+  components-layer rule against a Button-composed marker loses to Button's
+  compiled utilities no matter how specific the selector is, because it never
+  reaches a specificity comparison at all. It has to move to
+  `@layer utilities` to even compete.
+- **Specificity.** `:where(...)` is deliberately zero-specificity — it exists
+  precisely so structural selector wrapping doesn't accidentally win fights
+  it shouldn't. Once a rule is correctly in the utilities layer, a
+  `:where()`-wrapped version of it still loses to a plain class like
+  `.rounded-lg`, because within one layer the cascade falls back to ordinary
+  specificity and `:where()` contributes none. The selector has to carry real
+  specificity (a plain class or attribute selector, not `:where()`) to
+  actually win.
+
+Getting only one half right produces a rule that silently does nothing: it
+parses, it compiles, `stylegen --check` and `make audit` are both green, and
+in the running page the override never applies. This exact bug class was
+found three separate times during implementation, by three different routes,
+against three different components — which is why it is recorded here as an
+explicit invariant rather than left implicit in the CSS.
+
+**Worked examples**, all in `assets/css/styles/default.css`:
+
+- **ButtonGroup corner geometry** (`@layer utilities`, near the Carousel
+  arrow rules): a grouped child's corner radius and border must override the
+  `rounded-lg` a Button now renders as a concrete utility. The rule lives in
+  the utilities layer with a plain attribute-selector specificity, not
+  wrapped in `:where()`.
+- **Carousel arrows** (`@layer components` at `default.css:2610`,
+  `@layer utilities` at `default.css:~3262`): geometry that doesn't compete
+  with Button (`absolute`, positioning) stays in the components layer exactly
+  as before; only the part that overrides Button's own compiled shape
+  (`size-8 rounded-full`, against Button's `rounded-lg`) had to move to the
+  utilities layer with unwrapped selectors. See the cross-reference comments
+  at both locations.
+- **InputGroupButton** (`@layer utilities`, `default.css:~3270`): retunes a
+  grouped Button's whole size ramp — type scale and radius — which again
+  means overriding utilities Button now renders concretely, not a
+  low-specificity recipe class.
+
+See item 1 in the Follow-up work section (§15) for the one case where
+dropping `:where()` narrowed an existing caller-override guarantee, and item
+2 for making this invariant a build-time check instead of a comment.
+
+## 10. Manifest-driven generation
 
 The current generator hardcodes Button: a literal `buttonStyleSources` slice, a
 `GenerateButton` entry point, and a `.button.gsx-*` temp file pattern.
@@ -309,7 +374,7 @@ than doing it now.
 
 Atomic write, `--check` drift mode, and the temp-file discipline are retained.
 
-## 10. Error handling
+## 11. Error handling
 
 Every diagnostic carries a source location and names the artifact at fault.
 
@@ -326,7 +391,7 @@ Every diagnostic carries a source location and names the artifact at fault.
 Validation is complete before any artifact is written. A failing run mutates
 nothing.
 
-## 11. Testing
+## 12. Testing
 
 | Layer | What it proves | Where |
 |---|---|---|
@@ -343,7 +408,7 @@ Behavior is asserted once against the structural source rather than N times
 against generated styles, so the test pyramid never becomes parameterized by
 presentation.
 
-## 12. Scope
+## 13. Scope
 
 **In scope.** The typed model and validation; helper desugaring; the canonical
 package and its boundary test; manifest-driven generation; the generated
@@ -354,7 +419,7 @@ Button to the new pipeline.
 than Button; compound variants and selection matrices; a third style; build-time
 pre-merge (§8); changes to theme values, presets, or the CLI apply flow.
 
-## 13. Success criteria
+## 14. Success criteria
 
 1. `registry/canonical/button.gsx` contains no concrete utility and no recipe
    token string — only `role`, `variant`, and `size` calls.
@@ -368,3 +433,57 @@ pre-merge (§8); changes to theme values, presets, or the CLI apply flow.
    Maia per axis, and report completeness — with no access to the CSS.
 7. Structure and behavior tests run once against the canonical and pass.
 8. Nothing outside `stylegen` imports `registry/canonical`.
+
+## 15. Follow-up work
+
+Working notes from implementation lived in a gitignored scratch directory
+that will be deleted; the items below are captured here so they survive.
+
+1. **Dropping `:where()` on the Carousel arrow rule is a real (untested)
+   narrowing.** Promoted utilities-layer rules with real specificity now
+   outrank equal-specificity caller classes — a caller passing
+   `class="rounded-none"` to a Carousel arrow can no longer override it, a
+   regression relative to merge base. Untested. Needs its own spec so the gap
+   is known rather than assumed.
+2. **The components/utilities split in `default.css` is load-bearing but
+   unenforced.** Nothing currently fails the build if a new rule overriding
+   Button-composed markers is added to the wrong layer or wrapped in
+   `:where()`. A `make audit` rule flagging components-layer rules against
+   Button-composed markers would turn this bug class into a build failure
+   instead of a matter of vigilance — found three times, by three different
+   routes, during this implementation alone.
+3. **Mixed composition model.** Components that call `ui.Button` receive
+   compiled utilities; components that merely stamp its `data-gsxui-slot-button`
+   marker (site-only surfaces) still fall back to `web/site-button.css`.
+   These two paths will keep drifting from each other until the
+   marker-stampers are converted to call `ui.Button` directly.
+4. **Nothing validates variant-combination completeness in recipes.** This is
+   exactly how nova's `dark:hover:bg-destructive/90` went missing before this
+   branch — the rule for `dark:` and the rule for `hover:` both existed, but
+   their combination didn't. A style-authoring lint ("a rule declaring both
+   `hover:X` and `dark:X` must also declare `dark:hover:X`") would catch this
+   class of gap mechanically.
+5. **`ui/button_test.go` derives its expected classes via `merge.Merge`**, so
+   a regression in the merge logic itself cancels out between the expected
+   and actual values and would not be caught by this test. Bounded risk: the
+   real computed values are independently covered by
+   `jstest/specs/style-visual.spec.ts`.
+6. **`registry/canonical/recipe.go`'s `Shapes()` is a shallow copy** — the
+   returned map is fresh, but each `Shape`'s `Dimensions`/`Values` slices are
+   still shared with the package-level map, so a caller mutating them in
+   place would corrupt shared state.
+7. **`ui/button_test.go` imports `internal/stylegen` only for the
+   `DefaultStyle` constant**, which pulls `registry/canonical` transitively
+   into `ui`'s test binary. Moving `DefaultStyle` to `internal/recipe` would
+   drop that import and tighten the canonical boundary (§13: nothing outside
+   `stylegen` should depend on `registry/canonical`).
+8. **Adding a dimension requires three uncoupled edits**: a method on
+   `recipe.Component`, the residue list at `internal/stylegen/resolve.go:98`,
+   and its duplicate at `internal/stylegen/generate_test.go:105`. Also note
+   `strings.ToLower(Sel.Name)` maps a method `IconSize` to the dimension name
+   `"iconsize"`, not `"icon-size"` — a naming trap for the next dimension
+   added.
+9. **The CSS-layer sweep covered resting state at one viewport.**
+   Hover/focus/active states are covered only for the specific cases that
+   `jstest/specs/style-visual.spec.ts` names, not exhaustively across
+   components and breakpoints.

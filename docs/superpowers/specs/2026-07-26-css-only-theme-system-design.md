@@ -4,6 +4,15 @@
 presence-marker revision are implemented. The configurator roadmap remains
 unscheduled.
 
+**Partially superseded:** the "one CSS presentation style" decision below no
+longer holds for Button. See
+[`2026-07-29-typed-recipe-model-design.md`](2026-07-29-typed-recipe-model-design.md),
+which compiles Button's canonical source against a typed style recipe and
+emits concrete utilities into generated `.gsx` source instead of a
+components-layer rule. The rest of this document — the canonical-template
+decision, the slot/state contract, and the roadmap for every other
+component — still stands.
+
 This document defines the boundary we want before replacing the current
 theme editor. It is deliberately an architecture and roadmap, not a promise
 to ship a catalogue of named component styles.

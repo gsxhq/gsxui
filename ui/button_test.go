@@ -25,8 +25,10 @@ import (
 func TestButtonPinned(t *testing.T) {
 	// Exact full-render pin, verified token-by-token against shadcn's
 	// buttonVariants base + default variant + default size
-	// (registry/new-york-v4/ui/button.tsx) and docs/jsx-parity.md — no ADAPT
-	// deviations apply to the default button.
+	// (registry/new-york-v4/ui/button.tsx) and docs/jsx-parity.md. The
+	// *default* variant/size pinned here carries no ADAPT deviation; the
+	// destructive variant does (nova's dark:hover:bg-destructive/90 — see
+	// docs/jsx-parity.md's `## button` entry).
 	got := render(t, ui.Button("", "", "", false, gsx.Raw("Save"), nil))
 	want := `<button data-variant="default" data-size="default" type="button" ` +
 		canonicalButtonClass("default", "default") +

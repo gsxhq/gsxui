@@ -2,6 +2,16 @@
 
 Notable changes to gsxui's component set, newest first.
 
+## 2026-07-29
+
+### Fixed
+
+- **button** — `gsxui init` now ships a `ui/button.gsx` whose Button renders concrete Tailwind utilities compiled from its style recipe, instead of `.gsxui-recipe-button*` classes that no shipped stylesheet defined (those rules lived only in the site-only `web/site-button.css`, never copied by `gsxui init`). Consumer-project buttons were unstyled at merge base; they are now styled out of the box.
+
+### Changed
+
+- **button** — destructive buttons now lighten on hover in dark mode (`bg-destructive/90`), matching the documented style contract. This diverges from upstream shadcn, which keeps `/60` through hover; see `docs/jsx-parity.md`.
+
 ## 2026-07-25
 
 ### Added

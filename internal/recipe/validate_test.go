@@ -172,3 +172,46 @@ func TestCheckConflictsRejectsRepeatedUtility(t *testing.T) {
 		t.Errorf("CheckConflicts() = %q, want %q", got, want)
 	}
 }
+
+// TestCheckConflictsCombinedPrefersSuperseded covers a rule that both
+// repeats a utility and carries a superseded one. The superseded/conflict
+// error must win, deterministically, regardless of Go's randomized map
+// iteration order — CheckConflicts walks the original utilities slice, not
+// its internal count maps, for exactly this reason.
+func TestCheckConflictsCombinedPrefersSuperseded(t *testing.T) {
+	t.Parallel()
+	src := strings.Replace(conformCSS,
+		"  .gsxui-recipe-button { @apply inline-flex items-center; }",
+		"  .gsxui-recipe-button { @apply rounded-lg inline-flex rounded-md inline-flex; }", 1)
+	resolved, err := Conform("nova/button.css", conformShape(), mustParse(t, src))
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Stub merger: drops "rounded-lg" when "rounded-md" follows it, and
+	// deduplicates repeated utilities otherwise.
+	stub := func(classes []string) string {
+		var kept []string
+		seen := make(map[string]struct{})
+		for _, class := range classes {
+			if class == "rounded-lg" && slices.Contains(classes, "rounded-md") {
+				continue
+			}
+			if _, ok := seen[class]; ok {
+				continue
+			}
+			seen[class] = struct{}{}
+			kept = append(kept, class)
+		}
+		return strings.Join(kept, " ")
+	}
+	for i := 0; i < 20; i++ {
+		err = CheckConflicts("nova/button.css", resolved, stub)
+		if err == nil {
+			t.Fatal("CheckConflicts() = nil, want error")
+		}
+		want := "nova/button.css: .gsxui-recipe-button applies conflicting utilities: rounded-lg is superseded"
+		if got := err.Error(); got != want {
+			t.Fatalf("CheckConflicts() = %q, want %q", got, want)
+		}
+	}
+}
