@@ -23,8 +23,7 @@ func TestSidebarProviderReflectsStateWidthsAndBehaviorHook(t *testing.T) {
 		`data-state="expanded"`,
 		`data-gsxui-sidebar-wrapper`,
 		`data-gsxui-slot-sidebar-wrapper`,
-		`--sidebar-width:16rem`,
-		`--sidebar-width-icon:3rem`,
+		`style="--sidebar-width:16rem;--sidebar-width-icon:3rem"`,
 		`class="caller"`,
 	)
 	if strings.Count(open, `class="caller"`) != 1 {

@@ -33,7 +33,7 @@ component SidebarProvider(open bool, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-state={state}
 		data-gsxui-sidebar-wrapper
-		style={ css`--sidebar-width:@{sidebarWidth}`, css`--sidebar-width-icon:@{sidebarWidthIcon}` }
+		style=css`--sidebar-width:@{sidebarWidth};--sidebar-width-icon:@{sidebarWidthIcon}`
 		{ attrs... }
 		data-gsxui-slot-sidebar-wrapper
 	>
