@@ -88,3 +88,21 @@ test("InputGroupButton keeps its xs type scale and radius", async ({ page }) => 
   expect(fontSize).toBe("14px");
   expect(borderRadius).toBe("7px");
 });
+
+test("Card keeps its rounded corners", async ({ page }) => {
+  await page.goto("/x/card/compound");
+  const el = page.locator("[data-gsxui-slot-card]").first();
+  const radius = await el.evaluate((n) => getComputedStyle(n).borderRadius);
+  expect(radius).toBe("14px");
+});
+
+test("CardHeader keeps its border-b bottom padding and border", async ({ page }) => {
+  await page.goto("/x/card/compound");
+  const el = page.locator("[data-gsxui-slot-card-header]").first();
+  const { borderBottomWidth, paddingBottom } = await el.evaluate((n) => {
+    const computed = getComputedStyle(n);
+    return { borderBottomWidth: computed.borderBottomWidth, paddingBottom: computed.paddingBottom };
+  });
+  expect(borderBottomWidth).toBe("1px");
+  expect(paddingBottom).toBe("16px");
+});

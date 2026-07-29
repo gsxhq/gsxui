@@ -33,6 +33,38 @@
           }
         }
       }
+    },
+    "card": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
+        "action": {
+          "base": true,
+          "dimensions": {}
+        },
+        "content": {
+          "base": true,
+          "dimensions": {}
+        },
+        "description": {
+          "base": true,
+          "dimensions": {}
+        },
+        "footer": {
+          "base": true,
+          "dimensions": {}
+        },
+        "header": {
+          "base": true,
+          "dimensions": {}
+        },
+        "title": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
     }
   },
   "styles": {
@@ -163,6 +195,79 @@
             }
           }
         }
+      },
+      "card": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "flex-col",
+              "gap-4",
+              "rounded-xl",
+              "border",
+              "bg-card",
+              "py-4",
+              "text-sm",
+              "text-card-foreground",
+              "has-[[data-gsxui-slot-card-footer]]:pb-0"
+            ],
+            "dimensions": {}
+          },
+          "action": {
+            "base": [
+              "col-start-2",
+              "row-span-2",
+              "row-start-1",
+              "self-start",
+              "justify-self-end"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "px-4"
+            ],
+            "dimensions": {}
+          },
+          "description": {
+            "base": [
+              "text-sm",
+              "text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "footer": {
+            "base": [
+              "flex",
+              "items-center",
+              "rounded-b-xl",
+              "border-t",
+              "p-4"
+            ],
+            "dimensions": {}
+          },
+          "header": {
+            "base": [
+              "grid",
+              "auto-rows-min",
+              "grid-rows-[auto_auto]",
+              "items-start",
+              "gap-1",
+              "px-4",
+              "has-[[data-gsxui-slot-card-action]]:grid-cols-[1fr_auto]",
+              "[\u0026.border-b]:pb-4"
+            ],
+            "dimensions": {}
+          },
+          "title": {
+            "base": [
+              "text-base",
+              "leading-snug",
+              "font-medium"
+            ],
+            "dimensions": {}
+          }
+        }
       }
     },
     "nova": {
@@ -285,6 +390,79 @@
                 ]
               }
             }
+          }
+        }
+      },
+      "card": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "flex-col",
+              "gap-4",
+              "rounded-xl",
+              "border",
+              "bg-card",
+              "py-4",
+              "text-sm",
+              "text-card-foreground",
+              "has-[[data-gsxui-slot-card-footer]]:pb-0"
+            ],
+            "dimensions": {}
+          },
+          "action": {
+            "base": [
+              "col-start-2",
+              "row-span-2",
+              "row-start-1",
+              "self-start",
+              "justify-self-end"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "px-4"
+            ],
+            "dimensions": {}
+          },
+          "description": {
+            "base": [
+              "text-sm",
+              "text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "footer": {
+            "base": [
+              "flex",
+              "items-center",
+              "rounded-b-xl",
+              "border-t",
+              "p-4"
+            ],
+            "dimensions": {}
+          },
+          "header": {
+            "base": [
+              "grid",
+              "auto-rows-min",
+              "grid-rows-[auto_auto]",
+              "items-start",
+              "gap-1",
+              "px-4",
+              "has-[[data-gsxui-slot-card-action]]:grid-cols-[1fr_auto]",
+              "[\u0026.border-b]:pb-4"
+            ],
+            "dimensions": {}
+          },
+          "title": {
+            "base": [
+              "text-base",
+              "leading-snug",
+              "font-medium"
+            ],
+            "dimensions": {}
           }
         }
       }

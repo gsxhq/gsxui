@@ -196,44 +196,6 @@
     @apply h-auto;
   }
 
-  /* Card */
-  :where([data-gsxui-slot-card]) {
-    @apply flex flex-col gap-4 rounded-xl border bg-card py-4 text-sm text-card-foreground;
-  }
-  :where([data-gsxui-slot-card]):has(
-      [data-gsxui-slot-card-footer]
-    ) {
-    @apply pb-0;
-  }
-  :where([data-gsxui-slot-card-header]) {
-    container-name: card-header;
-    container-type: inline-size;
-    @apply grid auto-rows-min grid-rows-[auto_auto] items-start gap-1 px-4;
-  }
-  :where([data-gsxui-slot-card-header]):has(
-      [data-gsxui-slot-card-action]
-    ) {
-    @apply grid-cols-[1fr_auto];
-  }
-  :where([data-gsxui-slot-card-header].border-b) {
-    @apply pb-4;
-  }
-  :where([data-gsxui-slot-card-title]) {
-    @apply text-base leading-snug font-medium;
-  }
-  :where([data-gsxui-slot-card-description]) {
-    @apply text-sm text-muted-foreground;
-  }
-  :where([data-gsxui-slot-card-action]) {
-    @apply col-start-2 row-span-2 row-start-1 self-start justify-self-end;
-  }
-  :where([data-gsxui-slot-card-content]) {
-    @apply px-4;
-  }
-  :where([data-gsxui-slot-card-footer]) {
-    @apply flex items-center rounded-b-xl border-t p-4;
-  }
-
   /* Empty */
   :where([data-gsxui-slot-empty]) {
     @apply flex min-w-0 flex-1 flex-col items-center justify-center gap-4 rounded-xl border-dashed p-6 text-center text-balance;
@@ -3266,6 +3228,19 @@
    layers before it ever looks at specificity, so a components-layer rule can
    no longer beat them however specific it is. */
 @layer utilities {
+  /* Card header: container-name/container-type are plain CSS properties with
+     no Tailwind utility equivalent, so recipe stylesheets (@apply-only) can't
+     carry them. This is the migration's escape hatch — everything else in
+     Card's rule set moved to registry/styles/{nova,maia}/card.css. Unwrapped
+     (no :where()) to clear the (0,1,0) specificity floor the layer gate
+     requires of anything left behind here. Nothing in the catalogue reacts
+     to this named container yet; it is unused upstream setup, preserved
+     verbatim. */
+  [data-gsxui-slot-card-header] {
+    container-name: card-header;
+    container-type: inline-size;
+  }
+
   /* Carousel arrows: a round control, against Button's own rounded-lg. The
      marker selectors are deliberately NOT wrapped in :where() here — inside a
      single layer the cascade falls back to specificity, and a zero-specificity

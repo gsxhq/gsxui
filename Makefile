@@ -81,8 +81,8 @@ audit:
 	@! rg -n -P '\[[[:space:]]*data-gsxui-slot(?=[[:space:]]*(?:[~|^$*]?=|\]))' $(audit-css-source-dirs) -g '*.css'
 	@! rg -n -P '[\w./:\[\]&>-]+!' ui -g '*.gsx'
 	@! rg -n 'gsxui-recipe-' ui -g '*.gsx'
-	@! rg -n '^[[:space:]]+class=' ui -g '*.gsx' -g '!button.gsx'
-	@! rg -n '^[[:space:]]*<[^>]*class=' ui -g '*.gsx' -g '!button.gsx'
+	@! rg -n '^[[:space:]]+class=' ui -g '*.gsx' -g '!button.gsx' -g '!card.gsx'
+	@! rg -n '^[[:space:]]*<[^>]*class=' ui -g '*.gsx' -g '!button.gsx' -g '!card.gsx'
 	@! rg -n 'gsxui-recipe-' registry/canonical -g '*.gsx'
 	@! rg -n '!important' assets/css/foundation.css assets/css/styles/default.css
 	go run ./cmd/stylegen --check-layers

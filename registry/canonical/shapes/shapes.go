@@ -17,6 +17,7 @@ import (
 
 var all = map[string]recipe.Shape{
 	Button.Component: Button,
+	Card.Component:   Card,
 }
 
 // All returns every declared component shape, keyed by component name.
