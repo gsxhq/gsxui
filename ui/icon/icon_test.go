@@ -54,7 +54,7 @@ func TestIconCallerClassIsForwardedOnce(t *testing.T) {
 func TestIconOwnPresenceMarkerWinsCollisionAndKeepsComposedMarker(t *testing.T) {
 	got, err := render(t, icon.ChevronDown(
 		gsx.Attr{Key: "data-gsxui-slot-icon", Value: "caller-value"},
-		gsx.Attr{Key: "data-gsxui-slot-spinner", Value: gsx.Toggle(true)},
+		gsx.Attr{Key: "data-gsxui-slot-spinner", Value: true},
 	))
 	if err != nil {
 		t.Fatal(err)

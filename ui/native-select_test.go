@@ -65,7 +65,7 @@ func TestNativeSelectAttrsFallThrough(t *testing.T) {
 
 func TestNativeSelectForwardsCallerPresenceMarkerToSelectWithoutPrefixFiltering(t *testing.T) {
 	got := render(t, ui.NativeSelect(nil, gsx.Attrs{
-		{Key: "data-gsxui-slot-calendar-dropdown", Value: gsx.Toggle(true)},
+		{Key: "data-gsxui-slot-calendar-dropdown", Value: true},
 		{Key: "id", Value: "month"},
 		{Key: "aria-label", Value: "Month"},
 	}))

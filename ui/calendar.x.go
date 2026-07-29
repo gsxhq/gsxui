@@ -981,10 +981,10 @@ func Calendar(mode string, month time.Time, selected []time.Time, from time.Time
 				_gsxgw.S("<td role=\"gridcell\" data-date=\"")
 				_gsxgw.AttrValue(string(d.Format("2006-01-02")))
 				_gsxgw.S("\"")
-				_gsxgw.BoolAttr("data-outside", bool(gsx.Toggle(outside)))
-				_gsxgw.BoolAttr("data-hidden", bool(gsx.Toggle(hiddenDay)))
-				_gsxgw.BoolAttr("data-today", bool(gsx.Toggle(isToday)))
-				_gsxgw.BoolAttr("data-disabled", bool(gsx.Toggle(dayDis)))
+				_gsxgw.BoolAttr("data-outside", bool(outside))
+				_gsxgw.BoolAttr("data-hidden", bool(hiddenDay))
+				_gsxgw.BoolAttr("data-today", bool(isToday))
+				_gsxgw.BoolAttr("data-disabled", bool(dayDis))
 				if cellSel {
 					_gsxgw.S(" data-selected=\"true\"")
 				}

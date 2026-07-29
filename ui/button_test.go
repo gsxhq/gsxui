@@ -89,7 +89,7 @@ func TestButtonCallerClassFollowsCanonicalRolesOnce(t *testing.T) {
 func TestButtonOwnPresenceMarkerWinsCollisionAndKeepsComposedMarker(t *testing.T) {
 	got := render(t, ui.Button("", "", "", false, gsx.Raw("x"), gsx.Attrs{
 		{Key: "data-gsxui-slot-button", Value: "caller-value"},
-		{Key: "data-gsxui-slot-pagination-link", Value: gsx.Toggle(true)},
+		{Key: "data-gsxui-slot-pagination-link", Value: true},
 	}))
 	requirePresenceAttributesOnSameTag(t, got, "<button",
 		"data-gsxui-slot-pagination-link",

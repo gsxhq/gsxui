@@ -870,10 +870,10 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 								<td
 									role="gridcell"
 									data-date={d.Format("2006-01-02")}
-									data-outside={gsx.Toggle(outside)}
-									data-hidden={gsx.Toggle(hiddenDay)}
-									data-today={gsx.Toggle(isToday)}
-									data-disabled={gsx.Toggle(dayDis)}
+									data-outside={outside}
+									data-hidden={hiddenDay}
+									data-today={isToday}
+									data-disabled={dayDis}
 									{ if cellSel {
 										data-selected="true"
 									} }

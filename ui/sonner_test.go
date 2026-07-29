@@ -48,7 +48,7 @@ func TestSonnerToasterAttrsMergeAndCallerClass(t *testing.T) {
 	got := render(t, ui.Toaster(gsx.Attrs{
 		{Key: "id", Value: "my-toaster"},
 		{Key: "class", Value: "caller-region"},
-		{Key: "data-gsxui-slot-caller-token", Value: gsx.Toggle(true)},
+		{Key: "data-gsxui-slot-caller-token", Value: true},
 	}))
 	requireMarkup(t, got,
 		`id="my-toaster"`,
@@ -89,7 +89,7 @@ func TestSonnerToastContract(t *testing.T) {
 func TestSonnerToastCallerClassAndSlotComposition(t *testing.T) {
 	got := render(t, ui.Toast("default", "Hello", "", "", "", gsx.Attrs{
 		{Key: "class", Value: "caller-toast"},
-		{Key: "data-gsxui-slot-caller-token", Value: gsx.Toggle(true)},
+		{Key: "data-gsxui-slot-caller-token", Value: true},
 	}))
 	requireMarkup(t, got,
 		`class="caller-toast"`,
