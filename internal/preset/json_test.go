@@ -276,7 +276,7 @@ func TestParseJSONReturnsIndependentThemeMaps(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ParseJSON(again): %v", err)
 	}
-	if again.Theme.Light["primary"] != "oklch(0% 0 0)" ||
+	if again.Theme.Light["primary"] != "oklch(0.205 0 0)" ||
 		again.Theme.Dark["primary"] != "oklch(0.922 0 0)" {
 		t.Fatal("ParseJSON returned shared theme map storage")
 	}

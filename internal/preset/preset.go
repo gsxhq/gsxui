@@ -63,18 +63,18 @@ var presentationGroups = []string{
 
 var tokenDefinitions = []TokenDefinition{
 	{Name: "background", Group: "Base", Light: "oklch(1 0 0)", Dark: "oklch(0.145 0 0)"},
-	{Name: "foreground", Group: "Base", Light: "oklch(0% 0 0)", Dark: "oklch(0.985 0 0)"},
+	{Name: "foreground", Group: "Base", Light: "oklch(0.145 0 0)", Dark: "oklch(0.985 0 0)"},
 	{Name: "card", Group: "Base", Light: "oklch(1 0 0)", Dark: "oklch(0.205 0 0)"},
-	{Name: "card-foreground", Group: "Base", Light: "oklch(0% 0 0)", Dark: "oklch(0.985 0 0)"},
+	{Name: "card-foreground", Group: "Base", Light: "oklch(0.145 0 0)", Dark: "oklch(0.985 0 0)"},
 	{Name: "popover", Group: "Base", Light: "oklch(1 0 0)", Dark: "oklch(0.205 0 0)"},
-	{Name: "popover-foreground", Group: "Base", Light: "oklch(0% 0 0)", Dark: "oklch(0.985 0 0)"},
-	{Name: "primary", Group: "Brand", Light: "oklch(0% 0 0)", Dark: "oklch(0.922 0 0)"},
+	{Name: "popover-foreground", Group: "Base", Light: "oklch(0.145 0 0)", Dark: "oklch(0.985 0 0)"},
+	{Name: "primary", Group: "Brand", Light: "oklch(0.205 0 0)", Dark: "oklch(0.922 0 0)"},
 	{Name: "primary-foreground", Group: "Brand", Light: "oklch(0.985 0 0)", Dark: "oklch(0.205 0 0)"},
 	{Name: "secondary", Group: "Brand", Light: "oklch(0.97 0 0)", Dark: "oklch(0.269 0 0)"},
 	{Name: "secondary-foreground", Group: "Brand", Light: "oklch(0.205 0 0)", Dark: "oklch(0.985 0 0)"},
 	{Name: "muted", Group: "Feedback", Light: "oklch(0.97 0 0)", Dark: "oklch(0.269 0 0)"},
 	{Name: "muted-foreground", Group: "Feedback", Light: "oklch(0.556 0 0)", Dark: "oklch(0.708 0 0)"},
-	{Name: "accent", Group: "Brand", Light: "oklch(0.97 0 0)", Dark: "oklch(0.371 0 0)"},
+	{Name: "accent", Group: "Brand", Light: "oklch(0.97 0 0)", Dark: "oklch(0.269 0 0)"},
 	{Name: "accent-foreground", Group: "Brand", Light: "oklch(0.205 0 0)", Dark: "oklch(0.985 0 0)"},
 	{Name: "destructive", Group: "Feedback", Light: "oklch(0.577 0.245 27.325)", Dark: "oklch(0.704 0.191 22.216)"},
 	{Name: "destructive-foreground", Group: "Feedback", Light: "oklch(0.97 0.01 17)", Dark: "oklch(0.58 0.22 27)"},
@@ -82,13 +82,13 @@ var tokenDefinitions = []TokenDefinition{
 	{Name: "input", Group: "Structure", Light: "oklch(0.922 0 0)", Dark: "oklch(1 0 0 / 15%)"},
 	{Name: "ring", Group: "Structure", Light: "oklch(0.708 0 0)", Dark: "oklch(0.556 0 0)"},
 	{Name: "sidebar", Group: "Sidebar", Light: "oklch(0.985 0 0)", Dark: "oklch(0.205 0 0)"},
-	{Name: "sidebar-foreground", Group: "Sidebar", Light: "oklch(0% 0 0)", Dark: "oklch(0.985 0 0)"},
+	{Name: "sidebar-foreground", Group: "Sidebar", Light: "oklch(0.145 0 0)", Dark: "oklch(0.985 0 0)"},
 	{Name: "sidebar-primary", Group: "Sidebar", Light: "oklch(0.205 0 0)", Dark: "oklch(0.488 0.243 264.376)"},
 	{Name: "sidebar-primary-foreground", Group: "Sidebar", Light: "oklch(0.985 0 0)", Dark: "oklch(0.985 0 0)"},
 	{Name: "sidebar-accent", Group: "Sidebar", Light: "oklch(0.97 0 0)", Dark: "oklch(0.269 0 0)"},
 	{Name: "sidebar-accent-foreground", Group: "Sidebar", Light: "oklch(0.205 0 0)", Dark: "oklch(0.985 0 0)"},
 	{Name: "sidebar-border", Group: "Sidebar", Light: "oklch(0.922 0 0)", Dark: "oklch(1 0 0 / 10%)"},
-	{Name: "sidebar-ring", Group: "Sidebar", Light: "oklch(0.708 0 0)", Dark: "oklch(0.439 0 0)"},
+	{Name: "sidebar-ring", Group: "Sidebar", Light: "oklch(0.708 0 0)", Dark: "oklch(0.556 0 0)"},
 	{Name: "success", Group: "Status and overlay", Light: "oklch(69.6% 0.17 162.48)", Dark: "oklch(69.6% 0.17 162.48)"},
 	{Name: "info", Group: "Status and overlay", Light: "oklch(68.5% 0.169 237.323)", Dark: "oklch(68.5% 0.169 237.323)"},
 	{Name: "warning", Group: "Status and overlay", Light: "oklch(76.9% 0.188 70.08)", Dark: "oklch(76.9% 0.188 70.08)"},
@@ -141,22 +141,11 @@ func RadiusUnits() []string {
 }
 
 func Default(style Style) Preset {
-	light := make(ThemeValues, len(tokenDefinitions))
-	dark := make(ThemeValues, len(tokenDefinitions))
-	for _, definition := range tokenDefinitions {
-		light[definition.Name] = definition.Light
-		dark[definition.Name] = definition.Dark
+	preset, err := resolvePalette(style, DefaultPaletteSelection())
+	if err == nil {
+		return preset
 	}
-	return Preset{
-		Schema:        SchemaURL,
-		SchemaVersion: SchemaVersion,
-		Style:         style,
-		Radius:        defaultRadius,
-		Theme: Theme{
-			Light: light,
-			Dark:  dark,
-		},
-	}
+	return canonicalDefault(style)
 }
 
 func Validate(preset Preset) error {

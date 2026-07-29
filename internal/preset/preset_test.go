@@ -172,7 +172,7 @@ func TestDefaultReturnsIndependentValidPresets(t *testing.T) {
 			first.Theme.Light["primary"] = "red"
 			first.Theme.Dark["primary"] = "blue"
 			again := Default(style)
-			if got := again.Theme.Light["primary"]; got != "oklch(0% 0 0)" {
+			if got := again.Theme.Light["primary"]; got != "oklch(0.205 0 0)" {
 				t.Fatalf("light map was shared: primary = %q", got)
 			}
 			if got := again.Theme.Dark["primary"]; got != "oklch(0.922 0 0)" {

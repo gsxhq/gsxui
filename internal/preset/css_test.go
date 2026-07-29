@@ -74,7 +74,7 @@ func TestImportThemeCSSUpdatesRecognizedValuesAndPreservesBase(t *testing.T) {
 			t.Fatalf("dark %s changed: got %q, want %q", name, got.Theme.Dark[name], base.Theme.Dark[name])
 		}
 	}
-	if base.Theme.Light["primary"] != "oklch(0% 0 0)" ||
+	if base.Theme.Light["primary"] != "oklch(0.205 0 0)" ||
 		base.Theme.Dark["primary"] != "oklch(0.922 0 0)" {
 		t.Fatal("ImportThemeCSS mutated the base preset")
 	}
