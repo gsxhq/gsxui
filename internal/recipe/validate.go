@@ -62,26 +62,56 @@ func Conform(filename string, shape Shape, style Style) (Resolved, error) {
 	return resolved, nil
 }
 
-// CheckConflicts reports a utility list that contains a Tailwind conflict.
+// CheckConflicts reports a utility list that contains a Tailwind conflict or repetition.
 // merger is the Tailwind-aware class merger; a list that shortens when merged
-// contained a utility superseded by a later one, which is an authoring error
-// rather than something to normalize silently.
+// contained a utility that is either superseded by a conflicting one or repeated.
+// This function uses multiset logic (counting occurrences) to distinguish between
+// superseded utilities (output count=0, a conflict) and repeated utilities
+// (output count>0 but less than input, a duplicate), so neither behavior is
+// accidental or subject to simplification.
 func CheckConflicts(filename string, resolved Resolved, merger func([]string) string) error {
 	check := func(class string, utilities []string) error {
 		kept := strings.Fields(merger(slices.Clone(utilities)))
 		if len(kept) == len(utilities) {
 			return nil
 		}
-		keptSet := make(map[string]struct{}, len(kept))
-		for _, utility := range kept {
-			keptSet[utility] = struct{}{}
-		}
+
+		// Count occurrences in the original and merged lists.
+		inputCounts := make(map[string]int, len(utilities))
 		for _, utility := range utilities {
-			if _, ok := keptSet[utility]; !ok {
+			inputCounts[utility]++
+		}
+		outputCounts := make(map[string]int, len(kept))
+		for _, utility := range kept {
+			outputCounts[utility]++
+		}
+
+		// Check for utilities that were removed or reduced.
+		// Superseded (output count=0) takes priority over repeated (output count>0).
+		seen := make(map[string]struct{})
+		for _, utility := range utilities {
+			if _, ok := seen[utility]; ok {
+				continue // Already processed
+			}
+			seen[utility] = struct{}{}
+
+			outCount := outputCounts[utility]
+			if outCount == 0 {
+				// Utility was completely removed: it was superseded by a conflicting one.
 				return fmt.Errorf("%s: .%s applies conflicting utilities: %s is superseded",
 					filename, class, utility)
 			}
 		}
+
+		// Check for utilities that were repeated (if no superseded utilities found).
+		for utility, inCount := range inputCounts {
+			outCount := outputCounts[utility]
+			if outCount > 0 && outCount < inCount {
+				// Utility appeared multiple times in input but fewer in output: it was repeated.
+				return fmt.Errorf("%s: .%s repeats utility %s", filename, class, utility)
+			}
+		}
+
 		return nil
 	}
 

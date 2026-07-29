@@ -142,3 +142,33 @@ func TestCheckConflictsRejectsSupersededUtility(t *testing.T) {
 		t.Errorf("CheckConflicts() = %q, want %q", got, want)
 	}
 }
+
+func TestCheckConflictsRejectsRepeatedUtility(t *testing.T) {
+	t.Parallel()
+	src := strings.Replace(conformCSS,
+		"  .gsxui-recipe-button { @apply inline-flex items-center; }", "  .gsxui-recipe-button { @apply inline-flex inline-flex; }", 1)
+	resolved, err := Conform("nova/button.css", conformShape(), mustParse(t, src))
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Stub merger: deduplicates repeated utilities.
+	stub := func(classes []string) string {
+		seen := make(map[string]struct{})
+		var kept []string
+		for _, class := range classes {
+			if _, ok := seen[class]; !ok {
+				seen[class] = struct{}{}
+				kept = append(kept, class)
+			}
+		}
+		return strings.Join(kept, " ")
+	}
+	err = CheckConflicts("nova/button.css", resolved, stub)
+	if err == nil {
+		t.Fatal("CheckConflicts() = nil, want error")
+	}
+	want := "nova/button.css: .gsxui-recipe-button repeats utility inline-flex"
+	if got := err.Error(); got != want {
+		t.Errorf("CheckConflicts() = %q, want %q", got, want)
+	}
+}
