@@ -102,7 +102,11 @@ func TestSiteLayoutModes(t *testing.T) {
 			}
 
 			isDocs := tt.mode == "docs"
-			for _, marker := range []string{"data-site-docs-sidebar", "data-site-docs-article"} {
+			for _, marker := range []string{
+				"data-site-docs-mobile-nav",
+				"data-site-docs-sidebar",
+				"data-site-docs-article",
+			} {
 				hasMarker := strings.Contains(body, marker)
 				if hasMarker != isDocs {
 					t.Errorf("GET %s has %s = %t, want %t; body:\n%s", tt.path, marker, hasMarker, isDocs, body)

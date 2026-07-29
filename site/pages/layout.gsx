@@ -21,6 +21,64 @@ type docTOCItem struct {
 	Depth int
 }
 
+component docsNavigation(active string) {
+	<div class="flex flex-col gap-4 text-sm">
+		<div class="flex flex-col gap-1">
+			<h3 class="px-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Docs</h3>
+			<a
+				href={GettingStarted{} |> url}
+				class={
+					"rounded-md px-2 py-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
+					"bg-accent text-accent-foreground": active == "getting-started"
+				}
+			>
+				Getting Started
+			</a>
+			<a
+				href={Theming{} |> url}
+				class={
+					"rounded-md px-2 py-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
+					"bg-accent text-accent-foreground": active == "theming"
+				}
+			>
+				Theming
+			</a>
+		</div>
+		<div class="flex flex-col gap-1">
+			<h3 class="px-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Components</h3>
+			{{ names, _ := registry.Components() }}
+			{ for _, name := range names {
+				<a
+					href={"/components/" + name}
+					class={
+						"rounded-md px-2 py-1 capitalize text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
+						"bg-accent text-accent-foreground": active == name
+					}
+				>
+					{ name }
+				</a>
+			} }
+		</div>
+	</div>
+}
+
+component compactDocsNavigation(active string) {
+	<ui.Popover data-site-docs-mobile-nav class="lg:hidden">
+		<ui.PopoverTrigger
+			aria-label="Open documentation navigation"
+			class="inline-flex h-8 items-center gap-2 rounded-md px-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+		>
+			<icon.Menu class="size-4"/>
+			<span>Docs</span>
+		</ui.PopoverTrigger>
+		<ui.PopoverContent class="max-h-[calc(100svh-5rem)] w-56 overflow-y-auto p-3">
+			<nav aria-label="Documentation navigation">
+				<docsNavigation active={active}/>
+			</nav>
+		</ui.PopoverContent>
+	</ui.Popover>
+}
+
 // siteLayout is the shared page shell. Its explicit mode selects the page's
 // spatial responsibilities without inferring them from the request path.
 // active names the documentation navigation entry to highlight.
@@ -43,7 +101,7 @@ component siteLayout(title string, active string, mode layoutMode, toc []docTOCI
 			headerContainerClass += " max-w-[1568px] px-4 sm:px-6 lg:px-8"
 			contentContainerClass += " max-w-[1568px] grid grid-cols-1 px-4 sm:px-6 lg:grid-cols-[288px_minmax(0,1fr)] lg:px-8 xl:grid-cols-[288px_minmax(0,1fr)_288px]"
 			mainClass = "mx-auto w-full min-w-0 max-w-[640px]"
-			footerContainerClass += " max-w-[1568px]"
+			footerContainerClass += " max-w-[1568px] sm:px-6 lg:px-8"
 		case layoutWorkspace:
 			headerContainerClass += " max-w-none px-4"
 			contentContainerClass += " flex max-w-none px-4"
@@ -62,9 +120,14 @@ component siteLayout(title string, active string, mode layoutMode, toc []docTOCI
 		>
 			<header class="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur">
 				<div class={headerContainerClass}>
-					<a href={Home{} |> url} class="flex items-center">
-						<siteLogo/>
-					</a>
+					<div class="flex items-center gap-2">
+						<a href={Home{} |> url} class="flex items-center">
+							<siteLogo/>
+						</a>
+						{ if mode == layoutDocs {
+							<compactDocsNavigation active={active}/>
+						} }
+					</div>
 					<nav class="flex items-center gap-4">
 						<ui.Dialog>
 							<button
@@ -145,43 +208,11 @@ component siteLayout(title string, active string, mode layoutMode, toc []docTOCI
 			<div class={contentContainerClass}>
 				{ if mode == layoutDocs {
 					<aside data-site-docs-sidebar class="hidden min-w-0 lg:block">
-						<nav class="sticky top-20 flex max-h-[calc(100svh-5rem)] flex-col gap-4 overflow-y-auto pr-16 text-sm">
-						<div class="flex flex-col gap-1">
-							<h3 class="px-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Docs</h3>
-							<a
-								href={GettingStarted{} |> url}
-								class={
-									"rounded-md px-2 py-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
-									"bg-accent text-accent-foreground": active == "getting-started"
-								}
-							>
-								Getting Started
-							</a>
-							<a
-								href={Theming{} |> url}
-								class={
-									"rounded-md px-2 py-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
-									"bg-accent text-accent-foreground": active == "theming"
-								}
-							>
-								Theming
-							</a>
-						</div>
-						<div class="flex flex-col gap-1">
-							<h3 class="px-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Components</h3>
-							{{ names, _ := registry.Components() }}
-							{ for _, name := range names {
-								<a
-									href={"/components/" + name}
-									class={
-										"rounded-md px-2 py-1 capitalize text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
-										"bg-accent text-accent-foreground": active == name
-									}
-								>
-									{ name }
-								</a>
-							} }
-						</div>
+						<nav
+							aria-label="Documentation navigation"
+							class="sticky top-20 max-h-[calc(100svh-5rem)] overflow-y-auto pr-16"
+						>
+							<docsNavigation active={active}/>
 						</nav>
 					</aside>
 				} }
