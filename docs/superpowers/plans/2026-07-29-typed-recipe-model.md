@@ -1270,7 +1270,30 @@ start := r.fset.Position(part.ExprPos).Offset
 end := r.fset.Position(part.End()).Offset
 ```
 
-Keep `applyLiteralEdits`, `gen.Format`, the `gsxparser.ParseFile` reparse, and the residue checks exactly as they are, but change the residue check to also reject any surviving `.Role(`, `.Variant(`, or `.Size(` call. Delete `resolveClassLiteral` and the `used`/`declared` token-set machinery; conformance is now `internal/recipe`'s job.
+Keep `applyLiteralEdits`, `gen.Format`, the `gsxparser.ParseFile` reparse, and the residue checks exactly as they are, but change the residue check to also reject any surviving `.Role(`, `.Variant(`, or `.Size(` call.
+
+**Staged retirement of the token path.** The legacy token-literal substitution
+cannot be deleted here. Because Task 5 copies rather than moves,
+`ui/button.gsx` is still in the old token form (`"gsxui-recipe-button-variant-outline"`,
+`default: ""`), and `GenerateButton` resolves that file — so deleting
+`resolveClassLiteral` would break the build and the committed-artifact tests,
+violating the green-commit constraint.
+
+Therefore in this task:
+
+- Add the new `Resolve` (taking `recipe.Resolved`) and `HelperCalls` alongside
+  the existing code.
+- Rename the legacy entry point to an unexported `resolveTokens`, keeping
+  `ResolveReport`, `resolveClassLiteral`, `declaredRecipeTokens` and the
+  `used`/`declared` token-set machinery intact and still called by
+  `generate.go`'s `GenerateButton` and by the existing token tests.
+- Add a comment on `resolveTokens` stating it is the legacy path, retired by
+  Task 7.
+
+Task 7 deletes `resolveTokens`, `ResolveReport`, `resolveClassLiteral`,
+`declaredRecipeTokens`, `GenerateButton`, and their tests in the same commit
+that replaces `ui/button.gsx` with generated output — at which point nothing
+authored is in token form and the capability is genuinely dead.
 
 `HelperCalls` reuses the same traversal in a validation-only mode and returns the calls without editing — `GenerateAll` uses it to check the canonical against the shapes before touching any style.
 
@@ -1489,6 +1512,8 @@ func GenerateAll(root string, check bool) error {
 ```
 
 `resolveAll` walks `registry/canonical/*.gsx`, looks each component's shape up in `canonical.Shapes()` (error if absent), validates the canonical's helper calls with `HelperCalls`, then for each `registry/styles/*/` directory: `recipe.ParseStyle` → `recipe.Conform` → `recipe.CheckConflicts(…, merge.Merge)` → `Resolve`. It accumulates three outputs per style (the `package ui` generated source, the `package <style>` preview via the existing `rewriteGSXPackage`, and — for `DefaultStyle` — the `ui/<component>.gsx` copy). Sort styles by name so output order is deterministic.
+
+Delete the legacy token path that Task 6 staged for retirement: `resolveTokens`, `ResolveReport`, `resolveClassLiteral`, `declaredRecipeTokens`, `recipeSetDifference`, `GenerateButton`, and every test that exercises token-literal substitution (`TestResolveGolden`, the `UsedTokens` assertions, and the `TestGenerateButton*` artifact tests). After this task nothing authored is in token form, so the capability is dead code. The canonical is the only input, and `registry/canonical`'s own tests plus the new `GenerateAll` tests cover what those tests used to.
 
 Rename the `generatedButtonSource` struct to `generatedSource` (same fields: `relativePath string`, `content []byte`). Keep `writeGeneratedButton` (rename to `writeGenerated`, and generalize its temp-file pattern from `.button.gsx-*` to `.gsx-*`), `checkButtonSources` (rename to `checkOutputs`), and the atomic temp-then-rename discipline unchanged.
 
