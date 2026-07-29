@@ -826,39 +826,6 @@
   :where([data-gsxui-slot-input-group-addon][data-align="block-end"].border-t) {
     @apply pt-2;
   }
-  :where([data-gsxui-slot-input-group-button]) {
-    @apply flex items-center gap-2 text-sm shadow-none;
-  }
-  :where([data-gsxui-slot-input-group-button])[data-size="xs"] {
-    @apply h-6 gap-1 rounded-[calc(var(--radius)-3px)] px-1.5 text-sm;
-  }
-  :where([data-gsxui-slot-input-group-button])[data-size="xs"]:has(> svg) {
-    @apply px-1.5;
-  }
-  :where([data-gsxui-slot-input-group-button])[data-size="xs"]
-    > svg:not([class*="size-"]) {
-    @apply size-3.5;
-  }
-  :where([data-gsxui-slot-input-group-button])[data-size="sm"] {
-    @apply h-8 gap-1.5 rounded-md px-2.5 text-sm;
-  }
-  :where([data-gsxui-slot-input-group-button])[data-size="sm"]:has(> svg) {
-    @apply px-2.5;
-  }
-  :where([data-gsxui-slot-input-group-button])[data-size="icon-xs"] {
-    @apply size-6 rounded-[calc(var(--radius)-3px)] p-0;
-  }
-  :where([data-gsxui-slot-input-group-button])[data-size="icon-xs"]:has(
-      > svg
-    ),
-  :where([data-gsxui-slot-input-group-button])[data-size="icon-sm"]:has(
-      > svg
-    ) {
-    @apply p-0;
-  }
-  :where([data-gsxui-slot-input-group-button])[data-size="icon-sm"] {
-    @apply size-8 p-0;
-  }
   :where([data-gsxui-slot-input-group-text]) {
     @apply flex items-center gap-2 text-sm text-muted-foreground;
   }
@@ -2643,7 +2610,7 @@
       [data-gsxui-slot-carousel-previous],
       [data-gsxui-slot-carousel-next]
     ) {
-    @apply absolute size-8 rounded-full;
+    @apply absolute;
   }
   :where(
       [data-gsxui-slot-carousel-previous][data-orientation="horizontal"],
@@ -3291,6 +3258,52 @@
    layers before it ever looks at specificity, so a components-layer rule can
    no longer beat them however specific it is. */
 @layer utilities {
+  /* Carousel arrows: a round control, against Button's own rounded-lg. The
+     marker selectors are deliberately NOT wrapped in :where() here — inside a
+     single layer the cascade falls back to specificity, and a zero-specificity
+     :where() loses to the plain .rounded-lg utility class. */
+  [data-gsxui-slot-carousel-previous],
+  [data-gsxui-slot-carousel-next] {
+    @apply size-8 rounded-full;
+  }
+
+  /* InputGroupButton retunes Button's whole size ramp — type scale, radius,
+     padding, gap and icon sizing all restate a property Button now emits for
+     itself. */
+  :where([data-gsxui-slot-input-group-button]) {
+    @apply flex items-center gap-2 text-sm shadow-none;
+  }
+  :where([data-gsxui-slot-input-group-button])[data-size="xs"] {
+    @apply h-6 gap-1 rounded-[calc(var(--radius)-3px)] px-1.5 text-sm;
+  }
+  :where([data-gsxui-slot-input-group-button])[data-size="xs"]:has(> svg) {
+    @apply px-1.5;
+  }
+  :where([data-gsxui-slot-input-group-button])[data-size="xs"]
+    > svg:not([class*="size-"]) {
+    @apply size-3.5;
+  }
+  :where([data-gsxui-slot-input-group-button])[data-size="sm"] {
+    @apply h-8 gap-1.5 rounded-md px-2.5 text-sm;
+  }
+  :where([data-gsxui-slot-input-group-button])[data-size="sm"]:has(> svg) {
+    @apply px-2.5;
+  }
+  :where([data-gsxui-slot-input-group-button])[data-size="icon-xs"] {
+    @apply size-6 rounded-[calc(var(--radius)-3px)] p-0;
+  }
+  :where([data-gsxui-slot-input-group-button])[data-size="icon-xs"]:has(
+      > svg
+    ),
+  :where([data-gsxui-slot-input-group-button])[data-size="icon-sm"]:has(
+      > svg
+    ) {
+    @apply p-0;
+  }
+  :where([data-gsxui-slot-input-group-button])[data-size="icon-sm"] {
+    @apply size-8 p-0;
+  }
+
   :where([data-gsxui-slot-button-group]):has(
       > select[aria-hidden="true"]:last-child
     )

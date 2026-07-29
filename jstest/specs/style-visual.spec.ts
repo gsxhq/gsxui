@@ -690,3 +690,67 @@ test.describe("mobile visual contracts", () => {
     });
   }
 });
+
+// The three tests below pin presentation that a component's own CSS supplies
+// ON TOP OF the Button it renders through. ui.Button ships concrete Tailwind
+// utilities compiled from its style recipe, and those land in @layer
+// utilities; the cascade compares whole layers before specificity, so a rule
+// in @layer components can never override them. Every property asserted here
+// silently reverted to Button's own value when the Button switched from a
+// recipe token to concrete utilities, and the 313-test suite did not notice.
+// If one of these fails, check which layer the rule lives in before touching
+// the expectation.
+
+test("Carousel arrows stay circular over Button's own radius", async ({
+  page,
+}) => {
+  const response = await page.goto("/x/carousel/basic");
+  expect(response?.status(), "carousel/basic fixture response").toBe(200);
+
+  for (const marker of [
+    "[data-gsxui-slot-carousel-previous]",
+    "[data-gsxui-slot-carousel-next]",
+  ]) {
+    const arrow = page.locator(marker).first();
+    const { radius, height } = await arrow.evaluate((element) => {
+      const css = getComputedStyle(element);
+      return {
+        radius: Number.parseFloat(css.borderTopLeftRadius),
+        height: Number.parseFloat(css.height),
+      };
+    });
+    // rounded-full, not Button's rounded-lg (10px): a pill radius is clamped
+    // to half the box, so anything >= height/2 renders as a circle here.
+    expect(
+      radius,
+      `${marker} must be circular, not Button's rounded-lg`,
+    ).toBeGreaterThanOrEqual(height / 2);
+  }
+});
+
+test("InputGroupButton keeps its own type scale and radius over Button's size ramp", async ({
+  page,
+}) => {
+  const response = await page.goto("/x/input-group/basic");
+  expect(response?.status(), "input-group/basic fixture response").toBe(200);
+
+  const button = page.locator("[data-gsxui-slot-input-group-button]").first();
+  await expect(button).toHaveAttribute("data-size", "xs");
+  expect(
+    await button.evaluate((element) => {
+      const css = getComputedStyle(element);
+      return {
+        borderRadius: css.borderTopLeftRadius,
+        fontSize: css.fontSize,
+        paddingLeft: css.paddingLeft,
+      };
+    }),
+  ).toEqual({
+    // InputGroup's own xs ramp: rounded-[calc(var(--radius)-3px)] and text-sm,
+    // NOT Button's xs ramp (rounded-[min(var(--radius-md),10px)] = 8px and
+    // text-xs = 12px).
+    borderRadius: "7px",
+    fontSize: "14px",
+    paddingLeft: "6px",
+  });
+});
