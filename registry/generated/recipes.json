@@ -1,6 +1,50 @@
 {
   "version": 1,
   "components": {
+    "alert": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {
+            "variant": {
+              "default": "default",
+              "values": [
+                "default",
+                "destructive"
+              ]
+            }
+          }
+        },
+        "description": {
+          "base": true,
+          "dimensions": {}
+        },
+        "title": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
+    "badge": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {
+            "variant": {
+              "default": "default",
+              "values": [
+                "default",
+                "secondary",
+                "destructive",
+                "outline",
+                "ghost",
+                "link"
+              ]
+            }
+          }
+        }
+      }
+    },
     "button": {
       "slots": {
         "": {
@@ -69,6 +113,135 @@
   },
   "styles": {
     "maia": {
+      "alert": {
+        "slots": {
+          "": {
+            "base": [
+              "relative",
+              "grid",
+              "w-full",
+              "items-start",
+              "gap-y-0.5",
+              "rounded-lg",
+              "border",
+              "bg-card",
+              "px-2.5",
+              "py-2",
+              "text-sm",
+              "text-card-foreground",
+              "has-[\u003esvg]:grid-cols-[auto_1fr]",
+              "has-[\u003esvg]:gap-x-2",
+              "[\u0026\u003esvg]:row-span-2",
+              "[\u0026\u003esvg]:translate-y-0.5",
+              "[\u0026\u003esvg]:text-current",
+              "[\u0026\u003esvg:not([class*='size-'])]:size-4"
+            ],
+            "dimensions": {
+              "variant": {
+                "default": [
+                  "bg-card",
+                  "text-card-foreground"
+                ],
+                "destructive": [
+                  "bg-card",
+                  "text-destructive",
+                  "[\u0026_[data-gsxui-slot-alert-description]]:text-destructive/90"
+                ]
+              }
+            }
+          },
+          "description": {
+            "base": [
+              "col-start-2",
+              "grid",
+              "justify-items-start",
+              "text-sm",
+              "text-muted-foreground",
+              "[\u0026_p]:leading-relaxed",
+              "[\u0026_p:not(:last-child)]:mb-4"
+            ],
+            "dimensions": {}
+          },
+          "title": {
+            "base": [
+              "col-start-2",
+              "font-medium"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "badge": {
+        "slots": {
+          "": {
+            "base": [
+              "inline-flex",
+              "h-5",
+              "w-fit",
+              "shrink-0",
+              "items-center",
+              "justify-center",
+              "gap-1",
+              "overflow-hidden",
+              "rounded-4xl",
+              "border",
+              "border-transparent",
+              "px-2",
+              "py-0.5",
+              "text-xs",
+              "font-medium",
+              "whitespace-nowrap",
+              "transition-[color,box-shadow]",
+              "has-[\u003esvg]:px-1.5",
+              "focus-visible:border-ring",
+              "focus-visible:ring-[3px]",
+              "focus-visible:ring-ring/50",
+              "aria-invalid:border-destructive",
+              "aria-invalid:ring-destructive/20",
+              "dark:aria-invalid:ring-destructive/40",
+              "[\u0026\u003esvg]:size-3",
+              "[\u0026\u003esvg]:pointer-events-none"
+            ],
+            "dimensions": {
+              "variant": {
+                "default": [
+                  "bg-primary",
+                  "text-primary-foreground",
+                  "[a\u0026]:hover:bg-primary/90"
+                ],
+                "destructive": [
+                  "bg-destructive",
+                  "text-contrast",
+                  "focus-visible:ring-destructive/20",
+                  "dark:bg-destructive/60",
+                  "dark:focus-visible:ring-destructive/40",
+                  "[a\u0026]:hover:bg-destructive/90"
+                ],
+                "ghost": [
+                  "[a\u0026]:hover:bg-accent",
+                  "[a\u0026]:hover:text-accent-foreground"
+                ],
+                "link": [
+                  "text-primary",
+                  "underline-offset-4",
+                  "[a\u0026]:hover:underline"
+                ],
+                "outline": [
+                  "border-border",
+                  "text-foreground",
+                  "[a\u0026]:hover:bg-accent",
+                  "[a\u0026]:hover:text-accent-foreground"
+                ],
+                "secondary": [
+                  "bg-secondary",
+                  "text-secondary-foreground",
+                  "[a\u0026]:hover:bg-secondary/90"
+                ]
+              }
+            }
+          }
+        }
+      },
       "button": {
         "slots": {
           "": {
@@ -271,6 +444,135 @@
       }
     },
     "nova": {
+      "alert": {
+        "slots": {
+          "": {
+            "base": [
+              "relative",
+              "grid",
+              "w-full",
+              "items-start",
+              "gap-y-0.5",
+              "rounded-lg",
+              "border",
+              "bg-card",
+              "px-2.5",
+              "py-2",
+              "text-sm",
+              "text-card-foreground",
+              "has-[\u003esvg]:grid-cols-[auto_1fr]",
+              "has-[\u003esvg]:gap-x-2",
+              "[\u0026\u003esvg]:row-span-2",
+              "[\u0026\u003esvg]:translate-y-0.5",
+              "[\u0026\u003esvg]:text-current",
+              "[\u0026\u003esvg:not([class*='size-'])]:size-4"
+            ],
+            "dimensions": {
+              "variant": {
+                "default": [
+                  "bg-card",
+                  "text-card-foreground"
+                ],
+                "destructive": [
+                  "bg-card",
+                  "text-destructive",
+                  "[\u0026_[data-gsxui-slot-alert-description]]:text-destructive/90"
+                ]
+              }
+            }
+          },
+          "description": {
+            "base": [
+              "col-start-2",
+              "grid",
+              "justify-items-start",
+              "text-sm",
+              "text-muted-foreground",
+              "[\u0026_p]:leading-relaxed",
+              "[\u0026_p:not(:last-child)]:mb-4"
+            ],
+            "dimensions": {}
+          },
+          "title": {
+            "base": [
+              "col-start-2",
+              "font-medium"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "badge": {
+        "slots": {
+          "": {
+            "base": [
+              "inline-flex",
+              "h-5",
+              "w-fit",
+              "shrink-0",
+              "items-center",
+              "justify-center",
+              "gap-1",
+              "overflow-hidden",
+              "rounded-4xl",
+              "border",
+              "border-transparent",
+              "px-2",
+              "py-0.5",
+              "text-xs",
+              "font-medium",
+              "whitespace-nowrap",
+              "transition-[color,box-shadow]",
+              "has-[\u003esvg]:px-1.5",
+              "focus-visible:border-ring",
+              "focus-visible:ring-[3px]",
+              "focus-visible:ring-ring/50",
+              "aria-invalid:border-destructive",
+              "aria-invalid:ring-destructive/20",
+              "dark:aria-invalid:ring-destructive/40",
+              "[\u0026\u003esvg]:size-3",
+              "[\u0026\u003esvg]:pointer-events-none"
+            ],
+            "dimensions": {
+              "variant": {
+                "default": [
+                  "bg-primary",
+                  "text-primary-foreground",
+                  "[a\u0026]:hover:bg-primary/90"
+                ],
+                "destructive": [
+                  "bg-destructive",
+                  "text-contrast",
+                  "focus-visible:ring-destructive/20",
+                  "dark:bg-destructive/60",
+                  "dark:focus-visible:ring-destructive/40",
+                  "[a\u0026]:hover:bg-destructive/90"
+                ],
+                "ghost": [
+                  "[a\u0026]:hover:bg-accent",
+                  "[a\u0026]:hover:text-accent-foreground"
+                ],
+                "link": [
+                  "text-primary",
+                  "underline-offset-4",
+                  "[a\u0026]:hover:underline"
+                ],
+                "outline": [
+                  "border-border",
+                  "text-foreground",
+                  "[a\u0026]:hover:bg-accent",
+                  "[a\u0026]:hover:text-accent-foreground"
+                ],
+                "secondary": [
+                  "bg-secondary",
+                  "text-secondary-foreground",
+                  "[a\u0026]:hover:bg-secondary/90"
+                ]
+              }
+            }
+          }
+        }
+      },
       "button": {
         "slots": {
           "": {

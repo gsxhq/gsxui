@@ -42,8 +42,8 @@ func TestAlertVariants(t *testing.T) {
 
 func TestAlertCallerClassIsForwardedOnce(t *testing.T) {
 	got := render(t, ui.Alert("", gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "px-8"}}))
-	if strings.Count(got, `class="px-8"`) != 1 {
-		t.Errorf("caller class must be the only class and render once\nin: %s", got)
+	if strings.Count(got, `class="`) != 1 || !strings.Contains(got, "px-8") {
+		t.Errorf("caller class must merge into the single class attribute and render once\nin: %s", got)
 	}
 }
 
@@ -53,7 +53,7 @@ func TestAlertPinned(t *testing.T) {
 	// (registry/new-york-v4/ui/alert.tsx) — straight port, cva() replaced by
 	// a switch (see docs/jsx-parity.md).
 	got := render(t, ui.Alert("", gsx.Raw("Heads up"), nil))
-	want := `<div role="alert" data-variant="default" data-gsxui-slot-alert>Heads up</div>`
+	want := `<div role="alert" data-variant="default" class="relative grid w-full items-start gap-y-0.5 rounded-lg border px-2.5 py-2 text-sm has-[&gt;svg]:grid-cols-[auto_1fr] has-[&gt;svg]:gap-x-2 [&amp;&gt;svg]:row-span-2 [&amp;&gt;svg]:translate-y-0.5 [&amp;&gt;svg]:text-current [&amp;&gt;svg:not([class*=&#39;size-&#39;])]:size-4 bg-card text-card-foreground" data-gsxui-slot-alert>Heads up</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

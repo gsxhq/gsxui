@@ -106,3 +106,35 @@ test("CardHeader keeps its border-b bottom padding and border", async ({ page })
   expect(borderBottomWidth).toBe("1px");
   expect(paddingBottom).toBe("16px");
 });
+
+test("Badge keeps its pill corner radius and per-variant background", async ({ page }) => {
+  await page.goto("/x/badge/variants");
+  const badges = page.locator("[data-gsxui-slot-badge]");
+  const defaultBadge = badges.nth(0);
+  const secondaryBadge = badges.nth(1);
+  await expect(defaultBadge).toHaveAttribute("data-variant", "default");
+  await expect(secondaryBadge).toHaveAttribute("data-variant", "secondary");
+
+  const radius = await defaultBadge.evaluate((n) => getComputedStyle(n).borderRadius);
+  expect(radius).toBe("32px");
+
+  const defaultBg = await defaultBadge.evaluate((n) => getComputedStyle(n).backgroundColor);
+  const secondaryBg = await secondaryBadge.evaluate((n) => getComputedStyle(n).backgroundColor);
+  expect(defaultBg).not.toBe(secondaryBg);
+});
+
+test("Alert destructive variant recolors text but keeps the default's radius", async ({ page }) => {
+  await page.goto("/x/alert/variants");
+  const alerts = page.locator("[data-gsxui-slot-alert]");
+  const defaultAlert = alerts.nth(0);
+  const destructiveAlert = alerts.nth(1);
+  await expect(defaultAlert).toHaveAttribute("data-variant", "default");
+  await expect(destructiveAlert).toHaveAttribute("data-variant", "destructive");
+
+  const defaultColor = await defaultAlert.evaluate((n) => getComputedStyle(n).color);
+  const destructiveColor = await destructiveAlert.evaluate((n) => getComputedStyle(n).color);
+  expect(defaultColor).not.toBe(destructiveColor);
+
+  const radius = await defaultAlert.evaluate((n) => getComputedStyle(n).borderRadius);
+  expect(radius).toBe("10px");
+});

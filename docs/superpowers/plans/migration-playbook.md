@@ -275,6 +275,132 @@ preserved rather than an active concern — but it still had to move, since
 leaving it under the deleted `@layer components` selector would make it
 dead code the layer gate should (and does) object to.
 
+## Dimensions on the root slot (Badge, Alert)
+
+Badge and Alert added the first **dimension** (`variant`) to the model —
+Button had dimensions but on a single-slot component where "root" and "the
+only slot" are the same thing; Card had slots but no dimensions. Badge is
+single-slot-with-dimension like Button; Alert is a compound component where
+the dimension lives on the root slot only (`title`/`description` stay plain
+`Base: true` slots, no `Dimensions`).
+
+**Finding: derive the value list from `default.css`, but treat the style
+contract as authoritative when it disagrees, and CONSULT UPSTREAM to settle
+the disagreement — don't average the two or trust whichever list is easier to
+read off the CSS.** For Badge specifically:
+
+- The brief's illustrative shape (`task-2-brief.md`) quoted 4 values —
+  `default, secondary, destructive, outline` — explicitly flagged as
+  illustrative, and it was: incomplete.
+- Reading `default.css`'s `[data-gsxui-slot-badge][data-variant="…"]` base
+  rules directly gives 5 values with their own non-hover rule block —
+  `default, secondary, destructive, outline, link`. `"ghost"` appears
+  exactly once, sharing a hover-only compound selector with `outline`
+  (`:is(a[…][data-variant="outline"]):hover, :is(a[…][data-variant="ghost"]):hover`)
+  and has **no** dedicated base rule of its own.
+- `internal/stylecontract/contracts_primitives.go`'s Badge axis lists 6
+  values, including `ghost`.
+- **This looked like a bug** (a declared variant resolving to unstyled
+  except on hover) and was reported as NEEDS_CONTEXT rather than guessed.
+  Checking upstream (`apps/v4/registry/new-york-v4/ui/badge.tsx` in a
+  shadcn checkout) resolved it: ghost's ENTIRE upstream definition is
+  `[a&]:hover:bg-accent [a&]:hover:text-accent-foreground` — hover-only and
+  only when the badge renders as an anchor, by design (a ghost badge is
+  meant to look like plain text until hovered as a link). gsxui's
+  `default.css` is faithful to upstream, not missing a rule. **The contract's
+  6 values were correct; use them.** Alert's contract and CSS agreed exactly
+  (`default, destructive`) — no ambiguity, no upstream check needed.
+
+**Rule for later components:** when the contract and `default.css` disagree
+on a dimension's value list, that is not automatically a bug to fix or a
+judgment call to make locally — check the corresponding upstream shadcn
+component file (`/Users/jackieli/personal/shadcn-ui/apps/v4/registry/new-york-v4/ui/<component>.tsx`
+in this environment) before reporting OR before trusting either source. The
+contract wins once upstream confirms it; `default.css`'s own quirks
+(hover-only variants, dead-looking rules) are frequently faithful ports of an
+intentional upstream design, not migration bugs.
+
+**A fourth relational form: `[a&]:hover:`.** gsxui writes
+`:is(a[data-gsxui-slot-X][data-variant="Y"]):hover { @apply … }` for
+several/all of Badge's variants (every one of `default, secondary,
+destructive, outline, link` has one, plus the shared `ghost` case). This is
+exactly upstream's `[a&]:hover:` Tailwind variant, applied only when the
+component renders as an anchor. Translate it directly:
+
+```css
+/* was: :is(a[data-gsxui-slot-badge][data-variant="destructive"]):hover { bg-destructive/90 } */
+.gsxui-recipe-badge-variant-destructive {
+  @apply … [a&]:hover:bg-destructive/90;
+}
+```
+
+It compiles cleanly under this repo's Tailwind v4 (verified directly with
+the `tailwindcss` CLI the same way `jstest/support/compiled-css-audit.test.ts`
+does, before committing to the syntax) — confirm this yourself on a new
+component rather than trusting that it will just work, the same caution the
+brief already asked for on the descendant-marker `:has()` form.
+
+**Note: this form can be write-only.** Badge's `Badge()` component never
+renders an `<a>` (no `href` prop, unlike Button) — so `[a&]:hover:` is
+correctly copied but currently unreachable in this codebase, same as
+upstream's own `asChild`-only Slot path. That's not a reason to drop the
+utility; the recipe stylesheet has to remain faithful to `default.css`
+regardless of whether every consumer happens to exercise every state.
+
+**The `<Slot><Dimension>` accessor looked exactly like Button's, because both
+declared the dimension on the root (`Name: ""`) slot:**
+
+```go
+func (r badgeRecipe) Root() string             { return r.c.SlotClass("") }
+func (r badgeRecipe) Variant(value string) string { return r.c.SlotValueClass("", "variant", value) }
+```
+
+Alert's title/description slots, having no dimensions, only ever get a
+`SlotClass` accessor (`Title()`, `Description()`) — same as any of Card's
+plain slots. Nothing new needed in `internal/recipe` for a dimension that
+happens to live on a non-root-but-single slot; the mechanism doesn't
+distinguish "root" from "the component's only dimensioned slot" at all — it
+was already generic over slot name.
+
+**The generated `default:` arm.** For Badge, `registry/generated/nova/badge.gsx`'s
+switch produces:
+
+```go
+switch variant {
+case "secondary": "bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90"
+case "destructive": "bg-destructive text-contrast focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40 [a&]:hover:bg-destructive/90"
+case "outline": "border-border text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground"
+case "ghost": "[a&]:hover:bg-accent [a&]:hover:text-accent-foreground"
+case "link": "text-primary underline-offset-4 [a&]:hover:underline"
+default: "bg-primary text-primary-foreground [a&]:hover:bg-primary/90"
+}
+```
+confirming the `default:` arm carries `default`'s own utilities (matching
+`TestResolveDefaultArmCarriesDeclaredDefault`'s pin for Button), not `""`.
+
+## What actually needed the escape hatch (Badge, Alert)
+
+Nothing. Every rule in both components' `default.css` blocks translated to
+`@apply`-only utilities, including the `.dark` selectors (`dark:` variant)
+and the parent-reaching Alert rule below. Unlike Card, no plain-CSS
+properties without a Tailwind form turned up.
+
+**A relational shape Card didn't have: a variant on one slot painting a
+DIFFERENT slot.** Alert's destructive variant recolors its description child
+(`:where([data-gsxui-slot-alert])[data-variant="destructive"]
+:where([data-gsxui-slot-alert-description])`). This is the mirror image of
+Card's descendant `:has()` form — Card reacts to a child's *presence*;
+here the root reacts to its own *variant* and reaches down to paint a
+specific descendant. `has-[]:` is the wrong tool (nothing is being detected,
+something is being painted), so it's an ordinary arbitrary descendant
+variant on the variant's own rule:
+
+```css
+.gsxui-recipe-alert-variant-destructive {
+  @apply bg-card text-destructive [&_[data-gsxui-slot-alert-description]]:text-destructive/90;
+}
+```
+
 ## What the brief got wrong or left out
 
 1. **Rule count.** The brief said "13 rules"; the actual count in
@@ -309,3 +435,31 @@ dead code the layer gate should (and does) object to.
 6. **The Playwright baseline count (329) doesn't match the tree.** Verified
    331 at the pre-migration commit. Re-derive it yourself; don't paste the
    brief's number into a report unchecked.
+7. **(Task 2, Badge/Alert) The brief's illustrative dimension-value list was
+   wrong, not just illustrative-and-approximate.** It quoted 4 Badge values;
+   the real count, once the contract and upstream both agree, is 6. Don't
+   spend the "derive from `default.css`" instruction as license to skip
+   checking the contract AND upstream when the two disagree — `default.css`
+   alone made `ghost` look like dead/broken CSS when it was a faithful,
+   intentional hover-only port.
+8. **Dimensions can disagree between the style contract and `default.css` for
+   a legitimate design reason, not just as an error.** The brief's framing
+   ("derive from `default.css`, don't trust a quoted list") is right for
+   catching a stale brief, but insufficient on its own when `default.css`
+   itself looks incomplete — the tiebreaker in that case is upstream shadcn,
+   not a coin flip between contract and CSS.
+9. **This task's shared-worktree hazard, not in the brief at all:** a
+   concurrent agent splitting Sonner/Toast was working in this SAME working
+   directory (not an isolated git worktree per agent), and left uncommitted
+   changes to shared generated artifacts (`registry/generated/recipes.json`
+   csv-adjacent files, `jstest/runtime-style-contract.json`,
+   `internal/stylecontract/contract.go`, `internal/registry/registry_test.go`,
+   `site/examples/style_contract_test.go`) sitting in the tree throughout this
+   task. `go build`, `go test`, and the Playwright suite all ran against that
+   mixed state — one Playwright test
+   (`runtime-style-contract.spec.ts › real interactions cover the exact
+   runtime-owned style contract`) failed for reasons entirely owned by that
+   other agent's in-progress rename, unrelated to Badge/Alert. Future
+   migrations sharing a worktree need to `git diff --stat` before touching
+   anything and again before committing, to separate "my diff" from "their
+   live WIP" — and commit only the former.
