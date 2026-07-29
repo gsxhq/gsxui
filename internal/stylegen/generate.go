@@ -83,7 +83,7 @@ func resolveButtonSources(root string) ([]generatedButtonSource, error) {
 		if err != nil {
 			return nil, fmt.Errorf("parse %s Button recipe: %w", style.name, err)
 		}
-		resolved, _, err := Resolve(canonicalPath, canonical, recipes)
+		resolved, _, err := resolveTokens(canonicalPath, canonical, recipes)
 		if err != nil {
 			return nil, fmt.Errorf("resolve %s Button: %w", style.name, err)
 		}

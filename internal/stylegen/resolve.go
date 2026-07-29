@@ -17,6 +17,13 @@ import (
 	"github.com/gsxhq/gsxui/internal/recipe"
 )
 
+// Call is one recipe helper call found in a canonical class expression.
+// Dimension is empty for a Role call.
+type Call struct {
+	Component string
+	Dimension string
+}
+
 type ResolveReport struct {
 	UsedTokens []string
 }
@@ -34,17 +41,90 @@ const (
 	validationOnlyInspection
 )
 
+// classMode selects how a canonical class expression is treated. The two
+// helper modes read the structural `<component>.<Method>(...)` form; the token
+// mode is the legacy literal-substitution path retired by Task 7.
+type classMode uint8
+
+const (
+	tokenSubstitutionMode classMode = iota
+	helperDesugarMode
+	helperScanMode
+)
+
 type resolver struct {
-	filename string
-	src      []byte
-	fset     *token.FileSet
-	recipes  *recipe.Style
-	used     map[string]struct{}
-	edits    []literalEdit
-	err      error
+	filename  string
+	src       []byte
+	fset      *token.FileSet
+	classMode classMode
+	recipes   *recipe.Style
+	resolved  recipe.Resolved
+	used      map[string]struct{}
+	calls     []Call
+	edits     []literalEdit
+	err       error
 }
 
-func Resolve(filename string, src []byte, recipes recipe.Style) ([]byte, ResolveReport, error) {
+// Resolve rewrites a canonical component source into consumer source for one
+// style: every `<component>.Role()`, `.Variant(v)` and `.Size(v)` call in a
+// class expression is replaced by the concrete utilities the resolved recipe
+// supplies, so the output contains no recipe construct at all.
+func Resolve(filename string, src []byte, resolved recipe.Resolved) ([]byte, error) {
+	r, err := inspectSource(filename, src, func(r *resolver) {
+		r.classMode = helperDesugarMode
+		r.resolved = resolved
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	edited, err := applyLiteralEdits(src, r.edits)
+	if err != nil {
+		return nil, fmt.Errorf("%s: apply recipe edits: %w", filename, err)
+	}
+	formatted, err := gen.Format(filename, edited)
+	if err != nil {
+		return nil, fmt.Errorf("%s: format resolved GSX: %w", filename, err)
+	}
+	if _, err := gsxparser.ParseFile(token.NewFileSet(), filename, formatted, 0); err != nil {
+		return nil, fmt.Errorf("%s: reparse resolved GSX: %w", filename, err)
+	}
+	remaining, err := RecipeTokens(filename, formatted)
+	if err != nil {
+		return nil, fmt.Errorf("%s: validate resolved GSX recipe use: %w", filename, err)
+	}
+	if len(remaining) != 0 {
+		return nil, fmt.Errorf("%s: resolved GSX still contains recipe tokens %q", filename, remaining)
+	}
+	if bytes.Contains(formatted, []byte(recipe.Prefix)) {
+		return nil, fmt.Errorf("%s: resolved GSX still contains recipe prefix %q", filename, recipe.Prefix)
+	}
+	for _, helper := range []string{".Role(", ".Variant(", ".Size("} {
+		if bytes.Contains(formatted, []byte(helper)) {
+			return nil, fmt.Errorf("%s: resolved GSX still contains a recipe helper call %q", filename, helper)
+		}
+	}
+	return formatted, nil
+}
+
+// HelperCalls reports every recipe helper call a canonical source makes, in
+// source order, without resolving any of them. Generation uses it to check a
+// canonical against the declared shapes before it touches any style.
+func HelperCalls(filename string, src []byte) ([]Call, error) {
+	r, err := inspectSource(filename, src, func(r *resolver) {
+		r.classMode = helperScanMode
+	})
+	if err != nil {
+		return nil, err
+	}
+	return r.calls, nil
+}
+
+// resolveTokens is the legacy recipe-token-literal substitution path. It is
+// retired by Task 7, in the same commit that replaces the last authored source
+// still written in token form (ui/button.gsx) with generated output. New work
+// belongs in Resolve.
+func resolveTokens(filename string, src []byte, recipes recipe.Style) ([]byte, ResolveReport, error) {
 	declared, err := declaredRecipeTokens(filename, recipes)
 	if err != nil {
 		return nil, ResolveReport{}, err
@@ -101,23 +181,38 @@ type inspectionResult struct {
 	edits  []literalEdit
 }
 
-func inspectRecipeTokens(filename string, src []byte, recipes *recipe.Style) (inspectionResult, error) {
+// inspectSource runs the one shared traversal. configure selects the class
+// mode and supplies whatever that mode resolves against.
+func inspectSource(filename string, src []byte, configure func(*resolver)) (*resolver, error) {
 	fset := token.NewFileSet()
 	file, err := gsxparser.ParseFile(fset, filename, src, 0)
 	if err != nil {
-		return inspectionResult{}, fmt.Errorf("%s: %w", filename, err)
+		return nil, fmt.Errorf("%s: %w", filename, err)
 	}
 
 	r := &resolver{
 		filename: filename,
 		src:      src,
 		fset:     fset,
-		recipes:  recipes,
 		used:     make(map[string]struct{}),
+	}
+	if configure != nil {
+		configure(r)
 	}
 	gsxast.Inspect(file, r.inspectVisitor(canonicalClassInspection))
 	if r.err != nil {
-		return inspectionResult{}, r.err
+		return nil, r.err
+	}
+	return r, nil
+}
+
+func inspectRecipeTokens(filename string, src []byte, recipes *recipe.Style) (inspectionResult, error) {
+	r, err := inspectSource(filename, src, func(r *resolver) {
+		r.classMode = tokenSubstitutionMode
+		r.recipes = recipes
+	})
+	if err != nil {
+		return inspectionResult{}, err
 	}
 
 	tokens := make([]string, 0, len(r.used))
@@ -174,7 +269,7 @@ func (r *resolver) inspectClassAttr(attr *gsxast.ClassAttr, mode inspectionMode)
 		part := &attr.Parts[i]
 		if part.Expr != "" {
 			if canonicalClass {
-				r.inspectClassExpr(part.Expr, part.ExprPos)
+				r.inspectClassExpr(part.Expr, part.ExprPos, part)
 			} else {
 				r.inspectNonClassExpr(part.Expr, part.ExprPos, context)
 			}
@@ -198,7 +293,7 @@ func (r *resolver) inspectClassAttr(attr *gsxast.ClassAttr, mode inspectionMode)
 	}
 }
 
-func (r *resolver) inspectClassExpr(expr string, exprPos token.Pos) {
+func (r *resolver) inspectClassExpr(expr string, exprPos token.Pos, part *gsxast.ClassPart) {
 	if r.err != nil {
 		return
 	}
@@ -206,6 +301,15 @@ func (r *resolver) inspectClassExpr(expr string, exprPos token.Pos) {
 	if err != nil {
 		r.err = r.positionedError(exprPos, "class recipe expression must be a Go string literal: %v", err)
 		return
+	}
+
+	if r.classMode != tokenSubstitutionMode {
+		if call, ok := parsed.(*goast.CallExpr); ok {
+			if selector, ok := call.Fun.(*goast.SelectorExpr); ok {
+				r.inspectHelperCall(call, selector, exprPos, part)
+				return
+			}
+		}
 	}
 
 	literal := unwrappedStringLiteral(parsed)
@@ -255,6 +359,122 @@ func (r *resolver) inspectClassExpr(expr string, exprPos token.Pos) {
 	}
 	literal.Value = strconv.Quote(resolved)
 	r.edits = append(r.edits, literalEdit{start: start, end: end, value: literal.Value})
+}
+
+// inspectHelperCall matches `<component>.<Method>(...)` in a canonical class
+// expression. In desugar mode it records an edit replacing the whole class part
+// with the concrete style source; in scan mode it only records the call.
+func (r *resolver) inspectHelperCall(
+	call *goast.CallExpr,
+	selector *goast.SelectorExpr,
+	exprPos token.Pos,
+	part *gsxast.ClassPart,
+) {
+	receiver, ok := selector.X.(*goast.Ident)
+	if !ok {
+		r.err = r.positionedError(exprPos, "recipe helper call receiver must be a bare component identifier")
+		return
+	}
+	component := receiver.Name
+	if r.classMode == helperDesugarMode && component != r.resolved.Shape.Component {
+		r.err = r.positionedError(
+			exprPos,
+			"recipe helper call on component %q, but this source resolves component %q",
+			component,
+			r.resolved.Shape.Component,
+		)
+		return
+	}
+
+	if selector.Sel.Name == "Role" {
+		if len(call.Args) != 0 {
+			r.err = r.positionedError(exprPos, "%s.Role takes no arguments, got %d", component, len(call.Args))
+			return
+		}
+		r.calls = append(r.calls, Call{Component: component})
+		if r.classMode != helperDesugarMode {
+			return
+		}
+		r.recordPartEdit(exprPos, part, strconv.Quote(strings.Join(r.resolved.Base, " ")))
+		return
+	}
+
+	dimensionName := strings.ToLower(selector.Sel.Name)
+	if len(call.Args) != 1 {
+		r.err = r.positionedError(
+			exprPos,
+			"%s.%s takes exactly one argument, got %d",
+			component, selector.Sel.Name, len(call.Args),
+		)
+		return
+	}
+	argument, ok := call.Args[0].(*goast.Ident)
+	if !ok {
+		r.err = r.positionedError(
+			exprPos,
+			"%s.%s argument must be a bare identifier naming a component parameter",
+			component, selector.Sel.Name,
+		)
+		return
+	}
+	r.calls = append(r.calls, Call{Component: component, Dimension: dimensionName})
+	if r.classMode != helperDesugarMode {
+		return
+	}
+	dimension, ok := r.resolved.Shape.Dimension(dimensionName)
+	if !ok {
+		r.err = r.positionedError(
+			exprPos,
+			"component %q declares no dimension %q",
+			r.resolved.Shape.Component, dimensionName,
+		)
+		return
+	}
+	r.recordPartEdit(exprPos, part, dimensionSwitch(r.resolved, dimension, argument.Name))
+}
+
+// recordPartEdit replaces a whole class part. Per the resolved spike a
+// ClassPart's Pos includes the leading newline and indentation while End
+// excludes the trailing comma, so the expression's own position is the correct
+// start and the part's End is the correct end. gen.Format re-indents
+// afterwards, so value carries no indentation.
+func (r *resolver) recordPartEdit(exprPos token.Pos, part *gsxast.ClassPart, value string) {
+	if part == nil {
+		r.err = r.positionedError(exprPos, "a recipe helper call must be a whole class part")
+		return
+	}
+	if part.Cond != "" || len(part.Stages) != 0 || part.CF != nil || len(part.CSSSegments) != 0 {
+		r.err = r.positionedError(exprPos, "a recipe helper call must be a plain class part with no condition, pipeline or control flow")
+		return
+	}
+	start := r.fset.Position(exprPos).Offset
+	end := r.fset.Position(part.End()).Offset
+	if start < 0 || end < start || end > len(r.src) {
+		r.err = r.positionedError(exprPos, "recipe helper call span is outside source")
+		return
+	}
+	r.edits = append(r.edits, literalEdit{start: start, end: end, value: value})
+}
+
+// dimensionSwitch generates the class switch for one dimension. Every declared
+// value except the default gets a case; the declared default's utilities go in
+// the default arm, so an unrecognized value renders the default rather than
+// nothing. That mirrors recipe.Component's runtime behavior, which is what
+// makes a behavior test written against the canonical true of every style.
+func dimensionSwitch(resolved recipe.Resolved, dimension recipe.Dimension, argument string) string {
+	var out strings.Builder
+	fmt.Fprintf(&out, "switch %s {\n", argument)
+	for _, value := range dimension.Values {
+		if value == dimension.Default {
+			continue
+		}
+		fmt.Fprintf(&out, "case %s:\n%s\n",
+			strconv.Quote(value),
+			strconv.Quote(strings.Join(resolved.Utilities(dimension.Name, value), " ")))
+	}
+	fmt.Fprintf(&out, "default:\n%s\n}",
+		strconv.Quote(strings.Join(resolved.Utilities(dimension.Name, dimension.Default), " ")))
+	return out.String()
 }
 
 func (r *resolver) resolveClassLiteral(value string) (string, bool, error) {
@@ -414,7 +634,7 @@ func (r *resolver) inspectValueArm(arm *gsxast.ValueArm, transform bool, context
 		return
 	}
 	if transform {
-		r.inspectClassExpr(arm.Expr, arm.ExprPos)
+		r.inspectClassExpr(arm.Expr, arm.ExprPos, nil)
 	} else {
 		r.inspectNonClassExpr(arm.Expr, arm.ExprPos, context)
 	}

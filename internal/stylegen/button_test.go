@@ -290,12 +290,12 @@ func TestGenerateButtonArtifactsMatchCommittedResolvedSources(t *testing.T) {
 		if err != nil {
 			t.Fatalf("ParseStyle(%s) error = %v", style, err)
 		}
-		want, report, err := Resolve(canonicalPath, canonical, recipes)
+		want, report, err := resolveTokens(canonicalPath, canonical, recipes)
 		if err != nil {
-			t.Fatalf("Resolve(%s) error = %v", style, err)
+			t.Fatalf("resolveTokens(%s) error = %v", style, err)
 		}
 		if !reflect.DeepEqual(report.UsedTokens, buttonRecipeTokens) {
-			t.Errorf("Resolve(%s) used tokens = %q, want %q", style, report.UsedTokens, buttonRecipeTokens)
+			t.Errorf("resolveTokens(%s) used tokens = %q, want %q", style, report.UsedTokens, buttonRecipeTokens)
 		}
 
 		generatedPath := filepath.Join(root, "registry", "generated", style, "button.gsx")

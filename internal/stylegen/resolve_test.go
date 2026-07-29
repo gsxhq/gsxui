@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"regexp"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -15,6 +17,7 @@ import (
 	gsxparser "github.com/gsxhq/gsx/parser"
 
 	"github.com/gsxhq/gsxui/internal/recipe"
+	"github.com/gsxhq/gsxui/registry/canonical"
 )
 
 func TestResolveGolden(t *testing.T) {
@@ -31,12 +34,12 @@ func TestResolveGolden(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	got, report, err := Resolve(filename, src, resolveTestRecipes(t))
+	got, report, err := resolveTokens(filename, src, resolveTestRecipes(t))
 	if err != nil {
-		t.Fatalf("Resolve() error = %v", err)
+		t.Fatalf("resolveTokens() error = %v", err)
 	}
 	if !bytes.Equal(got, want) {
-		t.Errorf("Resolve() output mismatch\n--- got ---\n%s\n--- want ---\n%s", got, want)
+		t.Errorf("resolveTokens() output mismatch\n--- got ---\n%s\n--- want ---\n%s", got, want)
 	}
 	if want := []string{
 		"gsxui-recipe-button",
@@ -48,16 +51,16 @@ func TestResolveGolden(t *testing.T) {
 		t.Errorf("ResolveReport.UsedTokens = %q, want %q", report.UsedTokens, want)
 	}
 	if bytes.Contains(got, []byte(recipe.Prefix)) {
-		t.Errorf("Resolve() output still contains %q", recipe.Prefix)
+		t.Errorf("resolveTokens() output still contains %q", recipe.Prefix)
 	}
 	if !bytes.Contains(got, []byte("// Preserve this comment adjacent to the class switches.")) {
-		t.Error("Resolve() removed the class-switch comment")
+		t.Error("resolveTokens() removed the class-switch comment")
 	}
 	if !bytes.Contains(got, []byte(`sm:hover:[&>svg]:size-4`)) {
-		t.Error("Resolve() changed an unrelated arbitrary Tailwind class")
+		t.Error("resolveTokens() changed an unrelated arbitrary Tailwind class")
 	}
 	if !bytes.Contains(got, []byte(`const unrelatedRecipeDocumentation = "recipe names belong only in canonical class expressions"`)) {
-		t.Error("Resolve() changed an unrelated string literal")
+		t.Error("resolveTokens() changed an unrelated string literal")
 	}
 
 	formatted, err := gen.Format(filename, got)
@@ -238,21 +241,21 @@ func TestResolveAcceptsElementValuedExpressions(t *testing.T) {
 			if err != nil {
 				t.Fatalf("gen.Format() error = %v", err)
 			}
-			got, report, err := Resolve("element-valued.gsx", src, recipe.Style{})
+			got, report, err := resolveTokens("element-valued.gsx", src, recipe.Style{})
 			if err != nil {
-				t.Fatalf("Resolve() error = %v", err)
+				t.Fatalf("resolveTokens() error = %v", err)
 			}
 			if len(report.UsedTokens) != 0 {
 				t.Errorf("ResolveReport.UsedTokens = %q, want none", report.UsedTokens)
 			}
 			if !bytes.Equal(got, wantFormatted) {
-				t.Errorf("Resolve() changed recipe-free element-valued expression\n--- got ---\n%s\n--- want ---\n%s", got, wantFormatted)
+				t.Errorf("resolveTokens() changed recipe-free element-valued expression\n--- got ---\n%s\n--- want ---\n%s", got, wantFormatted)
 			}
 			if !bytes.Contains(got, []byte(tt.want)) {
-				t.Errorf("Resolve() output does not preserve %q:\n%s", tt.want, got)
+				t.Errorf("resolveTokens() output does not preserve %q:\n%s", tt.want, got)
 			}
 			if bytes.Contains(got, []byte(recipe.Prefix)) {
-				t.Errorf("Resolve() output still contains %q", recipe.Prefix)
+				t.Errorf("resolveTokens() output still contains %q", recipe.Prefix)
 			}
 		})
 	}
@@ -299,15 +302,15 @@ func TestRecipeTokensRejectsRecipeUseInsideElementValuedExpressions(t *testing.T
 					}
 				}
 			}
-			got, _, err := Resolve(filename, source, recipe.Style{})
+			got, _, err := resolveTokens(filename, source, recipe.Style{})
 			if err == nil {
-				t.Fatal("Resolve() error = nil, want structural recipe-use error")
+				t.Fatal("resolveTokens() error = nil, want structural recipe-use error")
 			}
 			if !strings.Contains(err.Error(), "recipe token") {
-				t.Errorf("Resolve() error %q does not identify recipe-token misuse", err)
+				t.Errorf("resolveTokens() error %q does not identify recipe-token misuse", err)
 			}
 			if bytes.Contains(got, []byte(recipe.Prefix)) {
-				t.Errorf("Resolve() returned output containing %q: %s", recipe.Prefix, got)
+				t.Errorf("resolveTokens() returned output containing %q: %s", recipe.Prefix, got)
 			}
 		})
 	}
@@ -354,17 +357,17 @@ func TestRecipeTokensRejectsRecipeContentInNestedElementValuedExpressions(t *tes
 			recipes := testRecipes(t,
 				recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"resolved-utility"}},
 			)
-			got, report, err := Resolve(filename, source, recipes)
+			got, report, err := resolveTokens(filename, source, recipes)
 			if err == nil {
-				t.Fatal("Resolve() error = nil, want nested recipe-use error")
+				t.Fatal("resolveTokens() error = nil, want nested recipe-use error")
 			}
 			for _, want := range []string{"recipe token", tt.want} {
 				if !strings.Contains(err.Error(), want) {
-					t.Errorf("Resolve() error %q does not contain %q", err, want)
+					t.Errorf("resolveTokens() error %q does not contain %q", err, want)
 				}
 			}
 			if got != nil {
-				t.Errorf("Resolve() output = %q, want nil on nested recipe misuse", got)
+				t.Errorf("resolveTokens() output = %q, want nil on nested recipe misuse", got)
 			}
 			if len(report.UsedTokens) != 0 {
 				t.Errorf("ResolveReport.UsedTokens = %q, want none on nested recipe misuse", report.UsedTokens)
@@ -410,15 +413,15 @@ func TestResolveRejectsRecipeTokenIntroducedByUtility(t *testing.T) {
 	recipes := testRecipes(t,
 		recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"gsxui-recipe-leaked"}},
 	)
-	got, _, err := Resolve("introduced-token.gsx", src, recipes)
+	got, _, err := resolveTokens("introduced-token.gsx", src, recipes)
 	if err == nil {
-		t.Fatal("Resolve() error = nil, want structural output-invariant error")
+		t.Fatal("resolveTokens() error = nil, want structural output-invariant error")
 	}
 	if !strings.Contains(err.Error(), "gsxui-recipe-leaked") {
-		t.Errorf("Resolve() error %q does not identify introduced token", err)
+		t.Errorf("resolveTokens() error %q does not identify introduced token", err)
 	}
 	if bytes.Contains(got, []byte(recipe.Prefix)) {
-		t.Errorf("Resolve() returned output containing %q: %s", recipe.Prefix, got)
+		t.Errorf("resolveTokens() returned output containing %q: %s", recipe.Prefix, got)
 	}
 }
 
@@ -434,12 +437,12 @@ func TestResolveNoPrefixInvariantIsIndependentOfRecipeScanner(t *testing.T) {
 	if len(tokens) != 0 {
 		t.Fatalf("RecipeTokens() = %q, want none for source-only comment", tokens)
 	}
-	got, _, err := Resolve("output-invariant.gsx", src, recipe.Style{})
+	got, _, err := resolveTokens("output-invariant.gsx", src, recipe.Style{})
 	if err == nil {
-		t.Fatal("Resolve() error = nil, want independent no-prefix invariant error")
+		t.Fatal("resolveTokens() error = nil, want independent no-prefix invariant error")
 	}
 	if bytes.Contains(got, []byte(recipe.Prefix)) {
-		t.Errorf("Resolve() returned output containing %q: %s", recipe.Prefix, got)
+		t.Errorf("resolveTokens() returned output containing %q: %s", recipe.Prefix, got)
 	}
 }
 
@@ -491,9 +494,9 @@ func TestResolveAcceptsUnrelatedDynamicClassSurfaces(t *testing.T) {
 			if len(tokens) != 0 {
 				t.Fatalf("RecipeTokens() = %q, want none", tokens)
 			}
-			got, report, err := Resolve("dynamic.gsx", src, recipe.Style{})
+			got, report, err := resolveTokens("dynamic.gsx", src, recipe.Style{})
 			if err != nil {
-				t.Fatalf("Resolve() error = %v", err)
+				t.Fatalf("resolveTokens() error = %v", err)
 			}
 			if len(report.UsedTokens) != 0 {
 				t.Errorf("ResolveReport.UsedTokens = %q, want none", report.UsedTokens)
@@ -596,13 +599,13 @@ func TestResolveRejectsInvalidRecipeUse(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			filename := filepath.Join("testdata", "malformed.gsx")
-			_, _, err := Resolve(filename, []byte(tt.src), tt.recipes)
+			_, _, err := resolveTokens(filename, []byte(tt.src), tt.recipes)
 			if err == nil {
-				t.Fatal("Resolve() error = nil, want error")
+				t.Fatal("resolveTokens() error = nil, want error")
 			}
 			for _, want := range tt.want {
 				if !strings.Contains(err.Error(), want) {
-					t.Errorf("Resolve() error %q does not contain %q", err, want)
+					t.Errorf("resolveTokens() error %q does not contain %q", err, want)
 				}
 			}
 		})
@@ -663,15 +666,15 @@ func assertRecipeRejectedByBothAPIs(t *testing.T, src, want string) {
 		t.Errorf("RecipeTokens() error %q does not contain %q", err, want)
 	}
 
-	got, _, err := Resolve(filename, source, recipe.Style{})
+	got, _, err := resolveTokens(filename, source, recipe.Style{})
 	if err == nil {
-		t.Fatal("Resolve() error = nil, want structural recipe-use error")
+		t.Fatal("resolveTokens() error = nil, want structural recipe-use error")
 	}
 	if bytes.Contains(got, []byte(recipe.Prefix)) {
-		t.Errorf("Resolve() returned output containing %q: %s", recipe.Prefix, got)
+		t.Errorf("resolveTokens() returned output containing %q: %s", recipe.Prefix, got)
 	}
 	if !strings.Contains(err.Error(), want) {
-		t.Errorf("Resolve() error %q does not contain %q", err, want)
+		t.Errorf("resolveTokens() error %q does not contain %q", err, want)
 	}
 }
 
@@ -704,4 +707,260 @@ func resolvedElementClassExpressions(t *testing.T, filename string, src []byte) 
 		t.Fatalf("class expressions found = %v, want a and button", classes)
 	}
 	return classes["a"], classes["button"]
+}
+
+// testResolved builds the small Button-shaped fixture the helper-call tests
+// desugar against: base {inline-flex items-center}, variant default ->
+// {bg-primary}, outline -> {border-border bg-background}. It goes through
+// recipe.ParseStyle and recipe.Conform so the fixture is a Resolved the real
+// conformance check produced, not a hand-built struct.
+func testResolved(t *testing.T) recipe.Resolved {
+	t.Helper()
+
+	shape := recipe.Shape{
+		Component: "button",
+		Base:      true,
+		Dimensions: []recipe.Dimension{
+			{Name: "variant", Default: "default", Values: []string{"default", "outline"}},
+		},
+	}
+	style := testRecipes(t,
+		recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"inline-flex", "items-center"}},
+		recipe.Rule{Class: "gsxui-recipe-button-variant-default", Utilities: []string{"bg-primary"}},
+		recipe.Rule{Class: "gsxui-recipe-button-variant-outline", Utilities: []string{"border-border", "bg-background"}},
+	)
+	resolved, err := recipe.Conform("testResolved.css", shape, style)
+	if err != nil {
+		t.Fatalf("recipe.Conform(fixture) error = %v", err)
+	}
+	return resolved
+}
+
+func TestResolveDesugarsHelperCalls(t *testing.T) {
+	t.Parallel()
+	src := []byte(`package canonical
+
+import "github.com/gsxhq/gsx"
+
+component B(variant string, children gsx.Node) {
+	<button class={ "group/button", button.Role(), button.Variant(variant) }>
+		{ children }
+	</button>
+}
+`)
+	got, err := Resolve("button.gsx", src, testResolved(t))
+	if err != nil {
+		t.Fatalf("Resolve() error = %v", err)
+	}
+	for _, want := range []string{
+		`"inline-flex items-center"`,
+		`case "outline":`,
+		`"border-border bg-background"`,
+		`default:`,
+		`"bg-primary"`,
+		`"group/button"`,
+	} {
+		if !strings.Contains(string(got), want) {
+			t.Errorf("missing %q\nin: %s", want, got)
+		}
+	}
+	if strings.Contains(string(got), recipe.Prefix) {
+		t.Errorf("resolved source still contains the recipe prefix:\n%s", got)
+	}
+	if strings.Contains(string(got), "button.Role()") {
+		t.Errorf("resolved source still contains a helper call:\n%s", got)
+	}
+	if _, err := gsxparser.ParseFile(token.NewFileSet(), "button.gsx", got, 0); err != nil {
+		t.Fatalf("resolved output does not parse: %v", err)
+	}
+}
+
+func TestResolveDefaultArmCarriesDeclaredDefault(t *testing.T) {
+	t.Parallel()
+	// The declared default's utilities must appear in the default arm, not "",
+	// so a misspelled variant renders the default rather than nothing.
+	src := []byte(`package canonical
+
+import "github.com/gsxhq/gsx"
+
+component B(variant string, children gsx.Node) {
+	<button class={ button.Variant(variant) }>{ children }</button>
+}
+`)
+	got, err := Resolve("button.gsx", src, testResolved(t))
+	if err != nil {
+		t.Fatalf("Resolve() error = %v", err)
+	}
+	if !regexp.MustCompile(`default:\s*\n?\s*"bg-primary"`).Match(got) {
+		t.Errorf("default arm must carry the declared default's utilities\nin: %s", got)
+	}
+	// The default value must not also get its own redundant case arm.
+	if strings.Contains(string(got), `case "default":`) {
+		t.Errorf("default value must not get a redundant case arm\nin: %s", got)
+	}
+}
+
+func TestResolveRejectsUnknownDimension(t *testing.T) {
+	t.Parallel()
+	src := []byte(`package canonical
+
+import "github.com/gsxhq/gsx"
+
+component B(tone string, children gsx.Node) {
+	<button class={ button.Tone(tone) }>{ children }</button>
+}
+`)
+	_, err := Resolve("button.gsx", src, testResolved(t))
+	if err == nil {
+		t.Fatal("Resolve() = nil error, want error")
+	}
+	if !strings.Contains(err.Error(), "button.gsx:6:") {
+		t.Errorf("error must carry a source position, got %q", err)
+	}
+}
+
+func TestResolveRejectsMalformedHelperCalls(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name string
+		body string
+		want string
+	}{
+		{
+			name: "wrong component",
+			body: `<div class={ badge.Role() }></div>`,
+			want: `component "badge"`,
+		},
+		{
+			name: "role with arguments",
+			body: `<div class={ button.Role("x") }></div>`,
+			want: "takes no arguments",
+		},
+		{
+			name: "dimension without argument",
+			body: `<div class={ button.Variant() }></div>`,
+			want: "exactly one argument",
+		},
+		{
+			name: "dimension with literal argument",
+			body: `<div class={ button.Variant("outline") }></div>`,
+			want: "identifier",
+		},
+		{
+			name: "non-identifier receiver",
+			body: `<div class={ pkg.button.Role() }></div>`,
+			want: "component identifier",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			_, err := Resolve("helper.gsx", []byte(resolveComponent(tt.body)), testResolved(t))
+			if err == nil {
+				t.Fatal("Resolve() error = nil, want error")
+			}
+			if !strings.Contains(err.Error(), tt.want) {
+				t.Errorf("Resolve() error %q does not contain %q", err, tt.want)
+			}
+			if !strings.Contains(err.Error(), "helper.gsx:3:") {
+				t.Errorf("Resolve() error %q does not carry a source position", err)
+			}
+		})
+	}
+}
+
+func TestHelperCallsReportsEveryCallWithoutAShape(t *testing.T) {
+	t.Parallel()
+
+	src := []byte(`package canonical
+
+import "github.com/gsxhq/gsx"
+
+component B(variant string, size string, children gsx.Node) {
+	<button class={ "group/button", button.Role(), button.Variant(variant), button.Size(size) }>
+		{ children }
+	</button>
+}
+`)
+	got, err := HelperCalls("button.gsx", src)
+	if err != nil {
+		t.Fatalf("HelperCalls() error = %v", err)
+	}
+	want := []Call{
+		{Component: "button"},
+		{Component: "button", Dimension: "variant"},
+		{Component: "button", Dimension: "size"},
+	}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("HelperCalls() = %+v, want %+v", got, want)
+	}
+}
+
+func TestResolveDesugarsTheRealCanonicalButton(t *testing.T) {
+	t.Parallel()
+
+	root := resolveRepoRoot(t)
+	filename := filepath.Join(root, "registry", "canonical", "button.gsx")
+	src, err := os.ReadFile(filename)
+	if err != nil {
+		t.Fatal(err)
+	}
+	stylePath := filepath.Join(root, "registry", "styles", "nova", "button.css")
+	styleSource, err := os.ReadFile(stylePath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	style, err := recipe.ParseStyle(stylePath, styleSource)
+	if err != nil {
+		t.Fatalf("recipe.ParseStyle() error = %v", err)
+	}
+	resolved, err := recipe.Conform(stylePath, canonical.Shapes()["button"], style)
+	if err != nil {
+		t.Fatalf("recipe.Conform() error = %v", err)
+	}
+
+	got, err := Resolve(filename, src, resolved)
+	if err != nil {
+		t.Fatalf("Resolve() error = %v", err)
+	}
+	if bytes.Contains(got, []byte(recipe.Prefix)) {
+		t.Errorf("resolved canonical still contains the recipe prefix:\n%s", got)
+	}
+	for _, helper := range []string{".Role(", ".Variant(", ".Size("} {
+		if bytes.Contains(got, []byte(helper)) {
+			t.Errorf("resolved canonical still contains %q:\n%s", helper, got)
+		}
+	}
+	// Every declared value's utilities must survive into the output.
+	for dimension, values := range resolved.Values {
+		for value := range values {
+			want := strings.Join(resolved.Utilities(dimension, value), " ")
+			if !bytes.Contains(got, []byte(strconv.Quote(want))) {
+				t.Errorf("resolved canonical is missing %s=%s utilities %q", dimension, value, want)
+			}
+		}
+	}
+	if _, err := gsxparser.ParseFile(token.NewFileSet(), filename, got, 0); err != nil {
+		t.Fatalf("resolved canonical does not parse: %v", err)
+	}
+}
+
+func resolveRepoRoot(t *testing.T) string {
+	t.Helper()
+	dir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for {
+		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
+			return dir
+		}
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			t.Fatal("module root not found")
+		}
+		dir = parent
+	}
 }
