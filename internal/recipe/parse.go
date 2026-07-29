@@ -46,7 +46,7 @@ func ParseStyle(filename string, src []byte) (Style, error) {
 				if len(result.ordered) == 0 {
 					return Style{}, styleError(filename, src, len(src), "@layer components contains no recipe rules")
 				}
-				if err := validateCSSStructure(src); err != nil {
+				if err := ValidateCSSStructure(src); err != nil {
 					return Style{}, styleError(filename, src, len(src), "malformed CSS in %s: %v", lastContext, err)
 				}
 				return result, nil
@@ -97,7 +97,7 @@ func ParseStyle(filename string, src []byte) (Style, error) {
 			rule.utilities = append(rule.utilities, utilities...)
 
 		case css.BeginRulesetGrammar:
-			selector := selectorText(parser.Values())
+			selector := SelectorText(parser.Values())
 			if !componentsLayer {
 				return Style{}, styleError(filename, src, parser.Offset(), "recipe rule %s must be inside @layer components", selector)
 			}
@@ -141,7 +141,9 @@ func ParseStyle(filename string, src []byte) (Style, error) {
 	}
 }
 
-func validateCSSStructure(src []byte) error {
+// ValidateCSSStructure checks that CSS constructs (parentheses, brackets,
+// braces, strings, comments) are balanced and well-formed.
+func ValidateCSSStructure(src []byte) error {
 	lexer := css.NewLexer(parse.NewInputBytes(src))
 	var blocks []css.TokenType
 	for {
@@ -215,20 +217,6 @@ func (s Style) Rules() []Rule {
 		out[i] = Rule{Class: rule.Class, Utilities: slices.Clone(rule.Utilities)}
 	}
 	return out
-}
-
-// NewStyle builds a Style directly from rules, in order, without parsing CSS.
-// It exists for tests that need a Style fixture (including one with a
-// duplicate class, which ParseStyle itself rejects).
-func NewStyle(rules ...Rule) Style {
-	s := Style{
-		ordered: append([]Rule(nil), rules...),
-		byClass: make(map[string]Rule, len(rules)),
-	}
-	for _, rule := range rules {
-		s.byClass[rule.Class] = rule
-	}
-	return s
 }
 
 type recipeRule struct {
@@ -311,7 +299,8 @@ func parseApply(tokens []css.Token) ([]string, error) {
 	return utilities, nil
 }
 
-func selectorText(tokens []css.Token) string {
+// SelectorText renders a CSS selector's tokens back to source text.
+func SelectorText(tokens []css.Token) string {
 	var selector bytes.Buffer
 	for _, token := range tokens {
 		selector.Write(token.Data)

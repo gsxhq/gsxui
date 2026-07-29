@@ -3,7 +3,6 @@ package stylegen
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -12,6 +11,8 @@ import (
 
 	parse "github.com/tdewolff/parse/v2"
 	"github.com/tdewolff/parse/v2/css"
+
+	"github.com/gsxhq/gsxui/internal/recipe"
 )
 
 const buttonSlotAttribute = "data-gsxui-slot-button"
@@ -124,14 +125,14 @@ func parseCSSOwnershipRules(src []byte) ([]cssOwnershipRule, error) {
 			if err := parser.Err(); !errors.Is(err, io.EOF) {
 				return nil, err
 			}
-			if err := validateCSSStructure(src); err != nil {
+			if err := recipe.ValidateCSSStructure(src); err != nil {
 				return nil, err
 			}
 			return rules, nil
 		case css.BeginRulesetGrammar:
 			tokens := parser.Values()
 			rule = &cssOwnershipRule{
-				selector:     selectorText(tokens),
+				selector:     recipe.SelectorText(tokens),
 				attributes:   selectorAttributeNames(tokens),
 				declarations: make(map[string]bool),
 				directChild:  selectorHasDirectChild(tokens),
@@ -176,67 +177,4 @@ func selectorHasDirectChild(tokens []css.Token) bool {
 		}
 	}
 	return false
-}
-
-func selectorText(tokens []css.Token) string {
-	var selector bytes.Buffer
-	for _, token := range tokens {
-		selector.Write(token.Data)
-	}
-	return selector.String()
-}
-
-// validateCSSStructure is a local copy of the same-named helper in
-// internal/recipe/parse.go: it checks that CSS constructs (parentheses,
-// brackets, braces, strings, comments) are balanced and well-formed. It is
-// duplicated here rather than exported from internal/recipe because this
-// test's ownership-rule scan is unrelated to the typed recipe model.
-func validateCSSStructure(src []byte) error {
-	lexer := css.NewLexer(parse.NewInputBytes(src))
-	var blocks []css.TokenType
-	for {
-		tokenType, data := lexer.Next()
-		switch tokenType {
-		case css.ErrorToken:
-			if err := lexer.Err(); !errors.Is(err, io.EOF) {
-				return err
-			}
-			if len(blocks) != 0 {
-				return fmt.Errorf("unclosed %s", blocks[len(blocks)-1])
-			}
-			return nil
-		case css.BadStringToken, css.BadURLToken:
-			return fmt.Errorf("invalid %s", tokenType)
-		case css.CommentToken:
-			if !bytes.HasSuffix(data, []byte("*/")) {
-				return errors.New("unterminated comment")
-			}
-		case css.FunctionToken, css.LeftParenthesisToken:
-			blocks = append(blocks, css.LeftParenthesisToken)
-		case css.LeftBracketToken:
-			blocks = append(blocks, css.LeftBracketToken)
-		case css.LeftBraceToken:
-			blocks = append(blocks, css.LeftBraceToken)
-		case css.RightParenthesisToken:
-			if !popCSSBlock(&blocks, css.LeftParenthesisToken) {
-				return errors.New("unexpected right parenthesis")
-			}
-		case css.RightBracketToken:
-			if !popCSSBlock(&blocks, css.LeftBracketToken) {
-				return errors.New("unexpected right bracket")
-			}
-		case css.RightBraceToken:
-			if !popCSSBlock(&blocks, css.LeftBraceToken) {
-				return errors.New("unexpected right brace")
-			}
-		}
-	}
-}
-
-func popCSSBlock(blocks *[]css.TokenType, want css.TokenType) bool {
-	if len(*blocks) == 0 || (*blocks)[len(*blocks)-1] != want {
-		return false
-	}
-	*blocks = (*blocks)[:len(*blocks)-1]
-	return true
 }

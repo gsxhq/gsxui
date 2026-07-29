@@ -2,6 +2,7 @@ package stylegen
 
 import (
 	"bytes"
+	"fmt"
 	"go/token"
 	"os"
 	"path/filepath"
@@ -30,7 +31,7 @@ func TestResolveGolden(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	got, report, err := Resolve(filename, src, resolveTestRecipes())
+	got, report, err := Resolve(filename, src, resolveTestRecipes(t))
 	if err != nil {
 		t.Fatalf("Resolve() error = %v", err)
 	}
@@ -350,7 +351,7 @@ func TestRecipeTokensRejectsRecipeContentInNestedElementValuedExpressions(t *tes
 				}
 			}
 
-			recipes := testRecipes(
+			recipes := testRecipes(t,
 				recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"resolved-utility"}},
 			)
 			got, report, err := Resolve(filename, source, recipes)
@@ -406,7 +407,7 @@ func TestResolveRejectsRecipeTokenIntroducedByUtility(t *testing.T) {
 	t.Parallel()
 
 	src := []byte(resolveComponent(`<div class={ "gsxui-recipe-button" }></div>`))
-	recipes := testRecipes(
+	recipes := testRecipes(t,
 		recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"gsxui-recipe-leaked"}},
 	)
 	got, _, err := Resolve("introduced-token.gsx", src, recipes)
@@ -516,7 +517,7 @@ func TestResolveRejectsInvalidRecipeUse(t *testing.T) {
 		{
 			name: "missing used token and unused declaration reported together",
 			src:  resolveComponent(`<div class={ "gsxui-recipe-missing" }></div>`),
-			recipes: testRecipes(
+			recipes: testRecipes(t,
 				recipe.Rule{Class: "gsxui-recipe-unused", Utilities: []string{"grid"}},
 			),
 			want: []string{"missing", "gsxui-recipe-missing", "unused", "gsxui-recipe-unused"},
@@ -524,67 +525,70 @@ func TestResolveRejectsInvalidRecipeUse(t *testing.T) {
 		{
 			name: "unused declaration",
 			src:  resolveComponent(`<div class={ "gsxui-recipe-button" }></div>`),
-			recipes: testRecipes(
+			recipes: testRecipes(t,
 				recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}},
 				recipe.Rule{Class: "gsxui-recipe-unused", Utilities: []string{"grid"}},
 			),
 			want: []string{"unused", "gsxui-recipe-unused"},
 		},
-		{
-			name: "duplicate declaration",
-			src:  resolveComponent(`<div class={ "gsxui-recipe-button" }></div>`),
-			recipes: recipe.NewStyle(
-				recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}},
-				recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"grid"}},
-			),
-			want: []string{"duplicate", "gsxui-recipe-button"},
-		},
+		// There used to be a "duplicate declaration" case here, constructing a
+		// recipe.Style with two rules sharing a class to exercise
+		// declaredRecipeTokens's own duplicate check in resolve.go. That
+		// required reaching past recipe.Style's exported API to build a
+		// state recipe.ParseStyle itself now refuses to produce (it already
+		// rejects a duplicate class while parsing CSS - see
+		// TestParseRecipesRejectsInvalidGrammar/duplicate_recipe_token in
+		// internal/recipe/parse_test.go). Since every recipe.Style reaching
+		// Resolve in production comes from recipe.ParseStyle, that duplicate
+		// path in declaredRecipeTokens is unreachable via the public API and
+		// the fixture could not be expressed as parseable CSS, so the case
+		// was removed rather than kept alive via a bypass constructor.
 		{
 			name:    "static class",
 			src:     resolveComponent(`<div class="gsxui-recipe-button"></div>`),
-			recipes: testRecipes(recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
+			recipes: testRecipes(t, recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
 			want:    []string{"static class", "gsxui-recipe-button"},
 		},
 		{
 			name:    "embedded in larger class token",
 			src:     resolveComponent(`<div class={ "prefix-gsxui-recipe-button" }></div>`),
-			recipes: testRecipes(recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
+			recipes: testRecipes(t, recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
 			want:    []string{"whole", "prefix-gsxui-recipe-button"},
 		},
 		{
 			name:    "assembled by concatenation",
 			src:     resolveComponent(`<div class={ "gsxui-recipe-" + suffix }></div>`),
-			recipes: testRecipes(recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
+			recipes: testRecipes(t, recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
 			want:    []string{"literal", "concatenation"},
 		},
 		{
 			name:    "assembled from split constant concatenation",
 			src:     resolveComponent(`<div class={ "gsxui-" + "recipe-button" }></div>`),
-			recipes: testRecipes(recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
+			recipes: testRecipes(t, recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
 			want:    []string{"literal", "concatenation"},
 		},
 		{
 			name:    "assembled by interpolation",
 			src:     resolveComponent("<div class={ f`gsxui-recipe-@{suffix}` }></div>"),
-			recipes: testRecipes(recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
+			recipes: testRecipes(t, recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
 			want:    []string{"literal", "interpolation"},
 		},
 		{
 			name:    "token in non-class expression",
 			src:     resolveComponent(`<div title={ "gsxui-recipe-button" } class={ "safe" }></div>`),
-			recipes: testRecipes(recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
+			recipes: testRecipes(t, recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
 			want:    []string{"non-class", "gsxui-recipe-button"},
 		},
 		{
 			name:    "non-string class expression containing recipe",
 			src:     resolveComponent(`<div class={ choose("gsxui-recipe-button") }></div>`),
-			recipes: testRecipes(recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
+			recipes: testRecipes(t, recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
 			want:    []string{"string literal", "gsxui-recipe-button"},
 		},
 		{
 			name:    "malformed gsx",
 			src:     "package p\ncomponent C() { <div>",
-			recipes: testRecipes(recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
+			recipes: testRecipes(t, recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
 			want:    []string{"malformed.gsx"},
 		},
 	}
@@ -605,8 +609,9 @@ func TestResolveRejectsInvalidRecipeUse(t *testing.T) {
 	}
 }
 
-func resolveTestRecipes() recipe.Style {
-	return testRecipes(
+func resolveTestRecipes(t *testing.T) recipe.Style {
+	t.Helper()
+	return testRecipes(t,
 		recipe.Rule{Class: "gsxui-recipe-button-size-default", Utilities: []string{"h-9", "px-4"}},
 		recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"inline-flex", "items-center"}},
 		recipe.Rule{Class: "gsxui-recipe-button-variant-outline", Utilities: []string{"border", "border-input", "bg-background"}},
@@ -615,8 +620,28 @@ func resolveTestRecipes() recipe.Style {
 	)
 }
 
-func testRecipes(rules ...recipe.Rule) recipe.Style {
-	return recipe.NewStyle(rules...)
+// testRecipes builds a Style fixture by authoring the rules as real CSS and
+// running it through recipe.ParseStyle, so tests exercise the actual parser
+// rather than bypass it. Every stylegen test fixture that can be expressed
+// as parseable CSS uses this helper; see the "duplicate declaration" case in
+// TestResolveRejectsInvalidRecipeUse for the one case that cannot be
+// (ParseStyle itself now rejects a duplicate class), and how that case was
+// handled instead.
+func testRecipes(t *testing.T, rules ...recipe.Rule) recipe.Style {
+	t.Helper()
+
+	var css strings.Builder
+	css.WriteString("@layer components {\n")
+	for _, rule := range rules {
+		fmt.Fprintf(&css, ".%s { @apply %s; }\n", rule.Class, strings.Join(rule.Utilities, " "))
+	}
+	css.WriteString("}\n")
+
+	style, err := recipe.ParseStyle("testRecipes.css", []byte(css.String()))
+	if err != nil {
+		t.Fatalf("recipe.ParseStyle(fixture) error = %v", err)
+	}
+	return style
 }
 
 func resolveComponent(body string) string {
