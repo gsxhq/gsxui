@@ -30,7 +30,7 @@ func _gsxrenderdocHeading(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, item docTO
 		return _gsxerr
 	}
 //line toc.gsx:12:2
-	headingAttrs := attrs.Without("id", "data-doc-heading", "tabindex")
+	headingAttrs := attrs.WithoutFold("id", "data-doc-heading", "tabindex")
 //line toc.gsx:13:2
 	if item.Depth == 3 {
 //line toc.gsx:14:3

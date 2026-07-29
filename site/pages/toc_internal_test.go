@@ -25,9 +25,9 @@ func TestDocHeadingPreservesSemanticsAndCallerPresentation(t *testing.T) {
 			node := docHeading(
 				docTOCItem{ID: "explicit-id", Title: "Section title", Depth: tt.depth},
 				gsx.Attrs{
-					{Key: "id", Value: "caller-id"},
-					{Key: "data-doc-heading", Value: false},
-					{Key: "tabindex", Value: "0"},
+					{Key: "ID", Value: "caller-id"},
+					{Key: "DATA-DOC-HEADING", Value: "caller-marker"},
+					{Key: "TaBiNdEx", Value: "0"},
 					{Key: "class", Value: "text-sm font-medium"},
 					{Key: "data-caller", Value: true},
 				},
@@ -51,9 +51,15 @@ func TestDocHeadingPreservesSemanticsAndCallerPresentation(t *testing.T) {
 					t.Errorf("docHeading(depth=%d) missing %q\nin: %s", tt.depth, want, got)
 				}
 			}
-			for _, forbidden := range []string{`id="caller-id"`, `tabindex="0"`, `data-doc-heading="false"`} {
-				if strings.Contains(got, forbidden) {
+			lower := strings.ToLower(got)
+			for _, forbidden := range []string{`id="caller-id"`, `tabindex="0"`, `data-doc-heading="caller-marker"`} {
+				if strings.Contains(lower, forbidden) {
 					t.Errorf("docHeading(depth=%d) rendered caller override %q\nin: %s", tt.depth, forbidden, got)
+				}
+			}
+			for _, attribute := range []string{"id", "tabindex", "data-doc-heading"} {
+				if count := strings.Count(lower, " "+attribute); count != 1 {
+					t.Errorf("docHeading(depth=%d) rendered %d case-insensitive %s attributes, want exactly 1\nin: %s", tt.depth, count, attribute, got)
 				}
 			}
 			otherTag := "h3"

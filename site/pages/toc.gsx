@@ -9,7 +9,7 @@ type docTOCItem struct {
 }
 
 component docHeading(item docTOCItem, attrs gsx.Attrs) {
-	{{ headingAttrs := attrs.Without("id", "data-doc-heading", "tabindex") }}
+	{{ headingAttrs := attrs.WithoutFold("id", "data-doc-heading", "tabindex") }}
 	{ if item.Depth == 3 {
 		<h3
 			id={item.ID}
