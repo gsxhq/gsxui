@@ -126,9 +126,25 @@ Relational rules fold into the owning slot's base as variants:
 cp ui/card.gsx registry/canonical/card.gsx
 ```
 
-Change `package ui` to `package canonical`. Add the binding to `shapes.go`'s sibling file or alongside the shape:
+Change `package ui` to `package canonical`. The binding goes in
+`registry/canonical/card_recipe.go` — **not** in `registry/canonical/shapes/`.
+`cardRecipe` is generated into package `canonical`, and `shapes` is a leaf
+package that must never depend on `canonical`; that is the entire reason it
+exists (it breaks the accessor-generation bootstrap cycle). Follow the existing
+`registry/canonical/button_recipe.go` precedent:
 
 ```go
+// registry/canonical/card_recipe.go
+package canonical
+
+import (
+	"github.com/gsxhq/gsxui/internal/recipe"
+	"github.com/gsxhq/gsxui/registry/canonical/shapes"
+)
+
+// card binds Card's shape to the accessor calls card.gsx authors. The variable
+// name is the component name: stylegen resolves card.Header() by looking
+// "card" up in shapes.All().
 var card = cardRecipe{c: recipe.Component{Shape: shapes.Card}}
 ```
 
