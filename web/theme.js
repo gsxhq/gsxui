@@ -65,6 +65,7 @@ if (schemaElement) {
 
   let state;
   let previewHandshakeTimer;
+  let previewAttempt = "";
   let initialMessage = "";
   try {
     const shared = loadShareFromURL(location.href, schema, validators);
@@ -85,6 +86,7 @@ if (schemaElement) {
   function previewPayload() {
     return {
       type: PREVIEW_MESSAGE,
+      attempt: previewAttempt,
       preset: previewPreset(state),
       mode: state.mode,
     };
@@ -102,6 +104,7 @@ if (schemaElement) {
 
   function startPreviewHandshake(message = "Connecting to preview…") {
     finishPreviewHandshake();
+    previewAttempt = crypto.randomUUID();
     if (previewStatus) previewStatus.textContent = message;
     previewRetry?.classList.add("hidden");
     previewHandshakeTimer = setTimeout(() => {
@@ -508,10 +511,12 @@ if (schemaElement) {
     if (event.data?.type === READY_MESSAGE) {
       syncPreview();
     } else if (event.data?.type === APPLIED_MESSAGE) {
+      if (event.data.attempt !== previewAttempt) return;
       finishPreviewHandshake();
       if (previewStatus) previewStatus.textContent = "Live";
       previewRetry?.classList.add("hidden");
     } else if (event.data?.type === ERROR_MESSAGE) {
+      if (event.data.attempt !== previewAttempt) return;
       finishPreviewHandshake();
       if (previewStatus) previewStatus.textContent = event.data.message || "Preview rejected the current state.";
       previewRetry?.classList.remove("hidden");

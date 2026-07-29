@@ -18,9 +18,12 @@ if (previewDocument) {
   );
   let focusedStyle = "";
 
-  function fail(message) {
+  function fail(attempt, message) {
     if (parent !== window) {
-      parent.postMessage({ type: ERROR_MESSAGE, message }, location.origin);
+      parent.postMessage(
+        { type: ERROR_MESSAGE, attempt, message },
+        location.origin,
+      );
     }
   }
 
@@ -30,9 +33,9 @@ if (previewDocument) {
     }
   }
 
-  function applied() {
+  function applied(attempt) {
     if (parent !== window) {
-      parent.postMessage({ type: APPLIED_MESSAGE }, location.origin);
+      parent.postMessage({ type: APPLIED_MESSAGE, attempt }, location.origin);
     }
   }
 
@@ -65,6 +68,9 @@ if (previewDocument) {
     if (!message || message.type !== PREVIEW_MESSAGE) {
       throw new Error("unsupported preview message");
     }
+    if (typeof message.attempt !== "string" || message.attempt.length === 0) {
+      throw new Error("attempt must be a non-empty string");
+    }
     if (message.mode !== "light" && message.mode !== "dark") {
       throw new Error("mode must be light or dark");
     }
@@ -88,6 +94,7 @@ if (previewDocument) {
       throw new Error("preset.theme must be an object");
     }
     return {
+      attempt: message.attempt,
       style: preset.style,
       radius: preset.radius,
       mode: message.mode,
@@ -121,11 +128,16 @@ if (previewDocument) {
     if (event.origin !== location.origin || event.source !== parent) {
       return;
     }
+    const attempt = event.data?.attempt;
     try {
-      applyState(validatedState(event.data));
-      applied();
+      const state = validatedState(event.data);
+      applyState(state);
+      applied(state.attempt);
     } catch (error) {
-      fail(error instanceof Error ? error.message : "invalid preview state");
+      fail(
+        attempt,
+        error instanceof Error ? error.message : "invalid preview state",
+      );
     }
   });
 
