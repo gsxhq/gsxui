@@ -16,7 +16,7 @@ component Button(variant string, size string, href string, disabled bool, childr
 			href={href}
 			class={
 				"group/button",
-				button.Role(),
+				button.Root(),
 				button.Variant(variant),
 				button.Size(size),
 			}
@@ -33,7 +33,7 @@ component Button(variant string, size string, href string, disabled bool, childr
 			disabled={disabled}
 			class={
 				"group/button",
-				button.Role(),
+				button.Root(),
 				button.Variant(variant),
 				button.Size(size),
 			}

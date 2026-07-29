@@ -43,7 +43,7 @@ func Button(variant string, size string, href string, disabled bool, children gs
 				_gsxgw.S("\"")
 			}
 			_gsxgw.S(" class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/button"), _gsxrt.Class(button.Role()), _gsxrt.Class(button.Variant(variant)), _gsxrt.Class(button.Size(size)), _gsxrt.Class(attrs.Class()))
+			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/button"), _gsxrt.Class(button.Root()), _gsxrt.Class(button.Variant(variant)), _gsxrt.Class(button.Size(size)), _gsxrt.Class(attrs.Class()))
 			_gsxgw.S("\"")
 			_gsxgw.StyleMerged("", attrs.Style())
 			_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-button"})
@@ -72,7 +72,7 @@ func Button(variant string, size string, href string, disabled bool, children gs
 				_gsxgw.BoolAttr("disabled", bool(disabled))
 			}
 			_gsxgw.S(" class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/button"), _gsxrt.Class(button.Role()), _gsxrt.Class(button.Variant(variant)), _gsxrt.Class(button.Size(size)), _gsxrt.Class(attrs.Class()))
+			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/button"), _gsxrt.Class(button.Root()), _gsxrt.Class(button.Variant(variant)), _gsxrt.Class(button.Size(size)), _gsxrt.Class(attrs.Class()))
 			_gsxgw.S("\"")
 			_gsxgw.StyleMerged("", attrs.Style())
 			_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-button"})
