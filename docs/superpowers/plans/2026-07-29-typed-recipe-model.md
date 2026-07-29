@@ -19,6 +19,7 @@
 - Per the user's Go conventions: types, fields, and methods are unexported unless they need serialisation or cross-package use.
 - Nothing outside `internal/stylegen` and its own tests may import `registry/canonical`.
 - Generated files are committed and drift-checked with `go run ./cmd/stylegen --check`.
+- **Every commit must leave `go build ./...` green and the test suite passing.** No task may hand the next one a broken tree.
 - Use `{/* */}` for comments inside gsx markup, never `//`.
 
 ## Resolved Spike
@@ -439,12 +440,30 @@ git mv internal/stylegen/testdata/recipe-valid.css internal/recipe/testdata/reci
 
 Then in both moved files: change `package stylegen` to `package recipe`; apply the renames listed above; delete the `const RecipePrefix = "gsxui-recipe-"` line (Task 2 defines `Prefix`); rename the error helpers `recipeError`/`parserRecipeError` to `styleError`/`parserStyleError` for consistency.
 
-- [ ] **Step 2: Run tests to verify the move is clean**
+- [ ] **Step 2: Update stylegen's call sites in the same commit**
 
-Run: `go build ./... && go test ./internal/recipe/ -v`
-Expected: `internal/recipe` PASS. `internal/stylegen` will fail to build — that is expected and is fixed in Task 6.
+**Every commit must leave `go build ./...` green.** The move breaks
+`internal/stylegen`, so repair it here rather than leaving the tree broken
+until Task 6. These are mechanical substitutions in `internal/stylegen/resolve.go`
+and `generate.go`:
 
-- [ ] **Step 3: Commit**
+- add the import `"github.com/gsxhq/gsxui/internal/recipe"`
+- `ParseRecipes(` → `recipe.ParseStyle(`
+- `Recipes` (the type) → `recipe.Style`
+- `RecipePrefix` → `recipe.Prefix`
+- `Recipe` (the type) → `recipe.Rule`
+- `.Token` on a rule → `.Class`
+- `.Tokens()` on a style → `.Classes()`
+
+Do not change any behavior. Task 6 rewrites this logic; here it only has to
+compile and keep passing its existing tests.
+
+- [ ] **Step 3: Run tests to verify the move is clean**
+
+Run: `go build ./... && go test ./internal/recipe/ ./internal/stylegen/ -v`
+Expected: both packages PASS, build green.
+
+- [ ] **Step 4: Commit**
 
 ```bash
 git add -A internal/recipe internal/stylegen
@@ -966,9 +985,14 @@ Expected: PASS.
 - [ ] **Step 5: Move and rewrite the canonical Button**
 
 ```bash
-git mv ui/button.gsx registry/canonical/button.gsx
-git rm ui/button.x.go
+cp ui/button.gsx registry/canonical/button.gsx
 ```
+
+**Copy, do not move.** `ui/button.gsx` and `ui/button.x.go` stay exactly as they
+are: `site/pages/home.gsx` calls `ui.Button`, and Task 7 is what replaces
+`ui/button.gsx` with generated output. Removing it here would break
+`go build ./...` for three tasks. Task 9 verifies that the final `ui/button.gsx`
+is the generated Nova copy.
 
 In `registry/canonical/button.gsx`, change `package ui` to `package canonical`, and replace **both** class attributes (the `<a>` branch and the `<button>` branch) so each reads:
 
@@ -1059,7 +1083,7 @@ Expected: PASS.
 - [ ] **Step 8: Commit**
 
 ```bash
-git add -A registry/canonical ui
+git add -A registry/canonical
 git commit -m "feat: add the canonical component package with recipe helpers"
 ```
 
