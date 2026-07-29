@@ -466,7 +466,7 @@ func StyleContractFixture() _gsxrt.Node {
 			return _gsxgw.Err()
 		}), nil))
 //line style_contract.gsx:206:3
-		_gsxgw.Node(ctx, ui.CommandDialog("Contract command", "Command dialog style contract", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.Node(ctx, ui.CommandDialog("Contract command", "Command dialog style contract", nil, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line style_contract.gsx:211:4
 			_gsxgw.Node(ctx, ui.CommandInput("Search contract commands", nil))

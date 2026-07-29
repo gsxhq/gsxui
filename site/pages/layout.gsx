@@ -77,12 +77,10 @@ component compactDocsNavigation(active string) {
 // spatial responsibilities without inferring them from the request path.
 // active names the documentation navigation entry to highlight.
 //
-// Doc search: an outer ui.Dialog root wires the header trigger button to
-// CommandDialog's nested dialog element by proximity (dialog.js's
-// root.querySelector reaches through the inner root), and command.js's
-// global Cmd-K/Ctrl-K hotkey toggles the same dialog. The search index is
-// the registry component list plus the static pages — derived, no manual
-// list to drift.
+// Doc search: CommandDialog owns both its named trigger and content within one
+// Dialog root, matching dialog.js's nearest-root ownership. command.js's global
+// Cmd-K/Ctrl-K hotkey toggles the same dialog. The search index is the registry
+// component list plus the static pages — derived, no manual list to drift.
 component siteLayout(title string, active string, mode layoutMode, toc []docTOCItem, children gsx.Node) {
 	{{
 		headerContainerClass := "mx-auto flex h-14 items-center justify-between"
@@ -128,39 +126,35 @@ component siteLayout(title string, active string, mode layoutMode, toc []docTOCI
 						} }
 					</div>
 					<nav class="flex items-center gap-4">
-						<ui.Dialog>
-							<button
-								data-gsxui-dialog-trigger
-								data-gsxui-slot-dialog-trigger
-								type="button"
-								aria-haspopup="dialog"
-								aria-expanded="false"
+						<ui.CommandDialog
+							title="Search documentation"
+							description="Search components and pages..."
+							trigger={ <ui.DialogTrigger
 								class="hidden h-8 w-56 items-center gap-2 rounded-lg border bg-muted/50 px-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted sm:inline-flex"
 							>
 								<icon.Search class="size-4"/>
 								<span class="flex-1 text-left">Search docs...</span>
 								<ui.Kbd>⌘K</ui.Kbd>
-							</button>
-							<ui.CommandDialog title="Search documentation" description="Search components and pages...">
-								<ui.CommandInput placeholder="Search documentation..."/>
-								<ui.CommandList>
-									<ui.CommandEmpty>No results found.</ui.CommandEmpty>
-									<ui.CommandGroup heading="Components">
-										{{ searchNames, _ := registry.Components() }}
-										{ for _, name := range searchNames {
-											<ui.CommandItem data-href={"/components/" + name} class="capitalize">{ name }</ui.CommandItem>
-										} }
-									</ui.CommandGroup>
-									<ui.CommandGroup heading="Pages">
-										<ui.CommandItem data-href={Home{} |> url}>Home</ui.CommandItem>
-										<ui.CommandItem data-href={ComponentsIndex{} |> url}>Components</ui.CommandItem>
-										<ui.CommandItem data-href={GettingStarted{} |> url}>Getting Started</ui.CommandItem>
-										<ui.CommandItem data-href={Theming{} |> url}>Theming</ui.CommandItem>
-										<ui.CommandItem data-href={Theme{} |> url}>Theme Editor</ui.CommandItem>
-									</ui.CommandGroup>
-								</ui.CommandList>
-							</ui.CommandDialog>
-						</ui.Dialog>
+							</ui.DialogTrigger> }
+						>
+							<ui.CommandInput placeholder="Search documentation..."/>
+							<ui.CommandList>
+								<ui.CommandEmpty>No results found.</ui.CommandEmpty>
+								<ui.CommandGroup heading="Components">
+									{{ searchNames, _ := registry.Components() }}
+									{ for _, name := range searchNames {
+										<ui.CommandItem data-href={"/components/" + name} class="capitalize">{ name }</ui.CommandItem>
+									} }
+								</ui.CommandGroup>
+								<ui.CommandGroup heading="Pages">
+									<ui.CommandItem data-href={Home{} |> url}>Home</ui.CommandItem>
+									<ui.CommandItem data-href={ComponentsIndex{} |> url}>Components</ui.CommandItem>
+									<ui.CommandItem data-href={GettingStarted{} |> url}>Getting Started</ui.CommandItem>
+									<ui.CommandItem data-href={Theming{} |> url}>Theming</ui.CommandItem>
+									<ui.CommandItem data-href={Theme{} |> url}>Theme Editor</ui.CommandItem>
+								</ui.CommandGroup>
+							</ui.CommandList>
+						</ui.CommandDialog>
 						<a
 							href={Theme{} |> url}
 							class="text-sm text-muted-foreground transition-colors hover:text-foreground"

@@ -1,5 +1,24 @@
 import { expect, test } from "../support/fixtures";
 
+test("documentation search opens from the header trigger", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("/components");
+
+  const trigger = page.getByRole("button", { name: /Search docs/ });
+  const dialog = page.locator("dialog[data-gsxui-command-dialog]");
+  const input = dialog.getByPlaceholder("Search documentation...");
+
+  await expect(dialog).not.toBeVisible();
+  await trigger.click();
+  await expect(dialog).toBeVisible();
+  await expect(trigger).toHaveAttribute("aria-expanded", "true");
+  await expect(input).toBeFocused();
+
+  await page.keyboard.press("Escape");
+  await expect(dialog).not.toBeVisible();
+  await expect(trigger).toHaveAttribute("aria-expanded", "false");
+});
+
 test("documentation rails respond around the fixed 640px article", async ({
   page,
 }) => {

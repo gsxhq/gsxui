@@ -79,7 +79,7 @@ func TestCommandCSSOnlyContract(t *testing.T) {
 }
 
 func TestCommandDialogCSSOnlyComposition(t *testing.T) {
-	got := render(t, ui.CommandDialog("", "", ui.CommandInput("Search", nil), nil))
+	got := render(t, ui.CommandDialog("", "", nil, ui.CommandInput("Search", nil), nil))
 	assertMenuCSSOnlyMarkup(t, got,
 		"dialog command-dialog",
 		"dialog-content command-dialog-content",

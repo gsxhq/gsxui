@@ -71,10 +71,17 @@ func TestCommandEmptyHidden(t *testing.T) {
 // CommandDialog composes DialogContent and Command through ordered styling
 // tokens, while its a11y header remains visually hidden by its semantic token.
 func TestCommandDialogComposition(t *testing.T) {
-	got := render(t, ui.CommandDialog("", "", ui.CommandInput("Search", nil), nil))
+	got := render(t, ui.CommandDialog(
+		"",
+		"",
+		ui.DialogTrigger(gsx.Text("Open"), nil),
+		ui.CommandInput("Search", nil),
+		nil,
+	))
 	for _, want := range []string{
 		`data-gsxui-command-dialog`,
 		`data-gsxui-dialog-content`,
+		`data-gsxui-dialog-trigger`,
 		`data-gsxui-slot-command-dialog data-gsxui-slot-dialog`,
 		`data-gsxui-slot-command-dialog-content data-gsxui-slot-dialog-content`,
 		`data-gsxui-slot-command-dialog-header data-gsxui-slot-dialog-header`,
