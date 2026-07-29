@@ -20,6 +20,7 @@
 - Nothing outside `internal/stylegen` and its own tests may import `registry/canonical`.
 - Generated files are committed and drift-checked with `go run ./cmd/stylegen --check`.
 - **Every commit must leave `go build ./...` green and the test suite passing.** No task may hand the next one a broken tree.
+- **`gofmt -l .` must print nothing.** The Makefile enforces `gofmt -l . | (! grep .)`; an unformatted file fails CI. Run `gofmt -w` on every file you touch before committing.
 - Use `{/* */}` for comments inside gsx markup, never `//`.
 
 ## Resolved Spike
