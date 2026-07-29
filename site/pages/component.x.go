@@ -108,32 +108,43 @@ func examplePreviewURL(componentName string, exampleName string, preview string)
 	}.Encode()
 }
 
-//line component.gsx:104:1
+func componentTOCItems(examples []exampleProps) []docTOCItem {
+	items := make([]docTOCItem, len(examples))
+	for i, example := range examples {
+		items[i] = docTOCItem{
+			ID:    "example-" + example.Name,
+			Title: example.Title,
+			Depth: 2,
+		}
+	}
+	return items
+}
+
+//line component.gsx:116:1
 func (c Component) Page(props ComponentProps) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line component.gsx:105:2
-		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, props.Title, props.Name, layoutDocs, nil, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line component.gsx:117:2
+		toc := componentTOCItems(props.Examples)
+//line component.gsx:118:2
+		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, props.Title, props.Name, layoutDocs, toc, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line component.gsx:106:3
+//line component.gsx:119:3
 			_gsxgw.S("<div class=\"flex flex-col gap-10 py-10\">")
-//line component.gsx:107:4
+//line component.gsx:120:4
 			_gsxgw.S("<h1 class=\"text-3xl font-semibold tracking-tight\">")
-//line component.gsx:107:54
+//line component.gsx:120:54
 			_gsxgw.Text(string(props.Title))
 			_gsxgw.S("</h1>")
-//line component.gsx:108:4
-			for _, ex := range props.Examples {
-//line component.gsx:109:5
+//line component.gsx:121:4
+			for i, ex := range props.Examples {
+//line component.gsx:122:5
 				_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line component.gsx:110:6
-				_gsxgw.S("<h2 class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">")
-//line component.gsx:110:84
-				_gsxgw.Text(string(ex.Title))
-				_gsxgw.S("</h2>")
-//line component.gsx:111:6
+//line component.gsx:123:6
+				_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, toc[i]))
+//line component.gsx:124:6
 				if ex.Isolated && len(ex.Previews) == 0 {
-//line component.gsx:112:7
+//line component.gsx:125:7
 					_gsxgw.S("<iframe")
 					_gsxgw.BoolAttr("data-site-isolated-preview", true)
 					_gsxgw.S(" title=\"")
@@ -142,20 +153,20 @@ func (c Component) Page(props ComponentProps) _gsxrt.Node {
 					_gsxgw.URL(string(examplePreviewURL(props.Name, ex.Name, "")))
 					_gsxgw.S("\" loading=\"lazy\" class=\"block h-[32rem] w-full rounded-lg border bg-background\"></iframe>")
 				} else {
-//line component.gsx:119:13
+//line component.gsx:132:13
 					if ex.Isolated {
-//line component.gsx:120:7
+//line component.gsx:133:7
 						_gsxgw.S("<div class=\"flex flex-col gap-6\">")
-//line component.gsx:121:8
+//line component.gsx:134:8
 						for _, preview := range ex.Previews {
-//line component.gsx:122:9
+//line component.gsx:135:9
 							_gsxgw.S("<div class=\"flex flex-col gap-2\">")
-//line component.gsx:123:10
+//line component.gsx:136:10
 							_gsxgw.S("<div class=\"text-sm font-medium\">")
-//line component.gsx:123:43
+//line component.gsx:136:43
 							_gsxgw.Text(string(preview.Title))
 							_gsxgw.S("</div>")
-//line component.gsx:124:10
+//line component.gsx:137:10
 							_gsxgw.S("<iframe")
 							_gsxgw.BoolAttr("data-site-isolated-preview", true)
 							_gsxgw.S(" title=\"")
@@ -166,44 +177,44 @@ func (c Component) Page(props ComponentProps) _gsxrt.Node {
 						}
 						_gsxgw.S("</div>")
 					} else {
-//line component.gsx:135:7
+//line component.gsx:148:7
 						_gsxgw.S("<div class=\"border rounded-lg p-8 bg-background\">")
-//line component.gsx:136:8
+//line component.gsx:149:8
 						_gsxgw.Node(ctx, ex.Node)
 						_gsxgw.S("</div>")
 					}
 				}
-//line component.gsx:139:6
+//line component.gsx:152:6
 				_gsxgw.S("<div class=\"relative\"")
 				_gsxgw.BoolAttr("data-site-example", true)
 				_gsxgw.S(">")
-//line component.gsx:140:7
+//line component.gsx:153:7
 				_gsxgw.S("<pre class=\"overflow-x-auto rounded-2xl bg-muted/50 px-4 py-3.5 font-mono text-sm\">")
-//line component.gsx:142:8
+//line component.gsx:155:8
 				_gsxgw.S("<code>")
-//line component.gsx:142:14
+//line component.gsx:155:14
 				_gsxgw.Node(ctx, hl.Node(ex.SourcePath))
 				_gsxgw.S("</code></pre>")
-//line component.gsx:143:7
+//line component.gsx:156:7
 				_gsxgw.S("<button type=\"button\"")
 				_gsxgw.BoolAttr("data-site-copy", true)
 				_gsxgw.S(" class=\"absolute right-2 top-2 rounded-md border border-border bg-background px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground\">Copy</button></div></section>")
 			}
-//line component.gsx:153:4
+//line component.gsx:166:4
 			_gsxgw.S("<footer class=\"flex flex-col gap-3 border-t border-border pt-6 text-sm text-muted-foreground\">")
-//line component.gsx:154:5
+//line component.gsx:167:5
 			_gsxgw.S("<pre class=\"overflow-x-auto rounded-lg border border-border bg-card p-4 text-card-foreground\">")
-//line component.gsx:156:6
+//line component.gsx:169:6
 			_gsxgw.S("<code>")
-//line component.gsx:156:12
+//line component.gsx:169:12
 			_gsxgw.Text(string("gsxui add " + props.Name))
 			_gsxgw.S("</code></pre>")
-//line component.gsx:157:5
+//line component.gsx:170:5
 			if props.Name == "icon" {
-//line component.gsx:158:6
+//line component.gsx:171:6
 				_gsxgw.S("<a href=\"https://lucide.dev\" target=\"_blank\" rel=\"noreferrer\" class=\"underline underline-offset-4 hover:text-foreground\">View the icon set on lucide.dev</a>")
 			} else {
-//line component.gsx:167:6
+//line component.gsx:180:6
 				_gsxgw.S("<a href=\"")
 				_gsxgw.URL(string("https://ui.shadcn.com/docs/components/" + shadcnName(props.Name)))
 				_gsxgw.S("\" target=\"_blank\" rel=\"noreferrer\" class=\"underline underline-offset-4 hover:text-foreground\">View the original on shadcn/ui</a>")

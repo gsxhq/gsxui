@@ -101,13 +101,26 @@ func examplePreviewURL(componentName string, exampleName string, preview string)
 	}.Encode()
 }
 
+func componentTOCItems(examples []exampleProps) []docTOCItem {
+	items := make([]docTOCItem, len(examples))
+	for i, example := range examples {
+		items[i] = docTOCItem{
+			ID:    "example-" + example.Name,
+			Title: example.Title,
+			Depth: 2,
+		}
+	}
+	return items
+}
+
 component (c Component) Page(props ComponentProps) {
-	<siteLayout title={props.Title} active={props.Name} mode={layoutDocs} toc={nil}>
+	{{ toc := componentTOCItems(props.Examples) }}
+	<siteLayout title={props.Title} active={props.Name} mode={layoutDocs} toc={toc}>
 		<div class="flex flex-col gap-10 py-10">
 			<h1 class="text-3xl font-semibold tracking-tight">{ props.Title }</h1>
-			{ for _, ex := range props.Examples {
+			{ for i, ex := range props.Examples {
 				<section class="flex flex-col gap-3">
-					<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">{ ex.Title }</h2>
+					<docHeading item={toc[i]}/>
 					{ if ex.Isolated && len(ex.Previews) == 0 {
 						<iframe
 							data-site-isolated-preview

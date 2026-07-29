@@ -14,145 +14,153 @@ import (
 //line theming.gsx:5:1
 type Theming struct{}
 
-//line theming.gsx:8:1
+var themingTOCItems = []docTOCItem{
+	{ID: "css-files", Title: "The four CSS files", Depth: 2},
+	{ID: "semantic-variables", Title: "Edit semantic variables", Depth: 2},
+	{ID: "component-markers", Title: "Stable component markers", Depth: 2},
+	{ID: "caller-utilities", Title: "Caller utilities win", Depth: 2},
+	{ID: "breaking-migration", Title: "Breaking migration", Depth: 2},
+}
+
+//line theming.gsx:16:1
 func (t Theming) Page() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line theming.gsx:9:2
-		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, "Theming", "theming", layoutDocs, nil, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line theming.gsx:17:2
+		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, "Theming", "theming", layoutDocs, themingTOCItems, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line theming.gsx:10:3
+//line theming.gsx:18:3
 			_gsxgw.S("<div data-doc=\"theming\" class=\"flex max-w-3xl flex-col gap-10 py-10\">")
-//line theming.gsx:11:4
+//line theming.gsx:19:4
 			_gsxgw.S("<div class=\"flex flex-col gap-4\">")
-//line theming.gsx:12:5
-			_gsxgw.S("<h1 class=\"text-3xl font-semibold tracking-tight\">Theming</h1>")
-//line theming.gsx:13:5
-			_gsxgw.S("<p class=\"text-muted-foreground\">gsxui keeps behavior, semantic values, and component presentation in separate CSS files. A theme changes variables only; every component keeps the same canonical GSX markup.</p></div>")
-//line theming.gsx:18:4
-			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line theming.gsx:19:5
-			_gsxgw.S("<h2>The four CSS files</h2>")
 //line theming.gsx:20:5
+			_gsxgw.S("<h1 class=\"text-3xl font-semibold tracking-tight\">Theming</h1>")
+//line theming.gsx:21:5
+			_gsxgw.S("<p class=\"text-muted-foreground\">gsxui keeps behavior, semantic values, and component presentation in separate CSS files. A theme changes variables only; every component keeps the same canonical GSX markup.</p></div>")
+//line theming.gsx:26:4
+			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
+//line theming.gsx:27:5
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, themingTOCItems[0]))
+//line theming.gsx:28:5
 			_gsxgw.S("<pre>")
-//line theming.gsx:20:10
+//line theming.gsx:28:10
 			_gsxgw.S("<code>")
-//line theming.gsx:20:16
+//line theming.gsx:28:16
 			_gsxgw.Node(ctx, hl.Node("snippets/theme-entry.css"))
 			_gsxgw.S("</code></pre>")
-//line theming.gsx:21:5
+//line theming.gsx:29:5
 			_gsxgw.S("<ul class=\"list-disc space-y-2 pl-6\">")
-//line theming.gsx:22:6
+//line theming.gsx:30:6
 			_gsxgw.S("<li>")
-//line theming.gsx:22:10
+//line theming.gsx:30:10
 			_gsxgw.S("<code>index.css</code> is the one entry your app imports.</li>")
-//line theming.gsx:23:6
-			_gsxgw.S("<li>")
-//line theming.gsx:24:7
-			_gsxgw.S("<code>foundation.css</code> owns accessibility and behavior-critical mechanics such as hidden states, positioning, and interaction geometry.</li>")
-//line theming.gsx:27:6
-			_gsxgw.S("<li>")
-//line theming.gsx:28:7
-			_gsxgw.S("<code>theme.css</code> owns semantic light/dark variables, including sidebar, status, overlay, contrast, and radius tokens.</li>")
 //line theming.gsx:31:6
 			_gsxgw.S("<li>")
 //line theming.gsx:32:7
+			_gsxgw.S("<code>foundation.css</code> owns accessibility and behavior-critical mechanics such as hidden states, positioning, and interaction geometry.</li>")
+//line theming.gsx:35:6
+			_gsxgw.S("<li>")
+//line theming.gsx:36:7
+			_gsxgw.S("<code>theme.css</code> owns semantic light/dark variables, including sidebar, status, overlay, contrast, and radius tokens.</li>")
+//line theming.gsx:39:6
+			_gsxgw.S("<li>")
+//line theming.gsx:40:7
 			_gsxgw.S("<code>style.css</code> owns the replaceable component presentation: density, borders, shadows, typography, and visual variants.</li></ul>")
-//line theming.gsx:36:5
+//line theming.gsx:44:5
 			_gsxgw.S("<p>To recolor the default style, replace only ")
-//line theming.gsx:37:49
+//line theming.gsx:45:49
 			_gsxgw.S("<code>theme.css</code>. Keep the other three files unchanged.</p></section>")
-//line theming.gsx:40:4
-			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line theming.gsx:41:5
-			_gsxgw.S("<h2>Edit semantic variables</h2>")
-//line theming.gsx:42:5
-			_gsxgw.S("<p>The variables are shadcn-compatible ")
-//line theming.gsx:43:42
-			_gsxgw.S("<code>:root</code> and ")
-//line theming.gsx:43:65
-			_gsxgw.S("<code>.dark</code> blocks. The theme editor imports and exports exactly this variables-only file.</p>")
-//line theming.gsx:46:5
-			_gsxgw.S("<pre>")
-//line theming.gsx:46:10
-			_gsxgw.S("<code>")
-//line theming.gsx:46:16
-			_gsxgw.Node(ctx, hl.Node("snippets/theme-restyle.css"))
-			_gsxgw.S("</code></pre></section>")
 //line theming.gsx:48:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line theming.gsx:49:5
-			_gsxgw.S("<h2>Stable component markers</h2>")
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, themingTOCItems[1]))
 //line theming.gsx:50:5
-			_gsxgw.S("<p>Components expose one bare ")
-//line theming.gsx:51:33
-			_gsxgw.S("<code>data-gsxui-slot-&lt;name&gt;</code> attribute per semantic part. Composed parts forward each distinct attribute onto the same element, so selectors use exact presence matching:</p>")
+			_gsxgw.S("<p>The variables are shadcn-compatible ")
+//line theming.gsx:51:42
+			_gsxgw.S("<code>:root</code> and ")
+//line theming.gsx:51:65
+			_gsxgw.S("<code>.dark</code> blocks. The theme editor imports and exports exactly this variables-only file.</p>")
 //line theming.gsx:54:5
 			_gsxgw.S("<pre>")
 //line theming.gsx:54:10
 			_gsxgw.S("<code>")
 //line theming.gsx:54:16
+			_gsxgw.Node(ctx, hl.Node("snippets/theme-restyle.css"))
+			_gsxgw.S("</code></pre></section>")
+//line theming.gsx:56:4
+			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
+//line theming.gsx:57:5
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, themingTOCItems[2]))
+//line theming.gsx:58:5
+			_gsxgw.S("<p>Components expose one bare ")
+//line theming.gsx:59:33
+			_gsxgw.S("<code>data-gsxui-slot-&lt;name&gt;</code> attribute per semantic part. Composed parts forward each distinct attribute onto the same element, so selectors use exact presence matching:</p>")
+//line theming.gsx:62:5
+			_gsxgw.S("<pre>")
+//line theming.gsx:62:10
+			_gsxgw.S("<code>")
+//line theming.gsx:62:16
 			_gsxgw.Node(ctx, hl.Node("snippets/theme-slot.css"))
 			_gsxgw.S("</code></pre>")
-//line theming.gsx:55:5
+//line theming.gsx:63:5
 			_gsxgw.S("<p>Use the same exact presence form in project CSS. Value and token operators are not part of the contract.</p></section>")
-//line theming.gsx:59:4
+//line theming.gsx:67:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line theming.gsx:60:5
-			_gsxgw.S("<h2>Caller utilities win</h2>")
-//line theming.gsx:61:5
+//line theming.gsx:68:5
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, themingTOCItems[3]))
+//line theming.gsx:69:5
 			_gsxgw.S("<p>The default style is in ")
-//line theming.gsx:62:30
+//line theming.gsx:70:30
 			_gsxgw.S("<code>@layer components</code>. Tailwind utilities are emitted later, so an ordinary caller class such as ")
-//line theming.gsx:63:27
+//line theming.gsx:71:27
 			_gsxgw.S("<code>h-12</code> or ")
-//line theming.gsx:63:48
+//line theming.gsx:71:48
 			_gsxgw.S("<code>rounded-full</code> overrides the style without ")
-//line theming.gsx:64:14
+//line theming.gsx:72:14
 			_gsxgw.S("<code>!important</code> or a class merger fighting component-owned utility strings.</p>")
-//line theming.gsx:66:5
+//line theming.gsx:74:5
 			_gsxgw.S("<pre>")
-//line theming.gsx:66:10
+//line theming.gsx:74:10
 			_gsxgw.S("<code>")
-//line theming.gsx:66:16
+//line theming.gsx:74:16
 			_gsxgw.Node(ctx, hl.Node("snippets/theme-merge.gsx"))
 			_gsxgw.S("</code></pre>")
-//line theming.gsx:67:5
+//line theming.gsx:75:5
 			_gsxgw.S("<p>Fallthrough attributes still carry ids, ARIA, data, and HTMX attributes to the rendered element:</p>")
-//line theming.gsx:70:5
+//line theming.gsx:78:5
 			_gsxgw.S("<pre>")
-//line theming.gsx:70:10
+//line theming.gsx:78:10
 			_gsxgw.S("<code>")
-//line theming.gsx:70:16
+//line theming.gsx:78:16
 			_gsxgw.Node(ctx, hl.Node("snippets/theme-attrs.gsx"))
 			_gsxgw.S("</code></pre></section>")
-//line theming.gsx:72:4
+//line theming.gsx:80:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line theming.gsx:73:5
-			_gsxgw.S("<h2>Breaking migration</h2>")
-//line theming.gsx:74:5
+//line theming.gsx:81:5
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, themingTOCItems[4]))
+//line theming.gsx:82:5
 			_gsxgw.S("<ol class=\"list-decimal space-y-2 pl-6\">")
-//line theming.gsx:75:6
+//line theming.gsx:83:6
 			_gsxgw.S("<li>Change the CSS entry from ")
-//line theming.gsx:75:36
+//line theming.gsx:83:36
 			_gsxgw.S("<code>web/gsxui.css</code> to ")
-//line theming.gsx:75:66
+//line theming.gsx:83:66
 			_gsxgw.S("<code>web/gsxui/index.css</code>.</li>")
-//line theming.gsx:76:6
+//line theming.gsx:84:6
 			_gsxgw.S("<li>Review the four-file diff, then run ")
-//line theming.gsx:76:46
+//line theming.gsx:84:46
 			_gsxgw.S("<code>gsxui init --overwrite</code>.</li>")
-//line theming.gsx:77:6
+//line theming.gsx:85:6
 			_gsxgw.S("<li>Run ")
-//line theming.gsx:78:11
+//line theming.gsx:86:11
 			_gsxgw.S("<code>gsxui add &lt;component&gt; --overwrite</code> for each vendored component you want to refresh.</li>")
-//line theming.gsx:80:6
+//line theming.gsx:88:6
 			_gsxgw.S("<li>Replace intentional project ")
-//line theming.gsx:81:35
+//line theming.gsx:89:35
 			_gsxgw.S("<code>data-slot</code> selectors with exact presence selectors such as ")
-//line theming.gsx:82:10
+//line theming.gsx:90:10
 			_gsxgw.S("<code>[data-gsxui-slot-button]</code>.</li></ol>")
-//line theming.gsx:85:5
+//line theming.gsx:93:5
 			_gsxgw.S("<p>This is a one-time breaking migration. There is no legacy selector or combined-file compatibility layer.</p></section></div>")
 			return _gsxgw.Err()
 		})))

@@ -15,12 +15,6 @@ const (
 	layoutWorkspace layoutMode = "workspace"
 )
 
-type docTOCItem struct {
-	ID    string
-	Title string
-	Depth int
-}
-
 component docsNavigation(active string) {
 	<div class="flex flex-col gap-4 text-sm">
 		<div class="flex flex-col gap-1">
@@ -224,6 +218,13 @@ component siteLayout(title string, active string, mode layoutMode, toc []docTOCI
 				>
 					{ children }
 				</main>
+				{ if mode == layoutDocs && len(toc) > 0 {
+					<aside data-site-docs-toc class="hidden min-w-0 xl:block">
+						<div class="sticky top-20 max-h-[calc(100svh-5rem)] overflow-y-auto pl-16">
+							<docTableOfContents items={toc}/>
+						</div>
+					</aside>
+				} }
 			</div>
 			{ if mode != layoutWorkspace {
 				<footer data-site-footer class="border-t border-border">

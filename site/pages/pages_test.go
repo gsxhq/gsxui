@@ -124,6 +124,136 @@ func TestSiteLayoutModes(t *testing.T) {
 	}
 }
 
+func TestDocsTableOfContents(t *testing.T) {
+	handler := newTestHandler(t)
+
+	tests := []struct {
+		path  string
+		items []struct {
+			id    string
+			title string
+		}
+	}{
+		{
+			path: "/components/button",
+			items: []struct {
+				id    string
+				title string
+			}{
+				{id: "example-basic", title: "Basic"},
+				{id: "example-variants", title: "Variants"},
+			},
+		},
+		{
+			path: "/docs/getting-started",
+			items: []struct {
+				id    string
+				title string
+			}{
+				{id: "install-cli", title: "1. Install the CLI"},
+				{id: "initialize-project", title: "2. Initialize your project"},
+				{id: "add-components", title: "3. Add components"},
+				{id: "first-page", title: "4. Your first page"},
+			},
+		},
+		{
+			path: "/docs/theming",
+			items: []struct {
+				id    string
+				title string
+			}{
+				{id: "css-files", title: "The four CSS files"},
+				{id: "semantic-variables", title: "Edit semantic variables"},
+				{id: "component-markers", title: "Stable component markers"},
+				{id: "caller-utilities", title: "Caller utilities win"},
+				{id: "breaking-migration", title: "Breaking migration"},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.path, func(t *testing.T) {
+			document := renderDocument(t, handler, tt.path)
+
+			var headings []*html.Node
+			var links []*html.Node
+			walkHTML(document, func(node *html.Node) {
+				if hasHTMLAttribute(node, "data-doc-heading") {
+					headings = append(headings, node)
+				}
+				if hasHTMLAttribute(node, "data-site-toc-link") {
+					links = append(links, node)
+				}
+			})
+
+			if got, want := countHTMLNodes(document, "data-site-docs-toc"), 1; got != want {
+				t.Fatalf("GET %s has %d documentation TOCs, want %d", tt.path, got, want)
+			}
+			if got, want := len(headings), len(tt.items); got != want {
+				t.Fatalf("GET %s has %d document headings, want %d", tt.path, got, want)
+			}
+			if got, want := len(links), len(tt.items); got != want {
+				t.Fatalf("GET %s has %d TOC links, want %d", tt.path, got, want)
+			}
+
+			headingByID := make(map[string]*html.Node, len(headings))
+			for index, heading := range headings {
+				id, ok := htmlAttribute(heading, "id")
+				if !ok || id == "" {
+					t.Fatalf("GET %s heading %d has no explicit ID", tt.path, index+1)
+				}
+				if _, exists := headingByID[id]; exists {
+					t.Fatalf("GET %s has duplicate document heading ID %q", tt.path, id)
+				}
+				headingByID[id] = heading
+
+				item := tt.items[index]
+				if id != item.id {
+					t.Errorf("GET %s heading %d ID = %q, want %q", tt.path, index+1, id, item.id)
+				}
+				if got := normalizedHTMLText(heading); got != item.title {
+					t.Errorf("GET %s heading %q text = %q, want %q", tt.path, id, got, item.title)
+				}
+				if tabindex, ok := htmlAttribute(heading, "tabindex"); !ok || tabindex != "-1" {
+					t.Errorf("GET %s heading %q tabindex = %q, want -1", tt.path, id, tabindex)
+				}
+			}
+
+			for index, link := range links {
+				href, ok := htmlAttribute(link, "href")
+				if !ok || !strings.HasPrefix(href, "#") || len(href) == 1 {
+					t.Fatalf("GET %s TOC link %d href = %q, want an explicit fragment", tt.path, index+1, href)
+				}
+				id := strings.TrimPrefix(href, "#")
+				heading, exists := headingByID[id]
+				if !exists {
+					t.Fatalf("GET %s TOC link %q has no matching document heading", tt.path, href)
+				}
+				if got, want := normalizedHTMLText(link), normalizedHTMLText(heading); got != want {
+					t.Errorf("GET %s TOC link %q text = %q, heading text = %q", tt.path, href, got, want)
+				}
+				item := tt.items[index]
+				if id != item.id {
+					t.Errorf("GET %s TOC link %d target = %q, want %q", tt.path, index+1, id, item.id)
+				}
+				if got := normalizedHTMLText(link); got != item.title {
+					t.Errorf("GET %s TOC link %q text = %q, want %q", tt.path, href, got, item.title)
+				}
+			}
+		})
+	}
+
+	t.Run("components index has no right rail", func(t *testing.T) {
+		document := renderDocument(t, handler, "/components")
+		if got := countHTMLNodes(document, "data-site-docs-toc"); got != 0 {
+			t.Fatalf("GET /components has %d documentation TOCs, want none", got)
+		}
+		if got := countHTMLNodes(document, "data-site-toc-link"); got != 0 {
+			t.Fatalf("GET /components has %d TOC links, want none", got)
+		}
+	})
+}
+
 func TestDialogTriggerSlotMarkers(t *testing.T) {
 	tests := []struct {
 		name string
@@ -206,6 +336,54 @@ func htmlAttribute(node *html.Node, name string) (string, bool) {
 		}
 	}
 	return "", false
+}
+
+func renderDocument(t *testing.T, handler http.Handler, path string) *html.Node {
+	t.Helper()
+	req := httptest.NewRequest(http.MethodGet, path, nil)
+	rec := httptest.NewRecorder()
+	handler.ServeHTTP(rec, req)
+	if rec.Code == http.StatusTemporaryRedirect {
+		req = httptest.NewRequest(http.MethodGet, rec.Header().Get("Location"), nil)
+		rec = httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+	}
+	if rec.Code != http.StatusOK {
+		t.Fatalf("GET %s = %d, want %d; body:\n%s", path, rec.Code, http.StatusOK, rec.Body.String())
+	}
+	document, err := html.Parse(strings.NewReader(rec.Body.String()))
+	if err != nil {
+		t.Fatalf("parse GET %s response: %v", path, err)
+	}
+	return document
+}
+
+func walkHTML(node *html.Node, visit func(*html.Node)) {
+	visit(node)
+	for child := node.FirstChild; child != nil; child = child.NextSibling {
+		walkHTML(child, visit)
+	}
+}
+
+func countHTMLNodes(document *html.Node, attribute string) int {
+	count := 0
+	walkHTML(document, func(node *html.Node) {
+		if hasHTMLAttribute(node, attribute) {
+			count++
+		}
+	})
+	return count
+}
+
+func normalizedHTMLText(node *html.Node) string {
+	var text strings.Builder
+	walkHTML(node, func(descendant *html.Node) {
+		if descendant.Type == html.TextNode {
+			text.WriteString(descendant.Data)
+			text.WriteByte(' ')
+		}
+	})
+	return strings.Join(strings.Fields(text.String()), " ")
 }
 
 // TestComponentPageRoute is the Task 2 integration smoke test for

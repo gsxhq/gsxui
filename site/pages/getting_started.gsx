@@ -8,8 +8,15 @@ import "github.com/gsxhq/gsxui/site/hl"
 // invented).
 type GettingStarted struct{}
 
+var gettingStartedTOCItems = []docTOCItem{
+	{ID: "install-cli", Title: "1. Install the CLI", Depth: 2},
+	{ID: "initialize-project", Title: "2. Initialize your project", Depth: 2},
+	{ID: "add-components", Title: "3. Add components", Depth: 2},
+	{ID: "first-page", Title: "4. Your first page", Depth: 2},
+}
+
 component (g GettingStarted) Page() {
-	<siteLayout title="Getting Started" active="getting-started" mode={layoutDocs} toc={nil}>
+	<siteLayout title="Getting Started" active="getting-started" mode={layoutDocs} toc={gettingStartedTOCItems}>
 		<div data-doc="getting-started" class="flex max-w-3xl flex-col gap-10 py-10">
 			<div class="flex flex-col gap-4">
 				<h1 class="text-3xl font-semibold tracking-tight">Getting Started</h1>
@@ -19,11 +26,11 @@ component (g GettingStarted) Page() {
 				</p>
 			</div>
 			<section class="flex flex-col gap-3">
-				<h2>1. Install the CLI</h2>
+				<docHeading item={gettingStartedTOCItems[0]}/>
 				<pre><code>{ hl.Node("snippets/install.sh") }</code></pre>
 			</section>
 			<section class="flex flex-col gap-3">
-				<h2>2. Initialize your project</h2>
+				<docHeading item={gettingStartedTOCItems[1]}/>
 				<p>In your project (a Go module):</p>
 				<pre><code>{ hl.Node("snippets/init.sh") }</code></pre>
 				<pre><code>{ hl.Node("snippets/init.output") }</code></pre>
@@ -47,7 +54,7 @@ component (g GettingStarted) Page() {
 				</p>
 			</section>
 			<section class="flex flex-col gap-3">
-				<h2>3. Add components</h2>
+				<docHeading item={gettingStartedTOCItems[2]}/>
 				<pre><code>{ hl.Node("snippets/add.sh") }</code></pre>
 				<pre><code>{ hl.Node("snippets/add.output") }</code></pre>
 				<p>
@@ -61,7 +68,7 @@ component (g GettingStarted) Page() {
 				</p>
 			</section>
 			<section class="flex flex-col gap-3">
-				<h2>4. Your first page</h2>
+				<docHeading item={gettingStartedTOCItems[3]}/>
 				<p>
 					A tiny two-file app: <code>home.gsx</code> renders a <code>Card</code> around a <code>Button</code>,
 					and <code>main.go</code> serves it.
