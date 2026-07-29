@@ -13,6 +13,8 @@ import (
 	gsxast "github.com/gsxhq/gsx/ast"
 	"github.com/gsxhq/gsx/gen"
 	gsxparser "github.com/gsxhq/gsx/parser"
+
+	"github.com/gsxhq/gsxui/internal/recipe"
 )
 
 type ResolveReport struct {
@@ -36,13 +38,13 @@ type resolver struct {
 	filename string
 	src      []byte
 	fset     *token.FileSet
-	recipes  *Recipes
+	recipes  *recipe.Style
 	used     map[string]struct{}
 	edits    []literalEdit
 	err      error
 }
 
-func Resolve(filename string, src []byte, recipes Recipes) ([]byte, ResolveReport, error) {
+func Resolve(filename string, src []byte, recipes recipe.Style) ([]byte, ResolveReport, error) {
 	declared, err := declaredRecipeTokens(filename, recipes)
 	if err != nil {
 		return nil, ResolveReport{}, err
@@ -80,8 +82,8 @@ func Resolve(filename string, src []byte, recipes Recipes) ([]byte, ResolveRepor
 	if len(remaining) != 0 {
 		return nil, ResolveReport{}, fmt.Errorf("%s: resolved GSX still contains recipe tokens %q", filename, remaining)
 	}
-	if bytes.Contains(formatted, []byte(RecipePrefix)) {
-		return nil, ResolveReport{}, fmt.Errorf("%s: resolved GSX still contains recipe prefix %q", filename, RecipePrefix)
+	if bytes.Contains(formatted, []byte(recipe.Prefix)) {
+		return nil, ResolveReport{}, fmt.Errorf("%s: resolved GSX still contains recipe prefix %q", filename, recipe.Prefix)
 	}
 	return formatted, ResolveReport{UsedTokens: result.tokens}, nil
 }
@@ -99,7 +101,7 @@ type inspectionResult struct {
 	edits  []literalEdit
 }
 
-func inspectRecipeTokens(filename string, src []byte, recipes *Recipes) (inspectionResult, error) {
+func inspectRecipeTokens(filename string, src []byte, recipes *recipe.Style) (inspectionResult, error) {
 	fset := token.NewFileSet()
 	file, err := gsxparser.ParseFile(fset, filename, src, 0)
 	if err != nil {
@@ -271,7 +273,7 @@ func (r *resolver) resolveClassLiteral(value string) (string, bool, error) {
 			end++
 		}
 		classToken := value[pos:end]
-		prefix := strings.Index(classToken, RecipePrefix)
+		prefix := strings.Index(classToken, recipe.Prefix)
 		switch {
 		case prefix < 0:
 			out.WriteString(classToken)
@@ -283,12 +285,12 @@ func (r *resolver) resolveClassLiteral(value string) (string, bool, error) {
 				out.WriteString(classToken)
 				break
 			}
-			recipe, ok := r.recipes.Lookup(classToken)
+			rule, ok := r.recipes.Lookup(classToken)
 			if !ok {
 				out.WriteString(classToken)
 				break
 			}
-			out.WriteString(strings.Join(recipe.Utilities, " "))
+			out.WriteString(strings.Join(rule.Utilities, " "))
 			changed = true
 		}
 		pos = end
@@ -297,7 +299,7 @@ func (r *resolver) resolveClassLiteral(value string) (string, bool, error) {
 }
 
 func (r *resolver) inspectStaticAttr(attr *gsxast.StaticAttr) {
-	if !strings.Contains(attr.Value, RecipePrefix) {
+	if !strings.Contains(attr.Value, recipe.Prefix) {
 		return
 	}
 	if attr.Name == "class" {
@@ -308,7 +310,7 @@ func (r *resolver) inspectStaticAttr(attr *gsxast.StaticAttr) {
 }
 
 func (r *resolver) inspectNestedText(text *gsxast.Text) {
-	if !strings.Contains(text.Value, RecipePrefix) {
+	if !strings.Contains(text.Value, recipe.Prefix) {
 		return
 	}
 	r.err = r.positionedError(text.Pos(), "recipe token %q appears in nested element text", text.Value)
@@ -476,7 +478,7 @@ func (r *resolver) inspectEmbeddedSegments(segments []gsxast.Markup, pos token.P
 			}
 			prefix, suffix, fullyConstant := constantBoundaryFragments(parsed)
 			assembled.WriteString(prefix)
-			if strings.Contains(assembled.String(), RecipePrefix) {
+			if strings.Contains(assembled.String(), recipe.Prefix) {
 				r.err = r.positionedError(
 					pos,
 					"recipe token %q must be a whole class string literal; found in non-class %s",
@@ -494,7 +496,7 @@ func (r *resolver) inspectEmbeddedSegments(segments []gsxast.Markup, pos token.P
 			assembled.Reset()
 			continue
 		}
-		if strings.Contains(assembled.String(), RecipePrefix) {
+		if strings.Contains(assembled.String(), recipe.Prefix) {
 			r.err = r.positionedError(
 				pos,
 				"recipe token %q must be a whole class string literal; found in non-class %s",
@@ -548,7 +550,7 @@ func recipeLiteralInNode(root goast.Node) (string, bool) {
 		if err != nil {
 			return true
 		}
-		if strings.Contains(value, RecipePrefix) {
+		if strings.Contains(value, recipe.Prefix) {
 			found = value
 			return false
 		}
@@ -593,7 +595,7 @@ func constantRecipeAssembly(expr goast.Expr) (string, bool) {
 				continue
 			}
 			run.WriteString(value)
-			if strings.Contains(run.String(), RecipePrefix) {
+			if strings.Contains(run.String(), recipe.Prefix) {
 				found = run.String()
 				return false
 			}
@@ -684,13 +686,14 @@ func expressionUsesConcatenation(expr goast.Expr) bool {
 	return found
 }
 
-func declaredRecipeTokens(filename string, recipes Recipes) (map[string]struct{}, error) {
-	declared := make(map[string]struct{}, len(recipes.ordered))
-	for _, recipe := range recipes.ordered {
-		if _, exists := declared[recipe.Token]; exists {
-			return nil, fmt.Errorf("%s: duplicate recipe declaration %q", filename, recipe.Token)
+func declaredRecipeTokens(filename string, recipes recipe.Style) (map[string]struct{}, error) {
+	rules := recipes.Rules()
+	declared := make(map[string]struct{}, len(rules))
+	for _, rule := range rules {
+		if _, exists := declared[rule.Class]; exists {
+			return nil, fmt.Errorf("%s: duplicate recipe declaration %q", filename, rule.Class)
 		}
-		declared[recipe.Token] = struct{}{}
+		declared[rule.Class] = struct{}{}
 	}
 	return declared, nil
 }

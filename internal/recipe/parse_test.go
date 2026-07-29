@@ -1,4 +1,4 @@
-package stylegen
+package recipe
 
 import (
 	"os"
@@ -18,24 +18,24 @@ func TestParseRecipesValid(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	recipes, err := ParseRecipes(filename, src)
+	style, err := ParseStyle(filename, src)
 	if err != nil {
-		t.Fatalf("ParseRecipes() error = %v", err)
+		t.Fatalf("ParseStyle() error = %v", err)
 	}
 
-	if got, want := recipes.Tokens(), []string{
+	if got, want := style.Classes(), []string{
 		"gsxui-recipe-button",
 		"gsxui-recipe-button-variant-outline",
 		"gsxui-recipe-button-size-icon",
 	}; !reflect.DeepEqual(got, want) {
-		t.Errorf("Tokens() = %q, want %q", got, want)
+		t.Errorf("Classes() = %q, want %q", got, want)
 	}
 
-	recipe, ok := recipes.Lookup("gsxui-recipe-button")
+	rule, ok := style.Lookup("gsxui-recipe-button")
 	if !ok {
 		t.Fatal("Lookup(gsxui-recipe-button) = false, want true")
 	}
-	if got, want := recipe.Utilities, []string{
+	if got, want := rule.Utilities, []string{
 		"inline-flex",
 		"items-center",
 		"gap-2",
@@ -46,7 +46,7 @@ func TestParseRecipesValid(t *testing.T) {
 		t.Errorf("Lookup(gsxui-recipe-button).Utilities = %q, want %q", got, want)
 	}
 
-	if _, ok := recipes.Lookup("gsxui-recipe-missing"); ok {
+	if _, ok := style.Lookup("gsxui-recipe-missing"); ok {
 		t.Error("Lookup(gsxui-recipe-missing) = true, want false")
 	}
 }
@@ -237,9 +237,9 @@ func TestParseRecipesRejectsInvalidGrammar(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			filename := filepath.Join("testdata", strings.ReplaceAll(tt.name, " ", "-")+".css")
-			_, err := ParseRecipes(filename, []byte(tt.src))
+			_, err := ParseStyle(filename, []byte(tt.src))
 			if err == nil {
-				t.Fatal("ParseRecipes() error = nil, want error")
+				t.Fatal("ParseStyle() error = nil, want error")
 			}
 
 			message := err.Error()

@@ -1,5 +1,4 @@
-// Package stylegen generates consumer component source from authored style recipes.
-package stylegen
+package recipe
 
 import (
 	"bytes"
@@ -12,21 +11,19 @@ import (
 	"github.com/tdewolff/parse/v2/css"
 )
 
-const RecipePrefix = "gsxui-recipe-"
-
-type Recipe struct {
-	Token     string
+type Rule struct {
+	Class     string
 	Utilities []string
 }
 
-type Recipes struct {
-	ordered []Recipe
-	byToken map[string]Recipe
+type Style struct {
+	ordered []Rule
+	byClass map[string]Rule
 }
 
-func ParseRecipes(filename string, src []byte) (Recipes, error) {
+func ParseStyle(filename string, src []byte) (Style, error) {
 	parser := css.NewParser(parse.NewInputBytes(src), false)
-	var result Recipes
+	var result Style
 	var componentsLayer bool
 	var layerSeen bool
 	var rule *recipeRule
@@ -38,25 +35,25 @@ func ParseRecipes(filename string, src []byte) (Recipes, error) {
 		case css.ErrorGrammar:
 			if err := parser.Err(); errors.Is(err, io.EOF) {
 				if rule != nil {
-					return Recipes{}, recipeError(filename, src, parser.Offset(), "malformed CSS in %s", rule.selector)
+					return Style{}, styleError(filename, src, parser.Offset(), "malformed CSS in %s", rule.selector)
 				}
 				if componentsLayer {
-					return Recipes{}, recipeError(filename, src, parser.Offset(), "malformed CSS in @layer components")
+					return Style{}, styleError(filename, src, parser.Offset(), "malformed CSS in @layer components")
 				}
 				if !layerSeen {
-					return Recipes{}, recipeError(filename, src, len(src), "missing @layer components")
+					return Style{}, styleError(filename, src, len(src), "missing @layer components")
 				}
 				if len(result.ordered) == 0 {
-					return Recipes{}, recipeError(filename, src, len(src), "@layer components contains no recipe rules")
+					return Style{}, styleError(filename, src, len(src), "@layer components contains no recipe rules")
 				}
 				if err := validateCSSStructure(src); err != nil {
-					return Recipes{}, recipeError(filename, src, len(src), "malformed CSS in %s: %v", lastContext, err)
+					return Style{}, styleError(filename, src, len(src), "malformed CSS in %s: %v", lastContext, err)
 				}
 				return result, nil
 			} else if err != nil {
-				return Recipes{}, parserRecipeError(filename, src, parser.Offset(), err, malformedContext(rule, componentsLayer))
+				return Style{}, parserStyleError(filename, src, parser.Offset(), err, malformedContext(rule, componentsLayer))
 			}
-			return Recipes{}, recipeError(filename, src, parser.Offset(), "malformed CSS")
+			return Style{}, styleError(filename, src, parser.Offset(), "malformed CSS")
 
 		case css.CommentGrammar:
 			continue
@@ -64,16 +61,16 @@ func ParseRecipes(filename string, src []byte) (Recipes, error) {
 		case css.BeginAtRuleGrammar:
 			atRule := atRuleText(data, parser.Values())
 			if rule != nil {
-				return Recipes{}, recipeError(filename, src, parser.Offset(), "nested at-rule %s in %s", atRule, rule.selector)
+				return Style{}, styleError(filename, src, parser.Offset(), "nested at-rule %s in %s", atRule, rule.selector)
 			}
 			if componentsLayer {
-				return Recipes{}, recipeError(filename, src, parser.Offset(), "nested at-rule %s in @layer components", atRule)
+				return Style{}, styleError(filename, src, parser.Offset(), "nested at-rule %s in @layer components", atRule)
 			}
 			if layerSeen {
-				return Recipes{}, recipeError(filename, src, parser.Offset(), "multiple component layers: %s", atRule)
+				return Style{}, styleError(filename, src, parser.Offset(), "multiple component layers: %s", atRule)
 			}
 			if !isComponentsLayer(data, parser.Values()) {
-				return Recipes{}, recipeError(filename, src, parser.Offset(), "expected @layer components, found %s", atRule)
+				return Style{}, styleError(filename, src, parser.Offset(), "expected @layer components, found %s", atRule)
 			}
 			layerSeen = true
 			componentsLayer = true
@@ -81,65 +78,65 @@ func ParseRecipes(filename string, src []byte) (Recipes, error) {
 
 		case css.EndAtRuleGrammar:
 			if !componentsLayer || rule != nil {
-				return Recipes{}, recipeError(filename, src, parser.Offset(), "malformed @layer components ownership")
+				return Style{}, styleError(filename, src, parser.Offset(), "malformed @layer components ownership")
 			}
 			componentsLayer = false
 
 		case css.AtRuleGrammar:
 			atRule := atRuleText(data, parser.Values())
 			if rule == nil {
-				return Recipes{}, recipeError(filename, src, parser.Offset(), "expected @layer components block, found %s", atRule)
+				return Style{}, styleError(filename, src, parser.Offset(), "expected @layer components block, found %s", atRule)
 			}
 			if !bytes.Equal(data, []byte("@apply")) {
-				return Recipes{}, recipeError(filename, src, parser.Offset(), "expected @apply in %s, found %s", rule.selector, atRule)
+				return Style{}, styleError(filename, src, parser.Offset(), "expected @apply in %s, found %s", rule.selector, atRule)
 			}
 			utilities, err := parseApply(parser.Values())
 			if err != nil {
-				return Recipes{}, recipeError(filename, src, parser.Offset(), "invalid @apply in %s: %v (%s)", rule.selector, err, atRule)
+				return Style{}, styleError(filename, src, parser.Offset(), "invalid @apply in %s: %v (%s)", rule.selector, err, atRule)
 			}
 			rule.utilities = append(rule.utilities, utilities...)
 
 		case css.BeginRulesetGrammar:
 			selector := selectorText(parser.Values())
 			if !componentsLayer {
-				return Recipes{}, recipeError(filename, src, parser.Offset(), "recipe rule %s must be inside @layer components", selector)
+				return Style{}, styleError(filename, src, parser.Offset(), "recipe rule %s must be inside @layer components", selector)
 			}
 			if rule != nil {
-				return Recipes{}, recipeError(filename, src, parser.Offset(), "nested rule %s in %s", selector, rule.selector)
+				return Style{}, styleError(filename, src, parser.Offset(), "nested rule %s in %s", selector, rule.selector)
 			}
 			token, ok := recipeSelector(parser.Values())
 			if !ok {
-				return Recipes{}, recipeError(filename, src, parser.Offset(), "invalid recipe selector %s", selector)
+				return Style{}, styleError(filename, src, parser.Offset(), "invalid recipe selector %s", selector)
 			}
 			rule = &recipeRule{selector: selector, token: token}
 			lastContext = selector
 
 		case css.EndRulesetGrammar:
 			if rule == nil {
-				return Recipes{}, recipeError(filename, src, parser.Offset(), "ruleset outside @layer components")
+				return Style{}, styleError(filename, src, parser.Offset(), "ruleset outside @layer components")
 			}
 			if len(rule.utilities) == 0 {
-				return Recipes{}, recipeError(filename, src, parser.Offset(), "recipe rule %s requires at least one @apply", rule.selector)
+				return Style{}, styleError(filename, src, parser.Offset(), "recipe rule %s requires at least one @apply", rule.selector)
 			}
-			if _, exists := result.byToken[rule.token]; exists {
-				return Recipes{}, recipeError(filename, src, parser.Offset(), "duplicate recipe token %s in %s", rule.token, rule.selector)
+			if _, exists := result.byClass[rule.token]; exists {
+				return Style{}, styleError(filename, src, parser.Offset(), "duplicate recipe token %s in %s", rule.token, rule.selector)
 			}
-			if result.byToken == nil {
-				result.byToken = make(map[string]Recipe)
+			if result.byClass == nil {
+				result.byClass = make(map[string]Rule)
 			}
-			recipe := Recipe{Token: rule.token, Utilities: slices.Clone(rule.utilities)}
-			result.ordered = append(result.ordered, recipe)
-			result.byToken[recipe.Token] = recipe
+			styleRule := Rule{Class: rule.token, Utilities: slices.Clone(rule.utilities)}
+			result.ordered = append(result.ordered, styleRule)
+			result.byClass[styleRule.Class] = styleRule
 			rule = nil
 
 		case css.DeclarationGrammar, css.CustomPropertyGrammar:
 			if rule != nil {
-				return Recipes{}, recipeError(filename, src, parser.Offset(), "ordinary declaration in recipe rule %s", rule.selector)
+				return Style{}, styleError(filename, src, parser.Offset(), "ordinary declaration in recipe rule %s", rule.selector)
 			}
-			return Recipes{}, recipeError(filename, src, parser.Offset(), "ordinary declaration outside recipe rule")
+			return Style{}, styleError(filename, src, parser.Offset(), "ordinary declaration outside recipe rule")
 
 		default:
-			return Recipes{}, recipeError(filename, src, parser.Offset(), "unsupported CSS grammar %s", grammar)
+			return Style{}, styleError(filename, src, parser.Offset(), "unsupported CSS grammar %s", grammar)
 		}
 	}
 }
@@ -194,21 +191,44 @@ func popCSSBlock(blocks *[]css.TokenType, want css.TokenType) bool {
 	return true
 }
 
-func (r Recipes) Lookup(token string) (Recipe, bool) {
-	recipe, ok := r.byToken[token]
+func (s Style) Lookup(class string) (Rule, bool) {
+	rule, ok := s.byClass[class]
 	if !ok {
-		return Recipe{}, false
+		return Rule{}, false
 	}
-	recipe.Utilities = slices.Clone(recipe.Utilities)
-	return recipe, true
+	rule.Utilities = slices.Clone(rule.Utilities)
+	return rule, true
 }
 
-func (r Recipes) Tokens() []string {
-	tokens := make([]string, len(r.ordered))
-	for i, recipe := range r.ordered {
-		tokens[i] = recipe.Token
+func (s Style) Classes() []string {
+	classes := make([]string, len(s.ordered))
+	for i, rule := range s.ordered {
+		classes[i] = rule.Class
 	}
-	return tokens
+	return classes
+}
+
+// Rules returns every parsed rule in source order.
+func (s Style) Rules() []Rule {
+	out := make([]Rule, len(s.ordered))
+	for i, rule := range s.ordered {
+		out[i] = Rule{Class: rule.Class, Utilities: slices.Clone(rule.Utilities)}
+	}
+	return out
+}
+
+// NewStyle builds a Style directly from rules, in order, without parsing CSS.
+// It exists for tests that need a Style fixture (including one with a
+// duplicate class, which ParseStyle itself rejects).
+func NewStyle(rules ...Rule) Style {
+	s := Style{
+		ordered: append([]Rule(nil), rules...),
+		byClass: make(map[string]Rule, len(rules)),
+	}
+	for _, rule := range rules {
+		s.byClass[rule.Class] = rule
+	}
+	return s
 }
 
 type recipeRule struct {
@@ -232,7 +252,7 @@ func recipeSelector(tokens []css.Token) (string, bool) {
 		return "", false
 	}
 	token := string(tokens[1].Data)
-	if len(token) == len(RecipePrefix) || !bytes.HasPrefix(tokens[1].Data, []byte(RecipePrefix)) || bytes.ContainsRune(tokens[1].Data, '\\') {
+	if len(token) == len(Prefix) || !bytes.HasPrefix(tokens[1].Data, []byte(Prefix)) || bytes.ContainsRune(tokens[1].Data, '\\') {
 		return "", false
 	}
 	return token, true
@@ -334,14 +354,14 @@ func malformedContext(rule *recipeRule, componentsLayer bool) string {
 	return "stylesheet"
 }
 
-func parserRecipeError(filename string, src []byte, offset int, err error, context string) error {
+func parserStyleError(filename string, src []byte, offset int, err error, context string) error {
 	if parseErr, ok := errors.AsType[*parse.Error](err); ok {
 		return fmt.Errorf("%s:%d:%d: malformed CSS in %s: %w", filename, parseErr.Line, parseErr.Column, context, err)
 	}
-	return recipeError(filename, src, offset, "malformed CSS in %s: %v", context, err)
+	return styleError(filename, src, offset, "malformed CSS in %s: %v", context, err)
 }
 
-func recipeError(filename string, src []byte, offset int, format string, args ...any) error {
+func styleError(filename string, src []byte, offset int, format string, args ...any) error {
 	if offset < 0 {
 		offset = 0
 	}

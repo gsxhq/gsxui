@@ -12,6 +12,8 @@ import (
 	gsxast "github.com/gsxhq/gsx/ast"
 	"github.com/gsxhq/gsx/gen"
 	gsxparser "github.com/gsxhq/gsx/parser"
+
+	"github.com/gsxhq/gsxui/internal/recipe"
 )
 
 func TestResolveGolden(t *testing.T) {
@@ -44,8 +46,8 @@ func TestResolveGolden(t *testing.T) {
 	}; !reflect.DeepEqual(report.UsedTokens, want) {
 		t.Errorf("ResolveReport.UsedTokens = %q, want %q", report.UsedTokens, want)
 	}
-	if bytes.Contains(got, []byte(RecipePrefix)) {
-		t.Errorf("Resolve() output still contains %q", RecipePrefix)
+	if bytes.Contains(got, []byte(recipe.Prefix)) {
+		t.Errorf("Resolve() output still contains %q", recipe.Prefix)
 	}
 	if !bytes.Contains(got, []byte("// Preserve this comment adjacent to the class switches.")) {
 		t.Error("Resolve() removed the class-switch comment")
@@ -235,7 +237,7 @@ func TestResolveAcceptsElementValuedExpressions(t *testing.T) {
 			if err != nil {
 				t.Fatalf("gen.Format() error = %v", err)
 			}
-			got, report, err := Resolve("element-valued.gsx", src, Recipes{})
+			got, report, err := Resolve("element-valued.gsx", src, recipe.Style{})
 			if err != nil {
 				t.Fatalf("Resolve() error = %v", err)
 			}
@@ -248,8 +250,8 @@ func TestResolveAcceptsElementValuedExpressions(t *testing.T) {
 			if !bytes.Contains(got, []byte(tt.want)) {
 				t.Errorf("Resolve() output does not preserve %q:\n%s", tt.want, got)
 			}
-			if bytes.Contains(got, []byte(RecipePrefix)) {
-				t.Errorf("Resolve() output still contains %q", RecipePrefix)
+			if bytes.Contains(got, []byte(recipe.Prefix)) {
+				t.Errorf("Resolve() output still contains %q", recipe.Prefix)
 			}
 		})
 	}
@@ -296,15 +298,15 @@ func TestRecipeTokensRejectsRecipeUseInsideElementValuedExpressions(t *testing.T
 					}
 				}
 			}
-			got, _, err := Resolve(filename, source, Recipes{})
+			got, _, err := Resolve(filename, source, recipe.Style{})
 			if err == nil {
 				t.Fatal("Resolve() error = nil, want structural recipe-use error")
 			}
 			if !strings.Contains(err.Error(), "recipe token") {
 				t.Errorf("Resolve() error %q does not identify recipe-token misuse", err)
 			}
-			if bytes.Contains(got, []byte(RecipePrefix)) {
-				t.Errorf("Resolve() returned output containing %q: %s", RecipePrefix, got)
+			if bytes.Contains(got, []byte(recipe.Prefix)) {
+				t.Errorf("Resolve() returned output containing %q: %s", recipe.Prefix, got)
 			}
 		})
 	}
@@ -349,7 +351,7 @@ func TestRecipeTokensRejectsRecipeContentInNestedElementValuedExpressions(t *tes
 			}
 
 			recipes := testRecipes(
-				Recipe{Token: "gsxui-recipe-button", Utilities: []string{"resolved-utility"}},
+				recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"resolved-utility"}},
 			)
 			got, report, err := Resolve(filename, source, recipes)
 			if err == nil {
@@ -405,7 +407,7 @@ func TestResolveRejectsRecipeTokenIntroducedByUtility(t *testing.T) {
 
 	src := []byte(resolveComponent(`<div class={ "gsxui-recipe-button" }></div>`))
 	recipes := testRecipes(
-		Recipe{Token: "gsxui-recipe-button", Utilities: []string{"gsxui-recipe-leaked"}},
+		recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"gsxui-recipe-leaked"}},
 	)
 	got, _, err := Resolve("introduced-token.gsx", src, recipes)
 	if err == nil {
@@ -414,8 +416,8 @@ func TestResolveRejectsRecipeTokenIntroducedByUtility(t *testing.T) {
 	if !strings.Contains(err.Error(), "gsxui-recipe-leaked") {
 		t.Errorf("Resolve() error %q does not identify introduced token", err)
 	}
-	if bytes.Contains(got, []byte(RecipePrefix)) {
-		t.Errorf("Resolve() returned output containing %q: %s", RecipePrefix, got)
+	if bytes.Contains(got, []byte(recipe.Prefix)) {
+		t.Errorf("Resolve() returned output containing %q: %s", recipe.Prefix, got)
 	}
 }
 
@@ -431,12 +433,12 @@ func TestResolveNoPrefixInvariantIsIndependentOfRecipeScanner(t *testing.T) {
 	if len(tokens) != 0 {
 		t.Fatalf("RecipeTokens() = %q, want none for source-only comment", tokens)
 	}
-	got, _, err := Resolve("output-invariant.gsx", src, Recipes{})
+	got, _, err := Resolve("output-invariant.gsx", src, recipe.Style{})
 	if err == nil {
 		t.Fatal("Resolve() error = nil, want independent no-prefix invariant error")
 	}
-	if bytes.Contains(got, []byte(RecipePrefix)) {
-		t.Errorf("Resolve() returned output containing %q: %s", RecipePrefix, got)
+	if bytes.Contains(got, []byte(recipe.Prefix)) {
+		t.Errorf("Resolve() returned output containing %q: %s", recipe.Prefix, got)
 	}
 }
 
@@ -488,7 +490,7 @@ func TestResolveAcceptsUnrelatedDynamicClassSurfaces(t *testing.T) {
 			if len(tokens) != 0 {
 				t.Fatalf("RecipeTokens() = %q, want none", tokens)
 			}
-			got, report, err := Resolve("dynamic.gsx", src, Recipes{})
+			got, report, err := Resolve("dynamic.gsx", src, recipe.Style{})
 			if err != nil {
 				t.Fatalf("Resolve() error = %v", err)
 			}
@@ -508,14 +510,14 @@ func TestResolveRejectsInvalidRecipeUse(t *testing.T) {
 	tests := []struct {
 		name    string
 		src     string
-		recipes Recipes
+		recipes recipe.Style
 		want    []string
 	}{
 		{
 			name: "missing used token and unused declaration reported together",
 			src:  resolveComponent(`<div class={ "gsxui-recipe-missing" }></div>`),
 			recipes: testRecipes(
-				Recipe{Token: "gsxui-recipe-unused", Utilities: []string{"grid"}},
+				recipe.Rule{Class: "gsxui-recipe-unused", Utilities: []string{"grid"}},
 			),
 			want: []string{"missing", "gsxui-recipe-missing", "unused", "gsxui-recipe-unused"},
 		},
@@ -523,71 +525,66 @@ func TestResolveRejectsInvalidRecipeUse(t *testing.T) {
 			name: "unused declaration",
 			src:  resolveComponent(`<div class={ "gsxui-recipe-button" }></div>`),
 			recipes: testRecipes(
-				Recipe{Token: "gsxui-recipe-button", Utilities: []string{"flex"}},
-				Recipe{Token: "gsxui-recipe-unused", Utilities: []string{"grid"}},
+				recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}},
+				recipe.Rule{Class: "gsxui-recipe-unused", Utilities: []string{"grid"}},
 			),
 			want: []string{"unused", "gsxui-recipe-unused"},
 		},
 		{
 			name: "duplicate declaration",
 			src:  resolveComponent(`<div class={ "gsxui-recipe-button" }></div>`),
-			recipes: Recipes{
-				ordered: []Recipe{
-					{Token: "gsxui-recipe-button", Utilities: []string{"flex"}},
-					{Token: "gsxui-recipe-button", Utilities: []string{"grid"}},
-				},
-				byToken: map[string]Recipe{
-					"gsxui-recipe-button": {Token: "gsxui-recipe-button", Utilities: []string{"grid"}},
-				},
-			},
+			recipes: recipe.NewStyle(
+				recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}},
+				recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"grid"}},
+			),
 			want: []string{"duplicate", "gsxui-recipe-button"},
 		},
 		{
 			name:    "static class",
 			src:     resolveComponent(`<div class="gsxui-recipe-button"></div>`),
-			recipes: testRecipes(Recipe{Token: "gsxui-recipe-button", Utilities: []string{"flex"}}),
+			recipes: testRecipes(recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
 			want:    []string{"static class", "gsxui-recipe-button"},
 		},
 		{
 			name:    "embedded in larger class token",
 			src:     resolveComponent(`<div class={ "prefix-gsxui-recipe-button" }></div>`),
-			recipes: testRecipes(Recipe{Token: "gsxui-recipe-button", Utilities: []string{"flex"}}),
+			recipes: testRecipes(recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
 			want:    []string{"whole", "prefix-gsxui-recipe-button"},
 		},
 		{
 			name:    "assembled by concatenation",
 			src:     resolveComponent(`<div class={ "gsxui-recipe-" + suffix }></div>`),
-			recipes: testRecipes(Recipe{Token: "gsxui-recipe-button", Utilities: []string{"flex"}}),
+			recipes: testRecipes(recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
 			want:    []string{"literal", "concatenation"},
 		},
 		{
 			name:    "assembled from split constant concatenation",
 			src:     resolveComponent(`<div class={ "gsxui-" + "recipe-button" }></div>`),
-			recipes: testRecipes(Recipe{Token: "gsxui-recipe-button", Utilities: []string{"flex"}}),
+			recipes: testRecipes(recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
 			want:    []string{"literal", "concatenation"},
 		},
 		{
 			name:    "assembled by interpolation",
 			src:     resolveComponent("<div class={ f`gsxui-recipe-@{suffix}` }></div>"),
-			recipes: testRecipes(Recipe{Token: "gsxui-recipe-button", Utilities: []string{"flex"}}),
+			recipes: testRecipes(recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
 			want:    []string{"literal", "interpolation"},
 		},
 		{
 			name:    "token in non-class expression",
 			src:     resolveComponent(`<div title={ "gsxui-recipe-button" } class={ "safe" }></div>`),
-			recipes: testRecipes(Recipe{Token: "gsxui-recipe-button", Utilities: []string{"flex"}}),
+			recipes: testRecipes(recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
 			want:    []string{"non-class", "gsxui-recipe-button"},
 		},
 		{
 			name:    "non-string class expression containing recipe",
 			src:     resolveComponent(`<div class={ choose("gsxui-recipe-button") }></div>`),
-			recipes: testRecipes(Recipe{Token: "gsxui-recipe-button", Utilities: []string{"flex"}}),
+			recipes: testRecipes(recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
 			want:    []string{"string literal", "gsxui-recipe-button"},
 		},
 		{
 			name:    "malformed gsx",
 			src:     "package p\ncomponent C() { <div>",
-			recipes: testRecipes(Recipe{Token: "gsxui-recipe-button", Utilities: []string{"flex"}}),
+			recipes: testRecipes(recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"flex"}}),
 			want:    []string{"malformed.gsx"},
 		},
 	}
@@ -608,25 +605,18 @@ func TestResolveRejectsInvalidRecipeUse(t *testing.T) {
 	}
 }
 
-func resolveTestRecipes() Recipes {
+func resolveTestRecipes() recipe.Style {
 	return testRecipes(
-		Recipe{Token: "gsxui-recipe-button-size-default", Utilities: []string{"h-9", "px-4"}},
-		Recipe{Token: "gsxui-recipe-button", Utilities: []string{"inline-flex", "items-center"}},
-		Recipe{Token: "gsxui-recipe-button-variant-outline", Utilities: []string{"border", "border-input", "bg-background"}},
-		Recipe{Token: "gsxui-recipe-button-size-icon", Utilities: []string{"size-9", "[&>svg]:shrink-0"}},
-		Recipe{Token: "gsxui-recipe-button-variant-default", Utilities: []string{"bg-primary", "text-primary-foreground"}},
+		recipe.Rule{Class: "gsxui-recipe-button-size-default", Utilities: []string{"h-9", "px-4"}},
+		recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"inline-flex", "items-center"}},
+		recipe.Rule{Class: "gsxui-recipe-button-variant-outline", Utilities: []string{"border", "border-input", "bg-background"}},
+		recipe.Rule{Class: "gsxui-recipe-button-size-icon", Utilities: []string{"size-9", "[&>svg]:shrink-0"}},
+		recipe.Rule{Class: "gsxui-recipe-button-variant-default", Utilities: []string{"bg-primary", "text-primary-foreground"}},
 	)
 }
 
-func testRecipes(recipes ...Recipe) Recipes {
-	result := Recipes{
-		ordered: append([]Recipe(nil), recipes...),
-		byToken: make(map[string]Recipe, len(recipes)),
-	}
-	for _, recipe := range recipes {
-		result.byToken[recipe.Token] = recipe
-	}
-	return result
+func testRecipes(rules ...recipe.Rule) recipe.Style {
+	return recipe.NewStyle(rules...)
 }
 
 func resolveComponent(body string) string {
@@ -648,12 +638,12 @@ func assertRecipeRejectedByBothAPIs(t *testing.T, src, want string) {
 		t.Errorf("RecipeTokens() error %q does not contain %q", err, want)
 	}
 
-	got, _, err := Resolve(filename, source, Recipes{})
+	got, _, err := Resolve(filename, source, recipe.Style{})
 	if err == nil {
 		t.Fatal("Resolve() error = nil, want structural recipe-use error")
 	}
-	if bytes.Contains(got, []byte(RecipePrefix)) {
-		t.Errorf("Resolve() returned output containing %q: %s", RecipePrefix, got)
+	if bytes.Contains(got, []byte(recipe.Prefix)) {
+		t.Errorf("Resolve() returned output containing %q: %s", recipe.Prefix, got)
 	}
 	if !strings.Contains(err.Error(), want) {
 		t.Errorf("Resolve() error %q does not contain %q", err, want)

@@ -19,6 +19,8 @@ import (
 	gsxast "github.com/gsxhq/gsx/ast"
 	"github.com/gsxhq/gsx/gen"
 	gsxparser "github.com/gsxhq/gsx/parser"
+
+	"github.com/gsxhq/gsxui/internal/recipe"
 )
 
 var buttonRecipeTokens = []string{
@@ -182,11 +184,11 @@ func TestButtonRecipesDeclareExactCanonicalRoleSet(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			recipes, err := ParseRecipes(filename, src)
+			recipes, err := recipe.ParseStyle(filename, src)
 			if err != nil {
-				t.Fatalf("ParseRecipes() error = %v", err)
+				t.Fatalf("ParseStyle() error = %v", err)
 			}
-			got := recipes.Tokens()
+			got := recipes.Classes()
 			sort.Strings(got)
 			if !reflect.DeepEqual(got, buttonRecipeTokens) {
 				t.Errorf("%s recipe tokens = %q, want exact canonical role set %q", style, got, buttonRecipeTokens)
@@ -244,19 +246,19 @@ func TestButtonRecipesCarryRecognizableConcretePresentationForEveryRole(t *testi
 			if err != nil {
 				t.Fatal(err)
 			}
-			recipes, err := ParseRecipes(filename, src)
+			recipes, err := recipe.ParseStyle(filename, src)
 			if err != nil {
-				t.Fatalf("ParseRecipes() error = %v", err)
+				t.Fatalf("ParseStyle() error = %v", err)
 			}
 			for role, wantUtilities := range roles {
-				recipe, ok := recipes.Lookup(role)
+				rule, ok := recipes.Lookup(role)
 				if !ok {
 					t.Errorf("recipe %q is missing", role)
 					continue
 				}
 				for _, utility := range wantUtilities {
-					if !containsString(recipe.Utilities, utility) {
-						t.Errorf("recipe %q utilities = %q, want recognizable %q", role, recipe.Utilities, utility)
+					if !containsString(rule.Utilities, utility) {
+						t.Errorf("recipe %q utilities = %q, want recognizable %q", role, rule.Utilities, utility)
 					}
 				}
 			}
@@ -284,9 +286,9 @@ func TestGenerateButtonArtifactsMatchCommittedResolvedSources(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		recipes, err := ParseRecipes(recipePath, recipeSource)
+		recipes, err := recipe.ParseStyle(recipePath, recipeSource)
 		if err != nil {
-			t.Fatalf("ParseRecipes(%s) error = %v", style, err)
+			t.Fatalf("ParseStyle(%s) error = %v", style, err)
 		}
 		want, report, err := Resolve(canonicalPath, canonical, recipes)
 		if err != nil {
@@ -480,7 +482,7 @@ func readGeneratedButtons(t *testing.T, root string) map[string][]byte {
 func assertGeneratedButtonSource(t *testing.T, filename string, src []byte) {
 	t.Helper()
 
-	if bytes.Contains(src, []byte(RecipePrefix)) {
+	if bytes.Contains(src, []byte(recipe.Prefix)) {
 		t.Errorf("%s contains recipe tokens", filename)
 	}
 	for _, helper := range []string{"variantClass", "sizeClass", "buttonClass"} {
@@ -710,7 +712,7 @@ func assertButtonRoleLiteral(t *testing.T, name, expr, want string) {
 	if got != want {
 		t.Errorf("%s = %q, want %q", name, got, want)
 	}
-	if got != "" && !strings.HasPrefix(got, RecipePrefix) {
+	if got != "" && !strings.HasPrefix(got, recipe.Prefix) {
 		t.Errorf("%s contains concrete presentation utility %q", name, got)
 	}
 }

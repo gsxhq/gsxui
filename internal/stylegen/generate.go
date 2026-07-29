@@ -12,6 +12,8 @@ import (
 	"strings"
 
 	gsxparser "github.com/gsxhq/gsx/parser"
+
+	"github.com/gsxhq/gsxui/internal/recipe"
 )
 
 type buttonStyleSource struct {
@@ -77,7 +79,7 @@ func resolveButtonSources(root string) ([]generatedButtonSource, error) {
 		if err != nil {
 			return nil, fmt.Errorf("read %s Button recipe %s: %w", style.name, recipePath, err)
 		}
-		recipes, err := ParseRecipes(recipePath, recipeSource)
+		recipes, err := recipe.ParseStyle(recipePath, recipeSource)
 		if err != nil {
 			return nil, fmt.Errorf("parse %s Button recipe: %w", style.name, err)
 		}
