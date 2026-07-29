@@ -511,7 +511,12 @@ test("CSS import ignores valid unrelated implicit nesting", async ({ page }) => 
 test("theme editor exposes Retry when the preview never handshakes", async ({
   page,
 }) => {
+  let responsive = false;
   await page.route("**/theme/preview/button", async (route) => {
+    if (responsive) {
+      await route.fallback();
+      return;
+    }
     await route.fulfill({
       contentType: "text/html",
       body: "<!doctype html><title>Unresponsive preview</title>",
@@ -523,4 +528,210 @@ test("theme editor exposes Retry when the preview never handshakes", async ({
     "Preview did not respond.",
   );
   await expect(page.locator("[data-theme-preview-retry]")).toBeVisible();
+
+  responsive = true;
+  await page.locator("[data-theme-preview-retry]").click();
+  await expect(page.locator("[data-theme-preview-status]")).toHaveText("Live");
+  await expect(page.locator("[data-theme-preview-retry]")).toBeHidden();
+});
+
+test("preview acknowledgement survives a late parent-observed iframe load", async ({
+  page,
+}) => {
+  await page.goto("/theme");
+  const status = page.locator("[data-theme-preview-status]");
+  const retry = page.locator("[data-theme-preview-retry]");
+  await expect(status).toHaveText("Live");
+  await expect(retry).toBeHidden();
+
+  await page
+    .locator("[data-theme-preview-frame]")
+    .evaluate((frame) => frame.dispatchEvent(new Event("load")));
+
+  await page.waitForTimeout(2_100);
+  await expect(status).toHaveText("Live");
+  await expect(retry).toBeHidden();
+});
+
+test("stale previous-document responses cannot complete a fresh preview attempt", async ({
+  page,
+}) => {
+  let responsive = true;
+  await page.route("**/theme/preview/button", async (route) => {
+    if (responsive) {
+      await route.fallback();
+      return;
+    }
+    await route.fulfill({
+      contentType: "text/html",
+      body: "<!doctype html><body data-unresponsive-preview>Unresponsive preview</body>",
+    });
+  });
+
+  await page.goto("/theme");
+  const frame = page.locator("[data-theme-preview-frame]");
+  const preview = page.frameLocator("[data-theme-preview-frame]");
+  const status = page.locator("[data-theme-preview-status]");
+  const retry = page.locator("[data-theme-preview-retry]");
+  await expect(status).toHaveText("Live");
+
+  await preview.locator("html").evaluate(() => {
+    addEventListener("message", (event) => {
+      if (event.data?.type === "gsxui:theme-preview:v1") {
+        (
+          globalThis as typeof globalThis & {
+            capturedThemePreviewAttempt?: string;
+          }
+        ).capturedThemePreviewAttempt = event.data.attempt;
+      }
+    });
+  });
+  await page.locator('[data-theme-mode-tab="dark"]').click();
+  await expect
+    .poll(() =>
+      preview.locator("html").evaluate(
+        () =>
+          (
+            globalThis as typeof globalThis & {
+              capturedThemePreviewAttempt?: string;
+            }
+          ).capturedThemePreviewAttempt,
+      ),
+    )
+    .toBeTruthy();
+  const staleAttempt = await preview.locator("html").evaluate(
+    () =>
+      (
+        globalThis as typeof globalThis & {
+          capturedThemePreviewAttempt: string;
+        }
+      ).capturedThemePreviewAttempt,
+  );
+  await expect(status).toHaveText("Live");
+  await expect(retry).toBeHidden();
+
+  responsive = false;
+  await frame.evaluate((element: HTMLIFrameElement) => {
+    element.src = element.src;
+  });
+  await expect(preview.locator("[data-unresponsive-preview]")).toBeVisible();
+
+  await preview.locator("html").evaluate((_, attempt) => {
+    parent.postMessage(
+      { type: "gsxui:theme-preview-applied:v1", attempt },
+      location.origin,
+    );
+    parent.postMessage(
+      {
+        type: "gsxui:theme-preview-error:v1",
+        attempt,
+        message: "stale preview error",
+      },
+      location.origin,
+    );
+  }, staleAttempt);
+
+  await expect(status).toHaveText("Preview did not respond.");
+  await expect(retry).toBeVisible();
+
+  responsive = true;
+  await retry.click();
+  await expect(status).toHaveText("Live");
+  await expect(retry).toBeHidden();
+});
+
+test("preview rejects state messages with an empty attempt identity", async ({
+  page,
+}) => {
+  await page.goto("/theme");
+  const frame = page.locator("[data-theme-preview-frame]");
+  const preview = page.frameLocator("[data-theme-preview-frame]");
+  const status = page.locator("[data-theme-preview-status]");
+  const retry = page.locator("[data-theme-preview-retry]");
+  await expect(status).toHaveText("Live");
+
+  await page.evaluate(() => {
+    addEventListener("message", (event) => {
+      if (event.data?.attempt === "") {
+        (
+          globalThis as typeof globalThis & {
+            invalidAttemptResponse?: unknown;
+          }
+        ).invalidAttemptResponse = event.data;
+      }
+    });
+  });
+  await preview.locator("html").evaluate(() => {
+    addEventListener("message", (event) => {
+      if (event.data?.type === "gsxui:theme-preview:v1") {
+        (
+          globalThis as typeof globalThis & {
+            capturedThemePreviewMessage?: unknown;
+          }
+        ).capturedThemePreviewMessage = structuredClone(event.data);
+      }
+    });
+  });
+  await page.locator('[data-theme-mode-tab="dark"]').click();
+  await expect
+    .poll(() =>
+      preview.locator("html").evaluate(
+        () =>
+          (
+            globalThis as typeof globalThis & {
+              capturedThemePreviewMessage?: unknown;
+            }
+          ).capturedThemePreviewMessage,
+      ),
+    )
+    .not.toBeUndefined();
+  const payload = await preview.locator("html").evaluate(
+    () =>
+      (
+        globalThis as typeof globalThis & {
+          capturedThemePreviewMessage: unknown;
+        }
+      ).capturedThemePreviewMessage,
+  );
+
+  await frame.evaluate(
+    (
+      element: HTMLIFrameElement,
+      message: Record<string, unknown>,
+    ) => {
+      element.contentWindow?.postMessage(
+        { ...message, attempt: "", mode: "light" },
+        location.origin,
+      );
+    },
+    payload,
+  );
+
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          (
+            globalThis as typeof globalThis & {
+              invalidAttemptResponse?: {
+                type?: string;
+                message?: string;
+              };
+            }
+          ).invalidAttemptResponse,
+      ),
+    )
+    .toMatchObject({
+      type: "gsxui:theme-preview-error:v1",
+      message: "attempt must be a non-empty string",
+    });
+  await expect
+    .poll(() =>
+      preview
+        .locator("html")
+        .evaluate((element) => element.classList.contains("dark")),
+    )
+    .toBe(true);
+  await expect(status).toHaveText("Live");
+  await expect(retry).toBeHidden();
 });

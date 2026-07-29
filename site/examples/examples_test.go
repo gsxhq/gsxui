@@ -5,6 +5,7 @@ import (
 	"context"
 	"net/url"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -12,6 +13,88 @@ import (
 	"github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/site/examples"
 )
+
+func TestRegisterRejectsDuplicateExampleNames(t *testing.T) {
+	const childEnvironment = "GSXUI_TEST_DUPLICATE_EXAMPLE_REGISTRATION"
+	if os.Getenv(childEnvironment) == "1" {
+		examples.Register("__duplicate-registration-test__", examples.Example{Name: "same-name"})
+		examples.Register("__duplicate-registration-test__", examples.Example{Name: "same-name"})
+		return
+	}
+
+	command := exec.Command(os.Args[0], "-test.run=^TestRegisterRejectsDuplicateExampleNames$")
+	command.Env = append(os.Environ(), childEnvironment+"=1")
+	output, err := command.CombinedOutput()
+	if err == nil {
+		t.Fatalf("duplicate component/example registration succeeded; output:\n%s", output)
+	}
+	const want = `examples: duplicate registration for component "__duplicate-registration-test__" example "same-name"`
+	if !strings.Contains(string(output), want) {
+		t.Fatalf("duplicate registration failure = %v\noutput:\n%s\nwant panic containing:\n%s", err, output, want)
+	}
+}
+
+func TestRegisterValidatesViewportWidth(t *testing.T) {
+	const childEnvironment = "GSXUI_TEST_EXAMPLE_VIEWPORT_WIDTH"
+	if testCase := os.Getenv(childEnvironment); testCase != "" {
+		switch testCase {
+		case "negative":
+			examples.Register("__viewport-width-test__", examples.Example{
+				Name:          "negative",
+				ViewportWidth: -1,
+			})
+		case "inline":
+			examples.Register("__viewport-width-test__", examples.Example{
+				Name:          "inline",
+				ViewportWidth: 1024,
+			})
+		case "isolated":
+			examples.Register("__viewport-width-test__", examples.Example{
+				Name:          "isolated",
+				Isolated:      true,
+				ViewportWidth: 1024,
+			})
+		default:
+			t.Fatalf("unknown child test case %q", testCase)
+		}
+		return
+	}
+
+	tests := []struct {
+		name      string
+		wantPanic string
+	}{
+		{
+			name:      "negative",
+			wantPanic: `examples: component "__viewport-width-test__" example "negative" has negative viewport width -1`,
+		},
+		{
+			name:      "inline",
+			wantPanic: `examples: component "__viewport-width-test__" example "inline" has viewport width 1024 but is not isolated`,
+		},
+		{name: "isolated"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			command := exec.Command(os.Args[0], "-test.run=^TestRegisterValidatesViewportWidth$")
+			command.Env = append(os.Environ(), childEnvironment+"="+tt.name)
+			output, err := command.CombinedOutput()
+			if tt.wantPanic == "" {
+				if err != nil {
+					t.Fatalf("valid viewport registration failed: %v\noutput:\n%s", err, output)
+				}
+				return
+			}
+			if err == nil {
+				t.Fatalf("invalid viewport registration succeeded; output:\n%s", output)
+			}
+			if !strings.Contains(string(output), tt.wantPanic) {
+				t.Fatalf("viewport registration failure = %v\noutput:\n%s\nwant panic containing:\n%s", err, output, tt.wantPanic)
+			}
+		})
+	}
+}
 
 func TestFindResolvesOnlyExactRegisteredExamples(t *testing.T) {
 	title, node, ok := examples.Find("button", "basic", nil)

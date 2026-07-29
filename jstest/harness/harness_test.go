@@ -200,19 +200,41 @@ func TestThemeRouteLoadsProductionEquivalentBrowserEntry(t *testing.T) {
 	}
 	for _, want := range []string{
 		`import "./harness-site.js";`,
-		`import "../web/theme.js";`,
 	} {
 		if !strings.Contains(string(entry), want) {
 			t.Errorf("jstest/harness-theme.js missing %q", want)
 		}
+	}
+	if strings.Contains(string(entry), `import "../web/theme.js";`) {
+		t.Error("theme harness entry redundantly imports the controller already provided by harness-site.js")
 	}
 
 	siteEntry, err := os.ReadFile(filepath.Join(root, "jstest", "harness-site.js"))
 	if err != nil {
 		t.Fatalf("reading jstest/harness-site.js: %v", err)
 	}
-	if strings.Contains(string(siteEntry), `import "../web/theme.js";`) {
-		t.Error("shared harness entry imports theme-only dependencies")
+	if !strings.Contains(string(siteEntry), `import "../web/theme.js";`) {
+		t.Error("shared harness entry omits the production theme controller")
+	}
+
+	siteRes, err := http.Get(srv.URL + "/site/theme")
+	if err != nil {
+		t.Fatalf("GET /site/theme: %v", err)
+	}
+	siteBody, _ := io.ReadAll(siteRes.Body)
+	siteRes.Body.Close()
+	if siteRes.StatusCode != http.StatusOK {
+		t.Fatalf("GET /site/theme status = %d, want 200", siteRes.StatusCode)
+	}
+	productionPage := string(siteBody)
+	for _, want := range []string{
+		`<script type="importmap">`,
+		`"css-tree":"/static/node_modules/css-tree/dist/csstree.esm.js"`,
+		`<script type="module" src="/static/jstest/harness-site.js"></script>`,
+	} {
+		if !strings.Contains(productionPage, want) {
+			t.Errorf("/site/theme missing %q", want)
+		}
 	}
 }
 

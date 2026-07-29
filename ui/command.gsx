@@ -34,16 +34,20 @@ component Command(children gsx.Node, attrs gsx.Attrs) {
 
 // CommandDialog composes Dialog/DialogContent (so command → dialog derives
 // for the CLI and dialog.js's machinery — trigger wiring, Esc, exit
-// animation, backdrop — is reused whole). The sr-only header lives INSIDE
-// DialogContent, unlike shadcn's outside-the-content placement: our
+// animation, backdrop — is reused whole). An optional trigger node renders
+// inside that same Dialog root; dialog ownership is deliberately nearest-root
+// scoped, so callers must not wrap CommandDialog in another Dialog to attach a
+// trigger. The sr-only header lives INSIDE DialogContent, unlike shadcn's
+// outside-the-content placement: our
 // dialog.js wireA11y looks the title/description up within the <dialog>
 // element to stamp aria-labelledby/-describedby (an ADAPT with identical
 // semantics — the text is sr-only either way).
 //
 // data-gsxui-command-dialog on the content is command.js's global-hotkey
 // hook: ⌘K/Ctrl-K toggles the first such dialog on the page.
-component CommandDialog(title string, description string, children gsx.Node, attrs gsx.Attrs) {
+component CommandDialog(title string, description string, trigger gsx.Node, children gsx.Node, attrs gsx.Attrs) {
 	<Dialog data-gsxui-slot-command-dialog>
+		{ trigger }
 		<DialogContent
 			data-gsxui-command-dialog
 			{ attrs... }

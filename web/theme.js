@@ -27,6 +27,7 @@ import {
 
 const PREVIEW_MESSAGE = "gsxui:theme-preview:v1";
 const READY_MESSAGE = "gsxui:theme-preview-ready:v1";
+const APPLIED_MESSAGE = "gsxui:theme-preview-applied:v1";
 const ERROR_MESSAGE = "gsxui:theme-preview-error:v1";
 const PREVIEW_HANDSHAKE_TIMEOUT_MS = 2_000;
 
@@ -64,6 +65,7 @@ if (schemaElement) {
 
   let state;
   let previewHandshakeTimer;
+  let previewAttempt = "";
   let initialMessage = "";
   try {
     const shared = loadShareFromURL(location.href, schema, validators);
@@ -84,6 +86,7 @@ if (schemaElement) {
   function previewPayload() {
     return {
       type: PREVIEW_MESSAGE,
+      attempt: previewAttempt,
       preset: previewPreset(state),
       mode: state.mode,
     };
@@ -101,6 +104,7 @@ if (schemaElement) {
 
   function startPreviewHandshake(message = "Connecting to preview…") {
     finishPreviewHandshake();
+    previewAttempt = crypto.randomUUID();
     if (previewStatus) previewStatus.textContent = message;
     previewRetry?.classList.add("hidden");
     previewHandshakeTimer = setTimeout(() => {
@@ -505,11 +509,14 @@ if (schemaElement) {
   addEventListener("message", (event) => {
     if (event.origin !== location.origin || event.source !== frame?.contentWindow) return;
     if (event.data?.type === READY_MESSAGE) {
+      syncPreview();
+    } else if (event.data?.type === APPLIED_MESSAGE) {
+      if (event.data.attempt !== previewAttempt) return;
       finishPreviewHandshake();
       if (previewStatus) previewStatus.textContent = "Live";
       previewRetry?.classList.add("hidden");
-      syncPreview();
     } else if (event.data?.type === ERROR_MESSAGE) {
+      if (event.data.attempt !== previewAttempt) return;
       finishPreviewHandshake();
       if (previewStatus) previewStatus.textContent = event.data.message || "Preview rejected the current state.";
       previewRetry?.classList.remove("hidden");

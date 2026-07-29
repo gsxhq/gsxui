@@ -10,6 +10,17 @@ import (
 	"github.com/gsxhq/gsxui/ui"
 )
 
+const browserImportMap = `<script type="importmap">{"imports":{
+  "css-tree":"/static/node_modules/css-tree/dist/csstree.esm.js",
+  "jsonc-parser":"/static/node_modules/jsonc-parser/lib/esm/main.js",
+  "postcss/lib/parse":"/static/jstest/.tmp/postcss-parse.mjs",
+  "/static/node_modules/jsonc-parser/lib/esm/impl/edit":"/static/node_modules/jsonc-parser/lib/esm/impl/edit.js",
+  "/static/node_modules/jsonc-parser/lib/esm/impl/format":"/static/node_modules/jsonc-parser/lib/esm/impl/format.js",
+  "/static/node_modules/jsonc-parser/lib/esm/impl/parser":"/static/node_modules/jsonc-parser/lib/esm/impl/parser.js",
+  "/static/node_modules/jsonc-parser/lib/esm/impl/scanner":"/static/node_modules/jsonc-parser/lib/esm/impl/scanner.js",
+  "/static/node_modules/jsonc-parser/lib/esm/impl/string-intern":"/static/node_modules/jsonc-parser/lib/esm/impl/string-intern.js"
+}}</script>`
+
 // shellTmpl is the minimal page every harness route renders into. It
 // deliberately carries only what a component needs: the compiled stylesheet
 // and one module script. No site chrome, no web/site.js, no theme script —
@@ -26,16 +37,7 @@ var shellTmpl = template.Must(template.New("shell").Parse(
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{.Title}}</title>
 <link rel="stylesheet" href="{{.Stylesheet}}">
-<script type="importmap">{"imports":{
-  "css-tree":"/static/node_modules/css-tree/dist/csstree.esm.js",
-  "jsonc-parser":"/static/node_modules/jsonc-parser/lib/esm/main.js",
-  "postcss/lib/parse":"/static/jstest/.tmp/postcss-parse.mjs",
-  "/static/node_modules/jsonc-parser/lib/esm/impl/edit":"/static/node_modules/jsonc-parser/lib/esm/impl/edit.js",
-  "/static/node_modules/jsonc-parser/lib/esm/impl/format":"/static/node_modules/jsonc-parser/lib/esm/impl/format.js",
-  "/static/node_modules/jsonc-parser/lib/esm/impl/parser":"/static/node_modules/jsonc-parser/lib/esm/impl/parser.js",
-  "/static/node_modules/jsonc-parser/lib/esm/impl/scanner":"/static/node_modules/jsonc-parser/lib/esm/impl/scanner.js",
-  "/static/node_modules/jsonc-parser/lib/esm/impl/string-intern":"/static/node_modules/jsonc-parser/lib/esm/impl/string-intern.js"
-}}</script>
+{{.ImportMap}}
 <script type="module" src="{{.Script}}"></script>
 </head>
 <body class="min-h-svh bg-background text-foreground antialiased">
@@ -49,6 +51,7 @@ type shellData struct {
 	Title      string
 	Stylesheet string
 	Script     string
+	ImportMap  template.HTML
 	Body       template.HTML
 	Toaster    template.HTML
 }
@@ -65,6 +68,7 @@ func renderShell(w io.Writer, title, stylesheet, script string, body template.HT
 		Title:      title,
 		Stylesheet: stylesheet,
 		Script:     script,
+		ImportMap:  template.HTML(browserImportMap),
 		Body:       body,
 		Toaster:    template.HTML(toaster.String()),
 	})

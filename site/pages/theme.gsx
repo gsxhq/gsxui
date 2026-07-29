@@ -183,14 +183,37 @@ const themeImportPlaceholder = `:root {
 
 component (t Theme) Page() {
 	<siteLayout title="Theme" active="" mode={layoutWorkspace} toc={nil}>
-		<ThemeEditor previewURL={ThemePreviewButton{} |> url}/>
+		<themeEditor previewURL={ThemePreviewButton{} |> url} workspace/>
 	</siteLayout>
 }
 
 // ThemeEditor is the editor body without the site shell, so the browser
 // harness can exercise the production controls and web/theme.js directly.
 component ThemeEditor(previewURL string) {
-	<div class="flex flex-col gap-8 py-10">
+	<themeEditor previewURL={previewURL}/>
+}
+
+component themeEditor(previewURL string, workspace bool) {
+	{{
+		editorClass := "flex flex-col gap-8 py-10"
+		gridClass := "grid grid-cols-1 gap-8"
+		previewPanelClass := "flex min-w-0 flex-col gap-4"
+		controlsPanelClass := "flex min-w-0 flex-col gap-7"
+		iframeClass := "w-full rounded-xl border border-border bg-background shadow-sm"
+		if workspace {
+			editorClass += " lg:h-full lg:min-h-0 lg:gap-4 lg:py-0"
+			gridClass += " lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(22rem,28rem)_minmax(0,1fr)] lg:grid-rows-[auto_minmax(12rem,1fr)] lg:gap-x-8 lg:gap-y-6"
+			previewPanelClass += " lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:min-h-0"
+			controlsPanelClass += " lg:col-start-1 lg:row-start-2 lg:min-h-0 lg:overflow-y-auto lg:pr-2"
+			iframeClass += " h-[min(70svh,640px)] lg:h-auto lg:min-h-0 lg:flex-1"
+		} else {
+			gridClass += " xl:grid-cols-[minmax(0,5fr)_minmax(420px,7fr)]"
+			previewPanelClass += " xl:col-start-2 xl:row-span-2 xl:row-start-1"
+			controlsPanelClass += " xl:col-start-1 xl:row-start-2"
+			iframeClass += " min-h-[640px]"
+		}
+	}}
+	<div class={editorClass}>
 		<script type="application/json" data-theme-schema>@{ themeEditorSchemaValue() }</script>
 		<div>
 			<h1 class="text-3xl font-semibold tracking-tight">Theme editor</h1>
@@ -199,41 +222,69 @@ component ThemeEditor(previewURL string) {
 				Nova or Maia source a project receives from <code>gsxui add</code>.
 			</p>
 		</div>
-		<div class="grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,5fr)_minmax(420px,7fr)]">
-			<div class="flex min-w-0 flex-col gap-7">
-				<section class="flex flex-col gap-3">
-					<div class="flex items-center justify-between gap-3">
-						<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Style</h2>
-						<ui.Button data-theme-reset variant="outline" size="sm">Reset</ui.Button>
+		<div class={gridClass}>
+			<section data-theme-style-panel class="flex min-w-0 flex-col gap-3">
+				<div class="flex items-center justify-between gap-3">
+					<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Style</h2>
+					<ui.Button data-theme-reset variant="outline" size="sm">Reset</ui.Button>
+				</div>
+				<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+					<button
+						type="button"
+						data-theme-style="nova"
+						aria-pressed="true"
+						class="rounded-xl border border-primary bg-accent/50 p-4 text-left transition-colors hover:bg-accent"
+					>
+						<span class="block font-medium">Nova</span>
+						<span class="mt-1 block text-xs text-muted-foreground">Compact, practical defaults.</span>
+					</button>
+					<button
+						type="button"
+						data-theme-style="maia"
+						aria-pressed="false"
+						class="rounded-xl border border-border p-4 text-left transition-colors hover:bg-accent"
+					>
+						<span class="flex items-center justify-between gap-2">
+							<span class="font-medium">Maia</span>
+							<span class="rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-foreground">Button pilot</span>
+						</span>
+						<span class="mt-1 block text-xs text-muted-foreground">Softer geometry and roomier controls.</span>
+					</button>
+				</div>
+				<p class="text-xs text-muted-foreground">
+					Maia currently applies only to Button. The CLI refuses an unsafe mixed-style migration once other components
+					are installed.
+				</p>
+			</section>
+			<div
+				data-theme-preview-panel
+				class={previewPanelClass}
+			>
+				<div class="flex items-center justify-between gap-3">
+					<div>
+						<h2 class="font-medium">Button preview</h2>
+						<p data-theme-preview-status class="text-xs text-muted-foreground">Connecting to preview…</p>
 					</div>
-					<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-						<button
-							type="button"
-							data-theme-style="nova"
-							aria-pressed="true"
-							class="rounded-xl border border-primary bg-accent/50 p-4 text-left transition-colors hover:bg-accent"
-						>
-							<span class="block font-medium">Nova</span>
-							<span class="mt-1 block text-xs text-muted-foreground">Compact, practical defaults.</span>
-						</button>
-						<button
-							type="button"
-							data-theme-style="maia"
-							aria-pressed="false"
-							class="rounded-xl border border-border p-4 text-left transition-colors hover:bg-accent"
-						>
-							<span class="flex items-center justify-between gap-2">
-								<span class="font-medium">Maia</span>
-								<span class="rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-foreground">Button pilot</span>
-							</span>
-							<span class="mt-1 block text-xs text-muted-foreground">Softer geometry and roomier controls.</span>
-						</button>
-					</div>
-					<p class="text-xs text-muted-foreground">
-						Maia currently applies only to Button. The CLI refuses an unsafe mixed-style migration once other components
-						are installed.
-					</p>
-				</section>
+					<ui.Button data-theme-preview-retry variant="outline" size="sm" class="hidden">Retry</ui.Button>
+				</div>
+				<iframe
+					data-theme-preview-frame
+					title="Button theme preview"
+					src={previewURL}
+					class={iframeClass}
+				></iframe>
+				<p data-theme-status role="status" aria-live="polite" class="min-h-5 text-sm text-muted-foreground"></p>
+				<textarea
+					data-theme-manual-copy
+					readonly
+					rows="5"
+					class="hidden w-full rounded-md border border-input bg-background p-3 font-mono text-xs"
+				></textarea>
+			</div>
+			<div
+				data-theme-controls-panel
+				class={controlsPanelClass}
+			>
 				<section class="flex flex-col gap-3 border-t border-border pt-6">
 					<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Mode and palette</h2>
 					<div class="flex flex-wrap items-end justify-between gap-4">
@@ -334,28 +385,6 @@ component ThemeEditor(previewURL string) {
 						></textarea>
 					</label>
 				</section>
-			</div>
-			<div class="flex min-w-0 flex-col gap-4 xl:sticky xl:top-20 xl:self-start">
-				<div class="flex items-center justify-between gap-3">
-					<div>
-						<h2 class="font-medium">Button preview</h2>
-						<p data-theme-preview-status class="text-xs text-muted-foreground">Connecting to preview…</p>
-					</div>
-					<ui.Button data-theme-preview-retry variant="outline" size="sm" class="hidden">Retry</ui.Button>
-				</div>
-				<iframe
-					data-theme-preview-frame
-					title="Button theme preview"
-					src={previewURL}
-					class="min-h-[640px] w-full rounded-xl border border-border bg-background shadow-sm"
-				></iframe>
-				<p data-theme-status role="status" aria-live="polite" class="min-h-5 text-sm text-muted-foreground"></p>
-				<textarea
-					data-theme-manual-copy
-					readonly
-					rows="5"
-					class="hidden w-full rounded-md border border-input bg-background p-3 font-mono text-xs"
-				></textarea>
 			</div>
 		</div>
 	</div>

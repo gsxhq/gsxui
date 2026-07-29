@@ -6,11 +6,43 @@ test("sidebar documentation contains each app shell inside its own viewport", as
   const previews = page.locator("iframe[data-site-isolated-preview]");
   await expect(previews).toHaveCount(10);
   await expect(page.locator("[data-gsxui-slot-sidebar-container]")).toHaveCount(0);
-  await expect(page.locator('a[href="/components/button"]').first()).toBeVisible();
+  await expect(
+    page.locator('[data-site-docs-sidebar] a[href="/components/button"]'),
+  ).toBeVisible();
 
+  const basicFrame = page.locator('iframe[src="/examples/sidebar/basic"]');
   const basic = page.frameLocator('iframe[src="/examples/sidebar/basic"]');
   const wrapper = basic.locator("[data-gsxui-sidebar-wrapper]");
   const container = basic.locator("[data-gsxui-slot-sidebar-container]");
+  await expect(basicFrame).toHaveAttribute("width", "1024");
+  await expect
+    .poll(() =>
+      basic
+        .locator("html")
+        .evaluate(() => document.documentElement.clientWidth),
+    )
+    .toBe(1024);
+  const previewGeometry = await basicFrame
+    .locator("..")
+    .evaluate((surface) => {
+      const frame = surface.querySelector("iframe");
+      if (!(frame instanceof HTMLIFrameElement)) {
+        throw new Error("isolated preview surface is missing its iframe");
+      }
+      return {
+        surfaceWidth: surface.getBoundingClientRect().width,
+        frameWidth: frame.getBoundingClientRect().width,
+        overflowX: getComputedStyle(surface).overflowX,
+      };
+    });
+  expect(previewGeometry.surfaceWidth).toBe(640);
+  expect(previewGeometry.frameWidth).toBe(1024);
+  expect(previewGeometry.overflowX).toBe("hidden");
+  const outerDocumentWidth = await page.locator("html").evaluate(() => ({
+    client: document.documentElement.clientWidth,
+    scroll: document.documentElement.scrollWidth,
+  }));
+  expect(outerDocumentWidth.scroll).toBe(outerDocumentWidth.client);
   await expect(wrapper).toHaveAttribute("data-state", "expanded");
   await expect(container).toBeVisible();
 

@@ -8,6 +8,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/gsxhq/gsxui/site/examples"
 	"github.com/gsxhq/gsxui/site/pages"
 	"github.com/gsxhq/vite"
 	"github.com/jackielii/structpages"
@@ -217,6 +218,25 @@ func TestDocsTableOfContents(t *testing.T) {
 				if tabindex, ok := htmlAttribute(heading, "tabindex"); !ok || tabindex != "-1" {
 					t.Errorf("GET %s heading %q tabindex = %q, want -1", tt.path, id, tabindex)
 				}
+				class, _ := htmlAttribute(heading, "class")
+				for _, forbidden := range []string{"text-lg", "text-xl"} {
+					if strings.Contains(class, forbidden) {
+						t.Errorf("GET %s heading %q unexpectedly receives shared typography %q in class %q", tt.path, id, forbidden, class)
+					}
+				}
+				if tt.path == "/components/button" {
+					for _, want := range []string{"text-sm", "font-medium", "uppercase", "tracking-wide", "text-muted-foreground"} {
+						if !strings.Contains(class, want) {
+							t.Errorf("GET %s heading %q class %q missing prior component presentation %q", tt.path, id, class, want)
+						}
+					}
+				} else {
+					for _, forbidden := range []string{"text-sm", "font-medium", "uppercase", "tracking-wide", "text-muted-foreground", "font-semibold"} {
+						if strings.Contains(class, forbidden) {
+							t.Errorf("GET %s guide heading %q unexpectedly receives component/shared presentation %q in class %q", tt.path, id, forbidden, class)
+						}
+					}
+				}
 			}
 
 			for index, link := range links {
@@ -238,6 +258,52 @@ func TestDocsTableOfContents(t *testing.T) {
 				}
 				if got := normalizedHTMLText(link); got != item.title {
 					t.Errorf("GET %s TOC link %q text = %q, want %q", tt.path, href, got, item.title)
+				}
+			}
+		})
+	}
+
+	for _, component := range examples.Components() {
+		t.Run("all component routes/"+component, func(t *testing.T) {
+			document := renderDocument(t, handler, "/components/"+component)
+			registered := examples.For(component)
+
+			var headings []*html.Node
+			var links []*html.Node
+			walkHTML(document, func(node *html.Node) {
+				if hasHTMLAttribute(node, "data-doc-heading") {
+					headings = append(headings, node)
+				}
+				if hasHTMLAttribute(node, "data-site-toc-link") {
+					links = append(links, node)
+				}
+			})
+			if got, want := len(headings), len(registered); got != want {
+				t.Fatalf("GET /components/%s has %d headings, want %d registered examples", component, got, want)
+			}
+			if got, want := len(links), len(registered); got != want {
+				t.Fatalf("GET /components/%s has %d TOC links, want %d registered examples", component, got, want)
+			}
+
+			seenIDs := make(map[string]struct{}, len(headings))
+			for index, example := range registered {
+				wantID := "example-" + example.Name
+				gotID, _ := htmlAttribute(headings[index], "id")
+				if _, duplicate := seenIDs[gotID]; duplicate {
+					t.Errorf("GET /components/%s has duplicate heading ID %q", component, gotID)
+				}
+				seenIDs[gotID] = struct{}{}
+				if gotID != wantID {
+					t.Errorf("GET /components/%s heading %d ID = %q, want %q", component, index+1, gotID, wantID)
+				}
+				if got := normalizedHTMLText(headings[index]); got != example.Title {
+					t.Errorf("GET /components/%s heading %q text = %q, want %q", component, gotID, got, example.Title)
+				}
+				if got, _ := htmlAttribute(links[index], "href"); got != "#"+wantID {
+					t.Errorf("GET /components/%s TOC link %d href = %q, want %q", component, index+1, got, "#"+wantID)
+				}
+				if got := normalizedHTMLText(links[index]); got != example.Title {
+					t.Errorf("GET /components/%s TOC link %d text = %q, want %q", component, index+1, got, example.Title)
 				}
 			}
 		})
@@ -434,8 +500,14 @@ func TestComponentPageRoute(t *testing.T) {
 			t.Fatalf("GET /components/sidebar = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
 		}
 		body := rec.Body.String()
-		if got := strings.Count(body, `data-site-isolated-preview`); got != 10 {
+		if got := strings.Count(body, `<iframe data-site-isolated-preview`); got != 10 {
 			t.Errorf("sidebar page has %d isolated previews, want 10; body:\n%s", got, body)
+		}
+		if got := strings.Count(body, `data-site-isolated-preview-surface`); got != 10 {
+			t.Errorf("sidebar page has %d isolated preview surfaces, want 10; body:\n%s", got, body)
+		}
+		if got := strings.Count(body, `width="1024"`); got != 10 {
+			t.Errorf("sidebar page has %d declared 1024px preview viewports, want 10; body:\n%s", got, body)
 		}
 		for _, marker := range []string{
 			`title="Basic preview"`,
@@ -758,6 +830,36 @@ func TestThemePageRoute(t *testing.T) {
 		t.Fatalf("GET /theme = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
 	}
 	body := rec.Body.String()
+	document, err := html.Parse(strings.NewReader(body))
+	if err != nil {
+		t.Fatalf("parse theme response: %v", err)
+	}
+	if got, want := countHTMLNodes(document, "data-site-layout"), 1; got != want {
+		t.Errorf("theme page has %d site layout markers, want %d", got, want)
+	}
+	if !strings.Contains(body, `data-site-layout="workspace"`) {
+		t.Errorf(`theme page missing data-site-layout="workspace"; body:\n%s`, body)
+	}
+	for _, marker := range []string{
+		"data-theme-style-panel",
+		"data-theme-preview-panel",
+		"data-theme-controls-panel",
+	} {
+		if got, want := countHTMLNodes(document, marker), 1; got != want {
+			t.Errorf("theme page has %d %s regions, want %d", got, marker, want)
+		}
+	}
+	for _, marker := range []string{
+		"data-site-docs-mobile-nav",
+		"data-site-docs-sidebar",
+		"data-site-docs-toc",
+		"data-site-docs-article",
+		"data-site-footer",
+	} {
+		if got := countHTMLNodes(document, marker); got != 0 {
+			t.Errorf("theme workspace has %d unexpected %s regions, want none", got, marker)
+		}
+	}
 	for _, picker := range []string{"baseColor", "theme", "radius"} {
 		if got := strings.Count(body, `data-theme-picker="`+picker+`"`); got != 1 {
 			t.Errorf("theme page has %d %s pickers, want 1; body:\n%s", got, picker, body)

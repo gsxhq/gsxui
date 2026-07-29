@@ -30,12 +30,13 @@ type ComponentProps struct {
 // (generated from these same files, see site/hl/gen), so the page looks the
 // block up by SourcePath instead of reading and escaping it per request.
 type exampleProps struct {
-	Name       string
-	Title      string
-	Node       gsx.Node
-	SourcePath string
-	Isolated   bool
-	Previews   []examples.Preview
+	Name          string
+	Title         string
+	Node          gsx.Node
+	SourcePath    string
+	Isolated      bool
+	ViewportWidth int
+	Previews      []examples.Preview
 }
 
 // Props resolves the {name} path param against the examples registry.
@@ -54,12 +55,13 @@ func (Component) Props(r *http.Request) (ComponentProps, error) {
 	eps := make([]exampleProps, len(exs))
 	for i, ex := range exs {
 		eps[i] = exampleProps{
-			Name:       ex.Name,
-			Title:      ex.Title,
-			Node:       ex.Node,
-			SourcePath: ex.SourcePath,
-			Isolated:   ex.Isolated,
-			Previews:   ex.Previews,
+			Name:          ex.Name,
+			Title:         ex.Title,
+			Node:          ex.Node,
+			SourcePath:    ex.SourcePath,
+			Isolated:      ex.Isolated,
+			ViewportWidth: ex.ViewportWidth,
+			Previews:      ex.Previews,
 		}
 	}
 	return ComponentProps{Name: name, Title: capitalize(name), Examples: eps}, nil
@@ -113,6 +115,33 @@ func componentTOCItems(examples []exampleProps) []docTOCItem {
 	return items
 }
 
+component isolatedExamplePreview(title string, src string, viewportWidth int, tall bool) {
+	{{
+		surfaceClass := "w-full overflow-hidden rounded-lg border bg-background"
+		if tall {
+			surfaceClass += " h-[32rem]"
+		} else {
+			surfaceClass += " h-80"
+		}
+		iframeClass := "block h-full max-w-none border-0 bg-background"
+		if viewportWidth == 0 {
+			iframeClass += " w-full"
+		}
+	}}
+	<div data-site-isolated-preview-surface class={ surfaceClass }>
+		<iframe
+			data-site-isolated-preview
+			title={title}
+			src={src}
+			loading="lazy"
+			{ if viewportWidth > 0 {
+				width={viewportWidth}
+			} }
+			class={ iframeClass }
+		></iframe>
+	</div>
+}
+
 component (c Component) Page(props ComponentProps) {
 	{{ toc := componentTOCItems(props.Examples) }}
 	<siteLayout title={props.Title} active={props.Name} mode={layoutDocs} toc={toc}>
@@ -120,27 +149,25 @@ component (c Component) Page(props ComponentProps) {
 			<h1 class="text-3xl font-semibold tracking-tight">{ props.Title }</h1>
 			{ for i, ex := range props.Examples {
 				<section class="flex flex-col gap-3">
-					<docHeading item={toc[i]}/>
+					<docHeading item={toc[i]} class="text-sm font-medium uppercase tracking-wide text-muted-foreground"/>
 					{ if ex.Isolated && len(ex.Previews) == 0 {
-						<iframe
-							data-site-isolated-preview
+						<isolatedExamplePreview
 							title={ex.Title + " preview"}
 							src={examplePreviewURL(props.Name, ex.Name, "")}
-							loading="lazy"
-							class="block h-[32rem] w-full rounded-lg border bg-background"
-						></iframe>
+							viewportWidth={ex.ViewportWidth}
+							tall={true}
+						/>
 					} else if ex.Isolated {
 						<div class="flex flex-col gap-6">
 							{ for _, preview := range ex.Previews {
 								<div class="flex flex-col gap-2">
 									<div class="text-sm font-medium">{ preview.Title }</div>
-									<iframe
-										data-site-isolated-preview
+									<isolatedExamplePreview
 										title={preview.Title + " preview"}
 										src={examplePreviewURL(props.Name, ex.Name, preview.Name)}
-										loading="lazy"
-										class="block h-80 w-full rounded-lg border bg-background"
-									></iframe>
+										viewportWidth={ex.ViewportWidth}
+										tall={false}
+									/>
 								</div>
 							} }
 						</div>
