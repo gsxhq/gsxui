@@ -500,8 +500,14 @@ func TestComponentPageRoute(t *testing.T) {
 			t.Fatalf("GET /components/sidebar = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
 		}
 		body := rec.Body.String()
-		if got := strings.Count(body, `data-site-isolated-preview`); got != 10 {
+		if got := strings.Count(body, `<iframe data-site-isolated-preview`); got != 10 {
 			t.Errorf("sidebar page has %d isolated previews, want 10; body:\n%s", got, body)
+		}
+		if got := strings.Count(body, `data-site-isolated-preview-surface`); got != 10 {
+			t.Errorf("sidebar page has %d isolated preview surfaces, want 10; body:\n%s", got, body)
+		}
+		if got := strings.Count(body, `width="1024"`); got != 10 {
+			t.Errorf("sidebar page has %d declared 1024px preview viewports, want 10; body:\n%s", got, body)
 		}
 		for _, marker := range []string{
 			`title="Basic preview"`,
