@@ -166,7 +166,7 @@ func _gsxrendersiteLayout(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title stri
 		headerContainerClass += " max-w-none px-4"
 		headerClass += " shrink-0"
 		contentContainerClass += " flex max-w-none px-4 lg:min-h-0 lg:flex-1 lg:py-4"
-		mainClass += " lg:min-h-0"
+		mainClass += " lg:min-h-0 lg:overflow-y-auto"
 		bodyClass += " lg:flex lg:h-svh lg:flex-col lg:overflow-hidden"
 	case layoutMarketing:
 		headerContainerClass += " max-w-6xl px-4"

@@ -1,5 +1,6 @@
 const PREVIEW_MESSAGE = "gsxui:theme-preview:v1";
 const READY_MESSAGE = "gsxui:theme-preview-ready:v1";
+const APPLIED_MESSAGE = "gsxui:theme-preview-applied:v1";
 const ERROR_MESSAGE = "gsxui:theme-preview-error:v1";
 
 const previewDocument = document.querySelector("[data-theme-button-preview]");
@@ -15,7 +16,6 @@ if (previewDocument) {
       section,
     ]),
   );
-  let hasAppliedState = false;
   let focusedStyle = "";
 
   function fail(message) {
@@ -27,6 +27,12 @@ if (previewDocument) {
   function ready() {
     if (parent !== window) {
       parent.postMessage({ type: READY_MESSAGE }, location.origin);
+    }
+  }
+
+  function applied() {
+    if (parent !== window) {
+      parent.postMessage({ type: APPLIED_MESSAGE }, location.origin);
     }
   }
 
@@ -117,13 +123,7 @@ if (previewDocument) {
     }
     try {
       applyState(validatedState(event.data));
-      if (!hasAppliedState) {
-        hasAppliedState = true;
-        // Repeat ready after the first accepted state. This closes the race
-        // where the initial ready message lands before the parent module has
-        // installed its listener, without creating an acknowledgement loop.
-        ready();
-      }
+      applied();
     } catch (error) {
       fail(error instanceof Error ? error.message : "invalid preview state");
     }

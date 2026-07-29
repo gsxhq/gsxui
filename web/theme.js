@@ -27,6 +27,7 @@ import {
 
 const PREVIEW_MESSAGE = "gsxui:theme-preview:v1";
 const READY_MESSAGE = "gsxui:theme-preview-ready:v1";
+const APPLIED_MESSAGE = "gsxui:theme-preview-applied:v1";
 const ERROR_MESSAGE = "gsxui:theme-preview-error:v1";
 const PREVIEW_HANDSHAKE_TIMEOUT_MS = 2_000;
 
@@ -505,10 +506,11 @@ if (schemaElement) {
   addEventListener("message", (event) => {
     if (event.origin !== location.origin || event.source !== frame?.contentWindow) return;
     if (event.data?.type === READY_MESSAGE) {
+      syncPreview();
+    } else if (event.data?.type === APPLIED_MESSAGE) {
       finishPreviewHandshake();
       if (previewStatus) previewStatus.textContent = "Live";
       previewRetry?.classList.add("hidden");
-      syncPreview();
     } else if (event.data?.type === ERROR_MESSAGE) {
       finishPreviewHandshake();
       if (previewStatus) previewStatus.textContent = event.data.message || "Preview rejected the current state.";

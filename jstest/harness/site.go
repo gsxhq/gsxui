@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"io/fs"
 	"net/http"
+	"net/http/httptest"
 	"testing/fstest"
 
 	"github.com/gsxhq/gsxui/site/pages"
@@ -55,7 +57,36 @@ func registerSiteRoutes(mux *http.ServeMux) {
 	if err != nil {
 		panic("loading test site manifest: " + err.Error())
 	}
-	siteHandler := v.Middleware(pagesMux)
+	siteHandler := withBrowserImportMap(v.Middleware(pagesMux))
 	mux.Handle("/site/", http.StripPrefix("/site", siteHandler))
 	mux.Handle("/", siteHandler)
+}
+
+func withBrowserImportMap(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		recorder := httptest.NewRecorder()
+		next.ServeHTTP(recorder, r)
+
+		result := recorder.Result()
+		defer result.Body.Close()
+
+		for key, values := range result.Header {
+			for _, value := range values {
+				w.Header().Add(key, value)
+			}
+		}
+
+		body := recorder.Body.Bytes()
+		if bytes.HasPrefix([]byte(result.Header.Get("Content-Type")), []byte("text/html")) {
+			// The test manifest swaps the production bundle for browser-native
+			// modules. Keep their import map before the exact module tag emitted
+			// by siteHead so the browser resolves bare package imports.
+			moduleTag := []byte(`<script type="module"`)
+			body = bytes.Replace(body, moduleTag, append([]byte(browserImportMap+"\n"), moduleTag...), 1)
+			w.Header().Del("Content-Length")
+		}
+
+		w.WriteHeader(result.StatusCode)
+		_, _ = w.Write(body)
+	})
 }

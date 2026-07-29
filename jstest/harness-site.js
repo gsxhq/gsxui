@@ -3,4 +3,5 @@
 // virtual dev-panel import and lets the test manifest provide compiled CSS.
 import "../ui/index.js";
 import "../web/site.js";
+import "../web/theme.js";
 import "../web/theme-preview.js";

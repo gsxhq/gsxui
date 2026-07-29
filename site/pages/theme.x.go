@@ -243,7 +243,7 @@ func _gsxrenderthemeEditor(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, previewUR
 	iframeClass := "w-full rounded-xl border border-border bg-background shadow-sm"
 	if workspace {
 		editorClass += " lg:h-full lg:min-h-0 lg:gap-4 lg:py-0"
-		gridClass += " lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(22rem,28rem)_minmax(0,1fr)] lg:grid-rows-[auto_minmax(0,1fr)] lg:gap-x-8 lg:gap-y-6"
+		gridClass += " lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(22rem,28rem)_minmax(0,1fr)] lg:grid-rows-[auto_minmax(12rem,1fr)] lg:gap-x-8 lg:gap-y-6"
 		previewPanelClass += " lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:min-h-0"
 		controlsPanelClass += " lg:col-start-1 lg:row-start-2 lg:min-h-0 lg:overflow-y-auto lg:pr-2"
 		iframeClass += " h-[min(70svh,640px)] lg:h-auto lg:min-h-0 lg:flex-1"

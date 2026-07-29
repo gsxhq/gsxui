@@ -511,7 +511,12 @@ test("CSS import ignores valid unrelated implicit nesting", async ({ page }) => 
 test("theme editor exposes Retry when the preview never handshakes", async ({
   page,
 }) => {
+  let responsive = false;
   await page.route("**/theme/preview/button", async (route) => {
+    if (responsive) {
+      await route.fallback();
+      return;
+    }
     await route.fulfill({
       contentType: "text/html",
       body: "<!doctype html><title>Unresponsive preview</title>",
@@ -523,4 +528,27 @@ test("theme editor exposes Retry when the preview never handshakes", async ({
     "Preview did not respond.",
   );
   await expect(page.locator("[data-theme-preview-retry]")).toBeVisible();
+
+  responsive = true;
+  await page.locator("[data-theme-preview-retry]").click();
+  await expect(page.locator("[data-theme-preview-status]")).toHaveText("Live");
+  await expect(page.locator("[data-theme-preview-retry]")).toBeHidden();
+});
+
+test("preview acknowledgement survives a late parent-observed iframe load", async ({
+  page,
+}) => {
+  await page.goto("/theme");
+  const status = page.locator("[data-theme-preview-status]");
+  const retry = page.locator("[data-theme-preview-retry]");
+  await expect(status).toHaveText("Live");
+  await expect(retry).toBeHidden();
+
+  await page
+    .locator("[data-theme-preview-frame]")
+    .evaluate((frame) => frame.dispatchEvent(new Event("load")));
+
+  await page.waitForTimeout(2_100);
+  await expect(status).toHaveText("Live");
+  await expect(retry).toBeHidden();
 });
