@@ -18,7 +18,6 @@ import (
 )
 
 const (
-	sharePrefix          = "gsxui:v1:"
 	defaultMaxInputBytes = int64(1 << 20)
 	requestTimeout       = 10 * time.Second
 )
@@ -30,11 +29,18 @@ type InputResolver struct {
 }
 
 func EncodeShare(preset Preset) (string, error) {
+	compact, ok, err := encodeCompactShare(preset)
+	if err != nil {
+		return "", fmt.Errorf("encode share: %w", err)
+	}
+	if ok {
+		return compact, nil
+	}
 	canonical, err := CanonicalJSON(preset)
 	if err != nil {
 		return "", fmt.Errorf("encode share: %w", err)
 	}
-	return sharePrefix + base64.RawURLEncoding.EncodeToString(canonical), nil
+	return fullSharePrefix + base64.RawURLEncoding.EncodeToString(canonical), nil
 }
 
 func DecodeShare(code string) (Preset, error) {
@@ -42,21 +48,36 @@ func DecodeShare(code string) (Preset, error) {
 		return Preset{}, errors.New("decode share: invalid prefix")
 	}
 	parts := strings.SplitN(code, ":", 3)
-	if len(parts) != 3 || parts[1] != "v1" {
+	if len(parts) != 3 {
 		version := ""
 		if len(parts) > 1 {
 			version = parts[1]
 		}
 		return Preset{}, fmt.Errorf("decode share: unsupported transport version %q", version)
 	}
-	if strings.Contains(parts[2], "=") {
+	switch parts[1] {
+	case "p1":
+		value, err := decodeCompactShare(parts[2])
+		if err != nil {
+			return Preset{}, fmt.Errorf("decode share: %w", err)
+		}
+		return clonePreset(value), nil
+	case "v1":
+		return decodeFullShare(parts[2])
+	default:
+		return Preset{}, fmt.Errorf("decode share: unsupported transport version %q", parts[1])
+	}
+}
+
+func decodeFullShare(encoded string) (Preset, error) {
+	if strings.Contains(encoded, "=") {
 		return Preset{}, errors.New("decode share: padded base64 is not canonical")
 	}
-	payload, err := base64.RawURLEncoding.DecodeString(parts[2])
+	payload, err := base64.RawURLEncoding.DecodeString(encoded)
 	if err != nil {
 		return Preset{}, fmt.Errorf("decode share: invalid base64: %w", err)
 	}
-	if parts[2] != base64.RawURLEncoding.EncodeToString(payload) {
+	if encoded != base64.RawURLEncoding.EncodeToString(payload) {
 		return Preset{}, errors.New("decode share: base64 spelling is not canonical")
 	}
 	if !utf8.Valid(payload) {

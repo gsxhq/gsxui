@@ -262,21 +262,134 @@ function fromBase64URL(value) {
   return Uint8Array.from(binary, (character) => character.charCodeAt(0));
 }
 
-export function encodeShare(preset, schema) {
-  return `${schema.transportPrefix}${base64URL(new TextEncoder().encode(canonicalJSON(preset, schema)))}`;
+const base62Alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+const maxUint64 = (1n << 64n) - 1n;
+
+function encodeBase62(value) {
+  if (value === 0n) return "0";
+  let encoded = "";
+  while (value > 0n) {
+    encoded = base62Alphabet[Number(value % 62n)] + encoded;
+    value /= 62n;
+  }
+  return encoded;
 }
 
-export function decodeShare(code, schema, validators) {
-  if (!code.startsWith(schema.transportPrefix)) {
-    throw new Error("unsupported share transport");
+function decodeBase62(value) {
+  if (value === "") throw new Error("compact payload is empty");
+  let decoded = 0n;
+  for (const character of value) {
+    const digit = base62Alphabet.indexOf(character);
+    if (digit === -1) throw new Error(`invalid compact base62 character ${character}`);
+    decoded = decoded * 62n + BigInt(digit);
+    if (decoded > maxUint64) throw new Error("compact base62 integer overflow");
   }
-  const payload = code.slice(schema.transportPrefix.length);
+  if (encodeBase62(decoded) !== value) {
+    throw new Error("compact base62 spelling is not canonical");
+  }
+  return decoded;
+}
+
+function compactSelection(preset, schema) {
+  const selection = matchedPaletteSelection(preset, schema);
+  if (Object.values(selection).includes("custom")) return null;
+  const compact = schema.transport.compact;
+  const indexes = {
+    style: compact.styles.indexOf(preset.style),
+    baseColor: compact.baseColors.indexOf(selection.baseColor),
+    theme: compact.themes.indexOf(selection.theme),
+    radius: compact.radii.indexOf(selection.radius),
+  };
+  return Object.values(indexes).includes(-1) ? null : indexes;
+}
+
+function encodeFullShare(preset, schema) {
+  return `${schema.transport.fullPrefix}${base64URL(new TextEncoder().encode(canonicalJSON(preset, schema)))}`;
+}
+
+export function encodeShare(preset, schema) {
+  const selection = compactSelection(preset, schema);
+  if (!selection) return encodeFullShare(preset, schema);
+  const packed =
+    BigInt(selection.style) |
+    (BigInt(selection.baseColor) << 4n) |
+    (BigInt(selection.theme) << 8n) |
+    (BigInt(selection.radius) << 13n);
+  return `${schema.transport.compactPrefix}${encodeBase62(packed)}`;
+}
+
+function decodeCompactShare(code, schema, validators) {
+  const payload = code.slice(schema.transport.compactPrefix.length);
+  const packed = decodeBase62(payload);
+  if (packed >> 16n !== 0n) {
+    throw new Error("compact payload uses bits beyond the p1 schema");
+  }
+  const compact = schema.transport.compact;
+  const indexes = {
+    style: Number(packed & 0xfn),
+    baseColor: Number((packed >> 4n) & 0xfn),
+    theme: Number((packed >> 8n) & 0x1fn),
+    radius: Number((packed >> 13n) & 0x7n),
+  };
+  for (const [name, index] of Object.entries(indexes)) {
+    const values =
+      name === "style"
+        ? compact.styles
+        : name === "baseColor"
+          ? compact.baseColors
+          : name === "theme"
+            ? compact.themes
+            : compact.radii;
+    if (index >= values.length) throw new Error(`compact payload uses unused ${name} index`);
+  }
+
+  const style = compact.styles[indexes.style];
+  const baseColor = compact.baseColors[indexes.baseColor];
+  const theme = compact.themes[indexes.theme];
+  const radiusName = compact.radii[indexes.radius];
+  const resolved = schema.palette.resolved[baseColor]?.[theme];
+  if (!resolved) {
+    throw new Error(`compact payload has invalid base-color/theme combination ${baseColor}/${theme}`);
+  }
+  const radius = schema.palette.radii.find((choice) => choice.name === radiusName)?.value;
+  if (radius === undefined) {
+    throw new Error(`compact payload radius ${radiusName} is absent from the palette schema`);
+  }
+  const preset = validatePreset(
+    {
+      $schema: schema.schema,
+      schemaVersion: schema.schemaVersion,
+      style,
+      radius,
+      theme: clone(resolved),
+    },
+    schema,
+    validators,
+  );
+  if (encodeShare(preset, schema) !== code) {
+    throw new Error("compact share code is not canonical");
+  }
+  return clone(preset);
+}
+
+function decodeFullShare(code, schema, validators) {
+  const payload = code.slice(schema.transport.fullPrefix.length);
   const source = new TextDecoder("utf-8", { fatal: true }).decode(fromBase64URL(payload));
   const preset = importPresetJSON(source, schema, validators);
-  if (encodeShare(preset, schema) !== code) {
+  if (encodeFullShare(preset, schema) !== code) {
     throw new Error("share code is not canonical");
   }
   return preset;
+}
+
+export function decodeShare(code, schema, validators) {
+  if (code.startsWith(schema.transport.compactPrefix)) {
+    return decodeCompactShare(code, schema, validators);
+  }
+  if (code.startsWith(schema.transport.fullPrefix)) {
+    return decodeFullShare(code, schema, validators);
+  }
+  throw new Error("unsupported share transport");
 }
 
 export function loadShareFromURL(url, schema, validators) {

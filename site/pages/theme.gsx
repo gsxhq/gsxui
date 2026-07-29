@@ -17,13 +17,26 @@ type Theme struct{}
 type themeEditorSchema struct {
 	Schema            string                     `json:"schema"`
 	SchemaVersion     int                        `json:"schemaVersion"`
-	TransportPrefix   string                     `json:"transportPrefix"`
+	Transport         themeTransportSchema       `json:"transport"`
 	TokenNames        []string                   `json:"tokenNames"`
 	RadiusUnits       []string                   `json:"radiusUnits"`
 	Styles            []string                   `json:"styles"`
 	Defaults          map[string]json.RawMessage `json:"defaults"`
 	CanonicalDefaults map[string]string          `json:"canonicalDefaults"`
 	Palette           themePaletteSchema         `json:"palette"`
+}
+
+type themeTransportSchema struct {
+	FullPrefix    string                      `json:"fullPrefix"`
+	CompactPrefix string                      `json:"compactPrefix"`
+	Compact       themeCompactTransportSchema `json:"compact"`
+}
+
+type themeCompactTransportSchema struct {
+	Styles     []string `json:"styles"`
+	BaseColors []string `json:"baseColors"`
+	Themes     []string `json:"themes"`
+	Radii      []string `json:"radii"`
 }
 
 type themePaletteSchema struct {
@@ -62,7 +75,7 @@ func themeEditorSchemaValue() themeEditorSchema {
 	schema := themeEditorSchema{
 		Schema:            preset.SchemaURL,
 		SchemaVersion:     preset.SchemaVersion,
-		TransportPrefix:   "gsxui:v1:",
+		Transport:         themeTransportSchemaValue(),
 		TokenNames:        preset.TokenNames(),
 		RadiusUnits:       preset.RadiusUnits(),
 		Styles:            make([]string, len(styles)),
@@ -80,6 +93,24 @@ func themeEditorSchemaValue() themeEditorSchema {
 		schema.CanonicalDefaults[string(style)] = string(canonical)
 	}
 	return schema
+}
+
+func themeTransportSchemaValue() themeTransportSchema {
+	transport := preset.ShareTransportSchema()
+	styles := make([]string, len(transport.Styles))
+	for i, style := range transport.Styles {
+		styles[i] = string(style)
+	}
+	return themeTransportSchema{
+		FullPrefix:    transport.FullPrefix,
+		CompactPrefix: transport.CompactPrefix,
+		Compact: themeCompactTransportSchema{
+			Styles:     styles,
+			BaseColors: transport.BaseColors,
+			Themes:     transport.Themes,
+			Radii:      transport.Radii,
+		},
+	}
 }
 
 func themePaletteSchemaValue() themePaletteSchema {

@@ -377,6 +377,42 @@ test("click commits palette state to JSON, share code, commands, and iframe", as
     .toBe(catalog.palette.resolved.neutral.blue.light.primary);
 });
 
+test("share commands use compact built-ins and full custom imports", async ({ page }) => {
+  await page.goto("/theme");
+
+  const initialShare = shareFromInit((await commands(page)).init);
+  expect(initialShare).toMatch(/^gsxui:p1:/);
+  expect(initialShare.length).toBeLessThanOrEqual(12);
+
+  await choose(page, "theme", "Blue");
+  const selectedShare = shareFromInit((await commands(page)).init);
+  expect(selectedShare).toMatch(/^gsxui:p1:/);
+  expect(selectedShare.length).toBeLessThanOrEqual(12);
+  expect(selectedShare).not.toBe(initialShare);
+
+  const imported = JSON.parse((await downloadText(page, "json")).text);
+  imported.theme.light.primary = "rgb(1 2 3)";
+  await page.locator('[data-theme-import="json"]').fill(`${JSON.stringify(imported)}\n`);
+  await page.locator('[data-theme-import-apply="json"]').click();
+
+  const customShare = shareFromInit((await commands(page)).init);
+  expect(customShare).toMatch(/^gsxui:v1:/);
+  expect(JSON.parse((await downloadText(page, "json")).text)).toEqual(imported);
+});
+
+test("historical full built-in share URLs still load", async ({ page }) => {
+  const source = readFileSync(
+    `${repoRoot}/internal/preset/testdata/default-nova.json`,
+    "utf8",
+  );
+  const fullCode = `gsxui:v1:${Buffer.from(source).toString("base64url")}`;
+  await page.goto(`/theme?preset=${encodeURIComponent(fullCode)}`);
+
+  await expect(page.locator("[data-theme-status]")).toHaveText("Loaded shared preset.");
+  expect(JSON.parse((await downloadText(page, "json")).text)).toEqual(JSON.parse(source));
+  expect(shareFromInit((await commands(page)).init)).toMatch(/^gsxui:p1:/);
+});
+
 test("custom JSON import is lossless and a built-in base replaces it atomically", async ({
   page,
 }) => {

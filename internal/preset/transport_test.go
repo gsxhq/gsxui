@@ -23,11 +23,8 @@ func TestShareCodeRoundTripsCanonicalPreset(t *testing.T) {
 	if err != nil {
 		t.Fatalf("EncodeShare: %v", err)
 	}
-	if !strings.HasPrefix(code, "gsxui:v1:") {
-		t.Fatalf("share code = %q, want gsxui:v1 prefix", code)
-	}
-	if strings.Contains(strings.TrimPrefix(code, "gsxui:v1:"), "=") {
-		t.Fatalf("share code contains base64 padding: %q", code)
+	if !strings.HasPrefix(code, "gsxui:p1:") {
+		t.Fatalf("share code = %q, want gsxui:p1 prefix", code)
 	}
 
 	got, err := DecodeShare(code)
@@ -40,6 +37,31 @@ func TestShareCodeRoundTripsCanonicalPreset(t *testing.T) {
 	got.Theme.Light["primary"] = "red"
 	if preset.Theme.Light["primary"] == "red" {
 		t.Fatal("DecodeShare returned shared theme storage")
+	}
+}
+
+func TestDecodeShareKeepsHistoricalFullBuiltInCodeValid(t *testing.T) {
+	t.Parallel()
+
+	value := Default(StyleNova)
+	canonical, err := CanonicalJSON(value)
+	if err != nil {
+		t.Fatal(err)
+	}
+	code := fullSharePrefix + base64.RawURLEncoding.EncodeToString(canonical)
+	got, err := DecodeShare(code)
+	if err != nil {
+		t.Fatalf("DecodeShare historical full code: %v", err)
+	}
+	if !presetsEqual(got, value) {
+		t.Fatalf("DecodeShare = %#v, want %#v", got, value)
+	}
+	reencoded, err := EncodeShare(got)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.HasPrefix(reencoded, compactSharePrefix) {
+		t.Fatalf("new encoding = %q, want compact transport", reencoded)
 	}
 }
 
@@ -132,8 +154,12 @@ func TestInputResolverResolvesFileStdinRawJSONAndShare(t *testing.T) {
 		t.Fatal(err)
 	}
 	tempDir := t.TempDir()
-	path := filepath.Join(tempDir, "preset.json")
-	if err := os.WriteFile(path, golden, 0o600); err != nil {
+	jsonPath := filepath.Join(tempDir, "preset.json")
+	if err := os.WriteFile(jsonPath, golden, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	sharePath := filepath.Join(tempDir, "preset.txt")
+	if err := os.WriteFile(sharePath, []byte(code+"\n"), 0o600); err != nil {
 		t.Fatal(err)
 	}
 
@@ -142,7 +168,8 @@ func TestInputResolverResolvesFileStdinRawJSONAndShare(t *testing.T) {
 		resolver InputResolver
 		argument string
 	}{
-		{name: "file", resolver: InputResolver{}, argument: path},
+		{name: "JSON file", resolver: InputResolver{}, argument: jsonPath},
+		{name: "share file", resolver: InputResolver{}, argument: sharePath},
 		{
 			name:     "stdin JSON",
 			resolver: InputResolver{Stdin: bytes.NewReader(golden)},

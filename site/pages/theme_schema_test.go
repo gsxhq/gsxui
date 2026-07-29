@@ -31,7 +31,7 @@ func TestThemeEditorSchemaMatchesPresetAuthority(t *testing.T) {
 	var schema struct {
 		Schema            string                     `json:"schema"`
 		SchemaVersion     int                        `json:"schemaVersion"`
-		TransportPrefix   string                     `json:"transportPrefix"`
+		Transport         transportSchemaProbe       `json:"transport"`
 		TokenNames        []string                   `json:"tokenNames"`
 		RadiusUnits       []string                   `json:"radiusUnits"`
 		Styles            []string                   `json:"styles"`
@@ -48,8 +48,28 @@ func TestThemeEditorSchemaMatchesPresetAuthority(t *testing.T) {
 	if schema.SchemaVersion != preset.SchemaVersion {
 		t.Errorf("schema version = %d, want %d", schema.SchemaVersion, preset.SchemaVersion)
 	}
-	if schema.TransportPrefix != "gsxui:v1:" {
-		t.Errorf("transport prefix = %q, want gsxui:v1:", schema.TransportPrefix)
+	transport := preset.ShareTransportSchema()
+	if schema.Transport.FullPrefix != transport.FullPrefix {
+		t.Errorf("full transport prefix = %q, want %q", schema.Transport.FullPrefix, transport.FullPrefix)
+	}
+	if schema.Transport.CompactPrefix != transport.CompactPrefix {
+		t.Errorf("compact transport prefix = %q, want %q", schema.Transport.CompactPrefix, transport.CompactPrefix)
+	}
+	wantTransportStyles := make([]string, len(transport.Styles))
+	for i, style := range transport.Styles {
+		wantTransportStyles[i] = string(style)
+	}
+	if !reflect.DeepEqual(schema.Transport.Compact.Styles, wantTransportStyles) {
+		t.Errorf("compact styles = %#v, want %#v", schema.Transport.Compact.Styles, wantTransportStyles)
+	}
+	if !reflect.DeepEqual(schema.Transport.Compact.BaseColors, transport.BaseColors) {
+		t.Errorf("compact base colors = %#v, want %#v", schema.Transport.Compact.BaseColors, transport.BaseColors)
+	}
+	if !reflect.DeepEqual(schema.Transport.Compact.Themes, transport.Themes) {
+		t.Errorf("compact themes = %#v, want %#v", schema.Transport.Compact.Themes, transport.Themes)
+	}
+	if !reflect.DeepEqual(schema.Transport.Compact.Radii, transport.Radii) {
+		t.Errorf("compact radii = %#v, want %#v", schema.Transport.Compact.Radii, transport.Radii)
 	}
 	if !reflect.DeepEqual(schema.TokenNames, preset.TokenNames()) {
 		t.Errorf("token names = %#v, want %#v", schema.TokenNames, preset.TokenNames())
@@ -114,6 +134,17 @@ func TestThemeEditorSchemaMatchesPresetAuthority(t *testing.T) {
 			t.Errorf("schema default %s is not canonical JSON", style)
 		}
 	}
+}
+
+type transportSchemaProbe struct {
+	FullPrefix    string `json:"fullPrefix"`
+	CompactPrefix string `json:"compactPrefix"`
+	Compact       struct {
+		Styles     []string `json:"styles"`
+		BaseColors []string `json:"baseColors"`
+		Themes     []string `json:"themes"`
+		Radii      []string `json:"radii"`
+	} `json:"compact"`
 }
 
 type paletteSchemaProbe struct {

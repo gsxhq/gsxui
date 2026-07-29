@@ -30,7 +30,41 @@ import {
 const schema = {
   schema: "https://ui.gsxhq.dev/schemas/preset-v1.json",
   schemaVersion: 1,
-  transportPrefix: "gsxui:v1:",
+  transport: {
+    fullPrefix: "gsxui:v1:",
+    compactPrefix: "gsxui:p1:",
+    compact: {
+      styles: ["nova", "maia"],
+      baseColors: ["neutral", "stone", "zinc", "mauve", "olive", "mist", "taupe"],
+      themes: [
+        "neutral",
+        "stone",
+        "zinc",
+        "mauve",
+        "olive",
+        "mist",
+        "taupe",
+        "amber",
+        "blue",
+        "cyan",
+        "emerald",
+        "fuchsia",
+        "green",
+        "indigo",
+        "lime",
+        "orange",
+        "pink",
+        "purple",
+        "red",
+        "rose",
+        "sky",
+        "teal",
+        "violet",
+        "yellow",
+      ],
+      radii: ["none", "small", "medium", "large"],
+    },
+  },
   tokenNames: ["background", "primary"],
   styles: ["nova", "maia"],
   defaults: {
@@ -215,11 +249,12 @@ test("reset restores the selected style built-in preset and recomputes selection
 });
 
 test("canonical JSON, share code, share URL, CSS, and commands round trip", () => {
-  const preset = selectStyle(createThemeState(schema), "maia", schema).resolved;
+  const preset = createThemeState(schema).resolved;
   const json = canonicalJSON(preset, schema);
-  assert.equal(importPresetJSON(json, schema, validators).style, "maia");
+  assert.equal(importPresetJSON(json, schema, validators).style, "nova");
 
   const share = encodeShare(preset, schema);
+  assert.equal(share, "gsxui:p1:4GG");
   assert.deepEqual(decodeShare(share, schema, validators), preset);
   assert.deepEqual(
     loadShareFromURL(`https://ui.example/theme?preset=${encodeURIComponent(share)}`, schema, validators),
@@ -230,6 +265,81 @@ test("canonical JSON, share code, share URL, CSS, and commands round trip", () =
     init: `gsxui init --preset '${share}'`,
     apply: `gsxui apply --preset '${share}'`,
   });
+});
+
+test("compact transport matches the Go bit layout for every catalogue combination", () => {
+  const exhaustive = compactTestSchema();
+  for (const style of exhaustive.transport.compact.styles) {
+    for (const baseColor of exhaustive.transport.compact.baseColors) {
+      for (const theme of exhaustive.transport.compact.themes) {
+        if (
+          exhaustive.transport.compact.baseColors.includes(theme) &&
+          theme !== baseColor
+        ) {
+          continue;
+        }
+        for (const radius of exhaustive.palette.radii) {
+          const resolved = exhaustive.palette.resolved[baseColor][theme];
+          const preset = {
+            $schema: exhaustive.schema,
+            schemaVersion: exhaustive.schemaVersion,
+            style,
+            radius: radius.value,
+            theme: structuredClone(resolved),
+          };
+          const want = expectedCompactCode(exhaustive, style, baseColor, theme, radius.name);
+          assert.equal(encodeShare(preset, exhaustive), want);
+          assert.deepEqual(decodeShare(want, exhaustive, validators), preset);
+        }
+      }
+    }
+  }
+});
+
+test("custom values use full transport and historical full codes remain valid", () => {
+  const customTheme = structuredClone(schema.defaults.nova);
+  customTheme.theme.light.primary = "violet";
+  const customThemeCode = encodeShare(customTheme, schema);
+  assert.match(customThemeCode, /^gsxui:v1:/);
+  assert.deepEqual(decodeShare(customThemeCode, schema, validators), customTheme);
+
+  const customRadius = structuredClone(schema.defaults.nova);
+  customRadius.radius = "1rem";
+  const customRadiusCode = encodeShare(customRadius, schema);
+  assert.match(customRadiusCode, /^gsxui:v1:/);
+  assert.deepEqual(decodeShare(customRadiusCode, schema, validators), customRadius);
+
+  const fullBuiltIn = `gsxui:v1:${Buffer.from(canonicalJSON(schema.defaults.nova, schema)).toString("base64url")}`;
+  assert.deepEqual(decodeShare(fullBuiltIn, schema, validators), schema.defaults.nova);
+});
+
+test("compact decoder rejects malformed and non-canonical payloads", () => {
+  for (const code of [
+    "gsxui:p1:",
+    "gsxui:p1:!",
+    "gsxui:p1:zzzzzzzzzzzz",
+    "gsxui:p1:2",
+    "gsxui:p1:1o",
+    "gsxui:p1:1bc",
+    "gsxui:p1:8WW",
+    "gsxui:p1:G",
+    "gsxui:p1:H32",
+    "gsxui:p1:04GG",
+  ]) {
+    assert.throws(() => decodeShare(code, schema, validators));
+  }
+});
+
+test("transient previews never alter compact transport", () => {
+  const committed = createThemeState(schema);
+  const share = encodeShare(committed.resolved, schema);
+  for (const preview of [
+    previewBaseColor(committed, "stone", schema),
+    previewTheme(committed, "blue", schema),
+    previewRadius(committed, "large", schema),
+  ]) {
+    assert.equal(encodeShare(preview.resolved, schema), share);
+  }
 });
 
 test("browser canonical JSON matches the Go golden byte for byte", () => {
@@ -279,3 +389,61 @@ test("clipboard fallback retains selected manual-copy text", () => {
   assert.deepEqual(manualCopyState(true, "value"), { visible: false, text: "" });
   assert.deepEqual(manualCopyState(false, "value"), { visible: true, text: "value" });
 });
+
+function compactTestSchema() {
+  const compact = structuredClone(schema.transport.compact);
+  const radii = [
+    { name: "none", value: "0" },
+    { name: "small", value: "0.45rem" },
+    { name: "medium", value: "0.625rem" },
+    { name: "large", value: "0.875rem" },
+  ];
+  const resolved = {};
+  const themes = {};
+  for (const [baseIndex, baseColor] of compact.baseColors.entries()) {
+    resolved[baseColor] = {};
+    themes[baseColor] = [];
+    for (const [themeIndex, theme] of compact.themes.entries()) {
+      if (themeIndex < compact.baseColors.length && theme !== baseColor) continue;
+      themes[baseColor].push({ name: theme });
+      resolved[baseColor][theme] = {
+        light: {
+          background: `oklch(0.${baseIndex + 1} 0 0)`,
+          primary: `oklch(0.${themeIndex + 1} 0.1 20)`,
+        },
+        dark: {
+          background: `oklch(0.${baseIndex + 2} 0 0)`,
+          primary: `oklch(0.${themeIndex + 2} 0.1 200)`,
+        },
+      };
+    }
+  }
+  return {
+    ...schema,
+    transport: { ...schema.transport, compact },
+    palette: {
+      baseColors: compact.baseColors.map((name) => ({ name })),
+      themes,
+      radii,
+      resolved,
+      defaultSelection: { baseColor: "neutral", theme: "neutral", radius: "medium" },
+    },
+  };
+}
+
+function expectedCompactCode(valueSchema, style, baseColor, theme, radius) {
+  const compact = valueSchema.transport.compact;
+  const packed =
+    compact.styles.indexOf(style) |
+    (compact.baseColors.indexOf(baseColor) << 4) |
+    (compact.themes.indexOf(theme) << 8) |
+    (compact.radii.indexOf(radius) << 13);
+  const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  let value = packed;
+  let payload = "";
+  do {
+    payload = alphabet[value % 62] + payload;
+    value = Math.floor(value / 62);
+  } while (value > 0);
+  return `${valueSchema.transport.compactPrefix}${payload}`;
+}
