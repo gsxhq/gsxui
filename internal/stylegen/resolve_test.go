@@ -684,7 +684,7 @@ func TestResolveRejectsMalformedHelperCalls(t *testing.T) {
 		{
 			name: "wrong component",
 			body: `<div class={ badge.Root() }></div>`,
-			want: `component "badge"`,
+			want: `receiver "badge"`,
 		},
 		{
 			name: "role with arguments",

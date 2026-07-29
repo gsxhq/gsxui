@@ -77,7 +77,7 @@ func Resolve(filename string, src []byte, resolved recipe.Resolved) ([]byte, err
 	// dimension) in declaration order, so a shape with two slots that generate
 	// the same accessor name would desugar calls against the wrong one — quietly,
 	// and before the generated file's duplicate methods fail the build.
-	if err := checkAccessorNames(resolved.Shape); err != nil {
+	if err := checkComponentNaming(resolved.Shape); err != nil {
 		return nil, err
 	}
 	r, err := inspectSource(filename, src, func(r *resolver) {
@@ -110,16 +110,39 @@ func Resolve(filename string, src []byte, resolved recipe.Resolved) ([]byte, err
 	if bytes.Contains(formatted, []byte(recipe.Prefix)) {
 		return nil, fmt.Errorf("%s: resolved GSX still contains recipe prefix %q", filename, recipe.Prefix)
 	}
-	if residue, ok := residualAccessorCall(formatted, knownComponents(resolved.Shape)); ok {
+	receivers, err := knownReceivers(resolved.Shape)
+	if err != nil {
+		return nil, err
+	}
+	if residue, ok := residualAccessorCall(formatted, receivers); ok {
 		return nil, fmt.Errorf("%s: resolved GSX still contains a recipe accessor call %q", filename, residue)
 	}
 	return formatted, nil
 }
 
-// knownComponents names every identifier that may legally receive a recipe
+// knownReceivers names every identifier that may legally receive a recipe
 // accessor call, sorted. Deriving the residue check from this instead of a
 // hardcoded ".Role(", ".Variant(", ".Size(" list is what keeps adding a slot or
 // a dimension from being three uncoupled edits.
+//
+// These are the DERIVED Go identifiers, not the registry names: a hyphenated
+// registry name can never appear as a receiver, because `input-group.Root()`
+// is subtraction.
+func knownReceivers(extra ...recipe.Shape) ([]string, error) {
+	components := knownComponents(extra...)
+	receivers := make([]string, 0, len(components))
+	for _, component := range components {
+		identifier, err := componentIdentifier(component)
+		if err != nil {
+			return nil, err
+		}
+		receivers = append(receivers, identifier)
+	}
+	sort.Strings(receivers)
+	return receivers, nil
+}
+
+// knownComponents names every declared component, by registry name, sorted.
 func knownComponents(extra ...recipe.Shape) []string {
 	declared := shapes.All()
 	names := make([]string, 0, len(declared)+len(extra))
@@ -154,7 +177,7 @@ func residualAccessorCall(src []byte, components []string) (string, bool) {
 // is a parameter because an accessor's method name can only be split back into
 // (slot, dimension) against the shape it was generated from.
 func HelperCalls(filename string, src []byte, shape recipe.Shape) ([]Call, error) {
-	if err := checkAccessorNames(shape); err != nil {
+	if err := checkComponentNaming(shape); err != nil {
 		return nil, err
 	}
 	r, err := inspectSource(filename, src, func(r *resolver) {
@@ -349,16 +372,28 @@ func (r *resolver) inspectHelperCall(
 		r.err = r.positionedError(exprPos, "recipe accessor call receiver must be a bare component identifier")
 		return
 	}
-	component := receiver.Name
-	if component != r.shape.Component {
+	// The receiver is the component's DERIVED Go identifier, not its registry
+	// name: `input-group.Root()` would parse as subtraction, so a hyphenated
+	// component is received as `inputGroup`. See componentIdentifier.
+	expected, err := componentIdentifier(r.shape.Component)
+	if err != nil {
+		r.err = r.positionedError(exprPos, "%v", err)
+		return
+	}
+	if receiver.Name != expected {
 		r.err = r.positionedError(
 			exprPos,
-			"recipe accessor call on component %q, but this source declares component %q",
-			component,
+			"recipe accessor call on receiver %q, but this source declares component %q, whose accessor receiver is %q",
+			receiver.Name,
 			r.shape.Component,
+			expected,
 		)
 		return
 	}
+	// Calls are reported by REGISTRY name: the Go identifier only exists for
+	// generated code and .gsx receivers, and everything downstream — shape
+	// lookup, marker names, diagnostics — speaks the registry name.
+	component := r.shape.Component
 
 	method := selector.Sel.Name
 	slotName, dimensionName, ok := accessorTarget(r.shape, method)
@@ -366,14 +401,14 @@ func (r *resolver) inspectHelperCall(
 		r.err = r.positionedError(
 			exprPos,
 			"component %q declares no accessor %s.%s",
-			r.shape.Component, component, method,
+			r.shape.Component, expected, method,
 		)
 		return
 	}
 
 	if dimensionName == "" {
 		if len(call.Args) != 0 {
-			r.err = r.positionedError(exprPos, "%s.%s takes no arguments, got %d", component, method, len(call.Args))
+			r.err = r.positionedError(exprPos, "%s.%s takes no arguments, got %d", expected, method, len(call.Args))
 			return
 		}
 		r.calls = append(r.calls, Call{Component: component, Slot: slotName})
@@ -389,7 +424,7 @@ func (r *resolver) inspectHelperCall(
 		r.err = r.positionedError(
 			exprPos,
 			"%s.%s takes exactly one argument, got %d",
-			component, method, len(call.Args),
+			expected, method, len(call.Args),
 		)
 		return
 	}
@@ -398,7 +433,7 @@ func (r *resolver) inspectHelperCall(
 		r.err = r.positionedError(
 			exprPos,
 			"%s.%s argument must be a bare identifier naming a component parameter",
-			component, method,
+			expected, method,
 		)
 		return
 	}
