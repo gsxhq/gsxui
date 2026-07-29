@@ -138,12 +138,18 @@ form cannot work.
 
 ### 3.3 Registry name to Go identifier
 
-The registry and CSS identity for a component stays kebab-case
-(`input-group`) — that is what appears in class names, the contract, and
-`registry/generated/recipes.json`. The generated Go type name and its
-receiver are *derived* from that kebab-case name by the same title-casing
-rule already used for slot accessors (`menu-button` → `MenuButton`):
-`input-group` gives type `inputGroupRecipe` and receiver `inputGroup`.
+A component's class expression is Go, so its receiver must be a Go
+identifier. A hyphen is not legal in one, and in expression position
+`input-group.Root()` is simply `input - group.Root()` — ordinary Go grammar,
+not a quirk of gsx. Eleven components have kebab-case names, so the two
+namespaces have to be bridged.
+
+The registry and CSS identity stays kebab-case (`input-group`) — that is what
+appears in class names, the contract, and `registry/generated/recipes.json`.
+The generated Go type name and its receiver are *derived* from it by the same
+title-casing rule already used for slot accessors (`menu-button` →
+`MenuButton`): `input-group` gives type `inputGroupRecipe` and receiver
+`inputGroup`. Nothing is renamed, and no second name is maintained.
 
 The derivation must be validated for:
 
