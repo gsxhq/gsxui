@@ -13,21 +13,32 @@ func main() {
 	check := flag.Bool("check", false, "check generated style sources without writing")
 	checkLayers := flag.Bool("check-layers", false,
 		"check that every override of compiled component presentation can win the cascade")
+	checkAuthoring := flag.Bool("check-authoring", false,
+		"check that unmigrated components carry no hand-authored presentation and migrated components are generated output")
 	flag.Parse()
 	if flag.NArg() != 0 {
-		fmt.Fprintln(os.Stderr, "usage: go run ./cmd/stylegen [--check] [--check-layers]")
+		fmt.Fprintln(os.Stderr, "usage: go run ./cmd/stylegen [--check] [--check-layers] [--check-authoring]")
 		os.Exit(2)
 	}
-	if *check && *checkLayers {
-		fmt.Fprintln(os.Stderr, "stylegen: --check and --check-layers are separate gates; run them separately")
+	modes := 0
+	for _, m := range []bool{*check, *checkLayers, *checkAuthoring} {
+		if m {
+			modes++
+		}
+	}
+	if modes > 1 {
+		fmt.Fprintln(os.Stderr, "stylegen: --check, --check-layers, and --check-authoring are separate gates; run them separately")
 		os.Exit(2)
 	}
 
 	root, err := repositoryRoot()
 	if err == nil {
-		if *checkLayers {
+		switch {
+		case *checkLayers:
 			err = stylegen.CheckLayerPrecedence(root)
-		} else {
+		case *checkAuthoring:
+			err = stylegen.CheckAuthoring(root)
+		default:
 			err = stylegen.GenerateAll(root, *check)
 		}
 	}

@@ -73,19 +73,16 @@ test-theme-state:
 audit:
 	@! rg -n '^[[:space:]]*<[^>]*data-slot=|^[[:space:]]+data-slot=' $(audit-source-dirs) -g '!*.x.go' -g '!*.gen.go'
 	@! rg -n 'data-slot|className[[:space:]]*=|[.]classList|setAttribute[(][^)]*class|[.]className[[:space:]]*=' ui $(wildcard dev) -g '*.js'
-	@! rg -n 'data-slot|group/|peer/|(group|peer)-(data|has|focus|hover|active|disabled|aria|open|checked)[^[:space:]]*/' ui $(wildcard dev) -g '*.gsx' -g '!button.gsx'
-	@! rg -n 'data-slot|peer/|(group|peer)-(data|has|focus|hover|active|disabled|aria|open|checked)[^[:space:]]*/' ui/button.gsx
 	@! rg -n -P '\bwithSlot[[:space:]]*\(|\bslotattr[[:space:]]*\.[[:space:]]*With[[:space:]]*\(' ui $(wildcard dev) -g '*.gsx'
 	@! rg -n -U -P '(?s)<[^>]*\bdata-gsxui-slot(?=[[:space:]]*(?:=|/?>))' $(audit-source-dirs) -g '*.gsx' -g '!*.x.go' -g '!*.gen.go'
 	@! rg -n -P '(?:\bKey[[:space:]]*:[[:space:]]*|[.]SetAttribute\([[:space:]]*|\bsetAttribute\([[:space:]]*)["\x27\x60]data-gsxui-slot["\x27\x60]' $(audit-source-dirs) -g '*.go' -g '*.js' -g '!*.x.go' -g '!*.gen.go' -g '!*_test.go'
 	@! rg -n -P '\[[[:space:]]*data-gsxui-slot(?=[[:space:]]*(?:[~|^$*]?=|\]))' $(audit-css-source-dirs) -g '*.css'
 	@! rg -n -P '[\w./:\[\]&>-]+!' ui -g '*.gsx'
 	@! rg -n 'gsxui-recipe-' ui -g '*.gsx'
-	@! rg -n '^[[:space:]]+class=' ui -g '*.gsx' -g '!button.gsx' -g '!card.gsx'
-	@! rg -n '^[[:space:]]*<[^>]*class=' ui -g '*.gsx' -g '!button.gsx' -g '!card.gsx'
 	@! rg -n 'gsxui-recipe-' registry/canonical -g '*.gsx'
 	@! rg -n '!important' assets/css/foundation.css assets/css/styles/default.css
 	go run ./cmd/stylegen --check-layers
+	go run ./cmd/stylegen --check-authoring
 
 check: audit test-css-audit test-theme-state verify-generated-styles
 	@$(MAKE) --no-print-directory verify-generated
