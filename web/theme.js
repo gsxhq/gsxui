@@ -409,8 +409,11 @@ if (schemaElement) {
     render();
   });
 
-  on("pointerenter", "[data-theme-choice]", (_event, choice) => {
-    if (!matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  on("pointerenter", "[data-theme-choice]", (event, choice) => {
+    if (
+      event.pointerType === "touch" ||
+      !matchMedia("(hover: hover) and (pointer: fine)").matches
+    ) return;
     const input = choice.querySelector("[data-gsxui-slot-radio]");
     const kind = input.closest("[data-theme-picker]").dataset.themePicker;
     if (kind === "baseColor") state = previewBaseColor(state, input.value, schema);

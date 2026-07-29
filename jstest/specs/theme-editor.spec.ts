@@ -262,6 +262,34 @@ test("desktop hover previews only the iframe and restores on dismissal or pointe
   expect(await commands(page)).toEqual(committedCommands);
 });
 
+test("touch pointerenter does not preview on a fine hover-capable device", async ({ page }) => {
+  await page.goto("/theme");
+  const committedPrimary = await iframeVariable(page, "primary");
+  const theme = picker(page, "theme");
+  await theme.locator("[data-theme-picker-trigger]").click();
+  const rose = theme.getByRole("radio", { name: "Rose", exact: true }).locator("..");
+
+  expect(
+    await page.evaluate(() =>
+      matchMedia("(hover: hover) and (pointer: fine)").matches,
+    ),
+  ).toBe(true);
+  const pointerType = await rose.evaluate((element) => {
+    const event = new PointerEvent("pointerenter", {
+      bubbles: false,
+      composed: true,
+      isPrimary: true,
+      pointerId: 17,
+      pointerType: "touch",
+    });
+    element.dispatchEvent(event);
+    return event.pointerType;
+  });
+  expect(pointerType).toBe("touch");
+
+  await expect.poll(() => iframeVariable(page, "primary")).toBe(committedPrimary);
+});
+
 test("click commits palette state to JSON, share code, commands, and iframe", async ({
   page,
 }) => {
