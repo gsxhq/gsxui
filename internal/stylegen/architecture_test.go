@@ -15,19 +15,35 @@ import (
 // unstyled markup.
 const canonicalImportPath = "github.com/gsxhq/gsxui/registry/canonical"
 
-// canonicalImporters names the only packages allowed to import it: the
-// generator that reads it, and the package itself (its own external test
-// package included).
+// shapesImportPath is the leaf package holding every component's shape as pure
+// data. It exists to break a bootstrap cycle: the generator must read shapes in
+// order to emit the accessors registry/canonical needs to compile at all, so
+// the shapes cannot live in registry/canonical.
+const shapesImportPath = canonicalImportPath + "/shapes"
+
+// canonicalImporters names the only packages allowed to import registry/canonical:
+// just itself, including its own external test package. The generator reads the
+// canonical sources as FILES, not as a Go dependency — importing them would
+// resurrect the bootstrap cycle the shapes package exists to break.
 var canonicalImporters = map[string]bool{
-	"github.com/gsxhq/gsxui/internal/stylegen": true,
-	canonicalImportPath:                        true,
+	canonicalImportPath: true,
 }
 
-// TestNothingOutsideStylegenImportsCanonical fails if any package in the module
-// takes a direct dependency on registry/canonical. It inspects every package's
+// shapesImporters names the packages allowed to import the shapes leaf package.
+// Unlike registry/canonical it is safe to depend on — it is pure data and
+// carries no recipe tokens — but it is still registry-private.
+var shapesImporters = map[string]bool{
+	"github.com/gsxhq/gsxui/internal/stylegen": true,
+	canonicalImportPath:                        true,
+	shapesImportPath:                           true,
+}
+
+// TestNothingImportsCanonical fails if any package in the module takes a direct
+// dependency on registry/canonical, or if anything outside the registry and the
+// generator depends on registry/canonical/shapes. It inspects every package's
 // imports, including those of its internal and external test binaries, so a
 // test file cannot smuggle the dependency in either.
-func TestNothingOutsideStylegenImportsCanonical(t *testing.T) {
+func TestNothingImportsCanonical(t *testing.T) {
 	const format = `{{.ImportPath}}` +
 		`{{range .Imports}} {{.}}{{end}}` +
 		`{{range .TestImports}} {{.}}{{end}}` +
@@ -50,12 +66,16 @@ func TestNothingOutsideStylegenImportsCanonical(t *testing.T) {
 			continue
 		}
 		importPath, imports := fields[0], fields[1:]
-		if canonicalImporters[importPath] {
-			continue
-		}
 		for _, imported := range imports {
-			if imported == canonicalImportPath || strings.HasPrefix(imported, canonicalImportPath+"/") {
-				t.Errorf("%s imports %s; the canonical package must never ship", importPath, canonicalImportPath)
+			switch {
+			case imported == shapesImportPath || strings.HasPrefix(imported, shapesImportPath+"/"):
+				if !shapesImporters[importPath] {
+					t.Errorf("%s imports %s; the shapes package is registry-private", importPath, shapesImportPath)
+				}
+			case imported == canonicalImportPath || strings.HasPrefix(imported, canonicalImportPath+"/"):
+				if !canonicalImporters[importPath] {
+					t.Errorf("%s imports %s; the canonical package must never ship", importPath, canonicalImportPath)
+				}
 			}
 		}
 	}

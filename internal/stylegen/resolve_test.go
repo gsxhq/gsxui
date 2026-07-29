@@ -16,7 +16,7 @@ import (
 	gsxparser "github.com/gsxhq/gsx/parser"
 
 	"github.com/gsxhq/gsxui/internal/recipe"
-	"github.com/gsxhq/gsxui/registry/canonical"
+	"github.com/gsxhq/gsxui/registry/canonical/shapes"
 )
 
 func TestRecipeTokensReturnsSortedUniqueCanonicalUses(t *testing.T) {
@@ -336,13 +336,12 @@ func TestRecipeTokensRejectsRecipeAssembledAcrossEmbeddedSegments(t *testing.T) 
 func TestResolveRejectsRecipeTokenIntroducedByUtility(t *testing.T) {
 	t.Parallel()
 
-	src := []byte(resolveComponent(`<div class={ button.Role() }></div>`))
+	src := []byte(resolveComponent(`<div class={ button.Root() }></div>`))
 	shape := recipe.Shape{
 		Component: "button",
-		Base:      true,
-		Dimensions: []recipe.Dimension{
+		Slots: []recipe.Slot{{Name: "", Base: true, Dimensions: []recipe.Dimension{
 			{Name: "variant", Default: "default", Values: []string{"default"}},
-		},
+		}}},
 	}
 	style := testRecipes(t,
 		recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"gsxui-recipe-leaked"}},
@@ -575,10 +574,9 @@ func testResolved(t *testing.T) recipe.Resolved {
 
 	shape := recipe.Shape{
 		Component: "button",
-		Base:      true,
-		Dimensions: []recipe.Dimension{
+		Slots: []recipe.Slot{{Name: "", Base: true, Dimensions: []recipe.Dimension{
 			{Name: "variant", Default: "default", Values: []string{"default", "outline"}},
-		},
+		}}},
 	}
 	style := testRecipes(t,
 		recipe.Rule{Class: "gsxui-recipe-button", Utilities: []string{"inline-flex", "items-center"}},
@@ -599,7 +597,7 @@ func TestResolveDesugarsHelperCalls(t *testing.T) {
 import "github.com/gsxhq/gsx"
 
 component B(variant string, children gsx.Node) {
-	<button class={ "group/button", button.Role(), button.Variant(variant) }>
+	<button class={ "group/button", button.Root(), button.Variant(variant) }>
 		{ children }
 	</button>
 }
@@ -623,7 +621,7 @@ component B(variant string, children gsx.Node) {
 	if strings.Contains(string(got), recipe.Prefix) {
 		t.Errorf("resolved source still contains the recipe prefix:\n%s", got)
 	}
-	if strings.Contains(string(got), "button.Role()") {
+	if strings.Contains(string(got), "button.Root()") {
 		t.Errorf("resolved source still contains a helper call:\n%s", got)
 	}
 	if _, err := gsxparser.ParseFile(token.NewFileSet(), "button.gsx", got, 0); err != nil {
@@ -685,12 +683,12 @@ func TestResolveRejectsMalformedHelperCalls(t *testing.T) {
 	}{
 		{
 			name: "wrong component",
-			body: `<div class={ badge.Role() }></div>`,
+			body: `<div class={ badge.Root() }></div>`,
 			want: `component "badge"`,
 		},
 		{
 			name: "role with arguments",
-			body: `<div class={ button.Role("x") }></div>`,
+			body: `<div class={ button.Root("x") }></div>`,
 			want: "takes no arguments",
 		},
 		{
@@ -705,7 +703,7 @@ func TestResolveRejectsMalformedHelperCalls(t *testing.T) {
 		},
 		{
 			name: "non-identifier receiver",
-			body: `<div class={ pkg.button.Role() }></div>`,
+			body: `<div class={ pkg.button.Root() }></div>`,
 			want: "component identifier",
 		},
 	}
@@ -727,7 +725,7 @@ func TestResolveRejectsMalformedHelperCalls(t *testing.T) {
 	}
 }
 
-func TestHelperCallsReportsEveryCallWithoutAShape(t *testing.T) {
+func TestHelperCallsReportsEveryCall(t *testing.T) {
 	t.Parallel()
 
 	src := []byte(`package canonical
@@ -735,12 +733,12 @@ func TestHelperCallsReportsEveryCallWithoutAShape(t *testing.T) {
 import "github.com/gsxhq/gsx"
 
 component B(variant string, size string, children gsx.Node) {
-	<button class={ "group/button", button.Role(), button.Variant(variant), button.Size(size) }>
+	<button class={ "group/button", button.Root(), button.Variant(variant), button.Size(size) }>
 		{ children }
 	</button>
 }
 `)
-	got, err := HelperCalls("button.gsx", src)
+	got, err := HelperCalls("button.gsx", src, buttonScanShape())
 	if err != nil {
 		t.Fatalf("HelperCalls() error = %v", err)
 	}
@@ -751,6 +749,119 @@ component B(variant string, size string, children gsx.Node) {
 	}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("HelperCalls() = %+v, want %+v", got, want)
+	}
+}
+
+// buttonScanShape is the shape HelperCalls resolves accessor names against in
+// the scan-mode tests. It is the real Button shape, so the accessor names in
+// the fixtures are the ones the generator actually emits.
+func buttonScanShape() recipe.Shape { return shapes.Button }
+
+// assertNoAccessorResidue fails if a generated accessor call survived
+// desugaring. The method name is derived from the shape rather than hardcoded.
+func assertNoAccessorResidue(t *testing.T, src []byte, component, method string) {
+	t.Helper()
+	if residue := component + "." + method + "("; bytes.Contains(src, []byte(residue)) {
+		t.Errorf("resolved canonical still contains %q:\n%s", residue, src)
+	}
+}
+
+// TestResolveDesugarsSlotAccessors pins the multi-slot path: a named slot's
+// base accessor must resolve to that slot's utilities, not the root's.
+func TestResolveDesugarsSlotAccessors(t *testing.T) {
+	t.Parallel()
+	src := []byte(`package canonical
+
+import "github.com/gsxhq/gsx"
+
+component C(children gsx.Node) {
+	<div class={ card.Root() }>
+		<div class={ card.Header() }>{ children }</div>
+	</div>
+}
+`)
+	resolved := testSlotResolved(t)
+	got, err := Resolve("card.gsx", src, resolved)
+	if err != nil {
+		t.Fatalf("Resolve() error = %v", err)
+	}
+	for _, want := range []string{`"rounded-xl border"`, `"flex gap-1.5"`} {
+		if !strings.Contains(string(got), want) {
+			t.Errorf("missing %q\nin: %s", want, got)
+		}
+	}
+	for _, forbidden := range []string{recipe.Prefix, "card.Root()", "card.Header()"} {
+		if strings.Contains(string(got), forbidden) {
+			t.Errorf("resolved source still contains %q:\n%s", forbidden, got)
+		}
+	}
+}
+
+// testSlotResolved builds a two-slot card fixture through the real ParseStyle
+// and Conform, so the Resolved is one the conformance check produced.
+func testSlotResolved(t *testing.T) recipe.Resolved {
+	t.Helper()
+	shape := recipe.Shape{
+		Component: "card",
+		Slots: []recipe.Slot{
+			{Name: "", Base: true},
+			{Name: "header", Base: true, Dimensions: []recipe.Dimension{
+				{Name: "variant", Default: "default", Values: []string{"default", "muted"}},
+			}},
+		},
+	}
+	style := testRecipes(t,
+		recipe.Rule{Class: "gsxui-recipe-card", Utilities: []string{"rounded-xl", "border"}},
+		recipe.Rule{Class: "gsxui-recipe-card-header", Utilities: []string{"flex", "gap-1.5"}},
+		recipe.Rule{Class: "gsxui-recipe-card-header-variant-default", Utilities: []string{"text-foreground"}},
+		recipe.Rule{Class: "gsxui-recipe-card-header-variant-muted", Utilities: []string{"text-muted-foreground"}},
+	)
+	resolved, err := recipe.Conform("testSlotResolved.css", shape, style)
+	if err != nil {
+		t.Fatalf("recipe.Conform(card fixture) error = %v", err)
+	}
+	return resolved
+}
+
+// TestResolveSplitsSlotAndDimensionByAccessorName is the reason accessor names
+// are resolved against the shape rather than split. "MenuButtonSize" is slot
+// "menu-button" plus dimension "size", and nothing in the string marks the
+// boundary — a ToLower or split-on-capitals would silently mis-resolve it.
+func TestResolveSplitsSlotAndDimensionByAccessorName(t *testing.T) {
+	t.Parallel()
+	// A local fixture, not a registry entry: sidebar has no canonical source
+	// yet, and test scaffolding does not belong in the shipped shape data. The
+	// slot names mirror the real sidebar's prefix collisions.
+	shape := recipe.Shape{
+		Component: "sidebar",
+		Slots: []recipe.Slot{
+			{Name: "", Base: true},
+			{Name: "menu", Base: true},
+			{Name: "menu-button", Base: true, Dimensions: []recipe.Dimension{
+				{Name: "size", Default: "default", Values: []string{"default", "lg"}},
+			}},
+			{Name: "menu-button-tooltip-content", Base: true},
+		},
+	}
+	calls, err := HelperCalls("sidebar.gsx", []byte(`package canonical
+
+import "github.com/gsxhq/gsx"
+
+component S(size string, children gsx.Node) {
+	<div class={ sidebar.MenuButtonSize(size) }>{ children }</div>
+}
+`), shape)
+	if err != nil {
+		t.Fatalf("HelperCalls() error = %v", err)
+	}
+	if len(calls) != 1 {
+		t.Fatalf("HelperCalls() = %d calls, want 1", len(calls))
+	}
+	if got, want := calls[0].Slot, "menu-button"; got != want {
+		t.Errorf("Slot = %q, want %q", got, want)
+	}
+	if got, want := calls[0].Dimension, "size"; got != want {
+		t.Errorf("Dimension = %q, want %q", got, want)
 	}
 }
 
@@ -772,7 +883,7 @@ func TestResolveDesugarsTheRealCanonicalButton(t *testing.T) {
 	if err != nil {
 		t.Fatalf("recipe.ParseStyle() error = %v", err)
 	}
-	resolved, err := recipe.Conform(stylePath, canonical.Shapes()["button"], style)
+	resolved, err := recipe.Conform(stylePath, shapes.Button, style)
 	if err != nil {
 		t.Fatalf("recipe.Conform() error = %v", err)
 	}
@@ -784,17 +895,25 @@ func TestResolveDesugarsTheRealCanonicalButton(t *testing.T) {
 	if bytes.Contains(got, []byte(recipe.Prefix)) {
 		t.Errorf("resolved canonical still contains the recipe prefix:\n%s", got)
 	}
-	for _, helper := range []string{".Role(", ".Variant(", ".Size("} {
-		if bytes.Contains(got, []byte(helper)) {
-			t.Errorf("resolved canonical still contains %q:\n%s", helper, got)
+	// Derived from the shape, so a new slot or dimension is covered without a
+	// second edit here.
+	for _, slot := range resolved.Shape.Slots {
+		if slot.Base {
+			assertNoAccessorResidue(t, got, resolved.Shape.Component, accessorName(slot.Name))
+		}
+		for _, dimension := range slot.Dimensions {
+			assertNoAccessorResidue(t, got, resolved.Shape.Component,
+				dimensionAccessorName(slot.Name, dimension.Name))
 		}
 	}
 	// Every declared value's utilities must survive into the output.
-	for dimension, values := range resolved.Values {
-		for value := range values {
-			want := strings.Join(resolved.Utilities(dimension, value), " ")
-			if !bytes.Contains(got, []byte(strconv.Quote(want))) {
-				t.Errorf("resolved canonical is missing %s=%s utilities %q", dimension, value, want)
+	for slot, dimensions := range resolved.Values {
+		for dimension, values := range dimensions {
+			for value := range values {
+				want := strings.Join(resolved.Utilities(slot, dimension, value), " ")
+				if !bytes.Contains(got, []byte(strconv.Quote(want))) {
+					t.Errorf("resolved canonical is missing %s/%s=%s utilities %q", slot, dimension, value, want)
+				}
 			}
 		}
 	}
@@ -836,13 +955,13 @@ func TestResolveRejectsHelperCallInNonPlainClassPart(t *testing.T) {
 	}{
 		{
 			name: "condition",
-			body: `<div class={ button.Role() : disabled }></div>`,
+			body: `<div class={ button.Root() : disabled }></div>`,
 			want: "plain class part",
 			at:   "part.gsx:3:",
 		},
 		{
 			name: "pipeline",
-			body: `<div class={ button.Role() |> upper() }></div>`,
+			body: `<div class={ button.Root() |> upper() }></div>`,
 			want: "plain class part",
 			at:   "part.gsx:3:",
 		},
@@ -857,7 +976,7 @@ func TestResolveRejectsHelperCallInNonPlainClassPart(t *testing.T) {
 			body: `<div class={
 				switch mode {
 				case "a":
-					button.Role()
+					button.Root()
 				default:
 					"other"
 				},
@@ -891,7 +1010,7 @@ func TestResolveRejectsHelperCallInNonPlainClassPart(t *testing.T) {
 
 			// The same guard must run in scan mode, so Task 7's pre-flight
 			// check cannot pass a call that Resolve would later refuse.
-			calls, err := HelperCalls("part.gsx", source)
+			calls, err := HelperCalls("part.gsx", source, buttonScanShape())
 			if err == nil {
 				t.Fatalf("HelperCalls() error = nil, want error; calls = %+v", calls)
 			}
@@ -907,16 +1026,15 @@ func TestResolveRejectsHelperCallInNonPlainClassPart(t *testing.T) {
 
 // TestResolveRejectsRoleAgainstABaselessShape pins the base-rule guard.
 // Shape.Validate does not require Base, so without this check a Base:false
-// shape would resolve button.Role() to "" and emit a silently unstyled element.
+// shape would resolve button.Root() to "" and emit a silently unstyled element.
 func TestResolveRejectsRoleAgainstABaselessShape(t *testing.T) {
 	t.Parallel()
 
 	shape := recipe.Shape{
 		Component: "button",
-		Base:      false,
-		Dimensions: []recipe.Dimension{
+		Slots: []recipe.Slot{{Name: "", Base: false, Dimensions: []recipe.Dimension{
 			{Name: "variant", Default: "default", Values: []string{"default", "outline"}},
-		},
+		}}},
 	}
 	style := testRecipes(t,
 		recipe.Rule{Class: "gsxui-recipe-button-variant-default", Utilities: []string{"bg-primary"}},
@@ -926,17 +1044,17 @@ func TestResolveRejectsRoleAgainstABaselessShape(t *testing.T) {
 	if err != nil {
 		t.Fatalf("recipe.Conform(baseless) error = %v", err)
 	}
-	if resolved.Shape.Base {
+	if root, _ := resolved.Shape.Slot(""); root.Base {
 		t.Fatal("fixture shape must declare no base rule")
 	}
 
-	source := []byte(resolveComponent(`<div class={ button.Role() }></div>`))
+	source := []byte(resolveComponent(`<div class={ button.Root() }></div>`))
 	got, err := Resolve("baseless.gsx", source, resolved)
 	if err == nil {
 		t.Fatalf("Resolve() error = nil, want error; output:\n%s", got)
 	}
-	if !strings.Contains(err.Error(), "declares no base rule") {
-		t.Errorf("Resolve() error %q does not identify the missing base rule", err)
+	if !strings.Contains(err.Error(), "declares no accessor button.Root") {
+		t.Errorf("Resolve() error %q does not identify the missing base accessor", err)
 	}
 	if !strings.Contains(err.Error(), "baseless.gsx:3:") {
 		t.Errorf("Resolve() error %q does not carry a source position", err)

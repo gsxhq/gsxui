@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/gsxhq/gsxui/internal/recipe"
+	"github.com/gsxhq/gsxui/registry/canonical/shapes"
 )
 
 // copyRepoFixture copies the inputs and artifacts GenerateAll touches into dst,
@@ -102,9 +103,14 @@ func TestGeneratedSourcesAreFreeOfRecipeConstructs(t *testing.T) {
 		if bytes.Contains(src, []byte(recipe.Prefix)) {
 			t.Errorf("%s contains the recipe prefix", path)
 		}
-		for _, helper := range []string{".Role(", ".Variant(", ".Size("} {
-			if bytes.Contains(src, []byte(helper)) {
-				t.Errorf("%s contains a helper call %q", path, helper)
+		// Derived from the shape, so a new slot or dimension needs no edit here.
+		for _, slot := range shapes.Button.Slots {
+			if slot.Base {
+				assertNoAccessorResidue(t, src, shapes.Button.Component, accessorName(slot.Name))
+			}
+			for _, dimension := range slot.Dimensions {
+				assertNoAccessorResidue(t, src, shapes.Button.Component,
+					dimensionAccessorName(slot.Name, dimension.Name))
 			}
 		}
 	}
@@ -142,9 +148,9 @@ func TestGenerateAllValidatesBeforeWriting(t *testing.T) {
 }
 
 // TestGenerateAllRejectsAHelperCallNamingAnUndeclaredDimension pins the
-// cross-check GenerateAll performs on HelperCalls: HelperCalls carries no
-// shape, so only GenerateAll can catch a canonical naming a dimension the
-// component never declared, and it must catch it before writing anything.
+// cross-check GenerateAll performs before it writes anything: a canonical
+// calling an accessor its component never declared must fail generation, with
+// the offending accessor named, and must leave every artifact untouched.
 func TestGenerateAllRejectsAHelperCallNamingAnUndeclaredDimension(t *testing.T) {
 	root := t.TempDir()
 	copyRepoFixture(t, root)
@@ -168,7 +174,7 @@ func TestGenerateAllRejectsAHelperCallNamingAnUndeclaredDimension(t *testing.T) 
 	if err == nil {
 		t.Fatal("GenerateAll() = nil, want an error for the undeclared dimension")
 	}
-	if !bytes.Contains([]byte(err.Error()), []byte("density")) {
+	if !bytes.Contains([]byte(err.Error()), []byte("Density")) {
 		t.Errorf("GenerateAll() error %q does not name the undeclared dimension", err)
 	}
 	after, err := os.ReadFile(filepath.Join(root, "ui", "button.gsx"))

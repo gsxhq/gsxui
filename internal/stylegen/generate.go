@@ -17,7 +17,7 @@ import (
 
 	"github.com/gsxhq/gsxui/internal/recipe"
 	"github.com/gsxhq/gsxui/merge"
-	"github.com/gsxhq/gsxui/registry/canonical"
+	"github.com/gsxhq/gsxui/registry/canonical/shapes"
 )
 
 // DefaultStyle names the style whose generated output ships as package ui. It
@@ -63,7 +63,7 @@ func resolveAll(root string) ([]generatedSource, error) {
 	if err != nil {
 		return nil, err
 	}
-	shapes := canonical.Shapes()
+	declared := shapes.All()
 
 	shapesByComponent := make(map[string]recipe.Shape, len(components))
 	resolvedByStyle := make(map[string]map[string]recipe.Resolved, len(styles))
@@ -78,7 +78,7 @@ func resolveAll(root string) ([]generatedSource, error) {
 		if err != nil {
 			return nil, fmt.Errorf("read canonical %s: %w", component, err)
 		}
-		shape, ok := shapes[component]
+		shape, ok := declared[component]
 		if !ok {
 			return nil, fmt.Errorf("canonical %s declares no shape in registry/canonical", component)
 		}
@@ -86,6 +86,18 @@ func resolveAll(root string) ([]generatedSource, error) {
 			return nil, err
 		}
 		shapesByComponent[component] = shape
+
+		// The typed accessor set is a generated artifact like any other, so it
+		// flows through the same validation-before-mutation and --check drift
+		// machinery as the resolved sources.
+		accessors, err := GenerateAccessors(shape)
+		if err != nil {
+			return nil, fmt.Errorf("generate %s accessors: %w", component, err)
+		}
+		outputs = append(outputs, generatedSource{
+			relativePath: filepath.Join("registry", "canonical", component+"_recipe.gen.go"),
+			content:      accessors,
+		})
 
 		for _, style := range styles {
 			stylePath := filepath.Join(root, "registry", "styles", style, component+".css")
@@ -151,34 +163,42 @@ func resolveAll(root string) ([]generatedSource, error) {
 	return outputs, nil
 }
 
-// checkHelperCalls cross-checks a canonical's helper calls against its declared
-// shape. HelperCalls has no shape of its own, so this is the only place a call
-// naming an undeclared dimension is caught before any style is touched.
+// checkHelperCalls cross-checks a canonical's accessor calls against its
+// declared shape. It runs before any style is touched, so a call naming a slot
+// or dimension the shape does not declare fails generation rather than
+// producing an artifact.
 func checkHelperCalls(filename string, src []byte, shape recipe.Shape) error {
-	calls, err := HelperCalls(filename, src)
+	calls, err := HelperCalls(filename, src, shape)
 	if err != nil {
-		return fmt.Errorf("scan %s helper calls: %w", filepath.Base(filename), err)
+		return fmt.Errorf("scan %s accessor calls: %w", filepath.Base(filename), err)
 	}
 	for _, call := range calls {
 		if call.Component != shape.Component {
 			return fmt.Errorf(
-				"%s: recipe helper call on component %q, but this source declares component %q",
+				"%s: recipe accessor call on component %q, but this source declares component %q",
 				filename, call.Component, shape.Component,
 			)
 		}
+		slot, ok := shape.Slot(call.Slot)
+		if !ok {
+			return fmt.Errorf(
+				"%s: component %q declares no slot %q",
+				filename, shape.Component, call.Slot,
+			)
+		}
 		if call.Dimension == "" {
-			if !shape.Base {
+			if !slot.Base {
 				return fmt.Errorf(
-					"%s: component %q declares no base rule, so %s.Role() has nothing to resolve to",
-					filename, shape.Component, call.Component,
+					"%s: component %q slot %q declares no base rule",
+					filename, shape.Component, call.Slot,
 				)
 			}
 			continue
 		}
-		if _, ok := shape.Dimension(call.Dimension); !ok {
+		if _, ok := slot.Dimension(call.Dimension); !ok {
 			return fmt.Errorf(
-				"%s: component %q declares no dimension %q",
-				filename, shape.Component, call.Dimension,
+				"%s: component %q slot %q declares no dimension %q",
+				filename, shape.Component, call.Slot, call.Dimension,
 			)
 		}
 	}

@@ -6,6 +6,8 @@ import (
 	goast "go/ast"
 	goparser "go/parser"
 	"go/token"
+	"regexp"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -15,12 +17,15 @@ import (
 	gsxparser "github.com/gsxhq/gsx/parser"
 
 	"github.com/gsxhq/gsxui/internal/recipe"
+	"github.com/gsxhq/gsxui/registry/canonical/shapes"
 )
 
-// Call is one recipe helper call found in a canonical class expression.
-// Dimension is empty for a Role call.
+// Call is one recipe accessor call found in a canonical class expression.
+// Slot is "" for the component's root element, and Dimension is empty for a
+// slot's base accessor.
 type Call struct {
 	Component string
+	Slot      string
 	Dimension string
 }
 
@@ -55,6 +60,7 @@ type resolver struct {
 	fset      *token.FileSet
 	classMode classMode
 	resolved  recipe.Resolved
+	shape     recipe.Shape
 	used      map[string]struct{}
 	calls     []Call
 	edits     []literalEdit
@@ -62,13 +68,15 @@ type resolver struct {
 }
 
 // Resolve rewrites a canonical component source into consumer source for one
-// style: every `<component>.Role()`, `.Variant(v)` and `.Size(v)` call in a
-// class expression is replaced by the concrete utilities the resolved recipe
-// supplies, so the output contains no recipe construct at all.
+// style: every generated slot accessor call in a class expression — a slot's
+// base accessor or one of its dimension accessors — is replaced by the concrete
+// utilities the resolved recipe supplies, so the output contains no recipe
+// construct at all.
 func Resolve(filename string, src []byte, resolved recipe.Resolved) ([]byte, error) {
 	r, err := inspectSource(filename, src, func(r *resolver) {
 		r.classMode = helperDesugarMode
 		r.resolved = resolved
+		r.shape = resolved.Shape
 	})
 	if err != nil {
 		return nil, err
@@ -95,20 +103,53 @@ func Resolve(filename string, src []byte, resolved recipe.Resolved) ([]byte, err
 	if bytes.Contains(formatted, []byte(recipe.Prefix)) {
 		return nil, fmt.Errorf("%s: resolved GSX still contains recipe prefix %q", filename, recipe.Prefix)
 	}
-	for _, helper := range []string{".Role(", ".Variant(", ".Size("} {
-		if bytes.Contains(formatted, []byte(helper)) {
-			return nil, fmt.Errorf("%s: resolved GSX still contains a recipe helper call %q", filename, helper)
-		}
+	if residue, ok := residualAccessorCall(formatted, knownComponents(resolved.Shape)); ok {
+		return nil, fmt.Errorf("%s: resolved GSX still contains a recipe accessor call %q", filename, residue)
 	}
 	return formatted, nil
 }
 
-// HelperCalls reports every recipe helper call a canonical source makes, in
+// knownComponents names every identifier that may legally receive a recipe
+// accessor call, sorted. Deriving the residue check from this instead of a
+// hardcoded ".Role(", ".Variant(", ".Size(" list is what keeps adding a slot or
+// a dimension from being three uncoupled edits.
+func knownComponents(extra ...recipe.Shape) []string {
+	declared := shapes.All()
+	names := make([]string, 0, len(declared)+len(extra))
+	for name := range declared {
+		names = append(names, name)
+	}
+	for _, shape := range extra {
+		if shape.Component != "" && !slices.Contains(names, shape.Component) {
+			names = append(names, shape.Component)
+		}
+	}
+	sort.Strings(names)
+	return names
+}
+
+// residualAccessorCall reports any surviving `<component>.<Method>(` whose
+// receiver names a known component. Every such call should have been replaced
+// by concrete utilities, so one reaching here means the desugaring missed it.
+func residualAccessorCall(src []byte, components []string) (string, bool) {
+	for _, component := range components {
+		pattern := regexp.MustCompile(`(^|[^\w.])` + regexp.QuoteMeta(component) + `\.([A-Z][A-Za-z0-9_]*)\(`)
+		if match := pattern.FindSubmatch(src); match != nil {
+			return component + "." + string(match[2]) + "(", true
+		}
+	}
+	return "", false
+}
+
+// HelperCalls reports every recipe accessor call a canonical source makes, in
 // source order, without resolving any of them. Generation uses it to check a
-// canonical against the declared shapes before it touches any style.
-func HelperCalls(filename string, src []byte) ([]Call, error) {
+// canonical against its declared shape before it touches any style. The shape
+// is a parameter because an accessor's method name can only be split back into
+// (slot, dimension) against the shape it was generated from.
+func HelperCalls(filename string, src []byte, shape recipe.Shape) ([]Call, error) {
 	r, err := inspectSource(filename, src, func(r *resolver) {
 		r.classMode = helperScanMode
+		r.shape = shape
 	})
 	if err != nil {
 		return nil, err
@@ -288,57 +329,57 @@ func (r *resolver) inspectHelperCall(
 	part *gsxast.ClassPart,
 ) {
 	// The part shape is validated in both helper modes, so a scan reports a
-	// helper call that Resolve would later refuse rather than passing it as
+	// accessor call that Resolve would later refuse rather than passing it as
 	// well formed.
 	if !r.validateHelperPart(exprPos, part) {
 		return
 	}
 	receiver, ok := selector.X.(*goast.Ident)
 	if !ok {
-		r.err = r.positionedError(exprPos, "recipe helper call receiver must be a bare component identifier")
+		r.err = r.positionedError(exprPos, "recipe accessor call receiver must be a bare component identifier")
 		return
 	}
 	component := receiver.Name
-	if r.classMode == helperDesugarMode && component != r.resolved.Shape.Component {
+	if component != r.shape.Component {
 		r.err = r.positionedError(
 			exprPos,
-			"recipe helper call on component %q, but this source resolves component %q",
+			"recipe accessor call on component %q, but this source declares component %q",
 			component,
-			r.resolved.Shape.Component,
+			r.shape.Component,
 		)
 		return
 	}
 
-	if selector.Sel.Name == "Role" {
-		if len(call.Args) != 0 {
-			r.err = r.positionedError(exprPos, "%s.Role takes no arguments, got %d", component, len(call.Args))
-			return
-		}
-		r.calls = append(r.calls, Call{Component: component})
-		if r.classMode != helperDesugarMode {
-			return
-		}
-		// A shape that declares no base rule has no utilities to substitute.
-		// Emitting "" here would silently produce an unstyled element, which is
-		// the exact failure this task exists to eliminate.
-		if !r.resolved.Shape.Base {
-			r.err = r.positionedError(
-				exprPos,
-				"component %q declares no base rule, so %s.Role() has nothing to resolve to",
-				r.resolved.Shape.Component, component,
-			)
-			return
-		}
-		r.recordPartEdit(exprPos, part, strconv.Quote(strings.Join(r.resolved.Base, " ")))
+	method := selector.Sel.Name
+	slotName, dimensionName, ok := accessorTarget(r.shape, method)
+	if !ok {
+		r.err = r.positionedError(
+			exprPos,
+			"component %q declares no accessor %s.%s",
+			r.shape.Component, component, method,
+		)
 		return
 	}
 
-	dimensionName := strings.ToLower(selector.Sel.Name)
+	if dimensionName == "" {
+		if len(call.Args) != 0 {
+			r.err = r.positionedError(exprPos, "%s.%s takes no arguments, got %d", component, method, len(call.Args))
+			return
+		}
+		r.calls = append(r.calls, Call{Component: component, Slot: slotName})
+		if r.classMode != helperDesugarMode {
+			return
+		}
+		r.recordPartEdit(exprPos, part,
+			strconv.Quote(strings.Join(r.resolved.BaseUtilities(slotName), " ")))
+		return
+	}
+
 	if len(call.Args) != 1 {
 		r.err = r.positionedError(
 			exprPos,
 			"%s.%s takes exactly one argument, got %d",
-			component, selector.Sel.Name, len(call.Args),
+			component, method, len(call.Args),
 		)
 		return
 	}
@@ -347,38 +388,49 @@ func (r *resolver) inspectHelperCall(
 		r.err = r.positionedError(
 			exprPos,
 			"%s.%s argument must be a bare identifier naming a component parameter",
-			component, selector.Sel.Name,
+			component, method,
 		)
 		return
 	}
-	r.calls = append(r.calls, Call{Component: component, Dimension: dimensionName})
+	r.calls = append(r.calls, Call{Component: component, Slot: slotName, Dimension: dimensionName})
 	if r.classMode != helperDesugarMode {
 		return
 	}
-	dimension, ok := r.resolved.Shape.Dimension(dimensionName)
-	if !ok {
-		r.err = r.positionedError(
-			exprPos,
-			"component %q declares no dimension %q",
-			r.resolved.Shape.Component, dimensionName,
-		)
-		return
-	}
-	r.recordPartEdit(exprPos, part, dimensionSwitch(r.resolved, dimension, argument.Name))
+	slot, _ := r.shape.Slot(slotName)
+	dimension, _ := slot.Dimension(dimensionName)
+	r.recordPartEdit(exprPos, part, dimensionSwitch(r.resolved, slotName, dimension, argument.Name))
 }
 
-// validateHelperPart requires a helper call to occupy a whole plain class part.
+// accessorTarget resolves a generated accessor's method name back to the
+// (slot, dimension) it was generated from. Name-splitting cannot do this:
+// "MenuButtonSize" is slot "menu-button" + dimension "size", and nothing in
+// the string says where the boundary is.
+func accessorTarget(shape recipe.Shape, method string) (slot, dimension string, ok bool) {
+	for _, s := range shape.Slots {
+		if s.Base && accessorName(s.Name) == method {
+			return s.Name, "", true
+		}
+		for _, d := range s.Dimensions {
+			if dimensionAccessorName(s.Name, d.Name) == method {
+				return s.Name, d.Name, true
+			}
+		}
+	}
+	return "", "", false
+}
+
+// validateHelperPart requires an accessor call to occupy a whole plain class part.
 // The replacement span runs to part.End(), which also covers a part's condition,
 // pipeline stages, control flow and CSS segments — none of which the generated
 // replacement reproduces. Substituting anyway would silently delete them, so
 // anything but a plain part is rejected. Runs in both helper modes.
 func (r *resolver) validateHelperPart(exprPos token.Pos, part *gsxast.ClassPart) bool {
 	if part == nil {
-		r.err = r.positionedError(exprPos, "a recipe helper call must be a whole class part")
+		r.err = r.positionedError(exprPos, "a recipe accessor call must be a whole class part")
 		return false
 	}
 	if part.Cond != "" || len(part.Stages) != 0 || part.CF != nil || len(part.CSSSegments) != 0 {
-		r.err = r.positionedError(exprPos, "a recipe helper call must be a plain class part with no condition, pipeline or control flow")
+		r.err = r.positionedError(exprPos, "a recipe accessor call must be a plain class part with no condition, pipeline or control flow")
 		return false
 	}
 	return true
@@ -394,7 +446,7 @@ func (r *resolver) recordPartEdit(exprPos token.Pos, part *gsxast.ClassPart, val
 	start := r.fset.Position(exprPos).Offset
 	end := r.fset.Position(part.End()).Offset
 	if start < 0 || end < start || end > len(r.src) {
-		r.err = r.positionedError(exprPos, "recipe helper call span is outside source")
+		r.err = r.positionedError(exprPos, "recipe accessor call span is outside source")
 		return
 	}
 	r.edits = append(r.edits, literalEdit{start: start, end: end, value: value})
@@ -405,7 +457,7 @@ func (r *resolver) recordPartEdit(exprPos token.Pos, part *gsxast.ClassPart, val
 // the default arm, so an unrecognized value renders the default rather than
 // nothing. That mirrors recipe.Component's runtime behavior, which is what
 // makes a behavior test written against the canonical true of every style.
-func dimensionSwitch(resolved recipe.Resolved, dimension recipe.Dimension, argument string) string {
+func dimensionSwitch(resolved recipe.Resolved, slot string, dimension recipe.Dimension, argument string) string {
 	var out strings.Builder
 	fmt.Fprintf(&out, "switch %s {\n", argument)
 	for _, value := range dimension.Values {
@@ -414,10 +466,10 @@ func dimensionSwitch(resolved recipe.Resolved, dimension recipe.Dimension, argum
 		}
 		fmt.Fprintf(&out, "case %s:\n%s\n",
 			strconv.Quote(value),
-			strconv.Quote(strings.Join(resolved.Utilities(dimension.Name, value), " ")))
+			strconv.Quote(strings.Join(resolved.Utilities(slot, dimension.Name, value), " ")))
 	}
 	fmt.Fprintf(&out, "default:\n%s\n}",
-		strconv.Quote(strings.Join(resolved.Utilities(dimension.Name, dimension.Default), " ")))
+		strconv.Quote(strings.Join(resolved.Utilities(slot, dimension.Name, dimension.Default), " ")))
 	return out.String()
 }
 
