@@ -19,7 +19,7 @@ func main() {
 
 	root, err := repositoryRoot()
 	if err == nil {
-		err = stylegen.GenerateButton(root, *check)
+		err = stylegen.GenerateAll(root, *check)
 	}
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "stylegen: %v\n", err)
@@ -38,7 +38,7 @@ func repositoryRoot() (string, error) {
 	}
 	for {
 		if regularFile(filepath.Join(dir, "go.mod")) &&
-			regularFile(filepath.Join(dir, "ui", "button.gsx")) {
+			regularFile(filepath.Join(dir, "registry", "canonical", "button.gsx")) {
 			return dir, nil
 		}
 		parent := filepath.Dir(dir)

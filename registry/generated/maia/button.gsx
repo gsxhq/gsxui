@@ -18,8 +18,6 @@ component Button(variant string, size string, href string, disabled bool, childr
 				"group/button",
 				"focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 rounded-4xl border border-transparent bg-clip-padding text-sm font-medium focus-visible:ring-[3px] aria-invalid:ring-[3px] active:not-aria-[haspopup]:translate-y-px [&_svg:not([class*='size-'])]:size-4 inline-flex shrink-0 items-center justify-center whitespace-nowrap transition-all outline-none select-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
 				switch variant {
-				case "", "default":
-					"bg-primary text-primary-foreground hover:bg-primary/80"
 				case "destructive":
 					"bg-destructive/10 hover:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/20 text-destructive focus-visible:border-destructive/40 dark:hover:bg-destructive/30"
 				case "outline":
@@ -31,11 +29,9 @@ component Button(variant string, size string, href string, disabled bool, childr
 				case "link":
 					"text-primary underline-offset-4 hover:underline"
 				default:
-					""
+					"bg-primary text-primary-foreground hover:bg-primary/80"
 				},
 				switch size {
-				case "", "default":
-					"h-9 gap-1.5 px-3 has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5"
 				case "xs":
 					"h-6 gap-1 px-2.5 text-xs has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 [&_svg:not([class*='size-'])]:size-3"
 				case "sm":
@@ -51,7 +47,7 @@ component Button(variant string, size string, href string, disabled bool, childr
 				case "icon-lg":
 					"size-10"
 				default:
-					""
+					"h-9 gap-1.5 px-3 has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5"
 				}
 			}
 			{ attrs... }
@@ -69,8 +65,6 @@ component Button(variant string, size string, href string, disabled bool, childr
 				"group/button",
 				"focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 rounded-4xl border border-transparent bg-clip-padding text-sm font-medium focus-visible:ring-[3px] aria-invalid:ring-[3px] active:not-aria-[haspopup]:translate-y-px [&_svg:not([class*='size-'])]:size-4 inline-flex shrink-0 items-center justify-center whitespace-nowrap transition-all outline-none select-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
 				switch variant {
-				case "", "default":
-					"bg-primary text-primary-foreground hover:bg-primary/80"
 				case "destructive":
 					"bg-destructive/10 hover:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/20 text-destructive focus-visible:border-destructive/40 dark:hover:bg-destructive/30"
 				case "outline":
@@ -82,11 +76,9 @@ component Button(variant string, size string, href string, disabled bool, childr
 				case "link":
 					"text-primary underline-offset-4 hover:underline"
 				default:
-					""
+					"bg-primary text-primary-foreground hover:bg-primary/80"
 				},
 				switch size {
-				case "", "default":
-					"h-9 gap-1.5 px-3 has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5"
 				case "xs":
 					"h-6 gap-1 px-2.5 text-xs has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 [&_svg:not([class*='size-'])]:size-3"
 				case "sm":
@@ -102,7 +94,7 @@ component Button(variant string, size string, href string, disabled bool, childr
 				case "icon-lg":
 					"size-10"
 				default:
-					""
+					"h-9 gap-1.5 px-3 has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5"
 				}
 			}
 			{ attrs... }

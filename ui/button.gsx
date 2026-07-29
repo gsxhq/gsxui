@@ -16,43 +16,39 @@ component Button(variant string, size string, href string, disabled bool, childr
 			href={href}
 			class={
 				"group/button",
-				"gsxui-recipe-button",
+				"inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:shrink-0 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
 				switch variant {
-				case "", "default":
-					"gsxui-recipe-button-variant-default"
 				case "destructive":
-					"gsxui-recipe-button-variant-destructive"
+					"bg-destructive text-contrast hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40"
 				case "outline":
-					"gsxui-recipe-button-variant-outline"
+					"border-border bg-background hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
 				case "secondary":
-					"gsxui-recipe-button-variant-secondary"
+					"bg-secondary text-secondary-foreground hover:bg-secondary/80"
 				case "ghost":
-					"gsxui-recipe-button-variant-ghost"
+					"hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50"
 				case "link":
-					"gsxui-recipe-button-variant-link"
+					"text-primary underline-offset-4 hover:underline"
 				default:
-					""
+					"bg-primary text-primary-foreground hover:bg-primary/90"
 				},
 				switch size {
-				case "", "default":
-					"gsxui-recipe-button-size-default"
 				case "xs":
-					"gsxui-recipe-button-size-xs"
+					"h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3"
 				case "sm":
-					"gsxui-recipe-button-size-sm"
+					"h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3.5"
 				case "lg":
-					"gsxui-recipe-button-size-lg"
+					"h-9 gap-1.5 px-2.5 has-[>svg]:px-2"
 				case "icon":
-					"gsxui-recipe-button-size-icon"
+					"size-8"
 				case "icon-xs":
-					"gsxui-recipe-button-size-icon-xs"
+					"size-6 rounded-[min(var(--radius-md),10px)] [&_svg:not([class*='size-'])]:size-3"
 				case "icon-sm":
-					"gsxui-recipe-button-size-icon-sm"
+					"size-7 rounded-[min(var(--radius-md),12px)]"
 				case "icon-lg":
-					"gsxui-recipe-button-size-icon-lg"
+					"size-9"
 				default:
-					""
-				},
+					"h-8 gap-1.5 px-2.5 has-[>svg]:px-2"
+				}
 			}
 			{ attrs... }
 			data-gsxui-slot-button
@@ -67,43 +63,39 @@ component Button(variant string, size string, href string, disabled bool, childr
 			disabled={disabled}
 			class={
 				"group/button",
-				"gsxui-recipe-button",
+				"inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:shrink-0 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
 				switch variant {
-				case "", "default":
-					"gsxui-recipe-button-variant-default"
 				case "destructive":
-					"gsxui-recipe-button-variant-destructive"
+					"bg-destructive text-contrast hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40"
 				case "outline":
-					"gsxui-recipe-button-variant-outline"
+					"border-border bg-background hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
 				case "secondary":
-					"gsxui-recipe-button-variant-secondary"
+					"bg-secondary text-secondary-foreground hover:bg-secondary/80"
 				case "ghost":
-					"gsxui-recipe-button-variant-ghost"
+					"hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50"
 				case "link":
-					"gsxui-recipe-button-variant-link"
+					"text-primary underline-offset-4 hover:underline"
 				default:
-					""
+					"bg-primary text-primary-foreground hover:bg-primary/90"
 				},
 				switch size {
-				case "", "default":
-					"gsxui-recipe-button-size-default"
 				case "xs":
-					"gsxui-recipe-button-size-xs"
+					"h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3"
 				case "sm":
-					"gsxui-recipe-button-size-sm"
+					"h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3.5"
 				case "lg":
-					"gsxui-recipe-button-size-lg"
+					"h-9 gap-1.5 px-2.5 has-[>svg]:px-2"
 				case "icon":
-					"gsxui-recipe-button-size-icon"
+					"size-8"
 				case "icon-xs":
-					"gsxui-recipe-button-size-icon-xs"
+					"size-6 rounded-[min(var(--radius-md),10px)] [&_svg:not([class*='size-'])]:size-3"
 				case "icon-sm":
-					"gsxui-recipe-button-size-icon-sm"
+					"size-7 rounded-[min(var(--radius-md),12px)]"
 				case "icon-lg":
-					"gsxui-recipe-button-size-icon-lg"
+					"size-9"
 				default:
-					""
-				},
+					"h-8 gap-1.5 px-2.5 has-[>svg]:px-2"
+				}
 			}
 			{ attrs... }
 			data-gsxui-slot-button

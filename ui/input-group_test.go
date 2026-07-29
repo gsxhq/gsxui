@@ -75,16 +75,14 @@ func TestInputGroupAddonAttrsFallThrough(t *testing.T) {
 }
 
 // TestInputGroupButtonDefaultPinned proves InputGroupButton composes the
-// Button seam: Button contributes its canonical recipe roles and public axes.
-// InputGroupButton defaults and forwards Button's size axis to xs.
+// Button seam: Button contributes the default style's resolved presentation
+// and its public axes. InputGroupButton defaults and forwards Button's size
+// axis to xs.
 func TestInputGroupButtonDefaultPinned(t *testing.T) {
 	got := render(t, ui.InputGroupButton("", "", gsx.Raw("x"), nil))
 	want := `<button data-variant="ghost" data-size="xs" type="button" ` + canonicalButtonClass("ghost", "xs") + ` data-gsxui-slot-input-group-button data-gsxui-slot-button>x</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
-	}
-	if strings.Contains(got, "focus-visible:ring") || strings.Contains(got, "hover:bg-accent") {
-		t.Errorf("canonical Button must render roles, not concrete presentation\nin: %s", got)
 	}
 }
 
@@ -111,8 +109,8 @@ func TestInputGroupButtonSizeAxisMatchesCanonicalButtonClass(t *testing.T) {
 					t.Errorf("missing aligned Button size contract %q\nin: %s", want, got)
 				}
 			}
-			if strings.Contains(got, "gsxui-recipe-button-size-default") {
-				t.Errorf("InputGroupButton %s rendered contradictory default Button size role\nin: %s", tt.name, got)
+			if tt.want != "default" && strings.Contains(got, canonicalButtonClass("ghost", "default")) {
+				t.Errorf("InputGroupButton %s rendered contradictory default Button size\nin: %s", tt.name, got)
 			}
 		})
 	}
@@ -151,8 +149,8 @@ func TestGeneratedButtonSizeContractsForInputGroupComposition(t *testing.T) {
 }
 
 // TestInputGroupButtonVariantOverride proves variant is forwarded as Button's
-// public styling axis. The canonical source reflects it through a semantic
-// recipe role while concrete presentation remains generated.
+// public styling axis, and that the forwarded variant selects the default
+// style's outline presentation rather than the default variant's.
 func TestInputGroupButtonVariantOverride(t *testing.T) {
 	got := render(t, ui.InputGroupButton("outline", "", gsx.Raw("x"), nil))
 	for _, want := range []string{`data-variant="outline"`, canonicalButtonClass("outline", "xs")} {
@@ -160,8 +158,8 @@ func TestInputGroupButtonVariantOverride(t *testing.T) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
 	}
-	if strings.Contains(got, "dark:border-input dark:bg-input/30") {
-		t.Errorf("outline variant presentation must not render inline\nin: %s", got)
+	if strings.Contains(got, canonicalButtonClass("default", "xs")) {
+		t.Errorf("outline variant must not render the default variant presentation\nin: %s", got)
 	}
 }
 

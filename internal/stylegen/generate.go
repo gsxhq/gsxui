@@ -9,98 +9,212 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	gsxparser "github.com/gsxhq/gsx/parser"
 
 	"github.com/gsxhq/gsxui/internal/recipe"
+	"github.com/gsxhq/gsxui/merge"
+	"github.com/gsxhq/gsxui/registry/canonical"
 )
 
-type buttonStyleSource struct {
-	name              string
-	recipePath        string
-	outputPath        string
-	previewOutputPath string
-}
+// DefaultStyle names the style whose generated output ships as package ui. It
+// is the single place the shipped style is chosen.
+const DefaultStyle = "nova"
 
-var buttonStyleSources = []buttonStyleSource{
-	{
-		name:       "nova",
-		recipePath: filepath.Join("registry", "styles", "nova", "button.css"),
-		outputPath: filepath.Join("registry", "generated", "nova", "button.gsx"),
-		previewOutputPath: filepath.Join(
-			"site", "stylepreview", "nova", "button.gsx",
-		),
-	},
-	{
-		name:       "maia",
-		recipePath: filepath.Join("registry", "styles", "maia", "button.css"),
-		outputPath: filepath.Join("registry", "generated", "maia", "button.gsx"),
-		previewOutputPath: filepath.Join(
-			"site", "stylepreview", "maia", "button.gsx",
-		),
-	},
-}
+// consumerPackage is the package clause every generated component carries.
+const consumerPackage = "ui"
 
-type generatedButtonSource struct {
+type generatedSource struct {
 	relativePath string
 	content      []byte
 }
 
-// GenerateButton resolves the canonical Button against every authored style
-// recipe before it checks or mutates any generated artifact.
-func GenerateButton(root string, check bool) error {
-	outputs, err := resolveButtonSources(root)
+// GenerateAll resolves every canonical component against every authored style
+// before it checks or mutates any artifact. A failing run writes nothing.
+func GenerateAll(root string, check bool) error {
+	outputs, err := resolveAll(root)
 	if err != nil {
 		return err
 	}
 	if check {
-		return checkButtonSources(root, outputs)
+		return checkOutputs(root, outputs)
 	}
 	for _, output := range outputs {
-		if err := writeGeneratedButton(filepath.Join(root, output.relativePath), output.content); err != nil {
+		if err := writeGenerated(filepath.Join(root, output.relativePath), output.content); err != nil {
 			return fmt.Errorf("write %s: %w", filepath.ToSlash(output.relativePath), err)
 		}
 	}
 	return nil
 }
 
-func resolveButtonSources(root string) ([]generatedButtonSource, error) {
-	canonicalPath := filepath.Join(root, "ui", "button.gsx")
-	canonical, err := os.ReadFile(canonicalPath)
+// resolveAll discovers every canonical component and every authored style and
+// resolves the full cross product in memory. Every parse, conformance check,
+// conflict check and resolve completes here, so GenerateAll never writes a
+// partial result.
+func resolveAll(root string) ([]generatedSource, error) {
+	components, err := canonicalComponents(root)
 	if err != nil {
-		return nil, fmt.Errorf("read canonical Button %s: %w", canonicalPath, err)
+		return nil, err
 	}
+	styles, err := styleNames(root)
+	if err != nil {
+		return nil, err
+	}
+	shapes := canonical.Shapes()
 
-	outputs := make([]generatedButtonSource, 0, 2*len(buttonStyleSources))
-	for _, style := range buttonStyleSources {
-		recipePath := filepath.Join(root, style.recipePath)
-		recipeSource, err := os.ReadFile(recipePath)
+	var outputs []generatedSource
+	for _, component := range components {
+		canonicalPath := filepath.Join(root, "registry", "canonical", component+".gsx")
+		src, err := os.ReadFile(canonicalPath)
 		if err != nil {
-			return nil, fmt.Errorf("read %s Button recipe %s: %w", style.name, recipePath, err)
+			return nil, fmt.Errorf("read canonical %s: %w", component, err)
 		}
-		recipes, err := recipe.ParseStyle(recipePath, recipeSource)
-		if err != nil {
-			return nil, fmt.Errorf("parse %s Button recipe: %w", style.name, err)
+		shape, ok := shapes[component]
+		if !ok {
+			return nil, fmt.Errorf("canonical %s declares no shape in registry/canonical", component)
 		}
-		resolved, _, err := resolveTokens(canonicalPath, canonical, recipes)
-		if err != nil {
-			return nil, fmt.Errorf("resolve %s Button: %w", style.name, err)
+		if err := checkHelperCalls(canonicalPath, src, shape); err != nil {
+			return nil, err
 		}
-		outputs = append(outputs, generatedButtonSource{
-			relativePath: style.outputPath,
-			content:      resolved,
-		})
-		preview, err := rewriteGSXPackage(style.outputPath, resolved, style.name)
-		if err != nil {
-			return nil, fmt.Errorf("derive %s Button preview: %w", style.name, err)
+
+		for _, style := range styles {
+			stylePath := filepath.Join(root, "registry", "styles", style, component+".css")
+			styleSource, err := os.ReadFile(stylePath)
+			if err != nil {
+				return nil, fmt.Errorf("read %s %s recipe: %w", style, component, err)
+			}
+			parsed, err := recipe.ParseStyle(stylePath, styleSource)
+			if err != nil {
+				return nil, fmt.Errorf("parse %s %s recipe: %w", style, component, err)
+			}
+			resolved, err := recipe.Conform(stylePath, shape, parsed)
+			if err != nil {
+				return nil, fmt.Errorf("conform %s %s recipe: %w", style, component, err)
+			}
+			if err := recipe.CheckConflicts(stylePath, resolved, merge.Merge); err != nil {
+				return nil, fmt.Errorf("check %s %s recipe: %w", style, component, err)
+			}
+			desugared, err := Resolve(canonicalPath, src, resolved)
+			if err != nil {
+				return nil, fmt.Errorf("resolve %s %s: %w", style, component, err)
+			}
+			// The canonical is authored in package canonical, which is never
+			// shipped; consumers receive package ui and the previews receive
+			// one package per style.
+			generated, err := rewriteGSXPackage(canonicalPath, desugared, consumerPackage)
+			if err != nil {
+				return nil, fmt.Errorf("derive %s %s consumer source: %w", style, component, err)
+			}
+			preview, err := rewriteGSXPackage(canonicalPath, desugared, style)
+			if err != nil {
+				return nil, fmt.Errorf("derive %s %s preview: %w", style, component, err)
+			}
+			outputs = append(outputs, generatedSource{
+				relativePath: filepath.Join("registry", "generated", style, component+".gsx"),
+				content:      generated,
+			})
+			outputs = append(outputs, generatedSource{
+				relativePath: filepath.Join("site", "stylepreview", style, component+".gsx"),
+				content:      preview,
+			})
+			if style == DefaultStyle {
+				// ui/ is the default style's output, not a fourth artifact kind.
+				outputs = append(outputs, generatedSource{
+					relativePath: filepath.Join("ui", component+".gsx"),
+					content:      generated,
+				})
+			}
 		}
-		outputs = append(outputs, generatedButtonSource{
-			relativePath: style.previewOutputPath,
-			content:      preview,
-		})
 	}
 	return outputs, nil
+}
+
+// checkHelperCalls cross-checks a canonical's helper calls against its declared
+// shape. HelperCalls has no shape of its own, so this is the only place a call
+// naming an undeclared dimension is caught before any style is touched.
+func checkHelperCalls(filename string, src []byte, shape recipe.Shape) error {
+	calls, err := HelperCalls(filename, src)
+	if err != nil {
+		return fmt.Errorf("scan %s helper calls: %w", filepath.Base(filename), err)
+	}
+	for _, call := range calls {
+		if call.Component != shape.Component {
+			return fmt.Errorf(
+				"%s: recipe helper call on component %q, but this source declares component %q",
+				filename, call.Component, shape.Component,
+			)
+		}
+		if call.Dimension == "" {
+			if !shape.Base {
+				return fmt.Errorf(
+					"%s: component %q declares no base rule, so %s.Role() has nothing to resolve to",
+					filename, shape.Component, call.Component,
+				)
+			}
+			continue
+		}
+		if _, ok := shape.Dimension(call.Dimension); !ok {
+			return fmt.Errorf(
+				"%s: component %q declares no dimension %q",
+				filename, shape.Component, call.Dimension,
+			)
+		}
+	}
+	return nil
+}
+
+// canonicalComponents lists every component name authored under
+// registry/canonical, sorted, so generation order is deterministic.
+func canonicalComponents(root string) ([]string, error) {
+	dir := filepath.Join(root, "registry", "canonical")
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return nil, fmt.Errorf("read canonical sources: %w", err)
+	}
+	var components []string
+	for _, entry := range entries {
+		if entry.IsDir() || filepath.Ext(entry.Name()) != ".gsx" {
+			continue
+		}
+		components = append(components, strings.TrimSuffix(entry.Name(), ".gsx"))
+	}
+	if len(components) == 0 {
+		return nil, fmt.Errorf("no canonical components found in %s", filepath.ToSlash(filepath.Join("registry", "canonical")))
+	}
+	sort.Strings(components)
+	return components, nil
+}
+
+// styleNames lists every authored style, sorted. The default style must exist:
+// without it there is nothing to ship as package ui.
+func styleNames(root string) ([]string, error) {
+	dir := filepath.Join(root, "registry", "styles")
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return nil, fmt.Errorf("read styles: %w", err)
+	}
+	var styles []string
+	for _, entry := range entries {
+		if entry.IsDir() {
+			styles = append(styles, entry.Name())
+		}
+	}
+	sort.Strings(styles)
+	if !containsStyle(styles, DefaultStyle) {
+		return nil, fmt.Errorf("default style %q is not authored under registry/styles", DefaultStyle)
+	}
+	return styles, nil
+}
+
+func containsStyle(styles []string, want string) bool {
+	for _, style := range styles {
+		if style == want {
+			return true
+		}
+	}
+	return false
 }
 
 func rewriteGSXPackage(filename string, src []byte, packageName string) ([]byte, error) {
@@ -130,14 +244,14 @@ func rewriteGSXPackage(filename string, src []byte, packageName string) ([]byte,
 	return result, nil
 }
 
-func checkButtonSources(root string, outputs []generatedButtonSource) error {
+func checkOutputs(root string, outputs []generatedSource) error {
 	var drift []string
 	for _, output := range outputs {
 		path := filepath.Join(root, output.relativePath)
 		got, err := os.ReadFile(path)
 		if err != nil {
 			if !errors.Is(err, fs.ErrNotExist) {
-				return fmt.Errorf("read generated Button %s: %w", filepath.ToSlash(output.relativePath), err)
+				return fmt.Errorf("read generated source %s: %w", filepath.ToSlash(output.relativePath), err)
 			}
 			drift = append(drift, filepath.ToSlash(output.relativePath)+" (missing)")
 			continue
@@ -148,14 +262,14 @@ func checkButtonSources(root string, outputs []generatedButtonSource) error {
 	}
 	if len(drift) != 0 {
 		return fmt.Errorf(
-			"generated Button sources are out of date: %s; run go run ./cmd/stylegen",
+			"generated style sources are out of date: %s; run go run ./cmd/stylegen",
 			strings.Join(drift, ", "),
 		)
 	}
 	return nil
 }
 
-func writeGeneratedButton(path string, content []byte) error {
+func writeGenerated(path string, content []byte) error {
 	if got, err := os.ReadFile(path); err == nil && bytes.Equal(got, content) {
 		return nil
 	} else if err != nil && !errors.Is(err, fs.ErrNotExist) {
@@ -165,7 +279,7 @@ func writeGeneratedButton(path string, content []byte) error {
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return err
 	}
-	temp, err := os.CreateTemp(filepath.Dir(path), ".button.gsx-*")
+	temp, err := os.CreateTemp(filepath.Dir(path), ".gsx-*")
 	if err != nil {
 		return err
 	}

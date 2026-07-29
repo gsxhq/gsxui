@@ -1,6 +1,6 @@
 .PHONY: generate generate-styles verify-generated verify-generated-styles test test-js test-theme-state test-css-audit audit check ci icons site-dev site highlight
 
-audit-source-dirs := ui site/examples site/pages web $(wildcard dev)
+audit-source-dirs := ui registry/canonical site/examples site/pages web $(wildcard dev)
 audit-css-source-dirs := assets/css site web $(wildcard dev)
 
 generate: generate-styles
@@ -67,10 +67,10 @@ audit:
 	@! rg -n -P '(?:\bKey[[:space:]]*:[[:space:]]*|[.]SetAttribute\([[:space:]]*|\bsetAttribute\([[:space:]]*)["\x27\x60]data-gsxui-slot["\x27\x60]' $(audit-source-dirs) -g '*.go' -g '*.js' -g '!*.x.go' -g '!*.gen.go' -g '!*_test.go'
 	@! rg -n -P '\[[[:space:]]*data-gsxui-slot(?=[[:space:]]*(?:[~|^$*]?=|\]))' $(audit-css-source-dirs) -g '*.css'
 	@! rg -n -P '[\w./:\[\]&>-]+!' ui -g '*.gsx'
-	@! rg -n 'gsxui-recipe-' ui -g '*.gsx' -g '!button.gsx'
+	@! rg -n 'gsxui-recipe-' ui -g '*.gsx'
 	@! rg -n '^[[:space:]]+class=' ui -g '*.gsx' -g '!button.gsx'
 	@! rg -n '^[[:space:]]*<[^>]*class=' ui -g '*.gsx' -g '!button.gsx'
-	@! rg -n -P '^[[:space:]]+"(?!(?:group/button|gsxui-recipe-[^"]*|)"[,]?[[:space:]]*$$)' ui/button.gsx
+	@! rg -n 'gsxui-recipe-' registry/canonical -g '*.gsx'
 	@! rg -n '!important' assets/css/foundation.css assets/css/styles/default.css
 
 check: audit test-css-audit test-theme-state verify-generated-styles

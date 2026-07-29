@@ -46,8 +46,6 @@ func Button(variant string, size string, href string, disabled bool, children gs
 			_gsxv1 := "focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 rounded-4xl border border-transparent bg-clip-padding text-sm font-medium focus-visible:ring-[3px] aria-invalid:ring-[3px] active:not-aria-[haspopup]:translate-y-px [&_svg:not([class*='size-'])]:size-4 inline-flex shrink-0 items-center justify-center whitespace-nowrap transition-all outline-none select-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0"
 			var _gsxv2 string
 			switch variant {
-			case "", "default":
-				_gsxv2 = "bg-primary text-primary-foreground hover:bg-primary/80"
 			case "destructive":
 				_gsxv2 = "bg-destructive/10 hover:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/20 text-destructive focus-visible:border-destructive/40 dark:hover:bg-destructive/30"
 			case "outline":
@@ -59,12 +57,10 @@ func Button(variant string, size string, href string, disabled bool, children gs
 			case "link":
 				_gsxv2 = "text-primary underline-offset-4 hover:underline"
 			default:
-				_gsxv2 = ""
+				_gsxv2 = "bg-primary text-primary-foreground hover:bg-primary/80"
 			}
 			var _gsxv3 string
 			switch size {
-			case "", "default":
-				_gsxv3 = "h-9 gap-1.5 px-3 has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5"
 			case "xs":
 				_gsxv3 = "h-6 gap-1 px-2.5 text-xs has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 [&_svg:not([class*='size-'])]:size-3"
 			case "sm":
@@ -80,7 +76,7 @@ func Button(variant string, size string, href string, disabled bool, children gs
 			case "icon-lg":
 				_gsxv3 = "size-10"
 			default:
-				_gsxv3 = ""
+				_gsxv3 = "h-9 gap-1.5 px-3 has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5"
 			}
 			_gsxgw.S(" class=\"")
 			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(_gsxv3), _gsxrt.Class(attrs.Class()))
@@ -89,11 +85,11 @@ func Button(variant string, size string, href string, disabled bool, children gs
 			_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-button"})
 			_gsxgw.BoolAttr("data-gsxui-slot-button", true)
 			_gsxgw.S(">")
-//line button.gsx:60:4
+//line button.gsx:56:4
 			_gsxgw.Node(ctx, children)
 			_gsxgw.S("</a>")
 		} else {
-//line button.gsx:63:3
+//line button.gsx:59:3
 			_gsxgw.S("<button")
 			if !attrs.Has("data-variant") {
 				_gsxgw.S(" data-variant=\"")
@@ -115,8 +111,6 @@ func Button(variant string, size string, href string, disabled bool, children gs
 			_gsxv5 := "focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 rounded-4xl border border-transparent bg-clip-padding text-sm font-medium focus-visible:ring-[3px] aria-invalid:ring-[3px] active:not-aria-[haspopup]:translate-y-px [&_svg:not([class*='size-'])]:size-4 inline-flex shrink-0 items-center justify-center whitespace-nowrap transition-all outline-none select-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0"
 			var _gsxv6 string
 			switch variant {
-			case "", "default":
-				_gsxv6 = "bg-primary text-primary-foreground hover:bg-primary/80"
 			case "destructive":
 				_gsxv6 = "bg-destructive/10 hover:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/20 text-destructive focus-visible:border-destructive/40 dark:hover:bg-destructive/30"
 			case "outline":
@@ -128,12 +122,10 @@ func Button(variant string, size string, href string, disabled bool, children gs
 			case "link":
 				_gsxv6 = "text-primary underline-offset-4 hover:underline"
 			default:
-				_gsxv6 = ""
+				_gsxv6 = "bg-primary text-primary-foreground hover:bg-primary/80"
 			}
 			var _gsxv7 string
 			switch size {
-			case "", "default":
-				_gsxv7 = "h-9 gap-1.5 px-3 has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5"
 			case "xs":
 				_gsxv7 = "h-6 gap-1 px-2.5 text-xs has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 [&_svg:not([class*='size-'])]:size-3"
 			case "sm":
@@ -149,7 +141,7 @@ func Button(variant string, size string, href string, disabled bool, children gs
 			case "icon-lg":
 				_gsxv7 = "size-10"
 			default:
-				_gsxv7 = ""
+				_gsxv7 = "h-9 gap-1.5 px-3 has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5"
 			}
 			_gsxgw.S(" class=\"")
 			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv4), _gsxrt.Class(_gsxv5), _gsxrt.Class(_gsxv6), _gsxrt.Class(_gsxv7), _gsxrt.Class(attrs.Class()))
@@ -158,7 +150,7 @@ func Button(variant string, size string, href string, disabled bool, children gs
 			_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-button"})
 			_gsxgw.BoolAttr("data-gsxui-slot-button", true)
 			_gsxgw.S(">")
-//line button.gsx:111:4
+//line button.gsx:103:4
 			_gsxgw.Node(ctx, children)
 			_gsxgw.S("</button>")
 		}

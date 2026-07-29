@@ -41,71 +41,6 @@ var buttonRecipeTokens = []string{
 	"gsxui-recipe-button-variant-secondary",
 }
 
-var buttonVariantRoles = []buttonRoleCase{
-	{list: `"", "default"`, token: "gsxui-recipe-button-variant-default"},
-	{list: `"destructive"`, token: "gsxui-recipe-button-variant-destructive"},
-	{list: `"outline"`, token: "gsxui-recipe-button-variant-outline"},
-	{list: `"secondary"`, token: "gsxui-recipe-button-variant-secondary"},
-	{list: `"ghost"`, token: "gsxui-recipe-button-variant-ghost"},
-	{list: `"link"`, token: "gsxui-recipe-button-variant-link"},
-}
-
-var buttonSizeRoles = []buttonRoleCase{
-	{list: `"", "default"`, token: "gsxui-recipe-button-size-default"},
-	{list: `"xs"`, token: "gsxui-recipe-button-size-xs"},
-	{list: `"sm"`, token: "gsxui-recipe-button-size-sm"},
-	{list: `"lg"`, token: "gsxui-recipe-button-size-lg"},
-	{list: `"icon"`, token: "gsxui-recipe-button-size-icon"},
-	{list: `"icon-xs"`, token: "gsxui-recipe-button-size-icon-xs"},
-	{list: `"icon-sm"`, token: "gsxui-recipe-button-size-icon-sm"},
-	{list: `"icon-lg"`, token: "gsxui-recipe-button-size-icon-lg"},
-}
-
-type buttonRoleCase struct {
-	list  string
-	token string
-}
-
-func TestCanonicalButtonRecipeTokenContract(t *testing.T) {
-	t.Parallel()
-
-	filename, src := canonicalButtonSource(t)
-	got, err := RecipeTokens(filename, src)
-	if err != nil {
-		t.Fatalf("RecipeTokens() error = %v", err)
-	}
-	if !reflect.DeepEqual(got, buttonRecipeTokens) {
-		t.Errorf("RecipeTokens() = %q, want exact Button role set %q", got, buttonRecipeTokens)
-	}
-}
-
-func TestCanonicalButtonBranchesUseIdenticalInlineRoleSwitches(t *testing.T) {
-	t.Parallel()
-
-	filename, src := canonicalButtonSource(t)
-	anchorClass, buttonClass := resolvedElementClassExpressions(t, filename, src)
-	if !bytes.Equal(anchorClass, buttonClass) {
-		t.Errorf("canonical anchor/button class expressions differ\n--- anchor ---\n%s\n--- button ---\n%s", anchorClass, buttonClass)
-	}
-
-	classes := buttonClassAttrs(t, filename, src)
-	for _, tag := range []string{"a", "button"} {
-		class := classes[tag]
-		if class == nil {
-			t.Errorf("<%s> has no class expression", tag)
-			continue
-		}
-		if len(class.Parts) != 4 {
-			t.Errorf("<%s> class parts = %d, want structural marker + base + variant switch + size switch", tag, len(class.Parts))
-			continue
-		}
-		assertButtonStructuralLiteral(t, tag+" structural marker", class.Parts[0].Expr)
-		assertButtonRoleLiteral(t, tag+" base", class.Parts[1].Expr, "gsxui-recipe-button")
-		assertButtonRoleSwitch(t, tag+" variant", class.Parts[2].CF, "variant", buttonVariantRoles)
-		assertButtonRoleSwitch(t, tag+" size", class.Parts[3].CF, "size", buttonSizeRoles)
-	}
-}
-
 func TestCanonicalButtonKeepsAxesMarkerAndCallerPrecedence(t *testing.T) {
 	t.Parallel()
 
@@ -266,57 +201,10 @@ func TestButtonRecipesCarryRecognizableConcretePresentationForEveryRole(t *testi
 	}
 }
 
-func TestGenerateButtonArtifactsMatchCommittedResolvedSources(t *testing.T) {
+func TestGeneratedPreviewsMatchRegistryAST(t *testing.T) {
 	t.Parallel()
 
-	root := repositoryRoot(t)
-	if err := GenerateButton(root, true); err != nil {
-		t.Fatalf("GenerateButton(check) error = %v", err)
-	}
-
-	canonicalPath := filepath.Join(root, "ui", "button.gsx")
-	canonical, err := os.ReadFile(canonicalPath)
-	if err != nil {
-		t.Fatal(err)
-	}
-	generated := make(map[string][]byte)
-	for _, style := range []string{"nova", "maia"} {
-		recipePath := filepath.Join(root, "registry", "styles", style, "button.css")
-		recipeSource, err := os.ReadFile(recipePath)
-		if err != nil {
-			t.Fatal(err)
-		}
-		recipes, err := recipe.ParseStyle(recipePath, recipeSource)
-		if err != nil {
-			t.Fatalf("ParseStyle(%s) error = %v", style, err)
-		}
-		want, report, err := resolveTokens(canonicalPath, canonical, recipes)
-		if err != nil {
-			t.Fatalf("resolveTokens(%s) error = %v", style, err)
-		}
-		if !reflect.DeepEqual(report.UsedTokens, buttonRecipeTokens) {
-			t.Errorf("resolveTokens(%s) used tokens = %q, want %q", style, report.UsedTokens, buttonRecipeTokens)
-		}
-
-		generatedPath := filepath.Join(root, "registry", "generated", style, "button.gsx")
-		got, err := os.ReadFile(generatedPath)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if !bytes.Equal(got, want) {
-			t.Errorf("%s committed artifact differs from resolved canonical source\n--- got ---\n%s\n--- want ---\n%s", style, got, want)
-		}
-		assertGeneratedButtonSource(t, generatedPath, got)
-		generated[style] = got
-	}
-
-	assertButtonStylesDifferVisibly(t, generated["nova"], generated["maia"])
-}
-
-func TestGenerateButtonPreviewFixturesMatchRegistryAST(t *testing.T) {
-	t.Parallel()
-
-	root := repositoryRoot(t)
+	root := repoRoot(t)
 	for _, style := range []string{"nova", "maia"} {
 		registryPath := filepath.Join(root, "registry", "generated", style, "button.gsx")
 		previewPath := filepath.Join(root, "site", "stylepreview", style, "button.gsx")
@@ -329,24 +217,25 @@ func TestGenerateButtonPreviewFixturesMatchRegistryAST(t *testing.T) {
 	}
 }
 
-func TestGenerateButtonWritesDeterministicallyAndCheckNeverWrites(t *testing.T) {
+func TestGenerateAllWritesDeterministicallyAndCheckNeverWrites(t *testing.T) {
 	t.Parallel()
 
-	root := buttonGeneratorFixture(t)
-	if err := GenerateButton(root, false); err != nil {
-		t.Fatalf("GenerateButton(write) error = %v", err)
+	root := t.TempDir()
+	copyRepoFixture(t, root)
+	if err := GenerateAll(root, false); err != nil {
+		t.Fatalf("GenerateAll(write) error = %v", err)
 	}
 	first := readGeneratedButtons(t, root)
 
-	if err := GenerateButton(root, false); err != nil {
-		t.Fatalf("GenerateButton(second write) error = %v", err)
+	if err := GenerateAll(root, false); err != nil {
+		t.Fatalf("GenerateAll(second write) error = %v", err)
 	}
 	second := readGeneratedButtons(t, root)
 	if !reflect.DeepEqual(second, first) {
 		t.Error("repeated generation changed Button artifacts")
 	}
-	if err := GenerateButton(root, true); err != nil {
-		t.Fatalf("GenerateButton(clean check) error = %v", err)
+	if err := GenerateAll(root, true); err != nil {
+		t.Fatalf("GenerateAll(clean check) error = %v", err)
 	}
 
 	maiaPath := filepath.Join(root, "registry", "generated", "maia", "button.gsx")
@@ -354,32 +243,32 @@ func TestGenerateButtonWritesDeterministicallyAndCheckNeverWrites(t *testing.T) 
 		t.Fatal(err)
 	}
 	beforeCheck := readGeneratedButtons(t, root)
-	err := GenerateButton(root, true)
+	err := GenerateAll(root, true)
 	if err == nil {
-		t.Fatal("GenerateButton(drift check) error = nil, want drift")
+		t.Fatal("GenerateAll(drift check) error = nil, want drift")
 	}
 	if !strings.Contains(err.Error(), filepath.ToSlash("registry/generated/maia/button.gsx")) {
-		t.Errorf("GenerateButton(drift check) error %q does not identify Maia artifact", err)
+		t.Errorf("GenerateAll(drift check) error %q does not identify Maia artifact", err)
 	}
 	afterCheck := readGeneratedButtons(t, root)
 	if !reflect.DeepEqual(afterCheck, beforeCheck) {
 		t.Error("check mode mutated generated artifacts")
 	}
 
-	if err := GenerateButton(root, false); err != nil {
-		t.Fatalf("GenerateButton(restore) error = %v", err)
+	if err := GenerateAll(root, false); err != nil {
+		t.Fatalf("GenerateAll(restore) error = %v", err)
 	}
 	previewPath := filepath.Join(root, "site", "stylepreview", "nova", "button.gsx")
 	previewDrift := []byte("locally modified preview\n")
 	if err := os.WriteFile(previewPath, previewDrift, 0o644); err != nil {
 		t.Fatal(err)
 	}
-	err = GenerateButton(root, true)
+	err = GenerateAll(root, true)
 	if err == nil {
-		t.Fatal("GenerateButton(preview drift check) error = nil, want drift")
+		t.Fatal("GenerateAll(preview drift check) error = nil, want drift")
 	}
 	if !strings.Contains(err.Error(), filepath.ToSlash("site/stylepreview/nova/button.gsx")) {
-		t.Errorf("GenerateButton(preview drift check) error %q does not identify Nova preview artifact", err)
+		t.Errorf("GenerateAll(preview drift check) error %q does not identify Nova preview artifact", err)
 	}
 	afterPreviewCheck, readErr := os.ReadFile(previewPath)
 	if readErr != nil {
@@ -390,78 +279,15 @@ func TestGenerateButtonWritesDeterministicallyAndCheckNeverWrites(t *testing.T) 
 	}
 }
 
-func TestGenerateButtonResolvesEveryStyleBeforeWriting(t *testing.T) {
-	t.Parallel()
-
-	root := buttonGeneratorFixture(t)
-	for _, style := range []string{"nova", "maia"} {
-		path := filepath.Join(root, "registry", "generated", style, "button.gsx")
-		if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
-			t.Fatal(err)
-		}
-		if err := os.WriteFile(path, []byte(style+" sentinel\n"), 0o644); err != nil {
-			t.Fatal(err)
-		}
-	}
-	before := readGeneratedButtons(t, root)
-
-	maiaRecipe := filepath.Join(root, "registry", "styles", "maia", "button.css")
-	if err := os.WriteFile(maiaRecipe, []byte("@layer components {"), 0o644); err != nil {
-		t.Fatal(err)
-	}
-	if err := GenerateButton(root, false); err == nil {
-		t.Fatal("GenerateButton() error = nil, want Maia recipe failure")
-	}
-	after := readGeneratedButtons(t, root)
-	if !reflect.DeepEqual(after, before) {
-		t.Error("generation mutated an artifact before all styles resolved")
-	}
-}
-
 func canonicalButtonSource(t *testing.T) (string, []byte) {
 	t.Helper()
 
-	filename := filepath.Join("..", "..", "ui", "button.gsx")
+	filename := filepath.Join("..", "..", "registry", "canonical", "button.gsx")
 	src, err := os.ReadFile(filename)
 	if err != nil {
 		t.Fatal(err)
 	}
 	return filename, src
-}
-
-func repositoryRoot(t *testing.T) string {
-	t.Helper()
-
-	root, err := filepath.Abs(filepath.Join("..", ".."))
-	if err != nil {
-		t.Fatal(err)
-	}
-	return root
-}
-
-func buttonGeneratorFixture(t *testing.T) string {
-	t.Helper()
-
-	sourceRoot := repositoryRoot(t)
-	root := t.TempDir()
-	for _, relative := range []string{
-		filepath.Join("ui", "button.gsx"),
-		filepath.Join("registry", "styles", "nova", "button.css"),
-		filepath.Join("registry", "styles", "maia", "button.css"),
-	} {
-		src, err := os.ReadFile(filepath.Join(sourceRoot, relative))
-		if err != nil {
-			t.Fatal(err)
-		}
-		dst := filepath.Join(root, relative)
-		if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
-			t.Fatal(err)
-		}
-		if err := os.WriteFile(dst, src, 0o644); err != nil {
-			t.Fatal(err)
-		}
-	}
-	return root
 }
 
 func readGeneratedButtons(t *testing.T, root string) map[string][]byte {
@@ -655,66 +481,6 @@ func buttonClassAttrs(t *testing.T, filename string, src []byte) map[string]*gsx
 		return true
 	})
 	return classes
-}
-
-func assertButtonRoleSwitch(t *testing.T, name string, cf *gsxast.ValueCF, tag string, want []buttonRoleCase) {
-	t.Helper()
-
-	if cf == nil || cf.Switch == nil {
-		t.Errorf("%s is not an inline value switch", name)
-		return
-	}
-	switchNode := cf.Switch
-	if switchNode.Tag != tag {
-		t.Errorf("%s tag = %q, want %q", name, switchNode.Tag, tag)
-	}
-	if len(switchNode.Cases) != len(want)+1 {
-		t.Errorf("%s cases = %d, want %d role cases plus fallback", name, len(switchNode.Cases), len(want)+1)
-		return
-	}
-	for i, role := range want {
-		caseNode := switchNode.Cases[i]
-		if caseNode.Default {
-			t.Errorf("%s case %d is default, want %s", name, i, role.list)
-			continue
-		}
-		if caseNode.List != role.list {
-			t.Errorf("%s case %d list = %q, want %q", name, i, caseNode.List, role.list)
-		}
-		assertButtonRoleLiteral(t, name+" case "+role.list, caseNode.Value.Expr, role.token)
-	}
-	fallback := switchNode.Cases[len(switchNode.Cases)-1]
-	if !fallback.Default {
-		t.Errorf("%s final case is not default", name)
-		return
-	}
-	assertButtonRoleLiteral(t, name+" fallback", fallback.Value.Expr, "")
-}
-
-func assertButtonRoleLiteral(t *testing.T, name, expr, want string) {
-	t.Helper()
-
-	parsed, err := goparser.ParseExpr(expr)
-	if err != nil {
-		t.Errorf("%s expression %q does not parse: %v", name, expr, err)
-		return
-	}
-	literal, ok := parsed.(*goast.BasicLit)
-	if !ok || literal.Kind != token.STRING {
-		t.Errorf("%s expression = %q, want one string literal", name, expr)
-		return
-	}
-	got, err := strconv.Unquote(literal.Value)
-	if err != nil {
-		t.Errorf("%s expression %q does not unquote: %v", name, expr, err)
-		return
-	}
-	if got != want {
-		t.Errorf("%s = %q, want %q", name, got, want)
-	}
-	if got != "" && !strings.HasPrefix(got, recipe.Prefix) {
-		t.Errorf("%s contains concrete presentation utility %q", name, got)
-	}
 }
 
 func assertButtonStructuralLiteral(t *testing.T, name, expr string) {

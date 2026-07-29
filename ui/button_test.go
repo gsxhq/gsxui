@@ -1,11 +1,18 @@
 package ui_test
 
 import (
+	"html"
+	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
+	"sync"
 	"testing"
 
 	gsx "github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/internal/recipe"
+	"github.com/gsxhq/gsxui/internal/stylegen"
+	"github.com/gsxhq/gsxui/merge"
 	"github.com/gsxhq/gsxui/ui"
 )
 
@@ -131,15 +138,44 @@ func TestButtonOwnPresenceMarkerWinsCollisionAndKeepsComposedMarker(t *testing.T
 	)
 }
 
-func canonicalButtonClass(variant, size string, caller ...string) string {
-	classes := []string{
-		"group/button",
-		"gsxui-recipe-button",
-		"gsxui-recipe-button-variant-" + variant,
-		"gsxui-recipe-button-size-" + size,
+// novaButtonRecipe loads the default style's Button recipe once. ui.Button is
+// generated output now, so the classes it renders are the default style's
+// concrete utilities; the expectation is derived from the same recipe the
+// generator reads rather than restated as a literal that would have to be
+// rewritten on every style edit.
+var novaButtonRecipe = sync.OnceValue(func() recipe.Style {
+	path := filepath.Join("..", "registry", "styles", stylegen.DefaultStyle, "button.css")
+	src, err := os.ReadFile(path)
+	if err != nil {
+		panic(err)
 	}
+	style, err := recipe.ParseStyle(path, src)
+	if err != nil {
+		panic(err)
+	}
+	return style
+})
+
+func recipeUtilities(class string) []string {
+	rule, ok := novaButtonRecipe().Lookup(class)
+	if !ok {
+		panic("default style declares no recipe " + class)
+	}
+	return rule.Utilities
+}
+
+// canonicalButtonClass is the class attribute ui.Button renders for one
+// variant/size pair, plus any caller classes. gsx merges the whole class value
+// through merge.Merge, so the expectation runs the same merger: a caller
+// utility that conflicts with a role utility replaces it rather than following
+// it.
+func canonicalButtonClass(variant, size string, caller ...string) string {
+	classes := []string{"group/button"}
+	classes = append(classes, recipeUtilities("gsxui-recipe-button")...)
+	classes = append(classes, recipeUtilities("gsxui-recipe-button-variant-"+variant)...)
+	classes = append(classes, recipeUtilities("gsxui-recipe-button-size-"+size)...)
 	classes = append(classes, caller...)
-	return `class="` + strings.Join(classes, " ") + `"`
+	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
 }
 
 func assertButtonCallerAttrsOnce(t *testing.T, got, variant, size string) {

@@ -24,10 +24,6 @@ type Call struct {
 	Dimension string
 }
 
-type ResolveReport struct {
-	UsedTokens []string
-}
-
 type literalEdit struct {
 	start int
 	end   int
@@ -43,11 +39,12 @@ const (
 
 // classMode selects how a canonical class expression is treated. The two
 // helper modes read the structural `<component>.<Method>(...)` form; the token
-// mode is the legacy literal-substitution path retired by Task 7.
+// mode only scans string literals for recipe tokens, so that RecipeTokens can
+// report and reject stray token use without resolving anything.
 type classMode uint8
 
 const (
-	tokenSubstitutionMode classMode = iota
+	tokenScanMode classMode = iota
 	helperDesugarMode
 	helperScanMode
 )
@@ -57,7 +54,6 @@ type resolver struct {
 	src       []byte
 	fset      *token.FileSet
 	classMode classMode
-	recipes   *recipe.Style
 	resolved  recipe.Resolved
 	used      map[string]struct{}
 	calls     []Call
@@ -120,65 +116,22 @@ func HelperCalls(filename string, src []byte) ([]Call, error) {
 	return r.calls, nil
 }
 
-// resolveTokens is the legacy recipe-token-literal substitution path. It is
-// retired by Task 7, in the same commit that replaces the last authored source
-// still written in token form (ui/button.gsx) with generated output. New work
-// belongs in Resolve.
-func resolveTokens(filename string, src []byte, recipes recipe.Style) ([]byte, ResolveReport, error) {
-	declared, err := declaredRecipeTokens(filename, recipes)
-	if err != nil {
-		return nil, ResolveReport{}, err
-	}
-
-	result, err := inspectRecipeTokens(filename, src, &recipes)
-	if err != nil {
-		return nil, ResolveReport{}, err
-	}
-	missing, unused := recipeSetDifference(result.tokens, declared)
-	if len(missing) != 0 || len(unused) != 0 {
-		return nil, ResolveReport{}, fmt.Errorf(
-			"%s: recipe token set mismatch: missing=%q unused=%q",
-			filename,
-			missing,
-			unused,
-		)
-	}
-
-	resolved, err := applyLiteralEdits(src, result.edits)
-	if err != nil {
-		return nil, ResolveReport{}, fmt.Errorf("%s: apply recipe literals: %w", filename, err)
-	}
-	formatted, err := gen.Format(filename, resolved)
-	if err != nil {
-		return nil, ResolveReport{}, fmt.Errorf("%s: format resolved GSX: %w", filename, err)
-	}
-	if _, err := gsxparser.ParseFile(token.NewFileSet(), filename, formatted, 0); err != nil {
-		return nil, ResolveReport{}, fmt.Errorf("%s: reparse resolved GSX: %w", filename, err)
-	}
-	remaining, err := RecipeTokens(filename, formatted)
-	if err != nil {
-		return nil, ResolveReport{}, fmt.Errorf("%s: validate resolved GSX recipe use: %w", filename, err)
-	}
-	if len(remaining) != 0 {
-		return nil, ResolveReport{}, fmt.Errorf("%s: resolved GSX still contains recipe tokens %q", filename, remaining)
-	}
-	if bytes.Contains(formatted, []byte(recipe.Prefix)) {
-		return nil, ResolveReport{}, fmt.Errorf("%s: resolved GSX still contains recipe prefix %q", filename, recipe.Prefix)
-	}
-	return formatted, ResolveReport{UsedTokens: result.tokens}, nil
-}
-
+// RecipeTokens reports every recipe token a source names in a class value, and
+// rejects every structurally invalid recipe use it finds along the way.
 func RecipeTokens(filename string, src []byte) ([]string, error) {
-	result, err := inspectRecipeTokens(filename, src, nil)
+	r, err := inspectSource(filename, src, func(r *resolver) {
+		r.classMode = tokenScanMode
+	})
 	if err != nil {
 		return nil, err
 	}
-	return result.tokens, nil
-}
 
-type inspectionResult struct {
-	tokens []string
-	edits  []literalEdit
+	tokens := make([]string, 0, len(r.used))
+	for token := range r.used {
+		tokens = append(tokens, token)
+	}
+	sort.Strings(tokens)
+	return tokens, nil
 }
 
 // inspectSource runs the one shared traversal. configure selects the class
@@ -204,23 +157,6 @@ func inspectSource(filename string, src []byte, configure func(*resolver)) (*res
 		return nil, r.err
 	}
 	return r, nil
-}
-
-func inspectRecipeTokens(filename string, src []byte, recipes *recipe.Style) (inspectionResult, error) {
-	r, err := inspectSource(filename, src, func(r *resolver) {
-		r.classMode = tokenSubstitutionMode
-		r.recipes = recipes
-	})
-	if err != nil {
-		return inspectionResult{}, err
-	}
-
-	tokens := make([]string, 0, len(r.used))
-	for token := range r.used {
-		tokens = append(tokens, token)
-	}
-	sort.Strings(tokens)
-	return inspectionResult{tokens: tokens, edits: r.edits}, nil
 }
 
 func (r *resolver) inspectVisitor(mode inspectionMode) func(gsxast.Node) bool {
@@ -303,7 +239,7 @@ func (r *resolver) inspectClassExpr(expr string, exprPos token.Pos, part *gsxast
 		return
 	}
 
-	if r.classMode != tokenSubstitutionMode {
+	if r.classMode != tokenScanMode {
 		if call, ok := parsed.(*goast.CallExpr); ok {
 			if selector, ok := call.Fun.(*goast.SelectorExpr); ok {
 				r.inspectHelperCall(call, selector, exprPos, part)
@@ -337,28 +273,9 @@ func (r *resolver) inspectClassExpr(expr string, exprPos token.Pos, part *gsxast
 		r.err = r.positionedError(exprPos, "invalid class string literal: %v", err)
 		return
 	}
-	resolved, changed, err := r.resolveClassLiteral(value)
-	if err != nil {
+	if err := r.scanClassLiteral(value); err != nil {
 		r.err = r.positionedError(exprPos, "%v", err)
-		return
 	}
-	if !changed {
-		return
-	}
-
-	exprOffset := r.fset.Position(exprPos).Offset
-	if exprOffset < 0 {
-		r.err = r.positionedError(exprPos, "class expression has no source position")
-		return
-	}
-	start := exprOffset + int(literal.Pos()) - 1
-	end := exprOffset + int(literal.End()) - 1
-	if start < 0 || end < start || end > len(r.src) {
-		r.err = r.positionedError(exprPos, "class string literal span is outside source")
-		return
-	}
-	literal.Value = strconv.Quote(resolved)
-	r.edits = append(r.edits, literalEdit{start: start, end: end, value: literal.Value})
 }
 
 // inspectHelperCall matches `<component>.<Method>(...)` in a canonical class
@@ -504,14 +421,13 @@ func dimensionSwitch(resolved recipe.Resolved, dimension recipe.Dimension, argum
 	return out.String()
 }
 
-func (r *resolver) resolveClassLiteral(value string) (string, bool, error) {
-	var out strings.Builder
-	out.Grow(len(value))
-	changed := false
-
+// scanClassLiteral records every recipe token a class string literal names and
+// rejects any token that is not a whole class token. It never rewrites: nothing
+// authored is in token form any more, so a token reaching here is either a
+// report for RecipeTokens or an error.
+func (r *resolver) scanClassLiteral(value string) error {
 	for pos := 0; pos < len(value); {
 		if isHTMLASCIIWhitespace(value[pos]) {
-			out.WriteByte(value[pos])
 			pos++
 			continue
 		}
@@ -520,29 +436,16 @@ func (r *resolver) resolveClassLiteral(value string) (string, bool, error) {
 			end++
 		}
 		classToken := value[pos:end]
-		prefix := strings.Index(classToken, recipe.Prefix)
-		switch {
+		switch prefix := strings.Index(classToken, recipe.Prefix); {
 		case prefix < 0:
-			out.WriteString(classToken)
 		case prefix > 0:
-			return "", false, fmt.Errorf("recipe token must be a whole class token, found %q", classToken)
+			return fmt.Errorf("recipe token must be a whole class token, found %q", classToken)
 		default:
 			r.used[classToken] = struct{}{}
-			if r.recipes == nil {
-				out.WriteString(classToken)
-				break
-			}
-			rule, ok := r.recipes.Lookup(classToken)
-			if !ok {
-				out.WriteString(classToken)
-				break
-			}
-			out.WriteString(strings.Join(rule.Utilities, " "))
-			changed = true
 		}
 		pos = end
 	}
-	return out.String(), changed, nil
+	return nil
 }
 
 func (r *resolver) inspectStaticAttr(attr *gsxast.StaticAttr) {
@@ -931,36 +834,6 @@ func expressionUsesConcatenation(expr goast.Expr) bool {
 		return !found
 	})
 	return found
-}
-
-func declaredRecipeTokens(filename string, recipes recipe.Style) (map[string]struct{}, error) {
-	rules := recipes.Rules()
-	declared := make(map[string]struct{}, len(rules))
-	for _, rule := range rules {
-		if _, exists := declared[rule.Class]; exists {
-			return nil, fmt.Errorf("%s: duplicate recipe declaration %q", filename, rule.Class)
-		}
-		declared[rule.Class] = struct{}{}
-	}
-	return declared, nil
-}
-
-func recipeSetDifference(used []string, declared map[string]struct{}) (missing, unused []string) {
-	usedSet := make(map[string]struct{}, len(used))
-	for _, token := range used {
-		usedSet[token] = struct{}{}
-		if _, ok := declared[token]; !ok {
-			missing = append(missing, token)
-		}
-	}
-	for token := range declared {
-		if _, ok := usedSet[token]; !ok {
-			unused = append(unused, token)
-		}
-	}
-	sort.Strings(missing)
-	sort.Strings(unused)
-	return missing, unused
 }
 
 func applyLiteralEdits(src []byte, edits []literalEdit) ([]byte, error) {
