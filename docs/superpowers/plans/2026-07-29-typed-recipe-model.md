@@ -21,6 +21,7 @@
 - Generated files are committed and drift-checked with `go run ./cmd/stylegen --check`.
 - **Every commit must leave `go build ./...` green and the test suite passing.** No task may hand the next one a broken tree.
 - **`gofmt -l .` must print nothing.** The Makefile enforces `gofmt -l . | (! grep .)`; an unformatted file fails CI. Run `gofmt -w` on every file you touch before committing.
+- **`make audit` must pass.** It is the first target of `make ci`. Several of its rules name `ui/button.gsx` explicitly; Task 7 updates them for the new file layout.
 - Use `{/* */}` for comments inside gsx markup, never `//`.
 
 ## Resolved Spike
@@ -1453,6 +1454,47 @@ Rename the `generatedButtonSource` struct to `generatedSource` (same fields: `re
 
 In `cmd/stylegen/main.go`, replace `stylegen.GenerateButton(root, *check)` with `stylegen.GenerateAll(root, *check)`, and change `repositoryRoot`'s marker file from `ui/button.gsx` to `registry/canonical/button.gsx`.
 
+- [ ] **Step 4b: Update the Makefile audit rules**
+
+`make audit` is the first target of `make ci`, and several of its rules name
+`ui/button.gsx` because that file used to be the recipe-token component. This
+task makes it generated concrete Tailwind, which breaks the strictest rule.
+Apply exactly these changes to the `audit:` target:
+
+Delete this rule entirely — it allowed only `"group/button"` and
+`gsxui-recipe-*` string literals in `ui/button.gsx`, which generated output
+cannot satisfy:
+
+```make
+	@! rg -n -P '^[[:space:]]+"(?!(?:group/button|gsxui-recipe-[^"]*|)"[,]?[[:space:]]*$$)' ui/button.gsx
+```
+
+Replace it with the equivalent guarantee applied to the canonical instead —
+the canonical must express recipe roles through helper calls, never literal
+tokens, and must carry no concrete utilities:
+
+```make
+	@! rg -n 'gsxui-recipe-' registry/canonical -g '*.gsx'
+```
+
+Tighten the recipe-prefix rule, dropping the `ui/button.gsx` exemption. After
+this task no file under `ui/` may contain a recipe token at all, which is
+exactly success criterion 4:
+
+```make
+	@! rg -n 'gsxui-recipe-' ui -g '*.gsx'
+```
+
+Add `registry/canonical` to `audit-source-dirs` (line 3) so the `data-slot`
+and `data-gsxui-slot` guards cover the canonical sources too.
+
+Leave every other rule unchanged. In particular the `-g '!button.gsx'`
+exemptions on the `group/`, `peer/` and `class=` rules stay: generated
+`ui/button.gsx` still legitimately carries `group/button` and a `class={…}`
+attribute.
+
+Verify with `make audit` and confirm it exits 0.
+
 - [ ] **Step 5: Run tests to verify they pass**
 
 Run: `go test ./internal/stylegen/ -v && go run ./cmd/stylegen --check`
@@ -1744,6 +1786,7 @@ Run each of these and confirm the stated expectation before claiming completion:
 
 ```bash
 go build ./...                       # expect: no output
+make audit                           # expect: exit 0
 go run ./cmd/stylegen --check        # expect: exit 0, no drift
 go test ./...                        # expect: all packages ok
 npm test                             # expect: jstest suite passes
