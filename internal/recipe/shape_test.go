@@ -66,3 +66,62 @@ func TestShapeDimensionLookup(t *testing.T) {
 		t.Error("Dimension(tone) = true, want false")
 	}
 }
+
+func TestShapeClassEncoding(t *testing.T) {
+	t.Parallel()
+	s := validShape()
+	if got, want := s.BaseClass(), "gsxui-recipe-button"; got != want {
+		t.Errorf("BaseClass() = %q, want %q", got, want)
+	}
+	if got, want := s.ValueClass("size", "icon-lg"), "gsxui-recipe-button-size-icon-lg"; got != want {
+		t.Errorf("ValueClass() = %q, want %q", got, want)
+	}
+}
+
+func TestShapeDecodeClass(t *testing.T) {
+	t.Parallel()
+	s := validShape()
+	tests := []struct {
+		class         string
+		wantKind      ClassKind
+		wantDimension string
+		wantValue     string
+	}{
+		{"gsxui-recipe-button", ClassBase, "", ""},
+		{"gsxui-recipe-button-variant-outline", ClassValue, "variant", "outline"},
+		// The dashed value must win over any shorter accidental split.
+		{"gsxui-recipe-button-size-icon-lg", ClassValue, "size", "icon-lg"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.class, func(t *testing.T) {
+			t.Parallel()
+			dimension, value, kind, err := s.DecodeClass(tt.class)
+			if err != nil {
+				t.Fatalf("DecodeClass() error = %v", err)
+			}
+			if kind != tt.wantKind || dimension != tt.wantDimension || value != tt.wantValue {
+				t.Errorf("DecodeClass() = (%q, %q, %v), want (%q, %q, %v)",
+					dimension, value, kind, tt.wantDimension, tt.wantValue, tt.wantKind)
+			}
+		})
+	}
+}
+
+func TestShapeDecodeClassRejects(t *testing.T) {
+	t.Parallel()
+	s := validShape()
+	for _, class := range []string{
+		"gsxui-recipe-card",                 // wrong component
+		"gsxui-recipe-button-variant-plain", // undeclared value
+		"gsxui-recipe-button-tone-quiet",    // undeclared dimension
+		"inline-flex",                       // not a recipe class
+		"gsxui-recipe-",                     // prefix only
+	} {
+		t.Run(class, func(t *testing.T) {
+			t.Parallel()
+			if _, _, _, err := s.DecodeClass(class); err == nil {
+				t.Errorf("DecodeClass(%q) = nil error, want error", class)
+			}
+		})
+	}
+}

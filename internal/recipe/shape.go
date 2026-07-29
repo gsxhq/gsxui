@@ -2,7 +2,10 @@
 // declares, and the utilities a style supplies for it.
 package recipe
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // Shape is a component's style interface: the dimensions it varies over and
 // the values each dimension admits. Every style must implement all of it.
@@ -82,4 +85,50 @@ func (s Shape) Dimension(name string) (Dimension, bool) {
 		}
 	}
 	return Dimension{}, false
+}
+
+// Prefix namespaces every recipe class. It must never survive into a
+// generated consumer artifact.
+const Prefix = "gsxui-recipe-"
+
+// ClassKind distinguishes a component's base rule from a dimension value rule.
+type ClassKind uint8
+
+const (
+	ClassBase ClassKind = iota
+	ClassValue
+)
+
+func (s Shape) BaseClass() string { return Prefix + s.Component }
+
+func (s Shape) ValueClass(dimension, value string) string {
+	return Prefix + s.Component + "-" + dimension + "-" + value
+}
+
+// DecodeClass resolves a recipe class name against the shape. It matches
+// declared dimensions and values rather than splitting on dashes, so a dashed
+// value such as "icon-lg" is unambiguous.
+func (s Shape) DecodeClass(class string) (dimension, value string, kind ClassKind, err error) {
+	if !strings.HasPrefix(class, Prefix) {
+		return "", "", 0, fmt.Errorf("%q is not a recipe class", class)
+	}
+	if class == s.BaseClass() {
+		return "", "", ClassBase, nil
+	}
+	rest, ok := strings.CutPrefix(class, s.BaseClass()+"-")
+	if !ok {
+		return "", "", 0, fmt.Errorf("recipe class %q does not belong to component %q", class, s.Component)
+	}
+	for _, candidate := range s.Dimensions {
+		suffix, ok := strings.CutPrefix(rest, candidate.Name+"-")
+		if !ok {
+			continue
+		}
+		if !candidate.Has(suffix) {
+			return "", "", 0, fmt.Errorf("recipe class %q: dimension %q does not declare value %q",
+				class, candidate.Name, suffix)
+		}
+		return candidate.Name, suffix, ClassValue, nil
+	}
+	return "", "", 0, fmt.Errorf("recipe class %q names no declared dimension of %q", class, s.Component)
 }
