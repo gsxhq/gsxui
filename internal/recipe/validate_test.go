@@ -2,6 +2,7 @@ package recipe
 
 import (
 	"reflect"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -96,5 +97,48 @@ func TestConformRejectsInvalidShape(t *testing.T) {
 	}
 	if got, want := err.Error(), `button: dimension "variant" default "ghost" is not one of its values`; got != want {
 		t.Errorf("Conform() = %q, want %q", got, want)
+	}
+}
+
+// noConflictMerger keeps every class, standing in for a merge with no conflicts.
+func noConflictMerger(classes []string) string { return strings.Join(classes, " ") }
+
+func TestCheckConflictsAcceptsCleanLists(t *testing.T) {
+	t.Parallel()
+	resolved, err := Conform("nova/button.css", conformShape(), mustParse(t, conformCSS))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := CheckConflicts("nova/button.css", resolved, noConflictMerger); err != nil {
+		t.Fatalf("CheckConflicts() = %v, want nil", err)
+	}
+}
+
+func TestCheckConflictsRejectsSupersededUtility(t *testing.T) {
+	t.Parallel()
+	src := strings.Replace(conformCSS,
+		"@apply inline-flex items-center;", "@apply rounded-lg rounded-md;", 1)
+	resolved, err := Conform("nova/button.css", conformShape(), mustParse(t, src))
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Stub merger: drops "rounded-lg" when "rounded-md" follows it.
+	stub := func(classes []string) string {
+		var kept []string
+		for _, class := range classes {
+			if class == "rounded-lg" && slices.Contains(classes, "rounded-md") {
+				continue
+			}
+			kept = append(kept, class)
+		}
+		return strings.Join(kept, " ")
+	}
+	err = CheckConflicts("nova/button.css", resolved, stub)
+	if err == nil {
+		t.Fatal("CheckConflicts() = nil, want error")
+	}
+	want := "nova/button.css: .gsxui-recipe-button applies conflicting utilities: rounded-lg is superseded"
+	if got := err.Error(); got != want {
+		t.Errorf("CheckConflicts() = %q, want %q", got, want)
 	}
 }

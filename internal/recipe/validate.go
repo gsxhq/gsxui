@@ -3,6 +3,7 @@ package recipe
 import (
 	"fmt"
 	"slices"
+	"strings"
 )
 
 // Resolved is a style proven to be a complete implementation of a shape.
@@ -59,4 +60,43 @@ func Conform(filename string, shape Shape, style Style) (Resolved, error) {
 		}
 	}
 	return resolved, nil
+}
+
+// CheckConflicts reports a utility list that contains a Tailwind conflict.
+// merger is the Tailwind-aware class merger; a list that shortens when merged
+// contained a utility superseded by a later one, which is an authoring error
+// rather than something to normalize silently.
+func CheckConflicts(filename string, resolved Resolved, merger func([]string) string) error {
+	check := func(class string, utilities []string) error {
+		kept := strings.Fields(merger(slices.Clone(utilities)))
+		if len(kept) == len(utilities) {
+			return nil
+		}
+		keptSet := make(map[string]struct{}, len(kept))
+		for _, utility := range kept {
+			keptSet[utility] = struct{}{}
+		}
+		for _, utility := range utilities {
+			if _, ok := keptSet[utility]; !ok {
+				return fmt.Errorf("%s: .%s applies conflicting utilities: %s is superseded",
+					filename, class, utility)
+			}
+		}
+		return nil
+	}
+
+	if resolved.Shape.Base {
+		if err := check(resolved.Shape.BaseClass(), resolved.Base); err != nil {
+			return err
+		}
+	}
+	for _, dimension := range resolved.Shape.Dimensions {
+		for _, value := range dimension.Values {
+			class := resolved.Shape.ValueClass(dimension.Name, value)
+			if err := check(class, resolved.Values[dimension.Name][value]); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
