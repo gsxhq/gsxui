@@ -113,7 +113,7 @@ func (c Component) Page(props ComponentProps) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line component.gsx:105:2
-		_gsxgw.NodeResult(_gsxrenderLayout(ctx, _gsxgw, props.Title, props.Name, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, props.Title, props.Name, layoutDocs, nil, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line component.gsx:106:3
 			_gsxgw.S("<div class=\"flex flex-col gap-10 py-10\">")

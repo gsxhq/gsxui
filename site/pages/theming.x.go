@@ -19,7 +19,7 @@ func (t Theming) Page() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line theming.gsx:9:2
-		_gsxgw.NodeResult(_gsxrenderLayout(ctx, _gsxgw, "Theming", "theming", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, "Theming", "theming", layoutDocs, nil, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line theming.gsx:10:3
 			_gsxgw.S("<div data-doc=\"theming\" class=\"flex max-w-3xl flex-col gap-10 py-10\">")

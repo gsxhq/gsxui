@@ -7,11 +7,23 @@ import (
 	"github.com/gsxhq/gsxui/ui/icon"
 )
 
-// Layout is the shared page shell every site page renders through: header
-// (wordmark + doc search + GitHub link), sidebar (component list from the
-// registry — derived, so it can never drift from what `ui/` actually
-// ships), and footer. active names the component whose sidebar entry
-// should highlight; pages outside /components/ pass "".
+type layoutMode string
+
+const (
+	layoutMarketing layoutMode = "marketing"
+	layoutDocs      layoutMode = "docs"
+	layoutWorkspace layoutMode = "workspace"
+)
+
+type docTOCItem struct {
+	ID    string
+	Title string
+	Depth int
+}
+
+// siteLayout is the shared page shell. Its explicit mode selects the page's
+// spatial responsibilities without inferring them from the request path.
+// active names the documentation navigation entry to highlight.
 //
 // Doc search: an outer ui.Dialog root wires the header trigger button to
 // CommandDialog's nested dialog element by proximity (dialog.js's
@@ -19,13 +31,37 @@ import (
 // global Cmd-K/Ctrl-K hotkey toggles the same dialog. The search index is
 // the registry component list plus the static pages — derived, no manual
 // list to drift.
-component Layout(title string, active string, children gsx.Node) {
+component siteLayout(title string, active string, mode layoutMode, toc []docTOCItem, children gsx.Node) {
+	{{
+		headerContainerClass := "mx-auto flex h-14 items-center justify-between"
+		contentContainerClass := "mx-auto w-full py-10"
+		mainClass := "min-w-0 flex-1"
+		footerContainerClass := "mx-auto px-4 py-6 text-sm text-muted-foreground"
+
+		switch mode {
+		case layoutDocs:
+			headerContainerClass += " max-w-[1568px] px-4 sm:px-6 lg:px-8"
+			contentContainerClass += " max-w-[1568px] grid grid-cols-1 px-4 sm:px-6 lg:grid-cols-[288px_minmax(0,1fr)] lg:px-8 xl:grid-cols-[288px_minmax(0,1fr)_288px]"
+			mainClass = "mx-auto w-full min-w-0 max-w-[640px]"
+			footerContainerClass += " max-w-[1568px]"
+		case layoutWorkspace:
+			headerContainerClass += " max-w-none px-4"
+			contentContainerClass += " flex max-w-none px-4"
+		case layoutMarketing:
+			headerContainerClass += " max-w-6xl px-4"
+			contentContainerClass += " flex max-w-6xl px-4"
+			footerContainerClass += " max-w-6xl"
+		}
+	}}
 	<!DOCTYPE html>
 	<html lang="en">
 		<siteHead title={title} entry="web/main.js"/>
-		<body class="min-h-svh bg-background text-foreground antialiased">
+		<body
+			data-site-layout={mode}
+			class="min-h-svh bg-background text-foreground antialiased"
+		>
 			<header class="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur">
-				<div class="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
+				<div class={headerContainerClass}>
 					<a href={Home{} |> url} class="flex items-center">
 						<siteLogo/>
 					</a>
@@ -106,9 +142,10 @@ component Layout(title string, active string, children gsx.Node) {
 					</nav>
 				</div>
 			</header>
-			<div class="mx-auto flex max-w-6xl gap-10 px-4 py-10">
-				<aside class="hidden w-44 shrink-0 md:block">
-					<nav class="sticky top-20 flex flex-col gap-4 text-sm">
+			<div class={contentContainerClass}>
+				{ if mode == layoutDocs {
+					<aside data-site-docs-sidebar class="hidden min-w-0 lg:block">
+						<nav class="sticky top-20 flex max-h-[calc(100svh-5rem)] flex-col gap-4 overflow-y-auto pr-16 text-sm">
 						<div class="flex flex-col gap-1">
 							<h3 class="px-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Docs</h3>
 							<a
@@ -145,15 +182,25 @@ component Layout(title string, active string, children gsx.Node) {
 								</a>
 							} }
 						</div>
-					</nav>
-				</aside>
-				<main class="min-w-0 flex-1">{ children }</main>
+						</nav>
+					</aside>
+				} }
+				<main
+					{ if mode == layoutDocs {
+						data-site-docs-article
+					} }
+					class={mainClass}
+				>
+					{ children }
+				</main>
 			</div>
-			<footer class="border-t border-border">
-				<div class="mx-auto max-w-6xl px-4 py-6 text-sm text-muted-foreground">
-					gsxui — shadcn-style components for gsx. Copy-in, type-checked, server-rendered.
-				</div>
-			</footer>
+			{ if mode != layoutWorkspace {
+				<footer data-site-footer class="border-t border-border">
+					<div class={footerContainerClass}>
+						gsxui — shadcn-style components for gsx. Copy-in, type-checked, server-rendered.
+					</div>
+				</footer>
+			} }
 			{/* Mounted once per page: the bottom-right region ui/sonner.js
 			   appends every client-constructed toast <li> into. */}
 			<ui.Toaster/>

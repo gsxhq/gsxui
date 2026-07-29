@@ -23,7 +23,7 @@ func (g GettingStarted) Page() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line getting_started.gsx:12:2
-		_gsxgw.NodeResult(_gsxrenderLayout(ctx, _gsxgw, "Getting Started", "getting-started", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, "Getting Started", "getting-started", layoutDocs, nil, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line getting_started.gsx:13:3
 			_gsxgw.S("<div data-doc=\"getting-started\" class=\"flex max-w-3xl flex-col gap-10 py-10\">")

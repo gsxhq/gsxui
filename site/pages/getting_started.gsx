@@ -9,7 +9,7 @@ import "github.com/gsxhq/gsxui/site/hl"
 type GettingStarted struct{}
 
 component (g GettingStarted) Page() {
-	<Layout title="Getting Started" active="getting-started">
+	<siteLayout title="Getting Started" active="getting-started" mode={layoutDocs} toc={nil}>
 		<div data-doc="getting-started" class="flex max-w-3xl flex-col gap-10 py-10">
 			<div class="flex flex-col gap-4">
 				<h1 class="text-3xl font-semibold tracking-tight">Getting Started</h1>
@@ -83,5 +83,5 @@ component (g GettingStarted) Page() {
 				</p>
 			</section>
 		</div>
-	</Layout>
+	</siteLayout>
 }

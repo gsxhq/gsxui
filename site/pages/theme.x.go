@@ -195,7 +195,7 @@ func (t Theme) Page() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line theme.gsx:185:2
-		_gsxgw.NodeResult(_gsxrenderLayout(ctx, _gsxgw, "Theme", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, "Theme", "", layoutWorkspace, nil, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line theme.gsx:186:3
 			_gsxa0, _gsxerr := _gsxf0.URLFor(ctx, (ThemePreviewButton{}))
@@ -210,7 +210,7 @@ func (t Theme) Page() _gsxrt.Node {
 }
 
 //line theme.gsx:190:1
-// ThemeEditor is the editor body without the site Layout, so the browser
+// ThemeEditor is the editor body without the site shell, so the browser
 // harness can exercise the production controls and web/theme.js directly.
 
 //line theme.gsx:192:1

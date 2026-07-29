@@ -102,7 +102,7 @@ func examplePreviewURL(componentName string, exampleName string, preview string)
 }
 
 component (c Component) Page(props ComponentProps) {
-	<Layout title={props.Title} active={props.Name}>
+	<siteLayout title={props.Title} active={props.Name} mode={layoutDocs} toc={nil}>
 		<div class="flex flex-col gap-10 py-10">
 			<h1 class="text-3xl font-semibold tracking-tight">{ props.Title }</h1>
 			{ for _, ex := range props.Examples {
@@ -175,5 +175,5 @@ component (c Component) Page(props ComponentProps) {
 				} }
 			</footer>
 		</div>
-	</Layout>
+	</siteLayout>
 }

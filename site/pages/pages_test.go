@@ -68,6 +68,58 @@ func TestSiteRoutes(t *testing.T) {
 	}
 }
 
+func TestSiteLayoutModes(t *testing.T) {
+	handler := newTestHandler(t)
+
+	tests := []struct {
+		path string
+		mode string
+	}{
+		{path: "/", mode: "marketing"},
+		{path: "/components", mode: "docs"},
+		{path: "/components/button", mode: "docs"},
+		{path: "/docs/getting-started", mode: "docs"},
+		{path: "/theme", mode: "workspace"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.path, func(t *testing.T) {
+			req := httptest.NewRequest(http.MethodGet, tt.path, nil)
+			rec := httptest.NewRecorder()
+			handler.ServeHTTP(rec, req)
+			if rec.Code == http.StatusTemporaryRedirect {
+				req = httptest.NewRequest(http.MethodGet, rec.Header().Get("Location"), nil)
+				rec = httptest.NewRecorder()
+				handler.ServeHTTP(rec, req)
+			}
+
+			if rec.Code != http.StatusOK {
+				t.Fatalf("GET %s = %d, want %d; body:\n%s", tt.path, rec.Code, http.StatusOK, rec.Body.String())
+			}
+			body := rec.Body.String()
+			if !strings.Contains(body, `data-site-layout="`+tt.mode+`"`) {
+				t.Errorf("GET %s missing data-site-layout=%q; body:\n%s", tt.path, tt.mode, body)
+			}
+
+			isDocs := tt.mode == "docs"
+			for _, marker := range []string{"data-site-docs-sidebar", "data-site-docs-article"} {
+				hasMarker := strings.Contains(body, marker)
+				if hasMarker != isDocs {
+					t.Errorf("GET %s has %s = %t, want %t; body:\n%s", tt.path, marker, hasMarker, isDocs, body)
+				}
+			}
+
+			if tt.mode == "workspace" {
+				for _, marker := range []string{"data-site-docs-toc", "data-site-footer"} {
+					if strings.Contains(body, marker) {
+						t.Errorf("GET %s workspace unexpectedly renders %s; body:\n%s", tt.path, marker, body)
+					}
+				}
+			}
+		})
+	}
+}
+
 func TestDialogTriggerSlotMarkers(t *testing.T) {
 	tests := []struct {
 		name string

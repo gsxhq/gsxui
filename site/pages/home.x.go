@@ -24,7 +24,7 @@ func (h Home) Page() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line home.gsx:15:2
-		_gsxgw.NodeResult(_gsxrenderLayout(ctx, _gsxgw, "gsxui", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, "gsxui", "", layoutMarketing, nil, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line home.gsx:16:3
 			_gsxgw.S("<section class=\"flex flex-col gap-4 py-10\">")

@@ -6,7 +6,7 @@ import "github.com/gsxhq/gsxui/site/hl"
 type Theming struct{}
 
 component (t Theming) Page() {
-	<Layout title="Theming" active="theming">
+	<siteLayout title="Theming" active="theming" mode={layoutDocs} toc={nil}>
 		<div data-doc="theming" class="flex max-w-3xl flex-col gap-10 py-10">
 			<div class="flex flex-col gap-4">
 				<h1 class="text-3xl font-semibold tracking-tight">Theming</h1>
@@ -87,5 +87,5 @@ component (t Theming) Page() {
 				</p>
 			</section>
 		</div>
-	</Layout>
+	</siteLayout>
 }

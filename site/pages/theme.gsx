@@ -182,12 +182,12 @@ const themeImportPlaceholder = `:root {
 }`
 
 component (t Theme) Page() {
-	<Layout title="Theme" active="">
+	<siteLayout title="Theme" active="" mode={layoutWorkspace} toc={nil}>
 		<ThemeEditor previewURL={ThemePreviewButton{} |> url}/>
-	</Layout>
+	</siteLayout>
 }
 
-// ThemeEditor is the editor body without the site Layout, so the browser
+// ThemeEditor is the editor body without the site shell, so the browser
 // harness can exercise the production controls and web/theme.js directly.
 component ThemeEditor(previewURL string) {
 	<div class="flex flex-col gap-8 py-10">

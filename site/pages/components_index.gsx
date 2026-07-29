@@ -14,7 +14,7 @@ import (
 type ComponentsIndex struct{}
 
 component (c ComponentsIndex) Page() {
-	<Layout title="Components" active="">
+	<siteLayout title="Components" active="" mode={layoutDocs} toc={nil}>
 		<section class="flex flex-col gap-6">
 			<div>
 				<h1 class="text-3xl font-semibold tracking-tight">Components</h1>
@@ -35,5 +35,5 @@ component (c ComponentsIndex) Page() {
 				} }
 			</div>
 		</section>
-	</Layout>
+	</siteLayout>
 }

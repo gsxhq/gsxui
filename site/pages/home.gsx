@@ -12,7 +12,7 @@ gsxui init
 gsxui add button`
 
 component (h Home) Page() {
-	<Layout title="gsxui" active="">
+	<siteLayout title="gsxui" active="" mode={layoutMarketing} toc={nil}>
 		<section class="flex flex-col gap-4 py-10">
 			<h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">
 				Components for modern web frontends in Go.
@@ -103,5 +103,5 @@ component (h Home) Page() {
 				</div>
 			</div>
 		</section>
-	</Layout>
+	</siteLayout>
 }
