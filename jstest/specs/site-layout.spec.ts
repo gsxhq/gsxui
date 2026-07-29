@@ -26,6 +26,26 @@ test("documentation rails respond around the fixed 640px article", async ({
   await page.goto("/components");
   await expect(page.locator("[data-site-docs-sidebar]")).toBeVisible();
   await expect(page.locator("[data-site-docs-toc]")).toHaveCount(0);
+
+  const sidebarNav = page.locator("[data-site-docs-sidebar] nav");
+  await sidebarNav.evaluate((element) => {
+    element.scrollTop = element.scrollHeight;
+  });
+  const sidebarEnd = await page.evaluate(() => {
+    const lastLink = document.querySelector<HTMLElement>(
+      '[data-site-docs-sidebar] a[href="/components/tooltip"]',
+    );
+    if (!lastLink) {
+      throw new Error("final documentation sidebar link is missing");
+    }
+    return {
+      documentScrollY: window.scrollY,
+      linkBottom: lastLink.getBoundingClientRect().bottom,
+      viewportBottom: document.documentElement.clientHeight,
+    };
+  });
+  expect(sidebarEnd.documentScrollY).toBe(0);
+  expect(sidebarEnd.linkBottom).toBeLessThanOrEqual(sidebarEnd.viewportBottom);
 });
 
 test("component table of contents follows existing hashes and observed headings", async ({

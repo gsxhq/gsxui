@@ -209,7 +209,7 @@ component siteLayout(title string, active string, mode layoutMode, toc []docTOCI
 					<aside data-site-docs-sidebar class="hidden min-w-0 lg:block">
 						<nav
 							aria-label="Documentation navigation"
-							class="sticky top-20 max-h-[calc(100svh-5rem)] overflow-y-auto pr-16"
+							class="sticky top-24 max-h-[calc(100svh-7rem)] overflow-y-auto pb-1 pr-16"
 						>
 							<docsNavigation active={active}/>
 						</nav>
@@ -225,7 +225,7 @@ component siteLayout(title string, active string, mode layoutMode, toc []docTOCI
 				</main>
 				{ if mode == layoutDocs && len(toc) > 0 {
 					<aside data-site-docs-toc class="hidden min-w-0 xl:block">
-						<div class="sticky top-20 max-h-[calc(100svh-5rem)] overflow-y-auto pl-16">
+						<div class="sticky top-24 max-h-[calc(100svh-7rem)] overflow-y-auto pb-1 pl-16">
 							<docTableOfContents items={toc}/>
 						</div>
 					</aside>

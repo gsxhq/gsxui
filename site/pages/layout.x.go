@@ -363,7 +363,7 @@ func _gsxrendersiteLayout(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title stri
 		_gsxgw.BoolAttr("data-site-docs-sidebar", true)
 		_gsxgw.S(" class=\"hidden min-w-0 lg:block\">")
 //line layout.gsx:210:7
-		_gsxgw.S("<nav aria-label=\"Documentation navigation\" class=\"sticky top-20 max-h-[calc(100svh-5rem)] overflow-y-auto pr-16\">")
+		_gsxgw.S("<nav aria-label=\"Documentation navigation\" class=\"sticky top-24 max-h-[calc(100svh-7rem)] overflow-y-auto pb-1 pr-16\">")
 //line layout.gsx:214:8
 		_gsxgw.NodeResult(_gsxrenderdocsNavigation(ctx, _gsxgw, active))
 		_gsxgw.S("</nav></aside>")
@@ -386,7 +386,7 @@ func _gsxrendersiteLayout(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title stri
 		_gsxgw.BoolAttr("data-site-docs-toc", true)
 		_gsxgw.S(" class=\"hidden min-w-0 xl:block\">")
 //line layout.gsx:228:7
-		_gsxgw.S("<div class=\"sticky top-20 max-h-[calc(100svh-5rem)] overflow-y-auto pl-16\">")
+		_gsxgw.S("<div class=\"sticky top-24 max-h-[calc(100svh-7rem)] overflow-y-auto pb-1 pl-16\">")
 //line layout.gsx:229:8
 		_gsxgw.NodeResult(_gsxrenderdocTableOfContents(ctx, _gsxgw, toc))
 		_gsxgw.S("</div></aside>")
