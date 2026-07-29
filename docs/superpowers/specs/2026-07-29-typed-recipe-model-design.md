@@ -48,9 +48,9 @@ introduced. Shapes are Go values, recipes are CSS, the contract is JSON.
 
 ```text
 registry/canonical/            package canonical  (compiled, never shipped)
-  button.gsx                     structure + behavior; calls role/variant/size
-  button_recipe.go               var buttonShape = recipe.Shape{…}
-  recipe.go                      role/variant/size helper bodies
+  button.gsx                     structure + behavior; calls button.Role/Variant/Size
+  button_recipe.go               var buttonShape = recipe.Shape{…}; var button = recipe.Component{…}
+  recipe.go                      shapes map and Shapes()
         │
         │  imported for the shape ─────────────┐
         │  parsed as .gsx for class exprs      │
@@ -86,7 +86,9 @@ nothing about CSS syntax.
 
 ### 3.3 `registry/canonical`
 
-The authored components, their shapes, and the helper bodies. It is compiled so
+The authored components and their shapes. Each component binds its shape to a
+package-level `recipe.Component` value named after the component (the helper
+method bodies themselves live in `internal/recipe/component.go`). It is compiled so
 that it type-checks and so that structure and behavior tests can run against the
 authoritative source. It is never imported by `ui` or by consumers.
 
@@ -101,7 +103,7 @@ split is deliberate.
 // internal/recipe
 type Shape struct {
     Component  string
-    Base       bool // component has a role() base rule
+    Base       bool // component has a Role() base rule
     Dimensions []Dimension
 }
 
@@ -171,16 +173,17 @@ The canonical authors semantic roles:
 ```gsx
 class={
     "group/button",
-    role("button"),
-    variant("button", variant),
-    size("button", size),
+    button.Role(),
+    button.Variant(variant),
+    button.Size(size),
 }
 ```
 
-`role`, `variant`, and `size` are unexported functions in `registry/canonical`.
-They have both a compile-time and a runtime meaning:
+`button` is an unexported package-level `recipe.Component` value in
+`registry/canonical`, and `Role`, `Variant`, and `Size` are its methods. They
+have both a compile-time and a runtime meaning:
 
-| | `role("button")` | `variant("button", v)` |
+| | `button.Role()` | `button.Variant(v)` |
 |---|---|---|
 | **stylegen** | base utilities literal | a `switch` over `v` |
 | **canonical runtime** | `"gsxui-recipe-button"` | token for `v`, falling back to the dimension's `Default` when `v` is empty or unknown |
@@ -189,7 +192,7 @@ The runtime fallback is not a convenience. It makes the canonical's semantics
 match the generated `default:` arm, so a behavior test written against the
 canonical asserts something true of every style.
 
-Desugared output for `variant("button", variant)` under Nova:
+Desugared output for `button.Variant(variant)` under Nova:
 
 ```gsx
 switch variant {
@@ -207,9 +210,23 @@ utilities rather than `""`, so a misspelled variant renders the default instead
 of an unstyled element. And because the arms are generated from the shape, they
 cannot drift from the recipe.
 
-The canonical still writes `variant("button", variant)` once per rendered
+The canonical still writes `button.Variant(variant)` once per rendered
 element — the `<a>` and `<button>` branches are two call sites. Each is one line
 rather than a sixteen-line switch, and neither is hand-maintained.
+
+### 5.1 Why methods, not free functions
+
+The dimension names are meant to mirror the component's parameter names, so the
+first design called free functions: `variant("button", variant)`. That does not
+compile — a parameter named `variant` shadows the package-level function
+`variant`, and Go reports "cannot call variant (variable of type string):
+string is not a function." Every dimension of every component hits this
+collision by construction, not by accident, because dimension and parameter
+names are meant to match. Binding the shape to a method on a `recipe.Component`
+value instead (`button.Variant(variant)`) makes the collision impossible: a
+local variable cannot shadow a method, whatever it is named. It also states the
+component name once, in the value's declaration, instead of at every call
+site.
 
 ## 6. Rewrite mechanics
 
@@ -231,9 +248,15 @@ Rejection rules carry over from the current resolver: a helper call or recipe
 token is illegal in a static class attribute, a non-class attribute, an
 interpolation, a pipeline argument, a switch tag, and nested markup.
 
-**Open implementation question.** Whether `ClassPart.End()` covers the trailing
-comma of a part is unverified. A spike resolves this before the rewrite is built;
-if it does not, the replaced span needs adjusting.
+**Resolved.** `ClassPart.Pos()` includes the leading newline and indentation,
+and `End()` excludes the trailing comma — so the edit span is
+`[ExprPos, End())`, using the helper call expression's own position as the
+start and the part's `End()` as the end. Implementation also found a case the
+spike didn't anticipate: a helper call in a class part that also carries a
+condition, pipeline, control flow, or CSS segments is rejected outright,
+because `End()` extends past a trailing `: cond` guard and reusing the part's
+span would silently delete it. See `recordPartEdit` and
+`validateHelperPart` in `internal/stylegen/resolve.go`.
 
 ## 7. Generated contract
 
@@ -422,7 +445,8 @@ pre-merge (§8); changes to theme values, presets, or the CLI apply flow.
 ## 14. Success criteria
 
 1. `registry/canonical/button.gsx` contains no concrete utility and no recipe
-   token string — only `role`, `variant`, and `size` calls.
+   token string — only `button.Role()`, `button.Variant()`, and `button.Size()`
+   calls.
 2. The shape is declared once; Nova and Maia supply utilities only.
 3. Deleting a rule from either style fails the build naming the exact missing
    `(dimension, value)`.
