@@ -166,12 +166,6 @@
   :where([data-gsxui-slot-button-group]) > :focus-visible {
     @apply relative z-10;
   }
-  :where([data-gsxui-slot-button-group]):has(
-      > select[aria-hidden="true"]:last-child
-    )
-    > :where([data-gsxui-slot-select-trigger]):last-of-type {
-    @apply rounded-r-lg;
-  }
   :where([data-gsxui-slot-button-group])
     > :where([data-gsxui-slot-select-trigger]):not([class*="w-"]) {
     @apply w-fit;
@@ -179,41 +173,8 @@
   :where([data-gsxui-slot-button-group]) > input {
     @apply flex-1;
   }
-  :where([data-gsxui-slot-button-group])[data-orientation="horizontal"]
-    > :not(:first-child) {
-    @apply rounded-l-none border-l-0;
-  }
-  :where([data-gsxui-slot-button-group])[data-orientation="horizontal"]
-    > :not(:last-child) {
-    @apply rounded-r-none;
-  }
-  :where([data-gsxui-slot-button-group])[data-orientation="horizontal"]
-    > :where(:not(select[aria-hidden="true"])):not(
-      :has(~ :not(select[aria-hidden="true"]))
-    ) {
-    @apply rounded-r-lg;
-  }
   :where([data-gsxui-slot-button-group])[data-orientation="vertical"] {
     @apply flex-col;
-  }
-  :where([data-gsxui-slot-button-group])[data-orientation="vertical"]
-    > :not(:first-child) {
-    @apply rounded-t-none border-t-0;
-  }
-  :where([data-gsxui-slot-button-group])[data-orientation="vertical"]
-    > :not(:last-child) {
-    @apply rounded-b-none;
-  }
-  :where([data-gsxui-slot-button-group])[data-orientation="vertical"]
-    > :where(:not(select[aria-hidden="true"])):not(
-      :has(~ :not(select[aria-hidden="true"]))
-    ) {
-    @apply rounded-b-lg;
-  }
-  :where([data-gsxui-slot-button-group]) > [data-size="xs"],
-  :where([data-gsxui-slot-button-group]) > [data-size="icon-xs"],
-  :where([data-gsxui-slot-button-group]) > [data-size="icon-sm"] {
-    @apply rounded-lg;
   }
   :where([data-gsxui-slot-button-group-text]) {
     @apply flex items-center gap-2 rounded-lg border bg-muted px-2.5 text-sm font-medium;
@@ -3318,5 +3279,55 @@
   }
   :where([data-gsxui-slot-toast-close-icon]) {
     @apply size-3;
+  }
+}
+
+
+/* ButtonGroup corner geometry lives in the utilities layer, not components.
+   Its whole job is to override the radius and border a grouped child renders
+   for itself, and those now arrive as Tailwind utilities on the child: the
+   Button ships concrete utilities compiled from its style recipe rather than
+   a recipe token backed by a components-layer rule. The cascade orders whole
+   layers before it ever looks at specificity, so a components-layer rule can
+   no longer beat them however specific it is. */
+@layer utilities {
+  :where([data-gsxui-slot-button-group]):has(
+      > select[aria-hidden="true"]:last-child
+    )
+    > :where([data-gsxui-slot-select-trigger]):last-of-type {
+    @apply rounded-r-lg;
+  }
+  :where([data-gsxui-slot-button-group])[data-orientation="horizontal"]
+    > :not(:first-child) {
+    @apply rounded-l-none border-l-0;
+  }
+  :where([data-gsxui-slot-button-group])[data-orientation="horizontal"]
+    > :not(:last-child) {
+    @apply rounded-r-none;
+  }
+  :where([data-gsxui-slot-button-group])[data-orientation="horizontal"]
+    > :where(:not(select[aria-hidden="true"])):not(
+      :has(~ :not(select[aria-hidden="true"]))
+    ) {
+    @apply rounded-r-lg;
+  }
+  :where([data-gsxui-slot-button-group])[data-orientation="vertical"]
+    > :not(:first-child) {
+    @apply rounded-t-none border-t-0;
+  }
+  :where([data-gsxui-slot-button-group])[data-orientation="vertical"]
+    > :not(:last-child) {
+    @apply rounded-b-none;
+  }
+  :where([data-gsxui-slot-button-group])[data-orientation="vertical"]
+    > :where(:not(select[aria-hidden="true"])):not(
+      :has(~ :not(select[aria-hidden="true"]))
+    ) {
+    @apply rounded-b-lg;
+  }
+  :where([data-gsxui-slot-button-group]) > [data-size="xs"],
+  :where([data-gsxui-slot-button-group]) > [data-size="icon-xs"],
+  :where([data-gsxui-slot-button-group]) > [data-size="icon-sm"] {
+    @apply rounded-lg;
   }
 }

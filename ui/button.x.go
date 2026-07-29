@@ -55,7 +55,7 @@ func _gsxrenderButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string
 		var _gsxv2 string
 		switch variant {
 		case "destructive":
-			_gsxv2 = "bg-destructive text-contrast hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40"
+			_gsxv2 = "bg-destructive text-contrast hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:hover:bg-destructive/90 dark:focus-visible:ring-destructive/40"
 		case "outline":
 			_gsxv2 = "border-border bg-background hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
 		case "secondary":
@@ -120,7 +120,7 @@ func _gsxrenderButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string
 		var _gsxv6 string
 		switch variant {
 		case "destructive":
-			_gsxv6 = "bg-destructive text-contrast hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40"
+			_gsxv6 = "bg-destructive text-contrast hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:hover:bg-destructive/90 dark:focus-visible:ring-destructive/40"
 		case "outline":
 			_gsxv6 = "border-border bg-background hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
 		case "secondary":

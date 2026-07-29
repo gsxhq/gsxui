@@ -13,7 +13,7 @@
   }
 
   .gsxui-recipe-button-variant-destructive {
-    @apply bg-destructive text-contrast hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40;
+    @apply bg-destructive text-contrast hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:hover:bg-destructive/90 dark:focus-visible:ring-destructive/40;
   }
 
   .gsxui-recipe-button-variant-outline {
