@@ -17,7 +17,7 @@
 - Default style is `nova`, named in exactly one place (`stylegen.DefaultStyle`).
 - Styles are strictly conformant: every style implements every `(slot, dimension, value)` in the shape.
 - **Button's generated output must be byte-identical before and after Stage 0.** This is the proof the slot axis is backward compatible. Any diff to `ui/button.gsx` or `registry/generated/*/button.gsx` other than through a deliberate, justified change is a failure.
-- Every commit leaves `go build ./...` green and the full test suite passing.
+- **Intermediate commits need NOT be green.** This is one atomic cross-package refactor; the model change breaks every consumer at once. The FINAL state of the plan must be fully green. Reviewers: a broken build inside Tasks 1-7 is sanctioned by the plan, not a finding.
 - `gofmt -l .` must print nothing (Makefile enforces `gofmt -l . | (! grep .)`).
 - `make audit` must pass — it is the first target of `make ci`.
 - `go run ./cmd/stylegen --check` must exit 0.
@@ -285,7 +285,7 @@ Update every assertion whose expected error string changed to the new slot-quali
 - [ ] **Step 5: Run tests to verify they pass**
 
 Run: `go test ./internal/recipe/ -v`
-Expected: PASS. (`internal/stylegen` and `registry/canonical` will not compile yet — Tasks 2-7 fix them. This is the one task in the plan that may leave the tree red; commit it together with Task 2 if you prefer a green commit, but do not skip its tests.)
+Expected: PASS. `internal/stylegen` and `registry/canonical` will not compile yet — Tasks 5-7 fix them, and that is expected.
 
 - [ ] **Step 6: Commit**
 
