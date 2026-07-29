@@ -5,10 +5,39 @@ import "testing"
 func validShape() Shape {
 	return Shape{
 		Component: "button",
-		Base:      true,
-		Dimensions: []Dimension{
-			{Name: "variant", Default: "default", Values: []string{"default", "outline"}},
-			{Name: "size", Default: "default", Values: []string{"default", "icon-lg"}},
+		Slots: []Slot{{
+			Name: "", Base: true,
+			Dimensions: []Dimension{
+				{Name: "variant", Default: "default", Values: []string{"default", "outline"}},
+				{Name: "size", Default: "default", Values: []string{"default", "icon-lg"}},
+			},
+		}},
+	}
+}
+
+func slotShape() Shape {
+	return Shape{
+		Component: "card",
+		Slots: []Slot{
+			{Name: "", Base: true},
+			{Name: "header", Base: true, Dimensions: []Dimension{
+				{Name: "variant", Default: "default", Values: []string{"default", "muted"}},
+			}},
+			{Name: "menu-button", Base: true},
+		},
+	}
+}
+
+func sidebarShape() Shape {
+	return Shape{
+		Component: "sidebar",
+		Slots: []Slot{
+			{Name: "", Base: true},
+			{Name: "menu", Base: true},
+			{Name: "menu-button", Base: true, Dimensions: []Dimension{
+				{Name: "size", Default: "default", Values: []string{"default", "lg"}},
+			}},
+			{Name: "menu-button-tooltip-content", Base: true},
 		},
 	}
 }
@@ -28,13 +57,23 @@ func TestShapeValidateRejects(t *testing.T) {
 		wantErr string
 	}{
 		{"empty component", func(s *Shape) { s.Component = "" }, "component name is empty"},
-		{"no dimensions", func(s *Shape) { s.Dimensions = nil }, `button: no dimensions declared`},
-		{"empty dimension name", func(s *Shape) { s.Dimensions[0].Name = "" }, "button: dimension 0 has no name"},
-		{"duplicate dimension", func(s *Shape) { s.Dimensions[1].Name = "variant" }, `button: duplicate dimension "variant"`},
-		{"no values", func(s *Shape) { s.Dimensions[0].Values = nil }, `button: dimension "variant" declares no values`},
-		{"duplicate value", func(s *Shape) { s.Dimensions[0].Values = []string{"outline", "outline"} }, `button: dimension "variant" duplicates value "outline"`},
-		{"default not a value", func(s *Shape) { s.Dimensions[0].Default = "ghost" }, `button: dimension "variant" default "ghost" is not one of its values`},
-		{"empty value", func(s *Shape) { s.Dimensions[0].Values = []string{"default", ""} }, `button: dimension "variant" has an empty value`},
+		{"no slots", func(s *Shape) { s.Slots = nil }, `button: no slots declared`},
+		{"no base and no dimensions", func(s *Shape) {
+			s.Slots[0].Base = false
+			s.Slots[0].Dimensions = nil
+		}, `button: slot "" declares neither a base rule nor any dimension`},
+		{"empty dimension name", func(s *Shape) { s.Slots[0].Dimensions[0].Name = "" }, `button: slot "" has an unnamed dimension`},
+		{"duplicate dimension", func(s *Shape) { s.Slots[0].Dimensions[1].Name = "variant" }, `button: slot "" duplicate dimension "variant"`},
+		{"no values", func(s *Shape) { s.Slots[0].Dimensions[0].Values = nil }, `button: slot "" dimension "variant" declares no values`},
+		{"duplicate value", func(s *Shape) {
+			s.Slots[0].Dimensions[0].Values = []string{"outline", "outline"}
+		}, `button: slot "" dimension "variant" duplicates value "outline"`},
+		{"default not a value", func(s *Shape) {
+			s.Slots[0].Dimensions[0].Default = "ghost"
+		}, `button: slot "" dimension "variant" default "ghost" is not one of its values`},
+		{"empty value", func(s *Shape) {
+			s.Slots[0].Dimensions[0].Values = []string{"default", ""}
+		}, `button: slot "" dimension "variant" has an empty value`},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -52,17 +91,77 @@ func TestShapeValidateRejects(t *testing.T) {
 	}
 }
 
+func TestShapeValidateAcceptsSlots(t *testing.T) {
+	t.Parallel()
+	if err := slotShape().Validate(); err != nil {
+		t.Fatalf("Validate() = %v, want nil", err)
+	}
+}
+
+func TestShapeValidateRejectsSlotProblems(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		mutate  func(*Shape)
+		wantErr string
+	}{
+		{"no slots", func(s *Shape) { s.Slots = nil }, "card: no slots declared"},
+		{"duplicate slot", func(s *Shape) { s.Slots[2].Name = "header" }, `card: duplicate slot "header"`},
+		{"slot with neither base nor dimensions", func(s *Shape) { s.Slots[2].Base = false }, `card: slot "menu-button" declares neither a base rule nor any dimension`},
+		{"bad default in slot dimension", func(s *Shape) { s.Slots[1].Dimensions[0].Default = "loud" }, `card: slot "header" dimension "variant" default "loud" is not one of its values`},
+		{"duplicate dimension in slot", func(s *Shape) {
+			s.Slots[1].Dimensions = append(s.Slots[1].Dimensions, s.Slots[1].Dimensions[0])
+		}, `card: slot "header" duplicate dimension "variant"`},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			s := slotShape()
+			tt.mutate(&s)
+			err := s.Validate()
+			if err == nil {
+				t.Fatalf("Validate() = nil, want %q", tt.wantErr)
+			}
+			if got := err.Error(); got != tt.wantErr {
+				t.Errorf("Validate() = %q, want %q", got, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestShapeSlotLookup(t *testing.T) {
+	t.Parallel()
+	s := slotShape()
+	root, ok := s.Slot("")
+	if !ok || !root.Base {
+		t.Fatalf("Slot(\"\") = %+v, %v; want the root slot", root, ok)
+	}
+	header, ok := s.Slot("header")
+	if !ok {
+		t.Fatal("Slot(header) = false, want true")
+	}
+	if _, ok := header.Dimension("variant"); !ok {
+		t.Error("header.Dimension(variant) = false, want true")
+	}
+	if _, ok := s.Slot("nope"); ok {
+		t.Error("Slot(nope) = true, want false")
+	}
+}
+
 func TestShapeDimensionLookup(t *testing.T) {
 	t.Parallel()
-	s := validShape()
-	d, ok := s.Dimension("size")
+	root, ok := validShape().Slot("")
+	if !ok {
+		t.Fatal("Slot(root) = false, want true")
+	}
+	d, ok := root.Dimension("size")
 	if !ok {
 		t.Fatal("Dimension(size) = false, want true")
 	}
 	if d.Default != "default" {
 		t.Errorf("Default = %q, want %q", d.Default, "default")
 	}
-	if _, ok := s.Dimension("tone"); ok {
+	if _, ok := root.Dimension("tone"); ok {
 		t.Error("Dimension(tone) = true, want false")
 	}
 }
@@ -70,11 +169,26 @@ func TestShapeDimensionLookup(t *testing.T) {
 func TestShapeClassEncoding(t *testing.T) {
 	t.Parallel()
 	s := validShape()
-	if got, want := s.BaseClass(), "gsxui-recipe-button"; got != want {
+	if got, want := s.BaseClass(""), "gsxui-recipe-button"; got != want {
 		t.Errorf("BaseClass() = %q, want %q", got, want)
 	}
-	if got, want := s.ValueClass("size", "icon-lg"), "gsxui-recipe-button-size-icon-lg"; got != want {
+	if got, want := s.ValueClass("", "size", "icon-lg"), "gsxui-recipe-button-size-icon-lg"; got != want {
 		t.Errorf("ValueClass() = %q, want %q", got, want)
+	}
+}
+
+func TestShapeSlotClassEncoding(t *testing.T) {
+	t.Parallel()
+	s := sidebarShape()
+	for _, tt := range []struct{ got, want string }{
+		{s.BaseClass(""), "gsxui-recipe-sidebar"},
+		{s.BaseClass("menu-button"), "gsxui-recipe-sidebar-menu-button"},
+		{s.ValueClass("menu-button", "size", "lg"), "gsxui-recipe-sidebar-menu-button-size-lg"},
+		{s.ValueClass("", "size", "lg"), "gsxui-recipe-sidebar-size-lg"},
+	} {
+		if tt.got != tt.want {
+			t.Errorf("got %q, want %q", tt.got, tt.want)
+		}
 	}
 }
 
@@ -95,13 +209,48 @@ func TestShapeDecodeClass(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.class, func(t *testing.T) {
 			t.Parallel()
-			dimension, value, kind, err := s.DecodeClass(tt.class)
+			slot, dimension, value, kind, err := s.DecodeClass(tt.class)
 			if err != nil {
 				t.Fatalf("DecodeClass() error = %v", err)
+			}
+			if slot != "" {
+				t.Errorf("DecodeClass() slot = %q, want the root slot", slot)
 			}
 			if kind != tt.wantKind || dimension != tt.wantDimension || value != tt.wantValue {
 				t.Errorf("DecodeClass() = (%q, %q, %v), want (%q, %q, %v)",
 					dimension, value, kind, tt.wantDimension, tt.wantValue, tt.wantKind)
+			}
+		})
+	}
+}
+
+func TestShapeDecodeClassPrefersTheLongestSlot(t *testing.T) {
+	t.Parallel()
+	s := sidebarShape()
+	tests := []struct {
+		class                      string
+		wantKind                   ClassKind
+		wantSlot, wantDim, wantVal string
+	}{
+		{"gsxui-recipe-sidebar", ClassBase, "", "", ""},
+		{"gsxui-recipe-sidebar-menu", ClassBase, "menu", "", ""},
+		// "menu-button" must win over "menu", or the remainder is nonsense.
+		{"gsxui-recipe-sidebar-menu-button", ClassBase, "menu-button", "", ""},
+		// The longest slot of all, three segments deep.
+		{"gsxui-recipe-sidebar-menu-button-tooltip-content", ClassBase, "menu-button-tooltip-content", "", ""},
+		// Slot plus dimension: longest slot first, then the dimension-value pair.
+		{"gsxui-recipe-sidebar-menu-button-size-lg", ClassValue, "menu-button", "size", "lg"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.class, func(t *testing.T) {
+			t.Parallel()
+			slot, dim, val, kind, err := s.DecodeClass(tt.class)
+			if err != nil {
+				t.Fatalf("DecodeClass() error = %v", err)
+			}
+			if kind != tt.wantKind || slot != tt.wantSlot || dim != tt.wantDim || val != tt.wantVal {
+				t.Errorf("DecodeClass() = (%q,%q,%q,%v), want (%q,%q,%q,%v)",
+					slot, dim, val, kind, tt.wantSlot, tt.wantDim, tt.wantVal, tt.wantKind)
 			}
 		})
 	}
@@ -119,7 +268,25 @@ func TestShapeDecodeClassRejects(t *testing.T) {
 	} {
 		t.Run(class, func(t *testing.T) {
 			t.Parallel()
-			if _, _, _, err := s.DecodeClass(class); err == nil {
+			if _, _, _, _, err := s.DecodeClass(class); err == nil {
+				t.Errorf("DecodeClass(%q) = nil error, want error", class)
+			}
+		})
+	}
+}
+
+func TestShapeDecodeClassRejectsSlotErrors(t *testing.T) {
+	t.Parallel()
+	s := sidebarShape()
+	for _, class := range []string{
+		"gsxui-recipe-sidebar-nosuchslot",
+		"gsxui-recipe-sidebar-menu-button-size-xl", // undeclared value
+		"gsxui-recipe-sidebar-menu-tone-quiet",     // undeclared dimension on that slot
+		"gsxui-recipe-card",                        // wrong component
+	} {
+		t.Run(class, func(t *testing.T) {
+			t.Parallel()
+			if _, _, _, _, err := s.DecodeClass(class); err == nil {
 				t.Errorf("DecodeClass(%q) = nil error, want error", class)
 			}
 		})
