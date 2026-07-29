@@ -79,14 +79,15 @@ type transactionJournal struct {
 }
 
 type transactionJournalEntry struct {
-	Target         string      `json:"target"`
-	Staged         string      `json:"staged"`
-	Backup         string      `json:"backup"`
-	PreviousExists bool        `json:"previousExists"`
-	PreviousHash   string      `json:"previousHash,omitempty"`
-	PreviousMode   fs.FileMode `json:"previousMode,omitempty"`
-	IntendedHash   string      `json:"intendedHash"`
-	IntendedMode   fs.FileMode `json:"intendedMode"`
+	Target             string      `json:"target"`
+	Staged             string      `json:"staged"`
+	Backup             string      `json:"backup"`
+	PreviousExists     bool        `json:"previousExists"`
+	PreviousHash       string      `json:"previousHash,omitempty"`
+	PreviousMode       fs.FileMode `json:"previousMode,omitempty"`
+	IntendedHash       string      `json:"intendedHash"`
+	IntendedMode       fs.FileMode `json:"intendedMode"`
+	MutableAfterCommit bool        `json:"mutableAfterCommit,omitempty"`
 }
 
 type artifactTransaction struct {
@@ -209,7 +210,7 @@ func changedArtifacts(root string, artifacts []artifact) ([]artifact, error) {
 		}
 		existing, err := os.ReadFile(target)
 		switch {
-		case err == nil && bytes.Equal(existing, planned.Content):
+		case err == nil && bytes.Equal(existing, planned.Content) && !planned.AlwaysTrack:
 			continue
 		case err == nil:
 		case os.IsNotExist(err):
@@ -322,14 +323,15 @@ func prepareArtifactTransaction(root string, artifacts []artifact) (*artifactTra
 			return nil, fmt.Errorf("stage transaction target %s: %w", planned.RelativePath, err)
 		}
 		journal.Entries = append(journal.Entries, transactionJournalEntry{
-			Target:         planned.RelativePath,
-			Staged:         stagedRelative,
-			Backup:         backupRelative,
-			PreviousExists: previousExists,
-			PreviousHash:   previousHash,
-			PreviousMode:   mode,
-			IntendedHash:   contentHash(planned.Content),
-			IntendedMode:   mode,
+			Target:             planned.RelativePath,
+			Staged:             stagedRelative,
+			Backup:             backupRelative,
+			PreviousExists:     previousExists,
+			PreviousHash:       previousHash,
+			PreviousMode:       mode,
+			IntendedHash:       contentHash(planned.Content),
+			IntendedMode:       mode,
+			MutableAfterCommit: planned.MutableAfterCommit,
 		})
 	}
 	journal.CreatedDirectories = make([]string, 0, len(directories))
@@ -941,6 +943,23 @@ func validateRecoveryJournal(root string, journal transactionJournal) error {
 		} else if entry.PreviousHash != "" || entry.PreviousMode != entry.IntendedMode {
 			return fmt.Errorf("entry %d records inconsistent state for an absent target", index)
 		}
+		if entry.MutableAfterCommit {
+			if entry.Target != "package.json" && entry.Target != "package-lock.json" {
+				return fmt.Errorf(
+					"entry %d target %q cannot be mutable after commit",
+					index,
+					entry.Target,
+				)
+			}
+			if !entry.PreviousExists || entry.IntendedHash != entry.PreviousHash ||
+				entry.IntendedMode.Perm() != entry.PreviousMode.Perm() {
+				return fmt.Errorf(
+					"entry %d mutable target %q must stage its exact previous state",
+					index,
+					entry.Target,
+				)
+			}
+		}
 	}
 	if err := validateCreatedDirectories(journal); err != nil {
 		return err
@@ -1201,6 +1220,10 @@ func validateRollbackJournalState(root string, journal transactionJournal) error
 				break
 			}
 		}
+		if !matched && journal.Phase == transactionPhaseGenerationPending &&
+			transactionEntryStateMatchesMutableReplacement(entry, state) {
+			matched = true
+		}
 		if !matched {
 			return fmt.Errorf(
 				"%s transaction target %s changed after interruption",
@@ -1450,6 +1473,8 @@ func validateRollbackPendingState(root string, journal transactionJournal) error
 		case index == journal.Cursor-1:
 			if !transactionEntryStateIsRestored(entry, state) &&
 				!transactionEntryStateIsRollbackTransition(entry, state) &&
+				!(source.Phase == transactionPhaseGenerationPending &&
+					transactionEntryStateMatchesMutableReplacement(entry, state)) &&
 				!transactionEntryStateMatchesAny(
 					entry,
 					state,
@@ -1461,11 +1486,13 @@ func validateRollbackPendingState(root string, journal transactionJournal) error
 				)
 			}
 		default:
-			if !transactionEntryStateMatchesAny(
-				entry,
-				state,
-				allowedRollbackEntryStates(source, index),
-			) {
+			if !(source.Phase == transactionPhaseGenerationPending &&
+				transactionEntryStateMatchesMutableReplacement(entry, state)) &&
+				!transactionEntryStateMatchesAny(
+					entry,
+					state,
+					allowedRollbackEntryStates(source, index),
+				) {
 				return fmt.Errorf(
 					"rollback-pending target %s changed after interruption",
 					entry.Target,
@@ -1487,6 +1514,21 @@ func transactionEntryStateMatchesAny(
 		}
 	}
 	return false
+}
+
+func transactionEntryStateMatchesMutableReplacement(
+	entry transactionJournalEntry,
+	state transactionEntryState,
+) bool {
+	if !entry.MutableAfterCommit || state.staged.exists {
+		return false
+	}
+	previous := transactionFileState{
+		exists: entry.PreviousExists,
+		hash:   entry.PreviousHash,
+		mode:   entry.PreviousMode.Perm(),
+	}
+	return transactionFileStatesEqual(state.backup, previous)
 }
 
 func transactionEntryStateIsRestored(
@@ -1550,7 +1592,8 @@ func (transaction *artifactTransaction) restoreEntry(index int) error {
 			hash:   entry.IntendedHash,
 			mode:   entry.IntendedMode.Perm(),
 		}
-		if !transactionFileStatesEqual(state.target, intended) {
+		if !transactionFileStatesEqual(state.target, intended) &&
+			!entry.MutableAfterCommit {
 			return fmt.Errorf("transaction target %s changed after interruption", entry.Target)
 		}
 		if err := os.Remove(target); err != nil {

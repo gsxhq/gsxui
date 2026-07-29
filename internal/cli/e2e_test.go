@@ -2,6 +2,7 @@ package cli
 
 import (
 	"bytes"
+	"encoding/json"
 	"io/fs"
 	"os"
 	"os/exec"
@@ -13,34 +14,26 @@ import (
 	"github.com/gsxhq/gsxui/internal/preset"
 )
 
-// TestE2E exercises the real flow: temp module → init → Button style
-// round-trip → add Dialog → go build. It needs network (go get) and the real
-// gsx toolchain; skipped with -short.
+// TestE2E exercises the real flow: pinned gsx scaffold → compact Maia init →
+// Button → production CSS/Vite build → style round-trip → Dialog → Go build.
+// It needs network and the real gsx/npm toolchains; skipped with -short.
 func TestE2E(t *testing.T) {
 	if testing.Short() {
 		t.Skip("network-dependent e2e; run without -short")
 	}
-	gsxModuleDir := activeModuleDir(t, "github.com/gsxhq/gsx")
 	// This temporary consumer is intentionally outside the test runner's workspace.
 	t.Setenv("GOWORK", "off")
-	dir := t.TempDir()
-	mustRun(t, dir, "go", "mod", "init", "example.com/app")
-	// The replace lives only in this disposable consumer so its generated
-	// output exercises the active compiler, including unpublished review work.
-	mustRun(t, dir, "go", "mod", "edit", "-replace", "github.com/gsxhq/gsx="+gsxModuleDir)
+	dir := scaffoldGSXProject(t)
 	t.Chdir(dir)
 
-	if err := Run([]string{"init"}); err != nil {
+	maiaCode := presetCode(t, preset.Default(preset.StyleMaia))
+	if !strings.HasPrefix(maiaCode, "gsxui:p1:") {
+		t.Fatalf("Maia preset code = %q, want compact transport", maiaCode)
+	}
+	if err := Run([]string{"init", "--preset", maiaCode}); err != nil {
 		t.Fatal(err)
 	}
 	if err := Run([]string{"add", "button"}); err != nil {
-		t.Fatal(err)
-	}
-	if err := Run([]string{
-		"apply",
-		"--preset", presetCode(t, preset.Default(preset.StyleMaia)),
-		"--yes",
-	}); err != nil {
 		t.Fatal(err)
 	}
 	maiaButton, err := fs.ReadFile(gsxui.Files, "registry/generated/maia/button.gsx")
@@ -50,7 +43,31 @@ func TestE2E(t *testing.T) {
 	if got, err := os.ReadFile(filepath.Join(dir, "ui", "button.gsx")); err != nil {
 		t.Fatal(err)
 	} else if !bytes.Equal(got, maiaButton) {
-		t.Fatal("e2e apply did not install exact Maia Button")
+		t.Fatal("e2e compact init did not install exact Maia Button")
+	}
+
+	assertScaffoldPackageIntegration(t, dir)
+	viteBefore := readFile(t, dir, "vite.config.ts")
+	mainBefore := readFile(t, dir, "web/main.js")
+	if err := Run([]string{"init", "--preset", maiaCode}); err != nil {
+		t.Fatal(err)
+	}
+	if got := readFile(t, dir, "vite.config.ts"); got != viteBefore {
+		t.Fatal("e2e init rerun changed vite.config.ts")
+	}
+	if got := readFile(t, dir, "web/main.js"); got != mainBefore {
+		t.Fatal("e2e init rerun changed web/main.js")
+	}
+
+	mustRun(t, dir, "npm", "run", "build")
+	compiledCSS := builtCSS(t, dir)
+	if !strings.Contains(compiledCSS, ".h-9") {
+		t.Fatal("production CSS is missing Button's h-9 utility")
+	}
+	for _, unresolved := range []string{"@apply", "@theme", `@import "tailwindcss"`} {
+		if strings.Contains(compiledCSS, unresolved) {
+			t.Fatalf("production CSS contains unresolved Tailwind directive %q", unresolved)
+		}
 	}
 	mustRun(t, dir, "go", "build", "./...")
 	if err := Run([]string{
@@ -90,7 +107,7 @@ func TestE2E(t *testing.T) {
 	if !strings.Contains(string(dialogSrc), "package ui") {
 		t.Fatalf("vendored dialog.gsx missing package ui clause:\n%s", dialogSrc)
 	}
-	const renderTest = `package app_test
+	const renderTest = `package main_test
 
 import (
 	"bytes"
@@ -183,8 +200,7 @@ func TestE2ECustomUIPath(t *testing.T) {
 	}
 	// This temporary consumer is intentionally outside the test runner's workspace.
 	t.Setenv("GOWORK", "off")
-	dir := t.TempDir()
-	mustRun(t, dir, "go", "mod", "init", "example.com/app")
+	dir := scaffoldGSXProject(t)
 	t.Chdir(dir)
 
 	cfg := DefaultConfig()
@@ -218,6 +234,74 @@ func TestE2ECustomUIPath(t *testing.T) {
 	}
 
 	mustRun(t, dir, "go", "build", "./...")
+}
+
+func scaffoldGSXProject(t *testing.T) string {
+	t.Helper()
+	repoRoot := activeModuleDir(t, "github.com/gsxhq/gsxui")
+	toolPath := filepath.Join(t.TempDir(), "gsx")
+	mustRun(t, repoRoot, "go", "build", "-o", toolPath, "github.com/gsxhq/gsx/cmd/gsx")
+	parent := t.TempDir()
+	mustRun(
+		t,
+		parent,
+		toolPath,
+		"init",
+		"--yes",
+		"--module",
+		"example.com/app",
+		"app",
+	)
+	return filepath.Join(parent, "app")
+}
+
+func assertScaffoldPackageIntegration(t *testing.T, dir string) {
+	t.Helper()
+	var manifest struct {
+		DevDependencies map[string]string `json:"devDependencies"`
+	}
+	if err := json.Unmarshal([]byte(readFile(t, dir, "package.json")), &manifest); err != nil {
+		t.Fatal(err)
+	}
+	for _, dependency := range []string{"tailwindcss", "@tailwindcss/vite", "tw-animate-css"} {
+		if manifest.DevDependencies[dependency] == "" {
+			t.Errorf("package.json devDependencies missing %s", dependency)
+		}
+		if !strings.Contains(readFile(t, dir, "package-lock.json"), `"`+dependency+`"`) {
+			t.Errorf("package-lock.json missing %s", dependency)
+		}
+	}
+
+	vite := readFile(t, dir, "vite.config.ts")
+	if strings.Count(vite, `import tailwindcss from "@tailwindcss/vite"`) != 1 ||
+		strings.Count(vite, "tailwindcss()") != 1 {
+		t.Fatalf("vite.config.ts integration is not singular:\n%s", vite)
+	}
+	main := readFile(t, dir, "web/main.js")
+	if strings.Count(main, `import "./gsxui/index.js"`) != 1 ||
+		strings.Count(main, `import "./gsxui/index.css"`) != 1 {
+		t.Fatalf("web/main.js integration is not singular:\n%s", main)
+	}
+}
+
+func builtCSS(t *testing.T, dir string) string {
+	t.Helper()
+	paths, err := filepath.Glob(filepath.Join(dir, "dist", "assets", "*.css"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(paths) == 0 {
+		t.Fatal("production build emitted no CSS assets")
+	}
+	var combined strings.Builder
+	for _, path := range paths {
+		content, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		combined.Write(content)
+	}
+	return combined.String()
 }
 
 func mustRun(t *testing.T, dir, name string, args ...string) {

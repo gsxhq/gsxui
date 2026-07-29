@@ -7,7 +7,8 @@ import (
 // Home is the site's landing page.
 type Home struct{}
 
-const installSnippet = `go install github.com/gsxhq/gsxui/cmd/gsxui@latest
+const installSnippet = `gsx init app --yes
+cd app
 gsxui init
 gsxui add button`
 

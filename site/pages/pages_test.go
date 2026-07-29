@@ -151,8 +151,9 @@ func TestDocsTableOfContents(t *testing.T) {
 				id    string
 				title string
 			}{
-				{id: "install-cli", title: "1. Install the CLI"},
+				{id: "install-cli", title: "1. Install the CLIs"},
 				{id: "initialize-project", title: "2. Initialize your project"},
+				{id: "manual-integration", title: "Manual integration"},
 				{id: "add-components", title: "3. Add components"},
 				{id: "first-page", title: "4. Your first page"},
 			},
@@ -780,6 +781,15 @@ func TestDocsRoutes(t *testing.T) {
 		// paraphrase — proves the walkthrough shows real output.
 		if !strings.Contains(body, "gsxui initialized.") {
 			t.Errorf(`response missing real "gsxui initialized." CLI output; body:\n%s`, body)
+		}
+		for _, want := range []string{
+			"gsx init app --yes",
+			"vite: Tailwind CSS configured",
+			"npm install --save-dev tailwindcss@^4.3.3",
+		} {
+			if !strings.Contains(body, want) {
+				t.Errorf("response missing %q; body:\n%s", want, body)
+			}
 		}
 		if !strings.Contains(body, "adding: button card") {
 			t.Errorf(`response missing real "adding: button card" CLI output; body:\n%s`, body)

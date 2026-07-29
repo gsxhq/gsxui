@@ -170,7 +170,7 @@ func decodeCompactShare(payload string) (Preset, error) {
 }
 
 func compactMask(bits int) uint64 {
-	return 1<<bits - 1
+	return (1 << bits) - 1
 }
 
 func encodeBase62(value uint64) string {

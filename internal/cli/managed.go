@@ -20,6 +20,10 @@ type artifact struct {
 	RelativePath string
 	Content      []byte
 	Managed      bool
+	// AlwaysTrack includes unchanged consumer-owned files in the rollback journal.
+	AlwaysTrack bool
+	// MutableAfterCommit permits post-commit commands to update a journaled file.
+	MutableAfterCommit bool
 }
 
 var portableCaseFolder = cases.Fold()

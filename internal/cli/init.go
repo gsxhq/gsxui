@@ -67,6 +67,16 @@ func runInit(args []string) error {
 	if err != nil {
 		return err
 	}
+	integrationArtifacts, err := planScaffoldIntegration(dir, cfg)
+	if err != nil {
+		return err
+	}
+	artifacts = append(artifacts, integrationArtifacts...)
+	packageArtifacts, err := packageMetadataArtifacts(dir)
+	if err != nil {
+		return err
+	}
+	artifacts = append(artifacts, packageArtifacts...)
 	_, completePlan, err := artifactPlanWithConfig(cfg, artifacts)
 	if err != nil {
 		return err
@@ -74,26 +84,43 @@ func runInit(args []string) error {
 	if err := validateArtifactPlan(dir, cfg, completePlan, *overwrite); err != nil {
 		return err
 	}
+	npmCommand := []string{
+		"install",
+		"--save-dev",
+		"tailwindcss@^4.3.3",
+		"@tailwindcss/vite@^4.3.3",
+		"tw-animate-css@^1.4.0",
+	}
 	commands := [][]string{
 		{"go", "get", "github.com/gsxhq/gsx@latest"},
 		{"go", "get", "github.com/jackielii/tailwind-merge-go@latest"},
 		{"go", "get", "-tool", "github.com/gsxhq/gsx/cmd/gsx@latest"},
 	}
-	for _, command := range commands {
-		if err := runCommand(dir, command[0], command[1:]...); err != nil {
-			return fmt.Errorf("%v: %w", command, err)
-		}
-	}
 	if err := executeArtifactTransaction(
 		dir,
 		completePlan,
-		func() error { return generateProject(dir) },
+		func() error {
+			if err := runCommand(dir, "npm", npmCommand...); err != nil {
+				return fmt.Errorf("npm %v: %w", npmCommand, err)
+			}
+			for _, command := range commands {
+				if err := runCommand(dir, command[0], command[1:]...); err != nil {
+					return fmt.Errorf("%v: %w", command, err)
+				}
+			}
+			return generateProject(dir)
+		},
 		func() error { return generateProject(dir) },
 	); err != nil {
 		return err
 	}
 
-	fmt.Printf("gsxui initialized.\n  css:  %s (import it from your entry point)\n  js:   %s/index.js (import it from your entry point)\n  next: gsxui add button\n", cfg.CSS, cfg.JS)
+	fmt.Fprintf(
+		commandStdout,
+		"gsxui initialized.\n  css:  %s\n  js:   %s/index.js\n  vite: Tailwind CSS configured\n  next: gsxui add button\n",
+		cfg.CSS,
+		cfg.JS,
+	)
 	return nil
 }
 

@@ -13,17 +13,29 @@ set.
 
     go install github.com/gsxhq/gsxui/cmd/gsxui@latest
 
-Then, from your Go module:
+Create a GSX app, then initialize gsxui:
 
-    gsxui init          # tokens css, js runtime, class merger, gsx.toml wiring
+    gsx init app --yes
+    cd app
+    gsxui init          # Tailwind/Vite + tokens, JS runtime, class merger
     gsxui add dialog    # vendors dialog + its deps (button)
     gsxui list          # what's available
 
-`gsxui init` prints the CSS and JS entry points to import from your
-bundler. It also adds the gsx toolchain and class merger to your `go.mod`.
-Import `web/gsxui/index.css`; it composes the behavior-critical foundation,
-semantic `theme.css`, and replaceable component `style.css`. Recoloring a
-project means changing only `theme.css`.
+On the unmodified npm/Vite scaffold produced by `gsx init --yes`, `gsxui init`
+installs Tailwind CSS, `@tailwindcss/vite`, and `tw-animate-css`; configures the
+Vite plugin; and imports `web/gsxui/index.js` and
+`web/gsxui/index.css` from `web/main.js`. It also adds the GSX toolchain and
+class merger to your `go.mod`. The CSS entry composes the behavior-critical
+foundation, semantic `theme.css`, and replaceable component `style.css`.
+Recoloring a project means changing only `theme.css`.
+
+For a custom Vite config, entry file, package manager, or gsxui JS/CSS path,
+init refuses automatic rewriting before it changes the project. Integrate those
+projects manually:
+
+    npm install --save-dev tailwindcss@^4.3.3 @tailwindcss/vite@^4.3.3 tw-animate-css@^1.4.0
+    # vite.config.ts: import tailwindcss and add tailwindcss() to plugins
+    # web/main.js: import "./gsxui/index.js" and "./gsxui/index.css"
 
 ## Use
 

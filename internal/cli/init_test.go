@@ -19,13 +19,12 @@ import (
 	"github.com/tdewolff/parse/v2/css"
 )
 
-// initTestModule creates a fake module root and stubs the command runner.
+// initTestModule creates an exact supported gsx npm/Vite scaffold and stubs
+// the command runner.
 func initTestModule(t *testing.T) (dir string, commands *[][]string) {
 	t.Helper()
-	dir = t.TempDir()
-	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module example.com/app\n\ngo 1.26\n"), 0o644); err != nil {
-		t.Fatal(err)
-	}
+	dir = writeScaffoldFixture(t, testGSXVitePristine, testGSXMainPristine)
+	writeFile(t, dir, "go.mod", "module example.com/app\n\ngo 1.26\n")
 	var got [][]string
 	orig := runCommand
 	runCommand = func(dir, name string, args ...string) error {
@@ -53,6 +52,8 @@ func TestInitWritesEverything(t *testing.T) {
 		"web/gsxui/index.js",
 		"ui/merge/merge.go",
 		"gsx.toml",
+		"vite.config.ts",
+		"web/main.js",
 	} {
 		if _, err := os.Stat(filepath.Join(dir, p)); err != nil {
 			t.Errorf("missing %s: %v", p, err)
@@ -100,6 +101,7 @@ func TestInitWritesEverything(t *testing.T) {
 		joined += strings.Join(c, " ") + "\n"
 	}
 	for _, want := range []string{
+		"npm install --save-dev tailwindcss@^4.3.3 @tailwindcss/vite@^4.3.3 tw-animate-css@^1.4.0",
 		"go get github.com/gsxhq/gsx@latest",
 		"go get github.com/jackielii/tailwind-merge-go@latest",
 		"go get -tool github.com/gsxhq/gsx/cmd/gsx@latest",
@@ -172,20 +174,14 @@ func TestInitPresetInputsSelectMaia(t *testing.T) {
 
 func TestInitMalformedPresetDoesNotWriteAnything(t *testing.T) {
 	dir, commands := initTestModule(t)
+	before := snapshotFiles(t, dir)
 	err := Run([]string{"init", "--preset", `{"style":"maia"}`})
 	if err == nil || !strings.Contains(err.Error(), "preset") {
 		t.Fatalf("init malformed preset error = %v", err)
 	}
-	entries, readErr := os.ReadDir(dir)
-	if readErr != nil {
-		t.Fatal(readErr)
-	}
-	if len(entries) != 1 || entries[0].Name() != "go.mod" {
-		var names []string
-		for _, entry := range entries {
-			names = append(names, entry.Name())
-		}
-		t.Fatalf("malformed preset wrote files: %v", names)
+	after := snapshotFiles(t, dir)
+	if !equalFileSnapshots(before, after) {
+		t.Fatal("malformed preset changed the scaffold")
 	}
 	if len(*commands) != 0 {
 		t.Fatalf("malformed preset ran commands: %v", *commands)
@@ -331,8 +327,8 @@ func TestInitRejectsPlannedFileAncestorBeforeAnyWrite(t *testing.T) {
 	before := treeDigest(t, dir)
 
 	err := Run([]string{"init", "--overwrite"})
-	if err == nil || !strings.Contains(err.Error(), "ancestor") {
-		t.Errorf("init error = %v, want planned-file ancestor rejection", err)
+	if err == nil || !strings.Contains(err.Error(), "default gsxui JS and CSS paths") {
+		t.Errorf("init error = %v, want unsupported-path preflight rejection", err)
 	}
 	if len(*commands) != 0 {
 		t.Errorf("ancestor conflict ran commands: %v", *commands)
@@ -356,8 +352,8 @@ func TestInitRejectsPortableCaseAliasBeforeAnyWrite(t *testing.T) {
 	before := treeDigest(t, dir)
 
 	err := Run([]string{"init", "--overwrite"})
-	if err == nil || !strings.Contains(err.Error(), "portable") {
-		t.Errorf("init error = %v, want portable-alias rejection", err)
+	if err == nil || !strings.Contains(err.Error(), "default gsxui JS and CSS paths") {
+		t.Errorf("init error = %v, want unsupported-path preflight rejection", err)
 	}
 	if len(*commands) != 0 {
 		t.Errorf("portable-alias conflict ran commands: %v", *commands)
@@ -649,22 +645,22 @@ func treeDigest(t *testing.T, root string) string {
 func TestInitVendorsCSSAssetsBesideCustomEntry(t *testing.T) {
 	dir, _ := initTestModule(t)
 	cfg := Config{UI: "ui", JS: "web/gsxui", CSS: "web/styles/brand.css"}
-	if err := cfg.Save(dir); err != nil {
+	artifacts, err := initArtifacts(dir, "example.com/app", cfg, preset.Default(preset.StyleNova))
+	if err != nil {
 		t.Fatal(err)
 	}
-
-	if err := Run([]string{"init"}); err != nil {
-		t.Fatal(err)
+	byPath := make(map[string]artifact, len(artifacts))
+	for _, planned := range artifacts {
+		byPath[planned.RelativePath] = planned
 	}
-
-	for _, path := range []string{
+	for _, relative := range []string{
 		"web/styles/brand.css",
 		"web/styles/foundation.css",
 		"web/styles/theme.css",
 		"web/styles/style.css",
 	} {
-		if _, err := os.Stat(filepath.Join(dir, path)); err != nil {
-			t.Errorf("missing %s: %v", path, err)
+		if _, ok := byPath[relative]; !ok {
+			t.Errorf("initArtifacts missing %s", relative)
 		}
 	}
 }
@@ -691,31 +687,18 @@ func TestCSSAssetTargetsExcludeSiteButtonFallback(t *testing.T) {
 	}
 }
 
-func TestInitRejectsModifiedCustomCSSSibling(t *testing.T) {
-	dir, _ := initTestModule(t)
+func TestInitRejectsCustomCSSPathBeforeCommands(t *testing.T) {
+	dir, commands := initTestModule(t)
 	cfg := Config{UI: "ui", JS: "web/gsxui", CSS: "web/styles/brand.css"}
 	if err := cfg.Save(dir); err != nil {
 		t.Fatal(err)
 	}
-	if err := Run([]string{"init"}); err != nil {
-		t.Fatal(err)
-	}
-
-	themePath := filepath.Join(dir, "web/styles/theme.css")
-	const modified = "/* local theme */\n"
-	if err := os.WriteFile(themePath, []byte(modified), 0o644); err != nil {
-		t.Fatal(err)
-	}
 	err := Run([]string{"init"})
-	if err == nil || !strings.Contains(err.Error(), themePath) || !strings.Contains(err.Error(), "--overwrite") {
-		t.Fatalf("want custom sibling overwrite-refusal error, got %v", err)
+	if err == nil || !strings.Contains(err.Error(), "default gsxui JS and CSS paths") {
+		t.Fatalf("want custom path preflight refusal, got %v", err)
 	}
-	got, err := os.ReadFile(themePath)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if string(got) != modified {
-		t.Errorf("modified sibling was overwritten:\n%s", got)
+	if len(*commands) != 0 {
+		t.Fatalf("custom path refusal ran commands: %v", *commands)
 	}
 }
 
@@ -723,8 +706,8 @@ func TestInitOverwriteRefreshesOnlyVersionedSupportFiles(t *testing.T) {
 	dir, _ := initTestModule(t)
 	cfg := Config{
 		UI:  "components/ui",
-		JS:  "web/behavior",
-		CSS: "web/styles/brand.css",
+		JS:  "web/gsxui",
+		CSS: "web/gsxui/index.css",
 	}
 	if err := cfg.Save(dir); err != nil {
 		t.Fatal(err)
@@ -752,9 +735,9 @@ func TestInitOverwriteRefreshesOnlyVersionedSupportFiles(t *testing.T) {
 	}
 	targets := []supportTarget{
 		{path: cfg.CSS, source: "assets/css/index.css"},
-		{path: "web/styles/foundation.css", source: "assets/css/foundation.css"},
-		{path: "web/styles/theme.css", source: "assets/css/themes/default.css"},
-		{path: "web/styles/style.css", source: "assets/css/styles/default.css"},
+		{path: "web/gsxui/foundation.css", source: "assets/css/foundation.css"},
+		{path: "web/gsxui/theme.css", source: "assets/css/themes/default.css"},
+		{path: "web/gsxui/style.css", source: "assets/css/styles/default.css"},
 		{path: filepath.Join(cfg.JS, "gsxui.js"), source: "ui/gsxui.js"},
 		{path: filepath.Join(cfg.UI, "merge", "merge.go"), source: "merge/merge.go"},
 	}
@@ -847,8 +830,8 @@ func TestInitializedConsumerCSSOmitsButtonPresentationAndKeepsRemainingStyle(t *
 	dir, _ := initTestModule(t)
 	cfg := Config{
 		UI:  "components/ui",
-		JS:  "web/behavior",
-		CSS: "web/styles/brand.css",
+		JS:  "web/gsxui",
+		CSS: "web/gsxui/index.css",
 	}
 	if err := cfg.Save(dir); err != nil {
 		t.Fatal(err)
@@ -866,7 +849,7 @@ func TestInitializedConsumerCSSOmitsButtonPresentationAndKeepsRemainingStyle(t *
 	}
 	input := filepath.Join(dir, "consumer.css")
 	if err := os.WriteFile(input, []byte(`
-@import "./web/styles/brand.css";
+@import "./web/gsxui/index.css";
 @source "./components/ui/**/*.gsx";
 `), 0o644); err != nil {
 		t.Fatal(err)
@@ -892,7 +875,7 @@ func TestInitializedConsumerCSSOmitsButtonPresentationAndKeepsRemainingStyle(t *
 	if len(compiled) == 0 {
 		t.Fatal("compiled consumer CSS is empty")
 	}
-	vendoredStyle, err := os.ReadFile(filepath.Join(dir, "web/styles/style.css"))
+	vendoredStyle, err := os.ReadFile(filepath.Join(dir, "web/gsxui/style.css"))
 	if err != nil {
 		t.Fatal(err)
 	}
