@@ -370,6 +370,12 @@ func (r *resolver) inspectHelperCall(
 	exprPos token.Pos,
 	part *gsxast.ClassPart,
 ) {
+	// The part shape is validated in both helper modes, so a scan reports a
+	// helper call that Resolve would later refuse rather than passing it as
+	// well formed.
+	if !r.validateHelperPart(exprPos, part) {
+		return
+	}
 	receiver, ok := selector.X.(*goast.Ident)
 	if !ok {
 		r.err = r.positionedError(exprPos, "recipe helper call receiver must be a bare component identifier")
@@ -393,6 +399,17 @@ func (r *resolver) inspectHelperCall(
 		}
 		r.calls = append(r.calls, Call{Component: component})
 		if r.classMode != helperDesugarMode {
+			return
+		}
+		// A shape that declares no base rule has no utilities to substitute.
+		// Emitting "" here would silently produce an unstyled element, which is
+		// the exact failure this task exists to eliminate.
+		if !r.resolved.Shape.Base {
+			r.err = r.positionedError(
+				exprPos,
+				"component %q declares no base rule, so %s.Role() has nothing to resolve to",
+				r.resolved.Shape.Component, component,
+			)
 			return
 		}
 		r.recordPartEdit(exprPos, part, strconv.Quote(strings.Join(r.resolved.Base, " ")))
@@ -433,20 +450,30 @@ func (r *resolver) inspectHelperCall(
 	r.recordPartEdit(exprPos, part, dimensionSwitch(r.resolved, dimension, argument.Name))
 }
 
+// validateHelperPart requires a helper call to occupy a whole plain class part.
+// The replacement span runs to part.End(), which also covers a part's condition,
+// pipeline stages, control flow and CSS segments — none of which the generated
+// replacement reproduces. Substituting anyway would silently delete them, so
+// anything but a plain part is rejected. Runs in both helper modes.
+func (r *resolver) validateHelperPart(exprPos token.Pos, part *gsxast.ClassPart) bool {
+	if part == nil {
+		r.err = r.positionedError(exprPos, "a recipe helper call must be a whole class part")
+		return false
+	}
+	if part.Cond != "" || len(part.Stages) != 0 || part.CF != nil || len(part.CSSSegments) != 0 {
+		r.err = r.positionedError(exprPos, "a recipe helper call must be a plain class part with no condition, pipeline or control flow")
+		return false
+	}
+	return true
+}
+
 // recordPartEdit replaces a whole class part. Per the resolved spike a
 // ClassPart's Pos includes the leading newline and indentation while End
 // excludes the trailing comma, so the expression's own position is the correct
 // start and the part's End is the correct end. gen.Format re-indents
-// afterwards, so value carries no indentation.
+// afterwards, so value carries no indentation. The caller has already run
+// validateHelperPart, so part is a non-nil plain part here.
 func (r *resolver) recordPartEdit(exprPos token.Pos, part *gsxast.ClassPart, value string) {
-	if part == nil {
-		r.err = r.positionedError(exprPos, "a recipe helper call must be a whole class part")
-		return
-	}
-	if part.Cond != "" || len(part.Stages) != 0 || part.CF != nil || len(part.CSSSegments) != 0 {
-		r.err = r.positionedError(exprPos, "a recipe helper call must be a plain class part with no condition, pipeline or control flow")
-		return
-	}
 	start := r.fset.Position(exprPos).Offset
 	end := r.fset.Position(part.End()).Offset
 	if start < 0 || end < start || end > len(r.src) {

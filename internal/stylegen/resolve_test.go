@@ -964,3 +964,138 @@ func resolveRepoRoot(t *testing.T) string {
 		dir = parent
 	}
 }
+
+// TestResolveRejectsHelperCallInNonPlainClassPart pins the part-shape guard.
+// The replacement span runs to part.End(), so without this guard a helper call
+// carrying a condition, a pipeline or control flow would have its trailing
+// metadata silently deleted rather than rejected.
+func TestResolveRejectsHelperCallInNonPlainClassPart(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name string
+		body string
+		want string
+		at   string
+	}{
+		{
+			name: "condition",
+			body: `<div class={ button.Role() : disabled }></div>`,
+			want: "plain class part",
+			at:   "part.gsx:3:",
+		},
+		{
+			name: "pipeline",
+			body: `<div class={ button.Role() |> upper() }></div>`,
+			want: "plain class part",
+			at:   "part.gsx:3:",
+		},
+		{
+			name: "dimension call with condition",
+			body: `<div class={ button.Variant(variant) : disabled }></div>`,
+			want: "plain class part",
+			at:   "part.gsx:3:",
+		},
+		{
+			name: "value switch arm",
+			body: `<div class={
+				switch mode {
+				case "a":
+					button.Role()
+				default:
+					"other"
+				},
+			}></div>`,
+			want: "whole class part",
+			at:   "part.gsx:6:",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			source := []byte(resolveComponent(tt.body))
+			if _, err := gsxparser.ParseFile(token.NewFileSet(), "part.gsx", source, 0); err != nil {
+				t.Fatalf("fixture does not parse: %v", err)
+			}
+
+			got, err := Resolve("part.gsx", source, testResolved(t))
+			if err == nil {
+				t.Fatalf("Resolve() error = nil, want error; output:\n%s", got)
+			}
+			if !strings.Contains(err.Error(), tt.want) {
+				t.Errorf("Resolve() error %q does not contain %q", err, tt.want)
+			}
+			if !strings.Contains(err.Error(), tt.at) {
+				t.Errorf("Resolve() error %q does not carry position %s", err, tt.at)
+			}
+			if got != nil {
+				t.Errorf("Resolve() output = %q, want nil on a rejected part", got)
+			}
+
+			// The same guard must run in scan mode, so Task 7's pre-flight
+			// check cannot pass a call that Resolve would later refuse.
+			calls, err := HelperCalls("part.gsx", source)
+			if err == nil {
+				t.Fatalf("HelperCalls() error = nil, want error; calls = %+v", calls)
+			}
+			if !strings.Contains(err.Error(), tt.want) {
+				t.Errorf("HelperCalls() error %q does not contain %q", err, tt.want)
+			}
+			if !strings.Contains(err.Error(), tt.at) {
+				t.Errorf("HelperCalls() error %q does not carry position %s", err, tt.at)
+			}
+		})
+	}
+}
+
+// TestResolveRejectsRoleAgainstABaselessShape pins the base-rule guard.
+// Shape.Validate does not require Base, so without this check a Base:false
+// shape would resolve button.Role() to "" and emit a silently unstyled element.
+func TestResolveRejectsRoleAgainstABaselessShape(t *testing.T) {
+	t.Parallel()
+
+	shape := recipe.Shape{
+		Component: "button",
+		Base:      false,
+		Dimensions: []recipe.Dimension{
+			{Name: "variant", Default: "default", Values: []string{"default", "outline"}},
+		},
+	}
+	style := testRecipes(t,
+		recipe.Rule{Class: "gsxui-recipe-button-variant-default", Utilities: []string{"bg-primary"}},
+		recipe.Rule{Class: "gsxui-recipe-button-variant-outline", Utilities: []string{"border-border"}},
+	)
+	resolved, err := recipe.Conform("baseless.css", shape, style)
+	if err != nil {
+		t.Fatalf("recipe.Conform(baseless) error = %v", err)
+	}
+	if resolved.Shape.Base {
+		t.Fatal("fixture shape must declare no base rule")
+	}
+
+	source := []byte(resolveComponent(`<div class={ button.Role() }></div>`))
+	got, err := Resolve("baseless.gsx", source, resolved)
+	if err == nil {
+		t.Fatalf("Resolve() error = nil, want error; output:\n%s", got)
+	}
+	if !strings.Contains(err.Error(), "declares no base rule") {
+		t.Errorf("Resolve() error %q does not identify the missing base rule", err)
+	}
+	if !strings.Contains(err.Error(), "baseless.gsx:3:") {
+		t.Errorf("Resolve() error %q does not carry a source position", err)
+	}
+	if got != nil {
+		t.Errorf("Resolve() output = %q, want nil", got)
+	}
+
+	// A baseless shape is still usable for its dimensions.
+	dimensionOnly := []byte(resolveComponent(`<div class={ button.Variant(variant) }></div>`))
+	resolvedSource, err := Resolve("baseless.gsx", dimensionOnly, resolved)
+	if err != nil {
+		t.Fatalf("Resolve(dimension only) error = %v", err)
+	}
+	if !strings.Contains(string(resolvedSource), `"bg-primary"`) {
+		t.Errorf("Resolve(dimension only) did not desugar the dimension:\n%s", resolvedSource)
+	}
+}
