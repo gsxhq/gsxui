@@ -9,6 +9,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"slices"
 	"sort"
 	"strings"
 
@@ -221,19 +222,10 @@ func styleNames(root string) ([]string, error) {
 		}
 	}
 	sort.Strings(styles)
-	if !containsStyle(styles, DefaultStyle) {
+	if !slices.Contains(styles, DefaultStyle) {
 		return nil, fmt.Errorf("default style %q is not authored under registry/styles", DefaultStyle)
 	}
 	return styles, nil
-}
-
-func containsStyle(styles []string, want string) bool {
-	for _, style := range styles {
-		if style == want {
-			return true
-		}
-	}
-	return false
 }
 
 func rewriteGSXPackage(filename string, src []byte, packageName string) ([]byte, error) {

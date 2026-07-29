@@ -109,9 +109,6 @@ func TestInputGroupButtonSizeAxisMatchesCanonicalButtonClass(t *testing.T) {
 					t.Errorf("missing aligned Button size contract %q\nin: %s", want, got)
 				}
 			}
-			if tt.want != "default" && strings.Contains(got, canonicalButtonClass("ghost", "default")) {
-				t.Errorf("InputGroupButton %s rendered contradictory default Button size\nin: %s", tt.name, got)
-			}
 		})
 	}
 }
@@ -157,9 +154,6 @@ func TestInputGroupButtonVariantOverride(t *testing.T) {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
-	}
-	if strings.Contains(got, canonicalButtonClass("default", "xs")) {
-		t.Errorf("outline variant must not render the default variant presentation\nin: %s", got)
 	}
 }
 

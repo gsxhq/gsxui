@@ -40,8 +40,10 @@ func TestBuildContractEmitsSharedShapeAndPerStyleUtilities(t *testing.T) {
 		}
 	}
 	// The shape must appear once, under components — never repeated per style.
-	if strings.Count(string(got), `"values"`) != 1 {
-		t.Errorf("shape must be emitted exactly once, got:\n%s", got)
+	// One "values" key per declared dimension, derived from the fixture rather
+	// than hardcoded, so a second dimension does not silently pass.
+	if count, want := strings.Count(string(got), `"values"`), len(shape.Dimensions); count != want {
+		t.Errorf("shape emitted %d times, want %d:\n%s", count, want, got)
 	}
 }
 

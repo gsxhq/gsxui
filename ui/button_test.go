@@ -1,10 +1,16 @@
+// This file pins the *generated* Nova output of ui.Button: the concrete
+// utilities the default style's recipe compiles to, plus the gsx-level class
+// merging and attribute precedence that only the generated component exhibits.
+//
+// Style-independent Button behavior — href renders an anchor, disabled renders
+// a real button even with an href, caller attributes fall through — lives in
+// registry/canonical/button_test.go and is deliberately NOT restated here.
 package ui_test
 
 import (
 	"html"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 	"sync"
 	"testing"
@@ -15,29 +21,6 @@ import (
 	"github.com/gsxhq/gsxui/merge"
 	"github.com/gsxhq/gsxui/ui"
 )
-
-// disabledAttr matches the bare boolean `disabled` HTML attribute, as
-// distinct from Tailwind's `disabled:pointer-events-none` / `disabled:opacity-50`
-// variant classes that appear verbatim in the button's base class string and
-// would otherwise false-positive a plain strings.Contains(got, "disabled").
-var disabledAttr = regexp.MustCompile(`disabled(>|\s)`)
-
-func TestButtonDefault(t *testing.T) {
-	got := render(t, ui.Button("", "", "", false, gsx.Raw("Save"), nil))
-	for _, want := range []string{
-		"<button", `data-gsxui-slot-button`, `type="button"`,
-		`data-variant="default"`, `data-size="default"`,
-		canonicalButtonClass("default", "default"),
-		">Save</button>",
-	} {
-		if !strings.Contains(got, want) {
-			t.Errorf("missing %q\nin: %s", want, got)
-		}
-	}
-	if disabledAttr.MatchString(got) {
-		t.Errorf("unexpected disabled attr\nin: %s", got)
-	}
-}
 
 func TestButtonPinned(t *testing.T) {
 	// Exact full-render pin, verified token-by-token against shadcn's
@@ -79,32 +62,6 @@ func TestButtonVariantAndSizeAxes(t *testing.T) {
 		if !strings.Contains(got, canonicalButtonClass("default", size)) {
 			t.Errorf("size %s: missing exact canonical role classes\nin: %s", size, got)
 		}
-	}
-}
-
-func TestButtonHrefRendersAnchor(t *testing.T) {
-	got := render(t, ui.Button("", "", "/docs", false, gsx.Raw("Docs"), nil))
-	for _, want := range []string{"<a", `href="/docs"`, canonicalButtonClass("default", "default"), `data-gsxui-slot-button`, ">Docs</a>"} {
-		if !strings.Contains(got, want) {
-			t.Errorf("missing %q\nin: %s", want, got)
-		}
-	}
-	if strings.Contains(got, "<button") {
-		t.Errorf("href should render <a>, not <button>\nin: %s", got)
-	}
-}
-
-func TestButtonDisabled(t *testing.T) {
-	// disabled wins over href: render a real disabled <button>.
-	got := render(t, ui.Button("", "", "/docs", true, gsx.Raw("x"), nil))
-	if !strings.Contains(got, "<button") {
-		t.Errorf("want disabled <button>\nin: %s", got)
-	}
-	if !disabledAttr.MatchString(got) {
-		t.Errorf("want real disabled attribute\nin: %s", got)
-	}
-	if !strings.Contains(got, canonicalButtonClass("default", "default")) {
-		t.Errorf("disabled button lost canonical role classes\nin: %s", got)
 	}
 }
 

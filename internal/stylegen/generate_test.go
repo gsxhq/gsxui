@@ -42,7 +42,8 @@ func copyRepoFixture(t *testing.T, dst string) {
 }
 
 func TestGenerateAllIsIdempotent(t *testing.T) {
-	root := repoRoot(t)
+	root := t.TempDir()
+	copyRepoFixture(t, root)
 	if err := GenerateAll(root, false); err != nil {
 		t.Fatalf("GenerateAll() error = %v", err)
 	}
@@ -52,7 +53,8 @@ func TestGenerateAllIsIdempotent(t *testing.T) {
 }
 
 func TestGenerateAllEmitsEveryStyleAndTheDefaultCopy(t *testing.T) {
-	root := repoRoot(t)
+	root := t.TempDir()
+	copyRepoFixture(t, root)
 	if err := GenerateAll(root, false); err != nil {
 		t.Fatal(err)
 	}
@@ -87,7 +89,8 @@ func TestGenerateAllEmitsEveryStyleAndTheDefaultCopy(t *testing.T) {
 }
 
 func TestGeneratedSourcesAreFreeOfRecipeConstructs(t *testing.T) {
-	root := repoRoot(t)
+	root := t.TempDir()
+	copyRepoFixture(t, root)
 	if err := GenerateAll(root, false); err != nil {
 		t.Fatal(err)
 	}

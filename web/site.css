@@ -18,6 +18,7 @@
    default-recognized extensions. */
 @source "../ui/**/*.gsx";
 @source "../site/**/*.gsx";
+@source "../registry/generated/**/*.gsx";
 
 /* Site-only branding for the inlined header logo. */
 :root {
