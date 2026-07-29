@@ -36,9 +36,68 @@ func dimensionAccessorName(slot, dimension string) string {
 	return accessorName(slot) + accessorName(dimension)
 }
 
+// rootAccessorName is the method the root slot generates. A slot literally
+// named "root" would generate the same one.
+const rootAccessorName = "Root"
+
+// checkAccessorNames requires the shape's accessor names to be unique. Naming
+// is neither total nor injective on its own: "menu-button" and "menuButton"
+// both title-case to MenuButton, slot "menu" + dimension "button" collides with
+// slot "menu-button"'s base accessor, and a slot named "root" collides with the
+// root slot's Root(). Every one of those passes Shape.Validate and formats
+// fine — format.Source parses without type-checking — and then fails at go
+// build with "method redeclared", after the file is written, naming neither the
+// shape nor the slots that collided.
+//
+// The quieter half is worse: accessorTarget resolves a method name to the FIRST
+// matching (slot, dimension) in declaration order, so checkHelperCalls,
+// checkShapeCoverage and Resolve's desugaring all bind to the wrong slot before
+// the build ever fails. This runs first so neither happens.
+//
+// It lives here rather than in Shape.Validate because accessorName is a
+// stylegen concept: internal/recipe has no idea what a Go method is called.
+func checkAccessorNames(shape recipe.Shape) error {
+	owner := map[string]string{}
+	claim := func(name, by string) error {
+		if previous, taken := owner[name]; taken {
+			return fmt.Errorf(
+				"%s: %s and %s both generate the accessor %s() — Go would reject the "+
+					"generated file with \"method redeclared\"; rename one of them",
+				shape.Component, previous, by, name)
+		}
+		owner[name] = by
+		return nil
+	}
+	for _, slot := range shape.Slots {
+		if slot.Name != "" && accessorName(slot.Name) == rootAccessorName {
+			return fmt.Errorf(
+				"%s: slot %q is reserved — the root slot already generates %s()",
+				shape.Component, slot.Name, rootAccessorName)
+		}
+		// Every slot claims its accessor name, base rule or not: a slot without a
+		// base rule still contributes its name to every dimension accessor it
+		// declares, and letting two slots share a name would make those collide.
+		if err := claim(accessorName(slot.Name), fmt.Sprintf("slot %q", slot.Name)); err != nil {
+			return err
+		}
+	}
+	for _, slot := range shape.Slots {
+		for _, dimension := range slot.Dimensions {
+			by := fmt.Sprintf("slot %q dimension %q", slot.Name, dimension.Name)
+			if err := claim(dimensionAccessorName(slot.Name, dimension.Name), by); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
 // GenerateAccessors emits the typed per-slot accessor type for one component.
 func GenerateAccessors(shape recipe.Shape) ([]byte, error) {
 	if err := shape.Validate(); err != nil {
+		return nil, err
+	}
+	if err := checkAccessorNames(shape); err != nil {
 		return nil, err
 	}
 	typeName := shape.Component + "Recipe"

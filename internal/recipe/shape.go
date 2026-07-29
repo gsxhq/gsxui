@@ -50,6 +50,46 @@ func (s Shape) Validate() error {
 			return err
 		}
 	}
+	return s.validateClassEncoding()
+}
+
+// validateClassEncoding requires the shape's class encoding to be injective.
+// Slot, dimension and value are joined with "-" into one flat class name, so
+// distinct axes can land on the same string:
+//
+//	slot "menu"        dimension "button-size" value "lg"
+//	slot "menu-button" dimension "size"        value "lg"
+//
+// both encode as gsxui-recipe-<component>-menu-button-size-lg. Only one of them
+// is reachable; the other's rules are dead, and DecodeClass reports the survivor,
+// so Conform blames the wrong axis for a rule that is visibly present in the CSS.
+// This also catches a base class colliding with a value class — a slot literally
+// named "menu-button-size-lg".
+func (s Shape) validateClassEncoding() error {
+	owner := make(map[string]string)
+	claim := func(class, by string) error {
+		if previous, taken := owner[class]; taken {
+			return fmt.Errorf(
+				"%s: %s and %s both encode as class %q — one of them can never be selected; "+
+					"rename a slot, dimension or value so the encoding stays unambiguous",
+				s.Component, previous, by, class)
+		}
+		owner[class] = by
+		return nil
+	}
+	for _, slot := range s.Slots {
+		if err := claim(s.BaseClass(slot.Name), fmt.Sprintf("slot %q", slot.Name)); err != nil {
+			return err
+		}
+		for _, dimension := range slot.Dimensions {
+			for _, value := range dimension.Values {
+				by := fmt.Sprintf("slot %q dimension %q value %q", slot.Name, dimension.Name, value)
+				if err := claim(s.ValueClass(slot.Name, dimension.Name, value), by); err != nil {
+					return err
+				}
+			}
+		}
+	}
 	return nil
 }
 
@@ -167,6 +207,15 @@ func (s Shape) DecodeClass(class string) (slot, dimension, value string, kind Cl
 	ordered := slices.Clone(s.Slots)
 	sort.Slice(ordered, func(i, j int) bool { return len(ordered[i].Name) > len(ordered[j].Name) })
 
+	// Longest-first is a search, not a commitment. A candidate whose dimension
+	// prefix matches but whose value is not declared is simply not the decode —
+	// "menu-button-size-xl" prefix-matches slot "menu-button" dimension "size"
+	// with an undeclared "xl", while slot "menu" dimension "button-size" decodes
+	// it exactly. Returning at the first near-miss would reject that class
+	// outright. Validate now rejects shapes where two candidates BOTH resolve,
+	// so at most one ever survives this loop; the search is what makes the
+	// remaining single answer the one that is found.
+	var reasons []string
 	for _, candidate := range ordered {
 		remainder := rest
 		if candidate.Name != "" {
@@ -185,12 +234,16 @@ func (s Shape) DecodeClass(class string) (slot, dimension, value string, kind Cl
 				continue
 			}
 			if !dim.Has(suffix) {
-				return "", "", "", 0, fmt.Errorf(
-					"recipe class %q: slot %q dimension %q does not declare value %q",
-					class, candidate.Name, dim.Name, suffix)
+				reasons = append(reasons, fmt.Sprintf(
+					"slot %q dimension %q does not declare value %q",
+					candidate.Name, dim.Name, suffix))
+				continue
 			}
 			return candidate.Name, dim.Name, suffix, ClassValue, nil
 		}
+	}
+	if len(reasons) > 0 {
+		return "", "", "", 0, fmt.Errorf("recipe class %q: %s", class, strings.Join(reasons, "; "))
 	}
 	return "", "", "", 0, fmt.Errorf("recipe class %q names no declared slot or dimension of %q", class, s.Component)
 }

@@ -73,6 +73,13 @@ type resolver struct {
 // utilities the resolved recipe supplies, so the output contains no recipe
 // construct at all.
 func Resolve(filename string, src []byte, resolved recipe.Resolved) ([]byte, error) {
+	// accessorTarget resolves a method name to the first matching (slot,
+	// dimension) in declaration order, so a shape with two slots that generate
+	// the same accessor name would desugar calls against the wrong one — quietly,
+	// and before the generated file's duplicate methods fail the build.
+	if err := checkAccessorNames(resolved.Shape); err != nil {
+		return nil, err
+	}
 	r, err := inspectSource(filename, src, func(r *resolver) {
 		r.classMode = helperDesugarMode
 		r.resolved = resolved
@@ -147,6 +154,9 @@ func residualAccessorCall(src []byte, components []string) (string, bool) {
 // is a parameter because an accessor's method name can only be split back into
 // (slot, dimension) against the shape it was generated from.
 func HelperCalls(filename string, src []byte, shape recipe.Shape) ([]Call, error) {
+	if err := checkAccessorNames(shape); err != nil {
+		return nil, err
+	}
 	r, err := inspectSource(filename, src, func(r *resolver) {
 		r.classMode = helperScanMode
 		r.shape = shape

@@ -1,6 +1,9 @@
 package recipe
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func validShape() Shape {
 	return Shape{
@@ -290,5 +293,81 @@ func TestShapeDecodeClassRejectsSlotErrors(t *testing.T) {
 				t.Errorf("DecodeClass(%q) = nil error, want error", class)
 			}
 		})
+	}
+}
+
+// collidingShape is the confirmed non-injective encoding: slot "menu" varies
+// over "button-size", slot "menu-button" varies over "size", and both reach
+// gsxui-recipe-sidebar-menu-button-size-lg.
+func collidingShape() Shape {
+	return Shape{
+		Component: "sidebar",
+		Slots: []Slot{
+			{Name: "menu", Dimensions: []Dimension{
+				{Name: "button-size", Default: "md", Values: []string{"md", "lg", "xl"}},
+			}},
+			{Name: "menu-button", Dimensions: []Dimension{
+				{Name: "size", Default: "default", Values: []string{"default", "lg"}},
+			}},
+		},
+	}
+}
+
+// TestShapeValidateRejectsNonInjectiveClassEncoding pins finding 2. Without
+// this the shape validates, one of the two axes becomes unreachable, and
+// Conform then blames the wrong axis for a rule that is visibly present in the
+// CSS file it is reading.
+func TestShapeValidateRejectsNonInjectiveClassEncoding(t *testing.T) {
+	t.Parallel()
+
+	s := collidingShape()
+	if a, b := s.ValueClass("menu", "button-size", "lg"), s.ValueClass("menu-button", "size", "lg"); a != b {
+		t.Fatalf("fixture no longer collides: %q vs %q", a, b)
+	}
+	err := s.Validate()
+	if err == nil {
+		t.Fatal("Validate() = nil, want an error for the colliding class encoding")
+	}
+	for _, want := range []string{`slot "menu" dimension "button-size" value "lg"`, `slot "menu-button" dimension "size" value "lg"`} {
+		if !strings.Contains(err.Error(), want) {
+			t.Errorf("Validate() error must name both contributors, missing %q in %q", want, err)
+		}
+	}
+}
+
+// TestShapeValidateRejectsBaseVersusValueCollision is the same defect through
+// the other door: a slot whose own name is another slot's value class.
+func TestShapeValidateRejectsBaseVersusValueCollision(t *testing.T) {
+	t.Parallel()
+
+	s := Shape{
+		Component: "sidebar",
+		Slots: []Slot{
+			{Name: "menu-button-size-lg", Base: true},
+			{Name: "menu-button", Dimensions: []Dimension{
+				{Name: "size", Default: "default", Values: []string{"default", "lg"}},
+			}},
+		},
+	}
+	if err := s.Validate(); err == nil {
+		t.Fatal("Validate() = nil, want an error for the base-versus-value collision")
+	}
+}
+
+// TestShapeDecodeClassSearchesEveryCandidate pins finding 2's second half.
+// Longest-match must be a search, not a greedy first-match: a class that one
+// candidate near-misses and another decodes exactly must decode.
+func TestShapeDecodeClassSearchesEveryCandidate(t *testing.T) {
+	t.Parallel()
+
+	s := collidingShape()
+	const class = "gsxui-recipe-sidebar-menu-button-size-xl"
+	slot, dimension, value, kind, err := s.DecodeClass(class)
+	if err != nil {
+		t.Fatalf("DecodeClass(%q) error = %v — the longest candidate near-missed and the search stopped", class, err)
+	}
+	if slot != "menu" || dimension != "button-size" || value != "xl" || kind != ClassValue {
+		t.Errorf("DecodeClass(%q) = (%q,%q,%q,%v), want (menu,button-size,xl,ClassValue)",
+			class, slot, dimension, value, kind)
 	}
 }

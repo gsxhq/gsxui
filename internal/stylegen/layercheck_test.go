@@ -2,9 +2,11 @@ package stylegen
 
 import (
 	"bytes"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"slices"
+	"sort"
 	"strings"
 	"testing"
 )
@@ -46,13 +48,96 @@ func TestCheckLayerPrecedenceAcceptsTheCurrentTree(t *testing.T) {
 	}
 }
 
-// injectDefaultCSS copies the repo into a temp root and splices extra source in
-// after the named anchor, returning the temp root.
-func injectDefaultCSS(t *testing.T, anchor, extra string) string {
+// TestLayerCheckedStylesheetsCoverEveryAuthoredStylesheet keeps the gate's file
+// list honest. The list is spelled out rather than globbed so that no
+// stylesheet enters scope unvetted — and this is the other half of that trade:
+// a new stylesheet under assets/css or web/ must be added to the list (or to
+// the exemptions, with a reason) rather than silently going unchecked.
+func TestLayerCheckedStylesheetsCoverEveryAuthoredStylesheet(t *testing.T) {
+	t.Parallel()
+
+	root := repoRoot(t)
+	var found []string
+	for _, dir := range []string{filepath.Join("assets", "css"), "web"} {
+		err := filepath.WalkDir(filepath.Join(root, dir), func(path string, entry fs.DirEntry, err error) error {
+			if err != nil || entry.IsDir() || filepath.Ext(path) != ".css" {
+				return err
+			}
+			relative, err := filepath.Rel(root, path)
+			if err != nil {
+				return err
+			}
+			found = append(found, filepath.ToSlash(relative))
+			return nil
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	sort.Strings(found)
+
+	listed := slices.Clone(layerCheckedStylesheets)
+	sort.Strings(listed)
+	if !slices.Equal(found, listed) {
+		t.Errorf("layerCheckedStylesheets = %q, but the authored stylesheets are %q", listed, found)
+	}
+	for relative := range layerCheckExemptions {
+		if !slices.Contains(listed, relative) {
+			t.Errorf("exemption %q names a stylesheet the gate does not list", relative)
+		}
+	}
+}
+
+// TestSiteButtonFallbackWouldViolateWithoutItsExemption proves the exemption is
+// load-bearing rather than decorative: web/site-button.css really does hold
+// zero-specificity components-layer rules against the migrated Button's marker,
+// and the gate really does read that file now. If the fallback is ever deleted
+// or rewritten to win the cascade, this test says so and the exemption can go.
+func TestSiteButtonFallbackWouldViolateWithoutItsExemption(t *testing.T) {
+	t.Parallel()
+
+	const relative = "web/site-button.css"
+	if _, exempt := layerCheckExemptions[relative]; !exempt {
+		t.Fatalf("%s is expected to be exempt", relative)
+	}
+	root := repoRoot(t)
+	markers, err := composedMarkers(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	sets, err := componentUtilities(root, markers)
+	if err != nil {
+		t.Fatal(err)
+	}
+	src, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(relative)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	rules, err := layeredRules(relative, src)
+	if err != nil {
+		t.Fatal(err)
+	}
+	properties := &utilityPropertyResolver{root: root, sets: sets}
+	var violations []string
+	for _, rule := range rules {
+		found, err := rule.violations(relative, markers, sets, properties)
+		if err != nil {
+			t.Fatal(err)
+		}
+		violations = append(violations, found...)
+	}
+	if len(violations) == 0 {
+		t.Fatalf("%s no longer contests compiled Button presentation — drop its exemption", relative)
+	}
+}
+
+// injectCSS copies the repo into a temp root and splices extra source into the
+// named stylesheet after the named anchor, returning the temp root.
+func injectCSS(t *testing.T, relative, anchor, extra string) string {
 	t.Helper()
 	root := t.TempDir()
 	copyRepoFixture(t, root)
-	path := filepath.Join(root, "assets", "css", "styles", "default.css")
+	path := filepath.Join(root, filepath.FromSlash(relative))
 	src, err := os.ReadFile(path)
 	if err != nil {
 		t.Fatal(err)
@@ -65,6 +150,77 @@ func injectDefaultCSS(t *testing.T, anchor, extra string) string {
 		t.Fatal(err)
 	}
 	return root
+}
+
+// injectDefaultCSS splices into the default style sheet, the gate's original
+// and still most common subject.
+func injectDefaultCSS(t *testing.T, anchor, extra string) string {
+	t.Helper()
+	return injectCSS(t, "assets/css/styles/default.css", anchor, extra)
+}
+
+// TestCheckLayerPrecedenceRejectsARawDeclarationOverride is finding 1's core
+// case. foundation.css is written in plain CSS declarations, not @apply, and
+// the gate used to read only assets/css/styles/default.css — so a mechanics
+// rule that goes dead the day its component migrates was invisible twice over.
+func TestCheckLayerPrecedenceRejectsARawDeclarationOverride(t *testing.T) {
+	t.Parallel()
+
+	root := injectCSS(t, "assets/css/foundation.css", "@layer components {",
+		`  :where([data-gsxui-slot-carousel-previous]) { display: block; }`)
+	err := CheckLayerPrecedence(root)
+	if err == nil {
+		t.Fatal("CheckLayerPrecedence() = nil, want an error for the raw-declaration override")
+	}
+	if !strings.Contains(err.Error(), "carousel-previous") {
+		t.Errorf("error must name the offending marker, got %q", err)
+	}
+	if !strings.Contains(err.Error(), "display") {
+		t.Errorf("error must name the offending property, got %q", err)
+	}
+	if !strings.Contains(err.Error(), "foundation.css") {
+		t.Errorf("error must name the offending stylesheet, got %q", err)
+	}
+}
+
+// TestCheckLayerPrecedenceAllowsNonCompetingRawDeclarations is the other side:
+// resolving utilities to real property names is what keeps the widened scope
+// from flagging every mechanics rule in foundation.css. Button sets neither
+// position nor inset, so this rule still applies in the browser.
+func TestCheckLayerPrecedenceAllowsNonCompetingRawDeclarations(t *testing.T) {
+	t.Parallel()
+
+	root := injectCSS(t, "assets/css/foundation.css", "@layer components {",
+		`  :where([data-gsxui-slot-carousel-previous]) { position: absolute; left: -3rem; }`)
+	if err := CheckLayerPrecedence(root); err != nil {
+		t.Fatalf("CheckLayerPrecedence() = %v, want nil for a non-competing raw declaration", err)
+	}
+}
+
+// TestComposedTargetIsDeterministic pins the tie-break. Marker ownership lives
+// in a map, and one compound selector can name markers from two components; the
+// answer must not depend on map iteration order.
+func TestComposedTargetIsDeterministic(t *testing.T) {
+	t.Parallel()
+
+	markers := map[string]string{
+		"data-gsxui-slot-card":          "card",
+		"data-gsxui-slot-sidebar-inset": "sidebar",
+	}
+	const selector = "[data-gsxui-slot-card][data-gsxui-slot-sidebar-inset]"
+	marker, component, _, ok := composedTarget(selector, markers)
+	if !ok {
+		t.Fatal("composedTarget() found no marker")
+	}
+	for range 200 {
+		gotMarker, gotComponent, _, gotOK := composedTarget(selector, markers)
+		if !gotOK || gotMarker != marker || gotComponent != component {
+			t.Fatalf("composedTarget() = %q/%q, want a stable %q/%q", gotMarker, gotComponent, marker, component)
+		}
+	}
+	if marker != "data-gsxui-slot-sidebar-inset" {
+		t.Errorf("composedTarget() = %q, want the longest matching marker", marker)
+	}
 }
 
 func TestCheckLayerPrecedenceRejectsAComponentsLayerOverride(t *testing.T) {

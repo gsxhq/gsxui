@@ -139,6 +139,37 @@ func attrName(attr gsxast.Attr) string {
 	}
 }
 
+// layerCheckedStylesheets is every authored stylesheet the layer gate reads,
+// named one by one on purpose. A glob would silently pull in whatever a future
+// commit drops under assets/css or web/ — a file nobody decided was in scope.
+// TestLayerCheckedStylesheetsCoverEveryAuthoredStylesheet fails when a new
+// stylesheet appears, so adding one is a deliberate line in this list.
+//
+// Paths are slash-separated and relative to the repo root.
+var layerCheckedStylesheets = []string{
+	"assets/css/foundation.css",
+	"assets/css/index.css",
+	"assets/css/styles/default.css",
+	"assets/css/themes/default.css",
+	"web/site.css",
+	"web/site-button.css",
+}
+
+// layerCheckExemptions names stylesheets whose components-layer rules against a
+// composed marker are deliberate, with the reason. Nothing else is exempt: a
+// rule that loses the cascade by accident is exactly what this gate exists to
+// catch, and an exemption is the one way to say "this one is on purpose".
+var layerCheckExemptions = map[string]string{
+	// site-button.css is docs-and-demos-only presentation for raw markup that
+	// carries [data-gsxui-slot-button] WITHOUT rendering through <ui.Button> —
+	// hand-written examples and the theme preview. It is authored at zero
+	// specificity in @layer components precisely so the compiled Button's own
+	// utilities beat it wherever a real Button is rendered; losing the cascade
+	// there is the design, not a defect. jstest/specs/basic-demo-presentation.spec.ts
+	// pins that both halves still hold in the browser.
+	"web/site-button.css": "intentional zero-specificity fallback for non-component demo markup",
+}
+
 // CheckLayerPrecedence enforces the layer invariant of the design spec §9:
 //
 //	A rule overriding compiled component presentation must live in
@@ -152,24 +183,33 @@ func CheckLayerPrecedence(root string) error {
 	if err != nil {
 		return err
 	}
-	utilities, err := componentUtilities(root, markers)
+	sets, err := componentUtilities(root, markers)
 	if err != nil {
 		return err
 	}
-
-	path := filepath.Join(root, "assets", "css", "styles", "default.css")
-	src, err := os.ReadFile(path)
-	if err != nil {
-		return err
-	}
-	rules, err := layeredRules(path, src)
-	if err != nil {
-		return err
-	}
+	properties := &utilityPropertyResolver{root: root, sets: sets}
 
 	var violations []string
-	for _, rule := range rules {
-		violations = append(violations, rule.violations(path, markers, utilities)...)
+	for _, relative := range layerCheckedStylesheets {
+		if _, exempt := layerCheckExemptions[relative]; exempt {
+			continue
+		}
+		path := filepath.Join(root, filepath.FromSlash(relative))
+		src, err := os.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		rules, err := layeredRules(path, src)
+		if err != nil {
+			return err
+		}
+		for _, rule := range rules {
+			found, err := rule.violations(relative, markers, sets, properties)
+			if err != nil {
+				return err
+			}
+			violations = append(violations, found...)
+		}
 	}
 	if len(violations) == 0 {
 		return nil
@@ -252,37 +292,46 @@ func descendantUtility(utility string) (string, bool) {
 	return "", false
 }
 
-// layerRule is one ruleset from default.css together with the cascade layer it
-// resolved in and the utilities it applies.
+// layerRule is one ruleset from an authored stylesheet together with the
+// cascade layer it resolved in, the utilities it applies, and the properties it
+// sets directly. Both halves matter: foundation.css is written almost entirely
+// in plain declarations, so a gate that only saw @apply would read those files
+// and find nothing in them.
 type layerRule struct {
-	layer     string
-	selector  string
-	line      int
-	utilities []string
+	layer      string
+	selector   string
+	line       int
+	utilities  []string
+	properties []string
 }
 
-// layeredRules parses default.css and returns every ruleset that carries at
-// least one @apply, tagged with its enclosing @layer.
+// layeredRules parses one authored stylesheet and returns every ruleset that
+// carries at least one @apply or one declaration, tagged with its enclosing
+// @layer.
 func layeredRules(filename string, src []byte) ([]layerRule, error) {
 	parser := css.NewParser(parse.NewInputBytes(src), false)
 
 	type frame struct {
-		layer    string
-		selector string
-		line     int
-		rule     bool
+		layer      string
+		selector   string
+		line       int
+		rule       bool
+		utilities  []string
+		properties []string
 	}
 	var stack []frame
-	currentLayer := func() string {
+	var rules []layerRule
+	// innermost returns the innermost enclosing ruleset frame. Declarations and
+	// @apply inside a nested @media/@supports belong to the ruleset around them,
+	// and Tailwind's own output nests @supports inside rulesets too.
+	innermost := func() int {
 		for i := len(stack) - 1; i >= 0; i-- {
-			if stack[i].layer != "" {
-				return stack[i].layer
+			if stack[i].rule {
+				return i
 			}
 		}
-		return ""
+		return -1
 	}
-
-	var rules []layerRule
 	for {
 		grammar, _, data := parser.Next()
 		switch grammar {
@@ -312,26 +361,45 @@ func layeredRules(filename string, src []byte) ([]layerRule, error) {
 			if len(stack) == 0 {
 				return nil, fmt.Errorf("%s: unbalanced block at offset %d", filename, parser.Offset())
 			}
+			top := stack[len(stack)-1]
 			stack = stack[:len(stack)-1]
-
-		case css.AtRuleGrammar:
-			if !bytes.Equal(data, []byte("@apply")) || len(stack) == 0 {
+			if !top.rule || (len(top.utilities) == 0 && len(top.properties) == 0) {
 				continue
 			}
-			top := stack[len(stack)-1]
-			if !top.rule {
+			layer := ""
+			for i := len(stack) - 1; i >= 0; i-- {
+				if stack[i].layer != "" {
+					layer = stack[i].layer
+					break
+				}
+			}
+			rules = append(rules, layerRule{
+				layer:      layer,
+				selector:   top.selector,
+				line:       top.line,
+				utilities:  top.utilities,
+				properties: top.properties,
+			})
+
+		case css.DeclarationGrammar:
+			index := innermost()
+			if index < 0 {
+				continue
+			}
+			if property := strings.TrimSpace(string(data)); property != "" {
+				stack[index].properties = append(stack[index].properties, strings.ToLower(property))
+			}
+
+		case css.AtRuleGrammar:
+			if !bytes.Equal(data, []byte("@apply")) {
+				continue
+			}
+			index := innermost()
+			if index < 0 {
 				continue
 			}
 			applied := strings.Fields(recipe.SelectorText(parser.Values()))
-			if len(applied) == 0 {
-				continue
-			}
-			rules = append(rules, layerRule{
-				layer:     currentLayer(),
-				selector:  top.selector,
-				line:      top.line,
-				utilities: applied,
-			})
+			stack[index].utilities = append(stack[index].utilities, applied...)
 		}
 	}
 }
@@ -346,7 +414,12 @@ func lineAt(src []byte, offset int) int {
 // violations reports every way this rule loses to compiled component
 // presentation. A rule can name several markers via a selector list, so each
 // complex selector is judged on its own.
-func (r layerRule) violations(filename string, markers map[string]string, sets map[string]utilitySets) []string {
+func (r layerRule) violations(
+	filename string,
+	markers map[string]string,
+	sets map[string]utilitySets,
+	properties *utilityPropertyResolver,
+) ([]string, error) {
 	var out []string
 	for _, complex := range splitSelectorList(r.selector) {
 		_, component, descendant, ok := composedTarget(complex, markers)
@@ -359,9 +432,18 @@ func (r layerRule) violations(filename string, markers map[string]string, sets m
 			against = set.descendant
 		}
 		contested := contestedUtilities(r.utilities, against)
-		if len(contested) == 0 {
+		var contestedProps []string
+		if len(r.properties) > 0 {
+			owned, err := properties.propertiesOf(against)
+			if err != nil {
+				return nil, err
+			}
+			contestedProps = contestedProperties(r.properties, owned)
+		}
+		if len(contested) == 0 && len(contestedProps) == 0 {
 			continue
 		}
+		detail := describeContest(contested, contestedProps)
 		spec := selectorSpecificity(complex)
 		switch {
 		case r.layer != "utilities":
@@ -370,22 +452,59 @@ func (r layerRule) violations(filename string, markers map[string]string, sets m
 				layer = "no layer"
 			}
 			out = append(out, fmt.Sprintf(
-				"%s:%d: %s applies %s in @layer %s, but that element renders through\n"+
+				"%s:%d: %s %s in @layer %s, but that element renders through\n"+
 					"  %s, whose own utilities win the layer ordering. Move this rule to\n"+
 					"  @layer utilities and give it specificity >= (0,1,0) — see %s.",
 				filepath.ToSlash(filename), r.line, strings.TrimSpace(complex),
-				strings.Join(contested, " "), layer, component, designSpecRef))
+				detail, layer, component, designSpecRef))
 		case !spec.beatsPlainUtility():
 			out = append(out, fmt.Sprintf(
-				"%s:%d: %s applies %s in @layer utilities, but its specificity is\n"+
+				"%s:%d: %s %s in @layer utilities, but its specificity is\n"+
 					"  %s — inside one layer the cascade falls back to specificity, and a plain\n"+
 					"  utility class from %s scores (0,1,0). Drop the :where() wrapper so the\n"+
 					"  selector carries specificity >= (0,1,0) — see %s.",
 				filepath.ToSlash(filename), r.line, strings.TrimSpace(complex),
-				strings.Join(contested, " "), spec, component, designSpecRef))
+				detail, spec, component, designSpecRef))
 		}
 	}
-	return out
+	return out, nil
+}
+
+// describeContest names what the rule tries to override, keeping the two kinds
+// of override distinguishable: `@apply rounded-full` is a class, `display:flex`
+// is a property, and telling a reader "applies display" would send them looking
+// for a utility that does not exist.
+func describeContest(utilities, properties []string) string {
+	var parts []string
+	if len(utilities) > 0 {
+		parts = append(parts, "applies "+strings.Join(utilities, " "))
+	}
+	if len(properties) > 0 {
+		parts = append(parts, "sets "+strings.Join(properties, ", "))
+	}
+	return strings.Join(parts, " and ")
+}
+
+// contestedProperties reports which of a rule's own declarations name a CSS
+// property the component's compiled utilities already set. Unlike utilities,
+// which the Tailwind merger can compare by name, a raw `display: flex` has no
+// class name to compare — so the utilities are resolved to the properties they
+// actually declare, and the comparison happens there.
+func contestedProperties(declared []string, owned map[string]struct{}) []string {
+	var contested []string
+	seen := map[string]struct{}{}
+	for _, property := range declared {
+		if _, ok := owned[property]; !ok {
+			continue
+		}
+		if _, dup := seen[property]; dup {
+			continue
+		}
+		seen[property] = struct{}{}
+		contested = append(contested, property)
+	}
+	sort.Strings(contested)
+	return contested
 }
 
 // contestedUtilities reports which of a rule's utilities collide with one the
@@ -413,12 +532,27 @@ func contestedUtilities(applied, componentUtilities []string) []string {
 // whether the selected element is the marker itself or a descendant of it.
 func composedTarget(complex string, markers map[string]string) (marker, component string, descendant, ok bool) {
 	compounds := splitCompounds(complex)
+	names := make([]string, 0, len(markers))
+	for name := range markers {
+		names = append(names, name)
+	}
+	// Map iteration order is random, and one compound can legitimately name two
+	// markers owned by different components — `[data-gsxui-slot-card][data-gsxui-slot-sidebar-inset]`.
+	// Picking whichever came out of the map first would make the diagnostic, and
+	// therefore the gate's verdict, vary run to run. Longest marker first is the
+	// most specific reading of the compound; the name breaks remaining ties.
+	sort.Slice(names, func(i, j int) bool {
+		if len(names[i]) != len(names[j]) {
+			return len(names[i]) > len(names[j])
+		}
+		return names[i] < names[j]
+	})
 	for i := len(compounds) - 1; i >= 0; i-- {
-		for name, owner := range markers {
+		for _, name := range names {
 			if !containsAttributeName(compounds[i], name) {
 				continue
 			}
-			return name, owner, i != len(compounds)-1, true
+			return name, markers[name], i != len(compounds)-1, true
 		}
 	}
 	return "", "", false, false

@@ -17,7 +17,7 @@ import (
 func copyRepoFixture(t *testing.T, dst string) {
 	t.Helper()
 	root := repoRoot(t)
-	for _, dir := range []string{"registry", "ui", "assets", filepath.Join("site", "stylepreview")} {
+	for _, dir := range []string{"registry", "ui", "assets", "web", filepath.Join("site", "stylepreview")} {
 		src := filepath.Join(root, dir)
 		err := filepath.WalkDir(src, func(path string, entry fs.DirEntry, err error) error {
 			if err != nil {
@@ -40,6 +40,13 @@ func copyRepoFixture(t *testing.T, dst string) {
 		if err != nil {
 			t.Fatal(err)
 		}
+	}
+	// The layer gate resolves compiled utilities to CSS properties by running
+	// the Tailwind CLI against the root under check, and Tailwind resolves
+	// `@import "tailwindcss"` through the nearest node_modules. A fixture root
+	// without one cannot compile anything.
+	if err := os.Symlink(filepath.Join(root, "node_modules"), filepath.Join(dst, "node_modules")); err != nil {
+		t.Fatal(err)
 	}
 }
 
