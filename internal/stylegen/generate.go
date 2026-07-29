@@ -64,6 +64,12 @@ func resolveAll(root string) ([]generatedSource, error) {
 	}
 	shapes := canonical.Shapes()
 
+	shapesByComponent := make(map[string]recipe.Shape, len(components))
+	resolvedByStyle := make(map[string]map[string]recipe.Resolved, len(styles))
+	for _, style := range styles {
+		resolvedByStyle[style] = make(map[string]recipe.Resolved, len(components))
+	}
+
 	var outputs []generatedSource
 	for _, component := range components {
 		canonicalPath := filepath.Join(root, "registry", "canonical", component+".gsx")
@@ -78,6 +84,7 @@ func resolveAll(root string) ([]generatedSource, error) {
 		if err := checkHelperCalls(canonicalPath, src, shape); err != nil {
 			return nil, err
 		}
+		shapesByComponent[component] = shape
 
 		for _, style := range styles {
 			stylePath := filepath.Join(root, "registry", "styles", style, component+".css")
@@ -96,6 +103,7 @@ func resolveAll(root string) ([]generatedSource, error) {
 			if err := recipe.CheckConflicts(stylePath, resolved, merge.Merge); err != nil {
 				return nil, fmt.Errorf("check %s %s recipe: %w", style, component, err)
 			}
+			resolvedByStyle[style][component] = resolved
 			desugared, err := Resolve(canonicalPath, src, resolved)
 			if err != nil {
 				return nil, fmt.Errorf("resolve %s %s: %w", style, component, err)
@@ -128,6 +136,17 @@ func resolveAll(root string) ([]generatedSource, error) {
 			}
 		}
 	}
+
+	contract := recipe.BuildContract(shapesByComponent, resolvedByStyle)
+	contractJSON, err := contract.MarshalIndent()
+	if err != nil {
+		return nil, fmt.Errorf("marshal recipe contract: %w", err)
+	}
+	outputs = append(outputs, generatedSource{
+		relativePath: filepath.Join("registry", "generated", "recipes.json"),
+		content:      contractJSON,
+	})
+
 	return outputs, nil
 }
 
