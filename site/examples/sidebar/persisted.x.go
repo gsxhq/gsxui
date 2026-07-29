@@ -72,7 +72,7 @@ func Persisted() _gsxrt.Node {
 				_gsxgw.Node(ctx, ui.SidebarHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line persisted.gsx:57:6
-					_gsxgw.S("<div class=\"px-2 py-1 text-sm font-semibold\">Acme Inc</div>")
+					_gsxgw.NodeResult(_gsxrenderbrand(ctx, _gsxgw))
 					return _gsxgw.Err()
 				}), nil))
 //line persisted.gsx:59:5

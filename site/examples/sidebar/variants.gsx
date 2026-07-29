@@ -5,6 +5,30 @@ import (
 	"github.com/gsxhq/gsxui/ui/icon"
 )
 
+// brand uses the same overflow behavior as the rest of an icon-collapsible
+// menu: the fixed A mark remains visible while the full company name is
+// clipped by SidebarMenuButton's compact state.
+component brand() {
+	<ui.SidebarMenu>
+		<ui.SidebarMenuItem>
+			<ui.SidebarMenuButton
+				size="lg"
+				tooltip="Acme Inc"
+				aria-label="Acme Inc"
+				data-sidebar-example-brand
+			>
+				<span
+					class="flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
+					data-sidebar-example-brand-mark
+				>
+					A
+				</span>
+				<span class="truncate font-semibold" data-sidebar-example-brand-name>Acme Inc</span>
+			</ui.SidebarMenuButton>
+		</ui.SidebarMenuItem>
+	</ui.SidebarMenu>
+}
+
 // menu is the shared three-item menu every mini demo below reuses, so the
 // only thing that visibly differs between them is the variant/collapsible
 // axis each one is labeled for.
@@ -44,7 +68,7 @@ component demo(side string, variant string, collapsible string, open bool, rail 
 	<ui.SidebarProvider open={open}>
 		<ui.Sidebar open={open} side={side} variant={variant} collapsible={collapsible}>
 			<ui.SidebarHeader>
-				<div class="px-2 py-1 text-sm font-semibold">Acme Inc</div>
+				<brand/>
 			</ui.SidebarHeader>
 			<ui.SidebarContent>
 				<ui.SidebarGroup>

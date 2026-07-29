@@ -2872,7 +2872,9 @@
   :where([data-gsxui-slot-sidebar-footer]) {
     @apply flex flex-col gap-2 p-2;
   }
-  :where([data-gsxui-slot-sidebar-separator]) {
+  :where(
+      [data-gsxui-slot-sidebar-separator]
+    )[data-orientation="horizontal"] {
     @apply mx-2 w-auto bg-sidebar-border;
   }
   :where([data-gsxui-slot-sidebar-content]) {

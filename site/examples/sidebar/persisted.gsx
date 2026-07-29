@@ -54,7 +54,7 @@ component Persisted() {
 		<ui.SidebarProvider open={true}>
 			<ui.Sidebar open={true} collapsible="icon">
 				<ui.SidebarHeader>
-					<div class="px-2 py-1 text-sm font-semibold">Acme Inc</div>
+					<brand/>
 				</ui.SidebarHeader>
 				<ui.SidebarContent>
 					<ui.SidebarGroup>

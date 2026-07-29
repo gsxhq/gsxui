@@ -1,5 +1,112 @@
 import { expect, test } from "../support/fixtures";
 
+test("sidebar basic keeps separators and trailing controls inside their rows", async ({
+  page,
+}) => {
+  await page.goto("/components/sidebar");
+
+  const basic = page.frameLocator('iframe[src="/examples/sidebar/basic"]');
+  const desktop = basic.locator("[data-gsxui-slot-sidebar-desktop]");
+  const inner = desktop.locator("[data-gsxui-slot-sidebar-inner]");
+  const separator = desktop.locator("[data-gsxui-slot-sidebar-separator]");
+
+  const separatorGeometry = await Promise.all([
+    inner.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      return { left: rect.left, right: rect.right };
+    }),
+    separator.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      return { left: rect.left, right: rect.right };
+    }),
+  ]);
+  expect(separatorGeometry[1].left - separatorGeometry[0].left).toBeCloseTo(8);
+  expect(separatorGeometry[0].right - separatorGeometry[1].right).toBeCloseTo(8);
+
+  const decorationGeometry = await desktop
+    .locator("[data-gsxui-slot-sidebar-menu-item]")
+    .evaluateAll((items) =>
+      items.flatMap((item) => {
+        const itemRect = item.getBoundingClientRect();
+        if (itemRect.width === 0 || itemRect.height === 0) return [];
+
+        const button = item.querySelector("[data-gsxui-slot-sidebar-menu-button]");
+        if (!(button instanceof HTMLElement)) return [];
+        const buttonRect = button.getBoundingClientRect();
+        const decorations = [
+          ...item.querySelectorAll(
+            ":scope > [data-gsxui-slot-sidebar-menu-action], " +
+              ":scope > [data-gsxui-slot-sidebar-menu-badge]",
+          ),
+        ].filter((element) => element.getBoundingClientRect().width > 0);
+
+        return decorations.map((decoration, index) => {
+          const rect = decoration.getBoundingClientRect();
+          const overlapsAnother = decorations.some((other, otherIndex) => {
+            if (index === otherIndex) return false;
+            const otherRect = other.getBoundingClientRect();
+            return (
+              rect.left < otherRect.right &&
+              rect.right > otherRect.left &&
+              rect.top < otherRect.bottom &&
+              rect.bottom > otherRect.top
+            );
+          });
+          return {
+            withinButtonRow:
+              rect.top >= buttonRect.top && rect.bottom <= buttonRect.bottom,
+            overlapsAnother,
+          };
+        });
+      }),
+    );
+  expect(decorationGeometry.length).toBeGreaterThan(0);
+  expect(decorationGeometry.every((entry) => entry.withinButtonRow)).toBe(true);
+  expect(decorationGeometry.every((entry) => !entry.overlapsAnother)).toBe(true);
+});
+
+test("sidebar icon collapse keeps a compact brand mark without leaking its name", async ({
+  page,
+}) => {
+  await page.goto("/components/sidebar");
+
+  const icon = page.frameLocator(
+    'iframe[src="/examples/sidebar/variants?_preview=icon-collapsed"]',
+  );
+  await page
+    .locator('iframe[src="/examples/sidebar/variants?_preview=icon-collapsed"]')
+    .scrollIntoViewIfNeeded();
+  const brand = icon
+    .locator("[data-gsxui-slot-sidebar-desktop]")
+    .locator("[data-sidebar-example-brand]");
+  const mark = brand.locator("[data-sidebar-example-brand-mark]");
+  const name = brand.locator("[data-sidebar-example-brand-name]");
+
+  await expect(mark).toHaveText("A");
+  await expect(name).toHaveText("Acme Inc");
+
+  const geometry = await brand.evaluate((element) => {
+    const mark = element.querySelector("[data-sidebar-example-brand-mark]");
+    const name = element.querySelector("[data-sidebar-example-brand-name]");
+    if (!(mark instanceof HTMLElement) || !(name instanceof HTMLElement)) {
+      throw new Error("sidebar example brand is missing its mark or name");
+    }
+    const rect = element.getBoundingClientRect();
+    const markRect = mark.getBoundingClientRect();
+    const nameRect = name.getBoundingClientRect();
+    return {
+      width: rect.width,
+      overflowX: getComputedStyle(element).overflowX,
+      markInside: markRect.left >= rect.left && markRect.right <= rect.right,
+      nameStartsOutside: nameRect.left >= rect.right,
+    };
+  });
+  expect(geometry.width).toBe(32);
+  expect(geometry.overflowX).toBe("hidden");
+  expect(geometry.markInside).toBe(true);
+  expect(geometry.nameStartsOutside).toBe(true);
+});
+
 test("sidebar documentation contains each app shell inside its own viewport", async ({ page }) => {
   await page.goto("/components/sidebar");
 

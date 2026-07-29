@@ -11,11 +11,54 @@ import (
 )
 
 //line variants.gsx:8:1
+// brand uses the same overflow behavior as the rest of an icon-collapsible
+// menu: the fixed A mark remains visible while the full company name is
+// clipped by SidebarMenuButton's compact state.
+
+//line variants.gsx:11:1
+func brand() _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+		return _gsxrenderbrand(ctx, _gsxgw)
+	})
+}
+
+func _gsxrenderbrand(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line variants.gsx:12:2
+	_gsxgw.Node(ctx, ui.SidebarMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line variants.gsx:13:3
+		_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
+//line variants.gsx:14:4
+			_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "lg", "Acme Inc", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+//line variants.gsx:20:5
+				_gsxgw.S("<span class=\"flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground\"")
+				_gsxgw.BoolAttr("data-sidebar-example-brand-mark", true)
+				_gsxgw.S(">A</span>")
+//line variants.gsx:26:5
+				_gsxgw.S("<span class=\"truncate font-semibold\"")
+				_gsxgw.BoolAttr("data-sidebar-example-brand-name", true)
+				_gsxgw.S(">Acme Inc</span>")
+				return _gsxgw.Err()
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-label", Value: "Acme Inc"}}, _gsxrt.Attrs{{Key: "data-sidebar-example-brand", Value: _gsxrt.Toggle(true)}})))
+			return _gsxgw.Err()
+		}), nil))
+		return _gsxgw.Err()
+	}), nil))
+	return _gsxgw.Err()
+}
+
+//line variants.gsx:32:1
 // menu is the shared three-item menu every mini demo below reuses, so the
 // only thing that visibly differs between them is the variant/collapsible
 // axis each one is labeled for.
 
-//line variants.gsx:11:1
+//line variants.gsx:35:1
 func menu() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -27,46 +70,46 @@ func _gsxrendermenu(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error {
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line variants.gsx:12:2
+//line variants.gsx:36:2
 	_gsxgw.Node(ctx, ui.SidebarMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line variants.gsx:13:3
+//line variants.gsx:37:3
 		_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line variants.gsx:14:4
+//line variants.gsx:38:4
 			_gsxgw.Node(ctx, ui.SidebarMenuButton(true, "", "", "Home", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line variants.gsx:15:5
+//line variants.gsx:39:5
 				_gsxgw.Node(ctx, icon.House())
-//line variants.gsx:16:5
+//line variants.gsx:40:5
 				_gsxgw.S("<span>Home</span>")
 				return _gsxgw.Err()
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
-//line variants.gsx:19:3
+//line variants.gsx:43:3
 		_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line variants.gsx:20:4
+//line variants.gsx:44:4
 			_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "", "Inbox", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line variants.gsx:21:5
+//line variants.gsx:45:5
 				_gsxgw.Node(ctx, icon.Inbox())
-//line variants.gsx:22:5
+//line variants.gsx:46:5
 				_gsxgw.S("<span>Inbox</span>")
 				return _gsxgw.Err()
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
-//line variants.gsx:25:3
+//line variants.gsx:49:3
 		_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line variants.gsx:26:4
+//line variants.gsx:50:4
 			_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "", "Settings", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line variants.gsx:27:5
+//line variants.gsx:51:5
 				_gsxgw.Node(ctx, icon.Settings())
-//line variants.gsx:28:5
+//line variants.gsx:52:5
 				_gsxgw.S("<span>Settings</span>")
 				return _gsxgw.Err()
 			}), nil))
@@ -77,7 +120,7 @@ func _gsxrendermenu(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error {
 	return _gsxgw.Err()
 }
 
-//line variants.gsx:34:1
+//line variants.gsx:58:1
 // demo renders one SidebarProvider. The gallery runs every exported case
 // below in its own iframe because each desktop Sidebar intentionally owns
 // its document viewport; mounting several cases in one document would make
@@ -88,7 +131,7 @@ func _gsxrendermenu(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error {
 // ui/sidebar.gsx's own Sidebar doc comment), so rail gates it off for that
 // one case.
 
-//line variants.gsx:43:1
+//line variants.gsx:67:1
 func demo(side string, variant string, collapsible string, open bool, rail bool) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -100,44 +143,44 @@ func _gsxrenderdemo(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, side string, var
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line variants.gsx:44:2
+//line variants.gsx:68:2
 	_gsxgw.Node(ctx, ui.SidebarProvider(open, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line variants.gsx:45:3
+//line variants.gsx:69:3
 		_gsxgw.Node(ctx, ui.Sidebar(open, side, variant, collapsible, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line variants.gsx:46:4
+//line variants.gsx:70:4
 			_gsxgw.Node(ctx, ui.SidebarHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line variants.gsx:47:5
-				_gsxgw.S("<div class=\"px-2 py-1 text-sm font-semibold\">Acme Inc</div>")
+//line variants.gsx:71:5
+				_gsxgw.NodeResult(_gsxrenderbrand(ctx, _gsxgw))
 				return _gsxgw.Err()
 			}), nil))
-//line variants.gsx:49:4
+//line variants.gsx:73:4
 			_gsxgw.Node(ctx, ui.SidebarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line variants.gsx:50:5
+//line variants.gsx:74:5
 				_gsxgw.Node(ctx, ui.SidebarGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line variants.gsx:51:6
+//line variants.gsx:75:6
 					_gsxgw.NodeResult(_gsxrendermenu(ctx, _gsxgw))
 					return _gsxgw.Err()
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line variants.gsx:54:4
+//line variants.gsx:78:4
 			if rail {
-//line variants.gsx:55:5
+//line variants.gsx:79:5
 				_gsxgw.Node(ctx, ui.SidebarRail(nil))
 			}
 			return _gsxgw.Err()
 		}), nil))
-//line variants.gsx:58:3
+//line variants.gsx:82:3
 		_gsxgw.Node(ctx, ui.SidebarInset(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line variants.gsx:59:4
+//line variants.gsx:83:4
 			_gsxgw.S("<header class=\"flex h-12 items-center gap-2 border-b px-4\">")
-//line variants.gsx:60:5
+//line variants.gsx:84:5
 			_gsxgw.Node(ctx, ui.SidebarTrigger(nil))
 			_gsxgw.S("</header>")
 			return _gsxgw.Err()
@@ -147,88 +190,88 @@ func _gsxrenderdemo(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, side string, var
 	return _gsxgw.Err()
 }
 
-//line variants.gsx:66:1
+//line variants.gsx:90:1
 // Variants demonstrates the three `variant`s (sidebar/floating/inset) and
 // the three `collapsible` modes (offcanvas/icon/none) shadcn's own registry
 // exposes as separate props on the same component. It is the default case;
 // the gallery registers the sibling cases below as named preview documents
 // under this same source block.
 
-//line variants.gsx:71:1
+//line variants.gsx:95:1
 func Variants() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line variants.gsx:72:2
+//line variants.gsx:96:2
 		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "", "", "", true, true))
 		return _gsxgw.Err()
 	})
 }
 
-//line variants.gsx:75:1
+//line variants.gsx:99:1
 func VariantFloating() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line variants.gsx:76:2
+//line variants.gsx:100:2
 		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "", "floating", "", true, true))
 		return _gsxgw.Err()
 	})
 }
 
-//line variants.gsx:79:1
+//line variants.gsx:103:1
 func VariantInset() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line variants.gsx:80:2
+//line variants.gsx:104:2
 		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "", "inset", "", true, true))
 		return _gsxgw.Err()
 	})
 }
 
-//line variants.gsx:83:1
+//line variants.gsx:107:1
 func CollapsibleOffcanvas() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line variants.gsx:84:2
+//line variants.gsx:108:2
 		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "", "", "offcanvas", true, true))
 		return _gsxgw.Err()
 	})
 }
 
-//line variants.gsx:87:1
+//line variants.gsx:111:1
 func CollapsibleIcon() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line variants.gsx:88:2
+//line variants.gsx:112:2
 		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "", "", "icon", true, true))
 		return _gsxgw.Err()
 	})
 }
 
-//line variants.gsx:91:1
+//line variants.gsx:115:1
 func CollapsibleNone() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line variants.gsx:92:2
+//line variants.gsx:116:2
 		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "", "", "none", true, false))
 		return _gsxgw.Err()
 	})
 }
 
-//line variants.gsx:95:1
+//line variants.gsx:119:1
 func RightCollapsed() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line variants.gsx:96:2
+//line variants.gsx:120:2
 		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "right", "", "offcanvas", false, true))
 		return _gsxgw.Err()
 	})
 }
 
-//line variants.gsx:99:1
+//line variants.gsx:123:1
 func IconCollapsed() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line variants.gsx:100:2
+//line variants.gsx:124:2
 		_gsxgw.NodeResult(_gsxrenderdemo(ctx, _gsxgw, "", "", "icon", false, true))
 		return _gsxgw.Err()
 	})

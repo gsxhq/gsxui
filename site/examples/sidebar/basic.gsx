@@ -32,17 +32,13 @@ component Basic() {
 								</ui.SidebarMenuButton>
 							</ui.SidebarMenuItem>
 							<ui.SidebarMenuItem>
-								<ui.SidebarMenuButton variant="outline" size="sm" tooltip="Inbox">
+								<ui.SidebarMenuButton variant="outline" size="sm">
 									<icon.Inbox/>
 									<span>Inbox</span>
 								</ui.SidebarMenuButton>
 								<ui.SidebarMenuAction showOnHover={true} aria-label="More">
 									<icon.Plus/>
 								</ui.SidebarMenuAction>
-								<ui.SidebarMenuAction aria-label="Pin">
-									<icon.Plus/>
-								</ui.SidebarMenuAction>
-								<ui.SidebarMenuBadge>24</ui.SidebarMenuBadge>
 								<ui.SidebarMenuSub>
 									<ui.SidebarMenuSubItem>
 										<ui.SidebarMenuSubButton size="sm" isActive={true}>Unread</ui.SidebarMenuSubButton>
@@ -53,16 +49,20 @@ component Basic() {
 								</ui.SidebarMenuSub>
 							</ui.SidebarMenuItem>
 							<ui.SidebarMenuItem>
-								<ui.SidebarMenuButton size="lg" tooltip="Calendar">
+								<ui.SidebarMenuButton size="lg">
 									<icon.Calendar/>
 									<span>Calendar</span>
 								</ui.SidebarMenuButton>
+								<ui.SidebarMenuBadge>24</ui.SidebarMenuBadge>
 							</ui.SidebarMenuItem>
 							<ui.SidebarMenuItem>
-								<ui.SidebarMenuButton tooltip="Search">
+								<ui.SidebarMenuButton>
 									<icon.Search/>
 									<span>Search</span>
 								</ui.SidebarMenuButton>
+								<ui.SidebarMenuAction aria-label="Pin">
+									<icon.Plus/>
+								</ui.SidebarMenuAction>
 							</ui.SidebarMenuItem>
 						</ui.SidebarMenu>
 						<ui.SidebarMenuSkeleton showIcon={true}/>
