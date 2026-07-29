@@ -162,12 +162,17 @@ var layerCheckedStylesheets = []string{
 // deliberate one is invisible. 52 components are about to migrate through these
 // files; a whole-file waiver is a hole that widens by itself.
 type exemptionKey struct {
-	file     string
-	selector string
-	// contested is the utility name (`bg-primary`) or CSS property
-	// (`background-color`) this rule loses on. One rule contesting two things is
-	// two decisions, and each needs its own reason.
-	contested string
+	file string
+	// style is the installable style whose compiled utilities win. It is part of
+	// the key because contest is a per-style fact: Maia's Button is `rounded-4xl`
+	// and `h-9` where Nova's is `rounded-lg` and `h-8`, so the same authored rule
+	// is dead under one style and live under the other. A key without this
+	// dimension would let a decision taken about Nova silently forgive a Maia
+	// violation nobody looked at — which is the whole failure P1b describes, just
+	// moved into the exemption list.
+	style     string
+	selector  string
+	contested string // utility name (`bg-primary`) or CSS property (`background-color`)
 }
 
 // layerCheckExemption records why one violation is deliberate. The reason is
@@ -202,83 +207,110 @@ const siteButtonFallbackReason = "web/site-button.css is docs-and-demos-only pre
 	"hold in the browser."
 
 // siteButtonFallbackExemptions spells out every violation the fallback really
-// commits, one (selector, utility) pair at a time.
+// commits, one (selector, utility, style) triple at a time.
 //
 // This list is long on purpose. The old exemption was the single string
-// "web/site-button.css", which forgave these 56 violations AND every violation
+// "web/site-button.css", which forgave these violations AND every violation
 // anyone adds to that file afterwards — including, during the migration wave, a
 // genuinely wrong one. Enumerating them is the cost of the file no longer being
 // a blind spot: a new dead rule in site-button.css is not on this list, so the
 // gate reports it, and a rule that leaves the list is caught as stale.
+//
+// THE STYLE DIMENSION IS DECLARED, NOT DERIVED. Each pair names the styles under
+// which it is a deliberate violation, and the expansion below turns one line
+// into one key per style. Two things are deliberately NOT done: the styles are
+// not enumerated from registry/styles (a new style would then inherit a waiver
+// nobody granted, silently, which is the P1b failure moved into this list), and
+// they are not read back from what the check currently finds (that turns a
+// precise exemption into the blanket waiver this list replaced). Naming them
+// makes each one a decision: `bg-primary` is contested under both styles because
+// both set it, `rounded-lg` only under Nova because Maia is `rounded-4xl`, and a
+// pair whose style list stops matching reality goes stale and fails the build.
 func siteButtonFallbackExemptions() []layerCheckExemption {
-	pairs := []struct{ selector, contested string }{
-		{selector: ".dark :where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button][data-variant=\"destructive\"])", contested: "bg-destructive/60"},
-		{selector: ".dark :where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button][data-variant=\"ghost\"]):hover", contested: "bg-accent/50"},
-		{selector: ".dark :where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button][data-variant=\"outline\"])", contested: "bg-input/30"},
-		{selector: ".dark :where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button][data-variant=\"outline\"])", contested: "border-input"},
-		{selector: ".dark :where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button][data-variant=\"outline\"]):hover", contested: "bg-input/50"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button]) svg:not([class*=\"size-\"])", contested: "size-4"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])", contested: "border-transparent"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])", contested: "rounded-lg"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])", contested: "text-sm"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button]):focus-visible", contested: "border-ring"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[aria-invalid=\"true\"]", contested: "border-destructive"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"default\"]", contested: "gap-1.5"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"default\"]", contested: "h-8"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"default\"]", contested: "px-2.5"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"default\"]:has(>svg)", contested: "px-2"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-lg\"]", contested: "size-9"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-sm\"]", contested: "rounded-[min(var(--radius-md),12px)]"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-sm\"]", contested: "size-7"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-xs\"] svg:not([class*=\"size-\"])", contested: "size-3"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-xs\"]", contested: "rounded-[min(var(--radius-md),10px)]"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-xs\"]", contested: "size-6"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon\"]", contested: "size-8"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"lg\"]", contested: "gap-1.5"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"lg\"]", contested: "h-9"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"lg\"]", contested: "px-2.5"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"lg\"]:has(>svg)", contested: "px-2"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"] svg:not([class*=\"size-\"])", contested: "size-3.5"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]", contested: "gap-1"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]", contested: "h-7"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]", contested: "px-2.5"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]", contested: "rounded-[min(var(--radius-md),12px)]"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]", contested: "text-[0.8rem]"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]:has(>svg)", contested: "px-1.5"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"] svg:not([class*=\"size-\"])", contested: "size-3"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]", contested: "gap-1"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]", contested: "h-6"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]", contested: "px-2"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]", contested: "rounded-[min(var(--radius-md),10px)]"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]", contested: "text-xs"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]:has(>svg)", contested: "px-1.5"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"default\"]", contested: "bg-primary"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"default\"]", contested: "text-primary-foreground"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"default\"]:hover", contested: "bg-primary/90"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"destructive\"]", contested: "bg-destructive"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"destructive\"]", contested: "text-contrast"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"destructive\"]:hover", contested: "bg-destructive/90"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"ghost\"]:hover", contested: "bg-accent"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"ghost\"]:hover", contested: "text-accent-foreground"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"link\"]", contested: "text-primary"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"outline\"]", contested: "bg-background"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"outline\"]", contested: "border-border"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"outline\"]:hover", contested: "bg-accent"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"outline\"]:hover", contested: "text-accent-foreground"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"secondary\"]", contested: "bg-secondary"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"secondary\"]", contested: "text-secondary-foreground"},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"secondary\"]:hover", contested: "bg-secondary/80"},
+	// Every pair below happens to be contested under both styles: the fallback
+	// contests a Tailwind GROUP (border-radius, height, background-color), and
+	// both Button recipes set every one of those groups even where they disagree
+	// on the value — `rounded-lg` against `rounded-4xl`, `h-8` against `h-9`. A
+	// pair contested under only one style is written with that style alone, and
+	// the staleness check is what forces the question to be answered honestly.
+	both := []string{"maia", "nova"}
+	pairs := []struct {
+		selector, contested string
+		styles              []string
+	}{
+		{selector: ".dark :where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button][data-variant=\"destructive\"])", contested: "bg-destructive/60", styles: both},
+		{selector: ".dark :where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button][data-variant=\"ghost\"]):hover", contested: "bg-accent/50", styles: both},
+		{selector: ".dark :where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button][data-variant=\"outline\"])", contested: "bg-input/30", styles: both},
+		{selector: ".dark :where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button][data-variant=\"outline\"])", contested: "border-input", styles: both},
+		{selector: ".dark :where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button][data-variant=\"outline\"]):hover", contested: "bg-input/50", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button]) svg:not([class*=\"size-\"])", contested: "size-4", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])", contested: "border-transparent", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])", contested: "rounded-lg", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])", contested: "text-sm", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button]):focus-visible", contested: "border-ring", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[aria-invalid=\"true\"]", contested: "border-destructive", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"default\"]", contested: "gap-1.5", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"default\"]", contested: "h-8", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"default\"]", contested: "px-2.5", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"default\"]:has(>svg)", contested: "px-2", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-lg\"]", contested: "size-9", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-sm\"]", contested: "rounded-[min(var(--radius-md),12px)]", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-sm\"]", contested: "size-7", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-xs\"] svg:not([class*=\"size-\"])", contested: "size-3", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-xs\"]", contested: "rounded-[min(var(--radius-md),10px)]", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-xs\"]", contested: "size-6", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon\"]", contested: "size-8", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"lg\"]", contested: "gap-1.5", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"lg\"]", contested: "h-9", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"lg\"]", contested: "px-2.5", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"lg\"]:has(>svg)", contested: "px-2", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"] svg:not([class*=\"size-\"])", contested: "size-3.5", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]", contested: "gap-1", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]", contested: "h-7", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]", contested: "px-2.5", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]", contested: "rounded-[min(var(--radius-md),12px)]", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]", contested: "text-[0.8rem]", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]:has(>svg)", contested: "px-1.5", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"] svg:not([class*=\"size-\"])", contested: "size-3", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]", contested: "gap-1", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]", contested: "h-6", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]", contested: "px-2", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]", contested: "rounded-[min(var(--radius-md),10px)]", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]", contested: "text-xs", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]:has(>svg)", contested: "px-1.5", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"default\"]", contested: "bg-primary", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"default\"]", contested: "text-primary-foreground", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"default\"]:hover", contested: "bg-primary/90", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"destructive\"]", contested: "bg-destructive", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"destructive\"]", contested: "text-contrast", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"destructive\"]:hover", contested: "bg-destructive/90", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"ghost\"]:hover", contested: "bg-accent", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"ghost\"]:hover", contested: "text-accent-foreground", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"link\"]", contested: "text-primary", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"outline\"]", contested: "bg-background", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"outline\"]", contested: "border-border", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"outline\"]:hover", contested: "bg-accent", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"outline\"]:hover", contested: "text-accent-foreground", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"secondary\"]", contested: "bg-secondary", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"secondary\"]", contested: "text-secondary-foreground", styles: both},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"secondary\"]:hover", contested: "bg-secondary/80", styles: both},
 	}
 	out := make([]layerCheckExemption, 0, len(pairs))
 	for _, pair := range pairs {
-		out = append(out, layerCheckExemption{
-			key: exemptionKey{
-				file:      "web/site-button.css",
-				selector:  pair.selector,
-				contested: pair.contested,
-			},
-			reason: siteButtonFallbackReason,
-		})
+		if len(pair.styles) == 0 {
+			panic("exemption for " + pair.selector + " / " + pair.contested + " names no style")
+		}
+		for _, style := range pair.styles {
+			out = append(out, layerCheckExemption{
+				key: exemptionKey{
+					file:      "web/site-button.css",
+					style:     style,
+					selector:  pair.selector,
+					contested: pair.contested,
+				},
+				reason: siteButtonFallbackReason,
+			})
+		}
 	}
 	return out
 }
@@ -310,10 +342,12 @@ func staleExemptions(found []violation, exemptions []layerCheckExemption) []stri
 			continue
 		}
 		stale = append(stale, fmt.Sprintf(
-			"%s: the exemption for %s\n  on %q no longer names a violation that occurs — the rule was\n"+
-				"  deleted, reflowed, or fixed to win the cascade. Re-point it or delete it.\n"+
+			"%s: under style %s, the exemption for %s\n  on %q no longer names a violation that occurs — the rule was\n"+
+				"  deleted, reflowed, or fixed to win the cascade, or this style never contested it.\n"+
+				"  Re-point it, drop %s from its style list, or delete it.\n"+
 				"  Its reason was: %s",
-			exemption.key.file, exemption.key.selector, exemption.key.contested, exemption.reason))
+			exemption.key.file, exemption.key.style, exemption.key.selector, exemption.key.contested,
+			exemption.key.style, exemption.reason))
 	}
 	return stale
 }
@@ -340,17 +374,7 @@ func normalizeSelectorKey(selector string) string {
 // place. Reporting it here is what keeps the exemption list from being a
 // one-way ratchet.
 func CheckLayerPrecedence(root string) error {
-	markers, err := composedMarkers(root)
-	if err != nil {
-		return err
-	}
-	sets, err := componentUtilities(root, markers)
-	if err != nil {
-		return err
-	}
-	properties := &utilityPropertyResolver{root: root, sets: sets}
-
-	found, err := layerViolations(root, markers, sets, properties)
+	found, err := allLayerViolations(root)
 	if err != nil {
 		return err
 	}
@@ -372,12 +396,49 @@ func CheckLayerPrecedence(root string) error {
 		len(reported), strings.Join(reported, "\n\n"))
 }
 
-// layerViolations collects every violation in every checked stylesheet, exempt
-// or not. Exemption is applied by the caller so that the same collection pass
-// can answer both "what is broken" and "is every exemption still forgiving
-// something real".
+// allLayerViolations runs the check ONCE PER INSTALLABLE STYLE and returns every
+// violation any of them produces.
+//
+// Reading only registry/styles/<DefaultStyle> was a hole with a shipping user:
+// Maia is installable, its Button utilities differ substantially from Nova's,
+// and a shared structural rule can therefore be dead under Maia while `make
+// audit` is green. The styles' utility sets are deliberately NOT unioned — a
+// union answers "is this rule dead under some style" and throws away WHICH,
+// which is exactly the fact whoever has to fix the rule needs.
+func allLayerViolations(root string) ([]violation, error) {
+	markers, err := composedMarkers(root)
+	if err != nil {
+		return nil, err
+	}
+	styles, err := styleNames(root)
+	if err != nil {
+		return nil, err
+	}
+	var out []violation
+	for _, style := range styles {
+		sets, err := componentUtilities(root, style, markers)
+		if err != nil {
+			return nil, err
+		}
+		// One resolver per style: the same utility name compiles to the same CSS
+		// in every style, but the SETS differ, and a shared resolver would compile
+		// utilities no style under test actually renders.
+		properties := &utilityPropertyResolver{root: root, sets: sets}
+		found, err := layerViolations(root, style, markers, sets, properties)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, found...)
+	}
+	return out, nil
+}
+
+// layerViolations collects every violation in every checked stylesheet under ONE
+// style, exempt or not. Exemption is applied by the caller so that the same
+// collection pass can answer both "what is broken" and "is every exemption still
+// forgiving something real".
 func layerViolations(
-	root string,
+	root, style string,
 	markers map[string]string,
 	sets map[string]utilitySets,
 	properties *utilityPropertyResolver,
@@ -394,7 +455,7 @@ func layerViolations(
 			return nil, err
 		}
 		for _, rule := range rules {
-			found, err := rule.violations(relative, markers, sets, properties)
+			found, err := rule.violations(relative, style, markers, sets, properties)
 			if err != nil {
 				return nil, err
 			}
@@ -413,25 +474,25 @@ type utilitySets struct {
 	descendant []string
 }
 
-func componentUtilities(root string, markers map[string]string) (map[string]utilitySets, error) {
+func componentUtilities(root, style string, markers map[string]string) (map[string]utilitySets, error) {
 	wanted := map[string]struct{}{}
 	for _, component := range markers {
 		wanted[component] = struct{}{}
 	}
 	sets := make(map[string]utilitySets, len(wanted))
 	for component := range wanted {
-		path := filepath.Join(root, "registry", "styles", DefaultStyle, component+".css")
+		path := filepath.Join(root, "registry", "styles", style, component+".css")
 		src, err := os.ReadFile(path)
 		if err != nil {
-			return nil, fmt.Errorf("read %s %s recipe: %w", DefaultStyle, component, err)
+			return nil, fmt.Errorf("read %s %s recipe: %w", style, component, err)
 		}
-		style, err := recipe.ParseStyle(path, src)
+		parsed, err := recipe.ParseStyle(path, src)
 		if err != nil {
-			return nil, fmt.Errorf("parse %s %s recipe: %w", DefaultStyle, component, err)
+			return nil, fmt.Errorf("parse %s %s recipe: %w", style, component, err)
 		}
 		var set utilitySets
 		seen := map[string]struct{}{}
-		for _, rule := range style.Rules() {
+		for _, rule := range parsed.Rules() {
 			for _, utility := range rule.Utilities {
 				if _, dup := seen[utility]; dup {
 					continue
@@ -633,7 +694,7 @@ func lineAt(src []byte, offset int) int {
 // presentation. A rule can name several markers via a selector list, so each
 // complex selector is judged on its own.
 func (r layerRule) violations(
-	filename string,
+	filename, style string,
 	markers map[string]string,
 	sets map[string]utilitySets,
 	properties *utilityPropertyResolver,
@@ -659,12 +720,22 @@ func (r layerRule) violations(
 			if err != nil {
 				return nil, err
 			}
-			contests = append(contests, contestedProperties(r.properties, complex, marker, descendant, owned)...)
+			found, err := contestedProperties(r.properties, complex, marker, descendant, owned)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"%s:%d: style %s: selector %s: %w\n"+
+						"  The layer gate converts this hazard into a build failure, so it must not\n"+
+						"  pass a rule whose state it cannot model — teach the model this form in\n"+
+						"  internal/stylegen/state.go, or rewrite the selector — see %s.",
+					filepath.ToSlash(filename), r.line, style, normalizeSelectorKey(complex), err, designSpecRef)
+			}
+			contests = append(contests, found...)
 		}
 		spec := selectorSpecificity(complex)
 		for _, contested := range contests {
 			key := exemptionKey{
 				file:      filepath.ToSlash(filename),
+				style:     style,
 				selector:  normalizeSelectorKey(complex),
 				contested: contested.name,
 			}
@@ -676,18 +747,19 @@ func (r layerRule) violations(
 					layer = "no layer"
 				}
 				message = fmt.Sprintf(
-					"%s:%d: %s %s in @layer %s, but that element renders through\n"+
-						"  %s, whose own utilities win the layer ordering. Move this rule to\n"+
-						"  @layer utilities and give it specificity >= (0,1,0) — see %s.",
-					filepath.ToSlash(filename), r.line, normalizeSelectorKey(complex),
+					"%s:%d: under style %s, %s %s in @layer %s, but that\n"+
+						"  element renders through %s, whose own utilities win the layer ordering.\n"+
+						"  Move this rule to @layer utilities and give it specificity >= (0,1,0) —\n"+
+						"  see %s.",
+					filepath.ToSlash(filename), r.line, style, normalizeSelectorKey(complex),
 					contested.describe(), layer, component, designSpecRef)
 			case !spec.beatsPlainUtility():
 				message = fmt.Sprintf(
-					"%s:%d: %s %s in @layer utilities, but its specificity is\n"+
-						"  %s — inside one layer the cascade falls back to specificity, and a plain\n"+
-						"  utility class from %s scores (0,1,0). Drop the :where() wrapper so the\n"+
-						"  selector carries specificity >= (0,1,0) — see %s.",
-					filepath.ToSlash(filename), r.line, normalizeSelectorKey(complex),
+					"%s:%d: under style %s, %s %s in @layer utilities, but its\n"+
+						"  specificity is %s — inside one layer the cascade falls back to specificity,\n"+
+						"  and a plain utility class from %s scores (0,1,0). Drop the :where() wrapper\n"+
+						"  so the selector carries specificity >= (0,1,0) — see %s.",
+					filepath.ToSlash(filename), r.line, style, normalizeSelectorKey(complex),
 					contested.describe(), spec, component, designSpecRef)
 			default:
 				continue
@@ -716,32 +788,36 @@ func (c contest) describe() string {
 }
 
 // contestedProperties reports which of a rule's own declarations name a CSS
-// property the component's compiled utilities already set IN THE SAME STATE.
-// Unlike utilities, which the Tailwind merger can compare by name, a raw
-// `display: flex` has no class name to compare — so the utilities are resolved
-// to the (state, property) pairs they actually declare, and the comparison
-// happens there.
+// property the component's compiled utilities take over IN A STATE THIS RULE
+// GUARANTEES. Unlike utilities, which the Tailwind merger can compare by name, a
+// raw `display: flex` has no class name to compare — so the utilities are
+// resolved to the (state, property) pairs they actually declare, and the
+// comparison happens there.
 //
-// Matching on the property alone is what made this oracle variant-blind: a
-// component utility `hover:bg-accent` made every unconditional
-// `background-color` rule on the marker look contested, even though the two
-// never apply at the same time. Across a 52-component migration and 153
-// selector-level interaction rules that is a stream of false positives against
-// rules that are perfectly correct — and a gate that cries wolf gets disabled.
+// The relation is IMPLICATION, in one direction only. Matching on the property
+// alone made the oracle variant-blind: a component utility `hover:bg-accent`
+// made every unconditional `background-color` rule look contested, though the
+// two never compete. Matching on property AND EQUAL STATE — the correction that
+// followed — swung past the answer the other way and passed a `:hover` rule
+// sitting under an unconditional utility, which is dead every time it applies.
+// Only "the authored state implies the generated state" gets both.
 func contestedProperties(
 	declared []layerDeclaration,
 	complex, marker string,
 	descendant bool,
-	owned map[stateProperty]struct{},
-) []contest {
+	owned ownedProperties,
+) ([]contest, error) {
 	var contests []contest
 	seen := map[string]struct{}{}
 	for _, declaration := range declared {
-		state, ok := ruleState(declaration.atRules, complex, marker, descendant)
+		state, ok, err := ruleState(declaration.atRules, complex, marker, descendant)
+		if err != nil {
+			return nil, err
+		}
 		if !ok {
 			continue
 		}
-		if _, contested := owned[stateProperty{state: state, property: declaration.property}]; !contested {
+		if !owned.shadows(declaration.property, state) {
 			continue
 		}
 		if _, dup := seen[declaration.property]; dup {
@@ -751,7 +827,7 @@ func contestedProperties(
 		contests = append(contests, contest{name: declaration.property, property: true})
 	}
 	sort.Slice(contests, func(i, j int) bool { return contests[i].name < contests[j].name })
-	return contests
+	return contests, nil
 }
 
 // ruleState derives an authored rule's state the same way a compiled utility's
@@ -764,10 +840,10 @@ func contestedProperties(
 // selecting a descendant of the marker — which means the descendant compound is
 // the TARGETING, already accounted for by that unwrapping, and Tailwind never
 // compiled it. So only the enclosing context is compared and the descendant
-// compound's own suffix is ignored; a `[&_svg]:hover:` utility therefore does
-// not contest a `… svg:hover` rule. That is a false negative, taken knowingly:
-// see the note on canonicalState.
-func ruleState(atRules []string, complex, marker string, descendant bool) (string, bool) {
+// compound's own conditions are dropped. Dropping them WEAKENS the authored
+// predicate, and a weaker predicate implies strictly less, so this can only ever
+// miss a contest — never invent one.
+func ruleState(atRules []string, complex, marker string, descendant bool) (statePredicate, bool, error) {
 	if descendant {
 		var ancestors []string
 		for _, compound := range splitCompounds(complex) {
@@ -776,15 +852,17 @@ func ruleState(atRules []string, complex, marker string, descendant bool) (strin
 			}
 			ancestors = append(ancestors, compound)
 		}
-		return canonicalState(atRules, scopeAncestors(ancestors), ""), true
+		state, err := buildPredicate(atRules, scopeAncestors(ancestors), "")
+		return state, err == nil, err
 	}
 	ancestors, suffix, ok := subjectConditions(complex, func(compound string) (string, bool) {
 		return removeMarkerAttribute(compound, marker)
 	})
 	if !ok {
-		return "", false
+		return statePredicate{}, false, nil
 	}
-	return canonicalState(atRules, ancestors, suffix), true
+	state, err := buildPredicate(atRules, ancestors, suffix)
+	return state, err == nil, err
 }
 
 // contestedUtilities reports which of a rule's utilities collide with one the
@@ -866,6 +944,21 @@ func isAttributeNameByte(b byte) bool {
 // splitSelectorList splits a selector list on its top-level commas, ignoring
 // commas nested inside :where(...)/:is(...) argument lists and attribute values.
 func splitSelectorList(selector string) []string {
+	parts := splitSelectorListKeepingEmpty(selector)
+	out := parts[:0]
+	for _, part := range parts {
+		if trimmed := strings.TrimSpace(part); trimmed != "" {
+			out = append(out, trimmed)
+		}
+	}
+	return out
+}
+
+// splitSelectorListKeepingEmpty is the same split with the empty parts left in.
+// An empty branch is not noise: inside `:is()`/`:where()` it is a branch that
+// matches everything, which makes the whole group vacuous, and dropping it would
+// turn "no condition at all" into "this list of conditions".
+func splitSelectorListKeepingEmpty(selector string) []string {
 	var parts []string
 	depth := 0
 	start := 0
@@ -888,14 +981,7 @@ func splitSelectorList(selector string) []string {
 			start = i + 1
 		}
 	}
-	parts = append(parts, selector[start:])
-	out := parts[:0]
-	for _, part := range parts {
-		if trimmed := strings.TrimSpace(part); trimmed != "" {
-			out = append(out, trimmed)
-		}
-	}
-	return out
+	return append(parts, selector[start:])
 }
 
 // splitCompounds splits one complex selector into its compound selectors,

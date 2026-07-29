@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -43,13 +44,27 @@ const probeClassPrefix = "gsxui-layercheck-probe-"
 
 var probeClassPattern = regexp.MustCompile(`\.` + regexp.QuoteMeta(probeClassPrefix) + `(\d+)\b`)
 
-// stateProperty is one CSS property together with the state the declaring rule
-// applies in. Contest is decided on the pair: an unconditional
-// `background-color` rule contests `bg-x` but not `hover:bg-x`, and a `:hover`
-// rule contests `hover:bg-x` but not `bg-x`.
-type stateProperty struct {
-	state    string
-	property string
+// ownedProperties maps each CSS property a component's compiled utilities set to
+// EVERY state in which they set it. The list is a DISJUNCTION: the property is
+// governed by the utilities layer whenever any one of those states holds, so an
+// authored rule is shadowed as soon as it implies any single entry.
+type ownedProperties map[string][]statePredicate
+
+// shadows reports whether the compiled utilities take over property in a state
+// the authored predicate guarantees. This is the whole directional relation: the
+// authored rule is dead when, WHENEVER IT APPLIES, a compiled utility applies
+// too — so it is authored that must imply generated, never the other way round.
+func (owned ownedProperties) shadows(property string, authored statePredicate) bool {
+	return slices.ContainsFunc(owned[property], authored.implies)
+}
+
+func (owned ownedProperties) add(property string, state statePredicate) {
+	for _, existing := range owned[property] {
+		if existing.box == state.box && slices.Equal(existing.conditions, state.conditions) {
+			return
+		}
+	}
+	owned[property] = append(owned[property], state)
 }
 
 // utilityPropertyResolver answers "in which states does this set of utilities
@@ -59,21 +74,23 @@ type utilityPropertyResolver struct {
 	root string
 	sets map[string]utilitySets
 
-	byUtility map[string]map[stateProperty]struct{}
+	byUtility map[string]ownedProperties
 	err       error
 	done      bool
 }
 
-// statePropertiesOf returns the union of the (state, property) pairs declared by
-// every utility in the set.
-func (r *utilityPropertyResolver) statePropertiesOf(utilities []string) (map[stateProperty]struct{}, error) {
+// statePropertiesOf returns the union, over every utility in the set, of the
+// states in which each CSS property is declared.
+func (r *utilityPropertyResolver) statePropertiesOf(utilities []string) (ownedProperties, error) {
 	if err := r.resolve(); err != nil {
 		return nil, err
 	}
-	union := map[stateProperty]struct{}{}
+	union := ownedProperties{}
 	for _, utility := range utilities {
-		for pair := range r.byUtility[utility] {
-			union[pair] = struct{}{}
+		for property, states := range r.byUtility[utility] {
+			for _, state := range states {
+				union.add(property, state)
+			}
 		}
 	}
 	return union, nil
@@ -102,10 +119,10 @@ func (r *utilityPropertyResolver) resolve() error {
 
 // compileUtilityProperties runs Tailwind over one probe class per utility and
 // reads back the state and properties each one declares.
-func compileUtilityProperties(root string, utilities []string) (map[string]map[stateProperty]struct{}, error) {
-	byUtility := make(map[string]map[stateProperty]struct{}, len(utilities))
+func compileUtilityProperties(root string, utilities []string) (map[string]ownedProperties, error) {
+	byUtility := make(map[string]ownedProperties, len(utilities))
 	for _, utility := range utilities {
-		byUtility[utility] = map[stateProperty]struct{}{}
+		byUtility[utility] = ownedProperties{}
 	}
 	if len(utilities) == 0 {
 		return byUtility, nil
@@ -154,12 +171,14 @@ func compileUtilityProperties(root string, utilities []string) (map[string]map[s
 	if err != nil {
 		return nil, err
 	}
-	for index, pairs := range found {
+	for index, owned := range found {
 		if index < 0 || index >= len(utilities) {
 			continue
 		}
-		for pair := range pairs {
-			byUtility[utilities[index]][pair] = struct{}{}
+		for property, states := range owned {
+			for _, state := range states {
+				byUtility[utilities[index]].add(property, state)
+			}
 		}
 	}
 	for _, utility := range utilities {
@@ -185,13 +204,14 @@ func compileUtilityProperties(root string, utilities []string) (map[string]map[s
 // One utility legitimately emits several rules with different states (a `dark:`
 // utility that also needs an unconditional custom-property fallback, say); each
 // contributes its own pairs.
-func probedProperties(filename string, src []byte) (map[int]map[stateProperty]struct{}, error) {
-	out := map[int]map[stateProperty]struct{}{}
+func probedProperties(filename string, src []byte) (map[int]ownedProperties, error) {
+	out := map[int]ownedProperties{}
 	type frame struct {
 		header  string
 		indices []int
 	}
 	var stack []frame
+	var recordErr error
 
 	record := func(segment []byte) {
 		declaration := strings.TrimSpace(string(segment))
@@ -214,11 +234,19 @@ func probedProperties(filename string, src []byte) (map[int]map[stateProperty]st
 		}
 		for _, f := range stack {
 			for _, index := range f.indices {
-				state := probeSelectorState(atRules, f.header, index)
-				if out[index] == nil {
-					out[index] = map[stateProperty]struct{}{}
+				states, err := probeSelectorStates(atRules, f.header, index)
+				if err != nil {
+					if recordErr == nil {
+						recordErr = fmt.Errorf("%s: compiled selector %q: %w", filename, normalizeSpace(f.header), err)
+					}
+					continue
 				}
-				out[index][stateProperty{state: state, property: property}] = struct{}{}
+				if out[index] == nil {
+					out[index] = ownedProperties{}
+				}
+				for _, state := range states {
+					out[index].add(property, state)
+				}
 			}
 		}
 	}
@@ -271,19 +299,25 @@ func probedProperties(filename string, src []byte) (map[int]map[stateProperty]st
 	if len(stack) != 0 {
 		return nil, fmt.Errorf("%s: %d unclosed block(s)", filename, len(stack))
 	}
+	if recordErr != nil {
+		return nil, recordErr
+	}
 	return out, nil
 }
 
-// probeSelectorState reduces one compiled probe ruleset to its comparable state.
-// Tailwind may emit a selector suffix (`.probe0:hover`), an ancestor form
-// (`.dark .probe0`, or its `:is(.dark *)` encoding), an at-rule wrapper, or any
-// combination; all three are captured so that like is compared with like.
-func probeSelectorState(atRules []string, selector string, index int) string {
+// probeSelectorStates reduces one compiled probe ruleset to the states it
+// applies in. Tailwind may emit a selector suffix (`.probe0:hover`), an ancestor
+// form (`.dark .probe0`, or its `:is(.dark *)` encoding), an at-rule wrapper, or
+// any combination; all three are captured so that like is compared with like.
+//
+// A selector LIST on one probe rule is a disjunction — `.p:hover, .p:focus`
+// governs the property in either state — so each branch becomes its own
+// predicate and the caller reports a contest when the authored rule implies ANY
+// of them. Folding them into one comparable string, which is what this used to
+// do, invented a compound state that holds in neither case.
+func probeSelectorStates(atRules []string, selector string, index int) ([]statePredicate, error) {
 	token := fmt.Sprintf(".%s%d", probeClassPrefix, index)
-	// A selector list on one probe rule is unusual, but if it happens each
-	// complex selector could carry a different state. Only the ones naming this
-	// probe count, and the narrowest reading is to keep them all.
-	var states []string
+	var states []statePredicate
 	for _, complex := range splitSelectorList(selector) {
 		ancestors, suffix, ok := subjectConditions(complex, func(compound string) (string, bool) {
 			return removeToken(compound, token)
@@ -291,53 +325,20 @@ func probeSelectorState(atRules []string, selector string, index int) string {
 		if !ok {
 			continue
 		}
-		states = append(states, canonicalState(atRules, ancestors, suffix))
+		state, err := buildPredicate(atRules, ancestors, suffix)
+		if err != nil {
+			return nil, err
+		}
+		states = append(states, state)
 	}
 	if len(states) == 0 {
 		// The probe class appears only in a non-subject position — the utility
 		// styles something other than the element it is on. Nothing an authored
 		// rule on the marker can be compared against, so record an unmatchable
 		// state rather than pretending it is unconditional.
-		return "\x00unmatched"
+		return []statePredicate{unmatchablePredicate()}, nil
 	}
-	sort.Strings(states)
-	return strings.Join(states, ";")
-}
-
-// canonicalState renders the conditions under which a rule applies to its
-// subject as one comparable string: the at-rules it is wrapped in, the ancestor
-// conditions above it, and the subject compound's own trailing conditions.
-//
-// Two states contest only when these strings are equal. That is deliberately
-// strict: a state this function cannot reduce to the same text on both sides —
-// a `@media (width >= 40rem)` wrapper on the authored side against Tailwind's
-// own `md:` output, say — compares unequal and is therefore NOT reported as a
-// contest. Missing a real contest costs a silent dead rule; inventing one blocks
-// legitimate work and gets the gate switched off, so the error is taken in that
-// direction on purpose. TestCanonicalStateDoesNotContestAcrossUncomparableMedia
-// pins the choice.
-func canonicalState(atRules, ancestors []string, suffix string) string {
-	var wrappers []string
-	for _, at := range atRules {
-		normalized := normalizeSpace(at)
-		// Tailwind implements `hover:` as a `:hover` rule inside
-		// `@media (hover: hover)`; an authored `:hover` rule carries no such
-		// wrapper. Keeping it would make EVERY hover-versus-hover contest
-		// invisible, which is the one variant the interaction rules in
-		// assets/css/styles/default.css use most. It is dropped so that the
-		// `:hover` suffix — which both sides do carry — decides.
-		if strings.HasPrefix(normalized, "@media") && strings.Contains(normalized, "(hover: hover)") {
-			continue
-		}
-		wrappers = append(wrappers, normalized)
-	}
-	sort.Strings(wrappers)
-	scopes := make([]string, 0, len(ancestors))
-	for _, ancestor := range ancestors {
-		scopes = append(scopes, stripSpace(ancestor))
-	}
-	sort.Strings(scopes)
-	return strings.Join(wrappers, "&&") + "|" + strings.Join(scopes, "&&") + "|" + stripSpace(suffix)
+	return states, nil
 }
 
 // subjectConditions splits a complex selector into the ancestor conditions above

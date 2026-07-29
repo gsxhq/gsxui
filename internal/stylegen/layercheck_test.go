@@ -92,19 +92,11 @@ func TestLayerCheckedStylesheetsCoverEveryAuthoredStylesheet(t *testing.T) {
 }
 
 // repoViolations runs the gate's own collection pass over the committed tree,
-// exemptions NOT applied, so a test can ask exactly what the gate saw.
+// every style, exemptions NOT applied, so a test can ask exactly what the gate
+// saw.
 func repoViolations(t *testing.T) []violation {
 	t.Helper()
-	root := repoRoot(t)
-	markers, err := composedMarkers(root)
-	if err != nil {
-		t.Fatal(err)
-	}
-	sets, err := componentUtilities(root, markers)
-	if err != nil {
-		t.Fatal(err)
-	}
-	found, err := layerViolations(root, markers, sets, &utilityPropertyResolver{root: root, sets: sets})
+	found, err := allLayerViolations(repoRoot(t))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -315,11 +307,17 @@ func TestCheckLayerPrecedenceStillRejectsUnconditionalAgainstUnconditional(t *te
 	}
 }
 
-// TestCanonicalStateDoesNotContestAcrossUncomparableMedia pins the deliberate
-// false negative documented on canonicalState. An authored @media wrapper has no
-// counterpart in the compiled utilities of this component, and rather than guess
-// at equivalence the oracle declines to call it a contest.
-func TestCanonicalStateDoesNotContestAcrossUncomparableMedia(t *testing.T) {
+// TestCheckLayerPrecedenceRejectsARuleNarrowedOnlyByAMediaQuery is the same
+// directional reading applied to an at-rule. A `@media` wrapper NARROWS when the
+// authored rule applies; it does not narrow when the unconditional utility
+// applies. So at every width where the authored rule is live the utility is live
+// too, and the rule is dead — even though the compiled Button carries no @media
+// wrapper anywhere for the two states to compare equal.
+//
+// The oracle used to pass this, on the grounds that it could not line the two
+// states up. Implication does not need to line them up: a conjunction implies
+// each of its conjuncts, and dropping the wrapper is exactly that.
+func TestCheckLayerPrecedenceRejectsARuleNarrowedOnlyByAMediaQuery(t *testing.T) {
 	t.Parallel()
 
 	root := injectCSS(t, "assets/css/foundation.css", "@layer components {",
@@ -328,8 +326,321 @@ func TestCanonicalStateDoesNotContestAcrossUncomparableMedia(t *testing.T) {
 			`    [data-gsxui-slot-carousel-previous] { display: block; }`,
 			`  }`,
 		}, "\n"))
+	err := CheckLayerPrecedence(root)
+	if err == nil {
+		t.Fatal("CheckLayerPrecedence() = nil, want an error — the utility applies at every width too")
+	}
+	if !strings.Contains(err.Error(), "display") {
+		t.Errorf("error must name the contested property, got %q", err)
+	}
+}
+
+// TestCheckLayerPrecedenceAllowsAMediaQueryNarrowingAHoverOnlyUtility keeps the
+// row above from being an accident of "any @media contests anything". The
+// authored rule is unconditional apart from the width, and the utility applies
+// only on hover, so outside hover the authored rule still governs.
+func TestCheckLayerPrecedenceAllowsAMediaQueryNarrowingAHoverOnlyUtility(t *testing.T) {
+	t.Parallel()
+
+	root := injectCSS(t, "assets/css/foundation.css", "@layer components {",
+		strings.Join([]string{
+			`  @media (width >= 40rem) {`,
+			`    [data-gsxui-slot-carousel-previous] { text-decoration-line: underline; }`,
+			`  }`,
+		}, "\n"))
 	if err := CheckLayerPrecedence(root); err != nil {
-		t.Fatalf("CheckLayerPrecedence() = %v, want nil for a state the oracle cannot compare", err)
+		t.Fatalf("CheckLayerPrecedence() = %v, want nil — hover:underline does not apply outside hover", err)
+	}
+}
+
+// SHADOWING IS DIRECTIONAL — the whole of P1c, as the five rows that define the
+// relation. Each row is a claim about the browser, and the oracle must agree:
+//
+//	authored state | generated state | dead? | why
+//	---------------|-----------------|-------|-----------------------------------
+//	unconditional  | unconditional   | YES   | same conditions
+//	:hover         | unconditional   | YES   | the utility applies during hover too
+//	:hover         | :hover          | YES   | same condition
+//	unconditional  | :hover          | NO    | the rule still governs the rest
+//	:hover         | :focus          | NO    | neither implies the other
+//
+// The properties are chosen so the generated side is fixed by the recipe, not by
+// the test: Button sets border-radius unconditionally (`rounded-lg`/`rounded-4xl`)
+// and text-decoration-line only under `hover:underline`.
+//
+// Row two is the hole. An equality oracle passed it — the authored `:hover` and
+// the generated unconditional state are not the same string — and the rule it
+// passed can never take effect.
+func TestCheckLayerPrecedenceShadowingIsDirectionalForRawDeclarations(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name     string
+		rule     string
+		wantDead bool
+		property string
+	}{
+		{
+			name:     "unconditional rule under an unconditional utility",
+			rule:     `  [data-gsxui-slot-carousel-previous] { border-radius: 0px; }`,
+			wantDead: true,
+			property: "border-radius",
+		},
+		{
+			name:     "hover rule under an unconditional utility",
+			rule:     `  [data-gsxui-slot-carousel-previous]:hover { border-radius: 0px; }`,
+			wantDead: true,
+			property: "border-radius",
+		},
+		{
+			name:     "hover rule under a hover utility",
+			rule:     `  [data-gsxui-slot-carousel-previous]:hover { text-decoration-line: underline; }`,
+			wantDead: true,
+			property: "text-decoration-line",
+		},
+		{
+			name:     "unconditional rule under a hover utility",
+			rule:     `  [data-gsxui-slot-carousel-previous] { text-decoration-line: underline; }`,
+			wantDead: false,
+			property: "text-decoration-line",
+		},
+		{
+			name:     "focus rule under a hover utility",
+			rule:     `  [data-gsxui-slot-carousel-previous]:focus { text-decoration-line: underline; }`,
+			wantDead: false,
+			property: "text-decoration-line",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			root := injectCSS(t, "assets/css/foundation.css", "@layer components {", tt.rule)
+			err := CheckLayerPrecedence(root)
+			if !tt.wantDead {
+				if err != nil {
+					t.Fatalf("CheckLayerPrecedence() = %v, want nil — the rule still applies somewhere", err)
+				}
+				return
+			}
+			if err == nil {
+				t.Fatal("CheckLayerPrecedence() = nil, want an error — the rule can never take effect")
+			}
+			if !strings.Contains(err.Error(), tt.property) {
+				t.Errorf("error must name the contested property %q, got %q", tt.property, err)
+			}
+			if !strings.Contains(err.Error(), "carousel-previous") {
+				t.Errorf("error must name the offending marker, got %q", err)
+			}
+		})
+	}
+}
+
+// TestCheckLayerPrecedenceShadowingIsDirectionalForApply is the same five rows
+// through the OTHER path, to prove the implication model did not regress it.
+//
+// This path compares CLASS NAMES through the repo's Tailwind merger rather than
+// resolving them to properties, so it reads state from two places at once: the
+// utility's own variant prefix, and — for the unconditional-utility rows — the
+// enclosing selector. That is why it already caught row two, and it still does.
+//
+// It has a blind spot the property path does not: with the state in the SELECTOR
+// and an unprefixed utility, `:hover { @apply underline }` against a compiled
+// `hover:underline` is two different class names to the merger, so row three
+// goes unreported here. Pinned below as a known limitation rather than left to
+// be discovered — the property path, which is the one the migration's raw
+// declarations take, gets it right.
+func TestCheckLayerPrecedenceShadowingIsDirectionalForApply(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name     string
+		rule     string
+		wantDead bool
+	}{
+		{
+			name:     "unconditional rule under an unconditional utility",
+			rule:     `  [data-gsxui-slot-carousel-previous] { @apply rounded-none; }`,
+			wantDead: true,
+		},
+		{
+			name:     "hover rule under an unconditional utility",
+			rule:     `  [data-gsxui-slot-carousel-previous]:hover { @apply rounded-none; }`,
+			wantDead: true,
+		},
+		{
+			name:     "hover utility under a hover utility",
+			rule:     `  [data-gsxui-slot-carousel-previous] { @apply hover:bg-transparent; }`,
+			wantDead: true,
+		},
+		{
+			name:     "unconditional rule under a hover utility",
+			rule:     `  [data-gsxui-slot-carousel-previous] { @apply underline; }`,
+			wantDead: false,
+		},
+		{
+			name:     "focus utility under a hover utility",
+			rule:     `  [data-gsxui-slot-carousel-previous] { @apply focus:underline; }`,
+			wantDead: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			root := injectDefaultCSS(t, "@layer components {", tt.rule)
+			err := CheckLayerPrecedence(root)
+			if tt.wantDead && err == nil {
+				t.Fatal("CheckLayerPrecedence() = nil, want an error — the rule can never take effect")
+			}
+			if !tt.wantDead && err != nil {
+				t.Fatalf("CheckLayerPrecedence() = %v, want nil — the rule still applies somewhere", err)
+			}
+		})
+	}
+}
+
+// TestApplyPathStillMissesSelectorStateAgainstAVariantUtility pins the blind
+// spot named above, so that it is a recorded limitation rather than a belief. If
+// someone teaches the @apply path to read selector state, this test fails and
+// they delete it — which is the point.
+func TestApplyPathStillMissesSelectorStateAgainstAVariantUtility(t *testing.T) {
+	t.Parallel()
+
+	root := injectDefaultCSS(t, "@layer components {",
+		`  [data-gsxui-slot-carousel-previous]:hover { @apply underline; }`)
+	if err := CheckLayerPrecedence(root); err != nil {
+		t.Fatalf("CheckLayerPrecedence() = %v — the @apply path learned selector state; "+
+			"delete this test and fold the row into the table above", err)
+	}
+}
+
+// TestCheckLayerPrecedenceFailsLoudlyOnAnUnsupportedSelectorForm is what makes
+// the spec's claim true. The gate says it converts this hazard into a build
+// failure; a state it cannot model, read as "no conditions", would instead be
+// the weakest possible predicate — implied by everything, contesting nothing,
+// silently. It must refuse, and it must name the selector so the refusal is
+// actionable.
+func TestCheckLayerPrecedenceFailsLoudlyOnAnUnsupportedSelectorForm(t *testing.T) {
+	t.Parallel()
+
+	root := injectCSS(t, "assets/css/foundation.css", "@layer components {",
+		`  [data-gsxui-slot-carousel-previous]:no-such-pseudo-class { display: block; }`)
+	err := CheckLayerPrecedence(root)
+	if err == nil {
+		t.Fatal("CheckLayerPrecedence() = nil, want an error — the gate cannot model this state")
+	}
+	for _, want := range []string{
+		":no-such-pseudo-class",               // what it could not read
+		"[data-gsxui-slot-carousel-previous]", // where
+		"assets/css/foundation.css",           // which file
+		"internal/stylegen/state.go",          // what to do about it
+	} {
+		if !strings.Contains(err.Error(), want) {
+			t.Errorf("error must mention %q, got:\n%s", want, err)
+		}
+	}
+}
+
+// TestCheckLayerPrecedenceChecksEveryStyleNotJustTheDefault is P1b. Maia is
+// installable and its Button utilities differ substantially from Nova's, so a
+// rule can be dead under Maia while a default-only gate stays green. `select-none`
+// is in Maia's Button recipe and not in Nova's, which makes user-select a
+// property exactly one style takes over.
+func TestCheckLayerPrecedenceChecksEveryStyleNotJustTheDefault(t *testing.T) {
+	t.Parallel()
+
+	if DefaultStyle == "maia" {
+		t.Fatal("this test relies on maia NOT being the default style")
+	}
+	root := injectCSS(t, "assets/css/foundation.css", "@layer components {",
+		`  [data-gsxui-slot-carousel-previous] { user-select: none; }`)
+	err := CheckLayerPrecedence(root)
+	if err == nil {
+		t.Fatal("CheckLayerPrecedence() = nil, want an error — the rule is dead under maia")
+	}
+	if !strings.Contains(err.Error(), "maia") {
+		t.Errorf("the diagnostic must name the style that creates the conflict, got:\n%s", err)
+	}
+	if strings.Contains(err.Error(), "under style nova") {
+		t.Errorf("nova does not set user-select, so it must not be blamed, got:\n%s", err)
+	}
+	if !strings.Contains(err.Error(), "user-select") {
+		t.Errorf("error must name the contested property, got:\n%s", err)
+	}
+}
+
+// TestEveryStyleIsChecked is the structural half: a style authored under
+// registry/styles that the gate never looks at is a silent hole, so the pass
+// must produce violations keyed to each one.
+func TestEveryStyleIsChecked(t *testing.T) {
+	t.Parallel()
+
+	root := repoRoot(t)
+	styles, err := styleNames(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(styles) < 2 {
+		t.Fatalf("styleNames() = %q — this test needs more than one style to mean anything", styles)
+	}
+	checked := map[string]struct{}{}
+	for _, v := range repoViolations(t) {
+		checked[v.key.style] = struct{}{}
+	}
+	for _, style := range styles {
+		if _, ok := checked[style]; !ok {
+			t.Errorf("style %q produced no violations at all — it is not being checked", style)
+		}
+	}
+}
+
+// TestExemptionForOneStyleDoesNotExemptAnother is the consequence of putting the
+// style in the key, exercised. web/site-button.css contests the same utilities
+// under both styles today; an exemption written for Nova alone must leave the
+// Maia violation reported, or the exemption list quietly reintroduces exactly
+// the blind spot P1b describes.
+func TestExemptionForOneStyleDoesNotExemptAnother(t *testing.T) {
+	t.Parallel()
+
+	found := repoViolations(t)
+	novaOnly := layerCheckExemptions[0]
+	novaOnly.key.style = "nova"
+	if !slices.ContainsFunc(found, func(v violation) bool { return v.key == novaOnly.key }) {
+		t.Fatalf("fixture moved: %v is no longer a violation under nova", novaOnly.key)
+	}
+	maiaKey := novaOnly.key
+	maiaKey.style = "maia"
+	if !slices.ContainsFunc(found, func(v violation) bool { return v.key == maiaKey }) {
+		t.Fatalf("fixture moved: %v is no longer a violation under maia", maiaKey)
+	}
+
+	exempt := exemptionIndex([]layerCheckExemption{novaOnly})
+	if _, ok := exempt[novaOnly.key]; !ok {
+		t.Error("the nova-only exemption does not cover its own violation")
+	}
+	if _, ok := exempt[maiaKey]; ok {
+		t.Error("a nova-only exemption silently forgave the maia violation of the same rule")
+	}
+}
+
+// TestStaleExemptionIsPerStyle is the other direction: an exemption naming a
+// style under which the rule is NOT contested has no subject, and saying so is
+// what stops a style list from drifting into a blanket waiver.
+func TestStaleExemptionIsPerStyle(t *testing.T) {
+	t.Parallel()
+
+	found := repoViolations(t)
+	for _, style := range []string{"no-such-style", ""} {
+		invented := layerCheckExemptions[0]
+		invented.key.style = style
+		stale := staleExemptions(found, []layerCheckExemption{invented})
+		if len(stale) != 1 {
+			t.Fatalf("staleExemptions() for style %q = %v, want the exemption reported — a violation "+
+				"is always attributed to a named style, so an exemption naming any other one "+
+				"(including none at all) has no subject", style, stale)
+		}
+		if !strings.Contains(stale[0], "under style "+style) {
+			t.Errorf("the stale diagnostic must name the style, got %q", stale[0])
+		}
 	}
 }
 
