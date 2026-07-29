@@ -1,5 +1,7 @@
 package preset
 
+import "fmt"
+
 // Values below were copied from the audited shadcn registry at
 // /Users/jackieli/personal/shadcn-ui/apps/v4/registry/themes.ts.
 // They are intentionally checked in so builds and tests do not read that checkout.
@@ -833,6 +835,9 @@ var radiusCatalog = []RadiusChoice{
 func values(pairs ...string) ThemeValues {
 	result := make(ThemeValues, len(pairs)/2)
 	for i := 0; i < len(pairs); i += 2 {
+		if _, exists := result[pairs[i]]; exists {
+			panic(fmt.Sprintf("catalog values: duplicate token %q", pairs[i]))
+		}
 		result[pairs[i]] = pairs[i+1]
 	}
 	return result

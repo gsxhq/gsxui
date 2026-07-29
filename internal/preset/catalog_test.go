@@ -103,6 +103,23 @@ func TestPaletteCatalogChoiceSlicesAreIndependent(t *testing.T) {
 	}
 }
 
+func TestCatalogValuesRejectDuplicateTokenPairs(t *testing.T) {
+	defer func() {
+		recovered := recover()
+		if recovered == nil {
+			t.Fatal("values accepted duplicate token pairs")
+		}
+		if got := fmt.Sprint(recovered); got != `catalog values: duplicate token "primary"` {
+			t.Fatalf("values panic = %q", got)
+		}
+	}()
+
+	values(
+		"primary", "oklch(0.2 0 0)",
+		"primary", "oklch(0.8 0 0)",
+	)
+}
+
 func TestPaletteCatalogResolvesAndMatchesEveryCombination(t *testing.T) {
 	seenPalettes := make(map[[32]byte]PaletteSelection)
 	for _, style := range Styles() {
