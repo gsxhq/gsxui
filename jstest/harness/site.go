@@ -55,5 +55,7 @@ func registerSiteRoutes(mux *http.ServeMux) {
 	if err != nil {
 		panic("loading test site manifest: " + err.Error())
 	}
-	mux.Handle("/", v.Middleware(pagesMux))
+	siteHandler := v.Middleware(pagesMux)
+	mux.Handle("/site/", http.StripPrefix("/site", siteHandler))
+	mux.Handle("/", siteHandler)
 }

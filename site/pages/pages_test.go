@@ -824,6 +824,36 @@ func TestThemePageRoute(t *testing.T) {
 		t.Fatalf("GET /theme = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
 	}
 	body := rec.Body.String()
+	document, err := html.Parse(strings.NewReader(body))
+	if err != nil {
+		t.Fatalf("parse theme response: %v", err)
+	}
+	if got, want := countHTMLNodes(document, "data-site-layout"), 1; got != want {
+		t.Errorf("theme page has %d site layout markers, want %d", got, want)
+	}
+	if !strings.Contains(body, `data-site-layout="workspace"`) {
+		t.Errorf(`theme page missing data-site-layout="workspace"; body:\n%s`, body)
+	}
+	for _, marker := range []string{
+		"data-theme-style-panel",
+		"data-theme-preview-panel",
+		"data-theme-controls-panel",
+	} {
+		if got, want := countHTMLNodes(document, marker), 1; got != want {
+			t.Errorf("theme page has %d %s regions, want %d", got, marker, want)
+		}
+	}
+	for _, marker := range []string{
+		"data-site-docs-mobile-nav",
+		"data-site-docs-sidebar",
+		"data-site-docs-toc",
+		"data-site-docs-article",
+		"data-site-footer",
+	} {
+		if got := countHTMLNodes(document, marker); got != 0 {
+			t.Errorf("theme workspace has %d unexpected %s regions, want none", got, marker)
+		}
+	}
 	for _, picker := range []string{"baseColor", "theme", "radius"} {
 		if got := strings.Count(body, `data-theme-picker="`+picker+`"`); got != 1 {
 			t.Errorf("theme page has %d %s pickers, want 1; body:\n%s", got, picker, body)

@@ -107,3 +107,75 @@ test("compact docs navigation keeps docs and component links reachable below lg"
   await nextCompactNav.locator('a[href="/components/button"]').click();
   await expect(page).toHaveURL(/\/components\/button$/);
 });
+
+test("theme workspace contains desktop overflow and preserves narrow document order", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("/site/theme");
+
+  const stylePanel = page.locator("[data-theme-style-panel]");
+  const previewPanel = page.locator("[data-theme-preview-panel]");
+  const controlsPanel = page.locator("[data-theme-controls-panel]");
+
+  await expect(stylePanel).toBeVisible();
+  await expect(previewPanel).toBeVisible();
+  await expect(controlsPanel).toBeVisible();
+  await expect(page.locator("[data-theme-preview-frame]")).toHaveCount(1);
+
+  const desktopGeometry = await page.evaluate(() => {
+    const controls = document.querySelector<HTMLElement>(
+      "[data-theme-controls-panel]",
+    );
+    const preview = document.querySelector<HTMLElement>(
+      "[data-theme-preview-panel]",
+    );
+    if (!controls || !preview) {
+      throw new Error("theme workspace panels are missing");
+    }
+    return {
+      documentOverflow:
+        document.documentElement.scrollHeight >
+        document.documentElement.clientHeight,
+      controlsWidth: controls.getBoundingClientRect().width,
+      previewWidth: preview.getBoundingClientRect().width,
+      controlsOverflow: getComputedStyle(controls).overflowY,
+      controlsScrollHeight: controls.scrollHeight,
+      controlsClientHeight: controls.clientHeight,
+    };
+  });
+  expect(desktopGeometry.documentOverflow).toBe(false);
+  expect(desktopGeometry.controlsWidth).toBeLessThan(
+    desktopGeometry.previewWidth,
+  );
+  expect(desktopGeometry.controlsOverflow).toBe("auto");
+  expect(desktopGeometry.controlsScrollHeight).toBeGreaterThan(
+    desktopGeometry.controlsClientHeight,
+  );
+
+  await page.setViewportSize({ width: 900, height: 900 });
+
+  const narrowGeometry = await page.evaluate(() => {
+    const top = (selector: string) => {
+      const element = document.querySelector<HTMLElement>(selector);
+      if (!element) {
+        throw new Error(`missing ${selector}`);
+      }
+      return element.getBoundingClientRect().top;
+    };
+    return {
+      documentOverflow:
+        document.documentElement.scrollHeight >
+        document.documentElement.clientHeight,
+      styleTop: top("[data-theme-style-panel]"),
+      previewTop: top("[data-theme-preview-panel]"),
+      controlsTop: top("[data-theme-controls-panel]"),
+      iframeCount: document.querySelectorAll("[data-theme-preview-frame]")
+        .length,
+    };
+  });
+  expect(narrowGeometry.documentOverflow).toBe(true);
+  expect(narrowGeometry.styleTop).toBeLessThan(narrowGeometry.previewTop);
+  expect(narrowGeometry.previewTop).toBeLessThan(narrowGeometry.controlsTop);
+  expect(narrowGeometry.iframeCount).toBe(1);
+});

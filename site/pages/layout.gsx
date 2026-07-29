@@ -86,8 +86,10 @@ component compactDocsNavigation(active string) {
 component siteLayout(title string, active string, mode layoutMode, toc []docTOCItem, children gsx.Node) {
 	{{
 		headerContainerClass := "mx-auto flex h-14 items-center justify-between"
+		headerClass := "sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur"
 		contentContainerClass := "mx-auto w-full py-10"
 		mainClass := "min-w-0 flex-1"
+		bodyClass := "min-h-svh bg-background text-foreground antialiased"
 		footerContainerClass := "mx-auto px-4 py-6 text-sm text-muted-foreground"
 
 		switch mode {
@@ -98,7 +100,10 @@ component siteLayout(title string, active string, mode layoutMode, toc []docTOCI
 			footerContainerClass += " max-w-[1568px] sm:px-6 lg:px-8"
 		case layoutWorkspace:
 			headerContainerClass += " max-w-none px-4"
-			contentContainerClass += " flex max-w-none px-4"
+			headerClass += " shrink-0"
+			contentContainerClass += " flex max-w-none px-4 lg:min-h-0 lg:flex-1 lg:py-4"
+			mainClass += " lg:min-h-0"
+			bodyClass += " lg:flex lg:h-svh lg:flex-col lg:overflow-hidden"
 		case layoutMarketing:
 			headerContainerClass += " max-w-6xl px-4"
 			contentContainerClass += " flex max-w-6xl px-4"
@@ -110,9 +115,9 @@ component siteLayout(title string, active string, mode layoutMode, toc []docTOCI
 		<siteHead title={title} entry="web/main.js"/>
 		<body
 			data-site-layout={mode}
-			class="min-h-svh bg-background text-foreground antialiased"
+			class={bodyClass}
 		>
-			<header class="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur">
+			<header class={headerClass}>
 				<div class={headerContainerClass}>
 					<div class="flex items-center gap-2">
 						<a href={Home{} |> url} class="flex items-center">
