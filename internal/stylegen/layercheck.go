@@ -155,19 +155,174 @@ var layerCheckedStylesheets = []string{
 	"web/site-button.css",
 }
 
-// layerCheckExemptions names stylesheets whose components-layer rules against a
-// composed marker are deliberate, with the reason. Nothing else is exempt: a
-// rule that loses the cascade by accident is exactly what this gate exists to
-// catch, and an exemption is the one way to say "this one is on purpose".
-var layerCheckExemptions = map[string]string{
-	// site-button.css is docs-and-demos-only presentation for raw markup that
-	// carries [data-gsxui-slot-button] WITHOUT rendering through <ui.Button> —
-	// hand-written examples and the theme preview. It is authored at zero
-	// specificity in @layer components precisely so the compiled Button's own
-	// utilities beat it wherever a real Button is rendered; losing the cascade
-	// there is the design, not a defect. jstest/specs/basic-demo-presentation.spec.ts
-	// pins that both halves still hold in the browser.
-	"web/site-button.css": "intentional zero-specificity fallback for non-component demo markup",
+// exemptionKey identifies ONE deliberate violation: a file, the selector that
+// loses the cascade, and the single utility or property it loses on. Keying by
+// file alone — which is what this used to do — exempts every future rule anyone
+// drops into that file too, so the first genuinely wrong rule added beside a
+// deliberate one is invisible. 52 components are about to migrate through these
+// files; a whole-file waiver is a hole that widens by itself.
+type exemptionKey struct {
+	file     string
+	selector string
+	// contested is the utility name (`bg-primary`) or CSS property
+	// (`background-color`) this rule loses on. One rule contesting two things is
+	// two decisions, and each needs its own reason.
+	contested string
+}
+
+// layerCheckExemption records why one violation is deliberate. The reason is
+// mandatory and is printed in every diagnostic that mentions the exemption, so
+// a reader who trips over a suppressed rule learns why it is suppressed without
+// going looking.
+type layerCheckExemption struct {
+	key    exemptionKey
+	reason string
+}
+
+// layerCheckExemptions names the individual components-layer violations that are
+// deliberate. Nothing else is exempt: a rule that loses the cascade by accident
+// is exactly what this gate exists to catch, and an exemption is the one way to
+// say "this one is on purpose".
+//
+// Every entry is SELF-INVALIDATING: CheckLayerPrecedence fails when an entry no
+// longer names a violation that really occurs, so an exemption whose rule was
+// deleted, reflowed, renamed, or rewritten to win the cascade fails the build
+// instead of quietly widening its own scope.
+var layerCheckExemptions = siteButtonFallbackExemptions()
+
+// siteButtonFallbackReason is the single decision behind every entry below. It
+// is attached to each one because a reader who trips over a suppressed rule
+// should learn why it is suppressed from the diagnostic, not from a comment
+// somewhere else in the tree.
+const siteButtonFallbackReason = "web/site-button.css is docs-and-demos-only presentation for raw markup that carries " +
+	"[data-gsxui-slot-button] WITHOUT rendering through <ui.Button> — hand-written examples and the " +
+	"theme preview. It is authored at zero specificity in @layer components precisely so the compiled " +
+	"Button's own utilities beat it wherever a real Button is rendered; losing the cascade there is the " +
+	"design, not a defect. jstest/specs/basic-demo-presentation.spec.ts:182 pins that both halves still " +
+	"hold in the browser."
+
+// siteButtonFallbackExemptions spells out every violation the fallback really
+// commits, one (selector, utility) pair at a time.
+//
+// This list is long on purpose. The old exemption was the single string
+// "web/site-button.css", which forgave these 56 violations AND every violation
+// anyone adds to that file afterwards — including, during the migration wave, a
+// genuinely wrong one. Enumerating them is the cost of the file no longer being
+// a blind spot: a new dead rule in site-button.css is not on this list, so the
+// gate reports it, and a rule that leaves the list is caught as stale.
+func siteButtonFallbackExemptions() []layerCheckExemption {
+	pairs := []struct{ selector, contested string }{
+		{selector: ".dark :where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button][data-variant=\"destructive\"])", contested: "bg-destructive/60"},
+		{selector: ".dark :where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button][data-variant=\"ghost\"]):hover", contested: "bg-accent/50"},
+		{selector: ".dark :where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button][data-variant=\"outline\"])", contested: "bg-input/30"},
+		{selector: ".dark :where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button][data-variant=\"outline\"])", contested: "border-input"},
+		{selector: ".dark :where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button][data-variant=\"outline\"]):hover", contested: "bg-input/50"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button]) svg:not([class*=\"size-\"])", contested: "size-4"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])", contested: "border-transparent"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])", contested: "rounded-lg"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])", contested: "text-sm"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button]):focus-visible", contested: "border-ring"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[aria-invalid=\"true\"]", contested: "border-destructive"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"default\"]", contested: "gap-1.5"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"default\"]", contested: "h-8"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"default\"]", contested: "px-2.5"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"default\"]:has(>svg)", contested: "px-2"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-lg\"]", contested: "size-9"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-sm\"]", contested: "rounded-[min(var(--radius-md),12px)]"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-sm\"]", contested: "size-7"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-xs\"] svg:not([class*=\"size-\"])", contested: "size-3"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-xs\"]", contested: "rounded-[min(var(--radius-md),10px)]"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-xs\"]", contested: "size-6"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon\"]", contested: "size-8"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"lg\"]", contested: "gap-1.5"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"lg\"]", contested: "h-9"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"lg\"]", contested: "px-2.5"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"lg\"]:has(>svg)", contested: "px-2"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"] svg:not([class*=\"size-\"])", contested: "size-3.5"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]", contested: "gap-1"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]", contested: "h-7"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]", contested: "px-2.5"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]", contested: "rounded-[min(var(--radius-md),12px)]"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]", contested: "text-[0.8rem]"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]:has(>svg)", contested: "px-1.5"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"] svg:not([class*=\"size-\"])", contested: "size-3"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]", contested: "gap-1"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]", contested: "h-6"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]", contested: "px-2"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]", contested: "rounded-[min(var(--radius-md),10px)]"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]", contested: "text-xs"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]:has(>svg)", contested: "px-1.5"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"default\"]", contested: "bg-primary"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"default\"]", contested: "text-primary-foreground"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"default\"]:hover", contested: "bg-primary/90"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"destructive\"]", contested: "bg-destructive"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"destructive\"]", contested: "text-contrast"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"destructive\"]:hover", contested: "bg-destructive/90"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"ghost\"]:hover", contested: "bg-accent"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"ghost\"]:hover", contested: "text-accent-foreground"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"link\"]", contested: "text-primary"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"outline\"]", contested: "bg-background"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"outline\"]", contested: "border-border"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"outline\"]:hover", contested: "bg-accent"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"outline\"]:hover", contested: "text-accent-foreground"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"secondary\"]", contested: "bg-secondary"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"secondary\"]", contested: "text-secondary-foreground"},
+		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"secondary\"]:hover", contested: "bg-secondary/80"},
+	}
+	out := make([]layerCheckExemption, 0, len(pairs))
+	for _, pair := range pairs {
+		out = append(out, layerCheckExemption{
+			key: exemptionKey{
+				file:      "web/site-button.css",
+				selector:  pair.selector,
+				contested: pair.contested,
+			},
+			reason: siteButtonFallbackReason,
+		})
+	}
+	return out
+}
+
+// exemptionIndex maps each exempted violation to its reason. Building it here
+// rather than declaring a map literal keeps the reason mandatory at the type
+// level: an entry without one cannot be written down.
+func exemptionIndex(exemptions []layerCheckExemption) map[exemptionKey]string {
+	index := make(map[exemptionKey]string, len(exemptions))
+	for _, exemption := range exemptions {
+		index[exemption.key] = exemption.reason
+	}
+	return index
+}
+
+// staleExemptions reports every exemption that no longer forgives anything. An
+// exemption that stops matching is not harmless: it is a decision whose subject
+// has changed underneath it, and the next rule written in its place inherits a
+// waiver nobody granted. Failing on it is what makes the exemption list
+// self-invalidating rather than accumulating.
+func staleExemptions(found []violation, exemptions []layerCheckExemption) []string {
+	occurring := make(map[exemptionKey]struct{}, len(found))
+	for _, v := range found {
+		occurring[v.key] = struct{}{}
+	}
+	var stale []string
+	for _, exemption := range exemptions {
+		if _, ok := occurring[exemption.key]; ok {
+			continue
+		}
+		stale = append(stale, fmt.Sprintf(
+			"%s: the exemption for %s\n  on %q no longer names a violation that occurs — the rule was\n"+
+				"  deleted, reflowed, or fixed to win the cascade. Re-point it or delete it.\n"+
+				"  Its reason was: %s",
+			exemption.key.file, exemption.key.selector, exemption.key.contested, exemption.reason))
+	}
+	return stale
+}
+
+// normalizeSelectorKey makes an exemption's recorded selector comparable to the
+// one the parser hands back, so that whitespace in the stylesheet does not
+// decide whether an exemption applies.
+func normalizeSelectorKey(selector string) string {
+	return normalizeSpace(strings.ReplaceAll(selector, "\n", " "))
 }
 
 // CheckLayerPrecedence enforces the layer invariant of the design spec §9:
@@ -178,6 +333,12 @@ var layerCheckExemptions = map[string]string{
 // Both halves fail silently on their own — the rule parses, generation and
 // make audit stay green, and the override simply never applies in the browser.
 // Every violation is reported, not just the first.
+//
+// It also fails on a STALE exemption. An exemption is a decision about one
+// specific rule; when that rule stops existing the decision has no subject, and
+// leaving the entry behind hands a waiver to whatever is written next in its
+// place. Reporting it here is what keeps the exemption list from being a
+// one-way ratchet.
 func CheckLayerPrecedence(root string) error {
 	markers, err := composedMarkers(root)
 	if err != nil {
@@ -189,34 +350,58 @@ func CheckLayerPrecedence(root string) error {
 	}
 	properties := &utilityPropertyResolver{root: root, sets: sets}
 
-	var violations []string
-	for _, relative := range layerCheckedStylesheets {
-		if _, exempt := layerCheckExemptions[relative]; exempt {
+	found, err := layerViolations(root, markers, sets, properties)
+	if err != nil {
+		return err
+	}
+	exempt := exemptionIndex(layerCheckExemptions)
+	var reported []string
+	for _, v := range found {
+		if _, ok := exempt[v.key]; ok {
 			continue
 		}
+		reported = append(reported, v.message)
+	}
+	reported = append(reported, staleExemptions(found, layerCheckExemptions)...)
+	if len(reported) == 0 {
+		return nil
+	}
+	return fmt.Errorf(
+		"%d layer-precedence problem(s) — a rule that cannot win the cascade, or an\n"+
+			"exemption that no longer forgives one:\n\n%s",
+		len(reported), strings.Join(reported, "\n\n"))
+}
+
+// layerViolations collects every violation in every checked stylesheet, exempt
+// or not. Exemption is applied by the caller so that the same collection pass
+// can answer both "what is broken" and "is every exemption still forgiving
+// something real".
+func layerViolations(
+	root string,
+	markers map[string]string,
+	sets map[string]utilitySets,
+	properties *utilityPropertyResolver,
+) ([]violation, error) {
+	var out []violation
+	for _, relative := range layerCheckedStylesheets {
 		path := filepath.Join(root, filepath.FromSlash(relative))
 		src, err := os.ReadFile(path)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		rules, err := layeredRules(path, src)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		for _, rule := range rules {
 			found, err := rule.violations(relative, markers, sets, properties)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			violations = append(violations, found...)
+			out = append(out, found...)
 		}
 	}
-	if len(violations) == 0 {
-		return nil
-	}
-	return fmt.Errorf(
-		"%d rule(s) override compiled component presentation but cannot win the cascade:\n\n%s",
-		len(violations), strings.Join(violations, "\n\n"))
+	return out, nil
 }
 
 // componentUtilities collects, per migrated component that owns at least one
@@ -302,7 +487,25 @@ type layerRule struct {
 	selector   string
 	line       int
 	utilities  []string
-	properties []string
+	properties []layerDeclaration
+}
+
+// layerDeclaration is one plain declaration together with the at-rules enclosing
+// it. The at-rules are part of WHEN the declaration applies, and a declaration
+// inside a nested @media inside a ruleset applies in a different state from its
+// siblings outside that @media — so they are recorded per declaration, not per
+// rule.
+type layerDeclaration struct {
+	property string
+	atRules  []string
+}
+
+// violation is one rule losing the cascade on one contested thing. Contests are
+// reported one at a time rather than grouped per rule so that an exemption can
+// name the exact violation it forgives instead of the whole rule.
+type violation struct {
+	key     exemptionKey
+	message string
 }
 
 // layeredRules parses one authored stylesheet and returns every ruleset that
@@ -313,11 +516,12 @@ func layeredRules(filename string, src []byte) ([]layerRule, error) {
 
 	type frame struct {
 		layer      string
+		atRule     string
 		selector   string
 		line       int
 		rule       bool
 		utilities  []string
-		properties []string
+		properties []layerDeclaration
 	}
 	var stack []frame
 	var rules []layerRule
@@ -345,8 +549,11 @@ func layeredRules(filename string, src []byte) ([]layerRule, error) {
 
 		case css.BeginAtRuleGrammar:
 			f := frame{}
+			prelude := strings.TrimSpace(recipe.SelectorText(parser.Values()))
 			if bytes.Equal(data, []byte("@layer")) {
-				f.layer = strings.TrimSpace(recipe.SelectorText(parser.Values()))
+				f.layer = prelude
+			} else {
+				f.atRule = normalizeSpace(string(data) + " " + prelude)
 			}
 			stack = append(stack, f)
 
@@ -386,9 +593,20 @@ func layeredRules(filename string, src []byte) ([]layerRule, error) {
 			if index < 0 {
 				continue
 			}
-			if property := strings.TrimSpace(string(data)); property != "" {
-				stack[index].properties = append(stack[index].properties, strings.ToLower(property))
+			property := strings.TrimSpace(string(data))
+			if property == "" {
+				continue
 			}
+			var atRules []string
+			for _, f := range stack {
+				if f.atRule != "" {
+					atRules = append(atRules, f.atRule)
+				}
+			}
+			stack[index].properties = append(stack[index].properties, layerDeclaration{
+				property: strings.ToLower(property),
+				atRules:  atRules,
+			})
 
 		case css.AtRuleGrammar:
 			if !bytes.Equal(data, []byte("@apply")) {
@@ -419,10 +637,10 @@ func (r layerRule) violations(
 	markers map[string]string,
 	sets map[string]utilitySets,
 	properties *utilityPropertyResolver,
-) ([]string, error) {
-	var out []string
+) ([]violation, error) {
+	var out []violation
 	for _, complex := range splitSelectorList(r.selector) {
-		_, component, descendant, ok := composedTarget(complex, markers)
+		marker, component, descendant, ok := composedTarget(complex, markers)
 		if !ok {
 			continue
 		}
@@ -431,80 +649,142 @@ func (r layerRule) violations(
 		if descendant {
 			against = set.descendant
 		}
-		contested := contestedUtilities(r.utilities, against)
-		var contestedProps []string
+		// Utilities are compared by name through the repo's Tailwind merger,
+		// which already knows `hover:bg-x` and `bg-x` are different utilities —
+		// so the variant blindness this gate had was only ever in the property
+		// path below.
+		contests := contestedUtilities(r.utilities, against)
 		if len(r.properties) > 0 {
-			owned, err := properties.propertiesOf(against)
+			owned, err := properties.statePropertiesOf(against)
 			if err != nil {
 				return nil, err
 			}
-			contestedProps = contestedProperties(r.properties, owned)
+			contests = append(contests, contestedProperties(r.properties, complex, marker, descendant, owned)...)
 		}
-		if len(contested) == 0 && len(contestedProps) == 0 {
-			continue
-		}
-		detail := describeContest(contested, contestedProps)
 		spec := selectorSpecificity(complex)
-		switch {
-		case r.layer != "utilities":
-			layer := r.layer
-			if layer == "" {
-				layer = "no layer"
+		for _, contested := range contests {
+			key := exemptionKey{
+				file:      filepath.ToSlash(filename),
+				selector:  normalizeSelectorKey(complex),
+				contested: contested.name,
 			}
-			out = append(out, fmt.Sprintf(
-				"%s:%d: %s %s in @layer %s, but that element renders through\n"+
-					"  %s, whose own utilities win the layer ordering. Move this rule to\n"+
-					"  @layer utilities and give it specificity >= (0,1,0) — see %s.",
-				filepath.ToSlash(filename), r.line, strings.TrimSpace(complex),
-				detail, layer, component, designSpecRef))
-		case !spec.beatsPlainUtility():
-			out = append(out, fmt.Sprintf(
-				"%s:%d: %s %s in @layer utilities, but its specificity is\n"+
-					"  %s — inside one layer the cascade falls back to specificity, and a plain\n"+
-					"  utility class from %s scores (0,1,0). Drop the :where() wrapper so the\n"+
-					"  selector carries specificity >= (0,1,0) — see %s.",
-				filepath.ToSlash(filename), r.line, strings.TrimSpace(complex),
-				detail, spec, component, designSpecRef))
+			var message string
+			switch {
+			case r.layer != "utilities":
+				layer := r.layer
+				if layer == "" {
+					layer = "no layer"
+				}
+				message = fmt.Sprintf(
+					"%s:%d: %s %s in @layer %s, but that element renders through\n"+
+						"  %s, whose own utilities win the layer ordering. Move this rule to\n"+
+						"  @layer utilities and give it specificity >= (0,1,0) — see %s.",
+					filepath.ToSlash(filename), r.line, normalizeSelectorKey(complex),
+					contested.describe(), layer, component, designSpecRef)
+			case !spec.beatsPlainUtility():
+				message = fmt.Sprintf(
+					"%s:%d: %s %s in @layer utilities, but its specificity is\n"+
+						"  %s — inside one layer the cascade falls back to specificity, and a plain\n"+
+						"  utility class from %s scores (0,1,0). Drop the :where() wrapper so the\n"+
+						"  selector carries specificity >= (0,1,0) — see %s.",
+					filepath.ToSlash(filename), r.line, normalizeSelectorKey(complex),
+					contested.describe(), spec, component, designSpecRef)
+			default:
+				continue
+			}
+			out = append(out, violation{key: key, message: message})
 		}
 	}
 	return out, nil
 }
 
-// describeContest names what the rule tries to override, keeping the two kinds
-// of override distinguishable: `@apply rounded-full` is a class, `display:flex`
-// is a property, and telling a reader "applies display" would send them looking
-// for a utility that does not exist.
-func describeContest(utilities, properties []string) string {
-	var parts []string
-	if len(utilities) > 0 {
-		parts = append(parts, "applies "+strings.Join(utilities, " "))
+// contest is one thing a rule loses on: either a utility it applies or a
+// property it declares. The two are kept distinguishable because
+// `@apply rounded-full` is a class and `display: flex` is a property, and
+// telling a reader "applies display" would send them looking for a utility that
+// does not exist.
+type contest struct {
+	name     string
+	property bool
+}
+
+func (c contest) describe() string {
+	if c.property {
+		return "sets " + c.name
 	}
-	if len(properties) > 0 {
-		parts = append(parts, "sets "+strings.Join(properties, ", "))
-	}
-	return strings.Join(parts, " and ")
+	return "applies " + c.name
 }
 
 // contestedProperties reports which of a rule's own declarations name a CSS
-// property the component's compiled utilities already set. Unlike utilities,
-// which the Tailwind merger can compare by name, a raw `display: flex` has no
-// class name to compare — so the utilities are resolved to the properties they
-// actually declare, and the comparison happens there.
-func contestedProperties(declared []string, owned map[string]struct{}) []string {
-	var contested []string
+// property the component's compiled utilities already set IN THE SAME STATE.
+// Unlike utilities, which the Tailwind merger can compare by name, a raw
+// `display: flex` has no class name to compare — so the utilities are resolved
+// to the (state, property) pairs they actually declare, and the comparison
+// happens there.
+//
+// Matching on the property alone is what made this oracle variant-blind: a
+// component utility `hover:bg-accent` made every unconditional
+// `background-color` rule on the marker look contested, even though the two
+// never apply at the same time. Across a 52-component migration and 153
+// selector-level interaction rules that is a stream of false positives against
+// rules that are perfectly correct — and a gate that cries wolf gets disabled.
+func contestedProperties(
+	declared []layerDeclaration,
+	complex, marker string,
+	descendant bool,
+	owned map[stateProperty]struct{},
+) []contest {
+	var contests []contest
 	seen := map[string]struct{}{}
-	for _, property := range declared {
-		if _, ok := owned[property]; !ok {
+	for _, declaration := range declared {
+		state, ok := ruleState(declaration.atRules, complex, marker, descendant)
+		if !ok {
 			continue
 		}
-		if _, dup := seen[property]; dup {
+		if _, contested := owned[stateProperty{state: state, property: declaration.property}]; !contested {
 			continue
 		}
-		seen[property] = struct{}{}
-		contested = append(contested, property)
+		if _, dup := seen[declaration.property]; dup {
+			continue
+		}
+		seen[declaration.property] = struct{}{}
+		contests = append(contests, contest{name: declaration.property, property: true})
 	}
-	sort.Strings(contested)
-	return contested
+	sort.Slice(contests, func(i, j int) bool { return contests[i].name < contests[j].name })
+	return contests
+}
+
+// ruleState derives an authored rule's state the same way a compiled utility's
+// is derived: everything the selector requires of the subject beyond the marker
+// itself, plus the at-rules the declaration sits in.
+//
+// The descendant case is the one place the two sides cannot be lined up. A
+// component's descendant presentation is written as `[&_svg…]:size-4`, and the
+// gate deliberately unwraps that variant to compare `size-4` against a rule
+// selecting a descendant of the marker — which means the descendant compound is
+// the TARGETING, already accounted for by that unwrapping, and Tailwind never
+// compiled it. So only the enclosing context is compared and the descendant
+// compound's own suffix is ignored; a `[&_svg]:hover:` utility therefore does
+// not contest a `… svg:hover` rule. That is a false negative, taken knowingly:
+// see the note on canonicalState.
+func ruleState(atRules []string, complex, marker string, descendant bool) (string, bool) {
+	if descendant {
+		var ancestors []string
+		for _, compound := range splitCompounds(complex) {
+			if containsAttributeName(compound, marker) {
+				break
+			}
+			ancestors = append(ancestors, compound)
+		}
+		return canonicalState(atRules, scopeAncestors(ancestors), ""), true
+	}
+	ancestors, suffix, ok := subjectConditions(complex, func(compound string) (string, bool) {
+		return removeMarkerAttribute(compound, marker)
+	})
+	if !ok {
+		return "", false
+	}
+	return canonicalState(atRules, ancestors, suffix), true
 }
 
 // contestedUtilities reports which of a rule's utilities collide with one the
@@ -512,15 +792,15 @@ func contestedProperties(declared []string, owned map[string]struct{}) []string 
 // merger — the same authority that decides which class wins everywhere else —
 // so no property table has to be maintained here. Identical utilities are not
 // contested: restating a value the component already sets changes nothing.
-func contestedUtilities(applied, componentUtilities []string) []string {
-	var contested []string
+func contestedUtilities(applied, componentUtilities []string) []contest {
+	var contested []contest
 	for _, utility := range applied {
 		for _, own := range componentUtilities {
 			if own == utility {
 				continue
 			}
 			if merge.Merge([]string{own, utility}) == utility {
-				contested = append(contested, utility)
+				contested = append(contested, contest{name: utility})
 				break
 			}
 		}

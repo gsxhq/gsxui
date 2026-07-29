@@ -81,25 +81,20 @@ func TestLayerCheckedStylesheetsCoverEveryAuthoredStylesheet(t *testing.T) {
 	if !slices.Equal(found, listed) {
 		t.Errorf("layerCheckedStylesheets = %q, but the authored stylesheets are %q", listed, found)
 	}
-	for relative := range layerCheckExemptions {
-		if !slices.Contains(listed, relative) {
-			t.Errorf("exemption %q names a stylesheet the gate does not list", relative)
+	for _, exemption := range layerCheckExemptions {
+		if !slices.Contains(listed, exemption.key.file) {
+			t.Errorf("exemption %q names a stylesheet the gate does not list", exemption.key.file)
+		}
+		if strings.TrimSpace(exemption.reason) == "" {
+			t.Errorf("exemption %v carries no reason", exemption.key)
 		}
 	}
 }
 
-// TestSiteButtonFallbackWouldViolateWithoutItsExemption proves the exemption is
-// load-bearing rather than decorative: web/site-button.css really does hold
-// zero-specificity components-layer rules against the migrated Button's marker,
-// and the gate really does read that file now. If the fallback is ever deleted
-// or rewritten to win the cascade, this test says so and the exemption can go.
-func TestSiteButtonFallbackWouldViolateWithoutItsExemption(t *testing.T) {
-	t.Parallel()
-
-	const relative = "web/site-button.css"
-	if _, exempt := layerCheckExemptions[relative]; !exempt {
-		t.Fatalf("%s is expected to be exempt", relative)
-	}
+// repoViolations runs the gate's own collection pass over the committed tree,
+// exemptions NOT applied, so a test can ask exactly what the gate saw.
+func repoViolations(t *testing.T) []violation {
+	t.Helper()
 	root := repoRoot(t)
 	markers, err := composedMarkers(root)
 	if err != nil {
@@ -109,25 +104,96 @@ func TestSiteButtonFallbackWouldViolateWithoutItsExemption(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	src, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(relative)))
+	found, err := layerViolations(root, markers, sets, &utilityPropertyResolver{root: root, sets: sets})
 	if err != nil {
 		t.Fatal(err)
 	}
-	rules, err := layeredRules(relative, src)
-	if err != nil {
-		t.Fatal(err)
+	return found
+}
+
+// TestLayerCheckExemptionsAreAllStillLoadBearing is what makes an exemption
+// SELF-INVALIDATING. The old guard only demanded that web/site-button.css hold
+// at least one violation somewhere, so deleting the deliberate fallback and
+// replacing it with a different, genuinely wrong rule kept the guard green while
+// the exemption silently moved to cover the wrong rule. This asserts each
+// exemption key still names a violation that really occurs.
+func TestLayerCheckExemptionsAreAllStillLoadBearing(t *testing.T) {
+	t.Parallel()
+
+	if stale := staleExemptions(repoViolations(t), layerCheckExemptions); len(stale) != 0 {
+		t.Errorf("stale exemption(s):\n%s", strings.Join(stale, "\n\n"))
 	}
-	properties := &utilityPropertyResolver{root: root, sets: sets}
-	var violations []string
-	for _, rule := range rules {
-		found, err := rule.violations(relative, markers, sets, properties)
-		if err != nil {
-			t.Fatal(err)
+}
+
+// TestSiteButtonExemptionsAreTheOnlyThingKeepingTheTreeGreen pins the other
+// half: the exemptions are load-bearing, not decorative. Without them the
+// committed tree fails the gate.
+func TestSiteButtonExemptionsAreTheOnlyThingKeepingTheTreeGreen(t *testing.T) {
+	t.Parallel()
+
+	found := repoViolations(t)
+	if len(found) == 0 {
+		t.Fatal("no violations at all — web/site-button.css no longer contests compiled Button presentation")
+	}
+	exempt := exemptionIndex(layerCheckExemptions)
+	for _, v := range found {
+		if _, ok := exempt[v.key]; !ok {
+			t.Errorf("unexempted violation on the committed tree:\n%s", v.message)
 		}
-		violations = append(violations, found...)
 	}
-	if len(violations) == 0 {
-		t.Fatalf("%s no longer contests compiled Button presentation — drop its exemption", relative)
+}
+
+// TestStaleExemptionFailsTheBuild is the self-invalidation, exercised. An
+// exemption whose violation no longer exists is reported — and the reason it
+// carried is printed with it, so whoever has to re-decide can see what was
+// decided before.
+func TestStaleExemptionFailsTheBuild(t *testing.T) {
+	t.Parallel()
+
+	found := repoViolations(t)
+
+	// Deleting the exempted rule: the selector no longer occurs at all.
+	deleted := layerCheckExemptions[0]
+	deleted.key.selector = ":where([data-gsxui-slot-button]):this-rule-was-deleted"
+	stale := staleExemptions(found, []layerCheckExemption{deleted})
+	if len(stale) != 1 {
+		t.Fatalf("staleExemptions() = %v, want the deleted rule reported", stale)
+	}
+	if !strings.Contains(stale[0], deleted.reason) {
+		t.Errorf("stale diagnostic must carry the exemption's reason, got %q", stale[0])
+	}
+
+	// Replacing the exempted rule with a different one under the SAME selector:
+	// a file-keyed exemption would still have called this live, which is exactly
+	// the hole this key closes.
+	replaced := layerCheckExemptions[0]
+	replaced.key.contested = "bg-some-utility-nobody-wrote"
+	if stale := staleExemptions(found, []layerCheckExemption{replaced}); len(stale) != 1 {
+		t.Fatalf("staleExemptions() = %v, want the replaced rule reported", stale)
+	}
+
+	// And the real list is not stale, so the two above are not vacuous.
+	if stale := staleExemptions(found, layerCheckExemptions); len(stale) != 0 {
+		t.Fatalf("the committed exemptions are stale: %v", stale)
+	}
+}
+
+// TestExemptionThatStillHoldsPassesAndSurfacesItsReason is the positive case:
+// a live exemption is not reported, and its reason is the one the gate would
+// print if it ever went stale.
+func TestExemptionThatStillHoldsPassesAndSurfacesItsReason(t *testing.T) {
+	t.Parallel()
+
+	live := layerCheckExemptions[0]
+	if stale := staleExemptions(repoViolations(t), []layerCheckExemption{live}); len(stale) != 0 {
+		t.Fatalf("a live exemption was reported stale: %v", stale)
+	}
+	reason, ok := exemptionIndex(layerCheckExemptions)[live.key]
+	if !ok || reason == "" {
+		t.Fatal("exemption index lost the reason")
+	}
+	if !strings.Contains(reason, "basic-demo-presentation.spec.ts") {
+		t.Errorf("reason must point at what pins the behaviour, got %q", reason)
 	}
 }
 
@@ -194,6 +260,76 @@ func TestCheckLayerPrecedenceAllowsNonCompetingRawDeclarations(t *testing.T) {
 		`  :where([data-gsxui-slot-carousel-previous]) { position: absolute; left: -3rem; }`)
 	if err := CheckLayerPrecedence(root); err != nil {
 		t.Fatalf("CheckLayerPrecedence() = %v, want nil for a non-competing raw declaration", err)
+	}
+}
+
+// TestCheckLayerPrecedenceAllowsAnUnconditionalRuleAgainstAHoverOnlyUtility is
+// the false positive the migration wave would have hit 153 times over. Button
+// declares text-decoration-line only under `hover:underline`; an unconditional
+// rule setting it never competes with that, so flagging it would block correct
+// work for no cascade reason at all.
+func TestCheckLayerPrecedenceAllowsAnUnconditionalRuleAgainstAHoverOnlyUtility(t *testing.T) {
+	t.Parallel()
+
+	root := injectCSS(t, "assets/css/foundation.css", "@layer components {",
+		`  [data-gsxui-slot-carousel-previous] { text-decoration-line: underline; }`)
+	if err := CheckLayerPrecedence(root); err != nil {
+		t.Fatalf("CheckLayerPrecedence() = %v, want nil — an unconditional rule cannot contest hover:underline", err)
+	}
+}
+
+// TestCheckLayerPrecedenceRejectsAHoverRuleAgainstAHoverUtility is the other
+// side of the same coin: when the states DO match, the contest is real and the
+// rule really is dead.
+func TestCheckLayerPrecedenceRejectsAHoverRuleAgainstAHoverUtility(t *testing.T) {
+	t.Parallel()
+
+	root := injectCSS(t, "assets/css/foundation.css", "@layer components {",
+		`  [data-gsxui-slot-carousel-previous]:hover { text-decoration-line: underline; }`)
+	err := CheckLayerPrecedence(root)
+	if err == nil {
+		t.Fatal("CheckLayerPrecedence() = nil, want an error — :hover contests hover:underline")
+	}
+	if !strings.Contains(err.Error(), "text-decoration-line") {
+		t.Errorf("error must name the contested property, got %q", err)
+	}
+	if !strings.Contains(err.Error(), "carousel-previous") {
+		t.Errorf("error must name the offending marker, got %q", err)
+	}
+}
+
+// TestCheckLayerPrecedenceStillRejectsUnconditionalAgainstUnconditional guards
+// against over-correcting: making the oracle variant-aware must not make it
+// blind to the plain case it already caught.
+func TestCheckLayerPrecedenceStillRejectsUnconditionalAgainstUnconditional(t *testing.T) {
+	t.Parallel()
+
+	root := injectCSS(t, "assets/css/foundation.css", "@layer components {",
+		`  [data-gsxui-slot-carousel-previous] { display: block; }`)
+	err := CheckLayerPrecedence(root)
+	if err == nil {
+		t.Fatal("CheckLayerPrecedence() = nil, want an error — display contests inline-flex")
+	}
+	if !strings.Contains(err.Error(), "display") {
+		t.Errorf("error must name the contested property, got %q", err)
+	}
+}
+
+// TestCanonicalStateDoesNotContestAcrossUncomparableMedia pins the deliberate
+// false negative documented on canonicalState. An authored @media wrapper has no
+// counterpart in the compiled utilities of this component, and rather than guess
+// at equivalence the oracle declines to call it a contest.
+func TestCanonicalStateDoesNotContestAcrossUncomparableMedia(t *testing.T) {
+	t.Parallel()
+
+	root := injectCSS(t, "assets/css/foundation.css", "@layer components {",
+		strings.Join([]string{
+			`  @media (width >= 40rem) {`,
+			`    [data-gsxui-slot-carousel-previous] { display: block; }`,
+			`  }`,
+		}, "\n"))
+	if err := CheckLayerPrecedence(root); err != nil {
+		t.Fatalf("CheckLayerPrecedence() = %v, want nil for a state the oracle cannot compare", err)
 	}
 }
 
