@@ -1845,6 +1845,40 @@ Expected: PASS.
 
 Verify `web/site.css`'s `@source` globs still reach the generated sources — `@source "../ui/**/*.gsx"` covers `ui/button.gsx`, and `@source "../site/**/*.gsx"` covers the stylepreview packages. Add `@source "../registry/generated/**/*.gsx";` so styles a consumer might install are also scanned.
 
+- [ ] **Step 4b: Stop the generation tests mutating the working tree**
+
+Task 7's `TestGenerateAllIsIdempotent`, `TestGenerateAllEmitsEveryStyleAndTheDefaultCopy`
+and `TestGeneratedSourcesAreFreeOfRecipeConstructs` call `GenerateAll(repoRoot(t), false)`,
+so `go test` silently repairs stale artifacts in `ui/`, `registry/generated/`
+and `site/stylepreview/`. A drift bug can therefore be masked simply by having
+run the suite. This was mandated by the plan, not chosen by the implementer.
+
+Point all three at an isolated copy instead, exactly as
+`TestGenerateAllWritesDeterministicallyAndCheckNeverWrites` already does:
+
+```go
+root := t.TempDir()
+copyRepoFixture(t, root)
+```
+
+`TestGenerateAllValidatesBeforeWriting` already uses this pattern — leave it.
+After the change, `go test ./...` must leave `git status --short` empty.
+
+- [ ] **Step 4c: Remove two tautological assertions**
+
+`ui/input-group_test.go:112` and `:161` assert that `got` does NOT contain
+`canonicalButtonClass(<other variant>, …)`. Since that helper returns a whole
+`class="…"` attribute and an element has exactly one class attribute, those
+negatives cannot be true once the positive assertion above them passes — they
+read as coverage they do not provide. Delete both, and delete the dead
+`tt.want != "default"` guard at `:110` (no case in that table has
+`want == "default"`).
+
+- [ ] **Step 4d: Replace the containsStyle loop**
+
+`internal/stylegen/generate.go:211-218` — use `slices.Contains`. It is the only
+`gopls check -severity=hint` hit in the changed files.
+
 - [ ] **Step 5: Full verification**
 
 Run each of these and confirm the stated expectation before claiming completion:
