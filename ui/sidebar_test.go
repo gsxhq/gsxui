@@ -23,7 +23,10 @@ func TestSidebarProviderStampsServerState(t *testing.T) {
 
 func TestSidebarProviderCarriesWidthVars(t *testing.T) {
 	got := render(t, ui.SidebarProvider(true, gsx.Raw("x"), nil))
-	for _, want := range []string{"--sidebar-width", "--sidebar-width-icon", `data-slot="sidebar-wrapper"`} {
+	for _, want := range []string{
+		`style="--sidebar-width:16rem;--sidebar-width-icon:3rem"`,
+		`data-slot="sidebar-wrapper"`,
+	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("want %q\nin: %s", want, got)
 		}

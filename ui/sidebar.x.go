@@ -169,16 +169,17 @@ func SidebarProvider(open bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node 
 			_gsxgw.AttrValue(string(state))
 			_gsxgw.S("\"")
 		}
+		if !attrs.Has("style") {
+			_gsxgw.S(" style=\"--sidebar-width:")
+			_gsxgw.AttrValue(_gsxrt.StyleValue(string(sidebarWidth)))
+			_gsxgw.S(";--sidebar-width-icon:")
+			_gsxgw.AttrValue(_gsxrt.StyleValue(string(sidebarWidthIcon)))
+			_gsxgw.S("\"")
+		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
-		if attrs.Has("style") {
-			_gsxgw.StyleMerged(_gsxrt.StyleString(_gsxrt.Class("--sidebar-width:"+_gsxrt.StyleValue(sidebarWidth)), _gsxrt.Class("--sidebar-width-icon:"+_gsxrt.StyleValue(sidebarWidthIcon))), attrs.Style())
-		} else {
-			_gsxgw.S(" style=\"")
-			_gsxgw.Style(_gsxrt.Class("--sidebar-width:"+_gsxrt.StyleValue(sidebarWidth)), _gsxrt.Class("--sidebar-width-icon:"+_gsxrt.StyleValue(sidebarWidthIcon)))
-			_gsxgw.S("\"")
-		}
+		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
 		_gsxgw.S(">")
 //line sidebar.gsx:156:3

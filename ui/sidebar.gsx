@@ -149,7 +149,7 @@ component SidebarProvider(open bool, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-slot="sidebar-wrapper"
 		data-state={state}
-		style={ css`--sidebar-width:@{sidebarWidth}`, css`--sidebar-width-icon:@{sidebarWidthIcon}` }
+		style=css`--sidebar-width:@{sidebarWidth};--sidebar-width-icon:@{sidebarWidthIcon}`
 		class="group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar"
 		{ attrs... }
 	>
