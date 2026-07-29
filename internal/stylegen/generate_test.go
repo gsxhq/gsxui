@@ -5,6 +5,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/gsxhq/gsxui/internal/recipe"
@@ -16,7 +17,7 @@ import (
 func copyRepoFixture(t *testing.T, dst string) {
 	t.Helper()
 	root := repoRoot(t)
-	for _, dir := range []string{"registry", "ui", filepath.Join("site", "stylepreview")} {
+	for _, dir := range []string{"registry", "ui", "assets", filepath.Join("site", "stylepreview")} {
 		src := filepath.Join(root, dir)
 		err := filepath.WalkDir(src, func(path string, entry fs.DirEntry, err error) error {
 			if err != nil {
@@ -183,5 +184,160 @@ func TestGenerateAllRejectsAHelperCallNamingAnUndeclaredDimension(t *testing.T) 
 	}
 	if !bytes.Equal(before, after) {
 		t.Error("a failing run must not mutate any artifact")
+	}
+}
+
+// cardCoverageShape is a two-slot shape with a dimension, used to exercise
+// both directions of checkHelperCalls against real GSX source.
+func cardCoverageShape() recipe.Shape {
+	return recipe.Shape{
+		Component: "card",
+		Slots: []recipe.Slot{
+			{Name: "", Base: true, Dimensions: []recipe.Dimension{
+				{Name: "tone", Default: "plain", Values: []string{"plain", "muted"}},
+			}},
+			{Name: "footer", Base: true},
+		},
+	}
+}
+
+const cardCoverageSource = `package canonical
+
+import "github.com/gsxhq/gsx"
+
+component Card(tone string, children gsx.Node) {
+	<div class={ card.Root(), card.Tone(tone) }>
+		{ children }
+		<div class={ card.Footer() }></div>
+	</div>
+}
+`
+
+// TestCheckHelperCallsAcceptsFullSlotCoverage pins the passing side: every
+// declared slot and dimension is reached by an accessor call.
+func TestCheckHelperCallsAcceptsFullSlotCoverage(t *testing.T) {
+	t.Parallel()
+	if err := checkHelperCalls("card.gsx", []byte(cardCoverageSource), cardCoverageShape()); err != nil {
+		t.Fatalf("checkHelperCalls() = %v, want nil", err)
+	}
+}
+
+// TestCheckHelperCallsRejectsAnUndeclaredSlot pins the direction that already
+// worked: an accessor call naming a slot the shape does not declare.
+func TestCheckHelperCallsRejectsAnUndeclaredSlot(t *testing.T) {
+	t.Parallel()
+	src := []byte(`package canonical
+
+import "github.com/gsxhq/gsx"
+
+component Card(tone string, children gsx.Node) {
+	<div class={ card.Root(), card.Tone(tone) }>
+		{ children }
+		<div class={ card.Footer() }></div>
+		<div class={ card.Header() }></div>
+	</div>
+}
+`)
+	err := checkHelperCalls("card.gsx", src, cardCoverageShape())
+	if err == nil {
+		t.Fatal("checkHelperCalls() = nil, want an error for the undeclared slot")
+	}
+	if !strings.Contains(err.Error(), "Header") && !strings.Contains(err.Error(), "header") {
+		t.Errorf("error must name the undeclared accessor, got %q", err)
+	}
+}
+
+// TestCheckHelperCallsRejectsAnUnrenderedSlot pins the new direction. Without
+// it a shape could declare a slot no .gsx renders: the style would implement
+// it, conformance would pass, and the resulting recipe rules would be dead.
+func TestCheckHelperCallsRejectsAnUnrenderedSlot(t *testing.T) {
+	t.Parallel()
+	src := []byte(`package canonical
+
+import "github.com/gsxhq/gsx"
+
+component Card(tone string, children gsx.Node) {
+	<div class={ card.Root(), card.Tone(tone) }>{ children }</div>
+}
+`)
+	err := checkHelperCalls("registry/canonical/card.gsx", src, cardCoverageShape())
+	if err == nil {
+		t.Fatal("checkHelperCalls() = nil, want an error for the unrendered slot")
+	}
+	want := `registry/canonical/card.gsx: shape declares slot "footer" but the component never renders it`
+	if !strings.Contains(err.Error(), want) {
+		t.Errorf("checkHelperCalls() = %q, want it to contain %q", err, want)
+	}
+}
+
+// TestCheckHelperCallsRejectsAnUnusedDimension — a dimension is reached by a
+// single accessor call however many values it has, so an unused one is the
+// same dead-rule signal as an unused slot, and every one of its values costs
+// the style a rule that conformance forces it to author.
+func TestCheckHelperCallsRejectsAnUnusedDimension(t *testing.T) {
+	t.Parallel()
+	src := []byte(`package canonical
+
+import "github.com/gsxhq/gsx"
+
+component Card(tone string, children gsx.Node) {
+	<div class={ card.Root() }>
+		{ children }
+		<div class={ card.Footer() }></div>
+	</div>
+}
+`)
+	err := checkHelperCalls("registry/canonical/card.gsx", src, cardCoverageShape())
+	if err == nil {
+		t.Fatal("checkHelperCalls() = nil, want an error for the unused dimension")
+	}
+	want := `registry/canonical/card.gsx: shape declares dimension "tone" on slot "" but the component never applies it`
+	if !strings.Contains(err.Error(), want) {
+		t.Errorf("checkHelperCalls() = %q, want it to contain %q", err, want)
+	}
+}
+
+// TestCheckHelperCallsRejectsAnUnusedBaseRule closes the last hole: a slot can
+// be reached through a dimension accessor while its base rule stays dead.
+func TestCheckHelperCallsRejectsAnUnusedBaseRule(t *testing.T) {
+	t.Parallel()
+	src := []byte(`package canonical
+
+import "github.com/gsxhq/gsx"
+
+component Card(tone string, children gsx.Node) {
+	<div class={ card.Tone(tone) }>
+		{ children }
+		<div class={ card.Footer() }></div>
+	</div>
+}
+`)
+	err := checkHelperCalls("registry/canonical/card.gsx", src, cardCoverageShape())
+	if err == nil {
+		t.Fatal("checkHelperCalls() = nil, want an error for the unused base rule")
+	}
+	if !strings.Contains(err.Error(), "base rule") {
+		t.Errorf("checkHelperCalls() = %q, want it to mention the unused base rule", err)
+	}
+}
+
+// TestCheckHelperCallsReportsEveryGap keeps the diagnostic a sweep, not a
+// bisect: a 38-slot component should not need 38 runs to converge.
+func TestCheckHelperCallsReportsEveryGap(t *testing.T) {
+	t.Parallel()
+	src := []byte(`package canonical
+
+import "github.com/gsxhq/gsx"
+
+component Card(tone string, children gsx.Node) {
+	<div class={ card.Root() }>{ children }</div>
+}
+`)
+	err := checkHelperCalls("registry/canonical/card.gsx", src, cardCoverageShape())
+	if err == nil {
+		t.Fatal("checkHelperCalls() = nil, want errors")
+	}
+	if !strings.Contains(err.Error(), `slot "footer"`) || !strings.Contains(err.Error(), `dimension "tone"`) {
+		t.Errorf("checkHelperCalls() = %q, want every gap reported", err)
 	}
 }

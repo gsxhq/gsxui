@@ -164,9 +164,18 @@ func resolveAll(root string) ([]generatedSource, error) {
 }
 
 // checkHelperCalls cross-checks a canonical's accessor calls against its
-// declared shape. It runs before any style is touched, so a call naming a slot
-// or dimension the shape does not declare fails generation rather than
-// producing an artifact.
+// declared shape, in both directions. It runs before any style is touched, so
+// either mismatch fails generation rather than producing an artifact:
+//
+//   - every accessor call resolves to a declared slot and dimension, and
+//   - every slot, base rule and dimension the shape declares is actually
+//     reached by the component's GSX.
+//
+// The second direction is what keeps a shape honest as slot counts grow. A
+// declared-but-unrendered slot costs every style a set of rules conformance
+// forces it to author, all of them dead, and nothing else in the pipeline
+// notices: the style conforms, the contract lists the slot, and no element
+// ever carries the utilities.
 func checkHelperCalls(filename string, src []byte, shape recipe.Shape) error {
 	calls, err := HelperCalls(filename, src, shape)
 	if err != nil {
@@ -202,7 +211,53 @@ func checkHelperCalls(filename string, src []byte, shape recipe.Shape) error {
 			)
 		}
 	}
-	return nil
+	return checkShapeCoverage(filename, shape, calls)
+}
+
+// checkShapeCoverage reports every part of the shape the component's GSX never
+// reaches. It reports all of them at once: converging a 38-slot component one
+// failed run at a time is not a workflow.
+func checkShapeCoverage(filename string, shape recipe.Shape, calls []Call) error {
+	usedSlots := make(map[string]struct{}, len(calls))
+	usedBases := make(map[string]struct{}, len(calls))
+	usedDimensions := make(map[[2]string]struct{}, len(calls))
+	for _, call := range calls {
+		usedSlots[call.Slot] = struct{}{}
+		if call.Dimension == "" {
+			usedBases[call.Slot] = struct{}{}
+			continue
+		}
+		usedDimensions[[2]string{call.Slot, call.Dimension}] = struct{}{}
+	}
+
+	var gaps []string
+	for _, slot := range shape.Slots {
+		if _, ok := usedSlots[slot.Name]; !ok {
+			gaps = append(gaps, fmt.Sprintf(
+				"%s: shape declares slot %q but the component never renders it",
+				filename, slot.Name))
+			continue
+		}
+		if slot.Base {
+			if _, ok := usedBases[slot.Name]; !ok {
+				gaps = append(gaps, fmt.Sprintf(
+					"%s: shape declares a base rule on slot %q but the component never applies it",
+					filename, slot.Name))
+			}
+		}
+		for _, dimension := range slot.Dimensions {
+			if _, ok := usedDimensions[[2]string{slot.Name, dimension.Name}]; ok {
+				continue
+			}
+			gaps = append(gaps, fmt.Sprintf(
+				"%s: shape declares dimension %q on slot %q but the component never applies it",
+				filename, dimension.Name, slot.Name))
+		}
+	}
+	if len(gaps) == 0 {
+		return nil
+	}
+	return errors.New(strings.Join(gaps, "\n"))
 }
 
 // canonicalComponents lists every component name authored under
