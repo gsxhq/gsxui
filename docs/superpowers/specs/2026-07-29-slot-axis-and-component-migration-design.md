@@ -253,36 +253,40 @@ is what finds these.
 
 ## 11. Known gaps carried into the migration
 
-Each is a current limitation, not a historical note. None blocks starting the
-migration; all are worth closing as the catalogue grows.
+Each is a current limitation, not a historical note. None blocks the migration.
 
-1. **The property oracle is variant-blind.** `contestedProperties` unions the
-   resolved property names of a component's utilities without regard to variant,
-   so a component utility such as `hover:bg-x` makes any unconditional
-   `background-color` declaration on that marker look contested. The only escape
-   hatch is a whole-file exemption, which is coarse. Expect this to bite once
-   Sidebar and Carousel migrate.
+1. **Responsive `@media` overrides are a blind spot in the layer gate.** The
+   contest oracle compares an authored rule's enclosing at-rule prelude against
+   the one Tailwind emits for a responsive variant, and the prelude text differs,
+   so the two never match and never contest. `@media (hover: hover)` is handled
+   — it is dropped on both sides, being Tailwind's `hover:` implementation — but
+   width-based conditions are not. Close it by normalizing media conditions if
+   the migration starts writing responsive overrides against migrated markers.
 
-2. **`checkAccessorNames` is unpinned at one of its three call sites.** It runs
+2. **The `web/site-button.css` exemption list is coupled to exact selector
+   text.** 56 explicit `(selector, contested)` pairs, each carrying the
+   docs/demo-fallback reason. A reflow of that file, or a semantically
+   equivalent selector rewrite, fails the build as stale. That is the intended
+   trade — a stale exemption must not survive silently — but expect churn while
+   the components that depend on the fallback migrate.
+
+3. **`checkAccessorNames` is unpinned at one of its three call sites.** It runs
    in `GenerateAccessors`, `Resolve` and `HelperCalls`, but only the first two
-   are covered by tests — neutering the `Resolve` call leaves the suite green.
+   are covered — neutering the `Resolve` call leaves the suite green.
 
-3. **The sweep covers resting state at one viewport.** Interaction states
-   (`:hover`, `:focus-visible`, `[data-state=open]`) are not swept, and the
-   migration's remaining components carry many such overrides. Per-component
-   regression pins in `jstest/specs/layer-precedence.spec.ts` are the pattern to
-   follow, rather than relying on the sweep alone.
+4. **The computed-style sweep covers resting state at one viewport.** Interaction
+   states are not swept. The layer gate catches such rules at source, so the
+   sweep is the second net rather than the first; per-component regression pins
+   in `jstest/specs/layer-precedence.spec.ts` are the pattern to follow. A static
+   before/after diff of compiled CSS per marker would close this more cheaply
+   than driving hover on every element.
 
-4. **`shapes.All()` is a shallow copy.** The `Shape` structs are copied but the
+5. **`shapes.All()` is a shallow copy.** The `Shape` structs are copied but the
    `Slots` and `Values` backing arrays are shared. No caller mutates today.
-
-5. **The `web/site-button.css` exemption is checked for existence, not
-   correctness.** Its guard test requires at least one violation, so a genuinely
-   wrong new rule added to that file would stay invisible.
 
 6. **From the first migration that puts a compiled component under a foundation
    mechanics rule, `make audit` and `go test ./internal/stylegen` require
-   `npm install`**, because the property oracle shells out to the Tailwind CLI.
+   `npm install`**, because the contest oracle shells out to the Tailwind CLI.
    It errors loudly when absent rather than passing silently.
 
 ## 10. Stage 0 and 1 complete
