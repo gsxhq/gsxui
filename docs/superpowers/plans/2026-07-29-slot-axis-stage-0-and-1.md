@@ -1,6 +1,15 @@
 # Slot Axis (Stage 0) and Layer Gate (Stage 1) Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **STATUS: IMPLEMENTED.** This plan is a historical record of completed work
+> (Stage 0 and Stage 1), not a task list to resume. All checkboxes below are
+> ticked because the work shipped — do not treat any of them as "next up."
+> Implemented 2026-07-29, commits `9d9d8c7..b74eeed`. Where implementation
+> diverged from what this plan describes, a **Divergence** note is added
+> inline at the relevant step; the specs in `docs/superpowers/specs/` reflect
+> the as-built system and are the source of truth over this plan's prose.
+> Stages 2-4 (the bulk migration) remain future work — see the spec's §10/§6.
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Give the recipe model a slot axis so multi-slot components can be expressed, generate per-slot accessors without a bootstrap cycle, and build the layer-precedence gate that must exist before any bulk migration.
 
@@ -72,7 +81,7 @@
 
 The root slot has `Name: ""`. `Shape.Base` and `Shape.Dimensions` are removed — they move onto `Slot`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```go
 func slotShape() Shape {
@@ -146,12 +155,12 @@ func TestShapeSlotLookup(t *testing.T) {
 }
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `go test ./internal/recipe/ -run TestShapeValidateAcceptsSlots -v`
 Expected: FAIL — `unknown field Slots in struct literal`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 Replace `Shape`'s fields and add `Slot` in `internal/recipe/shape.go`:
 
@@ -261,7 +270,7 @@ func (d Dimension) validate(component, slot string) error {
 
 Delete `Shape.Dimension` (the component-level lookup) — dimensions are per slot now. Existing tests referencing it will fail to compile; update them in Step 4.
 
-- [ ] **Step 4: Update the pre-existing shape tests**
+- [x] **Step 4: Update the pre-existing shape tests**
 
 `internal/recipe/shape_test.go`'s `validShape()` and its dependants still use the flat form. Rewrite `validShape()` as a single-root-slot shape so it keeps testing what it tested:
 
@@ -282,12 +291,12 @@ func validShape() Shape {
 
 Update every assertion whose expected error string changed to the new slot-qualified form. Do not weaken any assertion — the messages gain a `slot "…"` clause and nothing else.
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
 
 Run: `go test ./internal/recipe/ -v`
 Expected: PASS. `internal/stylegen` and `registry/canonical` will not compile yet — Tasks 5-7 fix them, and that is expected.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add internal/recipe/shape.go internal/recipe/shape_test.go
@@ -308,7 +317,7 @@ git commit -m "feat: add a slot axis to the recipe shape"
 
 Longest-match slot resolution is the point of this task. Sidebar's `menu`, `menu-button` and `menu-button-tooltip-content` all coexist.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```go
 func sidebarShape() Shape {
@@ -391,12 +400,12 @@ func TestShapeDecodeClassRejectsSlotErrors(t *testing.T) {
 }
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `go test ./internal/recipe/ -run TestShapeSlotClassEncoding -v`
 Expected: FAIL — `too many arguments in call to s.BaseClass`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```go
 func (s Shape) BaseClass(slot string) string {
@@ -460,16 +469,16 @@ func (s Shape) DecodeClass(class string) (slot, dimension, value string, kind Cl
 
 Add `slices` and `sort` to the import block.
 
-- [ ] **Step 4: Update the pre-existing encoding tests**
+- [x] **Step 4: Update the pre-existing encoding tests**
 
 `TestShapeClassEncoding`, `TestShapeDecodeClass` and `TestShapeDecodeClassRejects` from the previous design call the old signatures. Update the call sites to pass `""` for the root slot and accept the extra return value. Keep every existing case — they still describe correct root-slot behavior.
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
 
 Run: `go test ./internal/recipe/ -v`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add internal/recipe/shape.go internal/recipe/shape_test.go
@@ -490,7 +499,7 @@ git commit -m "feat: encode and decode recipe classes with a slot axis"
 
 `Base` is keyed by slot. `Values` is keyed `[slot][dimension][value]`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```go
 func slotConformShape() Shape {
@@ -587,12 +596,12 @@ func TestCheckConflictsNamesTheSlot(t *testing.T) {
 }
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `go test ./internal/recipe/ -run TestConformAcceptsSlottedStyle -v`
 Expected: FAIL — `resolved.BaseUtilities undefined`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```go
 // Resolved is a style proven to be a complete implementation of a shape.
@@ -667,16 +676,16 @@ func Conform(filename string, shape Shape, style Style) (Resolved, error) {
 
 `CheckConflicts` keeps its existing `check(class string, utilities []string) error` closure and its superseded-before-repeat ordering verbatim. Only the traversal changes — walk `shape.Slots`, checking `resolved.Base[slot.Name]` under `shape.BaseClass(slot.Name)` and each value under `shape.ValueClass(slot.Name, dim.Name, value)`.
 
-- [ ] **Step 4: Update the pre-existing validate tests**
+- [x] **Step 4: Update the pre-existing validate tests**
 
 `conformShape()`, `conformCSS` and their dependants use the flat form. Rewrite `conformShape()` as a single-root-slot shape and update expected messages to the slot-qualified form. Keep every case.
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
 
 Run: `go test ./internal/recipe/ -v`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add internal/recipe/validate.go internal/recipe/validate_test.go
@@ -685,7 +694,7 @@ git commit -m "feat: validate style conformance per slot"
 
 ---
 
-### Task 4: Contract schema v2
+### Task 4: Contract schema, slots under components
 
 **Files:**
 - Modify: `internal/recipe/contract.go`
@@ -693,11 +702,17 @@ git commit -m "feat: validate style conformance per slot"
 
 **Interfaces:**
 - Consumes: `Shape`, `Slot`, `Resolved` (Tasks 1-3)
-- Produces: `const ContractVersion = 2`, `ContractComponent{Slots map[string]ContractSlot}`, `ContractSlot{Base bool; Dimensions map[string]ContractDimension}`, `ContractUtilities{Slots map[string]ContractSlotUtilities}`, `ContractSlotUtilities{Base []string; Dimensions map[string]map[string][]string}`
+- Produces: `const ContractVersion = 1`, `ContractComponent{Slots map[string]ContractSlot}`, `ContractSlot{Base bool; Dimensions map[string]ContractDimension}`, `ContractUtilities{Slots map[string]ContractSlotUtilities}`, `ContractSlotUtilities{Base []string; Dimensions map[string]map[string][]string}`
 
 The shape is still emitted once under `components`; `styles` still carries only utilities.
 
-- [ ] **Step 1: Write the failing test**
+> **Divergence:** this task and its title were originally written against a
+> `ContractVersion = 2` bump. That was reset to `ContractVersion = 1` during
+> implementation — the library is unreleased, so there was never a released
+> "version 1" to bump away from, and `1` is what shipped
+> (`internal/recipe/contract.go`, `registry/generated/recipes.json`).
+
+- [x] **Step 1: Write the failing test**
 
 ```go
 func TestBuildContractGroupsSlotsUnderComponent(t *testing.T) {
@@ -765,12 +780,15 @@ func TestContractIsDeterministicWithSlots(t *testing.T) {
 }
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `go test ./internal/recipe/ -run TestBuildContractGroupsSlots -v`
 Expected: FAIL — `card.Slots undefined`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
+
+(As drafted here. Shipped with `ContractVersion = 1`, not `2` — see the
+Divergence note above Task 4.)
 
 ```go
 // ContractVersion is bumped whenever the emitted schema changes shape.
@@ -798,12 +816,12 @@ type ContractSlotUtilities struct {
 
 `Contract`, `ContractDimension` and `MarshalIndent` are unchanged. `BuildContract` walks slots for both halves. The root slot's key in the JSON maps is the empty string — that is deliberate and round-trips through `encoding/json` correctly.
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `go test ./internal/recipe/ -v`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add internal/recipe/contract.go internal/recipe/contract_test.go
@@ -826,7 +844,7 @@ git commit -m "feat: group slots under their component in contract v2"
 
 This package exists to break a bootstrap cycle: `stylegen` imports it to read shapes and generate accessors into `registry/canonical`, which cannot compile until those accessors exist. `shapes` has no dependents inside `registry/canonical`, so it always compiles.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `registry/canonical/shapes/shapes_test.go`:
 
@@ -879,12 +897,12 @@ func TestButtonIsASingleRootSlot(t *testing.T) {
 }
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `go test ./registry/canonical/shapes/ -v`
 Expected: FAIL — package does not exist.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 `registry/canonical/shapes/button.go`:
 
@@ -965,12 +983,12 @@ var button = recipe.Component{Shape: shapes.Button}
 func Shapes() map[string]recipe.Shape { return shapes.All() }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `go test ./registry/canonical/shapes/ -v`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add registry/canonical/shapes registry/canonical/recipe.go registry/canonical/button_recipe.go
@@ -996,7 +1014,7 @@ git commit -m "feat: move recipe shapes to a leaf package"
 
 Accessor naming: kebab segments title-cased. Root slot base is `Root()`. A named slot's base is `<Slot>()`. A dimension is `<Slot><Dimension>(v)`, with the slot part omitted for the root.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```go
 func TestGenerateAccessorsForASingleRootSlot(t *testing.T) {
@@ -1070,12 +1088,12 @@ func TestGeneratedAccessorsResolveThroughTheShape(t *testing.T) {
 }
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `go test ./internal/stylegen/ -run TestGenerateAccessors -v`
 Expected: FAIL — `undefined: GenerateAccessors`.
 
-- [ ] **Step 3: Rewrite recipe.Component**
+- [x] **Step 3: Rewrite recipe.Component**
 
 ```go
 // Component binds a Shape to the accessor calls a canonical component authors.
@@ -1112,7 +1130,7 @@ func (c Component) SlotValueClass(slot, dimension, value string) string {
 }
 ```
 
-- [ ] **Step 4: Write the generator**
+- [x] **Step 4: Write the generator**
 
 `internal/stylegen/accessors.go`. Build the source with `text/template` or a `strings.Builder`, then run it through `format.Source` so output is gofmt-clean by construction:
 
@@ -1197,12 +1215,12 @@ Imports: `fmt`, `go/format`, `slices`, `sort`, `strconv`, `strings`, plus
 `internal/recipe`. Sorting slots and dimensions by name is what makes the output
 deterministic, which the drift check requires.
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
 
 Run: `go test ./internal/stylegen/ -run TestGenerate -v`
 Expected: PASS.
 
-- [ ] **Step 6: Switch Button's authored source to the generated accessors**
+- [x] **Step 6: Switch Button's authored source to the generated accessors**
 
 In `registry/canonical/button.gsx`, in BOTH class attributes (the `<a>` branch and the `<button>` branch), change `button.Role()` to `button.Root()`. Leave `button.Variant(variant)` and `button.Size(size)` as they are — the generated names match.
 
@@ -1212,7 +1230,7 @@ In `registry/canonical/button_recipe.go`, change the binding to the generated ty
 var button = buttonRecipe{c: recipe.Component{Shape: shapes.Button}}
 ```
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add internal/stylegen/accessors.go internal/stylegen/accessors_test.go \
@@ -1236,7 +1254,17 @@ git commit -m "feat: generate per-slot recipe accessors"
 
 The matcher no longer lowercases a method name to get a dimension. It resolves the method name against the shape's accessor names, which is the only way `MenuButtonSize` can split into slot `menu-button` and dimension `size`.
 
-- [ ] **Step 1: Write the failing test**
+> **Divergence:** "unchanged ... `HelperCalls` ... signature" above did not
+> hold. A method name cannot be split back into `(slot, dimension)` by string
+> manipulation alone, so `HelperCalls` ships with a third argument,
+> `HelperCalls(filename string, src []byte, shape recipe.Shape)`, resolving
+> each method name against that shape's own generated accessor names. The
+> test below (`TestResolveSplitsSlotAndDimensionByAccessorName`), written
+> during this plan's own execution, calls the pre-divergence two-argument
+> form; the shipped signature is the three-argument one described in the
+> slot-axis spec §3.2.
+
+- [x] **Step 1: Write the failing test**
 
 ```go
 func TestResolveDesugarsSlotAccessors(t *testing.T) {
@@ -1297,12 +1325,12 @@ component S(size string, children gsx.Node) {
 
 Add `testSlotResolved(t)` building a `recipe.Resolved` for the card shape from Task 3's fixture CSS via `ParseStyle` + `Conform`.
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `go test ./internal/stylegen/ -run TestResolveDesugarsSlotAccessors -v`
 Expected: FAIL — `calls[0].Slot undefined`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 In `resolve.go`, replace the `strings.ToLower(selector.Sel.Name)` mapping with a shape-driven lookup. Build the accessor table from the shape once (the same `accessorName` function Task 6 defines — export it within the package so both files use one implementation, do NOT duplicate it):
 
@@ -1334,7 +1362,7 @@ In `generate.go`, `resolveAll` gains one more generated artifact per component: 
 
 Update the residue check's hardcoded method list. Rather than listing `.Root(`, `.Variant(`, `.Size(` and every future accessor, derive it: reject any surviving `<ident>.<Method>(` whose ident matches a known component name. That removes the three-uncoupled-edits problem noted as follow-up 8 of the base design.
 
-- [ ] **Step 4: Verify Button byte-identity — THE CRITICAL CHECK**
+- [x] **Step 4: Verify Button byte-identity — THE CRITICAL CHECK**
 
 ```bash
 git stash list  # ensure clean
@@ -1349,12 +1377,12 @@ diff /tmp/maia-before.gsx registry/generated/maia/button.gsx && echo "maia IDENT
 
 All three MUST be identical. If any differs, the slot axis is not backward compatible — STOP and report rather than accepting the diff. `registry/generated/recipes.json` WILL differ (schema v2); that is expected and is the only permitted change.
 
-- [ ] **Step 5: Run the full suite**
+- [x] **Step 5: Run the full suite**
 
 Run: `go build ./... && go test ./... && go run ./cmd/stylegen --check && gofmt -l . && make audit`
 Expected: all green, `--check` exit 0.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add -A internal/stylegen registry ui
@@ -1376,7 +1404,15 @@ git commit -m "feat: desugar slot accessors and generate them per component"
 
 This is Stage 1's first half, and it must land before any bulk migration. The hazard: a rule in `@layer components` that overrides a migrated component's presentation silently stops winning, because the cascade orders layers before specificity. It bit three times during Button alone and twice produced a visible regression that a 313-test browser suite did not catch.
 
-- [ ] **Step 1: Write the failing test**
+> **Divergence:** the shipped gate is broader than drafted here. It reads six
+> stylesheets, not just `assets/css/styles/default.css`, and it contests raw
+> CSS property declarations as well as `@apply` rules. Its exemption list is
+> keyed by `(file, selector, contested)` rather than by selector alone, each
+> entry carries a mandatory reason string, and the build fails if an
+> exemption goes stale (no longer matches a real contest) rather than only
+> when a new, unexempted contest appears.
+
+- [x] **Step 1: Write the failing test**
 
 ```go
 func TestCheckLayerPrecedenceAcceptsTheCurrentTree(t *testing.T) {
@@ -1415,12 +1451,12 @@ func TestCheckLayerPrecedenceRejectsAComponentsLayerOverride(t *testing.T) {
 }
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `go test ./internal/stylegen/ -run TestCheckLayerPrecedence -v`
 Expected: FAIL — `undefined: CheckLayerPrecedence`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 `ComponentComposedMarkers` finds every `data-gsxui-slot-*` marker on an element
 that renders through a migrated component. Parse each `ui/*.gsx` with
@@ -1504,7 +1540,7 @@ assets/css/styles/default.css:2643: [data-gsxui-slot-carousel-previous] sets
 
 Report every violation, not just the first — a sweep is more useful than a bisect.
 
-- [ ] **Step 4: Wire it into make audit**
+- [x] **Step 4: Wire it into make audit**
 
 Add to `cmd/stylegen/main.go` a `--check-layers` flag calling `CheckLayerPrecedence`, then add to the `audit:` target:
 
@@ -1512,12 +1548,12 @@ Add to `cmd/stylegen/main.go` a `--check-layers` flag calling `CheckLayerPrecede
 	go run ./cmd/stylegen --check-layers
 ```
 
-- [ ] **Step 5: Run tests and the gate**
+- [x] **Step 5: Run tests and the gate**
 
 Run: `go test ./internal/stylegen/ -v && make audit`
 Expected: PASS, `make audit` exit 0.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add internal/stylegen/layercheck.go internal/stylegen/layercheck_test.go \
@@ -1540,7 +1576,7 @@ git commit -m "feat: fail the build on components-layer overrides of compiled pr
 
 Stage 1's second half. The Button work built this ad hoc and threw it away; every future migration needs it, and rebuilding it each time is how the Carousel regression survived.
 
-- [ ] **Step 1: Write the harness**
+- [x] **Step 1: Write the harness**
 
 `jstest/support/computed-sweep.ts`:
 
@@ -1578,7 +1614,7 @@ export async function sweepComputedStyles(page, url: string) {
 }
 ```
 
-- [ ] **Step 2: Write the spec that uses it**
+- [x] **Step 2: Write the spec that uses it**
 
 `jstest/specs/layer-precedence.spec.ts` sweeps every fixture in both colour schemes and writes the result to `jstest/.tmp/sweep-<scheme>.json`. It asserts nothing on its own — it is a baseline producer. Diffing against a pre-migration baseline is the assertion, and that is what `make sweep-compare` does.
 
@@ -1594,7 +1630,7 @@ test("carousel arrows stay circular", async ({ page }) => {
 });
 ```
 
-- [ ] **Step 3: Add the Makefile targets**
+- [x] **Step 3: Add the Makefile targets**
 
 ```make
 sweep-baseline:
@@ -1646,16 +1682,16 @@ if (differences > 0) {
 console.log("no computed-style differences");
 ```
 
-- [ ] **Step 4: Prove the harness catches a real regression**
+- [x] **Step 4: Prove the harness catches a real regression**
 
 Temporarily revert the Carousel fix (move `rounded-full` back into `@layer components` with its `:where()`), run `make sweep-compare` against a baseline taken before the revert, and confirm it reports `data-gsxui-slot-carousel-previous#1 borderRadius`. Then restore the fix and confirm a clean compare. Paste both outputs into your report — a sweep harness that has never caught anything is not known to work.
 
-- [ ] **Step 5: Run the full suite**
+- [x] **Step 5: Run the full suite**
 
 Run: `npx playwright test --config jstest/playwright.config.ts`
 Expected: 1 failed (`sidebar-page.spec.ts:3`, pre-existing at merge base) or better, plus the new pins passing.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add jstest/support/computed-sweep.ts jstest/support/sweep-diff.mjs \
@@ -1672,22 +1708,23 @@ git commit -m "test: commit the computed-style sweep harness and regression pins
 - Modify: `docs/superpowers/specs/2026-07-29-typed-recipe-model-design.md`
 - Modify: `CHANGELOG.md`
 
-- [ ] **Step 1: Record what implementation changed**
+- [x] **Step 1: Record what implementation changed**
 
 Earlier work in this repo repeatedly shipped specs describing designs that implementation had abandoned. Re-read both specs against the code and correct any statement that is no longer true — in particular the base design's §5 accessor table (`Role()` is now `Root()`, and `Variant`/`Size` are generated rather than fixed methods on `recipe.Component`), and its follow-up items 2 and 8, which this plan closes.
 
-- [ ] **Step 2: Add the CHANGELOG entry**
+- [x] **Step 2: Add the CHANGELOG entry**
 
 Contract consumers need to know the schema moved:
 
 ```markdown
 ### Changed
-- `registry/generated/recipes.json` is now schema version 2: a component's
-  rules are grouped under named slots (`components.<c>.slots.<s>`), so
-  multi-slot components can be expressed. Version 1 had no slot axis.
+- `registry/generated/recipes.json` groups a component's rules under named
+  slots (`components.<c>.slots.<s>`), so multi-slot components can be
+  expressed. The contract stays schema version 1 — the library is unreleased,
+  so there is no prior released version to bump from.
 ```
 
-- [ ] **Step 3: Full verification**
+- [x] **Step 3: Full verification**
 
 Run each and confirm the stated expectation before claiming completion:
 
@@ -1701,7 +1738,7 @@ git status --short                   # expect: clean
 npx playwright test --config jstest/playwright.config.ts
 ```
 
-- [ ] **Step 4: Verify the spec's success criteria**
+- [x] **Step 4: Verify the spec's success criteria**
 
 Confirm each of §9's seven criteria with evidence:
 
@@ -1713,7 +1750,7 @@ Confirm each of §9's seven criteria with evidence:
 6. `make audit` fails on a components-layer override — point at `TestCheckLayerPrecedenceRejectsAComponentsLayerOverride`.
 7. The sweep harness is committed and proven to catch a regression — point at Task 9 Step 4's output.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add -A

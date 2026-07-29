@@ -71,7 +71,7 @@ registry/styles/<style>/button.css               contract JSON schema
 registry/generated/<style>/button.gsx   per-style output, committed
         │  default style (nova) copied to ↓
 ui/button.gsx                  package ui  ← ships
-registry/generated/recipes.json            ← editor
+registry/generated/recipes.json            ← published contract, no consumer yet
 ```
 
 ### 3.1 `internal/recipe`
@@ -285,9 +285,10 @@ span would silently delete it. See `recordPartEdit` and
 alongside the generated `.gsx` files:
 
 A component's rules are grouped under named slots, so multi-slot components can
-be expressed. The `version` field carries `recipe.ContractVersion`, which a
-consumer reads to decide whether it understands the schema. Abridged to the
-root slot for legibility:
+be expressed. The `version` field carries `recipe.ContractVersion`, intended
+for a future consumer to check before it decides whether it understands the
+schema — no consumer reads it yet, and no test exercises version rejection.
+Abridged to the root slot for legibility:
 
 ```json
 { "version": 1,
@@ -307,12 +308,15 @@ root slot for legibility:
 ```
 
 The shape is emitted once and shared by all styles, which is strict conformance
-made visible in the artifact. The editor features this design exists to enable
-follow directly: the gallery iterates `components`, a diff aligns two entries of
-`styles` on identical axes, completeness is structural rather than textual, and
-a preset export is a subtree.
+made visible in the artifact. This is a **published contract awaiting
+integration**: no consumer reads it today. Editor features this design would
+enable follow directly once a consumer exists — a gallery could iterate
+`components`, a diff could align two entries of `styles` on identical axes,
+completeness would be structural rather than textual, and a preset export
+would be a subtree — but none of that is built.
 
-No editor UI is in scope here. The artifact and its drift check are.
+No editor UI is in scope here. The artifact and its drift check are. Also
+missing: any test that a consumer rejects an unexpected `version` value.
 
 ## 8. Rejected: build-time utility pre-merge
 

@@ -136,6 +136,26 @@ manipulation — nothing in `MenuButtonSize` marks the boundary —
 each method name against that shape's own generated accessor names. A two-argument
 form cannot work.
 
+### 3.3 Registry name to Go identifier
+
+The registry and CSS identity for a component stays kebab-case
+(`input-group`) — that is what appears in class names, the contract, and
+`registry/generated/recipes.json`. The generated Go type name and its
+receiver are *derived* from that kebab-case name by the same title-casing
+rule already used for slot accessors (`menu-button` → `MenuButton`):
+`input-group` gives type `inputGroupRecipe` and receiver `inputGroup`.
+
+The derivation must be validated for:
+
+- names that title-case to a Go keyword (or otherwise are not valid Go
+  identifiers), and
+- two distinct components whose kebab-case names normalize to the same
+  identifier.
+
+A concurrent branch of work is implementing this generator; this section
+states the rule the implementation must satisfy, not the implementation
+itself.
+
 ## 4. The pipeline on the slot axis
 
 Each unit of the pipeline is small and independently tested.
@@ -155,6 +175,27 @@ Each unit of the pipeline is small and independently tested.
 
 The contract emits each shape once: slots live under `components`, and styles
 carry only utilities.
+
+### 4.1 `internal/stylecontract` and `recipe.Shape`
+
+`internal/stylecontract` (`Component`, `Slot`, `Axis`, `RegistryName`) already
+declares Button's slot/variant/size vocabulary, independently of
+`recipe.Shape`. Today the two duplicate that vocabulary with no executable
+link between them — nothing checks that a `Shape` and its component's
+`stylecontract.Component` agree.
+
+The intended equivalences, as **requirements** for a later enforcement task,
+not yet checked automatically:
+
+- a shape's `Component` name equals its style-contract `RegistryName`;
+- a shape's slot names map onto the contract's full slot names;
+- a shape's dimensions map onto the contract's declared `data-*` axes
+  (`Axis.Attribute`);
+- a shape's dimension values are among the values that axis permits
+  (`Axis.Values`).
+
+No code enforces this today; it is recorded here as a gap and a future
+requirement, not as a description of an existing check.
 
 ## 5. The layer hazard applies to every migration
 
@@ -244,50 +285,14 @@ is what finds these.
    test pins the longest-match rule against its shorter siblings.
 4. Accessors are generated from shapes with no bootstrap cycle, and a typo'd
    slot or dimension is a compile error.
-5. `recipes.json` groups slots under their component; the editor can
-   enumerate, diff per axis, and report completeness with no CSS access.
+5. `recipes.json` groups slots under their component as a published contract
+   a future editor or other consumer could enumerate, diff per axis, and
+   report completeness against with no CSS access. No such consumer exists
+   yet (§11.7).
 6. A `make audit` rule fails the build on a components-layer rule that overrides
    a migrated component's presentation.
 7. Every migrated component has a committed before/after computed-style sweep
    showing no unexplained difference.
-
-## 11. Known gaps carried into the migration
-
-Each is a current limitation, not a historical note. None blocks the migration.
-
-1. **Responsive `@media` overrides are a blind spot in the layer gate.** The
-   contest oracle compares an authored rule's enclosing at-rule prelude against
-   the one Tailwind emits for a responsive variant, and the prelude text differs,
-   so the two never match and never contest. `@media (hover: hover)` is handled
-   — it is dropped on both sides, being Tailwind's `hover:` implementation — but
-   width-based conditions are not. Close it by normalizing media conditions if
-   the migration starts writing responsive overrides against migrated markers.
-
-2. **The `web/site-button.css` exemption list is coupled to exact selector
-   text.** 56 explicit `(selector, contested)` pairs, each carrying the
-   docs/demo-fallback reason. A reflow of that file, or a semantically
-   equivalent selector rewrite, fails the build as stale. That is the intended
-   trade — a stale exemption must not survive silently — but expect churn while
-   the components that depend on the fallback migrate.
-
-3. **`checkAccessorNames` is unpinned at one of its three call sites.** It runs
-   in `GenerateAccessors`, `Resolve` and `HelperCalls`, but only the first two
-   are covered — neutering the `Resolve` call leaves the suite green.
-
-4. **The computed-style sweep covers resting state at one viewport.** Interaction
-   states are not swept. The layer gate catches such rules at source, so the
-   sweep is the second net rather than the first; per-component regression pins
-   in `jstest/specs/layer-precedence.spec.ts` are the pattern to follow. A static
-   before/after diff of compiled CSS per marker would close this more cheaply
-   than driving hover on every element.
-
-5. **`shapes.All()` is a shallow copy.** The `Shape` structs are copied but the
-   `Slots` and `Values` backing arrays are shared. No caller mutates today.
-
-6. **From the first migration that puts a compiled component under a foundation
-   mechanics rule, `make audit` and `go test ./internal/stylegen` require
-   `npm install`**, because the contest oracle shells out to the Tailwind CLI.
-   It errors loudly when absent rather than passing silently.
 
 ## 10. Stage 0 and 1 complete
 
@@ -330,3 +335,53 @@ renders at 28px (`size-7`, its own authored value and upstream shadcn's), and
 **Not started:** Stage 2 (Card), Stage 3 (Badge, Alert), Stage 4 (the long
 tail, Sidebar last). The rule in §6 still applies — a stage does not begin
 until the previous one's sweep is clean.
+
+## 11. Known gaps carried into the migration
+
+Each is a current limitation, not a historical note. None blocks the migration.
+
+1. **Responsive `@media` overrides are a blind spot in the layer gate.** The
+   contest oracle compares an authored rule's enclosing at-rule prelude against
+   the one Tailwind emits for a responsive variant, and the prelude text differs,
+   so the two never match and never contest. `@media (hover: hover)` is handled
+   — it is dropped on both sides, being Tailwind's `hover:` implementation — but
+   width-based conditions are not. Close it by normalizing media conditions if
+   the migration starts writing responsive overrides against migrated markers.
+
+2. **The `web/site-button.css` exemption list is coupled to exact selector
+   text.** 56 explicit `(selector, contested)` pairs, each carrying the
+   docs/demo-fallback reason. A reflow of that file, or a semantically
+   equivalent selector rewrite, fails the build as stale. That is the intended
+   trade — a stale exemption must not survive silently — but expect churn while
+   the components that depend on the fallback migrate.
+
+3. **`checkAccessorNames` is unpinned at one of its three call sites.** It runs
+   in `GenerateAccessors`, `Resolve` and `HelperCalls`, but only the first two
+   are covered — neutering the `Resolve` call leaves the suite green.
+
+4. **The computed-style sweep covers resting state at one viewport.** Interaction
+   states are not swept. The layer gate catches such rules at source, so the
+   sweep is the second net rather than the first; per-component regression pins
+   in `jstest/specs/layer-precedence.spec.ts` are the pattern to follow. A static
+   before/after diff of compiled CSS per marker would close this more cheaply
+   than driving hover on every element.
+
+5. **`shapes.All()` is a shallow copy.** The `Shape` structs are copied but the
+   `Slots` and `Values` backing arrays are shared. No caller mutates today.
+
+6. **From the first migration that puts a compiled component under a foundation
+   mechanics rule, `make audit` and `go test ./internal/stylegen` require
+   `npm install`**, because the contest oracle shells out to the Tailwind CLI.
+   It errors loudly when absent rather than passing silently.
+
+7. **`registry/generated/recipes.json` has no consumer yet.** It is a
+   published contract, not one currently read by the theme editor or anything
+   else — `grep -rn "recipes.json" --include='*.ts' --include='*.js'
+   --include='*.go' .` finds only the writer in
+   `internal/stylegen/generate.go`. There is also no version-rejection test: no
+   test asserts that a consumer (real or fixture) rejects an unexpected
+   `version` value. Both are gaps until an actual consumer is built.
+
+8. **`recipe.Shape` and `internal/stylecontract.Component` duplicate the same
+   slot/variant/size vocabulary with no executable link (§4.1).** The
+   equivalences between them are stated as requirements, not enforced.

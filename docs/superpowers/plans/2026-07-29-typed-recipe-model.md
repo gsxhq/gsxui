@@ -1,6 +1,15 @@
 # Typed Recipe Model Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **STATUS: IMPLEMENTED.** This plan is a historical record of completed work,
+> not a task list to resume. All checkboxes below are ticked because the work
+> shipped — do not treat any of them as "next up." Implemented 2026-07-29,
+> commits `9c1f73c..4a4e653` (see also `1c9afc7`, `910fc01` for the follow-up
+> doc reconciliation). Where implementation diverged from what this plan
+> describes, a **Divergence** note is added inline at the relevant step; the
+> specs in `docs/superpowers/specs/` reflect the as-built system and are the
+> source of truth over this plan's prose.
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Replace flat recipe token strings with a typed shape model, and make the compiler generate the variant switches that are currently hand-written in the canonical component.
 
@@ -75,7 +84,7 @@ Verified against `class={ "group/button", role("button"), variant("button", vari
 - Consumes: nothing
 - Produces: `recipe.Shape{Component string, Base bool, Dimensions []Dimension}`, `recipe.Dimension{Name, Default string, Values []string}`, `func (Shape) Validate() error`, `func (Shape) Dimension(name string) (Dimension, bool)`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```go
 package recipe
@@ -148,12 +157,12 @@ func TestShapeDimensionLookup(t *testing.T) {
 }
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `go test ./internal/recipe/ -run TestShape -v`
 Expected: FAIL — package `internal/recipe` does not exist.
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```go
 // Package recipe models component style recipes: the shape a component
@@ -243,12 +252,12 @@ func (s Shape) Dimension(name string) (Dimension, bool) {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `go test ./internal/recipe/ -run TestShape -v`
 Expected: PASS, all subtests.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add internal/recipe/shape.go internal/recipe/shape_test.go
@@ -269,7 +278,7 @@ git commit -m "feat: add typed recipe shape model"
 
 Class names are a derived encoding, not the schema. Decoding matches against *declared* values, which is what removes the ambiguity between a dimension name and a dashed value like `icon-lg`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```go
 func TestShapeClassEncoding(t *testing.T) {
@@ -332,12 +341,12 @@ func TestShapeDecodeClassRejects(t *testing.T) {
 }
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `go test ./internal/recipe/ -run TestShapeDecode -v`
 Expected: FAIL — `undefined: ClassKind`.
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 Append to `internal/recipe/shape.go`:
 
@@ -391,12 +400,12 @@ func (s Shape) DecodeClass(class string) (dimension, value string, kind ClassKin
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `go test ./internal/recipe/ -v`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add internal/recipe/shape.go internal/recipe/shape_test.go
@@ -432,7 +441,7 @@ func (s Style) Rules() []Rule {
 }
 ```
 
-- [ ] **Step 1: Move the files and apply renames**
+- [x] **Step 1: Move the files and apply renames**
 
 ```bash
 git mv internal/stylegen/recipe.go internal/recipe/parse.go
@@ -442,7 +451,7 @@ git mv internal/stylegen/testdata/recipe-valid.css internal/recipe/testdata/reci
 
 Then in both moved files: change `package stylegen` to `package recipe`; apply the renames listed above; delete the `const RecipePrefix = "gsxui-recipe-"` line (Task 2 defines `Prefix`); rename the error helpers `recipeError`/`parserRecipeError` to `styleError`/`parserStyleError` for consistency.
 
-- [ ] **Step 2: Update stylegen's call sites in the same commit**
+- [x] **Step 2: Update stylegen's call sites in the same commit**
 
 **Every commit must leave `go build ./...` green.** The move breaks
 `internal/stylegen`, so repair it here rather than leaving the tree broken
@@ -460,12 +469,12 @@ and `generate.go`:
 Do not change any behavior. Task 6 rewrites this logic; here it only has to
 compile and keep passing its existing tests.
 
-- [ ] **Step 3: Run tests to verify the move is clean**
+- [x] **Step 3: Run tests to verify the move is clean**
 
 Run: `go build ./... && go test ./internal/recipe/ ./internal/stylegen/ -v`
 Expected: both packages PASS, build green.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add -A internal/recipe internal/stylegen
@@ -486,7 +495,7 @@ git commit -m "refactor: move the recipe CSS parser into internal/recipe"
 
 `Values` is keyed `[dimension][value]`. `Conform` validates in both directions and returns the resolved recipe only if the style is a complete, exact implementation of the shape.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```go
 package recipe
@@ -591,12 +600,12 @@ func TestConformRejectsInvalidShape(t *testing.T) {
 }
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `go test ./internal/recipe/ -run TestConform -v`
 Expected: FAIL — `undefined: Conform`.
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```go
 package recipe
@@ -663,12 +672,12 @@ func Conform(filename string, shape Shape, style Style) (Resolved, error) {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `go test ./internal/recipe/ -v`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add internal/recipe/validate.go internal/recipe/validate_test.go
@@ -689,7 +698,7 @@ git commit -m "feat: validate style conformance against a component shape"
 
 The Tailwind conflict model is injected as a function so `internal/recipe` stays free of a dependency on `merge`, and so the test can drive it with a stub. `merge.Merge` drops superseded classes, so a list that gets shorter when merged contained a conflict. This is the real Tailwind-aware model, not a heuristic.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```go
 func TestCheckConflictsAcceptsCleanLists(t *testing.T) {
@@ -736,12 +745,12 @@ func TestCheckConflictsRejectsSupersededUtility(t *testing.T) {
 }
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `go test ./internal/recipe/ -run TestCheckConflicts -v`
 Expected: FAIL — `undefined: CheckConflicts`.
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 Append to `internal/recipe/validate.go`:
 
@@ -788,12 +797,12 @@ func CheckConflicts(filename string, resolved Resolved, merger func([]string) st
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `go test ./internal/recipe/ -v`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add internal/recipe/validate.go internal/recipe/validate_test.go
@@ -814,6 +823,18 @@ git commit -m "feat: reject conflicting utilities within one recipe rule"
 **Interfaces:**
 - Consumes: `recipe.Shape`, `recipe.Dimension` (Task 1)
 - Produces: `recipe.Component` (in `internal/recipe/component.go`) with `Role() string`, `Variant(value string) string`, `Size(value string) string`; `func Shapes() map[string]recipe.Shape` (exported for `stylegen`); and one unexported package-level `recipe.Component` var per component in `registry/canonical`, **named exactly after the component**
+
+> **Divergence (superseded by the later slot-axis work, see
+> `2026-07-29-slot-axis-stage-0-and-1.md`):** `Role()` shipped, then was
+> renamed `Root()` once slots were added, since a non-root slot has no
+> "role." `Variant`/`Size` as fixed methods on `recipe.Component` did not
+> survive either — the slot axis generates a typed per-component accessor
+> struct (e.g. `buttonRecipe`) with one method per declared
+> `(slot, dimension)`; `recipe.Component` itself now exposes only the
+> untyped primitives `SlotClass`/`SlotValueClass`. `Shapes()`/`canonical.Shapes()`
+> was replaced by `shapes.All()` in the leaf package `registry/canonical/shapes`,
+> and `internal/stylegen` does not import `registry/canonical` in any form —
+> see Divergence notes below and the slot-axis spec §3.1-§3.2.
 
 **Why methods, not free functions.** A component parameter named `variant`
 shadows any package-level function named `variant`, so `variant("button", variant)`
@@ -847,7 +868,7 @@ the dimension whose name is the method name lowercased (`Variant` → `variant`,
 
 The helpers resolve an empty or unrecognized value to the dimension's declared default, so the canonical's runtime semantics match the generated `default:` arm.
 
-- [ ] **Step 1: Write the failing test for the helpers**
+- [x] **Step 1: Write the failing test for the helpers**
 
 `registry/canonical/recipe_test.go`:
 
@@ -916,12 +937,12 @@ func TestButtonShapeMatchesPublicAPI(t *testing.T) {
 }
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `go test ./registry/canonical/ -v`
 Expected: FAIL — package does not exist.
 
-- [ ] **Step 3: Write the shape and helpers**
+- [x] **Step 3: Write the shape and helpers**
 
 `registry/canonical/button_recipe.go`:
 
@@ -1019,12 +1040,12 @@ func Shapes() map[string]recipe.Shape {
 
 (import `maps` alongside `recipe`.)
 
-- [ ] **Step 4: Run the helper tests**
+- [x] **Step 4: Run the helper tests**
 
 Run: `go test ./registry/canonical/ -v`
 Expected: PASS.
 
-- [ ] **Step 5: Move and rewrite the canonical Button**
+- [x] **Step 5: Move and rewrite the canonical Button**
 
 ```bash
 cp ui/button.gsx registry/canonical/button.gsx
@@ -1049,7 +1070,7 @@ class={
 
 Everything else — the parameter list, the `href`/`disabled` branch, `data-variant`, `data-size`, `type="button"`, `{ attrs... }`, `data-gsxui-slot-button`, and the doc comment — stays exactly as it is.
 
-- [ ] **Step 6: Write the style-independent behavior test**
+- [x] **Step 6: Write the style-independent behavior test**
 
 `registry/canonical/button_test.go`. These assertions are true under every style, which is the point of hosting them here:
 
@@ -1117,12 +1138,12 @@ func TestUnrecognizedVariantResolvesToDefault(t *testing.T) {
 
 Copy the `render` helper from `ui/button_test.go` into a new `registry/canonical/render_test.go`, changing only its package clause to `canonical_test`.
 
-- [ ] **Step 7: Generate and run**
+- [x] **Step 7: Generate and run**
 
 Run: `go generate ./... || npx gsx generate` (whichever the repo uses; check `Makefile` for the gsx codegen target), then `go test ./registry/canonical/ -v`
 Expected: PASS.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add -A registry/canonical
@@ -1142,9 +1163,17 @@ git commit -m "feat: add the canonical component package with recipe helpers"
 - Consumes: `recipe.Resolved` (Task 3)
 - Produces: `func Resolve(filename string, src []byte, resolved recipe.Resolved) ([]byte, error)`, `func HelperCalls(filename string, src []byte) ([]Call, error)` with `type Call struct{ Component, Dimension string }` (`Dimension` empty for `Role`)
 
+> **Divergence (superseded by the slot-axis work):** the two-argument
+> `HelperCalls(filename, src)` shown here cannot survive the slot axis. A
+> generated method name like `MenuButtonSize` cannot be split back into
+> `(slot, dimension)` by string manipulation, so `HelperCalls` ships with a
+> third argument, `shape recipe.Shape`, and resolves each method name against
+> that shape's own generated accessor names. See
+> `2026-07-29-slot-axis-stage-0-and-1.md` Task 7.
+
 Keep every existing rejection rule and the format/reparse/residue verification. The change is *what* gets substituted: a `ClassPart` whose `Expr` is a helper call is replaced over `[ExprPos, End())` (see Resolved Spike).
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```go
 func TestResolveDesugarsHelperCalls(t *testing.T) {
@@ -1230,12 +1259,12 @@ component B(tone string, children gsx.Node) {
 
 Add `testResolved(t)` to the test file, building a `recipe.Resolved` with base `{"inline-flex","items-center"}`, variant `default`→`{"bg-primary"}`, `outline`→`{"border-border","bg-background"}`.
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `go test ./internal/stylegen/ -run TestResolveDesugars -v`
 Expected: FAIL — `Resolve` has the old signature.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 Change `inspectClassExpr` so that, when the parsed expression is a `*goast.CallExpr` whose `Fun` is a `*goast.SelectorExpr` — that is, a call of the form `<component>.<Method>(...)`:
 
@@ -1297,12 +1326,12 @@ authored is in token form and the capability is genuinely dead.
 
 `HelperCalls` reuses the same traversal in a validation-only mode and returns the calls without editing — `GenerateAll` uses it to check the canonical against the shapes before touching any style.
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `go test ./internal/stylegen/ -v`
 Expected: PASS. Update `testdata/resolve-input.gsx.txt` and `testdata/resolve-nova.golden.gsx.txt` to the helper-call form and its expansion.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add internal/stylegen/resolve.go internal/stylegen/resolve_test.go internal/stylegen/testdata
@@ -1322,6 +1351,13 @@ git commit -m "feat: desugar recipe helper calls into generated switches"
 - Consumes: `Resolve`, `HelperCalls` (Task 6), `recipe.Conform`, `recipe.CheckConflicts` (Tasks 3–4), `canonical.Shapes()` (Task 5)
 - Produces: `const DefaultStyle = "nova"`, `func GenerateAll(root string, check bool) error`
 
+> **Divergence (superseded by the slot-axis work):** `canonical.Shapes()` did
+> not last. `internal/stylegen/generate.go` reads `shapes.All()` from the
+> leaf package `registry/canonical/shapes`, and `internal/stylegen` does not
+> import `registry/canonical` in any form — that import was removed entirely
+> to keep the bootstrap cycle broken. See
+> `2026-07-29-slot-axis-stage-0-and-1.md` §3.1 / Task 5.
+
 Discovery replaces the hardcoded `buttonStyleSources` slice:
 
 ```text
@@ -1332,7 +1368,7 @@ for each registry/canonical/<component>.gsx
   copy registry/generated/<DefaultStyle>/<component>.gsx -> ui/<component>.gsx
 ```
 
-- [ ] **Step 1: Write the test helpers**
+- [x] **Step 1: Write the test helpers**
 
 Add these to `internal/stylegen/generate_test.go` first — later tasks use them too:
 
@@ -1388,7 +1424,7 @@ func copyRepoFixture(t *testing.T, dst string) {
 }
 ```
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 ```go
 func TestGenerateAllIsIdempotent(t *testing.T) {
@@ -1480,12 +1516,12 @@ func TestGenerateAllValidatesBeforeWriting(t *testing.T) {
 }
 ```
 
-- [ ] **Step 3: Run test to verify it fails**
+- [x] **Step 3: Run test to verify it fails**
 
 Run: `go test ./internal/stylegen/ -run TestGenerateAll -v`
 Expected: FAIL — `undefined: GenerateAll`.
 
-- [ ] **Step 4: Write the implementation**
+- [x] **Step 4: Write the implementation**
 
 Rewrite `generate.go`:
 
@@ -1519,7 +1555,7 @@ Rename the `generatedButtonSource` struct to `generatedSource` (same fields: `re
 
 In `cmd/stylegen/main.go`, replace `stylegen.GenerateButton(root, *check)` with `stylegen.GenerateAll(root, *check)`, and change `repositoryRoot`'s marker file from `ui/button.gsx` to `registry/canonical/button.gsx`.
 
-- [ ] **Step 4b: Update the Makefile audit rules**
+- [x] **Step 4b: Update the Makefile audit rules**
 
 `make audit` is the first target of `make ci`, and several of its rules name
 `ui/button.gsx` because that file used to be the recipe-token component. This
@@ -1560,12 +1596,12 @@ attribute.
 
 Verify with `make audit` and confirm it exits 0.
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
 
 Run: `go test ./internal/stylegen/ -v && go run ./cmd/stylegen --check`
 Expected: PASS, and the check run exits 0.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add internal/stylegen/generate.go internal/stylegen/generate_test.go cmd/stylegen/main.go
@@ -1587,7 +1623,7 @@ git commit -m "feat: drive style generation from a discovered manifest"
 
 Emitted to `registry/generated/recipes.json` by `GenerateAll` and drift-checked with every other artifact. The shape is emitted once and shared by all styles — strict conformance made visible in the artifact.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```go
 func TestBuildContractEmitsSharedShapeAndPerStyleUtilities(t *testing.T) {
@@ -1652,12 +1688,12 @@ func TestContractIsDeterministic(t *testing.T) {
 }
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `go test ./internal/recipe/ -run TestBuildContract -v`
 Expected: FAIL — `undefined: BuildContract`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```go
 package recipe
@@ -1738,7 +1774,7 @@ func (c Contract) MarshalIndent() ([]byte, error) {
 }
 ```
 
-- [ ] **Step 4: Wire it into generation**
+- [x] **Step 4: Wire it into generation**
 
 In `resolveAll`, accumulate the per-style `recipe.Resolved` values, then append one more output:
 
@@ -1754,12 +1790,12 @@ outputs = append(outputs, generatedSource{
 })
 ```
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
 
 Run: `go test ./internal/recipe/ ./internal/stylegen/ -v && go run ./cmd/stylegen && go run ./cmd/stylegen --check`
 Expected: PASS; `registry/generated/recipes.json` exists and the check exits 0.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add internal/recipe/contract.go internal/recipe/contract_test.go internal/stylegen/generate.go registry/generated/recipes.json
@@ -1780,7 +1816,7 @@ git commit -m "feat: emit the generated recipe contract"
 - Consumes: everything above
 - Produces: no new API
 
-- [ ] **Step 1: Write the boundary test**
+- [x] **Step 1: Write the boundary test**
 
 ```go
 package stylegen
@@ -1826,12 +1862,12 @@ func TestNothingOutsideStylegenImportsCanonical(t *testing.T) {
 }
 ```
 
-- [ ] **Step 2: Run it**
+- [x] **Step 2: Run it**
 
 Run: `go test ./internal/stylegen/ -run TestNothingOutside -v`
 Expected: PASS.
 
-- [ ] **Step 3: Retarget the ui tests**
+- [x] **Step 3: Retarget the ui tests**
 
 `ui/button_test.go` currently asserts recipe *token* classes via `canonicalButtonClass()`. `ui.Button` now renders concrete Nova utilities, so:
 
@@ -1839,13 +1875,13 @@ Expected: PASS.
 - Keep `TestButtonPinned` and `TestButtonVariantAndSizeAxes` as **Nova pins**, replacing `canonicalButtonClass(variant, size)` with the concrete Nova utility strings read from `registry/generated/recipes.json` or inlined verbatim.
 - Add a comment at the top of the file recording that this file pins the *generated Nova* output, and that style-independent behavior belongs in `registry/canonical/button_test.go`.
 
-- [ ] **Step 4: Retarget the compiled-CSS audit**
+- [x] **Step 4: Retarget the compiled-CSS audit**
 
 `jstest/support/compiled-css-audit.test.ts` builds each recipe stylesheet with Tailwind. The recipes are unchanged, so this test keeps working as-is — but its second test, "compiled site Button fallback has the exact normal-site scope", asserts a `.gsxui-recipe-button` fallback selector in the site CSS that no longer exists now that `ui/button.gsx` carries concrete utilities. Delete that second test; the first (per-style recipe compilation) is the one that matters and stays.
 
 Verify `web/site.css`'s `@source` globs still reach the generated sources — `@source "../ui/**/*.gsx"` covers `ui/button.gsx`, and `@source "../site/**/*.gsx"` covers the stylepreview packages. Add `@source "../registry/generated/**/*.gsx";` so styles a consumer might install are also scanned.
 
-- [ ] **Step 4b: Stop the generation tests mutating the working tree**
+- [x] **Step 4b: Stop the generation tests mutating the working tree**
 
 Task 7's `TestGenerateAllIsIdempotent`, `TestGenerateAllEmitsEveryStyleAndTheDefaultCopy`
 and `TestGeneratedSourcesAreFreeOfRecipeConstructs` call `GenerateAll(repoRoot(t), false)`,
@@ -1864,7 +1900,7 @@ copyRepoFixture(t, root)
 `TestGenerateAllValidatesBeforeWriting` already uses this pattern — leave it.
 After the change, `go test ./...` must leave `git status --short` empty.
 
-- [ ] **Step 4c: Remove two tautological assertions**
+- [x] **Step 4c: Remove two tautological assertions**
 
 `ui/input-group_test.go:112` and `:161` assert that `got` does NOT contain
 `canonicalButtonClass(<other variant>, …)`. Since that helper returns a whole
@@ -1874,7 +1910,7 @@ read as coverage they do not provide. Delete both, and delete the dead
 `tt.want != "default"` guard at `:110` (no case in that table has
 `want == "default"`).
 
-- [ ] **Step 4d0: Harden the contract's "shape emitted once" assertion**
+- [x] **Step 4d0: Harden the contract's "shape emitted once" assertion**
 
 `internal/recipe/contract_test.go`'s `strings.Count(string(got), `"values"`) != 1`
 only works because the fixture happens to declare exactly one dimension. It
@@ -1887,12 +1923,12 @@ if got, want := strings.Count(string(out), `"values"`), len(shape.Dimensions); g
 }
 ```
 
-- [ ] **Step 4d: Replace the containsStyle loop**
+- [x] **Step 4d: Replace the containsStyle loop**
 
 `internal/stylegen/generate.go:211-218` — use `slices.Contains`. It is the only
 `gopls check -severity=hint` hit in the changed files.
 
-- [ ] **Step 5: Full verification**
+- [x] **Step 5: Full verification**
 
 Run each of these and confirm the stated expectation before claiming completion:
 
@@ -1905,7 +1941,7 @@ npm test                             # expect: jstest suite passes
 git status --short                   # expect: clean, no unstaged generated files
 ```
 
-- [ ] **Step 6: Verify the success criteria from the spec**
+- [x] **Step 6: Verify the success criteria from the spec**
 
 Confirm each by inspection or command, and report the evidence:
 
@@ -1918,7 +1954,7 @@ Confirm each by inspection or command, and report the evidence:
 7. `go test ./registry/canonical/` → PASS
 8. `go test ./internal/stylegen/ -run TestNothingOutside` → PASS
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add -A
