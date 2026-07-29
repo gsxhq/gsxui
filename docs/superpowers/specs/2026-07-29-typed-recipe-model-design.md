@@ -469,13 +469,13 @@ that will be deleted; the items below are captured here so they survive.
    `class="rounded-none"` to a Carousel arrow can no longer override it, a
    regression relative to merge base. Untested. Needs its own spec so the gap
    is known rather than assumed.
-2. **The components/utilities split in `default.css` is load-bearing but
-   unenforced.** Nothing currently fails the build if a new rule overriding
-   Button-composed markers is added to the wrong layer or wrapped in
-   `:where()`. A `make audit` rule flagging components-layer rules against
-   Button-composed markers would turn this bug class into a build failure
-   instead of a matter of vigilance — found three times, by three different
-   routes, during this implementation alone.
+2. ~~**The components/utilities split in `default.css` is load-bearing but
+   unenforced.**~~ Done: `stylegen.CheckLayerPrecedence` enforces both halves
+   of the invariant and runs from `make audit` as
+   `go run ./cmd/stylegen --check-layers`. It found two further latent
+   instances on its first run (`data-gsxui-slot-sidebar-trigger`, in the wrong
+   layer; `data-gsxui-slot-input-group-button`, right layer, zero
+   specificity), both fixed in the same change.
 3. **Mixed composition model.** Components that call `ui.Button` receive
    compiled utilities; components that merely stamp its `data-gsxui-slot-button`
    marker (site-only surfaces) still fall back to `web/site-button.css`.

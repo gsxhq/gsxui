@@ -85,6 +85,7 @@ audit:
 	@! rg -n '^[[:space:]]*<[^>]*class=' ui -g '*.gsx' -g '!button.gsx'
 	@! rg -n 'gsxui-recipe-' registry/canonical -g '*.gsx'
 	@! rg -n '!important' assets/css/foundation.css assets/css/styles/default.css
+	go run ./cmd/stylegen --check-layers
 
 check: audit test-css-audit test-theme-state verify-generated-styles
 	@$(MAKE) --no-print-directory verify-generated

@@ -11,15 +11,25 @@ import (
 
 func main() {
 	check := flag.Bool("check", false, "check generated style sources without writing")
+	checkLayers := flag.Bool("check-layers", false,
+		"check that every override of compiled component presentation can win the cascade")
 	flag.Parse()
 	if flag.NArg() != 0 {
-		fmt.Fprintln(os.Stderr, "usage: go run ./cmd/stylegen [--check]")
+		fmt.Fprintln(os.Stderr, "usage: go run ./cmd/stylegen [--check] [--check-layers]")
+		os.Exit(2)
+	}
+	if *check && *checkLayers {
+		fmt.Fprintln(os.Stderr, "stylegen: --check and --check-layers are separate gates; run them separately")
 		os.Exit(2)
 	}
 
 	root, err := repositoryRoot()
 	if err == nil {
-		err = stylegen.GenerateAll(root, *check)
+		if *checkLayers {
+			err = stylegen.CheckLayerPrecedence(root)
+		} else {
+			err = stylegen.GenerateAll(root, *check)
+		}
 	}
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "stylegen: %v\n", err)

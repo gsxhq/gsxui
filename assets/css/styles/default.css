@@ -2782,9 +2782,10 @@
     @apply rounded-lg border border-sidebar-border shadow-sm;
   }
 
-  :where([data-gsxui-slot-sidebar-trigger]) {
-    @apply size-7;
-  }
+  /* SidebarTrigger's size-7 overrides the size-8 Button now emits for
+     size="icon", so it cannot live here — see the @layer utilities block near
+     the Carousel arrows, and the layer invariant in
+     docs/superpowers/specs/2026-07-29-typed-recipe-model-design.md §9. */
   :where([data-gsxui-slot-sidebar-trigger-label]),
   :where([data-gsxui-slot-sidebar-mobile-header]) {
     @apply sr-only;
@@ -3272,10 +3273,20 @@
     @apply size-8 rounded-full;
   }
 
+  /* SidebarTrigger: a 28px control against the 32px Button renders for
+     size="icon". Same reasoning as the Carousel arrows above — utilities
+     layer, no :where(). */
+  [data-gsxui-slot-sidebar-trigger] {
+    @apply size-7;
+  }
+
   /* InputGroupButton retunes Button's whole size ramp — type scale, radius,
      padding, gap and icon sizing all restate a property Button now emits for
      itself. */
-  :where([data-gsxui-slot-input-group-button]) {
+  /* Unwrapped for the same reason as the Carousel arrows: display, gap and
+     type scale all contest a utility Button emits, and a :where() wrapper
+     scores (0,0,0) — it would lose inside this layer. */
+  [data-gsxui-slot-input-group-button] {
     @apply flex items-center gap-2 text-sm shadow-none;
   }
   :where([data-gsxui-slot-input-group-button])[data-size="xs"] {
