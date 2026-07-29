@@ -35,9 +35,23 @@ func TestComponentsMatchTypedStyleContract(t *testing.T) {
 	for _, component := range stylecontract.All() {
 		contractComponents = append(contractComponents, component.RegistryName)
 	}
-	slices.Sort(contractComponents)
-	if !slices.Equal(components, contractComponents) {
-		t.Fatalf("registry components = %v; typed style contract = %v", components, contractComponents)
+	// ui/sonner.gsx is one vendorable file backing two typed style-contract
+	// components, "toaster" and "toast" (they're separate gsx components
+	// rendered by gsxui itself, and the split lets each satisfy the
+	// "<RegistryName>-<relative>" slot-naming rule with no exception — see
+	// contracts_toast.go). registry.Components() stays file-derived, so fold
+	// the pair back to the single file name "sonner" before comparing.
+	foldedContractComponents := make([]string, 0, len(contractComponents))
+	for _, name := range contractComponents {
+		if name == "toaster" || name == "toast" {
+			continue
+		}
+		foldedContractComponents = append(foldedContractComponents, name)
+	}
+	foldedContractComponents = append(foldedContractComponents, "sonner")
+	slices.Sort(foldedContractComponents)
+	if !slices.Equal(components, foldedContractComponents) {
+		t.Fatalf("registry components = %v; typed style contract (toast/toaster folded to sonner) = %v", components, foldedContractComponents)
 	}
 }
 

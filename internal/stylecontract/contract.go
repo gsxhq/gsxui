@@ -51,7 +51,7 @@ func All() []Component {
 			len(menuContracts)+
 			len(compositeContracts)+
 			len(sidebarContracts)+
-			len(sonnerContracts),
+			len(toastContracts),
 	)
 	appendComponents := func(components []Component) {
 		for _, component := range components {
@@ -64,7 +64,7 @@ func All() []Component {
 	appendComponents(menuContracts)
 	appendComponents(compositeContracts)
 	appendComponents(sidebarContracts)
-	appendComponents(sonnerContracts)
+	appendComponents(toastContracts)
 	sort.Slice(all, func(i, j int) bool {
 		return all[i].Name < all[j].Name
 	})

@@ -235,7 +235,7 @@ func onlyPrimitiveContracts(t *testing.T, components []Component) {
 	originalMenus := menuContracts
 	originalComposites := compositeContracts
 	originalSidebar := sidebarContracts
-	originalSonner := sonnerContracts
+	originalToast := toastContracts
 	t.Cleanup(func() {
 		primitiveContracts = originalPrimitives
 		formContracts = originalForms
@@ -243,7 +243,7 @@ func onlyPrimitiveContracts(t *testing.T, components []Component) {
 		menuContracts = originalMenus
 		compositeContracts = originalComposites
 		sidebarContracts = originalSidebar
-		sonnerContracts = originalSonner
+		toastContracts = originalToast
 	})
 	primitiveContracts = components
 	formContracts = nil
@@ -251,7 +251,7 @@ func onlyPrimitiveContracts(t *testing.T, components []Component) {
 	menuContracts = nil
 	compositeContracts = nil
 	sidebarContracts = nil
-	sonnerContracts = nil
+	toastContracts = nil
 }
 
 func TestAllPreservesSliceNilness(t *testing.T) {

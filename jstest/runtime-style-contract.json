@@ -301,42 +301,42 @@
     "scenario": "sheet-lifecycle"
   },
   {
-    "component": "sonner",
+    "component": "toast",
     "slot": "toast",
     "attribute": "data-state",
     "value": "closed",
     "scenario": "sonner-lifecycle"
   },
   {
-    "component": "sonner",
+    "component": "toast",
     "slot": "toast",
     "attribute": "data-state",
     "value": "open",
     "scenario": "sonner-lifecycle"
   },
   {
-    "component": "sonner",
+    "component": "toast",
     "slot": "toast",
     "attribute": "data-visible",
     "value": "false",
     "scenario": "sonner-lifecycle"
   },
   {
-    "component": "sonner",
+    "component": "toast",
     "slot": "toast",
     "attribute": "data-visible",
     "value": "true",
     "scenario": "sonner-lifecycle"
   },
   {
-    "component": "sonner",
+    "component": "toaster",
     "slot": "toaster",
     "attribute": "data-expanded",
     "value": "false",
     "scenario": "sonner-lifecycle"
   },
   {
-    "component": "sonner",
+    "component": "toaster",
     "slot": "toaster",
     "attribute": "data-expanded",
     "value": "true",
