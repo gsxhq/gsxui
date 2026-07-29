@@ -14,43 +14,61 @@ import (
 // light/dark values so the page works before any JS runs.
 type Theme struct{}
 
-// themeVar is one editable CSS custom property, with its default light and
-// dark values.
-type themeVar struct {
-	Name  string
-	Light string
-	Dark  string
-}
-
-// themeGroup is a labeled cluster of related vars (matches the editor's
-// section headings).
-type themeGroup struct {
-	Title string
-	Vars  []themeVar
-}
-
 type themeEditorSchema struct {
-	Schema          string                     `json:"schema"`
-	SchemaVersion   int                        `json:"schemaVersion"`
-	TransportPrefix string                     `json:"transportPrefix"`
-	TokenNames      []string                   `json:"tokenNames"`
-	RadiusUnits     []string                   `json:"radiusUnits"`
-	Styles          []string                   `json:"styles"`
-	Defaults        map[string]json.RawMessage `json:"defaults"`
-	CanonicalDefaults map[string]string        `json:"canonicalDefaults"`
+	Schema            string                     `json:"schema"`
+	SchemaVersion     int                        `json:"schemaVersion"`
+	TransportPrefix   string                     `json:"transportPrefix"`
+	TokenNames        []string                   `json:"tokenNames"`
+	RadiusUnits       []string                   `json:"radiusUnits"`
+	Styles            []string                   `json:"styles"`
+	Defaults          map[string]json.RawMessage `json:"defaults"`
+	CanonicalDefaults map[string]string          `json:"canonicalDefaults"`
+	Palette           themePaletteSchema         `json:"palette"`
+}
+
+type themePaletteSchema struct {
+	BaseColors       []themePaletteChoiceSchema                       `json:"baseColors"`
+	Themes           map[string][]themePaletteChoiceSchema            `json:"themes"`
+	Radii            []themeRadiusChoiceSchema                        `json:"radii"`
+	Resolved         map[string]map[string]themePaletteResolvedSchema `json:"resolved"`
+	DefaultSelection themePaletteSelectionSchema                      `json:"defaultSelection"`
+}
+
+type themePaletteChoiceSchema struct {
+	Name   string `json:"name"`
+	Title  string `json:"title"`
+	Swatch string `json:"swatch"`
+}
+
+type themeRadiusChoiceSchema struct {
+	Name  string `json:"name"`
+	Title string `json:"title"`
+	Value string `json:"value"`
+}
+
+type themePaletteResolvedSchema struct {
+	Light preset.ThemeValues `json:"light"`
+	Dark  preset.ThemeValues `json:"dark"`
+}
+
+type themePaletteSelectionSchema struct {
+	BaseColor string `json:"baseColor"`
+	Theme     string `json:"theme"`
+	Radius    string `json:"radius"`
 }
 
 func themeEditorSchemaValue() themeEditorSchema {
 	styles := preset.Styles()
 	schema := themeEditorSchema{
-		Schema:          preset.SchemaURL,
-		SchemaVersion:   preset.SchemaVersion,
-		TransportPrefix: "gsxui:v1:",
-		TokenNames:      preset.TokenNames(),
-		RadiusUnits:     preset.RadiusUnits(),
-		Styles:          make([]string, len(styles)),
-		Defaults:        make(map[string]json.RawMessage, len(styles)),
+		Schema:            preset.SchemaURL,
+		SchemaVersion:     preset.SchemaVersion,
+		TransportPrefix:   "gsxui:v1:",
+		TokenNames:        preset.TokenNames(),
+		RadiusUnits:       preset.RadiusUnits(),
+		Styles:            make([]string, len(styles)),
+		Defaults:          make(map[string]json.RawMessage, len(styles)),
 		CanonicalDefaults: make(map[string]string, len(styles)),
+		Palette:           themePaletteSchemaValue(),
 	}
 	for i, style := range styles {
 		schema.Styles[i] = string(style)
@@ -64,39 +82,94 @@ func themeEditorSchemaValue() themeEditorSchema {
 	return schema
 }
 
-// ThemeGroups derives the editor's presentation groups and server-rendered
-// defaults from the authoritative preset schema.
-func ThemeGroups() []themeGroup {
-	defaults := preset.Default(preset.StyleNova)
-	groupIndexes := make(map[string]int)
-	groups := make([]themeGroup, 0, len(preset.GroupNames()))
-	for _, name := range preset.GroupNames() {
-		groupIndexes[name] = len(groups)
-		groups = append(groups, themeGroup{Title: name})
+func themePaletteSchemaValue() themePaletteSchema {
+	selection := preset.DefaultPaletteSelection()
+	schema := themePaletteSchema{
+		BaseColors:       themePaletteChoiceSchemaValues(preset.BaseColorChoices()),
+		Themes:           make(map[string][]themePaletteChoiceSchema),
+		Radii:            themeRadiusChoiceSchemaValues(preset.RadiusChoices()),
+		Resolved:         make(map[string]map[string]themePaletteResolvedSchema),
+		DefaultSelection: themePaletteSelectionSchemaFromPreset(selection),
 	}
-	add := func(definition preset.TokenDefinition, light, dark string) {
-		index, ok := groupIndexes[definition.Group]
-		if !ok {
-			index = len(groups)
-			groupIndexes[definition.Group] = index
-			groups = append(groups, themeGroup{Title: definition.Group})
+	for _, baseColor := range preset.BaseColorChoices() {
+		themes, err := preset.ThemeChoices(baseColor.Name)
+		if err != nil {
+			panic(err)
 		}
-		groups[index].Vars = append(groups[index].Vars, themeVar{
-			Name:  "--" + definition.Name,
-			Light: light,
-			Dark:  dark,
-		})
+		schema.Themes[baseColor.Name] = themePaletteChoiceSchemaValues(themes)
+		schema.Resolved[baseColor.Name] = make(map[string]themePaletteResolvedSchema, len(themes))
+		for _, theme := range themes {
+			resolved, err := preset.ResolvePalette(preset.StyleNova, preset.PaletteSelection{
+				BaseColor: baseColor.Name,
+				Theme:     theme.Name,
+				Radius:    selection.Radius,
+			})
+			if err != nil {
+				panic(err)
+			}
+			schema.Resolved[baseColor.Name][theme.Name] = themePaletteResolvedSchema{
+				Light: resolved.Theme.Light,
+				Dark:  resolved.Theme.Dark,
+			}
+		}
 	}
-	for _, definition := range preset.TokenDefinitions() {
-		add(
-			definition,
-			defaults.Theme.Light[definition.Name],
-			defaults.Theme.Dark[definition.Name],
-		)
+	return schema
+}
+
+func themePaletteChoiceSchemaValues(choices []preset.PaletteChoice) []themePaletteChoiceSchema {
+	values := make([]themePaletteChoiceSchema, len(choices))
+	for i, choice := range choices {
+		values[i] = themePaletteChoiceSchema{Name: choice.Name, Title: choice.Title, Swatch: choice.Swatch}
 	}
-	radius := preset.RadiusDefinition()
-	add(radius, defaults.Radius, defaults.Radius)
-	return groups
+	return values
+}
+
+func themeRadiusChoiceSchemaValues(choices []preset.RadiusChoice) []themeRadiusChoiceSchema {
+	values := make([]themeRadiusChoiceSchema, len(choices))
+	for i, choice := range choices {
+		values[i] = themeRadiusChoiceSchema{Name: choice.Name, Title: choice.Title, Value: choice.Value}
+	}
+	return values
+}
+
+func themePaletteSelectionSchemaFromPreset(selection preset.PaletteSelection) themePaletteSelectionSchema {
+	return themePaletteSelectionSchema{
+		BaseColor: selection.BaseColor,
+		Theme:     selection.Theme,
+		Radius:    selection.Radius,
+	}
+}
+
+func themePickerChoices(choices []preset.PaletteChoice) []themePickerChoice {
+	values := make([]themePickerChoice, len(choices))
+	for i, choice := range choices {
+		values[i] = themePickerChoice{
+			Title:  choice.Title,
+			Swatch: choice.Swatch,
+			Value:  choice.Name,
+		}
+	}
+	return values
+}
+
+func themeRadiusPickerChoices(choices []preset.RadiusChoice) []themePickerChoice {
+	values := make([]themePickerChoice, len(choices))
+	for i, choice := range choices {
+		values[i] = themePickerChoice{
+			Title:       choice.Title,
+			Value:       choice.Name,
+			SwatchStyle: "border-radius: " + choice.Value,
+		}
+	}
+	return values
+}
+
+func mustThemePickerChoices(baseColor string) []preset.PaletteChoice {
+	choices, err := preset.ThemeChoices(baseColor)
+	if err != nil {
+		panic(err)
+	}
+	return choices
 }
 
 const tabBtnBase = "rounded-md border border-border px-3 py-1.5 text-sm font-medium transition-colors"
@@ -122,8 +195,8 @@ component ThemeEditor(previewURL string) {
 		<div>
 			<h1 class="text-3xl font-semibold tracking-tight">Theme editor</h1>
 			<p class="mt-2 max-w-2xl text-sm text-muted-foreground">
-				Choose the copied component style, then edit the semantic theme it consumes. This Button pilot renders the
-				exact Nova or Maia source a project receives from <code>gsxui add</code>.
+				Choose the copied component style, then edit the semantic theme it consumes. This Button pilot renders the exact
+				Nova or Maia source a project receives from <code>gsxui add</code>.
 			</p>
 		</div>
 		<div class="grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,5fr)_minmax(420px,7fr)]">
@@ -157,13 +230,12 @@ component ThemeEditor(previewURL string) {
 						</button>
 					</div>
 					<p class="text-xs text-muted-foreground">
-						Maia currently applies only to Button. The CLI refuses an unsafe mixed-style migration once other
-						components are installed.
+						Maia currently applies only to Button. The CLI refuses an unsafe mixed-style migration once other components
+						are installed.
 					</p>
 				</section>
-
 				<section class="flex flex-col gap-3 border-t border-border pt-6">
-					<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Mode and radius</h2>
+					<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Mode and palette</h2>
 					<div class="flex flex-wrap items-end justify-between gap-4">
 						<div class="flex items-center gap-2">
 							<button
@@ -183,56 +255,28 @@ component ThemeEditor(previewURL string) {
 								Dark
 							</button>
 						</div>
-						<label class="flex min-w-[220px] flex-col gap-1.5 text-xs text-muted-foreground">
-							Radius
-							<input
-								type="text"
-								data-theme-field="radius"
-								value={preset.Default(preset.StyleNova).Radius}
-								class="h-9 rounded-md border border-input bg-transparent px-3 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
-							/>
-							<span data-theme-field-error="radius" class="hidden text-destructive"></span>
-						</label>
+					</div>
+					<div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+						<ThemePicker
+							name="baseColor"
+							label="Base color"
+							selected="neutral"
+							choices={themePickerChoices(preset.BaseColorChoices())}
+						/>
+						<ThemePicker
+							name="theme"
+							label="Theme"
+							selected="neutral"
+							choices={themePickerChoices(mustThemePickerChoices("neutral"))}
+						/>
+						<ThemePicker
+							name="radius"
+							label="Radius"
+							selected="medium"
+							choices={themeRadiusPickerChoices(preset.RadiusChoices())}
+						/>
 					</div>
 				</section>
-
-				{ for _, g := range ThemeGroups() {
-					<section data-theme-group={g.Title} class="flex flex-col gap-3 border-t border-border pt-6">
-						<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">{ g.Title }</h2>
-						<div class="flex flex-col gap-2">
-							{ for _, v := range g.Vars {
-								{ if v.Name != "--radius" {
-									<div class="grid grid-cols-[minmax(0,150px)_1fr] items-start gap-3">
-										<label class="truncate pt-2 font-mono text-xs text-muted-foreground" title={v.Name}>{ v.Name }</label>
-										<div data-theme-mode-field="light">
-											<input
-												type="text"
-												data-theme-var={v.Name}
-												data-theme-mode="light"
-												data-theme-field={"light." + strings.TrimPrefix(v.Name, "--")}
-												value={v.Light}
-												class="h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
-											/>
-											<span data-theme-field-error={"light." + strings.TrimPrefix(v.Name, "--")} class="mt-1 hidden text-xs text-destructive"></span>
-										</div>
-										<div data-theme-mode-field="dark" hidden>
-											<input
-												type="text"
-												data-theme-var={v.Name}
-												data-theme-mode="dark"
-												data-theme-field={"dark." + strings.TrimPrefix(v.Name, "--")}
-												value={v.Dark}
-												class="h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
-											/>
-											<span data-theme-field-error={"dark." + strings.TrimPrefix(v.Name, "--")} class="mt-1 hidden text-xs text-destructive"></span>
-										</div>
-									</div>
-								} }
-							} }
-						</div>
-					</section>
-				} }
-
 				<section class="flex flex-col gap-3 border-t border-border pt-6">
 					<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Preset JSON</h2>
 					<div class="flex flex-wrap gap-2">
@@ -249,7 +293,6 @@ component ThemeEditor(previewURL string) {
 						<ui.Button data-theme-import-apply="json" variant="outline" size="sm">Apply JSON</ui.Button>
 					</div>
 				</section>
-
 				<section class="flex flex-col gap-3 border-t border-border pt-6">
 					<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Theme CSS</h2>
 					<div class="flex flex-wrap gap-2">
@@ -266,7 +309,6 @@ component ThemeEditor(previewURL string) {
 						<ui.Button data-theme-import-apply="css" variant="outline" size="sm">Apply CSS</ui.Button>
 					</div>
 				</section>
-
 				<section class="flex flex-col gap-3 border-t border-border pt-6">
 					<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Share and install</h2>
 					<div class="flex flex-wrap gap-2">
@@ -275,15 +317,24 @@ component ThemeEditor(previewURL string) {
 					</div>
 					<label class="flex flex-col gap-1.5 text-xs text-muted-foreground">
 						New project
-						<textarea data-theme-command="init" readonly rows="3" class="rounded-md border border-input bg-muted/40 p-3 font-mono text-xs text-foreground"></textarea>
+						<textarea
+							data-theme-command="init"
+							readonly
+							rows="3"
+							class="rounded-md border border-input bg-muted/40 p-3 font-mono text-xs text-foreground"
+						></textarea>
 					</label>
 					<label class="flex flex-col gap-1.5 text-xs text-muted-foreground">
 						Initialized project
-						<textarea data-theme-command="apply" readonly rows="3" class="rounded-md border border-input bg-muted/40 p-3 font-mono text-xs text-foreground"></textarea>
+						<textarea
+							data-theme-command="apply"
+							readonly
+							rows="3"
+							class="rounded-md border border-input bg-muted/40 p-3 font-mono text-xs text-foreground"
+						></textarea>
 					</label>
 				</section>
 			</div>
-
 			<div class="flex min-w-0 flex-col gap-4 xl:sticky xl:top-20 xl:self-start">
 				<div class="flex items-center justify-between gap-3">
 					<div>

@@ -83,7 +83,7 @@ func newMux(root string) http.Handler {
 			return
 		}
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		if err := renderShell(w, "theme", stylesheetFor(r), "/web/theme.js", template.HTML(buf.String())); err != nil {
+		if err := renderShell(w, "theme", stylesheetFor(r), "/static/jstest/harness-theme.js", template.HTML(buf.String())); err != nil {
 			log.Printf("rendering theme editor: %v", err)
 		}
 	})

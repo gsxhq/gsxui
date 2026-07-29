@@ -1,7 +1,18 @@
 import { readFileSync } from "node:fs";
 
+import type { Page } from "@playwright/test";
+
 import { expect, test } from "../support/fixtures";
 import { repoRoot } from "../support/paths";
+
+type ThemeSchema = {
+  palette: {
+    resolved: Record<
+      string,
+      Record<string, { light: Record<string, string>; dark: Record<string, string> }>
+    >;
+  };
+};
 
 function variables(css: string, selector: string) {
   const escaped = selector.replace(".", "\\.");
@@ -14,30 +25,82 @@ function variables(css: string, selector: string) {
   );
 }
 
-test("theme editor downloads the exact variables-only theme.css", async ({
-  page,
-}) => {
-  await page.goto("/theme");
+async function downloadText(page: Page, kind: "json" | "css", pointer = true) {
   const downloadPromise = page.waitForEvent("download");
-  await page.locator('[data-theme-download="css"]').click();
+  const button = page.locator(`[data-theme-download="${kind}"]`);
+  if (pointer) {
+    await button.click();
+  } else {
+    await button.evaluate((element: HTMLButtonElement) => element.click());
+  }
   const download = await downloadPromise;
-  expect(download.suggestedFilename()).toBe("theme.css");
   const path = await download.path();
   if (!path) throw new Error("download has no local path");
-  const exported = readFileSync(path, "utf8");
-  const defaults = readFileSync(
-    `${repoRoot}/assets/css/themes/default.css`,
-    "utf8",
-  );
+  return { filename: download.suggestedFilename(), text: readFileSync(path, "utf8") };
+}
 
-  expect(variables(exported, ":root")).toEqual(variables(defaults, ":root"));
-  expect(variables(exported, ".dark")).toEqual(variables(defaults, ".dark"));
-  expect(exported).not.toMatch(/@import|@theme|@layer|tailwindcss|foundation|style\.css/);
+async function schema(page: Page): Promise<ThemeSchema> {
+  return JSON.parse(await page.locator("[data-theme-schema]").textContent());
+}
+
+async function iframeVariable(page: Page, name: string) {
+  return page
+    .frameLocator("[data-theme-preview-frame]")
+    .locator("html")
+    .evaluate((element, property) => element.style.getPropertyValue(property).trim(), `--${name}`);
+}
+
+async function commands(page: Page) {
+  return {
+    init: await page.locator('[data-theme-command="init"]').inputValue(),
+    apply: await page.locator('[data-theme-command="apply"]').inputValue(),
+  };
+}
+
+function shareFromInit(command: string) {
+  const match = command.match(/^gsxui init --preset '([^']+)'$/);
+  if (!match) throw new Error(`unexpected init command ${JSON.stringify(command)}`);
+  return match[1];
+}
+
+function picker(page: Page, kind: "baseColor" | "theme" | "radius") {
+  return page.locator(`[data-theme-picker="${kind}"]`);
+}
+
+async function choose(
+  page: Page,
+  kind: "baseColor" | "theme" | "radius",
+  accessibleName: string,
+) {
+  const control = picker(page, kind);
+  const content = control.locator("[data-gsxui-popover-content]");
+  if (!(await content.evaluate((element) => element.matches(":popover-open")))) {
+    await control.locator("[data-theme-picker-trigger]").click();
+  }
+  await control.getByRole("radio", { name: accessibleName, exact: true }).click();
+}
+
+async function selectionValue(
+  page: Page,
+  kind: "baseColor" | "theme" | "radius",
+) {
+  return picker(page, kind).locator("[data-theme-selection-value]").textContent();
+}
+
+test("theme editor downloads the exact variables-only theme.css", async ({ page }) => {
+  await page.goto("/theme");
+  const download = await downloadText(page, "css");
+  expect(download.filename).toBe("theme.css");
+  const defaults = readFileSync(`${repoRoot}/assets/css/themes/default.css`, "utf8");
+
+  expect(variables(download.text, ":root")).toEqual(variables(defaults, ":root"));
+  expect(variables(download.text, ".dark")).toEqual(variables(defaults, ".dark"));
+  expect(download.text).not.toMatch(
+    /@import|@theme|@layer|tailwindcss|foundation|style\.css/,
+  );
 });
 
-test("style and valid theme state drive the isolated Button preview", async ({
-  page,
-}) => {
+test("style and mode remain independent from the curated palette", async ({ page }) => {
   await page.goto("/theme");
   await expect(page.locator("[data-theme-preview-status]")).toHaveText("Live");
 
@@ -68,132 +131,282 @@ test("style and valid theme state drive the isolated Button preview", async ({
   expect(maiaGeometry.height).not.toBe(novaGeometry.height);
   expect(maiaGeometry.radius).not.toBe(novaGeometry.radius);
 
-  const primary = page.locator('[data-theme-field="light.primary"]');
-  await primary.fill("oklch(0.65 0.2 30)");
-  await expect(primary).toHaveAttribute("aria-invalid", "false");
-  await expect
-    .poll(() =>
-      preview.locator("html").evaluate((element) =>
-        element.style.getPropertyValue("--primary").trim(),
-      ),
-    )
-    .toBe("oklch(0.65 0.2 30)");
-
-  await primary.fill("not-a-color");
-  await expect(primary).toHaveAttribute("aria-invalid", "true");
-  await expect(page.locator("[data-theme-status]")).toContainText("last valid values");
-  expect(
-    await preview.locator("html").evaluate((element) =>
-      element.style.getPropertyValue("--primary").trim(),
-    ),
-  ).toBe("oklch(0.65 0.2 30)");
-
   await page.locator('[data-theme-mode-tab="dark"]').click();
   await expect(preview.locator("html")).toHaveClass(/\bdark\b/);
+  await expect(selectionValue(page, "baseColor")).resolves.toBe("Neutral");
+  await expect(selectionValue(page, "theme")).resolves.toBe("Neutral");
+  await expect(selectionValue(page, "radius")).resolves.toBe("Medium");
 });
 
-test("CSS import rejects duplicate recognized declarations atomically", async ({
+test("pickers expose accessible catalog choices and no raw token inputs", async ({
   page,
 }) => {
   await page.goto("/theme");
-  const primary = page.locator('[data-theme-field="light.primary"]');
-  const original = await primary.inputValue();
+  await expect(page.locator("[data-theme-var]")).toHaveCount(0);
+  await expect(page.locator('[data-theme-field^="light."]')).toHaveCount(0);
+  await expect(page.locator('[data-theme-field^="dark."]')).toHaveCount(0);
+  await expect(page.locator('[data-theme-field="radius"]')).toHaveCount(0);
+  await expect(page.locator("iframe")).toHaveCount(1);
 
-  await page
-    .locator('[data-theme-import="css"]')
-    .fill(":root { --primary: red; --primary: blue; }");
-  await page.locator('[data-theme-import-apply="css"]').click();
+  const base = picker(page, "baseColor");
+  await base.locator("[data-theme-picker-trigger]").click();
+  await expect(base.locator("[data-gsxui-popover-content]")).toHaveJSProperty(
+    "popover",
+    "auto",
+  );
+  expect(
+    await base
+      .locator("[data-gsxui-popover-content]")
+      .evaluate((element) => element.matches(":popover-open")),
+  ).toBe(true);
+  await expect(base.getByRole("radio")).toHaveCount(7);
+  await expect(base.getByRole("radio", { name: "Neutral", exact: true })).toBeChecked();
 
-  await expect(page.locator("[data-theme-status]")).toContainText("duplicated");
-  await expect(primary).toHaveValue(original);
+  const theme = picker(page, "theme");
+  await theme.locator("[data-theme-picker-trigger]").click();
+  await expect(theme.getByRole("radio")).toHaveCount(18);
+  await expect(theme.getByRole("radio", { name: "Neutral", exact: true })).toBeChecked();
+  await expect(theme.getByRole("radio", { name: "Blue", exact: true })).toHaveCount(1);
+
+  const radius = picker(page, "radius");
+  await radius.locator("[data-theme-picker-trigger]").click();
+  await expect(radius.getByRole("radio")).toHaveCount(4);
+  await expect(radius.getByRole("radio", { name: "Medium", exact: true })).toBeChecked();
+
+  for (const kind of ["baseColor", "theme", "radius"] as const) {
+    await expect(picker(page, kind).locator("[data-theme-selection-swatch]")).toBeVisible();
+    await expect(picker(page, kind).locator("[data-theme-choice-swatch]")).not.toHaveCount(0);
+  }
 });
 
-test("CSS import rejects malformed unrelated syntax atomically", async ({
+test("Base Color and Theme choices update both iframe modes and the same-named option", async ({
   page,
 }) => {
   await page.goto("/theme");
-  const primary = page.locator('[data-theme-field="light.primary"]');
-  const original = await primary.inputValue();
+  const catalog = await schema(page);
 
+  await choose(page, "baseColor", "Stone");
+  await expect(selectionValue(page, "baseColor")).resolves.toBe("Stone");
+  await expect(selectionValue(page, "theme")).resolves.toBe("Stone");
+  await expect
+    .poll(() => iframeVariable(page, "foreground"))
+    .toBe(catalog.palette.resolved.stone.stone.light.foreground);
+
+  const theme = picker(page, "theme");
+  await theme.locator("[data-theme-picker-trigger]").click();
+  await expect(theme.getByRole("radio", { name: "Stone", exact: true })).toBeChecked();
+  await expect(theme.getByRole("radio", { name: "Neutral", exact: true })).toHaveCount(0);
+  await expect(theme.getByRole("radio")).toHaveCount(18);
+
+  await theme.getByRole("radio", { name: "Blue", exact: true }).click();
+  await expect(selectionValue(page, "theme")).resolves.toBe("Blue");
+  await expect
+    .poll(() => iframeVariable(page, "primary"))
+    .toBe(catalog.palette.resolved.stone.blue.light.primary);
+
+  await page.locator('[data-theme-mode-tab="dark"]').click();
+  await expect
+    .poll(() => iframeVariable(page, "primary"))
+    .toBe(catalog.palette.resolved.stone.blue.dark.primary);
+});
+
+test("desktop hover previews only the iframe and restores on dismissal or pointer leave", async ({
+  page,
+}) => {
+  await page.goto("/theme");
+  const catalog = await schema(page);
+  const committedPrimary = await iframeVariable(page, "primary");
+  const committedCommands = await commands(page);
+  const committedJSON = (await downloadText(page, "json")).text;
+
+  const theme = picker(page, "theme");
+  await theme.locator("[data-theme-picker-trigger]").click();
+  const rose = theme.getByRole("radio", { name: "Rose", exact: true }).locator("..");
+  await rose.locator("[data-theme-choice-swatch]").hover();
+
+  await expect
+    .poll(() => iframeVariable(page, "primary"))
+    .toBe(catalog.palette.resolved.neutral.rose.light.primary);
+  const roseBox = await rose.boundingBox();
+  if (!roseBox) throw new Error("Rose choice has no layout box");
+  await page.mouse.move(
+    roseBox.x + roseBox.width - 2,
+    roseBox.y + roseBox.height / 2,
+  );
+  await expect
+    .poll(() => iframeVariable(page, "primary"))
+    .toBe(catalog.palette.resolved.neutral.rose.light.primary);
+  await expect(
+    theme.getByRole("radio", { name: "Neutral", exact: true }),
+  ).toBeFocused();
+  expect(await commands(page)).toEqual(committedCommands);
+  expect((await downloadText(page, "json", false)).text).toBe(committedJSON);
+
+  await page.keyboard.press("Escape");
+  await expect
+    .poll(() =>
+      theme
+        .locator("[data-gsxui-popover-content]")
+        .evaluate((element) => element.matches(":popover-open")),
+    )
+    .toBe(false);
+  await expect.poll(() => iframeVariable(page, "primary")).toBe(committedPrimary);
+
+  await theme.locator("[data-theme-picker-trigger]").click();
+  await rose.hover();
+  await expect
+    .poll(() => iframeVariable(page, "primary"))
+    .toBe(catalog.palette.resolved.neutral.rose.light.primary);
+  await page.mouse.move(1, 1);
+  await expect.poll(() => iframeVariable(page, "primary")).toBe(committedPrimary);
+  expect(await commands(page)).toEqual(committedCommands);
+});
+
+test("click commits palette state to JSON, share code, commands, and iframe", async ({
+  page,
+}) => {
+  await page.goto("/theme");
+  const catalog = await schema(page);
+  const beforeJSON = (await downloadText(page, "json")).text;
+  const beforeCommands = await commands(page);
+  const beforeShare = shareFromInit(beforeCommands.init);
+
+  await choose(page, "theme", "Blue");
+
+  const afterJSON = (await downloadText(page, "json")).text;
+  const afterCommands = await commands(page);
+  expect(afterJSON).not.toBe(beforeJSON);
+  expect(JSON.parse(afterJSON).theme.light.primary).toBe(
+    catalog.palette.resolved.neutral.blue.light.primary,
+  );
+  expect(shareFromInit(afterCommands.init)).not.toBe(beforeShare);
+  expect(afterCommands.init).not.toBe(beforeCommands.init);
+  expect(afterCommands.apply).not.toBe(beforeCommands.apply);
+  await expect
+    .poll(() => iframeVariable(page, "primary"))
+    .toBe(catalog.palette.resolved.neutral.blue.light.primary);
+});
+
+test("custom JSON import is lossless and a built-in base replaces it atomically", async ({
+  page,
+}) => {
+  await page.goto("/theme");
+  const catalog = await schema(page);
+  const imported = JSON.parse((await downloadText(page, "json")).text);
+  imported.radius = "1rem";
+  imported.theme.light.primary = "rgb(1 2 3)";
+  imported.theme.dark.primary = "rgb(4 5 6)";
+
+  await page.locator('[data-theme-import="json"]').fill(`${JSON.stringify(imported)}\n`);
+  await page.locator('[data-theme-import-apply="json"]').click();
+
+  await expect(selectionValue(page, "baseColor")).resolves.toBe("Custom");
+  await expect(selectionValue(page, "theme")).resolves.toBe("Custom");
+  await expect(selectionValue(page, "radius")).resolves.toBe("Custom");
+  await expect.poll(() => iframeVariable(page, "primary")).toBe("rgb(1 2 3)");
+  expect(JSON.parse((await downloadText(page, "json")).text)).toEqual(imported);
+
+  await choose(page, "baseColor", "Stone");
+  await expect(selectionValue(page, "baseColor")).resolves.toBe("Stone");
+  await expect(selectionValue(page, "theme")).resolves.toBe("Stone");
+  await expect(selectionValue(page, "radius")).resolves.toBe("Custom");
+  await expect
+    .poll(() => iframeVariable(page, "primary"))
+    .toBe(catalog.palette.resolved.stone.stone.light.primary);
+  const replaced = JSON.parse((await downloadText(page, "json")).text);
+  expect(replaced.theme.light).toEqual(catalog.palette.resolved.stone.stone.light);
+  expect(replaced.theme.dark).toEqual(catalog.palette.resolved.stone.stone.dark);
+  expect(replaced.radius).toBe("1rem");
+});
+
+test("custom CSS import is lossless while a named radius preserves its colors", async ({
+  page,
+}) => {
+  await page.goto("/theme");
   await page
     .locator('[data-theme-import="css"]')
-    .fill("body { color red; } :root { --primary: green; }");
+    .fill(
+      ":root { --radius: 1rem; --primary: rgb(10 20 30); }\n" +
+        ".dark { --primary: rgb(40 50 60); }",
+    );
   await page.locator('[data-theme-import-apply="css"]').click();
 
-  await expect(page.locator("[data-theme-status]")).toContainText("malformed");
-  await expect(primary).toHaveValue(original);
+  await expect(selectionValue(page, "baseColor")).resolves.toBe("Custom");
+  await expect(selectionValue(page, "theme")).resolves.toBe("Custom");
+  await expect(selectionValue(page, "radius")).resolves.toBe("Custom");
+  await expect.poll(() => iframeVariable(page, "primary")).toBe("rgb(10 20 30)");
+
+  await choose(page, "radius", "Large");
+  await expect(selectionValue(page, "baseColor")).resolves.toBe("Custom");
+  await expect(selectionValue(page, "theme")).resolves.toBe("Custom");
+  await expect(selectionValue(page, "radius")).resolves.toBe("Large");
+  const exported = JSON.parse((await downloadText(page, "json")).text);
+  expect(exported.theme.light.primary).toBe("rgb(10 20 30)");
+  expect(exported.theme.dark.primary).toBe("rgb(40 50 60)");
+  expect(exported.radius).toBe("0.875rem");
 });
+
+for (const rejection of [
+  {
+    name: "duplicate recognized declarations",
+    css: ":root { --primary: red; --primary: blue; }",
+    message: "duplicated",
+  },
+  {
+    name: "malformed unrelated syntax",
+    css: "body { color red; } :root { --primary: green; }",
+    message: "malformed",
+  },
+  {
+    name: "selector identifiers split across comments",
+    css: ":r/**/oot { --primary: red; }",
+    message: "must belong to :root or .dark",
+  },
+  {
+    name: "important recognized declarations",
+    css: ":root { --primary: red !important; }",
+    message: "theme.light.primary",
+  },
+]) {
+  test(`CSS import rejects ${rejection.name} atomically`, async ({ page }) => {
+    await page.goto("/theme");
+    const before = await commands(page);
+    await page.locator('[data-theme-import="css"]').fill(rejection.css);
+    await page.locator('[data-theme-import-apply="css"]').click();
+
+    await expect(page.locator("[data-theme-status]")).toContainText(rejection.message);
+    expect(await commands(page)).toEqual(before);
+  });
+}
 
 test("CSS import ignores valid unrelated CSS without mutating the preset", async ({
   page,
 }) => {
   await page.goto("/theme");
-  const primary = page.locator('[data-theme-field="light.primary"]');
-  const original = await primary.inputValue();
-
+  const before = await commands(page);
   await page
     .locator('[data-theme-import="css"]')
     .fill("body { color: red; --unrelated: blue; }");
   await page.locator('[data-theme-import-apply="css"]').click();
 
-  await expect(page.locator("[data-theme-status]")).toHaveText("Nova · light");
-  await expect(primary).toHaveValue(original);
+  expect(await commands(page)).toEqual(before);
 });
 
 test("CSS import accepts comments between supported selector tokens", async ({
   page,
 }) => {
   await page.goto("/theme");
-  const primary = page.locator('[data-theme-field="light.primary"]');
-
   await page
     .locator('[data-theme-import="css"]')
     .fill(":/* comment */root { --primary: red; }");
   await page.locator('[data-theme-import-apply="css"]').click();
 
-  await expect(primary).toHaveValue("red");
-});
-
-test("CSS import does not merge selector identifiers across comments", async ({
-  page,
-}) => {
-  await page.goto("/theme");
-  const primary = page.locator('[data-theme-field="light.primary"]');
-  const original = await primary.inputValue();
-
-  await page
-    .locator('[data-theme-import="css"]')
-    .fill(":r/**/oot { --primary: red; }");
-  await page.locator('[data-theme-import-apply="css"]').click();
-
-  await expect(page.locator("[data-theme-status]")).toContainText(
-    "must belong to :root or .dark",
-  );
-  await expect(primary).toHaveValue(original);
-});
-
-test("CSS import rejects important recognized declarations atomically", async ({
-  page,
-}) => {
-  await page.goto("/theme");
-  const primary = page.locator('[data-theme-field="light.primary"]');
-  const original = await primary.inputValue();
-
-  await page
-    .locator('[data-theme-import="css"]')
-    .fill(":root { --primary: red !important; }");
-  await page.locator('[data-theme-import-apply="css"]').click();
-
-  await expect(page.locator("[data-theme-status]")).toContainText(
-    "theme.light.primary",
-  );
-  await expect(primary).toHaveValue(original);
+  await expect(selectionValue(page, "theme")).resolves.toBe("Custom");
+  await expect.poll(() => iframeVariable(page, "primary")).toBe("red");
 });
 
 test("CSS import ignores valid unrelated implicit nesting", async ({ page }) => {
   await page.goto("/theme");
-  const primary = page.locator('[data-theme-field="light.primary"]');
-
   await page
     .locator('[data-theme-import="css"]')
     .fill(
@@ -201,7 +414,8 @@ test("CSS import ignores valid unrelated implicit nesting", async ({ page }) => 
     );
   await page.locator('[data-theme-import-apply="css"]').click();
 
-  await expect(primary).toHaveValue("green");
+  await expect(selectionValue(page, "theme")).resolves.toBe("Custom");
+  await expect.poll(() => iframeVariable(page, "primary")).toBe("green");
 });
 
 test("theme editor exposes Retry when the preview never handshakes", async ({

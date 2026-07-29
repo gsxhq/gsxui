@@ -510,10 +510,9 @@ func TestDocsRoutes(t *testing.T) {
 	})
 }
 
-// TestThemePageRoute is the Task 5 smoke test for /theme: the page renders
-// (JS-less) with the token-editing controls and a default-themed preview
-// panel present in the markup — no JS assertions, since the live restyling
-// itself is web/theme.js's job, not the server's.
+// TestThemePageRoute is the theme editor's JS-less picker contract: catalog
+// choices arrive from the server and raw per-token editing never leaks into
+// the completed editor markup.
 func TestThemePageRoute(t *testing.T) {
 	handler := newTestHandler(t)
 
@@ -525,11 +524,45 @@ func TestThemePageRoute(t *testing.T) {
 		t.Fatalf("GET /theme = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
 	}
 	body := rec.Body.String()
-	if !strings.Contains(body, `data-theme-var="--primary"`) {
-		t.Errorf(`response missing data-theme-var="--primary"; body:\n%s`, body)
+	for _, picker := range []string{"baseColor", "theme", "radius"} {
+		if got := strings.Count(body, `data-theme-picker="`+picker+`"`); got != 1 {
+			t.Errorf("theme page has %d %s pickers, want 1; body:\n%s", got, picker, body)
+		}
+	}
+	for _, marker := range []string{
+		`data-theme-picker-trigger`,
+		`data-theme-choice`,
+		`data-theme-choice-swatch`,
+		`data-theme-selection-value`,
+		`data-theme-selection-swatch`,
+		`type="radio"`,
+		`aria-label=`,
+		`checked`,
+		`value="neutral"`,
+		`value="blue"`,
+		`value="medium"`,
+		`Neutral`,
+		`Blue`,
+		`Medium`,
+	} {
+		if !strings.Contains(body, marker) {
+			t.Errorf("response missing picker marker %q; body:\n%s", marker, body)
+		}
+	}
+	for _, forbidden := range []string{
+		`data-theme-var=`,
+		`data-theme-field="light.`,
+		`data-theme-field="dark.`,
+	} {
+		if strings.Contains(body, forbidden) {
+			t.Errorf("theme page still exposes raw token input %q; body:\n%s", forbidden, body)
+		}
 	}
 	if !strings.Contains(body, `data-theme-preview-frame`) {
 		t.Errorf(`response missing data-theme-preview-frame; body:\n%s`, body)
+	}
+	if got := strings.Count(body, `<iframe`); got != 1 {
+		t.Errorf("theme page has %d iframes, want 1; body:\n%s", got, body)
 	}
 	if !strings.Contains(body, `src="/theme/preview/button"`) {
 		t.Errorf(`response missing Button preview iframe route; body:\n%s`, body)

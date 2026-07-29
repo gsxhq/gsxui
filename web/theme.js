@@ -2,8 +2,8 @@ import { on } from "../ui/gsxui.js";
 import { tokenize, tokenTypes } from "css-tree";
 import parseCSS from "postcss/lib/parse";
 import {
-  applyField,
   canonicalJSON,
+  clearPalettePreview,
   commandStrings,
   createThemeState,
   encodeShare,
@@ -11,9 +11,16 @@ import {
   importThemeCSS,
   loadShareFromURL,
   manualCopyState,
+  previewBaseColor,
+  previewPreset,
+  previewTheme,
+  replacePreset,
   resetThemeState,
   selectMode,
+  selectBaseColor,
+  selectRadius,
   selectStyle,
+  selectTheme,
   themeCSS,
 } from "./theme-state.js";
 
@@ -66,13 +73,6 @@ if (schemaElement) {
     initialMessage = error instanceof Error ? `Share link ignored: ${error.message}` : "Share link ignored.";
   }
 
-  function fieldValue(path) {
-    if (state.drafts.has(path)) return state.drafts.get(path);
-    if (path === "radius") return state.resolved.radius;
-    const [mode, name] = path.split(".");
-    return state.resolved.theme[mode][name];
-  }
-
   function setStatus(message, error = false) {
     if (!status) return;
     status.textContent = message;
@@ -83,7 +83,7 @@ if (schemaElement) {
   function previewPayload() {
     return {
       type: PREVIEW_MESSAGE,
-      preset: state.resolved,
+      preset: previewPreset(state),
       mode: state.mode,
     };
   }
@@ -141,39 +141,56 @@ if (schemaElement) {
       button.classList.toggle("text-accent-foreground", active);
       button.classList.toggle("text-muted-foreground", !active);
     }
-    for (const panel of document.querySelectorAll("[data-theme-mode-field]")) {
-      panel.hidden = panel.dataset.themeModeField !== state.mode;
-    }
-    for (const input of document.querySelectorAll("[data-theme-field]")) {
-      const path = input.dataset.themeField;
-      input.value = fieldValue(path);
-      const invalid = state.drafts.has(path);
-      input.setAttribute("aria-invalid", String(invalid));
-      const error = document.querySelector(`[data-theme-field-error="${CSS.escape(path)}"]`);
-      if (error) {
-        error.hidden = !invalid;
-        error.classList.toggle("hidden", !invalid);
-        error.textContent = invalid
-          ? path === "radius"
-            ? "Use zero or a non-negative CSS length."
-            : "Enter a valid CSS color."
-          : "";
-      }
-    }
+    renderPickers();
 
     const artifacts = currentArtifacts();
     for (const output of document.querySelectorAll("[data-theme-command]")) {
       output.value = artifacts[output.dataset.themeCommand];
     }
-    if (state.drafts.size > 0) {
-      setStatus(`${state.drafts.size} invalid draft${state.drafts.size === 1 ? "" : "s"} — preview and exports keep the last valid values.`, true);
-    } else if (initialMessage) {
+    if (initialMessage) {
       setStatus(initialMessage);
       initialMessage = "";
     } else {
       setStatus(`${state.resolved.style === "maia" ? "Maia" : "Nova"} · ${state.mode}`);
     }
     syncPreview();
+  }
+
+  function pickerChoices(kind) {
+    if (kind === "baseColor") return schema.palette.baseColors;
+    if (kind === "radius") return schema.palette.radii;
+    return schema.palette.themes[state.selection.baseColor === "custom" ? "neutral" : state.selection.baseColor];
+  }
+
+  function renderPickers() {
+    function renderSwatch(swatch, choice, kind) {
+      const radius = kind === "radius";
+      swatch.hidden = !choice || (!radius && !choice.swatch);
+      swatch.style.backgroundColor = radius ? "" : (choice?.swatch ?? "");
+      swatch.style.borderRadius = radius ? (choice?.value ?? "") : "";
+    }
+
+    for (const kind of ["baseColor", "theme", "radius"]) {
+      const picker = document.querySelector(`[data-theme-picker="${kind}"]`);
+      if (!picker) continue;
+      const choices = pickerChoices(kind);
+      const selected = state.selection[kind];
+      const selectedChoice = choices.find((choice) => choice.name === selected);
+      picker.querySelector("[data-theme-selection-value]").textContent = selectedChoice?.title ?? "Custom";
+      const swatch = picker.querySelector("[data-theme-selection-swatch]");
+      renderSwatch(swatch, selectedChoice, kind);
+      const options = picker.querySelectorAll("[data-theme-choice]");
+      choices.forEach((choice, index) => {
+        const option = options[index];
+        if (!option) return;
+        const input = option.querySelector("input");
+        input.value = choice.name;
+        input.checked = choice.name === selected;
+        input.setAttribute("aria-label", choice.title);
+        option.querySelector("[data-theme-choice-label]").textContent = choice.title;
+        renderSwatch(option.querySelector("[data-theme-choice-swatch]"), choice, kind);
+      });
+    }
   }
 
   function parseCompatibleThemeCSS(source) {
@@ -384,10 +401,34 @@ if (schemaElement) {
     }
   }
 
-  on("input", "[data-theme-field]", (_event, input) => {
-    state = applyField(state, input.dataset.themeField, input.value, validators);
+  on("change", "[data-gsxui-slot-radio]", (_event, input) => {
+    const kind = input.closest("[data-theme-picker]").dataset.themePicker;
+    if (kind === "baseColor") state = selectBaseColor(state, input.value, schema);
+    else if (kind === "theme") state = selectTheme(state, input.value, schema);
+    else state = selectRadius(state, input.value, schema);
     render();
   });
+
+  on("pointerenter", "[data-theme-choice]", (_event, choice) => {
+    if (!matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    const input = choice.querySelector("[data-gsxui-slot-radio]");
+    const kind = input.closest("[data-theme-picker]").dataset.themePicker;
+    if (kind === "baseColor") state = previewBaseColor(state, input.value, schema);
+    else if (kind === "theme") state = previewTheme(state, input.value, schema);
+    else return;
+    render();
+  }, { capture: true });
+  on("pointerleave", "[data-theme-picker]", (event, picker) => {
+    if (event.relatedTarget instanceof Node && picker.contains(event.relatedTarget)) return;
+    state = clearPalettePreview(state);
+    render();
+  }, { capture: true });
+  on("toggle", "[data-theme-picker] [data-gsxui-popover-content]", (event) => {
+    if (event.newState === "closed") {
+      state = clearPalettePreview(state);
+      render();
+    }
+  }, { capture: true });
 
   on("click", "[data-theme-style]", (_event, button) => {
     state = selectStyle(state, button.dataset.themeStyle, schema);
@@ -433,7 +474,7 @@ if (schemaElement) {
     try {
       if (kind === "json") {
         const preset = importPresetJSON(input.value, schema, validators);
-        state = { resolved: preset, drafts: new Map(), mode: state.mode };
+        state = replacePreset(state, preset, schema);
       } else {
         state = importThemeCSS(state, input.value, schema, validators, parseCompatibleThemeCSS);
       }

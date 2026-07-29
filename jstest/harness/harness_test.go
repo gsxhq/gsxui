@@ -172,6 +172,50 @@ func TestSiteRoutesUseTheRealPagesWithHarnessAssets(t *testing.T) {
 	}
 }
 
+func TestThemeRouteLoadsProductionEquivalentBrowserEntry(t *testing.T) {
+	root := repoRoot(t)
+	srv := httptest.NewServer(newMux(root))
+	defer srv.Close()
+
+	res, err := http.Get(srv.URL + "/theme")
+	if err != nil {
+		t.Fatalf("GET /theme: %v", err)
+	}
+	body, _ := io.ReadAll(res.Body)
+	res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("status = %d, want 200", res.StatusCode)
+	}
+	page := string(body)
+	if !strings.Contains(page, `<script type="module" src="/static/jstest/harness-theme.js"></script>`) {
+		t.Error("/theme does not load the production-equivalent theme harness entry")
+	}
+	if strings.Contains(page, `<script type="module" src="/web/theme.js"></script>`) {
+		t.Error("/theme still loads theme.js without the production ui/index.js dependency graph")
+	}
+
+	entry, err := os.ReadFile(filepath.Join(root, "jstest", "harness-theme.js"))
+	if err != nil {
+		t.Fatalf("reading jstest/harness-theme.js: %v", err)
+	}
+	for _, want := range []string{
+		`import "./harness-site.js";`,
+		`import "../web/theme.js";`,
+	} {
+		if !strings.Contains(string(entry), want) {
+			t.Errorf("jstest/harness-theme.js missing %q", want)
+		}
+	}
+
+	siteEntry, err := os.ReadFile(filepath.Join(root, "jstest", "harness-site.js"))
+	if err != nil {
+		t.Fatalf("reading jstest/harness-site.js: %v", err)
+	}
+	if strings.Contains(string(siteEntry), `import "../web/theme.js";`) {
+		t.Error("shared harness entry imports theme-only dependencies")
+	}
+}
+
 func TestFoundationQueryLoadsOnlyFoundationStylesheet(t *testing.T) {
 	srv := httptest.NewServer(newMux(repoRoot(t)))
 	defer srv.Close()

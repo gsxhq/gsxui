@@ -16,6 +16,7 @@ if (previewDocument) {
     ]),
   );
   let hasAppliedState = false;
+  let focusedStyle = "";
 
   function fail(message) {
     if (parent !== window) {
@@ -102,9 +103,12 @@ if (previewDocument) {
     for (const [style, section] of styleSections) {
       section.hidden = style !== state.style;
     }
-    styleSections.get(state.style)
-      ?.querySelector('[data-theme-preview-case="focus-visible"]')
-      ?.focus();
+    if (focusedStyle !== state.style) {
+      styleSections.get(state.style)
+        ?.querySelector('[data-theme-preview-case="focus-visible"]')
+        ?.focus();
+      focusedStyle = state.style;
+    }
   }
 
   addEventListener("message", (event) => {

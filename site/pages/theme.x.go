@@ -23,21 +23,6 @@ import (
 //line theme.gsx:11:1
 type Theme struct{}
 
-// themeVar is one editable CSS custom property, with its default light and
-// dark values.
-type themeVar struct {
-	Name  string
-	Light string
-	Dark  string
-}
-
-// themeGroup is a labeled cluster of related vars (matches the editor's
-// section headings).
-type themeGroup struct {
-	Title string
-	Vars  []themeVar
-}
-
 type themeEditorSchema struct {
 	Schema            string                     `json:"schema"`
 	SchemaVersion     int                        `json:"schemaVersion"`
@@ -47,6 +32,38 @@ type themeEditorSchema struct {
 	Styles            []string                   `json:"styles"`
 	Defaults          map[string]json.RawMessage `json:"defaults"`
 	CanonicalDefaults map[string]string          `json:"canonicalDefaults"`
+	Palette           themePaletteSchema         `json:"palette"`
+}
+
+type themePaletteSchema struct {
+	BaseColors       []themePaletteChoiceSchema                       `json:"baseColors"`
+	Themes           map[string][]themePaletteChoiceSchema            `json:"themes"`
+	Radii            []themeRadiusChoiceSchema                        `json:"radii"`
+	Resolved         map[string]map[string]themePaletteResolvedSchema `json:"resolved"`
+	DefaultSelection themePaletteSelectionSchema                      `json:"defaultSelection"`
+}
+
+type themePaletteChoiceSchema struct {
+	Name   string `json:"name"`
+	Title  string `json:"title"`
+	Swatch string `json:"swatch"`
+}
+
+type themeRadiusChoiceSchema struct {
+	Name  string `json:"name"`
+	Title string `json:"title"`
+	Value string `json:"value"`
+}
+
+type themePaletteResolvedSchema struct {
+	Light preset.ThemeValues `json:"light"`
+	Dark  preset.ThemeValues `json:"dark"`
+}
+
+type themePaletteSelectionSchema struct {
+	BaseColor string `json:"baseColor"`
+	Theme     string `json:"theme"`
+	Radius    string `json:"radius"`
 }
 
 func themeEditorSchemaValue() themeEditorSchema {
@@ -60,6 +77,7 @@ func themeEditorSchemaValue() themeEditorSchema {
 		Styles:            make([]string, len(styles)),
 		Defaults:          make(map[string]json.RawMessage, len(styles)),
 		CanonicalDefaults: make(map[string]string, len(styles)),
+		Palette:           themePaletteSchemaValue(),
 	}
 	for i, style := range styles {
 		schema.Styles[i] = string(style)
@@ -73,39 +91,94 @@ func themeEditorSchemaValue() themeEditorSchema {
 	return schema
 }
 
-// ThemeGroups derives the editor's presentation groups and server-rendered
-// defaults from the authoritative preset schema.
-func ThemeGroups() []themeGroup {
-	defaults := preset.Default(preset.StyleNova)
-	groupIndexes := make(map[string]int)
-	groups := make([]themeGroup, 0, len(preset.GroupNames()))
-	for _, name := range preset.GroupNames() {
-		groupIndexes[name] = len(groups)
-		groups = append(groups, themeGroup{Title: name})
+func themePaletteSchemaValue() themePaletteSchema {
+	selection := preset.DefaultPaletteSelection()
+	schema := themePaletteSchema{
+		BaseColors:       themePaletteChoiceSchemaValues(preset.BaseColorChoices()),
+		Themes:           make(map[string][]themePaletteChoiceSchema),
+		Radii:            themeRadiusChoiceSchemaValues(preset.RadiusChoices()),
+		Resolved:         make(map[string]map[string]themePaletteResolvedSchema),
+		DefaultSelection: themePaletteSelectionSchemaFromPreset(selection),
 	}
-	add := func(definition preset.TokenDefinition, light, dark string) {
-		index, ok := groupIndexes[definition.Group]
-		if !ok {
-			index = len(groups)
-			groupIndexes[definition.Group] = index
-			groups = append(groups, themeGroup{Title: definition.Group})
+	for _, baseColor := range preset.BaseColorChoices() {
+		themes, err := preset.ThemeChoices(baseColor.Name)
+		if err != nil {
+			panic(err)
 		}
-		groups[index].Vars = append(groups[index].Vars, themeVar{
-			Name:  "--" + definition.Name,
-			Light: light,
-			Dark:  dark,
-		})
+		schema.Themes[baseColor.Name] = themePaletteChoiceSchemaValues(themes)
+		schema.Resolved[baseColor.Name] = make(map[string]themePaletteResolvedSchema, len(themes))
+		for _, theme := range themes {
+			resolved, err := preset.ResolvePalette(preset.StyleNova, preset.PaletteSelection{
+				BaseColor: baseColor.Name,
+				Theme:     theme.Name,
+				Radius:    selection.Radius,
+			})
+			if err != nil {
+				panic(err)
+			}
+			schema.Resolved[baseColor.Name][theme.Name] = themePaletteResolvedSchema{
+				Light: resolved.Theme.Light,
+				Dark:  resolved.Theme.Dark,
+			}
+		}
 	}
-	for _, definition := range preset.TokenDefinitions() {
-		add(
-			definition,
-			defaults.Theme.Light[definition.Name],
-			defaults.Theme.Dark[definition.Name],
-		)
+	return schema
+}
+
+func themePaletteChoiceSchemaValues(choices []preset.PaletteChoice) []themePaletteChoiceSchema {
+	values := make([]themePaletteChoiceSchema, len(choices))
+	for i, choice := range choices {
+		values[i] = themePaletteChoiceSchema{Name: choice.Name, Title: choice.Title, Swatch: choice.Swatch}
 	}
-	radius := preset.RadiusDefinition()
-	add(radius, defaults.Radius, defaults.Radius)
-	return groups
+	return values
+}
+
+func themeRadiusChoiceSchemaValues(choices []preset.RadiusChoice) []themeRadiusChoiceSchema {
+	values := make([]themeRadiusChoiceSchema, len(choices))
+	for i, choice := range choices {
+		values[i] = themeRadiusChoiceSchema{Name: choice.Name, Title: choice.Title, Value: choice.Value}
+	}
+	return values
+}
+
+func themePaletteSelectionSchemaFromPreset(selection preset.PaletteSelection) themePaletteSelectionSchema {
+	return themePaletteSelectionSchema{
+		BaseColor: selection.BaseColor,
+		Theme:     selection.Theme,
+		Radius:    selection.Radius,
+	}
+}
+
+func themePickerChoices(choices []preset.PaletteChoice) []themePickerChoice {
+	values := make([]themePickerChoice, len(choices))
+	for i, choice := range choices {
+		values[i] = themePickerChoice{
+			Title:  choice.Title,
+			Swatch: choice.Swatch,
+			Value:  choice.Name,
+		}
+	}
+	return values
+}
+
+func themeRadiusPickerChoices(choices []preset.RadiusChoice) []themePickerChoice {
+	values := make([]themePickerChoice, len(choices))
+	for i, choice := range choices {
+		values[i] = themePickerChoice{
+			Title:       choice.Title,
+			Value:       choice.Name,
+			SwatchStyle: "border-radius: " + choice.Value,
+		}
+	}
+	return values
+}
+
+func mustThemePickerChoices(baseColor string) []preset.PaletteChoice {
+	choices, err := preset.ThemeChoices(baseColor)
+	if err != nil {
+		panic(err)
+	}
+	return choices
 }
 
 const tabBtnBase = "rounded-md border border-border px-3 py-1.5 text-sm font-medium transition-colors"
@@ -117,14 +190,14 @@ const themeImportPlaceholder = `:root {
   --primary: oklch(0.7 0.2 280);
 }`
 
-//line theme.gsx:111:1
+//line theme.gsx:184:1
 func (t Theme) Page() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line theme.gsx:112:2
+//line theme.gsx:185:2
 		_gsxgw.NodeResult(_gsxrenderLayout(ctx, _gsxgw, "Theme", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line theme.gsx:113:3
+//line theme.gsx:186:3
 			_gsxa0, _gsxerr := _gsxf0.URLFor(ctx, (ThemePreviewButton{}))
 			if _gsxerr != nil {
 				return _gsxerr
@@ -136,11 +209,11 @@ func (t Theme) Page() _gsxrt.Node {
 	})
 }
 
-//line theme.gsx:117:1
+//line theme.gsx:190:1
 // ThemeEditor is the editor body without the site Layout, so the browser
 // harness can exercise the production controls and web/theme.js directly.
 
-//line theme.gsx:119:1
+//line theme.gsx:192:1
 func ThemeEditor(previewURL string) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -152,267 +225,208 @@ func _gsxrenderThemeEditor(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, previewUR
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line theme.gsx:120:2
+//line theme.gsx:193:2
 	_gsxgw.S("<div class=\"flex flex-col gap-8 py-10\">")
-//line theme.gsx:121:3
+//line theme.gsx:194:3
 	_gsxgw.S("<script type=\"application/json\"")
 	_gsxgw.BoolAttr("data-theme-schema", true)
 	_gsxgw.Nonce(ctx)
 	_gsxgw.S(">")
 	_gsxgw.JSVal(themeEditorSchemaValue())
 	_gsxgw.S("</script>")
-//line theme.gsx:122:3
+//line theme.gsx:195:3
 	_gsxgw.S("<div>")
-//line theme.gsx:123:4
+//line theme.gsx:196:4
 	_gsxgw.S("<h1 class=\"text-3xl font-semibold tracking-tight\">Theme editor</h1>")
-//line theme.gsx:124:4
+//line theme.gsx:197:4
 	_gsxgw.S("<p class=\"mt-2 max-w-2xl text-sm text-muted-foreground\">Choose the copied component style, then edit the semantic theme it consumes. This Button pilot renders the exact Nova or Maia source a project receives from ")
-//line theme.gsx:126:55
+//line theme.gsx:199:49
 	_gsxgw.S("<code>gsxui add</code>.</p></div>")
-//line theme.gsx:129:3
+//line theme.gsx:202:3
 	_gsxgw.S("<div class=\"grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,5fr)_minmax(420px,7fr)]\">")
-//line theme.gsx:130:4
+//line theme.gsx:203:4
 	_gsxgw.S("<div class=\"flex min-w-0 flex-col gap-7\">")
-//line theme.gsx:131:5
+//line theme.gsx:204:5
 	_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line theme.gsx:132:6
+//line theme.gsx:205:6
 	_gsxgw.S("<div class=\"flex items-center justify-between gap-3\">")
-//line theme.gsx:133:7
+//line theme.gsx:206:7
 	_gsxgw.S("<h2 class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">Style</h2>")
-//line theme.gsx:134:7
+//line theme.gsx:207:7
 	_gsxgw.Node(ctx, ui.Button("outline", "sm", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 		_gsxgw.S("Reset")
 		return _gsxgw.Err()
 	}), _gsxrt.Attrs{{Key: "data-theme-reset", Value: _gsxrt.Toggle(true)}}))
 	_gsxgw.S("</div>")
-//line theme.gsx:136:6
+//line theme.gsx:209:6
 	_gsxgw.S("<div class=\"grid grid-cols-1 gap-3 sm:grid-cols-2\">")
-//line theme.gsx:137:7
+//line theme.gsx:210:7
 	_gsxgw.S("<button type=\"button\" data-theme-style=\"nova\" aria-pressed=\"true\" class=\"rounded-xl border border-primary bg-accent/50 p-4 text-left transition-colors hover:bg-accent\">")
-//line theme.gsx:143:8
+//line theme.gsx:216:8
 	_gsxgw.S("<span class=\"block font-medium\">Nova</span>")
-//line theme.gsx:144:8
+//line theme.gsx:217:8
 	_gsxgw.S("<span class=\"mt-1 block text-xs text-muted-foreground\">Compact, practical defaults.</span></button>")
-//line theme.gsx:146:7
+//line theme.gsx:219:7
 	_gsxgw.S("<button type=\"button\" data-theme-style=\"maia\" aria-pressed=\"false\" class=\"rounded-xl border border-border p-4 text-left transition-colors hover:bg-accent\">")
-//line theme.gsx:152:8
+//line theme.gsx:225:8
 	_gsxgw.S("<span class=\"flex items-center justify-between gap-2\">")
-//line theme.gsx:153:9
+//line theme.gsx:226:9
 	_gsxgw.S("<span class=\"font-medium\">Maia</span>")
-//line theme.gsx:154:9
+//line theme.gsx:227:9
 	_gsxgw.S("<span class=\"rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-foreground\">Button pilot</span></span>")
-//line theme.gsx:156:8
+//line theme.gsx:229:8
 	_gsxgw.S("<span class=\"mt-1 block text-xs text-muted-foreground\">Softer geometry and roomier controls.</span></button></div>")
-//line theme.gsx:159:6
+//line theme.gsx:232:6
 	_gsxgw.S("<p class=\"text-xs text-muted-foreground\">Maia currently applies only to Button. The CLI refuses an unsafe mixed-style migration once other components are installed.</p></section>")
-//line theme.gsx:165:5
+//line theme.gsx:237:5
 	_gsxgw.S("<section class=\"flex flex-col gap-3 border-t border-border pt-6\">")
-//line theme.gsx:166:6
-	_gsxgw.S("<h2 class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">Mode and radius</h2>")
-//line theme.gsx:167:6
+//line theme.gsx:238:6
+	_gsxgw.S("<h2 class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">Mode and palette</h2>")
+//line theme.gsx:239:6
 	_gsxgw.S("<div class=\"flex flex-wrap items-end justify-between gap-4\">")
-//line theme.gsx:168:7
+//line theme.gsx:240:7
 	_gsxgw.S("<div class=\"flex items-center gap-2\">")
-//line theme.gsx:169:8
+//line theme.gsx:241:8
 	_gsxgw.S("<button type=\"button\" data-theme-mode-tab=\"light\" aria-pressed=\"true\" class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tabBtnBase), _gsxrt.Class("bg-accent text-accent-foreground"))
 	_gsxgw.S("\">Light</button>")
-//line theme.gsx:177:8
+//line theme.gsx:249:8
 	_gsxgw.S("<button type=\"button\" data-theme-mode-tab=\"dark\" aria-pressed=\"false\" class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tabBtnBase), _gsxrt.Class("text-muted-foreground hover:bg-accent hover:text-accent-foreground"))
-	_gsxgw.S("\">Dark</button></div>")
-//line theme.gsx:186:7
-	_gsxgw.S("<label class=\"flex min-w-[220px] flex-col gap-1.5 text-xs text-muted-foreground\">Radius")
-//line theme.gsx:188:8
-	_gsxgw.S("<input type=\"text\" data-theme-field=\"radius\" value=\"")
-	_gsxgw.AttrValue(string(preset.Default(preset.StyleNova).Radius))
-	_gsxgw.S("\" class=\"h-9 rounded-md border border-input bg-transparent px-3 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50\">")
-//line theme.gsx:194:8
-	_gsxgw.S("<span data-theme-field-error=\"radius\" class=\"hidden text-destructive\"></span></label></div></section>")
-//line theme.gsx:199:5
-	for _, g := range ThemeGroups() {
-//line theme.gsx:200:6
-		_gsxgw.S("<section data-theme-group=\"")
-		_gsxgw.AttrValue(string(g.Title))
-		_gsxgw.S("\" class=\"flex flex-col gap-3 border-t border-border pt-6\">")
-//line theme.gsx:201:7
-		_gsxgw.S("<h2 class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">")
-//line theme.gsx:201:85
-		_gsxgw.Text(string(g.Title))
-		_gsxgw.S("</h2>")
-//line theme.gsx:202:7
-		_gsxgw.S("<div class=\"flex flex-col gap-2\">")
-//line theme.gsx:203:8
-		for _, v := range g.Vars {
-//line theme.gsx:204:9
-			if v.Name != "--radius" {
-//line theme.gsx:205:10
-				_gsxgw.S("<div class=\"grid grid-cols-[minmax(0,150px)_1fr] items-start gap-3\">")
-//line theme.gsx:206:11
-				_gsxgw.S("<label class=\"truncate pt-2 font-mono text-xs text-muted-foreground\" title=\"")
-				_gsxgw.AttrValue(string(v.Name))
-				_gsxgw.S("\">")
-//line theme.gsx:206:95
-				_gsxgw.Text(string(v.Name))
-				_gsxgw.S("</label>")
-//line theme.gsx:207:11
-				_gsxgw.S("<div data-theme-mode-field=\"light\">")
-//line theme.gsx:208:12
-				_gsxgw.S("<input type=\"text\" data-theme-var=\"")
-				_gsxgw.AttrValue(string(v.Name))
-				_gsxgw.S("\" data-theme-mode=\"light\" data-theme-field=\"")
-				_gsxgw.AttrValue(string("light." + strings.TrimPrefix(v.Name, "--")))
-				_gsxgw.S("\" value=\"")
-				_gsxgw.AttrValue(string(v.Light))
-				_gsxgw.S("\" class=\"h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50\">")
-//line theme.gsx:216:12
-				_gsxgw.S("<span data-theme-field-error=\"")
-				_gsxgw.AttrValue(string("light." + strings.TrimPrefix(v.Name, "--")))
-				_gsxgw.S("\" class=\"mt-1 hidden text-xs text-destructive\"></span></div>")
-//line theme.gsx:218:11
-				_gsxgw.S("<div data-theme-mode-field=\"dark\"")
-				_gsxgw.BoolAttr("hidden", true)
-				_gsxgw.S(">")
-//line theme.gsx:219:12
-				_gsxgw.S("<input type=\"text\" data-theme-var=\"")
-				_gsxgw.AttrValue(string(v.Name))
-				_gsxgw.S("\" data-theme-mode=\"dark\" data-theme-field=\"")
-				_gsxgw.AttrValue(string("dark." + strings.TrimPrefix(v.Name, "--")))
-				_gsxgw.S("\" value=\"")
-				_gsxgw.AttrValue(string(v.Dark))
-				_gsxgw.S("\" class=\"h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50\">")
-//line theme.gsx:227:12
-				_gsxgw.S("<span data-theme-field-error=\"")
-				_gsxgw.AttrValue(string("dark." + strings.TrimPrefix(v.Name, "--")))
-				_gsxgw.S("\" class=\"mt-1 hidden text-xs text-destructive\"></span></div></div>")
-			}
-		}
-		_gsxgw.S("</div></section>")
-	}
-//line theme.gsx:236:5
+	_gsxgw.S("\">Dark</button></div></div>")
+//line theme.gsx:259:6
+	_gsxgw.S("<div class=\"grid grid-cols-1 gap-3 sm:grid-cols-3\">")
+//line theme.gsx:260:7
+	_gsxgw.NodeResult(_gsxrenderThemePicker(ctx, _gsxgw, "baseColor", "Base color", "neutral", themePickerChoices(preset.BaseColorChoices())))
+//line theme.gsx:266:7
+	_gsxgw.NodeResult(_gsxrenderThemePicker(ctx, _gsxgw, "theme", "Theme", "neutral", themePickerChoices(mustThemePickerChoices("neutral"))))
+//line theme.gsx:272:7
+	_gsxgw.NodeResult(_gsxrenderThemePicker(ctx, _gsxgw, "radius", "Radius", "medium", themeRadiusPickerChoices(preset.RadiusChoices())))
+	_gsxgw.S("</div></section>")
+//line theme.gsx:280:5
 	_gsxgw.S("<section class=\"flex flex-col gap-3 border-t border-border pt-6\">")
-//line theme.gsx:237:6
+//line theme.gsx:281:6
 	_gsxgw.S("<h2 class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">Preset JSON</h2>")
-//line theme.gsx:238:6
+//line theme.gsx:282:6
 	_gsxgw.S("<div class=\"flex flex-wrap gap-2\">")
-//line theme.gsx:239:7
+//line theme.gsx:283:7
 	_gsxgw.Node(ctx, ui.Button("outline", "sm", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 		_gsxgw.S("Copy JSON")
 		return _gsxgw.Err()
 	}), _gsxrt.Attrs{{Key: "data-theme-copy", Value: "json"}}))
-//line theme.gsx:240:7
+//line theme.gsx:284:7
 	_gsxgw.Node(ctx, ui.Button("outline", "sm", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 		_gsxgw.S("Download preset.json")
 		return _gsxgw.Err()
 	}), _gsxrt.Attrs{{Key: "data-theme-download", Value: "json"}}))
 	_gsxgw.S("</div>")
-//line theme.gsx:242:6
+//line theme.gsx:286:6
 	_gsxgw.S("<textarea data-theme-import=\"json\" rows=\"6\" placeholder=\"Paste a gsxui preset JSON document\" class=\"w-full rounded-md border border-input bg-transparent p-3 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50\"></textarea>")
-//line theme.gsx:248:6
+//line theme.gsx:292:6
 	_gsxgw.S("<div>")
-//line theme.gsx:249:7
+//line theme.gsx:293:7
 	_gsxgw.Node(ctx, ui.Button("outline", "sm", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 		_gsxgw.S("Apply JSON")
 		return _gsxgw.Err()
 	}), _gsxrt.Attrs{{Key: "data-theme-import-apply", Value: "json"}}))
 	_gsxgw.S("</div></section>")
-//line theme.gsx:253:5
+//line theme.gsx:296:5
 	_gsxgw.S("<section class=\"flex flex-col gap-3 border-t border-border pt-6\">")
-//line theme.gsx:254:6
+//line theme.gsx:297:6
 	_gsxgw.S("<h2 class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">Theme CSS</h2>")
-//line theme.gsx:255:6
+//line theme.gsx:298:6
 	_gsxgw.S("<div class=\"flex flex-wrap gap-2\">")
-//line theme.gsx:256:7
+//line theme.gsx:299:7
 	_gsxgw.Node(ctx, ui.Button("outline", "sm", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 		_gsxgw.S("Copy CSS")
 		return _gsxgw.Err()
 	}), _gsxrt.Attrs{{Key: "data-theme-copy", Value: "css"}}))
-//line theme.gsx:257:7
+//line theme.gsx:300:7
 	_gsxgw.Node(ctx, ui.Button("outline", "sm", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 		_gsxgw.S("Download theme.css")
 		return _gsxgw.Err()
 	}), _gsxrt.Attrs{{Key: "data-theme-download", Value: "css"}}))
 	_gsxgw.S("</div>")
-//line theme.gsx:259:6
+//line theme.gsx:302:6
 	_gsxgw.S("<textarea data-theme-import=\"css\" rows=\"6\" placeholder=\"")
 	_gsxgw.AttrValue(string(themeImportPlaceholder))
 	_gsxgw.S("\" class=\"w-full rounded-md border border-input bg-transparent p-3 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50\"></textarea>")
-//line theme.gsx:265:6
+//line theme.gsx:308:6
 	_gsxgw.S("<div>")
-//line theme.gsx:266:7
+//line theme.gsx:309:7
 	_gsxgw.Node(ctx, ui.Button("outline", "sm", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 		_gsxgw.S("Apply CSS")
 		return _gsxgw.Err()
 	}), _gsxrt.Attrs{{Key: "data-theme-import-apply", Value: "css"}}))
 	_gsxgw.S("</div></section>")
-//line theme.gsx:270:5
+//line theme.gsx:312:5
 	_gsxgw.S("<section class=\"flex flex-col gap-3 border-t border-border pt-6\">")
-//line theme.gsx:271:6
+//line theme.gsx:313:6
 	_gsxgw.S("<h2 class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">Share and install</h2>")
-//line theme.gsx:272:6
+//line theme.gsx:314:6
 	_gsxgw.S("<div class=\"flex flex-wrap gap-2\">")
-//line theme.gsx:273:7
+//line theme.gsx:315:7
 	_gsxgw.Node(ctx, ui.Button("outline", "sm", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 		_gsxgw.S("Copy share code")
 		return _gsxgw.Err()
 	}), _gsxrt.Attrs{{Key: "data-theme-copy", Value: "share"}}))
-//line theme.gsx:274:7
+//line theme.gsx:316:7
 	_gsxgw.Node(ctx, ui.Button("outline", "sm", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 		_gsxgw.S("Copy share URL")
 		return _gsxgw.Err()
 	}), _gsxrt.Attrs{{Key: "data-theme-copy", Value: "url"}}))
 	_gsxgw.S("</div>")
-//line theme.gsx:276:6
+//line theme.gsx:318:6
 	_gsxgw.S("<label class=\"flex flex-col gap-1.5 text-xs text-muted-foreground\">New project")
-//line theme.gsx:278:7
+//line theme.gsx:320:7
 	_gsxgw.S("<textarea data-theme-command=\"init\"")
 	_gsxgw.BoolAttr("readonly", true)
 	_gsxgw.S(" rows=\"3\" class=\"rounded-md border border-input bg-muted/40 p-3 font-mono text-xs text-foreground\"></textarea></label>")
-//line theme.gsx:280:6
+//line theme.gsx:327:6
 	_gsxgw.S("<label class=\"flex flex-col gap-1.5 text-xs text-muted-foreground\">Initialized project")
-//line theme.gsx:282:7
+//line theme.gsx:329:7
 	_gsxgw.S("<textarea data-theme-command=\"apply\"")
 	_gsxgw.BoolAttr("readonly", true)
 	_gsxgw.S(" rows=\"3\" class=\"rounded-md border border-input bg-muted/40 p-3 font-mono text-xs text-foreground\"></textarea></label></section></div>")
-//line theme.gsx:287:4
+//line theme.gsx:338:4
 	_gsxgw.S("<div class=\"flex min-w-0 flex-col gap-4 xl:sticky xl:top-20 xl:self-start\">")
-//line theme.gsx:288:5
+//line theme.gsx:339:5
 	_gsxgw.S("<div class=\"flex items-center justify-between gap-3\">")
-//line theme.gsx:289:6
+//line theme.gsx:340:6
 	_gsxgw.S("<div>")
-//line theme.gsx:290:7
+//line theme.gsx:341:7
 	_gsxgw.S("<h2 class=\"font-medium\">Button preview</h2>")
-//line theme.gsx:291:7
+//line theme.gsx:342:7
 	_gsxgw.S("<p")
 	_gsxgw.BoolAttr("data-theme-preview-status", true)
 	_gsxgw.S(" class=\"text-xs text-muted-foreground\">Connecting to preview…</p></div>")
-//line theme.gsx:293:6
+//line theme.gsx:344:6
 	_gsxgw.Node(ctx, ui.Button("outline", "sm", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 		_gsxgw.S("Retry")
 		return _gsxgw.Err()
 	}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-theme-preview-retry", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "class", Value: "hidden"}})))
 	_gsxgw.S("</div>")
-//line theme.gsx:295:5
+//line theme.gsx:346:5
 	_gsxgw.S("<iframe")
 	_gsxgw.BoolAttr("data-theme-preview-frame", true)
 	_gsxgw.S(" title=\"Button theme preview\" src=\"")
 	_gsxgw.URL(string(previewURL))
 	_gsxgw.S("\" class=\"min-h-[640px] w-full rounded-xl border border-border bg-background shadow-sm\"></iframe>")
-//line theme.gsx:301:5
+//line theme.gsx:352:5
 	_gsxgw.S("<p")
 	_gsxgw.BoolAttr("data-theme-status", true)
 	_gsxgw.S(" role=\"status\" aria-live=\"polite\" class=\"min-h-5 text-sm text-muted-foreground\"></p>")
-//line theme.gsx:302:5
+//line theme.gsx:353:5
 	_gsxgw.S("<textarea")
 	_gsxgw.BoolAttr("data-theme-manual-copy", true)
 	_gsxgw.BoolAttr("readonly", true)

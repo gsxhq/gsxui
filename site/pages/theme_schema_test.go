@@ -37,6 +37,7 @@ func TestThemeEditorSchemaMatchesPresetAuthority(t *testing.T) {
 		Styles            []string                   `json:"styles"`
 		Defaults          map[string]json.RawMessage `json:"defaults"`
 		CanonicalDefaults map[string]string          `json:"canonicalDefaults"`
+		Palette           paletteSchemaProbe         `json:"palette"`
 	}
 	if err := json.Unmarshal([]byte(htmlNodeText(schemaNode)), &schema); err != nil {
 		t.Fatalf("parse data-theme-schema JSON: %v\n%s", err, htmlNodeText(schemaNode))
@@ -60,6 +61,37 @@ func TestThemeEditorSchemaMatchesPresetAuthority(t *testing.T) {
 	if !reflect.DeepEqual(schema.Styles, wantStyles) {
 		t.Errorf("styles = %#v, want %#v", schema.Styles, wantStyles)
 	}
+	if got := len(schema.Palette.BaseColors); got != 7 {
+		t.Errorf("palette base colors = %d, want 7", got)
+	}
+	if got := len(schema.Palette.Themes["neutral"]); got != 18 {
+		t.Errorf("palette neutral themes = %d, want 18", got)
+	}
+	if got := len(schema.Palette.Radii); got != 4 {
+		t.Errorf("palette radii = %d, want 4", got)
+	}
+	if got, want := schema.Palette.DefaultSelection, (struct {
+		BaseColor string `json:"baseColor"`
+		Theme     string `json:"theme"`
+		Radius    string `json:"radius"`
+	}{BaseColor: "neutral", Theme: "neutral", Radius: "medium"}); got != want {
+		t.Errorf("palette default selection = %#v, want %#v", got, want)
+	}
+	wantBlue, err := preset.ResolvePalette(preset.StyleNova, preset.PaletteSelection{
+		BaseColor: "neutral",
+		Theme:     "blue",
+		Radius:    "medium",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	gotBlue, ok := schema.Palette.Resolved["neutral"]["blue"]
+	if !ok {
+		t.Fatal("palette resolved values missing neutral + blue")
+	}
+	if !reflect.DeepEqual(gotBlue.Light, wantBlue.Theme.Light) || !reflect.DeepEqual(gotBlue.Dark, wantBlue.Theme.Dark) {
+		t.Errorf("palette resolved neutral + blue = %#v, want %#v", gotBlue, wantBlue.Theme)
+	}
 	for _, style := range preset.Styles() {
 		raw, ok := schema.Defaults[string(style)]
 		if !ok {
@@ -82,6 +114,28 @@ func TestThemeEditorSchemaMatchesPresetAuthority(t *testing.T) {
 			t.Errorf("schema default %s is not canonical JSON", style)
 		}
 	}
+}
+
+type paletteSchemaProbe struct {
+	BaseColors []struct {
+		Name string `json:"name"`
+	} `json:"baseColors"`
+	Themes map[string][]struct {
+		Name string `json:"name"`
+	} `json:"themes"`
+	Radii []struct {
+		Name  string `json:"name"`
+		Value string `json:"value"`
+	} `json:"radii"`
+	Resolved map[string]map[string]struct {
+		Light preset.ThemeValues `json:"light"`
+		Dark  preset.ThemeValues `json:"dark"`
+	} `json:"resolved"`
+	DefaultSelection struct {
+		BaseColor string `json:"baseColor"`
+		Theme     string `json:"theme"`
+		Radius    string `json:"radius"`
+	} `json:"defaultSelection"`
 }
 
 func findElementWithAttribute(node *html.Node, name string) *html.Node {

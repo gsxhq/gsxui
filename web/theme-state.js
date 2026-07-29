@@ -7,7 +7,8 @@ function clone(value) {
 function cloneState(state) {
   return {
     resolved: clone(state.resolved),
-    drafts: new Map(state.drafts),
+    selection: clone(state.selection),
+    previewResolved: state.previewResolved === null ? null : clone(state.previewResolved),
     mode: state.mode,
   };
 }
@@ -55,17 +56,135 @@ function validatePreset(preset, schema, validators) {
 }
 
 export function createThemeState(schema, preset = schema.defaults.nova) {
-  return {
-    resolved: clone(preset),
-    drafts: new Map(),
-    mode: "light",
-  };
+  return replacePreset(
+    {
+      resolved: clone(preset),
+      selection: clone(schema.palette.defaultSelection),
+      previewResolved: null,
+      mode: "light",
+    },
+    preset,
+    schema,
+  );
+}
+
+function paletteResolution(schema, baseColor, theme) {
+  const resolution = schema.palette.resolved[baseColor]?.[theme];
+  if (!resolution) {
+    throw new Error(`unsupported palette selection ${baseColor}/${theme}`);
+  }
+  return resolution;
+}
+
+function applyPaletteTheme(preset, schema, baseColor, theme) {
+  const resolution = paletteResolution(schema, baseColor, theme);
+  preset.theme.light = clone(resolution.light);
+  preset.theme.dark = clone(resolution.dark);
+}
+
+function themeSelectionForBase(state, baseColor, schema) {
+  const theme = state.selection.theme;
+  if (state.selection.baseColor === "custom" || !schema.palette.resolved[baseColor]?.[theme]) {
+    return baseColor;
+  }
+  return theme;
+}
+
+function matchedPaletteSelection(preset, schema) {
+  let baseColor = "custom";
+  let theme = "custom";
+  for (const [candidateBaseColor, themes] of Object.entries(schema.palette.resolved)) {
+    for (const [candidateTheme, resolved] of Object.entries(themes)) {
+      if (
+        themeValuesEqual(preset.theme.light, resolved.light, schema.tokenNames) &&
+        themeValuesEqual(preset.theme.dark, resolved.dark, schema.tokenNames)
+      ) {
+        baseColor = candidateBaseColor;
+        theme = candidateTheme;
+        break;
+      }
+    }
+    if (baseColor !== "custom") break;
+  }
+  const radius = schema.palette.radii.find((choice) => choice.value === preset.radius)?.name ?? "custom";
+  return { baseColor, theme, radius };
+}
+
+function themeValuesEqual(a, b, tokenNames) {
+  return tokenNames.every((name) => a[name] === b[name]);
+}
+
+export function replacePreset(state, preset, schema) {
+  const next = cloneState(state);
+  next.resolved = clone(preset);
+  next.selection = matchedPaletteSelection(next.resolved, schema);
+  next.previewResolved = null;
+  return next;
+}
+
+export function selectBaseColor(state, baseColor, schema) {
+  const next = cloneState(state);
+  const theme = themeSelectionForBase(state, baseColor, schema);
+  applyPaletteTheme(next.resolved, schema, baseColor, theme);
+  next.selection.baseColor = baseColor;
+  next.selection.theme = theme;
+  next.previewResolved = null;
+  return next;
+}
+
+export function selectTheme(state, theme, schema) {
+  const next = cloneState(state);
+  const baseColor = state.selection.baseColor === "custom" ? "neutral" : state.selection.baseColor;
+  applyPaletteTheme(next.resolved, schema, baseColor, theme);
+  next.selection.baseColor = baseColor;
+  next.selection.theme = theme;
+  next.previewResolved = null;
+  return next;
+}
+
+export function selectRadius(state, radius, schema) {
+  const choice = schema.palette.radii.find((candidate) => candidate.name === radius);
+  if (!choice) {
+    throw new Error(`unsupported palette radius ${String(radius)}`);
+  }
+  const next = cloneState(state);
+  next.resolved.radius = choice.value;
+  next.selection.radius = radius;
+  next.previewResolved = null;
+  return next;
+}
+
+export function previewBaseColor(state, baseColor, schema) {
+  const next = cloneState(state);
+  const theme = themeSelectionForBase(state, baseColor, schema);
+  next.previewResolved = clone(next.resolved);
+  applyPaletteTheme(next.previewResolved, schema, baseColor, theme);
+  return next;
+}
+
+export function previewTheme(state, theme, schema) {
+  const next = cloneState(state);
+  const baseColor = state.selection.baseColor === "custom" ? "neutral" : state.selection.baseColor;
+  next.previewResolved = clone(next.resolved);
+  applyPaletteTheme(next.previewResolved, schema, baseColor, theme);
+  return next;
+}
+
+export function clearPalettePreview(state) {
+  const next = cloneState(state);
+  next.previewResolved = null;
+  return next;
+}
+
+export function previewPreset(state) {
+  return state.previewResolved ?? state.resolved;
 }
 
 export function selectStyle(state, style, schema) {
   assertStyle(style, schema);
   const next = cloneState(state);
   next.resolved.style = style;
+  next.previewResolved = null;
   return next;
 }
 
@@ -78,37 +197,9 @@ export function selectMode(state, mode) {
   return next;
 }
 
-export function applyField(state, path, value, validators) {
-  const next = cloneState(state);
-  const valid =
-    path === "radius"
-      ? validators.radius(value)
-      : /^(light|dark)\.[a-z0-9-]+$/.test(path) && validators.color(value);
-  if (!valid) {
-    next.drafts.set(path, value);
-    return next;
-  }
-
-  if (path === "radius") {
-    next.resolved.radius = value;
-  } else {
-    const [mode, name] = path.split(".");
-    if (!(name in next.resolved.theme[mode])) {
-      throw new Error(`unknown theme field ${path}`);
-    }
-    next.resolved.theme[mode][name] = value;
-  }
-  next.drafts.delete(path);
-  return next;
-}
-
 export function resetThemeState(state, schema) {
   assertStyle(state.resolved.style, schema);
-  return {
-    resolved: clone(schema.defaults[state.resolved.style]),
-    drafts: new Map(),
-    mode: state.mode,
-  };
+  return replacePreset(state, schema.defaults[state.resolved.style], schema);
 }
 
 function orderedPreset(preset, schema) {
@@ -258,11 +349,7 @@ export function importThemeCSS(state, source, schema, validators, parseCSS) {
   Object.assign(candidate.theme.light, parsed.light);
   Object.assign(candidate.theme.dark, parsed.dark);
   validatePreset(candidate, schema, validators);
-  return {
-    resolved: candidate,
-    drafts: new Map(),
-    mode: state.mode,
-  };
+  return replacePreset(state, candidate, schema);
 }
 
 export function manualCopyState(copied, text) {
