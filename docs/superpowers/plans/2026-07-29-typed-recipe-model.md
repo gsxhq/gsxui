@@ -1874,6 +1874,19 @@ read as coverage they do not provide. Delete both, and delete the dead
 `tt.want != "default"` guard at `:110` (no case in that table has
 `want == "default"`).
 
+- [ ] **Step 4d0: Harden the contract's "shape emitted once" assertion**
+
+`internal/recipe/contract_test.go`'s `strings.Count(string(got), `"values"`) != 1`
+only works because the fixture happens to declare exactly one dimension. It
+asserts "not duplicated" by coincidence, not "emitted once" in general. Derive
+the expected count from the fixture instead:
+
+```go
+if got, want := strings.Count(string(out), `"values"`), len(shape.Dimensions); got != want {
+	t.Errorf("shape emitted %d times, want %d:\n%s", got, want, out)
+}
+```
+
 - [ ] **Step 4d: Replace the containsStyle loop**
 
 `internal/stylegen/generate.go:211-218` — use `slices.Contains`. It is the only
