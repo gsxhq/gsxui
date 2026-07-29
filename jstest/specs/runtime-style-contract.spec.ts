@@ -519,7 +519,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   });
   await observe(
     "sonner-lifecycle",
-    "sonner",
+    "toast",
     "toast",
     toast,
     "data-state",
@@ -527,7 +527,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   );
   await observe(
     "sonner-lifecycle",
-    "sonner",
+    "toast",
     "toast",
     queuedToast,
     "data-visible",
@@ -535,7 +535,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   );
   await observe(
     "sonner-lifecycle",
-    "sonner",
+    "toast",
     "toast",
     toast,
     "data-visible",
@@ -544,7 +544,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   await toast.hover();
   await observe(
     "sonner-lifecycle",
-    "sonner",
+    "toaster",
     "toaster",
     toaster,
     "data-expanded",
@@ -553,7 +553,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   await page.mouse.move(0, 0);
   await observe(
     "sonner-lifecycle",
-    "sonner",
+    "toaster",
     "toaster",
     toaster,
     "data-expanded",
@@ -562,7 +562,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   await toast.locator("[data-gsxui-toast-close]").click();
   await observe(
     "sonner-lifecycle",
-    "sonner",
+    "toast",
     "toast",
     toast,
     "data-state",
