@@ -346,13 +346,35 @@ until the previous one's sweep is clean.
 
 Each is a current limitation, not a historical note. None blocks the migration.
 
-1. **Sonner's slot names do not follow the registry-name prefix rule.** Every
+1. **Sonner should be split into two components rather than exempted.**
+   `ui/sonner.gsx` exports both `Toast` and `Toaster` and renders the toast DOM
+   itself (ten `toast-*` slots), so `Toast` is a standalone component and
+   registering it as one removes the naming mismatch entirely. Upstream shadcn
+   has since added a separate `toast` component with the same slot vocabulary
+   (`toast`, `toast-content`, `toast-title`, `toast-description`,
+   `toast-action`, `toast-close`) plus `toast-portal` and `toast-viewport`,
+   which gsxui lacks. Calendar needs no equivalent change: its contract is
+   `RegistryName: "calendar"` with every slot `calendar-*`, and the date picker
+   exists only as an example composing it, exactly as upstream does it.
+
+   Superseded note — the original framing of this gap:
+   **Sonner's slot names do not follow the registry-name prefix rule.** Every
    other component's style-contract slots are `<RegistryName>-<relative>`, which
    is what `registry/canonical/shapes/agreement_test.go` joins on. Sonner's
    registry name is `sonner` but its slots are `toaster`, `toast`, `toast-*`.
    It has no shape yet, so nothing is forced; when Sonner migrates, either its
    contract slots are renamed or the mapping gains a documented exception. The
    agreement check fails loudly rather than special-casing it silently.
+
+1. **Upstream now ships eight styles; the model assumes two.** shadcn's
+   `apps/v4/registry/styles/` carries luma, lyra, maia, mira, nova, rhea, sera
+   and vega. gsxui models nova and maia. Three consequences if more are adopted:
+   strict conformance means every style implements every `(slot, dimension,
+   value)`, so the authoring burden is linear in styles × components; the layer
+   gate performs one Tailwind compile per style and would need caching; and the
+   `web/site-button.css` exemption list is already per-style (112 entries at two
+   styles). Decide deliberately whether to adopt more styles before the
+   migration multiplies the cost, not after.
 
 1. **Responsive `@media` overrides are a blind spot in the layer gate.** The
    contest oracle compares an authored rule's enclosing at-rule prelude against
