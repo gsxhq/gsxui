@@ -47,10 +47,15 @@ introduced. Shapes are Go values, recipes are CSS, the contract is JSON.
 ## 3. Architecture
 
 ```text
+registry/canonical/shapes/     package shapes  (pure data, leaf)
+  button.go                      var Button = recipe.Shape{…}; All()
+        │
+        │  imported by stylegen (always compiles — see §3.4)
+        ▼
 registry/canonical/            package canonical  (compiled, never shipped)
-  button.gsx                     structure + behavior; calls button.Role/Variant/Size
-  button_recipe.go               var buttonShape = recipe.Shape{…}; var button = recipe.Component{…}
-  recipe.go                      shapes map and Shapes()
+  button.gsx                     structure + behavior; calls button.Root/Variant/Size
+  button_recipe.go               var button = recipe.Component{…}
+  button_recipe.gen.go           GENERATED per-slot accessors
         │
         │  imported for the shape ─────────────┐
         │  parsed as .gsx for class exprs      │
@@ -92,18 +97,37 @@ method bodies themselves live in `internal/recipe/component.go`). It is compiled
 that it type-checks and so that structure and behavior tests can run against the
 authoritative source. It is never imported by `ui` or by consumers.
 
-`stylegen` consumes this package two ways: it **imports** it to read the shapes
-(no reading of Go declarations as data), and separately **parses** the `.gsx`
-file as text to rewrite class expressions. These are different concerns and the
-split is deliberate.
+`stylegen` consumes the canonical by **parsing** its `.gsx` files as text to
+rewrite class expressions. It reads shapes by **importing**
+`registry/canonical/shapes` (no reading of Go declarations as data). These are
+different concerns and the split is deliberate.
+
+### 3.4 `registry/canonical/shapes` (slot axis)
+
+Shapes originally lived in `registry/canonical` behind a `Shapes()` accessor.
+Once accessors became generated *into* `registry/canonical`, that arrangement
+deadlocked: `cmd/stylegen` imports `internal/stylegen`, which imported
+`registry/canonical` for `Shapes()`; Go compiles a package as a unit; so a
+canonical `.gsx` calling a not-yet-generated accessor made `registry/canonical`
+unbuildable and the generator unable to run at all.
+
+Shapes therefore moved to a leaf package that always compiles on its own.
+`generate.go` now reads `shapes.All()` and `internal/stylegen` no longer
+imports `registry/canonical` in any form; `canonical.Shapes()` was deleted.
+See §3 of the slot-axis design.
 
 ## 4. The recipe model
 
+**Superseded in part.** `Shape` gained a slot axis: `Base` and `Dimensions`
+moved onto a `Slot`, and a `Shape` carries `Slots []Slot`. See §2 of the
+slot-axis design for the current struct. Everything below about dimensions,
+defaults, conformance and conflicts still holds — it now applies per slot.
+
 ```go
-// internal/recipe
+// internal/recipe — as shipped in the Button pilot, before the slot axis
 type Shape struct {
     Component  string
-    Base       bool // component has a Role() base rule
+    Base       bool // component has a base rule
     Dimensions []Dimension
 }
 
@@ -118,16 +142,19 @@ Declared once, beside the canonical component whose public parameters it
 mirrors:
 
 ```go
-// registry/canonical/button_recipe.go
-var buttonShape = recipe.Shape{
+// registry/canonical/shapes/button.go  (current form, slot axis)
+var Button = recipe.Shape{
     Component: "button",
-    Base:      true,
-    Dimensions: []recipe.Dimension{
-        {Name: "variant", Default: "default", Values: []string{
-            "default", "destructive", "outline", "secondary", "ghost", "link"}},
-        {Name: "size", Default: "default", Values: []string{
-            "default", "xs", "sm", "lg", "icon", "icon-xs", "icon-sm", "icon-lg"}},
-    },
+    Slots: []recipe.Slot{{
+        Name: "", // the root slot
+        Base: true,
+        Dimensions: []recipe.Dimension{
+            {Name: "variant", Default: "default", Values: []string{
+                "default", "destructive", "outline", "secondary", "ghost", "link"}},
+            {Name: "size", Default: "default", Values: []string{
+                "default", "xs", "sm", "lg", "icon", "icon-xs", "icon-sm", "icon-lg"}},
+        },
+    }},
 }
 ```
 
@@ -173,17 +200,22 @@ The canonical authors semantic roles:
 ```gsx
 class={
     "group/button",
-    button.Role(),
+    button.Root(),
     button.Variant(variant),
     button.Size(size),
 }
 ```
 
-`button` is an unexported package-level `recipe.Component` value in
-`registry/canonical`, and `Role`, `Variant`, and `Size` are its methods. They
-have both a compile-time and a runtime meaning:
+`button` is an unexported package-level value in `registry/canonical` of the
+**generated** type `buttonRecipe`, which wraps a `recipe.Component` and exposes
+one method per declared (slot, dimension). `recipe.Component` itself carries
+only the untyped primitives `SlotClass(slot)` and
+`SlotValueClass(slot, dimension, value)`; the typed per-slot API is the
+generated accessor type, not fixed `Role`/`Variant`/`Size` methods. `Root()` is
+the root slot's base accessor (it was called `Role()` in the Button pilot).
+Both meanings are unchanged:
 
-| | `button.Role()` | `button.Variant(v)` |
+| | `button.Root()` | `button.Variant(v)` |
 |---|---|---|
 | **stylegen** | base utilities literal | a `switch` over `v` |
 | **canonical runtime** | `"gsxui-recipe-button"` | token for `v`, falling back to the dimension's `Default` when `v` is empty or unknown |
@@ -262,6 +294,12 @@ span would silently delete it. See `recordPartEdit` and
 
 `registry/generated/recipes.json`, emitted by the same pass and drift-checked
 alongside the generated `.gsx` files:
+
+**Superseded: the artifact is now schema version 2.** A component's rules are
+grouped under named slots (`components.<c>.slots.<s>.dimensions.<d>`) so
+multi-slot components can be expressed. `recipe.ContractVersion` is `2`. The
+version-1 sketch below is retained because every property it argues for is
+unchanged — only the extra `slots` level was inserted.
 
 ```json
 { "version": 1,
@@ -366,8 +404,10 @@ explicit invariant rather than left implicit in the CSS.
   low-specificity recipe class.
 
 See item 1 in the Follow-up work section (§15) for the one case where
-dropping `:where()` narrowed an existing caller-override guarantee, and item
-2 for making this invariant a build-time check instead of a comment.
+dropping `:where()` narrowed an existing caller-override guarantee. Item 2 —
+making this invariant a build-time check instead of a comment — is now done:
+`stylegen.CheckLayerPrecedence` runs from `make audit` via
+`go run ./cmd/stylegen --check-layers`.
 
 ## 10. Manifest-driven generation
 
@@ -422,7 +462,7 @@ nothing.
 | Desugaring | canonical to Nova and Maia, byte for byte | `internal/stylegen`, golden files |
 | Rejection | helper in a non-class attribute, interpolation, static class, nested markup | `internal/stylegen` |
 | Structure and behavior | `href` renders `<a>`, `disabled` forces `<button>`, `attrs` fall through, slot markers present — asserted once, style-independent | `registry/canonical` |
-| Boundary | nothing outside `stylegen` and its tests imports `registry/canonical` | architecture test |
+| Boundary | nothing imports `registry/canonical` — not even `stylegen`, which reads it as files and takes shapes from the leaf `registry/canonical/shapes` | architecture test |
 | Drift | generated `.gsx` and `recipes.json` match a fresh run | CI, `--check` |
 | Tailwind reality | every recipe compiles with no unknown utilities | existing `compiled-css-audit`, retargeted |
 
@@ -445,8 +485,8 @@ pre-merge (§8); changes to theme values, presets, or the CLI apply flow.
 ## 14. Success criteria
 
 1. `registry/canonical/button.gsx` contains no concrete utility and no recipe
-   token string — only `button.Role()`, `button.Variant()`, and `button.Size()`
-   calls.
+   token string — only `button.Root()`, `button.Variant()`, and `button.Size()`
+   calls. (`Role()` was renamed `Root()` with the slot axis.)
 2. The shape is declared once; Nova and Maia supply utilities only.
 3. Deleting a rule from either style fails the build naming the exact missing
    `(dimension, value)`.
@@ -456,7 +496,9 @@ pre-merge (§8); changes to theme values, presets, or the CLI apply flow.
 6. `recipes.json` is sufficient to enumerate every variant, diff Nova against
    Maia per axis, and report completeness — with no access to the CSS.
 7. Structure and behavior tests run once against the canonical and pass.
-8. Nothing outside `stylegen` imports `registry/canonical`.
+8. Nothing imports `registry/canonical`. (Tightened by the slot axis: even
+   `stylegen` no longer does — it reads shapes from `registry/canonical/shapes`
+   and the components as files.)
 
 ## 15. Follow-up work
 
@@ -492,21 +534,28 @@ that will be deleted; the items below are captured here so they survive.
    and actual values and would not be caught by this test. Bounded risk: the
    real computed values are independently covered by
    `jstest/specs/style-visual.spec.ts`.
-6. **`registry/canonical/recipe.go`'s `Shapes()` is a shallow copy** — the
-   returned map is fresh, but each `Shape`'s `Dimensions`/`Values` slices are
+6. **`registry/canonical/shapes`'s `All()` is a shallow copy** — the returned
+   map is fresh, but each `Shape`'s `Slots`/`Dimensions`/`Values` slices are
    still shared with the package-level map, so a caller mutating them in
-   place would corrupt shared state.
+   place would corrupt shared state. (Still open. `canonical.Shapes()`, where
+   this was first noted, no longer exists — the accessor moved to the leaf
+   `shapes` package, see §3.4.)
 7. **`ui/button_test.go` imports `internal/stylegen` only for the
-   `DefaultStyle` constant**, which pulls `registry/canonical` transitively
-   into `ui`'s test binary. Moving `DefaultStyle` to `internal/recipe` would
-   drop that import and tighten the canonical boundary (§13: nothing outside
-   `stylegen` should depend on `registry/canonical`).
-8. **Adding a dimension requires three uncoupled edits**: a method on
-   `recipe.Component`, the residue list at `internal/stylegen/resolve.go:98`,
-   and its duplicate at `internal/stylegen/generate_test.go:105`. Also note
-   `strings.ToLower(Sel.Name)` maps a method `IconSize` to the dimension name
-   `"iconsize"`, not `"icon-size"` — a naming trap for the next dimension
-   added.
+   `DefaultStyle` constant**, which pulls `internal/stylegen` (and through it
+   `registry/canonical/shapes`) into `ui`'s test binary. Still open, but
+   narrower than first written: `stylegen` no longer imports
+   `registry/canonical` itself, so the never-ship package is not dragged in.
+   Moving `DefaultStyle` to `internal/recipe` would drop the import entirely.
+8. ~~**Adding a dimension requires three uncoupled edits**~~ Done. The
+   accessor method is generated from the shape rather than hand-written on
+   `recipe.Component`; the residue check derives its receiver list from
+   `shapes.All()` (`knownComponents`/`residualAccessorCall` in
+   `internal/stylegen/resolve.go`) instead of a hardcoded
+   `.Role(`/`.Variant(`/`.Size(` list; and the `strings.ToLower(Sel.Name)`
+   trap is gone — a method name is resolved back to its `(slot, dimension)`
+   against the shape's own generated accessor names, never by string
+   splitting. Adding a dimension is now one edit to the shape plus
+   regeneration.
 9. **The CSS-layer sweep covered resting state at one viewport.**
    Hover/focus/active states are covered only for the specific cases that
    `jstest/specs/style-visual.spec.ts` names, not exhaustively across

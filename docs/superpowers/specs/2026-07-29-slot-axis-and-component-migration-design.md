@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-29
 
-**Status:** Approved design
+**Status:** Approved design — **Stages 0 and 1 complete** (see §10)
 
 **Extends:** [`2026-07-29-typed-recipe-model-design.md`](2026-07-29-typed-recipe-model-design.md).
 That design's principles, validation model, contract artifact, layer invariant
@@ -86,10 +86,11 @@ and accessor in sync only by convention.
 ### 3.1 The bootstrap cycle, and why shapes move
 
 Generating accessors **into** `registry/canonical` cannot work as the package
-stands. `stylegen` imports `registry/canonical` to read `Shapes()`; Go compiles
-a package as a unit; so if `card.gsx` calls a not-yet-generated `card.Header()`,
-the package fails to build and `Shapes()` becomes unreadable — the generator
-cannot run to produce the very methods it needs.
+stands. `cmd/stylegen` imports `internal/stylegen`, which imported
+`registry/canonical` to read `Shapes()`; Go compiles a package as a unit; so if
+`card.gsx` calls a not-yet-generated `card.Header()`, the package fails to
+build, that import chain fails with it, and the generator binary cannot be
+built to produce the very methods it needs.
 
 Shapes therefore move to a leaf package that compiles on its own:
 
@@ -103,6 +104,13 @@ registry/canonical/shapes/         hand-written, pure data, no dependents
 registry/canonical/card_recipe.gen.go     GENERATED accessors
 registry/canonical/card.gsx               authored structure
 ```
+
+As implemented, `internal/stylegen/generate.go` reads `shapes.All()` and
+`internal/stylegen` no longer imports `registry/canonical` at all;
+`canonical.Shapes()` was deleted. Leaving `stylegen` importing `canonical` for
+any reason would keep the cycle alive through `cmd/stylegen -> stylegen ->
+canonical`, so the leaf package only breaks the bootstrap if that import is
+gone entirely — which the architecture test now pins.
 
 `registry/canonical` keeps its "never ships" property and its architecture test.
 `shapes` is pure data and inherits the same rule.
@@ -125,6 +133,18 @@ file plus regeneration; "role" reads wrong once slots exist.
 A generated accessor for a slot or dimension that the shape does not declare is
 impossible by construction, and a typo at a call site is a compile error.
 
+Accessors are generated as a per-component struct type (`buttonRecipe`) wrapping
+a `recipe.Component`. `recipe.Component` itself carries only the untyped
+primitives `SlotClass(slot)` and `SlotValueClass(slot, dimension, value)`; the
+generated type is the typed API.
+
+Because a method name cannot be split back into (slot, dimension) by string
+manipulation — nothing in `MenuButtonSize` marks the boundary —
+`stylegen.HelperCalls` takes the shape as a third argument
+(`HelperCalls(filename string, src []byte, shape recipe.Shape)`) and resolves
+each method name against that shape's own generated accessor names. A two-argument
+form cannot work.
+
 ## 4. Consequences for the existing pipeline
 
 Each is a localized change to code that already exists and is tested.
@@ -139,7 +159,8 @@ Each is a localized change to code that already exists and is tested.
 | `CheckConflicts` | per slot-and-value list; error names the slot |
 | `Contract` | `components[c].slots[s].dimensions[d]`; **schema version 2** |
 | `stylegen` matcher | method name resolves to `(slot, dimension)` via the shape, not `strings.ToLower` |
-| `recipe.Component` | fixed `Role`/`Variant`/`Size` methods replaced by generated per-component accessors |
+| `recipe.Component` | fixed `Role`/`Variant`/`Size` methods replaced by `SlotClass`/`SlotValueClass`, with the typed API on the generated per-component accessor type |
+| generation | slot **coverage** is validated: a shape declaring a slot, a base rule, or a dimension the component never renders is an error, reported all at once |
 
 The contract's shape-emitted-once property is preserved: slots live under
 `components`, styles still carry only utilities.
@@ -170,7 +191,9 @@ light/dark) is the tool for this and must be committed rather than rebuilt.
 
 Making this a `make audit` gate is follow-up item 2 of the base design. It
 should be built **before** the bulk migration, not after: it converts the
-catalogue's riskiest property from vigilance into a build failure.
+catalogue's riskiest property from vigilance into a build failure. **Done** —
+`stylegen.CheckLayerPrecedence`, run from `make audit` as
+`go run ./cmd/stylegen --check-layers`.
 
 ## 6. Migration order
 
@@ -235,3 +258,46 @@ is what finds these.
    a migrated component's presentation.
 7. Every migrated component has a committed before/after computed-style sweep
    showing no unexplained difference.
+
+## 10. Stage 0 and 1 complete
+
+Shipped on this branch. Migration (Stages 2-4) is what remains.
+
+**Stage 0 — the model.**
+
+- `recipe.Shape` carries `Slots []Slot`; `Base`/`Dimensions` live on `Slot`.
+  Validation, `Conform`, `CheckConflicts` and the error messages all name the
+  slot.
+- `BaseClass`/`ValueClass` take a slot. `DecodeClass` matches declared slot
+  names longest-first (`TestShapeDecodeClassPrefersTheLongestSlot`).
+- Shapes moved to the leaf package `registry/canonical/shapes` (§3.1), and
+  `internal/stylegen` no longer imports `registry/canonical` in any form.
+- Per-slot accessors are generated into `registry/canonical/<c>_recipe.gen.go`
+  as a per-component struct type. `HelperCalls` resolves method names against
+  the shape, never by string splitting.
+- Generation validates slot coverage in both directions: an unrendered slot,
+  base rule, or dimension is an error.
+- `registry/generated/recipes.json` is schema **version 2**: rules are grouped
+  under `components.<c>.slots.<s>`.
+- Button was re-expressed through the axis (root slot only) and emits
+  byte-identical output. `Role()` was renamed `Root()`.
+
+**Stage 1 — the layer gate.**
+
+- `stylegen.CheckLayerPrecedence` enforces both halves of the base design's §9
+  invariant and runs from `make audit`. It found two latent instances on its
+  first run.
+- The computed-style sweep harness is committed:
+  `jstest/specs/layer-precedence.spec.ts`, `jstest/support/computed-sweep.ts`,
+  `jstest/support/sweep-diff.mjs`, driven by `make sweep-baseline` and
+  `make sweep-compare` (3,283 elements x 22 properties x light/dark).
+
+**Presentation changes shipped alongside**, both justified by the sweep:
+`data-gsxui-slot-sidebar-trigger` now renders at 28px (`size-7`, its own
+authored value and upstream shadcn's) instead of silently losing to Button's
+`size-8`; `data-gsxui-slot-input-group-button` is restored to 28x24, radius
+7px, font-size 14px after the Button migration demoted its rules a layer.
+
+**Not started:** Stage 2 (Card), Stage 3 (Badge, Alert), Stage 4 (the long
+tail, Sidebar last). The rule in §6 still applies — a stage does not begin
+until the previous one's sweep is clean.
