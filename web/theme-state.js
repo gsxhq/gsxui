@@ -170,6 +170,17 @@ export function previewTheme(state, theme, schema) {
   return next;
 }
 
+export function previewRadius(state, radius, schema) {
+  const choice = schema.palette.radii.find((candidate) => candidate.name === radius);
+  if (!choice) {
+    throw new Error(`unsupported palette radius ${String(radius)}`);
+  }
+  const next = cloneState(state);
+  next.previewResolved = clone(next.resolved);
+  next.previewResolved.radius = choice.value;
+  return next;
+}
+
 export function clearPalettePreview(state) {
   const next = cloneState(state);
   next.previewResolved = null;

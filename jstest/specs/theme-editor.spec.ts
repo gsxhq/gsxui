@@ -179,6 +179,50 @@ test("pickers expose accessible catalog choices and no raw token inputs", async 
   }
 });
 
+test("keyboard reopening focuses the checked theme-picker radio", async ({ page }) => {
+  await page.goto("/theme");
+  const theme = picker(page, "theme");
+  const trigger = theme.locator("[data-theme-picker-trigger]");
+  const content = theme.locator("[data-gsxui-popover-content]");
+  const blue = theme.getByRole("radio", { name: "Blue", exact: true });
+
+  await trigger.click();
+  await blue.click();
+  await expect(blue).toBeChecked();
+  await page.keyboard.press("Escape");
+  await expect(trigger).toBeFocused();
+
+  await trigger.press("Enter");
+  await expect(content).toHaveAttribute("data-state", "open");
+  await expect(blue).toBeFocused();
+});
+
+test("unrelated gsxui radios stay outside the theme-picker controller", async ({ page }) => {
+  await page.goto("/theme");
+  const committedJSON = (await downloadText(page, "json")).text;
+
+  const errorMessage = await page.evaluate(async () => {
+    const radio = document.createElement("input");
+    radio.type = "radio";
+    radio.setAttribute("data-gsxui-slot-radio", "");
+    let message = "";
+    const recordError = (event: ErrorEvent) => {
+      event.preventDefault();
+      message = event.message;
+    };
+    addEventListener("error", recordError);
+    document.body.append(radio);
+    radio.dispatchEvent(new Event("change", { bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    removeEventListener("error", recordError);
+    radio.remove();
+    return message;
+  });
+
+  expect(errorMessage).toBe("");
+  expect((await downloadText(page, "json", false)).text).toBe(committedJSON);
+});
+
 test("Base Color and Theme choices update both iframe modes and the same-named option", async ({
   page,
 }) => {
@@ -288,6 +332,24 @@ test("touch pointerenter does not preview on a fine hover-capable device", async
   expect(pointerType).toBe("touch");
 
   await expect.poll(() => iframeVariable(page, "primary")).toBe(committedPrimary);
+});
+
+test("radius hover previews only the iframe and restores on pointer leave", async ({ page }) => {
+  await page.goto("/theme");
+  const committedRadius = await iframeVariable(page, "radius");
+  const committedCommands = await commands(page);
+  const committedJSON = (await downloadText(page, "json")).text;
+  const radius = picker(page, "radius");
+  await radius.locator("[data-theme-picker-trigger]").click();
+
+  await radius.getByRole("radio", { name: "Large", exact: true }).locator("..").hover();
+  await expect.poll(() => iframeVariable(page, "radius")).toBe("0.875rem");
+  expect(await commands(page)).toEqual(committedCommands);
+  expect((await downloadText(page, "json", false)).text).toBe(committedJSON);
+
+  await page.mouse.move(1, 1);
+  await expect.poll(() => iframeVariable(page, "radius")).toBe(committedRadius);
+  expect(await commands(page)).toEqual(committedCommands);
 });
 
 test("click commits palette state to JSON, share code, commands, and iframe", async ({

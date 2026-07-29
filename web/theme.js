@@ -13,6 +13,7 @@ import {
   manualCopyState,
   previewBaseColor,
   previewPreset,
+  previewRadius,
   previewTheme,
   replacePreset,
   resetThemeState,
@@ -401,7 +402,7 @@ if (schemaElement) {
     }
   }
 
-  on("change", "[data-gsxui-slot-radio]", (_event, input) => {
+  on("change", "[data-theme-picker] [data-gsxui-slot-radio]", (_event, input) => {
     const kind = input.closest("[data-theme-picker]").dataset.themePicker;
     if (kind === "baseColor") state = selectBaseColor(state, input.value, schema);
     else if (kind === "theme") state = selectTheme(state, input.value, schema);
@@ -409,7 +410,7 @@ if (schemaElement) {
     render();
   });
 
-  on("pointerenter", "[data-theme-choice]", (event, choice) => {
+  on("pointerenter", "[data-theme-picker] [data-theme-choice]", (event, choice) => {
     if (
       event.pointerType === "touch" ||
       !matchMedia("(hover: hover) and (pointer: fine)").matches
@@ -418,7 +419,7 @@ if (schemaElement) {
     const kind = input.closest("[data-theme-picker]").dataset.themePicker;
     if (kind === "baseColor") state = previewBaseColor(state, input.value, schema);
     else if (kind === "theme") state = previewTheme(state, input.value, schema);
-    else return;
+    else state = previewRadius(state, input.value, schema);
     render();
   }, { capture: true });
   on("pointerleave", "[data-theme-picker]", (event, picker) => {
@@ -426,6 +427,13 @@ if (schemaElement) {
     state = clearPalettePreview(state);
     render();
   }, { capture: true });
+  on(
+    "gsxui:open",
+    "[data-theme-picker] [data-gsxui-popover-content]",
+    (_event, content) => {
+      content.querySelector("[data-gsxui-slot-radio]:checked")?.focus();
+    },
+  );
   on("toggle", "[data-theme-picker] [data-gsxui-popover-content]", (event) => {
     if (event.newState === "closed") {
       state = clearPalettePreview(state);

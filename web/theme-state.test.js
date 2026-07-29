@@ -15,6 +15,7 @@ import {
   manualCopyState,
   previewBaseColor,
   previewPreset,
+  previewRadius,
   previewTheme,
   replacePreset,
   resetThemeState,
@@ -139,6 +140,19 @@ test("palette previews never alter committed export state", () => {
   const preview = previewTheme(committed, "rose", schema);
   assert.equal(previewPreset(preview).theme.light.primary, "crimson");
   assert.equal(canonicalJSON(preview.resolved, schema), canonicalJSON(committed.resolved, schema));
+
+  const cleared = clearPalettePreview(preview);
+  assert.equal(cleared.previewResolved, null);
+  assert.deepEqual(previewPreset(cleared), committed.resolved);
+});
+
+test("radius preview is transient and preserves committed export state", () => {
+  const committed = createThemeState(schema);
+  const committedJSON = canonicalJSON(committed.resolved, schema);
+  const preview = previewRadius(committed, "large", schema);
+
+  assert.equal(previewPreset(preview).radius, "0.875rem");
+  assert.equal(canonicalJSON(preview.resolved, schema), committedJSON);
 
   const cleared = clearPalettePreview(preview);
   assert.equal(cleared.previewResolved, null);
