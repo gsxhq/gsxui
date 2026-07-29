@@ -813,7 +813,37 @@ git commit -m "feat: reject conflicting utilities within one recipe rule"
 
 **Interfaces:**
 - Consumes: `recipe.Shape`, `recipe.Dimension` (Task 1)
-- Produces: `func Shapes() map[string]recipe.Shape` (exported for `stylegen`), unexported `role(component string) string`, `variant(component, value string) string`, `size(component, value string) string`
+- Produces: `recipe.Component` (in `internal/recipe/component.go`) with `Role() string`, `Variant(value string) string`, `Size(value string) string`; `func Shapes() map[string]recipe.Shape` (exported for `stylegen`); and one unexported package-level `recipe.Component` var per component in `registry/canonical`, **named exactly after the component**
+
+**Why methods, not free functions.** A component parameter named `variant`
+shadows any package-level function named `variant`, so `variant("button", variant)`
+does not compile — and dimension names are *supposed* to match parameter names,
+so this would bite every dimension of every component. A method on a
+package-level value cannot be shadowed by a local, so the collision is
+impossible by construction rather than avoided by naming convention. It also
+states the component name once instead of at every call site.
+
+The var name is the component name — that is the contract stylegen resolves
+against:
+
+```go
+// registry/canonical/button_recipe.go
+var button = recipe.Component{Shape: buttonShape}
+```
+
+```gsx
+class={
+	"group/button",
+	button.Role(),
+	button.Variant(variant),
+	button.Size(size),
+}
+```
+
+Method name to dimension: `Role()` is the base rule; any other method maps to
+the dimension whose name is the method name lowercased (`Variant` → `variant`,
+`Size` → `size`). Adding a dimension later means adding one method to
+`recipe.Component`, which keeps the mapping type-checked.
 
 The helpers resolve an empty or unrecognized value to the dimension's declared default, so the canonical's runtime semantics match the generated `default:` arm.
 
@@ -828,18 +858,18 @@ import "testing"
 
 func TestRoleClass(t *testing.T) {
 	t.Parallel()
-	if got, want := role("button"), "gsxui-recipe-button"; got != want {
-		t.Errorf("role() = %q, want %q", got, want)
+	if got, want := button.Role(), "gsxui-recipe-button"; got != want {
+		t.Errorf("Role() = %q, want %q", got, want)
 	}
 }
 
 func TestDimensionHelpersResolveDeclaredValues(t *testing.T) {
 	t.Parallel()
-	if got, want := variant("button", "outline"), "gsxui-recipe-button-variant-outline"; got != want {
-		t.Errorf("variant() = %q, want %q", got, want)
+	if got, want := button.Variant("outline"), "gsxui-recipe-button-variant-outline"; got != want {
+		t.Errorf("Variant() = %q, want %q", got, want)
 	}
-	if got, want := size("button", "icon-lg"), "gsxui-recipe-button-size-icon-lg"; got != want {
-		t.Errorf("size() = %q, want %q", got, want)
+	if got, want := button.Size("icon-lg"), "gsxui-recipe-button-size-icon-lg"; got != want {
+		t.Errorf("Size() = %q, want %q", got, want)
 	}
 }
 
@@ -848,8 +878,8 @@ func TestDimensionHelpersFallBackToDefault(t *testing.T) {
 	// Empty and unrecognized values must both resolve to the declared default,
 	// matching the generated switch's default arm.
 	for _, value := range []string{"", "destructve"} {
-		if got, want := variant("button", value), "gsxui-recipe-button-variant-default"; got != want {
-			t.Errorf("variant(%q) = %q, want %q", value, got, want)
+		if got, want := button.Variant(value), "gsxui-recipe-button-variant-default"; got != want {
+			t.Errorf("Variant(%q) = %q, want %q", value, got, want)
 		}
 	}
 }
@@ -915,6 +945,53 @@ var buttonShape = recipe.Shape{
 }
 ```
 
+`internal/recipe/component.go` (new file in the recipe package):
+
+```go
+package recipe
+
+import "fmt"
+
+// Component binds a Shape to the helper calls a canonical component authors.
+// stylegen replaces every method call with concrete style source; the method
+// bodies exist so the canonical type-checks and so its style-independent
+// behavior tests can run.
+type Component struct {
+	Shape Shape
+}
+
+// Role is the component's base recipe class.
+func (c Component) Role() string { return c.Shape.BaseClass() }
+
+// Variant and Size are dimension helpers. An empty or unrecognized value
+// resolves to the dimension's declared default, matching the generated
+// switch's default arm — so a behavior test written against the canonical
+// asserts something true of every style.
+func (c Component) Variant(value string) string { return c.class("variant", value) }
+
+func (c Component) Size(value string) string { return c.class("size", value) }
+
+func (c Component) class(dimension, value string) string {
+	declared, ok := c.Shape.Dimension(dimension)
+	if !ok {
+		panic(fmt.Sprintf("recipe: component %q declares no dimension %q", c.Shape.Component, dimension))
+	}
+	if !declared.Has(value) {
+		value = declared.Default
+	}
+	return c.Shape.ValueClass(dimension, value)
+}
+```
+
+`registry/canonical/button_recipe.go` gains the binding, below `buttonShape`:
+
+```go
+// button binds Button's shape to the helper calls button.gsx authors. The
+// variable name is the component name: stylegen resolves button.Variant(v) by
+// looking "button" up in Shapes().
+var button = recipe.Component{Shape: buttonShape}
+```
+
 `registry/canonical/recipe.go`:
 
 ```go
@@ -925,11 +1002,7 @@ var buttonShape = recipe.Shape{
 // in package ui. Nothing outside internal/stylegen may import it.
 package canonical
 
-import (
-	"fmt"
-
-	"github.com/gsxhq/gsxui/internal/recipe"
-)
+import "github.com/gsxhq/gsxui/internal/recipe"
 
 var shapes = map[string]recipe.Shape{
 	buttonShape.Component: buttonShape,
@@ -939,45 +1012,12 @@ var shapes = map[string]recipe.Shape{
 // internal/stylegen reads this instead of parsing Go declarations as data.
 func Shapes() map[string]recipe.Shape {
 	out := make(map[string]recipe.Shape, len(shapes))
-	for name, shape := range shapes {
-		out[name] = shape
-	}
+	maps.Copy(out, shapes)
 	return out
 }
-
-func mustShape(component string) recipe.Shape {
-	shape, ok := shapes[component]
-	if !ok {
-		panic(fmt.Sprintf("canonical: no shape declared for component %q", component))
-	}
-	return shape
-}
-
-// role is the component's base recipe class. stylegen replaces every call with
-// the selected style's base utilities.
-func role(component string) string { return mustShape(component).BaseClass() }
-
-// variant and size are dimension helpers. stylegen replaces every call with a
-// switch over the dimension's declared values. At runtime — which only the
-// canonical package's own tests exercise — an empty or unrecognized value
-// resolves to the dimension's declared default, matching the generated switch's
-// default arm.
-func variant(component, value string) string { return dimensionClass(component, "variant", value) }
-
-func size(component, value string) string { return dimensionClass(component, "size", value) }
-
-func dimensionClass(component, dimension, value string) string {
-	shape := mustShape(component)
-	declared, ok := shape.Dimension(dimension)
-	if !ok {
-		panic(fmt.Sprintf("canonical: component %q declares no dimension %q", component, dimension))
-	}
-	if !declared.Has(value) {
-		value = declared.Default
-	}
-	return shape.ValueClass(dimension, value)
-}
 ```
+
+(import `maps` alongside `recipe`.)
 
 - [ ] **Step 4: Run the helper tests**
 
@@ -1001,9 +1041,9 @@ In `registry/canonical/button.gsx`, change `package ui` to `package canonical`, 
 ```gsx
 class={
 	"group/button",
-	role("button"),
-	variant("button", variant),
-	size("button", size),
+	button.Role(),
+	button.Variant(variant),
+	button.Size(size),
 }
 ```
 
@@ -1100,7 +1140,7 @@ git commit -m "feat: add the canonical component package with recipe helpers"
 
 **Interfaces:**
 - Consumes: `recipe.Resolved` (Task 3)
-- Produces: `func Resolve(filename string, src []byte, resolved recipe.Resolved) ([]byte, error)`, `func HelperCalls(filename string, src []byte) ([]Call, error)` with `type Call struct{ Component, Dimension string }` (`Dimension` empty for `role`)
+- Produces: `func Resolve(filename string, src []byte, resolved recipe.Resolved) ([]byte, error)`, `func HelperCalls(filename string, src []byte) ([]Call, error)` with `type Call struct{ Component, Dimension string }` (`Dimension` empty for `Role`)
 
 Keep every existing rejection rule and the format/reparse/residue verification. The change is *what* gets substituted: a `ClassPart` whose `Expr` is a helper call is replaced over `[ExprPos, End())` (see Resolved Spike).
 
@@ -1114,7 +1154,7 @@ func TestResolveDesugarsHelperCalls(t *testing.T) {
 import "github.com/gsxhq/gsx"
 
 component B(variant string, children gsx.Node) {
-	<button class={ "group/button", role("button"), variant("button", variant) }>
+	<button class={ "group/button", button.Role(), button.Variant(variant) }>
 		{ children }
 	</button>
 }
@@ -1138,7 +1178,7 @@ component B(variant string, children gsx.Node) {
 	if strings.Contains(string(got), recipe.Prefix) {
 		t.Errorf("resolved source still contains the recipe prefix:\n%s", got)
 	}
-	if strings.Contains(string(got), `role("button")`) {
+	if strings.Contains(string(got), "button.Role()") {
 		t.Errorf("resolved source still contains a helper call:\n%s", got)
 	}
 }
@@ -1152,7 +1192,7 @@ func TestResolveDefaultArmCarriesDeclaredDefault(t *testing.T) {
 import "github.com/gsxhq/gsx"
 
 component B(variant string, children gsx.Node) {
-	<button class={ variant("button", variant) }>{ children }</button>
+	<button class={ button.Variant(variant) }>{ children }</button>
 }
 `)
 	got, err := Resolve("button.gsx", src, testResolved(t))
@@ -1175,7 +1215,7 @@ func TestResolveRejectsUnknownDimension(t *testing.T) {
 import "github.com/gsxhq/gsx"
 
 component B(tone string, children gsx.Node) {
-	<button class={ tone("button", tone) }>{ children }</button>
+	<button class={ button.Tone(tone) }>{ children }</button>
 }
 `)
 	_, err := Resolve("button.gsx", src, testResolved(t))
@@ -1197,11 +1237,11 @@ Expected: FAIL — `Resolve` has the old signature.
 
 - [ ] **Step 3: Write the implementation**
 
-Change `inspectClassExpr` so that, when the parsed expression is a `*goast.CallExpr` whose `Fun` is an `*goast.Ident` named `role`, `variant`, or `size`:
+Change `inspectClassExpr` so that, when the parsed expression is a `*goast.CallExpr` whose `Fun` is a `*goast.SelectorExpr` — that is, a call of the form `<component>.<Method>(...)`:
 
-1. Require the first argument to be a string literal (the component). Reject otherwise with a positioned error.
-2. For `role`, require exactly one argument; record an edit replacing the span with `strconv.Quote(strings.Join(resolved.Base, " "))`.
-3. For a dimension helper, require exactly two arguments and that the second is a bare `*goast.Ident`; look the dimension up in `resolved.Shape` and reject an unknown one with a positioned error; record an edit replacing the span with the generated switch.
+1. Require `X` to be a bare `*goast.Ident`. Its name is the component name; reject with a positioned error if it does not match `resolved.Shape.Component`.
+2. If `Sel` is `Role`, require zero arguments; record an edit replacing the span with `strconv.Quote(strings.Join(resolved.Base, " "))`.
+3. Otherwise the dimension is `strings.ToLower(Sel.Name)`. Require exactly one argument and that it is a bare `*goast.Ident`; look the dimension up in `resolved.Shape` and reject an unknown one with a positioned error; record an edit replacing the span with the generated switch.
 
 Switch generation — every declared value except the default gets a `case`, and the default's utilities go in the `default:` arm:
 
@@ -1230,7 +1270,7 @@ start := r.fset.Position(part.ExprPos).Offset
 end := r.fset.Position(part.End()).Offset
 ```
 
-Keep `applyLiteralEdits`, `gen.Format`, the `gsxparser.ParseFile` reparse, and the residue checks exactly as they are, but change the residue check to also reject any surviving `role(`, `variant(`, or `size(` call. Delete `resolveClassLiteral` and the `used`/`declared` token-set machinery; conformance is now `internal/recipe`'s job.
+Keep `applyLiteralEdits`, `gen.Format`, the `gsxparser.ParseFile` reparse, and the residue checks exactly as they are, but change the residue check to also reject any surviving `.Role(`, `.Variant(`, or `.Size(` call. Delete `resolveClassLiteral` and the `used`/`declared` token-set machinery; conformance is now `internal/recipe`'s job.
 
 `HelperCalls` reuses the same traversal in a validation-only mode and returns the calls without editing — `GenerateAll` uses it to check the canonical against the shapes before touching any style.
 
@@ -1380,7 +1420,7 @@ func TestGeneratedSourcesAreFreeOfRecipeConstructs(t *testing.T) {
 		if bytes.Contains(src, []byte(recipe.Prefix)) {
 			t.Errorf("%s contains the recipe prefix", path)
 		}
-		for _, helper := range []string{"role(", "variant(", "size("} {
+		for _, helper := range []string{".Role(", ".Variant(", ".Size("} {
 			if bytes.Contains(src, []byte(helper)) {
 				t.Errorf("%s contains a helper call %q", path, helper)
 			}
@@ -1797,7 +1837,7 @@ git status --short                   # expect: clean, no unstaged generated file
 
 Confirm each by inspection or command, and report the evidence:
 
-1. `grep -c 'gsxui-recipe\|inline-flex' registry/canonical/button.gsx` → 0
+1. `grep -c 'gsxui-recipe\|inline-flex' registry/canonical/button.gsx` → 0, and its class attributes contain only `"group/button"` plus `button.*` method calls
 2. Shape declared once: `grep -rn 'recipe.Shape{' registry/ internal/` → one hit
 3. Break a rule in `registry/styles/maia/button.css`, run `go run ./cmd/stylegen`, confirm the error names the exact missing `(dimension, value)`, then restore
 4. `go run ./cmd/stylegen --check` → exit 0
