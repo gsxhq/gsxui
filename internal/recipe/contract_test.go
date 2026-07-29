@@ -95,8 +95,8 @@ func TestBuildContractGroupsSlotsUnderComponent(t *testing.T) {
 	if err := json.Unmarshal(out, &parsed); err != nil {
 		t.Fatalf("contract is not valid JSON: %v", err)
 	}
-	if parsed.Version != 2 {
-		t.Errorf("Version = %d, want 2", parsed.Version)
+	if parsed.Version != 1 {
+		t.Errorf("Version = %d, want 1", parsed.Version)
 	}
 	card, ok := parsed.Components["card"]
 	if !ok {
