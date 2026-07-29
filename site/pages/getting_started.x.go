@@ -45,7 +45,7 @@ func (g GettingStarted) Page() _gsxrt.Node {
 //line getting_started.gsx:28:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line getting_started.gsx:29:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, gettingStartedTOCItems[0]))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, gettingStartedTOCItems[0], nil))
 //line getting_started.gsx:30:5
 			_gsxgw.S("<pre>")
 //line getting_started.gsx:30:10
@@ -56,7 +56,7 @@ func (g GettingStarted) Page() _gsxrt.Node {
 //line getting_started.gsx:32:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line getting_started.gsx:33:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, gettingStartedTOCItems[1]))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, gettingStartedTOCItems[1], nil))
 //line getting_started.gsx:34:5
 			_gsxgw.S("<p>In your project (a Go module):</p>")
 //line getting_started.gsx:35:5
@@ -129,7 +129,7 @@ func (g GettingStarted) Page() _gsxrt.Node {
 //line getting_started.gsx:56:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line getting_started.gsx:57:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, gettingStartedTOCItems[2]))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, gettingStartedTOCItems[2], nil))
 //line getting_started.gsx:58:5
 			_gsxgw.S("<pre>")
 //line getting_started.gsx:58:10
@@ -167,7 +167,7 @@ func (g GettingStarted) Page() _gsxrt.Node {
 //line getting_started.gsx:70:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line getting_started.gsx:71:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, gettingStartedTOCItems[3]))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, gettingStartedTOCItems[3], nil))
 //line getting_started.gsx:72:5
 			_gsxgw.S("<p>A tiny two-file app: ")
 //line getting_started.gsx:73:27

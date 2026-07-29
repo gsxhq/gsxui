@@ -1,6 +1,7 @@
 package examples
 
 import (
+	"fmt"
 	"net/url"
 
 	"github.com/gsxhq/gsx"
@@ -65,6 +66,15 @@ var (
 // init() (see button.go), so component pages iterate a stable,
 // source-defined order — Task 3 batches append one file each, same pattern.
 func Register(component string, ex Example) {
+	for _, registered := range registry[component] {
+		if registered.Name == ex.Name {
+			panic(fmt.Sprintf(
+				"examples: duplicate registration for component %q example %q",
+				component,
+				ex.Name,
+			))
+		}
+	}
 	if _, ok := registry[component]; !ok {
 		order = append(order, component)
 	}

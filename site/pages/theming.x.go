@@ -40,7 +40,7 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:26:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line theming.gsx:27:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, themingTOCItems[0]))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, themingTOCItems[0], nil))
 //line theming.gsx:28:5
 			_gsxgw.S("<pre>")
 //line theming.gsx:28:10
@@ -73,7 +73,7 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:48:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line theming.gsx:49:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, themingTOCItems[1]))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, themingTOCItems[1], nil))
 //line theming.gsx:50:5
 			_gsxgw.S("<p>The variables are shadcn-compatible ")
 //line theming.gsx:51:42
@@ -90,7 +90,7 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:56:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line theming.gsx:57:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, themingTOCItems[2]))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, themingTOCItems[2], nil))
 //line theming.gsx:58:5
 			_gsxgw.S("<p>Components expose one bare ")
 //line theming.gsx:59:33
@@ -107,7 +107,7 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:67:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line theming.gsx:68:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, themingTOCItems[3]))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, themingTOCItems[3], nil))
 //line theming.gsx:69:5
 			_gsxgw.S("<p>The default style is in ")
 //line theming.gsx:70:30
@@ -137,7 +137,7 @@ func (t Theming) Page() _gsxrt.Node {
 //line theming.gsx:80:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line theming.gsx:81:5
-			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, themingTOCItems[4]))
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, themingTOCItems[4], nil))
 //line theming.gsx:82:5
 			_gsxgw.S("<ol class=\"list-decimal space-y-2 pl-6\">")
 //line theming.gsx:83:6

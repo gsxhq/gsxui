@@ -4,56 +4,87 @@ package pages
 
 import (
 	_gsxctx "context"
+	"github.com/gsxhq/gsx"
 	_gsxrt "github.com/gsxhq/gsx"
 	_gsxcm "github.com/gsxhq/gsxui/merge"
 	_gsxio "io"
 )
 
-//line toc.gsx:3:1
+//line toc.gsx:5:1
 type docTOCItem struct {
 	ID    string
 	Title string
 	Depth int
 }
 
-//line toc.gsx:9:1
-func docHeading(item docTOCItem) _gsxrt.Node {
+//line toc.gsx:11:1
+func docHeading(item docTOCItem, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-		return _gsxrenderdocHeading(ctx, _gsxgw, item)
+		return _gsxrenderdocHeading(ctx, _gsxgw, item, attrs)
 	})
 }
 
-func _gsxrenderdocHeading(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, item docTOCItem) error {
+func _gsxrenderdocHeading(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, item docTOCItem, attrs gsx.Attrs) error {
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line toc.gsx:10:2
+//line toc.gsx:12:2
+	headingAttrs := attrs.Without("id", "data-doc-heading", "tabindex")
+//line toc.gsx:13:2
 	if item.Depth == 3 {
-//line toc.gsx:11:3
-		_gsxgw.S("<h3 id=\"")
-		_gsxgw.AttrValue(string(item.ID))
+//line toc.gsx:14:3
+		_gsxv0 := headingAttrs
+		_gsxgw.S("<h3")
+		if !_gsxv0.Has("id") {
+			_gsxgw.S(" id=\"")
+			_gsxgw.AttrValue(string(item.ID))
+			_gsxgw.S("\"")
+		}
+		if !_gsxv0.Has("data-doc-heading") {
+			_gsxgw.BoolAttr("data-doc-heading", true)
+		}
+		if !_gsxv0.Has("tabindex") {
+			_gsxgw.S(" tabindex=\"-1\"")
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("scroll-mt-20"), _gsxrt.Class(_gsxv0.Class()))
 		_gsxgw.S("\"")
-		_gsxgw.BoolAttr("data-doc-heading", true)
-		_gsxgw.S(" tabindex=\"-1\" class=\"scroll-mt-20 text-lg font-semibold tracking-tight\">")
-//line toc.gsx:17:4
+		_gsxgw.StyleMerged("", _gsxv0.Style())
+		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line toc.gsx:21:4
 		_gsxgw.Text(string(item.Title))
 		_gsxgw.S("</h3>")
 	} else {
-//line toc.gsx:20:3
-		_gsxgw.S("<h2 id=\"")
-		_gsxgw.AttrValue(string(item.ID))
+//line toc.gsx:24:3
+		_gsxv1 := headingAttrs
+		_gsxgw.S("<h2")
+		if !_gsxv1.Has("id") {
+			_gsxgw.S(" id=\"")
+			_gsxgw.AttrValue(string(item.ID))
+			_gsxgw.S("\"")
+		}
+		if !_gsxv1.Has("data-doc-heading") {
+			_gsxgw.BoolAttr("data-doc-heading", true)
+		}
+		if !_gsxv1.Has("tabindex") {
+			_gsxgw.S(" tabindex=\"-1\"")
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("scroll-mt-20"), _gsxrt.Class(_gsxv1.Class()))
 		_gsxgw.S("\"")
-		_gsxgw.BoolAttr("data-doc-heading", true)
-		_gsxgw.S(" tabindex=\"-1\" class=\"scroll-mt-20 text-xl font-semibold tracking-tight\">")
-//line toc.gsx:26:4
+		_gsxgw.StyleMerged("", _gsxv1.Style())
+		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
+//line toc.gsx:31:4
 		_gsxgw.Text(string(item.Title))
 		_gsxgw.S("</h2>")
 	}
 	return _gsxgw.Err()
 }
 
-//line toc.gsx:31:1
+//line toc.gsx:36:1
 func docTableOfContents(items []docTOCItem) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -65,15 +96,15 @@ func _gsxrenderdocTableOfContents(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, it
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line toc.gsx:32:2
+//line toc.gsx:37:2
 	_gsxgw.S("<nav aria-label=\"On this page\" class=\"flex flex-col gap-3 text-sm\">")
-//line toc.gsx:33:3
+//line toc.gsx:38:3
 	_gsxgw.S("<div class=\"font-medium\">On this page</div>")
-//line toc.gsx:34:3
+//line toc.gsx:39:3
 	_gsxgw.S("<div class=\"flex flex-col gap-2\">")
-//line toc.gsx:35:4
+//line toc.gsx:40:4
 	for _, item := range items {
-//line toc.gsx:36:5
+//line toc.gsx:41:5
 		_gsxgw.S("<a")
 		_gsxgw.BoolAttr("data-site-toc-link", true)
 		_gsxgw.S(" href=\"")
@@ -81,7 +112,7 @@ func _gsxrenderdocTableOfContents(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, it
 		_gsxgw.S("\" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground transition-colors hover:text-foreground data-[active]:font-medium data-[active]:text-foreground"), _gsxrt.ClassIf("pl-3", item.Depth == 3))
 		_gsxgw.S("\">")
-//line toc.gsx:44:6
+//line toc.gsx:49:6
 		_gsxgw.Text(string(item.Title))
 		_gsxgw.S("</a>")
 	}

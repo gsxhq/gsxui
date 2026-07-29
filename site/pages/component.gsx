@@ -120,7 +120,7 @@ component (c Component) Page(props ComponentProps) {
 			<h1 class="text-3xl font-semibold tracking-tight">{ props.Title }</h1>
 			{ for i, ex := range props.Examples {
 				<section class="flex flex-col gap-3">
-					<docHeading item={toc[i]}/>
+					<docHeading item={toc[i]} class="text-sm font-medium uppercase tracking-wide text-muted-foreground"/>
 					{ if ex.Isolated && len(ex.Previews) == 0 {
 						<iframe
 							data-site-isolated-preview

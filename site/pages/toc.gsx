@@ -1,18 +1,22 @@
 package pages
 
+import "github.com/gsxhq/gsx"
+
 type docTOCItem struct {
 	ID    string
 	Title string
 	Depth int
 }
 
-component docHeading(item docTOCItem) {
+component docHeading(item docTOCItem, attrs gsx.Attrs) {
+	{{ headingAttrs := attrs.Without("id", "data-doc-heading", "tabindex") }}
 	{ if item.Depth == 3 {
 		<h3
 			id={item.ID}
 			data-doc-heading
 			tabindex="-1"
-			class="scroll-mt-20 text-lg font-semibold tracking-tight"
+			class="scroll-mt-20"
+			{ headingAttrs... }
 		>
 			{ item.Title }
 		</h3>
@@ -21,7 +25,8 @@ component docHeading(item docTOCItem) {
 			id={item.ID}
 			data-doc-heading
 			tabindex="-1"
-			class="scroll-mt-20 text-xl font-semibold tracking-tight"
+			class="scroll-mt-20"
+			{ headingAttrs... }
 		>
 			{ item.Title }
 		</h2>

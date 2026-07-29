@@ -141,7 +141,7 @@ func (c Component) Page(props ComponentProps) _gsxrt.Node {
 //line component.gsx:122:5
 				_gsxgw.S("<section class=\"flex flex-col gap-3\">")
 //line component.gsx:123:6
-				_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, toc[i]))
+				_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, toc[i], _gsxrt.Attrs{{Key: "class", Value: "text-sm font-medium uppercase tracking-wide text-muted-foreground"}}))
 //line component.gsx:124:6
 				if ex.Isolated && len(ex.Previews) == 0 {
 //line component.gsx:125:7
