@@ -346,6 +346,14 @@ until the previous one's sweep is clean.
 
 Each is a current limitation, not a historical note. None blocks the migration.
 
+1. **Sonner's slot names do not follow the registry-name prefix rule.** Every
+   other component's style-contract slots are `<RegistryName>-<relative>`, which
+   is what `registry/canonical/shapes/agreement_test.go` joins on. Sonner's
+   registry name is `sonner` but its slots are `toaster`, `toast`, `toast-*`.
+   It has no shape yet, so nothing is forced; when Sonner migrates, either its
+   contract slots are renamed or the mapping gains a documented exception. The
+   agreement check fails loudly rather than special-casing it silently.
+
 1. **Responsive `@media` overrides are a blind spot in the layer gate.** The
    contest oracle compares an authored rule's enclosing at-rule prelude against
    the one Tailwind emits for a responsive variant, and the prelude text differs,
