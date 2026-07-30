@@ -34,7 +34,6 @@
 @import "./default/navigation-menu.css";
 @import "./default/menu-popover-transition.css";
 @import "./default/textarea.css";
-@import "./default/toggle.css";
 @import "./default/dialog.css";
 @import "./default/alert-dialog.css";
 @import "./default/drawer-sheet-shared.css";
@@ -48,6 +47,93 @@
 @import "./default/carousel.css";
 @import "./default/sidebar.css";
 @import "./default/sonner.css";
+
+/* Toggle marker fallback: a @layer components block, not utilities.
+   ui/toggle-group.gsx's ToggleGroupItem stamps data-gsxui-slot-toggle onto
+   its own <button> ALONGSIDE data-gsxui-slot-toggle-group-item, and has no
+   class attribute of its own referencing Toggle's recipe — every bit of its
+   base appearance (layout, hover/focus/disabled states, variant/size
+   geometry, icon sizing) came entirely from Toggle's own marker-keyed
+   rules, not from a class Toggle's migration adds. Toggle's migration
+   deletes those marker rules from assets/css/styles/default/toggle.css
+   (moved to registry/styles/{nova,maia}/toggle.css, scoped to the new
+   .gsxui-recipe-toggle class), which would leave ToggleGroupItem — a
+   sibling component out of scope for this migration — unstyled.
+
+   FINDING (carried over from the earlier, reverted Toggle migration
+   attempt): this does NOT belong in @layer utilities like every other
+   escape hatch below. @layer utilities is the SAME named layer Tailwind's
+   own scanned utility classes live in, and this file is @imported after
+   "tailwindcss" in every consumer (web/site.css, jstest/site.css), so a
+   rule placed there always wins over a caller's plain utility class
+   instead of losing to it — the opposite of what every other escape hatch
+   here relies on. Kept :where()-wrapped at (0,0,0) here instead, exactly as
+   toggle.css originally had it: it only needs to lose gracefully to
+   Toggle's own new (0,1,0) recipe class (identical values, no visible
+   difference) and to any real caller utility class (which lives in @layer
+   utilities and always outranks @layer components regardless of
+   specificity).
+
+   ToggleGroup is already migrated (registry/styles/{nova,maia}/
+   toggle-group.css), so unlike the earlier attempt this block carries NO
+   ToggleGroupItem-specific rules — its own padding/radius/border overrides
+   already live in its own recipe and are unaffected by this migration. */
+@layer components {
+  :where([data-gsxui-slot-toggle]) {
+    @apply inline-flex items-center justify-center gap-1 rounded-lg bg-transparent text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none;
+  }
+  :where([data-gsxui-slot-toggle]):hover {
+    @apply bg-muted text-muted-foreground;
+  }
+  :where([data-gsxui-slot-toggle]):focus-visible {
+    @apply border-ring ring-[3px] ring-ring/50;
+  }
+  :where([data-gsxui-slot-toggle]):disabled {
+    @apply pointer-events-none opacity-50;
+  }
+  :where([data-gsxui-slot-toggle])[aria-invalid="true"] {
+    @apply border-destructive ring-destructive/20;
+  }
+  .dark :where([data-gsxui-slot-toggle][aria-invalid="true"]) {
+    @apply ring-destructive/40;
+  }
+  :where([data-gsxui-slot-toggle])[data-state="on"] {
+    @apply bg-accent text-accent-foreground;
+  }
+  :where([data-gsxui-slot-toggle])[data-variant="outline"] {
+    @apply border border-input;
+  }
+  :where([data-gsxui-slot-toggle])[data-variant="outline"]:hover {
+    @apply bg-accent text-accent-foreground;
+  }
+  :where([data-gsxui-slot-toggle])[data-size="default"] {
+    @apply h-8 min-w-8 px-2.5;
+  }
+  :where([data-gsxui-slot-toggle])[data-size="default"]:has(> svg) {
+    @apply px-2;
+  }
+  :where([data-gsxui-slot-toggle])[data-size="sm"] {
+    @apply h-7 min-w-7 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem];
+  }
+  :where([data-gsxui-slot-toggle])[data-size="sm"]:has(> svg) {
+    @apply px-1.5;
+  }
+  :where([data-gsxui-slot-toggle])[data-size="sm"] svg:not([class*="size-"]) {
+    @apply size-3.5;
+  }
+  :where([data-gsxui-slot-toggle])[data-size="lg"] {
+    @apply h-9 min-w-9 px-2.5;
+  }
+  :where([data-gsxui-slot-toggle])[data-size="lg"]:has(> svg) {
+    @apply px-2;
+  }
+  :where([data-gsxui-slot-toggle]) svg {
+    @apply pointer-events-none shrink-0;
+  }
+  :where([data-gsxui-slot-toggle]) svg:not([class*="size-"]) {
+    @apply size-4;
+  }
+}
 
 /* The @layer utilities block below stays in this file rather than moving into
    ./default/. It is cross-component fallout — Card, FieldLabel,
