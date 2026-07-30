@@ -42,7 +42,7 @@ func TestDropdownStructure(t *testing.T) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
 	}
-	assertMenuCSSOnlyMarkup(t, got,
+	assertMenuMarkupSlots(t, got,
 		"dropdown-menu",
 		"dropdown-menu-trigger",
 		"dropdown-menu-content",
@@ -54,21 +54,24 @@ func TestDropdownStructure(t *testing.T) {
 }
 
 func TestDropdownItemVariants(t *testing.T) {
+	// Migrated to the slot axis: variant presentation now lives in the
+	// recipe's compiled class (dropdownMenu.ItemVariant), so a class
+	// attribute legitimately renders here now.
 	for input, want := range map[string]string{"": "default", "destructive": "destructive"} {
 		got := render(t, ui.DropdownMenuItem(input, gsx.Raw("x"), nil))
 		if !strings.Contains(got, `data-variant="`+want+`"`) {
 			t.Errorf("variant %q must stamp %q\nin: %s", input, want, got)
 		}
-		if strings.Contains(got, `class=`) {
-			t.Errorf("variant presentation must live in CSS\nin: %s", got)
+		if strings.Count(got, `class=`) != 1 {
+			t.Errorf("variant presentation must render exactly one class attribute\nin: %s", got)
 		}
 	}
 }
 
 func TestDropdownContentCallerClassMerges(t *testing.T) {
 	got := render(t, ui.DropdownMenuContent(gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "z-10"}}))
-	if strings.Count(got, `class="z-10"`) != 1 || strings.Count(got, `class=`) != 1 {
-		t.Errorf("caller z-10 must be the only class and render once\nin: %s", got)
+	if strings.Count(got, "z-10") != 1 || strings.Count(got, `class=`) != 1 {
+		t.Errorf("caller z-10 must merge in exactly once, in exactly one class attribute\nin: %s", got)
 	}
 }
 
@@ -166,7 +169,7 @@ func TestDropdownMenuSubNestsContentInsideParentContentPinned(t *testing.T) {
 		strings.LastIndex(got, "</div>") {
 		t.Errorf("submenu content must remain DOM-nested\nin: %s", got)
 	}
-	assertMenuCSSOnlyMarkup(t, got,
+	assertMenuMarkupSlots(t, got,
 		"dropdown-menu-content",
 		"dropdown-menu-sub",
 		"dropdown-menu-sub-trigger",
@@ -176,7 +179,7 @@ func TestDropdownMenuSubNestsContentInsideParentContentPinned(t *testing.T) {
 
 func TestDropdownPinned(t *testing.T) {
 	got := render(t, ui.DropdownMenuItem("", gsx.Raw("Edit"), nil))
-	want := `<div data-gsxui-dropdown-item data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-dropdown-menu-item>Edit</div>`
+	want := `<div class="relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 [&amp;_svg:not([class*=&#39;text-&#39;])]:text-muted-foreground text-foreground" data-gsxui-dropdown-item data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-dropdown-menu-item>Edit</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -184,7 +187,7 @@ func TestDropdownPinned(t *testing.T) {
 
 func TestDropdownContentPinned(t *testing.T) {
 	got := render(t, ui.DropdownMenuContent(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-dropdown-content popover="auto" role="menu" tabindex="-1" data-state="closed" data-side="bottom" data-gsxui-slot-dropdown-menu-content>x</div>`
+	want := `<div class="z-50 max-h-96 min-w-[8rem] origin-top-left overflow-x-hidden overflow-y-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&amp;:popover-open]:opacity-100 [&amp;:popover-open]:scale-100 starting:[&amp;:popover-open]:opacity-0 starting:[&amp;:popover-open]:scale-95 data-[side=bottom]:starting:[&amp;:popover-open]:-translate-y-2 data-[side=left]:starting:[&amp;:popover-open]:translate-x-2 data-[side=right]:starting:[&amp;:popover-open]:-translate-x-2 data-[side=top]:starting:[&amp;:popover-open]:translate-y-2" data-gsxui-dropdown-content popover="auto" role="menu" tabindex="-1" data-state="closed" data-side="bottom" data-gsxui-slot-dropdown-menu-content>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
