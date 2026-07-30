@@ -1,4 +1,4 @@
-package ui
+package canonical
 
 import (
 	"github.com/gsxhq/gsx"
@@ -17,7 +17,7 @@ component Pagination(children gsx.Node, attrs gsx.Attrs) {
 	<nav
 		role="navigation"
 		aria-label="pagination"
-		class={ "mx-auto flex w-full justify-center" }
+		class={ pagination.Root() }
 		{ attrs... }
 		data-gsxui-slot-pagination
 	>
@@ -26,7 +26,7 @@ component Pagination(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component PaginationContent(children gsx.Node, attrs gsx.Attrs) {
-	<ul class={ "flex flex-row items-center gap-0.5" } { attrs... } data-gsxui-slot-pagination-content>
+	<ul class={ pagination.Content() } { attrs... } data-gsxui-slot-pagination-content>
 		{ children }
 	</ul>
 }
@@ -83,7 +83,7 @@ component PaginationPrevious(href string, attrs gsx.Attrs) {
 		data-gsxui-slot-pagination-previous
 	>
 		<icon.ChevronLeft/>
-		<span class={ "hidden sm:block" } data-gsxui-slot-pagination-previous-label>Previous</span>
+		<span class={ pagination.PreviousLabel() } data-gsxui-slot-pagination-previous-label>Previous</span>
 	</PaginationLink>
 }
 
@@ -95,7 +95,7 @@ component PaginationNext(href string, attrs gsx.Attrs) {
 		{ attrs... }
 		data-gsxui-slot-pagination-next
 	>
-		<span class={ "hidden sm:block" } data-gsxui-slot-pagination-next-label>Next</span>
+		<span class={ pagination.NextLabel() } data-gsxui-slot-pagination-next-label>Next</span>
 		<icon.ChevronRight/>
 	</PaginationLink>
 }
@@ -103,7 +103,7 @@ component PaginationNext(href string, attrs gsx.Attrs) {
 component PaginationEllipsis(attrs gsx.Attrs) {
 	<span
 		aria-hidden="true"
-		class={ "flex size-8 items-center justify-center [&>svg]:size-4" }
+		class={ pagination.Ellipsis() }
 		{ attrs... }
 		data-gsxui-slot-pagination-ellipsis
 	>

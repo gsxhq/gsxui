@@ -373,3 +373,9 @@ test("TabsTrigger active state keeps its shadow-sm elevation", async ({ page }) 
     "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 2px -1px",
   );
 });
+test("PaginationEllipsis keeps its size-8 tile", async ({ page }) => {
+  await page.goto("/x/pagination/basic");
+  const ellipsis = page.locator("[data-gsxui-slot-pagination-ellipsis]").first();
+  const size = await ellipsis.evaluate((n) => getComputedStyle(n).width);
+  expect(size).toBe("32px");
+});

@@ -282,6 +282,30 @@
         }
       }
     },
+    "pagination": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
+        "content": {
+          "base": true,
+          "dimensions": {}
+        },
+        "ellipsis": {
+          "base": true,
+          "dimensions": {}
+        },
+        "next-label": {
+          "base": true,
+          "dimensions": {}
+        },
+        "previous-label": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "progress": {
       "slots": {
         "": {
@@ -1175,6 +1199,52 @@
               "[[data-disabled=true]_\u0026]:opacity-50",
               "[:disabled~\u0026]:cursor-not-allowed",
               "[:disabled~\u0026]:opacity-50"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "pagination": {
+        "slots": {
+          "": {
+            "base": [
+              "mx-auto",
+              "flex",
+              "w-full",
+              "justify-center"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "flex",
+              "flex-row",
+              "items-center",
+              "gap-0.5"
+            ],
+            "dimensions": {}
+          },
+          "ellipsis": {
+            "base": [
+              "flex",
+              "size-8",
+              "items-center",
+              "justify-center",
+              "[\u0026\u003esvg]:size-4"
+            ],
+            "dimensions": {}
+          },
+          "next-label": {
+            "base": [
+              "hidden",
+              "sm:block"
+            ],
+            "dimensions": {}
+          },
+          "previous-label": {
+            "base": [
+              "hidden",
+              "sm:block"
             ],
             "dimensions": {}
           }
@@ -2239,6 +2309,52 @@
               "[[data-disabled=true]_\u0026]:opacity-50",
               "[:disabled~\u0026]:cursor-not-allowed",
               "[:disabled~\u0026]:opacity-50"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "pagination": {
+        "slots": {
+          "": {
+            "base": [
+              "mx-auto",
+              "flex",
+              "w-full",
+              "justify-center"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "flex",
+              "flex-row",
+              "items-center",
+              "gap-0.5"
+            ],
+            "dimensions": {}
+          },
+          "ellipsis": {
+            "base": [
+              "flex",
+              "size-8",
+              "items-center",
+              "justify-center",
+              "[\u0026\u003esvg]:size-4"
+            ],
+            "dimensions": {}
+          },
+          "next-label": {
+            "base": [
+              "hidden",
+              "sm:block"
+            ],
+            "dimensions": {}
+          },
+          "previous-label": {
+            "base": [
+              "hidden",
+              "sm:block"
             ],
             "dimensions": {}
           }

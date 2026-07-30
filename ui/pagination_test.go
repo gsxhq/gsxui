@@ -10,7 +10,7 @@ import (
 
 func TestPaginationPinned(t *testing.T) {
 	got := render(t, ui.Pagination(gsx.Raw("x"), nil))
-	want := `<nav role="navigation" aria-label="pagination" data-gsxui-slot-pagination>x</nav>`
+	want := `<nav role="navigation" aria-label="pagination" class="mx-auto flex w-full justify-center" data-gsxui-slot-pagination>x</nav>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -25,7 +25,7 @@ func TestPaginationAttrsFallThrough(t *testing.T) {
 
 func TestPaginationContentPinned(t *testing.T) {
 	got := render(t, ui.PaginationContent(gsx.Raw("x"), nil))
-	want := `<ul data-gsxui-slot-pagination-content>x</ul>`
+	want := `<ul class="flex flex-row items-center gap-0.5" data-gsxui-slot-pagination-content>x</ul>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -106,7 +106,7 @@ func TestPaginationLinkCallerClassIsForwardedOnce(t *testing.T) {
 // anything a caller could otherwise pass.
 func TestPaginationPreviousPinned(t *testing.T) {
 	got := render(t, ui.PaginationPrevious("/p/1", nil))
-	want := `<a data-variant="ghost" data-size="default" href="/p/1" aria-label="Go to previous page" data-gsxui-slot-pagination-previous data-gsxui-slot-pagination-link data-gsxui-slot-button><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="m15 18-6-6 6-6"/></svg><span data-gsxui-slot-pagination-previous-label>Previous</span></a>`
+	want := `<a data-variant="ghost" data-size="default" href="/p/1" aria-label="Go to previous page" data-gsxui-slot-pagination-previous data-gsxui-slot-pagination-link data-gsxui-slot-button><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="m15 18-6-6 6-6"/></svg><span class="hidden sm:block" data-gsxui-slot-pagination-previous-label>Previous</span></a>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -123,7 +123,7 @@ func TestPaginationPreviousComposesAllPresenceMarkersOnLink(t *testing.T) {
 
 func TestPaginationNextPinned(t *testing.T) {
 	got := render(t, ui.PaginationNext("/p/3", nil))
-	want := `<a data-variant="ghost" data-size="default" href="/p/3" aria-label="Go to next page" data-gsxui-slot-pagination-next data-gsxui-slot-pagination-link data-gsxui-slot-button><span data-gsxui-slot-pagination-next-label>Next</span><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="m9 18 6-6-6-6"/></svg></a>`
+	want := `<a data-variant="ghost" data-size="default" href="/p/3" aria-label="Go to next page" data-gsxui-slot-pagination-next data-gsxui-slot-pagination-link data-gsxui-slot-button><span class="hidden sm:block" data-gsxui-slot-pagination-next-label>Next</span><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="m9 18 6-6-6-6"/></svg></a>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -131,7 +131,7 @@ func TestPaginationNextPinned(t *testing.T) {
 
 func TestPaginationEllipsisPinned(t *testing.T) {
 	got := render(t, ui.PaginationEllipsis(nil))
-	want := `<span aria-hidden="true" data-gsxui-slot-pagination-ellipsis><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg><span data-gsxui-slot-pagination-ellipsis-label>More pages</span></span>`
+	want := `<span aria-hidden="true" class="flex size-8 items-center justify-center [&amp;&gt;svg]:size-4" data-gsxui-slot-pagination-ellipsis><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg><span data-gsxui-slot-pagination-ellipsis-label>More pages</span></span>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

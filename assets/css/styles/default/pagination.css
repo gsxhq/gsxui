@@ -1,11 +1,21 @@
 @layer components {
-  /* Pagination */
-  :where([data-gsxui-slot-pagination]) {
-    @apply mx-auto flex w-full justify-center;
-  }
-  :where([data-gsxui-slot-pagination-content]) {
-    @apply flex flex-row items-center gap-0.5;
-  }
+  /* Pagination migrated to the slot axis (registry/styles/{nova,maia}/pagination.css)
+     EXCEPT these two rules, which must stay here as plain CSS. Their
+     caller-overridability (jstest/specs/style-visual.spec.ts's
+     "pagination-previous-caller" fixture: a caller's `pl-12` must beat this
+     rule's `pl-1.5`) depends on the CSS LAYER boundary — this rule lives in
+     @layer components, a caller's plain utility class lives in @layer
+     utilities, and @layer utilities always wins regardless of specificity.
+     That guarantee only exists pre-resolution: if this rule migrated onto
+     PaginationLink's recipe, it would resolve to a literal utility class
+     Tailwind scans directly out of ui/pagination.gsx — no longer inside an
+     explicit @layer components boundary at consumption time — and it would
+     then compete on ordinary specificity instead. Its own arbitrary
+     attribute-compound selector form outranks a plain caller utility
+     (0,2,0) vs (0,1,0)), so the caller would permanently lose. Verified by
+     reproducing the migration and measuring computed padding in the
+     browser: the caller-overridable fixture regressed exactly this way.
+     See registry/canonical/shapes/pagination.go's doc comment. */
   :is(
     [data-gsxui-slot-pagination-link][data-gsxui-slot-pagination-previous]
   ) {
@@ -16,21 +26,4 @@
   ) {
     @apply pr-1.5;
   }
-  :where([data-gsxui-slot-pagination-previous-label]),
-  :where([data-gsxui-slot-pagination-next-label]) {
-    @apply hidden;
-  }
-  @media (width >= 40rem) {
-    :where([data-gsxui-slot-pagination-previous-label]),
-    :where([data-gsxui-slot-pagination-next-label]) {
-      @apply block;
-    }
-  }
-  :where([data-gsxui-slot-pagination-ellipsis]) {
-    @apply flex size-8 items-center justify-center;
-  }
-  :where([data-gsxui-slot-pagination-ellipsis]) > svg {
-    @apply size-4;
-  }
-
 }
