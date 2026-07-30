@@ -99,15 +99,15 @@ func AspectRatio(ratio string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxv6, _gsxerr := _gsxrt.AttrsCond(form == aspectRatioPair, func() (_gsxrt.Attrs, error) {
 			_gsxv0 := _gsxrt.FilterCSS(string(w))
 			_gsxv1 := _gsxrt.FilterCSS(string(h))
-			return _gsxrt.Attrs{{Key: "style", Value: "aspect-ratio: " + _gsxv0 + " / " + _gsxv1}}, nil
+			return _gsxrt.Attrs{{Key: "style", Value: "aspect-ratio: " + _gsxv0 + " / " + _gsxv1 + ";"}}, nil
 		}, func() (_gsxrt.Attrs, error) {
 			_gsxv5, _gsxerr := _gsxrt.AttrsCond(form == aspectRatioAutoPair, func() (_gsxrt.Attrs, error) {
 				_gsxv2 := _gsxrt.FilterCSS(string(w))
 				_gsxv3 := _gsxrt.FilterCSS(string(h))
-				return _gsxrt.Attrs{{Key: "style", Value: "aspect-ratio: auto " + _gsxv2 + " / " + _gsxv3}}, nil
+				return _gsxrt.Attrs{{Key: "style", Value: "aspect-ratio: auto " + _gsxv2 + " / " + _gsxv3 + ";"}}, nil
 			}, func() (_gsxrt.Attrs, error) {
 				_gsxv4 := _gsxrt.FilterCSS(string(ratio))
-				return _gsxrt.Attrs{{Key: "style", Value: "aspect-ratio: " + _gsxv4}}, nil
+				return _gsxrt.Attrs{{Key: "style", Value: "aspect-ratio: " + _gsxv4 + ";"}}, nil
 			})
 			if _gsxerr != nil {
 				return nil, _gsxerr
