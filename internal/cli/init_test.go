@@ -901,10 +901,13 @@ func TestInitializedConsumerCSSOmitsButtonPresentationAndKeepsRemainingStyle(t *
 	if attributes["data-gsxui-slot-button"] {
 		t.Error("initialized consumer CSS still contains Button presentation")
 	}
+	// Only components still off the slot axis appear here. A migrated
+	// component's presentation is keyed by recipe classes that ship with the
+	// component when it is added, so an unadded one contributes nothing to
+	// the vendored style — pick sentinels accordingly.
 	for _, attribute := range []string{
 		"data-gsxui-slot-combobox-content",
 		"data-gsxui-slot-command",
-		"data-gsxui-slot-tooltip",
 	} {
 		if !attributes[attribute] {
 			t.Errorf("clean consumer CSS missing canonical selector [%s]", attribute)
