@@ -8,17 +8,6 @@
     @apply block;
   }
 
-  /* Avatar */
-  :where([data-gsxui-slot-avatar]) {
-    @apply relative flex size-8 shrink-0 overflow-hidden rounded-full select-none;
-  }
-  :where([data-gsxui-slot-avatar-image]) {
-    @apply absolute inset-0 aspect-square size-full;
-  }
-  :where([data-gsxui-slot-avatar-fallback]) {
-    @apply flex size-full items-center justify-center rounded-full bg-muted text-sm text-muted-foreground;
-  }
-
   /* Breadcrumb */
   :where([data-gsxui-slot-breadcrumb-list]) {
     @apply flex flex-wrap items-center gap-1.5 text-sm break-words text-muted-foreground;

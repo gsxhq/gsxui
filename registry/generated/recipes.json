@@ -25,6 +25,22 @@
         }
       }
     },
+    "avatar": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
+        "fallback": {
+          "base": true,
+          "dimensions": {}
+        },
+        "image": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "badge": {
       "slots": {
         "": {
@@ -194,6 +210,44 @@
             "base": [
               "col-start-2",
               "font-medium"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "avatar": {
+        "slots": {
+          "": {
+            "base": [
+              "relative",
+              "flex",
+              "size-8",
+              "shrink-0",
+              "overflow-hidden",
+              "rounded-full",
+              "select-none"
+            ],
+            "dimensions": {}
+          },
+          "fallback": {
+            "base": [
+              "flex",
+              "size-full",
+              "items-center",
+              "justify-center",
+              "rounded-full",
+              "bg-muted",
+              "text-sm",
+              "text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "image": {
+            "base": [
+              "absolute",
+              "inset-0",
+              "aspect-square",
+              "size-full"
             ],
             "dimensions": {}
           }
@@ -573,6 +627,44 @@
             "base": [
               "col-start-2",
               "font-medium"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "avatar": {
+        "slots": {
+          "": {
+            "base": [
+              "relative",
+              "flex",
+              "size-8",
+              "shrink-0",
+              "overflow-hidden",
+              "rounded-full",
+              "select-none"
+            ],
+            "dimensions": {}
+          },
+          "fallback": {
+            "base": [
+              "flex",
+              "size-full",
+              "items-center",
+              "justify-center",
+              "rounded-full",
+              "bg-muted",
+              "text-sm",
+              "text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "image": {
+            "base": [
+              "absolute",
+              "inset-0",
+              "aspect-square",
+              "size-full"
             ],
             "dimensions": {}
           }

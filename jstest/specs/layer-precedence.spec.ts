@@ -167,3 +167,14 @@ test("Progress keeps its track height", async ({ page }) => {
   expect(height).toBe("4px");
 });
 
+test("Avatar keeps its fixed size-8 dimensions", async ({ page }) => {
+  await page.goto("/x/avatar/basic");
+  const el = page.locator("[data-gsxui-slot-avatar]").first();
+  const { width, height } = await el.evaluate((n) => {
+    const computed = getComputedStyle(n);
+    return { width: computed.width, height: computed.height };
+  });
+  expect(width).toBe("32px");
+  expect(height).toBe("32px");
+});
+

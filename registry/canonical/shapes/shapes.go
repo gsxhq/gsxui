@@ -23,6 +23,7 @@ var all = map[string]recipe.Shape{
 	Skeleton.Component: Skeleton,
 	Spinner.Component:  Spinner,
 	Progress.Component: Progress,
+	Avatar.Component:   Avatar,
 }
 
 // All returns every declared component shape, keyed by component name.

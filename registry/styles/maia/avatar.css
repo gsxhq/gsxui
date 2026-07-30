@@ -1,0 +1,17 @@
+/* Source: gsxui@05bfe97, assets/css/styles/default.css, Avatar block (three
+   rules: root, image, fallback). No relational forms, no dimensions. Nova
+   and Maia have not diverged on Avatar, so this file is byte-identical to
+   registry/styles/nova/avatar.css. */
+@layer components {
+  .gsxui-recipe-avatar {
+    @apply relative flex size-8 shrink-0 overflow-hidden rounded-full select-none;
+  }
+
+  .gsxui-recipe-avatar-image {
+    @apply absolute inset-0 aspect-square size-full;
+  }
+
+  .gsxui-recipe-avatar-fallback {
+    @apply flex size-full items-center justify-center rounded-full bg-muted text-sm text-muted-foreground;
+  }
+}

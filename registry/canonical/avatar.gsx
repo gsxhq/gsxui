@@ -1,4 +1,4 @@
-package ui
+package canonical
 
 import "github.com/gsxhq/gsx"
 
@@ -12,12 +12,7 @@ import "github.com/gsxhq/gsx"
 // (ui/avatar/avatar.js).
 
 component Avatar(children gsx.Node, attrs gsx.Attrs) {
-	<span
-		data-gsxui-avatar
-		class={ "relative flex size-8 shrink-0 overflow-hidden rounded-full select-none" }
-		{ attrs... }
-		data-gsxui-slot-avatar
-	>
+	<span data-gsxui-avatar class={ avatar.Root() } { attrs... } data-gsxui-slot-avatar>
 		{ children }
 	</span>
 }
@@ -27,7 +22,7 @@ component AvatarImage(src string, alt string, attrs gsx.Attrs) {
 		data-gsxui-avatar-image
 		src={src}
 		alt={alt}
-		class={ "absolute inset-0 aspect-square size-full" }
+		class={ avatar.Image() }
 		{ attrs... }
 		data-gsxui-slot-avatar-image
 	/>
@@ -36,7 +31,7 @@ component AvatarImage(src string, alt string, attrs gsx.Attrs) {
 component AvatarFallback(children gsx.Node, attrs gsx.Attrs) {
 	<span
 		data-gsxui-avatar-fallback
-		class={ "flex size-full items-center justify-center rounded-full bg-muted text-sm text-muted-foreground" }
+		class={ avatar.Fallback() }
 		{ attrs... }
 		data-gsxui-slot-avatar-fallback
 	>

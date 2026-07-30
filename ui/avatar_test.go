@@ -40,8 +40,8 @@ func TestAvatarStructure(t *testing.T) {
 
 func TestAvatarCallerClassIsForwardedOnce(t *testing.T) {
 	got := render(t, ui.Avatar(gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "size-12"}}))
-	if strings.Count(got, `class="size-12"`) != 1 {
-		t.Errorf("caller class must be the only class and render once\nin: %s", got)
+	if strings.Count(got, `class="`) != 1 || !strings.Contains(got, "size-12") {
+		t.Errorf("caller class must merge into the single class attribute and render once\nin: %s", got)
 	}
 }
 
@@ -49,9 +49,10 @@ func TestAvatarPinned(t *testing.T) {
 	// Exact full-render pin for Avatar > AvatarImage, verified token-by-token
 	// against shadcn's Avatar/AvatarImage (registry/new-york-v4/ui/avatar.tsx)
 	// and docs/jsx-parity.md's ADAPT: AvatarImage adds absolute inset-0
-	// to overlay the fallback (no-JS rendering correct).
+	// to overlay the fallback (no-JS rendering correct). Now carries the
+	// recipe's resolved class (slot axis migration).
 	got := render(t, ui.AvatarImage("/shadcn.jpg", "shadcn", nil))
-	want := `<img data-gsxui-avatar-image src="/shadcn.jpg" alt="shadcn" data-gsxui-slot-avatar-image>`
+	want := `<img data-gsxui-avatar-image src="/shadcn.jpg" alt="shadcn" class="absolute inset-0 aspect-square size-full" data-gsxui-slot-avatar-image>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
