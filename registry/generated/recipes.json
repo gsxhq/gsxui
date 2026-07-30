@@ -134,6 +134,14 @@
         }
       }
     },
+    "collapsible": {
+      "slots": {
+        "trigger": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "kbd": {
       "slots": {
         "": {
@@ -573,6 +581,16 @@
               "text-base",
               "leading-snug",
               "font-medium"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "collapsible": {
+        "slots": {
+          "trigger": {
+            "base": [
+              "list-none"
             ],
             "dimensions": {}
           }
@@ -1075,6 +1093,16 @@
               "text-base",
               "leading-snug",
               "font-medium"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "collapsible": {
+        "slots": {
+          "trigger": {
+            "base": [
+              "list-none"
             ],
             "dimensions": {}
           }

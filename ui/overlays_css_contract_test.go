@@ -65,7 +65,21 @@ func TestCollapsibleCSSOnlyContract(t *testing.T) {
 		ui.CollapsibleContent(gsx.Raw("Body"), nil),
 	), callerAttrs()))
 	assertCSSOnlyMarkup(t, got, "collapsible", "collapsible-trigger", "collapsible-content")
-	assertCallerAttrsOnce(t, got)
+	// Not assertCallerAttrsOnce: CollapsibleTrigger now carries its own
+	// recipe class (list-none) in addition to the root's caller-supplied
+	// class, so class= legitimately renders twice — same carve-out as
+	// FieldLabel/InputGroupButton for a composed primitive's own class.
+	for _, attr := range []string{`class="caller-only"`, `id="caller-id"`} {
+		if strings.Count(got, attr) != 1 {
+			t.Errorf("%s must render exactly once\nin: %s", attr, got)
+		}
+	}
+	if !strings.Contains(got, `class="list-none"`) {
+		t.Errorf("collapsible trigger must keep its own recipe class\nin: %s", got)
+	}
+	if strings.Count(got, `class=`) != 2 {
+		t.Errorf("expected exactly 2 class= attributes (caller root + trigger)\nin: %s", got)
+	}
 	if !strings.Contains(got, `<details`) || !strings.Contains(got, ` open`) {
 		t.Errorf("open collapsible must retain native disclosure state\nin: %s", got)
 	}

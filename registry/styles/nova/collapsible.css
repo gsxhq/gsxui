@@ -1,0 +1,13 @@
+/* Source: assets/css/styles/default/collapsible.css. Only the trigger slot
+   carries a rule (list-none); Collapsible's root and content elements have
+   no CSS of their own, so the shape declares only the trigger slot. The
+   ::-webkit-details-marker rule is a plain-CSS pseudo-element selector with
+   no Tailwind utility form and no @apply-only equivalent, so it stays behind
+   in default.css's @layer utilities escape hatch rather than moving here.
+   Nova and Maia have not diverged on Collapsible, so this file is
+   byte-identical to registry/styles/maia/collapsible.css. */
+@layer components {
+  .gsxui-recipe-collapsible-trigger {
+    @apply list-none;
+  }
+}

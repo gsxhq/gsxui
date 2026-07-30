@@ -1,4 +1,4 @@
-package ui
+package canonical
 
 import "github.com/gsxhq/gsx"
 
@@ -11,7 +11,7 @@ component Collapsible(open bool, children gsx.Node, attrs gsx.Attrs) {
 }
 
 component CollapsibleTrigger(children gsx.Node, attrs gsx.Attrs) {
-	<summary class={ "list-none" } { attrs... } data-gsxui-slot-collapsible-trigger>
+	<summary class={ collapsible.Trigger() } { attrs... } data-gsxui-slot-collapsible-trigger>
 		{ children }
 	</summary>
 }

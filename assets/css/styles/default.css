@@ -44,7 +44,6 @@
 @import "./default/toggle.css";
 @import "./default/toggle-group.css";
 @import "./default/accordion.css";
-@import "./default/collapsible.css";
 @import "./default/dialog.css";
 @import "./default/alert-dialog.css";
 @import "./default/drawer-sheet-shared.css";
@@ -90,6 +89,16 @@
   [data-gsxui-slot-card-header] {
     container-name: card-header;
     container-type: inline-size;
+  }
+
+  /* Collapsible trigger: hides the native <summary> disclosure triangle in
+     WebKit. ::-webkit-details-marker is a vendor pseudo-element selector with
+     no Tailwind utility form, so it can't move into
+     registry/styles/{nova,maia}/collapsible.css (@apply-only). The rest of
+     Collapsible's rule set (list-none) moved there. Unwrapped to clear the
+     (0,1,0) specificity floor. */
+  [data-gsxui-slot-collapsible-trigger]::-webkit-details-marker {
+    display: none;
   }
 
   /* FieldLabel: Field composes its label onto <ui.Label>, so the rendered

@@ -239,4 +239,10 @@ test("Kbd keeps its pill-corner radius", async ({ page }) => {
   const radius = await el.evaluate((n) => getComputedStyle(n).borderRadius);
   expect(radius).toBe("6px");
 });
+test("Collapsible trigger keeps its list-none marker hidden", async ({ page }) => {
+  await page.goto("/x/collapsible/basic");
+  const el = page.locator("[data-gsxui-slot-collapsible-trigger]").first();
+  const listStyle = await el.evaluate((n) => getComputedStyle(n).listStyleType);
+  expect(listStyle).toBe("none");
+});
 

@@ -32,6 +32,7 @@ var all = map[string]recipe.Shape{
 	AspectRatio.Component: AspectRatio,
 	Separator.Component:   Separator,
 	Kbd.Component:         Kbd,
+	Collapsible.Component: Collapsible,
 }
 
 // All returns every declared component shape, keyed by component name.
