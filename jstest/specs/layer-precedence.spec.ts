@@ -1435,3 +1435,71 @@ test("An offcanvas rail sits flush and reaches past its own edge", async ({ page
   // foundation.css's ::after base is left: 50%.
   expect(got.after).toBe("16px");
 });
+
+
+// Toast's migration. Two things it must not lose, neither of which the
+// resting sweep can prove on its own.
+test("Toast keeps its card chrome and its close button's own anchor", async ({
+  page,
+}) => {
+  await page.goto("/x/toast/server");
+  const card = page.locator("[data-gsxui-slot-toast]").first();
+  expect(await card.evaluate((n) => getComputedStyle(n).width)).toBe("356px");
+  expect(await card.evaluate((n) => getComputedStyle(n).borderTopLeftRadius)).toBe(
+    "16px",
+  );
+  const close = page.locator("[data-gsxui-slot-toast-close]").first();
+  expect(await close.evaluate((n) => getComputedStyle(n).position)).toBe(
+    "absolute",
+  );
+});
+
+// The standalone showcase row opts out of the stack with a plain `static`
+// utility. foundation.css's stack-anchor rule is deliberately :where()-wrapped
+// in @layer components so that caller utility wins; promoting it to @layer
+// utilities (the layer gate's usual fix for a migrated component) flips this
+// to absolute — see toastStackAnchorReason in internal/stylegen/layercheck.go.
+test("Toast's caller `static` still beats the stack anchor", async ({ page }) => {
+  await page.goto("/x/toast/server");
+  const card = page.locator("[data-gsxui-slot-toast]").first();
+  expect(await card.evaluate((n) => getComputedStyle(n).position)).toBe("static");
+});
+
+// data-type is NOT a recipe dimension: ui/toaster.js mutates it at runtime
+// (morph() turns a loading toast into a success one in place), so the type's
+// icon colour lives on the icon slot's own recipe rule as an ancestor-keyed
+// arbitrary variant. This pin exercises exactly the path a baked-in class
+// would break — the icon must recolour after the attribute changes.
+test("Toast's type-keyed icon colour follows a runtime data-type change", async ({
+  page,
+}) => {
+  await page.goto("/x/toaster/types");
+  // Resolve the token through a probe element so the comparison is against a
+  // computed colour in the same notation. A probe carrying `text-success` as a
+  // class would not work: that utility is only ever emitted inside the icon
+  // rule's arbitrary variant, never as a standalone class.
+  const successColor = await page.evaluate(() => {
+    const probe = document.createElement("div");
+    probe.style.color = "var(--success)";
+    document.body.appendChild(probe);
+    const color = getComputedStyle(probe).color;
+    probe.remove();
+    return color;
+  });
+
+  await page.getByRole("button", { name: "Promise" }).click();
+  const icon = page.locator(
+    "#gsxui-toaster [data-gsxui-slot-toast] [data-gsxui-slot-toast-icon]",
+  );
+  await expect(icon).toHaveCount(1);
+  await expect(
+    page.locator("#gsxui-toaster [data-gsxui-slot-toast][data-type='loading']"),
+  ).toHaveCount(1);
+
+  await expect(
+    page.locator("#gsxui-toaster [data-gsxui-slot-toast][data-type='success']"),
+  ).toHaveCount(1, { timeout: 10_000 });
+  expect(await icon.evaluate((n) => getComputedStyle(n).color)).toBe(
+    successColor,
+  );
+});

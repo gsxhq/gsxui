@@ -1,0 +1,105 @@
+package canonical
+
+import (
+	"github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/ui/icon"
+)
+
+// Toast is the server-rendered toast card — the single source of truth for
+// the toast <li> markup, and a standalone component: it is usable on its own
+// (a server-rendered flash row, a static markup showcase) without Toaster.
+// That is why it is registered separately rather than shipped as part of
+// ui/toaster.gsx, matching upstream shadcn's split between the toast card and
+// the toaster region.
+//
+// shadcn's own sonner.tsx renders nothing but a re-themed <Sonner>
+// passthrough (the toast library owns 100% of the toast DOM from a
+// non-Tailwind stylesheet), so there is no upstream markup to port. This is
+// the ONE place the card is authored: ui/toaster.js clones a pre-rendered
+// Toast (one per type, shipped as inert <template>s by Toaster) rather than
+// building the card from JS string DOM — the old "icon paths hand-copied
+// into a JS module" maintenance seam is gone (docs/jsx-parity.md ## sonner).
+//
+// toastType is one of default/success/info/warning/error/loading (the Go
+// keyword `type` forces the param name); empty is normalised to "default".
+// The type drives the icon (via ui/icon), the data-type styling axis, and
+// the aria-live level: an error toast
+// announces assertively, every other type politely. description/action/
+// cancel are optional — an empty string renders the part absent, matching
+// the JS `toast(msg, { description, action, cancel })` option surface; the
+// action/cancel buttons carry dedicated behavior hooks ui/toaster.js wires
+// clicks onto. A custom auto-dismiss is a data-duration attr passed
+// through attrs (ui/toaster.js reads it on adoption; loading defaults to no
+// auto-dismiss).
+component Toast(toastType string, title string, description string, action string, cancel string, attrs gsx.Attrs) {
+	{{
+		t := toastType
+		if t == "" {
+			t = "default"
+		}
+		ariaLive := "polite"
+		if t == "error" {
+			ariaLive = "assertive"
+		}
+	}}
+	<li
+		data-gsxui-toast
+		data-type={t}
+		role="status"
+		aria-live={ariaLive}
+		aria-atomic="true"
+		class={ toast.Root() }
+		{ attrs... }
+		data-gsxui-slot-toast
+	>
+		{ if t != "default" {
+			{ switch t {
+			case "success":
+				<icon.CircleCheck class={ toast.Icon() } data-gsxui-toast-icon data-gsxui-slot-toast-icon/>
+			case "info":
+				<icon.Info class={ toast.Icon() } data-gsxui-toast-icon data-gsxui-slot-toast-icon/>
+			case "warning":
+				<icon.TriangleAlert class={ toast.Icon() } data-gsxui-toast-icon data-gsxui-slot-toast-icon/>
+			case "error":
+				<icon.OctagonX class={ toast.Icon() } data-gsxui-toast-icon data-gsxui-slot-toast-icon/>
+			case "loading":
+				<icon.LoaderCircle class={ toast.Icon() } data-gsxui-toast-icon data-gsxui-slot-toast-icon/>
+			} }
+		} }
+		<div class={ toast.Content() } data-gsxui-slot-toast-content>
+			<div class={ toast.Title() } data-gsxui-toast-title data-gsxui-slot-toast-title>{ title }</div>
+			{ if description != "" {
+				<div class={ toast.Description() } data-gsxui-toast-description data-gsxui-slot-toast-description>{ description }</div>
+			} }
+		</div>
+		{ if action != "" {
+			<button
+				type="button"
+				class={ toast.Action() }
+				data-gsxui-toast-action
+				data-gsxui-slot-toast-action
+			>
+				{ action }
+			</button>
+		} }
+		{ if cancel != "" {
+			<button
+				type="button"
+				class={ toast.Cancel() }
+				data-gsxui-toast-cancel
+				data-gsxui-slot-toast-cancel
+			>
+				{ cancel }
+			</button>
+		} }
+		<button
+			type="button"
+			class={ toast.Close() }
+			data-gsxui-toast-close
+			aria-label="Close"
+			data-gsxui-slot-toast-close
+		>
+			<icon.X class={ toast.CloseIcon() } data-gsxui-slot-toast-close-icon/>
+		</button>
+	</li>
+}

@@ -272,6 +272,7 @@ var layerCheckExemptions = slices.Concat(
 	comboboxItemDisabledFallbackExemptions(),
 	sidebarFoundationMechanicsExemptions(),
 	sidebarStyleOverridableExemptions(),
+	toastStackAnchorExemptions(),
 )
 
 // comboboxItemDisabledFallbackReason is the decision behind every entry
@@ -315,6 +316,63 @@ func comboboxItemDisabledFallbackExemptions() []layerCheckExemption {
 			},
 			reason: comboboxItemDisabledFallbackReason,
 		})
+	}
+	return out
+}
+
+// toastStackAnchorReason is the decision behind every entry
+// toastStackAnchorExemptions lists.
+//
+// assets/css/foundation.css's @layer components carries the toast stack's
+// invariant mechanics — the card is absolutely positioned against the
+// fixed toaster region at --gsxui-toast-offset. Toast's migration made that
+// rule sit on a component with compiled utilities, and the gate reports
+// position and right as contested.
+//
+// It is a false positive of the gate's granularity, not a real cascade
+// loss. componentUtilities builds ONE utility set per COMPONENT, not per
+// slot: the position comes from the CLOSE BUTTON slot's `absolute` and the
+// right from its `-right-1.5`. Neither is on the card element the mechanics
+// rule targets — Toast's own root slot renders no positioning utility at
+// all.
+//
+// The gate's usual fix (promote to @layer utilities, unwrapped) was tried
+// first and rejected: it breaks a real, documented caller override. The
+// card takes an attrs spread, and site/examples/toast/server.gsx passes
+// `class="static"` to render a standalone showcase row outside the stack.
+// Unwrapped in @layer utilities the mechanics rule ties that caller utility
+// on specificity and wins on source order — the computed-style sweep caught
+// it as position static -> absolute on /x/toast/server. Zero specificity in
+// @layer components is what keeps the caller's utility winning. The rule is
+// foundation and must also apply with no style loaded (jstest's foundation
+// mode), which a style-owned rule cannot do.
+const toastStackAnchorReason = "assets/css/foundation.css's toast stack-anchor rule sits on a component " +
+	"with compiled utilities since Toast's migration. The contest is an artifact of the gate comparing " +
+	"against Toast's whole-component utility union rather than the card slot's own utilities — position " +
+	"and right come from the close-button slot's absolute/-right-1.5, not from anything on the card. " +
+	"Promoting the rule to @layer utilities was tried and reverted: it beat the caller's own `static` " +
+	"utility (site/examples/toast/server.gsx), which the sweep caught. The rule is foundation and must " +
+	"apply with no style loaded, so it cannot move into a style's @layer utilities."
+
+// toastStackAnchorExemptions spells out the two properties the mechanics
+// rule is reported as losing, one (property, style) pair at a time,
+// following calendarCaptionVisuallyHiddenExemptions' enumeration
+// discipline.
+func toastStackAnchorExemptions() []layerCheckExemption {
+	const selector = ":where([data-gsxui-slot-toast])"
+	out := make([]layerCheckExemption, 0, 4)
+	for _, property := range []string{"position", "right"} {
+		for _, style := range []string{"maia", "nova"} {
+			out = append(out, layerCheckExemption{
+				key: exemptionKey{
+					file:      "assets/css/foundation.css",
+					style:     style,
+					selector:  selector,
+					contested: property,
+				},
+				reason: toastStackAnchorReason,
+			})
+		}
 	}
 	return out
 }

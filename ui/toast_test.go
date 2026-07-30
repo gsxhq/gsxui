@@ -1,12 +1,55 @@
 package ui_test
 
 import (
+	"html"
+	"os"
+	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 
 	gsx "github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/internal/recipe"
+	"github.com/gsxhq/gsxui/internal/stylegen"
+	"github.com/gsxhq/gsxui/merge"
 	"github.com/gsxhq/gsxui/ui"
 )
+
+// novaToastRecipe loads the default style's Toast recipe once. ui.Toast is
+// generated output now, so the classes it renders are the default style's
+// concrete utilities — same pattern as novaButtonRecipe in button_test.go.
+var novaToastRecipe = sync.OnceValue(func() recipe.Style {
+	path := filepath.Join("..", "registry", "styles", stylegen.DefaultStyle, "toast.css")
+	src, err := os.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+	style, err := recipe.ParseStyle(path, src)
+	if err != nil {
+		panic(err)
+	}
+	return style
+})
+
+func toastRecipeUtilities(class string) []string {
+	rule, ok := novaToastRecipe().Lookup(class)
+	if !ok {
+		panic("default style declares no recipe " + class)
+	}
+	return rule.Utilities
+}
+
+// canonicalToastClass renders the class attribute ui.Toast's slot emits,
+// with any caller classes merged in after the recipe's own utilities.
+func canonicalToastClass(slot string, caller ...string) string {
+	name := "gsxui-recipe-toast"
+	if slot != "" {
+		name += "-" + slot
+	}
+	classes := append([]string(nil), toastRecipeUtilities(name)...)
+	classes = append(classes, caller...)
+	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
+}
 
 func requireMarkup(t *testing.T, got string, fragments ...string) {
 	t.Helper()
@@ -29,15 +72,15 @@ func forbidMarkup(t *testing.T, got string, fragments ...string) {
 func TestToastContract(t *testing.T) {
 	got := render(t, ui.Toast("error", "Failed", "Try again", "Retry", "Dismiss", nil))
 	requireMarkup(t, got,
-		`<li data-gsxui-toast data-type="error" role="status" aria-live="assertive" aria-atomic="true" data-gsxui-slot-toast>`,
+		`<li data-gsxui-toast data-type="error" role="status" aria-live="assertive" aria-atomic="true" `+canonicalToastClass("")+` data-gsxui-slot-toast>`,
 		`data-gsxui-toast-icon`,
 		`data-gsxui-slot-toast-icon data-gsxui-slot-icon`,
-		`<div data-gsxui-slot-toast-content>`,
-		`<div data-gsxui-toast-title data-gsxui-slot-toast-title>Failed</div>`,
-		`<div data-gsxui-toast-description data-gsxui-slot-toast-description>Try again</div>`,
-		`<button type="button" data-gsxui-toast-action data-gsxui-slot-toast-action>Retry</button>`,
-		`<button type="button" data-gsxui-toast-cancel data-gsxui-slot-toast-cancel>Dismiss</button>`,
-		`<button type="button" data-gsxui-toast-close aria-label="Close" data-gsxui-slot-toast-close>`,
+		`<div `+canonicalToastClass("content")+` data-gsxui-slot-toast-content>`,
+		`<div `+canonicalToastClass("title")+` data-gsxui-toast-title data-gsxui-slot-toast-title>Failed</div>`,
+		`<div `+canonicalToastClass("description")+` data-gsxui-toast-description data-gsxui-slot-toast-description>Try again</div>`,
+		`<button type="button" `+canonicalToastClass("action")+` data-gsxui-toast-action data-gsxui-slot-toast-action>Retry</button>`,
+		`<button type="button" `+canonicalToastClass("cancel")+` data-gsxui-toast-cancel data-gsxui-slot-toast-cancel>Dismiss</button>`,
+		`<button type="button" `+canonicalToastClass("close")+` data-gsxui-toast-close aria-label="Close" data-gsxui-slot-toast-close>`,
 		`data-gsxui-slot-toast-close-icon data-gsxui-slot-icon`,
 	)
 	forbidMarkup(t, got,
@@ -49,7 +92,6 @@ func TestToastContract(t *testing.T) {
 		`data-action`,
 		`data-cancel`,
 		`data-close-button`,
-		` class="`,
 	)
 }
 
@@ -59,9 +101,12 @@ func TestToastCallerClassAndSlotComposition(t *testing.T) {
 		{Key: "data-gsxui-slot-caller-token", Value: true},
 	}))
 	requireMarkup(t, got,
-		`class="caller-toast"`,
+		canonicalToastClass("", "caller-toast"),
 		`data-gsxui-slot-caller-token data-gsxui-slot-toast`,
 	)
+	if strings.Count(got, `caller-toast`) != 1 {
+		t.Errorf("caller class merged %d times, want once\nin: %s", strings.Count(got, `caller-toast`), got)
+	}
 }
 
 func TestToastTypeIconsAndAria(t *testing.T) {

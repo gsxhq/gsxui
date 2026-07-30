@@ -181,7 +181,9 @@ test("every toast type uses semantic icon color and dedicated hooks", async ({ p
   ]);
   for (const card of result) {
     expect(card.toastSlot).toBe(true);
-    expect(card.className).toBeNull();
+    // Toast is on the slot axis now: the cloned card carries the resolved
+    // root-slot recipe utilities, not a bare marker.
+    expect(card.className).toContain("w-[356px]");
     if (card.semanticColor) {
       expect(card.toastIconSlot).toBe(true);
       expect(card.primitiveIconSlot).toBe(true);

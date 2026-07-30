@@ -23,7 +23,10 @@ func TestToasterContract(t *testing.T) {
 	if gotCount := strings.Count(got, `data-gsxui-toast-template=`); gotCount != 6 {
 		t.Errorf("template count = %d, want 6\nin: %s", gotCount, got)
 	}
-	forbidMarkup(t, got, `data-slot=`, ` class="`)
+	// The region's own <ol> is pinned above with no class attribute; the
+	// nested <template> cards are ui.Toast, which is on the slot axis and
+	// legitimately renders its recipe classes.
+	forbidMarkup(t, got, `data-slot=`)
 }
 
 func TestToasterAttrsMergeAndCallerClass(t *testing.T) {
