@@ -1,18 +1,58 @@
 package ui_test
 
 import (
+	"html"
+	"os"
+	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 
 	gsx "github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/internal/recipe"
+	"github.com/gsxhq/gsxui/internal/stylegen"
+	"github.com/gsxhq/gsxui/merge"
 	"github.com/gsxhq/gsxui/ui"
 )
+
+// novaNativeSelectRecipe loads the default style's NativeSelect recipe once.
+// ui.NativeSelect is generated output now, so the classes it renders are the
+// default style's concrete utilities — same pattern as novaKbdRecipe.
+var novaNativeSelectRecipe = sync.OnceValue(func() recipe.Style {
+	path := filepath.Join("..", "registry", "styles", stylegen.DefaultStyle, "native-select.css")
+	src, err := os.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+	style, err := recipe.ParseStyle(path, src)
+	if err != nil {
+		panic(err)
+	}
+	return style
+})
+
+func nativeSelectRecipeClass(class string, caller ...string) string {
+	rule, ok := novaNativeSelectRecipe().Lookup(class)
+	if !ok {
+		panic("default style declares no recipe " + class)
+	}
+	classes := append(append([]string(nil), rule.Utilities...), caller...)
+	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
+}
+
+func canonicalNativeSelectWrapperClass(caller ...string) string {
+	return nativeSelectRecipeClass("gsxui-recipe-native-select-wrapper", caller...)
+}
+
+func canonicalNativeSelectClass(caller ...string) string {
+	return nativeSelectRecipeClass("gsxui-recipe-native-select", caller...)
+}
 
 func TestNativeSelectDefault(t *testing.T) {
 	got := render(t, ui.NativeSelect(gsx.Raw("<option>x</option>"), nil))
 	for _, want := range []string{
-		`<div data-gsxui-slot-native-select-wrapper>`,
-		`<select data-gsxui-slot-native-select`,
+		`<div ` + canonicalNativeSelectWrapperClass() + ` data-gsxui-slot-native-select-wrapper>`,
+		`<select ` + canonicalNativeSelectClass() + ` data-gsxui-slot-native-select`,
 		"<option>x</option></select>",
 		"</div>",
 	} {
@@ -46,11 +86,19 @@ func TestNativeSelectIconDependency(t *testing.T) {
 // fills the wrapper with w-full.
 func TestNativeSelectCallerClassMerges(t *testing.T) {
 	got := render(t, ui.NativeSelect(nil, gsx.Attrs{{Key: "class", Value: "w-full"}}))
-	if !strings.Contains(got, `<div class="w-full" data-gsxui-slot-native-select-wrapper>`) {
-		t.Errorf("caller w-full should land on the wrapper\nin: %s", got)
+	// The wrapper's own w-fit and the caller's w-full are both plain
+	// utilities on the same element now, so merge.Merge drops w-fit rather
+	// than the old zero-specificity :where() rule losing the cascade.
+	wantWrapper := `<div ` + canonicalNativeSelectWrapperClass("w-full") + ` data-gsxui-slot-native-select-wrapper>`
+	if !strings.Contains(got, wantWrapper) {
+		t.Errorf("caller w-full should land on the wrapper\nwant: %s\nin: %s", wantWrapper, got)
 	}
-	if strings.Count(got, `class="w-full"`) != 1 {
-		t.Errorf("caller class must appear exactly once\nin: %s", got)
+	if strings.Contains(got, "w-fit") {
+		t.Errorf("caller w-full should have displaced the wrapper's own w-fit\nin: %s", got)
+	}
+	if strings.Count(got, "w-full") != 2 {
+		// once on the wrapper (the caller's), once on the <select> (its own).
+		t.Errorf("caller class must merge exactly once\nin: %s", got)
 	}
 }
 
@@ -137,7 +185,7 @@ func TestNativeSelectGroupAttrsFallThrough(t *testing.T) {
 func TestNativeSelectPinned(t *testing.T) {
 	// Presentation lives in the stylesheet; the render pin covers structure.
 	got := render(t, ui.NativeSelect(gsx.Raw(`<option value="us">United States</option>`), nil))
-	want := `<div data-gsxui-slot-native-select-wrapper><select data-gsxui-slot-native-select><option value="us">United States</option></select><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="m6 9 6 6 6-6"/></svg></div>`
+	want := `<div ` + canonicalNativeSelectWrapperClass() + ` data-gsxui-slot-native-select-wrapper><select ` + canonicalNativeSelectClass() + ` data-gsxui-slot-native-select><option value="us">United States</option></select><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="m6 9 6 6 6-6"/></svg></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

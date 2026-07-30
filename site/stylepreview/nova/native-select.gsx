@@ -1,4 +1,4 @@
-package ui
+package nova
 
 // native-select.gsx backs the shadcn/ui NativeSelect component. Renamed
 // 2026-07-24 (was Select/SelectOption/SelectGroup in ui/select.gsx):

@@ -648,6 +648,18 @@
         }
       }
     },
+    "native-select": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
+        "wrapper": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "navigation-menu": {
       "slots": {
         "": {
@@ -3061,6 +3073,57 @@
               "focus:text-accent-foreground",
               "data-[state=open]:bg-accent",
               "data-[state=open]:text-accent-foreground"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "native-select": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "h-8",
+              "w-full",
+              "appearance-none",
+              "items-center",
+              "justify-between",
+              "gap-2",
+              "rounded-lg",
+              "border",
+              "border-input",
+              "bg-transparent",
+              "py-1",
+              "pr-8",
+              "pl-2.5",
+              "text-sm",
+              "whitespace-nowrap",
+              "transition-[color,box-shadow]",
+              "outline-none",
+              "focus-visible:border-ring",
+              "focus-visible:ring-[3px]",
+              "focus-visible:ring-ring/50",
+              "disabled:cursor-not-allowed",
+              "disabled:opacity-50",
+              "aria-invalid:border-destructive",
+              "aria-invalid:ring-destructive/20",
+              "dark:bg-input/30",
+              "dark:hover:bg-input/50",
+              "dark:aria-invalid:ring-destructive/40"
+            ],
+            "dimensions": {}
+          },
+          "wrapper": {
+            "base": [
+              "relative",
+              "w-fit",
+              "[\u0026\u003esvg]:pointer-events-none",
+              "[\u0026\u003esvg]:absolute",
+              "[\u0026\u003esvg]:top-1/2",
+              "[\u0026\u003esvg]:right-2.5",
+              "[\u0026\u003esvg]:size-4",
+              "[\u0026\u003esvg]:-translate-y-1/2",
+              "[\u0026\u003esvg]:opacity-50"
             ],
             "dimensions": {}
           }
@@ -6252,6 +6315,57 @@
               "focus:text-accent-foreground",
               "data-[state=open]:bg-accent",
               "data-[state=open]:text-accent-foreground"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "native-select": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "h-8",
+              "w-full",
+              "appearance-none",
+              "items-center",
+              "justify-between",
+              "gap-2",
+              "rounded-lg",
+              "border",
+              "border-input",
+              "bg-transparent",
+              "py-1",
+              "pr-8",
+              "pl-2.5",
+              "text-sm",
+              "whitespace-nowrap",
+              "transition-[color,box-shadow]",
+              "outline-none",
+              "focus-visible:border-ring",
+              "focus-visible:ring-[3px]",
+              "focus-visible:ring-ring/50",
+              "disabled:cursor-not-allowed",
+              "disabled:opacity-50",
+              "aria-invalid:border-destructive",
+              "aria-invalid:ring-destructive/20",
+              "dark:bg-input/30",
+              "dark:hover:bg-input/50",
+              "dark:aria-invalid:ring-destructive/40"
+            ],
+            "dimensions": {}
+          },
+          "wrapper": {
+            "base": [
+              "relative",
+              "w-fit",
+              "[\u0026\u003esvg]:pointer-events-none",
+              "[\u0026\u003esvg]:absolute",
+              "[\u0026\u003esvg]:top-1/2",
+              "[\u0026\u003esvg]:right-2.5",
+              "[\u0026\u003esvg]:size-4",
+              "[\u0026\u003esvg]:-translate-y-1/2",
+              "[\u0026\u003esvg]:opacity-50"
             ],
             "dimensions": {}
           }

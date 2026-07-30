@@ -27,7 +27,6 @@
 @import "./default/field.css";
 @import "./default/input.css";
 @import "./default/input-group.css";
-@import "./default/native-select.css";
 @import "./default/command.css";
 @import "./default/combobox.css";
 @import "./default/menu.css";
@@ -475,5 +474,57 @@
      specificity floor. */
   [data-gsxui-slot-toggle-group] {
     gap: calc(var(--spacing) * var(--gap));
+  }
+
+  /* Calendar's dropdown chrome, fallout from NativeSelect's migration.
+     ui/calendar.gsx's month/year dropdowns compose <ui.NativeSelect>
+     directly, so these five rules' styled SUBJECT is a NativeSelect element
+     (wrapper, select, or the chevron <svg> the wrapper positions) reacting
+     to a Calendar ancestor — the "Calendar stray" shape: they belong to
+     Calendar, not to NativeSelect's recipe, and must not migrate onto it.
+     They previously lived in assets/css/styles/default/calendar.css's
+     @layer components block at zero specificity, which worked only while
+     NativeSelect's own rules were zero-specificity :where() rules in the
+     same layer. NativeSelect's migration turned those into real (0,1,0)
+     utilities in @layer utilities, so every property these rules contest
+     (border-radius, border, width/height, padding, background, the
+     chevron's inset/size) would otherwise flip to NativeSelect's own value
+     inside a Calendar. Unwrapped here they score (0,2,0)/(0,2,1)/(0,3,0)
+     and win, restoring the pre-migration rendering exactly. Same fallout
+     shape as the ButtonGroup > SelectTrigger guard above. */
+  [data-gsxui-slot-calendar-dropdowns]
+    [data-gsxui-slot-native-select-wrapper] {
+    @apply relative rounded-md border border-input;
+  }
+  [data-gsxui-slot-calendar-dropdowns]
+    [data-gsxui-slot-native-select-wrapper]:has(
+      > [data-gsxui-slot-native-select]:focus
+    ) {
+    @apply border-ring ring-3 ring-ring/50;
+  }
+  [data-gsxui-slot-calendar-dropdowns]
+    [data-gsxui-slot-native-select-wrapper]
+    > [data-gsxui-slot-native-select] {
+    @apply h-6 rounded-none border-0 bg-transparent py-0 pr-5 pl-1.5;
+  }
+  [data-gsxui-slot-calendar-dropdowns]
+    [data-gsxui-slot-native-select-wrapper]
+    > [data-gsxui-slot-native-select]:focus-visible {
+    @apply border-transparent ring-0;
+  }
+  .dark
+    [data-gsxui-slot-calendar-dropdowns]
+    [data-gsxui-slot-native-select-wrapper]
+    > [data-gsxui-slot-native-select],
+  .dark
+    [data-gsxui-slot-calendar-dropdowns]
+    [data-gsxui-slot-native-select-wrapper]
+    > [data-gsxui-slot-native-select]:hover {
+    @apply bg-transparent;
+  }
+  [data-gsxui-slot-calendar-dropdowns]
+    [data-gsxui-slot-native-select-wrapper]
+    > svg {
+    @apply right-1 size-3.5;
   }
 }

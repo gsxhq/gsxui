@@ -36,44 +36,37 @@ import (
 func NativeSelect(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-		return _gsxrenderNativeSelect(ctx, _gsxgw, children, attrs)
-	})
-}
-
-func _gsxrenderNativeSelect(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
-	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
-		return _gsxerr
-	}
 //line native-select.gsx:40:2
-	var wrapperAttrs gsx.Attrs
-	if class, ok := attrs.Get("class"); ok {
-		wrapperAttrs = gsx.Attrs{{Key: "class", Value: class}}
-	}
+		var wrapperAttrs gsx.Attrs
+		if class, ok := attrs.Get("class"); ok {
+			wrapperAttrs = gsx.Attrs{{Key: "class", Value: class}}
+		}
 //line native-select.gsx:46:2
-	_gsxv0 := wrapperAttrs
-	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative w-fit [&>svg]:pointer-events-none [&>svg]:absolute [&>svg]:top-1/2 [&>svg]:right-2.5 [&>svg]:size-4 [&>svg]:-translate-y-1/2 [&>svg]:opacity-50"), _gsxrt.Class(_gsxv0.Class()))
-	_gsxgw.S("\"")
-	_gsxgw.StyleMerged("", _gsxv0.Style())
-	_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-native-select-wrapper"})
-	_gsxgw.BoolAttr("data-gsxui-slot-native-select-wrapper", true)
-	_gsxgw.S(">")
+		_gsxv0 := wrapperAttrs
+		_gsxgw.S("<div class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative w-fit [&>svg]:pointer-events-none [&>svg]:absolute [&>svg]:top-1/2 [&>svg]:right-2.5 [&>svg]:size-4 [&>svg]:-translate-y-1/2 [&>svg]:opacity-50"), _gsxrt.Class(_gsxv0.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", _gsxv0.Style())
+		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-native-select-wrapper"})
+		_gsxgw.BoolAttr("data-gsxui-slot-native-select-wrapper", true)
+		_gsxgw.S(">")
 //line native-select.gsx:53:3
-	_gsxv1 := attrs.Without("class")
-	_gsxgw.S("<select class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex h-8 w-full appearance-none items-center justify-between gap-2 rounded-lg border border-input bg-transparent py-1 pr-8 pl-2.5 text-sm whitespace-nowrap transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40"), _gsxrt.Class(_gsxv1.Class()))
-	_gsxgw.S("\"")
-	_gsxgw.StyleMerged("", _gsxv1.Style())
-	_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-native-select"})
-	_gsxgw.BoolAttr("data-gsxui-slot-native-select", true)
-	_gsxgw.S(">")
+		_gsxv1 := attrs.Without("class")
+		_gsxgw.S("<select class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex h-8 w-full appearance-none items-center justify-between gap-2 rounded-lg border border-input bg-transparent py-1 pr-8 pl-2.5 text-sm whitespace-nowrap transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40"), _gsxrt.Class(_gsxv1.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", _gsxv1.Style())
+		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-native-select"})
+		_gsxgw.BoolAttr("data-gsxui-slot-native-select", true)
+		_gsxgw.S(">")
 //line native-select.gsx:60:4
-	_gsxgw.Node(ctx, children)
-	_gsxgw.S("</select>")
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</select>")
 //line native-select.gsx:62:3
-	_gsxgw.Node(ctx, icon.ChevronDown())
-	_gsxgw.S("</div>")
-	return _gsxgw.Err()
+		_gsxgw.Node(ctx, icon.ChevronDown())
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
 }
 
 //line native-select.gsx:66:1
@@ -87,35 +80,28 @@ func _gsxrenderNativeSelect(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children
 func NativeSelectOption(value string, selected bool, disabled bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-		return _gsxrenderNativeSelectOption(ctx, _gsxgw, value, selected, disabled, children, attrs)
-	})
-}
-
-func _gsxrenderNativeSelectOption(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, value string, selected bool, disabled bool, children gsx.Node, attrs gsx.Attrs) error {
-	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
-		return _gsxerr
-	}
 //line native-select.gsx:72:2
-	_gsxgw.S("<option")
-	if !attrs.Has("value") {
-		_gsxgw.S(" value=\"")
-		_gsxgw.AttrValue(string(value))
-		_gsxgw.S("\"")
-	}
-	if !attrs.Has("selected") {
-		_gsxgw.BoolAttr("selected", bool(selected))
-	}
-	if !attrs.Has("disabled") {
-		_gsxgw.BoolAttr("disabled", bool(disabled))
-	}
-	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
-	_gsxgw.StyleMerged("", attrs.Style())
-	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
-	_gsxgw.S(">")
+		_gsxgw.S("<option")
+		if !attrs.Has("value") {
+			_gsxgw.S(" value=\"")
+			_gsxgw.AttrValue(string(value))
+			_gsxgw.S("\"")
+		}
+		if !attrs.Has("selected") {
+			_gsxgw.BoolAttr("selected", bool(selected))
+		}
+		if !attrs.Has("disabled") {
+			_gsxgw.BoolAttr("disabled", bool(disabled))
+		}
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.S(">")
 //line native-select.gsx:72:77
-	_gsxgw.Node(ctx, children)
-	_gsxgw.S("</option>")
-	return _gsxgw.Err()
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</option>")
+		return _gsxgw.Err()
+	})
 }
 
 //line native-select.gsx:75:1

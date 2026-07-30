@@ -1,4 +1,4 @@
-package ui
+package canonical
 
 // native-select.gsx backs the shadcn/ui NativeSelect component. Renamed
 // 2026-07-24 (was Select/SelectOption/SelectGroup in ui/select.gsx):
@@ -43,17 +43,9 @@ component NativeSelect(children gsx.Node, attrs gsx.Attrs) {
 			wrapperAttrs = gsx.Attrs{{Key: "class", Value: class}}
 		}
 	}}
-	<div
-		class={
-			"relative w-fit [&>svg]:pointer-events-none [&>svg]:absolute [&>svg]:top-1/2 [&>svg]:right-2.5 [&>svg]:size-4 [&>svg]:-translate-y-1/2 [&>svg]:opacity-50"
-		}
-		{ wrapperAttrs... }
-		data-gsxui-slot-native-select-wrapper
-	>
+	<div class={ nativeSelect.Wrapper() } { wrapperAttrs... } data-gsxui-slot-native-select-wrapper>
 		<select
-			class={
-				"flex h-8 w-full appearance-none items-center justify-between gap-2 rounded-lg border border-input bg-transparent py-1 pr-8 pl-2.5 text-sm whitespace-nowrap transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40"
-			}
+			class={ nativeSelect.Root() }
 			{ attrs.Without("class")... }
 			data-gsxui-slot-native-select
 		>

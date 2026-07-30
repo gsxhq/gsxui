@@ -36,41 +36,11 @@
   :where([data-gsxui-slot-calendar-caption]) {
     @apply text-sm font-medium select-none;
   }
-  :where([data-gsxui-slot-calendar-dropdowns])
-    :where([data-gsxui-slot-native-select-wrapper]) {
-    @apply relative rounded-md border border-input;
-  }
-  :where([data-gsxui-slot-calendar-dropdowns])
-    :where([data-gsxui-slot-native-select-wrapper]):has(
-    > [data-gsxui-slot-native-select]:focus
-  ) {
-    @apply border-ring ring-3 ring-ring/50;
-  }
-  :where([data-gsxui-slot-calendar-dropdowns])
-    :where([data-gsxui-slot-native-select-wrapper])
-    > :where([data-gsxui-slot-native-select]) {
-    @apply h-6 rounded-none border-0 bg-transparent py-0 pr-5 pl-1.5;
-  }
-  :where([data-gsxui-slot-calendar-dropdowns])
-    :where([data-gsxui-slot-native-select-wrapper])
-    > :where([data-gsxui-slot-native-select]):focus-visible {
-    @apply border-transparent ring-0;
-  }
-  .dark
-    :where([data-gsxui-slot-calendar-dropdowns])
-    :where([data-gsxui-slot-native-select-wrapper])
-    > :where([data-gsxui-slot-native-select]),
-  .dark
-    :where([data-gsxui-slot-calendar-dropdowns])
-    :where([data-gsxui-slot-native-select-wrapper])
-    > :where([data-gsxui-slot-native-select]):hover {
-    @apply bg-transparent;
-  }
-  :where([data-gsxui-slot-calendar-dropdowns])
-    :where([data-gsxui-slot-native-select-wrapper])
-    > svg {
-    @apply right-1 size-3.5;
-  }
+  /* Calendar's five rules whose styled SUBJECT is a NativeSelect element
+     (the month/year dropdowns compose <ui.NativeSelect>) moved to
+     assets/css/styles/default.css's @layer utilities block when NativeSelect
+     migrated to the slot axis — they now have to outrank NativeSelect's own
+     resolved utilities. See the comment there. */
   :where([data-gsxui-slot-calendar-grid]) {
     @apply w-full border-collapse;
   }

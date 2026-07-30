@@ -198,6 +198,7 @@ var all = map[string]recipe.Shape{
 	AlertDialog.Component:    AlertDialog,
 	Drawer.Component:         Drawer,
 	Sheet.Component:          Sheet,
+	NativeSelect.Component:   NativeSelect,
 }
 
 // All returns every declared component shape, keyed by component name.

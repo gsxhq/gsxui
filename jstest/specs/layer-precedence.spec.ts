@@ -891,3 +891,33 @@ test("ContextMenu checkbox and radio items mute their icons like plain items", a
     expect(color, `${slot} icon colour`).toBe(muted);
   }
 });
+
+// NativeSelect's migration (Wave 4d). Two things have to keep holding: the
+// component's own chrome on a standalone select, and Calendar's override of
+// that chrome for the month/year dropdowns it composes. The latter is the
+// transitive-fallout shape — Calendar's rules moved to @layer utilities in
+// assets/css/styles/default.css because NativeSelect's own resolved
+// utilities would otherwise outrank them.
+
+test("NativeSelect keeps its own height, radius and chevron placement", async ({ page }) => {
+  await page.goto("/x/native-select/basic");
+  const select = page.locator("[data-gsxui-slot-native-select]").first();
+  expect(await select.evaluate((n) => getComputedStyle(n).height)).toBe("32px");
+  expect(await select.evaluate((n) => getComputedStyle(n).borderRadius)).toBe("10px");
+  const chevron = page.locator("[data-gsxui-slot-native-select-wrapper] > svg").first();
+  expect(await chevron.evaluate((n) => getComputedStyle(n).position)).toBe("absolute");
+  expect(await chevron.evaluate((n) => getComputedStyle(n).width)).toBe("16px");
+});
+
+test("Calendar's dropdowns still override NativeSelect's own chrome", async ({ page }) => {
+  await page.goto("/x/calendar/dropdown");
+  const wrapper = page.locator("[data-gsxui-slot-calendar-dropdowns] [data-gsxui-slot-native-select-wrapper]").first();
+  const select = wrapper.locator("> [data-gsxui-slot-native-select]");
+  const chevron = wrapper.locator("> svg");
+  expect(await wrapper.evaluate((n) => getComputedStyle(n).borderRadius)).toBe("8px");
+  expect(await select.evaluate((n) => getComputedStyle(n).height)).toBe("24px");
+  expect(await select.evaluate((n) => getComputedStyle(n).borderRadius)).toBe("0px");
+  expect(await select.evaluate((n) => getComputedStyle(n).borderTopWidth)).toBe("0px");
+  expect(await select.evaluate((n) => getComputedStyle(n).paddingLeft)).toBe("6px");
+  expect(await chevron.evaluate((n) => getComputedStyle(n).width)).toBe("14px");
+});
