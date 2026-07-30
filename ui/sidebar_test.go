@@ -317,8 +317,20 @@ func TestSidebarMenuButtonComposesTooltipTokens(t *testing.T) {
 	if strings.Contains(got, `data-active=`) {
 		t.Fatalf("active tooltip button must render data-active as a bare marker\nin: %s", got)
 	}
-	if strings.Contains(got, ` class=`) || strings.Contains(got, `data-slot=`) || strings.Contains(got, `data-sidebar=`) {
-		t.Fatalf("tooltip composition retained presentation classes or legacy styling hooks\nin: %s", got)
+	// Tooltip migrated to the slot axis: its root/content/arrow now
+	// legitimately carry their own recipe classes (same carve-out as
+	// InputGroupButton/FieldLabel/FieldSeparator for any composed
+	// primitive's own class once it migrates). SidebarMenuButton's own
+	// <button> element still has no class attribute of its own — that's
+	// the part this assertion actually guards.
+	if strings.Count(got, `class=`) != 3 {
+		t.Fatalf("expected exactly 3 class= attributes (tooltip root + content + arrow)\nin: %s", got)
+	}
+	if strings.Contains(got, `<button type="button" data-variant="outline" data-size="lg" data-active data-gsxui-tooltip-trigger data-gsxui-slot-sidebar-menu-button class=`) {
+		t.Fatalf("sidebar-menu-button element must not carry a presentation class\nin: %s", got)
+	}
+	if strings.Contains(got, `data-slot=`) || strings.Contains(got, `data-sidebar=`) {
+		t.Fatalf("tooltip composition retained legacy styling hooks\nin: %s", got)
 	}
 }
 
