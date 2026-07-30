@@ -202,6 +202,54 @@
         }
       }
     },
+    "command": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
+        "dialog-content": {
+          "base": true,
+          "dimensions": {}
+        },
+        "empty": {
+          "base": true,
+          "dimensions": {}
+        },
+        "group": {
+          "base": true,
+          "dimensions": {}
+        },
+        "group-heading": {
+          "base": true,
+          "dimensions": {}
+        },
+        "input": {
+          "base": true,
+          "dimensions": {}
+        },
+        "input-wrapper": {
+          "base": true,
+          "dimensions": {}
+        },
+        "item": {
+          "base": true,
+          "dimensions": {}
+        },
+        "list": {
+          "base": true,
+          "dimensions": {}
+        },
+        "separator": {
+          "base": true,
+          "dimensions": {}
+        },
+        "shortcut": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "context-menu": {
       "slots": {
         "": {
@@ -1432,6 +1480,143 @@
           "trigger": {
             "base": [
               "list-none"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "command": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "h-full",
+              "w-full",
+              "flex-col",
+              "overflow-hidden",
+              "rounded-xl",
+              "bg-popover",
+              "p-1",
+              "text-popover-foreground"
+            ],
+            "dimensions": {}
+          },
+          "dialog-content": {
+            "base": [
+              "[dialog\u0026]:overflow-hidden"
+            ],
+            "dimensions": {}
+          },
+          "empty": {
+            "base": [
+              "py-6",
+              "text-center",
+              "text-sm"
+            ],
+            "dimensions": {}
+          },
+          "group": {
+            "base": [
+              "overflow-hidden",
+              "p-1",
+              "text-foreground",
+              "[[data-gsxui-slot-command-dialog-content]_\u0026]:px-2",
+              "[[data-gsxui-slot-command-dialog-content]_[data-gsxui-slot-command-group]:not([hidden])~\u0026]:pt-0"
+            ],
+            "dimensions": {}
+          },
+          "group-heading": {
+            "base": [
+              "px-2",
+              "py-1.5",
+              "text-xs",
+              "font-medium",
+              "text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "input": {
+            "base": [
+              "flex",
+              "h-10",
+              "w-full",
+              "rounded-md",
+              "bg-transparent",
+              "py-3",
+              "text-sm",
+              "outline-hidden",
+              "placeholder:text-muted-foreground",
+              "disabled:cursor-not-allowed",
+              "disabled:opacity-50",
+              "[[data-gsxui-slot-command-dialog-content]_\u0026]:h-12"
+            ],
+            "dimensions": {}
+          },
+          "input-wrapper": {
+            "base": [
+              "flex",
+              "h-9",
+              "items-center",
+              "gap-2",
+              "border-b",
+              "px-3",
+              "[\u0026\u003esvg]:size-4",
+              "[\u0026\u003esvg]:shrink-0",
+              "[\u0026\u003esvg]:opacity-50",
+              "[[data-gsxui-slot-command-dialog-content]_\u0026]:h-12",
+              "[[data-gsxui-slot-command-dialog-content]_\u0026]:[\u0026_svg]:size-5"
+            ],
+            "dimensions": {}
+          },
+          "item": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-2",
+              "rounded-sm",
+              "px-2",
+              "py-1.5",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "data-[disabled=true]:pointer-events-none",
+              "data-[selected=true]:bg-accent",
+              "data-[selected=true]:text-accent-foreground",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground",
+              "[[data-gsxui-slot-command-dialog-content]_\u0026]:px-2",
+              "[[data-gsxui-slot-command-dialog-content]_\u0026]:py-3",
+              "[[data-gsxui-slot-command-dialog-content]_\u0026]:[\u0026_svg]:size-5"
+            ],
+            "dimensions": {}
+          },
+          "list": {
+            "base": [
+              "max-h-72",
+              "scroll-py-1",
+              "overflow-x-hidden",
+              "overflow-y-auto"
+            ],
+            "dimensions": {}
+          },
+          "separator": {
+            "base": [
+              "-mx-1",
+              "h-px",
+              "bg-border"
+            ],
+            "dimensions": {}
+          },
+          "shortcut": {
+            "base": [
+              "ml-auto",
+              "text-xs",
+              "tracking-widest",
+              "text-muted-foreground"
             ],
             "dimensions": {}
           }
@@ -4159,6 +4344,143 @@
           "trigger": {
             "base": [
               "list-none"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "command": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "h-full",
+              "w-full",
+              "flex-col",
+              "overflow-hidden",
+              "rounded-xl",
+              "bg-popover",
+              "p-1",
+              "text-popover-foreground"
+            ],
+            "dimensions": {}
+          },
+          "dialog-content": {
+            "base": [
+              "[dialog\u0026]:overflow-hidden"
+            ],
+            "dimensions": {}
+          },
+          "empty": {
+            "base": [
+              "py-6",
+              "text-center",
+              "text-sm"
+            ],
+            "dimensions": {}
+          },
+          "group": {
+            "base": [
+              "overflow-hidden",
+              "p-1",
+              "text-foreground",
+              "[[data-gsxui-slot-command-dialog-content]_\u0026]:px-2",
+              "[[data-gsxui-slot-command-dialog-content]_[data-gsxui-slot-command-group]:not([hidden])~\u0026]:pt-0"
+            ],
+            "dimensions": {}
+          },
+          "group-heading": {
+            "base": [
+              "px-2",
+              "py-1.5",
+              "text-xs",
+              "font-medium",
+              "text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "input": {
+            "base": [
+              "flex",
+              "h-10",
+              "w-full",
+              "rounded-md",
+              "bg-transparent",
+              "py-3",
+              "text-sm",
+              "outline-hidden",
+              "placeholder:text-muted-foreground",
+              "disabled:cursor-not-allowed",
+              "disabled:opacity-50",
+              "[[data-gsxui-slot-command-dialog-content]_\u0026]:h-12"
+            ],
+            "dimensions": {}
+          },
+          "input-wrapper": {
+            "base": [
+              "flex",
+              "h-9",
+              "items-center",
+              "gap-2",
+              "border-b",
+              "px-3",
+              "[\u0026\u003esvg]:size-4",
+              "[\u0026\u003esvg]:shrink-0",
+              "[\u0026\u003esvg]:opacity-50",
+              "[[data-gsxui-slot-command-dialog-content]_\u0026]:h-12",
+              "[[data-gsxui-slot-command-dialog-content]_\u0026]:[\u0026_svg]:size-5"
+            ],
+            "dimensions": {}
+          },
+          "item": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-2",
+              "rounded-sm",
+              "px-2",
+              "py-1.5",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "data-[disabled=true]:pointer-events-none",
+              "data-[selected=true]:bg-accent",
+              "data-[selected=true]:text-accent-foreground",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground",
+              "[[data-gsxui-slot-command-dialog-content]_\u0026]:px-2",
+              "[[data-gsxui-slot-command-dialog-content]_\u0026]:py-3",
+              "[[data-gsxui-slot-command-dialog-content]_\u0026]:[\u0026_svg]:size-5"
+            ],
+            "dimensions": {}
+          },
+          "list": {
+            "base": [
+              "max-h-72",
+              "scroll-py-1",
+              "overflow-x-hidden",
+              "overflow-y-auto"
+            ],
+            "dimensions": {}
+          },
+          "separator": {
+            "base": [
+              "-mx-1",
+              "h-px",
+              "bg-border"
+            ],
+            "dimensions": {}
+          },
+          "shortcut": {
+            "base": [
+              "ml-auto",
+              "text-xs",
+              "tracking-widest",
+              "text-muted-foreground"
             ],
             "dimensions": {}
           }

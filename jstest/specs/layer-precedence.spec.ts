@@ -653,6 +653,49 @@ test("SheetContent keeps Dialog's shared fixed/z-50 chrome via the marker fallba
 // (shadcn context-menu.tsx), and the recipe now does too — make sweep-compare
 // surfaced the change as 9 elements shifting to the muted token in both themes.
 
+test("Command keeps its palette chrome and stays caller-overridable", async ({
+  page,
+}) => {
+  const response = await page.goto("/x/command/basic");
+  expect(response?.status(), "command/basic fixture response").toBe(200);
+
+  const root = page.locator("[data-gsxui-slot-command]").first();
+  const rootStyle = await root.evaluate((n) => {
+    const css = getComputedStyle(n);
+    return { borderRadius: css.borderRadius, backgroundColor: css.backgroundColor };
+  });
+  // site/examples/command/basic.gsx passes class="max-w-md rounded-lg …": the
+  // caller's rounded-lg must replace the recipe's own rounded-xl (10px, not
+  // this theme's 14px), and the recipe's bg-popover must still apply.
+  expect(rootStyle.borderRadius).toBe("10px");
+  expect(rootStyle.backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
+
+  // The input wrapper's `> svg` search icon: a child-combinator rule that
+  // became a [&>svg]: arbitrary variant on the wrapper's recipe class.
+  const icon = page.locator("[data-gsxui-slot-command-input-wrapper] > svg").first();
+  const iconSize = await icon.evaluate((n) => getComputedStyle(n).width);
+  expect(iconSize).toBe("16px");
+
+  const list = page.locator("[data-gsxui-slot-command-list]").first();
+  expect(await list.evaluate((n) => getComputedStyle(n).maxHeight)).toBe("288px");
+});
+
+test("CommandItem's disabled opacity stays caller-overridable", async ({ page }) => {
+  const response = await page.goto("/f/style-contract");
+  expect(response?.status(), "style contract fixture response").toBe(200);
+
+  const el = page.locator('[data-style-contract="command-item-caller"]');
+  const style = await el.evaluate((n) => {
+    const css = getComputedStyle(n);
+    return { opacity: css.opacity, pointerEvents: css.pointerEvents };
+  });
+  // opacity-100 must beat the retained [data-disabled=true]:opacity-50 rule;
+  // pointer-events-none is baked onto the recipe on purpose and must NOT be
+  // overridable.
+  expect(style.opacity).toBe("1");
+  expect(style.pointerEvents).toBe("none");
+});
+
 test("ContextMenu checkbox and radio items mute their icons like plain items", async ({ page }) => {
   await page.goto("/x/context-menu/full");
   const muted = "oklch(0.556 0 0)";

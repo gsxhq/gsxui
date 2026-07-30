@@ -857,7 +857,7 @@ func TestInitializedConsumerCSSOmitsButtonPresentationAndKeepsRemainingStyle(t *
 	if err := Run([]string{"init"}); err != nil {
 		t.Fatal(err)
 	}
-	if err := Run([]string{"add", "button-group", "combobox", "command", "menubar"}); err != nil {
+	if err := Run([]string{"add", "button-group", "combobox", "command", "menubar", "sidebar"}); err != nil {
 		t.Fatal(err)
 	}
 
@@ -905,9 +905,17 @@ func TestInitializedConsumerCSSOmitsButtonPresentationAndKeepsRemainingStyle(t *
 	// component's presentation is keyed by recipe classes that ship with the
 	// component when it is added, so an unadded one contributes nothing to
 	// the vendored style — pick sentinels accordingly.
+	//
+	// These were combobox-content and command until Command migrated; the
+	// assertion is unchanged, only its sentinels are repointed at two
+	// components still off the axis, with "sidebar" added to the add list
+	// above so its presentation is actually vendored. Sidebar is the last
+	// component scheduled off the axis, so it is the sentinel with the
+	// longest shelf life. Repoint again — do not weaken this loop — when
+	// either of these two migrates.
 	for _, attribute := range []string{
-		"data-gsxui-slot-combobox-content",
-		"data-gsxui-slot-command",
+		"data-gsxui-slot-sidebar",
+		"data-gsxui-slot-button-group",
 	} {
 		if !attributes[attribute] {
 			t.Errorf("clean consumer CSS missing canonical selector [%s]", attribute)

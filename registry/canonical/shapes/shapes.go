@@ -194,6 +194,7 @@ var all = map[string]recipe.Shape{
 	Textarea.Component:       Textarea,
 	Input.Component:          Input,
 	Dialog.Component:         Dialog,
+	Command.Component:        Command,
 }
 
 // All returns every declared component shape, keyed by component name.

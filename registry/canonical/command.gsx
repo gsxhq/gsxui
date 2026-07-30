@@ -1,4 +1,4 @@
-package ui
+package canonical
 
 import (
 	"github.com/gsxhq/gsx"
@@ -25,7 +25,7 @@ import (
 component Command(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-gsxui-command
-		class={ "flex h-full w-full flex-col overflow-hidden rounded-xl bg-popover p-1 text-popover-foreground" }
+		class={ command.Root() }
 		{ attrs... }
 		data-gsxui-slot-command
 	>
@@ -51,7 +51,7 @@ component CommandDialog(title string, description string, trigger gsx.Node, chil
 		{ trigger }
 		<DialogContent
 			data-gsxui-command-dialog
-			class={ "[dialog&]:overflow-hidden" }
+			class={ command.DialogContent() }
 			{ attrs... }
 			data-gsxui-slot-command-dialog-content
 		>
@@ -71,13 +71,7 @@ component CommandDialog(title string, description string, trigger gsx.Node, chil
 // moves selection on ArrowUp/ArrowDown, and activates on Enter, all while
 // focus stays here (aria-activedescendant tracks the selected option).
 component CommandInput(placeholder string, attrs gsx.Attrs) {
-	<div
-		data-gsxui-command-input-wrapper
-		class={
-			"flex h-9 items-center gap-2 border-b px-3 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50 [[data-gsxui-slot-command-dialog-content]_&]:h-12 [[data-gsxui-slot-command-dialog-content]_&]:[&_svg]:size-5"
-		}
-		data-gsxui-slot-command-input-wrapper
-	>
+	<div data-gsxui-command-input-wrapper class={ command.InputWrapper() } data-gsxui-slot-command-input-wrapper>
 		<icon.Search/>
 		<input
 			data-gsxui-command-input
@@ -88,9 +82,7 @@ component CommandInput(placeholder string, attrs gsx.Attrs) {
 			autocomplete="off"
 			spellcheck="false"
 			placeholder={placeholder}
-			class={
-				"flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 [[data-gsxui-slot-command-dialog-content]_&]:h-12"
-			}
+			class={ command.Input() }
 			{ attrs... }
 			data-gsxui-slot-command-input
 		/>
@@ -101,7 +93,7 @@ component CommandList(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-gsxui-command-list
 		role="listbox"
-		class={ "max-h-72 scroll-py-1 overflow-x-hidden overflow-y-auto" }
+		class={ command.List() }
 		{ attrs... }
 		data-gsxui-slot-command-list
 	>
@@ -113,9 +105,7 @@ component CommandList(children gsx.Node, attrs gsx.Attrs) {
 // query matches nothing (cmdk's Empty renders conditionally — same net
 // visual, inverted mechanism since there is no VDOM to unmount).
 component CommandEmpty(children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-command-empty hidden class={ "py-6 text-center text-sm" } { attrs... } data-gsxui-slot-command-empty>
-		{ children }
-	</div>
+	<div data-gsxui-command-empty hidden class={ command.Empty() } { attrs... } data-gsxui-slot-command-empty>{ children }</div>
 }
 
 // CommandGroup's heading is a real child div (slot command-group-heading)
@@ -123,36 +113,16 @@ component CommandEmpty(children gsx.Node, attrs gsx.Attrs) {
 // the styles shadcn applies through the group's descendant selectors land
 // on it via the mapped public slot selectors (see Command's doc comment).
 component CommandGroup(heading string, children gsx.Node, attrs gsx.Attrs) {
-	<div
-		data-gsxui-command-group
-		role="group"
-		class={
-			"overflow-hidden p-1 text-foreground [[data-gsxui-slot-command-dialog-content]_&]:px-2 [[data-gsxui-slot-command-dialog-content]_[data-gsxui-slot-command-group]:not([hidden])~&]:pt-0"
-		}
-		{ attrs... }
-		data-gsxui-slot-command-group
-	>
+	<div data-gsxui-command-group role="group" class={ command.Group() } { attrs... } data-gsxui-slot-command-group>
 		{ if heading != "" {
-			<div
-				data-gsxui-command-group-heading
-				class={ "px-2 py-1.5 text-xs font-medium text-muted-foreground" }
-				data-gsxui-slot-command-group-heading
-			>
-				{ heading }
-			</div>
+			<div data-gsxui-command-group-heading class={ command.GroupHeading() } data-gsxui-slot-command-group-heading>{ heading }</div>
 		} }
 		{ children }
 	</div>
 }
 
 component CommandSeparator(attrs gsx.Attrs) {
-	<div
-		data-gsxui-command-separator
-		role="separator"
-		class={ "-mx-1 h-px bg-border" }
-		{ attrs... }
-		data-gsxui-slot-command-separator
-	></div>
+	<div data-gsxui-command-separator role="separator" class={ command.Separator() } { attrs... } data-gsxui-slot-command-separator></div>
 }
 
 // CommandItem is a role="option" div (cmdk's own role), NOT focusable —
@@ -168,9 +138,7 @@ component CommandItem(value string, children gsx.Node, attrs gsx.Attrs) {
 		data-value={value}
 		role="option"
 		aria-selected="false"
-		class={
-			"relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled=true]:pointer-events-none data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [[data-gsxui-slot-command-dialog-content]_&]:px-2 [[data-gsxui-slot-command-dialog-content]_&]:py-3 [[data-gsxui-slot-command-dialog-content]_&]:[&_svg]:size-5"
-		}
+		class={ command.Item() }
 		{ attrs... }
 		data-gsxui-slot-command-item
 	>
@@ -179,7 +147,7 @@ component CommandItem(value string, children gsx.Node, attrs gsx.Attrs) {
 }
 
 component CommandShortcut(children gsx.Node, attrs gsx.Attrs) {
-	<span class={ "ml-auto text-xs tracking-widest text-muted-foreground" } { attrs... } data-gsxui-slot-command-shortcut>
+	<span class={ command.Shortcut() } { attrs... } data-gsxui-slot-command-shortcut>
 		{ children }
 	</span>
 }

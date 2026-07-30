@@ -261,6 +261,15 @@ component StyleContractFixture() {
 			<ui.MenubarItem data-inset="true" data-disabled="true" class="pl-2 opacity-100" tabindex="0" data-style-contract="menubar-item-caller">
 				Inset + disabled menubar item, caller-overridden
 			</ui.MenubarItem>
+			{/* Same §10b shape for Command/Combobox: data-disabled is stamped by
+			    the CALLER through attrs on both (CommandItem/ComboboxItem's own
+			    doc comments), so their opacity-50 rules stayed behind in
+			    assets/css/styles/default/{command,combobox}.css rather than
+			    moving onto the recipe. pointer-events-none WAS migrated for
+			    both, on purpose. */}
+			<ui.CommandItem data-disabled="true" class="opacity-100" data-style-contract="command-item-caller">
+				Disabled command item, caller-overridden
+			</ui.CommandItem>
 		</div>
 		<div>
 			<ui.DropdownMenuCheckboxItem checked={true} value="dropdown-on" data-style-contract="dropdown-checked">

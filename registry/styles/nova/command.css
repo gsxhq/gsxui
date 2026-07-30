@@ -1,0 +1,72 @@
+/* Source: assets/css/styles/default/command.css (every rule except the one
+   [data-disabled="true"] opacity-50 declaration retained there — see
+   registry/canonical/shapes/command.go's doc comment for why). The
+   `:where(dialog)[data-gsxui-slot-command-dialog-content]` element
+   qualifier translates as `[dialog&]:`, the same arbitrary same-element
+   form Badge's `[a&]:hover:` already proved; the command-dialog-content
+   ANCESTOR rules translate as `[[data-gsxui-slot-command-dialog-content]_&]:`
+   descendant variants, stacked with a second `[&_svg]:` variant where the
+   original selector's subject was an icon inside the slot. Every form here
+   was compiled with this repo's Tailwind v4 CLI before use. Nova and Maia
+   have not diverged on Command yet, so this file is byte-identical to
+   registry/styles/maia/command.css. */
+@layer components {
+  .gsxui-recipe-command {
+    @apply flex h-full w-full flex-col overflow-hidden rounded-xl bg-popover p-1 text-popover-foreground;
+  }
+
+  .gsxui-recipe-command-dialog-content {
+    @apply [dialog&]:overflow-hidden;
+  }
+
+  .gsxui-recipe-command-input-wrapper {
+    @apply flex h-9 items-center gap-2 border-b px-3;
+    @apply [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50;
+    @apply [[data-gsxui-slot-command-dialog-content]_&]:h-12;
+    @apply [[data-gsxui-slot-command-dialog-content]_&]:[&_svg]:size-5;
+  }
+
+  .gsxui-recipe-command-input {
+    @apply flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden;
+    @apply placeholder:text-muted-foreground;
+    @apply disabled:cursor-not-allowed disabled:opacity-50;
+    @apply [[data-gsxui-slot-command-dialog-content]_&]:h-12;
+  }
+
+  .gsxui-recipe-command-list {
+    @apply max-h-72 scroll-py-1 overflow-x-hidden overflow-y-auto;
+  }
+
+  .gsxui-recipe-command-empty {
+    @apply py-6 text-center text-sm;
+  }
+
+  .gsxui-recipe-command-group {
+    @apply overflow-hidden p-1 text-foreground;
+    @apply [[data-gsxui-slot-command-dialog-content]_&]:px-2;
+    @apply [[data-gsxui-slot-command-dialog-content]_[data-gsxui-slot-command-group]:not([hidden])~&]:pt-0;
+  }
+
+  .gsxui-recipe-command-group-heading {
+    @apply px-2 py-1.5 text-xs font-medium text-muted-foreground;
+  }
+
+  .gsxui-recipe-command-separator {
+    @apply -mx-1 h-px bg-border;
+  }
+
+  .gsxui-recipe-command-item {
+    @apply relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none;
+    @apply data-[disabled=true]:pointer-events-none;
+    @apply data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground;
+    @apply [&_svg]:pointer-events-none [&_svg]:shrink-0;
+    @apply [&_svg:not([class*='size-'])]:size-4;
+    @apply [&_svg:not([class*='text-'])]:text-muted-foreground;
+    @apply [[data-gsxui-slot-command-dialog-content]_&]:px-2 [[data-gsxui-slot-command-dialog-content]_&]:py-3;
+    @apply [[data-gsxui-slot-command-dialog-content]_&]:[&_svg]:size-5;
+  }
+
+  .gsxui-recipe-command-shortcut {
+    @apply ml-auto text-xs tracking-widest text-muted-foreground;
+  }
+}

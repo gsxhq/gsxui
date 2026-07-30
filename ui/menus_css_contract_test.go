@@ -39,7 +39,13 @@ func assertComboboxCanonicalButtonRoles(t *testing.T, got string) {
 	}
 }
 
-func TestCommandCSSOnlyContract(t *testing.T) {
+// TestCommandMarkupContract used to be TestCommandCSSOnlyContract: Command
+// migrated to the slot axis (registry/canonical/command.gsx), so its markup
+// now legitimately carries a class= attribute (the recipe's compiled
+// utilities) — assertMenuCSSOnlyMarkup's "no class=" assertion no longer
+// holds, and this switches to assertMenuMarkupSlots (marker presence only),
+// the same downgrade DropdownMenu's own migration made just below.
+func TestCommandMarkupContract(t *testing.T) {
 	got := render(t, ui.Command(
 		gsx.Fragment(
 			ui.CommandInput("Search", nil),
@@ -55,7 +61,7 @@ func TestCommandCSSOnlyContract(t *testing.T) {
 		),
 		nil,
 	))
-	assertMenuCSSOnlyMarkup(t, got,
+	assertMenuMarkupSlots(t, got,
 		"command",
 		"command-input-wrapper",
 		"command-input",
@@ -413,7 +419,7 @@ func TestCommandComboboxDropdownContextMenuMenubarNavigationMenuCallerClassesRem
 		node  gsx.Node
 		exact bool // true: class="caller-only" is the WHOLE attribute (unmigrated)
 	}{
-		{"Command", ui.Command(nil, gsx.Attrs{{Key: "class", Value: "caller-only"}}), true},
+		{"Command", ui.Command(nil, gsx.Attrs{{Key: "class", Value: "caller-only"}}), false},
 		{"Combobox", ui.Combobox("", "", nil, gsx.Attrs{{Key: "class", Value: "caller-only"}}), true},
 		{"Dropdown", ui.DropdownMenuContent(nil, gsx.Attrs{{Key: "class", Value: "caller-only"}}), false},
 		{"ContextMenu", ui.ContextMenuContent(nil, gsx.Attrs{{Key: "class", Value: "caller-only"}}), false},
