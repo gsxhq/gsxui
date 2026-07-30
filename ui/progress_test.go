@@ -41,8 +41,8 @@ func TestProgressZeroValue(t *testing.T) {
 
 func TestProgressCallerClassMerges(t *testing.T) {
 	got := render(t, ui.Progress(50, gsx.Attrs{{Key: "class", Value: "h-4"}}))
-	if strings.Count(got, `class="h-4"`) != 1 {
-		t.Errorf("caller class must be forwarded exactly once\nin: %s", got)
+	if strings.Count(got, `class="`) != 2 || !strings.Contains(got, "h-4") || !strings.Contains(got, "bg-primary/20") {
+		t.Errorf("caller class must merge into the root's class attribute and render once\nin: %s", got)
 	}
 }
 
@@ -56,10 +56,10 @@ func TestProgressAttrsFallThrough(t *testing.T) {
 }
 
 func TestProgressPinned(t *testing.T) {
-	// Presentation lives in the stylesheet; only the dynamic transform
-	// remains inline.
+	// Presentation is expressed as the recipe's resolved class (slot axis
+	// migration); only the dynamic transform remains inline.
 	got := render(t, ui.Progress(25, nil))
-	want := `<div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="25" data-gsxui-slot-progress><div style="transform: translateX(-75%)" data-gsxui-slot-progress-indicator></div></div>`
+	want := `<div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="25" class="relative h-1 w-full overflow-hidden rounded-full bg-primary/20" data-gsxui-slot-progress><div style="transform: translateX(-75%)" class="h-full w-full flex-1 bg-primary transition-all" data-gsxui-slot-progress-indicator></div></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

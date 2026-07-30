@@ -1,4 +1,4 @@
-package ui
+package canonical
 
 import (
 	"strconv"
@@ -34,13 +34,13 @@ component Progress(value float64, attrs gsx.Attrs) {
 		aria-valuemin="0"
 		aria-valuemax="100"
 		aria-valuenow={value}
-		class={ "relative h-1 w-full overflow-hidden rounded-full bg-primary/20" }
+		class={ progress.Root() }
 		{ attrs... }
 		data-gsxui-slot-progress
 	>
 		<div
 			style={ "transform: translateX(-" + gsx.RawCSS(remaining) + "%)" }
-			class={ "h-full w-full flex-1 bg-primary transition-all" }
+			class={ progress.Indicator() }
 			data-gsxui-slot-progress-indicator
 		></div>
 	</div>

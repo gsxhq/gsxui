@@ -110,6 +110,18 @@
         }
       }
     },
+    "progress": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
+        "indicator": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "skeleton": {
       "slots": {
         "": {
@@ -453,6 +465,31 @@
               "text-base",
               "leading-snug",
               "font-medium"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "progress": {
+        "slots": {
+          "": {
+            "base": [
+              "relative",
+              "h-1",
+              "w-full",
+              "overflow-hidden",
+              "rounded-full",
+              "bg-primary/20"
+            ],
+            "dimensions": {}
+          },
+          "indicator": {
+            "base": [
+              "h-full",
+              "w-full",
+              "flex-1",
+              "bg-primary",
+              "transition-all"
             ],
             "dimensions": {}
           }
@@ -802,6 +839,31 @@
               "text-base",
               "leading-snug",
               "font-medium"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "progress": {
+        "slots": {
+          "": {
+            "base": [
+              "relative",
+              "h-1",
+              "w-full",
+              "overflow-hidden",
+              "rounded-full",
+              "bg-primary/20"
+            ],
+            "dimensions": {}
+          },
+          "indicator": {
+            "base": [
+              "h-full",
+              "w-full",
+              "flex-1",
+              "bg-primary",
+              "transition-all"
             ],
             "dimensions": {}
           }

@@ -160,3 +160,10 @@ test("Spinner keeps its spin animation", async ({ page }) => {
   expect(duration).toBe("1s");
 });
 
+test("Progress keeps its track height", async ({ page }) => {
+  await page.goto("/x/progress/basic");
+  const el = page.locator("[data-gsxui-slot-progress]").first();
+  const height = await el.evaluate((n) => getComputedStyle(n).height);
+  expect(height).toBe("4px");
+});
+

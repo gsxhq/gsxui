@@ -800,14 +800,6 @@
     @apply pointer-events-none absolute top-1/2 right-2.5 size-4 -translate-y-1/2 opacity-50;
   }
 
-  /* Progress */
-  :where([data-gsxui-slot-progress]) {
-    @apply relative h-1 w-full overflow-hidden rounded-full bg-primary/20;
-  }
-  :where([data-gsxui-slot-progress-indicator]) {
-    @apply h-full w-full flex-1 bg-primary transition-all;
-  }
-
   /* Radio */
   :where([data-gsxui-slot-radio]) {
     @apply aspect-square size-4 shrink-0 appearance-none rounded-full border border-input transition-[color,box-shadow] outline-none;
