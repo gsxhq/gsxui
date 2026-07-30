@@ -1,0 +1,137 @@
+/* Source: assets/css/styles/default/menu.css (shared with DropdownMenu and
+   ContextMenu, 33 rules split three ways — this file carries Menubar's
+   share) and assets/css/styles/default/menu-popover-transition.css (shared
+   with DropdownMenu, ContextMenu, NavigationMenu and the not-yet-migrated
+   Combobox — this file carries Menubar's Content/SubContent share;
+   Combobox's own selector stays behind, untouched, in
+   menu-popover-transition.css). Nova and Maia have not diverged on Menubar
+   yet, so this file is byte-identical to registry/styles/maia/menubar.css.
+
+   TWO rules are DELIBERATELY NOT HERE — see
+   registry/styles/nova/context-menu.css's own comment for the full
+   spec-section-10b rationale (identical shape here): `[data-inset]:pl-8`
+   on item/label/sub-trigger, and `[data-disabled]:opacity-50` on
+   item/checkbox-item/radio-item/sub-trigger, both caller-supplied through
+   attrs, both stay in assets/css/styles/default/menu.css's residual
+   @layer components block. `[data-disabled]:pointer-events-none` for the
+   same state IS migrated below, on purpose.
+
+   MenubarSubTrigger deliberately does NOT carry the
+   [&_svg]:pointer-events-none/[&_svg]:shrink-0/[&_svg:not([class*='text-'])]:
+   text-muted-foreground triple every other SubTrigger in this menu family
+   gets — see ui/menubar.gsx's own file header ("NOT byte-identical to
+   DropdownMenuSubTrigger/ContextMenuSubTrigger"): new-york-v4's own
+   menubar.tsx SubTrigger never had those tokens, and nova's own rule is
+   silent on them too. Its chevron renders in the default foreground color,
+   not muted, by design. */
+@layer components {
+  .gsxui-recipe-menubar {
+    @apply flex h-8 items-center gap-0.5 rounded-lg border bg-background p-[3px];
+  }
+
+  .gsxui-recipe-menubar-menu {
+    @apply contents;
+  }
+
+  .gsxui-recipe-menubar-trigger {
+    @apply flex items-center rounded-sm px-1.5 py-[2px] text-sm font-medium outline-hidden select-none;
+    @apply focus:bg-accent focus:text-accent-foreground;
+    @apply data-[state=open]:bg-accent data-[state=open]:text-accent-foreground;
+  }
+
+  .gsxui-recipe-menubar-content {
+    @apply z-50 min-w-36 origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-md;
+    @apply opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150;
+    @apply [&:popover-open]:opacity-100 [&:popover-open]:scale-100;
+    @apply starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95;
+    @apply data-[side=bottom]:starting:[&:popover-open]:-translate-y-2;
+    @apply data-[side=left]:starting:[&:popover-open]:translate-x-2;
+    @apply data-[side=right]:starting:[&:popover-open]:-translate-x-2;
+    @apply data-[side=top]:starting:[&:popover-open]:translate-y-2;
+  }
+
+  .gsxui-recipe-menubar-item {
+    @apply relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none;
+    @apply focus:bg-accent focus:text-accent-foreground;
+    @apply data-disabled:pointer-events-none;
+    @apply [&_svg]:pointer-events-none [&_svg]:shrink-0;
+    @apply [&_svg:not([class*='size-'])]:size-4;
+    @apply [&_svg:not([class*='text-'])]:text-muted-foreground;
+  }
+
+  .gsxui-recipe-menubar-item-variant-default {
+    @apply text-foreground;
+  }
+
+  .gsxui-recipe-menubar-item-variant-destructive {
+    @apply text-destructive;
+    @apply focus:bg-destructive/10 focus:text-destructive;
+    @apply dark:focus:bg-destructive/20;
+    @apply [&_svg]:text-destructive;
+  }
+
+  .gsxui-recipe-menubar-checkbox-item {
+    @apply relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none;
+    @apply focus:bg-accent focus:text-accent-foreground;
+    @apply data-disabled:pointer-events-none;
+    @apply [&_svg]:pointer-events-none [&_svg]:shrink-0;
+    @apply [&_svg:not([class*='size-'])]:size-4;
+    @apply [&_svg:not([class*='text-'])]:text-muted-foreground;
+  }
+
+  .gsxui-recipe-menubar-checkbox-item-indicator {
+    @apply pointer-events-none absolute right-2 hidden size-4 items-center justify-center;
+    @apply [[data-state=checked]_&]:flex;
+    @apply [&>svg]:size-4;
+  }
+
+  .gsxui-recipe-menubar-radio-item {
+    @apply relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none;
+    @apply focus:bg-accent focus:text-accent-foreground;
+    @apply data-disabled:pointer-events-none;
+    @apply [&_svg]:pointer-events-none [&_svg]:shrink-0;
+    @apply [&_svg:not([class*='size-'])]:size-4;
+    @apply [&_svg:not([class*='text-'])]:text-muted-foreground;
+  }
+
+  .gsxui-recipe-menubar-radio-item-indicator {
+    @apply pointer-events-none absolute right-2 hidden size-4 items-center justify-center;
+    @apply [[data-state=checked]_&]:flex;
+    @apply [&>svg]:size-2 [&>svg]:fill-current;
+  }
+
+  .gsxui-recipe-menubar-label {
+    @apply px-1.5 py-1 text-sm font-medium;
+  }
+
+  .gsxui-recipe-menubar-separator {
+    @apply -mx-1 my-1 h-px bg-border;
+  }
+
+  .gsxui-recipe-menubar-shortcut {
+    @apply ml-auto text-xs tracking-widest text-muted-foreground;
+  }
+
+  .gsxui-recipe-menubar-sub {
+    @apply contents;
+  }
+
+  .gsxui-recipe-menubar-sub-trigger {
+    @apply relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none;
+    @apply focus:bg-accent focus:text-accent-foreground;
+    @apply data-[state=open]:bg-accent data-[state=open]:text-accent-foreground;
+    @apply [&_svg:not([class*='size-'])]:size-4;
+    @apply [&>svg:last-child]:ml-auto [&>svg:last-child]:size-4;
+  }
+
+  .gsxui-recipe-menubar-sub-content {
+    @apply z-50 min-w-[8rem] origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg;
+    @apply opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150;
+    @apply [&:popover-open]:opacity-100 [&:popover-open]:scale-100;
+    @apply starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95;
+    @apply data-[side=bottom]:starting:[&:popover-open]:-translate-y-2;
+    @apply data-[side=left]:starting:[&:popover-open]:translate-x-2;
+    @apply data-[side=right]:starting:[&:popover-open]:-translate-x-2;
+    @apply data-[side=top]:starting:[&:popover-open]:translate-y-2;
+  }
+}

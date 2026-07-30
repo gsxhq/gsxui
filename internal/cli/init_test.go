@@ -904,7 +904,7 @@ func TestInitializedConsumerCSSOmitsButtonPresentationAndKeepsRemainingStyle(t *
 	for _, attribute := range []string{
 		"data-gsxui-slot-combobox-content",
 		"data-gsxui-slot-command",
-		"data-gsxui-slot-menubar",
+		"data-gsxui-slot-tooltip",
 	} {
 		if !attributes[attribute] {
 			t.Errorf("clean consumer CSS missing canonical selector [%s]", attribute)

@@ -68,7 +68,7 @@ func TestMenubarStructure(t *testing.T) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
 	}
-	assertMenuCSSOnlyMarkup(t, got,
+	assertMenuMarkupSlots(t, got,
 		"menubar",
 		"menubar-menu",
 		"menubar-trigger",
@@ -80,21 +80,24 @@ func TestMenubarStructure(t *testing.T) {
 }
 
 func TestMenubarItemVariants(t *testing.T) {
+	// Migrated to the slot axis: variant presentation now lives in the
+	// recipe's compiled class (menubar.ItemVariant), so a class attribute
+	// legitimately renders here now.
 	for input, want := range map[string]string{"": "default", "destructive": "destructive"} {
 		got := render(t, ui.MenubarItem(input, gsx.Raw("x"), nil))
 		if !strings.Contains(got, `data-variant="`+want+`"`) {
 			t.Errorf("variant %q must stamp %q\nin: %s", input, want, got)
 		}
-		if strings.Contains(got, `class=`) {
-			t.Errorf("variant presentation must live in CSS\nin: %s", got)
+		if strings.Count(got, `class=`) != 1 {
+			t.Errorf("variant presentation must render exactly one class attribute\nin: %s", got)
 		}
 	}
 }
 
 func TestMenubarContentCallerClassMerges(t *testing.T) {
 	got := render(t, ui.MenubarContent(gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "z-10"}}))
-	if strings.Count(got, `class="z-10"`) != 1 || strings.Count(got, `class=`) != 1 {
-		t.Errorf("caller z-10 must be the only class and render once\nin: %s", got)
+	if strings.Count(got, "z-10") != 1 || strings.Count(got, `class=`) != 1 {
+		t.Errorf("caller z-10 must merge in exactly once, in exactly one class attribute\nin: %s", got)
 	}
 }
 
@@ -172,7 +175,7 @@ func TestMenubarSubNestsContentInsideParentContentPinned(t *testing.T) {
 			t.Errorf("missing nested submenu contract %q\nin: %s", want, got)
 		}
 	}
-	assertMenuCSSOnlyMarkup(t, got,
+	assertMenuMarkupSlots(t, got,
 		"menubar-content",
 		"menubar-sub",
 		"menubar-sub-trigger",
@@ -189,37 +192,37 @@ func TestMenubarPinnedParts(t *testing.T) {
 		{
 			name: "root",
 			node: ui.Menubar(gsx.Raw("x"), nil),
-			want: `<div data-gsxui-menubar role="menubar" data-gsxui-slot-menubar>x</div>`,
+			want: `<div class="flex h-8 items-center gap-0.5 rounded-lg border bg-background p-[3px]" data-gsxui-menubar role="menubar" data-gsxui-slot-menubar>x</div>`,
 		},
 		{
 			name: "menu",
 			node: ui.MenubarMenu(gsx.Raw("x"), nil),
-			want: `<div data-gsxui-menubar-menu data-gsxui-slot-menubar-menu>x</div>`,
+			want: `<div class="contents" data-gsxui-menubar-menu data-gsxui-slot-menubar-menu>x</div>`,
 		},
 		{
 			name: "item",
 			node: ui.MenubarItem("", gsx.Raw("Print"), nil),
-			want: `<div data-gsxui-menubar-item data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-menubar-item>Print</div>`,
+			want: `<div class="relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 [&amp;_svg:not([class*=&#39;text-&#39;])]:text-muted-foreground text-foreground" data-gsxui-menubar-item data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-menubar-item>Print</div>`,
 		},
 		{
 			name: "content",
 			node: ui.MenubarContent(gsx.Raw("x"), nil),
-			want: `<div data-gsxui-menubar-content popover="auto" role="menu" tabindex="-1" data-state="closed" data-side="bottom" data-gsxui-slot-menubar-content>x</div>`,
+			want: `<div class="z-50 min-w-36 origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&amp;:popover-open]:opacity-100 [&amp;:popover-open]:scale-100 starting:[&amp;:popover-open]:opacity-0 starting:[&amp;:popover-open]:scale-95 data-[side=bottom]:starting:[&amp;:popover-open]:-translate-y-2 data-[side=left]:starting:[&amp;:popover-open]:translate-x-2 data-[side=right]:starting:[&amp;:popover-open]:-translate-x-2 data-[side=top]:starting:[&amp;:popover-open]:translate-y-2" data-gsxui-menubar-content popover="auto" role="menu" tabindex="-1" data-state="closed" data-side="bottom" data-gsxui-slot-menubar-content>x</div>`,
 		},
 		{
 			name: "label",
 			node: ui.MenubarLabel(gsx.Raw("People"), nil),
-			want: `<div data-gsxui-slot-menubar-label>People</div>`,
+			want: `<div class="px-1.5 py-1 text-sm font-medium" data-gsxui-slot-menubar-label>People</div>`,
 		},
 		{
 			name: "separator",
 			node: ui.MenubarSeparator(nil),
-			want: `<div role="separator" data-gsxui-slot-menubar-separator></div>`,
+			want: `<div class="-mx-1 my-1 h-px bg-border" role="separator" data-gsxui-slot-menubar-separator></div>`,
 		},
 		{
 			name: "shortcut",
 			node: ui.MenubarShortcut(gsx.Raw("⌘T"), nil),
-			want: `<span data-gsxui-slot-menubar-shortcut>⌘T</span>`,
+			want: `<span class="ml-auto text-xs tracking-widest text-muted-foreground" data-gsxui-slot-menubar-shortcut>⌘T</span>`,
 		},
 		{
 			name: "group",
