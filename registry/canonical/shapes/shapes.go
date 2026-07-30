@@ -202,6 +202,7 @@ var all = map[string]recipe.Shape{
 	Calendar.Component:       Calendar,
 	NativeSelect.Component:   NativeSelect,
 	ButtonGroup.Component:    ButtonGroup,
+	Item.Component:           Item,
 }
 
 // All returns every declared component shape, keyed by component name.

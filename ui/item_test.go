@@ -1,16 +1,73 @@
 package ui_test
 
 import (
+	"html"
+	"os"
+	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 
 	gsx "github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/internal/recipe"
+	"github.com/gsxhq/gsxui/internal/stylegen"
+	"github.com/gsxhq/gsxui/merge"
 	"github.com/gsxhq/gsxui/ui"
 )
 
+// novaItemRecipe loads the default style's Item recipe once — same pattern as
+// novaSeparatorRecipe in separator_test.go.
+var novaItemRecipe = sync.OnceValue(func() recipe.Style {
+	path := filepath.Join("..", "registry", "styles", stylegen.DefaultStyle, "item.css")
+	src, err := os.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+	style, err := recipe.ParseStyle(path, src)
+	if err != nil {
+		panic(err)
+	}
+	return style
+})
+
+func itemRecipeUtilities(class string) []string {
+	rule, ok := novaItemRecipe().Lookup(class)
+	if !ok {
+		panic("default style declares no recipe " + class)
+	}
+	return rule.Utilities
+}
+
+// canonicalItemClass builds the class attribute one Item slot renders: the
+// slot's base utilities, then any dimension-value utilities, then the caller's
+// own classes, merged the way gsx merges class values at runtime.
+func canonicalItemClass(slot string, extra []string, caller ...string) string {
+	base := "gsxui-recipe-item"
+	if slot != "" {
+		base += "-" + slot
+	}
+	classes := append([]string(nil), itemRecipeUtilities(base)...)
+	for _, value := range extra {
+		classes = append(classes, itemRecipeUtilities(base+"-"+value)...)
+	}
+	classes = append(classes, caller...)
+	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
+}
+
+// canonicalItemSeparatorClass is what ItemSeparator renders: ui.Separator's
+// own recipe utilities for the orientation, with Item's separator-slot my-2
+// merged in after them as an ordinary caller class.
+func canonicalItemSeparatorClass(orientation string, caller ...string) string {
+	classes := append([]string(nil), separatorRecipeUtilities("gsxui-recipe-separator")...)
+	classes = append(classes, separatorRecipeUtilities("gsxui-recipe-separator-orientation-"+orientation)...)
+	classes = append(classes, itemRecipeUtilities("gsxui-recipe-item-separator")...)
+	classes = append(classes, caller...)
+	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
+}
+
 func TestItemGroupPinned(t *testing.T) {
 	got := render(t, ui.ItemGroup(gsx.Raw("x"), nil))
-	want := `<div role="list" data-gsxui-slot-item-group>x</div>`
+	want := `<div ` + canonicalItemClass("group", nil) + ` role="list" data-gsxui-slot-item-group>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -25,8 +82,11 @@ func TestItemGroupAttrsFallThrough(t *testing.T) {
 
 func TestItemGroupCallerClassIsForwardedOnce(t *testing.T) {
 	got := render(t, ui.ItemGroup(nil, gsx.Attrs{{Key: "class", Value: "gap-4"}}))
-	if strings.Count(got, `class="gap-4"`) != 1 {
-		t.Errorf("caller class must be the only class and render once\nin: %s", got)
+	if strings.Count(got, "gap-4") != 1 || strings.Count(got, `class=`) != 1 {
+		t.Errorf("caller class must merge in exactly once\nin: %s", got)
+	}
+	if want := canonicalItemClass("group", nil, "gap-4"); !strings.Contains(got, want) {
+		t.Errorf("caller class not merged after the recipe's own\nwant: %s\nin: %s", want, got)
 	}
 }
 
@@ -36,7 +96,7 @@ func TestItemGroupCallerClassIsForwardedOnce(t *testing.T) {
 // Separator's own data-[orientation=...] base classes both come through.
 func TestItemSeparatorDefaultPinned(t *testing.T) {
 	got := render(t, ui.ItemSeparator("", nil))
-	want := `<div role="none" data-orientation="horizontal" ` + canonicalSeparatorClass("horizontal") + ` data-gsxui-slot-item-separator data-gsxui-slot-separator></div>`
+	want := `<div role="none" data-orientation="horizontal" ` + canonicalItemSeparatorClass("horizontal") + ` data-gsxui-slot-item-separator data-gsxui-slot-separator></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -63,7 +123,7 @@ func TestItemSeparatorAttrsFallThrough(t *testing.T) {
 // TestItemDefaultPinned pins the zero-value (variant="default", size="default").
 func TestItemDefaultPinned(t *testing.T) {
 	got := render(t, ui.Item("", "", gsx.Raw("x"), nil))
-	want := `<div data-variant="default" data-size="default" data-gsxui-slot-item>x</div>`
+	want := `<div data-variant="default" data-size="default" ` + canonicalItemClass("", []string{"variant-default"}) + ` data-gsxui-slot-item>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -76,7 +136,7 @@ func TestItemDefaultPinned(t *testing.T) {
 // utility is untouched).
 func TestItemOutlineSmPinned(t *testing.T) {
 	got := render(t, ui.Item("outline", "sm", gsx.Raw("x"), nil))
-	want := `<div data-variant="outline" data-size="sm" data-gsxui-slot-item>x</div>`
+	want := `<div data-variant="outline" data-size="sm" ` + canonicalItemClass("", []string{"variant-outline"}) + ` data-gsxui-slot-item>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -114,14 +174,19 @@ func TestItemAttrsFallThrough(t *testing.T) {
 
 func TestItemCallerClassIsForwardedOnce(t *testing.T) {
 	got := render(t, ui.Item("", "", nil, gsx.Attrs{{Key: "class", Value: "gap-8"}}))
-	if strings.Count(got, `class="gap-8"`) != 1 {
-		t.Errorf("caller class must be the only class and render once\nin: %s", got)
+	if strings.Count(got, "gap-8") != 1 || strings.Count(got, `class=`) != 1 {
+		t.Errorf("caller class must merge in exactly once\nin: %s", got)
+	}
+	// gap-8 displaces the base rule's own gap-2.5 through tailwind-merge —
+	// plain-vs-plain, so the caller wins before the cascade is consulted.
+	if want := canonicalItemClass("", []string{"variant-default"}, "gap-8"); !strings.Contains(got, want) {
+		t.Errorf("caller class not merged after the recipe's own\nwant: %s\nin: %s", want, got)
 	}
 }
 
 func TestItemMediaDefaultPinned(t *testing.T) {
 	got := render(t, ui.ItemMedia("", gsx.Raw("x"), nil))
-	want := `<div data-variant="default" data-gsxui-slot-item-media>x</div>`
+	want := `<div data-variant="default" ` + canonicalItemClass("media", []string{"variant-default"}) + ` data-gsxui-slot-item-media>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -129,7 +194,7 @@ func TestItemMediaDefaultPinned(t *testing.T) {
 
 func TestItemMediaIconPinned(t *testing.T) {
 	got := render(t, ui.ItemMedia("icon", gsx.Raw("x"), nil))
-	want := `<div data-variant="icon" data-gsxui-slot-item-media>x</div>`
+	want := `<div data-variant="icon" ` + canonicalItemClass("media", []string{"variant-icon"}) + ` data-gsxui-slot-item-media>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -137,7 +202,7 @@ func TestItemMediaIconPinned(t *testing.T) {
 
 func TestItemMediaImagePinned(t *testing.T) {
 	got := render(t, ui.ItemMedia("image", gsx.Raw("x"), nil))
-	want := `<div data-variant="image" data-gsxui-slot-item-media>x</div>`
+	want := `<div data-variant="image" ` + canonicalItemClass("media", []string{"variant-image"}) + ` data-gsxui-slot-item-media>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -152,7 +217,7 @@ func TestItemMediaAttrsFallThrough(t *testing.T) {
 
 func TestItemContentPinned(t *testing.T) {
 	got := render(t, ui.ItemContent(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot-item-content>x</div>`
+	want := `<div ` + canonicalItemClass("content", nil) + ` data-gsxui-slot-item-content>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -167,7 +232,7 @@ func TestItemContentAttrsFallThrough(t *testing.T) {
 
 func TestItemTitlePinned(t *testing.T) {
 	got := render(t, ui.ItemTitle(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot-item-title>x</div>`
+	want := `<div ` + canonicalItemClass("title", nil) + ` data-gsxui-slot-item-title>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -185,7 +250,7 @@ func TestItemTitleAttrsFallThrough(t *testing.T) {
 // says "p" but whose actual element is a div — see ui/item.gsx's comment).
 func TestItemDescriptionPinned(t *testing.T) {
 	got := render(t, ui.ItemDescription(gsx.Raw("x"), nil))
-	want := `<p data-gsxui-slot-item-description>x</p>`
+	want := `<p ` + canonicalItemClass("description", nil) + ` data-gsxui-slot-item-description>x</p>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -200,7 +265,7 @@ func TestItemDescriptionAttrsFallThrough(t *testing.T) {
 
 func TestItemActionsPinned(t *testing.T) {
 	got := render(t, ui.ItemActions(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot-item-actions>x</div>`
+	want := `<div ` + canonicalItemClass("actions", nil) + ` data-gsxui-slot-item-actions>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -215,7 +280,7 @@ func TestItemActionsAttrsFallThrough(t *testing.T) {
 
 func TestItemHeaderPinned(t *testing.T) {
 	got := render(t, ui.ItemHeader(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot-item-header>x</div>`
+	want := `<div ` + canonicalItemClass("header", nil) + ` data-gsxui-slot-item-header>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -230,7 +295,7 @@ func TestItemHeaderAttrsFallThrough(t *testing.T) {
 
 func TestItemFooterPinned(t *testing.T) {
 	got := render(t, ui.ItemFooter(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot-item-footer>x</div>`
+	want := `<div ` + canonicalItemClass("footer", nil) + ` data-gsxui-slot-item-footer>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -270,8 +335,8 @@ func TestItemGroupWithSeparatorComposition(t *testing.T) {
 	))
 	for _, want := range []string{
 		`data-gsxui-slot-item-group`,
-		`data-variant="outline" data-size="default" data-gsxui-slot-item`,
-		`data-variant="icon" data-gsxui-slot-item-media`,
+		`data-variant="outline" data-size="default" ` + canonicalItemClass("", []string{"variant-outline"}) + ` data-gsxui-slot-item`,
+		`data-variant="icon" ` + canonicalItemClass("media", []string{"variant-icon"}) + ` data-gsxui-slot-item-media`,
 		`data-gsxui-slot-item-content`,
 		`data-gsxui-slot-item-title`,
 		`>Invoice #1234</div>`,

@@ -672,6 +672,68 @@
         }
       }
     },
+    "item": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {
+            "variant": {
+              "default": "default",
+              "values": [
+                "default",
+                "outline",
+                "muted"
+              ]
+            }
+          }
+        },
+        "actions": {
+          "base": true,
+          "dimensions": {}
+        },
+        "content": {
+          "base": true,
+          "dimensions": {}
+        },
+        "description": {
+          "base": true,
+          "dimensions": {}
+        },
+        "footer": {
+          "base": true,
+          "dimensions": {}
+        },
+        "group": {
+          "base": true,
+          "dimensions": {}
+        },
+        "header": {
+          "base": true,
+          "dimensions": {}
+        },
+        "media": {
+          "base": true,
+          "dimensions": {
+            "variant": {
+              "default": "default",
+              "values": [
+                "default",
+                "icon",
+                "image"
+              ]
+            }
+          }
+        },
+        "separator": {
+          "base": true,
+          "dimensions": {}
+        },
+        "title": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "kbd": {
       "slots": {
         "": {
@@ -3126,6 +3188,153 @@
               "data-[active=true]:aria-invalid:ring-destructive/20",
               "dark:bg-input/30",
               "dark:data-[active=true]:aria-invalid:ring-destructive/40"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "item": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "flex-wrap",
+              "items-center",
+              "gap-2.5",
+              "rounded-lg",
+              "border",
+              "border-transparent",
+              "px-3",
+              "py-2.5",
+              "text-sm",
+              "transition-colors",
+              "duration-100",
+              "outline-none",
+              "focus-visible:border-ring",
+              "focus-visible:ring-[3px]",
+              "focus-visible:ring-ring/50",
+              "[a\u0026]:transition-colors",
+              "[a\u0026]:hover:bg-accent/50"
+            ],
+            "dimensions": {
+              "variant": {
+                "default": [
+                  "bg-transparent"
+                ],
+                "muted": [
+                  "bg-muted/50"
+                ],
+                "outline": [
+                  "border-border"
+                ]
+              }
+            }
+          },
+          "actions": {
+            "base": [
+              "flex",
+              "items-center",
+              "gap-2"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "flex",
+              "flex-1",
+              "flex-col",
+              "gap-1",
+              "[\u0026+[data-gsxui-slot-item-content]]:flex-none"
+            ],
+            "dimensions": {}
+          },
+          "description": {
+            "base": [
+              "line-clamp-2",
+              "text-sm",
+              "leading-normal",
+              "font-normal",
+              "text-balance",
+              "text-muted-foreground",
+              "[\u0026\u003ea]:underline",
+              "[\u0026\u003ea]:underline-offset-4",
+              "[\u0026\u003ea:hover]:text-primary"
+            ],
+            "dimensions": {}
+          },
+          "footer": {
+            "base": [
+              "flex",
+              "basis-full",
+              "items-center",
+              "justify-between",
+              "gap-2"
+            ],
+            "dimensions": {}
+          },
+          "group": {
+            "base": [
+              "flex",
+              "flex-col"
+            ],
+            "dimensions": {}
+          },
+          "header": {
+            "base": [
+              "flex",
+              "basis-full",
+              "items-center",
+              "justify-between",
+              "gap-2"
+            ],
+            "dimensions": {}
+          },
+          "media": {
+            "base": [
+              "flex",
+              "shrink-0",
+              "items-center",
+              "justify-center",
+              "gap-2",
+              "[\u0026_svg]:pointer-events-none"
+            ],
+            "dimensions": {
+              "variant": {
+                "default": [
+                  "bg-transparent"
+                ],
+                "icon": [
+                  "size-8",
+                  "rounded-sm",
+                  "border",
+                  "bg-muted",
+                  "[\u0026_svg:not([class*='size-'])]:size-4"
+                ],
+                "image": [
+                  "size-10",
+                  "overflow-hidden",
+                  "rounded-sm",
+                  "[\u0026_img]:size-full",
+                  "[\u0026_img]:object-cover"
+                ]
+              }
+            }
+          },
+          "separator": {
+            "base": [
+              "my-2"
+            ],
+            "dimensions": {}
+          },
+          "title": {
+            "base": [
+              "flex",
+              "w-fit",
+              "items-center",
+              "gap-2",
+              "text-sm",
+              "leading-snug",
+              "font-medium"
             ],
             "dimensions": {}
           }
@@ -6627,6 +6836,153 @@
               "data-[active=true]:aria-invalid:ring-destructive/20",
               "dark:bg-input/30",
               "dark:data-[active=true]:aria-invalid:ring-destructive/40"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "item": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "flex-wrap",
+              "items-center",
+              "gap-2.5",
+              "rounded-lg",
+              "border",
+              "border-transparent",
+              "px-3",
+              "py-2.5",
+              "text-sm",
+              "transition-colors",
+              "duration-100",
+              "outline-none",
+              "focus-visible:border-ring",
+              "focus-visible:ring-[3px]",
+              "focus-visible:ring-ring/50",
+              "[a\u0026]:transition-colors",
+              "[a\u0026]:hover:bg-accent/50"
+            ],
+            "dimensions": {
+              "variant": {
+                "default": [
+                  "bg-transparent"
+                ],
+                "muted": [
+                  "bg-muted/50"
+                ],
+                "outline": [
+                  "border-border"
+                ]
+              }
+            }
+          },
+          "actions": {
+            "base": [
+              "flex",
+              "items-center",
+              "gap-2"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "flex",
+              "flex-1",
+              "flex-col",
+              "gap-1",
+              "[\u0026+[data-gsxui-slot-item-content]]:flex-none"
+            ],
+            "dimensions": {}
+          },
+          "description": {
+            "base": [
+              "line-clamp-2",
+              "text-sm",
+              "leading-normal",
+              "font-normal",
+              "text-balance",
+              "text-muted-foreground",
+              "[\u0026\u003ea]:underline",
+              "[\u0026\u003ea]:underline-offset-4",
+              "[\u0026\u003ea:hover]:text-primary"
+            ],
+            "dimensions": {}
+          },
+          "footer": {
+            "base": [
+              "flex",
+              "basis-full",
+              "items-center",
+              "justify-between",
+              "gap-2"
+            ],
+            "dimensions": {}
+          },
+          "group": {
+            "base": [
+              "flex",
+              "flex-col"
+            ],
+            "dimensions": {}
+          },
+          "header": {
+            "base": [
+              "flex",
+              "basis-full",
+              "items-center",
+              "justify-between",
+              "gap-2"
+            ],
+            "dimensions": {}
+          },
+          "media": {
+            "base": [
+              "flex",
+              "shrink-0",
+              "items-center",
+              "justify-center",
+              "gap-2",
+              "[\u0026_svg]:pointer-events-none"
+            ],
+            "dimensions": {
+              "variant": {
+                "default": [
+                  "bg-transparent"
+                ],
+                "icon": [
+                  "size-8",
+                  "rounded-sm",
+                  "border",
+                  "bg-muted",
+                  "[\u0026_svg:not([class*='size-'])]:size-4"
+                ],
+                "image": [
+                  "size-10",
+                  "overflow-hidden",
+                  "rounded-sm",
+                  "[\u0026_img]:size-full",
+                  "[\u0026_img]:object-cover"
+                ]
+              }
+            }
+          },
+          "separator": {
+            "base": [
+              "my-2"
+            ],
+            "dimensions": {}
+          },
+          "title": {
+            "base": [
+              "flex",
+              "w-fit",
+              "items-center",
+              "gap-2",
+              "text-sm",
+              "leading-snug",
+              "font-medium"
             ],
             "dimensions": {}
           }

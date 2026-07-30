@@ -5,12 +5,12 @@
 // blocks (no data-keyed selectors in the source). The CSS-only contract
 // reflects those axes through data attributes; see docs/jsx-parity.md
 // `## item` for the drop list (asChild) and mechanisms.
-package ui
+package canonical
 
 import "github.com/gsxhq/gsx"
 
 component ItemGroup(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "flex flex-col" } role="list" { attrs... } data-gsxui-slot-item-group>
+	<div class={ item.Group() } role="list" { attrs... } data-gsxui-slot-item-group>
 		{ children }
 	</div>
 }
@@ -29,7 +29,7 @@ component ItemGroup(children gsx.Node, attrs gsx.Attrs) {
 component ItemSeparator(orientation string, attrs gsx.Attrs) {
 	<Separator
 		orientation={orientation |> default("horizontal")}
-		class={ "my-2" }
+		class={ item.Separator() }
 		{ attrs... }
 		data-gsxui-slot-item-separator
 	/>
@@ -47,8 +47,8 @@ component Item(variant string, size string, children gsx.Node, attrs gsx.Attrs) 
 		data-variant={variant |> default("default")}
 		data-size={size |> default("default")}
 		class={
-			"flex flex-wrap items-center gap-2.5 rounded-lg border border-transparent px-3 py-2.5 text-sm transition-colors duration-100 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 [a&]:transition-colors [a&]:hover:bg-accent/50",
-			switch variant { case "outline": "border-border" case "muted": "bg-muted/50" default: "bg-transparent" }
+			item.Root(),
+			item.Variant(variant),
 		}
 		{ attrs... }
 		data-gsxui-slot-item
@@ -72,15 +72,8 @@ component ItemMedia(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-variant={variant |> default("default")}
 		class={
-			"flex shrink-0 items-center justify-center gap-2 [&_svg]:pointer-events-none",
-			switch variant {
-			case "icon":
-				"size-8 rounded-sm border bg-muted [&_svg:not([class*='size-'])]:size-4"
-			case "image":
-				"size-10 overflow-hidden rounded-sm [&_img]:size-full [&_img]:object-cover"
-			default:
-				"bg-transparent"
-			}
+			item.Media(),
+			item.MediaVariant(variant),
 		}
 		{ attrs... }
 		data-gsxui-slot-item-media
@@ -90,21 +83,13 @@ component ItemMedia(variant string, children gsx.Node, attrs gsx.Attrs) {
 }
 
 component ItemContent(children gsx.Node, attrs gsx.Attrs) {
-	<div
-		class={ "flex flex-1 flex-col gap-1 [&+[data-gsxui-slot-item-content]]:flex-none" }
-		{ attrs... }
-		data-gsxui-slot-item-content
-	>
+	<div class={ item.Content() } { attrs... } data-gsxui-slot-item-content>
 		{ children }
 	</div>
 }
 
 component ItemTitle(children gsx.Node, attrs gsx.Attrs) {
-	<div
-		class={ "flex w-fit items-center gap-2 text-sm leading-snug font-medium" }
-		{ attrs... }
-		data-gsxui-slot-item-title
-	>
+	<div class={ item.Title() } { attrs... } data-gsxui-slot-item-title>
 		{ children }
 	</div>
 }
@@ -113,31 +98,25 @@ component ItemTitle(children gsx.Node, attrs gsx.Attrs) {
 // (unlike EmptyDescription, whose type says "p" but whose element is a
 // <div> — see empty.gsx).
 component ItemDescription(children gsx.Node, attrs gsx.Attrs) {
-	<p
-		class={
-			"line-clamp-2 text-sm leading-normal font-normal text-balance text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary"
-		}
-		{ attrs... }
-		data-gsxui-slot-item-description
-	>
+	<p class={ item.Description() } { attrs... } data-gsxui-slot-item-description>
 		{ children }
 	</p>
 }
 
 component ItemActions(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "flex items-center gap-2" } { attrs... } data-gsxui-slot-item-actions>
+	<div class={ item.Actions() } { attrs... } data-gsxui-slot-item-actions>
 		{ children }
 	</div>
 }
 
 component ItemHeader(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "flex basis-full items-center justify-between gap-2" } { attrs... } data-gsxui-slot-item-header>
+	<div class={ item.Header() } { attrs... } data-gsxui-slot-item-header>
 		{ children }
 	</div>
 }
 
 component ItemFooter(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "flex basis-full items-center justify-between gap-2" } { attrs... } data-gsxui-slot-item-footer>
+	<div class={ item.Footer() } { attrs... } data-gsxui-slot-item-footer>
 		{ children }
 	</div>
 }

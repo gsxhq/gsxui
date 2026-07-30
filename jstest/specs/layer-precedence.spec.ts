@@ -1067,3 +1067,47 @@ test("ButtonGroup's nested-group gap stays caller-overridable", async ({ page })
   const el = page.locator('[data-style-contract="button-group-nested-caller-gap"]');
   expect(await el.evaluate((n) => getComputedStyle(n).gap)).toBe("32px");
 });
+
+// Item's migration (Wave 4c).
+//
+// The media offset — `item:has(item-description) item-media { translate-y-0.5
+// self-start }` — is RETAINED in @layer components under § 10b: as an
+// ancestor-scoped arbitrary variant on the media slot's recipe it would compile
+// to (0,3,0) and a caller's own self-* could never beat it. These two pins
+// assert both halves of that: the rule still applies, AND a caller still wins.
+
+test("Item's media offset applies through the retained rule", async ({ page }) => {
+  await page.goto("/f/style-contract");
+  const media = page.locator('[data-style-contract="item-media-offset"]');
+  expect(await media.evaluate((n) => getComputedStyle(n).alignSelf)).toBe("flex-start");
+  expect(await media.evaluate((n) => getComputedStyle(n).translate)).toBe("0px 2px");
+});
+
+test("Item's media offset stays caller-overridable", async ({ page }) => {
+  await page.goto("/f/style-contract");
+  const media = page.locator('[data-style-contract="item-media-offset-caller"]');
+  // self-center is a plain (0,1,0) utility in @layer utilities; it can only
+  // beat the retained rule while that rule stays in @layer components.
+  expect(await media.evaluate((n) => getComputedStyle(n).alignSelf)).toBe("center");
+});
+
+// The content flex group DID migrate, in full (see registry/styles/nova/item.css's
+// header). This pins the pair that forced it: the first content grows, the
+// second — selected by the sibling variant on the first one's own class —
+// does not.
+test("Item's second adjacent content does not grow", async ({ page }) => {
+  await page.goto("/f/style-contract");
+  const first = page.locator('[data-style-contract="item-content-first"]');
+  const second = page.locator('[data-style-contract="item-content-second"]');
+  expect(await first.evaluate((n) => getComputedStyle(n).flexGrow)).toBe("1");
+  expect(await second.evaluate((n) => getComputedStyle(n).flexGrow)).toBe("0");
+});
+
+// ItemSeparator's my-2 now arrives as an ordinary caller class on <Separator>
+// rather than as a marker-keyed default.css rule.
+test("ItemSeparator keeps its my-2 margin after migration", async ({ page }) => {
+  await page.goto("/x/item/basic");
+  const separator = page.locator("[data-gsxui-slot-item-separator]").first();
+  expect(await separator.evaluate((n) => getComputedStyle(n).marginTop)).toBe("8px");
+  expect(await separator.evaluate((n) => getComputedStyle(n).marginBottom)).toBe("8px");
+});

@@ -5,7 +5,7 @@
 // blocks (no data-keyed selectors in the source). The CSS-only contract
 // reflects those axes through data attributes; see docs/jsx-parity.md
 // `## item` for the drop list (asChild) and mechanisms.
-package ui
+package maia
 
 import "github.com/gsxhq/gsx"
 

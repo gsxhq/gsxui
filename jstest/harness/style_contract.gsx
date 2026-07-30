@@ -100,6 +100,22 @@ component StyleContractFixture() {
 		    :has(> [data-gsxui-slot-button-group]) { gap-2 } rule stays in
 		    @layer components precisely so gap-8 (in @layer utilities) wins
 		    the layer contest; see assets/css/styles/default/button-group.css. */}
+		{/* Item's retained media-offset rule (§ 10b): an item that contains a
+		    description pushes its media to self-start. The second media passes
+		    self-center, which must WIN — that is the whole reason the rule
+		    stays in @layer components. The two ItemContents also pin the
+		    migrated adjacent-sibling flex-none. */}
+		<ui.Item data-style-contract="item-with-description">
+			<ui.ItemMedia variant="icon" data-style-contract="item-media-offset"/>
+			<ui.ItemMedia variant="icon" class="self-center" data-style-contract="item-media-offset-caller"/>
+			<ui.ItemContent data-style-contract="item-content-first">
+				<ui.ItemTitle>Title</ui.ItemTitle>
+				<ui.ItemDescription>Description</ui.ItemDescription>
+			</ui.ItemContent>
+			<ui.ItemContent data-style-contract="item-content-second">
+				<ui.ItemTitle>Second</ui.ItemTitle>
+			</ui.ItemContent>
+		</ui.Item>
 		<ui.ButtonGroup class="gap-8" data-style-contract="button-group-nested-caller-gap">
 			<ui.ButtonGroup>
 				<ui.Button>Nested</ui.Button>
