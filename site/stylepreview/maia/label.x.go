@@ -23,7 +23,7 @@ func Label(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line label.gsx:11:2
 		_gsxgw.S("<label class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex items-center gap-2 text-sm leading-none font-medium select-none [[data-disabled=true]_&]:pointer-events-none [[data-disabled=true]_&]:opacity-50 [:disabled~&]:cursor-not-allowed [:disabled~&]:opacity-50"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex items-center gap-2 text-sm leading-none font-medium select-none [[data-disabled=true]_&]:pointer-events-none [:disabled~&]:cursor-not-allowed"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-label"})
