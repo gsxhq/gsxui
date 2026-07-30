@@ -233,6 +233,37 @@ func injectDefaultCSS(t *testing.T, anchor, extra string) string {
 	return injectCSS(t, "assets/css/styles/default/root.css", anchor, extra)
 }
 
+// writeGSXFixture adds a new ui/*.gsx file to an already-copied fixture root
+// (see injectCSS/copyRepoFixture), for tests that need a composition shape no
+// existing ui/*.gsx has rather than splicing into a stylesheet.
+func writeGSXFixture(t *testing.T, root, name, src string) {
+	t.Helper()
+	path := filepath.Join(root, "ui", name)
+	if err := os.WriteFile(path, []byte(src), 0o644); err != nil {
+		t.Fatal(err)
+	}
+}
+
+// sharedMarkerFixtureGSX stamps one new marker, data-gsxui-slot-shared-control,
+// onto both a <Card> and a <Badge> — two already-migrated components — the
+// same way ui/input-group.gsx stamps data-gsxui-slot-input-group-control onto
+// both an <Input> and a <Textarea>. Card and Badge both apply a "rounded-*"
+// utility on their root slot (rounded-xl and rounded-4xl respectively), so a
+// components-layer rule targeting the shared marker with a conflicting
+// rounded-md contests both.
+const sharedMarkerFixtureGSX = `package ui
+
+import "github.com/gsxhq/gsx"
+
+component SharedMarkerFixtureCard(attrs gsx.Attrs) {
+	<Card { attrs... } data-gsxui-slot-shared-control></Card>
+}
+
+component SharedMarkerFixtureBadge(attrs gsx.Attrs) {
+	<Badge variant="default" { attrs... } data-gsxui-slot-shared-control></Badge>
+}
+`
+
 // TestCheckLayerPrecedenceRejectsARawDeclarationOverride is finding 1's core
 // case. foundation.css is written in plain CSS declarations, not @apply, and
 // the gate used to read only assets/css/styles/default.css — so a mechanics
@@ -666,23 +697,79 @@ func TestStaleExemptionIsPerStyle(t *testing.T) {
 func TestComposedTargetIsDeterministic(t *testing.T) {
 	t.Parallel()
 
-	markers := map[string]string{
-		"data-gsxui-slot-card":          "card",
-		"data-gsxui-slot-sidebar-inset": "sidebar",
+	markers := map[string][]string{
+		"data-gsxui-slot-card":          {"card"},
+		"data-gsxui-slot-sidebar-inset": {"sidebar"},
 	}
 	const selector = "[data-gsxui-slot-card][data-gsxui-slot-sidebar-inset]"
-	marker, component, _, ok := composedTarget(selector, markers)
+	marker, components, _, ok := composedTarget(selector, markers)
 	if !ok {
 		t.Fatal("composedTarget() found no marker")
 	}
 	for range 200 {
-		gotMarker, gotComponent, _, gotOK := composedTarget(selector, markers)
-		if !gotOK || gotMarker != marker || gotComponent != component {
-			t.Fatalf("composedTarget() = %q/%q, want a stable %q/%q", gotMarker, gotComponent, marker, component)
+		gotMarker, gotComponents, _, gotOK := composedTarget(selector, markers)
+		if !gotOK || gotMarker != marker || !slices.Equal(gotComponents, components) {
+			t.Fatalf("composedTarget() = %q/%q, want a stable %q/%q", gotMarker, gotComponents, marker, components)
 		}
 	}
 	if marker != "data-gsxui-slot-sidebar-inset" {
 		t.Errorf("composedTarget() = %q, want the longest matching marker", marker)
+	}
+}
+
+// TestComposedMarkersAllowsSharedOwnership pins the ruling: a marker stamped
+// by two migrated components (see sharedMarkerFixtureGSX) is not an error —
+// composedMarkers must return every owner, not just the first, or the second.
+func TestComposedMarkersAllowsSharedOwnership(t *testing.T) {
+	t.Parallel()
+
+	root := t.TempDir()
+	copyRepoFixture(t, root)
+	writeGSXFixture(t, root, "shared_marker_fixture.gsx", sharedMarkerFixtureGSX)
+
+	byMarker, err := composedMarkers(root)
+	if err != nil {
+		t.Fatalf("composedMarkers() error = %v, want a shared marker to be accepted, not rejected", err)
+	}
+	owners := byMarker["data-gsxui-slot-shared-control"]
+	want := []string{"badge", "card"}
+	if !slices.Equal(owners, want) {
+		t.Errorf("composedMarkers()[shared-control] = %q, want %q (sorted, both owners)", owners, want)
+	}
+}
+
+// TestCheckLayerPrecedenceNamesEveryOwnerOfASharedMarker is the end-to-end
+// half of the same ruling: the gate must still fire when a components-layer
+// rule targets a marker two migrated components share, and its diagnostic
+// must name every contesting owner — not just one — since that name is the
+// only thing telling a reader whose utilities are winning.
+func TestCheckLayerPrecedenceNamesEveryOwnerOfASharedMarker(t *testing.T) {
+	t.Parallel()
+
+	root := t.TempDir()
+	copyRepoFixture(t, root)
+	writeGSXFixture(t, root, "shared_marker_fixture.gsx", sharedMarkerFixtureGSX)
+	path := filepath.Join(root, "assets", "css", "styles", "default", "root.css")
+	src, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	const anchor = "@layer components {"
+	const extra = `  [data-gsxui-slot-shared-control] { @apply rounded-md; }`
+	injected := bytes.Replace(src, []byte(anchor), []byte(anchor+"\n"+extra), 1)
+	if bytes.Equal(injected, src) {
+		t.Fatal("fixture did not change — the anchor moved")
+	}
+	if err := os.WriteFile(path, injected, 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	err = CheckLayerPrecedence(root)
+	if err == nil {
+		t.Fatal("CheckLayerPrecedence() = nil, want an error: rounded-md contests both Card's and Badge's own rounded-* utility")
+	}
+	if !strings.Contains(err.Error(), "badge, card") {
+		t.Errorf("error must name every contesting owner sorted, got %q", err)
 	}
 }
 

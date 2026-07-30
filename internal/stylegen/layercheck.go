@@ -45,11 +45,29 @@ func ComponentComposedMarkers(root string) ([]string, error) {
 	return markers, nil
 }
 
-// composedMarkers maps each composed marker to the migrated component whose
-// compiled utilities land on the same element. The component name is what the
-// diagnostic needs in order to say whose utilities are winning.
-func composedMarkers(root string) (map[string]string, error) {
-	byMarker := map[string]string{}
+// composedMarkers maps each composed marker to every migrated component whose
+// compiled utilities land on the same element. A marker CAN have more than one
+// owner: input-group.gsx stamps data-gsxui-slot-input-group-control onto both
+// an <Input> and a <Textarea>, and once both are migrated neither is "the"
+// owner — both bring compiled utilities to elements carrying that marker, and
+// the gate's question ("does a components-layer rule lose to a migrated
+// component's utilities") has to be answered against each of them
+// independently, not by picking one or merging their utility sets (merging
+// would answer "is this dead under the union", which is not what a reader can
+// act on — they need to know WHICH component's utilities are winning). Owners
+// are kept sorted so the diagnostic is deterministic regardless of gsx.Glob or
+// map iteration order.
+func composedMarkers(root string) (map[string][]string, error) {
+	byMarker := map[string][]string{}
+	addOwner := func(marker, component string) {
+		for _, owner := range byMarker[marker] {
+			if owner == component {
+				return
+			}
+		}
+		byMarker[marker] = append(byMarker[marker], component)
+		sort.Strings(byMarker[marker])
+	}
 	// migrated maps a GSX component tag to the canonical component it renders.
 	// The tag is the exported name — matching case-insensitively would make the
 	// plain HTML <button> element look like <Button>, which it is not.
@@ -59,7 +77,7 @@ func composedMarkers(root string) (map[string]string, error) {
 		// A migrated component's own slot markers sit on the very elements that
 		// carry its compiled utilities, so they are composed by definition.
 		for _, slot := range shape.Slots {
-			byMarker[slotMarker(name, slot.Name)] = name
+			addOwner(slotMarker(name, slot.Name), name)
 		}
 	}
 
@@ -78,7 +96,6 @@ func composedMarkers(root string) (map[string]string, error) {
 		if err != nil {
 			return nil, fmt.Errorf("parse %s: %w", path, err)
 		}
-		var walkErr error
 		gsxast.Inspect(file, func(node gsxast.Node) bool {
 			element, ok := node.(*gsxast.Element)
 			if !ok {
@@ -93,19 +110,10 @@ func composedMarkers(root string) (map[string]string, error) {
 				if !strings.HasPrefix(marker, slotMarkerPrefix) {
 					continue
 				}
-				if owner, dup := byMarker[marker]; dup && owner != component {
-					walkErr = fmt.Errorf(
-						"%s: marker %s renders through both %q and %q",
-						path, marker, owner, component)
-					return false
-				}
-				byMarker[marker] = component
+				addOwner(marker, component)
 			}
 			return true
 		})
-		if walkErr != nil {
-			return nil, walkErr
-		}
 	}
 	return byMarker, nil
 }
@@ -647,7 +655,7 @@ func allLayerViolations(root string) ([]violation, error) {
 // forgiving something real".
 func layerViolations(
 	root, style string,
-	markers map[string]string,
+	markers map[string][]string,
 	sets map[string]utilitySets,
 	properties *utilityPropertyResolver,
 ) ([]violation, error) {
@@ -686,10 +694,12 @@ type utilitySets struct {
 	descendant []string
 }
 
-func componentUtilities(root, style string, markers map[string]string) (map[string]utilitySets, error) {
+func componentUtilities(root, style string, markers map[string][]string) (map[string]utilitySets, error) {
 	wanted := map[string]struct{}{}
-	for _, component := range markers {
-		wanted[component] = struct{}{}
+	for _, components := range markers {
+		for _, component := range components {
+			wanted[component] = struct{}{}
+		}
 	}
 	sets := make(map[string]utilitySets, len(wanted))
 	for component := range wanted {
@@ -907,50 +917,65 @@ func lineAt(src []byte, offset int) int {
 // complex selector is judged on its own.
 func (r layerRule) violations(
 	filename, style string,
-	markers map[string]string,
+	markers map[string][]string,
 	sets map[string]utilitySets,
 	properties *utilityPropertyResolver,
 ) ([]violation, error) {
 	var out []violation
 	for _, complex := range splitSelectorList(r.selector) {
-		marker, component, descendant, ok := composedTarget(complex, markers)
+		marker, components, descendant, ok := composedTarget(complex, markers)
 		if !ok {
 			continue
 		}
-		set := sets[component]
-		against := set.own
-		if descendant {
-			against = set.descendant
-		}
-		// Utilities are compared by name through the repo's Tailwind merger,
-		// which already knows `hover:bg-x` and `bg-x` are different utilities —
-		// so the variant blindness this gate had was only ever in the property
-		// path below.
-		contests := contestedUtilities(r.utilities, against)
-		if len(r.properties) > 0 {
-			owned, err := properties.statePropertiesOf(against)
-			if err != nil {
-				return nil, err
+		// A marker can have several owners (input-group-control renders
+		// through both Input and Textarea once both are migrated). The rule
+		// is contested if it is contested under ANY owner, so each owner is
+		// checked independently and never merged into one combined utility
+		// set — merging would answer "dead under the union", which hides
+		// which component is actually doing the winning. mergeContests then
+		// groups identical contests back together so a property/utility
+		// contested by two owners is reported once, naming both.
+		perOwner := make(map[string][]contest, len(components))
+		for _, component := range components {
+			set := sets[component]
+			against := set.own
+			if descendant {
+				against = set.descendant
 			}
-			found, err := contestedProperties(r.properties, complex, marker, descendant, owned)
-			if err != nil {
-				return nil, fmt.Errorf(
-					"%s:%d: style %s: selector %s: %w\n"+
-						"  The layer gate converts this hazard into a build failure, so it must not\n"+
-						"  pass a rule whose state it cannot model — teach the model this form in\n"+
-						"  internal/stylegen/state.go, or rewrite the selector — see %s.",
-					filepath.ToSlash(filename), r.line, style, normalizeSelectorKey(complex), err, designSpecRef)
+			// Utilities are compared by name through the repo's Tailwind merger,
+			// which already knows `hover:bg-x` and `bg-x` are different utilities —
+			// so the variant blindness this gate had was only ever in the property
+			// path below.
+			contests := contestedUtilities(r.utilities, against)
+			if len(r.properties) > 0 {
+				owned, err := properties.statePropertiesOf(against)
+				if err != nil {
+					return nil, err
+				}
+				found, err := contestedProperties(r.properties, complex, marker, descendant, owned)
+				if err != nil {
+					return nil, fmt.Errorf(
+						"%s:%d: style %s: selector %s: %w\n"+
+							"  The layer gate converts this hazard into a build failure, so it must not\n"+
+							"  pass a rule whose state it cannot model — teach the model this form in\n"+
+							"  internal/stylegen/state.go, or rewrite the selector — see %s.",
+						filepath.ToSlash(filename), r.line, style, normalizeSelectorKey(complex), err, designSpecRef)
+				}
+				contests = append(contests, found...)
 			}
-			contests = append(contests, found...)
+			if len(contests) > 0 {
+				perOwner[component] = contests
+			}
 		}
 		spec := selectorSpecificity(complex)
-		for _, contested := range contests {
+		for _, contested := range mergeContests(perOwner, components) {
 			key := exemptionKey{
 				file:      filepath.ToSlash(filename),
 				style:     style,
 				selector:  normalizeSelectorKey(complex),
 				contested: contested.name,
 			}
+			owners := strings.Join(contested.owners, ", ")
 			var message string
 			switch {
 			case r.layer != "utilities":
@@ -964,7 +989,7 @@ func (r layerRule) violations(
 						"  Move this rule to @layer utilities and give it specificity >= (0,1,0) —\n"+
 						"  see %s.",
 					filepath.ToSlash(filename), r.line, style, normalizeSelectorKey(complex),
-					contested.describe(), layer, component, designSpecRef)
+					contested.describe(), layer, owners, designSpecRef)
 			case !spec.beatsPlainUtility():
 				message = fmt.Sprintf(
 					"%s:%d: under style %s, %s %s in @layer utilities, but its\n"+
@@ -972,7 +997,7 @@ func (r layerRule) violations(
 						"  and a plain utility class from %s scores (0,1,0). Drop the :where() wrapper\n"+
 						"  so the selector carries specificity >= (0,1,0) — see %s.",
 					filepath.ToSlash(filename), r.line, style, normalizeSelectorKey(complex),
-					contested.describe(), spec, component, designSpecRef)
+					contested.describe(), spec, owners, designSpecRef)
 			default:
 				continue
 			}
@@ -986,10 +1011,14 @@ func (r layerRule) violations(
 // property it declares. The two are kept distinguishable because
 // `@apply rounded-full` is a class and `display: flex` is a property, and
 // telling a reader "applies display" would send them looking for a utility that
-// does not exist.
+// does not exist. owners names every composing component whose utilities
+// contest this one thing — usually one, but a shared marker (see
+// composedMarkers) can make it more than one, and the diagnostic must name all
+// of them, not just the first found.
 type contest struct {
 	name     string
 	property bool
+	owners   []string
 }
 
 func (c contest) describe() string {
@@ -997,6 +1026,34 @@ func (c contest) describe() string {
 		return "sets " + c.name
 	}
 	return "applies " + c.name
+}
+
+// mergeContests folds each owner's independently-computed contests back
+// together, keyed by (name, property) so a rule contested by two owners
+// reports once naming both rather than twice naming one apiece. order fixes
+// the iteration order (composedTarget already returns owners sorted), so the
+// owners list attached to a merged contest is deterministic run to run.
+func mergeContests(perOwner map[string][]contest, order []string) []contest {
+	index := map[string]int{}
+	var merged []contest
+	for _, owner := range order {
+		for _, c := range perOwner[owner] {
+			key := c.name
+			if c.property {
+				key = "prop:" + key
+			} else {
+				key = "util:" + key
+			}
+			if i, ok := index[key]; ok {
+				merged[i].owners = append(merged[i].owners, owner)
+				continue
+			}
+			c.owners = []string{owner}
+			index[key] = len(merged)
+			merged = append(merged, c)
+		}
+	}
+	return merged
 }
 
 // contestedProperties reports which of a rule's own declarations name a CSS
@@ -1100,7 +1157,7 @@ func contestedUtilities(applied, componentUtilities []string) []contest {
 
 // composedTarget reports the composed marker a complex selector targets, and
 // whether the selected element is the marker itself or a descendant of it.
-func composedTarget(complex string, markers map[string]string) (marker, component string, descendant, ok bool) {
+func composedTarget(complex string, markers map[string][]string) (marker string, components []string, descendant, ok bool) {
 	compounds := splitCompounds(complex)
 	names := make([]string, 0, len(markers))
 	for name := range markers {
@@ -1122,10 +1179,11 @@ func composedTarget(complex string, markers map[string]string) (marker, componen
 			if !containsAttributeName(compounds[i], name) {
 				continue
 			}
+			// markers[name] is already sorted by composedMarkers' addOwner.
 			return name, markers[name], i != len(compounds)-1, true
 		}
 	}
-	return "", "", false, false
+	return "", nil, false, false
 }
 
 // containsAttributeName reports whether selector names the given attribute,
