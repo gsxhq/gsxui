@@ -19,7 +19,6 @@
    the split, which is what makes the compiled output byte-identical. */
 @import "./default/root.css";
 @import "./default/button-group.css";
-@import "./default/empty.css";
 @import "./default/icon.css";
 @import "./default/item.css";
 @import "./default/pagination.css";

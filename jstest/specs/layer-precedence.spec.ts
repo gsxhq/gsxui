@@ -352,3 +352,14 @@ test("Slider keeps its cursor-pointer affordance", async ({ page }) => {
   const el = page.locator("[data-gsxui-slot-slider]").first();
   const cursor = await el.evaluate((n) => getComputedStyle(n).cursor);
   expect(cursor).toBe("pointer");
+});
+test("EmptyMedia icon variant keeps its rounded muted tile size", async ({ page }) => {
+  await page.goto("/x/empty/basic");
+  const el = page
+    .locator('[data-gsxui-slot-empty-icon][data-variant="icon"]')
+    .first();
+  const radius = await el.evaluate((n) => getComputedStyle(n).borderRadius);
+  const width = await el.evaluate((n) => getComputedStyle(n).width);
+  expect(radius).toBe("10px");
+  expect(width).toBe("32px");
+});

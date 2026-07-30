@@ -10,7 +10,7 @@ import (
 
 func TestEmptyPinned(t *testing.T) {
 	got := render(t, ui.Empty(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot-empty>x</div>`
+	want := `<div class="flex min-w-0 flex-1 flex-col items-center justify-center gap-4 rounded-xl border-dashed p-6 text-center text-balance" data-gsxui-slot-empty>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -25,14 +25,14 @@ func TestEmptyAttrsFallThrough(t *testing.T) {
 
 func TestEmptyCallerClassIsForwardedOnce(t *testing.T) {
 	got := render(t, ui.Empty(nil, gsx.Attrs{{Key: "class", Value: "gap-2"}}))
-	if strings.Count(got, `class="gap-2"`) != 1 {
-		t.Errorf("caller class must be the only class and render once\nin: %s", got)
+	if strings.Count(got, "gap-2") != 1 || strings.Count(got, `class="`) != 1 {
+		t.Errorf("caller class must be forwarded exactly once, merged with the recipe class\nin: %s", got)
 	}
 }
 
 func TestEmptyHeaderPinned(t *testing.T) {
 	got := render(t, ui.EmptyHeader(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot-empty-header>x</div>`
+	want := `<div class="flex max-w-sm flex-col items-center gap-2 text-center" data-gsxui-slot-empty-header>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -52,7 +52,7 @@ func TestEmptyHeaderAttrsFallThrough(t *testing.T) {
 // same idiom as badge/button-group.
 func TestEmptyMediaDefaultPinned(t *testing.T) {
 	got := render(t, ui.EmptyMedia("", gsx.Raw("x"), nil))
-	want := `<div data-variant="default" data-gsxui-slot-empty-icon>x</div>`
+	want := `<div data-variant="default" class="mb-2 flex shrink-0 items-center justify-center [&amp;_svg]:shrink-0 [&amp;_svg]:pointer-events-none bg-transparent" data-gsxui-slot-empty-icon>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -60,7 +60,7 @@ func TestEmptyMediaDefaultPinned(t *testing.T) {
 
 func TestEmptyMediaIconPinned(t *testing.T) {
 	got := render(t, ui.EmptyMedia("icon", gsx.Raw("x"), nil))
-	want := `<div data-variant="icon" data-gsxui-slot-empty-icon>x</div>`
+	want := `<div data-variant="icon" class="mb-2 flex shrink-0 items-center justify-center [&amp;_svg]:shrink-0 [&amp;_svg]:pointer-events-none size-8 rounded-lg bg-muted text-foreground [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4" data-gsxui-slot-empty-icon>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -75,7 +75,7 @@ func TestEmptyMediaAttrsFallThrough(t *testing.T) {
 
 func TestEmptyTitlePinned(t *testing.T) {
 	got := render(t, ui.EmptyTitle(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot-empty-title>x</div>`
+	want := `<div class="text-sm font-medium tracking-tight" data-gsxui-slot-empty-title>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -93,7 +93,7 @@ func TestEmptyTitleAttrsFallThrough(t *testing.T) {
 // JSX returns a div — see ui/empty.gsx's own comment and docs/jsx-parity.md).
 func TestEmptyDescriptionPinned(t *testing.T) {
 	got := render(t, ui.EmptyDescription(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot-empty-description>x</div>`
+	want := `<div class="text-sm/relaxed text-muted-foreground [&amp;&gt;a]:underline [&amp;&gt;a]:underline-offset-4 [&amp;&gt;a:hover]:text-primary" data-gsxui-slot-empty-description>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -108,7 +108,7 @@ func TestEmptyDescriptionAttrsFallThrough(t *testing.T) {
 
 func TestEmptyContentPinned(t *testing.T) {
 	got := render(t, ui.EmptyContent(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot-empty-content>x</div>`
+	want := `<div class="flex w-full max-w-sm min-w-0 flex-col items-center gap-2.5 text-sm text-balance" data-gsxui-slot-empty-content>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -142,7 +142,8 @@ func TestEmptyFullComposition(t *testing.T) {
 	for _, want := range []string{
 		`data-gsxui-slot-empty`,
 		`data-gsxui-slot-empty-header`,
-		`data-variant="icon" data-gsxui-slot-empty-icon`,
+		`data-variant="icon" class="`,
+		`data-gsxui-slot-empty-icon`,
 		`data-gsxui-slot-empty-title`,
 		`>No results</div>`,
 		`data-gsxui-slot-empty-description`,

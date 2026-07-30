@@ -1,4 +1,4 @@
-package ui
+package canonical
 
 import "github.com/gsxhq/gsx"
 
@@ -7,19 +7,13 @@ import "github.com/gsxhq/gsx"
 // plain styled <div>, the same "package-namespaced compound parts" shape as
 // card/breadcrumb.
 component Empty(children gsx.Node, attrs gsx.Attrs) {
-	<div
-		class={
-			"flex min-w-0 flex-1 flex-col items-center justify-center gap-4 rounded-xl border-dashed p-6 text-center text-balance"
-		}
-		{ attrs... }
-		data-gsxui-slot-empty
-	>
+	<div class={ empty.Root() } { attrs... } data-gsxui-slot-empty>
 		{ children }
 	</div>
 }
 
 component EmptyHeader(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "flex max-w-sm flex-col items-center gap-2 text-center" } { attrs... } data-gsxui-slot-empty-header>
+	<div class={ empty.Header() } { attrs... } data-gsxui-slot-empty-header>
 		{ children }
 	</div>
 }
@@ -32,13 +26,8 @@ component EmptyMedia(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-variant={variant |> default("default")}
 		class={
-			"mb-2 flex shrink-0 items-center justify-center [&_svg]:shrink-0 [&_svg]:pointer-events-none",
-			switch variant {
-			case "icon":
-				"size-8 rounded-lg bg-muted text-foreground [&_svg:not([class*='size-'])]:size-4"
-			default:
-				"bg-transparent"
-			}
+			empty.Icon(),
+			empty.IconVariant(variant),
 		}
 		{ attrs... }
 		data-gsxui-slot-empty-icon
@@ -48,7 +37,7 @@ component EmptyMedia(variant string, children gsx.Node, attrs gsx.Attrs) {
 }
 
 component EmptyTitle(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "text-sm font-medium tracking-tight" } { attrs... } data-gsxui-slot-empty-title>
+	<div class={ empty.Title() } { attrs... } data-gsxui-slot-empty-title>
 		{ children }
 	</div>
 }
@@ -59,21 +48,13 @@ component EmptyTitle(children gsx.Node, attrs gsx.Attrs) {
 // for Kbd/KbdGroup (see docs/jsx-parity.md ## kbd); ported verbatim, tag
 // included, per the token-for-token rule.
 component EmptyDescription(children gsx.Node, attrs gsx.Attrs) {
-	<div
-		class={ "text-sm/relaxed text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary" }
-		{ attrs... }
-		data-gsxui-slot-empty-description
-	>
+	<div class={ empty.Description() } { attrs... } data-gsxui-slot-empty-description>
 		{ children }
 	</div>
 }
 
 component EmptyContent(children gsx.Node, attrs gsx.Attrs) {
-	<div
-		class={ "flex w-full max-w-sm min-w-0 flex-col items-center gap-2.5 text-sm text-balance" }
-		{ attrs... }
-		data-gsxui-slot-empty-content
-	>
+	<div class={ empty.Content() } { attrs... } data-gsxui-slot-empty-content>
 		{ children }
 	</div>
 }

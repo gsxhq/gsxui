@@ -202,6 +202,42 @@
         }
       }
     },
+    "empty": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
+        "content": {
+          "base": true,
+          "dimensions": {}
+        },
+        "description": {
+          "base": true,
+          "dimensions": {}
+        },
+        "header": {
+          "base": true,
+          "dimensions": {}
+        },
+        "icon": {
+          "base": true,
+          "dimensions": {
+            "variant": {
+              "default": "default",
+              "values": [
+                "default",
+                "icon"
+              ]
+            }
+          }
+        },
+        "title": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "input-otp": {
       "slots": {
         "": {
@@ -926,6 +962,95 @@
           "trigger": {
             "base": [
               "list-none"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "empty": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "min-w-0",
+              "flex-1",
+              "flex-col",
+              "items-center",
+              "justify-center",
+              "gap-4",
+              "rounded-xl",
+              "border-dashed",
+              "p-6",
+              "text-center",
+              "text-balance"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "flex",
+              "w-full",
+              "max-w-sm",
+              "min-w-0",
+              "flex-col",
+              "items-center",
+              "gap-2.5",
+              "text-sm",
+              "text-balance"
+            ],
+            "dimensions": {}
+          },
+          "description": {
+            "base": [
+              "text-sm/relaxed",
+              "text-muted-foreground",
+              "[\u0026\u003ea]:underline",
+              "[\u0026\u003ea]:underline-offset-4",
+              "[\u0026\u003ea:hover]:text-primary"
+            ],
+            "dimensions": {}
+          },
+          "header": {
+            "base": [
+              "flex",
+              "max-w-sm",
+              "flex-col",
+              "items-center",
+              "gap-2",
+              "text-center"
+            ],
+            "dimensions": {}
+          },
+          "icon": {
+            "base": [
+              "mb-2",
+              "flex",
+              "shrink-0",
+              "items-center",
+              "justify-center",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg]:pointer-events-none"
+            ],
+            "dimensions": {
+              "variant": {
+                "default": [
+                  "bg-transparent"
+                ],
+                "icon": [
+                  "size-8",
+                  "rounded-lg",
+                  "bg-muted",
+                  "text-foreground",
+                  "[\u0026_svg:not([class*='size-'])]:size-4"
+                ]
+              }
+            }
+          },
+          "title": {
+            "base": [
+              "text-sm",
+              "font-medium",
+              "tracking-tight"
             ],
             "dimensions": {}
           }
@@ -1901,6 +2026,95 @@
           "trigger": {
             "base": [
               "list-none"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "empty": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "min-w-0",
+              "flex-1",
+              "flex-col",
+              "items-center",
+              "justify-center",
+              "gap-4",
+              "rounded-xl",
+              "border-dashed",
+              "p-6",
+              "text-center",
+              "text-balance"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "flex",
+              "w-full",
+              "max-w-sm",
+              "min-w-0",
+              "flex-col",
+              "items-center",
+              "gap-2.5",
+              "text-sm",
+              "text-balance"
+            ],
+            "dimensions": {}
+          },
+          "description": {
+            "base": [
+              "text-sm/relaxed",
+              "text-muted-foreground",
+              "[\u0026\u003ea]:underline",
+              "[\u0026\u003ea]:underline-offset-4",
+              "[\u0026\u003ea:hover]:text-primary"
+            ],
+            "dimensions": {}
+          },
+          "header": {
+            "base": [
+              "flex",
+              "max-w-sm",
+              "flex-col",
+              "items-center",
+              "gap-2",
+              "text-center"
+            ],
+            "dimensions": {}
+          },
+          "icon": {
+            "base": [
+              "mb-2",
+              "flex",
+              "shrink-0",
+              "items-center",
+              "justify-center",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg]:pointer-events-none"
+            ],
+            "dimensions": {
+              "variant": {
+                "default": [
+                  "bg-transparent"
+                ],
+                "icon": [
+                  "size-8",
+                  "rounded-lg",
+                  "bg-muted",
+                  "text-foreground",
+                  "[\u0026_svg:not([class*='size-'])]:size-4"
+                ]
+              }
+            }
+          },
+          "title": {
+            "base": [
+              "text-sm",
+              "font-medium",
+              "tracking-tight"
             ],
             "dimensions": {}
           }
