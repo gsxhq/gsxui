@@ -1,4 +1,4 @@
-package ui
+package canonical
 
 import (
 	"github.com/gsxhq/gsx"
@@ -59,7 +59,7 @@ import (
 // difference to fix and no reason to deviate from context-menu's own
 // source here.
 component ContextMenu(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "contents" } data-gsxui-contextmenu { attrs... } data-gsxui-slot-context-menu>{ children }</div>
+	<div class={ contextMenu.Root() } data-gsxui-contextmenu { attrs... } data-gsxui-slot-context-menu>{ children }</div>
 }
 
 // ContextMenuTrigger renders the drop-zone AREA a user right-clicks inside
@@ -86,9 +86,7 @@ component ContextMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 // docs/jsx-parity.md's ## context-menu ledger.
 component ContextMenuContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={
-			"z-50 max-h-96 min-w-36 origin-top-left overflow-x-hidden overflow-y-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 data-[side=bottom]:starting:[&:popover-open]:-translate-y-2 data-[side=left]:starting:[&:popover-open]:translate-x-2 data-[side=right]:starting:[&:popover-open]:-translate-x-2 data-[side=top]:starting:[&:popover-open]:translate-y-2"
-		}
+		class={ contextMenu.Content() }
 		data-gsxui-contextmenu-content
 		popover="auto"
 		role="menu"
@@ -109,13 +107,8 @@ component ContextMenuContent(children gsx.Node, attrs gsx.Attrs) {
 component ContextMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground",
-			switch variant {
-			case "destructive":
-				"text-destructive focus:bg-destructive/10 focus:text-destructive dark:focus:bg-destructive/20 [&_svg]:text-destructive"
-			default:
-				"text-foreground"
-			}
+			contextMenu.Item(),
+			contextMenu.ItemVariant(variant),
 		}
 		data-gsxui-contextmenu-item
 		data-variant={variant |> default("default")}
@@ -154,9 +147,7 @@ component ContextMenuGroup(children gsx.Node, attrs gsx.Attrs) {
 // following ui/select.gsx's SelectItem precedent), not re-derived here.
 component ContextMenuCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={
-			"relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
-		}
+		class={ contextMenu.CheckboxItem() }
 		data-gsxui-contextmenu-checkbox-item
 		role="menuitemcheckbox"
 		data-value={value}
@@ -171,13 +162,7 @@ component ContextMenuCheckboxItem(checked bool, value string, children gsx.Node,
 		{ attrs... }
 		data-gsxui-slot-context-menu-checkbox-item
 	>
-		<span
-			class={
-				"pointer-events-none absolute right-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-4"
-			}
-			data-gsxui-contextmenu-checkbox-indicator
-			data-gsxui-slot-context-menu-checkbox-item-indicator
-		>
+		<span class={ contextMenu.CheckboxItemIndicator() } data-gsxui-contextmenu-checkbox-indicator data-gsxui-slot-context-menu-checkbox-item-indicator>
 			<icon.Check/>
 		</span>
 		{ children }
@@ -213,9 +198,7 @@ component ContextMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs
 // ContextMenuCheckboxItem's own doc comment, not repeated here.
 component ContextMenuRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={
-			"relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
-		}
+		class={ contextMenu.RadioItem() }
 		data-gsxui-contextmenu-radio-item
 		role="menuitemradio"
 		data-value={value}
@@ -230,13 +213,7 @@ component ContextMenuRadioItem(checked bool, value string, children gsx.Node, at
 		{ attrs... }
 		data-gsxui-slot-context-menu-radio-item
 	>
-		<span
-			class={
-				"pointer-events-none absolute right-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-2 [&>svg]:fill-current"
-			}
-			data-gsxui-contextmenu-radio-indicator
-			data-gsxui-slot-context-menu-radio-item-indicator
-		>
+		<span class={ contextMenu.RadioItemIndicator() } data-gsxui-contextmenu-radio-indicator data-gsxui-slot-context-menu-radio-item-indicator>
 			<icon.Circle/>
 		</span>
 		{ children }
@@ -250,21 +227,15 @@ component ContextMenuRadioItem(checked bool, value string, children gsx.Node, at
 // the shadcn source, not a copy error (see docs/jsx-parity.md ##
 // context-menu).
 component ContextMenuLabel(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "px-1.5 py-1 text-xs font-medium text-foreground" } { attrs... } data-gsxui-slot-context-menu-label>
-		{ children }
-	</div>
+	<div class={ contextMenu.Label() } { attrs... } data-gsxui-slot-context-menu-label>{ children }</div>
 }
 
 component ContextMenuSeparator(attrs gsx.Attrs) {
-	<div class={ "-mx-1 my-1 h-px bg-border" } role="separator" { attrs... } data-gsxui-slot-context-menu-separator></div>
+	<div class={ contextMenu.Separator() } role="separator" { attrs... } data-gsxui-slot-context-menu-separator></div>
 }
 
 component ContextMenuShortcut(children gsx.Node, attrs gsx.Attrs) {
-	<span
-		class={ "ml-auto text-xs tracking-widest text-muted-foreground" }
-		{ attrs... }
-		data-gsxui-slot-context-menu-shortcut
-	>
+	<span class={ contextMenu.Shortcut() } { attrs... } data-gsxui-slot-context-menu-shortcut>
 		{ children }
 	</span>
 }
@@ -277,7 +248,7 @@ component ContextMenuShortcut(children gsx.Node, attrs gsx.Attrs) {
 // and to scope the pointer-leave grace-period boundary check to "the whole
 // sub" — same shape as DropdownMenuSub's own doc comment.
 component ContextMenuSub(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "contents" } data-gsxui-contextmenu-sub { attrs... } data-gsxui-slot-context-menu-sub>{ children }</div>
+	<div class={ contextMenu.Sub() } data-gsxui-contextmenu-sub { attrs... } data-gsxui-slot-context-menu-sub>{ children }</div>
 }
 
 // ContextMenuSubTrigger opens/closes its sibling ContextMenuSubContent
@@ -294,9 +265,7 @@ component ContextMenuSub(children gsx.Node, attrs gsx.Attrs) {
 // data-[state=open]: kept, not nova's data-open: (standing house exception).
 component ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={
-			"relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&>svg:last-child]:ml-auto [&>svg:last-child]:size-4"
-		}
+		class={ contextMenu.SubTrigger() }
 		data-gsxui-contextmenu-sub-trigger
 		role="menuitem"
 		aria-haspopup="menu"
@@ -327,9 +296,7 @@ component ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 // exception).
 component ContextMenuSubContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={
-			"z-50 min-w-[96px] origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 data-[side=bottom]:starting:[&:popover-open]:-translate-y-2 data-[side=left]:starting:[&:popover-open]:translate-x-2 data-[side=right]:starting:[&:popover-open]:-translate-x-2 data-[side=top]:starting:[&:popover-open]:translate-y-2"
-		}
+		class={ contextMenu.SubContent() }
 		data-gsxui-contextmenu-sub-content
 		popover="auto"
 		role="menu"

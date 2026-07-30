@@ -2,50 +2,10 @@
 
 package canonical
 
-import (
-	_gsxctx "context"
-	"github.com/gsxhq/gsx"
-	_gsxrt "github.com/gsxhq/gsx"
-	_gsxcm "github.com/gsxhq/gsxui/merge"
-	_gsxio "io"
-)
-
-//line switch.gsx:9:1
-// Switch is the shadcn/ui Switch, ported as a real native
-// <input type="checkbox" role="switch">: form-native, zero JS, browser
-// :checked/:disabled truth replaces Radix's button-role Root + separate
-// Thumb span (ledger ADAPT). role="switch" preserves the switch semantics
-// a plain checkbox input doesn't carry on its own (ARIA maps
-// input[type=checkbox][role=switch] correctly; the checked state itself is
-// still native).
+// GSX GENERATION FAILED for switch.gsx. Fix the errors below and re-run gsx generate.
 //
-// The Thumb is no longer a sibling element targeted through Radix's
-// ancestor size state — it is this element's own ::before
-// pseudo-element (MECHANISM: thumb-span→before:). A generated pseudo-
-// element renders nothing without an explicit content utility, unlike a
-// real child element, so before:content-[''] is required (not present on
-// the Radix Thumb span, which needs no content at all) — see
-// docs/jsx-parity.md.
+//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:88:2: error: undefined: DropdownMenu
+//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:90:2: error: undefined: Menubar
+//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:91:2: error: undefined: NavigationMenu
 
-//line switch.gsx:24:1
-func Switch(attrs gsx.Attrs) _gsxrt.Node {
-	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-		_gsxgw := _gsxrt.W(_gsxw)
-//line switch.gsx:25:2
-		_gsxgw.S("<input")
-		if !attrs.Has("type") {
-			_gsxgw.S(" type=\"checkbox\"")
-		}
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"switch\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(switch_.Root()), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "xlink:href"}, []string{"background", "src"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-switch"})
-		_gsxgw.BoolAttr("data-gsxui-slot-switch", true)
-		_gsxgw.S(">")
-		return _gsxgw.Err()
-	})
-}
+var _ = GSX_GENERATION_FAILED__see_switch_gsx

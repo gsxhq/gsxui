@@ -1,283 +1,63 @@
 @layer components {
-  /* DropdownMenu, ContextMenu, and Menubar */
+  /* DropdownMenu, ContextMenu and Menubar migrated to the slot axis
+     (registry/styles/{nova,maia}/{dropdown-menu,context-menu,menubar}.css)
+     EXCEPT these two rule groups, which must stay here as plain CSS. Their
+     caller-overridability depends on the CSS LAYER boundary — these rules
+     live in @layer components, a caller's plain utility class lives in
+     @layer utilities, and @layer utilities always wins regardless of
+     specificity. That guarantee only exists pre-resolution: if either
+     rule migrated onto its slot's recipe, it would resolve to a literal
+     `[data-inset]:pl-8` / `[data-disabled]:opacity-50` utility class
+     Tailwind scans directly out of the generated ui/*.gsx — no longer
+     inside an explicit @layer components boundary at consumption time — and
+     it would then compete on ordinary specificity instead, at (0,2,0),
+     permanently beating a caller's plain `pl-*`/`opacity-*` utility
+     regardless of source order. See
+     docs/superpowers/specs/2026-07-29-slot-axis-and-component-migration-design.md
+     section 10b, and assets/css/styles/default/{card,label,pagination}.css
+     for the identical prior fix on other components.
+
+     Both data-inset and data-disabled are stamped by the CALLER through
+     attrs on these components (ContextMenuItem/DropdownMenuItem/
+     MenubarItem/*Label/*SubTrigger's own doc comments say so explicitly),
+     not by the component itself — the same shape as Card's `.border-b` and
+     Label's disabled-state rules, not a component-owned runtime toggle.
+
+     `pointer-events-none` for the [data-disabled] state IS migrated (baked
+     directly onto item/checkbox-item/radio-item's own recipe class in all
+     three components): no caller should be able to re-enable pointer
+     interaction on a menu row the caller themselves marked disabled — only
+     the purely presentational opacity needed to stay caller-overridable.
+     Note [data-disabled] never had a rule for *-sub-trigger to begin with
+     (the selector list below is exhaustive, not abbreviated) — sub-trigger's
+     own contract axis exists but pointer-events/opacity for a disabled
+     sub-trigger were never wired to CSS pre-migration either; that gap is
+     unchanged carried-over behavior, not something this migration
+     introduced or is responsible for fixing. */
   :where(
-    [data-gsxui-slot-dropdown-menu],
-    [data-gsxui-slot-dropdown-menu-sub],
-    [data-gsxui-slot-context-menu],
-    [data-gsxui-slot-context-menu-sub],
-    [data-gsxui-slot-menubar-menu],
-    [data-gsxui-slot-menubar-sub]
-  ) {
-    display: contents;
-  }
-  :where([data-gsxui-slot-menubar]) {
-    @apply flex h-8 items-center gap-0.5 rounded-lg border bg-background p-[3px];
-  }
-  :where([data-gsxui-slot-menubar-trigger]) {
-    @apply flex items-center rounded-sm px-1.5 py-[2px] text-sm font-medium outline-hidden select-none;
-  }
-  :where([data-gsxui-slot-menubar-trigger]):focus,
-  :where([data-gsxui-slot-menubar-trigger])[data-state="open"] {
-    @apply bg-accent text-accent-foreground;
-  }
-  :where(
-    [data-gsxui-slot-dropdown-menu-content],
-    [data-gsxui-slot-context-menu-content]
-  ) {
-    @apply z-50 max-h-96 origin-top-left overflow-x-hidden overflow-y-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md;
-  }
-  :where([data-gsxui-slot-dropdown-menu-content]) {
-    @apply min-w-[8rem];
-  }
-  :where([data-gsxui-slot-context-menu-content]),
-  :where([data-gsxui-slot-menubar-content]) {
-    @apply min-w-36;
-  }
-  :where([data-gsxui-slot-menubar-content]) {
-    @apply z-50 origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-md;
-  }
-  :where(
-    [data-gsxui-slot-dropdown-menu-sub-content],
-    [data-gsxui-slot-context-menu-sub-content],
-    [data-gsxui-slot-menubar-sub-content]
-  ) {
-    @apply z-50 origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg;
-  }
-  :where(
-    [data-gsxui-slot-dropdown-menu-sub-content],
-    [data-gsxui-slot-context-menu-sub-content]
-  ) {
-    @apply min-w-[96px];
-  }
-  :where([data-gsxui-slot-menubar-sub-content]) {
-    @apply min-w-[8rem];
-  }
-  :where(
-    [data-gsxui-slot-dropdown-menu-item],
-    [data-gsxui-slot-context-menu-item],
-    [data-gsxui-slot-menubar-item],
-    [data-gsxui-slot-dropdown-menu-checkbox-item],
-    [data-gsxui-slot-dropdown-menu-radio-item],
-    [data-gsxui-slot-context-menu-checkbox-item],
-    [data-gsxui-slot-context-menu-radio-item],
-    [data-gsxui-slot-menubar-checkbox-item],
-    [data-gsxui-slot-menubar-radio-item],
-    [data-gsxui-slot-dropdown-menu-sub-trigger],
-    [data-gsxui-slot-context-menu-sub-trigger],
-    [data-gsxui-slot-menubar-sub-trigger]
-  ) {
-    @apply relative flex cursor-default items-center gap-1.5 rounded-md py-1 text-sm outline-hidden select-none;
-  }
-  :where(
-    [data-gsxui-slot-dropdown-menu-item],
-    [data-gsxui-slot-context-menu-item],
-    [data-gsxui-slot-menubar-item],
-    [data-gsxui-slot-dropdown-menu-sub-trigger],
-    [data-gsxui-slot-context-menu-sub-trigger],
-    [data-gsxui-slot-menubar-sub-trigger]
-  ) {
-    @apply px-1.5;
-  }
-  :where(
-    [data-gsxui-slot-dropdown-menu-checkbox-item],
-    [data-gsxui-slot-dropdown-menu-radio-item],
-    [data-gsxui-slot-context-menu-checkbox-item],
-    [data-gsxui-slot-context-menu-radio-item],
-    [data-gsxui-slot-menubar-checkbox-item],
-    [data-gsxui-slot-menubar-radio-item]
-  ) {
-    @apply pr-8 pl-1.5;
-  }
-  :where(
-    [data-gsxui-slot-dropdown-menu-item],
-    [data-gsxui-slot-context-menu-item],
-    [data-gsxui-slot-menubar-item],
-    [data-gsxui-slot-dropdown-menu-checkbox-item],
-    [data-gsxui-slot-dropdown-menu-radio-item],
-    [data-gsxui-slot-context-menu-checkbox-item],
-    [data-gsxui-slot-context-menu-radio-item],
-    [data-gsxui-slot-menubar-checkbox-item],
-    [data-gsxui-slot-menubar-radio-item],
-    [data-gsxui-slot-dropdown-menu-sub-trigger],
-    [data-gsxui-slot-context-menu-sub-trigger],
-    [data-gsxui-slot-menubar-sub-trigger]
-  ):focus,
-  :where(
-    [data-gsxui-slot-dropdown-menu-sub-trigger],
-    [data-gsxui-slot-context-menu-sub-trigger],
-    [data-gsxui-slot-menubar-sub-trigger]
-  )[data-state="open"] {
-    @apply bg-accent text-accent-foreground;
-  }
-  :where(
-    [data-gsxui-slot-dropdown-menu-item],
-    [data-gsxui-slot-context-menu-item],
-    [data-gsxui-slot-menubar-item],
-    [data-gsxui-slot-dropdown-menu-checkbox-item],
-    [data-gsxui-slot-dropdown-menu-radio-item],
-    [data-gsxui-slot-context-menu-checkbox-item],
-    [data-gsxui-slot-context-menu-radio-item],
-    [data-gsxui-slot-menubar-checkbox-item],
-    [data-gsxui-slot-menubar-radio-item]
-  )[data-disabled] {
-    @apply pointer-events-none opacity-50;
-  }
-  :where(
-    [data-gsxui-slot-dropdown-menu-item],
-    [data-gsxui-slot-context-menu-item],
-    [data-gsxui-slot-menubar-item]
-  )[data-variant="destructive"] {
-    @apply text-destructive;
-  }
-  :where(
-    [data-gsxui-slot-dropdown-menu-item],
-    [data-gsxui-slot-context-menu-item],
-    [data-gsxui-slot-menubar-item]
-  )[data-variant="destructive"]:focus {
-    @apply bg-destructive/10 text-destructive;
-  }
-  .dark
-    :where(
       [data-gsxui-slot-dropdown-menu-item],
       [data-gsxui-slot-context-menu-item],
-      [data-gsxui-slot-menubar-item]
-    )[data-variant="destructive"]:focus {
-    @apply bg-destructive/20;
-  }
-  :where(
-    [data-gsxui-slot-dropdown-menu-item],
-    [data-gsxui-slot-context-menu-item],
-    [data-gsxui-slot-menubar-item],
-    [data-gsxui-slot-dropdown-menu-checkbox-item],
-    [data-gsxui-slot-dropdown-menu-radio-item],
-    [data-gsxui-slot-context-menu-checkbox-item],
-    [data-gsxui-slot-context-menu-radio-item],
-    [data-gsxui-slot-menubar-checkbox-item],
-    [data-gsxui-slot-menubar-radio-item],
-    [data-gsxui-slot-dropdown-menu-sub-trigger],
-    [data-gsxui-slot-context-menu-sub-trigger]
-  ) svg {
-    @apply pointer-events-none shrink-0;
-  }
-  :where(
-    [data-gsxui-slot-dropdown-menu-item],
-    [data-gsxui-slot-context-menu-item],
-    [data-gsxui-slot-menubar-item],
-    [data-gsxui-slot-dropdown-menu-checkbox-item],
-    [data-gsxui-slot-dropdown-menu-radio-item],
-    [data-gsxui-slot-context-menu-checkbox-item],
-    [data-gsxui-slot-context-menu-radio-item],
-    [data-gsxui-slot-menubar-checkbox-item],
-    [data-gsxui-slot-menubar-radio-item],
-    [data-gsxui-slot-dropdown-menu-sub-trigger],
-    [data-gsxui-slot-context-menu-sub-trigger],
-    [data-gsxui-slot-menubar-sub-trigger]
-  ) svg:not([class*="size-"]) {
-    @apply size-4;
-  }
-  :where(
-    [data-gsxui-slot-dropdown-menu-item],
-    [data-gsxui-slot-context-menu-item],
-    [data-gsxui-slot-menubar-item],
-    [data-gsxui-slot-dropdown-menu-sub-trigger],
-    [data-gsxui-slot-context-menu-sub-trigger]
-  ) svg:not([class*="text-"]) {
-    @apply text-muted-foreground;
-  }
-  :where(
-    [data-gsxui-slot-dropdown-menu-item],
-    [data-gsxui-slot-context-menu-item],
-    [data-gsxui-slot-menubar-item]
-  )[data-variant="destructive"] svg {
-    @apply text-destructive;
-  }
-  :where(
-    [data-gsxui-slot-dropdown-menu-checkbox-item-indicator],
-    [data-gsxui-slot-dropdown-menu-radio-item-indicator],
-    [data-gsxui-slot-context-menu-checkbox-item-indicator],
-    [data-gsxui-slot-context-menu-radio-item-indicator],
-    [data-gsxui-slot-menubar-checkbox-item-indicator],
-    [data-gsxui-slot-menubar-radio-item-indicator]
-  ) {
-    @apply pointer-events-none absolute right-2 hidden size-4 items-center justify-center;
-  }
-  :where(
-    [data-gsxui-slot-dropdown-menu-checkbox-item],
-    [data-gsxui-slot-dropdown-menu-radio-item],
-    [data-gsxui-slot-context-menu-checkbox-item],
-    [data-gsxui-slot-context-menu-radio-item],
-    [data-gsxui-slot-menubar-checkbox-item],
-    [data-gsxui-slot-menubar-radio-item]
-  )[data-state="checked"]
-    > :where(
-      [data-gsxui-slot-dropdown-menu-checkbox-item-indicator],
-      [data-gsxui-slot-dropdown-menu-radio-item-indicator],
-      [data-gsxui-slot-context-menu-checkbox-item-indicator],
-      [data-gsxui-slot-context-menu-radio-item-indicator],
-      [data-gsxui-slot-menubar-checkbox-item-indicator],
-      [data-gsxui-slot-menubar-radio-item-indicator]
-    ) {
-    @apply flex;
-  }
-  :where(
-    [data-gsxui-slot-dropdown-menu-checkbox-item-indicator],
-    [data-gsxui-slot-context-menu-checkbox-item-indicator],
-    [data-gsxui-slot-menubar-checkbox-item-indicator]
-  ) > svg {
-    @apply size-4;
-  }
-  :where(
-    [data-gsxui-slot-dropdown-menu-radio-item-indicator],
-    [data-gsxui-slot-context-menu-radio-item-indicator],
-    [data-gsxui-slot-menubar-radio-item-indicator]
-  ) > svg {
-    @apply size-2 fill-current;
-  }
-  :where(
-    [data-gsxui-slot-dropdown-menu-label],
-    [data-gsxui-slot-context-menu-label]
-  ) {
-    @apply px-1.5 py-1 text-xs font-medium;
-  }
-  :where([data-gsxui-slot-context-menu-label]) {
-    @apply text-foreground;
-  }
-  :where([data-gsxui-slot-menubar-label]) {
-    @apply px-1.5 py-1 text-sm font-medium;
-  }
-  :where(
-    [data-gsxui-slot-dropdown-menu-item],
-    [data-gsxui-slot-context-menu-item],
-    [data-gsxui-slot-menubar-item],
-    [data-gsxui-slot-dropdown-menu-label],
-    [data-gsxui-slot-context-menu-label],
-    [data-gsxui-slot-menubar-label],
-    [data-gsxui-slot-dropdown-menu-sub-trigger],
-    [data-gsxui-slot-context-menu-sub-trigger],
-    [data-gsxui-slot-menubar-sub-trigger]
-  )[data-inset] {
+      [data-gsxui-slot-menubar-item],
+      [data-gsxui-slot-dropdown-menu-label],
+      [data-gsxui-slot-context-menu-label],
+      [data-gsxui-slot-menubar-label],
+      [data-gsxui-slot-dropdown-menu-sub-trigger],
+      [data-gsxui-slot-context-menu-sub-trigger],
+      [data-gsxui-slot-menubar-sub-trigger]
+    )[data-inset] {
     @apply pl-8;
   }
   :where(
-    [data-gsxui-slot-dropdown-menu-separator],
-    [data-gsxui-slot-context-menu-separator],
-    [data-gsxui-slot-menubar-separator]
-  ) {
-    @apply -mx-1 my-1 h-px bg-border;
+      [data-gsxui-slot-dropdown-menu-item],
+      [data-gsxui-slot-context-menu-item],
+      [data-gsxui-slot-menubar-item],
+      [data-gsxui-slot-dropdown-menu-checkbox-item],
+      [data-gsxui-slot-dropdown-menu-radio-item],
+      [data-gsxui-slot-context-menu-checkbox-item],
+      [data-gsxui-slot-context-menu-radio-item],
+      [data-gsxui-slot-menubar-checkbox-item],
+      [data-gsxui-slot-menubar-radio-item]
+    )[data-disabled] {
+    @apply opacity-50;
   }
-  :where(
-    [data-gsxui-slot-dropdown-menu-shortcut],
-    [data-gsxui-slot-context-menu-shortcut],
-    [data-gsxui-slot-menubar-shortcut]
-  ) {
-    @apply ml-auto text-xs tracking-widest text-muted-foreground;
-  }
-  :where(
-    [data-gsxui-slot-dropdown-menu-sub-trigger],
-    [data-gsxui-slot-context-menu-sub-trigger],
-    [data-gsxui-slot-menubar-sub-trigger]
-  ) > svg:last-child {
-    @apply ml-auto size-4;
-  }
-
 }

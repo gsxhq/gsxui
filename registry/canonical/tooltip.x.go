@@ -2,101 +2,10 @@
 
 package canonical
 
-import (
-	_gsxctx "context"
-	"github.com/gsxhq/gsx"
-	_gsxrt "github.com/gsxhq/gsx"
-	_gsxcm "github.com/gsxhq/gsxui/merge"
-	_gsxio "io"
-)
+// GSX GENERATION FAILED for tooltip.gsx. Fix the errors below and re-run gsx generate.
+//
+//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:88:2: error: undefined: DropdownMenu
+//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:90:2: error: undefined: Menubar
+//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:91:2: error: undefined: NavigationMenu
 
-//line tooltip.gsx:5:1
-// Tooltip uses a manual native popover so hover/focus behavior controls its
-// top-layer lifetime. Its arrow is static because placement is always top.
-
-//line tooltip.gsx:7:1
-func Tooltip(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
-	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-		_gsxgw := _gsxrt.W(_gsxw)
-//line tooltip.gsx:8:2
-		_gsxgw.S("<div")
-		if !attrs.Has("data-gsxui-tooltip") {
-			_gsxgw.BoolAttr("data-gsxui-tooltip", true)
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tooltip.Root()), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-tooltip"})
-		_gsxgw.BoolAttr("data-gsxui-slot-tooltip", true)
-		_gsxgw.S(">")
-//line tooltip.gsx:8:88
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
-	})
-}
-
-//line tooltip.gsx:11:1
-func TooltipTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
-	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-		_gsxgw := _gsxrt.W(_gsxw)
-//line tooltip.gsx:12:2
-		_gsxgw.S("<button")
-		if !attrs.Has("data-gsxui-tooltip-trigger") {
-			_gsxgw.BoolAttr("data-gsxui-tooltip-trigger", true)
-		}
-		if !attrs.Has("type") {
-			_gsxgw.S(" type=\"button\"")
-		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-tooltip-trigger"})
-		_gsxgw.BoolAttr("data-gsxui-slot-tooltip-trigger", true)
-		_gsxgw.S(">")
-//line tooltip.gsx:12:96
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</button>")
-		return _gsxgw.Err()
-	})
-}
-
-//line tooltip.gsx:15:1
-func TooltipContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
-	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-		_gsxgw := _gsxrt.W(_gsxw)
-//line tooltip.gsx:16:2
-		_gsxgw.S("<div")
-		if !attrs.Has("data-gsxui-tooltip-content") {
-			_gsxgw.BoolAttr("data-gsxui-tooltip-content", true)
-		}
-		if !attrs.Has("popover") {
-			_gsxgw.S(" popover=\"manual\"")
-		}
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"tooltip\"")
-		}
-		if !attrs.Has("data-state") {
-			_gsxgw.S(" data-state=\"closed\"")
-		}
-		if !attrs.Has("data-side") {
-			_gsxgw.S(" data-side=\"top\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tooltip.Content()), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-tooltip-content"})
-		_gsxgw.BoolAttr("data-gsxui-slot-tooltip-content", true)
-		_gsxgw.S(">")
-//line tooltip.gsx:26:3
-		_gsxgw.Node(ctx, children)
-//line tooltip.gsx:27:3
-		_gsxgw.S("<span class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tooltip.Arrow()))
-		_gsxgw.S("\"")
-		_gsxgw.BoolAttr("data-gsxui-slot-tooltip-arrow", true)
-		_gsxgw.S("></span></div>")
-		return _gsxgw.Err()
-	})
-}
+var _ = GSX_GENERATION_FAILED__see_tooltip_gsx

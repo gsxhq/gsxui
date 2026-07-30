@@ -2,86 +2,10 @@
 
 package canonical
 
-import (
-	_gsxctx "context"
-	"github.com/gsxhq/gsx"
-	_gsxrt "github.com/gsxhq/gsx"
-	_gsxstd "github.com/gsxhq/gsx/std"
-	_gsxcm "github.com/gsxhq/gsxui/merge"
-	_gsxio "io"
-)
+// GSX GENERATION FAILED for button.gsx. Fix the errors below and re-run gsx generate.
+//
+//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:88:2: error: undefined: DropdownMenu
+//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:90:2: error: undefined: Menubar
+//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:91:2: error: undefined: NavigationMenu
 
-//line button.gsx:5:1
-// Button is the canonical Button structure. Its semantic recipe roles resolve
-// to concrete style source before consumers compile the generated component.
-// A non-empty href on an enabled Button renders an <a> (gsx's answer to
-// asChild-wrapping a link); disabled always renders a real disabled <button>.
-// type="button" is an overridable default — pass type="submit" at the call
-// site to submit forms.
-
-//line button.gsx:11:1
-func Button(variant string, size string, href string, disabled bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
-	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-		_gsxgw := _gsxrt.W(_gsxw)
-//line button.gsx:12:2
-		if href != "" && !disabled {
-//line button.gsx:13:3
-			_gsxgw.S("<a")
-			if !attrs.Has("data-variant") {
-				_gsxgw.S(" data-variant=\"")
-				_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
-				_gsxgw.S("\"")
-			}
-			if !attrs.Has("data-size") {
-				_gsxgw.S(" data-size=\"")
-				_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
-				_gsxgw.S("\"")
-			}
-			if !attrs.Has("href") {
-				_gsxgw.S(" href=\"")
-				_gsxgw.URL(string(href))
-				_gsxgw.S("\"")
-			}
-			_gsxgw.S(" class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/button"), _gsxrt.Class(button.Root()), _gsxrt.Class(button.Variant(variant)), _gsxrt.Class(button.Size(size)), _gsxrt.Class(attrs.Class()))
-			_gsxgw.S("\"")
-			_gsxgw.StyleMerged("", attrs.Style())
-			_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-button"})
-			_gsxgw.BoolAttr("data-gsxui-slot-button", true)
-			_gsxgw.S(">")
-//line button.gsx:26:4
-			_gsxgw.Node(ctx, children)
-			_gsxgw.S("</a>")
-		} else {
-//line button.gsx:29:3
-			_gsxgw.S("<button")
-			if !attrs.Has("data-variant") {
-				_gsxgw.S(" data-variant=\"")
-				_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
-				_gsxgw.S("\"")
-			}
-			if !attrs.Has("data-size") {
-				_gsxgw.S(" data-size=\"")
-				_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
-				_gsxgw.S("\"")
-			}
-			if !attrs.Has("type") {
-				_gsxgw.S(" type=\"button\"")
-			}
-			if !attrs.Has("disabled") {
-				_gsxgw.BoolAttr("disabled", bool(disabled))
-			}
-			_gsxgw.S(" class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/button"), _gsxrt.Class(button.Root()), _gsxrt.Class(button.Variant(variant)), _gsxrt.Class(button.Size(size)), _gsxrt.Class(attrs.Class()))
-			_gsxgw.S("\"")
-			_gsxgw.StyleMerged("", attrs.Style())
-			_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-button"})
-			_gsxgw.BoolAttr("data-gsxui-slot-button", true)
-			_gsxgw.S(">")
-//line button.gsx:43:4
-			_gsxgw.Node(ctx, children)
-			_gsxgw.S("</button>")
-		}
-		return _gsxgw.Err()
-	})
-}
+var _ = GSX_GENERATION_FAILED__see_button_gsx

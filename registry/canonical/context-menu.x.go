@@ -2,10 +2,10 @@
 
 package canonical
 
-// GSX GENERATION FAILED for aspect-ratio.gsx. Fix the errors below and re-run gsx generate.
+// GSX GENERATION FAILED for context-menu.gsx. Fix the errors below and re-run gsx generate.
 //
 //	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:88:2: error: undefined: DropdownMenu
 //	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:90:2: error: undefined: Menubar
 //	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:91:2: error: undefined: NavigationMenu
 
-var _ = GSX_GENERATION_FAILED__see_aspect_ratio_gsx
+var _ = GSX_GENERATION_FAILED__see_context_menu_gsx

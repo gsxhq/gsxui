@@ -100,7 +100,7 @@ component SelectValue(placeholder string, attrs gsx.Attrs) {
 	<span data-gsxui-select-value class={ select_.Value() } { attrs... } data-gsxui-slot-select-value>{ placeholder }</span>
 }
 
-// SelectContent is the popover listbox. It rides the exact dropdown.js
+// SelectContent is the popover listbox. It rides the exact dropdown-menu.js
 // popover machinery: popover="auto" (top layer, light dismiss, free Esc),
 // server-rendered data-state="closed" + data-side="bottom" (select.js always
 // anchors below the trigger), and the discrete-transition enter/exit block

@@ -202,6 +202,134 @@
         }
       }
     },
+    "context-menu": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
+        "checkbox-item": {
+          "base": true,
+          "dimensions": {}
+        },
+        "checkbox-item-indicator": {
+          "base": true,
+          "dimensions": {}
+        },
+        "content": {
+          "base": true,
+          "dimensions": {}
+        },
+        "item": {
+          "base": true,
+          "dimensions": {
+            "variant": {
+              "default": "default",
+              "values": [
+                "default",
+                "destructive"
+              ]
+            }
+          }
+        },
+        "label": {
+          "base": true,
+          "dimensions": {}
+        },
+        "radio-item": {
+          "base": true,
+          "dimensions": {}
+        },
+        "radio-item-indicator": {
+          "base": true,
+          "dimensions": {}
+        },
+        "separator": {
+          "base": true,
+          "dimensions": {}
+        },
+        "shortcut": {
+          "base": true,
+          "dimensions": {}
+        },
+        "sub": {
+          "base": true,
+          "dimensions": {}
+        },
+        "sub-content": {
+          "base": true,
+          "dimensions": {}
+        },
+        "sub-trigger": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
+    "dropdown-menu": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
+        "checkbox-item": {
+          "base": true,
+          "dimensions": {}
+        },
+        "checkbox-item-indicator": {
+          "base": true,
+          "dimensions": {}
+        },
+        "content": {
+          "base": true,
+          "dimensions": {}
+        },
+        "item": {
+          "base": true,
+          "dimensions": {
+            "variant": {
+              "default": "default",
+              "values": [
+                "default",
+                "destructive"
+              ]
+            }
+          }
+        },
+        "label": {
+          "base": true,
+          "dimensions": {}
+        },
+        "radio-item": {
+          "base": true,
+          "dimensions": {}
+        },
+        "radio-item-indicator": {
+          "base": true,
+          "dimensions": {}
+        },
+        "separator": {
+          "base": true,
+          "dimensions": {}
+        },
+        "shortcut": {
+          "base": true,
+          "dimensions": {}
+        },
+        "sub": {
+          "base": true,
+          "dimensions": {}
+        },
+        "sub-content": {
+          "base": true,
+          "dimensions": {}
+        },
+        "sub-trigger": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "empty": {
       "slots": {
         "": {
@@ -289,6 +417,133 @@
     "label": {
       "slots": {
         "": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
+    "menubar": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
+        "checkbox-item": {
+          "base": true,
+          "dimensions": {}
+        },
+        "checkbox-item-indicator": {
+          "base": true,
+          "dimensions": {}
+        },
+        "content": {
+          "base": true,
+          "dimensions": {}
+        },
+        "item": {
+          "base": true,
+          "dimensions": {
+            "variant": {
+              "default": "default",
+              "values": [
+                "default",
+                "destructive"
+              ]
+            }
+          }
+        },
+        "label": {
+          "base": true,
+          "dimensions": {}
+        },
+        "menu": {
+          "base": true,
+          "dimensions": {}
+        },
+        "radio-item": {
+          "base": true,
+          "dimensions": {}
+        },
+        "radio-item-indicator": {
+          "base": true,
+          "dimensions": {}
+        },
+        "separator": {
+          "base": true,
+          "dimensions": {}
+        },
+        "shortcut": {
+          "base": true,
+          "dimensions": {}
+        },
+        "sub": {
+          "base": true,
+          "dimensions": {}
+        },
+        "sub-content": {
+          "base": true,
+          "dimensions": {}
+        },
+        "sub-trigger": {
+          "base": true,
+          "dimensions": {}
+        },
+        "trigger": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
+    "navigation-menu": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
+        "content": {
+          "base": true,
+          "dimensions": {}
+        },
+        "indicator": {
+          "base": true,
+          "dimensions": {}
+        },
+        "indicator-arrow": {
+          "base": true,
+          "dimensions": {}
+        },
+        "item": {
+          "base": true,
+          "dimensions": {}
+        },
+        "link": {
+          "base": true,
+          "dimensions": {
+            "active": {
+              "default": "false",
+              "values": [
+                "false",
+                "true"
+              ]
+            },
+            "variant": {
+              "default": "default",
+              "values": [
+                "default",
+                "trigger"
+              ]
+            }
+          }
+        },
+        "list": {
+          "base": true,
+          "dimensions": {}
+        },
+        "trigger": {
+          "base": true,
+          "dimensions": {}
+        },
+        "trigger-icon": {
           "base": true,
           "dimensions": {}
         }
@@ -1130,6 +1385,487 @@
           }
         }
       },
+      "context-menu": {
+        "slots": {
+          "": {
+            "base": [
+              "contents"
+            ],
+            "dimensions": {}
+          },
+          "checkbox-item": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "py-1",
+              "pr-8",
+              "pl-1.5",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-disabled:pointer-events-none",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "checkbox-item-indicator": {
+            "base": [
+              "pointer-events-none",
+              "absolute",
+              "right-2",
+              "hidden",
+              "size-4",
+              "items-center",
+              "justify-center",
+              "[[data-state=checked]_\u0026]:flex",
+              "[\u0026\u003esvg]:size-4"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "z-50",
+              "max-h-96",
+              "min-w-36",
+              "origin-top-left",
+              "overflow-x-hidden",
+              "overflow-y-auto",
+              "rounded-lg",
+              "border",
+              "bg-popover",
+              "p-1",
+              "text-popover-foreground",
+              "shadow-md",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "data-[side=bottom]:starting:[\u0026:popover-open]:-translate-y-2",
+              "data-[side=left]:starting:[\u0026:popover-open]:translate-x-2",
+              "data-[side=right]:starting:[\u0026:popover-open]:-translate-x-2",
+              "data-[side=top]:starting:[\u0026:popover-open]:translate-y-2"
+            ],
+            "dimensions": {}
+          },
+          "item": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "px-1.5",
+              "py-1",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-disabled:pointer-events-none",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
+            ],
+            "dimensions": {
+              "variant": {
+                "default": [
+                  "text-foreground"
+                ],
+                "destructive": [
+                  "text-destructive",
+                  "focus:bg-destructive/10",
+                  "focus:text-destructive",
+                  "dark:focus:bg-destructive/20",
+                  "[\u0026_svg]:text-destructive"
+                ]
+              }
+            }
+          },
+          "label": {
+            "base": [
+              "px-1.5",
+              "py-1",
+              "text-xs",
+              "font-medium",
+              "text-foreground"
+            ],
+            "dimensions": {}
+          },
+          "radio-item": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "py-1",
+              "pr-8",
+              "pl-1.5",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-disabled:pointer-events-none",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "radio-item-indicator": {
+            "base": [
+              "pointer-events-none",
+              "absolute",
+              "right-2",
+              "hidden",
+              "size-4",
+              "items-center",
+              "justify-center",
+              "[[data-state=checked]_\u0026]:flex",
+              "[\u0026\u003esvg]:size-2",
+              "[\u0026\u003esvg]:fill-current"
+            ],
+            "dimensions": {}
+          },
+          "separator": {
+            "base": [
+              "-mx-1",
+              "my-1",
+              "h-px",
+              "bg-border"
+            ],
+            "dimensions": {}
+          },
+          "shortcut": {
+            "base": [
+              "ml-auto",
+              "text-xs",
+              "tracking-widest",
+              "text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "sub": {
+            "base": [
+              "contents"
+            ],
+            "dimensions": {}
+          },
+          "sub-content": {
+            "base": [
+              "z-50",
+              "min-w-[96px]",
+              "origin-top-left",
+              "overflow-hidden",
+              "rounded-lg",
+              "border",
+              "bg-popover",
+              "p-1",
+              "text-popover-foreground",
+              "shadow-lg",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "data-[side=bottom]:starting:[\u0026:popover-open]:-translate-y-2",
+              "data-[side=left]:starting:[\u0026:popover-open]:translate-x-2",
+              "data-[side=right]:starting:[\u0026:popover-open]:-translate-x-2",
+              "data-[side=top]:starting:[\u0026:popover-open]:translate-y-2"
+            ],
+            "dimensions": {}
+          },
+          "sub-trigger": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "px-1.5",
+              "py-1",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-[state=open]:bg-accent",
+              "data-[state=open]:text-accent-foreground",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground",
+              "[\u0026\u003esvg:last-child]:ml-auto",
+              "[\u0026\u003esvg:last-child]:size-4"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "dropdown-menu": {
+        "slots": {
+          "": {
+            "base": [
+              "contents"
+            ],
+            "dimensions": {}
+          },
+          "checkbox-item": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "py-1",
+              "pr-8",
+              "pl-1.5",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-disabled:pointer-events-none",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "checkbox-item-indicator": {
+            "base": [
+              "pointer-events-none",
+              "absolute",
+              "right-2",
+              "hidden",
+              "size-4",
+              "items-center",
+              "justify-center",
+              "[[data-state=checked]_\u0026]:flex",
+              "[\u0026\u003esvg]:size-4"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "z-50",
+              "max-h-96",
+              "min-w-[8rem]",
+              "origin-top-left",
+              "overflow-x-hidden",
+              "overflow-y-auto",
+              "rounded-lg",
+              "border",
+              "bg-popover",
+              "p-1",
+              "text-popover-foreground",
+              "shadow-md",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "data-[side=bottom]:starting:[\u0026:popover-open]:-translate-y-2",
+              "data-[side=left]:starting:[\u0026:popover-open]:translate-x-2",
+              "data-[side=right]:starting:[\u0026:popover-open]:-translate-x-2",
+              "data-[side=top]:starting:[\u0026:popover-open]:translate-y-2"
+            ],
+            "dimensions": {}
+          },
+          "item": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "px-1.5",
+              "py-1",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-disabled:pointer-events-none",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
+            ],
+            "dimensions": {
+              "variant": {
+                "default": [
+                  "text-foreground"
+                ],
+                "destructive": [
+                  "text-destructive",
+                  "focus:bg-destructive/10",
+                  "focus:text-destructive",
+                  "dark:focus:bg-destructive/20",
+                  "[\u0026_svg]:text-destructive"
+                ]
+              }
+            }
+          },
+          "label": {
+            "base": [
+              "px-1.5",
+              "py-1",
+              "text-xs",
+              "font-medium"
+            ],
+            "dimensions": {}
+          },
+          "radio-item": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "py-1",
+              "pr-8",
+              "pl-1.5",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-disabled:pointer-events-none",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "radio-item-indicator": {
+            "base": [
+              "pointer-events-none",
+              "absolute",
+              "right-2",
+              "hidden",
+              "size-4",
+              "items-center",
+              "justify-center",
+              "[[data-state=checked]_\u0026]:flex",
+              "[\u0026\u003esvg]:size-2",
+              "[\u0026\u003esvg]:fill-current"
+            ],
+            "dimensions": {}
+          },
+          "separator": {
+            "base": [
+              "-mx-1",
+              "my-1",
+              "h-px",
+              "bg-border"
+            ],
+            "dimensions": {}
+          },
+          "shortcut": {
+            "base": [
+              "ml-auto",
+              "text-xs",
+              "tracking-widest",
+              "text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "sub": {
+            "base": [
+              "contents"
+            ],
+            "dimensions": {}
+          },
+          "sub-content": {
+            "base": [
+              "z-50",
+              "min-w-[96px]",
+              "origin-top-left",
+              "overflow-hidden",
+              "rounded-lg",
+              "border",
+              "bg-popover",
+              "p-1",
+              "text-popover-foreground",
+              "shadow-lg",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "data-[side=bottom]:starting:[\u0026:popover-open]:-translate-y-2",
+              "data-[side=left]:starting:[\u0026:popover-open]:translate-x-2",
+              "data-[side=right]:starting:[\u0026:popover-open]:-translate-x-2",
+              "data-[side=top]:starting:[\u0026:popover-open]:translate-y-2"
+            ],
+            "dimensions": {}
+          },
+          "sub-trigger": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "px-1.5",
+              "py-1",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-[state=open]:bg-accent",
+              "data-[state=open]:text-accent-foreground",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground",
+              "[\u0026\u003esvg:last-child]:ml-auto",
+              "[\u0026\u003esvg:last-child]:size-4"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
       "empty": {
         "slots": {
           "": {
@@ -1375,6 +2111,476 @@
               "select-none",
               "[[data-disabled=true]_\u0026]:pointer-events-none",
               "[:disabled~\u0026]:cursor-not-allowed"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "menubar": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "h-8",
+              "items-center",
+              "gap-0.5",
+              "rounded-lg",
+              "border",
+              "bg-background",
+              "p-[3px]"
+            ],
+            "dimensions": {}
+          },
+          "checkbox-item": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "py-1",
+              "pr-8",
+              "pl-1.5",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-disabled:pointer-events-none",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "checkbox-item-indicator": {
+            "base": [
+              "pointer-events-none",
+              "absolute",
+              "right-2",
+              "hidden",
+              "size-4",
+              "items-center",
+              "justify-center",
+              "[[data-state=checked]_\u0026]:flex",
+              "[\u0026\u003esvg]:size-4"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "z-50",
+              "min-w-36",
+              "origin-top-left",
+              "overflow-hidden",
+              "rounded-lg",
+              "border",
+              "bg-popover",
+              "p-1",
+              "text-popover-foreground",
+              "shadow-md",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "data-[side=bottom]:starting:[\u0026:popover-open]:-translate-y-2",
+              "data-[side=left]:starting:[\u0026:popover-open]:translate-x-2",
+              "data-[side=right]:starting:[\u0026:popover-open]:-translate-x-2",
+              "data-[side=top]:starting:[\u0026:popover-open]:translate-y-2"
+            ],
+            "dimensions": {}
+          },
+          "item": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "px-1.5",
+              "py-1",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-disabled:pointer-events-none",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
+            ],
+            "dimensions": {
+              "variant": {
+                "default": [
+                  "text-foreground"
+                ],
+                "destructive": [
+                  "text-destructive",
+                  "focus:bg-destructive/10",
+                  "focus:text-destructive",
+                  "dark:focus:bg-destructive/20",
+                  "[\u0026_svg]:text-destructive"
+                ]
+              }
+            }
+          },
+          "label": {
+            "base": [
+              "px-1.5",
+              "py-1",
+              "text-sm",
+              "font-medium"
+            ],
+            "dimensions": {}
+          },
+          "menu": {
+            "base": [
+              "contents"
+            ],
+            "dimensions": {}
+          },
+          "radio-item": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "py-1",
+              "pr-8",
+              "pl-1.5",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-disabled:pointer-events-none",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "radio-item-indicator": {
+            "base": [
+              "pointer-events-none",
+              "absolute",
+              "right-2",
+              "hidden",
+              "size-4",
+              "items-center",
+              "justify-center",
+              "[[data-state=checked]_\u0026]:flex",
+              "[\u0026\u003esvg]:size-2",
+              "[\u0026\u003esvg]:fill-current"
+            ],
+            "dimensions": {}
+          },
+          "separator": {
+            "base": [
+              "-mx-1",
+              "my-1",
+              "h-px",
+              "bg-border"
+            ],
+            "dimensions": {}
+          },
+          "shortcut": {
+            "base": [
+              "ml-auto",
+              "text-xs",
+              "tracking-widest",
+              "text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "sub": {
+            "base": [
+              "contents"
+            ],
+            "dimensions": {}
+          },
+          "sub-content": {
+            "base": [
+              "z-50",
+              "min-w-[8rem]",
+              "origin-top-left",
+              "overflow-hidden",
+              "rounded-lg",
+              "border",
+              "bg-popover",
+              "p-1",
+              "text-popover-foreground",
+              "shadow-lg",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "data-[side=bottom]:starting:[\u0026:popover-open]:-translate-y-2",
+              "data-[side=left]:starting:[\u0026:popover-open]:translate-x-2",
+              "data-[side=right]:starting:[\u0026:popover-open]:-translate-x-2",
+              "data-[side=top]:starting:[\u0026:popover-open]:translate-y-2"
+            ],
+            "dimensions": {}
+          },
+          "sub-trigger": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "px-1.5",
+              "py-1",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-[state=open]:bg-accent",
+              "data-[state=open]:text-accent-foreground",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026\u003esvg:last-child]:ml-auto",
+              "[\u0026\u003esvg:last-child]:size-4"
+            ],
+            "dimensions": {}
+          },
+          "trigger": {
+            "base": [
+              "flex",
+              "items-center",
+              "rounded-sm",
+              "px-1.5",
+              "py-[2px]",
+              "text-sm",
+              "font-medium",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-[state=open]:bg-accent",
+              "data-[state=open]:text-accent-foreground"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "navigation-menu": {
+        "slots": {
+          "": {
+            "base": [
+              "relative",
+              "flex",
+              "max-w-max",
+              "flex-1",
+              "items-center",
+              "justify-center"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "top-0",
+              "left-0",
+              "p-1",
+              "md:absolute",
+              "[[data-gsxui-slot-navigation-menu][data-viewport=false]_\u0026]:top-full",
+              "[[data-gsxui-slot-navigation-menu][data-viewport=false]_\u0026]:mt-1.5",
+              "[[data-gsxui-slot-navigation-menu][data-viewport=false]_\u0026]:overflow-hidden",
+              "[[data-gsxui-slot-navigation-menu][data-viewport=false]_\u0026]:rounded-lg",
+              "[[data-gsxui-slot-navigation-menu][data-viewport=false]_\u0026]:border",
+              "[[data-gsxui-slot-navigation-menu][data-viewport=false]_\u0026]:bg-popover",
+              "[[data-gsxui-slot-navigation-menu][data-viewport=false]_\u0026]:text-popover-foreground",
+              "[[data-gsxui-slot-navigation-menu][data-viewport=false]_\u0026]:shadow",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "data-[side=bottom]:starting:[\u0026:popover-open]:-translate-y-2",
+              "data-[side=left]:starting:[\u0026:popover-open]:translate-x-2",
+              "data-[side=right]:starting:[\u0026:popover-open]:-translate-x-2",
+              "data-[side=top]:starting:[\u0026:popover-open]:translate-y-2"
+            ],
+            "dimensions": {}
+          },
+          "indicator": {
+            "base": [
+              "pointer-events-none",
+              "top-full",
+              "z-[1]",
+              "flex",
+              "h-1.5",
+              "items-end",
+              "justify-center",
+              "overflow-hidden",
+              "opacity-0",
+              "transition-opacity",
+              "duration-200",
+              "data-[state=visible]:opacity-100"
+            ],
+            "dimensions": {}
+          },
+          "indicator-arrow": {
+            "base": [
+              "relative",
+              "top-[60%]",
+              "h-2",
+              "w-2",
+              "rotate-45",
+              "rounded-tl-sm",
+              "bg-border",
+              "shadow-md"
+            ],
+            "dimensions": {}
+          },
+          "item": {
+            "base": [
+              "relative"
+            ],
+            "dimensions": {}
+          },
+          "link": {
+            "base": [
+              "flex",
+              "flex-col",
+              "gap-1",
+              "rounded-lg",
+              "p-2",
+              "text-sm",
+              "transition-all",
+              "outline-none",
+              "[[data-gsxui-slot-navigation-menu-content]_\u0026]:rounded-md",
+              "hover:bg-accent",
+              "hover:text-accent-foreground",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "focus-visible:ring-[3px]",
+              "focus-visible:ring-ring/50",
+              "focus-visible:outline-1",
+              "[[data-gsxui-slot-navigation-menu-content]_\u0026]:focus:ring-0",
+              "[[data-gsxui-slot-navigation-menu-content]_\u0026]:focus:outline-none",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
+            ],
+            "dimensions": {
+              "active": {
+                "false": [
+                  "outline-none"
+                ],
+                "true": [
+                  "bg-accent/50",
+                  "text-accent-foreground",
+                  "hover:bg-accent",
+                  "hover:text-accent-foreground",
+                  "focus:bg-accent"
+                ]
+              },
+              "variant": {
+                "default": [
+                  "outline-none"
+                ],
+                "trigger": [
+                  "inline-flex",
+                  "h-9",
+                  "w-max",
+                  "items-center",
+                  "justify-center",
+                  "rounded-lg",
+                  "px-2.5",
+                  "py-1.5",
+                  "text-sm",
+                  "font-medium",
+                  "transition-all",
+                  "outline-none",
+                  "hover:bg-accent",
+                  "hover:text-accent-foreground",
+                  "focus:bg-accent",
+                  "focus:text-accent-foreground",
+                  "focus-visible:ring-[3px]",
+                  "focus-visible:ring-ring/50",
+                  "focus-visible:outline-1",
+                  "disabled:pointer-events-none",
+                  "disabled:opacity-50",
+                  "data-[state=open]:bg-accent/50",
+                  "data-[state=open]:text-accent-foreground",
+                  "data-[state=open]:hover:bg-accent",
+                  "data-[state=open]:focus:bg-accent"
+                ]
+              }
+            }
+          },
+          "list": {
+            "base": [
+              "flex",
+              "flex-1",
+              "list-none",
+              "items-center",
+              "justify-center",
+              "gap-0"
+            ],
+            "dimensions": {}
+          },
+          "trigger": {
+            "base": [
+              "inline-flex",
+              "h-9",
+              "w-max",
+              "items-center",
+              "justify-center",
+              "rounded-lg",
+              "px-2.5",
+              "py-1.5",
+              "text-sm",
+              "font-medium",
+              "transition-all",
+              "outline-none",
+              "hover:bg-accent",
+              "hover:text-accent-foreground",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "focus-visible:ring-[3px]",
+              "focus-visible:ring-ring/50",
+              "focus-visible:outline-1",
+              "disabled:pointer-events-none",
+              "disabled:opacity-50",
+              "data-[state=open]:bg-accent/50",
+              "data-[state=open]:text-accent-foreground",
+              "data-[state=open]:hover:bg-accent",
+              "data-[state=open]:focus:bg-accent"
+            ],
+            "dimensions": {}
+          },
+          "trigger-icon": {
+            "base": [
+              "relative",
+              "top-px",
+              "ml-1",
+              "size-3",
+              "transition",
+              "duration-300",
+              "[[data-state=open]_\u0026]:rotate-180"
             ],
             "dimensions": {}
           }
@@ -2721,6 +3927,487 @@
           }
         }
       },
+      "context-menu": {
+        "slots": {
+          "": {
+            "base": [
+              "contents"
+            ],
+            "dimensions": {}
+          },
+          "checkbox-item": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "py-1",
+              "pr-8",
+              "pl-1.5",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-disabled:pointer-events-none",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "checkbox-item-indicator": {
+            "base": [
+              "pointer-events-none",
+              "absolute",
+              "right-2",
+              "hidden",
+              "size-4",
+              "items-center",
+              "justify-center",
+              "[[data-state=checked]_\u0026]:flex",
+              "[\u0026\u003esvg]:size-4"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "z-50",
+              "max-h-96",
+              "min-w-36",
+              "origin-top-left",
+              "overflow-x-hidden",
+              "overflow-y-auto",
+              "rounded-lg",
+              "border",
+              "bg-popover",
+              "p-1",
+              "text-popover-foreground",
+              "shadow-md",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "data-[side=bottom]:starting:[\u0026:popover-open]:-translate-y-2",
+              "data-[side=left]:starting:[\u0026:popover-open]:translate-x-2",
+              "data-[side=right]:starting:[\u0026:popover-open]:-translate-x-2",
+              "data-[side=top]:starting:[\u0026:popover-open]:translate-y-2"
+            ],
+            "dimensions": {}
+          },
+          "item": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "px-1.5",
+              "py-1",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-disabled:pointer-events-none",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
+            ],
+            "dimensions": {
+              "variant": {
+                "default": [
+                  "text-foreground"
+                ],
+                "destructive": [
+                  "text-destructive",
+                  "focus:bg-destructive/10",
+                  "focus:text-destructive",
+                  "dark:focus:bg-destructive/20",
+                  "[\u0026_svg]:text-destructive"
+                ]
+              }
+            }
+          },
+          "label": {
+            "base": [
+              "px-1.5",
+              "py-1",
+              "text-xs",
+              "font-medium",
+              "text-foreground"
+            ],
+            "dimensions": {}
+          },
+          "radio-item": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "py-1",
+              "pr-8",
+              "pl-1.5",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-disabled:pointer-events-none",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "radio-item-indicator": {
+            "base": [
+              "pointer-events-none",
+              "absolute",
+              "right-2",
+              "hidden",
+              "size-4",
+              "items-center",
+              "justify-center",
+              "[[data-state=checked]_\u0026]:flex",
+              "[\u0026\u003esvg]:size-2",
+              "[\u0026\u003esvg]:fill-current"
+            ],
+            "dimensions": {}
+          },
+          "separator": {
+            "base": [
+              "-mx-1",
+              "my-1",
+              "h-px",
+              "bg-border"
+            ],
+            "dimensions": {}
+          },
+          "shortcut": {
+            "base": [
+              "ml-auto",
+              "text-xs",
+              "tracking-widest",
+              "text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "sub": {
+            "base": [
+              "contents"
+            ],
+            "dimensions": {}
+          },
+          "sub-content": {
+            "base": [
+              "z-50",
+              "min-w-[96px]",
+              "origin-top-left",
+              "overflow-hidden",
+              "rounded-lg",
+              "border",
+              "bg-popover",
+              "p-1",
+              "text-popover-foreground",
+              "shadow-lg",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "data-[side=bottom]:starting:[\u0026:popover-open]:-translate-y-2",
+              "data-[side=left]:starting:[\u0026:popover-open]:translate-x-2",
+              "data-[side=right]:starting:[\u0026:popover-open]:-translate-x-2",
+              "data-[side=top]:starting:[\u0026:popover-open]:translate-y-2"
+            ],
+            "dimensions": {}
+          },
+          "sub-trigger": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "px-1.5",
+              "py-1",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-[state=open]:bg-accent",
+              "data-[state=open]:text-accent-foreground",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground",
+              "[\u0026\u003esvg:last-child]:ml-auto",
+              "[\u0026\u003esvg:last-child]:size-4"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "dropdown-menu": {
+        "slots": {
+          "": {
+            "base": [
+              "contents"
+            ],
+            "dimensions": {}
+          },
+          "checkbox-item": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "py-1",
+              "pr-8",
+              "pl-1.5",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-disabled:pointer-events-none",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "checkbox-item-indicator": {
+            "base": [
+              "pointer-events-none",
+              "absolute",
+              "right-2",
+              "hidden",
+              "size-4",
+              "items-center",
+              "justify-center",
+              "[[data-state=checked]_\u0026]:flex",
+              "[\u0026\u003esvg]:size-4"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "z-50",
+              "max-h-96",
+              "min-w-[8rem]",
+              "origin-top-left",
+              "overflow-x-hidden",
+              "overflow-y-auto",
+              "rounded-lg",
+              "border",
+              "bg-popover",
+              "p-1",
+              "text-popover-foreground",
+              "shadow-md",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "data-[side=bottom]:starting:[\u0026:popover-open]:-translate-y-2",
+              "data-[side=left]:starting:[\u0026:popover-open]:translate-x-2",
+              "data-[side=right]:starting:[\u0026:popover-open]:-translate-x-2",
+              "data-[side=top]:starting:[\u0026:popover-open]:translate-y-2"
+            ],
+            "dimensions": {}
+          },
+          "item": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "px-1.5",
+              "py-1",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-disabled:pointer-events-none",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
+            ],
+            "dimensions": {
+              "variant": {
+                "default": [
+                  "text-foreground"
+                ],
+                "destructive": [
+                  "text-destructive",
+                  "focus:bg-destructive/10",
+                  "focus:text-destructive",
+                  "dark:focus:bg-destructive/20",
+                  "[\u0026_svg]:text-destructive"
+                ]
+              }
+            }
+          },
+          "label": {
+            "base": [
+              "px-1.5",
+              "py-1",
+              "text-xs",
+              "font-medium"
+            ],
+            "dimensions": {}
+          },
+          "radio-item": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "py-1",
+              "pr-8",
+              "pl-1.5",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-disabled:pointer-events-none",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "radio-item-indicator": {
+            "base": [
+              "pointer-events-none",
+              "absolute",
+              "right-2",
+              "hidden",
+              "size-4",
+              "items-center",
+              "justify-center",
+              "[[data-state=checked]_\u0026]:flex",
+              "[\u0026\u003esvg]:size-2",
+              "[\u0026\u003esvg]:fill-current"
+            ],
+            "dimensions": {}
+          },
+          "separator": {
+            "base": [
+              "-mx-1",
+              "my-1",
+              "h-px",
+              "bg-border"
+            ],
+            "dimensions": {}
+          },
+          "shortcut": {
+            "base": [
+              "ml-auto",
+              "text-xs",
+              "tracking-widest",
+              "text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "sub": {
+            "base": [
+              "contents"
+            ],
+            "dimensions": {}
+          },
+          "sub-content": {
+            "base": [
+              "z-50",
+              "min-w-[96px]",
+              "origin-top-left",
+              "overflow-hidden",
+              "rounded-lg",
+              "border",
+              "bg-popover",
+              "p-1",
+              "text-popover-foreground",
+              "shadow-lg",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "data-[side=bottom]:starting:[\u0026:popover-open]:-translate-y-2",
+              "data-[side=left]:starting:[\u0026:popover-open]:translate-x-2",
+              "data-[side=right]:starting:[\u0026:popover-open]:-translate-x-2",
+              "data-[side=top]:starting:[\u0026:popover-open]:translate-y-2"
+            ],
+            "dimensions": {}
+          },
+          "sub-trigger": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "px-1.5",
+              "py-1",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-[state=open]:bg-accent",
+              "data-[state=open]:text-accent-foreground",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground",
+              "[\u0026\u003esvg:last-child]:ml-auto",
+              "[\u0026\u003esvg:last-child]:size-4"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
       "empty": {
         "slots": {
           "": {
@@ -2966,6 +4653,476 @@
               "select-none",
               "[[data-disabled=true]_\u0026]:pointer-events-none",
               "[:disabled~\u0026]:cursor-not-allowed"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "menubar": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "h-8",
+              "items-center",
+              "gap-0.5",
+              "rounded-lg",
+              "border",
+              "bg-background",
+              "p-[3px]"
+            ],
+            "dimensions": {}
+          },
+          "checkbox-item": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "py-1",
+              "pr-8",
+              "pl-1.5",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-disabled:pointer-events-none",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "checkbox-item-indicator": {
+            "base": [
+              "pointer-events-none",
+              "absolute",
+              "right-2",
+              "hidden",
+              "size-4",
+              "items-center",
+              "justify-center",
+              "[[data-state=checked]_\u0026]:flex",
+              "[\u0026\u003esvg]:size-4"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "z-50",
+              "min-w-36",
+              "origin-top-left",
+              "overflow-hidden",
+              "rounded-lg",
+              "border",
+              "bg-popover",
+              "p-1",
+              "text-popover-foreground",
+              "shadow-md",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "data-[side=bottom]:starting:[\u0026:popover-open]:-translate-y-2",
+              "data-[side=left]:starting:[\u0026:popover-open]:translate-x-2",
+              "data-[side=right]:starting:[\u0026:popover-open]:-translate-x-2",
+              "data-[side=top]:starting:[\u0026:popover-open]:translate-y-2"
+            ],
+            "dimensions": {}
+          },
+          "item": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "px-1.5",
+              "py-1",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-disabled:pointer-events-none",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
+            ],
+            "dimensions": {
+              "variant": {
+                "default": [
+                  "text-foreground"
+                ],
+                "destructive": [
+                  "text-destructive",
+                  "focus:bg-destructive/10",
+                  "focus:text-destructive",
+                  "dark:focus:bg-destructive/20",
+                  "[\u0026_svg]:text-destructive"
+                ]
+              }
+            }
+          },
+          "label": {
+            "base": [
+              "px-1.5",
+              "py-1",
+              "text-sm",
+              "font-medium"
+            ],
+            "dimensions": {}
+          },
+          "menu": {
+            "base": [
+              "contents"
+            ],
+            "dimensions": {}
+          },
+          "radio-item": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "py-1",
+              "pr-8",
+              "pl-1.5",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-disabled:pointer-events-none",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "radio-item-indicator": {
+            "base": [
+              "pointer-events-none",
+              "absolute",
+              "right-2",
+              "hidden",
+              "size-4",
+              "items-center",
+              "justify-center",
+              "[[data-state=checked]_\u0026]:flex",
+              "[\u0026\u003esvg]:size-2",
+              "[\u0026\u003esvg]:fill-current"
+            ],
+            "dimensions": {}
+          },
+          "separator": {
+            "base": [
+              "-mx-1",
+              "my-1",
+              "h-px",
+              "bg-border"
+            ],
+            "dimensions": {}
+          },
+          "shortcut": {
+            "base": [
+              "ml-auto",
+              "text-xs",
+              "tracking-widest",
+              "text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "sub": {
+            "base": [
+              "contents"
+            ],
+            "dimensions": {}
+          },
+          "sub-content": {
+            "base": [
+              "z-50",
+              "min-w-[8rem]",
+              "origin-top-left",
+              "overflow-hidden",
+              "rounded-lg",
+              "border",
+              "bg-popover",
+              "p-1",
+              "text-popover-foreground",
+              "shadow-lg",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "data-[side=bottom]:starting:[\u0026:popover-open]:-translate-y-2",
+              "data-[side=left]:starting:[\u0026:popover-open]:translate-x-2",
+              "data-[side=right]:starting:[\u0026:popover-open]:-translate-x-2",
+              "data-[side=top]:starting:[\u0026:popover-open]:translate-y-2"
+            ],
+            "dimensions": {}
+          },
+          "sub-trigger": {
+            "base": [
+              "relative",
+              "flex",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "px-1.5",
+              "py-1",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-[state=open]:bg-accent",
+              "data-[state=open]:text-accent-foreground",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026\u003esvg:last-child]:ml-auto",
+              "[\u0026\u003esvg:last-child]:size-4"
+            ],
+            "dimensions": {}
+          },
+          "trigger": {
+            "base": [
+              "flex",
+              "items-center",
+              "rounded-sm",
+              "px-1.5",
+              "py-[2px]",
+              "text-sm",
+              "font-medium",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-[state=open]:bg-accent",
+              "data-[state=open]:text-accent-foreground"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "navigation-menu": {
+        "slots": {
+          "": {
+            "base": [
+              "relative",
+              "flex",
+              "max-w-max",
+              "flex-1",
+              "items-center",
+              "justify-center"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "top-0",
+              "left-0",
+              "p-1",
+              "md:absolute",
+              "[[data-gsxui-slot-navigation-menu][data-viewport=false]_\u0026]:top-full",
+              "[[data-gsxui-slot-navigation-menu][data-viewport=false]_\u0026]:mt-1.5",
+              "[[data-gsxui-slot-navigation-menu][data-viewport=false]_\u0026]:overflow-hidden",
+              "[[data-gsxui-slot-navigation-menu][data-viewport=false]_\u0026]:rounded-lg",
+              "[[data-gsxui-slot-navigation-menu][data-viewport=false]_\u0026]:border",
+              "[[data-gsxui-slot-navigation-menu][data-viewport=false]_\u0026]:bg-popover",
+              "[[data-gsxui-slot-navigation-menu][data-viewport=false]_\u0026]:text-popover-foreground",
+              "[[data-gsxui-slot-navigation-menu][data-viewport=false]_\u0026]:shadow",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "data-[side=bottom]:starting:[\u0026:popover-open]:-translate-y-2",
+              "data-[side=left]:starting:[\u0026:popover-open]:translate-x-2",
+              "data-[side=right]:starting:[\u0026:popover-open]:-translate-x-2",
+              "data-[side=top]:starting:[\u0026:popover-open]:translate-y-2"
+            ],
+            "dimensions": {}
+          },
+          "indicator": {
+            "base": [
+              "pointer-events-none",
+              "top-full",
+              "z-[1]",
+              "flex",
+              "h-1.5",
+              "items-end",
+              "justify-center",
+              "overflow-hidden",
+              "opacity-0",
+              "transition-opacity",
+              "duration-200",
+              "data-[state=visible]:opacity-100"
+            ],
+            "dimensions": {}
+          },
+          "indicator-arrow": {
+            "base": [
+              "relative",
+              "top-[60%]",
+              "h-2",
+              "w-2",
+              "rotate-45",
+              "rounded-tl-sm",
+              "bg-border",
+              "shadow-md"
+            ],
+            "dimensions": {}
+          },
+          "item": {
+            "base": [
+              "relative"
+            ],
+            "dimensions": {}
+          },
+          "link": {
+            "base": [
+              "flex",
+              "flex-col",
+              "gap-1",
+              "rounded-lg",
+              "p-2",
+              "text-sm",
+              "transition-all",
+              "outline-none",
+              "[[data-gsxui-slot-navigation-menu-content]_\u0026]:rounded-md",
+              "hover:bg-accent",
+              "hover:text-accent-foreground",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "focus-visible:ring-[3px]",
+              "focus-visible:ring-ring/50",
+              "focus-visible:outline-1",
+              "[[data-gsxui-slot-navigation-menu-content]_\u0026]:focus:ring-0",
+              "[[data-gsxui-slot-navigation-menu-content]_\u0026]:focus:outline-none",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
+            ],
+            "dimensions": {
+              "active": {
+                "false": [
+                  "outline-none"
+                ],
+                "true": [
+                  "bg-accent/50",
+                  "text-accent-foreground",
+                  "hover:bg-accent",
+                  "hover:text-accent-foreground",
+                  "focus:bg-accent"
+                ]
+              },
+              "variant": {
+                "default": [
+                  "outline-none"
+                ],
+                "trigger": [
+                  "inline-flex",
+                  "h-9",
+                  "w-max",
+                  "items-center",
+                  "justify-center",
+                  "rounded-lg",
+                  "px-2.5",
+                  "py-1.5",
+                  "text-sm",
+                  "font-medium",
+                  "transition-all",
+                  "outline-none",
+                  "hover:bg-accent",
+                  "hover:text-accent-foreground",
+                  "focus:bg-accent",
+                  "focus:text-accent-foreground",
+                  "focus-visible:ring-[3px]",
+                  "focus-visible:ring-ring/50",
+                  "focus-visible:outline-1",
+                  "disabled:pointer-events-none",
+                  "disabled:opacity-50",
+                  "data-[state=open]:bg-accent/50",
+                  "data-[state=open]:text-accent-foreground",
+                  "data-[state=open]:hover:bg-accent",
+                  "data-[state=open]:focus:bg-accent"
+                ]
+              }
+            }
+          },
+          "list": {
+            "base": [
+              "flex",
+              "flex-1",
+              "list-none",
+              "items-center",
+              "justify-center",
+              "gap-0"
+            ],
+            "dimensions": {}
+          },
+          "trigger": {
+            "base": [
+              "inline-flex",
+              "h-9",
+              "w-max",
+              "items-center",
+              "justify-center",
+              "rounded-lg",
+              "px-2.5",
+              "py-1.5",
+              "text-sm",
+              "font-medium",
+              "transition-all",
+              "outline-none",
+              "hover:bg-accent",
+              "hover:text-accent-foreground",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "focus-visible:ring-[3px]",
+              "focus-visible:ring-ring/50",
+              "focus-visible:outline-1",
+              "disabled:pointer-events-none",
+              "disabled:opacity-50",
+              "data-[state=open]:bg-accent/50",
+              "data-[state=open]:text-accent-foreground",
+              "data-[state=open]:hover:bg-accent",
+              "data-[state=open]:focus:bg-accent"
+            ],
+            "dimensions": {}
+          },
+          "trigger-icon": {
+            "base": [
+              "relative",
+              "top-px",
+              "ml-1",
+              "size-3",
+              "transition",
+              "duration-300",
+              "[[data-state=open]_\u0026]:rotate-180"
             ],
             "dimensions": {}
           }

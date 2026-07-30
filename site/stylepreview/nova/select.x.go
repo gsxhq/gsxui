@@ -160,7 +160,7 @@ func SelectValue(placeholder string, attrs gsx.Attrs) _gsxrt.Node {
 }
 
 //line select.gsx:103:1
-// SelectContent is the popover listbox. It rides the exact dropdown.js
+// SelectContent is the popover listbox. It rides the exact dropdown-menu.js
 // popover machinery: popover="auto" (top layer, light dismiss, free Esc),
 // server-rendered data-state="closed" + data-side="bottom" (select.js always
 // anchors below the trigger), and the discrete-transition enter/exit block

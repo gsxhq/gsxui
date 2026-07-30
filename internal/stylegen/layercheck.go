@@ -248,7 +248,80 @@ type layerCheckExemption struct {
 // longer names a violation that really occurs, so an exemption whose rule was
 // deleted, reflowed, renamed, or rewritten to win the cascade fails the build
 // instead of quietly widening its own scope.
-var layerCheckExemptions = append(siteButtonFallbackExemptions(), toggleMarkerFallbackExemptions()...)
+var layerCheckExemptions = append(append(siteButtonFallbackExemptions(), toggleMarkerFallbackExemptions()...), menuInsetDisabledFallbackExemptions()...)
+
+// menuInsetDisabledFallbackReason is the decision behind both entries
+// menuInsetDisabledFallbackExemptions lists. assets/css/styles/default/menu.css
+// keeps a data-inset/pl-8 rule and a data-disabled/opacity-50 rule in @layer
+// components on purpose — spec section 10b — because both data-inset and
+// data-disabled are stamped by the CALLER through attrs on DropdownMenuItem/
+// ContextMenuItem/MenubarItem and their Label/SubTrigger/CheckboxItem/RadioItem
+// siblings, not by the component itself. Moving either rule to @layer
+// utilities (this gate's usual fix) would make it win over a caller's plain
+// utility unconditionally instead of losing to it: @layer utilities is the
+// SAME layer Tailwind's own scanned classes live in, and this file is
+// @imported before "tailwindcss" is scanned in every consumer, so the ordering
+// would flip the wrong way. Keeping it in @layer components is what lets a
+// caller's own plain `pl-*`/`opacity-*` utility (which lives in @layer
+// utilities) win regardless of specificity, exactly as it did before this
+// migration. The one real cost is that these two rules now also sit in the
+// same layer as DropdownMenu/ContextMenu/Menubar's own compiled recipe
+// utilities, which legitimately beat them there (a real, accepted loss, not a
+// caller-facing regression) — jstest/specs/layer-precedence.spec.ts pins the
+// caller-override case these two rules exist to protect.
+const menuInsetDisabledFallbackReason = "assets/css/styles/default/menu.css's data-inset/data-disabled rules are " +
+	"caller-attrs-driven per spec section 10b and must stay in @layer components to remain caller-" +
+	"overridable; losing the cascade against DropdownMenu/ContextMenu/Menubar's own compiled recipe " +
+	"utilities in that same layer is the design, not a defect. jstest/specs/layer-precedence.spec.ts's " +
+	"menu caller-override pins cover the real rendering paths these rules must not break."
+
+// menuInsetDisabledFallbackExemptions spells out the two violations the
+// retained menu.css rules commit, one (selector, utility, style) triple at a
+// time, following siteButtonFallbackExemptions' own enumeration discipline.
+func menuInsetDisabledFallbackExemptions() []layerCheckExemption {
+	both := []string{"maia", "nova"}
+	pairs := []struct {
+		selector, contested string
+		styles              []string
+	}{
+		{
+			selector: ":where( [data-gsxui-slot-dropdown-menu-item],[data-gsxui-slot-context-menu-item]," +
+				"[data-gsxui-slot-menubar-item],[data-gsxui-slot-dropdown-menu-label]," +
+				"[data-gsxui-slot-context-menu-label],[data-gsxui-slot-menubar-label]," +
+				"[data-gsxui-slot-dropdown-menu-sub-trigger],[data-gsxui-slot-context-menu-sub-trigger]," +
+				"[data-gsxui-slot-menubar-sub-trigger] )[data-inset]",
+			contested: "pl-8",
+			styles:    both,
+		},
+		{
+			selector: ":where( [data-gsxui-slot-dropdown-menu-item],[data-gsxui-slot-context-menu-item]," +
+				"[data-gsxui-slot-menubar-item],[data-gsxui-slot-dropdown-menu-checkbox-item]," +
+				"[data-gsxui-slot-dropdown-menu-radio-item],[data-gsxui-slot-context-menu-checkbox-item]," +
+				"[data-gsxui-slot-context-menu-radio-item],[data-gsxui-slot-menubar-checkbox-item]," +
+				"[data-gsxui-slot-menubar-radio-item] )[data-disabled]",
+			contested: "opacity-50",
+			styles:    both,
+		},
+	}
+	out := make([]layerCheckExemption, 0, len(pairs)*2)
+	for _, pair := range pairs {
+		if len(pair.styles) == 0 {
+			panic("exemption for " + pair.selector + " / " + pair.contested + " names no style")
+		}
+		for _, style := range pair.styles {
+			out = append(out, layerCheckExemption{
+				key: exemptionKey{
+					file:      "assets/css/styles/default/menu.css",
+					style:     style,
+					selector:  pair.selector,
+					contested: pair.contested,
+				},
+				reason: menuInsetDisabledFallbackReason,
+			})
+		}
+	}
+	return out
+}
 
 // toggleMarkerFallbackReason is the decision behind every entry
 // toggleMarkerFallbackExemptions lists. ui/toggle-group.gsx's
