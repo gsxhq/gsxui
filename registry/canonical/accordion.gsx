@@ -1,4 +1,4 @@
-package ui
+package canonical
 
 import (
 	"github.com/gsxhq/gsx"
@@ -13,26 +13,15 @@ component Accordion(name string, children gsx.Node, attrs gsx.Attrs) {
 }
 
 component AccordionItem(name string, open bool, children gsx.Node, attrs gsx.Attrs) {
-	<details name={name} open={open} class={ "border-b last:border-b-0" } { attrs... } data-gsxui-slot-accordion-item>
+	<details name={name} open={open} class={ accordion.Item() } { attrs... } data-gsxui-slot-accordion-item>
 		{ children }
 	</details>
 }
 
 component AccordionTrigger(children gsx.Node, attrs gsx.Attrs) {
-	<summary
-		class={
-			"flex list-none items-start justify-between rounded-lg py-2.5 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
-		}
-		{ attrs... }
-		data-gsxui-slot-accordion-trigger
-	>
+	<summary class={ accordion.Trigger() } { attrs... } data-gsxui-slot-accordion-trigger>
 		{ children }
-		<icon.ChevronDown
-			class={
-				"size-4 shrink-0 text-muted-foreground transition-transform duration-200 [[data-gsxui-slot-accordion-item][open]_&]:rotate-180"
-			}
-			data-gsxui-slot-accordion-trigger-icon
-		/>
+		<icon.ChevronDown class={ accordion.TriggerIcon() } data-gsxui-slot-accordion-trigger-icon/>
 	</summary>
 }
 
@@ -46,7 +35,7 @@ component AccordionContent(children gsx.Node, attrs gsx.Attrs) {
 			innerAttrs = gsx.Attrs{{Key: "class", Value: class}}
 		}
 	}}
-	<div class={ "overflow-hidden text-sm" } { attrs.Without("class")... } data-gsxui-slot-accordion-content>
-		<div class={ "pt-0 pb-2.5" } { innerAttrs... } data-gsxui-slot-accordion-content-inner>{ children }</div>
+	<div class={ accordion.Content() } { attrs.Without("class")... } data-gsxui-slot-accordion-content>
+		<div class={ accordion.ContentInner() } { innerAttrs... } data-gsxui-slot-accordion-content-inner>{ children }</div>
 	</div>
 }

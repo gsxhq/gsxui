@@ -39,6 +39,7 @@ var all = map[string]recipe.Shape{
 	ToggleGroup.Component: ToggleGroup,
 	ScrollArea.Component:  ScrollArea,
 	Checkbox.Component:    Checkbox,
+	Accordion.Component:   Accordion,
 }
 
 // All returns every declared component shape, keyed by component name.

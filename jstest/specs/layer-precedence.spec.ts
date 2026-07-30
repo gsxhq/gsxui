@@ -308,4 +308,15 @@ test("Checkbox's checked:bg-primary paints its background, unchecked stays trans
   expect(checkedBg).not.toBe("rgba(0, 0, 0, 0)");
   expect(checkedBg).toBe("oklch(0.205 0 0)");
 });
+test("Accordion's trigger-icon rotates only inside its own open item", async ({ page }) => {
+  // Tailwind v4's rotate-180 compiles to the standalone CSS `rotate`
+  // property (not a `transform: rotate(...)` matrix), so that is what a
+  // layer regression would actually clobber.
+  await page.goto("/x/accordion/basic");
+  const icons = page.locator("[data-gsxui-slot-accordion-trigger-icon]");
+  const openIconRotate = await icons.nth(0).evaluate((n) => getComputedStyle(n).rotate);
+  const closedIconRotate = await icons.nth(1).evaluate((n) => getComputedStyle(n).rotate);
+  expect(openIconRotate).toBe("180deg");
+  expect(closedIconRotate).toBe("none");
+});
 

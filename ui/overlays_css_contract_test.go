@@ -42,6 +42,14 @@ func callerAttrs() gsx.Attrs {
 }
 
 func TestAccordionCSSOnlyContract(t *testing.T) {
+	// Accordion migrated to the slot axis: unlike the other CSS-only parts
+	// this test covers, every one of its slots (item, trigger, trigger-icon,
+	// content, content-inner) now legitimately renders a class="..." attribute
+	// carrying its recipe's resolved utilities — assertCallerAttrsOnce's
+	// blanket "class= appears exactly once in the whole render" assumption
+	// no longer holds. Assert caller attrs merge onto their own element
+	// (item) exactly once instead, mirroring InputGroupButton's precedent
+	// for a migrated composed part.
 	got := render(t, ui.AccordionItem("faq", true, gsx.Fragment(
 		ui.AccordionTrigger(gsx.Raw("Question"), nil),
 		ui.AccordionContent(gsx.Raw("Answer"), nil),
@@ -53,7 +61,12 @@ func TestAccordionCSSOnlyContract(t *testing.T) {
 		"accordion-content",
 		"accordion-content-inner",
 	)
-	assertCallerAttrsOnce(t, got)
+	if strings.Count(got, `id="caller-id"`) != 1 {
+		t.Errorf(`id="caller-id" must render exactly once\nin: %s`, got)
+	}
+	if !strings.Contains(got, "border-b last:border-b-0 caller-only") {
+		t.Errorf("caller class must merge onto the item element's own recipe class\nin: %s", got)
+	}
 	if !strings.Contains(got, `name="faq" open`) {
 		t.Errorf("open item must retain native grouped disclosure state\nin: %s", got)
 	}

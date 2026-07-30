@@ -1,0 +1,49 @@
+/* Source: gsxui@c9289d5, assets/css/styles/default/accordion.css, folded
+   into six slots. Nova and Maia have not diverged on Accordion yet, so this
+   file is byte-identical to registry/styles/maia/accordion.css.
+
+   Relational forms:
+   - item's `:last-child` is Tailwind's built-in `last:` pseudo-class variant.
+   - trigger-icon's rotate on an open ancestor item
+     (`:where([data-gsxui-slot-accordion-item])[open] >
+     :where([data-gsxui-slot-accordion-trigger])
+     :where([data-gsxui-slot-accordion-trigger-icon])`) is the same shape as
+     Label's ancestor `data-disabled` rule in the playbook — an ancestor's
+     own [open] state painting a descendant, not a marker :has() detects —
+     so it translates as the arbitrary ancestor-descendant variant
+     `[[data-gsxui-slot-accordion-item][open]_&]:rotate-180`. The
+     intermediate `>` direct-child hop to trigger collapses into a plain
+     descendant match: trigger-icon is always nested inside trigger, which
+     is always a direct child of item, so "descendant of an open item"
+     is exactly equivalent here.
+
+   trigger's `::-webkit-details-marker { display: none }` is NOT here: a
+   pseudo-element has no Tailwind utility form at all, so it stays behind in
+   assets/css/styles/default.css's @layer utilities block as the escape
+   hatch — same shape as Card's container-name rule. */
+@layer components {
+  .gsxui-recipe-accordion-item {
+    @apply border-b;
+    @apply last:border-b-0;
+  }
+
+  .gsxui-recipe-accordion-trigger {
+    @apply flex list-none items-start justify-between rounded-lg py-2.5 text-left text-sm font-medium transition-all outline-none;
+    @apply hover:underline;
+    @apply focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50;
+    @apply disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .gsxui-recipe-accordion-trigger-icon {
+    @apply size-4 shrink-0 text-muted-foreground transition-transform duration-200;
+    @apply [[data-gsxui-slot-accordion-item][open]_&]:rotate-180;
+  }
+
+  .gsxui-recipe-accordion-content {
+    @apply overflow-hidden text-sm;
+  }
+
+  .gsxui-recipe-accordion-content-inner {
+    @apply pt-0 pb-2.5;
+  }
+}

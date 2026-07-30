@@ -39,7 +39,6 @@
 @import "./default/switch.css";
 @import "./default/textarea.css";
 @import "./default/toggle.css";
-@import "./default/accordion.css";
 @import "./default/dialog.css";
 @import "./default/alert-dialog.css";
 @import "./default/drawer-sheet-shared.css";
@@ -72,6 +71,15 @@
    layers before it ever looks at specificity, so a components-layer rule can
    no longer beat them however specific it is. */
 @layer utilities {
+  /* Accordion trigger: ::-webkit-details-marker is a pseudo-element with no
+     Tailwind utility form at all, so a recipe stylesheet (@apply-only)
+     can't carry it. Everything else in Accordion's rule set moved to
+     registry/styles/{nova,maia}/accordion.css. Unwrapped for the same
+     specificity-floor reason as Card header below. */
+  [data-gsxui-slot-accordion-trigger]::-webkit-details-marker {
+    display: none;
+  }
+
   /* Card header: container-name/container-type are plain CSS properties with
      no Tailwind utility equivalent, so recipe stylesheets (@apply-only) can't
      carry them. This is the migration's escape hatch — everything else in
