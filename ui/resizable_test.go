@@ -92,7 +92,14 @@ func TestResizableHandleWithHandleRendersNovaPill(t *testing.T) {
 
 func TestResizableHandleWithoutHandleHasNoGrip(t *testing.T) {
 	got := render(t, ui.ResizableHandle("horizontal", false, nil))
-	if strings.Contains(got, "resizable-handle-grip") {
+	// Not a bare Contains("resizable-handle-grip"): the handle's own recipe
+	// class now legitimately carries that substring inside its
+	// aria-[orientation=horizontal]:[&>[data-gsxui-slot-resizable-handle-grip]]
+	// rotate-90 utility (the handle painting its child, same relational
+	// shape as Alert's variant recoloring its description). The actual
+	// rendered marker (a real grip element) always ends the attribute with
+	// "-grip>", which the class string's bracketed selector never does.
+	if strings.Contains(got, "resizable-handle-grip>") {
 		t.Errorf("withHandle=false must not render the grip\nin: %s", got)
 	}
 }
@@ -104,7 +111,7 @@ func TestResizableHandlePinnedHorizontal(t *testing.T) {
 	// invisible to CI — the group's own string already gets this
 	// treatment, matching house style (ui/toggle-group_test.go).
 	got := render(t, ui.ResizableHandle("horizontal", false, nil))
-	want := `<div data-gsxui-resizable-handle role="separator" aria-orientation="vertical" tabindex="0" data-gsxui-slot-resizable-handle></div>`
+	want := `<div data-gsxui-resizable-handle role="separator" aria-orientation="vertical" tabindex="0" class="bg-border focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:outline-hidden aria-[orientation=vertical]:w-px aria-[orientation=vertical]:cursor-col-resize aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:cursor-row-resize aria-[orientation=horizontal]:[&amp;&gt;[data-gsxui-slot-resizable-handle-grip]]:rotate-90" data-gsxui-slot-resizable-handle></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -112,7 +119,7 @@ func TestResizableHandlePinnedHorizontal(t *testing.T) {
 
 func TestResizableHandlePinnedVertical(t *testing.T) {
 	got := render(t, ui.ResizableHandle("vertical", false, nil))
-	want := `<div data-gsxui-resizable-handle role="separator" aria-orientation="horizontal" tabindex="0" data-gsxui-slot-resizable-handle></div>`
+	want := `<div data-gsxui-resizable-handle role="separator" aria-orientation="horizontal" tabindex="0" class="bg-border focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:outline-hidden aria-[orientation=vertical]:w-px aria-[orientation=vertical]:cursor-col-resize aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:cursor-row-resize aria-[orientation=horizontal]:[&amp;&gt;[data-gsxui-slot-resizable-handle-grip]]:rotate-90" data-gsxui-slot-resizable-handle></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

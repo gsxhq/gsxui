@@ -123,7 +123,6 @@
   }
   :where([data-gsxui-slot-resizable-handle]) {
     position: relative;
-    display: flex;
     flex: none;
     align-items: center;
     justify-content: center;
@@ -135,11 +134,6 @@
     width: 4px;
     content: "";
     transform: translateX(-50%);
-  }
-  :where(
-      [data-gsxui-slot-resizable-handle][aria-orientation="horizontal"]
-    ) {
-    width: 100%;
   }
   :where(
       [data-gsxui-slot-resizable-handle][aria-orientation="horizontal"]
@@ -400,5 +394,28 @@ input[type="range"] {
     bottom: var(--gsxui-toast-offset, 0);
     transform-origin: bottom;
     pointer-events: auto;
+  }
+}
+
+/* Resizable handle escape hatch: migrating Resizable to the slot axis gave
+   its own recipe classes (registry/styles/{nova,maia}/resizable.css) real
+   (0,1,0) specificity. The layer gate's component-utilities check is
+   whole-component, not per-slot — the handle-grip rule's own "flex"/"w-1"
+   utilities register as utilities the "resizable" component owns, and that
+   shadows the mechanics rules above that set the same CSS properties
+   (display, width) on the handle marker, even unconditionally/under a
+   different aria-orientation branch. Only the two contested properties are
+   promoted here (display from the unconditioned handle rule; width from its
+   aria-orientation="horizontal" rule) — everything else in those rules is
+   uncontested and stays above, same split FieldLabel's migration used
+   (only leading-snug promoted, not the whole declaration). Unwrapped (no
+   :where()) to clear the (0,1,0) specificity floor the layer gate requires
+   of anything left behind here. */
+@layer utilities {
+  [data-gsxui-slot-resizable-handle] {
+    display: flex;
+  }
+  [data-gsxui-slot-resizable-handle][aria-orientation="horizontal"] {
+    width: 100%;
   }
 }

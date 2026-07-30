@@ -218,12 +218,20 @@ test("Resizable consumes dynamic flex values and remains keyboard operable", asy
   await expect.poll(() => handle.evaluate((el) => el.getBoundingClientRect().width)).toBe(1);
   await page.addStyleTag({
     content: `
-      @layer components {
-        :where(
-          [data-gsxui-slot-resizable-handle][aria-orientation="vertical"]
-        ) {
-          width: 6px;
-        }
+      /* No @layer wrapper, not :where(): Resizable is migrated to the slot
+         axis, so its width now comes from a literal Tailwind utility class
+         (aria-[orientation=vertical]:w-px) compiled into Tailwind's own
+         internal @layer utilities — which always outranks @layer components
+         regardless of specificity or source order, by CSS cascade-layer
+         order, not just specificity. Before migration this override lived
+         in the same @layer components as default.css's rule and won on a
+         same-layer specificity/order tie; that tie no longer exists post-
+         migration, so the override must be unlayered (author styles beat
+         every layered rule unconditionally) to still take effect. This
+         test's intent — JS reads live computed width, not whichever rule
+         authored it — is unaffected by the change. */
+      [data-gsxui-slot-resizable-handle][aria-orientation="vertical"] {
+        width: 6px;
       }
     `,
   });

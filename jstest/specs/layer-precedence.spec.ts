@@ -245,4 +245,18 @@ test("Collapsible trigger keeps its list-none marker hidden", async ({ page }) =
   const listStyle = await el.evaluate((n) => getComputedStyle(n).listStyleType);
   expect(listStyle).toBe("none");
 });
+test("Resizable handle keeps its hairline width and flex layout", async ({ page }) => {
+  // Pins both the recipe's own width and the foundation.css escape-hatch
+  // rules (display: flex / width: 100% under aria-orientation=horizontal)
+  // that Resizable's migration split out of the same selector — a layer
+  // regression on either half would visibly widen or collapse the handle.
+  await page.goto("/x/resizable/handle");
+  const handle = page.locator("[data-gsxui-slot-resizable-handle]").first();
+  const { width, display } = await handle.evaluate((n) => {
+    const computed = getComputedStyle(n);
+    return { width: computed.width, display: computed.display };
+  });
+  expect(display).toBe("flex");
+  expect(width).toBe("1px");
+});
 
