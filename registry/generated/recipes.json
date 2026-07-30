@@ -109,6 +109,14 @@
           "dimensions": {}
         }
       }
+    },
+    "skeleton": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
     }
   },
   "styles": {
@@ -441,6 +449,18 @@
             "dimensions": {}
           }
         }
+      },
+      "skeleton": {
+        "slots": {
+          "": {
+            "base": [
+              "animate-pulse",
+              "rounded-md",
+              "bg-accent"
+            ],
+            "dimensions": {}
+          }
+        }
       }
     },
     "nova": {
@@ -763,6 +783,18 @@
               "text-base",
               "leading-snug",
               "font-medium"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "skeleton": {
+        "slots": {
+          "": {
+            "base": [
+              "animate-pulse",
+              "rounded-md",
+              "bg-accent"
             ],
             "dimensions": {}
           }

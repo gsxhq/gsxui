@@ -1,0 +1,9 @@
+/* Source: gsxui@05bfe97, assets/css/styles/default.css, Skeleton block
+   (single rule). No relational forms, no dimensions. Nova and Maia have not
+   diverged on Skeleton, so this file is byte-identical to
+   registry/styles/maia/skeleton.css. */
+@layer components {
+  .gsxui-recipe-skeleton {
+    @apply animate-pulse rounded-md bg-accent;
+  }
+}

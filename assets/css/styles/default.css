@@ -291,11 +291,6 @@
     @apply size-4;
   }
 
-  /* Skeleton */
-  :where([data-gsxui-slot-skeleton]) {
-    @apply animate-pulse rounded-md bg-accent;
-  }
-
   /* Spinner */
   :where([data-gsxui-slot-spinner]) {
     @apply size-4 animate-spin;

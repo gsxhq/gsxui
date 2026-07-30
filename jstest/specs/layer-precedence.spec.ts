@@ -138,3 +138,14 @@ test("Alert destructive variant recolors text but keeps the default's radius", a
   const radius = await defaultAlert.evaluate((n) => getComputedStyle(n).borderRadius);
   expect(radius).toBe("10px");
 });
+
+test("Skeleton keeps its rounded-md corner radius", async ({ page }) => {
+  await page.goto("/x/skeleton/basic");
+  const el = page.locator("[data-gsxui-slot-skeleton]").first();
+  const radius = await el.evaluate((n) => getComputedStyle(n).borderRadius);
+  // rounded-md resolves to --radius-md = calc(var(--radius) - 2px), and this
+  // theme's --radius is 0.625rem (10px) — the same token Card's 14px
+  // (--radius + 4px) pin already anchors.
+  expect(radius).toBe("8px");
+});
+

@@ -366,8 +366,10 @@ func TestSidebarMenuSkeletonComposesSkeletonPartsAndKeepsDynamicWidth(t *testing
 		`data-gsxui-slot-sidebar-menu-skeleton-text data-gsxui-slot-skeleton`,
 		`--skeleton-width:`,
 	)
-	if strings.Contains(got, ` class=`) || strings.Contains(got, `data-sidebar=`) || strings.Contains(got, `data-slot=`) {
-		t.Fatalf("skeleton composition retained presentation classes or legacy styling hooks\nin: %s", got)
+	// Skeleton is on the slot axis: its parts legitimately carry the
+	// recipe's resolved class now. Only the legacy hooks are disallowed.
+	if strings.Contains(got, `data-sidebar=`) || strings.Contains(got, `data-slot=`) {
+		t.Fatalf("skeleton composition retained legacy styling hooks\nin: %s", got)
 	}
 
 	without := render(t, ui.SidebarMenuSkeleton(false, nil))
