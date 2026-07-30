@@ -139,14 +139,34 @@ test("Alert destructive variant recolors text but keeps the default's radius", a
   expect(radius).toBe("10px");
 });
 
-test("Skeleton keeps its rounded-md corner radius", async ({ page }) => {
+test("Skeleton keeps its rounded-md radius, and a caller class still wins", async ({
+  page,
+}) => {
   await page.goto("/x/skeleton/basic");
-  const el = page.locator("[data-gsxui-slot-skeleton]").first();
-  const radius = await el.evaluate((n) => getComputedStyle(n).borderRadius);
-  // rounded-md resolves to --radius-md = calc(var(--radius) - 2px), and this
-  // theme's --radius is 0.625rem (10px) — the same token Card's 14px
-  // (--radius + 4px) pin already anchors.
-  expect(radius).toBe("8px");
+  // The FIRST skeleton on this page is <ui.Skeleton class="size-12
+  // rounded-full"/>, so it deliberately does NOT show the recipe's radius —
+  // reading .first() here is what made the original pin fail. Read a skeleton
+  // with no radius override for the recipe value, and use the overridden one to
+  // pin caller precedence, which nothing else asserts.
+  const plain = page.locator("[data-gsxui-slot-skeleton]").nth(1);
+  const overridden = page.locator("[data-gsxui-slot-skeleton]").first();
+
+  // rounded-md is --radius-md = calc(var(--radius) - 2px); this theme's
+  // --radius is 0.625rem (10px), the same token Card's 14px pin anchors.
+  expect(
+    await plain.evaluate((n) => getComputedStyle(n).borderRadius),
+  ).toBe("8px");
+
+  // A caller-supplied rounded-full must still beat the recipe's rounded-md.
+  // Compiled component presentation lives in @layer utilities, so this is the
+  // property most at risk from the migration and the least covered.
+  const overriddenRadius = await overridden.evaluate((n) =>
+    parseFloat(getComputedStyle(n).borderRadius),
+  );
+  const overriddenHeight = await overridden.evaluate(
+    (n) => n.getBoundingClientRect().height,
+  );
+  expect(overriddenRadius).toBeGreaterThanOrEqual(overriddenHeight / 2);
 });
 
 test("Spinner keeps its spin animation", async ({ page }) => {
