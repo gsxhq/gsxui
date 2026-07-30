@@ -1,6 +1,7 @@
-// Sonner (toasts). Unlike every other gsxui behavior module (which attaches
-// delegated behavior to server-rendered markup), sonner's card markup is
-// still authored server-side — as the ui.Toast component — but shipped as
+// Toaster (toasts) — the behavior module for ui/toaster.gsx. Unlike every
+// other gsxui behavior module (which attaches delegated behavior to
+// server-rendered markup), the toast card markup is still authored
+// server-side — as the separately registered ui.Toast component — but shipped as
 // inert per-type <template>s inside ui.Toaster. This module CLONES the
 // matching type's template on each toast() call (never builds card DOM from
 // JS string concatenation), then owns the whole lifecycle: mount → stack →

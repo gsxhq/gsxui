@@ -1,4 +1,4 @@
-package sonner
+package toaster
 
 import "github.com/gsxhq/gsxui/ui"
 
@@ -6,7 +6,7 @@ import "github.com/gsxhq/gsxui/ui"
 // fires a toast with a description and an "Undo" action. It uses the
 // declarative data-gsxui-toast trigger (no page script needed) — the same
 // zero-JS idiom as the dialog trigger. The toast itself is built by
-// ui/sonner.js and mounted into the layout's <ui.Toaster/> region.
+// ui/toaster.js and mounted into the layout's <ui.Toaster/> region.
 component Basic() {
 	<ui.Button
 		variant="outline"

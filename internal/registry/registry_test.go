@@ -15,7 +15,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "calendar", "card", "carousel", "checkbox", "collapsible", "combobox", "command", "context-menu", "dialog", "drawer", "dropdown-menu", "empty", "field", "hover-card", "icon", "input", "input-group", "input-otp", "item", "kbd", "label", "menubar", "native-select", "navigation-menu", "pagination", "popover", "progress", "radio", "resizable", "scroll-area", "select", "separator", "sheet", "sidebar", "skeleton", "slider", "sonner", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
+	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "calendar", "card", "carousel", "checkbox", "collapsible", "combobox", "command", "context-menu", "dialog", "drawer", "dropdown-menu", "empty", "field", "hover-card", "icon", "input", "input-group", "input-otp", "item", "kbd", "label", "menubar", "native-select", "navigation-menu", "pagination", "popover", "progress", "radio", "resizable", "scroll-area", "select", "separator", "sheet", "sidebar", "skeleton", "slider", "spinner", "switch", "table", "tabs", "textarea", "toast", "toaster", "toggle", "toggle-group", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -35,23 +35,9 @@ func TestComponentsMatchTypedStyleContract(t *testing.T) {
 	for _, component := range stylecontract.All() {
 		contractComponents = append(contractComponents, component.RegistryName)
 	}
-	// ui/sonner.gsx is one vendorable file backing two typed style-contract
-	// components, "toaster" and "toast" (they're separate gsx components
-	// rendered by gsxui itself, and the split lets each satisfy the
-	// "<RegistryName>-<relative>" slot-naming rule with no exception — see
-	// contracts_toast.go). registry.Components() stays file-derived, so fold
-	// the pair back to the single file name "sonner" before comparing.
-	foldedContractComponents := make([]string, 0, len(contractComponents))
-	for _, name := range contractComponents {
-		if name == "toaster" || name == "toast" {
-			continue
-		}
-		foldedContractComponents = append(foldedContractComponents, name)
-	}
-	foldedContractComponents = append(foldedContractComponents, "sonner")
-	slices.Sort(foldedContractComponents)
-	if !slices.Equal(components, foldedContractComponents) {
-		t.Fatalf("registry components = %v; typed style contract (toast/toaster folded to sonner) = %v", components, foldedContractComponents)
+	slices.Sort(contractComponents)
+	if !slices.Equal(components, contractComponents) {
+		t.Fatalf("registry components = %v; typed style contract = %v", components, contractComponents)
 	}
 }
 
@@ -433,16 +419,27 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("select deps = %v, want [icon]", deps)
 	}
 
-	// sonner.gsx imports ui/icon: the server-rendered ui.Toast card (the
+	// toast.gsx imports ui/icon: the server-rendered ui.Toast card (the
 	// single source of the toast <li> markup, shipped as inert per-type
-	// <template>s and cloned by ui/sonner.js) renders its type glyph and the
-	// close X via icon.* Go calls — so Deps is [icon], no longer empty.
-	deps, err = registry.Deps("sonner")
+	// <template>s by Toaster and cloned by ui/toaster.js) renders its type
+	// glyph and the close X via icon.* Go calls — so Deps is [icon].
+	deps, err = registry.Deps("toast")
 	if err != nil {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(deps, []string{"icon"}) {
-		t.Fatalf("sonner deps = %v, want [icon]", deps)
+		t.Fatalf("toast deps = %v, want [icon]", deps)
+	}
+
+	// toaster.gsx imports nothing itself, but its generated .x.go renders
+	// the Toast component (the per-type <template>s), so declIndex resolves
+	// the intra-package edge to [toast].
+	deps, err = registry.Deps("toaster")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(deps, []string{"toast"}) {
+		t.Fatalf("toaster deps = %v, want [toast]", deps)
 	}
 
 	// combobox.gsx imports ui/icon (ComboboxItem's Check, ComboboxTrigger's
@@ -605,14 +602,16 @@ func TestHasJS(t *testing.T) {
 	if registry.HasJS("native-select") {
 		t.Error("native-select should not have JS")
 	}
-	// sonner has its own ui/sonner.js — it clones Toaster's server-rendered
+	// toaster has its own ui/toaster.js — it clones Toaster's server-rendered
 	// per-type <template>s into live toast <li>s and owns the stacking/
 	// timer/pause-on-hover/promise-morph lifecycle plus adoption of
-	// server-inserted rows. ui/sonner.gsx (Toaster + ui.Toast) is the
-	// single source of the card markup; HasJS derives from the
-	// <basename>.js match, so the file is ui/sonner.js.
-	if !registry.HasJS("sonner") {
-		t.Error("sonner should have JS")
+	// server-inserted rows. The lifecycle belongs to the region, not the
+	// card: ui/toast.gsx is pure markup and has no JS of its own.
+	if !registry.HasJS("toaster") {
+		t.Error("toaster should have JS")
+	}
+	if registry.HasJS("toast") {
+		t.Error("toast should not have JS")
 	}
 	// combobox has its own ui/combobox.js — filter-as-you-type (hide/show,
 	// no reordering; see its own header ADAPT), a data-highlighted +
@@ -776,13 +775,14 @@ func TestResolveTransitive(t *testing.T) {
 		t.Fatalf("got %v want %v", got, want)
 	}
 
-	// sonner depends on icon (ui.Toast renders Lucide glyphs) — Resolve pulls
-	// icon in ahead of it, same shape as select/native-select above.
-	got, err = registry.Resolve([]string{"sonner"})
+	// toaster composes toast, which depends on icon (ui.Toast renders Lucide
+	// glyphs) — Resolve walks the two-hop chain, same shape as combobox's
+	// input-group edge above.
+	got, err = registry.Resolve([]string{"toaster"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	want = []string{"icon", "sonner"}
+	want = []string{"icon", "toast", "toaster"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}

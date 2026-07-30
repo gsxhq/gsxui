@@ -1,0 +1,7 @@
+@layer components {
+  /* Toaster — the positioned toast region (ui/toaster.gsx). */
+  :where([data-gsxui-slot-toaster]) {
+    --gsxui-toast-offset: 1.5rem;
+    @apply flex flex-col gap-2 p-6;
+  }
+}

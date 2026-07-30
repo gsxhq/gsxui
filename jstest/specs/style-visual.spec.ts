@@ -20,7 +20,7 @@ const desktopRoutes = [
   "sidebar/variants?_preview=none",
   "sidebar/variants?_preview=right-collapsed",
   "sidebar/variants?_preview=icon-collapsed",
-  "sonner/types",
+  "toaster/types",
   "tabs/basic",
 ] as const;
 
@@ -67,7 +67,7 @@ async function prepareVisualRoute(
     await expect(page.locator("[data-gsxui-dropdown-content]")).toBeVisible();
   }
 
-  if (route === "sonner/types") {
+  if (route === "toaster/types") {
     const triggers = page.locator("button[data-gsxui-toast]");
     await expect(triggers).toHaveCount(5);
     for (let i = 0; i < 5; i++) {

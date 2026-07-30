@@ -144,7 +144,7 @@ test("foundation keeps InputOTP entry and client caret functional", async ({ pag
 test("foundation keeps Sonner fallback creation and server-row adoption functional", async ({
   page,
 }) => {
-  await page.goto(foundation("/x/sonner/types"));
+  await page.goto(foundation("/x/toaster/types"));
   await page.evaluate(() => {
     const section = document.querySelector('[aria-label="Notifications"]')!;
     for (const template of [...section.querySelectorAll("template")]) {

@@ -1131,7 +1131,7 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   ships six inert
   `<template data-gsxui-toast-template="TYPE">`s (default/success/info/
   warning/error/loading), one per type, each wrapping a placeholder
-  `ui.Toast`. `ui/sonner.js` no longer builds card DOM from string
+  `ui.Toast`. `ui/toaster.js` no longer builds card DOM from string
   concatenation — its `build()` **clones** the matching type's template
   content and fills/removes the dedicated `data-gsxui-toast-title`/
   `-description`/`-action`/`-cancel` parts, then owns the lifecycle (mount →
@@ -1189,17 +1189,17 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   real `ui/icon` component calls (`icon.CircleCheck`/`Info`/`TriangleAlert`/
   `OctagonX`/`LoaderCircle` for the types, `icon.X` for close) — the earlier
   maintenance seam (five type glyphs + the close `x` hand-copied as literal
-  SVG-path strings into `ui/sonner.js`, which would silently drift if
+  SVG-path strings into `ui/toaster.js`, which would silently drift if
   `ui/icon` were regenerated from a newer Lucide) is deleted outright. The
   `GLYPHS`/`X_GLYPH`/`svg()`/`iconHTML()` helpers are gone; promise-morph
   swaps the icon by cloning the target type's template icon slot.
 - BARREL-EXPORT PRECEDENT (first public imperative API): `ui/index.js` gains
-  both `import "./sonner.js"` (side-effect: the declarative trigger + the
-  window global) AND `export { toast } from "./sonner.js"`, so
+  both `import "./toaster.js"` (side-effect: the declarative trigger + the
+  window global) AND `export { toast } from "./toaster.js"`, so
   `import { toast } from "gsxui"` works for page authors. Dialog controls
   compose through DOM request events instead of an exported helper; `toast` is the first public
   imperative surface re-exported through the barrel. Because an inline
-  `<script>` on a demo page cannot import the barrel, `ui/sonner.js` also
+  `<script>` on a demo page cannot import the barrel, `ui/toaster.js` also
   attaches `window.gsxui = Object.assign(window.gsxui ?? {}, { toast })` —
   `site/examples/sonner/types.gsx`'s promise button uses
   `window.gsxui.toast.promise` (documented choice).
@@ -1250,12 +1250,12 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
 - GAP (swipe-dismiss): sonner is touch swipe-dismissible (drag past a
   threshold). gsxui v1 ships no gesture layer — dismissal is the close
   button, the action button, the auto-dismiss timer, or `toast.dismiss(id?)`.
-- Registry: `sonner.gsx` now imports `ui/icon` (the `ui.Toast` card renders
+- Registry: `toast.gsx` imports `ui/icon` (the `ui.Toast` card renders
   its type glyph and close `x` via `icon.*` calls), so
   `registry.Deps("sonner")` is `["icon"]` and `Resolve(["sonner"])` is
   `["icon", "sonner"]` — pinned in `internal/registry/registry_test.go`
   (previously empty, when the icons were JS path-strings). `HasJS("sonner")`
-  is `true` (`ui/sonner.js`, exact-basename match).
+  is `true` (`ui/toaster.js`, exact-basename match on the toaster component).
 
 ## resizable
 - ADAPT (handle `aria-orientation` inverted from the group's own

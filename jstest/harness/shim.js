@@ -22,11 +22,11 @@
 //   1. Document/window-level signals with no selector to delegate on —
 //      ui/input-otp.js's document "selectionchange" (the case the review
 //      called out), ui/command.js's ⌘K "keydown", ui/sidebar.js's shortcut
-//      "keydown", ui/avatar.js's window "load" sweep, ui/sonner.js's
+//      "keydown", ui/avatar.js's window "load" sweep, ui/toaster.js's
 //      "DOMContentLoaded" init.
 //   2. Listeners bound to a specific element the module already holds a
 //      reference to — ui/carousel.js's per-root pointer/focus pause,
-//      ui/sonner.js's per-toast buttons, ui/context-menu.js's one-shot
+//      ui/toaster.js's per-toast buttons, ui/context-menu.js's one-shot
 //      "pointerup".
 //
 // Neither shape can collide the way delegated selectors can, which is why

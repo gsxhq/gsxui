@@ -504,7 +504,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
     "",
   );
 
-  await page.goto("/x/sonner/types");
+  await page.goto("/x/toaster/types");
   await page.evaluate(() => {
     for (let index = 0; index < 4; index++) {
       window.gsxui.toast(`Runtime queue ${index}`, { duration: 60_000 });

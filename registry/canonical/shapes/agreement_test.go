@@ -28,10 +28,9 @@ const authorityNote = "the style contract is authoritative (it describes the ren
 // by the style contract ("card", "card-header").
 //
 // The mapping is registry name for the root, and registry name + "-" + relative
-// name otherwise. That holds for every component in stylecontract.All() except
-// Sonner, whose slots are named after "toaster"/"toast" rather than its registry
-// name "sonner"; Sonner has no shape today, and if it ever gets one this check
-// will fail loudly rather than silently accept a mismatch.
+// name otherwise. That holds for every component in stylecontract.All() with no
+// exception — the toast/toaster split (ui/toast.gsx, ui/toaster.gsx) exists
+// precisely so both halves satisfy the rule.
 func contractSlotName(registryName, slot string) string {
 	if slot == "" {
 		return registryName

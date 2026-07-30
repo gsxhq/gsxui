@@ -265,33 +265,16 @@ func selectedButtonArtifact(module string, cfg Config, style preset.Style) (arti
 	}, nil
 }
 
-// styledComponentSourceBasename returns the ui/ file (or directory) basename
-// that vendors a style-contract component's RegistryName. This is the
-// identity function for every component except "toast" and "toaster", which
-// are two typed style-contract components backed by the single
-// ui/sonner.gsx — gsxui renders both the Toaster and the Toast DOM itself,
-// so they're split in the contract even though they still ship as one gsx
-// source file (see internal/stylecontract/contracts_toast.go).
-func styledComponentSourceBasename(name string) string {
-	switch name {
-	case "toast", "toaster":
-		return "sonner"
-	default:
-		return name
-	}
-}
-
 func installedStyledComponents(dir string, cfg Config) ([]string, error) {
 	components := stylecontract.All()
 	installed := make([]string, 0, len(components))
 	for _, component := range components {
 		name := component.RegistryName
-		source := styledComponentSourceBasename(name)
-		sourceInfo, directoryErr := fs.Stat(gsxui.Files, "ui/"+source)
+		sourceInfo, directoryErr := fs.Stat(gsxui.Files, "ui/"+name)
 		directoryComponent := directoryErr == nil && sourceInfo.IsDir()
 		if !directoryComponent {
 			var fileErr error
-			sourceInfo, fileErr = fs.Stat(gsxui.Files, "ui/"+source+".gsx")
+			sourceInfo, fileErr = fs.Stat(gsxui.Files, "ui/"+name+".gsx")
 			if fileErr != nil {
 				return nil, fmt.Errorf("inspect registry component %s: %w", name, fileErr)
 			}
@@ -301,10 +284,10 @@ func installedStyledComponents(dir string, cfg Config) ([]string, error) {
 			pathErr error
 		)
 		if directoryComponent {
-			relative := filepath.ToSlash(filepath.Join(cfg.UI, source))
+			relative := filepath.ToSlash(filepath.Join(cfg.UI, name))
 			target, pathErr = artifactDirectoryPath(dir, relative)
 		} else {
-			relative := filepath.ToSlash(filepath.Join(cfg.UI, source+".gsx"))
+			relative := filepath.ToSlash(filepath.Join(cfg.UI, name+".gsx"))
 			target, pathErr = artifactPath(dir, relative)
 		}
 		if pathErr != nil {

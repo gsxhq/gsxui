@@ -2,7 +2,7 @@ import type { Page } from "@playwright/test";
 
 import { expect, test } from "../support/fixtures";
 
-const route = "/x/sonner/types";
+const route = "/x/toaster/types";
 
 async function expectSameTurnToastLifecycle(page: Page, label: string) {
   const card = page.locator(`[data-same-turn-toast="${label}"]`);

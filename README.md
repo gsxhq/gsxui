@@ -72,7 +72,7 @@ switch, textarea, toggle, toggle-group
 separator, skeleton, spinner, table
 
 **Overlay:** alert-dialog, context-menu, dialog, drawer, dropdown,
-hover-card, menubar, popover, sheet, sonner, tooltip
+hover-card, menubar, popover, sheet, toast, toaster, tooltip
 
 **Navigation:** accordion, breadcrumb, command, navigation-menu,
 pagination, sidebar, tabs

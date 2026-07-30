@@ -61,7 +61,7 @@ the start; per-component ledger entries in `docs/jsx-parity.md`.
 | slider | native `<input type=range>` + `slider.js` gradient fill | multi-thumb/range, vertical, inverted, minStepsBetweenThumbs; nova's ::after hit-target compensation (unreachable on thumb pseudo-elements) |
 | scroll-area | one collapsed div, standard + webkit scrollbar CSS | Corner (no Firefox concept); `type` visibility timing (OS policy wins) |
 | select (custom listbox) | dropdown machinery + `select.js` value model / prefix typeahead / hidden form bridge; `NativeSelect` stays alongside | scroll up/down buttons (popper-equivalent anchoring); no-JS form submit carries empty value (bridge is JS-filled) |
-| sonner (toasts) | `Toaster` + client-constructed toasts in `sonner.js`; `toast()` via barrel export | positions other than bottom-right; swipe-to-dismiss |
+| sonner (toasts) | `Toaster` + `Toast` (separately registered) with the lifecycle in `toaster.js`; `toast()` via barrel export | positions other than bottom-right; swipe-to-dismiss |
 | drawer | sheet-style `<dialog>` variant, four directions | vaul drag-to-dismiss, snap points, background scaling |
 | carousel | CSS scroll-snap + `carousel.js` | embla `loop` wraparound; plugin ecosystem (autoplay ships as a data attribute) |
 | input-otp | one hidden real input + presentational slots (`input-otp.js`) | first-paint slot values (JS-populated); anchored-regex pattern constants (per-char class instead) |

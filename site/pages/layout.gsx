@@ -232,7 +232,7 @@ component siteLayout(title string, active string, mode layoutMode, toc []docTOCI
 					</div>
 				</footer>
 			} }
-			{/* Mounted once per page: the bottom-right region ui/sonner.js
+			{/* Mounted once per page: the bottom-right region ui/toaster.js
 			   appends every client-constructed toast <li> into. */}
 			<ui.Toaster/>
 		</body>

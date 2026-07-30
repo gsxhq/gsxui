@@ -1,4 +1,4 @@
-package sonner
+package toast
 
 import "github.com/gsxhq/gsxui/ui"
 
@@ -9,7 +9,7 @@ import "github.com/gsxhq/gsxui/ui"
 //
 //  1. A static ui.Toast rendered inline (the markup showcase). On a full page
 //     load a server would drain its session/request flashes into <ui.Toaster/>
-//     exactly like this; ui/sonner.js adopts every li[data-gsxui-toast]
+//     exactly like this; ui/toaster.js adopts every li[data-gsxui-toast]
 //     present at init — inside the toaster region, which is where a real
 //     flash render puts them. This standalone preview sits OUTSIDE that
 //     region (so it is deliberately never adopted: no timer, no stacking)

@@ -18,8 +18,8 @@ import "./resizable.js";
 import "./select.js";
 import "./sidebar.js";
 import "./slider.js";
-import "./sonner.js";
 import "./tabs.js";
+import "./toaster.js";
 import "./toggle-group.js";
 import "./toggle.js";
 import "./tooltip.js";
@@ -27,4 +27,4 @@ import "./tooltip.js";
 // First public imperative API re-exported through the barrel for page
 // authors (every other module only exports internals for sibling use):
 // `import { toast } from "gsxui"`.
-export { toast } from "./sonner.js";
+export { toast } from "./toaster.js";

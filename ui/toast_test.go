@@ -26,40 +26,7 @@ func forbidMarkup(t *testing.T, got string, fragments ...string) {
 	}
 }
 
-func TestSonnerToasterContract(t *testing.T) {
-	got := render(t, ui.Toaster(nil))
-	requireMarkup(t, got,
-		`<section aria-label="Notifications" tabindex="-1">`,
-		`<ol id="gsxui-toaster" data-gsxui-toaster data-gsxui-slot-toaster></ol>`,
-		`<template data-gsxui-toast-template="default">`,
-		`<template data-gsxui-toast-template="success">`,
-		`<template data-gsxui-toast-template="info">`,
-		`<template data-gsxui-toast-template="warning">`,
-		`<template data-gsxui-toast-template="error">`,
-		`<template data-gsxui-toast-template="loading">`,
-	)
-	if gotCount := strings.Count(got, `data-gsxui-toast-template=`); gotCount != 6 {
-		t.Errorf("template count = %d, want 6\nin: %s", gotCount, got)
-	}
-	forbidMarkup(t, got, `data-slot=`, ` class="`)
-}
-
-func TestSonnerToasterAttrsMergeAndCallerClass(t *testing.T) {
-	got := render(t, ui.Toaster(gsx.Attrs{
-		{Key: "id", Value: "my-toaster"},
-		{Key: "class", Value: "caller-region"},
-		{Key: "data-gsxui-slot-caller-token", Value: true},
-	}))
-	requireMarkup(t, got,
-		`id="my-toaster"`,
-		`data-gsxui-toaster`,
-		`class="caller-region"`,
-		`data-gsxui-slot-caller-token data-gsxui-slot-toaster`,
-	)
-	forbidMarkup(t, got, `id="gsxui-toaster"`)
-}
-
-func TestSonnerToastContract(t *testing.T) {
+func TestToastContract(t *testing.T) {
 	got := render(t, ui.Toast("error", "Failed", "Try again", "Retry", "Dismiss", nil))
 	requireMarkup(t, got,
 		`<li data-gsxui-toast data-type="error" role="status" aria-live="assertive" aria-atomic="true" data-gsxui-slot-toast>`,
@@ -86,7 +53,7 @@ func TestSonnerToastContract(t *testing.T) {
 	)
 }
 
-func TestSonnerToastCallerClassAndSlotComposition(t *testing.T) {
+func TestToastCallerClassAndSlotComposition(t *testing.T) {
 	got := render(t, ui.Toast("default", "Hello", "", "", "", gsx.Attrs{
 		{Key: "class", Value: "caller-toast"},
 		{Key: "data-gsxui-slot-caller-token", Value: true},
@@ -97,7 +64,7 @@ func TestSonnerToastCallerClassAndSlotComposition(t *testing.T) {
 	)
 }
 
-func TestSonnerToastTypeIconsAndAria(t *testing.T) {
+func TestToastTypeIconsAndAria(t *testing.T) {
 	cases := []struct {
 		typ      string
 		ariaLive string
@@ -126,7 +93,7 @@ func TestSonnerToastTypeIconsAndAria(t *testing.T) {
 	}
 }
 
-func TestSonnerToastOptionalPartsAndDuration(t *testing.T) {
+func TestToastOptionalPartsAndDuration(t *testing.T) {
 	full := render(t, ui.Toast("info", "Title", "Detail", "Retry", "Dismiss",
 		gsx.Attrs{{Key: "data-duration", Value: "8000"}}))
 	requireMarkup(t, full,

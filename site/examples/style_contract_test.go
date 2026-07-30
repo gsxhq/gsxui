@@ -164,21 +164,8 @@ func TestRegisteredExamplesCoverStyleContract(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	// ui/sonner.gsx is one vendorable file backing two typed style-contract
-	// components, "toaster" and "toast" (see internal/stylecontract/contracts_toast.go);
-	// registry.Components() stays file-derived, so fold the pair back to
-	// "sonner" before comparing against it.
-	foldedContractComponents := make([]string, 0, len(contractComponents))
-	for _, name := range contractComponents {
-		if name == "toaster" || name == "toast" {
-			continue
-		}
-		foldedContractComponents = append(foldedContractComponents, name)
-	}
-	foldedContractComponents = append(foldedContractComponents, "sonner")
-	slices.Sort(foldedContractComponents)
-	if !slices.Equal(foldedContractComponents, registered) {
-		t.Errorf("typed contract components (toast/toaster folded to sonner) = %v; registry components = %v", foldedContractComponents, registered)
+	if !slices.Equal(contractComponents, registered) {
+		t.Errorf("typed contract components = %v; registry components = %v", contractComponents, registered)
 	}
 
 	emittedSlots := make(map[string]struct{})

@@ -1,4 +1,4 @@
-package sonner
+package toaster
 
 import "github.com/gsxhq/gsxui/ui"
 
@@ -7,7 +7,7 @@ import "github.com/gsxhq/gsxui/ui"
 // trigger; the promise button needs the imperative API (toast.promise
 // morphs a loading toast in place on settle), reached here through the
 // window.gsxui global — inline <script> can't import the barrel, and
-// ui/sonner.js exposes window.gsxui.toast for exactly this case.
+// ui/toaster.js exposes window.gsxui.toast for exactly this case.
 component Types() {
 	<div class="flex flex-wrap gap-2">
 		<ui.Button variant="outline" data-gsxui-toast="Event has been created">Default</ui.Button>

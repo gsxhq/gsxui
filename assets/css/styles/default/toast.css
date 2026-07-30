@@ -1,9 +1,5 @@
 @layer components {
-  /* Sonner */
-  :where([data-gsxui-slot-toaster]) {
-    --gsxui-toast-offset: 1.5rem;
-    @apply flex flex-col gap-2 p-6;
-  }
+  /* Toast — the toast card (ui/toast.gsx). */
   :where([data-gsxui-slot-toast]) {
     @apply flex w-[356px] items-start gap-3 rounded-2xl border border-border bg-popover p-4 text-sm text-popover-foreground shadow-lg transition-[transform,opacity] duration-300 ease-out;
   }
