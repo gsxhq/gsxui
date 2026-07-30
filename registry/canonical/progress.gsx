@@ -1,10 +1,6 @@
 package canonical
 
-import (
-	"strconv"
-
-	"github.com/gsxhq/gsx"
-)
+import "github.com/gsxhq/gsx"
 
 // Progress is the shadcn/ui Progress. shadcn wraps Radix's
 // ProgressPrimitive.Root/Indicator pair (registry/new-york-v4/ui/progress.tsx);
@@ -18,17 +14,18 @@ import (
 // Radix's Indicator drives its fill via
 // `style={{ transform: translateX(-${100 - (value || 0)}%) }}` — ported
 // verbatim as the same translateX mechanism (not width, which would clip
-// transition-all's animation differently), computed here as
-// strconv.FormatFloat(100-value, ...) since a float64 param can't itself
-// concatenate into a string. The composed style value is wrapped in
-// gsx.RawCSS (MECHANISM, same precedent as AspectRatio's ratio property —
-// see ui/aspect-ratio.gsx and its docs/jsx-parity.md entry) to opt it out
-// of gw's CSS value filter, which blocklists "(" and ")" — punctuation
-// translateX(...)'s function-call syntax requires, not injected data. The
-// percentage is trusted, developer-computed layout intent, the same trust
-// boundary aspect-ratio's ratio already extends.
+// transition-all's animation differently).
+//
+// The declaration is a css`` literal (MECHANISM) rather than a Go
+// concatenation: gw's CSS value filter — a port of html/template's —
+// blocklists "(" and ")", and Go's + folds the static translateX(…) syntax
+// and the dynamic percentage into one string the filter then judges as a
+// unit, which is what previously forced gsx.RawCSS over the whole
+// declaration. In a css`` literal the function call is static template text
+// and only the percentage is a hole, so the filter still judges it and
+// nothing is trusted that the component did not itself compute. The hole
+// renders the float64 directly, the same way aria-valuenow does.
 component Progress(value float64, attrs gsx.Attrs) {
-	{{ remaining := strconv.FormatFloat(100-value, 'f', -1, 64) }}
 	<div
 		role="progressbar"
 		aria-valuemin="0"
@@ -39,7 +36,7 @@ component Progress(value float64, attrs gsx.Attrs) {
 		data-gsxui-slot-progress
 	>
 		<div
-			style={ "transform: translateX(-" + gsx.RawCSS(remaining) + "%)" }
+			style=css`transform: translateX(-@{100 - value}%)`
 			class={ progress.Indicator() }
 			data-gsxui-slot-progress-indicator
 		></div>

@@ -3,16 +3,15 @@
 package canonical
 
 import (
-	"strconv"
-
 	_gsxctx "context"
 	"github.com/gsxhq/gsx"
 	_gsxrt "github.com/gsxhq/gsx"
 	_gsxcm "github.com/gsxhq/gsxui/merge"
 	_gsxio "io"
+	_gsxsc "strconv"
 )
 
-//line progress.gsx:9:1
+//line progress.gsx:5:1
 // Progress is the shadcn/ui Progress. shadcn wraps Radix's
 // ProgressPrimitive.Root/Indicator pair (registry/new-york-v4/ui/progress.tsx);
 // this port replaces both with two plain divs, no client JS or component
@@ -25,24 +24,24 @@ import (
 // Radix's Indicator drives its fill via
 // `style={{ transform: translateX(-${100 - (value || 0)}%) }}` — ported
 // verbatim as the same translateX mechanism (not width, which would clip
-// transition-all's animation differently), computed here as
-// strconv.FormatFloat(100-value, ...) since a float64 param can't itself
-// concatenate into a string. The composed style value is wrapped in
-// gsx.RawCSS (MECHANISM, same precedent as AspectRatio's ratio property —
-// see ui/aspect-ratio.gsx and its docs/jsx-parity.md entry) to opt it out
-// of gw's CSS value filter, which blocklists "(" and ")" — punctuation
-// translateX(...)'s function-call syntax requires, not injected data. The
-// percentage is trusted, developer-computed layout intent, the same trust
-// boundary aspect-ratio's ratio already extends.
+// transition-all's animation differently).
+//
+// The declaration is a css`` literal (MECHANISM) rather than a Go
+// concatenation: gw's CSS value filter — a port of html/template's —
+// blocklists "(" and ")", and Go's + folds the static translateX(…) syntax
+// and the dynamic percentage into one string the filter then judges as a
+// unit, which is what previously forced gsx.RawCSS over the whole
+// declaration. In a css`` literal the function call is static template text
+// and only the percentage is a hole, so the filter still judges it and
+// nothing is trusted that the component did not itself compute. The hole
+// renders the float64 directly, the same way aria-valuenow does.
 
-//line progress.gsx:30:1
+//line progress.gsx:28:1
 func Progress(value float64, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 		var _gsxnum [32]byte
-//line progress.gsx:31:2
-		remaining := strconv.FormatFloat(100-value, 'f', -1, 64)
-//line progress.gsx:32:2
+//line progress.gsx:29:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"progressbar\"")
@@ -65,10 +64,10 @@ func Progress(value float64, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-progress"})
 		_gsxgw.BoolAttr("data-gsxui-slot-progress", true)
 		_gsxgw.S(">")
-//line progress.gsx:41:3
-		_gsxgw.S("<div style=\"")
-		_gsxgw.Style(_gsxrt.Class(_gsxrt.StyleValue("transform: translateX(-" + gsx.RawCSS(remaining) + "%)")))
-		_gsxgw.S("\" class=\"")
+//line progress.gsx:38:3
+		_gsxgw.S("<div style=\"transform: translateX(-")
+		_gsxgw.AttrValue(_gsxrt.StyleValue(_gsxsc.FormatFloat(float64(100-value), 'g', -1, 64)))
+		_gsxgw.S("%)\" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(progress.Indicator()))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-progress-indicator", true)

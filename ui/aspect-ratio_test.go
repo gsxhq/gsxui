@@ -72,6 +72,66 @@ func TestAspectRatioNumericRatio(t *testing.T) {
 	}
 }
 
+// TestAspectRatioGrammarForms pins every shape of the CSS aspect-ratio
+// grammar the component parses. The "<number> / <number>" and "auto || …"
+// forms are split so the slash and the auto keyword are static template
+// text; a ratio the grammar does not cover is emitted as a single hole and
+// left to gsx's CSS value filter.
+func TestAspectRatioGrammarForms(t *testing.T) {
+	for _, tt := range []struct {
+		name  string
+		ratio string
+		want  string
+	}{
+		{"pair", "16 / 9", "16 / 9"},
+		{"pair without spaces", "16/9", "16 / 9"},
+		{"pair with excess spaces", "  16  /  9  ", "16 / 9"},
+		{"bare number", "1.5", "1.5"},
+		{"exponent number", "1e2 / 3", "1e2 / 3"},
+		{"auto alone", "auto", "auto"},
+		{"auto before ratio", "auto 16 / 9", "auto 16 / 9"},
+		// `auto || <ratio>` is order-free; both orders mean the same thing,
+		// so the trailing form is re-emitted in the canonical leading one.
+		{"auto after ratio", "16 / 9 auto", "auto 16 / 9"},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			got := render(t, ui.AspectRatio(tt.ratio, nil, nil))
+			if want := `style="aspect-ratio: ` + tt.want + `"`; !strings.Contains(got, want) {
+				t.Errorf("missing %q\nin: %s", want, got)
+			}
+		})
+	}
+}
+
+// TestAspectRatioHostileRatioIsInert is the reason the component parses the
+// grammar instead of wrapping the value in gsx.RawCSS. Every author-supplied
+// number lands in its own hole, so gsx's CSS value filter (a port of
+// html/template's) still judges it: nothing that is not a recognised number
+// can reach the rendered declaration, and a hole can never contribute the
+// "/" that would be needed to close a CSS comment or open a second
+// declaration.
+func TestAspectRatioHostileRatioIsInert(t *testing.T) {
+	for _, ratio := range []string{
+		"red;background:url(javascript:alert(1))",
+		"16 / 9; color:red",
+		// A "*" immediately after the static slash would open a CSS comment
+		// and swallow the rest of the style attribute if the sides were not
+		// checked for being numbers.
+		"1 /* x",
+		"1 / * x",
+		"var(--r)",
+		"expression(alert(1))",
+		"auto16/9",
+	} {
+		t.Run(ratio, func(t *testing.T) {
+			got := render(t, ui.AspectRatio(ratio, nil, nil))
+			if !strings.Contains(got, `style="aspect-ratio: ZgotmplZ"`) {
+				t.Errorf("hostile ratio was not neutralised\nin: %s", got)
+			}
+		})
+	}
+}
+
 func TestAspectRatioAttrsFallThrough(t *testing.T) {
 	got := render(t, ui.AspectRatio("16 / 9", nil, gsx.Attrs{{Key: "id", Value: "ar1"}, {Key: "class", Value: "bg-muted"}}))
 	if !strings.Contains(got, `id="ar1"`) {
