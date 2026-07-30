@@ -575,3 +575,68 @@ test("Textarea's caller text-lg stays overridable against the retained md:text-s
   const fontSize = await el.evaluate((n) => getComputedStyle(n).fontSize);
   // text-lg (18px) must beat the retained md:text-sm (14px) rule.
   expect(fontSize).toBe("18px");
+});
+
+// Dialog's content radius, and AlertDialogContent's retained max-w-xs caller
+// override (section 10b — see assets/css/styles/default/alert-dialog.css).
+
+test("DialogContent keeps its rounded-xl radius and centered box once open", async ({ page }) => {
+  await page.goto("/x/dialog/basic");
+  const dialog = page.locator("dialog[data-gsxui-dialog-content]");
+  await dialog.evaluate((el) =>
+    el.dispatchEvent(new CustomEvent("gsxui:request-open", { bubbles: true, cancelable: true })),
+  );
+  await expect(dialog).toHaveJSProperty("open", true);
+  const radius = await dialog.evaluate((n) => getComputedStyle(n).borderRadius);
+  const position = await dialog.evaluate((n) => getComputedStyle(n).position);
+  expect(radius).toBe("14px");
+  expect(position).toBe("fixed");
+});
+
+test("AlertDialogContent's caller max-w-md stays overridable against the retained max-w-xs", async ({ page }) => {
+  const response = await page.goto("/f/style-contract");
+  expect(response?.status(), "style contract fixture response").toBe(200);
+
+  const el = page.locator('[data-style-contract="alert-dialog-content-caller"]');
+  await el.evaluate((n) =>
+    n.dispatchEvent(new CustomEvent("gsxui:request-open", { bubbles: true, cancelable: true })),
+  );
+  await expect(el).toHaveJSProperty("open", true);
+  const maxWidth = await el.evaluate((n) => getComputedStyle(n).maxWidth);
+  // max-w-md must beat the retained max-w-xs — this theme's --container-md
+  // token computes to 384px (not the 448px max-w-md usually reads as),
+  // confirmed against the actual computed style rather than guessed.
+  expect(maxWidth).toBe("384px");
+});
+
+// Composer fallout verification: DrawerContent/SheetContent stamp
+// data-gsxui-slot-dialog-content without ever calling dialog.Content()
+// (ui/drawer.gsx, ui/sheet.gsx), so they depend entirely on the marker
+// fallback in assets/css/styles/default.css for their base chrome. Verified
+// empirically here, not just by reading the CSS.
+
+test("DrawerContent keeps Dialog's shared fixed/z-50 chrome via the marker fallback", async ({ page }) => {
+  await page.goto("/x/drawer/basic");
+  const content = page.locator("dialog[data-gsxui-slot-drawer-content]").first();
+  await content.evaluate((el) =>
+    el.dispatchEvent(new CustomEvent("gsxui:request-open", { bubbles: true, cancelable: true })),
+  );
+  await expect(content).toHaveJSProperty("open", true);
+  const position = await content.evaluate((n) => getComputedStyle(n).position);
+  const zIndex = await content.evaluate((n) => getComputedStyle(n).zIndex);
+  expect(position).toBe("fixed");
+  expect(zIndex).toBe("50");
+});
+
+test("SheetContent keeps Dialog's shared fixed/z-50 chrome via the marker fallback", async ({ page }) => {
+  await page.goto("/x/sheet/basic");
+  const content = page.locator("dialog[data-gsxui-slot-sheet-content]").first();
+  await content.evaluate((el) =>
+    el.dispatchEvent(new CustomEvent("gsxui:request-open", { bubbles: true, cancelable: true })),
+  );
+  await expect(content).toHaveJSProperty("open", true);
+  const position = await content.evaluate((n) => getComputedStyle(n).position);
+  const zIndex = await content.evaluate((n) => getComputedStyle(n).zIndex);
+  expect(position).toBe("fixed");
+  expect(zIndex).toBe("50");
+});

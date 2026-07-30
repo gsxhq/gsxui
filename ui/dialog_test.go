@@ -33,8 +33,12 @@ func TestDialogStructure(t *testing.T) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
 	}
-	if strings.Contains(got, ` class=`) || strings.Contains(got, `data-slot=`) {
-		t.Errorf("default dialog markup must contain no presentation classes or legacy slots\nin: %s", got)
+	// Dialog is migrated to the slot axis, so its parts now render their own
+	// resolved recipe classes (presentation lives in the stylesheet; this
+	// structural pin only needs to confirm no LEGACY slot attribute leaked
+	// through).
+	if strings.Contains(got, `data-slot=`) {
+		t.Errorf("default dialog markup must contain no legacy slots\nin: %s", got)
 	}
 }
 
@@ -60,9 +64,16 @@ func TestDialogFooterShowCloseButton(t *testing.T) {
 	}
 }
 
+// dialogContentClass is DialogContent's exact resolved class attribute value
+// (no caller classes), for tests composing <ui.DialogContent> (AlertDialog,
+// Command) that need to assert the composed markup verbatim.
+func dialogContentClass() string {
+	return "fixed z-50 text-sm duration-200 outline-none data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-[var(--overlay)] backdrop:backdrop-blur-xs backdrop:duration-200 data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 top-1/2 left-1/2 w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl border bg-background p-4 text-foreground open:grid data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:max-w-sm"
+}
+
 func TestDialogCallerClassOnly(t *testing.T) {
 	got := render(t, ui.DialogContent(true, gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "caller"}}))
-	if strings.Count(got, `class="caller"`) != 1 || strings.Count(got, `class=`) != 1 {
-		t.Errorf("caller class must be the only class\nin: %s", got)
+	if !strings.Contains(got, "caller") || strings.Count(got, `class=`) != 1 {
+		t.Errorf("caller class must be merged into the one class attribute\nin: %s", got)
 	}
 }

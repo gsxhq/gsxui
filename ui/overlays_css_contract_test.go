@@ -34,6 +34,20 @@ func assertCallerAttrsOnce(t *testing.T, got string) {
 	}
 }
 
+// assertCallerAttrsOnceMerged is assertCallerAttrsOnce's counterpart for an
+// element that also composes a migrated component's own recipe class (Dialog/
+// DialogContent), so caller-only no longer renders as the class attribute's
+// entire value — it's merged in alongside the resolved recipe utilities.
+func assertCallerAttrsOnceMerged(t *testing.T, got string) {
+	t.Helper()
+	if strings.Count(got, `id="caller-id"`) != 1 {
+		t.Errorf("id=\"caller-id\" must render exactly once\nin: %s", got)
+	}
+	if !strings.Contains(got, "caller-only") || strings.Count(got, `class=`) != 1 {
+		t.Errorf("caller-only must be merged into the one class attribute\nin: %s", got)
+	}
+}
+
 func callerAttrs() gsx.Attrs {
 	return gsx.Attrs{
 		{Key: "class", Value: "caller-only"},
@@ -119,7 +133,18 @@ func TestDialogCSSOnlyContract(t *testing.T) {
 		"dialog-close-icon",
 		"dialog-close-label",
 	)
-	assertCallerAttrsOnce(t, got)
+	// Not assertCallerAttrsOnceMerged: this fixture renders the WHOLE Dialog
+	// tree, and Dialog/DialogContent/DialogTitle/DialogDescription/
+	// DialogClose-button/-icon all now carry their own recipe class, so
+	// class= legitimately appears more than once. caller-only/caller-id are
+	// only passed to DialogContent, so those still need to be exactly one
+	// each, merged into DialogContent's own class attribute.
+	if strings.Count(got, `id="caller-id"`) != 1 {
+		t.Errorf("id=\"caller-id\" must render exactly once\nin: %s", got)
+	}
+	if !strings.Contains(got, "caller-only") {
+		t.Errorf("caller-only must be merged into DialogContent's class attribute\nin: %s", got)
+	}
 	for _, hook := range []string{
 		`data-gsxui-dialog-title`,
 		`data-gsxui-dialog-description`,
@@ -134,7 +159,7 @@ func TestDialogCSSOnlyContract(t *testing.T) {
 func TestAlertDialogCSSOnlyContract(t *testing.T) {
 	root := render(t, ui.AlertDialog(gsx.Raw("x"), callerAttrs()))
 	assertCSSOnlyMarkup(t, root, "dialog alert-dialog")
-	assertCallerAttrsOnce(t, root)
+	assertCallerAttrsOnceMerged(t, root)
 
 	content := render(t, ui.AlertDialogContent(gsx.Fragment(
 		ui.AlertDialogTitle(gsx.Raw("Title"), nil),
@@ -145,7 +170,7 @@ func TestAlertDialogCSSOnlyContract(t *testing.T) {
 		"alert-dialog-title",
 		"alert-dialog-description",
 	)
-	assertCallerAttrsOnce(t, content)
+	assertCallerAttrsOnceMerged(t, content)
 	for _, want := range []string{
 		`role="alertdialog"`,
 		`data-state="closed"`,
@@ -172,7 +197,7 @@ func TestAlertDialogCSSOnlyContract(t *testing.T) {
 func TestDrawerCSSOnlyContract(t *testing.T) {
 	root := render(t, ui.Drawer(gsx.Raw("x"), callerAttrs()))
 	assertCSSOnlyMarkup(t, root, "dialog drawer")
-	assertCallerAttrsOnce(t, root)
+	assertCallerAttrsOnceMerged(t, root)
 
 	for _, side := range []string{"bottom", "top", "left", "right"} {
 		input := side
@@ -193,7 +218,7 @@ func TestDrawerCSSOnlyContract(t *testing.T) {
 func TestSheetCSSOnlyContract(t *testing.T) {
 	root := render(t, ui.Sheet(gsx.Raw("x"), callerAttrs()))
 	assertCSSOnlyMarkup(t, root, "dialog sheet")
-	assertCallerAttrsOnce(t, root)
+	assertCallerAttrsOnceMerged(t, root)
 
 	for _, side := range []string{"right", "left", "top", "bottom"} {
 		input := side

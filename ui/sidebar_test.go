@@ -68,8 +68,16 @@ func TestSidebarRendersTwoExplicitResponsiveTrees(t *testing.T) {
 		`data-gsxui-slot-sidebar-container`,
 		`data-gsxui-slot-sidebar-inner`,
 	)
-	if count := strings.Count(got, `class="caller"`); count != 2 {
-		t.Fatalf("caller class count = %d, want one on each responsive tree\nin: %s", count, got)
+	// The mobile tree's root is <ui.Sheet>, which composes <ui.Dialog>
+	// directly — Dialog is migrated to the slot axis, so its own "contents"
+	// recipe class now merges with the caller's "caller" there instead of
+	// caller rendering alone. The desktop tree's container is a plain,
+	// unmigrated div, so it still renders class="caller" verbatim.
+	if count := strings.Count(got, `class="contents caller"`); count != 1 {
+		t.Fatalf(`class="contents caller" count = %d, want exactly 1 (mobile Sheet/Dialog root)\nin: %s`, count, got)
+	}
+	if count := strings.Count(got, `class="caller"`); count != 1 {
+		t.Fatalf(`class="caller" count = %d, want exactly 1 (desktop container)\nin: %s`, count, got)
 	}
 	if strings.Contains(got, `data-slot=`) || strings.Contains(got, `data-sidebar=`) {
 		t.Fatalf("legacy styling hooks remain\nin: %s", got)

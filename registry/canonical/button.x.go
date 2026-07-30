@@ -23,65 +23,72 @@ import (
 func Button(variant string, size string, href string, disabled bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line button.gsx:12:2
-		if href != "" && !disabled {
-//line button.gsx:13:3
-			_gsxgw.S("<a")
-			if !attrs.Has("data-variant") {
-				_gsxgw.S(" data-variant=\"")
-				_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
-				_gsxgw.S("\"")
-			}
-			if !attrs.Has("data-size") {
-				_gsxgw.S(" data-size=\"")
-				_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
-				_gsxgw.S("\"")
-			}
-			if !attrs.Has("href") {
-				_gsxgw.S(" href=\"")
-				_gsxgw.URL(string(href))
-				_gsxgw.S("\"")
-			}
-			_gsxgw.S(" class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/button"), _gsxrt.Class(button.Root()), _gsxrt.Class(button.Variant(variant)), _gsxrt.Class(button.Size(size)), _gsxrt.Class(attrs.Class()))
-			_gsxgw.S("\"")
-			_gsxgw.StyleMerged("", attrs.Style())
-			_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-button"})
-			_gsxgw.BoolAttr("data-gsxui-slot-button", true)
-			_gsxgw.S(">")
-//line button.gsx:26:4
-			_gsxgw.Node(ctx, children)
-			_gsxgw.S("</a>")
-		} else {
-//line button.gsx:29:3
-			_gsxgw.S("<button")
-			if !attrs.Has("data-variant") {
-				_gsxgw.S(" data-variant=\"")
-				_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
-				_gsxgw.S("\"")
-			}
-			if !attrs.Has("data-size") {
-				_gsxgw.S(" data-size=\"")
-				_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
-				_gsxgw.S("\"")
-			}
-			if !attrs.Has("type") {
-				_gsxgw.S(" type=\"button\"")
-			}
-			if !attrs.Has("disabled") {
-				_gsxgw.BoolAttr("disabled", bool(disabled))
-			}
-			_gsxgw.S(" class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/button"), _gsxrt.Class(button.Root()), _gsxrt.Class(button.Variant(variant)), _gsxrt.Class(button.Size(size)), _gsxrt.Class(attrs.Class()))
-			_gsxgw.S("\"")
-			_gsxgw.StyleMerged("", attrs.Style())
-			_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-button"})
-			_gsxgw.BoolAttr("data-gsxui-slot-button", true)
-			_gsxgw.S(">")
-//line button.gsx:43:4
-			_gsxgw.Node(ctx, children)
-			_gsxgw.S("</button>")
-		}
-		return _gsxgw.Err()
+		return _gsxrenderButton(ctx, _gsxgw, variant, size, href, disabled, children, attrs)
 	})
+}
+
+func _gsxrenderButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string, size string, href string, disabled bool, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line button.gsx:12:2
+	if href != "" && !disabled {
+//line button.gsx:13:3
+		_gsxgw.S("<a")
+		if !attrs.Has("data-variant") {
+			_gsxgw.S(" data-variant=\"")
+			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
+			_gsxgw.S("\"")
+		}
+		if !attrs.Has("data-size") {
+			_gsxgw.S(" data-size=\"")
+			_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
+			_gsxgw.S("\"")
+		}
+		if !attrs.Has("href") {
+			_gsxgw.S(" href=\"")
+			_gsxgw.URL(string(href))
+			_gsxgw.S("\"")
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/button"), _gsxrt.Class(button.Root()), _gsxrt.Class(button.Variant(variant)), _gsxrt.Class(button.Size(size)), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-button"})
+		_gsxgw.BoolAttr("data-gsxui-slot-button", true)
+		_gsxgw.S(">")
+//line button.gsx:26:4
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</a>")
+	} else {
+//line button.gsx:29:3
+		_gsxgw.S("<button")
+		if !attrs.Has("data-variant") {
+			_gsxgw.S(" data-variant=\"")
+			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
+			_gsxgw.S("\"")
+		}
+		if !attrs.Has("data-size") {
+			_gsxgw.S(" data-size=\"")
+			_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
+			_gsxgw.S("\"")
+		}
+		if !attrs.Has("type") {
+			_gsxgw.S(" type=\"button\"")
+		}
+		if !attrs.Has("disabled") {
+			_gsxgw.BoolAttr("disabled", bool(disabled))
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/button"), _gsxrt.Class(button.Root()), _gsxrt.Class(button.Variant(variant)), _gsxrt.Class(button.Size(size)), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-button"})
+		_gsxgw.BoolAttr("data-gsxui-slot-button", true)
+		_gsxgw.S(">")
+//line button.gsx:43:4
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</button>")
+	}
+	return _gsxgw.Err()
 }

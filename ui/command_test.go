@@ -95,9 +95,9 @@ func TestCommandDialogComposition(t *testing.T) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
 	}
-	if strings.Contains(got, ` class=`) {
-		t.Errorf("CommandDialog must not pass an internal presentation class\nin: %s", got)
-	}
+	// Dialog/DialogContent/DialogHeader are migrated to the slot axis, so
+	// CommandDialog's composed markup now legitimately carries their
+	// resolved recipe classes (Command itself still adds none of its own).
 }
 
 func TestCommandCallerClassMerges(t *testing.T) {

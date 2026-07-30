@@ -14,9 +14,9 @@ func TestAlertDialogPinnedParts(t *testing.T) {
 		got  string
 		want string
 	}{
-		{"root", render(t, ui.AlertDialog(gsx.Raw("x"), nil)), `<div data-gsxui-dialog data-gsxui-slot-alert-dialog data-gsxui-slot-dialog>x</div>`},
+		{"root", render(t, ui.AlertDialog(gsx.Raw("x"), nil)), `<div class="contents" data-gsxui-dialog data-gsxui-slot-alert-dialog data-gsxui-slot-dialog>x</div>`},
 		{"trigger", render(t, ui.AlertDialogTrigger(gsx.Raw("Delete"), nil)), `<button data-gsxui-dialog-trigger type="button" aria-haspopup="dialog" aria-expanded="false" data-gsxui-slot-alert-dialog-trigger>Delete</button>`},
-		{"content", render(t, ui.AlertDialogContent(gsx.Raw("x"), nil)), `<dialog data-gsxui-dialog-content data-state="closed" role="alertdialog" data-gsxui-dialog-static data-gsxui-slot-alert-dialog-content data-gsxui-slot-dialog-content>x</dialog>`},
+		{"content", render(t, ui.AlertDialogContent(gsx.Raw("x"), nil)), `<dialog class="` + dialogContentClass() + `" data-gsxui-dialog-content data-state="closed" role="alertdialog" data-gsxui-dialog-static data-gsxui-slot-alert-dialog-content data-gsxui-slot-dialog-content>x</dialog>`},
 		{"header", render(t, ui.AlertDialogHeader(gsx.Raw("x"), nil)), `<div data-gsxui-slot-alert-dialog-header>x</div>`},
 		{"footer", render(t, ui.AlertDialogFooter(gsx.Raw("x"), nil)), `<div data-gsxui-slot-alert-dialog-footer>x</div>`},
 		{"title", render(t, ui.AlertDialogTitle(gsx.Raw("x"), nil)), `<h2 data-gsxui-dialog-title data-gsxui-slot-alert-dialog-title>x</h2>`},
@@ -45,10 +45,11 @@ func TestAlertDialogCallerAttrsFallThroughOnce(t *testing.T) {
 		{Key: "id", Value: "confirm"},
 		{Key: "class", Value: "caller"},
 	}))
-	for _, want := range []string{`id="confirm"`, `class="caller"`} {
-		if strings.Count(got, want) != 1 {
-			t.Errorf("%q must render once\nin: %s", want, got)
-		}
+	if strings.Count(got, `id="confirm"`) != 1 {
+		t.Errorf("id must render once\nin: %s", got)
+	}
+	if !strings.Contains(got, "caller") || strings.Count(got, "class=") != 1 {
+		t.Errorf("caller class must be merged into the one class attribute\nin: %s", got)
 	}
 }
 

@@ -33,7 +33,6 @@
 @import "./default/menu.css";
 @import "./default/menu-popover-transition.css";
 @import "./default/textarea.css";
-@import "./default/dialog.css";
 @import "./default/alert-dialog.css";
 @import "./default/drawer-sheet-shared.css";
 @import "./default/drawer.css";
@@ -127,6 +126,66 @@
   }
   :where([data-gsxui-slot-toggle]) svg:not([class*="size-"]) {
     @apply size-4;
+  }
+}
+
+/* Dialog-content marker fallback: a @layer components block, not utilities,
+   same reasoning as the Toggle marker fallback above. ui/drawer.gsx's
+   DrawerContent and ui/sheet.gsx's SheetContent both stamp
+   data-gsxui-slot-dialog-content onto their own <dialog> element ALONGSIDE
+   their own drawer-content/sheet-content marker, and have no class of their
+   own referencing Dialog's recipe for it — the base chrome every <dialog>
+   content needs (fixed positioning/z-index/transition-duration, the
+   data-state animate-in/out, and the native ::backdrop styling) came
+   entirely from this marker-keyed rule in the old
+   assets/css/styles/default/dialog.css, not from a class Dialog's migration
+   adds. Dialog's migration deletes that file (moved to
+   registry/styles/{nova,maia}/dialog.css, scoped to the new
+   .gsxui-recipe-dialog-content class), which would leave DrawerContent and
+   SheetContent — two sibling components out of scope for this migration —
+   without it.
+
+   This does NOT belong in @layer utilities, for the identical reason the
+   Toggle fallback above doesn't: @layer utilities is the SAME named layer
+   Tailwind's own scanned utility classes live in, so a rule placed there
+   would always win over a caller's plain utility class instead of losing to
+   it. Kept :where()-wrapped at (0,0,0) here instead: it only needs to lose
+   gracefully to Dialog's own new (0,1,0) recipe class when a real
+   <ui.DialogContent> renders (identical values, no visible difference) and
+   to any real caller utility class.
+
+   Only the chrome ALL THREE (Dialog, Drawer, Sheet) unconditionally shared
+   in the old dialog.css is here — the plain-modal box (top-1/2 left-1/2
+   w-full max-w-[...] etc), which the old file guarded with
+   :not([data-gsxui-slot-drawer-content]):not([data-gsxui-slot-sheet-content]),
+   is Dialog's own presentation now and lives only in its recipe; it was
+   already excluded here by that same guard before migration, so leaving it
+   out changes nothing. assets/css/styles/default/drawer-sheet-shared.css
+   carries the OTHER half — the rules Drawer/Sheet need that Dialog never
+   had at all (m-0/flex-col/shadow-lg/etc) — untouched by this migration. */
+@layer components {
+  :where(dialog[data-gsxui-slot-dialog-content]) {
+    @apply fixed z-50 text-sm duration-200 outline-none;
+  }
+  :where(dialog[data-gsxui-slot-dialog-content])[data-state="closed"] {
+    @apply animate-out;
+  }
+  :where(dialog[data-gsxui-slot-dialog-content])[data-state="open"] {
+    @apply animate-in;
+  }
+  :where(dialog[data-gsxui-slot-dialog-content])::backdrop {
+    background-color: var(--overlay);
+    @apply backdrop-blur-xs duration-200;
+  }
+  :where(
+      dialog[data-gsxui-slot-dialog-content][data-state="open"]
+    )::backdrop {
+    @apply animate-in fade-in-0;
+  }
+  :where(
+      dialog[data-gsxui-slot-dialog-content][data-state="closed"]
+    )::backdrop {
+    @apply animate-out fade-out-0;
   }
 }
 
@@ -378,6 +437,18 @@
   }
   [data-gsxui-slot-input-group]:has(> [data-gsxui-slot-input-group-addon][data-align="block-end"]) > [data-gsxui-slot-input] {
     @apply pt-3;
+  }
+
+  /* CommandDialog's dialog-content sizing: p-0 and max-w-lg, contesting
+     Dialog's own p-4/sm:max-w-sm once both are on the same element (see
+     assets/css/styles/default/command.css's own comment). */
+  [data-gsxui-slot-command-dialog-content] {
+    @apply p-0;
+  }
+  @media (width >= 40rem) {
+    [data-gsxui-slot-command-dialog-content] {
+      @apply max-w-lg;
+    }
   }
 
   /* InputGroupButton retunes Button's whole size ramp — type scale, radius,

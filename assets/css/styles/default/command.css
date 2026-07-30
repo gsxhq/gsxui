@@ -3,13 +3,20 @@
   :where([data-gsxui-slot-command]) {
     @apply flex h-full w-full flex-col overflow-hidden rounded-xl bg-popover p-1 text-popover-foreground;
   }
+  /* p-0/max-w-lg below are promoted to assets/css/styles/default.css's
+     @layer utilities block (Dialog migration fallout): CommandDialog
+     composes <ui.DialogContent> directly (ui/command.gsx) and stamps
+     data-gsxui-slot-command-dialog-content onto the SAME element, so it now
+     also carries Dialog's own scanned p-4/sm:max-w-sm recipe utilities,
+     which these two contest. stylegen --check-layers does not catch this —
+     this selector only names command-dialog-content, not dialog-content
+     too, so the gate's marker scan (a full-token match) never sees it as
+     composing a migrated component at all; make sweep-compare and the
+     jstest CSS-contract suite are what actually caught the regression.
+     overflow-hidden doesn't conflict with anything Dialog's recipe sets and
+     stays here. */
   :where(dialog)[data-gsxui-slot-command-dialog-content] {
-    @apply overflow-hidden p-0;
-  }
-  @media (width >= 40rem) {
-    :where(dialog)[data-gsxui-slot-command-dialog-content] {
-      @apply max-w-lg;
-    }
+    @apply overflow-hidden;
   }
   :where([data-gsxui-slot-command-input-wrapper]) {
     @apply flex h-9 items-center gap-2 border-b px-3;

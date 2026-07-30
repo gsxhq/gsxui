@@ -91,6 +91,11 @@ component StyleContractFixture() {
 			<ui.Input class="text-lg" data-style-contract="input-caller-text-size"/>
 			<ui.Textarea class="text-lg" data-style-contract="textarea-caller-text-size"/>
 		</div>
+		<ui.AlertDialog>
+			<ui.AlertDialogContent class="max-w-md" data-style-contract="alert-dialog-content-caller">
+				<ui.AlertDialogTitle>Caller max-w override</ui.AlertDialogTitle>
+			</ui.AlertDialogContent>
+		</ui.AlertDialog>
 		<ui.ButtonGroup data-style-contract="button-group-tail">
 			<ui.Button data-style-contract="button-group-earlier">Earlier</ui.Button>
 			<ui.Button data-style-contract="button-group-visible-tail">Visible tail</ui.Button>

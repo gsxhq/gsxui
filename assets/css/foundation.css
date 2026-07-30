@@ -325,9 +325,6 @@
     }
   }
   @media (width >= 48rem) {
-    :is([data-gsxui-slot-sidebar-mobile-root]) {
-      display: none;
-    }
     :where([data-gsxui-slot-sidebar-desktop]) {
       display: block;
     }
@@ -368,6 +365,29 @@ input[type="range"] {
     width: 100%;
     height: 100%;
     opacity: 0;
+  }
+}
+
+/* Sidebar's mobile root composes <ui.Sheet> (ui/sidebar.gsx's SidebarInner),
+   which composes <ui.Dialog> directly. Dialog's migration to the slot axis
+   gave data-gsxui-slot-dialog real (0,1,0)-equivalent Tailwind-scanned
+   utilities — including its own unconditional "display: contents" — so the
+   @media(>=48rem) ":is([data-gsxui-slot-sidebar-mobile-root]) { display:
+   none }" rule above, previously winning within @layer components on
+   specificity alone (:is() at (0,1,0) beating the base rule's :where() at
+   (0,0,0)), can no longer win against Dialog's scanned utility regardless of
+   specificity once both compete across the components/utilities layer
+   boundary. Promoted here, :is() already gives it the (0,1,0) floor this
+   layer's own gate requires. Caught by Playwright, not by
+   stylegen --check-layers (this selector reacts to a marker composed onto
+   an ancestor of the migrated component's own root, a shape the gate does
+   not model), and not by make sweep-compare (a display:none element renders
+   no computed style to diff against). */
+@layer utilities {
+  @media (width >= 48rem) {
+    :is([data-gsxui-slot-sidebar-mobile-root]) {
+      display: none;
+    }
   }
 }
 

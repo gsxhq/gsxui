@@ -9,7 +9,7 @@ import (
 )
 
 func TestDrawerPinnedParts(t *testing.T) {
-	if got, want := render(t, ui.Drawer(gsx.Raw("x"), nil)), `<div data-gsxui-dialog data-gsxui-slot-drawer data-gsxui-slot-dialog>x</div>`; got != want {
+	if got, want := render(t, ui.Drawer(gsx.Raw("x"), nil)), `<div class="contents" data-gsxui-dialog data-gsxui-slot-drawer data-gsxui-slot-dialog>x</div>`; got != want {
 		t.Errorf("root mismatch\n got: %s\nwant: %s", got, want)
 	}
 	if got, want := render(t, ui.DrawerTrigger(gsx.Raw("Open"), nil)), `<button data-gsxui-dialog-trigger type="button" aria-haspopup="dialog" aria-expanded="false" data-gsxui-slot-drawer-trigger>Open</button>`; got != want {

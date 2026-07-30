@@ -330,6 +330,59 @@ func menuInsetDisabledFallbackExemptions() []layerCheckExemption {
 	}
 	return out
 }
+var layerCheckExemptions = append(append(siteButtonFallbackExemptions(), toggleMarkerFallbackExemptions()...), dialogContentFallbackExemptions()...)
+
+// dialogContentFallbackReason is the decision behind every entry
+// dialogContentFallbackExemptions lists — the Dialog-content marker
+// fallback in assets/css/styles/default.css (Drawer/Sheet's shared base
+// chrome), assets/css/styles/default/drawer-sheet-shared.css (Drawer/Sheet's
+// own extra chrome), and assets/css/styles/default/alert-dialog.css
+// (AlertDialogContent's narrower max-w, section 10b). All three are
+// deliberately :where()-wrapped at (0,0,0) so they lose gracefully to
+// Dialog's own new (0,1,0) recipe class when a real <ui.DialogContent>
+// renders (identical values, no visible difference) — see each file's own
+// comment for the full reasoning, following the Toggle marker fallback's
+// exemption shape exactly.
+const dialogContentFallbackReason = "Dialog-content marker fallback for Drawer/Sheet/AlertDialog — see assets/css/styles/default.css"
+
+// dialogContentFallbackExemptions spells out every violation the Dialog-
+// content fallbacks commit, one (file, selector, contested) triple at a
+func dialogContentFallbackExemptions() []layerCheckExemption {
+		file, selector, contested string
+			file:      "assets/css/styles/default.css",
+			selector:  ":where(dialog[data-gsxui-slot-dialog-content])",
+			contested: "fixed",
+			file:      "assets/css/styles/default.css",
+			selector:  ":where(dialog[data-gsxui-slot-dialog-content])",
+			contested: "text-sm",
+			file:      "assets/css/styles/default.css",
+			selector:  ":where(dialog[data-gsxui-slot-dialog-content])::backdrop",
+			contested: "background-color",
+			file:      "assets/css/styles/default/alert-dialog.css",
+			selector:  ":where( dialog[data-gsxui-slot-dialog-content][data-gsxui-slot-alert-dialog-content] )",
+			contested: "max-w-xs",
+			file:      "assets/css/styles/default/alert-dialog.css",
+			selector:  ":where( dialog[data-gsxui-slot-dialog-content][data-gsxui-slot-alert-dialog-content] )",
+			contested: "max-w-sm",
+			file:      "assets/css/styles/default/drawer-sheet-shared.css",
+			selector:  ":where( dialog[data-gsxui-slot-dialog-content]:is( [data-gsxui-slot-drawer-content],[data-gsxui-slot-sheet-content] ) )",
+			contested: "m-0",
+			file:      "assets/css/styles/default/drawer-sheet-shared.css",
+			selector:  ":where( dialog[data-gsxui-slot-dialog-content]:is( [data-gsxui-slot-drawer-content],[data-gsxui-slot-sheet-content] ) )",
+			contested: "flex-col",
+			file:      "assets/css/styles/default/drawer-sheet-shared.css",
+			selector:  ":where( dialog[data-gsxui-slot-dialog-content]:is( [data-gsxui-slot-drawer-content],[data-gsxui-slot-sheet-content] ) )",
+			contested: "gap-4",
+			file:      "assets/css/styles/default/drawer-sheet-shared.css",
+			selector:  ":where( dialog[data-gsxui-slot-dialog-content]:is( [data-gsxui-slot-drawer-content],[data-gsxui-slot-sheet-content] ) )",
+			contested: "transition",
+			file:      "assets/css/styles/default/drawer-sheet-shared.css",
+			selector:  ":where( dialog[data-gsxui-slot-dialog-content]:is( [data-gsxui-slot-drawer-content],[data-gsxui-slot-sheet-content] )[open] )",
+			contested: "display",
+	out := make([]layerCheckExemption, 0, len(pairs)*len(both))
+		for _, style := range both {
+					file:      pair.file,
+				reason: dialogContentFallbackReason,
 
 // toggleMarkerFallbackReason is the decision behind every entry
 // toggleMarkerFallbackExemptions lists. ui/toggle-group.gsx's

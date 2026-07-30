@@ -85,7 +85,13 @@ func TestCommandCSSOnlyContract(t *testing.T) {
 
 func TestCommandDialogCSSOnlyComposition(t *testing.T) {
 	got := render(t, ui.CommandDialog("", "", nil, ui.CommandInput("Search", nil), nil))
-	assertMenuCSSOnlyMarkup(t, got,
+	if strings.Contains(got, `data-slot=`) {
+		t.Errorf("legacy data-slot must not render\nin: %s", got)
+	}
+	// Not assertMenuCSSOnlyMarkup's usual "no built-in class" check: Dialog/
+	// DialogContent/DialogHeader are migrated to the slot axis, so this
+	// composition now legitimately carries their resolved recipe classes.
+	for _, slot := range []string{
 		"dialog command-dialog",
 		"dialog-content command-dialog-content",
 		"dialog-header command-dialog-header",
@@ -95,7 +101,13 @@ func TestCommandDialogCSSOnlyComposition(t *testing.T) {
 		"command-input-wrapper",
 		"command-input",
 		"dialog-close dialog-close-button",
-	)
+	} {
+		for name := range strings.FieldsSeq(slot) {
+			if !strings.Contains(got, `data-gsxui-slot-`+name) {
+				t.Errorf("missing slot marker %q\nin: %s", name, got)
+			}
+		}
+	}
 	for _, want := range []string{
 		`data-gsxui-dialog-content`,
 		`data-gsxui-command-dialog`,
