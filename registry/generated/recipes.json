@@ -294,6 +294,38 @@
         }
       }
     },
+    "table": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
+        "caption": {
+          "base": true,
+          "dimensions": {}
+        },
+        "cell": {
+          "base": true,
+          "dimensions": {}
+        },
+        "container": {
+          "base": true,
+          "dimensions": {}
+        },
+        "footer": {
+          "base": true,
+          "dimensions": {}
+        },
+        "head": {
+          "base": true,
+          "dimensions": {}
+        },
+        "row": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "toggle-group": {
       "slots": {
         "": {
@@ -1068,6 +1100,78 @@
             "base": [
               "size-4",
               "animate-spin"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "table": {
+        "slots": {
+          "": {
+            "base": [
+              "w-full",
+              "caption-bottom",
+              "text-sm"
+            ],
+            "dimensions": {}
+          },
+          "caption": {
+            "base": [
+              "mt-4",
+              "text-sm",
+              "text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "cell": {
+            "base": [
+              "p-2",
+              "align-middle",
+              "whitespace-nowrap",
+              "has-[[role=\"checkbox\"]]:pr-0",
+              "[\u0026\u003e[role=\"checkbox\"]]:translate-y-[2px]"
+            ],
+            "dimensions": {}
+          },
+          "container": {
+            "base": [
+              "relative",
+              "w-full",
+              "overflow-x-auto"
+            ],
+            "dimensions": {}
+          },
+          "footer": {
+            "base": [
+              "border-t",
+              "bg-muted/50",
+              "font-medium"
+            ],
+            "dimensions": {}
+          },
+          "head": {
+            "base": [
+              "h-10",
+              "px-2",
+              "text-left",
+              "align-middle",
+              "font-medium",
+              "whitespace-nowrap",
+              "text-foreground",
+              "has-[[role=\"checkbox\"]]:pr-0",
+              "[\u0026\u003e[role=\"checkbox\"]]:translate-y-[2px]"
+            ],
+            "dimensions": {}
+          },
+          "row": {
+            "base": [
+              "border-b",
+              "transition-colors",
+              "hover:bg-muted/50",
+              "has-[[aria-expanded=\"true\"]]:bg-muted/50",
+              "data-[state=selected]:bg-muted",
+              "[[data-gsxui-slot-table-body]_\u0026]:last:border-b-0",
+              "[[data-gsxui-slot-table-footer]_\u0026]:last:border-b-0"
             ],
             "dimensions": {}
           }
@@ -1863,6 +1967,78 @@
             "base": [
               "size-4",
               "animate-spin"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "table": {
+        "slots": {
+          "": {
+            "base": [
+              "w-full",
+              "caption-bottom",
+              "text-sm"
+            ],
+            "dimensions": {}
+          },
+          "caption": {
+            "base": [
+              "mt-4",
+              "text-sm",
+              "text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "cell": {
+            "base": [
+              "p-2",
+              "align-middle",
+              "whitespace-nowrap",
+              "has-[[role=\"checkbox\"]]:pr-0",
+              "[\u0026\u003e[role=\"checkbox\"]]:translate-y-[2px]"
+            ],
+            "dimensions": {}
+          },
+          "container": {
+            "base": [
+              "relative",
+              "w-full",
+              "overflow-x-auto"
+            ],
+            "dimensions": {}
+          },
+          "footer": {
+            "base": [
+              "border-t",
+              "bg-muted/50",
+              "font-medium"
+            ],
+            "dimensions": {}
+          },
+          "head": {
+            "base": [
+              "h-10",
+              "px-2",
+              "text-left",
+              "align-middle",
+              "font-medium",
+              "whitespace-nowrap",
+              "text-foreground",
+              "has-[[role=\"checkbox\"]]:pr-0",
+              "[\u0026\u003e[role=\"checkbox\"]]:translate-y-[2px]"
+            ],
+            "dimensions": {}
+          },
+          "row": {
+            "base": [
+              "border-b",
+              "transition-colors",
+              "hover:bg-muted/50",
+              "has-[[aria-expanded=\"true\"]]:bg-muted/50",
+              "data-[state=selected]:bg-muted",
+              "[[data-gsxui-slot-table-body]_\u0026]:last:border-b-0",
+              "[[data-gsxui-slot-table-footer]_\u0026]:last:border-b-0"
             ],
             "dimensions": {}
           }

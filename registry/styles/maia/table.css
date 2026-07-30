@@ -1,0 +1,74 @@
+/* Source: gsxui@c9289d5, assets/css/styles/default/table.css, folded into
+   six slots (table-header/table-body carry no rule of their own — see
+   registry/canonical/shapes/table.go's doc comment). Nova and Maia have not
+   diverged on Table yet, so this file is byte-identical to
+   registry/styles/maia/table.css.
+
+   Relational forms, all confirmed compiling against this repo's Tailwind
+   v4 with the CLI directly before use:
+   - table-row's `[[data-gsxui-slot-table-body]_&]:last:border-b-0` and
+     `[[data-gsxui-slot-table-footer]_&]:last:border-b-0` translate
+     ":where([data-gsxui-slot-table-body]) tr:last-child" and the footer's
+     `> tr:last-child` equivalent — both keyed on a bare `tr` tag, not a
+     marker, but every <tr> under Table is rendered by TableRow, so "tr
+     under table-body/table-footer" and "table-row under table-body/
+     table-footer" are the same set of elements. The child-combinator vs
+     descendant-combinator distinction (footer's `>` vs body's plain
+     descendant) collapses the same way Accordion's did: a <tr> is always a
+     direct child of its <tbody>/<tfoot>, so "descendant of an open
+     ancestor" and "direct child of it" pick out the same rows here.
+   - table-row's `has-[[aria-expanded="true"]]:bg-muted/50` is the same
+     same-element :has() form Card already proved, keyed on a plain
+     attribute rather than a marker.
+   - table-row's `data-[state=selected]:bg-muted` is Tailwind's own
+     data-attribute-value arbitrary variant, a more direct translation of
+     ":where([data-gsxui-slot-table-row])[data-state="selected"]" than any
+     dimension would be — this state has exactly one styled value
+     ("selected"; the absence of the attribute is the unstyled default), so
+     it is not modeled as a recipe.Dimension.
+   - table-head's and table-cell's `has-[[role="checkbox"]]:pr-0` (same
+     shape as above) and `[&>[role="checkbox"]]:translate-y-[2px]` are NOT
+     stray rules belonging to some other component: the styled subject is a
+     bare `[role="checkbox"]` child with no data-gsxui-slot marker of its
+     own, so this is table-head/table-cell describing their OWN
+     children's presentation — the same "[&>svg]:size-3" shape Badge's own
+     recipe already uses for an unmarked child, not the Card/Calendar
+     stray-ownership case. */
+@layer components {
+  .gsxui-recipe-table-container {
+    @apply relative w-full overflow-x-auto;
+  }
+
+  .gsxui-recipe-table {
+    @apply w-full caption-bottom text-sm;
+  }
+
+  .gsxui-recipe-table-footer {
+    @apply border-t bg-muted/50 font-medium;
+  }
+
+  .gsxui-recipe-table-row {
+    @apply border-b transition-colors;
+    @apply hover:bg-muted/50;
+    @apply has-[[aria-expanded="true"]]:bg-muted/50;
+    @apply data-[state=selected]:bg-muted;
+    @apply [[data-gsxui-slot-table-body]_&]:last:border-b-0;
+    @apply [[data-gsxui-slot-table-footer]_&]:last:border-b-0;
+  }
+
+  .gsxui-recipe-table-head {
+    @apply h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground;
+    @apply has-[[role="checkbox"]]:pr-0;
+    @apply [&>[role="checkbox"]]:translate-y-[2px];
+  }
+
+  .gsxui-recipe-table-cell {
+    @apply p-2 align-middle whitespace-nowrap;
+    @apply has-[[role="checkbox"]]:pr-0;
+    @apply [&>[role="checkbox"]]:translate-y-[2px];
+  }
+
+  .gsxui-recipe-table-caption {
+    @apply mt-4 text-sm text-muted-foreground;
+  }
+}

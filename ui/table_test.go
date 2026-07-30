@@ -38,7 +38,7 @@ func TestTablePinned(t *testing.T) {
 	// (registry/new-york-v4/ui/table.tsx) and docs/jsx-parity.md — a straight
 	// port, no divergences. Covers both the container div and the table.
 	got := render(t, ui.Table(gsx.Raw("Content"), nil))
-	want := `<div data-gsxui-slot-table-container><table data-gsxui-slot-table>Content</table></div>`
+	want := `<div class="relative w-full overflow-x-auto" data-gsxui-slot-table-container><table class="w-full caption-bottom text-sm" data-gsxui-slot-table>Content</table></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -104,8 +104,8 @@ func TestTableCaption(t *testing.T) {
 
 func TestTableCallerClassIsForwardedOnce(t *testing.T) {
 	got := render(t, ui.Table(gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "caption-top"}}))
-	if strings.Count(got, `class="caption-top"`) != 1 {
-		t.Errorf("caller class must be the only class and render once\nin: %s", got)
+	if !strings.Contains(got, "caption-top") || strings.Count(got, "class=") != 2 {
+		t.Errorf("caller class must merge onto the table exactly once\nin: %s", got)
 	}
 }
 

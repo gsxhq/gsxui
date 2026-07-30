@@ -319,4 +319,14 @@ test("Accordion's trigger-icon rotates only inside its own open item", async ({ 
   expect(openIconRotate).toBe("180deg");
   expect(closedIconRotate).toBe("none");
 });
+test("Table row's data-state=selected background outranks an unselected row", async ({ page }) => {
+  await page.goto("/x/table/basic");
+  const rows = page.locator("[data-gsxui-slot-table-row]");
+  const selectedBg = await rows.nth(0).evaluate((n) => getComputedStyle(n).backgroundColor);
+  const unselectedBg = await rows.nth(1).evaluate((n) => getComputedStyle(n).backgroundColor);
+  await expect(rows.nth(0)).toHaveAttribute("data-state", "selected");
+  expect(selectedBg).not.toBe(unselectedBg);
+  expect(selectedBg).toBe("oklch(0.97 0 0)");
+  expect(unselectedBg).toBe("rgba(0, 0, 0, 0)");
+});
 
