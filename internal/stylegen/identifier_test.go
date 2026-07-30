@@ -159,10 +159,6 @@ func TestComponentIdentifierRejectsIllegalDerivations(t *testing.T) {
 		component string
 		want      string
 	}{
-		{component: "range", want: "Go keyword"},
-		{component: "type", want: "Go keyword"},
-		{component: "string", want: "predeclared"},
-		{component: "len", want: "predeclared"},
 		{component: "2-column", want: "starts with a digit"},
 		{component: "-", want: "empty Go identifier"},
 		{component: "input group", want: "not a valid Go identifier"},
@@ -184,21 +180,108 @@ func TestComponentIdentifierRejectsIllegalDerivations(t *testing.T) {
 	}
 }
 
-func TestGenerateAccessorsRejectsAKeywordComponent(t *testing.T) {
+// TestComponentIdentifierSuffixesKeywordsAndPredeclaredIdentifiers is the
+// replacement for the old rejection behavior: switch/select are real,
+// already-shipped registry names (data-gsxui-slot-switch,
+// data-gsxui-slot-select) that must not be renamed just because their Go
+// identifier collides with a keyword. componentIdentifier instead appends a
+// single trailing underscore, Go's own convention for this exact collision.
+func TestComponentIdentifierSuffixesKeywordsAndPredeclaredIdentifiers(t *testing.T) {
 	t.Parallel()
-	// The rejection has to reach the generator, not just the helper: a component
-	// named "range" would otherwise emit `type rangeRecipe` — which parses — and
-	// a canonical source would author `range.Root()`, which does not.
+	tests := []struct {
+		component string
+		want      string
+	}{
+		{component: "switch", want: "switch_"},
+		{component: "select", want: "select_"},
+		{component: "range", want: "range_"},
+		{component: "type", want: "type_"},
+		{component: "string", want: "string_"},
+		{component: "len", want: "len_"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.component, func(t *testing.T) {
+			t.Parallel()
+			got, err := componentIdentifier(tt.component)
+			if err != nil {
+				t.Fatalf("componentIdentifier(%q) error = %v, want no error", tt.component, err)
+			}
+			if got != tt.want {
+				t.Errorf("componentIdentifier(%q) = %q, want %q", tt.component, got, tt.want)
+			}
+			if !token.IsIdentifier(got) || token.IsKeyword(got) {
+				t.Errorf("componentIdentifier(%q) = %q is not a legal, non-keyword Go identifier", tt.component, got)
+			}
+		})
+	}
+}
+
+func TestGenerateAccessorsSuffixesAKeywordComponent(t *testing.T) {
+	t.Parallel()
+	// The suffixing has to reach the generator, not just the helper: a
+	// component named "range" would otherwise emit `type rangeRecipe` (which
+	// parses fine) but `var range = rangeRecipe{...}` and a canonical source
+	// authoring `range.Root()` do not — "range" the bare receiver is the
+	// actual keyword collision, not the type name.
 	shape := recipe.Shape{
 		Component: "range",
 		Slots:     []recipe.Slot{{Name: "", Base: true}},
 	}
-	_, err := GenerateAccessors(shape)
-	if err == nil {
-		t.Fatal("GenerateAccessors() error = nil, want error")
+	src, err := GenerateAccessors(shape)
+	if err != nil {
+		t.Fatalf("GenerateAccessors() error = %v, want no error", err)
 	}
-	if !strings.Contains(err.Error(), "range") || !strings.Contains(err.Error(), "Go keyword") {
-		t.Errorf("GenerateAccessors() error %q does not name the component and the keyword", err)
+	if _, err := goparser.ParseFile(token.NewFileSet(), "range_recipe.gen.go", src, 0); err != nil {
+		t.Fatalf("generated accessors do not parse: %v\n%s", err, src)
+	}
+	got := string(src)
+	for _, want := range []string{
+		"type range_Recipe struct{ c recipe.Component }",
+		"func (r range_Recipe) Root() string { return r.c.SlotClass(\"\") }",
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("missing %q\nin: %s", want, got)
+		}
+	}
+}
+
+// TestRegistryNameStillNamesTheRecipeClassesForAKeywordComponent proves both
+// halves hold simultaneously for switch/select, the way
+// TestRegistryNameStillNamesTheRecipeClasses already does for the hyphenated
+// case: the Go identifier is suffixed (switch_/select_), but the CSS/registry
+// identity — recipe class names and slot markers — is untouched.
+func TestRegistryNameStillNamesTheRecipeClassesForAKeywordComponent(t *testing.T) {
+	t.Parallel()
+	for _, tt := range []struct {
+		component  string
+		identifier string
+	}{
+		{component: "switch", identifier: "switch_"},
+		{component: "select", identifier: "select_"},
+	} {
+		t.Run(tt.component, func(t *testing.T) {
+			t.Parallel()
+			shape := recipe.Shape{
+				Component: tt.component,
+				Slots:     []recipe.Slot{{Name: "", Base: true}},
+			}
+			if got, want := shape.BaseClass(""), "gsxui-recipe-"+tt.component; got != want {
+				t.Errorf("BaseClass(\"\") = %q, want %q", got, want)
+			}
+			if got, want := slotMarker(tt.component, ""), "data-gsxui-slot-"+tt.component; got != want {
+				t.Errorf("slotMarker = %q, want %q", got, want)
+			}
+			identifier, err := componentIdentifier(tt.component)
+			if err != nil {
+				t.Fatalf("componentIdentifier() error = %v", err)
+			}
+			if identifier != tt.identifier {
+				t.Fatalf("componentIdentifier(%q) = %q, want %q", tt.component, identifier, tt.identifier)
+			}
+			if strings.Contains(shape.BaseClass(""), identifier) {
+				t.Errorf("recipe class %q leaked the Go identifier %q", shape.BaseClass(""), identifier)
+			}
+		})
 	}
 }
 
@@ -208,6 +291,12 @@ func TestCheckComponentIdentifiersRejectsCollisionsNamingBoth(t *testing.T) {
 		{"input-group", "inputGroup"},
 		{"input-group", "input_group"},
 		{"a-1b", "a1b"},
+		// A hypothetical component literally named "switch_" collides with
+		// "switch" the same way "input_group" collides with "input-group":
+		// identifierFold strips both hyphens and underscores, so "switch_"
+		// folds to the same string "switch" does, independently of the fact
+		// that componentIdentifier("switch") itself now derives "switch_".
+		{"switch", "switch_"},
 	}
 	for _, pair := range tests {
 		t.Run(strings.Join(pair, "+"), func(t *testing.T) {

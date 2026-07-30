@@ -33,9 +33,18 @@ import (
 // "button" has no hyphen, so it derives "button" and nothing about the
 // already-migrated component moves.
 //
-// Derivation is neither total nor injective, so every failure mode is an error
-// naming the component rather than a panic or a silent fallback. Injectivity is
-// checkComponentIdentifiers' job; legality is this function's.
+// The same "registry stays put, Go side is derived" answer applies when the
+// derived name is a Go keyword ("switch", "select") or a predeclared
+// identifier ("len", "new"): rather than reject it, a single trailing
+// underscore is appended ("switch" -> "switch_"), Go's own convention for
+// exactly this collision. The registry/CSS identity is untouched — the
+// generated CSS class is still gsxui-recipe-switch, only the Go receiver
+// and type name pick up the suffix.
+//
+// Derivation is neither total nor injective, so every remaining failure mode
+// (empty, digit-initial, not-an-identifier after suffixing) is an error
+// naming the component rather than a panic or a silent fallback. Injectivity
+// is checkComponentIdentifiers' job; legality is this function's.
 func componentIdentifier(component string) (string, error) {
 	if component == "" {
 		return "", fmt.Errorf("component name is empty: nothing to derive a Go identifier from")
@@ -52,17 +61,17 @@ func componentIdentifier(component string) (string, error) {
 				"a component name's first segment must not start with a digit",
 			component, derived)
 	}
-	if token.IsKeyword(derived) {
-		return "", fmt.Errorf(
-			"component %q derives the Go identifier %q, which is a Go keyword; "+
-				"the generated recipe type and its .gsx receiver cannot be named that — rename the component",
-			component, derived)
-	}
-	if types.Universe.Lookup(derived) != nil {
-		return "", fmt.Errorf(
-			"component %q derives the Go identifier %q, which is a predeclared Go identifier; "+
-				"shadowing it in generated code is a trap — rename the component",
-			component, derived)
+	// A keyword or predeclared identifier is not illegal to derive — the
+	// registry/CSS identity ("switch", "select") is public surface (every
+	// data-gsxui-slot-* marker, every recipe class, every file name) and
+	// stays put exactly the way a hyphenated name does; only the GO side is
+	// derived. So this collision gets the same answer hyphenation already
+	// got: extend the derivation instead of renaming the component. A single
+	// trailing underscore is Go's own convention for exactly this situation
+	// (protoc-gen-go does the same for a field named e.g. "type"), and it's
+	// deterministic — no per-component override map to keep in sync.
+	if token.IsKeyword(derived) || types.Universe.Lookup(derived) != nil {
+		derived += "_"
 	}
 	if !token.IsIdentifier(derived) {
 		return "", fmt.Errorf(
