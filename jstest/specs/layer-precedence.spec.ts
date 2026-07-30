@@ -645,3 +645,20 @@ test("SheetContent keeps Dialog's shared fixed/z-50 chrome via the marker fallba
   expect(position).toBe("fixed");
   expect(zIndex).toBe("50");
 });
+
+// The pre-slot-axis menu CSS muted item icons through a :where() selector list
+// that named only plain items and sub-triggers, so CheckboxItem's and
+// RadioItem's icons rendered at full foreground. Upstream carries the same
+// [&_svg:not([class*='text-'])]:text-muted-foreground on those two items
+// (shadcn context-menu.tsx), and the recipe now does too — make sweep-compare
+// surfaced the change as 9 elements shifting to the muted token in both themes.
+
+test("ContextMenu checkbox and radio items mute their icons like plain items", async ({ page }) => {
+  await page.goto("/x/context-menu/full");
+  const muted = "oklch(0.556 0 0)";
+  for (const slot of ["checkbox-item", "radio-item"]) {
+    const icon = page.locator(`[data-gsxui-slot-context-menu-${slot}] svg`).first();
+    const color = await icon.evaluate((n) => getComputedStyle(n).color);
+    expect(color, `${slot} icon colour`).toBe(muted);
+  }
+});
