@@ -290,13 +290,16 @@ func TestCheckLayerPrecedenceRejectsARawDeclarationOverride(t *testing.T) {
 
 // TestCheckLayerPrecedenceAllowsNonCompetingRawDeclarations is the other side:
 // resolving utilities to real property names is what keeps the widened scope
-// from flagging every mechanics rule in foundation.css. Button sets neither
-// position nor inset, so this rule still applies in the browser.
+// from flagging every mechanics rule in foundation.css. Neither Button nor
+// Carousel (the two components whose utilities reach this marker) sets
+// z-index, so this rule still applies in the browser. It used to use
+// position/inset; Carousel's own migration made those competing properties,
+// which is the gate working, not the fixture aging badly.
 func TestCheckLayerPrecedenceAllowsNonCompetingRawDeclarations(t *testing.T) {
 	t.Parallel()
 
 	root := injectCSS(t, "assets/css/foundation.css", "@layer components {",
-		`  :where([data-gsxui-slot-carousel-previous]) { position: absolute; left: -3rem; }`)
+		`  :where([data-gsxui-slot-carousel-previous]) { z-index: 3; }`)
 	if err := CheckLayerPrecedence(root); err != nil {
 		t.Fatalf("CheckLayerPrecedence() = %v, want nil for a non-competing raw declaration", err)
 	}
@@ -839,14 +842,16 @@ func TestCheckLayerPrecedenceReportsEveryViolation(t *testing.T) {
 }
 
 // TestCheckLayerPrecedenceAllowsNonCompetingComponentsLayerRules pins the
-// other side: positioning geometry that no compiled utility contests stays
-// legal in @layer components. Without this the gate would push unrelated CSS
-// into the utilities layer for no reason.
+// other side: a property that no compiled utility contests stays legal in
+// @layer components. Without this the gate would push unrelated CSS into the
+// utilities layer for no reason. z-index, not the positioning geometry this
+// used to assert on — Carousel's migration made position/inset competing on
+// this marker.
 func TestCheckLayerPrecedenceAllowsNonCompetingComponentsLayerRules(t *testing.T) {
 	t.Parallel()
 
 	root := injectDefaultCSS(t, "@layer components {",
-		`  [data-gsxui-slot-carousel-previous] { @apply absolute -left-12; }`)
+		`  [data-gsxui-slot-carousel-previous] { @apply z-10; }`)
 	if err := CheckLayerPrecedence(root); err != nil {
 		t.Fatalf("CheckLayerPrecedence() = %v, want nil for a non-competing rule", err)
 	}

@@ -1,4 +1,4 @@
-package ui
+package canonical
 
 import (
 	"github.com/gsxhq/gsx"
@@ -38,7 +38,7 @@ component Carousel(orientation string, children gsx.Node, attrs gsx.Attrs) {
 		aria-roledescription="carousel"
 		data-gsxui-carousel
 		data-orientation={orientation |> default("horizontal")}
-		class={ "relative" }
+		class={ carousel.Root() }
 		{ attrs... }
 		data-gsxui-slot-carousel
 	>
@@ -64,12 +64,12 @@ component CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs
 	<div
 		data-gsxui-carousel-content
 		data-orientation={orientation |> default("horizontal")}
-		class={ "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden" }
+		class={ carousel.Content() }
 		data-gsxui-slot-carousel-content
 	>
 		<div
 			data-orientation={orientation |> default("horizontal")}
-			class={ switch orientation { case "vertical": "-mt-4" default: "-ml-4" } }
+			class={ carousel.TrackOrientation(orientation) }
 			{ attrs... }
 			data-gsxui-slot-carousel-track
 		>
@@ -104,7 +104,7 @@ component CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) {
 		aria-roledescription="slide"
 		data-gsxui-carousel-item
 		data-orientation={orientation |> default("horizontal")}
-		class={ switch orientation { case "vertical": "pt-4 -scroll-mt-4" default: "pl-4 -scroll-ml-4" } }
+		class={ carousel.ItemOrientation(orientation) }
 		{ attrs... }
 		data-gsxui-slot-carousel-item
 	>
@@ -148,13 +148,8 @@ component CarouselPrevious(orientation string, attrs gsx.Attrs) {
 		size="icon"
 		disabled={true}
 		class={
-			"absolute size-8 rounded-full",
-			switch orientation {
-			case "vertical":
-				"-top-12 left-1/2 -translate-x-1/2 rotate-90"
-			default:
-				"top-1/2 -left-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
-			}
+			carousel.Previous(),
+			carousel.PreviousOrientation(orientation),
 		}
 		{ attrs... }
 		data-gsxui-slot-carousel-previous
@@ -171,13 +166,8 @@ component CarouselNext(orientation string, attrs gsx.Attrs) {
 		variant="outline"
 		size="icon"
 		class={
-			"absolute size-8 rounded-full",
-			switch orientation {
-			case "vertical":
-				"-bottom-12 left-1/2 -translate-x-1/2 rotate-90"
-			default:
-				"top-1/2 -right-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
-			}
+			carousel.Next(),
+			carousel.NextOrientation(orientation),
 		}
 		{ attrs... }
 		data-gsxui-slot-carousel-next

@@ -210,6 +210,66 @@
         }
       }
     },
+    "carousel": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
+        "content": {
+          "base": true,
+          "dimensions": {}
+        },
+        "item": {
+          "base": false,
+          "dimensions": {
+            "orientation": {
+              "default": "horizontal",
+              "values": [
+                "horizontal",
+                "vertical"
+              ]
+            }
+          }
+        },
+        "next": {
+          "base": true,
+          "dimensions": {
+            "orientation": {
+              "default": "horizontal",
+              "values": [
+                "horizontal",
+                "vertical"
+              ]
+            }
+          }
+        },
+        "previous": {
+          "base": true,
+          "dimensions": {
+            "orientation": {
+              "default": "horizontal",
+              "values": [
+                "horizontal",
+                "vertical"
+              ]
+            }
+          }
+        },
+        "track": {
+          "base": false,
+          "dimensions": {
+            "orientation": {
+              "default": "horizontal",
+              "values": [
+                "horizontal",
+                "vertical"
+              ]
+            }
+          }
+        }
+      }
+    },
     "checkbox": {
       "slots": {
         "": {
@@ -1611,6 +1671,95 @@
               "font-medium"
             ],
             "dimensions": {}
+          }
+        }
+      },
+      "carousel": {
+        "slots": {
+          "": {
+            "base": [
+              "relative"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "[scrollbar-width:none]",
+              "[\u0026::-webkit-scrollbar]:hidden"
+            ],
+            "dimensions": {}
+          },
+          "item": {
+            "dimensions": {
+              "orientation": {
+                "horizontal": [
+                  "pl-4",
+                  "-scroll-ml-4"
+                ],
+                "vertical": [
+                  "pt-4",
+                  "-scroll-mt-4"
+                ]
+              }
+            }
+          },
+          "next": {
+            "base": [
+              "absolute",
+              "size-8",
+              "rounded-full"
+            ],
+            "dimensions": {
+              "orientation": {
+                "horizontal": [
+                  "top-1/2",
+                  "-right-12",
+                  "-translate-y-1/2",
+                  "active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
+                ],
+                "vertical": [
+                  "-bottom-12",
+                  "left-1/2",
+                  "-translate-x-1/2",
+                  "rotate-90"
+                ]
+              }
+            }
+          },
+          "previous": {
+            "base": [
+              "absolute",
+              "size-8",
+              "rounded-full"
+            ],
+            "dimensions": {
+              "orientation": {
+                "horizontal": [
+                  "top-1/2",
+                  "-left-12",
+                  "-translate-y-1/2",
+                  "active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
+                ],
+                "vertical": [
+                  "-top-12",
+                  "left-1/2",
+                  "-translate-x-1/2",
+                  "rotate-90"
+                ]
+              }
+            }
+          },
+          "track": {
+            "dimensions": {
+              "orientation": {
+                "horizontal": [
+                  "-ml-4"
+                ],
+                "vertical": [
+                  "-mt-4"
+                ]
+              }
+            }
           }
         }
       },
@@ -4853,6 +5002,95 @@
               "font-medium"
             ],
             "dimensions": {}
+          }
+        }
+      },
+      "carousel": {
+        "slots": {
+          "": {
+            "base": [
+              "relative"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "[scrollbar-width:none]",
+              "[\u0026::-webkit-scrollbar]:hidden"
+            ],
+            "dimensions": {}
+          },
+          "item": {
+            "dimensions": {
+              "orientation": {
+                "horizontal": [
+                  "pl-4",
+                  "-scroll-ml-4"
+                ],
+                "vertical": [
+                  "pt-4",
+                  "-scroll-mt-4"
+                ]
+              }
+            }
+          },
+          "next": {
+            "base": [
+              "absolute",
+              "size-8",
+              "rounded-full"
+            ],
+            "dimensions": {
+              "orientation": {
+                "horizontal": [
+                  "top-1/2",
+                  "-right-12",
+                  "-translate-y-1/2",
+                  "active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
+                ],
+                "vertical": [
+                  "-bottom-12",
+                  "left-1/2",
+                  "-translate-x-1/2",
+                  "rotate-90"
+                ]
+              }
+            }
+          },
+          "previous": {
+            "base": [
+              "absolute",
+              "size-8",
+              "rounded-full"
+            ],
+            "dimensions": {
+              "orientation": {
+                "horizontal": [
+                  "top-1/2",
+                  "-left-12",
+                  "-translate-y-1/2",
+                  "active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
+                ],
+                "vertical": [
+                  "-top-12",
+                  "left-1/2",
+                  "-translate-x-1/2",
+                  "rotate-90"
+                ]
+              }
+            }
+          },
+          "track": {
+            "dimensions": {
+              "orientation": {
+                "horizontal": [
+                  "-ml-4"
+                ],
+                "vertical": [
+                  "-mt-4"
+                ]
+              }
+            }
           }
         }
       },

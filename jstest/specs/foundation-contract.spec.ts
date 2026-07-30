@@ -55,15 +55,24 @@ test("foundation keeps Carousel navigation geometrically functional", async ({ p
   const items = page.locator("[data-gsxui-carousel-item]");
   await expect(items).toHaveCount(5);
   const geometry = await viewport.evaluate((el) => {
+    const track = el.querySelector<HTMLElement>("[data-gsxui-slot-carousel-track]")!;
     const first = el.querySelector<HTMLElement>("[data-gsxui-carousel-item]")!;
     return {
       viewportWidth: el.getBoundingClientRect().width,
+      trackWidth: track.getBoundingClientRect().width,
       itemWidth: first.getBoundingClientRect().width,
       scrollWidth: el.scrollWidth,
     };
   });
   expect(geometry.viewportWidth).toBeGreaterThan(0);
-  expect(geometry.itemWidth).toBeCloseTo(geometry.viewportWidth, 0);
+  // One item spans exactly one track width (foundation's own
+  // `flex: 0 0 100%`). Compared against the TRACK, not the viewport: the
+  // track's -ml-4 spacing is Carousel's style, and since Carousel migrated to
+  // the slot axis that utility is a literal class on the markup Tailwind
+  // scans, so it is present in foundation mode too and makes the track 16px
+  // wider than the viewport. The mechanic under test is the flex basis, not
+  // the spacing.
+  expect(geometry.itemWidth).toBeCloseTo(geometry.trackWidth, 0);
   expect(geometry.scrollWidth).toBeGreaterThan(geometry.viewportWidth * 4);
 
   await expect(root).toHaveAttribute("data-current-index", "0");

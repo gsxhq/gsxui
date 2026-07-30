@@ -198,6 +198,7 @@ var all = map[string]recipe.Shape{
 	AlertDialog.Component:    AlertDialog,
 	Drawer.Component:         Drawer,
 	Sheet.Component:          Sheet,
+	Carousel.Component:       Carousel,
 	NativeSelect.Component:   NativeSelect,
 }
 

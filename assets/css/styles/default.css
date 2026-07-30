@@ -33,7 +33,6 @@
 @import "./default/menu-popover-transition.css";
 @import "./default/textarea.css";
 @import "./default/calendar.css";
-@import "./default/carousel.css";
 @import "./default/sidebar.css";
 @import "./default/sonner.css";
 
@@ -311,15 +310,6 @@
      has not migrated yet; this is fallout from Select's own migration. */
   [data-gsxui-slot-button-group] > [data-gsxui-slot-select-trigger]:not([class*="w-"]) {
     @apply w-fit;
-  }
-
-  /* Carousel arrows: a round control, against Button's own rounded-lg. The
-     marker selectors are deliberately NOT wrapped in :where() here — inside a
-     single layer the cascade falls back to specificity, and a zero-specificity
-     :where() loses to the plain .rounded-lg utility class. */
-  [data-gsxui-slot-carousel-previous],
-  [data-gsxui-slot-carousel-next] {
-    @apply size-8 rounded-full;
   }
 
   /* SidebarTrigger: a 28px control against the 32px Button renders for

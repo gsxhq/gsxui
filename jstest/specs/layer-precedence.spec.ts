@@ -921,3 +921,31 @@ test("Calendar's dropdowns still override NativeSelect's own chrome", async ({ p
   expect(await select.evaluate((n) => getComputedStyle(n).paddingLeft)).toBe("6px");
   expect(await chevron.evaluate((n) => getComputedStyle(n).width)).toBe("14px");
 });
+
+// Carousel's migration (Wave 4d). The arrows compose <Button variant="outline"
+// size="icon">, and their round shape used to need the @layer utilities escape
+// hatch in assets/css/styles/default.css to beat Button's own rounded-lg. On
+// the recipe it is a plain utility merged onto Button's own class list, so
+// merge.Merge drops rounded-lg — this pins that the arrows are still round and
+// still positioned, and that the caller's spacing override still wins on the
+// track/item, which is the property pair site/examples/carousel/sizes.gsx
+// overrides.
+
+test("Carousel arrows keep their round shape and outboard positioning", async ({ page }) => {
+  await page.goto("/x/carousel/basic");
+  const prev = page.locator("[data-gsxui-slot-carousel-previous]").first();
+  expect(await prev.evaluate((n) => getComputedStyle(n).position)).toBe("absolute");
+  expect(await prev.evaluate((n) => getComputedStyle(n).width)).toBe("32px");
+  const radius = await prev.evaluate((n) => parseFloat(getComputedStyle(n).borderTopLeftRadius));
+  expect(radius, "rounded-full must beat Button's rounded-lg").toBeGreaterThan(100);
+});
+
+test("Carousel's caller spacing override still displaces the track and item defaults", async ({ page }) => {
+  await page.goto("/x/carousel/sizes");
+  const track = page.locator("[data-gsxui-slot-carousel-track]").first();
+  const item = page.locator("[data-gsxui-slot-carousel-item]").first();
+  // -ml-1 / pl-1 / -scroll-ml-1, not the recipe's own -ml-4 / pl-4.
+  expect(await track.evaluate((n) => getComputedStyle(n).marginLeft)).toBe("-4px");
+  expect(await item.evaluate((n) => getComputedStyle(n).paddingLeft)).toBe("4px");
+  expect(await item.evaluate((n) => getComputedStyle(n).scrollMarginLeft)).toBe("-4px");
+});
