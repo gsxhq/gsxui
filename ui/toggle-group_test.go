@@ -14,7 +14,7 @@ func TestToggleGroupRootPinned(t *testing.T) {
 	// horizontal, the dead upstream shadow selector dropped per this port's
 	// ADAPT (nova's own .cn-toggle-group precedent, see docs/jsx-parity.md).
 	got := render(t, ui.ToggleGroup("multiple", "", "", "", gsx.Raw("x"), nil))
-	want := `<div data-gsxui-toggle-group data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" role="toolbar" style="--gap: 0" data-gsxui-slot-toggle-group>x</div>`
+	want := `<div data-gsxui-toggle-group data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" role="toolbar" style="--gap: 0" class="flex w-fit items-center rounded-lg" data-gsxui-slot-toggle-group>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -30,7 +30,7 @@ func TestToggleGroupRootSingleRole(t *testing.T) {
 func TestToggleGroupItemSinglePinned(t *testing.T) {
 	// type="single" item: role="radio" + aria-checked, NOT aria-pressed.
 	got := render(t, ui.ToggleGroupItem("single", "", "", "", true, "bold", gsx.Raw("B"), nil))
-	want := `<button type="button" data-gsxui-toggle-group-item data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" data-state="on" data-value="bold" role="radio" aria-checked="true" data-gsxui-slot-toggle-group-item data-gsxui-slot-toggle>B</button>`
+	want := `<button type="button" data-gsxui-toggle-group-item data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" data-state="on" data-value="bold" role="radio" aria-checked="true" class="w-auto min-w-0 shrink-0 px-3 focus:z-10 focus-visible:z-10 has-[&gt;svg]:px-2 rounded-none shadow-none data-[variant=outline]:border-l-0 data-[variant=outline]:first:border-l data-[spacing=0]:first:rounded-l-lg data-[spacing=0]:last:rounded-r-lg" data-gsxui-slot-toggle-group-item data-gsxui-slot-toggle>B</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -44,7 +44,7 @@ func TestToggleGroupItemMultiplePinned(t *testing.T) {
 	// class string to the single-type pinned case above (variant/size
 	// unchanged); only data-state/data-value/the ARIA attribute pair differ.
 	got := render(t, ui.ToggleGroupItem("multiple", "", "", "", false, "bold", gsx.Raw("B"), nil))
-	want := `<button type="button" data-gsxui-toggle-group-item data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" data-state="off" data-value="bold" aria-pressed="false" data-gsxui-slot-toggle-group-item data-gsxui-slot-toggle>B</button>`
+	want := `<button type="button" data-gsxui-toggle-group-item data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" data-state="off" data-value="bold" aria-pressed="false" class="w-auto min-w-0 shrink-0 px-3 focus:z-10 focus-visible:z-10 has-[&gt;svg]:px-2 rounded-none shadow-none data-[variant=outline]:border-l-0 data-[variant=outline]:first:border-l data-[spacing=0]:first:rounded-l-lg data-[spacing=0]:last:rounded-r-lg" data-gsxui-slot-toggle-group-item data-gsxui-slot-toggle>B</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -89,16 +89,29 @@ func TestToggleGroupDisabledCascade(t *testing.T) {
 }
 
 func TestToggleGroupCallerClassMerges(t *testing.T) {
+	// Not a bare class="gap-8" match: ToggleGroup now carries its own
+	// recipe class, so the caller's gap-8 merges in alongside it rather
+	// than rendering as the entire attribute value.
 	got := render(t, ui.ToggleGroup("multiple", "", "", "", gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "gap-8"}}))
-	if strings.Count(got, `class="gap-8"`) != 1 {
-		t.Errorf("caller class must be forwarded exactly once\nin: %s", got)
+	if strings.Count(got, "gap-8") != 1 {
+		t.Errorf("caller class must merge in exactly once\nin: %s", got)
+	}
+	if strings.Count(got, "class=") != 1 {
+		t.Errorf("expected exactly one class= attribute\nin: %s", got)
 	}
 }
 
 func TestToggleGroupItemCallerClassMerges(t *testing.T) {
+	// Not a bare class="px-8" match: ToggleGroupItem now carries its own
+	// recipe class (including its own px-3), so the caller's px-8 merges
+	// in (replacing the recipe's own px-3, same-property override)
+	// alongside it.
 	got := render(t, ui.ToggleGroupItem("multiple", "", "", "", false, "bold", gsx.Raw("B"), gsx.Attrs{{Key: "class", Value: "px-8"}}))
-	if strings.Count(got, `class="px-8"`) != 1 {
-		t.Errorf("caller class must be forwarded exactly once\nin: %s", got)
+	if strings.Count(got, "px-8") != 1 {
+		t.Errorf("caller class must merge in exactly once\nin: %s", got)
+	}
+	if strings.Count(got, "class=") != 1 {
+		t.Errorf("expected exactly one class= attribute\nin: %s", got)
 	}
 }
 

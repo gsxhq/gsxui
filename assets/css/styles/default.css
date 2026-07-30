@@ -40,7 +40,6 @@
 @import "./default/switch.css";
 @import "./default/textarea.css";
 @import "./default/toggle.css";
-@import "./default/toggle-group.css";
 @import "./default/accordion.css";
 @import "./default/dialog.css";
 @import "./default/alert-dialog.css";
@@ -255,5 +254,15 @@
   :where([data-gsxui-slot-button-group]) > [data-size="icon-xs"],
   :where([data-gsxui-slot-button-group]) > [data-size="icon-sm"] {
     @apply rounded-lg;
+  }
+
+  /* ToggleGroup's root gap: a calc() referencing the --gap custom property
+     the .gsx sets via inline style (style="--gap: <spacing>"). Plain CSS
+     with no Tailwind utility form, so it can't move into
+     registry/styles/{nova,maia}/toggle-group.css (@apply-only). The rest of
+     ToggleGroup's rule set moved there. Unwrapped to clear the (0,1,0)
+     specificity floor. */
+  [data-gsxui-slot-toggle-group] {
+    gap: calc(var(--spacing) * var(--gap));
   }
 }

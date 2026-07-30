@@ -1,4 +1,4 @@
-package ui
+package canonical
 
 import "github.com/gsxhq/gsx"
 
@@ -80,10 +80,7 @@ component ToggleGroup(groupType string, variant string, size string, spacing str
 		data-orientation="horizontal"
 		role={role}
 		style=css`--gap: @{sp}`
-		class={
-			"flex w-fit items-center rounded-lg",
-			switch size { case "sm": "rounded-[min(var(--radius-md),10px)]" case "lg": "rounded-lg" default: "rounded-lg" }
-		}
+		class={ toggleGroup.Root(), toggleGroup.Size(size) }
 		{ attrs... }
 		data-gsxui-slot-toggle-group
 	>
@@ -133,15 +130,10 @@ component ToggleGroupItem(groupType string, variant string, size string, spacing
 			aria-pressed={pressed}
 		} }
 		class={
-			"w-auto min-w-0 shrink-0 px-3 focus:z-10 focus-visible:z-10",
-			switch size { case "sm": "has-[>svg]:px-1.5" case "lg": "has-[>svg]:px-2" default: "has-[>svg]:px-2" },
-			switch sp {
-			case "2":
-				"isolate"
-			default:
-				"rounded-none shadow-none data-[variant=outline]:border-l-0 data-[variant=outline]:first:border-l"
-			},
-			switch orientation { default: "data-[spacing=0]:first:rounded-l-lg data-[spacing=0]:last:rounded-r-lg" }
+			toggleGroup.Item(),
+			toggleGroup.ItemSize(size),
+			toggleGroup.ItemSpacing(sp),
+			toggleGroup.ItemOrientation(orientation),
 		}
 		{ attrs... }
 		data-gsxui-slot-toggle-group-item

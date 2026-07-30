@@ -264,6 +264,20 @@ test("Radio checked state keeps its primary fill and gradient dot", async ({ pag
   expect(backgroundColor).toBe("oklch(0.205 0 0)");
   expect(backgroundImage).toContain("radial-gradient");
 });
+test("ToggleGroupItem at spacing=2 keeps Toggle's own per-size rounding", async ({ page }) => {
+  // Pins the exact regression a first draft of ToggleGroup's migration
+  // introduced: ToggleGroupItem also composes Toggle's own (still
+  // unmigrated) presentation via data-gsxui-slot-toggle, and Toggle sets
+  // its own size=sm-capped border-radius. An earlier recipe draft restated
+  // "rounded-lg" on the spacing=2 arm to satisfy the one-rule-per-value
+  // requirement, which silently outranked Toggle's own rounding (compiled
+  // utilities always win over Toggle's still-@layer-components rule) and
+  // widened the radius from 8px to 10px — caught only by this sweep.
+  await page.goto("/x/toggle-group/spacing");
+  const item = page.locator("[data-gsxui-slot-toggle-group-item]").first();
+  const radius = await item.evaluate((n) => getComputedStyle(n).borderRadius);
+  expect(radius).toBe("8px");
+});
 test("Resizable handle keeps its hairline width and flex layout", async ({ page }) => {
   // Pins both the recipe's own width and the foundation.css escape-hatch
   // rules (display: flex / width: 100% under aria-orientation=horizontal)

@@ -253,6 +253,49 @@
           "dimensions": {}
         }
       }
+    },
+    "toggle-group": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {
+            "size": {
+              "default": "default",
+              "values": [
+                "default",
+                "sm",
+                "lg"
+              ]
+            }
+          }
+        },
+        "item": {
+          "base": true,
+          "dimensions": {
+            "orientation": {
+              "default": "horizontal",
+              "values": [
+                "horizontal"
+              ]
+            },
+            "size": {
+              "default": "default",
+              "values": [
+                "default",
+                "sm",
+                "lg"
+              ]
+            },
+            "spacing": {
+              "default": "0",
+              "values": [
+                "0",
+                "2"
+              ]
+            }
+          }
+        }
+      }
     }
   },
   "styles": {
@@ -887,6 +930,71 @@
             "dimensions": {}
           }
         }
+      },
+      "toggle-group": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "w-fit",
+              "items-center",
+              "rounded-lg"
+            ],
+            "dimensions": {
+              "size": {
+                "default": [
+                  "rounded-lg"
+                ],
+                "lg": [
+                  "rounded-lg"
+                ],
+                "sm": [
+                  "rounded-[min(var(--radius-md),10px)]"
+                ]
+              }
+            }
+          },
+          "item": {
+            "base": [
+              "w-auto",
+              "min-w-0",
+              "shrink-0",
+              "px-3",
+              "focus:z-10",
+              "focus-visible:z-10"
+            ],
+            "dimensions": {
+              "orientation": {
+                "horizontal": [
+                  "data-[spacing=0]:first:rounded-l-lg",
+                  "data-[spacing=0]:last:rounded-r-lg"
+                ]
+              },
+              "size": {
+                "default": [
+                  "has-[\u003esvg]:px-2"
+                ],
+                "lg": [
+                  "has-[\u003esvg]:px-2"
+                ],
+                "sm": [
+                  "has-[\u003esvg]:px-1.5"
+                ]
+              },
+              "spacing": {
+                "0": [
+                  "rounded-none",
+                  "shadow-none",
+                  "data-[variant=outline]:border-l-0",
+                  "data-[variant=outline]:first:border-l"
+                ],
+                "2": [
+                  "isolate"
+                ]
+              }
+            }
+          }
+        }
       }
     },
     "nova": {
@@ -1513,6 +1621,71 @@
               "animate-spin"
             ],
             "dimensions": {}
+          }
+        }
+      },
+      "toggle-group": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "w-fit",
+              "items-center",
+              "rounded-lg"
+            ],
+            "dimensions": {
+              "size": {
+                "default": [
+                  "rounded-lg"
+                ],
+                "lg": [
+                  "rounded-lg"
+                ],
+                "sm": [
+                  "rounded-[min(var(--radius-md),10px)]"
+                ]
+              }
+            }
+          },
+          "item": {
+            "base": [
+              "w-auto",
+              "min-w-0",
+              "shrink-0",
+              "px-3",
+              "focus:z-10",
+              "focus-visible:z-10"
+            ],
+            "dimensions": {
+              "orientation": {
+                "horizontal": [
+                  "data-[spacing=0]:first:rounded-l-lg",
+                  "data-[spacing=0]:last:rounded-r-lg"
+                ]
+              },
+              "size": {
+                "default": [
+                  "has-[\u003esvg]:px-2"
+                ],
+                "lg": [
+                  "has-[\u003esvg]:px-2"
+                ],
+                "sm": [
+                  "has-[\u003esvg]:px-1.5"
+                ]
+              },
+              "spacing": {
+                "0": [
+                  "rounded-none",
+                  "shadow-none",
+                  "data-[variant=outline]:border-l-0",
+                  "data-[variant=outline]:first:border-l"
+                ],
+                "2": [
+                  "isolate"
+                ]
+              }
+            }
           }
         }
       }

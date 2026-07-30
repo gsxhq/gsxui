@@ -36,6 +36,7 @@ var all = map[string]recipe.Shape{
 	Resizable.Component:   Resizable,
 	Breadcrumb.Component:  Breadcrumb,
 	Radio.Component:       Radio,
+	ToggleGroup.Component: ToggleGroup,
 }
 
 // All returns every declared component shape, keyed by component name.

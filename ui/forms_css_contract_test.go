@@ -134,9 +134,13 @@ func TestFormControlCompositionTokenOrder(t *testing.T) {
 			want: `<div data-content data-gsxui-slot-field-separator-wrapper><div role="none" data-orientation="horizontal" ` + canonicalSeparatorClass("horizontal") + ` data-gsxui-slot-field-separator data-gsxui-slot-separator></div><span data-gsxui-slot-field-separator-content>Or</span></div>`,
 		},
 		{
+			// ToggleGroupItem is now migrated too (composing Toggle's own
+			// still-unmigrated marker, data-gsxui-slot-toggle, alongside its
+			// own recipe class) — same carve-out as FieldLabel/FieldSeparator
+			// above for a migrated primitive's own class.
 			name: "ToggleGroupItem",
 			node: ui.ToggleGroupItem("multiple", "", "", "", false, "bold", gsx.Raw("B"), nil),
-			want: `<button type="button" data-gsxui-toggle-group-item data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" data-state="off" data-value="bold" aria-pressed="false" data-gsxui-slot-toggle-group-item data-gsxui-slot-toggle>B</button>`,
+			want: `<button type="button" data-gsxui-toggle-group-item data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" data-state="off" data-value="bold" aria-pressed="false" class="w-auto min-w-0 shrink-0 px-3 focus:z-10 focus-visible:z-10 has-[&gt;svg]:px-2 rounded-none shadow-none data-[variant=outline]:border-l-0 data-[variant=outline]:first:border-l data-[spacing=0]:first:rounded-l-lg data-[spacing=0]:last:rounded-r-lg" data-gsxui-slot-toggle-group-item data-gsxui-slot-toggle>B</button>`,
 		},
 	}
 
