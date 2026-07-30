@@ -52,7 +52,6 @@
 @import "./default/overlay-popover-transition.css";
 @import "./default/calendar.css";
 @import "./default/carousel.css";
-@import "./default/scroll-area.css";
 @import "./default/sidebar.css";
 @import "./default/tabs.css";
 @import "./default/sonner.css";
@@ -132,6 +131,30 @@
      the computed-style sweep. Keep the uncontested half where it was. */
   [data-gsxui-slot-field-label] {
     @apply leading-snug;
+  }
+
+  /* ScrollArea: scrollbar-width/scrollbar-color (CSS Scrollbars Module
+     Level 1) and the ::-webkit-scrollbar* pseudo-elements are plain CSS
+     with no Tailwind utility form, so a recipe stylesheet (@apply-only)
+     can't carry them. Everything else in ScrollArea's rule set moved to
+     registry/styles/{nova,maia}/scroll-area.css. Unwrapped for the same
+     specificity-floor reason as Card header above. */
+  [data-gsxui-slot-scroll-area] {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  [data-gsxui-slot-scroll-area]::-webkit-scrollbar {
+    width: 0.625rem;
+    height: 0.625rem;
+  }
+  [data-gsxui-slot-scroll-area]::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  [data-gsxui-slot-scroll-area]::-webkit-scrollbar-thumb {
+    background-color: var(--border);
+    background-clip: padding-box;
+    border: 1px solid transparent;
+    border-radius: 9999px;
   }
 
   /* ButtonGroupSeparator: ButtonGroup composes its separator onto

@@ -292,4 +292,8 @@ test("Resizable handle keeps its hairline width and flex layout", async ({ page 
   expect(display).toBe("flex");
   expect(width).toBe("1px");
 });
+test("ScrollArea's caller-supplied rounded-md wins over its own recipe rounded-[inherit]", async ({ page }) => {
+  await page.goto("/x/scroll-area/basic");
+  const el = page.locator("[data-gsxui-slot-scroll-area]").first();
+  const radius = await el.evaluate((n) => getComputedStyle(n).borderRadius);
 

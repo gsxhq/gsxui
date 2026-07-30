@@ -222,6 +222,14 @@
         }
       }
     },
+    "scroll-area": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "separator": {
       "slots": {
         "": {
@@ -881,6 +889,22 @@
               "shrink-0",
               "rounded-lg",
               "bg-border"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "scroll-area": {
+        "slots": {
+          "": {
+            "base": [
+              "relative",
+              "rounded-[inherit]",
+              "outline-none",
+              "transition-[color,box-shadow]",
+              "focus-visible:ring-[3px]",
+              "focus-visible:ring-ring/50",
+              "focus-visible:outline-1"
             ],
             "dimensions": {}
           }
@@ -1574,6 +1598,22 @@
               "shrink-0",
               "rounded-lg",
               "bg-border"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "scroll-area": {
+        "slots": {
+          "": {
+            "base": [
+              "relative",
+              "rounded-[inherit]",
+              "outline-none",
+              "transition-[color,box-shadow]",
+              "focus-visible:ring-[3px]",
+              "focus-visible:ring-ring/50",
+              "focus-visible:outline-1"
             ],
             "dimensions": {}
           }

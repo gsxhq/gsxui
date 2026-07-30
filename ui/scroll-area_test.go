@@ -12,7 +12,7 @@ import (
 // orientation reflected explicitly for style and mechanism selectors.
 func TestScrollAreaVerticalPinned(t *testing.T) {
 	got := render(t, ui.ScrollArea("", gsx.Raw("x"), nil))
-	want := `<div data-orientation="vertical" data-gsxui-slot-scroll-area>x</div>`
+	want := `<div data-orientation="vertical" class="relative rounded-[inherit] outline-none transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1" data-gsxui-slot-scroll-area>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -21,12 +21,9 @@ func TestScrollAreaVerticalPinned(t *testing.T) {
 // TestScrollAreaHorizontalPinned pins orientation="horizontal".
 func TestScrollAreaHorizontalPinned(t *testing.T) {
 	got := render(t, ui.ScrollArea("horizontal", gsx.Raw("x"), nil))
-	want := `<div data-orientation="horizontal" data-gsxui-slot-scroll-area>x</div>`
+	want := `<div data-orientation="horizontal" class="relative rounded-[inherit] outline-none transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1" data-gsxui-slot-scroll-area>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
-	}
-	if strings.Contains(got, ` class="`) {
-		t.Errorf("horizontal must not render a library class\nin: %s", got)
 	}
 }
 
@@ -35,7 +32,7 @@ func TestScrollAreaHorizontalPinned(t *testing.T) {
 // fall-through as the only rendered class.
 func TestScrollAreaCallerClassMerges(t *testing.T) {
 	got := render(t, ui.ScrollArea("", nil, gsx.Attrs{{Key: "class", Value: "h-72 w-48 rounded-md border"}}))
-	if !strings.Contains(got, `class="h-72 w-48 rounded-md border" data-gsxui-slot-scroll-area`) {
+	if !strings.Contains(got, "h-72 w-48 rounded-md border") || strings.Count(got, "class=") != 1 {
 		t.Errorf("caller class is not forwarded exactly\nin: %s", got)
 	}
 }
@@ -44,8 +41,8 @@ func TestScrollAreaCallerClassMerges(t *testing.T) {
 // rounded-* utility remains caller-owned.
 func TestScrollAreaCallerClassOverridesRounded(t *testing.T) {
 	got := render(t, ui.ScrollArea("", nil, gsx.Attrs{{Key: "class", Value: "rounded-full"}}))
-	if !strings.Contains(got, `class="rounded-full"`) {
-		t.Errorf("missing caller class rounded-full\nin: %s", got)
+	if !strings.Contains(got, "rounded-full") || strings.Contains(got, "rounded-[inherit]") {
+		t.Errorf("missing caller class rounded-full, or recipe's rounded-[inherit] was not overridden\nin: %s", got)
 	}
 }
 
