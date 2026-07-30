@@ -1,4 +1,4 @@
-package ui
+package canonical
 
 import "github.com/gsxhq/gsx"
 
@@ -27,9 +27,7 @@ import "github.com/gsxhq/gsx"
 component Radio(attrs gsx.Attrs) {
 	<input
 		type="radio"
-		class={
-			"aspect-square size-4 shrink-0 appearance-none rounded-full border border-input transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 dark:aria-invalid:ring-destructive/40 checked:border-primary checked:bg-primary checked:text-primary-foreground dark:checked:bg-primary"
-		}
+		class={ radio.Root() }
 		{ attrs... }
 		data-gsxui-slot-radio
 	/>

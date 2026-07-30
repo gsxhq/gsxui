@@ -30,7 +30,6 @@
 @import "./default/input-group.css";
 @import "./default/input-otp.css";
 @import "./default/native-select.css";
-@import "./default/radio.css";
 @import "./default/select.css";
 @import "./default/command.css";
 @import "./default/combobox.css";
@@ -97,6 +96,22 @@
      (0,1,0) specificity floor. */
   [data-gsxui-slot-collapsible-trigger]::-webkit-details-marker {
     display: none;
+  }
+
+  /* Radio's checked-state indicator dot: a radial-gradient background-image
+     painted in currentColor (so it can resolve the caller's CSS custom
+     properties, which a data-URI can't). Plain CSS with no Tailwind utility
+     form, so it can't move into registry/styles/{nova,maia}/radio.css
+     (@apply-only). The rest of Radio's rule set (including checked:bg-primary/
+     checked:text-primary-foreground, which the gradient's currentColor
+     depends on) moved there. Unwrapped to clear the (0,1,0) specificity
+     floor. */
+  [data-gsxui-slot-radio]:checked {
+    background-image: radial-gradient(
+      circle closest-side,
+      currentColor 45%,
+      transparent 50%
+    );
   }
 
   /* FieldLabel: Field composes its label onto <ui.Label>, so the rendered

@@ -21,9 +21,15 @@ func TestRadioDefault(t *testing.T) {
 }
 
 func TestRadioCallerClassMerges(t *testing.T) {
+	// Not a bare class="size-6" match: Radio now carries its own recipe
+	// class, so the caller's size-6 merges in (replacing the recipe's own
+	// size-4, same-property override) alongside it.
 	got := render(t, ui.Radio(gsx.Attrs{{Key: "class", Value: "size-6"}}))
-	if strings.Count(got, `class="size-6"`) != 1 {
-		t.Errorf("caller class must be forwarded exactly once\nin: %s", got)
+	if strings.Count(got, "size-6") != 1 {
+		t.Errorf("caller class must merge in exactly once\nin: %s", got)
+	}
+	if strings.Count(got, "class=") != 1 {
+		t.Errorf("expected exactly one class= attribute\nin: %s", got)
 	}
 }
 
@@ -58,7 +64,7 @@ func TestRadioDisabledAttr(t *testing.T) {
 func TestRadioPinned(t *testing.T) {
 	// Presentation lives in the stylesheet; the render pin covers structure.
 	got := render(t, ui.Radio(nil))
-	want := `<input type="radio" data-gsxui-slot-radio>`
+	want := `<input type="radio" class="aspect-square size-4 shrink-0 appearance-none rounded-full border border-input transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 dark:aria-invalid:ring-destructive/40 checked:border-primary checked:bg-primary checked:text-primary-foreground dark:checked:bg-primary" data-gsxui-slot-radio>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

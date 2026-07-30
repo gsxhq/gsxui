@@ -251,6 +251,19 @@ test("Breadcrumb separator icon keeps its 3.5 size and link keeps hover color", 
   const size = await svg.evaluate((n) => getComputedStyle(n).width);
   expect(size).toBe("14px");
 });
+test("Radio checked state keeps its primary fill and gradient dot", async ({ page }) => {
+  // Pins both halves of the split: bg-primary (recipe CSS) and the
+  // radial-gradient background-image (default.css's plain-CSS escape
+  // hatch, since @apply can't carry it) must both still apply together.
+  await page.goto("/x/radio/states");
+  const checked = page.locator("#radio-states-monthly");
+  const { backgroundColor, backgroundImage } = await checked.evaluate((n) => {
+    const computed = getComputedStyle(n);
+    return { backgroundColor: computed.backgroundColor, backgroundImage: computed.backgroundImage };
+  });
+  expect(backgroundColor).toBe("oklch(0.205 0 0)");
+  expect(backgroundImage).toContain("radial-gradient");
+});
 test("Resizable handle keeps its hairline width and flex layout", async ({ page }) => {
   // Pins both the recipe's own width and the foundation.css escape-hatch
   // rules (display: flex / width: 100% under aria-orientation=horizontal)
