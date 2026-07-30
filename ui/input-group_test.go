@@ -1,18 +1,94 @@
 package ui_test
 
 import (
+	"html"
+	"os"
+	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 
 	gsx "github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/internal/recipe"
+	"github.com/gsxhq/gsxui/internal/stylegen"
+	"github.com/gsxhq/gsxui/merge"
 	maiaui "github.com/gsxhq/gsxui/registry/generated/maia"
 	novaui "github.com/gsxhq/gsxui/registry/generated/nova"
 	"github.com/gsxhq/gsxui/ui"
 )
 
+// defaultStyleRecipe loads one component's recipe stylesheet from the default
+// style. InputGroup composes three migrated components (Button, Input,
+// Textarea), so unlike the single-component helpers in separator_test.go and
+// item_test.go this one is parameterised by component name.
+var defaultStyleRecipe = sync.OnceValue(func() func(string) recipe.Style {
+	cache := map[string]recipe.Style{}
+	return func(component string) recipe.Style {
+		if style, ok := cache[component]; ok {
+			return style
+		}
+		path := filepath.Join("..", "registry", "styles", stylegen.DefaultStyle, component+".css")
+		src, err := os.ReadFile(path)
+		if err != nil {
+			panic(err)
+		}
+		style, err := recipe.ParseStyle(path, src)
+		if err != nil {
+			panic(err)
+		}
+		cache[component] = style
+		return style
+	}
+})
+
+func styleRecipeUtilities(component, class string) []string {
+	rule, ok := defaultStyleRecipe()(component).Lookup(class)
+	if !ok {
+		panic("default style declares no recipe " + class)
+	}
+	return rule.Utilities
+}
+
+func inputGroupRecipeClasses(slot string, extra ...string) []string {
+	base := "gsxui-recipe-input-group"
+	if slot != "" {
+		base += "-" + slot
+	}
+	classes := append([]string(nil), styleRecipeUtilities("input-group", base)...)
+	for _, value := range extra {
+		classes = append(classes, styleRecipeUtilities("input-group", base+"-"+value)...)
+	}
+	return classes
+}
+
+// canonicalInputGroupClass is the class attribute one InputGroup slot renders,
+// plus any caller classes, merged the way gsx merges class values at runtime.
+func canonicalInputGroupClass(slot string, extra []string, caller ...string) string {
+	classes := append(inputGroupRecipeClasses(slot, extra...), caller...)
+	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
+}
+
+// canonicalInputGroupControlClass is what InputGroupInput/InputGroupTextarea
+// render: the composed control's own recipe utilities with InputGroup's
+// control slot merged in after them as an ordinary caller class.
+//
+// tailwind-merge genuinely REMOVES two of the control's own utilities here —
+// focus-visible:ring-[3px] loses to focus-visible:ring-0, and dark:bg-input/30
+// loses to dark:bg-transparent. That is upstream shadcn's own behaviour
+// (registry/new-york-v4/ui/input-group.tsx puts exactly those two utilities on
+// InputGroupInput's className and lets cn() resolve them), and it is a change
+// from the pre-migration render, where the same two rules sat in
+// @layer components and lost to Input's utilities-layer classes instead.
+func canonicalInputGroupControlClass(control string, caller ...string) string {
+	classes := append([]string(nil), styleRecipeUtilities(control, "gsxui-recipe-"+control)...)
+	classes = append(classes, inputGroupRecipeClasses("control")...)
+	classes = append(classes, caller...)
+	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
+}
+
 func TestInputGroupPinned(t *testing.T) {
 	got := render(t, ui.InputGroup(gsx.Raw("x"), nil))
-	want := `<div role="group" data-gsxui-slot-input-group>x</div>`
+	want := `<div role="group" ` + canonicalInputGroupClass("", nil) + ` data-gsxui-slot-input-group>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -27,15 +103,18 @@ func TestInputGroupAttrsFallThrough(t *testing.T) {
 
 func TestInputGroupCallerClassMerges(t *testing.T) {
 	got := render(t, ui.InputGroup(nil, gsx.Attrs{{Key: "class", Value: "max-w-sm"}}))
-	if strings.Count(got, `class="max-w-sm"`) != 1 {
+	if strings.Count(got, "max-w-sm") != 1 || strings.Count(got, `class=`) != 1 {
 		t.Errorf("caller class must be forwarded exactly once\nin: %s", got)
+	}
+	if want := canonicalInputGroupClass("", nil, "max-w-sm"); !strings.Contains(got, want) {
+		t.Errorf("caller class not merged after the recipe's own\nwant: %s\nin: %s", want, got)
 	}
 }
 
 // TestInputGroupAddonDefaultPinned pins the zero-value ("inline-start") align.
 func TestInputGroupAddonDefaultPinned(t *testing.T) {
 	got := render(t, ui.InputGroupAddon("", gsx.Raw("x"), nil))
-	want := `<div role="group" data-align="inline-start" data-gsxui-slot-input-group-addon>x</div>`
+	want := `<div role="group" data-align="inline-start" ` + canonicalInputGroupClass("addon", []string{"align-inline-start"}) + ` data-gsxui-slot-input-group-addon>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -52,7 +131,7 @@ func TestInputGroupAddonInlineEndPinned(t *testing.T) {
 
 func TestInputGroupAddonBlockStartPinned(t *testing.T) {
 	got := render(t, ui.InputGroupAddon("block-start", gsx.Raw("x"), nil))
-	want := `<div role="group" data-align="block-start" data-gsxui-slot-input-group-addon>x</div>`
+	want := `<div role="group" data-align="block-start" ` + canonicalInputGroupClass("addon", []string{"align-block-start"}) + ` data-gsxui-slot-input-group-addon>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -174,7 +253,7 @@ func TestInputGroupButtonCallerClassMerges(t *testing.T) {
 
 func TestInputGroupTextPinned(t *testing.T) {
 	got := render(t, ui.InputGroupText(gsx.Raw("x"), nil))
-	want := `<span data-gsxui-slot-input-group-text>x</span>`
+	want := `<span ` + canonicalInputGroupClass("text", nil) + ` data-gsxui-slot-input-group-text>x</span>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -190,7 +269,7 @@ func TestInputGroupTextAttrsFallThrough(t *testing.T) {
 // InputGroupInput composes Input's token with the group-control token.
 func TestInputGroupInputPinned(t *testing.T) {
 	got := render(t, ui.InputGroupInput(nil))
-	want := `<input type="text" class="h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 transition-[color,box-shadow] outline-none selection:bg-primary selection:text-primary-foreground file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 dark:aria-invalid:ring-destructive/40" data-gsxui-slot-input-group-control data-gsxui-slot-input>`
+	want := `<input type="text" ` + canonicalInputGroupControlClass("input") + ` data-gsxui-slot-input-group-control data-gsxui-slot-input>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -206,7 +285,7 @@ func TestInputGroupInputAttrsFallThrough(t *testing.T) {
 // InputGroupTextarea composes Textarea's token with the group-control token.
 func TestInputGroupTextareaPinned(t *testing.T) {
 	got := render(t, ui.InputGroupTextarea("hi", nil))
-	want := `<textarea class="field-sizing-content flex min-h-16 w-full rounded-lg border border-input bg-transparent px-2.5 py-2 transition-[color,box-shadow] outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 dark:aria-invalid:ring-destructive/40" data-gsxui-slot-input-group-control data-gsxui-slot-textarea>hi</textarea>`
+	want := `<textarea ` + canonicalInputGroupControlClass("textarea") + ` data-gsxui-slot-input-group-control data-gsxui-slot-textarea>hi</textarea>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

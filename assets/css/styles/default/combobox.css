@@ -3,9 +3,12 @@
   :where([data-gsxui-slot-combobox]) {
     display: contents;
   }
-  :where([data-gsxui-slot-combobox-input-group]) {
-    @apply w-auto;
-  }
+  /* w-auto moved to ui/combobox.gsx as a literal class on the <InputGroup>
+     call (InputGroup migration fallout) — upstream's own cn("w-auto",
+     className) form. As a marker-keyed @layer components rule it could no
+     longer beat InputGroup's own w-full utility, and promoting it to
+     @layer utilities overshot and beat the CALLER's w-[220px] as well
+     (make sweep-compare caught that: 220px -> 1216px on three fixtures). */
   :where([data-gsxui-slot-combobox-trigger]) svg:not([class*="size-"]) {
     @apply size-4;
   }
@@ -24,9 +27,17 @@
   :where([data-gsxui-slot-combobox-content]) {
     @apply relative z-50 max-h-72 min-w-36 origin-top-left overflow-hidden rounded-lg bg-popover text-popover-foreground shadow-md ring-1 ring-foreground/10;
   }
+  /* h-8/border-input/30/bg-input/30 are promoted to
+     assets/css/styles/default.css's @layer utilities block (InputGroup
+     migration fallout): each contests a property InputGroup's own recipe now
+     emits as a real utility on this element (h-8, border-input, and dark's
+     bg-input/30). m-1/mb-0/shadow-none contest nothing InputGroup sets and
+     stay HERE — promoting the uncontested half as well is exactly what went
+     wrong for FieldLabel in an earlier wave, where it changed which rule won
+     against the consumer's own layout rules. */
   :where([data-gsxui-slot-combobox-content])
     > :where([data-gsxui-slot-input-group]) {
-    @apply m-1 mb-0 h-8 border-input/30 bg-input/30 shadow-none;
+    @apply m-1 mb-0 shadow-none;
   }
   :where([data-gsxui-slot-combobox-list]) {
     @apply max-h-[calc(--spacing(72)---spacing(9))] scroll-py-1 overflow-y-auto p-1;

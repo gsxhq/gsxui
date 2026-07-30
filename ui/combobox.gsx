@@ -153,9 +153,24 @@ component Combobox(name string, value string, children gsx.Node, attrs gsx.Attrs
 // e.g. for a <label for> pairing (site/examples/combobox/form.gsx).
 component ComboboxInput(placeholder string, showTrigger bool, showClear bool, disabled bool, children gsx.Node, attrs gsx.Attrs) {
 	{{
-		var wrapperAttrs gsx.Attrs
+		// "w-auto" is upstream's own cn("w-auto", className) default, which the
+		// doc comment above already describes this block as reproducing. It
+		// used to live in assets/css/styles/default/combobox.css as a
+		// marker-keyed rule, and InputGroup's migration killed it: InputGroup
+		// now emits a real w-full utility, which no @layer components rule can
+		// beat. Promoting it to @layer utilities overshoots in the other
+		// direction — at (0,1,0) in that layer it beats the CALLER's own
+		// w-[220px] too, which make sweep-compare caught as 220px -> 1216px on
+		// three fixtures. Combining it with the caller's class HERE is the only
+		// form that orders correctly against both, and it is exactly what
+		// upstream does. It is composed into the attrs bag rather than written
+		// as a class= attribute on the tag because Combobox is not migrated and
+		// CheckAuthoring (correctly) forbids hand-authored presentation markup
+		// in an unmigrated component's ui/*.gsx; when Combobox migrates this
+		// becomes an ordinary recipe utility on its input-group slot.
+		wrapperAttrs := gsx.Attrs{{Key: "class", Value: "w-auto"}}
 		if class, ok := attrs.Get("class"); ok {
-			wrapperAttrs = gsx.Attrs{{Key: "class", Value: class}}
+			wrapperAttrs = append(wrapperAttrs, gsx.Attr{Key: "class", Value: class})
 		}
 	}}
 	<InputGroup data-gsxui-combobox-input-group { wrapperAttrs... } data-gsxui-slot-combobox-input-group>

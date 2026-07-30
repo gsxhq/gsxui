@@ -100,6 +100,14 @@ component StyleContractFixture() {
 		    :has(> [data-gsxui-slot-button-group]) { gap-2 } rule stays in
 		    @layer components precisely so gap-8 (in @layer utilities) wins
 		    the layer contest; see assets/css/styles/default/button-group.css. */}
+		{/* InputGroup § 10b probes: a caller-supplied border-b on a block-start
+		    addon (the retained consumer-class rule) and a caller padding that
+		    must still beat it. */}
+		<ui.InputGroup>
+			<ui.InputGroupAddon align="block-start" class="border-b" data-style-contract="input-group-addon-border-b">URL</ui.InputGroupAddon>
+			<ui.InputGroupAddon align="block-start" class="border-b pb-8" data-style-contract="input-group-addon-border-b-caller">URL</ui.InputGroupAddon>
+			<ui.InputGroupInput placeholder="probe"/>
+		</ui.InputGroup>
 		{/* Field § 10b probes. The nested FieldGroup pins the migrated
 		    outer-reaching gap-4; the disabled title pins that the RETAINED
 		    opacity rule still loses to a caller's own opacity utility; the

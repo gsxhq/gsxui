@@ -1188,3 +1188,82 @@ test("FieldDescription's retained margin-top group survives", async ({ page }) =
   // inside that layer.
   expect(await description.evaluate((n) => getComputedStyle(n).marginTop)).toBe("-6px");
 });
+
+// InputGroup's migration (Wave 4c).
+
+test("InputGroup keeps its own chrome and its block-align column layout", async ({ page }) => {
+  await page.goto("/x/input-group/basic");
+  const group = page.locator("[data-gsxui-slot-input-group]").first();
+  expect(await group.evaluate((n) => getComputedStyle(n).borderRadius)).toBe("10px");
+  // The whole has-() state block moved onto the recipe (every rule in it
+  // contested a property the base rule sets — h-8, border-input, the two ring
+  // colours), so these are the pin that catches the variants failing to
+  // compile.
+  const stacked = page.locator('[data-gsxui-slot-input-group]:has(> [data-align="block-start"])').first();
+  expect(await stacked.evaluate((n) => getComputedStyle(n).flexDirection)).toBe("column");
+  expect(await stacked.evaluate((n) => getComputedStyle(n).height !== "32px")).toBe(true);
+});
+
+test("InputGroup's invalid state borders red", async ({ page }) => {
+  await page.goto("/x/input-group/basic");
+  const invalid = page.locator('[data-gsxui-slot-input-group]:has([aria-invalid="true"])').first();
+  expect(await invalid.evaluate((n) => getComputedStyle(n).borderTopColor)).toBe(
+    "oklch(0.577 0.245 27.325)",
+  );
+});
+
+test("InputGroup's addon border-b padding applies", async ({ page }) => {
+  await page.goto("/f/style-contract");
+  // `[data-align=block-start].border-b -> pb-2` is § 10b's own worst case
+  // (Card's [&.border-b]:pb-4), and it is on the recipe anyway: retaining it in
+  // @layer components left it DEAD against the addon's own py-1.5, because
+  // padding-bottom is a sub-property of the py-* shorthand. That reads as 6px
+  // here, not 8px — this pin is what caught it, since --check-layers does not
+  // model py-* vs pb-* and no fixture passes border-b.
+  //
+  // The second element additionally passes pb-8 and DOES NOT win: at (0,2,0)
+  // the variant outranks a caller's plain pb-*. That is the § 10b cost, taken
+  // deliberately because the alternative is the rule never applying. Upstream
+  // shadcn has the same behaviour.
+  const plain = page.locator('[data-style-contract="input-group-addon-border-b"]');
+  const overridden = page.locator('[data-style-contract="input-group-addon-border-b-caller"]');
+  expect(await plain.evaluate((n) => getComputedStyle(n).paddingBottom)).toBe("8px");
+  expect(await overridden.evaluate((n) => getComputedStyle(n).paddingBottom)).toBe("8px");
+});
+
+// CONFORMANCE FIX, not a regression. Before InputGroup migrated, its control's
+// `focus-visible:ring-0` and `dark:bg-transparent` sat in @layer components and
+// lost to Input's/Textarea's own utilities-layer classes, so a focused
+// InputGroupInput drew its OWN 3px ring inside the group's ring. They are now
+// ordinary utilities merged onto the control by tailwind-merge, which drops
+// Input's focus-visible:ring-[3px] and dark:bg-input/30 outright — exactly what
+// upstream shadcn's cn() does with the identical class list
+// (registry/new-york-v4/ui/input-group.tsx's InputGroupInput). The resting
+// computed-style sweep cannot see a focus state, so this pin is the only guard.
+test("InputGroupInput draws no ring of its own when focused", async ({ page }) => {
+  await page.goto("/x/input-group/basic");
+  const input = page.locator("input[data-gsxui-slot-input-group-control]").first();
+  await input.focus();
+  expect(await input.evaluate((n) => getComputedStyle(n).outlineStyle)).toBe("none");
+  // Input's own focus-visible:ring-[3px] is gone; the group draws the ring.
+  expect(await input.evaluate((n) => n.className.includes("focus-visible:ring-[3px]"))).toBe(false);
+  const group = page.locator("[data-gsxui-slot-input-group]").first();
+  expect(await group.evaluate((n) => getComputedStyle(n).boxShadow)).not.toBe("none");
+});
+
+test("Combobox's InputGroup keeps its w-auto default and still yields to a caller width", async ({
+  page,
+}) => {
+  // InputGroup's migration killed combobox.css's marker-keyed w-auto rule
+  // (a components-layer rule cannot beat InputGroup's own w-full utility), and
+  // promoting it to @layer utilities overshot and beat the caller's own
+  // w-[220px]. It is composed into ComboboxInput's wrapper attrs now.
+  await page.goto("/x/combobox/basic");
+  const sized = page.locator("[data-gsxui-slot-combobox-input-group]").first();
+  expect(await sized.evaluate((n) => getComputedStyle(n).width)).toBe("220px");
+
+  await page.goto("/x/combobox/form");
+  const unsized = page.locator("[data-gsxui-slot-combobox-input-group]").first();
+  expect(await unsized.evaluate((n) => n.className.includes("w-full"))).toBe(false);
+  expect(await unsized.evaluate((n) => n.className.includes("w-auto"))).toBe(true);
+});

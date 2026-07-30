@@ -184,36 +184,51 @@ func ComboboxInput(placeholder string, showTrigger bool, showClear bool, disable
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line combobox.gsx:155:2
-		var wrapperAttrs gsx.Attrs
+		// "w-auto" is upstream's own cn("w-auto", className) default, which the
+		// doc comment above already describes this block as reproducing. It
+		// used to live in assets/css/styles/default/combobox.css as a
+		// marker-keyed rule, and InputGroup's migration killed it: InputGroup
+		// now emits a real w-full utility, which no @layer components rule can
+		// beat. Promoting it to @layer utilities overshoots in the other
+		// direction — at (0,1,0) in that layer it beats the CALLER's own
+		// w-[220px] too, which make sweep-compare caught as 220px -> 1216px on
+		// three fixtures. Combining it with the caller's class HERE is the only
+		// form that orders correctly against both, and it is exactly what
+		// upstream does. It is composed into the attrs bag rather than written
+		// as a class= attribute on the tag because Combobox is not migrated and
+		// CheckAuthoring (correctly) forbids hand-authored presentation markup
+		// in an unmigrated component's ui/*.gsx; when Combobox migrates this
+		// becomes an ordinary recipe utility on its input-group slot.
+		wrapperAttrs := gsx.Attrs{{Key: "class", Value: "w-auto"}}
 		if class, ok := attrs.Get("class"); ok {
-			wrapperAttrs = gsx.Attrs{{Key: "class", Value: class}}
+			wrapperAttrs = append(wrapperAttrs, gsx.Attr{Key: "class", Value: class})
 		}
-//line combobox.gsx:161:2
+//line combobox.gsx:176:2
 		_gsxgw.NodeResult(_gsxrenderInputGroup(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line combobox.gsx:162:3
+//line combobox.gsx:177:3
 			_gsxgw.NodeResult(_gsxrenderInputGroupInput(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-combobox-input", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "type", Value: "text"}}, _gsxrt.Attrs{{Key: "role", Value: "combobox"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "listbox"}}, _gsxrt.Attrs{{Key: "aria-autocomplete", Value: "list"}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "off"}}, _gsxrt.Attrs{{Key: "spellcheck", Value: "false"}}, _gsxrt.Attrs{{Key: "placeholder", Value: placeholder}}, _gsxrt.Attrs{{Key: "disabled", Value: disabled}}, attrs.Without("class"), _gsxrt.Attrs{{Key: "data-gsxui-slot-combobox-input", Value: _gsxrt.Toggle(true)}})))
-//line combobox.gsx:176:3
+//line combobox.gsx:191:3
 			_gsxgw.NodeResult(_gsxrenderInputGroupAddon(ctx, _gsxgw, "inline-end", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line combobox.gsx:177:4
+//line combobox.gsx:192:4
 				if showTrigger {
-//line combobox.gsx:178:5
+//line combobox.gsx:193:5
 					_gsxgw.NodeResult(_gsxrenderInputGroupButton(ctx, _gsxgw, "ghost", "icon-xs", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line combobox.gsx:185:6
+//line combobox.gsx:200:6
 						_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.Attrs{{Key: "data-gsxui-slot-combobox-trigger-icon", Value: _gsxrt.Toggle(true)}}...))
 						return _gsxgw.Err()
 					}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-combobox-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "disabled", Value: disabled}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-combobox-trigger", Value: _gsxrt.Toggle(true)}})))
 				}
-//line combobox.gsx:188:4
+//line combobox.gsx:203:4
 				if showClear {
-//line combobox.gsx:189:5
+//line combobox.gsx:204:5
 					_gsxgw.NodeResult(_gsxrenderComboboxClear(ctx, _gsxgw, _gsxrt.Attrs{{Key: "disabled", Value: disabled}}))
 				}
 				return _gsxgw.Err()
 			}), nil))
-//line combobox.gsx:192:3
+//line combobox.gsx:207:3
 			_gsxgw.Node(ctx, children)
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-combobox-input-group", Value: _gsxrt.Toggle(true)}}, wrapperAttrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-combobox-input-group", Value: _gsxrt.Toggle(true)}})))
@@ -221,7 +236,7 @@ func ComboboxInput(placeholder string, showTrigger bool, showClear bool, disable
 	})
 }
 
-//line combobox.gsx:196:1
+//line combobox.gsx:211:1
 // ComboboxTrigger is the standalone chevron-toggle button — used directly
 // only by the "trigger a popup from a button" composition variant (combobox
 // composed with a ui.Button and the search input moved inside
@@ -229,11 +244,11 @@ func ComboboxInput(placeholder string, showTrigger bool, showClear bool, disable
 // shipped examples, see the GAP list above). ComboboxInput's own addon does
 // NOT call this — see its doc comment for why.
 
-//line combobox.gsx:202:1
+//line combobox.gsx:217:1
 func ComboboxTrigger(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line combobox.gsx:203:2
+//line combobox.gsx:218:2
 		_gsxgw.S("<button")
 		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"button\"")
@@ -246,14 +261,14 @@ func ComboboxTrigger(attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-combobox-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-combobox-trigger", true)
 		_gsxgw.S(">")
-//line combobox.gsx:209:3
+//line combobox.gsx:224:3
 		_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.Attrs{{Key: "data-gsxui-slot-combobox-trigger-icon", Value: _gsxrt.Toggle(true)}}...))
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line combobox.gsx:213:1
+//line combobox.gsx:228:1
 // ComboboxClear composes ui.InputGroupButton (variant="ghost"
 // size="icon-xs") directly — per the source map, this part is ALWAYS an
 // InputGroupButton composition (no independent bare-button shape the way
@@ -274,7 +289,7 @@ func ComboboxTrigger(attrs gsx.Attrs) _gsxrt.Node {
 // `disabled` param the same way — the established override mechanism (see
 // ui/input-group.gsx's InputGroupButton composition contract).
 
-//line combobox.gsx:232:1
+//line combobox.gsx:247:1
 func ComboboxClear(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -286,17 +301,17 @@ func _gsxrenderComboboxClear(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs g
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line combobox.gsx:233:2
+//line combobox.gsx:248:2
 	_gsxgw.NodeResult(_gsxrenderInputGroupButton(ctx, _gsxgw, "ghost", "icon-xs", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line combobox.gsx:240:3
+//line combobox.gsx:255:3
 		_gsxgw.Node(ctx, icon.X())
 		return _gsxgw.Err()
 	}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-combobox-clear", Value: _gsxrt.Toggle(true)}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-combobox-clear", Value: _gsxrt.Toggle(true)}})))
 	return _gsxgw.Err()
 }
 
-//line combobox.gsx:244:1
+//line combobox.gsx:259:1
 // ComboboxContent is the popover listbox surface. See the package doc
 // comment for the popover-machinery MECHANISM and the CSS-var-drop ADAPT.
 // ComboboxContent is the named ancestor targeted by ComboboxEmpty's
@@ -308,11 +323,11 @@ func _gsxrenderComboboxClear(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs g
 // original token here, not a nova border->ring swap to reject — new-york-v4
 // never had a border on this part (source map ## combobox §1).
 
-//line combobox.gsx:254:1
+//line combobox.gsx:269:1
 func ComboboxContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line combobox.gsx:255:2
+//line combobox.gsx:270:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-gsxui-combobox-content") {
 			_gsxgw.BoolAttr("data-gsxui-combobox-content", true)
@@ -331,14 +346,14 @@ func ComboboxContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-combobox-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-combobox-content", true)
 		_gsxgw.S(">")
-//line combobox.gsx:263:3
+//line combobox.gsx:278:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line combobox.gsx:267:1
+//line combobox.gsx:282:1
 // ComboboxList is the scrolling item container (unlike ui.Select, which has
 // no separate list part — SelectContent itself scrolls — Combobox's List is
 // its own element, matching the raw source's own separate part). role and
@@ -361,11 +376,11 @@ func ComboboxContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // and clips the last ~40px of a full list against ComboboxContent's own
 // max-h-72 + overflow-hidden with no way to scroll to it.
 
-//line combobox.gsx:288:1
+//line combobox.gsx:303:1
 func ComboboxList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line combobox.gsx:289:2
+//line combobox.gsx:304:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-gsxui-combobox-list") {
 			_gsxgw.BoolAttr("data-gsxui-combobox-list", true)
@@ -381,14 +396,14 @@ func ComboboxList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-combobox-list"})
 		_gsxgw.BoolAttr("data-gsxui-slot-combobox-list", true)
 		_gsxgw.S(">")
-//line combobox.gsx:296:3
+//line combobox.gsx:311:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line combobox.gsx:300:1
+//line combobox.gsx:315:1
 // ComboboxItem is one option. value is the form/filter value (data-value,
 // synced into the hidden bridge on commit); selected server-renders the
 // initial pick. Two attributes track two different facts, the same split
@@ -402,11 +417,11 @@ func ComboboxList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // different split since focus never leaves the input). Items are never tab
 // stops (command.js's model): no tabindex is stamped at all.
 
-//line combobox.gsx:312:1
+//line combobox.gsx:327:1
 func ComboboxItem(value string, selected bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line combobox.gsx:313:2
+//line combobox.gsx:328:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-gsxui-combobox-item") {
 			_gsxgw.BoolAttr("data-gsxui-combobox-item", true)
@@ -438,21 +453,21 @@ func ComboboxItem(value string, selected bool, children gsx.Node, attrs gsx.Attr
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-combobox-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-combobox-item", true)
 		_gsxgw.S(">")
-//line combobox.gsx:326:3
+//line combobox.gsx:341:3
 		_gsxgw.Node(ctx, children)
-//line combobox.gsx:327:3
+//line combobox.gsx:342:3
 		_gsxgw.S("<span")
 		_gsxgw.BoolAttr("data-gsxui-combobox-item-indicator", true)
 		_gsxgw.BoolAttr("data-gsxui-slot-combobox-item-indicator", true)
 		_gsxgw.S(">")
-//line combobox.gsx:328:4
+//line combobox.gsx:343:4
 		_gsxgw.Node(ctx, icon.Check())
 		_gsxgw.S("</span></div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line combobox.gsx:333:1
+//line combobox.gsx:348:1
 // ComboboxGroup wraps a set of items under a ComboboxLabel — real structural
 // parts, not a native <optgroup> collapse, the same call ## select makes
 // for SelectGroup/SelectLabel (a custom listbox can hold an arbitrary
@@ -460,11 +475,11 @@ func ComboboxItem(value string, selected bool, children gsx.Node, attrs gsx.Attr
 // aria-labelledby to the contained ComboboxLabel's generated id at init,
 // mirroring select.js's own group-labelling MECHANISM exactly.
 
-//line combobox.gsx:339:1
+//line combobox.gsx:354:1
 func ComboboxGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line combobox.gsx:340:2
+//line combobox.gsx:355:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-gsxui-combobox-group") {
 			_gsxgw.BoolAttr("data-gsxui-combobox-group", true)
@@ -477,23 +492,23 @@ func ComboboxGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-combobox-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-combobox-group", true)
 		_gsxgw.S(">")
-//line combobox.gsx:340:90
+//line combobox.gsx:355:90
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line combobox.gsx:343:1
+//line combobox.gsx:358:1
 // ComboboxLabel is the group heading. pointer-coarse: variants are a real
 // new (non-metric) addition nova's own CSS carries for this part — ported
 // verbatim, not a retarget.
 
-//line combobox.gsx:346:1
+//line combobox.gsx:361:1
 func ComboboxLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line combobox.gsx:347:2
+//line combobox.gsx:362:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-gsxui-combobox-label") {
 			_gsxgw.BoolAttr("data-gsxui-combobox-label", true)
@@ -503,24 +518,24 @@ func ComboboxLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-combobox-label"})
 		_gsxgw.BoolAttr("data-gsxui-slot-combobox-label", true)
 		_gsxgw.S(">")
-//line combobox.gsx:347:77
+//line combobox.gsx:362:77
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line combobox.gsx:350:1
+//line combobox.gsx:365:1
 // ComboboxEmpty is server-rendered hidden; combobox.js reveals it via the
 // content ancestor's empty-state selector when a filter pass leaves
 // zero visible items — see ComboboxContent's own doc comment for exactly
 // which element combobox.js stamps data-empty on.
 
-//line combobox.gsx:354:1
+//line combobox.gsx:369:1
 func ComboboxEmpty(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line combobox.gsx:355:2
+//line combobox.gsx:370:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-gsxui-combobox-empty") {
 			_gsxgw.BoolAttr("data-gsxui-combobox-empty", true)
@@ -530,22 +545,22 @@ func ComboboxEmpty(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-combobox-empty"})
 		_gsxgw.BoolAttr("data-gsxui-slot-combobox-empty", true)
 		_gsxgw.S(">")
-//line combobox.gsx:355:77
+//line combobox.gsx:370:77
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line combobox.gsx:358:1
+//line combobox.gsx:373:1
 // ComboboxSeparator divides groups. aria-hidden, matching ## select's own
 // SelectSeparator (a decorative rule, not a role="separator").
 
-//line combobox.gsx:360:1
+//line combobox.gsx:375:1
 func ComboboxSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line combobox.gsx:361:2
+//line combobox.gsx:376:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-gsxui-combobox-separator") {
 			_gsxgw.BoolAttr("data-gsxui-combobox-separator", true)

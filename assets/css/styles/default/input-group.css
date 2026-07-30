@@ -1,77 +1,22 @@
 @layer components {
-  /* InputGroup */
-  :where([data-gsxui-slot-input-group]) {
-    @apply relative flex h-8 min-w-0 w-full items-center rounded-lg border border-input transition-[color,box-shadow] outline-none;
-  }
-  .dark :where([data-gsxui-slot-input-group]) {
-    @apply bg-input/30;
-  }
-  /* h-auto is promoted to assets/css/styles/default.css's @layer utilities
-     block (Input migration fallout, same shape as the border-ring/rounded-
-     none/border-0 fallout above): the control here is specifically
-     Textarea (the compound requires data-gsxui-slot-textarea), but
-     data-gsxui-slot-input-group-control is a shared marker (Input also
-     stamps it), so this rule now also has to clear the layer gate under
-     Input's own h-8. It never actually renders against a plain Input (the
-     compound requires the textarea marker too), but the gate can't see
-     that exclusion, and promoting is harmless either way. */
-  /* pl-1.5/pr-1.5/pb-3/pt-3 below are promoted to assets/css/styles/
-     default.css's @layer utilities block (Input migration fallout): they
-     override a sub-property (padding-left/right/top/bottom) of Input's own
-     px-2.5/py-1 shorthand utilities. The layer gate's contest analysis
-     didn't flag these four (a sub-property override doesn't read as a
-     name-level utility conflict to it), but make sweep-compare caught a
-     real regression empirically — Input's own utilities are Tailwind-
-     scanned directly out of its resolved .gsx and, once in the same
-     utilities-adjacent scope, win source order against these
-     components-layer overrides regardless. h-auto/flex-col on the
-     InputGroup element itself (not the control) are unaffected and stay
-     here. */
-  :where([data-gsxui-slot-input-group]):has(
-      > [data-gsxui-slot-input-group-addon][data-align="block-start"]
-    ),
-  :where([data-gsxui-slot-input-group]):has(
-      > [data-gsxui-slot-input-group-addon][data-align="block-end"]
-    ) {
-    @apply h-auto flex-col;
-  }
-  /* border-ring is promoted to assets/css/styles/default.css's @layer
-     utilities block (Textarea migration fallout): once the control is
-     ui.Textarea, its own recipe utilities are Tailwind-scanned directly
-     out of its resolved .gsx and win @layer components regardless of
-     specificity, so this rule's border-ring would silently stop applying
-     when Textarea is focused inside an InputGroup. ring-[3px] ring-ring/50
-     are unaffected (Textarea's own recipe doesn't set them on the
-     input-group ancestor) and stay here. */
-  :where([data-gsxui-slot-input-group]):has(
-      [data-gsxui-slot-input-group-control]:focus-visible
-    ) {
-    @apply ring-[3px] ring-ring/50;
-  }
-  :where([data-gsxui-slot-input-group]):has([aria-invalid="true"]) {
-    @apply border-destructive ring-destructive/20;
-  }
-  .dark
-    :where([data-gsxui-slot-input-group]):has([aria-invalid="true"]) {
-    @apply ring-destructive/40;
-  }
-  :where([data-gsxui-slot-input-group-addon]) {
-    @apply flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium text-muted-foreground select-none;
-  }
+  /* InputGroup — migrated to the slot axis; see
+     registry/styles/{nova,maia}/input-group.css for what moved and why.
+     Everything below is RETAINED here deliberately under design doc § 10b:
+     each is a relational rule whose styled SUBJECT carries the recipe class,
+     so translating it would compile to a two-or-more-class selector and
+     permanently outrank a caller's own plain utility. Each was checked against
+     the slot's own recipe utilities first — none sets the property group
+     involved, so nothing here is dead. */
+
+  /* The disabled dimming, ancestor-scoped onto the addon. The addon slot's
+     recipe sets no opacity. */
   :where([data-gsxui-slot-input-group][data-disabled="true"])
     > :where([data-gsxui-slot-input-group-addon]) {
     @apply opacity-50;
   }
-  :where([data-gsxui-slot-input-group-addon]) > kbd {
-    @apply rounded-[calc(var(--radius)-5px)];
-  }
-  :where([data-gsxui-slot-input-group-addon])
-    > svg:not([class*="size-"]) {
-    @apply size-4;
-  }
-  :where([data-gsxui-slot-input-group-addon])[data-align="inline-start"] {
-    @apply order-first pl-2;
-  }
+
+  /* The four addon negative-margin nudges, same-element :has(). The align arms
+     set padding, never margin, so these are uncontested. */
   :where([data-gsxui-slot-input-group-addon])[data-align="inline-start"]:has(
       > button
     ) {
@@ -81,9 +26,6 @@
       > kbd
     ) {
     @apply ml-[-0.15rem];
-  }
-  :where([data-gsxui-slot-input-group-addon])[data-align="inline-end"] {
-    @apply order-last pr-2;
   }
   :where([data-gsxui-slot-input-group-addon])[data-align="inline-end"]:has(
       > button
@@ -95,68 +37,23 @@
     ) {
     @apply mr-[-0.15rem];
   }
-  :where([data-gsxui-slot-input-group-addon])[data-align="block-start"] {
-    @apply order-first w-full justify-start px-2.5 pt-2;
-  }
-  :where([data-gsxui-slot-input-group]):has(
-      > [data-gsxui-slot-input]
-    )
-    > :where(
-      [data-gsxui-slot-input-group-addon][data-align="block-start"]
-    ) {
-    @apply pt-2;
-  }
-  :where([data-gsxui-slot-input-group-addon][data-align="block-start"].border-b) {
-    @apply pb-2;
-  }
-  :where([data-gsxui-slot-input-group-addon])[data-align="block-end"] {
-    @apply order-last w-full justify-start px-2.5 pb-2;
-  }
-  :where([data-gsxui-slot-input-group]):has(
-      > [data-gsxui-slot-input]
-    )
-    > :where(
-      [data-gsxui-slot-input-group-addon][data-align="block-end"]
-    ) {
-    @apply pb-2;
-  }
-  :where([data-gsxui-slot-input-group-addon][data-align="block-end"].border-t) {
-    @apply pt-2;
-  }
-  :where([data-gsxui-slot-input-group-text]) {
-    @apply flex items-center gap-2 text-sm text-muted-foreground;
-  }
-  :where([data-gsxui-slot-input-group-text]) svg {
-    @apply pointer-events-none;
-  }
-  :where([data-gsxui-slot-input-group-text])
-    svg:not([class*="size-"]) {
-    @apply size-4;
-  }
-  /* rounded-none/border-0 are promoted to assets/css/styles/default.css's
-     @layer utilities block — same Textarea-migration fallout as
-     border-ring above: they contest Textarea's own rounded-lg/border-input
-     recipe utilities directly on the same element. flex-1/bg-transparent/
-     shadow-none don't conflict with anything Textarea's recipe sets and
-     stay here. */
-  :where([data-gsxui-slot-input-group-control]) {
-    @apply flex-1 bg-transparent shadow-none;
-  }
-  :where([data-gsxui-slot-input-group-control]):focus-visible {
-    @apply ring-0;
-  }
-  .dark :where([data-gsxui-slot-input-group-control]) {
-    @apply bg-transparent;
-  }
-  /* py-2 is promoted alongside h-auto above, same reason: it contests
-     Input's own py-1 once Input is also a data-gsxui-slot-input-group-control
-     owner, even though this compound requires the textarea marker too and so
-     can never actually render against a plain Input. resize-none has no
-     equivalent in Input's or Textarea's own recipe utilities and stays here. */
+
+  /* The two consumer-class .border-b/.border-t padding rules are NOT here.
+     They are § 10b's own worst case and retention was the first attempt, but
+     the addon's base rule sets py-1.5 — whose padding-bottom/-top a
+     components-layer pb-2/pt-2 cannot beat once py-1.5 is a real utility — so
+     retaining them left them dead. See
+     registry/styles/{nova,maia}/input-group.css for the full reasoning; they
+     are arbitrary same-element variants on the block-start/block-end arms. */
+
+  /* resize-none applies only when the control is a Textarea. It is not part of
+     the shared input-group-control slot (Input stamps that marker too), and
+     InputGroup's shape has no textarea slot to hang it on, so it stays a
+     marker-keyed rule. Nothing in Textarea's or InputGroup's recipe sets
+     resize. */
   :where(
       [data-gsxui-slot-textarea][data-gsxui-slot-input-group-control]
     ) {
     @apply resize-none;
   }
-
 }

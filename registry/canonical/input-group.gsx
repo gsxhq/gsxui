@@ -1,4 +1,4 @@
-package ui
+package canonical
 
 import "github.com/gsxhq/gsx"
 
@@ -27,9 +27,7 @@ import "github.com/gsxhq/gsx"
 component InputGroup(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="group"
-		class={
-			"relative flex h-8 min-w-0 w-full items-center rounded-lg border border-input transition-[color,box-shadow] outline-none dark:bg-input/30 has-[>[data-gsxui-slot-textarea][data-gsxui-slot-input-group-control]]:h-auto has-[>[data-gsxui-slot-input-group-addon][data-align=block-start]]:h-auto has-[>[data-gsxui-slot-input-group-addon][data-align=block-start]]:flex-col has-[>[data-gsxui-slot-input-group-addon][data-align=block-end]]:h-auto has-[>[data-gsxui-slot-input-group-addon][data-align=block-end]]:flex-col has-[[data-gsxui-slot-input-group-control]:focus-visible]:border-ring has-[[data-gsxui-slot-input-group-control]:focus-visible]:ring-[3px] has-[[data-gsxui-slot-input-group-control]:focus-visible]:ring-ring/50 has-[[aria-invalid=true]]:border-destructive has-[[aria-invalid=true]]:ring-destructive/20 dark:has-[[aria-invalid=true]]:ring-destructive/40"
-		}
+		class={ inputGroup.Root() }
 		{ attrs... }
 		data-gsxui-slot-input-group
 	>
@@ -44,17 +42,8 @@ component InputGroupAddon(align string, children gsx.Node, attrs gsx.Attrs) {
 		role="group"
 		data-align={align |> default("inline-start")}
 		class={
-			"flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium text-muted-foreground select-none [&>kbd]:rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-4",
-			switch align {
-			case "inline-end":
-				"order-last pr-2"
-			case "block-start":
-				"order-first w-full justify-start px-2.5 pt-2 [[data-gsxui-slot-input-group]:has(>[data-gsxui-slot-input])>&]:pt-2 [&.border-b]:pb-2"
-			case "block-end":
-				"order-last w-full justify-start px-2.5 pb-2 [[data-gsxui-slot-input-group]:has(>[data-gsxui-slot-input])>&]:pb-2 [&.border-t]:pt-2"
-			default:
-				"order-first pl-2"
-			}
+			inputGroup.Addon(),
+			inputGroup.AddonAlign(align),
 		}
 		{ attrs... }
 		data-gsxui-slot-input-group-addon
@@ -81,9 +70,7 @@ component InputGroupButton(variant string, size string, children gsx.Node, attrs
 // InputGroupText has its own theme token.
 component InputGroupText(children gsx.Node, attrs gsx.Attrs) {
 	<span
-		class={
-			"flex items-center gap-2 text-sm text-muted-foreground [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4"
-		}
+		class={ inputGroup.Text() }
 		{ attrs... }
 		data-gsxui-slot-input-group-text
 	>
@@ -95,7 +82,7 @@ component InputGroupText(children gsx.Node, attrs gsx.Attrs) {
 // InputGroup keys focus and invalid relations off the latter.
 component InputGroupInput(attrs gsx.Attrs) {
 	<Input
-		class={ "flex-1 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent" }
+		class={ inputGroup.Control() }
 		{ attrs... }
 		data-gsxui-slot-input-group-control
 	/>
@@ -108,7 +95,7 @@ component InputGroupInput(attrs gsx.Attrs) {
 component InputGroupTextarea(value string, attrs gsx.Attrs) {
 	<Textarea
 		value={value}
-		class={ "flex-1 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent" }
+		class={ inputGroup.Control() }
 		{ attrs... }
 		data-gsxui-slot-input-group-control
 	/>

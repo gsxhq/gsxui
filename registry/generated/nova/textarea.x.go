@@ -20,17 +20,24 @@ import (
 func Textarea(value string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line textarea.gsx:10:2
-		_gsxgw.S("<textarea class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("field-sizing-content flex min-h-16 w-full rounded-lg border border-input bg-transparent px-2.5 py-2 transition-[color,box-shadow] outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 dark:aria-invalid:ring-destructive/40"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-textarea"})
-		_gsxgw.BoolAttr("data-gsxui-slot-textarea", true)
-		_gsxgw.S(">")
-//line textarea.gsx:16:3
-		_gsxgw.Text(string(value))
-		_gsxgw.S("</textarea>")
-		return _gsxgw.Err()
+		return _gsxrenderTextarea(ctx, _gsxgw, value, attrs)
 	})
+}
+
+func _gsxrenderTextarea(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, value string, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line textarea.gsx:10:2
+	_gsxgw.S("<textarea class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("field-sizing-content flex min-h-16 w-full rounded-lg border border-input bg-transparent px-2.5 py-2 transition-[color,box-shadow] outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 dark:aria-invalid:ring-destructive/40"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-textarea"})
+	_gsxgw.BoolAttr("data-gsxui-slot-textarea", true)
+	_gsxgw.S(">")
+//line textarea.gsx:16:3
+	_gsxgw.Text(string(value))
+	_gsxgw.S("</textarea>")
+	return _gsxgw.Err()
 }
