@@ -310,6 +310,14 @@
         }
       }
     },
+    "slider": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "spinner": {
       "slots": {
         "": {
@@ -1179,6 +1187,48 @@
               "animate-pulse",
               "rounded-md",
               "bg-accent"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "slider": {
+        "slots": {
+          "": {
+            "base": [
+              "w-full",
+              "cursor-pointer",
+              "bg-transparent",
+              "disabled:cursor-not-allowed",
+              "disabled:opacity-50",
+              "[\u0026::-webkit-slider-runnable-track]:h-1",
+              "[\u0026::-webkit-slider-runnable-track]:rounded-full",
+              "[\u0026::-webkit-slider-runnable-track]:bg-[linear-gradient(to_right,var(--primary)_0%,var(--primary)_var(--fill,0%),var(--muted)_var(--fill,0%),var(--muted)_100%)]",
+              "[\u0026::-moz-range-track]:h-1",
+              "[\u0026::-moz-range-track]:rounded-full",
+              "[\u0026::-moz-range-track]:bg-[linear-gradient(to_right,var(--primary)_0%,var(--primary)_var(--fill,0%),var(--muted)_var(--fill,0%),var(--muted)_100%)]",
+              "[\u0026::-webkit-slider-thumb]:appearance-none",
+              "[\u0026::-webkit-slider-thumb]:size-3",
+              "[\u0026::-webkit-slider-thumb]:rounded-full",
+              "[\u0026::-webkit-slider-thumb]:border",
+              "[\u0026::-webkit-slider-thumb]:border-primary",
+              "[\u0026::-webkit-slider-thumb]:bg-contrast",
+              "[\u0026::-webkit-slider-thumb]:-mt-1",
+              "[\u0026::-webkit-slider-thumb]:transition-shadow",
+              "[\u0026::-webkit-slider-thumb]:duration-150",
+              "[\u0026::-moz-range-thumb]:size-3",
+              "[\u0026::-moz-range-thumb]:rounded-full",
+              "[\u0026::-moz-range-thumb]:border",
+              "[\u0026::-moz-range-thumb]:border-primary",
+              "[\u0026::-moz-range-thumb]:bg-contrast",
+              "[\u0026::-moz-range-thumb]:transition-shadow",
+              "[\u0026::-moz-range-thumb]:duration-150",
+              "hover:[\u0026::-webkit-slider-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)]",
+              "focus-visible:[\u0026::-webkit-slider-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)]",
+              "active:[\u0026::-webkit-slider-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)]",
+              "hover:[\u0026::-moz-range-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)]",
+              "focus-visible:[\u0026::-moz-range-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)]",
+              "active:[\u0026::-moz-range-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)]"
             ],
             "dimensions": {}
           }
@@ -2112,6 +2162,48 @@
               "animate-pulse",
               "rounded-md",
               "bg-accent"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "slider": {
+        "slots": {
+          "": {
+            "base": [
+              "w-full",
+              "cursor-pointer",
+              "bg-transparent",
+              "disabled:cursor-not-allowed",
+              "disabled:opacity-50",
+              "[\u0026::-webkit-slider-runnable-track]:h-1",
+              "[\u0026::-webkit-slider-runnable-track]:rounded-full",
+              "[\u0026::-webkit-slider-runnable-track]:bg-[linear-gradient(to_right,var(--primary)_0%,var(--primary)_var(--fill,0%),var(--muted)_var(--fill,0%),var(--muted)_100%)]",
+              "[\u0026::-moz-range-track]:h-1",
+              "[\u0026::-moz-range-track]:rounded-full",
+              "[\u0026::-moz-range-track]:bg-[linear-gradient(to_right,var(--primary)_0%,var(--primary)_var(--fill,0%),var(--muted)_var(--fill,0%),var(--muted)_100%)]",
+              "[\u0026::-webkit-slider-thumb]:appearance-none",
+              "[\u0026::-webkit-slider-thumb]:size-3",
+              "[\u0026::-webkit-slider-thumb]:rounded-full",
+              "[\u0026::-webkit-slider-thumb]:border",
+              "[\u0026::-webkit-slider-thumb]:border-primary",
+              "[\u0026::-webkit-slider-thumb]:bg-contrast",
+              "[\u0026::-webkit-slider-thumb]:-mt-1",
+              "[\u0026::-webkit-slider-thumb]:transition-shadow",
+              "[\u0026::-webkit-slider-thumb]:duration-150",
+              "[\u0026::-moz-range-thumb]:size-3",
+              "[\u0026::-moz-range-thumb]:rounded-full",
+              "[\u0026::-moz-range-thumb]:border",
+              "[\u0026::-moz-range-thumb]:border-primary",
+              "[\u0026::-moz-range-thumb]:bg-contrast",
+              "[\u0026::-moz-range-thumb]:transition-shadow",
+              "[\u0026::-moz-range-thumb]:duration-150",
+              "hover:[\u0026::-webkit-slider-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)]",
+              "focus-visible:[\u0026::-webkit-slider-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)]",
+              "active:[\u0026::-webkit-slider-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)]",
+              "hover:[\u0026::-moz-range-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)]",
+              "focus-visible:[\u0026::-moz-range-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)]",
+              "active:[\u0026::-moz-range-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)]"
             ],
             "dimensions": {}
           }

@@ -42,6 +42,7 @@ var all = map[string]recipe.Shape{
 	Accordion.Component:   Accordion,
 	Table.Component:       Table,
 	InputOTP.Component:    InputOTP,
+	Slider.Component:      Slider,
 }
 
 // All returns every declared component shape, keyed by component name.

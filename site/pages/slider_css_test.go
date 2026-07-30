@@ -8,29 +8,28 @@ import (
 	"testing"
 )
 
+// TestSliderCSSUsesSemanticContrast now reads Slider's migrated recipe
+// stylesheet (registry/styles/nova/slider.css) rather than the deleted
+// assets/css/styles/default/slider.css block — the same bg-contrast utility
+// carries the semantic token forward through the arbitrary-variant form
+// (`[&::-webkit-slider-thumb]:bg-contrast`), not a raw `background:` property.
 func TestSliderCSSUsesSemanticContrast(t *testing.T) {
 	_, testFile, _, _ := runtime.Caller(0)
-	// Slider's authored presentation is its own file: the default style's
-	// components layer is split one file per component so that migrating a
-	// component is a file deletion rather than an edit to one shared 3000-line
-	// sheet. When Slider migrates this file goes away and this test fails loudly
-	// rather than passing against a stale block.
-	path := filepath.Join(filepath.Dir(testFile), "..", "..", "assets", "css", "styles", "default", "slider.css")
+	path := filepath.Join(filepath.Dir(testFile), "..", "..", "registry", "styles", "nova", "slider.css")
 	b, err := os.ReadFile(path)
 	if err != nil {
 		t.Fatalf("os.ReadFile(%s): %v", path, err)
 	}
 	for _, selector := range []string{
-		`:where([data-gsxui-slot-slider])::-webkit-slider-thumb`,
-		`:where([data-gsxui-slot-slider])::-moz-range-thumb`,
+		`[&::-webkit-slider-thumb]:bg-contrast`,
+		`[&::-moz-range-thumb]:bg-contrast`,
 	} {
-		contrast := regexp.MustCompile(regexp.QuoteMeta(selector) + `\s*\{[^}]*background:\s*var\(--contrast\);`)
-		if !contrast.Match(b) {
-			t.Errorf("%s does not use background: var(--contrast)", selector)
+		if !regexp.MustCompile(regexp.QuoteMeta(selector)).Match(b) {
+			t.Errorf("recipe does not apply %s", selector)
 		}
-		literalWhite := regexp.MustCompile(regexp.QuoteMeta(selector) + `\s*\{[^}]*background:\s*#fff;`)
-		if literalWhite.Match(b) {
-			t.Errorf("%s bypasses the contrast token with a literal white background", selector)
-		}
+	}
+	literalWhite := regexp.MustCompile(`bg-white\b|#fff`)
+	if literalWhite.Match(b) {
+		t.Errorf("recipe bypasses the contrast token with a literal white background")
 	}
 }

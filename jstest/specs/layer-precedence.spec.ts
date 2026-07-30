@@ -347,3 +347,8 @@ test("InputOTPGroup's has-[[aria-invalid=true]] border fires when a descendant s
   expect(invalidBorder).toBe("oklch(0.577 0.245 27.325)");
 });
 
+test("Slider keeps its cursor-pointer affordance", async ({ page }) => {
+  await page.goto("/x/slider/basic");
+  const el = page.locator("[data-gsxui-slot-slider]").first();
+  const cursor = await el.evaluate((n) => getComputedStyle(n).cursor);
+  expect(cursor).toBe("pointer");

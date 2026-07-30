@@ -1,0 +1,32 @@
+/* Source: assets/css/styles/default/slider.css, Slider block (all rules),
+   with every pseudo-class state and pseudo-element selector folded in as
+   arbitrary variants on the one root slot rule. Nova and Maia have not
+   diverged on Slider yet, so this file is byte-identical to
+   registry/styles/maia/slider.css.
+
+   The track/thumb pseudo-elements have no Tailwind utility for their own
+   selector (::-webkit-slider-runnable-track etc. aren't a Tailwind variant
+   name), so they're expressed as arbitrary variants `[&::-webkit-slider-
+   thumb]:` etc., same mechanism as Kbd's foreign-ancestor arbitrary variant.
+   The linear-gradient background and calc()-derived margin have no utility
+   form either, so they ride as arbitrary VALUES (bg-[...], -mt-1) inside
+   those same variants — still @apply-only, nothing moved to the escape
+   hatch, because Tailwind's arbitrary-value syntax covers both the selector
+   and the value here. Confirmed compiling with this repo's Tailwind v4 CLI
+   before use. */
+@layer components {
+  .gsxui-recipe-slider {
+    @apply w-full cursor-pointer bg-transparent;
+    @apply disabled:cursor-not-allowed disabled:opacity-50;
+    @apply [&::-webkit-slider-runnable-track]:h-1 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-[linear-gradient(to_right,var(--primary)_0%,var(--primary)_var(--fill,0%),var(--muted)_var(--fill,0%),var(--muted)_100%)];
+    @apply [&::-moz-range-track]:h-1 [&::-moz-range-track]:rounded-full [&::-moz-range-track]:bg-[linear-gradient(to_right,var(--primary)_0%,var(--primary)_var(--fill,0%),var(--muted)_var(--fill,0%),var(--muted)_100%)];
+    @apply [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:size-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-primary [&::-webkit-slider-thumb]:bg-contrast [&::-webkit-slider-thumb]:-mt-1 [&::-webkit-slider-thumb]:transition-shadow [&::-webkit-slider-thumb]:duration-150;
+    @apply [&::-moz-range-thumb]:size-3 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border [&::-moz-range-thumb]:border-primary [&::-moz-range-thumb]:bg-contrast [&::-moz-range-thumb]:transition-shadow [&::-moz-range-thumb]:duration-150;
+    @apply hover:[&::-webkit-slider-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)];
+    @apply focus-visible:[&::-webkit-slider-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)];
+    @apply active:[&::-webkit-slider-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)];
+    @apply hover:[&::-moz-range-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)];
+    @apply focus-visible:[&::-moz-range-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)];
+    @apply active:[&::-moz-range-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)];
+  }
+}
