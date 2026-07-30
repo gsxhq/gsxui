@@ -20,7 +20,7 @@ component Card(children gsx.Node, attrs gsx.Attrs) {
 component CardHeader(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"grid auto-rows-min grid-rows-[auto_auto] items-start gap-1 px-4 has-[[data-gsxui-slot-card-action]]:grid-cols-[1fr_auto] [&.border-b]:pb-4"
+			"grid auto-rows-min grid-rows-[auto_auto] items-start gap-1 px-4 has-[[data-gsxui-slot-card-action]]:grid-cols-[1fr_auto]"
 		}
 		{ attrs... }
 		data-gsxui-slot-card-header

@@ -1,12 +1,21 @@
 /* Source: gsxui@0d6a973c564f1188221a1af8e4db522610cbc77e
    assets/css/styles/default.css, Card block (lines 199-234), with the
-   :has() relational rules and the header .border-b compound rule folded in
-   as variants on their owning slot. Nova and Maia have not diverged on Card
-   yet, so this file is byte-identical to registry/styles/maia/card.css —
-   that is expected, not a smell.
+   :has() relational rule folded in as a variant on its owning slot. Nova
+   and Maia have not diverged on Card yet, so this file is byte-identical to
+   registry/styles/maia/card.css — that is expected, not a smell.
 
-   The header's container-name/container-type declarations are NOT here:
-   a recipe stylesheet only accepts @apply, and those are plain CSS
+   The header's `[&.border-b]:pb-4` compound rule (reacting to a
+   consumer-supplied `.border-b` class, not a marker) is DELIBERATELY NOT
+   HERE. Spec section 10b: an arbitrary same-element variant compiles to a
+   two-class selector ((0,2,0)) that permanently outranks a caller's plain
+   utility regardless of source order, so migrating it strips the
+   caller-overridability the pre-migration @layer components boundary gave
+   it for free. It stays authored as plain CSS in
+   assets/css/styles/default/card.css instead. See that file's comment and
+   assets/css/styles/default/pagination.css for the identical prior fix.
+
+   The header's container-name/container-type declarations are NOT here
+   either: a recipe stylesheet only accepts @apply, and those are plain CSS
    properties with no Tailwind utility equivalent. They stay behind in
    assets/css/styles/default.css's @layer utilities block, scoped to
    [data-gsxui-slot-card-header], as the escape hatch this migration's brief
@@ -21,7 +30,6 @@
   .gsxui-recipe-card-header {
     @apply grid auto-rows-min grid-rows-[auto_auto] items-start gap-1 px-4;
     @apply has-[[data-gsxui-slot-card-action]]:grid-cols-[1fr_auto];
-    @apply [&.border-b]:pb-4;
   }
 
   .gsxui-recipe-card-title {
