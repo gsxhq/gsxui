@@ -117,6 +117,14 @@
           "dimensions": {}
         }
       }
+    },
+    "spinner": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
     }
   },
   "styles": {
@@ -461,6 +469,17 @@
             "dimensions": {}
           }
         }
+      },
+      "spinner": {
+        "slots": {
+          "": {
+            "base": [
+              "size-4",
+              "animate-spin"
+            ],
+            "dimensions": {}
+          }
+        }
       }
     },
     "nova": {
@@ -795,6 +814,17 @@
               "animate-pulse",
               "rounded-md",
               "bg-accent"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "spinner": {
+        "slots": {
+          "": {
+            "base": [
+              "size-4",
+              "animate-spin"
             ],
             "dimensions": {}
           }

@@ -149,3 +149,14 @@ test("Skeleton keeps its rounded-md corner radius", async ({ page }) => {
   expect(radius).toBe("8px");
 });
 
+test("Spinner keeps its spin animation", async ({ page }) => {
+  await page.goto("/x/spinner/basic");
+  const el = page.locator("[data-gsxui-slot-spinner]").first();
+  const { name, duration } = await el.evaluate((n) => {
+    const computed = getComputedStyle(n);
+    return { name: computed.animationName, duration: computed.animationDuration };
+  });
+  expect(name).toBe("spin");
+  expect(duration).toBe("1s");
+});
+
