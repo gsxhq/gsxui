@@ -44,6 +44,7 @@ var all = map[string]recipe.Shape{
 	InputOTP.Component:    InputOTP,
 	Slider.Component:      Slider,
 	Empty.Component:       Empty,
+	Tabs.Component:        Tabs,
 }
 
 // All returns every declared component shape, keyed by component name.

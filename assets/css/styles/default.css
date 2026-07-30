@@ -47,7 +47,6 @@
 @import "./default/calendar.css";
 @import "./default/carousel.css";
 @import "./default/sidebar.css";
-@import "./default/tabs.css";
 @import "./default/sonner.css";
 
 /* The @layer utilities block below stays in this file rather than moving into

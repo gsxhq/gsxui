@@ -363,3 +363,13 @@ test("EmptyMedia icon variant keeps its rounded muted tile size", async ({ page 
   expect(radius).toBe("10px");
   expect(width).toBe("32px");
 });
+test("TabsTrigger active state keeps its shadow-sm elevation", async ({ page }) => {
+  await page.goto("/x/tabs/basic");
+  const el = page
+    .locator('[data-gsxui-slot-tabs-trigger][data-state="active"]')
+    .first();
+  const shadow = await el.evaluate((n) => getComputedStyle(n).boxShadow);
+  expect(shadow).toBe(
+    "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 2px -1px",
+  );
+});
