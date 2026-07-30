@@ -1,4 +1,4 @@
-package ui
+package canonical
 
 import "github.com/gsxhq/gsx"
 
@@ -24,9 +24,7 @@ import "github.com/gsxhq/gsx"
 component Checkbox(attrs gsx.Attrs) {
 	<input
 		type="checkbox"
-		class={
-			"size-4 shrink-0 appearance-none rounded-[4px] border border-input transition-shadow outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:bg-input/30 checked:border-primary checked:bg-primary"
-		}
+		class={ checkbox.Root() }
 		{ attrs... }
 		data-gsxui-slot-checkbox
 	/>

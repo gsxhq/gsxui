@@ -296,4 +296,16 @@ test("ScrollArea's caller-supplied rounded-md wins over its own recipe rounded-[
   await page.goto("/x/scroll-area/basic");
   const el = page.locator("[data-gsxui-slot-scroll-area]").first();
   const radius = await el.evaluate((n) => getComputedStyle(n).borderRadius);
+  expect(radius).toBe("8px");
+});
+test("Checkbox's checked:bg-primary paints its background, unchecked stays transparent", async ({ page }) => {
+  await page.goto("/x/checkbox/states");
+  const unchecked = page.locator("#checkbox-states-unchecked");
+  const checked = page.locator("#checkbox-states-checked");
+  const uncheckedBg = await unchecked.evaluate((n) => getComputedStyle(n).backgroundColor);
+  const checkedBg = await checked.evaluate((n) => getComputedStyle(n).backgroundColor);
+  expect(uncheckedBg).toBe("rgba(0, 0, 0, 0)");
+  expect(checkedBg).not.toBe("rgba(0, 0, 0, 0)");
+  expect(checkedBg).toBe("oklch(0.205 0 0)");
+});
 

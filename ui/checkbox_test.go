@@ -71,7 +71,7 @@ func TestCheckboxDataURIDecodesToValidSVG(t *testing.T) {
 func TestCheckboxDarkCheckedOverrides(t *testing.T) {
 	got := checkboxCSS(t)
 	for _, want := range []string{
-		`.dark :where([data-gsxui-slot-checkbox]):checked`,
+		`.dark [data-gsxui-slot-checkbox]:checked`,
 		`background-image: url("data:image/svg+xml;base64,`,
 	} {
 		if !strings.Contains(got, want) {
@@ -82,7 +82,7 @@ func TestCheckboxDarkCheckedOverrides(t *testing.T) {
 
 func TestCheckboxCallerClassMerges(t *testing.T) {
 	got := render(t, ui.Checkbox(gsx.Attrs{{Key: "class", Value: "size-6"}}))
-	if strings.Count(got, `class="size-6"`) != 1 {
+	if !strings.Contains(got, "size-6") || strings.Count(got, "class=") != 1 {
 		t.Errorf("caller class must be forwarded exactly once\nin: %s", got)
 	}
 }
@@ -121,9 +121,8 @@ func TestCheckboxDisabledAttr(t *testing.T) {
 }
 
 func TestCheckboxPinned(t *testing.T) {
-	// Presentation lives in the stylesheet; the render pin covers structure.
 	got := render(t, ui.Checkbox(nil))
-	want := `<input type="checkbox" data-gsxui-slot-checkbox>`
+	want := `<input type="checkbox" class="size-4 shrink-0 appearance-none rounded-[4px] border border-input transition-shadow outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:bg-input/30 checked:border-primary checked:bg-primary" data-gsxui-slot-checkbox>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -136,7 +135,7 @@ func TestCheckboxPinned(t *testing.T) {
 // loudly instead of letting them keep passing against a stale block.
 func checkboxCSS(t *testing.T) string {
 	t.Helper()
-	cssBytes, err := os.ReadFile("../assets/css/styles/default/checkbox.css")
+	cssBytes, err := os.ReadFile("../assets/css/styles/default.css")
 	if err != nil {
 		t.Fatal(err)
 	}
