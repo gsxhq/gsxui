@@ -249,7 +249,15 @@ func TestSheetCSSOnlyContract(t *testing.T) {
 		}
 		got := render(t, ui.SheetContent(input, true, gsx.Raw("x"), callerAttrs()))
 		assertCSSOnlyMarkup(t, got, "dialog-content sheet-content")
-		assertCallerAttrsOnce(t, got)
+		// Not assertCallerAttrsOnce: Sheet migrated to the slot axis, so the
+		// content carries its own resolved chrome. Same carve-out as
+		// Accordion, Collapsible and Drawer.
+		if strings.Count(got, `id="caller-id"`) != 1 {
+			t.Errorf("%s sheet id=\"caller-id\" must render exactly once\nin: %s", side, got)
+		}
+		if !strings.Contains(got, sheetContentClass(side)+" caller-only") {
+			t.Errorf("%s sheet caller class must merge after its own content utilities\nin: %s", side, got)
+		}
 		for _, want := range []string{`data-state="closed"`, `data-side="` + side + `"`} {
 			if !strings.Contains(got, want) {
 				t.Errorf("%s sheet missing %q\nin: %s", side, want, got)
@@ -259,8 +267,18 @@ func TestSheetCSSOnlyContract(t *testing.T) {
 
 	injected := render(t, ui.SheetContent("", false, gsx.Raw("x"), nil))
 	assertCSSOnlyMarkup(t, injected, "sheet-close sheet-close-button", "sheet-close-icon", "sheet-close-label")
-	if strings.Contains(injected, `class=`) {
-		t.Errorf("injected sheet close parts must not carry presentation classes\nin: %s", injected)
+	// The injected close parts DO carry presentation classes now — that is
+	// what migrating close-button/close-icon onto the slot axis means. They
+	// must carry their own recipe utilities and nothing else; close-label
+	// stays classless, covered by foundation.css's shared sr-only rule.
+	for _, want := range []string{
+		`class="` + sheetCloseButtonClass() + `" data-gsxui-dialog-close data-gsxui-slot-sheet-close-button`,
+		`class="` + sheetCloseIconClass() + `" data-gsxui-slot-sheet-close-icon`,
+		`<span data-gsxui-slot-sheet-close-label>`,
+	} {
+		if !strings.Contains(injected, want) {
+			t.Errorf("injected sheet close parts missing %q\nin: %s", want, injected)
+		}
 	}
 }
 

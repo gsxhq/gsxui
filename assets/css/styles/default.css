@@ -33,8 +33,6 @@
 @import "./default/menu.css";
 @import "./default/menu-popover-transition.css";
 @import "./default/textarea.css";
-@import "./default/drawer-sheet-shared.css";
-@import "./default/sheet.css";
 @import "./default/calendar.css";
 @import "./default/carousel.css";
 @import "./default/sidebar.css";
@@ -124,68 +122,6 @@
   }
   :where([data-gsxui-slot-toggle]) svg:not([class*="size-"]) {
     @apply size-4;
-  }
-}
-
-/* Dialog-content marker fallback: a @layer components block, not utilities,
-   same reasoning as the Toggle marker fallback above. ui/sheet.gsx's
-   SheetContent stamps data-gsxui-slot-dialog-content onto its own <dialog>
-   element ALONGSIDE its own sheet-content marker, and has no class of its
-   own referencing Dialog's recipe for it (ui/drawer.gsx's DrawerContent did
-   too until Drawer's own migration, which gave it these utilities on its own
-   recipe class; only Sheet is left) — the base chrome every <dialog>
-   content needs (fixed positioning/z-index/transition-duration, the
-   data-state animate-in/out, and the native ::backdrop styling) came
-   entirely from this marker-keyed rule in the old
-   assets/css/styles/default/dialog.css, not from a class Dialog's migration
-   adds. Dialog's migration deletes that file (moved to
-   registry/styles/{nova,maia}/dialog.css, scoped to the new
-   .gsxui-recipe-dialog-content class), which would leave DrawerContent and
-   SheetContent — two sibling components out of scope for this migration —
-   without it.
-
-   This does NOT belong in @layer utilities, for the identical reason the
-   Toggle fallback above doesn't: @layer utilities is the SAME named layer
-   Tailwind's own scanned utility classes live in, so a rule placed there
-   would always win over a caller's plain utility class instead of losing to
-   it. Kept :where()-wrapped at (0,0,0) here instead: it only needs to lose
-   gracefully to Dialog's own new (0,1,0) recipe class when a real
-   <ui.DialogContent> renders (identical values, no visible difference) and
-   to any real caller utility class.
-
-   Only the chrome Dialog and Sheet unconditionally share
-   in the old dialog.css is here — the plain-modal box (top-1/2 left-1/2
-   w-full max-w-[...] etc), which the old file guarded with
-   :not([data-gsxui-slot-drawer-content]):not([data-gsxui-slot-sheet-content]),
-   is Dialog's own presentation now and lives only in its recipe; it was
-   already excluded here by that same guard before migration, so leaving it
-   out changes nothing. assets/css/styles/default/drawer-sheet-shared.css
-   carries the OTHER half — the rules Sheet needs that Dialog never had at
-   all (m-0/flex-col/shadow-lg/etc). Both this block and that file retire
-   when Sheet migrates. */
-@layer components {
-  :where(dialog[data-gsxui-slot-dialog-content]) {
-    @apply fixed z-50 text-sm duration-200 outline-none;
-  }
-  :where(dialog[data-gsxui-slot-dialog-content])[data-state="closed"] {
-    @apply animate-out;
-  }
-  :where(dialog[data-gsxui-slot-dialog-content])[data-state="open"] {
-    @apply animate-in;
-  }
-  :where(dialog[data-gsxui-slot-dialog-content])::backdrop {
-    background-color: var(--overlay);
-    @apply backdrop-blur-xs duration-200;
-  }
-  :where(
-      dialog[data-gsxui-slot-dialog-content][data-state="open"]
-    )::backdrop {
-    @apply animate-in fade-in-0;
-  }
-  :where(
-      dialog[data-gsxui-slot-dialog-content][data-state="closed"]
-    )::backdrop {
-    @apply animate-out fade-out-0;
   }
 }
 

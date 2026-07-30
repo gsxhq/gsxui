@@ -6,20 +6,13 @@
     @apply bg-sidebar;
   }
   :where([data-gsxui-slot-sidebar][data-collapsible="none"]),
-  :where([data-gsxui-slot-sidebar-mobile-content]),
   :where([data-gsxui-slot-sidebar-inner]) {
     @apply bg-sidebar text-sidebar-foreground;
   }
   :is(
       dialog[data-gsxui-slot-sidebar-mobile-content][data-mobile="true"]
     ) {
-    width: var(--sidebar-width);
-    max-width: none;
     @apply p-0;
-  }
-  :where([data-gsxui-slot-sidebar-mobile-content])
-    > :where([data-gsxui-slot-sheet-close-button]) {
-    @apply hidden;
   }
   :where([data-gsxui-slot-sidebar-desktop]) {
     --gsxui-sidebar-collapsed-gap-width: var(--sidebar-width-icon);
@@ -81,6 +74,8 @@
   :where([data-gsxui-slot-sidebar-mobile-header]) {
     @apply sr-only;
   }
+  /* sr-only's padding half for sidebar-mobile-header lives in the
+     @layer utilities block at the bottom of this file — see its comment. */
   :where([data-gsxui-slot-sidebar-rail]) {
     @apply transition-all ease-linear;
   }
@@ -437,4 +432,52 @@
     @apply size-4 shrink-0 text-sidebar-accent-foreground;
   }
 
+}
+
+/* Sheet's migration to the slot axis gave data-gsxui-slot-sheet-close-button
+   a real (0,1,0) recipe class, so the rule that hides Sheet's own close
+   button inside a mobile sidebar (the sidebar supplies its own trigger)
+   could no longer win from @layer components at (0,0,0). Promoted here and
+   unwrapped to clear the layer gate's (0,1,0) floor — the same escape hatch
+   Label/Separator's composed consumers already use, triggered transitively
+   by a DIFFERENT component's migration. Only the contested property moves;
+   the rest of Sidebar's rules stay in the components block above. */
+@layer utilities {
+  [data-gsxui-slot-sidebar-mobile-content] > [data-gsxui-slot-sheet-close-button] {
+    display: none;
+  }
+}
+
+/* The rest of Sheet's migration fallout on Sidebar, found by
+   make sweep-compare rather than by the layer gate: SidebarInner composes
+   <ui.SheetContent>/<ui.SheetHeader> directly (ui/sidebar.gsx), so Sheet's
+   now-real recipe utilities beat anything Sidebar declares for the SAME
+   property from @layer components, regardless of specificity. Only the
+   contested properties move; everything else in the rules they came from
+   stays above.
+
+   - width/max-width: Sheet's side arms apply w-3/4 and sm:max-w-sm. The
+     mobile sidebar is a fixed --sidebar-width panel, not a three-quarter
+     sheet — the sweep measured it collapsing from 288px to 75%.
+   - background-color/color: Sheet's content applies bg-background and
+     text-foreground; the mobile sidebar must paint with the sidebar tokens
+     like every other sidebar surface. Split out of the three-marker rule
+     above, which keeps its other two markers (neither composes Sheet).
+   - padding: SheetHeader applies p-4, which defeated the sr-only rule that
+     hides sidebar-mobile-header from sighted users. sr-only's other
+     declarations are uncontested and stay above; only padding moves.
+
+   All unwrapped to clear the layer gate's (0,1,0) floor. */
+@layer utilities {
+  [data-gsxui-slot-sidebar-mobile-content] {
+    background-color: var(--sidebar);
+    color: var(--sidebar-foreground);
+  }
+  dialog[data-gsxui-slot-sidebar-mobile-content][data-mobile="true"] {
+    width: var(--sidebar-width);
+    max-width: none;
+  }
+  [data-gsxui-slot-sidebar-mobile-header] {
+    padding: 0;
+  }
 }

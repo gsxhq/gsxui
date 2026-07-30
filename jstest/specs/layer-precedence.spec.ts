@@ -645,13 +645,13 @@ test("AlertDialogContent's own max-w-xs narrowing beats Dialog's box below the s
 // Composer fallout verification: DrawerContent/SheetContent stamp
 // data-gsxui-slot-dialog-content without ever calling Dialog's content
 // accessor (ui/drawer.gsx, ui/sheet.gsx) — they must not inherit Dialog's
-// plain-modal box. SheetContent still gets its base chrome from the marker
-// fallback in assets/css/styles/default.css; DrawerContent now carries it on
-// its own recipe class. Verified empirically here, not just by reading the
-// CSS.
+// plain-modal box. Both now carry that chrome on their own recipe classes;
+// the marker fallback in assets/css/styles/default.css and
+// assets/css/styles/default/drawer-sheet-shared.css are both gone. Verified
+// empirically here, not just by reading the CSS.
 //
-// Drawer's pin is deliberately stronger than the fallback-era one it
-// replaces: the sweep only records RESTING (closed) computed style, so the
+// These pins are deliberately stronger than the fallback-era ones they
+// replace: the sweep only records RESTING (closed) computed style, so the
 // open-state chrome and every per-side rule are invisible to it. Nothing but
 // these assertions would notice a side arm resolving to the wrong class.
 
@@ -730,17 +730,106 @@ test("DrawerContent's four side arms each resolve to their own anchoring", async
   }
 });
 
-test("SheetContent keeps Dialog's shared fixed/z-50 chrome via the marker fallback", async ({ page }) => {
+test("SheetContent carries the shared fixed/z-50 chrome on its own recipe class", async ({
+  page,
+}) => {
   await page.goto("/x/sheet/basic");
   const content = page.locator("dialog[data-gsxui-slot-sheet-content]").first();
   await content.evaluate((el) =>
     el.dispatchEvent(new CustomEvent("gsxui:request-open", { bubbles: true, cancelable: true })),
   );
   await expect(content).toHaveJSProperty("open", true);
-  const position = await content.evaluate((n) => getComputedStyle(n).position);
-  const zIndex = await content.evaluate((n) => getComputedStyle(n).zIndex);
-  expect(position).toBe("fixed");
-  expect(zIndex).toBe("50");
+  const style = await content.evaluate((n) => {
+    const s = getComputedStyle(n);
+    const closeButton = n.querySelector("[data-gsxui-slot-sheet-close-button]");
+    return {
+      position: s.position,
+      zIndex: s.zIndex,
+      display: s.display,
+      margin: s.margin,
+      flexDirection: s.flexDirection,
+      boxShadow: s.boxShadow,
+      transitionDuration: s.transitionDuration,
+      closePosition: closeButton ? getComputedStyle(closeButton).position : "",
+    };
+  });
+  expect(style.position).toBe("fixed");
+  expect(style.zIndex).toBe("50");
+  // display:flex is drawer-sheet-shared.css's [open] rule, now open:flex on
+  // the recipe; m-0 and flex-col came from the same block. Sheet sets no
+  // per-side margin, so all four sides are 0.
+  expect(style.display).toBe("flex");
+  expect(style.margin).toBe("0px");
+  expect(style.flexDirection).toBe("column");
+  expect(style.boxShadow).not.toBe("none");
+  // `transition` sets 150ms and `duration-200` overrides it — the one place
+  // the recipe's @apply ORDER is load-bearing.
+  expect(style.transitionDuration).toBe("0.2s");
+  // The injected close button migrated too and must keep its own absolute
+  // placement.
+  expect(style.closePosition).toBe("absolute");
+});
+
+test("SheetContent's four side arms each resolve to their own anchoring", async ({ page }) => {
+  await page.goto("/x/sheet/directions");
+  const expected = {
+    right: { borderLeftWidth: "1px", borderRightWidth: "0px" },
+    left: { borderRightWidth: "1px", borderLeftWidth: "0px" },
+    top: { borderBottomWidth: "1px", borderTopWidth: "0px" },
+    bottom: { borderTopWidth: "1px", borderBottomWidth: "0px" },
+  } as const;
+  for (const [side, want] of Object.entries(expected)) {
+    const content = page.locator(`dialog[data-gsxui-slot-sheet-content][data-side="${side}"]`);
+    await content.evaluate((el) =>
+      el.dispatchEvent(new CustomEvent("gsxui:request-open", { bubbles: true, cancelable: true })),
+    );
+    await expect(content).toHaveJSProperty("open", true);
+    const got = await content.evaluate((n) => {
+      const s = getComputedStyle(n);
+      return {
+        borderTopWidth: s.borderTopWidth,
+        borderBottomWidth: s.borderBottomWidth,
+        borderLeftWidth: s.borderLeftWidth,
+        borderRightWidth: s.borderRightWidth,
+      };
+    });
+    for (const [property, value] of Object.entries(want)) {
+      expect(got[property as keyof typeof got], `${side} sheet ${property}`).toBe(value);
+    }
+    await content.evaluate((el) =>
+      el.dispatchEvent(new CustomEvent("gsxui:request-close", { bubbles: true, cancelable: true })),
+    );
+  }
+});
+
+// Sheet's migration fallout on Sidebar, which composes <ui.SheetContent> and
+// <ui.SheetHeader> directly: Sheet's own utilities now beat anything Sidebar
+// declares for the same property from @layer components. make sweep-compare
+// caught the mobile panel collapsing from its --sidebar-width to Sheet's
+// w-3/4 and repainting with bg-background; the promoted rules at the bottom
+// of assets/css/styles/default/sidebar.css restore both. Pinned so a future
+// layer change cannot silently undo the promotion.
+test("Sidebar's mobile panel keeps its own width and surface against Sheet's", async ({ page }) => {
+  await page.setViewportSize({ width: 640, height: 900 });
+  await page.goto("/x/sidebar/basic");
+  const content = page.locator("dialog[data-gsxui-slot-sidebar-mobile-content]").first();
+  await content.evaluate((el) =>
+    el.dispatchEvent(new CustomEvent("gsxui:request-open", { bubbles: true, cancelable: true })),
+  );
+  await expect(content).toHaveJSProperty("open", true);
+  const got = await content.evaluate((n) => {
+    const s = getComputedStyle(n);
+    const header = n.querySelector("[data-gsxui-slot-sidebar-mobile-header]");
+    return {
+      width: s.width,
+      backgroundColor: s.backgroundColor,
+      headerPadding: header ? getComputedStyle(header).padding : "",
+    };
+  });
+  expect(got.width).toBe("288px");
+  expect(got.backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
+  // sr-only must survive SheetHeader's p-4.
+  expect(got.headerPadding).toBe("0px");
 });
 
 // The pre-slot-axis menu CSS muted item icons through a :where() selector list
