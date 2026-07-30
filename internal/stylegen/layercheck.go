@@ -261,12 +261,18 @@ type layerCheckExemption struct {
 // Sheet all migrated to the slot axis and carry the utilities they used to
 // borrow through a marker on their own recipe classes, so the fallbacks the
 // exemptions covered no longer exist to be exempted.
-var layerCheckExemptions = append(append(append(
+// The chain is slices.Concat rather than nested appends: every migration wave
+// adds a group here, and a nested append chain put each addition on the same
+// two lines, so every wave collided with every other one.
+var layerCheckExemptions = slices.Concat(
 	siteButtonFallbackExemptions(),
-	toggleMarkerFallbackExemptions()...),
-	menuInsetDisabledFallbackExemptions()...),
-	append(calendarCaptionVisuallyHiddenExemptions(),
-		comboboxItemDisabledFallbackExemptions()...)...)
+	toggleMarkerFallbackExemptions(),
+	menuInsetDisabledFallbackExemptions(),
+	calendarCaptionVisuallyHiddenExemptions(),
+	comboboxItemDisabledFallbackExemptions(),
+	sidebarFoundationMechanicsExemptions(),
+	sidebarStyleOverridableExemptions(),
+)
 
 // comboboxItemDisabledFallbackReason is the decision behind every entry
 // comboboxItemDisabledFallbackExemptions lists.
@@ -1534,4 +1540,205 @@ func skipBalanced(s string, open int, left, right byte) int {
 		}
 	}
 	return len(s)
+}
+
+// sidebarFoundationMechanicsReason is the decision behind every entry
+// sidebarFoundationMechanicsExemptions lists.
+//
+// assets/css/foundation.css carries Sidebar's state-machine mechanics — the
+// display/position/width/height/flex arithmetic that makes one semantic tree
+// render as either a mobile Sheet or a fixed desktop column. Sidebar's
+// migration to the slot axis gave those same elements compiled recipe
+// utilities, and the gate now reports 44 (selector, property) pairs as
+// contested under each style.
+//
+// Every one of them is the same false positive Calendar's caption already
+// documents, at a much larger scale: componentUtilities builds ONE utility set
+// per COMPONENT, not per slot, so the union it compares each foundation rule
+// against is every utility Sidebar renders ANYWHERE across its 32 slots. The
+// `display` it reports against the wrapper comes from menu-action's
+// collapsed-icon `hidden`; the `width` from menu-sub-button's `min-w-0`; the
+// `content` against group-action::after from the rail's own
+// `hover:after:bg-sidebar-border`. Checked slot by slot against
+// registry/styles/{nova,maia}/sidebar.css, NO recipe rule sets any of these
+// properties on the element the foundation rule targets — which is the whole
+// reason the mechanics stayed in foundation and the presentation moved.
+//
+// The gate's usual fix does not apply. These rules must keep working with no
+// style loaded at all (jstest's foundation mode), which a style-owned
+// @layer utilities rule cannot do; and promoting them into foundation's own
+// @layer utilities block would make them beat a caller's plain utility instead
+// of losing to it — site/examples/sidebar/basic.gsx's
+// `class="min-h-[32rem]"` on the wrapper is exactly that caller, and it must
+// keep winning over foundation's `min-height: 100svh`.
+const sidebarFoundationMechanicsReason = "assets/css/foundation.css holds Sidebar's state-machine mechanics " +
+	"(display/position/size/flex), which since Sidebar's migration sit on a component with compiled " +
+	"utilities. The contest is an artifact of the gate comparing against Sidebar's whole-component utility " +
+	"union rather than the individual slot's own utilities — no rule in registry/styles/{nova,maia}/" +
+	"sidebar.css sets the reported property on the element the foundation rule targets. These rules must " +
+	"apply with no style loaded, so they cannot move into a style's @layer utilities, and promoting them " +
+	"inside foundation would make them beat caller utilities they are required to lose to."
+
+// sidebarRailConditionalOverrideReason covers the two entries the gate is
+// literally right about, and which are still deliberate.
+//
+// foundation.css's rail base sets `transform: translateX(-50%)` and its
+// ::after sets `left: 50%`. Sidebar's recipe overrides both — but only under
+// an offcanvas desktop ancestor, as `[…[data-collapsible=offcanvas] &]:
+// [transform:translateX(0)]` and `…:after:left-full`. That is exactly what the
+// pre-migration rules in assets/css/styles/default/sidebar.css did from the
+// same layer by source order; the migration moved the winner into
+// @layer utilities and left the loser where it was, so the unconditional
+// foundation value still applies in every non-offcanvas state. The gate models
+// neither the variant condition nor the fact that the base value is still
+// reachable, so it reports a total loss where there is a conditional one.
+// jstest/specs/layer-precedence.spec.ts pins both halves.
+const sidebarRailConditionalOverrideReason = "assets/css/foundation.css's rail transform and ::after offset are " +
+	"overridden by registry/styles/{nova,maia}/sidebar.css ONLY under an offcanvas desktop ancestor, which " +
+	"is what the pre-migration rules did by source order in the same layer. The unconditional foundation " +
+	"value still applies in every other state; the gate models neither the variant condition nor the " +
+	"surviving base value. jstest/specs/layer-precedence.spec.ts pins both."
+
+// sidebarFoundationMechanicsExemptions spells out every violation Sidebar's
+// migration exposes in foundation.css, one (selector, property, style) triple
+// at a time, following siteButtonFallbackExemptions' enumeration discipline.
+func sidebarFoundationMechanicsExemptions() []layerCheckExemption {
+	both := []string{"maia", "nova"}
+	pairs := []struct {
+		selector, contested, reason string
+		styles                      []string
+	}{
+		{selector: ":is( [data-gsxui-slot-sidebar-desktop][data-collapsible=\"icon\"] ) :is( [data-gsxui-slot-sidebar-menu-button-tooltip-content]:popover-open )", contested: "display", styles: both},
+		{selector: ":where( [data-gsxui-slot-sidebar-desktop][data-collapsible=\"icon\"] ) :where([data-gsxui-slot-sidebar-content])", contested: "overflow", styles: both},
+		{selector: ":where( [data-gsxui-slot-sidebar-desktop][data-collapsible=\"icon\"] )>:where([data-gsxui-slot-sidebar-container])", contested: "width", styles: both},
+		{selector: ":where( [data-gsxui-slot-sidebar-desktop][data-collapsible=\"icon\"] )>:where([data-gsxui-slot-sidebar-gap])", contested: "width", styles: both},
+		{selector: ":where( [data-gsxui-slot-sidebar-desktop][data-collapsible=\"offcanvas\"] )>:where([data-gsxui-slot-sidebar-gap])", contested: "width", styles: both},
+		{selector: ":where( [data-gsxui-slot-sidebar-desktop][data-side=\"left\"][data-collapsible=\"offcanvas\"] )>:where([data-gsxui-slot-sidebar-container])", contested: "left", styles: both},
+		{selector: ":where( [data-gsxui-slot-sidebar-desktop][data-side=\"right\"][data-collapsible=\"offcanvas\"] )>:where([data-gsxui-slot-sidebar-container])", contested: "right", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-container])", contested: "display", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-container])", contested: "height", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-container])", contested: "position", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-container])", contested: "width", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-content])", contested: "display", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-content])", contested: "flex", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-content])", contested: "flex-direction", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-content])", contested: "overflow", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-desktop])", contested: "display", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-desktop]) :where([data-gsxui-slot-sidebar-rail])", contested: "display", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-desktop][data-side=\"left\"])>:where([data-gsxui-slot-sidebar-container])", contested: "left", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-desktop][data-side=\"right\"])>:where([data-gsxui-slot-sidebar-container])", contested: "right", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-gap])", contested: "flex", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-gap])", contested: "position", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-gap])", contested: "width", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-group-action])::after", contested: "content", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-inner])", contested: "display", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-inner])", contested: "flex-direction", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-inner])", contested: "height", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-inner])", contested: "width", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-inset])", contested: "display", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-inset])", contested: "flex", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-inset])", contested: "flex-direction", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-inset])", contested: "width", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-menu-action])::after", contested: "content", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-mobile-content]) :where([data-gsxui-slot-sidebar-rail])", contested: "display", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-rail])", contested: "display", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-rail])", contested: "position", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-rail])", contested: "width", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-rail])::after", contested: "content", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-wrapper])", contested: "display", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-wrapper])", contested: "width", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar][data-collapsible=\"none\"])", contested: "display", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar][data-collapsible=\"none\"])", contested: "flex-direction", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar][data-collapsible=\"none\"])", contested: "height", styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar][data-collapsible=\"none\"])", contested: "width", styles: both},
+
+		// The two the gate is literally right about; see the reason above.
+		{selector: ":where([data-gsxui-slot-sidebar-rail])", contested: "transform", reason: sidebarRailConditionalOverrideReason, styles: both},
+		{selector: ":where([data-gsxui-slot-sidebar-rail])::after", contested: "left", reason: sidebarRailConditionalOverrideReason, styles: both},
+	}
+	out := make([]layerCheckExemption, 0, len(pairs)*2)
+	for _, pair := range pairs {
+		if len(pair.styles) == 0 {
+			panic("exemption for " + pair.selector + " / " + pair.contested + " names no style")
+		}
+		reason := pair.reason
+		if reason == "" {
+			reason = sidebarFoundationMechanicsReason
+		}
+		for _, style := range pair.styles {
+			out = append(out, layerCheckExemption{
+				key: exemptionKey{
+					file:      "assets/css/foundation.css",
+					style:     style,
+					selector:  pair.selector,
+					contested: pair.contested,
+				},
+				reason: reason,
+			})
+		}
+	}
+	return out
+}
+
+// sidebarStyleOverridableReason is the decision behind the two entries
+// sidebarStyleOverridableExemptions lists.
+//
+// assets/css/styles/default/sidebar.css keeps three rule groups in
+// @layer components on purpose — spec section 10b — because a STYLE is
+// expected to redefine them, and a style can only do that from this layer.
+// jstest/specs/sidebar-style-contract.spec.ts's "custom style owns floating
+// and inset collapsed density without foundation shrink" injects exactly such
+// a stylesheet and requires all three to take effect; migrating them onto the
+// recipe made that test fail, which is how the retention was decided rather
+// than guessed.
+//
+// Two of the three set raw custom properties the gate does not model. The
+// other two — the floating/inset container padding and the floating inner
+// border — it reports, correctly, as sitting in the same layer as Sidebar's
+// own compiled utilities. That is an accepted cost, not a caller-facing
+// regression: registry/styles/{nova,maia}/sidebar.css deliberately sets no
+// padding on sidebar-container and no border width or colour on
+// sidebar-inner, so nothing of Sidebar's own actually shadows either rule and
+// both are live. This is the same shape as menuInsetDisabledFallbackReason.
+const sidebarStyleOverridableReason = "assets/css/styles/default/sidebar.css's floating/inset container padding " +
+	"and floating inner border are style-overridable per spec section 10b and must stay in @layer components " +
+	"so a consumer stylesheet can beat them; Sidebar's own recipe sets neither property on those slots, so " +
+	"neither rule is shadowed in practice. jstest/specs/sidebar-style-contract.spec.ts's custom-density test " +
+	"is the contract these two exist to keep."
+
+func sidebarStyleOverridableExemptions() []layerCheckExemption {
+	both := []string{"maia", "nova"}
+	pairs := []struct {
+		selector, contested string
+		styles              []string
+	}{
+		{
+			selector:  ":where( [data-gsxui-slot-sidebar-desktop]:is( [data-variant=\"floating\"],[data-variant=\"inset\"] ) )>:where([data-gsxui-slot-sidebar-container])",
+			contested: "p-2",
+			styles:    both,
+		},
+		{
+			selector:  ":where( [data-gsxui-slot-sidebar-desktop][data-variant=\"floating\"] ) :where([data-gsxui-slot-sidebar-inner])",
+			contested: "border",
+			styles:    both,
+		},
+	}
+	out := make([]layerCheckExemption, 0, len(pairs)*2)
+	for _, pair := range pairs {
+		if len(pair.styles) == 0 {
+			panic("exemption for " + pair.selector + " / " + pair.contested + " names no style")
+		}
+		for _, style := range pair.styles {
+			out = append(out, layerCheckExemption{
+				key: exemptionKey{
+					file:      "assets/css/styles/default/sidebar.css",
+					style:     style,
+					selector:  pair.selector,
+					contested: pair.contested,
+				},
+				reason: sidebarStyleOverridableReason,
+			})
+		}
+	}
+	return out
 }

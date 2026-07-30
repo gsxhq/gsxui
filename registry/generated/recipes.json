@@ -1250,6 +1250,138 @@
         }
       }
     },
+    "sidebar": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
+        "container": {
+          "base": true,
+          "dimensions": {}
+        },
+        "content": {
+          "base": true,
+          "dimensions": {}
+        },
+        "desktop": {
+          "base": true,
+          "dimensions": {}
+        },
+        "footer": {
+          "base": true,
+          "dimensions": {}
+        },
+        "gap": {
+          "base": true,
+          "dimensions": {}
+        },
+        "group": {
+          "base": true,
+          "dimensions": {}
+        },
+        "group-action": {
+          "base": true,
+          "dimensions": {}
+        },
+        "group-content": {
+          "base": true,
+          "dimensions": {}
+        },
+        "group-label": {
+          "base": true,
+          "dimensions": {}
+        },
+        "header": {
+          "base": true,
+          "dimensions": {}
+        },
+        "inner": {
+          "base": true,
+          "dimensions": {}
+        },
+        "input": {
+          "base": true,
+          "dimensions": {}
+        },
+        "inset": {
+          "base": true,
+          "dimensions": {}
+        },
+        "menu": {
+          "base": true,
+          "dimensions": {}
+        },
+        "menu-action": {
+          "base": true,
+          "dimensions": {}
+        },
+        "menu-badge": {
+          "base": true,
+          "dimensions": {}
+        },
+        "menu-button": {
+          "base": true,
+          "dimensions": {}
+        },
+        "menu-item": {
+          "base": true,
+          "dimensions": {}
+        },
+        "menu-skeleton": {
+          "base": true,
+          "dimensions": {}
+        },
+        "menu-skeleton-icon": {
+          "base": true,
+          "dimensions": {}
+        },
+        "menu-skeleton-text": {
+          "base": true,
+          "dimensions": {}
+        },
+        "menu-sub": {
+          "base": true,
+          "dimensions": {}
+        },
+        "menu-sub-button": {
+          "base": true,
+          "dimensions": {}
+        },
+        "menu-sub-item": {
+          "base": true,
+          "dimensions": {}
+        },
+        "mobile-content": {
+          "base": true,
+          "dimensions": {}
+        },
+        "mobile-header": {
+          "base": true,
+          "dimensions": {}
+        },
+        "rail": {
+          "base": true,
+          "dimensions": {}
+        },
+        "separator": {
+          "base": true,
+          "dimensions": {}
+        },
+        "trigger": {
+          "base": true,
+          "dimensions": {}
+        },
+        "trigger-label": {
+          "base": true,
+          "dimensions": {}
+        },
+        "wrapper": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "skeleton": {
       "slots": {
         "": {
@@ -5065,6 +5197,440 @@
               "text-base",
               "font-medium",
               "text-foreground"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "sidebar": {
+        "slots": {
+          "": {
+            "base": [
+              "data-[collapsible=none]:bg-sidebar",
+              "data-[collapsible=none]:text-sidebar-foreground"
+            ],
+            "dimensions": {}
+          },
+          "container": {
+            "base": [
+              "transition-[left,right,width]",
+              "duration-200",
+              "ease-linear",
+              "[[data-gsxui-slot-sidebar-desktop][data-variant=sidebar][data-side=left]\u003e\u0026]:border-r",
+              "[[data-gsxui-slot-sidebar-desktop][data-variant=sidebar][data-side=left]\u003e\u0026]:border-sidebar-border",
+              "[[data-gsxui-slot-sidebar-desktop][data-variant=sidebar][data-side=right]\u003e\u0026]:border-l",
+              "[[data-gsxui-slot-sidebar-desktop][data-variant=sidebar][data-side=right]\u003e\u0026]:border-sidebar-border"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "gap-0",
+              "[scrollbar-width:none]",
+              "[\u0026::-webkit-scrollbar]:hidden"
+            ],
+            "dimensions": {}
+          },
+          "desktop": {
+            "base": [
+              "text-sidebar-foreground"
+            ],
+            "dimensions": {}
+          },
+          "footer": {
+            "base": [
+              "flex",
+              "flex-col",
+              "gap-2",
+              "p-2"
+            ],
+            "dimensions": {}
+          },
+          "gap": {
+            "base": [
+              "bg-transparent",
+              "transition-[width]",
+              "duration-200",
+              "ease-linear"
+            ],
+            "dimensions": {}
+          },
+          "group": {
+            "base": [
+              "relative",
+              "flex",
+              "w-full",
+              "min-w-0",
+              "flex-col",
+              "p-2"
+            ],
+            "dimensions": {}
+          },
+          "group-action": {
+            "base": [
+              "absolute",
+              "top-3.5",
+              "right-3",
+              "flex",
+              "aspect-square",
+              "w-5",
+              "items-center",
+              "justify-center",
+              "rounded-md",
+              "p-0",
+              "text-sidebar-foreground",
+              "ring-sidebar-ring",
+              "outline-hidden",
+              "transition-transform",
+              "hover:bg-sidebar-accent",
+              "hover:text-sidebar-accent-foreground",
+              "focus-visible:ring-2",
+              "[\u0026\u003esvg]:size-4",
+              "[\u0026\u003esvg]:shrink-0",
+              "[[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_\u0026]:hidden"
+            ],
+            "dimensions": {}
+          },
+          "group-content": {
+            "base": [
+              "w-full",
+              "text-sm"
+            ],
+            "dimensions": {}
+          },
+          "group-label": {
+            "base": [
+              "flex",
+              "h-8",
+              "shrink-0",
+              "items-center",
+              "rounded-md",
+              "px-2",
+              "text-xs",
+              "font-medium",
+              "text-sidebar-foreground/70",
+              "ring-sidebar-ring",
+              "outline-hidden",
+              "transition-[margin,opacity]",
+              "duration-200",
+              "ease-linear",
+              "focus-visible:ring-2",
+              "[\u0026\u003esvg]:size-4",
+              "[\u0026\u003esvg]:shrink-0",
+              "[[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_\u0026]:-mt-8",
+              "[[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_\u0026]:opacity-0"
+            ],
+            "dimensions": {}
+          },
+          "header": {
+            "base": [
+              "flex",
+              "flex-col",
+              "gap-2",
+              "p-2"
+            ],
+            "dimensions": {}
+          },
+          "inner": {
+            "base": [
+              "bg-sidebar",
+              "text-sidebar-foreground",
+              "[[data-gsxui-slot-sidebar-desktop][data-variant=floating]_\u0026]:rounded-lg",
+              "[[data-gsxui-slot-sidebar-desktop][data-variant=floating]_\u0026]:shadow-sm"
+            ],
+            "dimensions": {}
+          },
+          "input": {
+            "base": [
+              "h-8",
+              "w-full",
+              "bg-background",
+              "shadow-none",
+              "dark:bg-background"
+            ],
+            "dimensions": {}
+          },
+          "inset": {
+            "base": [
+              "relative",
+              "bg-background",
+              "md:[[data-gsxui-slot-sidebar-desktop][data-variant=inset]~\u0026]:m-2",
+              "md:[[data-gsxui-slot-sidebar-desktop][data-variant=inset]~\u0026]:ml-0",
+              "md:[[data-gsxui-slot-sidebar-desktop][data-variant=inset]~\u0026]:rounded-xl",
+              "md:[[data-gsxui-slot-sidebar-desktop][data-variant=inset]~\u0026]:shadow-sm",
+              "md:[[data-gsxui-slot-sidebar-desktop][data-variant=inset][data-state=collapsed]~\u0026]:ml-2"
+            ],
+            "dimensions": {}
+          },
+          "menu": {
+            "base": [
+              "flex",
+              "w-full",
+              "min-w-0",
+              "flex-col",
+              "gap-0"
+            ],
+            "dimensions": {}
+          },
+          "menu-action": {
+            "base": [
+              "absolute",
+              "top-1.5",
+              "right-1",
+              "flex",
+              "aspect-square",
+              "w-5",
+              "items-center",
+              "justify-center",
+              "rounded-md",
+              "p-0",
+              "text-sidebar-foreground",
+              "ring-sidebar-ring",
+              "outline-hidden",
+              "transition-transform",
+              "hover:bg-sidebar-accent",
+              "hover:text-sidebar-accent-foreground",
+              "focus-visible:ring-2",
+              "[\u0026\u003esvg]:size-4",
+              "[\u0026\u003esvg]:shrink-0",
+              "[[data-gsxui-slot-sidebar-menu-button][data-size=sm]~\u0026]:top-1",
+              "[[data-gsxui-slot-sidebar-menu-button][data-size=default]~\u0026]:top-1.5",
+              "[[data-gsxui-slot-sidebar-menu-button][data-size=lg]~\u0026]:top-2.5",
+              "[[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_\u0026]:hidden",
+              "md:[\u0026[data-show-on-hover]]:opacity-0",
+              "md:[[data-gsxui-slot-sidebar-menu-item]:hover\u003e\u0026[data-show-on-hover]]:opacity-100",
+              "md:[[data-gsxui-slot-sidebar-menu-item]:focus-within\u003e\u0026[data-show-on-hover]]:opacity-100",
+              "md:[\u0026[data-show-on-hover][data-state=open]]:opacity-100",
+              "[[data-gsxui-slot-sidebar-menu-button][data-active]~\u0026[data-show-on-hover]]:text-sidebar-primary-foreground",
+              "[[data-gsxui-slot-sidebar-menu-button]:hover~\u0026]:text-sidebar-accent-foreground"
+            ],
+            "dimensions": {}
+          },
+          "menu-badge": {
+            "base": [
+              "pointer-events-none",
+              "absolute",
+              "right-1",
+              "flex",
+              "h-5",
+              "min-w-5",
+              "items-center",
+              "justify-center",
+              "rounded-md",
+              "px-1",
+              "text-xs",
+              "font-medium",
+              "text-sidebar-foreground",
+              "tabular-nums",
+              "select-none",
+              "[[data-gsxui-slot-sidebar-menu-button][data-size=sm]~\u0026]:top-1",
+              "[[data-gsxui-slot-sidebar-menu-button][data-size=default]~\u0026]:top-1.5",
+              "[[data-gsxui-slot-sidebar-menu-button][data-size=lg]~\u0026]:top-2.5",
+              "[[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_\u0026]:hidden",
+              "[[data-gsxui-slot-sidebar-menu-button]:hover~\u0026]:text-sidebar-accent-foreground",
+              "[[data-gsxui-slot-sidebar-menu-button][data-active]~\u0026]:text-sidebar-primary-foreground"
+            ],
+            "dimensions": {}
+          },
+          "menu-button": {
+            "base": [
+              "flex",
+              "h-8",
+              "w-full",
+              "items-center",
+              "gap-2",
+              "overflow-hidden",
+              "rounded-md",
+              "p-2",
+              "text-left",
+              "text-sm",
+              "ring-sidebar-ring",
+              "outline-hidden",
+              "transition-[width,height,padding]",
+              "[[data-gsxui-slot-sidebar-menu-item]:has(\u003e[data-gsxui-slot-sidebar-menu-action])\u003e\u0026]:pr-8",
+              "hover:bg-sidebar-accent",
+              "hover:text-sidebar-accent-foreground",
+              "active:bg-sidebar-accent",
+              "active:text-sidebar-accent-foreground",
+              "data-[state=open]:hover:bg-sidebar-accent",
+              "data-[state=open]:hover:text-sidebar-accent-foreground",
+              "focus-visible:ring-2",
+              "disabled:pointer-events-none",
+              "disabled:opacity-50",
+              "[\u0026[aria-disabled]]:pointer-events-none",
+              "[\u0026[aria-disabled]]:opacity-50",
+              "[\u0026[data-active]]:bg-sidebar-primary",
+              "[\u0026[data-active]]:font-medium",
+              "[\u0026[data-active]]:text-sidebar-primary-foreground",
+              "[\u0026[data-active]]:hover:bg-sidebar-primary/90",
+              "[\u0026[data-active]]:hover:text-sidebar-primary-foreground",
+              "data-[variant=outline]:bg-background",
+              "data-[variant=outline]:shadow-[0_0_0_1px_var(--sidebar-border)]",
+              "data-[variant=outline]:hover:bg-sidebar-accent",
+              "data-[variant=outline]:hover:text-sidebar-accent-foreground",
+              "data-[variant=outline]:hover:shadow-[0_0_0_1px_var(--sidebar-accent)]",
+              "[\u0026\u003espan:last-child]:truncate",
+              "[\u0026\u003esvg]:size-4",
+              "[\u0026\u003esvg]:shrink-0",
+              "data-[size=sm]:h-7",
+              "data-[size=sm]:text-xs",
+              "data-[size=lg]:h-12",
+              "data-[size=lg]:text-sm",
+              "[[data-gsxui-slot-sidebar-desktop][data-gsxui-sidebar-desktop][data-collapsible=icon]_\u0026]:size-8",
+              "[[data-gsxui-slot-sidebar-desktop][data-gsxui-sidebar-desktop][data-collapsible=icon]_\u0026]:p-2",
+              "[[data-gsxui-slot-sidebar-desktop][data-gsxui-sidebar-desktop][data-collapsible=icon]_\u0026[data-size=lg]]:p-0"
+            ],
+            "dimensions": {}
+          },
+          "menu-item": {
+            "base": [
+              "relative"
+            ],
+            "dimensions": {}
+          },
+          "menu-skeleton": {
+            "base": [
+              "flex",
+              "h-8",
+              "items-center",
+              "gap-2",
+              "rounded-md",
+              "px-2"
+            ],
+            "dimensions": {}
+          },
+          "menu-skeleton-icon": {
+            "base": [
+              "size-4",
+              "rounded-md"
+            ],
+            "dimensions": {}
+          },
+          "menu-skeleton-text": {
+            "base": [
+              "h-4",
+              "max-w-[var(--skeleton-width)]",
+              "flex-1"
+            ],
+            "dimensions": {}
+          },
+          "menu-sub": {
+            "base": [
+              "mx-3.5",
+              "flex",
+              "min-w-0",
+              "translate-x-px",
+              "flex-col",
+              "gap-1",
+              "border-l",
+              "border-sidebar-border",
+              "px-2.5",
+              "py-0.5",
+              "[[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_\u0026]:hidden"
+            ],
+            "dimensions": {}
+          },
+          "menu-sub-button": {
+            "base": [
+              "flex",
+              "h-7",
+              "min-w-0",
+              "-translate-x-px",
+              "items-center",
+              "gap-2",
+              "overflow-hidden",
+              "rounded-md",
+              "px-2",
+              "text-sm",
+              "text-sidebar-foreground",
+              "ring-sidebar-ring",
+              "outline-hidden",
+              "hover:bg-sidebar-accent",
+              "hover:text-sidebar-accent-foreground",
+              "active:bg-sidebar-accent",
+              "active:text-sidebar-accent-foreground",
+              "[\u0026[data-active]]:bg-sidebar-accent",
+              "[\u0026[data-active]]:text-sidebar-accent-foreground",
+              "focus-visible:ring-2",
+              "disabled:pointer-events-none",
+              "disabled:opacity-50",
+              "[\u0026[aria-disabled]]:pointer-events-none",
+              "[\u0026[aria-disabled]]:opacity-50",
+              "data-[size=sm]:text-xs",
+              "[\u0026\u003espan:last-child]:truncate",
+              "[\u0026\u003esvg]:size-4",
+              "[\u0026\u003esvg]:shrink-0",
+              "[\u0026\u003esvg]:text-sidebar-accent-foreground"
+            ],
+            "dimensions": {}
+          },
+          "menu-sub-item": {
+            "base": [
+              "relative"
+            ],
+            "dimensions": {}
+          },
+          "mobile-content": {
+            "base": [
+              "w-[var(--sidebar-width)]",
+              "max-w-none",
+              "p-0",
+              "bg-sidebar",
+              "text-sidebar-foreground",
+              "sm:max-w-none",
+              "[\u0026\u003e[data-gsxui-slot-sheet-close-button]]:hidden"
+            ],
+            "dimensions": {}
+          },
+          "mobile-header": {
+            "base": [
+              "sr-only",
+              "p-0"
+            ],
+            "dimensions": {}
+          },
+          "rail": {
+            "base": [
+              "transition-all",
+              "ease-linear",
+              "[[data-gsxui-slot-sidebar-desktop][data-side=left]_\u0026]:-right-4",
+              "[[data-gsxui-slot-sidebar-desktop][data-side=left]_\u0026]:cursor-w-resize",
+              "[[data-gsxui-slot-sidebar-desktop][data-side=right]_\u0026]:left-0",
+              "[[data-gsxui-slot-sidebar-desktop][data-side=right]_\u0026]:cursor-e-resize",
+              "[[data-gsxui-slot-sidebar-desktop][data-side=left][data-state=collapsed]_\u0026]:cursor-e-resize",
+              "[[data-gsxui-slot-sidebar-desktop][data-side=right][data-state=collapsed]_\u0026]:cursor-w-resize",
+              "[[data-gsxui-slot-sidebar-desktop][data-collapsible=offcanvas]_\u0026]:[transform:translateX(0)]",
+              "[[data-gsxui-slot-sidebar-desktop][data-collapsible=offcanvas][data-side=left]_\u0026]:-right-2",
+              "[[data-gsxui-slot-sidebar-desktop][data-collapsible=offcanvas][data-side=right]_\u0026]:-left-2",
+              "[[data-gsxui-slot-sidebar-desktop][data-collapsible=offcanvas]_\u0026]:after:left-full",
+              "hover:after:bg-sidebar-border",
+              "[[data-gsxui-slot-sidebar-desktop][data-collapsible=offcanvas]_\u0026]:hover:bg-sidebar"
+            ],
+            "dimensions": {}
+          },
+          "separator": {
+            "base": [
+              "data-[orientation=horizontal]:mx-2",
+              "data-[orientation=horizontal]:w-auto",
+              "data-[orientation=horizontal]:bg-sidebar-border"
+            ],
+            "dimensions": {}
+          },
+          "trigger": {
+            "base": [
+              "size-7"
+            ],
+            "dimensions": {}
+          },
+          "trigger-label": {
+            "base": [
+              "sr-only"
+            ],
+            "dimensions": {}
+          },
+          "wrapper": {
+            "base": [
+              "has-[\u003e[data-gsxui-slot-sidebar-desktop][data-variant=inset]]:bg-sidebar"
             ],
             "dimensions": {}
           }
@@ -9178,6 +9744,440 @@
               "text-base",
               "font-medium",
               "text-foreground"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "sidebar": {
+        "slots": {
+          "": {
+            "base": [
+              "data-[collapsible=none]:bg-sidebar",
+              "data-[collapsible=none]:text-sidebar-foreground"
+            ],
+            "dimensions": {}
+          },
+          "container": {
+            "base": [
+              "transition-[left,right,width]",
+              "duration-200",
+              "ease-linear",
+              "[[data-gsxui-slot-sidebar-desktop][data-variant=sidebar][data-side=left]\u003e\u0026]:border-r",
+              "[[data-gsxui-slot-sidebar-desktop][data-variant=sidebar][data-side=left]\u003e\u0026]:border-sidebar-border",
+              "[[data-gsxui-slot-sidebar-desktop][data-variant=sidebar][data-side=right]\u003e\u0026]:border-l",
+              "[[data-gsxui-slot-sidebar-desktop][data-variant=sidebar][data-side=right]\u003e\u0026]:border-sidebar-border"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "gap-0",
+              "[scrollbar-width:none]",
+              "[\u0026::-webkit-scrollbar]:hidden"
+            ],
+            "dimensions": {}
+          },
+          "desktop": {
+            "base": [
+              "text-sidebar-foreground"
+            ],
+            "dimensions": {}
+          },
+          "footer": {
+            "base": [
+              "flex",
+              "flex-col",
+              "gap-2",
+              "p-2"
+            ],
+            "dimensions": {}
+          },
+          "gap": {
+            "base": [
+              "bg-transparent",
+              "transition-[width]",
+              "duration-200",
+              "ease-linear"
+            ],
+            "dimensions": {}
+          },
+          "group": {
+            "base": [
+              "relative",
+              "flex",
+              "w-full",
+              "min-w-0",
+              "flex-col",
+              "p-2"
+            ],
+            "dimensions": {}
+          },
+          "group-action": {
+            "base": [
+              "absolute",
+              "top-3.5",
+              "right-3",
+              "flex",
+              "aspect-square",
+              "w-5",
+              "items-center",
+              "justify-center",
+              "rounded-md",
+              "p-0",
+              "text-sidebar-foreground",
+              "ring-sidebar-ring",
+              "outline-hidden",
+              "transition-transform",
+              "hover:bg-sidebar-accent",
+              "hover:text-sidebar-accent-foreground",
+              "focus-visible:ring-2",
+              "[\u0026\u003esvg]:size-4",
+              "[\u0026\u003esvg]:shrink-0",
+              "[[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_\u0026]:hidden"
+            ],
+            "dimensions": {}
+          },
+          "group-content": {
+            "base": [
+              "w-full",
+              "text-sm"
+            ],
+            "dimensions": {}
+          },
+          "group-label": {
+            "base": [
+              "flex",
+              "h-8",
+              "shrink-0",
+              "items-center",
+              "rounded-md",
+              "px-2",
+              "text-xs",
+              "font-medium",
+              "text-sidebar-foreground/70",
+              "ring-sidebar-ring",
+              "outline-hidden",
+              "transition-[margin,opacity]",
+              "duration-200",
+              "ease-linear",
+              "focus-visible:ring-2",
+              "[\u0026\u003esvg]:size-4",
+              "[\u0026\u003esvg]:shrink-0",
+              "[[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_\u0026]:-mt-8",
+              "[[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_\u0026]:opacity-0"
+            ],
+            "dimensions": {}
+          },
+          "header": {
+            "base": [
+              "flex",
+              "flex-col",
+              "gap-2",
+              "p-2"
+            ],
+            "dimensions": {}
+          },
+          "inner": {
+            "base": [
+              "bg-sidebar",
+              "text-sidebar-foreground",
+              "[[data-gsxui-slot-sidebar-desktop][data-variant=floating]_\u0026]:rounded-lg",
+              "[[data-gsxui-slot-sidebar-desktop][data-variant=floating]_\u0026]:shadow-sm"
+            ],
+            "dimensions": {}
+          },
+          "input": {
+            "base": [
+              "h-8",
+              "w-full",
+              "bg-background",
+              "shadow-none",
+              "dark:bg-background"
+            ],
+            "dimensions": {}
+          },
+          "inset": {
+            "base": [
+              "relative",
+              "bg-background",
+              "md:[[data-gsxui-slot-sidebar-desktop][data-variant=inset]~\u0026]:m-2",
+              "md:[[data-gsxui-slot-sidebar-desktop][data-variant=inset]~\u0026]:ml-0",
+              "md:[[data-gsxui-slot-sidebar-desktop][data-variant=inset]~\u0026]:rounded-xl",
+              "md:[[data-gsxui-slot-sidebar-desktop][data-variant=inset]~\u0026]:shadow-sm",
+              "md:[[data-gsxui-slot-sidebar-desktop][data-variant=inset][data-state=collapsed]~\u0026]:ml-2"
+            ],
+            "dimensions": {}
+          },
+          "menu": {
+            "base": [
+              "flex",
+              "w-full",
+              "min-w-0",
+              "flex-col",
+              "gap-0"
+            ],
+            "dimensions": {}
+          },
+          "menu-action": {
+            "base": [
+              "absolute",
+              "top-1.5",
+              "right-1",
+              "flex",
+              "aspect-square",
+              "w-5",
+              "items-center",
+              "justify-center",
+              "rounded-md",
+              "p-0",
+              "text-sidebar-foreground",
+              "ring-sidebar-ring",
+              "outline-hidden",
+              "transition-transform",
+              "hover:bg-sidebar-accent",
+              "hover:text-sidebar-accent-foreground",
+              "focus-visible:ring-2",
+              "[\u0026\u003esvg]:size-4",
+              "[\u0026\u003esvg]:shrink-0",
+              "[[data-gsxui-slot-sidebar-menu-button][data-size=sm]~\u0026]:top-1",
+              "[[data-gsxui-slot-sidebar-menu-button][data-size=default]~\u0026]:top-1.5",
+              "[[data-gsxui-slot-sidebar-menu-button][data-size=lg]~\u0026]:top-2.5",
+              "[[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_\u0026]:hidden",
+              "md:[\u0026[data-show-on-hover]]:opacity-0",
+              "md:[[data-gsxui-slot-sidebar-menu-item]:hover\u003e\u0026[data-show-on-hover]]:opacity-100",
+              "md:[[data-gsxui-slot-sidebar-menu-item]:focus-within\u003e\u0026[data-show-on-hover]]:opacity-100",
+              "md:[\u0026[data-show-on-hover][data-state=open]]:opacity-100",
+              "[[data-gsxui-slot-sidebar-menu-button][data-active]~\u0026[data-show-on-hover]]:text-sidebar-primary-foreground",
+              "[[data-gsxui-slot-sidebar-menu-button]:hover~\u0026]:text-sidebar-accent-foreground"
+            ],
+            "dimensions": {}
+          },
+          "menu-badge": {
+            "base": [
+              "pointer-events-none",
+              "absolute",
+              "right-1",
+              "flex",
+              "h-5",
+              "min-w-5",
+              "items-center",
+              "justify-center",
+              "rounded-md",
+              "px-1",
+              "text-xs",
+              "font-medium",
+              "text-sidebar-foreground",
+              "tabular-nums",
+              "select-none",
+              "[[data-gsxui-slot-sidebar-menu-button][data-size=sm]~\u0026]:top-1",
+              "[[data-gsxui-slot-sidebar-menu-button][data-size=default]~\u0026]:top-1.5",
+              "[[data-gsxui-slot-sidebar-menu-button][data-size=lg]~\u0026]:top-2.5",
+              "[[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_\u0026]:hidden",
+              "[[data-gsxui-slot-sidebar-menu-button]:hover~\u0026]:text-sidebar-accent-foreground",
+              "[[data-gsxui-slot-sidebar-menu-button][data-active]~\u0026]:text-sidebar-primary-foreground"
+            ],
+            "dimensions": {}
+          },
+          "menu-button": {
+            "base": [
+              "flex",
+              "h-8",
+              "w-full",
+              "items-center",
+              "gap-2",
+              "overflow-hidden",
+              "rounded-md",
+              "p-2",
+              "text-left",
+              "text-sm",
+              "ring-sidebar-ring",
+              "outline-hidden",
+              "transition-[width,height,padding]",
+              "[[data-gsxui-slot-sidebar-menu-item]:has(\u003e[data-gsxui-slot-sidebar-menu-action])\u003e\u0026]:pr-8",
+              "hover:bg-sidebar-accent",
+              "hover:text-sidebar-accent-foreground",
+              "active:bg-sidebar-accent",
+              "active:text-sidebar-accent-foreground",
+              "data-[state=open]:hover:bg-sidebar-accent",
+              "data-[state=open]:hover:text-sidebar-accent-foreground",
+              "focus-visible:ring-2",
+              "disabled:pointer-events-none",
+              "disabled:opacity-50",
+              "[\u0026[aria-disabled]]:pointer-events-none",
+              "[\u0026[aria-disabled]]:opacity-50",
+              "[\u0026[data-active]]:bg-sidebar-primary",
+              "[\u0026[data-active]]:font-medium",
+              "[\u0026[data-active]]:text-sidebar-primary-foreground",
+              "[\u0026[data-active]]:hover:bg-sidebar-primary/90",
+              "[\u0026[data-active]]:hover:text-sidebar-primary-foreground",
+              "data-[variant=outline]:bg-background",
+              "data-[variant=outline]:shadow-[0_0_0_1px_var(--sidebar-border)]",
+              "data-[variant=outline]:hover:bg-sidebar-accent",
+              "data-[variant=outline]:hover:text-sidebar-accent-foreground",
+              "data-[variant=outline]:hover:shadow-[0_0_0_1px_var(--sidebar-accent)]",
+              "[\u0026\u003espan:last-child]:truncate",
+              "[\u0026\u003esvg]:size-4",
+              "[\u0026\u003esvg]:shrink-0",
+              "data-[size=sm]:h-7",
+              "data-[size=sm]:text-xs",
+              "data-[size=lg]:h-12",
+              "data-[size=lg]:text-sm",
+              "[[data-gsxui-slot-sidebar-desktop][data-gsxui-sidebar-desktop][data-collapsible=icon]_\u0026]:size-8",
+              "[[data-gsxui-slot-sidebar-desktop][data-gsxui-sidebar-desktop][data-collapsible=icon]_\u0026]:p-2",
+              "[[data-gsxui-slot-sidebar-desktop][data-gsxui-sidebar-desktop][data-collapsible=icon]_\u0026[data-size=lg]]:p-0"
+            ],
+            "dimensions": {}
+          },
+          "menu-item": {
+            "base": [
+              "relative"
+            ],
+            "dimensions": {}
+          },
+          "menu-skeleton": {
+            "base": [
+              "flex",
+              "h-8",
+              "items-center",
+              "gap-2",
+              "rounded-md",
+              "px-2"
+            ],
+            "dimensions": {}
+          },
+          "menu-skeleton-icon": {
+            "base": [
+              "size-4",
+              "rounded-md"
+            ],
+            "dimensions": {}
+          },
+          "menu-skeleton-text": {
+            "base": [
+              "h-4",
+              "max-w-[var(--skeleton-width)]",
+              "flex-1"
+            ],
+            "dimensions": {}
+          },
+          "menu-sub": {
+            "base": [
+              "mx-3.5",
+              "flex",
+              "min-w-0",
+              "translate-x-px",
+              "flex-col",
+              "gap-1",
+              "border-l",
+              "border-sidebar-border",
+              "px-2.5",
+              "py-0.5",
+              "[[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_\u0026]:hidden"
+            ],
+            "dimensions": {}
+          },
+          "menu-sub-button": {
+            "base": [
+              "flex",
+              "h-7",
+              "min-w-0",
+              "-translate-x-px",
+              "items-center",
+              "gap-2",
+              "overflow-hidden",
+              "rounded-md",
+              "px-2",
+              "text-sm",
+              "text-sidebar-foreground",
+              "ring-sidebar-ring",
+              "outline-hidden",
+              "hover:bg-sidebar-accent",
+              "hover:text-sidebar-accent-foreground",
+              "active:bg-sidebar-accent",
+              "active:text-sidebar-accent-foreground",
+              "[\u0026[data-active]]:bg-sidebar-accent",
+              "[\u0026[data-active]]:text-sidebar-accent-foreground",
+              "focus-visible:ring-2",
+              "disabled:pointer-events-none",
+              "disabled:opacity-50",
+              "[\u0026[aria-disabled]]:pointer-events-none",
+              "[\u0026[aria-disabled]]:opacity-50",
+              "data-[size=sm]:text-xs",
+              "[\u0026\u003espan:last-child]:truncate",
+              "[\u0026\u003esvg]:size-4",
+              "[\u0026\u003esvg]:shrink-0",
+              "[\u0026\u003esvg]:text-sidebar-accent-foreground"
+            ],
+            "dimensions": {}
+          },
+          "menu-sub-item": {
+            "base": [
+              "relative"
+            ],
+            "dimensions": {}
+          },
+          "mobile-content": {
+            "base": [
+              "w-[var(--sidebar-width)]",
+              "max-w-none",
+              "p-0",
+              "bg-sidebar",
+              "text-sidebar-foreground",
+              "sm:max-w-none",
+              "[\u0026\u003e[data-gsxui-slot-sheet-close-button]]:hidden"
+            ],
+            "dimensions": {}
+          },
+          "mobile-header": {
+            "base": [
+              "sr-only",
+              "p-0"
+            ],
+            "dimensions": {}
+          },
+          "rail": {
+            "base": [
+              "transition-all",
+              "ease-linear",
+              "[[data-gsxui-slot-sidebar-desktop][data-side=left]_\u0026]:-right-4",
+              "[[data-gsxui-slot-sidebar-desktop][data-side=left]_\u0026]:cursor-w-resize",
+              "[[data-gsxui-slot-sidebar-desktop][data-side=right]_\u0026]:left-0",
+              "[[data-gsxui-slot-sidebar-desktop][data-side=right]_\u0026]:cursor-e-resize",
+              "[[data-gsxui-slot-sidebar-desktop][data-side=left][data-state=collapsed]_\u0026]:cursor-e-resize",
+              "[[data-gsxui-slot-sidebar-desktop][data-side=right][data-state=collapsed]_\u0026]:cursor-w-resize",
+              "[[data-gsxui-slot-sidebar-desktop][data-collapsible=offcanvas]_\u0026]:[transform:translateX(0)]",
+              "[[data-gsxui-slot-sidebar-desktop][data-collapsible=offcanvas][data-side=left]_\u0026]:-right-2",
+              "[[data-gsxui-slot-sidebar-desktop][data-collapsible=offcanvas][data-side=right]_\u0026]:-left-2",
+              "[[data-gsxui-slot-sidebar-desktop][data-collapsible=offcanvas]_\u0026]:after:left-full",
+              "hover:after:bg-sidebar-border",
+              "[[data-gsxui-slot-sidebar-desktop][data-collapsible=offcanvas]_\u0026]:hover:bg-sidebar"
+            ],
+            "dimensions": {}
+          },
+          "separator": {
+            "base": [
+              "data-[orientation=horizontal]:mx-2",
+              "data-[orientation=horizontal]:w-auto",
+              "data-[orientation=horizontal]:bg-sidebar-border"
+            ],
+            "dimensions": {}
+          },
+          "trigger": {
+            "base": [
+              "size-7"
+            ],
+            "dimensions": {}
+          },
+          "trigger-label": {
+            "base": [
+              "sr-only"
+            ],
+            "dimensions": {}
+          },
+          "wrapper": {
+            "base": [
+              "has-[\u003e[data-gsxui-slot-sidebar-desktop][data-variant=inset]]:bg-sidebar"
             ],
             "dimensions": {}
           }

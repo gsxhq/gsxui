@@ -1,12 +1,45 @@
 package ui_test
 
 import (
+	"html"
+	"regexp"
 	"strings"
 	"testing"
 
 	gsx "github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/merge"
 	"github.com/gsxhq/gsxui/ui"
 )
+
+// sidebarRecipeUtilities reads one Sidebar slot's compiled utilities out of
+// the default style. ui/sidebar.gsx is generated output now, so these are
+// exactly the classes it renders. defaultStyleRecipe's loader
+// (input-group_test.go) already caches every component's recipe, and Sidebar
+// composes four other migrated components, so this reuses it rather than
+// adding a fifth per-component loader.
+func sidebarRecipeUtilities(slot string) []string {
+	return styleRecipeUtilities("sidebar", "gsxui-recipe-"+slot)
+}
+
+// canonicalSidebarClass is the class attribute one Sidebar slot renders on its
+// own, plus any caller classes, merged the way gsx merges class values at
+// runtime.
+func canonicalSidebarClass(slot string, caller ...string) string {
+	classes := append([]string(nil), sidebarRecipeUtilities(slot)...)
+	classes = append(classes, caller...)
+	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
+}
+
+var classAttributePattern = regexp.MustCompile(`(?s) class="[^"]*"`)
+
+// withoutClassAttributes strips every class attribute from a render. Sidebar's
+// recipe utilities contain arbitrary variants written against its own
+// data-attributes (`[&[data-active]]:…`, `md:[&[data-show-on-hover]]:…`), so a
+// bare strings.Contains for an ATTRIBUTE now matches inside the class value
+// too. Every assertion about attribute presence reads the stripped render.
+func withoutClassAttributes(render string) string {
+	return classAttributePattern.ReplaceAllString(render, "")
+}
 
 func requireContainsAll(t *testing.T, got string, wants ...string) {
 	t.Helper()
@@ -24,10 +57,10 @@ func TestSidebarProviderReflectsStateWidthsAndBehaviorHook(t *testing.T) {
 		`data-gsxui-sidebar-wrapper`,
 		`data-gsxui-slot-sidebar-wrapper`,
 		`style="--sidebar-width:16rem;--sidebar-width-icon:3rem"`,
-		`class="caller"`,
+		canonicalSidebarClass("sidebar-wrapper", "caller"),
 	)
-	if strings.Count(open, `class="caller"`) != 1 {
-		t.Fatalf("caller class count = %d, want 1\nin: %s", strings.Count(open, `class="caller"`), open)
+	if got, want := strings.Count(open, canonicalSidebarClass("sidebar-wrapper", "caller")), 1; got != want {
+		t.Fatalf("wrapper class count = %d, want %d\nin: %s", got, want, open)
 	}
 
 	closed := render(t, ui.SidebarProvider(false, gsx.Raw("x"), nil))
@@ -70,14 +103,16 @@ func TestSidebarRendersTwoExplicitResponsiveTrees(t *testing.T) {
 	)
 	// The mobile tree's root is <ui.Sheet>, which composes <ui.Dialog>
 	// directly — Dialog is migrated to the slot axis, so its own "contents"
-	// recipe class now merges with the caller's "caller" there instead of
-	// caller rendering alone. The desktop tree's container is a plain,
-	// unmigrated div, so it still renders class="caller" verbatim.
+	// recipe class merges with the caller's "caller" there instead of caller
+	// rendering alone. The desktop tree's container is Sidebar's own
+	// container slot, which since Sidebar's migration carries that slot's
+	// recipe utilities ahead of the caller class.
 	if count := strings.Count(got, `class="contents caller"`); count != 1 {
 		t.Fatalf(`class="contents caller" count = %d, want exactly 1 (mobile Sheet/Dialog root)\nin: %s`, count, got)
 	}
-	if count := strings.Count(got, `class="caller"`); count != 1 {
-		t.Fatalf(`class="caller" count = %d, want exactly 1 (desktop container)\nin: %s`, count, got)
+	container := canonicalSidebarClass("sidebar-container", "caller")
+	if count := strings.Count(got, container); count != 1 {
+		t.Fatalf("container class count = %d, want exactly 1 for %s\nin: %s", count, container, got)
 	}
 	if strings.Contains(got, `data-slot=`) || strings.Contains(got, `data-sidebar=`) {
 		t.Fatalf("legacy styling hooks remain\nin: %s", got)
@@ -113,7 +148,7 @@ func TestSidebarCollapsibleNoneIsOneCanonicalFlatTree(t *testing.T) {
 		`data-side="right"`,
 		`data-variant="inset"`,
 		`data-collapsible="none"`,
-		`class="caller"`,
+		canonicalSidebarClass("sidebar", "caller"),
 	)
 	if strings.Contains(got, `sidebar-mobile-root`) || strings.Contains(got, `sidebar-desktop`) {
 		t.Fatalf("collapsible=none rendered a responsive state-machine tree\nin: %s", got)
@@ -122,35 +157,53 @@ func TestSidebarCollapsibleNoneIsOneCanonicalFlatTree(t *testing.T) {
 
 func TestSidebarPrimitiveCompositionAndCallerClassPlacement(t *testing.T) {
 	cases := []struct {
-		name      string
-		got       string
-		want      string
+		name string
+		got  string
+		want string
+		// wantClass is the class attribute the COMPOSED element renders.
 		wantClass string
+		// classAttributes is how many class attributes the whole render
+		// carries. The trigger's is 2 because SidebarTrigger also renders its
+		// own sr-only label span, which is a Sidebar slot of its own.
+		classAttributes int
 	}{
 		{
-			name:      "trigger button",
-			got:       render(t, ui.SidebarTrigger(gsx.Attrs{{Key: "class", Value: "caller"}})),
-			want:      `data-gsxui-slot-sidebar-trigger data-gsxui-slot-button`,
-			wantClass: canonicalButtonClass("ghost", "icon", "caller"),
+			// Sidebar's trigger slot rides into <ui.Button>'s class
+			// attribute, where merge.Merge drops Button's size-8 icon arm in
+			// favour of size-7 — the promotion in default.css this retired.
+			name:            "trigger button",
+			got:             render(t, ui.SidebarTrigger(gsx.Attrs{{Key: "class", Value: "caller"}})),
+			want:            `data-gsxui-slot-sidebar-trigger data-gsxui-slot-button`,
+			wantClass:       canonicalButtonClass("ghost", "icon", append(sidebarRecipeUtilities("sidebar-trigger"), "caller")...),
+			classAttributes: 2,
 		},
 		{
-			name:      "input",
-			got:       render(t, ui.SidebarInput(gsx.Attrs{{Key: "class", Value: "caller"}})),
-			want:      `data-gsxui-slot-sidebar-input data-gsxui-slot-input`,
-			wantClass: `class="h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 transition-[color,box-shadow] outline-none selection:bg-primary selection:text-primary-foreground file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 dark:aria-invalid:ring-destructive/40 caller"`,
+			name: "input",
+			got:  render(t, ui.SidebarInput(gsx.Attrs{{Key: "class", Value: "caller"}})),
+			want: `data-gsxui-slot-sidebar-input data-gsxui-slot-input`,
+			wantClass: canonicalComposedClass(
+				styleRecipeUtilities("input", "gsxui-recipe-input"),
+				sidebarRecipeUtilities("sidebar-input"),
+				[]string{"caller"},
+			),
+			classAttributes: 1,
 		},
 		{
-			name:      "separator",
-			got:       render(t, ui.SidebarSeparator(gsx.Attrs{{Key: "class", Value: "caller"}})),
-			want:      `data-gsxui-slot-sidebar-separator data-gsxui-slot-separator`,
-			wantClass: canonicalSeparatorClass("horizontal", "caller"),
+			name:            "separator",
+			got:             render(t, ui.SidebarSeparator(gsx.Attrs{{Key: "class", Value: "caller"}})),
+			want:            `data-gsxui-slot-sidebar-separator data-gsxui-slot-separator`,
+			wantClass:       canonicalSeparatorClass("horizontal", append(sidebarRecipeUtilities("sidebar-separator"), "caller")...),
+			classAttributes: 1,
 		},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			requireContainsAll(t, tc.got, tc.want, tc.wantClass)
-			if count := strings.Count(tc.got, tc.wantClass); count != 1 || strings.Count(tc.got, `class=`) != 1 {
+			if count := strings.Count(tc.got, tc.wantClass); count != 1 {
 				t.Fatalf("exact class count = %d, want 1 for %s\nin: %s", count, tc.wantClass, tc.got)
+			}
+			if count := strings.Count(tc.got, `class=`); count != tc.classAttributes {
+				t.Fatalf("class attribute count = %d, want %d\nin: %s", count, tc.classAttributes, tc.got)
 			}
 			if strings.Contains(tc.got, `data-slot=`) || strings.Contains(tc.got, `data-sidebar=`) {
 				t.Fatalf("legacy styling hook remains\nin: %s", tc.got)
@@ -176,7 +229,11 @@ func TestSidebarTriggerComposesPresenceMarkersOnButton(t *testing.T) {
 	)
 }
 
-func TestSidebarPlainPartsExposeNamespacedSlotsWithoutPresentationClasses(t *testing.T) {
+// TestSidebarPlainPartsExposeNamespacedSlotsWithTheirRecipeClass replaces the
+// pre-migration "…WithoutPresentationClasses". Sidebar is on the slot axis
+// now, so each of these parts legitimately renders exactly its own slot's
+// compiled utilities and nothing else. The legacy-hook bans are unchanged.
+func TestSidebarPlainPartsExposeNamespacedSlotsWithTheirRecipeClass(t *testing.T) {
 	parts := []struct {
 		name string
 		got  string
@@ -199,9 +256,9 @@ func TestSidebarPlainPartsExposeNamespacedSlotsWithoutPresentationClasses(t *tes
 	}
 	for _, part := range parts {
 		t.Run(part.name, func(t *testing.T) {
-			requireContainsAll(t, part.got, `data-gsxui-slot-`+part.slot)
-			if strings.Contains(part.got, ` class=`) {
-				t.Fatalf("library presentation class remains\nin: %s", part.got)
+			requireContainsAll(t, part.got, `data-gsxui-slot-`+part.slot, canonicalSidebarClass(part.slot))
+			if count := strings.Count(part.got, ` class=`); count != 1 {
+				t.Fatalf("class attribute count = %d, want exactly 1\nin: %s", count, part.got)
 			}
 			if strings.Contains(part.got, `data-slot=`) || strings.Contains(part.got, `data-sidebar=`) {
 				t.Fatalf("legacy styling hook remains\nin: %s", part.got)
@@ -248,17 +305,18 @@ func TestSidebarMenuButtonReflectsEveryPresentationAxis(t *testing.T) {
 			`data-gsxui-slot-sidebar-menu-button`,
 			`data-variant="`+variant+`"`,
 			`data-size="`+size+`"`,
-			`class="caller"`,
+			canonicalSidebarClass("sidebar-menu-button", "caller"),
 		)
+		attributes := withoutClassAttributes(got)
 		if tc.active {
-			requireContainsAll(t, got, ` data-active`)
-			if strings.Contains(got, `data-active=`) {
+			requireContainsAll(t, attributes, ` data-active`)
+			if strings.Contains(attributes, `data-active=`) {
 				t.Fatalf("active button must render data-active as a bare marker\nin: %s", got)
 			}
-		} else if strings.Contains(got, `data-active`) {
+		} else if strings.Contains(attributes, `data-active`) {
 			t.Fatalf("inactive button must omit data-active\nin: %s", got)
 		}
-		if strings.Count(got, `class="caller"`) != 1 {
+		if strings.Count(got, canonicalSidebarClass("sidebar-menu-button", "caller")) != 1 {
 			t.Fatalf("caller class not forwarded exactly once\nin: %s", got)
 		}
 	}
@@ -322,21 +380,17 @@ func TestSidebarMenuButtonComposesTooltipTokens(t *testing.T) {
 		`data-active`,
 		">Inbox<",
 	)
-	if strings.Contains(got, `data-active=`) {
+	if strings.Contains(withoutClassAttributes(got), `data-active=`) {
 		t.Fatalf("active tooltip button must render data-active as a bare marker\nin: %s", got)
 	}
-	// Tooltip migrated to the slot axis: its root/content/arrow now
-	// legitimately carry their own recipe classes (same carve-out as
-	// InputGroupButton/FieldLabel/FieldSeparator for any composed
-	// primitive's own class once it migrates). SidebarMenuButton's own
-	// <button> element still has no class attribute of its own — that's
-	// the part this assertion actually guards.
-	if strings.Count(got, `class=`) != 3 {
-		t.Fatalf("expected exactly 3 class= attributes (tooltip root + content + arrow)\nin: %s", got)
+	// Tooltip's root/content/arrow carry their own recipe classes, and since
+	// Sidebar's own migration the <button> carries the menu-button slot's.
+	// Four class attributes, one per styled element — the tooltip wrapper
+	// itself still contributes none of Sidebar's presentation.
+	if strings.Count(got, `class=`) != 4 {
+		t.Fatalf("expected exactly 4 class= attributes (menu button + tooltip root, content, arrow)\nin: %s", got)
 	}
-	if strings.Contains(got, `<button type="button" data-variant="outline" data-size="lg" data-active data-gsxui-tooltip-trigger data-gsxui-slot-sidebar-menu-button class=`) {
-		t.Fatalf("sidebar-menu-button element must not carry a presentation class\nin: %s", got)
-	}
+	requireContainsAll(t, got, canonicalSidebarClass("sidebar-menu-button"))
 	if strings.Contains(got, `data-slot=`) || strings.Contains(got, `data-sidebar=`) {
 		t.Fatalf("tooltip composition retained legacy styling hooks\nin: %s", got)
 	}
@@ -345,17 +399,18 @@ func TestSidebarMenuButtonComposesTooltipTokens(t *testing.T) {
 func TestSidebarMenuActionReflectsShowOnHover(t *testing.T) {
 	for _, show := range []bool{false, true} {
 		got := render(t, ui.SidebarMenuAction(show, gsx.Raw("x"), nil))
-		requireContainsAll(t, got, `data-gsxui-slot-sidebar-menu-action`)
+		requireContainsAll(t, got, `data-gsxui-slot-sidebar-menu-action`, canonicalSidebarClass("sidebar-menu-action"))
+		attributes := withoutClassAttributes(got)
 		if show {
-			requireContainsAll(t, got, ` data-show-on-hover`)
-			if strings.Contains(got, `data-show-on-hover=`) {
+			requireContainsAll(t, attributes, ` data-show-on-hover`)
+			if strings.Contains(attributes, `data-show-on-hover=`) {
 				t.Fatalf("showOnHover=true must render data-show-on-hover as a bare marker\nin: %s", got)
 			}
-		} else if strings.Contains(got, `data-show-on-hover`) {
+		} else if strings.Contains(attributes, `data-show-on-hover`) {
 			t.Fatalf("showOnHover=false must omit data-show-on-hover\nin: %s", got)
 		}
-		if strings.Contains(got, ` class=`) {
-			t.Fatalf("library presentation class remains\nin: %s", got)
+		if count := strings.Count(got, ` class=`); count != 1 {
+			t.Fatalf("class attribute count = %d, want exactly 1\nin: %s", count, got)
 		}
 	}
 }
@@ -371,9 +426,9 @@ func TestSidebarMenuSubButtonReflectsSizeActiveAndCallerClass(t *testing.T) {
 		`data-gsxui-slot-sidebar-menu-sub-button`,
 		`data-size="sm"`,
 		`data-active`,
-		`class="caller"`,
+		canonicalSidebarClass("sidebar-menu-sub-button", "caller"),
 	)
-	if strings.Contains(got, `data-active=`) {
+	if strings.Contains(withoutClassAttributes(got), `data-active=`) {
 		t.Fatalf("active sub-button must render data-active as a bare marker\nin: %s", got)
 	}
 }
@@ -386,14 +441,18 @@ func TestSidebarMenuSkeletonComposesSkeletonPartsAndKeepsDynamicWidth(t *testing
 		`data-gsxui-slot-sidebar-menu-skeleton-text data-gsxui-slot-skeleton`,
 		`--skeleton-width:`,
 	)
-	// SidebarMenuSkeleton composes ui.Skeleton, which is migrated onto the slot
-	// axis and therefore renders its own recipe utilities. Sidebar itself must
-	// still contribute no presentation of its own, so assert on the WRAPPER
-	// rather than the whole subtree, and keep the legacy-hook bans absolute.
+	// SidebarMenuSkeleton composes ui.Skeleton, which is migrated too, so the
+	// two child elements carry Skeleton's utilities merged with the two
+	// skeleton slots' own. Assert the WRAPPER carries exactly its own slot,
+	// and keep the legacy-hook bans absolute.
 	wrapper := got[:strings.Index(got, ">")+1]
-	if strings.Contains(wrapper, ` class=`) {
-		t.Fatalf("sidebar-menu-skeleton wrapper retained presentation classes\nin: %s", got)
+	if !strings.Contains(wrapper, canonicalSidebarClass("sidebar-menu-skeleton")) {
+		t.Fatalf("sidebar-menu-skeleton wrapper missing its recipe class\nin: %s", got)
 	}
+	requireContainsAll(t, got, canonicalComposedClass(
+		styleRecipeUtilities("skeleton", "gsxui-recipe-skeleton"),
+		sidebarRecipeUtilities("sidebar-menu-skeleton-icon"),
+	))
 	if strings.Contains(got, `data-sidebar=`) || strings.Contains(got, `data-slot=`) {
 		t.Fatalf("skeleton composition retained legacy styling hooks\nin: %s", got)
 	}
@@ -403,4 +462,17 @@ func TestSidebarMenuSkeletonComposesSkeletonPartsAndKeepsDynamicWidth(t *testing
 		t.Fatalf("showIcon=false rendered icon part\nin: %s", without)
 	}
 	requireContainsAll(t, without, `data-gsxui-slot-sidebar-menu-skeleton-text data-gsxui-slot-skeleton`)
+}
+
+// canonicalComposedClass merges several utility lists in render order into the
+// class attribute the composed element renders. Sidebar composes Button,
+// Input, Separator and Skeleton, and in every case its own slot utilities
+// arrive AFTER the composed component's, which is what lets merge.Merge settle
+// the properties the two contest.
+func canonicalComposedClass(lists ...[]string) string {
+	var classes []string
+	for _, list := range lists {
+		classes = append(classes, list...)
+	}
+	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
 }

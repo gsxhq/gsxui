@@ -18,14 +18,21 @@ import (
 func Skeleton(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line skeleton.gsx:8:2
-		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(skeleton.Root()), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-skeleton"})
-		_gsxgw.BoolAttr("data-gsxui-slot-skeleton", true)
-		_gsxgw.S("></div>")
-		return _gsxgw.Err()
+		return _gsxrenderSkeleton(ctx, _gsxgw, attrs)
 	})
+}
+
+func _gsxrenderSkeleton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line skeleton.gsx:8:2
+	_gsxgw.S("<div class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(skeleton.Root()), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-skeleton"})
+	_gsxgw.BoolAttr("data-gsxui-slot-skeleton", true)
+	_gsxgw.S("></div>")
+	return _gsxgw.Err()
 }

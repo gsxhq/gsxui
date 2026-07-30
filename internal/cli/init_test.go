@@ -906,16 +906,16 @@ func TestInitializedConsumerCSSOmitsButtonPresentationAndKeepsRemainingStyle(t *
 	// component when it is added, so an unadded one contributes nothing to
 	// the vendored style — pick sentinels accordingly.
 	//
-	// These were combobox-content and command until Command migrated; the
-	// assertion is unchanged, only its sentinel is repointed at a component
-	// still off the axis, with "sidebar" added to the add list above so its
-	// presentation is actually vendored. Sidebar is the last component
-	// scheduled off the axis, so it is the sentinel with the longest shelf
-	// life — and once it migrates there is no unmigrated component left to
-	// point at, at which point this loop has no subject and should go.
-	// Repoint, or retire; do not weaken it.
+	// These were combobox-content and command until Command migrated, then
+	// sidebar alone. Sidebar has now migrated too, so the assertion is
+	// repointed a third time — unchanged, only its sentinel moves — at
+	// Combobox, which has no shape under registry/canonical/shapes/ and whose
+	// presentation therefore still ships as marker-keyed rules in
+	// assets/css/styles/default/combobox.css. Every component with a shape is
+	// now on the slot axis; Combobox is what is left. Repoint, or retire once
+	// it has a shape too; do not weaken it.
 	for _, attribute := range []string{
-		"data-gsxui-slot-sidebar",
+		"data-gsxui-slot-combobox-trigger",
 	} {
 		if !attributes[attribute] {
 			t.Errorf("clean consumer CSS missing canonical selector [%s]", attribute)

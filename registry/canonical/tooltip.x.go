@@ -18,23 +18,30 @@ import (
 func Tooltip(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line tooltip.gsx:8:2
-		_gsxgw.S("<div")
-		if !attrs.Has("data-gsxui-tooltip") {
-			_gsxgw.BoolAttr("data-gsxui-tooltip", true)
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tooltip.Root()), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-tooltip"})
-		_gsxgw.BoolAttr("data-gsxui-slot-tooltip", true)
-		_gsxgw.S(">")
-//line tooltip.gsx:8:88
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderTooltip(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderTooltip(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line tooltip.gsx:8:2
+	_gsxgw.S("<div")
+	if !attrs.Has("data-gsxui-tooltip") {
+		_gsxgw.BoolAttr("data-gsxui-tooltip", true)
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tooltip.Root()), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-tooltip"})
+	_gsxgw.BoolAttr("data-gsxui-slot-tooltip", true)
+	_gsxgw.S(">")
+//line tooltip.gsx:8:88
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line tooltip.gsx:11:1
@@ -65,38 +72,45 @@ func TooltipTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func TooltipContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line tooltip.gsx:16:2
-		_gsxgw.S("<div")
-		if !attrs.Has("data-gsxui-tooltip-content") {
-			_gsxgw.BoolAttr("data-gsxui-tooltip-content", true)
-		}
-		if !attrs.Has("popover") {
-			_gsxgw.S(" popover=\"manual\"")
-		}
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"tooltip\"")
-		}
-		if !attrs.Has("data-state") {
-			_gsxgw.S(" data-state=\"closed\"")
-		}
-		if !attrs.Has("data-side") {
-			_gsxgw.S(" data-side=\"top\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tooltip.Content()), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-tooltip-content"})
-		_gsxgw.BoolAttr("data-gsxui-slot-tooltip-content", true)
-		_gsxgw.S(">")
-//line tooltip.gsx:26:3
-		_gsxgw.Node(ctx, children)
-//line tooltip.gsx:27:3
-		_gsxgw.S("<span class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tooltip.Arrow()))
-		_gsxgw.S("\"")
-		_gsxgw.BoolAttr("data-gsxui-slot-tooltip-arrow", true)
-		_gsxgw.S("></span></div>")
-		return _gsxgw.Err()
+		return _gsxrenderTooltipContent(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderTooltipContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line tooltip.gsx:16:2
+	_gsxgw.S("<div")
+	if !attrs.Has("data-gsxui-tooltip-content") {
+		_gsxgw.BoolAttr("data-gsxui-tooltip-content", true)
+	}
+	if !attrs.Has("popover") {
+		_gsxgw.S(" popover=\"manual\"")
+	}
+	if !attrs.Has("role") {
+		_gsxgw.S(" role=\"tooltip\"")
+	}
+	if !attrs.Has("data-state") {
+		_gsxgw.S(" data-state=\"closed\"")
+	}
+	if !attrs.Has("data-side") {
+		_gsxgw.S(" data-side=\"top\"")
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tooltip.Content()), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-tooltip-content"})
+	_gsxgw.BoolAttr("data-gsxui-slot-tooltip-content", true)
+	_gsxgw.S(">")
+//line tooltip.gsx:26:3
+	_gsxgw.Node(ctx, children)
+//line tooltip.gsx:27:3
+	_gsxgw.S("<span class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tooltip.Arrow()))
+	_gsxgw.S("\"")
+	_gsxgw.BoolAttr("data-gsxui-slot-tooltip-arrow", true)
+	_gsxgw.S("></span></div>")
+	return _gsxgw.Err()
 }

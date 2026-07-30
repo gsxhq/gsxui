@@ -271,19 +271,13 @@
      data-[orientation=vertical]: variant that outranks h-full by design. See
      registry/styles/{nova,maia}/button-group.css. */
 
-  /* SidebarSeparator: same fallout as ButtonGroupSeparator above — Sidebar
-     composes its separator onto <ui.Separator> (sidebar.gsx), so w-auto and
-     bg-sidebar-border here contest Separator's own w-full and bg-border. */
-  [data-gsxui-slot-sidebar-separator][data-orientation="horizontal"] {
-    @apply mx-2 w-auto bg-sidebar-border;
-  }
-
-  /* SidebarInput: same fallout shape — Sidebar composes its input onto
-     <ui.Input> (sidebar.gsx), so bg-background here contests Input's own
-     bg-transparent/dark:bg-input/30. */
-  [data-gsxui-slot-sidebar-input] {
-    @apply bg-background;
-  }
+  /* SidebarSeparator's and SidebarInput's promotions have been RETIRED by
+     Sidebar's own migration, exactly as ButtonGroupSeparator's was by
+     ButtonGroup's. Both styled an element Sidebar composes onto another
+     component (<ui.Separator>, <ui.Input>), so their utilities now travel in
+     the same class attribute as the composed component's own and merge.Merge
+     settles the contest instead of the cascade. See
+     registry/styles/{nova,maia}/sidebar.css. */
 
   /* ButtonGroup > SelectTrigger width guard: ButtonGroup composes an
      unmigrated SelectTrigger's width via `:not([class*="w-"])` — "only
@@ -299,12 +293,10 @@
     @apply w-fit;
   }
 
-  /* SidebarTrigger: a 28px control against the 32px Button renders for
-     size="icon". Same reasoning as the Carousel arrows above — utilities
-     layer, no :where(). */
-  [data-gsxui-slot-sidebar-trigger] {
-    @apply size-7;
-  }
+  /* SidebarTrigger's size-7 promotion has been RETIRED by Sidebar's own
+     migration for the same reason as the two above: SidebarTrigger composes
+     <ui.Button variant="ghost" size="icon">, so size-7 now arrives through
+     the caller-class merge and twmerge drops Button's size-8 outright. */
 
   /* InputGroup control fallout from Textarea's migration:
      ui/input-group.gsx's InputGroupTextarea composes <ui.Textarea> directly

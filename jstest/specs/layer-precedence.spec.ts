@@ -803,12 +803,18 @@ test("SheetContent's four side arms each resolve to their own anchoring", async 
 });
 
 // Sheet's migration fallout on Sidebar, which composes <ui.SheetContent> and
-// <ui.SheetHeader> directly: Sheet's own utilities now beat anything Sidebar
+// <ui.SheetHeader> directly: Sheet's own utilities beat anything Sidebar
 // declares for the same property from @layer components. make sweep-compare
 // caught the mobile panel collapsing from its --sidebar-width to Sheet's
-// w-3/4 and repainting with bg-background; the promoted rules at the bottom
-// of assets/css/styles/default/sidebar.css restore both. Pinned so a future
-// layer change cannot silently undo the promotion.
+// w-3/4 and repainting with bg-background.
+//
+// The @layer utilities promotion that first restored this has since been
+// RETIRED by Sidebar's own migration: the same three properties are now
+// utilities on the sidebar-mobile-content and -mobile-header slots, so they
+// ride into SheetContent's / SheetHeader's own class attribute and
+// merge.Merge settles them. sm:max-w-none is load-bearing there — merge
+// scopes conflicts per variant, so an unprefixed max-w-none would leave
+// Sheet's sm:max-w-sm standing. This pin is what holds all of that.
 test("Sidebar's mobile panel keeps its own width and surface against Sheet's", async ({ page }) => {
   await page.setViewportSize({ width: 640, height: 900 });
   await page.goto("/x/sidebar/basic");
@@ -1306,4 +1312,126 @@ test("Combobox's trigger chevron is size-4, not Button's icon-xs size-3", async 
   const icon = page.locator("[data-gsxui-slot-combobox-trigger-icon]").first();
   expect(await icon.evaluate((n) => getComputedStyle(n).width)).toBe("16px");
   expect(await icon.evaluate((n) => getComputedStyle(n).height)).toBe("16px");
+});
+
+
+// ---------------------------------------------------------------------------
+// Sidebar's own migration to the slot axis.
+//
+// Sidebar composes four already-migrated components — Button, Input,
+// Separator and Skeleton — and before this migration each contest was settled
+// by an unwrapped rule promoted into assets/css/styles/default.css's
+// @layer utilities block. All three promotions are retired: Sidebar's slot
+// utilities now travel in the SAME class attribute as the composed
+// component's, where merge.Merge decides. These pins are what stops that
+// quietly reverting to the composed component's value.
+// ---------------------------------------------------------------------------
+
+test("SidebarTrigger stays 28px against Button's size-8 icon arm", async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 768 });
+  await page.goto("/f/sidebar-contract?case=menu-expanded");
+  const trigger = page.locator("[data-gsxui-slot-sidebar-trigger]").first();
+  const box = await trigger.evaluate((n) => {
+    const s = getComputedStyle(n);
+    return { width: s.width, height: s.height };
+  });
+  expect(box).toEqual({ width: "28px", height: "28px" });
+});
+
+test("SidebarSeparator keeps its own width, inset and colour against Separator's", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1024, height: 768 });
+  await page.goto("/f/sidebar-contract?case=tokens");
+  const separator = page.locator("[data-gsxui-slot-sidebar-separator]").first();
+  const got = await separator.evaluate((n) => {
+    const s = getComputedStyle(n);
+    return {
+      marginLeft: s.marginLeft,
+      backgroundColor: s.backgroundColor,
+      // Separator's own orientation arm is w-full; the sidebar slot's
+      // data-[orientation=horizontal]:w-auto has to outrank it. This fixture
+      // renders the desktop tree, which is display:none below the md
+      // breakpoint's layout pass, so the computed value is the specified
+      // keyword rather than a used length — which is exactly the fact under
+      // test: "auto" means w-auto won, "100%" would mean w-full did.
+      width: s.width,
+    };
+  });
+  expect(got.marginLeft).toBe("8px");
+  // --sidebar-border is rgb(19,20,21) in this fixture; Separator's own
+  // bg-border would paint something else entirely.
+  expect(got.backgroundColor).toBe("rgb(19, 20, 21)");
+  expect(got.width).toBe("auto");
+});
+
+// SidebarInput's bg-background contests BOTH of Input's background utilities.
+// bg-transparent is an ordinary merge conflict; dark:bg-input/30 is not — it
+// survives the merge as a different variant group and would win the dark
+// theme on Tailwind's own variant ordering. registry/styles/*/sidebar.css
+// carries an explicit dark:bg-background for exactly that reason, and this is
+// the pin that justifies a utility the pre-migration CSS did not have.
+for (const scheme of ["light", "dark"] as const) {
+  test(`SidebarInput paints the background token in the ${scheme} theme`, async ({ page }) => {
+    await page.setViewportSize({ width: 1024, height: 768 });
+    if (scheme === "dark") {
+      await page.addInitScript(() => document.documentElement.classList.add("dark"));
+    }
+    await page.goto("/f/sidebar-contract?case=menu-expanded");
+    const input = page.locator("[data-gsxui-slot-sidebar-input]").first();
+    const got = await input.evaluate((n) => {
+      const s = getComputedStyle(n);
+      return {
+        backgroundColor: s.backgroundColor,
+        background: getComputedStyle(document.documentElement)
+          .getPropertyValue("--background")
+          .trim(),
+      };
+    });
+    expect(got.backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
+    expect(got.background).not.toBe("");
+  });
+}
+
+// Sidebar's own two same-specificity ties, both of which the pre-migration
+// CSS resolved by source order at (0,0,0) and the recipe now resolves by
+// arbitrary-variant specificity.
+test("An active menu button's badge takes the primary foreground, hovered or not", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1024, height: 768 });
+  await page.goto("/f/sidebar-contract?case=menu-expanded");
+  // The fixture renders both responsive trees; scope to the desktop one.
+  const item = page.locator(
+    '[data-gsxui-slot-sidebar-desktop] [data-sidebar-contract="action-item"]',
+  );
+  const badge = item.locator("[data-gsxui-slot-sidebar-menu-badge]");
+  const button = item.locator("[data-gsxui-slot-sidebar-menu-button]");
+  const resting = await badge.evaluate((n) => getComputedStyle(n).color);
+  await button.hover();
+  const hovered = await badge.evaluate((n) => getComputedStyle(n).color);
+  // The active-sibling rule and the hovered-sibling rule are both (0,3,0);
+  // active must win, as it did by source order before the migration.
+  expect(hovered).toBe(resting);
+});
+
+test("An offcanvas rail sits flush and reaches past its own edge", async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 768 });
+  // offcanvas-right is the collapsed offcanvas case — the desktop element
+  // only carries data-collapsible="offcanvas" while collapsed. Scope to the
+  // desktop tree; the mobile one renders a rail too.
+  await page.goto("/f/sidebar-contract?case=offcanvas-right");
+  const rail = page.locator(
+    "[data-gsxui-slot-sidebar-desktop] [data-gsxui-slot-sidebar-rail]",
+  );
+  const got = await rail.evaluate((n) => {
+    const s = getComputedStyle(n);
+    return { transform: s.transform, after: getComputedStyle(n, "::after").left };
+  });
+  // foundation.css's rail base is translateX(-50%); the offcanvas variant
+  // must still replace it outright rather than compose with it, which is why
+  // the recipe writes [transform:translateX(0)] and not translate-x-0.
+  expect(got.transform).toBe("matrix(1, 0, 0, 1, 0, 0)");
+  // foundation.css's ::after base is left: 50%.
+  expect(got.after).toBe("16px");
 });
