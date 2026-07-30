@@ -2,7 +2,7 @@
 // could never be its own package — one of the reasons ui/ is a single flat
 // package (see docs/jsx-parity.md packaging entry); as a file basename and
 // CLI name (`gsxui add switch`) it is fine. The component is `ui.Switch`.
-package ui
+package canonical
 
 import "github.com/gsxhq/gsx"
 
@@ -25,9 +25,7 @@ component Switch(attrs gsx.Attrs) {
 	<input
 		type="checkbox"
 		role="switch"
-		class={
-			"inline-flex h-[1.15rem] w-8 shrink-0 appearance-none items-center rounded-full border border-transparent bg-input transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 checked:bg-primary dark:bg-input/80 dark:checked:bg-primary before:content-[''] before:pointer-events-none before:block before:size-4 before:rounded-full before:bg-background before:transition-transform checked:before:translate-x-[calc(100%-2px)] dark:before:bg-foreground dark:checked:before:bg-primary-foreground"
-		}
+		class={ switch_.Root() }
 		{ attrs... }
 		data-gsxui-slot-switch
 	/>

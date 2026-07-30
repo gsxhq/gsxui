@@ -2,7 +2,7 @@
 // could never be its own package — one of the reasons ui/ is a single flat
 // package (see docs/jsx-parity.md packaging entry); as a file basename and
 // CLI name (`gsxui add switch`) it is fine. The component is `ui.Switch`.
-package ui
+package nova
 
 import "github.com/gsxhq/gsx"
 

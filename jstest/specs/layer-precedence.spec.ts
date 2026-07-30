@@ -379,3 +379,9 @@ test("PaginationEllipsis keeps its size-8 tile", async ({ page }) => {
   const size = await ellipsis.evaluate((n) => getComputedStyle(n).width);
   expect(size).toBe("32px");
 });
+test("Switch keeps its checked-state background", async ({ page }) => {
+  await page.goto("/x/switch/basic");
+  const checked = page.locator("[data-gsxui-slot-switch]").nth(1);
+  const bg = await checked.evaluate((n) => getComputedStyle(n).backgroundColor);
+  expect(bg).toBe("oklch(0.205 0 0)");
+});
