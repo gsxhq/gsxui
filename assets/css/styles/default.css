@@ -30,7 +30,6 @@
 @import "./default/command.css";
 @import "./default/combobox.css";
 @import "./default/menu.css";
-@import "./default/menu-popover-transition.css";
 @import "./default/textarea.css";
 @import "./default/sidebar.css";
 @import "./default/sonner.css";
@@ -359,9 +358,12 @@
      own recipe utilities. The rule below contests three InputGroup emits —
      h-8, border-input, and dark's bg-input/30 — and a :where()-wrapped
      (0,0,0) selector in @layer components would lose regardless of source
-     order. Unwrapped to clear the (0,1,0) specificity floor. Combobox itself
-     has not migrated yet; see assets/css/styles/default/combobox.css for the
-     uncontested half of the second rule, which stayed there.
+     order. Unwrapped to clear the (0,1,0) specificity floor. This rule is not
+     Combobox's to migrate: its styled SUBJECT is InputGroup (Combobox's
+     content is only ancestor context), so Combobox's own migration left it
+     alone. The uncontested half — m-1/mb-0/shadow-none — moved with the rest
+     of the old combobox.css to assets/css/styles/default/input-group.css,
+     where InputGroup's other marker-keyed rules live.
 
      The selector is compounded with data-gsxui-slot-input-group rather than
      merely unwrapped. (0,1,0) is only the FLOOR: inside @layer utilities the
@@ -372,8 +374,9 @@
      Combobox's OWN input group needed the opposite treatment: its w-auto is
      not here at all, because promoting it overshot and beat the caller's own
      w-[220px] too (make sweep-compare caught it as 220px -> 1216px on three
-     fixtures). It is a literal class on ui/combobox.gsx's <InputGroup> call
-     instead — upstream's own form — so tailwind-merge orders it correctly
+     fixtures). It is an ordinary recipe utility on Combobox's own input-group
+     slot now (registry/styles/{nova,maia}/combobox.css) — upstream's own
+     cn("w-auto", className) form — so tailwind-merge orders it correctly
      against both InputGroup's w-full and the caller's width. */
   [data-gsxui-slot-combobox-content] > [data-gsxui-slot-input-group][data-gsxui-slot-input-group] {
     @apply h-8 border-input/30 bg-input/30;

@@ -366,6 +366,58 @@
         }
       }
     },
+    "combobox": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
+        "clear": {
+          "base": true,
+          "dimensions": {}
+        },
+        "content": {
+          "base": true,
+          "dimensions": {}
+        },
+        "empty": {
+          "base": true,
+          "dimensions": {}
+        },
+        "input-group": {
+          "base": true,
+          "dimensions": {}
+        },
+        "item": {
+          "base": true,
+          "dimensions": {}
+        },
+        "item-indicator": {
+          "base": true,
+          "dimensions": {}
+        },
+        "label": {
+          "base": true,
+          "dimensions": {}
+        },
+        "list": {
+          "base": true,
+          "dimensions": {}
+        },
+        "separator": {
+          "base": true,
+          "dimensions": {}
+        },
+        "trigger": {
+          "base": true,
+          "dimensions": {}
+        },
+        "trigger-icon": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "command": {
       "slots": {
         "": {
@@ -2257,6 +2309,158 @@
           "trigger": {
             "base": [
               "list-none"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "combobox": {
+        "slots": {
+          "": {
+            "base": [
+              "contents"
+            ],
+            "dimensions": {}
+          },
+          "clear": {
+            "base": [
+              "[\u0026\u003esvg]:pointer-events-none"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "relative",
+              "z-50",
+              "max-h-72",
+              "min-w-36",
+              "origin-top-left",
+              "overflow-hidden",
+              "rounded-lg",
+              "bg-popover",
+              "text-popover-foreground",
+              "shadow-md",
+              "ring-1",
+              "ring-foreground/10",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "starting:[\u0026:popover-open]:data-[side=bottom]:-translate-y-2",
+              "starting:[\u0026:popover-open]:data-[side=left]:translate-x-2",
+              "starting:[\u0026:popover-open]:data-[side=right]:-translate-x-2",
+              "starting:[\u0026:popover-open]:data-[side=top]:translate-y-2"
+            ],
+            "dimensions": {}
+          },
+          "empty": {
+            "base": [
+              "hidden",
+              "w-full",
+              "justify-center",
+              "py-2",
+              "text-center",
+              "text-sm",
+              "text-muted-foreground",
+              "[[data-gsxui-slot-combobox-content][data-empty]_\u0026]:flex"
+            ],
+            "dimensions": {}
+          },
+          "input-group": {
+            "base": [
+              "w-auto"
+            ],
+            "dimensions": {}
+          },
+          "item": {
+            "base": [
+              "relative",
+              "flex",
+              "w-full",
+              "cursor-default",
+              "items-center",
+              "gap-2",
+              "rounded-md",
+              "py-1",
+              "pr-8",
+              "pl-1.5",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "data-[highlighted=true]:bg-accent",
+              "data-[highlighted=true]:text-accent-foreground",
+              "data-disabled:pointer-events-none",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "data-[state=checked]:[\u0026\u003e[data-gsxui-slot-combobox-item-indicator]]:flex"
+            ],
+            "dimensions": {}
+          },
+          "item-indicator": {
+            "base": [
+              "pointer-events-none",
+              "absolute",
+              "right-2",
+              "hidden",
+              "size-4",
+              "items-center",
+              "justify-center",
+              "[\u0026\u003esvg]:size-4",
+              "pointer-coarse:[\u0026\u003esvg]:size-5"
+            ],
+            "dimensions": {}
+          },
+          "label": {
+            "base": [
+              "px-2",
+              "py-1.5",
+              "text-xs",
+              "text-muted-foreground",
+              "pointer-coarse:px-3",
+              "pointer-coarse:py-2",
+              "pointer-coarse:text-sm"
+            ],
+            "dimensions": {}
+          },
+          "list": {
+            "base": [
+              "max-h-[calc(--spacing(72)---spacing(9))]",
+              "scroll-py-1",
+              "overflow-y-auto",
+              "p-1",
+              "[scrollbar-width:none]",
+              "[\u0026::-webkit-scrollbar]:hidden",
+              "data-empty:p-0"
+            ],
+            "dimensions": {}
+          },
+          "separator": {
+            "base": [
+              "-mx-1",
+              "my-1",
+              "h-px",
+              "bg-border"
+            ],
+            "dimensions": {}
+          },
+          "trigger": {
+            "base": [
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[[data-gsxui-slot-input-group]:has([data-gsxui-slot-combobox-clear])_\u0026]:hidden"
+            ],
+            "dimensions": {}
+          },
+          "trigger-icon": {
+            "base": [
+              "pointer-events-none",
+              "size-4",
+              "text-muted-foreground"
             ],
             "dimensions": {}
           }
@@ -6218,6 +6422,158 @@
           "trigger": {
             "base": [
               "list-none"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "combobox": {
+        "slots": {
+          "": {
+            "base": [
+              "contents"
+            ],
+            "dimensions": {}
+          },
+          "clear": {
+            "base": [
+              "[\u0026\u003esvg]:pointer-events-none"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "relative",
+              "z-50",
+              "max-h-72",
+              "min-w-36",
+              "origin-top-left",
+              "overflow-hidden",
+              "rounded-lg",
+              "bg-popover",
+              "text-popover-foreground",
+              "shadow-md",
+              "ring-1",
+              "ring-foreground/10",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "starting:[\u0026:popover-open]:data-[side=bottom]:-translate-y-2",
+              "starting:[\u0026:popover-open]:data-[side=left]:translate-x-2",
+              "starting:[\u0026:popover-open]:data-[side=right]:-translate-x-2",
+              "starting:[\u0026:popover-open]:data-[side=top]:translate-y-2"
+            ],
+            "dimensions": {}
+          },
+          "empty": {
+            "base": [
+              "hidden",
+              "w-full",
+              "justify-center",
+              "py-2",
+              "text-center",
+              "text-sm",
+              "text-muted-foreground",
+              "[[data-gsxui-slot-combobox-content][data-empty]_\u0026]:flex"
+            ],
+            "dimensions": {}
+          },
+          "input-group": {
+            "base": [
+              "w-auto"
+            ],
+            "dimensions": {}
+          },
+          "item": {
+            "base": [
+              "relative",
+              "flex",
+              "w-full",
+              "cursor-default",
+              "items-center",
+              "gap-2",
+              "rounded-md",
+              "py-1",
+              "pr-8",
+              "pl-1.5",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "data-[highlighted=true]:bg-accent",
+              "data-[highlighted=true]:text-accent-foreground",
+              "data-disabled:pointer-events-none",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "data-[state=checked]:[\u0026\u003e[data-gsxui-slot-combobox-item-indicator]]:flex"
+            ],
+            "dimensions": {}
+          },
+          "item-indicator": {
+            "base": [
+              "pointer-events-none",
+              "absolute",
+              "right-2",
+              "hidden",
+              "size-4",
+              "items-center",
+              "justify-center",
+              "[\u0026\u003esvg]:size-4",
+              "pointer-coarse:[\u0026\u003esvg]:size-5"
+            ],
+            "dimensions": {}
+          },
+          "label": {
+            "base": [
+              "px-2",
+              "py-1.5",
+              "text-xs",
+              "text-muted-foreground",
+              "pointer-coarse:px-3",
+              "pointer-coarse:py-2",
+              "pointer-coarse:text-sm"
+            ],
+            "dimensions": {}
+          },
+          "list": {
+            "base": [
+              "max-h-[calc(--spacing(72)---spacing(9))]",
+              "scroll-py-1",
+              "overflow-y-auto",
+              "p-1",
+              "[scrollbar-width:none]",
+              "[\u0026::-webkit-scrollbar]:hidden",
+              "data-empty:p-0"
+            ],
+            "dimensions": {}
+          },
+          "separator": {
+            "base": [
+              "-mx-1",
+              "my-1",
+              "h-px",
+              "bg-border"
+            ],
+            "dimensions": {}
+          },
+          "trigger": {
+            "base": [
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[[data-gsxui-slot-input-group]:has([data-gsxui-slot-combobox-clear])_\u0026]:hidden"
+            ],
+            "dimensions": {}
+          },
+          "trigger-icon": {
+            "base": [
+              "pointer-events-none",
+              "size-4",
+              "text-muted-foreground"
             ],
             "dimensions": {}
           }

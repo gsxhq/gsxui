@@ -1257,7 +1257,8 @@ test("Combobox's InputGroup keeps its w-auto default and still yields to a calle
   // InputGroup's migration killed combobox.css's marker-keyed w-auto rule
   // (a components-layer rule cannot beat InputGroup's own w-full utility), and
   // promoting it to @layer utilities overshot and beat the caller's own
-  // w-[220px]. It is composed into ComboboxInput's wrapper attrs now.
+  // w-[220px]. Combobox's own migration made it an ordinary recipe utility on
+  // its input-group slot — upstream's own cn("w-auto", className) form.
   await page.goto("/x/combobox/basic");
   const sized = page.locator("[data-gsxui-slot-combobox-input-group]").first();
   expect(await sized.evaluate((n) => getComputedStyle(n).width)).toBe("220px");
@@ -1266,4 +1267,43 @@ test("Combobox's InputGroup keeps its w-auto default and still yields to a calle
   const unsized = page.locator("[data-gsxui-slot-combobox-input-group]").first();
   expect(await unsized.evaluate((n) => n.className.includes("w-full"))).toBe(false);
   expect(await unsized.evaluate((n) => n.className.includes("w-auto"))).toBe(true);
+});
+
+// Combobox's trigger is hidden whenever a clear button is also present —
+// ComboboxInput's own documented contract ("clear wins visually"), matching
+// shadcn's composition table. Until Combobox migrated, the rule that enforces
+// it was `:where([data-gsxui-slot-input-group]):has([…combobox-clear])
+// :where([…combobox-trigger]) { display: none }` at (0,0,0), while the trigger
+// renders through InputGroupButton -> Button, whose migrated recipe emits a
+// real `inline-flex` at (0,1,0) in the same layer — so the trigger was NOT
+// hidden, and no fixture rendered both buttons for the sweep to notice
+// (combobox/clear passes showClear without showTrigger). site/examples/
+// combobox/trigger-clear.gsx now does, and the migrated form is an arbitrary
+// variant on the trigger's own recipe class at (0,3,0).
+test("Combobox hides its trigger when a clear button is present", async ({ page }) => {
+  await page.goto("/x/combobox/trigger-clear");
+  const trigger = page.locator("[data-gsxui-slot-combobox-trigger]").first();
+  expect(await trigger.evaluate((n) => getComputedStyle(n).display)).toBe("none");
+  // The clear button is the one that stays. Its resting display is `flex`,
+  // not Button's own inline-flex: InputGroupButton's own recipe restates
+  // display for every button inside an input group.
+  const clear = page.locator("[data-gsxui-slot-combobox-clear]").first();
+  expect(await clear.evaluate((n) => getComputedStyle(n).display)).toBe("flex");
+});
+
+// Conformance fix from Combobox's migration. Upstream's ComboboxTrigger renders
+// its chevron with an explicit `className="pointer-events-none size-4
+// text-muted-foreground"` (registry/new-york-v4/ui/combobox.tsx:36), and
+// upstream's trigger itself is `cn("[&_svg:not([class*='size-'])]:size-4",
+// className)` on InputGroupButton — 16px both ways. gsxui rendered 12px before
+// the migration: the icon's own marker rule was a (0,0,0) @layer components
+// selector and lost to Button's icon-xs `[&_svg:not([class*='size-'])]:size-3`
+// compiled utility. Both are ordinary utilities now, so tailwind-merge drops
+// the size-3 form and the icon carries size-4 outright. make sweep-compare
+// caught this as 12px -> 16px on four fixtures.
+test("Combobox's trigger chevron is size-4, not Button's icon-xs size-3", async ({ page }) => {
+  await page.goto("/x/combobox/basic");
+  const icon = page.locator("[data-gsxui-slot-combobox-trigger-icon]").first();
+  expect(await icon.evaluate((n) => getComputedStyle(n).width)).toBe("16px");
+  expect(await icon.evaluate((n) => getComputedStyle(n).height)).toBe("16px");
 });

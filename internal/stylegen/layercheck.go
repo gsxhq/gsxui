@@ -265,7 +265,53 @@ var layerCheckExemptions = append(append(append(
 	siteButtonFallbackExemptions(),
 	toggleMarkerFallbackExemptions()...),
 	menuInsetDisabledFallbackExemptions()...),
-	calendarCaptionVisuallyHiddenExemptions()...)
+	append(calendarCaptionVisuallyHiddenExemptions(),
+		comboboxItemDisabledFallbackExemptions()...)...)
+
+// comboboxItemDisabledFallbackReason is the decision behind every entry
+// comboboxItemDisabledFallbackExemptions lists.
+//
+// assets/css/styles/default/combobox.css keeps ONE rule in @layer components
+// on purpose — spec section 10b — `[data-gsxui-slot-combobox-item][data-
+// disabled] { opacity-50 }`. data-disabled is stamped by the CALLER through
+// attrs (ComboboxItem declares no `disabled` param at all), so the rule must
+// stay caller-overridable, and @layer utilities — the layer Tailwind's own
+// scanned classes live in — would flip that the wrong way. This is the same
+// call assets/css/styles/default/menu.css's data-disabled rule makes; see
+// menuInsetDisabledFallbackReason.
+//
+// Unlike menu's, though, the contest the gate reports here is a FALSE
+// POSITIVE of its granularity, the calendar-caption shape:
+// componentUtilities builds one utility set per COMPONENT, not per slot, and
+// Combobox's union contains opacity-* only because combobox-content's
+// popover transition emits opacity-0/opacity-100. Nothing on combobox-item
+// sets opacity. The identical rule on Command's own item
+// (assets/css/styles/default/command.css) is not reported at all, for exactly
+// that reason — Command has no opacity utility anywhere.
+const comboboxItemDisabledFallbackReason = "assets/css/styles/default/combobox.css's data-disabled/opacity-50 " +
+	"rule is caller-attrs-driven per spec section 10b (ComboboxItem declares no disabled param; the caller " +
+	"stamps data-disabled through attrs) and must stay in @layer components to remain caller-overridable. " +
+	"The reported contest is an artifact of the gate comparing against Combobox's whole-component utility " +
+	"union: the only opacity-* utilities Combobox emits are combobox-content's popover-transition " +
+	"opacity-0/opacity-100, on a different element entirely. The same rule on command-item is not reported " +
+	"only because Command emits no opacity utility anywhere."
+
+func comboboxItemDisabledFallbackExemptions() []layerCheckExemption {
+	const selector = ":where([data-gsxui-slot-combobox-item])[data-disabled]"
+	out := make([]layerCheckExemption, 0, 2)
+	for _, style := range []string{"maia", "nova"} {
+		out = append(out, layerCheckExemption{
+			key: exemptionKey{
+				file:      "assets/css/styles/default/combobox.css",
+				style:     style,
+				selector:  selector,
+				contested: "opacity-50",
+			},
+			reason: comboboxItemDisabledFallbackReason,
+		})
+	}
+	return out
+}
 
 // calendarCaptionVisuallyHiddenReason is the decision behind every entry
 // calendarCaptionVisuallyHiddenExemptions lists.

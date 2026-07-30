@@ -4,9 +4,10 @@ import "github.com/gsxhq/gsxui/internal/recipe"
 
 // NavigationMenu owns its own dedicated stylesheet
 // (assets/css/styles/default/navigation-menu.css) except for the discrete
-// popover-transition block it shares with DropdownMenu/ContextMenu/Menubar/
-// the not-yet-migrated Combobox in menu-popover-transition.css. Every marked
-// element has real CSS, so every one is declared here.
+// popover-transition block it shared with DropdownMenu/ContextMenu/Menubar/
+// Combobox in menu-popover-transition.css — a file Combobox's own migration
+// deleted, being its last unmigrated selector. Every marked element has real
+// CSS, so every one is declared here.
 var NavigationMenu = recipe.Shape{
 	Component: "navigation-menu",
 	Slots: []recipe.Slot{

@@ -3,11 +3,12 @@ package shapes
 import "github.com/gsxhq/gsxui/internal/recipe"
 
 // DropdownMenu shares assets/css/styles/default/menu.css with ContextMenu and
-// Menubar (33 rules split three ways) and shares
+// Menubar (33 rules split three ways) and shared the now-deleted
 // assets/css/styles/default/menu-popover-transition.css's discrete-transition
-// block with ContextMenu, Menubar, NavigationMenu AND the not-yet-migrated
-// Combobox — this shape only claims the slots menu.css/menu-popover-
-// transition.css actually style. DropdownMenuTrigger, DropdownMenuGroup and
+// block with ContextMenu, Menubar, NavigationMenu AND Combobox, which was that
+// file's last unmigrated selector and has since migrated too (the file is
+// gone; see registry/styles/nova/combobox.css) — this shape only claims the
+// slots menu.css/menu-popover-transition.css actually styled. DropdownMenuTrigger, DropdownMenuGroup and
 // DropdownMenuRadioGroup carry no class at all in either source CSS file
 // (callers style their own trigger button; the two group wrappers are pure
 // a11y markup) so they are deliberately NOT declared here — same "no rule,

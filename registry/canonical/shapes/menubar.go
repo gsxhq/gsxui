@@ -3,9 +3,10 @@ package shapes
 import "github.com/gsxhq/gsxui/internal/recipe"
 
 // Menubar shares assets/css/styles/default/menu.css with DropdownMenu and
-// ContextMenu, and assets/css/styles/default/menu-popover-transition.css with
-// DropdownMenu, ContextMenu, NavigationMenu AND the not-yet-migrated
-// Combobox — see DropdownMenu's own shape file for the split rationale.
+// ContextMenu, and shared the now-deleted
+// assets/css/styles/default/menu-popover-transition.css with DropdownMenu,
+// ContextMenu, NavigationMenu AND Combobox, whose own migration deleted that
+// file — see DropdownMenu's own shape file for the split rationale.
 // MenubarGroup and MenubarRadioGroup carry no class in either source CSS
 // file (pure a11y markup, same call as DropdownMenuGroup/
 // DropdownMenuRadioGroup) and are deliberately not declared here. Unlike

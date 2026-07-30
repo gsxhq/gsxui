@@ -1,100 +1,43 @@
 @layer components {
-  /* Combobox */
-  :where([data-gsxui-slot-combobox]) {
-    display: contents;
-  }
-  /* w-auto moved to ui/combobox.gsx as a literal class on the <InputGroup>
-     call (InputGroup migration fallout) — upstream's own cn("w-auto",
-     className) form. As a marker-keyed @layer components rule it could no
-     longer beat InputGroup's own w-full utility, and promoting it to
-     @layer utilities overshot and beat the CALLER's w-[220px] as well
-     (make sweep-compare caught that: 220px -> 1216px on three fixtures). */
-  :where([data-gsxui-slot-combobox-trigger]) svg:not([class*="size-"]) {
-    @apply size-4;
-  }
-  :where([data-gsxui-slot-combobox-trigger-icon]) {
-    @apply pointer-events-none size-4 text-muted-foreground;
-  }
-  :where([data-gsxui-slot-input-group]):has(
-      [data-gsxui-slot-combobox-clear]
-    )
-    :where([data-gsxui-slot-combobox-trigger]) {
-    display: none;
-  }
-  :where([data-gsxui-slot-combobox-clear]) > svg {
-    @apply pointer-events-none;
-  }
-  :where([data-gsxui-slot-combobox-content]) {
-    @apply relative z-50 max-h-72 min-w-36 origin-top-left overflow-hidden rounded-lg bg-popover text-popover-foreground shadow-md ring-1 ring-foreground/10;
-  }
-  /* h-8/border-input/30/bg-input/30 are promoted to
-     assets/css/styles/default.css's @layer utilities block (InputGroup
-     migration fallout): each contests a property InputGroup's own recipe now
-     emits as a real utility on this element (h-8, border-input, and dark's
-     bg-input/30). m-1/mb-0/shadow-none contest nothing InputGroup sets and
-     stay HERE — promoting the uncontested half as well is exactly what went
-     wrong for FieldLabel in an earlier wave, where it changed which rule won
-     against the consumer's own layout rules. */
-  :where([data-gsxui-slot-combobox-content])
-    > :where([data-gsxui-slot-input-group]) {
-    @apply m-1 mb-0 shadow-none;
-  }
-  :where([data-gsxui-slot-combobox-list]) {
-    @apply max-h-[calc(--spacing(72)---spacing(9))] scroll-py-1 overflow-y-auto p-1;
-    scrollbar-width: none;
-  }
-  :where([data-gsxui-slot-combobox-list])::-webkit-scrollbar {
-    display: none;
-  }
-  :where([data-gsxui-slot-combobox-list])[data-empty] {
-    @apply p-0;
-  }
-  :where([data-gsxui-slot-combobox-item]) {
-    @apply relative flex w-full cursor-default items-center gap-2 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none;
-  }
-  :where([data-gsxui-slot-combobox-item])[data-highlighted="true"] {
-    @apply bg-accent text-accent-foreground;
-  }
-  :where([data-gsxui-slot-combobox-item])[data-disabled] {
-    @apply pointer-events-none opacity-50;
-  }
-  :where([data-gsxui-slot-combobox-item]) svg {
-    @apply pointer-events-none shrink-0;
-  }
-  :where([data-gsxui-slot-combobox-item])
-    svg:not([class*="size-"]) {
-    @apply size-4;
-  }
-  :where([data-gsxui-slot-combobox-item-indicator]) {
-    @apply pointer-events-none absolute right-2 hidden size-4 items-center justify-center;
-  }
-  :where([data-gsxui-slot-combobox-item][data-state="checked"])
-    > :where([data-gsxui-slot-combobox-item-indicator]) {
-    @apply flex;
-  }
-  :where([data-gsxui-slot-combobox-item-indicator]) > svg {
-    @apply size-4;
-  }
-  :where([data-gsxui-slot-combobox-label]) {
-    @apply px-2 py-1.5 text-xs text-muted-foreground;
-  }
-  :where([data-gsxui-slot-combobox-empty]) {
-    @apply hidden w-full justify-center py-2 text-center text-sm text-muted-foreground;
-  }
-  :where([data-gsxui-slot-combobox-content])[data-empty]
-    :where([data-gsxui-slot-combobox-empty]) {
-    @apply flex;
-  }
-  :where([data-gsxui-slot-combobox-separator]) {
-    @apply -mx-1 my-1 h-px bg-border;
-  }
-  @media (pointer: coarse) {
-    :where([data-gsxui-slot-combobox-label]) {
-      @apply px-3 py-2 text-sm;
-    }
-    :where([data-gsxui-slot-combobox-item-indicator]) > svg {
-      @apply size-5;
-    }
-  }
+  /* Combobox migrated to the slot axis (registry/styles/{nova,maia}/
+     combobox.css) EXCEPT this one declaration, which must stay here as
+     plain CSS. Its caller-overridability depends on the CSS LAYER boundary
+     — this rule lives in @layer components, a caller's plain utility class
+     lives in @layer utilities, and @layer utilities always wins regardless
+     of specificity. That guarantee only exists pre-resolution: migrated
+     onto combobox-item's recipe it would resolve to a literal
+     `data-disabled:opacity-50` utility class Tailwind scans straight out of
+     the generated ui/combobox.gsx — no longer inside an explicit @layer
+     components boundary at consumption time — and would then compete on
+     ordinary specificity at (0,2,0), permanently beating a caller's own
+     `opacity-*`. See
+     docs/superpowers/specs/2026-07-29-slot-axis-and-component-migration-design.md
+     section 10b and assets/css/styles/default/{command,menu}.css for the
+     identical prior fix.
 
+     data-disabled is stamped by the CALLER through attrs — ComboboxItem
+     declares no `disabled` param at all — not by combobox.js.
+     data-highlighted, data-state and data-empty, by contrast, ARE
+     combobox.js's own runtime stamps and migrated onto the recipe.
+
+     The `pointer-events-none` half of this same rule IS migrated (baked
+     onto .gsxui-recipe-combobox-item): no caller should be able to
+     re-enable pointer interaction on a row they themselves marked
+     disabled — only the purely presentational opacity needed to stay
+     caller-overridable.
+
+     stylegen --check-layers reports this rule as contested and it carries a
+     named exemption (internal/stylegen/layercheck.go's
+     comboboxItemDisabledFallbackReason): the contest is an artifact of that
+     gate comparing against Combobox's whole-COMPONENT utility union, whose
+     only opacity-* entries are combobox-content's popover-transition
+     opacity-0/opacity-100 — a different element entirely.
+
+     The old file's `combobox-content > input-group` rule is NOT here
+     either: its styled subject is InputGroup, so it moved to
+     assets/css/styles/default/input-group.css rather than onto Combobox's
+     recipe. */
+  :where([data-gsxui-slot-combobox-item])[data-disabled] {
+    @apply opacity-50;
+  }
 }

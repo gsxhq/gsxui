@@ -1,10 +1,11 @@
 /* Source: assets/css/styles/default/menu.css (shared with DropdownMenu and
    Menubar, 33 rules split three ways — this file carries ContextMenu's
-   share) and assets/css/styles/default/menu-popover-transition.css (shared
-   with DropdownMenu, Menubar, NavigationMenu and the not-yet-migrated
-   Combobox — this file carries ContextMenu's Content/SubContent share of
-   the discrete-transition block; Combobox's own selector stays behind,
-   untouched, in menu-popover-transition.css). Nova and Maia have not
+   share) and the now-deleted assets/css/styles/default/
+   menu-popover-transition.css (shared with DropdownMenu, Menubar,
+   NavigationMenu and Combobox — this file carries ContextMenu's
+   Content/SubContent share of the discrete-transition block; Combobox was
+   that file's last unmigrated selector and has since migrated too, so the
+   file no longer exists — see registry/styles/nova/combobox.css). Nova and Maia have not
    diverged on ContextMenu yet, so this file is byte-identical to
    registry/styles/maia/context-menu.css.
 

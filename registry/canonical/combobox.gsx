@@ -1,4 +1,4 @@
-package ui
+package canonical
 
 import (
 	"github.com/gsxhq/gsx"
@@ -91,7 +91,7 @@ import (
 // select's own entry rejects it: duration-150 is the popover family's
 // shared standard, supplied by the discrete-transition block below.
 component Combobox(name string, value string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-combobox class={ "contents" } { attrs... } data-gsxui-slot-combobox>
+	<div data-gsxui-combobox class={ combobox.Root() } { attrs... } data-gsxui-slot-combobox>
 		{ children }
 		{ if name != "" {
 			<input
@@ -158,12 +158,7 @@ component ComboboxInput(placeholder string, showTrigger bool, showClear bool, di
 			wrapperAttrs = gsx.Attrs{{Key: "class", Value: class}}
 		}
 	}}
-	<InputGroup
-		data-gsxui-combobox-input-group
-		class={ "w-auto" }
-		{ wrapperAttrs... }
-		data-gsxui-slot-combobox-input-group
-	>
+	<InputGroup data-gsxui-combobox-input-group class={ combobox.InputGroup() } { wrapperAttrs... } data-gsxui-slot-combobox-input-group>
 		<InputGroupInput
 			data-gsxui-combobox-input
 			type="text"
@@ -185,15 +180,10 @@ component ComboboxInput(placeholder string, showTrigger bool, showClear bool, di
 					variant="ghost"
 					data-gsxui-combobox-trigger
 					disabled={disabled}
-					class={
-						"[&_svg:not([class*='size-'])]:size-4 [[data-gsxui-slot-input-group]:has([data-gsxui-slot-combobox-clear])_&]:hidden"
-					}
+					class={ combobox.Trigger() }
 					data-gsxui-slot-combobox-trigger
 				>
-					<icon.ChevronDown
-						class={ "pointer-events-none size-4 text-muted-foreground" }
-						data-gsxui-slot-combobox-trigger-icon
-					/>
+					<icon.ChevronDown class={ combobox.TriggerIcon() } data-gsxui-slot-combobox-trigger-icon/>
 				</InputGroupButton>
 			} }
 			{ if showClear {
@@ -214,16 +204,11 @@ component ComboboxTrigger(attrs gsx.Attrs) {
 	<button
 		type="button"
 		data-gsxui-combobox-trigger
-		class={
-			"[&_svg:not([class*='size-'])]:size-4 [[data-gsxui-slot-input-group]:has([data-gsxui-slot-combobox-clear])_&]:hidden"
-		}
+		class={ combobox.Trigger() }
 		{ attrs... }
 		data-gsxui-slot-combobox-trigger
 	>
-		<icon.ChevronDown
-			class={ "pointer-events-none size-4 text-muted-foreground" }
-			data-gsxui-slot-combobox-trigger-icon
-		/>
+		<icon.ChevronDown class={ combobox.TriggerIcon() } data-gsxui-slot-combobox-trigger-icon/>
 	</button>
 }
 
@@ -251,7 +236,7 @@ component ComboboxClear(attrs gsx.Attrs) {
 		variant="ghost"
 		size="icon-xs"
 		data-gsxui-combobox-clear
-		class={ "[&>svg]:pointer-events-none" }
+		class={ combobox.Clear() }
 		{ attrs... }
 		data-gsxui-slot-combobox-clear
 	>
@@ -275,9 +260,7 @@ component ComboboxContent(children gsx.Node, attrs gsx.Attrs) {
 		popover="auto"
 		data-state="closed"
 		data-side="bottom"
-		class={
-			"relative z-50 max-h-72 min-w-36 origin-top-left overflow-hidden rounded-lg bg-popover text-popover-foreground shadow-md ring-1 ring-foreground/10 opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 starting:[&:popover-open]:data-[side=bottom]:-translate-y-2 starting:[&:popover-open]:data-[side=left]:translate-x-2 starting:[&:popover-open]:data-[side=right]:-translate-x-2 starting:[&:popover-open]:data-[side=top]:translate-y-2"
-		}
+		class={ combobox.Content() }
 		{ attrs... }
 		data-gsxui-slot-combobox-content
 	>
@@ -311,9 +294,7 @@ component ComboboxList(children gsx.Node, attrs gsx.Attrs) {
 		data-gsxui-combobox-list
 		role="listbox"
 		tabindex="-1"
-		class={
-			"max-h-[calc(--spacing(72)---spacing(9))] scroll-py-1 overflow-y-auto p-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden data-empty:p-0"
-		}
+		class={ combobox.List() }
 		{ attrs... }
 		data-gsxui-slot-combobox-list
 	>
@@ -344,20 +325,12 @@ component ComboboxItem(value string, selected bool, children gsx.Node, attrs gsx
 			data-state="unchecked"
 		} }
 		aria-selected={selected}
-		class={
-			"relative flex w-full cursor-default items-center gap-2 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none data-[highlighted=true]:bg-accent data-[highlighted=true]:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-[state=checked]:[&>[data-gsxui-slot-combobox-item-indicator]]:flex"
-		}
+		class={ combobox.Item() }
 		{ attrs... }
 		data-gsxui-slot-combobox-item
 	>
 		{ children }
-		<span
-			data-gsxui-combobox-item-indicator
-			class={
-				"pointer-events-none absolute right-2 hidden size-4 items-center justify-center [&>svg]:size-4 pointer-coarse:[&>svg]:size-5"
-			}
-			data-gsxui-slot-combobox-item-indicator
-		>
+		<span data-gsxui-combobox-item-indicator class={ combobox.ItemIndicator() } data-gsxui-slot-combobox-item-indicator>
 			<icon.Check/>
 		</span>
 	</div>
@@ -377,14 +350,7 @@ component ComboboxGroup(children gsx.Node, attrs gsx.Attrs) {
 // new (non-metric) addition nova's own CSS carries for this part — ported
 // verbatim, not a retarget.
 component ComboboxLabel(children gsx.Node, attrs gsx.Attrs) {
-	<div
-		data-gsxui-combobox-label
-		class={ "px-2 py-1.5 text-xs text-muted-foreground pointer-coarse:px-3 pointer-coarse:py-2 pointer-coarse:text-sm" }
-		{ attrs... }
-		data-gsxui-slot-combobox-label
-	>
-		{ children }
-	</div>
+	<div data-gsxui-combobox-label class={ combobox.Label() } { attrs... } data-gsxui-slot-combobox-label>{ children }</div>
 }
 
 // ComboboxEmpty is server-rendered hidden; combobox.js reveals it via the
@@ -392,26 +358,11 @@ component ComboboxLabel(children gsx.Node, attrs gsx.Attrs) {
 // zero visible items — see ComboboxContent's own doc comment for exactly
 // which element combobox.js stamps data-empty on.
 component ComboboxEmpty(children gsx.Node, attrs gsx.Attrs) {
-	<div
-		data-gsxui-combobox-empty
-		class={
-			"hidden w-full justify-center py-2 text-center text-sm text-muted-foreground [[data-gsxui-slot-combobox-content][data-empty]_&]:flex"
-		}
-		{ attrs... }
-		data-gsxui-slot-combobox-empty
-	>
-		{ children }
-	</div>
+	<div data-gsxui-combobox-empty class={ combobox.Empty() } { attrs... } data-gsxui-slot-combobox-empty>{ children }</div>
 }
 
 // ComboboxSeparator divides groups. aria-hidden, matching ## select's own
 // SelectSeparator (a decorative rule, not a role="separator").
 component ComboboxSeparator(attrs gsx.Attrs) {
-	<div
-		data-gsxui-combobox-separator
-		aria-hidden="true"
-		class={ "-mx-1 my-1 h-px bg-border" }
-		{ attrs... }
-		data-gsxui-slot-combobox-separator
-	></div>
+	<div data-gsxui-combobox-separator aria-hidden="true" class={ combobox.Separator() } { attrs... } data-gsxui-slot-combobox-separator></div>
 }

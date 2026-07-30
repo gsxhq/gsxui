@@ -56,4 +56,29 @@
     ) {
     @apply resize-none;
   }
+
+  /* Moved here verbatim from assets/css/styles/default/combobox.css when
+     Combobox migrated to the slot axis. The styled SUBJECT is InputGroup,
+     not any Combobox slot — Combobox's content is only ancestor context —
+     so this is InputGroup's rule keyed on a foreign marker, the "Calendar
+     stray" shape registry/canonical/shapes/card.go's migration named.
+     Attaching it to Combobox's recipe would paint a foreign component from
+     Combobox's own classes; deleting it with the rest of combobox.css would
+     unstyle the search input a Combobox popup can host.
+
+     This is only the UNCONTESTED half of the original rule: h-8,
+     border-input/30 and bg-input/30 each contest a property InputGroup's own
+     recipe emits as a real utility on this element, so they were promoted to
+     assets/css/styles/default.css's @layer utilities block when InputGroup
+     migrated and stay there. m-1/mb-0/shadow-none contest nothing InputGroup
+     sets, so they keep their :where() wrapping and (0,0,0) specificity here.
+
+     They do now sit EARLIER in the sheet than they did (this file is imported
+     before combobox.css was), which only matters against another (0,0,0) rule
+     setting margin or box-shadow on an input-group between here and the old
+     position — there is none. */
+  :where([data-gsxui-slot-combobox-content])
+    > :where([data-gsxui-slot-input-group]) {
+    @apply m-1 mb-0 shadow-none;
+  }
 }

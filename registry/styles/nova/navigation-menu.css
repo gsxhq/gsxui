@@ -1,9 +1,10 @@
 /* Source: assets/css/styles/default/navigation-menu.css (NavigationMenu's
    own dedicated file — no sharing with DropdownMenu/ContextMenu/Menubar)
-   plus its Content/Indicator share of
+   plus its Content/Indicator share of the now-deleted
    assets/css/styles/default/menu-popover-transition.css (shared with
-   DropdownMenu/ContextMenu/Menubar and the not-yet-migrated Combobox —
-   Combobox's own selector stays behind, untouched, in that file). Nova and
+   DropdownMenu/ContextMenu/Menubar and Combobox — Combobox was that file's
+   last unmigrated selector and has since migrated too, so the file no
+   longer exists; see registry/styles/nova/combobox.css). Nova and
    Maia have not diverged on NavigationMenu yet, so this file is
    byte-identical to registry/styles/maia/navigation-menu.css.
 

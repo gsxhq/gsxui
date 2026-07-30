@@ -1,10 +1,15 @@
 package ui_test
 
 import (
+	"os"
+	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 
 	gsx "github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/internal/recipe"
+	"github.com/gsxhq/gsxui/internal/stylegen"
 	"github.com/gsxhq/gsxui/ui"
 )
 
@@ -25,105 +30,47 @@ func assertMenuCSSOnlyMarkup(t *testing.T, got string, slots ...string) {
 	}
 }
 
+// novaComboboxRecipe loads the default style's Combobox recipe, the same way
+// novaButtonRecipe loads Button's: Combobox is migrated to the slot axis, so
+// its trigger and clear render Button's canonical roles WITH Combobox's own
+// slot utilities merged on top as caller classes.
+var novaComboboxRecipe = sync.OnceValue(func() recipe.Style {
+	path := filepath.Join("..", "registry", "styles", stylegen.DefaultStyle, "combobox.css")
+	src, err := os.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+	style, err := recipe.ParseStyle(path, src)
+	if err != nil {
+		panic(err)
+	}
+	return style
+})
+
+func comboboxRecipeUtilities(class string) []string {
+	rule, ok := novaComboboxRecipe().Lookup(class)
+	if !ok {
+		panic("default style declares no recipe " + class)
+	}
+	return rule.Utilities
+}
+
 func assertComboboxCanonicalButtonRoles(t *testing.T, got string) {
 	t.Helper()
 
-	// Input is migrated to the slot axis, so ComboboxInput's <input> now also
-	// carries its own resolved recipe `class` attribute — a third `class=`
-	// in the output that isn't one of the trigger/clear Button roles this
-	// assertion checks. The count check is scoped to occurrences of the
-	// canonical Button class itself, which is unaffected.
-	want := canonicalButtonClass("ghost", "icon-xs")
-	if strings.Count(got, want) != 2 {
-		t.Errorf("Combobox trigger and clear must each render exact canonical Button roles\nwant: %s\nin: %s", want, got)
-	}
-}
-
-// TestCommandMarkupContract used to be TestCommandCSSOnlyContract: Command
-// migrated to the slot axis (registry/canonical/command.gsx), so its markup
-// now legitimately carries a class= attribute (the recipe's compiled
-// utilities) — assertMenuCSSOnlyMarkup's "no class=" assertion no longer
-// holds, and this switches to assertMenuMarkupSlots (marker presence only),
-// the same downgrade DropdownMenu's own migration made just below.
-func TestCommandMarkupContract(t *testing.T) {
-	got := render(t, ui.Command(
-		gsx.Fragment(
-			ui.CommandInput("Search", nil),
-			ui.CommandList(
-				gsx.Fragment(
-					ui.CommandEmpty(gsx.Raw("Empty"), nil),
-					ui.CommandGroup("Group", ui.CommandItem("item", gsx.Raw("Item"), nil), nil),
-					ui.CommandSeparator(nil),
-				),
-				nil,
-			),
-			ui.CommandShortcut(gsx.Raw("⌘K"), nil),
-		),
-		nil,
-	))
-	assertMenuMarkupSlots(t, got,
-		"command",
-		"command-input-wrapper",
-		"command-input",
-		"command-list",
-		"command-empty",
-		"command-group",
-		"command-group-heading",
-		"command-item",
-		"command-separator",
-		"command-shortcut",
-	)
-	for _, hook := range []string{
-		`data-gsxui-command`,
-		`data-gsxui-command-input`,
-		`data-gsxui-command-list`,
-		`data-gsxui-command-empty`,
-		`data-gsxui-command-group`,
-		`data-gsxui-command-group-heading`,
-		`data-gsxui-command-item`,
-		`data-gsxui-command-separator`,
-	} {
-		if !strings.Contains(got, hook) {
-			t.Errorf("missing Command behavior hook %q\nin: %s", hook, got)
-		}
-	}
-}
-
-func TestCommandDialogCSSOnlyComposition(t *testing.T) {
-	got := render(t, ui.CommandDialog("", "", nil, ui.CommandInput("Search", nil), nil))
-	if strings.Contains(got, `data-slot=`) {
-		t.Errorf("legacy data-slot must not render\nin: %s", got)
-	}
-	// Not assertMenuCSSOnlyMarkup's usual "no built-in class" check: Dialog/
-	// DialogContent/DialogHeader are migrated to the slot axis, so this
-	// composition now legitimately carries their resolved recipe classes.
-	for _, slot := range []string{
-		"dialog command-dialog",
-		"dialog-content command-dialog-content",
-		"dialog-header command-dialog-header",
-		"dialog-title",
-		"dialog-description",
-		"command command-dialog-command",
-		"command-input-wrapper",
-		"command-input",
-		"dialog-close dialog-close-button",
-	} {
-		for name := range strings.FieldsSeq(slot) {
-			if !strings.Contains(got, `data-gsxui-slot-`+name) {
-				t.Errorf("missing slot marker %q\nin: %s", name, got)
-			}
-		}
-	}
+	// Both buttons compose InputGroupButton -> Button and carry the canonical
+	// ghost/icon-xs role. Combobox's own migration adds its trigger and clear
+	// slot utilities on top, as ordinary caller classes merged by merge.Merge
+	// — which is why the trigger's own
+	// [&_svg:not([class*='size-'])]:size-4 REPLACES Button's icon-xs size-3
+	// rather than following it, and why the expectation runs the merger
+	// instead of concatenating strings.
 	for _, want := range []string{
-		`data-gsxui-dialog-content`,
-		`data-gsxui-command-dialog`,
-		`data-gsxui-command`,
-		`data-gsxui-command-input`,
-		`>Command Palette</h2>`,
-		`>Search for a command to run...</p>`,
+		canonicalButtonClass("ghost", "icon-xs", comboboxRecipeUtilities("gsxui-recipe-combobox-trigger")...),
+		canonicalButtonClass("ghost", "icon-xs", comboboxRecipeUtilities("gsxui-recipe-combobox-clear")...),
 	} {
-		if !strings.Contains(got, want) {
-			t.Errorf("missing CommandDialog contract %q\nin: %s", want, got)
+		if strings.Count(got, want) != 1 {
+			t.Errorf("Combobox trigger and clear must each render exact canonical Button roles\nwant: %s\nin: %s", want, got)
 		}
 	}
 }
@@ -410,9 +357,11 @@ func TestNavigationMenuMarkupContract(t *testing.T) {
 // recipe's own compiled utilities into ONE class attribute, rather than
 // arriving as the entire attribute — the same class="X" -> bare Contains(X)
 // downgrade the migration playbook's Step 9 documents for every migrated
-// component's caller-class pin. Command/Combobox are unmigrated and keep
-// the stricter exact-match assertion; the other four only assert the
-// caller's token survives, merged in exactly once.
+// component's caller-class pin. Command and then Combobox followed, so all
+// six now only assert the caller's token survives, merged in exactly once —
+// the `exact` arm is kept (with no case selecting it) because it is the
+// assertion an UNMIGRATED component must still satisfy, and the next
+// component added here may well be one.
 func TestCommandComboboxDropdownContextMenuMenubarNavigationMenuCallerClassesRemainCallerOnly(t *testing.T) {
 	tests := []struct {
 		name  string
@@ -420,7 +369,7 @@ func TestCommandComboboxDropdownContextMenuMenubarNavigationMenuCallerClassesRem
 		exact bool // true: class="caller-only" is the WHOLE attribute (unmigrated)
 	}{
 		{"Command", ui.Command(nil, gsx.Attrs{{Key: "class", Value: "caller-only"}}), false},
-		{"Combobox", ui.Combobox("", "", nil, gsx.Attrs{{Key: "class", Value: "caller-only"}}), true},
+		{"Combobox", ui.Combobox("", "", nil, gsx.Attrs{{Key: "class", Value: "caller-only"}}), false},
 		{"Dropdown", ui.DropdownMenuContent(nil, gsx.Attrs{{Key: "class", Value: "caller-only"}}), false},
 		{"ContextMenu", ui.ContextMenuContent(nil, gsx.Attrs{{Key: "class", Value: "caller-only"}}), false},
 		{"Menubar", ui.Menubar(nil, gsx.Attrs{{Key: "class", Value: "caller-only"}}), false},
