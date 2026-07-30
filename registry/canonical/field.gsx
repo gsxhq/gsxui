@@ -1,4 +1,4 @@
-package ui
+package canonical
 
 import "github.com/gsxhq/gsx"
 
@@ -22,7 +22,7 @@ import "github.com/gsxhq/gsx"
 // errors-array-to-list plumbing.
 component FieldSet(children gsx.Node, attrs gsx.Attrs) {
 	<fieldset
-		class={ "flex flex-col gap-4" }
+		class={ field.Set() }
 		{ attrs... }
 		data-gsxui-slot-field-set
 	>
@@ -34,7 +34,10 @@ component FieldSet(children gsx.Node, attrs gsx.Attrs) {
 component FieldLegend(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<legend
 		data-variant={variant |> default("legend")}
-		class={ "mb-1.5 font-medium", switch variant { case "label": "text-sm" default: "text-base" } }
+		class={
+			field.Legend(),
+			field.LegendVariant(variant),
+		}
 		{ attrs... }
 		data-gsxui-slot-field-legend
 	>
@@ -44,7 +47,7 @@ component FieldLegend(variant string, children gsx.Node, attrs gsx.Attrs) {
 
 component FieldGroup(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "flex w-full flex-col gap-5 [&>[data-gsxui-slot-field-group]]:gap-4" }
+		class={ field.Group() }
 		{ attrs... }
 		data-gsxui-slot-field-group
 	>
@@ -59,15 +62,8 @@ component Field(orientation string, children gsx.Node, attrs gsx.Attrs) {
 		role="group"
 		data-orientation={orientation |> default("vertical")}
 		class={
-			"flex w-full gap-2 data-[invalid=true]:text-destructive",
-			switch orientation {
-			case "horizontal":
-				"flex-row items-center [&>[data-gsxui-slot-field-label]]:flex-auto has-[>[data-gsxui-slot-field-content]]:items-start has-[>[data-gsxui-slot-field-content]]:[&>:is([role=checkbox],[role=radio])]:mt-px"
-			case "responsive":
-				"flex-col [&>*]:w-full [&>[data-gsxui-slot-select-bridge]]:w-auto @min-[28rem]/field-group:flex-row @min-[28rem]/field-group:items-center @min-[28rem]/field-group:[&>*]:w-auto @min-[28rem]/field-group:[&>[data-gsxui-slot-field-label]]:flex-auto @min-[28rem]/field-group:has-[>[data-gsxui-slot-field-content]]:items-start @min-[28rem]/field-group:has-[>[data-gsxui-slot-field-content]]:[&>:is([role=checkbox],[role=radio])]:mt-px"
-			default:
-				"flex-col [&>*]:w-full [&>[data-gsxui-slot-select-bridge]]:w-auto"
-			}
+			field.Root(),
+			field.Orientation(orientation),
 		}
 		{ attrs... }
 		data-gsxui-slot-field
@@ -78,7 +74,7 @@ component Field(orientation string, children gsx.Node, attrs gsx.Attrs) {
 
 component FieldContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "flex flex-1 flex-col gap-0.5 leading-snug" }
+		class={ field.Content() }
 		{ attrs... }
 		data-gsxui-slot-field-content
 	>
@@ -90,9 +86,7 @@ component FieldContent(children gsx.Node, attrs gsx.Attrs) {
 // "label field-label".
 component FieldLabel(children gsx.Node, attrs gsx.Attrs) {
 	<Label
-		class={
-			"flex w-fit gap-2 leading-snug has-[>[data-gsxui-slot-field]]:w-full has-[>[data-gsxui-slot-field]]:flex-col has-[>[data-gsxui-slot-field]]:rounded-lg has-[>[data-gsxui-slot-field]]:border [&>[data-gsxui-slot-field]]:p-2.5 has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary/5 dark:has-[[data-state=checked]]:bg-primary/10"
-		}
+		class={ field.Label() }
 		{ attrs... }
 		data-gsxui-slot-field-label
 	>
@@ -104,7 +98,7 @@ component FieldLabel(children gsx.Node, attrs gsx.Attrs) {
 // independently from the composed FieldLabel.
 component FieldTitle(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "flex w-fit items-center gap-2 text-sm leading-snug font-medium" }
+		class={ field.Title() }
 		{ attrs... }
 		data-gsxui-slot-field-title
 	>
@@ -114,9 +108,7 @@ component FieldTitle(children gsx.Node, attrs gsx.Attrs) {
 
 component FieldDescription(children gsx.Node, attrs gsx.Attrs) {
 	<p
-		class={
-			"text-sm leading-normal font-normal text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary"
-		}
+		class={ field.Description() }
 		{ attrs... }
 		data-gsxui-slot-field-description
 	>
@@ -132,14 +124,14 @@ component FieldDescription(children gsx.Node, attrs gsx.Attrs) {
 component FieldSeparator(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-content={children != nil}
-		class={ "relative -my-2 h-5 text-sm [[data-gsxui-slot-field-group][data-variant=outline]_&]:-mb-2" }
+		class={ field.SeparatorWrapper() }
 		{ attrs... }
 		data-gsxui-slot-field-separator-wrapper
 	>
-		<Separator class={ "absolute inset-0 top-1/2" } data-gsxui-slot-field-separator/>
+		<Separator class={ field.Separator() } data-gsxui-slot-field-separator/>
 		{ if children != nil {
 			<span
-				class={ "relative mx-auto block w-fit bg-background px-2 text-muted-foreground" }
+				class={ field.SeparatorContent() }
 				data-gsxui-slot-field-separator-content
 			>
 				{ children }
@@ -153,7 +145,7 @@ component FieldSeparator(children gsx.Node, attrs gsx.Attrs) {
 // the file-level ADAPT comment above for the dropped errors prop).
 component FieldError(children gsx.Node, attrs gsx.Attrs) {
 	{ if children != nil {
-		<div role="alert" class={ "text-sm font-normal text-destructive" } { attrs... } data-gsxui-slot-field-error>
+		<div role="alert" class={ field.Error() } { attrs... } data-gsxui-slot-field-error>
 			{ children }
 		</div>
 	} }

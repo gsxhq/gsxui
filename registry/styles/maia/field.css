@@ -1,0 +1,147 @@
+/* Source: assets/css/styles/default/field.css.
+
+   Field is the most relational component in the catalogue, so the § 10b split
+   matters more here than anywhere else. The rule applied throughout:
+
+     A relational rule is RETAINED in @layer components when its styled subject
+     is the element carrying the recipe class (a same-element compound or an
+     ancestor-scoped descendant rule), because such a rule translates to a
+     two-or-more-class selector that would outrank a caller's plain utility
+     forever. It MIGRATES when it paints a DIFFERENT element than the one
+     carrying the class (`[&>x]:`, `[&_x]:`) — § 10b exempts those, they never
+     compete with a caller's utility on the same element. And it migrates
+     ANYWAY, retention notwithstanding, when retaining it would leave it dead:
+     if the slot's own recipe sets the same property group, a components-layer
+     rule can never win, so the whole group has to move together. Upstream
+     shadcn (registry/new-york-v4/ui/field.tsx) is the tiebreaker in that case,
+     and it ships every one of them on the class list.
+
+   What stayed behind is listed in assets/css/styles/default/field.css.
+
+   Two forms worth naming:
+
+     * The responsive orientation's `@container field-group (width >= 28rem)`
+       block becomes Tailwind's named container-query variant,
+       `@min-[28rem]/field-group:`. The container itself is still declared in
+       plain CSS (container-name/container-type have no utility form) in
+       assets/css/styles/default.css's @layer utilities escape hatch — Tailwind
+       does not need to own the container to query it by name.
+     * `> :is([role="checkbox"], [role="radio"])` survives a comma inside an
+       arbitrary variant: `[&>:is([role=checkbox],[role=radio])]:mt-px`.
+
+   Nova and Maia have not diverged on Field, so this file is byte-identical to
+   registry/styles/nova/field.css. Every arbitrary variant below was compiled
+   with this repo's Tailwind v4 CLI before use. */
+@layer components {
+  .gsxui-recipe-field-set {
+    @apply flex flex-col gap-4;
+  }
+
+  .gsxui-recipe-field-legend {
+    @apply mb-1.5 font-medium;
+  }
+
+  .gsxui-recipe-field-legend-variant-legend {
+    @apply text-base;
+  }
+
+  .gsxui-recipe-field-legend-variant-label {
+    @apply text-sm;
+  }
+
+  /* container-name/container-type stay in default.css's escape hatch: plain
+     CSS, no utility form. The nested-group gap is authored the way upstream
+     authors it — the OUTER group reaching down into an inner one, which makes
+     it a different-element variant rather than the ancestor-scoped form
+     default.css used. */
+  .gsxui-recipe-field-group {
+    @apply flex w-full flex-col gap-5;
+    @apply [&>[data-gsxui-slot-field-group]]:gap-4;
+  }
+
+  /* data-[invalid=true] is runtime state, not a dimension. It is here rather
+     than retained in @layer components (which § 10b would prefer, since it is
+     a same-element rule) because the layer gate rejects the retention: Field's
+     own utility set already includes text-destructive on the error slot, so a
+     components-layer text colour on any element Field renders is judged
+     losable. Upstream shadcn ships exactly this utility on the class list. */
+  .gsxui-recipe-field {
+    @apply flex w-full gap-2;
+    @apply data-[invalid=true]:text-destructive;
+  }
+
+  .gsxui-recipe-field-orientation-vertical {
+    @apply flex-col;
+    @apply [&>*]:w-full;
+    @apply [&>[data-gsxui-slot-select-bridge]]:w-auto;
+  }
+
+  .gsxui-recipe-field-orientation-horizontal {
+    @apply flex-row items-center;
+    @apply [&>[data-gsxui-slot-field-label]]:flex-auto;
+    @apply has-[>[data-gsxui-slot-field-content]]:items-start;
+    @apply has-[>[data-gsxui-slot-field-content]]:[&>:is([role=checkbox],[role=radio])]:mt-px;
+  }
+
+  .gsxui-recipe-field-orientation-responsive {
+    @apply flex-col;
+    @apply [&>*]:w-full;
+    @apply [&>[data-gsxui-slot-select-bridge]]:w-auto;
+    @apply @min-[28rem]/field-group:flex-row @min-[28rem]/field-group:items-center;
+    @apply @min-[28rem]/field-group:[&>*]:w-auto;
+    @apply @min-[28rem]/field-group:[&>[data-gsxui-slot-field-label]]:flex-auto;
+    @apply @min-[28rem]/field-group:has-[>[data-gsxui-slot-field-content]]:items-start;
+    @apply @min-[28rem]/field-group:has-[>[data-gsxui-slot-field-content]]:[&>:is([role=checkbox],[role=radio])]:mt-px;
+  }
+
+  .gsxui-recipe-field-content {
+    @apply flex flex-1 flex-col gap-0.5 leading-snug;
+  }
+
+  /* leading-snug is part of the base rule again. It had been promoted to
+     assets/css/styles/default.css's @layer utilities as Label's-migration
+     fallout, so it could outrank Label's own leading-none on the composed
+     element. FieldLabel now passes this whole class through the ordinary
+     caller-class merge onto <Label>, where tailwind-merge drops leading-none
+     outright, and the promotion is retired. */
+  .gsxui-recipe-field-label {
+    @apply flex w-fit gap-2 leading-snug;
+    @apply has-[>[data-gsxui-slot-field]]:w-full has-[>[data-gsxui-slot-field]]:flex-col has-[>[data-gsxui-slot-field]]:rounded-lg has-[>[data-gsxui-slot-field]]:border;
+    @apply [&>[data-gsxui-slot-field]]:p-2.5;
+    /* The checked-choice-card tint. Same story as the root's invalid tint:
+       § 10b would rather retain a same-element :has(), but the layer gate
+       rejects it — the separator-content slot's bg-background makes any
+       components-layer background on a Field-rendered element losable. And
+       again this is verbatim upstream (has-data-[state=checked]:border-primary
+       has-data-[state=checked]:bg-primary/5 dark:...bg-primary/10). */
+    @apply has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary/5;
+    @apply dark:has-[[data-state=checked]]:bg-primary/10;
+  }
+
+  .gsxui-recipe-field-title {
+    @apply flex w-fit items-center gap-2 text-sm leading-snug font-medium;
+  }
+
+  .gsxui-recipe-field-description {
+    @apply text-sm leading-normal font-normal text-muted-foreground;
+    @apply [&>a]:underline [&>a]:underline-offset-4;
+    @apply [&>a:hover]:text-primary;
+  }
+
+  .gsxui-recipe-field-separator-wrapper {
+    @apply relative -my-2 h-5 text-sm;
+    @apply [[data-gsxui-slot-field-group][data-variant=outline]_&]:-mb-2;
+  }
+
+  .gsxui-recipe-field-separator {
+    @apply absolute inset-0 top-1/2;
+  }
+
+  .gsxui-recipe-field-separator-content {
+    @apply relative mx-auto block w-fit bg-background px-2 text-muted-foreground;
+  }
+
+  .gsxui-recipe-field-error {
+    @apply text-sm font-normal text-destructive;
+  }
+}

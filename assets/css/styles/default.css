@@ -201,25 +201,24 @@
     );
   }
 
-  /* FieldLabel: Field composes its label onto <ui.Label>, so the rendered
-     element now carries Label's own recipe class alongside
-     data-gsxui-slot-field-label. Label's migration gave that class real
-     (0,1,0) specificity; this rule's leading-snug contests Label's own
-     leading-none, and a :where()-wrapped (0,0,0) selector here would lose
-     that fight regardless of source order. Unwrapped for the same reason as
-     Card header above — flex and gap-2 don't conflict with Label's own
-     utilities and could stay wrapped, but the whole declaration moved
-     together rather than splitting one property out. Field itself has not
-     migrated yet; this is fallout from Label's migration, not a Field
-     change. */
-  /* ONLY leading-snug is promoted. Label's migration gave its own class
-     (0,1,0) in @layer utilities, so leading-snug must outrank Label's
-     leading-none. The rest of this rule (flex, w-fit, gap-2) is NOT contested
-     by Label, and promoting it changed which rule won against Field's own
-     layout rules -- field-label went from full width to fit-content, caught by
-     the computed-style sweep. Keep the uncontested half where it was. */
-  [data-gsxui-slot-field-label] {
-    @apply leading-snug;
+  /* FieldLabel's leading-snug promotion has been RETIRED by Field's own
+     migration. It lived here so it could outrank Label's migrated
+     leading-none on the composed element; FieldLabel now passes Field's whole
+     field-label recipe class through the ordinary caller-class merge onto
+     <Label>, where tailwind-merge drops leading-none outright. See
+     registry/styles/{nova,maia}/field.css. */
+
+  /* FieldGroup's container declaration. container-name/container-type are
+     plain CSS with no Tailwind utility form, so a recipe stylesheet
+     (@apply-only) cannot carry them — the same escape-hatch case as Card's
+     own card-header container. The rest of FieldGroup's rule set moved to
+     registry/styles/{nova,maia}/field.css, including the responsive
+     orientation's @min-[28rem]/field-group: variants, which query this
+     container by name without needing to own it. Unwrapped to clear the
+     (0,1,0) specificity floor. */
+  [data-gsxui-slot-field-group] {
+    container-name: field-group;
+    container-type: inline-size;
   }
 
   /* ScrollArea: scrollbar-width/scrollbar-color (CSS Scrollbars Module

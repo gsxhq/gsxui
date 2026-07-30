@@ -1,16 +1,89 @@
 package ui_test
 
 import (
+	"html"
+	"os"
+	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 
 	gsx "github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/internal/recipe"
+	"github.com/gsxhq/gsxui/internal/stylegen"
+	"github.com/gsxhq/gsxui/merge"
 	"github.com/gsxhq/gsxui/ui"
 )
 
+// novaFieldRecipe loads the default style's Field recipe once — same pattern as
+// novaSeparatorRecipe in separator_test.go.
+var novaFieldRecipe = sync.OnceValue(func() recipe.Style {
+	path := filepath.Join("..", "registry", "styles", stylegen.DefaultStyle, "field.css")
+	src, err := os.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+	style, err := recipe.ParseStyle(path, src)
+	if err != nil {
+		panic(err)
+	}
+	return style
+})
+
+func fieldRecipeUtilities(class string) []string {
+	rule, ok := novaFieldRecipe().Lookup(class)
+	if !ok {
+		panic("default style declares no recipe " + class)
+	}
+	return rule.Utilities
+}
+
+// fieldRecipeClasses is the utility list one Field slot contributes: its base
+// rule, then any dimension-value rules, in accessor-call order.
+func fieldRecipeClasses(slot string, extra ...string) []string {
+	base := "gsxui-recipe-field"
+	if slot != "" {
+		base += "-" + slot
+	}
+	classes := append([]string(nil), fieldRecipeUtilities(base)...)
+	for _, value := range extra {
+		classes = append(classes, fieldRecipeUtilities(base+"-"+value)...)
+	}
+	return classes
+}
+
+// canonicalFieldClass is the class attribute one Field slot renders, plus any
+// caller classes, merged the way gsx merges class values at runtime.
+func canonicalFieldClass(slot string, extra []string, caller ...string) string {
+	classes := append(fieldRecipeClasses(slot, extra...), caller...)
+	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
+}
+
+// canonicalFieldLabelClass is what FieldLabel renders: ui.Label's own recipe
+// utilities with Field's field-label slot merged in after them as an ordinary
+// caller class. tailwind-merge is what resolves leading-snug against Label's
+// leading-none here — the reason the old @layer utilities promotion in
+// assets/css/styles/default.css could be retired.
+func canonicalFieldLabelClass(caller ...string) string {
+	classes := append([]string(nil), labelRecipeUtilities("gsxui-recipe-label")...)
+	classes = append(classes, fieldRecipeClasses("label")...)
+	classes = append(classes, caller...)
+	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
+}
+
+// canonicalFieldSeparatorClass is what the <Separator> inside FieldSeparator
+// renders: Separator's own horizontal recipe plus Field's field-separator slot.
+func canonicalFieldSeparatorClass(caller ...string) string {
+	classes := append([]string(nil), separatorRecipeUtilities("gsxui-recipe-separator")...)
+	classes = append(classes, separatorRecipeUtilities("gsxui-recipe-separator-orientation-horizontal")...)
+	classes = append(classes, fieldRecipeClasses("separator")...)
+	classes = append(classes, caller...)
+	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
+}
+
 func TestFieldSetPinned(t *testing.T) {
 	got := render(t, ui.FieldSet(gsx.Raw("x"), nil))
-	want := `<fieldset data-gsxui-slot-field-set>x</fieldset>`
+	want := `<fieldset ` + canonicalFieldClass("set", nil) + ` data-gsxui-slot-field-set>x</fieldset>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -26,7 +99,7 @@ func TestFieldSetAttrsFallThrough(t *testing.T) {
 // TestFieldLegendDefaultPinned pins the zero-value ("legend") variant.
 func TestFieldLegendDefaultPinned(t *testing.T) {
 	got := render(t, ui.FieldLegend("", gsx.Raw("x"), nil))
-	want := `<legend data-variant="legend" data-gsxui-slot-field-legend>x</legend>`
+	want := `<legend data-variant="legend" ` + canonicalFieldClass("legend", []string{"variant-legend"}) + ` data-gsxui-slot-field-legend>x</legend>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -48,7 +121,7 @@ func TestFieldLegendAttrsFallThrough(t *testing.T) {
 
 func TestFieldGroupPinned(t *testing.T) {
 	got := render(t, ui.FieldGroup(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot-field-group>x</div>`
+	want := `<div ` + canonicalFieldClass("group", nil) + ` data-gsxui-slot-field-group>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -64,7 +137,7 @@ func TestFieldGroupAttrsFallThrough(t *testing.T) {
 // TestFieldDefaultPinned pins the zero-value ("vertical") orientation.
 func TestFieldDefaultPinned(t *testing.T) {
 	got := render(t, ui.Field("", gsx.Raw("x"), nil))
-	want := `<div role="group" data-orientation="vertical" data-gsxui-slot-field>x</div>`
+	want := `<div role="group" data-orientation="vertical" ` + canonicalFieldClass("", []string{"orientation-vertical"}) + ` data-gsxui-slot-field>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -73,7 +146,7 @@ func TestFieldDefaultPinned(t *testing.T) {
 // TestFieldHorizontalPinned proves data-orientation remains load-bearing.
 func TestFieldHorizontalPinned(t *testing.T) {
 	got := render(t, ui.Field("horizontal", gsx.Raw("x"), nil))
-	want := `<div role="group" data-orientation="horizontal" data-gsxui-slot-field>x</div>`
+	want := `<div role="group" data-orientation="horizontal" ` + canonicalFieldClass("", []string{"orientation-horizontal"}) + ` data-gsxui-slot-field>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -81,7 +154,7 @@ func TestFieldHorizontalPinned(t *testing.T) {
 
 func TestFieldResponsivePinned(t *testing.T) {
 	got := render(t, ui.Field("responsive", gsx.Raw("x"), nil))
-	want := `<div role="group" data-orientation="responsive" data-gsxui-slot-field>x</div>`
+	want := `<div role="group" data-orientation="responsive" ` + canonicalFieldClass("", []string{"orientation-responsive"}) + ` data-gsxui-slot-field>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -96,14 +169,19 @@ func TestFieldAttrsFallThrough(t *testing.T) {
 
 func TestFieldCallerClassMerges(t *testing.T) {
 	got := render(t, ui.Field("", nil, gsx.Attrs{{Key: "class", Value: "gap-8"}}))
-	if strings.Count(got, `class="gap-8"`) != 1 {
+	if strings.Count(got, "gap-8") != 1 || strings.Count(got, `class=`) != 1 {
 		t.Errorf("caller class must be forwarded exactly once\nin: %s", got)
+	}
+	// gap-8 displaces the base rule's own gap-2 through tailwind-merge —
+	// plain-vs-plain, so the caller wins before the cascade is consulted.
+	if want := canonicalFieldClass("", []string{"orientation-vertical"}, "gap-8"); !strings.Contains(got, want) {
+		t.Errorf("caller class not merged after the recipe's own\nwant: %s\nin: %s", want, got)
 	}
 }
 
 func TestFieldContentPinned(t *testing.T) {
 	got := render(t, ui.FieldContent(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot-field-content>x</div>`
+	want := `<div ` + canonicalFieldClass("content", nil) + ` data-gsxui-slot-field-content>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -119,7 +197,7 @@ func TestFieldContentAttrsFallThrough(t *testing.T) {
 // TestFieldLabelPinned proves FieldLabel composes the Label token.
 func TestFieldLabelPinned(t *testing.T) {
 	got := render(t, ui.FieldLabel(gsx.Raw("x"), nil))
-	want := `<label ` + canonicalLabelClass() + ` data-gsxui-slot-field-label data-gsxui-slot-label>x</label>`
+	want := `<label ` + canonicalFieldLabelClass() + ` data-gsxui-slot-field-label data-gsxui-slot-label>x</label>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -135,7 +213,7 @@ func TestFieldLabelAttrsFallThrough(t *testing.T) {
 // FieldTitle has its own styling token.
 func TestFieldTitlePinned(t *testing.T) {
 	got := render(t, ui.FieldTitle(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-slot-field-title>x</div>`
+	want := `<div ` + canonicalFieldClass("title", nil) + ` data-gsxui-slot-field-title>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -150,7 +228,7 @@ func TestFieldTitleAttrsFallThrough(t *testing.T) {
 
 func TestFieldDescriptionPinned(t *testing.T) {
 	got := render(t, ui.FieldDescription(gsx.Raw("x"), nil))
-	want := `<p data-gsxui-slot-field-description>x</p>`
+	want := `<p ` + canonicalFieldClass("description", nil) + ` data-gsxui-slot-field-description>x</p>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -167,7 +245,7 @@ func TestFieldDescriptionAttrsFallThrough(t *testing.T) {
 // Separator token.
 func TestFieldSeparatorNoChildrenPinned(t *testing.T) {
 	got := render(t, ui.FieldSeparator(nil, nil))
-	want := `<div data-gsxui-slot-field-separator-wrapper><div role="none" data-orientation="horizontal" ` + canonicalSeparatorClass("horizontal") + ` data-gsxui-slot-field-separator data-gsxui-slot-separator></div></div>`
+	want := `<div ` + canonicalFieldClass("separator-wrapper", nil) + ` data-gsxui-slot-field-separator-wrapper><div role="none" data-orientation="horizontal" ` + canonicalFieldSeparatorClass() + ` data-gsxui-slot-field-separator data-gsxui-slot-separator></div></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -175,7 +253,7 @@ func TestFieldSeparatorNoChildrenPinned(t *testing.T) {
 
 func TestFieldSeparatorWithChildrenPinned(t *testing.T) {
 	got := render(t, ui.FieldSeparator(gsx.Raw("Or"), nil))
-	want := `<div data-content data-gsxui-slot-field-separator-wrapper><div role="none" data-orientation="horizontal" ` + canonicalSeparatorClass("horizontal") + ` data-gsxui-slot-field-separator data-gsxui-slot-separator></div><span data-gsxui-slot-field-separator-content>Or</span></div>`
+	want := `<div data-content ` + canonicalFieldClass("separator-wrapper", nil) + ` data-gsxui-slot-field-separator-wrapper><div role="none" data-orientation="horizontal" ` + canonicalFieldSeparatorClass() + ` data-gsxui-slot-field-separator data-gsxui-slot-separator></div><span ` + canonicalFieldClass("separator-content", nil) + ` data-gsxui-slot-field-separator-content>Or</span></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -200,7 +278,7 @@ func TestFieldErrorNilRendersNothing(t *testing.T) {
 
 func TestFieldErrorPinned(t *testing.T) {
 	got := render(t, ui.FieldError(gsx.Raw("This field is required."), nil))
-	want := `<div role="alert" data-gsxui-slot-field-error>This field is required.</div>`
+	want := `<div role="alert" ` + canonicalFieldClass("error", nil) + ` data-gsxui-slot-field-error>This field is required.</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

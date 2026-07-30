@@ -76,18 +76,19 @@ func TestFormControlsExposeCSSOnlySlots(t *testing.T) {
 					t.Errorf("InputGroupButton lost exact canonical Button roles\nin: %s", got)
 				}
 			case "FieldLabel":
-				// FieldLabel composes ui.Label directly (see field.gsx), and
-				// Label is migrated onto the slot axis — it renders its own
-				// canonical class the same way Button does, so FieldLabel gets
-				// the same carve-out InputGroupButton gets for composing Button.
-				if !strings.Contains(got, canonicalLabelClass()) {
+				// FieldLabel composes ui.Label directly (see field.gsx). Both
+				// are migrated onto the slot axis now, so the rendered class is
+				// Label's own utilities with Field's field-label slot merged in
+				// after them — tailwind-merge resolves the leading-none /
+				// leading-snug conflict there rather than in the cascade.
+				if !strings.Contains(got, canonicalFieldLabelClass()) {
 					t.Errorf("FieldLabel lost exact canonical Label utilities\nin: %s", got)
 				}
 			case "FieldSeparator":
 				// FieldSeparator composes ui.Separator directly (see
 				// field.gsx), and Separator is migrated onto the slot axis —
 				// same carve-out as FieldLabel/InputGroupButton above.
-				if !strings.Contains(got, canonicalSeparatorClass("horizontal")) {
+				if !strings.Contains(got, canonicalFieldSeparatorClass()) {
 					t.Errorf("FieldSeparator lost exact canonical Separator utilities\nin: %s", got)
 				}
 			default:
@@ -126,12 +127,12 @@ func TestFormControlCompositionTokenOrder(t *testing.T) {
 		{
 			name: "FieldLabel",
 			node: ui.FieldLabel(gsx.Raw("Email"), nil),
-			want: `<label ` + canonicalLabelClass() + ` data-gsxui-slot-field-label data-gsxui-slot-label>Email</label>`,
+			want: `<label ` + canonicalFieldLabelClass() + ` data-gsxui-slot-field-label data-gsxui-slot-label>Email</label>`,
 		},
 		{
 			name: "FieldSeparator",
 			node: ui.FieldSeparator(gsx.Raw("Or"), nil),
-			want: `<div data-content data-gsxui-slot-field-separator-wrapper><div role="none" data-orientation="horizontal" ` + canonicalSeparatorClass("horizontal") + ` data-gsxui-slot-field-separator data-gsxui-slot-separator></div><span data-gsxui-slot-field-separator-content>Or</span></div>`,
+			want: `<div data-content ` + canonicalFieldClass("separator-wrapper", nil) + ` data-gsxui-slot-field-separator-wrapper><div role="none" data-orientation="horizontal" ` + canonicalFieldSeparatorClass() + ` data-gsxui-slot-field-separator data-gsxui-slot-separator></div><span ` + canonicalFieldClass("separator-content", nil) + ` data-gsxui-slot-field-separator-content>Or</span></div>`,
 		},
 		{
 			// ToggleGroupItem is now migrated too (composing Toggle's own

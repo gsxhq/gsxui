@@ -100,6 +100,25 @@ component StyleContractFixture() {
 		    :has(> [data-gsxui-slot-button-group]) { gap-2 } rule stays in
 		    @layer components precisely so gap-8 (in @layer utilities) wins
 		    the layer contest; see assets/css/styles/default/button-group.css. */}
+		{/* Field § 10b probes. The nested FieldGroup pins the migrated
+		    outer-reaching gap-4; the disabled title pins that the RETAINED
+		    opacity rule still loses to a caller's own opacity utility; the
+		    legend + description pair pins the retained margin-top group. */}
+		<ui.FieldGroup data-style-contract="field-group-outer">
+			<ui.FieldGroup data-style-contract="field-group-nested">
+				<ui.Field>
+					<ui.FieldLabel>Nested</ui.FieldLabel>
+				</ui.Field>
+			</ui.FieldGroup>
+		</ui.FieldGroup>
+		<ui.Field data-disabled="true">
+			<ui.FieldTitle class="opacity-100" data-style-contract="field-title-disabled-caller">Title</ui.FieldTitle>
+			<ui.FieldTitle data-style-contract="field-title-disabled">Title</ui.FieldTitle>
+		</ui.Field>
+		<ui.FieldSet>
+			<ui.FieldLegend variant="legend">Legend</ui.FieldLegend>
+			<ui.FieldDescription data-style-contract="field-description-after-legend">Description</ui.FieldDescription>
+		</ui.FieldSet>
 		{/* Item's retained media-offset rule (§ 10b): an item that contains a
 		    description pushes its media to self-start. The second media passes
 		    self-center, which must WIN — that is the whole reason the rule

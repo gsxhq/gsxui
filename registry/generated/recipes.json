@@ -628,6 +628,75 @@
         }
       }
     },
+    "field": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {
+            "orientation": {
+              "default": "vertical",
+              "values": [
+                "vertical",
+                "horizontal",
+                "responsive"
+              ]
+            }
+          }
+        },
+        "content": {
+          "base": true,
+          "dimensions": {}
+        },
+        "description": {
+          "base": true,
+          "dimensions": {}
+        },
+        "error": {
+          "base": true,
+          "dimensions": {}
+        },
+        "group": {
+          "base": true,
+          "dimensions": {}
+        },
+        "label": {
+          "base": true,
+          "dimensions": {}
+        },
+        "legend": {
+          "base": true,
+          "dimensions": {
+            "variant": {
+              "default": "legend",
+              "values": [
+                "legend",
+                "label"
+              ]
+            }
+          }
+        },
+        "separator": {
+          "base": true,
+          "dimensions": {}
+        },
+        "separator-content": {
+          "base": true,
+          "dimensions": {}
+        },
+        "separator-wrapper": {
+          "base": true,
+          "dimensions": {}
+        },
+        "set": {
+          "base": true,
+          "dimensions": {}
+        },
+        "title": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "hover-card": {
       "slots": {
         "": {
@@ -3043,6 +3112,168 @@
               "text-sm",
               "font-medium",
               "tracking-tight"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "field": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "w-full",
+              "gap-2",
+              "data-[invalid=true]:text-destructive"
+            ],
+            "dimensions": {
+              "orientation": {
+                "horizontal": [
+                  "flex-row",
+                  "items-center",
+                  "[\u0026\u003e[data-gsxui-slot-field-label]]:flex-auto",
+                  "has-[\u003e[data-gsxui-slot-field-content]]:items-start",
+                  "has-[\u003e[data-gsxui-slot-field-content]]:[\u0026\u003e:is([role=checkbox],[role=radio])]:mt-px"
+                ],
+                "responsive": [
+                  "flex-col",
+                  "[\u0026\u003e*]:w-full",
+                  "[\u0026\u003e[data-gsxui-slot-select-bridge]]:w-auto",
+                  "@min-[28rem]/field-group:flex-row",
+                  "@min-[28rem]/field-group:items-center",
+                  "@min-[28rem]/field-group:[\u0026\u003e*]:w-auto",
+                  "@min-[28rem]/field-group:[\u0026\u003e[data-gsxui-slot-field-label]]:flex-auto",
+                  "@min-[28rem]/field-group:has-[\u003e[data-gsxui-slot-field-content]]:items-start",
+                  "@min-[28rem]/field-group:has-[\u003e[data-gsxui-slot-field-content]]:[\u0026\u003e:is([role=checkbox],[role=radio])]:mt-px"
+                ],
+                "vertical": [
+                  "flex-col",
+                  "[\u0026\u003e*]:w-full",
+                  "[\u0026\u003e[data-gsxui-slot-select-bridge]]:w-auto"
+                ]
+              }
+            }
+          },
+          "content": {
+            "base": [
+              "flex",
+              "flex-1",
+              "flex-col",
+              "gap-0.5",
+              "leading-snug"
+            ],
+            "dimensions": {}
+          },
+          "description": {
+            "base": [
+              "text-sm",
+              "leading-normal",
+              "font-normal",
+              "text-muted-foreground",
+              "[\u0026\u003ea]:underline",
+              "[\u0026\u003ea]:underline-offset-4",
+              "[\u0026\u003ea:hover]:text-primary"
+            ],
+            "dimensions": {}
+          },
+          "error": {
+            "base": [
+              "text-sm",
+              "font-normal",
+              "text-destructive"
+            ],
+            "dimensions": {}
+          },
+          "group": {
+            "base": [
+              "flex",
+              "w-full",
+              "flex-col",
+              "gap-5",
+              "[\u0026\u003e[data-gsxui-slot-field-group]]:gap-4"
+            ],
+            "dimensions": {}
+          },
+          "label": {
+            "base": [
+              "flex",
+              "w-fit",
+              "gap-2",
+              "leading-snug",
+              "has-[\u003e[data-gsxui-slot-field]]:w-full",
+              "has-[\u003e[data-gsxui-slot-field]]:flex-col",
+              "has-[\u003e[data-gsxui-slot-field]]:rounded-lg",
+              "has-[\u003e[data-gsxui-slot-field]]:border",
+              "[\u0026\u003e[data-gsxui-slot-field]]:p-2.5",
+              "has-[[data-state=checked]]:border-primary",
+              "has-[[data-state=checked]]:bg-primary/5",
+              "dark:has-[[data-state=checked]]:bg-primary/10"
+            ],
+            "dimensions": {}
+          },
+          "legend": {
+            "base": [
+              "mb-1.5",
+              "font-medium"
+            ],
+            "dimensions": {
+              "variant": {
+                "label": [
+                  "text-sm"
+                ],
+                "legend": [
+                  "text-base"
+                ]
+              }
+            }
+          },
+          "separator": {
+            "base": [
+              "absolute",
+              "inset-0",
+              "top-1/2"
+            ],
+            "dimensions": {}
+          },
+          "separator-content": {
+            "base": [
+              "relative",
+              "mx-auto",
+              "block",
+              "w-fit",
+              "bg-background",
+              "px-2",
+              "text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "separator-wrapper": {
+            "base": [
+              "relative",
+              "-my-2",
+              "h-5",
+              "text-sm",
+              "[[data-gsxui-slot-field-group][data-variant=outline]_\u0026]:-mb-2"
+            ],
+            "dimensions": {}
+          },
+          "set": {
+            "base": [
+              "flex",
+              "flex-col",
+              "gap-4"
+            ],
+            "dimensions": {}
+          },
+          "title": {
+            "base": [
+              "flex",
+              "w-fit",
+              "items-center",
+              "gap-2",
+              "text-sm",
+              "leading-snug",
+              "font-medium"
             ],
             "dimensions": {}
           }
@@ -6691,6 +6922,168 @@
               "text-sm",
               "font-medium",
               "tracking-tight"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "field": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "w-full",
+              "gap-2",
+              "data-[invalid=true]:text-destructive"
+            ],
+            "dimensions": {
+              "orientation": {
+                "horizontal": [
+                  "flex-row",
+                  "items-center",
+                  "[\u0026\u003e[data-gsxui-slot-field-label]]:flex-auto",
+                  "has-[\u003e[data-gsxui-slot-field-content]]:items-start",
+                  "has-[\u003e[data-gsxui-slot-field-content]]:[\u0026\u003e:is([role=checkbox],[role=radio])]:mt-px"
+                ],
+                "responsive": [
+                  "flex-col",
+                  "[\u0026\u003e*]:w-full",
+                  "[\u0026\u003e[data-gsxui-slot-select-bridge]]:w-auto",
+                  "@min-[28rem]/field-group:flex-row",
+                  "@min-[28rem]/field-group:items-center",
+                  "@min-[28rem]/field-group:[\u0026\u003e*]:w-auto",
+                  "@min-[28rem]/field-group:[\u0026\u003e[data-gsxui-slot-field-label]]:flex-auto",
+                  "@min-[28rem]/field-group:has-[\u003e[data-gsxui-slot-field-content]]:items-start",
+                  "@min-[28rem]/field-group:has-[\u003e[data-gsxui-slot-field-content]]:[\u0026\u003e:is([role=checkbox],[role=radio])]:mt-px"
+                ],
+                "vertical": [
+                  "flex-col",
+                  "[\u0026\u003e*]:w-full",
+                  "[\u0026\u003e[data-gsxui-slot-select-bridge]]:w-auto"
+                ]
+              }
+            }
+          },
+          "content": {
+            "base": [
+              "flex",
+              "flex-1",
+              "flex-col",
+              "gap-0.5",
+              "leading-snug"
+            ],
+            "dimensions": {}
+          },
+          "description": {
+            "base": [
+              "text-sm",
+              "leading-normal",
+              "font-normal",
+              "text-muted-foreground",
+              "[\u0026\u003ea]:underline",
+              "[\u0026\u003ea]:underline-offset-4",
+              "[\u0026\u003ea:hover]:text-primary"
+            ],
+            "dimensions": {}
+          },
+          "error": {
+            "base": [
+              "text-sm",
+              "font-normal",
+              "text-destructive"
+            ],
+            "dimensions": {}
+          },
+          "group": {
+            "base": [
+              "flex",
+              "w-full",
+              "flex-col",
+              "gap-5",
+              "[\u0026\u003e[data-gsxui-slot-field-group]]:gap-4"
+            ],
+            "dimensions": {}
+          },
+          "label": {
+            "base": [
+              "flex",
+              "w-fit",
+              "gap-2",
+              "leading-snug",
+              "has-[\u003e[data-gsxui-slot-field]]:w-full",
+              "has-[\u003e[data-gsxui-slot-field]]:flex-col",
+              "has-[\u003e[data-gsxui-slot-field]]:rounded-lg",
+              "has-[\u003e[data-gsxui-slot-field]]:border",
+              "[\u0026\u003e[data-gsxui-slot-field]]:p-2.5",
+              "has-[[data-state=checked]]:border-primary",
+              "has-[[data-state=checked]]:bg-primary/5",
+              "dark:has-[[data-state=checked]]:bg-primary/10"
+            ],
+            "dimensions": {}
+          },
+          "legend": {
+            "base": [
+              "mb-1.5",
+              "font-medium"
+            ],
+            "dimensions": {
+              "variant": {
+                "label": [
+                  "text-sm"
+                ],
+                "legend": [
+                  "text-base"
+                ]
+              }
+            }
+          },
+          "separator": {
+            "base": [
+              "absolute",
+              "inset-0",
+              "top-1/2"
+            ],
+            "dimensions": {}
+          },
+          "separator-content": {
+            "base": [
+              "relative",
+              "mx-auto",
+              "block",
+              "w-fit",
+              "bg-background",
+              "px-2",
+              "text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "separator-wrapper": {
+            "base": [
+              "relative",
+              "-my-2",
+              "h-5",
+              "text-sm",
+              "[[data-gsxui-slot-field-group][data-variant=outline]_\u0026]:-mb-2"
+            ],
+            "dimensions": {}
+          },
+          "set": {
+            "base": [
+              "flex",
+              "flex-col",
+              "gap-4"
+            ],
+            "dimensions": {}
+          },
+          "title": {
+            "base": [
+              "flex",
+              "w-fit",
+              "items-center",
+              "gap-2",
+              "text-sm",
+              "leading-snug",
+              "font-medium"
             ],
             "dimensions": {}
           }

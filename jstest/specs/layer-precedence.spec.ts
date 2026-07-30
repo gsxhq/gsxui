@@ -1111,3 +1111,80 @@ test("ItemSeparator keeps its my-2 margin after migration", async ({ page }) => 
   expect(await separator.evaluate((n) => getComputedStyle(n).marginTop)).toBe("8px");
   expect(await separator.evaluate((n) => getComputedStyle(n).marginBottom)).toBe("8px");
 });
+
+// Field's migration (Wave 4c). Field is the most relational component in the
+// catalogue, so these pins cover both sides of the § 10b split.
+
+test("Field's responsive orientation still resolves its container query", async ({ page }) => {
+  await page.goto("/x/field/basic");
+  // The @container field-group (width >= 28rem) block became Tailwind's
+  // @min-[28rem]/field-group: variant on the responsive arm. The container
+  // itself is still declared in plain CSS in default.css's escape hatch — this
+  // pin is what proves Tailwind can query a container it does not own.
+  const field = page.locator('[data-gsxui-slot-field][data-orientation="responsive"]').first();
+  expect(await field.evaluate((n) => getComputedStyle(n).flexDirection)).toBe("row");
+  // flex-start, not center: this fixture's responsive field contains a
+  // FieldContent, so the container query's own
+  // has-[>[data-gsxui-slot-field-content]]:items-start arm wins over its
+  // items-center. Both live inside the same @min-[28rem]/field-group: block,
+  // so this reads the container query twice over.
+  expect(await field.evaluate((n) => getComputedStyle(n).alignItems)).toBe("flex-start");
+});
+
+test("Field's disabled dimming applies through the retained rule, and stays caller-overridable", async ({
+  page,
+}) => {
+  await page.goto("/f/style-contract");
+  const dimmed = page.locator('[data-style-contract="field-title-disabled"]');
+  const overridden = page.locator('[data-style-contract="field-title-disabled-caller"]');
+  expect(await dimmed.evaluate((n) => getComputedStyle(n).opacity)).toBe("0.5");
+  // opacity-100 is a plain (0,1,0) utility; it can only beat the ancestor-scoped
+  // rule while that rule stays in @layer components.
+  expect(await overridden.evaluate((n) => getComputedStyle(n).opacity)).toBe("1");
+});
+
+test("Field's invalid tint applies from the recipe", async ({ page }) => {
+  await page.goto("/x/field/invalid");
+  // data-[invalid=true]:text-destructive moved ONTO the recipe (the layer gate
+  // rejected retaining it — see assets/css/styles/default/field.css), so this
+  // pin is what catches the variant silently failing to compile.
+  const field = page.locator('[data-gsxui-slot-field][data-invalid="true"]').first();
+  expect(await field.evaluate((n) => getComputedStyle(n).color)).toBe("oklch(0.577 0.245 27.325)");
+});
+
+test("FieldLabel's leading-snug beats Label's own leading-none", async ({ page }) => {
+  await page.goto("/x/field/basic");
+  // Before Field migrated this needed an unwrapped @layer utilities promotion
+  // in default.css. It is now an ordinary tailwind-merge outcome on the
+  // composed <Label>; the promotion is retired.
+  const label = page.locator("[data-gsxui-slot-field-label]").first();
+  const fontSize = await label.evaluate((n) => parseFloat(getComputedStyle(n).fontSize));
+  const lineHeight = await label.evaluate((n) => parseFloat(getComputedStyle(n).lineHeight));
+  // leading-snug is 1.375em, leading-none is 1em.
+  expect(lineHeight / fontSize).toBeCloseTo(1.375, 3);
+});
+
+test("FieldSeparator keeps its outline-group bottom margin", async ({ page }) => {
+  await page.goto("/x/field/basic");
+  // group-data-[variant=outline] reaching down onto the wrapper, translated as
+  // an ancestor-scoped arbitrary variant on the wrapper's own recipe class.
+  const wrapper = page.locator("[data-gsxui-slot-field-separator-wrapper]").first();
+  expect(await wrapper.evaluate((n) => getComputedStyle(n).marginBottom)).toBe("-8px");
+});
+
+test("A nested FieldGroup tightens its gap", async ({ page }) => {
+  await page.goto("/f/style-contract");
+  const outer = page.locator('[data-style-contract="field-group-outer"]');
+  const nested = page.locator('[data-style-contract="field-group-nested"]');
+  expect(await outer.evaluate((n) => getComputedStyle(n).rowGap)).toBe("20px");
+  expect(await nested.evaluate((n) => getComputedStyle(n).rowGap)).toBe("16px");
+});
+
+test("FieldDescription's retained margin-top group survives", async ({ page }) => {
+  await page.goto("/f/style-contract");
+  const description = page.locator('[data-style-contract="field-description-after-legend"]');
+  // The legend-sibling rule and the :last-child rule are ONE property group and
+  // both stayed in @layer components; the sibling rule outranks :last-child
+  // inside that layer.
+  expect(await description.evaluate((n) => getComputedStyle(n).marginTop)).toBe("-6px");
+});
