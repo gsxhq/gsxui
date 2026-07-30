@@ -2,8 +2,43 @@
 
 package canonical
 
-// GSX GENERATION FAILED for separator.gsx. Fix the errors below and re-run gsx generate.
-//
-//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/accordion_recipe.go:5:2: error: could not import github.com/gsxhq/gsxui/registry/canonical/shapes (codegen: cannot determine active companion Go files in /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes: /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:197:1: expected operand, found '<<'; /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:209:2: missing ',' in composite literal; /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:209:12: missing ',' before newline in composite literal)
+import (
+	_gsxctx "context"
+	"github.com/gsxhq/gsx"
+	_gsxrt "github.com/gsxhq/gsx"
+	_gsxstd "github.com/gsxhq/gsx/std"
+	_gsxcm "github.com/gsxhq/gsxui/merge"
+	_gsxio "io"
+)
 
-var _ = GSX_GENERATION_FAILED__see_separator_gsx
+//line separator.gsx:5:1
+// Separator is the shadcn/ui Separator. orientation: "" (default,
+// "horizontal") | "vertical" — stamped onto data-orientation, and also
+// drives the slot axis's own orientation dimension below, resolved to
+// concrete utilities at generation time. Radix's decorative prop (its
+// default true) is not ported — see docs/jsx-parity.md.
+
+//line separator.gsx:10:1
+func Separator(orientation string, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line separator.gsx:11:2
+		_gsxgw.S("<div")
+		if !attrs.Has("role") {
+			_gsxgw.S(" role=\"none\"")
+		}
+		if !attrs.Has("data-orientation") {
+			_gsxgw.S(" data-orientation=\"")
+			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
+			_gsxgw.S("\"")
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(separator.Root()), _gsxrt.Class(separator.Orientation(orientation)), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-separator"})
+		_gsxgw.BoolAttr("data-gsxui-slot-separator", true)
+		_gsxgw.S("></div>")
+		return _gsxgw.Err()
+	})
+}

@@ -2,8 +2,72 @@
 
 package canonical
 
-// GSX GENERATION FAILED for collapsible.gsx. Fix the errors below and re-run gsx generate.
-//
-//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/accordion_recipe.go:5:2: error: could not import github.com/gsxhq/gsxui/registry/canonical/shapes (codegen: cannot determine active companion Go files in /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes: /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:197:1: expected operand, found '<<'; /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:209:2: missing ',' in composite literal; /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:209:12: missing ',' before newline in composite literal)
+import (
+	_gsxctx "context"
+	"github.com/gsxhq/gsx"
+	_gsxrt "github.com/gsxhq/gsx"
+	_gsxcm "github.com/gsxhq/gsxui/merge"
+	_gsxio "io"
+)
 
-var _ = GSX_GENERATION_FAILED__see_collapsible_gsx
+//line collapsible.gsx:5:1
+// Collapsible is a native ungrouped <details>/<summary> disclosure. Its open
+// parameter is the server-visible initial state; interaction remains native.
+
+//line collapsible.gsx:7:1
+func Collapsible(open bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line collapsible.gsx:8:2
+		_gsxgw.S("<details")
+		if !attrs.Has("open") {
+			_gsxgw.BoolAttr("open", bool(open))
+		}
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-collapsible"})
+		_gsxgw.BoolAttr("data-gsxui-slot-collapsible", true)
+		_gsxgw.S(">")
+//line collapsible.gsx:9:3
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</details>")
+		return _gsxgw.Err()
+	})
+}
+
+//line collapsible.gsx:13:1
+func CollapsibleTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line collapsible.gsx:14:2
+		_gsxgw.S("<summary class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(collapsible.Trigger()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-collapsible-trigger"})
+		_gsxgw.BoolAttr("data-gsxui-slot-collapsible-trigger", true)
+		_gsxgw.S(">")
+//line collapsible.gsx:15:3
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</summary>")
+		return _gsxgw.Err()
+	})
+}
+
+//line collapsible.gsx:19:1
+func CollapsibleContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line collapsible.gsx:20:2
+		_gsxgw.S("<div")
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-collapsible-content"})
+		_gsxgw.BoolAttr("data-gsxui-slot-collapsible-content", true)
+		_gsxgw.S(">")
+//line collapsible.gsx:21:3
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}

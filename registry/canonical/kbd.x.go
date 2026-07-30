@@ -2,8 +2,61 @@
 
 package canonical
 
-// GSX GENERATION FAILED for kbd.gsx. Fix the errors below and re-run gsx generate.
-//
-//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/accordion_recipe.go:5:2: error: could not import github.com/gsxhq/gsxui/registry/canonical/shapes (codegen: cannot determine active companion Go files in /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes: /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:197:1: expected operand, found '<<'; /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:209:2: missing ',' in composite literal; /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:209:12: missing ',' before newline in composite literal)
+import (
+	_gsxctx "context"
+	"github.com/gsxhq/gsx"
+	_gsxrt "github.com/gsxhq/gsx"
+	_gsxcm "github.com/gsxhq/gsxui/merge"
+	_gsxio "io"
+)
 
-var _ = GSX_GENERATION_FAILED__see_kbd_gsx
+//line kbd.gsx:5:1
+// Kbd and KbdGroup are the shadcn/ui Kbd. Straight port: both render onto
+// real <kbd> elements — browsers freely nest <kbd> inside <kbd>, which is
+// exactly how KbdGroup models a compound shortcut like "Ctrl Shift K" (a
+// KbdGroup of Kbds). The style pack uses the stable tooltip-content ancestor
+// token for the corresponding nested presentation.
+
+//line kbd.gsx:10:1
+func Kbd(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line kbd.gsx:11:2
+		_gsxgw.S("<kbd class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(kbd.Root()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-kbd"})
+		_gsxgw.BoolAttr("data-gsxui-slot-kbd", true)
+		_gsxgw.S(">")
+//line kbd.gsx:12:3
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</kbd>")
+		return _gsxgw.Err()
+	})
+}
+
+//line kbd.gsx:16:1
+// KbdGroup wraps multiple Kbds to render a compound shortcut. shadcn types
+// its props as React.ComponentProps<"div"> but the component itself renders
+// a <kbd> element (registry/new-york-v4/ui/kbd.tsx, verified) — ported
+// verbatim, tag included (see docs/jsx-parity.md).
+
+//line kbd.gsx:20:1
+func KbdGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line kbd.gsx:21:2
+		_gsxgw.S("<kbd class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(kbd.Group()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-kbd-group"})
+		_gsxgw.BoolAttr("data-gsxui-slot-kbd-group", true)
+		_gsxgw.S(">")
+//line kbd.gsx:22:3
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</kbd>")
+		return _gsxgw.Err()
+	})
+}

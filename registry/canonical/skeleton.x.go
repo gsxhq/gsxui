@@ -2,8 +2,30 @@
 
 package canonical
 
-// GSX GENERATION FAILED for skeleton.gsx. Fix the errors below and re-run gsx generate.
-//
-//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/accordion_recipe.go:5:2: error: could not import github.com/gsxhq/gsxui/registry/canonical/shapes (codegen: cannot determine active companion Go files in /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes: /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:197:1: expected operand, found '<<'; /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:209:2: missing ',' in composite literal; /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:209:12: missing ',' before newline in composite literal)
+import (
+	_gsxctx "context"
+	"github.com/gsxhq/gsx"
+	_gsxrt "github.com/gsxhq/gsx"
+	_gsxcm "github.com/gsxhq/gsxui/merge"
+	_gsxio "io"
+)
 
-var _ = GSX_GENERATION_FAILED__see_skeleton_gsx
+//line skeleton.gsx:5:1
+// Skeleton is the shadcn/ui Skeleton loading placeholder. Straight port; no
+// divergences.
+
+//line skeleton.gsx:7:1
+func Skeleton(attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line skeleton.gsx:8:2
+		_gsxgw.S("<div class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(skeleton.Root()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-skeleton"})
+		_gsxgw.BoolAttr("data-gsxui-slot-skeleton", true)
+		_gsxgw.S("></div>")
+		return _gsxgw.Err()
+	})
+}

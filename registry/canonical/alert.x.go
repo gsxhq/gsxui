@@ -2,8 +2,82 @@
 
 package canonical
 
-// GSX GENERATION FAILED for alert.gsx. Fix the errors below and re-run gsx generate.
-//
-//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/accordion_recipe.go:5:2: error: could not import github.com/gsxhq/gsxui/registry/canonical/shapes (codegen: cannot determine active companion Go files in /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes: /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:197:1: expected operand, found '<<'; /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:209:2: missing ',' in composite literal; /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:209:12: missing ',' before newline in composite literal)
+import (
+	_gsxctx "context"
+	"github.com/gsxhq/gsx"
+	_gsxrt "github.com/gsxhq/gsx"
+	_gsxstd "github.com/gsxhq/gsx/std"
+	_gsxcm "github.com/gsxhq/gsxui/merge"
+	_gsxio "io"
+)
 
-var _ = GSX_GENERATION_FAILED__see_alert_gsx
+//line alert.gsx:5:1
+// Alert and its parts are the shadcn/ui Alert. variant: "" (default) |
+// "destructive". Extra attributes fall through to the <div>; caller classes
+// merge (caller wins per property).
+
+//line alert.gsx:8:1
+func Alert(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line alert.gsx:9:2
+		_gsxgw.S("<div")
+		if !attrs.Has("role") {
+			_gsxgw.S(" role=\"alert\"")
+		}
+		if !attrs.Has("data-variant") {
+			_gsxgw.S(" data-variant=\"")
+			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
+			_gsxgw.S("\"")
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(alert.Root()), _gsxrt.Class(alert.Variant(variant)), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-alert"})
+		_gsxgw.BoolAttr("data-gsxui-slot-alert", true)
+		_gsxgw.S(">")
+//line alert.gsx:19:3
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}
+
+//line alert.gsx:23:1
+func AlertTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line alert.gsx:24:2
+		_gsxgw.S("<div class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(alert.Title()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-alert-title"})
+		_gsxgw.BoolAttr("data-gsxui-slot-alert-title", true)
+		_gsxgw.S(">")
+//line alert.gsx:25:3
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}
+
+//line alert.gsx:29:1
+func AlertDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line alert.gsx:30:2
+		_gsxgw.S("<div class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(alert.Description()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-alert-description"})
+		_gsxgw.BoolAttr("data-gsxui-slot-alert-description", true)
+		_gsxgw.S(">")
+//line alert.gsx:31:3
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}
