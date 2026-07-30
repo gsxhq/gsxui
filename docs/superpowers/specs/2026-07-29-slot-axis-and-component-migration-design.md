@@ -376,6 +376,28 @@ Each is a current limitation, not a historical note. None blocks the migration.
    styles). Decide deliberately whether to adopt more styles before the
    migration multiplies the cost, not after.
 
+1. **The computed-style sweep is not perfectly deterministic.** One run in five
+   reported two spurious differences that three subsequent runs did not
+   reproduce. The sweep is the primary acceptance gate for every migration, so a
+   flake reads as a regression and costs an investigation. `ui/sidebar.gsx`
+   randomises skeleton widths (already filtered), so the residue is likely
+   animation or layout timing. Before relying on it for the remaining waves,
+   either settle the page (wait for animations/fonts) or re-run once on
+   difference and treat only a reproducible diff as a finding.
+
+1. **`//go:embed` silently skips `_`-prefixed files.** Splitting `default.css`
+   nearly shipped consumers a stylesheet missing `:root` because the part was
+   first named `_root.css`: the site compiled fine and only the vendored copy
+   was wrong. `TestEveryDefaultStylePartIsImported` caught it. Nothing guards
+   the general trap — a future part named with a leading underscore would
+   vanish from every consumer's CSS while every gate stayed green.
+
+1. **Import order in `assets/css/styles/default.css` IS the cascade, but only
+   its preservation is gated.** The aggregator's `@import` order determines
+   concatenation order and therefore precedence. Removing an import (what a
+   migration does) is safe; APPENDING one when the rules belonged mid-file stays
+   green in every gate and only the sweep would notice.
+
 1. **Responsive `@media` overrides are a blind spot in the layer gate.** The
    contest oracle compares an authored rule's enclosing at-rule prelude against
    the one Tailwind emits for a responsive variant, and the prelude text differs,
