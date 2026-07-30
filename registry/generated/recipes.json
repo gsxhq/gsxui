@@ -178,6 +178,30 @@
         }
       }
     },
+    "button-group": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {
+            "orientation": {
+              "default": "horizontal",
+              "values": [
+                "horizontal",
+                "vertical"
+              ]
+            }
+          }
+        },
+        "separator": {
+          "base": true,
+          "dimensions": {}
+        },
+        "text": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "calendar": {
       "slots": {
         "": {
@@ -1816,6 +1840,56 @@
                 ]
               }
             }
+          }
+        }
+      },
+      "button-group": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "w-fit",
+              "items-stretch",
+              "[\u0026\u003e*:focus-visible]:relative",
+              "[\u0026\u003e*:focus-visible]:z-10",
+              "[\u0026\u003einput]:flex-1"
+            ],
+            "dimensions": {
+              "orientation": {
+                "horizontal": [
+                  "flex-row"
+                ],
+                "vertical": [
+                  "flex-col"
+                ]
+              }
+            }
+          },
+          "separator": {
+            "base": [
+              "relative",
+              "m-0",
+              "self-stretch",
+              "bg-input",
+              "data-[orientation=vertical]:h-auto"
+            ],
+            "dimensions": {}
+          },
+          "text": {
+            "base": [
+              "flex",
+              "items-center",
+              "gap-2",
+              "rounded-lg",
+              "border",
+              "bg-muted",
+              "px-2.5",
+              "text-sm",
+              "font-medium",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg:not([class*='size-'])]:size-4"
+            ],
+            "dimensions": {}
           }
         }
       },
@@ -5727,6 +5801,56 @@
                 ]
               }
             }
+          }
+        }
+      },
+      "button-group": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "w-fit",
+              "items-stretch",
+              "[\u0026\u003e*:focus-visible]:relative",
+              "[\u0026\u003e*:focus-visible]:z-10",
+              "[\u0026\u003einput]:flex-1"
+            ],
+            "dimensions": {
+              "orientation": {
+                "horizontal": [
+                  "flex-row"
+                ],
+                "vertical": [
+                  "flex-col"
+                ]
+              }
+            }
+          },
+          "separator": {
+            "base": [
+              "relative",
+              "m-0",
+              "self-stretch",
+              "bg-input",
+              "data-[orientation=vertical]:h-auto"
+            ],
+            "dimensions": {}
+          },
+          "text": {
+            "base": [
+              "flex",
+              "items-center",
+              "gap-2",
+              "rounded-lg",
+              "border",
+              "bg-muted",
+              "px-2.5",
+              "text-sm",
+              "font-medium",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg:not([class*='size-'])]:size-4"
+            ],
+            "dimensions": {}
           }
         }
       },

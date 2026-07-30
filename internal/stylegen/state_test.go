@@ -192,8 +192,18 @@ func TestSupportedStateFormsCoverTheAuthoredStylesheets(t *testing.T) {
 	t.Parallel()
 
 	forms := authoredStateForms(t)
-	if len(forms) < 100 {
-		t.Fatalf("only %d state forms found — the derivation stopped working", len(forms))
+	// This used to require 100+ forms. authoredStateForms reads the authored
+	// stylesheets only, so every migration moves rules onto recipe classes and
+	// drops the count — the floor would have to be lowered each wave until it
+	// reached zero and guarded nothing. Naming specific forms instead does not
+	// help: the derived keys are whole selector suffixes tied to individual
+	// components, so they migrate away too.
+	//
+	// The assertion that carries the test's weight is the loop below, which
+	// demands the model account for every form actually present. All this
+	// guard has to catch is the derivation returning nothing at all.
+	if len(forms) == 0 {
+		t.Fatal("no state forms found — the derivation stopped working")
 	}
 	for suffix, where := range forms {
 		if _, err := buildPredicate(nil, nil, suffix); err != nil {
