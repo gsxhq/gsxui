@@ -122,8 +122,12 @@ func TestComboboxInputAttrsSplitClassToWrapperIdToControl(t *testing.T) {
 	if strings.Contains(control, "w-[300px]") {
 		t.Errorf("caller class must not also land on the <input> control\ncontrol: %s", control)
 	}
-	if strings.Count(got, `class=`) != 1 {
-		t.Errorf("caller class must be the only rendered class\nin: %s", got)
+	// Input is migrated to the slot axis, so the control itself now also
+	// carries its own resolved recipe `class` attribute — the count check
+	// below is scoped to the wrapper only, which must still carry exactly
+	// the caller's class and nothing merged in from Input.
+	if strings.Count(wrapper, `class=`) != 1 {
+		t.Errorf("caller class must be the only rendered class on the wrapper\nwrapper: %s", wrapper)
 	}
 }
 

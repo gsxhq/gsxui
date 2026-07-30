@@ -22,7 +22,7 @@ func TestInputDefault(t *testing.T) {
 func TestInputPinned(t *testing.T) {
 	// Presentation lives in the stylesheet; the render pin covers structure.
 	got := render(t, ui.Input(nil))
-	want := `<input type="text" data-gsxui-slot-input>`
+	want := `<input type="text" class="h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 transition-[color,box-shadow] outline-none selection:bg-primary selection:text-primary-foreground file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 dark:aria-invalid:ring-destructive/40" data-gsxui-slot-input>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -42,8 +42,11 @@ func TestInputTypeOverridable(t *testing.T) {
 
 func TestInputCallerClassMerges(t *testing.T) {
 	got := render(t, ui.Input(gsx.Attrs{{Key: "class", Value: "h-12"}}))
-	if strings.Count(got, `class="h-12"`) != 1 {
-		t.Errorf("caller class must be forwarded exactly once\nin: %s", got)
+	if !strings.Contains(got, "h-12") {
+		t.Errorf("caller class must be forwarded\nin: %s", got)
+	}
+	if strings.Contains(got, "h-8") {
+		t.Errorf("caller's h-12 must win over the recipe's h-8\nin: %s", got)
 	}
 }
 

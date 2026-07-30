@@ -6,23 +6,27 @@
   .dark :where([data-gsxui-slot-input-group]) {
     @apply bg-input/30;
   }
-  :where([data-gsxui-slot-input-group]):has(
-      > [data-gsxui-slot-textarea][data-gsxui-slot-input-group-control]
-    ) {
-    @apply h-auto;
-  }
-  :where([data-gsxui-slot-input-group]):has(
-      > [data-gsxui-slot-input-group-addon][data-align="inline-start"]
-    )
-    > :where([data-gsxui-slot-input]) {
-    @apply pl-1.5;
-  }
-  :where([data-gsxui-slot-input-group]):has(
-      > [data-gsxui-slot-input-group-addon][data-align="inline-end"]
-    )
-    > :where([data-gsxui-slot-input]) {
-    @apply pr-1.5;
-  }
+  /* h-auto is promoted to assets/css/styles/default.css's @layer utilities
+     block (Input migration fallout, same shape as the border-ring/rounded-
+     none/border-0 fallout above): the control here is specifically
+     Textarea (the compound requires data-gsxui-slot-textarea), but
+     data-gsxui-slot-input-group-control is a shared marker (Input also
+     stamps it), so this rule now also has to clear the layer gate under
+     Input's own h-8. It never actually renders against a plain Input (the
+     compound requires the textarea marker too), but the gate can't see
+     that exclusion, and promoting is harmless either way. */
+  /* pl-1.5/pr-1.5/pb-3/pt-3 below are promoted to assets/css/styles/
+     default.css's @layer utilities block (Input migration fallout): they
+     override a sub-property (padding-left/right/top/bottom) of Input's own
+     px-2.5/py-1 shorthand utilities. The layer gate's contest analysis
+     didn't flag these four (a sub-property override doesn't read as a
+     name-level utility conflict to it), but make sweep-compare caught a
+     real regression empirically — Input's own utilities are Tailwind-
+     scanned directly out of its resolved .gsx and, once in the same
+     utilities-adjacent scope, win source order against these
+     components-layer overrides regardless. h-auto/flex-col on the
+     InputGroup element itself (not the control) are unaffected and stay
+     here. */
   :where([data-gsxui-slot-input-group]):has(
       > [data-gsxui-slot-input-group-addon][data-align="block-start"]
     ),
@@ -30,18 +34,6 @@
       > [data-gsxui-slot-input-group-addon][data-align="block-end"]
     ) {
     @apply h-auto flex-col;
-  }
-  :where([data-gsxui-slot-input-group]):has(
-      > [data-gsxui-slot-input-group-addon][data-align="block-start"]
-    )
-    > :where([data-gsxui-slot-input]) {
-    @apply pb-3;
-  }
-  :where([data-gsxui-slot-input-group]):has(
-      > [data-gsxui-slot-input-group-addon][data-align="block-end"]
-    )
-    > :where([data-gsxui-slot-input]) {
-    @apply pt-3;
   }
   /* border-ring is promoted to assets/css/styles/default.css's @layer
      utilities block (Textarea migration fallout): once the control is
@@ -156,10 +148,15 @@
   .dark :where([data-gsxui-slot-input-group-control]) {
     @apply bg-transparent;
   }
+  /* py-2 is promoted alongside h-auto above, same reason: it contests
+     Input's own py-1 once Input is also a data-gsxui-slot-input-group-control
+     owner, even though this compound requires the textarea marker too and so
+     can never actually render against a plain Input. resize-none has no
+     equivalent in Input's or Textarea's own recipe utilities and stays here. */
   :where(
       [data-gsxui-slot-textarea][data-gsxui-slot-input-group-control]
     ) {
-    @apply resize-none py-2;
+    @apply resize-none;
   }
 
 }

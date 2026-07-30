@@ -32,6 +32,7 @@
 @import "./default/combobox.css";
 @import "./default/menu.css";
 @import "./default/menu-popover-transition.css";
+@import "./default/textarea.css";
 @import "./default/dialog.css";
 @import "./default/alert-dialog.css";
 @import "./default/drawer-sheet-shared.css";
@@ -297,6 +298,13 @@
     @apply mx-2 w-auto bg-sidebar-border;
   }
 
+  /* SidebarInput: same fallout shape — Sidebar composes its input onto
+     <ui.Input> (sidebar.gsx), so bg-background here contests Input's own
+     bg-transparent/dark:bg-input/30. */
+  [data-gsxui-slot-sidebar-input] {
+    @apply bg-background;
+  }
+
   /* ButtonGroup > SelectTrigger width guard: ButtonGroup composes an
      unmigrated SelectTrigger's width via `:not([class*="w-"])` — "only
      force w-fit if the trigger doesn't already carry a width utility of its
@@ -347,6 +355,29 @@
   }
   [data-gsxui-slot-input-group]:has([data-gsxui-slot-input-group-control]:focus-visible) {
     @apply border-ring;
+  }
+  [data-gsxui-slot-input-group]:has(> [data-gsxui-slot-textarea][data-gsxui-slot-input-group-control]) {
+    @apply h-auto;
+  }
+  [data-gsxui-slot-textarea][data-gsxui-slot-input-group-control] {
+    @apply py-2;
+  }
+  /* pl-1.5/pr-1.5/pb-3/pt-3: found by make sweep-compare, not by
+     stylegen --check-layers (a sub-property override of Input's own
+     px-2.5/py-1 doesn't read as a name-level utility conflict to that
+     gate's contest analysis, but it is one in the browser). See
+     assets/css/styles/default/input-group.css's own comment. */
+  [data-gsxui-slot-input-group]:has(> [data-gsxui-slot-input-group-addon][data-align="inline-start"]) > [data-gsxui-slot-input] {
+    @apply pl-1.5;
+  }
+  [data-gsxui-slot-input-group]:has(> [data-gsxui-slot-input-group-addon][data-align="inline-end"]) > [data-gsxui-slot-input] {
+    @apply pr-1.5;
+  }
+  [data-gsxui-slot-input-group]:has(> [data-gsxui-slot-input-group-addon][data-align="block-start"]) > [data-gsxui-slot-input] {
+    @apply pb-3;
+  }
+  [data-gsxui-slot-input-group]:has(> [data-gsxui-slot-input-group-addon][data-align="block-end"]) > [data-gsxui-slot-input] {
+    @apply pt-3;
   }
 
   /* InputGroupButton retunes Button's whole size ramp — type scale, radius,

@@ -156,8 +156,15 @@
     }
   }
 
+  /* bg-background is promoted to assets/css/styles/default.css's @layer
+     utilities block (Input migration fallout): SidebarInput composes
+     <ui.Input> directly (sidebar.gsx), so the rendered element now also
+     carries Input's own bg-transparent/dark:bg-input/30 recipe utilities,
+     which this rule's bg-background contests. h-8/w-full restate Input's
+     own values (no conflict) and shadow-none has no equivalent in Input's
+     recipe, so both stay here. */
   :where([data-gsxui-slot-sidebar-input]) {
-    @apply h-8 w-full bg-background shadow-none;
+    @apply h-8 w-full shadow-none;
   }
   :where([data-gsxui-slot-sidebar-header]),
   :where([data-gsxui-slot-sidebar-footer]) {

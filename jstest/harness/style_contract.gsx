@@ -87,6 +87,10 @@ component StyleContractFixture() {
 			<ui.PaginationNext href="#" data-style-contract="pagination-next"/>
 			<ui.PaginationPrevious href="#" class="pl-12" data-style-contract="pagination-previous-caller"/>
 		</div>
+		<div class="flex gap-2">
+			<ui.Input class="text-lg" data-style-contract="input-caller-text-size"/>
+			<ui.Textarea class="text-lg" data-style-contract="textarea-caller-text-size"/>
+		</div>
 		<ui.ButtonGroup data-style-contract="button-group-tail">
 			<ui.Button data-style-contract="button-group-earlier">Earlier</ui.Button>
 			<ui.Button data-style-contract="button-group-visible-tail">Visible tail</ui.Button>

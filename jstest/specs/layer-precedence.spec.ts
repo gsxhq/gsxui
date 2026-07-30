@@ -550,3 +550,28 @@ test("TooltipContent keeps its own has-kbd padding when it contains a Kbd", asyn
   // No Kbd child here, so the base px-3 (12px) applies unchanged.
   expect(paddingRightPlain).toBe("12px");
 });
+
+// Input's and Textarea's own text-base/md:text-sm pair is retained the same
+// way (see assets/css/styles/default/input.css and
+// assets/css/styles/default/textarea.css) — both properties stayed off the
+// recipe entirely, not just md:text-sm, because a components-layer rule can
+// never beat ANY utilities-layer rule: leaving text-base on the recipe while
+// retaining only md:text-sm made the retained rule permanently dead instead
+// of merely losing to a caller (make sweep-compare caught this on the first
+// attempt). These pins run at the default (desktop, >=48rem) viewport, where
+// md:text-sm would otherwise apply, and assert the caller's text-lg wins at
+// every property in that group.
+
+test("Input's caller text-lg stays overridable against the retained md:text-sm", async ({ page }) => {
+
+  const el = page.locator('[data-style-contract="input-caller-text-size"]');
+  const fontSize = await el.evaluate((n) => getComputedStyle(n).fontSize);
+  // text-lg (18px) must beat the retained md:text-sm (14px) rule.
+  expect(fontSize).toBe("18px");
+
+test("Textarea's caller text-lg stays overridable against the retained md:text-sm", async ({ page }) => {
+
+  const el = page.locator('[data-style-contract="textarea-caller-text-size"]');
+  const fontSize = await el.evaluate((n) => getComputedStyle(n).fontSize);
+  // text-lg (18px) must beat the retained md:text-sm (14px) rule.
+  expect(fontSize).toBe("18px");

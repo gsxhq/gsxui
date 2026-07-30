@@ -23,7 +23,7 @@ func TestTextareaDefault(t *testing.T) {
 func TestTextareaPinned(t *testing.T) {
 	// Presentation lives in the stylesheet; the render pin covers structure.
 	got := render(t, ui.Textarea("", nil))
-	want := `<textarea class="field-sizing-content flex min-h-16 w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-base transition-[color,box-shadow] outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 dark:aria-invalid:ring-destructive/40 md:text-sm" data-gsxui-slot-textarea></textarea>`
+	want := `<textarea class="field-sizing-content flex min-h-16 w-full rounded-lg border border-input bg-transparent px-2.5 py-2 transition-[color,box-shadow] outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 dark:aria-invalid:ring-destructive/40" data-gsxui-slot-textarea></textarea>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

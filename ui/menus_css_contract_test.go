@@ -28,8 +28,13 @@ func assertMenuCSSOnlyMarkup(t *testing.T, got string, slots ...string) {
 func assertComboboxCanonicalButtonRoles(t *testing.T, got string) {
 	t.Helper()
 
+	// Input is migrated to the slot axis, so ComboboxInput's <input> now also
+	// carries its own resolved recipe `class` attribute — a third `class=`
+	// in the output that isn't one of the trigger/clear Button roles this
+	// assertion checks. The count check is scoped to occurrences of the
+	// canonical Button class itself, which is unaffected.
 	want := canonicalButtonClass("ghost", "icon-xs")
-	if strings.Count(got, want) != 2 || strings.Count(got, `class=`) != 2 {
+	if strings.Count(got, want) != 2 {
 		t.Errorf("Combobox trigger and clear must each render exact canonical Button roles\nwant: %s\nin: %s", want, got)
 	}
 }
