@@ -1,4 +1,4 @@
-package ui
+package maia
 
 // select.gsx backs the shadcn/ui Select — the custom Radix listbox (NOT the
 // styled native <select>, which ships separately as ui.NativeSelect). It is

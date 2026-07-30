@@ -346,6 +346,54 @@
         }
       }
     },
+    "select": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
+        "content": {
+          "base": true,
+          "dimensions": {}
+        },
+        "item": {
+          "base": true,
+          "dimensions": {}
+        },
+        "item-indicator": {
+          "base": true,
+          "dimensions": {}
+        },
+        "item-text": {
+          "base": true,
+          "dimensions": {}
+        },
+        "label": {
+          "base": true,
+          "dimensions": {}
+        },
+        "separator": {
+          "base": true,
+          "dimensions": {}
+        },
+        "trigger": {
+          "base": true,
+          "dimensions": {
+            "size": {
+              "default": "default",
+              "values": [
+                "default",
+                "sm"
+              ]
+            }
+          }
+        },
+        "value": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "separator": {
       "slots": {
         "": {
@@ -386,6 +434,14 @@
         }
       }
     },
+    "switch": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "table": {
       "slots": {
         "": {
@@ -413,6 +469,26 @@
           "dimensions": {}
         },
         "row": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
+    "tabs": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
+        "content": {
+          "base": true,
+          "dimensions": {}
+        },
+        "list": {
+          "base": true,
+          "dimensions": {}
+        },
+        "trigger": {
           "base": true,
           "dimensions": {}
         }
@@ -1353,6 +1429,170 @@
           }
         }
       },
+      "select": {
+        "slots": {
+          "": {
+            "base": [
+              "contents"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "z-50",
+              "max-h-96",
+              "min-w-36",
+              "origin-top-left",
+              "overflow-x-hidden",
+              "overflow-y-auto",
+              "rounded-lg",
+              "border",
+              "bg-popover",
+              "p-1",
+              "text-popover-foreground",
+              "shadow-md",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "starting:[\u0026:popover-open]:data-[side=bottom]:-translate-y-2",
+              "starting:[\u0026:popover-open]:data-[side=left]:translate-x-2",
+              "starting:[\u0026:popover-open]:data-[side=right]:-translate-x-2",
+              "starting:[\u0026:popover-open]:data-[side=top]:translate-y-2"
+            ],
+            "dimensions": {}
+          },
+          "item": {
+            "base": [
+              "relative",
+              "flex",
+              "w-full",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "py-1",
+              "pr-8",
+              "pl-1.5",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-[disabled=true]:pointer-events-none",
+              "data-[disabled=true]:opacity-50",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg]:text-muted-foreground",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "data-[state=checked]:[\u0026\u003e[data-gsxui-slot-select-item-indicator]]:flex"
+            ],
+            "dimensions": {}
+          },
+          "item-indicator": {
+            "base": [
+              "pointer-events-none",
+              "absolute",
+              "right-2",
+              "hidden",
+              "size-4",
+              "items-center",
+              "justify-center",
+              "[\u0026\u003esvg]:size-4"
+            ],
+            "dimensions": {}
+          },
+          "item-text": {
+            "base": [
+              "flex",
+              "items-center",
+              "gap-2"
+            ],
+            "dimensions": {}
+          },
+          "label": {
+            "base": [
+              "px-1.5",
+              "py-1",
+              "text-xs",
+              "text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "separator": {
+            "base": [
+              "-mx-1",
+              "my-1",
+              "h-px",
+              "bg-border"
+            ],
+            "dimensions": {}
+          },
+          "trigger": {
+            "base": [
+              "flex",
+              "w-fit",
+              "items-center",
+              "justify-between",
+              "gap-1.5",
+              "rounded-lg",
+              "border",
+              "border-input",
+              "bg-transparent",
+              "py-2",
+              "pr-2",
+              "pl-2.5",
+              "text-sm",
+              "whitespace-nowrap",
+              "transition-[color,box-shadow]",
+              "outline-none",
+              "focus-visible:border-ring",
+              "focus-visible:ring-[3px]",
+              "focus-visible:ring-ring/50",
+              "disabled:cursor-not-allowed",
+              "disabled:opacity-50",
+              "aria-invalid:border-destructive",
+              "aria-invalid:ring-destructive/20",
+              "data-[placeholder]:text-muted-foreground",
+              "dark:bg-input/30",
+              "dark:hover:bg-input/50",
+              "dark:aria-invalid:ring-destructive/40",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg]:text-muted-foreground",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026\u003esvg]:size-4",
+              "[\u0026\u003esvg]:opacity-50"
+            ],
+            "dimensions": {
+              "size": {
+                "default": [
+                  "h-8"
+                ],
+                "sm": [
+                  "h-7",
+                  "rounded-[min(var(--radius-md),10px)]"
+                ]
+              }
+            }
+          },
+          "value": {
+            "base": [
+              "pointer-events-none",
+              "[[data-gsxui-slot-select-trigger]\u003e\u0026]:line-clamp-1",
+              "[[data-gsxui-slot-select-trigger]\u003e\u0026]:flex",
+              "[[data-gsxui-slot-select-trigger]\u003e\u0026]:items-center",
+              "[[data-gsxui-slot-select-trigger]\u003e\u0026]:gap-1.5"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
       "separator": {
         "slots": {
           "": {
@@ -1440,6 +1680,45 @@
           }
         }
       },
+      "switch": {
+        "slots": {
+          "": {
+            "base": [
+              "inline-flex",
+              "h-[1.15rem]",
+              "w-8",
+              "shrink-0",
+              "appearance-none",
+              "items-center",
+              "rounded-full",
+              "border",
+              "border-transparent",
+              "bg-input",
+              "transition-all",
+              "outline-none",
+              "focus-visible:border-ring",
+              "focus-visible:ring-[3px]",
+              "focus-visible:ring-ring/50",
+              "disabled:cursor-not-allowed",
+              "disabled:opacity-50",
+              "checked:bg-primary",
+              "dark:bg-input/80",
+              "dark:checked:bg-primary",
+              "before:content-['']",
+              "before:pointer-events-none",
+              "before:block",
+              "before:size-4",
+              "before:rounded-full",
+              "before:bg-background",
+              "before:transition-transform",
+              "checked:before:translate-x-[calc(100%-2px)]",
+              "dark:before:bg-foreground",
+              "dark:checked:before:bg-primary-foreground"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
       "table": {
         "slots": {
           "": {
@@ -1507,6 +1786,82 @@
               "data-[state=selected]:bg-muted",
               "[[data-gsxui-slot-table-body]_\u0026]:last:border-b-0",
               "[[data-gsxui-slot-table-footer]_\u0026]:last:border-b-0"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "tabs": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "flex-col",
+              "gap-2"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "flex-1",
+              "text-sm",
+              "outline-none"
+            ],
+            "dimensions": {}
+          },
+          "list": {
+            "base": [
+              "inline-flex",
+              "h-8",
+              "w-fit",
+              "items-center",
+              "justify-center",
+              "rounded-lg",
+              "bg-muted",
+              "p-[3px]",
+              "text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "trigger": {
+            "base": [
+              "relative",
+              "inline-flex",
+              "h-[calc(100%-1px)]",
+              "flex-1",
+              "items-center",
+              "justify-center",
+              "gap-1.5",
+              "rounded-md",
+              "border",
+              "border-transparent",
+              "px-1.5",
+              "py-0.5",
+              "text-sm",
+              "font-medium",
+              "whitespace-nowrap",
+              "text-foreground/60",
+              "transition-all",
+              "hover:text-foreground",
+              "focus-visible:border-ring",
+              "focus-visible:ring-[3px]",
+              "focus-visible:ring-ring/50",
+              "focus-visible:outline-1",
+              "focus-visible:outline-ring",
+              "disabled:pointer-events-none",
+              "disabled:opacity-50",
+              "has-[\u003esvg]:px-1",
+              "data-[state=active]:bg-background",
+              "data-[state=active]:text-foreground",
+              "data-[state=active]:shadow-sm",
+              "[\u0026\u003esvg]:size-4",
+              "[\u0026\u003esvg]:shrink-0",
+              "[\u0026\u003esvg]:pointer-events-none",
+              "dark:text-muted-foreground",
+              "dark:hover:text-foreground",
+              "dark:data-[state=active]:border-input",
+              "dark:data-[state=active]:bg-input/30",
+              "dark:data-[state=active]:text-foreground"
             ],
             "dimensions": {}
           }
@@ -2463,6 +2818,170 @@
           }
         }
       },
+      "select": {
+        "slots": {
+          "": {
+            "base": [
+              "contents"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "z-50",
+              "max-h-96",
+              "min-w-36",
+              "origin-top-left",
+              "overflow-x-hidden",
+              "overflow-y-auto",
+              "rounded-lg",
+              "border",
+              "bg-popover",
+              "p-1",
+              "text-popover-foreground",
+              "shadow-md",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "starting:[\u0026:popover-open]:data-[side=bottom]:-translate-y-2",
+              "starting:[\u0026:popover-open]:data-[side=left]:translate-x-2",
+              "starting:[\u0026:popover-open]:data-[side=right]:-translate-x-2",
+              "starting:[\u0026:popover-open]:data-[side=top]:translate-y-2"
+            ],
+            "dimensions": {}
+          },
+          "item": {
+            "base": [
+              "relative",
+              "flex",
+              "w-full",
+              "cursor-default",
+              "items-center",
+              "gap-1.5",
+              "rounded-md",
+              "py-1",
+              "pr-8",
+              "pl-1.5",
+              "text-sm",
+              "outline-hidden",
+              "select-none",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
+              "data-[disabled=true]:pointer-events-none",
+              "data-[disabled=true]:opacity-50",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg]:text-muted-foreground",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "data-[state=checked]:[\u0026\u003e[data-gsxui-slot-select-item-indicator]]:flex"
+            ],
+            "dimensions": {}
+          },
+          "item-indicator": {
+            "base": [
+              "pointer-events-none",
+              "absolute",
+              "right-2",
+              "hidden",
+              "size-4",
+              "items-center",
+              "justify-center",
+              "[\u0026\u003esvg]:size-4"
+            ],
+            "dimensions": {}
+          },
+          "item-text": {
+            "base": [
+              "flex",
+              "items-center",
+              "gap-2"
+            ],
+            "dimensions": {}
+          },
+          "label": {
+            "base": [
+              "px-1.5",
+              "py-1",
+              "text-xs",
+              "text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "separator": {
+            "base": [
+              "-mx-1",
+              "my-1",
+              "h-px",
+              "bg-border"
+            ],
+            "dimensions": {}
+          },
+          "trigger": {
+            "base": [
+              "flex",
+              "w-fit",
+              "items-center",
+              "justify-between",
+              "gap-1.5",
+              "rounded-lg",
+              "border",
+              "border-input",
+              "bg-transparent",
+              "py-2",
+              "pr-2",
+              "pl-2.5",
+              "text-sm",
+              "whitespace-nowrap",
+              "transition-[color,box-shadow]",
+              "outline-none",
+              "focus-visible:border-ring",
+              "focus-visible:ring-[3px]",
+              "focus-visible:ring-ring/50",
+              "disabled:cursor-not-allowed",
+              "disabled:opacity-50",
+              "aria-invalid:border-destructive",
+              "aria-invalid:ring-destructive/20",
+              "data-[placeholder]:text-muted-foreground",
+              "dark:bg-input/30",
+              "dark:hover:bg-input/50",
+              "dark:aria-invalid:ring-destructive/40",
+              "[\u0026_svg]:pointer-events-none",
+              "[\u0026_svg]:shrink-0",
+              "[\u0026_svg]:text-muted-foreground",
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026\u003esvg]:size-4",
+              "[\u0026\u003esvg]:opacity-50"
+            ],
+            "dimensions": {
+              "size": {
+                "default": [
+                  "h-8"
+                ],
+                "sm": [
+                  "h-7",
+                  "rounded-[min(var(--radius-md),10px)]"
+                ]
+              }
+            }
+          },
+          "value": {
+            "base": [
+              "pointer-events-none",
+              "[[data-gsxui-slot-select-trigger]\u003e\u0026]:line-clamp-1",
+              "[[data-gsxui-slot-select-trigger]\u003e\u0026]:flex",
+              "[[data-gsxui-slot-select-trigger]\u003e\u0026]:items-center",
+              "[[data-gsxui-slot-select-trigger]\u003e\u0026]:gap-1.5"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
       "separator": {
         "slots": {
           "": {
@@ -2550,6 +3069,45 @@
           }
         }
       },
+      "switch": {
+        "slots": {
+          "": {
+            "base": [
+              "inline-flex",
+              "h-[1.15rem]",
+              "w-8",
+              "shrink-0",
+              "appearance-none",
+              "items-center",
+              "rounded-full",
+              "border",
+              "border-transparent",
+              "bg-input",
+              "transition-all",
+              "outline-none",
+              "focus-visible:border-ring",
+              "focus-visible:ring-[3px]",
+              "focus-visible:ring-ring/50",
+              "disabled:cursor-not-allowed",
+              "disabled:opacity-50",
+              "checked:bg-primary",
+              "dark:bg-input/80",
+              "dark:checked:bg-primary",
+              "before:content-['']",
+              "before:pointer-events-none",
+              "before:block",
+              "before:size-4",
+              "before:rounded-full",
+              "before:bg-background",
+              "before:transition-transform",
+              "checked:before:translate-x-[calc(100%-2px)]",
+              "dark:before:bg-foreground",
+              "dark:checked:before:bg-primary-foreground"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
       "table": {
         "slots": {
           "": {
@@ -2617,6 +3175,82 @@
               "data-[state=selected]:bg-muted",
               "[[data-gsxui-slot-table-body]_\u0026]:last:border-b-0",
               "[[data-gsxui-slot-table-footer]_\u0026]:last:border-b-0"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "tabs": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "flex-col",
+              "gap-2"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "flex-1",
+              "text-sm",
+              "outline-none"
+            ],
+            "dimensions": {}
+          },
+          "list": {
+            "base": [
+              "inline-flex",
+              "h-8",
+              "w-fit",
+              "items-center",
+              "justify-center",
+              "rounded-lg",
+              "bg-muted",
+              "p-[3px]",
+              "text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "trigger": {
+            "base": [
+              "relative",
+              "inline-flex",
+              "h-[calc(100%-1px)]",
+              "flex-1",
+              "items-center",
+              "justify-center",
+              "gap-1.5",
+              "rounded-md",
+              "border",
+              "border-transparent",
+              "px-1.5",
+              "py-0.5",
+              "text-sm",
+              "font-medium",
+              "whitespace-nowrap",
+              "text-foreground/60",
+              "transition-all",
+              "hover:text-foreground",
+              "focus-visible:border-ring",
+              "focus-visible:ring-[3px]",
+              "focus-visible:ring-ring/50",
+              "focus-visible:outline-1",
+              "focus-visible:outline-ring",
+              "disabled:pointer-events-none",
+              "disabled:opacity-50",
+              "has-[\u003esvg]:px-1",
+              "data-[state=active]:bg-background",
+              "data-[state=active]:text-foreground",
+              "data-[state=active]:shadow-sm",
+              "[\u0026\u003esvg]:size-4",
+              "[\u0026\u003esvg]:shrink-0",
+              "[\u0026\u003esvg]:pointer-events-none",
+              "dark:text-muted-foreground",
+              "dark:hover:text-foreground",
+              "dark:data-[state=active]:border-input",
+              "dark:data-[state=active]:bg-input/30",
+              "dark:data-[state=active]:text-foreground"
             ],
             "dimensions": {}
           }

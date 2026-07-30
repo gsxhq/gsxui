@@ -47,6 +47,7 @@ var all = map[string]recipe.Shape{
 	Tabs.Component:        Tabs,
 	Pagination.Component:  Pagination,
 	Switch.Component:      Switch,
+	Select.Component:      Select,
 }
 
 // All returns every declared component shape, keyed by component name.

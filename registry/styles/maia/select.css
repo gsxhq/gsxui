@@ -1,0 +1,78 @@
+/* Source: assets/css/styles/default/select.css (all rules, minus the two
+   ButtonGroup-ancestor strays on select-trigger — see
+   registry/canonical/shapes/select.go's doc comment). display:contents on
+   the root has a direct Tailwind utility (`contents`), no escape hatch
+   needed. :popover-open and @starting-style translate as Tailwind v4's
+   native `starting:` variant plus an arbitrary `[&:popover-open]:` variant,
+   stacked with the existing `data-[side=...]:` forms. Nova and Maia have
+   not diverged on Select yet, so this file is byte-identical to
+   registry/styles/maia/select.css. Confirmed compiling with this repo's
+   Tailwind v4 CLI before use. */
+@layer components {
+  .gsxui-recipe-select {
+    @apply contents;
+  }
+
+  .gsxui-recipe-select-trigger {
+    @apply flex w-fit items-center justify-between gap-1.5 rounded-lg border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-[color,box-shadow] outline-none;
+    @apply focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50;
+    @apply disabled:cursor-not-allowed disabled:opacity-50;
+    @apply aria-invalid:border-destructive aria-invalid:ring-destructive/20;
+    @apply data-[placeholder]:text-muted-foreground;
+    @apply dark:bg-input/30;
+    @apply dark:hover:bg-input/50;
+    @apply dark:aria-invalid:ring-destructive/40;
+    @apply [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg]:text-muted-foreground;
+    @apply [&_svg:not([class*='size-'])]:size-4;
+    @apply [&>svg]:size-4 [&>svg]:opacity-50;
+  }
+
+  .gsxui-recipe-select-trigger-size-default {
+    @apply h-8;
+  }
+
+  .gsxui-recipe-select-trigger-size-sm {
+    @apply h-7 rounded-[min(var(--radius-md),10px)];
+  }
+
+  .gsxui-recipe-select-value {
+    @apply pointer-events-none;
+    @apply [[data-gsxui-slot-select-trigger]>&]:line-clamp-1 [[data-gsxui-slot-select-trigger]>&]:flex [[data-gsxui-slot-select-trigger]>&]:items-center [[data-gsxui-slot-select-trigger]>&]:gap-1.5;
+  }
+
+  .gsxui-recipe-select-content {
+    @apply z-50 max-h-96 min-w-36 origin-top-left overflow-x-hidden overflow-y-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150;
+    @apply [&:popover-open]:opacity-100 [&:popover-open]:scale-100;
+    @apply starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95;
+    @apply starting:[&:popover-open]:data-[side=bottom]:-translate-y-2;
+    @apply starting:[&:popover-open]:data-[side=left]:translate-x-2;
+    @apply starting:[&:popover-open]:data-[side=right]:-translate-x-2;
+    @apply starting:[&:popover-open]:data-[side=top]:translate-y-2;
+  }
+
+  .gsxui-recipe-select-label {
+    @apply px-1.5 py-1 text-xs text-muted-foreground;
+  }
+
+  .gsxui-recipe-select-item {
+    @apply relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none;
+    @apply focus:bg-accent focus:text-accent-foreground;
+    @apply data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50;
+    @apply [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg]:text-muted-foreground;
+    @apply [&_svg:not([class*='size-'])]:size-4;
+    @apply data-[state=checked]:[&>[data-gsxui-slot-select-item-indicator]]:flex;
+  }
+
+  .gsxui-recipe-select-item-text {
+    @apply flex items-center gap-2;
+  }
+
+  .gsxui-recipe-select-item-indicator {
+    @apply pointer-events-none absolute right-2 hidden size-4 items-center justify-center;
+    @apply [&>svg]:size-4;
+  }
+
+  .gsxui-recipe-select-separator {
+    @apply -mx-1 my-1 h-px bg-border;
+  }
+}

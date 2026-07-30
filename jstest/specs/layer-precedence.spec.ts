@@ -385,3 +385,11 @@ test("Switch keeps its checked-state background", async ({ page }) => {
   const bg = await checked.evaluate((n) => getComputedStyle(n).backgroundColor);
   expect(bg).toBe("oklch(0.205 0 0)");
 });
+test("SelectTrigger keeps its default height and radius", async ({ page }) => {
+  await page.goto("/x/select/basic");
+  const trigger = page.locator("[data-gsxui-slot-select-trigger]").first();
+  const height = await trigger.evaluate((n) => getComputedStyle(n).height);
+  const radius = await trigger.evaluate((n) => getComputedStyle(n).borderRadius);
+  expect(height).toBe("28px");
+  expect(radius).toBe("8px");
+});

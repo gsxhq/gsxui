@@ -26,7 +26,6 @@
 @import "./default/input.css";
 @import "./default/input-group.css";
 @import "./default/native-select.css";
-@import "./default/select.css";
 @import "./default/command.css";
 @import "./default/combobox.css";
 @import "./default/menu.css";
@@ -214,6 +213,20 @@
      bg-sidebar-border here contest Separator's own w-full and bg-border. */
   [data-gsxui-slot-sidebar-separator][data-orientation="horizontal"] {
     @apply mx-2 w-auto bg-sidebar-border;
+  }
+
+  /* ButtonGroup > SelectTrigger width guard: ButtonGroup composes an
+     unmigrated SelectTrigger's width via `:not([class*="w-"])` — "only
+     force w-fit if the trigger doesn't already carry a width utility of its
+     own". Select's migration gave select-trigger real (0,1,0) utilities
+     that include a literal `w-fit` in its own base rule, so the guard's
+     premise ("no w-* class yet") is now always false and this rule is
+     structurally unreachable regardless of layer — but the layer gate still
+     needs it here, unwrapped, to clear the (0,1,0) floor, the same fallout
+     shape as ButtonGroupSeparator/SidebarSeparator above. ButtonGroup itself
+     has not migrated yet; this is fallout from Select's own migration. */
+  [data-gsxui-slot-button-group] > [data-gsxui-slot-select-trigger]:not([class*="w-"]) {
+    @apply w-fit;
   }
 
   /* Carousel arrows: a round control, against Button's own rounded-lg. The

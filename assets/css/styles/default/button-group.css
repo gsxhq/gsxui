@@ -11,10 +11,6 @@
   :where([data-gsxui-slot-button-group]) > :focus-visible {
     @apply relative z-10;
   }
-  :where([data-gsxui-slot-button-group])
-    > :where([data-gsxui-slot-select-trigger]):not([class*="w-"]) {
-    @apply w-fit;
-  }
   :where([data-gsxui-slot-button-group]) > input {
     @apply flex-1;
   }
