@@ -226,3 +226,28 @@ func selectorHasDirectChild(tokens []css.Token) bool {
 	}
 	return false
 }
+
+// TestSidebarRecipeUsesPresenceSelectors follows the Sidebar half of the
+// compiled-CSS audit onto the slot axis. Sidebar's binary markers are stamped
+// with no value at all, so selecting them with an operator — [data-active="true"]
+// — matches nothing at runtime. That was audited against the consumer's flat
+// stylesheet while Sidebar was unmigrated; the rules now live on Sidebar's own
+// recipe as [&[data-active]]: variants, so the guarantee moves with them rather
+// than being dropped.
+func TestSidebarRecipeUsesPresenceSelectors(t *testing.T) {
+	for _, style := range []string{"nova", "maia"} {
+		path := filepath.Join("..", "..", "registry", "styles", style, "sidebar.css")
+		src, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, marker := range []string{"data-active", "data-show-on-hover"} {
+			if !strings.Contains(string(src), "["+marker+"]") {
+				t.Errorf("%s: sidebar recipe has no [%s] presence selector", style, marker)
+			}
+			if strings.Contains(string(src), marker+"=") {
+				t.Errorf("%s: sidebar recipe selects %s with an operator; the marker is stamped with no value, so it would match nothing", style, marker)
+			}
+		}
+	}
+}

@@ -901,21 +901,20 @@ func TestInitializedConsumerCSSOmitsButtonPresentationAndKeepsRemainingStyle(t *
 	if attributes["data-gsxui-slot-button"] {
 		t.Error("initialized consumer CSS still contains Button presentation")
 	}
-	// Only components still off the slot axis appear here. A migrated
-	// component's presentation is keyed by recipe classes that ship with the
-	// component when it is added, so an unadded one contributes nothing to
-	// the vendored style — pick sentinels accordingly.
+	// This asserted that a component still off the slot axis kept its
+	// marker-keyed presentation in the vendored style. That premise has run
+	// out: every component now has a shape, so nothing is left to point at,
+	// and the sentinel had to be repointed on each of the last four waves.
 	//
-	// These were combobox-content and command until Command migrated, then
-	// sidebar alone. Sidebar has now migrated too, so the assertion is
-	// repointed a third time — unchanged, only its sentinel moves — at
-	// Combobox, which has no shape under registry/canonical/shapes/ and whose
-	// presentation therefore still ships as marker-keyed rules in
-	// assets/css/styles/default/combobox.css. Every component with a shape is
-	// now on the slot axis; Combobox is what is left. Repoint, or retire once
-	// it has a shape too; do not weaken it.
+	// What survives in the vendored style is different and durable: the rules
+	// deliberately retained in @layer components under spec section 10b, so a
+	// caller's utility can still beat them. CardHeader's border-b bottom
+	// padding is one of those, and it carries a Playwright pin of its own
+	// ("CardHeader's border-b padding stays caller-overridable"), so it cannot
+	// quietly disappear. The assertion is unchanged; only what it stands for
+	// has moved from "not yet migrated" to "deliberately not on a recipe".
 	for _, attribute := range []string{
-		"data-gsxui-slot-combobox-trigger",
+		"data-gsxui-slot-card-header",
 	} {
 		if !attributes[attribute] {
 			t.Errorf("clean consumer CSS missing canonical selector [%s]", attribute)

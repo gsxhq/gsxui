@@ -136,44 +136,11 @@ test("consumer composition selectors retain their owning marker specificity", ()
   assert.deepEqual([...buttonGroupSizes].sort(), ["icon-sm", "icon-xs", "xs"]);
 });
 
-test("binary Sidebar markers use presence selectors", () => {
-  const root = parse(defaultStyleCSS());
-  const markers = new Map([
-    ["data-active", false],
-    ["data-show-on-hover", false],
-  ]);
-
-  root.walkRules((rule) => {
-    const selectorRoot = selectorParser().astSync(rule.selector);
-    for (const selector of selectorRoot.nodes) {
-      const attributes: import("postcss-selector-parser").Attribute[] = [];
-      selector.walkAttributes((attribute) => attributes.push(attribute));
-      if (
-        !attributes.some((attribute) =>
-          attribute.attribute
-            .toLowerCase()
-            .startsWith("data-gsxui-slot-sidebar-"),
-        )
-      ) {
-        continue;
-      }
-      for (const attribute of attributes) {
-        const name = attribute.attribute.toLowerCase();
-        if (!markers.has(name)) continue;
-        assert.equal(
-          attribute.operator,
-          undefined,
-          `${name} must be selected by presence: ${selector.toString()}`,
-        );
-        markers.set(name, true);
-      }
-    }
-  });
-
-  for (const [marker, found] of markers) {
-    assert.equal(found, true, `default CSS has no [${marker}] selector`);
-  }
-});
+// The "binary Sidebar markers use presence selectors" test lived here while
+// Sidebar's rules were in the consumer's flat stylesheet. Sidebar is on the
+// slot axis now and stamps those markers through [&[data-active]]: variants on
+// its own recipe, so the guarantee moved to TestSidebarRecipeUsesPresenceSelectors
+// in internal/stylegen/button_css_test.go, which checks both styles.
 
 test("allows only Tailwind's exact hidden preflight important declaration", () => {
   const css = `
