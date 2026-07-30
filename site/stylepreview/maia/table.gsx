@@ -32,7 +32,7 @@ component TableFooter(children gsx.Node, attrs gsx.Attrs) {
 component TableRow(children gsx.Node, attrs gsx.Attrs) {
 	<tr
 		class={
-			"border-b transition-colors hover:bg-muted/50 has-[[aria-expanded=\"true\"]]:bg-muted/50 data-[state=selected]:bg-muted [[data-gsxui-slot-table-body]_&]:last:border-b-0 [[data-gsxui-slot-table-footer]_&]:last:border-b-0"
+			"border-b transition-colors hover:bg-muted/50 has-[[aria-expanded=true]]:bg-muted/50 data-[state=selected]:bg-muted [[data-gsxui-slot-table-body]_&]:last:border-b-0 [[data-gsxui-slot-table-footer]_&]:last:border-b-0"
 		}
 		{ attrs... }
 		data-gsxui-slot-table-row
@@ -44,7 +44,7 @@ component TableRow(children gsx.Node, attrs gsx.Attrs) {
 component TableHead(children gsx.Node, attrs gsx.Attrs) {
 	<th
 		class={
-			"h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground has-[[role=\"checkbox\"]]:pr-0 [&>[role=\"checkbox\"]]:translate-y-[2px]"
+			"h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground has-[[role=checkbox]]:pr-0 [&>[role=checkbox]]:translate-y-[2px]"
 		}
 		{ attrs... }
 		data-gsxui-slot-table-head
@@ -55,9 +55,7 @@ component TableHead(children gsx.Node, attrs gsx.Attrs) {
 
 component TableCell(children gsx.Node, attrs gsx.Attrs) {
 	<td
-		class={
-			"p-2 align-middle whitespace-nowrap has-[[role=\"checkbox\"]]:pr-0 [&>[role=\"checkbox\"]]:translate-y-[2px]"
-		}
+		class={ "p-2 align-middle whitespace-nowrap has-[[role=checkbox]]:pr-0 [&>[role=checkbox]]:translate-y-[2px]" }
 		{ attrs... }
 		data-gsxui-slot-table-cell
 	>

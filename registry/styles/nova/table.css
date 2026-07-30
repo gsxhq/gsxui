@@ -17,7 +17,7 @@
      descendant) collapses the same way Accordion's did: a <tr> is always a
      direct child of its <tbody>/<tfoot>, so "descendant of an open
      ancestor" and "direct child of it" pick out the same rows here.
-   - table-row's `has-[[aria-expanded="true"]]:bg-muted/50` is the same
+   - table-row's `has-[[aria-expanded=true]]:bg-muted/50` is the same
      same-element :has() form Card already proved, keyed on a plain
      attribute rather than a marker.
    - table-row's `data-[state=selected]:bg-muted` is Tailwind's own
@@ -26,10 +26,10 @@
      dimension would be — this state has exactly one styled value
      ("selected"; the absence of the attribute is the unstyled default), so
      it is not modeled as a recipe.Dimension.
-   - table-head's and table-cell's `has-[[role="checkbox"]]:pr-0` (same
-     shape as above) and `[&>[role="checkbox"]]:translate-y-[2px]` are NOT
+   - table-head's and table-cell's `has-[[role=checkbox]]:pr-0` (same
+     shape as above) and `[&>[role=checkbox]]:translate-y-[2px]` are NOT
      stray rules belonging to some other component: the styled subject is a
-     bare `[role="checkbox"]` child with no data-gsxui-slot marker of its
+     bare `[role=checkbox]` child with no data-gsxui-slot marker of its
      own, so this is table-head/table-cell describing their OWN
      children's presentation — the same "[&>svg]:size-3" shape Badge's own
      recipe already uses for an unmarked child, not the Card/Calendar
@@ -50,7 +50,7 @@
   .gsxui-recipe-table-row {
     @apply border-b transition-colors;
     @apply hover:bg-muted/50;
-    @apply has-[[aria-expanded="true"]]:bg-muted/50;
+    @apply has-[[aria-expanded=true]]:bg-muted/50;
     @apply data-[state=selected]:bg-muted;
     @apply [[data-gsxui-slot-table-body]_&]:last:border-b-0;
     @apply [[data-gsxui-slot-table-footer]_&]:last:border-b-0;
@@ -58,14 +58,14 @@
 
   .gsxui-recipe-table-head {
     @apply h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground;
-    @apply has-[[role="checkbox"]]:pr-0;
-    @apply [&>[role="checkbox"]]:translate-y-[2px];
+    @apply has-[[role=checkbox]]:pr-0;
+    @apply [&>[role=checkbox]]:translate-y-[2px];
   }
 
   .gsxui-recipe-table-cell {
     @apply p-2 align-middle whitespace-nowrap;
-    @apply has-[[role="checkbox"]]:pr-0;
-    @apply [&>[role="checkbox"]]:translate-y-[2px];
+    @apply has-[[role=checkbox]]:pr-0;
+    @apply [&>[role=checkbox]]:translate-y-[2px];
   }
 
   .gsxui-recipe-table-caption {

@@ -1,4 +1,4 @@
-package ui
+package canonical
 
 import (
 	"github.com/gsxhq/gsx"
@@ -94,7 +94,7 @@ import (
 // icon.Minus already defaults to size-4, kept regardless per the map).
 component InputOTP(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "flex items-center gap-2 has-[[data-gsxui-slot-input-otp-input]:disabled]:opacity-50" }
+		class={ inputOtp.Root() }
 		data-gsxui-input-otp
 		data-gsxui-slot-input-otp
 	>
@@ -102,7 +102,7 @@ component InputOTP(children gsx.Node, attrs gsx.Attrs) {
 			data-gsxui-input-otp-input
 			inputmode="numeric"
 			autocomplete="one-time-code"
-			class={ "cursor-text disabled:cursor-not-allowed" }
+			class={ inputOtp.Input() }
 			{ attrs... }
 			data-gsxui-slot-input-otp-input
 		/>
@@ -115,9 +115,7 @@ component InputOTP(children gsx.Node, attrs gsx.Attrs) {
 // InputOTP's own doc comment).
 component InputOTPGroup(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={
-			"flex items-center rounded-lg has-[[aria-invalid=true]]:border-destructive has-[[aria-invalid=true]]:ring-3 has-[[aria-invalid=true]]:ring-destructive/20 dark:has-[[aria-invalid=true]]:ring-destructive/40"
-		}
+		class={ inputOtp.Group() }
 		{ attrs... }
 		data-gsxui-slot-input-otp-group
 	>
@@ -133,9 +131,7 @@ component InputOTPSlot(attrs gsx.Attrs) {
 	<div
 		data-gsxui-input-otp-slot
 		data-active="false"
-		class={
-			"relative flex size-8 items-center justify-center border-y border-r border-input text-sm transition-all outline-none first:rounded-l-lg first:border-l last:rounded-r-lg aria-invalid:border-destructive data-[active=true]:z-10 data-[active=true]:border-ring data-[active=true]:ring-3 data-[active=true]:ring-ring/50 data-[active=true]:aria-invalid:border-destructive data-[active=true]:aria-invalid:ring-destructive/20 dark:bg-input/30 dark:data-[active=true]:aria-invalid:ring-destructive/40"
-		}
+		class={ inputOtp.Slot() }
 		{ attrs... }
 		data-gsxui-slot-input-otp-slot
 	></div>
@@ -143,12 +139,7 @@ component InputOTPSlot(attrs gsx.Attrs) {
 
 // InputOTPSeparator: icon.Minus, static, unchanged from shadcn.
 component InputOTPSeparator(attrs gsx.Attrs) {
-	<div
-		role="separator"
-		class={ "[&_svg:not([class*='size-'])]:size-4" }
-		{ attrs... }
-		data-gsxui-slot-input-otp-separator
-	>
+	<div role="separator" class={ inputOtp.Separator() } { attrs... } data-gsxui-slot-input-otp-separator>
 		<icon.Minus/>
 	</div>
 }

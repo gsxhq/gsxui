@@ -350,17 +350,25 @@ input[type="range"] {
 }
 
 /* InputOTP's one real input must cover the visual slots while remaining
-   focusable and clickable in every style. */
-:where([data-gsxui-slot-input-otp]) {
-  position: relative;
-}
-:where([data-gsxui-slot-input-otp-input]) {
-  position: absolute;
-  inset: 0;
-  z-index: 10;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
+   focusable and clickable in every style. InputOTP's own migration to the
+   slot axis gave data-gsxui-slot-input-otp/-input real (0,1,0) recipe-class
+   specificity, so these two mechanics rules — previously unlayered and
+   winning outright — now need @layer utilities placement and an unwrapped
+   (no :where()) selector to clear the layer gate's own (0,1,0) floor, same
+   fallout shape the playbook already documents for Label/Separator's
+   composed consumers. */
+@layer utilities {
+  [data-gsxui-slot-input-otp] {
+    position: relative;
+  }
+  [data-gsxui-slot-input-otp-input] {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
 }
 
 /* Select's native form bridge remains available to forms and labels without

@@ -26,7 +26,6 @@
 @import "./default/field.css";
 @import "./default/input.css";
 @import "./default/input-group.css";
-@import "./default/input-otp.css";
 @import "./default/native-select.css";
 @import "./default/select.css";
 @import "./default/command.css";
@@ -77,6 +76,20 @@
      specificity-floor reason as Card header below. */
   [data-gsxui-slot-accordion-trigger]::-webkit-details-marker {
     display: none;
+  }
+
+  /* InputOTP's fake-caret overlay/caret: ui/input-otp.js creates both
+     elements at runtime with no class attribute at all (see
+     ui/input-otp.js's own setAttribute calls), and neither has a call site
+     in registry/canonical/input-otp.gsx for a SlotClass accessor to
+     resolve into — nothing in this migration's mechanism can carry a
+     resolved recipe class to a JS-created element. Unwrapped for the same
+     specificity-floor reason as Card header above. */
+  [data-gsxui-slot-input-otp-caret-overlay] {
+    @apply pointer-events-none absolute inset-0 flex items-center justify-center;
+  }
+  [data-gsxui-slot-input-otp-caret] {
+    @apply h-4 w-px animate-caret-blink bg-foreground duration-1000;
   }
 
   /* Card header: container-name/container-type are plain CSS properties with

@@ -329,4 +329,21 @@ test("Table row's data-state=selected background outranks an unselected row", as
   expect(selectedBg).toBe("oklch(0.97 0 0)");
   expect(unselectedBg).toBe("rgba(0, 0, 0, 0)");
 });
+test("InputOTPGroup's has-[[aria-invalid=true]] border fires when a descendant slot is invalid", async ({ page }) => {
+  // Regression pin for the escaped-quote bug this migration hit: an
+  // arbitrary attribute-value selector written with double quotes
+  // (has-[[aria-invalid="true"]]) resolves into a Go string literal with a
+  // literal backslash-escaped quote in the generated .gsx, which Tailwind's
+  // static content scanner reads as a DIFFERENT candidate than the
+  // (correctly unescaped) runtime class — the utility silently never
+  // applies. Unquoted attribute values (has-[[aria-invalid=true]]) avoid
+  // the escaping entirely.
+  await page.goto("/x/input-otp/basic");
+  const invalidGroup = page.locator("[data-gsxui-slot-input-otp-group]").first();
+  const validGroup = page.locator("[data-gsxui-slot-input-otp-group]").nth(1);
+  const invalidBorder = await invalidGroup.evaluate((n) => getComputedStyle(n).borderColor);
+  const validBorder = await validGroup.evaluate((n) => getComputedStyle(n).borderColor);
+  expect(invalidBorder).not.toBe(validBorder);
+  expect(invalidBorder).toBe("oklch(0.577 0.245 27.325)");
+});
 

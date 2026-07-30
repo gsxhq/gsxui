@@ -41,6 +41,7 @@ var all = map[string]recipe.Shape{
 	Checkbox.Component:    Checkbox,
 	Accordion.Component:   Accordion,
 	Table.Component:       Table,
+	InputOTP.Component:    InputOTP,
 }
 
 // All returns every declared component shape, keyed by component name.

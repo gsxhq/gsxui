@@ -104,7 +104,7 @@ func TableRow(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line table.gsx:33:2
 		_gsxgw.S("<tr class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("border-b transition-colors hover:bg-muted/50 has-[[aria-expanded=\"true\"]]:bg-muted/50 data-[state=selected]:bg-muted [[data-gsxui-slot-table-body]_&]:last:border-b-0 [[data-gsxui-slot-table-footer]_&]:last:border-b-0"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("border-b transition-colors hover:bg-muted/50 has-[[aria-expanded=true]]:bg-muted/50 data-[state=selected]:bg-muted [[data-gsxui-slot-table-body]_&]:last:border-b-0 [[data-gsxui-slot-table-footer]_&]:last:border-b-0"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-table-row"})
@@ -123,7 +123,7 @@ func TableHead(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line table.gsx:45:2
 		_gsxgw.S("<th class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground has-[[role=\"checkbox\"]]:pr-0 [&>[role=\"checkbox\"]]:translate-y-[2px]"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground has-[[role=checkbox]]:pr-0 [&>[role=checkbox]]:translate-y-[2px]"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-table-head"})
@@ -142,24 +142,24 @@ func TableCell(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line table.gsx:57:2
 		_gsxgw.S("<td class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("p-2 align-middle whitespace-nowrap has-[[role=\"checkbox\"]]:pr-0 [&>[role=\"checkbox\"]]:translate-y-[2px]"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("p-2 align-middle whitespace-nowrap has-[[role=checkbox]]:pr-0 [&>[role=checkbox]]:translate-y-[2px]"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-table-cell"})
 		_gsxgw.BoolAttr("data-gsxui-slot-table-cell", true)
 		_gsxgw.S(">")
-//line table.gsx:64:3
+//line table.gsx:62:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</td>")
 		return _gsxgw.Err()
 	})
 }
 
-//line table.gsx:68:1
+//line table.gsx:66:1
 func TableCaption(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line table.gsx:69:2
+//line table.gsx:67:2
 		_gsxgw.S("<caption class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("mt-4 text-sm text-muted-foreground"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -167,7 +167,7 @@ func TableCaption(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-table-caption"})
 		_gsxgw.BoolAttr("data-gsxui-slot-table-caption", true)
 		_gsxgw.S(">")
-//line table.gsx:70:3
+//line table.gsx:68:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</caption>")
 		return _gsxgw.Err()

@@ -202,6 +202,30 @@
         }
       }
     },
+    "input-otp": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
+        "group": {
+          "base": true,
+          "dimensions": {}
+        },
+        "input": {
+          "base": true,
+          "dimensions": {}
+        },
+        "separator": {
+          "base": true,
+          "dimensions": {}
+        },
+        "slot": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "kbd": {
       "slots": {
         "": {
@@ -899,6 +923,72 @@
           }
         }
       },
+      "input-otp": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "items-center",
+              "gap-2",
+              "has-[[data-gsxui-slot-input-otp-input]:disabled]:opacity-50"
+            ],
+            "dimensions": {}
+          },
+          "group": {
+            "base": [
+              "flex",
+              "items-center",
+              "rounded-lg",
+              "has-[[aria-invalid=true]]:border-destructive",
+              "has-[[aria-invalid=true]]:ring-3",
+              "has-[[aria-invalid=true]]:ring-destructive/20",
+              "dark:has-[[aria-invalid=true]]:ring-destructive/40"
+            ],
+            "dimensions": {}
+          },
+          "input": {
+            "base": [
+              "cursor-text",
+              "disabled:cursor-not-allowed"
+            ],
+            "dimensions": {}
+          },
+          "separator": {
+            "base": [
+              "[\u0026_svg:not([class*='size-'])]:size-4"
+            ],
+            "dimensions": {}
+          },
+          "slot": {
+            "base": [
+              "relative",
+              "flex",
+              "size-8",
+              "items-center",
+              "justify-center",
+              "border-y",
+              "border-r",
+              "border-input",
+              "text-sm",
+              "transition-all",
+              "outline-none",
+              "first:rounded-l-lg",
+              "first:border-l",
+              "last:rounded-r-lg",
+              "aria-invalid:border-destructive",
+              "data-[active=true]:z-10",
+              "data-[active=true]:border-ring",
+              "data-[active=true]:ring-3",
+              "data-[active=true]:ring-ring/50",
+              "data-[active=true]:aria-invalid:border-destructive",
+              "data-[active=true]:aria-invalid:ring-destructive/20",
+              "dark:bg-input/30",
+              "dark:data-[active=true]:aria-invalid:ring-destructive/40"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
       "kbd": {
         "slots": {
           "": {
@@ -1128,8 +1218,8 @@
               "p-2",
               "align-middle",
               "whitespace-nowrap",
-              "has-[[role=\"checkbox\"]]:pr-0",
-              "[\u0026\u003e[role=\"checkbox\"]]:translate-y-[2px]"
+              "has-[[role=checkbox]]:pr-0",
+              "[\u0026\u003e[role=checkbox]]:translate-y-[2px]"
             ],
             "dimensions": {}
           },
@@ -1158,8 +1248,8 @@
               "font-medium",
               "whitespace-nowrap",
               "text-foreground",
-              "has-[[role=\"checkbox\"]]:pr-0",
-              "[\u0026\u003e[role=\"checkbox\"]]:translate-y-[2px]"
+              "has-[[role=checkbox]]:pr-0",
+              "[\u0026\u003e[role=checkbox]]:translate-y-[2px]"
             ],
             "dimensions": {}
           },
@@ -1168,7 +1258,7 @@
               "border-b",
               "transition-colors",
               "hover:bg-muted/50",
-              "has-[[aria-expanded=\"true\"]]:bg-muted/50",
+              "has-[[aria-expanded=true]]:bg-muted/50",
               "data-[state=selected]:bg-muted",
               "[[data-gsxui-slot-table-body]_\u0026]:last:border-b-0",
               "[[data-gsxui-slot-table-footer]_\u0026]:last:border-b-0"
@@ -1766,6 +1856,72 @@
           }
         }
       },
+      "input-otp": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "items-center",
+              "gap-2",
+              "has-[[data-gsxui-slot-input-otp-input]:disabled]:opacity-50"
+            ],
+            "dimensions": {}
+          },
+          "group": {
+            "base": [
+              "flex",
+              "items-center",
+              "rounded-lg",
+              "has-[[aria-invalid=true]]:border-destructive",
+              "has-[[aria-invalid=true]]:ring-3",
+              "has-[[aria-invalid=true]]:ring-destructive/20",
+              "dark:has-[[aria-invalid=true]]:ring-destructive/40"
+            ],
+            "dimensions": {}
+          },
+          "input": {
+            "base": [
+              "cursor-text",
+              "disabled:cursor-not-allowed"
+            ],
+            "dimensions": {}
+          },
+          "separator": {
+            "base": [
+              "[\u0026_svg:not([class*='size-'])]:size-4"
+            ],
+            "dimensions": {}
+          },
+          "slot": {
+            "base": [
+              "relative",
+              "flex",
+              "size-8",
+              "items-center",
+              "justify-center",
+              "border-y",
+              "border-r",
+              "border-input",
+              "text-sm",
+              "transition-all",
+              "outline-none",
+              "first:rounded-l-lg",
+              "first:border-l",
+              "last:rounded-r-lg",
+              "aria-invalid:border-destructive",
+              "data-[active=true]:z-10",
+              "data-[active=true]:border-ring",
+              "data-[active=true]:ring-3",
+              "data-[active=true]:ring-ring/50",
+              "data-[active=true]:aria-invalid:border-destructive",
+              "data-[active=true]:aria-invalid:ring-destructive/20",
+              "dark:bg-input/30",
+              "dark:data-[active=true]:aria-invalid:ring-destructive/40"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
       "kbd": {
         "slots": {
           "": {
@@ -1995,8 +2151,8 @@
               "p-2",
               "align-middle",
               "whitespace-nowrap",
-              "has-[[role=\"checkbox\"]]:pr-0",
-              "[\u0026\u003e[role=\"checkbox\"]]:translate-y-[2px]"
+              "has-[[role=checkbox]]:pr-0",
+              "[\u0026\u003e[role=checkbox]]:translate-y-[2px]"
             ],
             "dimensions": {}
           },
@@ -2025,8 +2181,8 @@
               "font-medium",
               "whitespace-nowrap",
               "text-foreground",
-              "has-[[role=\"checkbox\"]]:pr-0",
-              "[\u0026\u003e[role=\"checkbox\"]]:translate-y-[2px]"
+              "has-[[role=checkbox]]:pr-0",
+              "[\u0026\u003e[role=checkbox]]:translate-y-[2px]"
             ],
             "dimensions": {}
           },
@@ -2035,7 +2191,7 @@
               "border-b",
               "transition-colors",
               "hover:bg-muted/50",
-              "has-[[aria-expanded=\"true\"]]:bg-muted/50",
+              "has-[[aria-expanded=true]]:bg-muted/50",
               "data-[state=selected]:bg-muted",
               "[[data-gsxui-slot-table-body]_\u0026]:last:border-b-0",
               "[[data-gsxui-slot-table-footer]_\u0026]:last:border-b-0"
