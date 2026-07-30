@@ -563,13 +563,18 @@ test("TooltipContent keeps its own has-kbd padding when it contains a Kbd", asyn
 // every property in that group.
 
 test("Input's caller text-lg stays overridable against the retained md:text-sm", async ({ page }) => {
+  const response = await page.goto("/f/style-contract");
+  expect(response?.status(), "style contract fixture response").toBe(200);
 
   const el = page.locator('[data-style-contract="input-caller-text-size"]');
   const fontSize = await el.evaluate((n) => getComputedStyle(n).fontSize);
   // text-lg (18px) must beat the retained md:text-sm (14px) rule.
   expect(fontSize).toBe("18px");
+});
 
 test("Textarea's caller text-lg stays overridable against the retained md:text-sm", async ({ page }) => {
+  const response = await page.goto("/f/style-contract");
+  expect(response?.status(), "style contract fixture response").toBe(200);
 
   const el = page.locator('[data-style-contract="textarea-caller-text-size"]');
   const fontSize = await el.evaluate((n) => getComputedStyle(n).fontSize);
