@@ -135,7 +135,7 @@ func TestSidebarPrimitiveCompositionAndCallerClassPlacement(t *testing.T) {
 			name:      "separator",
 			got:       render(t, ui.SidebarSeparator(gsx.Attrs{{Key: "class", Value: "caller"}})),
 			want:      `data-gsxui-slot-sidebar-separator data-gsxui-slot-separator`,
-			wantClass: `class="caller"`,
+			wantClass: canonicalSeparatorClass("horizontal", "caller"),
 		},
 	}
 	for _, tc := range cases {
@@ -366,8 +366,14 @@ func TestSidebarMenuSkeletonComposesSkeletonPartsAndKeepsDynamicWidth(t *testing
 		`data-gsxui-slot-sidebar-menu-skeleton-text data-gsxui-slot-skeleton`,
 		`--skeleton-width:`,
 	)
-	// Skeleton is on the slot axis: its parts legitimately carry the
-	// recipe's resolved class now. Only the legacy hooks are disallowed.
+	// SidebarMenuSkeleton composes ui.Skeleton, which is migrated onto the slot
+	// axis and therefore renders its own recipe utilities. Sidebar itself must
+	// still contribute no presentation of its own, so assert on the WRAPPER
+	// rather than the whole subtree, and keep the legacy-hook bans absolute.
+	wrapper := got[:strings.Index(got, ">")+1]
+	if strings.Contains(wrapper, ` class=`) {
+		t.Fatalf("sidebar-menu-skeleton wrapper retained presentation classes\nin: %s", got)
+	}
 	if strings.Contains(got, `data-sidebar=`) || strings.Contains(got, `data-slot=`) {
 		t.Fatalf("skeleton composition retained legacy styling hooks\nin: %s", got)
 	}

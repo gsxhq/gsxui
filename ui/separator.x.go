@@ -13,9 +13,9 @@ import (
 
 //line separator.gsx:5:1
 // Separator is the shadcn/ui Separator. orientation: "" (default,
-// "horizontal") | "vertical" — stamped onto data-orientation, which one
-// verbatim class string dispatches on via Tailwind's data-[orientation=...]
-// selectors, so no variant switch is needed. Radix's decorative prop (its
+// "horizontal") | "vertical" — stamped onto data-orientation, and also
+// drives the slot axis's own orientation dimension below, resolved to
+// concrete utilities at generation time. Radix's decorative prop (its
 // default true) is not ported — see docs/jsx-parity.md.
 
 //line separator.gsx:10:1
@@ -40,7 +40,17 @@ func _gsxrenderSeparator(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, orientation
 		_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
 		_gsxgw.S("\"")
 	}
-	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+	_gsxv0 := "shrink-0 bg-border"
+	var _gsxv1 string
+	switch orientation {
+	case "vertical":
+		_gsxv1 = "h-full w-px"
+	default:
+		_gsxv1 = "h-px w-full"
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-separator"})
 	_gsxgw.BoolAttr("data-gsxui-slot-separator", true)

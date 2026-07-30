@@ -16,14 +16,22 @@ import (
 )
 
 var all = map[string]recipe.Shape{
-	Button.Component:   Button,
-	Card.Component:     Card,
-	Badge.Component:    Badge,
-	Alert.Component:    Alert,
-	Skeleton.Component: Skeleton,
-	Spinner.Component:  Spinner,
-	Progress.Component: Progress,
-	Avatar.Component:   Avatar,
+	Button.Component:      Button,
+	Card.Component:        Card,
+	Badge.Component:       Badge,
+	Alert.Component:       Alert,
+	Skeleton.Component:    Skeleton,
+	Spinner.Component:     Spinner,
+	Progress.Component:    Progress,
+	Avatar.Component:      Avatar,
+	Button.Component:      Button,
+	Card.Component:        Card,
+	Badge.Component:       Badge,
+	Alert.Component:       Alert,
+	Label.Component:       Label,
+	AspectRatio.Component: AspectRatio,
+	Separator.Component:   Separator,
+	Kbd.Component:         Kbd,
 }
 
 // All returns every declared component shape, keyed by component name.

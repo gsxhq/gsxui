@@ -59,13 +59,16 @@ func TestButtonGroupTextAttrsFallThrough(t *testing.T) {
 }
 
 // TestButtonGroupSeparatorDefaultPinned proves the "vertical" default (the
-// opposite of Separator's own "horizontal" default) and that
-// data-[orientation=vertical]:h-auto / bg-input win their respective
-// tailwind-merge conflicts against Separator's own base classes
-// (data-[orientation=vertical]:h-full, bg-border — both dropped).
+// opposite of Separator's own "horizontal" default). Separator is migrated
+// onto the slot axis now, so its own utilities render as a real class here;
+// bg-input and the vertical h-auto still win over Separator's own bg-border
+// and h-full, but via the unwrapped default.css rule in @layer utilities
+// (assets/css/styles/default.css's ButtonGroupSeparator comment), not
+// tailwind-merge — Separator's class and this element's other marker-keyed
+// rule both render, layer/specificity settles the conflict.
 func TestButtonGroupSeparatorDefaultPinned(t *testing.T) {
 	got := render(t, ui.ButtonGroupSeparator("", nil))
-	want := `<div role="none" data-orientation="vertical" data-gsxui-slot-button-group-separator data-gsxui-slot-separator></div>`
+	want := `<div role="none" data-orientation="vertical" ` + canonicalSeparatorClass("vertical") + ` data-gsxui-slot-button-group-separator data-gsxui-slot-separator></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

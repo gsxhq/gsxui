@@ -1,0 +1,28 @@
+/* Source: gsxui@aafeaafd410d7411b0e3bd4382cbe3dfacc5e988
+   assets/css/styles/default.css, Label block (around line 250), with its two
+   relational rules folded in as arbitrary variants on the root slot. Nova
+   and Maia have not diverged on Label yet, so this file is byte-identical to
+   registry/styles/maia/label.css.
+
+   Both relational rules react to context OUTSIDE Label's own markers rather
+   than to one of Label's own dimensions, so neither is a `has-[...]:` case
+   (nothing is being detected inside Label) nor a same-element `[&.foo]:`
+   case (no consumer-supplied class):
+
+   - `:where([data-disabled="true"]) :where([data-gsxui-slot-label])` is an
+     ANCESTOR carrying data-disabled="true" -> Tailwind's arbitrary
+     ancestor-descendant variant, `[[data-disabled=true]_&]:`.
+   - `:disabled ~ :where([data-gsxui-slot-label])` is a preceding SIBLING
+     that is :disabled -> Tailwind's arbitrary general-sibling variant,
+     `[:disabled~&]:`.
+
+   Both confirmed compiling with this repo's Tailwind v4 CLI before use (same
+   method jstest/support/compiled-css-audit.test.ts uses), producing exactly
+   `[data-disabled=true] &` and `:disabled~&` in the compiled output. */
+@layer components {
+  .gsxui-recipe-label {
+    @apply flex items-center gap-2 text-sm leading-none font-medium select-none;
+    @apply [[data-disabled=true]_&]:pointer-events-none [[data-disabled=true]_&]:opacity-50;
+    @apply [:disabled~&]:cursor-not-allowed [:disabled~&]:opacity-50;
+  }
+}

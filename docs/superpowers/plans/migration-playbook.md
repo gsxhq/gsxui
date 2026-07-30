@@ -463,3 +463,190 @@ variant on the variant's own rule:
    migrations sharing a worktree need to `git diff --stat` before touching
    anything and again before committing, to separate "my diff" from "their
    live WIP" — and commit only the former.
+
+## Four small components in one pass (Label, AspectRatio, Separator, Kbd)
+
+This wave proved the parallel protocol on cheap work (3-7 rules each) and
+was the first to do more than one component per agent turn. It also
+exercised the first hyphenated component end-to-end.
+
+### The hyphenated case (AspectRatio) already had infrastructure — verify, don't build
+
+The brief flagged AspectRatio as "the interesting one" and warned the
+kebab-registry/camel-Go split had never been exercised end to end. In fact
+`internal/stylegen/identifier.go` (`componentIdentifier`) and its dedicated
+test (`internal/stylegen/identifier_test.go`, built around a synthetic
+`input-group` shape) already existed and already covered this — a prior
+wave must have built the mechanism generically before any hyphenated
+component actually used it. Nothing needed writing in `internal/stylegen`;
+the work was purely: declare `Component: "aspect-ratio"` in the shape, let
+`GenerateAccessors` derive `aspectRatioRecipe`/`aspectRatio` itself, and
+verify both halves hold simultaneously — `registry/canonical/shapes/aspect-ratio.go`
+still says `Component: "aspect-ratio"`, `registry/canonical/aspect-ratio.gsx`
+calls `aspectRatio.Root()`, and `registry/styles/{nova,maia}/aspect-ratio.css`
+still emits `.gsxui-recipe-aspect-ratio`. **Lesson for later components:**
+before assuming a brief's "this is unproven" is still true, grep for the
+mechanism — a prior wave may have already generalized it past the specific
+component that motivated it.
+
+### A new failure mode: the residual-accessor-call check scans doc comments too
+
+`internal/stylegen/resolve.go`'s final safety net (`residualAccessorCall`)
+regex-matches the literal text `separator.Orientation(` against the
+**entire formatted source**, comments included, not just code. Separator's
+canonical doc comment described the accessor call in prose ("resolved to
+concrete utilities by separator.Orientation()") and `go run ./cmd/stylegen`
+failed with "resolved GSX still contains a recipe accessor call
+\"separator.Orientation(\"" even though the actual `class={...}` call had
+resolved correctly — the match was in the comment, not the leftover code.
+**Rule for later components:** don't name an accessor call in
+`receiver.Method(` form inside a canonical `.gsx` doc comment; describe the
+mechanism instead ("resolved to concrete utilities at generation time").
+Cheap to avoid, confusing to diagnose the first time (the error message
+doesn't distinguish "found in a comment" from "found in unresolved code").
+
+### A new relational form: reacting to context outside the component's own markers
+
+Both Label and Kbd needed a shape `has-[...]:` and `[&.foo]:` don't cover:
+a rule keyed on something that is neither a descendant/ancestor MARKER of
+the same component nor a consumer-supplied class, but genuine surrounding
+DOM state.
+
+- Label: `:where([data-disabled="true"]) :where([data-gsxui-slot-label])`
+  (an ancestor's own `data-disabled` attribute) and
+  `:disabled ~ :where([data-gsxui-slot-label])` (a preceding sibling's
+  pseudo-class) translate as `[[data-disabled=true]_&]:` and `[:disabled~&]:`
+  respectively — Tailwind's arbitrary-variant `&`-placeholder syntax handles
+  both an ancestor-descendant compound and a general sibling combinator.
+- Kbd: `:where([data-gsxui-slot-tooltip-content]) :where([data-gsxui-slot-kbd])`
+  (an ancestor from a DIFFERENT component) translates as
+  `[[data-gsxui-slot-tooltip-content]_&]:`. The `.dark` variant of the same
+  rule, `:where(.dark [data-gsxui-slot-tooltip-content]) :where([data-gsxui-slot-kbd])`,
+  needs **no** separate `dark:` Tailwind prefix — `.dark` is already baked
+  into the arbitrary selector itself (`[.dark_[data-gsxui-slot-tooltip-content]_&]:`),
+  and prefixing it with `dark:` on top double-applies the condition
+  (`&:is(.dark *) { .dark ... & { ... } }` in the compiled output — verified
+  by compiling both forms with the Tailwind v4 CLI and diffing the result
+  before choosing the syntax, same caution as the `[a&]:hover:` form in the
+  Badge/Alert wave).
+
+All of these compiled cleanly on the first attempt once checked directly
+against the CLI — this repeatedly cheap verification step (never run
+Playwright to check syntax; run `tailwindcss -i - --cwd . --silent` on a
+throwaway file first) keeps paying for itself.
+
+### Migrating a component X breaks an UNMIGRATED component that composes X — this recurred four times, not once
+
+Card/Badge/Alert's playbook already covered "your shape disagrees with a
+sibling's rule" (the Calendar stray). This wave hit a DIFFERENT and more
+consequential shape of collateral damage: giving a component's own recipe
+class real `(0,1,0)` specificity breaks an *unmigrated* consumer that
+composes it directly (`<Label>`, `<Separator>` used as the underlying
+element inside another component's `.gsx`), because the consumer's own
+default.css rule targeting its own extra marker is still `:where()`-wrapped
+at `(0,0,0)` and can no longer win the cascade regardless of source order.
+This is not hypothetical or rare — it happened for every single relational
+consumer both of these two components have:
+
+- Label: `FieldLabel` (`field.gsx`) composes `<Label>` directly. Its own
+  `[data-gsxui-slot-field-label] { flex w-fit gap-2 leading-snug }` rule
+  contested Label's own `leading-none` on the `line-height` property.
+- Separator: THREE composed consumers exist
+  (`ButtonGroupSeparator`, `ItemSeparator`, `SidebarSeparator`), and TWO of
+  the three had a real property conflict — `ButtonGroupSeparator`'s
+  `bg-input`/`h-auto` vs Separator's own `bg-border`/`h-full`, and
+  `SidebarSeparator`'s `w-auto`/`bg-sidebar-border` vs Separator's own
+  `w-full`/`bg-border`. `ItemSeparator`'s own rule (`my-2`, a margin) and
+  `FieldSeparator`'s (`absolute inset-0 top-1/2`, positioning) don't
+  conflict with anything Separator itself sets, so those needed no change
+  at all — **check each consumer's actual declared properties against the
+  slot's own recipe utilities; don't assume every same-element compound
+  rule needs moving just because one sibling does.**
+
+**How this surfaces:** not from grepping default.css (a plain grep for the
+migrated component's own marker doesn't show you the *other* component's
+`.gsx` composing it) but from `go test ./...` itself —
+`internal/stylegen`'s `layercheck_test.go` fails
+(`TestCheckLayerPrecedenceAcceptsTheCurrentTree` and friends) naming the
+exact selector, property, and consuming component: *"under style X, SELECTOR
+applies PROPERTY in @layer components, but that element renders through
+COMPONENT, whose own utilities win the layer ordering."* This is the
+correct signal, not a false positive from stale test infrastructure. **Rule
+for later components: after regenerating and building, run the full test
+suite before moving on — this class of break only shows up there, not in
+`stylegen --check` or a visual reading of default.css.**
+
+**The fix is uniform:** move exactly the conflicting rule (not necessarily
+the whole originally-contiguous block) into `@layer utilities`, unwrapped
+(no `:where()`), with a comment naming which migration caused the fallout
+and which properties actually conflict — same escape-hatch mechanism Card's
+`container-name` rule already established, just triggered by a DIFFERENT
+component's migration instead of the rule's own component's migration. Test
+pins on the composing component (`ButtonGroupSeparatorDefaultPinned`,
+`ItemSeparatorDefaultPinned`, `SidebarSeparatorPinned`,
+`FieldLabelPinned`/`FieldSeparatorPinned`) then need the composed
+component's now-real canonical class spliced into their `want` string —
+exactly Card/Badge/Alert's Step 9 finding, just triggered transitively
+through a compose relationship instead of directly.
+
+### Test-pin plumbing: build one recipe-loading helper per component, reuse everywhere
+
+Following `button_test.go`'s `novaButtonRecipe`/`canonicalButtonClass`
+pattern for every migrated component (`canonicalLabelClass`,
+`canonicalAspectRatioClass`, `canonicalSeparatorClass`,
+`canonicalKbdClass`/`canonicalKbdGroupClass`) paid off immediately: every
+transitive-fallout pin above (`FieldLabelPinned`, `ButtonGroupSeparatorDefaultPinned`,
+`ItemSeparatorDefaultPinned`, `SidebarSeparatorPinned` inside
+`sidebar_test.go`'s table, `FieldSeparatorNoChildrenPinned`/`WithChildrenPinned`,
+and `forms_css_contract_test.go`'s `TestFormControlsExposeCSSOnlySlots`/
+`TestFormControlCompositionTokenOrder`) just called the helper rather than
+hand-computing or guessing the resolved utility string. `strings.Count(got,
+class) != 1 || strings.Count(got, "class=") != 1` (not a bare `Contains`)
+is the right assertion shape for "the caller class merged in exactly once,"
+matching `assertButtonCallerAttrsOnce`'s existing pattern.
+
+**`TestFormControlsExposeCSSOnlySlots` needed a new per-name exception, not
+a blanket rule change.** That test's design ("only Button-composing parts
+render a `class=` attribute; everything else in the forms family is
+CSS-only") pre-dates any slot-axis migration touching a composed part other
+than Button. `FieldLabel` (composes Label) and `FieldSeparator` (composes
+Separator) both trip the blanket "must not render a class" check the moment
+their underlying primitive migrates — the fix is one `case` per newly-migrated
+composed part in the existing `switch`, asserting the exact canonical class
+now legitimately renders, mirroring the pre-existing `InputGroupButton` case
+for Button. Expect one new case per migrated component that some OTHER,
+still-unmigrated component composes directly.
+
+### Attribute-order surprise: gsx floats `class=` ahead of other attributes at render time
+
+`AspectRatio`'s canonical source writes `style={...}` before `class={...}`
+in the `.gsx` (following the existing style-then-class ordering already in
+the file), but the actual rendered HTML puts `class=` FIRST, ahead of
+`style=`. This is a gsx rendering behavior (class merging happens ahead of
+other attributes), not a stylegen or migration bug — the fix is in the
+test's expected string, not the source. Worth checking rendered attribute
+order directly rather than assuming it matches source order when a
+component's class attr isn't the first attribute in the tag.
+
+### Doing four components in one pass: real time savings, one real risk
+
+Investigation reuse was substantial — reading `internal/recipe/shape.go`,
+`internal/stylegen/accessors.go`, and Button/Badge/Card as worked examples
+once covered all four; the Tailwind-CLI-verification habit and the
+recipe-test-helper pattern were written once (for Label) and then just
+copied per component. The one real risk: **shared generated/registry files
+(`registry/canonical/shapes/shapes.go`, `registry/generated/recipes.json`)
+accumulate edits across all four components in the working tree** even
+though the four are logically independent and must land as four separate,
+individually-buildable commits. Committing straight from an "all four done"
+working tree bakes later components' registrations into the first commit's
+diff. The only reliable fix found: temporarily move the not-yet-committed
+components' shape/recipe/gsx/css files out of the tree (a scratch stash
+directory), truncate the shared files back to the state that existed before
+this wave started plus only the components already committed, rerun
+`stylegen`/`gsx generate` for real (not by hand-editing the diff) so the
+shared generated files regenerate correctly for that partial set, verify
+gates and tests pass at THAT checkpoint, commit, then restore the next
+component's files and repeat. This is mechanical but not optional — a
+diff-splitting shortcut (hand-trimming the JSON or the map literal) risks
+committing a shared file in a state `stylegen` never actually produced.

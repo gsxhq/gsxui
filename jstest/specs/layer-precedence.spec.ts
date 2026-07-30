@@ -197,4 +197,46 @@ test("Avatar keeps its fixed size-8 dimensions", async ({ page }) => {
   expect(width).toBe("32px");
   expect(height).toBe("32px");
 });
+test("Label keeps its tight leading and medium weight", async ({ page }) => {
+  await page.goto("/x/label/basic");
+  const el = page.locator("[data-gsxui-slot-label]").first();
+  const { lineHeight, fontWeight } = await el.evaluate((n) => {
+    const computed = getComputedStyle(n);
+    return { lineHeight: computed.lineHeight, fontWeight: computed.fontWeight };
+  });
+  expect(lineHeight).toBe("14px");
+  expect(fontWeight).toBe("500");
+});
+test("AspectRatio keeps the ratio it was given", async ({ page }) => {
+  // AspectRatio's only recipe utility is "block", which is a no-op on a
+  // <div> (already block by the user-agent stylesheet) — there is no
+  // recipe property this component could visibly lose to a layer
+  // regression. The aspect-ratio value itself comes from an inline style,
+  // not the recipe, so this pin protects the feature end-to-end rather
+  // than a layer-precedence-specific regression.
+  await page.goto("/x/aspect-ratio/basic");
+  const el = page.locator("[data-gsxui-slot-aspect-ratio]").first();
+  const aspectRatio = await el.evaluate((n) => getComputedStyle(n).aspectRatio);
+  expect(aspectRatio).toBe("16 / 9");
+});
+test("Separator keeps its hairline thickness in both orientations", async ({ page }) => {
+  await page.goto("/x/separator/orientation");
+  const separators = page.locator("[data-gsxui-slot-separator]");
+  const horizontal = separators.nth(0);
+  const vertical = separators.nth(1);
+  await expect(horizontal).toHaveAttribute("data-orientation", "horizontal");
+  await expect(vertical).toHaveAttribute("data-orientation", "vertical");
+
+  const height = await horizontal.evaluate((n) => getComputedStyle(n).height);
+  expect(height).toBe("1px");
+
+  const width = await vertical.evaluate((n) => getComputedStyle(n).width);
+  expect(width).toBe("1px");
+});
+test("Kbd keeps its pill-corner radius", async ({ page }) => {
+  await page.goto("/x/kbd/basic");
+  const el = page.locator("[data-gsxui-slot-kbd]").first();
+  const radius = await el.evaluate((n) => getComputedStyle(n).borderRadius);
+  expect(radius).toBe("6px");
+});
 

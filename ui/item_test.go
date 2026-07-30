@@ -36,7 +36,7 @@ func TestItemGroupCallerClassIsForwardedOnce(t *testing.T) {
 // Separator's own data-[orientation=...] base classes both come through.
 func TestItemSeparatorDefaultPinned(t *testing.T) {
 	got := render(t, ui.ItemSeparator("", nil))
-	want := `<div role="none" data-orientation="horizontal" data-gsxui-slot-item-separator data-gsxui-slot-separator></div>`
+	want := `<div role="none" data-orientation="horizontal" ` + canonicalSeparatorClass("horizontal") + ` data-gsxui-slot-item-separator data-gsxui-slot-separator></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

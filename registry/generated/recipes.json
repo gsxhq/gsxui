@@ -25,6 +25,14 @@
         }
       }
     },
+    "aspect-ratio": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "avatar": {
       "slots": {
         "": {
@@ -126,6 +134,26 @@
         }
       }
     },
+    "kbd": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
+        "group": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
+    "label": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "progress": {
       "slots": {
         "": {
@@ -135,6 +163,22 @@
         "indicator": {
           "base": true,
           "dimensions": {}
+        }
+      }
+    },
+    "separator": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {
+            "orientation": {
+              "default": "horizontal",
+              "values": [
+                "horizontal",
+                "vertical"
+              ]
+            }
+          }
         }
       }
     },
@@ -210,6 +254,16 @@
             "base": [
               "col-start-2",
               "font-medium"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "aspect-ratio": {
+        "slots": {
+          "": {
+            "base": [
+              "block"
             ],
             "dimensions": {}
           }
@@ -524,6 +578,64 @@
           }
         }
       },
+      "kbd": {
+        "slots": {
+          "": {
+            "base": [
+              "pointer-events-none",
+              "inline-flex",
+              "h-5",
+              "w-fit",
+              "min-w-5",
+              "items-center",
+              "justify-center",
+              "gap-1",
+              "rounded-sm",
+              "bg-muted",
+              "px-1",
+              "font-sans",
+              "text-xs",
+              "font-medium",
+              "text-muted-foreground",
+              "select-none",
+              "[\u0026_svg:not([class*='size-'])]:size-3",
+              "[[data-gsxui-slot-tooltip-content]_\u0026]:bg-background/20",
+              "[[data-gsxui-slot-tooltip-content]_\u0026]:text-background",
+              "[[data-gsxui-slot-tooltip-content]_\u0026]:rounded-sm",
+              "[.dark_[data-gsxui-slot-tooltip-content]_\u0026]:bg-background/10"
+            ],
+            "dimensions": {}
+          },
+          "group": {
+            "base": [
+              "inline-flex",
+              "items-center",
+              "gap-1"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "label": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "items-center",
+              "gap-2",
+              "text-sm",
+              "leading-none",
+              "font-medium",
+              "select-none",
+              "[[data-disabled=true]_\u0026]:pointer-events-none",
+              "[[data-disabled=true]_\u0026]:opacity-50",
+              "[:disabled~\u0026]:cursor-not-allowed",
+              "[:disabled~\u0026]:opacity-50"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
       "progress": {
         "slots": {
           "": {
@@ -546,6 +658,28 @@
               "transition-all"
             ],
             "dimensions": {}
+          }
+        }
+      },
+      "separator": {
+        "slots": {
+          "": {
+            "base": [
+              "shrink-0",
+              "bg-border"
+            ],
+            "dimensions": {
+              "orientation": {
+                "horizontal": [
+                  "h-px",
+                  "w-full"
+                ],
+                "vertical": [
+                  "h-full",
+                  "w-px"
+                ]
+              }
+            }
           }
         }
       },
@@ -627,6 +761,16 @@
             "base": [
               "col-start-2",
               "font-medium"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "aspect-ratio": {
+        "slots": {
+          "": {
+            "base": [
+              "block"
             ],
             "dimensions": {}
           }
@@ -936,6 +1080,64 @@
           }
         }
       },
+      "kbd": {
+        "slots": {
+          "": {
+            "base": [
+              "pointer-events-none",
+              "inline-flex",
+              "h-5",
+              "w-fit",
+              "min-w-5",
+              "items-center",
+              "justify-center",
+              "gap-1",
+              "rounded-sm",
+              "bg-muted",
+              "px-1",
+              "font-sans",
+              "text-xs",
+              "font-medium",
+              "text-muted-foreground",
+              "select-none",
+              "[\u0026_svg:not([class*='size-'])]:size-3",
+              "[[data-gsxui-slot-tooltip-content]_\u0026]:bg-background/20",
+              "[[data-gsxui-slot-tooltip-content]_\u0026]:text-background",
+              "[[data-gsxui-slot-tooltip-content]_\u0026]:rounded-sm",
+              "[.dark_[data-gsxui-slot-tooltip-content]_\u0026]:bg-background/10"
+            ],
+            "dimensions": {}
+          },
+          "group": {
+            "base": [
+              "inline-flex",
+              "items-center",
+              "gap-1"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "label": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "items-center",
+              "gap-2",
+              "text-sm",
+              "leading-none",
+              "font-medium",
+              "select-none",
+              "[[data-disabled=true]_\u0026]:pointer-events-none",
+              "[[data-disabled=true]_\u0026]:opacity-50",
+              "[:disabled~\u0026]:cursor-not-allowed",
+              "[:disabled~\u0026]:opacity-50"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
       "progress": {
         "slots": {
           "": {
@@ -958,6 +1160,28 @@
               "transition-all"
             ],
             "dimensions": {}
+          }
+        }
+      },
+      "separator": {
+        "slots": {
+          "": {
+            "base": [
+              "shrink-0",
+              "bg-border"
+            ],
+            "dimensions": {
+              "orientation": {
+                "horizontal": [
+                  "h-px",
+                  "w-full"
+                ],
+                "vertical": [
+                  "h-full",
+                  "w-px"
+                ]
+              }
+            }
           }
         }
       },

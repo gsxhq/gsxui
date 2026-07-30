@@ -3,11 +3,6 @@
     --gsxui-default-style: default;
   }
 
-  /* AspectRatio */
-  :where([data-gsxui-slot-aspect-ratio]) {
-    @apply block;
-  }
-
   /* Breadcrumb */
   :where([data-gsxui-slot-breadcrumb-list]) {
     @apply flex flex-wrap items-center gap-1.5 text-sm break-words text-muted-foreground;
@@ -32,17 +27,6 @@
   }
   :where([data-gsxui-slot-breadcrumb-ellipsis]) > svg {
     @apply size-4;
-  }
-
-  /* Separator */
-  :where([data-gsxui-slot-separator]) {
-    @apply shrink-0 bg-border;
-  }
-  :where([data-gsxui-slot-separator])[data-orientation="horizontal"] {
-    @apply h-px w-full;
-  }
-  :where([data-gsxui-slot-separator])[data-orientation="vertical"] {
-    @apply h-full w-px;
   }
 
   /* ButtonGroup */
@@ -76,17 +60,6 @@
   :where([data-gsxui-slot-button-group-text]) svg:not([class*="size-"]) {
     @apply size-4;
   }
-  :where(
-      [data-gsxui-slot-separator][data-gsxui-slot-button-group-separator]
-    ) {
-    @apply relative m-0 self-stretch bg-input;
-  }
-  :where(
-      [data-gsxui-slot-separator][data-gsxui-slot-button-group-separator]
-    )[data-orientation="vertical"] {
-    @apply h-auto;
-  }
-
   /* Empty */
   :where([data-gsxui-slot-empty]) {
     @apply flex min-w-0 flex-1 flex-col items-center justify-center gap-4 rounded-xl border-dashed p-6 text-center text-balance;
@@ -214,36 +187,6 @@
   :where([data-gsxui-slot-item-header]),
   :where([data-gsxui-slot-item-footer]) {
     @apply flex basis-full items-center justify-between gap-2;
-  }
-
-  /* Kbd */
-  :where([data-gsxui-slot-kbd]) {
-    @apply pointer-events-none inline-flex h-5 w-fit min-w-5 items-center justify-center gap-1 rounded-sm bg-muted px-1 font-sans text-xs font-medium text-muted-foreground select-none;
-  }
-  :where([data-gsxui-slot-kbd]) svg:not([class*="size-"]) {
-    @apply size-3;
-  }
-  :where([data-gsxui-slot-tooltip-content])
-    :where([data-gsxui-slot-kbd]) {
-    @apply bg-background/20 text-background;
-  }
-  :where(.dark [data-gsxui-slot-tooltip-content])
-    :where([data-gsxui-slot-kbd]) {
-    @apply bg-background/10;
-  }
-  :where([data-gsxui-slot-kbd-group]) {
-    @apply inline-flex items-center gap-1;
-  }
-
-  /* Label */
-  :where([data-gsxui-slot-label]) {
-    @apply flex items-center gap-2 text-sm leading-none font-medium select-none;
-  }
-  :where([data-disabled="true"]) :where([data-gsxui-slot-label]) {
-    @apply pointer-events-none opacity-50;
-  }
-  :disabled ~ :where([data-gsxui-slot-label]) {
-    @apply cursor-not-allowed opacity-50;
   }
 
   /* Pagination */
@@ -445,7 +388,7 @@
     @apply flex flex-1 flex-col gap-0.5 leading-snug;
   }
   :where([data-gsxui-slot-field-label]) {
-    @apply flex w-fit gap-2 leading-snug;
+    @apply flex w-fit gap-2;
   }
   :where([data-gsxui-slot-field][data-disabled="true"])
     :where([data-gsxui-slot-field-label]),
@@ -2208,10 +2151,6 @@
     ) {
     @apply pr-1.5;
   }
-  :where([data-gsxui-slot-tooltip-content])
-    :where([data-gsxui-slot-kbd]) {
-    @apply rounded-sm;
-  }
   :where([data-gsxui-slot-tooltip-arrow]) {
     @apply absolute top-full left-1/2 z-50 size-2.5 -translate-x-1/2 -translate-y-[calc(50%+2px)] rotate-45 rounded-[2px] bg-foreground;
   }
@@ -2707,11 +2646,6 @@
   :where([data-gsxui-slot-sidebar-footer]) {
     @apply flex flex-col gap-2 p-2;
   }
-  :where(
-      [data-gsxui-slot-sidebar-separator]
-    )[data-orientation="horizontal"] {
-    @apply mx-2 w-auto bg-sidebar-border;
-  }
   :where([data-gsxui-slot-sidebar-content]) {
     @apply gap-0;
     scrollbar-width: none;
@@ -3112,6 +3046,53 @@
   [data-gsxui-slot-card-header] {
     container-name: card-header;
     container-type: inline-size;
+  }
+
+  /* FieldLabel: Field composes its label onto <ui.Label>, so the rendered
+     element now carries Label's own recipe class alongside
+     data-gsxui-slot-field-label. Label's migration gave that class real
+     (0,1,0) specificity; this rule's leading-snug contests Label's own
+     leading-none, and a :where()-wrapped (0,0,0) selector here would lose
+     that fight regardless of source order. Unwrapped for the same reason as
+     Card header above — flex and gap-2 don't conflict with Label's own
+     utilities and could stay wrapped, but the whole declaration moved
+     together rather than splitting one property out. Field itself has not
+     migrated yet; this is fallout from Label's migration, not a Field
+     change. */
+  /* ONLY leading-snug is promoted. Label's migration gave its own class
+     (0,1,0) in @layer utilities, so leading-snug must outrank Label's
+     leading-none. The rest of this rule (flex, w-fit, gap-2) is NOT contested
+     by Label, and promoting it changed which rule won against Field's own
+     layout rules -- field-label went from full width to fit-content, caught by
+     the computed-style sweep. Keep the uncontested half where it was. */
+  [data-gsxui-slot-field-label] {
+    @apply leading-snug;
+  }
+
+  /* ButtonGroupSeparator: ButtonGroup composes its separator onto
+     <ui.Separator> (button-group.gsx), so the rendered element now carries
+     Separator's own recipe classes alongside data-gsxui-slot-separator and
+     data-gsxui-slot-button-group-separator. Separator's migration gave its
+     class real (0,1,0) specificity; bg-input and the vertical h-auto here
+     contest Separator's own bg-border and h-full, and a :where()-wrapped
+     (0,0,0) selector would lose that fight regardless of source order.
+     Unwrapped for the same reason as Card header above. relative/m-0/
+     self-stretch don't conflict with Separator's own utilities and could
+     stay wrapped, but the whole declaration moved together. ButtonGroup
+     itself has not migrated yet; this is fallout from Separator's own
+     migration, not a ButtonGroup change. */
+  [data-gsxui-slot-separator][data-gsxui-slot-button-group-separator] {
+    @apply relative m-0 self-stretch bg-input;
+  }
+  [data-gsxui-slot-separator][data-gsxui-slot-button-group-separator][data-orientation="vertical"] {
+    @apply h-auto;
+  }
+
+  /* SidebarSeparator: same fallout as ButtonGroupSeparator above — Sidebar
+     composes its separator onto <ui.Separator> (sidebar.gsx), so w-auto and
+     bg-sidebar-border here contest Separator's own w-full and bg-border. */
+  [data-gsxui-slot-sidebar-separator][data-orientation="horizontal"] {
+    @apply mx-2 w-auto bg-sidebar-border;
   }
 
   /* Carousel arrows: a round control, against Button's own rounded-lg. The

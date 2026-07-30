@@ -1,10 +1,13 @@
 package ui_test
 
 import (
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
 	gsx "github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/internal/stylegen"
 	"github.com/gsxhq/gsxui/ui"
 )
 
@@ -37,6 +40,7 @@ func TestFormControlsExposeCSSOnlySlots(t *testing.T) {
 		{"InputOTPSlot", ui.InputOTPSlot(nil), []string{"input-otp-slot"}},
 		{"InputOTPSeparator", ui.InputOTPSeparator(nil), []string{"input-otp-separator", "icon"}},
 		{"NativeSelect", ui.NativeSelect(gsx.Raw("<option>x</option>"), nil), []string{"native-select-wrapper", "native-select", "icon"}},
+		{"Progress", ui.Progress(25, nil), []string{"progress", "progress-indicator"}},
 		{"Radio", ui.Radio(nil), []string{"radio"}},
 		{"Select", ui.Select("fruit", false, false, "", gsx.Raw("x"), nil), []string{"select", "select-bridge"}},
 		{"SelectTrigger", ui.SelectTrigger("", ui.SelectValue("Pick", nil), nil), []string{"select-trigger", "select-value", "icon"}},
@@ -66,12 +70,38 @@ func TestFormControlsExposeCSSOnlySlots(t *testing.T) {
 			if strings.Contains(got, `data-slot=`) {
 				t.Errorf("legacy data-slot must not render\nin: %s", got)
 			}
-			if tt.name == "InputGroupButton" {
+			switch tt.name {
+			case "InputGroupButton":
 				if !strings.Contains(got, canonicalButtonClass("ghost", "xs")) {
 					t.Errorf("InputGroupButton lost exact canonical Button roles\nin: %s", got)
 				}
-			} else if strings.Contains(got, ` class="`) {
-				t.Errorf("non-Button built-in presentation class must not render\nin: %s", got)
+			case "FieldLabel":
+				// FieldLabel composes ui.Label directly (see field.gsx), and
+				// Label is migrated onto the slot axis — it renders its own
+				// canonical class the same way Button does, so FieldLabel gets
+				// the same carve-out InputGroupButton gets for composing Button.
+				if !strings.Contains(got, canonicalLabelClass()) {
+					t.Errorf("FieldLabel lost exact canonical Label utilities\nin: %s", got)
+				}
+			case "FieldSeparator":
+				// FieldSeparator composes ui.Separator directly (see
+				// field.gsx), and Separator is migrated onto the slot axis —
+				// same carve-out as FieldLabel/InputGroupButton above.
+				if !strings.Contains(got, canonicalSeparatorClass("horizontal")) {
+					t.Errorf("FieldSeparator lost exact canonical Separator utilities\nin: %s", got)
+				}
+			default:
+				// A component migrated onto the slot axis renders concrete
+				// utilities of its own, exactly as Button does. The migrated
+				// set is derived from the presence of a recipe stylesheet
+				// rather than listed here: this switch previously carried one
+				// hand-written carve-out per migrated component, and two
+				// parallel migrations each added only their own, so Progress
+				// rendered a class with no carve-out and this test failed for
+				// a component that was working correctly.
+				if strings.Contains(got, ` class="`) && !rendersMigratedComponent(t, got) {
+					t.Errorf("unmigrated built-in presentation class must not render\nin: %s", got)
+				}
 			}
 		})
 	}
@@ -96,12 +126,12 @@ func TestFormControlCompositionTokenOrder(t *testing.T) {
 		{
 			name: "FieldLabel",
 			node: ui.FieldLabel(gsx.Raw("Email"), nil),
-			want: `<label data-gsxui-slot-field-label data-gsxui-slot-label>Email</label>`,
+			want: `<label ` + canonicalLabelClass() + ` data-gsxui-slot-field-label data-gsxui-slot-label>Email</label>`,
 		},
 		{
 			name: "FieldSeparator",
 			node: ui.FieldSeparator(gsx.Raw("Or"), nil),
-			want: `<div data-content data-gsxui-slot-field-separator-wrapper><div role="none" data-orientation="horizontal" data-gsxui-slot-field-separator data-gsxui-slot-separator></div><span data-gsxui-slot-field-separator-content>Or</span></div>`,
+			want: `<div data-content data-gsxui-slot-field-separator-wrapper><div role="none" data-orientation="horizontal" ` + canonicalSeparatorClass("horizontal") + ` data-gsxui-slot-field-separator data-gsxui-slot-separator></div><span data-gsxui-slot-field-separator-content>Or</span></div>`,
 		},
 		{
 			name: "ToggleGroupItem",
@@ -191,6 +221,7 @@ func TestFormControlCallerClassIsForwardedOnce(t *testing.T) {
 		{"InputGroup", ui.InputGroup(nil, gsx.Attrs{{Key: "class", Value: "task-5-caller"}})},
 		{"InputOTP", ui.InputOTP(nil, gsx.Attrs{{Key: "class", Value: "task-5-caller"}})},
 		{"NativeSelect", ui.NativeSelect(nil, gsx.Attrs{{Key: "class", Value: "task-5-caller"}})},
+		{"Progress", ui.Progress(0, gsx.Attrs{{Key: "class", Value: "task-5-caller"}})},
 		{"Radio", ui.Radio(gsx.Attrs{{Key: "class", Value: "task-5-caller"}})},
 		{"Select", ui.Select("", false, false, "", nil, gsx.Attrs{{Key: "class", Value: "task-5-caller"}})},
 		{"Slider", ui.Slider(0, 0, 100, 1, gsx.Attrs{{Key: "class", Value: "task-5-caller"}})},
@@ -202,9 +233,53 @@ func TestFormControlCallerClassIsForwardedOnce(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := render(t, tt.node)
-			if strings.Count(got, `class="task-5-caller"`) != 1 {
+			// An unmigrated component brings no presentation of its own, so
+			// the caller class is the whole class value. A migrated one renders
+			// its recipe utilities too, and the caller class must survive
+			// alongside them exactly once — the property that matters either
+			// way is that the caller's class is forwarded and not duplicated.
+			if rendersMigratedComponent(t, got) {
+				if strings.Count(got, "task-5-caller") != 1 {
+					t.Errorf("caller class must be forwarded exactly once\nin: %s", got)
+				}
+			} else if strings.Count(got, `class="task-5-caller"`) != 1 {
 				t.Errorf("caller class must be the only class and render once\nin: %s", got)
 			}
 		})
 	}
+}
+
+// migratedComponents reports every component that has been migrated onto the
+// slot axis, derived from the recipe stylesheets rather than a hand-kept list.
+// registry/canonical/shapes is the authority, but ui_test must not import it —
+// nothing outside internal/stylegen may reach the canonical package — and a
+// component has a recipe stylesheet if and only if it has a shape.
+func migratedComponents(t *testing.T) map[string]struct{} {
+	t.Helper()
+	entries, err := os.ReadDir(filepath.Join("..", "registry", "styles", stylegen.DefaultStyle))
+	if err != nil {
+		t.Fatalf("read recipe stylesheets: %v", err)
+	}
+	out := make(map[string]struct{}, len(entries))
+	for _, entry := range entries {
+		if name, ok := strings.CutSuffix(entry.Name(), ".css"); ok {
+			out[name] = struct{}{}
+		}
+	}
+	if len(out) == 0 {
+		t.Fatal("no recipe stylesheets found; the derivation is broken")
+	}
+	return out
+}
+
+// rendersMigratedComponent reports whether the rendered markup carries the
+// marker of a migrated component, which legitimately brings its own utilities.
+func rendersMigratedComponent(t *testing.T, got string) bool {
+	t.Helper()
+	for component := range migratedComponents(t) {
+		if strings.Contains(got, "data-gsxui-slot-"+component) {
+			return true
+		}
+	}
+	return false
 }

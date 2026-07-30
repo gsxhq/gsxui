@@ -119,7 +119,7 @@ func TestFieldContentAttrsFallThrough(t *testing.T) {
 // TestFieldLabelPinned proves FieldLabel composes the Label token.
 func TestFieldLabelPinned(t *testing.T) {
 	got := render(t, ui.FieldLabel(gsx.Raw("x"), nil))
-	want := `<label data-gsxui-slot-field-label data-gsxui-slot-label>x</label>`
+	want := `<label ` + canonicalLabelClass() + ` data-gsxui-slot-field-label data-gsxui-slot-label>x</label>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -167,7 +167,7 @@ func TestFieldDescriptionAttrsFallThrough(t *testing.T) {
 // Separator token.
 func TestFieldSeparatorNoChildrenPinned(t *testing.T) {
 	got := render(t, ui.FieldSeparator(nil, nil))
-	want := `<div data-gsxui-slot-field-separator-wrapper><div role="none" data-orientation="horizontal" data-gsxui-slot-field-separator data-gsxui-slot-separator></div></div>`
+	want := `<div data-gsxui-slot-field-separator-wrapper><div role="none" data-orientation="horizontal" ` + canonicalSeparatorClass("horizontal") + ` data-gsxui-slot-field-separator data-gsxui-slot-separator></div></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -175,7 +175,7 @@ func TestFieldSeparatorNoChildrenPinned(t *testing.T) {
 
 func TestFieldSeparatorWithChildrenPinned(t *testing.T) {
 	got := render(t, ui.FieldSeparator(gsx.Raw("Or"), nil))
-	want := `<div data-content data-gsxui-slot-field-separator-wrapper><div role="none" data-orientation="horizontal" data-gsxui-slot-field-separator data-gsxui-slot-separator></div><span data-gsxui-slot-field-separator-content>Or</span></div>`
+	want := `<div data-content data-gsxui-slot-field-separator-wrapper><div role="none" data-orientation="horizontal" ` + canonicalSeparatorClass("horizontal") + ` data-gsxui-slot-field-separator data-gsxui-slot-separator></div><span data-gsxui-slot-field-separator-content>Or</span></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

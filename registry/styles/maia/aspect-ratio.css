@@ -1,0 +1,15 @@
+/* Source: gsxui@aafeaafd410d7411b0e3bd4382cbe3dfacc5e988
+   assets/css/styles/default.css, AspectRatio block (line 7): a single rule,
+   no relational forms. Nova and Maia have not diverged on AspectRatio yet,
+   so this file is byte-identical to registry/styles/maia/aspect-ratio.css.
+
+   First HYPHENATED component on the axis: the registry/CSS identity stays
+   kebab-case ("aspect-ratio", emitted class "gsxui-recipe-aspect-ratio")
+   while the Go type/receiver derive as camel (aspectRatioRecipe /
+   aspectRatio) — see registry/canonical/shapes/aspect-ratio.go and
+   internal/stylegen/identifier.go. */
+@layer components {
+  .gsxui-recipe-aspect-ratio {
+    @apply block;
+  }
+}
