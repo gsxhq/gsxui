@@ -342,6 +342,49 @@ renders at 28px (`size-7`, its own authored value and upstream shadcn's), and
 tail, Sidebar last). The rule in §6 still applies — a stage does not begin
 until the previous one's sweep is clean.
 
+## 10b. Relational rules a caller may override must NOT migrate
+
+A relational rule translated into a same-element or ancestor-scoped arbitrary
+variant **loses caller-overridability**. This is a confirmed, measured
+regression, not a theoretical risk.
+
+Mechanism, from the compiled stylesheet:
+
+```css
+.\[\&\.border-b\]\:pb-4.border-b { padding-bottom: 16px }   /* (0,2,0) */
+.pb-10                             { … }                    /* (0,1,0) */
+```
+
+The variant compiles to a TWO-CLASS selector, so it outranks any caller's plain
+utility on specificity regardless of source order. `merge.Merge` does not dedupe
+the pair — twmerge does not classify `[&.border-b]:pb-4` as conflicting with
+plain `pb-*` — so both reach the DOM and the browser picks the recipe.
+
+Before migration the rule sat in `@layer components` while the caller's utility
+sat in `@layer utilities`, so the LAYER decided and the caller won. **The layer
+boundary, not specificity, is what made these rules overridable.**
+
+Consequences:
+
+- **The `@layer utilities` escape hatch does not help.** It puts the rule in the
+  same layer as the caller's utility, which is the losing contest. Two agents
+  reached this independently: one migrating Pagination, one migrating Toggle.
+- **The fix is not to migrate the rule.** Leave it in `@layer components`, with a
+  comment saying it must stay caller-overridable. The layer gate permits this so
+  long as the component's own recipe does not set the same property in the same
+  state; add a gate exemption if it does, following
+  `siteButtonFallbackExemptions` in `internal/stylegen/layercheck.go`.
+- **Plain-vs-plain is unaffected.** Skeleton's caller-override pin passes because
+  `rounded-md` vs `rounded-full` is plain-vs-plain, where twmerge dedupes and the
+  contest never reaches CSS. That pin was never evidence for the relational case.
+- A variant targeting a DIFFERENT element (`[&>svg]:size-4` vs a caller's
+  `size-6` on the parent) is not affected — they never compete.
+
+Known affected and fixed by not migrating the rule: Pagination's previous/next
+edge padding, Toggle's ToggleGroupItem fallout. Known affected and NOT yet
+fixed: **Card's `[&.border-b]:pb-4` and Label's `[[data-disabled=true]_&]:*`,
+both live on the branch.**
+
 ## 11. Known gaps carried into the migration
 
 Each is a current limitation, not a historical note. None blocks the migration.
