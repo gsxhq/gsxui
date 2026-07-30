@@ -643,22 +643,91 @@ test("AlertDialogContent's own max-w-xs narrowing beats Dialog's box below the s
 });
 
 // Composer fallout verification: DrawerContent/SheetContent stamp
-// data-gsxui-slot-dialog-content without ever calling dialog.Content()
-// (ui/drawer.gsx, ui/sheet.gsx), so they depend entirely on the marker
-// fallback in assets/css/styles/default.css for their base chrome. Verified
-// empirically here, not just by reading the CSS.
+// data-gsxui-slot-dialog-content without ever calling Dialog's content
+// accessor (ui/drawer.gsx, ui/sheet.gsx) — they must not inherit Dialog's
+// plain-modal box. SheetContent still gets its base chrome from the marker
+// fallback in assets/css/styles/default.css; DrawerContent now carries it on
+// its own recipe class. Verified empirically here, not just by reading the
+// CSS.
+//
+// Drawer's pin is deliberately stronger than the fallback-era one it
+// replaces: the sweep only records RESTING (closed) computed style, so the
+// open-state chrome and every per-side rule are invisible to it. Nothing but
+// these assertions would notice a side arm resolving to the wrong class.
 
-test("DrawerContent keeps Dialog's shared fixed/z-50 chrome via the marker fallback", async ({ page }) => {
+test("DrawerContent carries the shared fixed/z-50 chrome on its own recipe class", async ({
+  page,
+}) => {
   await page.goto("/x/drawer/basic");
   const content = page.locator("dialog[data-gsxui-slot-drawer-content]").first();
   await content.evaluate((el) =>
     el.dispatchEvent(new CustomEvent("gsxui:request-open", { bubbles: true, cancelable: true })),
   );
   await expect(content).toHaveJSProperty("open", true);
-  const position = await content.evaluate((n) => getComputedStyle(n).position);
-  const zIndex = await content.evaluate((n) => getComputedStyle(n).zIndex);
-  expect(position).toBe("fixed");
-  expect(zIndex).toBe("50");
+  const style = await content.evaluate((n) => {
+    const s = getComputedStyle(n);
+    return {
+      position: s.position,
+      zIndex: s.zIndex,
+      display: s.display,
+      margin: [s.marginLeft, s.marginRight, s.marginBottom].join(" "),
+      flexDirection: s.flexDirection,
+      boxShadow: s.boxShadow,
+      transitionDuration: s.transitionDuration,
+    };
+  });
+  expect(style.position).toBe("fixed");
+  expect(style.zIndex).toBe("50");
+  // display:flex is drawer-sheet-shared.css's [open] rule, now open:flex on
+  // the recipe; m-0 and flex-col came from the same block.
+  expect(style.display).toBe("flex");
+  // m-0 clears the UA <dialog> auto margins; the bottom drawer's own mt-24
+  // is the only margin left, so check the other three sides.
+  expect(style.margin).toBe("0px 0px 0px");
+  expect(style.flexDirection).toBe("column");
+  expect(style.boxShadow).not.toBe("none");
+  // `transition` sets 150ms and `duration-200` overrides it — the one place
+  // the recipe's @apply ORDER is load-bearing.
+  expect(style.transitionDuration).toBe("0.2s");
+});
+
+test("DrawerContent's four side arms each resolve to their own anchoring", async ({ page }) => {
+  await page.goto("/x/drawer/directions");
+  const expected = {
+    bottom: { borderTopWidth: "1px", borderBottomWidth: "0px", marginTop: "96px", textAlign: "center" },
+    top: { borderTopWidth: "0px", borderBottomWidth: "1px", marginBottom: "96px", textAlign: "center" },
+    left: { borderRightWidth: "1px", borderLeftWidth: "0px", textAlign: "left" },
+    right: { borderLeftWidth: "1px", borderRightWidth: "0px", textAlign: "left" },
+  } as const;
+  // left/right expect "left" rather than the inherited "start": the suite
+  // viewport is 1280px, above the md breakpoint the side arms' own
+  // md:[&_[data-gsxui-slot-drawer-header]]:text-left fires at.
+  for (const [side, want] of Object.entries(expected)) {
+    const content = page.locator(`dialog[data-gsxui-slot-drawer-content][data-side="${side}"]`);
+    await content.evaluate((el) =>
+      el.dispatchEvent(new CustomEvent("gsxui:request-open", { bubbles: true, cancelable: true })),
+    );
+    await expect(content).toHaveJSProperty("open", true);
+    const got = await content.evaluate((n) => {
+      const s = getComputedStyle(n);
+      const header = n.querySelector("[data-gsxui-slot-drawer-header]");
+      return {
+        borderTopWidth: s.borderTopWidth,
+        borderBottomWidth: s.borderBottomWidth,
+        borderLeftWidth: s.borderLeftWidth,
+        borderRightWidth: s.borderRightWidth,
+        marginTop: s.marginTop,
+        marginBottom: s.marginBottom,
+        textAlign: header ? getComputedStyle(header).textAlign : "",
+      };
+    });
+    for (const [property, value] of Object.entries(want)) {
+      expect(got[property as keyof typeof got], `${side} drawer ${property}`).toBe(value);
+    }
+    await content.evaluate((el) =>
+      el.dispatchEvent(new CustomEvent("gsxui:request-close", { bubbles: true, cancelable: true })),
+    );
+  }
 });
 
 test("SheetContent keeps Dialog's shared fixed/z-50 chrome via the marker fallback", async ({ page }) => {

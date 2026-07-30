@@ -1,0 +1,97 @@
+/* Source: assets/css/styles/default/drawer.css (deleted by this migration),
+   plus the two marker-keyed fallbacks DrawerContent depended on for chrome
+   it had no class for — the Dialog-content block in
+   assets/css/styles/default.css and the Drawer/Sheet half of
+   assets/css/styles/default/drawer-sheet-shared.css. Nova and Maia have not
+   diverged on Drawer yet, so this file is byte-identical to
+   registry/styles/maia/drawer.css.
+
+   Root, trigger and close carry no rules: the root renders <ui.Dialog> and
+   the other two are plain unstyled buttons.
+
+   drawer-content's base rule is written in the pre-migration cascade order,
+   because two of its utilities genuinely contest each other: `transition`
+   sets a 150ms duration and `duration-200` (which came later, from the
+   Dialog-content fallback in default.css, imported after both component
+   files) overrides it to 200ms. @apply inlines declarations in the order
+   listed, so that order is load-bearing here and is preserved literally
+   rather than tidied. Same reason `open:flex` is last: it is the [open]
+   display rule from drawer-sheet-shared.css, and `flex-col` above it only
+   sets flex-direction.
+
+   The side dimension folds three pre-migration rule families onto one class
+   per value: the position/size block, the data-state slide-in/out pair, and
+   the header text-align rule. That last one is the only place this migration
+   changes a selector's specificity: it was
+   ":where(dialog[…drawer-content]):is([data-side=bottom],[data-side=top])
+   :where([…drawer-header])" at (0,0,0) and is now
+   ".gsxui-recipe-drawer-content-side-bottom [data-gsxui-slot-drawer-header]"
+   at (0,2,0), so a caller's plain text-left on DrawerHeader no longer wins.
+   Kept on the recipe deliberately rather than retained per section 10b:
+   upstream makes exactly the same call, writing
+   "group-data-[vaul-drawer-direction=bottom]/drawer-content:text-center" into
+   DrawerHeader's own className (shadcn drawer.tsx), which compiles to the
+   same non-overridable shape. Upstream is the tiebreaker when the retained
+   rule and the recipe disagree, and here upstream agrees with the recipe.
+   The whole text-align property group moves together — nothing else on
+   drawer-header sets text-align — so no rule is left behind to lose
+   unconditionally. */
+@layer components {
+  .gsxui-recipe-drawer-content {
+    @apply m-0 flex-col gap-4 shadow-lg transition ease-in-out;
+    @apply bg-popover text-popover-foreground;
+    @apply fixed z-50 text-sm duration-200 outline-none;
+    @apply data-[state=closed]:animate-out;
+    @apply data-[state=open]:animate-in;
+    @apply backdrop:bg-[var(--overlay)] backdrop:backdrop-blur-xs backdrop:duration-200;
+    @apply data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0;
+    @apply data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0;
+    @apply open:flex;
+  }
+
+  .gsxui-recipe-drawer-content-side-bottom {
+    @apply inset-x-0 bottom-0 top-auto mt-24 h-auto max-h-[80vh] w-full max-w-none rounded-t-xl border-t;
+    @apply data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom;
+    @apply [&_[data-gsxui-slot-drawer-header]]:text-center;
+  }
+
+  .gsxui-recipe-drawer-content-side-top {
+    @apply inset-x-0 top-0 bottom-auto mb-24 h-auto max-h-[80vh] w-full max-w-none rounded-b-xl border-b;
+    @apply data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top;
+    @apply [&_[data-gsxui-slot-drawer-header]]:text-center;
+  }
+
+  .gsxui-recipe-drawer-content-side-left {
+    @apply inset-y-0 left-0 right-auto h-full max-h-none w-3/4 rounded-r-xl border-r;
+    @apply sm:max-w-sm;
+    @apply data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left;
+    @apply md:[&_[data-gsxui-slot-drawer-header]]:text-left;
+  }
+
+  .gsxui-recipe-drawer-content-side-right {
+    @apply inset-y-0 right-0 left-auto h-full max-h-none w-3/4 rounded-l-xl border-l;
+    @apply sm:max-w-sm;
+    @apply data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right;
+    @apply md:[&_[data-gsxui-slot-drawer-header]]:text-left;
+  }
+
+  .gsxui-recipe-drawer-handle {
+    @apply mx-auto mt-4 h-1 w-[100px] shrink-0 rounded-full bg-muted;
+  }
+
+  .gsxui-recipe-drawer-header {
+    @apply flex flex-col gap-0.5 p-4;
+  }
+
+  .gsxui-recipe-drawer-footer {
+    @apply mt-auto flex flex-col gap-2 p-4;
+  }
+
+  .gsxui-recipe-drawer-title {
+    @apply font-medium text-foreground;
+  }
+
+  .gsxui-recipe-drawer-description {
+    @apply text-sm text-muted-foreground;
+  }
+}

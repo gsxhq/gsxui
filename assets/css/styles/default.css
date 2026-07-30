@@ -34,7 +34,6 @@
 @import "./default/menu-popover-transition.css";
 @import "./default/textarea.css";
 @import "./default/drawer-sheet-shared.css";
-@import "./default/drawer.css";
 @import "./default/sheet.css";
 @import "./default/calendar.css";
 @import "./default/carousel.css";
@@ -129,11 +128,12 @@
 }
 
 /* Dialog-content marker fallback: a @layer components block, not utilities,
-   same reasoning as the Toggle marker fallback above. ui/drawer.gsx's
-   DrawerContent and ui/sheet.gsx's SheetContent both stamp
-   data-gsxui-slot-dialog-content onto their own <dialog> element ALONGSIDE
-   their own drawer-content/sheet-content marker, and have no class of their
-   own referencing Dialog's recipe for it — the base chrome every <dialog>
+   same reasoning as the Toggle marker fallback above. ui/sheet.gsx's
+   SheetContent stamps data-gsxui-slot-dialog-content onto its own <dialog>
+   element ALONGSIDE its own sheet-content marker, and has no class of its
+   own referencing Dialog's recipe for it (ui/drawer.gsx's DrawerContent did
+   too until Drawer's own migration, which gave it these utilities on its own
+   recipe class; only Sheet is left) — the base chrome every <dialog>
    content needs (fixed positioning/z-index/transition-duration, the
    data-state animate-in/out, and the native ::backdrop styling) came
    entirely from this marker-keyed rule in the old
@@ -153,15 +153,16 @@
    <ui.DialogContent> renders (identical values, no visible difference) and
    to any real caller utility class.
 
-   Only the chrome ALL THREE (Dialog, Drawer, Sheet) unconditionally shared
+   Only the chrome Dialog and Sheet unconditionally share
    in the old dialog.css is here — the plain-modal box (top-1/2 left-1/2
    w-full max-w-[...] etc), which the old file guarded with
    :not([data-gsxui-slot-drawer-content]):not([data-gsxui-slot-sheet-content]),
    is Dialog's own presentation now and lives only in its recipe; it was
    already excluded here by that same guard before migration, so leaving it
    out changes nothing. assets/css/styles/default/drawer-sheet-shared.css
-   carries the OTHER half — the rules Drawer/Sheet need that Dialog never
-   had at all (m-0/flex-col/shadow-lg/etc) — untouched by this migration. */
+   carries the OTHER half — the rules Sheet needs that Dialog never had at
+   all (m-0/flex-col/shadow-lg/etc). Both this block and that file retire
+   when Sheet migrates. */
 @layer components {
   :where(dialog[data-gsxui-slot-dialog-content]) {
     @apply fixed z-50 text-sm duration-200 outline-none;

@@ -218,7 +218,17 @@ func TestDrawerCSSOnlyContract(t *testing.T) {
 		}
 		got := render(t, ui.DrawerContent(input, gsx.Raw("x"), callerAttrs()))
 		assertCSSOnlyMarkup(t, got, "dialog-content drawer-content")
-		assertCallerAttrsOnce(t, got)
+		// Not assertCallerAttrsOnce: Drawer migrated to the slot axis, so the
+		// content carries its own resolved chrome and the bottom drawer's
+		// handle renders a class of its own — the blanket "the caller class
+		// is the only class" assumption no longer holds. Same carve-out as
+		// Accordion and Collapsible above.
+		if strings.Count(got, `id="caller-id"`) != 1 {
+			t.Errorf("%s drawer id=\"caller-id\" must render exactly once\nin: %s", side, got)
+		}
+		if !strings.Contains(got, drawerContentClass(side)+" caller-only") {
+			t.Errorf("%s drawer caller class must merge after its own content utilities\nin: %s", side, got)
+		}
 		for _, want := range []string{`data-state="closed"`, `data-side="` + side + `"`} {
 			if !strings.Contains(got, want) {
 				t.Errorf("%s drawer missing %q\nin: %s", side, want, got)

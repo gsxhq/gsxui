@@ -1,18 +1,18 @@
 @layer components {
-  /* Drawer and Sheet share Dialog state/backdrop mechanics above. */
-  :where(
-      dialog[data-gsxui-slot-dialog-content]:is(
-          [data-gsxui-slot-drawer-content],
-          [data-gsxui-slot-sheet-content]
-        )
-    ) {
+  /* Sheet shares Dialog state/backdrop mechanics above.
+
+     Drawer used to share these rules too — the file is named for the pair —
+     but Drawer's slot-axis migration moved them onto
+     .gsxui-recipe-drawer-content, so only SheetContent still reaches them.
+     The filename and the @import in ../default.css stay put until Sheet
+     migrates, at which point both retire together; renaming it for one
+     commit would churn the aggregator, the layer-gate exemption keys and
+     TestEveryDefaultStylePartIsImported for nothing. */
+  :where(dialog[data-gsxui-slot-dialog-content][data-gsxui-slot-sheet-content]) {
     @apply m-0 flex-col gap-4 shadow-lg transition ease-in-out;
   }
   :where(
-      dialog[data-gsxui-slot-dialog-content]:is(
-          [data-gsxui-slot-drawer-content],
-          [data-gsxui-slot-sheet-content]
-        )[open]
+      dialog[data-gsxui-slot-dialog-content][data-gsxui-slot-sheet-content][open]
     ) {
     display: flex;
   }

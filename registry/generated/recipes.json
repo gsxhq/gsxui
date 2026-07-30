@@ -374,6 +374,44 @@
         }
       }
     },
+    "drawer": {
+      "slots": {
+        "content": {
+          "base": true,
+          "dimensions": {
+            "side": {
+              "default": "bottom",
+              "values": [
+                "bottom",
+                "left",
+                "right",
+                "top"
+              ]
+            }
+          }
+        },
+        "description": {
+          "base": true,
+          "dimensions": {}
+        },
+        "footer": {
+          "base": true,
+          "dimensions": {}
+        },
+        "handle": {
+          "base": true,
+          "dimensions": {}
+        },
+        "header": {
+          "base": true,
+          "dimensions": {}
+        },
+        "title": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "dropdown-menu": {
       "slots": {
         "": {
@@ -2047,6 +2085,144 @@
               "text-base",
               "leading-none",
               "font-medium"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "drawer": {
+        "slots": {
+          "content": {
+            "base": [
+              "m-0",
+              "flex-col",
+              "gap-4",
+              "shadow-lg",
+              "transition",
+              "ease-in-out",
+              "bg-popover",
+              "text-popover-foreground",
+              "fixed",
+              "z-50",
+              "text-sm",
+              "duration-200",
+              "outline-none",
+              "data-[state=closed]:animate-out",
+              "data-[state=open]:animate-in",
+              "backdrop:bg-[var(--overlay)]",
+              "backdrop:backdrop-blur-xs",
+              "backdrop:duration-200",
+              "data-[state=open]:backdrop:animate-in",
+              "data-[state=open]:backdrop:fade-in-0",
+              "data-[state=closed]:backdrop:animate-out",
+              "data-[state=closed]:backdrop:fade-out-0",
+              "open:flex"
+            ],
+            "dimensions": {
+              "side": {
+                "bottom": [
+                  "inset-x-0",
+                  "bottom-0",
+                  "top-auto",
+                  "mt-24",
+                  "h-auto",
+                  "max-h-[80vh]",
+                  "w-full",
+                  "max-w-none",
+                  "rounded-t-xl",
+                  "border-t",
+                  "data-[state=closed]:slide-out-to-bottom",
+                  "data-[state=open]:slide-in-from-bottom",
+                  "[\u0026_[data-gsxui-slot-drawer-header]]:text-center"
+                ],
+                "left": [
+                  "inset-y-0",
+                  "left-0",
+                  "right-auto",
+                  "h-full",
+                  "max-h-none",
+                  "w-3/4",
+                  "rounded-r-xl",
+                  "border-r",
+                  "sm:max-w-sm",
+                  "data-[state=closed]:slide-out-to-left",
+                  "data-[state=open]:slide-in-from-left",
+                  "md:[\u0026_[data-gsxui-slot-drawer-header]]:text-left"
+                ],
+                "right": [
+                  "inset-y-0",
+                  "right-0",
+                  "left-auto",
+                  "h-full",
+                  "max-h-none",
+                  "w-3/4",
+                  "rounded-l-xl",
+                  "border-l",
+                  "sm:max-w-sm",
+                  "data-[state=closed]:slide-out-to-right",
+                  "data-[state=open]:slide-in-from-right",
+                  "md:[\u0026_[data-gsxui-slot-drawer-header]]:text-left"
+                ],
+                "top": [
+                  "inset-x-0",
+                  "top-0",
+                  "bottom-auto",
+                  "mb-24",
+                  "h-auto",
+                  "max-h-[80vh]",
+                  "w-full",
+                  "max-w-none",
+                  "rounded-b-xl",
+                  "border-b",
+                  "data-[state=closed]:slide-out-to-top",
+                  "data-[state=open]:slide-in-from-top",
+                  "[\u0026_[data-gsxui-slot-drawer-header]]:text-center"
+                ]
+              }
+            }
+          },
+          "description": {
+            "base": [
+              "text-sm",
+              "text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "footer": {
+            "base": [
+              "mt-auto",
+              "flex",
+              "flex-col",
+              "gap-2",
+              "p-4"
+            ],
+            "dimensions": {}
+          },
+          "handle": {
+            "base": [
+              "mx-auto",
+              "mt-4",
+              "h-1",
+              "w-[100px]",
+              "shrink-0",
+              "rounded-full",
+              "bg-muted"
+            ],
+            "dimensions": {}
+          },
+          "header": {
+            "base": [
+              "flex",
+              "flex-col",
+              "gap-0.5",
+              "p-4"
+            ],
+            "dimensions": {}
+          },
+          "title": {
+            "base": [
+              "font-medium",
+              "text-foreground"
             ],
             "dimensions": {}
           }
@@ -4962,6 +5138,144 @@
               "text-base",
               "leading-none",
               "font-medium"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "drawer": {
+        "slots": {
+          "content": {
+            "base": [
+              "m-0",
+              "flex-col",
+              "gap-4",
+              "shadow-lg",
+              "transition",
+              "ease-in-out",
+              "bg-popover",
+              "text-popover-foreground",
+              "fixed",
+              "z-50",
+              "text-sm",
+              "duration-200",
+              "outline-none",
+              "data-[state=closed]:animate-out",
+              "data-[state=open]:animate-in",
+              "backdrop:bg-[var(--overlay)]",
+              "backdrop:backdrop-blur-xs",
+              "backdrop:duration-200",
+              "data-[state=open]:backdrop:animate-in",
+              "data-[state=open]:backdrop:fade-in-0",
+              "data-[state=closed]:backdrop:animate-out",
+              "data-[state=closed]:backdrop:fade-out-0",
+              "open:flex"
+            ],
+            "dimensions": {
+              "side": {
+                "bottom": [
+                  "inset-x-0",
+                  "bottom-0",
+                  "top-auto",
+                  "mt-24",
+                  "h-auto",
+                  "max-h-[80vh]",
+                  "w-full",
+                  "max-w-none",
+                  "rounded-t-xl",
+                  "border-t",
+                  "data-[state=closed]:slide-out-to-bottom",
+                  "data-[state=open]:slide-in-from-bottom",
+                  "[\u0026_[data-gsxui-slot-drawer-header]]:text-center"
+                ],
+                "left": [
+                  "inset-y-0",
+                  "left-0",
+                  "right-auto",
+                  "h-full",
+                  "max-h-none",
+                  "w-3/4",
+                  "rounded-r-xl",
+                  "border-r",
+                  "sm:max-w-sm",
+                  "data-[state=closed]:slide-out-to-left",
+                  "data-[state=open]:slide-in-from-left",
+                  "md:[\u0026_[data-gsxui-slot-drawer-header]]:text-left"
+                ],
+                "right": [
+                  "inset-y-0",
+                  "right-0",
+                  "left-auto",
+                  "h-full",
+                  "max-h-none",
+                  "w-3/4",
+                  "rounded-l-xl",
+                  "border-l",
+                  "sm:max-w-sm",
+                  "data-[state=closed]:slide-out-to-right",
+                  "data-[state=open]:slide-in-from-right",
+                  "md:[\u0026_[data-gsxui-slot-drawer-header]]:text-left"
+                ],
+                "top": [
+                  "inset-x-0",
+                  "top-0",
+                  "bottom-auto",
+                  "mb-24",
+                  "h-auto",
+                  "max-h-[80vh]",
+                  "w-full",
+                  "max-w-none",
+                  "rounded-b-xl",
+                  "border-b",
+                  "data-[state=closed]:slide-out-to-top",
+                  "data-[state=open]:slide-in-from-top",
+                  "[\u0026_[data-gsxui-slot-drawer-header]]:text-center"
+                ]
+              }
+            }
+          },
+          "description": {
+            "base": [
+              "text-sm",
+              "text-muted-foreground"
+            ],
+            "dimensions": {}
+          },
+          "footer": {
+            "base": [
+              "mt-auto",
+              "flex",
+              "flex-col",
+              "gap-2",
+              "p-4"
+            ],
+            "dimensions": {}
+          },
+          "handle": {
+            "base": [
+              "mx-auto",
+              "mt-4",
+              "h-1",
+              "w-[100px]",
+              "shrink-0",
+              "rounded-full",
+              "bg-muted"
+            ],
+            "dimensions": {}
+          },
+          "header": {
+            "base": [
+              "flex",
+              "flex-col",
+              "gap-0.5",
+              "p-4"
+            ],
+            "dimensions": {}
+          },
+          "title": {
+            "base": [
+              "font-medium",
+              "text-foreground"
             ],
             "dimensions": {}
           }

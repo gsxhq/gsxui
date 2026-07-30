@@ -373,27 +373,27 @@ func dialogContentFallbackExemptions() []layerCheckExemption {
 		},
 		{
 			file:      "assets/css/styles/default/drawer-sheet-shared.css",
-			selector:  ":where( dialog[data-gsxui-slot-dialog-content]:is( [data-gsxui-slot-drawer-content],[data-gsxui-slot-sheet-content] ) )",
+			selector:  ":where(dialog[data-gsxui-slot-dialog-content][data-gsxui-slot-sheet-content])",
 			contested: "m-0",
 		},
 		{
 			file:      "assets/css/styles/default/drawer-sheet-shared.css",
-			selector:  ":where( dialog[data-gsxui-slot-dialog-content]:is( [data-gsxui-slot-drawer-content],[data-gsxui-slot-sheet-content] ) )",
+			selector:  ":where(dialog[data-gsxui-slot-dialog-content][data-gsxui-slot-sheet-content])",
 			contested: "flex-col",
 		},
 		{
 			file:      "assets/css/styles/default/drawer-sheet-shared.css",
-			selector:  ":where( dialog[data-gsxui-slot-dialog-content]:is( [data-gsxui-slot-drawer-content],[data-gsxui-slot-sheet-content] ) )",
+			selector:  ":where(dialog[data-gsxui-slot-dialog-content][data-gsxui-slot-sheet-content])",
 			contested: "gap-4",
 		},
 		{
 			file:      "assets/css/styles/default/drawer-sheet-shared.css",
-			selector:  ":where( dialog[data-gsxui-slot-dialog-content]:is( [data-gsxui-slot-drawer-content],[data-gsxui-slot-sheet-content] ) )",
+			selector:  ":where(dialog[data-gsxui-slot-dialog-content][data-gsxui-slot-sheet-content])",
 			contested: "transition",
 		},
 		{
 			file:      "assets/css/styles/default/drawer-sheet-shared.css",
-			selector:  ":where( dialog[data-gsxui-slot-dialog-content]:is( [data-gsxui-slot-drawer-content],[data-gsxui-slot-sheet-content] )[open] )",
+			selector:  ":where( dialog[data-gsxui-slot-dialog-content][data-gsxui-slot-sheet-content][open] )",
 			contested: "display",
 		},
 	}

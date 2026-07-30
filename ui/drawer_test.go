@@ -33,10 +33,34 @@ func TestDrawerContentSideAxis(t *testing.T) {
 				t.Errorf("%s missing %q\nin: %s", side, want, got)
 			}
 		}
-		if strings.Contains(got, ` class=`) {
-			t.Errorf("%s default content must not render a class\nin: %s", side, got)
+		// Drawer migrated to the slot axis: content now legitimately renders
+		// its own resolved chrome plus exactly one side class. Pin the whole
+		// attribute value rather than merely asserting a class exists — the
+		// side axis is the only place a wrong switch arm would be invisible.
+		if want := ` class="` + drawerContentClass(side) + `"`; !strings.Contains(got, want) {
+			t.Errorf("%s content class mismatch\nwant: %s\n  in: %s", side, want, got)
 		}
 	}
+}
+
+// drawerContentClass is DrawerContent's exact resolved class attribute value
+// for one side (no caller classes), HTML-escaped as it renders — the "&" of
+// the header text-align arbitrary variant comes out as "&amp;". Drawer's
+// content deliberately does not reuse Dialog's, so this is its own chrome,
+// not a narrowing of dialogContentClass.
+func drawerContentClass(side string) string {
+	const base = "m-0 flex-col gap-4 shadow-lg transition ease-in-out bg-popover text-popover-foreground fixed z-50 text-sm duration-200 outline-none data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-[var(--overlay)] backdrop:backdrop-blur-xs backdrop:duration-200 data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 open:flex"
+	switch side {
+	case "bottom":
+		return base + " inset-x-0 bottom-0 top-auto mt-24 h-auto max-h-[80vh] w-full max-w-none rounded-t-xl border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom [&amp;_[data-gsxui-slot-drawer-header]]:text-center"
+	case "top":
+		return base + " inset-x-0 top-0 bottom-auto mb-24 h-auto max-h-[80vh] w-full max-w-none rounded-b-xl border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top [&amp;_[data-gsxui-slot-drawer-header]]:text-center"
+	case "left":
+		return base + " inset-y-0 left-0 right-auto h-full max-h-none w-3/4 rounded-r-xl border-r sm:max-w-sm data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left md:[&amp;_[data-gsxui-slot-drawer-header]]:text-left"
+	case "right":
+		return base + " inset-y-0 right-0 left-auto h-full max-h-none w-3/4 rounded-l-xl border-l sm:max-w-sm data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right md:[&amp;_[data-gsxui-slot-drawer-header]]:text-left"
+	}
+	panic("unknown drawer side " + side)
 }
 
 func TestDrawerHandleBottomOnly(t *testing.T) {
