@@ -170,7 +170,19 @@ func TestAlertDialogCSSOnlyContract(t *testing.T) {
 		"alert-dialog-title",
 		"alert-dialog-description",
 	)
-	assertCallerAttrsOnceMerged(t, content)
+	// Not assertCallerAttrsOnceMerged: AlertDialog migrated to the slot axis,
+	// so title and description now legitimately render class= attributes of
+	// their own and the blanket "class= appears exactly once in the whole
+	// render" assumption no longer holds — same carve-out as Accordion and
+	// Collapsible above. The caller's class must still merge into
+	// DialogContent's single class attribute exactly once, and it must land
+	// AFTER AlertDialog's own max-w narrowing so a caller max-w-* wins.
+	if strings.Count(content, `id="caller-id"`) != 1 {
+		t.Errorf("id=\"caller-id\" must render exactly once\nin: %s", content)
+	}
+	if !strings.Contains(content, "max-w-xs sm:max-w-sm caller-only") {
+		t.Errorf("caller class must merge after AlertDialog's own content utilities\nin: %s", content)
+	}
 	for _, want := range []string{
 		`role="alertdialog"`,
 		`data-state="closed"`,

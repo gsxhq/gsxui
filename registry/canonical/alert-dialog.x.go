@@ -2,8 +2,8 @@
 
 package canonical
 
-// GSX GENERATION FAILED for tooltip.gsx. Fix the errors below and re-run gsx generate.
+// GSX GENERATION FAILED for alert-dialog.gsx. Fix the errors below and re-run gsx generate.
 //
 //	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/accordion_recipe.go:5:2: error: could not import github.com/gsxhq/gsxui/registry/canonical/shapes (codegen: cannot determine active companion Go files in /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes: /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:197:1: expected operand, found '<<'; /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:209:2: missing ',' in composite literal; /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:209:12: missing ',' before newline in composite literal)
 
-var _ = GSX_GENERATION_FAILED__see_tooltip_gsx
+var _ = GSX_GENERATION_FAILED__see_alert_dialog_gsx

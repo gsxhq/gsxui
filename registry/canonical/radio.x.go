@@ -2,54 +2,8 @@
 
 package canonical
 
-import (
-	_gsxctx "context"
-	"github.com/gsxhq/gsx"
-	_gsxrt "github.com/gsxhq/gsx"
-	_gsxcm "github.com/gsxhq/gsxui/merge"
-	_gsxio "io"
-)
-
-//line radio.gsx:5:1
-// Radio is the shadcn/ui RadioGroupItem, ported as a real native
-// <input type="radio">: form-native, zero JS, browser :checked/:disabled
-// truth replaces Radix's button-role + hidden-input + Indicator part
-// (ledger ADAPT). shadcn's RadioGroup container (a styled grid wrapper) is
-// not ported — native `name` grouping on sibling <input type="radio">
-// elements already gives you the group; the layout wrapper is the caller's
-// concern, same as any other flex/grid container (ledger ADAPT).
+// GSX GENERATION FAILED for radio.gsx. Fix the errors below and re-run gsx generate.
 //
-// The checked paint follows the nova style (the live site's default, per
-// the density-retarget decision): the whole circle fills with primary
-// (checked:bg-primary checked:border-primary) and the indicator is a
-// primary-FOREGROUND dot punched into it — nova's .cn-radio-group-item /
-// .cn-radio-group-indicator-icon (`data-checked:bg-primary` + a size-2
-// bg-primary-foreground dot), reading as a bold donut. (new-york-v4's
-// older outlined-circle-with-primary-dot recipe is superseded.) The dot is
-// still a radial-gradient painted in currentColor — a
-// data-URI can't reference the caller's CSS custom properties, but a
-// currentColor gradient can, and checked:text-primary-foreground is what
-// makes currentColor resolve to the dot's color; it is load-bearing, the
-// same role text-primary played for the old recipe. background-color and
-// background-image are distinct properties, so the primary fill and
-// gradient coexist.
+//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/accordion_recipe.go:5:2: error: could not import github.com/gsxhq/gsxui/registry/canonical/shapes (codegen: cannot determine active companion Go files in /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes: /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:197:1: expected operand, found '<<'; /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:209:2: missing ',' in composite literal; /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:209:12: missing ',' before newline in composite literal)
 
-//line radio.gsx:27:1
-func Radio(attrs gsx.Attrs) _gsxrt.Node {
-	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-		_gsxgw := _gsxrt.W(_gsxw)
-//line radio.gsx:28:2
-		_gsxgw.S("<input")
-		if !attrs.Has("type") {
-			_gsxgw.S(" type=\"radio\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(radio.Root()), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "xlink:href"}, []string{"background", "src"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-radio"})
-		_gsxgw.BoolAttr("data-gsxui-slot-radio", true)
-		_gsxgw.S(">")
-		return _gsxgw.Err()
-	})
-}
+var _ = GSX_GENERATION_FAILED__see_radio_gsx

@@ -2,36 +2,8 @@
 
 package canonical
 
-import (
-	_gsxctx "context"
-	"github.com/gsxhq/gsx"
-	_gsxrt "github.com/gsxhq/gsx"
-	_gsxcm "github.com/gsxhq/gsxui/merge"
-	_gsxio "io"
-)
+// GSX GENERATION FAILED for input.gsx. Fix the errors below and re-run gsx generate.
+//
+//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/accordion_recipe.go:5:2: error: could not import github.com/gsxhq/gsxui/registry/canonical/shapes (codegen: cannot determine active companion Go files in /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes: /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:197:1: expected operand, found '<<'; /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:209:2: missing ',' in composite literal; /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:209:12: missing ',' before newline in composite literal)
 
-//line input.gsx:5:1
-// Input is the shadcn/ui Input — a straight port of the native <input>.
-// type="text" is an overridable default (the button type="button" pattern) —
-// pass type="email" etc. at the call site. Void, childless element: the
-// explicit { attrs... } spread is what opts it into fallthrough.
-
-//line input.gsx:9:1
-func Input(attrs gsx.Attrs) _gsxrt.Node {
-	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-		_gsxgw := _gsxrt.W(_gsxw)
-//line input.gsx:10:2
-		_gsxgw.S("<input")
-		if !attrs.Has("type") {
-			_gsxgw.S(" type=\"text\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(input.Root()), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "xlink:href"}, []string{"background", "src"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-input"})
-		_gsxgw.BoolAttr("data-gsxui-slot-input", true)
-		_gsxgw.S(">")
-		return _gsxgw.Err()
-	})
-}
+var _ = GSX_GENERATION_FAILED__see_input_gsx

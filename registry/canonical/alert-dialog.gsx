@@ -1,4 +1,4 @@
-package ui
+package canonical
 
 import "github.com/gsxhq/gsx"
 
@@ -29,7 +29,7 @@ component AlertDialogTrigger(children gsx.Node, attrs gsx.Attrs) {
 
 component AlertDialogContent(children gsx.Node, attrs gsx.Attrs) {
 	<DialogContent
-		class={ "max-w-xs sm:max-w-sm" }
+		class={ alertDialog.Content() }
 		hideCloseButton={true}
 		role="alertdialog"
 		data-gsxui-dialog-static
@@ -41,40 +41,19 @@ component AlertDialogContent(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component AlertDialogHeader(children gsx.Node, attrs gsx.Attrs) {
-	<div
-		class={ "grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center" }
-		{ attrs... }
-		data-gsxui-slot-alert-dialog-header
-	>
-		{ children }
-	</div>
+	<div class={ alertDialog.Header() } { attrs... } data-gsxui-slot-alert-dialog-header>{ children }</div>
 }
 
 component AlertDialogFooter(children gsx.Node, attrs gsx.Attrs) {
-	<div
-		class={ "-mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4 sm:flex-row sm:justify-end" }
-		{ attrs... }
-		data-gsxui-slot-alert-dialog-footer
-	>
-		{ children }
-	</div>
+	<div class={ alertDialog.Footer() } { attrs... } data-gsxui-slot-alert-dialog-footer>{ children }</div>
 }
 
 component AlertDialogTitle(children gsx.Node, attrs gsx.Attrs) {
-	<h2 class={ "text-base font-medium" } data-gsxui-dialog-title { attrs... } data-gsxui-slot-alert-dialog-title>
-		{ children }
-	</h2>
+	<h2 class={ alertDialog.Title() } data-gsxui-dialog-title { attrs... } data-gsxui-slot-alert-dialog-title>{ children }</h2>
 }
 
 component AlertDialogDescription(children gsx.Node, attrs gsx.Attrs) {
-	<p
-		class={ "text-sm text-muted-foreground" }
-		data-gsxui-dialog-description
-		{ attrs... }
-		data-gsxui-slot-alert-dialog-description
-	>
-		{ children }
-	</p>
+	<p class={ alertDialog.Description() } data-gsxui-dialog-description { attrs... } data-gsxui-slot-alert-dialog-description>{ children }</p>
 }
 
 component AlertDialogAction(children gsx.Node, attrs gsx.Attrs) {

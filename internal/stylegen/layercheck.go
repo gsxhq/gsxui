@@ -372,16 +372,6 @@ func dialogContentFallbackExemptions() []layerCheckExemption {
 			contested: "background-color",
 		},
 		{
-			file:      "assets/css/styles/default/alert-dialog.css",
-			selector:  ":where( dialog[data-gsxui-slot-dialog-content][data-gsxui-slot-alert-dialog-content] )",
-			contested: "max-w-xs",
-		},
-		{
-			file:      "assets/css/styles/default/alert-dialog.css",
-			selector:  ":where( dialog[data-gsxui-slot-dialog-content][data-gsxui-slot-alert-dialog-content] )",
-			contested: "max-w-sm",
-		},
-		{
 			file:      "assets/css/styles/default/drawer-sheet-shared.css",
 			selector:  ":where( dialog[data-gsxui-slot-dialog-content]:is( [data-gsxui-slot-drawer-content],[data-gsxui-slot-sheet-content] ) )",
 			contested: "m-0",

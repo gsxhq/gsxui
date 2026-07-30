@@ -598,7 +598,7 @@ test("DialogContent keeps its rounded-xl radius and centered box once open", asy
   expect(position).toBe("fixed");
 });
 
-test("AlertDialogContent's caller max-w-md stays overridable against the retained max-w-xs", async ({ page }) => {
+test("AlertDialogContent's caller max-w-md stays overridable against its own max-w-xs", async ({ page }) => {
   const response = await page.goto("/f/style-contract");
   expect(response?.status(), "style contract fixture response").toBe(200);
 
@@ -608,10 +608,38 @@ test("AlertDialogContent's caller max-w-md stays overridable against the retaine
   );
   await expect(el).toHaveJSProperty("open", true);
   const maxWidth = await el.evaluate((n) => getComputedStyle(n).maxWidth);
-  // max-w-md must beat the retained max-w-xs — this theme's --container-md
-  // token computes to 384px (not the 448px max-w-md usually reads as),
-  // confirmed against the actual computed style rather than guessed.
+  // max-w-md must beat AlertDialog's own max-w-xs — this theme's
+  // --container-md token computes to 384px (not the 448px max-w-md usually
+  // reads as), confirmed against the actual computed style rather than
+  // guessed.
   expect(maxWidth).toBe("384px");
+});
+
+// AlertDialog's migration restored a narrowing that was silently dead.
+// Before it, max-w-xs lived as a retained :where()-wrapped rule at (0,0,0)
+// in assets/css/styles/default/alert-dialog.css and lost unconditionally to
+// Dialog's own (0,1,0) recipe class in the same layer — measured at a 400px
+// viewport on the pre-migration tree, an AlertDialogContent computed
+// max-width: calc(100% - 32px), i.e. Dialog's box, not the narrower alert
+// box. Carrying it as AlertDialog's own slot utilities hands it to
+// merge.Merge instead, which is how upstream settles it too (shadcn
+// alert-dialog.tsx puts AlertDialogContent's max-w on its own className and
+// lets twMerge displace DialogContent's). Below the sm breakpoint the two
+// values differ, which is the only width where this is observable — the
+// suite's default 1280px viewport cannot see it, which is why it went
+// unnoticed.
+test("AlertDialogContent's own max-w-xs narrowing beats Dialog's box below the sm breakpoint", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 400, height: 800 });
+  await page.goto("/x/alert-dialog/basic");
+  const content = page.locator("dialog[data-gsxui-slot-alert-dialog-content]").first();
+  await content.evaluate((el) =>
+    el.dispatchEvent(new CustomEvent("gsxui:request-open", { bubbles: true, cancelable: true })),
+  );
+  await expect(content).toHaveJSProperty("open", true);
+  const maxWidth = await content.evaluate((n) => getComputedStyle(n).maxWidth);
+  expect(maxWidth).toBe("320px");
 });
 
 // Composer fallout verification: DrawerContent/SheetContent stamp

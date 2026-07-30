@@ -2,49 +2,8 @@
 
 package canonical
 
-import (
-	_gsxctx "context"
-	"github.com/gsxhq/gsx"
-	_gsxrt "github.com/gsxhq/gsx"
-	_gsxstd "github.com/gsxhq/gsx/std"
-	_gsxcm "github.com/gsxhq/gsxui/merge"
-	_gsxio "io"
-)
-
-//line badge.gsx:5:1
-// Badge is the shadcn/ui Badge. variant: "" (default) | "secondary" |
-// "destructive" | "outline" | "ghost" | "link". Extra attributes fall
-// through to the <span>; caller classes merge (caller wins per property).
+// GSX GENERATION FAILED for badge.gsx. Fix the errors below and re-run gsx generate.
 //
-// Retargeted to nova density (2026-07-24 nova density map, `## badge`).
-// ADAPT: nova keys directional icon padding off `data-icon="inline-start|
-// inline-end"` stamps this component doesn't emit; ported instead onto
-// gsxui's existing has-[>svg]:px-* selector mechanism (the same
-// substitution button.gsx/toggle.gsx make — see their own doc comments),
-// collapsing nova's matching inline-start/inline-end value (both px-1.5)
-// into one has-[>svg]:px-1.5.
+//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/accordion_recipe.go:5:2: error: could not import github.com/gsxhq/gsxui/registry/canonical/shapes (codegen: cannot determine active companion Go files in /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes: /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:197:1: expected operand, found '<<'; /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:209:2: missing ',' in composite literal; /Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:209:12: missing ',' before newline in composite literal)
 
-//line badge.gsx:16:1
-func Badge(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
-	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-		_gsxgw := _gsxrt.W(_gsxw)
-//line badge.gsx:17:2
-		_gsxgw.S("<span")
-		if !attrs.Has("data-variant") {
-			_gsxgw.S(" data-variant=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
-			_gsxgw.S("\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(badge.Root()), _gsxrt.Class(badge.Variant(variant)), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-badge"})
-		_gsxgw.BoolAttr("data-gsxui-slot-badge", true)
-		_gsxgw.S(">")
-//line badge.gsx:26:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</span>")
-		return _gsxgw.Err()
-	})
-}
+var _ = GSX_GENERATION_FAILED__see_badge_gsx
