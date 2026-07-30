@@ -8,7 +8,7 @@ import "./combobox.js";
 import "./command.js";
 import "./context-menu.js";
 import "./dialog.js";
-import "./dropdown.js";
+import "./dropdown-menu.js";
 import "./hover-card.js";
 import "./input-otp.js";
 import "./menubar.js";

@@ -227,7 +227,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
     "true",
   );
 
-  await page.goto("/x/dropdown/submenu");
+  await page.goto("/x/dropdown-menu/submenu");
   const dropdownTrigger = page.locator("[data-gsxui-dropdown-trigger]").first();
   const dropdownContent = page.locator(
     "[data-gsxui-slot-dropdown-menu-content]",
@@ -235,7 +235,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   await dropdownTrigger.click();
   await observe(
     "dropdown-lifecycle",
-    "dropdown",
+    "dropdown-menu",
     "dropdown-menu-trigger",
     dropdownTrigger,
     "aria-expanded",
@@ -243,7 +243,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   );
   await observe(
     "dropdown-lifecycle",
-    "dropdown",
+    "dropdown-menu",
     "dropdown-menu-content",
     dropdownContent,
     "data-state",
@@ -258,7 +258,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   await dropdownSubTrigger.hover();
   await observe(
     "dropdown-lifecycle",
-    "dropdown",
+    "dropdown-menu",
     "dropdown-menu-sub-trigger",
     dropdownSubTrigger,
     "data-state",
@@ -266,7 +266,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   );
   await observe(
     "dropdown-lifecycle",
-    "dropdown",
+    "dropdown-menu",
     "dropdown-menu-sub-trigger",
     dropdownSubTrigger,
     "aria-expanded",
@@ -274,7 +274,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   );
   await observe(
     "dropdown-lifecycle",
-    "dropdown",
+    "dropdown-menu",
     "dropdown-menu-sub-content",
     dropdownSubContent,
     "data-state",

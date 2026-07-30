@@ -112,35 +112,35 @@
     "scenario": "drawer-lifecycle"
   },
   {
-    "component": "dropdown",
+    "component": "dropdown-menu",
     "slot": "dropdown-menu-content",
     "attribute": "data-state",
     "value": "open",
     "scenario": "dropdown-lifecycle"
   },
   {
-    "component": "dropdown",
+    "component": "dropdown-menu",
     "slot": "dropdown-menu-sub-content",
     "attribute": "data-state",
     "value": "open",
     "scenario": "dropdown-lifecycle"
   },
   {
-    "component": "dropdown",
+    "component": "dropdown-menu",
     "slot": "dropdown-menu-sub-trigger",
     "attribute": "aria-expanded",
     "value": "true",
     "scenario": "dropdown-lifecycle"
   },
   {
-    "component": "dropdown",
+    "component": "dropdown-menu",
     "slot": "dropdown-menu-sub-trigger",
     "attribute": "data-state",
     "value": "open",
     "scenario": "dropdown-lifecycle"
   },
   {
-    "component": "dropdown",
+    "component": "dropdown-menu",
     "slot": "dropdown-menu-trigger",
     "attribute": "aria-expanded",
     "value": "true",

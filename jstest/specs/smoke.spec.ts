@@ -5,9 +5,9 @@ test("the manifest reaches the specs", () => {
   const all = examples();
   expect(all.length).toBeGreaterThan(100);
   expect(all).toContainEqual({
-    component: "dropdown",
+    component: "dropdown-menu",
     example: "checkboxes",
-    url: "/x/dropdown/checkboxes",
+    url: "/x/dropdown-menu/checkboxes",
   });
 });
 
@@ -42,7 +42,7 @@ test("the shim records what the real modules would have registered", async ({ pa
   // walk in shim.js is the only thing that can break this.
   const modules = new Set(registrations.map((r) => r.module));
   expect(modules).not.toContain("unknown");
-  expect(modules).toContain("dropdown.js");
+  expect(modules).toContain("dropdown-menu.js");
   expect(modules).toContain("toggle.js");
 });
 

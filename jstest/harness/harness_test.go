@@ -33,15 +33,15 @@ func TestBuildManifestCoversRegisteredExamples(t *testing.T) {
 
 	var got *entry
 	for i := range m {
-		if m[i].Component == "dropdown" && m[i].Example == "checkboxes" {
+		if m[i].Component == "dropdown-menu" && m[i].Example == "checkboxes" {
 			got = &m[i]
 		}
 	}
 	if got == nil {
-		t.Fatal("dropdown/checkboxes missing from manifest")
+		t.Fatal("dropdown-menu/checkboxes missing from manifest")
 	}
-	if got.URL != "/x/dropdown/checkboxes" {
-		t.Errorf("URL = %q, want /x/dropdown/checkboxes", got.URL)
+	if got.URL != "/x/dropdown-menu/checkboxes" {
+		t.Errorf("URL = %q, want /x/dropdown-menu/checkboxes", got.URL)
 	}
 
 	var preview *entry
@@ -391,7 +391,7 @@ func TestServesRealModuleSourceByteForByte(t *testing.T) {
 	srv := httptest.NewServer(newMux(root))
 	defer srv.Close()
 
-	for _, name := range []string{"index.js", "dropdown.js", "gsxui.js"} {
+	for _, name := range []string{"index.js", "dropdown-menu.js", "gsxui.js"} {
 		want, err := os.ReadFile(filepath.Join(root, "ui", name))
 		if err != nil {
 			t.Fatalf("reading ui/%s: %v", name, err)
@@ -419,18 +419,18 @@ func TestShimPassesThroughEverythingButGsxui(t *testing.T) {
 	srv := httptest.NewServer(newMux(root))
 	defer srv.Close()
 
-	want, err := os.ReadFile(filepath.Join(root, "ui", "dropdown.js"))
+	want, err := os.ReadFile(filepath.Join(root, "ui", "dropdown-menu.js"))
 	if err != nil {
-		t.Fatalf("reading ui/dropdown.js: %v", err)
+		t.Fatalf("reading ui/dropdown-menu.js: %v", err)
 	}
-	res, err := http.Get(srv.URL + "/shim/dropdown.js")
+	res, err := http.Get(srv.URL + "/shim/dropdown-menu.js")
 	if err != nil {
-		t.Fatalf("GET /shim/dropdown.js: %v", err)
+		t.Fatalf("GET /shim/dropdown-menu.js: %v", err)
 	}
 	got, _ := io.ReadAll(res.Body)
 	res.Body.Close()
 	if !bytes.Equal(got, want) {
-		t.Error("/shim/dropdown.js is not the real ui/dropdown.js")
+		t.Error("/shim/dropdown-menu.js is not the real ui/dropdown-menu.js")
 	}
 }
 

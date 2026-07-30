@@ -89,7 +89,7 @@ var menuContracts = []Component{
 	},
 	{
 		Name:         "DropdownMenu",
-		RegistryName: "dropdown",
+		RegistryName: "dropdown-menu",
 		Slots: []Slot{
 			{Name: "dropdown-menu"},
 			{Name: "dropdown-menu-trigger", Axes: []Axis{

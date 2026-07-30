@@ -589,23 +589,27 @@ func TestComponentPageRoute(t *testing.T) {
 	})
 
 	// Task-6-review representative: proves a renamed component's footer
-	// link points at shadcn's actual slug (dropdown→dropdown-menu), not the
+	// link points at shadcn's actual slug (radio→radio-group), not the
 	// gsxui component name verbatim, which would 404 on ui.shadcn.com. (Prior
 	// to the single-package sweep this used switchctl, whose registered name
 	// only differed from its shadcn slug because "switch" is a Go keyword —
 	// now that the registry-facing name is "switch" itself, name and slug
-	// coincide and it no longer exercises shadcnSlug's rename path.)
-	t.Run("renamed component (dropdown) links to shadcn's dropdown-menu slug", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodGet, "/components/dropdown", nil)
+	// coincide and it no longer exercises shadcnSlug's rename path. dropdown
+	// used to exercise this path too — its registry name was "dropdown"
+	// against shadcn's "dropdown-menu" — until the registry entry itself was
+	// renamed to "dropdown-menu" ahead of its slot-axis migration, removing
+	// the delta; "radio" is the remaining live case.)
+	t.Run("renamed component (radio) links to shadcn's radio-group slug", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/components/radio", nil)
 		rec := httptest.NewRecorder()
 		handler.ServeHTTP(rec, req)
 
 		if rec.Code != http.StatusOK {
-			t.Fatalf("GET /components/dropdown = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
+			t.Fatalf("GET /components/radio = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
 		}
 		body := rec.Body.String()
-		if !strings.Contains(body, `ui.shadcn.com/docs/components/dropdown-menu"`) {
-			t.Errorf(`response missing shadcn link to renamed slug "dropdown-menu"; body:\n%s`, body)
+		if !strings.Contains(body, `ui.shadcn.com/docs/components/radio-group"`) {
+			t.Errorf(`response missing shadcn link to renamed slug "radio-group"; body:\n%s`, body)
 		}
 	})
 

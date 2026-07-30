@@ -77,11 +77,13 @@ func capitalize(s string) string {
 // shadcnSlug maps gsxui component names to the slug shadcn/ui uses under
 // ui.shadcn.com/docs/components/{slug} — most names match verbatim, but a
 // couple of gsxui components restructure their shadcn source under a
-// different name (dropdown ports DropdownMenu; radio ports RadioGroup).
-// Names not present here pass through unchanged.
+// different name (radio ports RadioGroup). dropdown-menu used to need an
+// entry here too (it was registered as "dropdown"), but that naming delta
+// was removed by renaming the registry entry to "dropdown-menu" ahead of
+// its slot-axis migration — it now matches upstream's own slug verbatim and
+// passes through unchanged. Names not present here pass through unchanged.
 var shadcnSlug = map[string]string{
-	"dropdown": "dropdown-menu",
-	"radio":    "radio-group",
+	"radio": "radio-group",
 }
 
 // shadcnName resolves a gsxui component name to its shadcn/ui docs slug,

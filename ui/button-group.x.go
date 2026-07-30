@@ -16,7 +16,7 @@ import (
 // (registry/new-york-v4/ui/button-group.tsx). Its public orientation is
 // reflected for the style pack and defaults via the house `|> default`
 // pattern (see
-// button.gsx/dropdown.gsx) for consistency with every other data-variant
+// button.gsx/dropdown-menu.gsx) for consistency with every other data-variant
 // stamp in this codebase — an ADAPT: shadcn leaves the attribute entirely
 // unset when `orientation` is undefined (see docs/jsx-parity.md).
 //

@@ -9,7 +9,7 @@ const desktopRoutes = [
   "checkbox/states",
   "combobox/basic",
   "dialog/basic",
-  "dropdown/basic",
+  "dropdown-menu/basic",
   "field/invalid",
   "navigation-menu/mega",
   "sidebar/variants",
@@ -62,7 +62,7 @@ async function prepareVisualRoute(
     await expect(page.getByRole("dialog")).toBeVisible();
   }
 
-  if (route === "dropdown/basic") {
+  if (route === "dropdown-menu/basic") {
     await page.getByRole("button", { name: "Options" }).click();
     await expect(page.locator("[data-gsxui-dropdown-content]")).toBeVisible();
   }

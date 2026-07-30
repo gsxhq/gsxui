@@ -33,7 +33,7 @@ var runtimeScenarioByComponent = map[string]string{
 	"context-menu":    "context-menu-lifecycle",
 	"dialog":          "dialog-lifecycle",
 	"drawer":          "drawer-lifecycle",
-	"dropdown":        "dropdown-lifecycle",
+	"dropdown-menu":   "dropdown-lifecycle",
 	"hover-card":      "hover-card-lifecycle",
 	"input-otp":       "input-otp-caret",
 	"menubar":         "menubar-lifecycle",

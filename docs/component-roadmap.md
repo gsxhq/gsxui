@@ -1,12 +1,15 @@
 # Component roadmap — shadcn coverage audit
 
 Audited 2026-07-23 against `shadcn-ui/apps/v4/registry/new-york-v4/ui`
-(57 registry components). gsxui ships 20 (naming deltas: our `dropdown` =
-their `dropdown-menu`, `radio` = `radio-group`; our native `<select>`
-port was renamed `select` → `native-select` on 2026-07-24 to match
-shadcn's own name for the same div-wrapped-native-select design — no
-naming delta there anymore — freeing `Select`/`select` for the Tier 3
-custom listbox below).
+(57 registry components). gsxui ships 20 (naming deltas: `radio` =
+their `radio-group`; our native `<select>` port was renamed `select` →
+`native-select` on 2026-07-24 to match shadcn's own name for the same
+div-wrapped-native-select design — no naming delta there anymore —
+freeing `Select`/`select` for the Tier 3 custom listbox below. Our
+registry entry for DropdownMenu was itself renamed `dropdown` →
+`dropdown-menu` ahead of its slot-axis migration, matching its own
+markers and shadcn's `dropdown-menu` — no naming delta there either
+anymore).
 
 Ordering is easy → hard **for this codebase**: difficulty is judged
 against the machinery gsxui already has (native popover API anchoring
@@ -96,7 +99,7 @@ backlog entry tracked — reaching **full parity** with shadcn's
 
 | component | shipped as | deferred sub-features (v1 gaps, ledgered) |
 |---|---|---|
-| menubar | `Menubar`/`MenubarMenu`/`MenubarTrigger` + the same seven shared item parts, reusing `dropdown.gsx`/`dropdown.js`'s popover machinery a third time; `menubar.js` roving-tabindex bar, open-follows-hover between sibling menus, DOM-nested submenus | no RTL arrow-key swap (codebase-wide gap, not menubar-specific); menu and submenu positioning are both a hand-rolled fixed anchor, not collision-aware flip/shift |
+| menubar | `Menubar`/`MenubarMenu`/`MenubarTrigger` + the same seven shared item parts, reusing `dropdown-menu.gsx`/`dropdown-menu.js`'s popover machinery a third time; `menubar.js` roving-tabindex bar, open-follows-hover between sibling menus, DOM-nested submenus | no RTL arrow-key swap (codebase-wide gap, not menubar-specific); menu and submenu positioning are both a hand-rolled fixed anchor, not collision-aware flip/shift |
 | navigation-menu | `NavigationMenu` + `Item`/`Trigger`/`Content`/`Link`/`Indicator`/`List`; ships `viewport={false}` only — each `Content` renders as its own chromed panel (gsx has no portal, so upstream's shared-viewport architecture doesn't fit) | shared-viewport mode (`viewport=true`, one portalled panel morphing between panel sizes); the six-token `data-[motion=…]` direction-aware slide animation, replaced by the codebase's standard discrete-transition block |
 
 **calendar SHIPPED 2026-07-26**, per `docs/superpowers/plans/2026-07-25-calendar.md`
