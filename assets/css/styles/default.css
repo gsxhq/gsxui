@@ -18,7 +18,6 @@
    components layer opening with the same declaration it opened with before
    the split, which is what makes the compiled output byte-identical. */
 @import "./default/root.css";
-@import "./default/breadcrumb.css";
 @import "./default/button-group.css";
 @import "./default/empty.css";
 @import "./default/icon.css";

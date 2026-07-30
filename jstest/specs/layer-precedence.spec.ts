@@ -245,6 +245,12 @@ test("Collapsible trigger keeps its list-none marker hidden", async ({ page }) =
   const listStyle = await el.evaluate((n) => getComputedStyle(n).listStyleType);
   expect(listStyle).toBe("none");
 });
+test("Breadcrumb separator icon keeps its 3.5 size and link keeps hover color", async ({ page }) => {
+  await page.goto("/x/breadcrumb/basic");
+  const svg = page.locator("[data-gsxui-slot-breadcrumb-separator] > svg").first();
+  const size = await svg.evaluate((n) => getComputedStyle(n).width);
+  expect(size).toBe("14px");
+});
 test("Resizable handle keeps its hairline width and flex layout", async ({ page }) => {
   // Pins both the recipe's own width and the foundation.css escape-hatch
   // rules (display: flex / width: 100% under aria-orientation=horizontal)
