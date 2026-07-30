@@ -1,4 +1,4 @@
-package ui
+package nova
 
 import "github.com/gsxhq/gsx"
 

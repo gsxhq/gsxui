@@ -238,6 +238,18 @@
         }
       }
     },
+    "hover-card": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
+        "content": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "input-otp": {
       "slots": {
         "": {
@@ -301,6 +313,18 @@
           "dimensions": {}
         },
         "previous-label": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
+    "popover": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
+        "content": {
           "base": true,
           "dimensions": {}
         }
@@ -558,6 +582,22 @@
               ]
             }
           }
+        }
+      }
+    },
+    "tooltip": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
+        "arrow": {
+          "base": true,
+          "dimensions": {}
+        },
+        "content": {
+          "base": true,
+          "dimensions": {}
         }
       }
     }
@@ -1179,6 +1219,45 @@
           }
         }
       },
+      "hover-card": {
+        "slots": {
+          "": {
+            "base": [
+              "contents"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "z-50",
+              "w-64",
+              "origin-top",
+              "rounded-lg",
+              "border",
+              "bg-popover",
+              "p-2.5",
+              "text-sm",
+              "text-popover-foreground",
+              "shadow-md",
+              "outline-hidden",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "starting:[\u0026:popover-open]:data-[side=bottom]:-translate-y-2",
+              "starting:[\u0026:popover-open]:data-[side=left]:translate-x-2",
+              "starting:[\u0026:popover-open]:data-[side=right]:-translate-x-2",
+              "starting:[\u0026:popover-open]:data-[side=top]:translate-y-2"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
       "input-otp": {
         "slots": {
           "": {
@@ -1342,6 +1421,46 @@
             "base": [
               "hidden",
               "sm:block"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "popover": {
+        "slots": {
+          "": {
+            "base": [
+              "contents"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "z-50",
+              "w-72",
+              "origin-top",
+              "gap-2.5",
+              "rounded-lg",
+              "border",
+              "bg-popover",
+              "p-2.5",
+              "text-sm",
+              "text-popover-foreground",
+              "shadow-md",
+              "outline-hidden",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "starting:[\u0026:popover-open]:data-[side=bottom]:-translate-y-2",
+              "starting:[\u0026:popover-open]:data-[side=left]:translate-x-2",
+              "starting:[\u0026:popover-open]:data-[side=right]:-translate-x-2",
+              "starting:[\u0026:popover-open]:data-[side=top]:translate-y-2"
             ],
             "dimensions": {}
           }
@@ -2020,6 +2139,62 @@
                 ]
               }
             }
+          }
+        }
+      },
+      "tooltip": {
+        "slots": {
+          "": {
+            "base": [
+              "contents"
+            ],
+            "dimensions": {}
+          },
+          "arrow": {
+            "base": [
+              "absolute",
+              "top-full",
+              "left-1/2",
+              "z-50",
+              "size-2.5",
+              "-translate-x-1/2",
+              "-translate-y-[calc(50%+2px)]",
+              "rotate-45",
+              "rounded-[2px]",
+              "bg-foreground"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "z-50",
+              "w-fit",
+              "origin-bottom",
+              "gap-1.5",
+              "overflow-visible",
+              "rounded-md",
+              "bg-foreground",
+              "px-3",
+              "py-1.5",
+              "text-xs",
+              "text-balance",
+              "text-background",
+              "has-[[data-gsxui-slot-kbd]]:pr-1.5",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "starting:[\u0026:popover-open]:data-[side=bottom]:-translate-y-2",
+              "starting:[\u0026:popover-open]:data-[side=left]:translate-x-2",
+              "starting:[\u0026:popover-open]:data-[side=right]:-translate-x-2",
+              "starting:[\u0026:popover-open]:data-[side=top]:translate-y-2"
+            ],
+            "dimensions": {}
           }
         }
       }
@@ -2635,6 +2810,45 @@
           }
         }
       },
+      "hover-card": {
+        "slots": {
+          "": {
+            "base": [
+              "contents"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "z-50",
+              "w-64",
+              "origin-top",
+              "rounded-lg",
+              "border",
+              "bg-popover",
+              "p-2.5",
+              "text-sm",
+              "text-popover-foreground",
+              "shadow-md",
+              "outline-hidden",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "starting:[\u0026:popover-open]:data-[side=bottom]:-translate-y-2",
+              "starting:[\u0026:popover-open]:data-[side=left]:translate-x-2",
+              "starting:[\u0026:popover-open]:data-[side=right]:-translate-x-2",
+              "starting:[\u0026:popover-open]:data-[side=top]:translate-y-2"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
       "input-otp": {
         "slots": {
           "": {
@@ -2798,6 +3012,46 @@
             "base": [
               "hidden",
               "sm:block"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "popover": {
+        "slots": {
+          "": {
+            "base": [
+              "contents"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "z-50",
+              "w-72",
+              "origin-top",
+              "gap-2.5",
+              "rounded-lg",
+              "border",
+              "bg-popover",
+              "p-2.5",
+              "text-sm",
+              "text-popover-foreground",
+              "shadow-md",
+              "outline-hidden",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "starting:[\u0026:popover-open]:data-[side=bottom]:-translate-y-2",
+              "starting:[\u0026:popover-open]:data-[side=left]:translate-x-2",
+              "starting:[\u0026:popover-open]:data-[side=right]:-translate-x-2",
+              "starting:[\u0026:popover-open]:data-[side=top]:translate-y-2"
             ],
             "dimensions": {}
           }
@@ -3476,6 +3730,62 @@
                 ]
               }
             }
+          }
+        }
+      },
+      "tooltip": {
+        "slots": {
+          "": {
+            "base": [
+              "contents"
+            ],
+            "dimensions": {}
+          },
+          "arrow": {
+            "base": [
+              "absolute",
+              "top-full",
+              "left-1/2",
+              "z-50",
+              "size-2.5",
+              "-translate-x-1/2",
+              "-translate-y-[calc(50%+2px)]",
+              "rotate-45",
+              "rounded-[2px]",
+              "bg-foreground"
+            ],
+            "dimensions": {}
+          },
+          "content": {
+            "base": [
+              "z-50",
+              "w-fit",
+              "origin-bottom",
+              "gap-1.5",
+              "overflow-visible",
+              "rounded-md",
+              "bg-foreground",
+              "px-3",
+              "py-1.5",
+              "text-xs",
+              "text-balance",
+              "text-background",
+              "has-[[data-gsxui-slot-kbd]]:pr-1.5",
+              "opacity-0",
+              "scale-95",
+              "transition-[opacity,scale,translate,display,overlay]",
+              "transition-discrete",
+              "duration-150",
+              "[\u0026:popover-open]:opacity-100",
+              "[\u0026:popover-open]:scale-100",
+              "starting:[\u0026:popover-open]:opacity-0",
+              "starting:[\u0026:popover-open]:scale-95",
+              "starting:[\u0026:popover-open]:data-[side=bottom]:-translate-y-2",
+              "starting:[\u0026:popover-open]:data-[side=left]:translate-x-2",
+              "starting:[\u0026:popover-open]:data-[side=right]:-translate-x-2",
+              "starting:[\u0026:popover-open]:data-[side=top]:translate-y-2"
+            ],
+            "dimensions": {}
           }
         }
       }

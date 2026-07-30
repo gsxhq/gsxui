@@ -218,9 +218,20 @@ func TestSheetCSSOnlyContract(t *testing.T) {
 }
 
 func TestPopoverCSSOnlyContract(t *testing.T) {
+	// Popover migrated to the slot axis: popover-content now legitimately
+	// renders a class="..." attribute carrying its recipe's resolved
+	// utilities, so assertCallerAttrsOnce's blanket "class=\"caller-only\"
+	// verbatim" assumption no longer holds. Assert the caller class merges
+	// onto the content element's own recipe class instead, mirroring
+	// Accordion's precedent for a migrated CSS-only part.
 	got := render(t, ui.PopoverContent(gsx.Raw("x"), callerAttrs()))
 	assertCSSOnlyMarkup(t, got, "popover-content")
-	assertCallerAttrsOnce(t, got)
+	if strings.Count(got, `id="caller-id"`) != 1 {
+		t.Errorf(`id="caller-id" must render exactly once\nin: %s`, got)
+	}
+	if strings.Count(got, "caller-only") != 1 || strings.Count(got, "class=") != 1 {
+		t.Errorf("caller class must merge onto content's own recipe class exactly once\nin: %s", got)
+	}
 	for _, want := range []string{
 		`popover="auto"`,
 		`data-state="closed"`,
@@ -234,9 +245,15 @@ func TestPopoverCSSOnlyContract(t *testing.T) {
 }
 
 func TestHoverCardCSSOnlyContract(t *testing.T) {
+	// HoverCard migrated: same carve-out as Popover above.
 	got := render(t, ui.HoverCardContent(gsx.Raw("x"), callerAttrs()))
 	assertCSSOnlyMarkup(t, got, "hover-card-content")
-	assertCallerAttrsOnce(t, got)
+	if strings.Count(got, `id="caller-id"`) != 1 {
+		t.Errorf(`id="caller-id" must render exactly once\nin: %s`, got)
+	}
+	if strings.Count(got, "caller-only") != 1 || strings.Count(got, "class=") != 1 {
+		t.Errorf("caller class must merge onto content's own recipe class exactly once\nin: %s", got)
+	}
 	for _, want := range []string{
 		`popover="manual"`,
 		`data-state="closed"`,
@@ -249,9 +266,20 @@ func TestHoverCardCSSOnlyContract(t *testing.T) {
 }
 
 func TestTooltipCSSOnlyContract(t *testing.T) {
+	// Tooltip migrated: same carve-out as Popover/HoverCard above, plus a
+	// second class= for the arrow span's own recipe class (same shape as
+	// CollapsibleTrigger's own class alongside the root's caller class).
 	got := render(t, ui.TooltipContent(gsx.Raw("x"), callerAttrs()))
 	assertCSSOnlyMarkup(t, got, "tooltip-content", "tooltip-arrow")
-	assertCallerAttrsOnce(t, got)
+	if strings.Count(got, `id="caller-id"`) != 1 {
+		t.Errorf(`id="caller-id" must render exactly once\nin: %s`, got)
+	}
+	if strings.Count(got, "caller-only") != 1 {
+		t.Errorf("caller class must merge onto content's own recipe class exactly once\nin: %s", got)
+	}
+	if strings.Count(got, `class=`) != 2 {
+		t.Errorf("expected exactly 2 class= attributes (content + arrow)\nin: %s", got)
+	}
 	for _, want := range []string{
 		`popover="manual"`,
 		`role="tooltip"`,

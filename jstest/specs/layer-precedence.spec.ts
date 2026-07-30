@@ -432,3 +432,41 @@ test("Label's disabled-state opacity stays caller-overridable", async ({ page })
   // [[data-disabled=true]_&]:opacity-50 rule (0.5).
   expect(opacity).toBe("1");
 });
+
+// Popover, HoverCard, and Tooltip migrated to the slot axis together (they
+// share assets/css/styles/default/overlay-popover-transition.css, now
+// deleted). None of their rules needed the §10b escape hatch, so these are
+// plain "the recipe class still applies" pins, not caller-override pins.
+// border-radius/background are on the -content slot's base rule, gated by
+// neither :popover-open nor @starting-style, so no popover-open interaction
+// is needed to observe them.
+
+test("PopoverContent keeps its rounded corners", async ({ page }) => {
+  await page.goto("/x/popover/basic");
+  const el = page.locator("[data-gsxui-slot-popover-content]");
+  const radius = await el.evaluate((n) => getComputedStyle(n).borderRadius);
+  expect(radius).toBe("10px");
+});
+
+test("HoverCardContent keeps its rounded corners", async ({ page }) => {
+  await page.goto("/x/hover-card/basic");
+  const el = page.locator("[data-gsxui-slot-hover-card-content]");
+  const radius = await el.evaluate((n) => getComputedStyle(n).borderRadius);
+  expect(radius).toBe("10px");
+});
+
+test("TooltipContent keeps its own has-kbd padding when it contains a Kbd", async ({ page }) => {
+  const response = await page.goto("/f/style-contract");
+  expect(response?.status(), "style contract fixture response").toBe(200);
+  const withKbd = page.locator('[data-style-contract="tooltip-kbd"]');
+  const paddingRightWithKbd = await withKbd.evaluate((n) => getComputedStyle(n).paddingRight);
+  // has-[[data-gsxui-slot-kbd]]:pr-1.5 (6px) fires because this fixture's
+  // TooltipContent actually renders a Kbd child.
+  expect(paddingRightWithKbd).toBe("6px");
+
+  await page.goto("/x/tooltip/basic");
+  const withoutKbd = page.locator("[data-gsxui-slot-tooltip-content]").first();
+  const paddingRightPlain = await withoutKbd.evaluate((n) => getComputedStyle(n).paddingRight);
+  // No Kbd child here, so the base px-3 (12px) applies unchanged.
+  expect(paddingRightPlain).toBe("12px");
+});

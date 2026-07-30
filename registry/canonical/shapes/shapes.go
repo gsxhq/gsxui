@@ -49,6 +49,9 @@ var all = map[string]recipe.Shape{
 	Switch.Component:      Switch,
 	Select.Component:      Select,
 	Toggle.Component:      Toggle,
+	Popover.Component:     Popover,
+	HoverCard.Component:   HoverCard,
+	Tooltip.Component:     Tooltip,
 }
 
 // All returns every declared component shape, keyed by component name.
