@@ -376,6 +376,23 @@ Each is a current limitation, not a historical note. None blocks the migration.
    styles). Decide deliberately whether to adopt more styles before the
    migration multiplies the cost, not after.
 
+1. **A contract axis that is not shaped `data-<name>` cannot become a shape
+   dimension at all.** Resizable's orientation is `aria-orientation`, and a
+   recipe dimension encodes as `gsxui-recipe-<c>-<dim>-<value>` matched against
+   a `data-*` attribute. Such an axis must be authored as a runtime-state
+   variant instead (`aria-[orientation=vertical]:`), exactly as `aria-invalid`
+   already is. This is a second, independent reason the shape/contract agreement
+   check is one-directional — the spec only gives the first (runtime state).
+   Check per component whether an orientation axis is `data-` or `aria-`;
+   the two are not interchangeable.
+
+1. **`assets/css/foundation.css` is a second shared-mechanics stylesheet** and
+   the migration procedure only names `assets/css/styles/default/`. A
+   component's rules can be split across both, so both must be grepped before
+   migrating. Foundation rules may legitimately stay — that is a per-rule
+   judgement the layer gate cannot make. Migrating Resizable required splitting
+   a whole-component rule there into an unwrapped `@layer utilities` rule.
+
 1. **The computed-style sweep is not perfectly deterministic.** One run in five
    reported two spurious differences that three subsequent runs did not
    reproduce. The sweep is the primary acceptance gate for every migration, so a
