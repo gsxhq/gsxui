@@ -267,6 +267,33 @@ Only two artifacts collide when migrations run concurrently:
 | `registry/generated/recipes.json` | no — regenerated whole | yes |
 | `registry/canonical/shapes/shapes.go` | no — one line added per component | yes (trivially) |
 
+**Two flaws found when Wave 1 first ran — the protocol as originally written
+does not work:**
+
+1. **`isolation: "worktree"` branches from the DEFAULT branch, not the current
+   one.** Both Wave 1 agents were handed worktrees built from `main`, which has
+   none of the slot-axis work — no playbook, no `registry/canonical/shapes/`, no
+   recipe stylesheets. Both correctly refused rather than forking a parallel
+   implementation. Create worktrees explicitly instead:
+
+   ```bash
+   git worktree add /tmp/gsxui-<name> recipe-model --detach
+   ln -sf <main-worktree>/node_modules /tmp/gsxui-<name>/node_modules
+   ```
+
+   and pass the path to the agent as its working directory.
+
+2. **Agents cannot each run the sweep.** `jstest/support/paths.ts` hardcodes
+   `harnessPort = 7799`, so concurrent Playwright runs collide on that port.
+   The sweep therefore moves to the coordinator, run ONCE after merging the
+   wave. Agents run only the Go gates (`stylegen --check`,
+   `--check-authoring`, `make audit`, build, tests) and ADD a regression pin per
+   component; the coordinator executes the pins and the sweep.
+
+   Consequence: an agent can no longer prove its own component
+   rendering-neutral. Attributability comes from one commit per component plus
+   the per-component pins — if the wave sweep is dirty, bisect by commit.
+
 - [ ] **Step 1: Write the protocol**
 
 Record this as the rule, with the reasoning:
