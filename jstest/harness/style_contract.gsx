@@ -48,6 +48,14 @@ component StyleContractFixture() {
 			</ui.Card>
 		</div>
 		<div>
+			<ui.CardHeader class="border-b pb-10" data-style-contract="card-header-caller">
+				<ui.CardTitle>Card header caller override</ui.CardTitle>
+			</ui.CardHeader>
+		</div>
+		<div data-disabled="true">
+			<ui.Label class="opacity-100" data-style-contract="label-disabled-caller">Disabled label caller override</ui.Label>
+		</div>
+		<div>
 			<ui.Badge>Badge</ui.Badge>
 		</div>
 		<div class="flex flex-wrap gap-2">

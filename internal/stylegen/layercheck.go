@@ -248,7 +248,87 @@ type layerCheckExemption struct {
 // longer names a violation that really occurs, so an exemption whose rule was
 // deleted, reflowed, renamed, or rewritten to win the cascade fails the build
 // instead of quietly widening its own scope.
-var layerCheckExemptions = siteButtonFallbackExemptions()
+var layerCheckExemptions = append(siteButtonFallbackExemptions(), toggleMarkerFallbackExemptions()...)
+
+// toggleMarkerFallbackReason is the decision behind every entry
+// toggleMarkerFallbackExemptions lists. ui/toggle-group.gsx's
+// ToggleGroupItem stamps data-gsxui-slot-toggle onto its own <button>
+// alongside data-gsxui-slot-toggle-group-item, and has no class attribute
+// of its own — every bit of its base appearance came entirely from
+// Toggle's marker-keyed rules, not from a class Toggle's own migration
+// adds. This :where()-wrapped fallback in assets/css/styles/default.css is
+// authored at zero specificity in @layer components precisely so Toggle's
+// own compiled recipe class beats it wherever a real <ui.Toggle> renders
+// (both apply the identical values, so there is no visible difference
+// either way) — the same "authored to lose on purpose" design as
+// web/site-button.css's fallback above, just for a sibling component
+// (ToggleGroup) composing an unmigrated marker instead of docs markup.
+// Moving it to @layer utilities instead (this gate's usual fix) was tried
+// first and rejected on the earlier Toggle migration attempt: it broke a
+// real caller override, because @layer utilities is the SAME named layer
+// Tailwind's own scanned utility classes live in, and this file is
+// @imported after "tailwindcss" in every consumer — so these rules would
+// always win over a caller's plain utility class instead of losing to it,
+// the opposite of every other escape hatch in this file.
+const toggleMarkerFallbackReason = "assets/css/styles/default.css's Toggle marker fallback is docs-and-" +
+	"unmigrated-consumer-only presentation for ToggleGroupItem, which composes " +
+	"data-gsxui-slot-toggle without going through <ui.Toggle>'s own accessor calls. It is " +
+	"authored at zero specificity in @layer components precisely so a real Toggle's own " +
+	"compiled utilities win wherever <ui.Toggle> renders; losing the cascade there is the " +
+	"design, not a defect. jstest/specs/layer-precedence.spec.ts's Toggle caller-override pin " +
+	"covers the real rendering path this fallback must not break."
+
+// toggleMarkerFallbackExemptions spells out every violation the Toggle
+// marker fallback commits, one (selector, utility, style) triple at a
+// time, following siteButtonFallbackExemptions' own enumeration
+// discipline exactly (see its own doc comment for why enumerating beats a
+// whole-file waiver).
+func toggleMarkerFallbackExemptions() []layerCheckExemption {
+	both := []string{"maia", "nova"}
+	pairs := []struct {
+		selector, contested string
+		styles              []string
+	}{
+		{selector: ":where([data-gsxui-slot-toggle])", contested: "rounded-lg", styles: both},
+		{selector: ":where([data-gsxui-slot-toggle])", contested: "text-sm", styles: both},
+		{selector: ":where([data-gsxui-slot-toggle]) svg:not([class*=\"size-\"])", contested: "size-4", styles: both},
+		{selector: ":where([data-gsxui-slot-toggle]):focus-visible", contested: "border-ring", styles: both},
+		{selector: ":where([data-gsxui-slot-toggle]):hover", contested: "bg-muted", styles: both},
+		{selector: ":where([data-gsxui-slot-toggle])[aria-invalid=\"true\"]", contested: "border-destructive", styles: both},
+		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"default\"]", contested: "h-8", styles: both},
+		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"default\"]", contested: "min-w-8", styles: both},
+		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"default\"]:has(>svg)", contested: "px-2", styles: both},
+		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"lg\"]", contested: "h-9", styles: both},
+		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"lg\"]", contested: "min-w-9", styles: both},
+		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"lg\"]:has(>svg)", contested: "px-2", styles: both},
+		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"sm\"]", contested: "h-7", styles: both},
+		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"sm\"]", contested: "min-w-7", styles: both},
+		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"sm\"]", contested: "rounded-[min(var(--radius-md),12px)]", styles: both},
+		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"sm\"]", contested: "text-[0.8rem]", styles: both},
+		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"sm\"] svg:not([class*=\"size-\"])", contested: "size-3.5", styles: both},
+		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"sm\"]:has(>svg)", contested: "px-1.5", styles: both},
+		{selector: ":where([data-gsxui-slot-toggle])[data-state=\"on\"]", contested: "bg-accent", styles: both},
+		{selector: ":where([data-gsxui-slot-toggle])[data-variant=\"outline\"]:hover", contested: "bg-accent", styles: both},
+	}
+	out := make([]layerCheckExemption, 0, len(pairs)*2)
+	for _, pair := range pairs {
+		if len(pair.styles) == 0 {
+			panic("exemption for " + pair.selector + " / " + pair.contested + " names no style")
+		}
+		for _, style := range pair.styles {
+			out = append(out, layerCheckExemption{
+				key: exemptionKey{
+					file:      "assets/css/styles/default.css",
+					style:     style,
+					selector:  pair.selector,
+					contested: pair.contested,
+				},
+				reason: toggleMarkerFallbackReason,
+			})
+		}
+	}
+	return out
+}
 
 // siteButtonFallbackReason is the single decision behind every entry below. It
 // is attached to each one because a reader who trips over a suppressed rule

@@ -393,3 +393,42 @@ test("SelectTrigger keeps its default height and radius", async ({ page }) => {
   expect(height).toBe("28px");
   expect(radius).toBe("8px");
 });
+
+// --- Caller-override pins (spec section 10b) -------------------------------
+//
+// The sweep above and every pin before this one only measure DEFAULT
+// rendering, which is exactly why Card's and Label's migrations silently
+// dropped caller-overridability of a relational rule and nobody noticed
+// through three migration waves: an arbitrary same-element/ancestor/sibling
+// variant compiles to a two-class selector that permanently outranks a
+// caller's plain utility regardless of source order, once the rule is
+// resolved onto the component's own generated markup instead of living in
+// @layer components. These pins pass a caller class that contests the
+// retained rule's property and assert the CALLER wins — see
+// assets/css/styles/default/card.css and
+// assets/css/styles/default/label.css for the retained rules themselves,
+// and jstest/harness/style_contract.gsx's "card-header-caller" /
+// "label-disabled-caller" fixtures this exercises (fixtures must exist in
+// the compiled CSS via Tailwind scanning, not runtime-injected HTML — same
+// requirement as "pagination-previous-caller" above).
+
+test("CardHeader's border-b padding stays caller-overridable", async ({ page }) => {
+  const response = await page.goto("/f/style-contract");
+  expect(response?.status(), "style contract fixture response").toBe(200);
+
+  const el = page.locator('[data-style-contract="card-header-caller"]');
+  const paddingBottom = await el.evaluate((n) => getComputedStyle(n).paddingBottom);
+  // pb-10 (40px) must beat the retained [&.border-b]:pb-4 (16px) rule.
+  expect(paddingBottom).toBe("40px");
+});
+
+test("Label's disabled-state opacity stays caller-overridable", async ({ page }) => {
+  const response = await page.goto("/f/style-contract");
+  expect(response?.status(), "style contract fixture response").toBe(200);
+
+  const el = page.locator('[data-style-contract="label-disabled-caller"]');
+  const opacity = await el.evaluate((n) => getComputedStyle(n).opacity);
+  // opacity-100 (1) must beat the retained
+  // [[data-disabled=true]_&]:opacity-50 rule (0.5).
+  expect(opacity).toBe("1");
+});
