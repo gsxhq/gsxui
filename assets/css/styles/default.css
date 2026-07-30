@@ -32,7 +32,6 @@
 @import "./default/combobox.css";
 @import "./default/menu.css";
 @import "./default/menu-popover-transition.css";
-@import "./default/textarea.css";
 @import "./default/dialog.css";
 @import "./default/alert-dialog.css";
 @import "./default/drawer-sheet-shared.css";
@@ -326,6 +325,28 @@
      layer, no :where(). */
   [data-gsxui-slot-sidebar-trigger] {
     @apply size-7;
+  }
+
+  /* InputGroup control fallout from Textarea's migration:
+     ui/input-group.gsx's InputGroupTextarea composes <ui.Textarea> directly
+     (input-group.gsx passes data-gsxui-slot-input-group-control alongside
+     Textarea's own data-gsxui-slot-textarea onto the same <textarea>), so
+     the rendered element now also carries Textarea's own recipe utilities.
+     Textarea's migration gave those real (0,1,0)-equivalent Tailwind
+     utilities scanned directly out of ui/textarea.gsx; the two rules below
+     contest rounded-lg/border-input (border radius/color) and
+     focus-visible:border-ring on that same element, and a
+     :where()-wrapped (0,0,0) selector in @layer components would lose both
+     fights regardless of source order. See
+     assets/css/styles/default/input-group.css for the non-conflicting half
+     of each original rule, which stayed there unpromoted. InputGroup itself
+     has not migrated yet; this is fallout from Textarea's own migration,
+     not an InputGroup change. */
+  [data-gsxui-slot-input-group-control] {
+    @apply rounded-none border-0;
+  }
+  [data-gsxui-slot-input-group]:has([data-gsxui-slot-input-group-control]:focus-visible) {
+    @apply border-ring;
   }
 
   /* InputGroupButton retunes Button's whole size ramp — type scale, radius,

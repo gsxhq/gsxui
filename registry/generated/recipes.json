@@ -773,6 +773,14 @@
         }
       }
     },
+    "textarea": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "toggle": {
       "slots": {
         "": {
@@ -3208,6 +3216,39 @@
               "dark:data-[state=active]:border-input",
               "dark:data-[state=active]:bg-input/30",
               "dark:data-[state=active]:text-foreground"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "textarea": {
+        "slots": {
+          "": {
+            "base": [
+              "field-sizing-content",
+              "flex",
+              "min-h-16",
+              "w-full",
+              "rounded-lg",
+              "border",
+              "border-input",
+              "bg-transparent",
+              "px-2.5",
+              "py-2",
+              "text-base",
+              "transition-[color,box-shadow]",
+              "outline-none",
+              "placeholder:text-muted-foreground",
+              "focus-visible:border-ring",
+              "focus-visible:ring-[3px]",
+              "focus-visible:ring-ring/50",
+              "disabled:cursor-not-allowed",
+              "disabled:opacity-50",
+              "aria-invalid:border-destructive",
+              "aria-invalid:ring-destructive/20",
+              "dark:bg-input/30",
+              "dark:aria-invalid:ring-destructive/40",
+              "md:text-sm"
             ],
             "dimensions": {}
           }
@@ -5750,6 +5791,39 @@
               "dark:data-[state=active]:border-input",
               "dark:data-[state=active]:bg-input/30",
               "dark:data-[state=active]:text-foreground"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "textarea": {
+        "slots": {
+          "": {
+            "base": [
+              "field-sizing-content",
+              "flex",
+              "min-h-16",
+              "w-full",
+              "rounded-lg",
+              "border",
+              "border-input",
+              "bg-transparent",
+              "px-2.5",
+              "py-2",
+              "text-base",
+              "transition-[color,box-shadow]",
+              "outline-none",
+              "placeholder:text-muted-foreground",
+              "focus-visible:border-ring",
+              "focus-visible:ring-[3px]",
+              "focus-visible:ring-ring/50",
+              "disabled:cursor-not-allowed",
+              "disabled:opacity-50",
+              "aria-invalid:border-destructive",
+              "aria-invalid:ring-destructive/20",
+              "dark:bg-input/30",
+              "dark:aria-invalid:ring-destructive/40",
+              "md:text-sm"
             ],
             "dimensions": {}
           }

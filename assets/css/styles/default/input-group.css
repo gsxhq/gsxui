@@ -43,10 +43,18 @@
     > :where([data-gsxui-slot-input]) {
     @apply pt-3;
   }
+  /* border-ring is promoted to assets/css/styles/default.css's @layer
+     utilities block (Textarea migration fallout): once the control is
+     ui.Textarea, its own recipe utilities are Tailwind-scanned directly
+     out of its resolved .gsx and win @layer components regardless of
+     specificity, so this rule's border-ring would silently stop applying
+     when Textarea is focused inside an InputGroup. ring-[3px] ring-ring/50
+     are unaffected (Textarea's own recipe doesn't set them on the
+     input-group ancestor) and stay here. */
   :where([data-gsxui-slot-input-group]):has(
       [data-gsxui-slot-input-group-control]:focus-visible
     ) {
-    @apply border-ring ring-[3px] ring-ring/50;
+    @apply ring-[3px] ring-ring/50;
   }
   :where([data-gsxui-slot-input-group]):has([aria-invalid="true"]) {
     @apply border-destructive ring-destructive/20;
@@ -133,8 +141,14 @@
     svg:not([class*="size-"]) {
     @apply size-4;
   }
+  /* rounded-none/border-0 are promoted to assets/css/styles/default.css's
+     @layer utilities block — same Textarea-migration fallout as
+     border-ring above: they contest Textarea's own rounded-lg/border-input
+     recipe utilities directly on the same element. flex-1/bg-transparent/
+     shadow-none don't conflict with anything Textarea's recipe sets and
+     stay here. */
   :where([data-gsxui-slot-input-group-control]) {
-    @apply flex-1 rounded-none border-0 bg-transparent shadow-none;
+    @apply flex-1 bg-transparent shadow-none;
   }
   :where([data-gsxui-slot-input-group-control]):focus-visible {
     @apply ring-0;
