@@ -1514,6 +1514,14 @@
         }
       }
     },
+    "toaster": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "toggle": {
       "slots": {
         "": {
@@ -6059,6 +6067,20 @@
             "base": [
               "font-medium",
               "text-foreground"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "toaster": {
+        "slots": {
+          "": {
+            "base": [
+              "[--gsxui-toast-offset:1.5rem]",
+              "flex",
+              "flex-col",
+              "gap-2",
+              "p-6"
             ],
             "dimensions": {}
           }
@@ -10711,6 +10733,20 @@
             "base": [
               "font-medium",
               "text-foreground"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
+      "toaster": {
+        "slots": {
+          "": {
+            "base": [
+              "[--gsxui-toast-offset:1.5rem]",
+              "flex",
+              "flex-col",
+              "gap-2",
+              "p-6"
             ],
             "dimensions": {}
           }

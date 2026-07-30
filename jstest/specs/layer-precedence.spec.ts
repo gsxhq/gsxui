@@ -1503,3 +1503,26 @@ test("Toast's type-keyed icon colour follows a runtime data-type change", async 
     successColor,
   );
 });
+
+// Toaster's migration. Its one authored declaration is not a utility at all
+// but a custom property (--gsxui-toast-offset), which rides onto the recipe
+// as a Tailwind arbitrary-property utility. foundation.css's mechanics rule
+// on the CARD reads it through inheritance, so the region losing it would
+// silently pin every toast to the viewport corner instead of insetting it.
+test("Toaster's inset custom property still reaches the toast card", async ({
+  page,
+}) => {
+  await page.goto("/x/toaster/types");
+  const region = page.locator("[data-gsxui-slot-toaster]");
+  expect(await region.evaluate((n) => getComputedStyle(n).padding)).toBe("24px");
+  expect(
+    await region.evaluate((n) =>
+      getComputedStyle(n).getPropertyValue("--gsxui-toast-offset").trim(),
+    ),
+  ).toBe("1.5rem");
+
+  await page.getByRole("button", { name: "Default" }).click();
+  const card = page.locator("#gsxui-toaster [data-gsxui-slot-toast]").first();
+  await expect(card).toBeVisible();
+  expect(await card.evaluate((n) => getComputedStyle(n).right)).toBe("24px");
+});

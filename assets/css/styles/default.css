@@ -32,7 +32,6 @@
 @import "./default/menu.css";
 @import "./default/textarea.css";
 @import "./default/sidebar.css";
-@import "./default/toaster.css";
 
 /* Toggle marker fallback: a @layer components block, not utilities.
    ui/toggle-group.gsx's ToggleGroupItem stamps data-gsxui-slot-toggle onto

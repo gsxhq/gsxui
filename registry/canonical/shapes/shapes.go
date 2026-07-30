@@ -208,6 +208,7 @@ var all = map[string]recipe.Shape{
 	Combobox.Component:       Combobox,
 	Sidebar.Component:        Sidebar,
 	Toast.Component:          Toast,
+	Toaster.Component:        Toaster,
 }
 
 // All returns every declared component shape, keyed by component name.

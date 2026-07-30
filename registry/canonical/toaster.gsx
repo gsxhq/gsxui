@@ -1,4 +1,4 @@
-package ui
+package canonical
 
 import "github.com/gsxhq/gsx"
 
@@ -31,7 +31,7 @@ component Toaster(attrs gsx.Attrs) {
 		<ol
 			id="gsxui-toaster"
 			data-gsxui-toaster
-			class={ "[--gsxui-toast-offset:1.5rem] flex flex-col gap-2 p-6" }
+			class={ toaster.Root() }
 			{ attrs... }
 			data-gsxui-slot-toaster
 		></ol>
