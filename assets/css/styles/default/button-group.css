@@ -1,29 +1,22 @@
 @layer components {
-  /* ButtonGroup */
-  :where([data-gsxui-slot-button-group]) {
-    @apply flex w-fit items-stretch;
-  }
+  /* ButtonGroup — migrated to the slot axis; see
+     registry/styles/{nova,maia}/button-group.css for what moved and why.
+
+     This one rule is RETAINED here deliberately (design doc § 10b): it is a
+     same-element relational rule, so translating it to
+     `has-[>[data-gsxui-slot-button-group]]:gap-2` would compile to a two-class
+     (0,2,0) selector and permanently outrank a caller's own plain gap-*
+     utility (0,1,0) — twmerge does not dedupe that pair, so both would reach
+     the DOM and the recipe would always win. Staying in @layer components
+     keeps the LAYER boundary, not specificity, deciding, which is what makes
+     a nested group's gap caller-overridable.
+
+     The whole property group is retained: gap is the only property this rule
+     sets, and ButtonGroup's own recipe sets no gap on the root, so there is
+     no dead-rule hazard of the kind that bit an earlier wave's md:text-sm. */
   :where([data-gsxui-slot-button-group]):has(
       > [data-gsxui-slot-button-group]
     ) {
     @apply gap-2;
-  }
-  :where([data-gsxui-slot-button-group]) > :focus-visible {
-    @apply relative z-10;
-  }
-  :where([data-gsxui-slot-button-group]) > input {
-    @apply flex-1;
-  }
-  :where([data-gsxui-slot-button-group])[data-orientation="vertical"] {
-    @apply flex-col;
-  }
-  :where([data-gsxui-slot-button-group-text]) {
-    @apply flex items-center gap-2 rounded-lg border bg-muted px-2.5 text-sm font-medium;
-  }
-  :where([data-gsxui-slot-button-group-text]) svg {
-    @apply pointer-events-none;
-  }
-  :where([data-gsxui-slot-button-group-text]) svg:not([class*="size-"]) {
-    @apply size-4;
   }
 }

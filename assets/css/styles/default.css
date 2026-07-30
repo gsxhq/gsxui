@@ -264,24 +264,14 @@
     background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJva2xjaCgwLjIwNSAwIDApIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTIwIDYgOSAxN2wtNS01Ii8+PC9zdmc+");
   }
 
-  /* ButtonGroupSeparator: ButtonGroup composes its separator onto
-     <ui.Separator> (button-group.gsx), so the rendered element now carries
-     Separator's own recipe classes alongside data-gsxui-slot-separator and
-     data-gsxui-slot-button-group-separator. Separator's migration gave its
-     class real (0,1,0) specificity; bg-input and the vertical h-auto here
-     contest Separator's own bg-border and h-full, and a :where()-wrapped
-     (0,0,0) selector would lose that fight regardless of source order.
-     Unwrapped for the same reason as Card header above. relative/m-0/
-     self-stretch don't conflict with Separator's own utilities and could
-     stay wrapped, but the whole declaration moved together. ButtonGroup
-     itself has not migrated yet; this is fallout from Separator's own
-     migration, not a ButtonGroup change. */
-  [data-gsxui-slot-separator][data-gsxui-slot-button-group-separator] {
-    @apply relative m-0 self-stretch bg-input;
-  }
-  [data-gsxui-slot-separator][data-gsxui-slot-button-group-separator][data-orientation="vertical"] {
-    @apply h-auto;
-  }
+  /* ButtonGroupSeparator's promotion has been RETIRED by ButtonGroup's own
+     migration. It used to live here (unwrapped, so bg-input and the vertical
+     h-auto could beat Separator's migrated bg-border/h-full on the same
+     element). ButtonGroupSeparator now passes those utilities through the
+     ordinary caller-class merge onto <Separator>, where twmerge dedupes
+     bg-border against bg-input outright and the h-auto arrives as a
+     data-[orientation=vertical]: variant that outranks h-full by design. See
+     registry/styles/{nova,maia}/button-group.css. */
 
   /* SidebarSeparator: same fallout as ButtonGroupSeparator above — Sidebar
      composes its separator onto <ui.Separator> (sidebar.gsx), so w-auto and

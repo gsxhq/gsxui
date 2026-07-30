@@ -22,31 +22,38 @@ import (
 func Separator(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line separator.gsx:11:2
-		_gsxgw.S("<div")
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"none\"")
-		}
-		if !attrs.Has("data-orientation") {
-			_gsxgw.S(" data-orientation=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
-			_gsxgw.S("\"")
-		}
-		_gsxv0 := "shrink-0 bg-border"
-		var _gsxv1 string
-		switch orientation {
-		case "vertical":
-			_gsxv1 = "h-full w-px"
-		default:
-			_gsxv1 = "h-px w-full"
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-separator"})
-		_gsxgw.BoolAttr("data-gsxui-slot-separator", true)
-		_gsxgw.S("></div>")
-		return _gsxgw.Err()
+		return _gsxrenderSeparator(ctx, _gsxgw, orientation, attrs)
 	})
+}
+
+func _gsxrenderSeparator(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, orientation string, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line separator.gsx:11:2
+	_gsxgw.S("<div")
+	if !attrs.Has("role") {
+		_gsxgw.S(" role=\"none\"")
+	}
+	if !attrs.Has("data-orientation") {
+		_gsxgw.S(" data-orientation=\"")
+		_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
+		_gsxgw.S("\"")
+	}
+	_gsxv0 := "shrink-0 bg-border"
+	var _gsxv1 string
+	switch orientation {
+	case "vertical":
+		_gsxv1 = "h-full w-px"
+	default:
+		_gsxv1 = "h-px w-full"
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-separator"})
+	_gsxgw.BoolAttr("data-gsxui-slot-separator", true)
+	_gsxgw.S("></div>")
+	return _gsxgw.Err()
 }

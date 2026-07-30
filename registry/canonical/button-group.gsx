@@ -1,4 +1,4 @@
-package ui
+package canonical
 
 import "github.com/gsxhq/gsx"
 
@@ -35,8 +35,8 @@ component ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) {
 		role="group"
 		data-orientation={orientation |> default("horizontal")}
 		class={
-			"flex w-fit items-stretch [&>*:focus-visible]:relative [&>*:focus-visible]:z-10 [&>input]:flex-1",
-			switch orientation { case "vertical": "flex-col" default: "flex-row" }
+			buttonGroup.Root(),
+			buttonGroup.Orientation(orientation),
 		}
 		{ attrs... }
 		data-gsxui-slot-button-group
@@ -50,13 +50,7 @@ component ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) {
 // shadcn slot hook either (unlike every other button-group part); ported
 // as-is rather than "fixed", per the token-for-token rule.
 component ButtonGroupText(children gsx.Node, attrs gsx.Attrs) {
-	<div
-		class={
-			"flex items-center gap-2 rounded-lg border bg-muted px-2.5 text-sm font-medium [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4"
-		}
-		{ attrs... }
-		data-gsxui-slot-button-group-text
-	>
+	<div class={ buttonGroup.Text() } { attrs... } data-gsxui-slot-button-group-text>
 		{ children }
 	</div>
 }
@@ -74,7 +68,7 @@ component ButtonGroupText(children gsx.Node, attrs gsx.Attrs) {
 component ButtonGroupSeparator(orientation string, attrs gsx.Attrs) {
 	<Separator
 		orientation={orientation |> default("vertical")}
-		class={ "relative m-0 self-stretch bg-input data-[orientation=vertical]:h-auto" }
+		class={ buttonGroup.Separator() }
 		{ attrs... }
 		data-gsxui-slot-button-group-separator
 	/>

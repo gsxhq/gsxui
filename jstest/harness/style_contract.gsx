@@ -96,6 +96,15 @@ component StyleContractFixture() {
 				<ui.AlertDialogTitle>Caller max-w override</ui.AlertDialogTitle>
 			</ui.AlertDialogContent>
 		</ui.AlertDialog>
+		{/* A nested ButtonGroup with a caller gap-8. The retained
+		    :has(> [data-gsxui-slot-button-group]) { gap-2 } rule stays in
+		    @layer components precisely so gap-8 (in @layer utilities) wins
+		    the layer contest; see assets/css/styles/default/button-group.css. */}
+		<ui.ButtonGroup class="gap-8" data-style-contract="button-group-nested-caller-gap">
+			<ui.ButtonGroup>
+				<ui.Button>Nested</ui.Button>
+			</ui.ButtonGroup>
+		</ui.ButtonGroup>
 		<ui.ButtonGroup data-style-contract="button-group-tail">
 			<ui.Button data-style-contract="button-group-earlier">Earlier</ui.Button>
 			<ui.Button data-style-contract="button-group-visible-tail">Visible tail</ui.Button>

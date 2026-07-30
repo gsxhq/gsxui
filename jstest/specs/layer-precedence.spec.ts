@@ -1000,3 +1000,70 @@ test("Calendar inside a Popover keeps its transparent background", async ({ page
   const calendar = page.locator("[data-gsxui-slot-popover-content] [data-gsxui-slot-calendar]").first();
   expect(await calendar.evaluate((n) => getComputedStyle(n).backgroundColor)).toBe("rgba(0, 0, 0, 0)");
 });
+
+
+// ButtonGroup's migration (Wave 4c). Three things it must not lose:
+//
+//  1. ButtonGroupSeparator's bg-input/h-auto. Before the migration these
+//     lived UNWRAPPED in assets/css/styles/default.css's @layer utilities
+//     escape hatch, promoted there so they could outrank Separator's own
+//     migrated bg-border/h-full on the same element. They now ride the
+//     ordinary caller-class merge onto <Separator>, where tailwind-merge
+//     drops bg-border outright and data-[orientation=vertical]:h-auto
+//     outranks h-full by specificity. Same rendering, different mechanism —
+//     which is exactly the kind of change that regresses silently.
+//  2. The inner/outer corner collapse, which still lives in default.css's
+//     @layer utilities block and paints ButtonGroup's CHILDREN. It has to
+//     keep beating Button's own migrated rounded-lg.
+//  3. The nested-group gap-2, RETAINED in @layer components under § 10b so a
+//     caller's own gap utility still wins the layer contest.
+
+test("ButtonGroupSeparator keeps bg-input and its vertical h-auto after migration", async ({ page }) => {
+  await page.goto("/x/button-group/basic");
+  const vertical = page
+    .locator('[data-gsxui-slot-button-group-separator][data-orientation="vertical"]')
+    .first();
+  // bg-input, not Separator's own bg-border.
+  expect(await vertical.evaluate((n) => getComputedStyle(n).backgroundColor)).toBe(
+    "oklch(0.922 0 0)",
+  );
+  // h-auto + self-stretch: the separator stretches to the group, rather than
+  // collapsing to Separator's own h-full against an auto-height parent.
+  expect(await vertical.evaluate((n) => getComputedStyle(n).width)).toBe("1px");
+  expect(await vertical.evaluate((n) => n.getBoundingClientRect().height > 0)).toBe(true);
+});
+
+test("ButtonGroup still collapses its children's inner corners over Button's own radius", async ({
+  page,
+}) => {
+  await page.goto("/x/button-group/basic");
+  const group = page.locator("[data-gsxui-slot-button-group]").first();
+  const first = group.locator("[data-gsxui-slot-button]").first();
+  const last = group.locator("[data-gsxui-slot-button]").last();
+  const radius = (locator: typeof first) =>
+    locator.evaluate((n) => {
+      const style = getComputedStyle(n);
+      return [
+        style.borderTopLeftRadius,
+        style.borderTopRightRadius,
+        style.borderBottomRightRadius,
+        style.borderBottomLeftRadius,
+      ].join(" ");
+    });
+  // Outer corners keep Button's own radius (10px at this size ramp; read from
+  // the real computed style, not guessed from the utility name); the seam
+  // between them is square.
+  expect(await radius(first)).toBe("10px 0px 0px 10px");
+  expect(await radius(last)).toBe("0px 10px 10px 0px");
+});
+
+test("ButtonGroup's nested-group gap stays caller-overridable", async ({ page }) => {
+  await page.goto("/f/style-contract");
+  // The retained rule is :has(> [data-gsxui-slot-button-group]) { gap-2 }, in
+  // @layer components. A caller's plain gap utility sits in @layer utilities
+  // and must win on the layer boundary — which it only can while the rule
+  // stays behind. As has-[...]:gap-2 on the recipe it would compile to a
+  // (0,2,0) selector and win unconditionally.
+  const el = page.locator('[data-style-contract="button-group-nested-caller-gap"]');
+  expect(await el.evaluate((n) => getComputedStyle(n).gap)).toBe("32px");
+});
