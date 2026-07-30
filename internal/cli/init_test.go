@@ -907,15 +907,15 @@ func TestInitializedConsumerCSSOmitsButtonPresentationAndKeepsRemainingStyle(t *
 	// the vendored style — pick sentinels accordingly.
 	//
 	// These were combobox-content and command until Command migrated; the
-	// assertion is unchanged, only its sentinels are repointed at two
-	// components still off the axis, with "sidebar" added to the add list
-	// above so its presentation is actually vendored. Sidebar is the last
-	// component scheduled off the axis, so it is the sentinel with the
-	// longest shelf life. Repoint again — do not weaken this loop — when
-	// either of these two migrates.
+	// assertion is unchanged, only its sentinel is repointed at a component
+	// still off the axis, with "sidebar" added to the add list above so its
+	// presentation is actually vendored. Sidebar is the last component
+	// scheduled off the axis, so it is the sentinel with the longest shelf
+	// life — and once it migrates there is no unmigrated component left to
+	// point at, at which point this loop has no subject and should go.
+	// Repoint, or retire; do not weaken it.
 	for _, attribute := range []string{
 		"data-gsxui-slot-sidebar",
-		"data-gsxui-slot-button-group",
 	} {
 		if !attributes[attribute] {
 			t.Errorf("clean consumer CSS missing canonical selector [%s]", attribute)
