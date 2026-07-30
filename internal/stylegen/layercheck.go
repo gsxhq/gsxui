@@ -171,12 +171,13 @@ var layerCheckedStylesheets = []string{
 // There is exactly one, and the reason it is safe to glob is the reason the list
 // above is not: assets/css/styles/default/ holds the default style's components
 // layer split one file per component, and a file appearing there is a component's
-// rules and nothing else. 41 components have yet to migrate; each migration
-// deletes one of these files, and before the split each was a block in the
-// middle of a single 3193-line sheet that every parallel migration had to edit.
-// Naming them individually would mean a second edit, in this file, for every
-// migration — churn that buys no decision, because "is this in scope" has one
-// answer for the whole directory.
+// rules and nothing else. Every component is on the slot axis now, so what
+// remains in that directory is not "not yet migrated" — it is the rules
+// deliberately kept in @layer components under spec section 10b so a caller's
+// utility can still beat them, plus the shared sheets no single component owns.
+// Globbing stays right for the same reason it always was: "is this in scope"
+// has one answer for the whole directory, and naming the files individually
+// would mean a second edit here every time a retention is added or dropped.
 //
 // The audited-by-default property the explicit list exists for is intact:
 // TestLayerCheckedStylesheetsCoverEveryAuthoredStylesheet still compares the
