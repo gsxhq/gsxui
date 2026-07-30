@@ -2,13 +2,51 @@ package ui_test
 
 import (
 	"fmt"
+	"html"
+	"os"
+	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
 	"github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/internal/recipe"
+	"github.com/gsxhq/gsxui/internal/stylegen"
+	"github.com/gsxhq/gsxui/merge"
 	"github.com/gsxhq/gsxui/ui"
 )
+
+// novaCalendarRecipe loads the default style's Calendar recipe once. ui.Calendar
+// is generated output now, so the classes it renders are the default style's
+// concrete utilities — same pattern as novaButtonRecipe in button_test.go.
+var novaCalendarRecipe = sync.OnceValue(func() recipe.Style {
+	path := filepath.Join("..", "registry", "styles", stylegen.DefaultStyle, "calendar.css")
+	src, err := os.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+	style, err := recipe.ParseStyle(path, src)
+	if err != nil {
+		panic(err)
+	}
+	return style
+})
+
+// canonicalCalendarClass is the class attribute one Calendar slot renders,
+// plus any caller classes, merged through the same merger gsx uses.
+func canonicalCalendarClass(slot string, caller ...string) string {
+	class := "gsxui-recipe-calendar"
+	if slot != "" {
+		class += "-" + slot
+	}
+	rule, ok := novaCalendarRecipe().Lookup(class)
+	if !ok {
+		panic("default style declares no recipe " + class)
+	}
+	classes := append(append([]string(nil), rule.Utilities...), caller...)
+	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
+}
 
 // grid returns the data-date values of every day BUTTON, in DOM order —
 // scoped to the data-gsxui-calendar-day tag specifically, not a bare
@@ -226,11 +264,20 @@ func TestCalendarStyleContract(t *testing.T) {
 	tagStart := strings.LastIndex(got[:rootStart], "<div")
 	rootEnd := strings.Index(got[rootStart:], ">")
 	rootTag := got[tagStart : rootStart+rootEnd]
-	if !strings.Contains(rootTag, `class="rounded-none"`) {
-		t.Errorf("root caller class is not forwarded\nroot: %s", rootTag)
+	// Calendar is on the slot axis now, so the root renders its own resolved
+	// utilities with the caller's class merged in after them — the caller's
+	// rounded-none is still what wins, but it is no longer the whole
+	// attribute (playbook step 9).
+	wantRoot := canonicalCalendarClass("", "rounded-none")
+	if !strings.Contains(rootTag, wantRoot) {
+		t.Errorf("root caller class is not forwarded\nwant: %s\nroot: %s", wantRoot, rootTag)
 	}
-	if strings.Count(got, ` class="`) != 1 {
-		t.Errorf("calendar rendered a library-owned class\nin: %s", got)
+	// Not a bare Count of "rounded-none": day cells and day buttons legitimately
+	// carry data-[today]:data-[selected=true]:rounded-none and
+	// data-[range-middle=true]:rounded-none as variant tokens. The root's whole
+	// merged attribute is what must appear exactly once.
+	if strings.Count(got, wantRoot) != 1 {
+		t.Errorf("caller class must merge onto the root exactly once\nwant: %s\nin: %s", wantRoot, got)
 	}
 }
 
@@ -1068,7 +1115,7 @@ func TestCalendarDropdownCaption(t *testing.T) {
 		`data-gsxui-calendar-year-select`,
 		`data-gsxui-slot-native-select-wrapper`,
 		`data-gsxui-slot-calendar-dropdowns`,
-		`data-caption-layout="dropdown" data-gsxui-slot-calendar-caption`,
+		`data-caption-layout="dropdown" ` + canonicalCalendarClass("caption") + ` data-gsxui-slot-calendar-caption`,
 		`<option value="0"`,  // January
 		`<option value="11"`, // December
 		`<option value="2020"`,
@@ -1321,7 +1368,14 @@ func TestCalendarNavHasARelativePositioningAncestor(t *testing.T) {
 	if navIdx < 0 {
 		t.Fatal("calendar-nav is not nested under calendar-months")
 	}
-	if strings.Contains(got, ` class="`) {
-		t.Errorf("calendar without caller attrs must not render presentation classes\nin: %s", got)
+	// The positioning contract itself: calendar-months carries `relative`, so
+	// calendar-nav's `absolute` resolves against it. Before Calendar migrated
+	// this was asserted negatively (no class attribute at all, the rule lived
+	// in default.css); now it is asserted on the resolved class directly.
+	if !strings.Contains(got, canonicalCalendarClass("months")+` data-gsxui-slot-calendar-months`) {
+		t.Errorf("calendar-months lost its relative positioning class\nin: %s", got)
+	}
+	if !strings.Contains(got, canonicalCalendarClass("nav")+` data-gsxui-slot-calendar-nav`) {
+		t.Errorf("calendar-nav lost its absolute positioning class\nin: %s", got)
 	}
 }

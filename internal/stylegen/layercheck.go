@@ -261,10 +261,69 @@ type layerCheckExemption struct {
 // Sheet all migrated to the slot axis and carry the utilities they used to
 // borrow through a marker on their own recipe classes, so the fallbacks the
 // exemptions covered no longer exist to be exempted.
-var layerCheckExemptions = append(append(
+var layerCheckExemptions = append(append(append(
 	siteButtonFallbackExemptions(),
 	toggleMarkerFallbackExemptions()...),
-	menuInsetDisabledFallbackExemptions()...)
+	menuInsetDisabledFallbackExemptions()...),
+	calendarCaptionVisuallyHiddenExemptions()...)
+
+// calendarCaptionVisuallyHiddenReason is the decision behind every entry
+// calendarCaptionVisuallyHiddenExemptions lists.
+//
+// assets/css/foundation.css's @layer base carries ONE visually-hidden rule
+// shared by eight screen-reader labels across the catalogue
+// (breadcrumb-ellipsis-label, pagination-ellipsis-label, dialog-close-label,
+// sheet-close-label, command-dialog-header, combobox-bridge,
+// carousel-control-label, and calendar-caption under
+// data-caption-layout="dropdown"). Calendar's migration made
+// calendar-caption the first marker in that list to sit on a component with
+// compiled utilities, and the gate reports position/width/height/padding as
+// contested.
+//
+// It is a false positive of the gate's granularity, not a real cascade loss.
+// componentUtilities builds ONE utility set per COMPONENT, not per slot, so
+// the union it compares against is every utility Calendar renders anywhere:
+// the padding comes from the root's p-2, the width from w-fit/w-full, the
+// height from month-caption's h-(--cell-size), the position from months'
+// `relative` and nav's `absolute`. None of them is on the caption element.
+// Calendar's caption slot renders exactly `text-sm font-medium select-none`
+// and takes no attrs spread of its own, so nothing a caller or a style can
+// put on that element contests the visually-hidden rule.
+//
+// The gate's usual fix does not apply either: moving this rule to @layer
+// utilities would mean either splitting one a11y rule eight ways in
+// foundation.css, or duplicating it into every style — and it must keep
+// working with NO style loaded at all (jstest's foundation mode), which a
+// style-owned rule cannot do.
+const calendarCaptionVisuallyHiddenReason = "assets/css/foundation.css's shared visually-hidden rule for " +
+	"screen-reader labels covers calendar-caption[data-caption-layout=\"dropdown\"], which since Calendar's " +
+	"migration sits on a component with compiled utilities. The contest is an artifact of the gate comparing " +
+	"against Calendar's whole-component utility union rather than the caption slot's own three utilities " +
+	"(text-sm font-medium select-none) — no Calendar rule sets position, width, height or padding on the " +
+	"caption element, and the caption slot accepts no caller attrs. The rule is foundation and must apply " +
+	"with no style loaded, so it cannot move into a style's @layer utilities."
+
+// calendarCaptionVisuallyHiddenExemptions spells out the four properties the
+// shared rule is reported as losing, one (property, style) pair at a time,
+// following siteButtonFallbackExemptions' enumeration discipline.
+func calendarCaptionVisuallyHiddenExemptions() []layerCheckExemption {
+	const selector = ":where( [data-gsxui-slot-calendar-caption][data-caption-layout=\"dropdown\"] )"
+	out := make([]layerCheckExemption, 0, 8)
+	for _, property := range []string{"height", "padding", "position", "width"} {
+		for _, style := range []string{"maia", "nova"} {
+			out = append(out, layerCheckExemption{
+				key: exemptionKey{
+					file:      "assets/css/foundation.css",
+					style:     style,
+					selector:  selector,
+					contested: property,
+				},
+				reason: calendarCaptionVisuallyHiddenReason,
+			})
+		}
+	}
+	return out
+}
 
 // menuInsetDisabledFallbackExemptions spells out the two violations the
 // retained menu.css rules commit, one (selector, utility, style) triple at a

@@ -1,4 +1,4 @@
-package ui
+package canonical
 
 import (
 	"strconv"
@@ -729,17 +729,12 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 		} }
 		data-gsxui-calendar-nav-from-year={strconv.Itoa(navFromYear)}
 		data-gsxui-calendar-nav-to-year={strconv.Itoa(navToYear)}
-		class={
-			"w-fit bg-background p-2 [--cell-size:calc(var(--spacing)*7)] [[data-gsxui-slot-card-content]_&]:bg-transparent [[data-gsxui-slot-popover-content]_&]:bg-transparent"
-		}
+		class={ calendar.Root() }
 		{ attrs... }
 		data-gsxui-slot-calendar
 	>
-		<div class={ "relative flex w-full flex-col gap-4" } data-gsxui-slot-calendar-months>
-			<nav
-				class={ "absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1" }
-				data-gsxui-slot-calendar-nav
-			>
+		<div class={ calendar.Months() } data-gsxui-slot-calendar-months>
+			<nav class={ calendar.Nav() } data-gsxui-slot-calendar-nav>
 				<button
 					type="button"
 					data-variant="ghost"
@@ -750,7 +745,7 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 						aria-disabled="true"
 						tabindex="-1"
 					} }
-					class={ "w-(--cell-size) h-(--cell-size) p-0 select-none aria-disabled:opacity-50" }
+					class={ calendar.NavButton() }
 					data-gsxui-slot-calendar-previous
 					data-gsxui-slot-calendar-nav-button
 					data-gsxui-slot-button
@@ -767,7 +762,7 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 						aria-disabled="true"
 						tabindex="-1"
 					} }
-					class={ "w-(--cell-size) h-(--cell-size) p-0 select-none aria-disabled:opacity-50" }
+					class={ calendar.NavButton() }
 					data-gsxui-slot-calendar-next
 					data-gsxui-slot-calendar-nav-button
 					data-gsxui-slot-button
@@ -775,15 +770,9 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 					<icon.ChevronRight/>
 				</button>
 			</nav>
-			<div
-				class={ "h-(--cell-size) px-(--cell-size) flex w-full items-center justify-center" }
-				data-gsxui-slot-calendar-month-caption
-			>
+			<div class={ calendar.MonthCaption() } data-gsxui-slot-calendar-month-caption>
 				{ if dropdownLayout {
-					<div
-						class={ "h-(--cell-size) flex w-full items-center justify-center gap-1.5 text-sm font-medium" }
-						data-gsxui-slot-calendar-dropdowns
-					>
+					<div class={ calendar.Dropdowns() } data-gsxui-slot-calendar-dropdowns>
 						<NativeSelect data-gsxui-calendar-month-select aria-label="Month">
 							{ for i := 0; i < 12; i++ {
 								<NativeSelectOption
@@ -808,7 +797,7 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 						role="status"
 						aria-live="polite"
 						data-caption-layout="dropdown"
-						class={ "text-sm font-medium select-none" }
+						class={ calendar.Caption() }
 						data-gsxui-slot-calendar-caption
 					>
 						{ captionText }
@@ -819,7 +808,7 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 						role="status"
 						aria-live="polite"
 						data-caption-layout="label"
-						class={ "text-sm font-medium select-none" }
+						class={ calendar.Caption() }
 						data-gsxui-slot-calendar-caption
 					>
 						{ captionText }
@@ -833,26 +822,20 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 				{ if multiselectable {
 					aria-multiselectable="true"
 				} }
-				class={ "w-full border-collapse" }
+				class={ calendar.Grid() }
 				data-gsxui-slot-calendar-grid
 			>
 				<thead aria-hidden="true">
-					<tr class={ "flex" } data-gsxui-slot-calendar-weekdays>
+					<tr class={ calendar.Weekdays() } data-gsxui-slot-calendar-weekdays>
 						{ for i := 0; i < 7; i++ {
 							{{ wd := time.Weekday((int(weekStartsOn) + i) % 7) }}
-							<th
-								scope="col"
-								class={ "flex-1 rounded-md text-[0.8rem] font-normal text-muted-foreground select-none" }
-								data-gsxui-slot-calendar-weekday
-							>
-								{ wd.String()[:2] }
-							</th>
+							<th scope="col" class={ calendar.Weekday() } data-gsxui-slot-calendar-weekday>{ wd.String()[:2] }</th>
 						} }
 					</tr>
 				</thead>
 				<tbody>
 					{ for week := 0; week < 6; week++ {
-						<tr class={ "mt-2 flex w-full" } data-gsxui-slot-calendar-week>
+						<tr class={ calendar.Week() } data-gsxui-slot-calendar-week>
 							{ for day := 0; day < 7; day++ {
 								{{
 									idx := week*7 + day
@@ -901,9 +884,7 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 										data-selected="true"
 									} }
 									aria-selected={boolStr(cellSel)}
-									class={
-										"relative aspect-square h-full w-full p-0 text-center select-none data-[outside]:text-muted-foreground data-[outside]:aria-selected:text-muted-foreground data-[today]:rounded-md data-[today]:bg-accent data-[today]:text-accent-foreground data-[today]:data-[selected=true]:rounded-none data-[disabled]:text-muted-foreground data-[disabled]:opacity-50 data-[hidden]:invisible"
-									}
+									class={ calendar.Day() }
 									data-gsxui-slot-calendar-day
 								>
 									<button
@@ -925,9 +906,7 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 										data-range-middle={boolStr(rMiddle)}
 										data-range-end={boolStr(rEnd)}
 										disabled={(dayDis && !tabStopDisabled) || hiddenDay}
-										class={
-											"min-w-(--cell-size) flex aspect-square h-auto w-full flex-col gap-1 leading-none font-normal [[data-gsxui-slot-calendar-day]:first-child[data-selected=true]>&]:rounded-l-md [[data-gsxui-slot-calendar-day]:last-child[data-selected=true]>&]:rounded-r-md [[data-gsxui-slot-calendar-day][data-focused]>&]:relative [[data-gsxui-slot-calendar-day][data-focused]>&]:z-10 [[data-gsxui-slot-calendar-day][data-focused]>&]:border-ring [[data-gsxui-slot-calendar-day][data-focused]>&]:ring-[3px] [[data-gsxui-slot-calendar-day][data-focused]>&]:ring-ring/50 data-[range-end=true]:rounded-md data-[range-end=true]:rounded-r-md data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:rounded-md data-[range-start=true]:rounded-l-md data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-accent-foreground [&>span]:text-xs [&>span]:opacity-70"
-										}
+										class={ calendar.DayButton() }
 										data-gsxui-slot-calendar-day-button
 										data-gsxui-slot-button
 									>

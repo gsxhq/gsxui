@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strings"
 	"testing"
 
@@ -59,8 +60,6 @@ func TestDefaultStyleRetainsComposedComponentButtonPresentation(t *testing.T) {
 		paginationPrevious  bool
 		paginationNext      bool
 		inputGroupRules     int
-		calendarNavGeometry bool
-		calendarDayGeometry bool
 	)
 	for _, rule := range rules {
 		attrs := rule.attributes
@@ -73,13 +72,6 @@ func TestDefaultStyleRetainsComposedComponentButtonPresentation(t *testing.T) {
 		if attrs["data-gsxui-slot-input-group-button"] {
 			inputGroupRules++
 		}
-		calendarNavGeometry = calendarNavGeometry ||
-			(attrs["data-gsxui-slot-calendar-nav-button"] &&
-				rule.declarations["width"] &&
-				rule.declarations["height"])
-		calendarDayGeometry = calendarDayGeometry ||
-			(attrs["data-gsxui-slot-calendar-day-button"] &&
-				rule.declarations["min-width"])
 	}
 
 	if !buttonGroupSizeRule {
@@ -95,12 +87,44 @@ func TestDefaultStyleRetainsComposedComponentButtonPresentation(t *testing.T) {
 	if inputGroupRules != 9 {
 		t.Errorf("consumer style has %d InputGroupButton presentation rules, want 9", inputGroupRules)
 	}
-	if !calendarNavGeometry || !calendarDayGeometry {
-		t.Errorf(
-			"consumer style lost Calendar button geometry: nav=%t day=%t",
-			calendarNavGeometry,
-			calendarDayGeometry,
-		)
+}
+
+// TestCalendarRecipeRetainsButtonGeometry is the other half of the check
+// above, for a component that has since migrated. Calendar's nav and day
+// buttons are raw <button>s stamped with data-gsxui-slot-button, and their
+// --cell-size geometry was checked in the consumer's flat style.css while
+// Calendar was unmigrated. It now lives on Calendar's own recipe instead, so
+// the guarantee moves with it rather than being dropped: a future edit that
+// swept this geometry into Button's own recipe would still be caught.
+func TestCalendarRecipeRetainsButtonGeometry(t *testing.T) {
+	for _, style := range []string{"nova", "maia"} {
+		path := filepath.Join("..", "..", "registry", "styles", style, "calendar.css")
+		src, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		parsed, err := recipe.ParseStyle(path, src)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, want := range []struct {
+			class     string
+			utilities []string
+		}{
+			{"gsxui-recipe-calendar-nav-button", []string{"w-(--cell-size)", "h-(--cell-size)"}},
+			{"gsxui-recipe-calendar-day-button", []string{"min-w-(--cell-size)"}},
+		} {
+			rule, ok := parsed.Lookup(want.class)
+			if !ok {
+				t.Errorf("%s: %s declares no rule", style, want.class)
+				continue
+			}
+			for _, utility := range want.utilities {
+				if !slices.Contains(rule.Utilities, utility) {
+					t.Errorf("%s: %s lost %s (utilities: %q)", style, want.class, utility, rule.Utilities)
+				}
+			}
+		}
 	}
 }
 

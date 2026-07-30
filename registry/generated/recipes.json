@@ -178,6 +178,62 @@
         }
       }
     },
+    "calendar": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        },
+        "caption": {
+          "base": true,
+          "dimensions": {}
+        },
+        "day": {
+          "base": true,
+          "dimensions": {}
+        },
+        "day-button": {
+          "base": true,
+          "dimensions": {}
+        },
+        "dropdowns": {
+          "base": true,
+          "dimensions": {}
+        },
+        "grid": {
+          "base": true,
+          "dimensions": {}
+        },
+        "month-caption": {
+          "base": true,
+          "dimensions": {}
+        },
+        "months": {
+          "base": true,
+          "dimensions": {}
+        },
+        "nav": {
+          "base": true,
+          "dimensions": {}
+        },
+        "nav-button": {
+          "base": true,
+          "dimensions": {}
+        },
+        "week": {
+          "base": true,
+          "dimensions": {}
+        },
+        "weekday": {
+          "base": true,
+          "dimensions": {}
+        },
+        "weekdays": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "card": {
       "slots": {
         "": {
@@ -1599,6 +1655,176 @@
                 ]
               }
             }
+          }
+        }
+      },
+      "calendar": {
+        "slots": {
+          "": {
+            "base": [
+              "w-fit",
+              "bg-background",
+              "p-2",
+              "[--cell-size:calc(var(--spacing)*7)]",
+              "[[data-gsxui-slot-card-content]_\u0026]:bg-transparent",
+              "[[data-gsxui-slot-popover-content]_\u0026]:bg-transparent"
+            ],
+            "dimensions": {}
+          },
+          "caption": {
+            "base": [
+              "text-sm",
+              "font-medium",
+              "select-none"
+            ],
+            "dimensions": {}
+          },
+          "day": {
+            "base": [
+              "relative",
+              "aspect-square",
+              "h-full",
+              "w-full",
+              "p-0",
+              "text-center",
+              "select-none",
+              "data-[outside]:text-muted-foreground",
+              "data-[outside]:aria-selected:text-muted-foreground",
+              "data-[today]:rounded-md",
+              "data-[today]:bg-accent",
+              "data-[today]:text-accent-foreground",
+              "data-[today]:data-[selected=true]:rounded-none",
+              "data-[disabled]:text-muted-foreground",
+              "data-[disabled]:opacity-50",
+              "data-[hidden]:invisible"
+            ],
+            "dimensions": {}
+          },
+          "day-button": {
+            "base": [
+              "min-w-(--cell-size)",
+              "flex",
+              "aspect-square",
+              "h-auto",
+              "w-full",
+              "flex-col",
+              "gap-1",
+              "leading-none",
+              "font-normal",
+              "[[data-gsxui-slot-calendar-day]:first-child[data-selected=true]\u003e\u0026]:rounded-l-md",
+              "[[data-gsxui-slot-calendar-day]:last-child[data-selected=true]\u003e\u0026]:rounded-r-md",
+              "[[data-gsxui-slot-calendar-day][data-focused]\u003e\u0026]:relative",
+              "[[data-gsxui-slot-calendar-day][data-focused]\u003e\u0026]:z-10",
+              "[[data-gsxui-slot-calendar-day][data-focused]\u003e\u0026]:border-ring",
+              "[[data-gsxui-slot-calendar-day][data-focused]\u003e\u0026]:ring-[3px]",
+              "[[data-gsxui-slot-calendar-day][data-focused]\u003e\u0026]:ring-ring/50",
+              "data-[range-end=true]:rounded-md",
+              "data-[range-end=true]:rounded-r-md",
+              "data-[range-end=true]:bg-primary",
+              "data-[range-end=true]:text-primary-foreground",
+              "data-[range-middle=true]:rounded-none",
+              "data-[range-middle=true]:bg-accent",
+              "data-[range-middle=true]:text-accent-foreground",
+              "data-[range-start=true]:rounded-md",
+              "data-[range-start=true]:rounded-l-md",
+              "data-[range-start=true]:bg-primary",
+              "data-[range-start=true]:text-primary-foreground",
+              "data-[selected-single=true]:bg-primary",
+              "data-[selected-single=true]:text-primary-foreground",
+              "dark:hover:text-accent-foreground",
+              "[\u0026\u003espan]:text-xs",
+              "[\u0026\u003espan]:opacity-70"
+            ],
+            "dimensions": {}
+          },
+          "dropdowns": {
+            "base": [
+              "h-(--cell-size)",
+              "flex",
+              "w-full",
+              "items-center",
+              "justify-center",
+              "gap-1.5",
+              "text-sm",
+              "font-medium"
+            ],
+            "dimensions": {}
+          },
+          "grid": {
+            "base": [
+              "w-full",
+              "border-collapse"
+            ],
+            "dimensions": {}
+          },
+          "month-caption": {
+            "base": [
+              "h-(--cell-size)",
+              "px-(--cell-size)",
+              "flex",
+              "w-full",
+              "items-center",
+              "justify-center"
+            ],
+            "dimensions": {}
+          },
+          "months": {
+            "base": [
+              "relative",
+              "flex",
+              "w-full",
+              "flex-col",
+              "gap-4"
+            ],
+            "dimensions": {}
+          },
+          "nav": {
+            "base": [
+              "absolute",
+              "inset-x-0",
+              "top-0",
+              "flex",
+              "w-full",
+              "items-center",
+              "justify-between",
+              "gap-1"
+            ],
+            "dimensions": {}
+          },
+          "nav-button": {
+            "base": [
+              "w-(--cell-size)",
+              "h-(--cell-size)",
+              "p-0",
+              "select-none",
+              "aria-disabled:opacity-50"
+            ],
+            "dimensions": {}
+          },
+          "week": {
+            "base": [
+              "mt-2",
+              "flex",
+              "w-full"
+            ],
+            "dimensions": {}
+          },
+          "weekday": {
+            "base": [
+              "flex-1",
+              "rounded-md",
+              "text-[0.8rem]",
+              "font-normal",
+              "text-muted-foreground",
+              "select-none"
+            ],
+            "dimensions": {}
+          },
+          "weekdays": {
+            "base": [
+              "flex"
+            ],
+            "dimensions": {}
           }
         }
       },
@@ -4930,6 +5156,176 @@
                 ]
               }
             }
+          }
+        }
+      },
+      "calendar": {
+        "slots": {
+          "": {
+            "base": [
+              "w-fit",
+              "bg-background",
+              "p-2",
+              "[--cell-size:calc(var(--spacing)*7)]",
+              "[[data-gsxui-slot-card-content]_\u0026]:bg-transparent",
+              "[[data-gsxui-slot-popover-content]_\u0026]:bg-transparent"
+            ],
+            "dimensions": {}
+          },
+          "caption": {
+            "base": [
+              "text-sm",
+              "font-medium",
+              "select-none"
+            ],
+            "dimensions": {}
+          },
+          "day": {
+            "base": [
+              "relative",
+              "aspect-square",
+              "h-full",
+              "w-full",
+              "p-0",
+              "text-center",
+              "select-none",
+              "data-[outside]:text-muted-foreground",
+              "data-[outside]:aria-selected:text-muted-foreground",
+              "data-[today]:rounded-md",
+              "data-[today]:bg-accent",
+              "data-[today]:text-accent-foreground",
+              "data-[today]:data-[selected=true]:rounded-none",
+              "data-[disabled]:text-muted-foreground",
+              "data-[disabled]:opacity-50",
+              "data-[hidden]:invisible"
+            ],
+            "dimensions": {}
+          },
+          "day-button": {
+            "base": [
+              "min-w-(--cell-size)",
+              "flex",
+              "aspect-square",
+              "h-auto",
+              "w-full",
+              "flex-col",
+              "gap-1",
+              "leading-none",
+              "font-normal",
+              "[[data-gsxui-slot-calendar-day]:first-child[data-selected=true]\u003e\u0026]:rounded-l-md",
+              "[[data-gsxui-slot-calendar-day]:last-child[data-selected=true]\u003e\u0026]:rounded-r-md",
+              "[[data-gsxui-slot-calendar-day][data-focused]\u003e\u0026]:relative",
+              "[[data-gsxui-slot-calendar-day][data-focused]\u003e\u0026]:z-10",
+              "[[data-gsxui-slot-calendar-day][data-focused]\u003e\u0026]:border-ring",
+              "[[data-gsxui-slot-calendar-day][data-focused]\u003e\u0026]:ring-[3px]",
+              "[[data-gsxui-slot-calendar-day][data-focused]\u003e\u0026]:ring-ring/50",
+              "data-[range-end=true]:rounded-md",
+              "data-[range-end=true]:rounded-r-md",
+              "data-[range-end=true]:bg-primary",
+              "data-[range-end=true]:text-primary-foreground",
+              "data-[range-middle=true]:rounded-none",
+              "data-[range-middle=true]:bg-accent",
+              "data-[range-middle=true]:text-accent-foreground",
+              "data-[range-start=true]:rounded-md",
+              "data-[range-start=true]:rounded-l-md",
+              "data-[range-start=true]:bg-primary",
+              "data-[range-start=true]:text-primary-foreground",
+              "data-[selected-single=true]:bg-primary",
+              "data-[selected-single=true]:text-primary-foreground",
+              "dark:hover:text-accent-foreground",
+              "[\u0026\u003espan]:text-xs",
+              "[\u0026\u003espan]:opacity-70"
+            ],
+            "dimensions": {}
+          },
+          "dropdowns": {
+            "base": [
+              "h-(--cell-size)",
+              "flex",
+              "w-full",
+              "items-center",
+              "justify-center",
+              "gap-1.5",
+              "text-sm",
+              "font-medium"
+            ],
+            "dimensions": {}
+          },
+          "grid": {
+            "base": [
+              "w-full",
+              "border-collapse"
+            ],
+            "dimensions": {}
+          },
+          "month-caption": {
+            "base": [
+              "h-(--cell-size)",
+              "px-(--cell-size)",
+              "flex",
+              "w-full",
+              "items-center",
+              "justify-center"
+            ],
+            "dimensions": {}
+          },
+          "months": {
+            "base": [
+              "relative",
+              "flex",
+              "w-full",
+              "flex-col",
+              "gap-4"
+            ],
+            "dimensions": {}
+          },
+          "nav": {
+            "base": [
+              "absolute",
+              "inset-x-0",
+              "top-0",
+              "flex",
+              "w-full",
+              "items-center",
+              "justify-between",
+              "gap-1"
+            ],
+            "dimensions": {}
+          },
+          "nav-button": {
+            "base": [
+              "w-(--cell-size)",
+              "h-(--cell-size)",
+              "p-0",
+              "select-none",
+              "aria-disabled:opacity-50"
+            ],
+            "dimensions": {}
+          },
+          "week": {
+            "base": [
+              "mt-2",
+              "flex",
+              "w-full"
+            ],
+            "dimensions": {}
+          },
+          "weekday": {
+            "base": [
+              "flex-1",
+              "rounded-md",
+              "text-[0.8rem]",
+              "font-normal",
+              "text-muted-foreground",
+              "select-none"
+            ],
+            "dimensions": {}
+          },
+          "weekdays": {
+            "base": [
+              "flex"
+            ],
+            "dimensions": {}
           }
         }
       },

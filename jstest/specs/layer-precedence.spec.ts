@@ -949,3 +949,54 @@ test("Carousel's caller spacing override still displaces the track and item defa
   expect(await item.evaluate((n) => getComputedStyle(n).paddingLeft)).toBe("4px");
   expect(await item.evaluate((n) => getComputedStyle(n).scrollMarginLeft)).toBe("-4px");
 });
+
+// Calendar's migration (Wave 4d). CONFORMANCE FIX, pinned so it cannot
+// silently revert: a range-middle day that sits at a week-row boundary now
+// rounds its outer corner, where before it stayed square. The old
+// default.css rule wrapped the whole selector in :where()
+// (`:where([...day]:last-child[data-selected=true]) > :where([...day-button])`,
+// (0,0,0)), so the day button's own [data-range-middle="true"] rule at
+// (0,1,0) beat it and rounded-none won. Upstream shadcn puts the same rule on
+// the DAY CELL's class list
+// (`[&:last-child[data-selected=true]_button]:rounded-r-md`, calendar.tsx
+// line 107), which outranks its own data-[range-middle=true]:rounded-none —
+// so upstream caps a range at the row edge and gsxui now matches. make
+// sweep-compare surfaced this as four differences (two buttons x two themes)
+// on the calendar/loadedrange fixture.
+
+test("Calendar caps a range at the week-row boundary, like upstream", async ({ page }) => {
+  await page.goto("/x/calendar/loadedrange");
+  const rowEnd = page.locator(
+    '[data-gsxui-slot-calendar-day]:last-child[data-selected="true"] > [data-gsxui-slot-calendar-day-button][data-range-middle="true"]',
+  );
+  const rowStart = page.locator(
+    '[data-gsxui-slot-calendar-day]:first-child[data-selected="true"] > [data-gsxui-slot-calendar-day-button][data-range-middle="true"]',
+  );
+  await expect(rowEnd).toHaveCount(1);
+  await expect(rowStart).toHaveCount(1);
+  expect(await rowEnd.evaluate((n) => getComputedStyle(n).borderRadius)).toBe("0px 8px 8px 0px");
+  expect(await rowStart.evaluate((n) => getComputedStyle(n).borderRadius)).toBe("8px 0px 0px 8px");
+});
+
+test("Calendar keeps its own chrome and cell geometry", async ({ page }) => {
+  await page.goto("/x/calendar/basic");
+  const root = page.locator("[data-gsxui-slot-calendar]").first();
+  const nav = page.locator("[data-gsxui-slot-calendar-nav]").first();
+  const navButton = page.locator("[data-gsxui-slot-calendar-nav-button]").first();
+  expect(await root.evaluate((n) => getComputedStyle(n).padding)).toBe("8px");
+  // --cell-size is calc(var(--spacing) * 7) == 28px, carried as an arbitrary
+  // property on the root and consumed by the nav/day geometry.
+  expect(await root.evaluate((n) => getComputedStyle(n).getPropertyValue("--cell-size").trim())).toBe(
+    "calc(0.25rem * 7)",
+  );
+  expect(await nav.evaluate((n) => getComputedStyle(n).position)).toBe("absolute");
+  expect(await navButton.evaluate((n) => getComputedStyle(n).width)).toBe("28px");
+  expect(await navButton.evaluate((n) => getComputedStyle(n).height)).toBe("28px");
+});
+
+test("Calendar inside a Popover keeps its transparent background", async ({ page }) => {
+  await page.goto("/x/calendar/datepicker");
+  await page.locator("[data-gsxui-slot-popover-trigger]").first().click();
+  const calendar = page.locator("[data-gsxui-slot-popover-content] [data-gsxui-slot-calendar]").first();
+  expect(await calendar.evaluate((n) => getComputedStyle(n).backgroundColor)).toBe("rgba(0, 0, 0, 0)");
+});

@@ -199,6 +199,7 @@ var all = map[string]recipe.Shape{
 	Drawer.Component:         Drawer,
 	Sheet.Component:          Sheet,
 	Carousel.Component:       Carousel,
+	Calendar.Component:       Calendar,
 	NativeSelect.Component:   NativeSelect,
 }
 
