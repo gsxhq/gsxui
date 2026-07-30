@@ -2,10 +2,364 @@
 
 package canonical
 
-// GSX GENERATION FAILED for select.gsx. Fix the errors below and re-run gsx generate.
-//
-//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:88:2: error: undefined: DropdownMenu
-//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:90:2: error: undefined: Menubar
-//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:91:2: error: undefined: NavigationMenu
+import (
+	_gsxctx "context"
+	"github.com/gsxhq/gsx"
+	_gsxrt "github.com/gsxhq/gsx"
+	_gsxstd "github.com/gsxhq/gsx/std"
+	_gsxcm "github.com/gsxhq/gsxui/merge"
+	"github.com/gsxhq/gsxui/ui/icon"
+	_gsxio "io"
+)
 
-var _ = GSX_GENERATION_FAILED__see_select_gsx
+//line select.gsx:36:1
+// Select is the listbox root: a layout-neutral div carrying the
+// data-gsxui-select hook select.js scopes every trigger/content lookup to
+// (closest("[data-gsxui-select]"), the same proximity wiring as dropdown's
+// data-gsxui-dropdown). When name != "" it also renders the hidden native
+// <select> form bridge (see the file header). required/disabled/form mirror
+// ui.NativeSelect's own form params so the two components share an
+// option-authoring shape.
+
+//line select.gsx:43:1
+func Select(name string, required bool, disabled bool, form string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line select.gsx:44:2
+		_gsxgw.S("<div")
+		if !attrs.Has("data-gsxui-select") {
+			_gsxgw.BoolAttr("data-gsxui-select", true)
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(select_.Root()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select"})
+		_gsxgw.BoolAttr("data-gsxui-slot-select", true)
+		_gsxgw.S(">")
+//line select.gsx:45:3
+		_gsxgw.Node(ctx, children)
+//line select.gsx:46:3
+		if name != "" {
+//line select.gsx:47:4
+			_gsxgw.S("<select")
+			_gsxgw.BoolAttr("data-gsxui-select-bridge", true)
+			_gsxgw.S(" aria-hidden=\"true\" tabindex=\"-1\" name=\"")
+			_gsxgw.AttrValue(string(name))
+			_gsxgw.S("\"")
+			_gsxgw.BoolAttr("required", bool(required))
+			_gsxgw.BoolAttr("disabled", bool(disabled))
+			if form != "" {
+				_gsxgw.S(" form=\"")
+				_gsxgw.AttrValue(string(form))
+				_gsxgw.S("\"")
+			}
+			_gsxgw.BoolAttr("data-gsxui-slot-select-bridge", true)
+			_gsxgw.S(">")
+//line select.gsx:59:5
+			_gsxgw.S("<option value=\"\"></option></select>")
+		}
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}
+
+//line select.gsx:65:1
+// SelectTrigger is the combobox button. It renders the caller's SelectValue
+// plus the chevron itself (shadcn's SelectTrigger owns the ChevronDownIcon,
+// not the caller). data-size is default|sm (nova metrics: h-8 / h-7 + the sm
+// radius override). data-placeholder is server-rendered present (initial
+// state = no value, placeholder shown, muted via
+// data-[placeholder]:text-muted-foreground); select.js removes it on the
+// first selection (and at init if an item is server-rendered checked).
+// data-state and aria-expanded start closed/"false"; select.js syncs both,
+// aria-controls, and aria-required (copied from the bridge) on open/close.
+
+//line select.gsx:74:1
+func SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line select.gsx:75:2
+		_gsxgw.S("<button")
+		if !attrs.Has("type") {
+			_gsxgw.S(" type=\"button\"")
+		}
+		if !attrs.Has("data-gsxui-select-trigger") {
+			_gsxgw.BoolAttr("data-gsxui-select-trigger", true)
+		}
+		if !attrs.Has("role") {
+			_gsxgw.S(" role=\"combobox\"")
+		}
+		if !attrs.Has("aria-expanded") {
+			_gsxgw.S(" aria-expanded=\"false\"")
+		}
+		if !attrs.Has("aria-autocomplete") {
+			_gsxgw.S(" aria-autocomplete=\"none\"")
+		}
+		if !attrs.Has("data-state") {
+			_gsxgw.S(" data-state=\"closed\"")
+		}
+		if !attrs.Has("data-size") {
+			_gsxgw.S(" data-size=\"")
+			_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
+			_gsxgw.S("\"")
+		}
+		if !attrs.Has("data-placeholder") {
+			_gsxgw.BoolAttr("data-placeholder", true)
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(select_.Trigger()), _gsxrt.Class(select_.TriggerSize(size)), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select-trigger"})
+		_gsxgw.BoolAttr("data-gsxui-slot-select-trigger", true)
+		_gsxgw.S(">")
+//line select.gsx:91:3
+		_gsxgw.Node(ctx, children)
+//line select.gsx:92:3
+		_gsxgw.Node(ctx, icon.ChevronDown())
+		_gsxgw.S("</button>")
+		return _gsxgw.Err()
+	})
+}
+
+//line select.gsx:96:1
+// SelectValue displays the current value, or the placeholder when nothing is
+// selected. select.js overwrites its text content on selection. The default
+// stylesheet applies pointer-events:none.
+
+//line select.gsx:99:1
+func SelectValue(placeholder string, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line select.gsx:100:2
+		_gsxgw.S("<span")
+		if !attrs.Has("data-gsxui-select-value") {
+			_gsxgw.BoolAttr("data-gsxui-select-value", true)
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(select_.Value()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select-value"})
+		_gsxgw.BoolAttr("data-gsxui-slot-select-value", true)
+		_gsxgw.S(">")
+//line select.gsx:100:100
+		_gsxgw.Text(string(placeholder))
+		_gsxgw.S("</span>")
+		return _gsxgw.Err()
+	})
+}
+
+//line select.gsx:103:1
+// SelectContent is the popover listbox. It rides the exact dropdown-menu.js
+// popover machinery: popover="auto" (top layer, light dismiss, free Esc),
+// server-rendered data-state="closed" + data-side="bottom" (select.js always
+// anchors below the trigger), and the discrete-transition enter/exit block
+// ported byte-for-byte from DropdownMenuContent (replacing Radix's
+// tw-animate keyframes, per docs/jsx-parity.md ## animations). border is
+// kept (no border->ring swap, house convention). No scroll up/down buttons —
+// the viewport's own overflow-y-auto scrolls natively (GAP, see the parity
+// ledger).
+
+//line select.gsx:112:1
+func SelectContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line select.gsx:113:2
+		_gsxgw.S("<div")
+		if !attrs.Has("data-gsxui-select-content") {
+			_gsxgw.BoolAttr("data-gsxui-select-content", true)
+		}
+		if !attrs.Has("popover") {
+			_gsxgw.S(" popover=\"auto\"")
+		}
+		if !attrs.Has("role") {
+			_gsxgw.S(" role=\"listbox\"")
+		}
+		if !attrs.Has("tabindex") {
+			_gsxgw.S(" tabindex=\"-1\"")
+		}
+		if !attrs.Has("data-state") {
+			_gsxgw.S(" data-state=\"closed\"")
+		}
+		if !attrs.Has("data-side") {
+			_gsxgw.S(" data-side=\"bottom\"")
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(select_.Content()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select-content"})
+		_gsxgw.BoolAttr("data-gsxui-slot-select-content", true)
+		_gsxgw.S(">")
+//line select.gsx:124:3
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}
+
+//line select.gsx:128:1
+// SelectGroup wraps a set of items under a SelectLabel. Unlike
+// ui.NativeSelect's SelectGroup (which collapses onto native <optgroup
+// label=...>), the custom listbox can hold an arbitrary styled label child,
+// so this ports as a real role="group" div. select.js wires aria-labelledby
+// to the contained SelectLabel's generated id at init.
+
+//line select.gsx:133:1
+func SelectGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line select.gsx:134:2
+		_gsxgw.S("<div")
+		if !attrs.Has("data-gsxui-select-group") {
+			_gsxgw.BoolAttr("data-gsxui-select-group", true)
+		}
+		if !attrs.Has("role") {
+			_gsxgw.S(" role=\"group\"")
+		}
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select-group"})
+		_gsxgw.BoolAttr("data-gsxui-slot-select-group", true)
+		_gsxgw.S(">")
+//line select.gsx:134:86
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}
+
+//line select.gsx:137:1
+// SelectLabel is the group heading (select.js stamps its id and the group's
+// aria-labelledby at init).
+
+//line select.gsx:139:1
+func SelectLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line select.gsx:140:2
+		_gsxgw.S("<div")
+		if !attrs.Has("data-gsxui-select-label") {
+			_gsxgw.BoolAttr("data-gsxui-select-label", true)
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(select_.Label()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select-label"})
+		_gsxgw.BoolAttr("data-gsxui-slot-select-label", true)
+		_gsxgw.S(">")
+//line select.gsx:140:99
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}
+
+//line select.gsx:143:1
+// SelectItem is one option. value is the form value (data-value, synced into
+// the hidden bridge); disabled skips it in focus/typeahead/selection;
+// selected server-renders the initial value (data-state="checked"). Two
+// separate attributes track distinct facts, per the traced Radix contract:
+//   - data-state="checked"|"unchecked" tracks the VALUE alone and drives the
+//     check indicator's CSS visibility through an ancestor-state gate.
+//   - aria-selected is server-rendered "false" and recomputed by select.js
+//     as (isValue AND isFocused) on every focus change — an item that IS the
+//     value but is not the highlighted item reports aria-selected="false".
+// items are always tabindex="-1"; select.js moves real DOM focus among them.
+
+//line select.gsx:153:1
+func SelectItem(value string, selected bool, disabled bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line select.gsx:154:2
+		_gsxgw.S("<div")
+		if !attrs.Has("data-gsxui-select-item") {
+			_gsxgw.BoolAttr("data-gsxui-select-item", true)
+		}
+		if !attrs.Has("role") {
+			_gsxgw.S(" role=\"option\"")
+		}
+		if !attrs.Has("data-value") {
+			_gsxgw.S(" data-value=\"")
+			_gsxgw.AttrValue(string(value))
+			_gsxgw.S("\"")
+		}
+		if selected {
+			if !attrs.Has("data-state") {
+				_gsxgw.S(" data-state=\"checked\"")
+			}
+		} else {
+			if !attrs.Has("data-state") {
+				_gsxgw.S(" data-state=\"unchecked\"")
+			}
+		}
+		if !attrs.Has("aria-selected") {
+			_gsxgw.S(" aria-selected=\"false\"")
+		}
+		if !attrs.Has("tabindex") {
+			_gsxgw.S(" tabindex=\"-1\"")
+		}
+		if disabled {
+			if !attrs.Has("data-disabled") {
+				_gsxgw.S(" data-disabled=\"true\"")
+			}
+			if !attrs.Has("aria-disabled") {
+				_gsxgw.S(" aria-disabled=\"true\"")
+			}
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(select_.Item()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select-item"})
+		_gsxgw.BoolAttr("data-gsxui-slot-select-item", true)
+		_gsxgw.S(">")
+//line select.gsx:173:3
+		_gsxgw.S("<span class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(select_.ItemIndicator()))
+		_gsxgw.S("\"")
+		_gsxgw.BoolAttr("data-gsxui-slot-select-item-indicator", true)
+		_gsxgw.S(">")
+//line select.gsx:174:4
+		_gsxgw.Node(ctx, icon.Check())
+		_gsxgw.S("</span>")
+//line select.gsx:176:3
+		_gsxgw.S("<span class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(select_.ItemText()))
+		_gsxgw.S("\"")
+		_gsxgw.BoolAttr("data-gsxui-select-item-text", true)
+		_gsxgw.BoolAttr("data-gsxui-slot-select-item-text", true)
+		_gsxgw.S(">")
+//line select.gsx:176:99
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</span></div>")
+		return _gsxgw.Err()
+	})
+}
+
+//line select.gsx:180:1
+// SelectSeparator divides groups. aria-hidden per Radix's own SelectSeparator
+// (a decorative rule, not a role="separator" like DropdownMenuSeparator).
+
+//line select.gsx:182:1
+func SelectSeparator(attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line select.gsx:183:2
+		_gsxgw.S("<div")
+		if !attrs.Has("aria-hidden") {
+			_gsxgw.S(" aria-hidden=\"true\"")
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(select_.Separator()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select-separator"})
+		_gsxgw.BoolAttr("data-gsxui-slot-select-separator", true)
+		_gsxgw.S("></div>")
+		return _gsxgw.Err()
+	})
+}

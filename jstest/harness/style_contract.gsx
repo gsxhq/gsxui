@@ -236,6 +236,24 @@ component StyleContractFixture() {
 			<div class="bg-destructive/10 text-destructive" data-style-contract-reference="menu-destructive-focus"></div>
 		</div>
 		<div>
+			{/* §10b caller-override pins: data-inset/data-disabled are stamped by
+			    the CALLER through attrs (not by the component), and their
+			    pl-8/opacity-50 rules deliberately stayed in
+			    assets/css/styles/default/menu.css's own @layer components block
+			    — not migrated onto the recipe — so a caller's plain utility still
+			    wins. pointer-events-none for [data-disabled] WAS migrated (baked
+			    onto the recipe on purpose), so only opacity is exercised here. */}
+			<ui.DropdownMenuItem data-inset="true" data-disabled="true" class="pl-2 opacity-100" tabindex="0" data-style-contract="dropdown-menu-item-caller">
+				Inset + disabled dropdown item, caller-overridden
+			</ui.DropdownMenuItem>
+			<ui.ContextMenuItem data-inset="true" data-disabled="true" class="pl-2 opacity-100" tabindex="0" data-style-contract="context-menu-item-caller">
+				Inset + disabled context item, caller-overridden
+			</ui.ContextMenuItem>
+			<ui.MenubarItem data-inset="true" data-disabled="true" class="pl-2 opacity-100" tabindex="0" data-style-contract="menubar-item-caller">
+				Inset + disabled menubar item, caller-overridden
+			</ui.MenubarItem>
+		</div>
+		<div>
 			<ui.DropdownMenuCheckboxItem checked={true} value="dropdown-on" data-style-contract="dropdown-checked">
 				Dropdown on
 			</ui.DropdownMenuCheckboxItem>

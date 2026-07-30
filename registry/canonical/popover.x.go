@@ -2,10 +2,99 @@
 
 package canonical
 
-// GSX GENERATION FAILED for popover.gsx. Fix the errors below and re-run gsx generate.
-//
-//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:88:2: error: undefined: DropdownMenu
-//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:90:2: error: undefined: Menubar
-//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:91:2: error: undefined: NavigationMenu
+import (
+	_gsxctx "context"
+	"github.com/gsxhq/gsx"
+	_gsxrt "github.com/gsxhq/gsx"
+	_gsxcm "github.com/gsxhq/gsxui/merge"
+	_gsxio "io"
+)
 
-var _ = GSX_GENERATION_FAILED__see_popover_gsx
+//line popover.gsx:5:1
+// Popover uses the native auto-popover top layer with light dismissal and
+// proximity-scoped behavior in ui/popover.js.
+
+//line popover.gsx:7:1
+func Popover(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line popover.gsx:8:2
+		_gsxgw.S("<div")
+		if !attrs.Has("data-gsxui-popover") {
+			_gsxgw.BoolAttr("data-gsxui-popover", true)
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(popover.Root()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-popover"})
+		_gsxgw.BoolAttr("data-gsxui-slot-popover", true)
+		_gsxgw.S(">")
+//line popover.gsx:8:88
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}
+
+//line popover.gsx:11:1
+func PopoverTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line popover.gsx:12:2
+		_gsxgw.S("<button")
+		if !attrs.Has("data-gsxui-popover-trigger") {
+			_gsxgw.BoolAttr("data-gsxui-popover-trigger", true)
+		}
+		if !attrs.Has("type") {
+			_gsxgw.S(" type=\"button\"")
+		}
+		if !attrs.Has("aria-expanded") {
+			_gsxgw.S(" aria-expanded=\"false\"")
+		}
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-popover-trigger"})
+		_gsxgw.BoolAttr("data-gsxui-slot-popover-trigger", true)
+		_gsxgw.S(">")
+//line popover.gsx:19:3
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</button>")
+		return _gsxgw.Err()
+	})
+}
+
+//line popover.gsx:23:1
+func PopoverContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line popover.gsx:24:2
+		_gsxgw.S("<div")
+		if !attrs.Has("data-gsxui-popover-content") {
+			_gsxgw.BoolAttr("data-gsxui-popover-content", true)
+		}
+		if !attrs.Has("popover") {
+			_gsxgw.S(" popover=\"auto\"")
+		}
+		if !attrs.Has("data-state") {
+			_gsxgw.S(" data-state=\"closed\"")
+		}
+		if !attrs.Has("data-side") {
+			_gsxgw.S(" data-side=\"bottom\"")
+		}
+		if !attrs.Has("tabindex") {
+			_gsxgw.S(" tabindex=\"-1\"")
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(popover.Content()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-popover-content"})
+		_gsxgw.BoolAttr("data-gsxui-slot-popover-content", true)
+		_gsxgw.S(">")
+//line popover.gsx:34:3
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}

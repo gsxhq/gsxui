@@ -176,7 +176,14 @@ func assertMenuMarkupSlots(t *testing.T, got string, slots ...string) {
 	}
 }
 
-func TestDropdownCSSOnlyContract(t *testing.T) {
+// TestDropdownMarkupContract used to be TestDropdownCSSOnlyContract:
+// DropdownMenu migrated to the slot axis (registry/canonical/dropdown-menu.gsx),
+// so its markup now legitimately carries a class= attribute (the recipe's
+// compiled utilities) — assertMenuCSSOnlyMarkup's "no class=" assertion no
+// longer holds, and this switches to assertMenuMarkupSlots (marker presence
+// only), the same downgrade Card/Badge/Alert's own migrations made to their
+// prior CSS-only pins.
+func TestDropdownMarkupContract(t *testing.T) {
 	got := render(t, ui.DropdownMenu(
 		gsx.Fragment(
 			ui.DropdownMenuTrigger(gsx.Raw("Open"), nil),
@@ -201,7 +208,7 @@ func TestDropdownCSSOnlyContract(t *testing.T) {
 		),
 		nil,
 	))
-	assertMenuCSSOnlyMarkup(t, got,
+	assertMenuMarkupSlots(t, got,
 		"dropdown-menu",
 		"dropdown-menu-trigger",
 		"dropdown-menu-content",
@@ -221,7 +228,9 @@ func TestDropdownCSSOnlyContract(t *testing.T) {
 	)
 }
 
-func TestContextMenuCSSOnlyContract(t *testing.T) {
+// TestContextMenuMarkupContract used to be TestContextMenuCSSOnlyContract —
+// see TestDropdownMarkupContract's own comment for why.
+func TestContextMenuMarkupContract(t *testing.T) {
 	got := render(t, ui.ContextMenu(
 		gsx.Fragment(
 			ui.ContextMenuTrigger(gsx.Raw("Open"), nil),
@@ -246,7 +255,7 @@ func TestContextMenuCSSOnlyContract(t *testing.T) {
 		),
 		nil,
 	))
-	assertMenuCSSOnlyMarkup(t, got,
+	assertMenuMarkupSlots(t, got,
 		"context-menu",
 		"context-menu-trigger",
 		"context-menu-content",
@@ -266,7 +275,9 @@ func TestContextMenuCSSOnlyContract(t *testing.T) {
 	)
 }
 
-func TestMenubarCSSOnlyContract(t *testing.T) {
+// TestMenubarMarkupContract used to be TestMenubarCSSOnlyContract — see
+// TestDropdownMarkupContract's own comment for why.
+func TestMenubarMarkupContract(t *testing.T) {
 	got := render(t, ui.Menubar(
 		ui.MenubarMenu(
 			gsx.Fragment(
@@ -294,7 +305,7 @@ func TestMenubarCSSOnlyContract(t *testing.T) {
 		),
 		nil,
 	))
-	assertMenuCSSOnlyMarkup(t, got,
+	assertMenuMarkupSlots(t, got,
 		"menubar",
 		"menubar-menu",
 		"menubar-trigger",
@@ -315,7 +326,9 @@ func TestMenubarCSSOnlyContract(t *testing.T) {
 	)
 }
 
-func TestNavigationMenuCSSOnlyContract(t *testing.T) {
+// TestNavigationMenuMarkupContract used to be TestNavigationMenuCSSOnlyContract
+// — see TestDropdownMarkupContract's own comment for why.
+func TestNavigationMenuMarkupContract(t *testing.T) {
 	got := render(t, ui.NavigationMenu(
 		ui.NavigationMenuList(
 			gsx.Fragment(
@@ -339,7 +352,7 @@ func TestNavigationMenuCSSOnlyContract(t *testing.T) {
 		),
 		nil,
 	))
-	assertMenuCSSOnlyMarkup(t, got,
+	assertMenuMarkupSlots(t, got,
 		"navigation-menu",
 		"navigation-menu-list",
 		"navigation-menu-item",
@@ -365,23 +378,42 @@ func TestNavigationMenuCSSOnlyContract(t *testing.T) {
 	}
 }
 
+// TestCommandComboboxDropdownContextMenuMenubarNavigationMenuCallerClassesRemainCallerOnly
+// used to assert every one of these six components renders class="caller-only"
+// verbatim (nothing else in the attribute). That held when all six were
+// CSS-only, but Dropdown/ContextMenu/Menubar/NavigationMenu migrated to the
+// slot axis: their canonical .gsx now renders class={ <recipe accessors> }
+// BEFORE { attrs... }, so the caller's class merges in alongside the
+// recipe's own compiled utilities into ONE class attribute, rather than
+// arriving as the entire attribute — the same class="X" -> bare Contains(X)
+// downgrade the migration playbook's Step 9 documents for every migrated
+// component's caller-class pin. Command/Combobox are unmigrated and keep
+// the stricter exact-match assertion; the other four only assert the
+// caller's token survives, merged in exactly once.
 func TestCommandComboboxDropdownContextMenuMenubarNavigationMenuCallerClassesRemainCallerOnly(t *testing.T) {
 	tests := []struct {
-		name string
-		node gsx.Node
+		name  string
+		node  gsx.Node
+		exact bool // true: class="caller-only" is the WHOLE attribute (unmigrated)
 	}{
-		{"Command", ui.Command(nil, gsx.Attrs{{Key: "class", Value: "caller-only"}})},
-		{"Combobox", ui.Combobox("", "", nil, gsx.Attrs{{Key: "class", Value: "caller-only"}})},
-		{"Dropdown", ui.DropdownMenuContent(nil, gsx.Attrs{{Key: "class", Value: "caller-only"}})},
-		{"ContextMenu", ui.ContextMenuContent(nil, gsx.Attrs{{Key: "class", Value: "caller-only"}})},
-		{"Menubar", ui.Menubar(nil, gsx.Attrs{{Key: "class", Value: "caller-only"}})},
-		{"NavigationMenu", ui.NavigationMenu(nil, gsx.Attrs{{Key: "class", Value: "caller-only"}})},
+		{"Command", ui.Command(nil, gsx.Attrs{{Key: "class", Value: "caller-only"}}), true},
+		{"Combobox", ui.Combobox("", "", nil, gsx.Attrs{{Key: "class", Value: "caller-only"}}), true},
+		{"Dropdown", ui.DropdownMenuContent(nil, gsx.Attrs{{Key: "class", Value: "caller-only"}}), false},
+		{"ContextMenu", ui.ContextMenuContent(nil, gsx.Attrs{{Key: "class", Value: "caller-only"}}), false},
+		{"Menubar", ui.Menubar(nil, gsx.Attrs{{Key: "class", Value: "caller-only"}}), false},
+		{"NavigationMenu", ui.NavigationMenu(nil, gsx.Attrs{{Key: "class", Value: "caller-only"}}), false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := render(t, tt.node)
-			if strings.Count(got, `class="caller-only"`) != 1 || strings.Count(got, `class=`) != 1 {
-				t.Errorf("caller class must be the only class and render once\nin: %s", got)
+			if tt.exact {
+				if strings.Count(got, `class="caller-only"`) != 1 || strings.Count(got, `class=`) != 1 {
+					t.Errorf("caller class must be the only class and render once\nin: %s", got)
+				}
+				return
+			}
+			if strings.Count(got, "caller-only") != 1 || strings.Count(got, `class=`) != 1 {
+				t.Errorf("caller class must merge in exactly once, in exactly one class attribute\nin: %s", got)
 			}
 		})
 	}

@@ -2,10 +2,76 @@
 
 package canonical
 
-// GSX GENERATION FAILED for progress.gsx. Fix the errors below and re-run gsx generate.
-//
-//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:88:2: error: undefined: DropdownMenu
-//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:90:2: error: undefined: Menubar
-//	/Users/jackieli/personal/gsxhq/gsxui/.worktrees/recipe-model/registry/canonical/shapes/shapes.go:91:2: error: undefined: NavigationMenu
+import (
+	_gsxctx "context"
+	"github.com/gsxhq/gsx"
+	_gsxrt "github.com/gsxhq/gsx"
+	_gsxcm "github.com/gsxhq/gsxui/merge"
+	_gsxio "io"
+	_gsxsc "strconv"
+)
 
-var _ = GSX_GENERATION_FAILED__see_progress_gsx
+//line progress.gsx:5:1
+// Progress is the shadcn/ui Progress. shadcn wraps Radix's
+// ProgressPrimitive.Root/Indicator pair (registry/new-york-v4/ui/progress.tsx);
+// this port replaces both with two plain divs, no client JS or component
+// state (ADAPT — see docs/jsx-parity.md). role="progressbar" plus
+// aria-valuemin/aria-valuemax/aria-valuenow replace what Radix's Root
+// stamps internally. value is a Go zero-value float64 (0-100); 0 matches
+// shadcn's own `value || 0` fallback, so an unset value renders the
+// indicator fully translated off-screen exactly like the original.
+//
+// Radix's Indicator drives its fill via
+// `style={{ transform: translateX(-${100 - (value || 0)}%) }}` — ported
+// verbatim as the same translateX mechanism (not width, which would clip
+// transition-all's animation differently).
+//
+// The declaration is a css`` literal (MECHANISM) rather than a Go
+// concatenation: gw's CSS value filter — a port of html/template's —
+// blocklists "(" and ")", and Go's + folds the static translateX(…) syntax
+// and the dynamic percentage into one string the filter then judges as a
+// unit, which is what previously forced gsx.RawCSS over the whole
+// declaration. In a css`` literal the function call is static template text
+// and only the percentage is a hole, so the filter still judges it and
+// nothing is trusted that the component did not itself compute. The hole
+// renders the float64 directly, the same way aria-valuenow does.
+
+//line progress.gsx:28:1
+func Progress(value float64, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+		var _gsxnum [32]byte
+//line progress.gsx:29:2
+		_gsxgw.S("<div")
+		if !attrs.Has("role") {
+			_gsxgw.S(" role=\"progressbar\"")
+		}
+		if !attrs.Has("aria-valuemin") {
+			_gsxgw.S(" aria-valuemin=\"0\"")
+		}
+		if !attrs.Has("aria-valuemax") {
+			_gsxgw.S(" aria-valuemax=\"100\"")
+		}
+		if !attrs.Has("aria-valuenow") {
+			_gsxgw.S(" aria-valuenow=\"")
+			_gsxgw.FloatInto(_gsxnum[:], float64(value))
+			_gsxgw.S("\"")
+		}
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(progress.Root()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-progress"})
+		_gsxgw.BoolAttr("data-gsxui-slot-progress", true)
+		_gsxgw.S(">")
+//line progress.gsx:38:3
+		_gsxgw.S("<div style=\"transform: translateX(-")
+		_gsxgw.AttrValue(_gsxrt.StyleValue(_gsxsc.FormatFloat(float64(100-value), 'g', -1, 64)))
+		_gsxgw.S("%)\" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(progress.Indicator()))
+		_gsxgw.S("\"")
+		_gsxgw.BoolAttr("data-gsxui-slot-progress-indicator", true)
+		_gsxgw.S("></div></div>")
+		return _gsxgw.Err()
+	})
+}

@@ -470,3 +470,79 @@ test("TooltipContent keeps its own has-kbd padding when it contains a Kbd", asyn
   // No Kbd child here, so the base px-3 (12px) applies unchanged.
   expect(paddingRightPlain).toBe("12px");
 });
+
+// DropdownMenu/ContextMenu/Menubar migration pins (wave 3b). Two shapes:
+// regular per-component regression pins on their own migrated recipe rules,
+// and one §10b caller-override pin per component proving the retained
+// data-inset/data-disabled rules (assets/css/styles/default/menu.css) still
+// lose to a caller's plain utility — see
+// jstest/harness/style_contract.gsx's "dropdown-menu-item-caller" /
+// "context-menu-item-caller" / "menubar-item-caller" fixtures.
+
+test("DropdownMenu content keeps its rounded-lg popover chrome", async ({ page }) => {
+  const response = await page.goto("/x/dropdown-menu/basic");
+  expect(response?.status(), "dropdown-menu/basic fixture response").toBe(200);
+
+  const trigger = page.locator("[data-gsxui-dropdown-trigger]").first();
+  await trigger.click();
+  const content = page.locator("[data-gsxui-slot-dropdown-menu-content]");
+  const borderRadius = await content.evaluate((n) => getComputedStyle(n).borderRadius);
+  expect(borderRadius).toBe("10px");
+
+test("DropdownMenuItem's inset padding and disabled opacity stay caller-overridable", async ({
+  page,
+}) => {
+
+  const el = page.locator('[data-style-contract="dropdown-menu-item-caller"]');
+  const style = await el.evaluate((n) => {
+    const css = getComputedStyle(n);
+    return { paddingLeft: css.paddingLeft, opacity: css.opacity };
+  // pl-2 (8px) must beat the retained [data-inset]:pl-8 (32px) rule, and
+  // opacity-100 (1) must beat the retained [data-disabled]:opacity-50 (0.5)
+  // rule. pointer-events-none for [data-disabled] is baked onto the recipe
+  // on purpose and is NOT exercised here (it is meant to stay unoverridable).
+  expect(style.paddingLeft).toBe("8px");
+  expect(style.opacity).toBe("1");
+
+test("ContextMenuItem's inset padding and disabled opacity stay caller-overridable", async ({
+  page,
+}) => {
+
+  const el = page.locator('[data-style-contract="context-menu-item-caller"]');
+  const style = await el.evaluate((n) => {
+    const css = getComputedStyle(n);
+    return { paddingLeft: css.paddingLeft, opacity: css.opacity };
+  expect(style.paddingLeft).toBe("8px");
+  expect(style.opacity).toBe("1");
+
+test("Menubar keeps its own bar radius, and its item's inset/disabled stay caller-overridable", async ({
+  page,
+}) => {
+  const response = await page.goto("/x/menubar/basic");
+  expect(response?.status(), "menubar/basic fixture response").toBe(200);
+
+  const bar = page.locator("[data-gsxui-slot-menubar]");
+  const borderRadius = await bar.evaluate((n) => getComputedStyle(n).borderRadius);
+  expect(borderRadius).toBe("10px");
+
+  const contractResponse = await page.goto("/f/style-contract");
+  expect(contractResponse?.status(), "style contract fixture response").toBe(200);
+  const el = page.locator('[data-style-contract="menubar-item-caller"]');
+  const style = await el.evaluate((n) => {
+    const css = getComputedStyle(n);
+    return { paddingLeft: css.paddingLeft, opacity: css.opacity };
+  expect(style.paddingLeft).toBe("8px");
+  expect(style.opacity).toBe("1");
+
+test("NavigationMenu content chrome renders only when its viewport ancestor is false", async ({
+  page,
+}) => {
+  const response = await page.goto("/x/navigation-menu/basic");
+  expect(response?.status(), "navigation-menu/basic fixture response").toBe(200);
+
+  const trigger = page.locator("[data-gsxui-navigation-menu-trigger]").first();
+  await trigger.click();
+  const content = page.locator("[data-gsxui-slot-navigation-menu-content]");
+  await expect(content).toBeVisible();
+  const borderRadius = await content.evaluate((n) => getComputedStyle(n).borderRadius);
+  expect(borderRadius).toBe("10px");

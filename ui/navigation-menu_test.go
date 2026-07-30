@@ -35,7 +35,7 @@ func TestNavigationMenuListIsAList(t *testing.T) {
 
 func TestNavigationMenuRootPinned(t *testing.T) {
 	got := render(t, ui.NavigationMenu(gsx.Raw("x"), nil))
-	want := `<nav data-gsxui-navigation-menu data-viewport="false" data-gsxui-slot-navigation-menu>x</nav>`
+	want := `<nav class="relative flex max-w-max flex-1 items-center justify-center" data-gsxui-navigation-menu data-viewport="false" data-gsxui-slot-navigation-menu>x</nav>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -60,17 +60,17 @@ func TestNavigationMenuPinnedStructuralParts(t *testing.T) {
 		{
 			name: "list",
 			node: ui.NavigationMenuList(gsx.Raw("x"), nil),
-			want: `<ul data-gsxui-navigation-menu-list data-gsxui-slot-navigation-menu-list>x</ul>`,
+			want: `<ul class="flex flex-1 list-none items-center justify-center gap-0" data-gsxui-navigation-menu-list data-gsxui-slot-navigation-menu-list>x</ul>`,
 		},
 		{
 			name: "item",
 			node: ui.NavigationMenuItem(gsx.Raw("x"), nil),
-			want: `<li data-gsxui-navigation-menu-item data-gsxui-slot-navigation-menu-item>x</li>`,
+			want: `<li class="relative" data-gsxui-navigation-menu-item data-gsxui-slot-navigation-menu-item>x</li>`,
 		},
 		{
 			name: "content",
 			node: ui.NavigationMenuContent(gsx.Raw("x"), nil),
-			want: `<div data-gsxui-navigation-menu-content popover="manual" data-state="closed" data-side="bottom" data-gsxui-slot-navigation-menu-content>x</div>`,
+			want: `<div class="top-0 left-0 p-1 md:absolute [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:top-full [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:mt-1.5 [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:overflow-hidden [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:rounded-lg [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:border [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:bg-popover [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:text-popover-foreground [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:shadow opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&amp;:popover-open]:opacity-100 [&amp;:popover-open]:scale-100 starting:[&amp;:popover-open]:opacity-0 starting:[&amp;:popover-open]:scale-95 data-[side=bottom]:starting:[&amp;:popover-open]:-translate-y-2 data-[side=left]:starting:[&amp;:popover-open]:translate-x-2 data-[side=right]:starting:[&amp;:popover-open]:-translate-x-2 data-[side=top]:starting:[&amp;:popover-open]:translate-y-2" data-gsxui-navigation-menu-content popover="manual" data-state="closed" data-side="bottom" data-gsxui-slot-navigation-menu-content>x</div>`,
 		},
 	}
 	for _, tt := range tests {
@@ -98,8 +98,10 @@ func TestNavigationMenuTriggerPinned(t *testing.T) {
 			t.Errorf("missing trigger contract %q\nin: %s", want, got)
 		}
 	}
-	if strings.Contains(got, `class=`) {
-		t.Errorf("trigger presentation and group markers must live in CSS\nin: %s", got)
+	// Two class attributes legitimately render here now: the trigger button's
+	// own recipe class, and its child chevron icon's own recipe class.
+	if strings.Count(got, `class=`) != 2 {
+		t.Errorf("trigger and icon presentation must render exactly two class attributes\nin: %s", got)
 	}
 }
 
@@ -122,8 +124,8 @@ func TestNavigationMenuLinkVariantReplacesClassHelper(t *testing.T) {
 		if !strings.Contains(got, slot) {
 			t.Errorf("variant %q missing slot order %q\nin: %s", input, slot, got)
 		}
-		if strings.Contains(got, `class=`) {
-			t.Errorf("variant presentation must live in CSS\nin: %s", got)
+		if strings.Count(got, `class=`) != 1 {
+			t.Errorf("variant presentation must render exactly one class attribute\nin: %s", got)
 		}
 	}
 }
@@ -175,15 +177,17 @@ func TestNavigationMenuIndicatorPinned(t *testing.T) {
 			t.Errorf("indicator missing %q\nin: %s", want, got)
 		}
 	}
-	if strings.Contains(got, `class=`) {
-		t.Errorf("indicator presentation must live in CSS\nin: %s", got)
+	// Two class attributes legitimately render here now: the indicator's own
+	// recipe class, and its child arrow div's own recipe class.
+	if strings.Count(got, `class=`) != 2 {
+		t.Errorf("indicator and arrow presentation must render exactly two class attributes\nin: %s", got)
 	}
 }
 
 func TestNavigationMenuCallerClassMerges(t *testing.T) {
 	got := render(t, ui.NavigationMenuContent(gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "p-8"}}))
-	if strings.Count(got, `class="p-8"`) != 1 || strings.Count(got, `class=`) != 1 {
-		t.Errorf("caller p-8 must be the only class and render once\nin: %s", got)
+	if strings.Count(got, "p-8") != 1 || strings.Count(got, `class=`) != 1 {
+		t.Errorf("caller p-8 must merge in exactly once, in exactly one class attribute\nin: %s", got)
 	}
 }
 
