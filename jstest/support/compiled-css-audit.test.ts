@@ -80,7 +80,11 @@ test("compiled site Button fallback has the exact normal-site scope", () => {
   );
 
   const selectors = compiledButtonSelectors(result.stdout);
-  assert.notEqual(selectors.length, 0, "compiled site CSS has no Button fallback");
+  assert.notEqual(
+    selectors.length,
+    0,
+    "compiled site CSS has no Button fallback",
+  );
   for (const selector of selectors) {
     assert.equal(
       hasExactNormalSiteScope(selector),
@@ -93,8 +97,11 @@ test("compiled site Button fallback has the exact normal-site scope", () => {
 test("consumer composition selectors retain their owning marker specificity", () => {
   const root = parse(defaultStyleCSS());
   const buttonGroupSizes = new Set<string>();
-  let calendarNavGeometry = false;
-  let calendarDayGeometry = false;
+  // Calendar's nav/day --cell-size geometry used to be asserted here, while
+  // Calendar was unmigrated and that geometry lived in the consumer's flat
+  // stylesheet. It now lives on Calendar's own recipe, so the guarantee moved
+  // rather than being dropped — see TestCalendarRecipeRetainsButtonGeometry in
+  // internal/stylegen/button_css_test.go, which checks both styles.
 
   root.walkRules((rule) => {
     const selectorRoot = selectorParser().astSync(rule.selector);
@@ -105,10 +112,7 @@ test("consumer composition selectors retain their owning marker specificity", ()
         attributes.map((attribute) => attribute.attribute.toLowerCase()),
       );
 
-      if (
-        names.has("data-gsxui-slot-button-group") &&
-        names.has("data-size")
-      ) {
+      if (names.has("data-gsxui-slot-button-group") && names.has("data-size")) {
         const size = attributes.find(
           (attribute) => attribute.attribute.toLowerCase() === "data-size",
         );
@@ -126,39 +130,10 @@ test("consumer composition selectors retain their owning marker specificity", ()
         );
         buttonGroupSizes.add(size?.value ?? "");
       }
-
-      const declarations = new Set(
-        rule.nodes
-          .filter((node) => node.type === "decl")
-          .map((declaration) => declaration.prop.toLowerCase()),
-      );
-      const nav = attributes.find(
-        (attribute) =>
-          attribute.attribute.toLowerCase() ===
-          "data-gsxui-slot-calendar-nav-button",
-      );
-      if (nav && declarations.has("width") && declarations.has("height")) {
-        assert.equal(nav.parent, selector);
-        calendarNavGeometry = true;
-      }
-      const day = attributes.find(
-        (attribute) =>
-          attribute.attribute.toLowerCase() ===
-          "data-gsxui-slot-calendar-day-button",
-      );
-      if (day && declarations.has("min-width")) {
-        assert.equal(day.parent, selector);
-        calendarDayGeometry = true;
-      }
     }
   });
 
-  assert.deepEqual(
-    [...buttonGroupSizes].sort(),
-    ["icon-sm", "icon-xs", "xs"],
-  );
-  assert.equal(calendarNavGeometry, true);
-  assert.equal(calendarDayGeometry, true);
+  assert.deepEqual([...buttonGroupSizes].sort(), ["icon-sm", "icon-xs", "xs"]);
 });
 
 test("binary Sidebar markers use presence selectors", () => {
