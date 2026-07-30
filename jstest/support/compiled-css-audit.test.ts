@@ -13,6 +13,30 @@ const repositoryRoot = resolve(
   "../..",
 );
 
+/**
+ * The default style's components layer is authored one file per component under
+ * assets/css/styles/default/, so migrating a component is a file deletion rather
+ * than a block deleted out of the middle of one 3000-line sheet. Reading
+ * default.css alone would now see only @import lines and the @layer utilities
+ * escape hatch, and every assertion below about a component's authored rules
+ * would pass vacuously.
+ *
+ * This inlines each relative @import in the aggregator's own order — the same
+ * composition internal/cli vendors as a consumer's flat style.css — so these
+ * tests keep reading exactly the stylesheet a consumer receives.
+ */
+function defaultStyleCSS(): string {
+  const dir = join(repositoryRoot, "assets/css/styles");
+  const aggregator = readFileSync(join(dir, "default.css"), "utf8");
+  return aggregator
+    .split("\n")
+    .map((line) => {
+      const match = /^@import "(\.\/[^"]+)";[ \t]*$/.exec(line);
+      return match ? readFileSync(join(dir, match[1]), "utf8") : line + "\n";
+    })
+    .join("");
+}
+
 for (const style of ["nova", "maia"]) {
   test(`compiles the authored ${style} Button recipe with Tailwind`, () => {
     const input = [
@@ -67,12 +91,7 @@ test("compiled site Button fallback has the exact normal-site scope", () => {
 });
 
 test("consumer composition selectors retain their owning marker specificity", () => {
-  const root = parse(
-    readFileSync(
-      join(repositoryRoot, "assets/css/styles/default.css"),
-      "utf8",
-    ),
-  );
+  const root = parse(defaultStyleCSS());
   const buttonGroupSizes = new Set<string>();
   let calendarNavGeometry = false;
   let calendarDayGeometry = false;
@@ -143,12 +162,7 @@ test("consumer composition selectors retain their owning marker specificity", ()
 });
 
 test("binary Sidebar markers use presence selectors", () => {
-  const root = parse(
-    readFileSync(
-      join(repositoryRoot, "assets/css/styles/default.css"),
-      "utf8",
-    ),
-  );
+  const root = parse(defaultStyleCSS());
   const markers = new Map([
     ["data-active", false],
     ["data-show-on-hover", false],
@@ -279,9 +293,7 @@ function compiledButtonSelectors(css: string) {
     for (const selector of selectorRoot.nodes) {
       let targetsButton = false;
       selector.walkAttributes((attribute) => {
-        if (
-          attribute.attribute.toLowerCase() === "data-gsxui-slot-button"
-        ) {
+        if (attribute.attribute.toLowerCase() === "data-gsxui-slot-button") {
           targetsButton = true;
         }
       });

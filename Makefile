@@ -80,7 +80,11 @@ audit:
 	@! rg -n -P '[\w./:\[\]&>-]+!' ui -g '*.gsx'
 	@! rg -n 'gsxui-recipe-' ui -g '*.gsx'
 	@! rg -n 'gsxui-recipe-' registry/canonical -g '*.gsx'
-	@! rg -n '!important' assets/css/foundation.css assets/css/styles/default.css
+	@# Recursive over assets/css/styles/ on purpose: the default style is one
+	@# file per component under styles/default/, so naming styles/default.css
+	@# alone would leave this gate scanning an aggregator of @import lines and
+	@# checking no component's rules at all.
+	@! rg -n '!important' assets/css/foundation.css assets/css/styles -g '*.css'
 	go run ./cmd/stylegen --check-layers
 	go run ./cmd/stylegen --check-authoring
 

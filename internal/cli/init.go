@@ -19,13 +19,17 @@ type cssAssetTarget struct {
 	target string
 }
 
+// defaultStyleCSS is the aggregator over assets/css/styles/default/*.css. It is
+// the one CSS asset vendored as a composition rather than a copy.
+const defaultStyleCSS = "assets/css/styles/default.css"
+
 func cssAssetTargets(entry string) []cssAssetTarget {
 	dir := filepath.Dir(entry)
 	return []cssAssetTarget{
 		{source: "assets/css/index.css", target: entry},
 		{source: "assets/css/foundation.css", target: filepath.Join(dir, "foundation.css")},
 		{source: "assets/css/themes/default.css", target: filepath.Join(dir, "theme.css")},
-		{source: "assets/css/styles/default.css", target: filepath.Join(dir, "style.css")},
+		{source: defaultStyleCSS, target: filepath.Join(dir, "style.css")},
 	}
 }
 
@@ -165,9 +169,18 @@ func initArtifacts(dir, module string, cfg Config, selected preset.Preset) ([]ar
 	}}
 	for _, asset := range cssAssetTargets(cfg.CSS) {
 		var content []byte
-		if asset.source == "assets/css/themes/default.css" {
+		switch asset.source {
+		case "assets/css/themes/default.css":
 			content = themeCSS
-		} else {
+		case defaultStyleCSS:
+			// The default style is authored as one file per component under
+			// styles/default/; the consumer receives the single flat sheet they
+			// have always received. See composeStyleCSS.
+			content, err = composeStyleCSS(gsxui.Files, asset.source)
+			if err != nil {
+				return nil, err
+			}
+		default:
 			content, err = fs.ReadFile(gsxui.Files, asset.source)
 			if err != nil {
 				return nil, err

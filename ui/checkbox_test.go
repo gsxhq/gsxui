@@ -29,11 +29,7 @@ func TestCheckboxDataURIDecodesToValidSVG(t *testing.T) {
 	// TWO check URIs: the light one strokes white (primary is near-black),
 	// the dark: variant strokes the dark theme's --primary-foreground value
 	// (primary flips near-white, where a white check would vanish).
-	cssBytes, err := os.ReadFile("../assets/css/styles/default.css")
-	if err != nil {
-		t.Fatal(err)
-	}
-	got := string(cssBytes)
+	got := checkboxCSS(t)
 	const pre, post = "data:image/svg+xml;base64,", `")`
 	var strokes []string
 	rest := got
@@ -73,11 +69,7 @@ func TestCheckboxDataURIDecodesToValidSVG(t *testing.T) {
 }
 
 func TestCheckboxDarkCheckedOverrides(t *testing.T) {
-	cssBytes, err := os.ReadFile("../assets/css/styles/default.css")
-	if err != nil {
-		t.Fatal(err)
-	}
-	got := string(cssBytes)
+	got := checkboxCSS(t)
 	for _, want := range []string{
 		`.dark :where([data-gsxui-slot-checkbox]):checked`,
 		`background-image: url("data:image/svg+xml;base64,`,
@@ -135,4 +127,18 @@ func TestCheckboxPinned(t *testing.T) {
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
+}
+
+// checkboxCSS returns Checkbox's authored presentation. The default style's
+// components layer is one file per component under assets/css/styles/default/,
+// so this is Checkbox's file rather than a 3000-line sheet — and when Checkbox
+// migrates to the recipe model that file is deleted, which fails these tests
+// loudly instead of letting them keep passing against a stale block.
+func checkboxCSS(t *testing.T) string {
+	t.Helper()
+	cssBytes, err := os.ReadFile("../assets/css/styles/default/checkbox.css")
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(cssBytes)
 }

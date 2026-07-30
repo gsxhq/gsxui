@@ -1,0 +1,87 @@
+@layer components {
+  /* Item */
+  :where([data-gsxui-slot-item-group]) {
+    @apply flex flex-col;
+  }
+  :where(
+      [data-gsxui-slot-separator][data-gsxui-slot-item-separator]
+    ) {
+    @apply my-2;
+  }
+  :where([data-gsxui-slot-item]) {
+    @apply flex flex-wrap items-center gap-2.5 rounded-lg border border-transparent px-3 py-2.5 text-sm transition-colors duration-100 outline-none;
+  }
+  :where([data-gsxui-slot-item]):focus-visible {
+    @apply border-ring ring-[3px] ring-ring/50;
+  }
+  :is(a[data-gsxui-slot-item]) {
+    @apply transition-colors;
+  }
+  :is(a[data-gsxui-slot-item]):hover {
+    @apply bg-accent/50;
+  }
+  :where([data-gsxui-slot-item])[data-variant="default"] {
+    @apply bg-transparent;
+  }
+  :where([data-gsxui-slot-item])[data-variant="outline"] {
+    @apply border-border;
+  }
+  :where([data-gsxui-slot-item])[data-variant="muted"] {
+    @apply bg-muted/50;
+  }
+  :where([data-gsxui-slot-item-media]) {
+    @apply flex shrink-0 items-center justify-center gap-2;
+  }
+  :where([data-gsxui-slot-item-media]) svg {
+    @apply pointer-events-none;
+  }
+  :where([data-gsxui-slot-item]):has(
+      [data-gsxui-slot-item-description]
+    )
+    :where([data-gsxui-slot-item-media]) {
+    @apply translate-y-0.5 self-start;
+  }
+  :where([data-gsxui-slot-item-media])[data-variant="default"] {
+    @apply bg-transparent;
+  }
+  :where([data-gsxui-slot-item-media])[data-variant="icon"] {
+    @apply size-8 rounded-sm border bg-muted;
+  }
+  :where([data-gsxui-slot-item-media])[data-variant="icon"]
+    svg:not([class*="size-"]) {
+    @apply size-4;
+  }
+  :where([data-gsxui-slot-item-media])[data-variant="image"] {
+    @apply size-10 overflow-hidden rounded-sm;
+  }
+  :where([data-gsxui-slot-item-media])[data-variant="image"] img {
+    @apply size-full object-cover;
+  }
+  :where([data-gsxui-slot-item-content]) {
+    @apply flex flex-1 flex-col gap-1;
+  }
+  :where([data-gsxui-slot-item-content])
+    + :where([data-gsxui-slot-item-content]) {
+    @apply flex-none;
+  }
+  :where([data-gsxui-slot-item-title]) {
+    @apply flex w-fit items-center gap-2 text-sm leading-snug font-medium;
+  }
+  :where([data-gsxui-slot-item-description]) {
+    @apply line-clamp-2 text-sm leading-normal font-normal text-balance text-muted-foreground;
+  }
+  :where([data-gsxui-slot-item-description]) > a {
+    @apply underline underline-offset-4;
+  }
+  :where([data-gsxui-slot-item-description]) > a:hover {
+    @apply text-primary;
+  }
+  :where([data-gsxui-slot-item-actions]) {
+    @apply flex items-center gap-2;
+  }
+  :where([data-gsxui-slot-item-header]),
+  :where([data-gsxui-slot-item-footer]) {
+    @apply flex basis-full items-center justify-between gap-2;
+  }
+
+}

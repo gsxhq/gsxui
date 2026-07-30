@@ -1,0 +1,93 @@
+@layer components {
+  /* Command */
+  :where([data-gsxui-slot-command]) {
+    @apply flex h-full w-full flex-col overflow-hidden rounded-xl bg-popover p-1 text-popover-foreground;
+  }
+  :where(dialog)[data-gsxui-slot-command-dialog-content] {
+    @apply overflow-hidden p-0;
+  }
+  @media (width >= 40rem) {
+    :where(dialog)[data-gsxui-slot-command-dialog-content] {
+      @apply max-w-lg;
+    }
+  }
+  :where([data-gsxui-slot-command-input-wrapper]) {
+    @apply flex h-9 items-center gap-2 border-b px-3;
+  }
+  :where([data-gsxui-slot-command-input-wrapper]) > svg {
+    @apply size-4 shrink-0 opacity-50;
+  }
+  :where([data-gsxui-slot-command-input]) {
+    @apply flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden;
+  }
+  :where([data-gsxui-slot-command-input])::placeholder {
+    @apply text-muted-foreground;
+  }
+  :where([data-gsxui-slot-command-input]):disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+  :where([data-gsxui-slot-command-list]) {
+    @apply max-h-72 scroll-py-1 overflow-x-hidden overflow-y-auto;
+  }
+  :where([data-gsxui-slot-command-empty]) {
+    @apply py-6 text-center text-sm;
+  }
+  :where([data-gsxui-slot-command-group]) {
+    @apply overflow-hidden p-1 text-foreground;
+  }
+  :where([data-gsxui-slot-command-group-heading]) {
+    @apply px-2 py-1.5 text-xs font-medium text-muted-foreground;
+  }
+  :where([data-gsxui-slot-command-separator]) {
+    @apply -mx-1 h-px bg-border;
+  }
+  :where([data-gsxui-slot-command-item]) {
+    @apply relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none;
+  }
+  :where([data-gsxui-slot-command-item])[data-disabled="true"] {
+    @apply pointer-events-none opacity-50;
+  }
+  :where([data-gsxui-slot-command-item])[data-selected="true"] {
+    @apply bg-accent text-accent-foreground;
+  }
+  :where([data-gsxui-slot-command-item]) svg {
+    @apply pointer-events-none shrink-0;
+  }
+  :where([data-gsxui-slot-command-item])
+    svg:not([class*="size-"]) {
+    @apply size-4;
+  }
+  :where([data-gsxui-slot-command-item])
+    svg:not([class*="text-"]) {
+    @apply text-muted-foreground;
+  }
+  :where([data-gsxui-slot-command-shortcut]) {
+    @apply ml-auto text-xs tracking-widest text-muted-foreground;
+  }
+  :where([data-gsxui-slot-command-dialog-content])
+    :where([data-gsxui-slot-command-input-wrapper]),
+  :where([data-gsxui-slot-command-dialog-content])
+    :where([data-gsxui-slot-command-input]) {
+    @apply h-12;
+  }
+  :where([data-gsxui-slot-command-dialog-content])
+    :where([data-gsxui-slot-command-input-wrapper]) svg,
+  :where([data-gsxui-slot-command-dialog-content])
+    :where([data-gsxui-slot-command-item]) svg {
+    @apply size-5;
+  }
+  :where([data-gsxui-slot-command-dialog-content])
+    :where([data-gsxui-slot-command-group]) {
+    @apply px-2;
+  }
+  :where([data-gsxui-slot-command-dialog-content])
+    :where([data-gsxui-slot-command-group]):not([hidden])
+    ~ :where([data-gsxui-slot-command-group]) {
+    @apply pt-0;
+  }
+  :where([data-gsxui-slot-command-dialog-content])
+    :where([data-gsxui-slot-command-item]) {
+    @apply px-2 py-3;
+  }
+
+}

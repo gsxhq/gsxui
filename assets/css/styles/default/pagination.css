@@ -1,0 +1,36 @@
+@layer components {
+  /* Pagination */
+  :where([data-gsxui-slot-pagination]) {
+    @apply mx-auto flex w-full justify-center;
+  }
+  :where([data-gsxui-slot-pagination-content]) {
+    @apply flex flex-row items-center gap-0.5;
+  }
+  :is(
+    [data-gsxui-slot-pagination-link][data-gsxui-slot-pagination-previous]
+  ) {
+    @apply pl-1.5;
+  }
+  :is(
+    [data-gsxui-slot-pagination-link][data-gsxui-slot-pagination-next]
+  ) {
+    @apply pr-1.5;
+  }
+  :where([data-gsxui-slot-pagination-previous-label]),
+  :where([data-gsxui-slot-pagination-next-label]) {
+    @apply hidden;
+  }
+  @media (width >= 40rem) {
+    :where([data-gsxui-slot-pagination-previous-label]),
+    :where([data-gsxui-slot-pagination-next-label]) {
+      @apply block;
+    }
+  }
+  :where([data-gsxui-slot-pagination-ellipsis]) {
+    @apply flex size-8 items-center justify-center;
+  }
+  :where([data-gsxui-slot-pagination-ellipsis]) > svg {
+    @apply size-4;
+  }
+
+}

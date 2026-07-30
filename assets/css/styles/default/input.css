@@ -1,0 +1,36 @@
+@layer components {
+  /* Input */
+  :where([data-gsxui-slot-input]) {
+    @apply h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-base transition-[color,box-shadow] outline-none;
+  }
+  :where([data-gsxui-slot-input])::selection {
+    @apply bg-primary text-primary-foreground;
+  }
+  :where([data-gsxui-slot-input])::file-selector-button {
+    @apply inline-flex h-6 border-0 bg-transparent text-sm font-medium text-foreground;
+  }
+  :where([data-gsxui-slot-input])::placeholder {
+    @apply text-muted-foreground;
+  }
+  :where([data-gsxui-slot-input]):focus-visible {
+    @apply border-ring ring-[3px] ring-ring/50;
+  }
+  :where([data-gsxui-slot-input]):disabled {
+    @apply pointer-events-none cursor-not-allowed opacity-50;
+  }
+  :where([data-gsxui-slot-input])[aria-invalid="true"] {
+    @apply border-destructive ring-destructive/20;
+  }
+  .dark :where([data-gsxui-slot-input]) {
+    @apply bg-input/30;
+  }
+  .dark :where([data-gsxui-slot-input][aria-invalid="true"]) {
+    @apply ring-destructive/40;
+  }
+  @media (width >= 48rem) {
+    :where([data-gsxui-slot-input]) {
+      @apply text-sm;
+    }
+  }
+
+}

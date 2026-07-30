@@ -1,0 +1,33 @@
+@layer components {
+  /* ButtonGroup */
+  :where([data-gsxui-slot-button-group]) {
+    @apply flex w-fit items-stretch;
+  }
+  :where([data-gsxui-slot-button-group]):has(
+      > [data-gsxui-slot-button-group]
+    ) {
+    @apply gap-2;
+  }
+  :where([data-gsxui-slot-button-group]) > :focus-visible {
+    @apply relative z-10;
+  }
+  :where([data-gsxui-slot-button-group])
+    > :where([data-gsxui-slot-select-trigger]):not([class*="w-"]) {
+    @apply w-fit;
+  }
+  :where([data-gsxui-slot-button-group]) > input {
+    @apply flex-1;
+  }
+  :where([data-gsxui-slot-button-group])[data-orientation="vertical"] {
+    @apply flex-col;
+  }
+  :where([data-gsxui-slot-button-group-text]) {
+    @apply flex items-center gap-2 rounded-lg border bg-muted px-2.5 text-sm font-medium;
+  }
+  :where([data-gsxui-slot-button-group-text]) svg {
+    @apply pointer-events-none;
+  }
+  :where([data-gsxui-slot-button-group-text]) svg:not([class*="size-"]) {
+    @apply size-4;
+  }
+}

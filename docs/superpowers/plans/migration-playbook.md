@@ -24,8 +24,21 @@ to reconstruct it after the fact.
 ### Step 2 — inventory the component's rules
 
 ```bash
-grep -n "data-gsxui-slot-<component>" assets/css/styles/default.css
+# The default style's components layer is one file per component. Yours is
+# usually assets/css/styles/default/<component>.css; grep the directory rather
+# than guessing the filename, because a few files are deliberately shared
+# (menu.css covers DropdownMenu/ContextMenu/Menubar, and the three
+# *-transition.css and drawer-sheet-shared.css files hold rules more than one
+# component depends on).
+rg -n "data-gsxui-slot-<component>" assets/css/styles/default/ assets/css/styles/default.css
 ```
+
+**Migrating the component DELETES its file** and removes its `@import` line
+from `assets/css/styles/default.css`. That is the whole reason for the split:
+two agents migrating different components no longer touch the same lines.
+`internal/cli` still vendors consumers ONE flat `style.css`, composed from the
+aggregator's imports in order, and `TestEveryDefaultStylePartIsImported`
+fails if a file exists that the aggregator does not import.
 
 Classify every match into one of three buckets:
 
@@ -268,7 +281,9 @@ One rule: the Card header's `container-name: card-header` /
 Tailwind utility form, so a recipe stylesheet (which only accepts `@apply`)
 cannot carry them at all — this isn't a judgment call, `stylegen` refuses to
 parse the file otherwise. They moved to `assets/css/styles/default.css`'s
-`@layer utilities` block, unwrapped, with a comment. Nothing in the
+`@layer utilities` block, unwrapped, with a comment. That block stays in the
+aggregator rather than in `styles/default/`: its correctness is its position
+after every components-layer import. Nothing in the
 catalogue currently reacts to this named container (no `@sm/card-header:`
 or similar variant exists anywhere), so it's inert upstream setup being
 preserved rather than an active concern — but it still had to move, since

@@ -1,0 +1,41 @@
+@layer components {
+  /* Empty */
+  :where([data-gsxui-slot-empty]) {
+    @apply flex min-w-0 flex-1 flex-col items-center justify-center gap-4 rounded-xl border-dashed p-6 text-center text-balance;
+  }
+  :where([data-gsxui-slot-empty-header]) {
+    @apply flex max-w-sm flex-col items-center gap-2 text-center;
+  }
+  :where([data-gsxui-slot-empty-icon]) {
+    @apply mb-2 flex shrink-0 items-center justify-center;
+  }
+  :where([data-gsxui-slot-empty-icon]) svg {
+    @apply shrink-0 pointer-events-none;
+  }
+  :where([data-gsxui-slot-empty-icon])[data-variant="default"] {
+    @apply bg-transparent;
+  }
+  :where([data-gsxui-slot-empty-icon])[data-variant="icon"] {
+    @apply size-8 rounded-lg bg-muted text-foreground;
+  }
+  :where([data-gsxui-slot-empty-icon])[data-variant="icon"]
+    svg:not([class*="size-"]) {
+    @apply size-4;
+  }
+  :where([data-gsxui-slot-empty-title]) {
+    @apply text-sm font-medium tracking-tight;
+  }
+  :where([data-gsxui-slot-empty-description]) {
+    @apply text-sm/relaxed text-muted-foreground;
+  }
+  :where([data-gsxui-slot-empty-description]) > a {
+    @apply underline underline-offset-4;
+  }
+  :where([data-gsxui-slot-empty-description]) > a:hover {
+    @apply text-primary;
+  }
+  :where([data-gsxui-slot-empty-content]) {
+    @apply flex w-full max-w-sm min-w-0 flex-col items-center gap-2.5 text-sm text-balance;
+  }
+
+}

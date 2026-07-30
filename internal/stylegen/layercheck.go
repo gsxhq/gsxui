@@ -8,6 +8,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"slices"
 	"sort"
 	"strings"
 
@@ -139,9 +140,10 @@ func attrName(attr gsxast.Attr) string {
 	}
 }
 
-// layerCheckedStylesheets is every authored stylesheet the layer gate reads,
-// named one by one on purpose. A glob would silently pull in whatever a future
-// commit drops under assets/css or web/ — a file nobody decided was in scope.
+// layerCheckedStylesheets is every individually named authored stylesheet the
+// layer gate reads, spelled out one by one on purpose. A blanket glob would
+// silently pull in whatever a future commit drops under assets/css or web/ — a
+// file nobody decided was in scope.
 // TestLayerCheckedStylesheetsCoverEveryAuthoredStylesheet fails when a new
 // stylesheet appears, so adding one is a deliberate line in this list.
 //
@@ -153,6 +155,59 @@ var layerCheckedStylesheets = []string{
 	"assets/css/themes/default.css",
 	"web/site.css",
 	"web/site-button.css",
+}
+
+// layerCheckedStylesheetDirs is every directory whose ENTIRE .css contents are
+// in scope by construction, so the gate globs it instead of naming its files.
+//
+// There is exactly one, and the reason it is safe to glob is the reason the list
+// above is not: assets/css/styles/default/ holds the default style's components
+// layer split one file per component, and a file appearing there is a component's
+// rules and nothing else. 41 components have yet to migrate; each migration
+// deletes one of these files, and before the split each was a block in the
+// middle of a single 3193-line sheet that every parallel migration had to edit.
+// Naming them individually would mean a second edit, in this file, for every
+// migration — churn that buys no decision, because "is this in scope" has one
+// answer for the whole directory.
+//
+// The audited-by-default property the explicit list exists for is intact:
+// TestLayerCheckedStylesheetsCoverEveryAuthoredStylesheet still compares the
+// full walk of assets/css and web/ against the explicit list PLUS these
+// directories, so a new stylesheet anywhere else — a new top-level sheet, a new
+// style directory, a new web/ sheet — still fails until someone decides about it.
+var layerCheckedStylesheetDirs = []string{
+	"assets/css/styles/default",
+}
+
+// layerCheckedSheets resolves the explicit list and the globbed directories into
+// the concrete set of stylesheets to read, slash-separated and relative to root.
+//
+// Order is the explicit list first, then each directory's files sorted by name.
+// The gate judges every rule against the compiled utilities independently, so
+// this order affects only the order diagnostics come out in — the CASCADE order
+// of the split files is the aggregator's @import order, which
+// internal/cli's TestComposedStyleCSSPreservesImportOrder is what pins.
+func layerCheckedSheets(root string) ([]string, error) {
+	sheets := slices.Clone(layerCheckedStylesheets)
+	for _, dir := range layerCheckedStylesheetDirs {
+		entries, err := os.ReadDir(filepath.Join(root, filepath.FromSlash(dir)))
+		if err != nil {
+			return nil, fmt.Errorf("layer gate: reading %s: %w", dir, err)
+		}
+		var found []string
+		for _, entry := range entries {
+			if entry.IsDir() || filepath.Ext(entry.Name()) != ".css" {
+				return nil, fmt.Errorf("layer gate: %s/%s is not a stylesheet; this directory holds only the default style's per-component sheets", dir, entry.Name())
+			}
+			found = append(found, dir+"/"+entry.Name())
+		}
+		if len(found) == 0 {
+			return nil, fmt.Errorf("layer gate: %s holds no stylesheets", dir)
+		}
+		sort.Strings(found)
+		sheets = append(sheets, found...)
+	}
+	return sheets, nil
 }
 
 // exemptionKey identifies ONE deliberate violation: a file, the selector that
@@ -444,7 +499,11 @@ func layerViolations(
 	properties *utilityPropertyResolver,
 ) ([]violation, error) {
 	var out []violation
-	for _, relative := range layerCheckedStylesheets {
+	sheets, err := layerCheckedSheets(root)
+	if err != nil {
+		return nil, err
+	}
+	for _, relative := range sheets {
 		path := filepath.Join(root, filepath.FromSlash(relative))
 		src, err := os.ReadFile(path)
 		if err != nil {

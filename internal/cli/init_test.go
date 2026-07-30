@@ -92,6 +92,22 @@ func TestInitWritesEverything(t *testing.T) {
 	if !strings.Contains(string(styleCSS), "[data-gsxui-slot-scroll-area]::-webkit-scrollbar") {
 		t.Error("style.css does not contain the ScrollArea pseudo-element rules")
 	}
+	// The consumer receives ONE flat sheet even though the default style is
+	// authored one file per component. This is the end-to-end half of that
+	// contract: whatever composeStyleCSS produces is exactly what lands on disk,
+	// byte for byte. Without it, a component file the aggregator does not import
+	// would ship a consumer a stylesheet missing that component and every other
+	// assertion here would still pass.
+	composed, err := composeStyleCSS(gsxui.Files, defaultStyleCSS)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(styleCSS, composed) {
+		t.Errorf(
+			"vendored style.css is not the composed default style (%d bytes on disk, %d composed)",
+			len(styleCSS), len(composed),
+		)
+	}
 	if _, err := os.Stat(filepath.Join(dir, "web/gsxui/site-button.css")); !os.IsNotExist(err) {
 		t.Errorf("init vendored the site-only Button fallback: %v", err)
 	}
@@ -780,7 +796,9 @@ func TestInitOverwriteRefreshesOnlyVersionedSupportFiles(t *testing.T) {
 		t.Fatalf("init --overwrite: %v", err)
 	}
 	for _, target := range targets {
-		want, readErr := fs.ReadFile(gsxui.Files, target.source)
+		// The default style is authored one file per component, so what the
+		// consumer receives is the composition of those files, not the aggregator.
+		want, readErr := expectedVendoredCSS(target.source)
 		if readErr != nil {
 			t.Fatal(readErr)
 		}
@@ -969,4 +987,15 @@ func TestInitDoesNotClobberUnparsableConfig(t *testing.T) {
 	if string(got) != broken {
 		t.Errorf("gsxui.json was modified:\n%s", got)
 	}
+}
+
+// expectedVendoredCSS is the exact bytes `gsxui init` writes for one embedded CSS
+// source: a copy for every sheet except the default style, which is composed
+// from assets/css/styles/default/*.css into the single flat file consumers have
+// always received. See composeStyleCSS.
+func expectedVendoredCSS(source string) ([]byte, error) {
+	if source == defaultStyleCSS {
+		return composeStyleCSS(gsxui.Files, source)
+	}
+	return fs.ReadFile(gsxui.Files, source)
 }

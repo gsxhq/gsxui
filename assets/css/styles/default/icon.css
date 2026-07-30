@@ -1,0 +1,7 @@
+@layer components {
+  /* Icon */
+  :where([data-gsxui-slot-icon]) {
+    @apply size-4;
+  }
+
+}

@@ -1,0 +1,98 @@
+@layer components {
+  /* Drawer */
+  :where(dialog[data-gsxui-slot-drawer-content]) {
+    @apply bg-popover text-popover-foreground;
+  }
+  :where(dialog[data-gsxui-slot-drawer-content])[data-side="bottom"] {
+    @apply inset-x-0 bottom-0 top-auto mt-24 h-auto max-h-[80vh] w-full max-w-none rounded-t-xl border-t;
+  }
+  :where(dialog[data-gsxui-slot-drawer-content])[data-side="top"] {
+    @apply inset-x-0 top-0 bottom-auto mb-24 h-auto max-h-[80vh] w-full max-w-none rounded-b-xl border-b;
+  }
+  :where(dialog[data-gsxui-slot-drawer-content])[data-side="left"] {
+    @apply inset-y-0 left-0 right-auto h-full max-h-none w-3/4 rounded-r-xl border-r;
+  }
+  :where(dialog[data-gsxui-slot-drawer-content])[data-side="right"] {
+    @apply inset-y-0 right-0 left-auto h-full max-h-none w-3/4 rounded-l-xl border-l;
+  }
+  @media (width >= 40rem) {
+    :where(dialog[data-gsxui-slot-drawer-content]):is(
+        [data-side="left"],
+        [data-side="right"]
+      ) {
+      @apply max-w-sm;
+    }
+  }
+  :where(
+      dialog[data-gsxui-slot-drawer-content][data-side="bottom"][data-state="closed"]
+    ) {
+    @apply slide-out-to-bottom;
+  }
+  :where(
+      dialog[data-gsxui-slot-drawer-content][data-side="bottom"][data-state="open"]
+    ) {
+    @apply slide-in-from-bottom;
+  }
+  :where(
+      dialog[data-gsxui-slot-drawer-content][data-side="top"][data-state="closed"]
+    ) {
+    @apply slide-out-to-top;
+  }
+  :where(
+      dialog[data-gsxui-slot-drawer-content][data-side="top"][data-state="open"]
+    ) {
+    @apply slide-in-from-top;
+  }
+  :where(
+      dialog[data-gsxui-slot-drawer-content][data-side="left"][data-state="closed"]
+    ) {
+    @apply slide-out-to-left;
+  }
+  :where(
+      dialog[data-gsxui-slot-drawer-content][data-side="left"][data-state="open"]
+    ) {
+    @apply slide-in-from-left;
+  }
+  :where(
+      dialog[data-gsxui-slot-drawer-content][data-side="right"][data-state="closed"]
+    ) {
+    @apply slide-out-to-right;
+  }
+  :where(
+      dialog[data-gsxui-slot-drawer-content][data-side="right"][data-state="open"]
+    ) {
+    @apply slide-in-from-right;
+  }
+  :where([data-gsxui-slot-drawer-handle]) {
+    @apply mx-auto mt-4 h-1 w-[100px] shrink-0 rounded-full bg-muted;
+  }
+  :where([data-gsxui-slot-drawer-header]) {
+    @apply flex flex-col gap-0.5 p-4;
+  }
+  :where(dialog[data-gsxui-slot-drawer-content]):is(
+      [data-side="bottom"],
+      [data-side="top"]
+    )
+    :where([data-gsxui-slot-drawer-header]) {
+    @apply text-center;
+  }
+  @media (width >= 48rem) {
+    :where(dialog[data-gsxui-slot-drawer-content]):is(
+        [data-side="left"],
+        [data-side="right"]
+      )
+      :where([data-gsxui-slot-drawer-header]) {
+      @apply text-left;
+    }
+  }
+  :where([data-gsxui-slot-drawer-footer]) {
+    @apply mt-auto flex flex-col gap-2 p-4;
+  }
+  :where([data-gsxui-slot-drawer-title]) {
+    @apply font-medium text-foreground;
+  }
+  :where([data-gsxui-slot-drawer-description]) {
+    @apply text-sm text-muted-foreground;
+  }
+
+}

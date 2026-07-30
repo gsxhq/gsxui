@@ -1,0 +1,121 @@
+@layer components {
+  /* Select */
+  :where([data-gsxui-slot-select]) {
+    display: contents;
+  }
+  :where([data-gsxui-slot-select-trigger]) {
+    @apply flex w-fit items-center justify-between gap-1.5 rounded-lg border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-[color,box-shadow] outline-none;
+  }
+  :where([data-gsxui-slot-select-trigger]):focus-visible {
+    @apply border-ring ring-[3px] ring-ring/50;
+  }
+  :where([data-gsxui-slot-select-trigger]):disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+  :where([data-gsxui-slot-select-trigger])[aria-invalid="true"] {
+    @apply border-destructive ring-destructive/20;
+  }
+  :where([data-gsxui-slot-select-trigger])[data-placeholder] {
+    @apply text-muted-foreground;
+  }
+  :where([data-gsxui-slot-select-trigger])[data-size="default"] {
+    @apply h-8;
+  }
+  :where([data-gsxui-slot-select-trigger])[data-size="sm"] {
+    @apply h-7 rounded-[min(var(--radius-md),10px)];
+  }
+  .dark :where([data-gsxui-slot-select-trigger]) {
+    @apply bg-input/30;
+  }
+  .dark :where([data-gsxui-slot-select-trigger]):hover {
+    @apply bg-input/50;
+  }
+  .dark
+    :where([data-gsxui-slot-select-trigger][aria-invalid="true"]) {
+    @apply ring-destructive/40;
+  }
+  :where([data-gsxui-slot-select-trigger])
+    > :where([data-gsxui-slot-select-value]) {
+    @apply line-clamp-1 flex items-center gap-1.5;
+  }
+  :where([data-gsxui-slot-select-value]) {
+    pointer-events: none;
+  }
+  :where([data-gsxui-slot-select-trigger]) svg {
+    @apply pointer-events-none shrink-0 text-muted-foreground;
+  }
+  :where([data-gsxui-slot-select-trigger])
+    svg:not([class*="size-"]) {
+    @apply size-4;
+  }
+  :where([data-gsxui-slot-select-trigger]) > svg {
+    @apply size-4 opacity-50;
+  }
+  :where([data-gsxui-slot-select-content]) {
+    @apply z-50 max-h-96 min-w-36 origin-top-left overflow-x-hidden overflow-y-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150;
+  }
+  :where([data-gsxui-slot-select-content]):popover-open {
+    @apply opacity-100 scale-100;
+  }
+  @starting-style {
+    :where([data-gsxui-slot-select-content]):popover-open {
+      @apply opacity-0 scale-95;
+    }
+    :where(
+        [data-gsxui-slot-select-content][data-side="bottom"]
+      ):popover-open {
+      @apply -translate-y-2;
+    }
+    :where(
+        [data-gsxui-slot-select-content][data-side="left"]
+      ):popover-open {
+      @apply translate-x-2;
+    }
+    :where(
+        [data-gsxui-slot-select-content][data-side="right"]
+      ):popover-open {
+      @apply -translate-x-2;
+    }
+    :where(
+        [data-gsxui-slot-select-content][data-side="top"]
+      ):popover-open {
+      @apply translate-y-2;
+    }
+  }
+  :where([data-gsxui-slot-select-label]) {
+    @apply px-1.5 py-1 text-xs text-muted-foreground;
+  }
+  :where([data-gsxui-slot-select-item]) {
+    @apply relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none;
+  }
+  :where([data-gsxui-slot-select-item]):focus {
+    @apply bg-accent text-accent-foreground;
+  }
+  :where([data-gsxui-slot-select-item])[data-disabled="true"] {
+    @apply pointer-events-none opacity-50;
+  }
+  :where([data-gsxui-slot-select-item]) svg {
+    @apply pointer-events-none shrink-0 text-muted-foreground;
+  }
+  :where([data-gsxui-slot-select-item])
+    svg:not([class*="size-"]) {
+    @apply size-4;
+  }
+  :where([data-gsxui-slot-select-item-text]) {
+    @apply flex items-center gap-2;
+  }
+  :where([data-gsxui-slot-select-item-indicator]) {
+    @apply pointer-events-none absolute right-2 hidden size-4 items-center justify-center;
+  }
+  :where([data-gsxui-slot-select-item][data-state="checked"])
+    > :where([data-gsxui-slot-select-item-indicator]) {
+    @apply flex;
+  }
+  :where([data-gsxui-slot-select-item-indicator]) > svg {
+    @apply size-4;
+  }
+  :where([data-gsxui-slot-select-separator]) {
+    @apply -mx-1 my-1 h-px bg-border;
+  }
+
+}

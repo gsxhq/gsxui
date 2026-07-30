@@ -1,0 +1,20 @@
+@layer components {
+  /* Drawer and Sheet share Dialog state/backdrop mechanics above. */
+  :where(
+      dialog[data-gsxui-slot-dialog-content]:is(
+          [data-gsxui-slot-drawer-content],
+          [data-gsxui-slot-sheet-content]
+        )
+    ) {
+    @apply m-0 flex-col gap-4 shadow-lg transition ease-in-out;
+  }
+  :where(
+      dialog[data-gsxui-slot-dialog-content]:is(
+          [data-gsxui-slot-drawer-content],
+          [data-gsxui-slot-sheet-content]
+        )[open]
+    ) {
+    display: flex;
+  }
+
+}

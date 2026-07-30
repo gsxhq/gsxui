@@ -1,0 +1,49 @@
+@layer components {
+  /* Table */
+  :where([data-gsxui-slot-table-container]) {
+    @apply relative w-full overflow-x-auto;
+  }
+  :where([data-gsxui-slot-table]) {
+    @apply w-full caption-bottom text-sm;
+  }
+  :where([data-gsxui-slot-table-header]) tr {
+    @apply border-b;
+  }
+  :where([data-gsxui-slot-table-body]) tr:last-child {
+    @apply border-0;
+  }
+  :where([data-gsxui-slot-table-footer]) {
+    @apply border-t bg-muted/50 font-medium;
+  }
+  :where([data-gsxui-slot-table-footer]) > tr:last-child {
+    @apply border-b-0;
+  }
+  :where([data-gsxui-slot-table-row]) {
+    @apply border-b transition-colors;
+  }
+  :where([data-gsxui-slot-table-row]):hover,
+  :where([data-gsxui-slot-table-row]):has([aria-expanded="true"]) {
+    @apply bg-muted/50;
+  }
+  :where([data-gsxui-slot-table-row])[data-state="selected"] {
+    @apply bg-muted;
+  }
+  :where([data-gsxui-slot-table-head]) {
+    @apply h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground;
+  }
+  :where([data-gsxui-slot-table-head]):has([role="checkbox"]),
+  :where([data-gsxui-slot-table-cell]):has([role="checkbox"]) {
+    @apply pr-0;
+  }
+  :where([data-gsxui-slot-table-head]) > [role="checkbox"],
+  :where([data-gsxui-slot-table-cell]) > [role="checkbox"] {
+    @apply translate-y-[2px];
+  }
+  :where([data-gsxui-slot-table-cell]) {
+    @apply p-2 align-middle whitespace-nowrap;
+  }
+  :where([data-gsxui-slot-table-caption]) {
+    @apply mt-4 text-sm text-muted-foreground;
+  }
+
+}

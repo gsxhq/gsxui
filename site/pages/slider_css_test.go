@@ -10,7 +10,12 @@ import (
 
 func TestSliderCSSUsesSemanticContrast(t *testing.T) {
 	_, testFile, _, _ := runtime.Caller(0)
-	path := filepath.Join(filepath.Dir(testFile), "..", "..", "assets", "css", "styles", "default.css")
+	// Slider's authored presentation is its own file: the default style's
+	// components layer is split one file per component so that migrating a
+	// component is a file deletion rather than an edit to one shared 3000-line
+	// sheet. When Slider migrates this file goes away and this test fails loudly
+	// rather than passing against a stale block.
+	path := filepath.Join(filepath.Dir(testFile), "..", "..", "assets", "css", "styles", "default", "slider.css")
 	b, err := os.ReadFile(path)
 	if err != nil {
 		t.Fatalf("os.ReadFile(%s): %v", path, err)

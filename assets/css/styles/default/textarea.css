@@ -1,0 +1,30 @@
+@layer components {
+  /* Textarea */
+  :where([data-gsxui-slot-textarea]) {
+    @apply field-sizing-content flex min-h-16 w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-base transition-[color,box-shadow] outline-none;
+  }
+  :where([data-gsxui-slot-textarea])::placeholder {
+    @apply text-muted-foreground;
+  }
+  :where([data-gsxui-slot-textarea]):focus-visible {
+    @apply border-ring ring-[3px] ring-ring/50;
+  }
+  :where([data-gsxui-slot-textarea]):disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+  :where([data-gsxui-slot-textarea])[aria-invalid="true"] {
+    @apply border-destructive ring-destructive/20;
+  }
+  .dark :where([data-gsxui-slot-textarea]) {
+    @apply bg-input/30;
+  }
+  .dark :where([data-gsxui-slot-textarea][aria-invalid="true"]) {
+    @apply ring-destructive/40;
+  }
+  @media (width >= 48rem) {
+    :where([data-gsxui-slot-textarea]) {
+      @apply text-sm;
+    }
+  }
+
+}

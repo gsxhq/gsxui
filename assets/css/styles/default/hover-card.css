@@ -1,0 +1,10 @@
+@layer components {
+  /* HoverCard */
+  :where([data-gsxui-slot-hover-card]) {
+    @apply contents;
+  }
+  :where([data-gsxui-slot-hover-card-content]) {
+    @apply z-50 w-64 origin-top rounded-lg border bg-popover p-2.5 text-sm text-popover-foreground shadow-md outline-hidden;
+  }
+
+}

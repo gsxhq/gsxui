@@ -1,0 +1,16 @@
+/* Not a component: the default style's identity. It sits in its own file, and
+   first in the aggregator's import list, so that the components layer opens
+   with exactly the declaration it opened with before this sheet was split —
+   the compiled output is byte-identical, which is what proves the split safe
+   for every vendored consumer. No component is named `root`, so no component
+   migration deletes it.
+
+   It is NOT named _root.css: `//go:embed assets` in embed.go silently skips
+   files whose names begin with an underscore or a dot, so an underscore here
+   would drop this file out of the CLI's embedded tree and out of every
+   consumer's vendored style.css while the site kept compiling it. */
+@layer components {
+  :root {
+    --gsxui-default-style: default;
+  }
+}

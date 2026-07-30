@@ -1,0 +1,89 @@
+@layer components {
+  /* Combobox */
+  :where([data-gsxui-slot-combobox]) {
+    display: contents;
+  }
+  :where([data-gsxui-slot-combobox-input-group]) {
+    @apply w-auto;
+  }
+  :where([data-gsxui-slot-combobox-trigger]) svg:not([class*="size-"]) {
+    @apply size-4;
+  }
+  :where([data-gsxui-slot-combobox-trigger-icon]) {
+    @apply pointer-events-none size-4 text-muted-foreground;
+  }
+  :where([data-gsxui-slot-input-group]):has(
+      [data-gsxui-slot-combobox-clear]
+    )
+    :where([data-gsxui-slot-combobox-trigger]) {
+    display: none;
+  }
+  :where([data-gsxui-slot-combobox-clear]) > svg {
+    @apply pointer-events-none;
+  }
+  :where([data-gsxui-slot-combobox-content]) {
+    @apply relative z-50 max-h-72 min-w-36 origin-top-left overflow-hidden rounded-lg bg-popover text-popover-foreground shadow-md ring-1 ring-foreground/10;
+  }
+  :where([data-gsxui-slot-combobox-content])
+    > :where([data-gsxui-slot-input-group]) {
+    @apply m-1 mb-0 h-8 border-input/30 bg-input/30 shadow-none;
+  }
+  :where([data-gsxui-slot-combobox-list]) {
+    @apply max-h-[calc(--spacing(72)---spacing(9))] scroll-py-1 overflow-y-auto p-1;
+    scrollbar-width: none;
+  }
+  :where([data-gsxui-slot-combobox-list])::-webkit-scrollbar {
+    display: none;
+  }
+  :where([data-gsxui-slot-combobox-list])[data-empty] {
+    @apply p-0;
+  }
+  :where([data-gsxui-slot-combobox-item]) {
+    @apply relative flex w-full cursor-default items-center gap-2 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none;
+  }
+  :where([data-gsxui-slot-combobox-item])[data-highlighted="true"] {
+    @apply bg-accent text-accent-foreground;
+  }
+  :where([data-gsxui-slot-combobox-item])[data-disabled] {
+    @apply pointer-events-none opacity-50;
+  }
+  :where([data-gsxui-slot-combobox-item]) svg {
+    @apply pointer-events-none shrink-0;
+  }
+  :where([data-gsxui-slot-combobox-item])
+    svg:not([class*="size-"]) {
+    @apply size-4;
+  }
+  :where([data-gsxui-slot-combobox-item-indicator]) {
+    @apply pointer-events-none absolute right-2 hidden size-4 items-center justify-center;
+  }
+  :where([data-gsxui-slot-combobox-item][data-state="checked"])
+    > :where([data-gsxui-slot-combobox-item-indicator]) {
+    @apply flex;
+  }
+  :where([data-gsxui-slot-combobox-item-indicator]) > svg {
+    @apply size-4;
+  }
+  :where([data-gsxui-slot-combobox-label]) {
+    @apply px-2 py-1.5 text-xs text-muted-foreground;
+  }
+  :where([data-gsxui-slot-combobox-empty]) {
+    @apply hidden w-full justify-center py-2 text-center text-sm text-muted-foreground;
+  }
+  :where([data-gsxui-slot-combobox-content])[data-empty]
+    :where([data-gsxui-slot-combobox-empty]) {
+    @apply flex;
+  }
+  :where([data-gsxui-slot-combobox-separator]) {
+    @apply -mx-1 my-1 h-px bg-border;
+  }
+  @media (pointer: coarse) {
+    :where([data-gsxui-slot-combobox-label]) {
+      @apply px-3 py-2 text-sm;
+    }
+    :where([data-gsxui-slot-combobox-item-indicator]) > svg {
+      @apply size-5;
+    }
+  }
+
+}

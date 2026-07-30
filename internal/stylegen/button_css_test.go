@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -103,15 +104,38 @@ func TestDefaultStyleRetainsComposedComponentButtonPresentation(t *testing.T) {
 	}
 }
 
+// readDefaultStyle returns the default style's components layer as ONE sheet:
+// the aggregator with each of its relative @import lines replaced by the file it
+// names, which is byte-for-byte what internal/cli vendors into a consumer's
+// style.css. The tests here ask what a consumer's stylesheet still owns, so they
+// have to read the whole composed sheet — reading only the aggregator would see
+// the @layer utilities block and nothing else, and would report every component
+// as lost.
 func readDefaultStyle(t *testing.T) []byte {
 	t.Helper()
-	path := filepath.Join("..", "..", "assets", "css", "styles", "default.css")
-	src, err := os.ReadFile(path)
+	dir := filepath.Join("..", "..", "assets", "css", "styles")
+	aggregator, err := os.ReadFile(filepath.Join(dir, "default.css"))
 	if err != nil {
 		t.Fatal(err)
 	}
-	return src
+	var out []byte
+	for _, line := range strings.SplitAfter(string(aggregator), "\n") {
+		match := defaultStyleImport.FindStringSubmatch(strings.TrimSuffix(line, "\n"))
+		if match == nil {
+			out = append(out, line...)
+			continue
+		}
+		part, err := os.ReadFile(filepath.Join(dir, filepath.FromSlash(match[1])))
+		if err != nil {
+			t.Fatal(err)
+		}
+		out = append(out, part...)
+	}
+	return out
 }
+
+// defaultStyleImport matches a whole-line relative @import in the aggregator.
+var defaultStyleImport = regexp.MustCompile(`^@import "(\./[^"]+)";[ \t]*$`)
 
 func parseCSSOwnershipRules(src []byte) ([]cssOwnershipRule, error) {
 	parser := css.NewParser(parse.NewInputBytes(src), false)

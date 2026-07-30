@@ -1,0 +1,28 @@
+@layer components {
+  /* Breadcrumb */
+  :where([data-gsxui-slot-breadcrumb-list]) {
+    @apply flex flex-wrap items-center gap-1.5 text-sm break-words text-muted-foreground;
+  }
+  :where([data-gsxui-slot-breadcrumb-item]) {
+    @apply inline-flex items-center gap-1;
+  }
+  :where([data-gsxui-slot-breadcrumb-link]) {
+    @apply transition-colors;
+  }
+  :where([data-gsxui-slot-breadcrumb-link]):hover {
+    @apply text-foreground;
+  }
+  :where([data-gsxui-slot-breadcrumb-page]) {
+    @apply font-normal text-foreground;
+  }
+  :where([data-gsxui-slot-breadcrumb-separator]) > svg {
+    @apply size-3.5;
+  }
+  :where([data-gsxui-slot-breadcrumb-ellipsis]) {
+    @apply flex size-5 items-center justify-center;
+  }
+  :where([data-gsxui-slot-breadcrumb-ellipsis]) > svg {
+    @apply size-4;
+  }
+
+}

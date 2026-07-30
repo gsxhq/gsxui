@@ -1,0 +1,13 @@
+@layer components {
+  /* AlertDialog */
+  :where([data-gsxui-slot-alert-dialog-header]) {
+    @apply grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center;
+  }
+  :where([data-gsxui-slot-alert-dialog-title]) {
+    @apply text-base font-medium;
+  }
+  :where([data-gsxui-slot-alert-dialog-description]) {
+    @apply text-sm text-muted-foreground;
+  }
+
+}

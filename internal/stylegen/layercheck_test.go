@@ -53,6 +53,11 @@ func TestCheckLayerPrecedenceAcceptsTheCurrentTree(t *testing.T) {
 // stylesheet enters scope unvetted — and this is the other half of that trade:
 // a new stylesheet under assets/css or web/ must be added to the list (or to
 // the exemptions, with a reason) rather than silently going unchecked.
+//
+// layerCheckedSheets() is the list PLUS the globbed contents of
+// layerCheckedStylesheetDirs, so the one directory that is in scope by
+// construction — the default style's per-component sheets — does not need a line
+// per component. Everywhere else still fails here until someone decides.
 func TestLayerCheckedStylesheetsCoverEveryAuthoredStylesheet(t *testing.T) {
 	t.Parallel()
 
@@ -76,7 +81,10 @@ func TestLayerCheckedStylesheetsCoverEveryAuthoredStylesheet(t *testing.T) {
 	}
 	sort.Strings(found)
 
-	listed := slices.Clone(layerCheckedStylesheets)
+	listed, err := layerCheckedSheets(root)
+	if err != nil {
+		t.Fatal(err)
+	}
 	sort.Strings(listed)
 	if !slices.Equal(found, listed) {
 		t.Errorf("layerCheckedStylesheets = %q, but the authored stylesheets are %q", listed, found)
@@ -210,11 +218,19 @@ func injectCSS(t *testing.T, relative, anchor, extra string) string {
 	return root
 }
 
-// injectDefaultCSS splices into the default style sheet, the gate's original
-// and still most common subject.
+// injectDefaultCSS splices into the default style's components layer, the gate's
+// original and still most common subject.
+//
+// The target is styles/default/root.css rather than styles/default.css: the
+// default style is now one file per component and the aggregator holds only
+// @import lines plus the @layer utilities block, so it has no components layer to
+// splice into. root.css carries the style's own :root declaration inside `@layer
+// components {`, and it is the one file in that directory no component migration
+// deletes — every other file there is a component's rules and will be removed
+// when that component migrates, which would break these fixtures.
 func injectDefaultCSS(t *testing.T, anchor, extra string) string {
 	t.Helper()
-	return injectCSS(t, "assets/css/styles/default.css", anchor, extra)
+	return injectCSS(t, "assets/css/styles/default/root.css", anchor, extra)
 }
 
 // TestCheckLayerPrecedenceRejectsARawDeclarationOverride is finding 1's core
@@ -697,7 +713,10 @@ func TestCheckLayerPrecedenceRejectsAComponentsLayerOverride(t *testing.T) {
 func TestCheckLayerPrecedenceRejectsAZeroSpecificityUtilitiesOverride(t *testing.T) {
 	t.Parallel()
 
-	root := injectDefaultCSS(t, "@layer utilities {",
+	// The utilities escape hatch stays in the aggregator, not in the
+	// per-component files, so this one injects there rather than via
+	// injectDefaultCSS.
+	root := injectCSS(t, "assets/css/styles/default.css", "@layer utilities {",
 		`  :where([data-gsxui-slot-carousel-previous]) { @apply rounded-none; }`)
 	err := CheckLayerPrecedence(root)
 	if err == nil {

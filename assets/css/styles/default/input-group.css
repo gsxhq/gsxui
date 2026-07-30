@@ -1,0 +1,151 @@
+@layer components {
+  /* InputGroup */
+  :where([data-gsxui-slot-input-group]) {
+    @apply relative flex h-8 min-w-0 w-full items-center rounded-lg border border-input transition-[color,box-shadow] outline-none;
+  }
+  .dark :where([data-gsxui-slot-input-group]) {
+    @apply bg-input/30;
+  }
+  :where([data-gsxui-slot-input-group]):has(
+      > [data-gsxui-slot-textarea][data-gsxui-slot-input-group-control]
+    ) {
+    @apply h-auto;
+  }
+  :where([data-gsxui-slot-input-group]):has(
+      > [data-gsxui-slot-input-group-addon][data-align="inline-start"]
+    )
+    > :where([data-gsxui-slot-input]) {
+    @apply pl-1.5;
+  }
+  :where([data-gsxui-slot-input-group]):has(
+      > [data-gsxui-slot-input-group-addon][data-align="inline-end"]
+    )
+    > :where([data-gsxui-slot-input]) {
+    @apply pr-1.5;
+  }
+  :where([data-gsxui-slot-input-group]):has(
+      > [data-gsxui-slot-input-group-addon][data-align="block-start"]
+    ),
+  :where([data-gsxui-slot-input-group]):has(
+      > [data-gsxui-slot-input-group-addon][data-align="block-end"]
+    ) {
+    @apply h-auto flex-col;
+  }
+  :where([data-gsxui-slot-input-group]):has(
+      > [data-gsxui-slot-input-group-addon][data-align="block-start"]
+    )
+    > :where([data-gsxui-slot-input]) {
+    @apply pb-3;
+  }
+  :where([data-gsxui-slot-input-group]):has(
+      > [data-gsxui-slot-input-group-addon][data-align="block-end"]
+    )
+    > :where([data-gsxui-slot-input]) {
+    @apply pt-3;
+  }
+  :where([data-gsxui-slot-input-group]):has(
+      [data-gsxui-slot-input-group-control]:focus-visible
+    ) {
+    @apply border-ring ring-[3px] ring-ring/50;
+  }
+  :where([data-gsxui-slot-input-group]):has([aria-invalid="true"]) {
+    @apply border-destructive ring-destructive/20;
+  }
+  .dark
+    :where([data-gsxui-slot-input-group]):has([aria-invalid="true"]) {
+    @apply ring-destructive/40;
+  }
+  :where([data-gsxui-slot-input-group-addon]) {
+    @apply flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium text-muted-foreground select-none;
+  }
+  :where([data-gsxui-slot-input-group][data-disabled="true"])
+    > :where([data-gsxui-slot-input-group-addon]) {
+    @apply opacity-50;
+  }
+  :where([data-gsxui-slot-input-group-addon]) > kbd {
+    @apply rounded-[calc(var(--radius)-5px)];
+  }
+  :where([data-gsxui-slot-input-group-addon])
+    > svg:not([class*="size-"]) {
+    @apply size-4;
+  }
+  :where([data-gsxui-slot-input-group-addon])[data-align="inline-start"] {
+    @apply order-first pl-2;
+  }
+  :where([data-gsxui-slot-input-group-addon])[data-align="inline-start"]:has(
+      > button
+    ) {
+    @apply ml-[-0.3rem];
+  }
+  :where([data-gsxui-slot-input-group-addon])[data-align="inline-start"]:has(
+      > kbd
+    ) {
+    @apply ml-[-0.15rem];
+  }
+  :where([data-gsxui-slot-input-group-addon])[data-align="inline-end"] {
+    @apply order-last pr-2;
+  }
+  :where([data-gsxui-slot-input-group-addon])[data-align="inline-end"]:has(
+      > button
+    ) {
+    @apply mr-[-0.3rem];
+  }
+  :where([data-gsxui-slot-input-group-addon])[data-align="inline-end"]:has(
+      > kbd
+    ) {
+    @apply mr-[-0.15rem];
+  }
+  :where([data-gsxui-slot-input-group-addon])[data-align="block-start"] {
+    @apply order-first w-full justify-start px-2.5 pt-2;
+  }
+  :where([data-gsxui-slot-input-group]):has(
+      > [data-gsxui-slot-input]
+    )
+    > :where(
+      [data-gsxui-slot-input-group-addon][data-align="block-start"]
+    ) {
+    @apply pt-2;
+  }
+  :where([data-gsxui-slot-input-group-addon][data-align="block-start"].border-b) {
+    @apply pb-2;
+  }
+  :where([data-gsxui-slot-input-group-addon])[data-align="block-end"] {
+    @apply order-last w-full justify-start px-2.5 pb-2;
+  }
+  :where([data-gsxui-slot-input-group]):has(
+      > [data-gsxui-slot-input]
+    )
+    > :where(
+      [data-gsxui-slot-input-group-addon][data-align="block-end"]
+    ) {
+    @apply pb-2;
+  }
+  :where([data-gsxui-slot-input-group-addon][data-align="block-end"].border-t) {
+    @apply pt-2;
+  }
+  :where([data-gsxui-slot-input-group-text]) {
+    @apply flex items-center gap-2 text-sm text-muted-foreground;
+  }
+  :where([data-gsxui-slot-input-group-text]) svg {
+    @apply pointer-events-none;
+  }
+  :where([data-gsxui-slot-input-group-text])
+    svg:not([class*="size-"]) {
+    @apply size-4;
+  }
+  :where([data-gsxui-slot-input-group-control]) {
+    @apply flex-1 rounded-none border-0 bg-transparent shadow-none;
+  }
+  :where([data-gsxui-slot-input-group-control]):focus-visible {
+    @apply ring-0;
+  }
+  .dark :where([data-gsxui-slot-input-group-control]) {
+    @apply bg-transparent;
+  }
+  :where(
+      [data-gsxui-slot-textarea][data-gsxui-slot-input-group-control]
+    ) {
+    @apply resize-none py-2;
+  }
+
+}

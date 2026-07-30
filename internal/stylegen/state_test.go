@@ -134,7 +134,11 @@ func authoredStateForms(t *testing.T) map[string][]string {
 	t.Helper()
 	root := repoRoot(t)
 	forms := map[string][]string{}
-	for _, relative := range layerCheckedStylesheets {
+	sheets, err := layerCheckedSheets(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, relative := range sheets {
 		path := filepath.Join(root, filepath.FromSlash(relative))
 		src, err := os.ReadFile(path)
 		if err != nil {

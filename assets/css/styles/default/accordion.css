@@ -1,0 +1,39 @@
+@layer components {
+  /* Accordion */
+  :where([data-gsxui-slot-accordion-item]) {
+    @apply border-b;
+  }
+  :where([data-gsxui-slot-accordion-item]):last-child {
+    @apply border-b-0;
+  }
+  :where([data-gsxui-slot-accordion-trigger]) {
+    @apply flex list-none items-start justify-between rounded-lg py-2.5 text-left text-sm font-medium transition-all outline-none;
+  }
+  :where([data-gsxui-slot-accordion-trigger])::-webkit-details-marker {
+    display: none;
+  }
+  :where([data-gsxui-slot-accordion-trigger]):hover {
+    @apply underline;
+  }
+  :where([data-gsxui-slot-accordion-trigger]):focus-visible {
+    @apply border-ring ring-[3px] ring-ring/50;
+  }
+  :where([data-gsxui-slot-accordion-trigger]):disabled {
+    @apply pointer-events-none opacity-50;
+  }
+  :where([data-gsxui-slot-accordion-trigger-icon]) {
+    @apply size-4 shrink-0 text-muted-foreground transition-transform duration-200;
+  }
+  :where([data-gsxui-slot-accordion-item])[open]
+    > :where([data-gsxui-slot-accordion-trigger])
+    :where([data-gsxui-slot-accordion-trigger-icon]) {
+    @apply rotate-180;
+  }
+  :where([data-gsxui-slot-accordion-content]) {
+    @apply overflow-hidden text-sm;
+  }
+  :where([data-gsxui-slot-accordion-content-inner]) {
+    @apply pt-0 pb-2.5;
+  }
+
+}

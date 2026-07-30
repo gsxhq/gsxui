@@ -1,0 +1,90 @@
+@layer components {
+  /* Native-popover transition shared by menu, combobox, and navigation content. */
+  :where(
+    [data-gsxui-slot-combobox-content],
+    [data-gsxui-slot-dropdown-menu-content],
+    [data-gsxui-slot-dropdown-menu-sub-content],
+    [data-gsxui-slot-context-menu-content],
+    [data-gsxui-slot-context-menu-sub-content],
+    [data-gsxui-slot-menubar-content],
+    [data-gsxui-slot-menubar-sub-content],
+    [data-gsxui-slot-navigation-menu-content]
+  ) {
+    @apply opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150;
+  }
+  :where(
+    [data-gsxui-slot-combobox-content],
+    [data-gsxui-slot-dropdown-menu-content],
+    [data-gsxui-slot-dropdown-menu-sub-content],
+    [data-gsxui-slot-context-menu-content],
+    [data-gsxui-slot-context-menu-sub-content],
+    [data-gsxui-slot-menubar-content],
+    [data-gsxui-slot-menubar-sub-content],
+    [data-gsxui-slot-navigation-menu-content]
+  ):popover-open {
+    @apply opacity-100 scale-100;
+  }
+  @starting-style {
+    :where(
+      [data-gsxui-slot-combobox-content],
+      [data-gsxui-slot-dropdown-menu-content],
+      [data-gsxui-slot-dropdown-menu-sub-content],
+      [data-gsxui-slot-context-menu-content],
+      [data-gsxui-slot-context-menu-sub-content],
+      [data-gsxui-slot-menubar-content],
+      [data-gsxui-slot-menubar-sub-content],
+      [data-gsxui-slot-navigation-menu-content]
+    ):popover-open {
+      @apply opacity-0 scale-95;
+    }
+    :where(
+      [data-gsxui-slot-combobox-content],
+      [data-gsxui-slot-dropdown-menu-content],
+      [data-gsxui-slot-dropdown-menu-sub-content],
+      [data-gsxui-slot-context-menu-content],
+      [data-gsxui-slot-context-menu-sub-content],
+      [data-gsxui-slot-menubar-content],
+      [data-gsxui-slot-menubar-sub-content],
+      [data-gsxui-slot-navigation-menu-content]
+    )[data-side="bottom"]:popover-open {
+      @apply -translate-y-2;
+    }
+    :where(
+      [data-gsxui-slot-combobox-content],
+      [data-gsxui-slot-dropdown-menu-content],
+      [data-gsxui-slot-dropdown-menu-sub-content],
+      [data-gsxui-slot-context-menu-content],
+      [data-gsxui-slot-context-menu-sub-content],
+      [data-gsxui-slot-menubar-content],
+      [data-gsxui-slot-menubar-sub-content],
+      [data-gsxui-slot-navigation-menu-content]
+    )[data-side="left"]:popover-open {
+      @apply translate-x-2;
+    }
+    :where(
+      [data-gsxui-slot-combobox-content],
+      [data-gsxui-slot-dropdown-menu-content],
+      [data-gsxui-slot-dropdown-menu-sub-content],
+      [data-gsxui-slot-context-menu-content],
+      [data-gsxui-slot-context-menu-sub-content],
+      [data-gsxui-slot-menubar-content],
+      [data-gsxui-slot-menubar-sub-content],
+      [data-gsxui-slot-navigation-menu-content]
+    )[data-side="right"]:popover-open {
+      @apply -translate-x-2;
+    }
+    :where(
+      [data-gsxui-slot-combobox-content],
+      [data-gsxui-slot-dropdown-menu-content],
+      [data-gsxui-slot-dropdown-menu-sub-content],
+      [data-gsxui-slot-context-menu-content],
+      [data-gsxui-slot-context-menu-sub-content],
+      [data-gsxui-slot-menubar-content],
+      [data-gsxui-slot-menubar-sub-content],
+      [data-gsxui-slot-navigation-menu-content]
+    )[data-side="top"]:popover-open {
+      @apply translate-y-2;
+    }
+  }
+
+}
