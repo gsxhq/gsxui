@@ -2,10 +2,10 @@
 // persistence remains caller-owned through the gsxui:change event.
 import { on, emit } from "./gsxui.js";
 
-const wrapperOf = (element) => element.closest("[data-gsxui-sidebar-wrapper]");
-const desktopOf = (wrapper) => wrapper.querySelector("[data-gsxui-sidebar-desktop]");
+const wrapperOf = (element) => element.closest("[data-gsxui-slot-sidebar-wrapper]");
+const desktopOf = (wrapper) => wrapper.querySelector("[data-gsxui-slot-sidebar-desktop]");
 const mobileDialogOf = (wrapper) =>
-  wrapper.querySelector("[data-gsxui-sidebar-mobile-dialog]");
+  wrapper.querySelector("[data-gsxui-slot-sidebar-mobile-content]");
 
 function isMobile(desktop) {
   return !desktop || getComputedStyle(desktop).display === "none";
@@ -37,12 +37,12 @@ function toggle(wrapper) {
   }
 }
 
-on("click", "[data-gsxui-sidebar-trigger]", (_event, trigger) => {
+on("click", "[data-gsxui-slot-sidebar-trigger]", (_event, trigger) => {
   const wrapper = wrapperOf(trigger);
   if (wrapper) toggle(wrapper);
 });
 
-on("click", "[data-gsxui-sidebar-rail]", (_event, rail) => {
+on("click", "[data-gsxui-slot-sidebar-rail]", (_event, rail) => {
   const wrapper = wrapperOf(rail);
   if (wrapper) toggle(wrapper);
 });
@@ -62,7 +62,7 @@ addEventListener("keydown", (event) => {
   ) {
     return;
   }
-  const wrapper = document.querySelector("[data-gsxui-sidebar-wrapper]");
+  const wrapper = document.querySelector("[data-gsxui-slot-sidebar-wrapper]");
   if (!wrapper) return;
   event.preventDefault();
   toggle(wrapper);

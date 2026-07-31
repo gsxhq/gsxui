@@ -475,7 +475,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   );
 
   await page.goto("/x/input-otp/basic");
-  await page.locator("[data-gsxui-input-otp-input]").focus();
+  await page.locator("[data-gsxui-slot-input-otp-input]").focus();
   const activeSlot = page.locator(
     "[data-gsxui-slot-input-otp-slot][data-active='true']",
   );
@@ -559,7 +559,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
     "data-expanded",
     "false",
   );
-  await toast.locator("[data-gsxui-toast-close]").click();
+  await toast.locator("[data-gsxui-slot-toast-close]").click();
   await observe(
     "sonner-lifecycle",
     "toast",

@@ -72,15 +72,15 @@ func forbidMarkup(t *testing.T, got string, fragments ...string) {
 func TestToastContract(t *testing.T) {
 	got := render(t, ui.Toast("error", "Failed", "Try again", "Retry", "Dismiss", nil))
 	requireMarkup(t, got,
-		`<li data-gsxui-toast data-type="error" role="status" aria-live="assertive" aria-atomic="true" `+canonicalToastClass("")+` data-gsxui-slot-toast>`,
-		`data-gsxui-toast-icon`,
+		`<li data-type="error" role="status" aria-live="assertive" aria-atomic="true" `+canonicalToastClass("")+` data-gsxui-slot-toast>`,
+		`data-gsxui-slot-toast-icon`,
 		`data-gsxui-slot-toast-icon data-gsxui-slot-icon`,
 		`<div `+canonicalToastClass("content")+` data-gsxui-slot-toast-content>`,
-		`<div `+canonicalToastClass("title")+` data-gsxui-toast-title data-gsxui-slot-toast-title>Failed</div>`,
-		`<div `+canonicalToastClass("description")+` data-gsxui-toast-description data-gsxui-slot-toast-description>Try again</div>`,
-		`<button type="button" `+canonicalToastClass("action")+` data-gsxui-toast-action data-gsxui-slot-toast-action>Retry</button>`,
-		`<button type="button" `+canonicalToastClass("cancel")+` data-gsxui-toast-cancel data-gsxui-slot-toast-cancel>Dismiss</button>`,
-		`<button type="button" `+canonicalToastClass("close")+` data-gsxui-toast-close aria-label="Close" data-gsxui-slot-toast-close>`,
+		`<div `+canonicalToastClass("title")+` data-gsxui-slot-toast-title>Failed</div>`,
+		`<div `+canonicalToastClass("description")+` data-gsxui-slot-toast-description>Try again</div>`,
+		`<button type="button" `+canonicalToastClass("action")+` data-gsxui-slot-toast-action>Retry</button>`,
+		`<button type="button" `+canonicalToastClass("cancel")+` data-gsxui-slot-toast-cancel>Dismiss</button>`,
+		`<button type="button" `+canonicalToastClass("close")+` aria-label="Close" data-gsxui-slot-toast-close>`,
 		`data-gsxui-slot-toast-close-icon data-gsxui-slot-icon`,
 	)
 	forbidMarkup(t, got,
@@ -130,9 +130,9 @@ func TestToastTypeIconsAndAria(t *testing.T) {
 				`aria-live="`+c.ariaLive+`"`,
 			)
 			if c.typ == "default" {
-				forbidMarkup(t, got, `data-gsxui-toast-icon`)
+				forbidMarkup(t, got, `data-gsxui-slot-toast-icon`)
 			} else {
-				requireMarkup(t, got, `data-gsxui-toast-icon`, c.glyph)
+				requireMarkup(t, got, `data-gsxui-slot-toast-icon`, c.glyph)
 			}
 		})
 	}
@@ -142,18 +142,18 @@ func TestToastOptionalPartsAndDuration(t *testing.T) {
 	full := render(t, ui.Toast("info", "Title", "Detail", "Retry", "Dismiss",
 		gsx.Attrs{{Key: "data-duration", Value: "8000"}}))
 	requireMarkup(t, full,
-		`data-gsxui-toast-description`,
-		`data-gsxui-toast-action`,
-		`data-gsxui-toast-cancel`,
+		`data-gsxui-slot-toast-description`,
+		`data-gsxui-slot-toast-action`,
+		`data-gsxui-slot-toast-cancel`,
 		`data-duration="8000"`,
 	)
 
 	minimal := render(t, ui.Toast("", "Hello", "", "", "", nil))
 	requireMarkup(t, minimal, `data-type="default"`, `aria-live="polite"`)
 	forbidMarkup(t, minimal,
-		`data-gsxui-toast-icon`,
-		`data-gsxui-toast-description`,
-		`data-gsxui-toast-action`,
-		`data-gsxui-toast-cancel`,
+		`data-gsxui-slot-toast-icon`,
+		`data-gsxui-slot-toast-description`,
+		`data-gsxui-slot-toast-action`,
+		`data-gsxui-slot-toast-cancel`,
 	)
 }

@@ -30,7 +30,6 @@ component Toaster(attrs gsx.Attrs) {
 	<section aria-label="Notifications" tabindex="-1">
 		<ol
 			id="gsxui-toaster"
-			data-gsxui-toaster
 			class={ toaster.Root() }
 			{ attrs... }
 			data-gsxui-slot-toaster

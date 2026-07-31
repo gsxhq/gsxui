@@ -21,9 +21,9 @@
 //       for free.
 import { on } from "./gsxui.js";
 
-const rootOf = (el) => el.closest("[data-gsxui-input-otp]");
-const inputOf = (root) => root.querySelector("[data-gsxui-input-otp-input]");
-const slotsOf = (root) => [...root.querySelectorAll("[data-gsxui-input-otp-slot]")];
+const rootOf = (el) => el.closest("[data-gsxui-slot-input-otp]");
+const inputOf = (root) => root.querySelector("[data-gsxui-slot-input-otp-input]");
+const slotsOf = (root) => [...root.querySelectorAll("[data-gsxui-slot-input-otp-slot]")];
 
 // One-time positional data-index stamp, DOM order, idempotent (mirrors
 // command.js's `if (!("gsxuiIndex" in item.dataset))` guard).
@@ -47,10 +47,8 @@ function renderSlot(slot, char, active) {
   if (!active) return;
   const overlay = document.createElement("div");
   overlay.setAttribute("data-gsxui-slot-input-otp-caret-overlay", "");
-  overlay.toggleAttribute("data-gsxui-input-otp-caret-overlay", true);
   const caret = document.createElement("div");
   caret.setAttribute("data-gsxui-slot-input-otp-caret", "");
-  caret.toggleAttribute("data-gsxui-input-otp-caret", true);
   overlay.appendChild(caret);
   slot.appendChild(overlay);
 }
@@ -101,7 +99,7 @@ function filterPattern(input) {
   input.setSelectionRange(newPos, newPos);
 }
 
-on("input", "[data-gsxui-input-otp-input]", (_e, input) => {
+on("input", "[data-gsxui-slot-input-otp-input]", (_e, input) => {
   const root = rootOf(input);
   if (!root) return;
   filterPattern(input);
@@ -111,7 +109,7 @@ on("input", "[data-gsxui-input-otp-input]", (_e, input) => {
 
 on(
   "focus",
-  "[data-gsxui-input-otp-input]",
+  "[data-gsxui-slot-input-otp-input]",
   (_e, input) => {
     const root = rootOf(input);
     if (root) recompute(root);
@@ -121,7 +119,7 @@ on(
 
 on(
   "blur",
-  "[data-gsxui-input-otp-input]",
+  "[data-gsxui-slot-input-otp-input]",
   (_e, input) => {
     const root = rootOf(input);
     if (root) recompute(root);
@@ -136,12 +134,12 @@ on(
 // shape as command.js's own raw ⌘K addEventListener).
 document.addEventListener("selectionchange", () => {
   const input = document.activeElement;
-  if (!(input instanceof Element) || !input.matches("[data-gsxui-input-otp-input]")) return;
+  if (!(input instanceof Element) || !input.matches("[data-gsxui-slot-input-otp-input]")) return;
   const root = rootOf(input);
   if (root) recompute(root);
 });
 
-on("click", "[data-gsxui-input-otp-slot]", (_e, slot) => {
+on("click", "[data-gsxui-slot-input-otp-slot]", (_e, slot) => {
   const root = rootOf(slot);
   const input = root && inputOf(root);
   if (!input) return;
@@ -155,7 +153,7 @@ on("click", "[data-gsxui-input-otp-slot]", (_e, slot) => {
 // (e.g. a server-rendered initial value) rather than waiting for the first
 // interaction — same one-time init-scan shape as toggle-group.js's
 // normalize() / command.js's filter() loops.
-for (const root of document.querySelectorAll("[data-gsxui-input-otp]")) {
+for (const root of document.querySelectorAll("[data-gsxui-slot-input-otp]")) {
   stamp(root);
   recompute(root);
 }

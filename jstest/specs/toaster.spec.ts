@@ -104,12 +104,12 @@ test("fallback toaster matches the server region contract", async ({ page }) => 
   });
 
   const region = page.locator("#gsxui-toaster");
-  await expect(region).toHaveAttribute("data-gsxui-toaster", "");
+  await expect(region).toHaveAttribute("data-gsxui-slot-toaster", "");
   await expect(region).toHaveAttribute("data-gsxui-slot-toaster", "");
   await expect(region).not.toHaveAttribute("class", /.+/);
-  await expect(region.locator("li[data-gsxui-toast]")).toHaveCount(2);
+  await expect(region.locator("li[data-gsxui-slot-toast]")).toHaveCount(2);
   await expect(
-    region.locator('li[data-gsxui-toast][data-fallback-server="true"]'),
+    region.locator('li[data-gsxui-slot-toast][data-fallback-server="true"]'),
   ).toHaveAttribute("data-state", "open");
   expect(
     await region.evaluate((element) => {
@@ -146,12 +146,12 @@ test("every toast type uses semantic icon color and dedicated hooks", async ({ p
     api.loading("Loading", { duration: Infinity });
   });
 
-  const cards = page.locator("li[data-gsxui-toast]");
+  const cards = page.locator("li[data-gsxui-slot-toast]");
   await expect(cards).toHaveCount(6);
   const result = await cards.evaluateAll((elements) =>
     elements.map((element) => {
       const type = (element as HTMLElement).dataset.type!;
-      const icon = element.querySelector("[data-gsxui-toast-icon]");
+      const icon = element.querySelector("[data-gsxui-slot-toast-icon]");
       let semanticColor: string | null = null;
       if (!["default", "loading"].includes(type)) {
         const probe = document.createElement("span");
@@ -192,9 +192,9 @@ test("every toast type uses semantic icon color and dedicated hooks", async ({ p
   }
 });
 
-test("server rows are adopted through li[data-gsxui-toast]", async ({ page }) => {
+test("server rows are adopted through li[data-gsxui-slot-toast]", async ({ page }) => {
   await page.goto(route);
-  const adopted = page.locator('li[data-gsxui-toast][data-server-probe="true"]');
+  const adopted = page.locator('li[data-gsxui-slot-toast][data-server-probe="true"]');
   await page.evaluate(() => {
     const template = document.querySelector<HTMLTemplateElement>(
       'template[data-gsxui-toast-template="success"]',
@@ -202,13 +202,13 @@ test("server rows are adopted through li[data-gsxui-toast]", async ({ page }) =>
     const row = template.content.firstElementChild!.cloneNode(true) as HTMLElement;
     row.dataset.serverProbe = "true";
     row.dataset.duration = "60000";
-    row.querySelector("[data-gsxui-toast-title]")!.textContent = "Server flash";
+    row.querySelector("[data-gsxui-slot-toast-title]")!.textContent = "Server flash";
     document.querySelector("#gsxui-toaster")!.append(row);
   });
 
   await expect(adopted).toHaveAttribute("data-state", "open");
   await expect(adopted).toHaveAttribute("data-visible", "true");
-  await expect(adopted.locator("[data-gsxui-toast-title]")).toHaveText("Server flash");
+  await expect(adopted.locator("[data-gsxui-slot-toast-title]")).toHaveText("Server flash");
   expect(
     await adopted.evaluate((element) => ({
       opacity: (element as HTMLElement).style.opacity,
@@ -271,7 +271,7 @@ test("region replacement reconciles nested adoption without duplicate ownership"
       const row = template.content.firstElementChild!.cloneNode(true) as HTMLElement;
       row.dataset.duration = "60000";
       row.dataset.lifecycleProbe = label;
-      row.querySelector("[data-gsxui-toast-title]")!.textContent = label;
+      row.querySelector("[data-gsxui-slot-toast-title]")!.textContent = label;
       return row;
     };
 
@@ -281,7 +281,7 @@ test("region replacement reconciles nested adoption without duplicate ownership"
     const region = document.createElement("ol");
     region.id = "gsxui-toaster";
     region.setAttribute("data-gsxui-slot-toaster", "");
-    region.setAttribute("data-gsxui-toaster", "");
+    region.setAttribute("data-gsxui-slot-toaster", "");
     region.append(clone("preexisting"));
     section.append(region);
     oldSection.replaceWith(section);
@@ -367,10 +367,10 @@ test("region replacement reconciles nested adoption without duplicate ownership"
     const probe = (window as any).__sonnerLifecycleProbe;
     const moved = probe.rows[0] as HTMLElement;
     moved
-      .querySelector<HTMLButtonElement>("[data-gsxui-toast-action]")!
+      .querySelector<HTMLButtonElement>("[data-gsxui-slot-toast-action]")!
       .click();
     probe.oldRows = [
-      ...probe.region.querySelectorAll("li[data-gsxui-toast]"),
+      ...probe.region.querySelectorAll("li[data-gsxui-slot-toast]"),
     ];
     probe.staleRow = moved;
     probe.staleActionEvents = 0;
@@ -416,7 +416,7 @@ test("region replacement reconciles nested adoption without duplicate ownership"
   await page.evaluate(() => {
     const probe = (window as any).__sonnerLifecycleProbe;
     probe.staleRow
-      .querySelector<HTMLButtonElement>("[data-gsxui-toast-action]")!
+      .querySelector<HTMLButtonElement>("[data-gsxui-slot-toast-action]")!
       .click();
   });
   expect(
@@ -433,7 +433,7 @@ test("region replacement reconciles nested adoption without duplicate ownership"
     const region = document.createElement("ol");
     region.id = "gsxui-toaster";
     region.setAttribute("data-gsxui-slot-toaster", "");
-    region.setAttribute("data-gsxui-toaster", "");
+    region.setAttribute("data-gsxui-slot-toaster", "");
     region.append(probe.clone("replacement-preexisting"));
     section.append(region);
     document.body.append(section);
@@ -488,7 +488,7 @@ test("same-turn server removal binds imperative ownership to the fallback", asyn
     }) as typeof window.clearTimeout;
 
     const retiredRegion = document.querySelector<HTMLElement>(
-      "[data-gsxui-toaster]",
+      "[data-gsxui-slot-toaster]",
     )!;
     retiredRegion.remove();
 
@@ -519,13 +519,13 @@ test("same-turn server removal binds imperative ownership to the fallback", asyn
         },
       },
     });
-    probe.expectedRegion = document.querySelector("[data-gsxui-toaster]")!;
-    probe.row = probe.expectedRegion.querySelector("li[data-gsxui-toast]")!;
+    probe.expectedRegion = document.querySelector("[data-gsxui-slot-toaster]")!;
+    probe.row = probe.expectedRegion.querySelector("li[data-gsxui-slot-toast]")!;
     probe.row.dataset.sameTurnToast = "fallback";
-    probe.actionButton = probe.row.querySelector("[data-gsxui-toast-action]")!;
+    probe.actionButton = probe.row.querySelector("[data-gsxui-slot-toast-action]")!;
   });
 
-  await expect(page.locator("[data-gsxui-toaster]")).toHaveCount(1);
+  await expect(page.locator("[data-gsxui-slot-toaster]")).toHaveCount(1);
   expect(
     await page.evaluate(() => {
       const probe = (window as any).__sonnerSameTurnProbe;
@@ -547,12 +547,12 @@ test("same-turn server insertion moves imperative ownership off the fallback", a
   await page.goto(route);
   await page.evaluate(() => {
     const retiredRegion = document.querySelector<HTMLElement>(
-      "[data-gsxui-toaster]",
+      "[data-gsxui-slot-toaster]",
     )!;
     (window as any).__sonnerRetiredRegion = retiredRegion;
     retiredRegion.remove();
   });
-  await expect(page.locator("[data-gsxui-toaster]")).toHaveCount(1);
+  await expect(page.locator("[data-gsxui-slot-toaster]")).toHaveCount(1);
 
   await page.evaluate(() => {
     const nativeSetTimeout = window.setTimeout.bind(window);
@@ -573,7 +573,7 @@ test("same-turn server insertion moves imperative ownership off the fallback", a
     }) as typeof window.clearTimeout;
 
     const fallbackRegion = document.querySelector<HTMLElement>(
-      "[data-gsxui-toaster]",
+      "[data-gsxui-slot-toaster]",
     )!;
     const section = document.createElement("section");
     section.setAttribute("aria-label", "Notifications");
@@ -581,7 +581,7 @@ test("same-turn server insertion moves imperative ownership off the fallback", a
     const serverRegion = document.createElement("ol");
     serverRegion.id = "gsxui-toaster";
     serverRegion.setAttribute("data-gsxui-slot-toaster", "");
-    serverRegion.setAttribute("data-gsxui-toaster", "");
+    serverRegion.setAttribute("data-gsxui-slot-toaster", "");
     section.append(serverRegion);
     document.body.append(section);
 
@@ -612,12 +612,12 @@ test("same-turn server insertion moves imperative ownership off the fallback", a
         },
       },
     });
-    probe.row = serverRegion.querySelector("li[data-gsxui-toast]")!;
+    probe.row = serverRegion.querySelector("li[data-gsxui-slot-toast]")!;
     probe.row.dataset.sameTurnToast = "server";
-    probe.actionButton = probe.row.querySelector("[data-gsxui-toast-action]")!;
+    probe.actionButton = probe.row.querySelector("[data-gsxui-slot-toast-action]")!;
   });
 
-  await expect(page.locator("[data-gsxui-toaster]")).toHaveCount(1);
+  await expect(page.locator("[data-gsxui-slot-toaster]")).toHaveCount(1);
   expect(
     await page.evaluate(() => {
       const probe = (window as any).__sonnerSameTurnProbe;
@@ -663,26 +663,26 @@ test("controls, promise morph, queue, expansion, and dismiss keep working", asyn
       error: "Rejected",
     });
   });
-  const promiseToast = page.locator("li[data-gsxui-toast]", {
+  const promiseToast = page.locator("li[data-gsxui-slot-toast]", {
     hasText: "Resolved done",
   });
   await expect(promiseToast).toHaveAttribute("data-type", "success");
-  await expect(promiseToast.locator("[data-gsxui-toast-icon]")).toHaveCount(1);
+  await expect(promiseToast.locator("[data-gsxui-slot-toast-icon]")).toHaveCount(1);
   await page.evaluate(() => window.gsxui.toast.dismiss());
-  await expect.poll(() => page.locator("li[data-gsxui-toast]").count()).toBe(0);
+  await expect.poll(() => page.locator("li[data-gsxui-slot-toast]").count()).toBe(0);
 
   await page.evaluate(() => {
     for (let i = 0; i < 4; i++) {
       window.gsxui.toast(`Queue ${i}`, { duration: 60_000 });
     }
   });
-  const queued = page.locator("li[data-gsxui-toast]", { hasText: "Queue 0" });
+  const queued = page.locator("li[data-gsxui-slot-toast]", { hasText: "Queue 0" });
   await expect(queued).toHaveAttribute("data-visible", "false");
-  const front = page.locator("li[data-gsxui-toast]", { hasText: "Queue 3" });
+  const front = page.locator("li[data-gsxui-slot-toast]", { hasText: "Queue 3" });
   await front.hover();
   await expect(page.locator("#gsxui-toaster")).toHaveAttribute("data-expanded", "true");
   await expect(front).toHaveCSS("pointer-events", "auto");
-  const measured = await page.locator("li[data-gsxui-toast]").evaluateAll((cards) => {
+  const measured = await page.locator("li[data-gsxui-slot-toast]").evaluateAll((cards) => {
     const frontCard = cards.at(-1) as HTMLElement;
     const behind = cards.at(-2) as HTMLElement;
     return [
@@ -697,6 +697,6 @@ test("controls, promise morph, queue, expansion, and dismiss keep working", asyn
   await front.getByRole("button", { name: "Close" }).click();
   await expect(front).toHaveAttribute("data-state", "closed");
   await expect(front).toHaveCount(0);
-  await expect.poll(() => page.locator("li[data-gsxui-toast]").count()).toBe(3);
+  await expect.poll(() => page.locator("li[data-gsxui-slot-toast]").count()).toBe(3);
   await expect(queued).toHaveAttribute("data-visible", "true");
 });

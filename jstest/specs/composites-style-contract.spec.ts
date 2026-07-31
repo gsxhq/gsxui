@@ -108,12 +108,12 @@ test("Carousel keeps native-scroll mechanics and caller spacing overrides", asyn
   const response = await page.goto("/x/carousel/sizes");
   expect(response?.status()).toBe(200);
 
-  const root = page.locator("[data-gsxui-carousel]");
-  const viewport = page.locator("[data-gsxui-carousel-content]");
+  const root = page.locator("[data-gsxui-slot-carousel]");
+  const viewport = page.locator("[data-gsxui-slot-carousel-content]");
   const track = page.locator('[data-gsxui-slot-carousel-track]');
-  const item = page.locator("[data-gsxui-carousel-item]").first();
-  const previous = page.locator("[data-gsxui-carousel-prev]");
-  const next = page.locator("[data-gsxui-carousel-next]");
+  const item = page.locator("[data-gsxui-slot-carousel-item]").first();
+  const previous = page.locator("[data-gsxui-slot-carousel-previous]");
+  const next = page.locator("[data-gsxui-slot-carousel-next]");
 
   expect(
     await viewport.evaluate((el) => {
@@ -174,7 +174,7 @@ test("registered vertical Carousel covers every oriented style slot", async ({ p
     ).toHaveAttribute("data-orientation", "vertical");
   }
 
-  const viewport = page.locator("[data-gsxui-carousel-content]");
+  const viewport = page.locator("[data-gsxui-slot-carousel-content]");
   const track = page.locator('[data-gsxui-slot-carousel-track]');
   expect(
     await viewport.evaluate((el) => {
@@ -187,7 +187,7 @@ test("registered vertical Carousel covers every oriented style slot", async ({ p
     .toBe("column");
 
   const itemGeometry = await page
-    .locator("[data-gsxui-carousel-item]")
+    .locator("[data-gsxui-slot-carousel-item]")
     .evaluateAll((items) =>
       items.slice(0, 2).map((item) => item.getBoundingClientRect().height),
     );
@@ -200,9 +200,9 @@ test("Resizable consumes dynamic flex values and remains keyboard operable", asy
   const response = await page.goto("/x/resizable/handle");
   expect(response?.status()).toBe(200);
 
-  const group = page.locator("[data-gsxui-resizable]").first();
-  const panels = group.locator(":scope > [data-gsxui-resizable-panel]");
-  const handle = group.locator(":scope > [data-gsxui-resizable-handle]");
+  const group = page.locator("[data-gsxui-slot-resizable-panel-group]").first();
+  const panels = group.locator(":scope > [data-gsxui-slot-resizable-panel]");
+  const handle = group.locator(":scope > [data-gsxui-slot-resizable-handle]");
   await expect(panels).toHaveCount(2);
 
   expect(

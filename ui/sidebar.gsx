@@ -37,7 +37,6 @@ component SidebarProvider(open bool, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={ "has-[>[data-gsxui-slot-sidebar-desktop][data-variant=inset]]:bg-sidebar" }
 		data-state={state}
-		data-gsxui-sidebar-wrapper
 		style=css`--sidebar-width:@{sidebarWidth};--sidebar-width-icon:@{sidebarWidthIcon}`
 		{ attrs... }
 		data-gsxui-slot-sidebar-wrapper
@@ -88,7 +87,6 @@ component Sidebar(open bool, side string, variant string, collapsible string, ch
 					}
 					side={s}
 					data-mobile="true"
-					data-gsxui-sidebar-mobile-dialog
 					style=css`--sidebar-width:@{sidebarWidthMobile}`
 					data-gsxui-slot-sidebar-mobile-content
 					data-gsxui-slot-sidebar
@@ -112,7 +110,6 @@ component Sidebar(open bool, side string, variant string, collapsible string, ch
 				data-gsxui-sidebar-collapsible={c}
 				data-variant={v}
 				data-side={s}
-				data-gsxui-sidebar-desktop
 				data-gsxui-slot-sidebar-desktop
 				data-gsxui-slot-sidebar
 			>
@@ -141,7 +138,6 @@ component Sidebar(open bool, side string, variant string, collapsible string, ch
 component SidebarTrigger(attrs gsx.Attrs) {
 	<Button
 		class={ "size-7" }
-		data-gsxui-sidebar-trigger
 		variant="ghost"
 		size="icon"
 		{ attrs... }
@@ -160,7 +156,6 @@ component SidebarRail(attrs gsx.Attrs) {
 			"transition-all ease-linear [[data-gsxui-slot-sidebar-desktop][data-side=left]_&]:-right-4 [[data-gsxui-slot-sidebar-desktop][data-side=left]_&]:cursor-w-resize [[data-gsxui-slot-sidebar-desktop][data-side=right]_&]:left-0 [[data-gsxui-slot-sidebar-desktop][data-side=right]_&]:cursor-e-resize [[data-gsxui-slot-sidebar-desktop][data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-gsxui-slot-sidebar-desktop][data-side=right][data-state=collapsed]_&]:cursor-w-resize [[data-gsxui-slot-sidebar-desktop][data-collapsible=offcanvas]_&]:[transform:translateX(0)] [[data-gsxui-slot-sidebar-desktop][data-collapsible=offcanvas][data-side=left]_&]:-right-2 [[data-gsxui-slot-sidebar-desktop][data-collapsible=offcanvas][data-side=right]_&]:-left-2 [[data-gsxui-slot-sidebar-desktop][data-collapsible=offcanvas]_&]:after:left-full hover:after:bg-sidebar-border [[data-gsxui-slot-sidebar-desktop][data-collapsible=offcanvas]_&]:hover:bg-sidebar"
 		}
 		type="button"
-		data-gsxui-sidebar-rail
 		aria-label="Toggle Sidebar"
 		tabindex="-1"
 		title="Toggle Sidebar"
@@ -260,7 +255,7 @@ component SidebarMenuButton(isActive bool, variant string, size string, tooltip 
 	{ if tooltip == "" {
 		<button
 			class={
-				"flex h-8 w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm ring-sidebar-ring outline-hidden transition-[width,height,padding] [[data-gsxui-slot-sidebar-menu-item]:has(>[data-gsxui-slot-sidebar-menu-action])>&]:pr-8 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 [&[aria-disabled]]:pointer-events-none [&[aria-disabled]]:opacity-50 [&[data-active]]:bg-sidebar-primary [&[data-active]]:font-medium [&[data-active]]:text-sidebar-primary-foreground [&[data-active]]:hover:bg-sidebar-primary/90 [&[data-active]]:hover:text-sidebar-primary-foreground data-[variant=outline]:bg-background data-[variant=outline]:shadow-[0_0_0_1px_var(--sidebar-border)] data-[variant=outline]:hover:bg-sidebar-accent data-[variant=outline]:hover:text-sidebar-accent-foreground data-[variant=outline]:hover:shadow-[0_0_0_1px_var(--sidebar-accent)] [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 data-[size=sm]:h-7 data-[size=sm]:text-xs data-[size=lg]:h-12 data-[size=lg]:text-sm [[data-gsxui-slot-sidebar-desktop][data-gsxui-sidebar-desktop][data-collapsible=icon]_&]:size-8 [[data-gsxui-slot-sidebar-desktop][data-gsxui-sidebar-desktop][data-collapsible=icon]_&]:p-2 [[data-gsxui-slot-sidebar-desktop][data-gsxui-sidebar-desktop][data-collapsible=icon]_&[data-size=lg]]:p-0"
+				"flex h-8 w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm ring-sidebar-ring outline-hidden transition-[width,height,padding] [[data-gsxui-slot-sidebar-menu-item]:has(>[data-gsxui-slot-sidebar-menu-action])>&]:pr-8 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 [&[aria-disabled]]:pointer-events-none [&[aria-disabled]]:opacity-50 [&[data-active]]:bg-sidebar-primary [&[data-active]]:font-medium [&[data-active]]:text-sidebar-primary-foreground [&[data-active]]:hover:bg-sidebar-primary/90 [&[data-active]]:hover:text-sidebar-primary-foreground data-[variant=outline]:bg-background data-[variant=outline]:shadow-[0_0_0_1px_var(--sidebar-border)] data-[variant=outline]:hover:bg-sidebar-accent data-[variant=outline]:hover:text-sidebar-accent-foreground data-[variant=outline]:hover:shadow-[0_0_0_1px_var(--sidebar-accent)] [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 data-[size=sm]:h-7 data-[size=sm]:text-xs data-[size=lg]:h-12 data-[size=lg]:text-sm [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:size-8 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:p-2 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&[data-size=lg]]:p-0"
 			}
 			type="button"
 			data-variant={variant |> default("default")}
@@ -275,7 +270,7 @@ component SidebarMenuButton(isActive bool, variant string, size string, tooltip 
 		<Tooltip data-gsxui-slot-sidebar-menu-button-tooltip>
 			<button
 				class={
-					"flex h-8 w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm ring-sidebar-ring outline-hidden transition-[width,height,padding] [[data-gsxui-slot-sidebar-menu-item]:has(>[data-gsxui-slot-sidebar-menu-action])>&]:pr-8 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 [&[aria-disabled]]:pointer-events-none [&[aria-disabled]]:opacity-50 [&[data-active]]:bg-sidebar-primary [&[data-active]]:font-medium [&[data-active]]:text-sidebar-primary-foreground [&[data-active]]:hover:bg-sidebar-primary/90 [&[data-active]]:hover:text-sidebar-primary-foreground data-[variant=outline]:bg-background data-[variant=outline]:shadow-[0_0_0_1px_var(--sidebar-border)] data-[variant=outline]:hover:bg-sidebar-accent data-[variant=outline]:hover:text-sidebar-accent-foreground data-[variant=outline]:hover:shadow-[0_0_0_1px_var(--sidebar-accent)] [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 data-[size=sm]:h-7 data-[size=sm]:text-xs data-[size=lg]:h-12 data-[size=lg]:text-sm [[data-gsxui-slot-sidebar-desktop][data-gsxui-sidebar-desktop][data-collapsible=icon]_&]:size-8 [[data-gsxui-slot-sidebar-desktop][data-gsxui-sidebar-desktop][data-collapsible=icon]_&]:p-2 [[data-gsxui-slot-sidebar-desktop][data-gsxui-sidebar-desktop][data-collapsible=icon]_&[data-size=lg]]:p-0"
+					"flex h-8 w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm ring-sidebar-ring outline-hidden transition-[width,height,padding] [[data-gsxui-slot-sidebar-menu-item]:has(>[data-gsxui-slot-sidebar-menu-action])>&]:pr-8 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 [&[aria-disabled]]:pointer-events-none [&[aria-disabled]]:opacity-50 [&[data-active]]:bg-sidebar-primary [&[data-active]]:font-medium [&[data-active]]:text-sidebar-primary-foreground [&[data-active]]:hover:bg-sidebar-primary/90 [&[data-active]]:hover:text-sidebar-primary-foreground data-[variant=outline]:bg-background data-[variant=outline]:shadow-[0_0_0_1px_var(--sidebar-border)] data-[variant=outline]:hover:bg-sidebar-accent data-[variant=outline]:hover:text-sidebar-accent-foreground data-[variant=outline]:hover:shadow-[0_0_0_1px_var(--sidebar-accent)] [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 data-[size=sm]:h-7 data-[size=sm]:text-xs data-[size=lg]:h-12 data-[size=lg]:text-sm [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:size-8 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:p-2 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&[data-size=lg]]:p-0"
 				}
 				type="button"
 				data-variant={variant |> default("default")}

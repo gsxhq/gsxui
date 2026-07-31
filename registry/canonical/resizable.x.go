@@ -119,9 +119,6 @@ func ResizablePanelGroup(orientation string, children gsx.Node, attrs gsx.Attrs)
 		_gsxgw := _gsxrt.W(_gsxw)
 //line resizable.gsx:108:2
 		_gsxgw.S("<div")
-		if !attrs.Has("data-gsxui-resizable") {
-			_gsxgw.BoolAttr("data-gsxui-resizable", true)
-		}
 		if !attrs.Has("aria-orientation") {
 			_gsxgw.S(" aria-orientation=\"")
 			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
@@ -132,14 +129,14 @@ func ResizablePanelGroup(orientation string, children gsx.Node, attrs gsx.Attrs)
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-resizable-panel-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-resizable-panel-group", true)
 		_gsxgw.S(">")
-//line resizable.gsx:114:3
+//line resizable.gsx:113:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line resizable.gsx:118:1
+//line resizable.gsx:117:1
 // ResizablePanel — see the package doc comment's MECHANISM/NEW/FIX entries
 // above for why this has a mechanical foundation rule (upstream's own
 // ResizablePanel has no presentation), why `defaultSize` becomes a real
@@ -154,20 +151,17 @@ func ResizablePanelGroup(orientation string, children gsx.Node, attrs gsx.Attrs)
 // warning; authoring non-conflicting min/max pairs is the caller's
 // responsibility.
 
-//line resizable.gsx:131:1
+//line resizable.gsx:130:1
 func ResizablePanel(defaultSize string, minSize string, maxSize string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line resizable.gsx:132:2
+//line resizable.gsx:131:2
 		grow := "1"
 		if defaultSize != "" {
 			grow = strings.TrimSuffix(defaultSize, "%")
 		}
-//line resizable.gsx:138:2
+//line resizable.gsx:137:2
 		_gsxgw.S("<div")
-		if !attrs.Has("data-gsxui-resizable-panel") {
-			_gsxgw.BoolAttr("data-gsxui-resizable-panel", true)
-		}
 		if minSize != "" {
 			if !attrs.Has("data-min-size") {
 				_gsxgw.S(" data-min-size=\"")
@@ -192,14 +186,14 @@ func ResizablePanel(defaultSize string, minSize string, maxSize string, children
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-resizable-panel"})
 		_gsxgw.BoolAttr("data-gsxui-slot-resizable-panel", true)
 		_gsxgw.S(">")
-//line resizable.gsx:150:3
+//line resizable.gsx:148:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line resizable.gsx:154:1
+//line resizable.gsx:152:1
 // ResizableHandle — see the package doc comment's ADAPT entry above for
 // the inverted-aria-orientation derivation.
 //
@@ -238,23 +232,20 @@ func ResizablePanel(defaultSize string, minSize string, maxSize string, children
 // just equivalent: a foundation rule works before JS has loaded, where the
 // library's own runtime injection would not.
 //
-// Behavior attaches only through data-gsxui-resizable-handle. The styling
+// Behavior attaches only through data-gsxui-slot-resizable-handle. The styling
 // token is deliberately separate and is never a JavaScript selector.
 
-//line resizable.gsx:194:1
+//line resizable.gsx:192:1
 func ResizableHandle(orientation string, withHandle bool, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line resizable.gsx:195:2
+//line resizable.gsx:193:2
 		handleOrientation := "vertical"
 		if orientation == "vertical" {
 			handleOrientation = "horizontal"
 		}
-//line resizable.gsx:201:2
+//line resizable.gsx:199:2
 		_gsxgw.S("<div")
-		if !attrs.Has("data-gsxui-resizable-handle") {
-			_gsxgw.BoolAttr("data-gsxui-resizable-handle", true)
-		}
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"separator\"")
 		}
@@ -273,9 +264,9 @@ func ResizableHandle(orientation string, withHandle bool, attrs gsx.Attrs) _gsxr
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-resizable-handle"})
 		_gsxgw.BoolAttr("data-gsxui-slot-resizable-handle", true)
 		_gsxgw.S(">")
-//line resizable.gsx:210:3
+//line resizable.gsx:207:3
 		if withHandle {
-//line resizable.gsx:211:4
+//line resizable.gsx:208:4
 			_gsxgw.S("<div class=\"")
 			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(resizable.HandleGrip()))
 			_gsxgw.S("\"")

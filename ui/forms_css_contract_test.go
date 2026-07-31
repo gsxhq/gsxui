@@ -157,12 +157,12 @@ func TestFormControlCompositionTokenOrder(t *testing.T) {
 func TestFormControlBehaviorHooksAreSeparateFromSlots(t *testing.T) {
 	otp := render(t, ui.InputOTP(ui.InputOTPSlot(nil), nil))
 	for _, want := range []string{
-		`data-gsxui-input-otp`,
-		`data-gsxui-input-otp-input`,
-		`data-gsxui-input-otp-slot`,
+		`data-gsxui-slot-input-otp`,
+		`data-gsxui-slot-input-otp-input`,
+		`data-gsxui-slot-input-otp-slot`,
 	} {
 		if !strings.Contains(otp, want) {
-			t.Errorf("InputOTP missing behavior hook %q\nin: %s", want, otp)
+			t.Errorf("InputOTP missing slot identity hook %q\nin: %s", want, otp)
 		}
 	}
 

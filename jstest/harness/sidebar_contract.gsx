@@ -19,7 +19,7 @@ component SidebarContractFrame(open bool, side string, variant string, collapsib
 		</ui.Sidebar>
 		<ui.SidebarInset>
 			<ui.SidebarTrigger/>
-			<button type="button" data-gsxui-sidebar-trigger>Custom Sidebar Trigger</button>
+			<button type="button" data-gsxui-slot-sidebar-trigger>Custom Sidebar Trigger</button>
 		</ui.SidebarInset>
 	</ui.SidebarProvider>
 }

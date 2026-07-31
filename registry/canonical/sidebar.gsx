@@ -37,7 +37,6 @@ component SidebarProvider(open bool, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={ sidebar.Wrapper() }
 		data-state={state}
-		data-gsxui-sidebar-wrapper
 		style=css`--sidebar-width:@{sidebarWidth};--sidebar-width-icon:@{sidebarWidthIcon}`
 		{ attrs... }
 		data-gsxui-slot-sidebar-wrapper
@@ -88,7 +87,6 @@ component Sidebar(open bool, side string, variant string, collapsible string, ch
 					}
 					side={s}
 					data-mobile="true"
-					data-gsxui-sidebar-mobile-dialog
 					style=css`--sidebar-width:@{sidebarWidthMobile}`
 					data-gsxui-slot-sidebar-mobile-content
 					data-gsxui-slot-sidebar
@@ -112,7 +110,6 @@ component Sidebar(open bool, side string, variant string, collapsible string, ch
 				data-gsxui-sidebar-collapsible={c}
 				data-variant={v}
 				data-side={s}
-				data-gsxui-sidebar-desktop
 				data-gsxui-slot-sidebar-desktop
 				data-gsxui-slot-sidebar
 			>
@@ -130,7 +127,6 @@ component Sidebar(open bool, side string, variant string, collapsible string, ch
 component SidebarTrigger(attrs gsx.Attrs) {
 	<Button
 		class={ sidebar.Trigger() }
-		data-gsxui-sidebar-trigger
 		variant="ghost"
 		size="icon"
 		{ attrs... }
@@ -147,7 +143,6 @@ component SidebarRail(attrs gsx.Attrs) {
 	<button
 		class={ sidebar.Rail() }
 		type="button"
-		data-gsxui-sidebar-rail
 		aria-label="Toggle Sidebar"
 		tabindex="-1"
 		title="Toggle Sidebar"
