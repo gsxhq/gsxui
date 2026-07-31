@@ -2663,68 +2663,70 @@ func _gsxrendergallerySidebarCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, id
 //line gallery.gsx:925:3
 		_gsxgw.NodeResult(_gsxrenderCardContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:926:4
+//line gallery.gsx:929:4
+			_gsxgw.S("<div class=\"relative isolate transform-gpu overflow-hidden rounded-lg border\">")
+//line gallery.gsx:930:5
 			_gsxgw.NodeResult(_gsxrenderSidebarProvider(ctx, _gsxgw, true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:927:5
+//line gallery.gsx:931:5
 				_gsxgw.NodeResult(_gsxrenderSidebar(ctx, _gsxgw, true, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:928:6
+//line gallery.gsx:932:6
 					_gsxgw.NodeResult(_gsxrenderSidebarHeader(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:929:7
+//line gallery.gsx:933:7
 						_gsxgw.S("<div class=\"px-2 py-1 text-sm font-semibold\">Acme Inc</div>")
-//line gallery.gsx:930:7
+//line gallery.gsx:934:7
 						_gsxgw.NodeResult(_gsxrenderSidebarInput(ctx, _gsxgw, _gsxrt.Attrs{{Key: "placeholder", Value: "Search navigation"}}))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:932:6
+//line gallery.gsx:936:6
 					_gsxgw.NodeResult(_gsxrenderSidebarSeparator(ctx, _gsxgw, nil))
-//line gallery.gsx:933:6
+//line gallery.gsx:937:6
 					_gsxgw.NodeResult(_gsxrenderSidebarContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:934:7
+//line gallery.gsx:938:7
 						_gsxgw.NodeResult(_gsxrenderSidebarGroup(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:935:8
+//line gallery.gsx:939:8
 							_gsxgw.NodeResult(_gsxrenderSidebarGroupLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("Application")
 								return _gsxgw.Err()
 							}), nil))
-//line gallery.gsx:936:8
+//line gallery.gsx:940:8
 							_gsxgw.NodeResult(_gsxrenderSidebarGroupContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:937:9
+//line gallery.gsx:941:9
 								_gsxgw.NodeResult(_gsxrenderSidebarMenu(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:938:10
+//line gallery.gsx:942:10
 									_gsxgw.NodeResult(_gsxrenderSidebarMenuItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:939:11
+//line gallery.gsx:943:11
 										_gsxgw.NodeResult(_gsxrenderSidebarMenuButton(ctx, _gsxgw, true, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 											_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:940:12
+//line gallery.gsx:944:12
 											_gsxgw.Node(ctx, icon.House())
-//line gallery.gsx:941:12
+//line gallery.gsx:945:12
 											_gsxgw.S("<span>Home</span>")
 											return _gsxgw.Err()
 										}), nil))
 										return _gsxgw.Err()
 									}), nil))
-//line gallery.gsx:944:10
+//line gallery.gsx:948:10
 									_gsxgw.NodeResult(_gsxrenderSidebarMenuItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:945:11
+//line gallery.gsx:949:11
 										_gsxgw.NodeResult(_gsxrenderSidebarMenuButton(ctx, _gsxgw, false, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 											_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:946:12
+//line gallery.gsx:950:12
 											_gsxgw.Node(ctx, icon.Inbox())
-//line gallery.gsx:947:12
+//line gallery.gsx:951:12
 											_gsxgw.S("<span>Inbox</span>")
 											return _gsxgw.Err()
 										}), nil))
-//line gallery.gsx:949:11
+//line gallery.gsx:953:11
 										_gsxgw.NodeResult(_gsxrenderSidebarMenuBadge(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 											_gsxgw := _gsxrt.W(_gsxw)
 											_gsxgw.S("24")
@@ -2732,15 +2734,15 @@ func _gsxrendergallerySidebarCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, id
 										}), nil))
 										return _gsxgw.Err()
 									}), nil))
-//line gallery.gsx:951:10
+//line gallery.gsx:955:10
 									_gsxgw.NodeResult(_gsxrenderSidebarMenuItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:952:11
+//line gallery.gsx:956:11
 										_gsxgw.NodeResult(_gsxrenderSidebarMenuButton(ctx, _gsxgw, false, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 											_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:953:12
+//line gallery.gsx:957:12
 											_gsxgw.Node(ctx, icon.Settings())
-//line gallery.gsx:954:12
+//line gallery.gsx:958:12
 											_gsxgw.S("<span>Settings</span>")
 											return _gsxgw.Err()
 										}), nil))
@@ -2754,21 +2756,21 @@ func _gsxrendergallerySidebarCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, id
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:961:6
+//line gallery.gsx:965:6
 					_gsxgw.NodeResult(_gsxrenderSidebarFooter(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:962:7
+//line gallery.gsx:966:7
 						_gsxgw.NodeResult(_gsxrenderSidebarMenu(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:963:8
+//line gallery.gsx:967:8
 							_gsxgw.NodeResult(_gsxrenderSidebarMenuItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:964:9
+//line gallery.gsx:968:9
 								_gsxgw.NodeResult(_gsxrenderSidebarMenuButton(ctx, _gsxgw, false, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:965:10
+//line gallery.gsx:969:10
 									_gsxgw.Node(ctx, icon.User())
-//line gallery.gsx:966:10
+//line gallery.gsx:970:10
 									_gsxgw.S("<span>Account</span>")
 									return _gsxgw.Err()
 								}), nil))
@@ -2780,24 +2782,25 @@ func _gsxrendergallerySidebarCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, id
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:972:5
+//line gallery.gsx:976:5
 				_gsxgw.NodeResult(_gsxrenderSidebarInset(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:973:6
-					_gsxgw.S("<header class=\"flex h-12 items-center gap-2 border-b px-4\">")
-//line gallery.gsx:974:7
-					_gsxgw.NodeResult(_gsxrenderSidebarTrigger(ctx, _gsxgw, nil))
-//line gallery.gsx:975:7
-					_gsxgw.S("<span class=\"text-sm text-muted-foreground\">Dashboard</span></header>")
 //line gallery.gsx:977:6
+					_gsxgw.S("<header class=\"flex h-12 items-center gap-2 border-b px-4\">")
+//line gallery.gsx:978:7
+					_gsxgw.NodeResult(_gsxrenderSidebarTrigger(ctx, _gsxgw, nil))
+//line gallery.gsx:979:7
+					_gsxgw.S("<span class=\"text-sm text-muted-foreground\">Dashboard</span></header>")
+//line gallery.gsx:981:6
 					_gsxgw.S("<div class=\"p-4 text-sm text-muted-foreground\">Overview of ")
-//line gallery.gsx:978:19
+//line gallery.gsx:982:19
 					_gsxgw.Text(string(idp))
 					_gsxgw.S(" workspace activity.</div>")
 					return _gsxgw.Err()
 				}), nil))
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "class", Value: "min-h-[24rem] overflow-hidden rounded-lg border"}}))
+			}), _gsxrt.Attrs{{Key: "class", Value: "min-h-[24rem]"}}))
+			_gsxgw.S("</div>")
 			return _gsxgw.Err()
 		}), nil))
 		return _gsxgw.Err()

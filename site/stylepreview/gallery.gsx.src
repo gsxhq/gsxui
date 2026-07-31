@@ -923,7 +923,11 @@ component gallerySidebarCard(idp string) {
 			<CardDescription>Sidebar navigation with inset content.</CardDescription>
 		</CardHeader>
 		<CardContent>
-			<SidebarProvider open={true} class="min-h-[24rem] overflow-hidden rounded-lg border">
+			{/* The sidebar panel is position:fixed by design; the transform on
+			    this wrapper makes it the panel's containing block, so the shell
+			    stays inside its card instead of overlaying the page. */}
+			<div class="relative isolate transform-gpu overflow-hidden rounded-lg border">
+				<SidebarProvider open={true} class="min-h-[24rem]">
 				<Sidebar open={true}>
 					<SidebarHeader>
 						<div class="px-2 py-1 text-sm font-semibold">Acme Inc</div>
@@ -978,7 +982,8 @@ component gallerySidebarCard(idp string) {
 						Overview of { idp } workspace activity.
 					</div>
 				</SidebarInset>
-			</SidebarProvider>
+				</SidebarProvider>
+			</div>
 		</CardContent>
 	</Card>
 }
