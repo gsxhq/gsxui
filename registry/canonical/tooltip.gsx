@@ -5,7 +5,7 @@ import "github.com/gsxhq/gsx"
 // Tooltip uses a manual native popover so hover/focus behavior controls its
 // top-layer lifetime. Its arrow is static because placement is always top.
 component Tooltip(children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-tooltip class={ tooltip.Root() } { attrs... } data-gsxui-slot-tooltip>{ children }</div>
+	<div class={ tooltip.Root() } { attrs... } data-gsxui-slot-tooltip>{ children }</div>
 }
 
 component TooltipTrigger(children gsx.Node, attrs gsx.Attrs) {
@@ -14,7 +14,6 @@ component TooltipTrigger(children gsx.Node, attrs gsx.Attrs) {
 
 component TooltipContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-gsxui-tooltip-content
 		popover="manual"
 		role="tooltip"
 		data-state="closed"

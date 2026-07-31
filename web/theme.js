@@ -433,12 +433,12 @@ if (schemaElement) {
   }, { capture: true });
   on(
     "gsxui:open",
-    "[data-theme-picker] [data-gsxui-popover-content]",
+    "[data-theme-picker] [data-gsxui-slot-popover-content]",
     (_event, content) => {
       content.querySelector("[data-gsxui-slot-radio]:checked")?.focus();
     },
   );
-  on("toggle", "[data-theme-picker] [data-gsxui-popover-content]", (event) => {
+  on("toggle", "[data-theme-picker] [data-gsxui-slot-popover-content]", (event) => {
     if (event.newState === "closed") {
       state = clearPalettePreview(state);
       render();

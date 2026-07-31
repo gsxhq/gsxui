@@ -32,7 +32,6 @@ component DrawerContent(direction string, children gsx.Node, attrs gsx.Attrs) {
 			drawer.Content(),
 			drawer.ContentSide(direction),
 		}
-		data-gsxui-dialog-content
 		data-state="closed"
 		data-side={direction |> default("bottom")}
 		{ attrs... }
@@ -55,11 +54,11 @@ component DrawerFooter(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component DrawerTitle(children gsx.Node, attrs gsx.Attrs) {
-	<h2 class={ drawer.Title() } data-gsxui-dialog-title { attrs... } data-gsxui-slot-drawer-title>{ children }</h2>
+	<h2 class={ drawer.Title() } { attrs... } data-gsxui-slot-drawer-title data-gsxui-slot-dialog-title>{ children }</h2>
 }
 
 component DrawerDescription(children gsx.Node, attrs gsx.Attrs) {
-	<p class={ drawer.Description() } data-gsxui-dialog-description { attrs... } data-gsxui-slot-drawer-description>{ children }</p>
+	<p class={ drawer.Description() } { attrs... } data-gsxui-slot-drawer-description data-gsxui-slot-dialog-description>{ children }</p>
 }
 
 component DrawerClose(children gsx.Node, attrs gsx.Attrs) {

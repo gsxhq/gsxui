@@ -126,14 +126,12 @@ func AlertDialogTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.S("<h2 class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(alertDialog.Title()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
-		if !attrs.Has("data-gsxui-dialog-title") {
-			_gsxgw.BoolAttr("data-gsxui-dialog-title", true)
-		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "h2", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-alert-dialog-title"})
+		_gsxgw.Spread(ctx, "h2", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-alert-dialog-title", "data-gsxui-slot-dialog-title"})
 		_gsxgw.BoolAttr("data-gsxui-slot-alert-dialog-title", true)
+		_gsxgw.BoolAttr("data-gsxui-slot-dialog-title", true)
 		_gsxgw.S(">")
-//line alert-dialog.gsx:52:108
+//line alert-dialog.gsx:52:113
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</h2>")
 		return _gsxgw.Err()
@@ -148,14 +146,12 @@ func AlertDialogDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.S("<p class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(alertDialog.Description()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
-		if !attrs.Has("data-gsxui-dialog-description") {
-			_gsxgw.BoolAttr("data-gsxui-dialog-description", true)
-		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "p", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-alert-dialog-description"})
+		_gsxgw.Spread(ctx, "p", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-alert-dialog-description", "data-gsxui-slot-dialog-description"})
 		_gsxgw.BoolAttr("data-gsxui-slot-alert-dialog-description", true)
+		_gsxgw.BoolAttr("data-gsxui-slot-dialog-description", true)
 		_gsxgw.S(">")
-//line alert-dialog.gsx:56:125
+//line alert-dialog.gsx:56:130
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</p>")
 		return _gsxgw.Err()

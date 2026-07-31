@@ -120,11 +120,11 @@ func TestComboboxCSSOnlyContract(t *testing.T) {
 	)
 	assertComboboxCanonicalButtonRoles(t, got)
 	for _, hook := range []string{
-		`data-gsxui-combobox-group`,
-		`data-gsxui-combobox-label`,
-		`data-gsxui-combobox-item`,
-		`data-gsxui-combobox-empty`,
-		`data-gsxui-combobox-separator`,
+		`data-gsxui-slot-combobox-group`,
+		`data-gsxui-slot-combobox-label`,
+		`data-gsxui-slot-combobox-item`,
+		`data-gsxui-slot-combobox-empty`,
+		`data-gsxui-slot-combobox-separator`,
 	} {
 		if !strings.Contains(got, hook) {
 			t.Errorf("missing Combobox behavior hook %q\nin: %s", hook, got)

@@ -41,7 +41,7 @@ func _gsxrenderSidebarContractFrame(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, 
 			_gsxgw.Node(ctx, ui.SidebarTrigger(nil))
 //line sidebar_contract.gsx:22:4
 			_gsxgw.S("<button type=\"button\"")
-			_gsxgw.BoolAttr("data-gsxui-sidebar-trigger", true)
+			_gsxgw.BoolAttr("data-gsxui-slot-sidebar-trigger", true)
 			_gsxgw.S(">Custom Sidebar Trigger</button>")
 			return _gsxgw.Err()
 		}), nil))

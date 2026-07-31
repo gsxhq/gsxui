@@ -73,7 +73,7 @@ async function choose(
   accessibleName: string,
 ) {
   const control = picker(page, kind);
-  const content = control.locator("[data-gsxui-popover-content]");
+  const content = control.locator("[data-gsxui-slot-popover-content]");
   if (!(await content.evaluate((element) => element.matches(":popover-open")))) {
     await control.locator("[data-theme-picker-trigger]").click();
   }
@@ -150,13 +150,13 @@ test("pickers expose accessible catalog choices and no raw token inputs", async 
 
   const base = picker(page, "baseColor");
   await base.locator("[data-theme-picker-trigger]").click();
-  await expect(base.locator("[data-gsxui-popover-content]")).toHaveJSProperty(
+  await expect(base.locator("[data-gsxui-slot-popover-content]")).toHaveJSProperty(
     "popover",
     "auto",
   );
   expect(
     await base
-      .locator("[data-gsxui-popover-content]")
+      .locator("[data-gsxui-slot-popover-content]")
       .evaluate((element) => element.matches(":popover-open")),
   ).toBe(true);
   await expect(base.getByRole("radio")).toHaveCount(7);
@@ -183,7 +183,7 @@ test("keyboard reopening focuses the checked theme-picker radio", async ({ page 
   await page.goto("/theme");
   const theme = picker(page, "theme");
   const trigger = theme.locator("[data-theme-picker-trigger]");
-  const content = theme.locator("[data-gsxui-popover-content]");
+  const content = theme.locator("[data-gsxui-slot-popover-content]");
   const blue = theme.getByRole("radio", { name: "Blue", exact: true });
 
   await trigger.click();
@@ -290,7 +290,7 @@ test("desktop hover previews only the iframe and restores on dismissal or pointe
   await expect
     .poll(() =>
       theme
-        .locator("[data-gsxui-popover-content]")
+        .locator("[data-gsxui-slot-popover-content]")
         .evaluate((element) => element.matches(":popover-open")),
     )
     .toBe(false);

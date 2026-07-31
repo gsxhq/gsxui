@@ -12,7 +12,7 @@ func TestNavigationMenuTriggerAria(t *testing.T) {
 	got := render(t, ui.NavigationMenuTrigger(gsx.Raw("Products"), nil))
 	for _, want := range []string{
 		`aria-expanded="false"`,
-		`data-gsxui-navigation-menu-trigger`,
+		`data-gsxui-slot-navigation-menu-trigger`,
 		`data-state="closed"`,
 		`data-gsxui-slot-navigation-menu-trigger`,
 		`data-gsxui-slot-navigation-menu-trigger-icon data-gsxui-slot-icon`,
@@ -35,7 +35,7 @@ func TestNavigationMenuListIsAList(t *testing.T) {
 
 func TestNavigationMenuRootPinned(t *testing.T) {
 	got := render(t, ui.NavigationMenu(gsx.Raw("x"), nil))
-	want := `<nav class="relative flex max-w-max flex-1 items-center justify-center" data-gsxui-navigation-menu data-viewport="false" data-gsxui-slot-navigation-menu>x</nav>`
+	want := `<nav class="relative flex max-w-max flex-1 items-center justify-center" data-viewport="false" data-gsxui-slot-navigation-menu>x</nav>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -60,17 +60,17 @@ func TestNavigationMenuPinnedStructuralParts(t *testing.T) {
 		{
 			name: "list",
 			node: ui.NavigationMenuList(gsx.Raw("x"), nil),
-			want: `<ul class="flex flex-1 list-none items-center justify-center gap-0" data-gsxui-navigation-menu-list data-gsxui-slot-navigation-menu-list>x</ul>`,
+			want: `<ul class="flex flex-1 list-none items-center justify-center gap-0" data-gsxui-slot-navigation-menu-list>x</ul>`,
 		},
 		{
 			name: "item",
 			node: ui.NavigationMenuItem(gsx.Raw("x"), nil),
-			want: `<li class="relative" data-gsxui-navigation-menu-item data-gsxui-slot-navigation-menu-item>x</li>`,
+			want: `<li class="relative" data-gsxui-slot-navigation-menu-item>x</li>`,
 		},
 		{
 			name: "content",
 			node: ui.NavigationMenuContent(gsx.Raw("x"), nil),
-			want: `<div class="top-0 left-0 p-1 md:absolute [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:top-full [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:mt-1.5 [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:overflow-hidden [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:rounded-lg [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:border [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:bg-popover [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:text-popover-foreground [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:shadow opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&amp;:popover-open]:opacity-100 [&amp;:popover-open]:scale-100 starting:[&amp;:popover-open]:opacity-0 starting:[&amp;:popover-open]:scale-95 data-[side=bottom]:starting:[&amp;:popover-open]:-translate-y-2 data-[side=left]:starting:[&amp;:popover-open]:translate-x-2 data-[side=right]:starting:[&amp;:popover-open]:-translate-x-2 data-[side=top]:starting:[&amp;:popover-open]:translate-y-2" data-gsxui-navigation-menu-content popover="manual" data-state="closed" data-side="bottom" data-gsxui-slot-navigation-menu-content>x</div>`,
+			want: `<div class="top-0 left-0 p-1 md:absolute [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:top-full [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:mt-1.5 [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:overflow-hidden [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:rounded-lg [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:border [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:bg-popover [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:text-popover-foreground [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:shadow opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&amp;:popover-open]:opacity-100 [&amp;:popover-open]:scale-100 starting:[&amp;:popover-open]:opacity-0 starting:[&amp;:popover-open]:scale-95 data-[side=bottom]:starting:[&amp;:popover-open]:-translate-y-2 data-[side=left]:starting:[&amp;:popover-open]:translate-x-2 data-[side=right]:starting:[&amp;:popover-open]:-translate-x-2 data-[side=top]:starting:[&amp;:popover-open]:translate-y-2" popover="manual" data-state="closed" data-side="bottom" data-gsxui-slot-navigation-menu-content>x</div>`,
 		},
 	}
 	for _, tt := range tests {
@@ -86,7 +86,7 @@ func TestNavigationMenuTriggerPinned(t *testing.T) {
 	got := render(t, ui.NavigationMenuTrigger(gsx.Raw("Products"), nil))
 	for _, want := range []string{
 		`<button`,
-		`data-gsxui-navigation-menu-trigger`,
+		`data-gsxui-slot-navigation-menu-trigger`,
 		`type="button"`,
 		`aria-expanded="false"`,
 		`data-state="closed"`,
@@ -109,7 +109,7 @@ func TestNavigationMenuLinkVariantReplacesClassHelper(t *testing.T) {
 	for input, wantVariant := range map[string]string{"": "default", "trigger": "trigger"} {
 		got := render(t, ui.NavigationMenuLink(false, input, gsx.Raw("Docs"), nil))
 		for _, want := range []string{
-			`data-gsxui-navigation-menu-link`,
+			`data-gsxui-slot-navigation-menu-link`,
 			`data-variant="` + wantVariant + `"`,
 			`data-active="false"`,
 		} {
@@ -168,7 +168,7 @@ func TestNavigationMenuLinkActive(t *testing.T) {
 func TestNavigationMenuIndicatorPinned(t *testing.T) {
 	got := render(t, ui.NavigationMenuIndicator(nil))
 	for _, want := range []string{
-		`data-gsxui-navigation-menu-indicator`,
+		`data-gsxui-slot-navigation-menu-indicator`,
 		`data-state="hidden"`,
 		`data-gsxui-slot-navigation-menu-indicator`,
 		`data-gsxui-slot-navigation-menu-indicator-arrow`,

@@ -141,7 +141,7 @@ func TestFormControlCompositionTokenOrder(t *testing.T) {
 			// above for a migrated primitive's own class.
 			name: "ToggleGroupItem",
 			node: ui.ToggleGroupItem("multiple", "", "", "", false, "bold", gsx.Raw("B"), nil),
-			want: `<button type="button" data-gsxui-toggle-group-item data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" data-state="off" data-value="bold" aria-pressed="false" class="w-auto min-w-0 shrink-0 px-3 focus:z-10 focus-visible:z-10 has-[&gt;svg]:px-2 rounded-none shadow-none data-[variant=outline]:border-l-0 data-[variant=outline]:first:border-l data-[spacing=0]:first:rounded-l-lg data-[spacing=0]:last:rounded-r-lg" data-gsxui-slot-toggle-group-item data-gsxui-slot-toggle>B</button>`,
+			want: `<button type="button" data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" data-state="off" data-value="bold" aria-pressed="false" class="w-auto min-w-0 shrink-0 px-3 focus:z-10 focus-visible:z-10 has-[&gt;svg]:px-2 rounded-none shadow-none data-[variant=outline]:border-l-0 data-[variant=outline]:first:border-l data-[spacing=0]:first:rounded-l-lg data-[spacing=0]:last:rounded-r-lg" data-gsxui-slot-toggle-group-item data-gsxui-slot-toggle>B</button>`,
 		},
 	}
 
@@ -157,12 +157,12 @@ func TestFormControlCompositionTokenOrder(t *testing.T) {
 func TestFormControlBehaviorHooksAreSeparateFromSlots(t *testing.T) {
 	otp := render(t, ui.InputOTP(ui.InputOTPSlot(nil), nil))
 	for _, want := range []string{
-		`data-gsxui-input-otp`,
-		`data-gsxui-input-otp-input`,
-		`data-gsxui-input-otp-slot`,
+		`data-gsxui-slot-input-otp`,
+		`data-gsxui-slot-input-otp-input`,
+		`data-gsxui-slot-input-otp-slot`,
 	} {
 		if !strings.Contains(otp, want) {
-			t.Errorf("InputOTP missing behavior hook %q\nin: %s", want, otp)
+			t.Errorf("InputOTP missing slot identity hook %q\nin: %s", want, otp)
 		}
 	}
 
@@ -181,13 +181,13 @@ func TestFormControlBehaviorHooksAreSeparateFromSlots(t *testing.T) {
 		nil,
 	))
 	for _, want := range []string{
-		`data-gsxui-select`,
-		`data-gsxui-select-bridge`,
-		`data-gsxui-select-content`,
-		`data-gsxui-select-group`,
-		`data-gsxui-select-label`,
-		`data-gsxui-select-item`,
-		`data-gsxui-select-item-text`,
+		`data-gsxui-slot-select`,
+		`data-gsxui-slot-select-bridge`,
+		`data-gsxui-slot-select-content`,
+		`data-gsxui-slot-select-group`,
+		`data-gsxui-slot-select-label`,
+		`data-gsxui-slot-select-item`,
+		`data-gsxui-slot-select-item-text`,
 	} {
 		if !strings.Contains(selectHTML, want) {
 			t.Errorf("Select missing behavior hook %q\nin: %s", want, selectHTML)

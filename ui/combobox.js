@@ -35,18 +35,18 @@
 // breaking CLI vendoring (see the .gsx file's own GAP entry).
 import { on, emit } from "./gsxui.js";
 
-const rootOf = (el) => el.closest("[data-gsxui-combobox]");
-const inputOf = (root) => root?.querySelector("[data-gsxui-combobox-input]") ?? null;
-const contentOf = (root) => root?.querySelector("[data-gsxui-combobox-content]") ?? null;
-const listOf = (root) => root?.querySelector("[data-gsxui-combobox-list]") ?? null;
-const bridgeOf = (root) => root?.querySelector("[data-gsxui-combobox-bridge]") ?? null;
-const itemsOf = (root) => (root ? [...root.querySelectorAll("[data-gsxui-combobox-item]")] : []);
+const rootOf = (el) => el.closest("[data-gsxui-slot-combobox]");
+const inputOf = (root) => root?.querySelector("[data-gsxui-slot-combobox-input]") ?? null;
+const contentOf = (root) => root?.querySelector("[data-gsxui-slot-combobox-content]") ?? null;
+const listOf = (root) => root?.querySelector("[data-gsxui-slot-combobox-list]") ?? null;
+const bridgeOf = (root) => root?.querySelector("[data-gsxui-slot-combobox-bridge]") ?? null;
+const itemsOf = (root) => (root ? [...root.querySelectorAll("[data-gsxui-slot-combobox-item]")] : []);
 const isDisabled = (item) =>
   item.getAttribute("aria-disabled") === "true" || "disabled" in item.dataset;
 const labelOf = (item) => item.textContent.trim();
 const visibleItems = (root) => itemsOf(root).filter((i) => !i.hidden && !isDisabled(i));
 const highlightedOf = (root) =>
-  root?.querySelector('[data-gsxui-combobox-item][data-highlighted="true"]') ?? null;
+  root?.querySelector('[data-gsxui-slot-combobox-item][data-highlighted="true"]') ?? null;
 
 let uid = 0;
 
@@ -114,11 +114,11 @@ function filter(root, queryOverride) {
     item.hidden = !match;
     if (match) any = true;
   }
-  for (const group of root.querySelectorAll("[data-gsxui-combobox-group]")) {
-    const items = [...group.querySelectorAll("[data-gsxui-combobox-item]")];
+  for (const group of root.querySelectorAll("[data-gsxui-slot-combobox-group]")) {
+    const items = [...group.querySelectorAll("[data-gsxui-slot-combobox-item]")];
     group.hidden = items.length > 0 && items.every((i) => i.hidden);
   }
-  for (const sep of root.querySelectorAll("[data-gsxui-combobox-separator]")) {
+  for (const sep of root.querySelectorAll("[data-gsxui-slot-combobox-separator]")) {
     sep.hidden = query !== "";
   }
   contentOf(root)?.toggleAttribute("data-empty", !any);
@@ -221,12 +221,12 @@ function reflectFromBridge(root) {
 // harmless in practice, but scoping here — the same fix calendar.js's own
 // reset handler already uses — is what keeps every future form-bridge
 // module from having to relitigate the same overlap.
-on("reset", "form:has([data-gsxui-combobox])", (_e, form) => {
+on("reset", "form:has([data-gsxui-slot-combobox])", (_e, form) => {
   // Native controls reset after the reset event and its microtask
   // checkpoint. Reflect in the next task, when the bridge carries its
   // restored default value.
   setTimeout(() => {
-    for (const root of form.querySelectorAll("[data-gsxui-combobox]")) {
+    for (const root of form.querySelectorAll("[data-gsxui-slot-combobox]")) {
       reflectFromBridge(root);
     }
   }, 0);
@@ -237,9 +237,9 @@ on("reset", "form:has([data-gsxui-combobox])", (_e, form) => {
 // open/closed state — see ui/combobox.gsx's ComboboxInput doc comment) ----
 
 function init(root) {
-  for (const group of root.querySelectorAll("[data-gsxui-combobox-group]")) {
+  for (const group of root.querySelectorAll("[data-gsxui-slot-combobox-group]")) {
     if (group.getAttribute("aria-labelledby")) continue;
-    const label = group.querySelector("[data-gsxui-combobox-label]");
+    const label = group.querySelector("[data-gsxui-slot-combobox-label]");
     if (!label) continue;
     if (!label.id) label.id = `gsxui-combobox-label-${++uid}`;
     group.setAttribute("aria-labelledby", label.id);
@@ -263,7 +263,7 @@ function init(root) {
   // the exact "reopening filtered to the committed label" bug this flag
   // exists to prevent (see docs/jsx-parity.md `## combobox`'s own FIX
   // entry): every option except this one would stay hidden.
-  const checked = root.querySelector('[data-gsxui-combobox-item][data-state="checked"]');
+  const checked = root.querySelector('[data-gsxui-slot-combobox-item][data-state="checked"]');
   if (checked && input) {
     const label = labelOf(checked);
     if (!input.value) input.value = label;
@@ -271,7 +271,7 @@ function init(root) {
   }
 }
 
-for (const root of document.querySelectorAll("[data-gsxui-combobox]")) init(root);
+for (const root of document.querySelectorAll("[data-gsxui-slot-combobox]")) init(root);
 
 // --- open / close (ported dropdown.js/select.js machinery) ---------------
 
@@ -279,7 +279,7 @@ function openContent(root) {
   const content = contentOf(root);
   const input = inputOf(root);
   if (!content || content.matches(":popover-open")) return;
-  const anchor = input?.closest("[data-gsxui-combobox-input-group]") ?? input;
+  const anchor = input?.closest("[data-gsxui-slot-combobox-input-group]") ?? input;
   if (anchor) {
     const r = anchor.getBoundingClientRect();
     content.style.position = "fixed";
@@ -307,7 +307,7 @@ function closeContent(root) {
 // expects it present regardless of open/closed state — see
 // ui/combobox.gsx's own ComboboxInput doc comment); this handler only
 // tracks open/closed state and clears the highlight cursor on close.
-on("toggle", "[data-gsxui-combobox-content]", (e, content) => {
+on("toggle", "[data-gsxui-slot-combobox-content]", (e, content) => {
   const open = e.newState === "open";
   content.dataset.state = open ? "open" : "closed";
   const root = rootOf(content);
@@ -324,18 +324,18 @@ on("toggle", "[data-gsxui-combobox-content]", (e, content) => {
 
 // contextmenu inside the listbox is suppressed (dropdown.js/select.js do the
 // same).
-on("contextmenu", "[data-gsxui-combobox-content]", (e) => e.preventDefault());
+on("contextmenu", "[data-gsxui-slot-combobox-content]", (e) => e.preventDefault());
 
 // --- trigger button --------------------------------------------------------
 
-on("pointerdown", "[data-gsxui-combobox-trigger]", (_e, trigger) => {
+on("pointerdown", "[data-gsxui-slot-combobox-trigger]", (_e, trigger) => {
   const content = contentOf(rootOf(trigger));
   if (content) {
     trigger.dataset.gsxuiWasOpen = content.matches(":popover-open") ? "true" : "false";
   }
 });
 
-on("click", "[data-gsxui-combobox-trigger]", (_e, trigger) => {
+on("click", "[data-gsxui-slot-combobox-trigger]", (_e, trigger) => {
   const root = rootOf(trigger);
   const content = contentOf(root);
   if (!content) return;
@@ -351,7 +351,7 @@ on("click", "[data-gsxui-combobox-trigger]", (_e, trigger) => {
 
 // --- clear button ------------------------------------------------------
 
-on("click", "[data-gsxui-combobox-clear]", (_e, clear) => {
+on("click", "[data-gsxui-slot-combobox-clear]", (_e, clear) => {
   clearValue(rootOf(clear));
 });
 
@@ -364,11 +364,11 @@ on("click", "[data-gsxui-combobox-clear]", (_e, clear) => {
 // fires after light-dismiss has already been evaluated for that gesture,
 // the same reason the trigger chevron (which always opened on "click")
 // never had this bug.
-on("click", "[data-gsxui-combobox-input]", (_e, input) => {
+on("click", "[data-gsxui-slot-combobox-input]", (_e, input) => {
   openContent(rootOf(input));
 });
 
-on("input", "[data-gsxui-combobox-input]", (_e, input) => {
+on("input", "[data-gsxui-slot-combobox-input]", (_e, input) => {
   // The user is typing now — any earlier commit/init/reset-seeded text no
   // longer applies; a real, query-driven filter pass is always correct
   // from here (see filter()'s and openContent()'s own headers).
@@ -382,7 +382,7 @@ on("input", "[data-gsxui-combobox-input]", (_e, input) => {
   }
 });
 
-on("keydown", "[data-gsxui-combobox-input]", (e, input) => {
+on("keydown", "[data-gsxui-slot-combobox-input]", (e, input) => {
   const root = rootOf(input);
   const content = contentOf(root);
   const isOpen = content?.matches(":popover-open") ?? false;
@@ -423,11 +423,11 @@ on("keydown", "[data-gsxui-combobox-input]", (e, input) => {
 
 // --- pointer on items: hover highlights, click commits (command.js model) -
 
-on("pointerover", "[data-gsxui-combobox-item]", (_e, item) => {
+on("pointerover", "[data-gsxui-slot-combobox-item]", (_e, item) => {
   if (isDisabled(item)) return;
   highlight(rootOf(item), item);
 });
 
-on("click", "[data-gsxui-combobox-item]", (_e, item) => {
+on("click", "[data-gsxui-slot-combobox-item]", (_e, item) => {
   commit(rootOf(item), item);
 });

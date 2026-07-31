@@ -11,9 +11,9 @@
 // the gsxui:carousel-select CustomEvent).
 import { on, emit } from "./gsxui.js";
 
-const rootOf = (el) => el.closest("[data-gsxui-carousel]");
-const viewportOf = (root) => root.querySelector("[data-gsxui-carousel-content]");
-const itemsOf = (root) => [...root.querySelectorAll("[data-gsxui-carousel-item]")];
+const rootOf = (el) => el.closest("[data-gsxui-slot-carousel]");
+const viewportOf = (root) => root.querySelector("[data-gsxui-slot-carousel-content]");
+const itemsOf = (root) => [...root.querySelectorAll("[data-gsxui-slot-carousel-item]")];
 const isVertical = (root) => root.dataset.orientation === "vertical";
 
 // Sub-pixel rounding epsilon for the scrollLeft/scrollTop-vs-bounds
@@ -112,8 +112,8 @@ function updateDisabled(root) {
   const max = vertical
     ? viewport.scrollHeight - viewport.clientHeight
     : viewport.scrollWidth - viewport.clientWidth;
-  const prev = root.querySelector("[data-gsxui-carousel-prev]");
-  const next = root.querySelector("[data-gsxui-carousel-next]");
+  const prev = root.querySelector("[data-gsxui-slot-carousel-previous]");
+  const next = root.querySelector("[data-gsxui-slot-carousel-next]");
   if (prev) prev.disabled = pos <= EPS;
   if (next) next.disabled = pos >= max - EPS;
 }
@@ -178,12 +178,12 @@ function initAutoplay(root) {
   start();
 }
 
-on("click", "[data-gsxui-carousel-prev]", (_e, btn) => {
+on("click", "[data-gsxui-slot-carousel-previous]", (_e, btn) => {
   const root = rootOf(btn);
   if (root) scrollByItems(root, -1);
 });
 
-on("click", "[data-gsxui-carousel-next]", (_e, btn) => {
+on("click", "[data-gsxui-slot-carousel-next]", (_e, btn) => {
   const root = rootOf(btn);
   if (root) scrollByItems(root, 1);
 });
@@ -193,7 +193,7 @@ on("click", "[data-gsxui-carousel-next]", (_e, btn) => {
 // onKeyDownCapture hard-codes ArrowLeft => scrollPrev()/ArrowRight =>
 // scrollNext() unconditionally, never ArrowUp/ArrowDown, regardless of
 // axis).
-on("keydown", "[data-gsxui-carousel]", (e, root) => {
+on("keydown", "[data-gsxui-slot-carousel]", (e, root) => {
   const dir = { ArrowLeft: -1, ArrowRight: 1 }[e.key];
   if (!dir) return;
   e.preventDefault();
@@ -207,7 +207,7 @@ on("keydown", "[data-gsxui-carousel]", (e, root) => {
 const scheduled = new WeakSet();
 on(
   "scroll",
-  "[data-gsxui-carousel-content]",
+  "[data-gsxui-slot-carousel-content]",
   (_e, viewport) => {
     const root = rootOf(viewport);
     if (!root) return;
@@ -236,7 +236,7 @@ const resizeObserver = new ResizeObserver((entries) => {
 // loop and command.js's filter() loop — late-added carousels (an HTMX swap
 // after this module has already run) are not picked up, the same accepted
 // limitation those two modules' own init loops carry.
-for (const root of document.querySelectorAll("[data-gsxui-carousel]")) {
+for (const root of document.querySelectorAll("[data-gsxui-slot-carousel]")) {
   root.gsxuiCarousel = {
     scrollTo: (index) => scrollToIndex(root, index),
     next: () => scrollByItems(root, 1),

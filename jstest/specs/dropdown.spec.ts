@@ -11,10 +11,10 @@ test("one checkbox click changes state and emits exactly once", async ({ page })
     });
   });
 
-  const trigger = page.locator("[data-gsxui-dropdown-trigger]");
-  const content = page.locator("[data-gsxui-dropdown-content]");
+  const trigger = page.locator("[data-gsxui-slot-dropdown-menu-trigger]");
+  const content = page.locator("[data-gsxui-slot-dropdown-menu-content]");
   const item = page.locator(
-    '[data-gsxui-dropdown-checkbox-item][data-value="statusbar"]',
+    '[data-gsxui-slot-dropdown-menu-checkbox-item][data-value="statusbar"]',
   );
 
   await trigger.click();

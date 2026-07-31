@@ -16,7 +16,7 @@
 // diffing against the server's own render of that same month.
 import { on, emit } from "./gsxui.js";
 
-const ROOT = "[data-gsxui-calendar]";
+const ROOT = "[data-gsxui-slot-calendar]";
 
 // Date.UTC treats years 0..99 as 1900..1999. Setting the full year on an
 // existing UTC date preserves the caller's exact year while retaining the
@@ -175,8 +175,8 @@ function setNavDisabled(button, atBound) {
 // component — Task 4 review's Important finding 1.
 function syncNavButtons(root, year, month) {
   const { fromYear, toYear } = navBounds(root);
-  setNavDisabled(root.querySelector("[data-gsxui-calendar-prev]"), prevDisabledAt(year, month, fromYear));
-  setNavDisabled(root.querySelector("[data-gsxui-calendar-next]"), nextDisabledAt(year, month, toYear));
+  setNavDisabled(root.querySelector("[data-gsxui-slot-calendar-previous]"), prevDisabledAt(year, month, fromYear));
+  setNavDisabled(root.querySelector("[data-gsxui-slot-calendar-next]"), nextDisabledAt(year, month, toYear));
 }
 
 // disabledRules reads the root's four disabled-rule attributes (calendar.gsx,
@@ -277,7 +277,7 @@ function repaint(root, year, month) {
   const focusedISO = currentFocusedDate(root);
 
   const cells = root.querySelectorAll('td[role="gridcell"]');
-  const buttons = root.querySelectorAll("[data-gsxui-calendar-day]");
+  const buttons = root.querySelectorAll("[data-gsxui-slot-calendar-day-button]");
 
   // The roving tabindex's single tab stop (source map §7.3's
   // isFocusTarget): the sticky tabStop day if one has ever been set for
@@ -411,18 +411,18 @@ function repaint(root, year, month) {
   // it has to follow a client-side navigation the same way the caption text
   // itself does, or the grid keeps announcing the month it was
   // server-rendered for.
-  const gridEl = root.querySelector("[data-gsxui-calendar-grid]");
+  const gridEl = root.querySelector("[data-gsxui-slot-calendar-grid]");
   if (gridEl) gridEl.setAttribute("aria-label", captionText(year, month));
 }
 
 // updateCaption writes the same text to every element carrying
-// data-gsxui-calendar-caption — one in "label" layout (the visible span),
+// data-gsxui-slot-calendar-caption — one in "label" layout (the visible span),
 // two in "dropdown" layout (the sr-only live-region span alongside the two
 // visible selects), per calendar.gsx's own doc comment on why dropdown
 // layout needs a second, textual announcement target.
 function updateCaption(root, year, month) {
   const text = captionText(year, month);
-  for (const el of root.querySelectorAll("[data-gsxui-calendar-caption]")) {
+  for (const el of root.querySelectorAll("[data-gsxui-slot-calendar-caption]")) {
     el.textContent = text;
   }
 }
@@ -453,7 +453,7 @@ function goTo(root, year, month) {
   syncNavButtons(root, year, month);
 }
 
-on("click", "[data-gsxui-calendar-prev]", (_event, el) => {
+on("click", "[data-gsxui-slot-calendar-previous]", (_event, el) => {
   // Nav buttons never take a native disabled attribute (calendar.gsx's own
   // doc comment on why — only aria-disabled + tabindex="-1", so they stay
   // reachable by Tab at a navigation bound). aria-disabled doesn't block a
@@ -467,7 +467,7 @@ on("click", "[data-gsxui-calendar-prev]", (_event, el) => {
   goTo(root, prevYear, prevMonth);
 });
 
-on("click", "[data-gsxui-calendar-next]", (_event, el) => {
+on("click", "[data-gsxui-slot-calendar-next]", (_event, el) => {
   if (el.getAttribute("aria-disabled") === "true") return;
   const root = el.closest(ROOT);
   if (!root) return;
@@ -627,7 +627,7 @@ function currentMonth(root) {
   return parseMonth(root.dataset.gsxuiCalendarMonth);
 }
 
-on("click", "[data-gsxui-calendar-day]", (_event, el) => {
+on("click", "[data-gsxui-slot-calendar-day-button]", (_event, el) => {
   // Disabled days ignore the click entirely and emit nothing. Real browsers
   // never dispatch "click" on a native-disabled button in the first place
   // (repaint() sets button.disabled = disabled for exactly this reason) —
@@ -684,7 +684,7 @@ on("click", "[data-gsxui-calendar-day]", (_event, el) => {
 
 // --- range hover preview (range mode only, while from is set and to is not)
 
-on("mouseover", "[data-gsxui-calendar-day]", (_event, el) => {
+on("mouseover", "[data-gsxui-slot-calendar-day-button]", (_event, el) => {
   // The same guard the day-click handler opens with, for the same reason:
   // a day that cannot be SELECTED must not paint a preview of a range that
   // ending on it would produce. Without this, hovering a disabled (or
@@ -870,7 +870,7 @@ const KEY_MOVES = {
 // ordinary in-month day of the newly displayed month before focus lands. The
 // roving sequence they are excluded from is the TAB one (tabindex="0"), in
 // repaint above — not this one.
-on("keydown", "[data-gsxui-calendar-day]", (event, el) => {
+on("keydown", "[data-gsxui-slot-calendar-day-button]", (event, el) => {
   const move = KEY_MOVES[event.key];
   if (!move) return;
   const root = el.closest(ROOT);
@@ -921,11 +921,11 @@ on("keydown", "[data-gsxui-calendar-day]", (event, el) => {
   // Focus lands imperatively (source map §3/§7.3: upstream calls
   // ref.current?.focus() whenever a day becomes the focused one — moving
   // tabindex alone does not move focus).
-  const targetButton = root.querySelector(`[data-gsxui-calendar-day][data-date="${targetISO}"]`);
+  const targetButton = root.querySelector(`[data-gsxui-slot-calendar-day-button][data-date="${targetISO}"]`);
   if (targetButton) targetButton.focus();
 });
 
-on("focusin", "[data-gsxui-calendar-day]", (_event, el) => {
+on("focusin", "[data-gsxui-slot-calendar-day-button]", (_event, el) => {
   const root = el.closest(ROOT);
   if (!root) return;
   const dateISO = el.dataset.date;
@@ -935,7 +935,7 @@ on("focusin", "[data-gsxui-calendar-day]", (_event, el) => {
   repaint(root, year, month);
 });
 
-on("focusout", "[data-gsxui-calendar-day]", (_event, el) => {
+on("focusout", "[data-gsxui-slot-calendar-day-button]", (_event, el) => {
   const root = el.closest(ROOT);
   if (!root) return;
   // A stale event: this root's live-focused day has already moved on (the
@@ -977,7 +977,7 @@ for (const root of document.querySelectorAll(ROOT)) captureDefaults(root);
 // both modules for reset:false: each handler restores disjoint descendants.
 // That exact pair is reviewed in selector-allowlist.ts and exercised by the
 // mixed calendar/form example; all other forms remain module-scoped.
-on("reset", "form:has([data-gsxui-calendar])", (_event, form) => {
+on("reset", "form:has([data-gsxui-slot-calendar])", (_event, form) => {
   // The reset event and its microtask checkpoint both run before the
   // browser's default reset action. Reconcile in the next task, once native
   // controls and this component's custom DOM can reach one final state.

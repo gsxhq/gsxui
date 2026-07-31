@@ -27,18 +27,14 @@ func _gsxrenderTooltip(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.
 		return _gsxerr
 	}
 //line tooltip.gsx:8:2
-	_gsxgw.S("<div")
-	if !attrs.Has("data-gsxui-tooltip") {
-		_gsxgw.BoolAttr("data-gsxui-tooltip", true)
-	}
-	_gsxgw.S(" class=\"")
+	_gsxgw.S("<div class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tooltip.Root()), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tooltip"})
 	_gsxgw.BoolAttr("data-gsxui-slot-tooltip", true)
 	_gsxgw.S(">")
-//line tooltip.gsx:8:88
+//line tooltip.gsx:8:69
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
@@ -82,9 +78,6 @@ func _gsxrenderTooltipContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childr
 	}
 //line tooltip.gsx:16:2
 	_gsxgw.S("<div")
-	if !attrs.Has("data-gsxui-tooltip-content") {
-		_gsxgw.BoolAttr("data-gsxui-tooltip-content", true)
-	}
 	if !attrs.Has("popover") {
 		_gsxgw.S(" popover=\"manual\"")
 	}
@@ -104,9 +97,9 @@ func _gsxrenderTooltipContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childr
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tooltip-content"})
 	_gsxgw.BoolAttr("data-gsxui-slot-tooltip-content", true)
 	_gsxgw.S(">")
-//line tooltip.gsx:26:3
+//line tooltip.gsx:25:3
 	_gsxgw.Node(ctx, children)
-//line tooltip.gsx:27:3
+//line tooltip.gsx:26:3
 	_gsxgw.S("<span class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tooltip.Arrow()))
 	_gsxgw.S("\"")

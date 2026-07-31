@@ -49,33 +49,42 @@ func canonicalCalendarClass(slot string, caller ...string) string {
 }
 
 // grid returns the data-date values of every day BUTTON, in DOM order —
-// scoped to the data-gsxui-calendar-day tag specifically, not a bare
+// scoped to the data-gsxui-slot-calendar-day-button tag specifically, not a bare
 // "every data-date in the document" split. The <td> cell carries its own
 // data-date too (Task 1), so a naive split would double-count once Task 4
 // adds the button's own copy (see calendar.gsx's own comment on why the
 // button needs it — Task 5's click handler matches the button and needs
 // its date without walking up to the cell, not any uniqueness argument):
 // jstest/specs/calendar.spec.ts's browser-side gridDates/gridCells helpers
-// read it directly off [data-gsxui-calendar-day] for the same reason.
+// read it directly off [data-gsxui-slot-calendar-day-button] for the same reason.
 func gridDates(t *testing.T, html string) []string {
 	t.Helper()
 	var out []string
-	for _, part := range strings.Split(html, `data-gsxui-calendar-day`)[1:] {
-		tagEnd := strings.Index(part, ">")
-		if tagEnd < 0 {
+	rest := html
+	for {
+		markerAt := strings.Index(rest, `data-gsxui-slot-calendar-day-button`)
+		if markerAt < 0 {
+			break
+		}
+		// The marker sits at the end of the tag; scan back to the opening
+		// "<" and forward to ">" so data-date is found wherever it sits.
+		tagStart := strings.LastIndex(rest[:markerAt], "<")
+		tagEnd := strings.Index(rest[markerAt:], ">")
+		if tagStart < 0 || tagEnd < 0 {
 			t.Fatalf("unterminated day button tag in %s", html)
 		}
-		tag := part[:tagEnd]
+		tag := rest[tagStart : markerAt+tagEnd]
+		rest = rest[markerAt+tagEnd:]
 		i := strings.Index(tag, `data-date="`)
 		if i < 0 {
 			t.Fatalf("day button missing data-date\nbutton tag: %s", tag)
 		}
-		rest := tag[i+len(`data-date="`):]
-		end := strings.Index(rest, `"`)
+		val := tag[i+len(`data-date="`):]
+		end := strings.Index(val, `"`)
 		if end < 0 {
 			t.Fatalf("unterminated data-date in button tag: %s", tag)
 		}
-		out = append(out, rest[:end])
+		out = append(out, val[:end])
 	}
 	return out
 }
@@ -217,7 +226,7 @@ func TestCalendarRootAttributes(t *testing.T) {
 
 	for _, want := range []string{
 		`data-gsxui-slot-calendar`,
-		`data-gsxui-calendar`,
+		`data-gsxui-slot-calendar`,
 		`data-gsxui-calendar-month="2026-07"`,
 		`data-gsxui-calendar-mode="range"`,
 		`data-gsxui-calendar-week-start="1"`,
@@ -285,8 +294,7 @@ func TestCalendarPreviousComposesAllPresenceMarkersOnButton(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
 		time.Time{}, time.Time{}, nil, nil, "", nil))
-	requirePresenceAttributesOnSameTag(t, got, "data-gsxui-calendar-prev",
-		"data-gsxui-slot-calendar-previous",
+	requirePresenceAttributesOnSameTag(t, got, "data-gsxui-slot-calendar-previous",
 		"data-gsxui-slot-calendar-nav-button",
 		"data-gsxui-slot-button",
 	)
@@ -999,8 +1007,8 @@ func TestCalendarLabelCaption(t *testing.T) {
 		t.Error("label caption missing the month and year")
 	}
 	for _, want := range []string{
-		`data-gsxui-calendar-prev`,
-		`data-gsxui-calendar-next`,
+		`data-gsxui-slot-calendar-previous`,
+		`data-gsxui-slot-calendar-next`,
 		`aria-label="Previous month"`,
 		`aria-label="Next month"`,
 		// The caption announces month changes. Source map §8 correction 4.
@@ -1092,7 +1100,9 @@ func TestCalendarNavBoundsUseAriaDisabledNotDisabled(t *testing.T) {
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 2026, 2026,
 		time.Time{}, time.Time{}, nil, nil, "", nil))
 
-	prev := got[strings.Index(got, "data-gsxui-calendar-prev"):]
+	// The slot marker sits at the end of the tag — take the whole tag.
+	markerAt := strings.Index(got, "data-gsxui-slot-calendar-previous")
+	prev := got[strings.LastIndex(got[:markerAt], "<"):]
 	prev = prev[:strings.Index(prev, ">")]
 	if !strings.Contains(prev, `aria-disabled="true"`) {
 		t.Errorf("prev at the navigation bound should be aria-disabled\ngot: %s", prev)

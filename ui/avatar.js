@@ -5,19 +5,19 @@ import { on } from "./gsxui.js";
 const sync = (img, ok) => {
   img.style.display = ok ? "" : "none";
   const fallback = img
-    .closest("[data-gsxui-avatar]")
-    ?.querySelector("[data-gsxui-avatar-fallback]");
+    .closest("[data-gsxui-slot-avatar]")
+    ?.querySelector("[data-gsxui-slot-avatar-fallback]");
   if (fallback) fallback.style.display = ok ? "none" : "";
 };
 
-on("error", "[data-gsxui-avatar-image]", (_e, img) => sync(img, false), { capture: true });
-on("load", "[data-gsxui-avatar-image]", (_e, img) => sync(img, true), { capture: true });
+on("error", "[data-gsxui-slot-avatar-image]", (_e, img) => sync(img, false), { capture: true });
+on("load", "[data-gsxui-slot-avatar-image]", (_e, img) => sync(img, true), { capture: true });
 
 // Images that settled before this module imported already fired load/error —
 // sweep them once at import and again at window load; delegation covers the
 // rest (including HTMX swaps).
 function sweep() {
-  for (const img of document.querySelectorAll("[data-gsxui-avatar-image]"))
+  for (const img of document.querySelectorAll("[data-gsxui-slot-avatar-image]"))
     if (img.complete) sync(img, img.naturalWidth > 0);
 }
 sweep();

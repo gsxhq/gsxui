@@ -10,7 +10,7 @@ import (
 
 func TestResizablePanelGroupPinned(t *testing.T) {
 	got := render(t, ui.ResizablePanelGroup("", gsx.Raw("x"), nil))
-	want := `<div data-gsxui-resizable aria-orientation="horizontal" data-gsxui-slot-resizable-panel-group>x</div>`
+	want := `<div aria-orientation="horizontal" data-gsxui-slot-resizable-panel-group>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -42,7 +42,7 @@ func TestResizablePanelSizedPanelPinned(t *testing.T) {
 	// the numeric part of defaultSize is the grow weight, 1 is shrink, 0px
 	// is the (always-resolvable) basis.
 	got := render(t, ui.ResizablePanel("20%", "", "", gsx.Raw("x"), nil))
-	want := `<div data-gsxui-resizable-panel style="flex: 20 1 0px" data-gsxui-slot-resizable-panel>x</div>`
+	want := `<div style="flex: 20 1 0px" data-gsxui-slot-resizable-panel>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -53,7 +53,7 @@ func TestResizablePanelUnsizedPanelPinned(t *testing.T) {
 	// equal-weight share (no class-based flex-1/grow-0 split as of round 2
 	// — see the FIX entry in the package doc comment).
 	got := render(t, ui.ResizablePanel("", "", "", gsx.Raw("x"), nil))
-	want := `<div data-gsxui-resizable-panel style="flex: 1 1 0px" data-gsxui-slot-resizable-panel>x</div>`
+	want := `<div style="flex: 1 1 0px" data-gsxui-slot-resizable-panel>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -111,7 +111,7 @@ func TestResizableHandlePinnedHorizontal(t *testing.T) {
 	// invisible to CI — the group's own string already gets this
 	// treatment, matching house style (ui/toggle-group_test.go).
 	got := render(t, ui.ResizableHandle("horizontal", false, nil))
-	want := `<div data-gsxui-resizable-handle role="separator" aria-orientation="vertical" tabindex="0" class="bg-border focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:outline-hidden aria-[orientation=vertical]:w-px aria-[orientation=vertical]:cursor-col-resize aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:cursor-row-resize aria-[orientation=horizontal]:[&amp;&gt;[data-gsxui-slot-resizable-handle-grip]]:rotate-90" data-gsxui-slot-resizable-handle></div>`
+	want := `<div role="separator" aria-orientation="vertical" tabindex="0" class="bg-border focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:outline-hidden aria-[orientation=vertical]:w-px aria-[orientation=vertical]:cursor-col-resize aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:cursor-row-resize aria-[orientation=horizontal]:[&amp;&gt;[data-gsxui-slot-resizable-handle-grip]]:rotate-90" data-gsxui-slot-resizable-handle></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -119,7 +119,7 @@ func TestResizableHandlePinnedHorizontal(t *testing.T) {
 
 func TestResizableHandlePinnedVertical(t *testing.T) {
 	got := render(t, ui.ResizableHandle("vertical", false, nil))
-	want := `<div data-gsxui-resizable-handle role="separator" aria-orientation="horizontal" tabindex="0" class="bg-border focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:outline-hidden aria-[orientation=vertical]:w-px aria-[orientation=vertical]:cursor-col-resize aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:cursor-row-resize aria-[orientation=horizontal]:[&amp;&gt;[data-gsxui-slot-resizable-handle-grip]]:rotate-90" data-gsxui-slot-resizable-handle></div>`
+	want := `<div role="separator" aria-orientation="horizontal" tabindex="0" class="bg-border focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:outline-hidden aria-[orientation=vertical]:w-px aria-[orientation=vertical]:cursor-col-resize aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:cursor-row-resize aria-[orientation=horizontal]:[&amp;&gt;[data-gsxui-slot-resizable-handle-grip]]:rotate-90" data-gsxui-slot-resizable-handle></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

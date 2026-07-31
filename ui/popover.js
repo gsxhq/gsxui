@@ -10,7 +10,7 @@
 import { on, emit } from "./gsxui.js";
 
 const contentOf = (el) =>
-  el.closest("[data-gsxui-popover]")?.querySelector("[data-gsxui-popover-content]");
+  el.closest("[data-gsxui-slot-popover]")?.querySelector("[data-gsxui-slot-popover-content]");
 
 // A pointerdown on the trigger records whether the popover was open at that
 // instant: popover="auto" light-dismisses on outside pointerdown (the
@@ -85,15 +85,15 @@ const TABBABLE =
 
 on(
   "beforetoggle",
-  "[data-gsxui-popover-content]",
+  "[data-gsxui-slot-popover-content]",
   (e, content) => {
     if (e.newState !== "closed" || !content.contains(document.activeElement)) return;
-    content.closest("[data-gsxui-popover]")?.querySelector("[data-gsxui-popover-trigger]")?.focus();
+    content.closest("[data-gsxui-slot-popover]")?.querySelector("[data-gsxui-popover-trigger]")?.focus();
   },
   { capture: true },
 );
 
-on("keydown", "[data-gsxui-popover-content]", (e, content) => {
+on("keydown", "[data-gsxui-slot-popover-content]", (e, content) => {
   if (e.key !== "Tab") return;
   const items = [...content.querySelectorAll(TABBABLE)];
   if (!items.length) return;
@@ -106,12 +106,12 @@ on("keydown", "[data-gsxui-popover-content]", (e, content) => {
 
 on(
   "toggle",
-  "[data-gsxui-popover-content]",
+  "[data-gsxui-slot-popover-content]",
   (e, content) => {
     const open = e.newState === "open";
     content.dataset.state = open ? "open" : "closed";
     const trigger = content
-      .closest("[data-gsxui-popover]")
+      .closest("[data-gsxui-slot-popover]")
       ?.querySelector("[data-gsxui-popover-trigger]");
     trigger?.setAttribute("aria-expanded", open ? "true" : "false");
     // clear only on open — clearing on close races the trigger-click task

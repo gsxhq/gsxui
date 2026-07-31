@@ -34,18 +34,17 @@ import (
 )
 
 // Select is the listbox root: a layout-neutral div carrying the
-// data-gsxui-select hook select.js scopes every trigger/content lookup to
-// (closest("[data-gsxui-select]"), the same proximity wiring as dropdown's
-// data-gsxui-dropdown). When name != "" it also renders the hidden native
+// data-gsxui-slot-select hook select.js scopes every trigger/content lookup to
+// (closest("[data-gsxui-slot-select]"), the same proximity wiring as dropdown's
+// data-gsxui-slot-dropdown-menu). When name != "" it also renders the hidden native
 // <select> form bridge (see the file header). required/disabled/form mirror
 // ui.NativeSelect's own form params so the two components share an
 // option-authoring shape.
 component Select(name string, required bool, disabled bool, form string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-select class={ select_.Root() } { attrs... } data-gsxui-slot-select>
+	<div class={ select_.Root() } { attrs... } data-gsxui-slot-select>
 		{ children }
 		{ if name != "" {
 			<select
-				data-gsxui-select-bridge
 				aria-hidden="true"
 				tabindex="-1"
 				name={name}
@@ -74,7 +73,6 @@ component Select(name string, required bool, disabled bool, form string, childre
 component SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) {
 	<button
 		type="button"
-		data-gsxui-select-trigger
 		role="combobox"
 		aria-expanded="false"
 		aria-autocomplete="none"
@@ -97,7 +95,7 @@ component SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) {
 // selected. select.js overwrites its text content on selection. The default
 // stylesheet applies pointer-events:none.
 component SelectValue(placeholder string, attrs gsx.Attrs) {
-	<span data-gsxui-select-value class={ select_.Value() } { attrs... } data-gsxui-slot-select-value>{ placeholder }</span>
+	<span class={ select_.Value() } { attrs... } data-gsxui-slot-select-value>{ placeholder }</span>
 }
 
 // SelectContent is the popover listbox. It rides the exact dropdown-menu.js
@@ -111,7 +109,6 @@ component SelectValue(placeholder string, attrs gsx.Attrs) {
 // ledger).
 component SelectContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-gsxui-select-content
 		popover="auto"
 		role="listbox"
 		tabindex="-1"
@@ -131,13 +128,13 @@ component SelectContent(children gsx.Node, attrs gsx.Attrs) {
 // so this ports as a real role="group" div. select.js wires aria-labelledby
 // to the contained SelectLabel's generated id at init.
 component SelectGroup(children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-select-group role="group" { attrs... } data-gsxui-slot-select-group>{ children }</div>
+	<div role="group" { attrs... } data-gsxui-slot-select-group>{ children }</div>
 }
 
 // SelectLabel is the group heading (select.js stamps its id and the group's
 // aria-labelledby at init).
 component SelectLabel(children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-select-label class={ select_.Label() } { attrs... } data-gsxui-slot-select-label>{ children }</div>
+	<div class={ select_.Label() } { attrs... } data-gsxui-slot-select-label>{ children }</div>
 }
 
 // SelectItem is one option. value is the form value (data-value, synced into
@@ -152,7 +149,6 @@ component SelectLabel(children gsx.Node, attrs gsx.Attrs) {
 // items are always tabindex="-1"; select.js moves real DOM focus among them.
 component SelectItem(value string, selected bool, disabled bool, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-gsxui-select-item
 		role="option"
 		data-value={value}
 		{ if selected {
@@ -173,7 +169,7 @@ component SelectItem(value string, selected bool, disabled bool, children gsx.No
 		<span class={ select_.ItemIndicator() } data-gsxui-slot-select-item-indicator>
 			<icon.Check/>
 		</span>
-		<span class={ select_.ItemText() } data-gsxui-select-item-text data-gsxui-slot-select-item-text>{ children }</span>
+		<span class={ select_.ItemText() } data-gsxui-slot-select-item-text>{ children }</span>
 	</div>
 }
 

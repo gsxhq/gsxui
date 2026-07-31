@@ -98,8 +98,8 @@ func TestExampleRouteRendersTheExample(t *testing.T) {
 		`<link rel="stylesheet" href="/static/jstest/.tmp/site.css">`,
 		`<script type="module" src="/ui/index.js"></script>`,
 		`class="min-h-svh bg-background text-foreground antialiased"`,
-		`data-gsxui-toggle`,
-		`data-gsxui-toaster`,
+		`data-gsxui-slot-toggle`,
+		`data-gsxui-slot-toaster`,
 		`data-gsxui-toast-template="default"`,
 	} {
 		if !strings.Contains(page, want) {
@@ -122,7 +122,7 @@ func TestNamedPreviewRouteRendersOneExactCase(t *testing.T) {
 		t.Fatalf("status = %d, want 200", res.StatusCode)
 	}
 	page := string(body)
-	if got := strings.Count(page, `data-gsxui-sidebar-wrapper`); got != 1 {
+	if got := strings.Count(page, `data-gsxui-slot-sidebar-wrapper`); got != 1 {
 		t.Fatalf("named preview contains %d Sidebar wrappers, want 1", got)
 	}
 	if !strings.Contains(page, `data-variant="floating"`) {
@@ -258,21 +258,24 @@ func TestFoundationQueryLoadsOnlyFoundationStylesheet(t *testing.T) {
 }
 
 // firstCalendarDayDate returns the data-date attribute of the first
-// [data-gsxui-calendar-day] element in page, in DOM order — the button's own
+// [data-gsxui-slot-calendar-day-button] element in page, in DOM order — the button's own
 // copy specifically (ui/calendar.gsx and its test file's own gridDates
 // helper explain why the button, not just the enclosing <td>, carries this
 // attribute: it's the one selector that's unambiguously one-per-cell).
 func firstCalendarDayDate(t *testing.T, page string) string {
 	t.Helper()
-	i := strings.Index(page, "data-gsxui-calendar-day")
+	i := strings.Index(page, "data-gsxui-slot-calendar-day-button")
 	if i < 0 {
-		t.Fatal("no [data-gsxui-calendar-day] element in page")
+		t.Fatal("no [data-gsxui-slot-calendar-day-button] element in page")
 	}
+	// The marker sits at the end of the tag; scan back to the opening "<"
+	// and forward to ">" so data-date is found wherever it sits in the tag.
+	tagStart := strings.LastIndex(page[:i], "<")
 	tagEnd := strings.Index(page[i:], ">")
-	if tagEnd < 0 {
+	if tagStart < 0 || tagEnd < 0 {
 		t.Fatal("unterminated day button tag")
 	}
-	tag := page[i : i+tagEnd]
+	tag := page[tagStart : i+tagEnd]
 	j := strings.Index(tag, `data-date="`)
 	if j < 0 {
 		t.Fatalf("day button missing data-date\ntag: %s", tag)

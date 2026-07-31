@@ -15,7 +15,7 @@ func TestInputOTPPinned(t *testing.T) {
 	// caller's slot markup. No maxlength/pattern/name here — see
 	// TestInputOTPAttrsFallThrough for those, all via attrs.
 	got := render(t, ui.InputOTP(gsx.Raw("x"), nil))
-	want := `<div class="flex items-center gap-2 has-[[data-gsxui-slot-input-otp-input]:disabled]:opacity-50" data-gsxui-input-otp data-gsxui-slot-input-otp><input data-gsxui-input-otp-input inputmode="numeric" autocomplete="one-time-code" class="cursor-text disabled:cursor-not-allowed" data-gsxui-slot-input-otp-input>x</div>`
+	want := `<div class="flex items-center gap-2 has-[[data-gsxui-slot-input-otp-input]:disabled]:opacity-50" data-gsxui-slot-input-otp><input inputmode="numeric" autocomplete="one-time-code" class="cursor-text disabled:cursor-not-allowed" data-gsxui-slot-input-otp-input>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -73,7 +73,7 @@ func TestInputOTPSlotPinned(t *testing.T) {
 	// ring-[3px]) — data-[active=true]:z-10 is KEPT regardless of nova's
 	// excerpt (functionally necessary, not a deliberate drop, see the map).
 	got := render(t, ui.InputOTPSlot(nil))
-	want := `<div data-gsxui-input-otp-slot data-active="false" class="relative flex size-8 items-center justify-center border-y border-r border-input text-sm transition-all outline-none first:rounded-l-lg first:border-l last:rounded-r-lg aria-invalid:border-destructive data-[active=true]:z-10 data-[active=true]:border-ring data-[active=true]:ring-3 data-[active=true]:ring-ring/50 data-[active=true]:aria-invalid:border-destructive data-[active=true]:aria-invalid:ring-destructive/20 dark:bg-input/30 dark:data-[active=true]:aria-invalid:ring-destructive/40" data-gsxui-slot-input-otp-slot></div>`
+	want := `<div data-active="false" class="relative flex size-8 items-center justify-center border-y border-r border-input text-sm transition-all outline-none first:rounded-l-lg first:border-l last:rounded-r-lg aria-invalid:border-destructive data-[active=true]:z-10 data-[active=true]:border-ring data-[active=true]:ring-3 data-[active=true]:ring-ring/50 data-[active=true]:aria-invalid:border-destructive data-[active=true]:aria-invalid:ring-destructive/20 dark:bg-input/30 dark:data-[active=true]:aria-invalid:ring-destructive/40" data-gsxui-slot-input-otp-slot></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

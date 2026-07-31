@@ -54,7 +54,6 @@ func TestSidebarProviderReflectsStateWidthsAndBehaviorHook(t *testing.T) {
 	open := render(t, ui.SidebarProvider(true, gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "caller"}}))
 	requireContainsAll(t, open,
 		`data-state="expanded"`,
-		`data-gsxui-sidebar-wrapper`,
 		`data-gsxui-slot-sidebar-wrapper`,
 		`style="--sidebar-width:16rem;--sidebar-width-icon:3rem"`,
 		canonicalSidebarClass("sidebar-wrapper", "caller"),
@@ -64,7 +63,7 @@ func TestSidebarProviderReflectsStateWidthsAndBehaviorHook(t *testing.T) {
 	}
 
 	closed := render(t, ui.SidebarProvider(false, gsx.Raw("x"), nil))
-	requireContainsAll(t, closed, `data-state="collapsed"`, `data-gsxui-sidebar-wrapper`)
+	requireContainsAll(t, closed, `data-state="collapsed"`, `data-gsxui-slot-sidebar-wrapper`)
 }
 
 func TestSidebarRendersTwoExplicitResponsiveTrees(t *testing.T) {
@@ -85,7 +84,6 @@ func TestSidebarRendersTwoExplicitResponsiveTrees(t *testing.T) {
 		`data-gsxui-slot-sidebar-mobile-content data-gsxui-slot-sidebar data-gsxui-slot-sheet-content data-gsxui-slot-dialog-content`,
 		`data-mobile="true"`,
 		`data-side="right"`,
-		`data-gsxui-sidebar-mobile-dialog`,
 		`--sidebar-width:18rem`,
 		`data-gsxui-slot-sidebar-mobile-header data-gsxui-slot-sheet-header`,
 		`data-gsxui-slot-sidebar-mobile-title data-gsxui-slot-sheet-title`,
@@ -96,7 +94,7 @@ func TestSidebarRendersTwoExplicitResponsiveTrees(t *testing.T) {
 		`data-collapsible="icon"`,
 		`data-gsxui-sidebar-collapsible="icon"`,
 		`data-variant="floating"`,
-		`data-gsxui-sidebar-desktop`,
+		`data-gsxui-slot-sidebar-desktop`,
 		`data-gsxui-slot-sidebar-gap`,
 		`data-gsxui-slot-sidebar-container`,
 		`data-gsxui-slot-sidebar-inner`,
@@ -215,7 +213,7 @@ func TestSidebarPrimitiveCompositionAndCallerClassPlacement(t *testing.T) {
 	requireContainsAll(t, trigger,
 		`data-variant="ghost"`,
 		`data-size="icon"`,
-		`data-gsxui-sidebar-trigger`,
+		`data-gsxui-slot-sidebar-trigger`,
 		`data-gsxui-slot-icon`,
 		`data-gsxui-slot-sidebar-trigger-label`,
 	)
@@ -223,8 +221,7 @@ func TestSidebarPrimitiveCompositionAndCallerClassPlacement(t *testing.T) {
 
 func TestSidebarTriggerComposesPresenceMarkersOnButton(t *testing.T) {
 	got := render(t, ui.SidebarTrigger(nil))
-	requirePresenceAttributesOnSameTag(t, got, "data-gsxui-sidebar-trigger",
-		"data-gsxui-slot-sidebar-trigger",
+	requirePresenceAttributesOnSameTag(t, got, "data-gsxui-slot-sidebar-trigger",
 		"data-gsxui-slot-button",
 	)
 }
@@ -268,7 +265,7 @@ func TestSidebarPlainPartsExposeNamespacedSlotsWithTheirRecipeClass(t *testing.T
 
 	rail := render(t, ui.SidebarRail(nil))
 	requireContainsAll(t, rail,
-		`data-gsxui-sidebar-rail`,
+		`data-gsxui-slot-sidebar-rail`,
 		`aria-label="Toggle Sidebar"`,
 		`tabindex="-1"`,
 		`title="Toggle Sidebar"`,

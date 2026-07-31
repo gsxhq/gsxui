@@ -53,9 +53,6 @@ func Carousel(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Nod
 		if !attrs.Has("aria-roledescription") {
 			_gsxgw.S(" aria-roledescription=\"carousel\"")
 		}
-		if !attrs.Has("data-gsxui-carousel") {
-			_gsxgw.BoolAttr("data-gsxui-carousel", true)
-		}
 		if !attrs.Has("data-orientation") {
 			_gsxgw.S(" data-orientation=\"")
 			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
@@ -68,14 +65,14 @@ func Carousel(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Nod
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-carousel"})
 		_gsxgw.BoolAttr("data-gsxui-slot-carousel", true)
 		_gsxgw.S(">")
-//line carousel.gsx:45:3
+//line carousel.gsx:44:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line carousel.gsx:49:1
+//line carousel.gsx:48:1
 // CarouselContent renders BOTH divs from shadcn's own source: the outer div
 // is embla's `carouselRef` viewport target, ported here as the REAL native
 // scroll container (`overflow-x-auto`/`-y-auto` + `snap-x`/`snap-y
@@ -91,21 +88,19 @@ func Carousel(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Nod
 // otherwise show a visible scrollbar embla's transform-based approach never
 // had anything analogous to.
 
-//line carousel.gsx:63:1
+//line carousel.gsx:62:1
 func CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:64:2
-		_gsxgw.S("<div")
-		_gsxgw.BoolAttr("data-gsxui-carousel-content", true)
-		_gsxgw.S(" data-orientation=\"")
+//line carousel.gsx:63:2
+		_gsxgw.S("<div data-orientation=\"")
 		_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
 		_gsxgw.S("\" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(carousel.Content()))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-carousel-content", true)
 		_gsxgw.S(">")
-//line carousel.gsx:70:3
+//line carousel.gsx:68:3
 		_gsxgw.S("<div")
 		if !attrs.Has("data-orientation") {
 			_gsxgw.S(" data-orientation=\"")
@@ -119,14 +114,14 @@ func CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs) _gs
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-carousel-track"})
 		_gsxgw.BoolAttr("data-gsxui-slot-carousel-track", true)
 		_gsxgw.S(">")
-//line carousel.gsx:76:4
+//line carousel.gsx:74:4
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div></div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line carousel.gsx:81:1
+//line carousel.gsx:79:1
 // The negative scroll-margin (`-scroll-ml-4`/`-scroll-mt-4`, matching the
 // item's own `pl-4`/`pt-4`) makes every snap position CONTENT-aligned, the
 // way embla's transform steps behave: embla translates by one whole slide
@@ -148,20 +143,17 @@ func CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs) _gs
 // native scroll-snap to have any snap points at all (embla needed none: it
 // never scrolls, it transforms).
 
-//line carousel.gsx:101:1
+//line carousel.gsx:99:1
 func CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:102:2
+//line carousel.gsx:100:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"group\"")
 		}
 		if !attrs.Has("aria-roledescription") {
 			_gsxgw.S(" aria-roledescription=\"slide\"")
-		}
-		if !attrs.Has("data-gsxui-carousel-item") {
-			_gsxgw.BoolAttr("data-gsxui-carousel-item", true)
 		}
 		if !attrs.Has("data-orientation") {
 			_gsxgw.S(" data-orientation=\"")
@@ -175,17 +167,17 @@ func CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-carousel-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-carousel-item", true)
 		_gsxgw.S(">")
-//line carousel.gsx:111:3
+//line carousel.gsx:108:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line carousel.gsx:115:1
+//line carousel.gsx:112:1
 // CarouselPrevious/CarouselNext compose Button (variant="outline"
 // size="icon") exactly like shadcn's own versions, plus
-// data-gsxui-carousel-prev/-next for carousel.js's delegated click wiring.
+// data-gsxui-slot-carousel-previous/-next for carousel.js's delegated click wiring.
 // shadcn computes `disabled={!canScrollPrev}`/`!canScrollNext` from embla's
 // The horizontal buttons' `-translate-y-1/2` centering shares the translate-y
 // property with Button's nova press effect (`active:not-aria-[haspopup]:
@@ -212,40 +204,40 @@ func CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt
 // not). carousel.js's own init pass recomputes and corrects both from the
 // real DOM immediately on load either way — see its own header comment.
 
-//line carousel.gsx:143:1
+//line carousel.gsx:140:1
 func CarouselPrevious(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:144:2
+//line carousel.gsx:141:2
 		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:157:3
+//line carousel.gsx:153:3
 			_gsxgw.Node(ctx, icon.ArrowLeft())
-//line carousel.gsx:158:3
+//line carousel.gsx:154:3
 			_gsxgw.S("<span")
 			_gsxgw.BoolAttr("data-gsxui-slot-carousel-control-label", true)
 			_gsxgw.S(">Previous slide</span>")
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-carousel-prev", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-orientation", Value: _gsxstd.Default((orientation), "horizontal")}}, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(carousel.Previous()), _gsxrt.Class(carousel.PreviousOrientation(orientation)))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-carousel-previous", Value: _gsxrt.Toggle(true)}})))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-orientation", Value: _gsxstd.Default((orientation), "horizontal")}}, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(carousel.Previous()), _gsxrt.Class(carousel.PreviousOrientation(orientation)))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-carousel-previous", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }
 
-//line carousel.gsx:162:1
+//line carousel.gsx:158:1
 func CarouselNext(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:163:2
+//line carousel.gsx:159:2
 		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:175:3
+//line carousel.gsx:170:3
 			_gsxgw.Node(ctx, icon.ArrowRight())
-//line carousel.gsx:176:3
+//line carousel.gsx:171:3
 			_gsxgw.S("<span")
 			_gsxgw.BoolAttr("data-gsxui-slot-carousel-control-label", true)
 			_gsxgw.S(">Next slide</span>")
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-carousel-next", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-orientation", Value: _gsxstd.Default((orientation), "horizontal")}}, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(carousel.Next()), _gsxrt.Class(carousel.NextOrientation(orientation)))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-carousel-next", Value: _gsxrt.Toggle(true)}})))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-orientation", Value: _gsxstd.Default((orientation), "horizontal")}}, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(carousel.Next()), _gsxrt.Class(carousel.NextOrientation(orientation)))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-carousel-next", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }

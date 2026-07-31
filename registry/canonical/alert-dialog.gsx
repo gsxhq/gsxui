@@ -49,11 +49,11 @@ component AlertDialogFooter(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component AlertDialogTitle(children gsx.Node, attrs gsx.Attrs) {
-	<h2 class={ alertDialog.Title() } data-gsxui-dialog-title { attrs... } data-gsxui-slot-alert-dialog-title>{ children }</h2>
+	<h2 class={ alertDialog.Title() } { attrs... } data-gsxui-slot-alert-dialog-title data-gsxui-slot-dialog-title>{ children }</h2>
 }
 
 component AlertDialogDescription(children gsx.Node, attrs gsx.Attrs) {
-	<p class={ alertDialog.Description() } data-gsxui-dialog-description { attrs... } data-gsxui-slot-alert-dialog-description>{ children }</p>
+	<p class={ alertDialog.Description() } { attrs... } data-gsxui-slot-alert-dialog-description data-gsxui-slot-dialog-description>{ children }</p>
 }
 
 component AlertDialogAction(children gsx.Node, attrs gsx.Attrs) {

@@ -58,7 +58,6 @@ component Toggle(pressed bool, variant string, size string, children gsx.Node, a
 	}}
 	<button
 		type="button"
-		data-gsxui-toggle
 		data-variant={variant |> default("default")}
 		data-size={size |> default("default")}
 		data-state={state}

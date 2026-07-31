@@ -9,7 +9,7 @@
 //
 // Because the card is server markup, the same lifecycle is applied to rows
 // the SERVER inserts, not just JS-triggered ones. A MutationObserver on the
-// <ol> adopts any inserted `li[data-gsxui-toast]` — so a full-page-load
+// <ol> adopts any inserted `li[data-gsxui-slot-toast]` — so a full-page-load
 // flash rendered inline, an HTMX out-of-band swap
 // (`hx-swap-oob="beforeend:#gsxui-toaster"`), an HTMX partial append, or an
 // SSE-driven insert all animate/stack/auto-dismiss with ZERO HTMX-specific
@@ -78,7 +78,6 @@ function createFallbackRegion() {
   fallbackSectionEl.tabIndex = -1;
   fallbackRegionEl = document.createElement("ol");
   fallbackRegionEl.setAttribute("data-gsxui-slot-toaster", "");
-  fallbackRegionEl.setAttribute("data-gsxui-toaster", "");
   fallbackRegionEl.id = "gsxui-toaster";
   fallbackSectionEl.appendChild(fallbackRegionEl);
   document.body.appendChild(fallbackSectionEl);
@@ -89,13 +88,13 @@ function desiredRegion() {
   if (regionEl && regionEl.isConnected) {
     if (regionEl !== fallbackRegionEl) return regionEl;
     const serverRegion = [
-      ...document.querySelectorAll("[data-gsxui-toaster]"),
+      ...document.querySelectorAll("[data-gsxui-slot-toaster]"),
     ].find((candidate) => candidate !== fallbackRegionEl);
     return serverRegion || regionEl;
   }
 
   const serverRegion = [
-    ...document.querySelectorAll("[data-gsxui-toaster]"),
+    ...document.querySelectorAll("[data-gsxui-slot-toaster]"),
   ].find((candidate) => candidate !== fallbackRegionEl);
   if (serverRegion) return serverRegion;
   if (fallbackRegionEl && fallbackRegionEl.isConnected) {
@@ -129,8 +128,8 @@ function disposeRecord(rec, removeTarget) {
 
 function reconcileRows(root) {
   if (root.nodeType !== 1) return;
-  if (root.matches("li[data-gsxui-toast]")) adopt(root);
-  root.querySelectorAll("li[data-gsxui-toast]").forEach((row) => adopt(row));
+  if (root.matches("li[data-gsxui-slot-toast]")) adopt(root);
+  root.querySelectorAll("li[data-gsxui-slot-toast]").forEach((row) => adopt(row));
 }
 
 function bindRegion(next) {
@@ -194,8 +193,8 @@ function handleDocumentMutations(mutations) {
     for (const node of mutation.addedNodes) {
       if (
         node.nodeType === 1 &&
-        (node.matches("[data-gsxui-toaster]") ||
-          node.querySelector("[data-gsxui-toaster]"))
+        (node.matches("[data-gsxui-slot-toaster]") ||
+          node.querySelector("[data-gsxui-slot-toaster]"))
       ) {
         ensureRegion();
         return;
@@ -221,9 +220,9 @@ function tpl(type) {
 function setIconFromTemplate(el, type) {
   const template = tpl(type);
   const srcIcon = template
-    ? template.content.querySelector("[data-gsxui-toast-icon]")
+    ? template.content.querySelector("[data-gsxui-slot-toast-icon]")
     : null;
-  const slot = el.querySelector("[data-gsxui-toast-icon]");
+  const slot = el.querySelector("[data-gsxui-slot-toast-icon]");
   if (!srcIcon) {
     if (slot) slot.remove();
     return;
@@ -243,16 +242,16 @@ function build(rec, opts) {
   const el = template.content.firstElementChild.cloneNode(true);
   el.dataset.type = rec.type;
 
-  const title = el.querySelector("[data-gsxui-toast-title]");
+  const title = el.querySelector("[data-gsxui-slot-toast-title]");
   if (title) title.textContent = opts.message ?? "";
 
-  const desc = el.querySelector("[data-gsxui-toast-description]");
+  const desc = el.querySelector("[data-gsxui-slot-toast-description]");
   if (desc) {
     if (opts.description) desc.textContent = opts.description;
     else desc.remove();
   }
 
-  const actionBtn = el.querySelector("[data-gsxui-toast-action]");
+  const actionBtn = el.querySelector("[data-gsxui-slot-toast-action]");
   if (actionBtn) {
     if (opts.action && opts.action.label) {
       actionBtn.textContent = opts.action.label;
@@ -262,7 +261,7 @@ function build(rec, opts) {
     }
   }
 
-  const cancelBtn = el.querySelector("[data-gsxui-toast-cancel]");
+  const cancelBtn = el.querySelector("[data-gsxui-slot-toast-cancel]");
   if (cancelBtn) {
     if (opts.cancel && opts.cancel.label) {
       cancelBtn.textContent = opts.cancel.label;
@@ -282,12 +281,12 @@ function build(rec, opts) {
 // leave → collapse + resume (debounced so crossing a gap doesn't flicker).
 function wire(el, rec) {
   const listenerOptions = { signal: rec.controller.signal };
-  const close = el.querySelector("[data-gsxui-toast-close]");
+  const close = el.querySelector("[data-gsxui-slot-toast-close]");
   if (close) {
     close.addEventListener("click", () => dismiss(rec.id), listenerOptions);
   }
 
-  const actionBtn = el.querySelector("[data-gsxui-toast-action]");
+  const actionBtn = el.querySelector("[data-gsxui-slot-toast-action]");
   if (actionBtn) {
     actionBtn.addEventListener(
       "click",
@@ -300,7 +299,7 @@ function wire(el, rec) {
     );
   }
 
-  const cancelBtn = el.querySelector("[data-gsxui-toast-cancel]");
+  const cancelBtn = el.querySelector("[data-gsxui-slot-toast-cancel]");
   if (cancelBtn) {
     cancelBtn.addEventListener(
       "click",
@@ -539,7 +538,7 @@ function morph(id, type, message) {
   rec.type = type;
   rec.el.dataset.type = type;
   setIconFromTemplate(rec.el, type);
-  const title = rec.el.querySelector("[data-gsxui-toast-title]");
+  const title = rec.el.querySelector("[data-gsxui-slot-toast-title]");
   if (title && message != null) title.textContent = message;
   clearTimeout(rec.timer);
   rec.timer = null;
@@ -594,9 +593,9 @@ toast.dismiss = (id) => {
 // Any element with a NON-EMPTY data-gsxui-toast fires a toast on click,
 // reading the same fields the imperative API takes — mirrors the
 // data-gsxui-dialog-trigger idiom so a docs page needs no page-specific
-// <script>. The cloned toast <li> also carries data-gsxui-toast (an empty
-// slot marker, per the Toast card markup), so the empty-value guard is what
-// stops a click INSIDE a toast from spawning a blank one.
+// <script>. Toast cards themselves no longer carry data-gsxui-toast (their
+// identity is data-gsxui-slot-toast), but the empty-value guard stays as a
+// defensive filter against stray valueless markers.
 on("click", "[data-gsxui-toast]", (_event, el) => {
   if (!el.dataset.gsxuiToast) return;
   const label = el.dataset.gsxuiToastAction;

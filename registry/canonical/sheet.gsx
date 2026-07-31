@@ -31,7 +31,6 @@ component SheetContent(side string, hideCloseButton bool, children gsx.Node, att
 			sheet.Content(),
 			sheet.ContentSide(side),
 		}
-		data-gsxui-dialog-content
 		data-state="closed"
 		data-side={side |> default("right")}
 		{ attrs... }
@@ -79,11 +78,11 @@ component SheetFooter(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component SheetTitle(children gsx.Node, attrs gsx.Attrs) {
-	<h2 class={ sheet.Title() } data-gsxui-dialog-title { attrs... } data-gsxui-slot-sheet-title>{ children }</h2>
+	<h2 class={ sheet.Title() } { attrs... } data-gsxui-slot-sheet-title data-gsxui-slot-dialog-title>{ children }</h2>
 }
 
 component SheetDescription(children gsx.Node, attrs gsx.Attrs) {
-	<p class={ sheet.Description() } data-gsxui-dialog-description { attrs... } data-gsxui-slot-sheet-description>{ children }</p>
+	<p class={ sheet.Description() } { attrs... } data-gsxui-slot-sheet-description data-gsxui-slot-dialog-description>{ children }</p>
 }
 
 component SheetClose(children gsx.Node, attrs gsx.Attrs) {

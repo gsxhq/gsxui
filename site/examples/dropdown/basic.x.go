@@ -26,38 +26,38 @@ func Basic() _gsxrt.Node {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Options")
 				return _gsxgw.Err()
-			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dropdown-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-dropdown-menu-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "menu"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
-//line basic.gsx:22:3
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-slot-dropdown-menu-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "menu"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
+//line basic.gsx:21:3
 			_gsxgw.Node(ctx, ui.DropdownMenuContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:23:4
+//line basic.gsx:22:4
 				_gsxgw.Node(ctx, ui.DropdownMenuGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:24:5
+//line basic.gsx:23:5
 					_gsxgw.Node(ctx, ui.DropdownMenuLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("My Account")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:25:5
+//line basic.gsx:24:5
 					_gsxgw.Node(ctx, ui.DropdownMenuSeparator(nil))
-//line basic.gsx:26:5
+//line basic.gsx:25:5
 					_gsxgw.Node(ctx, ui.DropdownMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Profile")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:27:5
+//line basic.gsx:26:5
 					_gsxgw.Node(ctx, ui.DropdownMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Billing")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:28:5
+//line basic.gsx:27:5
 					_gsxgw.Node(ctx, ui.DropdownMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Settings ")
-//line basic.gsx:29:15
+//line basic.gsx:28:15
 						_gsxgw.Node(ctx, ui.DropdownMenuShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⌘,")

@@ -9,7 +9,7 @@ import (
 )
 
 func TestDrawerPinnedParts(t *testing.T) {
-	if got, want := render(t, ui.Drawer(gsx.Raw("x"), nil)), `<div class="contents" data-gsxui-dialog data-gsxui-slot-drawer data-gsxui-slot-dialog>x</div>`; got != want {
+	if got, want := render(t, ui.Drawer(gsx.Raw("x"), nil)), `<div class="contents" data-gsxui-slot-drawer data-gsxui-slot-dialog>x</div>`; got != want {
 		t.Errorf("root mismatch\n got: %s\nwant: %s", got, want)
 	}
 	if got, want := render(t, ui.DrawerTrigger(gsx.Raw("Open"), nil)), `<button data-gsxui-dialog-trigger type="button" aria-haspopup="dialog" aria-expanded="false" data-gsxui-slot-drawer-trigger>Open</button>`; got != want {
@@ -86,8 +86,8 @@ func TestDrawerSemanticParts(t *testing.T) {
 	}{
 		{render(t, ui.DrawerHeader(gsx.Raw("x"), nil)), "drawer-header", ""},
 		{render(t, ui.DrawerFooter(gsx.Raw("x"), nil)), "drawer-footer", ""},
-		{render(t, ui.DrawerTitle(gsx.Raw("x"), nil)), "drawer-title", "data-gsxui-dialog-title"},
-		{render(t, ui.DrawerDescription(gsx.Raw("x"), nil)), "drawer-description", "data-gsxui-dialog-description"},
+		{render(t, ui.DrawerTitle(gsx.Raw("x"), nil)), "drawer-title", "data-gsxui-slot-dialog-title"},
+		{render(t, ui.DrawerDescription(gsx.Raw("x"), nil)), "drawer-description", "data-gsxui-slot-dialog-description"},
 		{render(t, ui.DrawerClose(gsx.Raw("x"), nil)), "drawer-close", "data-gsxui-dialog-close"},
 	}
 	for _, tt := range tests {

@@ -36,10 +36,10 @@ test("checked menu and combobox indicators follow semantic owner state", async (
   await openStyleContract(page);
 
   const cases = [
-    ["dropdown", "[data-gsxui-dropdown-checkbox-indicator]"],
-    ["context", "[data-gsxui-contextmenu-radio-indicator]"],
-    ["menubar", "[data-gsxui-menubar-checkbox-indicator]"],
-    ["combobox", "[data-gsxui-combobox-item-indicator]"],
+    ["dropdown", "[data-gsxui-slot-dropdown-menu-checkbox-item-indicator]"],
+    ["context", "[data-gsxui-slot-context-menu-radio-item-indicator]"],
+    ["menubar", "[data-gsxui-slot-menubar-checkbox-item-indicator]"],
+    ["combobox", "[data-gsxui-slot-combobox-item-indicator]"],
   ] as const;
 
   for (const [family, indicator] of cases) {
@@ -77,9 +77,9 @@ test("CommandDialog sizing is supplied by CSS ancestry", async ({ page }) => {
   await expect(dialog).toBeVisible();
   expect(
     await dialog.evaluate((element) => {
-      const command = element.querySelector("[data-gsxui-command]");
-      const wrapper = element.querySelector("[data-gsxui-command-input-wrapper]");
-      const input = element.querySelector("[data-gsxui-command-input]");
+      const command = element.querySelector("[data-gsxui-slot-command]");
+      const wrapper = element.querySelector("[data-gsxui-slot-command-input-wrapper]");
+      const input = element.querySelector("[data-gsxui-slot-command-input]");
       const css = getComputedStyle(element);
       return {
         maxWidth: css.maxWidth,
@@ -136,7 +136,7 @@ test("navigation viewport chrome and trigger rotation follow reflected state", a
   });
   expect(
     await trigger
-      .locator("[data-gsxui-navigation-menu-trigger-icon]")
+      .locator("[data-gsxui-slot-navigation-menu-trigger-icon]")
       .evaluate((element) => getComputedStyle(element).rotate),
   ).toBe("180deg");
 });

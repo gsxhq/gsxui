@@ -116,7 +116,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   );
 
   await page.goto("/x/hover-card/basic");
-  const hoverTrigger = page.locator("[data-gsxui-hovercard-trigger]");
+  const hoverTrigger = page.locator("[data-gsxui-slot-hover-card-trigger]");
   const hoverContent = page.locator("[data-gsxui-slot-hover-card-content]");
   await hoverTrigger.hover();
   await observe(
@@ -228,7 +228,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   );
 
   await page.goto("/x/dropdown-menu/submenu");
-  const dropdownTrigger = page.locator("[data-gsxui-dropdown-trigger]").first();
+  const dropdownTrigger = page.locator("[data-gsxui-slot-dropdown-menu-trigger]").first();
   const dropdownContent = page.locator(
     "[data-gsxui-slot-dropdown-menu-content]",
   );
@@ -282,7 +282,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   );
 
   await page.goto("/x/context-menu/full");
-  await page.locator("[data-gsxui-contextmenu-trigger]").click({
+  await page.locator("[data-gsxui-slot-context-menu-trigger]").click({
     button: "right",
   });
   const contextContent = page.locator(
@@ -394,7 +394,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
 
   await page.goto("/x/navigation-menu/basic");
   const navigationTrigger = page.locator(
-    "button[data-gsxui-navigation-menu-trigger]",
+    "button[data-gsxui-slot-navigation-menu-trigger]",
   );
   const navigationContent = page.locator(
     "[data-gsxui-slot-navigation-menu-content]",
@@ -475,7 +475,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   );
 
   await page.goto("/x/input-otp/basic");
-  await page.locator("[data-gsxui-input-otp-input]").focus();
+  await page.locator("[data-gsxui-slot-input-otp-input]").focus();
   const activeSlot = page.locator(
     "[data-gsxui-slot-input-otp-slot][data-active='true']",
   );
@@ -559,7 +559,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
     "data-expanded",
     "false",
   );
-  await toast.locator("[data-gsxui-toast-close]").click();
+  await toast.locator("[data-gsxui-slot-toast-close]").click();
   await observe(
     "sonner-lifecycle",
     "toast",

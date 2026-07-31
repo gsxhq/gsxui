@@ -13,7 +13,7 @@ const HIDDEN_OUTSIDE = "/x/calendar/hiddenoutside";
 
 // The grid's 42 data-date values, in DOM order.
 async function gridDates(page: import("@playwright/test").Page) {
-  return page.$$eval("[data-gsxui-calendar-day]", (els) =>
+  return page.$$eval("[data-gsxui-slot-calendar-day-button]", (els) =>
     els.map((el) => el.getAttribute("data-date")),
   );
 }
@@ -34,7 +34,7 @@ async function gridDates(page: import("@playwright/test").Page) {
 // none of the pre-existing fields would notice if calendar.js forgot any part
 // of that on a client-navigated month.
 async function gridCells(page: import("@playwright/test").Page) {
-  return page.$$eval("[data-gsxui-calendar-day]", (buttons) =>
+  return page.$$eval("[data-gsxui-slot-calendar-day-button]", (buttons) =>
     buttons.map((btn) => {
       const button = btn as HTMLButtonElement;
       const cell = button.closest("td")!;
@@ -71,14 +71,14 @@ test("the server renders a complete grid before any JS runs", async ({ page }) =
 test("next and previous navigate a month at a time", async ({ page }) => {
   await page.goto(BASIC);
 
-  await page.click("[data-gsxui-calendar-next]");
-  await expect(page.locator("[data-gsxui-calendar]")).toHaveAttribute(
+  await page.click("[data-gsxui-slot-calendar-next]");
+  await expect(page.locator("[data-gsxui-slot-calendar]")).toHaveAttribute(
     "data-gsxui-calendar-month",
     "2026-02",
   );
 
-  await page.click("[data-gsxui-calendar-prev]");
-  await expect(page.locator("[data-gsxui-calendar]")).toHaveAttribute(
+  await page.click("[data-gsxui-slot-calendar-previous]");
+  await expect(page.locator("[data-gsxui-slot-calendar]")).toHaveAttribute(
     "data-gsxui-calendar-month",
     "2026-01",
   );
@@ -86,10 +86,10 @@ test("next and previous navigate a month at a time", async ({ page }) => {
 
 test("navigation never creates or destroys a cell", async ({ page }) => {
   await page.goto(BASIC);
-  const before = await page.$$eval("[data-gsxui-calendar-day]", (els) => els.length);
+  const before = await page.$$eval("[data-gsxui-slot-calendar-day-button]", (els) => els.length);
 
-  const first = await page.$("[data-gsxui-calendar-day]");
-  await page.click("[data-gsxui-calendar-next]");
+  const first = await page.$("[data-gsxui-slot-calendar-day-button]");
+  await page.click("[data-gsxui-slot-calendar-next]");
 
   // A real navigation happened — without this, a completely broken click
   // handler (a no-op) would pass the rest of this test too: the cell count
@@ -97,12 +97,12 @@ test("navigation never creates or destroys a cell", async ({ page }) => {
   // at all. Task 4 review's Minor finding 3, confirmed by the Step-4
   // red-validation control: with calendar.js's import removed entirely,
   // this test was one of the two that still passed.
-  await expect(page.locator("[data-gsxui-calendar]")).toHaveAttribute(
+  await expect(page.locator("[data-gsxui-slot-calendar]")).toHaveAttribute(
     "data-gsxui-calendar-month",
     "2026-02",
   );
 
-  const after = await page.$$eval("[data-gsxui-calendar-day]", (els) => els.length);
+  const after = await page.$$eval("[data-gsxui-slot-calendar-day-button]", (els) => els.length);
   expect(after).toBe(before);
 
   // The same element object is still there — proof it was updated, not replaced.
@@ -127,10 +127,10 @@ const AGREEMENT_MONTHS = [
 for (const { clicks, month, why } of AGREEMENT_MONTHS) {
   test(`Go and JS agree on ${month} (${why})`, async ({ page }) => {
     await page.goto(BASIC);
-    const button = clicks > 0 ? "[data-gsxui-calendar-next]" : "[data-gsxui-calendar-prev]";
+    const button = clicks > 0 ? "[data-gsxui-slot-calendar-next]" : "[data-gsxui-slot-calendar-previous]";
     for (let i = 0; i < Math.abs(clicks); i++) await page.click(button);
 
-    await expect(page.locator("[data-gsxui-calendar]")).toHaveAttribute(
+    await expect(page.locator("[data-gsxui-slot-calendar]")).toHaveAttribute(
       "data-gsxui-calendar-month",
       month,
     );
@@ -147,9 +147,9 @@ for (const { clicks, month, why } of AGREEMENT_MONTHS) {
 for (const year of ["0000", "0099"]) {
   test(`Go and JS agree for exact year ${year}`, async ({ page }) => {
     await page.goto(`${BASIC}?month=${year}-01`);
-    await page.click("[data-gsxui-calendar-next]");
+    await page.click("[data-gsxui-slot-calendar-next]");
 
-    await expect(page.locator("[data-gsxui-calendar]")).toHaveAttribute(
+    await expect(page.locator("[data-gsxui-slot-calendar]")).toHaveAttribute(
       "data-gsxui-calendar-month",
       `${year}-02`,
     );
@@ -175,9 +175,9 @@ test("Go and JS agree on loaded 2026-02 (selection, disabled rules, Monday week 
   page,
 }) => {
   await page.goto(LOADED);
-  await page.click("[data-gsxui-calendar-next]");
+  await page.click("[data-gsxui-slot-calendar-next]");
 
-  await expect(page.locator("[data-gsxui-calendar]")).toHaveAttribute(
+  await expect(page.locator("[data-gsxui-slot-calendar]")).toHaveAttribute(
     "data-gsxui-calendar-month",
     "2026-02",
   );
@@ -198,10 +198,10 @@ test("loaded survives a next/prev round trip back to its own initial month", asy
   await page.goto(LOADED);
   const serverCells = await gridCells(page);
 
-  await page.click("[data-gsxui-calendar-next]");
-  await page.click("[data-gsxui-calendar-prev]");
+  await page.click("[data-gsxui-slot-calendar-next]");
+  await page.click("[data-gsxui-slot-calendar-previous]");
 
-  await expect(page.locator("[data-gsxui-calendar]")).toHaveAttribute(
+  await expect(page.locator("[data-gsxui-slot-calendar]")).toHaveAttribute(
     "data-gsxui-calendar-month",
     "2026-01",
   );
@@ -232,10 +232,10 @@ test("Go and JS agree on loaded-range 2026-01 (range flags, Monday week start)",
 }) => {
   await page.goto(LOADED_RANGE);
 
-  await page.click("[data-gsxui-calendar-next]");
-  await page.click("[data-gsxui-calendar-prev]");
+  await page.click("[data-gsxui-slot-calendar-next]");
+  await page.click("[data-gsxui-slot-calendar-previous]");
 
-  await expect(page.locator("[data-gsxui-calendar]")).toHaveAttribute(
+  await expect(page.locator("[data-gsxui-slot-calendar]")).toHaveAttribute(
     "data-gsxui-calendar-month",
     "2026-01",
   );
@@ -297,9 +297,9 @@ test("outside days are hidden without their cells leaving the grid", async ({ pa
 // (see the report for the captured failure).
 test("Go and JS agree on hidden-outside 2026-02 (showOutsideDays=false)", async ({ page }) => {
   await page.goto(HIDDEN_OUTSIDE);
-  await page.click("[data-gsxui-calendar-next]");
+  await page.click("[data-gsxui-slot-calendar-next]");
 
-  await expect(page.locator("[data-gsxui-calendar]")).toHaveAttribute(
+  await expect(page.locator("[data-gsxui-slot-calendar]")).toHaveAttribute(
     "data-gsxui-calendar-month",
     "2026-02",
   );
@@ -319,13 +319,13 @@ test("Go and JS agree on hidden-outside 2026-02 (showOutsideDays=false)", async 
 // navigation or it keeps announcing the server-rendered month forever.
 test("the grid's accessible name follows the displayed month", async ({ page }) => {
   await page.goto(BASIC);
-  const grid = page.locator("[data-gsxui-calendar-grid]");
+  const grid = page.locator("[data-gsxui-slot-calendar-grid]");
   await expect(grid).toHaveAttribute("aria-label", "January 2026");
 
-  await page.click("[data-gsxui-calendar-next]");
+  await page.click("[data-gsxui-slot-calendar-next]");
   await expect(grid).toHaveAttribute("aria-label", "February 2026");
 
-  await page.click("[data-gsxui-calendar-prev]");
+  await page.click("[data-gsxui-slot-calendar-previous]");
   await expect(grid).toHaveAttribute("aria-label", "January 2026");
 });
 
@@ -339,8 +339,8 @@ test("the grid's accessible name follows the displayed month", async ({ page }) 
 // year <select> holding a value with no matching <option>.
 test("next stops at the declared navigation bound instead of crossing it", async ({ page }) => {
   await page.goto(BOUNDED);
-  const root = page.locator("[data-gsxui-calendar]");
-  const next = page.locator("[data-gsxui-calendar-next]");
+  const root = page.locator("[data-gsxui-slot-calendar]");
+  const next = page.locator("[data-gsxui-slot-calendar-next]");
   const yearSelect = page.locator("[data-gsxui-calendar-year-select]");
 
   for (let i = 0; i < 11; i++) await next.click();
@@ -370,8 +370,8 @@ test("prev is disabled at the lower bound from the start and stays a no-op", asy
   page,
 }) => {
   await page.goto(BOUNDED);
-  const root = page.locator("[data-gsxui-calendar]");
-  const prev = page.locator("[data-gsxui-calendar-prev]");
+  const root = page.locator("[data-gsxui-slot-calendar]");
+  const prev = page.locator("[data-gsxui-slot-calendar-previous]");
 
   await expect(prev).toHaveAttribute("aria-disabled", "true");
   // force: true — see the equivalent comment on the "next stops at..." test
@@ -384,7 +384,7 @@ test("prev is disabled at the lower bound from the start and stays a no-op", asy
 
 // --- Task 5: selection behavior ---------------------------------------------
 //
-// Both the <td role="gridcell"> and its <button data-gsxui-calendar-day>
+// Both the <td role="gridcell"> and its <button data-gsxui-slot-calendar-day-button>
 // carry their own data-date (calendar.gsx and calendar.js's own repaint
 // agree on that split — see gridCells() above), so a bare
 // `[data-date="…"]` locator resolves to TWO elements and trips Playwright's
@@ -396,7 +396,7 @@ function cellFor(page: import("@playwright/test").Page, iso: string) {
   return page.locator(`td[data-date="${iso}"]`);
 }
 function dayFor(page: import("@playwright/test").Page, iso: string) {
-  return page.locator(`[data-gsxui-calendar-day][data-date="${iso}"]`);
+  return page.locator(`[data-gsxui-slot-calendar-day-button][data-date="${iso}"]`);
 }
 
 // listenForChanges wires up the same window.__changes collection every test
@@ -480,7 +480,7 @@ test("multiple mode submits every selected date as a repeated form value", async
 
 test("range takes two clicks and swaps when the second precedes the first", async ({ page }) => {
   await page.goto(RANGE);
-  const root = page.locator("[data-gsxui-calendar]");
+  const root = page.locator("[data-gsxui-slot-calendar]");
   // range.gsx renders name="stay" specifically so this test also exercises
   // syncHiddenInputs's range branch — Task 5 review, Minor 1 verification:
   // the "-to" input has to be told apart from the "from" input by its own
@@ -559,9 +559,9 @@ test("range previews on hover while only the start is set", async ({ page }) => 
 // depends on ui/calendar.js getting it right.
 test("a disabled day cannot be selected", async ({ page }) => {
   await page.goto(LOADED);
-  await page.click("[data-gsxui-calendar-next]");
-  await page.click("[data-gsxui-calendar-prev]");
-  await expect(page.locator("[data-gsxui-calendar]")).toHaveAttribute(
+  await page.click("[data-gsxui-slot-calendar-next]");
+  await page.click("[data-gsxui-slot-calendar-previous]");
+  await expect(page.locator("[data-gsxui-slot-calendar]")).toHaveAttribute(
     "data-gsxui-calendar-month",
     "2026-01",
   );
@@ -602,24 +602,24 @@ test("form reset clears the selection and the hidden input", async ({ page }) =>
 
   await page.locator('button[type="reset"]').click();
   await expect(input).toHaveValue("");
-  await expect(page.locator("[data-gsxui-calendar]")).not.toHaveAttribute(
+  await expect(page.locator("[data-gsxui-slot-calendar]")).not.toHaveAttribute(
     "data-gsxui-calendar-selected",
     /.*/,
   );
-  expect(await page.$$eval('[data-gsxui-calendar] [aria-selected="true"]', (els) => els.length)).toBe(
+  expect(await page.$$eval('[data-gsxui-slot-calendar] [aria-selected="true"]', (els) => els.length)).toBe(
     0,
   );
 });
 
 test("form reset restores the client-current month", async ({ page }) => {
   await page.goto(FORM);
-  const root = page.locator("[data-gsxui-calendar]");
+  const root = page.locator("[data-gsxui-slot-calendar]");
   const currentMonth = await page.evaluate(() => {
     const now = new Date();
     return `${String(now.getFullYear()).padStart(4, "0")}-${String(now.getMonth() + 1).padStart(2, "0")}`;
   });
 
-  await page.click("[data-gsxui-calendar-next]");
+  await page.click("[data-gsxui-slot-calendar-next]");
   await expect(root).toHaveAttribute("data-gsxui-calendar-month", "2026-02");
 
   await page.locator('button[type="reset"]').click();
@@ -629,9 +629,9 @@ test("form reset restores the client-current month", async ({ page }) => {
 test("one form reset restores both calendar and combobox state", async ({ page }) => {
   await page.goto(FORM);
   const calendarInput = page.locator('input[name="date"]');
-  const comboInput = page.locator("[data-gsxui-combobox-input]");
-  const comboBridge = page.locator("[data-gsxui-combobox-bridge]");
-  const comboItem = page.locator('[data-gsxui-combobox-item][data-value="sveltekit"]');
+  const comboInput = page.locator("[data-gsxui-slot-combobox-input]");
+  const comboBridge = page.locator("[data-gsxui-slot-combobox-bridge]");
+  const comboItem = page.locator('[data-gsxui-slot-combobox-item][data-value="sveltekit"]');
 
   await dayFor(page, "2026-01-15").click();
   await comboInput.click();
@@ -645,11 +645,11 @@ test("one form reset restores both calendar and combobox state", async ({ page }
   await page.locator('button[type="reset"]').click();
 
   await expect(calendarInput).toHaveValue("");
-  await expect(page.locator("[data-gsxui-calendar]")).not.toHaveAttribute(
+  await expect(page.locator("[data-gsxui-slot-calendar]")).not.toHaveAttribute(
     "data-gsxui-calendar-selected",
     /.*/,
   );
-  expect(await page.$$eval('[data-gsxui-calendar] [aria-selected="true"]', (els) => els.length)).toBe(
+  expect(await page.$$eval('[data-gsxui-slot-calendar] [aria-selected="true"]', (els) => els.length)).toBe(
     0,
   );
   await expect(comboInput).toHaveValue("");
@@ -676,15 +676,15 @@ test("form reset restores a calendar added after the page's own initial load", a
   await page.goto(FORM);
 
   await page.evaluate(() => {
-    const original = document.querySelector("[data-gsxui-calendar]")!;
+    const original = document.querySelector("[data-gsxui-slot-calendar]")!;
     const clone = original.cloneNode(true) as HTMLElement;
     const form = document.createElement("form");
     form.appendChild(clone);
     document.body.appendChild(form);
   });
 
-  const added = page.locator("[data-gsxui-calendar]").nth(1);
-  const addedDay = added.locator('[data-gsxui-calendar-day][data-date="2026-01-15"]');
+  const added = page.locator("[data-gsxui-slot-calendar]").nth(1);
+  const addedDay = added.locator('[data-gsxui-slot-calendar-day-button][data-date="2026-01-15"]');
   const addedInput = added.locator('input[name="date"]');
 
   await addedDay.click();
@@ -777,7 +777,7 @@ test("arrowing past the month edge navigates and keeps focus on the target", asy
 
   await page.keyboard.press("Shift+PageDown");
   expect(await focusedDate(page)).toBe("2027-01-31");
-  await expect(page.locator("[data-gsxui-calendar]")).toHaveAttribute(
+  await expect(page.locator("[data-gsxui-slot-calendar]")).toHaveAttribute(
     "data-gsxui-calendar-month",
     "2027-01",
   );
@@ -796,8 +796,8 @@ test("keyboard month/year moves stop at the declared navigation bound instead of
   page,
 }) => {
   await page.goto(BOUNDED);
-  const root = page.locator("[data-gsxui-calendar]");
-  const next = page.locator("[data-gsxui-calendar-next]");
+  const root = page.locator("[data-gsxui-slot-calendar]");
+  const next = page.locator("[data-gsxui-slot-calendar-next]");
   const yearSelect = page.locator("[data-gsxui-calendar-year-select]");
 
   await dayFor(page, "2026-01-15").focus();
@@ -841,7 +841,7 @@ test("keyboard month/year moves stop at the declared navigation bound instead of
 // in clampToNavBounds (see the report for the captured failure).
 test("arrow keys at a navigation bound clamp to the bound, not past it", async ({ page }) => {
   await page.goto(BOUNDED);
-  const root = page.locator("[data-gsxui-calendar]");
+  const root = page.locator("[data-gsxui-slot-calendar]");
 
   // Lower bound. A week backward from 2026-01-01 leaves fromYear entirely.
   await dayFor(page, "2026-01-01").focus();
@@ -852,7 +852,7 @@ test("arrow keys at a navigation bound clamp to the bound, not past it", async (
   // Upper bound, the mirror image: a week forward from 2026-12-31 leaves
   // toYear. Reached through the public nav control, same as the mouse-path
   // bound test above.
-  const next = page.locator("[data-gsxui-calendar-next]");
+  const next = page.locator("[data-gsxui-slot-calendar-next]");
   for (let i = 0; i < 11; i++) await next.click();
   await expect(root).toHaveAttribute("data-gsxui-calendar-month", "2026-12");
 
@@ -875,7 +875,7 @@ test("Enter and Space select the focused day", async ({ page }) => {
 
 test("exactly one day is tabbable at any time", async ({ page }) => {
   await page.goto(BASIC);
-  const count = () => page.$$eval('[data-gsxui-calendar-day][tabindex="0"]', (e) => e.length);
+  const count = () => page.$$eval('[data-gsxui-slot-calendar-day-button][tabindex="0"]', (e) => e.length);
   expect(await count()).toBe(1);
 
   await dayFor(page, "2026-01-15").focus();
@@ -885,7 +885,7 @@ test("exactly one day is tabbable at any time", async ({ page }) => {
 
 test("Tab enters the grid when its roving stop is disabled", async ({ page }) => {
   await page.goto(LOADED);
-  await page.locator("[data-gsxui-calendar-next]").focus();
+  await page.locator("[data-gsxui-slot-calendar-next]").focus();
   await page.keyboard.press("Tab");
 
   expect(await focusedDate(page)).toBe("2026-01-01");
@@ -909,9 +909,9 @@ test("a disabled day keeps focus (aria-disabled, not native) and Enter is a no-o
   page,
 }) => {
   await page.goto(LOADED);
-  await page.click("[data-gsxui-calendar-next]");
-  await page.click("[data-gsxui-calendar-prev]");
-  await expect(page.locator("[data-gsxui-calendar]")).toHaveAttribute(
+  await page.click("[data-gsxui-slot-calendar-next]");
+  await page.click("[data-gsxui-slot-calendar-previous]");
+  await expect(page.locator("[data-gsxui-slot-calendar]")).toHaveAttribute(
     "data-gsxui-calendar-month",
     "2026-01",
   );
@@ -957,7 +957,7 @@ test("today is marked from the client's date", async ({ page }) => {
     return { today: iso, delta: months };
   });
 
-  const button = delta >= 0 ? "[data-gsxui-calendar-next]" : "[data-gsxui-calendar-prev]";
+  const button = delta >= 0 ? "[data-gsxui-slot-calendar-next]" : "[data-gsxui-slot-calendar-previous]";
   for (let i = 0; i < Math.abs(delta); i++) await page.click(button);
 
   const marked = await page.$$eval("[data-today]", (els) =>
@@ -987,8 +987,8 @@ test("dropdown caption is one row, one border", async ({ page }) => {
     return {
       rowMid: mid(row),
       wrapperMid: mid(wrapper),
-      prevMid: mid(document.querySelector("[data-gsxui-calendar-prev]")),
-      nextMid: mid(document.querySelector("[data-gsxui-calendar-next]")),
+      prevMid: mid(document.querySelector("[data-gsxui-slot-calendar-previous]")),
+      nextMid: mid(document.querySelector("[data-gsxui-slot-calendar-next]")),
       selectBorder: getComputedStyle(select).borderTopWidth,
       wrapperBorder: getComputedStyle(wrapper).borderTopWidth,
       selectHeight: Math.round(select.getBoundingClientRect().height),
@@ -1049,8 +1049,8 @@ test("dropdown caption does not crowd the nav buttons", async ({ page }) => {
     const wraps = [
       ...document.querySelectorAll('[data-gsxui-slot-native-select-wrapper]'),
     ];
-    const prev = document.querySelector("[data-gsxui-calendar-prev]")!;
-    const next = document.querySelector("[data-gsxui-calendar-next]")!;
+    const prev = document.querySelector("[data-gsxui-slot-calendar-previous]")!;
+    const next = document.querySelector("[data-gsxui-slot-calendar-next]")!;
     return {
       beforeFirst: Math.round(r(wraps[0]).left - r(prev).right),
       between: Math.round(r(wraps[1]).left - r(wraps[0]).right),

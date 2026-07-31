@@ -436,7 +436,7 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 //     instead of them) — gsxui renders a `calendar-caption` span whose
 //     screen-reader mechanics live in foundation CSS. Both the label span and
 //     the dropdown visually-hidden span also
-//     carry `data-gsxui-calendar-caption`, the one hook Task 4's calendar.js
+//     carry `data-gsxui-slot-calendar-caption`, the one hook Task 4's calendar.js
 //     needs regardless of layout to update the announced text on navigation.
 //   - Hidden inputs render whenever `name != ""` — unconditionally, NOT
 //     gated on there being a selection yet (Task 5 review, Critical: an
@@ -455,7 +455,7 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 //     an `endsWith("-to")` check misidentify its OWN `from` input as the
 //     `to` input — Task 5 review, Minor 1). Both live inside the root
 //     element so Tasks 4-6's JavaScript can find them by DOM scope
-//     (`closest("[data-gsxui-calendar]")`), the same proximity idiom
+//     (`closest("[data-gsxui-slot-calendar]")`), the same proximity idiom
 //     ui.Select/ui.Combobox already use for their own hidden-input bridges.
 //
 // The weekday header row is `aria-hidden`, matching upstream: every day
@@ -516,7 +516,7 @@ func firstFocusableIndex(grid [42]time.Time, year int, month time.Month) int {
 //
 // Task 4 adds one exception to "the cell owns data-date, the button doesn't":
 // the button ALSO carries its own data-date (identical value, additive —
-// the cell's copy is untouched). NOT because [data-gsxui-calendar-day] is
+// the cell's copy is untouched). NOT because [data-gsxui-slot-calendar-day-button] is
 // the only one-per-cell selector — td[role="gridcell"] already was, just as
 // uniquely (the header row's cells are <th>, never <td>) — but because
 // Task 5's click handler (day selection) matches the BUTTON, the thing the
@@ -700,7 +700,6 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 		disabledWeekdaysAttr := strings.Join(disabledWeekdaysStr, ",")
 	}}
 	<div
-		data-gsxui-calendar
 		data-gsxui-calendar-month={month.Format("2006-01")}
 		data-gsxui-calendar-mode={mode}
 		data-gsxui-calendar-week-start={int(weekStartsOn)}
@@ -744,7 +743,6 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 					type="button"
 					data-variant="ghost"
 					data-size="icon"
-					data-gsxui-calendar-prev
 					aria-label="Previous month"
 					{ if prevDisabled {
 						aria-disabled="true"
@@ -761,7 +759,6 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 					type="button"
 					data-variant="ghost"
 					data-size="icon"
-					data-gsxui-calendar-next
 					aria-label="Next month"
 					{ if nextDisabled {
 						aria-disabled="true"
@@ -804,7 +801,6 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 						</NativeSelect>
 					</div>
 					<span
-						data-gsxui-calendar-caption
 						role="status"
 						aria-live="polite"
 						data-caption-layout="dropdown"
@@ -815,7 +811,6 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 					</span>
 				} else {
 					<span
-						data-gsxui-calendar-caption
 						role="status"
 						aria-live="polite"
 						data-caption-layout="label"
@@ -827,7 +822,6 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 				} }
 			</div>
 			<table
-				data-gsxui-calendar-grid
 				role="grid"
 				aria-label={captionText}
 				{ if multiselectable {
@@ -910,7 +904,6 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 										type="button"
 										data-variant="ghost"
 										data-size="icon"
-										data-gsxui-calendar-day
 										data-date={d.Format("2006-01-02")}
 										tabindex={tabindex}
 										aria-label={d.Format("Monday, January 2, 2006")}

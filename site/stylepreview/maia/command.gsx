@@ -24,7 +24,6 @@ import (
 // anything else listens for the gsxui:select CustomEvent on the item.
 component Command(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-gsxui-command
 		class={ "flex h-full w-full flex-col overflow-hidden rounded-xl bg-popover p-1 text-popover-foreground" }
 		{ attrs... }
 		data-gsxui-slot-command
@@ -72,7 +71,6 @@ component CommandDialog(title string, description string, trigger gsx.Node, chil
 // focus stays here (aria-activedescendant tracks the selected option).
 component CommandInput(placeholder string, attrs gsx.Attrs) {
 	<div
-		data-gsxui-command-input-wrapper
 		class={
 			"flex h-9 items-center gap-2 border-b px-3 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50 [[data-gsxui-slot-command-dialog-content]_&]:h-12 [[data-gsxui-slot-command-dialog-content]_&]:[&_svg]:size-5"
 		}
@@ -80,7 +78,6 @@ component CommandInput(placeholder string, attrs gsx.Attrs) {
 	>
 		<icon.Search/>
 		<input
-			data-gsxui-command-input
 			type="text"
 			role="combobox"
 			aria-expanded="true"
@@ -99,7 +96,6 @@ component CommandInput(placeholder string, attrs gsx.Attrs) {
 
 component CommandList(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-gsxui-command-list
 		role="listbox"
 		class={ "max-h-72 scroll-py-1 overflow-x-hidden overflow-y-auto" }
 		{ attrs... }
@@ -113,9 +109,7 @@ component CommandList(children gsx.Node, attrs gsx.Attrs) {
 // query matches nothing (cmdk's Empty renders conditionally — same net
 // visual, inverted mechanism since there is no VDOM to unmount).
 component CommandEmpty(children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-command-empty hidden class={ "py-6 text-center text-sm" } { attrs... } data-gsxui-slot-command-empty>
-		{ children }
-	</div>
+	<div hidden class={ "py-6 text-center text-sm" } { attrs... } data-gsxui-slot-command-empty>{ children }</div>
 }
 
 // CommandGroup's heading is a real child div (slot command-group-heading)
@@ -124,7 +118,6 @@ component CommandEmpty(children gsx.Node, attrs gsx.Attrs) {
 // on it via the mapped public slot selectors (see Command's doc comment).
 component CommandGroup(heading string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-gsxui-command-group
 		role="group"
 		class={
 			"overflow-hidden p-1 text-foreground [[data-gsxui-slot-command-dialog-content]_&]:px-2 [[data-gsxui-slot-command-dialog-content]_[data-gsxui-slot-command-group]:not([hidden])~&]:pt-0"
@@ -133,11 +126,7 @@ component CommandGroup(heading string, children gsx.Node, attrs gsx.Attrs) {
 		data-gsxui-slot-command-group
 	>
 		{ if heading != "" {
-			<div
-				data-gsxui-command-group-heading
-				class={ "px-2 py-1.5 text-xs font-medium text-muted-foreground" }
-				data-gsxui-slot-command-group-heading
-			>
+			<div class={ "px-2 py-1.5 text-xs font-medium text-muted-foreground" } data-gsxui-slot-command-group-heading>
 				{ heading }
 			</div>
 		} }
@@ -146,13 +135,7 @@ component CommandGroup(heading string, children gsx.Node, attrs gsx.Attrs) {
 }
 
 component CommandSeparator(attrs gsx.Attrs) {
-	<div
-		data-gsxui-command-separator
-		role="separator"
-		class={ "-mx-1 h-px bg-border" }
-		{ attrs... }
-		data-gsxui-slot-command-separator
-	></div>
+	<div role="separator" class={ "-mx-1 h-px bg-border" } { attrs... } data-gsxui-slot-command-separator></div>
 }
 
 // CommandItem is a role="option" div (cmdk's own role), NOT focusable —
@@ -164,7 +147,6 @@ component CommandSeparator(attrs gsx.Attrs) {
 // the same contract as DropdownMenuItem).
 component CommandItem(value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-gsxui-command-item
 		data-value={value}
 		role="option"
 		aria-selected="false"

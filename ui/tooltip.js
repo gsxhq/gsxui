@@ -4,7 +4,7 @@ import { on, emit } from "./gsxui.js";
 
 const timers = new WeakMap();
 const contentOf = (el) =>
-  el.closest("[data-gsxui-tooltip]")?.querySelector("[data-gsxui-tooltip-content]");
+  el.closest("[data-gsxui-slot-tooltip]")?.querySelector("[data-gsxui-slot-tooltip-content]");
 
 function show(trigger) {
   const content = contentOf(trigger);

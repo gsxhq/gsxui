@@ -35,7 +35,7 @@ import "github.com/gsxhq/gsx"
 // their own doc comments), collapsing nova's matching inline-start/
 // inline-end value (both px-1) into one has-[>svg]:px-1.
 component Tabs(value string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-tabs data-value={value} class={ tabs.Root() } { attrs... } data-gsxui-slot-tabs>{ children }</div>
+	<div data-value={value} class={ tabs.Root() } { attrs... } data-gsxui-slot-tabs>{ children }</div>
 }
 
 component TabsList(children gsx.Node, attrs gsx.Attrs) {
@@ -66,7 +66,6 @@ component TabsTrigger(value string, selected bool, children gsx.Node, attrs gsx.
 	<button
 		type="button"
 		role="tab"
-		data-gsxui-tabs-trigger
 		data-value={value}
 		data-state={state}
 		aria-selected={selected}

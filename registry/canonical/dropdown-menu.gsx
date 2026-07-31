@@ -54,12 +54,11 @@ import (
 // duplicated into dropdown.js (which would be an invisible-to-registry.Deps
 // dependency — forbidden).
 component DropdownMenu(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ dropdownMenu.Root() } data-gsxui-dropdown { attrs... } data-gsxui-slot-dropdown-menu>{ children }</div>
+	<div class={ dropdownMenu.Root() } { attrs... } data-gsxui-slot-dropdown-menu>{ children }</div>
 }
 
 component DropdownMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<button
-		data-gsxui-dropdown-trigger
 		type="button"
 		aria-haspopup="menu"
 		aria-expanded="false"
@@ -79,7 +78,6 @@ component DropdownMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 component DropdownMenuContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={ dropdownMenu.Content() }
-		data-gsxui-dropdown-content
 		popover="auto"
 		role="menu"
 		tabindex="-1"
@@ -102,7 +100,6 @@ component DropdownMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 			dropdownMenu.Item(),
 			dropdownMenu.ItemVariant(variant),
 		}
-		data-gsxui-dropdown-item
 		data-variant={variant |> default("default")}
 		role="menuitem"
 		tabindex="-1"
@@ -150,7 +147,6 @@ component DropdownMenuGroup(children gsx.Node, attrs gsx.Attrs) {
 component DropdownMenuCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={ dropdownMenu.CheckboxItem() }
-		data-gsxui-dropdown-checkbox-item
 		role="menuitemcheckbox"
 		data-value={value}
 		{ if checked {
@@ -164,7 +160,7 @@ component DropdownMenuCheckboxItem(checked bool, value string, children gsx.Node
 		{ attrs... }
 		data-gsxui-slot-dropdown-menu-checkbox-item
 	>
-		<span class={ dropdownMenu.CheckboxItemIndicator() } data-gsxui-dropdown-checkbox-indicator data-gsxui-slot-dropdown-menu-checkbox-item-indicator>
+		<span class={ dropdownMenu.CheckboxItemIndicator() } data-gsxui-slot-dropdown-menu-checkbox-item-indicator>
 			<icon.Check/>
 		</span>
 		{ children }
@@ -175,12 +171,11 @@ component DropdownMenuCheckboxItem(checked bool, value string, children gsx.Node
 // server-rendered current value, stamped as data-value on the root — the
 // same "checked state is server-rendered" contract as CheckboxItem, kept in
 // sync by dropdown.js on selection and echoed on the group's own
-// gsxui:change event. data-gsxui-dropdown-radio-group is the proximity anchor
+// gsxui:change event. data-gsxui-slot-dropdown-menu-radio-group is the proximity anchor
 // dropdown.js uses to scope "clear every OTHER item in this group" to this
 // group alone, not every radio item on the page.
 component DropdownMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-gsxui-dropdown-radio-group
 		role="group"
 		data-value={value}
 		{ attrs... }
@@ -202,7 +197,6 @@ component DropdownMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attr
 component DropdownMenuRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={ dropdownMenu.RadioItem() }
-		data-gsxui-dropdown-radio-item
 		role="menuitemradio"
 		data-value={value}
 		{ if checked {
@@ -216,7 +210,7 @@ component DropdownMenuRadioItem(checked bool, value string, children gsx.Node, a
 		{ attrs... }
 		data-gsxui-slot-dropdown-menu-radio-item
 	>
-		<span class={ dropdownMenu.RadioItemIndicator() } data-gsxui-dropdown-radio-indicator data-gsxui-slot-dropdown-menu-radio-item-indicator>
+		<span class={ dropdownMenu.RadioItemIndicator() } data-gsxui-slot-dropdown-menu-radio-item-indicator>
 			<icon.Circle/>
 		</span>
 		{ children }
@@ -242,12 +236,12 @@ component DropdownMenuShortcut(children gsx.Node, attrs gsx.Attrs) {
 // DropdownMenuSub is the non-rendering submenu root — layout-neutral
 // (class="contents", same idiom as DropdownMenu's own root) so its
 // SubTrigger/SubContent children sit inline in the parent content's normal
-// item flow. data-gsxui-dropdown-sub is the proximity anchor dropdown.js uses to
-// pair a SubTrigger with its own SubContent (closest("[data-gsxui-dropdown-sub]")
-// — same shape as DropdownMenu's own data-gsxui-dropdown root) and to scope
+// item flow. data-gsxui-slot-dropdown-menu-sub is the proximity anchor dropdown.js uses to
+// pair a SubTrigger with its own SubContent (closest("[data-gsxui-slot-dropdown-menu-sub]")
+// — same shape as DropdownMenu's own data-gsxui-slot-dropdown-menu root) and to scope
 // the pointer-leave grace-period boundary check to "the whole sub."
 component DropdownMenuSub(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ dropdownMenu.Sub() } data-gsxui-dropdown-sub { attrs... } data-gsxui-slot-dropdown-menu-sub>{ children }</div>
+	<div class={ dropdownMenu.Sub() } { attrs... } data-gsxui-slot-dropdown-menu-sub>{ children }</div>
 }
 
 // DropdownMenuSubTrigger opens/closes its sibling DropdownMenuSubContent
@@ -266,7 +260,6 @@ component DropdownMenuSub(children gsx.Node, attrs gsx.Attrs) {
 component DropdownMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={ dropdownMenu.SubTrigger() }
-		data-gsxui-dropdown-sub-trigger
 		role="menuitem"
 		aria-haspopup="menu"
 		aria-expanded="false"
@@ -305,7 +298,6 @@ component DropdownMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 component DropdownMenuSubContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={ dropdownMenu.SubContent() }
-		data-gsxui-dropdown-sub-content
 		popover="auto"
 		role="menu"
 		tabindex="-1"

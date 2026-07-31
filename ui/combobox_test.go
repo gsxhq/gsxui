@@ -48,7 +48,7 @@ func TestComboboxRootRendersFormBridge(t *testing.T) {
 func TestComboboxInputComposesInputGroup(t *testing.T) {
 	got := render(t, ui.ComboboxInput("Search framework...", true, false, false, nil, nil))
 	for _, want := range []string{
-		`data-gsxui-combobox-input-group`,
+		`data-gsxui-slot-combobox-input-group`,
 		// InputGroupInput composes both styling tokens; the group keys its
 		// focus ring off input-group-control.
 		`data-gsxui-slot-combobox-input-group data-gsxui-slot-input-group`,
@@ -149,7 +149,6 @@ func TestComboboxEmptyIsHiddenUntilListIsEmpty(t *testing.T) {
 	got := render(t, ui.ComboboxEmpty(gsx.Raw("No framework found."), nil))
 	for _, want := range []string{
 		`data-gsxui-slot-combobox-empty`,
-		`data-gsxui-combobox-empty`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("want %q\nin: %s", want, got)
@@ -177,10 +176,10 @@ func TestComboboxBehaviorPartsHaveDedicatedHooks(t *testing.T) {
 		nil,
 	))
 	for _, want := range []string{
-		`data-gsxui-combobox-group`,
-		`data-gsxui-combobox-label`,
-		`data-gsxui-combobox-separator`,
-		`data-gsxui-combobox-empty`,
+		`data-gsxui-slot-combobox-group`,
+		`data-gsxui-slot-combobox-label`,
+		`data-gsxui-slot-combobox-separator`,
+		`data-gsxui-slot-combobox-empty`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("want %q\nin: %s", want, got)
@@ -190,7 +189,7 @@ func TestComboboxBehaviorPartsHaveDedicatedHooks(t *testing.T) {
 
 func TestComboboxNameEmptyOmitsFormBridge(t *testing.T) {
 	got := render(t, ui.Combobox("", "", gsx.Raw("x"), nil))
-	if strings.Contains(got, "data-gsxui-combobox-bridge") {
+	if strings.Contains(got, "data-gsxui-slot-combobox-bridge") {
 		t.Errorf("name=\"\" must not render the hidden form bridge\nin: %s", got)
 	}
 	if !strings.Contains(got, `data-gsxui-slot-combobox`) {

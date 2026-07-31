@@ -13,7 +13,7 @@ import (
 // carries over:
 //
 // MECHANISM (ONE real input, not N): there is exactly ONE actual
-// `<input>` element — data-gsxui-input-otp-input below, absolutely
+// `<input>` element — data-gsxui-slot-input-otp-input below, absolutely
 // positioned to cover the whole slots row, visually hidden with opacity-0
 // (never sr-only/hidden/display:none, which would break focusability) and
 // left clickable (no pointer-events-none, kept z-10 on top) so a native
@@ -95,11 +95,9 @@ import (
 component InputOTP(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={ inputOtp.Root() }
-		data-gsxui-input-otp
 		data-gsxui-slot-input-otp
 	>
 		<input
-			data-gsxui-input-otp-input
 			inputmode="numeric"
 			autocomplete="one-time-code"
 			class={ inputOtp.Input() }
@@ -129,7 +127,6 @@ component InputOTPGroup(children gsx.Node, attrs gsx.Attrs) {
 // content after mount.
 component InputOTPSlot(attrs gsx.Attrs) {
 	<div
-		data-gsxui-input-otp-slot
 		data-active="false"
 		class={ inputOtp.Slot() }
 		{ attrs... }

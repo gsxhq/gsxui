@@ -47,7 +47,6 @@ import (
 component NavigationMenu(children gsx.Node, attrs gsx.Attrs) {
 	<nav
 		class={ "relative flex max-w-max flex-1 items-center justify-center" }
-		data-gsxui-navigation-menu
 		data-viewport="false"
 		{ attrs... }
 		data-gsxui-slot-navigation-menu
@@ -63,7 +62,6 @@ component NavigationMenu(children gsx.Node, attrs gsx.Attrs) {
 component NavigationMenuList(children gsx.Node, attrs gsx.Attrs) {
 	<ul
 		class={ "flex flex-1 list-none items-center justify-center gap-0" }
-		data-gsxui-navigation-menu-list
 		{ attrs... }
 		data-gsxui-slot-navigation-menu-list
 	>
@@ -72,12 +70,12 @@ component NavigationMenuList(children gsx.Node, attrs gsx.Attrs) {
 }
 
 // NavigationMenuItem is the <li> pairing one NavigationMenuTrigger with its
-// own NavigationMenuContent — data-gsxui-navigation-menu-item is the
+// own NavigationMenuContent — data-gsxui-slot-navigation-menu-item is the
 // proximity anchor ui/navigation-menu.js uses to resolve "this trigger's
-// own content" (closest("[data-gsxui-navigation-menu-item]")), the same
+// own content" (closest("[data-gsxui-slot-navigation-menu-item]")), the same
 // role DropdownMenu's own root plays for its single trigger/content pair.
 component NavigationMenuItem(children gsx.Node, attrs gsx.Attrs) {
-	<li class={ "relative" } data-gsxui-navigation-menu-item { attrs... } data-gsxui-slot-navigation-menu-item>
+	<li class={ "relative" } { attrs... } data-gsxui-slot-navigation-menu-item>
 		{ children }
 	</li>
 }
@@ -128,7 +126,6 @@ component NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 		class={
 			"inline-flex h-9 w-max items-center justify-center rounded-lg px-2.5 py-1.5 text-sm font-medium transition-all outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-accent/50 data-[state=open]:text-accent-foreground data-[state=open]:hover:bg-accent data-[state=open]:focus:bg-accent"
 		}
-		data-gsxui-navigation-menu-trigger
 		type="button"
 		aria-expanded="false"
 		data-state="closed"
@@ -138,7 +135,6 @@ component NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 		{ children }{ " " }
 		<icon.ChevronDown
 			class={ "relative top-px ml-1 size-3 transition duration-300 [[data-state=open]_&]:rotate-180" }
-			data-gsxui-navigation-menu-trigger-icon
 			data-gsxui-slot-navigation-menu-trigger-icon
 		/>
 	</button>
@@ -212,7 +208,6 @@ component NavigationMenuContent(children gsx.Node, attrs gsx.Attrs) {
 		class={
 			"top-0 left-0 p-1 md:absolute [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:top-full [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:mt-1.5 [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:overflow-hidden [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:rounded-lg [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:border [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:bg-popover [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:text-popover-foreground [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:shadow opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 data-[side=bottom]:starting:[&:popover-open]:-translate-y-2 data-[side=left]:starting:[&:popover-open]:translate-x-2 data-[side=right]:starting:[&:popover-open]:-translate-x-2 data-[side=top]:starting:[&:popover-open]:translate-y-2"
 		}
-		data-gsxui-navigation-menu-content
 		popover="manual"
 		data-state="closed"
 		data-side="bottom"
@@ -269,7 +264,6 @@ component NavigationMenuLink(active bool, variant string, children gsx.Node, att
 				"outline-none"
 			}
 		}
-		data-gsxui-navigation-menu-link
 		data-variant={linkVariant}
 		{ if active {
 			data-active="true"
@@ -318,7 +312,6 @@ component NavigationMenuIndicator(attrs gsx.Attrs) {
 		class={
 			"pointer-events-none top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden opacity-0 transition-opacity duration-200 data-[state=visible]:opacity-100"
 		}
-		data-gsxui-navigation-menu-indicator
 		data-state="hidden"
 		{ attrs... }
 		data-gsxui-slot-navigation-menu-indicator

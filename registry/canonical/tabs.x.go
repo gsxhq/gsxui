@@ -51,9 +51,6 @@ func Tabs(value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line tabs.gsx:38:2
 		_gsxgw.S("<div")
-		if !attrs.Has("data-gsxui-tabs") {
-			_gsxgw.BoolAttr("data-gsxui-tabs", true)
-		}
 		if !attrs.Has("data-value") {
 			_gsxgw.S(" data-value=\"")
 			_gsxgw.AttrValue(string(value))
@@ -66,7 +63,7 @@ func Tabs(value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tabs"})
 		_gsxgw.BoolAttr("data-gsxui-slot-tabs", true)
 		_gsxgw.S(">")
-//line tabs.gsx:38:98
+//line tabs.gsx:38:82
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
@@ -123,9 +120,6 @@ func TabsTrigger(value string, selected bool, children gsx.Node, attrs gsx.Attrs
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"tab\"")
 		}
-		if !attrs.Has("data-gsxui-tabs-trigger") {
-			_gsxgw.BoolAttr("data-gsxui-tabs-trigger", true)
-		}
 		if !attrs.Has("data-value") {
 			_gsxgw.S(" data-value=\"")
 			_gsxgw.AttrValue(string(value))
@@ -153,27 +147,27 @@ func TabsTrigger(value string, selected bool, children gsx.Node, attrs gsx.Attrs
 		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tabs-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-tabs-trigger", true)
 		_gsxgw.S(">")
-//line tabs.gsx:78:3
+//line tabs.gsx:77:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line tabs.gsx:82:1
+//line tabs.gsx:81:1
 // TabsContent's selected bool mirrors TabsTrigger's — same value-comparison
 // contract, same zero-value-is-inactive default.
 
-//line tabs.gsx:84:1
+//line tabs.gsx:83:1
 func TabsContent(value string, selected bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line tabs.gsx:85:2
+//line tabs.gsx:84:2
 		state := "inactive"
 		if selected {
 			state = "active"
 		}
-//line tabs.gsx:91:2
+//line tabs.gsx:90:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"tabpanel\"")
@@ -198,7 +192,7 @@ func TabsContent(value string, selected bool, children gsx.Node, attrs gsx.Attrs
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tabs-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-tabs-content", true)
 		_gsxgw.S(">")
-//line tabs.gsx:100:3
+//line tabs.gsx:99:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

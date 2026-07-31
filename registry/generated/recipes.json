@@ -5524,9 +5524,9 @@
               "data-[size=sm]:text-xs",
               "data-[size=lg]:h-12",
               "data-[size=lg]:text-sm",
-              "[[data-gsxui-slot-sidebar-desktop][data-gsxui-sidebar-desktop][data-collapsible=icon]_\u0026]:size-8",
-              "[[data-gsxui-slot-sidebar-desktop][data-gsxui-sidebar-desktop][data-collapsible=icon]_\u0026]:p-2",
-              "[[data-gsxui-slot-sidebar-desktop][data-gsxui-sidebar-desktop][data-collapsible=icon]_\u0026[data-size=lg]]:p-0"
+              "[[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_\u0026]:size-8",
+              "[[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_\u0026]:p-2",
+              "[[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_\u0026[data-size=lg]]:p-0"
             ],
             "dimensions": {}
           },
@@ -10190,9 +10190,9 @@
               "data-[size=sm]:text-xs",
               "data-[size=lg]:h-12",
               "data-[size=lg]:text-sm",
-              "[[data-gsxui-slot-sidebar-desktop][data-gsxui-sidebar-desktop][data-collapsible=icon]_\u0026]:size-8",
-              "[[data-gsxui-slot-sidebar-desktop][data-gsxui-sidebar-desktop][data-collapsible=icon]_\u0026]:p-2",
-              "[[data-gsxui-slot-sidebar-desktop][data-gsxui-sidebar-desktop][data-collapsible=icon]_\u0026[data-size=lg]]:p-0"
+              "[[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_\u0026]:size-8",
+              "[[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_\u0026]:p-2",
+              "[[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_\u0026[data-size=lg]]:p-0"
             ],
             "dimensions": {}
           },
