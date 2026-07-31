@@ -49,7 +49,6 @@ component Gallery(idp string) {
 		<galleryEmptyCard/>
 		<galleryMediaCard/>
 		<gallerySidebarCard idp={idp}/>
-		<Toaster/>
 	</div>
 }
 
@@ -155,7 +154,10 @@ component gallerySettingsCard(idp string) {
 			<div class="flex flex-col gap-2">
 				<Label for={idp + "-settings-density"}>Density</Label>
 				<Select name={idp + "-settings-density"}>
-					<SelectTrigger class="w-full">
+					{/* The label's for= must point at a labelable element; Select's
+					   own attrs land on a display:contents wrapper, so the id goes
+					   on the trigger button. */}
+					<SelectTrigger id={idp + "-settings-density"} class="w-full">
 						<SelectValue placeholder="Select density"/>
 					</SelectTrigger>
 					<SelectContent>

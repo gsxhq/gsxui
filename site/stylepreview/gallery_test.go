@@ -64,17 +64,22 @@ var galleryTags = map[string]string{
 	"tabs":            "Tabs",
 	"textarea":        "Textarea",
 	"toast":           "Toast",
-	"toaster":         "Toaster",
 	"toggle":          "Toggle",
 	"toggle-group":    "ToggleGroup",
 	"tooltip":         "Tooltip",
 }
 
 // galleryExcluded names components deliberately absent from the gallery's
-// visual layout, each with a reason. Empty today: every component composes
-// into the gallery. An exclusion here must be a conscious decision, never a
-// silent skip.
-var galleryExcluded = map[string]string{}
+// visual layout, each with a reason. An exclusion here must be a conscious
+// decision, never a silent skip.
+var galleryExcluded = map[string]string{
+	// Toaster is the fixed-position toast REGION: invisible chrome at rest,
+	// so it adds nothing a gallery can show — the Toast card carries the
+	// themed chrome — and it stamps the fixed id="gsxui-toaster" (its
+	// caller-visible HTMX oob contract, deliberately unprefixable), which
+	// would appear twice in a document that renders the gallery per style.
+	"toaster": "singleton id gsxui-toaster; the preview document renders the gallery twice, and the Toast card already shows the themed chrome",
+}
 
 // TestGalleryCoversEveryComponent asserts that every component the recipe
 // contract declares appears in the authored gallery composition at least
