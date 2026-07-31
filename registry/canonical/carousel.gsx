@@ -36,7 +36,6 @@ component Carousel(orientation string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="region"
 		aria-roledescription="carousel"
-		data-gsxui-carousel
 		data-orientation={orientation |> default("horizontal")}
 		class={ carousel.Root() }
 		{ attrs... }
@@ -62,7 +61,6 @@ component Carousel(orientation string, children gsx.Node, attrs gsx.Attrs) {
 // had anything analogous to.
 component CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-gsxui-carousel-content
 		data-orientation={orientation |> default("horizontal")}
 		class={ carousel.Content() }
 		data-gsxui-slot-carousel-content
@@ -102,7 +100,6 @@ component CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="group"
 		aria-roledescription="slide"
-		data-gsxui-carousel-item
 		data-orientation={orientation |> default("horizontal")}
 		class={ carousel.ItemOrientation(orientation) }
 		{ attrs... }
@@ -114,7 +111,7 @@ component CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) {
 
 // CarouselPrevious/CarouselNext compose Button (variant="outline"
 // size="icon") exactly like shadcn's own versions, plus
-// data-gsxui-carousel-prev/-next for carousel.js's delegated click wiring.
+// data-gsxui-slot-carousel-previous/-next for carousel.js's delegated click wiring.
 // shadcn computes `disabled={!canScrollPrev}`/`!canScrollNext` from embla's
 // The horizontal buttons' `-translate-y-1/2` centering shares the translate-y
 // property with Button's nova press effect (`active:not-aria-[haspopup]:
@@ -142,7 +139,6 @@ component CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) {
 // real DOM immediately on load either way — see its own header comment.
 component CarouselPrevious(orientation string, attrs gsx.Attrs) {
 	<Button
-		data-gsxui-carousel-prev
 		data-orientation={orientation |> default("horizontal")}
 		variant="outline"
 		size="icon"
@@ -161,7 +157,6 @@ component CarouselPrevious(orientation string, attrs gsx.Attrs) {
 
 component CarouselNext(orientation string, attrs gsx.Attrs) {
 	<Button
-		data-gsxui-carousel-next
 		data-orientation={orientation |> default("horizontal")}
 		variant="outline"
 		size="icon"

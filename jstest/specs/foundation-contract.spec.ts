@@ -50,13 +50,13 @@ test("foundation mode excludes the default style and preserves overlay lifecycle
 
 test("foundation keeps Carousel navigation geometrically functional", async ({ page }) => {
   await page.goto(foundation("/x/carousel/basic"));
-  const root = page.locator("[data-gsxui-carousel]");
-  const viewport = page.locator("[data-gsxui-carousel-content]");
-  const items = page.locator("[data-gsxui-carousel-item]");
+  const root = page.locator("[data-gsxui-slot-carousel]");
+  const viewport = page.locator("[data-gsxui-slot-carousel-content]");
+  const items = page.locator("[data-gsxui-slot-carousel-item]");
   await expect(items).toHaveCount(5);
   const geometry = await viewport.evaluate((el) => {
     const track = el.querySelector<HTMLElement>("[data-gsxui-slot-carousel-track]")!;
-    const first = el.querySelector<HTMLElement>("[data-gsxui-carousel-item]")!;
+    const first = el.querySelector<HTMLElement>("[data-gsxui-slot-carousel-item]")!;
     return {
       viewportWidth: el.getBoundingClientRect().width,
       trackWidth: track.getBoundingClientRect().width,
@@ -76,7 +76,7 @@ test("foundation keeps Carousel navigation geometrically functional", async ({ p
   expect(geometry.scrollWidth).toBeGreaterThan(geometry.viewportWidth * 4);
 
   await expect(root).toHaveAttribute("data-current-index", "0");
-  await page.locator("[data-gsxui-carousel-next]").click();
+  await page.locator("[data-gsxui-slot-carousel-next]").click();
   await expect.poll(() => viewport.evaluate((el) => el.scrollLeft)).toBeGreaterThan(0);
   await expect(root).toHaveAttribute("data-current-index", "1");
 });
@@ -87,9 +87,9 @@ for (const width of [640, 900]) {
   }) => {
     await page.setViewportSize({ width, height: 700 });
     await page.goto(foundation("/x/resizable/handle"));
-    const group = page.locator("[data-gsxui-resizable]").first();
-    const panels = group.locator(":scope > [data-gsxui-resizable-panel]");
-    const handle = group.locator(":scope > [data-gsxui-resizable-handle]");
+    const group = page.locator("[data-gsxui-slot-resizable-panel-group]").first();
+    const panels = group.locator(":scope > [data-gsxui-slot-resizable-panel]");
+    const handle = group.locator(":scope > [data-gsxui-slot-resizable-handle]");
     await expect(panels).toHaveCount(2);
 
     const before = await panels.first().evaluate((el) => el.getBoundingClientRect().width);
@@ -124,14 +124,14 @@ for (const width of [640, 900]) {
 
 test("foundation keeps InputOTP entry and client caret functional", async ({ page }) => {
   await page.goto(foundation("/x/input-otp/basic"));
-  const input = page.locator("[data-gsxui-input-otp-input]");
-  const slots = page.locator("[data-gsxui-input-otp-slot]");
+  const input = page.locator("[data-gsxui-slot-input-otp-input]");
+  const slots = page.locator("[data-gsxui-slot-input-otp-slot]");
   await input.fill("123");
   await expect(slots.nth(0)).toHaveText("1");
   await expect(slots.nth(2)).toHaveText("3");
   await expect(slots.nth(3)).toHaveAttribute("data-active", "true");
-  await expect(slots.nth(3).locator("[data-gsxui-input-otp-caret-overlay]")).toHaveCount(1);
-  await expect(slots.nth(3).locator("[data-gsxui-input-otp-caret]")).toHaveCount(1);
+  await expect(slots.nth(3).locator("[data-gsxui-slot-input-otp-caret-overlay]")).toHaveCount(1);
+  await expect(slots.nth(3).locator("[data-gsxui-slot-input-otp-caret]")).toHaveCount(1);
   expect(
     await input.evaluate((el) => {
       const inputRect = el.getBoundingClientRect();

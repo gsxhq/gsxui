@@ -31,11 +31,11 @@
 // round makes the drag/keyboard math consistent with it.
 import { on, emit } from "./gsxui.js";
 
-const HANDLE_SELECTOR = "[data-gsxui-resizable-handle]";
+const HANDLE_SELECTOR = "[data-gsxui-slot-resizable-handle]";
 
-const rootOf = (el) => el.closest("[data-gsxui-resizable]");
+const rootOf = (el) => el.closest("[data-gsxui-slot-resizable-panel-group]");
 
-const isPanel = (el) => !!el && el.hasAttribute("data-gsxui-resizable-panel");
+const isPanel = (el) => !!el && el.hasAttribute("data-gsxui-slot-resizable-panel");
 
 // The handle's two neighbours are its immediate DOM siblings — true
 // regardless of nesting, since a nested ResizablePanelGroup always sits

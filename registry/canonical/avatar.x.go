@@ -16,7 +16,7 @@ import (
 // image/fallback is mounted) is replaced by delegation (ADAPT, see
 // docs/jsx-parity.md): AvatarFallback always renders — no hidden attribute,
 // since load state isn't known at render time — and AvatarImage carries the
-// data-gsxui-avatar-image hook; ui/avatar/avatar.js toggles display on the
+// data-gsxui-slot-avatar-image hook; ui/avatar/avatar.js toggles display on the
 // image's native load/error events. Requires the avatar behavior module
 // (ui/avatar/avatar.js).
 
@@ -25,11 +25,7 @@ func Avatar(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line avatar.gsx:15:2
-		_gsxgw.S("<span")
-		if !attrs.Has("data-gsxui-avatar") {
-			_gsxgw.BoolAttr("data-gsxui-avatar", true)
-		}
-		_gsxgw.S(" class=\"")
+		_gsxgw.S("<span class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(avatar.Root()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
@@ -49,9 +45,6 @@ func AvatarImage(src string, alt string, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line avatar.gsx:21:2
 		_gsxgw.S("<img")
-		if !attrs.Has("data-gsxui-avatar-image") {
-			_gsxgw.BoolAttr("data-gsxui-avatar-image", true)
-		}
 		if !attrs.Has("src") {
 			_gsxgw.S(" src=\"")
 			_gsxgw.URLImage(string(src))
@@ -73,23 +66,19 @@ func AvatarImage(src string, alt string, attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line avatar.gsx:31:1
+//line avatar.gsx:30:1
 func AvatarFallback(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line avatar.gsx:32:2
-		_gsxgw.S("<span")
-		if !attrs.Has("data-gsxui-avatar-fallback") {
-			_gsxgw.BoolAttr("data-gsxui-avatar-fallback", true)
-		}
-		_gsxgw.S(" class=\"")
+//line avatar.gsx:31:2
+		_gsxgw.S("<span class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(avatar.Fallback()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-avatar-fallback"})
 		_gsxgw.BoolAttr("data-gsxui-slot-avatar-fallback", true)
 		_gsxgw.S(">")
-//line avatar.gsx:38:3
+//line avatar.gsx:36:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()

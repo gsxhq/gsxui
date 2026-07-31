@@ -106,7 +106,6 @@ import (
 // same accepted-gap shape as `## carousel`'s own `loop`/`align` GAPs.
 component ResizablePanelGroup(orientation string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-gsxui-resizable
 		aria-orientation={orientation |> default("horizontal")}
 		{ attrs... }
 		data-gsxui-slot-resizable-panel-group
@@ -136,7 +135,6 @@ component ResizablePanel(defaultSize string, minSize string, maxSize string, chi
 		}
 	}}
 	<div
-		data-gsxui-resizable-panel
 		{ if minSize != "" {
 			data-min-size={minSize}
 		} }
@@ -189,7 +187,7 @@ component ResizablePanel(defaultSize string, minSize string, maxSize string, chi
 // just equivalent: a foundation rule works before JS has loaded, where the
 // library's own runtime injection would not.
 //
-// Behavior attaches only through data-gsxui-resizable-handle. The styling
+// Behavior attaches only through data-gsxui-slot-resizable-handle. The styling
 // token is deliberately separate and is never a JavaScript selector.
 component ResizableHandle(orientation string, withHandle bool, attrs gsx.Attrs) {
 	{{
@@ -199,7 +197,6 @@ component ResizableHandle(orientation string, withHandle bool, attrs gsx.Attrs) 
 		}
 	}}
 	<div
-		data-gsxui-resizable-handle
 		role="separator"
 		aria-orientation={handleOrientation}
 		tabindex="0"

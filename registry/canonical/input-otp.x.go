@@ -20,7 +20,7 @@ import (
 // carries over:
 //
 // MECHANISM (ONE real input, not N): there is exactly ONE actual
-// `<input>` element — data-gsxui-input-otp-input below, absolutely
+// `<input>` element — data-gsxui-slot-input-otp-input below, absolutely
 // positioned to cover the whole slots row, visually hidden with opacity-0
 // (never sr-only/hidden/display:none, which would break focusability) and
 // left clickable (no pointer-events-none, kept z-10 on top) so a native
@@ -108,14 +108,10 @@ func InputOTP(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(inputOtp.Root()))
 		_gsxgw.S("\"")
-		_gsxgw.BoolAttr("data-gsxui-input-otp", true)
 		_gsxgw.BoolAttr("data-gsxui-slot-input-otp", true)
 		_gsxgw.S(">")
-//line input-otp.gsx:101:3
+//line input-otp.gsx:100:3
 		_gsxgw.S("<input")
-		if !attrs.Has("data-gsxui-input-otp-input") {
-			_gsxgw.BoolAttr("data-gsxui-input-otp-input", true)
-		}
 		if !attrs.Has("inputmode") {
 			_gsxgw.S(" inputmode=\"numeric\"")
 		}
@@ -129,23 +125,23 @@ func InputOTP(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "input", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-input-otp-input"})
 		_gsxgw.BoolAttr("data-gsxui-slot-input-otp-input", true)
 		_gsxgw.S(">")
-//line input-otp.gsx:109:3
+//line input-otp.gsx:107:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line input-otp.gsx:113:1
+//line input-otp.gsx:111:1
 // InputOTPGroup is an unchanged plain flex wrapper — zero behavior of its
 // own, straight port — plus nova's group-level invalid-ring adoption (see
 // InputOTP's own doc comment).
 
-//line input-otp.gsx:116:1
+//line input-otp.gsx:114:1
 func InputOTPGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line input-otp.gsx:117:2
+//line input-otp.gsx:115:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(inputOtp.Group()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -153,28 +149,25 @@ func InputOTPGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-input-otp-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-input-otp-group", true)
 		_gsxgw.S(">")
-//line input-otp.gsx:122:3
+//line input-otp.gsx:120:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line input-otp.gsx:126:1
+//line input-otp.gsx:124:1
 // InputOTPSlot renders EMPTY at server-render time (see InputOTP's own GAP
 // doc comment) — no index param (see the ADAPT doc comment above),
 // no children: ui/input-otp.js owns this element's entire text/caret
 // content after mount.
 
-//line input-otp.gsx:130:1
+//line input-otp.gsx:128:1
 func InputOTPSlot(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line input-otp.gsx:131:2
+//line input-otp.gsx:129:2
 		_gsxgw.S("<div")
-		if !attrs.Has("data-gsxui-input-otp-slot") {
-			_gsxgw.BoolAttr("data-gsxui-input-otp-slot", true)
-		}
 		if !attrs.Has("data-active") {
 			_gsxgw.S(" data-active=\"false\"")
 		}
@@ -189,14 +182,14 @@ func InputOTPSlot(attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line input-otp.gsx:140:1
+//line input-otp.gsx:137:1
 // InputOTPSeparator: icon.Minus, static, unchanged from shadcn.
 
-//line input-otp.gsx:141:1
+//line input-otp.gsx:138:1
 func InputOTPSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line input-otp.gsx:142:2
+//line input-otp.gsx:139:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"separator\"")
@@ -208,7 +201,7 @@ func InputOTPSeparator(attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-input-otp-separator"})
 		_gsxgw.BoolAttr("data-gsxui-slot-input-otp-separator", true)
 		_gsxgw.S(">")
-//line input-otp.gsx:143:3
+//line input-otp.gsx:140:3
 		_gsxgw.Node(ctx, icon.Minus())
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

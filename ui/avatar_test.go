@@ -15,12 +15,10 @@ func TestAvatarStructure(t *testing.T) {
 	), nil))
 	for _, want := range []string{
 		`data-gsxui-slot-avatar`,
-		`data-gsxui-avatar`,
 		`data-gsxui-slot-avatar-image`,
-		`data-gsxui-avatar-image`,
 		`src="/broken.jpg"`,
 		`alt="shadcn"`,
-		`data-gsxui-slot-avatar-fallback`, `data-gsxui-avatar-fallback`, ">CN<",
+		`data-gsxui-slot-avatar-fallback`, ">CN<",
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
@@ -52,7 +50,7 @@ func TestAvatarPinned(t *testing.T) {
 	// to overlay the fallback (no-JS rendering correct). Now carries the
 	// recipe's resolved class (slot axis migration).
 	got := render(t, ui.AvatarImage("/shadcn.jpg", "shadcn", nil))
-	want := `<img data-gsxui-avatar-image src="/shadcn.jpg" alt="shadcn" class="absolute inset-0 aspect-square size-full" data-gsxui-slot-avatar-image>`
+	want := `<img src="/shadcn.jpg" alt="shadcn" class="absolute inset-0 aspect-square size-full" data-gsxui-slot-avatar-image>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

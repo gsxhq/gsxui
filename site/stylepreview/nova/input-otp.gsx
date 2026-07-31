@@ -13,7 +13,7 @@ import (
 // carries over:
 //
 // MECHANISM (ONE real input, not N): there is exactly ONE actual
-// `<input>` element — data-gsxui-input-otp-input below, absolutely
+// `<input>` element — data-gsxui-slot-input-otp-input below, absolutely
 // positioned to cover the whole slots row, visually hidden with opacity-0
 // (never sr-only/hidden/display:none, which would break focusability) and
 // left clickable (no pointer-events-none, kept z-10 on top) so a native
@@ -95,11 +95,9 @@ import (
 component InputOTP(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={ "flex items-center gap-2 has-[[data-gsxui-slot-input-otp-input]:disabled]:opacity-50" }
-		data-gsxui-input-otp
 		data-gsxui-slot-input-otp
 	>
 		<input
-			data-gsxui-input-otp-input
 			inputmode="numeric"
 			autocomplete="one-time-code"
 			class={ "cursor-text disabled:cursor-not-allowed" }
@@ -131,7 +129,6 @@ component InputOTPGroup(children gsx.Node, attrs gsx.Attrs) {
 // content after mount.
 component InputOTPSlot(attrs gsx.Attrs) {
 	<div
-		data-gsxui-input-otp-slot
 		data-active="false"
 		class={
 			"relative flex size-8 items-center justify-center border-y border-r border-input text-sm transition-all outline-none first:rounded-l-lg first:border-l last:rounded-r-lg aria-invalid:border-destructive data-[active=true]:z-10 data-[active=true]:border-ring data-[active=true]:ring-3 data-[active=true]:ring-ring/50 data-[active=true]:aria-invalid:border-destructive data-[active=true]:aria-invalid:ring-destructive/20 dark:bg-input/30 dark:data-[active=true]:aria-invalid:ring-destructive/40"
