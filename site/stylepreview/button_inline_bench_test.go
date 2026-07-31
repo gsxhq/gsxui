@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/site/stylepreview"
 	"github.com/gsxhq/gsxui/site/stylepreview/maia"
 	"github.com/gsxhq/gsxui/site/stylepreview/nova"
 	"github.com/gsxhq/gsxui/ui"
@@ -32,7 +31,7 @@ func BenchmarkButtonInlineMaiaConflict(b *testing.B) {
 	benchmarkButton(b, maia.Button, conflictingButtonAttrs())
 }
 
-func benchmarkButton(b *testing.B, button stylepreview.ButtonRenderer, attrs gsx.Attrs) {
+func benchmarkButton(b *testing.B, button buttonRenderer, attrs gsx.Attrs) {
 	b.Helper()
 	node := button("default", "default", "", false, gsx.Text("Button"), attrs)
 	ctx := context.Background()

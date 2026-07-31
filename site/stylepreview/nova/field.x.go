@@ -90,19 +90,26 @@ func FieldLegend(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node
 func FieldGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line field.gsx:46:2
-		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex w-full flex-col gap-5 [&>[data-gsxui-slot-field-group]]:gap-4"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field-group"})
-		_gsxgw.BoolAttr("data-gsxui-slot-field-group", true)
-		_gsxgw.S(">")
-//line field.gsx:51:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderFieldGroup(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderFieldGroup(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line field.gsx:46:2
+	_gsxgw.S("<div class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex w-full flex-col gap-5 [&>[data-gsxui-slot-field-group]]:gap-4"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field-group"})
+	_gsxgw.BoolAttr("data-gsxui-slot-field-group", true)
+	_gsxgw.S(">")
+//line field.gsx:51:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line field.gsx:55:1
@@ -113,38 +120,45 @@ func FieldGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func Field(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line field.gsx:58:2
-		_gsxgw.S("<div")
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"group\"")
-		}
-		if !attrs.Has("data-orientation") {
-			_gsxgw.S(" data-orientation=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "vertical")))
-			_gsxgw.S("\"")
-		}
-		_gsxv2 := "flex w-full gap-2 data-[invalid=true]:text-destructive"
-		var _gsxv3 string
-		switch orientation {
-		case "horizontal":
-			_gsxv3 = "flex-row items-center [&>[data-gsxui-slot-field-label]]:flex-auto has-[>[data-gsxui-slot-field-content]]:items-start has-[>[data-gsxui-slot-field-content]]:[&>:is([role=checkbox],[role=radio])]:mt-px"
-		case "responsive":
-			_gsxv3 = "flex-col [&>*]:w-full [&>[data-gsxui-slot-select-bridge]]:w-auto @min-[28rem]/field-group:flex-row @min-[28rem]/field-group:items-center @min-[28rem]/field-group:[&>*]:w-auto @min-[28rem]/field-group:[&>[data-gsxui-slot-field-label]]:flex-auto @min-[28rem]/field-group:has-[>[data-gsxui-slot-field-content]]:items-start @min-[28rem]/field-group:has-[>[data-gsxui-slot-field-content]]:[&>:is([role=checkbox],[role=radio])]:mt-px"
-		default:
-			_gsxv3 = "flex-col [&>*]:w-full [&>[data-gsxui-slot-select-bridge]]:w-auto"
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv2), _gsxrt.Class(_gsxv3), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field"})
-		_gsxgw.BoolAttr("data-gsxui-slot-field", true)
-		_gsxgw.S(">")
-//line field.gsx:75:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderField(ctx, _gsxgw, orientation, children, attrs)
 	})
+}
+
+func _gsxrenderField(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, orientation string, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line field.gsx:58:2
+	_gsxgw.S("<div")
+	if !attrs.Has("role") {
+		_gsxgw.S(" role=\"group\"")
+	}
+	if !attrs.Has("data-orientation") {
+		_gsxgw.S(" data-orientation=\"")
+		_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "vertical")))
+		_gsxgw.S("\"")
+	}
+	_gsxv2 := "flex w-full gap-2 data-[invalid=true]:text-destructive"
+	var _gsxv3 string
+	switch orientation {
+	case "horizontal":
+		_gsxv3 = "flex-row items-center [&>[data-gsxui-slot-field-label]]:flex-auto has-[>[data-gsxui-slot-field-content]]:items-start has-[>[data-gsxui-slot-field-content]]:[&>:is([role=checkbox],[role=radio])]:mt-px"
+	case "responsive":
+		_gsxv3 = "flex-col [&>*]:w-full [&>[data-gsxui-slot-select-bridge]]:w-auto @min-[28rem]/field-group:flex-row @min-[28rem]/field-group:items-center @min-[28rem]/field-group:[&>*]:w-auto @min-[28rem]/field-group:[&>[data-gsxui-slot-field-label]]:flex-auto @min-[28rem]/field-group:has-[>[data-gsxui-slot-field-content]]:items-start @min-[28rem]/field-group:has-[>[data-gsxui-slot-field-content]]:[&>:is([role=checkbox],[role=radio])]:mt-px"
+	default:
+		_gsxv3 = "flex-col [&>*]:w-full [&>[data-gsxui-slot-select-bridge]]:w-auto"
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv2), _gsxrt.Class(_gsxv3), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field"})
+	_gsxgw.BoolAttr("data-gsxui-slot-field", true)
+	_gsxgw.S(">")
+//line field.gsx:75:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line field.gsx:79:1
@@ -174,15 +188,22 @@ func FieldContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func FieldLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line field.gsx:92:2
-		_gsxgw.NodeResult(_gsxrenderLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-			_gsxgw := _gsxrt.W(_gsxw)
-//line field.gsx:99:3
-			_gsxgw.Node(ctx, children)
-			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("flex w-fit gap-2 leading-snug has-[>[data-gsxui-slot-field]]:w-full has-[>[data-gsxui-slot-field]]:flex-col has-[>[data-gsxui-slot-field]]:rounded-lg has-[>[data-gsxui-slot-field]]:border [&>[data-gsxui-slot-field]]:p-2.5 has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary/5 dark:has-[[data-state=checked]]:bg-primary/10"))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-field-label", Value: _gsxrt.Toggle(true)}})))
-		return _gsxgw.Err()
+		return _gsxrenderFieldLabel(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderFieldLabel(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line field.gsx:92:2
+	_gsxgw.NodeResult(_gsxrenderLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line field.gsx:99:3
+		_gsxgw.Node(ctx, children)
+		return _gsxgw.Err()
+	}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("flex w-fit gap-2 leading-snug has-[>[data-gsxui-slot-field]]:w-full has-[>[data-gsxui-slot-field]]:flex-col has-[>[data-gsxui-slot-field]]:rounded-lg has-[>[data-gsxui-slot-field]]:border [&>[data-gsxui-slot-field]]:p-2.5 has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary/5 dark:has-[[data-state=checked]]:bg-primary/10"))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-field-label", Value: _gsxrt.Toggle(true)}})))
+	return _gsxgw.Err()
 }
 
 //line field.gsx:103:1
@@ -212,19 +233,26 @@ func FieldTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func FieldDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line field.gsx:116:2
-		_gsxgw.S("<p class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-sm leading-normal font-normal text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "p", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field-description"})
-		_gsxgw.BoolAttr("data-gsxui-slot-field-description", true)
-		_gsxgw.S(">")
-//line field.gsx:123:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</p>")
-		return _gsxgw.Err()
+		return _gsxrenderFieldDescription(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderFieldDescription(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line field.gsx:116:2
+	_gsxgw.S("<p class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-sm leading-normal font-normal text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "p", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field-description"})
+	_gsxgw.BoolAttr("data-gsxui-slot-field-description", true)
+	_gsxgw.S(">")
+//line field.gsx:123:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</p>")
+	return _gsxgw.Err()
 }
 
 //line field.gsx:127:1
@@ -238,35 +266,42 @@ func FieldDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func FieldSeparator(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line field.gsx:133:2
-		_gsxgw.S("<div")
-		if !attrs.Has("data-content") {
-			_gsxgw.BoolAttr("data-content", bool(children != nil))
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative -my-2 h-5 text-sm [[data-gsxui-slot-field-group][data-variant=outline]_&]:-mb-2"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field-separator-wrapper"})
-		_gsxgw.BoolAttr("data-gsxui-slot-field-separator-wrapper", true)
-		_gsxgw.S(">")
-//line field.gsx:139:3
-		_gsxgw.NodeResult(_gsxrenderSeparator(ctx, _gsxgw, "", _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("absolute inset-0 top-1/2"))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-field-separator", Value: _gsxrt.Toggle(true)}})))
-//line field.gsx:140:3
-		if children != nil {
-//line field.gsx:141:4
-			_gsxgw.S("<span class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative mx-auto block w-fit bg-background px-2 text-muted-foreground"))
-			_gsxgw.S("\"")
-			_gsxgw.BoolAttr("data-gsxui-slot-field-separator-content", true)
-			_gsxgw.S(">")
-//line field.gsx:145:5
-			_gsxgw.Node(ctx, children)
-			_gsxgw.S("</span>")
-		}
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderFieldSeparator(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderFieldSeparator(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line field.gsx:133:2
+	_gsxgw.S("<div")
+	if !attrs.Has("data-content") {
+		_gsxgw.BoolAttr("data-content", bool(children != nil))
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative -my-2 h-5 text-sm [[data-gsxui-slot-field-group][data-variant=outline]_&]:-mb-2"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field-separator-wrapper"})
+	_gsxgw.BoolAttr("data-gsxui-slot-field-separator-wrapper", true)
+	_gsxgw.S(">")
+//line field.gsx:139:3
+	_gsxgw.NodeResult(_gsxrenderSeparator(ctx, _gsxgw, "", _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("absolute inset-0 top-1/2"))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-field-separator", Value: _gsxrt.Toggle(true)}})))
+//line field.gsx:140:3
+	if children != nil {
+//line field.gsx:141:4
+		_gsxgw.S("<span class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative mx-auto block w-fit bg-background px-2 text-muted-foreground"))
+		_gsxgw.S("\"")
+		_gsxgw.BoolAttr("data-gsxui-slot-field-separator-content", true)
+		_gsxgw.S(">")
+//line field.gsx:145:5
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</span>")
+	}
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line field.gsx:151:1

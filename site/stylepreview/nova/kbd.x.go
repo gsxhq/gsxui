@@ -21,19 +21,26 @@ import (
 func Kbd(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line kbd.gsx:11:2
-		_gsxgw.S("<kbd class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pointer-events-none inline-flex h-5 w-fit min-w-5 items-center justify-center gap-1 rounded-sm bg-muted px-1 font-sans text-xs font-medium text-muted-foreground select-none [&_svg:not([class*='size-'])]:size-3 [[data-gsxui-slot-tooltip-content]_&]:bg-background/20 [[data-gsxui-slot-tooltip-content]_&]:text-background [[data-gsxui-slot-tooltip-content]_&]:rounded-sm [.dark_[data-gsxui-slot-tooltip-content]_&]:bg-background/10"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "kbd", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-kbd"})
-		_gsxgw.BoolAttr("data-gsxui-slot-kbd", true)
-		_gsxgw.S(">")
-//line kbd.gsx:18:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</kbd>")
-		return _gsxgw.Err()
+		return _gsxrenderKbd(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderKbd(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line kbd.gsx:11:2
+	_gsxgw.S("<kbd class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pointer-events-none inline-flex h-5 w-fit min-w-5 items-center justify-center gap-1 rounded-sm bg-muted px-1 font-sans text-xs font-medium text-muted-foreground select-none [&_svg:not([class*='size-'])]:size-3 [[data-gsxui-slot-tooltip-content]_&]:bg-background/20 [[data-gsxui-slot-tooltip-content]_&]:text-background [[data-gsxui-slot-tooltip-content]_&]:rounded-sm [.dark_[data-gsxui-slot-tooltip-content]_&]:bg-background/10"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "kbd", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-kbd"})
+	_gsxgw.BoolAttr("data-gsxui-slot-kbd", true)
+	_gsxgw.S(">")
+//line kbd.gsx:18:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</kbd>")
+	return _gsxgw.Err()
 }
 
 //line kbd.gsx:22:1
@@ -46,17 +53,24 @@ func Kbd(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func KbdGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line kbd.gsx:27:2
-		_gsxgw.S("<kbd class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("inline-flex items-center gap-1"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "kbd", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-kbd-group"})
-		_gsxgw.BoolAttr("data-gsxui-slot-kbd-group", true)
-		_gsxgw.S(">")
-//line kbd.gsx:28:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</kbd>")
-		return _gsxgw.Err()
+		return _gsxrenderKbdGroup(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderKbdGroup(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line kbd.gsx:27:2
+	_gsxgw.S("<kbd class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("inline-flex items-center gap-1"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "kbd", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-kbd-group"})
+	_gsxgw.BoolAttr("data-gsxui-slot-kbd-group", true)
+	_gsxgw.S(">")
+//line kbd.gsx:28:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</kbd>")
+	return _gsxgw.Err()
 }

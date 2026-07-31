@@ -66,19 +66,26 @@ import (
 func DropdownMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dropdown-menu.gsx:57:2
-		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("contents"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dropdown-menu"})
-		_gsxgw.BoolAttr("data-gsxui-slot-dropdown-menu", true)
-		_gsxgw.S(">")
-//line dropdown-menu.gsx:57:71
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderDropdownMenu(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderDropdownMenu(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line dropdown-menu.gsx:57:2
+	_gsxgw.S("<div class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("contents"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dropdown-menu"})
+	_gsxgw.BoolAttr("data-gsxui-slot-dropdown-menu", true)
+	_gsxgw.S(">")
+//line dropdown-menu.gsx:57:71
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line dropdown-menu.gsx:60:1
@@ -120,34 +127,41 @@ func DropdownMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func DropdownMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dropdown-menu.gsx:79:2
-		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("z-50 max-h-96 min-w-[8rem] origin-top-left overflow-x-hidden overflow-y-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 data-[side=bottom]:starting:[&:popover-open]:-translate-y-2 data-[side=left]:starting:[&:popover-open]:translate-x-2 data-[side=right]:starting:[&:popover-open]:-translate-x-2 data-[side=top]:starting:[&:popover-open]:translate-y-2"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		if !attrs.Has("popover") {
-			_gsxgw.S(" popover=\"auto\"")
-		}
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"menu\"")
-		}
-		if !attrs.Has("tabindex") {
-			_gsxgw.S(" tabindex=\"-1\"")
-		}
-		if !attrs.Has("data-state") {
-			_gsxgw.S(" data-state=\"closed\"")
-		}
-		if !attrs.Has("data-side") {
-			_gsxgw.S(" data-side=\"bottom\"")
-		}
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dropdown-menu-content"})
-		_gsxgw.BoolAttr("data-gsxui-slot-dropdown-menu-content", true)
-		_gsxgw.S(">")
-//line dropdown-menu.gsx:91:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderDropdownMenuContent(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderDropdownMenuContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line dropdown-menu.gsx:79:2
+	_gsxgw.S("<div class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("z-50 max-h-96 min-w-[8rem] origin-top-left overflow-x-hidden overflow-y-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 data-[side=bottom]:starting:[&:popover-open]:-translate-y-2 data-[side=left]:starting:[&:popover-open]:translate-x-2 data-[side=right]:starting:[&:popover-open]:-translate-x-2 data-[side=top]:starting:[&:popover-open]:translate-y-2"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	if !attrs.Has("popover") {
+		_gsxgw.S(" popover=\"auto\"")
+	}
+	if !attrs.Has("role") {
+		_gsxgw.S(" role=\"menu\"")
+	}
+	if !attrs.Has("tabindex") {
+		_gsxgw.S(" tabindex=\"-1\"")
+	}
+	if !attrs.Has("data-state") {
+		_gsxgw.S(" data-state=\"closed\"")
+	}
+	if !attrs.Has("data-side") {
+		_gsxgw.S(" data-side=\"bottom\"")
+	}
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dropdown-menu-content"})
+	_gsxgw.BoolAttr("data-gsxui-slot-dropdown-menu-content", true)
+	_gsxgw.S(">")
+//line dropdown-menu.gsx:91:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line dropdown-menu.gsx:95:1
@@ -160,39 +174,46 @@ func DropdownMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func DropdownMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dropdown-menu.gsx:100:2
-		_gsxgw.S("<div")
-		_gsxv0 := "relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
-		var _gsxv1 string
-		switch variant {
-		case "destructive":
-			_gsxv1 = "text-destructive focus:bg-destructive/10 focus:text-destructive dark:focus:bg-destructive/20 [&_svg]:text-destructive"
-		default:
-			_gsxv1 = "text-foreground"
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		if !attrs.Has("data-variant") {
-			_gsxgw.S(" data-variant=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
-			_gsxgw.S("\"")
-		}
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"menuitem\"")
-		}
-		if !attrs.Has("tabindex") {
-			_gsxgw.S(" tabindex=\"-1\"")
-		}
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dropdown-menu-item"})
-		_gsxgw.BoolAttr("data-gsxui-slot-dropdown-menu-item", true)
-		_gsxgw.S(">")
-//line dropdown-menu.gsx:116:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderDropdownMenuItem(ctx, _gsxgw, variant, children, attrs)
 	})
+}
+
+func _gsxrenderDropdownMenuItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line dropdown-menu.gsx:100:2
+	_gsxgw.S("<div")
+	_gsxv0 := "relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
+	var _gsxv1 string
+	switch variant {
+	case "destructive":
+		_gsxv1 = "text-destructive focus:bg-destructive/10 focus:text-destructive dark:focus:bg-destructive/20 [&_svg]:text-destructive"
+	default:
+		_gsxv1 = "text-foreground"
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	if !attrs.Has("data-variant") {
+		_gsxgw.S(" data-variant=\"")
+		_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
+		_gsxgw.S("\"")
+	}
+	if !attrs.Has("role") {
+		_gsxgw.S(" role=\"menuitem\"")
+	}
+	if !attrs.Has("tabindex") {
+		_gsxgw.S(" tabindex=\"-1\"")
+	}
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dropdown-menu-item"})
+	_gsxgw.BoolAttr("data-gsxui-slot-dropdown-menu-item", true)
+	_gsxgw.S(">")
+//line dropdown-menu.gsx:116:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line dropdown-menu.gsx:120:1
@@ -209,21 +230,28 @@ func DropdownMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt
 func DropdownMenuGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dropdown-menu.gsx:129:2
-		_gsxgw.S("<div")
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"group\"")
-		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dropdown-menu-group"})
-		_gsxgw.BoolAttr("data-gsxui-slot-dropdown-menu-group", true)
-		_gsxgw.S(">")
-//line dropdown-menu.gsx:129:69
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderDropdownMenuGroup(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderDropdownMenuGroup(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line dropdown-menu.gsx:129:2
+	_gsxgw.S("<div")
+	if !attrs.Has("role") {
+		_gsxgw.S(" role=\"group\"")
+	}
+	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dropdown-menu-group"})
+	_gsxgw.BoolAttr("data-gsxui-slot-dropdown-menu-group", true)
+	_gsxgw.S(">")
+//line dropdown-menu.gsx:129:69
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line dropdown-menu.gsx:132:1
@@ -412,57 +440,78 @@ func DropdownMenuRadioItem(checked bool, value string, children gsx.Node, attrs 
 func DropdownMenuLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dropdown-menu.gsx:244:2
-		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("px-1.5 py-1 text-xs font-medium"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dropdown-menu-label"})
-		_gsxgw.BoolAttr("data-gsxui-slot-dropdown-menu-label", true)
-		_gsxgw.S(">")
-//line dropdown-menu.gsx:244:100
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderDropdownMenuLabel(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderDropdownMenuLabel(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line dropdown-menu.gsx:244:2
+	_gsxgw.S("<div class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("px-1.5 py-1 text-xs font-medium"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dropdown-menu-label"})
+	_gsxgw.BoolAttr("data-gsxui-slot-dropdown-menu-label", true)
+	_gsxgw.S(">")
+//line dropdown-menu.gsx:244:100
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line dropdown-menu.gsx:247:1
 func DropdownMenuSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dropdown-menu.gsx:248:2
-		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("-mx-1 my-1 h-px bg-border"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"separator\"")
-		}
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dropdown-menu-separator"})
-		_gsxgw.BoolAttr("data-gsxui-slot-dropdown-menu-separator", true)
-		_gsxgw.S("></div>")
-		return _gsxgw.Err()
+		return _gsxrenderDropdownMenuSeparator(ctx, _gsxgw, attrs)
 	})
+}
+
+func _gsxrenderDropdownMenuSeparator(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line dropdown-menu.gsx:248:2
+	_gsxgw.S("<div class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("-mx-1 my-1 h-px bg-border"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	if !attrs.Has("role") {
+		_gsxgw.S(" role=\"separator\"")
+	}
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dropdown-menu-separator"})
+	_gsxgw.BoolAttr("data-gsxui-slot-dropdown-menu-separator", true)
+	_gsxgw.S("></div>")
+	return _gsxgw.Err()
 }
 
 //line dropdown-menu.gsx:256:1
 func DropdownMenuShortcut(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line dropdown-menu.gsx:257:2
-		_gsxgw.S("<span class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("ml-auto text-xs tracking-widest text-muted-foreground"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dropdown-menu-shortcut"})
-		_gsxgw.BoolAttr("data-gsxui-slot-dropdown-menu-shortcut", true)
-		_gsxgw.S(">")
-//line dropdown-menu.gsx:262:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</span>")
-		return _gsxgw.Err()
+		return _gsxrenderDropdownMenuShortcut(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderDropdownMenuShortcut(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line dropdown-menu.gsx:257:2
+	_gsxgw.S("<span class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("ml-auto text-xs tracking-widest text-muted-foreground"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dropdown-menu-shortcut"})
+	_gsxgw.BoolAttr("data-gsxui-slot-dropdown-menu-shortcut", true)
+	_gsxgw.S(">")
+//line dropdown-menu.gsx:262:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</span>")
+	return _gsxgw.Err()
 }
 
 //line dropdown-menu.gsx:266:1

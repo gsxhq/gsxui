@@ -93,38 +93,45 @@ func aspectRatioNumber(s string) bool {
 func AspectRatio(ratio string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line aspect-ratio.gsx:84:2
-		form, w, h := parseAspectRatio(ratio)
-//line aspect-ratio.gsx:85:2
-		_gsxgw.S("<div")
-		switch form {
-		case aspectRatioPair:
-			_gsxgw.S(" style=\"aspect-ratio: ")
-			_gsxgw.AttrValue(_gsxrt.StyleValue(string(w)))
-			_gsxgw.S(" / ")
-			_gsxgw.AttrValue(_gsxrt.StyleValue(string(h)))
-			_gsxgw.S("\"")
-		case aspectRatioAutoPair:
-			_gsxgw.S(" style=\"aspect-ratio: auto ")
-			_gsxgw.AttrValue(_gsxrt.StyleValue(string(w)))
-			_gsxgw.S(" / ")
-			_gsxgw.AttrValue(_gsxrt.StyleValue(string(h)))
-			_gsxgw.S("\"")
-		default:
-			_gsxgw.S(" style=\"aspect-ratio: ")
-			_gsxgw.AttrValue(_gsxrt.StyleValue(string(ratio)))
-			_gsxgw.S("\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("block"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-aspect-ratio"})
-		_gsxgw.BoolAttr("data-gsxui-slot-aspect-ratio", true)
-		_gsxgw.S(">")
-//line aspect-ratio.gsx:98:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderAspectRatio(ctx, _gsxgw, ratio, children, attrs)
 	})
+}
+
+func _gsxrenderAspectRatio(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, ratio string, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line aspect-ratio.gsx:84:2
+	form, w, h := parseAspectRatio(ratio)
+//line aspect-ratio.gsx:85:2
+	_gsxgw.S("<div")
+	switch form {
+	case aspectRatioPair:
+		_gsxgw.S(" style=\"aspect-ratio: ")
+		_gsxgw.AttrValue(_gsxrt.StyleValue(string(w)))
+		_gsxgw.S(" / ")
+		_gsxgw.AttrValue(_gsxrt.StyleValue(string(h)))
+		_gsxgw.S("\"")
+	case aspectRatioAutoPair:
+		_gsxgw.S(" style=\"aspect-ratio: auto ")
+		_gsxgw.AttrValue(_gsxrt.StyleValue(string(w)))
+		_gsxgw.S(" / ")
+		_gsxgw.AttrValue(_gsxrt.StyleValue(string(h)))
+		_gsxgw.S("\"")
+	default:
+		_gsxgw.S(" style=\"aspect-ratio: ")
+		_gsxgw.AttrValue(_gsxrt.StyleValue(string(ratio)))
+		_gsxgw.S("\"")
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("block"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-aspect-ratio"})
+	_gsxgw.BoolAttr("data-gsxui-slot-aspect-ratio", true)
+	_gsxgw.S(">")
+//line aspect-ratio.gsx:98:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }

@@ -24,15 +24,22 @@ import (
 func Drawer(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line drawer.gsx:13:2
-		_gsxgw.NodeResult(_gsxrenderDialog(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-			_gsxgw := _gsxrt.W(_gsxw)
-//line drawer.gsx:13:46
-			_gsxgw.Node(ctx, children)
-			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-drawer", Value: _gsxrt.Toggle(true)}})))
-		return _gsxgw.Err()
+		return _gsxrenderDrawer(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderDrawer(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line drawer.gsx:13:2
+	_gsxgw.NodeResult(_gsxrenderDialog(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line drawer.gsx:13:46
+		_gsxgw.Node(ctx, children)
+		return _gsxgw.Err()
+	}), _gsxrt.ConcatAttrs(attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-drawer", Value: _gsxrt.Toggle(true)}})))
+	return _gsxgw.Err()
 }
 
 //line drawer.gsx:16:1
@@ -66,128 +73,163 @@ func DrawerTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func DrawerContent(direction string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line drawer.gsx:29:2
-		_gsxgw.S("<dialog")
-		_gsxv0 := "m-0 flex-col gap-4 shadow-lg transition ease-in-out bg-popover text-popover-foreground fixed z-50 text-sm duration-200 outline-none data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-[var(--overlay)] backdrop:backdrop-blur-xs backdrop:duration-200 data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 open:flex"
-		var _gsxv1 string
-		switch direction {
-		case "left":
-			_gsxv1 = "inset-y-0 left-0 right-auto h-full max-h-none w-3/4 rounded-r-xl border-r sm:max-w-sm data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left md:[&_[data-gsxui-slot-drawer-header]]:text-left"
-		case "right":
-			_gsxv1 = "inset-y-0 right-0 left-auto h-full max-h-none w-3/4 rounded-l-xl border-l sm:max-w-sm data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right md:[&_[data-gsxui-slot-drawer-header]]:text-left"
-		case "top":
-			_gsxv1 = "inset-x-0 top-0 bottom-auto mb-24 h-auto max-h-[80vh] w-full max-w-none rounded-b-xl border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top [&_[data-gsxui-slot-drawer-header]]:text-center"
-		default:
-			_gsxv1 = "inset-x-0 bottom-0 top-auto mt-24 h-auto max-h-[80vh] w-full max-w-none rounded-t-xl border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom [&_[data-gsxui-slot-drawer-header]]:text-center"
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		if !attrs.Has("data-state") {
-			_gsxgw.S(" data-state=\"closed\"")
-		}
-		if !attrs.Has("data-side") {
-			_gsxgw.S(" data-side=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((direction), "bottom")))
-			_gsxgw.S("\"")
-		}
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "dialog", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-drawer-content", "data-gsxui-slot-dialog-content"})
-		_gsxgw.BoolAttr("data-gsxui-slot-drawer-content", true)
-		_gsxgw.BoolAttr("data-gsxui-slot-dialog-content", true)
-		_gsxgw.S(">")
-//line drawer.gsx:49:3
-		if direction == "" || direction == "bottom" {
-//line drawer.gsx:50:4
-			_gsxgw.S("<div class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("mx-auto mt-4 h-1 w-[100px] shrink-0 rounded-full bg-muted"))
-			_gsxgw.S("\"")
-			_gsxgw.BoolAttr("data-gsxui-slot-drawer-handle", true)
-			_gsxgw.S("></div>")
-		}
-//line drawer.gsx:52:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</dialog>")
-		return _gsxgw.Err()
+		return _gsxrenderDrawerContent(ctx, _gsxgw, direction, children, attrs)
 	})
+}
+
+func _gsxrenderDrawerContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, direction string, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line drawer.gsx:29:2
+	_gsxgw.S("<dialog")
+	_gsxv0 := "m-0 flex-col gap-4 shadow-lg transition ease-in-out bg-popover text-popover-foreground fixed z-50 text-sm duration-200 outline-none data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-[var(--overlay)] backdrop:backdrop-blur-xs backdrop:duration-200 data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 open:flex"
+	var _gsxv1 string
+	switch direction {
+	case "left":
+		_gsxv1 = "inset-y-0 left-0 right-auto h-full max-h-none w-3/4 rounded-r-xl border-r sm:max-w-sm data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left md:[&_[data-gsxui-slot-drawer-header]]:text-left"
+	case "right":
+		_gsxv1 = "inset-y-0 right-0 left-auto h-full max-h-none w-3/4 rounded-l-xl border-l sm:max-w-sm data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right md:[&_[data-gsxui-slot-drawer-header]]:text-left"
+	case "top":
+		_gsxv1 = "inset-x-0 top-0 bottom-auto mb-24 h-auto max-h-[80vh] w-full max-w-none rounded-b-xl border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top [&_[data-gsxui-slot-drawer-header]]:text-center"
+	default:
+		_gsxv1 = "inset-x-0 bottom-0 top-auto mt-24 h-auto max-h-[80vh] w-full max-w-none rounded-t-xl border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom [&_[data-gsxui-slot-drawer-header]]:text-center"
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	if !attrs.Has("data-state") {
+		_gsxgw.S(" data-state=\"closed\"")
+	}
+	if !attrs.Has("data-side") {
+		_gsxgw.S(" data-side=\"")
+		_gsxgw.AttrValue(string(_gsxstd.Default((direction), "bottom")))
+		_gsxgw.S("\"")
+	}
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "dialog", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-drawer-content", "data-gsxui-slot-dialog-content"})
+	_gsxgw.BoolAttr("data-gsxui-slot-drawer-content", true)
+	_gsxgw.BoolAttr("data-gsxui-slot-dialog-content", true)
+	_gsxgw.S(">")
+//line drawer.gsx:49:3
+	if direction == "" || direction == "bottom" {
+//line drawer.gsx:50:4
+		_gsxgw.S("<div class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("mx-auto mt-4 h-1 w-[100px] shrink-0 rounded-full bg-muted"))
+		_gsxgw.S("\"")
+		_gsxgw.BoolAttr("data-gsxui-slot-drawer-handle", true)
+		_gsxgw.S("></div>")
+	}
+//line drawer.gsx:52:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</dialog>")
+	return _gsxgw.Err()
 }
 
 //line drawer.gsx:56:1
 func DrawerHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line drawer.gsx:57:2
-		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-col gap-0.5 p-4"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-drawer-header"})
-		_gsxgw.BoolAttr("data-gsxui-slot-drawer-header", true)
-		_gsxgw.S(">")
-//line drawer.gsx:57:88
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderDrawerHeader(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderDrawerHeader(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line drawer.gsx:57:2
+	_gsxgw.S("<div class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-col gap-0.5 p-4"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-drawer-header"})
+	_gsxgw.BoolAttr("data-gsxui-slot-drawer-header", true)
+	_gsxgw.S(">")
+//line drawer.gsx:57:88
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line drawer.gsx:60:1
 func DrawerFooter(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line drawer.gsx:61:2
-		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("mt-auto flex flex-col gap-2 p-4"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-drawer-footer"})
-		_gsxgw.BoolAttr("data-gsxui-slot-drawer-footer", true)
-		_gsxgw.S(">")
-//line drawer.gsx:61:94
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderDrawerFooter(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderDrawerFooter(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line drawer.gsx:61:2
+	_gsxgw.S("<div class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("mt-auto flex flex-col gap-2 p-4"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-drawer-footer"})
+	_gsxgw.BoolAttr("data-gsxui-slot-drawer-footer", true)
+	_gsxgw.S(">")
+//line drawer.gsx:61:94
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line drawer.gsx:64:1
 func DrawerTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line drawer.gsx:65:2
-		_gsxgw.S("<h2 class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("font-medium text-foreground"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "h2", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-drawer-title", "data-gsxui-slot-dialog-title"})
-		_gsxgw.BoolAttr("data-gsxui-slot-drawer-title", true)
-		_gsxgw.BoolAttr("data-gsxui-slot-dialog-title", true)
-		_gsxgw.S(">")
-//line drawer.gsx:66:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</h2>")
-		return _gsxgw.Err()
+		return _gsxrenderDrawerTitle(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderDrawerTitle(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line drawer.gsx:65:2
+	_gsxgw.S("<h2 class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("font-medium text-foreground"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "h2", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-drawer-title", "data-gsxui-slot-dialog-title"})
+	_gsxgw.BoolAttr("data-gsxui-slot-drawer-title", true)
+	_gsxgw.BoolAttr("data-gsxui-slot-dialog-title", true)
+	_gsxgw.S(">")
+//line drawer.gsx:66:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</h2>")
+	return _gsxgw.Err()
 }
 
 //line drawer.gsx:70:1
 func DrawerDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line drawer.gsx:71:2
-		_gsxgw.S("<p class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-sm text-muted-foreground"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "p", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-drawer-description", "data-gsxui-slot-dialog-description"})
-		_gsxgw.BoolAttr("data-gsxui-slot-drawer-description", true)
-		_gsxgw.BoolAttr("data-gsxui-slot-dialog-description", true)
-		_gsxgw.S(">")
-//line drawer.gsx:77:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</p>")
-		return _gsxgw.Err()
+		return _gsxrenderDrawerDescription(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderDrawerDescription(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line drawer.gsx:71:2
+	_gsxgw.S("<p class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-sm text-muted-foreground"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "p", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-drawer-description", "data-gsxui-slot-dialog-description"})
+	_gsxgw.BoolAttr("data-gsxui-slot-drawer-description", true)
+	_gsxgw.BoolAttr("data-gsxui-slot-dialog-description", true)
+	_gsxgw.S(">")
+//line drawer.gsx:77:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</p>")
+	return _gsxgw.Err()
 }
 
 //line drawer.gsx:81:1

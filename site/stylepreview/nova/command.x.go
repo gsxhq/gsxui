@@ -128,71 +128,85 @@ func CommandDialog(title string, description string, trigger gsx.Node, children 
 func CommandInput(placeholder string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line command.gsx:73:2
-		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex h-9 items-center gap-2 border-b px-3 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50 [[data-gsxui-slot-command-dialog-content]_&]:h-12 [[data-gsxui-slot-command-dialog-content]_&]:[&_svg]:size-5"))
-		_gsxgw.S("\"")
-		_gsxgw.BoolAttr("data-gsxui-slot-command-input-wrapper", true)
-		_gsxgw.S(">")
-//line command.gsx:79:3
-		_gsxgw.Node(ctx, icon.Search())
-//line command.gsx:80:3
-		_gsxgw.S("<input")
-		if !attrs.Has("type") {
-			_gsxgw.S(" type=\"text\"")
-		}
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"combobox\"")
-		}
-		if !attrs.Has("aria-expanded") {
-			_gsxgw.S(" aria-expanded=\"true\"")
-		}
-		if !attrs.Has("aria-autocomplete") {
-			_gsxgw.S(" aria-autocomplete=\"list\"")
-		}
-		if !attrs.Has("autocomplete") {
-			_gsxgw.S(" autocomplete=\"off\"")
-		}
-		if !attrs.Has("spellcheck") {
-			_gsxgw.S(" spellcheck=\"false\"")
-		}
-		if !attrs.Has("placeholder") {
-			_gsxgw.S(" placeholder=\"")
-			_gsxgw.AttrValue(string(placeholder))
-			_gsxgw.S("\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 [[data-gsxui-slot-command-dialog-content]_&]:h-12"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "input", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command-input"})
-		_gsxgw.BoolAttr("data-gsxui-slot-command-input", true)
-		_gsxgw.S("></div>")
-		return _gsxgw.Err()
+		return _gsxrenderCommandInput(ctx, _gsxgw, placeholder, attrs)
 	})
+}
+
+func _gsxrenderCommandInput(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, placeholder string, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line command.gsx:73:2
+	_gsxgw.S("<div class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex h-9 items-center gap-2 border-b px-3 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50 [[data-gsxui-slot-command-dialog-content]_&]:h-12 [[data-gsxui-slot-command-dialog-content]_&]:[&_svg]:size-5"))
+	_gsxgw.S("\"")
+	_gsxgw.BoolAttr("data-gsxui-slot-command-input-wrapper", true)
+	_gsxgw.S(">")
+//line command.gsx:79:3
+	_gsxgw.Node(ctx, icon.Search())
+//line command.gsx:80:3
+	_gsxgw.S("<input")
+	if !attrs.Has("type") {
+		_gsxgw.S(" type=\"text\"")
+	}
+	if !attrs.Has("role") {
+		_gsxgw.S(" role=\"combobox\"")
+	}
+	if !attrs.Has("aria-expanded") {
+		_gsxgw.S(" aria-expanded=\"true\"")
+	}
+	if !attrs.Has("aria-autocomplete") {
+		_gsxgw.S(" aria-autocomplete=\"list\"")
+	}
+	if !attrs.Has("autocomplete") {
+		_gsxgw.S(" autocomplete=\"off\"")
+	}
+	if !attrs.Has("spellcheck") {
+		_gsxgw.S(" spellcheck=\"false\"")
+	}
+	if !attrs.Has("placeholder") {
+		_gsxgw.S(" placeholder=\"")
+		_gsxgw.AttrValue(string(placeholder))
+		_gsxgw.S("\"")
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 [[data-gsxui-slot-command-dialog-content]_&]:h-12"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "input", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command-input"})
+	_gsxgw.BoolAttr("data-gsxui-slot-command-input", true)
+	_gsxgw.S("></div>")
+	return _gsxgw.Err()
 }
 
 //line command.gsx:97:1
 func CommandList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line command.gsx:98:2
-		_gsxgw.S("<div")
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"listbox\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("max-h-72 scroll-py-1 overflow-x-hidden overflow-y-auto"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command-list"})
-		_gsxgw.BoolAttr("data-gsxui-slot-command-list", true)
-		_gsxgw.S(">")
-//line command.gsx:104:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderCommandList(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderCommandList(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line command.gsx:98:2
+	_gsxgw.S("<div")
+	if !attrs.Has("role") {
+		_gsxgw.S(" role=\"listbox\"")
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("max-h-72 scroll-py-1 overflow-x-hidden overflow-y-auto"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command-list"})
+	_gsxgw.BoolAttr("data-gsxui-slot-command-list", true)
+	_gsxgw.S(">")
+//line command.gsx:104:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line command.gsx:108:1
@@ -204,23 +218,30 @@ func CommandList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func CommandEmpty(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line command.gsx:112:2
-		_gsxgw.S("<div")
-		if !attrs.Has("hidden") {
-			_gsxgw.BoolAttr("hidden", true)
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("py-6 text-center text-sm"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command-empty"})
-		_gsxgw.BoolAttr("data-gsxui-slot-command-empty", true)
-		_gsxgw.S(">")
-//line command.gsx:112:94
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderCommandEmpty(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderCommandEmpty(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line command.gsx:112:2
+	_gsxgw.S("<div")
+	if !attrs.Has("hidden") {
+		_gsxgw.BoolAttr("hidden", true)
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("py-6 text-center text-sm"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command-empty"})
+	_gsxgw.BoolAttr("data-gsxui-slot-command-empty", true)
+	_gsxgw.S(">")
+//line command.gsx:112:94
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line command.gsx:115:1
@@ -233,55 +254,69 @@ func CommandEmpty(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func CommandGroup(heading string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line command.gsx:120:2
-		_gsxgw.S("<div")
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"group\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("overflow-hidden p-1 text-foreground [[data-gsxui-slot-command-dialog-content]_&]:px-2 [[data-gsxui-slot-command-dialog-content]_[data-gsxui-slot-command-group]:not([hidden])~&]:pt-0"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command-group"})
-		_gsxgw.BoolAttr("data-gsxui-slot-command-group", true)
-		_gsxgw.S(">")
-//line command.gsx:128:3
-		if heading != "" {
-//line command.gsx:129:4
-			_gsxgw.S("<div class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("px-2 py-1.5 text-xs font-medium text-muted-foreground"))
-			_gsxgw.S("\"")
-			_gsxgw.BoolAttr("data-gsxui-slot-command-group-heading", true)
-			_gsxgw.S(">")
-//line command.gsx:130:5
-			_gsxgw.Text(string(heading))
-			_gsxgw.S("</div>")
-		}
-//line command.gsx:133:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderCommandGroup(ctx, _gsxgw, heading, children, attrs)
 	})
+}
+
+func _gsxrenderCommandGroup(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, heading string, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line command.gsx:120:2
+	_gsxgw.S("<div")
+	if !attrs.Has("role") {
+		_gsxgw.S(" role=\"group\"")
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("overflow-hidden p-1 text-foreground [[data-gsxui-slot-command-dialog-content]_&]:px-2 [[data-gsxui-slot-command-dialog-content]_[data-gsxui-slot-command-group]:not([hidden])~&]:pt-0"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command-group"})
+	_gsxgw.BoolAttr("data-gsxui-slot-command-group", true)
+	_gsxgw.S(">")
+//line command.gsx:128:3
+	if heading != "" {
+//line command.gsx:129:4
+		_gsxgw.S("<div class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("px-2 py-1.5 text-xs font-medium text-muted-foreground"))
+		_gsxgw.S("\"")
+		_gsxgw.BoolAttr("data-gsxui-slot-command-group-heading", true)
+		_gsxgw.S(">")
+//line command.gsx:130:5
+		_gsxgw.Text(string(heading))
+		_gsxgw.S("</div>")
+	}
+//line command.gsx:133:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line command.gsx:137:1
 func CommandSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line command.gsx:138:2
-		_gsxgw.S("<div")
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"separator\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("-mx-1 h-px bg-border"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command-separator"})
-		_gsxgw.BoolAttr("data-gsxui-slot-command-separator", true)
-		_gsxgw.S("></div>")
-		return _gsxgw.Err()
+		return _gsxrenderCommandSeparator(ctx, _gsxgw, attrs)
 	})
+}
+
+func _gsxrenderCommandSeparator(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line command.gsx:138:2
+	_gsxgw.S("<div")
+	if !attrs.Has("role") {
+		_gsxgw.S(" role=\"separator\"")
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("-mx-1 h-px bg-border"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command-separator"})
+	_gsxgw.BoolAttr("data-gsxui-slot-command-separator", true)
+	_gsxgw.S("></div>")
+	return _gsxgw.Err()
 }
 
 //line command.gsx:141:1
@@ -297,48 +332,62 @@ func CommandSeparator(attrs gsx.Attrs) _gsxrt.Node {
 func CommandItem(value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line command.gsx:149:2
-		_gsxgw.S("<div")
-		if !attrs.Has("data-value") {
-			_gsxgw.S(" data-value=\"")
-			_gsxgw.AttrValue(string(value))
-			_gsxgw.S("\"")
-		}
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"option\"")
-		}
-		if !attrs.Has("aria-selected") {
-			_gsxgw.S(" aria-selected=\"false\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled=true]:pointer-events-none data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [[data-gsxui-slot-command-dialog-content]_&]:px-2 [[data-gsxui-slot-command-dialog-content]_&]:py-3 [[data-gsxui-slot-command-dialog-content]_&]:[&_svg]:size-5"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command-item"})
-		_gsxgw.BoolAttr("data-gsxui-slot-command-item", true)
-		_gsxgw.S(">")
-//line command.gsx:159:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderCommandItem(ctx, _gsxgw, value, children, attrs)
 	})
+}
+
+func _gsxrenderCommandItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, value string, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line command.gsx:149:2
+	_gsxgw.S("<div")
+	if !attrs.Has("data-value") {
+		_gsxgw.S(" data-value=\"")
+		_gsxgw.AttrValue(string(value))
+		_gsxgw.S("\"")
+	}
+	if !attrs.Has("role") {
+		_gsxgw.S(" role=\"option\"")
+	}
+	if !attrs.Has("aria-selected") {
+		_gsxgw.S(" aria-selected=\"false\"")
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled=true]:pointer-events-none data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [[data-gsxui-slot-command-dialog-content]_&]:px-2 [[data-gsxui-slot-command-dialog-content]_&]:py-3 [[data-gsxui-slot-command-dialog-content]_&]:[&_svg]:size-5"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command-item"})
+	_gsxgw.BoolAttr("data-gsxui-slot-command-item", true)
+	_gsxgw.S(">")
+//line command.gsx:159:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line command.gsx:163:1
 func CommandShortcut(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line command.gsx:164:2
-		_gsxgw.S("<span class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("ml-auto text-xs tracking-widest text-muted-foreground"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command-shortcut"})
-		_gsxgw.BoolAttr("data-gsxui-slot-command-shortcut", true)
-		_gsxgw.S(">")
-//line command.gsx:165:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</span>")
-		return _gsxgw.Err()
+		return _gsxrenderCommandShortcut(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderCommandShortcut(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line command.gsx:164:2
+	_gsxgw.S("<span class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("ml-auto text-xs tracking-widest text-muted-foreground"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command-shortcut"})
+	_gsxgw.BoolAttr("data-gsxui-slot-command-shortcut", true)
+	_gsxgw.S(">")
+//line command.gsx:165:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</span>")
+	return _gsxgw.Err()
 }

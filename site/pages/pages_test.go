@@ -715,16 +715,16 @@ func TestExamplePreviewRoute(t *testing.T) {
 	}
 }
 
-func TestThemePreviewButtonRoute(t *testing.T) {
+func TestThemePreviewRoute(t *testing.T) {
 	handler := newTestHandler(t)
 
-	t.Run("isolated exact-style matrix", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodGet, "/theme/preview/button", nil)
+	t.Run("isolated exact-style gallery", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/theme/preview", nil)
 		rec := httptest.NewRecorder()
 		handler.ServeHTTP(rec, req)
 
 		if rec.Code != http.StatusOK {
-			t.Fatalf("GET /theme/preview/button = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
+			t.Fatalf("GET /theme/preview = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
 		}
 		body := rec.Body.String()
 		for _, marker := range []string{
@@ -741,6 +741,11 @@ func TestThemePreviewButtonRoute(t *testing.T) {
 			`data-theme-preview-case="focus-visible"`,
 			`data-theme-preview-case="invalid"`,
 			`data-theme-preview-case="caller-composition"`,
+			`data-theme-preview-gallery`,
+			`data-gsxui-slot-card`,
+			`data-gsxui-slot-table`,
+			`data-gsxui-slot-calendar`,
+			`data-gsxui-slot-sidebar`,
 			`aria-invalid="true"`,
 			`href="/docs/getting-started"`,
 		} {
@@ -772,11 +777,11 @@ func TestThemePreviewButtonRoute(t *testing.T) {
 	})
 
 	t.Run("extra route segment is not accepted", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodGet, "/theme/preview/button/extra", nil)
+		req := httptest.NewRequest(http.MethodGet, "/theme/preview/extra", nil)
 		rec := httptest.NewRecorder()
 		handler.ServeHTTP(rec, req)
 		if rec.Code != http.StatusNotFound {
-			t.Fatalf("GET /theme/preview/button/extra = %d, want %d; body:\n%s", rec.Code, http.StatusNotFound, rec.Body.String())
+			t.Fatalf("GET /theme/preview/extra = %d, want %d; body:\n%s", rec.Code, http.StatusNotFound, rec.Body.String())
 		}
 	})
 }
@@ -933,7 +938,7 @@ func TestThemePageRoute(t *testing.T) {
 	if got := strings.Count(body, `<iframe`); got != 1 {
 		t.Errorf("theme page has %d iframes, want 1; body:\n%s", got, body)
 	}
-	if !strings.Contains(body, `src="/theme/preview/button"`) {
+	if !strings.Contains(body, `src="/theme/preview"`) {
 		t.Errorf(`response missing Button preview iframe route; body:\n%s`, body)
 	}
 	if !strings.Contains(body, `data-theme-style="maia"`) {

@@ -11,7 +11,7 @@ import (
 
 func TestThemeEditorRendersPalettePickerDefaults(t *testing.T) {
 	var output strings.Builder
-	if err := pages.ThemeEditor("/theme/preview/button").Render(context.Background(), &output); err != nil {
+	if err := pages.ThemeEditor("/theme/preview").Render(context.Background(), &output); err != nil {
 		t.Fatal(err)
 	}
 	document, err := html.Parse(strings.NewReader(output.String()))

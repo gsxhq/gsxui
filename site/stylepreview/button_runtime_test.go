@@ -7,19 +7,28 @@ import (
 	"testing"
 
 	"github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/site/stylepreview"
 	"github.com/gsxhq/gsxui/site/stylepreview/maia"
 	"github.com/gsxhq/gsxui/site/stylepreview/nova"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
 )
 
+// buttonRenderer is the copied Button contract shared by every generated
+// style package, restated locally now that stylepreview.Matrix is gone: the
+// tests below exercise the generated nova/maia Button sources directly.
+type buttonRenderer func(
+	variant, size, href string,
+	disabled bool,
+	children gsx.Node,
+	attrs gsx.Attrs,
+) gsx.Node
+
 func TestButtonInlineStylesMergeCallerAttrs(t *testing.T) {
 	t.Parallel()
 
 	for _, test := range []struct {
 		name   string
-		button stylepreview.ButtonRenderer
+		button buttonRenderer
 	}{
 		{name: "nova", button: nova.Button},
 		{name: "maia", button: maia.Button},
@@ -82,7 +91,7 @@ func TestButtonInlineStylesPreserveElementSemantics(t *testing.T) {
 
 	for _, test := range []struct {
 		name   string
-		button stylepreview.ButtonRenderer
+		button buttonRenderer
 	}{
 		{name: "nova", button: nova.Button},
 		{name: "maia", button: maia.Button},

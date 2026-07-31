@@ -28,8 +28,15 @@ import (
 func Spinner(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line spinner.gsx:21:2
-		_gsxgw.Node(ctx, icon.LoaderCircle(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "role", Value: "status"}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Loading"}}, _gsxrt.Attrs{{Key: "aria-hidden", Value: "false"}}, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("size-4 animate-spin"))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-spinner", Value: _gsxrt.Toggle(true)}})...))
-		return _gsxgw.Err()
+		return _gsxrenderSpinner(ctx, _gsxgw, attrs)
 	})
+}
+
+func _gsxrenderSpinner(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line spinner.gsx:21:2
+	_gsxgw.Node(ctx, icon.LoaderCircle(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "role", Value: "status"}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Loading"}}, _gsxrt.Attrs{{Key: "aria-hidden", Value: "false"}}, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("size-4 animate-spin"))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-spinner", Value: _gsxrt.Toggle(true)}})...))
+	return _gsxgw.Err()
 }

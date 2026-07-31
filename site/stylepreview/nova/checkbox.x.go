@@ -35,18 +35,25 @@ import (
 func Checkbox(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line checkbox.gsx:25:2
-		_gsxgw.S("<input")
-		if !attrs.Has("type") {
-			_gsxgw.S(" type=\"checkbox\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("size-4 shrink-0 appearance-none rounded-[4px] border border-input transition-shadow outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:bg-input/30 checked:border-primary checked:bg-primary"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "input", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-checkbox"})
-		_gsxgw.BoolAttr("data-gsxui-slot-checkbox", true)
-		_gsxgw.S(">")
-		return _gsxgw.Err()
+		return _gsxrenderCheckbox(ctx, _gsxgw, attrs)
 	})
+}
+
+func _gsxrenderCheckbox(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line checkbox.gsx:25:2
+	_gsxgw.S("<input")
+	if !attrs.Has("type") {
+		_gsxgw.S(" type=\"checkbox\"")
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("size-4 shrink-0 appearance-none rounded-[4px] border border-input transition-shadow outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:bg-input/30 checked:border-primary checked:bg-primary"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "input", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-checkbox"})
+	_gsxgw.BoolAttr("data-gsxui-slot-checkbox", true)
+	_gsxgw.S(">")
+	return _gsxgw.Err()
 }

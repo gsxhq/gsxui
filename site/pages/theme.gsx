@@ -214,7 +214,7 @@ const themeImportPlaceholder = `:root {
 
 component (t Theme) Page() {
 	<siteLayout title="Theme" active="" mode={layoutWorkspace} toc={nil}>
-		<themeEditor previewURL={ThemePreviewButton{} |> url} workspace/>
+		<themeEditor previewURL={ThemePreview{} |> url} workspace/>
 	</siteLayout>
 }
 
@@ -249,8 +249,8 @@ component themeEditor(previewURL string, workspace bool) {
 		<div>
 			<h1 class="text-3xl font-semibold tracking-tight">Theme editor</h1>
 			<p class="mt-2 max-w-2xl text-sm text-muted-foreground">
-				Choose the copied component style, then edit the semantic theme it consumes. This Button pilot renders the exact
-				Nova or Maia source a project receives from <code>gsxui add</code>.
+				Choose the copied component style, then edit the semantic theme it consumes. The gallery renders the exact
+				Nova or Maia component source a project receives from <code>gsxui add</code>.
 			</p>
 		</div>
 		<div class={gridClass}>
@@ -275,16 +275,13 @@ component themeEditor(previewURL string, workspace bool) {
 						aria-pressed="false"
 						class="rounded-xl border border-border p-4 text-left transition-colors hover:bg-accent"
 					>
-						<span class="flex items-center justify-between gap-2">
-							<span class="font-medium">Maia</span>
-							<span class="rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-foreground">Button pilot</span>
-						</span>
+						<span class="block font-medium">Maia</span>
 						<span class="mt-1 block text-xs text-muted-foreground">Softer geometry and roomier controls.</span>
 					</button>
 				</div>
 				<p class="text-xs text-muted-foreground">
-					Maia currently applies only to Button. The CLI refuses an unsafe mixed-style migration once other components
-					are installed.
+					Both styles render the full component catalogue. The CLI refuses an unsafe mixed-style migration once
+					components are installed.
 				</p>
 			</section>
 			<div
@@ -293,14 +290,14 @@ component themeEditor(previewURL string, workspace bool) {
 			>
 				<div class="flex items-center justify-between gap-3">
 					<div>
-						<h2 class="font-medium">Button preview</h2>
+						<h2 class="font-medium">Component preview</h2>
 						<p data-theme-preview-status class="text-xs text-muted-foreground">Connecting to preview…</p>
 					</div>
 					<ui.Button data-theme-preview-retry variant="outline" size="sm" class="hidden">Retry</ui.Button>
 				</div>
 				<iframe
 					data-theme-preview-frame
-					title="Button theme preview"
+					title="Theme preview"
 					src={previewURL}
 					class={iframeClass}
 				></iframe>

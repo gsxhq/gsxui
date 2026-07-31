@@ -27,6 +27,11 @@ const DefaultStyle = "nova"
 // consumerPackage is the package clause every generated component carries.
 const consumerPackage = "ui"
 
+// gallerySourceName is the single authored gallery composition under
+// site/stylepreview. The .src suffix keeps it out of gsx compilation — only
+// the per-style rewrites it generates are real packages.
+const gallerySourceName = "gallery.gsx.src"
+
 type generatedSource struct {
 	relativePath string
 	content      []byte
@@ -163,6 +168,26 @@ func resolveAll(root string) ([]generatedSource, error) {
 				}
 			}
 		}
+	}
+
+	// The gallery composition is authored once (site/stylepreview/gallery.gsx.src)
+	// and emitted into every style's preview package through the same package
+	// rewrite and --check drift machinery as the components themselves. It uses
+	// no recipe accessors, so it needs the package rewrite only, not desugaring.
+	galleryPath := filepath.Join(root, "site", "stylepreview", gallerySourceName)
+	gallerySource, err := os.ReadFile(galleryPath)
+	if err != nil {
+		return nil, fmt.Errorf("read gallery composition: %w", err)
+	}
+	for _, style := range styles {
+		gallery, err := rewriteGSXPackage(galleryPath, gallerySource, style)
+		if err != nil {
+			return nil, fmt.Errorf("derive %s gallery: %w", style, err)
+		}
+		outputs = append(outputs, generatedSource{
+			relativePath: filepath.Join("site", "stylepreview", style, "gallery.gsx"),
+			content:      gallery,
+		})
 	}
 
 	contract := recipe.BuildContract(shapesByComponent, resolvedByStyle)

@@ -22,137 +22,186 @@ import (
 func Table(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line table.gsx:13:2
-		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative w-full overflow-x-auto"))
-		_gsxgw.S("\"")
-		_gsxgw.BoolAttr("data-gsxui-slot-table-container", true)
-		_gsxgw.S(">")
-//line table.gsx:14:3
-		_gsxgw.S("<table class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("w-full caption-bottom text-sm"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "table", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-table"})
-		_gsxgw.BoolAttr("data-gsxui-slot-table", true)
-		_gsxgw.S(">")
-//line table.gsx:14:87
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</table></div>")
-		return _gsxgw.Err()
+		return _gsxrenderTable(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderTable(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line table.gsx:13:2
+	_gsxgw.S("<div class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative w-full overflow-x-auto"))
+	_gsxgw.S("\"")
+	_gsxgw.BoolAttr("data-gsxui-slot-table-container", true)
+	_gsxgw.S(">")
+//line table.gsx:14:3
+	_gsxgw.S("<table class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("w-full caption-bottom text-sm"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "table", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-table"})
+	_gsxgw.BoolAttr("data-gsxui-slot-table", true)
+	_gsxgw.S(">")
+//line table.gsx:14:87
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</table></div>")
+	return _gsxgw.Err()
 }
 
 //line table.gsx:18:1
 func TableHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line table.gsx:19:2
-		_gsxgw.S("<thead")
-		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "thead", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-table-header"})
-		_gsxgw.BoolAttr("data-gsxui-slot-table-header", true)
-		_gsxgw.S(">")
-//line table.gsx:19:51
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</thead>")
-		return _gsxgw.Err()
+		return _gsxrenderTableHeader(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderTableHeader(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line table.gsx:19:2
+	_gsxgw.S("<thead")
+	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "thead", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-table-header"})
+	_gsxgw.BoolAttr("data-gsxui-slot-table-header", true)
+	_gsxgw.S(">")
+//line table.gsx:19:51
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</thead>")
+	return _gsxgw.Err()
 }
 
 //line table.gsx:22:1
 func TableBody(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line table.gsx:23:2
-		_gsxgw.S("<tbody")
-		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "tbody", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-table-body"})
-		_gsxgw.BoolAttr("data-gsxui-slot-table-body", true)
-		_gsxgw.S(">")
-//line table.gsx:23:49
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</tbody>")
-		return _gsxgw.Err()
+		return _gsxrenderTableBody(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderTableBody(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line table.gsx:23:2
+	_gsxgw.S("<tbody")
+	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "tbody", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-table-body"})
+	_gsxgw.BoolAttr("data-gsxui-slot-table-body", true)
+	_gsxgw.S(">")
+//line table.gsx:23:49
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</tbody>")
+	return _gsxgw.Err()
 }
 
 //line table.gsx:26:1
 func TableFooter(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line table.gsx:27:2
-		_gsxgw.S("<tfoot class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("border-t bg-muted/50 font-medium"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "tfoot", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-table-footer"})
-		_gsxgw.BoolAttr("data-gsxui-slot-table-footer", true)
-		_gsxgw.S(">")
-//line table.gsx:28:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</tfoot>")
-		return _gsxgw.Err()
+		return _gsxrenderTableFooter(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderTableFooter(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line table.gsx:27:2
+	_gsxgw.S("<tfoot class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("border-t bg-muted/50 font-medium"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "tfoot", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-table-footer"})
+	_gsxgw.BoolAttr("data-gsxui-slot-table-footer", true)
+	_gsxgw.S(">")
+//line table.gsx:28:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</tfoot>")
+	return _gsxgw.Err()
 }
 
 //line table.gsx:32:1
 func TableRow(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line table.gsx:33:2
-		_gsxgw.S("<tr class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("border-b transition-colors hover:bg-muted/50 has-[[aria-expanded=true]]:bg-muted/50 data-[state=selected]:bg-muted [[data-gsxui-slot-table-body]_&]:last:border-b-0 [[data-gsxui-slot-table-footer]_&]:last:border-b-0"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "tr", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-table-row"})
-		_gsxgw.BoolAttr("data-gsxui-slot-table-row", true)
-		_gsxgw.S(">")
-//line table.gsx:40:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</tr>")
-		return _gsxgw.Err()
+		return _gsxrenderTableRow(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderTableRow(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line table.gsx:33:2
+	_gsxgw.S("<tr class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("border-b transition-colors hover:bg-muted/50 has-[[aria-expanded=true]]:bg-muted/50 data-[state=selected]:bg-muted [[data-gsxui-slot-table-body]_&]:last:border-b-0 [[data-gsxui-slot-table-footer]_&]:last:border-b-0"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "tr", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-table-row"})
+	_gsxgw.BoolAttr("data-gsxui-slot-table-row", true)
+	_gsxgw.S(">")
+//line table.gsx:40:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</tr>")
+	return _gsxgw.Err()
 }
 
 //line table.gsx:44:1
 func TableHead(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line table.gsx:45:2
-		_gsxgw.S("<th class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground has-[[role=checkbox]]:pr-0 [&>[role=checkbox]]:translate-y-[2px]"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "th", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-table-head"})
-		_gsxgw.BoolAttr("data-gsxui-slot-table-head", true)
-		_gsxgw.S(">")
-//line table.gsx:52:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</th>")
-		return _gsxgw.Err()
+		return _gsxrenderTableHead(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderTableHead(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line table.gsx:45:2
+	_gsxgw.S("<th class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground has-[[role=checkbox]]:pr-0 [&>[role=checkbox]]:translate-y-[2px]"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "th", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-table-head"})
+	_gsxgw.BoolAttr("data-gsxui-slot-table-head", true)
+	_gsxgw.S(">")
+//line table.gsx:52:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</th>")
+	return _gsxgw.Err()
 }
 
 //line table.gsx:56:1
 func TableCell(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line table.gsx:57:2
-		_gsxgw.S("<td class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("p-2 align-middle whitespace-nowrap has-[[role=checkbox]]:pr-0 [&>[role=checkbox]]:translate-y-[2px]"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "td", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-table-cell"})
-		_gsxgw.BoolAttr("data-gsxui-slot-table-cell", true)
-		_gsxgw.S(">")
-//line table.gsx:62:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</td>")
-		return _gsxgw.Err()
+		return _gsxrenderTableCell(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderTableCell(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line table.gsx:57:2
+	_gsxgw.S("<td class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("p-2 align-middle whitespace-nowrap has-[[role=checkbox]]:pr-0 [&>[role=checkbox]]:translate-y-[2px]"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "td", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-table-cell"})
+	_gsxgw.BoolAttr("data-gsxui-slot-table-cell", true)
+	_gsxgw.S(">")
+//line table.gsx:62:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</td>")
+	return _gsxgw.Err()
 }
 
 //line table.gsx:66:1
