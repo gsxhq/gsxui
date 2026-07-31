@@ -25,14 +25,14 @@ func TestDropdownStructure(t *testing.T) {
 		nil,
 	))
 	for _, want := range []string{
-		`data-gsxui-slot-dropdown-menu`, `data-gsxui-dropdown`,
-		`data-gsxui-slot-dropdown-menu-trigger`, `data-gsxui-dropdown-trigger`,
+		`data-gsxui-slot-dropdown-menu`, `data-gsxui-slot-dropdown-menu`,
+		`data-gsxui-slot-dropdown-menu-trigger`, `data-gsxui-slot-dropdown-menu-trigger`,
 		`aria-haspopup="menu"`, `aria-expanded="false"`,
-		`data-gsxui-slot-dropdown-menu-content`, `data-gsxui-dropdown-content`,
+		`data-gsxui-slot-dropdown-menu-content`, `data-gsxui-slot-dropdown-menu-content`,
 		`popover="auto"`, `role="menu"`, `data-state="closed"`, `data-side="bottom"`,
 		`data-gsxui-slot-dropdown-menu-label`, ">Actions<",
 		`data-gsxui-slot-dropdown-menu-separator`, `role="separator"`,
-		`data-gsxui-slot-dropdown-menu-item`, `data-gsxui-dropdown-item`,
+		`data-gsxui-slot-dropdown-menu-item`, `data-gsxui-slot-dropdown-menu-item`,
 		`role="menuitem"`, `tabindex="-1"`,
 		`data-variant="default"`, ">Edit<",
 		`data-gsxui-slot-dropdown-menu-shortcut`, ">⌘E<",
@@ -110,7 +110,7 @@ func TestDropdownMenuCheckedItemsStampIndicatorState(t *testing.T) {
 		`role="menuitemcheckbox"`,
 		`aria-checked="true"`,
 		`data-state="checked"`,
-		`data-gsxui-dropdown-checkbox-item`,
+		`data-gsxui-slot-dropdown-menu-checkbox-item`,
 		`data-value="show-toolbar"`,
 		`data-gsxui-slot-dropdown-menu-checkbox-item-indicator`,
 	} {
@@ -179,7 +179,7 @@ func TestDropdownMenuSubNestsContentInsideParentContentPinned(t *testing.T) {
 
 func TestDropdownPinned(t *testing.T) {
 	got := render(t, ui.DropdownMenuItem("", gsx.Raw("Edit"), nil))
-	want := `<div class="relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 [&amp;_svg:not([class*=&#39;text-&#39;])]:text-muted-foreground text-foreground" data-gsxui-dropdown-item data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-dropdown-menu-item>Edit</div>`
+	want := `<div class="relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 [&amp;_svg:not([class*=&#39;text-&#39;])]:text-muted-foreground text-foreground" data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-dropdown-menu-item>Edit</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -187,7 +187,7 @@ func TestDropdownPinned(t *testing.T) {
 
 func TestDropdownContentPinned(t *testing.T) {
 	got := render(t, ui.DropdownMenuContent(gsx.Raw("x"), nil))
-	want := `<div class="z-50 max-h-96 min-w-[8rem] origin-top-left overflow-x-hidden overflow-y-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&amp;:popover-open]:opacity-100 [&amp;:popover-open]:scale-100 starting:[&amp;:popover-open]:opacity-0 starting:[&amp;:popover-open]:scale-95 data-[side=bottom]:starting:[&amp;:popover-open]:-translate-y-2 data-[side=left]:starting:[&amp;:popover-open]:translate-x-2 data-[side=right]:starting:[&amp;:popover-open]:-translate-x-2 data-[side=top]:starting:[&amp;:popover-open]:translate-y-2" data-gsxui-dropdown-content popover="auto" role="menu" tabindex="-1" data-state="closed" data-side="bottom" data-gsxui-slot-dropdown-menu-content>x</div>`
+	want := `<div class="z-50 max-h-96 min-w-[8rem] origin-top-left overflow-x-hidden overflow-y-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&amp;:popover-open]:opacity-100 [&amp;:popover-open]:scale-100 starting:[&amp;:popover-open]:opacity-0 starting:[&amp;:popover-open]:scale-95 data-[side=bottom]:starting:[&amp;:popover-open]:-translate-y-2 data-[side=left]:starting:[&amp;:popover-open]:translate-x-2 data-[side=right]:starting:[&amp;:popover-open]:-translate-x-2 data-[side=top]:starting:[&amp;:popover-open]:translate-y-2" popover="auto" role="menu" tabindex="-1" data-state="closed" data-side="bottom" data-gsxui-slot-dropdown-menu-content>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

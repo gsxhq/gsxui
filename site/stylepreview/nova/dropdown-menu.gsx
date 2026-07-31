@@ -54,12 +54,11 @@ import (
 // duplicated into dropdown.js (which would be an invisible-to-registry.Deps
 // dependency — forbidden).
 component DropdownMenu(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "contents" } data-gsxui-dropdown { attrs... } data-gsxui-slot-dropdown-menu>{ children }</div>
+	<div class={ "contents" } { attrs... } data-gsxui-slot-dropdown-menu>{ children }</div>
 }
 
 component DropdownMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<button
-		data-gsxui-dropdown-trigger
 		type="button"
 		aria-haspopup="menu"
 		aria-expanded="false"
@@ -81,7 +80,6 @@ component DropdownMenuContent(children gsx.Node, attrs gsx.Attrs) {
 		class={
 			"z-50 max-h-96 min-w-[8rem] origin-top-left overflow-x-hidden overflow-y-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 data-[side=bottom]:starting:[&:popover-open]:-translate-y-2 data-[side=left]:starting:[&:popover-open]:translate-x-2 data-[side=right]:starting:[&:popover-open]:-translate-x-2 data-[side=top]:starting:[&:popover-open]:translate-y-2"
 		}
-		data-gsxui-dropdown-content
 		popover="auto"
 		role="menu"
 		tabindex="-1"
@@ -109,7 +107,6 @@ component DropdownMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 				"text-foreground"
 			}
 		}
-		data-gsxui-dropdown-item
 		data-variant={variant |> default("default")}
 		role="menuitem"
 		tabindex="-1"
@@ -159,7 +156,6 @@ component DropdownMenuCheckboxItem(checked bool, value string, children gsx.Node
 		class={
 			"relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
 		}
-		data-gsxui-dropdown-checkbox-item
 		role="menuitemcheckbox"
 		data-value={value}
 		{ if checked {
@@ -177,7 +173,6 @@ component DropdownMenuCheckboxItem(checked bool, value string, children gsx.Node
 			class={
 				"pointer-events-none absolute right-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-4"
 			}
-			data-gsxui-dropdown-checkbox-indicator
 			data-gsxui-slot-dropdown-menu-checkbox-item-indicator
 		>
 			<icon.Check/>
@@ -190,12 +185,11 @@ component DropdownMenuCheckboxItem(checked bool, value string, children gsx.Node
 // server-rendered current value, stamped as data-value on the root — the
 // same "checked state is server-rendered" contract as CheckboxItem, kept in
 // sync by dropdown.js on selection and echoed on the group's own
-// gsxui:change event. data-gsxui-dropdown-radio-group is the proximity anchor
+// gsxui:change event. data-gsxui-slot-dropdown-menu-radio-group is the proximity anchor
 // dropdown.js uses to scope "clear every OTHER item in this group" to this
 // group alone, not every radio item on the page.
 component DropdownMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-gsxui-dropdown-radio-group
 		role="group"
 		data-value={value}
 		{ attrs... }
@@ -219,7 +213,6 @@ component DropdownMenuRadioItem(checked bool, value string, children gsx.Node, a
 		class={
 			"relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
 		}
-		data-gsxui-dropdown-radio-item
 		role="menuitemradio"
 		data-value={value}
 		{ if checked {
@@ -237,7 +230,6 @@ component DropdownMenuRadioItem(checked bool, value string, children gsx.Node, a
 			class={
 				"pointer-events-none absolute right-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-2 [&>svg]:fill-current"
 			}
-			data-gsxui-dropdown-radio-indicator
 			data-gsxui-slot-dropdown-menu-radio-item-indicator
 		>
 			<icon.Circle/>
@@ -274,12 +266,12 @@ component DropdownMenuShortcut(children gsx.Node, attrs gsx.Attrs) {
 // DropdownMenuSub is the non-rendering submenu root — layout-neutral
 // (class="contents", same idiom as DropdownMenu's own root) so its
 // SubTrigger/SubContent children sit inline in the parent content's normal
-// item flow. data-gsxui-dropdown-sub is the proximity anchor dropdown.js uses to
-// pair a SubTrigger with its own SubContent (closest("[data-gsxui-dropdown-sub]")
-// — same shape as DropdownMenu's own data-gsxui-dropdown root) and to scope
+// item flow. data-gsxui-slot-dropdown-menu-sub is the proximity anchor dropdown.js uses to
+// pair a SubTrigger with its own SubContent (closest("[data-gsxui-slot-dropdown-menu-sub]")
+// — same shape as DropdownMenu's own data-gsxui-slot-dropdown-menu root) and to scope
 // the pointer-leave grace-period boundary check to "the whole sub."
 component DropdownMenuSub(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "contents" } data-gsxui-dropdown-sub { attrs... } data-gsxui-slot-dropdown-menu-sub>{ children }</div>
+	<div class={ "contents" } { attrs... } data-gsxui-slot-dropdown-menu-sub>{ children }</div>
 }
 
 // DropdownMenuSubTrigger opens/closes its sibling DropdownMenuSubContent
@@ -300,7 +292,6 @@ component DropdownMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 		class={
 			"relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&>svg:last-child]:ml-auto [&>svg:last-child]:size-4"
 		}
-		data-gsxui-dropdown-sub-trigger
 		role="menuitem"
 		aria-haspopup="menu"
 		aria-expanded="false"
@@ -341,7 +332,6 @@ component DropdownMenuSubContent(children gsx.Node, attrs gsx.Attrs) {
 		class={
 			"z-50 min-w-[96px] origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 data-[side=bottom]:starting:[&:popover-open]:-translate-y-2 data-[side=left]:starting:[&:popover-open]:translate-x-2 data-[side=right]:starting:[&:popover-open]:-translate-x-2 data-[side=top]:starting:[&:popover-open]:translate-y-2"
 		}
-		data-gsxui-dropdown-sub-content
 		popover="auto"
 		role="menu"
 		tabindex="-1"
