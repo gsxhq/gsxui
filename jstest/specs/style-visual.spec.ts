@@ -64,7 +64,7 @@ async function prepareVisualRoute(
 
   if (route === "dropdown-menu/basic") {
     await page.getByRole("button", { name: "Options" }).click();
-    await expect(page.locator("[data-gsxui-dropdown-content]")).toBeVisible();
+    await expect(page.locator("[data-gsxui-slot-dropdown-menu-content]")).toBeVisible();
   }
 
   if (route === "toaster/types") {

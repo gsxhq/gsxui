@@ -228,7 +228,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   );
 
   await page.goto("/x/dropdown-menu/submenu");
-  const dropdownTrigger = page.locator("[data-gsxui-dropdown-trigger]").first();
+  const dropdownTrigger = page.locator("[data-gsxui-slot-dropdown-menu-trigger]").first();
   const dropdownContent = page.locator(
     "[data-gsxui-slot-dropdown-menu-content]",
   );
@@ -282,7 +282,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   );
 
   await page.goto("/x/context-menu/full");
-  await page.locator("[data-gsxui-contextmenu-trigger]").click({
+  await page.locator("[data-gsxui-slot-context-menu-trigger]").click({
     button: "right",
   });
   const contextContent = page.locator(
@@ -394,7 +394,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
 
   await page.goto("/x/navigation-menu/basic");
   const navigationTrigger = page.locator(
-    "button[data-gsxui-navigation-menu-trigger]",
+    "button[data-gsxui-slot-navigation-menu-trigger]",
   );
   const navigationContent = page.locator(
     "[data-gsxui-slot-navigation-menu-content]",
