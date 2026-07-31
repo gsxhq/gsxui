@@ -86,12 +86,16 @@ component galleryButtonsCard() {
 				<Button variant="outline" href="/docs/getting-started" data-theme-preview-case="link">Link</Button>
 				<Button autofocus data-theme-preview-case="focus-visible">Focus visible</Button>
 				<Button aria-invalid="true" data-theme-preview-case="invalid">Invalid</Button>
+				{/* Proves caller utilities beat the recipe (radius and padding here)
+				   without reading as a defect: a pill override is a thing a real
+				   caller would ship. */}
 				<Button
-					class="rounded-none h-20 px-12 bg-warning text-warning-foreground rounded-r-none border-l-0"
+					variant="secondary"
+					class="rounded-full px-5"
 					data-caller-marker
 					data-theme-preview-case="caller-composition"
 				>
-					Caller classes win
+					Caller override
 				</Button>
 			</div>
 		</CardContent>
