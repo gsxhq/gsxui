@@ -1,6 +1,8 @@
 # Theme system and configurator roadmap
 
-**Status:** Phase 1 shipped; later phases are uncommitted possibilities.
+**Status:** Phase 1 shipped. The slot-axis migration is complete — all 54
+components are authored structurally against typed recipes. Later phases are
+uncommitted possibilities.
 
 This is dependency ordering, not a release promise. Work starts only when a
 phase is explicitly prioritized. A later phase does not imply that gsxui
@@ -28,15 +30,21 @@ Production projects install one unscoped style. The editor may build scoped
 copies for preview. Structural differences are separate components or a
 future structural base, never style-specific `.gsx` templates.
 
-**Exception: Button.** The diagram above still holds for every component
-except Button. Button's canonical source is compiled against a typed style
-recipe at generation time, so `ui/button.gsx` ships concrete Tailwind
-utilities baked into its generated `.gsx` source rather than a
-`.gsxui-recipe-button*` class consumed from a components-layer stylesheet.
-The rest of the component set still follows the CSS-layer path described
-here. See
+**How presentation reaches the markup.** Every component's canonical source is
+compiled against a typed style recipe at generation time, so `ui/<c>.gsx` ships
+concrete Tailwind utilities baked into its generated source rather than
+consuming a `.gsxui-recipe-<c>*` class from a components-layer stylesheet. The
+authored source is structural — `class={ button.Root(), button.Variant(variant) }`
+— and the recipe supplies the utilities.
+
+This began as a Button-only exception and is now the rule for the whole
+catalogue. What still travels as components-layer CSS is the deliberate
+residue: rules retained so a caller's utility can beat them, and shared
+mechanics no single component owns. See
 [`docs/superpowers/specs/2026-07-29-typed-recipe-model-design.md`](superpowers/specs/2026-07-29-typed-recipe-model-design.md)
-for the compiled-presentation architecture and its invariants.
+for the compiled-presentation architecture and its invariants, and §10b of
+[`the slot-axis design`](superpowers/specs/2026-07-29-slot-axis-and-component-migration-design.md)
+for when a rule may stay in CSS.
 
 ## Phase 1 — correct the styling boundary (shipped)
 

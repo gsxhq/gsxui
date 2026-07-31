@@ -21,6 +21,9 @@ elements, and presentation dimensions hang off those elements individually:
 | Sidebar | 38 | some, per slot |
 | Whole catalogue | 291 markers over 1162 rules | 16 of 52 components have any |
 
+(Counts as measured when this design was written, before the migration. All 54
+components carry a shape now — see §10.)
+
 `default.css` already carries per-slot dimensions such as
 `[data-gsxui-slot-badge][data-variant="destructive"]`, so the model has to name
 the slot to describe them at all. And the model has to reach `card.Header()` and
@@ -300,9 +303,18 @@ is what finds these.
 7. Every migrated component has a committed before/after computed-style sweep
    showing no unexplained difference.
 
-## 10. Stage 0 and 1 complete
+## 10. Complete
 
-Shipped on this branch. Migration (Stages 2-4) is what remains.
+Stages 0-4 are all shipped on this branch. **Every component in the catalogue
+is on the slot axis** — 54 recipes, the count being 54 rather than 53 because
+Sonner split into `toast` and `toaster` (§11.1).
+
+What remains under `assets/css/styles/default/` is therefore not a migration
+backlog. It is the rules deliberately retained in `@layer components` under
+§10b so a caller's utility can still beat them, plus the shared sheets no
+single component owns (`root.css`, `icon.css`, `menu.css`, `pagination.css`).
+Retiring that directory is not a goal; keeping its contents honest is — every
+retained rule must satisfy §10b.2.
 
 **Stage 0 — the model.**
 
@@ -342,7 +354,7 @@ renders at 28px (`size-7`, its own authored value and upstream shadcn's), and
 tail, Sidebar last). The rule in §6 still applies — a stage does not begin
 until the previous one's sweep is clean.
 
-## 10b. Relational rules a caller may override must NOT migrate
+## 10b. Relational rules a caller may override: migrate, or retain a rule that can still win
 
 A relational rule translated into a same-element or ancestor-scoped arbitrary
 variant **loses caller-overridability**. This is a confirmed, measured
@@ -369,27 +381,92 @@ Consequences:
 - **The `@layer utilities` escape hatch does not help.** It puts the rule in the
   same layer as the caller's utility, which is the losing contest. Two agents
   reached this independently: one migrating Pagination, one migrating Toggle.
-- **The fix is not to migrate the rule.** Leave it in `@layer components`, with a
-  comment saying it must stay caller-overridable. The layer gate permits this so
-  long as the component's own recipe does not set the same property in the same
-  state; add a gate exemption if it does, following
-  `siteButtonFallbackExemptions` in `internal/stylegen/layercheck.go`.
 - **Plain-vs-plain is unaffected.** Skeleton's caller-override pin passes because
   `rounded-md` vs `rounded-full` is plain-vs-plain, where twmerge dedupes and the
   contest never reaches CSS. That pin was never evidence for the relational case.
 - A variant targeting a DIFFERENT element (`[&>svg]:size-4` vs a caller's
   `size-6` on the parent) is not affected — they never compete.
 
-Known affected and fixed by not migrating the rule: Pagination's previous/next
-edge padding, Toggle's ToggleGroupItem fallout. Known affected and NOT yet
-fixed: **Card's `[&.border-b]:pb-4` and Label's `[[data-disabled=true]_&]:*`,
-both live on the branch.**
+### 10b.1 Retention is only correct when the retained rule can still win
+
+The original form of this section said the fix is to leave the rule in
+`@layer components`. That is incomplete, and the omission was expensive:
+**six retained rules across the migration turned out to be dead** — not
+caller-overridable, but unconditionally beaten by the recipe, which is strictly
+worse than migrating them. Retention buys nothing unless the retained rule
+actually wins when no caller intervenes.
+
+A retained rule loses in at least three ways, all observed:
+
+1. **Zero-specificity wrappers.** A `:where(…)` selector scores (0,0,0) and
+   loses to any recipe class at (0,1,0) on the same element, same layer.
+   Four of the six were this: ContextMenu/Menubar checkbox and radio icon
+   muting, Combobox's trigger-hiding rule (beaten by Button's `inline-flex`),
+   AlertDialog's `max-w-xs` (beaten by Dialog's box), and Calendar's
+   range-middle radius.
+2. **Half a property group retained.** Input/Textarea kept `md:text-sm` behind
+   while `text-base` moved onto the recipe. A components-layer rule can never
+   beat ANY utilities-layer rule, so the retained half was permanently dead
+   rather than merely losing to a caller. **Retain the whole property group or
+   none of it.**
+3. **Shorthand versus longhand.** InputGroup's addon kept `pb-2` in
+   `@layer components` while the recipe set `py-1.5`. A components-layer
+   longhand cannot beat a sub-property of a real utilities-layer shorthand.
+
+Three of the six were invisible to every static check and to the sweep at its
+default viewport. AlertDialog's was invisible at 1280px, where both paths land
+on 384px, and only measurable at 400px. Combobox's was exercised by no fixture
+at all. **Assume a retained rule is dead until you have measured it winning.**
+
+### 10b.2 Deciding, per rule
+
+1. Does the recipe set the same property, in the same state, on the same
+   element? If yes, retention is dead on arrival — migrate the rule, or use
+   10b.3.
+2. Is the retained selector `:where()`-wrapped or otherwise (0,0,0)? If yes it
+   loses to the recipe class. Give it real specificity or migrate it.
+3. Are you retaining every declaration in the property group, including its
+   responsive and state variants? If not, the remainder is dead.
+4. Can you demonstrate the retained rule winning — a pin at a viewport and
+   state where the values actually differ? If not, you have not verified it.
+
+When contract and CSS disagree about what the behaviour should be, upstream
+shadcn is the tiebreaker. In all six cases upstream carried the utility on the
+class list, so migrating was the conformant answer.
+
+### 10b.3 When the component composes a migrated one, hand it to `merge.Merge`
+
+If the component renders through another component's slot — AlertDialogContent
+composes `<ui.DialogContent>` — put the utilities on the composed slot instead
+of retaining a rule. They travel into the same `class` attribute, where
+`merge.Merge` settles them against a caller's class the way it settles any two
+plain utilities. No two-class selector is produced, so §10b does not apply at
+all, and caller-overridability is preserved by the merger rather than by the
+layer boundary. This is also what upstream does.
+
+Scope the variants when you do this: `merge.Merge` groups conflicts per variant,
+so a bare `max-w-none` does not displace a `sm:max-w-sm` — Sidebar needed
+`sm:max-w-none` explicitly.
+
+### 10b.4 The gate does not decide this for you
+
+`--check-layers` reports a contest when the recipe and a retained rule collide,
+but it under-reports in three known ways (§11), and it compares against the
+whole component's utilities rather than one slot's, so it also over-reports.
+Treat it as a prompt to look, not as the answer. The computed-style sweep and a
+hand-written pin at a state the fixtures do not otherwise reach are what
+actually settle these.
 
 ## 11. Known gaps carried into the migration
 
 Each is a current limitation, not a historical note. None blocks the migration.
 
-1. **Sonner should be split into two components rather than exempted.**
+1. **RESOLVED — Sonner was split into two components.** `toast` and `toaster`
+   are separately registered, `styledComponentSourceBasename` was deleted with
+   its last user, and the split was verified rendering-neutral by pairing every
+   renamed sweep key to identical computed styles. The original analysis:
+
+   **Sonner should be split into two components rather than exempted.**
    `ui/sonner.gsx` exports both `Toast` and `Toaster` and renders the toast DOM
    itself (ten `toast-*` slots), so `Toast` is a standalone component and
    registering it as one removes the naming mismatch entirely. Upstream shadcn
@@ -457,6 +534,29 @@ Each is a current limitation, not a historical note. None blocks the migration.
    concatenation order and therefore precedence. Removing an import (what a
    migration does) is safe; APPENDING one when the rules belonged mid-file stays
    green in every gate and only the sweep would notice.
+
+1. **`--check-layers` under-reports in three further ways, all measured during
+   the migration.** These are independent of the responsive-`@media` gap below,
+   and each was found by a wave hitting a real cascade loss the gate stayed
+   silent about.
+
+   - **A leading `.dark` clears the specificity floor while the LAYER boundary
+     still decides.** One of five Calendar-to-NativeSelect rules had to move
+     despite no report: `.dark … { bg-transparent }` passes the gate's
+     specificity check, but specificity was never the contest — the layer was.
+     Grep for `.dark`-prefixed rules on your markers even when the gate is quiet.
+   - **Shorthand versus longhand is not modelled.** InputGroup retained `pb-2`
+     against a recipe's `py-1.5` and the gate saw no contest, because it compares
+     utility and property names rather than resolving a shorthand into the
+     longhands it sets. The retained rule was dead (§10b.1).
+   - **It compares against the whole component's utilities, not one slot's.**
+     This over-reports rather than under-reports, but at a scale that trains
+     people to dismiss it: Sidebar produced 94 problems that were all spurious,
+     and every exemption group in `layercheck.go` cites this as its reason.
+
+   The rule the migration converged on: **run the computed-style sweep before
+   believing the gate**, in either direction. The sweep caught all three of the
+   above; the gate caught none of them.
 
 1. **Responsive `@media` overrides are a blind spot in the layer gate.** The
    contest oracle compares an authored rule's enclosing at-rule prelude against
