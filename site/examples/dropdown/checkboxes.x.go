@@ -27,31 +27,31 @@ func Checkboxes() _gsxrt.Node {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("View")
 				return _gsxgw.Err()
-			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dropdown-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-dropdown-menu-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "menu"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
-//line checkboxes.gsx:22:3
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-slot-dropdown-menu-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "menu"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
+//line checkboxes.gsx:21:3
 			_gsxgw.Node(ctx, ui.DropdownMenuContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line checkboxes.gsx:23:4
+//line checkboxes.gsx:22:4
 				_gsxgw.Node(ctx, ui.DropdownMenuLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Appearance")
 					return _gsxgw.Err()
 				}), nil))
-//line checkboxes.gsx:24:4
+//line checkboxes.gsx:23:4
 				_gsxgw.Node(ctx, ui.DropdownMenuSeparator(nil))
-//line checkboxes.gsx:25:4
+//line checkboxes.gsx:24:4
 				_gsxgw.Node(ctx, ui.DropdownMenuCheckboxItem(true, "toolbar", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Show Toolbar")
 					return _gsxgw.Err()
 				}), nil))
-//line checkboxes.gsx:26:4
+//line checkboxes.gsx:25:4
 				_gsxgw.Node(ctx, ui.DropdownMenuCheckboxItem(false, "statusbar", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Show Status Bar")
 					return _gsxgw.Err()
 				}), nil))
-//line checkboxes.gsx:27:4
+//line checkboxes.gsx:26:4
 				_gsxgw.Node(ctx, ui.DropdownMenuCheckboxItem(false, "sidebar", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Show Sidebar")

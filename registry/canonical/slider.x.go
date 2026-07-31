@@ -87,9 +87,6 @@ func Slider(value float64, min float64, max float64, step float64, attrs gsx.Att
 		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"range\"")
 		}
-		if !attrs.Has("data-gsxui-slider") {
-			_gsxgw.BoolAttr("data-gsxui-slider", true)
-		}
 		if !attrs.Has("min") {
 			_gsxgw.S(" min=\"")
 			_gsxgw.FloatInto(_gsxnum[:], float64(min))

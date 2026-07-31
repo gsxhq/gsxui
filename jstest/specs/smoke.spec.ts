@@ -15,7 +15,7 @@ test("markup, stylesheet and behavior JS all arrive", async ({ page }) => {
   await page.goto("/x/toggle/basic");
 
   // Markup: rendered through the real gsx component.
-  const toggle = page.locator("[data-gsxui-toggle]").first();
+  const toggle = page.locator("[data-gsxui-slot-toggle]").first();
   await expect(toggle).toBeVisible();
 
   // CSS: bg-background resolves to an opaque colour. Without the stylesheet

@@ -28,13 +28,13 @@ func TestContextMenuStructure(t *testing.T) {
 		nil,
 	))
 	for _, want := range []string{
-		`data-gsxui-slot-context-menu`, `data-gsxui-contextmenu`,
-		`data-gsxui-slot-context-menu-trigger`, `data-gsxui-contextmenu-trigger`,
-		`data-gsxui-slot-context-menu-content`, `data-gsxui-contextmenu-content`,
+		`data-gsxui-slot-context-menu`, `data-gsxui-slot-context-menu`,
+		`data-gsxui-slot-context-menu-trigger`, `data-gsxui-slot-context-menu-trigger`,
+		`data-gsxui-slot-context-menu-content`, `data-gsxui-slot-context-menu-content`,
 		`popover="auto"`, `role="menu"`, `data-state="closed"`,
 		`data-gsxui-slot-context-menu-label`, ">Actions<",
 		`data-gsxui-slot-context-menu-separator`, `role="separator"`,
-		`data-gsxui-slot-context-menu-item`, `data-gsxui-contextmenu-item`,
+		`data-gsxui-slot-context-menu-item`, `data-gsxui-slot-context-menu-item`,
 		`role="menuitem"`, `tabindex="-1"`,
 		`data-variant="default"`, ">Back<",
 		`data-gsxui-slot-context-menu-shortcut`, ">⌘[<",
@@ -108,7 +108,7 @@ func TestContextMenuPopoverAndSideAttrsOverridable(t *testing.T) {
 
 func TestContextMenuTriggerPinned(t *testing.T) {
 	got := render(t, ui.ContextMenuTrigger(gsx.Raw("Right click here"), nil))
-	want := `<div data-gsxui-contextmenu-trigger data-gsxui-slot-context-menu-trigger>Right click here</div>`
+	want := `<div data-gsxui-slot-context-menu-trigger>Right click here</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -116,7 +116,7 @@ func TestContextMenuTriggerPinned(t *testing.T) {
 
 func TestContextMenuContentPinned(t *testing.T) {
 	got := render(t, ui.ContextMenuContent(gsx.Raw("x"), nil))
-	want := `<div class="z-50 max-h-96 min-w-36 origin-top-left overflow-x-hidden overflow-y-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&amp;:popover-open]:opacity-100 [&amp;:popover-open]:scale-100 starting:[&amp;:popover-open]:opacity-0 starting:[&amp;:popover-open]:scale-95 data-[side=bottom]:starting:[&amp;:popover-open]:-translate-y-2 data-[side=left]:starting:[&amp;:popover-open]:translate-x-2 data-[side=right]:starting:[&amp;:popover-open]:-translate-x-2 data-[side=top]:starting:[&amp;:popover-open]:translate-y-2" data-gsxui-contextmenu-content popover="auto" role="menu" tabindex="-1" data-state="closed" data-gsxui-slot-context-menu-content>x</div>`
+	want := `<div class="z-50 max-h-96 min-w-36 origin-top-left overflow-x-hidden overflow-y-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&amp;:popover-open]:opacity-100 [&amp;:popover-open]:scale-100 starting:[&amp;:popover-open]:opacity-0 starting:[&amp;:popover-open]:scale-95 data-[side=bottom]:starting:[&amp;:popover-open]:-translate-y-2 data-[side=left]:starting:[&amp;:popover-open]:translate-x-2 data-[side=right]:starting:[&amp;:popover-open]:-translate-x-2 data-[side=top]:starting:[&amp;:popover-open]:translate-y-2" popover="auto" role="menu" tabindex="-1" data-state="closed" data-gsxui-slot-context-menu-content>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -129,7 +129,7 @@ func TestContextMenuCheckedItemsStampIndicatorState(t *testing.T) {
 	checkbox := render(t, ui.ContextMenuCheckboxItem(true, "status", gsx.Raw("Status"), nil))
 	for _, want := range []string{
 		`role="menuitemcheckbox"`, `aria-checked="true"`, `data-state="checked"`,
-		`data-gsxui-contextmenu-checkbox-item`,
+		`data-gsxui-slot-context-menu-checkbox-item`,
 		`data-gsxui-slot-context-menu-checkbox-item-indicator`,
 	} {
 		if !strings.Contains(checkbox, want) {
@@ -139,7 +139,7 @@ func TestContextMenuCheckedItemsStampIndicatorState(t *testing.T) {
 	radio := render(t, ui.ContextMenuRadioItem(true, "top", gsx.Raw("Top"), nil))
 	for _, want := range []string{
 		`role="menuitemradio"`, `aria-checked="true"`, `data-state="checked"`,
-		`data-gsxui-contextmenu-radio-item`,
+		`data-gsxui-slot-context-menu-radio-item`,
 		`data-gsxui-slot-context-menu-radio-item-indicator`,
 	} {
 		if !strings.Contains(radio, want) {
@@ -185,7 +185,7 @@ func TestContextMenuSubNestsContentInsideParentContentPinned(t *testing.T) {
 
 func TestContextMenuPinned(t *testing.T) {
 	got := render(t, ui.ContextMenuItem("", gsx.Raw("Back"), nil))
-	want := `<div class="relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 [&amp;_svg:not([class*=&#39;text-&#39;])]:text-muted-foreground text-foreground" data-gsxui-contextmenu-item data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-context-menu-item>Back</div>`
+	want := `<div class="relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 [&amp;_svg:not([class*=&#39;text-&#39;])]:text-muted-foreground text-foreground" data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-context-menu-item>Back</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

@@ -9,8 +9,8 @@
 import { on, emit } from "./gsxui.js";
 
 const itemsOf = (root) =>
-  [...root.querySelectorAll("[data-gsxui-toggle-group-item]")].filter(
-    (i) => i.closest("[data-gsxui-toggle-group]") === root,
+  [...root.querySelectorAll("[data-gsxui-slot-toggle-group-item]")].filter(
+    (i) => i.closest("[data-gsxui-slot-toggle-group]") === root,
   );
 const isSingle = (item) => item.getAttribute("role") === "radio";
 
@@ -46,9 +46,9 @@ function normalize(root) {
   setActiveTabStop(root, pressed ?? enabled[0]);
 }
 
-on("click", "[data-gsxui-toggle-group-item]", (_e, item) => {
+on("click", "[data-gsxui-slot-toggle-group-item]", (_e, item) => {
   if (item.disabled) return;
-  const root = item.closest("[data-gsxui-toggle-group]");
+  const root = item.closest("[data-gsxui-slot-toggle-group]");
   if (!root) return;
   const single = isSingle(item);
   // Single-type replace-on-activate: activating a new item just sets a new
@@ -71,12 +71,12 @@ on("click", "[data-gsxui-toggle-group-item]", (_e, item) => {
   emit(root, "gsxui:change", { value });
 });
 
-on("keydown", "[data-gsxui-toggle-group-item]", (e, item) => {
+on("keydown", "[data-gsxui-slot-toggle-group-item]", (e, item) => {
   // A held modifier suppresses the focus-move entirely (Radix: "if
   // (event.metaKey || ...) return") — arrow+modifier does nothing, not even
   // scroll, so this handler steps aside for the browser's own default.
   if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
-  const root = item.closest("[data-gsxui-toggle-group]");
+  const root = item.closest("[data-gsxui-slot-toggle-group]");
   if (!root) return;
   const items = itemsOf(root).filter((i) => !i.disabled);
   if (!items.length) return;
@@ -101,4 +101,4 @@ on("keydown", "[data-gsxui-toggle-group-item]", (e, item) => {
 // (server renders every item as a plain tab stop — see the package doc
 // comment on ui/toggle-group.gsx) — same one-time init-scan shape as
 // command.js's own initial filter() pass.
-for (const root of document.querySelectorAll("[data-gsxui-toggle-group]")) normalize(root);
+for (const root of document.querySelectorAll("[data-gsxui-slot-toggle-group]")) normalize(root);

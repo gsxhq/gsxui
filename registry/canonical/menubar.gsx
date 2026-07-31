@@ -28,9 +28,9 @@ import (
 // menubar behavior module (ui/menubar.js).
 //
 // HOOK NAMESPACING (load-bearing, THE fix from the prior round): every
-// selector menubar.js registers is `data-gsxui-menubar-*`, never a prefix
-// shared with dropdown-menu.js's `data-gsxui-dropdown-*` or context-menu.js's
-// `data-gsxui-contextmenu-*`. ui/gsxui.js's delegation registry is keyed
+// selector menubar.js registers is `data-gsxui-slot-menubar-*`, never a prefix
+// shared with dropdown-menu.js's `data-gsxui-slot-dropdown-menu-*` or context-menu.js's
+// `data-gsxui-slot-context-menu-*`. ui/gsxui.js's delegation registry is keyed
 // only by `${type}:${capture}` and dispatches to EVERY handler whose
 // selector matches the event target, regardless of which module registered
 // it — ui/index.js imports all three menu modules, so an identical selector
@@ -168,7 +168,6 @@ import (
 component Menubar(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={ menubar.Root() }
-		data-gsxui-menubar
 		role="menubar"
 		{ attrs... }
 		data-gsxui-slot-menubar
@@ -180,14 +179,14 @@ component Menubar(children gsx.Node, attrs gsx.Attrs) {
 // MenubarMenu is the non-rendering root pairing ONE MenubarTrigger with its
 // own MenubarContent — layout-neutral (class="contents", same idiom as
 // DropdownMenu's own root) so the pair sits inline in the bar's normal flex
-// row. data-gsxui-menubar-menu is the proximity anchor menubar.js uses to
-// resolve "this trigger's own content" (closest("[data-gsxui-menubar-
+// row. data-gsxui-slot-menubar-menu is the proximity anchor menubar.js uses to
+// resolve "this trigger's own content" (closest("[data-gsxui-slot-menubar-
 // menu]")), the same shape DropdownMenu's own root plays for its single
 // trigger/content pair — Menubar itself (the outer bar) is the SEPARATE
 // scope roving tabindex and open-follows-hover coordinate across every
 // MenubarMenu's trigger.
 component MenubarMenu(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ menubar.Menu() } data-gsxui-menubar-menu { attrs... } data-gsxui-slot-menubar-menu>{ children }</div>
+	<div class={ menubar.Menu() } { attrs... } data-gsxui-slot-menubar-menu>{ children }</div>
 }
 
 // MenubarTrigger is one pill in the bar. Unlike DropdownMenuTrigger (which
@@ -207,7 +206,6 @@ component MenubarMenu(children gsx.Node, attrs gsx.Attrs) {
 component MenubarTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<button
 		class={ menubar.Trigger() }
-		data-gsxui-menubar-trigger
 		type="button"
 		aria-haspopup="menu"
 		aria-expanded="false"
@@ -242,7 +240,6 @@ component MenubarTrigger(children gsx.Node, attrs gsx.Attrs) {
 component MenubarContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={ menubar.Content() }
-		data-gsxui-menubar-content
 		popover="auto"
 		role="menu"
 		tabindex="-1"
@@ -267,7 +264,6 @@ component MenubarItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 			menubar.Item(),
 			menubar.ItemVariant(variant),
 		}
-		data-gsxui-menubar-item
 		data-variant={variant |> default("default")}
 		role="menuitem"
 		tabindex="-1"
@@ -309,7 +305,6 @@ component MenubarGroup(children gsx.Node, attrs gsx.Attrs) {
 component MenubarCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={ menubar.CheckboxItem() }
-		data-gsxui-menubar-checkbox-item
 		role="menuitemcheckbox"
 		data-value={value}
 		{ if checked {
@@ -323,7 +318,7 @@ component MenubarCheckboxItem(checked bool, value string, children gsx.Node, att
 		{ attrs... }
 		data-gsxui-slot-menubar-checkbox-item
 	>
-		<span class={ menubar.CheckboxItemIndicator() } data-gsxui-menubar-checkbox-indicator data-gsxui-slot-menubar-checkbox-item-indicator>
+		<span class={ menubar.CheckboxItemIndicator() } data-gsxui-slot-menubar-checkbox-item-indicator>
 			<icon.Check/>
 		</span>
 		{ children }
@@ -334,10 +329,10 @@ component MenubarCheckboxItem(checked bool, value string, children gsx.Node, att
 // server-rendered current value, stamped as data-value on the root — the
 // same server-rendered-checked contract as CheckboxItem, kept in sync by
 // menubar.js on selection and echoed on the group's own gsxui:change event.
-// data-gsxui-menubar-radio-group is the proximity anchor menubar.js uses to
+// data-gsxui-slot-menubar-radio-group is the proximity anchor menubar.js uses to
 // scope "clear every OTHER item in this group" to this group alone.
 component MenubarRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-menubar-radio-group role="group" data-value={value} { attrs... } data-gsxui-slot-menubar-radio-group>
+	<div role="group" data-value={value} { attrs... } data-gsxui-slot-menubar-radio-group>
 		{ children }
 	</div>
 }
@@ -353,7 +348,6 @@ component MenubarRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) {
 component MenubarRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={ menubar.RadioItem() }
-		data-gsxui-menubar-radio-item
 		role="menuitemradio"
 		data-value={value}
 		{ if checked {
@@ -367,7 +361,7 @@ component MenubarRadioItem(checked bool, value string, children gsx.Node, attrs 
 		{ attrs... }
 		data-gsxui-slot-menubar-radio-item
 	>
-		<span class={ menubar.RadioItemIndicator() } data-gsxui-menubar-radio-indicator data-gsxui-slot-menubar-radio-item-indicator>
+		<span class={ menubar.RadioItemIndicator() } data-gsxui-slot-menubar-radio-item-indicator>
 			<icon.Circle/>
 		</span>
 		{ children }
@@ -406,13 +400,13 @@ component MenubarShortcut(children gsx.Node, attrs gsx.Attrs) {
 // MenubarSub is the non-rendering submenu root — layout-neutral
 // (class="contents", same idiom as MenubarMenu's own root) so its
 // SubTrigger/SubContent children sit inline in the parent content's normal
-// item flow. data-gsxui-menubar-sub is the proximity anchor menubar.js uses
+// item flow. data-gsxui-slot-menubar-sub is the proximity anchor menubar.js uses
 // to pair a SubTrigger with its own SubContent (closest("[data-gsxui-
-// menubar-sub]")) and to scope the pointer-leave grace-period boundary
+// slot-menubar-sub]")) and to scope the pointer-leave grace-period boundary
 // check to "the whole sub" — same shape as DropdownMenuSub's own doc
 // comment.
 component MenubarSub(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ menubar.Sub() } data-gsxui-menubar-sub { attrs... } data-gsxui-slot-menubar-sub>{ children }</div>
+	<div class={ menubar.Sub() } { attrs... } data-gsxui-slot-menubar-sub>{ children }</div>
 }
 
 // MenubarSubTrigger opens/closes its sibling MenubarSubContent (menubar.js:
@@ -449,7 +443,6 @@ component MenubarSub(children gsx.Node, attrs gsx.Attrs) {
 component MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={ menubar.SubTrigger() }
-		data-gsxui-menubar-sub-trigger
 		role="menuitem"
 		aria-haspopup="menu"
 		aria-expanded="false"
@@ -479,7 +472,6 @@ component MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 component MenubarSubContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={ menubar.SubContent() }
-		data-gsxui-menubar-sub-content
 		popover="auto"
 		role="menu"
 		tabindex="-1"

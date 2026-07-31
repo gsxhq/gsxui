@@ -445,7 +445,7 @@ test("DropdownMenu content keeps its rounded-lg popover chrome", async ({ page }
   const response = await page.goto("/x/dropdown-menu/basic");
   expect(response?.status(), "dropdown-menu/basic fixture response").toBe(200);
 
-  const trigger = page.locator("[data-gsxui-dropdown-trigger]").first();
+  const trigger = page.locator("[data-gsxui-slot-dropdown-menu-trigger]").first();
   await trigger.click();
   const content = page.locator("[data-gsxui-slot-dropdown-menu-content]");
   const borderRadius = await content.evaluate((n) => getComputedStyle(n).borderRadius);
@@ -513,7 +513,7 @@ test("NavigationMenu content chrome renders only when its viewport ancestor is f
   const response = await page.goto("/x/navigation-menu/basic");
   expect(response?.status(), "navigation-menu/basic fixture response").toBe(200);
 
-  const trigger = page.locator("[data-gsxui-navigation-menu-trigger]").first();
+  const trigger = page.locator("button[data-gsxui-slot-navigation-menu-trigger]").first();
   await trigger.click();
   const content = page.locator("[data-gsxui-slot-navigation-menu-content]");
   await expect(content).toBeVisible();
