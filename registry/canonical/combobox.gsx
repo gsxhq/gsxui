@@ -76,17 +76,20 @@ import (
 // origin-(--transform-origin), and List's own
 // min(calc(--spacing(72)---spacing(9)),calc(var(--available-height)-
 // -spacing(9))) tokens). combobox.js implements fixed positioning below the
-// input instead (ui/select.js's own openContent model, not a full
-// anchor-positioning engine), so those vars are never set; the tokens that
-// depend on them are dropped in favor of plain nova-retargeted values
-// (min-w-36 origin-top-left on Content) — the exact same substitution ##
-// select's own ADAPT entry documents for SelectContent's
-// min-w-[8rem]->min-w-36. List keeps the FIRST arm of its own min() (the
-// only one that doesn't depend on the dropped var) rather than collapsing
-// to a flat max-h-72: max-h-72 alone is 288px, but spacing(72)-spacing(9)
-// is 252px — a real, review-caught difference (a prior draft's flat
-// max-h-72 clipped the bottom ~40px of a full list against ComboboxContent's
-// own max-h-72 + overflow-hidden with no way to scroll to it). duration-100
+// input instead (ui/select.js's own openContent model, via gsxui.js's
+// shared position() engine, not a full anchor-positioning engine). Of
+// those vars, only the height one has an equivalent: position()'s cap
+// option sets --gsxui-available-height (room from the placed edge to the
+// viewport edge), which the recipes min() into Content's and List's
+// max-heights — the height cap Base UI's --available-height provided. The
+// width/origin tokens stay dropped in favor of plain nova-retargeted
+// values (min-w-36 origin-top-left on Content) — the exact same
+// substitution ## select's own ADAPT entry documents for SelectContent's
+// min-w-[8rem]->min-w-36. List keeps its min() shape with the first arm
+// verbatim: spacing(72)-spacing(9) is 252px, NOT max-h-72's 288px — a
+// real, review-caught difference (a prior draft's flat max-h-72 clipped
+// the bottom ~40px of a full list against ComboboxContent's own max-h-72
+// + overflow-hidden with no way to scroll to it). duration-100
 // (nova's one-off value for this component) is dropped the same way ##
 // select's own entry rejects it: duration-150 is the popover family's
 // shared standard, supplied by the discrete-transition block below.
@@ -273,16 +276,19 @@ component ComboboxContent(children gsx.Node, attrs gsx.Attrs) {
 // second, independent data-empty target from ComboboxContent's own group
 // selector — see ComboboxContent's doc comment).
 //
-// max-h-[calc(--spacing(72)---spacing(9))]: the source/nova token is
+// List's max-height: the source/nova token is
 // `max-h-[min(calc(--spacing(72)---spacing(9)),calc(var(--available-height)-
-// -spacing(9)))]` — a min() of two arms, the second depending on the
-// --available-height var this port's fixed-positioning ADAPT never sets
-// (see the package doc comment). Only the FIRST arm survives; a flat
-// `max-h-72` (a prior draft's mistake, caught in review) is a DIFFERENT,
-// larger number — 288px vs. this arm's 252px (spacing(72) minus
-// spacing(9), i.e. 18rem - 2.25rem at the default --spacing: 0.25rem) —
-// and clips the last ~40px of a full list against ComboboxContent's own
-// max-h-72 + overflow-hidden with no way to scroll to it.
+// -spacing(9)))]` — a min() of two arms. The recipe keeps that shape, with
+// the second arm reading --gsxui-available-height (set by gsxui.js's
+// position() cap when combobox.js opens the popup; 9999px fallback keeps
+// the resting computed style identical when unset) in place of Base UI's
+// --available-height (see the package doc comment). The first arm stays
+// verbatim: a flat `max-h-72` (a prior draft's mistake, caught in review)
+// is a DIFFERENT, larger number — 288px vs. this arm's 252px (spacing(72)
+// minus spacing(9), i.e. 18rem - 2.25rem at the default --spacing:
+// 0.25rem) — and clips the last ~40px of a full list against
+// ComboboxContent's own max-height + overflow-hidden with no way to
+// scroll to it.
 component ComboboxList(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="listbox"

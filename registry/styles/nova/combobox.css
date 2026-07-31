@@ -37,7 +37,7 @@
   }
 
   .gsxui-recipe-combobox-content {
-    @apply relative z-50 max-h-72 min-w-36 origin-top-left overflow-hidden rounded-lg bg-popover text-popover-foreground shadow-md ring-1 ring-foreground/10;
+    @apply relative z-50 max-h-[min(--spacing(72),var(--gsxui-available-height,9999px))] min-w-36 origin-top-left overflow-hidden rounded-lg bg-popover text-popover-foreground shadow-md ring-1 ring-foreground/10;
     @apply opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150;
     @apply [&:popover-open]:opacity-100 [&:popover-open]:scale-100;
     @apply starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95;
@@ -48,7 +48,7 @@
   }
 
   .gsxui-recipe-combobox-list {
-    @apply max-h-[calc(--spacing(72)---spacing(9))] scroll-py-1 overflow-y-auto p-1;
+    @apply max-h-[min(calc(--spacing(72)---spacing(9)),calc(var(--gsxui-available-height,9999px)---spacing(9)))] scroll-py-1 overflow-y-auto p-1;
     @apply [scrollbar-width:none];
     @apply [&::-webkit-scrollbar]:hidden;
     @apply data-empty:p-0;
