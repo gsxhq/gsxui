@@ -1,5 +1,9 @@
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
+github.com/gsxhq/gsxhl v0.0.0-20260730151208-23ad64a27ac9 h1:MLX6NkslqCg2+Nwd+zPhgjsiWuIRmT+22FxD1wKOj6o=
+github.com/gsxhq/gsxhl v0.0.0-20260730151208-23ad64a27ac9/go.mod h1:Wy6etWALfgt4ZFGTS3Xy+g9T48liSMQ83jq6XOm3Odo=
+github.com/gsxhq/tree-sitter-gsx v0.0.0-20260730150336-81d28e59d472 h1:vfPje+3xiOg1avwIkdBHYMt0mUZeTCB+TfKBnsFikiA=
+github.com/gsxhq/tree-sitter-gsx v0.0.0-20260730150336-81d28e59d472/go.mod h1:qSbwbMW75hrBcLVztfk3jty07Y3XLTCJEQikdFGDJbI=
 github.com/jackielii/go-tree-sitter-highlight v0.1.0 h1:Xh6K1YuFRX8Ap5zrspyZ0CV5pyCCoG40L0QcyQ5kKwg=
 github.com/jackielii/go-tree-sitter-highlight v0.1.0/go.mod h1:5rIk+j40yfATjPLvbLmJDVdwMs05AjOqTuQ2bAcahyM=
 github.com/mattn/go-pointer v0.0.1 h1:n+XhsuGeVO6MEAp7xyEukFINEa+Quek5psIR/ylA6o0=
