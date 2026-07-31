@@ -116,7 +116,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
   );
 
   await page.goto("/x/hover-card/basic");
-  const hoverTrigger = page.locator("[data-gsxui-hovercard-trigger]");
+  const hoverTrigger = page.locator("[data-gsxui-slot-hover-card-trigger]");
   const hoverContent = page.locator("[data-gsxui-slot-hover-card-content]");
   await hoverTrigger.hover();
   await observe(

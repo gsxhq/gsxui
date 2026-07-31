@@ -19,18 +19,14 @@ func Popover(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line popover.gsx:8:2
-		_gsxgw.S("<div")
-		if !attrs.Has("data-gsxui-popover") {
-			_gsxgw.BoolAttr("data-gsxui-popover", true)
-		}
-		_gsxgw.S(" class=\"")
+		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("contents"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-popover"})
 		_gsxgw.BoolAttr("data-gsxui-slot-popover", true)
 		_gsxgw.S(">")
-//line popover.gsx:8:84
+//line popover.gsx:8:65
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
@@ -70,9 +66,6 @@ func PopoverContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line popover.gsx:24:2
 		_gsxgw.S("<div")
-		if !attrs.Has("data-gsxui-popover-content") {
-			_gsxgw.BoolAttr("data-gsxui-popover-content", true)
-		}
 		if !attrs.Has("popover") {
 			_gsxgw.S(" popover=\"auto\"")
 		}
@@ -92,7 +85,7 @@ func PopoverContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-popover-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-popover-content", true)
 		_gsxgw.S(">")
-//line popover.gsx:36:3
+//line popover.gsx:35:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

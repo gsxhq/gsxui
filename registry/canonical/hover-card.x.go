@@ -19,18 +19,14 @@ func HoverCard(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line hover-card.gsx:8:2
-		_gsxgw.S("<div")
-		if !attrs.Has("data-gsxui-hovercard") {
-			_gsxgw.BoolAttr("data-gsxui-hovercard", true)
-		}
-		_gsxgw.S(" class=\"")
+		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(hoverCard.Root()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-hover-card"})
 		_gsxgw.BoolAttr("data-gsxui-slot-hover-card", true)
 		_gsxgw.S(">")
-//line hover-card.gsx:8:95
+//line hover-card.gsx:8:74
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
@@ -43,15 +39,12 @@ func HoverCardTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line hover-card.gsx:12:2
 		_gsxgw.S("<span")
-		if !attrs.Has("data-gsxui-hovercard-trigger") {
-			_gsxgw.BoolAttr("data-gsxui-hovercard-trigger", true)
-		}
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-hover-card-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-hover-card-trigger", true)
 		_gsxgw.S(">")
-//line hover-card.gsx:12:85
+//line hover-card.gsx:12:56
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()
@@ -64,9 +57,6 @@ func HoverCardContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line hover-card.gsx:16:2
 		_gsxgw.S("<div")
-		if !attrs.Has("data-gsxui-hovercard-content") {
-			_gsxgw.BoolAttr("data-gsxui-hovercard-content", true)
-		}
 		if !attrs.Has("popover") {
 			_gsxgw.S(" popover=\"manual\"")
 		}
@@ -83,7 +73,7 @@ func HoverCardContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-hover-card-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-hover-card-content", true)
 		_gsxgw.S(">")
-//line hover-card.gsx:25:3
+//line hover-card.gsx:24:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
