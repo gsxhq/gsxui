@@ -78,7 +78,10 @@ var siteButtonVariants = map[string]siteButtonVariant{
 	// exemptions derived from these rules have to key on the selector the gate
 	// reports, not on the one a formatter prefers.
 	"has-[>svg]":                    {pseudo: ":has(>svg)"},
+	"has-data-[icon=inline-start]":  {pseudo: `:has([data-icon="inline-start"])`},
+	"has-data-[icon=inline-end]":    {pseudo: `:has([data-icon="inline-end"])`},
 	"aria-invalid":                  {attr: `[aria-invalid="true"]`},
+	"aria-expanded":                 {attr: `[aria-expanded="true"]`},
 	"[&_svg]":                       {descendant: " svg"},
 	`[&_svg:not([class*='size-'])]`: {descendant: ` svg:not([class*="size-"])`},
 }
@@ -107,6 +110,19 @@ func siteButtonStylesheet(shape recipe.Shape, style recipe.Style) ([]byte, []sit
 // a single `:focus-visible` rule with both utilities — the shape the file has
 // always had.
 func siteButtonRules(shape recipe.Shape, style recipe.Style) ([]siteButtonRule, error) {
+	return buttonFallbackRules(shape, style, siteButtonSelector)
+}
+
+// buttonFallbackRules is the recipe→fallback-rule translation shared by every
+// Button fallback stylesheet. The composer decides only what a rule's selector
+// looks like — web/site-button.css scopes to the site body, the theme-preview
+// fallback scopes into one preview section — while the grouping of utilities by
+// variant chain, in recipe order, is identical for all of them.
+func buttonFallbackRules(
+	shape recipe.Shape,
+	style recipe.Style,
+	compose func(dimensionAttr string, variants []string) (string, error),
+) ([]siteButtonRule, error) {
 	if shape.Component != siteButtonComponent {
 		return nil, fmt.Errorf("site fallback is Button's, but shape declares component %q", shape.Component)
 	}
@@ -150,7 +166,7 @@ func siteButtonRules(shape recipe.Shape, style recipe.Style) ([]siteButtonRule, 
 			grouped[chain].utilities = append(grouped[chain].utilities, base)
 		}
 		for _, chain := range order {
-			selector, err := siteButtonSelector(dimensionAttr, grouped[chain].variants)
+			selector, err := compose(dimensionAttr, grouped[chain].variants)
 			if err != nil {
 				return nil, fmt.Errorf("%s recipe class %s: %w", siteButtonComponent, rule.Class, err)
 			}
@@ -170,33 +186,51 @@ func siteButtonRules(shape recipe.Shape, style recipe.Style) ([]siteButtonRule, 
 // than outranking it.
 func siteButtonSelector(dimensionAttr string, variants []string) (string, error) {
 	marker := slotMarker(siteButtonComponent, "")
-	attrs := dimensionAttr
-	var pseudos, descendant string
-	var dark bool
+	parts, err := buttonVariantParts(dimensionAttr, variants)
+	if err != nil {
+		return "", err
+	}
+	if parts.dark {
+		return ".dark " + siteButtonScope + " :where([" + marker + "]" + parts.attrs + ")" + parts.pseudos + parts.descendant, nil
+	}
+	return siteButtonScope + " :where([" + marker + "])" + parts.attrs + parts.pseudos + parts.descendant, nil
+}
+
+// buttonVariantParts is the shared decomposition behind every fallback selector
+// composer: it folds a variant chain through the closed siteButtonVariants
+// table into the attribute compounds, pseudo-class suffix, descendant compound
+// and dark-arm flag the composer arranges into its own selector shape.
+func buttonVariantParts(dimensionAttr string, variants []string) (buttonSelectorParts, error) {
+	parts := buttonSelectorParts{attrs: dimensionAttr}
 	for _, name := range variants {
 		form, ok := siteButtonVariants[name]
 		if !ok {
-			return "", fmt.Errorf(
+			return parts, fmt.Errorf(
 				"variant %q has no site-fallback selector form; add it to siteButtonVariants", name)
 		}
 		switch {
 		case form.dark:
-			dark = true
+			parts.dark = true
 		case form.attr != "":
-			attrs += form.attr
+			parts.attrs += form.attr
 		case form.pseudo != "":
-			pseudos += form.pseudo
+			parts.pseudos += form.pseudo
 		case form.descendant != "":
-			if descendant != "" {
-				return "", fmt.Errorf("variant chain selects two descendants: %q and %q", descendant, form.descendant)
+			if parts.descendant != "" {
+				return parts, fmt.Errorf("variant chain selects two descendants: %q and %q", parts.descendant, form.descendant)
 			}
-			descendant = form.descendant
+			parts.descendant = form.descendant
 		}
 	}
-	if dark {
-		return ".dark " + siteButtonScope + " :where([" + marker + "]" + attrs + ")" + pseudos + descendant, nil
-	}
-	return siteButtonScope + " :where([" + marker + "])" + attrs + pseudos + descendant, nil
+	return parts, nil
+}
+
+// buttonSelectorParts is one variant chain decomposed into selector fragments.
+type buttonSelectorParts struct {
+	attrs      string
+	pseudos    string
+	descendant string
+	dark       bool
 }
 
 // splitUtilityVariants splits a Tailwind utility into its variant chain and the

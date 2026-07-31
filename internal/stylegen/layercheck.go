@@ -163,6 +163,7 @@ var layerCheckedStylesheets = []string{
 	"assets/css/themes/default.css",
 	"web/site.css",
 	"web/site-button.css",
+	"web/theme-preview-button.css",
 }
 
 // layerCheckedStylesheetDirs is every directory whose ENTIRE .css contents are
@@ -296,8 +297,13 @@ func layerCheckExemptions(root string) ([]layerCheckExemption, error) {
 	if err != nil {
 		return nil, err
 	}
+	previewButton, err := previewButtonFallbackExemptions(root)
+	if err != nil {
+		return nil, err
+	}
 	return slices.Concat(
 		siteButton,
+		previewButton,
 		toggleMarkerFallbackExemptions(),
 		sidebarFoundationMechanicsExemptions(),
 	), nil
