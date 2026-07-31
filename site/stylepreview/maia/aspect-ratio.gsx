@@ -83,11 +83,12 @@ func aspectRatioNumber(s string) bool {
 component AspectRatio(ratio string, children gsx.Node, attrs gsx.Attrs) {
 	{{ form, w, h := parseAspectRatio(ratio) }}
 	<div
-		{ if form == aspectRatioPair {
+		{ switch form {
+		case aspectRatioPair:
 			style=css`aspect-ratio: @{w} / @{h};`
-		} else if form == aspectRatioAutoPair {
+		case aspectRatioAutoPair:
 			style=css`aspect-ratio: auto @{w} / @{h};`
-		} else {
+		default:
 			style=css`aspect-ratio: @{ratio};`
 		} }
 		class={ "block" }

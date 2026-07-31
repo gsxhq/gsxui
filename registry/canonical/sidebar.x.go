@@ -65,7 +65,7 @@ func SidebarProvider(open bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node 
 			_gsxgw.S("\"")
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sidebar-wrapper"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-wrapper"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-wrapper", true)
 		_gsxgw.S(">")
 //line sidebar.gsx:45:3
@@ -118,7 +118,7 @@ func Sidebar(open bool, side string, variant string, collapsible string, childre
 				_gsxgw.S(" data-collapsible=\"none\"")
 			}
 			_gsxgw.StyleMerged("", attrs.Style())
-			_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sidebar"})
+			_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar"})
 			_gsxgw.BoolAttr("data-gsxui-slot-sidebar", true)
 			_gsxgw.S(">")
 //line sidebar.gsx:79:4
@@ -191,7 +191,7 @@ func Sidebar(open bool, side string, variant string, collapsible string, childre
 			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.Container()), _gsxrt.Class(attrs.Class()))
 			_gsxgw.S("\"")
 			_gsxgw.StyleMerged("", attrs.Style())
-			_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sidebar-container"})
+			_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-container"})
 			_gsxgw.BoolAttr("data-gsxui-slot-sidebar-container", true)
 			_gsxgw.S(">")
 //line sidebar.gsx:121:6
@@ -257,7 +257,7 @@ func SidebarRail(attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" title=\"Toggle Sidebar\"")
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sidebar-rail"})
+		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-rail"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-rail", true)
 		_gsxgw.S("></button>")
 		return _gsxgw.Err()
@@ -273,7 +273,7 @@ func SidebarInset(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.Inset()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sidebar-inset"})
+		_gsxgw.Spread(ctx, "main", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-inset"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-inset", true)
 		_gsxgw.S(">")
 //line sidebar.gsx:160:77
@@ -302,7 +302,7 @@ func SidebarHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.Header()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sidebar-header"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-header"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-header", true)
 		_gsxgw.S(">")
 //line sidebar.gsx:168:78
@@ -321,7 +321,7 @@ func SidebarFooter(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.Footer()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sidebar-footer"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-footer"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-footer", true)
 		_gsxgw.S(">")
 //line sidebar.gsx:172:78
@@ -350,7 +350,7 @@ func SidebarContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.Content()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sidebar-content"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-content", true)
 		_gsxgw.S(">")
 //line sidebar.gsx:180:80
@@ -369,7 +369,7 @@ func SidebarGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.Group()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sidebar-group"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-group", true)
 		_gsxgw.S(">")
 //line sidebar.gsx:184:76
@@ -388,7 +388,7 @@ func SidebarGroupLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.GroupLabel()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sidebar-group-label"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-group-label"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-group-label", true)
 		_gsxgw.S(">")
 //line sidebar.gsx:188:87
@@ -410,7 +410,7 @@ func SidebarGroupAction(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" type=\"button\"")
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sidebar-group-action"})
+		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-group-action"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-group-action", true)
 		_gsxgw.S(">")
 //line sidebar.gsx:193:3
@@ -429,7 +429,7 @@ func SidebarGroupContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.GroupContent()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sidebar-group-content"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-group-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-group-content", true)
 		_gsxgw.S(">")
 //line sidebar.gsx:198:91
@@ -448,7 +448,7 @@ func SidebarMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.Menu()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sidebar-menu"})
+		_gsxgw.Spread(ctx, "ul", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu", true)
 		_gsxgw.S(">")
 //line sidebar.gsx:202:73
@@ -467,7 +467,7 @@ func SidebarMenuItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.MenuItem()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sidebar-menu-item"})
+		_gsxgw.Spread(ctx, "li", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-item", true)
 		_gsxgw.S(">")
 //line sidebar.gsx:206:82
@@ -504,7 +504,7 @@ func SidebarMenuButton(isActive bool, variant string, size string, tooltip strin
 				_gsxgw.BoolAttr("data-active", bool(isActive))
 			}
 			_gsxgw.StyleMerged("", attrs.Style())
-			_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sidebar-menu-button"})
+			_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-button"})
 			_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-button", true)
 			_gsxgw.S(">")
 //line sidebar.gsx:220:4
@@ -538,7 +538,7 @@ func SidebarMenuButton(isActive bool, variant string, size string, tooltip strin
 					_gsxgw.BoolAttr("data-gsxui-tooltip-trigger", true)
 				}
 				_gsxgw.StyleMerged("", attrs.Style())
-				_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sidebar-menu-button"})
+				_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-button"})
 				_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-button", true)
 				_gsxgw.S(">")
 //line sidebar.gsx:234:5
@@ -573,7 +573,7 @@ func SidebarMenuAction(showOnHover bool, children gsx.Node, attrs gsx.Attrs) _gs
 			_gsxgw.BoolAttr("data-show-on-hover", bool(showOnHover))
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sidebar-menu-action"})
+		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-action"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-action", true)
 		_gsxgw.S(">")
 //line sidebar.gsx:251:3
@@ -592,7 +592,7 @@ func SidebarMenuBadge(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.MenuBadge()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sidebar-menu-badge"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-badge"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-badge", true)
 		_gsxgw.S(">")
 //line sidebar.gsx:256:85
@@ -617,7 +617,7 @@ func SidebarMenuSkeleton(showIcon bool, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.MenuSkeleton()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sidebar-menu-skeleton"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-skeleton"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-skeleton", true)
 		_gsxgw.S(">")
 //line sidebar.gsx:264:3
@@ -643,7 +643,7 @@ func SidebarMenuSub(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.MenuSub()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sidebar-menu-sub"})
+		_gsxgw.Spread(ctx, "ul", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-sub"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-sub", true)
 		_gsxgw.S(">")
 //line sidebar.gsx:276:80
@@ -662,7 +662,7 @@ func SidebarMenuSubItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.MenuSubItem()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sidebar-menu-sub-item"})
+		_gsxgw.Spread(ctx, "li", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-sub-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-sub-item", true)
 		_gsxgw.S(">")
 //line sidebar.gsx:280:89
@@ -689,7 +689,7 @@ func SidebarMenuSubButton(size string, isActive bool, children gsx.Node, attrs g
 			_gsxgw.BoolAttr("data-active", bool(isActive))
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-sidebar-menu-sub-button"})
+		_gsxgw.Spread(ctx, "a", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-sub-button"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-sub-button", true)
 		_gsxgw.S(">")
 //line sidebar.gsx:291:3

@@ -23,7 +23,7 @@ func Card(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(card.Root()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-card"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-card"})
 		_gsxgw.BoolAttr("data-gsxui-slot-card", true)
 		_gsxgw.S(">")
 //line card.gsx:10:3
@@ -42,7 +42,7 @@ func CardHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(card.Header()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-card-header"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-card-header"})
 		_gsxgw.BoolAttr("data-gsxui-slot-card-header", true)
 		_gsxgw.S(">")
 //line card.gsx:16:3
@@ -61,7 +61,7 @@ func CardTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(card.Title()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-card-title"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-card-title"})
 		_gsxgw.BoolAttr("data-gsxui-slot-card-title", true)
 		_gsxgw.S(">")
 //line card.gsx:21:70
@@ -80,7 +80,7 @@ func CardDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(card.Description()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-card-description"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-card-description"})
 		_gsxgw.BoolAttr("data-gsxui-slot-card-description", true)
 		_gsxgw.S(">")
 //line card.gsx:25:82
@@ -99,7 +99,7 @@ func CardAction(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(card.Action()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-card-action"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-card-action"})
 		_gsxgw.BoolAttr("data-gsxui-slot-card-action", true)
 		_gsxgw.S(">")
 //line card.gsx:30:3
@@ -118,7 +118,7 @@ func CardContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(card.Content()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-card-content"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-card-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-card-content", true)
 		_gsxgw.S(">")
 //line card.gsx:35:74
@@ -137,7 +137,7 @@ func CardFooter(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(card.Footer()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-card-footer"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-card-footer"})
 		_gsxgw.BoolAttr("data-gsxui-slot-card-footer", true)
 		_gsxgw.S(">")
 //line card.gsx:39:72

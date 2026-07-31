@@ -29,7 +29,7 @@ func Accordion(name string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		}
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-accordion"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-accordion"})
 		_gsxgw.BoolAttr("data-gsxui-slot-accordion", true)
 		_gsxgw.S(">")
 //line accordion.gsx:12:63
@@ -57,7 +57,7 @@ func AccordionItem(name string, open bool, children gsx.Node, attrs gsx.Attrs) _
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(accordion.Item()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-accordion-item"})
+		_gsxgw.Spread(ctx, "details", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-accordion-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-accordion-item", true)
 		_gsxgw.S(">")
 //line accordion.gsx:17:3
@@ -76,7 +76,7 @@ func AccordionTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(accordion.Trigger()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-accordion-trigger"})
+		_gsxgw.Spread(ctx, "summary", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-accordion-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-accordion-trigger", true)
 		_gsxgw.S(">")
 //line accordion.gsx:23:3
@@ -108,7 +108,7 @@ func AccordionContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(accordion.Content()), _gsxrt.Class(_gsxv0.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", _gsxv0.Style())
-		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-accordion-content"})
+		_gsxgw.Spread(ctx, "div", _gsxv0, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-accordion-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-accordion-content", true)
 		_gsxgw.S(">")
 //line accordion.gsx:39:3
@@ -117,7 +117,7 @@ func AccordionContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(accordion.ContentInner()), _gsxrt.Class(_gsxv1.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", _gsxv1.Style())
-		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-accordion-content-inner"})
+		_gsxgw.Spread(ctx, "div", _gsxv1, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-accordion-content-inner"})
 		_gsxgw.BoolAttr("data-gsxui-slot-accordion-content-inner", true)
 		_gsxgw.S(">")
 //line accordion.gsx:39:101

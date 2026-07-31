@@ -34,7 +34,7 @@ func Select(name string, required bool, disabled bool, form string, children gsx
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(select_.Root()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-select"})
 		_gsxgw.BoolAttr("data-gsxui-slot-select", true)
 		_gsxgw.S(">")
 //line select.gsx:45:3
@@ -111,7 +111,7 @@ func SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node 
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(select_.Trigger()), _gsxrt.Class(select_.TriggerSize(size)), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select-trigger"})
+		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-select-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-select-trigger", true)
 		_gsxgw.S(">")
 //line select.gsx:91:3
@@ -141,7 +141,7 @@ func SelectValue(placeholder string, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(select_.Value()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select-value"})
+		_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-select-value"})
 		_gsxgw.BoolAttr("data-gsxui-slot-select-value", true)
 		_gsxgw.S(">")
 //line select.gsx:100:100
@@ -190,7 +190,7 @@ func SelectContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(select_.Content()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select-content"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-select-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-select-content", true)
 		_gsxgw.S(">")
 //line select.gsx:124:3
@@ -221,7 +221,7 @@ func SelectGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		}
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select-group"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-select-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-select-group", true)
 		_gsxgw.S(">")
 //line select.gsx:134:86
@@ -248,7 +248,7 @@ func SelectLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(select_.Label()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select-label"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-select-label"})
 		_gsxgw.BoolAttr("data-gsxui-slot-select-label", true)
 		_gsxgw.S(">")
 //line select.gsx:140:99
@@ -314,7 +314,7 @@ func SelectItem(value string, selected bool, disabled bool, children gsx.Node, a
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(select_.Item()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select-item"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-select-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-select-item", true)
 		_gsxgw.S(">")
 //line select.gsx:173:3
@@ -357,7 +357,7 @@ func SelectSeparator(attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(select_.Separator()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-select-separator"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-select-separator"})
 		_gsxgw.BoolAttr("data-gsxui-slot-select-separator", true)
 		_gsxgw.S("></div>")
 		return _gsxgw.Err()

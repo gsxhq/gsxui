@@ -40,7 +40,7 @@ func FieldSet(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-col gap-4"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-field-set"})
+		_gsxgw.Spread(ctx, "fieldset", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field-set"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field-set", true)
 		_gsxgw.S(">")
 //line field.gsx:29:3
@@ -76,7 +76,7 @@ func FieldLegend(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-field-legend"})
+		_gsxgw.Spread(ctx, "legend", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field-legend"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field-legend", true)
 		_gsxgw.S(">")
 //line field.gsx:41:3
@@ -95,7 +95,7 @@ func FieldGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex w-full flex-col gap-5 [&>[data-gsxui-slot-field-group]]:gap-4"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-field-group"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field-group", true)
 		_gsxgw.S(">")
 //line field.gsx:51:3
@@ -137,7 +137,7 @@ func Field(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv2), _gsxrt.Class(_gsxv3), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-field"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field", true)
 		_gsxgw.S(">")
 //line field.gsx:75:3
@@ -156,7 +156,7 @@ func FieldContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-1 flex-col gap-0.5 leading-snug"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-field-content"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field-content", true)
 		_gsxgw.S(">")
 //line field.gsx:85:3
@@ -198,7 +198,7 @@ func FieldTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex w-fit items-center gap-2 text-sm leading-snug font-medium"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-field-title"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field-title"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field-title", true)
 		_gsxgw.S(">")
 //line field.gsx:111:3
@@ -217,7 +217,7 @@ func FieldDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-sm leading-normal font-normal text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-field-description"})
+		_gsxgw.Spread(ctx, "p", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field-description"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field-description", true)
 		_gsxgw.S(">")
 //line field.gsx:123:3
@@ -247,7 +247,7 @@ func FieldSeparator(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative -my-2 h-5 text-sm [[data-gsxui-slot-field-group][data-variant=outline]_&]:-mb-2"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-field-separator-wrapper"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field-separator-wrapper"})
 		_gsxgw.BoolAttr("data-gsxui-slot-field-separator-wrapper", true)
 		_gsxgw.S(">")
 //line field.gsx:139:3
@@ -289,7 +289,7 @@ func FieldError(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-sm font-normal text-destructive"), _gsxrt.Class(attrs.Class()))
 			_gsxgw.S("\"")
 			_gsxgw.StyleMerged("", attrs.Style())
-			_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-field-error"})
+			_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-field-error"})
 			_gsxgw.BoolAttr("data-gsxui-slot-field-error", true)
 			_gsxgw.S(">")
 //line field.gsx:157:4

@@ -102,7 +102,7 @@ func Toggle(pressed bool, variant string, size string, children gsx.Node, attrs 
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(toggle.Root()), _gsxrt.Class(toggle.Variant(variant)), _gsxrt.Class(toggle.Size(size)), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-toggle"})
+		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-toggle"})
 		_gsxgw.BoolAttr("data-gsxui-slot-toggle", true)
 		_gsxgw.S(">")
 //line toggle.gsx:74:3

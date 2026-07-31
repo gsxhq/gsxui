@@ -56,7 +56,7 @@ func _gsxrenderInputGroup(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children g
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(inputGroup.Root()), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
-	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-input-group"})
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-input-group"})
 	_gsxgw.BoolAttr("data-gsxui-slot-input-group", true)
 	_gsxgw.S(">")
 //line input-group.gsx:34:3
@@ -95,7 +95,7 @@ func _gsxrenderInputGroupAddon(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, align
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(inputGroup.Addon()), _gsxrt.Class(inputGroup.AddonAlign(align)), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
-	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-input-group-addon"})
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-input-group-addon"})
 	_gsxgw.BoolAttr("data-gsxui-slot-input-group-addon", true)
 	_gsxgw.S(">")
 //line input-group.gsx:51:3
@@ -146,7 +146,7 @@ func InputGroupText(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(inputGroup.Text()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-input-group-text"})
+		_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-input-group-text"})
 		_gsxgw.BoolAttr("data-gsxui-slot-input-group-text", true)
 		_gsxgw.S(">")
 //line input-group.gsx:77:3

@@ -63,7 +63,7 @@ func Tabs(value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tabs.Root()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-tabs"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tabs"})
 		_gsxgw.BoolAttr("data-gsxui-slot-tabs", true)
 		_gsxgw.S(">")
 //line tabs.gsx:38:98
@@ -86,7 +86,7 @@ func TabsList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tabs.List()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-tabs-list"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tabs-list"})
 		_gsxgw.BoolAttr("data-gsxui-slot-tabs-list", true)
 		_gsxgw.S(">")
 //line tabs.gsx:48:3
@@ -150,7 +150,7 @@ func TabsTrigger(value string, selected bool, children gsx.Node, attrs gsx.Attrs
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tabs.Trigger()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-tabs-trigger"})
+		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tabs-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-tabs-trigger", true)
 		_gsxgw.S(">")
 //line tabs.gsx:78:3
@@ -195,7 +195,7 @@ func TabsContent(value string, selected bool, children gsx.Node, attrs gsx.Attrs
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tabs.Content()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-tabs-content"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tabs-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-tabs-content", true)
 		_gsxgw.S(">")
 //line tabs.gsx:100:3

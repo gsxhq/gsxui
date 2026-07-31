@@ -26,7 +26,7 @@ func Kbd(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pointer-events-none inline-flex h-5 w-fit min-w-5 items-center justify-center gap-1 rounded-sm bg-muted px-1 font-sans text-xs font-medium text-muted-foreground select-none [&_svg:not([class*='size-'])]:size-3 [[data-gsxui-slot-tooltip-content]_&]:bg-background/20 [[data-gsxui-slot-tooltip-content]_&]:text-background [[data-gsxui-slot-tooltip-content]_&]:rounded-sm [.dark_[data-gsxui-slot-tooltip-content]_&]:bg-background/10"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-kbd"})
+		_gsxgw.Spread(ctx, "kbd", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-kbd"})
 		_gsxgw.BoolAttr("data-gsxui-slot-kbd", true)
 		_gsxgw.S(">")
 //line kbd.gsx:18:3
@@ -51,7 +51,7 @@ func KbdGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("inline-flex items-center gap-1"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-kbd-group"})
+		_gsxgw.Spread(ctx, "kbd", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-kbd-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-kbd-group", true)
 		_gsxgw.S(">")
 //line kbd.gsx:28:3

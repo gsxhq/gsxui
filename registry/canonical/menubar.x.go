@@ -189,7 +189,7 @@ func Menubar(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" role=\"menubar\"")
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar", true)
 		_gsxgw.S(">")
 //line menubar.gsx:176:3
@@ -222,7 +222,7 @@ func MenubarMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.BoolAttr("data-gsxui-menubar-menu", true)
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-menu"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-menu"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-menu", true)
 		_gsxgw.S(">")
 //line menubar.gsx:190:98
@@ -272,7 +272,7 @@ func MenubarTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" data-state=\"closed\"")
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-trigger"})
+		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-trigger", true)
 		_gsxgw.S(">")
 //line menubar.gsx:218:3
@@ -331,7 +331,7 @@ func MenubarContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" data-side=\"bottom\"")
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-content"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-content", true)
 		_gsxgw.S(">")
 //line menubar.gsx:254:3
@@ -372,7 +372,7 @@ func MenubarItem(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node
 			_gsxgw.S(" tabindex=\"-1\"")
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-item"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-item", true)
 		_gsxgw.S(">")
 //line menubar.gsx:277:3
@@ -401,7 +401,7 @@ func MenubarGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		}
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-group"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-group", true)
 		_gsxgw.S(">")
 //line menubar.gsx:288:63
@@ -469,7 +469,7 @@ func MenubarCheckboxItem(checked bool, value string, children gsx.Node, attrs gs
 			_gsxgw.S(" tabindex=\"-1\"")
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-checkbox-item"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-checkbox-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-checkbox-item", true)
 		_gsxgw.S(">")
 //line menubar.gsx:326:3
@@ -516,7 +516,7 @@ func MenubarRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 		}
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-radio-group"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-radio-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-radio-group", true)
 		_gsxgw.S(">")
 //line menubar.gsx:341:3
@@ -574,7 +574,7 @@ func MenubarRadioItem(checked bool, value string, children gsx.Node, attrs gsx.A
 			_gsxgw.S(" tabindex=\"-1\"")
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-radio-item"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-radio-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-radio-item", true)
 		_gsxgw.S(">")
 //line menubar.gsx:370:3
@@ -610,7 +610,7 @@ func MenubarLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(menubar.Label()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-label"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-label"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-label", true)
 		_gsxgw.S(">")
 //line menubar.gsx:383:76
@@ -632,7 +632,7 @@ func MenubarSeparator(attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" role=\"separator\"")
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-separator"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-separator"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-separator", true)
 		_gsxgw.S("></div>")
 		return _gsxgw.Err()
@@ -660,7 +660,7 @@ func MenubarShortcut(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(menubar.Shortcut()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-shortcut"})
+		_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-shortcut"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-shortcut", true)
 		_gsxgw.S(">")
 //line menubar.gsx:402:3
@@ -692,7 +692,7 @@ func MenubarSub(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.BoolAttr("data-gsxui-menubar-sub", true)
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-sub"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-sub"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-sub", true)
 		_gsxgw.S(">")
 //line menubar.gsx:415:95
@@ -762,7 +762,7 @@ func MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" tabindex=\"-1\"")
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-sub-trigger"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-sub-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-sub-trigger", true)
 		_gsxgw.S(">")
 //line menubar.gsx:461:3
@@ -816,7 +816,7 @@ func MenubarSubContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" data-side=\"right\"")
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-menubar-sub-content"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-sub-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-menubar-sub-content", true)
 		_gsxgw.S(">")
 //line menubar.gsx:491:3

@@ -65,7 +65,7 @@ func TestCanonicalButtonKeepsAxesMarkerAndCallerPrecedence(t *testing.T) {
 		var marker *gsxast.BoolAttr
 		for i, attr := range element.Attrs {
 			switch attr := attr.(type) {
-			case *gsxast.ClassAttr:
+			case *gsxast.ComposedAttr:
 				if attr.Name == "class" {
 					classIndex = i
 				}
@@ -346,7 +346,7 @@ func assertGeneratedButtonSource(t *testing.T, filename string, src []byte) {
 		t.Errorf("%s Button params = %q, want %q", filename, button.Params, wantParams)
 	}
 
-	classes := buttonClassAttrs(t, filename, src)
+	classes := buttonComposedAttrs(t, filename, src)
 	for _, tag := range []string{"a", "button"} {
 		class := classes[tag]
 		if class == nil {
@@ -458,7 +458,7 @@ func assertButtonStylesDifferVisibly(t *testing.T, nova, maia []byte) {
 	}
 }
 
-func buttonClassAttrs(t *testing.T, filename string, src []byte) map[string]*gsxast.ClassAttr {
+func buttonComposedAttrs(t *testing.T, filename string, src []byte) map[string]*gsxast.ComposedAttr {
 	t.Helper()
 
 	fset := token.NewFileSet()
@@ -466,14 +466,14 @@ func buttonClassAttrs(t *testing.T, filename string, src []byte) map[string]*gsx
 	if err != nil {
 		t.Fatalf("parser.ParseFile() error = %v", err)
 	}
-	classes := make(map[string]*gsxast.ClassAttr)
+	classes := make(map[string]*gsxast.ComposedAttr)
 	gsxast.Inspect(file, func(node gsxast.Node) bool {
 		element, ok := node.(*gsxast.Element)
 		if !ok || (element.Tag != "a" && element.Tag != "button") {
 			return true
 		}
 		for _, attr := range element.Attrs {
-			class, ok := attr.(*gsxast.ClassAttr)
+			class, ok := attr.(*gsxast.ComposedAttr)
 			if ok && class.Name == "class" {
 				classes[element.Tag] = class
 			}

@@ -78,7 +78,7 @@ func _gsxrenderThemePicker(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, name, lab
 			_gsxgw.S("<span")
 			_gsxgw.BoolAttr("data-theme-selection-swatch", true)
 			_gsxgw.S(" class=\"size-4 shrink-0 rounded-full border border-border bg-foreground/40\" style=\"")
-			_gsxgw.Style(_gsxrt.Class(_gsxrt.StyleValue(themePickerSelectedSwatchStyle(choices, selected))))
+			_gsxgw.Style(_gsxrt.Style(_gsxrt.StyleValue(themePickerSelectedSwatchStyle(choices, selected))))
 			_gsxgw.S("\"></span>")
 			return _gsxgw.Err()
 		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-theme-picker-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "class", Value: "flex h-10 w-full items-center justify-between gap-3 rounded-md border border-input bg-transparent px-3 text-left text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"}})))
@@ -104,7 +104,7 @@ func _gsxrenderThemePicker(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, name, lab
 				_gsxgw.S("<span")
 				_gsxgw.BoolAttr("data-theme-choice-swatch", true)
 				_gsxgw.S(" class=\"size-4 shrink-0 rounded-full border border-border bg-foreground/40\" style=\"")
-				_gsxgw.Style(_gsxrt.Class(_gsxrt.StyleValue(themePickerSwatchStyle(choice))))
+				_gsxgw.Style(_gsxrt.Style(_gsxrt.StyleValue(themePickerSwatchStyle(choice))))
 				_gsxgw.S("\"></span>")
 //line theme_picker.gsx:61:7
 				_gsxgw.S("<span")

@@ -25,7 +25,7 @@ func Collapsible(open bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		}
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-collapsible"})
+		_gsxgw.Spread(ctx, "details", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-collapsible"})
 		_gsxgw.BoolAttr("data-gsxui-slot-collapsible", true)
 		_gsxgw.S(">")
 //line collapsible.gsx:9:3
@@ -44,7 +44,7 @@ func CollapsibleTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("list-none"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-collapsible-trigger"})
+		_gsxgw.Spread(ctx, "summary", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-collapsible-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-collapsible-trigger", true)
 		_gsxgw.S(">")
 //line collapsible.gsx:15:3
@@ -62,7 +62,7 @@ func CollapsibleContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.S("<div")
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-collapsible-content"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-collapsible-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-collapsible-content", true)
 		_gsxgw.S(">")
 //line collapsible.gsx:21:3

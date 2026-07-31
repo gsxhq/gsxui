@@ -35,7 +35,7 @@ func Breadcrumb(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		}
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-breadcrumb"})
+		_gsxgw.Spread(ctx, "nav", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-breadcrumb"})
 		_gsxgw.BoolAttr("data-gsxui-slot-breadcrumb", true)
 		_gsxgw.S(">")
 //line breadcrumb.gsx:20:71
@@ -54,7 +54,7 @@ func BreadcrumbList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(breadcrumb.List()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-breadcrumb-list"})
+		_gsxgw.Spread(ctx, "ol", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-breadcrumb-list"})
 		_gsxgw.BoolAttr("data-gsxui-slot-breadcrumb-list", true)
 		_gsxgw.S(">")
 //line breadcrumb.gsx:25:3
@@ -73,7 +73,7 @@ func BreadcrumbItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(breadcrumb.Item()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-breadcrumb-item"})
+		_gsxgw.Spread(ctx, "li", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-breadcrumb-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-breadcrumb-item", true)
 		_gsxgw.S(">")
 //line breadcrumb.gsx:31:3
@@ -107,7 +107,7 @@ func BreadcrumbLink(href string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(breadcrumb.Link()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-breadcrumb-link"})
+		_gsxgw.Spread(ctx, "a", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-breadcrumb-link"})
 		_gsxgw.BoolAttr("data-gsxui-slot-breadcrumb-link", true)
 		_gsxgw.S(">")
 //line breadcrumb.gsx:44:3
@@ -136,7 +136,7 @@ func BreadcrumbPage(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(breadcrumb.Page()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-breadcrumb-page"})
+		_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-breadcrumb-page"})
 		_gsxgw.BoolAttr("data-gsxui-slot-breadcrumb-page", true)
 		_gsxgw.S(">")
 //line breadcrumb.gsx:57:3
@@ -167,7 +167,7 @@ func BreadcrumbSeparator(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(breadcrumb.Separator()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-breadcrumb-separator"})
+		_gsxgw.Spread(ctx, "li", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-breadcrumb-separator"})
 		_gsxgw.BoolAttr("data-gsxui-slot-breadcrumb-separator", true)
 		_gsxgw.S(">")
 //line breadcrumb.gsx:72:3
@@ -204,7 +204,7 @@ func BreadcrumbEllipsis(attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(breadcrumb.Ellipsis()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-breadcrumb-ellipsis"})
+		_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-breadcrumb-ellipsis"})
 		_gsxgw.BoolAttr("data-gsxui-slot-breadcrumb-ellipsis", true)
 		_gsxgw.S(">")
 //line breadcrumb.gsx:91:3

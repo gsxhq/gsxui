@@ -65,7 +65,7 @@ func Carousel(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Nod
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(carousel.Root()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-carousel"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-carousel"})
 		_gsxgw.BoolAttr("data-gsxui-slot-carousel", true)
 		_gsxgw.S(">")
 //line carousel.gsx:45:3
@@ -116,7 +116,7 @@ func CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs) _gs
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(carousel.TrackOrientation(orientation)), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-carousel-track"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-carousel-track"})
 		_gsxgw.BoolAttr("data-gsxui-slot-carousel-track", true)
 		_gsxgw.S(">")
 //line carousel.gsx:76:4
@@ -172,7 +172,7 @@ func CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(carousel.ItemOrientation(orientation)), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-carousel-item"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-carousel-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-carousel-item", true)
 		_gsxgw.S(">")
 //line carousel.gsx:111:3

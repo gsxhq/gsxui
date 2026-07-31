@@ -55,7 +55,7 @@ func _gsxrenderNativeSelect(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(nativeSelect.Wrapper()), _gsxrt.Class(_gsxv0.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", _gsxv0.Style())
-	_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-native-select-wrapper"})
+	_gsxgw.Spread(ctx, "div", _gsxv0, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-native-select-wrapper"})
 	_gsxgw.BoolAttr("data-gsxui-slot-native-select-wrapper", true)
 	_gsxgw.S(">")
 //line native-select.gsx:47:3
@@ -64,7 +64,7 @@ func _gsxrenderNativeSelect(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(nativeSelect.Root()), _gsxrt.Class(_gsxv1.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", _gsxv1.Style())
-	_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-native-select"})
+	_gsxgw.Spread(ctx, "select", _gsxv1, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-native-select"})
 	_gsxgw.BoolAttr("data-gsxui-slot-native-select", true)
 	_gsxgw.S(">")
 //line native-select.gsx:52:4
@@ -110,7 +110,7 @@ func _gsxrenderNativeSelectOption(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, va
 	}
 	_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 	_gsxgw.StyleMerged("", attrs.Style())
-	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+	_gsxgw.Spread(ctx, "option", attrs, _gsxrt.AttrSinks{}, []string{"class", "style"})
 	_gsxgw.S(">")
 //line native-select.gsx:64:77
 	_gsxgw.Node(ctx, children)
@@ -139,7 +139,7 @@ func NativeSelectGroup(label string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 		}
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.Spread(ctx, "optgroup", attrs, _gsxrt.AttrSinks{}, []string{"class", "style"})
 		_gsxgw.S(">")
 //line native-select.gsx:74:39
 		_gsxgw.Node(ctx, children)

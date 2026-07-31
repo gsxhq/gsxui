@@ -35,7 +35,7 @@ func _gsxrenderTooltip(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tooltip.Root()), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
-	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-tooltip"})
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tooltip"})
 	_gsxgw.BoolAttr("data-gsxui-slot-tooltip", true)
 	_gsxgw.S(">")
 //line tooltip.gsx:8:88
@@ -58,7 +58,7 @@ func TooltipTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		}
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-tooltip-trigger"})
+		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tooltip-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-tooltip-trigger", true)
 		_gsxgw.S(">")
 //line tooltip.gsx:12:96
@@ -101,7 +101,7 @@ func _gsxrenderTooltipContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childr
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(tooltip.Content()), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
-	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-tooltip-content"})
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tooltip-content"})
 	_gsxgw.BoolAttr("data-gsxui-slot-tooltip-content", true)
 	_gsxgw.S(">")
 //line tooltip.gsx:26:3

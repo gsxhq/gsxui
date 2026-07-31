@@ -58,7 +58,7 @@ func ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(buttonGroup.Root()), _gsxrt.Class(buttonGroup.Orientation(orientation)), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-button-group"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-button-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-button-group", true)
 		_gsxgw.S(">")
 //line button-group.gsx:44:3
@@ -83,7 +83,7 @@ func ButtonGroupText(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(buttonGroup.Text()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-button-group-text"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-button-group-text"})
 		_gsxgw.BoolAttr("data-gsxui-slot-button-group-text", true)
 		_gsxgw.S(">")
 //line button-group.gsx:54:3

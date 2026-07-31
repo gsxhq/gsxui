@@ -129,7 +129,7 @@ func ResizablePanelGroup(orientation string, children gsx.Node, attrs gsx.Attrs)
 		}
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-resizable-panel-group"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-resizable-panel-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-resizable-panel-group", true)
 		_gsxgw.S(">")
 //line resizable.gsx:114:3
@@ -189,7 +189,7 @@ func ResizablePanel(defaultSize string, minSize string, maxSize string, children
 		}
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-resizable-panel"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-resizable-panel"})
 		_gsxgw.BoolAttr("data-gsxui-slot-resizable-panel", true)
 		_gsxgw.S(">")
 //line resizable.gsx:150:3
@@ -270,7 +270,7 @@ func ResizableHandle(orientation string, withHandle bool, attrs gsx.Attrs) _gsxr
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(resizable.Handle()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-resizable-handle"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-resizable-handle"})
 		_gsxgw.BoolAttr("data-gsxui-slot-resizable-handle", true)
 		_gsxgw.S(">")
 //line resizable.gsx:210:3

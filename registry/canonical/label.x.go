@@ -34,7 +34,7 @@ func _gsxrenderLabel(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.No
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(label.Root()), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
-	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-label"})
+	_gsxgw.Spread(ctx, "label", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-label"})
 	_gsxgw.BoolAttr("data-gsxui-slot-label", true)
 	_gsxgw.S(">")
 //line label.gsx:12:3

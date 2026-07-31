@@ -244,8 +244,8 @@ func (r *resolver) inspectNode(node gsxast.Node, mode inspectionMode) bool {
 		return false
 	}
 	switch node := node.(type) {
-	case *gsxast.ClassAttr:
-		r.inspectClassAttr(node, mode)
+	case *gsxast.ComposedAttr:
+		r.inspectComposedAttr(node, mode)
 		return false
 	case *gsxast.StaticAttr:
 		r.inspectStaticAttr(node)
@@ -269,7 +269,7 @@ func (r *resolver) inspectNode(node gsxast.Node, mode inspectionMode) bool {
 	return r.err == nil
 }
 
-func (r *resolver) inspectClassAttr(attr *gsxast.ClassAttr, mode inspectionMode) {
+func (r *resolver) inspectComposedAttr(attr *gsxast.ComposedAttr, mode inspectionMode) {
 	canonicalClass := mode == canonicalClassInspection && attr.Name == "class"
 	context := attr.Name
 	if mode == validationOnlyInspection {
@@ -288,8 +288,15 @@ func (r *resolver) inspectClassAttr(attr *gsxast.ClassAttr, mode inspectionMode)
 			r.inspectNonClassExpr(part.Cond, part.CondPos, context+" condition")
 		}
 		r.inspectPipelineStages(part.Stages, context+" pipeline stage")
-		if len(part.CSSSegments) != 0 {
-			r.inspectEmbeddedSegments(part.CSSSegments, part.Pos(), context+" CSS segment")
+		if len(part.LiteralSegments) != 0 {
+			// Each composable attribute takes only its own literal language —
+			// css`…` in style, f`…` in class — so name the one this part
+			// actually carries rather than assuming CSS.
+			language := "CSS"
+			if part.LiteralLang == gsxast.EmbeddedText {
+				language = "text"
+			}
+			r.inspectEmbeddedSegments(part.LiteralSegments, part.Pos(), context+" "+language+" segment")
 		}
 		if part.CF == nil {
 			continue
@@ -303,7 +310,7 @@ func (r *resolver) inspectClassAttr(attr *gsxast.ClassAttr, mode inspectionMode)
 	}
 }
 
-func (r *resolver) inspectClassExpr(expr string, exprPos token.Pos, part *gsxast.ClassPart) {
+func (r *resolver) inspectClassExpr(expr string, exprPos token.Pos, part *gsxast.ComposedPart) {
 	if r.err != nil {
 		return
 	}
@@ -359,7 +366,7 @@ func (r *resolver) inspectHelperCall(
 	call *goast.CallExpr,
 	selector *goast.SelectorExpr,
 	exprPos token.Pos,
-	part *gsxast.ClassPart,
+	part *gsxast.ComposedPart,
 ) {
 	// The part shape is validated in both helper modes, so a scan reports a
 	// accessor call that Resolve would later refuse rather than passing it as
@@ -469,12 +476,12 @@ func accessorTarget(shape recipe.Shape, method string) (slot, dimension string, 
 // pipeline stages, control flow and CSS segments — none of which the generated
 // replacement reproduces. Substituting anyway would silently delete them, so
 // anything but a plain part is rejected. Runs in both helper modes.
-func (r *resolver) validateHelperPart(exprPos token.Pos, part *gsxast.ClassPart) bool {
+func (r *resolver) validateHelperPart(exprPos token.Pos, part *gsxast.ComposedPart) bool {
 	if part == nil {
 		r.err = r.positionedError(exprPos, "a recipe accessor call must be a whole class part")
 		return false
 	}
-	if part.Cond != "" || len(part.Stages) != 0 || part.CF != nil || len(part.CSSSegments) != 0 {
+	if part.Cond != "" || len(part.Stages) != 0 || part.CF != nil || len(part.LiteralSegments) != 0 {
 		r.err = r.positionedError(exprPos, "a recipe accessor call must be a plain class part with no condition, pipeline or control flow")
 		return false
 	}
@@ -482,12 +489,12 @@ func (r *resolver) validateHelperPart(exprPos token.Pos, part *gsxast.ClassPart)
 }
 
 // recordPartEdit replaces a whole class part. Per the resolved spike a
-// ClassPart's Pos includes the leading newline and indentation while End
+// ComposedPart's Pos includes the leading newline and indentation while End
 // excludes the trailing comma, so the expression's own position is the correct
 // start and the part's End is the correct end. gen.Format re-indents
 // afterwards, so value carries no indentation. The caller has already run
 // validateHelperPart, so part is a non-nil plain part here.
-func (r *resolver) recordPartEdit(exprPos token.Pos, part *gsxast.ClassPart, value string) {
+func (r *resolver) recordPartEdit(exprPos token.Pos, part *gsxast.ComposedPart, value string) {
 	start := r.fset.Position(exprPos).Offset
 	end := r.fset.Position(part.End()).Offset
 	if start < 0 || end < start || end > len(r.src) {

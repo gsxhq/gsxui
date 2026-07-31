@@ -67,7 +67,7 @@ func NavigationMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" data-viewport=\"false\"")
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-navigation-menu"})
+		_gsxgw.Spread(ctx, "nav", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu"})
 		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:55:3
@@ -95,7 +95,7 @@ func NavigationMenuList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.BoolAttr("data-gsxui-navigation-menu-list", true)
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-navigation-menu-list"})
+		_gsxgw.Spread(ctx, "ul", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu-list"})
 		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-list", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:70:3
@@ -124,7 +124,7 @@ func NavigationMenuItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.BoolAttr("data-gsxui-navigation-menu-item", true)
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-navigation-menu-item"})
+		_gsxgw.Spread(ctx, "li", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-item", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:81:3
@@ -198,7 +198,7 @@ func NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" data-state=\"closed\"")
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-navigation-menu-trigger"})
+		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-trigger", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:138:3
@@ -298,7 +298,7 @@ func NavigationMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" data-side=\"bottom\"")
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-navigation-menu-content"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-content", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:222:3
@@ -386,7 +386,7 @@ func NavigationMenuLink(active bool, variant string, children gsx.Node, attrs gs
 			_gsxv3 = append(_gsxv3, "data-gsxui-slot-navigation-menu-trigger")
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, _gsxv3)
+		_gsxgw.Spread(ctx, "a", attrs, _gsxrt.AttrSinks{}, _gsxv3)
 		if _gsxv4 {
 			_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-trigger", true)
 		}
@@ -443,7 +443,7 @@ func NavigationMenuIndicator(attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" data-state=\"hidden\"")
 		}
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-navigation-menu-indicator"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu-indicator"})
 		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-indicator", true)
 		_gsxgw.S(">")
 //line navigation-menu.gsx:326:3

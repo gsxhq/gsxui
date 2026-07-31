@@ -51,7 +51,7 @@ func _gsxrenderdocHeading(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, item docTO
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("scroll-mt-20"), _gsxrt.Class(_gsxv0.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", _gsxv0.Style())
-		_gsxgw.Spread(ctx, _gsxv0, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.Spread(ctx, "h3", _gsxv0, _gsxrt.AttrSinks{}, []string{"class", "style"})
 		_gsxgw.S(">")
 //line toc.gsx:21:4
 		_gsxgw.Text(string(item.Title))
@@ -75,7 +75,7 @@ func _gsxrenderdocHeading(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, item docTO
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("scroll-mt-20"), _gsxrt.Class(_gsxv1.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", _gsxv1.Style())
-		_gsxgw.Spread(ctx, _gsxv1, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.Spread(ctx, "h2", _gsxv1, _gsxrt.AttrSinks{}, []string{"class", "style"})
 		_gsxgw.S(">")
 //line toc.gsx:31:4
 		_gsxgw.Text(string(item.Title))

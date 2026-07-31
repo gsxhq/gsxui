@@ -51,7 +51,7 @@ func svgIcon(name string, inner gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		}
 		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-icon"})
+		_gsxgw.Spread(ctx, "svg", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-icon"})
 		_gsxgw.BoolAttr("data-gsxui-slot-icon", true)
 		_gsxgw.S(">")
 //line icon.gsx:25:3

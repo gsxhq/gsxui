@@ -940,11 +940,11 @@ func repoRoot(t *testing.T) string {
 	}
 }
 
-// TestResolveRejectsHelperCallInNonPlainClassPart pins the part-shape guard.
+// TestResolveRejectsHelperCallInNonPlainComposedPart pins the part-shape guard.
 // The replacement span runs to part.End(), so without this guard a helper call
 // carrying a condition, a pipeline or control flow would have its trailing
 // metadata silently deleted rather than rejected.
-func TestResolveRejectsHelperCallInNonPlainClassPart(t *testing.T) {
+func TestResolveRejectsHelperCallInNonPlainComposedPart(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {

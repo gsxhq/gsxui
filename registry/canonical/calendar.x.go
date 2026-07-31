@@ -803,7 +803,7 @@ func Calendar(mode string, month time.Time, selected []time.Time, from time.Time
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(calendar.Root()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-calendar"})
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-calendar"})
 		_gsxgw.BoolAttr("data-gsxui-slot-calendar", true)
 		_gsxgw.S(">")
 //line calendar.gsx:736:3

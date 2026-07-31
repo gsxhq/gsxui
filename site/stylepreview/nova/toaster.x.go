@@ -54,7 +54,7 @@ func Toaster(attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("[--gsxui-toast-offset:1.5rem] flex flex-col gap-2 p-6"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-toaster"})
+		_gsxgw.Spread(ctx, "ol", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-toaster"})
 		_gsxgw.BoolAttr("data-gsxui-slot-toaster", true)
 		_gsxgw.S("></ol>")
 //line toaster.gsx:38:3

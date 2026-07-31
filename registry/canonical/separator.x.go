@@ -44,7 +44,7 @@ func _gsxrenderSeparator(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, orientation
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(separator.Root()), _gsxrt.Class(separator.Orientation(orientation)), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
-	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-separator"})
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-separator"})
 	_gsxgw.BoolAttr("data-gsxui-slot-separator", true)
 	_gsxgw.S("></div>")
 	return _gsxgw.Err()

@@ -31,7 +31,7 @@ func _gsxrenderSkeleton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs gsx.At
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("animate-pulse rounded-md bg-accent"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
-	_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style", "data-gsxui-slot-skeleton"})
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-skeleton"})
 	_gsxgw.BoolAttr("data-gsxui-slot-skeleton", true)
 	_gsxgw.S("></div>")
 	return _gsxgw.Err()
