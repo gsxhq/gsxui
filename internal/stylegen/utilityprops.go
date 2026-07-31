@@ -104,7 +104,8 @@ func (r *utilityPropertyResolver) resolve() error {
 	seen := map[string]struct{}{}
 	var all []string
 	for _, set := range r.sets {
-		for _, utility := range append(append([]string{}, set.own...), set.descendant...) {
+		utilities := append(append([]string{}, set.union...), set.descendant...)
+		for _, utility := range utilities {
 			if _, dup := seen[utility]; dup {
 				continue
 			}

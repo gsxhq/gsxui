@@ -21,9 +21,10 @@
    box-shadow — did migrate, since splitting them out costs nothing and they
    were never the subject of the contract.
 
-   The layer gate reports all three as losing (it compares against Sidebar's
-   whole-component utility union); internal/stylegen/layercheck.go carries the
-   matching exemptions with this reasoning. */
+   The layer gate no longer reports any of the three, and their exemptions are
+   gone: it compares an authored rule against the TARGETED SLOT's own compiled
+   utilities, and Sidebar's recipe sets none of these properties on those
+   slots. The retention decision above stands on its own contract. */
 @layer components {
   :where([data-gsxui-slot-sidebar-desktop]) {
     --gsxui-sidebar-collapsed-gap-width: var(--sidebar-width-icon);

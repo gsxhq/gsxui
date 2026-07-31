@@ -1458,7 +1458,9 @@ test("Toast keeps its card chrome and its close button's own anchor", async ({
 // utility. foundation.css's stack-anchor rule is deliberately :where()-wrapped
 // in @layer components so that caller utility wins; promoting it to @layer
 // utilities (the layer gate's usual fix for a migrated component) flips this
-// to absolute — see toastStackAnchorReason in internal/stylegen/layercheck.go.
+// to absolute. That is why the rule stays :where()-wrapped in @layer components
+// even though the layer gate no longer reports it (its own utilities are now
+// compared per slot, and Toast's card slot renders no positioning utility).
 test("Toast's caller `static` still beats the stack anchor", async ({ page }) => {
   await page.goto("/x/toast/server");
   const card = page.locator("[data-gsxui-slot-toast]").first();

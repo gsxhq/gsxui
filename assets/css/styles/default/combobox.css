@@ -26,11 +26,10 @@
      disabled — only the purely presentational opacity needed to stay
      caller-overridable.
 
-     stylegen --check-layers reports this rule as contested and it carries a
-     named exemption (internal/stylegen/layercheck.go's
-     comboboxItemDisabledFallbackReason): the contest is an artifact of that
-     gate comparing against Combobox's whole-COMPONENT utility union, whose
-     only opacity-* entries are combobox-content's popover-transition
+     stylegen --check-layers no longer reports this rule at all, and its
+     exemption is gone: the gate keys a component's own utilities by SLOT
+     MARKER, and combobox-item renders no opacity-* utility. The contest it
+     used to report came from combobox-content's popover-transition
      opacity-0/opacity-100 — a different element entirely.
 
      The old file's `combobox-content > input-group` rule is NOT here

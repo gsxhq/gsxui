@@ -262,252 +262,22 @@ type layerCheckExemption struct {
 // Sheet all migrated to the slot axis and carry the utilities they used to
 // borrow through a marker on their own recipe classes, so the fallbacks the
 // exemptions covered no longer exist to be exempted.
+//
+// Five more groups went the same way — menu's data-inset/data-disabled
+// fallbacks, Calendar's visually-hidden caption, Combobox's disabled item,
+// Sidebar's style-overridable pair and Toast's stack anchor — when the gate
+// started keying a component's own utilities by SLOT MARKER instead of by
+// component. Every one of them cited that granularity as its reason, and the
+// contests they forgave stopped occurring. Sidebar's foundation group shrank
+// from 90 entries to 8 for the same reason.
 // The chain is slices.Concat rather than nested appends: every migration wave
 // adds a group here, and a nested append chain put each addition on the same
 // two lines, so every wave collided with every other one.
 var layerCheckExemptions = slices.Concat(
 	siteButtonFallbackExemptions(),
 	toggleMarkerFallbackExemptions(),
-	menuInsetDisabledFallbackExemptions(),
-	calendarCaptionVisuallyHiddenExemptions(),
-	comboboxItemDisabledFallbackExemptions(),
 	sidebarFoundationMechanicsExemptions(),
-	sidebarStyleOverridableExemptions(),
-	toastStackAnchorExemptions(),
 )
-
-// comboboxItemDisabledFallbackReason is the decision behind every entry
-// comboboxItemDisabledFallbackExemptions lists.
-//
-// assets/css/styles/default/combobox.css keeps ONE rule in @layer components
-// on purpose — spec section 10b — `[data-gsxui-slot-combobox-item][data-
-// disabled] { opacity-50 }`. data-disabled is stamped by the CALLER through
-// attrs (ComboboxItem declares no `disabled` param at all), so the rule must
-// stay caller-overridable, and @layer utilities — the layer Tailwind's own
-// scanned classes live in — would flip that the wrong way. This is the same
-// call assets/css/styles/default/menu.css's data-disabled rule makes; see
-// menuInsetDisabledFallbackReason.
-//
-// Unlike menu's, though, the contest the gate reports here is a FALSE
-// POSITIVE of its granularity, the calendar-caption shape:
-// componentUtilities builds one utility set per COMPONENT, not per slot, and
-// Combobox's union contains opacity-* only because combobox-content's
-// popover transition emits opacity-0/opacity-100. Nothing on combobox-item
-// sets opacity. The identical rule on Command's own item
-// (assets/css/styles/default/command.css) is not reported at all, for exactly
-// that reason — Command has no opacity utility anywhere.
-const comboboxItemDisabledFallbackReason = "assets/css/styles/default/combobox.css's data-disabled/opacity-50 " +
-	"rule is caller-attrs-driven per spec section 10b (ComboboxItem declares no disabled param; the caller " +
-	"stamps data-disabled through attrs) and must stay in @layer components to remain caller-overridable. " +
-	"The reported contest is an artifact of the gate comparing against Combobox's whole-component utility " +
-	"union: the only opacity-* utilities Combobox emits are combobox-content's popover-transition " +
-	"opacity-0/opacity-100, on a different element entirely. The same rule on command-item is not reported " +
-	"only because Command emits no opacity utility anywhere."
-
-func comboboxItemDisabledFallbackExemptions() []layerCheckExemption {
-	const selector = ":where([data-gsxui-slot-combobox-item])[data-disabled]"
-	out := make([]layerCheckExemption, 0, 2)
-	for _, style := range []string{"maia", "nova"} {
-		out = append(out, layerCheckExemption{
-			key: exemptionKey{
-				file:      "assets/css/styles/default/combobox.css",
-				style:     style,
-				selector:  selector,
-				contested: "opacity-50",
-			},
-			reason: comboboxItemDisabledFallbackReason,
-		})
-	}
-	return out
-}
-
-// toastStackAnchorReason is the decision behind every entry
-// toastStackAnchorExemptions lists.
-//
-// assets/css/foundation.css's @layer components carries the toast stack's
-// invariant mechanics — the card is absolutely positioned against the
-// fixed toaster region at --gsxui-toast-offset. Toast's migration made that
-// rule sit on a component with compiled utilities, and the gate reports
-// position and right as contested.
-//
-// It is a false positive of the gate's granularity, not a real cascade
-// loss. componentUtilities builds ONE utility set per COMPONENT, not per
-// slot: the position comes from the CLOSE BUTTON slot's `absolute` and the
-// right from its `-right-1.5`. Neither is on the card element the mechanics
-// rule targets — Toast's own root slot renders no positioning utility at
-// all.
-//
-// The gate's usual fix (promote to @layer utilities, unwrapped) was tried
-// first and rejected: it breaks a real, documented caller override. The
-// card takes an attrs spread, and site/examples/toast/server.gsx passes
-// `class="static"` to render a standalone showcase row outside the stack.
-// Unwrapped in @layer utilities the mechanics rule ties that caller utility
-// on specificity and wins on source order — the computed-style sweep caught
-// it as position static -> absolute on /x/toast/server. Zero specificity in
-// @layer components is what keeps the caller's utility winning. The rule is
-// foundation and must also apply with no style loaded (jstest's foundation
-// mode), which a style-owned rule cannot do.
-const toastStackAnchorReason = "assets/css/foundation.css's toast stack-anchor rule sits on a component " +
-	"with compiled utilities since Toast's migration. The contest is an artifact of the gate comparing " +
-	"against Toast's whole-component utility union rather than the card slot's own utilities — position " +
-	"and right come from the close-button slot's absolute/-right-1.5, not from anything on the card. " +
-	"Promoting the rule to @layer utilities was tried and reverted: it beat the caller's own `static` " +
-	"utility (site/examples/toast/server.gsx), which the sweep caught. The rule is foundation and must " +
-	"apply with no style loaded, so it cannot move into a style's @layer utilities."
-
-// toastStackAnchorExemptions spells out the two properties the mechanics
-// rule is reported as losing, one (property, style) pair at a time,
-// following calendarCaptionVisuallyHiddenExemptions' enumeration
-// discipline.
-func toastStackAnchorExemptions() []layerCheckExemption {
-	const selector = ":where([data-gsxui-slot-toast])"
-	out := make([]layerCheckExemption, 0, 4)
-	for _, property := range []string{"position", "right"} {
-		for _, style := range []string{"maia", "nova"} {
-			out = append(out, layerCheckExemption{
-				key: exemptionKey{
-					file:      "assets/css/foundation.css",
-					style:     style,
-					selector:  selector,
-					contested: property,
-				},
-				reason: toastStackAnchorReason,
-			})
-		}
-	}
-	return out
-}
-
-// calendarCaptionVisuallyHiddenReason is the decision behind every entry
-// calendarCaptionVisuallyHiddenExemptions lists.
-//
-// assets/css/foundation.css's @layer base carries ONE visually-hidden rule
-// shared by eight screen-reader labels across the catalogue
-// (breadcrumb-ellipsis-label, pagination-ellipsis-label, dialog-close-label,
-// sheet-close-label, command-dialog-header, combobox-bridge,
-// carousel-control-label, and calendar-caption under
-// data-caption-layout="dropdown"). Calendar's migration made
-// calendar-caption the first marker in that list to sit on a component with
-// compiled utilities, and the gate reports position/width/height/padding as
-// contested.
-//
-// It is a false positive of the gate's granularity, not a real cascade loss.
-// componentUtilities builds ONE utility set per COMPONENT, not per slot, so
-// the union it compares against is every utility Calendar renders anywhere:
-// the padding comes from the root's p-2, the width from w-fit/w-full, the
-// height from month-caption's h-(--cell-size), the position from months'
-// `relative` and nav's `absolute`. None of them is on the caption element.
-// Calendar's caption slot renders exactly `text-sm font-medium select-none`
-// and takes no attrs spread of its own, so nothing a caller or a style can
-// put on that element contests the visually-hidden rule.
-//
-// The gate's usual fix does not apply either: moving this rule to @layer
-// utilities would mean either splitting one a11y rule eight ways in
-// foundation.css, or duplicating it into every style — and it must keep
-// working with NO style loaded at all (jstest's foundation mode), which a
-// style-owned rule cannot do.
-const calendarCaptionVisuallyHiddenReason = "assets/css/foundation.css's shared visually-hidden rule for " +
-	"screen-reader labels covers calendar-caption[data-caption-layout=\"dropdown\"], which since Calendar's " +
-	"migration sits on a component with compiled utilities. The contest is an artifact of the gate comparing " +
-	"against Calendar's whole-component utility union rather than the caption slot's own three utilities " +
-	"(text-sm font-medium select-none) — no Calendar rule sets position, width, height or padding on the " +
-	"caption element, and the caption slot accepts no caller attrs. The rule is foundation and must apply " +
-	"with no style loaded, so it cannot move into a style's @layer utilities."
-
-// calendarCaptionVisuallyHiddenExemptions spells out the four properties the
-// shared rule is reported as losing, one (property, style) pair at a time,
-// following siteButtonFallbackExemptions' enumeration discipline.
-func calendarCaptionVisuallyHiddenExemptions() []layerCheckExemption {
-	const selector = ":where( [data-gsxui-slot-calendar-caption][data-caption-layout=\"dropdown\"] )"
-	out := make([]layerCheckExemption, 0, 8)
-	for _, property := range []string{"height", "padding", "position", "width"} {
-		for _, style := range []string{"maia", "nova"} {
-			out = append(out, layerCheckExemption{
-				key: exemptionKey{
-					file:      "assets/css/foundation.css",
-					style:     style,
-					selector:  selector,
-					contested: property,
-				},
-				reason: calendarCaptionVisuallyHiddenReason,
-			})
-		}
-	}
-	return out
-}
-
-// menuInsetDisabledFallbackExemptions spells out the two violations the
-// retained menu.css rules commit, one (selector, utility, style) triple at a
-// time, following siteButtonFallbackExemptions' own enumeration discipline.
-// menuInsetDisabledFallbackReason is the decision behind both entries
-// menuInsetDisabledFallbackExemptions lists. assets/css/styles/default/menu.css
-// keeps a data-inset/pl-8 rule and a data-disabled/opacity-50 rule in @layer
-// components on purpose — spec section 10b — because both data-inset and
-// data-disabled are stamped by the CALLER through attrs on DropdownMenuItem/
-// ContextMenuItem/MenubarItem and their Label/SubTrigger/CheckboxItem/RadioItem
-// siblings, not by the component itself. Moving either rule to @layer
-// utilities (this gate's usual fix) would make it win over a caller's plain
-// utility unconditionally instead of losing to it: @layer utilities is the
-// SAME layer Tailwind's own scanned classes live in, and this file is
-// @imported before "tailwindcss" is scanned in every consumer, so the ordering
-// would flip the wrong way. Keeping it in @layer components is what lets a
-// caller's own plain `pl-*`/`opacity-*` utility (which lives in @layer
-// utilities) win regardless of specificity, exactly as it did before this
-// migration. The one real cost is that these two rules now also sit in the
-// same layer as DropdownMenu/ContextMenu/Menubar's own compiled recipe
-// utilities, which legitimately beat them there (a real, accepted loss, not a
-// caller-facing regression) — jstest/specs/layer-precedence.spec.ts pins the
-// caller-override case these two rules exist to protect.
-const menuInsetDisabledFallbackReason = "assets/css/styles/default/menu.css's data-inset/data-disabled rules are " +
-	"caller-attrs-driven per spec section 10b and must stay in @layer components to remain caller-" +
-	"overridable; losing the cascade against DropdownMenu/ContextMenu/Menubar's own compiled recipe " +
-	"utilities in that same layer is the design, not a defect. jstest/specs/layer-precedence.spec.ts's " +
-	"menu caller-override pins cover the real rendering paths these rules must not break."
-
-func menuInsetDisabledFallbackExemptions() []layerCheckExemption {
-	both := []string{"maia", "nova"}
-	pairs := []struct {
-		selector, contested string
-		styles              []string
-	}{
-		{
-			selector: ":where( [data-gsxui-slot-dropdown-menu-item],[data-gsxui-slot-context-menu-item]," +
-				"[data-gsxui-slot-menubar-item],[data-gsxui-slot-dropdown-menu-label]," +
-				"[data-gsxui-slot-context-menu-label],[data-gsxui-slot-menubar-label]," +
-				"[data-gsxui-slot-dropdown-menu-sub-trigger],[data-gsxui-slot-context-menu-sub-trigger]," +
-				"[data-gsxui-slot-menubar-sub-trigger] )[data-inset]",
-			contested: "pl-8",
-			styles:    both,
-		},
-		{
-			selector: ":where( [data-gsxui-slot-dropdown-menu-item],[data-gsxui-slot-context-menu-item]," +
-				"[data-gsxui-slot-menubar-item],[data-gsxui-slot-dropdown-menu-checkbox-item]," +
-				"[data-gsxui-slot-dropdown-menu-radio-item],[data-gsxui-slot-context-menu-checkbox-item]," +
-				"[data-gsxui-slot-context-menu-radio-item],[data-gsxui-slot-menubar-checkbox-item]," +
-				"[data-gsxui-slot-menubar-radio-item] )[data-disabled]",
-			contested: "opacity-50",
-			styles:    both,
-		},
-	}
-	out := make([]layerCheckExemption, 0, len(pairs)*2)
-	for _, pair := range pairs {
-		if len(pair.styles) == 0 {
-			panic("exemption for " + pair.selector + " / " + pair.contested + " names no style")
-		}
-		for _, style := range pair.styles {
-			out = append(out, layerCheckExemption{
-				key: exemptionKey{
-					file:      "assets/css/styles/default/menu.css",
-					style:     style,
-					selector:  pair.selector,
-					contested: pair.contested,
-				},
-				reason: menuInsetDisabledFallbackReason,
-			})
-		}
-	}
-	return out
-}
 
 // toggleMarkerFallbackReason is the decision behind every entry
 // toggleMarkerFallbackExemptions lists. ui/toggle-group.gsx's
@@ -867,9 +637,42 @@ func layerViolations(
 // composed marker, every utility that component can render. Two sets are kept
 // because a component's `[&_svg…]:` utilities land on its descendants, not on
 // the marker element itself.
+//
+// The two halves are deliberately keyed at DIFFERENT granularity.
+//
+// own is keyed by SLOT MARKER, because the element an authored rule targets is
+// exactly one slot's element, and only that slot's own utilities can contest
+// it. Keying own by component compared every authored rule against the union of
+// everything the component renders anywhere, which is how Calendar's caption
+// rule came out contested on the root's p-2 and nav's absolute.
+//
+// descendant stays keyed by COMPONENT on purpose. A `[&_svg…]:` utility lands
+// on a descendant of whichever slot is the ANCESTOR in the authored selector,
+// and the marker composedTarget returns names the SELECTED element, not that
+// ancestor — so the marker alone cannot identify the slot that emitted it. The
+// component-wide union is over-approximate there, which is the safe direction:
+// it can only over-report, never hide a real violation.
+//
+// union backs the same safe direction for own on a marker that is NOT one of
+// this component's slots. ui/carousel.gsx stamps data-gsxui-slot-carousel-
+// previous onto a <ui.Button>, so Button owns that marker without declaring a
+// slot for it; which of Button's own slot elements the marker landed on is not
+// recoverable from the marker. ownAt falls back to the union there.
 type utilitySets struct {
-	own        []string
+	own        map[string][]string
+	union      []string
 	descendant []string
+}
+
+// ownAt reports the utilities to compare an authored rule targeting marker
+// against: the marker's own slot set when the marker is one this component
+// declares, and the whole-component union when it is a marker some other
+// component composed onto one of this component's elements.
+func (s utilitySets) ownAt(marker string) []string {
+	if own, ok := s.own[marker]; ok {
+		return own
+	}
+	return s.union
 }
 
 func componentUtilities(root, style string, markers map[string][]string) (map[string]utilitySets, error) {
@@ -879,8 +682,13 @@ func componentUtilities(root, style string, markers map[string][]string) (map[st
 			wanted[component] = struct{}{}
 		}
 	}
+	declared := shapes.All()
 	sets := make(map[string]utilitySets, len(wanted))
 	for component := range wanted {
+		shape, ok := declared[component]
+		if !ok {
+			return nil, fmt.Errorf("component %s owns a composed marker but declares no shape", component)
+		}
 		path := filepath.Join(root, "registry", "styles", style, component+".css")
 		src, err := os.ReadFile(path)
 		if err != nil {
@@ -890,22 +698,58 @@ func componentUtilities(root, style string, markers map[string][]string) (map[st
 		if err != nil {
 			return nil, fmt.Errorf("parse %s %s recipe: %w", style, component, err)
 		}
-		var set utilitySets
-		seen := map[string]struct{}{}
+		// Every declared slot is seeded, so a slot whose recipe supplies no
+		// utility reads as "nothing contests here" rather than falling through
+		// to ownAt's union.
+		set := utilitySets{own: map[string][]string{}}
+		for _, slot := range shape.Slots {
+			set.own[slotMarker(component, slot.Name)] = nil
+		}
+		seenDescendant := map[string]struct{}{}
+		seenOwn := map[string]map[string]struct{}{}
 		for _, rule := range parsed.Rules() {
+			// The recipe class and the slot marker encode the same (component,
+			// slot) pair, so the rule's class names the element its utilities land
+			// on. DecodeClass matches the longest slot name, so a compound slot
+			// resolves to the slot rather than to a dimension of a shorter one.
+			slot, _, _, _, err := shape.DecodeClass(rule.Class)
+			if err != nil {
+				return nil, fmt.Errorf("decode %s %s recipe class %s: %w", style, component, rule.Class, err)
+			}
+			marker := slotMarker(component, slot)
 			for _, utility := range rule.Utilities {
+				if inner, ok := descendantUtility(utility); ok {
+					if _, dup := seenDescendant[utility]; dup {
+						continue
+					}
+					seenDescendant[utility] = struct{}{}
+					set.descendant = append(set.descendant, inner)
+					continue
+				}
+				seen, ok := seenOwn[marker]
+				if !ok {
+					seen = map[string]struct{}{}
+					seenOwn[marker] = seen
+				}
 				if _, dup := seen[utility]; dup {
 					continue
 				}
 				seen[utility] = struct{}{}
-				if inner, ok := descendantUtility(utility); ok {
-					set.descendant = append(set.descendant, inner)
-					continue
-				}
-				set.own = append(set.own, utility)
+				set.own[marker] = append(set.own[marker], utility)
 			}
 		}
-		sort.Strings(set.own)
+		seenUnion := map[string]struct{}{}
+		for marker := range set.own {
+			sort.Strings(set.own[marker])
+			for _, utility := range set.own[marker] {
+				if _, dup := seenUnion[utility]; dup {
+					continue
+				}
+				seenUnion[utility] = struct{}{}
+				set.union = append(set.union, utility)
+			}
+		}
+		sort.Strings(set.union)
 		sort.Strings(set.descendant)
 		sets[component] = set
 	}
@@ -1116,7 +960,11 @@ func (r layerRule) violations(
 		perOwner := make(map[string][]contest, len(components))
 		for _, component := range components {
 			set := sets[component]
-			against := set.own
+			// own is per-slot: only the utilities the TARGETED slot renders can
+			// contest a rule on that element. descendant stays the component-wide
+			// union — see utilitySets for why the marker cannot identify the
+			// ancestor slot a `[&_svg…]:` utility came from.
+			against := set.ownAt(marker)
 			if descendant {
 				against = set.descendant
 			}
@@ -1602,29 +1450,33 @@ func skipBalanced(s string, open int, left, right byte) int {
 }
 
 // sidebarFoundationMechanicsReason is the decision behind every entry
-// sidebarFoundationMechanicsExemptions lists.
+// sidebarFoundationMechanicsExemptions lists under it.
 //
 // assets/css/foundation.css carries Sidebar's state-machine mechanics — the
 // display/position/width/height/flex arithmetic that makes one semantic tree
 // render as either a mobile Sheet or a fixed desktop column. Sidebar's
 // migration to the slot axis gave those same elements compiled recipe
-// utilities, and the gate now reports 44 (selector, property) pairs as
-// contested under each style.
+// utilities.
 //
-// Every one of them is the same false positive Calendar's caption already
-// documents, at a much larger scale: componentUtilities builds ONE utility set
-// per COMPONENT, not per slot, so the union it compares each foundation rule
-// against is every utility Sidebar renders ANYWHERE across its 32 slots. The
-// `display` it reports against the wrapper comes from menu-action's
-// collapsed-icon `hidden`; the `width` from menu-sub-button's `min-w-0`; the
-// `content` against group-action::after from the rail's own
-// `hover:after:bg-sidebar-border`. Checked slot by slot against
-// registry/styles/{nova,maia}/sidebar.css, NO recipe rule sets any of these
-// properties on the element the foundation rule targets — which is the whole
-// reason the mechanics stayed in foundation and the presentation moved.
+// This group used to hold 44 (selector, property) pairs per style, all of them
+// artifacts of the gate keying a component's own utilities by COMPONENT rather
+// than by slot: the union it compared each foundation rule against was every
+// utility Sidebar renders anywhere across its 32 slots. own is now keyed by
+// SLOT MARKER and all 41 of those vanished. Two remain here:
 //
-// The gate's usual fix does not apply. These rules must keep working with no
-// style loaded at all (jstest's foundation mode), which a style-owned
+//   - the collapsed-icon tooltip's `display`. It is reached through the
+//     DESCENDANT path, which still compares against the component-wide union
+//     by design — the marker names the selected element, not the ancestor slot
+//     whose `[&_…]:` utility could contest it. Over-reporting is the safe
+//     direction there; see utilitySets.
+//   - `content` on the rail's ::after. That one is real and per-slot:
+//     registry/styles/{nova,maia}/sidebar.css puts `hover:after:bg-sidebar-border`
+//     and `…:after:left-full` on the rail's own recipe class, and Tailwind's
+//     `after:` variant emits `content: ""` with them. The foundation ::after
+//     still supplies the content in every state those variants do not cover.
+//
+// The gate's usual fix does not apply to either. These rules must keep working
+// with no style loaded at all (jstest's foundation mode), which a style-owned
 // @layer utilities rule cannot do; and promoting them into foundation's own
 // @layer utilities block would make them beat a caller's plain utility instead
 // of losing to it — site/examples/sidebar/basic.gsx's
@@ -1632,11 +1484,12 @@ func skipBalanced(s string, open int, left, right byte) int {
 // keep winning over foundation's `min-height: 100svh`.
 const sidebarFoundationMechanicsReason = "assets/css/foundation.css holds Sidebar's state-machine mechanics " +
 	"(display/position/size/flex), which since Sidebar's migration sit on a component with compiled " +
-	"utilities. The contest is an artifact of the gate comparing against Sidebar's whole-component utility " +
-	"union rather than the individual slot's own utilities — no rule in registry/styles/{nova,maia}/" +
-	"sidebar.css sets the reported property on the element the foundation rule targets. These rules must " +
-	"apply with no style loaded, so they cannot move into a style's @layer utilities, and promoting them " +
-	"inside foundation would make them beat caller utilities they are required to lose to."
+	"utilities. The collapsed-icon tooltip entry is reached through the gate's descendant path, which " +
+	"compares against Sidebar's whole-component utility union by design; the rail ::after entry is a real " +
+	"same-layer contest with the rail recipe's own after:* variants, whose content: \"\" the foundation " +
+	"rule still supplies in every state those variants do not cover. These rules must apply with no style " +
+	"loaded, so they cannot move into a style's @layer utilities, and promoting them inside foundation " +
+	"would make them beat caller utilities they are required to lose to."
 
 // sidebarRailConditionalOverrideReason covers the two entries the gate is
 // literally right about, and which are still deliberate.
@@ -1659,8 +1512,9 @@ const sidebarRailConditionalOverrideReason = "assets/css/foundation.css's rail t
 	"surviving base value. jstest/specs/layer-precedence.spec.ts pins both."
 
 // sidebarFoundationMechanicsExemptions spells out every violation Sidebar's
-// migration exposes in foundation.css, one (selector, property, style) triple
-// at a time, following siteButtonFallbackExemptions' enumeration discipline.
+// migration still exposes in foundation.css, one (selector, property, style)
+// triple at a time, following siteButtonFallbackExemptions' enumeration
+// discipline.
 func sidebarFoundationMechanicsExemptions() []layerCheckExemption {
 	both := []string{"maia", "nova"}
 	pairs := []struct {
@@ -1668,48 +1522,7 @@ func sidebarFoundationMechanicsExemptions() []layerCheckExemption {
 		styles                      []string
 	}{
 		{selector: ":is( [data-gsxui-slot-sidebar-desktop][data-collapsible=\"icon\"] ) :is( [data-gsxui-slot-sidebar-menu-button-tooltip-content]:popover-open )", contested: "display", styles: both},
-		{selector: ":where( [data-gsxui-slot-sidebar-desktop][data-collapsible=\"icon\"] ) :where([data-gsxui-slot-sidebar-content])", contested: "overflow", styles: both},
-		{selector: ":where( [data-gsxui-slot-sidebar-desktop][data-collapsible=\"icon\"] )>:where([data-gsxui-slot-sidebar-container])", contested: "width", styles: both},
-		{selector: ":where( [data-gsxui-slot-sidebar-desktop][data-collapsible=\"icon\"] )>:where([data-gsxui-slot-sidebar-gap])", contested: "width", styles: both},
-		{selector: ":where( [data-gsxui-slot-sidebar-desktop][data-collapsible=\"offcanvas\"] )>:where([data-gsxui-slot-sidebar-gap])", contested: "width", styles: both},
-		{selector: ":where( [data-gsxui-slot-sidebar-desktop][data-side=\"left\"][data-collapsible=\"offcanvas\"] )>:where([data-gsxui-slot-sidebar-container])", contested: "left", styles: both},
-		{selector: ":where( [data-gsxui-slot-sidebar-desktop][data-side=\"right\"][data-collapsible=\"offcanvas\"] )>:where([data-gsxui-slot-sidebar-container])", contested: "right", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-container])", contested: "display", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-container])", contested: "height", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-container])", contested: "position", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-container])", contested: "width", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-content])", contested: "display", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-content])", contested: "flex", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-content])", contested: "flex-direction", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-content])", contested: "overflow", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-desktop])", contested: "display", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-desktop]) :where([data-gsxui-slot-sidebar-rail])", contested: "display", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-desktop][data-side=\"left\"])>:where([data-gsxui-slot-sidebar-container])", contested: "left", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-desktop][data-side=\"right\"])>:where([data-gsxui-slot-sidebar-container])", contested: "right", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-gap])", contested: "flex", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-gap])", contested: "position", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-gap])", contested: "width", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-group-action])::after", contested: "content", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-inner])", contested: "display", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-inner])", contested: "flex-direction", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-inner])", contested: "height", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-inner])", contested: "width", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-inset])", contested: "display", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-inset])", contested: "flex", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-inset])", contested: "flex-direction", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-inset])", contested: "width", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-menu-action])::after", contested: "content", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-mobile-content]) :where([data-gsxui-slot-sidebar-rail])", contested: "display", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-rail])", contested: "display", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-rail])", contested: "position", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-rail])", contested: "width", styles: both},
 		{selector: ":where([data-gsxui-slot-sidebar-rail])::after", contested: "content", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-wrapper])", contested: "display", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-wrapper])", contested: "width", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar][data-collapsible=\"none\"])", contested: "display", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar][data-collapsible=\"none\"])", contested: "flex-direction", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar][data-collapsible=\"none\"])", contested: "height", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar][data-collapsible=\"none\"])", contested: "width", styles: both},
 
 		// The two the gate is literally right about; see the reason above.
 		{selector: ":where([data-gsxui-slot-sidebar-rail])", contested: "transform", reason: sidebarRailConditionalOverrideReason, styles: both},
@@ -1733,69 +1546,6 @@ func sidebarFoundationMechanicsExemptions() []layerCheckExemption {
 					contested: pair.contested,
 				},
 				reason: reason,
-			})
-		}
-	}
-	return out
-}
-
-// sidebarStyleOverridableReason is the decision behind the two entries
-// sidebarStyleOverridableExemptions lists.
-//
-// assets/css/styles/default/sidebar.css keeps three rule groups in
-// @layer components on purpose — spec section 10b — because a STYLE is
-// expected to redefine them, and a style can only do that from this layer.
-// jstest/specs/sidebar-style-contract.spec.ts's "custom style owns floating
-// and inset collapsed density without foundation shrink" injects exactly such
-// a stylesheet and requires all three to take effect; migrating them onto the
-// recipe made that test fail, which is how the retention was decided rather
-// than guessed.
-//
-// Two of the three set raw custom properties the gate does not model. The
-// other two — the floating/inset container padding and the floating inner
-// border — it reports, correctly, as sitting in the same layer as Sidebar's
-// own compiled utilities. That is an accepted cost, not a caller-facing
-// regression: registry/styles/{nova,maia}/sidebar.css deliberately sets no
-// padding on sidebar-container and no border width or colour on
-// sidebar-inner, so nothing of Sidebar's own actually shadows either rule and
-// both are live. This is the same shape as menuInsetDisabledFallbackReason.
-const sidebarStyleOverridableReason = "assets/css/styles/default/sidebar.css's floating/inset container padding " +
-	"and floating inner border are style-overridable per spec section 10b and must stay in @layer components " +
-	"so a consumer stylesheet can beat them; Sidebar's own recipe sets neither property on those slots, so " +
-	"neither rule is shadowed in practice. jstest/specs/sidebar-style-contract.spec.ts's custom-density test " +
-	"is the contract these two exist to keep."
-
-func sidebarStyleOverridableExemptions() []layerCheckExemption {
-	both := []string{"maia", "nova"}
-	pairs := []struct {
-		selector, contested string
-		styles              []string
-	}{
-		{
-			selector:  ":where( [data-gsxui-slot-sidebar-desktop]:is( [data-variant=\"floating\"],[data-variant=\"inset\"] ) )>:where([data-gsxui-slot-sidebar-container])",
-			contested: "p-2",
-			styles:    both,
-		},
-		{
-			selector:  ":where( [data-gsxui-slot-sidebar-desktop][data-variant=\"floating\"] ) :where([data-gsxui-slot-sidebar-inner])",
-			contested: "border",
-			styles:    both,
-		},
-	}
-	out := make([]layerCheckExemption, 0, len(pairs)*2)
-	for _, pair := range pairs {
-		if len(pair.styles) == 0 {
-			panic("exemption for " + pair.selector + " / " + pair.contested + " names no style")
-		}
-		for _, style := range pair.styles {
-			out = append(out, layerCheckExemption{
-				key: exemptionKey{
-					file:      "assets/css/styles/default/sidebar.css",
-					style:     style,
-					selector:  pair.selector,
-					contested: pair.contested,
-				},
-				reason: sidebarStyleOverridableReason,
 			})
 		}
 	}
