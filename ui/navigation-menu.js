@@ -65,7 +65,7 @@
 //
 // No Escape/outside-pointerdown light dismiss — same deliberate choice as
 // hover-card.js's own (hover/focus drive it, not outside clicks or Esc).
-import { on, emit, clampToViewport } from "./gsxui.js";
+import { on, emit, position } from "./gsxui.js";
 
 // NavigationMenuLink variant="trigger" shares the trigger SLOT (presentation)
 // without being a trigger: exclude it so only the real <button> trigger binds.
@@ -102,10 +102,11 @@ function isAnyOpen(menu) {
   );
 }
 
-function positionAt(el, rect, offset) {
-  el.style.position = "fixed";
-  el.style.inset = "auto";
-  clampToViewport(el, rect.left, rect.bottom + offset);
+// positionAt anchors el below trigger, left-aligned, via the shared engine
+// (flip/shift/clamp + scroll/resize tracking: see gsxui.js). Call AFTER
+// showPopover — a hidden popover has no layout box for the engine to place.
+function positionAt(el, trigger, offset) {
+  position(el, trigger, { side: "bottom", sideOffset: offset });
 }
 
 function stillWithin(trigger, related) {
@@ -163,12 +164,12 @@ function open(trigger) {
   // supplies the 6px gap (margin still offsets a fixed-positioned box's own
   // top edge from its computed `top`); an additional +6 offset here was
   // double-counting it, rendering a 12px gap where upstream has 6px.
-  positionAt(content, trigger.getBoundingClientRect(), 0);
   // Stamp open BEFORE showing — same flash-avoidance rule as every other
   // popover in this codebase (a queued toggle event can otherwise leave one
   // frame painted in the stale closed state).
   content.dataset.state = "open";
   content.showPopover();
+  positionAt(content, trigger, 0);
   trigger.dataset.state = "open";
   trigger.setAttribute("aria-expanded", "true");
   emit(content, "gsxui:open");

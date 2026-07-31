@@ -7,7 +7,7 @@
 // applies. The one positioning change: centered below the trigger, not
 // left-aligned (Radix's own Popover default is side=bottom align=center;
 // DropdownMenuContent's is align=start). toggle doesn't bubble — capture.
-import { on, emit, clampToViewport } from "./gsxui.js";
+import { on, emit, position } from "./gsxui.js";
 
 const contentOf = (el) =>
   el
@@ -50,34 +50,21 @@ on("click", TRIGGER_SELECTOR, (_e, trigger) => {
     content.hidePopover();
     return;
   }
-  const r = trigger.getBoundingClientRect();
-  content.style.position = "fixed";
-  content.style.inset = "auto";
   // Stamp open BEFORE showing — the toggle event that also stamps it is a
   // queued task, and a paint in the gap flashes one closed-state frame
   // before the enter animation restarts (see dropdown.js's comment).
   content.dataset.state = "open";
   content.showPopover();
-  // Position numerically AFTER showing (hidden popovers have no box) and
-  // never via translate/transform: the discrete-transition enter/exit
-  // animates the `translate` and `scale` properties (see popover.gsx's
-  // ADAPT comment), so a positioning translate would be fought by the
-  // transition in both directions. offsetWidth is a layout size,
-  // unaffected by the in-flight enter scale.
+  // Position AFTER showing (hidden popovers have no box) via the shared
+  // engine — never via translate/transform: the discrete-transition
+  // enter/exit animates the `translate` and `scale` properties (see
+  // popover.gsx's ADAPT comment), so a positioning translate would be
+  // fought by the transition in both directions.
   //
   // Centered below the trigger (Radix's own Popover default is side=bottom
-  // align=center — dropdown.js's left-aligned `r.left` is NOT reused here):
-  // left is the trigger's horizontal midpoint minus half the content's own
-  // width, so the content straddles the trigger's center the way Radix's
-  // Floating-UI align=center placement would. Clamped to the viewport by
-  // clampToViewport (shift-only, no side flip) — the old no-clamp NOTE
-  // accepted edge imprecision until the theme editor rendered a picker
-  // popover flush offscreen-left; see gsxui.js.
-  clampToViewport(
-    content,
-    r.left + r.width / 2 - content.offsetWidth / 2,
-    r.bottom + 4,
-  );
+  // align=center — dropdown.js's align=start is NOT reused here), 4px
+  // sideOffset. Flip/shift/clamp + scroll/resize tracking: see gsxui.js.
+  position(content, trigger, { side: "bottom", align: "center", sideOffset: 4 });
 });
 
 // Focus management, the Radix FocusScope trio popover.js was missing

@@ -21,7 +21,7 @@
 //     delayed close — tooltip.js needs none of this, since its content is
 //     never interactive and never receives focus or a hover of its own.
 //   - no arrow (hover-card has none, unlike tooltip's diamond span).
-import { on, emit, clampToViewport } from "./gsxui.js";
+import { on, emit, position } from "./gsxui.js";
 
 // Radix's own defaults are openDelay 700 / closeDelay 300, but shadcn's
 // site demos all pass openDelay={100} closeDelay={100} — the near-instant
@@ -49,23 +49,15 @@ function show(trigger) {
   clearTimer(trigger);
   const content = contentOf(trigger);
   if (!content || content.matches(":popover-open")) return;
-  const r = trigger.getBoundingClientRect();
-  content.style.position = "fixed";
-  content.style.inset = "auto";
   content.showPopover();
-  // Position numerically AFTER showing (hidden popovers have no box) and
-  // never via transform — same rationale as tooltip.js's own comment.
-  // Centered below the trigger (Radix HoverCard's own align=center,
-  // side=bottom default): left is the trigger's horizontal midpoint minus
-  // half the content's own width (identical calc to tooltip.js's); top is
-  // the trigger's bottom edge plus Radix's own 4px sideOffset (hover-
-  // card.tsx's default, same value as popover.tsx's — no arrow to clear
-  // room for, unlike tooltip's 6px-plus-arrow gap above the trigger).
-  clampToViewport(
-    content,
-    r.left + r.width / 2 - content.offsetWidth / 2,
-    r.bottom + 4,
-  );
+  // Position AFTER showing (hidden popovers have no box) and never via
+  // transform — same rationale as tooltip.js's own comment. Centered below
+  // the trigger (Radix HoverCard's own align=center, side=bottom default)
+  // with Radix's own 4px sideOffset (hover-card.tsx's default, same value
+  // as popover.tsx's — no arrow to clear room for, unlike tooltip's
+  // 6px-plus-arrow gap above the trigger). Flip/shift/clamp + scroll/
+  // resize tracking: see gsxui.js.
+  position(content, trigger, { side: "bottom", align: "center", sideOffset: 4 });
   content.dataset.state = "open";
   emit(content, "gsxui:open");
 }

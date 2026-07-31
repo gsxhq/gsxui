@@ -59,14 +59,115 @@ function callerModule() {
   return "unknown";
 }
 
-// clampToViewport is the real implementation, unchanged — positioning is
-// behavior under test, not delegation, so the recording layer must not
-// distort it. Keep in lockstep with ui/gsxui.js ("exact export surface"
-// above): a module importing a name the shim lacks fails to evaluate, and
-// with it every registration this file exists to record.
-export function clampToViewport(content, left, top) {
-  const maxLeft = document.documentElement.clientWidth - content.offsetWidth;
-  const maxTop = document.documentElement.clientHeight - content.offsetHeight;
-  content.style.left = `${Math.max(0, Math.min(left, maxLeft))}px`;
-  content.style.top = `${Math.max(0, Math.min(top, maxTop))}px`;
+// position/release are the real implementations, copied verbatim from
+// ui/gsxui.js — positioning is behavior under test, not delegation, so the
+// recording layer must not distort it. Keep in lockstep with ui/gsxui.js
+// ("exact export surface" above): a module importing a name the shim lacks
+// fails to evaluate, and with it every registration this file exists to
+// record (the 127-test incident). See ui/gsxui.js's own doc comments for
+// the semantics; none are repeated here.
+
+const CAP_PADDING = 8;
+
+const tracked = new Map();
+
+export function position(content, anchor, opts = {}) {
+  release(content);
+  const {
+    side = "bottom",
+    align = "start",
+    sideOffset = 0,
+    alignOffset = 0,
+    flip = true,
+    cap = false,
+  } = opts;
+  const anchorRect =
+    anchor instanceof Element ? () => anchor.getBoundingClientRect() : () => anchor;
+  const update = () =>
+    applyPlacement(content, anchorRect(), {
+      side,
+      align,
+      sideOffset,
+      alignOffset,
+      flip,
+      cap,
+    });
+  const onToggle = (e) => {
+    if (e.newState === "closed") release(content);
+  };
+  content.addEventListener("toggle", onToggle);
+  window.addEventListener("scroll", update, { capture: true, passive: true });
+  window.addEventListener("resize", update);
+  tracked.set(content, {
+    update,
+    onToggle,
+    hadSide: content.hasAttribute("data-side"),
+    authoredSide: content.getAttribute("data-side"),
+  });
+  update();
+}
+
+export function release(content) {
+  const entry = tracked.get(content);
+  if (!entry) return;
+  tracked.delete(content);
+  content.removeEventListener("toggle", entry.onToggle);
+  window.removeEventListener("scroll", entry.update, { capture: true });
+  window.removeEventListener("resize", entry.update);
+  if (entry.hadSide) content.setAttribute("data-side", entry.authoredSide);
+  else content.removeAttribute("data-side");
+}
+
+function applyPlacement(content, a, o) {
+  content.style.position = "fixed";
+  content.style.inset = "auto";
+  if (o.cap) content.style.removeProperty("--gsxui-available-height");
+  const vw = document.documentElement.clientWidth;
+  const vh = document.documentElement.clientHeight;
+  const w = content.offsetWidth;
+  let h = content.offsetHeight;
+  const vertical = o.side === "top" || o.side === "bottom";
+  let side = o.side;
+  if (o.flip) {
+    const room = {
+      top: a.top - o.sideOffset,
+      bottom: vh - a.bottom - o.sideOffset,
+      left: a.left - o.sideOffset,
+      right: vw - a.right - o.sideOffset,
+    };
+    const opposite = { top: "bottom", bottom: "top", left: "right", right: "left" }[side];
+    const need = vertical ? h : w;
+    if (need > room[side] && room[opposite] > room[side]) side = opposite;
+  }
+  if (o.cap && vertical) {
+    const avail =
+      (side === "bottom" ? vh - a.bottom - o.sideOffset : a.top - o.sideOffset) -
+      CAP_PADDING;
+    content.style.setProperty(
+      "--gsxui-available-height",
+      `${Math.max(0, Math.floor(avail))}px`,
+    );
+    h = content.offsetHeight;
+  }
+  let left, top;
+  if (vertical) {
+    top = side === "bottom" ? a.bottom + o.sideOffset : a.top - o.sideOffset - h;
+    left = alignedCoord(o.align, a.left, a.width, w) + o.alignOffset;
+    left = Math.max(0, Math.min(left, vw - w));
+  } else {
+    left = side === "right" ? a.right + o.sideOffset : a.left - o.sideOffset - w;
+    top = alignedCoord(o.align, a.top, a.height, h) + o.alignOffset;
+    top = Math.max(0, Math.min(top, vh - h));
+  }
+  left = Math.max(0, Math.min(left, vw - w));
+  top = Math.max(0, Math.min(top, vh - h));
+  if (o.flip) content.dataset.side = side;
+  content.style.left = `${left}px`;
+  content.style.top = `${top}px`;
+}
+
+function alignedCoord(align, start, anchorSize, contentSize) {
+  if (align === "center") return start + anchorSize / 2 - contentSize / 2;
+  if (align === "end") return start + anchorSize - contentSize;
+  return start;
 }

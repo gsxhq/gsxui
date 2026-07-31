@@ -17,7 +17,7 @@
 //   - a hidden native <select> FORM BRIDGE, populated from the DOM items at
 //     init and kept in sync (value assignment + a bubbling change event).
 // See docs/jsx-parity.md ## select and ui/select.gsx's header.
-import { on, emit, clampToViewport } from "./gsxui.js";
+import { on, emit, position } from "./gsxui.js";
 
 const rootOf = (el) => el.closest("[data-gsxui-slot-select]");
 const contentOf = (el) =>
@@ -185,18 +185,21 @@ for (const root of document.querySelectorAll("[data-gsxui-slot-select]"))
 // --- open / close (ported dropdown.js machinery) --------------------------
 
 function openContent(trigger, content) {
-  const r = trigger.getBoundingClientRect();
-  content.style.position = "fixed";
-  content.style.inset = "auto";
-  clampToViewport(content, r.left, r.bottom + 4);
   // Popper-equivalent width: never narrower than the trigger (Radix's
   // --radix-select-trigger-width). min-w-36 from the class still floors it.
-  content.style.minWidth = `${r.width}px`;
+  content.style.minWidth = `${trigger.getBoundingClientRect().width}px`;
   // Stamp open BEFORE showing — the toggle event that also stamps it is a
   // separate queued task; a paint can land in the gap and flash the closed
   // state (same fix dropdown.js documents).
   content.dataset.state = "open";
   content.showPopover();
+  // Position AFTER showing (hidden popovers have no box): below the
+  // trigger, left-aligned, 4px sideOffset. cap sets
+  // --gsxui-available-height (Radix Select's size middleware equivalent),
+  // which the recipe's max-height min()s in so a bottom-edge listbox
+  // shrinks and scrolls internally instead of clamping over the trigger.
+  // Flip/shift/clamp + scroll/resize tracking: see gsxui.js.
+  position(content, trigger, { side: "bottom", sideOffset: 4, cap: true });
 }
 
 on("pointerdown", "[data-gsxui-slot-select-trigger]", (_e, trigger) => {

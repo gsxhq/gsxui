@@ -1,6 +1,6 @@
 // Tooltip: pointerover/out + focusin/out delegation (these bubble), 300ms
 // open delay, manual popover so hover can't light-dismiss it.
-import { on, emit, clampToViewport } from "./gsxui.js";
+import { on, emit, position } from "./gsxui.js";
 
 const timers = new WeakMap();
 const contentOf = (el) =>
@@ -11,21 +11,15 @@ const contentOf = (el) =>
 function show(trigger) {
   const content = contentOf(trigger);
   if (!content || content.matches(":popover-open")) return;
-  const r = trigger.getBoundingClientRect();
-  content.style.position = "fixed";
-  content.style.inset = "auto";
   content.showPopover();
-  // Position numerically AFTER showing (hidden popovers have no box) and
-  // never via transform: the animate-in enter keyframes animate transform,
-  // so a positioning translate would be overridden for the animation's
-  // duration — the tooltip would enter at the untranslated spot and snap.
-  // offsetWidth/Height are layout sizes, unaffected by the in-flight
-  // enter scale.
-  clampToViewport(
-    content,
-    r.left + r.width / 2 - content.offsetWidth / 2,
-    r.top - 6 - content.offsetHeight,
-  );
+  // Position AFTER showing (hidden popovers have no box) and never via
+  // transform: the animate-in enter keyframes animate transform, so a
+  // positioning translate would be overridden for the animation's duration
+  // — the tooltip would enter at the untranslated spot and snap. Above the
+  // trigger, centered (Radix Tooltip's side=top default), 6px sideOffset
+  // (arrow clearance). Flip/shift/clamp + scroll/resize tracking: see
+  // gsxui.js.
+  position(content, trigger, { side: "top", align: "center", sideOffset: 6 });
   content.dataset.state = "open";
   emit(content, "gsxui:open");
 }
