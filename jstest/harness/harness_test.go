@@ -122,7 +122,7 @@ func TestNamedPreviewRouteRendersOneExactCase(t *testing.T) {
 		t.Fatalf("status = %d, want 200", res.StatusCode)
 	}
 	page := string(body)
-	if got := strings.Count(page, `data-gsxui-sidebar-wrapper`); got != 1 {
+	if got := strings.Count(page, `data-gsxui-slot-sidebar-wrapper`); got != 1 {
 		t.Fatalf("named preview contains %d Sidebar wrappers, want 1", got)
 	}
 	if !strings.Contains(page, `data-variant="floating"`) {

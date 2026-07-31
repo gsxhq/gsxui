@@ -297,7 +297,7 @@ test("mobile trigger opens the native Sheet tree and desktop resize keeps one vi
   await openFixture(page, "mobile", { width: 390, height: 844 });
   const desktop = page.locator(slot("sidebar-desktop"));
   const mobileRoot = page.locator(slot("sidebar-mobile-root"));
-  const dialog = page.locator("dialog[data-gsxui-sidebar-mobile-dialog]");
+  const dialog = page.locator("dialog[data-gsxui-slot-sidebar-mobile-content]");
 
   await expect(desktop).toBeHidden();
   await expect(dialog).toBeHidden();
@@ -319,7 +319,7 @@ test("mobile rail stays non-interactive through the sm breakpoint and only the m
   for (const width of [639, 640, 700, 767]) {
     await openFixture(page, "mobile", { width, height: 844 });
     const desktopContainer = page.locator(slot("sidebar-container"));
-    const dialog = page.locator("dialog[data-gsxui-sidebar-mobile-dialog]");
+    const dialog = page.locator("dialog[data-gsxui-slot-sidebar-mobile-content]");
     const mobileRail = dialog.locator(slot("sidebar-rail"));
 
     await page.getByRole("button", { name: "Toggle Sidebar" }).first().click();
@@ -344,7 +344,7 @@ test("mobile rail stays non-interactive through the sm breakpoint and only the m
   const wrapper = page.locator(slot("sidebar-wrapper"));
   const desktopContainer = page.locator(slot("sidebar-container"));
   const desktopRail = page.locator(slot("sidebar-desktop")).locator(slot("sidebar-rail"));
-  const dialog = page.locator("dialog[data-gsxui-sidebar-mobile-dialog]");
+  const dialog = page.locator("dialog[data-gsxui-slot-sidebar-mobile-content]");
   const mobileRail = dialog.locator(slot("sidebar-rail"));
 
   await expect(dialog).toBeHidden();

@@ -227,17 +227,18 @@
     @apply [&>svg]:size-4 [&>svg]:shrink-0;
     @apply data-[size=sm]:h-7 data-[size=sm]:text-xs;
     @apply data-[size=lg]:h-12 data-[size=lg]:text-sm;
-    /* The collapsed-icon geometry names data-gsxui-sidebar-desktop as well as
-       the slot marker — the SAME element carries both — purely for one extra
-       point of specificity. Without it this rule and the menu-item :has()
+    /* The collapsed-icon geometry repeats the data-gsxui-slot-sidebar-desktop
+       attribute selector purely for one extra point of specificity (repeating
+       the same simple selector counts twice, per the CSS specificity
+       algorithm). Without it this rule and the menu-item :has()
        pr-8 rule above both land at (0,3,0) and the padding shorthand loses to
        the longhand by source order; before the migration the icon rule was
        (0,1,0) against the pr-8 rule's (0,0,0) and won outright.
        jstest/specs/sidebar-style-contract.spec.ts's icon-collapse geometry
        assertion is what caught this. */
-    @apply [[data-gsxui-slot-sidebar-desktop][data-gsxui-sidebar-desktop][data-collapsible=icon]_&]:size-8;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-gsxui-sidebar-desktop][data-collapsible=icon]_&]:p-2;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-gsxui-sidebar-desktop][data-collapsible=icon]_&[data-size=lg]]:p-0;
+    @apply [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:size-8;
+    @apply [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:p-2;
+    @apply [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&[data-size=lg]]:p-0;
   }
 
   .gsxui-recipe-sidebar-menu-action {
