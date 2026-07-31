@@ -50,7 +50,7 @@ func canonicalCommandClass(slot string, caller ...string) string {
 
 func TestCommandPinned(t *testing.T) {
 	got := render(t, ui.Command(gsx.Raw("x"), nil))
-	want := `<div data-gsxui-command ` + canonicalCommandClass("") + ` data-gsxui-slot-command>x</div>`
+	want := `<div ` + canonicalCommandClass("") + ` data-gsxui-slot-command>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -59,9 +59,8 @@ func TestCommandPinned(t *testing.T) {
 func TestCommandInputPinned(t *testing.T) {
 	got := render(t, ui.CommandInput("Search...", nil))
 	for _, want := range []string{
-		`<div data-gsxui-command-input-wrapper ` + canonicalCommandClass("input-wrapper") + ` data-gsxui-slot-command-input-wrapper>`,
+		`<div ` + canonicalCommandClass("input-wrapper") + ` data-gsxui-slot-command-input-wrapper>`,
 		`data-gsxui-slot-command-input`,
-		`data-gsxui-command-input`,
 		`role="combobox"`,
 		`aria-autocomplete="list"`,
 		`placeholder="Search..."`,
@@ -76,7 +75,6 @@ func TestCommandItemPinned(t *testing.T) {
 	got := render(t, ui.CommandItem("calendar", gsx.Raw("Calendar"), nil))
 	for _, want := range []string{
 		`data-gsxui-slot-command-item`,
-		`data-gsxui-command-item`,
 		`data-value="calendar"`,
 		`role="option"`,
 		`aria-selected="false"`,
@@ -90,7 +88,7 @@ func TestCommandItemPinned(t *testing.T) {
 // CommandGroup renders its heading child only when non-empty.
 func TestCommandGroupHeading(t *testing.T) {
 	with := render(t, ui.CommandGroup("Settings", gsx.Raw("x"), nil))
-	if !strings.Contains(with, `<div data-gsxui-command-group-heading `+canonicalCommandClass("group-heading")+` data-gsxui-slot-command-group-heading>Settings</div>`) {
+	if !strings.Contains(with, `<div `+canonicalCommandClass("group-heading")+` data-gsxui-slot-command-group-heading>Settings</div>`) {
 		t.Errorf("missing heading in: %s", with)
 	}
 	without := render(t, ui.CommandGroup("", gsx.Raw("x"), nil))

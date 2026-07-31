@@ -86,8 +86,8 @@ function commandScore(string, abbreviation) {
 }
 // ---------------------------------------------------------------------------
 
-const rootOf = (el) => el.closest("[data-gsxui-command]");
-const itemsOf = (root) => [...root.querySelectorAll("[data-gsxui-command-item]")];
+const rootOf = (el) => el.closest("[data-gsxui-slot-command]");
+const itemsOf = (root) => [...root.querySelectorAll("[data-gsxui-slot-command-item]")];
 const valueOf = (item) => item.dataset.value || item.textContent.trim();
 const disabled = (item) =>
   item.getAttribute("aria-disabled") === "true" || "disabled" in item.dataset;
@@ -97,7 +97,7 @@ let uid = 0;
 // Initial selection is state synchronisation, not navigation: only
 // user-driven changes opt into scrolling the selected item into view.
 function select(root, item, { scroll = false } = {}) {
-  const input = root.querySelector("[data-gsxui-command-input]");
+  const input = root.querySelector("[data-gsxui-slot-command-input]");
   for (const other of itemsOf(root)) {
     if (other === item) continue;
     delete other.dataset.selected;
@@ -115,7 +115,7 @@ function select(root, item, { scroll = false } = {}) {
 }
 
 const visibleItems = (root) => itemsOf(root).filter((i) => !i.hidden && !disabled(i));
-const selectedOf = (root) => root.querySelector('[data-gsxui-command-item][data-selected="true"]');
+const selectedOf = (root) => root.querySelector('[data-gsxui-slot-command-item][data-selected="true"]');
 
 // Filter + rank: score every item, hide zero-scores, reorder items within
 // their group by score (cmdk reorders the DOM too — element identity is
@@ -124,9 +124,9 @@ const selectedOf = (root) => root.querySelector('[data-gsxui-command-item][data-
 // query is active (cmdk's behavior), and toggle the empty state. Ties keep
 // source order via the one-time data-gsxui-index stamp.
 function filter(root, { scrollSelection = false } = {}) {
-  const input = root.querySelector("[data-gsxui-command-input]");
+  const input = root.querySelector("[data-gsxui-slot-command-input]");
   const query = (input?.value ?? "").trim();
-  const list = root.querySelector("[data-gsxui-command-list]") ?? root;
+  const list = root.querySelector("[data-gsxui-slot-command-list]") ?? root;
 
   // One-time source-order stamps (items AND the list's top-level children:
   // groups, separators, the empty element, ungrouped items). Ranking ties
@@ -154,7 +154,7 @@ function filter(root, { scrollSelection = false } = {}) {
 
   // Items reorder within their group every pass (appendChild preserves
   // element identity, so listeners/state survive the moves).
-  for (const group of root.querySelectorAll("[data-gsxui-command-group]")) {
+  for (const group of root.querySelectorAll("[data-gsxui-slot-command-group]")) {
     const inGroup = items.filter((i) => group.contains(i));
     const ranked = [...inGroup].sort((a, b) => scores.get(b) - scores.get(a) || sourceOrder(a, b));
     for (const item of ranked) group.appendChild(item);
@@ -169,10 +169,10 @@ function filter(root, { scrollSelection = false } = {}) {
   const kids = [...list.children].sort((a, b) => rank(b) - rank(a) || sourceOrder(a, b));
   for (const kid of kids) list.appendChild(kid);
 
-  for (const sep of root.querySelectorAll("[data-gsxui-command-separator]")) {
+  for (const sep of root.querySelectorAll("[data-gsxui-slot-command-separator]")) {
     sep.hidden = query !== "";
   }
-  const empty = root.querySelector("[data-gsxui-command-empty]");
+  const empty = root.querySelector("[data-gsxui-slot-command-empty]");
   if (empty) empty.hidden = any;
 
   // Selection follows the ranking: top visible item after every keystroke.
@@ -189,12 +189,12 @@ function activate(item) {
   }
 }
 
-on("input", "[data-gsxui-command-input]", (_e, input) => {
+on("input", "[data-gsxui-slot-command-input]", (_e, input) => {
   const root = rootOf(input);
   if (root) filter(root, { scrollSelection: true });
 });
 
-on("keydown", "[data-gsxui-command-input]", (e, input) => {
+on("keydown", "[data-gsxui-slot-command-input]", (e, input) => {
   const root = rootOf(input);
   if (!root) return;
   if (e.key === "Enter") {
@@ -211,11 +211,11 @@ on("keydown", "[data-gsxui-command-input]", (e, input) => {
   select(root, items[(i + dir + items.length) % items.length], { scroll: true });
 });
 
-on("click", "[data-gsxui-command-item]", (_e, item) => activate(item));
+on("click", "[data-gsxui-slot-command-item]", (_e, item) => activate(item));
 
 // Selection follows the pointer (cmdk hover model — hover IS selection, no
 // separate hover style), same rationale as dropdown.js's pointerover focus.
-on("pointerover", "[data-gsxui-command-item]", (_e, item) => {
+on("pointerover", "[data-gsxui-slot-command-item]", (_e, item) => {
   if (disabled(item) || item.dataset.selected === "true") return;
   const root = rootOf(item);
   if (root) select(root, item);
@@ -223,7 +223,7 @@ on("pointerover", "[data-gsxui-command-item]", (_e, item) => {
 
 // Initial state: rank/selection for palettes rendered without a query
 // (server renders every item visible; this stamps the first selection).
-for (const root of document.querySelectorAll("[data-gsxui-command]")) filter(root);
+for (const root of document.querySelectorAll("[data-gsxui-slot-command]")) filter(root);
 
 // ⌘K / Ctrl-K requests a transition on the first command dialog. dialog.js
 // owns the default action, including state stamping and animated close.
@@ -244,9 +244,9 @@ on(
   "gsxui:open",
   "dialog[data-gsxui-command-dialog]",
   (_e, dialog) => {
-    const input = dialog.querySelector("[data-gsxui-command-input]");
+    const input = dialog.querySelector("[data-gsxui-slot-command-input]");
     if (input) input.value = "";
-    const root = rootOf(input ?? dialog) ?? dialog.querySelector("[data-gsxui-command]");
+    const root = rootOf(input ?? dialog) ?? dialog.querySelector("[data-gsxui-slot-command]");
     if (root) filter(root);
     input?.focus();
   },

@@ -67,10 +67,10 @@ test("command palette shortcuts and navigable selections request dialog transiti
       `
         <div data-gsxui-slot-dialog>
           <dialog data-gsxui-slot-dialog-content data-gsxui-command-dialog data-state="closed">
-            <div data-gsxui-command>
-              <input data-gsxui-command-input>
-              <div data-gsxui-command-list>
-                <button data-gsxui-command-item data-href="/command-selected">Open selected page</button>
+            <div data-gsxui-slot-command>
+              <input data-gsxui-slot-command-input>
+              <div data-gsxui-slot-command-list>
+                <button data-gsxui-slot-command-item data-href="/command-selected">Open selected page</button>
               </div>
             </div>
           </dialog>
@@ -119,7 +119,7 @@ test("command palette shortcuts and navigable selections request dialog transiti
 
   await page.keyboard.press("Control+k");
   await expect(dialog).toHaveJSProperty("open", true);
-  await page.locator(`${COMMAND_DIALOG} [data-gsxui-command-item][data-href]`).first().evaluate((item) => {
+  await page.locator(`${COMMAND_DIALOG} [data-gsxui-slot-command-item][data-href]`).first().evaluate((item) => {
     item.setAttribute("data-href", "#command-selected");
     (window as any).__commandNavigationOrder = [];
     document.addEventListener(
@@ -136,7 +136,7 @@ test("command palette shortcuts and navigable selections request dialog transiti
       { once: true },
     );
   });
-  await page.locator(`${COMMAND_DIALOG} [data-gsxui-command-item][data-href]`).first().click();
+  await page.locator(`${COMMAND_DIALOG} [data-gsxui-slot-command-item][data-href]`).first().click();
   await expect.poll(() => page.evaluate(() => (window as any).__commandNavigationOrder)).toEqual([
     "request-close",
     "navigation",
