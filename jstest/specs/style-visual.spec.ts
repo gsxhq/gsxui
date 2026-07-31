@@ -73,7 +73,7 @@ async function prepareVisualRoute(
     for (let i = 0; i < 5; i++) {
       await triggers.nth(i).click();
     }
-    const toasts = page.locator("#gsxui-toaster > [data-gsxui-toast]");
+    const toasts = page.locator("#gsxui-toaster > [data-gsxui-slot-toast]");
     await expect(toasts).toHaveCount(5);
     await toasts.last().hover();
     await expect(toasts.nth(2)).toBeVisible();

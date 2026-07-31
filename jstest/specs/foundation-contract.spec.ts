@@ -158,12 +158,12 @@ test("foundation keeps Sonner fallback creation and server-row adoption function
     const row = template.content.firstElementChild!.cloneNode(true) as HTMLElement;
     row.dataset.foundationServer = "true";
     row.dataset.duration = "60000";
-    document.querySelector("[data-gsxui-toaster]")!.append(row);
+    document.querySelector("[data-gsxui-slot-toaster]")!.append(row);
   });
 
-  const region = page.locator("[data-gsxui-toaster]");
+  const region = page.locator("[data-gsxui-slot-toaster]");
   await expect(region).toHaveCount(1);
-  await expect(region.locator("li[data-gsxui-toast]")).toHaveCount(2);
+  await expect(region.locator("li[data-gsxui-slot-toast]")).toHaveCount(2);
   await expect(region.locator('[data-foundation-server="true"]')).toHaveAttribute(
     "data-state",
     "open",

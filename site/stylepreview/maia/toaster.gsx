@@ -30,7 +30,6 @@ component Toaster(attrs gsx.Attrs) {
 	<section aria-label="Notifications" tabindex="-1">
 		<ol
 			id="gsxui-toaster"
-			data-gsxui-toaster
 			class={ "[--gsxui-toast-offset:1.5rem] flex flex-col gap-2 p-6" }
 			{ attrs... }
 			data-gsxui-slot-toaster

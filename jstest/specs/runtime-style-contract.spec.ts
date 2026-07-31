@@ -559,7 +559,7 @@ test("real interactions cover the exact runtime-owned style contract", async ({
     "data-expanded",
     "false",
   );
-  await toast.locator("[data-gsxui-toast-close]").click();
+  await toast.locator("[data-gsxui-slot-toast-close]").click();
   await observe(
     "sonner-lifecycle",
     "toast",

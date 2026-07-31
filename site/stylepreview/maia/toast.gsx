@@ -43,7 +43,6 @@ component Toast(toastType string, title string, description string, action strin
 		}
 	}}
 	<li
-		data-gsxui-toast
 		data-type={t}
 		role="status"
 		aria-live={ariaLive}
@@ -61,7 +60,6 @@ component Toast(toastType string, title string, description string, action strin
 					class={
 						"mt-0.5 size-4 shrink-0 [[data-gsxui-slot-toast][data-type='success']>&]:text-success [[data-gsxui-slot-toast][data-type='info']>&]:text-info [[data-gsxui-slot-toast][data-type='warning']>&]:text-warning [[data-gsxui-slot-toast][data-type='error']>&]:text-destructive [[data-gsxui-slot-toast][data-type='loading']>&]:animate-spin"
 					}
-					data-gsxui-toast-icon
 					data-gsxui-slot-toast-icon
 				/>
 			case "info":
@@ -69,7 +67,6 @@ component Toast(toastType string, title string, description string, action strin
 					class={
 						"mt-0.5 size-4 shrink-0 [[data-gsxui-slot-toast][data-type='success']>&]:text-success [[data-gsxui-slot-toast][data-type='info']>&]:text-info [[data-gsxui-slot-toast][data-type='warning']>&]:text-warning [[data-gsxui-slot-toast][data-type='error']>&]:text-destructive [[data-gsxui-slot-toast][data-type='loading']>&]:animate-spin"
 					}
-					data-gsxui-toast-icon
 					data-gsxui-slot-toast-icon
 				/>
 			case "warning":
@@ -77,7 +74,6 @@ component Toast(toastType string, title string, description string, action strin
 					class={
 						"mt-0.5 size-4 shrink-0 [[data-gsxui-slot-toast][data-type='success']>&]:text-success [[data-gsxui-slot-toast][data-type='info']>&]:text-info [[data-gsxui-slot-toast][data-type='warning']>&]:text-warning [[data-gsxui-slot-toast][data-type='error']>&]:text-destructive [[data-gsxui-slot-toast][data-type='loading']>&]:animate-spin"
 					}
-					data-gsxui-toast-icon
 					data-gsxui-slot-toast-icon
 				/>
 			case "error":
@@ -85,7 +81,6 @@ component Toast(toastType string, title string, description string, action strin
 					class={
 						"mt-0.5 size-4 shrink-0 [[data-gsxui-slot-toast][data-type='success']>&]:text-success [[data-gsxui-slot-toast][data-type='info']>&]:text-info [[data-gsxui-slot-toast][data-type='warning']>&]:text-warning [[data-gsxui-slot-toast][data-type='error']>&]:text-destructive [[data-gsxui-slot-toast][data-type='loading']>&]:animate-spin"
 					}
-					data-gsxui-toast-icon
 					data-gsxui-slot-toast-icon
 				/>
 			case "loading":
@@ -93,24 +88,20 @@ component Toast(toastType string, title string, description string, action strin
 					class={
 						"mt-0.5 size-4 shrink-0 [[data-gsxui-slot-toast][data-type='success']>&]:text-success [[data-gsxui-slot-toast][data-type='info']>&]:text-info [[data-gsxui-slot-toast][data-type='warning']>&]:text-warning [[data-gsxui-slot-toast][data-type='error']>&]:text-destructive [[data-gsxui-slot-toast][data-type='loading']>&]:animate-spin"
 					}
-					data-gsxui-toast-icon
 					data-gsxui-slot-toast-icon
 				/>
 			} }
 		} }
 		<div class={ "flex flex-1 flex-col gap-1" } data-gsxui-slot-toast-content>
-			<div class={ "font-medium text-foreground" } data-gsxui-toast-title data-gsxui-slot-toast-title>{ title }</div>
+			<div class={ "font-medium text-foreground" } data-gsxui-slot-toast-title>{ title }</div>
 			{ if description != "" {
-				<div class={ "text-muted-foreground" } data-gsxui-toast-description data-gsxui-slot-toast-description>
-					{ description }
-				</div>
+				<div class={ "text-muted-foreground" } data-gsxui-slot-toast-description>{ description }</div>
 			} }
 		</div>
 		{ if action != "" {
 			<button
 				type="button"
 				class={ "shrink-0 self-center text-sm underline-offset-4 font-medium hover:underline" }
-				data-gsxui-toast-action
 				data-gsxui-slot-toast-action
 			>
 				{ action }
@@ -120,7 +111,6 @@ component Toast(toastType string, title string, description string, action strin
 			<button
 				type="button"
 				class={ "shrink-0 self-center text-sm underline-offset-4 text-muted-foreground hover:underline" }
-				data-gsxui-toast-cancel
 				data-gsxui-slot-toast-cancel
 			>
 				{ cancel }
@@ -131,7 +121,6 @@ component Toast(toastType string, title string, description string, action strin
 			class={
 				"absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm"
 			}
-			data-gsxui-toast-close
 			aria-label="Close"
 			data-gsxui-slot-toast-close
 		>

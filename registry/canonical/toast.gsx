@@ -43,7 +43,6 @@ component Toast(toastType string, title string, description string, action strin
 		}
 	}}
 	<li
-		data-gsxui-toast
 		data-type={t}
 		role="status"
 		aria-live={ariaLive}
@@ -55,28 +54,27 @@ component Toast(toastType string, title string, description string, action strin
 		{ if t != "default" {
 			{ switch t {
 			case "success":
-				<icon.CircleCheck class={ toast.Icon() } data-gsxui-toast-icon data-gsxui-slot-toast-icon/>
+				<icon.CircleCheck class={ toast.Icon() } data-gsxui-slot-toast-icon/>
 			case "info":
-				<icon.Info class={ toast.Icon() } data-gsxui-toast-icon data-gsxui-slot-toast-icon/>
+				<icon.Info class={ toast.Icon() } data-gsxui-slot-toast-icon/>
 			case "warning":
-				<icon.TriangleAlert class={ toast.Icon() } data-gsxui-toast-icon data-gsxui-slot-toast-icon/>
+				<icon.TriangleAlert class={ toast.Icon() } data-gsxui-slot-toast-icon/>
 			case "error":
-				<icon.OctagonX class={ toast.Icon() } data-gsxui-toast-icon data-gsxui-slot-toast-icon/>
+				<icon.OctagonX class={ toast.Icon() } data-gsxui-slot-toast-icon/>
 			case "loading":
-				<icon.LoaderCircle class={ toast.Icon() } data-gsxui-toast-icon data-gsxui-slot-toast-icon/>
+				<icon.LoaderCircle class={ toast.Icon() } data-gsxui-slot-toast-icon/>
 			} }
 		} }
 		<div class={ toast.Content() } data-gsxui-slot-toast-content>
-			<div class={ toast.Title() } data-gsxui-toast-title data-gsxui-slot-toast-title>{ title }</div>
+			<div class={ toast.Title() } data-gsxui-slot-toast-title>{ title }</div>
 			{ if description != "" {
-				<div class={ toast.Description() } data-gsxui-toast-description data-gsxui-slot-toast-description>{ description }</div>
+				<div class={ toast.Description() } data-gsxui-slot-toast-description>{ description }</div>
 			} }
 		</div>
 		{ if action != "" {
 			<button
 				type="button"
 				class={ toast.Action() }
-				data-gsxui-toast-action
 				data-gsxui-slot-toast-action
 			>
 				{ action }
@@ -86,7 +84,6 @@ component Toast(toastType string, title string, description string, action strin
 			<button
 				type="button"
 				class={ toast.Cancel() }
-				data-gsxui-toast-cancel
 				data-gsxui-slot-toast-cancel
 			>
 				{ cancel }
@@ -95,7 +92,6 @@ component Toast(toastType string, title string, description string, action strin
 		<button
 			type="button"
 			class={ toast.Close() }
-			data-gsxui-toast-close
 			aria-label="Close"
 			data-gsxui-slot-toast-close
 		>

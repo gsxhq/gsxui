@@ -99,7 +99,7 @@ func TestExampleRouteRendersTheExample(t *testing.T) {
 		`<script type="module" src="/ui/index.js"></script>`,
 		`class="min-h-svh bg-background text-foreground antialiased"`,
 		`data-gsxui-toggle`,
-		`data-gsxui-toaster`,
+		`data-gsxui-slot-toaster`,
 		`data-gsxui-toast-template="default"`,
 	} {
 		if !strings.Contains(page, want) {

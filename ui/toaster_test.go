@@ -45,7 +45,7 @@ func TestToasterContract(t *testing.T) {
 	got := render(t, ui.Toaster(nil))
 	requireMarkup(t, got,
 		`<section aria-label="Notifications" tabindex="-1">`,
-		`<ol id="gsxui-toaster" data-gsxui-toaster `+canonicalToasterClass()+` data-gsxui-slot-toaster></ol>`,
+		`<ol id="gsxui-toaster" `+canonicalToasterClass()+` data-gsxui-slot-toaster></ol>`,
 		`<template data-gsxui-toast-template="default">`,
 		`<template data-gsxui-toast-template="success">`,
 		`<template data-gsxui-toast-template="info">`,
@@ -70,7 +70,7 @@ func TestToasterAttrsMergeAndCallerClass(t *testing.T) {
 	}))
 	requireMarkup(t, got,
 		`id="my-toaster"`,
-		`data-gsxui-toaster`,
+		`data-gsxui-slot-toaster`,
 		canonicalToasterClass("caller-region"),
 		`data-gsxui-slot-caller-token data-gsxui-slot-toaster`,
 	)
