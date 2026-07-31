@@ -1,11 +1,28 @@
 import type { Page } from "@playwright/test";
 
 export const SWEPT_PROPERTIES = [
-  "display", "position", "borderRadius", "borderWidth", "borderColor",
-  "width", "height", "paddingLeft", "paddingRight", "paddingTop",
-  "paddingBottom", "gap", "fontSize", "fontWeight", "lineHeight",
-  "color", "backgroundColor", "opacity", "boxShadow", "textDecorationLine",
-  "alignItems", "justifyContent",
+  "display",
+  "position",
+  "borderRadius",
+  "borderWidth",
+  "borderColor",
+  "width",
+  "height",
+  "paddingLeft",
+  "paddingRight",
+  "paddingTop",
+  "paddingBottom",
+  "gap",
+  "fontSize",
+  "fontWeight",
+  "lineHeight",
+  "color",
+  "backgroundColor",
+  "opacity",
+  "boxShadow",
+  "textDecorationLine",
+  "alignItems",
+  "justifyContent",
 ] as const;
 
 /**
@@ -21,6 +38,20 @@ export async function sweepComputedStyles(
 ): Promise<Record<string, Record<string, string>>> {
   await page.goto(url);
   return page.evaluate((props: readonly string[]) => {
+    // Sample animations at a fixed point instead of whenever the sweep happens
+    // to run. Sidebar's skeletons pulse, so an unpaused sweep caught opacity
+    // mid-cycle (0.999919 rather than 1) about one run in five — and because
+    // this sweep is the migration's acceptance gate, that flake read as a
+    // regression and cost an investigation each time. Pausing at currentTime 0
+    // makes "resting" mean the animation's start value, deterministically.
+    // Pausing is not the same as disabling: the animation still applies, so a
+    // rule that changes its start value still shows up here. Timing itself —
+    // animation-name, duration — is outside SWEPT_PROPERTIES entirely and is
+    // covered by pins instead (Drawer's 200ms duration, Spinner's spin).
+    for (const animation of document.getAnimations()) {
+      animation.pause();
+      animation.currentTime = 0;
+    }
     const out: Record<string, Record<string, string>> = {};
     const seen = new Map<string, number>();
     for (const el of document.querySelectorAll("*")) {

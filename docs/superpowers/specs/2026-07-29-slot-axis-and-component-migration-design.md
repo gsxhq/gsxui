@@ -513,14 +513,15 @@ Each is a current limitation, not a historical note. None blocks the migration.
    judgement the layer gate cannot make. Migrating Resizable required splitting
    a whole-component rule there into an unwrapped `@layer utilities` rule.
 
-1. **The computed-style sweep is not perfectly deterministic.** One run in five
-   reported two spurious differences that three subsequent runs did not
-   reproduce. The sweep is the primary acceptance gate for every migration, so a
-   flake reads as a regression and costs an investigation. `ui/sidebar.gsx`
-   randomises skeleton widths (already filtered), so the residue is likely
-   animation or layout timing. Before relying on it for the remaining waves,
-   either settle the page (wait for animations/fonts) or re-run once on
-   difference and treat only a reproducible diff as a finding.
+1. **RESOLVED — the computed-style sweep was not perfectly deterministic.**
+   About one run in five reported spurious differences: Sidebar's skeletons
+   pulse, so an unpaused sweep sampled opacity mid-cycle (0.999919 rather
+   than 1). Since the sweep is the acceptance gate for every migration, each
+   flake read as a regression and cost an investigation. `sweepComputedStyles`
+   now pauses every animation at `currentTime` 0 before sampling, so "resting"
+   means the animation's start value. Verified the paused sweep reproduces the
+   established baseline exactly — determinism was gained without any recorded
+   value changing.
 
 1. **`//go:embed` silently skips `_`-prefixed files.** Splitting `default.css`
    nearly shipped consumers a stylesheet missing `:root` because the part was
