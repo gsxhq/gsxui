@@ -13,8 +13,8 @@ async function mouseClick(
 
 test("a mouse click opens and the second click closes", async ({ page }) => {
   await page.goto(BASIC);
-  const trigger = page.locator("[data-gsxui-navigation-menu-trigger]");
-  const content = page.locator("[data-gsxui-navigation-menu-content]");
+  const trigger = page.locator("button[data-gsxui-slot-navigation-menu-trigger]");
+  const content = page.locator("[data-gsxui-slot-navigation-menu-content]");
 
   await mouseClick(page, trigger);
   await expect(trigger).toHaveAttribute("aria-expanded", "true");
@@ -27,9 +27,9 @@ test("a mouse click opens and the second click closes", async ({ page }) => {
 
 test("keyboard Tab focus opens the trigger panel", async ({ page }) => {
   await page.goto(BASIC);
-  const home = page.locator('[data-gsxui-navigation-menu-link]').first();
-  const trigger = page.locator("[data-gsxui-navigation-menu-trigger]");
-  const content = page.locator("[data-gsxui-navigation-menu-content]");
+  const home = page.locator('[data-gsxui-slot-navigation-menu-link]').first();
+  const trigger = page.locator("button[data-gsxui-slot-navigation-menu-trigger]");
+  const content = page.locator("[data-gsxui-slot-navigation-menu-content]");
 
   await home.focus();
   await page.keyboard.press("Tab");

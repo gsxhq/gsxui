@@ -67,13 +67,18 @@
 // hover-card.js's own (hover/focus drive it, not outside clicks or Esc).
 import { on, emit } from "./gsxui.js";
 
-const menuOf = (el) => el.closest("[data-gsxui-navigation-menu]");
-const listOf = (menu) => menu?.querySelector("[data-gsxui-navigation-menu-list]");
-const itemOf = (el) => el.closest("[data-gsxui-navigation-menu-item]");
+// NavigationMenuLink variant="trigger" shares the trigger SLOT (presentation)
+// without being a trigger: exclude it so only the real <button> trigger binds.
+const TRIGGER_SELECTOR =
+  "[data-gsxui-slot-navigation-menu-trigger]:not([data-gsxui-slot-navigation-menu-link])";
+
+const menuOf = (el) => el.closest("[data-gsxui-slot-navigation-menu]");
+const listOf = (menu) => menu?.querySelector("[data-gsxui-slot-navigation-menu-list]");
+const itemOf = (el) => el.closest("[data-gsxui-slot-navigation-menu-item]");
 const contentOf = (trigger) =>
-  itemOf(trigger)?.querySelector(":scope > [data-gsxui-navigation-menu-content]");
+  itemOf(trigger)?.querySelector(":scope > [data-gsxui-slot-navigation-menu-content]");
 const triggerOf = (content) =>
-  itemOf(content)?.querySelector(":scope > [data-gsxui-navigation-menu-trigger]");
+  itemOf(content)?.querySelector(`:scope > ${TRIGGER_SELECTOR}`);
 
 // Radix's own real delayDuration is unread (no dist in the reference
 // checkout) — reusing hover-card.js's own OPEN_DELAY/CLOSE_DELAY (100ms
@@ -89,7 +94,7 @@ function clearTimer(trigger) {
 }
 
 function isAnyOpen(menu) {
-  return [...menu.querySelectorAll("[data-gsxui-navigation-menu-trigger]")].some((t) =>
+  return [...menu.querySelectorAll(TRIGGER_SELECTOR)].some((t) =>
     contentOf(t)?.matches(":popover-open"),
   );
 }
@@ -108,7 +113,7 @@ function stillWithin(trigger, related) {
 
 function positionIndicator(menu, trigger) {
   const list = listOf(menu);
-  const indicator = list?.querySelector(":scope > [data-gsxui-navigation-menu-indicator]");
+  const indicator = list?.querySelector(":scope > [data-gsxui-slot-navigation-menu-indicator]");
   if (!list || !indicator) return;
   // Radix's own runtime sets position:relative on whatever hosts the
   // indicator's own translate-relative-to inline, at runtime, rather than
@@ -124,7 +129,7 @@ function positionIndicator(menu, trigger) {
 }
 
 function hideIndicator(menu) {
-  const indicator = listOf(menu)?.querySelector(":scope > [data-gsxui-navigation-menu-indicator]");
+  const indicator = listOf(menu)?.querySelector(":scope > [data-gsxui-slot-navigation-menu-indicator]");
   if (indicator) indicator.dataset.state = "hidden";
 }
 
@@ -138,7 +143,7 @@ function open(trigger) {
   // Close any OTHER open panel in this menu first — sibling panels are
   // never DOM-nested in one another, so switching is close-then-open, the
   // same shape as menubar.js's own openMenu.
-  for (const other of menu.querySelectorAll("[data-gsxui-navigation-menu-content]")) {
+  for (const other of menu.querySelectorAll("[data-gsxui-slot-navigation-menu-content]")) {
     if (other !== content && other.matches(":popover-open")) close(triggerOf(other));
   }
 
@@ -197,8 +202,8 @@ function scheduleClose(trigger) {
   timers.set(trigger, setTimeout(() => close(trigger), CLOSE_DELAY));
 }
 
-on("pointerover", "[data-gsxui-navigation-menu-trigger]", (_e, t) => scheduleOpen(t));
-on("pointerout", "[data-gsxui-navigation-menu-trigger]", (e, t) => {
+on("pointerover", TRIGGER_SELECTOR, (_e, t) => scheduleOpen(t));
+on("pointerout", TRIGGER_SELECTOR, (e, t) => {
   if (stillWithin(t, e.relatedTarget)) return;
   scheduleClose(t);
 });
@@ -208,36 +213,36 @@ on("pointerout", "[data-gsxui-navigation-menu-trigger]", (e, t) => {
 // unaffected for keyboard users; a mouse click's own focusin lands with
 // :focus-visible false (measured), so the click handler below becomes the
 // sole open/close authority for pointer users instead of racing it.
-on("focusin", "[data-gsxui-navigation-menu-trigger]", (_e, t) => {
+on("focusin", TRIGGER_SELECTOR, (_e, t) => {
   if (t.matches(":focus-visible")) open(t);
 });
-on("focusout", "[data-gsxui-navigation-menu-trigger]", (e, t) => {
+on("focusout", TRIGGER_SELECTOR, (e, t) => {
   if (stillWithin(t, e.relatedTarget)) return;
   scheduleClose(t);
 });
 // Click toggles — covers touch/no-hover pointer types, which never fire the
 // pointerover open above, same rationale as every submenu's own click
 // handler in this codebase.
-on("click", "[data-gsxui-navigation-menu-trigger]", (_e, t) => {
+on("click", TRIGGER_SELECTOR, (_e, t) => {
   const content = contentOf(t);
   if (content?.matches(":popover-open")) close(t);
   else open(t);
 });
 
-on("pointerover", "[data-gsxui-navigation-menu-content]", (_e, content) => {
+on("pointerover", "[data-gsxui-slot-navigation-menu-content]", (_e, content) => {
   const trigger = triggerOf(content);
   if (trigger) clearTimer(trigger);
 });
-on("pointerout", "[data-gsxui-navigation-menu-content]", (e, content) => {
+on("pointerout", "[data-gsxui-slot-navigation-menu-content]", (e, content) => {
   const trigger = triggerOf(content);
   if (!trigger || stillWithin(trigger, e.relatedTarget)) return;
   scheduleClose(trigger);
 });
-on("focusin", "[data-gsxui-navigation-menu-content]", (_e, content) => {
+on("focusin", "[data-gsxui-slot-navigation-menu-content]", (_e, content) => {
   const trigger = triggerOf(content);
   if (trigger) clearTimer(trigger);
 });
-on("focusout", "[data-gsxui-navigation-menu-content]", (e, content) => {
+on("focusout", "[data-gsxui-slot-navigation-menu-content]", (e, content) => {
   const trigger = triggerOf(content);
   if (!trigger || stillWithin(trigger, e.relatedTarget)) return;
   scheduleClose(trigger);
@@ -247,8 +252,8 @@ on("focusout", "[data-gsxui-navigation-menu-content]", (e, content) => {
 // Content ancestor (a plain top-level nav link with no dropdown, reflected
 // as data-variant="trigger") has nothing to close — the click just
 // navigates.
-on("click", "[data-gsxui-navigation-menu-link]", (_e, link) => {
-  const content = link.closest("[data-gsxui-navigation-menu-content]");
+on("click", "[data-gsxui-slot-navigation-menu-link]", (_e, link) => {
+  const content = link.closest("[data-gsxui-slot-navigation-menu-content]");
   if (!content) return;
   emit(link, "gsxui:select");
   close(triggerOf(content));
