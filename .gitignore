@@ -6,5 +6,6 @@ site/dist/*
 .env
 /site/hl/gen/gen
 jstest/.tmp/
+test-results/
 jstest/test-results/
 jstest/playwright-report/
