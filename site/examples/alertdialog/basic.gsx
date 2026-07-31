@@ -16,7 +16,6 @@ component Basic() {
 	<ui.AlertDialog>
 		<ui.Button
 			variant="outline"
-			data-gsxui-dialog-trigger
 			data-gsxui-slot-alert-dialog-trigger
 			aria-haspopup="dialog"
 			aria-expanded="false"

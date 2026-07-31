@@ -13,7 +13,6 @@ component Basic() {
 	<ui.Popover>
 		<ui.Button
 			variant="outline"
-			data-gsxui-popover-trigger
 			data-gsxui-slot-popover-trigger
 			aria-expanded="false"
 		>

@@ -17,12 +17,18 @@ const contentOf = (el) =>
 // trigger is outside the content), so by click time the popover may already
 // be closed and a bare toggle would wrongly reopen it. Same guard as
 // dropdown.js's own (see its ledger MECHANISM entry).
-on("pointerdown", "[data-gsxui-popover-trigger]", (_e, trigger) => {
+// A popover opens from PopoverTrigger — identified by its slot marker — or
+// from any element opted in with data-gsxui-popover-trigger, the idiom for
+// arbitrary triggers. Component markup does not stamp the role hook: for the
+// family trigger the role is implied by identity.
+const TRIGGER_SELECTOR = "[data-gsxui-popover-trigger],[data-gsxui-slot-popover-trigger]";
+
+on("pointerdown", TRIGGER_SELECTOR, (_e, trigger) => {
   const content = contentOf(trigger);
   if (content) trigger.dataset.gsxuiWasOpen = content.matches(":popover-open") ? "true" : "false";
 });
 
-on("click", "[data-gsxui-popover-trigger]", (_e, trigger) => {
+on("click", TRIGGER_SELECTOR, (_e, trigger) => {
   const content = contentOf(trigger);
   if (!content) return;
   const wasOpen = trigger.dataset.gsxuiWasOpen === "true";
@@ -88,7 +94,7 @@ on(
   "[data-gsxui-slot-popover-content]",
   (e, content) => {
     if (e.newState !== "closed" || !content.contains(document.activeElement)) return;
-    content.closest("[data-gsxui-slot-popover]")?.querySelector("[data-gsxui-popover-trigger]")?.focus();
+    content.closest("[data-gsxui-slot-popover]")?.querySelector(TRIGGER_SELECTOR)?.focus();
   },
   { capture: true },
 );
@@ -112,7 +118,7 @@ on(
     content.dataset.state = open ? "open" : "closed";
     const trigger = content
       .closest("[data-gsxui-slot-popover]")
-      ?.querySelector("[data-gsxui-popover-trigger]");
+      ?.querySelector(TRIGGER_SELECTOR);
     trigger?.setAttribute("aria-expanded", open ? "true" : "false");
     // clear only on open — clearing on close races the trigger-click task
     // that needs to read the flag (same ordering rationale as dropdown.js).

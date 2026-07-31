@@ -76,6 +76,12 @@ component (t Theming) Page() {
 					Fallthrough attributes still carry ids, ARIA, data, and HTMX attributes to the rendered element:
 				</p>
 				<pre><code>{ hl.Node("snippets/theme-attrs.gsx") }</code></pre>
+				<p>
+					Behaviour roles are opt-in data attributes, separate from identity. Any element can become a
+					dialog trigger by carrying <code>data-gsxui-dialog-trigger</code> — the family's own Trigger
+					components need no role attribute, because for them the role is implied by their slot marker:
+				</p>
+				<pre><code>{ hl.Node("snippets/theme-dataattr.gsx") }</code></pre>
 			</section>
 			<section class="flex flex-col gap-3">
 				<docHeading item={themingTOCItems[4]}/>

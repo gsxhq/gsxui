@@ -26,7 +26,7 @@ func TestAlertDialogPinnedParts(t *testing.T) {
 		want string
 	}{
 		{"root", render(t, ui.AlertDialog(gsx.Raw("x"), nil)), `<div class="contents" data-gsxui-slot-alert-dialog data-gsxui-slot-dialog>x</div>`},
-		{"trigger", render(t, ui.AlertDialogTrigger(gsx.Raw("Delete"), nil)), `<button data-gsxui-dialog-trigger type="button" aria-haspopup="dialog" aria-expanded="false" data-gsxui-slot-alert-dialog-trigger>Delete</button>`},
+		{"trigger", render(t, ui.AlertDialogTrigger(gsx.Raw("Delete"), nil)), `<button type="button" aria-haspopup="dialog" aria-expanded="false" data-gsxui-slot-alert-dialog-trigger>Delete</button>`},
 		{"content", render(t, ui.AlertDialogContent(gsx.Raw("x"), nil)), `<dialog class="` + alertDialogContentClass() + `" data-state="closed" role="alertdialog" data-gsxui-dialog-static data-gsxui-slot-alert-dialog-content data-gsxui-slot-dialog-content>x</dialog>`},
 		{"header", render(t, ui.AlertDialogHeader(gsx.Raw("x"), nil)), `<div class="grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center" data-gsxui-slot-alert-dialog-header>x</div>`},
 		{"footer", render(t, ui.AlertDialogFooter(gsx.Raw("x"), nil)), `<div class="-mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4 sm:flex-row sm:justify-end" data-gsxui-slot-alert-dialog-footer>x</div>`},

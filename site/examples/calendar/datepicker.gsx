@@ -19,7 +19,7 @@ var DatePickerDefaultMonth = time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 // DatePicker export, because Popover + Calendar already IS one, and
 // composing them at the call site is strictly cheaper than threading a
 // thirteenth Popover-specific parameter (open state, trigger label)
-// through ui.Calendar itself. data-gsxui-popover-trigger goes straight on
+// through ui.Calendar itself. data-gsxui-slot-popover-trigger goes straight on
 // ui.Button, the same direct-attribute idiom popover/basic.gsx's own
 // "Open popover" trigger already uses, rather than wrapping it in a
 // separate ui.PopoverTrigger.
@@ -41,7 +41,6 @@ component DatePicker() {
 		<ui.Popover>
 			<ui.Button
 				variant="outline"
-				data-gsxui-popover-trigger
 				data-gsxui-slot-popover-trigger
 				aria-expanded="false"
 				class="w-[240px] justify-start text-left font-normal text-muted-foreground"
@@ -63,7 +62,7 @@ component DatePicker() {
 		<script>
 			document.addEventListener("gsxui:change", (e) => {
 				if (e.target.id !== "datepicker-calendar") return;
-				const button = e.target.closest("[data-gsxui-slot-popover]")?.querySelector("[data-gsxui-popover-trigger]");
+				const button = e.target.closest("[data-gsxui-slot-popover]")?.querySelector("[data-gsxui-slot-popover-trigger]");
 				const label = button?.querySelector("[data-datepicker-label]");
 				if (!label) return;
 				const picked = e.detail.selected[0];

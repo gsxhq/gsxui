@@ -10,7 +10,6 @@ component Popover(children gsx.Node, attrs gsx.Attrs) {
 
 component PopoverTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<button
-		data-gsxui-popover-trigger
 		type="button"
 		aria-expanded="false"
 		{ attrs... }

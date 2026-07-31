@@ -10,7 +10,6 @@ component Dialog(children gsx.Node, attrs gsx.Attrs) {
 
 component DialogTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<button
-		data-gsxui-dialog-trigger
 		type="button"
 		aria-haspopup="dialog"
 		aria-expanded="false"
