@@ -11,7 +11,7 @@ import (
 func TestMenubarTriggerRovingAndAria(t *testing.T) {
 	got := render(t, ui.MenubarTrigger(gsx.Raw("File"), nil))
 	for _, want := range []string{
-		`data-gsxui-menubar-trigger`,
+		`data-gsxui-slot-menubar-trigger`,
 		`type="button"`,
 		`aria-haspopup="menu"`,
 		`aria-expanded="false"`,
@@ -52,13 +52,13 @@ func TestMenubarStructure(t *testing.T) {
 		nil,
 	))
 	for _, want := range []string{
-		`data-gsxui-slot-menubar`, `role="menubar"`, `data-gsxui-menubar`,
-		`data-gsxui-slot-menubar-menu`, `data-gsxui-menubar-menu`,
-		`data-gsxui-slot-menubar-trigger`, `data-gsxui-menubar-trigger`,
+		`data-gsxui-slot-menubar`, `role="menubar"`, `data-gsxui-slot-menubar`,
+		`data-gsxui-slot-menubar-menu`, `data-gsxui-slot-menubar-menu`,
+		`data-gsxui-slot-menubar-trigger`, `data-gsxui-slot-menubar-trigger`,
 		`aria-haspopup="menu"`, `aria-expanded="false"`,
-		`data-gsxui-slot-menubar-content`, `data-gsxui-menubar-content`,
+		`data-gsxui-slot-menubar-content`, `data-gsxui-slot-menubar-content`,
 		`popover="auto"`, `role="menu"`, `data-state="closed"`, `data-side="bottom"`,
-		`data-gsxui-slot-menubar-item`, `data-gsxui-menubar-item`,
+		`data-gsxui-slot-menubar-item`, `data-gsxui-slot-menubar-item`,
 		`role="menuitem"`, `tabindex="-1"`, `data-variant="default"`,
 		">New Tab<", `data-gsxui-slot-menubar-shortcut`, ">⌘T<",
 		`data-gsxui-slot-menubar-separator`, `role="separator"`,
@@ -129,7 +129,7 @@ func TestMenubarCheckedItemsStampIndicatorState(t *testing.T) {
 	checkbox := render(t, ui.MenubarCheckboxItem(true, "toolbar", gsx.Raw("Toolbar"), nil))
 	for _, want := range []string{
 		`role="menuitemcheckbox"`, `aria-checked="true"`, `data-state="checked"`,
-		`data-gsxui-menubar-checkbox-item`,
+		`data-gsxui-slot-menubar-checkbox-item`,
 		`data-gsxui-slot-menubar-checkbox-item-indicator`,
 	} {
 		if !strings.Contains(checkbox, want) {
@@ -139,7 +139,7 @@ func TestMenubarCheckedItemsStampIndicatorState(t *testing.T) {
 	radio := render(t, ui.MenubarRadioItem(true, "top", gsx.Raw("Top"), nil))
 	for _, want := range []string{
 		`role="menuitemradio"`, `aria-checked="true"`, `data-state="checked"`,
-		`data-gsxui-menubar-radio-item`,
+		`data-gsxui-slot-menubar-radio-item`,
 		`data-gsxui-slot-menubar-radio-item-indicator`,
 	} {
 		if !strings.Contains(radio, want) {
@@ -192,22 +192,22 @@ func TestMenubarPinnedParts(t *testing.T) {
 		{
 			name: "root",
 			node: ui.Menubar(gsx.Raw("x"), nil),
-			want: `<div class="flex h-8 items-center gap-0.5 rounded-lg border bg-background p-[3px]" data-gsxui-menubar role="menubar" data-gsxui-slot-menubar>x</div>`,
+			want: `<div class="flex h-8 items-center gap-0.5 rounded-lg border bg-background p-[3px]" role="menubar" data-gsxui-slot-menubar>x</div>`,
 		},
 		{
 			name: "menu",
 			node: ui.MenubarMenu(gsx.Raw("x"), nil),
-			want: `<div class="contents" data-gsxui-menubar-menu data-gsxui-slot-menubar-menu>x</div>`,
+			want: `<div class="contents" data-gsxui-slot-menubar-menu>x</div>`,
 		},
 		{
 			name: "item",
 			node: ui.MenubarItem("", gsx.Raw("Print"), nil),
-			want: `<div class="relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 [&amp;_svg:not([class*=&#39;text-&#39;])]:text-muted-foreground text-foreground" data-gsxui-menubar-item data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-menubar-item>Print</div>`,
+			want: `<div class="relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 [&amp;_svg:not([class*=&#39;text-&#39;])]:text-muted-foreground text-foreground" data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-menubar-item>Print</div>`,
 		},
 		{
 			name: "content",
 			node: ui.MenubarContent(gsx.Raw("x"), nil),
-			want: `<div class="z-50 min-w-36 origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&amp;:popover-open]:opacity-100 [&amp;:popover-open]:scale-100 starting:[&amp;:popover-open]:opacity-0 starting:[&amp;:popover-open]:scale-95 data-[side=bottom]:starting:[&amp;:popover-open]:-translate-y-2 data-[side=left]:starting:[&amp;:popover-open]:translate-x-2 data-[side=right]:starting:[&amp;:popover-open]:-translate-x-2 data-[side=top]:starting:[&amp;:popover-open]:translate-y-2" data-gsxui-menubar-content popover="auto" role="menu" tabindex="-1" data-state="closed" data-side="bottom" data-gsxui-slot-menubar-content>x</div>`,
+			want: `<div class="z-50 min-w-36 origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&amp;:popover-open]:opacity-100 [&amp;:popover-open]:scale-100 starting:[&amp;:popover-open]:opacity-0 starting:[&amp;:popover-open]:scale-95 data-[side=bottom]:starting:[&amp;:popover-open]:-translate-y-2 data-[side=left]:starting:[&amp;:popover-open]:translate-x-2 data-[side=right]:starting:[&amp;:popover-open]:-translate-x-2 data-[side=top]:starting:[&amp;:popover-open]:translate-y-2" popover="auto" role="menu" tabindex="-1" data-state="closed" data-side="bottom" data-gsxui-slot-menubar-content>x</div>`,
 		},
 		{
 			name: "label",
@@ -232,7 +232,7 @@ func TestMenubarPinnedParts(t *testing.T) {
 		{
 			name: "radio-group",
 			node: ui.MenubarRadioGroup("benoit", gsx.Raw("x"), nil),
-			want: `<div data-gsxui-menubar-radio-group role="group" data-value="benoit" data-gsxui-slot-menubar-radio-group>x</div>`,
+			want: `<div role="group" data-value="benoit" data-gsxui-slot-menubar-radio-group>x</div>`,
 		},
 	}
 	for _, tt := range tests {

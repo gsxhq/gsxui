@@ -28,9 +28,9 @@ import (
 // menubar behavior module (ui/menubar.js).
 //
 // HOOK NAMESPACING (load-bearing, THE fix from the prior round): every
-// selector menubar.js registers is `data-gsxui-menubar-*`, never a prefix
-// shared with dropdown-menu.js's `data-gsxui-dropdown-*` or context-menu.js's
-// `data-gsxui-contextmenu-*`. ui/gsxui.js's delegation registry is keyed
+// selector menubar.js registers is `data-gsxui-slot-menubar-*`, never a prefix
+// shared with dropdown-menu.js's `data-gsxui-slot-dropdown-menu-*` or context-menu.js's
+// `data-gsxui-slot-context-menu-*`. ui/gsxui.js's delegation registry is keyed
 // only by `${type}:${capture}` and dispatches to EVERY handler whose
 // selector matches the event target, regardless of which module registered
 // it — ui/index.js imports all three menu modules, so an identical selector
@@ -168,7 +168,6 @@ import (
 component Menubar(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={ "flex h-8 items-center gap-0.5 rounded-lg border bg-background p-[3px]" }
-		data-gsxui-menubar
 		role="menubar"
 		{ attrs... }
 		data-gsxui-slot-menubar
@@ -180,14 +179,14 @@ component Menubar(children gsx.Node, attrs gsx.Attrs) {
 // MenubarMenu is the non-rendering root pairing ONE MenubarTrigger with its
 // own MenubarContent — layout-neutral (class="contents", same idiom as
 // DropdownMenu's own root) so the pair sits inline in the bar's normal flex
-// row. data-gsxui-menubar-menu is the proximity anchor menubar.js uses to
-// resolve "this trigger's own content" (closest("[data-gsxui-menubar-
+// row. data-gsxui-slot-menubar-menu is the proximity anchor menubar.js uses to
+// resolve "this trigger's own content" (closest("[data-gsxui-slot-menubar-
 // menu]")), the same shape DropdownMenu's own root plays for its single
 // trigger/content pair — Menubar itself (the outer bar) is the SEPARATE
 // scope roving tabindex and open-follows-hover coordinate across every
 // MenubarMenu's trigger.
 component MenubarMenu(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "contents" } data-gsxui-menubar-menu { attrs... } data-gsxui-slot-menubar-menu>{ children }</div>
+	<div class={ "contents" } { attrs... } data-gsxui-slot-menubar-menu>{ children }</div>
 }
 
 // MenubarTrigger is one pill in the bar. Unlike DropdownMenuTrigger (which
@@ -209,7 +208,6 @@ component MenubarTrigger(children gsx.Node, attrs gsx.Attrs) {
 		class={
 			"flex items-center rounded-sm px-1.5 py-[2px] text-sm font-medium outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
 		}
-		data-gsxui-menubar-trigger
 		type="button"
 		aria-haspopup="menu"
 		aria-expanded="false"
@@ -246,7 +244,6 @@ component MenubarContent(children gsx.Node, attrs gsx.Attrs) {
 		class={
 			"z-50 min-w-36 origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 data-[side=bottom]:starting:[&:popover-open]:-translate-y-2 data-[side=left]:starting:[&:popover-open]:translate-x-2 data-[side=right]:starting:[&:popover-open]:-translate-x-2 data-[side=top]:starting:[&:popover-open]:translate-y-2"
 		}
-		data-gsxui-menubar-content
 		popover="auto"
 		role="menu"
 		tabindex="-1"
@@ -276,7 +273,6 @@ component MenubarItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 				"text-foreground"
 			}
 		}
-		data-gsxui-menubar-item
 		data-variant={variant |> default("default")}
 		role="menuitem"
 		tabindex="-1"
@@ -320,7 +316,6 @@ component MenubarCheckboxItem(checked bool, value string, children gsx.Node, att
 		class={
 			"relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
 		}
-		data-gsxui-menubar-checkbox-item
 		role="menuitemcheckbox"
 		data-value={value}
 		{ if checked {
@@ -338,7 +333,6 @@ component MenubarCheckboxItem(checked bool, value string, children gsx.Node, att
 			class={
 				"pointer-events-none absolute right-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-4"
 			}
-			data-gsxui-menubar-checkbox-indicator
 			data-gsxui-slot-menubar-checkbox-item-indicator
 		>
 			<icon.Check/>
@@ -351,10 +345,10 @@ component MenubarCheckboxItem(checked bool, value string, children gsx.Node, att
 // server-rendered current value, stamped as data-value on the root — the
 // same server-rendered-checked contract as CheckboxItem, kept in sync by
 // menubar.js on selection and echoed on the group's own gsxui:change event.
-// data-gsxui-menubar-radio-group is the proximity anchor menubar.js uses to
+// data-gsxui-slot-menubar-radio-group is the proximity anchor menubar.js uses to
 // scope "clear every OTHER item in this group" to this group alone.
 component MenubarRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-menubar-radio-group role="group" data-value={value} { attrs... } data-gsxui-slot-menubar-radio-group>
+	<div role="group" data-value={value} { attrs... } data-gsxui-slot-menubar-radio-group>
 		{ children }
 	</div>
 }
@@ -372,7 +366,6 @@ component MenubarRadioItem(checked bool, value string, children gsx.Node, attrs 
 		class={
 			"relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
 		}
-		data-gsxui-menubar-radio-item
 		role="menuitemradio"
 		data-value={value}
 		{ if checked {
@@ -390,7 +383,6 @@ component MenubarRadioItem(checked bool, value string, children gsx.Node, attrs 
 			class={
 				"pointer-events-none absolute right-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-2 [&>svg]:fill-current"
 			}
-			data-gsxui-menubar-radio-indicator
 			data-gsxui-slot-menubar-radio-item-indicator
 		>
 			<icon.Circle/>
@@ -431,13 +423,13 @@ component MenubarShortcut(children gsx.Node, attrs gsx.Attrs) {
 // MenubarSub is the non-rendering submenu root — layout-neutral
 // (class="contents", same idiom as MenubarMenu's own root) so its
 // SubTrigger/SubContent children sit inline in the parent content's normal
-// item flow. data-gsxui-menubar-sub is the proximity anchor menubar.js uses
+// item flow. data-gsxui-slot-menubar-sub is the proximity anchor menubar.js uses
 // to pair a SubTrigger with its own SubContent (closest("[data-gsxui-
-// menubar-sub]")) and to scope the pointer-leave grace-period boundary
+// slot-menubar-sub]")) and to scope the pointer-leave grace-period boundary
 // check to "the whole sub" — same shape as DropdownMenuSub's own doc
 // comment.
 component MenubarSub(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "contents" } data-gsxui-menubar-sub { attrs... } data-gsxui-slot-menubar-sub>{ children }</div>
+	<div class={ "contents" } { attrs... } data-gsxui-slot-menubar-sub>{ children }</div>
 }
 
 // MenubarSubTrigger opens/closes its sibling MenubarSubContent (menubar.js:
@@ -476,7 +468,6 @@ component MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 		class={
 			"relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg:not([class*='size-'])]:size-4 [&>svg:last-child]:ml-auto [&>svg:last-child]:size-4"
 		}
-		data-gsxui-menubar-sub-trigger
 		role="menuitem"
 		aria-haspopup="menu"
 		aria-expanded="false"
@@ -508,7 +499,6 @@ component MenubarSubContent(children gsx.Node, attrs gsx.Attrs) {
 		class={
 			"z-50 min-w-[8rem] origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 data-[side=bottom]:starting:[&:popover-open]:-translate-y-2 data-[side=left]:starting:[&:popover-open]:translate-x-2 data-[side=right]:starting:[&:popover-open]:-translate-x-2 data-[side=top]:starting:[&:popover-open]:translate-y-2"
 		}
-		data-gsxui-menubar-sub-content
 		popover="auto"
 		role="menu"
 		tabindex="-1"
