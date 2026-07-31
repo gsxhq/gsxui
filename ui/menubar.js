@@ -40,7 +40,7 @@
 // pointerover/ArrowRight/click, unlike hover-card's own delayed open.
 //
 // toggle doesn't bubble — capture.
-import { on, emit, clampToViewport } from "./gsxui.js";
+import { on, emit, position } from "./gsxui.js";
 
 // contentOf resolves a trigger (or anything inside its own MenubarMenu) to
 // THAT menu's own content — scoped by data-gsxui-slot-menubar-menu, the
@@ -143,15 +143,14 @@ function openMenu(trigger) {
     }
   }
   if (content.matches(":popover-open")) return;
-  const r = trigger.getBoundingClientRect();
-  content.style.position = "fixed";
-  content.style.inset = "auto";
-  clampToViewport(content, r.left, r.bottom + 4);
   // Stamp open BEFORE showing: the toggle event that also stamps it is
   // queued as a separate task, and a paint can land in the gap — see
   // dropdown.js's own comment on the identical rule.
   content.dataset.state = "open";
   content.showPopover();
+  // Below the trigger, left-aligned, 4px sideOffset. Flip/shift/clamp +
+  // scroll/resize tracking: see gsxui.js.
+  position(content, trigger, { side: "bottom", sideOffset: 4 });
 }
 
 // switchBarMenu moves the roving tab stop to the adjacent ENABLED trigger
@@ -498,16 +497,16 @@ function openSub(trigger) {
   const content = subContentOf(trigger);
   if (!content) return null;
   if (content.matches(":popover-open")) return content;
-  const r = trigger.getBoundingClientRect();
-  content.style.position = "fixed";
-  content.style.inset = "auto";
-  clampToViewport(content, r.right, r.top - 4); // -4 offsets the content's own p-1 so the first item's text roughly aligns with the trigger's
   // Stamp open BEFORE showing — same flash-avoidance rule as the top-level
   // trigger's own openMenu.
   trigger.dataset.state = "open";
   trigger.setAttribute("aria-expanded", "true");
   content.dataset.state = "open";
   content.showPopover();
+  // To the right of its trigger; alignOffset -4 offsets the content's own
+  // p-1 so the first item's text roughly aligns with the trigger's.
+  // Flip/shift/clamp + scroll/resize tracking: see gsxui.js.
+  position(content, trigger, { side: "right", alignOffset: -4 });
   return content;
 }
 

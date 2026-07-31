@@ -14,7 +14,7 @@
 // popover closes its nested (DOM-descendant) auto popovers as part of the
 // same platform stack-unwind, so a submenu never needs to be closed by hand
 // when its parent menu closes.
-import { on, emit, clampToViewport } from "./gsxui.js";
+import { on, emit, position } from "./gsxui.js";
 
 const contentOf = (el) =>
   el
@@ -80,10 +80,6 @@ on("click", "[data-gsxui-slot-dropdown-menu-trigger]", (_e, trigger) => {
     content.hidePopover();
     return;
   }
-  const r = trigger.getBoundingClientRect();
-  content.style.position = "fixed";
-  content.style.inset = "auto";
-  clampToViewport(content, r.left, r.bottom + 4);
   // Stamp open BEFORE showing: the toggle event that also stamps it is
   // queued as a separate task (spec: "queue a popover toggle event task"),
   // and a paint can land in the gap — one frame of the menu fully visible
@@ -93,6 +89,10 @@ on("click", "[data-gsxui-slot-dropdown-menu-trigger]", (_e, trigger) => {
   // The toggle handler's own stamp stays as reconciliation for closes.
   content.dataset.state = "open";
   content.showPopover();
+  // Position AFTER showing (hidden popovers have no box): below the
+  // trigger, left-aligned (Radix DropdownMenuContent's align=start), 4px
+  // sideOffset. Flip/shift/clamp + scroll/resize tracking: see gsxui.js.
+  position(content, trigger, { side: "bottom", sideOffset: 4 });
 });
 
 on(
@@ -309,10 +309,6 @@ function openSub(trigger) {
   const content = subContentOf(trigger);
   if (!content) return null;
   if (content.matches(":popover-open")) return content;
-  const r = trigger.getBoundingClientRect();
-  content.style.position = "fixed";
-  content.style.inset = "auto";
-  clampToViewport(content, r.right, r.top - 4); // -4 offsets the content's own p-1 so the first item's text roughly aligns with the trigger's
   // Stamp open BEFORE showing — same flash-avoidance rule as the top-level
   // trigger's own click handler (a queued toggle event can otherwise leave
   // one frame painted in the stale closed state).
@@ -320,6 +316,10 @@ function openSub(trigger) {
   trigger.setAttribute("aria-expanded", "true");
   content.dataset.state = "open";
   content.showPopover();
+  // To the right of its trigger; alignOffset -4 offsets the content's own
+  // p-1 so the first item's text roughly aligns with the trigger's.
+  // Flip/shift/clamp + scroll/resize tracking: see gsxui.js.
+  position(content, trigger, { side: "right", alignOffset: -4 });
   return content;
 }
 

@@ -38,19 +38,178 @@ export function emit(el, name, detail) {
   );
 }
 
-// clampToViewport clamps a desired fixed-position (left, top) so a box of
-// the element's own offset size stays inside the visual viewport. The
-// siblings' documented no-clamp NOTE accepted edge imprecision as a stopgap
-// until CSS anchor positioning is Baseline; the theme editor's pickers
-// disproved the acceptance — an ordinary panel near the viewport edge
-// rendered its popover flush offscreen-left. Shift-only (no side flip), the
-// same semantics context-menu.js already ships. clientWidth/Height rather
-// than innerWidth/Height: the inner metrics include classic-scrollbar
-// gutters, and clamping against them tucks an edge under the scrollbar.
-// Call AFTER showPopover() — a hidden popover has no layout box.
-export function clampToViewport(content, left, top) {
-  const maxLeft = document.documentElement.clientWidth - content.offsetWidth;
-  const maxTop = document.documentElement.clientHeight - content.offsetHeight;
-  content.style.left = `${Math.max(0, Math.min(left, maxLeft))}px`;
-  content.style.top = `${Math.max(0, Math.min(top, maxTop))}px`;
+// --- anchored positioning --------------------------------------------------
+//
+// position() is the shared placement engine every floating surface in ui/
+// uses (popover, hover-card, tooltip, dropdown-menu + sub, select, menubar
+// + sub, combobox, navigation-menu, context-menu + sub). It reproduces the
+// slice of Radix's popper (Floating UI middleware) those components rely
+// on, in Radix's middleware order:
+//
+//   offset (sideOffset/alignOffset) → flip (main axis) → shift (cross
+//   axis) → hard clamp (both axes, last resort) → size (the
+//   --gsxui-available-height cap) → autoUpdate (window scroll capture +
+//   resize while open).
+//
+// DELTAS from Radix popper, all deliberate — this is a small parity layer,
+// not a Floating-UI port:
+//   - flip is MAIN AXIS ONLY: preferred side vs its opposite. No
+//     cross-axis fallback placements, no fallbackAxisSideDirection.
+//   - no anchor-detached "hide" middleware (content is never auto-hidden
+//     when the trigger scrolls out of view).
+//   - autoUpdate is window scroll (capture, passive) + resize only — no
+//     MutationObserver / element-resize tracking. gsxui's DOM is
+//     server-rendered and static while a popover is open; scroll and
+//     resize are the movements that actually occur.
+//   - no arrow support, no collisionBoundary/collisionPadding options:
+//     the boundary is always the viewport (documentElement client box —
+//     innerWidth/Height include classic-scrollbar gutters and clamping
+//     against them tucks an edge under the scrollbar).
+//
+// Call AFTER showPopover() — a hidden popover has no layout box. The
+// engine sets position:fixed / inset:auto / left / top itself, stamps
+// data-side with the PLACED side (the enter/exit animations key on
+// data-[side=...], so a flipped placement must animate from the flipped
+// direction, exactly as Radix recomputes placement), and restores the
+// authored data-side on close so the next open starts from the preference.
+// Cleanup is automatic: the content's own "toggle" (newState "closed")
+// releases the listeners, so a module only ever calls position().
+
+const CAP_PADDING = 8; // px kept clear of the viewport edge by the size cap
+
+// tracked: content element -> { update, onToggle, hadSide, authoredSide }.
+// One entry per open surface; position() on an already-tracked content
+// releases first, so listeners attach exactly once per open.
+const tracked = new Map();
+
+// position places `content` against `anchor` (an Element, re-measured on
+// every update so the content tracks it through scroll/resize, or a static
+// DOMRect-like object — context-menu's pointer anchor) and keeps it placed
+// while the popover stays open.
+//   side:        "top" | "bottom" | "left" | "right" (preferred side)
+//   align:       "start" | "center" | "end" (cross-axis alignment)
+//   sideOffset:  gap between anchor and content on the main axis
+//   alignOffset: shift along the cross axis from the aligned position
+//   flip:        set false to keep the preferred side unconditionally AND
+//                leave data-side untouched (context-menu's top-level content
+//                deliberately has none — see context-menu.gsx)
+//   cap:         set --gsxui-available-height (px from the placed edge to
+//                the viewport edge minus CAP_PADDING) for recipe CSS to
+//                consume as a max-height arm (select, combobox)
+export function position(content, anchor, opts = {}) {
+  release(content);
+  const {
+    side = "bottom",
+    align = "start",
+    sideOffset = 0,
+    alignOffset = 0,
+    flip = true,
+    cap = false,
+  } = opts;
+  const anchorRect =
+    anchor instanceof Element ? () => anchor.getBoundingClientRect() : () => anchor;
+  const update = () =>
+    applyPlacement(content, anchorRect(), {
+      side,
+      align,
+      sideOffset,
+      alignOffset,
+      flip,
+      cap,
+    });
+  const onToggle = (e) => {
+    if (e.newState === "closed") release(content);
+  };
+  content.addEventListener("toggle", onToggle);
+  window.addEventListener("scroll", update, { capture: true, passive: true });
+  window.addEventListener("resize", update);
+  tracked.set(content, {
+    update,
+    onToggle,
+    hadSide: content.hasAttribute("data-side"),
+    authoredSide: content.getAttribute("data-side"),
+  });
+  update();
+}
+
+// release detaches the reposition listeners and restores the authored
+// data-side. Idempotent; runs automatically on the content's close toggle.
+export function release(content) {
+  const entry = tracked.get(content);
+  if (!entry) return;
+  tracked.delete(content);
+  content.removeEventListener("toggle", entry.onToggle);
+  window.removeEventListener("scroll", entry.update, { capture: true });
+  window.removeEventListener("resize", entry.update);
+  // --gsxui-available-height is deliberately NOT removed here: release runs
+  // on the close toggle, while the 150ms discrete-transition exit is still
+  // playing, and un-capping max-height mid-exit makes the closing box grow.
+  // applyPlacement clears it before measuring on the next open instead.
+  // Restoring data-side now is safe — only the @starting-style ENTER arms
+  // key on data-[side=...]; the exit is a side-agnostic fade/scale.
+  if (entry.hadSide) content.setAttribute("data-side", entry.authoredSide);
+  else content.removeAttribute("data-side");
+}
+
+function applyPlacement(content, a, o) {
+  content.style.position = "fixed";
+  content.style.inset = "auto";
+  // Clear a previous update's cap before measuring — a stale (smaller)
+  // cap would shrink the box and corrupt the flip decision's natural size.
+  if (o.cap) content.style.removeProperty("--gsxui-available-height");
+  const vw = document.documentElement.clientWidth;
+  const vh = document.documentElement.clientHeight;
+  const w = content.offsetWidth;
+  let h = content.offsetHeight;
+  const vertical = o.side === "top" || o.side === "bottom";
+  // Main-axis flip: if the preferred side can't hold the content and the
+  // opposite side has more room, flip (Radix flip middleware, main axis).
+  let side = o.side;
+  if (o.flip) {
+    const room = {
+      top: a.top - o.sideOffset,
+      bottom: vh - a.bottom - o.sideOffset,
+      left: a.left - o.sideOffset,
+      right: vw - a.right - o.sideOffset,
+    };
+    const opposite = { top: "bottom", bottom: "top", left: "right", right: "left" }[side];
+    const need = vertical ? h : w;
+    if (need > room[side] && room[opposite] > room[side]) side = opposite;
+  }
+  // Size cap (Radix size middleware, height only): expose the room on the
+  // PLACED side; recipe CSS min()s it into its max-height, so re-measure.
+  if (o.cap && vertical) {
+    const avail =
+      (side === "bottom" ? vh - a.bottom - o.sideOffset : a.top - o.sideOffset) -
+      CAP_PADDING;
+    content.style.setProperty(
+      "--gsxui-available-height",
+      `${Math.max(0, Math.floor(avail))}px`,
+    );
+    h = content.offsetHeight;
+  }
+  let left, top;
+  if (vertical) {
+    top = side === "bottom" ? a.bottom + o.sideOffset : a.top - o.sideOffset - h;
+    left = alignedCoord(o.align, a.left, a.width, w) + o.alignOffset;
+    left = Math.max(0, Math.min(left, vw - w)); // cross-axis shift
+  } else {
+    left = side === "right" ? a.right + o.sideOffset : a.left - o.sideOffset - w;
+    top = alignedCoord(o.align, a.top, a.height, h) + o.alignOffset;
+    top = Math.max(0, Math.min(top, vh - h)); // cross-axis shift
+  }
+  // Last-resort clamp on BOTH axes (the pre-flip clampToViewport
+  // behaviour, preserved): even a flipped side that still overflows stays
+  // inside the viewport.
+  left = Math.max(0, Math.min(left, vw - w));
+  top = Math.max(0, Math.min(top, vh - h));
+  if (o.flip) content.dataset.side = side;
+  content.style.left = `${left}px`;
+  content.style.top = `${top}px`;
+}
+
+function alignedCoord(align, start, anchorSize, contentSize) {
+  if (align === "center") return start + anchorSize / 2 - contentSize / 2;
+  if (align === "end") return start + anchorSize - contentSize;
+  return start;
 }

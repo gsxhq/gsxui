@@ -33,7 +33,7 @@
 // command.js — a JS-only import would be invisible to
 // internal/registry.Deps' go/parser scan over the generated .x.go, silently
 // breaking CLI vendoring (see the .gsx file's own GAP entry).
-import { on, emit, clampToViewport } from "./gsxui.js";
+import { on, emit, position } from "./gsxui.js";
 
 const rootOf = (el) => el.closest("[data-gsxui-slot-combobox]");
 const inputOf = (root) =>
@@ -304,18 +304,19 @@ function openContent(root) {
   if (!content || content.matches(":popover-open")) return;
   const anchor =
     input?.closest("[data-gsxui-slot-combobox-input-group]") ?? input;
-  if (anchor) {
-    const r = anchor.getBoundingClientRect();
-    content.style.position = "fixed";
-    content.style.inset = "auto";
-    clampToViewport(content, r.left, r.bottom + 4);
-    content.style.minWidth = `${r.width}px`;
-  }
+  if (anchor) content.style.minWidth = `${anchor.getBoundingClientRect().width}px`;
   // Stamp open BEFORE showing — the toggle event that also stamps it is a
   // separate queued task; a paint can land in the gap and flash the closed
   // state (same fix select.js/dropdown.js document).
   content.dataset.state = "open";
   content.showPopover();
+  // Position AFTER showing (hidden popovers have no box): below the input
+  // group, left-aligned, 4px sideOffset. cap sets
+  // --gsxui-available-height, which the recipe's max-height min()s in so a
+  // bottom-edge list shrinks and scrolls internally. Flip/shift/clamp +
+  // scroll/resize tracking: see gsxui.js.
+  if (anchor)
+    position(content, anchor, { side: "bottom", sideOffset: 4, cap: true });
   // Reopening after a commit/init/reset shows every option, not just the
   // one whose label happens to be sitting in the input — see filter()'s and
   // commit()'s own headers (FIX, review round 1, CRITICAL).

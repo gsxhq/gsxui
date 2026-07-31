@@ -60,7 +60,7 @@
 //
 // No static data-side is ever stamped on the top-level content — see
 // context-menu.gsx's own doc comment. toggle doesn't bubble — capture.
-import { on, emit } from "./gsxui.js";
+import { on, emit, position } from "./gsxui.js";
 
 const contentOf = (el) =>
   el
@@ -106,29 +106,36 @@ on("contextmenu", "[data-gsxui-slot-context-menu-trigger]", (e, trigger) => {
   // (light dismiss) before this event fires — see the header comment above.
   if (content.matches(":popover-open")) content.hidePopover();
   const openAt = () => {
-    content.style.position = "fixed";
-    content.style.inset = "auto";
     // Stamp open BEFORE showing — the toggle event that also stamps it is a
     // queued task, and a paint in the gap flashes one closed-state frame
     // before the enter animation restarts (see dropdown.js's comment).
     content.dataset.state = "open";
     content.showPopover();
-    // Position numerically AFTER showing (hidden popovers have no box) and
-    // never via translate/transform: the discrete-transition enter/exit
-    // animates the `translate` and `scale` properties (see popover.gsx's
-    // ADAPT comment), so a positioning translate would be fought by the
-    // transition in both directions.
-    // Clamp to the viewport edges (the ADAPT from the siblings' no-clamp
-    // precedent, see the header comment above) so a right-click near the
-    // right/bottom edge doesn't spawn an offscreen menu. clientWidth/Height,
-    // not innerWidth/Height: the inner metrics include classic-scrollbar
-    // gutters, and clamping against them tucks the menu's edge under the
-    // scrollbar (found in the Task 7 browser pass on a real-scrollbar
-    // window).
-    const maxLeft = document.documentElement.clientWidth - content.offsetWidth;
-    const maxTop = document.documentElement.clientHeight - content.offsetHeight;
-    content.style.left = `${Math.max(0, Math.min(e.clientX, maxLeft))}px`;
-    content.style.top = `${Math.max(0, Math.min(e.clientY, maxTop))}px`;
+    // Position AFTER showing (hidden popovers have no box) and never via
+    // translate/transform: the discrete-transition enter/exit animates the
+    // `translate` and `scale` properties (see popover.gsx's ADAPT comment),
+    // so a positioning translate would be fought by the transition in both
+    // directions.
+    //
+    // Pointer-anchored: a zero-size static rect at the cursor (Radix's own
+    // virtual anchor), flip:false — a context menu keeps its top-left at
+    // the cursor and only shift-clamps against the viewport edges (the
+    // ADAPT from the siblings' no-clamp precedent, see the header comment
+    // above), matching the prior inline clamp. flip:false also leaves
+    // data-side alone — no static data-side is ever stamped on this
+    // content (see context-menu.gsx). The engine still supplies the
+    // scroll/resize reposition tracking; the anchor rect is viewport-fixed
+    // client coordinates, so on scroll the menu re-clamps in place rather
+    // than tracking page content — Radix's virtual-anchor behaviour.
+    const rect = {
+      left: e.clientX,
+      top: e.clientY,
+      right: e.clientX,
+      bottom: e.clientY,
+      width: 0,
+      height: 0,
+    };
+    position(content, rect, { flip: false });
   };
   // On macOS the contextmenu event fires at mousedown time, so a button is
   // still held here (e.buttons != 0) and the gesture's own pointerup is
@@ -373,11 +380,6 @@ function openSub(trigger) {
   const content = subContentOf(trigger);
   if (!content) return null;
   if (content.matches(":popover-open")) return content;
-  const r = trigger.getBoundingClientRect();
-  content.style.position = "fixed";
-  content.style.inset = "auto";
-  content.style.left = `${r.right}px`;
-  content.style.top = `${r.top - 4}px`; // -4 offsets the content's own p-1 so the first item's text roughly aligns with the trigger's
   // Stamp open BEFORE showing — same flash-avoidance rule as the top-level
   // opener's own contextmenu handler (a queued toggle event can otherwise
   // leave one frame painted in the stale closed state).
@@ -385,6 +387,12 @@ function openSub(trigger) {
   trigger.setAttribute("aria-expanded", "true");
   content.dataset.state = "open";
   content.showPopover();
+  // To the right of its trigger; alignOffset -4 offsets the content's own
+  // p-1 so the first item's text roughly aligns with the trigger's. Unlike
+  // the pointer-anchored top-level content, a SubContent is an ordinary
+  // trigger-anchored surface with an authored data-side="right", so it
+  // gets the full flip/shift/clamp treatment like dropdown-menu's own sub.
+  position(content, trigger, { side: "right", alignOffset: -4 });
   return content;
 }
 
