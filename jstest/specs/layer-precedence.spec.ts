@@ -1526,3 +1526,36 @@ test("Toaster's inset custom property still reaches the toast card", async ({
   await expect(card).toBeVisible();
   expect(await card.evaluate((n) => getComputedStyle(n).right)).toBe("24px");
 });
+
+// Command's five command-dialog-content descendant rules and CommandItem's
+// data-selected background had no fixture reaching them when Command migrated:
+// site/examples/command/basic.gsx renders its CommandDialog closed, and nothing
+// stamps data-selected at rest. Both translate faithfully and compile, but
+// "compiles" is not "applies" — these open the dialog and stamp the attribute so
+// the rules are actually exercised.
+
+test("CommandDialog's in-dialog density reaches items once the dialog is open", async ({ page }) => {
+  await page.goto("/x/command/basic");
+  const dialog = page.locator("[data-gsxui-slot-command-dialog-content]");
+  await dialog.evaluate((el) =>
+    el.dispatchEvent(new CustomEvent("gsxui:request-open", { bubbles: true, cancelable: true })),
+  );
+  await expect(dialog).toHaveJSProperty("open", true);
+  const item = dialog.locator("[data-gsxui-slot-command-item]").first();
+  // The in-dialog rule loosens the item's vertical padding; a plain CommandItem
+  // outside a dialog does not carry it.
+  expect(await item.evaluate((n) => getComputedStyle(n).padding)).toBe("12px 8px");
+});
+
+test("CommandItem's data-selected background paints the accent", async ({ page }) => {
+  await page.goto("/x/command/basic");
+  const dialog = page.locator("[data-gsxui-slot-command-dialog-content]");
+  await dialog.evaluate((el) =>
+    el.dispatchEvent(new CustomEvent("gsxui:request-open", { bubbles: true, cancelable: true })),
+  );
+  await expect(dialog).toHaveJSProperty("open", true);
+  const item = dialog.locator("[data-gsxui-slot-command-item]").first();
+  // data-selected is command.js's runtime stamp, so drive it directly.
+  await item.evaluate((n) => n.setAttribute("data-selected", "true"));
+  expect(await item.evaluate((n) => getComputedStyle(n).backgroundColor)).toBe("oklch(0.97 0 0)");
+});
