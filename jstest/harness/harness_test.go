@@ -98,7 +98,7 @@ func TestExampleRouteRendersTheExample(t *testing.T) {
 		`<link rel="stylesheet" href="/static/jstest/.tmp/site.css">`,
 		`<script type="module" src="/ui/index.js"></script>`,
 		`class="min-h-svh bg-background text-foreground antialiased"`,
-		`data-gsxui-toggle`,
+		`data-gsxui-slot-toggle`,
 		`data-gsxui-toaster`,
 		`data-gsxui-toast-template="default"`,
 	} {

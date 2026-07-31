@@ -6,7 +6,7 @@
 // interacts with the thumb — see docs/jsx-parity.md `## slider`.
 import { on } from "./gsxui.js";
 
-on("input", "[data-gsxui-slider]", (_event, slider) => {
+on("input", "[data-gsxui-slot-slider]", (_event, slider) => {
   const min = Number(slider.min || 0);
   const max = Number(slider.max || 100);
   const value = Number(slider.value);

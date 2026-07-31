@@ -73,7 +73,6 @@ component Slider(value float64, min float64, max float64, step float64, attrs gs
 	}}
 	<input
 		type="range"
-		data-gsxui-slider
 		min={min}
 		max={maxV}
 		step={stepV}

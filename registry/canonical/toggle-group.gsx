@@ -73,7 +73,6 @@ component ToggleGroup(groupType string, variant string, size string, spacing str
 		}
 	}}
 	<div
-		data-gsxui-toggle-group
 		data-variant={variant |> default("default")}
 		data-size={size |> default("default")}
 		data-spacing={sp}
@@ -116,7 +115,6 @@ component ToggleGroupItem(groupType string, variant string, size string, spacing
 	}}
 	<button
 		type="button"
-		data-gsxui-toggle-group-item
 		data-variant={variant |> default("default")}
 		data-size={size |> default("default")}
 		data-spacing={sp}

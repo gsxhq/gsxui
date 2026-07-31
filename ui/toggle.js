@@ -4,7 +4,11 @@
 // gsxui:open/gsxui:close).
 import { on, emit } from "./gsxui.js";
 
-on("click", "[data-gsxui-toggle]", (_event, toggle) => {
+// ToggleGroupItem stamps data-gsxui-slot-toggle too — purely to share
+// Toggle's CSS — while toggle-group.js owns its behavior; exclude it here so
+// one click never fires both modules' handlers (the delegation registry
+// dispatches to every matching selector).
+on("click", "[data-gsxui-slot-toggle]:not([data-gsxui-slot-toggle-group-item])", (_event, toggle) => {
   const pressed = toggle.getAttribute("aria-pressed") !== "true";
   toggle.setAttribute("aria-pressed", pressed ? "true" : "false");
   toggle.dataset.state = pressed ? "on" : "off";
