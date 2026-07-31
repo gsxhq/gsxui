@@ -87,9 +87,9 @@ test("compiled site Button fallback has the exact normal-site scope", () => {
   );
   for (const selector of selectors) {
     assert.equal(
-      hasExactNormalSiteScope(selector),
+      hasExactNormalSiteScope(selector) || hasExactPreviewSectionScope(selector),
       true,
-      `Button fallback can escape the normal-site scope: ${selector.toString()}`,
+      `Button fallback can escape both the normal-site scope and the theme-preview section scope: ${selector.toString()}`,
     );
   }
 });
@@ -285,6 +285,33 @@ function hasExactNormalSiteScope(
       attribute.type === "attribute" &&
       attribute.attribute.toLowerCase() === "data-theme-button-preview" &&
       attribute.operator === undefined
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// hasExactPreviewSectionScope accepts web/theme-preview-button.css's shape: an
+// ancestor compound carrying [data-theme-preview-style="…"] followed by a
+// descendant combinator. Such elements exist only inside the theme-preview
+// document, so a rule scoped this way can no more escape into the normal site
+// than one carrying the body scope above.
+function hasExactPreviewSectionScope(
+  selector: ReturnType<
+    ReturnType<typeof selectorParser>["astSync"]
+  >["nodes"][number],
+) {
+  const nodes = selector.nodes;
+  for (let index = 0; index + 1 < nodes.length; index++) {
+    const scope = nodes[index];
+    const descendant = nodes[index + 1];
+    if (
+      scope.type === "attribute" &&
+      scope.attribute.toLowerCase() === "data-theme-preview-style" &&
+      scope.operator === "=" &&
+      descendant.type === "combinator" &&
+      descendant.value.trim() === ""
     ) {
       return true;
     }

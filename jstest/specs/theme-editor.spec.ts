@@ -544,6 +544,108 @@ test("CSS import ignores valid unrelated implicit nesting", async ({ page }) => 
   await expect.poll(() => iframeVariable(page, "primary")).toBe("green");
 });
 
+// The preview body scope-disables web/site-button.css, so raw slot-button
+// markup inside the gallery (Calendar day/nav buttons) gets its Button chrome
+// from the generated web/theme-preview-button.css instead — the NOVA section
+// from Nova's Button recipe, the MAIA section from Maia's. All of it is
+// measured against the /x/calendar/basic fixture, which renders under the
+// normal site-button fallback, never assumed.
+test("preview calendar day buttons keep per-style Button chrome in both sections", async ({
+  page,
+}) => {
+  const chrome = (element: Element) => {
+    const style = getComputedStyle(element);
+    return {
+      radius: style.borderRadius,
+      alignItems: style.alignItems,
+      justifyContent: style.justifyContent,
+    };
+  };
+
+  await page.goto("/x/calendar/basic");
+  const fixtureChrome = await page
+    .locator('[data-gsxui-slot-calendar-day-button][data-date="2026-01-15"]')
+    .evaluate(chrome);
+  expect(fixtureChrome.alignItems).toBe("center");
+  expect(fixtureChrome.justifyContent).toBe("center");
+  expect(fixtureChrome.radius).not.toBe("0px");
+
+  await page.goto("/theme");
+  await expect(page.locator("[data-theme-preview-status]")).toHaveText("Live");
+  const preview = page.frameLocator("[data-theme-preview-frame]");
+  const nova = preview.locator('[data-theme-preview-style="nova"]');
+  const maia = preview.locator('[data-theme-preview-style="maia"]');
+
+  const novaChrome = await nova
+    .locator('[data-gsxui-slot-calendar-day-button][data-date="2026-01-15"]')
+    .first()
+    .evaluate(chrome);
+  expect(novaChrome).toEqual(fixtureChrome);
+
+  await page.locator('[data-theme-style="maia"]').click();
+  await expect(maia).not.toHaveAttribute("hidden", "");
+  const maiaButtonRadius = (
+    await maia
+      .getByRole("button", { name: "Default" })
+      .first()
+      .evaluate(chrome)
+  ).radius;
+  const maiaChrome = await maia
+    .locator('[data-gsxui-slot-calendar-day-button][data-date="2026-01-15"]')
+    .first()
+    .evaluate(chrome);
+  expect(maiaChrome.alignItems).toBe("center");
+  expect(maiaChrome.justifyContent).toBe("center");
+  expect(maiaChrome.radius).toBe(maiaButtonRadius);
+  expect(maiaChrome.radius).not.toBe(novaChrome.radius);
+});
+
+// The preview entry loads the real behaviour barrel, so the gallery's
+// interactive components must actually operate inside the iframe.
+test("preview gallery menus and dialogs operate inside the iframe", async ({
+  page,
+}) => {
+  await page.goto("/theme");
+  await expect(page.locator("[data-theme-preview-status]")).toHaveText("Live");
+  const nova = page
+    .frameLocator("[data-theme-preview-frame]")
+    .locator('[data-theme-preview-style="nova"]');
+
+  const dropdownTrigger = nova
+    .locator("[data-gsxui-slot-dropdown-menu-trigger]")
+    .first();
+  await dropdownTrigger.scrollIntoViewIfNeeded();
+  await dropdownTrigger.click();
+  const dropdownContent = nova
+    .locator("[data-gsxui-slot-dropdown-menu-content]")
+    .first();
+  await expect
+    .poll(() =>
+      dropdownContent.evaluate((element) => element.matches(":popover-open")),
+    )
+    .toBe(true);
+  await expect(dropdownContent.getByText("My Account")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect
+    .poll(() =>
+      dropdownContent.evaluate((element) => element.matches(":popover-open")),
+    )
+    .toBe(false);
+
+  const dialogTrigger = nova.locator("[data-gsxui-slot-dialog-trigger]").first();
+  await dialogTrigger.scrollIntoViewIfNeeded();
+  await dialogTrigger.click();
+  const dialog = nova.locator("dialog[data-gsxui-slot-dialog-content]").first();
+  await expect.poll(() => dialog.evaluate((element) => (element as HTMLDialogElement).open)).toBe(
+    true,
+  );
+  await expect(dialog.getByText("Edit profile").first()).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect
+    .poll(() => dialog.evaluate((element) => (element as HTMLDialogElement).open))
+    .toBe(false);
+});
+
 test("theme editor exposes Retry when the preview never handshakes", async ({
   page,
 }) => {
