@@ -67,58 +67,65 @@ import (
 func Slider(value float64, min float64, max float64, step float64, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-		var _gsxnum [32]byte
-//line slider.gsx:59:2
-		maxV := max
-		if maxV == 0 {
-			maxV = 100
-		}
-		stepV := step
-		if stepV == 0 {
-			stepV = 1
-		}
-		fillPct := 0.0
-		if maxV > min {
-			fillPct = (value - min) / (maxV - min) * 100
-		}
-		fill := strconv.FormatFloat(fillPct, 'f', -1, 64)
-//line slider.gsx:74:2
-		_gsxgw.S("<input")
-		if !attrs.Has("type") {
-			_gsxgw.S(" type=\"range\"")
-		}
-		if !attrs.Has("min") {
-			_gsxgw.S(" min=\"")
-			_gsxgw.FloatInto(_gsxnum[:], float64(min))
-			_gsxgw.S("\"")
-		}
-		if !attrs.Has("max") {
-			_gsxgw.S(" max=\"")
-			_gsxgw.FloatInto(_gsxnum[:], float64(maxV))
-			_gsxgw.S("\"")
-		}
-		if !attrs.Has("step") {
-			_gsxgw.S(" step=\"")
-			_gsxgw.FloatInto(_gsxnum[:], float64(stepV))
-			_gsxgw.S("\"")
-		}
-		if !attrs.Has("value") {
-			_gsxgw.S(" value=\"")
-			_gsxgw.FloatInto(_gsxnum[:], float64(value))
-			_gsxgw.S("\"")
-		}
-		if !attrs.Has("style") {
-			_gsxgw.S(" style=\"--fill: ")
-			_gsxgw.AttrValue(_gsxrt.StyleValue(string(fill)))
-			_gsxgw.S("%\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("w-full cursor-pointer bg-transparent disabled:cursor-not-allowed disabled:opacity-50 [&::-webkit-slider-runnable-track]:h-1 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-[linear-gradient(to_right,var(--primary)_0%,var(--primary)_var(--fill,0%),var(--muted)_var(--fill,0%),var(--muted)_100%)] [&::-moz-range-track]:h-1 [&::-moz-range-track]:rounded-full [&::-moz-range-track]:bg-[linear-gradient(to_right,var(--primary)_0%,var(--primary)_var(--fill,0%),var(--muted)_var(--fill,0%),var(--muted)_100%)] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:size-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-primary [&::-webkit-slider-thumb]:bg-contrast [&::-webkit-slider-thumb]:-mt-1 [&::-webkit-slider-thumb]:transition-shadow [&::-webkit-slider-thumb]:duration-150 [&::-moz-range-thumb]:size-3 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border [&::-moz-range-thumb]:border-primary [&::-moz-range-thumb]:bg-contrast [&::-moz-range-thumb]:transition-shadow [&::-moz-range-thumb]:duration-150 hover:[&::-webkit-slider-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)] focus-visible:[&::-webkit-slider-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)] active:[&::-webkit-slider-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)] hover:[&::-moz-range-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)] focus-visible:[&::-moz-range-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)] active:[&::-moz-range-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)]"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "input", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-slider"})
-		_gsxgw.BoolAttr("data-gsxui-slot-slider", true)
-		_gsxgw.S(">")
-		return _gsxgw.Err()
+		return _gsxrenderSlider(ctx, _gsxgw, value, min, max, step, attrs)
 	})
+}
+
+func _gsxrenderSlider(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, value float64, min float64, max float64, step float64, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+	var _gsxnum [32]byte
+//line slider.gsx:59:2
+	maxV := max
+	if maxV == 0 {
+		maxV = 100
+	}
+	stepV := step
+	if stepV == 0 {
+		stepV = 1
+	}
+	fillPct := 0.0
+	if maxV > min {
+		fillPct = (value - min) / (maxV - min) * 100
+	}
+	fill := strconv.FormatFloat(fillPct, 'f', -1, 64)
+//line slider.gsx:74:2
+	_gsxgw.S("<input")
+	if !attrs.Has("type") {
+		_gsxgw.S(" type=\"range\"")
+	}
+	if !attrs.Has("min") {
+		_gsxgw.S(" min=\"")
+		_gsxgw.FloatInto(_gsxnum[:], float64(min))
+		_gsxgw.S("\"")
+	}
+	if !attrs.Has("max") {
+		_gsxgw.S(" max=\"")
+		_gsxgw.FloatInto(_gsxnum[:], float64(maxV))
+		_gsxgw.S("\"")
+	}
+	if !attrs.Has("step") {
+		_gsxgw.S(" step=\"")
+		_gsxgw.FloatInto(_gsxnum[:], float64(stepV))
+		_gsxgw.S("\"")
+	}
+	if !attrs.Has("value") {
+		_gsxgw.S(" value=\"")
+		_gsxgw.FloatInto(_gsxnum[:], float64(value))
+		_gsxgw.S("\"")
+	}
+	if !attrs.Has("style") {
+		_gsxgw.S(" style=\"--fill: ")
+		_gsxgw.AttrValue(_gsxrt.StyleValue(string(fill)))
+		_gsxgw.S("%\"")
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("w-full cursor-pointer bg-transparent disabled:cursor-not-allowed disabled:opacity-50 [&::-webkit-slider-runnable-track]:h-1 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-[linear-gradient(to_right,var(--primary)_0%,var(--primary)_var(--fill,0%),var(--muted)_var(--fill,0%),var(--muted)_100%)] [&::-moz-range-track]:h-1 [&::-moz-range-track]:rounded-full [&::-moz-range-track]:bg-[linear-gradient(to_right,var(--primary)_0%,var(--primary)_var(--fill,0%),var(--muted)_var(--fill,0%),var(--muted)_100%)] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:size-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-primary [&::-webkit-slider-thumb]:bg-contrast [&::-webkit-slider-thumb]:-mt-1 [&::-webkit-slider-thumb]:transition-shadow [&::-webkit-slider-thumb]:duration-150 [&::-moz-range-thumb]:size-3 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border [&::-moz-range-thumb]:border-primary [&::-moz-range-thumb]:bg-contrast [&::-moz-range-thumb]:transition-shadow [&::-moz-range-thumb]:duration-150 hover:[&::-webkit-slider-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)] focus-visible:[&::-webkit-slider-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)] active:[&::-webkit-slider-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)] hover:[&::-moz-range-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)] focus-visible:[&::-moz-range-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)] active:[&::-moz-range-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)]"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "input", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-slider"})
+	_gsxgw.BoolAttr("data-gsxui-slot-slider", true)
+	_gsxgw.S(">")
+	return _gsxgw.Err()
 }

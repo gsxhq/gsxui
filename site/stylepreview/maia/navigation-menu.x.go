@@ -56,22 +56,29 @@ import (
 func NavigationMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line navigation-menu.gsx:48:2
-		_gsxgw.S("<nav class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative flex max-w-max flex-1 items-center justify-center"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		if !attrs.Has("data-viewport") {
-			_gsxgw.S(" data-viewport=\"false\"")
-		}
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "nav", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu"})
-		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu", true)
-		_gsxgw.S(">")
-//line navigation-menu.gsx:54:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</nav>")
-		return _gsxgw.Err()
+		return _gsxrenderNavigationMenu(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderNavigationMenu(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line navigation-menu.gsx:48:2
+	_gsxgw.S("<nav class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative flex max-w-max flex-1 items-center justify-center"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	if !attrs.Has("data-viewport") {
+		_gsxgw.S(" data-viewport=\"false\"")
+	}
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "nav", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu"})
+	_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu", true)
+	_gsxgw.S(">")
+//line navigation-menu.gsx:54:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</nav>")
+	return _gsxgw.Err()
 }
 
 //line navigation-menu.gsx:58:1
@@ -84,19 +91,26 @@ func NavigationMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func NavigationMenuList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line navigation-menu.gsx:63:2
-		_gsxgw.S("<ul class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-1 list-none items-center justify-center gap-0"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "ul", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu-list"})
-		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-list", true)
-		_gsxgw.S(">")
-//line navigation-menu.gsx:68:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</ul>")
-		return _gsxgw.Err()
+		return _gsxrenderNavigationMenuList(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderNavigationMenuList(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line navigation-menu.gsx:63:2
+	_gsxgw.S("<ul class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-1 list-none items-center justify-center gap-0"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "ul", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu-list"})
+	_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-list", true)
+	_gsxgw.S(">")
+//line navigation-menu.gsx:68:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</ul>")
+	return _gsxgw.Err()
 }
 
 //line navigation-menu.gsx:72:1
@@ -110,19 +124,26 @@ func NavigationMenuList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func NavigationMenuItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line navigation-menu.gsx:78:2
-		_gsxgw.S("<li class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "li", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu-item"})
-		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-item", true)
-		_gsxgw.S(">")
-//line navigation-menu.gsx:79:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</li>")
-		return _gsxgw.Err()
+		return _gsxrenderNavigationMenuItem(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderNavigationMenuItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line navigation-menu.gsx:78:2
+	_gsxgw.S("<li class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "li", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu-item"})
+	_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-item", true)
+	_gsxgw.S(">")
+//line navigation-menu.gsx:79:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</li>")
+	return _gsxgw.Err()
 }
 
 //line navigation-menu.gsx:83:1
@@ -172,32 +193,39 @@ func NavigationMenuItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line navigation-menu.gsx:125:2
-		_gsxgw.S("<button class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("inline-flex h-9 w-max items-center justify-center rounded-lg px-2.5 py-1.5 text-sm font-medium transition-all outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-accent/50 data-[state=open]:text-accent-foreground data-[state=open]:hover:bg-accent data-[state=open]:focus:bg-accent"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		if !attrs.Has("type") {
-			_gsxgw.S(" type=\"button\"")
-		}
-		if !attrs.Has("aria-expanded") {
-			_gsxgw.S(" aria-expanded=\"false\"")
-		}
-		if !attrs.Has("data-state") {
-			_gsxgw.S(" data-state=\"closed\"")
-		}
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu-trigger"})
-		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-trigger", true)
-		_gsxgw.S(">")
-//line navigation-menu.gsx:135:3
-		_gsxgw.Node(ctx, children)
-//line navigation-menu.gsx:135:15
-		_gsxgw.Text(string(" "))
-//line navigation-menu.gsx:136:3
-		_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("relative top-px ml-1 size-3 transition duration-300 [[data-state=open]_&]:rotate-180"))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-navigation-menu-trigger-icon", Value: _gsxrt.Toggle(true)}})...))
-		_gsxgw.S("</button>")
-		return _gsxgw.Err()
+		return _gsxrenderNavigationMenuTrigger(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderNavigationMenuTrigger(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line navigation-menu.gsx:125:2
+	_gsxgw.S("<button class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("inline-flex h-9 w-max items-center justify-center rounded-lg px-2.5 py-1.5 text-sm font-medium transition-all outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-accent/50 data-[state=open]:text-accent-foreground data-[state=open]:hover:bg-accent data-[state=open]:focus:bg-accent"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	if !attrs.Has("type") {
+		_gsxgw.S(" type=\"button\"")
+	}
+	if !attrs.Has("aria-expanded") {
+		_gsxgw.S(" aria-expanded=\"false\"")
+	}
+	if !attrs.Has("data-state") {
+		_gsxgw.S(" data-state=\"closed\"")
+	}
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu-trigger"})
+	_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-trigger", true)
+	_gsxgw.S(">")
+//line navigation-menu.gsx:135:3
+	_gsxgw.Node(ctx, children)
+//line navigation-menu.gsx:135:15
+	_gsxgw.Text(string(" "))
+//line navigation-menu.gsx:136:3
+	_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("relative top-px ml-1 size-3 transition duration-300 [[data-state=open]_&]:rotate-180"))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-navigation-menu-trigger-icon", Value: _gsxrt.Toggle(true)}})...))
+	_gsxgw.S("</button>")
+	return _gsxgw.Err()
 }
 
 //line navigation-menu.gsx:143:1
@@ -269,28 +297,35 @@ func NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func NavigationMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line navigation-menu.gsx:207:2
-		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("top-0 left-0 p-1 md:absolute [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:top-full [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:mt-1.5 [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:overflow-hidden [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:rounded-lg [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:border [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:bg-popover [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:text-popover-foreground [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:shadow opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 data-[side=bottom]:starting:[&:popover-open]:-translate-y-2 data-[side=left]:starting:[&:popover-open]:translate-x-2 data-[side=right]:starting:[&:popover-open]:-translate-x-2 data-[side=top]:starting:[&:popover-open]:translate-y-2"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		if !attrs.Has("popover") {
-			_gsxgw.S(" popover=\"manual\"")
-		}
-		if !attrs.Has("data-state") {
-			_gsxgw.S(" data-state=\"closed\"")
-		}
-		if !attrs.Has("data-side") {
-			_gsxgw.S(" data-side=\"bottom\"")
-		}
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu-content"})
-		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-content", true)
-		_gsxgw.S(">")
-//line navigation-menu.gsx:217:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderNavigationMenuContent(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderNavigationMenuContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line navigation-menu.gsx:207:2
+	_gsxgw.S("<div class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("top-0 left-0 p-1 md:absolute [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:top-full [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:mt-1.5 [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:overflow-hidden [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:rounded-lg [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:border [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:bg-popover [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:text-popover-foreground [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:shadow opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 data-[side=bottom]:starting:[&:popover-open]:-translate-y-2 data-[side=left]:starting:[&:popover-open]:translate-x-2 data-[side=right]:starting:[&:popover-open]:-translate-x-2 data-[side=top]:starting:[&:popover-open]:translate-y-2"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	if !attrs.Has("popover") {
+		_gsxgw.S(" popover=\"manual\"")
+	}
+	if !attrs.Has("data-state") {
+		_gsxgw.S(" data-state=\"closed\"")
+	}
+	if !attrs.Has("data-side") {
+		_gsxgw.S(" data-side=\"bottom\"")
+	}
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu-content"})
+	_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-content", true)
+	_gsxgw.S(">")
+//line navigation-menu.gsx:217:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line navigation-menu.gsx:221:1
@@ -318,67 +353,74 @@ func NavigationMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func NavigationMenuLink(active bool, variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line navigation-menu.gsx:241:2
-		linkVariant := variant
-		if linkVariant == "" {
-			linkVariant = "default"
-		}
-		linkActive := "false"
-		if active {
-			linkActive = "true"
-		}
-//line navigation-menu.gsx:251:2
-		_gsxgw.S("<a")
-		_gsxv0 := "flex flex-col gap-1 rounded-lg p-2 text-sm transition-all outline-none [[data-gsxui-slot-navigation-menu-content]_&]:rounded-md hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 [[data-gsxui-slot-navigation-menu-content]_&]:focus:ring-0 [[data-gsxui-slot-navigation-menu-content]_&]:focus:outline-none [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
-		var _gsxv1 string
-		switch linkVariant {
-		case "trigger":
-			_gsxv1 = "inline-flex h-9 w-max items-center justify-center rounded-lg px-2.5 py-1.5 text-sm font-medium transition-all outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-accent/50 data-[state=open]:text-accent-foreground data-[state=open]:hover:bg-accent data-[state=open]:focus:bg-accent"
-		default:
-			_gsxv1 = "outline-none"
-		}
-		var _gsxv2 string
-		switch linkActive {
-		case "true":
-			_gsxv2 = "bg-accent/50 text-accent-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent"
-		default:
-			_gsxv2 = "outline-none"
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		if !attrs.Has("data-variant") {
-			_gsxgw.S(" data-variant=\"")
-			_gsxgw.AttrValue(string(linkVariant))
-			_gsxgw.S("\"")
-		}
-		if active {
-			if !attrs.Has("data-active") {
-				_gsxgw.S(" data-active=\"true\"")
-			}
-		} else {
-			if !attrs.Has("data-active") {
-				_gsxgw.S(" data-active=\"false\"")
-			}
-		}
-		_gsxv3 := []string{"class", "style", "data-gsxui-slot-navigation-menu-link"}
-		var _gsxv4 bool
-		if linkVariant == "trigger" {
-			_gsxv4 = true
-			_gsxv3 = append(_gsxv3, "data-gsxui-slot-navigation-menu-trigger")
-		}
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "a", attrs, _gsxrt.AttrSinks{}, _gsxv3)
-		if _gsxv4 {
-			_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-trigger", true)
-		}
-		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-link", true)
-		_gsxgw.S(">")
-//line navigation-menu.gsx:279:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</a>")
-		return _gsxgw.Err()
+		return _gsxrenderNavigationMenuLink(ctx, _gsxgw, active, variant, children, attrs)
 	})
+}
+
+func _gsxrenderNavigationMenuLink(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, active bool, variant string, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line navigation-menu.gsx:241:2
+	linkVariant := variant
+	if linkVariant == "" {
+		linkVariant = "default"
+	}
+	linkActive := "false"
+	if active {
+		linkActive = "true"
+	}
+//line navigation-menu.gsx:251:2
+	_gsxgw.S("<a")
+	_gsxv0 := "flex flex-col gap-1 rounded-lg p-2 text-sm transition-all outline-none [[data-gsxui-slot-navigation-menu-content]_&]:rounded-md hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 [[data-gsxui-slot-navigation-menu-content]_&]:focus:ring-0 [[data-gsxui-slot-navigation-menu-content]_&]:focus:outline-none [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
+	var _gsxv1 string
+	switch linkVariant {
+	case "trigger":
+		_gsxv1 = "inline-flex h-9 w-max items-center justify-center rounded-lg px-2.5 py-1.5 text-sm font-medium transition-all outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-accent/50 data-[state=open]:text-accent-foreground data-[state=open]:hover:bg-accent data-[state=open]:focus:bg-accent"
+	default:
+		_gsxv1 = "outline-none"
+	}
+	var _gsxv2 string
+	switch linkActive {
+	case "true":
+		_gsxv2 = "bg-accent/50 text-accent-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent"
+	default:
+		_gsxv2 = "outline-none"
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	if !attrs.Has("data-variant") {
+		_gsxgw.S(" data-variant=\"")
+		_gsxgw.AttrValue(string(linkVariant))
+		_gsxgw.S("\"")
+	}
+	if active {
+		if !attrs.Has("data-active") {
+			_gsxgw.S(" data-active=\"true\"")
+		}
+	} else {
+		if !attrs.Has("data-active") {
+			_gsxgw.S(" data-active=\"false\"")
+		}
+	}
+	_gsxv3 := []string{"class", "style", "data-gsxui-slot-navigation-menu-link"}
+	var _gsxv4 bool
+	if linkVariant == "trigger" {
+		_gsxv4 = true
+		_gsxv3 = append(_gsxv3, "data-gsxui-slot-navigation-menu-trigger")
+	}
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "a", attrs, _gsxrt.AttrSinks{}, _gsxv3)
+	if _gsxv4 {
+		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-trigger", true)
+	}
+	_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-link", true)
+	_gsxgw.S(">")
+//line navigation-menu.gsx:279:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</a>")
+	return _gsxgw.Err()
 }
 
 //line navigation-menu.gsx:283:1
@@ -414,23 +456,30 @@ func NavigationMenuLink(active bool, variant string, children gsx.Node, attrs gs
 func NavigationMenuIndicator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line navigation-menu.gsx:311:2
-		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pointer-events-none top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden opacity-0 transition-opacity duration-200 data-[state=visible]:opacity-100"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		if !attrs.Has("data-state") {
-			_gsxgw.S(" data-state=\"hidden\"")
-		}
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu-indicator"})
-		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-indicator", true)
-		_gsxgw.S(">")
-//line navigation-menu.gsx:319:3
-		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative top-[60%] h-2 w-2 rotate-45 rounded-tl-sm bg-border shadow-md"))
-		_gsxgw.S("\"")
-		_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-indicator-arrow", true)
-		_gsxgw.S("></div></div>")
-		return _gsxgw.Err()
+		return _gsxrenderNavigationMenuIndicator(ctx, _gsxgw, attrs)
 	})
+}
+
+func _gsxrenderNavigationMenuIndicator(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line navigation-menu.gsx:311:2
+	_gsxgw.S("<div class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pointer-events-none top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden opacity-0 transition-opacity duration-200 data-[state=visible]:opacity-100"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	if !attrs.Has("data-state") {
+		_gsxgw.S(" data-state=\"hidden\"")
+	}
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu-indicator"})
+	_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-indicator", true)
+	_gsxgw.S(">")
+//line navigation-menu.gsx:319:3
+	_gsxgw.S("<div class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative top-[60%] h-2 w-2 rotate-45 rounded-tl-sm bg-border shadow-md"))
+	_gsxgw.S("\"")
+	_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-indicator-arrow", true)
+	_gsxgw.S("></div></div>")
+	return _gsxgw.Err()
 }

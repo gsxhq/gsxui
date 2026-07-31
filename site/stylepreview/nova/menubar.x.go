@@ -178,22 +178,29 @@ import (
 func Menubar(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line menubar.gsx:169:2
-		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex h-8 items-center gap-0.5 rounded-lg border bg-background p-[3px]"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"menubar\"")
-		}
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar"})
-		_gsxgw.BoolAttr("data-gsxui-slot-menubar", true)
-		_gsxgw.S(">")
-//line menubar.gsx:175:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderMenubar(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderMenubar(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line menubar.gsx:169:2
+	_gsxgw.S("<div class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex h-8 items-center gap-0.5 rounded-lg border bg-background p-[3px]"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	if !attrs.Has("role") {
+		_gsxgw.S(" role=\"menubar\"")
+	}
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar"})
+	_gsxgw.BoolAttr("data-gsxui-slot-menubar", true)
+	_gsxgw.S(">")
+//line menubar.gsx:175:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line menubar.gsx:179:1
@@ -211,19 +218,26 @@ func Menubar(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func MenubarMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line menubar.gsx:189:2
-		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("contents"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-menu"})
-		_gsxgw.BoolAttr("data-gsxui-slot-menubar-menu", true)
-		_gsxgw.S(">")
-//line menubar.gsx:189:70
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderMenubarMenu(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderMenubarMenu(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line menubar.gsx:189:2
+	_gsxgw.S("<div class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("contents"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-menu"})
+	_gsxgw.BoolAttr("data-gsxui-slot-menubar-menu", true)
+	_gsxgw.S(">")
+//line menubar.gsx:189:70
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line menubar.gsx:192:1
@@ -246,31 +260,38 @@ func MenubarMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func MenubarTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line menubar.gsx:207:2
-		_gsxgw.S("<button class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex items-center rounded-sm px-1.5 py-[2px] text-sm font-medium outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		if !attrs.Has("type") {
-			_gsxgw.S(" type=\"button\"")
-		}
-		if !attrs.Has("aria-haspopup") {
-			_gsxgw.S(" aria-haspopup=\"menu\"")
-		}
-		if !attrs.Has("aria-expanded") {
-			_gsxgw.S(" aria-expanded=\"false\"")
-		}
-		if !attrs.Has("data-state") {
-			_gsxgw.S(" data-state=\"closed\"")
-		}
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-trigger"})
-		_gsxgw.BoolAttr("data-gsxui-slot-menubar-trigger", true)
-		_gsxgw.S(">")
-//line menubar.gsx:218:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</button>")
-		return _gsxgw.Err()
+		return _gsxrenderMenubarTrigger(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderMenubarTrigger(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line menubar.gsx:207:2
+	_gsxgw.S("<button class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex items-center rounded-sm px-1.5 py-[2px] text-sm font-medium outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	if !attrs.Has("type") {
+		_gsxgw.S(" type=\"button\"")
+	}
+	if !attrs.Has("aria-haspopup") {
+		_gsxgw.S(" aria-haspopup=\"menu\"")
+	}
+	if !attrs.Has("aria-expanded") {
+		_gsxgw.S(" aria-expanded=\"false\"")
+	}
+	if !attrs.Has("data-state") {
+		_gsxgw.S(" data-state=\"closed\"")
+	}
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-trigger"})
+	_gsxgw.BoolAttr("data-gsxui-slot-menubar-trigger", true)
+	_gsxgw.S(">")
+//line menubar.gsx:218:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</button>")
+	return _gsxgw.Err()
 }
 
 //line menubar.gsx:222:1
@@ -299,34 +320,41 @@ func MenubarTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func MenubarContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line menubar.gsx:243:2
-		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("z-50 min-w-36 origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 data-[side=bottom]:starting:[&:popover-open]:-translate-y-2 data-[side=left]:starting:[&:popover-open]:translate-x-2 data-[side=right]:starting:[&:popover-open]:-translate-x-2 data-[side=top]:starting:[&:popover-open]:translate-y-2"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		if !attrs.Has("popover") {
-			_gsxgw.S(" popover=\"auto\"")
-		}
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"menu\"")
-		}
-		if !attrs.Has("tabindex") {
-			_gsxgw.S(" tabindex=\"-1\"")
-		}
-		if !attrs.Has("data-state") {
-			_gsxgw.S(" data-state=\"closed\"")
-		}
-		if !attrs.Has("data-side") {
-			_gsxgw.S(" data-side=\"bottom\"")
-		}
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-content"})
-		_gsxgw.BoolAttr("data-gsxui-slot-menubar-content", true)
-		_gsxgw.S(">")
-//line menubar.gsx:255:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderMenubarContent(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderMenubarContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line menubar.gsx:243:2
+	_gsxgw.S("<div class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("z-50 min-w-36 origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 data-[side=bottom]:starting:[&:popover-open]:-translate-y-2 data-[side=left]:starting:[&:popover-open]:translate-x-2 data-[side=right]:starting:[&:popover-open]:-translate-x-2 data-[side=top]:starting:[&:popover-open]:translate-y-2"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	if !attrs.Has("popover") {
+		_gsxgw.S(" popover=\"auto\"")
+	}
+	if !attrs.Has("role") {
+		_gsxgw.S(" role=\"menu\"")
+	}
+	if !attrs.Has("tabindex") {
+		_gsxgw.S(" tabindex=\"-1\"")
+	}
+	if !attrs.Has("data-state") {
+		_gsxgw.S(" data-state=\"closed\"")
+	}
+	if !attrs.Has("data-side") {
+		_gsxgw.S(" data-side=\"bottom\"")
+	}
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-content"})
+	_gsxgw.BoolAttr("data-gsxui-slot-menubar-content", true)
+	_gsxgw.S(">")
+//line menubar.gsx:255:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line menubar.gsx:259:1
@@ -341,39 +369,46 @@ func MenubarContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func MenubarItem(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line menubar.gsx:266:2
-		_gsxgw.S("<div")
-		_gsxv0 := "relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
-		var _gsxv1 string
-		switch variant {
-		case "destructive":
-			_gsxv1 = "text-destructive focus:bg-destructive/10 focus:text-destructive dark:focus:bg-destructive/20 [&_svg]:text-destructive"
-		default:
-			_gsxv1 = "text-foreground"
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		if !attrs.Has("data-variant") {
-			_gsxgw.S(" data-variant=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
-			_gsxgw.S("\"")
-		}
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"menuitem\"")
-		}
-		if !attrs.Has("tabindex") {
-			_gsxgw.S(" tabindex=\"-1\"")
-		}
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-item"})
-		_gsxgw.BoolAttr("data-gsxui-slot-menubar-item", true)
-		_gsxgw.S(">")
-//line menubar.gsx:282:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderMenubarItem(ctx, _gsxgw, variant, children, attrs)
 	})
+}
+
+func _gsxrenderMenubarItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line menubar.gsx:266:2
+	_gsxgw.S("<div")
+	_gsxv0 := "relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
+	var _gsxv1 string
+	switch variant {
+	case "destructive":
+		_gsxv1 = "text-destructive focus:bg-destructive/10 focus:text-destructive dark:focus:bg-destructive/20 [&_svg]:text-destructive"
+	default:
+		_gsxv1 = "text-foreground"
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	if !attrs.Has("data-variant") {
+		_gsxgw.S(" data-variant=\"")
+		_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
+		_gsxgw.S("\"")
+	}
+	if !attrs.Has("role") {
+		_gsxgw.S(" role=\"menuitem\"")
+	}
+	if !attrs.Has("tabindex") {
+		_gsxgw.S(" tabindex=\"-1\"")
+	}
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-item"})
+	_gsxgw.BoolAttr("data-gsxui-slot-menubar-item", true)
+	_gsxgw.S(">")
+//line menubar.gsx:282:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line menubar.gsx:286:1
@@ -607,19 +642,26 @@ func MenubarLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 func MenubarSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line menubar.gsx:404:2
-		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("-mx-1 my-1 h-px bg-border"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"separator\"")
-		}
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-separator"})
-		_gsxgw.BoolAttr("data-gsxui-slot-menubar-separator", true)
-		_gsxgw.S("></div>")
-		return _gsxgw.Err()
+		return _gsxrenderMenubarSeparator(ctx, _gsxgw, attrs)
 	})
+}
+
+func _gsxrenderMenubarSeparator(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line menubar.gsx:404:2
+	_gsxgw.S("<div class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("-mx-1 my-1 h-px bg-border"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	if !attrs.Has("role") {
+		_gsxgw.S(" role=\"separator\"")
+	}
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-separator"})
+	_gsxgw.BoolAttr("data-gsxui-slot-menubar-separator", true)
+	_gsxgw.S("></div>")
+	return _gsxgw.Err()
 }
 
 //line menubar.gsx:407:1
@@ -638,19 +680,26 @@ func MenubarSeparator(attrs gsx.Attrs) _gsxrt.Node {
 func MenubarShortcut(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line menubar.gsx:418:2
-		_gsxgw.S("<span class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("ml-auto text-xs tracking-widest text-muted-foreground"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-shortcut"})
-		_gsxgw.BoolAttr("data-gsxui-slot-menubar-shortcut", true)
-		_gsxgw.S(">")
-//line menubar.gsx:419:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</span>")
-		return _gsxgw.Err()
+		return _gsxrenderMenubarShortcut(ctx, _gsxgw, children, attrs)
 	})
+}
+
+func _gsxrenderMenubarShortcut(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line menubar.gsx:418:2
+	_gsxgw.S("<span class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("ml-auto text-xs tracking-widest text-muted-foreground"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-menubar-shortcut"})
+	_gsxgw.BoolAttr("data-gsxui-slot-menubar-shortcut", true)
+	_gsxgw.S(">")
+//line menubar.gsx:419:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</span>")
+	return _gsxgw.Err()
 }
 
 //line menubar.gsx:423:1

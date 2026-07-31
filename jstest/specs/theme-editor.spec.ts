@@ -548,7 +548,7 @@ test("theme editor exposes Retry when the preview never handshakes", async ({
   page,
 }) => {
   let responsive = false;
-  await page.route("**/theme/preview/button", async (route) => {
+  await page.route("**/theme/preview", async (route) => {
     if (responsive) {
       await route.fallback();
       return;
@@ -593,7 +593,7 @@ test("stale previous-document responses cannot complete a fresh preview attempt"
   page,
 }) => {
   let responsive = true;
-  await page.route("**/theme/preview/button", async (route) => {
+  await page.route("**/theme/preview", async (route) => {
     if (responsive) {
       await route.fallback();
       return;

@@ -12,7 +12,7 @@ type Pages struct {
 	ComponentsIndex    `route:"/components/{$} Components"`
 	Component          `route:"/components/{name} Component"`
 	ExamplePreview     `route:"/examples/{component}/{example} Example Preview"`
-	ThemePreviewButton `route:"GET /theme/preview/button Button Theme Preview"`
+	ThemePreview `route:"GET /theme/preview Theme Preview"`
 	Theme              `route:"/theme Theme"`
 }
 

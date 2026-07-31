@@ -40,38 +40,45 @@ import (
 func Progress(value float64, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-		var _gsxnum [32]byte
-//line progress.gsx:29:2
-		_gsxgw.S("<div")
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"progressbar\"")
-		}
-		if !attrs.Has("aria-valuemin") {
-			_gsxgw.S(" aria-valuemin=\"0\"")
-		}
-		if !attrs.Has("aria-valuemax") {
-			_gsxgw.S(" aria-valuemax=\"100\"")
-		}
-		if !attrs.Has("aria-valuenow") {
-			_gsxgw.S(" aria-valuenow=\"")
-			_gsxgw.FloatInto(_gsxnum[:], float64(value))
-			_gsxgw.S("\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative h-1 w-full overflow-hidden rounded-full bg-primary/20"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-progress"})
-		_gsxgw.BoolAttr("data-gsxui-slot-progress", true)
-		_gsxgw.S(">")
-//line progress.gsx:38:3
-		_gsxgw.S("<div style=\"transform: translateX(-")
-		_gsxgw.AttrValue(_gsxrt.StyleValue(_gsxsc.FormatFloat(float64(100-value), 'g', -1, 64)))
-		_gsxgw.S("%)\" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("h-full w-full flex-1 bg-primary transition-all"))
-		_gsxgw.S("\"")
-		_gsxgw.BoolAttr("data-gsxui-slot-progress-indicator", true)
-		_gsxgw.S("></div></div>")
-		return _gsxgw.Err()
+		return _gsxrenderProgress(ctx, _gsxgw, value, attrs)
 	})
+}
+
+func _gsxrenderProgress(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, value float64, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+	var _gsxnum [32]byte
+//line progress.gsx:29:2
+	_gsxgw.S("<div")
+	if !attrs.Has("role") {
+		_gsxgw.S(" role=\"progressbar\"")
+	}
+	if !attrs.Has("aria-valuemin") {
+		_gsxgw.S(" aria-valuemin=\"0\"")
+	}
+	if !attrs.Has("aria-valuemax") {
+		_gsxgw.S(" aria-valuemax=\"100\"")
+	}
+	if !attrs.Has("aria-valuenow") {
+		_gsxgw.S(" aria-valuenow=\"")
+		_gsxgw.FloatInto(_gsxnum[:], float64(value))
+		_gsxgw.S("\"")
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative h-1 w-full overflow-hidden rounded-full bg-primary/20"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-progress"})
+	_gsxgw.BoolAttr("data-gsxui-slot-progress", true)
+	_gsxgw.S(">")
+//line progress.gsx:38:3
+	_gsxgw.S("<div style=\"transform: translateX(-")
+	_gsxgw.AttrValue(_gsxrt.StyleValue(_gsxsc.FormatFloat(float64(100-value), 'g', -1, 64)))
+	_gsxgw.S("%)\" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("h-full w-full flex-1 bg-primary transition-all"))
+	_gsxgw.S("\"")
+	_gsxgw.BoolAttr("data-gsxui-slot-progress-indicator", true)
+	_gsxgw.S("></div></div>")
+	return _gsxgw.Err()
 }

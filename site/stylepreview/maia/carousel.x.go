@@ -45,31 +45,38 @@ import (
 func Carousel(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:36:2
-		_gsxgw.S("<div")
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"region\"")
-		}
-		if !attrs.Has("aria-roledescription") {
-			_gsxgw.S(" aria-roledescription=\"carousel\"")
-		}
-		if !attrs.Has("data-orientation") {
-			_gsxgw.S(" data-orientation=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
-			_gsxgw.S("\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-carousel"})
-		_gsxgw.BoolAttr("data-gsxui-slot-carousel", true)
-		_gsxgw.S(">")
-//line carousel.gsx:44:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderCarousel(ctx, _gsxgw, orientation, children, attrs)
 	})
+}
+
+func _gsxrenderCarousel(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, orientation string, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line carousel.gsx:36:2
+	_gsxgw.S("<div")
+	if !attrs.Has("role") {
+		_gsxgw.S(" role=\"region\"")
+	}
+	if !attrs.Has("aria-roledescription") {
+		_gsxgw.S(" aria-roledescription=\"carousel\"")
+	}
+	if !attrs.Has("data-orientation") {
+		_gsxgw.S(" data-orientation=\"")
+		_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
+		_gsxgw.S("\"")
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-carousel"})
+	_gsxgw.BoolAttr("data-gsxui-slot-carousel", true)
+	_gsxgw.S(">")
+//line carousel.gsx:44:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line carousel.gsx:48:1
@@ -92,40 +99,47 @@ func Carousel(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Nod
 func CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:63:2
-		_gsxgw.S("<div data-orientation=\"")
-		_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
-		_gsxgw.S("\" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("[scrollbar-width:none] [&::-webkit-scrollbar]:hidden"))
-		_gsxgw.S("\"")
-		_gsxgw.BoolAttr("data-gsxui-slot-carousel-content", true)
-		_gsxgw.S(">")
-//line carousel.gsx:68:3
-		_gsxgw.S("<div")
-		if !attrs.Has("data-orientation") {
-			_gsxgw.S(" data-orientation=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
-			_gsxgw.S("\"")
-		}
-		var _gsxv0 string
-		switch orientation {
-		case "vertical":
-			_gsxv0 = "-mt-4"
-		default:
-			_gsxv0 = "-ml-4"
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-carousel-track"})
-		_gsxgw.BoolAttr("data-gsxui-slot-carousel-track", true)
-		_gsxgw.S(">")
-//line carousel.gsx:74:4
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div></div>")
-		return _gsxgw.Err()
+		return _gsxrenderCarouselContent(ctx, _gsxgw, orientation, children, attrs)
 	})
+}
+
+func _gsxrenderCarouselContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, orientation string, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line carousel.gsx:63:2
+	_gsxgw.S("<div data-orientation=\"")
+	_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
+	_gsxgw.S("\" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("[scrollbar-width:none] [&::-webkit-scrollbar]:hidden"))
+	_gsxgw.S("\"")
+	_gsxgw.BoolAttr("data-gsxui-slot-carousel-content", true)
+	_gsxgw.S(">")
+//line carousel.gsx:68:3
+	_gsxgw.S("<div")
+	if !attrs.Has("data-orientation") {
+		_gsxgw.S(" data-orientation=\"")
+		_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
+		_gsxgw.S("\"")
+	}
+	var _gsxv0 string
+	switch orientation {
+	case "vertical":
+		_gsxv0 = "-mt-4"
+	default:
+		_gsxv0 = "-ml-4"
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-carousel-track"})
+	_gsxgw.BoolAttr("data-gsxui-slot-carousel-track", true)
+	_gsxgw.S(">")
+//line carousel.gsx:74:4
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div></div>")
+	return _gsxgw.Err()
 }
 
 //line carousel.gsx:79:1
@@ -154,38 +168,45 @@ func CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs) _gs
 func CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:100:2
-		_gsxgw.S("<div")
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"group\"")
-		}
-		if !attrs.Has("aria-roledescription") {
-			_gsxgw.S(" aria-roledescription=\"slide\"")
-		}
-		if !attrs.Has("data-orientation") {
-			_gsxgw.S(" data-orientation=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
-			_gsxgw.S("\"")
-		}
-		var _gsxv1 string
-		switch orientation {
-		case "vertical":
-			_gsxv1 = "pt-4 -scroll-mt-4"
-		default:
-			_gsxv1 = "pl-4 -scroll-ml-4"
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-carousel-item"})
-		_gsxgw.BoolAttr("data-gsxui-slot-carousel-item", true)
-		_gsxgw.S(">")
-//line carousel.gsx:108:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderCarouselItem(ctx, _gsxgw, orientation, children, attrs)
 	})
+}
+
+func _gsxrenderCarouselItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, orientation string, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line carousel.gsx:100:2
+	_gsxgw.S("<div")
+	if !attrs.Has("role") {
+		_gsxgw.S(" role=\"group\"")
+	}
+	if !attrs.Has("aria-roledescription") {
+		_gsxgw.S(" aria-roledescription=\"slide\"")
+	}
+	if !attrs.Has("data-orientation") {
+		_gsxgw.S(" data-orientation=\"")
+		_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
+		_gsxgw.S("\"")
+	}
+	var _gsxv1 string
+	switch orientation {
+	case "vertical":
+		_gsxv1 = "pt-4 -scroll-mt-4"
+	default:
+		_gsxv1 = "pl-4 -scroll-ml-4"
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-carousel-item"})
+	_gsxgw.BoolAttr("data-gsxui-slot-carousel-item", true)
+	_gsxgw.S(">")
+//line carousel.gsx:108:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line carousel.gsx:112:1
@@ -222,54 +243,68 @@ func CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt
 func CarouselPrevious(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:141:2
-		_gsxa4 := _gsxrt.Attrs{{Key: "data-orientation", Value: _gsxstd.Default((orientation), "horizontal")}}
-		_gsxv2 := "absolute size-8 rounded-full"
-		var _gsxv3 string
-		switch orientation {
-		case "vertical":
-			_gsxv3 = "-top-12 left-1/2 -translate-x-1/2 rotate-90"
-		default:
-			_gsxv3 = "top-1/2 -left-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
-		}
-		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-			_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:158:3
-			_gsxgw.Node(ctx, icon.ArrowLeft())
-//line carousel.gsx:159:3
-			_gsxgw.S("<span")
-			_gsxgw.BoolAttr("data-gsxui-slot-carousel-control-label", true)
-			_gsxgw.S(">Previous slide</span>")
-			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxa4, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv2), _gsxrt.Class(_gsxv3))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-carousel-previous", Value: _gsxrt.Toggle(true)}})))
-		return _gsxgw.Err()
+		return _gsxrenderCarouselPrevious(ctx, _gsxgw, orientation, attrs)
 	})
+}
+
+func _gsxrenderCarouselPrevious(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, orientation string, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line carousel.gsx:141:2
+	_gsxa4 := _gsxrt.Attrs{{Key: "data-orientation", Value: _gsxstd.Default((orientation), "horizontal")}}
+	_gsxv2 := "absolute size-8 rounded-full"
+	var _gsxv3 string
+	switch orientation {
+	case "vertical":
+		_gsxv3 = "-top-12 left-1/2 -translate-x-1/2 rotate-90"
+	default:
+		_gsxv3 = "top-1/2 -left-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
+	}
+	_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line carousel.gsx:158:3
+		_gsxgw.Node(ctx, icon.ArrowLeft())
+//line carousel.gsx:159:3
+		_gsxgw.S("<span")
+		_gsxgw.BoolAttr("data-gsxui-slot-carousel-control-label", true)
+		_gsxgw.S(">Previous slide</span>")
+		return _gsxgw.Err()
+	}), _gsxrt.ConcatAttrs(_gsxa4, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv2), _gsxrt.Class(_gsxv3))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-carousel-previous", Value: _gsxrt.Toggle(true)}})))
+	return _gsxgw.Err()
 }
 
 //line carousel.gsx:163:1
 func CarouselNext(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:164:2
-		_gsxa7 := _gsxrt.Attrs{{Key: "data-orientation", Value: _gsxstd.Default((orientation), "horizontal")}}
-		_gsxv5 := "absolute size-8 rounded-full"
-		var _gsxv6 string
-		switch orientation {
-		case "vertical":
-			_gsxv6 = "-bottom-12 left-1/2 -translate-x-1/2 rotate-90"
-		default:
-			_gsxv6 = "top-1/2 -right-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
-		}
-		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-			_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:180:3
-			_gsxgw.Node(ctx, icon.ArrowRight())
-//line carousel.gsx:181:3
-			_gsxgw.S("<span")
-			_gsxgw.BoolAttr("data-gsxui-slot-carousel-control-label", true)
-			_gsxgw.S(">Next slide</span>")
-			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxa7, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv5), _gsxrt.Class(_gsxv6))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-carousel-next", Value: _gsxrt.Toggle(true)}})))
-		return _gsxgw.Err()
+		return _gsxrenderCarouselNext(ctx, _gsxgw, orientation, attrs)
 	})
+}
+
+func _gsxrenderCarouselNext(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, orientation string, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line carousel.gsx:164:2
+	_gsxa7 := _gsxrt.Attrs{{Key: "data-orientation", Value: _gsxstd.Default((orientation), "horizontal")}}
+	_gsxv5 := "absolute size-8 rounded-full"
+	var _gsxv6 string
+	switch orientation {
+	case "vertical":
+		_gsxv6 = "-bottom-12 left-1/2 -translate-x-1/2 rotate-90"
+	default:
+		_gsxv6 = "top-1/2 -right-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
+	}
+	_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line carousel.gsx:180:3
+		_gsxgw.Node(ctx, icon.ArrowRight())
+//line carousel.gsx:181:3
+		_gsxgw.S("<span")
+		_gsxgw.BoolAttr("data-gsxui-slot-carousel-control-label", true)
+		_gsxgw.S(">Next slide</span>")
+		return _gsxgw.Err()
+	}), _gsxrt.ConcatAttrs(_gsxa7, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv5), _gsxrt.Class(_gsxv6))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-carousel-next", Value: _gsxrt.Toggle(true)}})))
+	return _gsxgw.Err()
 }

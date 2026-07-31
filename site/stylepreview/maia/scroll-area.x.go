@@ -63,23 +63,30 @@ import (
 func ScrollArea(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line scroll-area.gsx:52:2
-		_gsxgw.S("<div")
-		if !attrs.Has("data-orientation") {
-			_gsxgw.S(" data-orientation=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "vertical")))
-			_gsxgw.S("\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative rounded-[inherit] outline-none transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-scroll-area"})
-		_gsxgw.BoolAttr("data-gsxui-slot-scroll-area", true)
-		_gsxgw.S(">")
-//line scroll-area.gsx:60:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderScrollArea(ctx, _gsxgw, orientation, children, attrs)
 	})
+}
+
+func _gsxrenderScrollArea(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, orientation string, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line scroll-area.gsx:52:2
+	_gsxgw.S("<div")
+	if !attrs.Has("data-orientation") {
+		_gsxgw.S(" data-orientation=\"")
+		_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "vertical")))
+		_gsxgw.S("\"")
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative rounded-[inherit] outline-none transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-scroll-area"})
+	_gsxgw.BoolAttr("data-gsxui-slot-scroll-area", true)
+	_gsxgw.S(">")
+//line scroll-area.gsx:60:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }

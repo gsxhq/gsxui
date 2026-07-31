@@ -77,67 +77,74 @@ import (
 func ToggleGroup(groupType string, variant string, size string, spacing string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line toggle-group.gsx:65:2
-		sp := spacing
-		if sp == "" {
-			sp = "0"
-		}
-		role := "toolbar"
-		if groupType == "single" {
-			role = "radiogroup"
-		}
-//line toggle-group.gsx:75:2
-		_gsxgw.S("<div")
-		if !attrs.Has("data-variant") {
-			_gsxgw.S(" data-variant=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
-			_gsxgw.S("\"")
-		}
-		if !attrs.Has("data-size") {
-			_gsxgw.S(" data-size=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
-			_gsxgw.S("\"")
-		}
-		if !attrs.Has("data-spacing") {
-			_gsxgw.S(" data-spacing=\"")
-			_gsxgw.AttrValue(string(sp))
-			_gsxgw.S("\"")
-		}
-		if !attrs.Has("data-orientation") {
-			_gsxgw.S(" data-orientation=\"horizontal\"")
-		}
-		if !attrs.Has("role") {
-			_gsxgw.S(" role=\"")
-			_gsxgw.AttrValue(string(role))
-			_gsxgw.S("\"")
-		}
-		if !attrs.Has("style") {
-			_gsxgw.S(" style=\"--gap: ")
-			_gsxgw.AttrValue(_gsxrt.StyleValue(string(sp)))
-			_gsxgw.S("\"")
-		}
-		_gsxv0 := "flex w-fit items-center rounded-lg"
-		var _gsxv1 string
-		switch size {
-		case "sm":
-			_gsxv1 = "rounded-[min(var(--radius-md),10px)]"
-		case "lg":
-			_gsxv1 = "rounded-lg"
-		default:
-			_gsxv1 = "rounded-lg"
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-toggle-group"})
-		_gsxgw.BoolAttr("data-gsxui-slot-toggle-group", true)
-		_gsxgw.S(">")
-//line toggle-group.gsx:89:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderToggleGroup(ctx, _gsxgw, groupType, variant, size, spacing, children, attrs)
 	})
+}
+
+func _gsxrenderToggleGroup(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, groupType string, variant string, size string, spacing string, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line toggle-group.gsx:65:2
+	sp := spacing
+	if sp == "" {
+		sp = "0"
+	}
+	role := "toolbar"
+	if groupType == "single" {
+		role = "radiogroup"
+	}
+//line toggle-group.gsx:75:2
+	_gsxgw.S("<div")
+	if !attrs.Has("data-variant") {
+		_gsxgw.S(" data-variant=\"")
+		_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
+		_gsxgw.S("\"")
+	}
+	if !attrs.Has("data-size") {
+		_gsxgw.S(" data-size=\"")
+		_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
+		_gsxgw.S("\"")
+	}
+	if !attrs.Has("data-spacing") {
+		_gsxgw.S(" data-spacing=\"")
+		_gsxgw.AttrValue(string(sp))
+		_gsxgw.S("\"")
+	}
+	if !attrs.Has("data-orientation") {
+		_gsxgw.S(" data-orientation=\"horizontal\"")
+	}
+	if !attrs.Has("role") {
+		_gsxgw.S(" role=\"")
+		_gsxgw.AttrValue(string(role))
+		_gsxgw.S("\"")
+	}
+	if !attrs.Has("style") {
+		_gsxgw.S(" style=\"--gap: ")
+		_gsxgw.AttrValue(_gsxrt.StyleValue(string(sp)))
+		_gsxgw.S("\"")
+	}
+	_gsxv0 := "flex w-fit items-center rounded-lg"
+	var _gsxv1 string
+	switch size {
+	case "sm":
+		_gsxv1 = "rounded-[min(var(--radius-md),10px)]"
+	case "lg":
+		_gsxv1 = "rounded-lg"
+	default:
+		_gsxv1 = "rounded-lg"
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-toggle-group"})
+	_gsxgw.BoolAttr("data-gsxui-slot-toggle-group", true)
+	_gsxgw.S(">")
+//line toggle-group.gsx:89:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line toggle-group.gsx:93:1
@@ -160,100 +167,107 @@ func ToggleGroup(groupType string, variant string, size string, spacing string, 
 func ToggleGroupItem(groupType string, variant string, size string, spacing string, pressed bool, value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line toggle-group.gsx:108:2
-		sp := spacing
-		if sp == "" {
-			sp = "0"
-		}
-		state := "off"
-		if pressed {
-			state = "on"
-		}
-		orientation := "horizontal"
-//line toggle-group.gsx:119:2
-		_gsxgw.S("<button")
-		if !attrs.Has("type") {
-			_gsxgw.S(" type=\"button\"")
-		}
-		if !attrs.Has("data-variant") {
-			_gsxgw.S(" data-variant=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
-			_gsxgw.S("\"")
-		}
-		if !attrs.Has("data-size") {
-			_gsxgw.S(" data-size=\"")
-			_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
-			_gsxgw.S("\"")
-		}
-		if !attrs.Has("data-spacing") {
-			_gsxgw.S(" data-spacing=\"")
-			_gsxgw.AttrValue(string(sp))
-			_gsxgw.S("\"")
-		}
-		if !attrs.Has("data-orientation") {
-			_gsxgw.S(" data-orientation=\"")
-			_gsxgw.AttrValue(string(orientation))
-			_gsxgw.S("\"")
-		}
-		if !attrs.Has("data-state") {
-			_gsxgw.S(" data-state=\"")
-			_gsxgw.AttrValue(string(state))
-			_gsxgw.S("\"")
-		}
-		if !attrs.Has("data-value") {
-			_gsxgw.S(" data-value=\"")
-			_gsxgw.AttrValue(string(value))
-			_gsxgw.S("\"")
-		}
-		if groupType == "single" {
-			if !attrs.Has("role") {
-				_gsxgw.S(" role=\"radio\"")
-			}
-			if !attrs.Has("aria-checked") {
-				_gsxgw.S(" aria-checked=\"")
-				_gsxgw.S(_gsxsc.FormatBool(bool(pressed)))
-				_gsxgw.S("\"")
-			}
-		} else {
-			if !attrs.Has("aria-pressed") {
-				_gsxgw.S(" aria-pressed=\"")
-				_gsxgw.S(_gsxsc.FormatBool(bool(pressed)))
-				_gsxgw.S("\"")
-			}
-		}
-		_gsxv2 := "w-auto min-w-0 shrink-0 px-3 focus:z-10 focus-visible:z-10"
-		var _gsxv3 string
-		switch size {
-		case "sm":
-			_gsxv3 = "has-[>svg]:px-1.5"
-		case "lg":
-			_gsxv3 = "has-[>svg]:px-2"
-		default:
-			_gsxv3 = "has-[>svg]:px-2"
-		}
-		var _gsxv4 string
-		switch sp {
-		case "2":
-			_gsxv4 = "isolate"
-		default:
-			_gsxv4 = "rounded-none shadow-none data-[variant=outline]:border-l-0 data-[variant=outline]:first:border-l"
-		}
-		var _gsxv5 string
-		switch orientation {
-		default:
-			_gsxv5 = "data-[spacing=0]:first:rounded-l-lg data-[spacing=0]:last:rounded-r-lg"
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv2), _gsxrt.Class(_gsxv3), _gsxrt.Class(_gsxv4), _gsxrt.Class(_gsxv5), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-toggle-group-item", "data-gsxui-slot-toggle"})
-		_gsxgw.BoolAttr("data-gsxui-slot-toggle-group-item", true)
-		_gsxgw.BoolAttr("data-gsxui-slot-toggle", true)
-		_gsxgw.S(">")
-//line toggle-group.gsx:148:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</button>")
-		return _gsxgw.Err()
+		return _gsxrenderToggleGroupItem(ctx, _gsxgw, groupType, variant, size, spacing, pressed, value, children, attrs)
 	})
+}
+
+func _gsxrenderToggleGroupItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, groupType string, variant string, size string, spacing string, pressed bool, value string, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line toggle-group.gsx:108:2
+	sp := spacing
+	if sp == "" {
+		sp = "0"
+	}
+	state := "off"
+	if pressed {
+		state = "on"
+	}
+	orientation := "horizontal"
+//line toggle-group.gsx:119:2
+	_gsxgw.S("<button")
+	if !attrs.Has("type") {
+		_gsxgw.S(" type=\"button\"")
+	}
+	if !attrs.Has("data-variant") {
+		_gsxgw.S(" data-variant=\"")
+		_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
+		_gsxgw.S("\"")
+	}
+	if !attrs.Has("data-size") {
+		_gsxgw.S(" data-size=\"")
+		_gsxgw.AttrValue(string(_gsxstd.Default((size), "default")))
+		_gsxgw.S("\"")
+	}
+	if !attrs.Has("data-spacing") {
+		_gsxgw.S(" data-spacing=\"")
+		_gsxgw.AttrValue(string(sp))
+		_gsxgw.S("\"")
+	}
+	if !attrs.Has("data-orientation") {
+		_gsxgw.S(" data-orientation=\"")
+		_gsxgw.AttrValue(string(orientation))
+		_gsxgw.S("\"")
+	}
+	if !attrs.Has("data-state") {
+		_gsxgw.S(" data-state=\"")
+		_gsxgw.AttrValue(string(state))
+		_gsxgw.S("\"")
+	}
+	if !attrs.Has("data-value") {
+		_gsxgw.S(" data-value=\"")
+		_gsxgw.AttrValue(string(value))
+		_gsxgw.S("\"")
+	}
+	if groupType == "single" {
+		if !attrs.Has("role") {
+			_gsxgw.S(" role=\"radio\"")
+		}
+		if !attrs.Has("aria-checked") {
+			_gsxgw.S(" aria-checked=\"")
+			_gsxgw.S(_gsxsc.FormatBool(bool(pressed)))
+			_gsxgw.S("\"")
+		}
+	} else {
+		if !attrs.Has("aria-pressed") {
+			_gsxgw.S(" aria-pressed=\"")
+			_gsxgw.S(_gsxsc.FormatBool(bool(pressed)))
+			_gsxgw.S("\"")
+		}
+	}
+	_gsxv2 := "w-auto min-w-0 shrink-0 px-3 focus:z-10 focus-visible:z-10"
+	var _gsxv3 string
+	switch size {
+	case "sm":
+		_gsxv3 = "has-[>svg]:px-1.5"
+	case "lg":
+		_gsxv3 = "has-[>svg]:px-2"
+	default:
+		_gsxv3 = "has-[>svg]:px-2"
+	}
+	var _gsxv4 string
+	switch sp {
+	case "2":
+		_gsxv4 = "isolate"
+	default:
+		_gsxv4 = "rounded-none shadow-none data-[variant=outline]:border-l-0 data-[variant=outline]:first:border-l"
+	}
+	var _gsxv5 string
+	switch orientation {
+	default:
+		_gsxv5 = "data-[spacing=0]:first:rounded-l-lg data-[spacing=0]:last:rounded-r-lg"
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv2), _gsxrt.Class(_gsxv3), _gsxrt.Class(_gsxv4), _gsxrt.Class(_gsxv5), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-toggle-group-item", "data-gsxui-slot-toggle"})
+	_gsxgw.BoolAttr("data-gsxui-slot-toggle-group-item", true)
+	_gsxgw.BoolAttr("data-gsxui-slot-toggle", true)
+	_gsxgw.S(">")
+//line toggle-group.gsx:148:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</button>")
+	return _gsxgw.Err()
 }

@@ -40,50 +40,57 @@ import (
 func Toaster(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line toaster.gsx:30:2
-		_gsxgw.S("<section aria-label=\"Notifications\" tabindex=\"-1\">")
-//line toaster.gsx:31:3
-		_gsxgw.S("<ol")
-		if !attrs.Has("id") {
-			_gsxgw.S(" id=\"gsxui-toaster\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("[--gsxui-toast-offset:1.5rem] flex flex-col gap-2 p-6"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "ol", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-toaster"})
-		_gsxgw.BoolAttr("data-gsxui-slot-toaster", true)
-		_gsxgw.S("></ol>")
-//line toaster.gsx:37:3
-		_gsxgw.S("<template data-gsxui-toast-template=\"default\">")
-//line toaster.gsx:38:4
-		_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "default", "Title", "Description", "Action", "Cancel", nil))
-		_gsxgw.S("</template>")
-//line toaster.gsx:40:3
-		_gsxgw.S("<template data-gsxui-toast-template=\"success\">")
-//line toaster.gsx:41:4
-		_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "success", "Title", "Description", "Action", "Cancel", nil))
-		_gsxgw.S("</template>")
-//line toaster.gsx:43:3
-		_gsxgw.S("<template data-gsxui-toast-template=\"info\">")
-//line toaster.gsx:44:4
-		_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "info", "Title", "Description", "Action", "Cancel", nil))
-		_gsxgw.S("</template>")
-//line toaster.gsx:46:3
-		_gsxgw.S("<template data-gsxui-toast-template=\"warning\">")
-//line toaster.gsx:47:4
-		_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "warning", "Title", "Description", "Action", "Cancel", nil))
-		_gsxgw.S("</template>")
-//line toaster.gsx:49:3
-		_gsxgw.S("<template data-gsxui-toast-template=\"error\">")
-//line toaster.gsx:50:4
-		_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "error", "Title", "Description", "Action", "Cancel", nil))
-		_gsxgw.S("</template>")
-//line toaster.gsx:52:3
-		_gsxgw.S("<template data-gsxui-toast-template=\"loading\">")
-//line toaster.gsx:53:4
-		_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "loading", "Title", "Description", "Action", "Cancel", nil))
-		_gsxgw.S("</template></section>")
-		return _gsxgw.Err()
+		return _gsxrenderToaster(ctx, _gsxgw, attrs)
 	})
+}
+
+func _gsxrenderToaster(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line toaster.gsx:30:2
+	_gsxgw.S("<section aria-label=\"Notifications\" tabindex=\"-1\">")
+//line toaster.gsx:31:3
+	_gsxgw.S("<ol")
+	if !attrs.Has("id") {
+		_gsxgw.S(" id=\"gsxui-toaster\"")
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("[--gsxui-toast-offset:1.5rem] flex flex-col gap-2 p-6"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "ol", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-toaster"})
+	_gsxgw.BoolAttr("data-gsxui-slot-toaster", true)
+	_gsxgw.S("></ol>")
+//line toaster.gsx:37:3
+	_gsxgw.S("<template data-gsxui-toast-template=\"default\">")
+//line toaster.gsx:38:4
+	_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "default", "Title", "Description", "Action", "Cancel", nil))
+	_gsxgw.S("</template>")
+//line toaster.gsx:40:3
+	_gsxgw.S("<template data-gsxui-toast-template=\"success\">")
+//line toaster.gsx:41:4
+	_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "success", "Title", "Description", "Action", "Cancel", nil))
+	_gsxgw.S("</template>")
+//line toaster.gsx:43:3
+	_gsxgw.S("<template data-gsxui-toast-template=\"info\">")
+//line toaster.gsx:44:4
+	_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "info", "Title", "Description", "Action", "Cancel", nil))
+	_gsxgw.S("</template>")
+//line toaster.gsx:46:3
+	_gsxgw.S("<template data-gsxui-toast-template=\"warning\">")
+//line toaster.gsx:47:4
+	_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "warning", "Title", "Description", "Action", "Cancel", nil))
+	_gsxgw.S("</template>")
+//line toaster.gsx:49:3
+	_gsxgw.S("<template data-gsxui-toast-template=\"error\">")
+//line toaster.gsx:50:4
+	_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "error", "Title", "Description", "Action", "Cancel", nil))
+	_gsxgw.S("</template>")
+//line toaster.gsx:52:3
+	_gsxgw.S("<template data-gsxui-toast-template=\"loading\">")
+//line toaster.gsx:53:4
+	_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "loading", "Title", "Description", "Action", "Cancel", nil))
+	_gsxgw.S("</template></section>")
+	return _gsxgw.Err()
 }

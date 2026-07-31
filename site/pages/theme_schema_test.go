@@ -16,7 +16,7 @@ func TestThemeEditorSchemaMatchesPresetAuthority(t *testing.T) {
 	t.Parallel()
 
 	var output strings.Builder
-	if err := pages.ThemeEditor("/theme/preview/button").Render(context.Background(), &output); err != nil {
+	if err := pages.ThemeEditor("/theme/preview").Render(context.Background(), &output); err != nil {
 		t.Fatalf("ThemeEditor.Render: %v", err)
 	}
 	document, err := html.Parse(strings.NewReader(output.String()))
