@@ -107,7 +107,9 @@ export function position(content, anchor, opts = {}) {
     cap = false,
   } = opts;
   const anchorRect =
-    anchor instanceof Element ? () => anchor.getBoundingClientRect() : () => anchor;
+    anchor instanceof Element
+      ? () => anchor.getBoundingClientRect()
+      : () => anchor;
   const update = () =>
     applyPlacement(content, anchorRect(), {
       side,
@@ -134,6 +136,11 @@ export function position(content, anchor, opts = {}) {
 
 // release detaches the reposition listeners and restores the authored
 // data-side. Idempotent; runs automatically on the content's close toggle.
+// Caveat: release() runs off the content's own close toggle. A content
+// element REMOVED from the DOM while open never fires toggle, leaking its
+// scroll/resize listeners and tracked entry — acceptable while the DOM is
+// server-rendered and static during an open popover; revisit if SPA-style
+// swaps ever land.
 export function release(content) {
   const entry = tracked.get(content);
   if (!entry) return;
@@ -172,7 +179,12 @@ function applyPlacement(content, a, o) {
       left: a.left - o.sideOffset,
       right: vw - a.right - o.sideOffset,
     };
-    const opposite = { top: "bottom", bottom: "top", left: "right", right: "left" }[side];
+    const opposite = {
+      top: "bottom",
+      bottom: "top",
+      left: "right",
+      right: "left",
+    }[side];
     const need = vertical ? h : w;
     if (need > room[side] && room[opposite] > room[side]) side = opposite;
   }
@@ -180,8 +192,9 @@ function applyPlacement(content, a, o) {
   // PLACED side; recipe CSS min()s it into its max-height, so re-measure.
   if (o.cap && vertical) {
     const avail =
-      (side === "bottom" ? vh - a.bottom - o.sideOffset : a.top - o.sideOffset) -
-      CAP_PADDING;
+      (side === "bottom"
+        ? vh - a.bottom - o.sideOffset
+        : a.top - o.sideOffset) - CAP_PADDING;
     content.style.setProperty(
       "--gsxui-available-height",
       `${Math.max(0, Math.floor(avail))}px`,
@@ -190,11 +203,13 @@ function applyPlacement(content, a, o) {
   }
   let left, top;
   if (vertical) {
-    top = side === "bottom" ? a.bottom + o.sideOffset : a.top - o.sideOffset - h;
+    top =
+      side === "bottom" ? a.bottom + o.sideOffset : a.top - o.sideOffset - h;
     left = alignedCoord(o.align, a.left, a.width, w) + o.alignOffset;
     left = Math.max(0, Math.min(left, vw - w)); // cross-axis shift
   } else {
-    left = side === "right" ? a.right + o.sideOffset : a.left - o.sideOffset - w;
+    left =
+      side === "right" ? a.right + o.sideOffset : a.left - o.sideOffset - w;
     top = alignedCoord(o.align, a.top, a.height, h) + o.alignOffset;
     top = Math.max(0, Math.min(top, vh - h)); // cross-axis shift
   }

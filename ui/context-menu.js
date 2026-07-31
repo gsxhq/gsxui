@@ -33,7 +33,7 @@
 //     without a preceding pointerdown (e.g. the keyboard Menu key), which
 //     still needs to reposition to the new (keyboard-relative) coordinates.
 //   - CLAMPING (context-menu was first; the siblings adopted the same
-//     shift-only clamp through gsxui.js's clampToViewport after the theme
+//     positioning engine in gsxui.js (position(), which clamps as its last resort) after the theme
 //     editor rendered a picker popover flush offscreen-left). A context menu
 //     has no such fixed anchor — it opens wherever the cursor was, which
 //     can be arbitrarily close to any edge — so an unclamped menu could
