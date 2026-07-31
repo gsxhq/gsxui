@@ -22,12 +22,13 @@ verify-generated-styles:
 #
 # The generator is a SEPARATE module (site/hl/gen/go.mod) because tree-sitter
 # is C: keeping it out of gsxui's module is what lets site/main.go keep
-# building CGO_ENABLED=0 into a distroless/static image. It resolves the
-# grammar and highlighter from sibling checkouts via replace directives, so
-# it needs ../tree-sitter-gsx and ../gsxhl next to this repo — nothing else
-# does, including CI and the Docker build, which consume the committed output.
+# building CGO_ENABLED=0 into a distroless/static image. The grammar and
+# highlighter are ordinary version pins fetched with GOPRIVATE — no sibling
+# checkouts required, so this runs from any worktree. Nothing else needs the
+# generator, including CI and the Docker build, which consume the committed
+# output.
 highlight:
-	cd site/hl/gen && go run .
+	cd site/hl/gen && GOPRIVATE=github.com/gsxhq/* go run .
 
 # icons regenerates ui/icon/icon_data.go and ui/icon/icon_defs.go from a
 # local Lucide checkout. See internal/lucidegen and Task 1's brief for the
