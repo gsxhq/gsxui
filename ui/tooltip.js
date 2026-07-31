@@ -1,10 +1,12 @@
 // Tooltip: pointerover/out + focusin/out delegation (these bubble), 300ms
 // open delay, manual popover so hover can't light-dismiss it.
-import { on, emit } from "./gsxui.js";
+import { on, emit, clampToViewport } from "./gsxui.js";
 
 const timers = new WeakMap();
 const contentOf = (el) =>
-  el.closest("[data-gsxui-slot-tooltip]")?.querySelector("[data-gsxui-slot-tooltip-content]");
+  el
+    .closest("[data-gsxui-slot-tooltip]")
+    ?.querySelector("[data-gsxui-slot-tooltip-content]");
 
 function show(trigger) {
   const content = contentOf(trigger);
@@ -19,8 +21,11 @@ function show(trigger) {
   // duration — the tooltip would enter at the untranslated spot and snap.
   // offsetWidth/Height are layout sizes, unaffected by the in-flight
   // enter scale.
-  content.style.left = `${r.left + r.width / 2 - content.offsetWidth / 2}px`;
-  content.style.top = `${r.top - 6 - content.offsetHeight}px`;
+  clampToViewport(
+    content,
+    r.left + r.width / 2 - content.offsetWidth / 2,
+    r.top - 6 - content.offsetHeight,
+  );
   content.dataset.state = "open";
   emit(content, "gsxui:open");
 }
@@ -39,11 +44,15 @@ function hide(trigger) {
 // to any element opted in with data-gsxui-tooltip-trigger, the idiom for
 // arbitrary triggers (Sidebar's menu button uses it). Component markup does
 // not stamp the role hook: for the family trigger the role is implied by identity.
-const TRIGGER_SELECTOR = "[data-gsxui-tooltip-trigger],[data-gsxui-slot-tooltip-trigger]";
+const TRIGGER_SELECTOR =
+  "[data-gsxui-tooltip-trigger],[data-gsxui-slot-tooltip-trigger]";
 
 on("pointerover", TRIGGER_SELECTOR, (_e, t) => {
   clearTimeout(timers.get(t));
-  timers.set(t, setTimeout(() => show(t), 300));
+  timers.set(
+    t,
+    setTimeout(() => show(t), 300),
+  );
 });
 on("pointerout", TRIGGER_SELECTOR, (_e, t) => hide(t));
 on("focusin", TRIGGER_SELECTOR, (_e, t) => show(t));

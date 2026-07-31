@@ -65,7 +65,7 @@
 //
 // No Escape/outside-pointerdown light dismiss — same deliberate choice as
 // hover-card.js's own (hover/focus drive it, not outside clicks or Esc).
-import { on, emit } from "./gsxui.js";
+import { on, emit, clampToViewport } from "./gsxui.js";
 
 // NavigationMenuLink variant="trigger" shares the trigger SLOT (presentation)
 // without being a trigger: exclude it so only the real <button> trigger binds.
@@ -73,10 +73,13 @@ const TRIGGER_SELECTOR =
   "[data-gsxui-slot-navigation-menu-trigger]:not([data-gsxui-slot-navigation-menu-link])";
 
 const menuOf = (el) => el.closest("[data-gsxui-slot-navigation-menu]");
-const listOf = (menu) => menu?.querySelector("[data-gsxui-slot-navigation-menu-list]");
+const listOf = (menu) =>
+  menu?.querySelector("[data-gsxui-slot-navigation-menu-list]");
 const itemOf = (el) => el.closest("[data-gsxui-slot-navigation-menu-item]");
 const contentOf = (trigger) =>
-  itemOf(trigger)?.querySelector(":scope > [data-gsxui-slot-navigation-menu-content]");
+  itemOf(trigger)?.querySelector(
+    ":scope > [data-gsxui-slot-navigation-menu-content]",
+  );
 const triggerOf = (content) =>
   itemOf(content)?.querySelector(`:scope > ${TRIGGER_SELECTOR}`);
 
@@ -102,8 +105,7 @@ function isAnyOpen(menu) {
 function positionAt(el, rect, offset) {
   el.style.position = "fixed";
   el.style.inset = "auto";
-  el.style.left = `${rect.left}px`;
-  el.style.top = `${rect.bottom + offset}px`;
+  clampToViewport(el, rect.left, rect.bottom + offset);
 }
 
 function stillWithin(trigger, related) {
@@ -113,7 +115,9 @@ function stillWithin(trigger, related) {
 
 function positionIndicator(menu, trigger) {
   const list = listOf(menu);
-  const indicator = list?.querySelector(":scope > [data-gsxui-slot-navigation-menu-indicator]");
+  const indicator = list?.querySelector(
+    ":scope > [data-gsxui-slot-navigation-menu-indicator]",
+  );
   if (!list || !indicator) return;
   // Radix's own runtime sets position:relative on whatever hosts the
   // indicator's own translate-relative-to inline, at runtime, rather than
@@ -129,7 +133,9 @@ function positionIndicator(menu, trigger) {
 }
 
 function hideIndicator(menu) {
-  const indicator = listOf(menu)?.querySelector(":scope > [data-gsxui-slot-navigation-menu-indicator]");
+  const indicator = listOf(menu)?.querySelector(
+    ":scope > [data-gsxui-slot-navigation-menu-indicator]",
+  );
   if (indicator) indicator.dataset.state = "hidden";
 }
 
@@ -143,8 +149,11 @@ function open(trigger) {
   // Close any OTHER open panel in this menu first — sibling panels are
   // never DOM-nested in one another, so switching is close-then-open, the
   // same shape as menubar.js's own openMenu.
-  for (const other of menu.querySelectorAll("[data-gsxui-slot-navigation-menu-content]")) {
-    if (other !== content && other.matches(":popover-open")) close(triggerOf(other));
+  for (const other of menu.querySelectorAll(
+    "[data-gsxui-slot-navigation-menu-content]",
+  )) {
+    if (other !== content && other.matches(":popover-open"))
+      close(triggerOf(other));
   }
 
   // Positioned under THIS trigger's own rect (viewport={false} semantics —
@@ -194,12 +203,18 @@ function scheduleOpen(trigger) {
     open(trigger);
     return;
   }
-  timers.set(trigger, setTimeout(() => open(trigger), OPEN_DELAY));
+  timers.set(
+    trigger,
+    setTimeout(() => open(trigger), OPEN_DELAY),
+  );
 }
 
 function scheduleClose(trigger) {
   clearTimer(trigger);
-  timers.set(trigger, setTimeout(() => close(trigger), CLOSE_DELAY));
+  timers.set(
+    trigger,
+    setTimeout(() => close(trigger), CLOSE_DELAY),
+  );
 }
 
 on("pointerover", TRIGGER_SELECTOR, (_e, t) => scheduleOpen(t));
@@ -229,10 +244,14 @@ on("click", TRIGGER_SELECTOR, (_e, t) => {
   else open(t);
 });
 
-on("pointerover", "[data-gsxui-slot-navigation-menu-content]", (_e, content) => {
-  const trigger = triggerOf(content);
-  if (trigger) clearTimer(trigger);
-});
+on(
+  "pointerover",
+  "[data-gsxui-slot-navigation-menu-content]",
+  (_e, content) => {
+    const trigger = triggerOf(content);
+    if (trigger) clearTimer(trigger);
+  },
+);
 on("pointerout", "[data-gsxui-slot-navigation-menu-content]", (e, content) => {
   const trigger = triggerOf(content);
   if (!trigger || stillWithin(trigger, e.relatedTarget)) return;

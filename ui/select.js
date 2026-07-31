@@ -17,21 +17,31 @@
 //   - a hidden native <select> FORM BRIDGE, populated from the DOM items at
 //     init and kept in sync (value assignment + a bubbling change event).
 // See docs/jsx-parity.md ## select and ui/select.gsx's header.
-import { on, emit } from "./gsxui.js";
+import { on, emit, clampToViewport } from "./gsxui.js";
 
 const rootOf = (el) => el.closest("[data-gsxui-slot-select]");
-const contentOf = (el) => rootOf(el)?.querySelector("[data-gsxui-slot-select-content]");
-const triggerOf = (el) => rootOf(el)?.querySelector("[data-gsxui-slot-select-trigger]");
-const bridgeOf = (root) => root.querySelector("[data-gsxui-slot-select-bridge]");
-const itemsOf = (content) => [...content.querySelectorAll("[data-gsxui-slot-select-item]")];
+const contentOf = (el) =>
+  rootOf(el)?.querySelector("[data-gsxui-slot-select-content]");
+const triggerOf = (el) =>
+  rootOf(el)?.querySelector("[data-gsxui-slot-select-trigger]");
+const bridgeOf = (root) =>
+  root.querySelector("[data-gsxui-slot-select-bridge]");
+const itemsOf = (content) => [
+  ...content.querySelectorAll("[data-gsxui-slot-select-item]"),
+];
 const isDisabled = (item) =>
   item.getAttribute("aria-disabled") === "true" || "disabled" in item.dataset;
-const enabledItems = (content) => itemsOf(content).filter((i) => !isDisabled(i));
+const enabledItems = (content) =>
+  itemsOf(content).filter((i) => !isDisabled(i));
 const labelOf = (item) =>
-  (item.querySelector("[data-gsxui-slot-select-item-text]") ?? item).textContent.trim();
+  (
+    item.querySelector("[data-gsxui-slot-select-item-text]") ?? item
+  ).textContent.trim();
 const focusedItem = (content) => {
   const a = document.activeElement;
-  return a instanceof Element && content.contains(a) && a.matches("[data-gsxui-slot-select-item]")
+  return a instanceof Element &&
+    content.contains(a) &&
+    a.matches("[data-gsxui-slot-select-item]")
     ? a
     : null;
 };
@@ -85,7 +95,10 @@ function focusItem(item, { scroll = false } = {}) {
       if (other !== item) other.setAttribute("aria-selected", "false");
     }
   }
-  item.setAttribute("aria-selected", item.dataset.state === "checked" ? "true" : "false");
+  item.setAttribute(
+    "aria-selected",
+    item.dataset.state === "checked" ? "true" : "false",
+  );
   item.focus({ preventScroll: true });
   if (scroll) item.scrollIntoView({ block: "nearest" });
 }
@@ -114,8 +127,11 @@ function findMatch(items, search, current) {
   const query = allSame ? norm[0] : norm;
   const start = Math.max(0, current ? items.indexOf(current) : 0);
   let wrapped = items.slice(start).concat(items.slice(0, start));
-  if (query.length === 1 && current) wrapped = wrapped.filter((it) => it !== current);
-  return wrapped.find((it) => labelOf(it).toLowerCase().startsWith(query)) ?? null;
+  if (query.length === 1 && current)
+    wrapped = wrapped.filter((it) => it !== current);
+  return (
+    wrapped.find((it) => labelOf(it).toLowerCase().startsWith(query)) ?? null
+  );
 }
 
 // --- init: bridge population, aria wiring, server-checked reflection -------
@@ -138,7 +154,9 @@ function init(root) {
   const trigger = root.querySelector("[data-gsxui-slot-select-trigger]");
   if (content) {
     // Wire each group's aria-labelledby to its own label's generated id.
-    for (const group of content.querySelectorAll("[data-gsxui-slot-select-group]")) {
+    for (const group of content.querySelectorAll(
+      "[data-gsxui-slot-select-group]",
+    )) {
       if (group.getAttribute("aria-labelledby")) continue;
       const label = group.querySelector("[data-gsxui-slot-select-label]");
       if (!label) continue;
@@ -151,7 +169,8 @@ function init(root) {
     populateBridge(content, bridge);
     // aria-required lives on the combobox trigger; the bridge carries the real
     // required attribute (there is no context to pass it directly to the trigger).
-    if (trigger && bridge.required) trigger.setAttribute("aria-required", "true");
+    if (trigger && bridge.required)
+      trigger.setAttribute("aria-required", "true");
   }
   // Reflect a server-rendered checked item into the trigger text + bridge value.
   const checked = content?.querySelector(
@@ -160,7 +179,8 @@ function init(root) {
   if (checked) applyValue(root, checked, { silent: true });
 }
 
-for (const root of document.querySelectorAll("[data-gsxui-slot-select]")) init(root);
+for (const root of document.querySelectorAll("[data-gsxui-slot-select]"))
+  init(root);
 
 // --- open / close (ported dropdown.js machinery) --------------------------
 
@@ -168,8 +188,7 @@ function openContent(trigger, content) {
   const r = trigger.getBoundingClientRect();
   content.style.position = "fixed";
   content.style.inset = "auto";
-  content.style.left = `${r.left}px`;
-  content.style.top = `${r.bottom + 4}px`;
+  clampToViewport(content, r.left, r.bottom + 4);
   // Popper-equivalent width: never narrower than the trigger (Radix's
   // --radix-select-trigger-width). min-w-36 from the class still floors it.
   content.style.minWidth = `${r.width}px`;
@@ -183,7 +202,9 @@ function openContent(trigger, content) {
 on("pointerdown", "[data-gsxui-slot-select-trigger]", (_e, trigger) => {
   const content = contentOf(trigger);
   if (content) {
-    trigger.dataset.gsxuiWasOpen = content.matches(":popover-open") ? "true" : "false";
+    trigger.dataset.gsxuiWasOpen = content.matches(":popover-open")
+      ? "true"
+      : "false";
   }
 });
 
@@ -243,10 +264,20 @@ on("keydown", "[data-gsxui-slot-select-content]", (e, content) => {
   }
   // Printable char → typeahead. Space is a search char only mid-search;
   // otherwise it falls through to selection below.
-  if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && !(e.key === " " && buffer === "")) {
+  if (
+    e.key.length === 1 &&
+    !e.ctrlKey &&
+    !e.metaKey &&
+    !e.altKey &&
+    !(e.key === " " && buffer === "")
+  ) {
     e.preventDefault();
     pushSearch(e.key);
-    const match = findMatch(enabledItems(content), buffer, focusedItem(content));
+    const match = findMatch(
+      enabledItems(content),
+      buffer,
+      focusedItem(content),
+    );
     if (match) focusItem(match, { scroll: true });
     return;
   }
@@ -281,7 +312,9 @@ on("keydown", "[data-gsxui-slot-select-content]", (e, content) => {
 });
 
 // contextmenu inside the listbox is suppressed (Radix does the same).
-on("contextmenu", "[data-gsxui-slot-select-content]", (e) => e.preventDefault());
+on("contextmenu", "[data-gsxui-slot-select-content]", (e) =>
+  e.preventDefault(),
+);
 
 // --- keyboard on the CLOSED trigger ---------------------------------------
 
@@ -291,7 +324,13 @@ on("keydown", "[data-gsxui-slot-select-trigger]", (e, trigger) => {
   // Typeahead on the closed trigger selects the value in place (no open),
   // exactly like a native <select>. Space with no active search is an OPEN
   // request, not a search char.
-  if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && !(e.key === " " && buffer === "")) {
+  if (
+    e.key.length === 1 &&
+    !e.ctrlKey &&
+    !e.metaKey &&
+    !e.altKey &&
+    !(e.key === " " && buffer === "")
+  ) {
     e.preventDefault();
     pushSearch(e.key);
     const current = content.querySelector(
@@ -341,8 +380,10 @@ on("click", "[data-gsxui-slot-select-item]", (_e, item) => {
 // keep working) and clears every item's aria-selected — same shape as
 // dropdown.js's content-level pointerout handler.
 on("pointerout", "[data-gsxui-slot-select-content]", (e, content) => {
-  if (e.relatedTarget instanceof Element && content.contains(e.relatedTarget)) return;
+  if (e.relatedTarget instanceof Element && content.contains(e.relatedTarget))
+    return;
   if (!content.contains(document.activeElement)) return;
-  for (const item of itemsOf(content)) item.setAttribute("aria-selected", "false");
+  for (const item of itemsOf(content))
+    item.setAttribute("aria-selected", "false");
   content.focus();
 });

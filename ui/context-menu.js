@@ -32,10 +32,9 @@
 //     hidePopover() below only matters for a contextmenu event dispatched
 //     without a preceding pointerdown (e.g. the keyboard Menu key), which
 //     still needs to reposition to the new (keyboard-relative) coordinates.
-//   - CLAMPING (the one deviation from dropdown.js/tooltip.js/popover.js's
-//     own documented no-clamp NOTE): those siblings anchor to a FIXED side
-//     of a known trigger element and accept imprecision near viewport edges
-//     as a stopgap until CSS anchor positioning is Baseline. A context menu
+//   - CLAMPING (context-menu was first; the siblings adopted the same
+//     shift-only clamp through gsxui.js's clampToViewport after the theme
+//     editor rendered a picker popover flush offscreen-left). A context menu
 //     has no such fixed anchor — it opens wherever the cursor was, which
 //     can be arbitrarily close to any edge — so an unclamped menu could
 //     render partially or fully offscreen on an ordinary right-click near
@@ -64,13 +63,16 @@
 import { on, emit } from "./gsxui.js";
 
 const contentOf = (el) =>
-  el.closest("[data-gsxui-slot-context-menu]")?.querySelector("[data-gsxui-slot-context-menu-content]");
+  el
+    .closest("[data-gsxui-slot-context-menu]")
+    ?.querySelector("[data-gsxui-slot-context-menu-content]");
 
 // Any popover=auto menu surface — the top-level content or a nested
 // submenu's own content — wherever a keydown/toggle handler must resolve
 // "which content level is this happening at," picking the NEAREST one via
 // closest().
-const CONTENT_SELECTOR = "[data-gsxui-slot-context-menu-content],[data-gsxui-slot-context-menu-sub-content]";
+const CONTENT_SELECTOR =
+  "[data-gsxui-slot-context-menu-content],[data-gsxui-slot-context-menu-sub-content]";
 const ITEM_SELECTOR =
   "[data-gsxui-slot-context-menu-item]:not([aria-disabled]),[data-gsxui-slot-context-menu-checkbox-item]:not([aria-disabled]),[data-gsxui-slot-context-menu-radio-item]:not([aria-disabled]),[data-gsxui-slot-context-menu-sub-trigger]:not([aria-disabled])";
 
@@ -87,8 +89,14 @@ function ownItems(content) {
 }
 
 const subRootOf = (el) => el.closest("[data-gsxui-slot-context-menu-sub]");
-const subContentOf = (trigger) => subRootOf(trigger)?.querySelector("[data-gsxui-slot-context-menu-sub-content]");
-const subTriggerOf = (content) => subRootOf(content)?.querySelector("[data-gsxui-slot-context-menu-sub-trigger]");
+const subContentOf = (trigger) =>
+  subRootOf(trigger)?.querySelector(
+    "[data-gsxui-slot-context-menu-sub-content]",
+  );
+const subTriggerOf = (content) =>
+  subRootOf(content)?.querySelector(
+    "[data-gsxui-slot-context-menu-sub-trigger]",
+  );
 
 on("contextmenu", "[data-gsxui-slot-context-menu-trigger]", (e, trigger) => {
   const content = contentOf(trigger);
@@ -207,13 +215,18 @@ on("keydown", CONTENT_SELECTOR, (e, content) => {
     return;
   }
   if (e.key === "ArrowRight") {
-    const trigger = e.target.closest("[data-gsxui-slot-context-menu-sub-trigger]");
+    const trigger = e.target.closest(
+      "[data-gsxui-slot-context-menu-sub-trigger]",
+    );
     if (!trigger) return;
     e.preventDefault();
     openSubAndFocusFirst(trigger);
     return;
   }
-  if (e.key === "ArrowLeft" && content.matches("[data-gsxui-slot-context-menu-sub-content]")) {
+  if (
+    e.key === "ArrowLeft" &&
+    content.matches("[data-gsxui-slot-context-menu-sub-content]")
+  ) {
     e.preventDefault();
     const trigger = subTriggerOf(content);
     content.hidePopover();
@@ -229,7 +242,12 @@ on("keydown", CONTENT_SELECTOR, (e, content) => {
   // the intended end (ArrowUp: -1 + -1 = -2, wrapping to the SECOND-to-last
   // item, not the last) — special-case the no-selection start explicitly
   // instead of relying on the wraparound arithmetic to do it by accident.
-  const next = i === -1 ? (dir === 1 ? items[0] : items[items.length - 1]) : items[(i + dir + items.length) % items.length];
+  const next =
+    i === -1
+      ? dir === 1
+        ? items[0]
+        : items[items.length - 1]
+      : items[(i + dir + items.length) % items.length];
   if (next) {
     // Moving keyboard focus to a different item at this same level closes
     // any OTHER open submenu among this level's own sub-triggers — without
@@ -239,7 +257,11 @@ on("keydown", CONTENT_SELECTOR, (e, content) => {
     // sub-trigger by an actual pointer movement already fires pointerout on
     // it, which schedules the same close via the grace-period timer below.
     for (const item of items) {
-      if (item !== next && item.matches("[data-gsxui-slot-context-menu-sub-trigger]") && item.dataset.state === "open") {
+      if (
+        item !== next &&
+        item.matches("[data-gsxui-slot-context-menu-sub-trigger]") &&
+        item.dataset.state === "open"
+      ) {
         closeSub(item);
       }
     }
@@ -249,7 +271,11 @@ on("keydown", CONTENT_SELECTOR, (e, content) => {
 });
 
 on("click", "[data-gsxui-slot-context-menu-item]", (_e, item) => {
-  if (item.getAttribute("aria-disabled") === "true" || "disabled" in item.dataset) return;
+  if (
+    item.getAttribute("aria-disabled") === "true" ||
+    "disabled" in item.dataset
+  )
+    return;
   // Always hide the ROOT content, not item.closest(CONTENT_SELECTOR) — from
   // inside a submenu, that resolves to the SUB-content, closing only the
   // submenu and leaving the root open with the sub-trigger still
@@ -266,7 +292,11 @@ on("click", "[data-gsxui-slot-context-menu-item]", (_e, item) => {
 // onSelect closes unless preventDefault is called; this port simply never
 // closes on a checkbox select).
 on("click", "[data-gsxui-slot-context-menu-checkbox-item]", (_e, item) => {
-  if (item.getAttribute("aria-disabled") === "true" || "disabled" in item.dataset) return;
+  if (
+    item.getAttribute("aria-disabled") === "true" ||
+    "disabled" in item.dataset
+  )
+    return;
   const checked = item.dataset.state !== "checked";
   item.dataset.state = checked ? "checked" : "unchecked";
   item.setAttribute("aria-checked", checked ? "true" : "false");
@@ -277,7 +307,11 @@ on("click", "[data-gsxui-slot-context-menu-checkbox-item]", (_e, item) => {
 // radio group (data-gsxui-slot-context-menu-radio-group scopes the sibling walk — a page
 // may have more than one group), and closes the menu like a plain Item.
 on("click", "[data-gsxui-slot-context-menu-radio-item]", (_e, item) => {
-  if (item.getAttribute("aria-disabled") === "true" || "disabled" in item.dataset) return;
+  if (
+    item.getAttribute("aria-disabled") === "true" ||
+    "disabled" in item.dataset
+  )
+    return;
   const group = item.closest("[data-gsxui-slot-context-menu-radio-group]");
   const siblings = group
     ? [...group.querySelectorAll("[data-gsxui-slot-context-menu-radio-item]")]
@@ -303,7 +337,11 @@ on("click", "[data-gsxui-slot-context-menu-radio-item]", (_e, item) => {
 const HOVERABLE_SELECTOR =
   "[data-gsxui-slot-context-menu-item],[data-gsxui-slot-context-menu-checkbox-item],[data-gsxui-slot-context-menu-radio-item],[data-gsxui-slot-context-menu-sub-trigger]";
 on("pointerover", HOVERABLE_SELECTOR, (_e, item) => {
-  if (item.getAttribute("aria-disabled") === "true" || "disabled" in item.dataset) return;
+  if (
+    item.getAttribute("aria-disabled") === "true" ||
+    "disabled" in item.dataset
+  )
+    return;
   item.focus();
 });
 
@@ -312,7 +350,8 @@ on("pointerover", HOVERABLE_SELECTOR, (_e, item) => {
 // Moving into a DOM-nested (open) submenu doesn't count as leaving — it's
 // still `content.contains(relatedTarget)` true, same guard as hover-card.js.
 on("pointerout", CONTENT_SELECTOR, (e, content) => {
-  if (e.relatedTarget instanceof Element && content.contains(e.relatedTarget)) return;
+  if (e.relatedTarget instanceof Element && content.contains(e.relatedTarget))
+    return;
   if (content.contains(document.activeElement)) content.focus();
 });
 
@@ -357,7 +396,10 @@ function closeSub(trigger) {
 
 function scheduleCloseSub(trigger) {
   clearSubTimer(trigger);
-  subTimers.set(trigger, setTimeout(() => closeSub(trigger), SUB_CLOSE_DELAY));
+  subTimers.set(
+    trigger,
+    setTimeout(() => closeSub(trigger), SUB_CLOSE_DELAY),
+  );
 }
 
 // The keyboard-only open path (ArrowRight / Enter on a focused sub-trigger):
@@ -370,25 +412,47 @@ function openSubAndFocusFirst(trigger) {
   if (content) ownItems(content)[0]?.focus();
 }
 
-on("pointerover", "[data-gsxui-slot-context-menu-sub-trigger]", (_e, trigger) => {
-  if (trigger.getAttribute("aria-disabled") === "true" || "disabled" in trigger.dataset) return;
-  openSub(trigger);
-});
+on(
+  "pointerover",
+  "[data-gsxui-slot-context-menu-sub-trigger]",
+  (_e, trigger) => {
+    if (
+      trigger.getAttribute("aria-disabled") === "true" ||
+      "disabled" in trigger.dataset
+    )
+      return;
+    openSub(trigger);
+  },
+);
 on("pointerout", "[data-gsxui-slot-context-menu-sub-trigger]", (e, trigger) => {
   const root = subRootOf(trigger);
   // Moving from the trigger into its OWN content (the gap between them, or
   // the content itself) is not a leave — same "moved within" guard as
   // hover-card.js's own trigger/content pair.
-  if (root && e.relatedTarget instanceof Element && root.contains(e.relatedTarget)) return;
+  if (
+    root &&
+    e.relatedTarget instanceof Element &&
+    root.contains(e.relatedTarget)
+  )
+    return;
   scheduleCloseSub(trigger);
 });
-on("pointerover", "[data-gsxui-slot-context-menu-sub-content]", (_e, content) => {
-  const trigger = subTriggerOf(content);
-  if (trigger) clearSubTimer(trigger);
-});
+on(
+  "pointerover",
+  "[data-gsxui-slot-context-menu-sub-content]",
+  (_e, content) => {
+    const trigger = subTriggerOf(content);
+    if (trigger) clearSubTimer(trigger);
+  },
+);
 on("pointerout", "[data-gsxui-slot-context-menu-sub-content]", (e, content) => {
   const root = subRootOf(content);
-  if (root && e.relatedTarget instanceof Element && root.contains(e.relatedTarget)) return;
+  if (
+    root &&
+    e.relatedTarget instanceof Element &&
+    root.contains(e.relatedTarget)
+  )
+    return;
   const trigger = subTriggerOf(content);
   if (trigger) scheduleCloseSub(trigger);
 });
@@ -400,7 +464,11 @@ on("pointerout", "[data-gsxui-slot-context-menu-sub-content]", (e, content) => {
 // one opened by hover) would re-focus its first item and steal the hover
 // highlight instead of acting as a close toggle.
 on("click", "[data-gsxui-slot-context-menu-sub-trigger]", (_e, trigger) => {
-  if (trigger.getAttribute("aria-disabled") === "true" || "disabled" in trigger.dataset) return;
+  if (
+    trigger.getAttribute("aria-disabled") === "true" ||
+    "disabled" in trigger.dataset
+  )
+    return;
   if (trigger.dataset.state === "open") {
     closeSub(trigger);
     return;
