@@ -7,10 +7,12 @@
 // applies. The one positioning change: centered below the trigger, not
 // left-aligned (Radix's own Popover default is side=bottom align=center;
 // DropdownMenuContent's is align=start). toggle doesn't bubble — capture.
-import { on, emit } from "./gsxui.js";
+import { on, emit, clampToViewport } from "./gsxui.js";
 
 const contentOf = (el) =>
-  el.closest("[data-gsxui-slot-popover]")?.querySelector("[data-gsxui-slot-popover-content]");
+  el
+    .closest("[data-gsxui-slot-popover]")
+    ?.querySelector("[data-gsxui-slot-popover-content]");
 
 // A pointerdown on the trigger records whether the popover was open at that
 // instant: popover="auto" light-dismisses on outside pointerdown (the
@@ -21,11 +23,15 @@ const contentOf = (el) =>
 // from any element opted in with data-gsxui-popover-trigger, the idiom for
 // arbitrary triggers. Component markup does not stamp the role hook: for the
 // family trigger the role is implied by identity.
-const TRIGGER_SELECTOR = "[data-gsxui-popover-trigger],[data-gsxui-slot-popover-trigger]";
+const TRIGGER_SELECTOR =
+  "[data-gsxui-popover-trigger],[data-gsxui-slot-popover-trigger]";
 
 on("pointerdown", TRIGGER_SELECTOR, (_e, trigger) => {
   const content = contentOf(trigger);
-  if (content) trigger.dataset.gsxuiWasOpen = content.matches(":popover-open") ? "true" : "false";
+  if (content)
+    trigger.dataset.gsxuiWasOpen = content.matches(":popover-open")
+      ? "true"
+      : "false";
 });
 
 on("click", TRIGGER_SELECTOR, (_e, trigger) => {
@@ -39,7 +45,8 @@ on("click", TRIGGER_SELECTOR, (_e, trigger) => {
     if (content.matches(":popover-open")) content.hidePopover();
     return;
   }
-  if (content.matches(":popover-open")) {     // keyboard activation close path
+  if (content.matches(":popover-open")) {
+    // keyboard activation close path
     content.hidePopover();
     return;
   }
@@ -62,12 +69,15 @@ on("click", TRIGGER_SELECTOR, (_e, trigger) => {
   // align=center — dropdown.js's left-aligned `r.left` is NOT reused here):
   // left is the trigger's horizontal midpoint minus half the content's own
   // width, so the content straddles the trigger's center the way Radix's
-  // Floating-UI align=center placement would. No viewport-edge clamping is
-  // done, consistent with dropdown.js/tooltip.js's own documented NOTE
-  // (hand-rolled position:fixed anchoring, not Floating-UI's collision-
-  // aware placement — a stopgap until CSS anchor positioning is Baseline).
-  content.style.left = `${r.left + r.width / 2 - content.offsetWidth / 2}px`;
-  content.style.top = `${r.bottom + 4}px`;
+  // Floating-UI align=center placement would. Clamped to the viewport by
+  // clampToViewport (shift-only, no side flip) — the old no-clamp NOTE
+  // accepted edge imprecision until the theme editor rendered a picker
+  // popover flush offscreen-left; see gsxui.js.
+  clampToViewport(
+    content,
+    r.left + r.width / 2 - content.offsetWidth / 2,
+    r.bottom + 4,
+  );
 });
 
 // Focus management, the Radix FocusScope trio popover.js was missing
@@ -93,8 +103,12 @@ on(
   "beforetoggle",
   "[data-gsxui-slot-popover-content]",
   (e, content) => {
-    if (e.newState !== "closed" || !content.contains(document.activeElement)) return;
-    content.closest("[data-gsxui-slot-popover]")?.querySelector(TRIGGER_SELECTOR)?.focus();
+    if (e.newState !== "closed" || !content.contains(document.activeElement))
+      return;
+    content
+      .closest("[data-gsxui-slot-popover]")
+      ?.querySelector(TRIGGER_SELECTOR)
+      ?.focus();
   },
   { capture: true },
 );

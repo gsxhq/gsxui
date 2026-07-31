@@ -21,7 +21,7 @@
 //     delayed close — tooltip.js needs none of this, since its content is
 //     never interactive and never receives focus or a hover of its own.
 //   - no arrow (hover-card has none, unlike tooltip's diamond span).
-import { on, emit } from "./gsxui.js";
+import { on, emit, clampToViewport } from "./gsxui.js";
 
 // Radix's own defaults are openDelay 700 / closeDelay 300, but shadcn's
 // site demos all pass openDelay={100} closeDelay={100} — the near-instant
@@ -32,9 +32,13 @@ const CLOSE_DELAY = 100;
 
 const timers = new WeakMap(); // trigger -> pending open/close setTimeout id
 const contentOf = (el) =>
-  el.closest("[data-gsxui-slot-hover-card]")?.querySelector("[data-gsxui-slot-hover-card-content]");
+  el
+    .closest("[data-gsxui-slot-hover-card]")
+    ?.querySelector("[data-gsxui-slot-hover-card-content]");
 const triggerOf = (el) =>
-  el.closest("[data-gsxui-slot-hover-card]")?.querySelector("[data-gsxui-slot-hover-card-trigger]");
+  el
+    .closest("[data-gsxui-slot-hover-card]")
+    ?.querySelector("[data-gsxui-slot-hover-card-trigger]");
 
 function clearTimer(trigger) {
   clearTimeout(timers.get(trigger));
@@ -57,8 +61,11 @@ function show(trigger) {
   // the trigger's bottom edge plus Radix's own 4px sideOffset (hover-
   // card.tsx's default, same value as popover.tsx's — no arrow to clear
   // room for, unlike tooltip's 6px-plus-arrow gap above the trigger).
-  content.style.left = `${r.left + r.width / 2 - content.offsetWidth / 2}px`;
-  content.style.top = `${r.bottom + 4}px`;
+  clampToViewport(
+    content,
+    r.left + r.width / 2 - content.offsetWidth / 2,
+    r.bottom + 4,
+  );
   content.dataset.state = "open";
   emit(content, "gsxui:open");
 }
@@ -74,23 +81,35 @@ function hide(trigger) {
 
 function scheduleShow(trigger) {
   clearTimer(trigger);
-  timers.set(trigger, setTimeout(() => show(trigger), OPEN_DELAY));
+  timers.set(
+    trigger,
+    setTimeout(() => show(trigger), OPEN_DELAY),
+  );
 }
 
 function scheduleHide(trigger) {
   clearTimer(trigger);
-  timers.set(trigger, setTimeout(() => hide(trigger), CLOSE_DELAY));
+  timers.set(
+    trigger,
+    setTimeout(() => hide(trigger), CLOSE_DELAY),
+  );
 }
 
-on("pointerover", "[data-gsxui-slot-hover-card-trigger]", (_e, t) => scheduleShow(t));
-on("pointerout", "[data-gsxui-slot-hover-card-trigger]", (_e, t) => scheduleHide(t));
+on("pointerover", "[data-gsxui-slot-hover-card-trigger]", (_e, t) =>
+  scheduleShow(t),
+);
+on("pointerout", "[data-gsxui-slot-hover-card-trigger]", (_e, t) =>
+  scheduleHide(t),
+);
 on("focusin", "[data-gsxui-slot-hover-card-trigger]", (_e, t) => show(t));
 // Leaving the trigger by keyboard rides the same closeDelay grace as
 // leaving it by pointer (scheduleHide, not an immediate hide) — a Tab press
 // that lands on a focusable child of HoverCardContent must not race the
 // popover closing under it. contentOf/triggerOf both key off the trigger,
 // so the content-side focusin below cancels this exact timer.
-on("focusout", "[data-gsxui-slot-hover-card-trigger]", (_e, t) => scheduleHide(t));
+on("focusout", "[data-gsxui-slot-hover-card-trigger]", (_e, t) =>
+  scheduleHide(t),
+);
 
 // The content itself can hold real interactive children — entering it (by
 // pointer OR by keyboard focus) must cancel any pending close the
@@ -115,7 +134,8 @@ on("pointerout", "[data-gsxui-slot-hover-card-content]", (e, content) => {
   // pointer never left the content's own hit area — same guard as
   // dropdown.js's own content pointerout handler, otherwise every internal
   // move would needlessly churn a schedule/clear pair.
-  if (e.relatedTarget instanceof Element && content.contains(e.relatedTarget)) return;
+  if (e.relatedTarget instanceof Element && content.contains(e.relatedTarget))
+    return;
   const trigger = triggerOf(content);
   if (trigger) scheduleHide(trigger);
 });

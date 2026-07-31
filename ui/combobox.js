@@ -33,27 +33,38 @@
 // command.js — a JS-only import would be invisible to
 // internal/registry.Deps' go/parser scan over the generated .x.go, silently
 // breaking CLI vendoring (see the .gsx file's own GAP entry).
-import { on, emit } from "./gsxui.js";
+import { on, emit, clampToViewport } from "./gsxui.js";
 
 const rootOf = (el) => el.closest("[data-gsxui-slot-combobox]");
-const inputOf = (root) => root?.querySelector("[data-gsxui-slot-combobox-input]") ?? null;
-const contentOf = (root) => root?.querySelector("[data-gsxui-slot-combobox-content]") ?? null;
-const listOf = (root) => root?.querySelector("[data-gsxui-slot-combobox-list]") ?? null;
-const bridgeOf = (root) => root?.querySelector("[data-gsxui-slot-combobox-bridge]") ?? null;
-const itemsOf = (root) => (root ? [...root.querySelectorAll("[data-gsxui-slot-combobox-item]")] : []);
+const inputOf = (root) =>
+  root?.querySelector("[data-gsxui-slot-combobox-input]") ?? null;
+const contentOf = (root) =>
+  root?.querySelector("[data-gsxui-slot-combobox-content]") ?? null;
+const listOf = (root) =>
+  root?.querySelector("[data-gsxui-slot-combobox-list]") ?? null;
+const bridgeOf = (root) =>
+  root?.querySelector("[data-gsxui-slot-combobox-bridge]") ?? null;
+const itemsOf = (root) =>
+  root ? [...root.querySelectorAll("[data-gsxui-slot-combobox-item]")] : [];
 const isDisabled = (item) =>
   item.getAttribute("aria-disabled") === "true" || "disabled" in item.dataset;
 const labelOf = (item) => item.textContent.trim();
-const visibleItems = (root) => itemsOf(root).filter((i) => !i.hidden && !isDisabled(i));
+const visibleItems = (root) =>
+  itemsOf(root).filter((i) => !i.hidden && !isDisabled(i));
 const highlightedOf = (root) =>
-  root?.querySelector('[data-gsxui-slot-combobox-item][data-highlighted="true"]') ?? null;
+  root?.querySelector(
+    '[data-gsxui-slot-combobox-item][data-highlighted="true"]',
+  ) ?? null;
 
 let uid = 0;
 
 // --- filter: Intl.Collator-backed boolean `contains` (Base UI's useFilter
 // default) — the exact algorithm traced from Base UI's docs/issue tracker,
 // mirroring React Aria's own implementation. See the file header ADAPT.
-const collator = new Intl.Collator(undefined, { usage: "search", sensitivity: "base" });
+const collator = new Intl.Collator(undefined, {
+  usage: "search",
+  sensitivity: "base",
+});
 
 function contains(string, substring) {
   if (substring.length === 0) return true;
@@ -107,18 +118,25 @@ function highlight(root, item) {
 // not just the one whose label happens to be sitting in the input).
 function filter(root, queryOverride) {
   const input = inputOf(root);
-  const query = queryOverride !== undefined ? queryOverride : (input?.value ?? "").trim();
+  const query =
+    queryOverride !== undefined ? queryOverride : (input?.value ?? "").trim();
   let any = false;
   for (const item of itemsOf(root)) {
     const match = contains(labelOf(item), query);
     item.hidden = !match;
     if (match) any = true;
   }
-  for (const group of root.querySelectorAll("[data-gsxui-slot-combobox-group]")) {
-    const items = [...group.querySelectorAll("[data-gsxui-slot-combobox-item]")];
+  for (const group of root.querySelectorAll(
+    "[data-gsxui-slot-combobox-group]",
+  )) {
+    const items = [
+      ...group.querySelectorAll("[data-gsxui-slot-combobox-item]"),
+    ];
     group.hidden = items.length > 0 && items.every((i) => i.hidden);
   }
-  for (const sep of root.querySelectorAll("[data-gsxui-slot-combobox-separator]")) {
+  for (const sep of root.querySelectorAll(
+    "[data-gsxui-slot-combobox-separator]",
+  )) {
     sep.hidden = query !== "";
   }
   contentOf(root)?.toggleAttribute("data-empty", !any);
@@ -237,7 +255,9 @@ on("reset", "form:has([data-gsxui-slot-combobox])", (_e, form) => {
 // open/closed state — see ui/combobox.gsx's ComboboxInput doc comment) ----
 
 function init(root) {
-  for (const group of root.querySelectorAll("[data-gsxui-slot-combobox-group]")) {
+  for (const group of root.querySelectorAll(
+    "[data-gsxui-slot-combobox-group]",
+  )) {
     if (group.getAttribute("aria-labelledby")) continue;
     const label = group.querySelector("[data-gsxui-slot-combobox-label]");
     if (!label) continue;
@@ -263,7 +283,9 @@ function init(root) {
   // the exact "reopening filtered to the committed label" bug this flag
   // exists to prevent (see docs/jsx-parity.md `## combobox`'s own FIX
   // entry): every option except this one would stay hidden.
-  const checked = root.querySelector('[data-gsxui-slot-combobox-item][data-state="checked"]');
+  const checked = root.querySelector(
+    '[data-gsxui-slot-combobox-item][data-state="checked"]',
+  );
   if (checked && input) {
     const label = labelOf(checked);
     if (!input.value) input.value = label;
@@ -271,7 +293,8 @@ function init(root) {
   }
 }
 
-for (const root of document.querySelectorAll("[data-gsxui-slot-combobox]")) init(root);
+for (const root of document.querySelectorAll("[data-gsxui-slot-combobox]"))
+  init(root);
 
 // --- open / close (ported dropdown.js/select.js machinery) ---------------
 
@@ -279,13 +302,13 @@ function openContent(root) {
   const content = contentOf(root);
   const input = inputOf(root);
   if (!content || content.matches(":popover-open")) return;
-  const anchor = input?.closest("[data-gsxui-slot-combobox-input-group]") ?? input;
+  const anchor =
+    input?.closest("[data-gsxui-slot-combobox-input-group]") ?? input;
   if (anchor) {
     const r = anchor.getBoundingClientRect();
     content.style.position = "fixed";
     content.style.inset = "auto";
-    content.style.left = `${r.left}px`;
-    content.style.top = `${r.bottom + 4}px`;
+    clampToViewport(content, r.left, r.bottom + 4);
     content.style.minWidth = `${r.width}px`;
   }
   // Stamp open BEFORE showing — the toggle event that also stamps it is a
@@ -307,31 +330,40 @@ function closeContent(root) {
 // expects it present regardless of open/closed state — see
 // ui/combobox.gsx's own ComboboxInput doc comment); this handler only
 // tracks open/closed state and clears the highlight cursor on close.
-on("toggle", "[data-gsxui-slot-combobox-content]", (e, content) => {
-  const open = e.newState === "open";
-  content.dataset.state = open ? "open" : "closed";
-  const root = rootOf(content);
-  const input = inputOf(root);
-  input?.setAttribute("aria-expanded", open ? "true" : "false");
-  if (open) {
-    emit(content, "gsxui:open");
-  } else {
-    input?.removeAttribute("aria-activedescendant");
-    for (const item of itemsOf(root)) delete item.dataset.highlighted;
-    emit(content, "gsxui:close");
-  }
-}, { capture: true });
+on(
+  "toggle",
+  "[data-gsxui-slot-combobox-content]",
+  (e, content) => {
+    const open = e.newState === "open";
+    content.dataset.state = open ? "open" : "closed";
+    const root = rootOf(content);
+    const input = inputOf(root);
+    input?.setAttribute("aria-expanded", open ? "true" : "false");
+    if (open) {
+      emit(content, "gsxui:open");
+    } else {
+      input?.removeAttribute("aria-activedescendant");
+      for (const item of itemsOf(root)) delete item.dataset.highlighted;
+      emit(content, "gsxui:close");
+    }
+  },
+  { capture: true },
+);
 
 // contextmenu inside the listbox is suppressed (dropdown.js/select.js do the
 // same).
-on("contextmenu", "[data-gsxui-slot-combobox-content]", (e) => e.preventDefault());
+on("contextmenu", "[data-gsxui-slot-combobox-content]", (e) =>
+  e.preventDefault(),
+);
 
 // --- trigger button --------------------------------------------------------
 
 on("pointerdown", "[data-gsxui-slot-combobox-trigger]", (_e, trigger) => {
   const content = contentOf(rootOf(trigger));
   if (content) {
-    trigger.dataset.gsxuiWasOpen = content.matches(":popover-open") ? "true" : "false";
+    trigger.dataset.gsxuiWasOpen = content.matches(":popover-open")
+      ? "true"
+      : "false";
   }
 });
 

@@ -771,3 +771,22 @@ test("preview rejects state messages with an empty attempt identity", async ({
   await expect(status).toHaveText("Live");
   await expect(retry).toBeHidden();
 });
+
+test("the base-color picker's popover stays inside the viewport", async ({ page }) => {
+  // At the desktop layout the picker column sits at the left edge with a
+  // ~156px trigger; the popover content is 288px wide and centered on the
+  // trigger's midpoint, which computes left = -34px — rendered flush
+  // offscreen-left before clampToViewport existed (reported from a real
+  // session). Asserting x >= 0 discriminates: mid-enter the scale animation
+  // shifts the box inward by ~7px, so the unclamped position still measures
+  // negative.
+  await page.goto("/theme");
+  await expect(page.locator("[data-theme-preview-status]")).toHaveText("Live");
+  const trigger = page.locator('[data-theme-picker="baseColor"] [data-gsxui-slot-popover-trigger]');
+  await trigger.click();
+  const content = page.locator('[data-theme-picker="baseColor"] [data-gsxui-slot-popover-content]');
+  await expect(content).toBeVisible();
+  const box = await content.boundingBox();
+  expect(box, "content has a box").not.toBeNull();
+  expect(box!.x, "left edge inside viewport").toBeGreaterThanOrEqual(0);
+});

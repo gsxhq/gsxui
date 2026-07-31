@@ -58,3 +58,15 @@ function callerModule() {
   }
   return "unknown";
 }
+
+// clampToViewport is the real implementation, unchanged — positioning is
+// behavior under test, not delegation, so the recording layer must not
+// distort it. Keep in lockstep with ui/gsxui.js ("exact export surface"
+// above): a module importing a name the shim lacks fails to evaluate, and
+// with it every registration this file exists to record.
+export function clampToViewport(content, left, top) {
+  const maxLeft = document.documentElement.clientWidth - content.offsetWidth;
+  const maxTop = document.documentElement.clientHeight - content.offsetHeight;
+  content.style.left = `${Math.max(0, Math.min(left, maxLeft))}px`;
+  content.style.top = `${Math.max(0, Math.min(top, maxTop))}px`;
+}
