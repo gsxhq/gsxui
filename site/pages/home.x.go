@@ -161,20 +161,20 @@ func (h Home) Page() _gsxrt.Node {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Open dialog")
 					return _gsxgw.Err()
-				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-dialog-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
-//line home.gsx:94:7
+				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-slot-dialog-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
+//line home.gsx:93:7
 				_gsxgw.Node(ctx, ui.DialogContent(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line home.gsx:95:8
+//line home.gsx:94:8
 					_gsxgw.Node(ctx, ui.DialogHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line home.gsx:96:9
+//line home.gsx:95:9
 						_gsxgw.Node(ctx, ui.DialogTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Edit profile")
 							return _gsxgw.Err()
 						}), nil))
-//line home.gsx:97:9
+//line home.gsx:96:9
 						_gsxgw.Node(ctx, ui.DialogDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Rendered by ui/dialog on the native &lt;dialog&gt; element — no client framework required.")
@@ -182,7 +182,7 @@ func (h Home) Page() _gsxrt.Node {
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line home.gsx:101:8
+//line home.gsx:100:8
 					_gsxgw.Node(ctx, ui.DialogFooter(true, nil, nil))
 					return _gsxgw.Err()
 				}), nil))

@@ -46,9 +46,6 @@ func TooltipTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line tooltip.gsx:12:2
 		_gsxgw.S("<button")
-		if !attrs.Has("data-gsxui-tooltip-trigger") {
-			_gsxgw.BoolAttr("data-gsxui-tooltip-trigger", true)
-		}
 		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"button\"")
 		}
@@ -57,7 +54,7 @@ func TooltipTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tooltip-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-tooltip-trigger", true)
 		_gsxgw.S(">")
-//line tooltip.gsx:12:96
+//line tooltip.gsx:12:69
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()

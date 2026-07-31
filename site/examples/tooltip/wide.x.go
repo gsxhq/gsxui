@@ -25,8 +25,8 @@ func Wide() _gsxrt.Node {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Info")
 				return _gsxgw.Err()
-			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-tooltip-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-tooltip-trigger", Value: _gsxrt.Toggle(true)}})))
-//line wide.gsx:18:3
+			}), _gsxrt.Attrs{{Key: "data-gsxui-slot-tooltip-trigger", Value: _gsxrt.Toggle(true)}}))
+//line wide.gsx:17:3
 			_gsxgw.Node(ctx, ui.TooltipContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Deploys automatically when you push to the main branch.")

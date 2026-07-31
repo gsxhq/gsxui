@@ -25,7 +25,6 @@ component Basic() {
 	<ui.Drawer>
 		<ui.Button
 			variant="outline"
-			data-gsxui-dialog-trigger
 			data-gsxui-slot-drawer-trigger
 			aria-haspopup="dialog"
 			aria-expanded="false"

@@ -39,9 +39,6 @@ func PopoverTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line popover.gsx:12:2
 		_gsxgw.S("<button")
-		if !attrs.Has("data-gsxui-popover-trigger") {
-			_gsxgw.BoolAttr("data-gsxui-popover-trigger", true)
-		}
 		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"button\"")
 		}
@@ -53,18 +50,18 @@ func PopoverTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-popover-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-popover-trigger", true)
 		_gsxgw.S(">")
-//line popover.gsx:19:3
+//line popover.gsx:18:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line popover.gsx:23:1
+//line popover.gsx:22:1
 func PopoverContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line popover.gsx:24:2
+//line popover.gsx:23:2
 		_gsxgw.S("<div")
 		if !attrs.Has("popover") {
 			_gsxgw.S(" popover=\"auto\"")
@@ -85,7 +82,7 @@ func PopoverContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-popover-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-popover-content", true)
 		_gsxgw.S(">")
-//line popover.gsx:35:3
+//line popover.gsx:34:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

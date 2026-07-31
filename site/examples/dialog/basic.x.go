@@ -26,20 +26,20 @@ func Basic() _gsxrt.Node {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Delete account")
 				return _gsxgw.Err()
-			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-dialog-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
-//line basic.gsx:22:3
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-slot-dialog-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
+//line basic.gsx:21:3
 			_gsxgw.Node(ctx, ui.DialogContent(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:23:4
+//line basic.gsx:22:4
 				_gsxgw.Node(ctx, ui.DialogHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:24:5
+//line basic.gsx:23:5
 					_gsxgw.Node(ctx, ui.DialogTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Are you absolutely sure?")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:25:5
+//line basic.gsx:24:5
 					_gsxgw.Node(ctx, ui.DialogDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("This will permanently delete your account.")
@@ -47,16 +47,16 @@ func Basic() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:27:4
+//line basic.gsx:26:4
 				_gsxgw.Node(ctx, ui.DialogFooter(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:28:5
+//line basic.gsx:27:5
 					_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Cancel")
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "data-gsxui-dialog-close", Value: _gsxrt.Toggle(true)}}))
-//line basic.gsx:29:5
+//line basic.gsx:28:5
 					_gsxgw.Node(ctx, ui.Button("destructive", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Continue")

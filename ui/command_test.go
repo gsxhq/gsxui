@@ -119,7 +119,7 @@ func TestCommandDialogComposition(t *testing.T) {
 	for _, want := range []string{
 		`data-gsxui-command-dialog`,
 		`data-gsxui-slot-dialog-content`,
-		`data-gsxui-dialog-trigger`,
+		`data-gsxui-slot-dialog-trigger`,
 		`data-gsxui-slot-command-dialog data-gsxui-slot-dialog`,
 		`data-gsxui-slot-command-dialog-content data-gsxui-slot-dialog-content`,
 		`data-gsxui-slot-command-dialog-header data-gsxui-slot-dialog-header`,

@@ -52,6 +52,14 @@ function authoredInvokers(dialog) {
   return [...document.querySelectorAll(`[commandfor="${target}"][command="show-modal"]`)];
 }
 
+// A dialog opens from its family Trigger components — identified by their
+// slot markers — or from any element opted in with data-gsxui-dialog-trigger,
+// the public idiom for arbitrary triggers (<ui.Button data-gsxui-dialog-trigger>).
+// Component markup does not stamp the role hook: for family members the role
+// is implied by identity.
+const TRIGGER_SELECTOR =
+  "[data-gsxui-dialog-trigger],[data-gsxui-slot-dialog-trigger],[data-gsxui-slot-alert-dialog-trigger],[data-gsxui-slot-drawer-trigger],[data-gsxui-slot-sheet-trigger]";
+
 // Idempotent: name/describe the dialog and point triggers at it.
 function wireA11y(root, dialog) {
   const title = owned(root, "[data-gsxui-slot-dialog-title]")[0];
@@ -60,7 +68,7 @@ function wireA11y(root, dialog) {
     dialog.setAttribute("aria-labelledby", ensureId(title, "title"));
   if (desc && !dialog.hasAttribute("aria-describedby"))
     dialog.setAttribute("aria-describedby", ensureId(desc, "desc"));
-  for (const t of owned(root, "[data-gsxui-dialog-trigger]"))
+  for (const t of owned(root, TRIGGER_SELECTOR))
     if (!t.hasAttribute("aria-controls"))
       t.setAttribute("aria-controls", ensureId(dialog, "dialog"));
 }
@@ -107,7 +115,7 @@ on("gsxui:request-close", DIALOG, (event, dialog) => {
   });
 });
 
-on("click", "[data-gsxui-dialog-trigger]", (_event, trigger) => {
+on("click", TRIGGER_SELECTOR, (_event, trigger) => {
   const root = rootOf(trigger);
   const dialog = root && dialogOf(root);
   if (dialog) request(dialog, "gsxui:request-open", { reason: "trigger" });
@@ -175,7 +183,7 @@ on(
     dialog.dataset.state = open ? "open" : "closed";
     const root = rootOf(dialog);
     if (root) {
-      for (const t of owned(root, "[data-gsxui-dialog-trigger]"))
+      for (const t of owned(root, TRIGGER_SELECTOR))
         t.setAttribute("aria-expanded", open ? "true" : "false");
       if (open) wireA11y(root, dialog);
     }

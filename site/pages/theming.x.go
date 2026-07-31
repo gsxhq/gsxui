@@ -133,34 +133,45 @@ func (t Theming) Page() _gsxrt.Node {
 			_gsxgw.S("<code>")
 //line theming.gsx:78:16
 			_gsxgw.Node(ctx, hl.Node("snippets/theme-attrs.gsx"))
+			_gsxgw.S("</code></pre>")
+//line theming.gsx:79:5
+			_gsxgw.S("<p>Behaviour roles are opt-in data attributes, separate from identity. Any element can become a dialog trigger by carrying ")
+//line theming.gsx:81:33
+			_gsxgw.S("<code>data-gsxui-dialog-trigger</code> — the family's own Trigger components need no role attribute, because for them the role is implied by their slot marker:</p>")
+//line theming.gsx:84:5
+			_gsxgw.S("<pre>")
+//line theming.gsx:84:10
+			_gsxgw.S("<code>")
+//line theming.gsx:84:16
+			_gsxgw.Node(ctx, hl.Node("snippets/theme-dataattr.gsx"))
 			_gsxgw.S("</code></pre></section>")
-//line theming.gsx:80:4
+//line theming.gsx:86:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line theming.gsx:81:5
+//line theming.gsx:87:5
 			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, themingTOCItems[4], nil))
-//line theming.gsx:82:5
+//line theming.gsx:88:5
 			_gsxgw.S("<ol class=\"list-decimal space-y-2 pl-6\">")
-//line theming.gsx:83:6
+//line theming.gsx:89:6
 			_gsxgw.S("<li>Change the CSS entry from ")
-//line theming.gsx:83:36
+//line theming.gsx:89:36
 			_gsxgw.S("<code>web/gsxui.css</code> to ")
-//line theming.gsx:83:66
+//line theming.gsx:89:66
 			_gsxgw.S("<code>web/gsxui/index.css</code>.</li>")
-//line theming.gsx:84:6
+//line theming.gsx:90:6
 			_gsxgw.S("<li>Review the four-file diff, then run ")
-//line theming.gsx:84:46
+//line theming.gsx:90:46
 			_gsxgw.S("<code>gsxui init --overwrite</code>.</li>")
-//line theming.gsx:85:6
+//line theming.gsx:91:6
 			_gsxgw.S("<li>Run ")
-//line theming.gsx:86:11
+//line theming.gsx:92:11
 			_gsxgw.S("<code>gsxui add &lt;component&gt; --overwrite</code> for each vendored component you want to refresh.</li>")
-//line theming.gsx:88:6
+//line theming.gsx:94:6
 			_gsxgw.S("<li>Replace intentional project ")
-//line theming.gsx:89:35
+//line theming.gsx:95:35
 			_gsxgw.S("<code>data-slot</code> selectors with exact presence selectors such as ")
-//line theming.gsx:90:10
+//line theming.gsx:96:10
 			_gsxgw.S("<code>[data-gsxui-slot-button]</code>.</li></ol>")
-//line theming.gsx:93:5
+//line theming.gsx:99:5
 			_gsxgw.S("<p>This is a one-time breaking migration. There is no legacy selector or combined-file compatibility layer.</p></section></div>")
 			return _gsxgw.Err()
 		})))

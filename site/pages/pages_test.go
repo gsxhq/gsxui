@@ -328,17 +328,22 @@ func TestDialogTriggerSlotMarkers(t *testing.T) {
 		want string
 	}{
 		{
-			name: "two exact empty markers",
-			html: `<button data-gsxui-dialog-trigger data-gsxui-slot-dialog-trigger></button><button data-gsxui-dialog-trigger data-gsxui-slot-dialog-trigger></button>`,
+			name: "one slot-marked and one role-marked trigger",
+			html: `<button data-gsxui-slot-dialog-trigger></button><button data-gsxui-dialog-trigger></button>`,
 		},
 		{
-			name: "suffix marker does not satisfy the contract",
-			html: `<button data-gsxui-dialog-trigger data-gsxui-slot-dialog-trigger-extra></button><button data-gsxui-dialog-trigger data-gsxui-slot-dialog-trigger></button>`,
-			want: "missing data-gsxui-slot-dialog-trigger",
+			name: "carrying both markers is the removed duplication",
+			html: `<button data-gsxui-dialog-trigger data-gsxui-slot-dialog-trigger></button><button data-gsxui-slot-dialog-trigger></button>`,
+			want: "carries both the role hook and the slot marker",
+		},
+		{
+			name: "suffix marker is not the trigger slot",
+			html: `<button data-gsxui-slot-dialog-trigger-extra></button><button data-gsxui-slot-dialog-trigger></button>`,
+			want: "found 1 dialog triggers, want 2",
 		},
 		{
 			name: "valued marker does not satisfy the contract",
-			html: `<button data-gsxui-dialog-trigger data-gsxui-slot-dialog-trigger = "true"></button><button data-gsxui-dialog-trigger data-gsxui-slot-dialog-trigger></button>`,
+			html: `<button data-gsxui-slot-dialog-trigger = "true"></button><button data-gsxui-slot-dialog-trigger></button>`,
 			want: `data-gsxui-slot-dialog-trigger has value "true"`,
 		},
 	}
@@ -364,29 +369,43 @@ func TestDialogTriggerSlotMarkers(t *testing.T) {
 }
 
 func validateDialogTriggerSlotMarkers(document *html.Node, want int) error {
-	var triggers []*html.Node
+	// An element is a dialog trigger through exactly one marker: its slot
+	// marker (the family Trigger components, and buttons that claim the
+	// slot), or the data-gsxui-dialog-trigger role hook (the opt-in idiom
+	// for arbitrary elements). Carrying both is the defect: the role
+	// restates what identity already implies — the pair the slot cleanup
+	// removed. Markers are presence-only, so a value on either is also a
+	// defect.
+	count := 0
+	var problem error
 	var visit func(*html.Node)
 	visit = func(node *html.Node) {
-		if node.Type == html.ElementNode && hasHTMLAttribute(node, "data-gsxui-dialog-trigger") {
-			triggers = append(triggers, node)
+		if node.Type == html.ElementNode {
+			role, hasRole := htmlAttribute(node, "data-gsxui-dialog-trigger")
+			slot, hasSlot := htmlAttribute(node, "data-gsxui-slot-dialog-trigger")
+			if hasRole || hasSlot {
+				count++
+				switch {
+				case problem != nil:
+				case hasRole && hasSlot:
+					problem = fmt.Errorf("dialog trigger %d carries both the role hook and the slot marker", count)
+				case hasRole && role != "":
+					problem = fmt.Errorf("dialog trigger %d data-gsxui-dialog-trigger has value %q", count, role)
+				case hasSlot && slot != "":
+					problem = fmt.Errorf("dialog trigger %d data-gsxui-slot-dialog-trigger has value %q", count, slot)
+				}
+			}
 		}
 		for child := node.FirstChild; child != nil; child = child.NextSibling {
 			visit(child)
 		}
 	}
 	visit(document)
-
-	if len(triggers) != want {
-		return fmt.Errorf("found %d dialog triggers, want %d", len(triggers), want)
+	if problem != nil {
+		return problem
 	}
-	for index, trigger := range triggers {
-		value, ok := htmlAttribute(trigger, "data-gsxui-slot-dialog-trigger")
-		if !ok {
-			return fmt.Errorf("dialog trigger %d missing data-gsxui-slot-dialog-trigger", index+1)
-		}
-		if value != "" {
-			return fmt.Errorf("dialog trigger %d data-gsxui-slot-dialog-trigger has value %q", index+1, value)
-		}
+	if count != want {
+		return fmt.Errorf("found %d dialog triggers, want %d", count, want)
 	}
 	return nil
 }

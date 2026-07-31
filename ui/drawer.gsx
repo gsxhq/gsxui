@@ -15,7 +15,6 @@ component Drawer(children gsx.Node, attrs gsx.Attrs) {
 
 component DrawerTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<button
-		data-gsxui-dialog-trigger
 		type="button"
 		aria-haspopup="dialog"
 		aria-expanded="false"

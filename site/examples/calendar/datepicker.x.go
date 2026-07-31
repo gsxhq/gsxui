@@ -27,7 +27,7 @@ var DatePickerDefaultMonth = time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 // DatePicker export, because Popover + Calendar already IS one, and
 // composing them at the call site is strictly cheaper than threading a
 // thirteenth Popover-specific parameter (open state, trigger label)
-// through ui.Calendar itself. data-gsxui-popover-trigger goes straight on
+// through ui.Calendar itself. data-gsxui-slot-popover-trigger goes straight on
 // ui.Button, the same direct-attribute idiom popover/basic.gsx's own
 // "Open popover" trigger already uses, rather than wrapping it in a
 // separate ui.PopoverTrigger.
@@ -57,27 +57,27 @@ func DatePicker() _gsxrt.Node {
 //line datepicker.gsx:42:4
 			_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line datepicker.gsx:49:5
+//line datepicker.gsx:48:5
 				_gsxgw.Node(ctx, icon.Calendar())
-//line datepicker.gsx:50:5
+//line datepicker.gsx:49:5
 				_gsxgw.S("<span")
 				_gsxgw.BoolAttr("data-datepicker-label", true)
 				_gsxgw.S(">Pick a date</span>")
 				return _gsxgw.Err()
-			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-popover-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-popover-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}}, _gsxrt.Attrs{{Key: "class", Value: "w-[240px] justify-start text-left font-normal text-muted-foreground"}})))
-//line datepicker.gsx:52:4
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-slot-popover-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}}, _gsxrt.Attrs{{Key: "class", Value: "w-[240px] justify-start text-left font-normal text-muted-foreground"}})))
+//line datepicker.gsx:51:4
 			_gsxgw.Node(ctx, ui.PopoverContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line datepicker.gsx:53:5
+//line datepicker.gsx:52:5
 				_gsxgw.Node(ctx, ui.Calendar("single", DatePickerDefaultMonth, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", _gsxrt.Attrs{{Key: "id", Value: "datepicker-calendar"}}))
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "w-auto p-0"}}))
 			return _gsxgw.Err()
 		}), nil))
-//line datepicker.gsx:63:3
+//line datepicker.gsx:62:3
 		_gsxgw.S("<script")
 		_gsxgw.Nonce(ctx)
-		_gsxgw.S(">\ndocument.addEventListener(\"gsxui:change\", (e) => {\n\tif (e.target.id !== \"datepicker-calendar\") return;\n\tconst button = e.target.closest(\"[data-gsxui-slot-popover]\")?.querySelector(\"[data-gsxui-popover-trigger]\");\n\tconst label = button?.querySelector(\"[data-datepicker-label]\");\n\tif (!label) return;\n\tconst picked = e.detail.selected[0];\n\tlabel.textContent = picked ?? \"Pick a date\";\n\tbutton.classList.toggle(\"text-muted-foreground\", !picked);\n});\n</script></div>")
+		_gsxgw.S(">\ndocument.addEventListener(\"gsxui:change\", (e) => {\n\tif (e.target.id !== \"datepicker-calendar\") return;\n\tconst button = e.target.closest(\"[data-gsxui-slot-popover]\")?.querySelector(\"[data-gsxui-slot-popover-trigger]\");\n\tconst label = button?.querySelector(\"[data-datepicker-label]\");\n\tif (!label) return;\n\tconst picked = e.detail.selected[0];\n\tlabel.textContent = picked ?? \"Pick a date\";\n\tbutton.classList.toggle(\"text-muted-foreground\", !picked);\n});\n</script></div>")
 		return _gsxgw.Err()
 	})
 }

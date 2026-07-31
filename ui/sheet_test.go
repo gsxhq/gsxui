@@ -12,7 +12,7 @@ func TestSheetPinnedParts(t *testing.T) {
 	if got, want := render(t, ui.Sheet(gsx.Raw("x"), nil)), `<div class="contents" data-gsxui-slot-sheet data-gsxui-slot-dialog>x</div>`; got != want {
 		t.Errorf("root mismatch\n got: %s\nwant: %s", got, want)
 	}
-	if got, want := render(t, ui.SheetTrigger(gsx.Raw("Open"), nil)), `<button data-gsxui-dialog-trigger type="button" aria-haspopup="dialog" aria-expanded="false" data-gsxui-slot-sheet-trigger>Open</button>`; got != want {
+	if got, want := render(t, ui.SheetTrigger(gsx.Raw("Open"), nil)), `<button type="button" aria-haspopup="dialog" aria-expanded="false" data-gsxui-slot-sheet-trigger>Open</button>`; got != want {
 		t.Errorf("trigger mismatch\n got: %s\nwant: %s", got, want)
 	}
 }

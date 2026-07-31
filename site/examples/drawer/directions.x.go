@@ -32,44 +32,44 @@ func Directions() _gsxrt.Node {
 //line directions.gsx:16:5
 				_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line directions.gsx:24:6
+//line directions.gsx:23:6
 					_gsxgw.Text(string(dir))
 					return _gsxgw.Err()
-				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-drawer-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}}, _gsxrt.Attrs{{Key: "class", Value: "capitalize"}})))
-//line directions.gsx:26:5
+				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-slot-drawer-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}}, _gsxrt.Attrs{{Key: "class", Value: "capitalize"}})))
+//line directions.gsx:25:5
 				_gsxgw.Node(ctx, ui.DrawerContent(dir, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line directions.gsx:27:6
+//line directions.gsx:26:6
 					_gsxgw.Node(ctx, ui.DrawerHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line directions.gsx:28:7
+//line directions.gsx:27:7
 						_gsxgw.Node(ctx, ui.DrawerTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line directions.gsx:28:42
+//line directions.gsx:27:42
 							_gsxgw.Text(string(dir))
 							_gsxgw.S(" drawer")
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "class", Value: "capitalize"}}))
-//line directions.gsx:29:7
+//line directions.gsx:28:7
 						_gsxgw.Node(ctx, ui.DrawerDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Anchored to the ")
-//line directions.gsx:29:45
+//line directions.gsx:28:45
 							_gsxgw.Text(string(dir))
 							_gsxgw.S(" edge.")
 							return _gsxgw.Err()
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line directions.gsx:31:6
+//line directions.gsx:30:6
 					_gsxgw.S("<div class=\"p-4 pt-0 text-sm text-muted-foreground\">The free edge is rounded and the panel slides in from the ")
-//line directions.gsx:32:65
+//line directions.gsx:31:65
 					_gsxgw.Text(string(dir))
 					_gsxgw.S(".</div>")
-//line directions.gsx:34:6
+//line directions.gsx:33:6
 					_gsxgw.Node(ctx, ui.DrawerFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line directions.gsx:35:7
+//line directions.gsx:34:7
 						_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Close")

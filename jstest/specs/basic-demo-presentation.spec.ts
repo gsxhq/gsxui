@@ -2,7 +2,6 @@ import { expect, test } from "../support/fixtures";
 
 type TriggerDemo = {
   route: string;
-  behaviorAttribute: string;
   triggerSlot: string;
   count: number;
 };
@@ -10,97 +9,81 @@ type TriggerDemo = {
 const triggerDemos: TriggerDemo[] = [
   {
     route: "alert-dialog/basic",
-    behaviorAttribute: "data-gsxui-dialog-trigger",
     triggerSlot: "alert-dialog-trigger",
     count: 1,
   },
   {
     route: "dialog/basic",
-    behaviorAttribute: "data-gsxui-dialog-trigger",
     triggerSlot: "dialog-trigger",
     count: 1,
   },
   {
     route: "dialog/footer",
-    behaviorAttribute: "data-gsxui-dialog-trigger",
     triggerSlot: "dialog-trigger",
     count: 1,
   },
   {
     route: "drawer/basic",
-    behaviorAttribute: "data-gsxui-dialog-trigger",
     triggerSlot: "drawer-trigger",
     count: 1,
   },
   {
     route: "drawer/directions",
-    behaviorAttribute: "data-gsxui-dialog-trigger",
     triggerSlot: "drawer-trigger",
     count: 4,
   },
   {
     route: "dropdown-menu/basic",
-    behaviorAttribute: "data-gsxui-slot-dropdown-menu-trigger",
     triggerSlot: "dropdown-menu-trigger",
     count: 1,
   },
   {
     route: "dropdown-menu/checkboxes",
-    behaviorAttribute: "data-gsxui-slot-dropdown-menu-trigger",
     triggerSlot: "dropdown-menu-trigger",
     count: 1,
   },
   {
     route: "dropdown-menu/destructive",
-    behaviorAttribute: "data-gsxui-slot-dropdown-menu-trigger",
     triggerSlot: "dropdown-menu-trigger",
     count: 1,
   },
   {
     route: "dropdown-menu/radios",
-    behaviorAttribute: "data-gsxui-slot-dropdown-menu-trigger",
     triggerSlot: "dropdown-menu-trigger",
     count: 1,
   },
   {
     route: "dropdown-menu/submenu",
-    behaviorAttribute: "data-gsxui-slot-dropdown-menu-trigger",
     triggerSlot: "dropdown-menu-trigger",
     count: 1,
   },
   {
     route: "calendar/datepicker",
-    behaviorAttribute: "data-gsxui-popover-trigger",
     triggerSlot: "popover-trigger",
     count: 1,
   },
   {
     route: "popover/basic",
-    behaviorAttribute: "data-gsxui-popover-trigger",
     triggerSlot: "popover-trigger",
     count: 1,
   },
   {
     route: "sheet/basic",
-    behaviorAttribute: "data-gsxui-dialog-trigger",
     triggerSlot: "sheet-trigger",
     count: 1,
   },
   {
     route: "sheet/directions",
-    behaviorAttribute: "data-gsxui-dialog-trigger",
     triggerSlot: "sheet-trigger",
     count: 4,
   },
   {
     route: "tooltip/basic",
-    behaviorAttribute: "data-gsxui-tooltip-trigger",
     triggerSlot: "tooltip-trigger",
     count: 1,
   },
   {
     route: "tooltip/wide",
-    behaviorAttribute: "data-gsxui-tooltip-trigger",
     triggerSlot: "tooltip-trigger",
     count: 1,
   },
@@ -113,7 +96,7 @@ for (const demo of triggerDemos) {
     const response = await page.goto(`/x/${demo.route}`);
     expect(response?.status(), `${demo.route} fixture response`).toBe(200);
 
-    const triggers = page.locator(`[${demo.behaviorAttribute}]`);
+    const triggers = page.locator(`[data-gsxui-slot-${demo.triggerSlot}]`);
     await expect(triggers).toHaveCount(demo.count);
     for (let index = 0; index < demo.count; index++) {
       const trigger = triggers.nth(index);

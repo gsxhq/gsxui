@@ -28,23 +28,23 @@ func Directions() _gsxrt.Node {
 //line directions.gsx:12:5
 				_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line directions.gsx:20:6
+//line directions.gsx:19:6
 					_gsxgw.Text(string(side))
 					return _gsxgw.Err()
-				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-sheet-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}}, _gsxrt.Attrs{{Key: "class", Value: "capitalize"}})))
-//line directions.gsx:22:5
+				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-slot-sheet-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}}, _gsxrt.Attrs{{Key: "class", Value: "capitalize"}})))
+//line directions.gsx:21:5
 				_gsxgw.Node(ctx, ui.SheetContent(side, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line directions.gsx:23:6
+//line directions.gsx:22:6
 					_gsxgw.Node(ctx, ui.SheetHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line directions.gsx:24:7
+//line directions.gsx:23:7
 						_gsxgw.Node(ctx, ui.SheetTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Edit profile")
 							return _gsxgw.Err()
 						}), nil))
-//line directions.gsx:25:7
+//line directions.gsx:24:7
 						_gsxgw.Node(ctx, ui.SheetDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Make changes to your profile here. Click save when you're done.")
@@ -52,34 +52,34 @@ func Directions() _gsxrt.Node {
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line directions.gsx:29:6
+//line directions.gsx:28:6
 					_gsxgw.S("<div class=\"grid gap-4 px-4\">")
-//line directions.gsx:30:7
+//line directions.gsx:29:7
 					_gsxgw.S("<div class=\"grid grid-cols-4 items-center gap-4\">")
-//line directions.gsx:31:8
+//line directions.gsx:30:8
 					_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Name")
 						return _gsxgw.Err()
 					}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "for", Value: "sheet-" + side + "-name"}}, _gsxrt.Attrs{{Key: "class", Value: "text-right"}})))
-//line directions.gsx:32:8
+//line directions.gsx:31:8
 					_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "sheet-" + side + "-name"}}, _gsxrt.Attrs{{Key: "value", Value: "Pedro Duarte"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-3"}})))
 					_gsxgw.S("</div>")
-//line directions.gsx:34:7
+//line directions.gsx:33:7
 					_gsxgw.S("<div class=\"grid grid-cols-4 items-center gap-4\">")
-//line directions.gsx:35:8
+//line directions.gsx:34:8
 					_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Username")
 						return _gsxgw.Err()
 					}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "for", Value: "sheet-" + side + "-username"}}, _gsxrt.Attrs{{Key: "class", Value: "text-right"}})))
-//line directions.gsx:36:8
+//line directions.gsx:35:8
 					_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "sheet-" + side + "-username"}}, _gsxrt.Attrs{{Key: "value", Value: "@peduarte"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-3"}})))
 					_gsxgw.S("</div></div>")
-//line directions.gsx:39:6
+//line directions.gsx:38:6
 					_gsxgw.Node(ctx, ui.SheetFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line directions.gsx:40:7
+//line directions.gsx:39:7
 						_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Save changes")

@@ -35,10 +35,16 @@ function hide(trigger) {
   emit(content, "gsxui:close");
 }
 
-on("pointerover", "[data-gsxui-tooltip-trigger]", (_e, t) => {
+// A tooltip attaches to TooltipTrigger — identified by its slot marker — or
+// to any element opted in with data-gsxui-tooltip-trigger, the idiom for
+// arbitrary triggers (Sidebar's menu button uses it). Component markup does
+// not stamp the role hook: for the family trigger the role is implied by identity.
+const TRIGGER_SELECTOR = "[data-gsxui-tooltip-trigger],[data-gsxui-slot-tooltip-trigger]";
+
+on("pointerover", TRIGGER_SELECTOR, (_e, t) => {
   clearTimeout(timers.get(t));
   timers.set(t, setTimeout(() => show(t), 300));
 });
-on("pointerout", "[data-gsxui-tooltip-trigger]", (_e, t) => hide(t));
-on("focusin", "[data-gsxui-tooltip-trigger]", (_e, t) => show(t));
-on("focusout", "[data-gsxui-tooltip-trigger]", (_e, t) => hide(t));
+on("pointerout", TRIGGER_SELECTOR, (_e, t) => hide(t));
+on("focusin", TRIGGER_SELECTOR, (_e, t) => show(t));
+on("focusout", TRIGGER_SELECTOR, (_e, t) => hide(t));

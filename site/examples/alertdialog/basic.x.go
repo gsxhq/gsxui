@@ -29,20 +29,20 @@ func Basic() _gsxrt.Node {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Show dialog")
 				return _gsxgw.Err()
-			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-alert-dialog-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
-//line basic.gsx:26:3
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-slot-alert-dialog-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
+//line basic.gsx:25:3
 			_gsxgw.Node(ctx, ui.AlertDialogContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:27:4
+//line basic.gsx:26:4
 				_gsxgw.Node(ctx, ui.AlertDialogHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:28:5
+//line basic.gsx:27:5
 					_gsxgw.Node(ctx, ui.AlertDialogTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Are you absolutely sure?")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:29:5
+//line basic.gsx:28:5
 					_gsxgw.Node(ctx, ui.AlertDialogDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("This action cannot be undone. This will permanently delete your account and remove your data from our servers.")
@@ -50,16 +50,16 @@ func Basic() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:33:4
+//line basic.gsx:32:4
 				_gsxgw.Node(ctx, ui.AlertDialogFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:34:5
+//line basic.gsx:33:5
 					_gsxgw.Node(ctx, ui.AlertDialogCancel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Cancel")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:35:5
+//line basic.gsx:34:5
 					_gsxgw.Node(ctx, ui.AlertDialogAction(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Continue")

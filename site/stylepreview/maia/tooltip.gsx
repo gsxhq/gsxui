@@ -9,7 +9,7 @@ component Tooltip(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component TooltipTrigger(children gsx.Node, attrs gsx.Attrs) {
-	<button data-gsxui-tooltip-trigger type="button" { attrs... } data-gsxui-slot-tooltip-trigger>{ children }</button>
+	<button type="button" { attrs... } data-gsxui-slot-tooltip-trigger>{ children }</button>
 }
 
 component TooltipContent(children gsx.Node, attrs gsx.Attrs) {

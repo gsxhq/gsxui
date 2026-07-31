@@ -20,7 +20,6 @@ component Basic() {
 	<ui.Sheet>
 		<ui.Button
 			variant="outline"
-			data-gsxui-dialog-trigger
 			data-gsxui-slot-sheet-trigger
 			aria-haspopup="dialog"
 			aria-expanded="false"
