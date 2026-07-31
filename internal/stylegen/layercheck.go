@@ -246,7 +246,21 @@ type exemptionKey struct {
 type layerCheckExemption struct {
 	key    exemptionKey
 	reason string
+	// derived names the group an entry was DERIVED from source rather than
+	// written down, and is "" for hand-written entries. It changes only how
+	// staleness is judged: a hand-written entry that stops matching is a decision
+	// whose subject moved, and must be re-taken; a derived entry that stops
+	// matching means the generator emitted a declaration nothing happens to
+	// contest, which nobody decided and nobody should have to re-decide. Derived
+	// GROUPS are still checked for staleness as a whole (see staleExemptions), so
+	// a group that stops forgiving anything at all still fails.
+	derived string
 }
+
+// siteButtonDerivedGroup names the one derived exemption group. It is a
+// constant rather than a bare string so the group name in the diagnostic and the
+// name on each entry cannot drift apart.
+const siteButtonDerivedGroup = "web/site-button.css (generated from Button's recipe)"
 
 // layerCheckExemptions names the individual components-layer violations that are
 // deliberate. Nothing else is exempt: a rule that loses the cascade by accident
@@ -273,11 +287,21 @@ type layerCheckExemption struct {
 // The chain is slices.Concat rather than nested appends: every migration wave
 // adds a group here, and a nested append chain put each addition on the same
 // two lines, so every wave collided with every other one.
-var layerCheckExemptions = slices.Concat(
-	siteButtonFallbackExemptions(),
-	toggleMarkerFallbackExemptions(),
-	sidebarFoundationMechanicsExemptions(),
-)
+//
+// Groups whose subject is a GENERATED file are derived from the same source the
+// generator reads instead of being written out — see
+// siteButtonFallbackExemptions — so they take root and can fail.
+func layerCheckExemptions(root string) ([]layerCheckExemption, error) {
+	siteButton, err := siteButtonFallbackExemptions(root)
+	if err != nil {
+		return nil, err
+	}
+	return slices.Concat(
+		siteButton,
+		toggleMarkerFallbackExemptions(),
+		sidebarFoundationMechanicsExemptions(),
+	), nil
+}
 
 // toggleMarkerFallbackReason is the decision behind every entry
 // toggleMarkerFallbackExemptions lists. ui/toggle-group.gsx's
@@ -309,9 +333,12 @@ const toggleMarkerFallbackReason = "assets/css/styles/default.css's Toggle marke
 
 // toggleMarkerFallbackExemptions spells out every violation the Toggle
 // marker fallback commits, one (selector, utility, style) triple at a
-// time, following siteButtonFallbackExemptions' own enumeration
-// discipline exactly (see its own doc comment for why enumerating beats a
-// whole-file waiver).
+// time. Enumerating beats a whole-file waiver for the reason exemptionKey's
+// own comment gives: keying by file forgives every rule added to it later.
+// assets/css/styles/default.css is hand-authored and shared with other
+// components, so unlike web/site-button.css — which is now GENERATED from
+// Button's recipe and whose exemptions are derived from it — there is nothing
+// here to derive these from.
 func toggleMarkerFallbackExemptions() []layerCheckExemption {
 	both := []string{"maia", "nova"}
 	pairs := []struct {
@@ -359,126 +386,6 @@ func toggleMarkerFallbackExemptions() []layerCheckExemption {
 	return out
 }
 
-// siteButtonFallbackReason is the single decision behind every entry below. It
-// is attached to each one because a reader who trips over a suppressed rule
-// should learn why it is suppressed from the diagnostic, not from a comment
-// somewhere else in the tree.
-const siteButtonFallbackReason = "web/site-button.css is docs-and-demos-only presentation for raw markup that carries " +
-	"[data-gsxui-slot-button] WITHOUT rendering through <ui.Button> — hand-written examples and the " +
-	"theme preview. It is authored at zero specificity in @layer components precisely so the compiled " +
-	"Button's own utilities beat it wherever a real Button is rendered; losing the cascade there is the " +
-	"design, not a defect. jstest/specs/basic-demo-presentation.spec.ts:182 pins that both halves still " +
-	"hold in the browser."
-
-// siteButtonFallbackExemptions spells out every violation the fallback really
-// commits, one (selector, utility, style) triple at a time.
-//
-// This list is long on purpose. The old exemption was the single string
-// "web/site-button.css", which forgave these violations AND every violation
-// anyone adds to that file afterwards — including, during the migration wave, a
-// genuinely wrong one. Enumerating them is the cost of the file no longer being
-// a blind spot: a new dead rule in site-button.css is not on this list, so the
-// gate reports it, and a rule that leaves the list is caught as stale.
-//
-// THE STYLE DIMENSION IS DECLARED, NOT DERIVED. Each pair names the styles under
-// which it is a deliberate violation, and the expansion below turns one line
-// into one key per style. Two things are deliberately NOT done: the styles are
-// not enumerated from registry/styles (a new style would then inherit a waiver
-// nobody granted, silently, which is the P1b failure moved into this list), and
-// they are not read back from what the check currently finds (that turns a
-// precise exemption into the blanket waiver this list replaced). Naming them
-// makes each one a decision: `bg-primary` is contested under both styles because
-// both set it, `rounded-lg` only under Nova because Maia is `rounded-4xl`, and a
-// pair whose style list stops matching reality goes stale and fails the build.
-func siteButtonFallbackExemptions() []layerCheckExemption {
-	// Every pair below happens to be contested under both styles: the fallback
-	// contests a Tailwind GROUP (border-radius, height, background-color), and
-	// both Button recipes set every one of those groups even where they disagree
-	// on the value — `rounded-lg` against `rounded-4xl`, `h-8` against `h-9`. A
-	// pair contested under only one style is written with that style alone, and
-	// the staleness check is what forces the question to be answered honestly.
-	both := []string{"maia", "nova"}
-	pairs := []struct {
-		selector, contested string
-		styles              []string
-	}{
-		{selector: ".dark :where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button][data-variant=\"destructive\"])", contested: "bg-destructive/60", styles: both},
-		{selector: ".dark :where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button][data-variant=\"ghost\"]):hover", contested: "bg-accent/50", styles: both},
-		{selector: ".dark :where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button][data-variant=\"outline\"])", contested: "bg-input/30", styles: both},
-		{selector: ".dark :where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button][data-variant=\"outline\"])", contested: "border-input", styles: both},
-		{selector: ".dark :where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button][data-variant=\"outline\"]):hover", contested: "bg-input/50", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button]) svg:not([class*=\"size-\"])", contested: "size-4", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])", contested: "border-transparent", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])", contested: "rounded-lg", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])", contested: "text-sm", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button]):focus-visible", contested: "border-ring", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[aria-invalid=\"true\"]", contested: "border-destructive", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"default\"]", contested: "gap-1.5", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"default\"]", contested: "h-8", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"default\"]", contested: "px-2.5", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"default\"]:has(>svg)", contested: "px-2", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-lg\"]", contested: "size-9", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-sm\"]", contested: "rounded-[min(var(--radius-md),12px)]", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-sm\"]", contested: "size-7", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-xs\"] svg:not([class*=\"size-\"])", contested: "size-3", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-xs\"]", contested: "rounded-[min(var(--radius-md),10px)]", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon-xs\"]", contested: "size-6", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"icon\"]", contested: "size-8", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"lg\"]", contested: "gap-1.5", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"lg\"]", contested: "h-9", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"lg\"]", contested: "px-2.5", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"lg\"]:has(>svg)", contested: "px-2", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"] svg:not([class*=\"size-\"])", contested: "size-3.5", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]", contested: "gap-1", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]", contested: "h-7", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]", contested: "px-2.5", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]", contested: "rounded-[min(var(--radius-md),12px)]", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]", contested: "text-[0.8rem]", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"sm\"]:has(>svg)", contested: "px-1.5", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"] svg:not([class*=\"size-\"])", contested: "size-3", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]", contested: "gap-1", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]", contested: "h-6", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]", contested: "px-2", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]", contested: "rounded-[min(var(--radius-md),10px)]", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]", contested: "text-xs", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-size=\"xs\"]:has(>svg)", contested: "px-1.5", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"default\"]", contested: "bg-primary", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"default\"]", contested: "text-primary-foreground", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"default\"]:hover", contested: "bg-primary/90", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"destructive\"]", contested: "bg-destructive", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"destructive\"]", contested: "text-contrast", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"destructive\"]:hover", contested: "bg-destructive/90", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"ghost\"]:hover", contested: "bg-accent", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"ghost\"]:hover", contested: "text-accent-foreground", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"link\"]", contested: "text-primary", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"outline\"]", contested: "bg-background", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"outline\"]", contested: "border-border", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"outline\"]:hover", contested: "bg-accent", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"outline\"]:hover", contested: "text-accent-foreground", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"secondary\"]", contested: "bg-secondary", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"secondary\"]", contested: "text-secondary-foreground", styles: both},
-		{selector: ":where(body:not([data-theme-button-preview])) :where([data-gsxui-slot-button])[data-variant=\"secondary\"]:hover", contested: "bg-secondary/80", styles: both},
-	}
-	out := make([]layerCheckExemption, 0, len(pairs))
-	for _, pair := range pairs {
-		if len(pair.styles) == 0 {
-			panic("exemption for " + pair.selector + " / " + pair.contested + " names no style")
-		}
-		for _, style := range pair.styles {
-			out = append(out, layerCheckExemption{
-				key: exemptionKey{
-					file:      "web/site-button.css",
-					style:     style,
-					selector:  pair.selector,
-					contested: pair.contested,
-				},
-				reason: siteButtonFallbackReason,
-			})
-		}
-	}
-	return out
-}
-
 // exemptionIndex maps each exempted violation to its reason. Building it here
 // rather than declaring a map literal keeps the reason mandatory at the type
 // level: an entry without one cannot be written down.
@@ -501,8 +408,16 @@ func staleExemptions(found []violation, exemptions []layerCheckExemption) []stri
 		occurring[v.key] = struct{}{}
 	}
 	var stale []string
+	// Derived groups are judged whole: "did this derivation still forgive
+	// anything" is the decision, and the individual keys are arithmetic.
+	derivedSeen := map[string]bool{}
 	for _, exemption := range exemptions {
-		if _, ok := occurring[exemption.key]; ok {
+		_, occurs := occurring[exemption.key]
+		if exemption.derived != "" {
+			derivedSeen[exemption.derived] = derivedSeen[exemption.derived] || occurs
+			continue
+		}
+		if occurs {
 			continue
 		}
 		stale = append(stale, fmt.Sprintf(
@@ -512,6 +427,21 @@ func staleExemptions(found []violation, exemptions []layerCheckExemption) []stri
 				"  Its reason was: %s",
 			exemption.key.file, exemption.key.style, exemption.key.selector, exemption.key.contested,
 			exemption.key.style, exemption.reason))
+	}
+	groups := make([]string, 0, len(derivedSeen))
+	for group := range derivedSeen {
+		groups = append(groups, group)
+	}
+	sort.Strings(groups)
+	for _, group := range groups {
+		if derivedSeen[group] {
+			continue
+		}
+		stale = append(stale, fmt.Sprintf(
+			"%s: the derived exemption group forgives nothing any more — not one of the\n"+
+				"  rules it covers still loses the cascade. The fallback it describes has stopped\n"+
+				"  restating the component it was generated from, so delete the group.",
+			group))
 	}
 	return stale
 }
@@ -542,7 +472,11 @@ func CheckLayerPrecedence(root string) error {
 	if err != nil {
 		return err
 	}
-	exempt := exemptionIndex(layerCheckExemptions)
+	exemptions, err := layerCheckExemptions(root)
+	if err != nil {
+		return err
+	}
+	exempt := exemptionIndex(exemptions)
 	var reported []string
 	for _, v := range found {
 		if _, ok := exempt[v.key]; ok {
@@ -550,7 +484,7 @@ func CheckLayerPrecedence(root string) error {
 		}
 		reported = append(reported, v.message)
 	}
-	reported = append(reported, staleExemptions(found, layerCheckExemptions)...)
+	reported = append(reported, staleExemptions(found, exemptions)...)
 	if len(reported) == 0 {
 		return nil
 	}
@@ -1513,8 +1447,9 @@ const sidebarRailConditionalOverrideReason = "assets/css/foundation.css's rail t
 
 // sidebarFoundationMechanicsExemptions spells out every violation Sidebar's
 // migration still exposes in foundation.css, one (selector, property, style)
-// triple at a time, following siteButtonFallbackExemptions' enumeration
-// discipline.
+// triple at a time, for the same reason toggleMarkerFallbackExemptions does:
+// foundation.css is hand-authored, so there is no generator output to derive
+// these from.
 func sidebarFoundationMechanicsExemptions() []layerCheckExemption {
 	both := []string{"maia", "nova"}
 	pairs := []struct {
