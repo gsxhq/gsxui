@@ -332,7 +332,7 @@
 }
 
 /* Author presentation must never defeat the native closed-dialog state. */
-:where(dialog[data-gsxui-dialog-content]:not([open])) {
+:where(dialog[data-gsxui-slot-dialog-content]:not([open])) {
   display: none;
 }
 

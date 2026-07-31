@@ -61,7 +61,7 @@ component AlertDialogFooter(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component AlertDialogTitle(children gsx.Node, attrs gsx.Attrs) {
-	<h2 class={ "text-base font-medium" } data-gsxui-dialog-title { attrs... } data-gsxui-slot-alert-dialog-title>
+	<h2 class={ "text-base font-medium" } { attrs... } data-gsxui-slot-alert-dialog-title data-gsxui-slot-dialog-title>
 		{ children }
 	</h2>
 }
@@ -69,9 +69,9 @@ component AlertDialogTitle(children gsx.Node, attrs gsx.Attrs) {
 component AlertDialogDescription(children gsx.Node, attrs gsx.Attrs) {
 	<p
 		class={ "text-sm text-muted-foreground" }
-		data-gsxui-dialog-description
 		{ attrs... }
 		data-gsxui-slot-alert-dialog-description
+		data-gsxui-slot-dialog-description
 	>
 		{ children }
 	</p>

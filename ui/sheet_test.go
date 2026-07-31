@@ -9,7 +9,7 @@ import (
 )
 
 func TestSheetPinnedParts(t *testing.T) {
-	if got, want := render(t, ui.Sheet(gsx.Raw("x"), nil)), `<div class="contents" data-gsxui-dialog data-gsxui-slot-sheet data-gsxui-slot-dialog>x</div>`; got != want {
+	if got, want := render(t, ui.Sheet(gsx.Raw("x"), nil)), `<div class="contents" data-gsxui-slot-sheet data-gsxui-slot-dialog>x</div>`; got != want {
 		t.Errorf("root mismatch\n got: %s\nwant: %s", got, want)
 	}
 	if got, want := render(t, ui.SheetTrigger(gsx.Raw("Open"), nil)), `<button data-gsxui-dialog-trigger type="button" aria-haspopup="dialog" aria-expanded="false" data-gsxui-slot-sheet-trigger>Open</button>`; got != want {
@@ -96,8 +96,8 @@ func TestSheetSemanticParts(t *testing.T) {
 	}{
 		{render(t, ui.SheetHeader(gsx.Raw("x"), nil)), "sheet-header", ""},
 		{render(t, ui.SheetFooter(gsx.Raw("x"), nil)), "sheet-footer", ""},
-		{render(t, ui.SheetTitle(gsx.Raw("x"), nil)), "sheet-title", "data-gsxui-dialog-title"},
-		{render(t, ui.SheetDescription(gsx.Raw("x"), nil)), "sheet-description", "data-gsxui-dialog-description"},
+		{render(t, ui.SheetTitle(gsx.Raw("x"), nil)), "sheet-title", "data-gsxui-slot-dialog-title"},
+		{render(t, ui.SheetDescription(gsx.Raw("x"), nil)), "sheet-description", "data-gsxui-slot-dialog-description"},
 		{render(t, ui.SheetClose(gsx.Raw("x"), nil)), "sheet-close", "data-gsxui-dialog-close"},
 	}
 	for _, tt := range tests {
@@ -110,8 +110,7 @@ func TestSheetSemanticParts(t *testing.T) {
 
 func TestSheetContentComposesPresenceMarkersOnDialog(t *testing.T) {
 	got := render(t, ui.SheetContent("", true, gsx.Raw("x"), nil))
-	requirePresenceAttributesOnSameTag(t, got, "data-gsxui-dialog-content",
-		"data-gsxui-slot-sheet-content",
+	requirePresenceAttributesOnSameTag(t, got, "data-gsxui-slot-sheet-content",
 		"data-gsxui-slot-dialog-content",
 	)
 }

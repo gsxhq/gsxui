@@ -40,7 +40,6 @@ component SheetContent(side string, hideCloseButton bool, children gsx.Node, att
 				"inset-y-0 right-0 left-auto h-full w-3/4 border-l sm:max-w-sm data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right"
 			}
 		}
-		data-gsxui-dialog-content
 		data-state="closed"
 		data-side={side |> default("right")}
 		{ attrs... }
@@ -92,9 +91,9 @@ component SheetFooter(children gsx.Node, attrs gsx.Attrs) {
 component SheetTitle(children gsx.Node, attrs gsx.Attrs) {
 	<h2
 		class={ "text-base font-medium text-foreground" }
-		data-gsxui-dialog-title
 		{ attrs... }
 		data-gsxui-slot-sheet-title
+		data-gsxui-slot-dialog-title
 	>
 		{ children }
 	</h2>
@@ -103,9 +102,9 @@ component SheetTitle(children gsx.Node, attrs gsx.Attrs) {
 component SheetDescription(children gsx.Node, attrs gsx.Attrs) {
 	<p
 		class={ "text-sm text-muted-foreground" }
-		data-gsxui-dialog-description
 		{ attrs... }
 		data-gsxui-slot-sheet-description
+		data-gsxui-slot-dialog-description
 	>
 		{ children }
 	</p>

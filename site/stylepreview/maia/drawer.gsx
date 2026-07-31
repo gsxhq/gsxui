@@ -41,7 +41,6 @@ component DrawerContent(direction string, children gsx.Node, attrs gsx.Attrs) {
 				"inset-x-0 bottom-0 top-auto mt-24 h-auto max-h-[80vh] w-full max-w-none rounded-t-xl border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom [&_[data-gsxui-slot-drawer-header]]:text-center"
 			}
 		}
-		data-gsxui-dialog-content
 		data-state="closed"
 		data-side={direction |> default("bottom")}
 		{ attrs... }
@@ -64,7 +63,7 @@ component DrawerFooter(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component DrawerTitle(children gsx.Node, attrs gsx.Attrs) {
-	<h2 class={ "font-medium text-foreground" } data-gsxui-dialog-title { attrs... } data-gsxui-slot-drawer-title>
+	<h2 class={ "font-medium text-foreground" } { attrs... } data-gsxui-slot-drawer-title data-gsxui-slot-dialog-title>
 		{ children }
 	</h2>
 }
@@ -72,9 +71,9 @@ component DrawerTitle(children gsx.Node, attrs gsx.Attrs) {
 component DrawerDescription(children gsx.Node, attrs gsx.Attrs) {
 	<p
 		class={ "text-sm text-muted-foreground" }
-		data-gsxui-dialog-description
 		{ attrs... }
 		data-gsxui-slot-drawer-description
+		data-gsxui-slot-dialog-description
 	>
 		{ children }
 	</p>

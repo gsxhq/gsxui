@@ -24,7 +24,6 @@ import (
 // anything else listens for the gsxui:select CustomEvent on the item.
 component Command(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-gsxui-command
 		class={ command.Root() }
 		{ attrs... }
 		data-gsxui-slot-command
@@ -71,10 +70,9 @@ component CommandDialog(title string, description string, trigger gsx.Node, chil
 // moves selection on ArrowUp/ArrowDown, and activates on Enter, all while
 // focus stays here (aria-activedescendant tracks the selected option).
 component CommandInput(placeholder string, attrs gsx.Attrs) {
-	<div data-gsxui-command-input-wrapper class={ command.InputWrapper() } data-gsxui-slot-command-input-wrapper>
+	<div class={ command.InputWrapper() } data-gsxui-slot-command-input-wrapper>
 		<icon.Search/>
 		<input
-			data-gsxui-command-input
 			type="text"
 			role="combobox"
 			aria-expanded="true"
@@ -91,7 +89,6 @@ component CommandInput(placeholder string, attrs gsx.Attrs) {
 
 component CommandList(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-gsxui-command-list
 		role="listbox"
 		class={ command.List() }
 		{ attrs... }
@@ -105,7 +102,7 @@ component CommandList(children gsx.Node, attrs gsx.Attrs) {
 // query matches nothing (cmdk's Empty renders conditionally — same net
 // visual, inverted mechanism since there is no VDOM to unmount).
 component CommandEmpty(children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-command-empty hidden class={ command.Empty() } { attrs... } data-gsxui-slot-command-empty>{ children }</div>
+	<div hidden class={ command.Empty() } { attrs... } data-gsxui-slot-command-empty>{ children }</div>
 }
 
 // CommandGroup's heading is a real child div (slot command-group-heading)
@@ -113,16 +110,16 @@ component CommandEmpty(children gsx.Node, attrs gsx.Attrs) {
 // the styles shadcn applies through the group's descendant selectors land
 // on it via the mapped public slot selectors (see Command's doc comment).
 component CommandGroup(heading string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-command-group role="group" class={ command.Group() } { attrs... } data-gsxui-slot-command-group>
+	<div role="group" class={ command.Group() } { attrs... } data-gsxui-slot-command-group>
 		{ if heading != "" {
-			<div data-gsxui-command-group-heading class={ command.GroupHeading() } data-gsxui-slot-command-group-heading>{ heading }</div>
+			<div class={ command.GroupHeading() } data-gsxui-slot-command-group-heading>{ heading }</div>
 		} }
 		{ children }
 	</div>
 }
 
 component CommandSeparator(attrs gsx.Attrs) {
-	<div data-gsxui-command-separator role="separator" class={ command.Separator() } { attrs... } data-gsxui-slot-command-separator></div>
+	<div role="separator" class={ command.Separator() } { attrs... } data-gsxui-slot-command-separator></div>
 }
 
 // CommandItem is a role="option" div (cmdk's own role), NOT focusable —
@@ -134,7 +131,6 @@ component CommandSeparator(attrs gsx.Attrs) {
 // the same contract as DropdownMenuItem).
 component CommandItem(value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-gsxui-command-item
 		data-value={value}
 		role="option"
 		aria-selected="false"

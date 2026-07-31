@@ -16,7 +16,7 @@
 //     demo) must not have the popover display:none'd out from under them
 //     mid-tab. Content-side listeners mirror the trigger-side pair for both
 //     input modalities: pointerover/focusin on
-//     [data-gsxui-hovercard-content] cancel the pending close scheduled by
+//     [data-gsxui-slot-hover-card-content] cancel the pending close scheduled by
 //     leaving the trigger, pointerout/focusout on it reschedule the same
 //     delayed close — tooltip.js needs none of this, since its content is
 //     never interactive and never receives focus or a hover of its own.
@@ -32,9 +32,9 @@ const CLOSE_DELAY = 100;
 
 const timers = new WeakMap(); // trigger -> pending open/close setTimeout id
 const contentOf = (el) =>
-  el.closest("[data-gsxui-hovercard]")?.querySelector("[data-gsxui-hovercard-content]");
+  el.closest("[data-gsxui-slot-hover-card]")?.querySelector("[data-gsxui-slot-hover-card-content]");
 const triggerOf = (el) =>
-  el.closest("[data-gsxui-hovercard]")?.querySelector("[data-gsxui-hovercard-trigger]");
+  el.closest("[data-gsxui-slot-hover-card]")?.querySelector("[data-gsxui-slot-hover-card-trigger]");
 
 function clearTimer(trigger) {
   clearTimeout(timers.get(trigger));
@@ -82,15 +82,15 @@ function scheduleHide(trigger) {
   timers.set(trigger, setTimeout(() => hide(trigger), CLOSE_DELAY));
 }
 
-on("pointerover", "[data-gsxui-hovercard-trigger]", (_e, t) => scheduleShow(t));
-on("pointerout", "[data-gsxui-hovercard-trigger]", (_e, t) => scheduleHide(t));
-on("focusin", "[data-gsxui-hovercard-trigger]", (_e, t) => show(t));
+on("pointerover", "[data-gsxui-slot-hover-card-trigger]", (_e, t) => scheduleShow(t));
+on("pointerout", "[data-gsxui-slot-hover-card-trigger]", (_e, t) => scheduleHide(t));
+on("focusin", "[data-gsxui-slot-hover-card-trigger]", (_e, t) => show(t));
 // Leaving the trigger by keyboard rides the same closeDelay grace as
 // leaving it by pointer (scheduleHide, not an immediate hide) — a Tab press
 // that lands on a focusable child of HoverCardContent must not race the
 // popover closing under it. contentOf/triggerOf both key off the trigger,
 // so the content-side focusin below cancels this exact timer.
-on("focusout", "[data-gsxui-hovercard-trigger]", (_e, t) => scheduleHide(t));
+on("focusout", "[data-gsxui-slot-hover-card-trigger]", (_e, t) => scheduleHide(t));
 
 // The content itself can hold real interactive children — entering it (by
 // pointer OR by keyboard focus) must cancel any pending close the
@@ -105,11 +105,11 @@ on("focusout", "[data-gsxui-hovercard-trigger]", (_e, t) => scheduleHide(t));
 // trigger's pending timer is the single source of truth regardless of
 // which of the two elements — or which input modality — is currently
 // active.
-on("pointerover", "[data-gsxui-hovercard-content]", (_e, content) => {
+on("pointerover", "[data-gsxui-slot-hover-card-content]", (_e, content) => {
   const trigger = triggerOf(content);
   if (trigger) clearTimer(trigger);
 });
-on("pointerout", "[data-gsxui-hovercard-content]", (e, content) => {
+on("pointerout", "[data-gsxui-slot-hover-card-content]", (e, content) => {
   // Moving between two child elements still inside the content fires
   // pointerout/pointerover on each boundary crossed even though the
   // pointer never left the content's own hit area — same guard as
@@ -119,11 +119,11 @@ on("pointerout", "[data-gsxui-hovercard-content]", (e, content) => {
   const trigger = triggerOf(content);
   if (trigger) scheduleHide(trigger);
 });
-on("focusin", "[data-gsxui-hovercard-content]", (_e, content) => {
+on("focusin", "[data-gsxui-slot-hover-card-content]", (_e, content) => {
   const trigger = triggerOf(content);
   if (trigger) clearTimer(trigger);
 });
-on("focusout", "[data-gsxui-hovercard-content]", (_e, content) => {
+on("focusout", "[data-gsxui-slot-hover-card-content]", (_e, content) => {
   const trigger = triggerOf(content);
   if (trigger) scheduleHide(trigger);
 });

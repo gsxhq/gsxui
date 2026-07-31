@@ -63,7 +63,7 @@ component DatePicker() {
 		<script>
 			document.addEventListener("gsxui:change", (e) => {
 				if (e.target.id !== "datepicker-calendar") return;
-				const button = e.target.closest("[data-gsxui-popover]")?.querySelector("[data-gsxui-popover-trigger]");
+				const button = e.target.closest("[data-gsxui-slot-popover]")?.querySelector("[data-gsxui-popover-trigger]");
 				const label = button?.querySelector("[data-datepicker-label]");
 				if (!label) return;
 				const picked = e.detail.selected[0];

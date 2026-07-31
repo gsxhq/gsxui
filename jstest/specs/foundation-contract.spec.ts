@@ -15,7 +15,7 @@ test("foundation mode excludes the default style and preserves overlay lifecycle
     ),
   ).toBe("");
 
-  const dialog = page.locator("[data-gsxui-dialog-content]");
+  const dialog = page.locator("[data-gsxui-slot-dialog-content]");
   await expect(dialog).not.toHaveAttribute("open");
   await expect.poll(() => dialog.evaluate((el) => getComputedStyle(el).display)).toBe("none");
 
@@ -34,7 +34,7 @@ test("foundation mode excludes the default style and preserves overlay lifecycle
   await expect(dialog).toHaveAttribute("data-state", "closed");
 
   await page.goto(foundation("/x/popover/basic"));
-  const popover = page.locator("[data-gsxui-popover-content]");
+  const popover = page.locator("[data-gsxui-slot-popover-content]");
   await expect.poll(() => popover.evaluate((el) => getComputedStyle(el).display)).toBe("none");
   await page.locator("[data-gsxui-slot-popover-trigger]").first().click();
   await expect.poll(() => popover.evaluate((el) => el.matches(":popover-open"))).toBe(true);

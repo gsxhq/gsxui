@@ -77,7 +77,7 @@ func DatePicker() _gsxrt.Node {
 //line datepicker.gsx:63:3
 		_gsxgw.S("<script")
 		_gsxgw.Nonce(ctx)
-		_gsxgw.S(">\ndocument.addEventListener(\"gsxui:change\", (e) => {\n\tif (e.target.id !== \"datepicker-calendar\") return;\n\tconst button = e.target.closest(\"[data-gsxui-popover]\")?.querySelector(\"[data-gsxui-popover-trigger]\");\n\tconst label = button?.querySelector(\"[data-datepicker-label]\");\n\tif (!label) return;\n\tconst picked = e.detail.selected[0];\n\tlabel.textContent = picked ?? \"Pick a date\";\n\tbutton.classList.toggle(\"text-muted-foreground\", !picked);\n});\n</script></div>")
+		_gsxgw.S(">\ndocument.addEventListener(\"gsxui:change\", (e) => {\n\tif (e.target.id !== \"datepicker-calendar\") return;\n\tconst button = e.target.closest(\"[data-gsxui-slot-popover]\")?.querySelector(\"[data-gsxui-popover-trigger]\");\n\tconst label = button?.querySelector(\"[data-datepicker-label]\");\n\tif (!label) return;\n\tconst picked = e.detail.selected[0];\n\tlabel.textContent = picked ?? \"Pick a date\";\n\tbutton.classList.toggle(\"text-muted-foreground\", !picked);\n});\n</script></div>")
 		return _gsxgw.Err()
 	})
 }

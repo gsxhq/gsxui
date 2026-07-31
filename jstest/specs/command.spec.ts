@@ -6,7 +6,7 @@ async function recordCommandScrollRequests(page: Page) {
     (window as any).__commandScrollRequests = 0;
     const scrollIntoView = Element.prototype.scrollIntoView;
     Element.prototype.scrollIntoView = function (...args) {
-      if ((this as Element).matches("[data-gsxui-command-item]")) {
+      if ((this as Element).matches("[data-gsxui-slot-command-item]")) {
         (window as any).__commandScrollRequests++;
       }
       return scrollIntoView.apply(this, args as [ScrollIntoViewOptions]);
@@ -28,7 +28,7 @@ test("keyboard selection keeps the selected item in view", async ({ page }) => {
   await page.goto("/x/command/basic");
   await page.evaluate(() => ((window as any).__commandScrollRequests = 0));
 
-  await page.locator("[data-gsxui-command-input]").first().press("ArrowDown");
+  await page.locator("[data-gsxui-slot-command-input]").first().press("ArrowDown");
 
   expect(
     await page.evaluate(() => (window as any).__commandScrollRequests),

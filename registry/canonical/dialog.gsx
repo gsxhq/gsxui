@@ -5,7 +5,7 @@ import "github.com/gsxhq/gsx"
 // Dialog uses the native <dialog> top layer. Trigger/content wiring is scoped
 // by the dedicated root hook and implemented by ui/dialog.js.
 component Dialog(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ dialog.Root() } data-gsxui-dialog { attrs... } data-gsxui-slot-dialog>{ children }</div>
+	<div class={ dialog.Root() } { attrs... } data-gsxui-slot-dialog>{ children }</div>
 }
 
 component DialogTrigger(children gsx.Node, attrs gsx.Attrs) {
@@ -24,7 +24,6 @@ component DialogTrigger(children gsx.Node, attrs gsx.Attrs) {
 component DialogContent(hideCloseButton bool, children gsx.Node, attrs gsx.Attrs) {
 	<dialog
 		class={ dialog.Content() }
-		data-gsxui-dialog-content
 		data-state="closed"
 		{ attrs... }
 		data-gsxui-slot-dialog-content
@@ -81,11 +80,11 @@ component DialogFooter(showCloseButton bool, children gsx.Node, attrs gsx.Attrs)
 }
 
 component DialogTitle(children gsx.Node, attrs gsx.Attrs) {
-	<h2 class={ dialog.Title() } data-gsxui-dialog-title { attrs... } data-gsxui-slot-dialog-title>{ children }</h2>
+	<h2 class={ dialog.Title() } { attrs... } data-gsxui-slot-dialog-title>{ children }</h2>
 }
 
 component DialogDescription(children gsx.Node, attrs gsx.Attrs) {
-	<p class={ dialog.Description() } data-gsxui-dialog-description { attrs... } data-gsxui-slot-dialog-description>{ children }</p>
+	<p class={ dialog.Description() } { attrs... } data-gsxui-slot-dialog-description>{ children }</p>
 }
 
 component DialogClose(children gsx.Node, attrs gsx.Attrs) {

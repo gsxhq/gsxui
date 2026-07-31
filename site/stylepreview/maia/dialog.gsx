@@ -5,7 +5,7 @@ import "github.com/gsxhq/gsx"
 // Dialog uses the native <dialog> top layer. Trigger/content wiring is scoped
 // by the dedicated root hook and implemented by ui/dialog.js.
 component Dialog(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "contents" } data-gsxui-dialog { attrs... } data-gsxui-slot-dialog>{ children }</div>
+	<div class={ "contents" } { attrs... } data-gsxui-slot-dialog>{ children }</div>
 }
 
 component DialogTrigger(children gsx.Node, attrs gsx.Attrs) {
@@ -26,7 +26,6 @@ component DialogContent(hideCloseButton bool, children gsx.Node, attrs gsx.Attrs
 		class={
 			"fixed z-50 text-sm duration-200 outline-none data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-[var(--overlay)] backdrop:backdrop-blur-xs backdrop:duration-200 data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 top-1/2 left-1/2 w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl border bg-background p-4 text-foreground open:grid data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:max-w-sm"
 		}
-		data-gsxui-dialog-content
 		data-state="closed"
 		{ attrs... }
 		data-gsxui-slot-dialog-content
@@ -91,20 +90,11 @@ component DialogFooter(showCloseButton bool, children gsx.Node, attrs gsx.Attrs)
 }
 
 component DialogTitle(children gsx.Node, attrs gsx.Attrs) {
-	<h2 class={ "text-base leading-none font-medium" } data-gsxui-dialog-title { attrs... } data-gsxui-slot-dialog-title>
-		{ children }
-	</h2>
+	<h2 class={ "text-base leading-none font-medium" } { attrs... } data-gsxui-slot-dialog-title>{ children }</h2>
 }
 
 component DialogDescription(children gsx.Node, attrs gsx.Attrs) {
-	<p
-		class={ "text-sm text-muted-foreground" }
-		data-gsxui-dialog-description
-		{ attrs... }
-		data-gsxui-slot-dialog-description
-	>
-		{ children }
-	</p>
+	<p class={ "text-sm text-muted-foreground" } { attrs... } data-gsxui-slot-dialog-description>{ children }</p>
 }
 
 component DialogClose(children gsx.Node, attrs gsx.Attrs) {
