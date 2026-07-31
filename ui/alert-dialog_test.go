@@ -25,13 +25,13 @@ func TestAlertDialogPinnedParts(t *testing.T) {
 		got  string
 		want string
 	}{
-		{"root", render(t, ui.AlertDialog(gsx.Raw("x"), nil)), `<div class="contents" data-gsxui-dialog data-gsxui-slot-alert-dialog data-gsxui-slot-dialog>x</div>`},
+		{"root", render(t, ui.AlertDialog(gsx.Raw("x"), nil)), `<div class="contents" data-gsxui-slot-alert-dialog data-gsxui-slot-dialog>x</div>`},
 		{"trigger", render(t, ui.AlertDialogTrigger(gsx.Raw("Delete"), nil)), `<button data-gsxui-dialog-trigger type="button" aria-haspopup="dialog" aria-expanded="false" data-gsxui-slot-alert-dialog-trigger>Delete</button>`},
-		{"content", render(t, ui.AlertDialogContent(gsx.Raw("x"), nil)), `<dialog class="` + alertDialogContentClass() + `" data-gsxui-dialog-content data-state="closed" role="alertdialog" data-gsxui-dialog-static data-gsxui-slot-alert-dialog-content data-gsxui-slot-dialog-content>x</dialog>`},
+		{"content", render(t, ui.AlertDialogContent(gsx.Raw("x"), nil)), `<dialog class="` + alertDialogContentClass() + `" data-state="closed" role="alertdialog" data-gsxui-dialog-static data-gsxui-slot-alert-dialog-content data-gsxui-slot-dialog-content>x</dialog>`},
 		{"header", render(t, ui.AlertDialogHeader(gsx.Raw("x"), nil)), `<div class="grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center" data-gsxui-slot-alert-dialog-header>x</div>`},
 		{"footer", render(t, ui.AlertDialogFooter(gsx.Raw("x"), nil)), `<div class="-mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4 sm:flex-row sm:justify-end" data-gsxui-slot-alert-dialog-footer>x</div>`},
-		{"title", render(t, ui.AlertDialogTitle(gsx.Raw("x"), nil)), `<h2 class="text-base font-medium" data-gsxui-dialog-title data-gsxui-slot-alert-dialog-title>x</h2>`},
-		{"description", render(t, ui.AlertDialogDescription(gsx.Raw("x"), nil)), `<p class="text-sm text-muted-foreground" data-gsxui-dialog-description data-gsxui-slot-alert-dialog-description>x</p>`},
+		{"title", render(t, ui.AlertDialogTitle(gsx.Raw("x"), nil)), `<h2 class="text-base font-medium" data-gsxui-slot-alert-dialog-title data-gsxui-slot-dialog-title>x</h2>`},
+		{"description", render(t, ui.AlertDialogDescription(gsx.Raw("x"), nil)), `<p class="text-sm text-muted-foreground" data-gsxui-slot-alert-dialog-description data-gsxui-slot-dialog-description>x</p>`},
 		{"action", render(t, ui.AlertDialogAction(gsx.Raw("x"), nil)), `<button data-variant="default" data-size="default" type="button" ` + canonicalButtonClass("default", "default") + ` data-gsxui-dialog-close data-gsxui-slot-alert-dialog-action data-gsxui-slot-button>x</button>`},
 		{"cancel", render(t, ui.AlertDialogCancel(gsx.Raw("x"), nil)), `<button data-variant="outline" data-size="default" type="button" ` + canonicalButtonClass("outline", "default") + ` data-gsxui-dialog-close data-gsxui-slot-alert-dialog-cancel data-gsxui-slot-button>x</button>`},
 	}

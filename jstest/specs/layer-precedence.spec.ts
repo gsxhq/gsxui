@@ -587,7 +587,7 @@ test("Textarea's caller text-lg stays overridable against the retained md:text-s
 
 test("DialogContent keeps its rounded-xl radius and centered box once open", async ({ page }) => {
   await page.goto("/x/dialog/basic");
-  const dialog = page.locator("dialog[data-gsxui-dialog-content]");
+  const dialog = page.locator("dialog[data-gsxui-slot-dialog-content]");
   await dialog.evaluate((el) =>
     el.dispatchEvent(new CustomEvent("gsxui:request-open", { bubbles: true, cancelable: true })),
   );

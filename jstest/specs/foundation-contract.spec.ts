@@ -15,7 +15,7 @@ test("foundation mode excludes the default style and preserves overlay lifecycle
     ),
   ).toBe("");
 
-  const dialog = page.locator("[data-gsxui-dialog-content]");
+  const dialog = page.locator("[data-gsxui-slot-dialog-content]");
   await expect(dialog).not.toHaveAttribute("open");
   await expect.poll(() => dialog.evaluate((el) => getComputedStyle(el).display)).toBe("none");
 

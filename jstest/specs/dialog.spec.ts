@@ -2,7 +2,7 @@ import type { Page } from "@playwright/test";
 import { expect, test } from "../support/fixtures";
 
 const BASIC = "/x/dialog/basic";
-const DIALOG = "dialog[data-gsxui-dialog-content]";
+const DIALOG = "dialog[data-gsxui-slot-dialog-content]";
 const COMMAND_DIALOG = "dialog[data-gsxui-command-dialog]";
 
 async function dispatch(page: Page, selector: string, type: string, detail = {}) {
@@ -34,7 +34,7 @@ test("the proximity trigger requests one targeted open with its stable reason", 
       (window as any).__dialogRequests.push({
         detail: request.detail,
         target: (request.target as Element).matches(
-          "dialog[data-gsxui-dialog-content]",
+          "dialog[data-gsxui-slot-dialog-content]",
         ),
       });
     });
@@ -50,7 +50,7 @@ test("the proximity trigger requests one targeted open with its stable reason", 
 
 test("descendant request events drive the native dialog state", async ({ page }) => {
   await page.goto(BASIC);
-  const source = `${DIALOG} [data-gsxui-dialog-title]`;
+  const source = `${DIALOG} [data-gsxui-slot-dialog-title]`;
 
   await dispatch(page, source, "gsxui:request-open", { reason: "application" });
   await expect(page.locator(DIALOG)).toHaveJSProperty("open", true);
@@ -65,8 +65,8 @@ test("command palette shortcuts and navigable selections request dialog transiti
     document.body.insertAdjacentHTML(
       "beforeend",
       `
-        <div data-gsxui-dialog>
-          <dialog data-gsxui-dialog-content data-gsxui-command-dialog data-state="closed">
+        <div data-gsxui-slot-dialog>
+          <dialog data-gsxui-slot-dialog-content data-gsxui-command-dialog data-state="closed">
             <div data-gsxui-command>
               <input data-gsxui-command-input>
               <div data-gsxui-command-list>
@@ -312,36 +312,36 @@ test("dialog identity and trigger ownership stay within their nearest roots", as
     document.body.insertAdjacentHTML(
       "beforeend",
       `
-        <div data-gsxui-dialog id="generated-root">
+        <div data-gsxui-slot-dialog id="generated-root">
           <button id="generated-trigger" data-gsxui-dialog-trigger aria-expanded="false">Generated</button>
-          <dialog data-gsxui-dialog-content data-state="closed">
-            <h2 data-gsxui-dialog-title>Generated title</h2>
-            <p data-gsxui-dialog-description>Generated description</p>
+          <dialog data-gsxui-slot-dialog-content data-state="closed">
+            <h2 data-gsxui-slot-dialog-title>Generated title</h2>
+            <p data-gsxui-slot-dialog-description>Generated description</p>
             <button data-gsxui-dialog-close>Close generated</button>
-            <div data-gsxui-dialog id="nested-root">
+            <div data-gsxui-slot-dialog id="nested-root">
               <button id="nested-trigger" data-gsxui-dialog-trigger aria-expanded="false">Nested</button>
               <button id="nested-root-close" data-gsxui-dialog-close>Close nested</button>
-              <dialog data-gsxui-dialog-content data-state="closed">
-                <h2 data-gsxui-dialog-title>Nested title</h2>
-                <p data-gsxui-dialog-description>Nested description</p>
+              <dialog data-gsxui-slot-dialog-content data-state="closed">
+                <h2 data-gsxui-slot-dialog-title>Nested title</h2>
+                <p data-gsxui-slot-dialog-description>Nested description</p>
               </dialog>
             </div>
           </dialog>
         </div>
-        <div data-gsxui-dialog id="second-root">
+        <div data-gsxui-slot-dialog id="second-root">
           <button id="second-trigger" data-gsxui-dialog-trigger aria-expanded="false">Second</button>
-          <dialog data-gsxui-dialog-content data-state="closed">
-            <h2 data-gsxui-dialog-title>Second title</h2>
-            <p data-gsxui-dialog-description>Second description</p>
+          <dialog data-gsxui-slot-dialog-content data-state="closed">
+            <h2 data-gsxui-slot-dialog-title>Second title</h2>
+            <p data-gsxui-slot-dialog-description>Second description</p>
             <button data-gsxui-dialog-close>Close second</button>
           </dialog>
         </div>
-        <div data-gsxui-dialog id="authored-root">
+        <div data-gsxui-slot-dialog id="authored-root">
           <button id="authored-trigger" data-gsxui-dialog-trigger aria-controls="keep-control" aria-expanded="false">Authored</button>
-          <dialog id="authored-dialog" data-gsxui-dialog-content data-state="closed"
+          <dialog id="authored-dialog" data-gsxui-slot-dialog-content data-state="closed"
             aria-labelledby="authored-label" aria-describedby="authored-description">
-            <h2 id="authored-label" data-gsxui-dialog-title>Authored title</h2>
-            <p id="authored-description" data-gsxui-dialog-description>Authored description</p>
+            <h2 id="authored-label" data-gsxui-slot-dialog-title>Authored title</h2>
+            <p id="authored-description" data-gsxui-slot-dialog-description>Authored description</p>
           </dialog>
         </div>
       `,
@@ -360,7 +360,7 @@ test("dialog identity and trigger ownership stay within their nearest roots", as
     document.addEventListener("gsxui:request-close", (event) => {
       const target = event.target as Element;
       (window as any).__nestedCloseTarget = target
-        .closest("[data-gsxui-dialog]")
+        .closest("[data-gsxui-slot-dialog]")
         ?.id;
     });
   });
@@ -404,14 +404,14 @@ test("dialog identity and trigger ownership stay within their nearest roots", as
       document.querySelector("#authored-root")!,
     ];
     return roots.map((root) => {
-      const dialog = [...root.querySelectorAll("dialog[data-gsxui-dialog-content]")].find(
-        (element) => element.closest("[data-gsxui-dialog]") === root,
+      const dialog = [...root.querySelectorAll("dialog[data-gsxui-slot-dialog-content]")].find(
+        (element) => element.closest("[data-gsxui-slot-dialog]") === root,
       )!;
-      const title = [...root.querySelectorAll("[data-gsxui-dialog-title]")].find(
-        (element) => element.closest("[data-gsxui-dialog]") === root,
+      const title = [...root.querySelectorAll("[data-gsxui-slot-dialog-title]")].find(
+        (element) => element.closest("[data-gsxui-slot-dialog]") === root,
       )!;
-      const description = [...root.querySelectorAll("[data-gsxui-dialog-description]")].find(
-        (element) => element.closest("[data-gsxui-dialog]") === root,
+      const description = [...root.querySelectorAll("[data-gsxui-slot-dialog-description]")].find(
+        (element) => element.closest("[data-gsxui-slot-dialog]") === root,
       )!;
       const trigger = root.querySelector("[data-gsxui-dialog-trigger]")!;
       return {
@@ -481,8 +481,8 @@ test("native invokers address authored dialogs exactly and synchronize their ARI
       `
         <button id="open-first" commandfor="native-first" command="show-modal">Open first</button>
         <button id="open-second" commandfor="native-second" command="show-modal">Open second</button>
-        <dialog id="native-first" data-gsxui-dialog-content data-state="closed"><p>First</p></dialog>
-        <dialog id="native-second" data-gsxui-dialog-content data-state="closed"><p>Second</p></dialog>
+        <dialog id="native-first" data-gsxui-slot-dialog-content data-state="closed"><p>First</p></dialog>
+        <dialog id="native-second" data-gsxui-slot-dialog-content data-state="closed"><p>Second</p></dialog>
       `,
     );
   });
@@ -509,7 +509,7 @@ test("native request-close enters the animated cancel path while close remains i
       "beforeend",
       `
         <button id="native-open" commandfor="native-close" command="show-modal">Open</button>
-        <dialog id="native-close" data-gsxui-dialog-content data-state="closed">
+        <dialog id="native-close" data-gsxui-slot-dialog-content data-state="closed">
           <p>Closable</p>
           <button id="native-request-close" commandfor="native-close" command="request-close">Request close</button>
           <button id="native-close-now" commandfor="native-close" command="close">Close</button>

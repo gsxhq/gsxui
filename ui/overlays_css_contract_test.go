@@ -146,8 +146,8 @@ func TestDialogCSSOnlyContract(t *testing.T) {
 		t.Errorf("caller-only must be merged into DialogContent's class attribute\nin: %s", got)
 	}
 	for _, hook := range []string{
-		`data-gsxui-dialog-title`,
-		`data-gsxui-dialog-description`,
+		`data-gsxui-slot-dialog-title`,
+		`data-gsxui-slot-dialog-description`,
 		`data-state="closed"`,
 	} {
 		if !strings.Contains(got, hook) {
@@ -187,8 +187,8 @@ func TestAlertDialogCSSOnlyContract(t *testing.T) {
 		`role="alertdialog"`,
 		`data-state="closed"`,
 		`data-gsxui-dialog-static`,
-		`data-gsxui-dialog-title`,
-		`data-gsxui-dialog-description`,
+		`data-gsxui-slot-dialog-title`,
+		`data-gsxui-slot-dialog-description`,
 	} {
 		if !strings.Contains(content, want) {
 			t.Errorf("missing alert dialog semantic/state value %q\nin: %s", want, content)

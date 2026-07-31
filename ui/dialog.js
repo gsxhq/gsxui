@@ -13,7 +13,7 @@
 // lazily here (authored ids and aria-* attributes are always respected).
 import { on, emit } from "./gsxui.js";
 
-const DIALOG = "dialog[data-gsxui-dialog-content]";
+const DIALOG = "dialog[data-gsxui-slot-dialog-content]";
 
 function generatedId(prefix) {
   for (;;) {
@@ -34,7 +34,7 @@ function ensureId(element, prefix) {
   return element.id;
 }
 
-const rootOf = (element) => element.closest("[data-gsxui-dialog]");
+const rootOf = (element) => element.closest("[data-gsxui-slot-dialog]");
 
 function owned(root, selector) {
   return [...root.querySelectorAll(selector)].filter(
@@ -54,8 +54,8 @@ function authoredInvokers(dialog) {
 
 // Idempotent: name/describe the dialog and point triggers at it.
 function wireA11y(root, dialog) {
-  const title = owned(root, "[data-gsxui-dialog-title]")[0];
-  const desc = owned(root, "[data-gsxui-dialog-description]")[0];
+  const title = owned(root, "[data-gsxui-slot-dialog-title]")[0];
+  const desc = owned(root, "[data-gsxui-slot-dialog-description]")[0];
   if (title && !dialog.hasAttribute("aria-labelledby"))
     dialog.setAttribute("aria-labelledby", ensureId(title, "title"));
   if (desc && !dialog.hasAttribute("aria-describedby"))
@@ -128,7 +128,7 @@ on("click", "[data-gsxui-dialog-close]", (_event, closer) => {
 // ignores outside clicks while Esc still closes it, and this early return
 // reproduces exactly that — Esc/cancel below and the close-button/toggle
 // handlers are untouched, only the backdrop-click path is skipped.
-on("click", "dialog[data-gsxui-dialog-content]", (event, dialog) => {
+on("click", "dialog[data-gsxui-slot-dialog-content]", (event, dialog) => {
   if (event.target !== dialog) return;
   if (dialog.hasAttribute("data-gsxui-dialog-static")) return;
   const r = dialog.getBoundingClientRect();
@@ -142,7 +142,7 @@ on("click", "dialog[data-gsxui-dialog-content]", (event, dialog) => {
 // The request-close path ends in close(), which still fires toggle below.
 on(
   "cancel",
-  "dialog[data-gsxui-dialog-content]",
+  "dialog[data-gsxui-slot-dialog-content]",
   (event, dialog) => {
     event.preventDefault();
     request(dialog, "gsxui:request-close", { reason: "cancel" });
@@ -155,7 +155,7 @@ on(
 // confirm it and notify observers.
 on(
   "beforetoggle",
-  "dialog[data-gsxui-dialog-content]",
+  "dialog[data-gsxui-slot-dialog-content]",
   (event, dialog) => {
     const open = event.newState === "open";
     const root = rootOf(dialog);
@@ -169,7 +169,7 @@ on(
 // programmatic showModal()/close() too.
 on(
   "toggle",
-  "dialog[data-gsxui-dialog-content]",
+  "dialog[data-gsxui-slot-dialog-content]",
   (event, dialog) => {
     const open = event.newState === "open";
     dialog.dataset.state = open ? "open" : "closed";

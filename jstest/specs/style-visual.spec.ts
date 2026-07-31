@@ -349,8 +349,8 @@ test("Dialog keeps dedicated a11y hooks, semantic backdrop, and caller cascade",
 
   expect(
     await dialog.evaluate((element) => {
-      const title = element.querySelector("[data-gsxui-dialog-title]");
-      const description = element.querySelector("[data-gsxui-dialog-description]");
+      const title = element.querySelector("[data-gsxui-slot-dialog-title]");
+      const description = element.querySelector("[data-gsxui-slot-dialog-description]");
       const css = getComputedStyle(element);
       return {
         labelledBy: element.getAttribute("aria-labelledby"),
@@ -375,9 +375,9 @@ test("Dialog keeps dedicated a11y hooks, semantic backdrop, and caller cascade",
   });
   const relationships = await dialog.evaluate((element) => ({
     labelledBy: element.getAttribute("aria-labelledby"),
-    titleID: element.querySelector("[data-gsxui-dialog-title]")?.id,
+    titleID: element.querySelector("[data-gsxui-slot-dialog-title]")?.id,
     describedBy: element.getAttribute("aria-describedby"),
-    descriptionID: element.querySelector("[data-gsxui-dialog-description]")?.id,
+    descriptionID: element.querySelector("[data-gsxui-slot-dialog-description]")?.id,
   }));
   expect(relationships.labelledBy).toBe(relationships.titleID);
   expect(relationships.describedBy).toBe(relationships.descriptionID);

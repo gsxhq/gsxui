@@ -183,7 +183,7 @@ function activate(item) {
   if (!item || disabled(item)) return;
   emit(item, "gsxui:select");
   if (item.dataset.href) {
-    const dialog = item.closest("dialog[data-gsxui-dialog-content]");
+    const dialog = item.closest("dialog[data-gsxui-slot-dialog-content]");
     if (dialog) emit(dialog, "gsxui:request-close", { reason: "select" });
     window.location.assign(item.dataset.href);
   }
