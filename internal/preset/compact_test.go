@@ -113,6 +113,13 @@ func TestCompactShareRoundTripsEveryCatalogCombination(t *testing.T) {
 					if !presetsEqual(got, value) {
 						t.Fatalf("DecodeShare(%q) = %#v, want %#v", code, got, value)
 					}
+					reencoded, err := EncodeShare(got)
+					if err != nil {
+						t.Fatalf("EncodeShare(DecodeShare(%q)): %v", code, err)
+					}
+					if reencoded != code {
+						t.Fatalf("EncodeShare(DecodeShare(%q)) = %q, want the original code; the catalog is no longer injective", code, reencoded)
+					}
 				}
 			}
 		}
