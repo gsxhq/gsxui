@@ -94,7 +94,9 @@ const disabled = (item) =>
 
 let uid = 0;
 
-function select(root, item) {
+// Initial selection is state synchronisation, not navigation: only
+// user-driven changes opt into scrolling the selected item into view.
+function select(root, item, { scroll = false } = {}) {
   const input = root.querySelector("[data-gsxui-command-input]");
   for (const other of itemsOf(root)) {
     if (other === item) continue;
@@ -109,7 +111,7 @@ function select(root, item) {
   item.setAttribute("aria-selected", "true");
   if (!item.id) item.id = `gsxui-command-item-${++uid}`;
   input?.setAttribute("aria-activedescendant", item.id);
-  item.scrollIntoView({ block: "nearest" });
+  if (scroll) item.scrollIntoView({ block: "nearest" });
 }
 
 const visibleItems = (root) => itemsOf(root).filter((i) => !i.hidden && !disabled(i));
@@ -121,7 +123,7 @@ const selectedOf = (root) => root.querySelector('[data-gsxui-command-item][data-
 // groups by their best item, hide empty groups, hide separators while a
 // query is active (cmdk's behavior), and toggle the empty state. Ties keep
 // source order via the one-time data-gsxui-index stamp.
-function filter(root) {
+function filter(root, { scrollSelection = false } = {}) {
   const input = root.querySelector("[data-gsxui-command-input]");
   const query = (input?.value ?? "").trim();
   const list = root.querySelector("[data-gsxui-command-list]") ?? root;
@@ -152,7 +154,7 @@ function filter(root) {
 
   // Items reorder within their group every pass (appendChild preserves
   // element identity, so listeners/state survive the moves).
-  for (const group of root.querySelectorAll('[data-slot="command-group"]')) {
+  for (const group of root.querySelectorAll("[data-gsxui-command-group]")) {
     const inGroup = items.filter((i) => group.contains(i));
     const ranked = [...inGroup].sort((a, b) => scores.get(b) - scores.get(a) || sourceOrder(a, b));
     for (const item of ranked) group.appendChild(item);
@@ -167,14 +169,14 @@ function filter(root) {
   const kids = [...list.children].sort((a, b) => rank(b) - rank(a) || sourceOrder(a, b));
   for (const kid of kids) list.appendChild(kid);
 
-  for (const sep of root.querySelectorAll('[data-slot="command-separator"]')) {
+  for (const sep of root.querySelectorAll("[data-gsxui-command-separator]")) {
     sep.hidden = query !== "";
   }
-  const empty = root.querySelector('[data-slot="command-empty"]');
+  const empty = root.querySelector("[data-gsxui-command-empty]");
   if (empty) empty.hidden = any;
 
   // Selection follows the ranking: top visible item after every keystroke.
-  select(root, visibleItems(root)[0] ?? null);
+  select(root, visibleItems(root)[0] ?? null, { scroll: scrollSelection });
 }
 
 function activate(item) {
@@ -189,7 +191,7 @@ function activate(item) {
 
 on("input", "[data-gsxui-command-input]", (_e, input) => {
   const root = rootOf(input);
-  if (root) filter(root);
+  if (root) filter(root, { scrollSelection: true });
 });
 
 on("keydown", "[data-gsxui-command-input]", (e, input) => {
@@ -206,7 +208,7 @@ on("keydown", "[data-gsxui-command-input]", (e, input) => {
   const items = visibleItems(root);
   if (!items.length) return;
   const i = items.indexOf(selectedOf(root));
-  select(root, items[(i + dir + items.length) % items.length]);
+  select(root, items[(i + dir + items.length) % items.length], { scroll: true });
 });
 
 on("click", "[data-gsxui-command-item]", (_e, item) => activate(item));

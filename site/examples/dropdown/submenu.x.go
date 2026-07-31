@@ -27,41 +27,41 @@ func Submenu() _gsxrt.Node {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Actions")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "data-gsxui-dropdown-trigger", Value: true}}))
-//line submenu.gsx:14:3
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dropdown-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-dropdown-menu-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "menu"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
+//line submenu.gsx:22:3
 			_gsxgw.Node(ctx, ui.DropdownMenuContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line submenu.gsx:15:4
+//line submenu.gsx:23:4
 				_gsxgw.Node(ctx, ui.DropdownMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("New File")
 					return _gsxgw.Err()
 				}), nil))
-//line submenu.gsx:16:4
+//line submenu.gsx:24:4
 				_gsxgw.Node(ctx, ui.DropdownMenuSub(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line submenu.gsx:17:5
+//line submenu.gsx:25:5
 					_gsxgw.Node(ctx, ui.DropdownMenuSubTrigger(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("More Tools")
 						return _gsxgw.Err()
 					}), nil))
-//line submenu.gsx:18:5
+//line submenu.gsx:26:5
 					_gsxgw.Node(ctx, ui.DropdownMenuSubContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line submenu.gsx:19:6
+//line submenu.gsx:27:6
 						_gsxgw.Node(ctx, ui.DropdownMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Save Page As...")
 							return _gsxgw.Err()
 						}), nil))
-//line submenu.gsx:20:6
+//line submenu.gsx:28:6
 						_gsxgw.Node(ctx, ui.DropdownMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Create Shortcut...")
 							return _gsxgw.Err()
 						}), nil))
-//line submenu.gsx:21:6
+//line submenu.gsx:29:6
 						_gsxgw.Node(ctx, ui.DropdownMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Name Window...")
@@ -71,9 +71,9 @@ func Submenu() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line submenu.gsx:24:4
+//line submenu.gsx:32:4
 				_gsxgw.Node(ctx, ui.DropdownMenuSeparator(nil))
-//line submenu.gsx:25:4
+//line submenu.gsx:33:4
 				_gsxgw.Node(ctx, ui.DropdownMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Exit")

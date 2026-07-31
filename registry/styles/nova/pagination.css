@@ -1,0 +1,31 @@
+/* Source: assets/css/styles/default/pagination.css. This covers every
+   Pagination rule EXCEPT the "link" slot's previous/next edge padding,
+   which stays authored as plain CSS in default.css's own @layer components
+   — see registry/canonical/shapes/pagination.go's doc comment for why.
+   The `@media (width >= 40rem)` block folds into the label slots' own
+   rules as the `sm:` breakpoint variant (this repo's default `sm`
+   breakpoint is 40rem, matching the media query exactly). Nova and Maia
+   have not diverged on Pagination yet, so this file is byte-identical to
+   registry/styles/maia/pagination.css. Confirmed compiling with this
+   repo's Tailwind v4 CLI before use. */
+@layer components {
+  .gsxui-recipe-pagination {
+    @apply mx-auto flex w-full justify-center;
+  }
+
+  .gsxui-recipe-pagination-content {
+    @apply flex flex-row items-center gap-0.5;
+  }
+
+  .gsxui-recipe-pagination-previous-label {
+    @apply hidden sm:block;
+  }
+
+  .gsxui-recipe-pagination-next-label {
+    @apply hidden sm:block;
+  }
+
+  .gsxui-recipe-pagination-ellipsis {
+    @apply flex size-8 items-center justify-center [&>svg]:size-4;
+  }
+}

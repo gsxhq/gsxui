@@ -24,8 +24,17 @@ var RangeDefaultMonth = time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 // by the "to" input's own data-gsxui-calendar-hidden-to marker rather than
 // a name-suffix guess — had zero live-browser coverage at all.
 component Range(month time.Time) {
-	{{ if month.IsZero() {
-		month = RangeDefaultMonth
-	} }}
-	<ui.Calendar mode="range" month={month} name="stay" weekStartsOn={time.Sunday} showOutsideDays={true} captionLayout="label"/>
+	{{
+		if month.IsZero() {
+			month = RangeDefaultMonth
+		}
+	}}
+	<ui.Calendar
+		mode="range"
+		month={month}
+		name="stay"
+		weekStartsOn={time.Sunday}
+		showOutsideDays={true}
+		captionLayout="label"
+	/>
 }

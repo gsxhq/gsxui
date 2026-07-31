@@ -1,0 +1,42 @@
+@layer components {
+  /* Combobox migrated to the slot axis (registry/styles/{nova,maia}/
+     combobox.css) EXCEPT this one declaration, which must stay here as
+     plain CSS. Its caller-overridability depends on the CSS LAYER boundary
+     — this rule lives in @layer components, a caller's plain utility class
+     lives in @layer utilities, and @layer utilities always wins regardless
+     of specificity. That guarantee only exists pre-resolution: migrated
+     onto combobox-item's recipe it would resolve to a literal
+     `data-disabled:opacity-50` utility class Tailwind scans straight out of
+     the generated ui/combobox.gsx — no longer inside an explicit @layer
+     components boundary at consumption time — and would then compete on
+     ordinary specificity at (0,2,0), permanently beating a caller's own
+     `opacity-*`. See
+     docs/superpowers/specs/2026-07-29-slot-axis-and-component-migration-design.md
+     section 10b and assets/css/styles/default/{command,menu}.css for the
+     identical prior fix.
+
+     data-disabled is stamped by the CALLER through attrs — ComboboxItem
+     declares no `disabled` param at all — not by combobox.js.
+     data-highlighted, data-state and data-empty, by contrast, ARE
+     combobox.js's own runtime stamps and migrated onto the recipe.
+
+     The `pointer-events-none` half of this same rule IS migrated (baked
+     onto .gsxui-recipe-combobox-item): no caller should be able to
+     re-enable pointer interaction on a row they themselves marked
+     disabled — only the purely presentational opacity needed to stay
+     caller-overridable.
+
+     stylegen --check-layers no longer reports this rule at all, and its
+     exemption is gone: the gate keys a component's own utilities by SLOT
+     MARKER, and combobox-item renders no opacity-* utility. The contest it
+     used to report came from combobox-content's popover-transition
+     opacity-0/opacity-100 — a different element entirely.
+
+     The old file's `combobox-content > input-group` rule is NOT here
+     either: its styled subject is InputGroup, so it moved to
+     assets/css/styles/default/input-group.css rather than onto Combobox's
+     recipe. */
+  :where([data-gsxui-slot-combobox-item])[data-disabled] {
+    @apply opacity-50;
+  }
+}

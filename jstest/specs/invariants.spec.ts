@@ -70,7 +70,7 @@ for (const example of examples()) {
     // selector matches, so if two modules both match one element for one
     // (type, capture) pair, both handlers run on a single event. That is
     // exactly the hook-prefix collision that shipped in Tier 4 Batch B:
-    // dropdown.js and context-menu.js both matched data-gsxui-menu-*, so
+    // dropdown-menu.js and context-menu.js both matched data-gsxui-menu-*, so
     // one click on a checkbox item fired two gsxui:change events and left
     // the state unchanged.
     //

@@ -29,7 +29,7 @@ func FormRow() _gsxrt.Node {
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "for", Value: "form-row-email"}}))
 //line form-row.gsx:14:4
-		_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "form-row-email"}}, _gsxrt.Attrs{{Key: "type", Value: "email"}}, _gsxrt.Attrs{{Key: "name", Value: "email"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "you@example.com"}}, _gsxrt.Attrs{{Key: "required", Value: true}})))
+		_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "form-row-email"}}, _gsxrt.Attrs{{Key: "type", Value: "email"}}, _gsxrt.Attrs{{Key: "name", Value: "email"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "you@example.com"}}, _gsxrt.Attrs{{Key: "required", Value: _gsxrt.Toggle(true)}})))
 		_gsxgw.S("</div>")
 //line form-row.gsx:16:3
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")

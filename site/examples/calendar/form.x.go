@@ -33,38 +33,38 @@ func Form() _gsxrt.Node {
 		_gsxgw.S("<form class=\"flex max-w-xs flex-col gap-4\">")
 //line form.gsx:21:3
 		_gsxgw.Node(ctx, ui.Calendar("single", FormDefaultMonth, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "date", nil))
-//line form.gsx:22:3
+//line form.gsx:29:3
 		_gsxgw.S("<div class=\"flex flex-col gap-2\">")
-//line form.gsx:23:4
+//line form.gsx:30:4
 		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Framework")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "for", Value: "calendar-form-framework"}}))
-//line form.gsx:24:4
+//line form.gsx:31:4
 		_gsxgw.Node(ctx, ui.Combobox("framework", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line form.gsx:25:5
+//line form.gsx:32:5
 			_gsxgw.Node(ctx, ui.ComboboxInput("Search framework...", true, false, false, nil, _gsxrt.Attrs{{Key: "id", Value: "calendar-form-framework"}}))
-//line form.gsx:26:5
+//line form.gsx:33:5
 			_gsxgw.Node(ctx, ui.ComboboxContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line form.gsx:27:6
+//line form.gsx:34:6
 				_gsxgw.Node(ctx, ui.ComboboxList(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line form.gsx:28:7
+//line form.gsx:35:7
 					_gsxgw.Node(ctx, ui.ComboboxEmpty(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("No framework found.")
 						return _gsxgw.Err()
 					}), nil))
-//line form.gsx:29:7
+//line form.gsx:36:7
 					_gsxgw.Node(ctx, ui.ComboboxItem("next.js", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Next.js")
 						return _gsxgw.Err()
 					}), nil))
-//line form.gsx:30:7
+//line form.gsx:37:7
 					_gsxgw.Node(ctx, ui.ComboboxItem("sveltekit", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("SvelteKit")
@@ -77,15 +77,15 @@ func Form() _gsxrt.Node {
 			return _gsxgw.Err()
 		}), nil))
 		_gsxgw.S("</div>")
-//line form.gsx:35:3
+//line form.gsx:42:3
 		_gsxgw.S("<div class=\"flex gap-2\">")
-//line form.gsx:36:4
+//line form.gsx:43:4
 		_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Continue")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "type", Value: "submit"}}))
-//line form.gsx:37:4
+//line form.gsx:44:4
 		_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Reset")

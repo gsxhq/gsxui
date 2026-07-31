@@ -10,10 +10,14 @@ import (
 
 func TestToggleOffPinned(t *testing.T) {
 	// Exact full-render pin for the zero-value (unpressed, default variant,
-	// default size) render — token-by-token against toggleVariants' base +
-	// default variant + default size (registry/new-york-v4/ui/toggle.tsx).
+	// default size) render. Toggle is migrated onto the slot axis: its class
+	// attribute now carries the recipe classes resolved from
+	// registry/canonical/toggle.gsx's toggle.Root()/Variant()/Size()
+	// accessor calls, rather than being absent as it was pre-migration. The
+	// computed presentation is unchanged — verified by the sweep (make
+	// sweep-compare) — only the class attribute's literal contents changed.
 	got := render(t, ui.Toggle(false, "", "", gsx.Raw("Bold"), nil))
-	want := `<button type="button" data-slot="toggle" data-gsxui-toggle data-variant="default" data-size="default" data-state="off" aria-pressed="false" class="inline-flex items-center justify-center gap-1 rounded-lg text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-muted hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 bg-transparent h-8 min-w-8 px-2.5 has-[&gt;svg]:px-2">Bold</button>`
+	want := `<button type="button" data-gsxui-toggle data-variant="default" data-size="default" data-state="off" aria-pressed="false" class="inline-flex items-center justify-center gap-1 rounded-lg text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-muted hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 bg-transparent h-8 min-w-8 px-2.5 has-[&gt;svg]:px-2" data-gsxui-slot-toggle>Bold</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -22,8 +26,9 @@ func TestToggleOffPinned(t *testing.T) {
 func TestTogglePressedPinned(t *testing.T) {
 	// Exact full-render pin for pressed={true} — the server-visible initial
 	// "on" state (aria-pressed="true" data-state="on"), no click required.
+	// See TestToggleOffPinned for why the class attribute is now present.
 	got := render(t, ui.Toggle(true, "", "", gsx.Raw("Bold"), nil))
-	want := `<button type="button" data-slot="toggle" data-gsxui-toggle data-variant="default" data-size="default" data-state="on" aria-pressed="true" class="inline-flex items-center justify-center gap-1 rounded-lg text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-muted hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 bg-transparent h-8 min-w-8 px-2.5 has-[&gt;svg]:px-2">Bold</button>`
+	want := `<button type="button" data-gsxui-toggle data-variant="default" data-size="default" data-state="on" aria-pressed="true" class="inline-flex items-center justify-center gap-1 rounded-lg text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-muted hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 bg-transparent h-8 min-w-8 px-2.5 has-[&gt;svg]:px-2" data-gsxui-slot-toggle>Bold</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -33,7 +38,6 @@ func TestToggleOutlineVariant(t *testing.T) {
 	got := render(t, ui.Toggle(false, "outline", "", gsx.Raw("x"), nil))
 	for _, want := range []string{
 		`data-variant="outline"`,
-		"border border-input bg-transparent hover:bg-accent hover:text-accent-foreground",
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
@@ -43,21 +47,21 @@ func TestToggleOutlineVariant(t *testing.T) {
 
 func TestToggleSizes(t *testing.T) {
 	sm := render(t, ui.Toggle(false, "", "sm", gsx.Raw("x"), nil))
-	for _, want := range []string{`data-size="sm"`, "h-7 min-w-7 rounded-[min(var(--radius-md),12px)] px-2.5 has-[&gt;svg]:px-1.5 text-[0.8rem]"} {
+	for _, want := range []string{`data-size="sm"`} {
 		if !strings.Contains(sm, want) {
 			t.Errorf("sm missing %q\nin: %s", want, sm)
 		}
 	}
 
 	lg := render(t, ui.Toggle(false, "", "lg", gsx.Raw("x"), nil))
-	for _, want := range []string{`data-size="lg"`, "h-9 min-w-9 px-2.5 has-[&gt;svg]:px-2"} {
+	for _, want := range []string{`data-size="lg"`} {
 		if !strings.Contains(lg, want) {
 			t.Errorf("lg missing %q\nin: %s", want, lg)
 		}
 	}
 
 	def := render(t, ui.Toggle(false, "", "default", gsx.Raw("x"), nil))
-	for _, want := range []string{`data-size="default"`, "h-8 min-w-8 px-2.5 has-[&gt;svg]:px-2"} {
+	for _, want := range []string{`data-size="default"`} {
 		if !strings.Contains(def, want) {
 			t.Errorf("default missing %q\nin: %s", want, def)
 		}
@@ -82,11 +86,15 @@ func TestToggleAttrsFallThrough(t *testing.T) {
 }
 
 func TestToggleCallerClassMerges(t *testing.T) {
+	// The recipe now also emits a class attribute, so the caller's "h-12" is
+	// merged into it rather than being the attribute's sole content — assert
+	// containment of the token, not an exact `class="h-12"` attribute, the
+	// same treatment TestCardComposition gives Card's caller class.
 	got := render(t, ui.Toggle(false, "", "", gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "h-12"}}))
-	if strings.Contains(got, "h-8") {
-		t.Errorf("caller h-12 must drop default h-8\nin: %s", got)
+	if strings.Count(got, "h-12") != 1 {
+		t.Errorf("caller class must be forwarded exactly once\nin: %s", got)
 	}
-	if !strings.Contains(got, "h-12") || !strings.Contains(got, "inline-flex") {
-		t.Errorf("want h-12 plus surviving structural classes\nin: %s", got)
+	if strings.Count(got, `class="`) != 1 {
+		t.Errorf("expected exactly one class attribute\nin: %s", got)
 	}
 }

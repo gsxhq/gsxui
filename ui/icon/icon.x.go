@@ -12,8 +12,8 @@ import (
 
 //line icon.gsx:5:1
 // svgIcon renders a Lucide icon's <svg> wrapper: 24x24 viewBox, the Lucide
-// stroke defaults, default class="size-4" (caller-overridable via tailwind
-// class merge), data-slot="icon", and aria-hidden="true" unless the caller
+// stroke defaults, no default class, data-gsxui-slot-icon, and
+// aria-hidden="true" unless the caller
 // already supplies an aria-hidden attribute — literal attributes authored
 // before { attrs... } only render when attrs doesn't already set that exact
 // key, so a caller's own aria-hidden (or, via the same fallthrough, other
@@ -25,9 +25,6 @@ func svgIcon(name string, inner gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line icon.gsx:13:2
 		_gsxgw.S("<svg")
-		if !attrs.Has("data-slot") {
-			_gsxgw.S(" data-slot=\"icon\"")
-		}
 		if !attrs.Has("aria-hidden") {
 			_gsxgw.S(" aria-hidden=\"true\"")
 		}
@@ -52,13 +49,12 @@ func svgIcon(name string, inner gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		if !attrs.Has("stroke-linejoin") {
 			_gsxgw.S(" stroke-linejoin=\"round\"")
 		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("size-4"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
+		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, attrs, []string{"action", "cite", "data", "formaction", "href", "manifest", "ping", "poster", "src", "xlink:href"}, []string{"background"}, []string{"imagesrcset", "srcset"}, nil, []string{"class", "style"})
+		_gsxgw.Spread(ctx, "svg", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-icon"})
+		_gsxgw.BoolAttr("data-gsxui-slot-icon", true)
 		_gsxgw.S(">")
-//line icon.gsx:26:3
+//line icon.gsx:25:3
 		_gsxgw.Node(ctx, inner)
 		_gsxgw.S("</svg>")
 		return _gsxgw.Err()

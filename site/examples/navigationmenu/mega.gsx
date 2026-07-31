@@ -11,8 +11,7 @@ import (
 // viewport={false} configuration only; see ui/navigation-menu.gsx's own
 // file header GAP paragraph for why there is no shared, JS-measured
 // viewport panel morphing between the two instead). Resources is a plain
-// link with no dropdown at all, styled via NavigationMenuTriggerStyle()
-// directly.
+// link with no dropdown at all, reflected as variant="trigger".
 component Mega() {
 	<ui.NavigationMenu>
 		<ui.NavigationMenuList>
@@ -58,7 +57,7 @@ component Mega() {
 				</ui.NavigationMenuContent>
 			</ui.NavigationMenuItem>
 			<ui.NavigationMenuItem>
-				<ui.NavigationMenuLink class={ ui.NavigationMenuTriggerStyle() } href="#">Resources</ui.NavigationMenuLink>
+				<ui.NavigationMenuLink variant="trigger" href="#">Resources</ui.NavigationMenuLink>
 			</ui.NavigationMenuItem>
 		</ui.NavigationMenuList>
 	</ui.NavigationMenu>

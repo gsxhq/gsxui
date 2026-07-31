@@ -1,0 +1,24 @@
+/* Source: assets/css/styles/default/hover-card.css (both rules) plus the
+   transition block this component shared with Popover and Tooltip in
+   assets/css/styles/default/overlay-popover-transition.css (now deleted —
+   all three sharing components migrated in this wave). Same translation as
+   registry/styles/nova/popover.css and registry/styles/nova/select.css:
+   :popover-open and @starting-style as `[&:popover-open]:`/`starting:`.
+   Nova and Maia have not diverged on HoverCard yet, so this file is
+   byte-identical to registry/styles/maia/hover-card.css. */
+@layer components {
+  .gsxui-recipe-hover-card {
+    @apply contents;
+  }
+
+  .gsxui-recipe-hover-card-content {
+    @apply z-50 w-64 origin-top rounded-lg border bg-popover p-2.5 text-sm text-popover-foreground shadow-md outline-hidden;
+    @apply opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150;
+    @apply [&:popover-open]:opacity-100 [&:popover-open]:scale-100;
+    @apply starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95;
+    @apply starting:[&:popover-open]:data-[side=bottom]:-translate-y-2;
+    @apply starting:[&:popover-open]:data-[side=left]:translate-x-2;
+    @apply starting:[&:popover-open]:data-[side=right]:-translate-x-2;
+    @apply starting:[&:popover-open]:data-[side=top]:translate-y-2;
+  }
+}

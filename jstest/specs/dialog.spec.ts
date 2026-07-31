@@ -3,7 +3,6 @@ import { expect, test } from "../support/fixtures";
 
 const BASIC = "/x/dialog/basic";
 const DIALOG = "dialog[data-gsxui-dialog-content]";
-const TRIGGER = "[data-gsxui-dialog-trigger]";
 const COMMAND_DIALOG = "dialog[data-gsxui-command-dialog]";
 
 async function dispatch(page: Page, selector: string, type: string, detail = {}) {
@@ -41,7 +40,7 @@ test("the proximity trigger requests one targeted open with its stable reason", 
     });
   });
 
-  await page.locator(TRIGGER).click();
+  await page.getByRole("button", { name: "Delete account", exact: true }).click();
 
   await expect(page.locator(DIALOG)).toHaveJSProperty("open", true);
   expect(await page.evaluate(() => (window as any).__dialogRequests)).toEqual([
@@ -51,7 +50,7 @@ test("the proximity trigger requests one targeted open with its stable reason", 
 
 test("descendant request events drive the native dialog state", async ({ page }) => {
   await page.goto(BASIC);
-  const source = `${DIALOG} [data-slot="dialog-title"]`;
+  const source = `${DIALOG} [data-gsxui-dialog-title]`;
 
   await dispatch(page, source, "gsxui:request-open", { reason: "application" });
   await expect(page.locator(DIALOG)).toHaveJSProperty("open", true);
@@ -160,7 +159,7 @@ test("a late document listener can cancel both deferred request defaults", async
     });
   });
 
-  await page.locator(TRIGGER).click();
+  await page.getByRole("button", { name: "Delete account", exact: true }).click();
   await expect(page.locator(DIALOG)).toHaveJSProperty("open", false);
 
   await page.evaluate(() => {
@@ -316,15 +315,15 @@ test("dialog identity and trigger ownership stay within their nearest roots", as
         <div data-gsxui-dialog id="generated-root">
           <button id="generated-trigger" data-gsxui-dialog-trigger aria-expanded="false">Generated</button>
           <dialog data-gsxui-dialog-content data-state="closed">
-            <h2 data-slot="dialog-title">Generated title</h2>
-            <p data-slot="dialog-description">Generated description</p>
+            <h2 data-gsxui-dialog-title>Generated title</h2>
+            <p data-gsxui-dialog-description>Generated description</p>
             <button data-gsxui-dialog-close>Close generated</button>
             <div data-gsxui-dialog id="nested-root">
               <button id="nested-trigger" data-gsxui-dialog-trigger aria-expanded="false">Nested</button>
               <button id="nested-root-close" data-gsxui-dialog-close>Close nested</button>
               <dialog data-gsxui-dialog-content data-state="closed">
-                <h2 data-slot="dialog-title">Nested title</h2>
-                <p data-slot="dialog-description">Nested description</p>
+                <h2 data-gsxui-dialog-title>Nested title</h2>
+                <p data-gsxui-dialog-description>Nested description</p>
               </dialog>
             </div>
           </dialog>
@@ -332,8 +331,8 @@ test("dialog identity and trigger ownership stay within their nearest roots", as
         <div data-gsxui-dialog id="second-root">
           <button id="second-trigger" data-gsxui-dialog-trigger aria-expanded="false">Second</button>
           <dialog data-gsxui-dialog-content data-state="closed">
-            <h2 data-slot="dialog-title">Second title</h2>
-            <p data-slot="dialog-description">Second description</p>
+            <h2 data-gsxui-dialog-title>Second title</h2>
+            <p data-gsxui-dialog-description>Second description</p>
             <button data-gsxui-dialog-close>Close second</button>
           </dialog>
         </div>
@@ -341,8 +340,8 @@ test("dialog identity and trigger ownership stay within their nearest roots", as
           <button id="authored-trigger" data-gsxui-dialog-trigger aria-controls="keep-control" aria-expanded="false">Authored</button>
           <dialog id="authored-dialog" data-gsxui-dialog-content data-state="closed"
             aria-labelledby="authored-label" aria-describedby="authored-description">
-            <h2 id="authored-label" data-slot="dialog-title">Authored title</h2>
-            <p id="authored-description" data-slot="dialog-description">Authored description</p>
+            <h2 id="authored-label" data-gsxui-dialog-title>Authored title</h2>
+            <p id="authored-description" data-gsxui-dialog-description>Authored description</p>
           </dialog>
         </div>
       `,
@@ -408,10 +407,10 @@ test("dialog identity and trigger ownership stay within their nearest roots", as
       const dialog = [...root.querySelectorAll("dialog[data-gsxui-dialog-content]")].find(
         (element) => element.closest("[data-gsxui-dialog]") === root,
       )!;
-      const title = [...root.querySelectorAll('[data-slot="dialog-title"]')].find(
+      const title = [...root.querySelectorAll("[data-gsxui-dialog-title]")].find(
         (element) => element.closest("[data-gsxui-dialog]") === root,
       )!;
-      const description = [...root.querySelectorAll('[data-slot="dialog-description"]')].find(
+      const description = [...root.querySelectorAll("[data-gsxui-dialog-description]")].find(
         (element) => element.closest("[data-gsxui-dialog]") === root,
       )!;
       const trigger = root.querySelector("[data-gsxui-dialog-trigger]")!;

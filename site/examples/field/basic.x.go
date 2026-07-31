@@ -22,7 +22,7 @@ func Basic() _gsxrt.Node {
 		_gsxgw.Node(ctx, ui.FieldSet(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:11:3
-			_gsxgw.Node(ctx, ui.FieldLegend("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.FieldLegend("label", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Profile")
 				return _gsxgw.Err()
@@ -52,17 +52,61 @@ func Basic() _gsxrt.Node {
 //line basic.gsx:18:4
 				_gsxgw.Node(ctx, ui.FieldSeparator(nil, nil))
 //line basic.gsx:19:4
+				_gsxgw.Node(ctx, ui.FieldSeparator(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+					_gsxgw.S("or")
+					return _gsxgw.Err()
+				}), nil))
+//line basic.gsx:20:4
+				_gsxgw.Node(ctx, ui.Field("horizontal", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:21:5
+					_gsxgw.Node(ctx, ui.FieldContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:22:6
+						_gsxgw.Node(ctx, ui.FieldTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+							_gsxgw := _gsxrt.W(_gsxw)
+							_gsxgw.S("Horizontal field")
+							return _gsxgw.Err()
+						}), nil))
+//line basic.gsx:23:6
+						_gsxgw.Node(ctx, ui.FieldDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+							_gsxgw := _gsxrt.W(_gsxw)
+							_gsxgw.S("Content and title use the same canonical slots.")
+							return _gsxgw.Err()
+						}), nil))
+						return _gsxgw.Err()
+					}), nil))
+					return _gsxgw.Err()
+				}), nil))
+//line basic.gsx:26:4
+				_gsxgw.Node(ctx, ui.Field("responsive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:27:5
+					_gsxgw.Node(ctx, ui.FieldContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:28:6
+						_gsxgw.Node(ctx, ui.FieldTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+							_gsxgw := _gsxrt.W(_gsxw)
+							_gsxgw.S("Responsive disabled field")
+							return _gsxgw.Err()
+						}), nil))
+						return _gsxgw.Err()
+					}), nil))
+					return _gsxgw.Err()
+				}), _gsxrt.Attrs{{Key: "data-disabled", Value: "true"}}))
+//line basic.gsx:31:4
 				_gsxgw.Node(ctx, ui.Field("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:20:5
+//line basic.gsx:32:5
 					_gsxgw.Node(ctx, ui.FieldLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Bio")
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "for", Value: "bio"}}))
-//line basic.gsx:21:5
+//line basic.gsx:33:5
 					_gsxgw.Node(ctx, ui.Textarea("", _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "bio"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "Tell us about yourself"}})))
-//line basic.gsx:22:5
+//line basic.gsx:34:5
 					_gsxgw.Node(ctx, ui.FieldDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Shown to other members on your public profile.")
@@ -71,7 +115,7 @@ func Basic() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), nil))
 				return _gsxgw.Err()
-			}), nil))
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: "group/field-group"}}, _gsxrt.Attrs{{Key: "data-variant", Value: "outline"}})))
 			return _gsxgw.Err()
 		}), nil))
 		return _gsxgw.Err()

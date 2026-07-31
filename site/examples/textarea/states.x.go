@@ -22,7 +22,7 @@ func States() _gsxrt.Node {
 //line states.gsx:9:3
 		_gsxgw.Node(ctx, ui.Textarea("Filled in already.", _gsxrt.Attrs{{Key: "placeholder", Value: "Message"}}))
 //line states.gsx:10:3
-		_gsxgw.Node(ctx, ui.Textarea("", _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "placeholder", Value: "Disabled"}}, _gsxrt.Attrs{{Key: "disabled", Value: true}})))
+		_gsxgw.Node(ctx, ui.Textarea("", _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "placeholder", Value: "Disabled"}}, _gsxrt.Attrs{{Key: "disabled", Value: _gsxrt.Toggle(true)}})))
 //line states.gsx:11:3
 		_gsxgw.Node(ctx, ui.Textarea("", _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "placeholder", Value: "Invalid"}}, _gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}})))
 		_gsxgw.S("</div>")

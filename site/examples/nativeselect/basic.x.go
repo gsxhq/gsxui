@@ -39,7 +39,7 @@ func Basic() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 			return _gsxgw.Err()
-		}), _gsxrt.Attrs{{Key: "name", Value: "fruit"}}))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "name", Value: "fruit"}}, _gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}})))
 		return _gsxgw.Err()
 	})
 }

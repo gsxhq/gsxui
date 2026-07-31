@@ -1,0 +1,336 @@
+package stylecontract
+
+import (
+	"reflect"
+	"testing"
+)
+
+func TestValidateRejectsInvalidContracts(t *testing.T) {
+	tests := []struct {
+		name       string
+		components []Component
+		want       string
+	}{
+		{
+			name:       "empty component name",
+			components: []Component{{}},
+			want:       "component 0: empty component name",
+		},
+		{
+			name:       "empty registry name",
+			components: []Component{{Name: "Button"}},
+			want:       `component "Button": empty registry name`,
+		},
+		{
+			name: "duplicate registry name",
+			components: []Component{
+				{Name: "DropdownMenu", RegistryName: "dropdown"},
+				{Name: "Dropdown", RegistryName: "dropdown"},
+			},
+			want: `component "Dropdown": duplicate registry name "dropdown"`,
+		},
+		{
+			name: "duplicate component name",
+			components: []Component{
+				{Name: "Button", RegistryName: "button"},
+				{Name: "Button", RegistryName: "other-button"},
+			},
+			want: "component \"Button\": duplicate component name",
+		},
+		{
+			name: "empty slot name",
+			components: []Component{{
+				Name:         "Button",
+				RegistryName: "button",
+				Slots:        []Slot{{}},
+			}},
+			want: "component \"Button\": slot 0: empty slot name",
+		},
+		{
+			name: "malformed non-runtime slot name",
+			components: []Component{{
+				Name:         "Button",
+				RegistryName: "button",
+				Slots:        []Slot{{Name: "button_primary"}},
+			}},
+			want: `component "Button": slot "button_primary": invalid slot name`,
+		},
+		{
+			name: "malformed runtime slot name",
+			components: []Component{{
+				Name:         "Button",
+				RegistryName: "button",
+				Slots:        []Slot{{Name: "Button", Runtime: true}},
+			}},
+			want: `component "Button": slot "Button": invalid slot name`,
+		},
+		{
+			name: "duplicate slot token globally",
+			components: []Component{
+				{Name: "Button", RegistryName: "button", Slots: []Slot{{Name: "button"}}},
+				{Name: "AlertDialogAction", RegistryName: "alert-dialog", Slots: []Slot{{Name: "button"}}},
+			},
+			want: "component \"AlertDialogAction\": slot \"button\": duplicate slot token (already declared by component \"Button\")",
+		},
+		{
+			name: "empty axis attribute",
+			components: []Component{{
+				Name:         "Button",
+				RegistryName: "button",
+				Slots: []Slot{{
+					Name: "button",
+					Axes: []Axis{{}},
+				}},
+			}},
+			want: "component \"Button\": slot \"button\": axis 0: empty attribute",
+		},
+		{
+			name: "duplicate axis value",
+			components: []Component{{
+				Name:         "Button",
+				RegistryName: "button",
+				Slots: []Slot{{
+					Name: "button",
+					Axes: []Axis{{Attribute: "data-size", Values: []string{"sm", "lg", "sm"}}},
+				}},
+			}},
+			want: "component \"Button\": slot \"button\": axis \"data-size\": duplicate value \"sm\"",
+		},
+		{
+			name: "duplicate runtime axis value",
+			components: []Component{{
+				Name:         "Dialog",
+				RegistryName: "dialog",
+				Slots: []Slot{{
+					Name: "dialog-content",
+					Axes: []Axis{{
+						Attribute:     "data-state",
+						Values:        []string{"closed", "open"},
+						RuntimeValues: []string{"open", "open"},
+					}},
+				}},
+			}},
+			want: `component "Dialog": slot "dialog-content": axis "data-state": duplicate runtime value "open"`,
+		},
+		{
+			name: "runtime value not declared",
+			components: []Component{{
+				Name:         "Dialog",
+				RegistryName: "dialog",
+				Slots: []Slot{{
+					Name: "dialog-content",
+					Axes: []Axis{{
+						Attribute:     "data-state",
+						Values:        []string{"closed"},
+						RuntimeValues: []string{"open"},
+					}},
+				}},
+			}},
+			want: `component "Dialog": slot "dialog-content": axis "data-state": runtime value "open" is not declared in Values`,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := Validate(tt.components)
+			if err == nil {
+				t.Fatal("Validate() error = nil")
+			}
+			if err.Error() != tt.want {
+				t.Fatalf("Validate() error = %q, want %q", err, tt.want)
+			}
+		})
+	}
+}
+
+func TestSlotAttributeParsing(t *testing.T) {
+	for _, name := range []string{"button_primary", "Button", "button--primary", "button-", "-button"} {
+		if _, ok := SlotName(SlotAttribute(name)); ok {
+			t.Errorf("slot marker %q was accepted", name)
+		}
+	}
+	if got, ok := SlotName(SlotAttribute("button-primary")); !ok || got != "button-primary" {
+		t.Errorf("valid slot marker parsed as %q, %t", got, ok)
+	}
+}
+
+func TestValidateAcceptsPresenceOnlyAxis(t *testing.T) {
+	err := Validate([]Component{{
+		Name:         "Button",
+		RegistryName: "button",
+		Slots: []Slot{{
+			Name: "button",
+			Axes: []Axis{{Attribute: "data-disabled"}},
+		}},
+	}})
+	if err != nil {
+		t.Fatalf("Validate() error = %v", err)
+	}
+}
+
+func TestAllReturnsSortedCopy(t *testing.T) {
+	onlyPrimitiveContracts(t, []Component{
+		{Name: "Zebra"},
+		{Name: "Alert"},
+	})
+
+	got := All()
+	want := []Component{
+		{Name: "Alert"},
+		{Name: "Zebra"},
+	}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("All() = %#v, want %#v", got, want)
+	}
+
+	got[0].Name = "Changed"
+	if again := All(); again[0].Name != "Alert" {
+		t.Fatalf("All() returned an aliased slice: %#v", again)
+	}
+}
+
+func TestAllReturnsDeepSnapshot(t *testing.T) {
+	onlyPrimitiveContracts(t, []Component{{
+		Name: "Button",
+		Slots: []Slot{{
+			Name:    "button",
+			Runtime: true,
+			Axes: []Axis{{
+				Attribute:     "data-size",
+				Values:        []string{"sm", "lg"},
+				RuntimeValues: []string{"lg"},
+			}},
+		}},
+	}})
+	want := []Component{{
+		Name: "Button",
+		Slots: []Slot{{
+			Name:    "button",
+			Runtime: true,
+			Axes: []Axis{{
+				Attribute:     "data-size",
+				Values:        []string{"sm", "lg"},
+				RuntimeValues: []string{"lg"},
+			}},
+		}},
+	}}
+
+	got := All()
+	got[0].Name = "Changed"
+	got[0].Slots[0].Name = "changed"
+	got[0].Slots[0].Axes[0].Attribute = "data-changed"
+	got[0].Slots[0].Axes[0].Values[0] = "changed"
+	got[0].Slots[0].Axes[0].RuntimeValues[0] = "changed"
+
+	if again := All(); !reflect.DeepEqual(again, want) {
+		t.Fatalf("All() returned an aliased nested value: got %#v, want %#v", again, want)
+	}
+}
+
+func onlyPrimitiveContracts(t *testing.T, components []Component) {
+	t.Helper()
+	originalPrimitives := primitiveContracts
+	originalForms := formContracts
+	originalOverlays := overlayContracts
+	originalMenus := menuContracts
+	originalComposites := compositeContracts
+	originalSidebar := sidebarContracts
+	originalToast := toastContracts
+	t.Cleanup(func() {
+		primitiveContracts = originalPrimitives
+		formContracts = originalForms
+		overlayContracts = originalOverlays
+		menuContracts = originalMenus
+		compositeContracts = originalComposites
+		sidebarContracts = originalSidebar
+		toastContracts = originalToast
+	})
+	primitiveContracts = components
+	formContracts = nil
+	overlayContracts = nil
+	menuContracts = nil
+	compositeContracts = nil
+	sidebarContracts = nil
+	toastContracts = nil
+}
+
+func TestAllPreservesSliceNilness(t *testing.T) {
+	originalPrimitives := primitiveContracts
+	defer func() { primitiveContracts = originalPrimitives }()
+	primitiveContracts = []Component{
+		{Name: "NilSlots"},
+		{Name: "EmptySlots", Slots: []Slot{}},
+		{
+			Name: "Axes",
+			Slots: []Slot{
+				{Name: "nil-axes"},
+				{Name: "empty-axes", Axes: []Axis{}},
+				{
+					Name: "values",
+					Axes: []Axis{
+						{Attribute: "data-presence"},
+						{Attribute: "data-empty", Values: []string{}},
+					},
+				},
+			},
+		},
+	}
+
+	components := make(map[string]Component)
+	for _, component := range All() {
+		components[component.Name] = component
+	}
+	if components["NilSlots"].Slots != nil {
+		t.Fatalf("nil Slots = %#v, want nil", components["NilSlots"].Slots)
+	}
+	if components["EmptySlots"].Slots == nil {
+		t.Fatal("empty Slots became nil")
+	}
+
+	slots := components["Axes"].Slots
+	if slots[0].Axes != nil {
+		t.Fatalf("nil Axes = %#v, want nil", slots[0].Axes)
+	}
+	if slots[1].Axes == nil {
+		t.Fatal("empty Axes became nil")
+	}
+	if slots[2].Axes[0].Values != nil {
+		t.Fatalf("presence-only Values = %#v, want nil", slots[2].Axes[0].Values)
+	}
+	if slots[2].Axes[1].Values == nil {
+		t.Fatal("empty Values became nil")
+	}
+}
+
+func TestPaginationLinkContractIncludesStateAxes(t *testing.T) {
+	for _, component := range All() {
+		if component.Name != "Pagination" {
+			continue
+		}
+		for _, slot := range component.Slots {
+			if slot.Name != "pagination-link" {
+				continue
+			}
+			currentPage := false
+			activePresence := false
+			for _, axis := range slot.Axes {
+				if axis.Attribute == "aria-current" &&
+					reflect.DeepEqual(axis.Values, []string{"page"}) {
+					currentPage = true
+				}
+				if axis.Attribute == "data-active" && axis.Values == nil {
+					activePresence = true
+				}
+			}
+			if !currentPage {
+				t.Fatal(`pagination-link missing aria-current values ["page"]`)
+			}
+			if !activePresence {
+				t.Fatal("pagination-link data-active must be a presence axis")
+			}
+			return
+		}
+		t.Fatal("Pagination missing pagination-link slot")
+	}
+	t.Fatal("missing Pagination contract")
+}

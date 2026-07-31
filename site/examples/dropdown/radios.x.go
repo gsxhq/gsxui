@@ -27,34 +27,34 @@ func Radios() _gsxrt.Node {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Panel Position")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "data-gsxui-dropdown-trigger", Value: true}}))
-//line radios.gsx:14:3
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dropdown-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-dropdown-menu-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "menu"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
+//line radios.gsx:22:3
 			_gsxgw.Node(ctx, ui.DropdownMenuContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line radios.gsx:15:4
+//line radios.gsx:23:4
 				_gsxgw.Node(ctx, ui.DropdownMenuLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Panel Position")
 					return _gsxgw.Err()
 				}), nil))
-//line radios.gsx:16:4
+//line radios.gsx:24:4
 				_gsxgw.Node(ctx, ui.DropdownMenuSeparator(nil))
-//line radios.gsx:17:4
+//line radios.gsx:25:4
 				_gsxgw.Node(ctx, ui.DropdownMenuRadioGroup("top", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line radios.gsx:18:5
+//line radios.gsx:26:5
 					_gsxgw.Node(ctx, ui.DropdownMenuRadioItem(true, "top", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Top")
 						return _gsxgw.Err()
 					}), nil))
-//line radios.gsx:19:5
+//line radios.gsx:27:5
 					_gsxgw.Node(ctx, ui.DropdownMenuRadioItem(false, "bottom", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Bottom")
 						return _gsxgw.Err()
 					}), nil))
-//line radios.gsx:20:5
+//line radios.gsx:28:5
 					_gsxgw.Node(ctx, ui.DropdownMenuRadioItem(false, "right", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Right")

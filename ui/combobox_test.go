@@ -11,10 +11,10 @@ import (
 func TestComboboxItemSelectedStampsIndicator(t *testing.T) {
 	got := render(t, ui.ComboboxItem("next.js", true, gsx.Raw("Next.js"), nil))
 	for _, want := range []string{
-		`data-slot="combobox-item"`,
+		`data-gsxui-slot-combobox-item`,
 		`data-value="next.js"`,
 		`aria-selected="true"`,
-		`data-slot="combobox-item-indicator"`,
+		`data-gsxui-slot-combobox-item-indicator`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("want %q\nin: %s", want, got)
@@ -34,7 +34,8 @@ func TestComboboxRootRendersFormBridge(t *testing.T) {
 	// server-rendered, mirroring ui/select.gsx's bridge.
 	got := render(t, ui.Combobox("framework", "next.js", gsx.Raw("x"), nil))
 	for _, want := range []string{
-		`data-slot="combobox"`,
+		`data-gsxui-slot-combobox`,
+		`data-gsxui-slot-combobox-bridge`,
 		`name="framework"`,
 		`value="next.js"`,
 	} {
@@ -47,14 +48,13 @@ func TestComboboxRootRendersFormBridge(t *testing.T) {
 func TestComboboxInputComposesInputGroup(t *testing.T) {
 	got := render(t, ui.ComboboxInput("Search framework...", true, false, false, nil, nil))
 	for _, want := range []string{
-		`data-slot="input-group"`,
-		// NOT overridden to "input-group-input" — ui/input-group.gsx's
-		// InputGroup keys its focus ring off
-		// has-[[data-slot=input-group-control]:focus-visible]; overriding
-		// the slot silently killed the only focus indicator on the control
-		// (WCAG 2.4.7), caught in review round 1.
-		`data-slot="input-group-control"`,
-		`data-slot="combobox-trigger"`,
+		`data-gsxui-combobox-input-group`,
+		// InputGroupInput composes both styling tokens; the group keys its
+		// focus ring off input-group-control.
+		`data-gsxui-slot-combobox-input-group data-gsxui-slot-input-group`,
+		`data-gsxui-slot-combobox-input data-gsxui-slot-input-group-control data-gsxui-slot-input`,
+		`data-gsxui-slot-combobox-trigger data-gsxui-slot-input-group-button data-gsxui-slot-button`,
+		`data-gsxui-slot-combobox-trigger-icon data-gsxui-slot-icon`,
 		`role="combobox"`,
 		`aria-expanded="false"`,
 		// Permanent regardless of open/closed state (APG expectation,
@@ -65,17 +65,17 @@ func TestComboboxInputComposesInputGroup(t *testing.T) {
 			t.Errorf("want %q\nin: %s", want, got)
 		}
 	}
-	if strings.Contains(got, `data-slot="combobox-clear"`) {
+	if strings.Contains(got, `data-gsxui-slot-combobox-clear data-gsxui-slot-input-group-button data-gsxui-slot-button`) {
 		t.Errorf("showClear=false must not render the clear button\nin: %s", got)
 	}
 }
 
 func TestComboboxInputShowClear(t *testing.T) {
 	got := render(t, ui.ComboboxInput("", false, true, false, nil, nil))
-	if !strings.Contains(got, `data-slot="combobox-clear"`) {
+	if !strings.Contains(got, `data-gsxui-slot-combobox-clear data-gsxui-slot-input-group-button data-gsxui-slot-button`) {
 		t.Errorf("want the clear button\nin: %s", got)
 	}
-	if strings.Contains(got, `data-slot="combobox-trigger"`) {
+	if strings.Contains(got, `data-gsxui-slot-combobox-trigger data-gsxui-slot-input-group-button data-gsxui-slot-button`) {
 		t.Errorf("showTrigger=false must not render the trigger\nin: %s", got)
 	}
 }
@@ -87,8 +87,8 @@ func TestComboboxInputBothTriggerAndClearRenderBothButtons(t *testing.T) {
 	// "TESTS" list asks this be pinned server-side too).
 	got := render(t, ui.ComboboxInput("", true, true, false, nil, nil))
 	for _, want := range []string{
-		`data-slot="combobox-trigger"`,
-		`data-slot="combobox-clear"`,
+		`data-gsxui-slot-combobox-trigger data-gsxui-slot-input-group-button data-gsxui-slot-button`,
+		`data-gsxui-slot-combobox-clear data-gsxui-slot-input-group-button data-gsxui-slot-button`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("want %q\nin: %s", want, got)
@@ -99,7 +99,7 @@ func TestComboboxInputBothTriggerAndClearRenderBothButtons(t *testing.T) {
 func TestComboboxInputAttrsSplitClassToWrapperIdToControl(t *testing.T) {
 	// The exact bug fixed pre-ship (and re-broken, then re-fixed, in review
 	// round 1): id must land on the actual <input> control, class must
-	// land on the InputGroup wrapper, matching source's own
+	// land on the InputGroup wrapper as its only class, matching source's own
 	// {className, ...props} destructure (## combobox ledger entry).
 	got := render(t, ui.ComboboxInput("", false, false, false, nil, gsx.Attrs{
 		{Key: "id", Value: "combo-input"},
@@ -122,16 +122,22 @@ func TestComboboxInputAttrsSplitClassToWrapperIdToControl(t *testing.T) {
 	if strings.Contains(control, "w-[300px]") {
 		t.Errorf("caller class must not also land on the <input> control\ncontrol: %s", control)
 	}
+	// Input is migrated to the slot axis, so the control itself now also
+	// carries its own resolved recipe `class` attribute — the count check
+	// below is scoped to the wrapper only, which must still carry exactly
+	// the caller's class and nothing merged in from Input.
+	if strings.Count(wrapper, `class=`) != 1 {
+		t.Errorf("caller class must be the only rendered class on the wrapper\nwrapper: %s", wrapper)
+	}
 }
 
-func TestComboboxContentCarriesDiscreteTransitionBlock(t *testing.T) {
-	// The popover family's shared exit-animation mechanism — must be
-	// byte-identical to ui/select.gsx's content, not re-derived.
+func TestComboboxContentCarriesPopoverStateContract(t *testing.T) {
 	got := render(t, ui.ComboboxContent(gsx.Raw("x"), nil))
 	for _, want := range []string{
 		`popover="auto"`,
-		`data-slot="combobox-content"`,
-		"transition-discrete",
+		`data-gsxui-slot-combobox-content`,
+		`data-state="closed"`,
+		`data-side="bottom"`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("want %q\nin: %s", want, got)
@@ -142,8 +148,8 @@ func TestComboboxContentCarriesDiscreteTransitionBlock(t *testing.T) {
 func TestComboboxEmptyIsHiddenUntilListIsEmpty(t *testing.T) {
 	got := render(t, ui.ComboboxEmpty(gsx.Raw("No framework found."), nil))
 	for _, want := range []string{
-		`data-slot="combobox-empty"`,
-		"group-data-empty/combobox-content:flex",
+		`data-gsxui-slot-combobox-empty`,
+		`data-gsxui-combobox-empty`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("want %q\nin: %s", want, got)
@@ -156,8 +162,29 @@ func TestComboboxListHasListboxRole(t *testing.T) {
 	if !strings.Contains(got, `role="listbox"`) {
 		t.Errorf("want role=listbox\nin: %s", got)
 	}
-	if !strings.Contains(got, `data-slot="combobox-list"`) {
-		t.Errorf("want data-slot=combobox-list\nin: %s", got)
+	if !strings.Contains(got, `data-gsxui-slot-combobox-list`) {
+		t.Errorf("want data-gsxui-slot-combobox-list\nin: %s", got)
+	}
+}
+
+func TestComboboxBehaviorPartsHaveDedicatedHooks(t *testing.T) {
+	got := render(t, ui.ComboboxGroup(
+		gsx.Fragment(
+			ui.ComboboxLabel(gsx.Raw("Framework"), nil),
+			ui.ComboboxEmpty(gsx.Raw("Empty"), nil),
+			ui.ComboboxSeparator(nil),
+		),
+		nil,
+	))
+	for _, want := range []string{
+		`data-gsxui-combobox-group`,
+		`data-gsxui-combobox-label`,
+		`data-gsxui-combobox-separator`,
+		`data-gsxui-combobox-empty`,
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("want %q\nin: %s", want, got)
+		}
 	}
 }
 
@@ -166,7 +193,7 @@ func TestComboboxNameEmptyOmitsFormBridge(t *testing.T) {
 	if strings.Contains(got, "data-gsxui-combobox-bridge") {
 		t.Errorf("name=\"\" must not render the hidden form bridge\nin: %s", got)
 	}
-	if !strings.Contains(got, `data-slot="combobox"`) {
-		t.Errorf("want data-slot=combobox\nin: %s", got)
+	if !strings.Contains(got, `data-gsxui-slot-combobox`) {
+		t.Errorf("want data-gsxui-slot-combobox\nin: %s", got)
 	}
 }

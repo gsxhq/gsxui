@@ -16,9 +16,9 @@ import "github.com/gsxhq/gsxui/ui"
 // — the deliberate API departure from shadcn's own index prop, see
 // ui/input-otp.gsx's own ADAPT doc comment.
 component Basic() {
-	<ui.InputOTP maxlength="6">
+	<ui.InputOTP maxlength="6" aria-invalid="true">
 		<ui.InputOTPGroup>
-			<ui.InputOTPSlot/>
+			<ui.InputOTPSlot aria-invalid="true"/>
 			<ui.InputOTPSlot/>
 			<ui.InputOTPSlot/>
 		</ui.InputOTPGroup>

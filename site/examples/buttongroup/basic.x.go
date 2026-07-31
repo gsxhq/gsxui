@@ -18,7 +18,7 @@ import (
 // divider), a secondary pair split by a ButtonGroupSeparator (shadcn's own
 // button-group-separator demo shape: the separator exists for borderLESS
 // variants), a quantity stepper showing ButtonGroupText between two icon
-// buttons, and a vertical orientation group.
+// buttons, and a vertical secondary pair split by a horizontal separator.
 
 //line basic.gsx:18:1
 func Basic() _gsxrt.Node {
@@ -91,16 +91,18 @@ func Basic() _gsxrt.Node {
 		_gsxgw.Node(ctx, ui.ButtonGroup("vertical", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:39:4
-			_gsxgw.Node(ctx, ui.Button("outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.Button("secondary", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:40:5
 				_gsxgw.Node(ctx, icon.Plus())
 				return _gsxgw.Err()
 			}), nil))
 //line basic.gsx:42:4
-			_gsxgw.Node(ctx, ui.Button("outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.ButtonGroupSeparator("horizontal", nil))
+//line basic.gsx:43:4
+			_gsxgw.Node(ctx, ui.Button("secondary", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:43:5
+//line basic.gsx:44:5
 				_gsxgw.Node(ctx, icon.Minus())
 				return _gsxgw.Err()
 			}), nil))

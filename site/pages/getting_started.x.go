@@ -18,67 +18,95 @@ import (
 //line getting_started.gsx:5:1
 type GettingStarted struct{}
 
-//line getting_started.gsx:11:1
+var gettingStartedTOCItems = []docTOCItem{
+	{ID: "install-cli", Title: "1. Install the CLIs", Depth: 2},
+	{ID: "initialize-project", Title: "2. Initialize your project", Depth: 2},
+	{ID: "manual-integration", Title: "Manual integration", Depth: 3},
+	{ID: "add-components", Title: "3. Add components", Depth: 2},
+	{ID: "first-page", Title: "4. Your first page", Depth: 2},
+}
+
+//line getting_started.gsx:19:1
 func (g GettingStarted) Page() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line getting_started.gsx:12:2
-		_gsxgw.NodeResult(_gsxrenderLayout(ctx, _gsxgw, "Getting Started", "getting-started", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line getting_started.gsx:20:2
+		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, "Getting Started", "getting-started", layoutDocs, gettingStartedTOCItems, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line getting_started.gsx:13:3
+//line getting_started.gsx:21:3
 			_gsxgw.S("<div data-doc=\"getting-started\" class=\"flex max-w-3xl flex-col gap-10 py-10\">")
-//line getting_started.gsx:14:4
+//line getting_started.gsx:22:4
 			_gsxgw.S("<div class=\"flex flex-col gap-4\">")
-//line getting_started.gsx:15:5
-			_gsxgw.S("<h1 class=\"text-3xl font-semibold tracking-tight\">Getting Started</h1>")
-//line getting_started.gsx:16:5
-			_gsxgw.S("<p class=\"text-muted-foreground\">gsxui components are copy-in: the CLI vendors real ")
-//line getting_started.gsx:17:57
-			_gsxgw.S("<code>.gsx</code> source into your own module, so what you build against is code you own and can edit — not a package you import and can't touch.</p></div>")
-//line getting_started.gsx:21:4
-			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line getting_started.gsx:22:5
-			_gsxgw.S("<h2>1. Install the CLI</h2>")
 //line getting_started.gsx:23:5
+			_gsxgw.S("<h1 class=\"text-3xl font-semibold tracking-tight\">Getting Started</h1>")
+//line getting_started.gsx:24:5
+			_gsxgw.S("<p class=\"text-muted-foreground\">gsxui components are copy-in: the CLI vendors real ")
+//line getting_started.gsx:25:57
+			_gsxgw.S("<code>.gsx</code> source into your own module, so what you build against is code you own and can edit — not a package you import and can't touch.</p></div>")
+//line getting_started.gsx:29:4
+			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
+//line getting_started.gsx:30:5
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, gettingStartedTOCItems[0], nil))
+//line getting_started.gsx:31:5
 			_gsxgw.S("<pre>")
-//line getting_started.gsx:23:10
+//line getting_started.gsx:31:10
 			_gsxgw.S("<code>")
-//line getting_started.gsx:23:16
+//line getting_started.gsx:31:16
 			_gsxgw.Node(ctx, hl.Node("snippets/install.sh"))
 			_gsxgw.S("</code></pre></section>")
-//line getting_started.gsx:25:4
+//line getting_started.gsx:33:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line getting_started.gsx:26:5
-			_gsxgw.S("<h2>2. Initialize your project</h2>")
-//line getting_started.gsx:27:5
-			_gsxgw.S("<p>In your project (a Go module):</p>")
-//line getting_started.gsx:28:5
+//line getting_started.gsx:34:5
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, gettingStartedTOCItems[1], nil))
+//line getting_started.gsx:35:5
+			_gsxgw.S("<p>Create a fresh GSX app, then initialize gsxui inside it:</p>")
+//line getting_started.gsx:36:5
 			_gsxgw.S("<pre>")
-//line getting_started.gsx:28:10
+//line getting_started.gsx:36:10
 			_gsxgw.S("<code>")
-//line getting_started.gsx:28:16
+//line getting_started.gsx:36:16
 			_gsxgw.Node(ctx, hl.Node("snippets/init.sh"))
 			_gsxgw.S("</code></pre>")
-//line getting_started.gsx:29:5
+//line getting_started.gsx:37:5
 			_gsxgw.S("<pre>")
-//line getting_started.gsx:29:10
+//line getting_started.gsx:37:10
 			_gsxgw.S("<code>")
-//line getting_started.gsx:29:16
+//line getting_started.gsx:37:16
 			_gsxgw.Node(ctx, hl.Node("snippets/init.output"))
 			_gsxgw.S("</code></pre>")
-//line getting_started.gsx:30:5
-			_gsxgw.S("<p>This vendors the theme tokens (")
-//line getting_started.gsx:31:37
-			_gsxgw.S("<code>web/gsxui.css</code>), the JS runtime and behavior barrel (")
-//line getting_started.gsx:32:6
-			_gsxgw.S("<code>web/gsxui/</code>), and the class merger (")
-//line getting_started.gsx:32:54
+//line getting_started.gsx:38:5
+			_gsxgw.S("<p>For the unmodified npm/Vite scaffold produced by ")
+//line getting_started.gsx:39:55
+			_gsxgw.S("<code>gsx init --yes</code>, this is the complete setup.")
+//line getting_started.gsx:40:6
+			_gsxgw.S("<code>gsxui init</code> installs Tailwind CSS, its Vite plugin, and ")
+//line getting_started.gsx:40:74
+			_gsxgw.S("<code>tw-animate-css</code>; registers")
+//line getting_started.gsx:41:6
+			_gsxgw.S("<code>tailwindcss()</code> in ")
+//line getting_started.gsx:41:36
+			_gsxgw.S("<code>vite.config.ts</code>; and imports the gsxui CSS and behavior entries from ")
+//line getting_started.gsx:42:11
+			_gsxgw.S("<code>web/main.js</code>.</p>")
+//line getting_started.gsx:44:5
+			_gsxgw.S("<p>This vendors the CSS entry (")
+//line getting_started.gsx:45:34
+			_gsxgw.S("<code>web/gsxui/index.css</code>) plus its sibling")
+//line getting_started.gsx:46:6
+			_gsxgw.S("<code>foundation.css</code>, ")
+//line getting_started.gsx:46:35
+			_gsxgw.S("<code>theme.css</code>, and ")
+//line getting_started.gsx:46:63
+			_gsxgw.S("<code>style.css</code>; the JS runtime and behavior barrel (")
+//line getting_started.gsx:48:6
+			_gsxgw.S("<code>web/gsxui/</code>); and the class merger (")
+//line getting_started.gsx:48:54
 			_gsxgw.S("<code>ui/merge/merge.go</code>), then points ")
-//line getting_started.gsx:33:13
+//line getting_started.gsx:49:13
 			_gsxgw.S("<code>gsx.toml</code>'s ")
-//line getting_started.gsx:33:37
+//line getting_started.gsx:49:37
 			_gsxgw.S("<code>class_merger</code> at it — the seam that makes caller-class-merge work (see ")
-//line getting_started.gsx:34:11
+//line getting_started.gsx:50:11
 			_gsxgw.S("<a")
 			_gsxv0, _gsxerr := _gsxf0.URLFor(ctx, (Theming{}))
 			if _gsxerr != nil {
@@ -87,134 +115,135 @@ func (g GettingStarted) Page() _gsxrt.Node {
 			_gsxgw.S(" href=\"")
 			_gsxgw.URL(string(_gsxv0))
 			_gsxgw.S("\">Theming</a>). It also ")
-//line getting_started.gsx:35:11
+//line getting_started.gsx:51:11
 			_gsxgw.S("<code>go get</code> ")
-//line getting_started.gsx:35:31
+//line getting_started.gsx:51:31
 			_gsxgw.S("<code>gsx</code> and ")
-//line getting_started.gsx:35:52
+//line getting_started.gsx:51:52
 			_gsxgw.S("<code>tailwind-merge-go</code>, and installs the ")
-//line getting_started.gsx:36:10
+//line getting_started.gsx:52:10
 			_gsxgw.S("<code>gsx</code> tool via ")
-//line getting_started.gsx:36:36
+//line getting_started.gsx:52:36
 			_gsxgw.S("<code>go get -tool</code>.</p>")
-//line getting_started.gsx:38:5
-			_gsxgw.S("<p>")
-//line getting_started.gsx:39:6
-			_gsxgw.S("<code>web/gsxui.css</code> begins with ")
-//line getting_started.gsx:40:11
-			_gsxgw.S("<code>@import \"tailwindcss\"</code> and ")
-//line getting_started.gsx:40:50
-			_gsxgw.S("<code>@import \"tw-animate-css\"</code> — your Tailwind build resolves both from npm, so make sure they're installed: ")
-//line getting_started.gsx:42:17
-			_gsxgw.S("<code>npm install tailwindcss @tailwindcss/vite tw-animate-css</code>. Without ")
-//line getting_started.gsx:43:14
-			_gsxgw.S("<code>tw-animate-css</code> every ")
-//line getting_started.gsx:43:48
-			_gsxgw.S("<code>animate-in</code>/")
-//line getting_started.gsx:43:72
-			_gsxgw.S("<code>animate-out</code> class the components carry (dialog, dropdown, tooltip) is silently inert.</p></section>")
-//line getting_started.gsx:47:4
-			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line getting_started.gsx:48:5
-			_gsxgw.S("<h2>3. Add components</h2>")
-//line getting_started.gsx:49:5
+//line getting_started.gsx:54:5
+			_gsxgw.S("<p>Rerunning ")
+//line getting_started.gsx:55:16
+			_gsxgw.S("<code>gsxui init</code> is safe: npm verifies the locked dependencies and the exact scaffold integration is not duplicated.</p>")
+//line getting_started.gsx:58:5
+			_gsxgw.S("<div class=\"mt-4 flex flex-col gap-3\">")
+//line getting_started.gsx:59:6
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, gettingStartedTOCItems[2], nil))
+//line getting_started.gsx:60:6
+			_gsxgw.S("<p>If you changed the Vite config, entry file, package manager, or gsxui JS/CSS paths, automatic rewriting stops before running commands or writing files. Keep your custom structure and apply the printed responsibilities yourself:</p>")
+//line getting_started.gsx:65:6
 			_gsxgw.S("<pre>")
-//line getting_started.gsx:49:10
+//line getting_started.gsx:65:11
 			_gsxgw.S("<code>")
-//line getting_started.gsx:49:16
+//line getting_started.gsx:65:17
+			_gsxgw.Node(ctx, hl.Node("snippets/manual-integration"))
+			_gsxgw.S("</code></pre></div></section>")
+//line getting_started.gsx:68:4
+			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
+//line getting_started.gsx:69:5
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, gettingStartedTOCItems[3], nil))
+//line getting_started.gsx:70:5
+			_gsxgw.S("<pre>")
+//line getting_started.gsx:70:10
+			_gsxgw.S("<code>")
+//line getting_started.gsx:70:16
 			_gsxgw.Node(ctx, hl.Node("snippets/add.sh"))
 			_gsxgw.S("</code></pre>")
-//line getting_started.gsx:50:5
+//line getting_started.gsx:71:5
 			_gsxgw.S("<pre>")
-//line getting_started.gsx:50:10
+//line getting_started.gsx:71:10
 			_gsxgw.S("<code>")
-//line getting_started.gsx:50:16
+//line getting_started.gsx:71:16
 			_gsxgw.Node(ctx, hl.Node("snippets/add.output"))
 			_gsxgw.S("</code></pre>")
-//line getting_started.gsx:51:5
+//line getting_started.gsx:72:5
 			_gsxgw.S("<p>")
-//line getting_started.gsx:52:6
+//line getting_started.gsx:73:6
 			_gsxgw.S("<code>card</code> has no dependencies of its own, but a component that does (e.g. ")
-//line getting_started.gsx:52:88
+//line getting_started.gsx:73:88
 			_gsxgw.S("<code>native-select</code>, which needs ")
-//line getting_started.gsx:53:18
+//line getting_started.gsx:74:18
 			_gsxgw.S("<code>icon</code>) pulls its dependency in automatically — ")
-//line getting_started.gsx:54:10
+//line getting_started.gsx:75:10
 			_gsxgw.S("<code>gsxui add native-select</code> vendors ")
-//line getting_started.gsx:54:55
+//line getting_started.gsx:75:55
 			_gsxgw.S("<code>icon</code> too. You own every file this writes: ")
-//line getting_started.gsx:55:14
+//line getting_started.gsx:76:14
 			_gsxgw.S("<code>gsxui add</code> never touches one you've already modified unless you pass ")
-//line getting_started.gsx:56:11
+//line getting_started.gsx:77:11
 			_gsxgw.S("<code>--overwrite</code>. After upgrading the ")
-//line getting_started.gsx:56:57
+//line getting_started.gsx:77:57
 			_gsxgw.S("<code>gsxui</code> binary, re-run ")
-//line getting_started.gsx:57:13
+//line getting_started.gsx:78:13
 			_gsxgw.S("<code>gsxui add &lt;name&gt; --overwrite</code> to refresh vendored components — that discards local edits to those files.</p></section>")
-//line getting_started.gsx:61:4
+//line getting_started.gsx:82:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line getting_started.gsx:62:5
-			_gsxgw.S("<h2>4. Your first page</h2>")
-//line getting_started.gsx:63:5
+//line getting_started.gsx:83:5
+			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, gettingStartedTOCItems[4], nil))
+//line getting_started.gsx:84:5
 			_gsxgw.S("<p>A tiny two-file app: ")
-//line getting_started.gsx:64:27
+//line getting_started.gsx:85:27
 			_gsxgw.S("<code>home.gsx</code> renders a ")
-//line getting_started.gsx:64:59
+//line getting_started.gsx:85:59
 			_gsxgw.S("<code>Card</code> around a ")
-//line getting_started.gsx:64:86
+//line getting_started.gsx:85:86
 			_gsxgw.S("<code>Button</code>, and ")
-//line getting_started.gsx:65:10
+//line getting_started.gsx:86:10
 			_gsxgw.S("<code>main.go</code> serves it.</p>")
-//line getting_started.gsx:67:5
+//line getting_started.gsx:88:5
 			_gsxgw.S("<pre>")
-//line getting_started.gsx:67:10
+//line getting_started.gsx:88:10
 			_gsxgw.S("<code>")
-//line getting_started.gsx:67:16
+//line getting_started.gsx:88:16
 			_gsxgw.Node(ctx, hl.Node("snippets/first-page.gsx"))
 			_gsxgw.S("</code></pre>")
-//line getting_started.gsx:68:5
+//line getting_started.gsx:89:5
 			_gsxgw.S("<pre>")
-//line getting_started.gsx:68:10
+//line getting_started.gsx:89:10
 			_gsxgw.S("<code>")
-//line getting_started.gsx:68:16
+//line getting_started.gsx:89:16
 			_gsxgw.Node(ctx, hl.Node("snippets/first-main.go"))
 			_gsxgw.S("</code></pre>")
-//line getting_started.gsx:69:5
+//line getting_started.gsx:90:5
 			_gsxgw.S("<p>Compile the ")
-//line getting_started.gsx:70:18
+//line getting_started.gsx:91:18
 			_gsxgw.S("<code>.gsx</code> file to plain Go, then run it:</p>")
-//line getting_started.gsx:72:5
+//line getting_started.gsx:93:5
 			_gsxgw.S("<pre>")
-//line getting_started.gsx:72:10
+//line getting_started.gsx:93:10
 			_gsxgw.S("<code>")
-//line getting_started.gsx:72:16
+//line getting_started.gsx:93:16
 			_gsxgw.Node(ctx, hl.Node("snippets/generate.sh"))
 			_gsxgw.S("</code></pre>")
-//line getting_started.gsx:73:5
+//line getting_started.gsx:94:5
 			_gsxgw.S("<p>(silent on success — it writes ")
-//line getting_started.gsx:74:39
+//line getting_started.gsx:95:39
 			_gsxgw.S("<code>home.x.go</code> next to ")
-//line getting_started.gsx:74:70
+//line getting_started.gsx:95:70
 			_gsxgw.S("<code>home.gsx</code> and exits 0)</p>")
-//line getting_started.gsx:76:5
+//line getting_started.gsx:97:5
 			_gsxgw.S("<pre>")
-//line getting_started.gsx:76:10
+//line getting_started.gsx:97:10
 			_gsxgw.S("<code>")
-//line getting_started.gsx:76:16
+//line getting_started.gsx:97:16
 			_gsxgw.Node(ctx, hl.Node("snippets/run.sh"))
 			_gsxgw.S("</code></pre>")
-//line getting_started.gsx:77:5
+//line getting_started.gsx:98:5
 			_gsxgw.S("<pre>")
-//line getting_started.gsx:77:10
+//line getting_started.gsx:98:10
 			_gsxgw.S("<code>")
-//line getting_started.gsx:77:16
+//line getting_started.gsx:98:16
 			_gsxgw.Node(ctx, hl.Node("snippets/run.output"))
 			_gsxgw.S("</code></pre>")
-//line getting_started.gsx:78:5
+//line getting_started.gsx:99:5
 			_gsxgw.S("<p>Open ")
-//line getting_started.gsx:79:11
+//line getting_started.gsx:100:11
 			_gsxgw.S("<code>http://localhost:8080</code> — a styled Card with a Button inside, rendered with gsxui's default light theme. Next: ")
-//line getting_started.gsx:80:25
+//line getting_started.gsx:101:25
 			_gsxgw.S("<a")
 			_gsxv1, _gsxerr := _gsxf0.URLFor(ctx, (Theming{}))
 			if _gsxerr != nil {

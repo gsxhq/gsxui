@@ -1,7 +1,19 @@
-.PHONY: generate test test-js check icons site-dev site highlight
+.PHONY: generate generate-styles verify-generated verify-generated-styles test test-js test-theme-state test-css-audit audit check ci icons site-dev site highlight sweep-baseline sweep-compare
 
-generate:
+audit-source-dirs := ui registry/canonical site/examples site/pages web $(wildcard dev)
+audit-css-source-dirs := assets/css site web $(wildcard dev)
+
+generate: generate-styles
 	go tool gsx generate
+
+generate-styles:
+	go run ./cmd/stylegen
+
+verify-generated:
+	go run ./internal/generatedcheck/cmd
+
+verify-generated-styles:
+	go run ./cmd/stylegen --check
 
 # highlight regenerates site/hl/blocks.gen.go — every component example and
 # doc snippet pre-rendered to highlighted HTML. Run it after adding, renaming
@@ -39,11 +51,62 @@ test: generate
 test-js:
 	npx playwright test --config jstest/playwright.config.ts
 
-check: test test-js
-	@git diff --exit-code -- '*.x.go' || { echo "error: generated .x.go drifted — commit regenerated output"; exit 1; }
-	@test -z "$$(git status --porcelain -- '*.x.go' | grep '^??')" || { echo "error: untracked .x.go files"; exit 1; }
+test-css-audit:
+	node --test jstest/support/compiled-css-audit.test.ts
+
+# sweep-baseline / sweep-compare: the computed-style sweep harness. It
+# records the resting computed style of every data-gsxui-slot-* element
+# across every fixture (both colour schemes) and diffs two such runs — the
+# only thing that reliably catches CSS-layer precedence regressions, which
+# change rendering without failing any assertion. Take a baseline before a
+# component migration, then compare after.
+sweep-baseline:
+	SWEEP_OUT=jstest/.tmp/sweep-baseline npx playwright test --config jstest/playwright.config.ts jstest/specs/layer-precedence.spec.ts
+
+sweep-compare:
+	SWEEP_OUT=jstest/.tmp/sweep-current npx playwright test --config jstest/playwright.config.ts jstest/specs/layer-precedence.spec.ts
+	node jstest/support/sweep-diff.mjs jstest/.tmp/sweep-baseline jstest/.tmp/sweep-current
+
+test-theme-state:
+	node --test web/theme-state.test.js
+
+audit:
+	@! rg -n '^[[:space:]]*<[^>]*data-slot=|^[[:space:]]+data-slot=' $(audit-source-dirs) -g '!*.x.go' -g '!*.gen.go'
+	@! rg -n 'data-slot|className[[:space:]]*=|[.]classList|setAttribute[(][^)]*class|[.]className[[:space:]]*=' ui $(wildcard dev) -g '*.js'
+	@! rg -n -P '\bwithSlot[[:space:]]*\(|\bslotattr[[:space:]]*\.[[:space:]]*With[[:space:]]*\(' ui $(wildcard dev) -g '*.gsx'
+	@! rg -n -U -P '(?s)<[^>]*\bdata-gsxui-slot(?=[[:space:]]*(?:=|/?>))' $(audit-source-dirs) -g '*.gsx' -g '!*.x.go' -g '!*.gen.go'
+	@! rg -n -P '(?:\bKey[[:space:]]*:[[:space:]]*|[.]SetAttribute\([[:space:]]*|\bsetAttribute\([[:space:]]*)["\x27\x60]data-gsxui-slot["\x27\x60]' $(audit-source-dirs) -g '*.go' -g '*.js' -g '!*.x.go' -g '!*.gen.go' -g '!*_test.go'
+	@! rg -n -P '\[[[:space:]]*data-gsxui-slot(?=[[:space:]]*(?:[~|^$*]?=|\]))' $(audit-css-source-dirs) -g '*.css'
+	@! rg -n -P '[\w./:\[\]&>-]+!' ui -g '*.gsx'
+	@! rg -n 'gsxui-recipe-' ui -g '*.gsx'
+	@! rg -n 'gsxui-recipe-' registry/canonical -g '*.gsx'
+	@# Recursive over assets/css/styles/ on purpose: the default style is one
+	@# file per component under styles/default/, so naming styles/default.css
+	@# alone would leave this gate scanning an aggregator of @import lines and
+	@# checking no component's rules at all.
+	@! rg -n '!important' assets/css/foundation.css assets/css/styles -g '*.css'
+	go run ./cmd/stylegen --check-layers
+	go run ./cmd/stylegen --check-authoring
+
+check: audit test-css-audit test-theme-state verify-generated-styles
+	@$(MAKE) --no-print-directory verify-generated
+	go vet ./...
+	go test ./...
+	npx playwright test --config jstest/playwright.config.ts
 	@test -f site/dist/.gitkeep || { echo "error: site/dist/.gitkeep missing (vite build deletes it — restore before commit)"; exit 1; }
-	@for f in $$(find ui jstest -name '*.js'); do node --check $$f || exit 1; done
+	@for f in $$(find ui jstest web -name '*.js'); do node --check $$f || exit 1; done
+	gofmt -l . | (! grep .)
+
+# ci is the authoritative uncached gate. It mirrors check without reusing
+# Go's test-result cache and keeps the browser, generation, syntax,
+# structural, and formatting checks in the same run.
+ci: audit test-css-audit test-theme-state verify-generated-styles
+	@$(MAKE) --no-print-directory verify-generated
+	go vet ./...
+	go test -count=1 ./...
+	npx playwright test --config jstest/playwright.config.ts
+	@test -f site/dist/.gitkeep || { echo "error: site/dist/.gitkeep missing (vite build deletes it — restore before commit)"; exit 1; }
+	@for f in $$(find ui jstest web -name '*.js'); do node --check $$f || exit 1; done
 	gofmt -l . | (! grep .)
 
 # site-dev runs the two-command dev loop: `npm install` once, then this.

@@ -1,0 +1,63 @@
+@layer components {
+  /* DropdownMenu, ContextMenu and Menubar migrated to the slot axis
+     (registry/styles/{nova,maia}/{dropdown-menu,context-menu,menubar}.css)
+     EXCEPT these two rule groups, which must stay here as plain CSS. Their
+     caller-overridability depends on the CSS LAYER boundary — these rules
+     live in @layer components, a caller's plain utility class lives in
+     @layer utilities, and @layer utilities always wins regardless of
+     specificity. That guarantee only exists pre-resolution: if either
+     rule migrated onto its slot's recipe, it would resolve to a literal
+     `[data-inset]:pl-8` / `[data-disabled]:opacity-50` utility class
+     Tailwind scans directly out of the generated ui/*.gsx — no longer
+     inside an explicit @layer components boundary at consumption time — and
+     it would then compete on ordinary specificity instead, at (0,2,0),
+     permanently beating a caller's plain `pl-*`/`opacity-*` utility
+     regardless of source order. See
+     docs/superpowers/specs/2026-07-29-slot-axis-and-component-migration-design.md
+     section 10b, and assets/css/styles/default/{card,label,pagination}.css
+     for the identical prior fix on other components.
+
+     Both data-inset and data-disabled are stamped by the CALLER through
+     attrs on these components (ContextMenuItem/DropdownMenuItem/
+     MenubarItem/*Label/*SubTrigger's own doc comments say so explicitly),
+     not by the component itself — the same shape as Card's `.border-b` and
+     Label's disabled-state rules, not a component-owned runtime toggle.
+
+     `pointer-events-none` for the [data-disabled] state IS migrated (baked
+     directly onto item/checkbox-item/radio-item's own recipe class in all
+     three components): no caller should be able to re-enable pointer
+     interaction on a menu row the caller themselves marked disabled — only
+     the purely presentational opacity needed to stay caller-overridable.
+     Note [data-disabled] never had a rule for *-sub-trigger to begin with
+     (the selector list below is exhaustive, not abbreviated) — sub-trigger's
+     own contract axis exists but pointer-events/opacity for a disabled
+     sub-trigger were never wired to CSS pre-migration either; that gap is
+     unchanged carried-over behavior, not something this migration
+     introduced or is responsible for fixing. */
+  :where(
+      [data-gsxui-slot-dropdown-menu-item],
+      [data-gsxui-slot-context-menu-item],
+      [data-gsxui-slot-menubar-item],
+      [data-gsxui-slot-dropdown-menu-label],
+      [data-gsxui-slot-context-menu-label],
+      [data-gsxui-slot-menubar-label],
+      [data-gsxui-slot-dropdown-menu-sub-trigger],
+      [data-gsxui-slot-context-menu-sub-trigger],
+      [data-gsxui-slot-menubar-sub-trigger]
+    )[data-inset] {
+    @apply pl-8;
+  }
+  :where(
+      [data-gsxui-slot-dropdown-menu-item],
+      [data-gsxui-slot-context-menu-item],
+      [data-gsxui-slot-menubar-item],
+      [data-gsxui-slot-dropdown-menu-checkbox-item],
+      [data-gsxui-slot-dropdown-menu-radio-item],
+      [data-gsxui-slot-context-menu-checkbox-item],
+      [data-gsxui-slot-context-menu-radio-item],
+      [data-gsxui-slot-menubar-checkbox-item],
+      [data-gsxui-slot-menubar-radio-item]
+    )[data-disabled] {
+    @apply opacity-50;
+  }
+}

@@ -10,7 +10,15 @@ import (
 // the newly picked value.
 component Radios() {
 	<ui.DropdownMenu>
-		<ui.Button variant="outline" data-gsxui-dropdown-trigger>Panel Position</ui.Button>
+		<ui.Button
+			variant="outline"
+			data-gsxui-dropdown-trigger
+			data-gsxui-slot-dropdown-menu-trigger
+			aria-haspopup="menu"
+			aria-expanded="false"
+		>
+			Panel Position
+		</ui.Button>
 		<ui.DropdownMenuContent>
 			<ui.DropdownMenuLabel>Panel Position</ui.DropdownMenuLabel>
 			<ui.DropdownMenuSeparator/>

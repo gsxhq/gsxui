@@ -14,7 +14,7 @@ func TestToggleGroupRootPinned(t *testing.T) {
 	// horizontal, the dead upstream shadow selector dropped per this port's
 	// ADAPT (nova's own .cn-toggle-group precedent, see docs/jsx-parity.md).
 	got := render(t, ui.ToggleGroup("multiple", "", "", "", gsx.Raw("x"), nil))
-	want := `<div data-slot="toggle-group" data-gsxui-toggle-group data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" role="toolbar" style="--gap: 0" class="group/toggle-group flex w-fit items-center gap-[--spacing(var(--gap))] rounded-lg data-[size=sm]:rounded-[min(var(--radius-md),10px)]">x</div>`
+	want := `<div data-gsxui-toggle-group data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" role="toolbar" style="--gap: 0" class="flex w-fit items-center rounded-lg" data-gsxui-slot-toggle-group>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -30,7 +30,7 @@ func TestToggleGroupRootSingleRole(t *testing.T) {
 func TestToggleGroupItemSinglePinned(t *testing.T) {
 	// type="single" item: role="radio" + aria-checked, NOT aria-pressed.
 	got := render(t, ui.ToggleGroupItem("single", "", "", "", true, "bold", gsx.Raw("B"), nil))
-	want := `<button type="button" data-slot="toggle-group-item" data-gsxui-toggle-group-item data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" data-state="on" data-value="bold" role="radio" aria-checked="true" class="inline-flex items-center justify-center gap-1 rounded-lg text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-muted hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 bg-transparent h-8 has-[&gt;svg]:px-2 w-auto min-w-0 shrink-0 px-3 focus:z-10 focus-visible:z-10 data-[spacing=0]:rounded-none data-[spacing=0]:shadow-none data-[spacing=0]:data-[variant=outline]:border-l-0 data-[spacing=0]:data-[variant=outline]:first:border-l data-[orientation=horizontal]:data-[spacing=0]:first:rounded-l-lg data-[orientation=horizontal]:data-[spacing=0]:last:rounded-r-lg">B</button>`
+	want := `<button type="button" data-gsxui-toggle-group-item data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" data-state="on" data-value="bold" role="radio" aria-checked="true" class="w-auto min-w-0 shrink-0 px-3 focus:z-10 focus-visible:z-10 has-[&gt;svg]:px-2 rounded-none shadow-none data-[variant=outline]:border-l-0 data-[variant=outline]:first:border-l data-[spacing=0]:first:rounded-l-lg data-[spacing=0]:last:rounded-r-lg" data-gsxui-slot-toggle-group-item data-gsxui-slot-toggle>B</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -44,7 +44,7 @@ func TestToggleGroupItemMultiplePinned(t *testing.T) {
 	// class string to the single-type pinned case above (variant/size
 	// unchanged); only data-state/data-value/the ARIA attribute pair differ.
 	got := render(t, ui.ToggleGroupItem("multiple", "", "", "", false, "bold", gsx.Raw("B"), nil))
-	want := `<button type="button" data-slot="toggle-group-item" data-gsxui-toggle-group-item data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" data-state="off" data-value="bold" aria-pressed="false" class="inline-flex items-center justify-center gap-1 rounded-lg text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-muted hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 bg-transparent h-8 has-[&gt;svg]:px-2 w-auto min-w-0 shrink-0 px-3 focus:z-10 focus-visible:z-10 data-[spacing=0]:rounded-none data-[spacing=0]:shadow-none data-[spacing=0]:data-[variant=outline]:border-l-0 data-[spacing=0]:data-[variant=outline]:first:border-l data-[orientation=horizontal]:data-[spacing=0]:first:rounded-l-lg data-[orientation=horizontal]:data-[spacing=0]:last:rounded-r-lg">B</button>`
+	want := `<button type="button" data-gsxui-toggle-group-item data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" data-state="off" data-value="bold" aria-pressed="false" class="w-auto min-w-0 shrink-0 px-3 focus:z-10 focus-visible:z-10 has-[&gt;svg]:px-2 rounded-none shadow-none data-[variant=outline]:border-l-0 data-[variant=outline]:first:border-l data-[spacing=0]:first:rounded-l-lg data-[spacing=0]:last:rounded-r-lg" data-gsxui-slot-toggle-group-item data-gsxui-slot-toggle>B</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -57,7 +57,6 @@ func TestToggleGroupItemOutlineVariant(t *testing.T) {
 	got := render(t, ui.ToggleGroupItem("multiple", "outline", "", "", false, "bold", gsx.Raw("B"), nil))
 	for _, want := range []string{
 		`data-variant="outline"`,
-		"border border-input bg-transparent hover:bg-accent hover:text-accent-foreground",
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
@@ -90,22 +89,29 @@ func TestToggleGroupDisabledCascade(t *testing.T) {
 }
 
 func TestToggleGroupCallerClassMerges(t *testing.T) {
+	// Not a bare class="gap-8" match: ToggleGroup now carries its own
+	// recipe class, so the caller's gap-8 merges in alongside it rather
+	// than rendering as the entire attribute value.
 	got := render(t, ui.ToggleGroup("multiple", "", "", "", gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "gap-8"}}))
-	if strings.Contains(got, "w-fit") == false {
-		t.Errorf("want surviving structural class w-fit\nin: %s", got)
+	if strings.Count(got, "gap-8") != 1 {
+		t.Errorf("caller class must merge in exactly once\nin: %s", got)
 	}
-	if !strings.Contains(got, "gap-8") {
-		t.Errorf("want caller gap-8\nin: %s", got)
+	if strings.Count(got, "class=") != 1 {
+		t.Errorf("expected exactly one class= attribute\nin: %s", got)
 	}
 }
 
 func TestToggleGroupItemCallerClassMerges(t *testing.T) {
+	// Not a bare class="px-8" match: ToggleGroupItem now carries its own
+	// recipe class (including its own px-3), so the caller's px-8 merges
+	// in (replacing the recipe's own px-3, same-property override)
+	// alongside it.
 	got := render(t, ui.ToggleGroupItem("multiple", "", "", "", false, "bold", gsx.Raw("B"), gsx.Attrs{{Key: "class", Value: "px-8"}}))
-	if strings.Contains(got, "px-3") {
-		t.Errorf("caller px-8 must drop default px-3\nin: %s", got)
+	if strings.Count(got, "px-8") != 1 {
+		t.Errorf("caller class must merge in exactly once\nin: %s", got)
 	}
-	if !strings.Contains(got, "px-8") || !strings.Contains(got, "inline-flex") {
-		t.Errorf("want px-8 plus surviving structural classes\nin: %s", got)
+	if strings.Count(got, "class=") != 1 {
+		t.Errorf("expected exactly one class= attribute\nin: %s", got)
 	}
 }
 

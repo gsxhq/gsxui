@@ -225,9 +225,9 @@ function selection(root) {
   };
 }
 
-// toggleAttr sets a bare (presence-only) attribute, matching gsx.Toggle's own
-// "bare name when true, absent when false" semantics for data-outside/
-// data-today/data-disabled.
+// toggleAttr sets a bare (presence-only) attribute, matching the server's
+// data-outside/data-today/data-disabled rendering: a bool on a data-* name
+// always renders as presence — bare when true, absent when false.
 function toggleAttr(el, name, present) {
   if (present) el.setAttribute(name, "");
   else el.removeAttribute(name);

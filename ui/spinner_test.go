@@ -14,7 +14,7 @@ func TestSpinnerDefault(t *testing.T) {
 		"<svg",
 		`role="status"`,
 		`aria-label="Loading"`,
-		"size-4 animate-spin",
+		`data-gsxui-slot-spinner data-gsxui-slot-icon`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
@@ -35,16 +35,10 @@ func TestSpinnerNotAriaHidden(t *testing.T) {
 	}
 }
 
-func TestSpinnerCallerClassMerges(t *testing.T) {
+func TestSpinnerCallerClassIsForwardedOnce(t *testing.T) {
 	got := render(t, ui.Spinner(gsx.Attrs{{Key: "class", Value: "size-6"}}))
-	if strings.Contains(got, "size-4") {
-		t.Errorf("base size-4 should be dropped by caller size-6\nin: %s", got)
-	}
-	if !strings.Contains(got, "animate-spin") {
-		t.Errorf("animate-spin should survive the merge\nin: %s", got)
-	}
-	if !strings.Contains(got, "size-6") {
-		t.Errorf("missing caller class size-6\nin: %s", got)
+	if strings.Count(got, `class="`) != 1 || !strings.Contains(got, "size-6") || !strings.Contains(got, "animate-spin") {
+		t.Errorf("caller class must merge into the single class attribute and render once\nin: %s", got)
 	}
 }
 
@@ -74,7 +68,7 @@ func TestSpinnerPinned(t *testing.T) {
 	// Exact full-render pin. Verified against shadcn's Spinner
 	// (registry/new-york-v4/ui/spinner.tsx: Loader2Icon role="status"
 	// aria-label="Loading" class="size-4 animate-spin") rendered through
-	// ui/icon's svgIcon wrapper (data-slot/viewBox/stroke defaults), with
+	// ui/icon's svgIcon wrapper (data-gsxui-slot/viewBox/stroke defaults), with
 	// aria-hidden explicitly overridden to "false" — see spinner.gsx.
 	// aria-hidden overrides svgIcon's default "true" via the spread bag
 	// rather than in svgIcon's own literal position — per gsx's documented
@@ -84,7 +78,7 @@ func TestSpinnerPinned(t *testing.T) {
 	// aria-label — the other attrs threaded through the same bag), not
 	// where svgIcon's own aria-hidden="true" default was authored.
 	got := render(t, ui.Spinner(nil))
-	want := `<svg data-slot="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4 animate-spin" role="status" aria-label="Loading" aria-hidden="false"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>`
+	want := `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4 animate-spin" role="status" aria-label="Loading" aria-hidden="false" data-gsxui-slot-spinner data-gsxui-slot-icon><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

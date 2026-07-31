@@ -1,0 +1,13 @@
+/* Source: gsxui@05bfe97, assets/css/styles/default.css, Progress block (two
+   rules: track and indicator). No relational forms, no dimensions. Nova and
+   Maia have not diverged on Progress, so this file is byte-identical to
+   registry/styles/nova/progress.css. */
+@layer components {
+  .gsxui-recipe-progress {
+    @apply relative h-1 w-full overflow-hidden rounded-full bg-primary/20;
+  }
+
+  .gsxui-recipe-progress-indicator {
+    @apply h-full w-full flex-1 bg-primary transition-all;
+  }
+}

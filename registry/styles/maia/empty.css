@@ -1,0 +1,41 @@
+/* Source: assets/css/styles/default/empty.css (all rules). The icon slot's
+   descendant svg rule and its variant-scoped :not([class*="size-"]) child
+   rule fold in as arbitrary descendant variants, matching Button/Alert/Kbd's
+   own `[&_svg:not([class*='size-'])]:` precedent. The description slot's
+   plain child <a>/<a:hover> rules fold in the same way. Nova and Maia have
+   not diverged on Empty yet, so this file is byte-identical to
+   registry/styles/maia/empty.css. Confirmed compiling with this repo's
+   Tailwind v4 CLI before use. */
+@layer components {
+  .gsxui-recipe-empty {
+    @apply flex min-w-0 flex-1 flex-col items-center justify-center gap-4 rounded-xl border-dashed p-6 text-center text-balance;
+  }
+
+  .gsxui-recipe-empty-header {
+    @apply flex max-w-sm flex-col items-center gap-2 text-center;
+  }
+
+  .gsxui-recipe-empty-icon {
+    @apply mb-2 flex shrink-0 items-center justify-center [&_svg]:shrink-0 [&_svg]:pointer-events-none;
+  }
+
+  .gsxui-recipe-empty-icon-variant-default {
+    @apply bg-transparent;
+  }
+
+  .gsxui-recipe-empty-icon-variant-icon {
+    @apply size-8 rounded-lg bg-muted text-foreground [&_svg:not([class*='size-'])]:size-4;
+  }
+
+  .gsxui-recipe-empty-title {
+    @apply text-sm font-medium tracking-tight;
+  }
+
+  .gsxui-recipe-empty-description {
+    @apply text-sm/relaxed text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary;
+  }
+
+  .gsxui-recipe-empty-content {
+    @apply flex w-full max-w-sm min-w-0 flex-col items-center gap-2.5 text-sm text-balance;
+  }
+}

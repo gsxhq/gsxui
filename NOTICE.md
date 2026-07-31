@@ -2,9 +2,11 @@
 
 The components under `ui/` are ports of **shadcn/ui**
 ([shadcn-ui/ui](https://github.com/shadcn-ui/ui), MIT © shadcn) from React/JSX
-to gsx: part names, `data-slot` contracts, and Tailwind class strings follow
-the shadcn v4 "new-york" registry. The event-delegation JS architecture is
-original to gsxui.
+to gsx: component structure and presentation recipes follow the shadcn v4
+"new-york" registry. gsxui's namespaced presence-marker
+`data-gsxui-slot-<name>` contract,
+CSS-only style packs, and event-delegation JS architecture are adaptations
+for server-rendered gsx.
 
 Icon markup embedded in components is from [Lucide](https://lucide.dev)
 (ISC License, © Lucide Contributors — https://lucide.dev/license). `ui/icon`'s
@@ -14,8 +16,8 @@ generated files (`icon_data.go`, `icon_defs.go`) are produced by
 (1,748 icons); regenerate with `make icons` against a fresh checkout to pick
 up a newer Lucide release.
 
-gsxui's server-side shadcn ports (component structure, `data-slot` parity,
-the generated-registry CLI) were developed with
+gsxui's server-side shadcn ports (component structure, stable part-token
+parity, the generated-registry CLI) were developed with
 [templUI](https://github.com/templui/templui) (MIT, © templUI contributors)
 consulted as architectural precedent for porting shadcn/ui to a Go templating
 language — structure only; no templUI code was copied.

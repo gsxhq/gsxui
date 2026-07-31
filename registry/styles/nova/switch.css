@@ -1,0 +1,27 @@
+/* Source: assets/css/styles/default/switch.css (all rules). Every
+   pseudo-class state, .dark, and the thumb's ::before pseudo-element
+   (including its checked/.dark combinations) fold onto the one root slot
+   rule as arbitrary/native Tailwind variants. before:content-[''] is
+   required (a generated pseudo-element renders nothing without an explicit
+   content utility, unlike the ::before's real-child predecessor this port
+   replaced — see ui/switch.gsx's own doc comment). The checked::before
+   transform has no plain utility form as a bare property, but
+   translate-x-[...] is an ordinary arbitrary-value utility, so this stays
+   @apply-only — nothing needed the escape hatch. Nova and Maia have not
+   diverged on Switch yet, so this file is byte-identical to
+   registry/styles/maia/switch.css. Confirmed compiling with this repo's
+   Tailwind v4 CLI before use. */
+@layer components {
+  .gsxui-recipe-switch {
+    @apply inline-flex h-[1.15rem] w-8 shrink-0 appearance-none items-center rounded-full border border-transparent bg-input transition-all outline-none;
+    @apply focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50;
+    @apply disabled:cursor-not-allowed disabled:opacity-50;
+    @apply checked:bg-primary;
+    @apply dark:bg-input/80;
+    @apply dark:checked:bg-primary;
+    @apply before:content-[''] before:pointer-events-none before:block before:size-4 before:rounded-full before:bg-background before:transition-transform;
+    @apply checked:before:translate-x-[calc(100%-2px)];
+    @apply dark:before:bg-foreground;
+    @apply dark:checked:before:bg-primary-foreground;
+  }
+}

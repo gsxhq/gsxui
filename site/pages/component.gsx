@@ -2,6 +2,7 @@ package pages
 
 import (
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/gsxhq/gsx"
@@ -29,9 +30,13 @@ type ComponentProps struct {
 // (generated from these same files, see site/hl/gen), so the page looks the
 // block up by SourcePath instead of reading and escaping it per request.
 type exampleProps struct {
-	Title      string
-	Node       gsx.Node
-	SourcePath string
+	Name          string
+	Title         string
+	Node          gsx.Node
+	SourcePath    string
+	Isolated      bool
+	ViewportWidth int
+	Previews      []examples.Preview
 }
 
 // Props resolves the {name} path param against the examples registry.
@@ -49,7 +54,15 @@ func (Component) Props(r *http.Request) (ComponentProps, error) {
 	}
 	eps := make([]exampleProps, len(exs))
 	for i, ex := range exs {
-		eps[i] = exampleProps{Title: ex.Title, Node: ex.Node, SourcePath: ex.SourcePath}
+		eps[i] = exampleProps{
+			Name:          ex.Name,
+			Title:         ex.Title,
+			Node:          ex.Node,
+			SourcePath:    ex.SourcePath,
+			Isolated:      ex.Isolated,
+			ViewportWidth: ex.ViewportWidth,
+			Previews:      ex.Previews,
+		}
 	}
 	return ComponentProps{Name: name, Title: capitalize(name), Examples: eps}, nil
 }
@@ -64,11 +77,13 @@ func capitalize(s string) string {
 // shadcnSlug maps gsxui component names to the slug shadcn/ui uses under
 // ui.shadcn.com/docs/components/{slug} — most names match verbatim, but a
 // couple of gsxui components restructure their shadcn source under a
-// different name (dropdown ports DropdownMenu; radio ports RadioGroup).
-// Names not present here pass through unchanged.
+// different name (radio ports RadioGroup). dropdown-menu used to need an
+// entry here too (it was registered as "dropdown"), but that naming delta
+// was removed by renaming the registry entry to "dropdown-menu" ahead of
+// its slot-axis migration — it now matches upstream's own slug verbatim and
+// passes through unchanged. Names not present here pass through unchanged.
 var shadcnSlug = map[string]string{
-	"dropdown": "dropdown-menu",
-	"radio":    "radio-group",
+	"radio": "radio-group",
 }
 
 // shadcnName resolves a gsxui component name to its shadcn/ui docs slug,
@@ -80,16 +95,89 @@ func shadcnName(name string) string {
 	return name
 }
 
+func examplePreviewURL(componentName string, exampleName string, preview string) string {
+	path := "/examples/" + url.PathEscape(componentName) + "/" + url.PathEscape(exampleName)
+	if preview == "" {
+		return path
+	}
+	return path + "?" + url.Values{
+		examples.PreviewQueryKey: []string{preview},
+	}.Encode()
+}
+
+func componentTOCItems(examples []exampleProps) []docTOCItem {
+	items := make([]docTOCItem, len(examples))
+	for i, example := range examples {
+		items[i] = docTOCItem{
+			ID:    "example-" + example.Name,
+			Title: example.Title,
+			Depth: 2,
+		}
+	}
+	return items
+}
+
+component isolatedExamplePreview(title string, src string, viewportWidth int, tall bool) {
+	{{
+		surfaceClass := "w-full overflow-hidden rounded-lg border bg-background"
+		if tall {
+			surfaceClass += " h-[32rem]"
+		} else {
+			surfaceClass += " h-80"
+		}
+		iframeClass := "block h-full max-w-none border-0 bg-background"
+		if viewportWidth == 0 {
+			iframeClass += " w-full"
+		}
+	}}
+	<div data-site-isolated-preview-surface class={ surfaceClass }>
+		<iframe
+			data-site-isolated-preview
+			title={title}
+			src={src}
+			loading="lazy"
+			{ if viewportWidth > 0 {
+				width={viewportWidth}
+			} }
+			class={ iframeClass }
+		></iframe>
+	</div>
+}
+
 component (c Component) Page(props ComponentProps) {
-	<Layout title={props.Title} active={props.Name}>
+	{{ toc := componentTOCItems(props.Examples) }}
+	<siteLayout title={props.Title} active={props.Name} mode={layoutDocs} toc={toc}>
 		<div class="flex flex-col gap-10 py-10">
 			<h1 class="text-3xl font-semibold tracking-tight">{ props.Title }</h1>
-			{ for _, ex := range props.Examples {
+			{ for i, ex := range props.Examples {
 				<section class="flex flex-col gap-3">
-					<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">{ ex.Title }</h2>
-					<div class="border rounded-lg p-8 bg-background">
-						{ ex.Node }
-					</div>
+					<docHeading item={toc[i]} class="text-sm font-medium uppercase tracking-wide text-muted-foreground"/>
+					{ if ex.Isolated && len(ex.Previews) == 0 {
+						<isolatedExamplePreview
+							title={ex.Title + " preview"}
+							src={examplePreviewURL(props.Name, ex.Name, "")}
+							viewportWidth={ex.ViewportWidth}
+							tall={true}
+						/>
+					} else if ex.Isolated {
+						<div class="flex flex-col gap-6">
+							{ for _, preview := range ex.Previews {
+								<div class="flex flex-col gap-2">
+									<div class="text-sm font-medium">{ preview.Title }</div>
+									<isolatedExamplePreview
+										title={preview.Title + " preview"}
+										src={examplePreviewURL(props.Name, ex.Name, preview.Name)}
+										viewportWidth={ex.ViewportWidth}
+										tall={false}
+									/>
+								</div>
+							} }
+						</div>
+					} else {
+						<div class="border rounded-lg p-8 bg-background">
+							{ ex.Node }
+						</div>
+					} }
 					<div class="relative" data-site-example>
 						<pre
 							class="overflow-x-auto rounded-2xl bg-muted/50 px-4 py-3.5 font-mono text-sm"
@@ -129,5 +217,5 @@ component (c Component) Page(props ComponentProps) {
 				} }
 			</footer>
 		</div>
-	</Layout>
+	</siteLayout>
 }

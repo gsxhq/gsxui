@@ -1,16 +1,94 @@
 package ui_test
 
 import (
+	"html"
+	"os"
+	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 
 	gsx "github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/internal/recipe"
+	"github.com/gsxhq/gsxui/internal/stylegen"
+	"github.com/gsxhq/gsxui/merge"
+	maiaui "github.com/gsxhq/gsxui/registry/generated/maia"
+	novaui "github.com/gsxhq/gsxui/registry/generated/nova"
 	"github.com/gsxhq/gsxui/ui"
 )
 
+// defaultStyleRecipe loads one component's recipe stylesheet from the default
+// style. InputGroup composes three migrated components (Button, Input,
+// Textarea), so unlike the single-component helpers in separator_test.go and
+// item_test.go this one is parameterised by component name.
+var defaultStyleRecipe = sync.OnceValue(func() func(string) recipe.Style {
+	cache := map[string]recipe.Style{}
+	return func(component string) recipe.Style {
+		if style, ok := cache[component]; ok {
+			return style
+		}
+		path := filepath.Join("..", "registry", "styles", stylegen.DefaultStyle, component+".css")
+		src, err := os.ReadFile(path)
+		if err != nil {
+			panic(err)
+		}
+		style, err := recipe.ParseStyle(path, src)
+		if err != nil {
+			panic(err)
+		}
+		cache[component] = style
+		return style
+	}
+})
+
+func styleRecipeUtilities(component, class string) []string {
+	rule, ok := defaultStyleRecipe()(component).Lookup(class)
+	if !ok {
+		panic("default style declares no recipe " + class)
+	}
+	return rule.Utilities
+}
+
+func inputGroupRecipeClasses(slot string, extra ...string) []string {
+	base := "gsxui-recipe-input-group"
+	if slot != "" {
+		base += "-" + slot
+	}
+	classes := append([]string(nil), styleRecipeUtilities("input-group", base)...)
+	for _, value := range extra {
+		classes = append(classes, styleRecipeUtilities("input-group", base+"-"+value)...)
+	}
+	return classes
+}
+
+// canonicalInputGroupClass is the class attribute one InputGroup slot renders,
+// plus any caller classes, merged the way gsx merges class values at runtime.
+func canonicalInputGroupClass(slot string, extra []string, caller ...string) string {
+	classes := append(inputGroupRecipeClasses(slot, extra...), caller...)
+	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
+}
+
+// canonicalInputGroupControlClass is what InputGroupInput/InputGroupTextarea
+// render: the composed control's own recipe utilities with InputGroup's
+// control slot merged in after them as an ordinary caller class.
+//
+// tailwind-merge genuinely REMOVES two of the control's own utilities here —
+// focus-visible:ring-[3px] loses to focus-visible:ring-0, and dark:bg-input/30
+// loses to dark:bg-transparent. That is upstream shadcn's own behaviour
+// (registry/new-york-v4/ui/input-group.tsx puts exactly those two utilities on
+// InputGroupInput's className and lets cn() resolve them), and it is a change
+// from the pre-migration render, where the same two rules sat in
+// @layer components and lost to Input's utilities-layer classes instead.
+func canonicalInputGroupControlClass(control string, caller ...string) string {
+	classes := append([]string(nil), styleRecipeUtilities(control, "gsxui-recipe-"+control)...)
+	classes = append(classes, inputGroupRecipeClasses("control")...)
+	classes = append(classes, caller...)
+	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
+}
+
 func TestInputGroupPinned(t *testing.T) {
 	got := render(t, ui.InputGroup(gsx.Raw("x"), nil))
-	want := `<div data-slot="input-group" role="group" class="group/input-group relative flex w-full items-center rounded-lg border border-input transition-[color,box-shadow] outline-none dark:bg-input/30 h-8 min-w-0 has-[&gt;textarea]:h-auto has-[&gt;[data-align=inline-start]]:[&amp;&gt;input]:pl-1.5 has-[&gt;[data-align=inline-end]]:[&amp;&gt;input]:pr-1.5 has-[&gt;[data-align=block-start]]:h-auto has-[&gt;[data-align=block-start]]:flex-col has-[&gt;[data-align=block-start]]:[&amp;&gt;input]:pb-3 has-[&gt;[data-align=block-end]]:h-auto has-[&gt;[data-align=block-end]]:flex-col has-[&gt;[data-align=block-end]]:[&amp;&gt;input]:pt-3 has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-[3px] has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50 has-[[data-slot][aria-invalid=true]]:border-destructive has-[[data-slot][aria-invalid=true]]:ring-destructive/20 dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40">x</div>`
+	want := `<div role="group" ` + canonicalInputGroupClass("", nil) + ` data-gsxui-slot-input-group>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -25,15 +103,18 @@ func TestInputGroupAttrsFallThrough(t *testing.T) {
 
 func TestInputGroupCallerClassMerges(t *testing.T) {
 	got := render(t, ui.InputGroup(nil, gsx.Attrs{{Key: "class", Value: "max-w-sm"}}))
-	if !strings.Contains(got, "max-w-sm") {
-		t.Errorf("missing caller class max-w-sm\nin: %s", got)
+	if strings.Count(got, "max-w-sm") != 1 || strings.Count(got, `class=`) != 1 {
+		t.Errorf("caller class must be forwarded exactly once\nin: %s", got)
+	}
+	if want := canonicalInputGroupClass("", nil, "max-w-sm"); !strings.Contains(got, want) {
+		t.Errorf("caller class not merged after the recipe's own\nwant: %s\nin: %s", want, got)
 	}
 }
 
 // TestInputGroupAddonDefaultPinned pins the zero-value ("inline-start") align.
 func TestInputGroupAddonDefaultPinned(t *testing.T) {
 	got := render(t, ui.InputGroupAddon("", gsx.Raw("x"), nil))
-	want := `<div role="group" data-slot="input-group-addon" data-align="inline-start" class="flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium text-muted-foreground select-none group-data-[disabled=true]/input-group:opacity-50 [&amp;&gt;kbd]:rounded-[calc(var(--radius)-5px)] [&amp;&gt;svg:not([class*=&#39;size-&#39;])]:size-4 order-first pl-2 has-[&gt;button]:ml-[-0.3rem] has-[&gt;kbd]:ml-[-0.15rem]">x</div>`
+	want := `<div role="group" data-align="inline-start" ` + canonicalInputGroupClass("addon", []string{"align-inline-start"}) + ` data-gsxui-slot-input-group-addon>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -41,7 +122,7 @@ func TestInputGroupAddonDefaultPinned(t *testing.T) {
 
 func TestInputGroupAddonInlineEndPinned(t *testing.T) {
 	got := render(t, ui.InputGroupAddon("inline-end", gsx.Raw("x"), nil))
-	for _, want := range []string{`data-align="inline-end"`, "order-last pr-2", "has-[&gt;button]:mr-[-0.3rem]"} {
+	for _, want := range []string{`data-align="inline-end"`, `data-gsxui-slot-input-group-addon`} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
@@ -50,18 +131,15 @@ func TestInputGroupAddonInlineEndPinned(t *testing.T) {
 
 func TestInputGroupAddonBlockStartPinned(t *testing.T) {
 	got := render(t, ui.InputGroupAddon("block-start", gsx.Raw("x"), nil))
-	want := `<div role="group" data-slot="input-group-addon" data-align="block-start" class="flex h-auto cursor-text items-center gap-2 py-1.5 text-sm font-medium text-muted-foreground select-none group-data-[disabled=true]/input-group:opacity-50 [&amp;&gt;kbd]:rounded-[calc(var(--radius)-5px)] [&amp;&gt;svg:not([class*=&#39;size-&#39;])]:size-4 order-first w-full justify-start px-2.5 pt-2 group-has-[&gt;input]/input-group:pt-2 [.border-b]:pb-2">x</div>`
+	want := `<div role="group" data-align="block-start" ` + canonicalInputGroupClass("addon", []string{"align-block-start"}) + ` data-gsxui-slot-input-group-addon>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
-	}
-	if strings.Contains(got, "justify-center") {
-		t.Errorf("justify-center should be dropped by justify-start\nin: %s", got)
 	}
 }
 
 func TestInputGroupAddonBlockEndPinned(t *testing.T) {
 	got := render(t, ui.InputGroupAddon("block-end", gsx.Raw("x"), nil))
-	for _, want := range []string{`data-align="block-end"`, "order-last w-full justify-start px-2.5 pb-2", "group-has-[&gt;input]/input-group:pb-2", "[.border-t]:pt-2"} {
+	for _, want := range []string{`data-align="block-end"`, `data-gsxui-slot-input-group-addon`} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
@@ -75,62 +153,86 @@ func TestInputGroupAddonAttrsFallThrough(t *testing.T) {
 	}
 }
 
-// TestInputGroupButtonDefaultPinned proves InputGroupButton actually
-// composes ui.Button (data-slot="button" and Button's own base/variant
-// classes all come through) and that the "xs" overlay classes win their
-// tailwind-merge conflicts against Button's own default size classes: h-8 ->
-// h-6, rounded-lg -> rounded-[calc(var(--radius)-3px)], px-2.5 -> px-1.5,
-// has-[>svg]:px-2 -> has-[>svg]:px-1.5. gap-1.5 (Button's own
-// default size class, which the xs overlay overrides to gap-1) does not
-// survive, matching shadcn's own cn() merge exactly (see
-// ui/input-group.gsx's own comment).
+// TestInputGroupButtonDefaultPinned proves InputGroupButton composes the
+// Button seam: Button contributes the default style's resolved presentation
+// and its public axes. InputGroupButton defaults and forwards Button's size
+// axis to xs.
 func TestInputGroupButtonDefaultPinned(t *testing.T) {
 	got := render(t, ui.InputGroupButton("", "", gsx.Raw("x"), nil))
-	want := `<button data-slot="button" data-variant="ghost" type="button" class="shrink-0 justify-center border border-transparent bg-clip-padding font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 flex items-center text-sm shadow-none h-6 gap-1 rounded-[calc(var(--radius)-3px)] px-1.5 has-[&gt;svg]:px-1.5 [&amp;&gt;svg:not([class*=&#39;size-&#39;])]:size-3.5" data-size="xs">x</button>`
+	want := `<button data-variant="ghost" data-size="xs" type="button" ` + canonicalButtonClass("ghost", "xs") + ` data-gsxui-slot-input-group-button data-gsxui-slot-button>x</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
-	if strings.Contains(got, "h-8 ") || strings.Contains(got, "px-2.5") || strings.Contains(got, "gap-1.5") {
-		t.Errorf("Button's own default size classes should be overridden by the xs overlay\nin: %s", got)
+}
+
+func TestInputGroupButtonSizeAxisMatchesCanonicalButtonClass(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  string
+	}{
+		{name: "default", input: "", want: "xs"},
+		{name: "xs", input: "xs", want: "xs"},
+		{name: "sm", input: "sm", want: "sm"},
+		{name: "icon-xs", input: "icon-xs", want: "icon-xs"},
+		{name: "icon-sm", input: "icon-sm", want: "icon-sm"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := render(t, ui.InputGroupButton("", tt.input, gsx.Raw("x"), nil))
+			for _, want := range []string{
+				`data-size="` + tt.want + `"`,
+				canonicalButtonClass("ghost", tt.want),
+			} {
+				if !strings.Contains(got, want) {
+					t.Errorf("missing aligned Button size contract %q\nin: %s", want, got)
+				}
+			}
+		})
 	}
 }
 
-func TestInputGroupButtonSmPinned(t *testing.T) {
-	got := render(t, ui.InputGroupButton("", "sm", gsx.Raw("x"), nil))
-	for _, want := range []string{`data-size="sm"`, "h-8 gap-1.5 rounded-md px-2.5 has-[&gt;svg]:px-2.5"} {
-		if !strings.Contains(got, want) {
-			t.Errorf("missing %q\nin: %s", want, got)
-		}
+func TestGeneratedButtonSizeContractsForInputGroupComposition(t *testing.T) {
+	tests := []struct {
+		name       string
+		node       gsx.Node
+		dataSize   string
+		wantClass  string
+		rejectSize string
+	}{
+		{name: "nova/xs", node: novaui.Button("ghost", "xs", "", false, gsx.Raw("x"), nil), dataSize: "xs", wantClass: "h-6", rejectSize: "h-8"},
+		{name: "nova/sm", node: novaui.Button("ghost", "sm", "", false, gsx.Raw("x"), nil), dataSize: "sm", wantClass: "h-7", rejectSize: "h-8"},
+		{name: "nova/icon-xs", node: novaui.Button("ghost", "icon-xs", "", false, gsx.Raw("x"), nil), dataSize: "icon-xs", wantClass: "size-6", rejectSize: "size-8"},
+		{name: "nova/icon-sm", node: novaui.Button("ghost", "icon-sm", "", false, gsx.Raw("x"), nil), dataSize: "icon-sm", wantClass: "size-7", rejectSize: "size-8"},
+		{name: "maia/xs", node: maiaui.Button("ghost", "xs", "", false, gsx.Raw("x"), nil), dataSize: "xs", wantClass: "h-6", rejectSize: "h-9"},
+		{name: "maia/sm", node: maiaui.Button("ghost", "sm", "", false, gsx.Raw("x"), nil), dataSize: "sm", wantClass: "h-8", rejectSize: "h-9"},
+		{name: "maia/icon-xs", node: maiaui.Button("ghost", "icon-xs", "", false, gsx.Raw("x"), nil), dataSize: "icon-xs", wantClass: "size-6", rejectSize: "size-9"},
+		{name: "maia/icon-sm", node: maiaui.Button("ghost", "icon-sm", "", false, gsx.Raw("x"), nil), dataSize: "icon-sm", wantClass: "size-8", rejectSize: "size-9"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := render(t, tt.node)
+			for _, want := range []string{`data-size="` + tt.dataSize + `"`, tt.wantClass} {
+				if !strings.Contains(got, want) {
+					t.Errorf("generated Button lacks concrete size contract %q\nin: %s", want, got)
+				}
+			}
+			if strings.Contains(got, tt.rejectSize) {
+				t.Errorf("generated Button retained contradictory default geometry %q\nin: %s", tt.rejectSize, got)
+			}
+		})
 	}
 }
 
-func TestInputGroupButtonIconXsPinned(t *testing.T) {
-	got := render(t, ui.InputGroupButton("", "icon-xs", gsx.Raw("x"), nil))
-	for _, want := range []string{`data-size="icon-xs"`, "size-6 rounded-[calc(var(--radius)-3px)] p-0 has-[&gt;svg]:p-0"} {
-		if !strings.Contains(got, want) {
-			t.Errorf("missing %q\nin: %s", want, got)
-		}
-	}
-}
-
-func TestInputGroupButtonIconSmPinned(t *testing.T) {
-	got := render(t, ui.InputGroupButton("", "icon-sm", gsx.Raw("x"), nil))
-	for _, want := range []string{`data-size="icon-sm"`, "size-8 p-0 has-[&gt;svg]:p-0"} {
-		if !strings.Contains(got, want) {
-			t.Errorf("missing %q\nin: %s", want, got)
-		}
-	}
-}
-
-// TestInputGroupButtonVariantOverride proves variant is forwarded to
-// Button's own variant param (default "ghost" per shadcn's own passthrough).
+// TestInputGroupButtonVariantOverride proves variant is forwarded as Button's
+// public styling axis, and that the forwarded variant selects the default
+// style's outline presentation rather than the default variant's.
 func TestInputGroupButtonVariantOverride(t *testing.T) {
 	got := render(t, ui.InputGroupButton("outline", "", gsx.Raw("x"), nil))
-	if !strings.Contains(got, `data-variant="outline"`) {
-		t.Errorf("missing data-variant=outline override\nin: %s", got)
-	}
-	if !strings.Contains(got, "dark:border-input dark:bg-input/30") {
-		t.Errorf("missing outline variant classes\nin: %s", got)
+	for _, want := range []string{`data-variant="outline"`, canonicalButtonClass("outline", "xs")} {
+		if !strings.Contains(got, want) {
+			t.Errorf("missing %q\nin: %s", want, got)
+		}
 	}
 }
 
@@ -143,19 +245,17 @@ func TestInputGroupButtonAttrsFallThrough(t *testing.T) {
 
 func TestInputGroupButtonCallerClassMerges(t *testing.T) {
 	got := render(t, ui.InputGroupButton("", "", nil, gsx.Attrs{{Key: "class", Value: "w-full"}}))
-	if !strings.Contains(got, "w-full") {
-		t.Errorf("missing caller class w-full\nin: %s", got)
+	want := canonicalButtonClass("ghost", "xs", "w-full")
+	if strings.Count(got, want) != 1 || strings.Count(got, `class=`) != 1 {
+		t.Errorf("caller class must follow exact canonical Button roles once\nwant: %s\nin: %s", want, got)
 	}
 }
 
 func TestInputGroupTextPinned(t *testing.T) {
 	got := render(t, ui.InputGroupText(gsx.Raw("x"), nil))
-	want := `<span class="flex items-center gap-2 text-sm text-muted-foreground [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4">x</span>`
+	want := `<span ` + canonicalInputGroupClass("text", nil) + ` data-gsxui-slot-input-group-text>x</span>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
-	}
-	if strings.Contains(got, "data-slot") {
-		t.Errorf("InputGroupText must not carry data-slot, matching shadcn's own source\nin: %s", got)
 	}
 }
 
@@ -166,22 +266,12 @@ func TestInputGroupTextAttrsFallThrough(t *testing.T) {
 	}
 }
 
-// TestInputGroupInputPinned proves InputGroupInput composes ui.Input
-// (Input's own base classes come through) and that data-slot is overridden
-// from Input's own "input" to "input-group-control", the attribute
-// InputGroup's own has-[[data-slot=input-group-control]...] selectors key
-// off. rounded-md/border/shadow-xs/dark:bg-input%2F30/ring-[3px] are all
-// overridden by the overlay's rounded-none/border-0/shadow-none/
-// dark:bg-transparent/ring-0 via the ordinary tailwind-merge conflict
-// mechanism (see ui/input-group.gsx's own comment).
+// InputGroupInput composes Input's token with the group-control token.
 func TestInputGroupInputPinned(t *testing.T) {
 	got := render(t, ui.InputGroupInput(nil))
-	want := `<input type="text" class="h-8 w-full min-w-0 border-input px-2.5 py-1 text-base transition-[color,box-shadow] outline-none selection:bg-primary selection:text-primary-foreground file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 flex-1 rounded-none border-0 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent" data-slot="input-group-control">`
+	want := `<input type="text" ` + canonicalInputGroupControlClass("input") + ` data-gsxui-slot-input-group-control data-gsxui-slot-input>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
-	}
-	if strings.Contains(got, `data-slot="input"`) {
-		t.Errorf("data-slot should be overridden to input-group-control\nin: %s", got)
 	}
 }
 
@@ -192,13 +282,10 @@ func TestInputGroupInputAttrsFallThrough(t *testing.T) {
 	}
 }
 
-// TestInputGroupTextareaPinned proves InputGroupTextarea composes
-// ui.Textarea (value renders as the text child, Textarea's own ADAPT — see
-// ui/textarea.gsx) with the same data-slot override and class-merge shape as
-// InputGroupInput above.
+// InputGroupTextarea composes Textarea's token with the group-control token.
 func TestInputGroupTextareaPinned(t *testing.T) {
 	got := render(t, ui.InputGroupTextarea("hi", nil))
-	want := `<textarea class="flex field-sizing-content min-h-16 w-full border-input px-2.5 text-base transition-[color,box-shadow] outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 md:text-sm dark:aria-invalid:ring-destructive/40 flex-1 resize-none rounded-none border-0 bg-transparent py-2 shadow-none focus-visible:ring-0 dark:bg-transparent" data-slot="input-group-control">hi</textarea>`
+	want := `<textarea ` + canonicalInputGroupControlClass("textarea") + ` data-gsxui-slot-input-group-control data-gsxui-slot-textarea>hi</textarea>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -224,12 +311,12 @@ func TestInputGroupSearchComposition(t *testing.T) {
 		nil,
 	))
 	for _, want := range []string{
-		`data-slot="input-group"`,
+		`data-gsxui-slot-input-group`,
 		`data-align="inline-start"`,
-		`data-slot="input-group-control"`,
+		`data-gsxui-slot-input-group-control data-gsxui-slot-input`,
 		`placeholder="Search..."`,
 		`data-align="inline-end"`,
-		`data-slot="button"`,
+		`data-gsxui-slot-input-group-button data-gsxui-slot-button`,
 		`data-size="icon-xs"`,
 		`aria-label="Send"`,
 	} {

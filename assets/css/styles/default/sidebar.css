@@ -1,0 +1,61 @@
+/* Sidebar migrated to the slot axis; almost all of its presentation now lives
+   in registry/styles/{nova,maia}/sidebar.css. What is left here are the three
+   rule groups that spec section 10b keeps behind, because a STYLE is expected
+   to override them and can only do so from this layer.
+
+   jstest/specs/sidebar-style-contract.spec.ts's "custom style owns floating
+   and inset collapsed density without foundation shrink" is the executable
+   statement of that expectation: it injects a components-layer stylesheet that
+   redefines the two collapsed-width custom properties, the floating/inset
+   container padding, and the floating/inset inner border, and requires all
+   three to take effect. Migrated onto the recipe those become Tailwind-scanned
+   utilities in @layer utilities, which no components-layer rule can beat
+   regardless of specificity — the override would silently stop working.
+
+   Each group is retained WHOLE, per the playbook's rule about Input's
+   md:text-sm: the recipe sets no custom property on sidebar-desktop, no
+   padding on sidebar-container and no border width or colour on
+   sidebar-inner, so none of these rules is shadowed by Sidebar's own
+   utilities and each is genuinely live rather than dead-but-tidy. The
+   companion properties that nothing overrides — the inner's border-radius and
+   box-shadow — did migrate, since splitting them out costs nothing and they
+   were never the subject of the contract.
+
+   The layer gate no longer reports any of the three, and their exemptions are
+   gone: it compares an authored rule against the TARGETED SLOT's own compiled
+   utilities, and Sidebar's recipe sets none of these properties on those
+   slots. The retention decision above stands on its own contract. */
+@layer components {
+  :where([data-gsxui-slot-sidebar-desktop]) {
+    --gsxui-sidebar-collapsed-gap-width: var(--sidebar-width-icon);
+    --gsxui-sidebar-collapsed-container-width: var(--sidebar-width-icon);
+  }
+  :where(
+      [data-gsxui-slot-sidebar-desktop]:is(
+          [data-variant="floating"],
+          [data-variant="inset"]
+        )
+    ) {
+    --gsxui-sidebar-collapsed-gap-width: calc(
+      var(--sidebar-width-icon) + 1rem
+    );
+    --gsxui-sidebar-collapsed-container-width: calc(
+      var(--sidebar-width-icon) + 1rem + 2px
+    );
+  }
+  :where(
+      [data-gsxui-slot-sidebar-desktop]:is(
+          [data-variant="floating"],
+          [data-variant="inset"]
+        )
+    )
+    > :where([data-gsxui-slot-sidebar-container]) {
+    @apply p-2;
+  }
+  :where(
+      [data-gsxui-slot-sidebar-desktop][data-variant="floating"]
+    )
+    :where([data-gsxui-slot-sidebar-inner]) {
+    @apply border border-sidebar-border;
+  }
+}

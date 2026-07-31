@@ -22,12 +22,12 @@ func Basic() _gsxrt.Node {
 		_gsxgw.Node(ctx, ui.Select("fruit", false, false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:13:3
-			_gsxgw.Node(ctx, ui.SelectTrigger("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.SelectTrigger("sm", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:14:4
 				_gsxgw.Node(ctx, ui.SelectValue("Select a fruit", nil))
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "class", Value: "w-[180px]"}}))
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}}, _gsxrt.Attrs{{Key: "class", Value: "w-[180px]"}})))
 //line basic.gsx:16:3
 			_gsxgw.Node(ctx, ui.SelectContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
@@ -41,13 +41,13 @@ func Basic() _gsxrt.Node {
 						return _gsxgw.Err()
 					}), nil))
 //line basic.gsx:19:5
-					_gsxgw.Node(ctx, ui.SelectItem("apple", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.SelectItem("apple", true, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Apple")
 						return _gsxgw.Err()
 					}), nil))
 //line basic.gsx:20:5
-					_gsxgw.Node(ctx, ui.SelectItem("banana", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.SelectItem("banana", false, true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Banana")
 						return _gsxgw.Err()

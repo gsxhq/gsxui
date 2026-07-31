@@ -4,6 +4,10 @@ import { baseURL, harnessPort, jstestDir, repoRoot } from "./support/paths";
 
 export default defineConfig({
   testDir: "./specs",
+  // Browser pixels are characterized in Linux CI but developers replay them
+  // on other hosts. Keep the project discriminator while deliberately
+  // omitting Playwright's default platform suffix from snapshot paths.
+  snapshotPathTemplate: "{testDir}/{testFilePath}-snapshots/{arg}-{projectName}{ext}",
   // Playwright's built-in default resolves outputDir against the nearest
   // package.json directory (the repo root), not the config file's
   // directory — that would leak a top-level /test-results/ next to
@@ -29,7 +33,15 @@ export default defineConfig({
     baseURL,
     trace: "on-first-retry",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  projects: [
+    {
+      name: "chromium",
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 1280, height: 900 },
+      },
+    },
+  ],
   webServer: {
     command: `go run ./jstest/harness -addr 127.0.0.1:${harnessPort} -root .`,
     cwd: repoRoot,

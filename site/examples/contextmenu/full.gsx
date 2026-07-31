@@ -15,14 +15,18 @@ import (
 // selector is dead weight without it.
 component Full() {
 	<ui.ContextMenu>
-		<ui.ContextMenuTrigger class="flex h-[150px] w-[300px] items-center justify-center rounded-md border border-dashed text-sm">
+		<ui.ContextMenuTrigger
+			class="flex h-[150px] w-[300px] items-center justify-center rounded-md border border-dashed text-sm"
+		>
 			Right click here
 		</ui.ContextMenuTrigger>
 		<ui.ContextMenuContent class="w-52">
-			<ui.ContextMenuItem>
-				Back
-				<ui.ContextMenuShortcut>⌘[</ui.ContextMenuShortcut>
-			</ui.ContextMenuItem>
+			<ui.ContextMenuGroup>
+				<ui.ContextMenuItem>
+					Back
+					<ui.ContextMenuShortcut>⌘[</ui.ContextMenuShortcut>
+				</ui.ContextMenuItem>
+			</ui.ContextMenuGroup>
 			<ui.ContextMenuItem aria-disabled="true" data-disabled="true">
 				Forward
 				<ui.ContextMenuShortcut>⌘]</ui.ContextMenuShortcut>

@@ -21,7 +21,7 @@ func Disabled() _gsxrt.Node {
 //line disabled.gsx:11:2
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")
 //line disabled.gsx:12:3
-		_gsxgw.Node(ctx, ui.Checkbox(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "label-disabled-terms"}}, _gsxrt.Attrs{{Key: "disabled", Value: true}})))
+		_gsxgw.Node(ctx, ui.Checkbox(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "label-disabled-terms"}}, _gsxrt.Attrs{{Key: "disabled", Value: _gsxrt.Toggle(true)}})))
 //line disabled.gsx:13:3
 		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)

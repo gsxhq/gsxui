@@ -10,48 +10,61 @@ import (
 )
 
 //line basic.gsx:8:1
-// Basic renders a menu with a label, separator, and plain items.
+// Basic renders a menu with a label, separator, and plain items. Its one
+// trigger Button carries both Button styling and DropdownMenu's trigger
+// behavior/state contract.
 
-//line basic.gsx:9:1
+//line basic.gsx:11:1
 func Basic() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:10:2
+//line basic.gsx:12:2
 		_gsxgw.Node(ctx, ui.DropdownMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:11:3
+//line basic.gsx:13:3
 			_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Options")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "data-gsxui-dropdown-trigger", Value: true}}))
-//line basic.gsx:12:3
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dropdown-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-dropdown-menu-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "menu"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
+//line basic.gsx:22:3
 			_gsxgw.Node(ctx, ui.DropdownMenuContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:13:4
-				_gsxgw.Node(ctx, ui.DropdownMenuLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line basic.gsx:23:4
+				_gsxgw.Node(ctx, ui.DropdownMenuGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-					_gsxgw.S("My Account")
-					return _gsxgw.Err()
-				}), nil))
-//line basic.gsx:14:4
-				_gsxgw.Node(ctx, ui.DropdownMenuSeparator(nil))
-//line basic.gsx:15:4
-				_gsxgw.Node(ctx, ui.DropdownMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-					_gsxgw := _gsxrt.W(_gsxw)
-					_gsxgw.S("Profile")
-					return _gsxgw.Err()
-				}), nil))
-//line basic.gsx:16:4
-				_gsxgw.Node(ctx, ui.DropdownMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-					_gsxgw := _gsxrt.W(_gsxw)
-					_gsxgw.S("Billing")
-					return _gsxgw.Err()
-				}), nil))
-//line basic.gsx:17:4
-				_gsxgw.Node(ctx, ui.DropdownMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-					_gsxgw := _gsxrt.W(_gsxw)
-					_gsxgw.S("Settings")
+//line basic.gsx:24:5
+					_gsxgw.Node(ctx, ui.DropdownMenuLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+						_gsxgw.S("My Account")
+						return _gsxgw.Err()
+					}), nil))
+//line basic.gsx:25:5
+					_gsxgw.Node(ctx, ui.DropdownMenuSeparator(nil))
+//line basic.gsx:26:5
+					_gsxgw.Node(ctx, ui.DropdownMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+						_gsxgw.S("Profile")
+						return _gsxgw.Err()
+					}), nil))
+//line basic.gsx:27:5
+					_gsxgw.Node(ctx, ui.DropdownMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+						_gsxgw.S("Billing")
+						return _gsxgw.Err()
+					}), nil))
+//line basic.gsx:28:5
+					_gsxgw.Node(ctx, ui.DropdownMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+						_gsxgw.S("Settings ")
+//line basic.gsx:29:15
+						_gsxgw.Node(ctx, ui.DropdownMenuShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+							_gsxgw := _gsxrt.W(_gsxw)
+							_gsxgw.S("⌘,")
+							return _gsxgw.Err()
+						}), nil))
+						return _gsxgw.Err()
+					}), nil))
 					return _gsxgw.Err()
 				}), nil))
 				return _gsxgw.Err()

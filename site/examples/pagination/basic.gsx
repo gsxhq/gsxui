@@ -27,6 +27,24 @@ component Basic() {
 			<ui.PaginationItem>
 				<ui.PaginationNext href="#"/>
 			</ui.PaginationItem>
+			<ui.PaginationItem>
+				<ui.PaginationLink href="#" size="xs">xs</ui.PaginationLink>
+			</ui.PaginationItem>
+			<ui.PaginationItem>
+				<ui.PaginationLink href="#" size="sm">sm</ui.PaginationLink>
+			</ui.PaginationItem>
+			<ui.PaginationItem>
+				<ui.PaginationLink href="#" size="lg">lg</ui.PaginationLink>
+			</ui.PaginationItem>
+			<ui.PaginationItem>
+				<ui.PaginationLink href="#" size="icon-xs" aria-label="Icon extra small">x</ui.PaginationLink>
+			</ui.PaginationItem>
+			<ui.PaginationItem>
+				<ui.PaginationLink href="#" size="icon-sm" aria-label="Icon small">s</ui.PaginationLink>
+			</ui.PaginationItem>
+			<ui.PaginationItem>
+				<ui.PaginationLink href="#" size="icon-lg" aria-label="Icon large">l</ui.PaginationLink>
+			</ui.PaginationItem>
 		</ui.PaginationContent>
 	</ui.Pagination>
 }

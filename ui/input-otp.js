@@ -23,7 +23,7 @@ import { on } from "./gsxui.js";
 
 const rootOf = (el) => el.closest("[data-gsxui-input-otp]");
 const inputOf = (root) => root.querySelector("[data-gsxui-input-otp-input]");
-const slotsOf = (root) => [...root.querySelectorAll('[data-slot="input-otp-slot"]')];
+const slotsOf = (root) => [...root.querySelectorAll("[data-gsxui-input-otp-slot]")];
 
 // One-time positional data-index stamp, DOM order, idempotent (mirrors
 // command.js's `if (!("gsxuiIndex" in item.dataset))` guard).
@@ -46,9 +46,11 @@ function renderSlot(slot, char, active) {
   }
   if (!active) return;
   const overlay = document.createElement("div");
-  overlay.className = "pointer-events-none absolute inset-0 flex items-center justify-center";
+  overlay.setAttribute("data-gsxui-slot-input-otp-caret-overlay", "");
+  overlay.toggleAttribute("data-gsxui-input-otp-caret-overlay", true);
   const caret = document.createElement("div");
-  caret.className = "h-4 w-px animate-caret-blink bg-foreground duration-1000";
+  caret.setAttribute("data-gsxui-slot-input-otp-caret", "");
+  caret.toggleAttribute("data-gsxui-input-otp-caret", true);
   overlay.appendChild(caret);
   slot.appendChild(overlay);
 }
@@ -139,7 +141,7 @@ document.addEventListener("selectionchange", () => {
   if (root) recompute(root);
 });
 
-on("click", '[data-slot="input-otp-slot"]', (_e, slot) => {
+on("click", "[data-gsxui-input-otp-slot]", (_e, slot) => {
   const root = rootOf(slot);
   const input = root && inputOf(root);
   if (!input) return;

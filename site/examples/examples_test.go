@@ -3,13 +3,155 @@ package examples_test
 import (
 	"bytes"
 	"context"
+	"net/url"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
 
+	"github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/site/examples"
 )
+
+func TestRegisterRejectsDuplicateExampleNames(t *testing.T) {
+	const childEnvironment = "GSXUI_TEST_DUPLICATE_EXAMPLE_REGISTRATION"
+	if os.Getenv(childEnvironment) == "1" {
+		examples.Register("__duplicate-registration-test__", examples.Example{Name: "same-name"})
+		examples.Register("__duplicate-registration-test__", examples.Example{Name: "same-name"})
+		return
+	}
+
+	command := exec.Command(os.Args[0], "-test.run=^TestRegisterRejectsDuplicateExampleNames$")
+	command.Env = append(os.Environ(), childEnvironment+"=1")
+	output, err := command.CombinedOutput()
+	if err == nil {
+		t.Fatalf("duplicate component/example registration succeeded; output:\n%s", output)
+	}
+	const want = `examples: duplicate registration for component "__duplicate-registration-test__" example "same-name"`
+	if !strings.Contains(string(output), want) {
+		t.Fatalf("duplicate registration failure = %v\noutput:\n%s\nwant panic containing:\n%s", err, output, want)
+	}
+}
+
+func TestRegisterValidatesViewportWidth(t *testing.T) {
+	const childEnvironment = "GSXUI_TEST_EXAMPLE_VIEWPORT_WIDTH"
+	if testCase := os.Getenv(childEnvironment); testCase != "" {
+		switch testCase {
+		case "negative":
+			examples.Register("__viewport-width-test__", examples.Example{
+				Name:          "negative",
+				ViewportWidth: -1,
+			})
+		case "inline":
+			examples.Register("__viewport-width-test__", examples.Example{
+				Name:          "inline",
+				ViewportWidth: 1024,
+			})
+		case "isolated":
+			examples.Register("__viewport-width-test__", examples.Example{
+				Name:          "isolated",
+				Isolated:      true,
+				ViewportWidth: 1024,
+			})
+		default:
+			t.Fatalf("unknown child test case %q", testCase)
+		}
+		return
+	}
+
+	tests := []struct {
+		name      string
+		wantPanic string
+	}{
+		{
+			name:      "negative",
+			wantPanic: `examples: component "__viewport-width-test__" example "negative" has negative viewport width -1`,
+		},
+		{
+			name:      "inline",
+			wantPanic: `examples: component "__viewport-width-test__" example "inline" has viewport width 1024 but is not isolated`,
+		},
+		{name: "isolated"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			command := exec.Command(os.Args[0], "-test.run=^TestRegisterValidatesViewportWidth$")
+			command.Env = append(os.Environ(), childEnvironment+"="+tt.name)
+			output, err := command.CombinedOutput()
+			if tt.wantPanic == "" {
+				if err != nil {
+					t.Fatalf("valid viewport registration failed: %v\noutput:\n%s", err, output)
+				}
+				return
+			}
+			if err == nil {
+				t.Fatalf("invalid viewport registration succeeded; output:\n%s", output)
+			}
+			if !strings.Contains(string(output), tt.wantPanic) {
+				t.Fatalf("viewport registration failure = %v\noutput:\n%s\nwant panic containing:\n%s", err, output, tt.wantPanic)
+			}
+		})
+	}
+}
+
+func TestFindResolvesOnlyExactRegisteredExamples(t *testing.T) {
+	title, node, ok := examples.Find("button", "basic", nil)
+	if !ok || title != "Basic" || node == nil {
+		t.Fatalf("Find(button, basic) = %q, %#v, %t", title, node, ok)
+	}
+
+	for _, key := range [][2]string{
+		{"button", "missing"},
+		{"missing", "basic"},
+		{"Button", "basic"},
+	} {
+		if _, _, ok := examples.Find(key[0], key[1], nil); ok {
+			t.Errorf("Find(%q, %q) accepted an unregistered key", key[0], key[1])
+		}
+	}
+}
+
+func TestFindResolvesOnlyRegisteredPreviewCases(t *testing.T) {
+	title, node, ok := examples.Find(
+		"sidebar",
+		"variants",
+		url.Values{examples.PreviewQueryKey: []string{"floating"}},
+	)
+	if !ok || title != "Variants · variant=floating" || node == nil {
+		t.Fatalf("Find(sidebar, variants, floating) = %q, %#v, %t", title, node, ok)
+	}
+
+	for _, values := range []url.Values{
+		{examples.PreviewQueryKey: []string{"missing"}},
+		{examples.PreviewQueryKey: []string{""}},
+		{examples.PreviewQueryKey: []string{"floating", "inset"}},
+	} {
+		if _, _, ok := examples.Find("sidebar", "variants", values); ok {
+			t.Fatalf("Find(sidebar, variants, %v) accepted an inexact preview selector", values)
+		}
+	}
+}
+
+func TestFindUsesTheRegisteredQueryRenderer(t *testing.T) {
+	_, node, ok := examples.Find(
+		"calendar",
+		"basic",
+		url.Values{"month": []string{"2026-02"}},
+	)
+	if !ok {
+		t.Fatal("Find(calendar, basic) = not found")
+	}
+
+	var output bytes.Buffer
+	if err := node.Render(context.Background(), &output); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(output.String(), "February 2026") {
+		t.Fatalf("query-rendered calendar does not contain February 2026:\n%s", output.String())
+	}
+}
 
 // TestExampleSourceMatchesFile is the drift guard for
 // source-shown-is-source-run: for every registered example, the bytes
@@ -48,14 +190,18 @@ func TestExamplesRender(t *testing.T) {
 	for _, component := range examples.Components() {
 		for _, ex := range examples.For(component) {
 			t.Run(component+"/"+ex.Name, func(t *testing.T) {
-				var buf bytes.Buffer
-				err := ex.Node.Render(context.Background(), &buf)
-				if err != nil {
-					t.Errorf("ex.Node.Render: %v", err)
+				nodes := []gsx.Node{ex.Node}
+				for _, preview := range ex.Previews {
+					nodes = append(nodes, preview.Node)
 				}
-				output := buf.String()
-				if strings.Contains(output, "about:invalid#gsx") {
-					t.Errorf("output contains blocked URL sentinel about:invalid#gsx")
+				for index, node := range nodes {
+					var buf bytes.Buffer
+					if err := node.Render(context.Background(), &buf); err != nil {
+						t.Errorf("node %d Render: %v", index, err)
+					}
+					if strings.Contains(buf.String(), "about:invalid#gsx") {
+						t.Errorf("node %d output contains blocked URL sentinel about:invalid#gsx", index)
+					}
 				}
 			})
 		}

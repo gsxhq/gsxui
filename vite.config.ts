@@ -70,7 +70,7 @@ export default defineConfig(({ command, mode }) => {
       // site/) — keep outDir under site/ so the prod binary can embed its own
       // built assets without reaching outside its package tree.
       outDir: "site/dist",
-      rollupOptions: { input: "web/main.js" },
+      rollupOptions: { input: ["web/main.js", "web/preview.js"] },
     },
   };
 });

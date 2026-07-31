@@ -14,7 +14,7 @@ import (
 // (pressed={true}), and one disabled.
 component Basic() {
 	<div class="flex flex-wrap items-center gap-4">
-		<ui.Toggle aria-label="Toggle bold">
+		<ui.Toggle aria-label="Toggle bold" aria-invalid="true">
 			<icon.Bold/>
 			Bold
 		</ui.Toggle>

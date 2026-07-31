@@ -22,6 +22,12 @@ func init() {
 		SourcePath: "combobox/clear.gsx",
 	})
 	Register("combobox", Example{
+		Name:       "trigger-clear",
+		Title:      "Trigger and clear",
+		Node:       examplecombobox.TriggerClear(),
+		SourcePath: "combobox/trigger-clear.gsx",
+	})
+	Register("combobox", Example{
 		Name:       "form",
 		Title:      "Form",
 		Node:       examplecombobox.Form(),

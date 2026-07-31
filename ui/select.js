@@ -28,7 +28,7 @@ const isDisabled = (item) =>
   item.getAttribute("aria-disabled") === "true" || "disabled" in item.dataset;
 const enabledItems = (content) => itemsOf(content).filter((i) => !isDisabled(i));
 const labelOf = (item) =>
-  (item.querySelector('[data-slot="select-item-text"]') ?? item).textContent.trim();
+  (item.querySelector("[data-gsxui-select-item-text]") ?? item).textContent.trim();
 const focusedItem = (content) => {
   const a = document.activeElement;
   return a instanceof Element && content.contains(a) && a.matches("[data-gsxui-select-item]")
@@ -55,7 +55,7 @@ function applyValue(root, item, { silent = false } = {}) {
     }
   }
   const value = item.dataset.value ?? "";
-  const valueEl = trigger?.querySelector('[data-slot="select-value"]');
+  const valueEl = trigger?.querySelector("[data-gsxui-select-value]");
   if (valueEl) valueEl.textContent = labelOf(item);
   trigger?.removeAttribute("data-placeholder");
   const bridge = bridgeOf(root);
@@ -140,7 +140,7 @@ function init(root) {
     // Wire each group's aria-labelledby to its own label's generated id.
     for (const group of content.querySelectorAll("[data-gsxui-select-group]")) {
       if (group.getAttribute("aria-labelledby")) continue;
-      const label = group.querySelector('[data-slot="select-label"]');
+      const label = group.querySelector("[data-gsxui-select-label]");
       if (!label) continue;
       if (!label.id) label.id = `gsxui-select-label-${++uid}`;
       group.setAttribute("aria-labelledby", label.id);
@@ -212,6 +212,7 @@ on(
     const open = e.newState === "open";
     content.dataset.state = open ? "open" : "closed";
     const trigger = triggerOf(content);
+    if (trigger) trigger.dataset.state = open ? "open" : "closed";
     trigger?.setAttribute("aria-expanded", open ? "true" : "false");
     if (open) {
       if (!content.id) content.id = `gsxui-select-content-${++uid}`;

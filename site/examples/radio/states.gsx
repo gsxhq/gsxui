@@ -13,7 +13,7 @@ component States() {
 			<ui.Label for="radio-states-monthly">Monthly</ui.Label>
 		</div>
 		<div class="flex items-center gap-2">
-			<ui.Radio id="radio-states-yearly" name="radio-states-billing"/>
+			<ui.Radio id="radio-states-yearly" name="radio-states-billing" aria-invalid="true"/>
 			<ui.Label for="radio-states-yearly">Yearly</ui.Label>
 		</div>
 		<div class="flex items-center gap-2">

@@ -1,0 +1,106 @@
+package maia
+
+import "github.com/gsxhq/gsx"
+
+// Tabs and its parts are the shadcn/ui Tabs, minus Radix's client context —
+// each part is a plain sibling component, no shared React-tree state. The
+// root still needs to know which trigger/panel is active at first paint, so
+// Tabs stamps data-value from the caller's value; TabsTrigger/TabsContent
+// each take an explicit selected bool (the caller compares its own value to
+// the group's value) and stamp aria-selected/data-state/tabindex/hidden from
+// it — the gsx answer to "no context", same shape as the switch/checkbox
+// explicit-state ADAPTs. ui/tabs/tabs.js takes over from there: click and
+// roving-arrow-key activation, re-stamping state on every trigger/panel and
+// emitting gsxui:change on the root. Requires the tabs behavior module
+// (ui/tabs/tabs.js).
+//
+// ADAPT: shadcn's `orientation` (horizontal/vertical) and TabsList's
+// `variant` (default/line) cva axis are both dropped — out of task scope, no
+// param for either. Every class token whose sole purpose was to key off one
+// of those two Radix-only accessed states is dropped as dead weight, same
+// "drop the selector, don't ship dead CSS" call as avatar's size prop and
+// dialog's close-button open-state pair: the ancestor-orientation rules on
+// Tabs' root and TabsTrigger, the line-variant family on
+// TabsList/TabsTrigger (rounding, background, the after-element indicator
+// — invisible under the only variant we ship), and the default-list active
+// shadow rule, which unwraps to an unconditional active-state shadow. Root and list
+// no longer stamp data-orientation/orientation/data-variant — nothing reads
+// them. See docs/jsx-parity.md.
+//
+// Retargeted to nova density (2026-07-24 nova density map, `## tabs`).
+// ADAPT: nova keys the trigger's directional icon padding off
+// `data-icon="inline-start|inline-end"` stamps this component doesn't emit;
+// ported instead onto gsxui's existing has-[>svg]:px-* selector mechanism
+// (the same substitution button.gsx's sizeClass and toggle.gsx make — see
+// their own doc comments), collapsing nova's matching inline-start/
+// inline-end value (both px-1) into one has-[>svg]:px-1.
+component Tabs(value string, children gsx.Node, attrs gsx.Attrs) {
+	<div data-gsxui-tabs data-value={value} class={ "flex flex-col gap-2" } { attrs... } data-gsxui-slot-tabs>
+		{ children }
+	</div>
+}
+
+component TabsList(children gsx.Node, attrs gsx.Attrs) {
+	<div
+		role="tablist"
+		class={ "inline-flex h-8 w-fit items-center justify-center rounded-lg bg-muted p-[3px] text-muted-foreground" }
+		{ attrs... }
+		data-gsxui-slot-tabs-list
+	>
+		{ children }
+	</div>
+}
+
+// TabsTrigger's selected bool is the explicit, server-visible stand-in for
+// "does my value match the root's" — the caller (which already has both
+// values in scope when building the tree) resolves the comparison; this
+// component only renders the result. Zero value (false) renders the
+// inactive state, matching a caller who forgets to pass it — never
+// accidentally active.
+component TabsTrigger(value string, selected bool, children gsx.Node, attrs gsx.Attrs) {
+	{{
+		state := "inactive"
+		tabindex := -1
+		if selected {
+			state, tabindex = "active", 0
+		}
+	}}
+	<button
+		type="button"
+		role="tab"
+		data-gsxui-tabs-trigger
+		data-value={value}
+		data-state={state}
+		aria-selected={selected}
+		tabindex={tabindex}
+		class={
+			"relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-1.5 py-0.5 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-1 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:pointer-events-none dark:text-muted-foreground dark:hover:text-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 dark:data-[state=active]:text-foreground"
+		}
+		{ attrs... }
+		data-gsxui-slot-tabs-trigger
+	>
+		{ children }
+	</button>
+}
+
+// TabsContent's selected bool mirrors TabsTrigger's — same value-comparison
+// contract, same zero-value-is-inactive default.
+component TabsContent(value string, selected bool, children gsx.Node, attrs gsx.Attrs) {
+	{{
+		state := "inactive"
+		if selected {
+			state = "active"
+		}
+	}}
+	<div
+		role="tabpanel"
+		data-value={value}
+		data-state={state}
+		hidden={!selected}
+		class={ "flex-1 text-sm outline-none" }
+		{ attrs... }
+		data-gsxui-slot-tabs-content
+	>
+		{ children }
+	</div>
+}

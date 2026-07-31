@@ -1,0 +1,34 @@
+@layer components {
+  /* Label migrated to the slot axis (registry/styles/{nova,maia}/label.css)
+     EXCEPT these two opacity-50 rules, which must stay here as plain CSS.
+     Their caller-overridability depends on the CSS LAYER boundary — these
+     rules live in @layer components, a caller's plain utility class lives
+     in @layer utilities, and @layer utilities always wins regardless of
+     specificity. That guarantee only exists pre-resolution: if these rules
+     migrated onto Label's recipe, each would resolve to a literal
+     `[[data-disabled=true]_&]:opacity-50` / `[:disabled~&]:opacity-50`
+     utility class Tailwind scans directly out of ui/label.gsx — no longer
+     inside an explicit @layer components boundary at consumption time — and
+     each would then compete on ordinary specificity instead, at (0,2,0) and
+     permanently beat a caller's plain `opacity-*`. See
+     docs/superpowers/specs/2026-07-29-slot-axis-and-component-migration-design.md
+     section 10b, and assets/css/styles/default/pagination.css and
+     assets/css/styles/default/card.css for the identical prior fix.
+
+     `pointer-events-none` (ancestor case) and `cursor-not-allowed` (sibling
+     case) are NOT here — those two stayed on the migrated recipe in
+     registry/styles/{nova,maia}/label.css on purpose. See that file's own
+     comment: no caller should be able to re-enable pointer interaction on a
+     label paired with a disabled control, so losing override power on those
+     two properties is correct, not a regression. Only the purely
+     presentational opacity-50 pair needed restoring.
+
+     Nothing else in Label's own recipe sets opacity in either state, so the
+     layer gate has nothing to contest these rules against. */
+  :where([data-disabled="true"]) :where([data-gsxui-slot-label]) {
+    @apply opacity-50;
+  }
+  :disabled ~ :where([data-gsxui-slot-label]) {
+    @apply opacity-50;
+  }
+}

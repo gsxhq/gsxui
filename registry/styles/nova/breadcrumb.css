@@ -1,0 +1,37 @@
+/* Source: assets/css/styles/default/breadcrumb.css. The root <nav> and the
+   ellipsis-label slot carry no rules here — the root is unstyled, and
+   ellipsis-label is fully styled by a shared sr-only rule in
+   assets/css/foundation.css's @layer base (shared with Pagination, Dialog,
+   Sheet, Command, Combobox, Carousel, Calendar — foundation mechanics, not
+   Breadcrumb's own rule, so it stays there untouched).
+
+   Separator and Ellipsis's default.css rules only reach their child <svg>
+   (`> svg { size-X }`, unconditional, not :has()) — translated as a
+   same-slot `[&>svg]:size-X` arbitrary variant on each slot's own base rule.
+   Nova and Maia have not diverged on Breadcrumb, so this file is
+   byte-identical to registry/styles/maia/breadcrumb.css. */
+@layer components {
+  .gsxui-recipe-breadcrumb-list {
+    @apply flex flex-wrap items-center gap-1.5 text-sm break-words text-muted-foreground;
+  }
+
+  .gsxui-recipe-breadcrumb-item {
+    @apply inline-flex items-center gap-1;
+  }
+
+  .gsxui-recipe-breadcrumb-link {
+    @apply transition-colors hover:text-foreground;
+  }
+
+  .gsxui-recipe-breadcrumb-page {
+    @apply font-normal text-foreground;
+  }
+
+  .gsxui-recipe-breadcrumb-separator {
+    @apply [&>svg]:size-3.5;
+  }
+
+  .gsxui-recipe-breadcrumb-ellipsis {
+    @apply flex size-5 items-center justify-center [&>svg]:size-4;
+  }
+}

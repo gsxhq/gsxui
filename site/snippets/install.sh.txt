@@ -1,1 +1,2 @@
+go install github.com/gsxhq/gsx/cmd/gsx@latest
 go install github.com/gsxhq/gsxui/cmd/gsxui@latest

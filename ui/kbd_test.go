@@ -1,27 +1,61 @@
 package ui_test
 
 import (
+	"html"
+	"os"
+	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 
 	gsx "github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/internal/recipe"
+	"github.com/gsxhq/gsxui/internal/stylegen"
+	"github.com/gsxhq/gsxui/merge"
 	"github.com/gsxhq/gsxui/ui"
 )
 
+// novaKbdRecipe loads the default style's Kbd recipe once. ui.Kbd and
+// ui.KbdGroup are generated output now, so the classes they render are the
+// default style's concrete utilities — same pattern as novaButtonRecipe in
+// button_test.go.
+var novaKbdRecipe = sync.OnceValue(func() recipe.Style {
+	path := filepath.Join("..", "registry", "styles", stylegen.DefaultStyle, "kbd.css")
+	src, err := os.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+	style, err := recipe.ParseStyle(path, src)
+	if err != nil {
+		panic(err)
+	}
+	return style
+})
+
+func kbdRecipeUtilities(class string) []string {
+	rule, ok := novaKbdRecipe().Lookup(class)
+	if !ok {
+		panic("default style declares no recipe " + class)
+	}
+	return rule.Utilities
+}
+
+func canonicalKbdClass(caller ...string) string {
+	classes := append([]string(nil), kbdRecipeUtilities("gsxui-recipe-kbd")...)
+	classes = append(classes, caller...)
+	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
+}
+
+func canonicalKbdGroupClass(caller ...string) string {
+	classes := append([]string(nil), kbdRecipeUtilities("gsxui-recipe-kbd-group")...)
+	classes = append(classes, caller...)
+	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
+}
+
 func TestKbdDefault(t *testing.T) {
-	// The class string carries Tailwind arbitrary-variant selectors built
-	// from "&" and "'" — both are HTML-escaped (&amp;, &#39;) in the
-	// rendered attribute value, the same ambiguous-ampersand/attribute
-	// escaping accordion's ported "[[open]>summary_&]:rotate-180" selector
-	// goes through (see accordion_test.go). Browsers decode the entity back
-	// to the literal character when parsing the attribute, so Tailwind's
-	// selector matching is unaffected.
 	got := render(t, ui.Kbd(gsx.Raw("Ctrl"), nil))
 	for _, want := range []string{
-		`<kbd data-slot="kbd"`,
-		"pointer-events-none inline-flex h-5 w-fit min-w-5 items-center justify-center gap-1 rounded-sm bg-muted px-1 font-sans text-xs font-medium text-muted-foreground select-none",
-		"[&amp;_svg:not([class*=&#39;size-&#39;])]:size-3",
-		"[[data-slot=tooltip-content]_&amp;]:bg-background/20 [[data-slot=tooltip-content]_&amp;]:text-background dark:[[data-slot=tooltip-content]_&amp;]:bg-background/10",
+		`<kbd `, `data-gsxui-slot-kbd`,
 		">Ctrl</kbd>",
 	} {
 		if !strings.Contains(got, want) {
@@ -30,15 +64,11 @@ func TestKbdDefault(t *testing.T) {
 	}
 }
 
-// Caller class merges via tailwind-merge — h-5 (height utility) must be
-// replaced, not just appended alongside, by a caller-supplied h-8.
-func TestKbdCallerClassMerges(t *testing.T) {
+func TestKbdCallerClassIsForwardedOnce(t *testing.T) {
 	got := render(t, ui.Kbd(nil, gsx.Attrs{{Key: "class", Value: "h-8"}}))
-	if strings.Contains(got, "h-5") {
-		t.Errorf("base h-5 should be dropped by caller h-8\nin: %s", got)
-	}
-	if !strings.Contains(got, "h-8") {
-		t.Errorf("missing caller class h-8\nin: %s", got)
+	wantClass := canonicalKbdClass("h-8")
+	if strings.Count(got, wantClass) != 1 || strings.Count(got, `class=`) != 1 {
+		t.Errorf("caller class must follow exact canonical Kbd utilities once\nwant: %s\nin: %s", wantClass, got)
 	}
 }
 
@@ -55,7 +85,7 @@ func TestKbdPinned(t *testing.T) {
 	// Exact full-render pin. Token-for-token against shadcn's Kbd
 	// (registry/new-york-v4/ui/kbd.tsx) — no dropped tokens.
 	got := render(t, ui.Kbd(gsx.Raw("Ctrl"), nil))
-	want := `<kbd data-slot="kbd" class="pointer-events-none inline-flex h-5 w-fit min-w-5 items-center justify-center gap-1 rounded-sm bg-muted px-1 font-sans text-xs font-medium text-muted-foreground select-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-3 [[data-slot=tooltip-content]_&amp;]:bg-background/20 [[data-slot=tooltip-content]_&amp;]:text-background dark:[[data-slot=tooltip-content]_&amp;]:bg-background/10">Ctrl</kbd>`
+	want := `<kbd ` + canonicalKbdClass() + ` data-gsxui-slot-kbd>Ctrl</kbd>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -63,7 +93,7 @@ func TestKbdPinned(t *testing.T) {
 
 func TestKbdGroupDefault(t *testing.T) {
 	got := render(t, ui.KbdGroup(gsx.Raw("<kbd>Ctrl</kbd><kbd>C</kbd>"), nil))
-	want := `<kbd data-slot="kbd-group" class="inline-flex items-center gap-1"><kbd>Ctrl</kbd><kbd>C</kbd></kbd>`
+	want := `<kbd ` + canonicalKbdGroupClass() + ` data-gsxui-slot-kbd-group><kbd>Ctrl</kbd><kbd>C</kbd></kbd>`
 	if got != want {
 		t.Errorf("got %s want %s", got, want)
 	}
@@ -78,7 +108,7 @@ func TestKbdGroupAttrsFallThrough(t *testing.T) {
 
 func TestKbdGroupPinned(t *testing.T) {
 	got := render(t, ui.KbdGroup(gsx.Raw("<kbd>Ctrl</kbd>"), nil))
-	want := `<kbd data-slot="kbd-group" class="inline-flex items-center gap-1"><kbd>Ctrl</kbd></kbd>`
+	want := `<kbd ` + canonicalKbdGroupClass() + ` data-gsxui-slot-kbd-group><kbd>Ctrl</kbd></kbd>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

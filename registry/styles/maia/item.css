@@ -1,0 +1,118 @@
+/* Source: assets/css/styles/default/item.css.
+
+   Relational forms folded in, all four already proven by earlier waves:
+   `:is(a[data-gsxui-slot-item])` and its :hover as `[a&]:` (Badge's form),
+   the media/description descendant-svg and -img rules as `[&_svg]:`/`[&_img]:`
+   (Empty/Select's form), the description's child <a> rules as `[&>a]:` and
+   `[&>a:hover]:` (Empty's form), and the root's focus-visible as the plain
+   `focus-visible:` variant.
+
+   NOT migrated, deliberately (§ 10b) — it survives in
+   assets/css/styles/default/item.css, which explains it in place:
+
+     1. the media offset rule
+        (`item:has(item-description) item-media`, translate-y-0.5 + self-start).
+        As an ancestor-scoped arbitrary variant this compiles to a (0,3,0)
+        selector and would permanently outrank a caller's own self-* / translate-*
+        utility. The media slot's own recipe sets neither align-self nor
+        translate, so retaining the whole rule leaves nothing dead behind.
+     2. NOTHING — item-content's flex group DID migrate, after a first pass
+        tried to retain it and the layer gate rejected that. Reasoning, in
+        order:
+          * The adjacent-sibling rule (`item-content + item-content` -> flex-none)
+            looks like a § 10b case, and retaining it alone would leave flex-1
+            on the recipe and the retained flex-none permanently DEAD (one
+            property group, split across two layers) — the md:text-sm mistake.
+          * Retaining the whole flex group instead fails
+            `stylegen --check-layers`: Item's own utility set includes shrink-0
+            (media) and basis-full (header/footer), and tailwind-merge treats
+            the flex shorthand as conflicting with shrink/basis, so any
+            components-layer flex-* rule on an element Item renders is judged
+            losable.
+          * Migrating both is correct anyway, and is what upstream shadcn
+            ships verbatim (ItemContent's className is
+            "flex flex-1 flex-col gap-1 [&+[data-slot=item-content]]:flex-none").
+            flex-1 stays caller-overridable because it is a PLAIN utility that
+            tailwind-merge dedupes against a caller's own flex-*; and the
+            sibling variant paints a DIFFERENT element than the one carrying
+            the class, which § 10b explicitly exempts from the specificity
+            hazard. The one residual cost — a caller cannot override flex on
+            the SECOND of two adjacent contents — is upstream's behaviour too.
+
+   Nova and Maia have not diverged on Item, so this file is byte-identical to
+   registry/styles/nova/item.css. Every arbitrary variant below was compiled
+   with this repo's Tailwind v4 CLI before use. */
+@layer components {
+  .gsxui-recipe-item-group {
+    @apply flex flex-col;
+  }
+
+  .gsxui-recipe-item-separator {
+    @apply my-2;
+  }
+
+  .gsxui-recipe-item {
+    @apply flex flex-wrap items-center gap-2.5 rounded-lg border border-transparent px-3 py-2.5 text-sm transition-colors duration-100 outline-none;
+    @apply focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50;
+    @apply [a&]:transition-colors;
+    @apply [a&]:hover:bg-accent/50;
+  }
+
+  .gsxui-recipe-item-variant-default {
+    @apply bg-transparent;
+  }
+
+  .gsxui-recipe-item-variant-outline {
+    @apply border-border;
+  }
+
+  .gsxui-recipe-item-variant-muted {
+    @apply bg-muted/50;
+  }
+
+  .gsxui-recipe-item-media {
+    @apply flex shrink-0 items-center justify-center gap-2;
+    @apply [&_svg]:pointer-events-none;
+  }
+
+  .gsxui-recipe-item-media-variant-default {
+    @apply bg-transparent;
+  }
+
+  .gsxui-recipe-item-media-variant-icon {
+    @apply size-8 rounded-sm border bg-muted;
+    @apply [&_svg:not([class*='size-'])]:size-4;
+  }
+
+  .gsxui-recipe-item-media-variant-image {
+    @apply size-10 overflow-hidden rounded-sm;
+    @apply [&_img]:size-full [&_img]:object-cover;
+  }
+
+  .gsxui-recipe-item-content {
+    @apply flex flex-1 flex-col gap-1;
+    @apply [&+[data-gsxui-slot-item-content]]:flex-none;
+  }
+
+  .gsxui-recipe-item-title {
+    @apply flex w-fit items-center gap-2 text-sm leading-snug font-medium;
+  }
+
+  .gsxui-recipe-item-description {
+    @apply line-clamp-2 text-sm leading-normal font-normal text-balance text-muted-foreground;
+    @apply [&>a]:underline [&>a]:underline-offset-4;
+    @apply [&>a:hover]:text-primary;
+  }
+
+  .gsxui-recipe-item-actions {
+    @apply flex items-center gap-2;
+  }
+
+  .gsxui-recipe-item-header {
+    @apply flex basis-full items-center justify-between gap-2;
+  }
+
+  .gsxui-recipe-item-footer {
+    @apply flex basis-full items-center justify-between gap-2;
+  }
+}

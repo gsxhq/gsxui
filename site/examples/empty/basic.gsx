@@ -11,6 +11,7 @@ import (
 component Basic() {
 	<ui.Empty>
 		<ui.EmptyHeader>
+			<ui.EmptyMedia>Default media</ui.EmptyMedia>
 			<ui.EmptyMedia variant="icon">
 				<icon.Inbox/>
 			</ui.EmptyMedia>

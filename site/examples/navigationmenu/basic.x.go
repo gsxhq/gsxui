@@ -12,8 +12,8 @@ import (
 //line basic.gsx:9:1
 // Basic mirrors the shape of shadcn's own navigation-menu-demo.tsx: a plain
 // top-level link (Home), a trigger opening a small grid of description
-// links (Components), and another plain link (Docs). Home/Docs render via
-// ui.NavigationMenuTriggerStyle() directly (no dropdown of their own);
+// links (Components), and another plain link (Docs). Home/Docs use
+// variant="trigger" directly (no dropdown of their own);
 // Components opens its own fully-chromed floating panel, positioned under
 // its own trigger — this port ships shadcn's viewport={false} configuration
 // only (see ui/navigation-menu.gsx's own file header GAP paragraph), so
@@ -33,11 +33,11 @@ func Basic() _gsxrt.Node {
 				_gsxgw.Node(ctx, ui.NavigationMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:21:5
-					_gsxgw.Node(ctx, ui.NavigationMenuLink(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw.Node(ctx, ui.NavigationMenuLink(true, "trigger", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Home")
 						return _gsxgw.Err()
-					}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(ui.NavigationMenuTriggerStyle()))}}, _gsxrt.Attrs{{Key: "href", Value: "#"}})))
+					}), _gsxrt.Attrs{{Key: "href", Value: "#"}}))
 					return _gsxgw.Err()
 				}), nil))
 //line basic.gsx:23:4
@@ -55,7 +55,7 @@ func Basic() _gsxrt.Node {
 //line basic.gsx:26:6
 						_gsxgw.S("<div class=\"grid w-80 gap-2\">")
 //line basic.gsx:27:7
-						_gsxgw.Node(ctx, ui.NavigationMenuLink(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw.Node(ctx, ui.NavigationMenuLink(false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:28:8
 							_gsxgw.S("<div class=\"text-sm font-medium\">Dialog</div>")
@@ -63,21 +63,21 @@ func Basic() _gsxrt.Node {
 							_gsxgw.S("<div class=\"text-muted-foreground\">A window overlaid on the page, rendered with the native &lt;dialog&gt; element.</div>")
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "href", Value: "#"}}))
-//line basic.gsx:31:7
-						_gsxgw.Node(ctx, ui.NavigationMenuLink(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line basic.gsx:33:7
+						_gsxgw.Node(ctx, ui.NavigationMenuLink(false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:32:8
+//line basic.gsx:34:8
 							_gsxgw.S("<div class=\"text-sm font-medium\">Dropdown Menu</div>")
-//line basic.gsx:33:8
+//line basic.gsx:35:8
 							_gsxgw.S("<div class=\"text-muted-foreground\">Displays a menu of actions or options, triggered by a button.</div>")
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "href", Value: "#"}}))
-//line basic.gsx:35:7
-						_gsxgw.Node(ctx, ui.NavigationMenuLink(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line basic.gsx:37:7
+						_gsxgw.Node(ctx, ui.NavigationMenuLink(false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:36:8
+//line basic.gsx:38:8
 							_gsxgw.S("<div class=\"text-sm font-medium\">Tooltip</div>")
-//line basic.gsx:37:8
+//line basic.gsx:39:8
 							_gsxgw.S("<div class=\"text-muted-foreground\">A popup that displays information related to an element on hover.</div>")
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "href", Value: "#"}}))
@@ -86,17 +86,19 @@ func Basic() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:42:4
+//line basic.gsx:44:4
 				_gsxgw.Node(ctx, ui.NavigationMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:43:5
-					_gsxgw.Node(ctx, ui.NavigationMenuLink(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line basic.gsx:45:5
+					_gsxgw.Node(ctx, ui.NavigationMenuLink(false, "trigger", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Docs")
 						return _gsxgw.Err()
-					}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(ui.NavigationMenuTriggerStyle()))}}, _gsxrt.Attrs{{Key: "href", Value: "#"}})))
+					}), _gsxrt.Attrs{{Key: "href", Value: "#"}}))
 					return _gsxgw.Err()
 				}), nil))
+//line basic.gsx:47:4
+				_gsxgw.Node(ctx, ui.NavigationMenuIndicator(nil))
 				return _gsxgw.Err()
 			}), nil))
 			return _gsxgw.Err()

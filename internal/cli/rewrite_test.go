@@ -1,51 +1,162 @@
 package cli
 
 import (
+	"bytes"
 	"strings"
 	"testing"
 )
 
-func TestRewriteGsx(t *testing.T) {
-	in := `package ui
+func TestRewriteGsxRewritesOnlyExactUIImports(t *testing.T) {
+	in := []byte(`package ui
 
-import (
-	"github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
-)
-`
-	out := string(RewriteGsx([]byte(in), "example.com/app", "ui"))
-	if !strings.Contains(out, `"example.com/app/ui"`) {
-		t.Fatalf("ui import not rewritten:\n%s", out)
+import "github.com/gsxhq/gsx"
+import root "github.com/gsxhq/gsxui/ui"
+import _ "github.com/gsxhq/gsxui/ui/icon"
+import . "github.com/gsxhq/gsxui/ui/internal/helpers"
+
+const commentLookalike = "github.com/gsxhq/gsxui/ui"
+
+// github.com/gsxhq/gsxui/ui/icon in a comment must stay unchanged.
+component Example() {
+	<div data-path="github.com/gsxhq/gsxui/ui/icon" />
+}
+`)
+
+	got, err := RewriteGsx(in, "example.com/app", "components/ui")
+	if err != nil {
+		t.Fatal(err)
 	}
-	if !strings.Contains(out, `"github.com/gsxhq/gsx"`) {
-		t.Fatalf("gsx runtime import must be untouched:\n%s", out)
-	}
-	if strings.Contains(out, "gsxhq/gsxui") {
-		t.Fatalf("gsxui reference left behind:\n%s", out)
+	for _, want := range []string{
+		`import "github.com/gsxhq/gsx"`,
+		`root "example.com/app/components/ui"`,
+		`_ "example.com/app/components/ui/icon"`,
+		`. "example.com/app/components/ui/internal/helpers"`,
+		`const commentLookalike = "github.com/gsxhq/gsxui/ui"`,
+		`// github.com/gsxhq/gsxui/ui/icon in a comment must stay unchanged.`,
+		`data-path="github.com/gsxhq/gsxui/ui/icon"`,
+	} {
+		if !strings.Contains(string(got), want) {
+			t.Errorf("rewritten GSX missing %q:\n%s", want, got)
+		}
 	}
 }
 
-func TestRewriteGsxIcon(t *testing.T) {
-	in := `package ui
+func TestRewriteGsxPreservesLookalikeImportPaths(t *testing.T) {
+	in := []byte(`package ui
 
 import (
-	"github.com/gsxhq/gsxui/ui/icon"
+	"github.com/gsxhq/gsxui/ui2"
+	"github.com/gsxhq/gsxui/ui?variant=maia"
+	"github.com/gsxhq/gsxui/ui%2Ficon"
+	"github.com/gsxhq/gsxui/u\x69x/icon"
 )
-`
-	out := string(RewriteGsx([]byte(in), "example.com/app", "ui"))
-	if !strings.Contains(out, `"example.com/app/ui/icon"`) {
-		t.Fatalf("icon import not rewritten:\n%s", out)
+`)
+
+	got, err := RewriteGsx(in, "example.com/app", "ui")
+	if err != nil {
+		t.Fatal(err)
 	}
-	if strings.Contains(out, "gsxhq/gsxui") {
-		t.Fatalf("gsxui reference left behind:\n%s", out)
+	if !bytes.Equal(got, in) {
+		t.Fatalf("lookalike imports changed:\n%s\nwant:\n%s", got, in)
 	}
 }
 
-func TestRewriteGsxCustomUIDir(t *testing.T) {
-	in := `import "github.com/gsxhq/gsxui/ui"`
-	out := string(RewriteGsx([]byte(in), "example.com/app", "components/ui"))
-	if !strings.Contains(out, `"example.com/app/components/ui"`) {
-		t.Fatalf("ui import not rewritten for custom uiDir:\n%s", out)
+func TestRewriteGsxDecodesRawAndEscapedExactImports(t *testing.T) {
+	in := []byte("package ui\n\n" +
+		"import (\n" +
+		"\traw `github.com/gsxhq/gsxui/ui/icon`\n" +
+		"\thex \"github.com/gsxhq/gsxui/u\\x69\"\n" +
+		"\tescapedSlash \"github.com/gsxhq/gsxui/ui\\x2fhelpers\"\n" +
+		")\n\n" +
+		"const unrelated = `github.com/gsxhq/gsxui/ui/icon`\n")
+
+	once, err := RewriteGsx(in, "example.com/app", "components/ui")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, want := range []string{
+		`raw "example.com/app/components/ui/icon"`,
+		`hex "example.com/app/components/ui"`,
+		`escapedSlash "example.com/app/components/ui/helpers"`,
+		"const unrelated = `github.com/gsxhq/gsxui/ui/icon`",
+	} {
+		if !strings.Contains(string(once), want) {
+			t.Errorf("rewritten GSX missing %q:\n%s", want, once)
+		}
+	}
+
+	twice, err := RewriteGsx(once, "example.com/app", "components/ui")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(twice, once) {
+		t.Fatalf("decoded-literal rewrite is not idempotent:\nsecond:\n%s\nfirst:\n%s", twice, once)
+	}
+}
+
+func TestRewriteGsxHandlesGroupedAliasesAndIsIdempotent(t *testing.T) {
+	in := []byte(`package ui
+
+import (
+	alias "github.com/gsxhq/gsxui/ui"
+	_ "github.com/gsxhq/gsxui/ui/icon"
+	. "github.com/gsxhq/gsxui/ui/helpers"
+)
+`)
+
+	once, err := RewriteGsx(in, "example.com/app", "ui")
+	if err != nil {
+		t.Fatal(err)
+	}
+	twice, err := RewriteGsx(once, "example.com/app", "ui")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(twice, once) {
+		t.Fatalf("second rewrite changed output:\n%s\nfirst:\n%s", twice, once)
+	}
+}
+
+func TestRewriteGsxRejectsMalformedSource(t *testing.T) {
+	tests := [][]byte{
+		[]byte(`package ui
+
+import "github.com/gsxhq/gsxui/ui"
+
+component Broken( {
+`),
+		[]byte("package ui\n\nimport \"github.com/gsxhq/gsxui/u\\q\"\n"),
+	}
+	for _, in := range tests {
+		if _, err := RewriteGsx(in, "example.com/app", "ui"); err == nil {
+			t.Fatalf("RewriteGsx accepted malformed GSX:\n%s", in)
+		}
+	}
+}
+
+func TestRewriteGsxRejectsInvalidDestination(t *testing.T) {
+	tests := []struct {
+		name   string
+		module string
+		uiDir  string
+	}{
+		{name: "empty module", module: "", uiDir: "ui"},
+		{name: "module query", module: "example.com/app?style=maia", uiDir: "ui"},
+		{name: "module alias", module: "example.com/app/../other", uiDir: "ui"},
+		{name: "empty UI directory", module: "example.com/app", uiDir: ""},
+		{name: "absolute UI directory", module: "example.com/app", uiDir: "/ui"},
+		{name: "escaping UI directory", module: "example.com/app", uiDir: "../ui"},
+		{name: "unclean UI directory", module: "example.com/app", uiDir: "components/../ui"},
+		{name: "backslash UI directory", module: "example.com/app", uiDir: `components\ui`},
+		{name: "query UI directory", module: "example.com/app", uiDir: "ui?style=maia"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if _, err := RewriteGsx([]byte("package ui\n"), tt.module, tt.uiDir); err == nil {
+				t.Fatal("RewriteGsx accepted invalid destination")
+			}
+		})
 	}
 }
 

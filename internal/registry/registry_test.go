@@ -2,10 +2,12 @@ package registry_test
 
 import (
 	"reflect"
+	"slices"
 	"strings"
 	"testing"
 
 	"github.com/gsxhq/gsxui/internal/registry"
+	"github.com/gsxhq/gsxui/internal/stylecontract"
 )
 
 func TestComponents(t *testing.T) {
@@ -13,7 +15,7 @@ func TestComponents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "calendar", "card", "carousel", "checkbox", "collapsible", "combobox", "command", "context-menu", "dialog", "drawer", "dropdown", "empty", "field", "hover-card", "icon", "input", "input-group", "input-otp", "item", "kbd", "label", "menubar", "native-select", "navigation-menu", "pagination", "popover", "progress", "radio", "resizable", "scroll-area", "select", "separator", "sheet", "sidebar", "skeleton", "slider", "sonner", "spinner", "switch", "table", "tabs", "textarea", "toggle", "toggle-group", "tooltip"}
+	want := []string{"accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge", "breadcrumb", "button", "button-group", "calendar", "card", "carousel", "checkbox", "collapsible", "combobox", "command", "context-menu", "dialog", "drawer", "dropdown-menu", "empty", "field", "hover-card", "icon", "input", "input-group", "input-otp", "item", "kbd", "label", "menubar", "native-select", "navigation-menu", "pagination", "popover", "progress", "radio", "resizable", "scroll-area", "select", "separator", "sheet", "sidebar", "skeleton", "slider", "spinner", "switch", "table", "tabs", "textarea", "toast", "toaster", "toggle", "toggle-group", "tooltip"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -21,6 +23,21 @@ func TestComponents(t *testing.T) {
 		if slicesContains(got, unwanted) {
 			t.Fatalf("Components() = %v, should not contain %q", got, unwanted)
 		}
+	}
+}
+
+func TestComponentsMatchTypedStyleContract(t *testing.T) {
+	components, err := registry.Components()
+	if err != nil {
+		t.Fatal(err)
+	}
+	contractComponents := make([]string, 0, len(stylecontract.All()))
+	for _, component := range stylecontract.All() {
+		contractComponents = append(contractComponents, component.RegistryName)
+	}
+	slices.Sort(contractComponents)
+	if !slices.Equal(components, contractComponents) {
+		t.Fatalf("registry components = %v; typed style contract = %v", components, contractComponents)
 	}
 }
 
@@ -141,16 +158,15 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("button deps = %v, want none", deps)
 	}
 
-	// pagination.gsx imports ui/icon (ChevronLeft/ChevronRight/Ellipsis) and
-	// PaginationLink calls button.gsx's package-private base/variantClass/
-	// sizeClass helpers directly (flat package, no import needed for that
-	// edge — resolved via declIndex, same shape as dialog's button dep).
+	// pagination.gsx imports ui/icon (ChevronLeft/ChevronRight/Ellipsis).
+	// Its Button relationship is now token composition in the shared style
+	// contract, not a Go code dependency for the vendored source graph.
 	deps, err = registry.Deps("pagination")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(deps, []string{"button", "icon"}) {
-		t.Fatalf("pagination deps = %v, want [button icon]", deps)
+	if !reflect.DeepEqual(deps, []string{"icon"}) {
+		t.Fatalf("pagination deps = %v, want [icon]", deps)
 	}
 
 	// button-group.gsx has no icon import; ButtonGroupSeparator calls
@@ -284,16 +300,15 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("toggle deps = %v, want none", deps)
 	}
 
-	// toggle-group.gsx has no icon import; ToggleGroupItem calls toggle.gsx's
-	// package-private toggleBase/toggleVariantClass/toggleSizeClass directly
-	// (flat package intra-package edge, same declIndex-resolved shape as
-	// pagination's own button dep above).
+	// ToggleGroupItem composes Toggle's styling token, but the CSS pack owns
+	// that token's declarations and toggle-group.js owns group interaction.
+	// There is no source or behavior dependency on toggle.gsx.
 	deps, err = registry.Deps("toggle-group")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(deps, []string{"toggle"}) {
-		t.Fatalf("toggle-group deps = %v, want [toggle]", deps)
+	if len(deps) != 0 {
+		t.Fatalf("toggle-group deps = %v, want none", deps)
 	}
 
 	// popover.gsx has no icon import and no intra-package reference to
@@ -404,16 +419,27 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("select deps = %v, want [icon]", deps)
 	}
 
-	// sonner.gsx imports ui/icon: the server-rendered ui.Toast card (the
+	// toast.gsx imports ui/icon: the server-rendered ui.Toast card (the
 	// single source of the toast <li> markup, shipped as inert per-type
-	// <template>s and cloned by ui/sonner.js) renders its type glyph and the
-	// close X via icon.* Go calls — so Deps is [icon], no longer empty.
-	deps, err = registry.Deps("sonner")
+	// <template>s by Toaster and cloned by ui/toaster.js) renders its type
+	// glyph and the close X via icon.* Go calls — so Deps is [icon].
+	deps, err = registry.Deps("toast")
 	if err != nil {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(deps, []string{"icon"}) {
-		t.Fatalf("sonner deps = %v, want [icon]", deps)
+		t.Fatalf("toast deps = %v, want [icon]", deps)
+	}
+
+	// toaster.gsx imports nothing itself, but its generated .x.go renders
+	// the Toast component (the per-type <template>s), so declIndex resolves
+	// the intra-package edge to [toast].
+	deps, err = registry.Deps("toaster")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(deps, []string{"toast"}) {
+		t.Fatalf("toaster deps = %v, want [toast]", deps)
 	}
 
 	// combobox.gsx imports ui/icon (ComboboxItem's Check, ComboboxTrigger's
@@ -446,18 +472,15 @@ func TestDeps(t *testing.T) {
 		t.Fatalf("sidebar deps = %v, want [button icon input separator sheet skeleton tooltip]", deps)
 	}
 
-	// calendar.gsx imports ui/icon (nav chevrons) and composes button.gsx's
-	// package-private base/variantClass helpers directly (the nav buttons,
-	// flat-package intra-package edge, same declIndex-resolved shape as
-	// pagination's own button dep) plus ui.NativeSelect/NativeSelectOption
-	// (the dropdown captionLayout's month/year pickers, Tier 4 calendar
-	// Task 3) — three deps, Deps sorts its result.
+	// Calendar's controls compose Button's public styling token in markup
+	// and CSS, not Button's Go implementation. Its only code dependencies
+	// are ui/icon (nav chevrons) and NativeSelect/NativeSelectOption.
 	deps, err = registry.Deps("calendar")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(deps, []string{"button", "icon", "native-select"}) {
-		t.Fatalf("calendar deps = %v, want [button icon native-select]", deps)
+	if !reflect.DeepEqual(deps, []string{"icon", "native-select"}) {
+		t.Fatalf("calendar deps = %v, want [icon native-select]", deps)
 	}
 
 	if _, err := registry.Deps("nosuch"); err == nil || !strings.Contains(err.Error(), "gsxui list") {
@@ -469,8 +492,8 @@ func TestDeps(t *testing.T) {
 }
 
 func TestHasJS(t *testing.T) {
-	if !registry.HasJS("dropdown") {
-		t.Error("dropdown should have JS")
+	if !registry.HasJS("dropdown-menu") {
+		t.Error("dropdown-menu should have JS")
 	}
 	if registry.HasJS("button") {
 		t.Error("button should not have JS")
@@ -579,14 +602,16 @@ func TestHasJS(t *testing.T) {
 	if registry.HasJS("native-select") {
 		t.Error("native-select should not have JS")
 	}
-	// sonner has its own ui/sonner.js — it clones Toaster's server-rendered
+	// toaster has its own ui/toaster.js — it clones Toaster's server-rendered
 	// per-type <template>s into live toast <li>s and owns the stacking/
 	// timer/pause-on-hover/promise-morph lifecycle plus adoption of
-	// server-inserted rows. ui/sonner.gsx (Toaster + ui.Toast) is the
-	// single source of the card markup; HasJS derives from the
-	// <basename>.js match, so the file is ui/sonner.js.
-	if !registry.HasJS("sonner") {
-		t.Error("sonner should have JS")
+	// server-inserted rows. The lifecycle belongs to the region, not the
+	// card: ui/toast.gsx is pure markup and has no JS of its own.
+	if !registry.HasJS("toaster") {
+		t.Error("toaster should have JS")
+	}
+	if registry.HasJS("toast") {
+		t.Error("toast should not have JS")
 	}
 	// combobox has its own ui/combobox.js — filter-as-you-type (hide/show,
 	// no reordering; see its own header ADAPT), a data-highlighted +
@@ -750,13 +775,14 @@ func TestResolveTransitive(t *testing.T) {
 		t.Fatalf("got %v want %v", got, want)
 	}
 
-	// sonner depends on icon (ui.Toast renders Lucide glyphs) — Resolve pulls
-	// icon in ahead of it, same shape as select/native-select above.
-	got, err = registry.Resolve([]string{"sonner"})
+	// toaster composes toast, which depends on icon (ui.Toast renders Lucide
+	// glyphs) — Resolve walks the two-hop chain, same shape as combobox's
+	// input-group edge above.
+	got, err = registry.Resolve([]string{"toaster"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	want = []string{"icon", "sonner"}
+	want = []string{"icon", "toast", "toaster"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}
@@ -786,15 +812,13 @@ func TestResolveTransitive(t *testing.T) {
 		t.Fatalf("got %v want %v", got, want)
 	}
 
-	// calendar resolves to itself plus its three direct deps (button, icon,
-	// native-select) — native-select itself transitively depends on icon
-	// too, but icon is already in the seen set by the time native-select is
-	// visited, so the flattened result has no duplicate.
+	// Calendar resolves to itself plus icon/native-select. NativeSelect also
+	// depends on Icon, but the flattened result has no duplicate.
 	got, err = registry.Resolve([]string{"calendar"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	want = []string{"button", "calendar", "icon", "native-select"}
+	want = []string{"calendar", "icon", "native-select"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v want %v", got, want)
 	}

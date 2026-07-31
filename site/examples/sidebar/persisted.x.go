@@ -44,7 +44,7 @@ import (
 //     "sidebar_state=undefined":
 //
 //     document.addEventListener("gsxui:change", (e) => {
-//       if (!e.target.matches?.('[data-slot="sidebar-wrapper"]')) return;
+//       if (!e.target.matches?.('[data-gsxui-slot-sidebar-wrapper]')) return;
 //       document.cookie = `sidebar_state=${e.detail.open}; path=/; max-age=604800`;
 //     });
 //
@@ -72,7 +72,7 @@ func Persisted() _gsxrt.Node {
 				_gsxgw.Node(ctx, ui.SidebarHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line persisted.gsx:57:6
-					_gsxgw.S("<div class=\"px-2 py-1 text-sm font-semibold\">Acme Inc</div>")
+					_gsxgw.NodeResult(_gsxrenderbrand(ctx, _gsxgw))
 					return _gsxgw.Err()
 				}), nil))
 //line persisted.gsx:59:5
@@ -134,11 +134,11 @@ func Persisted() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 			return _gsxgw.Err()
-		}), _gsxrt.Attrs{{Key: "class", Value: "h-64 min-h-0 overflow-hidden rounded-lg border"}}))
+		}), nil))
 //line persisted.gsx:86:3
 		_gsxgw.S("<script")
 		_gsxgw.Nonce(ctx)
-		_gsxgw.S(">\ndocument.addEventListener(\"gsxui:change\", (e) => {\n\tif (!e.target.matches?.('[data-slot=\"sidebar-wrapper\"]')) return;\n\tdocument.cookie = `sidebar_state=${e.detail.open}; path=/; max-age=604800`;\n});\n</script></div>")
+		_gsxgw.S(">\ndocument.addEventListener(\"gsxui:change\", (e) => {\n\tif (!e.target.matches?.('[data-gsxui-slot-sidebar-wrapper]')) return;\n\tdocument.cookie = `sidebar_state=${e.detail.open}; path=/; max-age=604800`;\n});\n</script></div>")
 		return _gsxgw.Err()
 	})
 }

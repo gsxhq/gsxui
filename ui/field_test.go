@@ -1,16 +1,89 @@
 package ui_test
 
 import (
+	"html"
+	"os"
+	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 
 	gsx "github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/internal/recipe"
+	"github.com/gsxhq/gsxui/internal/stylegen"
+	"github.com/gsxhq/gsxui/merge"
 	"github.com/gsxhq/gsxui/ui"
 )
 
+// novaFieldRecipe loads the default style's Field recipe once — same pattern as
+// novaSeparatorRecipe in separator_test.go.
+var novaFieldRecipe = sync.OnceValue(func() recipe.Style {
+	path := filepath.Join("..", "registry", "styles", stylegen.DefaultStyle, "field.css")
+	src, err := os.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+	style, err := recipe.ParseStyle(path, src)
+	if err != nil {
+		panic(err)
+	}
+	return style
+})
+
+func fieldRecipeUtilities(class string) []string {
+	rule, ok := novaFieldRecipe().Lookup(class)
+	if !ok {
+		panic("default style declares no recipe " + class)
+	}
+	return rule.Utilities
+}
+
+// fieldRecipeClasses is the utility list one Field slot contributes: its base
+// rule, then any dimension-value rules, in accessor-call order.
+func fieldRecipeClasses(slot string, extra ...string) []string {
+	base := "gsxui-recipe-field"
+	if slot != "" {
+		base += "-" + slot
+	}
+	classes := append([]string(nil), fieldRecipeUtilities(base)...)
+	for _, value := range extra {
+		classes = append(classes, fieldRecipeUtilities(base+"-"+value)...)
+	}
+	return classes
+}
+
+// canonicalFieldClass is the class attribute one Field slot renders, plus any
+// caller classes, merged the way gsx merges class values at runtime.
+func canonicalFieldClass(slot string, extra []string, caller ...string) string {
+	classes := append(fieldRecipeClasses(slot, extra...), caller...)
+	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
+}
+
+// canonicalFieldLabelClass is what FieldLabel renders: ui.Label's own recipe
+// utilities with Field's field-label slot merged in after them as an ordinary
+// caller class. tailwind-merge is what resolves leading-snug against Label's
+// leading-none here — the reason the old @layer utilities promotion in
+// assets/css/styles/default.css could be retired.
+func canonicalFieldLabelClass(caller ...string) string {
+	classes := append([]string(nil), labelRecipeUtilities("gsxui-recipe-label")...)
+	classes = append(classes, fieldRecipeClasses("label")...)
+	classes = append(classes, caller...)
+	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
+}
+
+// canonicalFieldSeparatorClass is what the <Separator> inside FieldSeparator
+// renders: Separator's own horizontal recipe plus Field's field-separator slot.
+func canonicalFieldSeparatorClass(caller ...string) string {
+	classes := append([]string(nil), separatorRecipeUtilities("gsxui-recipe-separator")...)
+	classes = append(classes, separatorRecipeUtilities("gsxui-recipe-separator-orientation-horizontal")...)
+	classes = append(classes, fieldRecipeClasses("separator")...)
+	classes = append(classes, caller...)
+	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
+}
+
 func TestFieldSetPinned(t *testing.T) {
 	got := render(t, ui.FieldSet(gsx.Raw("x"), nil))
-	want := `<fieldset data-slot="field-set" class="flex flex-col gap-4 has-[&gt;[data-slot=checkbox-group]]:gap-3 has-[&gt;[data-slot=radio-group]]:gap-3">x</fieldset>`
+	want := `<fieldset ` + canonicalFieldClass("set", nil) + ` data-gsxui-slot-field-set>x</fieldset>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -23,14 +96,10 @@ func TestFieldSetAttrsFallThrough(t *testing.T) {
 	}
 }
 
-// TestFieldLegendDefaultPinned pins the zero-value ("legend") variant. Both
-// data-[variant=legend]:text-base and data-[variant=label]:text-sm are
-// always present in the class string (WIN: no switch needed, the same
-// data-attribute-driven-selector shape as Separator's data-orientation, not
-// a static-block cva switch — see ui/field.gsx's own comment).
+// TestFieldLegendDefaultPinned pins the zero-value ("legend") variant.
 func TestFieldLegendDefaultPinned(t *testing.T) {
 	got := render(t, ui.FieldLegend("", gsx.Raw("x"), nil))
-	want := `<legend data-slot="field-legend" data-variant="legend" class="mb-1.5 font-medium data-[variant=legend]:text-base data-[variant=label]:text-sm">x</legend>`
+	want := `<legend data-variant="legend" ` + canonicalFieldClass("legend", []string{"variant-legend"}) + ` data-gsxui-slot-field-legend>x</legend>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -40,9 +109,6 @@ func TestFieldLegendLabelVariantPinned(t *testing.T) {
 	got := render(t, ui.FieldLegend("label", gsx.Raw("x"), nil))
 	if !strings.Contains(got, `data-variant="label"`) {
 		t.Errorf("missing data-variant=label\nin: %s", got)
-	}
-	if !strings.Contains(got, "data-[variant=label]:text-sm") {
-		t.Errorf("missing data-[variant=label]:text-sm selector\nin: %s", got)
 	}
 }
 
@@ -55,7 +121,7 @@ func TestFieldLegendAttrsFallThrough(t *testing.T) {
 
 func TestFieldGroupPinned(t *testing.T) {
 	got := render(t, ui.FieldGroup(gsx.Raw("x"), nil))
-	want := `<div data-slot="field-group" class="group/field-group @container/field-group flex w-full flex-col gap-5 data-[slot=checkbox-group]:gap-3 [&amp;&gt;[data-slot=field-group]]:gap-4">x</div>`
+	want := `<div ` + canonicalFieldClass("group", nil) + ` data-gsxui-slot-field-group>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -71,19 +137,16 @@ func TestFieldGroupAttrsFallThrough(t *testing.T) {
 // TestFieldDefaultPinned pins the zero-value ("vertical") orientation.
 func TestFieldDefaultPinned(t *testing.T) {
 	got := render(t, ui.Field("", gsx.Raw("x"), nil))
-	want := `<div role="group" data-slot="field" data-orientation="vertical" class="group/field flex w-full gap-2 data-[invalid=true]:text-destructive flex-col [&amp;&gt;*]:w-full [&amp;&gt;.sr-only]:w-auto">x</div>`
+	want := `<div role="group" data-orientation="vertical" ` + canonicalFieldClass("", []string{"orientation-vertical"}) + ` data-gsxui-slot-field>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
 }
 
-// TestFieldHorizontalPinned also proves data-orientation is genuinely
-// load-bearing: FieldDescription's own group-has-[[data-orientation=
-// horizontal]]/field:text-balance selector (see its own test) depends on
-// this exact attribute value existing on an ancestor.
+// TestFieldHorizontalPinned proves data-orientation remains load-bearing.
 func TestFieldHorizontalPinned(t *testing.T) {
 	got := render(t, ui.Field("horizontal", gsx.Raw("x"), nil))
-	want := `<div role="group" data-slot="field" data-orientation="horizontal" class="group/field flex w-full gap-2 data-[invalid=true]:text-destructive flex-row items-center [&amp;&gt;[data-slot=field-label]]:flex-auto has-[&gt;[data-slot=field-content]]:items-start has-[&gt;[data-slot=field-content]]:[&amp;&gt;[role=checkbox],[role=radio]]:mt-px">x</div>`
+	want := `<div role="group" data-orientation="horizontal" ` + canonicalFieldClass("", []string{"orientation-horizontal"}) + ` data-gsxui-slot-field>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -91,7 +154,7 @@ func TestFieldHorizontalPinned(t *testing.T) {
 
 func TestFieldResponsivePinned(t *testing.T) {
 	got := render(t, ui.Field("responsive", gsx.Raw("x"), nil))
-	want := `<div role="group" data-slot="field" data-orientation="responsive" class="group/field flex w-full gap-2 data-[invalid=true]:text-destructive flex-col @md/field-group:flex-row @md/field-group:items-center [&amp;&gt;*]:w-full @md/field-group:[&amp;&gt;*]:w-auto [&amp;&gt;.sr-only]:w-auto @md/field-group:[&amp;&gt;[data-slot=field-label]]:flex-auto @md/field-group:has-[&gt;[data-slot=field-content]]:items-start @md/field-group:has-[&gt;[data-slot=field-content]]:[&amp;&gt;[role=checkbox],[role=radio]]:mt-px">x</div>`
+	want := `<div role="group" data-orientation="responsive" ` + canonicalFieldClass("", []string{"orientation-responsive"}) + ` data-gsxui-slot-field>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -106,14 +169,19 @@ func TestFieldAttrsFallThrough(t *testing.T) {
 
 func TestFieldCallerClassMerges(t *testing.T) {
 	got := render(t, ui.Field("", nil, gsx.Attrs{{Key: "class", Value: "gap-8"}}))
-	if !strings.Contains(got, "gap-8") {
-		t.Errorf("missing caller class gap-8\nin: %s", got)
+	if strings.Count(got, "gap-8") != 1 || strings.Count(got, `class=`) != 1 {
+		t.Errorf("caller class must be forwarded exactly once\nin: %s", got)
+	}
+	// gap-8 displaces the base rule's own gap-2 through tailwind-merge —
+	// plain-vs-plain, so the caller wins before the cascade is consulted.
+	if want := canonicalFieldClass("", []string{"orientation-vertical"}, "gap-8"); !strings.Contains(got, want) {
+		t.Errorf("caller class not merged after the recipe's own\nwant: %s\nin: %s", want, got)
 	}
 }
 
 func TestFieldContentPinned(t *testing.T) {
 	got := render(t, ui.FieldContent(gsx.Raw("x"), nil))
-	want := `<div data-slot="field-content" class="group/field-content flex flex-1 flex-col gap-0.5 leading-snug">x</div>`
+	want := `<div ` + canonicalFieldClass("content", nil) + ` data-gsxui-slot-field-content>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -126,19 +194,12 @@ func TestFieldContentAttrsFallThrough(t *testing.T) {
 	}
 }
 
-// TestFieldLabelPinned proves FieldLabel actually composes ui.Label
-// (Label's own base classes come through) and that data-slot is overridden
-// from Label's own "label" to "field-label", and that leading-snug (this
-// overlay) wins its tailwind-merge conflict against Label's own
-// leading-none.
+// TestFieldLabelPinned proves FieldLabel composes the Label token.
 func TestFieldLabelPinned(t *testing.T) {
 	got := render(t, ui.FieldLabel(gsx.Raw("x"), nil))
-	want := `<label class="items-center text-sm font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50 group/field-label peer/field-label flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:opacity-50 has-[&gt;[data-slot=field]]:w-full has-[&gt;[data-slot=field]]:flex-col has-[&gt;[data-slot=field]]:rounded-lg has-[&gt;[data-slot=field]]:border [&amp;&gt;*]:data-[slot=field]:p-2.5 has-data-[state=checked]:border-primary has-data-[state=checked]:bg-primary/5 dark:has-data-[state=checked]:bg-primary/10" data-slot="field-label">x</label>`
+	want := `<label ` + canonicalFieldLabelClass() + ` data-gsxui-slot-field-label data-gsxui-slot-label>x</label>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
-	}
-	if strings.Contains(got, "leading-none") {
-		t.Errorf("leading-none should be dropped by leading-snug\nin: %s", got)
 	}
 }
 
@@ -149,12 +210,10 @@ func TestFieldLabelAttrsFallThrough(t *testing.T) {
 	}
 }
 
-// TestFieldTitlePinned proves FieldTitle shares FieldLabel's data-slot
-// ("field-label") — a shadcn source verbatim quirk, ported as-is (see
-// ui/field.gsx's own comment).
+// FieldTitle has its own styling token.
 func TestFieldTitlePinned(t *testing.T) {
 	got := render(t, ui.FieldTitle(gsx.Raw("x"), nil))
-	want := `<div data-slot="field-label" class="flex w-fit items-center gap-2 text-sm leading-snug font-medium group-data-[disabled=true]/field:opacity-50">x</div>`
+	want := `<div ` + canonicalFieldClass("title", nil) + ` data-gsxui-slot-field-title>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -169,7 +228,7 @@ func TestFieldTitleAttrsFallThrough(t *testing.T) {
 
 func TestFieldDescriptionPinned(t *testing.T) {
 	got := render(t, ui.FieldDescription(gsx.Raw("x"), nil))
-	want := `<p data-slot="field-description" class="text-sm leading-normal font-normal text-muted-foreground group-has-[[data-orientation=horizontal]]/field:text-balance last:mt-0 [[data-variant=legend]+&amp;]:-mt-1.5 [&amp;&gt;a]:underline [&amp;&gt;a]:underline-offset-4 [&amp;&gt;a:hover]:text-primary">x</p>`
+	want := `<p ` + canonicalFieldClass("description", nil) + ` data-gsxui-slot-field-description>x</p>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -182,15 +241,11 @@ func TestFieldDescriptionAttrsFallThrough(t *testing.T) {
 	}
 }
 
-// TestFieldSeparatorNoChildrenPinned proves FieldSeparator composes
-// ui.Separator (role="none" and Separator's own data-[orientation=...] base
-// classes both come through, horizontal default) and stamps
-// data-content="false" — gsx's bool-to-"true"/"false" attribute rendering,
-// the same mechanism as pagination.gsx's data-active (see ui/pagination.gsx)
-// — when no children are given; no field-separator-content span renders.
+// FieldSeparator keeps wrapper structure separate from its composed
+// Separator token.
 func TestFieldSeparatorNoChildrenPinned(t *testing.T) {
 	got := render(t, ui.FieldSeparator(nil, nil))
-	want := `<div data-slot="field-separator" data-content="false" class="relative -my-2 h-5 text-sm group-data-[variant=outline]/field-group:-mb-2"><div data-slot="separator" role="none" data-orientation="horizontal" class="shrink-0 bg-border data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px absolute inset-0 top-1/2"></div></div>`
+	want := `<div ` + canonicalFieldClass("separator-wrapper", nil) + ` data-gsxui-slot-field-separator-wrapper><div role="none" data-orientation="horizontal" ` + canonicalFieldSeparatorClass() + ` data-gsxui-slot-field-separator data-gsxui-slot-separator></div></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -198,7 +253,7 @@ func TestFieldSeparatorNoChildrenPinned(t *testing.T) {
 
 func TestFieldSeparatorWithChildrenPinned(t *testing.T) {
 	got := render(t, ui.FieldSeparator(gsx.Raw("Or"), nil))
-	want := `<div data-slot="field-separator" data-content="true" class="relative -my-2 h-5 text-sm group-data-[variant=outline]/field-group:-mb-2"><div data-slot="separator" role="none" data-orientation="horizontal" class="shrink-0 bg-border data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px absolute inset-0 top-1/2"></div><span class="relative mx-auto block w-fit bg-background px-2 text-muted-foreground" data-slot="field-separator-content">Or</span></div>`
+	want := `<div data-content ` + canonicalFieldClass("separator-wrapper", nil) + ` data-gsxui-slot-field-separator-wrapper><div role="none" data-orientation="horizontal" ` + canonicalFieldSeparatorClass() + ` data-gsxui-slot-field-separator data-gsxui-slot-separator></div><span ` + canonicalFieldClass("separator-content", nil) + ` data-gsxui-slot-field-separator-content>Or</span></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -223,7 +278,7 @@ func TestFieldErrorNilRendersNothing(t *testing.T) {
 
 func TestFieldErrorPinned(t *testing.T) {
 	got := render(t, ui.FieldError(gsx.Raw("This field is required."), nil))
-	want := `<div role="alert" data-slot="field-error" class="text-sm font-normal text-destructive">This field is required.</div>`
+	want := `<div role="alert" ` + canonicalFieldClass("error", nil) + ` data-gsxui-slot-field-error>This field is required.</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -263,20 +318,20 @@ func TestFieldFormComposition(t *testing.T) {
 		nil,
 	))
 	for _, want := range []string{
-		`data-slot="field-set"`,
-		`data-slot="field-legend"`,
+		`data-gsxui-slot-field-set`,
+		`data-gsxui-slot-field-legend`,
 		`>Profile</legend>`,
-		`data-slot="field-group"`,
-		`data-slot="field"`,
-		`data-slot="field-label"`,
+		`data-gsxui-slot-field-group`,
+		`data-gsxui-slot-field`,
+		`data-gsxui-slot-field-label data-gsxui-slot-label`,
 		`>Name</label>`,
 		`for="name"`,
-		`data-slot="field-description"`,
+		`data-gsxui-slot-field-description`,
 		`>Your full name.</p>`,
-		`data-slot="field-separator"`,
+		`data-gsxui-slot-field-separator-wrapper`,
 		`>Email</label>`,
 		`for="email"`,
-		`data-slot="field-error"`,
+		`data-gsxui-slot-field-error`,
 		`>Enter a valid email.</div>`,
 	} {
 		if !strings.Contains(got, want) {

@@ -1,0 +1,85 @@
+/* Source: assets/css/styles/default/combobox.css (every rule except the one
+   [data-disabled] opacity-50 declaration retained there, and the
+   `combobox-content > input-group` rule whose styled subject is InputGroup —
+   see registry/canonical/shapes/combobox.go's doc comment for both) plus
+   Combobox's share of assets/css/styles/default/menu-popover-transition.css,
+   the last selector in that now-deleted file.
+
+   display:contents on the root has a direct Tailwind utility (`contents`).
+   scrollbar-width and ::-webkit-scrollbar have no named utility but do have
+   an arbitrary-property / arbitrary-variant form (`[scrollbar-width:none]`,
+   `[&::-webkit-scrollbar]:hidden`), so no escape hatch was needed here at
+   all. :popover-open and @starting-style translate the same way
+   registry/styles/nova/select.css already documents. Every form was
+   compiled with this repo's Tailwind v4 CLI before use. Nova and Maia have
+   not diverged on Combobox yet, so this file is byte-identical to
+   registry/styles/maia/combobox.css. */
+@layer components {
+  .gsxui-recipe-combobox {
+    @apply contents;
+  }
+
+  .gsxui-recipe-combobox-input-group {
+    @apply w-auto;
+  }
+
+  .gsxui-recipe-combobox-trigger {
+    @apply [&_svg:not([class*='size-'])]:size-4;
+    @apply [[data-gsxui-slot-input-group]:has([data-gsxui-slot-combobox-clear])_&]:hidden;
+  }
+
+  .gsxui-recipe-combobox-trigger-icon {
+    @apply pointer-events-none size-4 text-muted-foreground;
+  }
+
+  .gsxui-recipe-combobox-clear {
+    @apply [&>svg]:pointer-events-none;
+  }
+
+  .gsxui-recipe-combobox-content {
+    @apply relative z-50 max-h-72 min-w-36 origin-top-left overflow-hidden rounded-lg bg-popover text-popover-foreground shadow-md ring-1 ring-foreground/10;
+    @apply opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150;
+    @apply [&:popover-open]:opacity-100 [&:popover-open]:scale-100;
+    @apply starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95;
+    @apply starting:[&:popover-open]:data-[side=bottom]:-translate-y-2;
+    @apply starting:[&:popover-open]:data-[side=left]:translate-x-2;
+    @apply starting:[&:popover-open]:data-[side=right]:-translate-x-2;
+    @apply starting:[&:popover-open]:data-[side=top]:translate-y-2;
+  }
+
+  .gsxui-recipe-combobox-list {
+    @apply max-h-[calc(--spacing(72)---spacing(9))] scroll-py-1 overflow-y-auto p-1;
+    @apply [scrollbar-width:none];
+    @apply [&::-webkit-scrollbar]:hidden;
+    @apply data-empty:p-0;
+  }
+
+  .gsxui-recipe-combobox-item {
+    @apply relative flex w-full cursor-default items-center gap-2 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none;
+    @apply data-[highlighted=true]:bg-accent data-[highlighted=true]:text-accent-foreground;
+    @apply data-disabled:pointer-events-none;
+    @apply [&_svg]:pointer-events-none [&_svg]:shrink-0;
+    @apply [&_svg:not([class*='size-'])]:size-4;
+    @apply data-[state=checked]:[&>[data-gsxui-slot-combobox-item-indicator]]:flex;
+  }
+
+  .gsxui-recipe-combobox-item-indicator {
+    @apply pointer-events-none absolute right-2 hidden size-4 items-center justify-center;
+    @apply [&>svg]:size-4;
+    @apply pointer-coarse:[&>svg]:size-5;
+  }
+
+  .gsxui-recipe-combobox-label {
+    @apply px-2 py-1.5 text-xs text-muted-foreground;
+    @apply pointer-coarse:px-3 pointer-coarse:py-2 pointer-coarse:text-sm;
+  }
+
+  .gsxui-recipe-combobox-empty {
+    @apply hidden w-full justify-center py-2 text-center text-sm text-muted-foreground;
+    @apply [[data-gsxui-slot-combobox-content][data-empty]_&]:flex;
+  }
+
+  .gsxui-recipe-combobox-separator {
+    @apply -mx-1 my-1 h-px bg-border;
+  }
+}

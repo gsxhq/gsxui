@@ -30,53 +30,112 @@ func Basic() _gsxrt.Node {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:16:5
 					_gsxgw.S("<div class=\"px-2 py-1 text-sm font-semibold\">Acme Inc</div>")
+//line basic.gsx:17:5
+					_gsxgw.Node(ctx, ui.SidebarInput(_gsxrt.Attrs{{Key: "placeholder", Value: "Search navigation"}}))
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:18:4
+//line basic.gsx:19:4
+				_gsxgw.Node(ctx, ui.SidebarSeparator(nil))
+//line basic.gsx:20:4
 				_gsxgw.Node(ctx, ui.SidebarContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:19:5
+//line basic.gsx:21:5
 					_gsxgw.Node(ctx, ui.SidebarGroup(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:20:6
+//line basic.gsx:22:6
 						_gsxgw.Node(ctx, ui.SidebarGroupLabel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Application")
 							return _gsxgw.Err()
 						}), nil))
-//line basic.gsx:21:6
+//line basic.gsx:23:6
+						_gsxgw.Node(ctx, ui.SidebarGroupAction(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+							_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:24:7
+							_gsxgw.Node(ctx, icon.Plus())
+							return _gsxgw.Err()
+						}), _gsxrt.Attrs{{Key: "aria-label", Value: "Add item"}}))
+//line basic.gsx:26:6
 						_gsxgw.Node(ctx, ui.SidebarGroupContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:22:7
+//line basic.gsx:27:7
 							_gsxgw.Node(ctx, ui.SidebarMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:23:8
+//line basic.gsx:28:8
 								_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:24:9
+//line basic.gsx:29:9
 									_gsxgw.Node(ctx, ui.SidebarMenuButton(true, "", "", "Home", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:25:10
+//line basic.gsx:30:10
 										_gsxgw.Node(ctx, icon.House())
-//line basic.gsx:26:10
+//line basic.gsx:31:10
 										_gsxgw.S("<span>Home</span>")
 										return _gsxgw.Err()
 									}), nil))
 									return _gsxgw.Err()
 								}), nil))
-//line basic.gsx:29:8
+//line basic.gsx:34:8
 								_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:30:9
-									_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "", "Inbox", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line basic.gsx:35:9
+									_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "outline", "sm", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:31:10
+//line basic.gsx:36:10
 										_gsxgw.Node(ctx, icon.Inbox())
-//line basic.gsx:32:10
+//line basic.gsx:37:10
 										_gsxgw.S("<span>Inbox</span>")
 										return _gsxgw.Err()
 									}), nil))
-//line basic.gsx:34:9
+//line basic.gsx:39:9
+									_gsxgw.Node(ctx, ui.SidebarMenuAction(true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+										_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:40:10
+										_gsxgw.Node(ctx, icon.Plus())
+										return _gsxgw.Err()
+									}), _gsxrt.Attrs{{Key: "aria-label", Value: "More"}}))
+//line basic.gsx:42:9
+									_gsxgw.Node(ctx, ui.SidebarMenuSub(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+										_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:43:10
+										_gsxgw.Node(ctx, ui.SidebarMenuSubItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+											_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:44:11
+											_gsxgw.Node(ctx, ui.SidebarMenuSubButton("sm", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+												_gsxgw := _gsxrt.W(_gsxw)
+												_gsxgw.S("Unread")
+												return _gsxgw.Err()
+											}), nil))
+											return _gsxgw.Err()
+										}), nil))
+//line basic.gsx:46:10
+										_gsxgw.Node(ctx, ui.SidebarMenuSubItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+											_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:47:11
+											_gsxgw.Node(ctx, ui.SidebarMenuSubButton("md", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+												_gsxgw := _gsxrt.W(_gsxw)
+												_gsxgw.S("Archived")
+												return _gsxgw.Err()
+											}), nil))
+											return _gsxgw.Err()
+										}), nil))
+										return _gsxgw.Err()
+									}), nil))
+									return _gsxgw.Err()
+								}), nil))
+//line basic.gsx:51:8
+								_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+									_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:52:9
+									_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "lg", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+										_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:53:10
+										_gsxgw.Node(ctx, icon.Calendar())
+//line basic.gsx:54:10
+										_gsxgw.S("<span>Calendar</span>")
+										return _gsxgw.Err()
+									}), nil))
+//line basic.gsx:56:9
 									_gsxgw.Node(ctx, ui.SidebarMenuBadge(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
 										_gsxgw.S("24")
@@ -84,57 +143,54 @@ func Basic() _gsxrt.Node {
 									}), nil))
 									return _gsxgw.Err()
 								}), nil))
-//line basic.gsx:36:8
+//line basic.gsx:58:8
 								_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:37:9
-									_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "", "Calendar", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line basic.gsx:59:9
+									_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:38:10
-										_gsxgw.Node(ctx, icon.Calendar())
-//line basic.gsx:39:10
-										_gsxgw.S("<span>Calendar</span>")
-										return _gsxgw.Err()
-									}), nil))
-									return _gsxgw.Err()
-								}), nil))
-//line basic.gsx:42:8
-								_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-									_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:43:9
-									_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "", "Search", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-										_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:44:10
+//line basic.gsx:60:10
 										_gsxgw.Node(ctx, icon.Search())
-//line basic.gsx:45:10
+//line basic.gsx:61:10
 										_gsxgw.S("<span>Search</span>")
 										return _gsxgw.Err()
 									}), nil))
+//line basic.gsx:63:9
+									_gsxgw.Node(ctx, ui.SidebarMenuAction(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+										_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:64:10
+										_gsxgw.Node(ctx, icon.Plus())
+										return _gsxgw.Err()
+									}), _gsxrt.Attrs{{Key: "aria-label", Value: "Pin"}}))
 									return _gsxgw.Err()
 								}), nil))
 								return _gsxgw.Err()
 							}), nil))
+//line basic.gsx:68:7
+							_gsxgw.Node(ctx, ui.SidebarMenuSkeleton(true, nil))
+//line basic.gsx:69:7
+							_gsxgw.Node(ctx, ui.SidebarMenuSkeleton(false, nil))
 							return _gsxgw.Err()
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:52:4
+//line basic.gsx:73:4
 				_gsxgw.Node(ctx, ui.SidebarFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:53:5
+//line basic.gsx:74:5
 					_gsxgw.Node(ctx, ui.SidebarMenu(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:54:6
+//line basic.gsx:75:6
 						_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:55:7
+//line basic.gsx:76:7
 							_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "", "Settings", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:56:8
+//line basic.gsx:77:8
 								_gsxgw.Node(ctx, icon.Settings())
-//line basic.gsx:57:8
+//line basic.gsx:78:8
 								_gsxgw.S("<span>Settings</span>")
 								return _gsxgw.Err()
 							}), nil))
@@ -144,20 +200,20 @@ func Basic() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:62:4
+//line basic.gsx:83:4
 				_gsxgw.Node(ctx, ui.SidebarRail(nil))
 				return _gsxgw.Err()
 			}), nil))
-//line basic.gsx:64:3
+//line basic.gsx:85:3
 			_gsxgw.Node(ctx, ui.SidebarInset(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:65:4
+//line basic.gsx:86:4
 				_gsxgw.S("<header class=\"flex h-12 items-center gap-2 border-b px-4\">")
-//line basic.gsx:66:5
+//line basic.gsx:87:5
 				_gsxgw.Node(ctx, ui.SidebarTrigger(nil))
-//line basic.gsx:67:5
+//line basic.gsx:88:5
 				_gsxgw.S("<span class=\"text-sm text-muted-foreground\">Dashboard</span></header>")
-//line basic.gsx:69:4
+//line basic.gsx:90:4
 				_gsxgw.S("<div class=\"p-4 text-sm text-muted-foreground\">Toggle the sidebar with the button above, the rail at its edge, or Cmd/Ctrl+B.</div>")
 				return _gsxgw.Err()
 			}), nil))

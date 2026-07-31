@@ -1,0 +1,26 @@
+@layer components {
+  /* Item — migrated to the slot axis; see registry/styles/{nova,maia}/item.css
+     for what moved. The one rule below is RETAINED here deliberately
+     (design doc § 10b): the media offset.
+
+     `item:has(item-description) item-media` is an ancestor-scoped relational
+     rule. Translated onto the media slot's recipe as
+     `[[data-gsxui-slot-item]:has([data-gsxui-slot-item-description])_&]:self-start`
+     it compiles to a (0,3,0) selector, which beats a caller's own plain
+     self-* / translate-* utility (0,1,0) regardless of source order — and
+     tailwind-merge does not dedupe a variant utility against its plain
+     counterpart, so both would reach the DOM and the recipe would always win.
+     Staying in @layer components keeps the LAYER boundary deciding. The media
+     slot's own recipe sets neither align-self nor translate, so the whole
+     property group is retained and nothing here is dead.
+
+     item-content's flex group is NOT retained here — see the recipe file's
+     header for why retaining it was tried, rejected by the layer gate, and
+     resolved by migrating it in full instead. */
+  :where([data-gsxui-slot-item]):has(
+      [data-gsxui-slot-item-description]
+    )
+    :where([data-gsxui-slot-item-media]) {
+    @apply translate-y-0.5 self-start;
+  }
+}

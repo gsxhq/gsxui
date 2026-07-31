@@ -1,0 +1,118 @@
+/* Source: assets/css/styles/default/navigation-menu.css (NavigationMenu's
+   own dedicated file — no sharing with DropdownMenu/ContextMenu/Menubar)
+   plus its Content/Indicator share of the now-deleted
+   assets/css/styles/default/menu-popover-transition.css (shared with
+   DropdownMenu/ContextMenu/Menubar and Combobox — Combobox was that file's
+   last unmigrated selector and has since migrated too, so the file no
+   longer exists; see registry/styles/nova/combobox.css). Nova and
+   Maia have not diverged on NavigationMenu yet, so this file is
+   byte-identical to registry/styles/maia/navigation-menu.css.
+
+   Two relational rules folded onto their reacting slot rather than left as
+   separate selectors, translated per the design doc's ancestor-variant/
+   descendant-variant idioms (not §10b escape-hatch cases — neither reacts
+   to a caller-supplied class or attribute the caller can independently set;
+   both react to this component's OWN structural markers):
+
+   - Content's chrome (border/bg/shadow/rounded/positioning) is gated on
+     `[data-gsxui-slot-navigation-menu][data-viewport="false"]` as an
+     ancestor — translated as `[[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:`
+     on Content's own class (same ancestor-marker-with-attribute-value idiom
+     as Label's `[[data-disabled=true]_&]:`).
+   - Link's rounding inside Content, and Link's focus ring reset inside
+     Content, are both keyed on `[data-gsxui-slot-navigation-menu-content]`
+     as an ancestor — translated the same way, on Link's own class (not
+     Content's), since Link is the element actually being painted. */
+@layer components {
+  .gsxui-recipe-navigation-menu {
+    @apply relative flex max-w-max flex-1 items-center justify-center;
+  }
+
+  .gsxui-recipe-navigation-menu-list {
+    @apply flex flex-1 list-none items-center justify-center gap-0;
+  }
+
+  .gsxui-recipe-navigation-menu-item {
+    @apply relative;
+  }
+
+  .gsxui-recipe-navigation-menu-trigger {
+    @apply inline-flex h-9 w-max items-center justify-center rounded-lg px-2.5 py-1.5 text-sm font-medium transition-all outline-none;
+    @apply hover:bg-accent hover:text-accent-foreground;
+    @apply focus:bg-accent focus:text-accent-foreground;
+    @apply focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1;
+    @apply disabled:pointer-events-none disabled:opacity-50;
+    @apply data-[state=open]:bg-accent/50 data-[state=open]:text-accent-foreground;
+    @apply data-[state=open]:hover:bg-accent data-[state=open]:focus:bg-accent;
+  }
+
+  .gsxui-recipe-navigation-menu-trigger-icon {
+    @apply relative top-px ml-1 size-3 transition duration-300;
+    @apply [[data-state=open]_&]:rotate-180;
+  }
+
+  .gsxui-recipe-navigation-menu-content {
+    @apply top-0 left-0 p-1;
+    @apply md:absolute;
+    @apply [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:top-full;
+    @apply [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:mt-1.5;
+    @apply [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:overflow-hidden;
+    @apply [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:rounded-lg;
+    @apply [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:border;
+    @apply [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:bg-popover;
+    @apply [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:text-popover-foreground;
+    @apply [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:shadow;
+    @apply opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150;
+    @apply [&:popover-open]:opacity-100 [&:popover-open]:scale-100;
+    @apply starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95;
+    @apply data-[side=bottom]:starting:[&:popover-open]:-translate-y-2;
+    @apply data-[side=left]:starting:[&:popover-open]:translate-x-2;
+    @apply data-[side=right]:starting:[&:popover-open]:-translate-x-2;
+    @apply data-[side=top]:starting:[&:popover-open]:translate-y-2;
+  }
+
+  .gsxui-recipe-navigation-menu-link {
+    @apply flex flex-col gap-1 rounded-lg p-2 text-sm transition-all outline-none;
+    @apply [[data-gsxui-slot-navigation-menu-content]_&]:rounded-md;
+    @apply hover:bg-accent hover:text-accent-foreground;
+    @apply focus:bg-accent focus:text-accent-foreground;
+    @apply focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1;
+    @apply [[data-gsxui-slot-navigation-menu-content]_&]:focus:ring-0;
+    @apply [[data-gsxui-slot-navigation-menu-content]_&]:focus:outline-none;
+    @apply [&_svg:not([class*='size-'])]:size-4;
+    @apply [&_svg:not([class*='text-'])]:text-muted-foreground;
+  }
+
+  .gsxui-recipe-navigation-menu-link-variant-default {
+    @apply outline-none;
+  }
+
+  .gsxui-recipe-navigation-menu-link-variant-trigger {
+    @apply inline-flex h-9 w-max items-center justify-center rounded-lg px-2.5 py-1.5 text-sm font-medium transition-all outline-none;
+    @apply hover:bg-accent hover:text-accent-foreground;
+    @apply focus:bg-accent focus:text-accent-foreground;
+    @apply focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1;
+    @apply disabled:pointer-events-none disabled:opacity-50;
+    @apply data-[state=open]:bg-accent/50 data-[state=open]:text-accent-foreground;
+    @apply data-[state=open]:hover:bg-accent data-[state=open]:focus:bg-accent;
+  }
+
+  .gsxui-recipe-navigation-menu-link-active-false {
+    @apply outline-none;
+  }
+
+  .gsxui-recipe-navigation-menu-link-active-true {
+    @apply bg-accent/50 text-accent-foreground;
+    @apply hover:bg-accent hover:text-accent-foreground;
+    @apply focus:bg-accent;
+  }
+
+  .gsxui-recipe-navigation-menu-indicator {
+    @apply pointer-events-none top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden opacity-0 transition-opacity duration-200;
+    @apply data-[state=visible]:opacity-100;
+  }
+
+  .gsxui-recipe-navigation-menu-indicator-arrow {
+    @apply relative top-[60%] h-2 w-2 rotate-45 rounded-tl-sm bg-border shadow-md;
+  }
+}

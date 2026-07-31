@@ -1,0 +1,54 @@
+@layer components {
+  /* Field — migrated to the slot axis; see registry/styles/{nova,maia}/field.css
+     for the migrated half and for the rule that decided the split. Everything
+     below is RETAINED here deliberately under design doc § 10b: each one is a
+     relational rule whose styled SUBJECT is the element carrying the recipe
+     class, so translating it would compile to a two-or-more-class selector and
+     permanently outrank a caller's own plain utility. Staying in
+     @layer components keeps the LAYER boundary deciding, which is what makes
+     them caller-overridable.
+
+     Each was checked against the corresponding slot's own recipe utilities
+     first: none of them sets the property group involved, so retaining these
+     leaves nothing dead behind (the md:text-sm failure mode). */
+
+  /* NOT retained, though § 10b would prefer it: the root's invalid tint and
+     the label's checked-choice-card tint both moved onto the recipe. The layer
+     gate (stylegen --check-layers) rejects retaining them, because it compares
+     a rule against the whole COMPONENT's utility set rather than one slot's:
+     Field's error slot already emits text-destructive and its separator-content
+     slot emits bg-background, so a components-layer text colour or background
+     on any Field-rendered element is judged losable regardless of which slot it
+     targets. Upstream shadcn ships both on the class list, so migrating them is
+     the conformant resolution rather than a concession. See
+     registry/styles/{nova,maia}/field.css. */
+
+  /* The disabled dimming, an ancestor-scoped rule reaching from the field onto
+     its label and title. Neither slot's recipe sets opacity. */
+  :where([data-gsxui-slot-field][data-disabled="true"])
+    :where([data-gsxui-slot-field-label]),
+  :where([data-gsxui-slot-field][data-disabled="true"])
+    :where([data-gsxui-slot-field-title]) {
+    @apply opacity-50;
+  }
+
+  /* The horizontal-orientation description balancing, ancestor-scoped. The
+     description slot's recipe sets no text-wrap. */
+  :where([data-gsxui-slot-field])[data-orientation="horizontal"]
+    :where([data-gsxui-slot-field-description]) {
+    @apply text-balance;
+  }
+
+  /* The description's margin-top pair, retained TOGETHER as one property
+     group: :last-child is a same-element state rule and the legend-sibling
+     rule is a sibling combinator, and splitting them across layers would leave
+     whichever stayed here permanently dead. The description slot's recipe sets
+     no margin at all, so the group is intact and self-consistent. */
+  :where([data-gsxui-slot-field-description]):last-child {
+    @apply mt-0;
+  }
+  :where([data-gsxui-slot-field-legend])[data-variant="legend"]
+    + :where([data-gsxui-slot-field-description]) {
+    @apply -mt-1.5;
+  }
+}

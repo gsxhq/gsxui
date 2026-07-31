@@ -1,0 +1,87 @@
+package stylecontract
+
+import (
+	"reflect"
+	"testing"
+)
+
+func TestSidebarContracts(t *testing.T) {
+	want := []Component{
+		{
+			Name:         "Sidebar",
+			RegistryName: "sidebar",
+			Slots: []Slot{
+				{Name: "sidebar-wrapper", Axes: []Axis{{Attribute: "data-state", Values: []string{"collapsed", "expanded"}}}},
+				{Name: "sidebar", Axes: []Axis{
+					{Attribute: "data-collapsible", Values: []string{"", "icon", "none", "offcanvas"}},
+					{Attribute: "data-side", Values: []string{"left", "right"}},
+					{Attribute: "data-variant", Values: []string{"floating", "inset", "sidebar"}},
+				}},
+				{Name: "sidebar-mobile-root"},
+				{Name: "sidebar-mobile-content", Axes: []Axis{
+					{Attribute: "data-mobile", Values: []string{"true"}},
+					{Attribute: "data-side", Values: []string{"left", "right"}},
+				}},
+				{Name: "sidebar-mobile-header"},
+				{Name: "sidebar-mobile-title"},
+				{Name: "sidebar-mobile-description"},
+				{Name: "sidebar-mobile-inner"},
+				{Name: "sidebar-desktop", Axes: []Axis{
+					{Attribute: "data-state", Values: []string{"collapsed", "expanded"}},
+					{Attribute: "data-collapsible", Values: []string{"", "icon", "offcanvas"}},
+					{Attribute: "data-variant", Values: []string{"floating", "inset", "sidebar"}},
+					{Attribute: "data-side", Values: []string{"left", "right"}},
+				}},
+				{Name: "sidebar-gap"},
+				{Name: "sidebar-container"},
+				{Name: "sidebar-inner"},
+				{Name: "sidebar-trigger", Axes: []Axis{
+					{Attribute: "data-variant", Values: []string{"ghost"}},
+					{Attribute: "data-size", Values: []string{"icon"}},
+				}},
+				{Name: "sidebar-trigger-label"},
+				{Name: "sidebar-rail"},
+				{Name: "sidebar-inset"},
+				{Name: "sidebar-input"},
+				{Name: "sidebar-header"},
+				{Name: "sidebar-footer"},
+				{Name: "sidebar-separator"},
+				{Name: "sidebar-content"},
+				{Name: "sidebar-group"},
+				{Name: "sidebar-group-label"},
+				{Name: "sidebar-group-action"},
+				{Name: "sidebar-group-content"},
+				{Name: "sidebar-menu"},
+				{Name: "sidebar-menu-item"},
+				{Name: "sidebar-menu-button", Axes: []Axis{
+					{Attribute: "data-variant", Values: []string{"default", "outline"}},
+					{Attribute: "data-size", Values: []string{"default", "lg", "sm"}},
+					{Attribute: "data-active"},
+					{Attribute: "disabled"},
+					{Attribute: "aria-disabled"},
+				}},
+				{Name: "sidebar-menu-button-tooltip"},
+				{Name: "sidebar-menu-button-tooltip-content"},
+				{Name: "sidebar-menu-action", Axes: []Axis{
+					{Attribute: "data-show-on-hover"},
+				}},
+				{Name: "sidebar-menu-badge"},
+				{Name: "sidebar-menu-skeleton"},
+				{Name: "sidebar-menu-skeleton-icon"},
+				{Name: "sidebar-menu-skeleton-text"},
+				{Name: "sidebar-menu-sub"},
+				{Name: "sidebar-menu-sub-item"},
+				{Name: "sidebar-menu-sub-button", Axes: []Axis{
+					{Attribute: "data-size", Values: []string{"md", "sm"}},
+					{Attribute: "data-active"},
+					{Attribute: "disabled"},
+					{Attribute: "aria-disabled"},
+				}},
+			},
+		},
+	}
+
+	if !reflect.DeepEqual(sidebarContracts, want) {
+		t.Fatalf("sidebarContracts = %#v\nwant %#v", sidebarContracts, want)
+	}
+}

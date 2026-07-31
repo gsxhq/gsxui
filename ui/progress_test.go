@@ -11,14 +11,13 @@ import (
 func TestProgressDefault(t *testing.T) {
 	got := render(t, ui.Progress(60, nil))
 	for _, want := range []string{
-		`<div data-slot="progress"`,
+		`<div role="progressbar"`,
 		`role="progressbar"`,
 		`aria-valuemin="0"`,
 		`aria-valuemax="100"`,
 		`aria-valuenow="60"`,
-		"relative h-1 w-full overflow-hidden rounded-full bg-primary/20",
-		`data-slot="progress-indicator"`,
-		"h-full w-full flex-1 bg-primary transition-all",
+		`data-gsxui-slot-progress`,
+		`data-gsxui-slot-progress-indicator`,
 		`style="transform: translateX(-40%)"`,
 	} {
 		if !strings.Contains(got, want) {
@@ -42,11 +41,8 @@ func TestProgressZeroValue(t *testing.T) {
 
 func TestProgressCallerClassMerges(t *testing.T) {
 	got := render(t, ui.Progress(50, gsx.Attrs{{Key: "class", Value: "h-4"}}))
-	if strings.Contains(got, "h-1 w-full") {
-		t.Errorf("base h-1 should be dropped by caller h-4\nin: %s", got)
-	}
-	if !strings.Contains(got, "h-4") {
-		t.Errorf("missing caller class h-4\nin: %s", got)
+	if strings.Count(got, `class="`) != 2 || !strings.Contains(got, "h-4") || !strings.Contains(got, "bg-primary/20") {
+		t.Errorf("caller class must merge into the root's class attribute and render once\nin: %s", got)
 	}
 }
 
@@ -60,14 +56,10 @@ func TestProgressAttrsFallThrough(t *testing.T) {
 }
 
 func TestProgressPinned(t *testing.T) {
-	// Exact full-render pin. Token-for-token against shadcn's Progress
-	// (registry/new-york-v4/ui/progress.tsx): the class strings on both divs
-	// are carried verbatim; Radix's Root/Indicator primitives are replaced by
-	// role="progressbar" + aria-valuemin/max/now (ADAPT, see
-	// docs/jsx-parity.md) and the translateX(-{100-value}%) transform is
-	// ported faithfully via gsx.RawCSS.
+	// Presentation is expressed as the recipe's resolved class (slot axis
+	// migration); only the dynamic transform remains inline.
 	got := render(t, ui.Progress(25, nil))
-	want := `<div data-slot="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="25" class="relative h-1 w-full overflow-hidden rounded-full bg-primary/20"><div data-slot="progress-indicator" class="h-full w-full flex-1 bg-primary transition-all" style="transform: translateX(-75%)"></div></div>`
+	want := `<div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="25" class="relative h-1 w-full overflow-hidden rounded-full bg-primary/20" data-gsxui-slot-progress><div style="transform: translateX(-75%)" class="h-full w-full flex-1 bg-primary transition-all" data-gsxui-slot-progress-indicator></div></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

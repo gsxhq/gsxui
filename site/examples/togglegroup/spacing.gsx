@@ -14,13 +14,34 @@ import (
 // root's style="--gap: 2").
 component Spacing() {
 	<ui.ToggleGroup groupType="multiple" variant="outline" spacing="2" size="sm" aria-label="Text formatting">
-		<ui.ToggleGroupItem groupType="multiple" variant="outline" spacing="2" size="sm" value="bold" aria-label="Toggle bold">
+		<ui.ToggleGroupItem
+			groupType="multiple"
+			variant="outline"
+			spacing="2"
+			size="sm"
+			value="bold"
+			aria-label="Toggle bold"
+		>
 			<icon.Bold/>
 		</ui.ToggleGroupItem>
-		<ui.ToggleGroupItem groupType="multiple" variant="outline" spacing="2" size="sm" value="italic" aria-label="Toggle italic">
+		<ui.ToggleGroupItem
+			groupType="multiple"
+			variant="outline"
+			spacing="2"
+			size="sm"
+			value="italic"
+			aria-label="Toggle italic"
+		>
 			<icon.Italic/>
 		</ui.ToggleGroupItem>
-		<ui.ToggleGroupItem groupType="multiple" variant="outline" spacing="2" size="sm" value="underline" aria-label="Toggle underline">
+		<ui.ToggleGroupItem
+			groupType="multiple"
+			variant="outline"
+			spacing="2"
+			size="sm"
+			value="underline"
+			aria-label="Toggle underline"
+		>
 			<icon.Underline/>
 		</ui.ToggleGroupItem>
 	</ui.ToggleGroup>

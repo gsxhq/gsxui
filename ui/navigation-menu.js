@@ -244,8 +244,8 @@ on("focusout", "[data-gsxui-navigation-menu-content]", (e, content) => {
 });
 
 // Selecting a Link inside an open Content closes that panel. A Link with no
-// Content ancestor (a plain top-level nav link with no dropdown, styled via
-// NavigationMenuTriggerStyle()) has nothing to close — the click just
+// Content ancestor (a plain top-level nav link with no dropdown, reflected
+// as data-variant="trigger") has nothing to close — the click just
 // navigates.
 on("click", "[data-gsxui-navigation-menu-link]", (_e, link) => {
   const content = link.closest("[data-gsxui-navigation-menu-content]");

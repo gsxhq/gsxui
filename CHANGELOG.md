@@ -2,6 +2,18 @@
 
 Notable changes to gsxui's component set, newest first.
 
+## 2026-07-29
+
+### Added
+
+- **contract** — `registry/generated/recipes.json` publishes the recipe model: every component's slots, their dimensions and values, and each style's utilities for them (`components.<c>.slots.<s>.dimensions.<d>`, `styles.<style>.<c>.slots.<s>`). It carries a `version` field so a consumer can check it understands the schema.
+
+### Changed
+
+- **button** — `gsxui init` ships a `ui/button.gsx` whose Button renders concrete Tailwind utilities compiled from its style recipe, so consumer-project buttons are styled out of the box with no extra stylesheet.
+- **sidebar** — `SidebarTrigger` renders at 28px (`size-7`), matching both its own authored CSS and upstream shadcn.
+- **button** — destructive buttons lighten on hover in dark mode (`bg-destructive/90`), matching the documented style contract. This diverges from upstream shadcn, which keeps `/60` through hover; see `docs/jsx-parity.md`.
+
 ## 2026-07-25
 
 ### Added

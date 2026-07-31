@@ -1,0 +1,460 @@
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-success: var(--success);
+  --color-info: var(--info);
+  --color-warning: var(--warning);
+  --color-overlay: var(--overlay);
+  --color-contrast: var(--contrast);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  :where([data-gsxui-slot-breadcrumb-ellipsis-label]),
+  :where([data-gsxui-slot-pagination-ellipsis-label]),
+  :where([data-gsxui-slot-dialog-close-label]),
+  :where([data-gsxui-slot-sheet-close-label]),
+  :where([data-gsxui-slot-command-dialog-header]),
+  :where([data-gsxui-slot-combobox-bridge]),
+  :where([data-gsxui-slot-carousel-control-label]),
+  :where(
+      [data-gsxui-slot-calendar-caption][data-caption-layout="dropdown"]
+    ) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+  :where([data-gsxui-slot-icon]) {
+    width: 1em;
+    height: 1em;
+  }
+}
+
+@layer components {
+  /* Carousel's native-scroll algorithm requires a scroll viewport, one flex
+     track, and fixed snap items. Spacing and scrollbar treatment remain style. */
+  :where([data-gsxui-slot-carousel-content]) {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+  :where(
+      [data-gsxui-slot-carousel-content][data-orientation="vertical"]
+    ) {
+    overflow-x: visible;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+  }
+  :where([data-gsxui-slot-carousel-track]) {
+    display: flex;
+  }
+  :where([data-gsxui-slot-carousel-track][data-orientation="vertical"]) {
+    flex-direction: column;
+  }
+  :where([data-gsxui-slot-carousel-item]) {
+    min-width: 0;
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+  }
+  :where([data-gsxui-slot-carousel-item][data-orientation="vertical"]) {
+    min-height: 0;
+  }
+  :where([data-gsxui-slot-carousel-item]:last-child) {
+    scroll-snap-align: end;
+  }
+
+  /* Resizable's live flex-grow algorithm consumes these invariant mechanics.
+     The handle pseudo-element is its operable pointer hit target. */
+  :where([data-gsxui-slot-resizable-panel-group]) {
+    display: flex;
+    width: 100%;
+    height: 100%;
+  }
+  :where(
+      [data-gsxui-slot-resizable-panel-group][aria-orientation="vertical"]
+    ) {
+    flex-direction: column;
+  }
+  :where([data-gsxui-slot-resizable-panel]) {
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+  }
+  :where([data-gsxui-slot-resizable-handle]) {
+    position: relative;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+  }
+  :where([data-gsxui-slot-resizable-handle])::after {
+    position: absolute;
+    inset-block: 0;
+    left: 50%;
+    width: 4px;
+    content: "";
+    transform: translateX(-50%);
+  }
+  :where(
+      [data-gsxui-slot-resizable-handle][aria-orientation="horizontal"]
+    )::after {
+    inset-block: auto;
+    inset-inline: 0;
+    top: 50%;
+    width: 100%;
+    height: 4px;
+    transform: translateY(-50%);
+  }
+
+  /* ScrollArea intentionally uses the browser's native scrolling surface. */
+  :where([data-gsxui-slot-scroll-area][data-orientation="vertical"]) {
+    overflow: auto;
+  }
+  :where([data-gsxui-slot-scroll-area][data-orientation="horizontal"]) {
+    overflow-x: auto;
+  }
+}
+
+/* Accordion open/close animation over native <details>. */
+:where([data-gsxui-slot-accordion-item])::details-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition:
+    grid-template-rows 200ms ease-out,
+    content-visibility 200ms allow-discrete;
+}
+:where([data-gsxui-slot-accordion-item])[open]::details-content {
+  grid-template-rows: 1fr;
+}
+:where([data-gsxui-slot-accordion-content]) {
+  min-height: 0;
+}
+
+/* Sidebar state-machine mechanics. Presentation remains in style.css. */
+@layer components {
+  :where([data-gsxui-slot-sidebar-wrapper]) {
+    display: flex;
+    min-height: 100svh;
+    width: 100%;
+  }
+  :where([data-gsxui-slot-sidebar][data-collapsible="none"]) {
+    display: flex;
+    width: var(--sidebar-width);
+    height: 100%;
+    flex-direction: column;
+  }
+  :where([data-gsxui-slot-sidebar-desktop]) {
+    display: none;
+  }
+  :where([data-gsxui-slot-sidebar-gap]) {
+    position: relative;
+    width: var(--sidebar-width);
+    flex: none;
+  }
+  :where(
+      [data-gsxui-slot-sidebar-desktop][data-collapsible="offcanvas"]
+    )
+    > :where([data-gsxui-slot-sidebar-gap]) {
+    width: 0;
+  }
+  :where(
+      [data-gsxui-slot-sidebar-desktop][data-collapsible="icon"]
+    )
+    > :where([data-gsxui-slot-sidebar-gap]) {
+    width: var(
+      --gsxui-sidebar-collapsed-gap-width,
+      var(--sidebar-width-icon)
+    );
+  }
+  :where([data-gsxui-slot-sidebar-container]) {
+    position: fixed;
+    inset-block: 0;
+    z-index: 10;
+    display: none;
+    width: var(--sidebar-width);
+    height: 100svh;
+  }
+  :where([data-gsxui-slot-sidebar-desktop][data-side="left"])
+    > :where([data-gsxui-slot-sidebar-container]) {
+    left: 0;
+  }
+  :where([data-gsxui-slot-sidebar-desktop][data-side="right"])
+    > :where([data-gsxui-slot-sidebar-container]) {
+    right: 0;
+  }
+  :where(
+      [data-gsxui-slot-sidebar-desktop][data-side="left"][data-collapsible="offcanvas"]
+    )
+    > :where([data-gsxui-slot-sidebar-container]) {
+    left: calc(var(--sidebar-width) * -1);
+  }
+  :where(
+      [data-gsxui-slot-sidebar-desktop][data-side="right"][data-collapsible="offcanvas"]
+    )
+    > :where([data-gsxui-slot-sidebar-container]) {
+    right: calc(var(--sidebar-width) * -1);
+  }
+  :where(
+      [data-gsxui-slot-sidebar-desktop][data-collapsible="icon"]
+    )
+    > :where([data-gsxui-slot-sidebar-container]) {
+    width: var(
+      --gsxui-sidebar-collapsed-container-width,
+      var(--sidebar-width-icon)
+    );
+  }
+  :where([data-gsxui-slot-sidebar-inner]),
+  :where([data-gsxui-slot-sidebar-mobile-inner]) {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+  }
+  :where([data-gsxui-slot-sidebar-inset]) {
+    display: flex;
+    width: 100%;
+    flex: 1 1 0%;
+    flex-direction: column;
+  }
+  :where([data-gsxui-slot-sidebar-content]) {
+    display: flex;
+    min-height: 0;
+    flex: 1 1 0%;
+    flex-direction: column;
+    overflow: auto;
+  }
+  :where(
+      [data-gsxui-slot-sidebar-desktop][data-collapsible="icon"]
+    )
+    :where([data-gsxui-slot-sidebar-content]) {
+    overflow: hidden;
+  }
+  :where([data-gsxui-slot-sidebar-rail]) {
+    position: absolute;
+    inset-block: 0;
+    z-index: 20;
+    display: none;
+    width: 1rem;
+    transform: translateX(-50%);
+  }
+  :where([data-gsxui-slot-sidebar-rail])::after {
+    position: absolute;
+    inset-block: 0;
+    left: 50%;
+    width: 2px;
+    content: "";
+  }
+  :where([data-gsxui-slot-sidebar-mobile-content])
+    :where([data-gsxui-slot-sidebar-rail]) {
+    display: none;
+  }
+  :where([data-gsxui-slot-sidebar-group-action])::after,
+  :where([data-gsxui-slot-sidebar-menu-action])::after {
+    position: absolute;
+    inset: -0.5rem;
+    content: "";
+  }
+
+  /* A Sidebar tooltip may enter the top layer only for the collapsed-icon
+     desktop tree. This state gate prevents closed or expanded ghost boxes. */
+  :is(
+      [data-gsxui-slot-sidebar-menu-button-tooltip-content]:popover-open
+    ) {
+    display: none;
+  }
+  :is(
+      [data-gsxui-slot-sidebar-desktop][data-collapsible="icon"]
+    )
+    :is(
+      [data-gsxui-slot-sidebar-menu-button-tooltip-content]:popover-open
+    ) {
+    display: block;
+  }
+
+  @media (width >= 40rem) {
+    :where([data-gsxui-slot-sidebar-desktop])
+      :where([data-gsxui-slot-sidebar-rail]) {
+      display: flex;
+    }
+    :where([data-gsxui-slot-sidebar-group-action])::after,
+    :where([data-gsxui-slot-sidebar-menu-action])::after {
+      display: none;
+    }
+  }
+  @media (width >= 48rem) {
+    :where([data-gsxui-slot-sidebar-desktop]) {
+      display: block;
+    }
+    :where([data-gsxui-slot-sidebar-container]) {
+      display: flex;
+    }
+  }
+}
+
+/* Author presentation must never defeat the native closed-dialog state. */
+:where(dialog[data-gsxui-dialog-content]:not([open])) {
+  display: none;
+}
+
+/* Normalize the range input before its presentation rules. */
+input[type="range"] {
+  appearance: none;
+  background: transparent;
+  outline: none;
+}
+
+/* InputOTP's one real input must cover the visual slots while remaining
+   focusable and clickable in every style. InputOTP's own migration to the
+   slot axis gave data-gsxui-slot-input-otp/-input real (0,1,0) recipe-class
+   specificity, so these two mechanics rules — previously unlayered and
+   winning outright — now need @layer utilities placement and an unwrapped
+   (no :where()) selector to clear the layer gate's own (0,1,0) floor, same
+   fallout shape the playbook already documents for Label/Separator's
+   composed consumers. */
+@layer utilities {
+  [data-gsxui-slot-input-otp] {
+    position: relative;
+  }
+  [data-gsxui-slot-input-otp-input] {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+}
+
+/* Sidebar's mobile root composes <ui.Sheet> (ui/sidebar.gsx's SidebarInner),
+   which composes <ui.Dialog> directly. Dialog's migration to the slot axis
+   gave data-gsxui-slot-dialog real (0,1,0)-equivalent Tailwind-scanned
+   utilities — including its own unconditional "display: contents" — so the
+   @media(>=48rem) ":is([data-gsxui-slot-sidebar-mobile-root]) { display:
+   none }" rule above, previously winning within @layer components on
+   specificity alone (:is() at (0,1,0) beating the base rule's :where() at
+   (0,0,0)), can no longer win against Dialog's scanned utility regardless of
+   specificity once both compete across the components/utilities layer
+   boundary. Promoted here, :is() already gives it the (0,1,0) floor this
+   layer's own gate requires. Caught by Playwright, not by
+   stylegen --check-layers (this selector reacts to a marker composed onto
+   an ancestor of the migrated component's own root, a shape the gate does
+   not model), and not by make sweep-compare (a display:none element renders
+   no computed style to diff against). */
+@layer utilities {
+  /* The unconditional half of the same rule, promoted for the same reason by
+     Sheet's migration rather than Dialog's. Sheet's own recipe class now
+     carries scanned utilities on the element SidebarMobileRoot composes, so
+     ":where([data-gsxui-slot-sidebar-mobile-root]) { display: contents }",
+     which lived in the @layer components block above, can no longer win.
+     The value is identical to the "contents" Dialog's root recipe already
+     applies — nothing renders differently — but the rule has to move rather
+     than be deleted: it is what keeps the mobile root transparent
+     independently of whichever component it happens to compose. Unwrapped to
+     clear this layer's (0,1,0) floor, and it must stay ABOVE the
+     @media(>=48rem) block below so the desktop display:none still wins. */
+  [data-gsxui-slot-sidebar-mobile-root] {
+    display: contents;
+  }
+  @media (width >= 48rem) {
+    :is([data-gsxui-slot-sidebar-mobile-root]) {
+      display: none;
+    }
+  }
+}
+
+/* Select's native form bridge remains available to forms and labels without
+   becoming a second visible control. */
+:where([data-gsxui-slot-select-bridge]) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Sonner's lifecycle computes a bottom-right overlapping stack with inline
+   transforms. These fixed/absolute anchors and hit-testing rules are the
+   invariant mechanics shared by the server and client-created regions. */
+@layer components {
+  :where([data-gsxui-slot-toaster]) {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    pointer-events: none;
+  }
+  :where([data-gsxui-slot-toast]) {
+    position: absolute;
+    right: var(--gsxui-toast-offset, 0);
+    bottom: var(--gsxui-toast-offset, 0);
+    transform-origin: bottom;
+    pointer-events: auto;
+  }
+}
+
+/* Resizable handle escape hatch: migrating Resizable to the slot axis gave
+   its own recipe classes (registry/styles/{nova,maia}/resizable.css) real
+   (0,1,0) specificity. The layer gate's component-utilities check is
+   whole-component, not per-slot — the handle-grip rule's own "flex"/"w-1"
+   utilities register as utilities the "resizable" component owns, and that
+   shadows the mechanics rules above that set the same CSS properties
+   (display, width) on the handle marker, even unconditionally/under a
+   different aria-orientation branch. Only the two contested properties are
+   promoted here (display from the unconditioned handle rule; width from its
+   aria-orientation="horizontal" rule) — everything else in those rules is
+   uncontested and stays above, same split FieldLabel's migration used
+   (only leading-snug promoted, not the whole declaration). Unwrapped (no
+   :where()) to clear the (0,1,0) specificity floor the layer gate requires
+   of anything left behind here. */
+@layer utilities {
+  [data-gsxui-slot-resizable-handle] {
+    display: flex;
+  }
+  [data-gsxui-slot-resizable-handle][aria-orientation="horizontal"] {
+    width: 100%;
+  }
+}

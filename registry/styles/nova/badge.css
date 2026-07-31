@@ -1,0 +1,54 @@
+/* Source: gsxui@aafeaafd410d7411b0e3bd4382cbe3dfacc5e988
+   assets/css/styles/default.css, Badge block (lines 56-118), with the
+   :has(>svg), :focus-visible, [aria-invalid], .dark and per-variant
+   :is(a[...]):hover relational rules folded in as variants on the root slot.
+   Nova and Maia have not diverged on Badge yet, so this file is
+   byte-identical to registry/styles/maia/badge.css.
+
+   Relational form: gsxui's `:is(a[data-gsxui-slot-badge][data-variant="X"]):hover`
+   is upstream's (shadcn new-york-v4 badge.tsx) `[a&]:hover:` Tailwind variant —
+   it fires only when the badge renders as an <a> (asChild), matching this
+   recipe's Anchor usage. Confirmed compiling with this repo's Tailwind v4
+   before use (see jstest/support/compiled-css-audit.test.ts for the harness
+   this was checked against).
+
+   "ghost" carries only [a&]:hover: utilities and no non-hover base styling —
+   that's faithful to upstream, where ghost's ENTIRE definition is
+   `[a&]:hover:bg-accent [a&]:hover:text-accent-foreground` (a ghost badge is
+   designed to look like plain text until hovered as a link). It shares those
+   exact hover utilities with "outline", which is why default.css combines
+   them into one selector list; the two variants are declared separately here
+   because the shape's switch generates one arm per value. */
+@layer components {
+  .gsxui-recipe-badge {
+    @apply inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-[color,box-shadow];
+    @apply has-[>svg]:px-1.5;
+    @apply focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50;
+    @apply aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40;
+    @apply [&>svg]:size-3 [&>svg]:pointer-events-none;
+  }
+
+  .gsxui-recipe-badge-variant-default {
+    @apply bg-primary text-primary-foreground [a&]:hover:bg-primary/90;
+  }
+
+  .gsxui-recipe-badge-variant-secondary {
+    @apply bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90;
+  }
+
+  .gsxui-recipe-badge-variant-destructive {
+    @apply bg-destructive text-contrast focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40 [a&]:hover:bg-destructive/90;
+  }
+
+  .gsxui-recipe-badge-variant-outline {
+    @apply border-border text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground;
+  }
+
+  .gsxui-recipe-badge-variant-ghost {
+    @apply [a&]:hover:bg-accent [a&]:hover:text-accent-foreground;
+  }
+
+  .gsxui-recipe-badge-variant-link {
+    @apply text-primary underline-offset-4 [a&]:hover:underline;
+  }
+}

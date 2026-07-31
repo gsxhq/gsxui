@@ -54,6 +54,32 @@ func Variants() _gsxrt.Node {
 			_gsxgw.S("Link")
 			return _gsxgw.Err()
 		}), nil))
+//line variants.gsx:14:3
+		_gsxgw.Node(ctx, ui.Button("", "lg", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
+			_gsxgw.S("Large")
+			return _gsxgw.Err()
+		}), nil))
+//line variants.gsx:15:3
+		_gsxgw.Node(ctx, ui.Button("", "icon-sm", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
+//line variants.gsx:15:53
+			_gsxgw.S("<span>+</span>")
+			return _gsxgw.Err()
+		}), _gsxrt.Attrs{{Key: "aria-label", Value: "Small icon"}}))
+//line variants.gsx:16:3
+		_gsxgw.Node(ctx, ui.Button("", "icon-lg", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
+//line variants.gsx:16:53
+			_gsxgw.S("<span>+</span>")
+			return _gsxgw.Err()
+		}), _gsxrt.Attrs{{Key: "aria-label", Value: "Large icon"}}))
+//line variants.gsx:17:3
+		_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
+			_gsxgw.S("Invalid")
+			return _gsxgw.Err()
+		}), _gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}}))
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})

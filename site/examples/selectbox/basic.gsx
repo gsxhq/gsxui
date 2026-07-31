@@ -10,14 +10,14 @@ import "github.com/gsxhq/gsxui/ui"
 // Trigger. name="fruit" renders the hidden native <select> form bridge.
 component Basic() {
 	<ui.Select name="fruit">
-		<ui.SelectTrigger class="w-[180px]">
+		<ui.SelectTrigger size="sm" aria-invalid="true" class="w-[180px]">
 			<ui.SelectValue placeholder="Select a fruit"/>
 		</ui.SelectTrigger>
 		<ui.SelectContent>
 			<ui.SelectGroup>
 				<ui.SelectLabel>Fruits</ui.SelectLabel>
-				<ui.SelectItem value="apple">Apple</ui.SelectItem>
-				<ui.SelectItem value="banana">Banana</ui.SelectItem>
+				<ui.SelectItem value="apple" selected>Apple</ui.SelectItem>
+				<ui.SelectItem value="banana" disabled>Banana</ui.SelectItem>
 				<ui.SelectItem value="blueberry">Blueberry</ui.SelectItem>
 				<ui.SelectItem value="grapes">Grapes</ui.SelectItem>
 				<ui.SelectItem value="pineapple">Pineapple</ui.SelectItem>

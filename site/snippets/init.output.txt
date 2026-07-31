@@ -1,4 +1,5 @@
 gsxui initialized.
-  css:  web/gsxui.css (import it from your entry point)
-  js:   web/gsxui/index.js (import it from your entry point)
+  css:  web/gsxui/index.css
+  js:   web/gsxui/index.js
+  vite: Tailwind CSS configured
   next: gsxui add button

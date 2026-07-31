@@ -1,0 +1,38 @@
+@layer components {
+  /* Command migrated to the slot axis (registry/styles/{nova,maia}/
+     command.css) EXCEPT this one declaration, which must stay here as plain
+     CSS. Its caller-overridability depends on the CSS LAYER boundary — this
+     rule lives in @layer components, a caller's plain utility class lives in
+     @layer utilities, and @layer utilities always wins regardless of
+     specificity. That guarantee only exists pre-resolution: migrated onto
+     command-item's recipe it would resolve to a literal
+     `data-[disabled=true]:opacity-50` utility class Tailwind scans straight
+     out of the generated ui/command.gsx — no longer inside an explicit
+     @layer components boundary at consumption time — and would then compete
+     on ordinary specificity at (0,2,0), permanently beating a caller's own
+     `opacity-*`. See
+     docs/superpowers/specs/2026-07-29-slot-axis-and-component-migration-design.md
+     section 10b and assets/css/styles/default/menu.css for the identical
+     prior fix.
+
+     data-disabled is stamped by the CALLER through attrs (CommandItem's own
+     doc comment: "Disable with aria-disabled=true or a data-disabled
+     attribute"), not by command.js — the same shape as Card's `.border-b`
+     and the menu family's [data-disabled], not a component-owned runtime
+     toggle. data-selected, by contrast, IS command.js's own runtime stamp
+     and migrated onto the recipe.
+
+     The `pointer-events-none` half of this same rule IS migrated (baked
+     onto .gsxui-recipe-command-item): no caller should be able to re-enable
+     pointer interaction on a row they themselves marked disabled — only the
+     purely presentational opacity needed to stay caller-overridable.
+
+     CommandDialog's own p-0 / sm:max-w-lg pair is NOT here either; it stays
+     promoted in assets/css/styles/default.css's @layer utilities block
+     (Dialog migration fallout — those two contest Dialog's own recipe
+     utilities on the same element). Only overflow-hidden, which contests
+     nothing Dialog sets, moved onto Command's own recipe. */
+  :where([data-gsxui-slot-command-item])[data-disabled="true"] {
+    @apply opacity-50;
+  }
+}

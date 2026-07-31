@@ -1,0 +1,84 @@
+@layer components {
+  /* InputGroup — migrated to the slot axis; see
+     registry/styles/{nova,maia}/input-group.css for what moved and why.
+     Everything below is RETAINED here deliberately under design doc § 10b:
+     each is a relational rule whose styled SUBJECT carries the recipe class,
+     so translating it would compile to a two-or-more-class selector and
+     permanently outrank a caller's own plain utility. Each was checked against
+     the slot's own recipe utilities first — none sets the property group
+     involved, so nothing here is dead. */
+
+  /* The disabled dimming, ancestor-scoped onto the addon. The addon slot's
+     recipe sets no opacity. */
+  :where([data-gsxui-slot-input-group][data-disabled="true"])
+    > :where([data-gsxui-slot-input-group-addon]) {
+    @apply opacity-50;
+  }
+
+  /* The four addon negative-margin nudges, same-element :has(). The align arms
+     set padding, never margin, so these are uncontested. */
+  :where([data-gsxui-slot-input-group-addon])[data-align="inline-start"]:has(
+      > button
+    ) {
+    @apply ml-[-0.3rem];
+  }
+  :where([data-gsxui-slot-input-group-addon])[data-align="inline-start"]:has(
+      > kbd
+    ) {
+    @apply ml-[-0.15rem];
+  }
+  :where([data-gsxui-slot-input-group-addon])[data-align="inline-end"]:has(
+      > button
+    ) {
+    @apply mr-[-0.3rem];
+  }
+  :where([data-gsxui-slot-input-group-addon])[data-align="inline-end"]:has(
+      > kbd
+    ) {
+    @apply mr-[-0.15rem];
+  }
+
+  /* The two consumer-class .border-b/.border-t padding rules are NOT here.
+     They are § 10b's own worst case and retention was the first attempt, but
+     the addon's base rule sets py-1.5 — whose padding-bottom/-top a
+     components-layer pb-2/pt-2 cannot beat once py-1.5 is a real utility — so
+     retaining them left them dead. See
+     registry/styles/{nova,maia}/input-group.css for the full reasoning; they
+     are arbitrary same-element variants on the block-start/block-end arms. */
+
+  /* resize-none applies only when the control is a Textarea. It is not part of
+     the shared input-group-control slot (Input stamps that marker too), and
+     InputGroup's shape has no textarea slot to hang it on, so it stays a
+     marker-keyed rule. Nothing in Textarea's or InputGroup's recipe sets
+     resize. */
+  :where(
+      [data-gsxui-slot-textarea][data-gsxui-slot-input-group-control]
+    ) {
+    @apply resize-none;
+  }
+
+  /* Moved here verbatim from assets/css/styles/default/combobox.css when
+     Combobox migrated to the slot axis. The styled SUBJECT is InputGroup,
+     not any Combobox slot — Combobox's content is only ancestor context —
+     so this is InputGroup's rule keyed on a foreign marker, the "Calendar
+     stray" shape registry/canonical/shapes/card.go's migration named.
+     Attaching it to Combobox's recipe would paint a foreign component from
+     Combobox's own classes; deleting it with the rest of combobox.css would
+     unstyle the search input a Combobox popup can host.
+
+     This is only the UNCONTESTED half of the original rule: h-8,
+     border-input/30 and bg-input/30 each contest a property InputGroup's own
+     recipe emits as a real utility on this element, so they were promoted to
+     assets/css/styles/default.css's @layer utilities block when InputGroup
+     migrated and stay there. m-1/mb-0/shadow-none contest nothing InputGroup
+     sets, so they keep their :where() wrapping and (0,0,0) specificity here.
+
+     They do now sit EARLIER in the sheet than they did (this file is imported
+     before combobox.css was), which only matters against another (0,0,0) rule
+     setting margin or box-shadow on an input-group between here and the old
+     position — there is none. */
+  :where([data-gsxui-slot-combobox-content])
+    > :where([data-gsxui-slot-input-group]) {
+    @apply m-1 mb-0 shadow-none;
+  }
+}

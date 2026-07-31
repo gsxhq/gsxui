@@ -8,8 +8,16 @@ import "github.com/gsxhq/gsxui/site/hl"
 // invented).
 type GettingStarted struct{}
 
+var gettingStartedTOCItems = []docTOCItem{
+	{ID: "install-cli", Title: "1. Install the CLIs", Depth: 2},
+	{ID: "initialize-project", Title: "2. Initialize your project", Depth: 2},
+	{ID: "manual-integration", Title: "Manual integration", Depth: 3},
+	{ID: "add-components", Title: "3. Add components", Depth: 2},
+	{ID: "first-page", Title: "4. Your first page", Depth: 2},
+}
+
 component (g GettingStarted) Page() {
-	<Layout title="Getting Started" active="getting-started">
+	<siteLayout title="Getting Started" active="getting-started" mode={layoutDocs} toc={gettingStartedTOCItems}>
 		<div data-doc="getting-started" class="flex max-w-3xl flex-col gap-10 py-10">
 			<div class="flex flex-col gap-4">
 				<h1 class="text-3xl font-semibold tracking-tight">Getting Started</h1>
@@ -19,33 +27,46 @@ component (g GettingStarted) Page() {
 				</p>
 			</div>
 			<section class="flex flex-col gap-3">
-				<h2>1. Install the CLI</h2>
+				<docHeading item={gettingStartedTOCItems[0]}/>
 				<pre><code>{ hl.Node("snippets/install.sh") }</code></pre>
 			</section>
 			<section class="flex flex-col gap-3">
-				<h2>2. Initialize your project</h2>
-				<p>In your project (a Go module):</p>
+				<docHeading item={gettingStartedTOCItems[1]}/>
+				<p>Create a fresh GSX app, then initialize gsxui inside it:</p>
 				<pre><code>{ hl.Node("snippets/init.sh") }</code></pre>
 				<pre><code>{ hl.Node("snippets/init.output") }</code></pre>
 				<p>
-					This vendors the theme tokens (<code>web/gsxui.css</code>), the JS runtime and behavior barrel (
-					<code>web/gsxui/</code>), and the class merger (<code>ui/merge/merge.go</code>), then
+					For the unmodified npm/Vite scaffold produced by <code>gsx init --yes</code>, this is the complete setup.
+					<code>gsxui init</code> installs Tailwind CSS, its Vite plugin, and <code>tw-animate-css</code>; registers
+					<code>tailwindcss()</code> in <code>vite.config.ts</code>; and imports the gsxui CSS and behavior entries
+					from <code>web/main.js</code>.
+				</p>
+				<p>
+					This vendors the CSS entry (<code>web/gsxui/index.css</code>) plus its sibling
+					<code>foundation.css</code>, <code>theme.css</code>, and <code>style.css</code>; the JS runtime and behavior
+					barrel (
+					<code>web/gsxui/</code>); and the class merger (<code>ui/merge/merge.go</code>), then
 					points <code>gsx.toml</code>'s <code>class_merger</code> at it — the seam that makes caller-class-merge work
 					(see <a href={Theming{} |> url}>Theming</a>). It
 					also <code>go get</code> <code>gsx</code> and <code>tailwind-merge-go</code>, and installs
 					the <code>gsx</code> tool via <code>go get -tool</code>.
 				</p>
 				<p>
-					<code>web/gsxui.css</code> begins
-					with <code>@import "tailwindcss"</code> and <code>@import "tw-animate-css"</code> — your Tailwind build
-					resolves both from npm, so make sure they're
-					installed: <code>npm install tailwindcss @tailwindcss/vite tw-animate-css</code>.
-					Without <code>tw-animate-css</code> every <code>animate-in</code>/<code>animate-out</code> class the
-					components carry (dialog, dropdown, tooltip) is silently inert.
+					Rerunning <code>gsxui init</code> is safe: npm verifies the locked dependencies and the exact scaffold
+					integration is not duplicated.
 				</p>
+				<div class="mt-4 flex flex-col gap-3">
+					<docHeading item={gettingStartedTOCItems[2]}/>
+					<p>
+						If you changed the Vite config, entry file, package manager, or gsxui JS/CSS paths, automatic rewriting
+						stops before running commands or writing files. Keep your custom structure and apply the printed
+						responsibilities yourself:
+					</p>
+					<pre><code>{ hl.Node("snippets/manual-integration") }</code></pre>
+				</div>
 			</section>
 			<section class="flex flex-col gap-3">
-				<h2>3. Add components</h2>
+				<docHeading item={gettingStartedTOCItems[3]}/>
 				<pre><code>{ hl.Node("snippets/add.sh") }</code></pre>
 				<pre><code>{ hl.Node("snippets/add.output") }</code></pre>
 				<p>
@@ -59,7 +80,7 @@ component (g GettingStarted) Page() {
 				</p>
 			</section>
 			<section class="flex flex-col gap-3">
-				<h2>4. Your first page</h2>
+				<docHeading item={gettingStartedTOCItems[4]}/>
 				<p>
 					A tiny two-file app: <code>home.gsx</code> renders a <code>Card</code> around a <code>Button</code>,
 					and <code>main.go</code> serves it.
@@ -81,5 +102,5 @@ component (g GettingStarted) Page() {
 				</p>
 			</section>
 		</div>
-	</Layout>
+	</siteLayout>
 }

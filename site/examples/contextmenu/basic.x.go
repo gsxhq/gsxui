@@ -30,14 +30,14 @@ func Basic() _gsxrt.Node {
 				_gsxgw.S("Right click here")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "flex h-[150px] w-[300px] items-center justify-center rounded-md border border-dashed text-sm"}}))
-//line basic.gsx:20:3
+//line basic.gsx:22:3
 			_gsxgw.Node(ctx, ui.ContextMenuContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:21:4
+//line basic.gsx:23:4
 				_gsxgw.Node(ctx, ui.ContextMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Back")
-//line basic.gsx:23:5
+//line basic.gsx:25:5
 					_gsxgw.Node(ctx, ui.ContextMenuShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("⌘[")
@@ -45,11 +45,11 @@ func Basic() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:25:4
+//line basic.gsx:27:4
 				_gsxgw.Node(ctx, ui.ContextMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Forward")
-//line basic.gsx:27:5
+//line basic.gsx:29:5
 					_gsxgw.Node(ctx, ui.ContextMenuShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("⌘]")
@@ -57,11 +57,11 @@ func Basic() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "aria-disabled", Value: "true"}}, _gsxrt.Attrs{{Key: "data-disabled", Value: "true"}})))
-//line basic.gsx:29:4
+//line basic.gsx:31:4
 				_gsxgw.Node(ctx, ui.ContextMenuItem("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Reload")
-//line basic.gsx:31:5
+//line basic.gsx:33:5
 					_gsxgw.Node(ctx, ui.ContextMenuShortcut(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("⌘R")
@@ -69,9 +69,9 @@ func Basic() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:33:4
+//line basic.gsx:35:4
 				_gsxgw.Node(ctx, ui.ContextMenuSeparator(nil))
-//line basic.gsx:34:4
+//line basic.gsx:36:4
 				_gsxgw.Node(ctx, ui.ContextMenuItem("destructive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Delete")

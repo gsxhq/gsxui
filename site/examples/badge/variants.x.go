@@ -23,7 +23,7 @@ func Variants() _gsxrt.Node {
 			_gsxgw := _gsxrt.W(_gsxw)
 			_gsxgw.S("Default")
 			return _gsxgw.Err()
-		}), nil))
+		}), _gsxrt.Attrs{{Key: "aria-invalid", Value: "true"}}))
 //line variants.gsx:9:3
 		_gsxgw.Node(ctx, ui.Badge("secondary", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)

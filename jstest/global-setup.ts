@@ -9,32 +9,64 @@ import {
   unlinkSync,
 } from "node:fs";
 import path from "node:path";
-import { cssPath, manifestPath, repoRoot, tmpDir } from "./support/paths";
+import { auditCompiledCSSFile } from "./support/compiled-css-audit.ts";
+import {
+  cssPath,
+  foundationCSSPath,
+  manifestPath,
+  repoRoot,
+  tmpDir,
+} from "./support/paths";
 
 /**
  * Runs once before any worker imports a spec file, which is what lets specs
  * read the manifest synchronously and still work under a bare
  * `npx playwright test`.
  *
- * The stylesheet is compiled from web/site.css — the production entry — so
- * every class a component can emit is present (site.css already declares
- * `@source "../ui/**\/*.gsx"`). Real CSS is not optional here: the ghost-box
- * invariant is a computed-style assertion, and it caught shipped defects in
- * both dialog and sidebar.
+ * The full stylesheet imports web/site.css — the production entry — and adds
+ * the harness's own authored fixtures to its explicit source boundary. Real
+ * CSS is not optional here: the ghost-box invariant is a computed-style
+ * assertion, and it caught shipped defects in both dialog and sidebar.
  */
 export default function globalSetup() {
   mkdirSync(tmpDir, { recursive: true });
+
+  execFileSync(
+    path.join(repoRoot, "node_modules", ".bin", "esbuild"),
+    [
+      "node_modules/postcss/lib/parse.js",
+      "--bundle",
+      "--platform=browser",
+      "--format=esm",
+      `--outfile=${path.join(tmpDir, "postcss-parse.mjs")}`,
+      "--log-level=warning",
+    ],
+    {
+      cwd: repoRoot,
+      stdio: "inherit",
+    },
+  );
 
   execFileSync("go", ["run", "./jstest/harness", "-manifest", manifestPath], {
     cwd: repoRoot,
     stdio: "inherit",
   });
 
-  execFileSync("npx", ["@tailwindcss/cli", "-i", "web/site.css", "-o", cssPath], {
+  execFileSync("npx", ["@tailwindcss/cli", "-i", "jstest/full.css", "-o", cssPath], {
     cwd: repoRoot,
     stdio: "inherit",
   });
+  execFileSync(
+    "npx",
+    ["@tailwindcss/cli", "-i", "jstest/foundation.css", "-o", foundationCSSPath],
+    {
+      cwd: repoRoot,
+      stdio: "inherit",
+    },
+  );
 
+  auditCompiledCSSFile(cssPath);
+  auditCompiledCSSFile(foundationCSSPath);
   linkFontAssets();
 }
 

@@ -1,24 +1,58 @@
 package ui_test
 
 import (
+	"html"
+	"os"
+	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 
 	gsx "github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/internal/recipe"
+	"github.com/gsxhq/gsxui/internal/stylegen"
+	"github.com/gsxhq/gsxui/merge"
 	"github.com/gsxhq/gsxui/ui"
 )
+
+// novaNativeSelectRecipe loads the default style's NativeSelect recipe once.
+// ui.NativeSelect is generated output now, so the classes it renders are the
+// default style's concrete utilities — same pattern as novaKbdRecipe.
+var novaNativeSelectRecipe = sync.OnceValue(func() recipe.Style {
+	path := filepath.Join("..", "registry", "styles", stylegen.DefaultStyle, "native-select.css")
+	src, err := os.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+	style, err := recipe.ParseStyle(path, src)
+	if err != nil {
+		panic(err)
+	}
+	return style
+})
+
+func nativeSelectRecipeClass(class string, caller ...string) string {
+	rule, ok := novaNativeSelectRecipe().Lookup(class)
+	if !ok {
+		panic("default style declares no recipe " + class)
+	}
+	classes := append(append([]string(nil), rule.Utilities...), caller...)
+	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
+}
+
+func canonicalNativeSelectWrapperClass(caller ...string) string {
+	return nativeSelectRecipeClass("gsxui-recipe-native-select-wrapper", caller...)
+}
+
+func canonicalNativeSelectClass(caller ...string) string {
+	return nativeSelectRecipeClass("gsxui-recipe-native-select", caller...)
+}
 
 func TestNativeSelectDefault(t *testing.T) {
 	got := render(t, ui.NativeSelect(gsx.Raw("<option>x</option>"), nil))
 	for _, want := range []string{
-		`<div data-slot="native-select-wrapper" class="relative w-fit">`,
-		`<select data-slot="native-select"`,
-		"flex w-full items-center justify-between gap-2 rounded-lg border border-input bg-transparent",
-		"disabled:cursor-not-allowed disabled:opacity-50",
-		"aria-invalid:border-destructive aria-invalid:ring-destructive/20",
-		"h-8",
-		"dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40",
-		"appearance-none pr-8",
+		`<div ` + canonicalNativeSelectWrapperClass() + ` data-gsxui-slot-native-select-wrapper>`,
+		`<select ` + canonicalNativeSelectClass() + ` data-gsxui-slot-native-select`,
 		"<option>x</option></select>",
 		"</div>",
 	} {
@@ -38,8 +72,7 @@ func TestNativeSelectIconDependency(t *testing.T) {
 		t.Errorf("expected chevron svg in render\nin: %s", got)
 	}
 	for _, want := range []string{
-		`data-slot="icon"`,
-		"pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 opacity-50",
+		`data-gsxui-slot-icon`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
@@ -53,14 +86,19 @@ func TestNativeSelectIconDependency(t *testing.T) {
 // fills the wrapper with w-full.
 func TestNativeSelectCallerClassMerges(t *testing.T) {
 	got := render(t, ui.NativeSelect(nil, gsx.Attrs{{Key: "class", Value: "w-full"}}))
+	// The wrapper's own w-fit and the caller's w-full are both plain
+	// utilities on the same element now, so merge.Merge drops w-fit rather
+	// than the old zero-specificity :where() rule losing the cascade.
+	wantWrapper := `<div ` + canonicalNativeSelectWrapperClass("w-full") + ` data-gsxui-slot-native-select-wrapper>`
+	if !strings.Contains(got, wantWrapper) {
+		t.Errorf("caller w-full should land on the wrapper\nwant: %s\nin: %s", wantWrapper, got)
+	}
 	if strings.Contains(got, "w-fit") {
-		t.Errorf("wrapper w-fit should be dropped by caller w-full\nin: %s", got)
+		t.Errorf("caller w-full should have displaced the wrapper's own w-fit\nin: %s", got)
 	}
-	if !strings.Contains(got, `class="relative w-full"`) {
-		t.Errorf("caller w-full should land on the wrapper\nin: %s", got)
-	}
-	if !strings.Contains(got, `class="flex w-full items-center`) {
-		t.Errorf("select should keep its own w-full\nin: %s", got)
+	if strings.Count(got, "w-full") != 2 {
+		// once on the wrapper (the caller's), once on the <select> (its own).
+		t.Errorf("caller class must merge exactly once\nin: %s", got)
 	}
 }
 
@@ -70,6 +108,23 @@ func TestNativeSelectAttrsFallThrough(t *testing.T) {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
+	}
+}
+
+func TestNativeSelectForwardsCallerPresenceMarkerToSelectWithoutPrefixFiltering(t *testing.T) {
+	got := render(t, ui.NativeSelect(nil, gsx.Attrs{
+		{Key: "data-gsxui-slot-calendar-dropdown", Value: true},
+		{Key: "id", Value: "month"},
+		{Key: "aria-label", Value: "Month"},
+	}))
+	requirePresenceAttributesOnSameTag(t, got, "<div", "data-gsxui-slot-native-select-wrapper")
+	requirePresenceAttributesOnSameTag(t, got, `id="month"`,
+		"data-gsxui-slot-calendar-dropdown",
+		"data-gsxui-slot-native-select",
+	)
+	wrapper := openingTagContaining(t, got, "<div")
+	if strings.Contains(wrapper, "data-gsxui-slot-calendar-dropdown") {
+		t.Errorf("caller select marker leaked onto wrapper\ntag: %s", wrapper)
 	}
 }
 
@@ -128,16 +183,9 @@ func TestNativeSelectGroupAttrsFallThrough(t *testing.T) {
 }
 
 func TestNativeSelectPinned(t *testing.T) {
-	// Exact full-render pin. Token-by-token verified against shadcn's
-	// SelectTrigger (registry/new-york-v4/ui/select.tsx) minus the ledgered
-	// Radix-only/dead-selector drop list (data-[placeholder]:..., the
-	// data-[size=*] variant pair replaced by an unconditional h-9, the
-	// *:data-[slot=select-value]:... child selectors, and the [&_svg]:...
-	// descendant selectors — the chevron is a sibling of <select>, never a
-	// descendant, since a native <select> can only contain option/optgroup)
-	// plus the appended appearance-none/pr-8. See docs/jsx-parity.md.
+	// Presentation lives in the stylesheet; the render pin covers structure.
 	got := render(t, ui.NativeSelect(gsx.Raw(`<option value="us">United States</option>`), nil))
-	want := `<div data-slot="native-select-wrapper" class="relative w-fit"><select data-slot="native-select" class="flex w-full items-center justify-between gap-2 rounded-lg border border-input bg-transparent pl-2.5 py-1 text-sm whitespace-nowrap transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 h-8 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40 appearance-none pr-8"><option value="us">United States</option></select><svg data-slot="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 opacity-50"><path d="m6 9 6 6 6-6"/></svg></div>`
+	want := `<div ` + canonicalNativeSelectWrapperClass() + ` data-gsxui-slot-native-select-wrapper><select ` + canonicalNativeSelectClass() + ` data-gsxui-slot-native-select><option value="us">United States</option></select><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="m6 9 6 6 6-6"/></svg></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

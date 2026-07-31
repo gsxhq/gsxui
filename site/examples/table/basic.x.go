@@ -38,7 +38,7 @@ func Basic() _gsxrt.Node {
 						return _gsxgw.Err()
 					}), nil))
 					return _gsxgw.Err()
-				}), nil))
+				}), _gsxrt.Attrs{{Key: "data-state", Value: "selected"}}))
 				return _gsxgw.Err()
 			}), nil))
 //line basic.gsx:15:3
@@ -74,6 +74,28 @@ func Basic() _gsxrt.Node {
 					_gsxgw.Node(ctx, ui.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("$19.00")
+						return _gsxgw.Err()
+					}), nil))
+					return _gsxgw.Err()
+				}), nil))
+				return _gsxgw.Err()
+			}), nil))
+//line basic.gsx:25:3
+			_gsxgw.Node(ctx, ui.TableFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:26:4
+				_gsxgw.Node(ctx, ui.TableRow(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+					_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:27:5
+					_gsxgw.Node(ctx, ui.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+						_gsxgw.S("Total")
+						return _gsxgw.Err()
+					}), nil))
+//line basic.gsx:28:5
+					_gsxgw.Node(ctx, ui.TableCell(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+						_gsxgw.S("$28.00")
 						return _gsxgw.Err()
 					}), nil))
 					return _gsxgw.Err()

@@ -1,0 +1,542 @@
+# Typed recipe model and structural component compilation
+
+**Date:** 2026-07-29
+
+**Status:** Approved design
+
+**Supersedes:** the flat-token half of
+[`2026-07-28-inline-style-button-pilot-design.md`](2026-07-28-inline-style-button-pilot-design.md).
+That pilot's compiler pass, provenance rules, and delivery model stand. Its
+string-token vocabulary and hand-written variant switches do not.
+
+## 1. Purpose
+
+The inline-style pilot proved the hard part: a safe, AST-driven pass can compile
+one canonical GSX component against an authored style recipe and emit concrete,
+readable, recipe-free consumer source. What it did not build is a **model**.
+
+Recipe tokens are flat strings. `gsxui-recipe-button-variant-outline` reads as
+structured, but nothing parses it: the `-variant-` segment is a naming
+convention. Four consequences follow, and every one of them is a missing data
+model rather than a missing feature:
+
+1. The component cannot be asked what variants it has, so no gallery.
+2. Two styles can only be diffed as overlapping string sets, not per axis.
+3. Completeness is one flat set comparison; it cannot say *"Maia is missing
+   `size=icon-lg`"*.
+4. The mapping from a public parameter to a token is hand-written as a `switch`
+   in the component — duplicated per rendered element, and free to drift from
+   the recipe.
+
+This design introduces the typed model and makes the compiler generate what was
+previously hand-maintained.
+
+## 2. Principles
+
+**The authored component is structural, not presentational.** Taken seriously,
+a structural component has no correct presentation of its own, so it is not
+something that ships. Every shipped artifact is `canonical × recipe`.
+
+**The shape is an interface; a style is an implementation of it.** A component
+has one set of dimensions and values. Styles supply utilities for that shape and
+may not alter it.
+
+**Prefer an existing parser to an invented one.** No new file format is
+introduced. Shapes are Go values, recipes are CSS, the contract is JSON.
+
+## 3. Architecture
+
+```text
+registry/canonical/shapes/     package shapes  (pure data, leaf)
+  button.go                      var Button = recipe.Shape{…}; All()
+        │
+        │  imported by stylegen (always compiles — see §3.4)
+        ▼
+registry/canonical/            package canonical  (compiled, never shipped)
+  button.gsx                     structure + behavior; calls button.Root/Variant/Size
+  button_recipe.go               var button = recipe.Component{…}
+  button_recipe.gen.go           GENERATED per-slot accessors
+        │
+        │  imported for the shape ─────────────┐
+        │  parsed as .gsx for class exprs      │
+        ▼                                      │
+internal/stylegen              the compiler pass
+        │                                      │
+        │  uses ─────────────────────────────► internal/recipe
+        │                                        Shape, Dimension, Recipe
+        ▼                                        CSS parse + validate
+registry/styles/<style>/button.css               contract JSON schema
+        │  utilities only
+        ▼
+registry/generated/<style>/button.gsx   per-style output, committed
+        │  default style (nova) copied to ↓
+ui/button.gsx                  package ui  ← ships
+registry/generated/recipes.json            ← published contract, no consumer yet
+```
+
+### 3.1 `internal/recipe`
+
+Pure data and validation. No gsx, no filesystem, no I/O. It owns `Shape` and
+`Dimension`, parses a style's CSS *against* a shape, and defines the contract
+JSON schema. Given a shape and a stylesheet it answers two questions: is this
+recipe a complete implementation of the shape, and what are the utilities for
+`(component, dimension, value)`?
+
+### 3.2 `internal/stylegen`
+
+The GSX pass. It parses the canonical `.gsx`, finds recipe helper calls in class
+attributes, replaces each with generated source, reformats, reparses, and
+verifies no recipe construct survives. It depends on `internal/recipe` and knows
+nothing about CSS syntax.
+
+### 3.3 `registry/canonical`
+
+The authored components and their shapes. Each component binds its shape to a
+package-level `recipe.Component` value named after the component (the helper
+method bodies themselves live in `internal/recipe/component.go`). It is compiled so
+that it type-checks and so that structure and behavior tests can run against the
+authoritative source. It is never imported by `ui` or by consumers.
+
+`stylegen` consumes the canonical by **parsing** its `.gsx` files as text to
+rewrite class expressions. It reads shapes by **importing**
+`registry/canonical/shapes` (no reading of Go declarations as data). These are
+different concerns and the split is deliberate.
+
+### 3.4 `registry/canonical/shapes`
+
+Shapes live in a leaf package that always compiles on its own, and
+`internal/stylegen` must not import `registry/canonical` in any form.
+
+The constraint is a bootstrap one. Accessors are generated *into*
+`registry/canonical`, and `cmd/stylegen` imports `internal/stylegen`; Go
+compiles a package as a unit. If `internal/stylegen` read shapes from
+`registry/canonical`, a canonical `.gsx` calling a not-yet-generated accessor
+would make `registry/canonical` unbuildable and the generator unable to run at
+all. `generate.go` reads `shapes.All()` instead. See §3 of the slot-axis
+design.
+
+## 4. The recipe model
+
+A `Shape` names a component and its slots; each slot carries its own base flag
+and dimensions. See §2 of the slot-axis design for the struct. Everything below
+about dimensions, defaults, conformance and conflicts applies per slot.
+
+```go
+// internal/recipe
+type Dimension struct {
+    Name    string
+    Default string   // must be a member of Values
+    Values  []string
+}
+```
+
+A shape is declared once, beside the canonical component whose public
+parameters it mirrors:
+
+```go
+// registry/canonical/shapes/button.go
+var Button = recipe.Shape{
+    Component: "button",
+    Slots: []recipe.Slot{{
+        Name: "", // the root slot
+        Base: true,
+        Dimensions: []recipe.Dimension{
+            {Name: "variant", Default: "default", Values: []string{
+                "default", "destructive", "outline", "secondary", "ghost", "link"}},
+            {Name: "size", Default: "default", Values: []string{
+                "default", "xs", "sm", "lg", "icon", "icon-xs", "icon-sm", "icon-lg"}},
+        },
+    }},
+}
+```
+
+Class names such as `.gsxui-recipe-button-variant-outline` remain the CSS
+selector encoding, but they are now *derived from* the shape rather than being
+the schema. The parser matches selectors against declared dimensions and values
+instead of splitting on dashes, which removes the ambiguity between a dimension
+name and a dashed value like `icon-lg`.
+
+### 4.1 Style conformance
+
+A component has one shape, and every style implements all of it. Validation runs
+in both directions:
+
+- every `(dimension, value)` in the shape has a rule in the style —
+  `maia/button.css: dimension "size" missing value "icon-lg"`
+- every rule in the style maps to a declared `(dimension, value)` —
+  `maia/button.css: unknown recipe rule .gsxui-recipe-button-variant-plain`
+- `Default` is a member of `Values`
+- a base rule exists if and only if `Base` is true
+
+Styles are therefore interchangeable: switching a style can never break a call
+site, and a Nova/Maia diff is about utilities only.
+
+### 4.2 Intra-list conflict detection
+
+A single utility list that applies two conflicting Tailwind utilities is an
+authoring mistake, and normalizing it silently would hide the bug. The build
+fails instead:
+
+```text
+nova/button.css: .gsxui-recipe-button applies conflicting utilities
+  rounded-lg and rounded-md
+```
+
+Conflicts *between* class parts (base against size, or either against caller
+classes) are resolved at render time by `merge.Merge`. See §8.
+
+## 5. Helpers and desugaring
+
+The canonical authors semantic roles:
+
+```gsx
+class={
+    "group/button",
+    button.Root(),
+    button.Variant(variant),
+    button.Size(size),
+}
+```
+
+`button` is an unexported package-level value in `registry/canonical` of the
+**generated** type `buttonRecipe`, which wraps a `recipe.Component` and exposes
+one method per declared (slot, dimension). `recipe.Component` itself carries
+only the untyped primitives `SlotClass(slot)` and
+`SlotValueClass(slot, dimension, value)`; the typed per-slot API is the
+generated accessor type. `Root()` is the root slot's base accessor. The two
+meanings are:
+
+| | `button.Root()` | `button.Variant(v)` |
+|---|---|---|
+| **stylegen** | base utilities literal | a `switch` over `v` |
+| **canonical runtime** | `"gsxui-recipe-button"` | token for `v`, falling back to the dimension's `Default` when `v` is empty or unknown |
+
+The runtime fallback is not a convenience. It makes the canonical's semantics
+match the generated `default:` arm, so a behavior test written against the
+canonical asserts something true of every style.
+
+Desugared output for `button.Variant(variant)` under Nova:
+
+```gsx
+switch variant {
+case "destructive": "bg-destructive text-contrast hover:bg-destructive/90 …"
+case "outline":     "border-border bg-background hover:bg-accent …"
+case "secondary":   "bg-secondary text-secondary-foreground …"
+case "ghost":       "hover:bg-accent hover:text-accent-foreground …"
+case "link":        "text-primary underline-offset-4 hover:underline"
+default:            "bg-primary text-primary-foreground hover:bg-primary/90"
+}
+```
+
+Two properties follow. The `default:` arm carries the declared default's
+utilities rather than `""`, so a misspelled variant renders the default instead
+of an unstyled element. And because the arms are generated from the shape, they
+cannot drift from the recipe.
+
+The canonical still writes `button.Variant(variant)` once per rendered
+element — the `<a>` and `<button>` branches are two call sites. Each is one line
+rather than a sixteen-line switch, and neither is hand-maintained.
+
+### 5.1 Why methods, not free functions
+
+The dimension names are meant to mirror the component's parameter names, so the
+first design called free functions: `variant("button", variant)`. That does not
+compile — a parameter named `variant` shadows the package-level function
+`variant`, and Go reports "cannot call variant (variable of type string):
+string is not a function." Every dimension of every component hits this
+collision by construction, not by accident, because dimension and parameter
+names are meant to match. Binding the shape to a method on a `recipe.Component`
+value instead (`button.Variant(variant)`) makes the collision impossible: a
+local variable cannot shadow a method, whatever it is named. It also states the
+component name once, in the value's declaration, instead of at every call
+site.
+
+## 6. Rewrite mechanics
+
+The pass replaces whole class parts: a `ClassPart` whose `Expr` is a recipe
+helper call has its source span swapped for generated text.
+
+The surrounding machinery is what makes the pass trustworthy:
+
+1. parse the canonical with `gsxparser.ParseFile`
+2. collect edits as `(span, replacement)`, rejecting anything malformed at its
+   own `file:line:col`
+3. apply edits back-to-front, rejecting overlapping spans
+4. `gen.Format`, reparse with `gsxparser.ParseFile`, then verify that no helper
+   call and no `gsxui-recipe-` prefix survives
+
+Rejection rules: a helper call or recipe
+token is illegal in a static class attribute, a non-class attribute, an
+interpolation, a pipeline argument, a switch tag, and nested markup.
+
+**Resolved.** `ClassPart.Pos()` includes the leading newline and indentation,
+and `End()` excludes the trailing comma — so the edit span is
+`[ExprPos, End())`, using the helper call expression's own position as the
+start and the part's `End()` as the end. Implementation also found a case the
+spike didn't anticipate: a helper call in a class part that also carries a
+condition, pipeline, control flow, or CSS segments is rejected outright,
+because `End()` extends past a trailing `: cond` guard and reusing the part's
+span would silently delete it. See `recordPartEdit` and
+`validateHelperPart` in `internal/stylegen/resolve.go`.
+
+## 7. Generated contract
+
+`registry/generated/recipes.json`, emitted by the same pass and drift-checked
+alongside the generated `.gsx` files:
+
+A component's rules are grouped under named slots, so multi-slot components can
+be expressed. The `version` field carries `recipe.ContractVersion`, intended
+for a future consumer to check before it decides whether it understands the
+schema — no consumer reads it yet, and no test exercises version rejection.
+Abridged to the root slot for legibility:
+
+```json
+{ "version": 1,
+  "components": { "button": { "slots": { "": {
+      "base": true,
+      "dimensions": {
+        "variant": { "default": "default",
+                     "values": ["default","destructive","outline","secondary","ghost","link"] },
+        "size":    { "default": "default",
+                     "values": ["default","xs","sm","lg","icon","icon-xs","icon-sm","icon-lg"] } } } } } },
+  "styles": { "nova": { "button": { "slots": { "": {
+      "base": ["inline-flex","shrink-0","items-center"],
+      "dimensions": {
+        "variant": { "outline": ["border-border","bg-background","hover:bg-accent"] },
+        "size":    { "xs": ["h-6","gap-1","px-2"] } } } } } },
+              "maia": {} } }
+```
+
+The shape is emitted once and shared by all styles, which is strict conformance
+made visible in the artifact. This is a **published contract awaiting
+integration**: no consumer reads it today. Editor features this design would
+enable follow directly once a consumer exists — a gallery could iterate
+`components`, a diff could align two entries of `styles` on identical axes,
+completeness would be structural rather than textual, and a preset export
+would be a subtree — but none of that is built.
+
+No editor UI is in scope here. The artifact and its drift check are. Also
+missing: any test that a consumer rejects an unexpected `version` value.
+
+## 8. Rejected: build-time utility pre-merge
+
+Pre-merging `base + variant + size` at generate time was considered and
+rejected.
+
+Those three are separate class parts, merged at render time together with caller
+classes. A cross-part conflict — Nova's base `rounded-lg` against `size-xs`'s
+`rounded-[min(var(--radius-md),10px)]` — can only be resolved statically by
+emitting the **product** of the dimensions: six variants times eight sizes is 48
+arms of pre-merged strings. That destroys the readability of the source the user
+owns, which is the whole purpose of inline-style delivery. Trading the
+deliverable's defining property for a per-render string merge is a bad trade.
+
+Excluding the product leaves only merging within a single list, and those
+conflicts are authoring mistakes that should be reported, not normalized.
+
+The useful half is therefore kept as validation (§4.2), and cross-part merging
+stays at render time where `merge.Merge` already handles it correctly.
+
+## 9. Compiled presentation vs. caller overrides: the layer invariant
+
+Compiling Button's presentation into concrete utilities determines what a
+caller override is competing against. Button's presentation arrives as plain
+utility classes on the generated element, at ordinary utility specificity.
+Anything that needs to override part of it — another component's CSS composing
+over a Button-rendered marker, not a one-off caller class — competes against
+those utilities directly, and loses by default if it sits in
+`@layer components`, because Tailwind's cascade orders whole `@layer`s before
+it ever looks at selector specificity.
+
+**The invariant:**
+
+> A rule that overrides compiled Button presentation must live in
+> `@layer utilities` **and** carry specificity >= (0,1,0).
+
+Both halves are required, independently:
+
+- **Layer.** The cascade orders whole layers before specificity. A
+  components-layer rule against a Button-composed marker loses to Button's
+  compiled utilities no matter how specific the selector is, because it never
+  reaches a specificity comparison at all. It has to move to
+  `@layer utilities` to even compete.
+- **Specificity.** `:where(...)` is deliberately zero-specificity — it exists
+  precisely so structural selector wrapping doesn't accidentally win fights
+  it shouldn't. Once a rule is correctly in the utilities layer, a
+  `:where()`-wrapped version of it still loses to a plain class like
+  `.rounded-lg`, because within one layer the cascade falls back to ordinary
+  specificity and `:where()` contributes none. The selector has to carry real
+  specificity (a plain class or attribute selector, not `:where()`) to
+  actually win.
+
+Getting only one half right produces a rule that silently does nothing: it
+parses, it compiles, `stylegen --check` and `make audit` are both green, and
+in the running page the override never applies. This exact bug class was
+found three separate times during implementation, by three different routes,
+against three different components — which is why it is recorded here as an
+explicit invariant rather than left implicit in the CSS.
+
+**Worked examples**, all in `assets/css/styles/default.css`:
+
+- **ButtonGroup corner geometry** (`@layer utilities`, near the Carousel
+  arrow rules): a grouped child's corner radius and border must override the
+  `rounded-lg` a Button now renders as a concrete utility. The rule lives in
+  the utilities layer with a plain attribute-selector specificity, not
+  wrapped in `:where()`.
+- **Carousel arrows** (`@layer components` at `default.css:2610`,
+  `@layer utilities` at `default.css:~3262`): geometry that doesn't compete
+  with Button (`absolute`, positioning) lives in the components layer; only
+  the part that overrides Button's own compiled shape (`size-8 rounded-full`,
+  against Button's `rounded-lg`) sits in the utilities layer with unwrapped
+  selectors. See the cross-reference comments at both locations.
+- **InputGroupButton** (`@layer utilities`, `default.css:~3270`): retunes a
+  grouped Button's whole size ramp — type scale and radius — which again
+  means overriding utilities Button renders concretely, not a
+  low-specificity recipe class.
+
+See item 1 in the Follow-up work section (§15) for the one case where
+dropping `:where()` costs a caller-override guarantee. Item 2 —
+making this invariant a build-time check instead of a comment — is now done:
+`stylegen.CheckLayerPrecedence` runs from `make audit` via
+`go run ./cmd/stylegen --check-layers`.
+
+## 10. Manifest-driven generation
+
+Generation is discovery-driven — nothing in the generator names a specific
+component:
+
+```text
+for each registry/canonical/<component>.gsx
+  for each registry/styles/<style>/<component>.css
+    emit registry/generated/<style>/<component>.gsx   package ui   (gsxui add)
+    emit site/stylepreview/<style>/<component>.gsx    package <style> (editor)
+  copy registry/generated/<defaultStyle>/<component>.gsx
+    -> ui/<component>.gsx                             package ui   (ships)
+```
+
+`ui/` is the default style's generated output, not a fourth kind of artifact.
+The default style is `nova`, named in one place and consumed by generation, by
+`gsxui add` when no style is selected, and by this repository's own site. A
+consumer who applies Maia overwrites `ui/<component>.gsx` from
+`registry/generated/maia/`; the shape is identical, so the call sites do not
+change.
+
+Only Button is migrated in practice, but the code is not Button-shaped:
+deferring that until the second component's migration would be strictly worse.
+
+Atomic write, `--check` drift mode, and the temp-file discipline all apply.
+
+## 11. Error handling
+
+Every diagnostic carries a source location and names the artifact at fault.
+
+| Fault | Reported against |
+|---|---|
+| missing or unknown `(dimension, value)` rule | the style CSS, at the rule or file |
+| `Default` not in `Values` | the shape, by component and dimension |
+| conflicting utilities in one list | the style CSS, at the rule |
+| helper call with an unknown component or dimension | the canonical `.gsx`, at the call |
+| helper call in an illegal position | the canonical `.gsx`, at the position |
+| recipe construct surviving resolution | internal invariant; fails the build |
+| generated artifact drift | the artifact path, with the regeneration command |
+
+Validation is complete before any artifact is written. A failing run mutates
+nothing.
+
+## 12. Testing
+
+| Layer | What it proves | Where |
+|---|---|---|
+| Shape and validation | missing/unknown value, bad default, missing base, conflicting utilities — each with its exact message | `internal/recipe`, table tests |
+| Desugaring | canonical to Nova and Maia, byte for byte | `internal/stylegen`, golden files |
+| Rejection | helper in a non-class attribute, interpolation, static class, nested markup | `internal/stylegen` |
+| Structure and behavior | `href` renders `<a>`, `disabled` forces `<button>`, `attrs` fall through, slot markers present — asserted once, style-independent | `registry/canonical` |
+| Boundary | nothing imports `registry/canonical` — not even `stylegen`, which reads it as files and takes shapes from the leaf `registry/canonical/shapes` | architecture test |
+| Drift | generated `.gsx` and `recipes.json` match a fresh run | CI, `--check` |
+| Tailwind reality | every recipe compiles with no unknown utilities | existing `compiled-css-audit`, retargeted |
+
+The structure and behavior row is the return on compiling the canonical.
+Behavior is asserted once against the structural source rather than N times
+against generated styles, so the test pyramid never becomes parameterized by
+presentation.
+
+## 13. Scope
+
+**In scope.** The typed model and validation; helper desugaring; the canonical
+package and its boundary test; manifest-driven generation; the generated
+contract JSON and its drift check; intra-list conflict detection; migrating
+Button to the new pipeline.
+
+**Out of scope.** Editor UI built on the contract; migrating any component other
+than Button; compound variants and selection matrices; a third style; build-time
+pre-merge (§8); changes to theme values, presets, or the CLI apply flow.
+
+## 14. Success criteria
+
+1. `registry/canonical/button.gsx` contains no concrete utility and no recipe
+   token string — only `button.Root()`, `button.Variant()`, and `button.Size()`
+   calls.
+2. The shape is declared once; Nova and Maia supply utilities only.
+3. Deleting a rule from either style fails the build naming the exact missing
+   `(dimension, value)`.
+4. Generated `ui/button.gsx` is byte-identical to a fresh run, contains readable
+   Tailwind, no helper call, and no recipe prefix.
+5. A misspelled variant at a call site renders the declared default.
+6. `recipes.json` is sufficient to enumerate every variant, diff Nova against
+   Maia per axis, and report completeness — with no access to the CSS.
+7. Structure and behavior tests run once against the canonical and pass.
+8. Nothing imports `registry/canonical` — not even `stylegen`, which reads
+   shapes from `registry/canonical/shapes` and the components as files.
+
+## 15. Follow-up work
+
+Working notes from implementation lived in a gitignored scratch directory
+that will be deleted; the items below are captured here so they survive.
+
+1. **The Carousel arrow rule outranks caller classes.** It sits in
+   `@layer utilities` with real specificity, so a caller passing
+   `class="rounded-none"` to a Carousel arrow cannot override it. Untested,
+   and it needs its own spec so the gap is known rather than assumed.
+2. ~~**The components/utilities split in `default.css` is load-bearing but
+   unenforced.**~~ Done: `stylegen.CheckLayerPrecedence` enforces both halves
+   of the invariant and runs from `make audit` as
+   `go run ./cmd/stylegen --check-layers`.
+3. **Mixed composition model.** Components that call `ui.Button` receive
+   compiled utilities; components that merely stamp its `data-gsxui-slot-button`
+   marker (site-only surfaces) fall back to `web/site-button.css`. These two
+   paths will drift from each other until the marker-stampers are converted to
+   call `ui.Button` directly.
+4. **Nothing validates variant-combination completeness in recipes.** A rule
+   for `dark:` and a rule for `hover:` can both exist while their combination
+   is missing, and no check notices. A style-authoring lint ("a rule declaring
+   both `hover:X` and `dark:X` must also declare `dark:hover:X`") would catch
+   this class of gap mechanically.
+5. **`ui/button_test.go` derives its expected classes via `merge.Merge`**, so
+   a regression in the merge logic itself cancels out between the expected
+   and actual values and would not be caught by this test. Bounded risk: the
+   real computed values are independently covered by
+   `jstest/specs/style-visual.spec.ts`.
+6. **`registry/canonical/shapes`'s `All()` is a shallow copy** — the returned
+   map is fresh, but each `Shape`'s `Slots`/`Dimensions`/`Values` slices are
+   still shared with the package-level map, so a caller mutating them in
+   place would corrupt shared state. Open.
+7. **`ui/button_test.go` imports `internal/stylegen` only for the
+   `DefaultStyle` constant**, which pulls `internal/stylegen` (and through it
+   `registry/canonical/shapes`) into `ui`'s test binary. The never-ship
+   `registry/canonical` package itself is not dragged in, since `stylegen` does
+   not import it. Moving `DefaultStyle` to `internal/recipe` would drop the
+   import entirely. Open.
+8. ~~**Adding a dimension requires three uncoupled edits**~~ Done. The
+   accessor method is generated from the shape rather than hand-written on
+   `recipe.Component`; the residue check derives its receiver list from
+   `shapes.All()` (`knownComponents`/`residualAccessorCall` in
+   `internal/stylegen/resolve.go`) instead of a hardcoded
+   `.Role(`/`.Variant(`/`.Size(` list; and the `strings.ToLower(Sel.Name)`
+   trap is gone — a method name is resolved back to its `(slot, dimension)`
+   against the shape's own generated accessor names, never by string
+   splitting. Adding a dimension is now one edit to the shape plus
+   regeneration.
+9. **The CSS-layer sweep covered resting state at one viewport.**
+   Hover/focus/active states are covered only for the specific cases that
+   `jstest/specs/style-visual.spec.ts` names, not exhaustively across
+   components and breakpoints.

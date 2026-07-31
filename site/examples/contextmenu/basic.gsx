@@ -14,7 +14,9 @@ import (
 // those components (see docs/jsx-parity.md's ## context-menu GAP entry).
 component Basic() {
 	<ui.ContextMenu>
-		<ui.ContextMenuTrigger class="flex h-[150px] w-[300px] items-center justify-center rounded-md border border-dashed text-sm">
+		<ui.ContextMenuTrigger
+			class="flex h-[150px] w-[300px] items-center justify-center rounded-md border border-dashed text-sm"
+		>
 			Right click here
 		</ui.ContextMenuTrigger>
 		<ui.ContextMenuContent class="w-52">

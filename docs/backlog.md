@@ -18,13 +18,12 @@ per-component GAP notes (see `jsx-parity.md` for the detailed rationale).
   color isn't near-white. Swap to a `currentColor` CSS-mask
   (`mask-image`/`-webkit-mask-image` painted via `background-color:
   currentColor`) in the Plan 4 theming work.
-- **`gsxui theme` (local)** — the theme editor ships remote (on the site,
-  `/theme`) for v1; a local `gsxui theme` command was deferred, open
-  question: embed a built CSS artifact in the CLI binary (stays in sync
-  with the site's editor, but bloats/staleness-risks the binary) vs. have
-  it reuse the calling project's own Tailwind build (accurate to that
-  project's tokens, but requires shelling out to its build tooling). Needs
-  a decision before implementation.
+- **Preset configurator** — the current `/theme` editor correctly imports,
+  previews, copies, and downloads variables-only `theme.css`. Replacing it
+  with the full preset configurator remains an uncommitted possibility.
+  The shipped CSS-only boundary and the no-promise gate for any second
+  component style are tracked in
+  [`theme-system-roadmap.md`](theme-system-roadmap.md).
 - **Icon search** — the icon gallery page (`site/examples/icon`) ships v1
   as a static grid of ~40 popular icons plus a "1,748 total" note; a
   searchable/filterable index over the full Lucide set is not built.

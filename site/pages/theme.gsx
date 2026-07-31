@@ -1,82 +1,206 @@
 package pages
 
 import (
+	"encoding/json"
+	"strings"
+
+	"github.com/gsxhq/gsxui/internal/preset"
 	"github.com/gsxhq/gsxui/ui"
 )
 
-// Theme is the /theme route: a live editor over the 20 shadcn-compatible
+// Theme is the /theme route: a live editor over the shadcn-compatible
 // CSS custom properties every gsxui component reads. Entirely client-side
 // once loaded (web/theme.js) — the Go side only server-renders the default
 // light/dark values so the page works before any JS runs.
 type Theme struct{}
 
-// themeVar is one editable CSS custom property, with its default light and
-// dark values.
-type themeVar struct {
-	Name  string
-	Light string
-	Dark  string
+type themeEditorSchema struct {
+	Schema            string                     `json:"schema"`
+	SchemaVersion     int                        `json:"schemaVersion"`
+	Transport         themeTransportSchema       `json:"transport"`
+	TokenNames        []string                   `json:"tokenNames"`
+	RadiusUnits       []string                   `json:"radiusUnits"`
+	Styles            []string                   `json:"styles"`
+	Defaults          map[string]json.RawMessage `json:"defaults"`
+	CanonicalDefaults map[string]string          `json:"canonicalDefaults"`
+	Palette           themePaletteSchema         `json:"palette"`
 }
 
-// themeGroup is a labeled cluster of related vars (matches the editor's
-// section headings).
-type themeGroup struct {
-	Title string
-	Vars  []themeVar
+type themeTransportSchema struct {
+	FullPrefix    string                      `json:"fullPrefix"`
+	CompactPrefix string                      `json:"compactPrefix"`
+	Compact       themeCompactTransportSchema `json:"compact"`
 }
 
-// themeGroups holds the DEFAULT light/dark values for all 20 editable
-// tokens, grouped the way the editor displays them. Source of truth:
-// web/site.css's :root/.dark blocks (which mirror assets/gsxui.css, the
-// file `gsxui init` vendors into consumer projects) — keep all three in
-// sync when shadcn/tailwind bump the base palette.
-var themeGroups = []themeGroup{
-	{
-		Title: "Base",
-		Vars: []themeVar{
-			{Name: "--background", Light: "oklch(1 0 0)", Dark: "oklch(0.145 0 0)"},
-			{Name: "--foreground", Light: "oklch(0% 0 0)", Dark: "oklch(0.985 0 0)"},
-			{Name: "--card", Light: "oklch(1 0 0)", Dark: "oklch(0.205 0 0)"},
-			{Name: "--card-foreground", Light: "oklch(0% 0 0)", Dark: "oklch(0.985 0 0)"},
-			{Name: "--popover", Light: "oklch(1 0 0)", Dark: "oklch(0.205 0 0)"},
-			{Name: "--popover-foreground", Light: "oklch(0% 0 0)", Dark: "oklch(0.985 0 0)"},
-		},
-	},
-	{
-		Title: "Brand",
-		Vars: []themeVar{
-			{Name: "--primary", Light: "oklch(0% 0 0)", Dark: "oklch(0.922 0 0)"},
-			{Name: "--primary-foreground", Light: "oklch(0.985 0 0)", Dark: "oklch(0.205 0 0)"},
-			{Name: "--secondary", Light: "oklch(0.97 0 0)", Dark: "oklch(0.269 0 0)"},
-			{Name: "--secondary-foreground", Light: "oklch(0.205 0 0)", Dark: "oklch(0.985 0 0)"},
-			{Name: "--accent", Light: "oklch(0.97 0 0)", Dark: "oklch(0.371 0 0)"},
-			{Name: "--accent-foreground", Light: "oklch(0.205 0 0)", Dark: "oklch(0.985 0 0)"},
-		},
-	},
-	{
-		Title: "Feedback",
-		Vars: []themeVar{
-			{Name: "--muted", Light: "oklch(0.97 0 0)", Dark: "oklch(0.269 0 0)"},
-			{Name: "--muted-foreground", Light: "oklch(0.556 0 0)", Dark: "oklch(0.708 0 0)"},
-			{Name: "--destructive", Light: "oklch(0.577 0.245 27.325)", Dark: "oklch(0.704 0.191 22.216)"},
-			{Name: "--destructive-foreground", Light: "oklch(0.97 0.01 17)", Dark: "oklch(0.58 0.22 27)"},
-		},
-	},
-	{
-		Title: "Structure",
-		Vars: []themeVar{
-			{Name: "--border", Light: "oklch(0.922 0 0)", Dark: "oklch(1 0 0 / 10%)"},
-			{Name: "--input", Light: "oklch(0.922 0 0)", Dark: "oklch(1 0 0 / 15%)"},
-			{Name: "--ring", Light: "oklch(0.708 0 0)", Dark: "oklch(0.556 0 0)"},
-			{Name: "--radius", Light: "0.625rem", Dark: "0.625rem"},
-		},
-	},
+type themeCompactTransportSchema struct {
+	Styles     []string `json:"styles"`
+	BaseColors []string `json:"baseColors"`
+	Themes     []string `json:"themes"`
+	Radii      []string `json:"radii"`
 }
 
-// ThemeGroups returns the default theme group definitions for testing purposes.
-// This allows tests to verify that Go defaults stay in sync with CSS values.
-func ThemeGroups() []themeGroup {
-	return themeGroups
+type themePaletteSchema struct {
+	BaseColors       []themePaletteChoiceSchema                       `json:"baseColors"`
+	Themes           map[string][]themePaletteChoiceSchema            `json:"themes"`
+	Radii            []themeRadiusChoiceSchema                        `json:"radii"`
+	Resolved         map[string]map[string]themePaletteResolvedSchema `json:"resolved"`
+	DefaultSelection themePaletteSelectionSchema                      `json:"defaultSelection"`
+}
+
+type themePaletteChoiceSchema struct {
+	Name   string `json:"name"`
+	Title  string `json:"title"`
+	Swatch string `json:"swatch"`
+}
+
+type themeRadiusChoiceSchema struct {
+	Name  string `json:"name"`
+	Title string `json:"title"`
+	Value string `json:"value"`
+}
+
+type themePaletteResolvedSchema struct {
+	Light preset.ThemeValues `json:"light"`
+	Dark  preset.ThemeValues `json:"dark"`
+}
+
+type themePaletteSelectionSchema struct {
+	BaseColor string `json:"baseColor"`
+	Theme     string `json:"theme"`
+	Radius    string `json:"radius"`
+}
+
+func themeEditorSchemaValue() themeEditorSchema {
+	styles := preset.Styles()
+	schema := themeEditorSchema{
+		Schema:            preset.SchemaURL,
+		SchemaVersion:     preset.SchemaVersion,
+		Transport:         themeTransportSchemaValue(),
+		TokenNames:        preset.TokenNames(),
+		RadiusUnits:       preset.RadiusUnits(),
+		Styles:            make([]string, len(styles)),
+		Defaults:          make(map[string]json.RawMessage, len(styles)),
+		CanonicalDefaults: make(map[string]string, len(styles)),
+		Palette:           themePaletteSchemaValue(),
+	}
+	for i, style := range styles {
+		schema.Styles[i] = string(style)
+		canonical, err := preset.CanonicalJSON(preset.Default(style))
+		if err != nil {
+			panic(err)
+		}
+		schema.Defaults[string(style)] = json.RawMessage(strings.TrimSpace(string(canonical)))
+		schema.CanonicalDefaults[string(style)] = string(canonical)
+	}
+	return schema
+}
+
+func themeTransportSchemaValue() themeTransportSchema {
+	transport := preset.ShareTransportSchema()
+	styles := make([]string, len(transport.Styles))
+	for i, style := range transport.Styles {
+		styles[i] = string(style)
+	}
+	return themeTransportSchema{
+		FullPrefix:    transport.FullPrefix,
+		CompactPrefix: transport.CompactPrefix,
+		Compact: themeCompactTransportSchema{
+			Styles:     styles,
+			BaseColors: transport.BaseColors,
+			Themes:     transport.Themes,
+			Radii:      transport.Radii,
+		},
+	}
+}
+
+func themePaletteSchemaValue() themePaletteSchema {
+	selection := preset.DefaultPaletteSelection()
+	schema := themePaletteSchema{
+		BaseColors:       themePaletteChoiceSchemaValues(preset.BaseColorChoices()),
+		Themes:           make(map[string][]themePaletteChoiceSchema),
+		Radii:            themeRadiusChoiceSchemaValues(preset.RadiusChoices()),
+		Resolved:         make(map[string]map[string]themePaletteResolvedSchema),
+		DefaultSelection: themePaletteSelectionSchemaFromPreset(selection),
+	}
+	for _, baseColor := range preset.BaseColorChoices() {
+		themes, err := preset.ThemeChoices(baseColor.Name)
+		if err != nil {
+			panic(err)
+		}
+		schema.Themes[baseColor.Name] = themePaletteChoiceSchemaValues(themes)
+		schema.Resolved[baseColor.Name] = make(map[string]themePaletteResolvedSchema, len(themes))
+		for _, theme := range themes {
+			resolved, err := preset.ResolvePalette(preset.StyleNova, preset.PaletteSelection{
+				BaseColor: baseColor.Name,
+				Theme:     theme.Name,
+				Radius:    selection.Radius,
+			})
+			if err != nil {
+				panic(err)
+			}
+			schema.Resolved[baseColor.Name][theme.Name] = themePaletteResolvedSchema{
+				Light: resolved.Theme.Light,
+				Dark:  resolved.Theme.Dark,
+			}
+		}
+	}
+	return schema
+}
+
+func themePaletteChoiceSchemaValues(choices []preset.PaletteChoice) []themePaletteChoiceSchema {
+	values := make([]themePaletteChoiceSchema, len(choices))
+	for i, choice := range choices {
+		values[i] = themePaletteChoiceSchema{Name: choice.Name, Title: choice.Title, Swatch: choice.Swatch}
+	}
+	return values
+}
+
+func themeRadiusChoiceSchemaValues(choices []preset.RadiusChoice) []themeRadiusChoiceSchema {
+	values := make([]themeRadiusChoiceSchema, len(choices))
+	for i, choice := range choices {
+		values[i] = themeRadiusChoiceSchema{Name: choice.Name, Title: choice.Title, Value: choice.Value}
+	}
+	return values
+}
+
+func themePaletteSelectionSchemaFromPreset(selection preset.PaletteSelection) themePaletteSelectionSchema {
+	return themePaletteSelectionSchema{
+		BaseColor: selection.BaseColor,
+		Theme:     selection.Theme,
+		Radius:    selection.Radius,
+	}
+}
+
+func themePickerChoices(choices []preset.PaletteChoice) []themePickerChoice {
+	values := make([]themePickerChoice, len(choices))
+	for i, choice := range choices {
+		values[i] = themePickerChoice{
+			Title:  choice.Title,
+			Swatch: choice.Swatch,
+			Value:  choice.Name,
+		}
+	}
+	return values
+}
+
+func themeRadiusPickerChoices(choices []preset.RadiusChoice) []themePickerChoice {
+	values := make([]themePickerChoice, len(choices))
+	for i, choice := range choices {
+		values[i] = themePickerChoice{
+			Title:       choice.Title,
+			Value:       choice.Name,
+			SwatchStyle: "border-radius: " + choice.Value,
+		}
+	}
+	return values
+}
+
+func mustThemePickerChoices(baseColor string) []preset.PaletteChoice {
+	choices, err := preset.ThemeChoices(baseColor)
+	if err != nil {
+		panic(err)
+	}
+	return choices
 }
 
 const tabBtnBase = "rounded-md border border-border px-3 py-1.5 text-sm font-medium transition-colors"
@@ -89,146 +213,210 @@ const themeImportPlaceholder = `:root {
 }`
 
 component (t Theme) Page() {
-	<Layout title="Theme" active="">
-		<div class="flex flex-col gap-6 py-10">
-			<div>
-				<h1 class="text-3xl font-semibold tracking-tight">Theme editor</h1>
-				<p class="mt-2 max-w-2xl text-sm text-muted-foreground">
-					Edit the 20 CSS custom properties gsxui's components read (mirrors assets/gsxui.css). Paste a tweakcn/shadcn theme's root and dark blocks into Import to try it, or export what you build here as a ready-to-drop-in gsxui.css.
+	<siteLayout title="Theme" active="" mode={layoutWorkspace} toc={nil}>
+		<themeEditor previewURL={ThemePreviewButton{} |> url} workspace/>
+	</siteLayout>
+}
+
+// ThemeEditor is the editor body without the site shell, so the browser
+// harness can exercise the production controls and web/theme.js directly.
+component ThemeEditor(previewURL string) {
+	<themeEditor previewURL={previewURL}/>
+}
+
+component themeEditor(previewURL string, workspace bool) {
+	{{
+		editorClass := "flex flex-col gap-8 py-10"
+		gridClass := "grid grid-cols-1 gap-8"
+		previewPanelClass := "flex min-w-0 flex-col gap-4"
+		controlsPanelClass := "flex min-w-0 flex-col gap-7"
+		iframeClass := "w-full rounded-xl border border-border bg-background shadow-sm"
+		if workspace {
+			editorClass += " lg:h-full lg:min-h-0 lg:gap-4 lg:py-0"
+			gridClass += " lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(22rem,28rem)_minmax(0,1fr)] lg:grid-rows-[auto_minmax(12rem,1fr)] lg:gap-x-8 lg:gap-y-6"
+			previewPanelClass += " lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:min-h-0"
+			controlsPanelClass += " lg:col-start-1 lg:row-start-2 lg:min-h-0 lg:overflow-y-auto lg:pr-2"
+			iframeClass += " h-[min(70svh,640px)] lg:h-auto lg:min-h-0 lg:flex-1"
+		} else {
+			gridClass += " xl:grid-cols-[minmax(0,5fr)_minmax(420px,7fr)]"
+			previewPanelClass += " xl:col-start-2 xl:row-span-2 xl:row-start-1"
+			controlsPanelClass += " xl:col-start-1 xl:row-start-2"
+			iframeClass += " min-h-[640px]"
+		}
+	}}
+	<div class={editorClass}>
+		<script type="application/json" data-theme-schema>@{ themeEditorSchemaValue() }</script>
+		<div>
+			<h1 class="text-3xl font-semibold tracking-tight">Theme editor</h1>
+			<p class="mt-2 max-w-2xl text-sm text-muted-foreground">
+				Choose the copied component style, then edit the semantic theme it consumes. This Button pilot renders the exact
+				Nova or Maia source a project receives from <code>gsxui add</code>.
+			</p>
+		</div>
+		<div class={gridClass}>
+			<section data-theme-style-panel class="flex min-w-0 flex-col gap-3">
+				<div class="flex items-center justify-between gap-3">
+					<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Style</h2>
+					<ui.Button data-theme-reset variant="outline" size="sm">Reset</ui.Button>
+				</div>
+				<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+					<button
+						type="button"
+						data-theme-style="nova"
+						aria-pressed="true"
+						class="rounded-xl border border-primary bg-accent/50 p-4 text-left transition-colors hover:bg-accent"
+					>
+						<span class="block font-medium">Nova</span>
+						<span class="mt-1 block text-xs text-muted-foreground">Compact, practical defaults.</span>
+					</button>
+					<button
+						type="button"
+						data-theme-style="maia"
+						aria-pressed="false"
+						class="rounded-xl border border-border p-4 text-left transition-colors hover:bg-accent"
+					>
+						<span class="flex items-center justify-between gap-2">
+							<span class="font-medium">Maia</span>
+							<span class="rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-foreground">Button pilot</span>
+						</span>
+						<span class="mt-1 block text-xs text-muted-foreground">Softer geometry and roomier controls.</span>
+					</button>
+				</div>
+				<p class="text-xs text-muted-foreground">
+					Maia currently applies only to Button. The CLI refuses an unsafe mixed-style migration once other components
+					are installed.
 				</p>
+			</section>
+			<div
+				data-theme-preview-panel
+				class={previewPanelClass}
+			>
+				<div class="flex items-center justify-between gap-3">
+					<div>
+						<h2 class="font-medium">Button preview</h2>
+						<p data-theme-preview-status class="text-xs text-muted-foreground">Connecting to preview…</p>
+					</div>
+					<ui.Button data-theme-preview-retry variant="outline" size="sm" class="hidden">Retry</ui.Button>
+				</div>
+				<iframe
+					data-theme-preview-frame
+					title="Button theme preview"
+					src={previewURL}
+					class={iframeClass}
+				></iframe>
+				<p data-theme-status role="status" aria-live="polite" class="min-h-5 text-sm text-muted-foreground"></p>
+				<textarea
+					data-theme-manual-copy
+					readonly
+					rows="5"
+					class="hidden w-full rounded-md border border-input bg-background p-3 font-mono text-xs"
+				></textarea>
 			</div>
-			<div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
-				<div class="flex flex-col gap-6">
-					{ for _, g := range themeGroups {
-						<section class="flex flex-col gap-3">
-							<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">{ g.Title }</h2>
-							<div class="flex flex-col gap-2">
-								<div class="grid grid-cols-[minmax(0,120px)_1fr_1fr] gap-3 text-xs text-muted-foreground">
-									<span></span>
-									<span>Light</span>
-									<span>Dark</span>
-								</div>
-								{ for _, v := range g.Vars {
-									<div>
-										<div class="grid grid-cols-[minmax(0,120px)_1fr_1fr] items-center gap-3">
-											<label class="truncate font-mono text-xs text-muted-foreground" title={v.Name}>{ v.Name }</label>
-											<input
-												type="text"
-												data-theme-var={v.Name}
-												data-theme-mode="light"
-												value={v.Light}
-												class="h-8 w-full min-w-0 rounded-md border border-input bg-transparent px-2 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
-											/>
-											<input
-												type="text"
-												data-theme-var={v.Name}
-												data-theme-mode="dark"
-												value={v.Dark}
-												class="h-8 w-full min-w-0 rounded-md border border-input bg-transparent px-2 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
-											/>
-										</div>
-										{ if v.Name == "--radius" {
-											<p class="col-start-2 col-span-2 mt-1 text-xs text-muted-foreground">
-												preview only — radius is theme-invariant in exports
-											</p>
-										} }
-									</div>
-								} }
-							</div>
-						</section>
-					} }
-					<section class="flex flex-col gap-3 border-t border-border pt-6">
-						<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Export</h2>
-						<div class="flex flex-wrap gap-2">
-							<ui.Button data-theme-copy variant="outline" size="sm">Copy CSS</ui.Button>
-							<ui.Button data-theme-download variant="outline" size="sm">Download gsxui.css</ui.Button>
+			<div
+				data-theme-controls-panel
+				class={controlsPanelClass}
+			>
+				<section class="flex flex-col gap-3 border-t border-border pt-6">
+					<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Mode and palette</h2>
+					<div class="flex flex-wrap items-end justify-between gap-4">
+						<div class="flex items-center gap-2">
+							<button
+								type="button"
+								data-theme-mode-tab="light"
+								aria-pressed="true"
+								class={ tabBtnBase, "bg-accent text-accent-foreground" }
+							>
+								Light
+							</button>
+							<button
+								type="button"
+								data-theme-mode-tab="dark"
+								aria-pressed="false"
+								class={ tabBtnBase, "text-muted-foreground hover:bg-accent hover:text-accent-foreground" }
+							>
+								Dark
+							</button>
 						</div>
+					</div>
+					<div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+						<ThemePicker
+							name="baseColor"
+							label="Base color"
+							selected="neutral"
+							choices={themePickerChoices(preset.BaseColorChoices())}
+						/>
+						<ThemePicker
+							name="theme"
+							label="Theme"
+							selected="neutral"
+							choices={themePickerChoices(mustThemePickerChoices("neutral"))}
+						/>
+						<ThemePicker
+							name="radius"
+							label="Radius"
+							selected="medium"
+							choices={themeRadiusPickerChoices(preset.RadiusChoices())}
+						/>
+					</div>
+				</section>
+				<section class="flex flex-col gap-3 border-t border-border pt-6">
+					<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Preset JSON</h2>
+					<div class="flex flex-wrap gap-2">
+						<ui.Button data-theme-copy="json" variant="outline" size="sm">Copy JSON</ui.Button>
+						<ui.Button data-theme-download="json" variant="outline" size="sm">Download preset.json</ui.Button>
+					</div>
+					<textarea
+						data-theme-import="json"
+						rows="6"
+						placeholder="Paste a gsxui preset JSON document"
+						class="w-full rounded-md border border-input bg-transparent p-3 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+					></textarea>
+					<div>
+						<ui.Button data-theme-import-apply="json" variant="outline" size="sm">Apply JSON</ui.Button>
+					</div>
+				</section>
+				<section class="flex flex-col gap-3 border-t border-border pt-6">
+					<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Theme CSS</h2>
+					<div class="flex flex-wrap gap-2">
+						<ui.Button data-theme-copy="css" variant="outline" size="sm">Copy CSS</ui.Button>
+						<ui.Button data-theme-download="css" variant="outline" size="sm">Download theme.css</ui.Button>
+					</div>
+					<textarea
+						data-theme-import="css"
+						rows="6"
+						placeholder={themeImportPlaceholder}
+						class="w-full rounded-md border border-input bg-transparent p-3 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+					></textarea>
+					<div>
+						<ui.Button data-theme-import-apply="css" variant="outline" size="sm">Apply CSS</ui.Button>
+					</div>
+				</section>
+				<section class="flex flex-col gap-3 border-t border-border pt-6">
+					<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Share and install</h2>
+					<div class="flex flex-wrap gap-2">
+						<ui.Button data-theme-copy="share" variant="outline" size="sm">Copy share code</ui.Button>
+						<ui.Button data-theme-copy="url" variant="outline" size="sm">Copy share URL</ui.Button>
+					</div>
+					<label class="flex flex-col gap-1.5 text-xs text-muted-foreground">
+						New project
 						<textarea
-							data-theme-export-output
+							data-theme-command="init"
 							readonly
-							rows="6"
-							class="hidden w-full rounded-md border border-input bg-transparent p-2 font-mono text-xs shadow-xs outline-none"
+							rows="3"
+							class="rounded-md border border-input bg-muted/40 p-3 font-mono text-xs text-foreground"
 						></textarea>
-					</section>
-					<section class="flex flex-col gap-3 border-t border-border pt-6">
-						<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Import</h2>
-						<p class="text-xs text-muted-foreground">
-							Paste a tweakcn/shadcn-style root/dark block of --var: value; pairs.
-						</p>
+					</label>
+					<label class="flex flex-col gap-1.5 text-xs text-muted-foreground">
+						Initialized project
 						<textarea
-							data-theme-import
-							rows="6"
-							placeholder={themeImportPlaceholder}
-							class="w-full rounded-md border border-input bg-transparent p-2 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+							data-theme-command="apply"
+							readonly
+							rows="3"
+							class="rounded-md border border-input bg-muted/40 p-3 font-mono text-xs text-foreground"
 						></textarea>
-						<div>
-							<ui.Button data-theme-import-apply variant="outline" size="sm">Apply</ui.Button>
-						</div>
-					</section>
-				</div>
-				<div class="flex flex-col gap-4">
-					<div class="flex items-center gap-2">
-						<button
-							type="button"
-							data-theme-tab="light"
-							aria-pressed="true"
-							class={ tabBtnBase, "bg-accent text-accent-foreground" }
-						>
-							Light
-						</button>
-						<button
-							type="button"
-							data-theme-tab="dark"
-							aria-pressed="false"
-							class={ tabBtnBase, "text-muted-foreground hover:bg-accent hover:text-accent-foreground" }
-						>
-							Dark
-						</button>
-					</div>
-					<div data-theme-preview class="flex flex-col gap-6 rounded-xl border border-border bg-background p-6">
-						<div class="flex flex-wrap items-center gap-2">
-							<ui.Button>Default</ui.Button>
-							<ui.Button variant="secondary">Secondary</ui.Button>
-							<ui.Button variant="outline">Outline</ui.Button>
-							<ui.Button variant="ghost">Ghost</ui.Button>
-							<ui.Button variant="link">Link</ui.Button>
-							<ui.Button variant="destructive">Destructive</ui.Button>
-						</div>
-						<div class="flex flex-wrap items-center gap-2">
-							<ui.Badge>Default</ui.Badge>
-							<ui.Badge variant="secondary">Secondary</ui.Badge>
-							<ui.Badge variant="outline">Outline</ui.Badge>
-							<ui.Badge variant="destructive">Destructive</ui.Badge>
-						</div>
-						<ui.Card class="max-w-sm">
-							<ui.CardHeader>
-								<ui.CardTitle>Profile</ui.CardTitle>
-								<ui.CardDescription>Preview restyles live as you edit the tokens.</ui.CardDescription>
-							</ui.CardHeader>
-							<ui.CardContent>
-								<div class="flex flex-col gap-3">
-									<div class="flex flex-col gap-1.5">
-										<ui.Label for="theme-preview-name">Name</ui.Label>
-										<ui.Input id="theme-preview-name" placeholder="Ada Lovelace"/>
-									</div>
-									<div class="flex items-center gap-2">
-										<ui.Checkbox id="theme-preview-terms" checked/>
-										<ui.Label for="theme-preview-terms">Accept terms</ui.Label>
-									</div>
-								</div>
-							</ui.CardContent>
-						</ui.Card>
-						<ui.Alert>
-							<ui.AlertTitle>Heads up</ui.AlertTitle>
-							<ui.AlertDescription>This alert restyles with the tokens above.</ui.AlertDescription>
-						</ui.Alert>
-						<ui.Alert variant="destructive">
-							<ui.AlertTitle>Something went wrong</ui.AlertTitle>
-							<ui.AlertDescription>The destructive variant uses --destructive.</ui.AlertDescription>
-						</ui.Alert>
-					</div>
-				</div>
+					</label>
+				</section>
 			</div>
 		</div>
-	</Layout>
+	</div>
 }

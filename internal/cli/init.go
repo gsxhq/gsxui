@@ -1,7 +1,9 @@
 package cli
 
 import (
+	"context"
 	"errors"
+	"flag"
 	"fmt"
 	"io/fs"
 	"os"
@@ -9,31 +11,43 @@ import (
 	"strings"
 
 	gsxui "github.com/gsxhq/gsxui"
+	"github.com/gsxhq/gsxui/internal/preset"
 )
 
-// writeVendored installs content at path: absent → write, identical → no-op,
-// different → error unless overwrite.
-func writeVendored(path string, content []byte, overwrite bool) error {
-	if existing, err := os.ReadFile(path); err == nil {
-		if string(existing) == string(content) {
-			return nil
-		}
-		if !overwrite {
-			return fmt.Errorf("%s differs from the gsxui version — pass --overwrite to replace it", path)
-		}
+type cssAssetTarget struct {
+	source string
+	target string
+}
+
+// defaultStyleCSS is the aggregator over assets/css/styles/default/*.css. It is
+// the one CSS asset vendored as a composition rather than a copy.
+const defaultStyleCSS = "assets/css/styles/default.css"
+
+func cssAssetTargets(entry string) []cssAssetTarget {
+	dir := filepath.Dir(entry)
+	return []cssAssetTarget{
+		{source: "assets/css/index.css", target: entry},
+		{source: "assets/css/foundation.css", target: filepath.Join(dir, "foundation.css")},
+		{source: "assets/css/themes/default.css", target: filepath.Join(dir, "theme.css")},
+		{source: defaultStyleCSS, target: filepath.Join(dir, "style.css")},
 	}
-	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
-		return err
-	}
-	return os.WriteFile(path, content, 0o644)
 }
 
 func runInit(args []string) error {
-	if len(args) != 0 {
-		return fmt.Errorf("usage: gsxui init")
+	flags := flag.NewFlagSet("init", flag.ContinueOnError)
+	presetInput := flags.String("preset", "", "preset file, share code, raw JSON, URL, or - for stdin")
+	overwrite := flags.Bool("overwrite", false, "replace locally modified support files")
+	if err := flags.Parse(args); err != nil {
+		return err
+	}
+	if len(flags.Args()) != 0 {
+		return fmt.Errorf("usage: gsxui init [--preset <file|code|->] [--overwrite]")
 	}
 	dir, err := os.Getwd()
 	if err != nil {
+		return err
+	}
+	if err := recoverArtifactTransaction(dir); err != nil {
 		return err
 	}
 	module, err := modulePath(dir)
@@ -45,76 +59,213 @@ func runInit(args []string) error {
 	case err == nil:
 	case errors.Is(err, errConfigNotFound):
 		cfg = DefaultConfig()
-		if err := cfg.Save(dir); err != nil {
-			return err
-		}
 	default:
 		return err // unparsable or unreadable: never overwrite
 	}
 
-	css, err := fs.ReadFile(gsxui.Files, "assets/gsxui.css")
+	selectedPreset, err := resolveInitPreset(dir, *presetInput)
 	if err != nil {
 		return err
 	}
-	if err := writeVendored(filepath.Join(dir, cfg.CSS), css, false); err != nil {
+	artifacts, err := initArtifacts(dir, module, cfg, selectedPreset)
+	if err != nil {
 		return err
+	}
+	integrationArtifacts, err := planScaffoldIntegration(dir, cfg)
+	if err != nil {
+		return err
+	}
+	artifacts = append(artifacts, integrationArtifacts...)
+	packageArtifacts, err := packageMetadataArtifacts(dir)
+	if err != nil {
+		return err
+	}
+	artifacts = append(artifacts, packageArtifacts...)
+	_, completePlan, err := artifactPlanWithConfig(cfg, artifacts)
+	if err != nil {
+		return err
+	}
+	if err := validateArtifactPlan(dir, cfg, completePlan, *overwrite); err != nil {
+		return err
+	}
+	npmCommand := []string{
+		"install",
+		"--save-dev",
+		"tailwindcss@^4.3.3",
+		"@tailwindcss/vite@^4.3.3",
+		"tw-animate-css@^1.4.0",
+	}
+	commands := [][]string{
+		{"go", "get", "github.com/gsxhq/gsx@latest"},
+		{"go", "get", "github.com/jackielii/tailwind-merge-go@latest"},
+		{"go", "get", "-tool", "github.com/gsxhq/gsx/cmd/gsx@latest"},
+	}
+	if err := executeArtifactTransaction(
+		dir,
+		completePlan,
+		func() error {
+			if err := runCommand(dir, "npm", npmCommand...); err != nil {
+				return fmt.Errorf("npm %v: %w", npmCommand, err)
+			}
+			for _, command := range commands {
+				if err := runCommand(dir, command[0], command[1:]...); err != nil {
+					return fmt.Errorf("%v: %w", command, err)
+				}
+			}
+			return generateProject(dir)
+		},
+		func() error { return generateProject(dir) },
+	); err != nil {
+		return err
+	}
+
+	fmt.Fprintf(
+		commandStdout,
+		"gsxui initialized.\n  css:  %s\n  js:   %s/index.js\n  vite: Tailwind CSS configured\n  next: gsxui add button\n",
+		cfg.CSS,
+		cfg.JS,
+	)
+	return nil
+}
+
+func resolveInitPreset(dir, input string) (preset.Preset, error) {
+	if input != "" {
+		resolved, err := (preset.InputResolver{Stdin: commandStdin}).Resolve(context.Background(), input)
+		if err != nil {
+			return preset.Preset{}, fmt.Errorf("resolve init preset: %w", err)
+		}
+		return resolved, nil
+	}
+
+	path := filepath.Join(dir, "gsxui.preset.json")
+	content, err := os.ReadFile(path)
+	if err == nil {
+		resolved, err := preset.ParseJSON(content)
+		if err != nil {
+			return preset.Preset{}, fmt.Errorf("load existing gsxui.preset.json: %w", err)
+		}
+		return resolved, nil
+	}
+	if !os.IsNotExist(err) {
+		return preset.Preset{}, fmt.Errorf("read existing gsxui.preset.json: %w", err)
+	}
+	return preset.Default(preset.StyleNova), nil
+}
+
+func initArtifacts(dir, module string, cfg Config, selected preset.Preset) ([]artifact, error) {
+	presetJSON, err := preset.CanonicalJSON(selected)
+	if err != nil {
+		return nil, err
+	}
+	themeCSS, err := preset.ThemeCSS(selected)
+	if err != nil {
+		return nil, err
+	}
+
+	artifacts := []artifact{{
+		RelativePath: "gsxui.preset.json",
+		Content:      presetJSON,
+		Managed:      true,
+	}}
+	for _, asset := range cssAssetTargets(cfg.CSS) {
+		var content []byte
+		switch asset.source {
+		case "assets/css/themes/default.css":
+			content = themeCSS
+		case defaultStyleCSS:
+			// The default style is authored as one file per component under
+			// styles/default/; the consumer receives the single flat sheet they
+			// have always received. See composeStyleCSS.
+			content, err = composeStyleCSS(gsxui.Files, asset.source)
+			if err != nil {
+				return nil, err
+			}
+		default:
+			content, err = fs.ReadFile(gsxui.Files, asset.source)
+			if err != nil {
+				return nil, err
+			}
+		}
+		artifacts = append(artifacts, artifact{
+			RelativePath: filepath.ToSlash(asset.target),
+			Content:      content,
+			Managed:      true,
+		})
 	}
 
 	core, err := fs.ReadFile(gsxui.Files, "ui/gsxui.js")
 	if err != nil {
-		return err
+		return nil, err
 	}
-	if err := writeVendored(filepath.Join(dir, cfg.JS, "gsxui.js"), core, false); err != nil {
-		return err
+	artifacts = append(artifacts, artifact{
+		RelativePath: filepath.ToSlash(filepath.Join(cfg.JS, "gsxui.js")),
+		Content:      core,
+		Managed:      true,
+	})
+
+	indexRelative := filepath.ToSlash(filepath.Join(cfg.JS, "index.js"))
+	indexPath, err := artifactPath(dir, indexRelative)
+	if err != nil {
+		return nil, err
 	}
-	indexPath := filepath.Join(dir, cfg.JS, "index.js")
-	if _, err := os.Stat(indexPath); os.IsNotExist(err) {
-		if err := writeVendored(indexPath, Barrel(nil), false); err != nil {
-			return err
+	index, err := os.ReadFile(indexPath)
+	switch {
+	case os.IsNotExist(err):
+		barrel, err := behaviorBarrelArtifact(dir, cfg, nil)
+		if err != nil {
+			return nil, err
 		}
+		artifacts = append(artifacts, barrel)
+	case err != nil:
+		return nil, fmt.Errorf("read behavior barrel: %w", err)
+	case strings.HasPrefix(string(index), barrelHeader):
+		barrel, err := behaviorBarrelArtifact(dir, cfg, nil)
+		if err != nil {
+			return nil, err
+		}
+		artifacts = append(artifacts, barrel)
 	}
 
 	merge, err := fs.ReadFile(gsxui.Files, "merge/merge.go")
 	if err != nil {
-		return err
+		return nil, err
 	}
-	if err := writeVendored(filepath.Join(dir, cfg.UI, "merge", "merge.go"), merge, false); err != nil {
-		return err
-	}
+	artifacts = append(artifacts, artifact{
+		RelativePath: filepath.ToSlash(filepath.Join(cfg.UI, "merge", "merge.go")),
+		Content:      merge,
+		Managed:      true,
+	})
 
-	if err := ensureClassMerger(dir, module, cfg.UI); err != nil {
-		return err
+	classMerger, err := classMergerArtifact(dir, module, cfg.UI)
+	if err != nil {
+		return nil, err
 	}
-
-	for _, c := range [][]string{
-		{"go", "get", "github.com/gsxhq/gsx@latest"},
-		{"go", "get", "github.com/jackielii/tailwind-merge-go@latest"},
-		{"go", "get", "-tool", "github.com/gsxhq/gsx/cmd/gsx@latest"},
-	} {
-		if err := runCommand(dir, c[0], c[1:]...); err != nil {
-			return fmt.Errorf("%v: %w", c, err)
-		}
+	if classMerger != nil {
+		artifacts = append(artifacts, *classMerger)
 	}
-
-	fmt.Printf("gsxui initialized.\n  css:  %s (import it from your entry point)\n  js:   %s/index.js (import it from your entry point)\n  next: gsxui add button\n", cfg.CSS, cfg.JS)
-	return nil
+	return artifacts, nil
 }
 
-// ensureClassMerger makes gsx.toml name the vendored merger. Top-level keys
-// must precede any [table] header, so a missing directive is prepended.
-func ensureClassMerger(dir, module, uiDir string) error {
-	path := filepath.Join(dir, "gsx.toml")
+func classMergerArtifact(dir, module, uiDir string) (*artifact, error) {
+	const relative = "gsx.toml"
+	path, err := artifactPath(dir, relative)
+	if err != nil {
+		return nil, err
+	}
 	line := fmt.Sprintf("class_merger = %q\n", module+"/"+uiDir+"/merge.Merge")
 	existing, err := os.ReadFile(path)
 	if os.IsNotExist(err) {
-		return os.WriteFile(path, []byte(line), 0o644)
+		return &artifact{RelativePath: relative, Content: []byte(line)}, nil
 	}
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if strings.Contains(string(existing), "class_merger") {
 		fmt.Println("gsx.toml already sets class_merger — left unchanged")
-		return nil
+		return nil, nil
 	}
-	return os.WriteFile(path, append([]byte(line+"\n"), existing...), 0o644)
+	return &artifact{
+		RelativePath: relative,
+		Content:      append([]byte(line+"\n"), existing...),
+	}, nil
 }

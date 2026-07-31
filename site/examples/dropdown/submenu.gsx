@@ -10,7 +10,15 @@ import (
 // rather than portalled.
 component Submenu() {
 	<ui.DropdownMenu>
-		<ui.Button variant="outline" data-gsxui-dropdown-trigger>Actions</ui.Button>
+		<ui.Button
+			variant="outline"
+			data-gsxui-dropdown-trigger
+			data-gsxui-slot-dropdown-menu-trigger
+			aria-haspopup="menu"
+			aria-expanded="false"
+		>
+			Actions
+		</ui.Button>
 		<ui.DropdownMenuContent>
 			<ui.DropdownMenuItem>New File</ui.DropdownMenuItem>
 			<ui.DropdownMenuSub>

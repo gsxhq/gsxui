@@ -1,10 +1,25 @@
 package examples
 
 import (
+	"fmt"
 	"net/url"
 
 	"github.com/gsxhq/gsx"
 )
+
+// PreviewQueryKey selects one exact named preview document for an isolated
+// example with multiple cases. The leading underscore reserves it for the
+// gallery rather than an example's own request state.
+const PreviewQueryKey = "_preview"
+
+// Preview is one independently rendered document within a registered
+// example. It lets a single shared source block demonstrate multiple
+// viewport-owning cases without mounting those fixed layouts together.
+type Preview struct {
+	Name  string
+	Title string
+	Node  gsx.Node
+}
 
 // Example is one live demo on a component page. Name/SourcePath key the
 // embedded source file (SourcePath is "{component}/{Name}.gsx", relative
@@ -18,6 +33,17 @@ type Example struct {
 	Title      string
 	Node       gsx.Node
 	SourcePath string
+	// Isolated renders the live example in its own same-origin document.
+	// Use it for application-shell components that intentionally own the
+	// viewport; source display and registration otherwise stay unchanged.
+	Isolated bool
+	// ViewportWidth gives an isolated example a stable inner canvas in CSS
+	// pixels. The parent preview surface remains fluid and clips this canvas;
+	// zero keeps the iframe fluid with the surface.
+	ViewportWidth int
+	// Previews, when non-empty, renders one isolated document per named case
+	// while retaining this example's single title and source block.
+	Previews []Preview
 
 	// Query, when non-nil, re-renders the example per-request from the
 	// request's raw query parameters instead of using the static Node —
@@ -44,6 +70,31 @@ var (
 // init() (see button.go), so component pages iterate a stable,
 // source-defined order — Task 3 batches append one file each, same pattern.
 func Register(component string, ex Example) {
+	if ex.ViewportWidth < 0 {
+		panic(fmt.Sprintf(
+			"examples: component %q example %q has negative viewport width %d",
+			component,
+			ex.Name,
+			ex.ViewportWidth,
+		))
+	}
+	if ex.ViewportWidth > 0 && !ex.Isolated {
+		panic(fmt.Sprintf(
+			"examples: component %q example %q has viewport width %d but is not isolated",
+			component,
+			ex.Name,
+			ex.ViewportWidth,
+		))
+	}
+	for _, registered := range registry[component] {
+		if registered.Name == ex.Name {
+			panic(fmt.Sprintf(
+				"examples: duplicate registration for component %q example %q",
+				component,
+				ex.Name,
+			))
+		}
+	}
 	if _, ok := registry[component]; !ok {
 		order = append(order, component)
 	}
@@ -54,6 +105,36 @@ func Register(component string, ex Example) {
 // nil if component has none registered.
 func For(component string) []Example {
 	return registry[component]
+}
+
+// Find resolves one exact registered component/example pair and, when the
+// reserved selector is present, exactly one named preview. Query-backed
+// examples render from the supplied values; all others return their static
+// node. Unknown, empty, or ambiguous keys are rejected rather than normalized
+// or reconstructed.
+func Find(component string, name string, query url.Values) (string, gsx.Node, bool) {
+	for _, example := range registry[component] {
+		if example.Name != name {
+			continue
+		}
+		if previewNames, selected := query[PreviewQueryKey]; selected {
+			if len(previewNames) != 1 || previewNames[0] == "" {
+				return "", nil, false
+			}
+			for _, preview := range example.Previews {
+				if preview.Name == previewNames[0] {
+					return example.Title + " · " + preview.Title, preview.Node, true
+				}
+			}
+			return "", nil, false
+		}
+		node := example.Node
+		if example.Query != nil {
+			node = example.Query(query)
+		}
+		return example.Title, node, true
+	}
+	return "", nil, false
 }
 
 // Components returns the names of components with at least one registered

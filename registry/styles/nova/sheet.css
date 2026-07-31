@@ -1,0 +1,87 @@
+/* Source: assets/css/styles/default/sheet.css, plus the two marker-keyed
+   fallbacks SheetContent depended on for chrome it had no class for — the
+   Dialog-content block in assets/css/styles/default.css and
+   assets/css/styles/default/drawer-sheet-shared.css. All three files are
+   deleted by this migration (Drawer already took its own half of the shared
+   pair in the previous commit, so nothing is left reading either fallback).
+   Nova and Maia have not diverged on Sheet yet, so this file is
+   byte-identical to registry/styles/maia/sheet.css.
+
+   Root, trigger and close carry no rules: the root renders <ui.Dialog>, the
+   other two are plain unstyled buttons. close-label is covered by the shared
+   sr-only rule in assets/css/foundation.css's @layer base.
+
+   sheet-content's base rule is written in the pre-migration cascade order,
+   because `transition` sets a 150ms duration and `duration-200` (which came
+   later, from the Dialog-content fallback in default.css, imported after
+   both component files) overrides it to 200ms. @apply inlines declarations
+   in the order listed, so that order is load-bearing and preserved literally
+   rather than tidied. `open:flex` is last for the same reason: it is
+   drawer-sheet-shared.css's [open] display rule, and `flex-col` above it
+   only sets flex-direction.
+
+   Unlike Drawer, Sheet has no rule reaching from the content into a child
+   slot, so nothing here changes a selector's specificity — every rule is a
+   plain slot base or a single dimension value class. */
+@layer components {
+  .gsxui-recipe-sheet-content {
+    @apply m-0 flex-col gap-4 shadow-lg transition ease-in-out;
+    @apply max-h-none bg-background text-foreground;
+    @apply fixed z-50 text-sm duration-200 outline-none;
+    @apply data-[state=closed]:animate-out;
+    @apply data-[state=open]:animate-in;
+    @apply backdrop:bg-[var(--overlay)] backdrop:backdrop-blur-xs backdrop:duration-200;
+    @apply data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0;
+    @apply data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0;
+    @apply open:flex;
+  }
+
+  .gsxui-recipe-sheet-content-side-right {
+    @apply inset-y-0 right-0 left-auto h-full w-3/4 border-l;
+    @apply sm:max-w-sm;
+    @apply data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right;
+  }
+
+  .gsxui-recipe-sheet-content-side-left {
+    @apply inset-y-0 left-0 right-auto h-full w-3/4 border-r;
+    @apply sm:max-w-sm;
+    @apply data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left;
+  }
+
+  .gsxui-recipe-sheet-content-side-top {
+    @apply inset-x-0 top-0 bottom-auto h-auto w-full max-w-none border-b;
+    @apply data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top;
+  }
+
+  .gsxui-recipe-sheet-content-side-bottom {
+    @apply inset-x-0 bottom-0 top-auto h-auto w-full max-w-none border-t;
+    @apply data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom;
+  }
+
+  .gsxui-recipe-sheet-close-button {
+    @apply absolute top-3 right-3 rounded-xs opacity-70 ring-offset-background transition-opacity;
+    @apply hover:opacity-100;
+    @apply focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden;
+    @apply disabled:pointer-events-none;
+  }
+
+  .gsxui-recipe-sheet-close-icon {
+    @apply size-4;
+  }
+
+  .gsxui-recipe-sheet-header {
+    @apply flex flex-col gap-0.5 p-4;
+  }
+
+  .gsxui-recipe-sheet-footer {
+    @apply mt-auto flex flex-col gap-2 p-4;
+  }
+
+  .gsxui-recipe-sheet-title {
+    @apply text-base font-medium text-foreground;
+  }
+
+  .gsxui-recipe-sheet-description {
+    @apply text-sm text-muted-foreground;
+  }
+}

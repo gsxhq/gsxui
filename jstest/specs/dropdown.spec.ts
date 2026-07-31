@@ -1,6 +1,6 @@
 import { expect, test } from "../support/fixtures";
 
-const CHECKBOXES = "/x/dropdown/checkboxes";
+const CHECKBOXES = "/x/dropdown-menu/checkboxes";
 
 test("one checkbox click changes state and emits exactly once", async ({ page }) => {
   await page.goto(CHECKBOXES);

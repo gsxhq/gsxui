@@ -1,0 +1,35 @@
+/* Source: assets/css/styles/default/textarea.css (all rules), folded onto
+   the one root slot. disabled/focus-visible/aria-invalid are the element's
+   own native pseudo-class/attribute state (not a caller-supplied class or a
+   descendant marker), so unlike section 10b's border-b/data-disabled cases
+   these translate directly as arbitrary/native variants — the same call
+   already made for Checkbox's aria-invalid rule
+   (registry/styles/nova/checkbox.css). Nova and Maia have not diverged on
+   Textarea yet, so this file is byte-identical to
+   registry/styles/maia/textarea.css.
+
+   EXCEPT the font-size/line-height pair (unconditional text-base AND its
+   md:text-sm override), which must stay caller-overridable for the same
+   reason as Input's (registry/styles/nova/input.css's own comment, and
+   section 10b of
+   docs/superpowers/specs/2026-07-29-slot-axis-and-component-migration-design.md).
+   Migrating md:text-sm alone and leaving text-base on the recipe was tried
+   first and made the retained rule permanently dead (a components-layer
+   rule can never beat ANY utilities-layer rule, so once text-base is
+   scanned directly out of ui/textarea.gsx the retained md:text-sm loses
+   even absent a caller override) — make sweep-compare caught it
+   immediately. Both properties stay off the recipe entirely and live in
+   assets/css/styles/default/textarea.css instead, restoring the exact
+   pre-migration mechanics. Confirmed compiling with this repo's Tailwind v4
+   CLI before use. */
+@layer components {
+  .gsxui-recipe-textarea {
+    @apply field-sizing-content flex min-h-16 w-full rounded-lg border border-input bg-transparent px-2.5 py-2 transition-[color,box-shadow] outline-none;
+    @apply placeholder:text-muted-foreground;
+    @apply focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50;
+    @apply disabled:cursor-not-allowed disabled:opacity-50;
+    @apply aria-invalid:border-destructive aria-invalid:ring-destructive/20;
+    @apply dark:bg-input/30;
+    @apply dark:aria-invalid:ring-destructive/40;
+  }
+}

@@ -1,0 +1,33 @@
+/* Source: assets/css/styles/default/tabs.css (all rules). data-state="active"
+   is JS/server-toggled runtime state, not an author-facing dimension, so it
+   folds onto trigger's own rule as `data-[state=active]:`, same treatment as
+   has-[>svg]:, the direct child >svg rule, and the .dark combinations (plain,
+   with :hover, with data-state). Nova and Maia have not diverged on Tabs yet,
+   so this file is byte-identical to registry/styles/maia/tabs.css. Confirmed
+   compiling with this repo's Tailwind v4 CLI before use. */
+@layer components {
+  .gsxui-recipe-tabs {
+    @apply flex flex-col gap-2;
+  }
+
+  .gsxui-recipe-tabs-list {
+    @apply inline-flex h-8 w-fit items-center justify-center rounded-lg bg-muted p-[3px] text-muted-foreground;
+  }
+
+  .gsxui-recipe-tabs-trigger {
+    @apply relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-1.5 py-0.5 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all;
+    @apply hover:text-foreground;
+    @apply focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring;
+    @apply disabled:pointer-events-none disabled:opacity-50;
+    @apply has-[>svg]:px-1;
+    @apply data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm;
+    @apply [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:pointer-events-none;
+    @apply dark:text-muted-foreground;
+    @apply dark:hover:text-foreground;
+    @apply dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 dark:data-[state=active]:text-foreground;
+  }
+
+  .gsxui-recipe-tabs-content {
+    @apply flex-1 text-sm outline-none;
+  }
+}

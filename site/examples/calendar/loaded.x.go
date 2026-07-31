@@ -77,7 +77,7 @@ func LoadedRange(month time.Time) _gsxrt.Node {
 		if month.IsZero() {
 			month = LoadedRangeDefaultMonth
 		}
-//line loaded.gsx:70:2
+//line loaded.gsx:72:2
 		_gsxgw.Node(ctx, ui.Calendar("range", month, nil, time.Date(2026, 1, 9, 0, 0, 0, 0, time.UTC), time.Date(2026, 1, 14, 0, 0, 0, 0, time.UTC), time.Monday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", nil))
 		return _gsxgw.Err()
 	})

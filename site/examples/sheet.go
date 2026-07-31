@@ -9,4 +9,10 @@ func init() {
 		Node:       examplesheet.Basic(),
 		SourcePath: "sheet/basic.gsx",
 	})
+	Register("sheet", Example{
+		Name:       "directions",
+		Title:      "Directions",
+		Node:       examplesheet.Directions(),
+		SourcePath: "sheet/directions.gsx",
+	})
 }

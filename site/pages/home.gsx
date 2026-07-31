@@ -7,19 +7,19 @@ import (
 // Home is the site's landing page.
 type Home struct{}
 
-const installSnippet = `go install github.com/gsxhq/gsxui/cmd/gsxui@latest
+const installSnippet = `gsx init app --yes
+cd app
 gsxui init
 gsxui add button`
 
 component (h Home) Page() {
-	<Layout title="gsxui" active="">
+	<siteLayout title="gsxui" active="" mode={layoutMarketing} toc={nil}>
 		<section class="flex flex-col gap-4 py-10">
 			<h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">
 				Components for modern web frontends in Go.
 			</h1>
 			<p class="max-w-2xl text-lg text-muted-foreground">
-				gsxui is a shadcn-style component set for
-				{ " " }
+				gsxui is a shadcn-style component set for{ " " }
 				<a
 					href="https://gsxhq.github.io/"
 					target="_blank"
@@ -82,7 +82,15 @@ component (h Home) Page() {
 				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Dialog</h2>
 				<div class="mt-4">
 					<ui.Dialog>
-						<ui.Button variant="outline" data-gsxui-dialog-trigger>Open dialog</ui.Button>
+						<ui.Button
+							variant="outline"
+							data-gsxui-dialog-trigger
+							data-gsxui-slot-dialog-trigger
+							aria-haspopup="dialog"
+							aria-expanded="false"
+						>
+							Open dialog
+						</ui.Button>
 						<ui.DialogContent>
 							<ui.DialogHeader>
 								<ui.DialogTitle>Edit profile</ui.DialogTitle>
@@ -96,5 +104,5 @@ component (h Home) Page() {
 				</div>
 			</div>
 		</section>
-	</Layout>
+	</siteLayout>
 }

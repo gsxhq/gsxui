@@ -7,7 +7,7 @@ import "github.com/gsxhq/gsxui/ui"
 component Basic() {
 	<ui.Table>
 		<ui.TableHeader>
-			<ui.TableRow>
+			<ui.TableRow data-state="selected">
 				<ui.TableHead>Product</ui.TableHead>
 				<ui.TableHead>Price</ui.TableHead>
 			</ui.TableRow>
@@ -22,5 +22,11 @@ component Basic() {
 				<ui.TableCell>$19.00</ui.TableCell>
 			</ui.TableRow>
 		</ui.TableBody>
+		<ui.TableFooter>
+			<ui.TableRow>
+				<ui.TableCell>Total</ui.TableCell>
+				<ui.TableCell>$28.00</ui.TableCell>
+			</ui.TableRow>
+		</ui.TableFooter>
 	</ui.Table>
 }

@@ -1,0 +1,29 @@
+@layer components {
+  /* Pagination migrated to the slot axis (registry/styles/{nova,maia}/pagination.css)
+     EXCEPT these two rules, which must stay here as plain CSS. Their
+     caller-overridability (jstest/specs/style-visual.spec.ts's
+     "pagination-previous-caller" fixture: a caller's `pl-12` must beat this
+     rule's `pl-1.5`) depends on the CSS LAYER boundary — this rule lives in
+     @layer components, a caller's plain utility class lives in @layer
+     utilities, and @layer utilities always wins regardless of specificity.
+     That guarantee only exists pre-resolution: if this rule migrated onto
+     PaginationLink's recipe, it would resolve to a literal utility class
+     Tailwind scans directly out of ui/pagination.gsx — no longer inside an
+     explicit @layer components boundary at consumption time — and it would
+     then compete on ordinary specificity instead. Its own arbitrary
+     attribute-compound selector form outranks a plain caller utility
+     (0,2,0) vs (0,1,0)), so the caller would permanently lose. Verified by
+     reproducing the migration and measuring computed padding in the
+     browser: the caller-overridable fixture regressed exactly this way.
+     See registry/canonical/shapes/pagination.go's doc comment. */
+  :is(
+    [data-gsxui-slot-pagination-link][data-gsxui-slot-pagination-previous]
+  ) {
+    @apply pl-1.5;
+  }
+  :is(
+    [data-gsxui-slot-pagination-link][data-gsxui-slot-pagination-next]
+  ) {
+    @apply pr-1.5;
+  }
+}

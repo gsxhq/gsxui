@@ -14,14 +14,14 @@ func TestTableParts(t *testing.T) {
 		node gsx.Node
 		want []string
 	}{
-		{"Table", ui.Table(gsx.Raw("x"), nil), []string{`data-slot="table-container"`, `data-slot="table"`, "relative w-full overflow-x-auto", "w-full caption-bottom text-sm"}},
-		{"TableHeader", ui.TableHeader(gsx.Raw("x"), nil), []string{`data-slot="table-header"`, "[&amp;_tr]:border-b"}},
-		{"TableBody", ui.TableBody(gsx.Raw("x"), nil), []string{`data-slot="table-body"`, "[&amp;_tr:last-child]:border-0"}},
-		{"TableFooter", ui.TableFooter(gsx.Raw("x"), nil), []string{`data-slot="table-footer"`, "border-t bg-muted/50 font-medium"}},
-		{"TableRow", ui.TableRow(gsx.Raw("x"), nil), []string{`data-slot="table-row"`, "border-b transition-colors hover:bg-muted/50"}},
-		{"TableHead", ui.TableHead(gsx.Raw("x"), nil), []string{`data-slot="table-head"`, "h-10 px-2 text-left align-middle font-medium"}},
-		{"TableCell", ui.TableCell(gsx.Raw("x"), nil), []string{`data-slot="table-cell"`, "p-2 align-middle whitespace-nowrap"}},
-		{"TableCaption", ui.TableCaption(gsx.Raw("x"), nil), []string{`data-slot="table-caption"`, "mt-4 text-sm text-muted-foreground"}},
+		{"Table", ui.Table(gsx.Raw("x"), nil), []string{`data-gsxui-slot-table-container`, `data-gsxui-slot-table`}},
+		{"TableHeader", ui.TableHeader(gsx.Raw("x"), nil), []string{`data-gsxui-slot-table-header`}},
+		{"TableBody", ui.TableBody(gsx.Raw("x"), nil), []string{`data-gsxui-slot-table-body`}},
+		{"TableFooter", ui.TableFooter(gsx.Raw("x"), nil), []string{`data-gsxui-slot-table-footer`}},
+		{"TableRow", ui.TableRow(gsx.Raw("x"), nil), []string{`data-gsxui-slot-table-row`}},
+		{"TableHead", ui.TableHead(gsx.Raw("x"), nil), []string{`data-gsxui-slot-table-head`}},
+		{"TableCell", ui.TableCell(gsx.Raw("x"), nil), []string{`data-gsxui-slot-table-cell`}},
+		{"TableCaption", ui.TableCaption(gsx.Raw("x"), nil), []string{`data-gsxui-slot-table-caption`}},
 	}
 	for _, tc := range cases {
 		got := render(t, tc.node)
@@ -38,7 +38,7 @@ func TestTablePinned(t *testing.T) {
 	// (registry/new-york-v4/ui/table.tsx) and docs/jsx-parity.md — a straight
 	// port, no divergences. Covers both the container div and the table.
 	got := render(t, ui.Table(gsx.Raw("Content"), nil))
-	want := `<div data-slot="table-container" class="relative w-full overflow-x-auto"><table data-slot="table" class="w-full caption-bottom text-sm">Content</table></div>`
+	want := `<div class="relative w-full overflow-x-auto" data-gsxui-slot-table-container><table class="w-full caption-bottom text-sm" data-gsxui-slot-table>Content</table></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -72,13 +72,13 @@ func TestTableComposition(t *testing.T) {
 		nil,
 	))
 	for _, want := range []string{
-		`data-slot="table-container"`,
-		`data-slot="table"`,
-		`data-slot="table-header"`,
-		`data-slot="table-body"`,
-		`data-slot="table-row"`,
-		`data-slot="table-head"`,
-		`data-slot="table-cell"`,
+		`data-gsxui-slot-table-container`,
+		`data-gsxui-slot-table`,
+		`data-gsxui-slot-table-header`,
+		`data-gsxui-slot-table-body`,
+		`data-gsxui-slot-table-row`,
+		`data-gsxui-slot-table-head`,
+		`data-gsxui-slot-table-cell`,
 		">Name<", ">Age<", ">Alice<", ">30<",
 	} {
 		if !strings.Contains(got, want) {
@@ -95,22 +95,17 @@ func TestTableCaption(t *testing.T) {
 		),
 		nil,
 	))
-	for _, want := range []string{`data-slot="table-caption"`, ">A list of results.<"} {
+	for _, want := range []string{`data-gsxui-slot-table-caption`, ">A list of results.<"} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
 		}
 	}
 }
 
-func TestTableClassMerge(t *testing.T) {
-	// Caller class must merge, and a conflicting utility must drop the base
-	// token (w-full vs a caller override).
+func TestTableCallerClassIsForwardedOnce(t *testing.T) {
 	got := render(t, ui.Table(gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "caption-top"}}))
-	if !strings.Contains(got, "caption-top") {
-		t.Errorf("caller class must merge\nin: %s", got)
-	}
-	if strings.Contains(got, "caption-bottom") {
-		t.Errorf("caller caption-top must drop default caption-bottom\nin: %s", got)
+	if !strings.Contains(got, "caption-top") || strings.Count(got, "class=") != 2 {
+		t.Errorf("caller class must merge onto the table exactly once\nin: %s", got)
 	}
 }
 

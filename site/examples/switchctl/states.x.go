@@ -23,7 +23,7 @@ func States() _gsxrt.Node {
 //line states.gsx:12:3
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")
 //line states.gsx:13:4
-		_gsxgw.Node(ctx, ui.Switch(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "switch-states-off-disabled"}}, _gsxrt.Attrs{{Key: "disabled", Value: true}})))
+		_gsxgw.Node(ctx, ui.Switch(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "switch-states-off-disabled"}}, _gsxrt.Attrs{{Key: "disabled", Value: _gsxrt.Toggle(true)}})))
 //line states.gsx:14:4
 		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
@@ -34,7 +34,7 @@ func States() _gsxrt.Node {
 //line states.gsx:16:3
 		_gsxgw.S("<div class=\"flex items-center gap-2\">")
 //line states.gsx:17:4
-		_gsxgw.Node(ctx, ui.Switch(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "switch-states-on-disabled"}}, _gsxrt.Attrs{{Key: "checked", Value: true}}, _gsxrt.Attrs{{Key: "disabled", Value: true}})))
+		_gsxgw.Node(ctx, ui.Switch(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "switch-states-on-disabled"}}, _gsxrt.Attrs{{Key: "checked", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "disabled", Value: _gsxrt.Toggle(true)}})))
 //line states.gsx:18:4
 		_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)

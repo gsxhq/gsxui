@@ -81,11 +81,8 @@ func TestTabsContentSelectedStamping(t *testing.T) {
 
 func TestTabsCallerClassMerges(t *testing.T) {
 	got := render(t, ui.TabsTrigger("a", false, gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "gap-4"}}))
-	if strings.Contains(got, "gap-1.5") {
-		t.Errorf("base gap-1.5 should be dropped by caller gap-4\nin: %s", got)
-	}
-	if !strings.Contains(got, "gap-4") {
-		t.Errorf("missing caller class gap-4\nin: %s", got)
+	if strings.Count(got, "gap-4") != 1 || strings.Count(got, `class="`) != 1 {
+		t.Errorf("caller class must be forwarded exactly once, merged with the recipe class\nin: %s", got)
 	}
 }
 
@@ -99,16 +96,8 @@ func TestTabsAttrsFallThrough(t *testing.T) {
 }
 
 func TestTabsTriggerPinned(t *testing.T) {
-	// Exact full-render pin for the active TabsTrigger, verified token-by-
-	// token against shadcn's TabsTrigger (registry/new-york-v4/ui/tabs.tsx)
-	// with the orientation/variant ADAPTs from docs/jsx-parity.md applied:
-	// group-data-[orientation=vertical]/tabs: tokens dropped (no orientation
-	// param), group-data-[variant=*]/tabs-list: unwrapped to the
-	// unconditional data-[state=active]:shadow-sm (no variant param, default
-	// is the only shipped variant), the after: line-indicator dropped
-	// entirely (invisible under the default variant).
 	got := render(t, ui.TabsTrigger("a", true, gsx.Raw("Account"), nil))
-	want := `<button type="button" role="tab" data-slot="tabs-trigger" data-gsxui-tabs-trigger data-value="a" data-state="active" aria-selected="true" tabindex="0" class="relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-1.5 py-0.5 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 has-[&gt;svg]:px-1 data-[state=active]:shadow-sm dark:text-muted-foreground dark:hover:text-foreground [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 data-[state=active]:bg-background data-[state=active]:text-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 dark:data-[state=active]:text-foreground">Account</button>`
+	want := `<button type="button" role="tab" data-gsxui-tabs-trigger data-value="a" data-state="active" aria-selected="true" tabindex="0" class="relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-1.5 py-0.5 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 has-[&gt;svg]:px-1 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm [&amp;&gt;svg]:size-4 [&amp;&gt;svg]:shrink-0 [&amp;&gt;svg]:pointer-events-none dark:text-muted-foreground dark:hover:text-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 dark:data-[state=active]:text-foreground" data-gsxui-slot-tabs-trigger>Account</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

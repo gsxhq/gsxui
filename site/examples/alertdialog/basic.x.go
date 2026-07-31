@@ -12,10 +12,10 @@ import (
 //line basic.gsx:9:1
 // Basic mirrors shadcn's own alert-dialog demo: a destructive-confirm flow
 // where Cancel/Action are the only ways out — backdrop click does nothing
-// (data-gsxui-dialog-static), Esc still closes. The trigger is a real
-// Button carrying data-gsxui-dialog-trigger, the same documented idiom
-// ui/dialog's own example uses, rather than the AlertDialogTrigger wrapper
-// (see ui/alert-dialog.gsx's AlertDialogTrigger doc comment).
+// (data-gsxui-dialog-static), Esc still closes. The trigger is one real
+// Button carrying both the alert-dialog trigger style slot and Dialog's
+// behavior/ARIA contract — gsxui's CSS-only equivalent of shadcn's
+// AlertDialogTrigger asChild composition.
 
 //line basic.gsx:15:1
 func Basic() _gsxrt.Node {
@@ -29,20 +29,20 @@ func Basic() _gsxrt.Node {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Show dialog")
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "data-gsxui-dialog-trigger", Value: true}}))
-//line basic.gsx:18:3
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-alert-dialog-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
+//line basic.gsx:26:3
 			_gsxgw.Node(ctx, ui.AlertDialogContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:19:4
+//line basic.gsx:27:4
 				_gsxgw.Node(ctx, ui.AlertDialogHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:20:5
+//line basic.gsx:28:5
 					_gsxgw.Node(ctx, ui.AlertDialogTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Are you absolutely sure?")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:21:5
+//line basic.gsx:29:5
 					_gsxgw.Node(ctx, ui.AlertDialogDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("This action cannot be undone. This will permanently delete your account and remove your data from our servers.")
@@ -50,16 +50,16 @@ func Basic() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:26:4
+//line basic.gsx:33:4
 				_gsxgw.Node(ctx, ui.AlertDialogFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:27:5
+//line basic.gsx:34:5
 					_gsxgw.Node(ctx, ui.AlertDialogCancel(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Cancel")
 						return _gsxgw.Err()
 					}), nil))
-//line basic.gsx:28:5
+//line basic.gsx:35:5
 					_gsxgw.Node(ctx, ui.AlertDialogAction(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Continue")

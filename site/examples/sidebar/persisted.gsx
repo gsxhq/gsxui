@@ -38,7 +38,7 @@ import (
 //     "sidebar_state=undefined":
 //
 //     document.addEventListener("gsxui:change", (e) => {
-//       if (!e.target.matches?.('[data-slot="sidebar-wrapper"]')) return;
+//       if (!e.target.matches?.('[data-gsxui-slot-sidebar-wrapper]')) return;
 //       document.cookie = `sidebar_state=${e.detail.open}; path=/; max-age=604800`;
 //     });
 //
@@ -51,10 +51,10 @@ import (
 // console.
 component Persisted() {
 	<div>
-		<ui.SidebarProvider open={true} class="h-64 min-h-0 overflow-hidden rounded-lg border">
+		<ui.SidebarProvider open={true}>
 			<ui.Sidebar open={true} collapsible="icon">
 				<ui.SidebarHeader>
-					<div class="px-2 py-1 text-sm font-semibold">Acme Inc</div>
+					<brand/>
 				</ui.SidebarHeader>
 				<ui.SidebarContent>
 					<ui.SidebarGroup>
@@ -85,7 +85,7 @@ component Persisted() {
 		</ui.SidebarProvider>
 		<script>
 			document.addEventListener("gsxui:change", (e) => {
-				if (!e.target.matches?.('[data-slot="sidebar-wrapper"]')) return;
+				if (!e.target.matches?.('[data-gsxui-slot-sidebar-wrapper]')) return;
 				document.cookie = `sidebar_state=${e.detail.open}; path=/; max-age=604800`;
 			});
 		</script>

@@ -1,0 +1,529 @@
+/* The default style's components layer, one file per component under
+   ./default/. Migrating a component to the recipe model DELETES its file; it
+   used to mean deleting a block out of the middle of this 3193-line sheet,
+   which is what made every parallel migration collide here.
+
+   THE IMPORT ORDER BELOW IS LOAD-BEARING. It is source order, so it is
+   cascade order for any two rules of equal specificity, and it is also the
+   order internal/cli concatenates these files in when it vendors a consumer's
+   flat style.css (see cssAssetTargets). Reordering these imports changes
+   rendering. Add a new component's import at the position its rules occupied
+   in this file, not at the end.
+
+   Imports come first because CSS requires @import to precede other rules. A
+   @layer block above them makes them invalid; Tailwind resolves them anyway,
+   but postcss-import and native CSS do not, so nothing may be written above
+   this list. That is why the style's own :root declaration lives in
+   ./default/root.css imported first, rather than inline here — it keeps the
+   components layer opening with the same declaration it opened with before
+   the split, which is what makes the compiled output byte-identical. */
+@import "./default/root.css";
+@import "./default/button-group.css";
+@import "./default/card.css";
+@import "./default/icon.css";
+@import "./default/item.css";
+@import "./default/label.css";
+@import "./default/pagination.css";
+@import "./default/field.css";
+@import "./default/input.css";
+@import "./default/input-group.css";
+@import "./default/command.css";
+@import "./default/combobox.css";
+@import "./default/menu.css";
+@import "./default/textarea.css";
+@import "./default/sidebar.css";
+
+/* Toggle marker fallback: a @layer components block, not utilities.
+   ui/toggle-group.gsx's ToggleGroupItem stamps data-gsxui-slot-toggle onto
+   its own <button> ALONGSIDE data-gsxui-slot-toggle-group-item, and has no
+   class attribute of its own referencing Toggle's recipe — every bit of its
+   base appearance (layout, hover/focus/disabled states, variant/size
+   geometry, icon sizing) came entirely from Toggle's own marker-keyed
+   rules, not from a class Toggle's migration adds. Toggle's migration
+   deletes those marker rules from assets/css/styles/default/toggle.css
+   (moved to registry/styles/{nova,maia}/toggle.css, scoped to the new
+   .gsxui-recipe-toggle class), which would leave ToggleGroupItem — a
+   sibling component out of scope for this migration — unstyled.
+
+   FINDING (carried over from the earlier, reverted Toggle migration
+   attempt): this does NOT belong in @layer utilities like every other
+   escape hatch below. @layer utilities is the SAME named layer Tailwind's
+   own scanned utility classes live in, and this file is @imported after
+   "tailwindcss" in every consumer (web/site.css, jstest/site.css), so a
+   rule placed there always wins over a caller's plain utility class
+   instead of losing to it — the opposite of what every other escape hatch
+   here relies on. Kept :where()-wrapped at (0,0,0) here instead, exactly as
+   toggle.css originally had it: it only needs to lose gracefully to
+   Toggle's own new (0,1,0) recipe class (identical values, no visible
+   difference) and to any real caller utility class (which lives in @layer
+   utilities and always outranks @layer components regardless of
+   specificity).
+
+   ToggleGroup is already migrated (registry/styles/{nova,maia}/
+   toggle-group.css), so unlike the earlier attempt this block carries NO
+   ToggleGroupItem-specific rules — its own padding/radius/border overrides
+   already live in its own recipe and are unaffected by this migration. */
+@layer components {
+  :where([data-gsxui-slot-toggle]) {
+    @apply inline-flex items-center justify-center gap-1 rounded-lg bg-transparent text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none;
+  }
+  :where([data-gsxui-slot-toggle]):hover {
+    @apply bg-muted text-muted-foreground;
+  }
+  :where([data-gsxui-slot-toggle]):focus-visible {
+    @apply border-ring ring-[3px] ring-ring/50;
+  }
+  :where([data-gsxui-slot-toggle]):disabled {
+    @apply pointer-events-none opacity-50;
+  }
+  :where([data-gsxui-slot-toggle])[aria-invalid="true"] {
+    @apply border-destructive ring-destructive/20;
+  }
+  .dark :where([data-gsxui-slot-toggle][aria-invalid="true"]) {
+    @apply ring-destructive/40;
+  }
+  :where([data-gsxui-slot-toggle])[data-state="on"] {
+    @apply bg-accent text-accent-foreground;
+  }
+  :where([data-gsxui-slot-toggle])[data-variant="outline"] {
+    @apply border border-input;
+  }
+  :where([data-gsxui-slot-toggle])[data-variant="outline"]:hover {
+    @apply bg-accent text-accent-foreground;
+  }
+  :where([data-gsxui-slot-toggle])[data-size="default"] {
+    @apply h-8 min-w-8 px-2.5;
+  }
+  :where([data-gsxui-slot-toggle])[data-size="default"]:has(> svg) {
+    @apply px-2;
+  }
+  :where([data-gsxui-slot-toggle])[data-size="sm"] {
+    @apply h-7 min-w-7 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem];
+  }
+  :where([data-gsxui-slot-toggle])[data-size="sm"]:has(> svg) {
+    @apply px-1.5;
+  }
+  :where([data-gsxui-slot-toggle])[data-size="sm"] svg:not([class*="size-"]) {
+    @apply size-3.5;
+  }
+  :where([data-gsxui-slot-toggle])[data-size="lg"] {
+    @apply h-9 min-w-9 px-2.5;
+  }
+  :where([data-gsxui-slot-toggle])[data-size="lg"]:has(> svg) {
+    @apply px-2;
+  }
+  :where([data-gsxui-slot-toggle]) svg {
+    @apply pointer-events-none shrink-0;
+  }
+  :where([data-gsxui-slot-toggle]) svg:not([class*="size-"]) {
+    @apply size-4;
+  }
+}
+
+/* The @layer utilities block below stays in this file rather than moving into
+   ./default/. It is cross-component fallout — Card, FieldLabel,
+   ButtonGroupSeparator, SidebarSeparator, Carousel arrows, SidebarTrigger,
+   InputGroupButton — whose entire correctness is its layer position, and it has
+   to come after every components-layer import. Splitting it per component would
+   scatter reasoning that only reads correctly together AND would hand its
+   cascade order to an @import position. Migrating a component prunes its
+   entries here by hand. */
+
+/* ButtonGroup corner geometry lives in the utilities layer, not components.
+   Its whole job is to override the radius and border a grouped child renders
+   for itself, and those now arrive as Tailwind utilities on the child: the
+   Button ships concrete utilities compiled from its style recipe rather than
+   a recipe token backed by a components-layer rule. The cascade orders whole
+   layers before it ever looks at specificity, so a components-layer rule can
+   no longer beat them however specific it is. */
+@layer utilities {
+  /* Accordion trigger: ::-webkit-details-marker is a pseudo-element with no
+     Tailwind utility form at all, so a recipe stylesheet (@apply-only)
+     can't carry it. Everything else in Accordion's rule set moved to
+     registry/styles/{nova,maia}/accordion.css. Unwrapped for the same
+     specificity-floor reason as Card header below. */
+  [data-gsxui-slot-accordion-trigger]::-webkit-details-marker {
+    display: none;
+  }
+
+  /* InputOTP's fake-caret overlay/caret: ui/input-otp.js creates both
+     elements at runtime with no class attribute at all (see
+     ui/input-otp.js's own setAttribute calls), and neither has a call site
+     in registry/canonical/input-otp.gsx for a SlotClass accessor to
+     resolve into — nothing in this migration's mechanism can carry a
+     resolved recipe class to a JS-created element. Unwrapped for the same
+     specificity-floor reason as Card header above. */
+  [data-gsxui-slot-input-otp-caret-overlay] {
+    @apply pointer-events-none absolute inset-0 flex items-center justify-center;
+  }
+  [data-gsxui-slot-input-otp-caret] {
+    @apply h-4 w-px animate-caret-blink bg-foreground duration-1000;
+  }
+
+  /* Card header: container-name/container-type are plain CSS properties with
+     no Tailwind utility equivalent, so recipe stylesheets (@apply-only) can't
+     carry them. This is the migration's escape hatch — everything else in
+     Card's rule set moved to registry/styles/{nova,maia}/card.css. Unwrapped
+     (no :where()) to clear the (0,1,0) specificity floor the layer gate
+     requires of anything left behind here. Nothing in the catalogue reacts
+     to this named container yet; it is unused upstream setup, preserved
+     verbatim. */
+  [data-gsxui-slot-card-header] {
+    container-name: card-header;
+    container-type: inline-size;
+  }
+
+  /* Collapsible trigger: hides the native <summary> disclosure triangle in
+     WebKit. ::-webkit-details-marker is a vendor pseudo-element selector with
+     no Tailwind utility form, so it can't move into
+     registry/styles/{nova,maia}/collapsible.css (@apply-only). The rest of
+     Collapsible's rule set (list-none) moved there. Unwrapped to clear the
+     (0,1,0) specificity floor. */
+  [data-gsxui-slot-collapsible-trigger]::-webkit-details-marker {
+    display: none;
+  }
+
+  /* Radio's checked-state indicator dot: a radial-gradient background-image
+     painted in currentColor (so it can resolve the caller's CSS custom
+     properties, which a data-URI can't). Plain CSS with no Tailwind utility
+     form, so it can't move into registry/styles/{nova,maia}/radio.css
+     (@apply-only). The rest of Radio's rule set (including checked:bg-primary/
+     checked:text-primary-foreground, which the gradient's currentColor
+     depends on) moved there. Unwrapped to clear the (0,1,0) specificity
+     floor. */
+  [data-gsxui-slot-radio]:checked {
+    background-image: radial-gradient(
+      circle closest-side,
+      currentColor 45%,
+      transparent 50%
+    );
+  }
+
+  /* FieldLabel's leading-snug promotion has been RETIRED by Field's own
+     migration. It lived here so it could outrank Label's migrated
+     leading-none on the composed element; FieldLabel now passes Field's whole
+     field-label recipe class through the ordinary caller-class merge onto
+     <Label>, where tailwind-merge drops leading-none outright. See
+     registry/styles/{nova,maia}/field.css. */
+
+  /* FieldGroup's container declaration. container-name/container-type are
+     plain CSS with no Tailwind utility form, so a recipe stylesheet
+     (@apply-only) cannot carry them — the same escape-hatch case as Card's
+     own card-header container. The rest of FieldGroup's rule set moved to
+     registry/styles/{nova,maia}/field.css, including the responsive
+     orientation's @min-[28rem]/field-group: variants, which query this
+     container by name without needing to own it. Unwrapped to clear the
+     (0,1,0) specificity floor. */
+  [data-gsxui-slot-field-group] {
+    container-name: field-group;
+    container-type: inline-size;
+  }
+
+  /* ScrollArea: scrollbar-width/scrollbar-color (CSS Scrollbars Module
+     Level 1) and the ::-webkit-scrollbar* pseudo-elements are plain CSS
+     with no Tailwind utility form, so a recipe stylesheet (@apply-only)
+     can't carry them. Everything else in ScrollArea's rule set moved to
+     registry/styles/{nova,maia}/scroll-area.css. Unwrapped for the same
+     specificity-floor reason as Card header above. */
+  [data-gsxui-slot-scroll-area] {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  [data-gsxui-slot-scroll-area]::-webkit-scrollbar {
+    width: 0.625rem;
+    height: 0.625rem;
+  }
+  [data-gsxui-slot-scroll-area]::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  [data-gsxui-slot-scroll-area]::-webkit-scrollbar-thumb {
+    background-color: var(--border);
+    background-clip: padding-box;
+    border: 1px solid transparent;
+    border-radius: 9999px;
+  }
+
+  /* Checkbox: the checked-state check-glyph background-image (a base64
+     data-URI, light and dark) plus its background-position/-repeat/-size
+     are plain CSS with no Tailwind utility form (Tailwind's arbitrary-value
+     bracket syntax turns "_" into a space and would mangle the payload).
+     border-primary/bg-primary on :checked moved to
+     registry/styles/{nova,maia}/checkbox.css; only the image itself and its
+     positioning properties stay here. Unwrapped for the same
+     specificity-floor reason as Card header above. */
+  [data-gsxui-slot-checkbox]:checked {
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0yMCA2IDkgMTdsLTUtNSIvPjwvc3ZnPg==");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 14px 14px;
+  }
+  .dark [data-gsxui-slot-checkbox]:checked {
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJva2xjaCgwLjIwNSAwIDApIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTIwIDYgOSAxN2wtNS01Ii8+PC9zdmc+");
+  }
+
+  /* ButtonGroupSeparator's promotion has been RETIRED by ButtonGroup's own
+     migration. It used to live here (unwrapped, so bg-input and the vertical
+     h-auto could beat Separator's migrated bg-border/h-full on the same
+     element). ButtonGroupSeparator now passes those utilities through the
+     ordinary caller-class merge onto <Separator>, where twmerge dedupes
+     bg-border against bg-input outright and the h-auto arrives as a
+     data-[orientation=vertical]: variant that outranks h-full by design. See
+     registry/styles/{nova,maia}/button-group.css. */
+
+  /* SidebarSeparator's and SidebarInput's promotions have been RETIRED by
+     Sidebar's own migration, exactly as ButtonGroupSeparator's was by
+     ButtonGroup's. Both styled an element Sidebar composes onto another
+     component (<ui.Separator>, <ui.Input>), so their utilities now travel in
+     the same class attribute as the composed component's own and merge.Merge
+     settles the contest instead of the cascade. See
+     registry/styles/{nova,maia}/sidebar.css. */
+
+  /* ButtonGroup > SelectTrigger width guard: ButtonGroup composes an
+     unmigrated SelectTrigger's width via `:not([class*="w-"])` — "only
+     force w-fit if the trigger doesn't already carry a width utility of its
+     own". Select's migration gave select-trigger real (0,1,0) utilities
+     that include a literal `w-fit` in its own base rule, so the guard's
+     premise ("no w-* class yet") is now always false and this rule is
+     structurally unreachable regardless of layer — but the layer gate still
+     needs it here, unwrapped, to clear the (0,1,0) floor, the same fallout
+     shape as ButtonGroupSeparator/SidebarSeparator above. ButtonGroup itself
+     has not migrated yet; this is fallout from Select's own migration. */
+  [data-gsxui-slot-button-group] > [data-gsxui-slot-select-trigger]:not([class*="w-"]) {
+    @apply w-fit;
+  }
+
+  /* SidebarTrigger's size-7 promotion has been RETIRED by Sidebar's own
+     migration for the same reason as the two above: SidebarTrigger composes
+     <ui.Button variant="ghost" size="icon">, so size-7 now arrives through
+     the caller-class merge and twmerge drops Button's size-8 outright. */
+
+  /* InputGroup control fallout from Textarea's migration:
+     ui/input-group.gsx's InputGroupTextarea composes <ui.Textarea> directly
+     (input-group.gsx passes data-gsxui-slot-input-group-control alongside
+     Textarea's own data-gsxui-slot-textarea onto the same <textarea>), so
+     the rendered element now also carries Textarea's own recipe utilities.
+     Textarea's migration gave those real (0,1,0)-equivalent Tailwind
+     utilities scanned directly out of ui/textarea.gsx; the rule below
+     contests rounded-lg/border-input (border radius/color) on that same
+     element, and a :where()-wrapped (0,0,0) selector in @layer components
+     would lose regardless of source order. See
+     assets/css/styles/default/input-group.css for the non-conflicting half
+     of the original rule, which stayed there unpromoted.
+
+     The two companions this comment used to cover — the focus-visible
+     border-ring and the has-(>textarea) h-auto — have been RETIRED by
+     InputGroup's own migration: both are properties of the InputGroup element
+     itself, not of a composed control, so they are ordinary utilities on
+     InputGroup's own class now. See
+     registry/styles/{nova,maia}/input-group.css. */
+  [data-gsxui-slot-input-group-control] {
+    @apply rounded-none border-0;
+  }
+  /* py-2 is promoted for the same reason: it contests Input's own py-1 once
+     Input is also a data-gsxui-slot-input-group-control owner, even though
+     this compound requires the textarea marker too and so can never actually
+     render against a plain Input. */
+  [data-gsxui-slot-textarea][data-gsxui-slot-input-group-control] {
+    @apply py-2;
+  }
+  /* pl-1.5/pr-1.5/pb-3/pt-3: found by make sweep-compare, not by
+     stylegen --check-layers (a sub-property override of Input's own
+     px-2.5/py-1 doesn't read as a name-level utility conflict to that
+     gate's contest analysis, but it is one in the browser). See
+     assets/css/styles/default/input-group.css's own comment. */
+  [data-gsxui-slot-input-group]:has(> [data-gsxui-slot-input-group-addon][data-align="inline-start"]) > [data-gsxui-slot-input] {
+    @apply pl-1.5;
+  }
+  [data-gsxui-slot-input-group]:has(> [data-gsxui-slot-input-group-addon][data-align="inline-end"]) > [data-gsxui-slot-input] {
+    @apply pr-1.5;
+  }
+  [data-gsxui-slot-input-group]:has(> [data-gsxui-slot-input-group-addon][data-align="block-start"]) > [data-gsxui-slot-input] {
+    @apply pb-3;
+  }
+  [data-gsxui-slot-input-group]:has(> [data-gsxui-slot-input-group-addon][data-align="block-end"]) > [data-gsxui-slot-input] {
+    @apply pt-3;
+  }
+
+  /* Combobox fallout from InputGroup's migration: ui/combobox.gsx composes
+     <ui.InputGroup> directly, so the rendered element now carries InputGroup's
+     own recipe utilities. The rule below contests three InputGroup emits —
+     h-8, border-input, and dark's bg-input/30 — and a :where()-wrapped
+     (0,0,0) selector in @layer components would lose regardless of source
+     order. Unwrapped to clear the (0,1,0) specificity floor. This rule is not
+     Combobox's to migrate: its styled SUBJECT is InputGroup (Combobox's
+     content is only ancestor context), so Combobox's own migration left it
+     alone. The uncontested half — m-1/mb-0/shadow-none — moved with the rest
+     of the old combobox.css to assets/css/styles/default/input-group.css,
+     where InputGroup's other marker-keyed rules live.
+
+     The selector is compounded with data-gsxui-slot-input-group rather than
+     merely unwrapped. (0,1,0) is only the FLOOR: inside @layer utilities the
+     cascade falls back to specificity and then to source order, and at (0,1,0)
+     this ties with InputGroup's own h-8/border-input, which Tailwind emits
+     later.
+
+     Combobox's OWN input group needed the opposite treatment: its w-auto is
+     not here at all, because promoting it overshot and beat the caller's own
+     w-[220px] too (make sweep-compare caught it as 220px -> 1216px on three
+     fixtures). It is an ordinary recipe utility on Combobox's own input-group
+     slot now (registry/styles/{nova,maia}/combobox.css) — upstream's own
+     cn("w-auto", className) form — so tailwind-merge orders it correctly
+     against both InputGroup's w-full and the caller's width. */
+  [data-gsxui-slot-combobox-content] > [data-gsxui-slot-input-group][data-gsxui-slot-input-group] {
+    @apply h-8 border-input/30 bg-input/30;
+  }
+
+  /* CommandDialog's dialog-content sizing: p-0 and max-w-lg, contesting
+     Dialog's own p-4/sm:max-w-sm once both are on the same element (see
+     assets/css/styles/default/command.css's own comment). */
+  [data-gsxui-slot-command-dialog-content] {
+    @apply p-0;
+  }
+  @media (width >= 40rem) {
+    [data-gsxui-slot-command-dialog-content] {
+      @apply max-w-lg;
+    }
+  }
+
+  /* InputGroupButton retunes Button's whole size ramp — type scale, radius,
+     padding, gap and icon sizing all restate a property Button now emits for
+     itself. */
+  /* Unwrapped for the same reason as the Carousel arrows: display, gap and
+     type scale all contest a utility Button emits, and a :where() wrapper
+     scores (0,0,0) — it would lose inside this layer. */
+  [data-gsxui-slot-input-group-button] {
+    @apply flex items-center gap-2 text-sm shadow-none;
+  }
+  :where([data-gsxui-slot-input-group-button])[data-size="xs"] {
+    @apply h-6 gap-1 rounded-[calc(var(--radius)-3px)] px-1.5 text-sm;
+  }
+  :where([data-gsxui-slot-input-group-button])[data-size="xs"]:has(> svg) {
+    @apply px-1.5;
+  }
+  :where([data-gsxui-slot-input-group-button])[data-size="xs"]
+    > svg:not([class*="size-"]) {
+    @apply size-3.5;
+  }
+  :where([data-gsxui-slot-input-group-button])[data-size="sm"] {
+    @apply h-8 gap-1.5 rounded-md px-2.5 text-sm;
+  }
+  :where([data-gsxui-slot-input-group-button])[data-size="sm"]:has(> svg) {
+    @apply px-2.5;
+  }
+  :where([data-gsxui-slot-input-group-button])[data-size="icon-xs"] {
+    @apply size-6 rounded-[calc(var(--radius)-3px)] p-0;
+  }
+  :where([data-gsxui-slot-input-group-button])[data-size="icon-xs"]:has(
+      > svg
+    ),
+  :where([data-gsxui-slot-input-group-button])[data-size="icon-sm"]:has(
+      > svg
+    ) {
+    @apply p-0;
+  }
+  :where([data-gsxui-slot-input-group-button])[data-size="icon-sm"] {
+    @apply size-8 p-0;
+  }
+
+  :where([data-gsxui-slot-button-group]):has(
+      > select[aria-hidden="true"]:last-child
+    )
+    > :where([data-gsxui-slot-select-trigger]):last-of-type {
+    @apply rounded-r-lg;
+  }
+  :where([data-gsxui-slot-button-group])[data-orientation="horizontal"]
+    > :not(:first-child) {
+    @apply rounded-l-none border-l-0;
+  }
+  :where([data-gsxui-slot-button-group])[data-orientation="horizontal"]
+    > :not(:last-child) {
+    @apply rounded-r-none;
+  }
+  :where([data-gsxui-slot-button-group])[data-orientation="horizontal"]
+    > :where(:not(select[aria-hidden="true"])):not(
+      :has(~ :not(select[aria-hidden="true"]))
+    ) {
+    @apply rounded-r-lg;
+  }
+  :where([data-gsxui-slot-button-group])[data-orientation="vertical"]
+    > :not(:first-child) {
+    @apply rounded-t-none border-t-0;
+  }
+  :where([data-gsxui-slot-button-group])[data-orientation="vertical"]
+    > :not(:last-child) {
+    @apply rounded-b-none;
+  }
+  :where([data-gsxui-slot-button-group])[data-orientation="vertical"]
+    > :where(:not(select[aria-hidden="true"])):not(
+      :has(~ :not(select[aria-hidden="true"]))
+    ) {
+    @apply rounded-b-lg;
+  }
+  :where([data-gsxui-slot-button-group]) > [data-size="xs"],
+  :where([data-gsxui-slot-button-group]) > [data-size="icon-xs"],
+  :where([data-gsxui-slot-button-group]) > [data-size="icon-sm"] {
+    @apply rounded-lg;
+  }
+
+  /* ToggleGroup's root gap: a calc() referencing the --gap custom property
+     the .gsx sets via inline style (style="--gap: <spacing>"). Plain CSS
+     with no Tailwind utility form, so it can't move into
+     registry/styles/{nova,maia}/toggle-group.css (@apply-only). The rest of
+     ToggleGroup's rule set moved there. Unwrapped to clear the (0,1,0)
+     specificity floor. */
+  [data-gsxui-slot-toggle-group] {
+    gap: calc(var(--spacing) * var(--gap));
+  }
+
+  /* Calendar's dropdown chrome, fallout from NativeSelect's migration.
+     ui/calendar.gsx's month/year dropdowns compose <ui.NativeSelect>
+     directly, so these five rules' styled SUBJECT is a NativeSelect element
+     (wrapper, select, or the chevron <svg> the wrapper positions) reacting
+     to a Calendar ancestor — the "Calendar stray" shape: they belong to
+     Calendar, not to NativeSelect's recipe, and must not migrate onto it.
+     They previously lived in assets/css/styles/default/calendar.css's
+     @layer components block at zero specificity, which worked only while
+     NativeSelect's own rules were zero-specificity :where() rules in the
+     same layer. NativeSelect's migration turned those into real (0,1,0)
+     utilities in @layer utilities, so every property these rules contest
+     (border-radius, border, width/height, padding, background, the
+     chevron's inset/size) would otherwise flip to NativeSelect's own value
+     inside a Calendar. Unwrapped here they score (0,2,0)/(0,2,1)/(0,3,0)
+     and win, restoring the pre-migration rendering exactly. Same fallout
+     shape as the ButtonGroup > SelectTrigger guard above. */
+  [data-gsxui-slot-calendar-dropdowns]
+    [data-gsxui-slot-native-select-wrapper] {
+    @apply relative rounded-md border border-input;
+  }
+  [data-gsxui-slot-calendar-dropdowns]
+    [data-gsxui-slot-native-select-wrapper]:has(
+      > [data-gsxui-slot-native-select]:focus
+    ) {
+    @apply border-ring ring-3 ring-ring/50;
+  }
+  [data-gsxui-slot-calendar-dropdowns]
+    [data-gsxui-slot-native-select-wrapper]
+    > [data-gsxui-slot-native-select] {
+    @apply h-6 rounded-none border-0 bg-transparent py-0 pr-5 pl-1.5;
+  }
+  [data-gsxui-slot-calendar-dropdowns]
+    [data-gsxui-slot-native-select-wrapper]
+    > [data-gsxui-slot-native-select]:focus-visible {
+    @apply border-transparent ring-0;
+  }
+  .dark
+    [data-gsxui-slot-calendar-dropdowns]
+    [data-gsxui-slot-native-select-wrapper]
+    > [data-gsxui-slot-native-select],
+  .dark
+    [data-gsxui-slot-calendar-dropdowns]
+    [data-gsxui-slot-native-select-wrapper]
+    > [data-gsxui-slot-native-select]:hover {
+    @apply bg-transparent;
+  }
+  [data-gsxui-slot-calendar-dropdowns]
+    [data-gsxui-slot-native-select-wrapper]
+    > svg {
+    @apply right-1 size-3.5;
+  }
+}

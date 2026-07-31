@@ -1,0 +1,54 @@
+/* Source: gsxui@0d6a973c564f1188221a1af8e4db522610cbc77e
+   assets/css/styles/default.css, Card block (lines 199-234), with the
+   :has() relational rule folded in as a variant on its owning slot. Nova
+   and Maia have not diverged on Card yet, so this file is byte-identical to
+   registry/styles/maia/card.css — that is expected, not a smell.
+
+   The header's `[&.border-b]:pb-4` compound rule (reacting to a
+   consumer-supplied `.border-b` class, not a marker) is DELIBERATELY NOT
+   HERE. Spec section 10b: an arbitrary same-element variant compiles to a
+   two-class selector ((0,2,0)) that permanently outranks a caller's plain
+   utility regardless of source order, so migrating it strips the
+   caller-overridability the pre-migration @layer components boundary gave
+   it for free. It stays authored as plain CSS in
+   assets/css/styles/default/card.css instead. See that file's comment and
+   assets/css/styles/default/pagination.css for the identical prior fix.
+
+   The header's container-name/container-type declarations are NOT here
+   either: a recipe stylesheet only accepts @apply, and those are plain CSS
+   properties with no Tailwind utility equivalent. They stay behind in
+   assets/css/styles/default.css's @layer utilities block, scoped to
+   [data-gsxui-slot-card-header], as the escape hatch this migration's brief
+   allows for genuinely untranslatable rules. Nothing in the catalogue reacts
+   to the named container yet — it is unused upstream setup. */
+@layer components {
+  .gsxui-recipe-card {
+    @apply flex flex-col gap-4 rounded-xl border bg-card py-4 text-sm text-card-foreground;
+    @apply has-[[data-gsxui-slot-card-footer]]:pb-0;
+  }
+
+  .gsxui-recipe-card-header {
+    @apply grid auto-rows-min grid-rows-[auto_auto] items-start gap-1 px-4;
+    @apply has-[[data-gsxui-slot-card-action]]:grid-cols-[1fr_auto];
+  }
+
+  .gsxui-recipe-card-title {
+    @apply text-base leading-snug font-medium;
+  }
+
+  .gsxui-recipe-card-description {
+    @apply text-sm text-muted-foreground;
+  }
+
+  .gsxui-recipe-card-action {
+    @apply col-start-2 row-span-2 row-start-1 self-start justify-self-end;
+  }
+
+  .gsxui-recipe-card-content {
+    @apply px-4;
+  }
+
+  .gsxui-recipe-card-footer {
+    @apply flex items-center rounded-b-xl border-t p-4;
+  }
+}

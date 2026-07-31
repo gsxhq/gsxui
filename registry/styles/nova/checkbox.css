@@ -1,0 +1,25 @@
+/* Source: gsxui@c9289d5, assets/css/styles/default/checkbox.css, folded
+   into one root slot. Nova and Maia have not diverged on Checkbox yet, so
+   this file is byte-identical to registry/styles/maia/checkbox.css.
+
+   The checked-state background-image (a base64 data-URI check glyph, light
+   and dark) plus its background-position/-repeat/-size are NOT here: a
+   recipe stylesheet only accepts @apply, and a raw url("data:...") has no
+   Tailwind utility form (Tailwind's arbitrary-value bracket syntax turns
+   "_" into a space and would mangle the payload). border-primary/bg-primary
+   on :checked DO translate — only the image itself and its positioning
+   properties are untranslatable — so this recipe carries the color half and
+   the image half stays behind in assets/css/styles/default.css's @layer
+   utilities block, unwrapped, as the escape hatch. See
+   TestCheckboxDataURIDecodesToValidSVG / TestCheckboxDarkCheckedOverrides in
+   ui/checkbox_test.go, which read that file directly now. */
+@layer components {
+  .gsxui-recipe-checkbox {
+    @apply size-4 shrink-0 appearance-none rounded-[4px] border border-input transition-shadow outline-none;
+    @apply focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50;
+    @apply disabled:cursor-not-allowed disabled:opacity-50;
+    @apply aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40;
+    @apply dark:bg-input/30;
+    @apply checked:border-primary checked:bg-primary;
+  }
+}

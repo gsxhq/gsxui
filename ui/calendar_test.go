@@ -2,12 +2,51 @@ package ui_test
 
 import (
 	"fmt"
+	"html"
+	"os"
+	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
+	"github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/internal/recipe"
+	"github.com/gsxhq/gsxui/internal/stylegen"
+	"github.com/gsxhq/gsxui/merge"
 	"github.com/gsxhq/gsxui/ui"
 )
+
+// novaCalendarRecipe loads the default style's Calendar recipe once. ui.Calendar
+// is generated output now, so the classes it renders are the default style's
+// concrete utilities — same pattern as novaButtonRecipe in button_test.go.
+var novaCalendarRecipe = sync.OnceValue(func() recipe.Style {
+	path := filepath.Join("..", "registry", "styles", stylegen.DefaultStyle, "calendar.css")
+	src, err := os.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+	style, err := recipe.ParseStyle(path, src)
+	if err != nil {
+		panic(err)
+	}
+	return style
+})
+
+// canonicalCalendarClass is the class attribute one Calendar slot renders,
+// plus any caller classes, merged through the same merger gsx uses.
+func canonicalCalendarClass(slot string, caller ...string) string {
+	class := "gsxui-recipe-calendar"
+	if slot != "" {
+		class += "-" + slot
+	}
+	rule, ok := novaCalendarRecipe().Lookup(class)
+	if !ok {
+		panic("default style declares no recipe " + class)
+	}
+	classes := append(append([]string(nil), rule.Utilities...), caller...)
+	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
+}
 
 // grid returns the data-date values of every day BUTTON, in DOM order —
 // scoped to the data-gsxui-calendar-day tag specifically, not a bare
@@ -177,16 +216,80 @@ func TestCalendarRootAttributes(t *testing.T) {
 		time.Time{}, time.Time{}, nil, nil, "", nil))
 
 	for _, want := range []string{
-		`data-slot="calendar"`,
+		`data-gsxui-slot-calendar`,
 		`data-gsxui-calendar`,
 		`data-gsxui-calendar-month="2026-07"`,
 		`data-gsxui-calendar-mode="range"`,
 		`data-gsxui-calendar-week-start="1"`,
+		`data-caption-layout="label"`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("root missing %q", want)
 		}
 	}
+}
+
+// TestCalendarStyleContract catches any styled anonymous table/grid part
+// falling back to undocumented DOM depth or a library presentation class.
+// The 42 day cells/buttons are also the fixed structure calendar.js repaints
+// in place, so their styling and behavior contracts must stay one-to-one.
+func TestCalendarStyleContract(t *testing.T) {
+	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "", gsx.Attrs{{Key: "class", Value: "rounded-none"}}))
+
+	for token, count := range map[string]int{
+		`data-gsxui-slot-calendar`:        1,
+		`data-gsxui-slot-calendar-months`: 1,
+		`data-gsxui-slot-calendar-nav`:    1,
+		`data-gsxui-slot-calendar-previous data-gsxui-slot-calendar-nav-button data-gsxui-slot-button`: 1,
+		`data-gsxui-slot-calendar-next data-gsxui-slot-calendar-nav-button data-gsxui-slot-button`:     1,
+		`data-gsxui-slot-calendar-month-caption`:                                                       1,
+		`data-gsxui-slot-calendar-caption`:                                                             1,
+		`data-gsxui-slot-calendar-grid`:                                                                1,
+		`data-gsxui-slot-calendar-weekdays`:                                                            1,
+		`data-gsxui-slot-calendar-weekday`:                                                             7,
+		`data-gsxui-slot-calendar-week`:                                                                6,
+		`data-gsxui-slot-calendar-day`:                                                                 42,
+		`data-gsxui-slot-calendar-day-button data-gsxui-slot-button`:                                   42,
+	} {
+		if n := countPresenceAttribute(got, token); n != count {
+			t.Errorf("%s count = %d, want %d", token, n, count)
+		}
+	}
+	rootStart := strings.Index(got, `data-gsxui-slot-calendar`)
+	if rootStart < 0 {
+		t.Fatal("calendar root has no style slot")
+	}
+	tagStart := strings.LastIndex(got[:rootStart], "<div")
+	rootEnd := strings.Index(got[rootStart:], ">")
+	rootTag := got[tagStart : rootStart+rootEnd]
+	// Calendar is on the slot axis now, so the root renders its own resolved
+	// utilities with the caller's class merged in after them — the caller's
+	// rounded-none is still what wins, but it is no longer the whole
+	// attribute (playbook step 9).
+	wantRoot := canonicalCalendarClass("", "rounded-none")
+	if !strings.Contains(rootTag, wantRoot) {
+		t.Errorf("root caller class is not forwarded\nwant: %s\nroot: %s", wantRoot, rootTag)
+	}
+	// Not a bare Count of "rounded-none": day cells and day buttons legitimately
+	// carry data-[today]:data-[selected=true]:rounded-none and
+	// data-[range-middle=true]:rounded-none as variant tokens. The root's whole
+	// merged attribute is what must appear exactly once.
+	if strings.Count(got, wantRoot) != 1 {
+		t.Errorf("caller class must merge onto the root exactly once\nwant: %s\nin: %s", wantRoot, got)
+	}
+}
+
+func TestCalendarPreviousComposesAllPresenceMarkersOnButton(t *testing.T) {
+	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
+		time.Time{}, time.Time{}, nil, nil, "", nil))
+	requirePresenceAttributesOnSameTag(t, got, "data-gsxui-calendar-prev",
+		"data-gsxui-slot-calendar-previous",
+		"data-gsxui-slot-calendar-nav-button",
+		"data-gsxui-slot-button",
+	)
 }
 
 // todayCellMarker is the exact substring a day cell renders when it carries
@@ -1010,6 +1113,9 @@ func TestCalendarDropdownCaption(t *testing.T) {
 	for _, want := range []string{
 		`data-gsxui-calendar-month-select`,
 		`data-gsxui-calendar-year-select`,
+		`data-gsxui-slot-native-select-wrapper`,
+		`data-gsxui-slot-calendar-dropdowns`,
+		`data-caption-layout="dropdown" ` + canonicalCalendarClass("caption") + ` data-gsxui-slot-calendar-caption`,
 		`<option value="0"`,  // January
 		`<option value="11"`, // December
 		`<option value="2020"`,
@@ -1018,6 +1124,12 @@ func TestCalendarDropdownCaption(t *testing.T) {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q", want)
 		}
+	}
+	if strings.Contains(got, "calendar-dropdown-root") {
+		t.Errorf("redundant calendar dropdown root marker remains")
+	}
+	if n := strings.Count(got, `data-gsxui-slot-native-select-wrapper`); n != 2 {
+		t.Errorf("got %d native select wrappers, want 2", n)
 	}
 	// 11 years inclusive, not 10.
 	if n := strings.Count(got, `data-gsxui-calendar-year-option`); n != 11 {
@@ -1225,33 +1337,6 @@ func TestCalendarMultipleHiddenInputKeepsEmptyPlaceholder(t *testing.T) {
 	}
 }
 
-// rootClassAttr returns the root <div data-slot="calendar" ...>'s own class
-// attribute value, anchored on the data-slot marker (not just "the first
-// class= in the whole document") so this stays correct even if some earlier
-// element ever grows a class attribute of its own.
-func rootClassAttr(t *testing.T, html string) string {
-	t.Helper()
-	i := strings.Index(html, `data-slot="calendar"`)
-	if i < 0 {
-		t.Fatal("no root element (data-slot=\"calendar\") in the rendered markup")
-	}
-	tagEnd := strings.Index(html[i:], ">")
-	if tagEnd < 0 {
-		t.Fatal("root element's opening tag is never closed")
-	}
-	tag := html[i : i+tagEnd]
-	ci := strings.Index(tag, `class="`)
-	if ci < 0 {
-		t.Fatal("root element has no class attribute")
-	}
-	rest := tag[ci+len(`class="`):]
-	ce := strings.Index(rest, `"`)
-	if ce < 0 {
-		t.Fatal("root element's class attribute is never closed")
-	}
-	return rest[:ce]
-}
-
 // The `nav` slot (source map §2) is `absolute inset-x-0 top-0 ...`, meant to
 // position against a `relative` ancestor — upstream's own `months` wrapper
 // div (§2: "relative flex flex-col gap-4 md:flex-row"). gsxui doesn't render
@@ -1268,55 +1353,29 @@ func rootClassAttr(t *testing.T, html string) string {
 // whatever `relative` ancestor the CONSUMING page happens to have, or the
 // viewport.
 //
-// This test checks all three halves of the contract — the wrapper has
-// "relative", the root does NOT, and nav still has "absolute" — so it cannot
-// pass vacuously if any of them is dropped or the markup is restructured.
-// The resulting geometry is asserted in jstest/specs/calendar.spec.ts's
-// "dropdown caption is one row, one border".
+// Render tests pin the structural slot ancestry; the actual positioning is
+// pinned by jstest/specs/calendar.spec.ts's computed geometry.
 func TestCalendarNavHasARelativePositioningAncestor(t *testing.T) {
 	got := render(t, ui.Calendar("single", time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 		nil, time.Time{}, time.Time{}, time.Sunday, true, "label", 0, 0,
 		time.Time{}, time.Time{}, nil, nil, "", nil))
 
-	rootClass := rootClassAttr(t, got)
-	for _, tok := range strings.Fields(rootClass) {
-		if tok == "relative" {
-			t.Errorf("root carries \"relative\", but it also carries p-2 — nav's top-0 would resolve against the padding box and sit above the caption row\nroot class: %s", rootClass)
-		}
-	}
-
-	// The months wrapper is the first <div> inside the root, and it is the
-	// element nav is positioned against.
-	wrapperIdx := strings.Index(got, "<div class=")
+	wrapperIdx := strings.Index(got, `data-gsxui-slot-calendar-months`)
 	if wrapperIdx < 0 {
-		t.Fatal("no months wrapper <div> rendered inside the root")
+		t.Fatal("no calendar-months wrapper rendered inside the root")
 	}
-	wrapperTagEnd := strings.Index(got[wrapperIdx:], ">")
-	wrapperTag := got[wrapperIdx : wrapperIdx+wrapperTagEnd]
-	wrapperClass := wrapperTag[len(`<div class="`):]
-	if q := strings.Index(wrapperClass, `"`); q >= 0 {
-		wrapperClass = wrapperClass[:q]
-	}
-	var wrapperIsRelative bool
-	for _, tok := range strings.Fields(wrapperClass) {
-		if tok == "relative" {
-			wrapperIsRelative = true
-		}
-	}
-	if !wrapperIsRelative {
-		t.Errorf("months wrapper has no bare \"relative\" token — nav's absolute positioning has no ancestor inside the root's padding\nwrapper class: %s", wrapperClass)
-	}
-
-	navIdx := strings.Index(got, "<nav")
+	navIdx := strings.Index(got[wrapperIdx:], `data-gsxui-slot-calendar-nav`)
 	if navIdx < 0 {
-		t.Fatal("no <nav> element rendered")
+		t.Fatal("calendar-nav is not nested under calendar-months")
 	}
-	navTagEnd := strings.Index(got[navIdx:], ">")
-	if navTagEnd < 0 {
-		t.Fatal("<nav> element's opening tag is never closed")
+	// The positioning contract itself: calendar-months carries `relative`, so
+	// calendar-nav's `absolute` resolves against it. Before Calendar migrated
+	// this was asserted negatively (no class attribute at all, the rule lived
+	// in default.css); now it is asserted on the resolved class directly.
+	if !strings.Contains(got, canonicalCalendarClass("months")+` data-gsxui-slot-calendar-months`) {
+		t.Errorf("calendar-months lost its relative positioning class\nin: %s", got)
 	}
-	navTag := got[navIdx : navIdx+navTagEnd]
-	if !strings.Contains(navTag, "absolute") {
-		t.Errorf("nav is no longer absolute — the root's relative token is no longer load-bearing for anything\nnav tag: %s", navTag)
+	if !strings.Contains(got, canonicalCalendarClass("nav")+` data-gsxui-slot-calendar-nav`) {
+		t.Errorf("calendar-nav lost its absolute positioning class\nin: %s", got)
 	}
 }

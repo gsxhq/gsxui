@@ -19,8 +19,10 @@ var DefaultMonth = time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 // per-request re-render (its Query hook, driven by ?month=) share one
 // component instead of two.
 component Basic(month time.Time) {
-	{{ if month.IsZero() {
-		month = DefaultMonth
-	} }}
+	{{
+		if month.IsZero() {
+			month = DefaultMonth
+		}
+	}}
 	<ui.Calendar mode="single" month={month} weekStartsOn={time.Sunday} showOutsideDays={true} captionLayout="label"/>
 }

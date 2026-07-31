@@ -1,0 +1,28 @@
+/* Source: assets/css/styles/default/popover.css (both rules) plus the
+   transition block this component shared with HoverCard and Tooltip in
+   assets/css/styles/default/overlay-popover-transition.css (now deleted —
+   all three sharing components migrated in this wave). display:contents on
+   the root has a direct Tailwind utility (`contents`), no escape hatch
+   needed. :popover-open and @starting-style translate as Tailwind v4's
+   native `starting:` variant plus an arbitrary `[&:popover-open]:` variant,
+   stacked with the existing `data-[side=...]:` forms — identical to
+   registry/styles/nova/select.css's own select-content rule, confirmed
+   compiling with this repo's Tailwind v4 CLI before use. Nova and Maia have
+   not diverged on Popover yet, so this file is byte-identical to
+   registry/styles/maia/popover.css. */
+@layer components {
+  .gsxui-recipe-popover {
+    @apply contents;
+  }
+
+  .gsxui-recipe-popover-content {
+    @apply z-50 w-72 origin-top gap-2.5 rounded-lg border bg-popover p-2.5 text-sm text-popover-foreground shadow-md outline-hidden;
+    @apply opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150;
+    @apply [&:popover-open]:opacity-100 [&:popover-open]:scale-100;
+    @apply starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95;
+    @apply starting:[&:popover-open]:data-[side=bottom]:-translate-y-2;
+    @apply starting:[&:popover-open]:data-[side=left]:translate-x-2;
+    @apply starting:[&:popover-open]:data-[side=right]:-translate-x-2;
+    @apply starting:[&:popover-open]:data-[side=top]:translate-y-2;
+  }
+}

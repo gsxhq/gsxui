@@ -1,0 +1,9 @@
+/* Source: gsxui@05bfe97, assets/css/styles/default.css, Spinner block
+   (single rule). No relational forms, no dimensions. Nova and Maia have not
+   diverged on Spinner, so this file is byte-identical to
+   registry/styles/nova/spinner.css. */
+@layer components {
+  .gsxui-recipe-spinner {
+    @apply size-4 animate-spin;
+  }
+}

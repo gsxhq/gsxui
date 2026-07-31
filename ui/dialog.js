@@ -54,8 +54,8 @@ function authoredInvokers(dialog) {
 
 // Idempotent: name/describe the dialog and point triggers at it.
 function wireA11y(root, dialog) {
-  const title = owned(root, '[data-slot="dialog-title"]')[0];
-  const desc = owned(root, '[data-slot="dialog-description"]')[0];
+  const title = owned(root, "[data-gsxui-dialog-title]")[0];
+  const desc = owned(root, "[data-gsxui-dialog-description]")[0];
   if (title && !dialog.hasAttribute("aria-labelledby"))
     dialog.setAttribute("aria-labelledby", ensureId(title, "title"));
   if (desc && !dialog.hasAttribute("aria-describedby"))

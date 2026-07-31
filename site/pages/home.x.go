@@ -15,24 +15,25 @@ import (
 //line home.gsx:7:1
 type Home struct{}
 
-const installSnippet = `go install github.com/gsxhq/gsxui/cmd/gsxui@latest
+const installSnippet = `gsx init app --yes
+cd app
 gsxui init
 gsxui add button`
 
-//line home.gsx:14:1
+//line home.gsx:15:1
 func (h Home) Page() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line home.gsx:15:2
-		_gsxgw.NodeResult(_gsxrenderLayout(ctx, _gsxgw, "gsxui", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+//line home.gsx:16:2
+		_gsxgw.NodeResult(_gsxrendersiteLayout(ctx, _gsxgw, "gsxui", "", layoutMarketing, nil, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line home.gsx:16:3
+//line home.gsx:17:3
 			_gsxgw.S("<section class=\"flex flex-col gap-4 py-10\">")
-//line home.gsx:17:4
+//line home.gsx:18:4
 			_gsxgw.S("<h1 class=\"text-4xl font-semibold tracking-tight sm:text-5xl\">Components for modern web frontends in Go.</h1>")
-//line home.gsx:20:4
+//line home.gsx:21:4
 			_gsxgw.S("<p class=\"max-w-2xl text-lg text-muted-foreground\">gsxui is a shadcn-style component set for")
-//line home.gsx:22:5
+//line home.gsx:22:46
 			_gsxgw.Text(string(" "))
 //line home.gsx:23:5
 			_gsxgw.S("<a href=\"https://gsxhq.github.io/\" target=\"_blank\" rel=\"noreferrer\" class=\"underline underline-offset-4 hover:text-foreground\">gsx</a>: copy-in, type-checked, server-rendered. Own the code, style it with Tailwind, ship it.</p>")
@@ -160,20 +161,20 @@ func (h Home) Page() _gsxrt.Node {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Open dialog")
 					return _gsxgw.Err()
-				}), _gsxrt.Attrs{{Key: "data-gsxui-dialog-trigger", Value: true}}))
-//line home.gsx:86:7
+				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-dialog-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-dialog-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
+//line home.gsx:94:7
 				_gsxgw.Node(ctx, ui.DialogContent(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line home.gsx:87:8
+//line home.gsx:95:8
 					_gsxgw.Node(ctx, ui.DialogHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line home.gsx:88:9
+//line home.gsx:96:9
 						_gsxgw.Node(ctx, ui.DialogTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Edit profile")
 							return _gsxgw.Err()
 						}), nil))
-//line home.gsx:89:9
+//line home.gsx:97:9
 						_gsxgw.Node(ctx, ui.DialogDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Rendered by ui/dialog on the native &lt;dialog&gt; element — no client framework required.")
@@ -181,7 +182,7 @@ func (h Home) Page() _gsxrt.Node {
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line home.gsx:93:8
+//line home.gsx:101:8
 					_gsxgw.Node(ctx, ui.DialogFooter(true, nil, nil))
 					return _gsxgw.Err()
 				}), nil))

@@ -14,7 +14,7 @@ import (
 // divider), a secondary pair split by a ButtonGroupSeparator (shadcn's own
 // button-group-separator demo shape: the separator exists for borderLESS
 // variants), a quantity stepper showing ButtonGroupText between two icon
-// buttons, and a vertical orientation group.
+// buttons, and a vertical secondary pair split by a horizontal separator.
 component Basic() {
 	<div class="flex flex-wrap items-start gap-6">
 		<ui.ButtonGroup>
@@ -36,10 +36,11 @@ component Basic() {
 			</ui.Button>
 		</ui.ButtonGroup>
 		<ui.ButtonGroup orientation="vertical" aria-label="Media controls" class="h-fit">
-			<ui.Button variant="outline" size="icon">
+			<ui.Button variant="secondary" size="icon">
 				<icon.Plus/>
 			</ui.Button>
-			<ui.Button variant="outline" size="icon">
+			<ui.ButtonGroupSeparator orientation="horizontal"/>
+			<ui.Button variant="secondary" size="icon">
 				<icon.Minus/>
 			</ui.Button>
 		</ui.ButtonGroup>

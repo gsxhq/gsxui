@@ -1,1 +1,3 @@
+gsx init app --yes
+cd app
 gsxui init

@@ -1,0 +1,352 @@
+[
+  {
+    "component": "alert-dialog",
+    "slot": "alert-dialog-content",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "alert-dialog-lifecycle"
+  },
+  {
+    "component": "alert-dialog",
+    "slot": "alert-dialog-trigger",
+    "attribute": "aria-expanded",
+    "value": "true",
+    "scenario": "alert-dialog-lifecycle"
+  },
+  {
+    "component": "combobox",
+    "slot": "combobox-content",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "combobox-lifecycle"
+  },
+  {
+    "component": "combobox",
+    "slot": "combobox-input",
+    "attribute": "aria-expanded",
+    "value": "true",
+    "scenario": "combobox-lifecycle"
+  },
+  {
+    "component": "combobox",
+    "slot": "combobox-item",
+    "attribute": "aria-selected",
+    "value": "true",
+    "scenario": "combobox-lifecycle"
+  },
+  {
+    "component": "combobox",
+    "slot": "combobox-item",
+    "attribute": "data-highlighted",
+    "value": "true",
+    "scenario": "combobox-lifecycle"
+  },
+  {
+    "component": "command",
+    "slot": "command-item",
+    "attribute": "aria-selected",
+    "value": "true",
+    "scenario": "command-runtime"
+  },
+  {
+    "component": "command",
+    "slot": "command-item",
+    "attribute": "data-selected",
+    "value": "true",
+    "scenario": "command-runtime"
+  },
+  {
+    "component": "context-menu",
+    "slot": "context-menu-content",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "context-menu-lifecycle"
+  },
+  {
+    "component": "context-menu",
+    "slot": "context-menu-sub-content",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "context-menu-lifecycle"
+  },
+  {
+    "component": "context-menu",
+    "slot": "context-menu-sub-trigger",
+    "attribute": "aria-expanded",
+    "value": "true",
+    "scenario": "context-menu-lifecycle"
+  },
+  {
+    "component": "context-menu",
+    "slot": "context-menu-sub-trigger",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "context-menu-lifecycle"
+  },
+  {
+    "component": "dialog",
+    "slot": "dialog-content",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "dialog-lifecycle"
+  },
+  {
+    "component": "dialog",
+    "slot": "dialog-trigger",
+    "attribute": "aria-expanded",
+    "value": "true",
+    "scenario": "dialog-lifecycle"
+  },
+  {
+    "component": "drawer",
+    "slot": "drawer-content",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "drawer-lifecycle"
+  },
+  {
+    "component": "drawer",
+    "slot": "drawer-trigger",
+    "attribute": "aria-expanded",
+    "value": "true",
+    "scenario": "drawer-lifecycle"
+  },
+  {
+    "component": "dropdown-menu",
+    "slot": "dropdown-menu-content",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "dropdown-lifecycle"
+  },
+  {
+    "component": "dropdown-menu",
+    "slot": "dropdown-menu-sub-content",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "dropdown-lifecycle"
+  },
+  {
+    "component": "dropdown-menu",
+    "slot": "dropdown-menu-sub-trigger",
+    "attribute": "aria-expanded",
+    "value": "true",
+    "scenario": "dropdown-lifecycle"
+  },
+  {
+    "component": "dropdown-menu",
+    "slot": "dropdown-menu-sub-trigger",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "dropdown-lifecycle"
+  },
+  {
+    "component": "dropdown-menu",
+    "slot": "dropdown-menu-trigger",
+    "attribute": "aria-expanded",
+    "value": "true",
+    "scenario": "dropdown-lifecycle"
+  },
+  {
+    "component": "hover-card",
+    "slot": "hover-card-content",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "hover-card-lifecycle"
+  },
+  {
+    "component": "input-otp",
+    "slot": "input-otp-caret",
+    "attribute": "data-gsxui-slot-input-otp-caret",
+    "value": "",
+    "scenario": "input-otp-caret"
+  },
+  {
+    "component": "input-otp",
+    "slot": "input-otp-caret-overlay",
+    "attribute": "data-gsxui-slot-input-otp-caret-overlay",
+    "value": "",
+    "scenario": "input-otp-caret"
+  },
+  {
+    "component": "input-otp",
+    "slot": "input-otp-slot",
+    "attribute": "data-active",
+    "value": "true",
+    "scenario": "input-otp-caret"
+  },
+  {
+    "component": "menubar",
+    "slot": "menubar-content",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "menubar-lifecycle"
+  },
+  {
+    "component": "menubar",
+    "slot": "menubar-sub-content",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "menubar-lifecycle"
+  },
+  {
+    "component": "menubar",
+    "slot": "menubar-sub-trigger",
+    "attribute": "aria-expanded",
+    "value": "true",
+    "scenario": "menubar-lifecycle"
+  },
+  {
+    "component": "menubar",
+    "slot": "menubar-sub-trigger",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "menubar-lifecycle"
+  },
+  {
+    "component": "menubar",
+    "slot": "menubar-trigger",
+    "attribute": "aria-expanded",
+    "value": "true",
+    "scenario": "menubar-lifecycle"
+  },
+  {
+    "component": "menubar",
+    "slot": "menubar-trigger",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "menubar-lifecycle"
+  },
+  {
+    "component": "navigation-menu",
+    "slot": "navigation-menu-content",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "navigation-menu-lifecycle"
+  },
+  {
+    "component": "navigation-menu",
+    "slot": "navigation-menu-indicator",
+    "attribute": "data-state",
+    "value": "hidden",
+    "scenario": "navigation-menu-lifecycle"
+  },
+  {
+    "component": "navigation-menu",
+    "slot": "navigation-menu-indicator",
+    "attribute": "data-state",
+    "value": "visible",
+    "scenario": "navigation-menu-lifecycle"
+  },
+  {
+    "component": "navigation-menu",
+    "slot": "navigation-menu-trigger",
+    "attribute": "aria-expanded",
+    "value": "true",
+    "scenario": "navigation-menu-lifecycle"
+  },
+  {
+    "component": "navigation-menu",
+    "slot": "navigation-menu-trigger",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "navigation-menu-lifecycle"
+  },
+  {
+    "component": "popover",
+    "slot": "popover-content",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "popover-lifecycle"
+  },
+  {
+    "component": "popover",
+    "slot": "popover-trigger",
+    "attribute": "aria-expanded",
+    "value": "true",
+    "scenario": "popover-lifecycle"
+  },
+  {
+    "component": "select",
+    "slot": "select-content",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "select-lifecycle"
+  },
+  {
+    "component": "select",
+    "slot": "select-item",
+    "attribute": "aria-selected",
+    "value": "true",
+    "scenario": "select-lifecycle"
+  },
+  {
+    "component": "select",
+    "slot": "select-trigger",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "select-lifecycle"
+  },
+  {
+    "component": "sheet",
+    "slot": "sheet-content",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "sheet-lifecycle"
+  },
+  {
+    "component": "sheet",
+    "slot": "sheet-trigger",
+    "attribute": "aria-expanded",
+    "value": "true",
+    "scenario": "sheet-lifecycle"
+  },
+  {
+    "component": "toast",
+    "slot": "toast",
+    "attribute": "data-state",
+    "value": "closed",
+    "scenario": "sonner-lifecycle"
+  },
+  {
+    "component": "toast",
+    "slot": "toast",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "sonner-lifecycle"
+  },
+  {
+    "component": "toast",
+    "slot": "toast",
+    "attribute": "data-visible",
+    "value": "false",
+    "scenario": "sonner-lifecycle"
+  },
+  {
+    "component": "toast",
+    "slot": "toast",
+    "attribute": "data-visible",
+    "value": "true",
+    "scenario": "sonner-lifecycle"
+  },
+  {
+    "component": "toaster",
+    "slot": "toaster",
+    "attribute": "data-expanded",
+    "value": "false",
+    "scenario": "sonner-lifecycle"
+  },
+  {
+    "component": "toaster",
+    "slot": "toaster",
+    "attribute": "data-expanded",
+    "value": "true",
+    "scenario": "sonner-lifecycle"
+  },
+  {
+    "component": "tooltip",
+    "slot": "tooltip-content",
+    "attribute": "data-state",
+    "value": "open",
+    "scenario": "tooltip-lifecycle"
+  }
+]

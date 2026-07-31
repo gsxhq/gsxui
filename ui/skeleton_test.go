@@ -11,8 +11,7 @@ import (
 func TestSkeletonDefault(t *testing.T) {
 	got := render(t, ui.Skeleton(nil))
 	for _, want := range []string{
-		`data-slot="skeleton"`,
-		"animate-pulse rounded-md bg-accent",
+		`data-gsxui-slot-skeleton`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("missing %q\nin: %s", want, got)
@@ -20,21 +19,20 @@ func TestSkeletonDefault(t *testing.T) {
 	}
 }
 
-func TestSkeletonCallerClassMerges(t *testing.T) {
+func TestSkeletonCallerClassIsForwardedOnce(t *testing.T) {
 	got := render(t, ui.Skeleton(gsx.Attrs{{Key: "class", Value: "h-4 w-full rounded-md"}}))
-	for _, want := range []string{"h-4 w-full rounded-md", "animate-pulse"} {
-		if !strings.Contains(got, want) {
-			t.Errorf("missing %q\nin: %s", want, got)
-		}
+	if strings.Count(got, `class="`) != 1 || !strings.Contains(got, "h-4") || !strings.Contains(got, "w-full") {
+		t.Errorf("caller class must merge into the single class attribute and render once\nin: %s", got)
 	}
 }
 
 func TestSkeletonPinned(t *testing.T) {
 	// Exact full-render pin, verified token-by-token against shadcn's
 	// Skeleton (registry/new-york-v4/ui/skeleton.tsx) — straight port, no
-	// divergences.
+	// divergences. Now carries the recipe's resolved class (slot axis
+	// migration); the markup shape is otherwise unchanged.
 	got := render(t, ui.Skeleton(nil))
-	want := `<div data-slot="skeleton" class="animate-pulse rounded-md bg-accent"></div>`
+	want := `<div class="animate-pulse rounded-md bg-accent" data-gsxui-slot-skeleton></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

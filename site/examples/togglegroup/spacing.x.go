@@ -28,21 +28,21 @@ func Spacing() _gsxrt.Node {
 //line spacing.gsx:17:3
 			_gsxgw.Node(ctx, ui.ToggleGroupItem("multiple", "outline", "sm", "2", false, "bold", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line spacing.gsx:18:4
+//line spacing.gsx:25:4
 				_gsxgw.Node(ctx, icon.Bold())
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "aria-label", Value: "Toggle bold"}}))
-//line spacing.gsx:20:3
+//line spacing.gsx:27:3
 			_gsxgw.Node(ctx, ui.ToggleGroupItem("multiple", "outline", "sm", "2", false, "italic", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line spacing.gsx:21:4
+//line spacing.gsx:35:4
 				_gsxgw.Node(ctx, icon.Italic())
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "aria-label", Value: "Toggle italic"}}))
-//line spacing.gsx:23:3
+//line spacing.gsx:37:3
 			_gsxgw.Node(ctx, ui.ToggleGroupItem("multiple", "outline", "sm", "2", false, "underline", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line spacing.gsx:24:4
+//line spacing.gsx:45:4
 				_gsxgw.Node(ctx, icon.Underline())
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "aria-label", Value: "Toggle underline"}}))

@@ -33,15 +33,28 @@ func TestBuildManifestCoversRegisteredExamples(t *testing.T) {
 
 	var got *entry
 	for i := range m {
-		if m[i].Component == "dropdown" && m[i].Example == "checkboxes" {
+		if m[i].Component == "dropdown-menu" && m[i].Example == "checkboxes" {
 			got = &m[i]
 		}
 	}
 	if got == nil {
-		t.Fatal("dropdown/checkboxes missing from manifest")
+		t.Fatal("dropdown-menu/checkboxes missing from manifest")
 	}
-	if got.URL != "/x/dropdown/checkboxes" {
-		t.Errorf("URL = %q, want /x/dropdown/checkboxes", got.URL)
+	if got.URL != "/x/dropdown-menu/checkboxes" {
+		t.Errorf("URL = %q, want /x/dropdown-menu/checkboxes", got.URL)
+	}
+
+	var preview *entry
+	for i := range m {
+		if m[i].Component == "sidebar" && m[i].Example == "variants/floating" {
+			preview = &m[i]
+		}
+	}
+	if preview == nil {
+		t.Fatal("sidebar/variants/floating missing from manifest")
+	}
+	if preview.URL != "/x/sidebar/variants?_preview=floating" {
+		t.Errorf("named preview URL = %q, want /x/sidebar/variants?_preview=floating", preview.URL)
 	}
 }
 
@@ -86,10 +99,161 @@ func TestExampleRouteRendersTheExample(t *testing.T) {
 		`<script type="module" src="/ui/index.js"></script>`,
 		`class="min-h-svh bg-background text-foreground antialiased"`,
 		`data-gsxui-toggle`,
+		`data-gsxui-toaster`,
+		`data-gsxui-toast-template="default"`,
 	} {
 		if !strings.Contains(page, want) {
 			t.Errorf("page missing %q", want)
 		}
+	}
+}
+
+func TestNamedPreviewRouteRendersOneExactCase(t *testing.T) {
+	srv := httptest.NewServer(newMux(repoRoot(t)))
+	defer srv.Close()
+
+	res, err := http.Get(srv.URL + "/x/sidebar/variants?_preview=floating")
+	if err != nil {
+		t.Fatalf("GET named preview: %v", err)
+	}
+	body, _ := io.ReadAll(res.Body)
+	res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("status = %d, want 200", res.StatusCode)
+	}
+	page := string(body)
+	if got := strings.Count(page, `data-gsxui-sidebar-wrapper`); got != 1 {
+		t.Fatalf("named preview contains %d Sidebar wrappers, want 1", got)
+	}
+	if !strings.Contains(page, `data-variant="floating"`) {
+		t.Fatal("named floating preview does not render data-variant=floating")
+	}
+
+	for _, path := range []string{
+		"/x/sidebar/variants?_preview=missing",
+		"/x/sidebar/variants?_preview=",
+		"/x/sidebar/variants?_preview=floating&_preview=inset",
+	} {
+		res, err = http.Get(srv.URL + path)
+		if err != nil {
+			t.Fatalf("GET inexact named preview %s: %v", path, err)
+		}
+		res.Body.Close()
+		if res.StatusCode != http.StatusNotFound {
+			t.Fatalf("inexact named preview %s status = %d, want 404", path, res.StatusCode)
+		}
+	}
+}
+
+func TestSiteRoutesUseTheRealPagesWithHarnessAssets(t *testing.T) {
+	srv := httptest.NewServer(newMux(repoRoot(t)))
+	defer srv.Close()
+
+	res, err := http.Get(srv.URL + "/components/sidebar")
+	if err != nil {
+		t.Fatalf("GET /components/sidebar: %v", err)
+	}
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("status = %d, want 200", res.StatusCode)
+	}
+	body, _ := io.ReadAll(res.Body)
+	page := string(body)
+
+	for _, want := range []string{
+		`<link rel="stylesheet" href="/static/jstest/.tmp/site.css">`,
+		`<script type="module" src="/static/jstest/harness-site.js"></script>`,
+		`data-site-isolated-preview`,
+		`src="/examples/sidebar/basic"`,
+	} {
+		if !strings.Contains(page, want) {
+			t.Errorf("site page missing %q", want)
+		}
+	}
+}
+
+func TestThemeRouteLoadsProductionEquivalentBrowserEntry(t *testing.T) {
+	root := repoRoot(t)
+	srv := httptest.NewServer(newMux(root))
+	defer srv.Close()
+
+	res, err := http.Get(srv.URL + "/theme")
+	if err != nil {
+		t.Fatalf("GET /theme: %v", err)
+	}
+	body, _ := io.ReadAll(res.Body)
+	res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("status = %d, want 200", res.StatusCode)
+	}
+	page := string(body)
+	if !strings.Contains(page, `<script type="module" src="/static/jstest/harness-theme.js"></script>`) {
+		t.Error("/theme does not load the production-equivalent theme harness entry")
+	}
+	if strings.Contains(page, `<script type="module" src="/web/theme.js"></script>`) {
+		t.Error("/theme still loads theme.js without the production ui/index.js dependency graph")
+	}
+
+	entry, err := os.ReadFile(filepath.Join(root, "jstest", "harness-theme.js"))
+	if err != nil {
+		t.Fatalf("reading jstest/harness-theme.js: %v", err)
+	}
+	for _, want := range []string{
+		`import "./harness-site.js";`,
+	} {
+		if !strings.Contains(string(entry), want) {
+			t.Errorf("jstest/harness-theme.js missing %q", want)
+		}
+	}
+	if strings.Contains(string(entry), `import "../web/theme.js";`) {
+		t.Error("theme harness entry redundantly imports the controller already provided by harness-site.js")
+	}
+
+	siteEntry, err := os.ReadFile(filepath.Join(root, "jstest", "harness-site.js"))
+	if err != nil {
+		t.Fatalf("reading jstest/harness-site.js: %v", err)
+	}
+	if !strings.Contains(string(siteEntry), `import "../web/theme.js";`) {
+		t.Error("shared harness entry omits the production theme controller")
+	}
+
+	siteRes, err := http.Get(srv.URL + "/site/theme")
+	if err != nil {
+		t.Fatalf("GET /site/theme: %v", err)
+	}
+	siteBody, _ := io.ReadAll(siteRes.Body)
+	siteRes.Body.Close()
+	if siteRes.StatusCode != http.StatusOK {
+		t.Fatalf("GET /site/theme status = %d, want 200", siteRes.StatusCode)
+	}
+	productionPage := string(siteBody)
+	for _, want := range []string{
+		`<script type="importmap">`,
+		`"css-tree":"/static/node_modules/css-tree/dist/csstree.esm.js"`,
+		`<script type="module" src="/static/jstest/harness-site.js"></script>`,
+	} {
+		if !strings.Contains(productionPage, want) {
+			t.Errorf("/site/theme missing %q", want)
+		}
+	}
+}
+
+func TestFoundationQueryLoadsOnlyFoundationStylesheet(t *testing.T) {
+	srv := httptest.NewServer(newMux(repoRoot(t)))
+	defer srv.Close()
+
+	res, err := http.Get(srv.URL + "/x/dialog/basic?css=foundation")
+	if err != nil {
+		t.Fatalf("GET foundation route: %v", err)
+	}
+	defer res.Body.Close()
+	body, _ := io.ReadAll(res.Body)
+	page := string(body)
+	if !strings.Contains(page, `<link rel="stylesheet" href="/static/jstest/.tmp/foundation.css">`) {
+		t.Errorf("foundation page missing foundation stylesheet link")
+	}
+	if strings.Contains(page, `<link rel="stylesheet" href="/static/jstest/.tmp/site.css">`) {
+		t.Errorf("foundation page also loads full site stylesheet")
 	}
 }
 
@@ -227,7 +391,7 @@ func TestServesRealModuleSourceByteForByte(t *testing.T) {
 	srv := httptest.NewServer(newMux(root))
 	defer srv.Close()
 
-	for _, name := range []string{"index.js", "dropdown.js", "gsxui.js"} {
+	for _, name := range []string{"index.js", "dropdown-menu.js", "gsxui.js"} {
 		want, err := os.ReadFile(filepath.Join(root, "ui", name))
 		if err != nil {
 			t.Fatalf("reading ui/%s: %v", name, err)
@@ -255,18 +419,18 @@ func TestShimPassesThroughEverythingButGsxui(t *testing.T) {
 	srv := httptest.NewServer(newMux(root))
 	defer srv.Close()
 
-	want, err := os.ReadFile(filepath.Join(root, "ui", "dropdown.js"))
+	want, err := os.ReadFile(filepath.Join(root, "ui", "dropdown-menu.js"))
 	if err != nil {
-		t.Fatalf("reading ui/dropdown.js: %v", err)
+		t.Fatalf("reading ui/dropdown-menu.js: %v", err)
 	}
-	res, err := http.Get(srv.URL + "/shim/dropdown.js")
+	res, err := http.Get(srv.URL + "/shim/dropdown-menu.js")
 	if err != nil {
-		t.Fatalf("GET /shim/dropdown.js: %v", err)
+		t.Fatalf("GET /shim/dropdown-menu.js: %v", err)
 	}
 	got, _ := io.ReadAll(res.Body)
 	res.Body.Close()
 	if !bytes.Equal(got, want) {
-		t.Error("/shim/dropdown.js is not the real ui/dropdown.js")
+		t.Error("/shim/dropdown-menu.js is not the real ui/dropdown-menu.js")
 	}
 }
 

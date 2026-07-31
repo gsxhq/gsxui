@@ -1,0 +1,9 @@
+/* Each semantic role has its own presence attribute. */
+[data-gsxui-slot-button] {
+  /* project-specific addition */
+}
+
+/* Composed parts forward each role as another attribute. */
+[data-gsxui-slot-alert-dialog-action] {
+  /* action-specific addition */
+}

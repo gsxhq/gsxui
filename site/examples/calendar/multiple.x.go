@@ -30,9 +30,9 @@ func Multiple(month time.Time) _gsxrt.Node {
 		if month.IsZero() {
 			month = MultipleDefaultMonth
 		}
-//line multiple.gsx:20:2
+//line multiple.gsx:22:2
 		_gsxgw.S("<form>")
-//line multiple.gsx:21:3
+//line multiple.gsx:23:3
 		_gsxgw.Node(ctx, ui.Calendar("multiple", month, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "dates", nil))
 		_gsxgw.S("</form>")
 		return _gsxgw.Err()

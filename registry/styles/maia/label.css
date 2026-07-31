@@ -1,0 +1,49 @@
+/* Source: gsxui@aafeaafd410d7411b0e3bd4382cbe3dfacc5e988
+   assets/css/styles/default.css, Label block (around line 250), with two of
+   its four relational utilities folded in as arbitrary variants on the root
+   slot. Nova and Maia have not diverged on Label yet, so this file is
+   byte-identical to registry/styles/maia/label.css.
+
+   Both retained relational rules react to context OUTSIDE Label's own
+   markers rather than to one of Label's own dimensions, so neither is a
+   `has-[...]:` case (nothing is being detected inside Label) nor a
+   same-element `[&.foo]:` case (no consumer-supplied class):
+
+   - `:where([data-disabled="true"]) :where([data-gsxui-slot-label])` is an
+     ANCESTOR carrying data-disabled="true" -> Tailwind's arbitrary
+     ancestor-descendant variant, `[[data-disabled=true]_&]:`.
+   - `:disabled ~ :where([data-gsxui-slot-label])` is a preceding SIBLING
+     that is :disabled -> Tailwind's arbitrary general-sibling variant,
+     `[:disabled~&]:`.
+
+   Both confirmed compiling with this repo's Tailwind v4 CLI before use (same
+   method jstest/support/compiled-css-audit.test.ts uses), producing exactly
+   `[data-disabled=true] &` and `:disabled~&` in the compiled output.
+
+   Only `pointer-events-none`/`cursor-not-allowed` stayed migrated here. The
+   matching `opacity-50` on each is DELIBERATELY NOT HERE: spec section 10b
+   found these same two arbitrary-variant selectors (this same rule) also
+   strip caller-overridability from any property they carry, the same
+   two-class-selector mechanism as Card's `[&.border-b]:pb-4`. The judgement
+   call is per property, not per rule:
+
+   - pointer-events-none/cursor-not-allowed express that a disabled
+     ancestor/sibling makes the label itself non-interactive. No caller has
+     a legitimate reason to override that back to `pointer-events-auto` or
+     `cursor-pointer` on a label paired with a disabled control — allowing
+     the override would be a real accessibility footgun, not a feature. So
+     these two stay as recipe utilities on purpose.
+   - opacity-50 is purely presentational (how dimmed the disabled label
+     looks) and shadcn/ui projects commonly theme or override disabled-state
+     opacity per design system. A caller plausibly wants its own dimming
+     value here, so both opacity-50 occurrences are restored as
+     caller-overridable plain CSS in
+     assets/css/styles/default/label.css instead, following Card/
+     Pagination's identical fix. */
+@layer components {
+  .gsxui-recipe-label {
+    @apply flex items-center gap-2 text-sm leading-none font-medium select-none;
+    @apply [[data-disabled=true]_&]:pointer-events-none;
+    @apply [:disabled~&]:cursor-not-allowed;
+  }
+}

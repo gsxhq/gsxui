@@ -1,9 +1,25 @@
 package main
 
 import (
+	"bytes"
+	"context"
+	"fmt"
 	"html/template"
 	"io"
+
+	"github.com/gsxhq/gsxui/ui"
 )
+
+const browserImportMap = `<script type="importmap">{"imports":{
+  "css-tree":"/static/node_modules/css-tree/dist/csstree.esm.js",
+  "jsonc-parser":"/static/node_modules/jsonc-parser/lib/esm/main.js",
+  "postcss/lib/parse":"/static/jstest/.tmp/postcss-parse.mjs",
+  "/static/node_modules/jsonc-parser/lib/esm/impl/edit":"/static/node_modules/jsonc-parser/lib/esm/impl/edit.js",
+  "/static/node_modules/jsonc-parser/lib/esm/impl/format":"/static/node_modules/jsonc-parser/lib/esm/impl/format.js",
+  "/static/node_modules/jsonc-parser/lib/esm/impl/parser":"/static/node_modules/jsonc-parser/lib/esm/impl/parser.js",
+  "/static/node_modules/jsonc-parser/lib/esm/impl/scanner":"/static/node_modules/jsonc-parser/lib/esm/impl/scanner.js",
+  "/static/node_modules/jsonc-parser/lib/esm/impl/string-intern":"/static/node_modules/jsonc-parser/lib/esm/impl/string-intern.js"
+}}</script>`
 
 // shellTmpl is the minimal page every harness route renders into. It
 // deliberately carries only what a component needs: the compiled stylesheet
@@ -20,24 +36,40 @@ var shellTmpl = template.Must(template.New("shell").Parse(
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{.Title}}</title>
-<link rel="stylesheet" href="/static/jstest/.tmp/site.css">
+<link rel="stylesheet" href="{{.Stylesheet}}">
+{{.ImportMap}}
 <script type="module" src="{{.Script}}"></script>
 </head>
 <body class="min-h-svh bg-background text-foreground antialiased">
 <main data-harness-root class="p-8">{{.Body}}</main>
+{{.Toaster}}
 </body>
 </html>
 `))
 
 type shellData struct {
-	Title  string
-	Script string
-	Body   template.HTML
+	Title      string
+	Stylesheet string
+	Script     string
+	ImportMap  template.HTML
+	Body       template.HTML
+	Toaster    template.HTML
 }
 
 // renderShell writes the shell around already-rendered markup. body is
 // trusted: it comes from a gsx component's own Render, which escapes its
 // own interpolations.
-func renderShell(w io.Writer, title, script string, body template.HTML) error {
-	return shellTmpl.Execute(w, shellData{Title: title, Script: script, Body: body})
+func renderShell(w io.Writer, title, stylesheet, script string, body template.HTML) error {
+	var toaster bytes.Buffer
+	if err := ui.Toaster(nil).Render(context.Background(), &toaster); err != nil {
+		return fmt.Errorf("rendering toaster: %w", err)
+	}
+	return shellTmpl.Execute(w, shellData{
+		Title:      title,
+		Stylesheet: stylesheet,
+		Script:     script,
+		ImportMap:  template.HTML(browserImportMap),
+		Body:       body,
+		Toaster:    template.HTML(toaster.String()),
+	})
 }

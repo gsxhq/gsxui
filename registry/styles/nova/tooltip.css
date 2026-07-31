@@ -1,0 +1,33 @@
+/* Source: assets/css/styles/default/tooltip.css (all four rules) plus the
+   transition block this component shared with Popover and HoverCard in
+   assets/css/styles/default/overlay-popover-transition.css (now deleted —
+   all three sharing components migrated in this wave). Same
+   :popover-open/@starting-style translation as registry/styles/nova/
+   popover.css and select.css. The kbd-descendant rule
+   (`:has([data-gsxui-slot-kbd])`) is Card's proven descendant-marker :has()
+   shape — it reacts to a rendered Kbd, not a consumer-supplied class, so no
+   §10b caller-override hazard applies and it translates directly as
+   `has-[[data-gsxui-slot-kbd]]:pr-1.5`. Nova and Maia have not diverged on
+   Tooltip yet, so this file is byte-identical to registry/styles/maia/
+   tooltip.css. */
+@layer components {
+  .gsxui-recipe-tooltip {
+    @apply contents;
+  }
+
+  .gsxui-recipe-tooltip-content {
+    @apply z-50 w-fit origin-bottom gap-1.5 overflow-visible rounded-md bg-foreground px-3 py-1.5 text-xs text-balance text-background;
+    @apply has-[[data-gsxui-slot-kbd]]:pr-1.5;
+    @apply opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150;
+    @apply [&:popover-open]:opacity-100 [&:popover-open]:scale-100;
+    @apply starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95;
+    @apply starting:[&:popover-open]:data-[side=bottom]:-translate-y-2;
+    @apply starting:[&:popover-open]:data-[side=left]:translate-x-2;
+    @apply starting:[&:popover-open]:data-[side=right]:-translate-x-2;
+    @apply starting:[&:popover-open]:data-[side=top]:translate-y-2;
+  }
+
+  .gsxui-recipe-tooltip-arrow {
+    @apply absolute top-full left-1/2 z-50 size-2.5 -translate-x-1/2 -translate-y-[calc(50%+2px)] rotate-45 rounded-[2px] bg-foreground;
+  }
+}

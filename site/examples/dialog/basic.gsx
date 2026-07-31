@@ -5,12 +5,20 @@ import (
 	"github.com/gsxhq/gsxui/ui"
 )
 
-// Basic renders a confirm dialog. The trigger is a real Button carrying
-// data-gsxui-dialog-trigger — the documented idiom for a styled trigger,
-// no DialogTrigger wrapper needed (see docs/jsx-parity.md).
+// Basic renders a confirm dialog. One real Button carries both the dialog
+// trigger style slot and the behavior/ARIA contract, so there is no
+// button-in-button wrapper or duplicate control.
 component Basic() {
 	<ui.Dialog>
-		<ui.Button variant="outline" data-gsxui-dialog-trigger>Delete account</ui.Button>
+		<ui.Button
+			variant="outline"
+			data-gsxui-dialog-trigger
+			data-gsxui-slot-dialog-trigger
+			aria-haspopup="dialog"
+			aria-expanded="false"
+		>
+			Delete account
+		</ui.Button>
 		<ui.DialogContent>
 			<ui.DialogHeader>
 				<ui.DialogTitle>Are you absolutely sure?</ui.DialogTitle>

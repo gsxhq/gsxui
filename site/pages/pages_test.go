@@ -2,14 +2,17 @@ package pages_test
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
+	"github.com/gsxhq/gsxui/site/examples"
 	"github.com/gsxhq/gsxui/site/pages"
 	"github.com/gsxhq/vite"
 	"github.com/jackielii/structpages"
+	"golang.org/x/net/html"
 )
 
 // newTestHandler mounts the real page tree on a real mux the same way
@@ -54,9 +57,400 @@ func TestSiteRoutes(t *testing.T) {
 	if rec.Code != http.StatusOK {
 		t.Fatalf("GET / = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
 	}
-	if !strings.Contains(rec.Body.String(), `data-slot="button"`) {
-		t.Errorf(`response missing data-slot="button"; body:\n%s`, rec.Body.String())
+	if !strings.Contains(rec.Body.String(), `data-gsxui-slot-button`) {
+		t.Errorf(`response missing data-gsxui-slot-button; body:\n%s`, rec.Body.String())
 	}
+	document, err := html.Parse(strings.NewReader(rec.Body.String()))
+	if err != nil {
+		t.Fatalf("parse home response: %v", err)
+	}
+	if err := validateDialogTriggerSlotMarkers(document, 2); err != nil {
+		t.Errorf("home response has invalid dialog trigger slot markers: %v", err)
+	}
+}
+
+func TestSiteLayoutModes(t *testing.T) {
+	handler := newTestHandler(t)
+
+	tests := []struct {
+		path string
+		mode string
+	}{
+		{path: "/", mode: "marketing"},
+		{path: "/components", mode: "docs"},
+		{path: "/components/button", mode: "docs"},
+		{path: "/docs/getting-started", mode: "docs"},
+		{path: "/theme", mode: "workspace"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.path, func(t *testing.T) {
+			req := httptest.NewRequest(http.MethodGet, tt.path, nil)
+			rec := httptest.NewRecorder()
+			handler.ServeHTTP(rec, req)
+			if rec.Code == http.StatusTemporaryRedirect {
+				req = httptest.NewRequest(http.MethodGet, rec.Header().Get("Location"), nil)
+				rec = httptest.NewRecorder()
+				handler.ServeHTTP(rec, req)
+			}
+
+			if rec.Code != http.StatusOK {
+				t.Fatalf("GET %s = %d, want %d; body:\n%s", tt.path, rec.Code, http.StatusOK, rec.Body.String())
+			}
+			body := rec.Body.String()
+			if !strings.Contains(body, `data-site-layout="`+tt.mode+`"`) {
+				t.Errorf("GET %s missing data-site-layout=%q; body:\n%s", tt.path, tt.mode, body)
+			}
+
+			isDocs := tt.mode == "docs"
+			for _, marker := range []string{
+				"data-site-docs-mobile-nav",
+				"data-site-docs-sidebar",
+				"data-site-docs-article",
+			} {
+				hasMarker := strings.Contains(body, marker)
+				if hasMarker != isDocs {
+					t.Errorf("GET %s has %s = %t, want %t; body:\n%s", tt.path, marker, hasMarker, isDocs, body)
+				}
+			}
+
+			if tt.mode == "workspace" {
+				for _, marker := range []string{"data-site-docs-toc", "data-site-footer"} {
+					if strings.Contains(body, marker) {
+						t.Errorf("GET %s workspace unexpectedly renders %s; body:\n%s", tt.path, marker, body)
+					}
+				}
+			}
+		})
+	}
+}
+
+func TestDocsTableOfContents(t *testing.T) {
+	handler := newTestHandler(t)
+
+	tests := []struct {
+		path  string
+		items []struct {
+			id    string
+			title string
+		}
+	}{
+		{
+			path: "/components/button",
+			items: []struct {
+				id    string
+				title string
+			}{
+				{id: "example-basic", title: "Basic"},
+				{id: "example-variants", title: "Variants"},
+			},
+		},
+		{
+			path: "/docs/getting-started",
+			items: []struct {
+				id    string
+				title string
+			}{
+				{id: "install-cli", title: "1. Install the CLIs"},
+				{id: "initialize-project", title: "2. Initialize your project"},
+				{id: "manual-integration", title: "Manual integration"},
+				{id: "add-components", title: "3. Add components"},
+				{id: "first-page", title: "4. Your first page"},
+			},
+		},
+		{
+			path: "/docs/theming",
+			items: []struct {
+				id    string
+				title string
+			}{
+				{id: "css-files", title: "The four CSS files"},
+				{id: "semantic-variables", title: "Edit semantic variables"},
+				{id: "component-markers", title: "Stable component markers"},
+				{id: "caller-utilities", title: "Caller utilities win"},
+				{id: "breaking-migration", title: "Breaking migration"},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.path, func(t *testing.T) {
+			document := renderDocument(t, handler, tt.path)
+
+			var headings []*html.Node
+			var links []*html.Node
+			walkHTML(document, func(node *html.Node) {
+				if hasHTMLAttribute(node, "data-doc-heading") {
+					headings = append(headings, node)
+				}
+				if hasHTMLAttribute(node, "data-site-toc-link") {
+					links = append(links, node)
+				}
+			})
+
+			if got, want := countHTMLNodes(document, "data-site-docs-toc"), 1; got != want {
+				t.Fatalf("GET %s has %d documentation TOCs, want %d", tt.path, got, want)
+			}
+			if got, want := len(headings), len(tt.items); got != want {
+				t.Fatalf("GET %s has %d document headings, want %d", tt.path, got, want)
+			}
+			if got, want := len(links), len(tt.items); got != want {
+				t.Fatalf("GET %s has %d TOC links, want %d", tt.path, got, want)
+			}
+
+			headingByID := make(map[string]*html.Node, len(headings))
+			for index, heading := range headings {
+				id, ok := htmlAttribute(heading, "id")
+				if !ok || id == "" {
+					t.Fatalf("GET %s heading %d has no explicit ID", tt.path, index+1)
+				}
+				if _, exists := headingByID[id]; exists {
+					t.Fatalf("GET %s has duplicate document heading ID %q", tt.path, id)
+				}
+				headingByID[id] = heading
+
+				item := tt.items[index]
+				if id != item.id {
+					t.Errorf("GET %s heading %d ID = %q, want %q", tt.path, index+1, id, item.id)
+				}
+				if got := normalizedHTMLText(heading); got != item.title {
+					t.Errorf("GET %s heading %q text = %q, want %q", tt.path, id, got, item.title)
+				}
+				if tabindex, ok := htmlAttribute(heading, "tabindex"); !ok || tabindex != "-1" {
+					t.Errorf("GET %s heading %q tabindex = %q, want -1", tt.path, id, tabindex)
+				}
+				class, _ := htmlAttribute(heading, "class")
+				for _, forbidden := range []string{"text-lg", "text-xl"} {
+					if strings.Contains(class, forbidden) {
+						t.Errorf("GET %s heading %q unexpectedly receives shared typography %q in class %q", tt.path, id, forbidden, class)
+					}
+				}
+				if tt.path == "/components/button" {
+					for _, want := range []string{"text-sm", "font-medium", "uppercase", "tracking-wide", "text-muted-foreground"} {
+						if !strings.Contains(class, want) {
+							t.Errorf("GET %s heading %q class %q missing prior component presentation %q", tt.path, id, class, want)
+						}
+					}
+				} else {
+					for _, forbidden := range []string{"text-sm", "font-medium", "uppercase", "tracking-wide", "text-muted-foreground", "font-semibold"} {
+						if strings.Contains(class, forbidden) {
+							t.Errorf("GET %s guide heading %q unexpectedly receives component/shared presentation %q in class %q", tt.path, id, forbidden, class)
+						}
+					}
+				}
+			}
+
+			for index, link := range links {
+				href, ok := htmlAttribute(link, "href")
+				if !ok || !strings.HasPrefix(href, "#") || len(href) == 1 {
+					t.Fatalf("GET %s TOC link %d href = %q, want an explicit fragment", tt.path, index+1, href)
+				}
+				id := strings.TrimPrefix(href, "#")
+				heading, exists := headingByID[id]
+				if !exists {
+					t.Fatalf("GET %s TOC link %q has no matching document heading", tt.path, href)
+				}
+				if got, want := normalizedHTMLText(link), normalizedHTMLText(heading); got != want {
+					t.Errorf("GET %s TOC link %q text = %q, heading text = %q", tt.path, href, got, want)
+				}
+				item := tt.items[index]
+				if id != item.id {
+					t.Errorf("GET %s TOC link %d target = %q, want %q", tt.path, index+1, id, item.id)
+				}
+				if got := normalizedHTMLText(link); got != item.title {
+					t.Errorf("GET %s TOC link %q text = %q, want %q", tt.path, href, got, item.title)
+				}
+			}
+		})
+	}
+
+	for _, component := range examples.Components() {
+		t.Run("all component routes/"+component, func(t *testing.T) {
+			document := renderDocument(t, handler, "/components/"+component)
+			registered := examples.For(component)
+
+			var headings []*html.Node
+			var links []*html.Node
+			walkHTML(document, func(node *html.Node) {
+				if hasHTMLAttribute(node, "data-doc-heading") {
+					headings = append(headings, node)
+				}
+				if hasHTMLAttribute(node, "data-site-toc-link") {
+					links = append(links, node)
+				}
+			})
+			if got, want := len(headings), len(registered); got != want {
+				t.Fatalf("GET /components/%s has %d headings, want %d registered examples", component, got, want)
+			}
+			if got, want := len(links), len(registered); got != want {
+				t.Fatalf("GET /components/%s has %d TOC links, want %d registered examples", component, got, want)
+			}
+
+			seenIDs := make(map[string]struct{}, len(headings))
+			for index, example := range registered {
+				wantID := "example-" + example.Name
+				gotID, _ := htmlAttribute(headings[index], "id")
+				if _, duplicate := seenIDs[gotID]; duplicate {
+					t.Errorf("GET /components/%s has duplicate heading ID %q", component, gotID)
+				}
+				seenIDs[gotID] = struct{}{}
+				if gotID != wantID {
+					t.Errorf("GET /components/%s heading %d ID = %q, want %q", component, index+1, gotID, wantID)
+				}
+				if got := normalizedHTMLText(headings[index]); got != example.Title {
+					t.Errorf("GET /components/%s heading %q text = %q, want %q", component, gotID, got, example.Title)
+				}
+				if got, _ := htmlAttribute(links[index], "href"); got != "#"+wantID {
+					t.Errorf("GET /components/%s TOC link %d href = %q, want %q", component, index+1, got, "#"+wantID)
+				}
+				if got := normalizedHTMLText(links[index]); got != example.Title {
+					t.Errorf("GET /components/%s TOC link %d text = %q, want %q", component, index+1, got, example.Title)
+				}
+			}
+		})
+	}
+
+	t.Run("components index has no right rail", func(t *testing.T) {
+		document := renderDocument(t, handler, "/components")
+		if got := countHTMLNodes(document, "data-site-docs-toc"); got != 0 {
+			t.Fatalf("GET /components has %d documentation TOCs, want none", got)
+		}
+		if got := countHTMLNodes(document, "data-site-toc-link"); got != 0 {
+			t.Fatalf("GET /components has %d TOC links, want none", got)
+		}
+	})
+}
+
+func TestDialogTriggerSlotMarkers(t *testing.T) {
+	tests := []struct {
+		name string
+		html string
+		want string
+	}{
+		{
+			name: "two exact empty markers",
+			html: `<button data-gsxui-dialog-trigger data-gsxui-slot-dialog-trigger></button><button data-gsxui-dialog-trigger data-gsxui-slot-dialog-trigger></button>`,
+		},
+		{
+			name: "suffix marker does not satisfy the contract",
+			html: `<button data-gsxui-dialog-trigger data-gsxui-slot-dialog-trigger-extra></button><button data-gsxui-dialog-trigger data-gsxui-slot-dialog-trigger></button>`,
+			want: "missing data-gsxui-slot-dialog-trigger",
+		},
+		{
+			name: "valued marker does not satisfy the contract",
+			html: `<button data-gsxui-dialog-trigger data-gsxui-slot-dialog-trigger = "true"></button><button data-gsxui-dialog-trigger data-gsxui-slot-dialog-trigger></button>`,
+			want: `data-gsxui-slot-dialog-trigger has value "true"`,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			document, err := html.Parse(strings.NewReader(tt.html))
+			if err != nil {
+				t.Fatalf("parse fixture: %v", err)
+			}
+			err = validateDialogTriggerSlotMarkers(document, 2)
+			if tt.want == "" {
+				if err != nil {
+					t.Fatalf("validateDialogTriggerSlotMarkers: %v", err)
+				}
+				return
+			}
+			if err == nil || !strings.Contains(err.Error(), tt.want) {
+				t.Fatalf("validateDialogTriggerSlotMarkers error = %v, want %q", err, tt.want)
+			}
+		})
+	}
+}
+
+func validateDialogTriggerSlotMarkers(document *html.Node, want int) error {
+	var triggers []*html.Node
+	var visit func(*html.Node)
+	visit = func(node *html.Node) {
+		if node.Type == html.ElementNode && hasHTMLAttribute(node, "data-gsxui-dialog-trigger") {
+			triggers = append(triggers, node)
+		}
+		for child := node.FirstChild; child != nil; child = child.NextSibling {
+			visit(child)
+		}
+	}
+	visit(document)
+
+	if len(triggers) != want {
+		return fmt.Errorf("found %d dialog triggers, want %d", len(triggers), want)
+	}
+	for index, trigger := range triggers {
+		value, ok := htmlAttribute(trigger, "data-gsxui-slot-dialog-trigger")
+		if !ok {
+			return fmt.Errorf("dialog trigger %d missing data-gsxui-slot-dialog-trigger", index+1)
+		}
+		if value != "" {
+			return fmt.Errorf("dialog trigger %d data-gsxui-slot-dialog-trigger has value %q", index+1, value)
+		}
+	}
+	return nil
+}
+
+func hasHTMLAttribute(node *html.Node, name string) bool {
+	_, ok := htmlAttribute(node, name)
+	return ok
+}
+
+func htmlAttribute(node *html.Node, name string) (string, bool) {
+	for _, attr := range node.Attr {
+		if attr.Key == name {
+			return attr.Val, true
+		}
+	}
+	return "", false
+}
+
+func renderDocument(t *testing.T, handler http.Handler, path string) *html.Node {
+	t.Helper()
+	req := httptest.NewRequest(http.MethodGet, path, nil)
+	rec := httptest.NewRecorder()
+	handler.ServeHTTP(rec, req)
+	if rec.Code == http.StatusTemporaryRedirect {
+		req = httptest.NewRequest(http.MethodGet, rec.Header().Get("Location"), nil)
+		rec = httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+	}
+	if rec.Code != http.StatusOK {
+		t.Fatalf("GET %s = %d, want %d; body:\n%s", path, rec.Code, http.StatusOK, rec.Body.String())
+	}
+	document, err := html.Parse(strings.NewReader(rec.Body.String()))
+	if err != nil {
+		t.Fatalf("parse GET %s response: %v", path, err)
+	}
+	return document
+}
+
+func walkHTML(node *html.Node, visit func(*html.Node)) {
+	visit(node)
+	for child := node.FirstChild; child != nil; child = child.NextSibling {
+		walkHTML(child, visit)
+	}
+}
+
+func countHTMLNodes(document *html.Node, attribute string) int {
+	count := 0
+	walkHTML(document, func(node *html.Node) {
+		if hasHTMLAttribute(node, attribute) {
+			count++
+		}
+	})
+	return count
+}
+
+func normalizedHTMLText(node *html.Node) string {
+	var text strings.Builder
+	walkHTML(node, func(descendant *html.Node) {
+		if descendant.Type == html.TextNode {
+			text.WriteString(descendant.Data)
+			text.WriteByte(' ')
+		}
+	})
+	return strings.Join(strings.Fields(text.String()), " ")
 }
 
 // TestComponentPageRoute is the Task 2 integration smoke test for
@@ -79,8 +473,8 @@ func TestComponentPageRoute(t *testing.T) {
 		if !strings.Contains(body, "border rounded-lg p-8 bg-background") {
 			t.Errorf("response missing preview panel marker; body:\n%s", body)
 		}
-		if !strings.Contains(body, `data-slot="button"`) {
-			t.Errorf(`response missing rendered example (data-slot="button"); body:\n%s`, body)
+		if !strings.Contains(body, `data-gsxui-slot-button`) {
+			t.Errorf(`response missing rendered example (data-gsxui-slot-button); body:\n%s`, body)
 		}
 		// A distinctive identifier from basic.gsx's literal source — proves
 		// the displayed source is the exact embedded file, not paraphrased.
@@ -92,6 +486,53 @@ func TestComponentPageRoute(t *testing.T) {
 		}
 		if !strings.Contains(body, "gsxui add button") {
 			t.Errorf(`response missing install snippet "gsxui add button"; body:\n%s`, body)
+		}
+		if strings.Contains(body, `data-site-isolated-preview`) {
+			t.Errorf("ordinary button examples should render inline; body:\n%s", body)
+		}
+	})
+
+	t.Run("viewport-owned component uses isolated previews", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/components/sidebar", nil)
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+
+		if rec.Code != http.StatusOK {
+			t.Fatalf("GET /components/sidebar = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
+		}
+		body := rec.Body.String()
+		if got := strings.Count(body, `<iframe data-site-isolated-preview`); got != 10 {
+			t.Errorf("sidebar page has %d isolated previews, want 10; body:\n%s", got, body)
+		}
+		if got := strings.Count(body, `data-site-isolated-preview-surface`); got != 10 {
+			t.Errorf("sidebar page has %d isolated preview surfaces, want 10; body:\n%s", got, body)
+		}
+		if got := strings.Count(body, `width="1024"`); got != 10 {
+			t.Errorf("sidebar page has %d declared 1024px preview viewports, want 10; body:\n%s", got, body)
+		}
+		for _, marker := range []string{
+			`title="Basic preview"`,
+			`src="/examples/sidebar/basic"`,
+			`title="variant=sidebar (default) preview"`,
+			`src="/examples/sidebar/variants?_preview=sidebar"`,
+			`title="variant=floating preview"`,
+			`src="/examples/sidebar/variants?_preview=floating"`,
+			`title="icon collapsed preview"`,
+			`src="/examples/sidebar/variants?_preview=icon-collapsed"`,
+			`title="Persisted (cookie round-trip) preview"`,
+			`src="/examples/sidebar/persisted"`,
+			`ui.SidebarProvider`,
+			`data-site-copy`,
+		} {
+			if !strings.Contains(body, marker) {
+				t.Errorf("sidebar page missing %q; body:\n%s", marker, body)
+			}
+		}
+		if strings.Contains(body, `data-gsxui-slot-sidebar-container`) {
+			t.Errorf("sidebar implementation leaked into the parent document; body:\n%s", body)
+		}
+		if got := strings.Count(body, `data-site-copy`); got != 3 {
+			t.Errorf("sidebar page has %d source copy controls, want one per registered example (3)", got)
 		}
 	})
 
@@ -110,8 +551,8 @@ func TestComponentPageRoute(t *testing.T) {
 		if !strings.Contains(body, "border rounded-lg p-8 bg-background") {
 			t.Errorf("response missing preview panel marker; body:\n%s", body)
 		}
-		if !strings.Contains(body, `data-slot="input"`) {
-			t.Errorf(`response missing rendered example (data-slot="input"); body:\n%s`, body)
+		if !strings.Contains(body, `data-gsxui-slot-input`) {
+			t.Errorf(`response missing rendered example (data-gsxui-slot-input); body:\n%s`, body)
 		}
 		// A distinctive identifier from basic.gsx's literal source — proves
 		// the displayed source is the exact embedded file, not paraphrased.
@@ -148,23 +589,27 @@ func TestComponentPageRoute(t *testing.T) {
 	})
 
 	// Task-6-review representative: proves a renamed component's footer
-	// link points at shadcn's actual slug (dropdown→dropdown-menu), not the
+	// link points at shadcn's actual slug (radio→radio-group), not the
 	// gsxui component name verbatim, which would 404 on ui.shadcn.com. (Prior
 	// to the single-package sweep this used switchctl, whose registered name
 	// only differed from its shadcn slug because "switch" is a Go keyword —
 	// now that the registry-facing name is "switch" itself, name and slug
-	// coincide and it no longer exercises shadcnSlug's rename path.)
-	t.Run("renamed component (dropdown) links to shadcn's dropdown-menu slug", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodGet, "/components/dropdown", nil)
+	// coincide and it no longer exercises shadcnSlug's rename path. dropdown
+	// used to exercise this path too — its registry name was "dropdown"
+	// against shadcn's "dropdown-menu" — until the registry entry itself was
+	// renamed to "dropdown-menu" ahead of its slot-axis migration, removing
+	// the delta; "radio" is the remaining live case.)
+	t.Run("renamed component (radio) links to shadcn's radio-group slug", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/components/radio", nil)
 		rec := httptest.NewRecorder()
 		handler.ServeHTTP(rec, req)
 
 		if rec.Code != http.StatusOK {
-			t.Fatalf("GET /components/dropdown = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
+			t.Fatalf("GET /components/radio = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
 		}
 		body := rec.Body.String()
-		if !strings.Contains(body, `ui.shadcn.com/docs/components/dropdown-menu"`) {
-			t.Errorf(`response missing shadcn link to renamed slug "dropdown-menu"; body:\n%s`, body)
+		if !strings.Contains(body, `ui.shadcn.com/docs/components/radio-group"`) {
+			t.Errorf(`response missing shadcn link to renamed slug "radio-group"; body:\n%s`, body)
 		}
 	})
 
@@ -199,6 +644,124 @@ func TestComponentPageRoute(t *testing.T) {
 	})
 }
 
+func TestExamplePreviewRoute(t *testing.T) {
+	handler := newTestHandler(t)
+
+	t.Run("registered example", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/examples/sidebar/basic", nil)
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+
+		if rec.Code != http.StatusOK {
+			t.Fatalf("GET /examples/sidebar/basic = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
+		}
+		body := rec.Body.String()
+		for _, marker := range []string{
+			`data-site-isolated-document`,
+			`data-gsxui-slot-sidebar-wrapper`,
+			`data-gsxui-slot-sidebar-container`,
+			`src="/__vite/@vite/client"`,
+			`src="/__vite/web/main.js"`,
+		} {
+			if !strings.Contains(body, marker) {
+				t.Errorf("preview response missing %q; body:\n%s", marker, body)
+			}
+		}
+		for _, forbidden := range []string{
+			`<iframe`,
+			`Search docs...`,
+			`View the original on shadcn/ui`,
+		} {
+			if strings.Contains(body, forbidden) {
+				t.Errorf("preview response unexpectedly contains %q; body:\n%s", forbidden, body)
+			}
+		}
+	})
+
+	for _, path := range []string{
+		"/examples/sidebar/missing",
+		"/examples/missing/basic",
+		"/examples/sidebar/variants?_preview=missing",
+		"/examples/sidebar/variants?_preview=",
+		"/examples/sidebar/variants?_preview=floating&_preview=inset",
+	} {
+		t.Run(path, func(t *testing.T) {
+			req := httptest.NewRequest(http.MethodGet, path, nil)
+			rec := httptest.NewRecorder()
+			handler.ServeHTTP(rec, req)
+			if rec.Code != http.StatusNotFound {
+				t.Fatalf("GET %s = %d, want %d; body:\n%s", path, rec.Code, http.StatusNotFound, rec.Body.String())
+			}
+		})
+	}
+}
+
+func TestThemePreviewButtonRoute(t *testing.T) {
+	handler := newTestHandler(t)
+
+	t.Run("isolated exact-style matrix", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/theme/preview/button", nil)
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+
+		if rec.Code != http.StatusOK {
+			t.Fatalf("GET /theme/preview/button = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
+		}
+		body := rec.Body.String()
+		for _, marker := range []string{
+			`<!DOCTYPE html>`,
+			`data-theme-button-preview`,
+			`src="/__vite/@vite/client"`,
+			`src="/__vite/web/preview.js"`,
+			`data-theme-preview-style="nova"`,
+			`data-theme-preview-style="maia" hidden`,
+			`data-theme-preview-case="text"`,
+			`data-theme-preview-case="icon"`,
+			`data-theme-preview-case="disabled"`,
+			`data-theme-preview-case="link"`,
+			`data-theme-preview-case="focus-visible"`,
+			`data-theme-preview-case="invalid"`,
+			`data-theme-preview-case="caller-composition"`,
+			`aria-invalid="true"`,
+			`href="/docs/getting-started"`,
+		} {
+			if !strings.Contains(body, marker) {
+				t.Errorf("theme preview response missing %q; body:\n%s", marker, body)
+			}
+		}
+		for _, variant := range []string{"default", "secondary", "destructive", "outline", "ghost", "link"} {
+			if got := strings.Count(body, `data-variant="`+variant+`"`); got < 2 {
+				t.Errorf("theme preview has %d %q variants, want one per style; body:\n%s", got, variant, body)
+			}
+		}
+		for _, size := range []string{"default", "xs", "sm", "lg", "icon", "icon-xs", "icon-sm", "icon-lg"} {
+			if got := strings.Count(body, `data-size="`+size+`"`); got < 2 {
+				t.Errorf("theme preview has %d %q sizes, want one per style; body:\n%s", got, size, body)
+			}
+		}
+		for _, forbidden := range []string{
+			`<iframe`,
+			`Search docs...`,
+			`Theme editor`,
+			`data-theme-var=`,
+			`src="/__vite/web/main.js"`,
+		} {
+			if strings.Contains(body, forbidden) {
+				t.Errorf("theme preview response unexpectedly contains %q; body:\n%s", forbidden, body)
+			}
+		}
+	})
+
+	t.Run("extra route segment is not accepted", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/theme/preview/button/extra", nil)
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+		if rec.Code != http.StatusNotFound {
+			t.Fatalf("GET /theme/preview/button/extra = %d, want %d; body:\n%s", rec.Code, http.StatusNotFound, rec.Body.String())
+		}
+	})
+}
+
 // TestDocsRoutes is the Task 4 smoke test for the two standalone docs
 // pages: both render 200 with a distinctive marker, and each links to the
 // other via the sidebar's Docs section so the active-state wiring is
@@ -222,6 +785,15 @@ func TestDocsRoutes(t *testing.T) {
 		// paraphrase — proves the walkthrough shows real output.
 		if !strings.Contains(body, "gsxui initialized.") {
 			t.Errorf(`response missing real "gsxui initialized." CLI output; body:\n%s`, body)
+		}
+		for _, want := range []string{
+			"gsx init app --yes",
+			"vite: Tailwind CSS configured",
+			"npm install --save-dev tailwindcss@^4.3.3",
+		} {
+			if !strings.Contains(body, want) {
+				t.Errorf("response missing %q; body:\n%s", want, body)
+			}
 		}
 		if !strings.Contains(body, "adding: button card") {
 			t.Errorf(`response missing real "adding: button card" CLI output; body:\n%s`, body)
@@ -249,16 +821,18 @@ func TestDocsRoutes(t *testing.T) {
 		if !strings.Contains(body, "data-gsxui-dialog-trigger") {
 			t.Errorf("response missing data-attribute idiom example (data-gsxui-dialog-trigger); body:\n%s", body)
 		}
+		if !strings.Contains(body, `[<span class="ts-attribute">data-gsxui-slot-button</span>]`) {
+			t.Errorf("response missing exact slot presence selector; body:\n%s", body)
+		}
 		if !strings.Contains(body, "/docs/getting-started") {
 			t.Errorf("response missing sidebar link to /docs/getting-started; body:\n%s", body)
 		}
 	})
 }
 
-// TestThemePageRoute is the Task 5 smoke test for /theme: the page renders
-// (JS-less) with the token-editing controls and a default-themed preview
-// panel present in the markup — no JS assertions, since the live restyling
-// itself is web/theme.js's job, not the server's.
+// TestThemePageRoute is the theme editor's JS-less picker contract: catalog
+// choices arrive from the server and raw per-token editing never leaks into
+// the completed editor markup.
 func TestThemePageRoute(t *testing.T) {
 	handler := newTestHandler(t)
 
@@ -270,28 +844,92 @@ func TestThemePageRoute(t *testing.T) {
 		t.Fatalf("GET /theme = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
 	}
 	body := rec.Body.String()
-	if !strings.Contains(body, `data-theme-var="--primary"`) {
-		t.Errorf(`response missing data-theme-var="--primary"; body:\n%s`, body)
+	document, err := html.Parse(strings.NewReader(body))
+	if err != nil {
+		t.Fatalf("parse theme response: %v", err)
 	}
-	if !strings.Contains(body, `data-theme-preview`) {
-		t.Errorf(`response missing data-theme-preview; body:\n%s`, body)
+	if got, want := countHTMLNodes(document, "data-site-layout"), 1; got != want {
+		t.Errorf("theme page has %d site layout markers, want %d", got, want)
 	}
-	if !strings.Contains(body, `data-theme-tab="light"`) {
-		t.Errorf(`response missing data-theme-tab="light"; body:\n%s`, body)
+	if !strings.Contains(body, `data-site-layout="workspace"`) {
+		t.Errorf(`theme page missing data-site-layout="workspace"; body:\n%s`, body)
 	}
-	if !strings.Contains(body, `data-theme-import`) {
-		t.Errorf(`response missing data-theme-import; body:\n%s`, body)
+	for _, marker := range []string{
+		"data-theme-style-panel",
+		"data-theme-preview-panel",
+		"data-theme-controls-panel",
+	} {
+		if got, want := countHTMLNodes(document, marker), 1; got != want {
+			t.Errorf("theme page has %d %s regions, want %d", got, marker, want)
+		}
 	}
-	// Preview panel renders the representative component set: button
-	// variants, badges, a Card+Label+Input+Checkbox form row, and both
-	// Alert variants — all live gsxui components, not static markup.
-	if !strings.Contains(body, `data-slot="button"`) {
-		t.Errorf(`response missing data-slot="button" in preview; body:\n%s`, body)
+	for _, marker := range []string{
+		"data-site-docs-mobile-nav",
+		"data-site-docs-sidebar",
+		"data-site-docs-toc",
+		"data-site-docs-article",
+		"data-site-footer",
+	} {
+		if got := countHTMLNodes(document, marker); got != 0 {
+			t.Errorf("theme workspace has %d unexpected %s regions, want none", got, marker)
+		}
 	}
-	if !strings.Contains(body, `data-slot="checkbox"`) {
-		t.Errorf(`response missing data-slot="checkbox" in preview; body:\n%s`, body)
+	for _, picker := range []string{"baseColor", "theme", "radius"} {
+		if got := strings.Count(body, `data-theme-picker="`+picker+`"`); got != 1 {
+			t.Errorf("theme page has %d %s pickers, want 1; body:\n%s", got, picker, body)
+		}
 	}
-	if !strings.Contains(body, `role="alert"`) {
-		t.Errorf(`response missing role="alert" in preview; body:\n%s`, body)
+	for _, marker := range []string{
+		`data-theme-picker-trigger`,
+		`data-theme-choice`,
+		`data-theme-choice-swatch`,
+		`data-theme-selection-value`,
+		`data-theme-selection-swatch`,
+		`type="radio"`,
+		`aria-label=`,
+		`checked`,
+		`value="neutral"`,
+		`value="blue"`,
+		`value="medium"`,
+		`Neutral`,
+		`Blue`,
+		`Medium`,
+	} {
+		if !strings.Contains(body, marker) {
+			t.Errorf("response missing picker marker %q; body:\n%s", marker, body)
+		}
+	}
+	for _, forbidden := range []string{
+		`data-theme-var=`,
+		`data-theme-field="light.`,
+		`data-theme-field="dark.`,
+	} {
+		if strings.Contains(body, forbidden) {
+			t.Errorf("theme page still exposes raw token input %q; body:\n%s", forbidden, body)
+		}
+	}
+	if !strings.Contains(body, `data-theme-preview-frame`) {
+		t.Errorf(`response missing data-theme-preview-frame; body:\n%s`, body)
+	}
+	if got := strings.Count(body, `<iframe`); got != 1 {
+		t.Errorf("theme page has %d iframes, want 1; body:\n%s", got, body)
+	}
+	if !strings.Contains(body, `src="/theme/preview/button"`) {
+		t.Errorf(`response missing Button preview iframe route; body:\n%s`, body)
+	}
+	if !strings.Contains(body, `data-theme-style="maia"`) {
+		t.Errorf(`response missing Maia style picker; body:\n%s`, body)
+	}
+	if !strings.Contains(body, `data-theme-mode-tab="light"`) {
+		t.Errorf(`response missing data-theme-mode-tab="light"; body:\n%s`, body)
+	}
+	if !strings.Contains(body, `data-theme-import="json"`) {
+		t.Errorf(`response missing preset JSON import; body:\n%s`, body)
+	}
+	if !strings.Contains(body, `data-theme-import="css"`) {
+		t.Errorf(`response missing theme CSS import; body:\n%s`, body)
+	}
+	if !strings.Contains(body, `data-theme-command="init"`) {
+		t.Errorf(`response missing init command; body:\n%s`, body)
 	}
 }
