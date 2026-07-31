@@ -39,7 +39,7 @@ test("checked menu and combobox indicators follow semantic owner state", async (
     ["dropdown", "[data-gsxui-dropdown-checkbox-indicator]"],
     ["context", "[data-gsxui-contextmenu-radio-indicator]"],
     ["menubar", "[data-gsxui-menubar-checkbox-indicator]"],
-    ["combobox", "[data-gsxui-combobox-item-indicator]"],
+    ["combobox", "[data-gsxui-slot-combobox-item-indicator]"],
   ] as const;
 
   for (const [family, indicator] of cases) {

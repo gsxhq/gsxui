@@ -629,9 +629,9 @@ test("form reset restores the client-current month", async ({ page }) => {
 test("one form reset restores both calendar and combobox state", async ({ page }) => {
   await page.goto(FORM);
   const calendarInput = page.locator('input[name="date"]');
-  const comboInput = page.locator("[data-gsxui-combobox-input]");
-  const comboBridge = page.locator("[data-gsxui-combobox-bridge]");
-  const comboItem = page.locator('[data-gsxui-combobox-item][data-value="sveltekit"]');
+  const comboInput = page.locator("[data-gsxui-slot-combobox-input]");
+  const comboBridge = page.locator("[data-gsxui-slot-combobox-bridge]");
+  const comboItem = page.locator('[data-gsxui-slot-combobox-item][data-value="sveltekit"]');
 
   await dayFor(page, "2026-01-15").click();
   await comboInput.click();

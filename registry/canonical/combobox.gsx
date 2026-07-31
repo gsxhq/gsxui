@@ -91,11 +91,10 @@ import (
 // select's own entry rejects it: duration-150 is the popover family's
 // shared standard, supplied by the discrete-transition block below.
 component Combobox(name string, value string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-combobox class={ combobox.Root() } { attrs... } data-gsxui-slot-combobox>
+	<div class={ combobox.Root() } { attrs... } data-gsxui-slot-combobox>
 		{ children }
 		{ if name != "" {
 			<input
-				data-gsxui-combobox-bridge
 				aria-hidden="true"
 				tabindex="-1"
 				type="text"
@@ -158,9 +157,8 @@ component ComboboxInput(placeholder string, showTrigger bool, showClear bool, di
 			wrapperAttrs = gsx.Attrs{{Key: "class", Value: class}}
 		}
 	}}
-	<InputGroup data-gsxui-combobox-input-group class={ combobox.InputGroup() } { wrapperAttrs... } data-gsxui-slot-combobox-input-group>
+	<InputGroup class={ combobox.InputGroup() } { wrapperAttrs... } data-gsxui-slot-combobox-input-group>
 		<InputGroupInput
-			data-gsxui-combobox-input
 			type="text"
 			role="combobox"
 			aria-expanded="false"
@@ -178,7 +176,6 @@ component ComboboxInput(placeholder string, showTrigger bool, showClear bool, di
 				<InputGroupButton
 					size="icon-xs"
 					variant="ghost"
-					data-gsxui-combobox-trigger
 					disabled={disabled}
 					class={ combobox.Trigger() }
 					data-gsxui-slot-combobox-trigger
@@ -203,7 +200,6 @@ component ComboboxInput(placeholder string, showTrigger bool, showClear bool, di
 component ComboboxTrigger(attrs gsx.Attrs) {
 	<button
 		type="button"
-		data-gsxui-combobox-trigger
 		class={ combobox.Trigger() }
 		{ attrs... }
 		data-gsxui-slot-combobox-trigger
@@ -235,7 +231,6 @@ component ComboboxClear(attrs gsx.Attrs) {
 	<InputGroupButton
 		variant="ghost"
 		size="icon-xs"
-		data-gsxui-combobox-clear
 		class={ combobox.Clear() }
 		{ attrs... }
 		data-gsxui-slot-combobox-clear
@@ -256,7 +251,6 @@ component ComboboxClear(attrs gsx.Attrs) {
 // never had a border on this part (source map ## combobox §1).
 component ComboboxContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-gsxui-combobox-content
 		popover="auto"
 		data-state="closed"
 		data-side="bottom"
@@ -291,7 +285,6 @@ component ComboboxContent(children gsx.Node, attrs gsx.Attrs) {
 // max-h-72 + overflow-hidden with no way to scroll to it.
 component ComboboxList(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-gsxui-combobox-list
 		role="listbox"
 		tabindex="-1"
 		class={ combobox.List() }
@@ -316,7 +309,6 @@ component ComboboxList(children gsx.Node, attrs gsx.Attrs) {
 // stops (command.js's model): no tabindex is stamped at all.
 component ComboboxItem(value string, selected bool, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-gsxui-combobox-item
 		role="option"
 		data-value={value}
 		{ if selected {
@@ -330,7 +322,7 @@ component ComboboxItem(value string, selected bool, children gsx.Node, attrs gsx
 		data-gsxui-slot-combobox-item
 	>
 		{ children }
-		<span data-gsxui-combobox-item-indicator class={ combobox.ItemIndicator() } data-gsxui-slot-combobox-item-indicator>
+		<span class={ combobox.ItemIndicator() } data-gsxui-slot-combobox-item-indicator>
 			<icon.Check/>
 		</span>
 	</div>
@@ -343,14 +335,14 @@ component ComboboxItem(value string, selected bool, children gsx.Node, attrs gsx
 // aria-labelledby to the contained ComboboxLabel's generated id at init,
 // mirroring select.js's own group-labelling MECHANISM exactly.
 component ComboboxGroup(children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-combobox-group role="group" { attrs... } data-gsxui-slot-combobox-group>{ children }</div>
+	<div role="group" { attrs... } data-gsxui-slot-combobox-group>{ children }</div>
 }
 
 // ComboboxLabel is the group heading. pointer-coarse: variants are a real
 // new (non-metric) addition nova's own CSS carries for this part — ported
 // verbatim, not a retarget.
 component ComboboxLabel(children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-combobox-label class={ combobox.Label() } { attrs... } data-gsxui-slot-combobox-label>{ children }</div>
+	<div class={ combobox.Label() } { attrs... } data-gsxui-slot-combobox-label>{ children }</div>
 }
 
 // ComboboxEmpty is server-rendered hidden; combobox.js reveals it via the
@@ -358,11 +350,11 @@ component ComboboxLabel(children gsx.Node, attrs gsx.Attrs) {
 // zero visible items — see ComboboxContent's own doc comment for exactly
 // which element combobox.js stamps data-empty on.
 component ComboboxEmpty(children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-combobox-empty class={ combobox.Empty() } { attrs... } data-gsxui-slot-combobox-empty>{ children }</div>
+	<div class={ combobox.Empty() } { attrs... } data-gsxui-slot-combobox-empty>{ children }</div>
 }
 
 // ComboboxSeparator divides groups. aria-hidden, matching ## select's own
 // SelectSeparator (a decorative rule, not a role="separator").
 component ComboboxSeparator(attrs gsx.Attrs) {
-	<div data-gsxui-combobox-separator aria-hidden="true" class={ combobox.Separator() } { attrs... } data-gsxui-slot-combobox-separator></div>
+	<div aria-hidden="true" class={ combobox.Separator() } { attrs... } data-gsxui-slot-combobox-separator></div>
 }
