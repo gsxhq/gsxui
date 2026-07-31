@@ -34,18 +34,17 @@ import (
 )
 
 // Select is the listbox root: a layout-neutral div carrying the
-// data-gsxui-select hook select.js scopes every trigger/content lookup to
-// (closest("[data-gsxui-select]"), the same proximity wiring as dropdown's
-// data-gsxui-dropdown). When name != "" it also renders the hidden native
+// data-gsxui-slot-select hook select.js scopes every trigger/content lookup to
+// (closest("[data-gsxui-slot-select]"), the same proximity wiring as dropdown's
+// data-gsxui-slot-dropdown-menu). When name != "" it also renders the hidden native
 // <select> form bridge (see the file header). required/disabled/form mirror
 // ui.NativeSelect's own form params so the two components share an
 // option-authoring shape.
 component Select(name string, required bool, disabled bool, form string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-select class={ "contents" } { attrs... } data-gsxui-slot-select>
+	<div class={ "contents" } { attrs... } data-gsxui-slot-select>
 		{ children }
 		{ if name != "" {
 			<select
-				data-gsxui-select-bridge
 				aria-hidden="true"
 				tabindex="-1"
 				name={name}
@@ -74,7 +73,6 @@ component Select(name string, required bool, disabled bool, form string, childre
 component SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) {
 	<button
 		type="button"
-		data-gsxui-select-trigger
 		role="combobox"
 		aria-expanded="false"
 		aria-autocomplete="none"
@@ -97,7 +95,7 @@ component SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) {
 // selected. select.js overwrites its text content on selection. The default
 // stylesheet applies pointer-events:none.
 component SelectValue(placeholder string, attrs gsx.Attrs) {
-	<span data-gsxui-select-value class={ "pointer-events-none [[data-gsxui-slot-select-trigger]>&]:line-clamp-1 [[data-gsxui-slot-select-trigger]>&]:flex [[data-gsxui-slot-select-trigger]>&]:items-center [[data-gsxui-slot-select-trigger]>&]:gap-1.5" } { attrs... } data-gsxui-slot-select-value>{ placeholder }</span>
+	<span class={ "pointer-events-none [[data-gsxui-slot-select-trigger]>&]:line-clamp-1 [[data-gsxui-slot-select-trigger]>&]:flex [[data-gsxui-slot-select-trigger]>&]:items-center [[data-gsxui-slot-select-trigger]>&]:gap-1.5" } { attrs... } data-gsxui-slot-select-value>{ placeholder }</span>
 }
 
 // SelectContent is the popover listbox. It rides the exact dropdown-menu.js
@@ -111,7 +109,6 @@ component SelectValue(placeholder string, attrs gsx.Attrs) {
 // ledger).
 component SelectContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-gsxui-select-content
 		popover="auto"
 		role="listbox"
 		tabindex="-1"
@@ -133,18 +130,13 @@ component SelectContent(children gsx.Node, attrs gsx.Attrs) {
 // so this ports as a real role="group" div. select.js wires aria-labelledby
 // to the contained SelectLabel's generated id at init.
 component SelectGroup(children gsx.Node, attrs gsx.Attrs) {
-	<div data-gsxui-select-group role="group" { attrs... } data-gsxui-slot-select-group>{ children }</div>
+	<div role="group" { attrs... } data-gsxui-slot-select-group>{ children }</div>
 }
 
 // SelectLabel is the group heading (select.js stamps its id and the group's
 // aria-labelledby at init).
 component SelectLabel(children gsx.Node, attrs gsx.Attrs) {
-	<div
-		data-gsxui-select-label
-		class={ "px-1.5 py-1 text-xs text-muted-foreground" }
-		{ attrs... }
-		data-gsxui-slot-select-label
-	>
+	<div class={ "px-1.5 py-1 text-xs text-muted-foreground" } { attrs... } data-gsxui-slot-select-label>
 		{ children }
 	</div>
 }
@@ -161,7 +153,6 @@ component SelectLabel(children gsx.Node, attrs gsx.Attrs) {
 // items are always tabindex="-1"; select.js moves real DOM focus among them.
 component SelectItem(value string, selected bool, disabled bool, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		data-gsxui-select-item
 		role="option"
 		data-value={value}
 		{ if selected {
@@ -187,7 +178,7 @@ component SelectItem(value string, selected bool, disabled bool, children gsx.No
 		>
 			<icon.Check/>
 		</span>
-		<span class={ "flex items-center gap-2" } data-gsxui-select-item-text data-gsxui-slot-select-item-text>{ children }</span>
+		<span class={ "flex items-center gap-2" } data-gsxui-slot-select-item-text>{ children }</span>
 	</div>
 }
 

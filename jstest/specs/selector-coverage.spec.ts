@@ -69,8 +69,8 @@ test("every recorded selector parses", async ({ page, registrations }) => {
  *
  * Without this, the disjointness invariant degrades toward vacuity through
  * exactly the drift the harness exists to catch: if dropdown-menu.gsx starts
- * emitting data-gsxui-dropdown-menuitem while ui/dropdown-menu.js still binds
- * [data-gsxui-dropdown-item], dropdown is dead in production, every
+ * emitting data-gsxui-slot-dropdown-menu-menuitem while ui/dropdown-menu.js still binds
+ * [data-gsxui-slot-dropdown-menu-item], dropdown is dead in production, every
  * registration matches nothing, and the invariant just gets quieter — all
  * 103 tests stay green. A selector that matches nothing is a handler that
  * never runs.
