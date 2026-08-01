@@ -66,9 +66,9 @@ component (rt Rtl) Page() {
 					</li>
 					<li>
 						<strong>Mirrored keyboard semantics.</strong> Roving-focus and open/close arrow keys in dropdown-menu,
-						context-menu, menubar, tabs, toggle-group, carousel, resizable, and calendar follow the WAI-ARIA convention of
-						mirroring by meaning, not by physical key — ArrowLeft still means "toward the next item" under RTL the way
-						ArrowRight does under LTR, and ArrowLeft still opens a submenu the way ArrowRight does under LTR.
+						context-menu, menubar, tabs, toggle-group, carousel, resizable, and calendar follow the WAI-ARIA convention
+						of mirroring by meaning, not by physical key — ArrowLeft still means "toward the next item" under RTL the
+						way ArrowRight does under LTR, and ArrowLeft still opens a submenu the way ArrowRight does under LTR.
 					</li>
 				</ul>
 				<p>
