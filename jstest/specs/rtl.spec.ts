@@ -159,4 +159,58 @@ test.describe("rtl", () => {
       .toBeLessThan(1);
     await expect(root).toHaveAttribute("data-current-index", "0");
   });
+
+  test("resizable: ArrowLeft grows the first (inline-start) panel under RTL", async ({
+    page,
+  }) => {
+    await page.goto("/x/resizable/basic");
+    await setRTL(page);
+
+    const group = page.locator("[data-gsxui-slot-resizable-panel-group]").first();
+    const panels = group.locator(":scope > [data-gsxui-slot-resizable-panel]");
+    const handle = group.locator(":scope > [data-gsxui-slot-resizable-handle]");
+    const first = panels.first();
+
+    await handle.focus();
+    // Native-direction convention: keys mirror under RTL, so the
+    // visually-left ArrowLeft key still GROWS the first (inline-start,
+    // visually-right-under-RTL) panel, same as ArrowRight does under LTR.
+    await page.keyboard.press("ArrowLeft");
+    await expect
+      .poll(() => first.evaluate((el: HTMLElement) => parseFloat(el.style.flexGrow)))
+      .toBeGreaterThan(50);
+
+    await page.keyboard.press("ArrowRight");
+    await expect
+      .poll(() => first.evaluate((el: HTMLElement) => parseFloat(el.style.flexGrow)))
+      .toBeCloseTo(50, 0);
+  });
+
+  test("resizable: dragging the handle toward the viewport-left grows the first panel under RTL", async ({
+    page,
+  }) => {
+    await page.goto("/x/resizable/basic");
+    await setRTL(page);
+
+    const group = page.locator("[data-gsxui-slot-resizable-panel-group]").first();
+    const panels = group.locator(":scope > [data-gsxui-slot-resizable-panel]");
+    const handle = group.locator(":scope > [data-gsxui-slot-resizable-handle]");
+    const first = panels.first();
+
+    const box = await handle.boundingBox();
+    if (!box) throw new Error("resizable handle has no bounding box");
+    const startX = box.x + box.width / 2;
+    const startY = box.y + box.height / 2;
+
+    await page.mouse.move(startX, startY);
+    await page.mouse.down();
+    // Dragging toward the viewport-left (smaller clientX) must GROW the
+    // first (inline-start, visually-right-under-RTL) panel.
+    await page.mouse.move(startX - 50, startY);
+    await page.mouse.up();
+
+    await expect
+      .poll(() => first.evaluate((el: HTMLElement) => parseFloat(el.style.flexGrow)))
+      .toBeGreaterThan(50);
+  });
 });

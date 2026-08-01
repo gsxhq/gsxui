@@ -19,7 +19,9 @@
     @apply w-full cursor-pointer bg-transparent;
     @apply disabled:cursor-not-allowed disabled:opacity-50;
     @apply [&::-webkit-slider-runnable-track]:h-1 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-[linear-gradient(to_right,var(--primary)_0%,var(--primary)_var(--fill,0%),var(--muted)_var(--fill,0%),var(--muted)_100%)];
+    @apply rtl:[&::-webkit-slider-runnable-track]:bg-[linear-gradient(to_left,var(--primary)_0%,var(--primary)_var(--fill,0%),var(--muted)_var(--fill,0%),var(--muted)_100%)];
     @apply [&::-moz-range-track]:h-1 [&::-moz-range-track]:rounded-full [&::-moz-range-track]:bg-[linear-gradient(to_right,var(--primary)_0%,var(--primary)_var(--fill,0%),var(--muted)_var(--fill,0%),var(--muted)_100%)];
+    @apply rtl:[&::-moz-range-track]:bg-[linear-gradient(to_left,var(--primary)_0%,var(--primary)_var(--fill,0%),var(--muted)_var(--fill,0%),var(--muted)_100%)];
     @apply [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:size-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-primary [&::-webkit-slider-thumb]:bg-contrast [&::-webkit-slider-thumb]:-mt-1 [&::-webkit-slider-thumb]:transition-shadow [&::-webkit-slider-thumb]:duration-150;
     @apply [&::-moz-range-thumb]:size-3 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border [&::-moz-range-thumb]:border-primary [&::-moz-range-thumb]:bg-contrast [&::-moz-range-thumb]:transition-shadow [&::-moz-range-thumb]:duration-150;
     @apply hover:[&::-webkit-slider-thumb]:shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_50%,transparent)];
