@@ -99,7 +99,9 @@ Computed style respects both `dir` attributes and CSS `direction`.
 Playwright specs asserting real geometry under `dir="rtl"`:
 - dropdown content aligns to the trigger's logical start (visually right);
 - submenu opens to the left of its parent;
-- sheet opens from the correct logical side;
+- sheet's `side="left|right"` stays PHYSICAL under RTL (shadcn's data-side
+  contract): a `side="left"` sheet opens from the viewport's left in both
+  directions, while its interior spacing/text stays logical;
 - slider fills right-to-left; pointer/keyboard values mirror;
 - carousel advances in the correct direction.
 
