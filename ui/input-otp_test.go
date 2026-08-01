@@ -15,7 +15,7 @@ func TestInputOTPPinned(t *testing.T) {
 	// caller's slot markup. No maxlength/pattern/name here — see
 	// TestInputOTPAttrsFallThrough for those, all via attrs.
 	got := render(t, ui.InputOTP(gsx.Raw("x"), nil))
-	want := `<div class="flex items-center gap-2 has-[[data-gsxui-slot-input-otp-input]:disabled]:opacity-50" data-gsxui-slot-input-otp><input inputmode="numeric" autocomplete="one-time-code" class="cursor-text disabled:cursor-not-allowed" data-gsxui-slot-input-otp-input>x</div>`
+	want := `<div class="flex items-center gap-2 has-[[data-gsxui-slot-input-otp-input]:disabled]:opacity-50" dir="ltr" data-gsxui-slot-input-otp><input inputmode="numeric" autocomplete="one-time-code" class="cursor-text disabled:cursor-not-allowed" data-gsxui-slot-input-otp-input>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -56,7 +56,7 @@ func TestInputOTPGroupPinned(t *testing.T) {
 	// aria-invalid styling) — adopted per the 2026-07-24 controls source
 	// map's `## input-otp` nova deltas table.
 	got := render(t, ui.InputOTPGroup(gsx.Raw("x"), nil))
-	want := `<div class="flex items-center rounded-lg has-[[aria-invalid=true]]:border-destructive has-[[aria-invalid=true]]:ring-3 has-[[aria-invalid=true]]:ring-destructive/20 dark:has-[[aria-invalid=true]]:ring-destructive/40" data-gsxui-slot-input-otp-group>x</div>`
+	want := `<div class="flex items-center rounded-lg has-[[aria-invalid=true]]:border-destructive has-[[aria-invalid=true]]:ring-3 has-[[aria-invalid=true]]:ring-destructive/20 dark:has-[[aria-invalid=true]]:ring-destructive/40" dir="ltr" data-gsxui-slot-input-otp-group>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

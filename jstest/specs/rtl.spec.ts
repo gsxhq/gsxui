@@ -280,4 +280,27 @@ test.describe("rtl", () => {
     // it at.
     expect(closeBox.x + closeBox.width / 2).toBeLessThan(contentMidpoint);
   });
+
+  test("input-otp: digit slot order stays LTR under RTL", async ({ page }) => {
+    await page.goto("/x/input-otp/basic");
+    await setRTL(page);
+
+    const slots = page.locator("[data-gsxui-slot-input-otp-slot]");
+    const first = slots.first();
+    const others = await slots.all();
+
+    const firstBox = await first.boundingBox();
+    if (!firstBox) throw new Error("first OTP slot has no bounding box");
+
+    // OTP codes are numeric tokens, not natural-language RTL text — the
+    // slot group forces dir="ltr" (ui/input-otp.gsx's InputOTPGroup) so the
+    // first digit's slot stays the leftmost slot even inside a dir="rtl"
+    // document, instead of migrating to the visual right the way RTL prose
+    // would.
+    for (const other of others.slice(1)) {
+      const box = await other.boundingBox();
+      if (!box) throw new Error("OTP slot has no bounding box");
+      expect(firstBox.x).toBeLessThan(box.x);
+    }
+  });
 });

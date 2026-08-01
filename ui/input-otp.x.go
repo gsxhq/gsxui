@@ -99,18 +99,30 @@ import (
 // novel color introduction. InputOTPSeparator carries nova's
 // [&_svg:not([class*='size-'])]:size-4 safeguard (likely a no-op since
 // icon.Minus already defaults to size-4, kept regardless per the map).
+// RTL (dir="ltr" forced, gsxui addition — see InputOTPGroup's own doc
+// comment below for the full rationale): this root div is the actual flex
+// container ordering multiple InputOTPGroup/InputOTPSeparator children
+// left-to-right — a caller with a 3-group, separator-split layout (e.g.
+// site/examples/inputotp/separator.gsx) needs THIS element pinned, not
+// just each inner InputOTPGroup, or the groups themselves would still
+// reorder right-to-left under an RTL ancestor even though each group's own
+// digits stay internally LTR. No attrs spread here (attrs already targets
+// the real input below, matching this file's existing convention), so
+// there's no override hook for this one — a caller wanting non-numeric,
+// direction-sensitive slot content should compose the parts directly
+// instead of through InputOTP's root.
 
-//line input-otp.gsx:95:1
+//line input-otp.gsx:107:1
 func InputOTP(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line input-otp.gsx:96:2
+//line input-otp.gsx:108:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex items-center gap-2 has-[[data-gsxui-slot-input-otp-input]:disabled]:opacity-50"))
-		_gsxgw.S("\"")
+		_gsxgw.S("\" dir=\"ltr\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-input-otp", true)
 		_gsxgw.S(">")
-//line input-otp.gsx:100:3
+//line input-otp.gsx:113:3
 		_gsxgw.S("<input")
 		if !attrs.Has("inputmode") {
 			_gsxgw.S(" inputmode=\"numeric\"")
@@ -125,48 +137,66 @@ func InputOTP(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "input", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-input-otp-input"})
 		_gsxgw.BoolAttr("data-gsxui-slot-input-otp-input", true)
 		_gsxgw.S(">")
-//line input-otp.gsx:107:3
+//line input-otp.gsx:120:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line input-otp.gsx:111:1
+//line input-otp.gsx:124:1
 // InputOTPGroup is an unchanged plain flex wrapper — zero behavior of its
 // own, straight port — plus nova's group-level invalid-ring adoption (see
 // InputOTP's own doc comment).
+//
+// RTL (dir="ltr" forced, gsxui addition — shadcn's own input-otp docs/RTL
+// guide have no component-specific guidance here, this is our own call):
+// OTP codes are numeric-string tokens (digit order is semantically fixed —
+// "123456" must always read left-to-right, entered/displayed in that
+// order, exactly like a credit-card number or phone number embedded in
+// RTL prose) not natural-language RTL text, so the slot row is pinned
+// dir="ltr" regardless of the surrounding document direction. Authored
+// before { attrs... } so a caller can still override it (matching this
+// file's own inputmode/autocomplete convention on InputOTP above) for the
+// rare non-numeric-pattern use case. Task 1 already converted this
+// element's slot children (InputOTPSlot's border-e/first:rounded-s-lg/
+// first:border-s/last:rounded-e-lg) to logical properties in anticipation
+// of this — with dir="ltr" forced here, logical resolves identically to
+// physical in both LTR and RTL documents, so there is no visual change.
 
-//line input-otp.gsx:114:1
+//line input-otp.gsx:142:1
 func InputOTPGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line input-otp.gsx:115:2
+//line input-otp.gsx:143:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex items-center rounded-lg has-[[aria-invalid=true]]:border-destructive has-[[aria-invalid=true]]:ring-3 has-[[aria-invalid=true]]:ring-destructive/20 dark:has-[[aria-invalid=true]]:ring-destructive/40"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
+		if !attrs.Has("dir") {
+			_gsxgw.S(" dir=\"ltr\"")
+		}
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-input-otp-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-input-otp-group", true)
 		_gsxgw.S(">")
-//line input-otp.gsx:122:3
+//line input-otp.gsx:151:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line input-otp.gsx:126:1
+//line input-otp.gsx:155:1
 // InputOTPSlot renders EMPTY at server-render time (see InputOTP's own GAP
 // doc comment) — no index param (see the ADAPT doc comment above),
 // no children: ui/input-otp.js owns this element's entire text/caret
 // content after mount.
 
-//line input-otp.gsx:130:1
+//line input-otp.gsx:159:1
 func InputOTPSlot(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line input-otp.gsx:131:2
+//line input-otp.gsx:160:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-active") {
 			_gsxgw.S(" data-active=\"false\"")
@@ -182,14 +212,14 @@ func InputOTPSlot(attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line input-otp.gsx:141:1
+//line input-otp.gsx:170:1
 // InputOTPSeparator: icon.Minus, static, unchanged from shadcn.
 
-//line input-otp.gsx:142:1
+//line input-otp.gsx:171:1
 func InputOTPSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line input-otp.gsx:143:2
+//line input-otp.gsx:172:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"separator\"")
@@ -201,7 +231,7 @@ func InputOTPSeparator(attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-input-otp-separator"})
 		_gsxgw.BoolAttr("data-gsxui-slot-input-otp-separator", true)
 		_gsxgw.S(">")
-//line input-otp.gsx:149:3
+//line input-otp.gsx:178:3
 		_gsxgw.Node(ctx, icon.Minus())
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
