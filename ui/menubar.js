@@ -40,7 +40,7 @@
 // pointerover/ArrowRight/click, unlike hover-card's own delayed open.
 //
 // toggle doesn't bubble — capture.
-import { on, emit, position } from "./gsxui.js";
+import { on, emit, position, isRTL } from "./gsxui.js";
 
 // contentOf resolves a trigger (or anything inside its own MenubarMenu) to
 // THAT menu's own content — scoped by data-gsxui-slot-menubar-menu, the
@@ -233,7 +233,13 @@ on("keydown", "[data-gsxui-slot-menubar-trigger]", (e, trigger) => {
   if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
   const bar = trigger.closest("[data-gsxui-slot-menubar]");
   if (!bar) return;
-  const dir = { ArrowLeft: -1, ArrowRight: 1 }[e.key];
+  // RTL negates roving direction — ArrowLeft/ArrowRight are read against the
+  // bar's resolved visual direction (isRTL, see gsxui.js), same "into the
+  // menu"/"out of the menu" mirror the submenu open/close keys below apply.
+  const rtl = isRTL(bar);
+  const dir = rtl
+    ? { ArrowLeft: 1, ArrowRight: -1 }[e.key]
+    : { ArrowLeft: -1, ArrowRight: 1 }[e.key];
   if (dir) {
     e.preventDefault();
     const triggers = enabledTriggersOf(bar);
@@ -318,7 +324,14 @@ on("keydown", CONTENT_SELECTOR, (e, content) => {
   // WAI-ARIA menu navigation keys operating on already-open menu content,
   // not the bar's own roving-tabindex entry point a browser/OS shortcut
   // could plausibly intercept).
-  if (e.key === "ArrowRight") {
+  // RTL flips "into the menu" / "out of the menu" — mirror image of LTR's
+  // ArrowRight-opens/ArrowLeft-closes (WAI-ARIA menu convention read against
+  // resolved direction, per isRTL — see gsxui.js). The "switch to next/
+  // previous top-level menu" meaning rides the same key: openKey (the
+  // submenu-opening key) also means "next menu," closeKey means "previous."
+  const openKey = isRTL(content) ? "ArrowLeft" : "ArrowRight";
+  const closeKey = isRTL(content) ? "ArrowRight" : "ArrowLeft";
+  if (e.key === openKey) {
     const subTrigger = e.target.closest(
       "[data-gsxui-slot-menubar-sub-trigger]",
     );
@@ -335,11 +348,11 @@ on("keydown", CONTENT_SELECTOR, (e, content) => {
     if (trigger) switchBarMenu(trigger, 1);
     return;
   }
-  // ArrowLeft: closing the CURRENT submenu and returning focus to its own
+  // closeKey: closing the CURRENT submenu and returning focus to its own
   // sub-trigger takes priority when content IS a sub-content (unchanged
-  // meaning) — otherwise (top-level content), it's the mirror of
-  // ArrowRight above: switch to the PREVIOUS top-level menu in the bar.
-  if (e.key === "ArrowLeft") {
+  // meaning) — otherwise (top-level content), it's the mirror of openKey
+  // above: switch to the PREVIOUS top-level menu in the bar.
+  if (e.key === closeKey) {
     if (content.matches("[data-gsxui-slot-menubar-sub-content]")) {
       e.preventDefault();
       const trigger = subTriggerOf(content);

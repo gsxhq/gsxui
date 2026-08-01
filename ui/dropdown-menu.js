@@ -14,7 +14,7 @@
 // popover closes its nested (DOM-descendant) auto popovers as part of the
 // same platform stack-unwind, so a submenu never needs to be closed by hand
 // when its parent menu closes.
-import { on, emit, position } from "./gsxui.js";
+import { on, emit, position, isRTL } from "./gsxui.js";
 
 const contentOf = (el) =>
   el
@@ -150,7 +150,12 @@ on("keydown", CONTENT_SELECTOR, (e, content) => {
     item.click();
     return;
   }
-  if (e.key === "ArrowRight") {
+  // RTL flips "into the menu" / "out of the menu" — mirror image of LTR's
+  // ArrowRight-opens/ArrowLeft-closes (WAI-ARIA menu convention read against
+  // resolved direction, per isRTL — see gsxui.js).
+  const openKey = isRTL(content) ? "ArrowLeft" : "ArrowRight";
+  const closeKey = isRTL(content) ? "ArrowRight" : "ArrowLeft";
+  if (e.key === openKey) {
     const trigger = e.target.closest(
       "[data-gsxui-slot-dropdown-menu-sub-trigger]",
     );
@@ -160,7 +165,7 @@ on("keydown", CONTENT_SELECTOR, (e, content) => {
     return;
   }
   if (
-    e.key === "ArrowLeft" &&
+    e.key === closeKey &&
     content.matches("[data-gsxui-slot-dropdown-menu-sub-content]")
   ) {
     e.preventDefault();
