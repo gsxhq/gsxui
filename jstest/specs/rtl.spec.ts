@@ -106,4 +106,46 @@ test.describe("rtl", () => {
     await expect(subContent).toHaveAttribute("data-state", "closed");
     await expect(subTrigger).toBeFocused();
   });
+
+  test("tabs: roving focus negates direction under RTL", async ({ page }) => {
+    await page.goto("/x/tabs/basic");
+    await setRTL(page);
+
+    const triggers = page.locator("[data-gsxui-slot-tabs-trigger]");
+    const first = triggers.nth(0);
+    const second = triggers.nth(1);
+
+    await first.focus();
+    // RTL negates roving direction: visually-left ArrowLeft moves focus
+    // FORWARD to the second tab.
+    await page.keyboard.press("ArrowLeft");
+    await expect(second).toBeFocused();
+    await page.keyboard.press("ArrowRight");
+    await expect(first).toBeFocused();
+  });
+
+  test("carousel: next/prev scroll math is mirrored under RTL", async ({
+    page,
+  }) => {
+    await page.goto("/x/carousel/basic");
+    await setRTL(page);
+
+    const root = page.locator("[data-gsxui-slot-carousel]");
+    const viewport = page.locator("[data-gsxui-slot-carousel-content]");
+
+    await expect(root).toHaveAttribute("data-current-index", "0");
+    await page.locator("[data-gsxui-slot-carousel-next]").click();
+    // Under RTL, scrollLeft is 0-or-negative (CSSOM spec) — "next" must move
+    // it further from 0, not toward it.
+    await expect
+      .poll(() => viewport.evaluate((el) => Math.abs(el.scrollLeft)))
+      .toBeGreaterThan(0);
+    await expect(root).toHaveAttribute("data-current-index", "1");
+
+    await page.locator("[data-gsxui-slot-carousel-previous]").click();
+    await expect
+      .poll(() => viewport.evaluate((el) => Math.abs(el.scrollLeft)))
+      .toBeLessThan(1);
+    await expect(root).toHaveAttribute("data-current-index", "0");
+  });
 });

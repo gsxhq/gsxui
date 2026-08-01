@@ -9,7 +9,7 @@
 // canScrollPrev/canScrollNext/selectedScrollSnap/scrollSnapList/on/off plus
 // its whole plugin-extension mechanism collapse to {scrollTo,next,prev} plus
 // the gsxui:carousel-select CustomEvent).
-import { on, emit } from "./gsxui.js";
+import { on, emit, isRTL } from "./gsxui.js";
 
 const rootOf = (el) => el.closest("[data-gsxui-slot-carousel]");
 const viewportOf = (root) => root.querySelector("[data-gsxui-slot-carousel-content]");
@@ -108,7 +108,7 @@ function updateDisabled(root) {
   const viewport = viewportOf(root);
   if (!viewport) return;
   const vertical = isVertical(root);
-  const pos = vertical ? viewport.scrollTop : viewport.scrollLeft;
+  const pos = vertical ? viewport.scrollTop : Math.abs(viewport.scrollLeft);
   const max = vertical
     ? viewport.scrollHeight - viewport.clientHeight
     : viewport.scrollWidth - viewport.clientWidth;
@@ -163,7 +163,7 @@ function initAutoplay(root) {
       const viewport = viewportOf(root);
       if (!viewport) return stop();
       const vertical = isVertical(root);
-      const pos = vertical ? viewport.scrollTop : viewport.scrollLeft;
+      const pos = vertical ? viewport.scrollTop : Math.abs(viewport.scrollLeft);
       const max = vertical
         ? viewport.scrollHeight - viewport.clientHeight
         : viewport.scrollWidth - viewport.clientWidth;
@@ -194,8 +194,9 @@ on("click", "[data-gsxui-slot-carousel-next]", (_e, btn) => {
 // scrollNext() unconditionally, never ArrowUp/ArrowDown, regardless of
 // axis).
 on("keydown", "[data-gsxui-slot-carousel]", (e, root) => {
-  const dir = { ArrowLeft: -1, ArrowRight: 1 }[e.key];
+  let dir = { ArrowLeft: -1, ArrowRight: 1 }[e.key];
   if (!dir) return;
+  if (isRTL(root)) dir = -dir;
   e.preventDefault();
   scrollByItems(root, dir);
 });
