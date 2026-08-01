@@ -81,6 +81,30 @@ test("foundation keeps Carousel navigation geometrically functional", async ({ p
   await expect(root).toHaveAttribute("data-current-index", "1");
 });
 
+test("vertical Carousel items grow to their content like shadcn's", async ({ page }) => {
+  await page.goto("/x/carousel/vertical");
+  const items = page.locator("[data-gsxui-slot-carousel-item]");
+  await expect(items).toHaveCount(5);
+  // shadcn's CarouselItem carries min-w-0 only — never min-height: 0 — so a
+  // vertical item whose basis is shorter than its card grows to min-content
+  // instead of letting neighbouring cards overlap (the flexbox min-height:auto
+  // default). Compare each item box against its own content box.
+  const overlaps = await items.evaluateAll((els) =>
+    els.map((el) => {
+      const content = el.firstElementChild!;
+      return {
+        itemHeight: el.getBoundingClientRect().height,
+        contentHeight: content.getBoundingClientRect().height,
+        minHeight: getComputedStyle(el).minHeight,
+      };
+    }),
+  );
+  for (const box of overlaps) {
+    expect(box.minHeight).toBe("auto");
+    expect(box.itemHeight).toBeGreaterThanOrEqual(box.contentHeight);
+  }
+});
+
 for (const width of [640, 900]) {
   test(`foundation keeps Resizable keyboard and pointer geometry at ${width}px`, async ({
     page,

@@ -97,9 +97,6 @@
     flex: 0 0 100%;
     scroll-snap-align: start;
   }
-  :where([data-gsxui-slot-carousel-item][data-orientation="vertical"]) {
-    min-height: 0;
-  }
   :where([data-gsxui-slot-carousel-item]:last-child) {
     scroll-snap-align: end;
   }

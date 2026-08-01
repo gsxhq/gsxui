@@ -186,14 +186,25 @@ test("registered vertical Carousel covers every oriented style slot", async ({ p
     .poll(() => track.evaluate((el) => getComputedStyle(el).flexDirection))
     .toBe("column");
 
+  // Items declare basis-1/2 of the 200px track but, like shadcn's (min-w-0
+  // only, min-height stays auto), grow to min-content when the card is
+  // taller than the 100px basis instead of letting cards overlap.
   const itemGeometry = await page
     .locator("[data-gsxui-slot-carousel-item]")
     .evaluateAll((items) =>
-      items.slice(0, 2).map((item) => item.getBoundingClientRect().height),
+      items.slice(0, 2).map((item) => ({
+        basis: getComputedStyle(item).flexBasis,
+        height: item.getBoundingClientRect().height,
+        contentHeight: item.firstElementChild!.getBoundingClientRect().height,
+        paddingTop: Number.parseFloat(getComputedStyle(item).paddingTop),
+      })),
     );
   expect(itemGeometry).toHaveLength(2);
-  expect(itemGeometry[0]).toBeCloseTo(100, 0);
-  expect(itemGeometry[1]).toBeCloseTo(100, 0);
+  for (const item of itemGeometry) {
+    expect(item.basis).toBe("50%");
+    expect(item.height).toBeCloseTo(item.contentHeight + item.paddingTop, 0);
+    expect(item.height).toBeGreaterThanOrEqual(100);
+  }
 });
 
 test("Resizable consumes dynamic flex values and remains keyboard operable", async ({ page }) => {
