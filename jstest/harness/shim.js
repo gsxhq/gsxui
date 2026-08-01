@@ -59,13 +59,19 @@ function callerModule() {
   return "unknown";
 }
 
-// position/release are the real implementations, copied verbatim from
+// position/release/isRTL are the real implementations, copied verbatim from
 // ui/gsxui.js — positioning is behavior under test, not delegation, so the
 // recording layer must not distort it. Keep in lockstep with ui/gsxui.js
 // ("exact export surface" above): a module importing a name the shim lacks
 // fails to evaluate, and with it every registration this file exists to
 // record (the 127-test incident). See ui/gsxui.js's own doc comments for
 // the semantics; none are repeated here.
+
+// isRTL reports the resolved direction at el — computed style, so it honors
+// both dir attributes and CSS `direction`.
+export function isRTL(el) {
+  return getComputedStyle(el).direction === "rtl";
+}
 
 const CAP_PADDING = 8;
 
