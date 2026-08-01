@@ -15,4 +15,10 @@ func init() {
 		Node:       examplealert.Variants(),
 		SourcePath: "alert/variants.gsx",
 	})
+	Register("alert", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplealert.Rtl(),
+		SourcePath: "alert/rtl.gsx",
+	})
 }

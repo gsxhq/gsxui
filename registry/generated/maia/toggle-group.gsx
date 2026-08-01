@@ -137,9 +137,9 @@ component ToggleGroupItem(groupType string, variant string, size string, spacing
 			case "2":
 				"isolate"
 			default:
-				"rounded-none shadow-none data-[variant=outline]:border-l-0 data-[variant=outline]:first:border-l"
+				"rounded-none shadow-none data-[variant=outline]:border-s-0 data-[variant=outline]:first:border-s"
 			},
-			switch orientation { default: "data-[spacing=0]:first:rounded-l-lg data-[spacing=0]:last:rounded-r-lg" }
+			switch orientation { default: "data-[spacing=0]:first:rounded-s-lg data-[spacing=0]:last:rounded-e-lg" }
 		}
 		{ attrs... }
 		data-gsxui-slot-toggle-group-item

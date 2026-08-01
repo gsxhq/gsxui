@@ -153,7 +153,7 @@ component ContextMenuGroup(children gsx.Node, attrs gsx.Attrs) {
 component ContextMenuCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
+			"relative flex cursor-default items-center gap-1.5 rounded-md py-1 pe-8 ps-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
 		}
 		role="menuitemcheckbox"
 		data-value={value}
@@ -170,7 +170,7 @@ component ContextMenuCheckboxItem(checked bool, value string, children gsx.Node,
 	>
 		<span
 			class={
-				"pointer-events-none absolute right-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-4"
+				"pointer-events-none absolute end-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-4"
 			}
 			data-gsxui-slot-context-menu-checkbox-item-indicator
 		>
@@ -209,7 +209,7 @@ component ContextMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs
 component ContextMenuRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
+			"relative flex cursor-default items-center gap-1.5 rounded-md py-1 pe-8 ps-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
 		}
 		role="menuitemradio"
 		data-value={value}
@@ -226,7 +226,7 @@ component ContextMenuRadioItem(checked bool, value string, children gsx.Node, at
 	>
 		<span
 			class={
-				"pointer-events-none absolute right-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-2 [&>svg]:fill-current"
+				"pointer-events-none absolute end-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-2 [&>svg]:fill-current"
 			}
 			data-gsxui-slot-context-menu-radio-item-indicator
 		>
@@ -254,7 +254,7 @@ component ContextMenuSeparator(attrs gsx.Attrs) {
 
 component ContextMenuShortcut(children gsx.Node, attrs gsx.Attrs) {
 	<span
-		class={ "ml-auto text-xs tracking-widest text-muted-foreground" }
+		class={ "ms-auto text-xs tracking-widest text-muted-foreground" }
 		{ attrs... }
 		data-gsxui-slot-context-menu-shortcut
 	>
@@ -288,7 +288,7 @@ component ContextMenuSub(children gsx.Node, attrs gsx.Attrs) {
 component ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&>svg:last-child]:ml-auto [&>svg:last-child]:size-4"
+			"relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&>svg:last-child]:ms-auto [&>svg:last-child]:size-4 [&>svg:last-child]:rtl:rotate-180"
 		}
 		role="menuitem"
 		aria-haspopup="menu"

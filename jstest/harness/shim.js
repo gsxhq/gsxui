@@ -59,13 +59,19 @@ function callerModule() {
   return "unknown";
 }
 
-// position/release are the real implementations, copied verbatim from
+// position/release/isRTL are the real implementations, copied verbatim from
 // ui/gsxui.js — positioning is behavior under test, not delegation, so the
 // recording layer must not distort it. Keep in lockstep with ui/gsxui.js
 // ("exact export surface" above): a module importing a name the shim lacks
 // fails to evaluate, and with it every registration this file exists to
 // record (the 127-test incident). See ui/gsxui.js's own doc comments for
 // the semantics; none are repeated here.
+
+// isRTL reports the resolved direction at el — computed style, so it honors
+// both dir attributes and CSS `direction`.
+export function isRTL(el) {
+  return getComputedStyle(el).direction === "rtl";
+}
 
 const CAP_PADDING = 8;
 
@@ -121,13 +127,36 @@ export function release(content) {
 function applyPlacement(content, a, o) {
   content.style.position = "fixed";
   content.style.inset = "auto";
+  // Clear a previous update's cap before measuring — a stale (smaller) cap
+  // would shrink the box and corrupt the flip decision's natural size.
   if (o.cap) content.style.removeProperty("--gsxui-available-height");
   const vw = document.documentElement.clientWidth;
   const vh = document.documentElement.clientHeight;
   const w = content.offsetWidth;
   let h = content.offsetHeight;
+
+  // Resolve logical options (side/align/alignOffset) to physical ones
+  // before the rest of the math — anchor rects have no element when a
+  // virtual rect is passed (context-menu's pointer anchor), so direction is
+  // read from `content`, which lives in the same direction context.
   const vertical = o.side === "top" || o.side === "bottom";
   let side = o.side;
+  let align = o.align;
+  let alignOffset = o.alignOffset;
+  if (isRTL(content)) {
+    if (vertical) {
+      // horizontal cross-axis: mirror alignment and its offset
+      if (align === "start") align = "end";
+      else if (align === "end") align = "start";
+      alignOffset = -alignOffset;
+    } else {
+      // horizontal main axis: mirror the preferred side
+      side = side === "left" ? "right" : "left";
+    }
+  }
+
+  // Main-axis flip: if the preferred side can't hold the content and the
+  // opposite side has more room, flip (Radix flip middleware, main axis).
   if (o.flip) {
     const room = {
       top: a.top - o.sideOffset,
@@ -139,6 +168,8 @@ function applyPlacement(content, a, o) {
     const need = vertical ? h : w;
     if (need > room[side] && room[opposite] > room[side]) side = opposite;
   }
+  // Size cap (Radix size middleware, height only): expose the room on the
+  // PLACED side; recipe CSS min()s it into its max-height, so re-measure.
   if (o.cap && vertical) {
     const avail =
       (side === "bottom" ? vh - a.bottom - o.sideOffset : a.top - o.sideOffset) -
@@ -152,13 +183,16 @@ function applyPlacement(content, a, o) {
   let left, top;
   if (vertical) {
     top = side === "bottom" ? a.bottom + o.sideOffset : a.top - o.sideOffset - h;
-    left = alignedCoord(o.align, a.left, a.width, w) + o.alignOffset;
-    left = Math.max(0, Math.min(left, vw - w));
+    left = alignedCoord(align, a.left, a.width, w) + alignOffset;
+    left = Math.max(0, Math.min(left, vw - w)); // cross-axis shift
   } else {
     left = side === "right" ? a.right + o.sideOffset : a.left - o.sideOffset - w;
-    top = alignedCoord(o.align, a.top, a.height, h) + o.alignOffset;
-    top = Math.max(0, Math.min(top, vh - h));
+    top = alignedCoord(align, a.top, a.height, h) + alignOffset;
+    top = Math.max(0, Math.min(top, vh - h)); // cross-axis shift
   }
+  // Last-resort clamp on BOTH axes (the pre-flip clampToViewport behaviour,
+  // preserved): even a flipped side that still overflows stays inside the
+  // viewport.
   left = Math.max(0, Math.min(left, vw - w));
   top = Math.max(0, Math.min(top, vh - h));
   if (o.flip) content.dataset.side = side;

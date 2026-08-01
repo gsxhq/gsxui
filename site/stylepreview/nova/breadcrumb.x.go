@@ -207,7 +207,7 @@ func _gsxrenderBreadcrumbSeparator(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, c
 		_gsxgw.S(" aria-hidden=\"true\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("[&>svg]:size-3.5"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("[&>svg]:size-3.5 [&>svg]:rtl:rotate-180"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "li", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-breadcrumb-separator"})

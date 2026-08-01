@@ -47,12 +47,12 @@
   }
 
   .gsxui-recipe-navigation-menu-trigger-icon {
-    @apply relative top-px ml-1 size-3 transition duration-300;
+    @apply relative top-px ms-1 size-3 transition duration-300;
     @apply [[data-state=open]_&]:rotate-180;
   }
 
   .gsxui-recipe-navigation-menu-content {
-    @apply top-0 left-0 p-1;
+    @apply top-0 start-0 p-1;
     @apply md:absolute;
     @apply [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:top-full;
     @apply [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:mt-1.5;

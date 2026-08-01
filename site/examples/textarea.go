@@ -15,4 +15,10 @@ func init() {
 		Node:       exampletextarea.States(),
 		SourcePath: "textarea/states.gsx",
 	})
+	Register("textarea", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       exampletextarea.Rtl(),
+		SourcePath: "textarea/rtl.gsx",
+	})
 }

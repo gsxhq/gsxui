@@ -748,7 +748,7 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 					data-gsxui-slot-calendar-nav-button
 					data-gsxui-slot-button
 				>
-					<icon.ChevronLeft/>
+					<icon.ChevronLeft class={ "rtl:rotate-180" }/>
 				</button>
 				<button
 					type="button"
@@ -764,7 +764,7 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 					data-gsxui-slot-calendar-nav-button
 					data-gsxui-slot-button
 				>
-					<icon.ChevronRight/>
+					<icon.ChevronRight class={ "rtl:rotate-180" }/>
 				</button>
 			</nav>
 			<div class={ calendar.MonthCaption() } data-gsxui-slot-calendar-month-caption>

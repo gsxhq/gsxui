@@ -15,4 +15,10 @@ func init() {
 		Node:       exampleavatar.Group(),
 		SourcePath: "avatar/group.gsx",
 	})
+	Register("avatar", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       exampleavatar.Rtl(),
+		SourcePath: "avatar/rtl.gsx",
+	})
 }

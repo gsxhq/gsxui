@@ -21,4 +21,10 @@ func init() {
 		Node:       exampleinputotp.Separator(),
 		SourcePath: "inputotp/separator.gsx",
 	})
+	Register("input-otp", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       exampleinputotp.Rtl(),
+		SourcePath: "inputotp/rtl.gsx",
+	})
 }

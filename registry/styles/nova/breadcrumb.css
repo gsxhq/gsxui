@@ -28,7 +28,7 @@
   }
 
   .gsxui-recipe-breadcrumb-separator {
-    @apply [&>svg]:size-3.5;
+    @apply [&>svg]:size-3.5 [&>svg]:rtl:rotate-180;
   }
 
   .gsxui-recipe-breadcrumb-ellipsis {

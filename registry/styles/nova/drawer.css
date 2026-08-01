@@ -61,18 +61,25 @@
     @apply [&_[data-gsxui-slot-drawer-header]]:text-center;
   }
 
+  /* direction is physical (matching shadcn: data-side names a physical
+     viewport edge, not a logical start/end), so position/border/corner and
+     slide direction stay pinned to left-0/border-r/rounded-r — a drawer
+     opened with direction="left" must hug the physical left edge under both
+     dir="ltr" and dir="rtl". Header text-align stays logical (text-start):
+     that is interior typography, not edge geometry. */
   .gsxui-recipe-drawer-content-side-left {
     @apply inset-y-0 left-0 right-auto h-full max-h-none w-3/4 rounded-r-xl border-r;
     @apply sm:max-w-sm;
     @apply data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left;
-    @apply md:[&_[data-gsxui-slot-drawer-header]]:text-left;
+    @apply md:[&_[data-gsxui-slot-drawer-header]]:text-start;
   }
 
+  /* Physical for the same reason as content-side-left above. */
   .gsxui-recipe-drawer-content-side-right {
     @apply inset-y-0 right-0 left-auto h-full max-h-none w-3/4 rounded-l-xl border-l;
     @apply sm:max-w-sm;
     @apply data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right;
-    @apply md:[&_[data-gsxui-slot-drawer-header]]:text-left;
+    @apply md:[&_[data-gsxui-slot-drawer-header]]:text-start;
   }
 
   .gsxui-recipe-drawer-handle {

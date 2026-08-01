@@ -160,7 +160,7 @@ func _gsxrenderToast(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, toastType strin
 	}
 //line toast.gsx:119:3
 	_gsxgw.S("<button type=\"button\" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm"))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("absolute -top-1.5 -end-1.5 flex size-5 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm"))
 	_gsxgw.S("\" aria-label=\"Close\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-toast-close", true)
 	_gsxgw.S(">")

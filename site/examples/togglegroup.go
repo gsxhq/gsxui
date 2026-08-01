@@ -21,4 +21,10 @@ func init() {
 		Node:       exampletogglegroup.Spacing(),
 		SourcePath: "togglegroup/spacing.gsx",
 	})
+	Register("toggle-group", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       exampletogglegroup.Rtl(),
+		SourcePath: "togglegroup/rtl.gsx",
+	})
 }

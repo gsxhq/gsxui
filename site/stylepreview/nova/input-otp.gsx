@@ -92,9 +92,22 @@ import (
 // novel color introduction. InputOTPSeparator carries nova's
 // [&_svg:not([class*='size-'])]:size-4 safeguard (likely a no-op since
 // icon.Minus already defaults to size-4, kept regardless per the map).
+// RTL (dir="ltr" forced, gsxui addition — see InputOTPGroup's own doc
+// comment below for the full rationale): this root div is the actual flex
+// container ordering multiple InputOTPGroup/InputOTPSeparator children
+// left-to-right — a caller with a 3-group, separator-split layout (e.g.
+// site/examples/inputotp/separator.gsx) needs THIS element pinned, not
+// just each inner InputOTPGroup, or the groups themselves would still
+// reorder right-to-left under an RTL ancestor even though each group's own
+// digits stay internally LTR. No attrs spread here (attrs already targets
+// the real input below, matching this file's existing convention), so
+// there's no override hook for this one — a caller wanting non-numeric,
+// direction-sensitive slot content should compose the parts directly
+// instead of through InputOTP's root.
 component InputOTP(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={ "flex items-center gap-2 has-[[data-gsxui-slot-input-otp-input]:disabled]:opacity-50" }
+		dir="ltr"
 		data-gsxui-slot-input-otp
 	>
 		<input
@@ -111,11 +124,27 @@ component InputOTP(children gsx.Node, attrs gsx.Attrs) {
 // InputOTPGroup is an unchanged plain flex wrapper — zero behavior of its
 // own, straight port — plus nova's group-level invalid-ring adoption (see
 // InputOTP's own doc comment).
+//
+// RTL (dir="ltr" forced, gsxui addition — shadcn's own input-otp docs/RTL
+// guide have no component-specific guidance here, this is our own call):
+// OTP codes are numeric-string tokens (digit order is semantically fixed —
+// "123456" must always read left-to-right, entered/displayed in that
+// order, exactly like a credit-card number or phone number embedded in
+// RTL prose) not natural-language RTL text, so the slot row is pinned
+// dir="ltr" regardless of the surrounding document direction. Authored
+// before { attrs... } so a caller can still override it (matching this
+// file's own inputmode/autocomplete convention on InputOTP above) for the
+// rare non-numeric-pattern use case. Task 1 already converted this
+// element's slot children (InputOTPSlot's border-e/first:rounded-s-lg/
+// first:border-s/last:rounded-e-lg) to logical properties in anticipation
+// of this — with dir="ltr" forced here, logical resolves identically to
+// physical in both LTR and RTL documents, so there is no visual change.
 component InputOTPGroup(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
 			"flex items-center rounded-lg has-[[aria-invalid=true]]:border-destructive has-[[aria-invalid=true]]:ring-3 has-[[aria-invalid=true]]:ring-destructive/20 dark:has-[[aria-invalid=true]]:ring-destructive/40"
 		}
+		dir="ltr"
 		{ attrs... }
 		data-gsxui-slot-input-otp-group
 	>
@@ -131,7 +160,7 @@ component InputOTPSlot(attrs gsx.Attrs) {
 	<div
 		data-active="false"
 		class={
-			"relative flex size-8 items-center justify-center border-y border-r border-input text-sm transition-all outline-none first:rounded-l-lg first:border-l last:rounded-r-lg aria-invalid:border-destructive data-[active=true]:z-10 data-[active=true]:border-ring data-[active=true]:ring-3 data-[active=true]:ring-ring/50 data-[active=true]:aria-invalid:border-destructive data-[active=true]:aria-invalid:ring-destructive/20 dark:bg-input/30 dark:data-[active=true]:aria-invalid:ring-destructive/40"
+			"relative flex size-8 items-center justify-center border-y border-e border-input text-sm transition-all outline-none first:rounded-s-lg first:border-s last:rounded-e-lg aria-invalid:border-destructive data-[active=true]:z-10 data-[active=true]:border-ring data-[active=true]:ring-3 data-[active=true]:ring-ring/50 data-[active=true]:aria-invalid:border-destructive data-[active=true]:aria-invalid:ring-destructive/20 dark:bg-input/30 dark:data-[active=true]:aria-invalid:ring-destructive/40"
 		}
 		{ attrs... }
 		data-gsxui-slot-input-otp-slot

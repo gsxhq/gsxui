@@ -29,7 +29,7 @@
 // distributes what's left AFTER the handles' own space is already spoken
 // for. currentSizes() already worked this way (round 1's own fix); this
 // round makes the drag/keyboard math consistent with it.
-import { on, emit } from "./gsxui.js";
+import { on, emit, isRTL } from "./gsxui.js";
 
 const HANDLE_SELECTOR = "[data-gsxui-slot-resizable-handle]";
 
@@ -184,7 +184,11 @@ on("pointerdown", HANDLE_SELECTOR, (e, handle) => {
 on("pointermove", HANDLE_SELECTOR, (e, handle) => {
   if (!drag || drag.handle !== handle || drag.pointerId !== e.pointerId) return;
   const pos = drag.vertical ? e.clientY : e.clientX;
-  const deltaPct = ((pos - drag.pointerStart) / drag.panelsTotalPx) * 100;
+  // Horizontal only: under RTL, the inline-start (first) panel sits
+  // visually on the right, so a pointer moving toward the viewport-left
+  // (decreasing clientX) must still GROW it — negate the raw pixel delta.
+  const rtlFlip = !drag.vertical && isRTL(drag.root) ? -1 : 1;
+  const deltaPct = (((pos - drag.pointerStart) * rtlFlip) / drag.panelsTotalPx) * 100;
   applyDeltaPct(drag.handle, drag.prev, drag.next, drag.prevStartPct, drag.nextStartPct, deltaPct);
 });
 
@@ -217,7 +221,13 @@ on("keydown", HANDLE_SELECTOR, (e, handle) => {
   const total = panelsTotalPx(root, vertical);
   if (!total) return;
 
-  const stepKeys = vertical ? { ArrowUp: -STEP, ArrowDown: STEP } : { ArrowLeft: -STEP, ArrowRight: STEP };
+  // Horizontal only: native-direction convention — keys mirror under RTL,
+  // so ArrowLeft still GROWS the first (inline-start) panel, same as
+  // ArrowRight does under LTR.
+  const rtlFlip = !vertical && isRTL(root) ? -1 : 1;
+  const stepKeys = vertical
+    ? { ArrowUp: -STEP, ArrowDown: STEP }
+    : { ArrowLeft: -STEP * rtlFlip, ArrowRight: STEP * rtlFlip };
   const prevStartPct = (panelSize(prev, vertical) / total) * 100;
   const nextStartPct = (panelSize(next, vertical) / total) * 100;
 

@@ -1,6 +1,6 @@
 // Tabs behavior: click + roving arrow keys; state stamped on triggers and
 // panels; gsxui:change on the root with { value }.
-import { on, emit } from "./gsxui.js";
+import { on, emit, isRTL } from "./gsxui.js";
 
 function activate(trigger) {
   const root = trigger.closest("[data-gsxui-slot-tabs]");
@@ -26,10 +26,11 @@ function activate(trigger) {
 on("click", "[data-gsxui-slot-tabs-trigger]", (_e, t) => activate(t));
 
 on("keydown", "[data-gsxui-slot-tabs-trigger]", (e, t) => {
-  const dir = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+  let dir = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
   if (!dir) return;
   const tablist = t.closest('[role="tablist"]');
   if (!tablist) return;
+  if (isRTL(tablist)) dir = -dir;
   const list = [...tablist.querySelectorAll('[data-gsxui-slot-tabs-trigger]')];
   const next = list[(list.indexOf(t) + dir + list.length) % list.length];
   next.focus();

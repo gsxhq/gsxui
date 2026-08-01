@@ -15,4 +15,10 @@ func init() {
 		Node:       exampleradio.States(),
 		SourcePath: "radio/states.gsx",
 	})
+	Register("radio", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       exampleradio.Rtl(),
+		SourcePath: "radio/rtl.gsx",
+	})
 }

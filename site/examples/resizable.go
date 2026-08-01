@@ -21,4 +21,10 @@ func init() {
 		Node:       exampleresizable.Handle(),
 		SourcePath: "resizable/handle.gsx",
 	})
+	Register("resizable", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       exampleresizable.Rtl(),
+		SourcePath: "resizable/rtl.gsx",
+	})
 }

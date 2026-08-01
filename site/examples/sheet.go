@@ -15,4 +15,10 @@ func init() {
 		Node:       examplesheet.Directions(),
 		SourcePath: "sheet/directions.gsx",
 	})
+	Register("sheet", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplesheet.Rtl(),
+		SourcePath: "sheet/rtl.gsx",
+	})
 }

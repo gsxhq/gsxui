@@ -9,4 +9,10 @@ func init() {
 		Node:       examplepopover.Basic(),
 		SourcePath: "popover/basic.gsx",
 	})
+	Register("popover", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplepopover.Rtl(),
+		SourcePath: "popover/rtl.gsx",
+	})
 }

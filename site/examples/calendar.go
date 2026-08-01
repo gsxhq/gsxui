@@ -157,4 +157,12 @@ func init() {
 		SourcePath: "calendar/datepicker.gsx",
 		// No Query hook: same reason as Dropdown's own.
 	})
+	Register("calendar", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplecalendar.Rtl(),
+		SourcePath: "calendar/rtl.gsx",
+		// No Query hook: this example is a fixed dir="rtl" demo, not part
+		// of the ?month= agreement-diff coverage the other examples carry.
+	})
 }

@@ -15,4 +15,10 @@ func init() {
 		Node:       exampletooltip.Wide(),
 		SourcePath: "tooltip/wide.gsx",
 	})
+	Register("tooltip", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       exampletooltip.Rtl(),
+		SourcePath: "tooltip/rtl.gsx",
+	})
 }

@@ -161,7 +161,7 @@ component CommandItem(value string, children gsx.Node, attrs gsx.Attrs) {
 }
 
 component CommandShortcut(children gsx.Node, attrs gsx.Attrs) {
-	<span class={ "ml-auto text-xs tracking-widest text-muted-foreground" } { attrs... } data-gsxui-slot-command-shortcut>
+	<span class={ "ms-auto text-xs tracking-widest text-muted-foreground" } { attrs... } data-gsxui-slot-command-shortcut>
 		{ children }
 	</span>
 }

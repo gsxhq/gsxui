@@ -191,7 +191,7 @@
   }
 
   .gsxui-recipe-sidebar-group-action {
-    @apply absolute top-3.5 right-3 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform;
+    @apply absolute top-3.5 end-3 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform;
     @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
     @apply focus-visible:ring-2;
     @apply [&>svg]:size-4 [&>svg]:shrink-0;
@@ -211,8 +211,8 @@
   }
 
   .gsxui-recipe-sidebar-menu-button {
-    @apply flex h-8 w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm ring-sidebar-ring outline-hidden transition-[width,height,padding];
-    @apply [[data-gsxui-slot-sidebar-menu-item]:has(>[data-gsxui-slot-sidebar-menu-action])>&]:pr-8;
+    @apply flex h-8 w-full items-center gap-2 overflow-hidden rounded-md p-2 text-start text-sm ring-sidebar-ring outline-hidden transition-[width,height,padding];
+    @apply [[data-gsxui-slot-sidebar-menu-item]:has(>[data-gsxui-slot-sidebar-menu-action])>&]:pe-8;
     @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
     @apply active:bg-sidebar-accent active:text-sidebar-accent-foreground;
     @apply data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground;
@@ -242,7 +242,7 @@
   }
 
   .gsxui-recipe-sidebar-menu-action {
-    @apply absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform;
+    @apply absolute top-1.5 end-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform;
     @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
     @apply focus-visible:ring-2;
     @apply [&>svg]:size-4 [&>svg]:shrink-0;
@@ -259,7 +259,7 @@
   }
 
   .gsxui-recipe-sidebar-menu-badge {
-    @apply pointer-events-none absolute right-1 flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-xs font-medium text-sidebar-foreground tabular-nums select-none;
+    @apply pointer-events-none absolute end-1 flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-xs font-medium text-sidebar-foreground tabular-nums select-none;
     @apply [[data-gsxui-slot-sidebar-menu-button][data-size=sm]~&]:top-1;
     @apply [[data-gsxui-slot-sidebar-menu-button][data-size=default]~&]:top-1.5;
     @apply [[data-gsxui-slot-sidebar-menu-button][data-size=lg]~&]:top-2.5;
@@ -283,7 +283,7 @@
   }
 
   .gsxui-recipe-sidebar-menu-sub {
-    @apply mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l border-sidebar-border px-2.5 py-0.5;
+    @apply mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-s border-sidebar-border px-2.5 py-0.5;
     @apply [[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:hidden;
   }
 

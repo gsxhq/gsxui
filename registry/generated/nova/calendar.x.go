@@ -828,7 +828,7 @@ func Calendar(mode string, month time.Time, selected []time.Time, from time.Time
 		_gsxgw.BoolAttr("data-gsxui-slot-button", true)
 		_gsxgw.S(">")
 //line calendar.gsx:756:6
-		_gsxgw.Node(ctx, icon.ChevronLeft())
+		_gsxgw.Node(ctx, icon.ChevronLeft(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("rtl:rotate-180"))}}...))
 		_gsxgw.S("</button>")
 //line calendar.gsx:758:5
 		_gsxgw.S("<button type=\"button\" data-variant=\"ghost\" data-size=\"icon\" aria-label=\"Next month\"")
@@ -843,7 +843,7 @@ func Calendar(mode string, month time.Time, selected []time.Time, from time.Time
 		_gsxgw.BoolAttr("data-gsxui-slot-button", true)
 		_gsxgw.S(">")
 //line calendar.gsx:772:6
-		_gsxgw.Node(ctx, icon.ChevronRight())
+		_gsxgw.Node(ctx, icon.ChevronRight(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("rtl:rotate-180"))}}...))
 		_gsxgw.S("</button></nav>")
 //line calendar.gsx:775:4
 		_gsxgw.S("<div class=\"")
@@ -1036,7 +1036,7 @@ func Calendar(mode string, month time.Time, selected []time.Time, from time.Time
 				_gsxgw.S("\"")
 				_gsxgw.BoolAttr("disabled", bool((dayDis && !tabStopDisabled) || hiddenDay))
 				_gsxgw.S(" class=\"")
-				_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("min-w-(--cell-size) flex aspect-square h-auto w-full flex-col gap-1 leading-none font-normal [[data-gsxui-slot-calendar-day]:first-child[data-selected=true]>&]:rounded-l-md [[data-gsxui-slot-calendar-day]:last-child[data-selected=true]>&]:rounded-r-md [[data-gsxui-slot-calendar-day][data-focused]>&]:relative [[data-gsxui-slot-calendar-day][data-focused]>&]:z-10 [[data-gsxui-slot-calendar-day][data-focused]>&]:border-ring [[data-gsxui-slot-calendar-day][data-focused]>&]:ring-[3px] [[data-gsxui-slot-calendar-day][data-focused]>&]:ring-ring/50 data-[range-end=true]:rounded-md data-[range-end=true]:rounded-r-md data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:rounded-md data-[range-start=true]:rounded-l-md data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-accent-foreground [&>span]:text-xs [&>span]:opacity-70"))
+				_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("min-w-(--cell-size) flex aspect-square h-auto w-full flex-col gap-1 leading-none font-normal [[data-gsxui-slot-calendar-day]:first-child[data-selected=true]>&]:rounded-s-md [[data-gsxui-slot-calendar-day]:last-child[data-selected=true]>&]:rounded-e-md [[data-gsxui-slot-calendar-day][data-focused]>&]:relative [[data-gsxui-slot-calendar-day][data-focused]>&]:z-10 [[data-gsxui-slot-calendar-day][data-focused]>&]:border-ring [[data-gsxui-slot-calendar-day][data-focused]>&]:ring-[3px] [[data-gsxui-slot-calendar-day][data-focused]>&]:ring-ring/50 data-[range-end=true]:rounded-md data-[range-end=true]:rounded-e-md data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:rounded-md data-[range-start=true]:rounded-s-md data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-accent-foreground [&>span]:text-xs [&>span]:opacity-70"))
 				_gsxgw.S("\"")
 				_gsxgw.BoolAttr("data-gsxui-slot-calendar-day-button", true)
 				_gsxgw.BoolAttr("data-gsxui-slot-button", true)

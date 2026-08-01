@@ -211,9 +211,16 @@ func CarouselPrevious(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 //line carousel.gsx:141:2
 		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
+//line carousel.gsx:150:3
+			var _gsxv0 string
+			switch orientation {
+			case "vertical":
+				_gsxv0 = ""
+			default:
+				_gsxv0 = "rtl:rotate-180"
+			}
+			_gsxgw.Node(ctx, icon.ArrowLeft(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv0))}}...))
 //line carousel.gsx:153:3
-			_gsxgw.Node(ctx, icon.ArrowLeft())
-//line carousel.gsx:154:3
 			_gsxgw.S("<span")
 			_gsxgw.BoolAttr("data-gsxui-slot-carousel-control-label", true)
 			_gsxgw.S(">Previous slide</span>")
@@ -223,16 +230,23 @@ func CarouselPrevious(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line carousel.gsx:158:1
+//line carousel.gsx:157:1
 func CarouselNext(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:159:2
+//line carousel.gsx:158:2
 		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:170:3
-			_gsxgw.Node(ctx, icon.ArrowRight())
-//line carousel.gsx:171:3
+//line carousel.gsx:166:3
+			var _gsxv1 string
+			switch orientation {
+			case "vertical":
+				_gsxv1 = ""
+			default:
+				_gsxv1 = "rtl:rotate-180"
+			}
+			_gsxgw.Node(ctx, icon.ArrowRight(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv1))}}...))
+//line carousel.gsx:169:3
 			_gsxgw.S("<span")
 			_gsxgw.BoolAttr("data-gsxui-slot-carousel-control-label", true)
 			_gsxgw.S(">Next slide</span>")

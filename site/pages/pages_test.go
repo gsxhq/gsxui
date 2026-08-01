@@ -143,6 +143,7 @@ func TestDocsTableOfContents(t *testing.T) {
 			}{
 				{id: "example-basic", title: "Basic"},
 				{id: "example-variants", title: "Variants"},
+				{id: "example-rtl", title: "RTL"},
 			},
 		},
 		{
@@ -520,14 +521,14 @@ func TestComponentPageRoute(t *testing.T) {
 			t.Fatalf("GET /components/sidebar = %d, want %d; body:\n%s", rec.Code, http.StatusOK, rec.Body.String())
 		}
 		body := rec.Body.String()
-		if got := strings.Count(body, `<iframe data-site-isolated-preview`); got != 10 {
-			t.Errorf("sidebar page has %d isolated previews, want 10; body:\n%s", got, body)
+		if got := strings.Count(body, `<iframe data-site-isolated-preview`); got != 11 {
+			t.Errorf("sidebar page has %d isolated previews, want 11; body:\n%s", got, body)
 		}
-		if got := strings.Count(body, `data-site-isolated-preview-surface`); got != 10 {
-			t.Errorf("sidebar page has %d isolated preview surfaces, want 10; body:\n%s", got, body)
+		if got := strings.Count(body, `data-site-isolated-preview-surface`); got != 11 {
+			t.Errorf("sidebar page has %d isolated preview surfaces, want 11; body:\n%s", got, body)
 		}
-		if got := strings.Count(body, `width="1024"`); got != 10 {
-			t.Errorf("sidebar page has %d declared 1024px preview viewports, want 10; body:\n%s", got, body)
+		if got := strings.Count(body, `width="1024"`); got != 11 {
+			t.Errorf("sidebar page has %d declared 1024px preview viewports, want 11; body:\n%s", got, body)
 		}
 		for _, marker := range []string{
 			`title="Basic preview"`,
@@ -540,6 +541,8 @@ func TestComponentPageRoute(t *testing.T) {
 			`src="/examples/sidebar/variants?_preview=icon-collapsed"`,
 			`title="Persisted (cookie round-trip) preview"`,
 			`src="/examples/sidebar/persisted"`,
+			`title="RTL preview"`,
+			`src="/examples/sidebar/rtl"`,
 			`ui.SidebarProvider`,
 			`data-site-copy`,
 		} {
@@ -550,8 +553,8 @@ func TestComponentPageRoute(t *testing.T) {
 		if strings.Contains(body, `data-gsxui-slot-sidebar-container`) {
 			t.Errorf("sidebar implementation leaked into the parent document; body:\n%s", body)
 		}
-		if got := strings.Count(body, `data-site-copy`); got != 3 {
-			t.Errorf("sidebar page has %d source copy controls, want one per registered example (3)", got)
+		if got := strings.Count(body, `data-site-copy`); got != 4 {
+			t.Errorf("sidebar page has %d source copy controls, want one per registered example (4)", got)
 		}
 	})
 

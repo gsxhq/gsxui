@@ -9,4 +9,10 @@ func init() {
 		Node:       exampleaspectratio.Basic(),
 		SourcePath: "aspectratio/basic.gsx",
 	})
+	Register("aspect-ratio", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       exampleaspectratio.Rtl(),
+		SourcePath: "aspectratio/rtl.gsx",
+	})
 }

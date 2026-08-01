@@ -332,7 +332,7 @@ component ComboboxItem(value string, selected bool, children gsx.Node, attrs gsx
 		} }
 		aria-selected={selected}
 		class={
-			"relative flex w-full cursor-default items-center gap-2 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none data-[highlighted=true]:bg-accent data-[highlighted=true]:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-[state=checked]:[&>[data-gsxui-slot-combobox-item-indicator]]:flex"
+			"relative flex w-full cursor-default items-center gap-2 rounded-md py-1 pe-8 ps-1.5 text-sm outline-hidden select-none data-[highlighted=true]:bg-accent data-[highlighted=true]:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-[state=checked]:[&>[data-gsxui-slot-combobox-item-indicator]]:flex"
 		}
 		{ attrs... }
 		data-gsxui-slot-combobox-item
@@ -340,7 +340,7 @@ component ComboboxItem(value string, selected bool, children gsx.Node, attrs gsx
 		{ children }
 		<span
 			class={
-				"pointer-events-none absolute right-2 hidden size-4 items-center justify-center [&>svg]:size-4 pointer-coarse:[&>svg]:size-5"
+				"pointer-events-none absolute end-2 hidden size-4 items-center justify-center [&>svg]:size-4 pointer-coarse:[&>svg]:size-5"
 			}
 			data-gsxui-slot-combobox-item-indicator
 		>

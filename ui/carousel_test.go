@@ -95,10 +95,10 @@ func TestCarouselContentVerticalPinned(t *testing.T) {
 }
 
 func TestCarouselContentCallerClassMerges(t *testing.T) {
-	got := render(t, ui.CarouselContent("", gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "-ml-1"}}))
-	// The track's own -ml-4 and the caller's -ml-1 are both plain utilities
+	got := render(t, ui.CarouselContent("", gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "-ms-1"}}))
+	// The track's own -ms-4 and the caller's -ms-1 are both plain utilities
 	// on the same element now, so merge.Merge replaces rather than stacks.
-	want := `class="-ml-1" data-gsxui-slot-carousel-track`
+	want := `class="-ms-1" data-gsxui-slot-carousel-track`
 	if !strings.Contains(got, want) {
 		t.Errorf("caller class must displace the track's own spacing\nwant: %s\nin: %s", want, got)
 	}
@@ -122,7 +122,7 @@ func TestCarouselItemVerticalPinned(t *testing.T) {
 
 func TestCarouselItemCallerClassMerges(t *testing.T) {
 	got := render(t, ui.CarouselItem("", gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "md:basis-1/2"}}))
-	// md:basis-1/2 contests nothing the item's own pl-4/-scroll-ml-4 set, so
+	// md:basis-1/2 contests nothing the item's own pl-4/-scroll-ms-4 set, so
 	// both survive the merge — the caller class follows the slot's own.
 	want := canonicalCarouselClass("gsxui-recipe-carousel-item-orientation-horizontal")
 	want = want[:len(want)-1] + ` md:basis-1/2" data-gsxui-slot-carousel-item`
@@ -133,7 +133,7 @@ func TestCarouselItemCallerClassMerges(t *testing.T) {
 
 func TestCarouselPreviousHorizontalPinned(t *testing.T) {
 	got := render(t, ui.CarouselPrevious("", nil))
-	want := `<button data-variant="outline" data-size="icon" type="button" disabled ` + canonicalCarouselArrowClass("previous", "horizontal") + ` data-orientation="horizontal" data-gsxui-slot-carousel-previous data-gsxui-slot-button><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg><span data-gsxui-slot-carousel-control-label>Previous slide</span></button>`
+	want := `<button data-variant="outline" data-size="icon" type="button" disabled ` + canonicalCarouselArrowClass("previous", "horizontal") + ` data-orientation="horizontal" data-gsxui-slot-carousel-previous data-gsxui-slot-button><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="rtl:rotate-180" data-gsxui-slot-icon><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg><span data-gsxui-slot-carousel-control-label>Previous slide</span></button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -153,7 +153,7 @@ func TestCarouselPreviousVerticalPositioning(t *testing.T) {
 
 func TestCarouselNextHorizontalPinned(t *testing.T) {
 	got := render(t, ui.CarouselNext("", nil))
-	want := `<button data-variant="outline" data-size="icon" type="button" ` + canonicalCarouselArrowClass("next", "horizontal") + ` data-orientation="horizontal" data-gsxui-slot-carousel-next data-gsxui-slot-button><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span data-gsxui-slot-carousel-control-label>Next slide</span></button>`
+	want := `<button data-variant="outline" data-size="icon" type="button" ` + canonicalCarouselArrowClass("next", "horizontal") + ` data-orientation="horizontal" data-gsxui-slot-carousel-next data-gsxui-slot-button><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="rtl:rotate-180" data-gsxui-slot-icon><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span data-gsxui-slot-carousel-control-label>Next slide</span></button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

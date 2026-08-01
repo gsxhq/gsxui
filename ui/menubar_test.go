@@ -222,7 +222,7 @@ func TestMenubarPinnedParts(t *testing.T) {
 		{
 			name: "shortcut",
 			node: ui.MenubarShortcut(gsx.Raw("⌘T"), nil),
-			want: `<span class="ml-auto text-xs tracking-widest text-muted-foreground" data-gsxui-slot-menubar-shortcut>⌘T</span>`,
+			want: `<span class="ms-auto text-xs tracking-widest text-muted-foreground" data-gsxui-slot-menubar-shortcut>⌘T</span>`,
 		},
 		{
 			name: "group",

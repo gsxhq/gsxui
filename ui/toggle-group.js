@@ -6,7 +6,7 @@
 // off Radix's own ARIA split rather than a redundant data-type stamp —
 // ToggleGroup/ToggleGroupItem already only ever pair a "radio" role with
 // type="single").
-import { on, emit } from "./gsxui.js";
+import { on, emit, isRTL } from "./gsxui.js";
 
 const itemsOf = (root) =>
   [...root.querySelectorAll("[data-gsxui-slot-toggle-group-item]")].filter(
@@ -80,7 +80,10 @@ on("keydown", "[data-gsxui-slot-toggle-group-item]", (e, item) => {
   if (!root) return;
   const items = itemsOf(root).filter((i) => !i.disabled);
   if (!items.length) return;
-  const dir = { ArrowLeft: -1, ArrowUp: -1, ArrowRight: 1, ArrowDown: 1 }[e.key];
+  let dir = { ArrowLeft: -1, ArrowUp: -1, ArrowRight: 1, ArrowDown: 1 }[e.key];
+  // Only the horizontal pair mirrors under RTL — ArrowUp/ArrowDown keep
+  // their logical meaning regardless of writing direction.
+  if (dir && (e.key === "ArrowLeft" || e.key === "ArrowRight") && isRTL(root)) dir = -dir;
   let next;
   if (dir) {
     const i = items.indexOf(item);

@@ -251,12 +251,12 @@ func _gsxrenderToggleGroupItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, group
 	case "2":
 		_gsxv4 = "isolate"
 	default:
-		_gsxv4 = "rounded-none shadow-none data-[variant=outline]:border-l-0 data-[variant=outline]:first:border-l"
+		_gsxv4 = "rounded-none shadow-none data-[variant=outline]:border-s-0 data-[variant=outline]:first:border-s"
 	}
 	var _gsxv5 string
 	switch orientation {
 	default:
-		_gsxv5 = "data-[spacing=0]:first:rounded-l-lg data-[spacing=0]:last:rounded-r-lg"
+		_gsxv5 = "data-[spacing=0]:first:rounded-s-lg data-[spacing=0]:last:rounded-e-lg"
 	}
 	_gsxgw.S(" class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv2), _gsxrt.Class(_gsxv3), _gsxrt.Class(_gsxv4), _gsxrt.Class(_gsxv5), _gsxrt.Class(attrs.Class()))

@@ -15,4 +15,10 @@ func init() {
 		Node:       examplecontextmenu.Full(),
 		SourcePath: "contextmenu/full.gsx",
 	})
+	Register("context-menu", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplecontextmenu.Rtl(),
+		SourcePath: "contextmenu/rtl.gsx",
+	})
 }

@@ -15,4 +15,10 @@ func init() {
 		Node:       exampleselectbox.Scrollable(),
 		SourcePath: "selectbox/scrollable.gsx",
 	})
+	Register("select", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       exampleselectbox.Rtl(),
+		SourcePath: "selectbox/rtl.gsx",
+	})
 }

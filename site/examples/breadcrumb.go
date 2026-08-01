@@ -9,4 +9,10 @@ func init() {
 		Node:       examplebreadcrumb.Basic(),
 		SourcePath: "breadcrumb/basic.gsx",
 	})
+	Register("breadcrumb", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplebreadcrumb.Rtl(),
+		SourcePath: "breadcrumb/rtl.gsx",
+	})
 }

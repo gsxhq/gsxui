@@ -33,4 +33,10 @@ func init() {
 		Node:       examplecombobox.Form(),
 		SourcePath: "combobox/form.gsx",
 	})
+	Register("combobox", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplecombobox.Rtl(),
+		SourcePath: "combobox/rtl.gsx",
+	})
 }

@@ -9,4 +9,10 @@ func init() {
 		Node:       examplealertdialog.Basic(),
 		SourcePath: "alertdialog/basic.gsx",
 	})
+	Register("alert-dialog", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplealertdialog.Rtl(),
+		SourcePath: "alertdialog/rtl.gsx",
+	})
 }

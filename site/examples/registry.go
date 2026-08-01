@@ -44,6 +44,12 @@ type Example struct {
 	// Previews, when non-empty, renders one isolated document per named case
 	// while retaining this example's single title and source block.
 	Previews []Preview
+	// PreviewRTL marks an isolated example whose document is right-to-left.
+	// The parent preview surface clips a fixed-width canvas from its inline
+	// end; setting this flips the surface to dir="rtl" so the canvas's RIGHT
+	// edge — where an RTL layout anchors its chrome — stays visible instead
+	// of the left one.
+	PreviewRTL bool
 
 	// Query, when non-nil, re-renders the example per-request from the
 	// request's raw query parameters instead of using the static Node —

@@ -15,4 +15,10 @@ func init() {
 		Node:       exampletabs.Icons(),
 		SourcePath: "tabs/icons.gsx",
 	})
+	Register("tabs", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       exampletabs.Rtl(),
+		SourcePath: "tabs/rtl.gsx",
+	})
 }

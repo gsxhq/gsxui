@@ -106,7 +106,7 @@ func TestPaginationLinkCallerClassIsForwardedOnce(t *testing.T) {
 // anything a caller could otherwise pass.
 func TestPaginationPreviousPinned(t *testing.T) {
 	got := render(t, ui.PaginationPrevious("/p/1", nil))
-	want := `<a data-variant="ghost" data-size="default" href="/p/1" aria-label="Go to previous page" data-gsxui-slot-pagination-previous data-gsxui-slot-pagination-link data-gsxui-slot-button><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="m15 18-6-6 6-6"/></svg><span class="hidden sm:block" data-gsxui-slot-pagination-previous-label>Previous</span></a>`
+	want := `<a data-variant="ghost" data-size="default" href="/p/1" aria-label="Go to previous page" data-gsxui-slot-pagination-previous data-gsxui-slot-pagination-link data-gsxui-slot-button><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="rtl:rotate-180" data-gsxui-slot-icon><path d="m15 18-6-6 6-6"/></svg><span class="hidden sm:block" data-gsxui-slot-pagination-previous-label>Previous</span></a>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -123,7 +123,7 @@ func TestPaginationPreviousComposesAllPresenceMarkersOnLink(t *testing.T) {
 
 func TestPaginationNextPinned(t *testing.T) {
 	got := render(t, ui.PaginationNext("/p/3", nil))
-	want := `<a data-variant="ghost" data-size="default" href="/p/3" aria-label="Go to next page" data-gsxui-slot-pagination-next data-gsxui-slot-pagination-link data-gsxui-slot-button><span class="hidden sm:block" data-gsxui-slot-pagination-next-label>Next</span><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="m9 18 6-6-6-6"/></svg></a>`
+	want := `<a data-variant="ghost" data-size="default" href="/p/3" aria-label="Go to next page" data-gsxui-slot-pagination-next data-gsxui-slot-pagination-link data-gsxui-slot-button><span class="hidden sm:block" data-gsxui-slot-pagination-next-label>Next</span><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="rtl:rotate-180" data-gsxui-slot-icon><path d="m9 18 6-6-6-6"/></svg></a>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

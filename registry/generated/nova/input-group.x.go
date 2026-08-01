@@ -95,13 +95,13 @@ func _gsxrenderInputGroupAddon(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, align
 	var _gsxv1 string
 	switch align {
 	case "inline-end":
-		_gsxv1 = "order-last pr-2"
+		_gsxv1 = "order-last pe-2"
 	case "block-start":
 		_gsxv1 = "order-first w-full justify-start px-2.5 pt-2 [[data-gsxui-slot-input-group]:has(>[data-gsxui-slot-input])>&]:pt-2 [&.border-b]:pb-2"
 	case "block-end":
 		_gsxv1 = "order-last w-full justify-start px-2.5 pb-2 [[data-gsxui-slot-input-group]:has(>[data-gsxui-slot-input])>&]:pb-2 [&.border-t]:pt-2"
 	default:
-		_gsxv1 = "order-first pl-2"
+		_gsxv1 = "order-first ps-2"
 	}
 	_gsxgw.S(" class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))

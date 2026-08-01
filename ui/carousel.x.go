@@ -112,7 +112,7 @@ func CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs) _gs
 		case "vertical":
 			_gsxv0 = "-mt-4"
 		default:
-			_gsxv0 = "-ml-4"
+			_gsxv0 = "-ms-4"
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(attrs.Class()))
@@ -172,7 +172,7 @@ func CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) _gsxrt
 		case "vertical":
 			_gsxv1 = "pt-4 -scroll-mt-4"
 		default:
-			_gsxv1 = "pl-4 -scroll-ml-4"
+			_gsxv1 = "ps-4 -scroll-ms-4"
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
@@ -230,13 +230,20 @@ func CarouselPrevious(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 		case "vertical":
 			_gsxv3 = "-top-12 left-1/2 -translate-x-1/2 rotate-90"
 		default:
-			_gsxv3 = "top-1/2 -left-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
+			_gsxv3 = "top-1/2 -start-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
 		}
 		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line carousel.gsx:158:3
-			_gsxgw.Node(ctx, icon.ArrowLeft())
-//line carousel.gsx:159:3
+			var _gsxv5 string
+			switch orientation {
+			case "vertical":
+				_gsxv5 = ""
+			default:
+				_gsxv5 = "rtl:rotate-180"
+			}
+			_gsxgw.Node(ctx, icon.ArrowLeft(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv5))}}...))
+//line carousel.gsx:161:3
 			_gsxgw.S("<span")
 			_gsxgw.BoolAttr("data-gsxui-slot-carousel-control-label", true)
 			_gsxgw.S(">Previous slide</span>")
@@ -246,30 +253,37 @@ func CarouselPrevious(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line carousel.gsx:163:1
+//line carousel.gsx:165:1
 func CarouselNext(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:164:2
-		_gsxa7 := _gsxrt.Attrs{{Key: "data-orientation", Value: _gsxstd.Default((orientation), "horizontal")}}
-		_gsxv5 := "absolute size-8 rounded-full"
-		var _gsxv6 string
+//line carousel.gsx:166:2
+		_gsxa8 := _gsxrt.Attrs{{Key: "data-orientation", Value: _gsxstd.Default((orientation), "horizontal")}}
+		_gsxv6 := "absolute size-8 rounded-full"
+		var _gsxv7 string
 		switch orientation {
 		case "vertical":
-			_gsxv6 = "-bottom-12 left-1/2 -translate-x-1/2 rotate-90"
+			_gsxv7 = "-bottom-12 left-1/2 -translate-x-1/2 rotate-90"
 		default:
-			_gsxv6 = "top-1/2 -right-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
+			_gsxv7 = "top-1/2 -end-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
 		}
 		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line carousel.gsx:180:3
-			_gsxgw.Node(ctx, icon.ArrowRight())
-//line carousel.gsx:181:3
+//line carousel.gsx:182:3
+			var _gsxv9 string
+			switch orientation {
+			case "vertical":
+				_gsxv9 = ""
+			default:
+				_gsxv9 = "rtl:rotate-180"
+			}
+			_gsxgw.Node(ctx, icon.ArrowRight(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv9))}}...))
+//line carousel.gsx:185:3
 			_gsxgw.S("<span")
 			_gsxgw.BoolAttr("data-gsxui-slot-carousel-control-label", true)
 			_gsxgw.S(">Next slide</span>")
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxa7, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv5), _gsxrt.Class(_gsxv6))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-carousel-next", Value: _gsxrt.Toggle(true)}})))
+		}), _gsxrt.ConcatAttrs(_gsxa8, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(_gsxv6), _gsxrt.Class(_gsxv7))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-carousel-next", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }

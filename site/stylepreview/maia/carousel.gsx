@@ -67,7 +67,7 @@ component CarouselContent(orientation string, children gsx.Node, attrs gsx.Attrs
 	>
 		<div
 			data-orientation={orientation |> default("horizontal")}
-			class={ switch orientation { case "vertical": "-mt-4" default: "-ml-4" } }
+			class={ switch orientation { case "vertical": "-mt-4" default: "-ms-4" } }
 			{ attrs... }
 			data-gsxui-slot-carousel-track
 		>
@@ -101,7 +101,7 @@ component CarouselItem(orientation string, children gsx.Node, attrs gsx.Attrs) {
 		role="group"
 		aria-roledescription="slide"
 		data-orientation={orientation |> default("horizontal")}
-		class={ switch orientation { case "vertical": "pt-4 -scroll-mt-4" default: "pl-4 -scroll-ml-4" } }
+		class={ switch orientation { case "vertical": "pt-4 -scroll-mt-4" default: "ps-4 -scroll-ms-4" } }
 		{ attrs... }
 		data-gsxui-slot-carousel-item
 	>
@@ -149,13 +149,15 @@ component CarouselPrevious(orientation string, attrs gsx.Attrs) {
 			case "vertical":
 				"-top-12 left-1/2 -translate-x-1/2 rotate-90"
 			default:
-				"top-1/2 -left-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
+				"top-1/2 -start-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
 			}
 		}
 		{ attrs... }
 		data-gsxui-slot-carousel-previous
 	>
-		<icon.ArrowLeft/>
+		<icon.ArrowLeft
+			class={ switch orientation { case "vertical": "" default: "rtl:rotate-180" } }
+		/>
 		<span data-gsxui-slot-carousel-control-label>Previous slide</span>
 	</Button>
 }
@@ -171,13 +173,15 @@ component CarouselNext(orientation string, attrs gsx.Attrs) {
 			case "vertical":
 				"-bottom-12 left-1/2 -translate-x-1/2 rotate-90"
 			default:
-				"top-1/2 -right-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
+				"top-1/2 -end-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
 			}
 		}
 		{ attrs... }
 		data-gsxui-slot-carousel-next
 	>
-		<icon.ArrowRight/>
+		<icon.ArrowRight
+			class={ switch orientation { case "vertical": "" default: "rtl:rotate-180" } }
+		/>
 		<span data-gsxui-slot-carousel-control-label>Next slide</span>
 	</Button>
 }

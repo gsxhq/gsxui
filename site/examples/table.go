@@ -15,4 +15,10 @@ func init() {
 		Node:       exampletable.Data(),
 		SourcePath: "table/data.gsx",
 	})
+	Register("table", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       exampletable.Rtl(),
+		SourcePath: "table/rtl.gsx",
+	})
 }

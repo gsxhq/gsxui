@@ -9,4 +9,10 @@ func init() {
 		Node:       exampleinputgroup.Basic(),
 		SourcePath: "inputgroup/basic.gsx",
 	})
+	Register("input-group", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       exampleinputgroup.Rtl(),
+		SourcePath: "inputgroup/rtl.gsx",
+	})
 }

@@ -65,7 +65,7 @@ func sheetContentClass(side string) string {
 // sheetCloseButtonClass and sheetCloseIconClass are the resolved classes of
 // the close parts SheetContent injects.
 func sheetCloseButtonClass() string {
-	return "absolute top-3 right-3 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
+	return "absolute top-3 end-3 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
 }
 
 func sheetCloseIconClass() string { return "size-4" }

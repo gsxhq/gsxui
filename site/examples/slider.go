@@ -9,4 +9,10 @@ func init() {
 		Node:       exampleslider.Basic(),
 		SourcePath: "slider/basic.gsx",
 	})
+	Register("slider", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       exampleslider.Rtl(),
+		SourcePath: "slider/rtl.gsx",
+	})
 }

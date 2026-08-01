@@ -15,4 +15,10 @@ func init() {
 		Node:       examplenavigationmenu.Mega(),
 		SourcePath: "navigationmenu/mega.gsx",
 	})
+	Register("navigation-menu", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplenavigationmenu.Rtl(),
+		SourcePath: "navigationmenu/rtl.gsx",
+	})
 }

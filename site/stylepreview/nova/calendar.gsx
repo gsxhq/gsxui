@@ -753,7 +753,7 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 					data-gsxui-slot-calendar-nav-button
 					data-gsxui-slot-button
 				>
-					<icon.ChevronLeft/>
+					<icon.ChevronLeft class={ "rtl:rotate-180" }/>
 				</button>
 				<button
 					type="button"
@@ -769,7 +769,7 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 					data-gsxui-slot-calendar-nav-button
 					data-gsxui-slot-button
 				>
-					<icon.ChevronRight/>
+					<icon.ChevronRight class={ "rtl:rotate-180" }/>
 				</button>
 			</nav>
 			<div
@@ -919,7 +919,7 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 										data-range-end={boolStr(rEnd)}
 										disabled={(dayDis && !tabStopDisabled) || hiddenDay}
 										class={
-											"min-w-(--cell-size) flex aspect-square h-auto w-full flex-col gap-1 leading-none font-normal [[data-gsxui-slot-calendar-day]:first-child[data-selected=true]>&]:rounded-l-md [[data-gsxui-slot-calendar-day]:last-child[data-selected=true]>&]:rounded-r-md [[data-gsxui-slot-calendar-day][data-focused]>&]:relative [[data-gsxui-slot-calendar-day][data-focused]>&]:z-10 [[data-gsxui-slot-calendar-day][data-focused]>&]:border-ring [[data-gsxui-slot-calendar-day][data-focused]>&]:ring-[3px] [[data-gsxui-slot-calendar-day][data-focused]>&]:ring-ring/50 data-[range-end=true]:rounded-md data-[range-end=true]:rounded-r-md data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:rounded-md data-[range-start=true]:rounded-l-md data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-accent-foreground [&>span]:text-xs [&>span]:opacity-70"
+											"min-w-(--cell-size) flex aspect-square h-auto w-full flex-col gap-1 leading-none font-normal [[data-gsxui-slot-calendar-day]:first-child[data-selected=true]>&]:rounded-s-md [[data-gsxui-slot-calendar-day]:last-child[data-selected=true]>&]:rounded-e-md [[data-gsxui-slot-calendar-day][data-focused]>&]:relative [[data-gsxui-slot-calendar-day][data-focused]>&]:z-10 [[data-gsxui-slot-calendar-day][data-focused]>&]:border-ring [[data-gsxui-slot-calendar-day][data-focused]>&]:ring-[3px] [[data-gsxui-slot-calendar-day][data-focused]>&]:ring-ring/50 data-[range-end=true]:rounded-md data-[range-end=true]:rounded-e-md data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:rounded-md data-[range-start=true]:rounded-s-md data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-accent-foreground [&>span]:text-xs [&>span]:opacity-70"
 										}
 										data-gsxui-slot-calendar-day-button
 										data-gsxui-slot-button

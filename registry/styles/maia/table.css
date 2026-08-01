@@ -57,14 +57,14 @@
   }
 
   .gsxui-recipe-table-head {
-    @apply h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground;
-    @apply has-[[role=checkbox]]:pr-0;
+    @apply h-10 px-2 text-start align-middle font-medium whitespace-nowrap text-foreground;
+    @apply has-[[role=checkbox]]:pe-0;
     @apply [&>[role=checkbox]]:translate-y-[2px];
   }
 
   .gsxui-recipe-table-cell {
     @apply p-2 align-middle whitespace-nowrap;
-    @apply has-[[role=checkbox]]:pr-0;
+    @apply has-[[role=checkbox]]:pe-0;
     @apply [&>[role=checkbox]]:translate-y-[2px];
   }
 

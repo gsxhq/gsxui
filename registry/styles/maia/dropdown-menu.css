@@ -55,7 +55,7 @@
   }
 
   .gsxui-recipe-dropdown-menu-checkbox-item {
-    @apply relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none;
+    @apply relative flex cursor-default items-center gap-1.5 rounded-md py-1 pe-8 ps-1.5 text-sm outline-hidden select-none;
     @apply focus:bg-accent focus:text-accent-foreground;
     @apply data-disabled:pointer-events-none;
     @apply [&_svg]:pointer-events-none [&_svg]:shrink-0;
@@ -64,13 +64,13 @@
   }
 
   .gsxui-recipe-dropdown-menu-checkbox-item-indicator {
-    @apply pointer-events-none absolute right-2 hidden size-4 items-center justify-center;
+    @apply pointer-events-none absolute end-2 hidden size-4 items-center justify-center;
     @apply [[data-state=checked]_&]:flex;
     @apply [&>svg]:size-4;
   }
 
   .gsxui-recipe-dropdown-menu-radio-item {
-    @apply relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none;
+    @apply relative flex cursor-default items-center gap-1.5 rounded-md py-1 pe-8 ps-1.5 text-sm outline-hidden select-none;
     @apply focus:bg-accent focus:text-accent-foreground;
     @apply data-disabled:pointer-events-none;
     @apply [&_svg]:pointer-events-none [&_svg]:shrink-0;
@@ -79,7 +79,7 @@
   }
 
   .gsxui-recipe-dropdown-menu-radio-item-indicator {
-    @apply pointer-events-none absolute right-2 hidden size-4 items-center justify-center;
+    @apply pointer-events-none absolute end-2 hidden size-4 items-center justify-center;
     @apply [[data-state=checked]_&]:flex;
     @apply [&>svg]:size-2 [&>svg]:fill-current;
   }
@@ -93,7 +93,7 @@
   }
 
   .gsxui-recipe-dropdown-menu-shortcut {
-    @apply ml-auto text-xs tracking-widest text-muted-foreground;
+    @apply ms-auto text-xs tracking-widest text-muted-foreground;
   }
 
   .gsxui-recipe-dropdown-menu-sub {
@@ -107,7 +107,8 @@
     @apply [&_svg]:pointer-events-none [&_svg]:shrink-0;
     @apply [&_svg:not([class*='size-'])]:size-4;
     @apply [&_svg:not([class*='text-'])]:text-muted-foreground;
-    @apply [&>svg:last-child]:ml-auto [&>svg:last-child]:size-4;
+    @apply [&>svg:last-child]:ms-auto [&>svg:last-child]:size-4;
+    @apply [&>svg:last-child]:rtl:rotate-180;
   }
 
   .gsxui-recipe-dropdown-menu-sub-content {

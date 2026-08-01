@@ -40,9 +40,9 @@
   }
 
   .gsxui-recipe-input-otp-slot {
-    @apply relative flex size-8 items-center justify-center border-y border-r border-input text-sm transition-all outline-none;
-    @apply first:rounded-l-lg first:border-l;
-    @apply last:rounded-r-lg;
+    @apply relative flex size-8 items-center justify-center border-y border-e border-input text-sm transition-all outline-none;
+    @apply first:rounded-s-lg first:border-s;
+    @apply last:rounded-e-lg;
     @apply aria-invalid:border-destructive;
     @apply data-[active=true]:z-10 data-[active=true]:border-ring data-[active=true]:ring-3 data-[active=true]:ring-ring/50;
     @apply data-[active=true]:aria-invalid:border-destructive data-[active=true]:aria-invalid:ring-destructive/20;

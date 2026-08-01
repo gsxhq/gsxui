@@ -62,11 +62,11 @@
   }
 
   .gsxui-recipe-input-group-addon-align-inline-start {
-    @apply order-first pl-2;
+    @apply order-first ps-2;
   }
 
   .gsxui-recipe-input-group-addon-align-inline-end {
-    @apply order-last pr-2;
+    @apply order-last pe-2;
   }
 
   /* The second rule is default.css's

@@ -27,4 +27,10 @@ func init() {
 		Node:       examplecarousel.Api(),
 		SourcePath: "carousel/api.gsx",
 	})
+	Register("carousel", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplecarousel.Rtl(),
+		SourcePath: "carousel/rtl.gsx",
+	})
 }

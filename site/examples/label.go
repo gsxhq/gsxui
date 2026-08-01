@@ -15,4 +15,10 @@ func init() {
 		Node:       examplelabel.Disabled(),
 		SourcePath: "label/disabled.gsx",
 	})
+	Register("label", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplelabel.Rtl(),
+		SourcePath: "label/rtl.gsx",
+	})
 }

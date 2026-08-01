@@ -696,12 +696,12 @@ test("DrawerContent's four side arms each resolve to their own anchoring", async
   const expected = {
     bottom: { borderTopWidth: "1px", borderBottomWidth: "0px", marginTop: "96px", textAlign: "center" },
     top: { borderTopWidth: "0px", borderBottomWidth: "1px", marginBottom: "96px", textAlign: "center" },
-    left: { borderRightWidth: "1px", borderLeftWidth: "0px", textAlign: "left" },
-    right: { borderLeftWidth: "1px", borderRightWidth: "0px", textAlign: "left" },
+    left: { borderRightWidth: "1px", borderLeftWidth: "0px", textAlign: "start" },
+    right: { borderLeftWidth: "1px", borderRightWidth: "0px", textAlign: "start" },
   } as const;
-  // left/right expect "left" rather than the inherited "start": the suite
-  // viewport is 1280px, above the md breakpoint the side arms' own
-  // md:[&_[data-gsxui-slot-drawer-header]]:text-left fires at.
+  // left/right expect "start": the suite viewport is 1280px, above the md
+  // breakpoint the side arms' own
+  // md:[&_[data-gsxui-slot-drawer-header]]:text-start fires at.
   for (const [side, want] of Object.entries(expected)) {
     const content = page.locator(`dialog[data-gsxui-slot-drawer-content][data-side="${side}"]`);
     await content.evaluate((el) =>

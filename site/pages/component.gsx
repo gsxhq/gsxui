@@ -37,6 +37,7 @@ type exampleProps struct {
 	Isolated      bool
 	ViewportWidth int
 	Previews      []examples.Preview
+	PreviewRTL    bool
 }
 
 // Props resolves the {name} path param against the examples registry.
@@ -62,6 +63,7 @@ func (Component) Props(r *http.Request) (ComponentProps, error) {
 			Isolated:      ex.Isolated,
 			ViewportWidth: ex.ViewportWidth,
 			Previews:      ex.Previews,
+			PreviewRTL:    ex.PreviewRTL,
 		}
 	}
 	return ComponentProps{Name: name, Title: capitalize(name), Examples: eps}, nil
@@ -117,7 +119,7 @@ func componentTOCItems(examples []exampleProps) []docTOCItem {
 	return items
 }
 
-component isolatedExamplePreview(title string, src string, viewportWidth int, tall bool) {
+component isolatedExamplePreview(title string, src string, viewportWidth int, tall bool, previewRTL bool) {
 	{{
 		surfaceClass := "w-full overflow-hidden rounded-lg border bg-background"
 		if tall {
@@ -130,7 +132,16 @@ component isolatedExamplePreview(title string, src string, viewportWidth int, ta
 			iframeClass += " w-full"
 		}
 	}}
-	<div data-site-isolated-preview-surface class={ surfaceClass }>
+	{/* A fixed-width canvas is clipped from the surface's inline end; an RTL
+	     canvas anchors its chrome on the right, so flip the surface's own
+	     direction to keep that edge visible. */}
+	<div
+		data-site-isolated-preview-surface
+		class={ surfaceClass }
+		{ if previewRTL {
+			dir="rtl"
+		} }
+	>
 		<iframe
 			data-site-isolated-preview
 			title={title}
@@ -158,6 +169,7 @@ component (c Component) Page(props ComponentProps) {
 							src={examplePreviewURL(props.Name, ex.Name, "")}
 							viewportWidth={ex.ViewportWidth}
 							tall={true}
+							previewRTL={ex.PreviewRTL}
 						/>
 					} else if ex.Isolated {
 						<div class="flex flex-col gap-6">
@@ -169,6 +181,7 @@ component (c Component) Page(props ComponentProps) {
 										src={examplePreviewURL(props.Name, ex.Name, preview.Name)}
 										viewportWidth={ex.ViewportWidth}
 										tall={false}
+										previewRTL={ex.PreviewRTL}
 									/>
 								</div>
 							} }

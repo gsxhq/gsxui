@@ -123,7 +123,7 @@ func TableHead(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line table.gsx:45:2
 		_gsxgw.S("<th class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground has-[[role=checkbox]]:pr-0 [&>[role=checkbox]]:translate-y-[2px]"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("h-10 px-2 text-start align-middle font-medium whitespace-nowrap text-foreground has-[[role=checkbox]]:pe-0 [&>[role=checkbox]]:translate-y-[2px]"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "th", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-table-head"})
@@ -142,7 +142,7 @@ func TableCell(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line table.gsx:57:2
 		_gsxgw.S("<td class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("p-2 align-middle whitespace-nowrap has-[[role=checkbox]]:pr-0 [&>[role=checkbox]]:translate-y-[2px]"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("p-2 align-middle whitespace-nowrap has-[[role=checkbox]]:pe-0 [&>[role=checkbox]]:translate-y-[2px]"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "td", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-table-cell"})

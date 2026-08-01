@@ -55,7 +55,7 @@
   }
 
   .gsxui-recipe-combobox-item {
-    @apply relative flex w-full cursor-default items-center gap-2 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none;
+    @apply relative flex w-full cursor-default items-center gap-2 rounded-md py-1 pe-8 ps-1.5 text-sm outline-hidden select-none;
     @apply data-[highlighted=true]:bg-accent data-[highlighted=true]:text-accent-foreground;
     @apply data-disabled:pointer-events-none;
     @apply [&_svg]:pointer-events-none [&_svg]:shrink-0;
@@ -64,7 +64,7 @@
   }
 
   .gsxui-recipe-combobox-item-indicator {
-    @apply pointer-events-none absolute right-2 hidden size-4 items-center justify-center;
+    @apply pointer-events-none absolute end-2 hidden size-4 items-center justify-center;
     @apply [&>svg]:size-4;
     @apply pointer-coarse:[&>svg]:size-5;
   }

@@ -5,6 +5,13 @@ import "github.com/gsxhq/gsx"
 // Drawer composes Dialog's root and behavior while exposing a directional
 // side-anchored content role. Drag-to-dismiss remains outside this component.
 //
+// direction is physical, matching shadcn: direction="left"/"right" always
+// anchors to that physical viewport edge (position, border, corner radius
+// and slide direction), in both dir="ltr" and dir="rtl" documents.
+// direction="top"/"bottom" is unaffected by text direction. Interior
+// presentation — header/footer padding and title/description text
+// alignment — is logical and follows dir normally.
+//
 // DrawerContent deliberately does NOT reuse Dialog's content presentation —
 // it must not inherit the plain-modal box — so it carries the shared
 // <dialog> chrome as its own recipe utilities instead. Every class attribute
@@ -27,10 +34,7 @@ component DrawerTrigger(children gsx.Node, attrs gsx.Attrs) {
 
 component DrawerContent(direction string, children gsx.Node, attrs gsx.Attrs) {
 	<dialog
-		class={
-			drawer.Content(),
-			drawer.ContentSide(direction),
-		}
+		class={ drawer.Content(), drawer.ContentSide(direction) }
 		data-state="closed"
 		data-side={direction |> default("bottom")}
 		{ attrs... }
@@ -57,7 +61,9 @@ component DrawerTitle(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component DrawerDescription(children gsx.Node, attrs gsx.Attrs) {
-	<p class={ drawer.Description() } { attrs... } data-gsxui-slot-drawer-description data-gsxui-slot-dialog-description>{ children }</p>
+	<p class={ drawer.Description() } { attrs... } data-gsxui-slot-drawer-description data-gsxui-slot-dialog-description>
+		{ children }
+	</p>
 }
 
 component DrawerClose(children gsx.Node, attrs gsx.Attrs) {

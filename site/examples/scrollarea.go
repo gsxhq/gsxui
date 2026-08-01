@@ -15,4 +15,10 @@ func init() {
 		Node:       examplescrollarea.Horizontal(),
 		SourcePath: "scrollarea/horizontal.gsx",
 	})
+	Register("scroll-area", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplescrollarea.Rtl(),
+		SourcePath: "scrollarea/rtl.gsx",
+	})
 }

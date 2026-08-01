@@ -429,21 +429,21 @@
       > select[aria-hidden="true"]:last-child
     )
     > :where([data-gsxui-slot-select-trigger]):last-of-type {
-    @apply rounded-r-lg;
+    @apply rounded-e-lg;
   }
   :where([data-gsxui-slot-button-group])[data-orientation="horizontal"]
     > :not(:first-child) {
-    @apply rounded-l-none border-l-0;
+    @apply rounded-s-none border-s-0;
   }
   :where([data-gsxui-slot-button-group])[data-orientation="horizontal"]
     > :not(:last-child) {
-    @apply rounded-r-none;
+    @apply rounded-e-none;
   }
   :where([data-gsxui-slot-button-group])[data-orientation="horizontal"]
     > :where(:not(select[aria-hidden="true"])):not(
       :has(~ :not(select[aria-hidden="true"]))
     ) {
-    @apply rounded-r-lg;
+    @apply rounded-e-lg;
   }
   :where([data-gsxui-slot-button-group])[data-orientation="vertical"]
     > :not(:first-child) {

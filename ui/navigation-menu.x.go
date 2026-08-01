@@ -194,7 +194,7 @@ func NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 //line navigation-menu.gsx:135:15
 		_gsxgw.Text(string(" "))
 //line navigation-menu.gsx:136:3
-		_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("relative top-px ml-1 size-3 transition duration-300 [[data-state=open]_&]:rotate-180"))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-navigation-menu-trigger-icon", Value: _gsxrt.Toggle(true)}})...))
+		_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("relative top-px ms-1 size-3 transition duration-300 [[data-state=open]_&]:rotate-180"))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-navigation-menu-trigger-icon", Value: _gsxrt.Toggle(true)}})...))
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
@@ -271,7 +271,7 @@ func NavigationMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line navigation-menu.gsx:207:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("top-0 left-0 p-1 md:absolute [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:top-full [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:mt-1.5 [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:overflow-hidden [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:rounded-lg [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:border [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:bg-popover [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:text-popover-foreground [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:shadow opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 data-[side=bottom]:starting:[&:popover-open]:-translate-y-2 data-[side=left]:starting:[&:popover-open]:translate-x-2 data-[side=right]:starting:[&:popover-open]:-translate-x-2 data-[side=top]:starting:[&:popover-open]:translate-y-2"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("top-0 start-0 p-1 md:absolute [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:top-full [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:mt-1.5 [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:overflow-hidden [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:rounded-lg [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:border [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:bg-popover [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:text-popover-foreground [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:shadow opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 data-[side=bottom]:starting:[&:popover-open]:-translate-y-2 data-[side=left]:starting:[&:popover-open]:translate-x-2 data-[side=right]:starting:[&:popover-open]:-translate-x-2 data-[side=top]:starting:[&:popover-open]:translate-y-2"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("popover") {
 			_gsxgw.S(" popover=\"manual\"")

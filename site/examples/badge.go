@@ -15,4 +15,10 @@ func init() {
 		Node:       examplebadge.Variants(),
 		SourcePath: "badge/variants.gsx",
 	})
+	Register("badge", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplebadge.Rtl(),
+		SourcePath: "badge/rtl.gsx",
+	})
 }

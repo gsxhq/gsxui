@@ -15,4 +15,10 @@ func init() {
 		Node:       examplefield.Invalid(),
 		SourcePath: "field/invalid.gsx",
 	})
+	Register("field", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplefield.Rtl(),
+		SourcePath: "field/rtl.gsx",
+	})
 }

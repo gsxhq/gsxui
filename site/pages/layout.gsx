@@ -37,6 +37,15 @@ component docsNavigation(active string) {
 			>
 				Theming
 			</a>
+			<a
+				href={Rtl{} |> url}
+				class={
+					"rounded-md px-2 py-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
+					"bg-accent text-accent-foreground": active == "rtl"
+				}
+			>
+				RTL
+			</a>
 		</div>
 		<div class="flex flex-col gap-1">
 			<h3 class="px-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Components</h3>
@@ -151,6 +160,7 @@ component siteLayout(title string, active string, mode layoutMode, toc []docTOCI
 									<ui.CommandItem data-href={ComponentsIndex{} |> url}>Components</ui.CommandItem>
 									<ui.CommandItem data-href={GettingStarted{} |> url}>Getting Started</ui.CommandItem>
 									<ui.CommandItem data-href={Theming{} |> url}>Theming</ui.CommandItem>
+									<ui.CommandItem data-href={Rtl{} |> url}>RTL</ui.CommandItem>
 									<ui.CommandItem data-href={Theme{} |> url}>Theme Editor</ui.CommandItem>
 								</ui.CommandGroup>
 							</ui.CommandList>
