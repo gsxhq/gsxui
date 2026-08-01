@@ -33,4 +33,10 @@ func init() {
 		Node:       exampledropdown.Submenu(),
 		SourcePath: "dropdown/submenu.gsx",
 	})
+	Register("dropdown-menu", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       exampledropdown.Rtl(),
+		SourcePath: "dropdown/rtl.gsx",
+	})
 }

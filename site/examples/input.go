@@ -27,4 +27,10 @@ func init() {
 		Node:       exampleinput.FormRow(),
 		SourcePath: "input/form-row.gsx",
 	})
+	Register("input", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       exampleinput.Rtl(),
+		SourcePath: "input/rtl.gsx",
+	})
 }

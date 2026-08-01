@@ -9,4 +9,10 @@ func init() {
 		Node:       exampleempty.Basic(),
 		SourcePath: "empty/basic.gsx",
 	})
+	Register("empty", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       exampleempty.Rtl(),
+		SourcePath: "empty/rtl.gsx",
+	})
 }

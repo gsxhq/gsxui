@@ -9,4 +9,10 @@ func init() {
 		Node:       examplecollapsible.Basic(),
 		SourcePath: "collapsible/basic.gsx",
 	})
+	Register("collapsible", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplecollapsible.Rtl(),
+		SourcePath: "collapsible/rtl.gsx",
+	})
 }

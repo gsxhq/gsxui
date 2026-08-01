@@ -9,4 +9,10 @@ func init() {
 		Node:       examplehovercard.Basic(),
 		SourcePath: "hovercard/basic.gsx",
 	})
+	Register("hover-card", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplehovercard.Rtl(),
+		SourcePath: "hovercard/rtl.gsx",
+	})
 }

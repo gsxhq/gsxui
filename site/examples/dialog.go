@@ -21,4 +21,10 @@ func init() {
 		Node:       exampledialog.Events(),
 		SourcePath: "dialog/events.gsx",
 	})
+	Register("dialog", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       exampledialog.Rtl(),
+		SourcePath: "dialog/rtl.gsx",
+	})
 }
