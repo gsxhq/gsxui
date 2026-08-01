@@ -50,5 +50,6 @@ func init() {
 		SourcePath:    "sidebar/rtl.gsx",
 		Isolated:      true,
 		ViewportWidth: sidebarPreviewViewportWidth,
+		PreviewRTL:    true,
 	})
 }
