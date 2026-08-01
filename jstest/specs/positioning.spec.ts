@@ -153,3 +153,58 @@ test("reposition listeners attach once per open and detach on close", async ({
     expect(await countWindowListeners(), "detached on close, no leak").toBe(baseline);
   }
 });
+
+test("dropdown content start-aligns to the trigger's right edge under dir=rtl", async ({
+  page,
+}) => {
+  await page.goto("/x/dropdown-menu/checkboxes");
+  await page.evaluate(() => document.documentElement.setAttribute("dir", "rtl"));
+  const trigger = page.locator("[data-gsxui-slot-dropdown-menu-trigger]");
+  const content = page.locator("[data-gsxui-slot-dropdown-menu-content]");
+  await trigger.click();
+  await expect(content).toBeVisible();
+  // Layout metrics (style.left/offsetWidth), not boundingBox: mid-enter the
+  // scale-95 transition skews the painted box by several px (same
+  // discrimination the scroll-tracking pin above documents), while layout
+  // position/size are what the engine actually computed.
+  const t = (await trigger.boundingBox())!;
+  const c = await content.evaluate((el: HTMLElement) => ({
+    left: parseFloat(el.style.left),
+    width: el.offsetWidth,
+  }));
+  // align:"start" under RTL logically starts from the trigger's right edge,
+  // not its left — the content's right edge lines up with the trigger's.
+  expect(Math.abs(c.left + c.width - (t.x + t.width))).toBeLessThan(1.5);
+});
+
+test("context-menu submenu prefers physical left under dir=rtl", async ({ page }) => {
+  await page.goto("/x/context-menu/full");
+  await page.evaluate(() => document.documentElement.setAttribute("dir", "rtl"));
+  // Open the menu at a fixed viewport coordinate (contextmenu's virtual
+  // anchor is the click point, not the trigger's own box) with generous
+  // room on BOTH physical sides — isolates the side mirroring this test
+  // targets from the main-axis room-based flip applyPlacement already does.
+  await page.evaluate(() => {
+    const el = document.querySelector(
+      "[data-gsxui-slot-context-menu-trigger]",
+    )!;
+    el.dispatchEvent(
+      new MouseEvent("contextmenu", {
+        bubbles: true,
+        cancelable: true,
+        clientX: 640,
+        clientY: 300,
+      }),
+    );
+  });
+  const subTrigger = page.locator("[data-gsxui-slot-context-menu-sub-trigger]");
+  await expect(subTrigger).toBeVisible();
+  await subTrigger.hover();
+  const subContent = page.locator("[data-gsxui-slot-context-menu-sub-content]");
+  await expect(subContent).toBeVisible();
+
+  await expect(subContent).toHaveAttribute("data-side", "left");
+  const parent = (await subTrigger.boundingBox())!;
+  const sub = (await subContent.boundingBox())!;
+  expect(sub.x + sub.width).toBeLessThanOrEqual(parent.x + 2);
+});

@@ -158,6 +158,12 @@ export function release(content) {
   else content.removeAttribute("data-side");
 }
 
+// isRTL reports the resolved direction at el — computed style, so it honors
+// both dir attributes and CSS `direction`.
+export function isRTL(el) {
+  return getComputedStyle(el).direction === "rtl";
+}
+
 function applyPlacement(content, a, o) {
   content.style.position = "fixed";
   content.style.inset = "auto";
@@ -168,10 +174,29 @@ function applyPlacement(content, a, o) {
   const vh = document.documentElement.clientHeight;
   const w = content.offsetWidth;
   let h = content.offsetHeight;
+
+  // Resolve logical options (side/align/alignOffset) to physical ones
+  // before the rest of the math — anchor rects have no element when a
+  // virtual rect is passed (context-menu's pointer anchor), so direction
+  // is read from `content`, which lives in the same direction context.
   const vertical = o.side === "top" || o.side === "bottom";
+  let side = o.side;
+  let align = o.align;
+  let alignOffset = o.alignOffset;
+  if (isRTL(content)) {
+    if (vertical) {
+      // horizontal cross-axis: mirror alignment and its offset
+      if (align === "start") align = "end";
+      else if (align === "end") align = "start";
+      alignOffset = -alignOffset;
+    } else {
+      // horizontal main axis: mirror the preferred side
+      side = side === "left" ? "right" : "left";
+    }
+  }
+
   // Main-axis flip: if the preferred side can't hold the content and the
   // opposite side has more room, flip (Radix flip middleware, main axis).
-  let side = o.side;
   if (o.flip) {
     const room = {
       top: a.top - o.sideOffset,
@@ -205,12 +230,12 @@ function applyPlacement(content, a, o) {
   if (vertical) {
     top =
       side === "bottom" ? a.bottom + o.sideOffset : a.top - o.sideOffset - h;
-    left = alignedCoord(o.align, a.left, a.width, w) + o.alignOffset;
+    left = alignedCoord(align, a.left, a.width, w) + alignOffset;
     left = Math.max(0, Math.min(left, vw - w)); // cross-axis shift
   } else {
     left =
       side === "right" ? a.right + o.sideOffset : a.left - o.sideOffset - w;
-    top = alignedCoord(o.align, a.top, a.height, h) + o.alignOffset;
+    top = alignedCoord(align, a.top, a.height, h) + alignOffset;
     top = Math.max(0, Math.min(top, vh - h)); // cross-axis shift
   }
   // Last-resort clamp on BOTH axes (the pre-flip clampToViewport
