@@ -9,4 +9,10 @@ func init() {
 		Node:       exampletoggle.Basic(),
 		SourcePath: "toggle/basic.gsx",
 	})
+	Register("toggle", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       exampletoggle.Rtl(),
+		SourcePath: "toggle/rtl.gsx",
+	})
 }

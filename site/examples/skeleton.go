@@ -15,4 +15,10 @@ func init() {
 		Node:       exampleskeleton.Card(),
 		SourcePath: "skeleton/card.gsx",
 	})
+	Register("skeleton", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       exampleskeleton.Rtl(),
+		SourcePath: "skeleton/rtl.gsx",
+	})
 }

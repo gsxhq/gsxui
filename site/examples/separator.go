@@ -15,4 +15,10 @@ func init() {
 		Node:       exampleseparator.Orientation(),
 		SourcePath: "separator/orientation.gsx",
 	})
+	Register("separator", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       exampleseparator.Rtl(),
+		SourcePath: "separator/rtl.gsx",
+	})
 }

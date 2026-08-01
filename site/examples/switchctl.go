@@ -15,4 +15,10 @@ func init() {
 		Node:       exampleswitch.States(),
 		SourcePath: "switchctl/states.gsx",
 	})
+	Register("switch", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       exampleswitch.Rtl(),
+		SourcePath: "switchctl/rtl.gsx",
+	})
 }

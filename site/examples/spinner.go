@@ -9,4 +9,10 @@ func init() {
 		Node:       examplespinner.Basic(),
 		SourcePath: "spinner/basic.gsx",
 	})
+	Register("spinner", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplespinner.Rtl(),
+		SourcePath: "spinner/rtl.gsx",
+	})
 }
