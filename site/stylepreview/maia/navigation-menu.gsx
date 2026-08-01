@@ -134,7 +134,7 @@ component NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 	>
 		{ children }{ " " }
 		<icon.ChevronDown
-			class={ "relative top-px ml-1 size-3 transition duration-300 [[data-state=open]_&]:rotate-180" }
+			class={ "relative top-px ms-1 size-3 transition duration-300 [[data-state=open]_&]:rotate-180" }
 			data-gsxui-slot-navigation-menu-trigger-icon
 		/>
 	</button>
@@ -206,7 +206,7 @@ component NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 component NavigationMenuContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"top-0 left-0 p-1 md:absolute [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:top-full [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:mt-1.5 [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:overflow-hidden [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:rounded-lg [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:border [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:bg-popover [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:text-popover-foreground [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:shadow opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 data-[side=bottom]:starting:[&:popover-open]:-translate-y-2 data-[side=left]:starting:[&:popover-open]:translate-x-2 data-[side=right]:starting:[&:popover-open]:-translate-x-2 data-[side=top]:starting:[&:popover-open]:translate-y-2"
+			"top-0 start-0 p-1 md:absolute [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:top-full [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:mt-1.5 [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:overflow-hidden [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:rounded-lg [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:border [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:bg-popover [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:text-popover-foreground [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:shadow opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 data-[side=bottom]:starting:[&:popover-open]:-translate-y-2 data-[side=left]:starting:[&:popover-open]:translate-x-2 data-[side=right]:starting:[&:popover-open]:-translate-x-2 data-[side=top]:starting:[&:popover-open]:translate-y-2"
 		}
 		popover="manual"
 		data-state="closed"

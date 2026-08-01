@@ -343,7 +343,7 @@ func _gsxrenderSelectItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, value stri
 		}
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg]:text-muted-foreground [&_svg:not([class*='size-'])]:size-4 data-[state=checked]:[&>[data-gsxui-slot-select-item-indicator]]:flex"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pe-8 ps-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg]:text-muted-foreground [&_svg:not([class*='size-'])]:size-4 data-[state=checked]:[&>[data-gsxui-slot-select-item-indicator]]:flex"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-select-item"})
@@ -351,7 +351,7 @@ func _gsxrenderSelectItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, value stri
 	_gsxgw.S(">")
 //line select.gsx:175:3
 	_gsxgw.S("<span class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pointer-events-none absolute right-2 hidden size-4 items-center justify-center [&>svg]:size-4"))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pointer-events-none absolute end-2 hidden size-4 items-center justify-center [&>svg]:size-4"))
 	_gsxgw.S("\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-select-item-indicator", true)
 	_gsxgw.S(">")

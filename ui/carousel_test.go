@@ -95,10 +95,10 @@ func TestCarouselContentVerticalPinned(t *testing.T) {
 }
 
 func TestCarouselContentCallerClassMerges(t *testing.T) {
-	got := render(t, ui.CarouselContent("", gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "-ml-1"}}))
-	// The track's own -ml-4 and the caller's -ml-1 are both plain utilities
+	got := render(t, ui.CarouselContent("", gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "-ms-1"}}))
+	// The track's own -ms-4 and the caller's -ms-1 are both plain utilities
 	// on the same element now, so merge.Merge replaces rather than stacks.
-	want := `class="-ml-1" data-gsxui-slot-carousel-track`
+	want := `class="-ms-1" data-gsxui-slot-carousel-track`
 	if !strings.Contains(got, want) {
 		t.Errorf("caller class must displace the track's own spacing\nwant: %s\nin: %s", want, got)
 	}
@@ -122,7 +122,7 @@ func TestCarouselItemVerticalPinned(t *testing.T) {
 
 func TestCarouselItemCallerClassMerges(t *testing.T) {
 	got := render(t, ui.CarouselItem("", gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "md:basis-1/2"}}))
-	// md:basis-1/2 contests nothing the item's own pl-4/-scroll-ml-4 set, so
+	// md:basis-1/2 contests nothing the item's own pl-4/-scroll-ms-4 set, so
 	// both survive the merge — the caller class follows the slot's own.
 	want := canonicalCarouselClass("gsxui-recipe-carousel-item-orientation-horizontal")
 	want = want[:len(want)-1] + ` md:basis-1/2" data-gsxui-slot-carousel-item`

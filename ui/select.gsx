@@ -167,13 +167,13 @@ component SelectItem(value string, selected bool, disabled bool, children gsx.No
 			aria-disabled="true"
 		} }
 		class={
-			"relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg]:text-muted-foreground [&_svg:not([class*='size-'])]:size-4 data-[state=checked]:[&>[data-gsxui-slot-select-item-indicator]]:flex"
+			"relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pe-8 ps-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg]:text-muted-foreground [&_svg:not([class*='size-'])]:size-4 data-[state=checked]:[&>[data-gsxui-slot-select-item-indicator]]:flex"
 		}
 		{ attrs... }
 		data-gsxui-slot-select-item
 	>
 		<span
-			class={ "pointer-events-none absolute right-2 hidden size-4 items-center justify-center [&>svg]:size-4" }
+			class={ "pointer-events-none absolute end-2 hidden size-4 items-center justify-center [&>svg]:size-4" }
 			data-gsxui-slot-select-item-indicator
 		>
 			<icon.Check/>

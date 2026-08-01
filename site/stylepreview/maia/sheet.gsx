@@ -32,11 +32,11 @@ component SheetContent(side string, hideCloseButton bool, children gsx.Node, att
 			case "bottom":
 				"inset-x-0 bottom-0 top-auto h-auto w-full max-w-none border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom"
 			case "left":
-				"inset-y-0 left-0 right-auto h-full w-3/4 border-r sm:max-w-sm data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left"
+				"inset-y-0 start-0 end-auto h-full w-3/4 border-e sm:max-w-sm data-[state=closed]:slide-out-to-start data-[state=open]:slide-in-from-start"
 			case "top":
 				"inset-x-0 top-0 bottom-auto h-auto w-full max-w-none border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top"
 			default:
-				"inset-y-0 right-0 left-auto h-full w-3/4 border-l sm:max-w-sm data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right"
+				"inset-y-0 end-0 start-auto h-full w-3/4 border-s sm:max-w-sm data-[state=closed]:slide-out-to-end data-[state=open]:slide-in-from-end"
 			}
 		}
 		data-state="closed"
@@ -50,7 +50,7 @@ component SheetContent(side string, hideCloseButton bool, children gsx.Node, att
 			<button
 				type="button"
 				class={
-					"absolute top-3 right-3 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
+					"absolute top-3 end-3 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
 				}
 				data-gsxui-dialog-close
 				data-gsxui-slot-sheet-close-button

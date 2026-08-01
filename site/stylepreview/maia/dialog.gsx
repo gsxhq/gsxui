@@ -34,7 +34,7 @@ component DialogContent(hideCloseButton bool, children gsx.Node, attrs gsx.Attrs
 			<button
 				type="button"
 				class={
-					"absolute top-2 right-2 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
+					"absolute top-2 end-2 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
 				}
 				data-gsxui-dialog-close
 				data-gsxui-slot-dialog-close-button
@@ -64,7 +64,7 @@ component DialogContent(hideCloseButton bool, children gsx.Node, attrs gsx.Attrs
 }
 
 component DialogHeader(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "flex flex-col gap-2 text-center sm:text-left" } { attrs... } data-gsxui-slot-dialog-header>
+	<div class={ "flex flex-col gap-2 text-center sm:text-start" } { attrs... } data-gsxui-slot-dialog-header>
 		{ children }
 	</div>
 }

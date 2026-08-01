@@ -87,9 +87,9 @@ func _gsxrenderDrawerContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, directi
 	var _gsxv1 string
 	switch direction {
 	case "left":
-		_gsxv1 = "inset-y-0 left-0 right-auto h-full max-h-none w-3/4 rounded-r-xl border-r sm:max-w-sm data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left md:[&_[data-gsxui-slot-drawer-header]]:text-left"
+		_gsxv1 = "inset-y-0 start-0 end-auto h-full max-h-none w-3/4 rounded-e-xl border-e sm:max-w-sm data-[state=closed]:slide-out-to-start data-[state=open]:slide-in-from-start md:[&_[data-gsxui-slot-drawer-header]]:text-start"
 	case "right":
-		_gsxv1 = "inset-y-0 right-0 left-auto h-full max-h-none w-3/4 rounded-l-xl border-l sm:max-w-sm data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right md:[&_[data-gsxui-slot-drawer-header]]:text-left"
+		_gsxv1 = "inset-y-0 end-0 start-auto h-full max-h-none w-3/4 rounded-s-xl border-s sm:max-w-sm data-[state=closed]:slide-out-to-end data-[state=open]:slide-in-from-end md:[&_[data-gsxui-slot-drawer-header]]:text-start"
 	case "top":
 		_gsxv1 = "inset-x-0 top-0 bottom-auto mb-24 h-auto max-h-[80vh] w-full max-w-none rounded-b-xl border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top [&_[data-gsxui-slot-drawer-header]]:text-center"
 	default:

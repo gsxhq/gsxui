@@ -19,7 +19,7 @@ component TooltipContent(children gsx.Node, attrs gsx.Attrs) {
 		data-state="closed"
 		data-side="top"
 		class={
-			"z-50 w-fit origin-bottom gap-1.5 overflow-visible rounded-md bg-foreground px-3 py-1.5 text-xs text-balance text-background has-[[data-gsxui-slot-kbd]]:pr-1.5 opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 starting:[&:popover-open]:data-[side=bottom]:-translate-y-2 starting:[&:popover-open]:data-[side=left]:translate-x-2 starting:[&:popover-open]:data-[side=right]:-translate-x-2 starting:[&:popover-open]:data-[side=top]:translate-y-2"
+			"z-50 w-fit origin-bottom gap-1.5 overflow-visible rounded-md bg-foreground px-3 py-1.5 text-xs text-balance text-background has-[[data-gsxui-slot-kbd]]:pe-1.5 opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 starting:[&:popover-open]:data-[side=bottom]:-translate-y-2 starting:[&:popover-open]:data-[side=left]:translate-x-2 starting:[&:popover-open]:data-[side=right]:-translate-x-2 starting:[&:popover-open]:data-[side=top]:translate-y-2"
 		}
 		{ attrs... }
 		data-gsxui-slot-tooltip-content

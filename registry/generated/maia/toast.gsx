@@ -119,7 +119,7 @@ component Toast(toastType string, title string, description string, action strin
 		<button
 			type="button"
 			class={
-				"absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm"
+				"absolute -top-1.5 -end-1.5 flex size-5 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm"
 			}
 			aria-label="Close"
 			data-gsxui-slot-toast-close

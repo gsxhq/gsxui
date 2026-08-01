@@ -47,13 +47,13 @@ component InputGroupAddon(align string, children gsx.Node, attrs gsx.Attrs) {
 			"flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium text-muted-foreground select-none [&>kbd]:rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-4",
 			switch align {
 			case "inline-end":
-				"order-last pr-2"
+				"order-last pe-2"
 			case "block-start":
 				"order-first w-full justify-start px-2.5 pt-2 [[data-gsxui-slot-input-group]:has(>[data-gsxui-slot-input])>&]:pt-2 [&.border-b]:pb-2"
 			case "block-end":
 				"order-last w-full justify-start px-2.5 pb-2 [[data-gsxui-slot-input-group]:has(>[data-gsxui-slot-input])>&]:pb-2 [&.border-t]:pt-2"
 			default:
-				"order-first pl-2"
+				"order-first ps-2"
 			}
 		}
 		{ attrs... }

@@ -56,9 +56,9 @@ func drawerContentClass(side string) string {
 	case "top":
 		return base + " inset-x-0 top-0 bottom-auto mb-24 h-auto max-h-[80vh] w-full max-w-none rounded-b-xl border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top [&amp;_[data-gsxui-slot-drawer-header]]:text-center"
 	case "left":
-		return base + " inset-y-0 left-0 right-auto h-full max-h-none w-3/4 rounded-r-xl border-r sm:max-w-sm data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left md:[&amp;_[data-gsxui-slot-drawer-header]]:text-left"
+		return base + " inset-y-0 start-0 end-auto h-full max-h-none w-3/4 rounded-e-xl border-e sm:max-w-sm data-[state=closed]:slide-out-to-start data-[state=open]:slide-in-from-start md:[&amp;_[data-gsxui-slot-drawer-header]]:text-start"
 	case "right":
-		return base + " inset-y-0 right-0 left-auto h-full max-h-none w-3/4 rounded-l-xl border-l sm:max-w-sm data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right md:[&amp;_[data-gsxui-slot-drawer-header]]:text-left"
+		return base + " inset-y-0 end-0 start-auto h-full max-h-none w-3/4 rounded-s-xl border-s sm:max-w-sm data-[state=closed]:slide-out-to-end data-[state=open]:slide-in-from-end md:[&amp;_[data-gsxui-slot-drawer-header]]:text-start"
 	}
 	panic("unknown drawer side " + side)
 }

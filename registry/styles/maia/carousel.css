@@ -49,7 +49,7 @@
   }
 
   .gsxui-recipe-carousel-track-orientation-horizontal {
-    @apply -ml-4;
+    @apply -ms-4;
   }
 
   .gsxui-recipe-carousel-track-orientation-vertical {
@@ -57,7 +57,7 @@
   }
 
   .gsxui-recipe-carousel-item-orientation-horizontal {
-    @apply pl-4 -scroll-ml-4;
+    @apply ps-4 -scroll-ms-4;
   }
 
   .gsxui-recipe-carousel-item-orientation-vertical {
@@ -69,7 +69,7 @@
   }
 
   .gsxui-recipe-carousel-previous-orientation-horizontal {
-    @apply top-1/2 -left-12 -translate-y-1/2;
+    @apply top-1/2 -start-12 -translate-y-1/2;
     @apply active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)];
   }
 
@@ -82,7 +82,7 @@
   }
 
   .gsxui-recipe-carousel-next-orientation-horizontal {
-    @apply top-1/2 -right-12 -translate-y-1/2;
+    @apply top-1/2 -end-12 -translate-y-1/2;
     @apply active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)];
   }
 

@@ -72,7 +72,7 @@
 
   .gsxui-recipe-toggle-group-item-spacing-0 {
     @apply rounded-none shadow-none;
-    @apply data-[variant=outline]:border-l-0 data-[variant=outline]:first:border-l;
+    @apply data-[variant=outline]:border-s-0 data-[variant=outline]:first:border-s;
   }
 
   /* Not rounded-lg: ToggleGroupItem also carries data-gsxui-slot-toggle and
@@ -95,6 +95,6 @@
   }
 
   .gsxui-recipe-toggle-group-item-orientation-horizontal {
-    @apply data-[spacing=0]:first:rounded-l-lg data-[spacing=0]:last:rounded-r-lg;
+    @apply data-[spacing=0]:first:rounded-s-lg data-[spacing=0]:last:rounded-e-lg;
   }
 }

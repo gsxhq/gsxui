@@ -67,6 +67,6 @@
   }
 
   .gsxui-recipe-command-shortcut {
-    @apply ml-auto text-xs tracking-widest text-muted-foreground;
+    @apply ms-auto text-xs tracking-widest text-muted-foreground;
   }
 }

@@ -100,12 +100,12 @@
 
   .gsxui-recipe-calendar-day-button {
     @apply min-w-(--cell-size) flex aspect-square h-auto w-full flex-col gap-1 leading-none font-normal;
-    @apply [[data-gsxui-slot-calendar-day]:first-child[data-selected=true]>&]:rounded-l-md;
-    @apply [[data-gsxui-slot-calendar-day]:last-child[data-selected=true]>&]:rounded-r-md;
+    @apply [[data-gsxui-slot-calendar-day]:first-child[data-selected=true]>&]:rounded-s-md;
+    @apply [[data-gsxui-slot-calendar-day]:last-child[data-selected=true]>&]:rounded-e-md;
     @apply [[data-gsxui-slot-calendar-day][data-focused]>&]:relative [[data-gsxui-slot-calendar-day][data-focused]>&]:z-10 [[data-gsxui-slot-calendar-day][data-focused]>&]:border-ring [[data-gsxui-slot-calendar-day][data-focused]>&]:ring-[3px] [[data-gsxui-slot-calendar-day][data-focused]>&]:ring-ring/50;
-    @apply data-[range-end=true]:rounded-md data-[range-end=true]:rounded-r-md data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground;
+    @apply data-[range-end=true]:rounded-md data-[range-end=true]:rounded-e-md data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground;
     @apply data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground;
-    @apply data-[range-start=true]:rounded-md data-[range-start=true]:rounded-l-md data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground;
+    @apply data-[range-start=true]:rounded-md data-[range-start=true]:rounded-s-md data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground;
     @apply data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground;
     @apply dark:hover:text-accent-foreground;
     @apply [&>span]:text-xs [&>span]:opacity-70;

@@ -127,7 +127,7 @@ func _gsxrenderCarouselContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, orien
 	case "vertical":
 		_gsxv0 = "-mt-4"
 	default:
-		_gsxv0 = "-ml-4"
+		_gsxv0 = "-ms-4"
 	}
 	_gsxgw.S(" class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(attrs.Class()))
@@ -194,7 +194,7 @@ func _gsxrenderCarouselItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, orientat
 	case "vertical":
 		_gsxv1 = "pt-4 -scroll-mt-4"
 	default:
-		_gsxv1 = "pl-4 -scroll-ml-4"
+		_gsxv1 = "ps-4 -scroll-ms-4"
 	}
 	_gsxgw.S(" class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
@@ -259,7 +259,7 @@ func _gsxrenderCarouselPrevious(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, orie
 	case "vertical":
 		_gsxv3 = "-top-12 left-1/2 -translate-x-1/2 rotate-90"
 	default:
-		_gsxv3 = "top-1/2 -left-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
+		_gsxv3 = "top-1/2 -start-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
 	}
 	_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -294,7 +294,7 @@ func _gsxrenderCarouselNext(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, orientat
 	case "vertical":
 		_gsxv6 = "-bottom-12 left-1/2 -translate-x-1/2 rotate-90"
 	default:
-		_gsxv6 = "top-1/2 -right-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
+		_gsxv6 = "top-1/2 -end-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
 	}
 	_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)

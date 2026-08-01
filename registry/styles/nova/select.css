@@ -55,7 +55,7 @@
   }
 
   .gsxui-recipe-select-item {
-    @apply relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none;
+    @apply relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pe-8 ps-1.5 text-sm outline-hidden select-none;
     @apply focus:bg-accent focus:text-accent-foreground;
     @apply data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50;
     @apply [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg]:text-muted-foreground;
@@ -68,7 +68,7 @@
   }
 
   .gsxui-recipe-select-item-indicator {
-    @apply pointer-events-none absolute right-2 hidden size-4 items-center justify-center;
+    @apply pointer-events-none absolute end-2 hidden size-4 items-center justify-center;
     @apply [&>svg]:size-4;
   }
 

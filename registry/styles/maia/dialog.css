@@ -72,7 +72,7 @@
   }
 
   .gsxui-recipe-dialog-close-button {
-    @apply absolute top-2 right-2 rounded-xs opacity-70 ring-offset-background transition-opacity;
+    @apply absolute top-2 end-2 rounded-xs opacity-70 ring-offset-background transition-opacity;
     @apply hover:opacity-100;
     @apply focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden;
     @apply disabled:pointer-events-none;
@@ -84,7 +84,7 @@
 
   .gsxui-recipe-dialog-header {
     @apply flex flex-col gap-2 text-center;
-    @apply sm:text-left;
+    @apply sm:text-start;
   }
 
   .gsxui-recipe-dialog-footer {

@@ -17,7 +17,7 @@
 
   .gsxui-recipe-tooltip-content {
     @apply z-50 w-fit origin-bottom gap-1.5 overflow-visible rounded-md bg-foreground px-3 py-1.5 text-xs text-balance text-background;
-    @apply has-[[data-gsxui-slot-kbd]]:pr-1.5;
+    @apply has-[[data-gsxui-slot-kbd]]:pe-1.5;
     @apply opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150;
     @apply [&:popover-open]:opacity-100 [&:popover-open]:scale-100;
     @apply starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95;

@@ -2178,22 +2178,22 @@
               "gap-1",
               "leading-none",
               "font-normal",
-              "[[data-gsxui-slot-calendar-day]:first-child[data-selected=true]\u003e\u0026]:rounded-l-md",
-              "[[data-gsxui-slot-calendar-day]:last-child[data-selected=true]\u003e\u0026]:rounded-r-md",
+              "[[data-gsxui-slot-calendar-day]:first-child[data-selected=true]\u003e\u0026]:rounded-s-md",
+              "[[data-gsxui-slot-calendar-day]:last-child[data-selected=true]\u003e\u0026]:rounded-e-md",
               "[[data-gsxui-slot-calendar-day][data-focused]\u003e\u0026]:relative",
               "[[data-gsxui-slot-calendar-day][data-focused]\u003e\u0026]:z-10",
               "[[data-gsxui-slot-calendar-day][data-focused]\u003e\u0026]:border-ring",
               "[[data-gsxui-slot-calendar-day][data-focused]\u003e\u0026]:ring-[3px]",
               "[[data-gsxui-slot-calendar-day][data-focused]\u003e\u0026]:ring-ring/50",
               "data-[range-end=true]:rounded-md",
-              "data-[range-end=true]:rounded-r-md",
+              "data-[range-end=true]:rounded-e-md",
               "data-[range-end=true]:bg-primary",
               "data-[range-end=true]:text-primary-foreground",
               "data-[range-middle=true]:rounded-none",
               "data-[range-middle=true]:bg-accent",
               "data-[range-middle=true]:text-accent-foreground",
               "data-[range-start=true]:rounded-md",
-              "data-[range-start=true]:rounded-l-md",
+              "data-[range-start=true]:rounded-s-md",
               "data-[range-start=true]:bg-primary",
               "data-[range-start=true]:text-primary-foreground",
               "data-[selected-single=true]:bg-primary",
@@ -2386,8 +2386,8 @@
             "dimensions": {
               "orientation": {
                 "horizontal": [
-                  "pl-4",
-                  "-scroll-ml-4"
+                  "ps-4",
+                  "-scroll-ms-4"
                 ],
                 "vertical": [
                   "pt-4",
@@ -2406,7 +2406,7 @@
               "orientation": {
                 "horizontal": [
                   "top-1/2",
-                  "-right-12",
+                  "-end-12",
                   "-translate-y-1/2",
                   "active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
                 ],
@@ -2429,7 +2429,7 @@
               "orientation": {
                 "horizontal": [
                   "top-1/2",
-                  "-left-12",
+                  "-start-12",
                   "-translate-y-1/2",
                   "active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
                 ],
@@ -2446,7 +2446,7 @@
             "dimensions": {
               "orientation": {
                 "horizontal": [
-                  "-ml-4"
+                  "-ms-4"
                 ],
                 "vertical": [
                   "-mt-4"
@@ -2567,8 +2567,8 @@
               "gap-2",
               "rounded-md",
               "py-1",
-              "pr-8",
-              "pl-1.5",
+              "pe-8",
+              "ps-1.5",
               "text-sm",
               "outline-hidden",
               "select-none",
@@ -2586,7 +2586,7 @@
             "base": [
               "pointer-events-none",
               "absolute",
-              "right-2",
+              "end-2",
               "hidden",
               "size-4",
               "items-center",
@@ -2774,7 +2774,7 @@
           },
           "shortcut": {
             "base": [
-              "ml-auto",
+              "ms-auto",
               "text-xs",
               "tracking-widest",
               "text-muted-foreground"
@@ -2800,8 +2800,8 @@
               "gap-1.5",
               "rounded-md",
               "py-1",
-              "pr-8",
-              "pl-1.5",
+              "pe-8",
+              "ps-1.5",
               "text-sm",
               "outline-hidden",
               "select-none",
@@ -2819,7 +2819,7 @@
             "base": [
               "pointer-events-none",
               "absolute",
-              "right-2",
+              "end-2",
               "hidden",
               "size-4",
               "items-center",
@@ -2914,8 +2914,8 @@
               "gap-1.5",
               "rounded-md",
               "py-1",
-              "pr-8",
-              "pl-1.5",
+              "pe-8",
+              "ps-1.5",
               "text-sm",
               "outline-hidden",
               "select-none",
@@ -2933,7 +2933,7 @@
             "base": [
               "pointer-events-none",
               "absolute",
-              "right-2",
+              "end-2",
               "hidden",
               "size-4",
               "items-center",
@@ -2955,7 +2955,7 @@
           },
           "shortcut": {
             "base": [
-              "ml-auto",
+              "ms-auto",
               "text-xs",
               "tracking-widest",
               "text-muted-foreground"
@@ -3017,7 +3017,7 @@
               "[\u0026_svg]:shrink-0",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "[\u0026_svg:not([class*='text-'])]:text-muted-foreground",
-              "[\u0026\u003esvg:last-child]:ml-auto",
+              "[\u0026\u003esvg:last-child]:ms-auto",
               "[\u0026\u003esvg:last-child]:size-4"
             ],
             "dimensions": {}
@@ -3036,7 +3036,7 @@
             "base": [
               "absolute",
               "top-2",
-              "right-2",
+              "end-2",
               "rounded-xs",
               "opacity-70",
               "ring-offset-background",
@@ -3124,7 +3124,7 @@
               "flex-col",
               "gap-2",
               "text-center",
-              "sm:text-left"
+              "sm:text-start"
             ],
             "dimensions": {}
           },
@@ -3185,31 +3185,31 @@
                 ],
                 "left": [
                   "inset-y-0",
-                  "left-0",
-                  "right-auto",
+                  "start-0",
+                  "end-auto",
                   "h-full",
                   "max-h-none",
                   "w-3/4",
-                  "rounded-r-xl",
-                  "border-r",
+                  "rounded-e-xl",
+                  "border-e",
                   "sm:max-w-sm",
-                  "data-[state=closed]:slide-out-to-left",
-                  "data-[state=open]:slide-in-from-left",
-                  "md:[\u0026_[data-gsxui-slot-drawer-header]]:text-left"
+                  "data-[state=closed]:slide-out-to-start",
+                  "data-[state=open]:slide-in-from-start",
+                  "md:[\u0026_[data-gsxui-slot-drawer-header]]:text-start"
                 ],
                 "right": [
                   "inset-y-0",
-                  "right-0",
-                  "left-auto",
+                  "end-0",
+                  "start-auto",
                   "h-full",
                   "max-h-none",
                   "w-3/4",
-                  "rounded-l-xl",
-                  "border-l",
+                  "rounded-s-xl",
+                  "border-s",
                   "sm:max-w-sm",
-                  "data-[state=closed]:slide-out-to-right",
-                  "data-[state=open]:slide-in-from-right",
-                  "md:[\u0026_[data-gsxui-slot-drawer-header]]:text-left"
+                  "data-[state=closed]:slide-out-to-end",
+                  "data-[state=open]:slide-in-from-end",
+                  "md:[\u0026_[data-gsxui-slot-drawer-header]]:text-start"
                 ],
                 "top": [
                   "inset-x-0",
@@ -3293,8 +3293,8 @@
               "gap-1.5",
               "rounded-md",
               "py-1",
-              "pr-8",
-              "pl-1.5",
+              "pe-8",
+              "ps-1.5",
               "text-sm",
               "outline-hidden",
               "select-none",
@@ -3312,7 +3312,7 @@
             "base": [
               "pointer-events-none",
               "absolute",
-              "right-2",
+              "end-2",
               "hidden",
               "size-4",
               "items-center",
@@ -3406,8 +3406,8 @@
               "gap-1.5",
               "rounded-md",
               "py-1",
-              "pr-8",
-              "pl-1.5",
+              "pe-8",
+              "ps-1.5",
               "text-sm",
               "outline-hidden",
               "select-none",
@@ -3425,7 +3425,7 @@
             "base": [
               "pointer-events-none",
               "absolute",
-              "right-2",
+              "end-2",
               "hidden",
               "size-4",
               "items-center",
@@ -3447,7 +3447,7 @@
           },
           "shortcut": {
             "base": [
-              "ml-auto",
+              "ms-auto",
               "text-xs",
               "tracking-widest",
               "text-muted-foreground"
@@ -3509,7 +3509,7 @@
               "[\u0026_svg]:shrink-0",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "[\u0026_svg:not([class*='text-'])]:text-muted-foreground",
-              "[\u0026\u003esvg:last-child]:ml-auto",
+              "[\u0026\u003esvg:last-child]:ms-auto",
               "[\u0026\u003esvg:last-child]:size-4"
             ],
             "dimensions": {}
@@ -3914,11 +3914,11 @@
                 ],
                 "inline-end": [
                   "order-last",
-                  "pr-2"
+                  "pe-2"
                 ],
                 "inline-start": [
                   "order-first",
-                  "pl-2"
+                  "ps-2"
                 ]
               }
             }
@@ -3991,14 +3991,14 @@
               "items-center",
               "justify-center",
               "border-y",
-              "border-r",
+              "border-e",
               "border-input",
               "text-sm",
               "transition-all",
               "outline-none",
-              "first:rounded-l-lg",
-              "first:border-l",
-              "last:rounded-r-lg",
+              "first:rounded-s-lg",
+              "first:border-s",
+              "last:rounded-e-lg",
               "aria-invalid:border-destructive",
               "data-[active=true]:z-10",
               "data-[active=true]:border-ring",
@@ -4240,8 +4240,8 @@
               "gap-1.5",
               "rounded-md",
               "py-1",
-              "pr-8",
-              "pl-1.5",
+              "pe-8",
+              "ps-1.5",
               "text-sm",
               "outline-hidden",
               "select-none",
@@ -4259,7 +4259,7 @@
             "base": [
               "pointer-events-none",
               "absolute",
-              "right-2",
+              "end-2",
               "hidden",
               "size-4",
               "items-center",
@@ -4357,8 +4357,8 @@
               "gap-1.5",
               "rounded-md",
               "py-1",
-              "pr-8",
-              "pl-1.5",
+              "pe-8",
+              "ps-1.5",
               "text-sm",
               "outline-hidden",
               "select-none",
@@ -4376,7 +4376,7 @@
             "base": [
               "pointer-events-none",
               "absolute",
-              "right-2",
+              "end-2",
               "hidden",
               "size-4",
               "items-center",
@@ -4398,7 +4398,7 @@
           },
           "shortcut": {
             "base": [
-              "ml-auto",
+              "ms-auto",
               "text-xs",
               "tracking-widest",
               "text-muted-foreground"
@@ -4457,7 +4457,7 @@
               "data-[state=open]:bg-accent",
               "data-[state=open]:text-accent-foreground",
               "[\u0026_svg:not([class*='size-'])]:size-4",
-              "[\u0026\u003esvg:last-child]:ml-auto",
+              "[\u0026\u003esvg:last-child]:ms-auto",
               "[\u0026\u003esvg:last-child]:size-4"
             ],
             "dimensions": {}
@@ -4524,7 +4524,7 @@
               "[\u0026\u003esvg]:pointer-events-none",
               "[\u0026\u003esvg]:absolute",
               "[\u0026\u003esvg]:top-1/2",
-              "[\u0026\u003esvg]:right-2.5",
+              "[\u0026\u003esvg]:end-2.5",
               "[\u0026\u003esvg]:size-4",
               "[\u0026\u003esvg]:-translate-y-1/2",
               "[\u0026\u003esvg]:opacity-50"
@@ -4549,7 +4549,7 @@
           "content": {
             "base": [
               "top-0",
-              "left-0",
+              "start-0",
               "p-1",
               "md:absolute",
               "[[data-gsxui-slot-navigation-menu][data-viewport=false]_\u0026]:top-full",
@@ -4727,7 +4727,7 @@
             "base": [
               "relative",
               "top-px",
-              "ml-1",
+              "ms-1",
               "size-3",
               "transition",
               "duration-300",
@@ -4974,8 +4974,8 @@
               "gap-1.5",
               "rounded-md",
               "py-1",
-              "pr-8",
-              "pl-1.5",
+              "pe-8",
+              "ps-1.5",
               "text-sm",
               "outline-hidden",
               "select-none",
@@ -4995,7 +4995,7 @@
             "base": [
               "pointer-events-none",
               "absolute",
-              "right-2",
+              "end-2",
               "hidden",
               "size-4",
               "items-center",
@@ -5118,7 +5118,7 @@
             "base": [
               "absolute",
               "top-3",
-              "right-3",
+              "end-3",
               "rounded-xs",
               "opacity-70",
               "ring-offset-background",
@@ -5180,25 +5180,25 @@
                 ],
                 "left": [
                   "inset-y-0",
-                  "left-0",
-                  "right-auto",
+                  "start-0",
+                  "end-auto",
                   "h-full",
                   "w-3/4",
-                  "border-r",
+                  "border-e",
                   "sm:max-w-sm",
-                  "data-[state=closed]:slide-out-to-left",
-                  "data-[state=open]:slide-in-from-left"
+                  "data-[state=closed]:slide-out-to-start",
+                  "data-[state=open]:slide-in-from-start"
                 ],
                 "right": [
                   "inset-y-0",
-                  "right-0",
-                  "left-auto",
+                  "end-0",
+                  "start-auto",
                   "h-full",
                   "w-3/4",
-                  "border-l",
+                  "border-s",
                   "sm:max-w-sm",
-                  "data-[state=closed]:slide-out-to-right",
-                  "data-[state=open]:slide-in-from-right"
+                  "data-[state=closed]:slide-out-to-end",
+                  "data-[state=open]:slide-in-from-end"
                 ],
                 "top": [
                   "inset-x-0",
@@ -5318,7 +5318,7 @@
             "base": [
               "absolute",
               "top-3.5",
-              "right-3",
+              "end-3",
               "flex",
               "aspect-square",
               "w-5",
@@ -5424,7 +5424,7 @@
             "base": [
               "absolute",
               "top-1.5",
-              "right-1",
+              "end-1",
               "flex",
               "aspect-square",
               "w-5",
@@ -5458,7 +5458,7 @@
             "base": [
               "pointer-events-none",
               "absolute",
-              "right-1",
+              "end-1",
               "flex",
               "h-5",
               "min-w-5",
@@ -5490,12 +5490,12 @@
               "overflow-hidden",
               "rounded-md",
               "p-2",
-              "text-left",
+              "text-start",
               "text-sm",
               "ring-sidebar-ring",
               "outline-hidden",
               "transition-[width,height,padding]",
-              "[[data-gsxui-slot-sidebar-menu-item]:has(\u003e[data-gsxui-slot-sidebar-menu-action])\u003e\u0026]:pr-8",
+              "[[data-gsxui-slot-sidebar-menu-item]:has(\u003e[data-gsxui-slot-sidebar-menu-action])\u003e\u0026]:pe-8",
               "hover:bg-sidebar-accent",
               "hover:text-sidebar-accent-foreground",
               "active:bg-sidebar-accent",
@@ -5570,7 +5570,7 @@
               "translate-x-px",
               "flex-col",
               "gap-1",
-              "border-l",
+              "border-s",
               "border-sidebar-border",
               "px-2.5",
               "py-0.5",
@@ -5811,7 +5811,7 @@
               "p-2",
               "align-middle",
               "whitespace-nowrap",
-              "has-[[role=checkbox]]:pr-0",
+              "has-[[role=checkbox]]:pe-0",
               "[\u0026\u003e[role=checkbox]]:translate-y-[2px]"
             ],
             "dimensions": {}
@@ -5836,12 +5836,12 @@
             "base": [
               "h-10",
               "px-2",
-              "text-left",
+              "text-start",
               "align-middle",
               "font-medium",
               "whitespace-nowrap",
               "text-foreground",
-              "has-[[role=checkbox]]:pr-0",
+              "has-[[role=checkbox]]:pe-0",
               "[\u0026\u003e[role=checkbox]]:translate-y-[2px]"
             ],
             "dimensions": {}
@@ -6015,7 +6015,7 @@
             "base": [
               "absolute",
               "-top-1.5",
-              "-right-1.5",
+              "-end-1.5",
               "flex",
               "size-5",
               "items-center",
@@ -6191,8 +6191,8 @@
             "dimensions": {
               "orientation": {
                 "horizontal": [
-                  "data-[spacing=0]:first:rounded-l-lg",
-                  "data-[spacing=0]:last:rounded-r-lg"
+                  "data-[spacing=0]:first:rounded-s-lg",
+                  "data-[spacing=0]:last:rounded-e-lg"
                 ]
               },
               "size": {
@@ -6210,8 +6210,8 @@
                 "0": [
                   "rounded-none",
                   "shadow-none",
-                  "data-[variant=outline]:border-l-0",
-                  "data-[variant=outline]:first:border-l"
+                  "data-[variant=outline]:border-s-0",
+                  "data-[variant=outline]:first:border-s"
                 ],
                 "2": [
                   "isolate"
@@ -6258,7 +6258,7 @@
               "text-xs",
               "text-balance",
               "text-background",
-              "has-[[data-gsxui-slot-kbd]]:pr-1.5",
+              "has-[[data-gsxui-slot-kbd]]:pe-1.5",
               "opacity-0",
               "scale-95",
               "transition-[opacity,scale,translate,display,overlay]",
@@ -6844,22 +6844,22 @@
               "gap-1",
               "leading-none",
               "font-normal",
-              "[[data-gsxui-slot-calendar-day]:first-child[data-selected=true]\u003e\u0026]:rounded-l-md",
-              "[[data-gsxui-slot-calendar-day]:last-child[data-selected=true]\u003e\u0026]:rounded-r-md",
+              "[[data-gsxui-slot-calendar-day]:first-child[data-selected=true]\u003e\u0026]:rounded-s-md",
+              "[[data-gsxui-slot-calendar-day]:last-child[data-selected=true]\u003e\u0026]:rounded-e-md",
               "[[data-gsxui-slot-calendar-day][data-focused]\u003e\u0026]:relative",
               "[[data-gsxui-slot-calendar-day][data-focused]\u003e\u0026]:z-10",
               "[[data-gsxui-slot-calendar-day][data-focused]\u003e\u0026]:border-ring",
               "[[data-gsxui-slot-calendar-day][data-focused]\u003e\u0026]:ring-[3px]",
               "[[data-gsxui-slot-calendar-day][data-focused]\u003e\u0026]:ring-ring/50",
               "data-[range-end=true]:rounded-md",
-              "data-[range-end=true]:rounded-r-md",
+              "data-[range-end=true]:rounded-e-md",
               "data-[range-end=true]:bg-primary",
               "data-[range-end=true]:text-primary-foreground",
               "data-[range-middle=true]:rounded-none",
               "data-[range-middle=true]:bg-accent",
               "data-[range-middle=true]:text-accent-foreground",
               "data-[range-start=true]:rounded-md",
-              "data-[range-start=true]:rounded-l-md",
+              "data-[range-start=true]:rounded-s-md",
               "data-[range-start=true]:bg-primary",
               "data-[range-start=true]:text-primary-foreground",
               "data-[selected-single=true]:bg-primary",
@@ -7052,8 +7052,8 @@
             "dimensions": {
               "orientation": {
                 "horizontal": [
-                  "pl-4",
-                  "-scroll-ml-4"
+                  "ps-4",
+                  "-scroll-ms-4"
                 ],
                 "vertical": [
                   "pt-4",
@@ -7072,7 +7072,7 @@
               "orientation": {
                 "horizontal": [
                   "top-1/2",
-                  "-right-12",
+                  "-end-12",
                   "-translate-y-1/2",
                   "active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
                 ],
@@ -7095,7 +7095,7 @@
               "orientation": {
                 "horizontal": [
                   "top-1/2",
-                  "-left-12",
+                  "-start-12",
                   "-translate-y-1/2",
                   "active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)]"
                 ],
@@ -7112,7 +7112,7 @@
             "dimensions": {
               "orientation": {
                 "horizontal": [
-                  "-ml-4"
+                  "-ms-4"
                 ],
                 "vertical": [
                   "-mt-4"
@@ -7233,8 +7233,8 @@
               "gap-2",
               "rounded-md",
               "py-1",
-              "pr-8",
-              "pl-1.5",
+              "pe-8",
+              "ps-1.5",
               "text-sm",
               "outline-hidden",
               "select-none",
@@ -7252,7 +7252,7 @@
             "base": [
               "pointer-events-none",
               "absolute",
-              "right-2",
+              "end-2",
               "hidden",
               "size-4",
               "items-center",
@@ -7440,7 +7440,7 @@
           },
           "shortcut": {
             "base": [
-              "ml-auto",
+              "ms-auto",
               "text-xs",
               "tracking-widest",
               "text-muted-foreground"
@@ -7466,8 +7466,8 @@
               "gap-1.5",
               "rounded-md",
               "py-1",
-              "pr-8",
-              "pl-1.5",
+              "pe-8",
+              "ps-1.5",
               "text-sm",
               "outline-hidden",
               "select-none",
@@ -7485,7 +7485,7 @@
             "base": [
               "pointer-events-none",
               "absolute",
-              "right-2",
+              "end-2",
               "hidden",
               "size-4",
               "items-center",
@@ -7580,8 +7580,8 @@
               "gap-1.5",
               "rounded-md",
               "py-1",
-              "pr-8",
-              "pl-1.5",
+              "pe-8",
+              "ps-1.5",
               "text-sm",
               "outline-hidden",
               "select-none",
@@ -7599,7 +7599,7 @@
             "base": [
               "pointer-events-none",
               "absolute",
-              "right-2",
+              "end-2",
               "hidden",
               "size-4",
               "items-center",
@@ -7621,7 +7621,7 @@
           },
           "shortcut": {
             "base": [
-              "ml-auto",
+              "ms-auto",
               "text-xs",
               "tracking-widest",
               "text-muted-foreground"
@@ -7683,7 +7683,7 @@
               "[\u0026_svg]:shrink-0",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "[\u0026_svg:not([class*='text-'])]:text-muted-foreground",
-              "[\u0026\u003esvg:last-child]:ml-auto",
+              "[\u0026\u003esvg:last-child]:ms-auto",
               "[\u0026\u003esvg:last-child]:size-4"
             ],
             "dimensions": {}
@@ -7702,7 +7702,7 @@
             "base": [
               "absolute",
               "top-2",
-              "right-2",
+              "end-2",
               "rounded-xs",
               "opacity-70",
               "ring-offset-background",
@@ -7790,7 +7790,7 @@
               "flex-col",
               "gap-2",
               "text-center",
-              "sm:text-left"
+              "sm:text-start"
             ],
             "dimensions": {}
           },
@@ -7851,31 +7851,31 @@
                 ],
                 "left": [
                   "inset-y-0",
-                  "left-0",
-                  "right-auto",
+                  "start-0",
+                  "end-auto",
                   "h-full",
                   "max-h-none",
                   "w-3/4",
-                  "rounded-r-xl",
-                  "border-r",
+                  "rounded-e-xl",
+                  "border-e",
                   "sm:max-w-sm",
-                  "data-[state=closed]:slide-out-to-left",
-                  "data-[state=open]:slide-in-from-left",
-                  "md:[\u0026_[data-gsxui-slot-drawer-header]]:text-left"
+                  "data-[state=closed]:slide-out-to-start",
+                  "data-[state=open]:slide-in-from-start",
+                  "md:[\u0026_[data-gsxui-slot-drawer-header]]:text-start"
                 ],
                 "right": [
                   "inset-y-0",
-                  "right-0",
-                  "left-auto",
+                  "end-0",
+                  "start-auto",
                   "h-full",
                   "max-h-none",
                   "w-3/4",
-                  "rounded-l-xl",
-                  "border-l",
+                  "rounded-s-xl",
+                  "border-s",
                   "sm:max-w-sm",
-                  "data-[state=closed]:slide-out-to-right",
-                  "data-[state=open]:slide-in-from-right",
-                  "md:[\u0026_[data-gsxui-slot-drawer-header]]:text-left"
+                  "data-[state=closed]:slide-out-to-end",
+                  "data-[state=open]:slide-in-from-end",
+                  "md:[\u0026_[data-gsxui-slot-drawer-header]]:text-start"
                 ],
                 "top": [
                   "inset-x-0",
@@ -7959,8 +7959,8 @@
               "gap-1.5",
               "rounded-md",
               "py-1",
-              "pr-8",
-              "pl-1.5",
+              "pe-8",
+              "ps-1.5",
               "text-sm",
               "outline-hidden",
               "select-none",
@@ -7978,7 +7978,7 @@
             "base": [
               "pointer-events-none",
               "absolute",
-              "right-2",
+              "end-2",
               "hidden",
               "size-4",
               "items-center",
@@ -8072,8 +8072,8 @@
               "gap-1.5",
               "rounded-md",
               "py-1",
-              "pr-8",
-              "pl-1.5",
+              "pe-8",
+              "ps-1.5",
               "text-sm",
               "outline-hidden",
               "select-none",
@@ -8091,7 +8091,7 @@
             "base": [
               "pointer-events-none",
               "absolute",
-              "right-2",
+              "end-2",
               "hidden",
               "size-4",
               "items-center",
@@ -8113,7 +8113,7 @@
           },
           "shortcut": {
             "base": [
-              "ml-auto",
+              "ms-auto",
               "text-xs",
               "tracking-widest",
               "text-muted-foreground"
@@ -8175,7 +8175,7 @@
               "[\u0026_svg]:shrink-0",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "[\u0026_svg:not([class*='text-'])]:text-muted-foreground",
-              "[\u0026\u003esvg:last-child]:ml-auto",
+              "[\u0026\u003esvg:last-child]:ms-auto",
               "[\u0026\u003esvg:last-child]:size-4"
             ],
             "dimensions": {}
@@ -8580,11 +8580,11 @@
                 ],
                 "inline-end": [
                   "order-last",
-                  "pr-2"
+                  "pe-2"
                 ],
                 "inline-start": [
                   "order-first",
-                  "pl-2"
+                  "ps-2"
                 ]
               }
             }
@@ -8657,14 +8657,14 @@
               "items-center",
               "justify-center",
               "border-y",
-              "border-r",
+              "border-e",
               "border-input",
               "text-sm",
               "transition-all",
               "outline-none",
-              "first:rounded-l-lg",
-              "first:border-l",
-              "last:rounded-r-lg",
+              "first:rounded-s-lg",
+              "first:border-s",
+              "last:rounded-e-lg",
               "aria-invalid:border-destructive",
               "data-[active=true]:z-10",
               "data-[active=true]:border-ring",
@@ -8906,8 +8906,8 @@
               "gap-1.5",
               "rounded-md",
               "py-1",
-              "pr-8",
-              "pl-1.5",
+              "pe-8",
+              "ps-1.5",
               "text-sm",
               "outline-hidden",
               "select-none",
@@ -8925,7 +8925,7 @@
             "base": [
               "pointer-events-none",
               "absolute",
-              "right-2",
+              "end-2",
               "hidden",
               "size-4",
               "items-center",
@@ -9023,8 +9023,8 @@
               "gap-1.5",
               "rounded-md",
               "py-1",
-              "pr-8",
-              "pl-1.5",
+              "pe-8",
+              "ps-1.5",
               "text-sm",
               "outline-hidden",
               "select-none",
@@ -9042,7 +9042,7 @@
             "base": [
               "pointer-events-none",
               "absolute",
-              "right-2",
+              "end-2",
               "hidden",
               "size-4",
               "items-center",
@@ -9064,7 +9064,7 @@
           },
           "shortcut": {
             "base": [
-              "ml-auto",
+              "ms-auto",
               "text-xs",
               "tracking-widest",
               "text-muted-foreground"
@@ -9123,7 +9123,7 @@
               "data-[state=open]:bg-accent",
               "data-[state=open]:text-accent-foreground",
               "[\u0026_svg:not([class*='size-'])]:size-4",
-              "[\u0026\u003esvg:last-child]:ml-auto",
+              "[\u0026\u003esvg:last-child]:ms-auto",
               "[\u0026\u003esvg:last-child]:size-4"
             ],
             "dimensions": {}
@@ -9190,7 +9190,7 @@
               "[\u0026\u003esvg]:pointer-events-none",
               "[\u0026\u003esvg]:absolute",
               "[\u0026\u003esvg]:top-1/2",
-              "[\u0026\u003esvg]:right-2.5",
+              "[\u0026\u003esvg]:end-2.5",
               "[\u0026\u003esvg]:size-4",
               "[\u0026\u003esvg]:-translate-y-1/2",
               "[\u0026\u003esvg]:opacity-50"
@@ -9215,7 +9215,7 @@
           "content": {
             "base": [
               "top-0",
-              "left-0",
+              "start-0",
               "p-1",
               "md:absolute",
               "[[data-gsxui-slot-navigation-menu][data-viewport=false]_\u0026]:top-full",
@@ -9393,7 +9393,7 @@
             "base": [
               "relative",
               "top-px",
-              "ml-1",
+              "ms-1",
               "size-3",
               "transition",
               "duration-300",
@@ -9640,8 +9640,8 @@
               "gap-1.5",
               "rounded-md",
               "py-1",
-              "pr-8",
-              "pl-1.5",
+              "pe-8",
+              "ps-1.5",
               "text-sm",
               "outline-hidden",
               "select-none",
@@ -9661,7 +9661,7 @@
             "base": [
               "pointer-events-none",
               "absolute",
-              "right-2",
+              "end-2",
               "hidden",
               "size-4",
               "items-center",
@@ -9784,7 +9784,7 @@
             "base": [
               "absolute",
               "top-3",
-              "right-3",
+              "end-3",
               "rounded-xs",
               "opacity-70",
               "ring-offset-background",
@@ -9846,25 +9846,25 @@
                 ],
                 "left": [
                   "inset-y-0",
-                  "left-0",
-                  "right-auto",
+                  "start-0",
+                  "end-auto",
                   "h-full",
                   "w-3/4",
-                  "border-r",
+                  "border-e",
                   "sm:max-w-sm",
-                  "data-[state=closed]:slide-out-to-left",
-                  "data-[state=open]:slide-in-from-left"
+                  "data-[state=closed]:slide-out-to-start",
+                  "data-[state=open]:slide-in-from-start"
                 ],
                 "right": [
                   "inset-y-0",
-                  "right-0",
-                  "left-auto",
+                  "end-0",
+                  "start-auto",
                   "h-full",
                   "w-3/4",
-                  "border-l",
+                  "border-s",
                   "sm:max-w-sm",
-                  "data-[state=closed]:slide-out-to-right",
-                  "data-[state=open]:slide-in-from-right"
+                  "data-[state=closed]:slide-out-to-end",
+                  "data-[state=open]:slide-in-from-end"
                 ],
                 "top": [
                   "inset-x-0",
@@ -9984,7 +9984,7 @@
             "base": [
               "absolute",
               "top-3.5",
-              "right-3",
+              "end-3",
               "flex",
               "aspect-square",
               "w-5",
@@ -10090,7 +10090,7 @@
             "base": [
               "absolute",
               "top-1.5",
-              "right-1",
+              "end-1",
               "flex",
               "aspect-square",
               "w-5",
@@ -10124,7 +10124,7 @@
             "base": [
               "pointer-events-none",
               "absolute",
-              "right-1",
+              "end-1",
               "flex",
               "h-5",
               "min-w-5",
@@ -10156,12 +10156,12 @@
               "overflow-hidden",
               "rounded-md",
               "p-2",
-              "text-left",
+              "text-start",
               "text-sm",
               "ring-sidebar-ring",
               "outline-hidden",
               "transition-[width,height,padding]",
-              "[[data-gsxui-slot-sidebar-menu-item]:has(\u003e[data-gsxui-slot-sidebar-menu-action])\u003e\u0026]:pr-8",
+              "[[data-gsxui-slot-sidebar-menu-item]:has(\u003e[data-gsxui-slot-sidebar-menu-action])\u003e\u0026]:pe-8",
               "hover:bg-sidebar-accent",
               "hover:text-sidebar-accent-foreground",
               "active:bg-sidebar-accent",
@@ -10236,7 +10236,7 @@
               "translate-x-px",
               "flex-col",
               "gap-1",
-              "border-l",
+              "border-s",
               "border-sidebar-border",
               "px-2.5",
               "py-0.5",
@@ -10477,7 +10477,7 @@
               "p-2",
               "align-middle",
               "whitespace-nowrap",
-              "has-[[role=checkbox]]:pr-0",
+              "has-[[role=checkbox]]:pe-0",
               "[\u0026\u003e[role=checkbox]]:translate-y-[2px]"
             ],
             "dimensions": {}
@@ -10502,12 +10502,12 @@
             "base": [
               "h-10",
               "px-2",
-              "text-left",
+              "text-start",
               "align-middle",
               "font-medium",
               "whitespace-nowrap",
               "text-foreground",
-              "has-[[role=checkbox]]:pr-0",
+              "has-[[role=checkbox]]:pe-0",
               "[\u0026\u003e[role=checkbox]]:translate-y-[2px]"
             ],
             "dimensions": {}
@@ -10681,7 +10681,7 @@
             "base": [
               "absolute",
               "-top-1.5",
-              "-right-1.5",
+              "-end-1.5",
               "flex",
               "size-5",
               "items-center",
@@ -10857,8 +10857,8 @@
             "dimensions": {
               "orientation": {
                 "horizontal": [
-                  "data-[spacing=0]:first:rounded-l-lg",
-                  "data-[spacing=0]:last:rounded-r-lg"
+                  "data-[spacing=0]:first:rounded-s-lg",
+                  "data-[spacing=0]:last:rounded-e-lg"
                 ]
               },
               "size": {
@@ -10876,8 +10876,8 @@
                 "0": [
                   "rounded-none",
                   "shadow-none",
-                  "data-[variant=outline]:border-l-0",
-                  "data-[variant=outline]:first:border-l"
+                  "data-[variant=outline]:border-s-0",
+                  "data-[variant=outline]:first:border-s"
                 ],
                 "2": [
                   "isolate"
@@ -10924,7 +10924,7 @@
               "text-xs",
               "text-balance",
               "text-background",
-              "has-[[data-gsxui-slot-kbd]]:pr-1.5",
+              "has-[[data-gsxui-slot-kbd]]:pe-1.5",
               "opacity-0",
               "scale-95",
               "transition-[opacity,scale,translate,display,overlay]",

@@ -314,7 +314,7 @@ component MenubarGroup(children gsx.Node, attrs gsx.Attrs) {
 component MenubarCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
+			"relative flex cursor-default items-center gap-1.5 rounded-md py-1 pe-8 ps-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
 		}
 		role="menuitemcheckbox"
 		data-value={value}
@@ -331,7 +331,7 @@ component MenubarCheckboxItem(checked bool, value string, children gsx.Node, att
 	>
 		<span
 			class={
-				"pointer-events-none absolute right-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-4"
+				"pointer-events-none absolute end-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-4"
 			}
 			data-gsxui-slot-menubar-checkbox-item-indicator
 		>
@@ -364,7 +364,7 @@ component MenubarRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) {
 component MenubarRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
+			"relative flex cursor-default items-center gap-1.5 rounded-md py-1 pe-8 ps-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
 		}
 		role="menuitemradio"
 		data-value={value}
@@ -381,7 +381,7 @@ component MenubarRadioItem(checked bool, value string, children gsx.Node, attrs 
 	>
 		<span
 			class={
-				"pointer-events-none absolute right-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-2 [&>svg]:fill-current"
+				"pointer-events-none absolute end-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-2 [&>svg]:fill-current"
 			}
 			data-gsxui-slot-menubar-radio-item-indicator
 		>
@@ -415,7 +415,7 @@ component MenubarSeparator(attrs gsx.Attrs) {
 // in this file for it to key off, the same scope call as every other
 // dropdown/context-menu Shortcut in this codebase.
 component MenubarShortcut(children gsx.Node, attrs gsx.Attrs) {
-	<span class={ "ml-auto text-xs tracking-widest text-muted-foreground" } { attrs... } data-gsxui-slot-menubar-shortcut>
+	<span class={ "ms-auto text-xs tracking-widest text-muted-foreground" } { attrs... } data-gsxui-slot-menubar-shortcut>
 		{ children }
 	</span>
 }
@@ -466,7 +466,7 @@ component MenubarSub(children gsx.Node, attrs gsx.Attrs) {
 component MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg:not([class*='size-'])]:size-4 [&>svg:last-child]:ml-auto [&>svg:last-child]:size-4"
+			"relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg:not([class*='size-'])]:size-4 [&>svg:last-child]:ms-auto [&>svg:last-child]:size-4"
 		}
 		role="menuitem"
 		aria-haspopup="menu"

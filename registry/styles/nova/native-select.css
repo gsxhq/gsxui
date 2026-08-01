@@ -25,7 +25,7 @@
 @layer components {
   .gsxui-recipe-native-select-wrapper {
     @apply relative w-fit;
-    @apply [&>svg]:pointer-events-none [&>svg]:absolute [&>svg]:top-1/2 [&>svg]:right-2.5 [&>svg]:size-4 [&>svg]:-translate-y-1/2 [&>svg]:opacity-50;
+    @apply [&>svg]:pointer-events-none [&>svg]:absolute [&>svg]:top-1/2 [&>svg]:end-2.5 [&>svg]:size-4 [&>svg]:-translate-y-1/2 [&>svg]:opacity-50;
   }
 
   .gsxui-recipe-native-select {
