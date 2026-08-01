@@ -82,7 +82,7 @@ component PaginationPrevious(href string, attrs gsx.Attrs) {
 		{ attrs... }
 		data-gsxui-slot-pagination-previous
 	>
-		<icon.ChevronLeft/>
+		<icon.ChevronLeft class={ "rtl:rotate-180" }/>
 		<span class={ "hidden sm:block" } data-gsxui-slot-pagination-previous-label>Previous</span>
 	</PaginationLink>
 }
@@ -96,7 +96,7 @@ component PaginationNext(href string, attrs gsx.Attrs) {
 		data-gsxui-slot-pagination-next
 	>
 		<span class={ "hidden sm:block" } data-gsxui-slot-pagination-next-label>Next</span>
-		<icon.ChevronRight/>
+		<icon.ChevronRight class={ "rtl:rotate-180" }/>
 	</PaginationLink>
 }
 

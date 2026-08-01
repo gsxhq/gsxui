@@ -133,7 +133,7 @@ func TestCarouselItemCallerClassMerges(t *testing.T) {
 
 func TestCarouselPreviousHorizontalPinned(t *testing.T) {
 	got := render(t, ui.CarouselPrevious("", nil))
-	want := `<button data-variant="outline" data-size="icon" type="button" disabled ` + canonicalCarouselArrowClass("previous", "horizontal") + ` data-orientation="horizontal" data-gsxui-slot-carousel-previous data-gsxui-slot-button><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg><span data-gsxui-slot-carousel-control-label>Previous slide</span></button>`
+	want := `<button data-variant="outline" data-size="icon" type="button" disabled ` + canonicalCarouselArrowClass("previous", "horizontal") + ` data-orientation="horizontal" data-gsxui-slot-carousel-previous data-gsxui-slot-button><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="rtl:rotate-180" data-gsxui-slot-icon><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg><span data-gsxui-slot-carousel-control-label>Previous slide</span></button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -153,7 +153,7 @@ func TestCarouselPreviousVerticalPositioning(t *testing.T) {
 
 func TestCarouselNextHorizontalPinned(t *testing.T) {
 	got := render(t, ui.CarouselNext("", nil))
-	want := `<button data-variant="outline" data-size="icon" type="button" ` + canonicalCarouselArrowClass("next", "horizontal") + ` data-orientation="horizontal" data-gsxui-slot-carousel-next data-gsxui-slot-button><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span data-gsxui-slot-carousel-control-label>Next slide</span></button>`
+	want := `<button data-variant="outline" data-size="icon" type="button" ` + canonicalCarouselArrowClass("next", "horizontal") + ` data-orientation="horizontal" data-gsxui-slot-carousel-next data-gsxui-slot-button><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="rtl:rotate-180" data-gsxui-slot-icon><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span data-gsxui-slot-carousel-control-label>Next slide</span></button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

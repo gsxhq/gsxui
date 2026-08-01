@@ -828,7 +828,7 @@ func Calendar(mode string, month time.Time, selected []time.Time, from time.Time
 		_gsxgw.BoolAttr("data-gsxui-slot-button", true)
 		_gsxgw.S(">")
 //line calendar.gsx:751:6
-		_gsxgw.Node(ctx, icon.ChevronLeft())
+		_gsxgw.Node(ctx, icon.ChevronLeft(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("rtl:rotate-180"))}}...))
 		_gsxgw.S("</button>")
 //line calendar.gsx:753:5
 		_gsxgw.S("<button type=\"button\" data-variant=\"ghost\" data-size=\"icon\" aria-label=\"Next month\"")
@@ -843,7 +843,7 @@ func Calendar(mode string, month time.Time, selected []time.Time, from time.Time
 		_gsxgw.BoolAttr("data-gsxui-slot-button", true)
 		_gsxgw.S(">")
 //line calendar.gsx:767:6
-		_gsxgw.Node(ctx, icon.ChevronRight())
+		_gsxgw.Node(ctx, icon.ChevronRight(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("rtl:rotate-180"))}}...))
 		_gsxgw.S("</button></nav>")
 //line calendar.gsx:770:4
 		_gsxgw.S("<div class=\"")

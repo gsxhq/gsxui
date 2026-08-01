@@ -123,6 +123,7 @@
     @apply data-[state=open]:bg-accent data-[state=open]:text-accent-foreground;
     @apply [&_svg:not([class*='size-'])]:size-4;
     @apply [&>svg:last-child]:ms-auto [&>svg:last-child]:size-4;
+    @apply [&>svg:last-child]:rtl:rotate-180;
   }
 
   .gsxui-recipe-menubar-sub-content {

@@ -33,10 +33,7 @@ var galleryAvatarSVG = []byte("<svg xmlns='http://www.w3.org/2000/svg' width='64
 // form-control name: the theme preview document renders the gallery twice
 // (once per style section), so unprefixed ids would collide across sections.
 component Gallery(idp string) {
-	<div
-		data-theme-preview-gallery
-		class="mx-auto grid w-full max-w-7xl items-start gap-4 p-4 sm:p-6 md:grid-cols-2 xl:grid-cols-3"
-	>
+	<div data-theme-preview-gallery class="mx-auto grid w-full max-w-7xl items-start gap-4 p-4 sm:p-6 md:grid-cols-2 xl:grid-cols-3">
 		<galleryButtonsCard/>
 		<galleryLoginCard idp={idp}/>
 		<gallerySettingsCard idp={idp}/>
@@ -78,18 +75,10 @@ component galleryButtonsCard() {
 				<Button size="sm" data-theme-preview-case="text">Small</Button>
 				<Button data-theme-preview-case="text">Default</Button>
 				<Button size="lg" data-theme-preview-case="text">Large</Button>
-				<Button size="icon-xs" aria-label="Icon extra small" data-theme-preview-case="icon">
-					<icon.Plus/>
-				</Button>
-				<Button size="icon-sm" aria-label="Icon small" data-theme-preview-case="icon">
-					<icon.Plus/>
-				</Button>
-				<Button size="icon" aria-label="Icon" data-theme-preview-case="icon">
-					<icon.Plus/>
-				</Button>
-				<Button size="icon-lg" aria-label="Icon large" data-theme-preview-case="icon">
-					<icon.Plus/>
-				</Button>
+				<Button size="icon-xs" aria-label="Icon extra small" data-theme-preview-case="icon"><icon.Plus/></Button>
+				<Button size="icon-sm" aria-label="Icon small" data-theme-preview-case="icon"><icon.Plus/></Button>
+				<Button size="icon" aria-label="Icon" data-theme-preview-case="icon"><icon.Plus/></Button>
+				<Button size="icon-lg" aria-label="Icon large" data-theme-preview-case="icon"><icon.Plus/></Button>
 			</div>
 			<div class="flex flex-wrap items-center gap-2">
 				<Button disabled data-theme-preview-case="disabled">Disabled</Button>
@@ -310,9 +299,7 @@ component galleryMenusCard() {
 				</DropdownMenu>
 			</div>
 			<ContextMenu>
-				<ContextMenuTrigger
-					class="flex h-24 w-full items-center justify-center rounded-md border border-dashed text-sm"
-				>
+				<ContextMenuTrigger class="flex h-24 w-full items-center justify-center rounded-md border border-dashed text-sm">
 					Right click here
 				</ContextMenuTrigger>
 				<ContextMenuContent class="w-52">
@@ -475,23 +462,17 @@ component galleryTableCard() {
 				<TableBody>
 					<TableRow>
 						<TableCell>INV-2041</TableCell>
-						<TableCell>
-							<Badge variant="outline">Paid</Badge>
-						</TableCell>
+						<TableCell><Badge variant="outline">Paid</Badge></TableCell>
 						<TableCell>$250.00</TableCell>
 					</TableRow>
 					<TableRow data-state="selected">
 						<TableCell>INV-2042</TableCell>
-						<TableCell>
-							<Badge variant="secondary">Pending</Badge>
-						</TableCell>
+						<TableCell><Badge variant="secondary">Pending</Badge></TableCell>
 						<TableCell>$125.00</TableCell>
 					</TableRow>
 					<TableRow>
 						<TableCell>INV-2043</TableCell>
-						<TableCell>
-							<Badge variant="destructive">Overdue</Badge>
-						</TableCell>
+						<TableCell><Badge variant="destructive">Overdue</Badge></TableCell>
 						<TableCell>$75.00</TableCell>
 					</TableRow>
 				</TableBody>
@@ -897,9 +878,9 @@ component galleryMediaCard() {
 				<div class="p-4">
 					<h4 class="mb-3 text-sm leading-none font-medium">Releases</h4>
 					{ for _, tag := range []string{
-	"v1.2.0-beta.5", "v1.2.0-beta.4", "v1.2.0-beta.3",
-	"v1.2.0-beta.2", "v1.2.0-beta.1", "v1.1.9", "v1.1.8", "v1.1.7",
-} {
+						"v1.2.0-beta.5", "v1.2.0-beta.4", "v1.2.0-beta.3",
+						"v1.2.0-beta.2", "v1.2.0-beta.1", "v1.1.9", "v1.1.8", "v1.1.7",
+					} {
 						<div>
 							<div class="text-sm">{ tag }</div>
 							<Separator class="my-2"/>
@@ -953,60 +934,60 @@ component gallerySidebarCard(idp string) {
 			    stays inside its card instead of overlaying the page. */}
 			<div class="relative isolate transform-gpu overflow-hidden rounded-lg border">
 				<SidebarProvider open={true} class="min-h-[24rem]">
-					<Sidebar open={true}>
-						<SidebarHeader>
-							<div class="px-2 py-1 text-sm font-semibold">Acme Inc</div>
-							<SidebarInput placeholder="Search navigation"/>
-						</SidebarHeader>
-						<SidebarSeparator/>
-						<SidebarContent>
-							<SidebarGroup>
-								<SidebarGroupLabel>Application</SidebarGroupLabel>
-								<SidebarGroupContent>
-									<SidebarMenu>
-										<SidebarMenuItem>
-											<SidebarMenuButton isActive={true}>
-												<icon.House/>
-												<span>Home</span>
-											</SidebarMenuButton>
-										</SidebarMenuItem>
-										<SidebarMenuItem>
-											<SidebarMenuButton>
-												<icon.Inbox/>
-												<span>Inbox</span>
-											</SidebarMenuButton>
-											<SidebarMenuBadge>24</SidebarMenuBadge>
-										</SidebarMenuItem>
-										<SidebarMenuItem>
-											<SidebarMenuButton>
-												<icon.Settings/>
-												<span>Settings</span>
-											</SidebarMenuButton>
-										</SidebarMenuItem>
-									</SidebarMenu>
-								</SidebarGroupContent>
-							</SidebarGroup>
-						</SidebarContent>
-						<SidebarFooter>
-							<SidebarMenu>
-								<SidebarMenuItem>
-									<SidebarMenuButton>
-										<icon.User/>
-										<span>Account</span>
-									</SidebarMenuButton>
-								</SidebarMenuItem>
-							</SidebarMenu>
-						</SidebarFooter>
-					</Sidebar>
-					<SidebarInset>
-						<header class="flex h-12 items-center gap-2 border-b px-4">
-							<SidebarTrigger/>
-							<span class="text-sm text-muted-foreground">Dashboard</span>
-						</header>
-						<div class="p-4 text-sm text-muted-foreground">
-							Overview of { idp } workspace activity.
-						</div>
-					</SidebarInset>
+				<Sidebar open={true}>
+					<SidebarHeader>
+						<div class="px-2 py-1 text-sm font-semibold">Acme Inc</div>
+						<SidebarInput placeholder="Search navigation"/>
+					</SidebarHeader>
+					<SidebarSeparator/>
+					<SidebarContent>
+						<SidebarGroup>
+							<SidebarGroupLabel>Application</SidebarGroupLabel>
+							<SidebarGroupContent>
+								<SidebarMenu>
+									<SidebarMenuItem>
+										<SidebarMenuButton isActive={true}>
+											<icon.House/>
+											<span>Home</span>
+										</SidebarMenuButton>
+									</SidebarMenuItem>
+									<SidebarMenuItem>
+										<SidebarMenuButton>
+											<icon.Inbox/>
+											<span>Inbox</span>
+										</SidebarMenuButton>
+										<SidebarMenuBadge>24</SidebarMenuBadge>
+									</SidebarMenuItem>
+									<SidebarMenuItem>
+										<SidebarMenuButton>
+											<icon.Settings/>
+											<span>Settings</span>
+										</SidebarMenuButton>
+									</SidebarMenuItem>
+								</SidebarMenu>
+							</SidebarGroupContent>
+						</SidebarGroup>
+					</SidebarContent>
+					<SidebarFooter>
+						<SidebarMenu>
+							<SidebarMenuItem>
+								<SidebarMenuButton>
+									<icon.User/>
+									<span>Account</span>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
+						</SidebarMenu>
+					</SidebarFooter>
+				</Sidebar>
+				<SidebarInset>
+					<header class="flex h-12 items-center gap-2 border-b px-4">
+						<SidebarTrigger/>
+						<span class="text-sm text-muted-foreground">Dashboard</span>
+					</header>
+					<div class="p-4 text-sm text-muted-foreground">
+						Overview of { idp } workspace activity.
+					</div>
+				</SidebarInset>
 				</SidebarProvider>
 			</div>
 		</CardContent>

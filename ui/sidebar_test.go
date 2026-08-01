@@ -161,8 +161,10 @@ func TestSidebarPrimitiveCompositionAndCallerClassPlacement(t *testing.T) {
 		// wantClass is the class attribute the COMPOSED element renders.
 		wantClass string
 		// classAttributes is how many class attributes the whole render
-		// carries. The trigger's is 2 because SidebarTrigger also renders its
-		// own sr-only label span, which is a Sidebar slot of its own.
+		// carries. The trigger's is 3 because SidebarTrigger also renders its
+		// own sr-only label span (a Sidebar slot of its own) and its
+		// PanelLeft icon carries a literal rtl:rotate-180 class so the
+		// trigger glyph flips in RTL contexts.
 		classAttributes int
 	}{
 		{
@@ -173,7 +175,7 @@ func TestSidebarPrimitiveCompositionAndCallerClassPlacement(t *testing.T) {
 			got:             render(t, ui.SidebarTrigger(gsx.Attrs{{Key: "class", Value: "caller"}})),
 			want:            `data-gsxui-slot-sidebar-trigger data-gsxui-slot-button`,
 			wantClass:       canonicalButtonClass("ghost", "icon", append(sidebarRecipeUtilities("sidebar-trigger"), "caller")...),
-			classAttributes: 2,
+			classAttributes: 3,
 		},
 		{
 			name: "input",

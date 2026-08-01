@@ -81,10 +81,7 @@ component Sidebar(open bool, side string, variant string, collapsible string, ch
 		<>
 			<Sheet { attrs... } data-gsxui-slot-sidebar-mobile-root>
 				<SheetContent
-					class={
-						sidebar.Root(),
-						sidebar.MobileContent(),
-					}
+					class={ sidebar.Root(), sidebar.MobileContent() }
 					side={s}
 					data-mobile="true"
 					style=css`--sidebar-width:@{sidebarWidthMobile}`
@@ -101,10 +98,7 @@ component Sidebar(open bool, side string, variant string, collapsible string, ch
 				</SheetContent>
 			</Sheet>
 			<div
-				class={
-					sidebar.Root(),
-					sidebar.Desktop(),
-				}
+				class={ sidebar.Root(), sidebar.Desktop() }
 				data-state={state}
 				data-collapsible={activeCollapsible}
 				data-gsxui-sidebar-collapsible={c}
@@ -132,7 +126,7 @@ component SidebarTrigger(attrs gsx.Attrs) {
 		{ attrs... }
 		data-gsxui-slot-sidebar-trigger
 	>
-		<icon.PanelLeft/>
+		<icon.PanelLeft class={ "rtl:rotate-180" }/>
 		<span class={ sidebar.TriggerLabel() } data-gsxui-slot-sidebar-trigger-label>Toggle Sidebar</span>
 	</Button>
 }

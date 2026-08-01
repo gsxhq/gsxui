@@ -108,6 +108,7 @@
     @apply [&_svg:not([class*='size-'])]:size-4;
     @apply [&_svg:not([class*='text-'])]:text-muted-foreground;
     @apply [&>svg:last-child]:ms-auto [&>svg:last-child]:size-4;
+    @apply [&>svg:last-child]:rtl:rotate-180;
   }
 
   .gsxui-recipe-dropdown-menu-sub-content {

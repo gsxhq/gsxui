@@ -1942,7 +1942,8 @@
           },
           "separator": {
             "base": [
-              "[\u0026\u003esvg]:size-3.5"
+              "[\u0026\u003esvg]:size-3.5",
+              "[\u0026\u003esvg]:rtl:rotate-180"
             ],
             "dimensions": {}
           }
@@ -3018,7 +3019,8 @@
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "[\u0026_svg:not([class*='text-'])]:text-muted-foreground",
               "[\u0026\u003esvg:last-child]:ms-auto",
-              "[\u0026\u003esvg:last-child]:size-4"
+              "[\u0026\u003esvg:last-child]:size-4",
+              "[\u0026\u003esvg:last-child]:rtl:rotate-180"
             ],
             "dimensions": {}
           }
@@ -3510,7 +3512,8 @@
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "[\u0026_svg:not([class*='text-'])]:text-muted-foreground",
               "[\u0026\u003esvg:last-child]:ms-auto",
-              "[\u0026\u003esvg:last-child]:size-4"
+              "[\u0026\u003esvg:last-child]:size-4",
+              "[\u0026\u003esvg:last-child]:rtl:rotate-180"
             ],
             "dimensions": {}
           }
@@ -4458,7 +4461,8 @@
               "data-[state=open]:text-accent-foreground",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "[\u0026\u003esvg:last-child]:ms-auto",
-              "[\u0026\u003esvg:last-child]:size-4"
+              "[\u0026\u003esvg:last-child]:size-4",
+              "[\u0026\u003esvg:last-child]:rtl:rotate-180"
             ],
             "dimensions": {}
           },
@@ -6613,7 +6617,8 @@
           },
           "separator": {
             "base": [
-              "[\u0026\u003esvg]:size-3.5"
+              "[\u0026\u003esvg]:size-3.5",
+              "[\u0026\u003esvg]:rtl:rotate-180"
             ],
             "dimensions": {}
           }
@@ -7684,7 +7689,8 @@
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "[\u0026_svg:not([class*='text-'])]:text-muted-foreground",
               "[\u0026\u003esvg:last-child]:ms-auto",
-              "[\u0026\u003esvg:last-child]:size-4"
+              "[\u0026\u003esvg:last-child]:size-4",
+              "[\u0026\u003esvg:last-child]:rtl:rotate-180"
             ],
             "dimensions": {}
           }
@@ -8176,7 +8182,8 @@
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "[\u0026_svg:not([class*='text-'])]:text-muted-foreground",
               "[\u0026\u003esvg:last-child]:ms-auto",
-              "[\u0026\u003esvg:last-child]:size-4"
+              "[\u0026\u003esvg:last-child]:size-4",
+              "[\u0026\u003esvg:last-child]:rtl:rotate-180"
             ],
             "dimensions": {}
           }
@@ -9124,7 +9131,8 @@
               "data-[state=open]:text-accent-foreground",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "[\u0026\u003esvg:last-child]:ms-auto",
-              "[\u0026\u003esvg:last-child]:size-4"
+              "[\u0026\u003esvg:last-child]:size-4",
+              "[\u0026\u003esvg:last-child]:rtl:rotate-180"
             ],
             "dimensions": {}
           },

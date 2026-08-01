@@ -466,7 +466,7 @@ component MenubarSub(children gsx.Node, attrs gsx.Attrs) {
 component MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg:not([class*='size-'])]:size-4 [&>svg:last-child]:ms-auto [&>svg:last-child]:size-4"
+			"relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg:not([class*='size-'])]:size-4 [&>svg:last-child]:ms-auto [&>svg:last-child]:size-4 [&>svg:last-child]:rtl:rotate-180"
 		}
 		role="menuitem"
 		aria-haspopup="menu"

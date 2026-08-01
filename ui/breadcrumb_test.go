@@ -80,7 +80,7 @@ func TestBreadcrumbSeparatorDefaultPinned(t *testing.T) {
 	// No children: renders the default ChevronRight icon, mirroring shadcn's
 	// `{children ?? <ChevronRight />}`.
 	got := render(t, ui.BreadcrumbSeparator(nil, nil))
-	want := `<li role="presentation" aria-hidden="true" class="[&amp;&gt;svg]:size-3.5" data-gsxui-slot-breadcrumb-separator><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="m9 18 6-6-6-6"/></svg></li>`
+	want := `<li role="presentation" aria-hidden="true" class="[&amp;&gt;svg]:size-3.5 [&amp;&gt;svg]:rtl:rotate-180" data-gsxui-slot-breadcrumb-separator><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="m9 18 6-6-6-6"/></svg></li>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -88,7 +88,7 @@ func TestBreadcrumbSeparatorDefaultPinned(t *testing.T) {
 
 func TestBreadcrumbSeparatorChildrenOverride(t *testing.T) {
 	got := render(t, ui.BreadcrumbSeparator(gsx.Raw("/"), nil))
-	want := `<li role="presentation" aria-hidden="true" class="[&amp;&gt;svg]:size-3.5" data-gsxui-slot-breadcrumb-separator>/</li>`
+	want := `<li role="presentation" aria-hidden="true" class="[&amp;&gt;svg]:size-3.5 [&amp;&gt;svg]:rtl:rotate-180" data-gsxui-slot-breadcrumb-separator>/</li>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

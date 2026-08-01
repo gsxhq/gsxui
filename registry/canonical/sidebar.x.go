@@ -131,16 +131,16 @@ func Sidebar(open bool, side string, variant string, collapsible string, childre
 				_gsxv0 := _gsxrt.FilterCSS(string(sidebarWidthMobile))
 				_gsxgw.NodeResult(_gsxrenderSheetContent(ctx, _gsxgw, _gsxa2, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:94:6
+//line sidebar.gsx:91:6
 					_gsxgw.NodeResult(_gsxrenderSheetHeader(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:95:7
+//line sidebar.gsx:92:7
 						_gsxgw.NodeResult(_gsxrenderSheetTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Sidebar")
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "data-gsxui-slot-sidebar-mobile-title", Value: _gsxrt.Toggle(true)}}))
-//line sidebar.gsx:96:7
+//line sidebar.gsx:93:7
 						_gsxgw.NodeResult(_gsxrenderSheetDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Displays the mobile sidebar.")
@@ -148,18 +148,18 @@ func Sidebar(open bool, side string, variant string, collapsible string, childre
 						}), _gsxrt.Attrs{{Key: "data-gsxui-slot-sidebar-mobile-description", Value: _gsxrt.Toggle(true)}}))
 						return _gsxgw.Err()
 					}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(sidebar.MobileHeader()))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-sidebar-mobile-header", Value: _gsxrt.Toggle(true)}})))
-//line sidebar.gsx:100:6
+//line sidebar.gsx:97:6
 					_gsxgw.S("<div")
 					_gsxgw.BoolAttr("data-gsxui-slot-sidebar-mobile-inner", true)
 					_gsxgw.S(">")
-//line sidebar.gsx:100:48
+//line sidebar.gsx:97:48
 					_gsxgw.Node(ctx, children)
 					_gsxgw.S("</div>")
 					return _gsxgw.Err()
 				}), _gsxrt.ConcatAttrs(_gsxa1, _gsxrt.Attrs{{Key: "data-mobile", Value: "true"}}, _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("--sidebar-width:" + _gsxv0)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-sidebar-mobile-content", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-sidebar", Value: _gsxrt.Toggle(true)}})))
 				return _gsxgw.Err()
 			}), _gsxrt.ConcatAttrs(attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-sidebar-mobile-root", Value: _gsxrt.Toggle(true)}})))
-//line sidebar.gsx:103:4
+//line sidebar.gsx:100:4
 			_gsxgw.S("<div class=\"")
 			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.Root()), _gsxrt.Class(sidebar.Desktop()))
 			_gsxgw.S("\" data-state=\"")
@@ -176,13 +176,13 @@ func Sidebar(open bool, side string, variant string, collapsible string, childre
 			_gsxgw.BoolAttr("data-gsxui-slot-sidebar-desktop", true)
 			_gsxgw.BoolAttr("data-gsxui-slot-sidebar", true)
 			_gsxgw.S(">")
-//line sidebar.gsx:116:5
+//line sidebar.gsx:110:5
 			_gsxgw.S("<div class=\"")
 			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.Gap()))
 			_gsxgw.S("\"")
 			_gsxgw.BoolAttr("data-gsxui-slot-sidebar-gap", true)
 			_gsxgw.S("></div>")
-//line sidebar.gsx:117:5
+//line sidebar.gsx:111:5
 			_gsxgw.S("<div class=\"")
 			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.Container()), _gsxrt.Class(attrs.Class()))
 			_gsxgw.S("\"")
@@ -190,13 +190,13 @@ func Sidebar(open bool, side string, variant string, collapsible string, childre
 			_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-container"})
 			_gsxgw.BoolAttr("data-gsxui-slot-sidebar-container", true)
 			_gsxgw.S(">")
-//line sidebar.gsx:118:6
+//line sidebar.gsx:112:6
 			_gsxgw.S("<div class=\"")
 			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.Inner()))
 			_gsxgw.S("\"")
 			_gsxgw.BoolAttr("data-gsxui-slot-sidebar-inner", true)
 			_gsxgw.S(">")
-//line sidebar.gsx:119:7
+//line sidebar.gsx:113:7
 			_gsxgw.Node(ctx, children)
 			_gsxgw.S("</div></div></div>")
 		}
@@ -204,16 +204,16 @@ func Sidebar(open bool, side string, variant string, collapsible string, childre
 	})
 }
 
-//line sidebar.gsx:127:1
+//line sidebar.gsx:121:1
 func SidebarTrigger(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:128:2
+//line sidebar.gsx:122:2
 		_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "ghost", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:135:3
-			_gsxgw.Node(ctx, icon.PanelLeft())
-//line sidebar.gsx:136:3
+//line sidebar.gsx:129:3
+			_gsxgw.Node(ctx, icon.PanelLeft(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("rtl:rotate-180"))}}...))
+//line sidebar.gsx:130:3
 			_gsxgw.S("<span class=\"")
 			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.TriggerLabel()))
 			_gsxgw.S("\"")
@@ -225,15 +225,15 @@ func SidebarTrigger(attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line sidebar.gsx:140:1
+//line sidebar.gsx:134:1
 // SidebarRail is a pointer affordance matching the reference: it is not a
 // keyboard tab stop and activates the same state transition as the trigger.
 
-//line sidebar.gsx:142:1
+//line sidebar.gsx:136:1
 func SidebarRail(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:143:2
+//line sidebar.gsx:137:2
 		_gsxgw.S("<button class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.Rail()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -257,11 +257,11 @@ func SidebarRail(attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line sidebar.gsx:154:1
+//line sidebar.gsx:148:1
 func SidebarInset(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:155:2
+//line sidebar.gsx:149:2
 		_gsxgw.S("<main class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.Inset()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -269,28 +269,28 @@ func SidebarInset(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "main", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-inset"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-inset", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:155:77
+//line sidebar.gsx:149:77
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</main>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:158:1
+//line sidebar.gsx:152:1
 func SidebarInput(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:159:2
+//line sidebar.gsx:153:2
 		_gsxgw.NodeResult(_gsxrenderInput(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(sidebar.Input()))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-sidebar-input", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:162:1
+//line sidebar.gsx:156:1
 func SidebarHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:163:2
+//line sidebar.gsx:157:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.Header()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -298,18 +298,18 @@ func SidebarHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-header"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-header", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:163:78
+//line sidebar.gsx:157:78
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:166:1
+//line sidebar.gsx:160:1
 func SidebarFooter(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:167:2
+//line sidebar.gsx:161:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.Footer()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -317,28 +317,28 @@ func SidebarFooter(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-footer"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-footer", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:167:78
+//line sidebar.gsx:161:78
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:170:1
+//line sidebar.gsx:164:1
 func SidebarSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:171:2
+//line sidebar.gsx:165:2
 		_gsxgw.NodeResult(_gsxrenderSeparator(ctx, _gsxgw, "", _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(sidebar.Separator()))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-sidebar-separator", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:174:1
+//line sidebar.gsx:168:1
 func SidebarContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:175:2
+//line sidebar.gsx:169:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.Content()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -346,18 +346,18 @@ func SidebarContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-content", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:175:80
+//line sidebar.gsx:169:80
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:178:1
+//line sidebar.gsx:172:1
 func SidebarGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:179:2
+//line sidebar.gsx:173:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.Group()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -365,18 +365,18 @@ func SidebarGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-group", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:179:76
+//line sidebar.gsx:173:76
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:182:1
+//line sidebar.gsx:176:1
 func SidebarGroupLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:183:2
+//line sidebar.gsx:177:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.GroupLabel()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -384,18 +384,18 @@ func SidebarGroupLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-group-label"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-group-label", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:183:87
+//line sidebar.gsx:177:87
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:186:1
+//line sidebar.gsx:180:1
 func SidebarGroupAction(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:187:2
+//line sidebar.gsx:181:2
 		_gsxgw.S("<button class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.GroupAction()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -406,18 +406,18 @@ func SidebarGroupAction(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-group-action"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-group-action", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:188:3
+//line sidebar.gsx:182:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:192:1
+//line sidebar.gsx:186:1
 func SidebarGroupContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:193:2
+//line sidebar.gsx:187:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.GroupContent()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -425,18 +425,18 @@ func SidebarGroupContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-group-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-group-content", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:193:91
+//line sidebar.gsx:187:91
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:196:1
+//line sidebar.gsx:190:1
 func SidebarMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:197:2
+//line sidebar.gsx:191:2
 		_gsxgw.S("<ul class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.Menu()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -444,18 +444,18 @@ func SidebarMenu(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "ul", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:197:73
+//line sidebar.gsx:191:73
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</ul>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:200:1
+//line sidebar.gsx:194:1
 func SidebarMenuItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:201:2
+//line sidebar.gsx:195:2
 		_gsxgw.S("<li class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.MenuItem()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -463,20 +463,20 @@ func SidebarMenuItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "li", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-item", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:201:82
+//line sidebar.gsx:195:82
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</li>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:204:1
+//line sidebar.gsx:198:1
 func SidebarMenuButton(isActive bool, variant string, size string, tooltip string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:205:2
+//line sidebar.gsx:199:2
 		if tooltip == "" {
-//line sidebar.gsx:206:3
+//line sidebar.gsx:200:3
 			_gsxgw.S("<button class=\"")
 			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.MenuButton()), _gsxrt.Class(attrs.Class()))
 			_gsxgw.S("\"")
@@ -500,14 +500,14 @@ func SidebarMenuButton(isActive bool, variant string, size string, tooltip strin
 			_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-button"})
 			_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-button", true)
 			_gsxgw.S(">")
-//line sidebar.gsx:215:4
+//line sidebar.gsx:209:4
 			_gsxgw.Node(ctx, children)
 			_gsxgw.S("</button>")
 		} else {
-//line sidebar.gsx:218:3
+//line sidebar.gsx:212:3
 			_gsxgw.NodeResult(_gsxrenderTooltip(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:219:4
+//line sidebar.gsx:213:4
 				_gsxgw.S("<button class=\"")
 				_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.MenuButton()), _gsxrt.Class(attrs.Class()))
 				_gsxgw.S("\"")
@@ -534,13 +534,13 @@ func SidebarMenuButton(isActive bool, variant string, size string, tooltip strin
 				_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-button"})
 				_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-button", true)
 				_gsxgw.S(">")
-//line sidebar.gsx:229:5
+//line sidebar.gsx:223:5
 				_gsxgw.Node(ctx, children)
 				_gsxgw.S("</button>")
-//line sidebar.gsx:231:4
+//line sidebar.gsx:225:4
 				_gsxgw.NodeResult(_gsxrenderTooltipContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:232:5
+//line sidebar.gsx:226:5
 					_gsxgw.Text(string(tooltip))
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "data-gsxui-slot-sidebar-menu-button-tooltip-content", Value: _gsxrt.Toggle(true)}}))
@@ -551,11 +551,11 @@ func SidebarMenuButton(isActive bool, variant string, size string, tooltip strin
 	})
 }
 
-//line sidebar.gsx:238:1
+//line sidebar.gsx:232:1
 func SidebarMenuAction(showOnHover bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:239:2
+//line sidebar.gsx:233:2
 		_gsxgw.S("<button class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.MenuAction()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -569,18 +569,18 @@ func SidebarMenuAction(showOnHover bool, children gsx.Node, attrs gsx.Attrs) _gs
 		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-action"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-action", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:246:3
+//line sidebar.gsx:240:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:250:1
+//line sidebar.gsx:244:1
 func SidebarMenuBadge(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:251:2
+//line sidebar.gsx:245:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.MenuBadge()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -588,24 +588,24 @@ func SidebarMenuBadge(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-badge"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-badge", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:251:85
+//line sidebar.gsx:245:85
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:254:1
+//line sidebar.gsx:248:1
 // The randomized width is the one dynamic presentation value in this part.
 // It is chosen once per server render, then consumed by style CSS.
 
-//line sidebar.gsx:256:1
+//line sidebar.gsx:250:1
 func SidebarMenuSkeleton(showIcon bool, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:257:2
+//line sidebar.gsx:251:2
 		width := strconv.Itoa(rand.Intn(40)+50) + "%"
-//line sidebar.gsx:258:2
+//line sidebar.gsx:252:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.MenuSkeleton()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -613,12 +613,12 @@ func SidebarMenuSkeleton(showIcon bool, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-skeleton"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-skeleton", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:259:3
+//line sidebar.gsx:253:3
 		if showIcon {
-//line sidebar.gsx:260:4
+//line sidebar.gsx:254:4
 			_gsxgw.NodeResult(_gsxrenderSkeleton(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(sidebar.MenuSkeletonIcon()))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-sidebar-menu-skeleton-icon", Value: _gsxrt.Toggle(true)}})))
 		}
-//line sidebar.gsx:262:3
+//line sidebar.gsx:256:3
 		_gsxa4 := _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(sidebar.MenuSkeletonText()))}}
 		_gsxv3 := _gsxrt.FilterCSS(string(width))
 		_gsxgw.NodeResult(_gsxrenderSkeleton(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxa4, _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("--skeleton-width:" + _gsxv3)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-sidebar-menu-skeleton-text", Value: _gsxrt.Toggle(true)}})))
@@ -627,11 +627,11 @@ func SidebarMenuSkeleton(showIcon bool, attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line sidebar.gsx:270:1
+//line sidebar.gsx:264:1
 func SidebarMenuSub(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:271:2
+//line sidebar.gsx:265:2
 		_gsxgw.S("<ul class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.MenuSub()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -639,18 +639,18 @@ func SidebarMenuSub(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "ul", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-sub"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-sub", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:271:80
+//line sidebar.gsx:265:80
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</ul>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:274:1
+//line sidebar.gsx:268:1
 func SidebarMenuSubItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:275:2
+//line sidebar.gsx:269:2
 		_gsxgw.S("<li class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.MenuSubItem()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -658,18 +658,18 @@ func SidebarMenuSubItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "li", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-sub-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-sub-item", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:275:89
+//line sidebar.gsx:269:89
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</li>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:278:1
+//line sidebar.gsx:272:1
 func SidebarMenuSubButton(size string, isActive bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:279:2
+//line sidebar.gsx:273:2
 		_gsxgw.S("<a class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.MenuSubButton()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -685,7 +685,7 @@ func SidebarMenuSubButton(size string, isActive bool, children gsx.Node, attrs g
 		_gsxgw.Spread(ctx, "a", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-sub-button"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-sub-button", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:286:3
+//line sidebar.gsx:280:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</a>")
 		return _gsxgw.Err()

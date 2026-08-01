@@ -143,7 +143,7 @@ component SidebarTrigger(attrs gsx.Attrs) {
 		{ attrs... }
 		data-gsxui-slot-sidebar-trigger
 	>
-		<icon.PanelLeft/>
+		<icon.PanelLeft class={ "rtl:rotate-180" }/>
 		<span class={ "sr-only" } data-gsxui-slot-sidebar-trigger-label>Toggle Sidebar</span>
 	</Button>
 }

@@ -234,7 +234,7 @@ func _gsxrenderSidebarTrigger(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, attrs 
 	_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "ghost", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line sidebar.gsx:146:3
-		_gsxgw.Node(ctx, icon.PanelLeft())
+		_gsxgw.Node(ctx, icon.PanelLeft(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("rtl:rotate-180"))}}...))
 //line sidebar.gsx:147:3
 		_gsxgw.S("<span class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("sr-only"))

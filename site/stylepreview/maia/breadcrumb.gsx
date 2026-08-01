@@ -69,7 +69,7 @@ component BreadcrumbSeparator(children gsx.Node, attrs gsx.Attrs) {
 	<li
 		role="presentation"
 		aria-hidden="true"
-		class={ "[&>svg]:size-3.5" }
+		class={ "[&>svg]:size-3.5 [&>svg]:rtl:rotate-180" }
 		{ attrs... }
 		data-gsxui-slot-breadcrumb-separator
 	>
