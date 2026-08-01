@@ -111,7 +111,7 @@ test("sidebar documentation contains each app shell inside its own viewport", as
   await page.goto("/components/sidebar");
 
   const previews = page.locator("iframe[data-site-isolated-preview]");
-  await expect(previews).toHaveCount(10);
+  await expect(previews).toHaveCount(11);
   await expect(page.locator("[data-gsxui-slot-sidebar-container]")).toHaveCount(0);
   await expect(
     page.locator('[data-site-docs-sidebar] a[href="/components/button"]'),
