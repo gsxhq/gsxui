@@ -9,4 +9,10 @@ func init() {
 		Node:       exampleprogress.Basic(),
 		SourcePath: "progress/basic.gsx",
 	})
+	Register("progress", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       exampleprogress.Rtl(),
+		SourcePath: "progress/rtl.gsx",
+	})
 }

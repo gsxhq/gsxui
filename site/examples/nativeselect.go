@@ -15,4 +15,10 @@ func init() {
 		Node:       examplenativeselect.Groups(),
 		SourcePath: "nativeselect/groups.gsx",
 	})
+	Register("native-select", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplenativeselect.Rtl(),
+		SourcePath: "nativeselect/rtl.gsx",
+	})
 }

@@ -15,4 +15,10 @@ func init() {
 		Node:       examplemenubar.Full(),
 		SourcePath: "menubar/full.gsx",
 	})
+	Register("menubar", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplemenubar.Rtl(),
+		SourcePath: "menubar/rtl.gsx",
+	})
 }

@@ -9,4 +9,10 @@ func init() {
 		Node:       examplekbd.Basic(),
 		SourcePath: "kbd/basic.gsx",
 	})
+	Register("kbd", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplekbd.Rtl(),
+		SourcePath: "kbd/rtl.gsx",
+	})
 }
