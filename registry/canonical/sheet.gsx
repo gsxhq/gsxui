@@ -4,6 +4,12 @@ import "github.com/gsxhq/gsx"
 
 // Sheet composes Dialog's root and behavior with side-anchored presentation.
 //
+// side is physical, matching shadcn: side="left"/"right" always anchors to
+// that physical viewport edge (position, border and slide direction), in
+// both dir="ltr" and dir="rtl" documents. Interior presentation — header and
+// footer padding, title/description text alignment, the close button's
+// logical end-* offset — is logical and follows dir normally.
+//
 // SheetContent deliberately does NOT reuse Dialog's content presentation —
 // it must not inherit the plain-modal box — so it carries the shared
 // <dialog> chrome as its own recipe utilities instead. Every class attribute

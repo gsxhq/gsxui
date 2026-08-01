@@ -213,4 +213,71 @@ test.describe("rtl", () => {
       .poll(() => first.evaluate((el: HTMLElement) => parseFloat(el.style.flexGrow)))
       .toBeGreaterThan(50);
   });
+
+  test("sidebar trigger icon flips under RTL", async ({ page }) => {
+    await page.goto("/f/sidebar-contract?case=offcanvas-left");
+    await setRTL(page);
+
+    const trigger = page.locator("[data-gsxui-slot-sidebar-trigger]").first();
+    await expect(trigger.locator("svg")).toHaveClass(/rtl:rotate-180/);
+  });
+
+  test("mobile sidebar (side=left) opens from the physical left under RTL", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 500, height: 800 });
+    await page.goto("/f/sidebar-contract?case=offcanvas-left");
+    await setRTL(page);
+
+    const trigger = page.locator("[data-gsxui-slot-sidebar-trigger]").first();
+    await trigger.click();
+
+    const content = page.locator("[data-gsxui-slot-sidebar-mobile-content]");
+    await expect(content).toBeVisible();
+    // side="left" is physical: the sheet must hug the physical left edge of
+    // the viewport regardless of dir="rtl" (allow a few px for the dialog's
+    // native UA border/backdrop inset). Wait out the 200ms slide-in
+    // transition before sampling geometry.
+    await expect
+      .poll(async () => {
+        const box = await content.boundingBox();
+        return box ? Math.abs(box.x) : Number.NaN;
+      })
+      .toBeLessThan(5);
+  });
+
+  test("sheet side=left opens from the physical left under RTL, with its close button at a logical (visual-left) position", async ({
+    page,
+  }) => {
+    await page.goto("/x/sheet/directions");
+    await setRTL(page);
+
+    await page.getByRole("button", { name: "left", exact: true }).click();
+    const content = page.locator(
+      '[data-gsxui-slot-sheet-content][data-side="left"]',
+    );
+    await expect(content).toBeVisible();
+    // side="left" is physical: the sheet must hug the physical left edge of
+    // the viewport regardless of dir="rtl". Wait out the slide-in transition
+    // before sampling geometry.
+    await expect
+      .poll(async () => {
+        const box = await content.boundingBox();
+        return box ? Math.abs(box.x) : Number.NaN;
+      })
+      .toBeLessThan(5);
+
+    const contentBox = await content.boundingBox();
+    if (!contentBox) throw new Error("sheet content has no bounding box");
+
+    const closeButton = content.locator("[data-gsxui-slot-sheet-close-button]");
+    const closeBox = await closeButton.boundingBox();
+    if (!closeBox) throw new Error("close button has no bounding box");
+    const contentMidpoint = contentBox.x + contentBox.width / 2;
+    // The close button sits at the logical end (interior positioning: end-3
+    // in ui/sheet.gsx), which under RTL is the visual LEFT side of the
+    // content box — not the physical right edge a plain "right-3" would put
+    // it at.
+    expect(closeBox.x + closeBox.width / 2).toBeLessThan(contentMidpoint);
+  });
 });

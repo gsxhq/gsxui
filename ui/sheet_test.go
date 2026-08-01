@@ -51,9 +51,9 @@ func sheetContentClass(side string) string {
 	const base = "m-0 flex-col gap-4 shadow-lg transition ease-in-out max-h-none bg-background text-foreground fixed z-50 text-sm duration-200 outline-none data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-[var(--overlay)] backdrop:backdrop-blur-xs backdrop:duration-200 data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 open:flex"
 	switch side {
 	case "right":
-		return base + " inset-y-0 end-0 start-auto h-full w-3/4 border-s sm:max-w-sm data-[state=closed]:slide-out-to-end data-[state=open]:slide-in-from-end"
+		return base + " inset-y-0 right-0 left-auto h-full w-3/4 border-l sm:max-w-sm data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right"
 	case "left":
-		return base + " inset-y-0 start-0 end-auto h-full w-3/4 border-e sm:max-w-sm data-[state=closed]:slide-out-to-start data-[state=open]:slide-in-from-start"
+		return base + " inset-y-0 left-0 right-auto h-full w-3/4 border-r sm:max-w-sm data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left"
 	case "top":
 		return base + " inset-x-0 top-0 bottom-auto h-auto w-full max-w-none border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top"
 	case "bottom":

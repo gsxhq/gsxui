@@ -18,6 +18,18 @@ import (
 // SidebarProvider and the desktop root, emits gsxui:change, and opens the
 // native mobile dialog. Persistence remains caller-owned.
 //
+// side is physical, matching shadcn: side="left"/"right" always anchors the
+// desktop rail and the mobile Sheet to that physical viewport edge, in both
+// dir="ltr" and dir="rtl" documents — the container's left/right offset,
+// the border between the rail and the inset content, and the rail's own
+// resize-cursor/position are all data-side-keyed physical geometry and stay
+// that way. Interior presentation — menu padding, badge/action offsets,
+// group-label/menu-button text alignment, the SidebarTrigger icon's
+// rtl:rotate-180 flip — is logical and follows dir normally. The mobile
+// Sheet needs no explicit dir plumbing: it composes <ui.Dialog>, which
+// renders inline in the server-rendered document, so dir inherits from the
+// ancestor <html dir="..."> the same as everywhere else.
+//
 // Every class attribute below is resolved to concrete utilities at generation
 // time. Six markers carry no class because nothing styles them — see
 // registry/canonical/shapes/sidebar.go for which and why.

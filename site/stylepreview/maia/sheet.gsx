@@ -4,6 +4,12 @@ import "github.com/gsxhq/gsx"
 
 // Sheet composes Dialog's root and behavior with side-anchored presentation.
 //
+// side is physical, matching shadcn: side="left"/"right" always anchors to
+// that physical viewport edge (position, border and slide direction), in
+// both dir="ltr" and dir="rtl" documents. Interior presentation — header and
+// footer padding, title/description text alignment, the close button's
+// logical end-* offset — is logical and follows dir normally.
+//
 // SheetContent deliberately does NOT reuse Dialog's content presentation —
 // it must not inherit the plain-modal box — so it carries the shared
 // <dialog> chrome as its own recipe utilities instead. Every class attribute
@@ -32,11 +38,11 @@ component SheetContent(side string, hideCloseButton bool, children gsx.Node, att
 			case "bottom":
 				"inset-x-0 bottom-0 top-auto h-auto w-full max-w-none border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom"
 			case "left":
-				"inset-y-0 start-0 end-auto h-full w-3/4 border-e sm:max-w-sm data-[state=closed]:slide-out-to-start data-[state=open]:slide-in-from-start"
+				"inset-y-0 left-0 right-auto h-full w-3/4 border-r sm:max-w-sm data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left"
 			case "top":
 				"inset-x-0 top-0 bottom-auto h-auto w-full max-w-none border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top"
 			default:
-				"inset-y-0 end-0 start-auto h-full w-3/4 border-s sm:max-w-sm data-[state=closed]:slide-out-to-end data-[state=open]:slide-in-from-end"
+				"inset-y-0 right-0 left-auto h-full w-3/4 border-l sm:max-w-sm data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right"
 			}
 		}
 		data-state="closed"
