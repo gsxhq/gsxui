@@ -15,4 +15,10 @@ func init() {
 		Node:       exampleaccordion.Compact(),
 		SourcePath: "accordion/compact.gsx",
 	})
+	Register("accordion", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       exampleaccordion.Rtl(),
+		SourcePath: "accordion/rtl.gsx",
+	})
 }

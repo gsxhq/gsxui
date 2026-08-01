@@ -18,4 +18,10 @@ func init() {
 		Node:       examplebutton.Variants(),
 		SourcePath: "button/variants.gsx",
 	})
+	Register("button", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplebutton.Rtl(),
+		SourcePath: "button/rtl.gsx",
+	})
 }

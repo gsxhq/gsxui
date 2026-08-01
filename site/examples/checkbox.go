@@ -15,4 +15,10 @@ func init() {
 		Node:       examplecheckbox.States(),
 		SourcePath: "checkbox/states.gsx",
 	})
+	Register("checkbox", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplecheckbox.Rtl(),
+		SourcePath: "checkbox/rtl.gsx",
+	})
 }

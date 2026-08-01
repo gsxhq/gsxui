@@ -143,6 +143,7 @@ func TestDocsTableOfContents(t *testing.T) {
 			}{
 				{id: "example-basic", title: "Basic"},
 				{id: "example-variants", title: "Variants"},
+				{id: "example-rtl", title: "RTL"},
 			},
 		},
 		{

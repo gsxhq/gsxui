@@ -21,4 +21,10 @@ func init() {
 		Node:       examplecard.Attrs(),
 		SourcePath: "card/attrs.gsx",
 	})
+	Register("card", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplecard.Rtl(),
+		SourcePath: "card/rtl.gsx",
+	})
 }

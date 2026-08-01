@@ -9,4 +9,10 @@ func init() {
 		Node:       examplebuttongroup.Basic(),
 		SourcePath: "buttongroup/basic.gsx",
 	})
+	Register("button-group", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplebuttongroup.Rtl(),
+		SourcePath: "buttongroup/rtl.gsx",
+	})
 }
