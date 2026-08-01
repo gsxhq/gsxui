@@ -40,13 +40,7 @@ component AccordionTrigger(children gsx.Node, attrs gsx.Attrs) {
 // classes join the inner padding token so utilities override its defaults on
 // the same box.
 component AccordionContent(children gsx.Node, attrs gsx.Attrs) {
-	{{
-		var innerAttrs gsx.Attrs
-		if class, ok := attrs.Get("class"); ok {
-			innerAttrs = gsx.Attrs{{Key: "class", Value: class}}
-		}
-	}}
 	<div class={ "overflow-hidden text-sm" } { attrs.Without("class")... } data-gsxui-slot-accordion-content>
-		<div class={ "pt-0 pb-2.5" } { innerAttrs... } data-gsxui-slot-accordion-content-inner>{ children }</div>
+		<div class={ "pt-0 pb-2.5", attrs.Class() } data-gsxui-slot-accordion-content-inner>{ children }</div>
 	</div>
 }

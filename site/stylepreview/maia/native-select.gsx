@@ -37,17 +37,11 @@ import (
 // edge. Non-class attrs still land on the <select> (name, id, aria-*,
 // disabled are form-control concerns).
 component NativeSelect(children gsx.Node, attrs gsx.Attrs) {
-	{{
-		var wrapperAttrs gsx.Attrs
-		if class, ok := attrs.Get("class"); ok {
-			wrapperAttrs = gsx.Attrs{{Key: "class", Value: class}}
-		}
-	}}
 	<div
 		class={
-			"relative w-fit [&>svg]:pointer-events-none [&>svg]:absolute [&>svg]:top-1/2 [&>svg]:right-2.5 [&>svg]:size-4 [&>svg]:-translate-y-1/2 [&>svg]:opacity-50"
+			"relative w-fit [&>svg]:pointer-events-none [&>svg]:absolute [&>svg]:top-1/2 [&>svg]:right-2.5 [&>svg]:size-4 [&>svg]:-translate-y-1/2 [&>svg]:opacity-50",
+			attrs.Class()
 		}
-		{ wrapperAttrs... }
 		data-gsxui-slot-native-select-wrapper
 	>
 		<select

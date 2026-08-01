@@ -379,6 +379,14 @@ func (r *resolver) inspectHelperCall(
 		r.err = r.positionedError(exprPos, "recipe accessor call receiver must be a bare component identifier")
 		return
 	}
+	// `attrs.Class()` is the one non-accessor call a canonical class
+	// expression may carry: it forwards the caller's class bag into the same
+	// merge site as the recipe tokens (see registry/canonical/accordion.gsx).
+	// It desugars verbatim — no edit recorded — so the consumer output keeps
+	// the same runtime forwarding.
+	if receiver.Name == "attrs" && selector.Sel.Name == "Class" && len(call.Args) == 0 {
+		return
+	}
 	// The receiver is the component's DERIVED Go identifier, not its registry
 	// name: `input-group.Root()` would parse as subtraction, so a hyphenated
 	// component is received as `inputGroup`. See componentIdentifier.

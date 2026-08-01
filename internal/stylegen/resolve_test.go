@@ -629,6 +629,45 @@ component B(variant string, children gsx.Node) {
 	}
 }
 
+func TestResolvePassesAttrsClassThroughVerbatim(t *testing.T) {
+	t.Parallel()
+	// attrs.Class() is runtime caller-class forwarding, not a recipe accessor:
+	// it must survive desugaring unchanged (registry/canonical/accordion.gsx's
+	// content-inner split relies on it), while any other foreign receiver in a
+	// class expression still fails the accessor-receiver check.
+	src := []byte(`package canonical
+
+import "github.com/gsxhq/gsx"
+
+component B(children gsx.Node, attrs gsx.Attrs) {
+	<button class={ button.Root(), attrs.Class() }>{ children }</button>
+}
+`)
+	got, err := Resolve("button.gsx", src, testResolved(t))
+	if err != nil {
+		t.Fatalf("Resolve() error = %v", err)
+	}
+	if !strings.Contains(string(got), "attrs.Class()") {
+		t.Errorf("attrs.Class() must pass through verbatim\nin: %s", got)
+	}
+	if strings.Contains(string(got), "button.Root()") {
+		t.Errorf("resolved source still contains a helper call:\n%s", got)
+	}
+
+	foreign := []byte(`package canonical
+
+import "github.com/gsxhq/gsx"
+
+component B(children gsx.Node, attrs gsx.Attrs) {
+	<button class={ button.Root(), other.Class() }>{ children }</button>
+}
+`)
+	if _, err := Resolve("button.gsx", foreign, testResolved(t)); err == nil ||
+		!strings.Contains(err.Error(), "accessor receiver") {
+		t.Errorf("foreign receiver must still be rejected, got %v", err)
+	}
+}
+
 func TestResolveDefaultArmCarriesDeclaredDefault(t *testing.T) {
 	t.Parallel()
 	// The declared default's utilities must appear in the default arm, not "",

@@ -98,11 +98,6 @@ func AccordionContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line accordion.gsx:32:2
-		var innerAttrs gsx.Attrs
-		if class, ok := attrs.Get("class"); ok {
-			innerAttrs = gsx.Attrs{{Key: "class", Value: class}}
-		}
-//line accordion.gsx:38:2
 		_gsxv0 := attrs.Without("class")
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(accordion.Content()), _gsxrt.Class(_gsxv0.Class()))
@@ -111,16 +106,13 @@ func AccordionContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", _gsxv0, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-accordion-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-accordion-content", true)
 		_gsxgw.S(">")
-//line accordion.gsx:39:3
-		_gsxv1 := innerAttrs
+//line accordion.gsx:33:3
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(accordion.ContentInner()), _gsxrt.Class(_gsxv1.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(accordion.ContentInner()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", _gsxv1.Style())
-		_gsxgw.Spread(ctx, "div", _gsxv1, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-accordion-content-inner"})
 		_gsxgw.BoolAttr("data-gsxui-slot-accordion-content-inner", true)
 		_gsxgw.S(">")
-//line accordion.gsx:39:101
+//line accordion.gsx:33:98
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div></div>")
 		return _gsxgw.Err()

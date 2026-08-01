@@ -154,13 +154,7 @@ component Combobox(name string, value string, children gsx.Node, attrs gsx.Attrs
 // precedence), while `id`/`aria-invalid`/etc. land on the actual `<input>`,
 // e.g. for a <label for> pairing (site/examples/combobox/form.gsx).
 component ComboboxInput(placeholder string, showTrigger bool, showClear bool, disabled bool, children gsx.Node, attrs gsx.Attrs) {
-	{{
-		var wrapperAttrs gsx.Attrs
-		if class, ok := attrs.Get("class"); ok {
-			wrapperAttrs = gsx.Attrs{{Key: "class", Value: class}}
-		}
-	}}
-	<InputGroup class={ "w-auto" } { wrapperAttrs... } data-gsxui-slot-combobox-input-group>
+	<InputGroup class={ "w-auto", attrs.Class() } data-gsxui-slot-combobox-input-group>
 		<InputGroupInput
 			type="text"
 			role="combobox"
