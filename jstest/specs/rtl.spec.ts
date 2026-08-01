@@ -95,6 +95,17 @@ test.describe("rtl", () => {
 
     const fileTrigger = page.locator("[data-gsxui-slot-menubar-trigger]").first();
     await fileTrigger.click();
+    // The click leaves the real mouse cursor resting near the content's
+    // first item. menubar.js's HOVERABLE pointerover handler (by design —
+    // "hover highlight IS focus", see the file's own header) refocuses
+    // whatever item the cursor ends up over once layout reflows (e.g. when
+    // the submenu below closes) — a synthetic pointerover Chromium fires on
+    // hit-test recompute, no actual pointer movement needed. That raced this
+    // otherwise keyboard-only test nondeterministically (menubar.js's File
+    // menu's first item sits directly under where the trigger click landed,
+    // unlike dropdown/context-menu's own submenu tests). Move the real
+    // cursor off the menu so only the keyboard drives focus from here.
+    await page.mouse.move(0, 0);
     const subTrigger = page.locator("[data-gsxui-slot-menubar-sub-trigger]").first();
     const subContent = page.locator("[data-gsxui-slot-menubar-sub-content]").first();
     await subTrigger.focus();
