@@ -646,6 +646,35 @@ test("preview gallery menus and dialogs operate inside the iframe", async ({
     .toBe(false);
 });
 
+test("preview gallery toast keeps its close button anchored to the row", async ({
+  page,
+}) => {
+  // The gallery renders a Toast row in-flow with a position override
+  // (foundation absolutely positions rows for the live Toaster stack). The
+  // override must stay `relative`, not `static`: the row is the containing
+  // block for the absolute close button, and a static row let the button
+  // escape to the page's top-right corner.
+  await page.goto("/theme/preview");
+  const toast = page
+    .locator('[data-theme-preview-style="nova"] [data-gsxui-slot-toast]')
+    .first();
+  const geometry = await toast.evaluate((row) => {
+    const button = row.querySelector("[data-gsxui-slot-toast-close]")!;
+    const rowRect = row.getBoundingClientRect();
+    const buttonRect = button.getBoundingClientRect();
+    return {
+      position: getComputedStyle(row).position,
+      buttonInsideRow:
+        buttonRect.left > rowRect.left &&
+        buttonRect.left < rowRect.right + 8 &&
+        buttonRect.top > rowRect.top - 8 &&
+        buttonRect.top < rowRect.bottom,
+    };
+  });
+  expect(geometry.position).toBe("relative");
+  expect(geometry.buttonInsideRow).toBe(true);
+});
+
 test("theme editor exposes Retry when the preview never handshakes", async ({
   page,
 }) => {

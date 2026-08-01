@@ -368,7 +368,7 @@ component galleryFeedbackCard() {
 					title="Profile updated"
 					description="Your changes have been saved."
 					action="Undo"
-					class="static w-full"
+					class="relative w-full"
 				/>
 			</ul>
 		</CardContent>

@@ -1012,7 +1012,7 @@ func _gsxrendergalleryFeedbackCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) e
 //line gallery.gsx:365:4
 			_gsxgw.S("<ul class=\"list-none\">")
 //line gallery.gsx:366:5
-			_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "success", "Profile updated", "Your changes have been saved.", "Undo", "", _gsxrt.Attrs{{Key: "class", Value: "static w-full"}}))
+			_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "success", "Profile updated", "Your changes have been saved.", "Undo", "", _gsxrt.Attrs{{Key: "class", Value: "relative w-full"}}))
 			_gsxgw.S("</ul>")
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "class", Value: "flex flex-col gap-4"}}))
