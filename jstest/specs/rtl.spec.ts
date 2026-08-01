@@ -325,4 +325,33 @@ test.describe("rtl", () => {
     await page.keyboard.press("ArrowRight");
     expect(await focusedDate()).toBe("2026-01-15");
   });
+
+  // Slider's fill is a native <input type=range>'s ::-webkit-slider-runnable-
+  // track / ::-moz-range-track pseudo-element background-image (a
+  // linear-gradient split at var(--fill)), reversed to() left under an
+  // unconditional `rtl:[&::-webkit-slider-runnable-track]:bg-[linear-
+  // gradient(to_left,...)]` class arm (slider.gsx). Chromium's
+  // getComputedStyle does not resolve `::-webkit-slider-runnable-track` (or
+  // `::-moz-range-track`, Firefox-only) at all — probed directly, it
+  // returns backgroundImage: "none" — so there is no way to sample the
+  // rendered gradient direction from script in headless Chromium. This test
+  // therefore guarantees only the two preconditions the CSS rule depends on
+  // — the rtl: class arm is present in the shipped markup, and the input's
+  // resolved direction is actually "rtl" so that Tailwind's :dir(rtl)-based
+  // rtl: variant matches — NOT that the fill visually renders on the right.
+  test("slider: rtl fill class arm is present and the input resolves rtl direction", async ({
+    page,
+  }) => {
+    await page.goto("/x/slider/basic");
+    await setRTL(page);
+
+    const slider = page.locator("[data-gsxui-slot-slider]").first();
+
+    const direction = await slider.evaluate((el) => getComputedStyle(el).direction);
+    expect(direction).toBe("rtl");
+
+    const className = await slider.evaluate((el) => el.className);
+    expect(className).toMatch(/(?:^|\s)rtl:\[&::-webkit-slider-runnable-track\]/);
+    expect(className).toMatch(/(?:^|\s)rtl:\[&::-moz-range-track\]/);
+  });
 });
