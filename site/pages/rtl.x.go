@@ -116,7 +116,7 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:67:6
 			_gsxgw.S("<li>")
 //line rtl.gsx:68:7
-			_gsxgw.S("<strong>Mirrored keyboard semantics.</strong> Roving-focus and open/close arrow keys in dropdown-menu, context-menu, menubar, tabs, toggle-group, carousel, and resizable follow the WAI-ARIA convention of mirroring by meaning, not by physical key — ArrowLeft still means \"toward the next item\" under RTL the way ArrowRight does under LTR, and ArrowLeft still opens a submenu the way ArrowRight does under LTR.</li></ul>")
+			_gsxgw.S("<strong>Mirrored keyboard semantics.</strong> Roving-focus and open/close arrow keys in dropdown-menu, context-menu, menubar, tabs, toggle-group, carousel, resizable, and calendar follow the WAI-ARIA convention of mirroring by meaning, not by physical key — ArrowLeft still means \"toward the next item\" under RTL the way ArrowRight does under LTR, and ArrowLeft still opens a submenu the way ArrowRight does under LTR.</li></ul>")
 //line rtl.gsx:74:5
 			_gsxgw.S("<p>Slider's fill gradient is direction-aware too, filling from the correct inline-start edge.")
 //line rtl.gsx:76:6
@@ -194,7 +194,7 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:123:6
 			_gsxgw.S("<a href=\"https://fonts.google.com/noto/specimen/Noto+Naskh+Arabic\" target=\"_blank\" rel=\"noreferrer\">Noto Naskh Arabic</a>(a book-style naskh better suited to longer prose). Load the Arabic font as a ")
 //line rtl.gsx:124:84
-			_gsxgw.S("<code>lang=\"ar\"</code>fallback rather than replacing Geist outright, so Latin text — brand names, code, page furniture — keeps rendering in Geist inside an RTL document.</p></section></div>")
+			_gsxgw.S("<code>lang=\"ar\"</code> fallback rather than replacing Geist outright, so Latin text — brand names, code, page furniture — keeps rendering in Geist inside an RTL document.</p></section></div>")
 			return _gsxgw.Err()
 		})))
 		return _gsxgw.Err()

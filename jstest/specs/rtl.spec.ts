@@ -303,4 +303,26 @@ test.describe("rtl", () => {
       expect(firstBox.x).toBeLessThan(box.x);
     }
   });
+
+  test("calendar: arrow-key day navigation mirrors under RTL", async ({ page }) => {
+    await page.goto("/x/calendar/basic");
+    await setRTL(page);
+
+    const dayFor = (iso: string) =>
+      page.locator(`[data-gsxui-slot-calendar-day-button][data-date="${iso}"]`);
+    const focusedDate = () =>
+      page.evaluate(() => document.activeElement?.getAttribute("data-date") ?? null);
+
+    await dayFor("2026-01-15").focus();
+
+    // RTL negates the day-navigation direction: visually-left ArrowLeft
+    // moves focus FORWARD a day (into the next day), and ArrowRight moves
+    // it BACKWARD a day — same convention as tabs.js/menubar.js's roving
+    // focus under RTL.
+    await page.keyboard.press("ArrowLeft");
+    expect(await focusedDate()).toBe("2026-01-16");
+
+    await page.keyboard.press("ArrowRight");
+    expect(await focusedDate()).toBe("2026-01-15");
+  });
 });

@@ -14,7 +14,7 @@
 // agree; jstest/specs/calendar.spec.ts's "Go and JS agree on …" tests are
 // exactly that agreement, checked by navigating client-side to a month and
 // diffing against the server's own render of that same month.
-import { on, emit } from "./gsxui.js";
+import { on, emit, isRTL } from "./gsxui.js";
 
 const ROOT = "[data-gsxui-slot-calendar]";
 
@@ -838,13 +838,14 @@ function clampToNavBounds(date, fromYear, toYear) {
 }
 
 // KEY_MOVES ports handleDayKeyDown's own keyMap verbatim (source map §7.3's
-// table). gsxui exposes no rtl/dir prop, so ArrowLeft/ArrowRight always take
-// the table's non-rtl branch. Every key NOT in this map is left completely
-// untouched — no preventDefault, no handling — matching upstream's own `if
-// (keyMap[e.key])` guard; this is also what lets Enter/Space fall through
-// to the native <button> element's own default activation (which
-// synthesizes a "click", handled by the day-click handler above) rather
-// than being reimplemented here.
+// table), always in its non-rtl form; the keydown handler below swaps
+// ArrowLeft/ArrowRight to the opposite table entry when isRTL(root) is
+// true, same as tabs.js/menubar.js reading direction at event time. Every
+// key NOT in this map is left completely untouched — no preventDefault, no
+// handling — matching upstream's own `if (keyMap[e.key])` guard; this is
+// also what lets Enter/Space fall through to the native <button> element's
+// own default activation (which synthesizes a "click", handled by the
+// day-click handler above) rather than being reimplemented here.
 const KEY_MOVES = {
   ArrowLeft: (date, shift) => (shift ? addMonthsUTC(date, -1) : addDaysUTC(date, -1)),
   ArrowRight: (date, shift) => (shift ? addMonthsUTC(date, 1) : addDaysUTC(date, 1)),
@@ -871,10 +872,18 @@ const KEY_MOVES = {
 // roving sequence they are excluded from is the TAB one (tabindex="0"), in
 // repaint above — not this one.
 on("keydown", "[data-gsxui-slot-calendar-day-button]", (event, el) => {
-  const move = KEY_MOVES[event.key];
-  if (!move) return;
   const root = el.closest(ROOT);
   if (!root) return;
+  // Mirror the day-move ArrowLeft/ArrowRight under RTL — same "read
+  // direction at event time" convention as tabs.js/menubar.js's roving
+  // focus — before the KEY_MOVES lookup, so the swap also negates
+  // Shift+Arrow's month move.
+  let key = event.key;
+  if ((key === "ArrowLeft" || key === "ArrowRight") && isRTL(root)) {
+    key = key === "ArrowLeft" ? "ArrowRight" : "ArrowLeft";
+  }
+  const move = KEY_MOVES[key];
+  if (!move) return;
   const current = parseISO(el.dataset.date);
   if (!current) return;
   event.preventDefault();

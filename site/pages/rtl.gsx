@@ -66,7 +66,7 @@ component (rt Rtl) Page() {
 					</li>
 					<li>
 						<strong>Mirrored keyboard semantics.</strong> Roving-focus and open/close arrow keys in dropdown-menu,
-						context-menu, menubar, tabs, toggle-group, carousel, and resizable follow the WAI-ARIA convention of
+						context-menu, menubar, tabs, toggle-group, carousel, resizable, and calendar follow the WAI-ARIA convention of
 						mirroring by meaning, not by physical key — ArrowLeft still means "toward the next item" under RTL the way
 						ArrowRight does under LTR, and ArrowLeft still opens a submenu the way ArrowRight does under LTR.
 					</li>
@@ -121,7 +121,7 @@ component (rt Rtl) Page() {
 					<a href="https://fonts.google.com/noto/specimen/Noto+Sans+Arabic" target="_blank" rel="noreferrer">Noto Sans Arabic</a>
 					(a UI sans matching Geist's weight range) or
 					<a href="https://fonts.google.com/noto/specimen/Noto+Naskh+Arabic" target="_blank" rel="noreferrer">Noto Naskh Arabic</a>
-					(a book-style naskh better suited to longer prose). Load the Arabic font as a <code>lang="ar"</code>fallback
+					(a book-style naskh better suited to longer prose). Load the Arabic font as a <code>lang="ar"</code> fallback
 					rather than replacing Geist outright, so Latin text — brand names, code, page furniture — keeps rendering in
 					Geist inside an RTL document.
 				</p>
