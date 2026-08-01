@@ -10,9 +10,9 @@ import (
 )
 
 //line compact.gsx:5:1
-// Compact overrides AccordionContent's default pb-4 with a caller pb-2 —
-// tailwind-merge drops the base utility, same class-merge story as every
-// other component.
+// Compact tightens both boxes with caller classes — the trigger's default
+// py-2.5 and the content's default pb-2.5 — tailwind-merge drops each base
+// utility, same class-merge story as every other component.
 
 //line compact.gsx:8:1
 func Compact() _gsxrt.Node {
@@ -29,13 +29,13 @@ func Compact() _gsxrt.Node {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Shipping")
 					return _gsxgw.Err()
-				}), nil))
+				}), _gsxrt.Attrs{{Key: "class", Value: "py-1.5"}}))
 //line compact.gsx:12:4
 				_gsxgw.Node(ctx, ui.AccordionContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Ships within 2 business days.")
 					return _gsxgw.Err()
-				}), _gsxrt.Attrs{{Key: "class", Value: "pb-2"}}))
+				}), _gsxrt.Attrs{{Key: "class", Value: "pb-1"}}))
 				return _gsxgw.Err()
 			}), nil))
 //line compact.gsx:14:3
@@ -46,13 +46,13 @@ func Compact() _gsxrt.Node {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Returns")
 					return _gsxgw.Err()
-				}), nil))
+				}), _gsxrt.Attrs{{Key: "class", Value: "py-1.5"}}))
 //line compact.gsx:16:4
 				_gsxgw.Node(ctx, ui.AccordionContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("30-day return window.")
 					return _gsxgw.Err()
-				}), _gsxrt.Attrs{{Key: "class", Value: "pb-2"}}))
+				}), _gsxrt.Attrs{{Key: "class", Value: "pb-1"}}))
 				return _gsxgw.Err()
 			}), nil))
 			return _gsxgw.Err()
