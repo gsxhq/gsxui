@@ -31,7 +31,8 @@ component (h Home) Page() {
 				: copy-in, type-checked, server-rendered. Own the code, style it with Tailwind, ship it.
 			</p>
 			<div class="flex flex-wrap items-center gap-3 pt-2">
-				<ui.Button size="lg" href={ComponentsIndex{} |> url}>Browse components</ui.Button>
+				<ui.Button size="lg" href={Theme{} |> url}>Create</ui.Button>
+				<ui.Button size="lg" variant="outline" href={ComponentsIndex{} |> url}>Browse components</ui.Button>
 				<ui.Button
 					size="lg"
 					variant="outline"

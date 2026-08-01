@@ -156,6 +156,12 @@ component siteLayout(title string, active string, mode layoutMode, toc []docTOCI
 							</ui.CommandList>
 						</ui.CommandDialog>
 						<a
+							href={GettingStarted{} |> url}
+							class="text-sm text-muted-foreground transition-colors hover:text-foreground"
+						>
+							Docs
+						</a>
+						<a
 							href={Theme{} |> url}
 							class="text-sm text-muted-foreground transition-colors hover:text-foreground"
 						>

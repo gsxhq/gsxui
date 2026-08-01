@@ -40,141 +40,151 @@ func (h Home) Page() _gsxrt.Node {
 //line home.gsx:33:4
 			_gsxgw.S("<div class=\"flex flex-wrap items-center gap-3 pt-2\">")
 //line home.gsx:34:5
-			_gsxa0, _gsxerr := _gsxf0.URLFor(ctx, (ComponentsIndex{}))
+			_gsxa0, _gsxerr := _gsxf0.URLFor(ctx, (Theme{}))
 			if _gsxerr != nil {
 				return _gsxerr
 			}
 			_gsxgw.Node(ctx, ui.Button("", "lg", _gsxa0, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-				_gsxgw.S("Browse components")
+				_gsxgw.S("Create")
 				return _gsxgw.Err()
 			}), nil))
 //line home.gsx:35:5
+			_gsxa1, _gsxerr := _gsxf0.URLFor(ctx, (ComponentsIndex{}))
+			if _gsxerr != nil {
+				return _gsxerr
+			}
+			_gsxgw.Node(ctx, ui.Button("outline", "lg", _gsxa1, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+				_gsxgw.S("Browse components")
+				return _gsxgw.Err()
+			}), nil))
+//line home.gsx:36:5
 			_gsxgw.Node(ctx, ui.Button("outline", "lg", "https://github.com/gsxhq/gsxui", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("View on GitHub")
 				return _gsxgw.Err()
 			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "target", Value: "_blank"}}, _gsxrt.Attrs{{Key: "rel", Value: "noreferrer"}})))
-//line home.gsx:44:5
+//line home.gsx:45:5
 			_gsxgw.Node(ctx, ui.Button("ghost", "lg", "https://gsxhq.github.io/", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("gsx documentation ↗")
 				return _gsxgw.Err()
 			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "target", Value: "_blank"}}, _gsxrt.Attrs{{Key: "rel", Value: "noreferrer"}})))
 			_gsxgw.S("</div></section>")
-//line home.gsx:55:3
+//line home.gsx:56:3
 			_gsxgw.S("<section class=\"pb-10\">")
-//line home.gsx:56:4
+//line home.gsx:57:4
 			_gsxgw.S("<pre class=\"overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground\">")
-//line home.gsx:58:5
+//line home.gsx:59:5
 			_gsxgw.S("<code>")
-//line home.gsx:58:11
+//line home.gsx:59:11
 			_gsxgw.Text(string(installSnippet))
 			_gsxgw.S("</code></pre></section>")
-//line home.gsx:60:3
+//line home.gsx:61:3
 			_gsxgw.S("<section id=\"components\" class=\"flex flex-col gap-10 border-t border-border py-10\">")
-//line home.gsx:61:4
+//line home.gsx:62:4
 			_gsxgw.S("<div>")
-//line home.gsx:62:5
-			_gsxgw.S("<h2 class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">Button</h2>")
 //line home.gsx:63:5
+			_gsxgw.S("<h2 class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">Button</h2>")
+//line home.gsx:64:5
 			_gsxgw.S("<div class=\"mt-4 flex flex-wrap items-center gap-3\">")
-//line home.gsx:64:6
+//line home.gsx:65:6
 			_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Default")
 				return _gsxgw.Err()
 			}), nil))
-//line home.gsx:65:6
+//line home.gsx:66:6
 			_gsxgw.Node(ctx, ui.Button("secondary", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Secondary")
 				return _gsxgw.Err()
 			}), nil))
-//line home.gsx:66:6
+//line home.gsx:67:6
 			_gsxgw.Node(ctx, ui.Button("destructive", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Destructive")
 				return _gsxgw.Err()
 			}), nil))
-//line home.gsx:67:6
+//line home.gsx:68:6
 			_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Outline")
 				return _gsxgw.Err()
 			}), nil))
-//line home.gsx:68:6
+//line home.gsx:69:6
 			_gsxgw.Node(ctx, ui.Button("ghost", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Ghost")
 				return _gsxgw.Err()
 			}), nil))
-//line home.gsx:69:6
+//line home.gsx:70:6
 			_gsxgw.Node(ctx, ui.Button("link", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Link")
 				return _gsxgw.Err()
 			}), nil))
 			_gsxgw.S("</div></div>")
-//line home.gsx:72:4
+//line home.gsx:73:4
 			_gsxgw.S("<div>")
-//line home.gsx:73:5
-			_gsxgw.S("<h2 class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">Badge</h2>")
 //line home.gsx:74:5
+			_gsxgw.S("<h2 class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">Badge</h2>")
+//line home.gsx:75:5
 			_gsxgw.S("<div class=\"mt-4 flex flex-wrap items-center gap-3\">")
-//line home.gsx:75:6
+//line home.gsx:76:6
 			_gsxgw.Node(ctx, ui.Badge("", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Default")
 				return _gsxgw.Err()
 			}), nil))
-//line home.gsx:76:6
+//line home.gsx:77:6
 			_gsxgw.Node(ctx, ui.Badge("secondary", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Secondary")
 				return _gsxgw.Err()
 			}), nil))
-//line home.gsx:77:6
+//line home.gsx:78:6
 			_gsxgw.Node(ctx, ui.Badge("destructive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Destructive")
 				return _gsxgw.Err()
 			}), nil))
-//line home.gsx:78:6
+//line home.gsx:79:6
 			_gsxgw.Node(ctx, ui.Badge("outline", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Outline")
 				return _gsxgw.Err()
 			}), nil))
 			_gsxgw.S("</div></div>")
-//line home.gsx:81:4
+//line home.gsx:82:4
 			_gsxgw.S("<div>")
-//line home.gsx:82:5
-			_gsxgw.S("<h2 class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">Dialog</h2>")
 //line home.gsx:83:5
+			_gsxgw.S("<h2 class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">Dialog</h2>")
+//line home.gsx:84:5
 			_gsxgw.S("<div class=\"mt-4\">")
-//line home.gsx:84:6
+//line home.gsx:85:6
 			_gsxgw.Node(ctx, ui.Dialog(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line home.gsx:85:7
+//line home.gsx:86:7
 				_gsxgw.Node(ctx, ui.Button("outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Open dialog")
 					return _gsxgw.Err()
 				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-slot-dialog-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
-//line home.gsx:93:7
+//line home.gsx:94:7
 				_gsxgw.Node(ctx, ui.DialogContent(false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line home.gsx:94:8
+//line home.gsx:95:8
 					_gsxgw.Node(ctx, ui.DialogHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line home.gsx:95:9
+//line home.gsx:96:9
 						_gsxgw.Node(ctx, ui.DialogTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Edit profile")
 							return _gsxgw.Err()
 						}), nil))
-//line home.gsx:96:9
+//line home.gsx:97:9
 						_gsxgw.Node(ctx, ui.DialogDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Rendered by ui/dialog on the native &lt;dialog&gt; element — no client framework required.")
@@ -182,7 +192,7 @@ func (h Home) Page() _gsxrt.Node {
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line home.gsx:100:8
+//line home.gsx:101:8
 					_gsxgw.Node(ctx, ui.DialogFooter(true, nil, nil))
 					return _gsxgw.Err()
 				}), nil))

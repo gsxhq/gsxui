@@ -322,48 +322,57 @@ func _gsxrendersiteLayout(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title stri
 	}), nil))
 //line layout.gsx:158:7
 	_gsxgw.S("<a")
-	_gsxv8, _gsxerr := _gsxf0.URLFor(ctx, (Theme{}))
+	_gsxv8, _gsxerr := _gsxf0.URLFor(ctx, (GettingStarted{}))
 	if _gsxerr != nil {
 		return _gsxerr
 	}
 	_gsxgw.S(" href=\"")
 	_gsxgw.URL(string(_gsxv8))
-	_gsxgw.S("\" class=\"text-sm text-muted-foreground transition-colors hover:text-foreground\">Theme</a>")
+	_gsxgw.S("\" class=\"text-sm text-muted-foreground transition-colors hover:text-foreground\">Docs</a>")
 //line layout.gsx:164:7
+	_gsxgw.S("<a")
+	_gsxv9, _gsxerr := _gsxf0.URLFor(ctx, (Theme{}))
+	if _gsxerr != nil {
+		return _gsxerr
+	}
+	_gsxgw.S(" href=\"")
+	_gsxgw.URL(string(_gsxv9))
+	_gsxgw.S("\" class=\"text-sm text-muted-foreground transition-colors hover:text-foreground\">Theme</a>")
+//line layout.gsx:170:7
 	_gsxgw.S("<a href=\"https://github.com/gsxhq/gsxui\" target=\"_blank\" rel=\"noreferrer\" class=\"text-sm text-muted-foreground transition-colors hover:text-foreground\">GitHub</a>")
-//line layout.gsx:172:7
+//line layout.gsx:178:7
 	_gsxgw.S("<button type=\"button\"")
 	_gsxgw.BoolAttr("data-site-theme-toggle", true)
 	_gsxgw.S(" aria-label=\"Toggle theme\" title=\"Toggle theme\" class=\"inline-flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground\">")
-//line layout.gsx:179:8
+//line layout.gsx:185:8
 	_gsxgw.S("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"size-4.5\">")
-//line layout.gsx:191:9
+//line layout.gsx:197:9
 	_gsxgw.S("<path d=\"M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0\"></path>")
-//line layout.gsx:192:9
+//line layout.gsx:198:9
 	_gsxgw.S("<path d=\"M12 3l0 18\"></path>")
-//line layout.gsx:193:9
+//line layout.gsx:199:9
 	_gsxgw.S("<path d=\"M12 9l4.65 -4.65\"></path>")
-//line layout.gsx:194:9
+//line layout.gsx:200:9
 	_gsxgw.S("<path d=\"M12 14.3l7.37 -7.37\"></path>")
-//line layout.gsx:195:9
+//line layout.gsx:201:9
 	_gsxgw.S("<path d=\"M12 19.6l8.85 -8.85\"></path></svg></button></nav></div></header>")
-//line layout.gsx:201:4
+//line layout.gsx:207:4
 	_gsxgw.S("<div class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(contentContainerClass))
 	_gsxgw.S("\">")
-//line layout.gsx:202:5
+//line layout.gsx:208:5
 	if mode == layoutDocs {
-//line layout.gsx:203:6
+//line layout.gsx:209:6
 		_gsxgw.S("<aside")
 		_gsxgw.BoolAttr("data-site-docs-sidebar", true)
 		_gsxgw.S(" class=\"hidden min-w-0 lg:block\">")
-//line layout.gsx:204:7
+//line layout.gsx:210:7
 		_gsxgw.S("<nav aria-label=\"Documentation navigation\" class=\"sticky top-24 max-h-[calc(100svh-7rem)] overflow-y-auto pb-1 pr-16\">")
-//line layout.gsx:208:8
+//line layout.gsx:214:8
 		_gsxgw.NodeResult(_gsxrenderdocsNavigation(ctx, _gsxgw, active))
 		_gsxgw.S("</nav></aside>")
 	}
-//line layout.gsx:212:5
+//line layout.gsx:218:5
 	_gsxgw.S("<main")
 	if mode == layoutDocs {
 		_gsxgw.BoolAttr("data-site-docs-article", true)
@@ -371,34 +380,34 @@ func _gsxrendersiteLayout(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, title stri
 	_gsxgw.S(" class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(mainClass))
 	_gsxgw.S("\">")
-//line layout.gsx:218:6
+//line layout.gsx:224:6
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</main>")
-//line layout.gsx:220:5
+//line layout.gsx:226:5
 	if mode == layoutDocs && len(toc) > 0 {
-//line layout.gsx:221:6
+//line layout.gsx:227:6
 		_gsxgw.S("<aside")
 		_gsxgw.BoolAttr("data-site-docs-toc", true)
 		_gsxgw.S(" class=\"hidden min-w-0 xl:block\">")
-//line layout.gsx:222:7
+//line layout.gsx:228:7
 		_gsxgw.S("<div class=\"sticky top-24 max-h-[calc(100svh-7rem)] overflow-y-auto pb-1 pl-16\">")
-//line layout.gsx:223:8
+//line layout.gsx:229:8
 		_gsxgw.NodeResult(_gsxrenderdocTableOfContents(ctx, _gsxgw, toc))
 		_gsxgw.S("</div></aside>")
 	}
 	_gsxgw.S("</div>")
-//line layout.gsx:228:4
+//line layout.gsx:234:4
 	if mode != layoutWorkspace {
-//line layout.gsx:229:5
+//line layout.gsx:235:5
 		_gsxgw.S("<footer")
 		_gsxgw.BoolAttr("data-site-footer", true)
 		_gsxgw.S(" class=\"border-t border-border\">")
-//line layout.gsx:230:6
+//line layout.gsx:236:6
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(footerContainerClass))
 		_gsxgw.S("\">gsxui — shadcn-style components for gsx. Copy-in, type-checked, server-rendered.</div></footer>")
 	}
-//line layout.gsx:237:4
+//line layout.gsx:243:4
 	_gsxgw.Node(ctx, ui.Toaster(nil))
 	_gsxgw.S("</body></html>")
 	return _gsxgw.Err()
