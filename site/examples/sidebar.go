@@ -43,4 +43,12 @@ func init() {
 		Isolated:      true,
 		ViewportWidth: sidebarPreviewViewportWidth,
 	})
+	Register("sidebar", Example{
+		Name:          "rtl",
+		Title:         "RTL",
+		Node:          examplesidebar.Rtl(),
+		SourcePath:    "sidebar/rtl.gsx",
+		Isolated:      true,
+		ViewportWidth: sidebarPreviewViewportWidth,
+	})
 }

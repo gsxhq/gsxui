@@ -9,4 +9,10 @@ func init() {
 		Node:       examplepagination.Basic(),
 		SourcePath: "pagination/basic.gsx",
 	})
+	Register("pagination", Example{
+		Name:       "rtl",
+		Title:      "RTL",
+		Node:       examplepagination.Rtl(),
+		SourcePath: "pagination/rtl.gsx",
+	})
 }
