@@ -63,3 +63,20 @@ func TestStatsCard(t *testing.T) {
 		}
 	}
 }
+
+func TestOverlaysCard(t *testing.T) {
+	html := render(t, showcase.OverlaysCard())
+	for _, want := range []string{
+		"data-gsxui-slot-dialog-trigger",
+		"data-gsxui-slot-dropdown-menu-trigger",
+		"data-gsxui-slot-tooltip-trigger",
+		"home-showcase-toast-btn",
+	} {
+		if !strings.Contains(html, want) {
+			t.Errorf("OverlaysCard output missing %q", want)
+		}
+	}
+	if got := strings.Count(html, "data-gsxui-slot-dialog-trigger"); got != 1 {
+		t.Errorf("OverlaysCard has %d dialog triggers, want exactly 1", got)
+	}
+}
