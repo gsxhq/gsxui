@@ -11,7 +11,7 @@ import (
 )
 
 // GettingStarted is the /docs/getting-started page: install → init → add →
-// a minimal first page, expanded from README.md with real CLI output
+// a first page served by the `gsx dev` loop, expanded from README.md with real CLI output
 // (copied from internal/cli/init.go / add.go's actual printed strings, not
 // invented).
 //
@@ -185,65 +185,56 @@ func (g GettingStarted) Page() _gsxrt.Node {
 //line getting_started.gsx:83:5
 			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, gettingStartedTOCItems[4], nil))
 //line getting_started.gsx:84:5
-			_gsxgw.S("<p>A tiny two-file app: ")
-//line getting_started.gsx:85:27
-			_gsxgw.S("<code>home.gsx</code> renders a ")
-//line getting_started.gsx:85:59
+			_gsxgw.S("<p>")
+//line getting_started.gsx:85:6
+			_gsxgw.S("<code>gsx init</code> already scaffolded a working app: ")
+//line getting_started.gsx:85:62
+			_gsxgw.S("<code>app.gsx</code> holds a ")
+//line getting_started.gsx:86:8
+			_gsxgw.S("<code>Layout</code> and an ")
+//line getting_started.gsx:86:35
+			_gsxgw.S("<code>Index</code> component, and ")
+//line getting_started.gsx:86:69
+			_gsxgw.S("<code>main.go</code> serves it. Make it your first gsxui page by rendering a ")
+//line getting_started.gsx:87:38
 			_gsxgw.S("<code>Card</code> around a ")
-//line getting_started.gsx:85:86
-			_gsxgw.S("<code>Button</code>, and ")
-//line getting_started.gsx:86:10
-			_gsxgw.S("<code>main.go</code> serves it.</p>")
-//line getting_started.gsx:88:5
-			_gsxgw.S("<pre>")
+//line getting_started.gsx:87:65
+			_gsxgw.S("<code>Button</code> — replace the ")
 //line getting_started.gsx:88:10
+			_gsxgw.S("<code>Index</code> component in ")
+//line getting_started.gsx:88:42
+			_gsxgw.S("<code>app.gsx</code> and add the ")
+//line getting_started.gsx:88:75
+			_gsxgw.S("<code>ui</code> import:</p>")
+//line getting_started.gsx:90:5
+			_gsxgw.S("<pre>")
+//line getting_started.gsx:90:10
 			_gsxgw.S("<code>")
-//line getting_started.gsx:88:16
+//line getting_started.gsx:90:16
 			_gsxgw.Node(ctx, hl.Node("snippets/first-page.gsx"))
 			_gsxgw.S("</code></pre>")
-//line getting_started.gsx:89:5
+//line getting_started.gsx:91:5
+			_gsxgw.S("<p>Then start the development loop:</p>")
+//line getting_started.gsx:92:5
 			_gsxgw.S("<pre>")
-//line getting_started.gsx:89:10
+//line getting_started.gsx:92:10
 			_gsxgw.S("<code>")
-//line getting_started.gsx:89:16
-			_gsxgw.Node(ctx, hl.Node("snippets/first-main.go"))
+//line getting_started.gsx:92:16
+			_gsxgw.Node(ctx, hl.Node("snippets/dev.sh"))
 			_gsxgw.S("</code></pre>")
-//line getting_started.gsx:90:5
-			_gsxgw.S("<p>Compile the ")
-//line getting_started.gsx:91:18
-			_gsxgw.S("<code>.gsx</code> file to plain Go, then run it:</p>")
 //line getting_started.gsx:93:5
-			_gsxgw.S("<pre>")
-//line getting_started.gsx:93:10
-			_gsxgw.S("<code>")
-//line getting_started.gsx:93:16
-			_gsxgw.Node(ctx, hl.Node("snippets/generate.sh"))
-			_gsxgw.S("</code></pre>")
-//line getting_started.gsx:94:5
-			_gsxgw.S("<p>(silent on success — it writes ")
-//line getting_started.gsx:95:39
-			_gsxgw.S("<code>home.x.go</code> next to ")
-//line getting_started.gsx:95:70
-			_gsxgw.S("<code>home.gsx</code> and exits 0)</p>")
-//line getting_started.gsx:97:5
-			_gsxgw.S("<pre>")
-//line getting_started.gsx:97:10
-			_gsxgw.S("<code>")
-//line getting_started.gsx:97:16
-			_gsxgw.Node(ctx, hl.Node("snippets/run.sh"))
-			_gsxgw.S("</code></pre>")
+			_gsxgw.S("<p>The scaffold's ")
+//line getting_started.gsx:94:21
+			_gsxgw.S("<code>npm run dev</code> is a one-line wrapper around the same command. ")
+//line getting_started.gsx:94:93
+			_gsxgw.S("<code>gsx dev</code>watches your sources, regenerates ")
+//line getting_started.gsx:95:40
+			_gsxgw.S("<code>.gsx</code> to Go, rebuilds and swaps the server, and reloads the browser — edit ")
+//line getting_started.gsx:96:23
+			_gsxgw.S("<code>app.gsx</code>, save, and the page updates.</p>")
 //line getting_started.gsx:98:5
-			_gsxgw.S("<pre>")
-//line getting_started.gsx:98:10
-			_gsxgw.S("<code>")
-//line getting_started.gsx:98:16
-			_gsxgw.Node(ctx, hl.Node("snippets/run.output"))
-			_gsxgw.S("</code></pre>")
-//line getting_started.gsx:99:5
-			_gsxgw.S("<p>Open ")
-//line getting_started.gsx:100:11
-			_gsxgw.S("<code>http://localhost:8080</code> — a styled Card with a Button inside, rendered with gsxui's default light theme. Next: ")
-//line getting_started.gsx:101:25
+			_gsxgw.S("<p>Open the printed URL — a styled Card with a Button inside, rendered with gsxui's default light theme. Next: ")
+//line getting_started.gsx:100:25
 			_gsxgw.S("<a")
 			_gsxv1, _gsxerr := _gsxf0.URLFor(ctx, (Theming{}))
 			if _gsxerr != nil {

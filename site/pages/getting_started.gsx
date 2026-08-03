@@ -3,7 +3,7 @@ package pages
 import "github.com/gsxhq/gsxui/site/hl"
 
 // GettingStarted is the /docs/getting-started page: install → init → add →
-// a minimal first page, expanded from README.md with real CLI output
+// a first page served by the `gsx dev` loop, expanded from README.md with real CLI output
 // (copied from internal/cli/init.go / add.go's actual printed strings, not
 // invented).
 type GettingStarted struct{}
@@ -82,22 +82,21 @@ component (g GettingStarted) Page() {
 			<section class="flex flex-col gap-3">
 				<docHeading item={gettingStartedTOCItems[4]}/>
 				<p>
-					A tiny two-file app: <code>home.gsx</code> renders a <code>Card</code> around a <code>Button</code>,
-					and <code>main.go</code> serves it.
+					<code>gsx init</code> already scaffolded a working app: <code>app.gsx</code> holds
+					a <code>Layout</code> and an <code>Index</code> component, and <code>main.go</code> serves it. Make it your
+					first gsxui page by rendering a <code>Card</code> around a <code>Button</code> — replace
+					the <code>Index</code> component in <code>app.gsx</code> and add the <code>ui</code> import:
 				</p>
 				<pre><code>{ hl.Node("snippets/first-page.gsx") }</code></pre>
-				<pre><code>{ hl.Node("snippets/first-main.go") }</code></pre>
+				<p>Then start the development loop:</p>
+				<pre><code>{ hl.Node("snippets/dev.sh") }</code></pre>
 				<p>
-					Compile the <code>.gsx</code> file to plain Go, then run it:
+					The scaffold's <code>npm run dev</code> is a one-line wrapper around the same command. <code>gsx dev</code>
+					watches your sources, regenerates <code>.gsx</code> to Go, rebuilds and swaps the server, and reloads the
+					browser — edit <code>app.gsx</code>, save, and the page updates.
 				</p>
-				<pre><code>{ hl.Node("snippets/generate.sh") }</code></pre>
 				<p>
-					(silent on success — it writes <code>home.x.go</code> next to <code>home.gsx</code> and exits 0)
-				</p>
-				<pre><code>{ hl.Node("snippets/run.sh") }</code></pre>
-				<pre><code>{ hl.Node("snippets/run.output") }</code></pre>
-				<p>
-					Open <code>http://localhost:8080</code> — a styled Card with a Button inside, rendered with gsxui's default
+					Open the printed URL — a styled Card with a Button inside, rendered with gsxui's default
 					light theme. Next: <a href={Theming{} |> url}>restyle it</a>.
 				</p>
 			</section>
