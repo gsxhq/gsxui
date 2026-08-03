@@ -49,3 +49,17 @@ func TestSettingsCard(t *testing.T) {
 		}
 	}
 }
+
+func TestStatsCard(t *testing.T) {
+	html := render(t, showcase.StatsCard())
+	for _, want := range []string{
+		"Storage",
+		"Bandwidth",
+		"Ada Lovelace",
+		"Active",
+	} {
+		if !strings.Contains(html, want) {
+			t.Errorf("StatsCard output missing %q", want)
+		}
+	}
+}
