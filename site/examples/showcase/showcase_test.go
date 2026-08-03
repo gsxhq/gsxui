@@ -35,3 +35,17 @@ func TestSignInCard(t *testing.T) {
 		}
 	}
 }
+
+func TestSettingsCard(t *testing.T) {
+	html := render(t, showcase.SettingsCard())
+	for _, want := range []string{
+		"home-showcase-notifications",
+		"home-showcase-autosave",
+		"home-showcase-theme",
+		"home-showcase-density",
+	} {
+		if !strings.Contains(html, want) {
+			t.Errorf("SettingsCard output missing %q", want)
+		}
+	}
+}
