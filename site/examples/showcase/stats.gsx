@@ -1,7 +1,3 @@
-// Package showcase holds the composed demo cards rendered on the site's
-// landing page. Unlike the per-component packages next door, these are
-// not registered docs examples — they exist to show several ui components
-// working together in one realistic piece of UI.
 package showcase
 
 import "github.com/gsxhq/gsxui/ui"

@@ -13,37 +13,37 @@ import (
 // Stand-in portrait for the usage card, same inline-SVG-to-data-URL
 // technique as site/examples/avatar.
 //
-//line stats.gsx:9:1
+//line stats.gsx:5:1
 var showcaseAvatarSVG = []byte("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect width='64' height='64' fill='#6d28d9'/><text x='32' y='34' text-anchor='middle' dominant-baseline='central' font-family='sans-serif' font-weight='600' font-size='26' fill='#fff'>AL</text></svg>")
 
 // StatsCard composes Avatar, Badge and Progress into a usage summary.
 
-//line stats.gsx:14:1
+//line stats.gsx:10:1
 func StatsCard() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line stats.gsx:15:2
+//line stats.gsx:11:2
 		_gsxgw.Node(ctx, ui.Card(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line stats.gsx:16:3
+//line stats.gsx:12:3
 			_gsxgw.Node(ctx, ui.CardHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line stats.gsx:17:4
+//line stats.gsx:13:4
 				_gsxgw.Node(ctx, ui.CardTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Usage")
 					return _gsxgw.Err()
 				}), nil))
-//line stats.gsx:18:4
+//line stats.gsx:14:4
 				_gsxgw.Node(ctx, ui.CardDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Your plan resets in 12 days.")
 					return _gsxgw.Err()
 				}), nil))
-//line stats.gsx:19:4
+//line stats.gsx:15:4
 				_gsxgw.Node(ctx, ui.CardAction(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line stats.gsx:20:5
+//line stats.gsx:16:5
 					_gsxgw.Node(ctx, ui.Badge("secondary", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Active")
@@ -53,17 +53,17 @@ func StatsCard() _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line stats.gsx:23:3
+//line stats.gsx:19:3
 			_gsxgw.Node(ctx, ui.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line stats.gsx:24:4
+//line stats.gsx:20:4
 				_gsxgw.S("<div class=\"flex items-center gap-3\">")
-//line stats.gsx:25:5
+//line stats.gsx:21:5
 				_gsxgw.Node(ctx, ui.Avatar(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line stats.gsx:26:6
+//line stats.gsx:22:6
 					_gsxgw.Node(ctx, ui.AvatarImage(_gsxstd.DataURL((showcaseAvatarSVG), "image/svg+xml"), "Ada Lovelace", nil))
-//line stats.gsx:27:6
+//line stats.gsx:23:6
 					_gsxgw.Node(ctx, ui.AvatarFallback(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("AL")
@@ -71,32 +71,32 @@ func StatsCard() _gsxrt.Node {
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line stats.gsx:29:5
+//line stats.gsx:25:5
 				_gsxgw.S("<div class=\"flex flex-col\">")
-//line stats.gsx:30:6
+//line stats.gsx:26:6
 				_gsxgw.S("<span class=\"text-sm font-medium\">Ada Lovelace</span>")
-//line stats.gsx:31:6
+//line stats.gsx:27:6
 				_gsxgw.S("<span class=\"text-sm text-muted-foreground\">Pro plan</span></div></div>")
-//line stats.gsx:34:4
+//line stats.gsx:30:4
 				_gsxgw.S("<div class=\"grid gap-2\">")
-//line stats.gsx:35:5
+//line stats.gsx:31:5
 				_gsxgw.S("<div class=\"flex items-center justify-between text-sm\">")
-//line stats.gsx:36:6
+//line stats.gsx:32:6
 				_gsxgw.S("<span>Storage</span>")
-//line stats.gsx:37:6
+//line stats.gsx:33:6
 				_gsxgw.S("<span class=\"text-muted-foreground\">72%</span></div>")
-//line stats.gsx:39:5
+//line stats.gsx:35:5
 				_gsxgw.Node(ctx, ui.Progress(72, nil))
 				_gsxgw.S("</div>")
-//line stats.gsx:41:4
+//line stats.gsx:37:4
 				_gsxgw.S("<div class=\"grid gap-2\">")
-//line stats.gsx:42:5
+//line stats.gsx:38:5
 				_gsxgw.S("<div class=\"flex items-center justify-between text-sm\">")
-//line stats.gsx:43:6
+//line stats.gsx:39:6
 				_gsxgw.S("<span>Bandwidth</span>")
-//line stats.gsx:44:6
+//line stats.gsx:40:6
 				_gsxgw.S("<span class=\"text-muted-foreground\">31%</span></div>")
-//line stats.gsx:46:5
+//line stats.gsx:42:5
 				_gsxgw.Node(ctx, ui.Progress(31, nil))
 				_gsxgw.S("</div>")
 				return _gsxgw.Err()
