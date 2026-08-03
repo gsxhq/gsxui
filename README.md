@@ -102,10 +102,15 @@ Each semantic styling role is a bare presence attribute. Roles compose through
 ordinary fallthrough attribute forwarding—no token-merging helper is needed:
 
 ```gsx
-<ui.Button data-gsxui-dialog-trigger data-gsxui-slot-dialog-trigger>
+<ui.Button data-gsxui-slot-dialog-trigger>
 	Open
 </ui.Button>
 ```
+
+The slot attribute carries both the styling role and the behavior/ARIA
+contract. (`data-gsxui-dialog-trigger`, without `slot`, remains the opt-in
+for an arbitrary element that wants the behavior but not the trigger's
+styling.)
 
 1. Change `web/gsxui.css` to `web/gsxui/index.css`.
 2. Review the four-file diff, then run `gsxui init --overwrite`.
