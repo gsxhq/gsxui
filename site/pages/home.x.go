@@ -51,13 +51,13 @@ func (h Home) Page() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 //line home.gsx:36:5
-			_gsxa1, _gsxerr := _gsxf0.URLFor(ctx, (ComponentsIndex{}))
+			_gsxa1, _gsxerr := _gsxf0.URLFor(ctx, (GettingStarted{}))
 			if _gsxerr != nil {
 				return _gsxerr
 			}
 			_gsxgw.Node(ctx, ui.Button("outline", "lg", _gsxa1, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-				_gsxgw.S("Browse components")
+				_gsxgw.S("Get Started")
 				return _gsxgw.Err()
 			}), nil))
 //line home.gsx:37:5

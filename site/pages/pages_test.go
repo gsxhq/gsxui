@@ -78,6 +78,17 @@ func TestSiteRoutes(t *testing.T) {
 			t.Errorf("home response missing showcase marker %q", want)
 		}
 	}
+
+	// Task 7: verify hero button text and links
+	if !strings.Contains(rec.Body.String(), "Get Started") {
+		t.Errorf("home response missing hero button text %q", "Get Started")
+	}
+	if strings.Contains(rec.Body.String(), ">Browse components<") {
+		t.Errorf("home response should not contain hero button '>Browse components<'")
+	}
+	if !strings.Contains(rec.Body.String(), "Browse all components") {
+		t.Errorf("home response should still contain showcase link %q", "Browse all components")
+	}
 }
 
 func TestSiteLayoutModes(t *testing.T) {
