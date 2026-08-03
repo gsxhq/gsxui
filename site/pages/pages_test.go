@@ -67,6 +67,17 @@ func TestSiteRoutes(t *testing.T) {
 	if err := validateDialogTriggerSlotMarkers(document, 2); err != nil {
 		t.Errorf("home response has invalid dialog trigger slot markers: %v", err)
 	}
+	for _, want := range []string{
+		"Built with gsxui",
+		"home-showcase-email",         // SignInCard
+		"home-showcase-notifications", // SettingsCard
+		"Ada Lovelace",                // StatsCard
+		"home-showcase-toast-btn",     // OverlaysCard
+	} {
+		if !strings.Contains(rec.Body.String(), want) {
+			t.Errorf("home response missing showcase marker %q", want)
+		}
+	}
 }
 
 func TestSiteLayoutModes(t *testing.T) {

@@ -1,6 +1,7 @@
 package pages
 
 import (
+	"github.com/gsxhq/gsxui/site/examples/showcase"
 	"github.com/gsxhq/gsxui/ui"
 )
 
@@ -58,50 +59,21 @@ component (h Home) Page() {
 				class="overflow-x-auto rounded-lg border border-border bg-card p-4 text-sm text-card-foreground"
 			><code>{ installSnippet }</code></pre>
 		</section>
-		<section id="components" class="flex flex-col gap-10 border-t border-border py-10">
-			<div>
-				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Button</h2>
-				<div class="mt-4 flex flex-wrap items-center gap-3">
-					<ui.Button>Default</ui.Button>
-					<ui.Button variant="secondary">Secondary</ui.Button>
-					<ui.Button variant="destructive">Destructive</ui.Button>
-					<ui.Button variant="outline">Outline</ui.Button>
-					<ui.Button variant="ghost">Ghost</ui.Button>
-					<ui.Button variant="link">Link</ui.Button>
-				</div>
+		<section id="components" class="flex flex-col gap-6 border-t border-border py-10">
+			<div class="flex flex-wrap items-end justify-between gap-3">
+				<h2 class="text-2xl font-semibold tracking-tight">Built with gsxui</h2>
+				<a
+					href={ComponentsIndex{} |> url}
+					class="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+				>
+					Browse all components →
+				</a>
 			</div>
-			<div>
-				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Badge</h2>
-				<div class="mt-4 flex flex-wrap items-center gap-3">
-					<ui.Badge>Default</ui.Badge>
-					<ui.Badge variant="secondary">Secondary</ui.Badge>
-					<ui.Badge variant="destructive">Destructive</ui.Badge>
-					<ui.Badge variant="outline">Outline</ui.Badge>
-				</div>
-			</div>
-			<div>
-				<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Dialog</h2>
-				<div class="mt-4">
-					<ui.Dialog>
-						<ui.Button
-							variant="outline"
-							data-gsxui-slot-dialog-trigger
-							aria-haspopup="dialog"
-							aria-expanded="false"
-						>
-							Open dialog
-						</ui.Button>
-						<ui.DialogContent>
-							<ui.DialogHeader>
-								<ui.DialogTitle>Edit profile</ui.DialogTitle>
-								<ui.DialogDescription>
-									Rendered by ui/dialog on the native &lt;dialog&gt; element — no client framework required.
-								</ui.DialogDescription>
-							</ui.DialogHeader>
-							<ui.DialogFooter showCloseButton={true}></ui.DialogFooter>
-						</ui.DialogContent>
-					</ui.Dialog>
-				</div>
+			<div class="grid gap-4 md:grid-cols-2">
+				<showcase.SignInCard/>
+				<showcase.SettingsCard/>
+				<showcase.StatsCard/>
+				<showcase.OverlaysCard/>
 			</div>
 		</section>
 	</siteLayout>
