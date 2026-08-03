@@ -591,9 +591,8 @@ toast.dismiss = (id) => {
 
 // --- Declarative trigger (zero-JS demo/doc pages) --------------------------
 // Any element with a NON-EMPTY data-gsxui-toast fires a toast on click,
-// reading the same fields the imperative API takes — mirrors the
-// data-gsxui-dialog-trigger idiom so a docs page needs no page-specific
-// <script>. Toast cards themselves no longer carry data-gsxui-toast (their
+// reading the same fields the imperative API takes, so a docs page needs
+// no page-specific <script>. Toast cards themselves no longer carry data-gsxui-toast (their
 // identity is data-gsxui-slot-toast), but the empty-value guard stays as a
 // defensive filter against stray valueless markers.
 on("click", "[data-gsxui-toast]", (_event, el) => {

@@ -19,12 +19,9 @@ const contentOf = (el) =>
 // trigger is outside the content), so by click time the popover may already
 // be closed and a bare toggle would wrongly reopen it. Same guard as
 // dropdown.js's own (see its ledger MECHANISM entry).
-// A popover opens from PopoverTrigger — identified by its slot marker — or
-// from any element opted in with data-gsxui-popover-trigger, the idiom for
-// arbitrary triggers. Component markup does not stamp the role hook: for the
-// family trigger the role is implied by identity.
-const TRIGGER_SELECTOR =
-  "[data-gsxui-popover-trigger],[data-gsxui-slot-popover-trigger]";
+// A popover opens from PopoverTrigger, identified by its slot marker — the
+// slot attribute carries the behavior contract along with the styling role.
+const TRIGGER_SELECTOR = "[data-gsxui-slot-popover-trigger]";
 
 on("pointerdown", TRIGGER_SELECTOR, (_e, trigger) => {
   const content = contentOf(trigger);

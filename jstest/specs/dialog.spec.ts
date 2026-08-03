@@ -313,13 +313,13 @@ test("dialog identity and trigger ownership stay within their nearest roots", as
       "beforeend",
       `
         <div data-gsxui-slot-dialog id="generated-root">
-          <button id="generated-trigger" data-gsxui-dialog-trigger aria-expanded="false">Generated</button>
+          <button id="generated-trigger" data-gsxui-slot-dialog-trigger aria-expanded="false">Generated</button>
           <dialog data-gsxui-slot-dialog-content data-state="closed">
             <h2 data-gsxui-slot-dialog-title>Generated title</h2>
             <p data-gsxui-slot-dialog-description>Generated description</p>
             <button data-gsxui-dialog-close>Close generated</button>
             <div data-gsxui-slot-dialog id="nested-root">
-              <button id="nested-trigger" data-gsxui-dialog-trigger aria-expanded="false">Nested</button>
+              <button id="nested-trigger" data-gsxui-slot-dialog-trigger aria-expanded="false">Nested</button>
               <button id="nested-root-close" data-gsxui-dialog-close>Close nested</button>
               <dialog data-gsxui-slot-dialog-content data-state="closed">
                 <h2 data-gsxui-slot-dialog-title>Nested title</h2>
@@ -329,7 +329,7 @@ test("dialog identity and trigger ownership stay within their nearest roots", as
           </dialog>
         </div>
         <div data-gsxui-slot-dialog id="second-root">
-          <button id="second-trigger" data-gsxui-dialog-trigger aria-expanded="false">Second</button>
+          <button id="second-trigger" data-gsxui-slot-dialog-trigger aria-expanded="false">Second</button>
           <dialog data-gsxui-slot-dialog-content data-state="closed">
             <h2 data-gsxui-slot-dialog-title>Second title</h2>
             <p data-gsxui-slot-dialog-description>Second description</p>
@@ -337,7 +337,7 @@ test("dialog identity and trigger ownership stay within their nearest roots", as
           </dialog>
         </div>
         <div data-gsxui-slot-dialog id="authored-root">
-          <button id="authored-trigger" data-gsxui-dialog-trigger aria-controls="keep-control" aria-expanded="false">Authored</button>
+          <button id="authored-trigger" data-gsxui-slot-dialog-trigger aria-controls="keep-control" aria-expanded="false">Authored</button>
           <dialog id="authored-dialog" data-gsxui-slot-dialog-content data-state="closed"
             aria-labelledby="authored-label" aria-describedby="authored-description">
             <h2 id="authored-label" data-gsxui-slot-dialog-title>Authored title</h2>
@@ -413,7 +413,7 @@ test("dialog identity and trigger ownership stay within their nearest roots", as
       const description = [...root.querySelectorAll("[data-gsxui-slot-dialog-description]")].find(
         (element) => element.closest("[data-gsxui-slot-dialog]") === root,
       )!;
-      const trigger = root.querySelector("[data-gsxui-dialog-trigger]")!;
+      const trigger = root.querySelector("[data-gsxui-slot-dialog-trigger]")!;
       return {
         dialog: dialog.id,
         labelledby: dialog.getAttribute("aria-labelledby"),

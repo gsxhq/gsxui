@@ -52,13 +52,11 @@ function authoredInvokers(dialog) {
   return [...document.querySelectorAll(`[commandfor="${target}"][command="show-modal"]`)];
 }
 
-// A dialog opens from its family Trigger components — identified by their
-// slot markers — or from any element opted in with data-gsxui-dialog-trigger,
-// the public idiom for arbitrary triggers (<ui.Button data-gsxui-dialog-trigger>).
-// Component markup does not stamp the role hook: for family members the role
-// is implied by identity.
+// A dialog opens from its family Trigger components, identified by their
+// slot markers — the slot attribute carries the behavior contract along
+// with the styling role.
 const TRIGGER_SELECTOR =
-  "[data-gsxui-dialog-trigger],[data-gsxui-slot-dialog-trigger],[data-gsxui-slot-alert-dialog-trigger],[data-gsxui-slot-drawer-trigger],[data-gsxui-slot-sheet-trigger]";
+  "[data-gsxui-slot-dialog-trigger],[data-gsxui-slot-alert-dialog-trigger],[data-gsxui-slot-drawer-trigger],[data-gsxui-slot-sheet-trigger]";
 
 // Idempotent: name/describe the dialog and point triggers at it.
 function wireA11y(root, dialog) {
