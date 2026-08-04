@@ -607,3 +607,21 @@ func captureRunOutput(t *testing.T, args []string) (string, error) {
 	}
 	return string(content), runErr
 }
+
+func TestAddAfterNonViteInitPreservesAnimateCSS(t *testing.T) {
+	dir, _ := nonViteTestModule(t)
+	if err := Run([]string{"init"}); err != nil {
+		t.Fatal(err)
+	}
+	before := readFile(t, dir, "web/gsxui/animate.css")
+	if err := Run([]string{"add", "dialog"}); err != nil {
+		t.Fatal(err)
+	}
+	if got := readFile(t, dir, "web/gsxui/animate.css"); got != before {
+		t.Fatal("gsxui add must not rewrite animate.css")
+	}
+	index := readFile(t, dir, "web/gsxui/index.js")
+	if !strings.Contains(index, `import "./dialog.js";`) {
+		t.Fatalf("barrel missing dialog behavior:\n%s", index)
+	}
+}
