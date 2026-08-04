@@ -75,7 +75,7 @@ component docsNavigation(active string) {
 }
 
 component compactDocsNavigation(active string) {
-	<ui.Popover data-site-docs-mobile-nav class="lg:hidden">
+	<ui.Popover data-site-docs-mobile-nav class="lg:hidden" hx-boost:inherited="false">
 		<ui.PopoverTrigger
 			aria-label="Open documentation navigation"
 			class="inline-flex h-8 items-center gap-2 rounded-md px-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
@@ -132,6 +132,8 @@ component siteLayout(title string, active string, mode layoutMode, toc []docTOCI
 		<body
 			data-site-layout={mode}
 			class={bodyClass}
+			hx-boost:inherited="true"
+			hx-swap:inherited="outerMorph"
 		>
 			<header class={headerClass}>
 				<div class={headerContainerClass}>
@@ -228,6 +230,7 @@ component siteLayout(title string, active string, mode layoutMode, toc []docTOCI
 				{ if mode == layoutDocs {
 					<aside data-site-docs-sidebar class="hidden min-w-0 lg:block">
 						<nav
+							id="site-docs-sidebar-nav"
 							aria-label="Documentation navigation"
 							class="sticky top-24 max-h-[calc(100svh-7rem)] overflow-y-auto pb-1 pr-16"
 						>
