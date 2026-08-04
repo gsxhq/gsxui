@@ -48,4 +48,23 @@ test.describe("boosted site navigation", () => {
     await expect(page).toHaveURL(/\/docs\/theming$/);
     expect(await page.evaluate(() => document.documentElement.classList.contains("dark"))).toBe(dark);
   });
+
+  test("select reflects server-checked item after boosted navigation", async ({ page }) => {
+    await page.goto("/components/button");
+    // The sidebar link's accessible name also matches a hidden mobile-popover
+    // duplicate that precedes the visible `aside` link in DOM order; `.last()`
+    // picks the visible one (verified against the rendered DOM).
+    await page.getByRole("link", { name: "select", exact: true }).last().click();
+    await expect(page).toHaveURL(/\/components\/select$/);
+    await expect(
+      page.locator("[data-gsxui-slot-select-trigger]").first(),
+    ).toContainText("Apple");
+  });
+
+  test("select reflects server-checked item after same-page boosted navigation", async ({ page }) => {
+    await page.goto("/components/select");
+    await expect(page.locator("[data-gsxui-slot-select-trigger]").first()).toContainText("Apple");
+    await page.getByRole("link", { name: "select", exact: true }).last().click();
+    await expect(page.locator("[data-gsxui-slot-select-trigger]").first()).toContainText("Apple");
+  });
 });
