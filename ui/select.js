@@ -136,7 +136,29 @@ function findMatch(items, search, current) {
 
 // --- init: bridge population, aria wiring, server-checked reflection -------
 
+// bridgeMatches is the cheap guard populateBridge checks first: initRoot
+// (and so populateBridge) now re-runs on every re-init the shared
+// MutationObserver schedules for this root — every open/close attribute
+// write among them, not just a real server swap — so wiping and rebuilding
+// the bridge <select>'s <option> children on each one would be wasted work
+// (and a mid-interaction option rebuild) most of those times change
+// nothing. Compares count + values IN ORDER, the same identity
+// populateBridge itself establishes (one leading empty "" option, then one
+// option per content item in DOM order) — an O(n) walk against the O(n)
+// rebuild it's guarding, no allocation beyond the counter.
+function bridgeMatches(content, bridge) {
+  const items = itemsOf(content);
+  const options = bridge.options;
+  if (options.length !== items.length + 1) return false;
+  if (options[0].value !== "") return false;
+  for (let i = 0; i < items.length; i++) {
+    if (options[i + 1].value !== (items[i].dataset.value ?? "")) return false;
+  }
+  return true;
+}
+
 function populateBridge(content, bridge) {
+  if (bridgeMatches(content, bridge)) return;
   bridge.textContent = "";
   const empty = document.createElement("option");
   empty.value = "";

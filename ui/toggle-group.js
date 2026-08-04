@@ -42,6 +42,19 @@ function normalize(root) {
   const items = itemsOf(root);
   const enabled = items.filter((i) => !i.disabled);
   if (!enabled.length) return;
+  // Bail when a live tab stop already exists (an explicit tabindex="0" set
+  // by setActiveTabStop during arrow-key/click interaction) — otherwise the
+  // shared MutationObserver's init() re-fires normalize() on every
+  // tabindex-attribute write those make (roving tabindex IS a mutation
+  // under this root), stomping the just-moved tab stop back to
+  // pressed-or-first one microtask later. Checked via the ATTRIBUTE (not
+  // the .tabIndex IDL property, which defaults to 0 for a plain <button>
+  // even with no tabindex attribute at all — using the property here would
+  // make this bail true on the very first, un-normalized render and never
+  // collapse the group to one tab stop). A real morph resets the item back
+  // to server-rendered markup (no tabindex attribute), so morph-reset still
+  // clears this guard and re-normalizes, as intended.
+  if (enabled.some((i) => i.getAttribute("tabindex") === "0")) return;
   const pressed = items.find((i) => i.dataset.state === "on" && !i.disabled);
   setActiveTabStop(root, pressed ?? enabled[0]);
 }
