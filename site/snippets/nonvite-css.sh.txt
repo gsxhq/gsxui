@@ -1,0 +1,3 @@
+# any Tailwind v4 tool works; two examples
+npx @tailwindcss/cli -i web/gsxui/index.css -o dist/gsxui.css
+tailwindcss -i web/gsxui/index.css -o dist/gsxui.css   # standalone binary
