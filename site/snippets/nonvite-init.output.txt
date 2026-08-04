@@ -1,0 +1,12 @@
+gsxui initialized (no Vite scaffold detected — npm-free mode).
+  css:  web/gsxui/index.css
+  js:   web/gsxui/index.js
+  next: gsxui add button
+
+Serve and build with your own tooling:
+  1. serve web/gsxui/ statically and load it with
+     <script type="module" src="/your-prefix/index.js"></script>
+  2. build web/gsxui/index.css with any Tailwind v4 tool, for example:
+     npx @tailwindcss/cli -i web/gsxui/index.css -o dist/gsxui.css
+     (or the standalone tailwindcss binary)
+  3. link the built stylesheet from your pages
