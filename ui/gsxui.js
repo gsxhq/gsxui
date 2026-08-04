@@ -38,6 +38,90 @@ export function emit(el, name, detail) {
   );
 }
 
+// --- dynamic init ---------------------------------------------------------
+//
+// on() needs no re-scan for late DOM — document-level delegation already
+// covers it. Init WORK (reflecting server-rendered state, per-instance
+// wiring) does not get that for free: a module's load-time scan runs once.
+// init(selector, fn) closes the gap: fn runs for current matches at
+// registration, for matches added later (htmx swaps, morphs, innerHTML),
+// and again when a match's subtree is morphed back to server state.
+//
+// Contract: fn is IDEMPOTENT. The core deliberately re-runs it on mutated
+// roots — a component needing true once-per-element wiring guards inside
+// its own fn (WeakSet / data flag). Mutations caused by an init pass
+// itself are discarded (flushing + takeRecords below); a concurrent
+// external mutation landing in that exact window is missed until the next
+// mutation re-heals it.
+
+const inits = []; // [{ selector, fn }]
+let observer = null;
+let pending = null; // Map<fn, Set<Element>> while a flush is queued
+let flushing = false;
+
+export function init(selector, fn) {
+  inits.push({ selector, fn });
+  for (const el of document.querySelectorAll(selector)) fn(el);
+  if (!observer) {
+    observer = new MutationObserver(collect);
+    observer.observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      characterData: true,
+    });
+  }
+}
+
+function schedule(fn, el) {
+  if (!pending) {
+    pending = new Map();
+    queueMicrotask(flush);
+  }
+  let set = pending.get(fn);
+  if (!set) pending.set(fn, (set = new Set()));
+  set.add(el);
+}
+
+function collect(records) {
+  if (flushing) return;
+  for (const record of records) {
+    if (record.type === "childList") {
+      for (const node of record.addedNodes) {
+        if (!(node instanceof Element)) continue;
+        for (const { selector, fn } of inits) {
+          if (node.matches(selector)) schedule(fn, node);
+          for (const el of node.querySelectorAll(selector)) schedule(fn, el);
+        }
+      }
+    }
+    const target =
+      record.target instanceof Element
+        ? record.target
+        : record.target.parentElement;
+    if (!target) continue;
+    for (const { selector, fn } of inits) {
+      const root = target.closest(selector);
+      if (root) schedule(fn, root);
+    }
+  }
+}
+
+function flush() {
+  const batch = pending;
+  pending = null;
+  if (!batch) return;
+  flushing = true;
+  try {
+    for (const [fn, els] of batch) {
+      for (const el of els) if (el.isConnected) fn(el);
+    }
+  } finally {
+    observer.takeRecords(); // discard mutations our own inits produced
+    flushing = false;
+  }
+}
+
 // --- anchored positioning --------------------------------------------------
 //
 // position() is the shared placement engine every floating surface in ui/
