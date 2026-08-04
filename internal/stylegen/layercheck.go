@@ -157,6 +157,7 @@ func attrName(attr gsxast.Attr) string {
 //
 // Paths are slash-separated and relative to the repo root.
 var layerCheckedStylesheets = []string{
+	"assets/css/animate.css", // vendored tw-animate-css; refreshed by make generate-animate
 	"assets/css/foundation.css",
 	"assets/css/index.css",
 	"assets/css/styles/default.css",
