@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"flag"
@@ -67,20 +68,26 @@ func runInit(args []string) error {
 	if err != nil {
 		return err
 	}
-	artifacts, err := initArtifacts(dir, module, cfg, selectedPreset)
+	nonVite, err := scaffoldAbsent(dir)
 	if err != nil {
 		return err
 	}
-	integrationArtifacts, err := planScaffoldIntegration(dir, cfg)
+	artifacts, err := initArtifacts(dir, module, cfg, selectedPreset, nonVite)
 	if err != nil {
 		return err
 	}
-	artifacts = append(artifacts, integrationArtifacts...)
-	packageArtifacts, err := packageMetadataArtifacts(dir)
-	if err != nil {
-		return err
+	if !nonVite {
+		integrationArtifacts, err := planScaffoldIntegration(dir, cfg)
+		if err != nil {
+			return err
+		}
+		artifacts = append(artifacts, integrationArtifacts...)
+		packageArtifacts, err := packageMetadataArtifacts(dir)
+		if err != nil {
+			return err
+		}
+		artifacts = append(artifacts, packageArtifacts...)
 	}
-	artifacts = append(artifacts, packageArtifacts...)
 	_, completePlan, err := artifactPlanWithConfig(cfg, artifacts)
 	if err != nil {
 		return err
@@ -104,8 +111,10 @@ func runInit(args []string) error {
 		dir,
 		completePlan,
 		func() error {
-			if err := runCommand(dir, "npm", npmCommand...); err != nil {
-				return fmt.Errorf("npm %v: %w", npmCommand, err)
+			if !nonVite {
+				if err := runCommand(dir, "npm", npmCommand...); err != nil {
+					return fmt.Errorf("npm %v: %w", npmCommand, err)
+				}
 			}
 			for _, command := range commands {
 				if err := runCommand(dir, command[0], command[1:]...); err != nil {
@@ -119,6 +128,27 @@ func runInit(args []string) error {
 		return err
 	}
 
+	if nonVite {
+		fmt.Fprintf(
+			commandStdout,
+			`gsxui initialized (no Vite scaffold detected — npm-free mode).
+  css:  %[1]s
+  js:   %[2]s/index.js
+  next: gsxui add button
+
+Serve and build with your own tooling:
+  1. serve %[2]s/ statically and load it with
+     <script type="module" src="/your-prefix/index.js"></script>
+  2. build %[1]s with any Tailwind v4 tool, for example:
+     npx @tailwindcss/cli -i %[1]s -o dist/gsxui.css
+     (or the standalone tailwindcss binary)
+  3. link the built stylesheet from your pages
+`,
+			cfg.CSS,
+			cfg.JS,
+		)
+		return nil
+	}
 	fmt.Fprintf(
 		commandStdout,
 		"gsxui initialized.\n  css:  %s\n  js:   %s/index.js\n  vite: Tailwind CSS configured\n  next: gsxui add button\n",
@@ -152,7 +182,7 @@ func resolveInitPreset(dir, input string) (preset.Preset, error) {
 	return preset.Default(preset.StyleNova), nil
 }
 
-func initArtifacts(dir, module string, cfg Config, selected preset.Preset) ([]artifact, error) {
+func initArtifacts(dir, module string, cfg Config, selected preset.Preset, nonVite bool) ([]artifact, error) {
 	presetJSON, err := preset.CanonicalJSON(selected)
 	if err != nil {
 		return nil, err
@@ -186,9 +216,23 @@ func initArtifacts(dir, module string, cfg Config, selected preset.Preset) ([]ar
 				return nil, err
 			}
 		}
+		if nonVite && asset.source == "assets/css/index.css" {
+			content = bytes.Replace(content, []byte("@import \"tw-animate-css\";"), []byte("@import \"./animate.css\";"), 1)
+		}
 		artifacts = append(artifacts, artifact{
 			RelativePath: filepath.ToSlash(asset.target),
 			Content:      content,
+			Managed:      true,
+		})
+	}
+	if nonVite {
+		animate, err := fs.ReadFile(gsxui.Files, "assets/css/animate.css")
+		if err != nil {
+			return nil, err
+		}
+		artifacts = append(artifacts, artifact{
+			RelativePath: filepath.ToSlash(filepath.Join(filepath.Dir(cfg.CSS), "animate.css")),
+			Content:      animate,
 			Managed:      true,
 		})
 	}
