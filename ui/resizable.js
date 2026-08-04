@@ -29,7 +29,7 @@
 // distributes what's left AFTER the handles' own space is already spoken
 // for. currentSizes() already worked this way (round 1's own fix); this
 // round makes the drag/keyboard math consistent with it.
-import { on, emit, isRTL } from "./gsxui.js";
+import { on, emit, isRTL, init } from "./gsxui.js";
 
 const HANDLE_SELECTOR = "[data-gsxui-slot-resizable-handle]";
 
@@ -250,10 +250,14 @@ on("keydown", HANDLE_SELECTOR, (e, handle) => {
 
 // --- Init: sync aria-valuenow/-min/-max from the server-rendered geometry --
 // (no context needed — every handle's neighbours are its own DOM siblings).
-// Same one-time module-load scan shape as toggle-group.js's normalize()
-// loop and carousel.js's own init loop: a handle added later via an HTMX
-// swap is not picked up, the same accepted limitation those modules carry.
-for (const handle of document.querySelectorAll(HANDLE_SELECTOR)) {
+// Self-healing via init() (ui/gsxui.js): current matches, later-added
+// matches (e.g. an HTMX swap), and any match morphed back to server state
+// all get this initializer re-run. Both writes are idempotent style/aria
+// writes with no per-call resource bound — touchAction is a plain style
+// property (re-setting it to the same value is a no-op) and
+// syncHandleAria() is pure reflection off the handle's current DOM
+// geometry — so re-running the pair is safe.
+init(HANDLE_SELECTOR, (handle) => {
   // Without this, touch input's default pan/scroll gesture wins the
   // pointerdown-to-pointermove race — the browser claims the gesture and
   // fires pointercancel mid-drag, so resizing never works on touch at all.
@@ -261,4 +265,4 @@ for (const handle of document.querySelectorAll(HANDLE_SELECTOR)) {
   // style, not a class-string change.
   handle.style.touchAction = "none";
   syncHandleAria(handle);
-}
+});

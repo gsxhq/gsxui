@@ -19,7 +19,7 @@
 //       index) — a fallback on top of the native click-through the real
 //       input's own opacity-0/z-10 (not pointer-events-none) already gives
 //       for free.
-import { on } from "./gsxui.js";
+import { on, init } from "./gsxui.js";
 
 const rootOf = (el) => el.closest("[data-gsxui-slot-input-otp]");
 const inputOf = (root) => root.querySelector("[data-gsxui-slot-input-otp-input]");
@@ -151,9 +151,13 @@ on("click", "[data-gsxui-slot-input-otp-slot]", (_e, slot) => {
 
 // Initial paint: populate every root present at parse time immediately
 // (e.g. a server-rendered initial value) rather than waiting for the first
-// interaction — same one-time init-scan shape as toggle-group.js's
-// normalize() / command.js's filter() loops.
-for (const root of document.querySelectorAll("[data-gsxui-slot-input-otp]")) {
+// interaction — self-healing via init(): current matches, later-added
+// matches, and any match morphed back to server state all get
+// stamp()+recompute() re-run. stamp() is guarded per-slot
+// (`if (!("index" in slot.dataset))`) and recompute() is pure reflection off
+// the real input's live value/selection, so re-running the pair is
+// safe/idempotent.
+init("[data-gsxui-slot-input-otp]", (root) => {
   stamp(root);
   recompute(root);
-}
+});

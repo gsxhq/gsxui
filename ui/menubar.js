@@ -40,7 +40,7 @@
 // pointerover/ArrowRight/click, unlike hover-card's own delayed open.
 //
 // toggle doesn't bubble — capture.
-import { on, emit, position, isRTL } from "./gsxui.js";
+import { on, emit, position, isRTL, init } from "./gsxui.js";
 
 // contentOf resolves a trigger (or anything inside its own MenubarMenu) to
 // THAT menu's own content — scoped by data-gsxui-slot-menubar-menu, the
@@ -109,12 +109,15 @@ function setActiveTrigger(bar, trigger) {
 // (server renders every trigger as a plain tab stop) — one-time init scan,
 // same shape as toggle-group.js's own normalize(). Enabled-only: the first
 // trigger might be disabled.
+// Self-healing via init(): current matches, later-added matches, and any
+// match morphed back to server state all get normalize() re-run. It always
+// resets the roving tab stop to the first enabled trigger — correct on a
+// morph (server reset), same as toggle-group.js's own normalize().
 function normalize(bar) {
   const triggers = enabledTriggersOf(bar);
   if (triggers.length) setActiveTrigger(bar, triggers[0]);
 }
-for (const bar of document.querySelectorAll("[data-gsxui-slot-menubar]"))
-  normalize(bar);
+init("[data-gsxui-slot-menubar]", normalize);
 
 // isAnyOpen gates (b) open-follows-hover: a menubar requires an explicit
 // open of the FIRST menu (click/Enter/Space/ArrowDown) — only once one

@@ -33,7 +33,7 @@
 // command.js — a JS-only import would be invisible to
 // internal/registry.Deps' go/parser scan over the generated .x.go, silently
 // breaking CLI vendoring (see the .gsx file's own GAP entry).
-import { on, emit, position } from "./gsxui.js";
+import { on, emit, position, init } from "./gsxui.js";
 
 const rootOf = (el) => el.closest("[data-gsxui-slot-combobox]");
 const inputOf = (root) =>
@@ -254,7 +254,7 @@ on("reset", "form:has([data-gsxui-slot-combobox])", (_e, form) => {
 // wire the permanent aria-controls (APG expects it present regardless of
 // open/closed state — see ui/combobox.gsx's ComboboxInput doc comment) ----
 
-function init(root) {
+function initRoot(root) {
   for (const group of root.querySelectorAll(
     "[data-gsxui-slot-combobox-group]",
   )) {
@@ -293,8 +293,13 @@ function init(root) {
   }
 }
 
-for (const root of document.querySelectorAll("[data-gsxui-slot-combobox]"))
-  init(root);
+// Self-healing via init() (ui/gsxui.js): current matches, later-added
+// matches, and any match morphed back to server state all get initRoot()
+// re-run. Pure reflection (aria-labelledby/aria-controls wiring, checked-
+// item reflection into the input) — every write is guarded (`if (!label.id)`,
+// `if (!list.id)`, `if (!input.value)`) or recomputed from the current DOM,
+// so re-running it is safe/idempotent.
+init("[data-gsxui-slot-combobox]", initRoot);
 
 // --- open / close (ported dropdown.js/select.js machinery) ---------------
 

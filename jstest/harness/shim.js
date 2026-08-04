@@ -41,6 +41,18 @@ export function on(type, selector, handler, { capture = false } = {}) {
   registrations.push({ type, capture, selector, module: callerModule() });
 }
 
+// init() (ui/gsxui.js): current matches, later-added matches, and matches
+// morphed back to server state all run fn. Recording layer only — this
+// shim exists to observe what on() WOULD have delegated (see the file
+// header's SCOPE note), not to reproduce init()'s own mutation-tracking
+// machinery, so it takes the simplest faithful stand-in: run fn once for
+// every current match, matching init()'s own "runs for current matches at
+// registration" contract without spinning up a MutationObserver a
+// recording-only harness has no use for.
+export function init(selector, fn) {
+  for (const el of document.querySelectorAll(selector)) fn(el);
+}
+
 export function emit(el, name, detail) {
   return el.dispatchEvent(
     new CustomEvent(name, { bubbles: true, cancelable: true, detail }),
