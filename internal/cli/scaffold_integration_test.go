@@ -3,6 +3,7 @@ package cli
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -397,6 +398,21 @@ func TestManualScaffoldInstructionsMatchDocumentation(t *testing.T) {
 	if strings.TrimSpace(string(content)) != manualScaffoldIntegrationInstructions {
 		t.Fatalf(
 			"manual integration documentation drifted from CLI refusal:\n%s",
+			content,
+		)
+	}
+}
+
+func TestNonViteInitSummaryMatchesDocumentation(t *testing.T) {
+	content, err := os.ReadFile(filepath.Join("..", "..", "site", "snippets", "nonvite-init.output.txt"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	cfg := DefaultConfig()
+	got := fmt.Sprintf(nonViteSummaryFormat, cfg.CSS, cfg.JS)
+	if strings.TrimSpace(string(content)) != strings.TrimSpace(got) {
+		t.Fatalf(
+			"non-Vite init summary drifted from documentation:\n%s",
 			content,
 		)
 	}
