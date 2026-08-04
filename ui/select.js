@@ -17,7 +17,7 @@
 //   - a hidden native <select> FORM BRIDGE, populated from the DOM items at
 //     init and kept in sync (value assignment + a bubbling change event).
 // See docs/jsx-parity.md ## select and ui/select.gsx's header.
-import { on, emit, position } from "./gsxui.js";
+import { on, emit, position, init } from "./gsxui.js";
 
 const rootOf = (el) => el.closest("[data-gsxui-slot-select]");
 const contentOf = (el) =>
@@ -149,7 +149,7 @@ function populateBridge(content, bridge) {
   }
 }
 
-function init(root) {
+function initRoot(root) {
   const content = root.querySelector("[data-gsxui-slot-select-content]");
   const trigger = root.querySelector("[data-gsxui-slot-select-trigger]");
   if (content) {
@@ -179,8 +179,7 @@ function init(root) {
   if (checked) applyValue(root, checked, { silent: true });
 }
 
-for (const root of document.querySelectorAll("[data-gsxui-slot-select]"))
-  init(root);
+init("[data-gsxui-slot-select]", initRoot);
 
 // --- open / close (ported dropdown.js machinery) --------------------------
 
