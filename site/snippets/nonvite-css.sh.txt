@@ -1,3 +1,10 @@
-# any Tailwind v4 tool works; two examples
+# standalone Tailwind CLI — a single binary, no npm required:
+# download for your platform from
+# https://github.com/tailwindlabs/tailwindcss/releases/latest
+curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-macos-arm64
+chmod +x tailwindcss-macos-arm64 && mv tailwindcss-macos-arm64 tailwindcss
+
+./tailwindcss -i web/gsxui/index.css -o dist/gsxui.css
+
+# already have npm? the npm-packaged CLI takes the same flags:
 npx @tailwindcss/cli -i web/gsxui/index.css -o dist/gsxui.css
-tailwindcss -i web/gsxui/index.css -o dist/gsxui.css   # standalone binary

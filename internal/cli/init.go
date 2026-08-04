@@ -153,9 +153,10 @@ const nonViteSummaryFormat = `gsxui initialized (no Vite scaffold detected — n
 Serve and build with your own tooling:
   1. serve %[2]s/ statically and load it with
      <script type="module" src="/your-prefix/index.js"></script>
-  2. build %[1]s with any Tailwind v4 tool, for example:
-     npx @tailwindcss/cli -i %[1]s -o dist/gsxui.css
-     (or the standalone tailwindcss binary)
+  2. build %[1]s with any Tailwind v4 tool, for example the
+     standalone tailwindcss binary (no npm needed):
+     tailwindcss -i %[1]s -o dist/gsxui.css
+     (or npx @tailwindcss/cli with the same flags if you have npm)
   3. link the built stylesheet from your pages
 `
 
