@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
+	"fmt"
 	"io"
 	"io/fs"
 	"os"
@@ -125,6 +126,88 @@ func TestInitWritesEverything(t *testing.T) {
 	} {
 		if !strings.Contains(joined, want) {
 			t.Errorf("missing command %q in:\n%s", want, joined)
+		}
+	}
+}
+
+// nonViteTestModule is initTestModule without the npm/Vite scaffold: just a
+// Go module in an empty directory.
+func nonViteTestModule(t *testing.T) (dir string, commands *[][]string) {
+	t.Helper()
+	dir = t.TempDir()
+	writeFile(t, dir, "go.mod", "module example.com/app\n\ngo 1.26\n")
+	var got [][]string
+	orig := runCommand
+	runCommand = func(dir, name string, args ...string) error {
+		got = append(got, append([]string{name}, args...))
+		return nil
+	}
+	t.Cleanup(func() { runCommand = orig })
+	t.Chdir(dir)
+	return dir, &got
+}
+
+func TestInitNonViteVendorsWithoutNPM(t *testing.T) {
+	dir, commands := nonViteTestModule(t)
+	if err := Run([]string{"init"}); err != nil {
+		t.Fatal(err)
+	}
+	for _, p := range []string{
+		"gsxui.json",
+		"gsxui.preset.json",
+		"web/gsxui/index.css",
+		"web/gsxui/animate.css",
+		"web/gsxui/foundation.css",
+		"web/gsxui/theme.css",
+		"web/gsxui/style.css",
+		"web/gsxui/gsxui.js",
+		"web/gsxui/index.js",
+		"ui/merge/merge.go",
+		"gsx.toml",
+	} {
+		if _, err := os.Stat(filepath.Join(dir, p)); err != nil {
+			t.Errorf("missing %s: %v", p, err)
+		}
+	}
+	for _, p := range []string{"vite.config.ts", "web/main.js", "package.json", "package-lock.json"} {
+		if _, err := os.Stat(filepath.Join(dir, p)); !os.IsNotExist(err) {
+			t.Errorf("%s must not be created in non-Vite mode (err=%v)", p, err)
+		}
+	}
+	index := readFile(t, dir, "web/gsxui/index.css")
+	if !strings.Contains(index, `@import "./animate.css";`) || strings.Contains(index, `@import "tw-animate-css";`) {
+		t.Fatalf("index.css must import ./animate.css instead of tw-animate-css:\n%s", index)
+	}
+	for _, command := range *commands {
+		if command[0] == "npm" {
+			t.Fatalf("npm must never run in non-Vite mode, got %v", *commands)
+		}
+	}
+	// go tooling still installed, and generation still runs.
+	joined := fmt.Sprint(*commands)
+	for _, want := range []string{"go get github.com/gsxhq/gsx@latest", "go get -tool github.com/gsxhq/gsx/cmd/gsx@latest"} {
+		if !strings.Contains(joined, want) {
+			t.Errorf("missing command %q in %v", want, *commands)
+		}
+	}
+}
+
+func TestInitNonVitePrintsServingInstructions(t *testing.T) {
+	_, _ = nonViteTestModule(t)
+	var out bytes.Buffer
+	origOut := commandStdout
+	commandStdout = &out
+	t.Cleanup(func() { commandStdout = origOut })
+	if err := Run([]string{"init"}); err != nil {
+		t.Fatal(err)
+	}
+	for _, want := range []string{
+		"no Vite scaffold detected",
+		`<script type="module"`,
+		"@tailwindcss/cli",
+	} {
+		if !strings.Contains(out.String(), want) {
+			t.Errorf("summary missing %q:\n%s", want, out.String())
 		}
 	}
 }
@@ -661,7 +744,7 @@ func treeDigest(t *testing.T, root string) string {
 func TestInitVendorsCSSAssetsBesideCustomEntry(t *testing.T) {
 	dir, _ := initTestModule(t)
 	cfg := Config{UI: "ui", JS: "web/gsxui", CSS: "web/styles/brand.css"}
-	artifacts, err := initArtifacts(dir, "example.com/app", cfg, preset.Default(preset.StyleNova))
+	artifacts, err := initArtifacts(dir, "example.com/app", cfg, preset.Default(preset.StyleNova), false)
 	if err != nil {
 		t.Fatal(err)
 	}
