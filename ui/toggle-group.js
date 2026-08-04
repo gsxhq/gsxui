@@ -6,7 +6,7 @@
 // off Radix's own ARIA split rather than a redundant data-type stamp —
 // ToggleGroup/ToggleGroupItem already only ever pair a "radio" role with
 // type="single").
-import { on, emit, isRTL } from "./gsxui.js";
+import { on, emit, isRTL, init } from "./gsxui.js";
 
 const itemsOf = (root) =>
   [...root.querySelectorAll("[data-gsxui-slot-toggle-group-item]")].filter(
@@ -102,6 +102,9 @@ on("keydown", "[data-gsxui-slot-toggle-group-item]", (e, item) => {
 
 // Initial tab-stop assignment for groups rendered without JS having run yet
 // (server renders every item as a plain tab stop — see the package doc
-// comment on ui/toggle-group.gsx) — same one-time init-scan shape as
-// command.js's own initial filter() pass.
-for (const root of document.querySelectorAll("[data-gsxui-slot-toggle-group]")) normalize(root);
+// comment on ui/toggle-group.gsx) — self-healing via init(): current
+// matches, later-added matches (e.g. an HTMX swap), and any match morphed
+// back to server state all get normalize() re-run. normalize() is pure
+// reflection over the current DOM (no per-call resources bound), so
+// re-running it is safe/idempotent.
+init("[data-gsxui-slot-toggle-group]", normalize);

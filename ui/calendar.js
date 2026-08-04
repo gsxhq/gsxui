@@ -14,7 +14,7 @@
 // agree; jstest/specs/calendar.spec.ts's "Go and JS agree on …" tests are
 // exactly that agreement, checked by navigating client-side to a month and
 // diffing against the server's own render of that same month.
-import { on, emit, isRTL } from "./gsxui.js";
+import { on, emit, isRTL, init } from "./gsxui.js";
 
 const ROOT = "[data-gsxui-slot-calendar]";
 
@@ -979,8 +979,6 @@ function captureDefaults(root) {
   });
 }
 
-for (const root of document.querySelectorAll(ROOT)) captureDefaults(root);
-
 // Scoped to a form that actually contains a calendar (`:has()`), not a bare
 // "form". A form may also contain a combobox and then intentionally matches
 // both modules for reset:false: each handler restores disjoint descendants.
@@ -1061,7 +1059,17 @@ function reconcileToday(root, year, month) {
   }
 }
 
-for (const root of document.querySelectorAll(ROOT)) {
+// Self-healing via init() (ui/gsxui.js): current matches, later-added
+// matches, and any match morphed back to server state all get this
+// initializer re-run. captureDefaults() is a WeakMap-guarded once-per-root
+// no-op after the first call (by design — the reset snapshot is meant to
+// stay the root's ORIGINAL pristine state, not whatever a later morph
+// produced; unchanged from this module's pre-existing "first call wins"
+// contract, which the day-click handler above already relied on for a
+// late-added root). reconcileToday() is pure reflection (only data-today,
+// recomputed from the client's own clock) — safe to re-run every time.
+init(ROOT, (root) => {
+  captureDefaults(root);
   const { year, month } = currentMonth(root);
   reconcileToday(root, year, month);
-}
+});

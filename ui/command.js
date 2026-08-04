@@ -6,7 +6,7 @@
 // on the item; an item carrying data-href then navigates. ⌘K/Ctrl-K toggles
 // the first dialog marked data-gsxui-command-dialog (see command.gsx),
 // riding dialog.js's machinery for open state and animated close.
-import { on, emit } from "./gsxui.js";
+import { on, emit, init } from "./gsxui.js";
 
 // ---------------------------------------------------------------------------
 // commandScore — verbatim port of command-score 0.1.2 (MIT, (c) Superhuman
@@ -223,7 +223,11 @@ on("pointerover", "[data-gsxui-slot-command-item]", (_e, item) => {
 
 // Initial state: rank/selection for palettes rendered without a query
 // (server renders every item visible; this stamps the first selection).
-for (const root of document.querySelectorAll("[data-gsxui-slot-command]")) filter(root);
+// Self-healing via init(): current matches, later-added matches, and any
+// match morphed back to server state all get filter() re-run. filter() is
+// pure reflection off the input's current value and each item's own DOM
+// state (score/hide/reorder), so re-running it is safe/idempotent.
+init("[data-gsxui-slot-command]", (root) => filter(root));
 
 // ⌘K / Ctrl-K requests a transition on the first command dialog. dialog.js
 // owns the default action, including state stamping and animated close.

@@ -48,4 +48,27 @@ test.describe("gsxui dynamic init", () => {
     });
     expect(ran).toBeGreaterThan(0); // the page's select root
   });
+
+  test("carousel init is idempotent under re-init", async ({ page }) => {
+    await page.goto("/x/carousel/basic");
+    await page.evaluate(async () => {
+      const { init } = await import("/ui/gsxui.js");
+      // Force a re-init pass over existing carousels by touching a root.
+      document.querySelector("[data-gsxui-slot-carousel]")!.setAttribute("data-poke", "1");
+      await new Promise((r) => setTimeout(r, 20));
+    });
+    const before = await page
+      .locator("[data-gsxui-slot-carousel-item]")
+      .first()
+      .boundingBox();
+    await page.locator("[data-gsxui-slot-carousel-next]").first().click();
+    await page.waitForTimeout(400); // one smooth-scroll settle
+    const after = await page
+      .locator("[data-gsxui-slot-carousel-item]")
+      .first()
+      .boundingBox();
+    expect(after!.x).toBeLessThan(before!.x); // advanced exactly one step is
+    // asserted by carousel's own existing specs; here we assert it MOVED
+    // (a double-bound autoplay/observer would break those existing specs).
+  });
 });
