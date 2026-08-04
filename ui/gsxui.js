@@ -1,6 +1,8 @@
 // gsxui delegation core. One document-level listener per (event type, phase);
-// behaviors register selector→handler pairs. No per-instance listeners, no
-// init scan — elements added later (HTMX swaps, innerHTML) just work.
+// behaviors register selector→handler pairs — elements added later (DOM
+// swaps, innerHTML) just work with no re-scan. init() (below) covers the
+// complementary case: per-instance init WORK that on()'s delegation model
+// doesn't reach for free.
 //
 // Non-bubbling events (toggle, close, focus, blur, …) must be registered with
 // { capture: true } — the document-level listener only sees them during the
@@ -44,20 +46,22 @@ export function emit(el, name, detail) {
 // covers it. Init WORK (reflecting server-rendered state, per-instance
 // wiring) does not get that for free: a module's load-time scan runs once.
 // init(selector, fn) closes the gap: fn runs for current matches at
-// registration, for matches added later (htmx swaps, morphs, innerHTML),
-// and again when a match's subtree is morphed back to server state.
+// registration, for matches added later (DOM swaps, morphs, innerHTML
+// writes), and again when a match's subtree is morphed back to server
+// state.
 //
 // Contract: fn is IDEMPOTENT. The core deliberately re-runs it on mutated
 // roots — a component needing true once-per-element wiring guards inside
 // its own fn (WeakSet / data flag). Mutations caused by an init pass
-// itself are discarded (flushing + takeRecords below); a concurrent
-// external mutation landing in that exact window is missed until the next
-// mutation re-heals it.
+// itself are discarded — see takeRecords() in flush() below, the sole
+// loop-prevention mechanism; a concurrent external mutation landing in
+// that exact window is missed until the next mutation re-heals it.
+// Double-registering the same (selector, fn) runs fn twice per match —
+// callers are expected to register once at module load.
 
 const inits = []; // [{ selector, fn }]
 let observer = null;
 let pending = null; // Map<fn, Set<Element>> while a flush is queued
-let flushing = false;
 
 export function init(selector, fn) {
   inits.push({ selector, fn });
@@ -84,7 +88,6 @@ function schedule(fn, el) {
 }
 
 function collect(records) {
-  if (flushing) return;
   for (const record of records) {
     if (record.type === "childList") {
       for (const node of record.addedNodes) {
@@ -111,14 +114,12 @@ function flush() {
   const batch = pending;
   pending = null;
   if (!batch) return;
-  flushing = true;
   try {
     for (const [fn, els] of batch) {
       for (const el of els) if (el.isConnected) fn(el);
     }
   } finally {
     observer.takeRecords(); // discard mutations our own inits produced
-    flushing = false;
   }
 }
 
