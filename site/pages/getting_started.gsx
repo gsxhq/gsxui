@@ -12,7 +12,6 @@ var gettingStartedTOCItems = []docTOCItem{
 	{ID: "install-cli", Title: "1. Install the CLIs", Depth: 2},
 	{ID: "initialize-project", Title: "2. Initialize your project", Depth: 2},
 	{ID: "manual-integration", Title: "Manual integration", Depth: 3},
-	{ID: "without-vite", Title: "Without Vite", Depth: 3},
 	{ID: "add-components", Title: "3. Add components", Depth: 2},
 	{ID: "first-page", Title: "4. Your first page", Depth: 2},
 }
@@ -64,31 +63,14 @@ component (g GettingStarted) Page() {
 						responsibilities yourself:
 					</p>
 					<pre><code>{ hl.Node("snippets/manual-integration") }</code></pre>
-				</div>
-				<div class="mt-4 flex flex-col gap-3">
-					<docHeading item={gettingStartedTOCItems[3]}/>
 					<p>
-						gsxui does not require Vite — or npm. If <code>gsxui init</code> finds neither
-						<code>vite.config.ts</code> nor <code>web/main.js</code>, it initializes in npm-free mode: the
-						component behaviors are dependency-free native ES modules, and the one CSS dependency
-						(<code>tw-animate-css</code>) is vendored as <code>web/gsxui/animate.css</code> so the stylesheet
-						builds without <code>node_modules</code>.
+						Not using Vite — or npm — at all? See <a href={NpmFree{} |> url}>npm-free</a>: <code>gsxui init</code>
+						detects the missing scaffold and initializes without either.
 					</p>
-					<pre><code>{ hl.Node("snippets/nonvite-init.output") }</code></pre>
-					<p>
-						You own serving and CSS building. Serve the vendored JS directory statically and load the barrel
-						with one module script tag — no bundler required, any bundler welcome:
-					</p>
-					<pre><code>{ hl.Node("snippets/nonvite-serve.go") }</code></pre>
-					<p>
-						Build the CSS entry with the Tailwind v4 tool of your choice (these are examples — gsxui never
-						installs or manages your build tooling), then link the output from your pages:
-					</p>
-					<pre><code>{ hl.Node("snippets/nonvite-css.sh") }</code></pre>
 				</div>
 			</section>
 			<section class="flex flex-col gap-3">
-				<docHeading item={gettingStartedTOCItems[4]}/>
+				<docHeading item={gettingStartedTOCItems[3]}/>
 				<pre><code>{ hl.Node("snippets/add.sh") }</code></pre>
 				<pre><code>{ hl.Node("snippets/add.output") }</code></pre>
 				<p>
@@ -102,7 +84,7 @@ component (g GettingStarted) Page() {
 				</p>
 			</section>
 			<section class="flex flex-col gap-3">
-				<docHeading item={gettingStartedTOCItems[5]}/>
+				<docHeading item={gettingStartedTOCItems[4]}/>
 				<p>
 					<code>gsx init</code> already scaffolded a working app: <code>app.gsx</code> holds
 					a <code>Layout</code> and an <code>Index</code> component, and <code>main.go</code> serves it. Make it your

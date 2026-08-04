@@ -22,6 +22,7 @@ type Docs struct {
 	GettingStarted `route:"/getting-started Getting Started"`
 	Theming        `route:"/theming Theming"`
 	Rtl            `route:"/rtl RTL"`
+	NpmFree        `route:"/npm-free npm-free"`
 }
 
 // ServeHTTP is the fallback for any path under "/" that no child route
