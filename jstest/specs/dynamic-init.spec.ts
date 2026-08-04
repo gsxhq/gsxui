@@ -71,4 +71,51 @@ test.describe("gsxui dynamic init", () => {
     // asserted by carousel's own existing specs; here we assert it MOVED
     // (a double-bound autoplay/observer would break those existing specs).
   });
+
+  // Pins the library guarantee stated at this file's own top — init() must
+  // reach a subtree injected with plain innerHTML (no htmx, no framework
+  // involved at all) — using a REAL select structure (the exact DOM shape
+  // ui/select.gsx's own SelectTrigger/SelectContent/SelectItem render,
+  // copied from a live /x/select/basic render) with a data-state="checked"
+  // item, so ui/select.js's own initRoot() reflects that item's label into
+  // the trigger with zero htmx/server round trip.
+  test("innerHTML-injected select is initialized: checked item reflects into the trigger", async ({ page }) => {
+    await page.goto("/x/select/basic");
+    const text = await page.evaluate(async () => {
+      const host = document.createElement("div");
+      host.innerHTML = `
+        <div data-gsxui-slot-select>
+          <button type="button" role="combobox" aria-expanded="false"
+            aria-autocomplete="none" data-state="closed"
+            data-gsxui-slot-select-trigger>
+            <span data-gsxui-slot-select-value>Select a fruit</span>
+          </button>
+          <div popover="auto" role="listbox" tabindex="-1" data-state="closed"
+            data-gsxui-slot-select-content>
+            <div role="group" data-gsxui-slot-select-group>
+              <div role="option" data-value="apple" data-state="checked"
+                aria-selected="false" tabindex="-1" data-gsxui-slot-select-item>
+                <span data-gsxui-slot-select-item-indicator></span>
+                <span data-gsxui-slot-select-item-text>Apple</span>
+              </div>
+              <div role="option" data-value="banana" data-state="unchecked"
+                aria-selected="false" tabindex="-1" data-gsxui-slot-select-item>
+                <span data-gsxui-slot-select-item-indicator></span>
+                <span data-gsxui-slot-select-item-text>Banana</span>
+              </div>
+            </div>
+          </div>
+          <select aria-hidden="true" tabindex="-1" name="fruit"
+            data-gsxui-slot-select-bridge>
+            <option value=""></option>
+            <option value="apple">Apple</option>
+            <option value="banana">Banana</option>
+          </select>
+        </div>`;
+      document.body.append(host);
+      await new Promise((r) => setTimeout(r, 20)); // observer flush
+      return host.querySelector("[data-gsxui-slot-select-value]")!.textContent;
+    });
+    expect(text).toBe("Apple");
+  });
 });

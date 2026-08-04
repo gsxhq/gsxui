@@ -115,6 +115,19 @@ function setActiveTrigger(bar, trigger) {
 // morph (server reset), same as toggle-group.js's own normalize().
 function normalize(bar) {
   const triggers = enabledTriggersOf(bar);
+  // Bail when a live tab stop already exists (an explicit tabindex="0" set
+  // by setActiveTrigger during arrow-key/click interaction) — otherwise the
+  // shared MutationObserver's init() re-fires normalize() on every
+  // tabindex-attribute write those make (roving tabindex IS a mutation
+  // under this bar), stomping the just-moved tab stop back to triggers[0]
+  // one microtask later. Checked via the ATTRIBUTE (not the .tabIndex IDL
+  // property, which defaults to 0 for a plain <button> even with no
+  // tabindex attribute at all — using the property here would make this
+  // bail true on the very first, un-normalized render and never collapse
+  // the bar to one tab stop). A real morph resets the trigger back to
+  // server-rendered markup (no tabindex attribute), so morph-reset still
+  // clears this guard and re-normalizes, as intended.
+  if (triggers.some((t) => t.getAttribute("tabindex") === "0")) return;
   if (triggers.length) setActiveTrigger(bar, triggers[0]);
 }
 init("[data-gsxui-slot-menubar]", normalize);

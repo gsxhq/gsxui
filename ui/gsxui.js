@@ -58,6 +58,19 @@ export function emit(el, name, detail) {
 // that exact window is missed until the next mutation re-heals it.
 // Double-registering the same (selector, fn) runs fn twice per match —
 // callers are expected to register once at module load.
+//
+// WARNING: fn fires on ANY attribute, text, or childList mutation at or
+// under a match — not just an external DOM swap/morph. A live interaction
+// inside the same subtree (e.g. a roving-tabindex module writing
+// tabindex="0"/"-1" on click/arrow-key, a toggle handler flipping
+// data-state) is itself such a mutation, and schedules fn again one
+// microtask later. Two obligations follow: fn must be CHEAP (it may run
+// once per interaction, not once per page load), and it must not FIGHT
+// live interaction state a handler just set (an unconditional "reset to
+// entry state" fn will stomp its own component's just-changed tab
+// stop/open state right back — see ui/menubar.js's and
+// ui/toggle-group.js's own normalize() for the "bail when a live value
+// already exists" guard this forces).
 
 const inits = []; // [{ selector, fn }]
 let observer = null;
