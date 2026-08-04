@@ -103,7 +103,7 @@ on("keydown", "[data-gsxui-slot-toggle-group-item]", (e, item) => {
 // Initial tab-stop assignment for groups rendered without JS having run yet
 // (server renders every item as a plain tab stop — see the package doc
 // comment on ui/toggle-group.gsx) — self-healing via init(): current
-// matches, later-added matches (e.g. an HTMX swap), and any match morphed
+// matches, later-added matches (e.g. a DOM swap), and any match morphed
 // back to server state all get normalize() re-run. normalize() is pure
 // reflection over the current DOM (no per-call resources bound), so
 // re-running it is safe/idempotent.

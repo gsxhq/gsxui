@@ -251,7 +251,7 @@ on("keydown", HANDLE_SELECTOR, (e, handle) => {
 // --- Init: sync aria-valuenow/-min/-max from the server-rendered geometry --
 // (no context needed — every handle's neighbours are its own DOM siblings).
 // Self-healing via init() (ui/gsxui.js): current matches, later-added
-// matches (e.g. an HTMX swap), and any match morphed back to server state
+// matches (e.g. a DOM swap), and any match morphed back to server state
 // all get this initializer re-run. Both writes are idempotent style/aria
 // writes with no per-call resource bound — touchAction is a plain style
 // property (re-setting it to the same value is a no-op) and

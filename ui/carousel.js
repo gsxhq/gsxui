@@ -254,7 +254,7 @@ const resizeObserver = new ResizeObserver((entries) => {
 });
 
 // Self-healing via init() (ui/gsxui.js): current matches, later-added
-// matches (e.g. an HTMX swap), and any match morphed back to server state
+// matches (e.g. a DOM swap), and any match morphed back to server state
 // all get initCarousel() re-run. Audited per-step, since this is the one
 // STATEFUL initializer in this batch (see the task-3 report for the full
 // writeup):
