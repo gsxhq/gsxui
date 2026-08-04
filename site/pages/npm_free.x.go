@@ -105,12 +105,18 @@ func (n NpmFree) Page() _gsxrt.Node {
 //line npm_free.gsx:48:5
 			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, npmFreeTOCItems[2], nil))
 //line npm_free.gsx:49:5
-			_gsxgw.S("<p>Build the CSS entry with the Tailwind v4 tool of your choice (these are examples — gsxui never installs or manages your build tooling), then link the output from your pages:</p>")
-//line npm_free.gsx:53:5
+			_gsxgw.S("<p>Build the CSS entry with any Tailwind v4 tool — gsxui never installs or manages your build tooling. True to this page's title, the ")
+//line npm_free.gsx:51:37
+			_gsxgw.S("<a href=\"https://tailwindcss.com/docs/installation/tailwind-cli\">standalone Tailwind CLI</a> is the natural fit: a single binary from ")
+//line npm_free.gsx:53:11
+			_gsxgw.S("<a href=\"https://github.com/tailwindlabs/tailwindcss/releases/latest\">GitHub releases</a>, no npm involved. If you already have npm, its ")
+//line npm_free.gsx:54:45
+			_gsxgw.S("<code>@tailwindcss/cli</code> package takes the same flags. Then link the output from your pages:</p>")
+//line npm_free.gsx:57:5
 			_gsxgw.S("<pre>")
-//line npm_free.gsx:53:10
+//line npm_free.gsx:57:10
 			_gsxgw.S("<code>")
-//line npm_free.gsx:53:16
+//line npm_free.gsx:57:16
 			_gsxgw.Node(ctx, hl.Node("snippets/nonvite-css.sh"))
 			_gsxgw.S("</code></pre></section></div>")
 			return _gsxgw.Err()
