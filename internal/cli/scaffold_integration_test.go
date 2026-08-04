@@ -649,3 +649,33 @@ func readFile(t *testing.T, dir, relative string) string {
 	}
 	return string(content)
 }
+
+func TestScaffoldAbsent(t *testing.T) {
+	dir := t.TempDir()
+	absent, err := scaffoldAbsent(dir)
+	if err != nil || !absent {
+		t.Fatalf("empty dir: absent=%v err=%v, want true nil", absent, err)
+	}
+
+	withVite := t.TempDir()
+	writeFile(t, withVite, "vite.config.ts", "export default {}\n")
+	absent, err = scaffoldAbsent(withVite)
+	if err != nil || absent {
+		t.Fatalf("vite.config.ts present: absent=%v err=%v, want false nil", absent, err)
+	}
+
+	withMain := t.TempDir()
+	writeFile(t, withMain, "web/main.js", "console.log(1)\n")
+	absent, err = scaffoldAbsent(withMain)
+	if err != nil || absent {
+		t.Fatalf("web/main.js present: absent=%v err=%v, want false nil", absent, err)
+	}
+}
+
+func TestRefusalIncludesNonViteGuidance(t *testing.T) {
+	dir := writeScaffoldFixture(t, "tampered", testGSXMainPristine)
+	_, err := planScaffoldIntegration(dir, DefaultConfig())
+	if err == nil || !strings.Contains(err.Error(), "without Vite") {
+		t.Fatalf("refusal must mention the non-Vite path, got: %v", err)
+	}
+}

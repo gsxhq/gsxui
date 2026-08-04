@@ -12,12 +12,38 @@ import (
 	"strings"
 )
 
+// scaffoldAbsent reports whether the project has no gsx npm/Vite scaffold at
+// all — neither vite.config.ts nor web/main.js exists. That state selects
+// init's non-Vite mode; a partially present or modified scaffold still goes
+// through planScaffoldIntegration's refusal so tampering never silently
+// downgrades an existing Vite project.
+func scaffoldAbsent(dir string) (bool, error) {
+	for _, relative := range []string{"vite.config.ts", "web/main.js"} {
+		path, err := artifactPath(dir, relative)
+		if err != nil {
+			return false, err
+		}
+		if _, err := os.Stat(path); err == nil {
+			return false, nil
+		} else if !os.IsNotExist(err) {
+			return false, err
+		}
+	}
+	return true, nil
+}
+
 const manualScaffoldIntegrationInstructions = `Automatic integration currently supports an unmodified gsx init npm/Vite scaffold with the default gsxui JS and CSS paths.
 
 Integrate this project manually:
   npm install --save-dev tailwindcss@^4.3.3 @tailwindcss/vite@^4.3.3 tw-animate-css@^1.4.0
   vite.config.ts: import tailwindcss from "@tailwindcss/vite" and add tailwindcss() to plugins
-  web/main.js: import "./gsxui/index.js" and import "./gsxui/index.css"`
+  web/main.js: import "./gsxui/index.js" and import "./gsxui/index.css"
+
+Or, to run without Vite entirely, delete vite.config.ts and web/main.js and
+re-run gsxui init: it will vendor everything self-contained (no npm), and you
+serve the gsxui JS directory statically, load index.js with one
+<script type="module"> tag, and build index.css with any Tailwind v4 tool
+(e.g. npx @tailwindcss/cli -i web/gsxui/index.css -o dist.css).`
 
 //go:embed scaffold/gsx-v1/*
 var scaffoldDocuments embed.FS
