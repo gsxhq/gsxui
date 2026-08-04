@@ -1,13 +1,18 @@
-.PHONY: generate generate-styles verify-generated verify-generated-styles test test-js test-theme-state test-css-audit audit check ci icons site-dev site highlight sweep-baseline sweep-compare
+.PHONY: generate generate-styles generate-animate verify-generated verify-generated-styles test test-js test-theme-state test-css-audit audit check ci icons site-dev site highlight sweep-baseline sweep-compare
 
 audit-source-dirs := ui registry/canonical site/examples site/pages web $(wildcard dev)
 audit-css-source-dirs := assets/css site web $(wildcard dev)
 
-generate: generate-styles
+generate: generate-styles generate-animate
 	go tool gsx generate
 
 generate-styles:
 	go run ./cmd/stylegen
+
+# Refresh the embedded tw-animate-css copy vendored by non-Vite `gsxui init`.
+generate-animate:
+	printf '/* tw-animate-css (MIT) — https://github.com/Wombosvideo/tw-animate-css\n   Vendored by gsxui for npm-free builds; refresh with `make generate-animate`. */\n' > assets/css/animate.css
+	cat node_modules/tw-animate-css/dist/tw-animate.css >> assets/css/animate.css
 
 verify-generated:
 	go run ./internal/generatedcheck/cmd

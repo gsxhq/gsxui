@@ -25,6 +25,10 @@ language — structure only; no templUI code was copied.
 When `gsxui add` vendors component source into your project, the vendored
 files remain subject to these notices alongside gsxui's own MIT license.
 
+tw-animate-css (assets/css/animate.css)
+MIT License — Copyright (c) Wombosvideo
+https://github.com/Wombosvideo/tw-animate-css
+
 ---
 
 ## shadcn/ui license (MIT)
