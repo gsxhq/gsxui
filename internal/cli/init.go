@@ -129,9 +129,23 @@ func runInit(args []string) error {
 	}
 
 	if nonVite {
-		fmt.Fprintf(
-			commandStdout,
-			`gsxui initialized (no Vite scaffold detected — npm-free mode).
+		fmt.Fprintf(commandStdout, nonViteSummaryFormat, cfg.CSS, cfg.JS)
+		return nil
+	}
+	fmt.Fprintf(
+		commandStdout,
+		"gsxui initialized.\n  css:  %s\n  js:   %s/index.js\n  vite: Tailwind CSS configured\n  next: gsxui add button\n",
+		cfg.CSS,
+		cfg.JS,
+	)
+	return nil
+}
+
+// nonViteSummaryFormat is the post-init summary printed in npm-free mode.
+// Verb 1 is cfg.CSS, verb 2 is cfg.JS. Kept in sync with
+// site/snippets/nonvite-init.output.txt by
+// TestNonViteInitSummaryMatchesDocumentation.
+const nonViteSummaryFormat = `gsxui initialized (no Vite scaffold detected — npm-free mode).
   css:  %[1]s
   js:   %[2]s/index.js
   next: gsxui add button
@@ -143,20 +157,7 @@ Serve and build with your own tooling:
      npx @tailwindcss/cli -i %[1]s -o dist/gsxui.css
      (or the standalone tailwindcss binary)
   3. link the built stylesheet from your pages
-`,
-			cfg.CSS,
-			cfg.JS,
-		)
-		return nil
-	}
-	fmt.Fprintf(
-		commandStdout,
-		"gsxui initialized.\n  css:  %s\n  js:   %s/index.js\n  vite: Tailwind CSS configured\n  next: gsxui add button\n",
-		cfg.CSS,
-		cfg.JS,
-	)
-	return nil
-}
+`
 
 func resolveInitPreset(dir, input string) (preset.Preset, error) {
 	if input != "" {
@@ -217,7 +218,14 @@ func initArtifacts(dir, module string, cfg Config, selected preset.Preset, nonVi
 			}
 		}
 		if nonVite && asset.source == "assets/css/index.css" {
-			content = bytes.Replace(content, []byte("@import \"tw-animate-css\";"), []byte("@import \"./animate.css\";"), 1)
+			needle := []byte("@import \"tw-animate-css\";")
+			if !bytes.Contains(content, needle) {
+				return nil, fmt.Errorf(
+					"assets/css/index.css: missing expected import %q for npm-free rewrite",
+					needle,
+				)
+			}
+			content = bytes.Replace(content, needle, []byte("@import \"./animate.css\";"), 1)
 		}
 		artifacts = append(artifacts, artifact{
 			RelativePath: filepath.ToSlash(asset.target),
