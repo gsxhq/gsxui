@@ -177,9 +177,19 @@ func TestDocsTableOfContents(t *testing.T) {
 				{id: "install-cli", title: "1. Install the CLIs"},
 				{id: "initialize-project", title: "2. Initialize your project"},
 				{id: "manual-integration", title: "Manual integration"},
-				{id: "without-vite", title: "Without Vite"},
 				{id: "add-components", title: "3. Add components"},
 				{id: "first-page", title: "4. Your first page"},
+			},
+		},
+		{
+			path: "/docs/npm-free",
+			items: []struct {
+				id    string
+				title string
+			}{
+				{id: "initialize", title: "Initialize without a scaffold"},
+				{id: "serve-scripts", title: "Serve the scripts"},
+				{id: "build-css", title: "Build the CSS"},
 			},
 		},
 		{
