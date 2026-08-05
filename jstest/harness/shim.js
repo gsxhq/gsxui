@@ -59,6 +59,26 @@ export function emit(el, name, detail) {
   );
 }
 
+// uid/wireGroupLabels are the real implementations, copied verbatim from
+// ui/gsxui.js — pure reflection, nothing to distort by recording. Keep in
+// lockstep with ui/gsxui.js's own copies (see the "exact export surface"
+// note above): a module importing a name the shim lacks fails to evaluate,
+// and with it every registration this file exists to record.
+let uidCounter = 0;
+export function uid(prefix) {
+  return `${prefix}-${++uidCounter}`;
+}
+
+export function wireGroupLabels(root, groupSelector, labelSelector, idPrefix) {
+  for (const group of root.querySelectorAll(groupSelector)) {
+    if (group.getAttribute("aria-labelledby")) continue;
+    const label = group.querySelector(labelSelector);
+    if (!label) continue;
+    if (!label.id) label.id = uid(idPrefix);
+    group.setAttribute("aria-labelledby", label.id);
+  }
+}
+
 // callerModule walks the V8 stack to the first frame outside this file. Frame
 // 0 is "Error", frame 1 is on() itself, frame 2 is the module that called it.
 // Returns the bare filename ("dropdown.js") so failure output is readable.
