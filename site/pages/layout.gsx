@@ -133,12 +133,13 @@ component siteLayout(title string, active string, mode layoutMode, toc []docTOCI
 			data-site-layout={mode}
 			class={bodyClass}
 			hx-boost:inherited="true"
-			{/* transition:true wraps the morph in a View Transition, making the
-			   swap paint-atomic. Without it, idiomorph's attribute-by-attribute
-			   rewriting of reused nodes has paintable intermediate states — a
-			   popover surface whose popover/slot attributes are momentarily
-			   absent renders as a plain block for a frame (the "select flash"
-			   between /components/separator and /components/select). */}
+			{/* transition:true is polish, not correctness: it wraps the swap in
+			   a View Transition for a smooth cross-fade. The flash fix is
+			   main's per-page id (below), which stops idiomorph pairing
+			   unrelated cross-page nodes and rewriting their attributes on the
+			   live DOM — the mechanism behind the old "select flash" between
+			   /components/separator and /components/select. Verified to hold
+			   with and without this modifier. */}
 			hx-swap:inherited="outerMorph transition:true"
 		>
 			<header class={headerClass}>
