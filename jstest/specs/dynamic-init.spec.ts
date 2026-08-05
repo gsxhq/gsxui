@@ -72,6 +72,69 @@ test.describe("gsxui dynamic init", () => {
     // (a double-bound autoplay/observer would break those existing specs).
   });
 
+  test("carousel autoplay binds on late attribute mutation", async ({ page }) => {
+    await page.goto("/x/carousel/basic");
+    // Create a carousel WITHOUT autoplay, init it, then add the attribute
+    const startScroll = await page.evaluate(async () => {
+      const root = document.createElement("div");
+      root.setAttribute("data-gsxui-slot-carousel", "");
+      const content = document.createElement("div");
+      content.setAttribute("data-gsxui-slot-carousel-content", "");
+      content.style.display = "flex";
+      content.style.overflow = "auto";
+      // Create two items
+      for (let i = 0; i < 2; i++) {
+        const item = document.createElement("div");
+        item.setAttribute("data-gsxui-slot-carousel-item", "");
+        item.style.flexShrink = "0";
+        item.style.width = "200px";
+        item.style.height = "100px";
+        item.textContent = `Item ${i}`;
+        content.appendChild(item);
+      }
+      root.appendChild(content);
+      document.body.appendChild(root);
+      // Force init to run (imports will trigger existing module init)
+      await import("/ui/carousel.js");
+      await new Promise((r) => setTimeout(r, 20)); // let init observer settle
+      // Verify no autoplay yet
+      const initialScroll = content.scrollLeft;
+      await new Promise((r) => setTimeout(r, 200));
+      return initialScroll;
+    });
+    // Carousel should not have scrolled (no autoplay yet)
+    const noAutoplayScroll = await page.evaluate(() => {
+      const root = document.querySelector(
+        "[data-gsxui-slot-carousel]"
+      ) as HTMLElement;
+      return (root?.querySelector(
+        "[data-gsxui-slot-carousel-content]"
+      ) as HTMLElement)?.scrollLeft ?? 0;
+    });
+    expect(noAutoplayScroll).toBe(startScroll);
+
+    // Now add the autoplay attribute with a short interval (100ms)
+    await page.evaluate(async () => {
+      const root = document.querySelector("[data-gsxui-slot-carousel]");
+      if (root)
+        root.setAttribute("data-gsxui-carousel-autoplay", "100");
+      await new Promise((r) => setTimeout(r, 20)); // let re-init observer settle
+    });
+
+    // Wait for autoplay to advance the carousel (100ms interval + settle time)
+    await page.waitForTimeout(300);
+    const afterAutoplayScroll = await page.evaluate(() => {
+      const root = document.querySelector(
+        "[data-gsxui-slot-carousel]"
+      ) as HTMLElement;
+      return (root?.querySelector(
+        "[data-gsxui-slot-carousel-content]"
+      ) as HTMLElement)?.scrollLeft ?? 0;
+    });
+    // Carousel should have scrolled forward due to autoplay
+    expect(afterAutoplayScroll).toBeGreaterThan(startScroll);
+  });
+
   // Pins the library guarantee stated at this file's own top — init() must
   // reach a subtree injected with plain innerHTML (no htmx, no framework
   // involved at all) — using a REAL select structure (the exact DOM shape

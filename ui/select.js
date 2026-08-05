@@ -377,7 +377,7 @@ on("pointerout", "[data-gsxui-slot-select-content]", (e, content) => {
   content.focus();
 });
 
-// --- init ---
+// --- init ------------------------------------------------------------------
 
 function initRoot(root) {
   const content = root.querySelector("[data-gsxui-slot-select-content]");
