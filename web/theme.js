@@ -1,6 +1,5 @@
 import { on } from "../ui/gsxui.js";
-import { tokenize, tokenTypes } from "css-tree";
-import parseCSS from "postcss/lib/parse";
+import { parse as parseCSSDeclaration, tokenize, tokenTypes } from "css-tree";
 import {
   canonicalJSON,
   clearPalettePreview,
@@ -205,20 +204,11 @@ if (schemaElement) {
     const result = { light: {}, dark: {}, radius: "" };
     let radiusValue = "";
 
-    let stylesheet;
-    try {
-      stylesheet = parseCSS(source);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "invalid syntax";
-      throw new Error(`CSS import: malformed CSS: ${message}`);
-    }
-
-    function themeMode(rule) {
-      if (typeof rule.selector !== "string") return "";
+    function themeMode(selector) {
       const tokens = [];
-      tokenize(rule.selector, (type, start, end) => {
+      tokenize(selector, (type, start, end) => {
         if (type === tokenTypes.WhiteSpace || type === tokenTypes.Comment) return;
-        tokens.push({ type, value: rule.selector.slice(start, end) });
+        tokens.push({ type, value: selector.slice(start, end) });
       });
       if (
         tokens.length === 2 &&
@@ -247,26 +237,27 @@ if (schemaElement) {
     }
 
     function declarationValue(declaration) {
-      const value = declaration.value.trim();
+      const value = declaration.value.value.trim();
       if (!declaration.important) return value;
-      return `${value}${declaration.raws.important || " !important"}`.trim();
+      const suffix = declaration.important === true ? "important" : declaration.important;
+      return `${value} !${suffix}`;
     }
 
     function acceptDeclaration(declaration, mode, nested) {
-      const name = recognizedName(declaration.prop);
+      const name = recognizedName(declaration.property);
       if (!name) return;
       if (nested) {
         throw new Error(
-          `Recognized property ${declaration.prop} has nested declaration ownership.`,
+          `Recognized property ${declaration.property} has nested declaration ownership.`,
         );
       }
       if (!mode) {
         throw new Error(
-          `Recognized property ${declaration.prop} must belong to :root or .dark.`,
+          `Recognized property ${declaration.property} must belong to :root or .dark.`,
         );
       }
       if (seen[mode].has(name)) {
-        throw new Error(`${declaration.prop} is duplicated in ${mode}.`);
+        throw new Error(`${declaration.property} is duplicated in ${mode}.`);
       }
       seen[mode].add(name);
       const value = declarationValue(declaration);
@@ -283,29 +274,128 @@ if (schemaElement) {
       result.radius = value;
     }
 
-    function rejectNestedRecognized(node) {
-      if (node.type === "decl") {
-        acceptDeclaration(node, "", true);
-        return;
-      }
-      if (node.nodes) {
-        for (const child of node.nodes) rejectNestedRecognized(child);
+    function parseDeclaration(text) {
+      try {
+        return parseCSSDeclaration(text, {
+          context: "declaration",
+          parseValue: false,
+          onParseError(error) {
+            throw error;
+          },
+        });
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "invalid syntax";
+        throw new Error(`CSS import: malformed CSS: ${message}`);
       }
     }
 
-    for (const node of stylesheet.nodes) {
-      if (node.type !== "rule") {
-        rejectNestedRecognized(node);
+    // Splits text into statements per the CSS syntax spec: a statement ends
+    // at a top-level semicolon (block: null) or at the close of a top-level
+    // {} block. validateCSSStructure has already guaranteed balanced blocks
+    // and strings, so the depth counters cannot go negative or stay open.
+    function splitStatements(text) {
+      const statements = [];
+      let group = 0;
+      let curly = 0;
+      let start = -1;
+      let preludeEnd = -1;
+      let blockStart = -1;
+      tokenize(text, (type, tokenStart, tokenEnd) => {
+        if (start === -1) {
+          if (
+            type === tokenTypes.WhiteSpace ||
+            type === tokenTypes.Comment ||
+            type === tokenTypes.CDO ||
+            type === tokenTypes.CDC
+          ) return;
+          start = tokenStart;
+        }
+        switch (type) {
+          case tokenTypes.Function:
+          case tokenTypes.LeftParenthesis:
+          case tokenTypes.LeftSquareBracket:
+            group++;
+            break;
+          case tokenTypes.RightParenthesis:
+          case tokenTypes.RightSquareBracket:
+            group--;
+            break;
+          case tokenTypes.LeftCurlyBracket:
+            if (curly === 0 && group === 0) {
+              preludeEnd = tokenStart;
+              blockStart = tokenEnd;
+            }
+            curly++;
+            break;
+          case tokenTypes.RightCurlyBracket:
+            curly--;
+            if (curly === 0 && group === 0) {
+              statements.push({
+                prelude: text.slice(start, preludeEnd),
+                block: text.slice(blockStart, tokenStart),
+              });
+              start = -1;
+            }
+            break;
+          case tokenTypes.Semicolon:
+            if (curly === 0 && group === 0) {
+              statements.push({ prelude: text.slice(start, tokenStart), block: null });
+              start = -1;
+            }
+            break;
+        }
+      });
+      if (start !== -1) statements.push({ prelude: text.slice(start), block: null });
+      return statements;
+    }
+
+    // A block statement whose prelude is `--name :` is a custom property
+    // declaration with a {} block in its value, not a nested rule.
+    function isCustomPropertyPrelude(prelude) {
+      const significant = [];
+      tokenize(prelude, (type, start, end) => {
+        if (type === tokenTypes.WhiteSpace || type === tokenTypes.Comment) return;
+        if (significant.length < 2) significant.push({ type, value: prelude.slice(start, end) });
+      });
+      return (
+        significant.length === 2 &&
+        significant[0].type === tokenTypes.Ident &&
+        significant[0].value.startsWith("--") &&
+        significant[1].type === tokenTypes.Colon
+      );
+    }
+
+    function walkBlock(text, mode, nested) {
+      for (const statement of splitStatements(text)) {
+        const prelude = statement.prelude.trim();
+        if (statement.block === null) {
+          if (prelude === "" || prelude.startsWith("@")) continue;
+          acceptDeclaration(parseDeclaration(statement.prelude), mode, nested);
+          continue;
+        }
+        if (!prelude.startsWith("@") && isCustomPropertyPrelude(statement.prelude)) {
+          acceptDeclaration(
+            parseDeclaration(`${statement.prelude}{${statement.block}}`),
+            mode,
+            nested,
+          );
+          continue;
+        }
+        walkBlock(statement.block, "", true);
+      }
+    }
+
+    for (const statement of splitStatements(source)) {
+      const prelude = statement.prelude.trim();
+      if (statement.block === null) {
+        if (prelude === "" || prelude.startsWith("@")) continue;
+        throw new Error("CSS import: malformed CSS: declaration outside a rule");
+      }
+      if (prelude.startsWith("@")) {
+        walkBlock(statement.block, "", true);
         continue;
       }
-      const mode = themeMode(node);
-      for (const child of node.nodes) {
-        if (child.type === "decl") {
-          acceptDeclaration(child, mode, false);
-        } else {
-          rejectNestedRecognized(child);
-        }
-      }
+      walkBlock(statement.block, themeMode(statement.prelude), false);
     }
 
     const sheet = new CSSStyleSheet();
