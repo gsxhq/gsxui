@@ -456,21 +456,3 @@ input[type="range"] {
   }
 }
 
-/* Morph guard for the Select listbox. A closed popover is display:none via
-   the UA's [popover]:not(:popover-open) rule — a rule keyed on the popover
-   ATTRIBUTE. Attribute-morphing DOM swaps (idiomorph-style engines reusing
-   a node and rewriting its attributes one by one) leave a window where the
-   attribute is momentarily absent: the UA rule stops applying, the recipe's
-   own display utility wins, and the recipe's discrete display transition
-   then plays a ~150ms fade of the closed listbox — a visible flash on every
-   morphed navigation. Keying the closed-state guard on the slot attribute
-   instead closes the window: the computed display never changes during the
-   attribute blip, so no transition can fire. Open/close behavior is
-   untouched — the selector unmatches exactly when :popover-open does, the
-   same condition the UA rule keys on. Unwrapped, (0,2,0), clearing the
-   utilities layer gate's floor and the recipe display utility both. */
-@layer utilities {
-  [data-gsxui-slot-select-content]:not(:popover-open) {
-    display: none;
-  }
-}
