@@ -53,7 +53,7 @@ func SignInCard() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "for", Value: "home-showcase-email"}}))
 //line signin.gsx:22:7
-				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "home-showcase-email"}}, _gsxrt.Attrs{{Key: "type", Value: "email"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "m@example.com"}}, _gsxrt.Attrs{{Key: "required", Value: _gsxrt.Toggle(true)}})))
+				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "home-showcase-email"}}, _gsxrt.Attrs{{Key: "type", Value: "email"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "m@example.com"}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "email"}}, _gsxrt.Attrs{{Key: "required", Value: _gsxrt.Toggle(true)}})))
 				_gsxgw.S("</div>")
 //line signin.gsx:24:6
 				_gsxgw.S("<div class=\"grid gap-2\">")
@@ -68,7 +68,7 @@ func SignInCard() _gsxrt.Node {
 //line signin.gsx:27:8
 				_gsxgw.S("<a href=\"#\" class=\"ms-auto inline-block text-sm underline-offset-4 hover:underline\">Forgot password?</a></div>")
 //line signin.gsx:29:7
-				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "home-showcase-password"}}, _gsxrt.Attrs{{Key: "type", Value: "password"}}, _gsxrt.Attrs{{Key: "required", Value: _gsxrt.Toggle(true)}})))
+				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "home-showcase-password"}}, _gsxrt.Attrs{{Key: "type", Value: "password"}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "current-password"}}, _gsxrt.Attrs{{Key: "required", Value: _gsxrt.Toggle(true)}})))
 				_gsxgw.S("</div>")
 //line signin.gsx:31:6
 				_gsxgw.S("<div class=\"flex items-center gap-2\">")

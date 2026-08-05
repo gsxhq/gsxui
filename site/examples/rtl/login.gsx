@@ -20,11 +20,11 @@ component Login() {
 				<form class="flex flex-col gap-4">
 					<div class="flex flex-col gap-2">
 						<ui.Label for="rtl-login-email">البريد الإلكتروني</ui.Label>
-						<ui.Input id="rtl-login-email" type="email" name="email" placeholder="you@example.com" required/>
+						<ui.Input id="rtl-login-email" type="email" name="email" placeholder="you@example.com" autocomplete="email" required/>
 					</div>
 					<div class="flex flex-col gap-2">
 						<ui.Label for="rtl-login-password">كلمة المرور</ui.Label>
-						<ui.Input id="rtl-login-password" type="password" name="password" required/>
+						<ui.Input id="rtl-login-password" type="password" name="password" autocomplete="current-password" required/>
 					</div>
 					<ui.Button type="submit" class="w-full">دخول</ui.Button>
 				</form>

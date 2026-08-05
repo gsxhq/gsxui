@@ -20,14 +20,14 @@ component Rtl() {
 					<div class="flex flex-col gap-6">
 						<div class="grid gap-2">
 							<ui.Label for="card-rtl-email">البريد الإلكتروني</ui.Label>
-							<ui.Input id="card-rtl-email" type="email" placeholder="m@example.com" required/>
+							<ui.Input id="card-rtl-email" type="email" placeholder="m@example.com" autocomplete="email" required/>
 						</div>
 						<div class="grid gap-2">
 							<div class="flex items-center">
 								<ui.Label for="card-rtl-password">كلمة المرور</ui.Label>
 								<a href="#" class="ms-auto inline-block text-sm underline-offset-4 hover:underline">نسيت كلمة المرور؟</a>
 							</div>
-							<ui.Input id="card-rtl-password" type="password" required/>
+							<ui.Input id="card-rtl-password" type="password" autocomplete="current-password" required/>
 						</div>
 					</div>
 				</form>

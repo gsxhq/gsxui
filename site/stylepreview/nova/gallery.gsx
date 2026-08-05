@@ -114,12 +114,12 @@ component galleryLoginCard(idp string) {
 			<FieldGroup>
 				<Field>
 					<FieldLabel for={idp + "-login-email"}>Email</FieldLabel>
-					<Input id={idp + "-login-email"} type="email" placeholder="m@example.com"/>
+					<Input id={idp + "-login-email"} type="email" placeholder="m@example.com" autocomplete="email"/>
 					<FieldDescription>We never share your email with anyone.</FieldDescription>
 				</Field>
 				<Field>
 					<FieldLabel for={idp + "-login-password"}>Password</FieldLabel>
-					<Input id={idp + "-login-password"} type="password" value=""/>
+					<Input id={idp + "-login-password"} type="password" value="" autocomplete="current-password"/>
 				</Field>
 				<FieldSeparator>or</FieldSeparator>
 				<div class="flex items-center gap-2">

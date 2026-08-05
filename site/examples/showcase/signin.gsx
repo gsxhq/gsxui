@@ -19,14 +19,14 @@ component SignInCard() {
 				<div class="flex flex-col gap-6">
 					<div class="grid gap-2">
 						<ui.Label for="home-showcase-email">Email</ui.Label>
-						<ui.Input id="home-showcase-email" type="email" placeholder="m@example.com" required/>
+						<ui.Input id="home-showcase-email" type="email" placeholder="m@example.com" autocomplete="email" required/>
 					</div>
 					<div class="grid gap-2">
 						<div class="flex items-center">
 							<ui.Label for="home-showcase-password">Password</ui.Label>
 							<a href="#" class="ms-auto inline-block text-sm underline-offset-4 hover:underline">Forgot password?</a>
 						</div>
-						<ui.Input id="home-showcase-password" type="password" required/>
+						<ui.Input id="home-showcase-password" type="password" autocomplete="current-password" required/>
 					</div>
 					<div class="flex items-center gap-2">
 						<ui.Checkbox id="home-showcase-remember"/>

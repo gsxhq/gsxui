@@ -55,7 +55,7 @@ func Login() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "for", Value: "rtl-login-email"}}))
 //line login.gsx:23:7
-				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "rtl-login-email"}}, _gsxrt.Attrs{{Key: "type", Value: "email"}}, _gsxrt.Attrs{{Key: "name", Value: "email"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "you@example.com"}}, _gsxrt.Attrs{{Key: "required", Value: _gsxrt.Toggle(true)}})))
+				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "rtl-login-email"}}, _gsxrt.Attrs{{Key: "type", Value: "email"}}, _gsxrt.Attrs{{Key: "name", Value: "email"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "you@example.com"}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "email"}}, _gsxrt.Attrs{{Key: "required", Value: _gsxrt.Toggle(true)}})))
 				_gsxgw.S("</div>")
 //line login.gsx:25:6
 				_gsxgw.S("<div class=\"flex flex-col gap-2\">")
@@ -66,7 +66,7 @@ func Login() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "for", Value: "rtl-login-password"}}))
 //line login.gsx:27:7
-				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "rtl-login-password"}}, _gsxrt.Attrs{{Key: "type", Value: "password"}}, _gsxrt.Attrs{{Key: "name", Value: "password"}}, _gsxrt.Attrs{{Key: "required", Value: _gsxrt.Toggle(true)}})))
+				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "rtl-login-password"}}, _gsxrt.Attrs{{Key: "type", Value: "password"}}, _gsxrt.Attrs{{Key: "name", Value: "password"}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "current-password"}}, _gsxrt.Attrs{{Key: "required", Value: _gsxrt.Toggle(true)}})))
 				_gsxgw.S("</div>")
 //line login.gsx:29:6
 				_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
