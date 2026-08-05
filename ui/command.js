@@ -6,7 +6,7 @@
 // on the item; an item carrying data-href then navigates. ⌘K/Ctrl-K toggles
 // the first dialog marked data-gsxui-command-dialog (see command.gsx),
 // riding dialog.js's machinery for open state and animated close.
-import { on, emit, init } from "./gsxui.js";
+import { on, emit, init, uid } from "./gsxui.js";
 
 // ---------------------------------------------------------------------------
 // commandScore — verbatim port of command-score 0.1.2 (MIT, (c) Superhuman
@@ -92,8 +92,6 @@ const valueOf = (item) => item.dataset.value || item.textContent.trim();
 const disabled = (item) =>
   item.getAttribute("aria-disabled") === "true" || "disabled" in item.dataset;
 
-let uid = 0;
-
 // Initial selection is state synchronisation, not navigation: only
 // user-driven changes opt into scrolling the selected item into view.
 function select(root, item, { scroll = false } = {}) {
@@ -109,7 +107,7 @@ function select(root, item, { scroll = false } = {}) {
   }
   item.dataset.selected = "true";
   item.setAttribute("aria-selected", "true");
-  if (!item.id) item.id = `gsxui-command-item-${++uid}`;
+  if (!item.id) item.id = uid("gsxui-command-item");
   input?.setAttribute("aria-activedescendant", item.id);
   if (scroll) item.scrollIntoView({ block: "nearest" });
 }
@@ -221,14 +219,6 @@ on("pointerover", "[data-gsxui-slot-command-item]", (_e, item) => {
   if (root) select(root, item);
 });
 
-// Initial state: rank/selection for palettes rendered without a query
-// (server renders every item visible; this stamps the first selection).
-// Self-healing via init(): current matches, later-added matches, and any
-// match morphed back to server state all get filter() re-run. filter() is
-// pure reflection off the input's current value and each item's own DOM
-// state (score/hide/reorder), so re-running it is safe/idempotent.
-init("[data-gsxui-slot-command]", (root) => filter(root));
-
 // ⌘K / Ctrl-K requests a transition on the first command dialog. dialog.js
 // owns the default action, including state stamping and animated close.
 addEventListener("keydown", (e) => {
@@ -256,3 +246,20 @@ on(
   },
   { capture: true },
 );
+
+// --- init ---
+
+// initRoot exists to carry the shared init-registration convention; filter
+// stays the domain name for the rank/hide/reorder pass it runs.
+//
+// Initial state: rank/selection for palettes rendered without a query
+// (server renders every item visible; this stamps the first selection).
+// Self-healing via init(): current matches, later-added matches, and any
+// match morphed back to server state all get initRoot() re-run. filter() is
+// pure reflection off the input's current value and each item's own DOM
+// state (score/hide/reorder), so re-running it is safe/idempotent.
+function initRoot(root) {
+  filter(root);
+}
+
+init("[data-gsxui-slot-command]", initRoot);

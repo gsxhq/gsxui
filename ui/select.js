@@ -19,7 +19,7 @@
 //   - a hidden native <select> FORM BRIDGE, populated from the DOM items at
 //     init and kept in sync (value assignment + a bubbling change event).
 // See docs/jsx-parity.md ## select and ui/select.gsx's header.
-import { on, emit, position, init } from "./gsxui.js";
+import { on, emit, position, init, uid, wireGroupLabels } from "./gsxui.js";
 
 const rootOf = (el) => el.closest("[data-gsxui-slot-select]");
 const contentOf = (el) =>
@@ -49,8 +49,6 @@ const focusedItem = (content) => {
 };
 
 const OPEN_KEYS = [" ", "Enter", "ArrowUp", "ArrowDown"];
-
-let uid = 0;
 
 // --- value model -----------------------------------------------------------
 
@@ -177,16 +175,12 @@ function initRoot(root) {
   const content = root.querySelector("[data-gsxui-slot-select-content]");
   const trigger = root.querySelector("[data-gsxui-slot-select-trigger]");
   if (content) {
-    // Wire each group's aria-labelledby to its own label's generated id.
-    for (const group of content.querySelectorAll(
+    wireGroupLabels(
+      content,
       "[data-gsxui-slot-select-group]",
-    )) {
-      if (group.getAttribute("aria-labelledby")) continue;
-      const label = group.querySelector("[data-gsxui-slot-select-label]");
-      if (!label) continue;
-      if (!label.id) label.id = `gsxui-select-label-${++uid}`;
-      group.setAttribute("aria-labelledby", label.id);
-    }
+      "[data-gsxui-slot-select-label]",
+      "gsxui-select-label",
+    );
   }
   const bridge = bridgeOf(root);
   if (bridge && content) {
@@ -208,8 +202,6 @@ function initRoot(root) {
   );
   if (checked) applyValue(root, checked, { silent: true });
 }
-
-init("[data-gsxui-slot-select]", initRoot);
 
 // --- open / close (ported dropdown.js machinery) --------------------------
 
@@ -256,7 +248,7 @@ on(
     if (trigger) trigger.dataset.state = open ? "open" : "closed";
     trigger?.setAttribute("aria-expanded", open ? "true" : "false");
     if (open) {
-      if (!content.id) content.id = `gsxui-select-content-${++uid}`;
+      if (!content.id) content.id = uid("gsxui-select-content");
       trigger?.setAttribute("aria-controls", content.id);
       // Position AFTER showing (hidden popovers have no box): below the
       // trigger, left-aligned, 4px sideOffset. cap sets
@@ -416,3 +408,7 @@ on("pointerout", "[data-gsxui-slot-select-content]", (e, content) => {
     item.setAttribute("aria-selected", "false");
   content.focus();
 });
+
+// --- init ---
+
+init("[data-gsxui-slot-select]", initRoot);

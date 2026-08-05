@@ -33,7 +33,7 @@
 // command.js — a JS-only import would be invisible to
 // internal/registry.Deps' go/parser scan over the generated .x.go, silently
 // breaking CLI vendoring (see the .gsx file's own GAP entry).
-import { on, emit, position, init } from "./gsxui.js";
+import { on, emit, position, init, uid, wireGroupLabels } from "./gsxui.js";
 
 const rootOf = (el) => el.closest("[data-gsxui-slot-combobox]");
 const inputOf = (root) =>
@@ -55,8 +55,6 @@ const highlightedOf = (root) =>
   root?.querySelector(
     '[data-gsxui-slot-combobox-item][data-highlighted="true"]',
   ) ?? null;
-
-let uid = 0;
 
 // --- filter: Intl.Collator-backed boolean `contains` (Base UI's useFilter
 // default) — the exact algorithm traced from Base UI's docs/issue tracker,
@@ -96,7 +94,7 @@ function highlight(root, item) {
     return;
   }
   item.dataset.highlighted = "true";
-  if (!item.id) item.id = `gsxui-combobox-item-${++uid}`;
+  if (!item.id) item.id = uid("gsxui-combobox-item");
   input?.setAttribute("aria-activedescendant", item.id);
   item.scrollIntoView({ block: "nearest" });
 }
@@ -249,57 +247,6 @@ on("reset", "form:has([data-gsxui-slot-combobox])", (_e, form) => {
     }
   }, 0);
 });
-
-// --- init: group aria-labelledby wiring, reflect a server-checked item,
-// wire the permanent aria-controls (APG expects it present regardless of
-// open/closed state — see ui/combobox.gsx's ComboboxInput doc comment) ----
-
-function initRoot(root) {
-  for (const group of root.querySelectorAll(
-    "[data-gsxui-slot-combobox-group]",
-  )) {
-    if (group.getAttribute("aria-labelledby")) continue;
-    const label = group.querySelector("[data-gsxui-slot-combobox-label]");
-    if (!label) continue;
-    if (!label.id) label.id = `gsxui-combobox-label-${++uid}`;
-    group.setAttribute("aria-labelledby", label.id);
-  }
-  const input = inputOf(root);
-  const list = listOf(root);
-  if (input && list) {
-    if (!list.id) list.id = `gsxui-combobox-list-${++uid}`;
-    input.setAttribute("aria-controls", list.id);
-  }
-  // FIX (review round 2, IMPORTANT): a caller is now expected to
-  // server-render the checked item's own label as ComboboxInput's `value`
-  // directly (docs/superpowers/specs/2026-07-24-tier4-batch-a-design.md
-  // §4 — state is a server-rendered parameter reflected in the DOM, not
-  // JS-seeded) — this used to be the ONLY place that label ever reached
-  // the input, so it wrote it unconditionally whenever the input was
-  // still empty. It stays as a fallback for a caller who doesn't supply
-  // `value` (input still empty), but either way the gsxuiCommitted flag
-  // must be set once the input's text equals the checked item's label —
-  // server-rendered or JS-seeded, an unflagged first reopen re-triggers
-  // the exact "reopening filtered to the committed label" bug this flag
-  // exists to prevent (see docs/jsx-parity.md `## combobox`'s own FIX
-  // entry): every option except this one would stay hidden.
-  const checked = root.querySelector(
-    '[data-gsxui-slot-combobox-item][data-state="checked"]',
-  );
-  if (checked && input) {
-    const label = labelOf(checked);
-    if (!input.value) input.value = label;
-    if (input.value === label) input.dataset.gsxuiCommitted = "true";
-  }
-}
-
-// Self-healing via init() (ui/gsxui.js): current matches, later-added
-// matches, and any match morphed back to server state all get initRoot()
-// re-run. Pure reflection (aria-labelledby/aria-controls wiring, checked-
-// item reflection into the input) — every write is guarded (`if (!label.id)`,
-// `if (!list.id)`, `if (!input.value)`) or recomputed from the current DOM,
-// so re-running it is safe/idempotent.
-init("[data-gsxui-slot-combobox]", initRoot);
 
 // --- open / close (ported dropdown.js/select.js machinery) ---------------
 
@@ -469,3 +416,51 @@ on("pointerover", "[data-gsxui-slot-combobox-item]", (_e, item) => {
 on("click", "[data-gsxui-slot-combobox-item]", (_e, item) => {
   commit(rootOf(item), item);
 });
+
+// --- init: group aria-labelledby wiring, reflect a server-checked item,
+// wire the permanent aria-controls (APG expects it present regardless of
+// open/closed state — see ui/combobox.gsx's ComboboxInput doc comment) ----
+
+function initRoot(root) {
+  wireGroupLabels(
+    root,
+    "[data-gsxui-slot-combobox-group]",
+    "[data-gsxui-slot-combobox-label]",
+    "gsxui-combobox-label",
+  );
+  const input = inputOf(root);
+  const list = listOf(root);
+  if (input && list) {
+    if (!list.id) list.id = uid("gsxui-combobox-list");
+    input.setAttribute("aria-controls", list.id);
+  }
+  // FIX (review round 2, IMPORTANT): a caller is now expected to
+  // server-render the checked item's own label as ComboboxInput's `value`
+  // directly (docs/superpowers/specs/2026-07-24-tier4-batch-a-design.md
+  // §4 — state is a server-rendered parameter reflected in the DOM, not
+  // JS-seeded) — this used to be the ONLY place that label ever reached
+  // the input, so it wrote it unconditionally whenever the input was
+  // still empty. It stays as a fallback for a caller who doesn't supply
+  // `value` (input still empty), but either way the gsxuiCommitted flag
+  // must be set once the input's text equals the checked item's label —
+  // server-rendered or JS-seeded, an unflagged first reopen re-triggers
+  // the exact "reopening filtered to the committed label" bug this flag
+  // exists to prevent (see docs/jsx-parity.md `## combobox`'s own FIX
+  // entry): every option except this one would stay hidden.
+  const checked = root.querySelector(
+    '[data-gsxui-slot-combobox-item][data-state="checked"]',
+  );
+  if (checked && input) {
+    const label = labelOf(checked);
+    if (!input.value) input.value = label;
+    if (input.value === label) input.dataset.gsxuiCommitted = "true";
+  }
+}
+
+// Self-healing via init() (ui/gsxui.js): current matches, later-added
+// matches, and any match morphed back to server state all get initRoot()
+// re-run. Pure reflection (aria-labelledby/aria-controls wiring, checked-
+// item reflection into the input) — every write is guarded (`if (!label.id)`,
+// `if (!list.id)`, `if (!input.value)`) or recomputed from the current DOM,
+// so re-running it is safe/idempotent.
+init("[data-gsxui-slot-combobox]", initRoot);
