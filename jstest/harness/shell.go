@@ -14,7 +14,6 @@ const browserImportMap = `<script type="importmap">{"imports":{
   "htmx.org":"/static/node_modules/htmx.org/dist/htmx.esm.min.js",
   "css-tree":"/static/node_modules/css-tree/dist/csstree.esm.js",
   "jsonc-parser":"/static/node_modules/jsonc-parser/lib/esm/main.js",
-  "postcss/lib/parse":"/static/jstest/.tmp/postcss-parse.mjs",
   "/static/node_modules/jsonc-parser/lib/esm/impl/edit":"/static/node_modules/jsonc-parser/lib/esm/impl/edit.js",
   "/static/node_modules/jsonc-parser/lib/esm/impl/format":"/static/node_modules/jsonc-parser/lib/esm/impl/format.js",
   "/static/node_modules/jsonc-parser/lib/esm/impl/parser":"/static/node_modules/jsonc-parser/lib/esm/impl/parser.js",
