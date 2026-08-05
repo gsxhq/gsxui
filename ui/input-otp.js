@@ -149,6 +149,8 @@ on("click", "[data-gsxui-slot-input-otp-slot]", (_e, slot) => {
   input.setSelectionRange(index, index);
 });
 
+// --- init --------------------------------------------------------------
+
 // Initial paint: populate every root present at parse time immediately
 // (e.g. a server-rendered initial value) rather than waiting for the first
 // interaction — self-healing via init(): current matches, later-added
@@ -157,7 +159,8 @@ on("click", "[data-gsxui-slot-input-otp-slot]", (_e, slot) => {
 // (`if (!("index" in slot.dataset))`) and recompute() is pure reflection off
 // the real input's live value/selection, so re-running the pair is
 // safe/idempotent.
-init("[data-gsxui-slot-input-otp]", (root) => {
+function initRoot(root) {
   stamp(root);
   recompute(root);
-});
+}
+init("[data-gsxui-slot-input-otp]", initRoot);

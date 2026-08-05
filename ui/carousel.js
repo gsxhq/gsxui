@@ -9,7 +9,7 @@
 // canScrollPrev/canScrollNext/selectedScrollSnap/scrollSnapList/on/off plus
 // its whole plugin-extension mechanism collapse to {scrollTo,next,prev} plus
 // the gsxui:carousel-select CustomEvent).
-import { on, emit, isRTL, init } from "./gsxui.js";
+import { on, emit, isRTL, init, once } from "./gsxui.js";
 
 const rootOf = (el) => el.closest("[data-gsxui-slot-carousel]");
 const viewportOf = (root) => root.querySelector("[data-gsxui-slot-carousel-content]");
@@ -149,29 +149,26 @@ function recompute(root) {
 // trigger on drag/click, not hover). No loop mode (see the package doc
 // comment's GAP) — autoplay simply stops advancing once it reaches the
 // last slide rather than wrapping back to the first.
-const autoplayBound = new WeakSet(); // roots whose autoplay listeners/timer are already bound
-
-function initAutoplay(root) {
+// GUARD (required — audited): this function binds four per-call
+// pointerenter/focusin/pointerleave/focusout listeners on `root` plus a
+// `timer` variable captured in THIS call's own closure. Under init()'s
+// self-healing re-init (a re-init pass over an already-inited carousel,
+// e.g. this root's subtree morphed back to server state), a second,
+// unguarded call would add a SECOND set of listeners with their own
+// independent `timer` closure — start() in the second call sees its own
+// `timer` as null even while the first call's interval is still running,
+// so a single pointerleave/focusout would start TWO intervals advancing
+// the same carousel concurrently (and stopping one on hover wouldn't stop
+// the other). Confirmed by reading the function body: it is genuinely
+// stateful (setInterval handle + 4 addEventListener calls), not pure
+// reflection, so it needs the same one-time-bind guard toggle-group.js's
+// own per-item state and command.js's data-gsxui-index stamp use elsewhere
+// in this codebase — once() (ui/gsxui.js) is exactly that guard, keyed on
+// the root, since "has autoplay ever been bound for this root" is exactly
+// the once-only fact being guarded.
+const initAutoplay = once(function bindAutoplay(root) {
   const ms = Number(root.dataset.gsxuiCarouselAutoplay);
   if (!ms) return;
-  // GUARD (required — audited): this function binds four per-call
-  // pointerenter/focusin/pointerleave/focusout listeners on `root` plus a
-  // `timer` variable captured in THIS call's own closure. Under init()'s
-  // self-healing re-init (a re-init pass over an already-inited carousel,
-  // e.g. this root's subtree morphed back to server state), a second,
-  // unguarded call would add a SECOND set of listeners with their own
-  // independent `timer` closure — start() in the second call sees its own
-  // `timer` as null even while the first call's interval is still running,
-  // so a single pointerleave/focusout would start TWO intervals advancing
-  // the same carousel concurrently (and stopping one on hover wouldn't stop
-  // the other). Confirmed by reading the function body: it is genuinely
-  // stateful (setInterval handle + 4 addEventListener calls), not pure
-  // reflection, so it needs the same one-time-bind guard toggle-group.js's
-  // own per-item state and command.js's data-gsxui-index stamp use elsewhere
-  // in this codebase — WeakSet keyed on the root, since "has autoplay ever
-  // been bound for this root" is exactly the once-only fact being guarded.
-  if (autoplayBound.has(root)) return;
-  autoplayBound.add(root);
   let timer = null;
   const stop = () => {
     if (timer) clearInterval(timer);
@@ -196,7 +193,7 @@ function initAutoplay(root) {
   root.addEventListener("pointerleave", start);
   root.addEventListener("focusout", start);
   start();
-}
+});
 
 on("click", "[data-gsxui-slot-carousel-previous]", (_e, btn) => {
   const root = rootOf(btn);
@@ -253,9 +250,11 @@ const resizeObserver = new ResizeObserver((entries) => {
   }
 });
 
+// --- init --------------------------------------------------------------
+
 // Self-healing via init() (ui/gsxui.js): current matches, later-added
 // matches (e.g. a DOM swap), and any match morphed back to server state
-// all get initCarousel() re-run. Audited per-step, since this is the one
+// all get initRoot() re-run. Audited per-step, since this is the one
 // STATEFUL initializer in this batch (see the task-3 report for the full
 // writeup):
 //   - root.gsxuiCarousel reassign: a fresh object with the same shape every
@@ -263,14 +262,14 @@ const resizeObserver = new ResizeObserver((entries) => {
 //   - recompute(root): reflection off the viewport's own scroll geometry —
 //     safe to re-run.
 //   - initAutoplay(root): binds per-call resources (a setInterval handle
-//     plus 4 event listeners) — internally guarded above via the
-//     autoplayBound WeakSet so a re-init is a no-op past the first bind.
+//     plus 4 event listeners) — internally guarded above via once() so a
+//     re-init is a no-op past the first bind.
 //   - resizeObserver.observe(viewport): per MDN, calling observe() again
 //     with a target already in the observer's own [[ObservationTargets]]
 //     is a no-op (the spec: "If target is in this.[[ObservationTargets]],
 //     then return") — no duplicate ResizeObserverEntry per resize, so this
 //     needs no guard of its own.
-function initCarousel(root) {
+function initRoot(root) {
   root.gsxuiCarousel = {
     scrollTo: (index) => scrollToIndex(root, index),
     next: () => scrollByItems(root, 1),
@@ -281,4 +280,4 @@ function initCarousel(root) {
   const viewport = viewportOf(root);
   if (viewport) resizeObserver.observe(viewport);
 }
-init("[data-gsxui-slot-carousel]", initCarousel);
+init("[data-gsxui-slot-carousel]", initRoot);

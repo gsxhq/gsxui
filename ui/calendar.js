@@ -1059,6 +1059,8 @@ function reconcileToday(root, year, month) {
   }
 }
 
+// --- init --------------------------------------------------------------
+
 // Self-healing via init() (ui/gsxui.js): current matches, later-added
 // matches, and any match morphed back to server state all get this
 // initializer re-run. captureDefaults() is a WeakMap-guarded once-per-root
@@ -1068,8 +1070,9 @@ function reconcileToday(root, year, month) {
 // contract, which the day-click handler above already relied on for a
 // late-added root). reconcileToday() is pure reflection (only data-today,
 // recomputed from the client's own clock) — safe to re-run every time.
-init(ROOT, (root) => {
+function initRoot(root) {
   captureDefaults(root);
   const { year, month } = currentMonth(root);
   reconcileToday(root, year, month);
-});
+}
+init(ROOT, initRoot);

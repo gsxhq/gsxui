@@ -79,6 +79,24 @@ export function wireGroupLabels(root, groupSelector, labelSelector, idPrefix) {
   }
 }
 
+// once/hasLiveTabStop are the real implementations, copied verbatim from
+// ui/gsxui.js — pure logic, nothing to distort by recording. Keep in
+// lockstep with ui/gsxui.js (see the "exact export surface" note above): a
+// module importing a name the shim lacks fails to evaluate, and with it
+// every registration this file exists to record.
+export function once(fn) {
+  const ran = new WeakSet();
+  return (el) => {
+    if (ran.has(el)) return;
+    ran.add(el);
+    fn(el);
+  };
+}
+
+export function hasLiveTabStop(els) {
+  return [...els].some((el) => el.getAttribute("tabindex") === "0");
+}
+
 // callerModule walks the V8 stack to the first frame outside this file. Frame
 // 0 is "Error", frame 1 is on() itself, frame 2 is the module that called it.
 // Returns the bare filename ("dropdown.js") so failure output is readable.

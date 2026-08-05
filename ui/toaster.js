@@ -612,7 +612,10 @@ on("click", "[data-gsxui-toast]", (_event, el) => {
 // adopts direct rows, rows inside inserted wrappers/fragments, and descendants
 // added to an existing wrapper later. Explicit record ownership makes both
 // paths idempotent.
-function init() {
+// bootstrap, not the core init(): toast cards are cloned from <template>s,
+// not server DOM matching a stable selector, so the selector-based
+// self-healing model does not fit.
+function bootstrap() {
   documentObserver?.observe(document.documentElement, {
     childList: true,
     subtree: true,
@@ -622,9 +625,9 @@ function init() {
 
 if (typeof document !== "undefined") {
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
+    document.addEventListener("DOMContentLoaded", bootstrap);
   } else {
-    init();
+    bootstrap();
   }
 }
 

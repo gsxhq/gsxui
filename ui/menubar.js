@@ -40,7 +40,7 @@
 // pointerover/ArrowRight/click, unlike hover-card's own delayed open.
 //
 // toggle doesn't bubble — capture.
-import { on, emit, position, isRTL, init } from "./gsxui.js";
+import { on, emit, position, isRTL, init, hasLiveTabStop } from "./gsxui.js";
 
 // contentOf resolves a trigger (or anything inside its own MenubarMenu) to
 // THAT menu's own content — scoped by data-gsxui-slot-menubar-menu, the
@@ -87,9 +87,9 @@ const triggersOf = (bar) =>
   );
 
 // Enabled-only view, same "who can become the tab stop / arrow-key
-// destination" filter toggle-group.js's own normalize()/keydown handler
+// destination" filter toggle-group.js's own initRoot()/keydown handler
 // apply via `items.filter(i => !i.disabled)`. Without this, a bar whose
-// FIRST trigger is disabled would hand it tabIndex=0 in normalize() below —
+// FIRST trigger is disabled would hand it tabIndex=0 in initRoot() below —
 // an unfocusable disabled button, leaving the whole bar with no reachable
 // tab stop at all — and the arrow walk could land focus on a disabled
 // trigger mid-bar.
@@ -104,33 +104,6 @@ const enabledTriggersOf = (bar) => triggersOf(bar).filter((t) => !t.disabled);
 function setActiveTrigger(bar, trigger) {
   for (const t of triggersOf(bar)) t.tabIndex = t === trigger ? 0 : -1;
 }
-
-// Entry-tabstop assignment for bars rendered without JS having run yet
-// (server renders every trigger as a plain tab stop) — one-time init scan,
-// same shape as toggle-group.js's own normalize(). Enabled-only: the first
-// trigger might be disabled.
-// Self-healing via init(): current matches, later-added matches, and any
-// match morphed back to server state all get normalize() re-run. It always
-// resets the roving tab stop to the first enabled trigger — correct on a
-// morph (server reset), same as toggle-group.js's own normalize().
-function normalize(bar) {
-  const triggers = enabledTriggersOf(bar);
-  // Bail when a live tab stop already exists (an explicit tabindex="0" set
-  // by setActiveTrigger during arrow-key/click interaction) — otherwise the
-  // shared MutationObserver's init() re-fires normalize() on every
-  // tabindex-attribute write those make (roving tabindex IS a mutation
-  // under this bar), stomping the just-moved tab stop back to triggers[0]
-  // one microtask later. Checked via the ATTRIBUTE (not the .tabIndex IDL
-  // property, which defaults to 0 for a plain <button> even with no
-  // tabindex attribute at all — using the property here would make this
-  // bail true on the very first, un-normalized render and never collapse
-  // the bar to one tab stop). A real morph resets the trigger back to
-  // server-rendered markup (no tabindex attribute), so morph-reset still
-  // clears this guard and re-normalizes, as intended.
-  if (triggers.some((t) => t.getAttribute("tabindex") === "0")) return;
-  if (triggers.length) setActiveTrigger(bar, triggers[0]);
-}
-init("[data-gsxui-slot-menubar]", normalize);
 
 // isAnyOpen gates (b) open-follows-hover: a menubar requires an explicit
 // open of the FIRST menu (click/Enter/Space/ArrowDown) — only once one
@@ -618,3 +591,23 @@ on("click", "[data-gsxui-slot-menubar-sub-trigger]", (_e, trigger) => {
   }
   openSubAndFocusFirst(trigger);
 });
+
+// --- init --------------------------------------------------------------
+
+// Entry-tabstop assignment for bars rendered without JS having run yet
+// (server renders every trigger as a plain tab stop) — one-time init scan,
+// same shape as toggle-group.js's own initRoot(). Enabled-only: the first
+// trigger might be disabled.
+// Self-healing via init(): current matches, later-added matches, and any
+// match morphed back to server state all get initRoot() re-run. It always
+// resets the roving tab stop to the first enabled trigger — correct on a
+// morph (server reset), same as toggle-group.js's own initRoot().
+function initRoot(bar) {
+  const triggers = enabledTriggersOf(bar);
+  // Bail when a live tab stop already exists — see hasLiveTabStop's own
+  // comment (ui/gsxui.js) for why this is a semantic re-arming check, not a
+  // once() guard.
+  if (hasLiveTabStop(triggers)) return;
+  if (triggers.length) setActiveTrigger(bar, triggers[0]);
+}
+init("[data-gsxui-slot-menubar]", initRoot);
