@@ -178,6 +178,12 @@ const bindAutoplay = once(function bindAutoplayOnce(root) {
   const start = () => {
     if (timer) return;
     timer = setInterval(() => {
+      // A swapped-out carousel (long-lived page, DOM morphs) must not keep
+      // its interval — and with it the detached subtree — alive. The
+      // at-end arithmetic below happens to catch this too (detached
+      // elements report zero scroll metrics), but that is incidental;
+      // this check is the deliberate lifecycle release.
+      if (!root.isConnected) return stop();
       const viewport = viewportOf(root);
       if (!viewport) return stop();
       const vertical = isVertical(root);
