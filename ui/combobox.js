@@ -450,7 +450,15 @@ function initRoot(root) {
   const checked = root.querySelector(
     '[data-gsxui-slot-combobox-item][data-state="checked"]',
   );
-  if (checked && input) {
+  // Live-interaction guard (the WARNING in ui/gsxui.js, applied to text):
+  // re-init fires on every filter() show/hide mutation while the user
+  // edits, and a FOCUSED input's text — including deliberately cleared
+  // text — is live interaction state, not server state to heal. Without
+  // this bail, clearing the text after a selection refilled the committed
+  // label one microtask later, so the text could never be cleared. Blurred
+  // inputs still reflect: that is the genuine init/heal case (fresh
+  // render, morphed-in root), where focus cannot be in the input.
+  if (checked && input && document.activeElement !== input) {
     const label = labelOf(checked);
     if (!input.value) input.value = label;
     if (input.value === label) input.dataset.gsxuiCommitted = "true";
