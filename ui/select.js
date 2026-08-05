@@ -171,38 +171,6 @@ function populateBridge(content, bridge) {
   }
 }
 
-function initRoot(root) {
-  const content = root.querySelector("[data-gsxui-slot-select-content]");
-  const trigger = root.querySelector("[data-gsxui-slot-select-trigger]");
-  if (content) {
-    wireGroupLabels(
-      content,
-      "[data-gsxui-slot-select-group]",
-      "[data-gsxui-slot-select-label]",
-      "gsxui-select-label",
-    );
-  }
-  const bridge = bridgeOf(root);
-  if (bridge && content) {
-    populateBridge(content, bridge);
-    // aria-required lives on the combobox trigger; the bridge carries the real
-    // required attribute (there is no context to pass it directly to the trigger).
-    if (trigger && bridge.required)
-      trigger.setAttribute("aria-required", "true");
-  }
-  // Declarative invoker (templui's model): the browser owns click-to-toggle,
-  // and the popover light-dismiss algorithm already knows a pointerdown on
-  // an open popover's own invoker must not dismiss-then-reopen — which is
-  // exactly the race the wasOpen pointerdown/click guard this module used
-  // to carry was reimplementing by hand.
-  if (trigger && content) trigger.popoverTargetElement = content;
-  // Reflect a server-rendered checked item into the trigger text + bridge value.
-  const checked = content?.querySelector(
-    '[data-gsxui-slot-select-item][data-state="checked"]',
-  );
-  if (checked) applyValue(root, checked, { silent: true });
-}
-
 // --- open / close (ported dropdown.js machinery) --------------------------
 
 function openContent(_trigger, content) {
@@ -410,5 +378,37 @@ on("pointerout", "[data-gsxui-slot-select-content]", (e, content) => {
 });
 
 // --- init ---
+
+function initRoot(root) {
+  const content = root.querySelector("[data-gsxui-slot-select-content]");
+  const trigger = root.querySelector("[data-gsxui-slot-select-trigger]");
+  if (content) {
+    wireGroupLabels(
+      content,
+      "[data-gsxui-slot-select-group]",
+      "[data-gsxui-slot-select-label]",
+      "gsxui-select-label",
+    );
+  }
+  const bridge = bridgeOf(root);
+  if (bridge && content) {
+    populateBridge(content, bridge);
+    // aria-required lives on the combobox trigger; the bridge carries the real
+    // required attribute (there is no context to pass it directly to the trigger).
+    if (trigger && bridge.required)
+      trigger.setAttribute("aria-required", "true");
+  }
+  // Declarative invoker (templui's model): the browser owns click-to-toggle,
+  // and the popover light-dismiss algorithm already knows a pointerdown on
+  // an open popover's own invoker must not dismiss-then-reopen — which is
+  // exactly the race the wasOpen pointerdown/click guard this module used
+  // to carry was reimplementing by hand.
+  if (trigger && content) trigger.popoverTargetElement = content;
+  // Reflect a server-rendered checked item into the trigger text + bridge value.
+  const checked = content?.querySelector(
+    '[data-gsxui-slot-select-item][data-state="checked"]',
+  );
+  if (checked) applyValue(root, checked, { silent: true });
+}
 
 init("[data-gsxui-slot-select]", initRoot);
