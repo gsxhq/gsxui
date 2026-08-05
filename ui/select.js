@@ -1,8 +1,10 @@
-// Custom-listbox Select behavior. Built on the SAME native-popover machinery
+// Custom-listbox Select behavior. Built on the same native-popover machinery
 // as dropdown.js (popover="auto" top layer, light dismiss + free Esc, the
-// closest()-proximity trigger/content wiring, the sync-data-state-before-
-// showPopover flash fix, the wasOpen pointerdown/click guard, and the
-// hover-is-focus / arrow-key .focus() roving-focus idioms). What this module
+// closest()-proximity trigger/content wiring, and the hover-is-focus /
+// arrow-key .focus() roving-focus idioms) — but click-to-toggle here is
+// DECLARATIVE: initRoot wires trigger.popoverTargetElement, so the browser
+// owns invoker toggling and its light-dismiss interaction, and the
+// beforetoggle handler stamps data-state before the first paint. What this module
 // adds on top of dropdown's machinery — all genuinely new, none ported:
 //   - a VALUE MODEL (one checked item per root; trigger text follows the
 //     selected item; data-placeholder cleared on first selection),
@@ -194,6 +196,12 @@ function initRoot(root) {
     if (trigger && bridge.required)
       trigger.setAttribute("aria-required", "true");
   }
+  // Declarative invoker (templui's model): the browser owns click-to-toggle,
+  // and the popover light-dismiss algorithm already knows a pointerdown on
+  // an open popover's own invoker must not dismiss-then-reopen — which is
+  // exactly the race the wasOpen pointerdown/click guard this module used
+  // to carry was reimplementing by hand.
+  if (trigger && content) trigger.popoverTargetElement = content;
   // Reflect a server-rendered checked item into the trigger text + bridge value.
   const checked = content?.querySelector(
     '[data-gsxui-slot-select-item][data-state="checked"]',
@@ -205,50 +213,38 @@ init("[data-gsxui-slot-select]", initRoot);
 
 // --- open / close (ported dropdown.js machinery) --------------------------
 
-function openContent(trigger, content) {
-  // Popper-equivalent width: never narrower than the trigger (Radix's
-  // --radix-select-trigger-width). min-w-36 from the class still floors it.
-  content.style.minWidth = `${trigger.getBoundingClientRect().width}px`;
-  // Stamp open BEFORE showing — the toggle event that also stamps it is a
-  // separate queued task; a paint can land in the gap and flash the closed
-  // state (same fix dropdown.js documents).
-  content.dataset.state = "open";
+function openContent(_trigger, content) {
+  // Keyboard open path (OPEN_KEYS). State stamping and width live in the
+  // beforetoggle handler; positioning lives in the toggle handler — the
+  // same single pipeline every open goes through, invoker or programmatic.
   content.showPopover();
-  // Position AFTER showing (hidden popovers have no box): below the
-  // trigger, left-aligned, 4px sideOffset. cap sets
-  // --gsxui-available-height (Radix Select's size middleware equivalent),
-  // which the recipe's max-height min()s in so a bottom-edge listbox
-  // shrinks and scrolls internally instead of clamping over the trigger.
-  // Flip/shift/clamp + scroll/resize tracking: see gsxui.js.
-  position(content, trigger, { side: "bottom", sideOffset: 4, cap: true });
 }
 
-on("pointerdown", "[data-gsxui-slot-select-trigger]", (_e, trigger) => {
-  const content = contentOf(trigger);
-  if (content) {
-    trigger.dataset.gsxuiWasOpen = content.matches(":popover-open")
-      ? "true"
-      : "false";
-  }
-});
+// Click-to-toggle is the browser's job via the popoverTargetElement wiring
+// in initRoot — no pointerdown/click handlers. The trigger stays a plain
+// invoker; light dismiss, invoker toggling, and their interaction are
+// native behavior (templui's selectbox proves this model out).
 
-on("click", "[data-gsxui-slot-select-trigger]", (_e, trigger) => {
-  const content = contentOf(trigger);
-  if (!content) return;
-  const wasOpen = trigger.dataset.gsxuiWasOpen === "true";
-  delete trigger.dataset.gsxuiWasOpen;
-  if (wasOpen) {
-    // Light dismiss on the outside-pointerdown may already have closed it;
-    // converge on the real state rather than assuming.
-    if (content.matches(":popover-open")) content.hidePopover();
-    return;
-  }
-  if (content.matches(":popover-open")) {
-    content.hidePopover();
-    return;
-  }
-  openContent(trigger, content);
-});
+// Stamp state BEFORE the popover paints: beforetoggle fires synchronously
+// inside show/hide (for invoker opens too), while the toggle event is a
+// separate queued task — a paint can land in that gap and flash the closed
+// state. The width sync happens here too so the first painted frame is
+// already trigger-wide.
+on(
+  "beforetoggle",
+  "[data-gsxui-slot-select-content]",
+  (e, content) => {
+    const open = e.newState === "open";
+    content.dataset.state = open ? "open" : "closed";
+    const trigger = triggerOf(content);
+    if (trigger) {
+      trigger.dataset.state = open ? "open" : "closed";
+      if (open)
+        content.style.minWidth = `${trigger.getBoundingClientRect().width}px`;
+    }
+  },
+  { capture: true },
+);
 
 on(
   "toggle",
@@ -262,7 +258,16 @@ on(
     if (open) {
       if (!content.id) content.id = `gsxui-select-content-${++uid}`;
       trigger?.setAttribute("aria-controls", content.id);
-      delete trigger?.dataset.gsxuiWasOpen;
+      // Position AFTER showing (hidden popovers have no box): below the
+      // trigger, left-aligned, 4px sideOffset. cap sets
+      // --gsxui-available-height (Radix Select's size middleware
+      // equivalent) so a bottom-edge listbox shrinks and scrolls instead
+      // of clamping over the trigger. The enter transition's starting
+      // style keeps the pre-position frame at opacity 0, so positioning in
+      // this queued task cannot flash an unpositioned popup.
+      // Flip/shift/clamp + scroll/resize tracking: see gsxui.js.
+      if (trigger)
+        position(content, trigger, { side: "bottom", sideOffset: 4, cap: true });
       // Focus the checked item if any, else the first enabled one.
       const target =
         content.querySelector(
