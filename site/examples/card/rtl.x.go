@@ -67,7 +67,7 @@ func Rtl() _gsxrt.Node {
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "for", Value: "card-rtl-email"}}))
 //line rtl.gsx:23:8
-				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "card-rtl-email"}}, _gsxrt.Attrs{{Key: "type", Value: "email"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "m@example.com"}}, _gsxrt.Attrs{{Key: "required", Value: _gsxrt.Toggle(true)}})))
+				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "card-rtl-email"}}, _gsxrt.Attrs{{Key: "type", Value: "email"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "m@example.com"}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "email"}}, _gsxrt.Attrs{{Key: "required", Value: _gsxrt.Toggle(true)}})))
 				_gsxgw.S("</div>")
 //line rtl.gsx:25:7
 				_gsxgw.S("<div class=\"grid gap-2\">")
@@ -82,7 +82,7 @@ func Rtl() _gsxrt.Node {
 //line rtl.gsx:28:9
 				_gsxgw.S("<a href=\"#\" class=\"ms-auto inline-block text-sm underline-offset-4 hover:underline\">نسيت كلمة المرور؟</a></div>")
 //line rtl.gsx:30:8
-				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "card-rtl-password"}}, _gsxrt.Attrs{{Key: "type", Value: "password"}}, _gsxrt.Attrs{{Key: "required", Value: _gsxrt.Toggle(true)}})))
+				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "card-rtl-password"}}, _gsxrt.Attrs{{Key: "type", Value: "password"}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "current-password"}}, _gsxrt.Attrs{{Key: "required", Value: _gsxrt.Toggle(true)}})))
 				_gsxgw.S("</div></div></form>")
 				return _gsxgw.Err()
 			}), nil))

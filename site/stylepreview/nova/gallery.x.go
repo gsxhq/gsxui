@@ -302,7 +302,7 @@ func _gsxrendergalleryLoginCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, idp 
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "for", Value: idp + "-login-email"}}))
 //line gallery.gsx:117:6
-					_gsxgw.NodeResult(_gsxrenderInput(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: idp + "-login-email"}}, _gsxrt.Attrs{{Key: "type", Value: "email"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "m@example.com"}})))
+					_gsxgw.NodeResult(_gsxrenderInput(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: idp + "-login-email"}}, _gsxrt.Attrs{{Key: "type", Value: "email"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "m@example.com"}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "email"}})))
 //line gallery.gsx:118:6
 					_gsxgw.NodeResult(_gsxrenderFieldDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
@@ -321,7 +321,7 @@ func _gsxrendergalleryLoginCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, idp 
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "for", Value: idp + "-login-password"}}))
 //line gallery.gsx:122:6
-					_gsxgw.NodeResult(_gsxrenderInput(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: idp + "-login-password"}}, _gsxrt.Attrs{{Key: "type", Value: "password"}}, _gsxrt.Attrs{{Key: "value", Value: ""}})))
+					_gsxgw.NodeResult(_gsxrenderInput(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: idp + "-login-password"}}, _gsxrt.Attrs{{Key: "type", Value: "password"}}, _gsxrt.Attrs{{Key: "value", Value: ""}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "current-password"}})))
 					return _gsxgw.Err()
 				}), nil))
 //line gallery.gsx:124:5
