@@ -6,7 +6,7 @@
 // off Radix's own ARIA split rather than a redundant data-type stamp —
 // ToggleGroup/ToggleGroupItem already only ever pair a "radio" role with
 // type="single").
-import { on, emit, isRTL, init } from "./gsxui.js";
+import { on, emit, isRTL, init, hasLiveTabStop } from "./gsxui.js";
 
 const itemsOf = (root) =>
   [...root.querySelectorAll("[data-gsxui-slot-toggle-group-item]")].filter(
@@ -32,31 +32,6 @@ function setPressed(item, pressed) {
 // machinery, which this plain-DOM port doesn't have or need).
 function setActiveTabStop(root, item) {
   for (const i of itemsOf(root)) i.tabIndex = i === item ? 0 : -1;
-}
-
-// Entry-tabstop priority at init, mirroring RovingFocusGroup's own
-// fallback chain minus "last-focused" (nothing to remember across a fresh
-// page load): the pressed item wins if one exists and isn't disabled,
-// else the first non-disabled item.
-function normalize(root) {
-  const items = itemsOf(root);
-  const enabled = items.filter((i) => !i.disabled);
-  if (!enabled.length) return;
-  // Bail when a live tab stop already exists (an explicit tabindex="0" set
-  // by setActiveTabStop during arrow-key/click interaction) — otherwise the
-  // shared MutationObserver's init() re-fires normalize() on every
-  // tabindex-attribute write those make (roving tabindex IS a mutation
-  // under this root), stomping the just-moved tab stop back to
-  // pressed-or-first one microtask later. Checked via the ATTRIBUTE (not
-  // the .tabIndex IDL property, which defaults to 0 for a plain <button>
-  // even with no tabindex attribute at all — using the property here would
-  // make this bail true on the very first, un-normalized render and never
-  // collapse the group to one tab stop). A real morph resets the item back
-  // to server-rendered markup (no tabindex attribute), so morph-reset still
-  // clears this guard and re-normalizes, as intended.
-  if (enabled.some((i) => i.getAttribute("tabindex") === "0")) return;
-  const pressed = items.find((i) => i.dataset.state === "on" && !i.disabled);
-  setActiveTabStop(root, pressed ?? enabled[0]);
 }
 
 on("click", "[data-gsxui-slot-toggle-group-item]", (_e, item) => {
@@ -113,11 +88,29 @@ on("keydown", "[data-gsxui-slot-toggle-group-item]", (e, item) => {
   next.focus();
 });
 
+// --- init --------------------------------------------------------------
+
+// Entry-tabstop priority at init, mirroring RovingFocusGroup's own
+// fallback chain minus "last-focused" (nothing to remember across a fresh
+// page load): the pressed item wins if one exists and isn't disabled,
+// else the first non-disabled item.
+//
 // Initial tab-stop assignment for groups rendered without JS having run yet
 // (server renders every item as a plain tab stop — see the package doc
 // comment on ui/toggle-group.gsx) — self-healing via init(): current
 // matches, later-added matches (e.g. a DOM swap), and any match morphed
-// back to server state all get normalize() re-run. normalize() is pure
+// back to server state all get initRoot() re-run. initRoot() is pure
 // reflection over the current DOM (no per-call resources bound), so
 // re-running it is safe/idempotent.
-init("[data-gsxui-slot-toggle-group]", normalize);
+function initRoot(root) {
+  const items = itemsOf(root);
+  const enabled = items.filter((i) => !i.disabled);
+  if (!enabled.length) return;
+  // Bail when a live tab stop already exists — see hasLiveTabStop's own
+  // comment (ui/gsxui.js) for why this is a semantic re-arming check, not a
+  // once() guard.
+  if (hasLiveTabStop(enabled)) return;
+  const pressed = items.find((i) => i.dataset.state === "on" && !i.disabled);
+  setActiveTabStop(root, pressed ?? enabled[0]);
+}
+init("[data-gsxui-slot-toggle-group]", initRoot);

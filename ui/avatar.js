@@ -13,6 +13,8 @@ const sync = (img, ok) => {
 on("error", "[data-gsxui-slot-avatar-image]", (_e, img) => sync(img, false), { capture: true });
 on("load", "[data-gsxui-slot-avatar-image]", (_e, img) => sync(img, true), { capture: true });
 
+// --- init --------------------------------------------------------------
+
 // Images that settled before this module's init ran already fired
 // load/error — init() (self-healing: current matches, later-added matches,
 // and matches whose subtree is morphed back to server state) covers the
@@ -20,14 +22,14 @@ on("load", "[data-gsxui-slot-avatar-image]", (_e, img) => sync(img, true), { cap
 // Pure reflection (img.complete/naturalWidth are read-only browser state),
 // so re-running on an already-synced image is a no-op — safe to re-run
 // unguarded.
-function sweep(img) {
+function initRoot(img) {
   if (img.complete) sync(img, img.naturalWidth > 0);
 }
-init("[data-gsxui-slot-avatar-image]", sweep);
+init("[data-gsxui-slot-avatar-image]", initRoot);
 window.addEventListener(
   "load",
   () => {
-    for (const img of document.querySelectorAll("[data-gsxui-slot-avatar-image]")) sweep(img);
+    for (const img of document.querySelectorAll("[data-gsxui-slot-avatar-image]")) initRoot(img);
   },
   { once: true },
 );

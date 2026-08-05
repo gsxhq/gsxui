@@ -248,16 +248,17 @@ on("keydown", HANDLE_SELECTOR, (e, handle) => {
   emit(root, "gsxui:change", { sizes: currentSizes(root) });
 });
 
-// --- Init: sync aria-valuenow/-min/-max from the server-rendered geometry --
-// (no context needed — every handle's neighbours are its own DOM siblings).
-// Self-healing via init() (ui/gsxui.js): current matches, later-added
-// matches (e.g. a DOM swap), and any match morphed back to server state
-// all get this initializer re-run. Both writes are idempotent style/aria
-// writes with no per-call resource bound — touchAction is a plain style
-// property (re-setting it to the same value is a no-op) and
-// syncHandleAria() is pure reflection off the handle's current DOM
-// geometry — so re-running the pair is safe.
-init(HANDLE_SELECTOR, (handle) => {
+// --- init --------------------------------------------------------------
+// Sync aria-valuenow/-min/-max from the server-rendered geometry (no context
+// needed — every handle's neighbours are its own DOM siblings). Self-healing
+// via init() (ui/gsxui.js): current matches, later-added matches (e.g. a DOM
+// swap), and any match morphed back to server state all get this
+// initializer re-run. Both writes are idempotent style/aria writes with no
+// per-call resource bound — touchAction is a plain style property
+// (re-setting it to the same value is a no-op) and syncHandleAria() is pure
+// reflection off the handle's current DOM geometry — so re-running the pair
+// is safe.
+function initRoot(handle) {
   // Without this, touch input's default pan/scroll gesture wins the
   // pointerdown-to-pointermove race — the browser claims the gesture and
   // fires pointercancel mid-drag, so resizing never works on touch at all.
@@ -265,4 +266,5 @@ init(HANDLE_SELECTOR, (handle) => {
   // style, not a class-string change.
   handle.style.touchAction = "none";
   syncHandleAria(handle);
-});
+}
+init(HANDLE_SELECTOR, initRoot);
