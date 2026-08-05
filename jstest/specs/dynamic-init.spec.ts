@@ -118,4 +118,14 @@ test.describe("gsxui dynamic init", () => {
     });
     expect(text).toBe("Apple");
   });
+
+  test("uid never repeats across prefixes", async ({ page }) => {
+    await page.goto("/x/select/basic");
+    const ids = await page.evaluate(async () => {
+      const { uid } = await import("/ui/gsxui.js");
+      return [uid("gsxui-a"), uid("gsxui-b"), uid("gsxui-a"), uid("gsxui-b")];
+    });
+    expect(new Set(ids).size).toBe(4);
+    expect(ids[0]).not.toBe(ids[2]);
+  });
 });

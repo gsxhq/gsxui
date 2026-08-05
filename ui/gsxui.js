@@ -57,7 +57,10 @@ export function emit(el, name, detail) {
 // loop-prevention mechanism; a concurrent external mutation landing in
 // that exact window is missed until the next mutation re-heals it.
 // Double-registering the same (selector, fn) runs fn twice per match —
-// callers are expected to register once at module load.
+// callers are expected to register once at module load. By convention,
+// the registered function is named `initRoot` and lives in each module's
+// trailing `--- init ---` section; the shared observer is instantiated by
+// whichever barrel import calls init() first (avatar today).
 //
 // WARNING: fn fires on ANY attribute, text, or childList mutation at or
 // under a match — not just an external DOM swap/morph. A live interaction
@@ -134,6 +137,60 @@ function flush() {
   } finally {
     observer.takeRecords(); // discard mutations our own inits produced
   }
+}
+
+// --- shared init helpers --------------------------------------------------
+
+// One counter for every generated id in the library. Uniqueness within the
+// document is the entire contract — which module the number came from never
+// matters, so modules share it instead of each keeping a private counter.
+let uidCounter = 0;
+export function uid(prefix) {
+  return `${prefix}-${++uidCounter}`;
+}
+
+// Group→label aria wiring shared by listbox-shaped components (select,
+// combobox): every group under root that lacks aria-labelledby gets pointed
+// at its own label, generating the label's id on demand. Skip-if-present
+// per group keeps it idempotent under re-init.
+export function wireGroupLabels(root, groupSelector, labelSelector, idPrefix) {
+  for (const group of root.querySelectorAll(groupSelector)) {
+    if (group.getAttribute("aria-labelledby")) continue;
+    const label = group.querySelector(labelSelector);
+    if (!label) continue;
+    if (!label.id) label.id = uid(idPrefix);
+    group.setAttribute("aria-labelledby", label.id);
+  }
+}
+
+// Initializers re-run on ANY mutation under a match (see init() above), so
+// they split into two kinds of work: REFLECTION (recompute state from the
+// DOM — must re-run unguarded, that is the whole point of re-init) and
+// RESOURCE BINDS (timers, listeners, per-element observers — must happen
+// once per element or they stack). once(fn) is the guard for the second
+// kind: the returned function runs fn at most once per element, forever.
+// It is NOT for semantic "a live value already exists" bails — those must
+// re-arm after a morph strips the value (see hasLiveTabStop below).
+export function once(fn) {
+  const ran = new WeakSet();
+  return (el) => {
+    if (ran.has(el)) return;
+    ran.add(el);
+    fn(el);
+  };
+}
+
+// Roving-tabindex bail shared by menubar and toggle-group: "has normalize
+// already picked an entry tab stop, or has the user moved it?" Checks the
+// tabindex ATTRIBUTE, never the IDL property — a plain <button> reports
+// .tabIndex === 0 even with no attribute at all, which would make this
+// always-true on server-fresh DOM and prevent the initial roving collapse.
+// Server markup renders no tabindex attributes; interaction and normalize
+// write them; a morph back to server state strips them — exactly the reset
+// that must re-trigger normalize, which is why this is a semantic check
+// and not a once() guard.
+export function hasLiveTabStop(els) {
+  return [...els].some((el) => el.getAttribute("tabindex") === "0");
 }
 
 // --- anchored positioning --------------------------------------------------
