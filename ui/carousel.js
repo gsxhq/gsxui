@@ -149,9 +149,9 @@ function recompute(root) {
 // trigger on drag/click, not hover). No loop mode (see the package doc
 // comment's GAP) — autoplay simply stops advancing once it reaches the
 // last slide rather than wrapping back to the first.
-// GUARD (required — audited): this function binds four per-call
-// pointerenter/focusin/pointerleave/focusout listeners on `root` plus a
-// `timer` variable captured in THIS call's own closure. Under init()'s
+// GUARD (required — audited): the bindAutoplay() function binds four
+// per-call pointerenter/focusin/pointerleave/focusout listeners on `root`
+// plus a `timer` variable captured in ITS OWN closure. Under init()'s
 // self-healing re-init (a re-init pass over an already-inited carousel,
 // e.g. this root's subtree morphed back to server state), a second,
 // unguarded call would add a SECOND set of listeners with their own
@@ -164,11 +164,12 @@ function recompute(root) {
 // reflection, so it needs the same one-time-bind guard toggle-group.js's
 // own per-item state and command.js's data-gsxui-index stamp use elsewhere
 // in this codebase — once() (ui/gsxui.js) is exactly that guard, keyed on
-// the root, since "has autoplay ever been bound for this root" is exactly
-// the once-only fact being guarded.
-const initAutoplay = once(function bindAutoplay(root) {
+// the root, since "has autoplay listeners ever been bound for this root"
+// is exactly the once-only fact being guarded. The interval-configured
+// check MUST be OUTSIDE once() so a later attribute mutation can still
+// trigger the bind.
+const bindAutoplay = once(function bindAutoplayOnce(root) {
   const ms = Number(root.dataset.gsxuiCarouselAutoplay);
-  if (!ms) return;
   let timer = null;
   const stop = () => {
     if (timer) clearInterval(timer);
@@ -194,6 +195,12 @@ const initAutoplay = once(function bindAutoplay(root) {
   root.addEventListener("focusout", start);
   start();
 });
+
+function initAutoplay(root) {
+  const ms = Number(root.dataset.gsxuiCarouselAutoplay);
+  if (!ms) return;
+  bindAutoplay(root);
+}
 
 on("click", "[data-gsxui-slot-carousel-previous]", (_e, btn) => {
   const root = rootOf(btn);

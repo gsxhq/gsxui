@@ -175,7 +175,7 @@ export function once(fn) {
   const ran = new WeakSet();
   return (el) => {
     if (ran.has(el)) return;
-    ran.add(el);
+    ran.add(el); // Marks before invoking: a throwing fn stays marked (no retry) — callers' binds must not throw.
     fn(el);
   };
 }
