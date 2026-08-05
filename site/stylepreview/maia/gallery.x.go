@@ -290,20 +290,22 @@ func _gsxrendergalleryLoginCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, idp 
 		_gsxgw.NodeResult(_gsxrenderCardContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line gallery.gsx:114:4
+			_gsxgw.S("<form>")
+//line gallery.gsx:115:4
 			_gsxgw.NodeResult(_gsxrenderFieldGroup(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:115:5
+//line gallery.gsx:116:5
 				_gsxgw.NodeResult(_gsxrenderField(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:116:6
+//line gallery.gsx:117:6
 					_gsxgw.NodeResult(_gsxrenderFieldLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Email")
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "for", Value: idp + "-login-email"}}))
-//line gallery.gsx:117:6
-					_gsxgw.NodeResult(_gsxrenderInput(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: idp + "-login-email"}}, _gsxrt.Attrs{{Key: "type", Value: "email"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "m@example.com"}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "email"}})))
 //line gallery.gsx:118:6
+					_gsxgw.NodeResult(_gsxrenderInput(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: idp + "-login-email"}}, _gsxrt.Attrs{{Key: "type", Value: "email"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "m@example.com"}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "email"}})))
+//line gallery.gsx:119:6
 					_gsxgw.NodeResult(_gsxrenderFieldDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("We never share your email with anyone.")
@@ -311,30 +313,30 @@ func _gsxrendergalleryLoginCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, idp 
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:120:5
+//line gallery.gsx:121:5
 				_gsxgw.NodeResult(_gsxrenderField(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:121:6
+//line gallery.gsx:122:6
 					_gsxgw.NodeResult(_gsxrenderFieldLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Password")
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "for", Value: idp + "-login-password"}}))
-//line gallery.gsx:122:6
+//line gallery.gsx:123:6
 					_gsxgw.NodeResult(_gsxrenderInput(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: idp + "-login-password"}}, _gsxrt.Attrs{{Key: "type", Value: "password"}}, _gsxrt.Attrs{{Key: "value", Value: ""}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "current-password"}})))
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:124:5
+//line gallery.gsx:125:5
 				_gsxgw.NodeResult(_gsxrenderFieldSeparator(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("or")
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:125:5
+//line gallery.gsx:126:5
 				_gsxgw.S("<div class=\"flex items-center gap-2\">")
-//line gallery.gsx:126:6
-				_gsxgw.NodeResult(_gsxrenderCheckbox(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: idp + "-login-remember"}}, _gsxrt.Attrs{{Key: "checked", Value: _gsxrt.Toggle(true)}})))
 //line gallery.gsx:127:6
+				_gsxgw.NodeResult(_gsxrenderCheckbox(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: idp + "-login-remember"}}, _gsxrt.Attrs{{Key: "checked", Value: _gsxrt.Toggle(true)}})))
+//line gallery.gsx:128:6
 				_gsxgw.NodeResult(_gsxrenderLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Remember me for 30 days")
@@ -343,18 +345,19 @@ func _gsxrendergalleryLoginCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, idp 
 				_gsxgw.S("</div>")
 				return _gsxgw.Err()
 			}), nil))
+			_gsxgw.S("</form>")
 			return _gsxgw.Err()
 		}), nil))
-//line gallery.gsx:131:3
+//line gallery.gsx:133:3
 		_gsxgw.NodeResult(_gsxrenderCardFooter(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:132:4
+//line gallery.gsx:134:4
 			_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Create account")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "w-full"}}))
-//line gallery.gsx:133:4
+//line gallery.gsx:135:4
 			_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Sign in with Google")
@@ -367,7 +370,7 @@ func _gsxrendergalleryLoginCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, idp 
 	return _gsxgw.Err()
 }
 
-//line gallery.gsx:138:1
+//line gallery.gsx:140:1
 func gallerySettingsCard(idp string) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -379,19 +382,19 @@ func _gsxrendergallerySettingsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line gallery.gsx:139:2
+//line gallery.gsx:141:2
 	_gsxgw.NodeResult(_gsxrenderCard(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:140:3
+//line gallery.gsx:142:3
 		_gsxgw.NodeResult(_gsxrenderCardHeader(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:141:4
+//line gallery.gsx:143:4
 			_gsxgw.NodeResult(_gsxrenderCardTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Workspace settings")
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:142:4
+//line gallery.gsx:144:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Configure notifications and appearance.")
@@ -399,76 +402,76 @@ func _gsxrendergallerySettingsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
-//line gallery.gsx:144:3
+//line gallery.gsx:146:3
 		_gsxgw.NodeResult(_gsxrenderCardContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:145:4
+//line gallery.gsx:147:4
 			_gsxgw.S("<div class=\"flex items-center justify-between gap-4\">")
-//line gallery.gsx:146:5
+//line gallery.gsx:148:5
 			_gsxgw.NodeResult(_gsxrenderLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Email notifications")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "for", Value: idp + "-settings-emails"}}))
-//line gallery.gsx:147:5
+//line gallery.gsx:149:5
 			_gsxgw.NodeResult(_gsxrenderSwitch(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: idp + "-settings-emails"}}, _gsxrt.Attrs{{Key: "checked", Value: _gsxrt.Toggle(true)}})))
 			_gsxgw.S("</div>")
-//line gallery.gsx:149:4
+//line gallery.gsx:151:4
 			_gsxgw.S("<div class=\"flex items-center justify-between gap-4\">")
-//line gallery.gsx:150:5
+//line gallery.gsx:152:5
 			_gsxgw.NodeResult(_gsxrenderLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Weekly digest")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "for", Value: idp + "-settings-digest"}}))
-//line gallery.gsx:151:5
+//line gallery.gsx:153:5
 			_gsxgw.NodeResult(_gsxrenderSwitch(ctx, _gsxgw, _gsxrt.Attrs{{Key: "id", Value: idp + "-settings-digest"}}))
 			_gsxgw.S("</div>")
-//line gallery.gsx:153:4
+//line gallery.gsx:155:4
 			_gsxgw.NodeResult(_gsxrenderSeparator(ctx, _gsxgw, "", nil))
-//line gallery.gsx:154:4
+//line gallery.gsx:156:4
 			_gsxgw.S("<div class=\"flex flex-col gap-2\">")
-//line gallery.gsx:155:5
+//line gallery.gsx:157:5
 			_gsxgw.NodeResult(_gsxrenderLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Density")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "for", Value: idp + "-settings-density"}}))
-//line gallery.gsx:156:5
+//line gallery.gsx:158:5
 			_gsxgw.NodeResult(_gsxrenderSelect(ctx, _gsxgw, idp+"-settings-density", false, false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:160:6
+//line gallery.gsx:162:6
 				_gsxgw.NodeResult(_gsxrenderSelectTrigger(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:161:7
+//line gallery.gsx:163:7
 					_gsxgw.NodeResult(_gsxrenderSelectValue(ctx, _gsxgw, "Select density", nil))
 					return _gsxgw.Err()
 				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: idp + "-settings-density"}}, _gsxrt.Attrs{{Key: "class", Value: "w-full"}})))
-//line gallery.gsx:163:6
+//line gallery.gsx:165:6
 				_gsxgw.NodeResult(_gsxrenderSelectContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:164:7
+//line gallery.gsx:166:7
 					_gsxgw.NodeResult(_gsxrenderSelectGroup(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:165:8
+//line gallery.gsx:167:8
 						_gsxgw.NodeResult(_gsxrenderSelectLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Density")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:166:8
+//line gallery.gsx:168:8
 						_gsxgw.NodeResult(_gsxrenderSelectItem(ctx, _gsxgw, "comfortable", true, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Comfortable")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:167:8
+//line gallery.gsx:169:8
 						_gsxgw.NodeResult(_gsxrenderSelectItem(ctx, _gsxgw, "compact", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Compact")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:168:8
+//line gallery.gsx:170:8
 						_gsxgw.NodeResult(_gsxrenderSelectItem(ctx, _gsxgw, "spacious", false, true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Spacious")
@@ -481,30 +484,30 @@ func _gsxrendergallerySettingsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 				return _gsxgw.Err()
 			}), nil))
 			_gsxgw.S("</div>")
-//line gallery.gsx:173:4
+//line gallery.gsx:175:4
 			_gsxgw.S("<div class=\"flex flex-col gap-2\">")
-//line gallery.gsx:174:5
+//line gallery.gsx:176:5
 			_gsxgw.NodeResult(_gsxrenderLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Timezone")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "for", Value: idp + "-settings-timezone"}}))
-//line gallery.gsx:175:5
+//line gallery.gsx:177:5
 			_gsxgw.NodeResult(_gsxrenderNativeSelect(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:176:6
+//line gallery.gsx:178:6
 				_gsxgw.NodeResult(_gsxrenderNativeSelectOption(ctx, _gsxgw, "utc", true, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("UTC")
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:177:6
+//line gallery.gsx:179:6
 				_gsxgw.NodeResult(_gsxrenderNativeSelectOption(ctx, _gsxgw, "cet", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Central European Time")
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:178:6
+//line gallery.gsx:180:6
 				_gsxgw.NodeResult(_gsxrenderNativeSelectOption(ctx, _gsxgw, "pt", false, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Pacific Time")
@@ -513,56 +516,56 @@ func _gsxrendergallerySettingsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 				return _gsxgw.Err()
 			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: idp + "-settings-timezone"}}, _gsxrt.Attrs{{Key: "name", Value: idp + "-settings-timezone"}})))
 			_gsxgw.S("</div>")
-//line gallery.gsx:181:4
+//line gallery.gsx:183:4
 			_gsxgw.S("<div class=\"flex flex-col gap-3\">")
-//line gallery.gsx:182:5
+//line gallery.gsx:184:5
 			_gsxgw.NodeResult(_gsxrenderLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Sidebar position")
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:183:5
+//line gallery.gsx:185:5
 			_gsxgw.S("<div class=\"flex items-center gap-2\">")
-//line gallery.gsx:184:6
+//line gallery.gsx:186:6
 			_gsxgw.NodeResult(_gsxrenderRadio(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: idp + "-settings-left"}}, _gsxrt.Attrs{{Key: "name", Value: idp + "-settings-side"}}, _gsxrt.Attrs{{Key: "checked", Value: _gsxrt.Toggle(true)}})))
-//line gallery.gsx:185:6
+//line gallery.gsx:187:6
 			_gsxgw.NodeResult(_gsxrenderLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Left")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "for", Value: idp + "-settings-left"}}))
 			_gsxgw.S("</div>")
-//line gallery.gsx:187:5
+//line gallery.gsx:189:5
 			_gsxgw.S("<div class=\"flex items-center gap-2\">")
-//line gallery.gsx:188:6
+//line gallery.gsx:190:6
 			_gsxgw.NodeResult(_gsxrenderRadio(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: idp + "-settings-right"}}, _gsxrt.Attrs{{Key: "name", Value: idp + "-settings-side"}})))
-//line gallery.gsx:189:6
+//line gallery.gsx:191:6
 			_gsxgw.NodeResult(_gsxrenderLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Right")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "for", Value: idp + "-settings-right"}}))
 			_gsxgw.S("</div></div>")
-//line gallery.gsx:192:4
+//line gallery.gsx:194:4
 			_gsxgw.S("<div class=\"flex flex-col gap-3\">")
-//line gallery.gsx:193:5
+//line gallery.gsx:195:5
 			_gsxgw.NodeResult(_gsxrenderLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Notification volume")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "for", Value: idp + "-settings-volume"}}))
-//line gallery.gsx:194:5
+//line gallery.gsx:196:5
 			_gsxgw.NodeResult(_gsxrenderSlider(ctx, _gsxgw, 35, 0, 100, 1, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: idp + "-settings-volume"}}, _gsxrt.Attrs{{Key: "aria-label", Value: "Notification volume"}})))
 			_gsxgw.S("</div>")
-//line gallery.gsx:196:4
+//line gallery.gsx:198:4
 			_gsxgw.S("<div class=\"flex flex-col gap-2\">")
-//line gallery.gsx:197:5
+//line gallery.gsx:199:5
 			_gsxgw.NodeResult(_gsxrenderLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Status message")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "for", Value: idp + "-settings-note"}}))
-//line gallery.gsx:198:5
+//line gallery.gsx:200:5
 			_gsxgw.NodeResult(_gsxrenderTextarea(ctx, _gsxgw, "", _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: idp + "-settings-note"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "Out of office until Monday."}})))
 			_gsxgw.S("</div>")
 			return _gsxgw.Err()
@@ -572,7 +575,7 @@ func _gsxrendergallerySettingsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 	return _gsxgw.Err()
 }
 
-//line gallery.gsx:204:1
+//line gallery.gsx:206:1
 func galleryCalendarCard(idp string) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -584,19 +587,19 @@ func _gsxrendergalleryCalendarCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line gallery.gsx:205:2
+//line gallery.gsx:207:2
 	_gsxgw.NodeResult(_gsxrenderCard(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:206:3
+//line gallery.gsx:208:3
 		_gsxgw.NodeResult(_gsxrenderCardHeader(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:207:4
+//line gallery.gsx:209:4
 			_gsxgw.NodeResult(_gsxrenderCardTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Schedule a review")
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:208:4
+//line gallery.gsx:210:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Pick a date for the quarterly review.")
@@ -604,26 +607,26 @@ func _gsxrendergalleryCalendarCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
-//line gallery.gsx:210:3
+//line gallery.gsx:212:3
 		_gsxgw.NodeResult(_gsxrenderCardContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:211:4
+//line gallery.gsx:213:4
 			_gsxgw.NodeResult(_gsxrenderCalendar(ctx, _gsxgw, "single", galleryMonth, []time.Time{time.Date(2026, 1, 15, 0, 0, 0, 0, time.UTC)}, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", nil))
-//line gallery.gsx:219:4
+//line gallery.gsx:221:4
 			_gsxgw.NodeResult(_gsxrenderPopover(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:220:5
+//line gallery.gsx:222:5
 				_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:226:6
+//line gallery.gsx:228:6
 					_gsxgw.Node(ctx, icon.Calendar())
 					_gsxgw.S("Pick a date")
 					return _gsxgw.Err()
 				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-slot-popover-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}}, _gsxrt.Attrs{{Key: "class", Value: "w-[220px] justify-start text-left font-normal text-muted-foreground"}})))
-//line gallery.gsx:229:5
+//line gallery.gsx:231:5
 				_gsxgw.NodeResult(_gsxrenderPopoverContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:230:6
+//line gallery.gsx:232:6
 					_gsxgw.NodeResult(_gsxrenderCalendar(ctx, _gsxgw, "single", galleryMonth, nil, *new(_gsxty1.Time), *new(_gsxty1.Time), time.Sunday, true, "label", 0, 0, *new(_gsxty1.Time), *new(_gsxty1.Time), nil, nil, "", _gsxrt.Attrs{{Key: "id", Value: idp + "-datepicker-calendar"}}))
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "class", Value: "w-auto p-0"}}))
@@ -636,7 +639,7 @@ func _gsxrendergalleryCalendarCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 	return _gsxgw.Err()
 }
 
-//line gallery.gsx:244:1
+//line gallery.gsx:246:1
 func galleryMenusCard() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -648,19 +651,19 @@ func _gsxrendergalleryMenusCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line gallery.gsx:245:2
+//line gallery.gsx:247:2
 	_gsxgw.NodeResult(_gsxrenderCard(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:246:3
+//line gallery.gsx:248:3
 		_gsxgw.NodeResult(_gsxrenderCardHeader(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:247:4
+//line gallery.gsx:249:4
 			_gsxgw.NodeResult(_gsxrenderCardTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Menus")
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:248:4
+//line gallery.gsx:250:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Menubar, dropdown, and context menu chrome.")
@@ -668,29 +671,29 @@ func _gsxrendergalleryMenusCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
-//line gallery.gsx:250:3
+//line gallery.gsx:252:3
 		_gsxgw.NodeResult(_gsxrenderCardContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:251:4
+//line gallery.gsx:253:4
 			_gsxgw.NodeResult(_gsxrenderMenubar(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:252:5
+//line gallery.gsx:254:5
 				_gsxgw.NodeResult(_gsxrenderMenubarMenu(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:253:6
+//line gallery.gsx:255:6
 					_gsxgw.NodeResult(_gsxrenderMenubarTrigger(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("File")
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:254:6
+//line gallery.gsx:256:6
 					_gsxgw.NodeResult(_gsxrenderMenubarContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:255:7
+//line gallery.gsx:257:7
 						_gsxgw.NodeResult(_gsxrenderMenubarItem(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("New Tab")
-//line gallery.gsx:257:8
+//line gallery.gsx:259:8
 							_gsxgw.NodeResult(_gsxrenderMenubarShortcut(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("⌘T")
@@ -698,11 +701,11 @@ func _gsxrendergalleryMenusCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 							}), nil))
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:259:7
+//line gallery.gsx:261:7
 						_gsxgw.NodeResult(_gsxrenderMenubarItem(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("New Window")
-//line gallery.gsx:261:8
+//line gallery.gsx:263:8
 							_gsxgw.NodeResult(_gsxrenderMenubarShortcut(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("⌘N")
@@ -710,13 +713,13 @@ func _gsxrendergalleryMenusCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 							}), nil))
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:263:7
+//line gallery.gsx:265:7
 						_gsxgw.NodeResult(_gsxrenderMenubarSeparator(ctx, _gsxgw, nil))
-//line gallery.gsx:264:7
+//line gallery.gsx:266:7
 						_gsxgw.NodeResult(_gsxrenderMenubarItem(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Print...")
-//line gallery.gsx:266:8
+//line gallery.gsx:268:8
 							_gsxgw.NodeResult(_gsxrenderMenubarShortcut(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("⌘P")
@@ -728,25 +731,25 @@ func _gsxrendergalleryMenusCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:270:5
+//line gallery.gsx:272:5
 				_gsxgw.NodeResult(_gsxrenderMenubarMenu(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:271:6
+//line gallery.gsx:273:6
 					_gsxgw.NodeResult(_gsxrenderMenubarTrigger(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Edit")
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:272:6
+//line gallery.gsx:274:6
 					_gsxgw.NodeResult(_gsxrenderMenubarContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:273:7
+//line gallery.gsx:275:7
 						_gsxgw.NodeResult(_gsxrenderMenubarItem(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Undo")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:274:7
+//line gallery.gsx:276:7
 						_gsxgw.NodeResult(_gsxrenderMenubarItem(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Redo")
@@ -758,48 +761,48 @@ func _gsxrendergalleryMenusCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:278:4
+//line gallery.gsx:280:4
 			_gsxgw.S("<div class=\"flex flex-wrap items-center gap-2\">")
-//line gallery.gsx:279:5
+//line gallery.gsx:281:5
 			_gsxgw.NodeResult(_gsxrenderDropdownMenu(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:280:6
+//line gallery.gsx:282:6
 				_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Options")
 					return _gsxgw.Err()
 				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-slot-dropdown-menu-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "menu"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
-//line gallery.gsx:288:6
+//line gallery.gsx:290:6
 				_gsxgw.NodeResult(_gsxrenderDropdownMenuContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:289:7
+//line gallery.gsx:291:7
 					_gsxgw.NodeResult(_gsxrenderDropdownMenuGroup(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:290:8
+//line gallery.gsx:292:8
 						_gsxgw.NodeResult(_gsxrenderDropdownMenuLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("My Account")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:291:8
+//line gallery.gsx:293:8
 						_gsxgw.NodeResult(_gsxrenderDropdownMenuSeparator(ctx, _gsxgw, nil))
-//line gallery.gsx:292:8
+//line gallery.gsx:294:8
 						_gsxgw.NodeResult(_gsxrenderDropdownMenuItem(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Profile")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:293:8
+//line gallery.gsx:295:8
 						_gsxgw.NodeResult(_gsxrenderDropdownMenuItem(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Billing")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:294:8
+//line gallery.gsx:296:8
 						_gsxgw.NodeResult(_gsxrenderDropdownMenuItem(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Settings ")
-//line gallery.gsx:295:18
+//line gallery.gsx:297:18
 							_gsxgw.NodeResult(_gsxrenderDropdownMenuShortcut(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("⌘,")
@@ -814,23 +817,23 @@ func _gsxrendergalleryMenusCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 				return _gsxgw.Err()
 			}), nil))
 			_gsxgw.S("</div>")
-//line gallery.gsx:301:4
+//line gallery.gsx:303:4
 			_gsxgw.NodeResult(_gsxrenderContextMenu(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:302:5
+//line gallery.gsx:304:5
 				_gsxgw.NodeResult(_gsxrenderContextMenuTrigger(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Right click here")
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "class", Value: "flex h-24 w-full items-center justify-center rounded-md border border-dashed text-sm"}}))
-//line gallery.gsx:305:5
+//line gallery.gsx:307:5
 				_gsxgw.NodeResult(_gsxrenderContextMenuContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:306:6
+//line gallery.gsx:308:6
 					_gsxgw.NodeResult(_gsxrenderContextMenuItem(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Back")
-//line gallery.gsx:308:7
+//line gallery.gsx:310:7
 						_gsxgw.NodeResult(_gsxrenderContextMenuShortcut(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⌘[")
@@ -838,11 +841,11 @@ func _gsxrendergalleryMenusCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:310:6
+//line gallery.gsx:312:6
 					_gsxgw.NodeResult(_gsxrenderContextMenuItem(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Reload")
-//line gallery.gsx:312:7
+//line gallery.gsx:314:7
 						_gsxgw.NodeResult(_gsxrenderContextMenuShortcut(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("⌘R")
@@ -850,9 +853,9 @@ func _gsxrendergalleryMenusCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:314:6
+//line gallery.gsx:316:6
 					_gsxgw.NodeResult(_gsxrenderContextMenuSeparator(ctx, _gsxgw, nil))
-//line gallery.gsx:315:6
+//line gallery.gsx:317:6
 					_gsxgw.NodeResult(_gsxrenderContextMenuItem(ctx, _gsxgw, "destructive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Delete")
@@ -869,7 +872,7 @@ func _gsxrendergalleryMenusCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 	return _gsxgw.Err()
 }
 
-//line gallery.gsx:322:1
+//line gallery.gsx:324:1
 func galleryFeedbackCard() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -881,19 +884,19 @@ func _gsxrendergalleryFeedbackCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) e
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line gallery.gsx:323:2
+//line gallery.gsx:325:2
 	_gsxgw.NodeResult(_gsxrenderCard(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:324:3
+//line gallery.gsx:326:3
 		_gsxgw.NodeResult(_gsxrenderCardHeader(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:325:4
+//line gallery.gsx:327:4
 			_gsxgw.NodeResult(_gsxrenderCardTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Sync status")
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:326:4
+//line gallery.gsx:328:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Alerts, badges, progress, and toasts.")
@@ -901,21 +904,21 @@ func _gsxrendergalleryFeedbackCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) e
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
-//line gallery.gsx:328:3
+//line gallery.gsx:330:3
 		_gsxgw.NodeResult(_gsxrenderCardContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:329:4
+//line gallery.gsx:331:4
 			_gsxgw.NodeResult(_gsxrenderAlert(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:330:5
+//line gallery.gsx:332:5
 				_gsxgw.Node(ctx, icon.CircleCheck())
-//line gallery.gsx:331:5
+//line gallery.gsx:333:5
 				_gsxgw.NodeResult(_gsxrenderAlertTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Backup complete")
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:332:5
+//line gallery.gsx:334:5
 				_gsxgw.NodeResult(_gsxrenderAlertDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Your workspace was backed up 5 minutes ago.")
@@ -923,18 +926,18 @@ func _gsxrendergalleryFeedbackCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) e
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:334:4
+//line gallery.gsx:336:4
 			_gsxgw.NodeResult(_gsxrenderAlert(ctx, _gsxgw, "destructive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:335:5
+//line gallery.gsx:337:5
 				_gsxgw.Node(ctx, icon.CircleAlert())
-//line gallery.gsx:336:5
+//line gallery.gsx:338:5
 				_gsxgw.NodeResult(_gsxrenderAlertTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Payment failed")
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:337:5
+//line gallery.gsx:339:5
 				_gsxgw.NodeResult(_gsxrenderAlertDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Please verify your billing information and try again.")
@@ -942,65 +945,65 @@ func _gsxrendergalleryFeedbackCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) e
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:339:4
+//line gallery.gsx:341:4
 			_gsxgw.S("<div class=\"flex flex-wrap items-center gap-2\">")
-//line gallery.gsx:340:5
+//line gallery.gsx:342:5
 			_gsxgw.NodeResult(_gsxrenderBadge(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Active")
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:341:5
+//line gallery.gsx:343:5
 			_gsxgw.NodeResult(_gsxrenderBadge(ctx, _gsxgw, "secondary", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Draft")
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:342:5
+//line gallery.gsx:344:5
 			_gsxgw.NodeResult(_gsxrenderBadge(ctx, _gsxgw, "destructive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Overdue")
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:343:5
+//line gallery.gsx:345:5
 			_gsxgw.NodeResult(_gsxrenderBadge(ctx, _gsxgw, "outline", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Archived")
 				return _gsxgw.Err()
 			}), nil))
 			_gsxgw.S("</div>")
-//line gallery.gsx:345:4
+//line gallery.gsx:347:4
 			_gsxgw.S("<div class=\"flex items-center gap-3\">")
-//line gallery.gsx:346:5
+//line gallery.gsx:348:5
 			_gsxgw.NodeResult(_gsxrenderProgress(ctx, _gsxgw, 66, _gsxrt.Attrs{{Key: "class", Value: "flex-1"}}))
-//line gallery.gsx:347:5
+//line gallery.gsx:349:5
 			_gsxgw.S("<span class=\"text-xs text-muted-foreground\">66%</span></div>")
-//line gallery.gsx:349:4
+//line gallery.gsx:351:4
 			_gsxgw.S("<div class=\"flex items-center gap-4\">")
-//line gallery.gsx:350:5
+//line gallery.gsx:352:5
 			_gsxgw.NodeResult(_gsxrenderSkeleton(ctx, _gsxgw, _gsxrt.Attrs{{Key: "class", Value: "size-10 rounded-full"}}))
-//line gallery.gsx:351:5
+//line gallery.gsx:353:5
 			_gsxgw.S("<div class=\"grid flex-1 gap-2\">")
-//line gallery.gsx:352:6
+//line gallery.gsx:354:6
 			_gsxgw.NodeResult(_gsxrenderSkeleton(ctx, _gsxgw, _gsxrt.Attrs{{Key: "class", Value: "h-3 w-3/4"}}))
-//line gallery.gsx:353:6
+//line gallery.gsx:355:6
 			_gsxgw.NodeResult(_gsxrenderSkeleton(ctx, _gsxgw, _gsxrt.Attrs{{Key: "class", Value: "h-3 w-1/2"}}))
 			_gsxgw.S("</div>")
-//line gallery.gsx:355:5
+//line gallery.gsx:357:5
 			_gsxgw.NodeResult(_gsxrenderSpinner(ctx, _gsxgw, nil))
 			_gsxgw.S("</div>")
-//line gallery.gsx:357:4
+//line gallery.gsx:359:4
 			_gsxgw.S("<div class=\"flex items-center gap-3 text-sm text-muted-foreground\">Press")
-//line gallery.gsx:359:5
+//line gallery.gsx:361:5
 			_gsxgw.NodeResult(_gsxrenderKbdGroup(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:360:6
+//line gallery.gsx:362:6
 				_gsxgw.NodeResult(_gsxrenderKbd(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("⌘")
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:361:6
+//line gallery.gsx:363:6
 				_gsxgw.NodeResult(_gsxrenderKbd(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("K")
@@ -1009,9 +1012,9 @@ func _gsxrendergalleryFeedbackCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) e
 				return _gsxgw.Err()
 			}), nil))
 			_gsxgw.S("to open the command palette</div>")
-//line gallery.gsx:365:4
+//line gallery.gsx:367:4
 			_gsxgw.S("<ul class=\"list-none\">")
-//line gallery.gsx:366:5
+//line gallery.gsx:368:5
 			_gsxgw.NodeResult(_gsxrenderToast(ctx, _gsxgw, "success", "Profile updated", "Your changes have been saved.", "Undo", "", _gsxrt.Attrs{{Key: "class", Value: "relative w-full"}}))
 			_gsxgw.S("</ul>")
 			return _gsxgw.Err()
@@ -1021,7 +1024,7 @@ func _gsxrendergalleryFeedbackCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) e
 	return _gsxgw.Err()
 }
 
-//line gallery.gsx:378:1
+//line gallery.gsx:380:1
 func galleryTeamCard() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -1033,35 +1036,35 @@ func _gsxrendergalleryTeamCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line gallery.gsx:379:2
+//line gallery.gsx:381:2
 	_gsxgw.NodeResult(_gsxrenderCard(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:380:3
+//line gallery.gsx:382:3
 		_gsxgw.NodeResult(_gsxrenderCardHeader(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:381:4
+//line gallery.gsx:383:4
 			_gsxgw.NodeResult(_gsxrenderCardTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Team members")
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:382:4
+//line gallery.gsx:384:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Invite and manage your team.")
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:383:4
+//line gallery.gsx:385:4
 			_gsxgw.NodeResult(_gsxrenderCardAction(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:384:5
+//line gallery.gsx:386:5
 				_gsxgw.S("<div class=\"flex -space-x-2\">")
-//line gallery.gsx:385:6
+//line gallery.gsx:387:6
 				_gsxgw.NodeResult(_gsxrenderAvatar(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:386:7
+//line gallery.gsx:388:7
 					_gsxgw.NodeResult(_gsxrenderAvatarImage(ctx, _gsxgw, _gsxstd.DataURL((galleryAvatarSVG), "image/svg+xml"), "Ada Lovelace", nil))
-//line gallery.gsx:387:7
+//line gallery.gsx:389:7
 					_gsxgw.NodeResult(_gsxrenderAvatarFallback(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("AL")
@@ -1069,10 +1072,10 @@ func _gsxrendergalleryTeamCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error
 					}), nil))
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "class", Value: "ring-2 ring-background"}}))
-//line gallery.gsx:389:6
+//line gallery.gsx:391:6
 				_gsxgw.NodeResult(_gsxrenderAvatar(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:390:7
+//line gallery.gsx:392:7
 					_gsxgw.NodeResult(_gsxrenderAvatarFallback(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("GH")
@@ -1080,10 +1083,10 @@ func _gsxrendergalleryTeamCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error
 					}), nil))
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "class", Value: "ring-2 ring-background"}}))
-//line gallery.gsx:392:6
+//line gallery.gsx:394:6
 				_gsxgw.NodeResult(_gsxrenderAvatar(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:393:7
+//line gallery.gsx:395:7
 					_gsxgw.NodeResult(_gsxrenderAvatarFallback(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("AT")
@@ -1096,32 +1099,32 @@ func _gsxrendergalleryTeamCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
-//line gallery.gsx:398:3
+//line gallery.gsx:400:3
 		_gsxgw.NodeResult(_gsxrenderCardContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:399:4
+//line gallery.gsx:401:4
 			_gsxgw.NodeResult(_gsxrenderItemGroup(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:400:5
+//line gallery.gsx:402:5
 				_gsxgw.NodeResult(_gsxrenderItem(ctx, _gsxgw, "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:401:6
+//line gallery.gsx:403:6
 					_gsxgw.NodeResult(_gsxrenderItemMedia(ctx, _gsxgw, "icon", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:402:7
+//line gallery.gsx:404:7
 						_gsxgw.Node(ctx, icon.User())
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:404:6
+//line gallery.gsx:406:6
 					_gsxgw.NodeResult(_gsxrenderItemContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:405:7
+//line gallery.gsx:407:7
 						_gsxgw.NodeResult(_gsxrenderItemTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Jamie Lee")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:406:7
+//line gallery.gsx:408:7
 						_gsxgw.NodeResult(_gsxrenderItemDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("jamie@example.com")
@@ -1129,10 +1132,10 @@ func _gsxrendergalleryTeamCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:408:6
+//line gallery.gsx:410:6
 					_gsxgw.NodeResult(_gsxrenderItemActions(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:409:7
+//line gallery.gsx:411:7
 						_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "ghost", "sm", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Remove")
@@ -1142,28 +1145,28 @@ func _gsxrendergalleryTeamCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:412:5
+//line gallery.gsx:414:5
 				_gsxgw.NodeResult(_gsxrenderItemSeparator(ctx, _gsxgw, "", nil))
-//line gallery.gsx:413:5
+//line gallery.gsx:415:5
 				_gsxgw.NodeResult(_gsxrenderItem(ctx, _gsxgw, "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:414:6
+//line gallery.gsx:416:6
 					_gsxgw.NodeResult(_gsxrenderItemMedia(ctx, _gsxgw, "icon", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:415:7
+//line gallery.gsx:417:7
 						_gsxgw.Node(ctx, icon.User())
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:417:6
+//line gallery.gsx:419:6
 					_gsxgw.NodeResult(_gsxrenderItemContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:418:7
+//line gallery.gsx:420:7
 						_gsxgw.NodeResult(_gsxrenderItemTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Alex Chen")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:419:7
+//line gallery.gsx:421:7
 						_gsxgw.NodeResult(_gsxrenderItemDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("alex@example.com")
@@ -1171,10 +1174,10 @@ func _gsxrendergalleryTeamCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:421:6
+//line gallery.gsx:423:6
 					_gsxgw.NodeResult(_gsxrenderItemActions(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:422:7
+//line gallery.gsx:424:7
 						_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "ghost", "sm", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Remove")
@@ -1186,13 +1189,13 @@ func _gsxrendergalleryTeamCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:426:4
+//line gallery.gsx:428:4
 			_gsxgw.NodeResult(_gsxrenderHoverCard(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:427:5
+//line gallery.gsx:429:5
 				_gsxgw.NodeResult(_gsxrenderHoverCardTrigger(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:428:6
+//line gallery.gsx:430:6
 					_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "link", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("@gsxui")
@@ -1200,15 +1203,15 @@ func _gsxrendergalleryTeamCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:430:5
+//line gallery.gsx:432:5
 				_gsxgw.NodeResult(_gsxrenderHoverCardContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:431:6
+//line gallery.gsx:433:6
 					_gsxgw.S("<div class=\"flex justify-between gap-4\">")
-//line gallery.gsx:432:7
+//line gallery.gsx:434:7
 					_gsxgw.NodeResult(_gsxrenderAvatar(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:433:8
+//line gallery.gsx:435:8
 						_gsxgw.NodeResult(_gsxrenderAvatarFallback(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("GX")
@@ -1216,13 +1219,13 @@ func _gsxrendergalleryTeamCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:435:7
+//line gallery.gsx:437:7
 					_gsxgw.S("<div class=\"space-y-1\">")
-//line gallery.gsx:436:8
-					_gsxgw.S("<h4 class=\"text-sm font-semibold\">@gsxui</h4>")
-//line gallery.gsx:437:8
-					_gsxgw.S("<p class=\"text-sm\">Server-rendered shadcn/ui components for Go.</p>")
 //line gallery.gsx:438:8
+					_gsxgw.S("<h4 class=\"text-sm font-semibold\">@gsxui</h4>")
+//line gallery.gsx:439:8
+					_gsxgw.S("<p class=\"text-sm\">Server-rendered shadcn/ui components for Go.</p>")
+//line gallery.gsx:440:8
 					_gsxgw.S("<div class=\"text-xs text-muted-foreground\">Joined July 2026</div></div></div>")
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "class", Value: "w-72"}}))
@@ -1235,7 +1238,7 @@ func _gsxrendergalleryTeamCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error
 	return _gsxgw.Err()
 }
 
-//line gallery.gsx:447:1
+//line gallery.gsx:449:1
 func galleryTableCard() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -1247,19 +1250,19 @@ func _gsxrendergalleryTableCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line gallery.gsx:448:2
+//line gallery.gsx:450:2
 	_gsxgw.NodeResult(_gsxrenderCard(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:449:3
+//line gallery.gsx:451:3
 		_gsxgw.NodeResult(_gsxrenderCardHeader(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:450:4
+//line gallery.gsx:452:4
 			_gsxgw.NodeResult(_gsxrenderCardTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Recent invoices")
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:451:4
+//line gallery.gsx:453:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Your billing history for this quarter.")
@@ -1267,31 +1270,31 @@ func _gsxrendergalleryTableCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
-//line gallery.gsx:453:3
+//line gallery.gsx:455:3
 		_gsxgw.NodeResult(_gsxrenderCardContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:454:4
+//line gallery.gsx:456:4
 			_gsxgw.NodeResult(_gsxrenderTable(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:455:5
+//line gallery.gsx:457:5
 				_gsxgw.NodeResult(_gsxrenderTableHeader(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:456:6
+//line gallery.gsx:458:6
 					_gsxgw.NodeResult(_gsxrenderTableRow(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:457:7
+//line gallery.gsx:459:7
 						_gsxgw.NodeResult(_gsxrenderTableHead(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Invoice")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:458:7
+//line gallery.gsx:460:7
 						_gsxgw.NodeResult(_gsxrenderTableHead(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Status")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:459:7
+//line gallery.gsx:461:7
 						_gsxgw.NodeResult(_gsxrenderTableHead(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Amount")
@@ -1301,22 +1304,22 @@ func _gsxrendergalleryTableCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:462:5
+//line gallery.gsx:464:5
 				_gsxgw.NodeResult(_gsxrenderTableBody(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:463:6
+//line gallery.gsx:465:6
 					_gsxgw.NodeResult(_gsxrenderTableRow(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:464:7
+//line gallery.gsx:466:7
 						_gsxgw.NodeResult(_gsxrenderTableCell(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("INV-2041")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:465:7
+//line gallery.gsx:467:7
 						_gsxgw.NodeResult(_gsxrenderTableCell(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:465:18
+//line gallery.gsx:467:18
 							_gsxgw.NodeResult(_gsxrenderBadge(ctx, _gsxgw, "outline", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("Paid")
@@ -1324,7 +1327,7 @@ func _gsxrendergalleryTableCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 							}), nil))
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:466:7
+//line gallery.gsx:468:7
 						_gsxgw.NodeResult(_gsxrenderTableCell(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("$250.00")
@@ -1332,19 +1335,19 @@ func _gsxrendergalleryTableCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:468:6
+//line gallery.gsx:470:6
 					_gsxgw.NodeResult(_gsxrenderTableRow(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:469:7
+//line gallery.gsx:471:7
 						_gsxgw.NodeResult(_gsxrenderTableCell(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("INV-2042")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:470:7
+//line gallery.gsx:472:7
 						_gsxgw.NodeResult(_gsxrenderTableCell(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:470:18
+//line gallery.gsx:472:18
 							_gsxgw.NodeResult(_gsxrenderBadge(ctx, _gsxgw, "secondary", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("Pending")
@@ -1352,7 +1355,7 @@ func _gsxrendergalleryTableCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 							}), nil))
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:471:7
+//line gallery.gsx:473:7
 						_gsxgw.NodeResult(_gsxrenderTableCell(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("$125.00")
@@ -1360,19 +1363,19 @@ func _gsxrendergalleryTableCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 						}), nil))
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "data-state", Value: "selected"}}))
-//line gallery.gsx:473:6
+//line gallery.gsx:475:6
 					_gsxgw.NodeResult(_gsxrenderTableRow(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:474:7
+//line gallery.gsx:476:7
 						_gsxgw.NodeResult(_gsxrenderTableCell(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("INV-2043")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:475:7
+//line gallery.gsx:477:7
 						_gsxgw.NodeResult(_gsxrenderTableCell(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:475:18
+//line gallery.gsx:477:18
 							_gsxgw.NodeResult(_gsxrenderBadge(ctx, _gsxgw, "destructive", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("Overdue")
@@ -1380,7 +1383,7 @@ func _gsxrendergalleryTableCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 							}), nil))
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:476:7
+//line gallery.gsx:478:7
 						_gsxgw.NodeResult(_gsxrenderTableCell(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("$75.00")
@@ -1390,21 +1393,21 @@ func _gsxrendergalleryTableCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:479:5
+//line gallery.gsx:481:5
 				_gsxgw.NodeResult(_gsxrenderTableFooter(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:480:6
+//line gallery.gsx:482:6
 					_gsxgw.NodeResult(_gsxrenderTableRow(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:481:7
+//line gallery.gsx:483:7
 						_gsxgw.NodeResult(_gsxrenderTableCell(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Total")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:482:7
+//line gallery.gsx:484:7
 						_gsxgw.NodeResult(_gsxrenderTableCell(ctx, _gsxgw, nil, nil))
-//line gallery.gsx:483:7
+//line gallery.gsx:485:7
 						_gsxgw.NodeResult(_gsxrenderTableCell(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("$450.00")
@@ -1423,7 +1426,7 @@ func _gsxrendergalleryTableCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 	return _gsxgw.Err()
 }
 
-//line gallery.gsx:491:1
+//line gallery.gsx:493:1
 func galleryTabsCard(idp string) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -1435,19 +1438,19 @@ func _gsxrendergalleryTabsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, idp s
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line gallery.gsx:492:2
+//line gallery.gsx:494:2
 	_gsxgw.NodeResult(_gsxrenderCard(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:493:3
+//line gallery.gsx:495:3
 		_gsxgw.NodeResult(_gsxrenderCardHeader(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:494:4
+//line gallery.gsx:496:4
 			_gsxgw.NodeResult(_gsxrenderCardTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Project overview")
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:495:4
+//line gallery.gsx:497:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Tabs and frequently asked questions.")
@@ -1455,28 +1458,28 @@ func _gsxrendergalleryTabsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, idp s
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
-//line gallery.gsx:497:3
+//line gallery.gsx:499:3
 		_gsxgw.NodeResult(_gsxrenderCardContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:498:4
+//line gallery.gsx:500:4
 			_gsxgw.NodeResult(_gsxrenderTabs(ctx, _gsxgw, "overview", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:499:5
+//line gallery.gsx:501:5
 				_gsxgw.NodeResult(_gsxrenderTabsList(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:500:6
+//line gallery.gsx:502:6
 					_gsxgw.NodeResult(_gsxrenderTabsTrigger(ctx, _gsxgw, "overview", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Overview")
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:501:6
+//line gallery.gsx:503:6
 					_gsxgw.NodeResult(_gsxrenderTabsTrigger(ctx, _gsxgw, "analytics", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Analytics")
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:502:6
+//line gallery.gsx:504:6
 					_gsxgw.NodeResult(_gsxrenderTabsTrigger(ctx, _gsxgw, "reports", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Reports")
@@ -1484,42 +1487,42 @@ func _gsxrendergalleryTabsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, idp s
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:504:5
+//line gallery.gsx:506:5
 				_gsxgw.NodeResult(_gsxrenderTabsContent(ctx, _gsxgw, "overview", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:505:6
+//line gallery.gsx:507:6
 					_gsxgw.S("<p class=\"text-sm text-muted-foreground\">Deployments are healthy. Last release shipped 2 hours ago.</p>")
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:507:5
+//line gallery.gsx:509:5
 				_gsxgw.NodeResult(_gsxrenderTabsContent(ctx, _gsxgw, "analytics", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:508:6
+//line gallery.gsx:510:6
 					_gsxgw.S("<p class=\"text-sm text-muted-foreground\">Traffic is up 12% week over week.</p>")
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:510:5
+//line gallery.gsx:512:5
 				_gsxgw.NodeResult(_gsxrenderTabsContent(ctx, _gsxgw, "reports", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:511:6
+//line gallery.gsx:513:6
 					_gsxgw.S("<p class=\"text-sm text-muted-foreground\">Monthly reports are generated on the 1st.</p>")
 					return _gsxgw.Err()
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:514:4
+//line gallery.gsx:516:4
 			_gsxgw.NodeResult(_gsxrenderAccordion(ctx, _gsxgw, idp+"-faq", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:515:5
+//line gallery.gsx:517:5
 				_gsxgw.NodeResult(_gsxrenderAccordionItem(ctx, _gsxgw, idp+"-faq", true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:516:6
+//line gallery.gsx:518:6
 					_gsxgw.NodeResult(_gsxrenderAccordionTrigger(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Is it accessible?")
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:517:6
+//line gallery.gsx:519:6
 					_gsxgw.NodeResult(_gsxrenderAccordionContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Yes, it follows the WAI-ARIA design pattern.")
@@ -1527,16 +1530,16 @@ func _gsxrendergalleryTabsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, idp s
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:519:5
+//line gallery.gsx:521:5
 				_gsxgw.NodeResult(_gsxrenderAccordionItem(ctx, _gsxgw, idp+"-faq", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:520:6
+//line gallery.gsx:522:6
 					_gsxgw.NodeResult(_gsxrenderAccordionTrigger(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Is it themed?")
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:521:6
+//line gallery.gsx:523:6
 					_gsxgw.NodeResult(_gsxrenderAccordionContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Yes, every surface reads the semantic theme tokens.")
@@ -1553,7 +1556,7 @@ func _gsxrendergalleryTabsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, idp s
 	return _gsxgw.Err()
 }
 
-//line gallery.gsx:528:1
+//line gallery.gsx:530:1
 func galleryNavigationCard() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -1565,19 +1568,19 @@ func _gsxrendergalleryNavigationCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer)
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line gallery.gsx:529:2
+//line gallery.gsx:531:2
 	_gsxgw.NodeResult(_gsxrenderCard(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:530:3
+//line gallery.gsx:532:3
 		_gsxgw.NodeResult(_gsxrenderCardHeader(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:531:4
+//line gallery.gsx:533:4
 			_gsxgw.NodeResult(_gsxrenderCardTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Navigation")
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:532:4
+//line gallery.gsx:534:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Breadcrumbs, menus, and pagination.")
@@ -1585,19 +1588,19 @@ func _gsxrendergalleryNavigationCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer)
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
-//line gallery.gsx:534:3
+//line gallery.gsx:536:3
 		_gsxgw.NodeResult(_gsxrenderCardContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:535:4
+//line gallery.gsx:537:4
 			_gsxgw.NodeResult(_gsxrenderBreadcrumb(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:536:5
+//line gallery.gsx:538:5
 				_gsxgw.NodeResult(_gsxrenderBreadcrumbList(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:537:6
+//line gallery.gsx:539:6
 					_gsxgw.NodeResult(_gsxrenderBreadcrumbItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:538:7
+//line gallery.gsx:540:7
 						_gsxgw.NodeResult(_gsxrenderBreadcrumbLink(ctx, _gsxgw, "#", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Home")
@@ -1605,21 +1608,21 @@ func _gsxrendergalleryNavigationCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer)
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:540:6
+//line gallery.gsx:542:6
 					_gsxgw.NodeResult(_gsxrenderBreadcrumbSeparator(ctx, _gsxgw, nil, nil))
-//line gallery.gsx:541:6
+//line gallery.gsx:543:6
 					_gsxgw.NodeResult(_gsxrenderBreadcrumbItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:542:7
+//line gallery.gsx:544:7
 						_gsxgw.NodeResult(_gsxrenderBreadcrumbEllipsis(ctx, _gsxgw, nil))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:544:6
+//line gallery.gsx:546:6
 					_gsxgw.NodeResult(_gsxrenderBreadcrumbSeparator(ctx, _gsxgw, nil, nil))
-//line gallery.gsx:545:6
+//line gallery.gsx:547:6
 					_gsxgw.NodeResult(_gsxrenderBreadcrumbItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:546:7
+//line gallery.gsx:548:7
 						_gsxgw.NodeResult(_gsxrenderBreadcrumbLink(ctx, _gsxgw, "#", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Components")
@@ -1627,12 +1630,12 @@ func _gsxrendergalleryNavigationCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer)
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:548:6
+//line gallery.gsx:550:6
 					_gsxgw.NodeResult(_gsxrenderBreadcrumbSeparator(ctx, _gsxgw, nil, nil))
-//line gallery.gsx:549:6
+//line gallery.gsx:551:6
 					_gsxgw.NodeResult(_gsxrenderBreadcrumbItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:550:7
+//line gallery.gsx:552:7
 						_gsxgw.NodeResult(_gsxrenderBreadcrumbPage(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Gallery")
@@ -1644,16 +1647,16 @@ func _gsxrendergalleryNavigationCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer)
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:554:4
+//line gallery.gsx:556:4
 			_gsxgw.NodeResult(_gsxrenderNavigationMenu(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:555:5
+//line gallery.gsx:557:5
 				_gsxgw.NodeResult(_gsxrenderNavigationMenuList(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:556:6
+//line gallery.gsx:558:6
 					_gsxgw.NodeResult(_gsxrenderNavigationMenuItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:557:7
+//line gallery.gsx:559:7
 						_gsxgw.NodeResult(_gsxrenderNavigationMenuLink(ctx, _gsxgw, true, "trigger", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Home")
@@ -1661,35 +1664,35 @@ func _gsxrendergalleryNavigationCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer)
 						}), _gsxrt.Attrs{{Key: "href", Value: "#"}}))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:559:6
+//line gallery.gsx:561:6
 					_gsxgw.NodeResult(_gsxrenderNavigationMenuItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:560:7
+//line gallery.gsx:562:7
 						_gsxgw.NodeResult(_gsxrenderNavigationMenuTrigger(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Components")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:561:7
+//line gallery.gsx:563:7
 						_gsxgw.NodeResult(_gsxrenderNavigationMenuContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:562:8
+//line gallery.gsx:564:8
 							_gsxgw.S("<div class=\"grid w-64 gap-2\">")
-//line gallery.gsx:563:9
+//line gallery.gsx:565:9
 							_gsxgw.NodeResult(_gsxrenderNavigationMenuLink(ctx, _gsxgw, false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:564:10
+//line gallery.gsx:566:10
 								_gsxgw.S("<div class=\"text-sm font-medium\">Dialog</div>")
-//line gallery.gsx:565:10
+//line gallery.gsx:567:10
 								_gsxgw.S("<div class=\"text-muted-foreground\">A window overlaid on the page.</div>")
 								return _gsxgw.Err()
 							}), _gsxrt.Attrs{{Key: "href", Value: "#"}}))
-//line gallery.gsx:567:9
+//line gallery.gsx:569:9
 							_gsxgw.NodeResult(_gsxrenderNavigationMenuLink(ctx, _gsxgw, false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:568:10
+//line gallery.gsx:570:10
 								_gsxgw.S("<div class=\"text-sm font-medium\">Tooltip</div>")
-//line gallery.gsx:569:10
+//line gallery.gsx:571:10
 								_gsxgw.S("<div class=\"text-muted-foreground\">A popup shown on hover.</div>")
 								return _gsxgw.Err()
 							}), _gsxrt.Attrs{{Key: "href", Value: "#"}}))
@@ -1698,10 +1701,10 @@ func _gsxrendergalleryNavigationCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer)
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:574:6
+//line gallery.gsx:576:6
 					_gsxgw.NodeResult(_gsxrenderNavigationMenuItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:575:7
+//line gallery.gsx:577:7
 						_gsxgw.NodeResult(_gsxrenderNavigationMenuLink(ctx, _gsxgw, false, "trigger", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Docs")
@@ -1709,29 +1712,29 @@ func _gsxrendergalleryNavigationCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer)
 						}), _gsxrt.Attrs{{Key: "href", Value: "#"}}))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:577:6
+//line gallery.gsx:579:6
 					_gsxgw.NodeResult(_gsxrenderNavigationMenuIndicator(ctx, _gsxgw, nil))
 					return _gsxgw.Err()
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:580:4
+//line gallery.gsx:582:4
 			_gsxgw.NodeResult(_gsxrenderPagination(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:581:5
+//line gallery.gsx:583:5
 				_gsxgw.NodeResult(_gsxrenderPaginationContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:582:6
+//line gallery.gsx:584:6
 					_gsxgw.NodeResult(_gsxrenderPaginationItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:583:7
+//line gallery.gsx:585:7
 						_gsxgw.NodeResult(_gsxrenderPaginationPrevious(ctx, _gsxgw, "#", nil))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:585:6
+//line gallery.gsx:587:6
 					_gsxgw.NodeResult(_gsxrenderPaginationItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:586:7
+//line gallery.gsx:588:7
 						_gsxgw.NodeResult(_gsxrenderPaginationLink(ctx, _gsxgw, "#", false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("1")
@@ -1739,10 +1742,10 @@ func _gsxrendergalleryNavigationCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer)
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:588:6
+//line gallery.gsx:590:6
 					_gsxgw.NodeResult(_gsxrenderPaginationItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:589:7
+//line gallery.gsx:591:7
 						_gsxgw.NodeResult(_gsxrenderPaginationLink(ctx, _gsxgw, "#", true, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("2")
@@ -1750,10 +1753,10 @@ func _gsxrendergalleryNavigationCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer)
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:591:6
+//line gallery.gsx:593:6
 					_gsxgw.NodeResult(_gsxrenderPaginationItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:592:7
+//line gallery.gsx:594:7
 						_gsxgw.NodeResult(_gsxrenderPaginationLink(ctx, _gsxgw, "#", false, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("3")
@@ -1761,17 +1764,17 @@ func _gsxrendergalleryNavigationCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer)
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:594:6
+//line gallery.gsx:596:6
 					_gsxgw.NodeResult(_gsxrenderPaginationItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:595:7
+//line gallery.gsx:597:7
 						_gsxgw.NodeResult(_gsxrenderPaginationEllipsis(ctx, _gsxgw, nil))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:597:6
+//line gallery.gsx:599:6
 					_gsxgw.NodeResult(_gsxrenderPaginationItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:598:7
+//line gallery.gsx:600:7
 						_gsxgw.NodeResult(_gsxrenderPaginationNext(ctx, _gsxgw, "#", nil))
 						return _gsxgw.Err()
 					}), nil))
@@ -1786,7 +1789,7 @@ func _gsxrendergalleryNavigationCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer)
 	return _gsxgw.Err()
 }
 
-//line gallery.gsx:606:1
+//line gallery.gsx:608:1
 func galleryControlsCard(idp string) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -1798,19 +1801,19 @@ func _gsxrendergalleryControlsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line gallery.gsx:607:2
+//line gallery.gsx:609:2
 	_gsxgw.NodeResult(_gsxrenderCard(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:608:3
+//line gallery.gsx:610:3
 		_gsxgw.NodeResult(_gsxrenderCardHeader(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:609:4
+//line gallery.gsx:611:4
 			_gsxgw.NodeResult(_gsxrenderCardTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Editor controls")
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:610:4
+//line gallery.gsx:612:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Toggles, groups, and composed inputs.")
@@ -1818,64 +1821,64 @@ func _gsxrendergalleryControlsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
-//line gallery.gsx:612:3
+//line gallery.gsx:614:3
 		_gsxgw.NodeResult(_gsxrenderCardContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:613:4
+//line gallery.gsx:615:4
 			_gsxgw.S("<div class=\"flex flex-wrap items-center gap-3\">")
-//line gallery.gsx:614:5
+//line gallery.gsx:616:5
 			_gsxgw.NodeResult(_gsxrenderToggle(ctx, _gsxgw, true, "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:615:6
+//line gallery.gsx:617:6
 				_gsxgw.Node(ctx, icon.Bold())
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "aria-label", Value: "Toggle bold"}}))
-//line gallery.gsx:617:5
+//line gallery.gsx:619:5
 			_gsxgw.NodeResult(_gsxrenderToggle(ctx, _gsxgw, false, "outline", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:618:6
+//line gallery.gsx:620:6
 				_gsxgw.Node(ctx, icon.Italic())
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "aria-label", Value: "Toggle italic"}}))
-//line gallery.gsx:620:5
+//line gallery.gsx:622:5
 			_gsxgw.NodeResult(_gsxrenderToggleGroup(ctx, _gsxgw, "multiple", "outline", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:621:6
+//line gallery.gsx:623:6
 				_gsxgw.NodeResult(_gsxrenderToggleGroupItem(ctx, _gsxgw, "multiple", "outline", "", "", true, "bold", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:622:7
+//line gallery.gsx:624:7
 					_gsxgw.Node(ctx, icon.Bold())
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "aria-label", Value: "Toggle bold"}}))
-//line gallery.gsx:624:6
+//line gallery.gsx:626:6
 				_gsxgw.NodeResult(_gsxrenderToggleGroupItem(ctx, _gsxgw, "multiple", "outline", "", "", false, "italic", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:625:7
+//line gallery.gsx:627:7
 					_gsxgw.Node(ctx, icon.Italic())
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "aria-label", Value: "Toggle italic"}}))
-//line gallery.gsx:627:6
+//line gallery.gsx:629:6
 				_gsxgw.NodeResult(_gsxrenderToggleGroupItem(ctx, _gsxgw, "multiple", "outline", "", "", false, "underline", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:628:7
+//line gallery.gsx:630:7
 					_gsxgw.Node(ctx, icon.Underline())
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "aria-label", Value: "Toggle underline"}}))
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "aria-label", Value: "Text formatting"}}))
 			_gsxgw.S("</div>")
-//line gallery.gsx:632:4
+//line gallery.gsx:634:4
 			_gsxgw.S("<div class=\"flex flex-wrap items-start gap-3\">")
-//line gallery.gsx:633:5
+//line gallery.gsx:635:5
 			_gsxgw.NodeResult(_gsxrenderButtonGroup(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:634:6
+//line gallery.gsx:636:6
 				_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Archive")
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:635:6
+//line gallery.gsx:637:6
 				_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Report")
@@ -1883,43 +1886,43 @@ func _gsxrendergalleryControlsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:637:5
+//line gallery.gsx:639:5
 			_gsxgw.NodeResult(_gsxrenderButtonGroup(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:638:6
+//line gallery.gsx:640:6
 				_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:639:7
+//line gallery.gsx:641:7
 					_gsxgw.Node(ctx, icon.Minus())
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "aria-label", Value: "Decrease quantity"}}))
-//line gallery.gsx:641:6
+//line gallery.gsx:643:6
 				_gsxgw.NodeResult(_gsxrenderButtonGroupText(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("42")
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:642:6
+//line gallery.gsx:644:6
 				_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "icon", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:643:7
+//line gallery.gsx:645:7
 					_gsxgw.Node(ctx, icon.Plus())
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "aria-label", Value: "Increase quantity"}}))
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "aria-label", Value: "Quantity"}}))
-//line gallery.gsx:646:5
+//line gallery.gsx:648:5
 			_gsxgw.NodeResult(_gsxrenderButtonGroup(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:647:6
+//line gallery.gsx:649:6
 				_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "secondary", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Copy")
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:648:6
+//line gallery.gsx:650:6
 				_gsxgw.NodeResult(_gsxrenderButtonGroupSeparator(ctx, _gsxgw, "", nil))
-//line gallery.gsx:649:6
+//line gallery.gsx:651:6
 				_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "secondary", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Paste")
@@ -1928,25 +1931,25 @@ func _gsxrendergalleryControlsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 				return _gsxgw.Err()
 			}), nil))
 			_gsxgw.S("</div>")
-//line gallery.gsx:652:4
+//line gallery.gsx:654:4
 			_gsxgw.NodeResult(_gsxrenderInputGroup(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:653:5
+//line gallery.gsx:655:5
 				_gsxgw.NodeResult(_gsxrenderInputGroupAddon(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:654:6
+//line gallery.gsx:656:6
 					_gsxgw.Node(ctx, icon.Search(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:656:5
+//line gallery.gsx:658:5
 				_gsxgw.NodeResult(_gsxrenderInputGroupInput(ctx, _gsxgw, _gsxrt.Attrs{{Key: "placeholder", Value: "Search projects..."}}))
-//line gallery.gsx:657:5
+//line gallery.gsx:659:5
 				_gsxgw.NodeResult(_gsxrenderInputGroupAddon(ctx, _gsxgw, "inline-end", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:658:6
+//line gallery.gsx:660:6
 					_gsxgw.NodeResult(_gsxrenderInputGroupButton(ctx, _gsxgw, "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:659:7
+//line gallery.gsx:661:7
 						_gsxgw.Node(ctx, icon.Send())
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "aria-label", Value: "Send"}}))
@@ -1954,82 +1957,82 @@ func _gsxrendergalleryControlsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:663:4
+//line gallery.gsx:665:4
 			_gsxgw.S("<div class=\"flex flex-col gap-2\">")
-//line gallery.gsx:664:5
+//line gallery.gsx:666:5
 			_gsxgw.NodeResult(_gsxrenderLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Verification code")
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:665:5
+//line gallery.gsx:667:5
 			_gsxgw.NodeResult(_gsxrenderInputOTP(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:666:6
+//line gallery.gsx:668:6
 				_gsxgw.NodeResult(_gsxrenderInputOTPGroup(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:667:7
-					_gsxgw.NodeResult(_gsxrenderInputOTPSlot(ctx, _gsxgw, nil))
-//line gallery.gsx:668:7
-					_gsxgw.NodeResult(_gsxrenderInputOTPSlot(ctx, _gsxgw, nil))
 //line gallery.gsx:669:7
+					_gsxgw.NodeResult(_gsxrenderInputOTPSlot(ctx, _gsxgw, nil))
+//line gallery.gsx:670:7
+					_gsxgw.NodeResult(_gsxrenderInputOTPSlot(ctx, _gsxgw, nil))
+//line gallery.gsx:671:7
 					_gsxgw.NodeResult(_gsxrenderInputOTPSlot(ctx, _gsxgw, nil))
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:671:6
+//line gallery.gsx:673:6
 				_gsxgw.NodeResult(_gsxrenderInputOTPSeparator(ctx, _gsxgw, nil))
-//line gallery.gsx:672:6
+//line gallery.gsx:674:6
 				_gsxgw.NodeResult(_gsxrenderInputOTPGroup(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:673:7
-					_gsxgw.NodeResult(_gsxrenderInputOTPSlot(ctx, _gsxgw, nil))
-//line gallery.gsx:674:7
-					_gsxgw.NodeResult(_gsxrenderInputOTPSlot(ctx, _gsxgw, nil))
 //line gallery.gsx:675:7
+					_gsxgw.NodeResult(_gsxrenderInputOTPSlot(ctx, _gsxgw, nil))
+//line gallery.gsx:676:7
+					_gsxgw.NodeResult(_gsxrenderInputOTPSlot(ctx, _gsxgw, nil))
+//line gallery.gsx:677:7
 					_gsxgw.NodeResult(_gsxrenderInputOTPSlot(ctx, _gsxgw, nil))
 					return _gsxgw.Err()
 				}), nil))
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "maxlength", Value: "6"}}))
 			_gsxgw.S("</div>")
-//line gallery.gsx:679:4
+//line gallery.gsx:681:4
 			_gsxgw.S("<div class=\"flex flex-col gap-2\">")
-//line gallery.gsx:680:5
+//line gallery.gsx:682:5
 			_gsxgw.NodeResult(_gsxrenderLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Framework")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "for", Value: idp + "-controls-framework"}}))
-//line gallery.gsx:681:5
+//line gallery.gsx:683:5
 			_gsxgw.NodeResult(_gsxrenderCombobox(ctx, _gsxgw, idp+"-controls-framework", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:682:6
+//line gallery.gsx:684:6
 				_gsxgw.NodeResult(_gsxrenderComboboxInput(ctx, _gsxgw, "Search framework...", true, false, false, nil, _gsxrt.Attrs{{Key: "id", Value: idp + "-controls-framework"}}))
-//line gallery.gsx:683:6
+//line gallery.gsx:685:6
 				_gsxgw.NodeResult(_gsxrenderComboboxContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:684:7
+//line gallery.gsx:686:7
 					_gsxgw.NodeResult(_gsxrenderComboboxList(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:685:8
+//line gallery.gsx:687:8
 						_gsxgw.NodeResult(_gsxrenderComboboxEmpty(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("No framework found.")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:686:8
+//line gallery.gsx:688:8
 						_gsxgw.NodeResult(_gsxrenderComboboxItem(ctx, _gsxgw, "next.js", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Next.js")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:687:8
+//line gallery.gsx:689:8
 						_gsxgw.NodeResult(_gsxrenderComboboxItem(ctx, _gsxgw, "sveltekit", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("SvelteKit")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:688:8
+//line gallery.gsx:690:8
 						_gsxgw.NodeResult(_gsxrenderComboboxItem(ctx, _gsxgw, "astro", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Astro")
@@ -2049,7 +2052,7 @@ func _gsxrendergalleryControlsCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 	return _gsxgw.Err()
 }
 
-//line gallery.gsx:697:1
+//line gallery.gsx:699:1
 func galleryOverlaysCard(idp string) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -2061,19 +2064,19 @@ func _gsxrendergalleryOverlaysCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line gallery.gsx:698:2
+//line gallery.gsx:700:2
 	_gsxgw.NodeResult(_gsxrenderCard(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:699:3
+//line gallery.gsx:701:3
 		_gsxgw.NodeResult(_gsxrenderCardHeader(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:700:4
+//line gallery.gsx:702:4
 			_gsxgw.NodeResult(_gsxrenderCardTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Overlays")
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:701:4
+//line gallery.gsx:703:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Dialogs, sheets, popovers, and the command palette.")
@@ -2081,33 +2084,33 @@ func _gsxrendergalleryOverlaysCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
-//line gallery.gsx:703:3
+//line gallery.gsx:705:3
 		_gsxgw.NodeResult(_gsxrenderCardContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:704:4
+//line gallery.gsx:706:4
 			_gsxgw.S("<div class=\"flex flex-wrap items-center gap-2\">")
-//line gallery.gsx:705:5
+//line gallery.gsx:707:5
 			_gsxgw.NodeResult(_gsxrenderDialog(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:706:6
+//line gallery.gsx:708:6
 				_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Edit profile")
 					return _gsxgw.Err()
 				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-slot-dialog-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
-//line gallery.gsx:714:6
+//line gallery.gsx:716:6
 				_gsxgw.NodeResult(_gsxrenderDialogContent(ctx, _gsxgw, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:715:7
+//line gallery.gsx:717:7
 					_gsxgw.NodeResult(_gsxrenderDialogHeader(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:716:8
+//line gallery.gsx:718:8
 						_gsxgw.NodeResult(_gsxrenderDialogTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Edit profile")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:717:8
+//line gallery.gsx:719:8
 						_gsxgw.NodeResult(_gsxrenderDialogDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Make changes to your profile here.")
@@ -2115,16 +2118,16 @@ func _gsxrendergalleryOverlaysCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:719:7
+//line gallery.gsx:721:7
 					_gsxgw.NodeResult(_gsxrenderDialogFooter(ctx, _gsxgw, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:720:8
+//line gallery.gsx:722:8
 						_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Cancel")
 							return _gsxgw.Err()
 						}), _gsxrt.Attrs{{Key: "data-gsxui-dialog-close", Value: _gsxrt.Toggle(true)}}))
-//line gallery.gsx:721:8
+//line gallery.gsx:723:8
 						_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Save changes")
@@ -2136,28 +2139,28 @@ func _gsxrendergalleryOverlaysCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:725:5
+//line gallery.gsx:727:5
 			_gsxgw.NodeResult(_gsxrenderAlertDialog(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:726:6
+//line gallery.gsx:728:6
 				_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Delete account")
 					return _gsxgw.Err()
 				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-slot-alert-dialog-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
-//line gallery.gsx:734:6
+//line gallery.gsx:736:6
 				_gsxgw.NodeResult(_gsxrenderAlertDialogContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:735:7
+//line gallery.gsx:737:7
 					_gsxgw.NodeResult(_gsxrenderAlertDialogHeader(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:736:8
+//line gallery.gsx:738:8
 						_gsxgw.NodeResult(_gsxrenderAlertDialogTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Are you absolutely sure?")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:737:8
+//line gallery.gsx:739:8
 						_gsxgw.NodeResult(_gsxrenderAlertDialogDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("This action cannot be undone.")
@@ -2165,16 +2168,16 @@ func _gsxrendergalleryOverlaysCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:739:7
+//line gallery.gsx:741:7
 					_gsxgw.NodeResult(_gsxrenderAlertDialogFooter(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:740:8
+//line gallery.gsx:742:8
 						_gsxgw.NodeResult(_gsxrenderAlertDialogCancel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Cancel")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:741:8
+//line gallery.gsx:743:8
 						_gsxgw.NodeResult(_gsxrenderAlertDialogAction(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Continue")
@@ -2186,28 +2189,28 @@ func _gsxrendergalleryOverlaysCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:745:5
+//line gallery.gsx:747:5
 			_gsxgw.NodeResult(_gsxrenderSheet(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:746:6
+//line gallery.gsx:748:6
 				_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Open sheet")
 					return _gsxgw.Err()
 				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-slot-sheet-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
-//line gallery.gsx:754:6
+//line gallery.gsx:756:6
 				_gsxgw.NodeResult(_gsxrenderSheetContent(ctx, _gsxgw, "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:755:7
+//line gallery.gsx:757:7
 					_gsxgw.NodeResult(_gsxrenderSheetHeader(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:756:8
+//line gallery.gsx:758:8
 						_gsxgw.NodeResult(_gsxrenderSheetTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Edit profile")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:757:8
+//line gallery.gsx:759:8
 						_gsxgw.NodeResult(_gsxrenderSheetDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Make changes to your profile here.")
@@ -2215,10 +2218,10 @@ func _gsxrendergalleryOverlaysCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:759:7
+//line gallery.gsx:761:7
 					_gsxgw.NodeResult(_gsxrenderSheetFooter(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:760:8
+//line gallery.gsx:762:8
 						_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Save changes")
@@ -2230,28 +2233,28 @@ func _gsxrendergalleryOverlaysCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:764:5
+//line gallery.gsx:766:5
 			_gsxgw.NodeResult(_gsxrenderDrawer(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:765:6
+//line gallery.gsx:767:6
 				_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Open drawer")
 					return _gsxgw.Err()
 				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-slot-drawer-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-haspopup", Value: "dialog"}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
-//line gallery.gsx:773:6
+//line gallery.gsx:775:6
 				_gsxgw.NodeResult(_gsxrenderDrawerContent(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:774:7
+//line gallery.gsx:776:7
 					_gsxgw.NodeResult(_gsxrenderDrawerHeader(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:775:8
+//line gallery.gsx:777:8
 						_gsxgw.NodeResult(_gsxrenderDrawerTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Move goal")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:776:8
+//line gallery.gsx:778:8
 						_gsxgw.NodeResult(_gsxrenderDrawerDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Set your daily activity goal.")
@@ -2259,16 +2262,16 @@ func _gsxrendergalleryOverlaysCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:778:7
+//line gallery.gsx:780:7
 					_gsxgw.NodeResult(_gsxrenderDrawerFooter(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:779:8
+//line gallery.gsx:781:8
 						_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Submit")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:780:8
+//line gallery.gsx:782:8
 						_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 							_gsxgw.S("Cancel")
@@ -2280,47 +2283,47 @@ func _gsxrendergalleryOverlaysCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:784:5
+//line gallery.gsx:786:5
 			_gsxgw.NodeResult(_gsxrenderPopover(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:785:6
+//line gallery.gsx:787:6
 				_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Dimensions")
 					return _gsxgw.Err()
 				}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-slot-popover-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "aria-expanded", Value: "false"}})))
-//line gallery.gsx:792:6
+//line gallery.gsx:794:6
 				_gsxgw.NodeResult(_gsxrenderPopoverContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:793:7
+//line gallery.gsx:795:7
 					_gsxgw.S("<div class=\"grid gap-3\">")
-//line gallery.gsx:794:8
+//line gallery.gsx:796:8
 					_gsxgw.S("<p class=\"text-sm text-muted-foreground\">Set the dimensions for the layer.</p>")
-//line gallery.gsx:795:8
+//line gallery.gsx:797:8
 					_gsxgw.S("<div class=\"grid grid-cols-3 items-center gap-3\">")
-//line gallery.gsx:796:9
+//line gallery.gsx:798:9
 					_gsxgw.NodeResult(_gsxrenderLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Width")
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "for", Value: idp + "-overlay-width"}}))
-//line gallery.gsx:797:9
+//line gallery.gsx:799:9
 					_gsxgw.NodeResult(_gsxrenderInput(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: idp + "-overlay-width"}}, _gsxrt.Attrs{{Key: "value", Value: "100%"}}, _gsxrt.Attrs{{Key: "class", Value: "col-span-2"}})))
 					_gsxgw.S("</div></div>")
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "class", Value: "w-72"}}))
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:802:5
+//line gallery.gsx:804:5
 			_gsxgw.NodeResult(_gsxrenderTooltip(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:803:6
+//line gallery.gsx:805:6
 				_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "outline", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Hover me")
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "data-gsxui-slot-tooltip-trigger", Value: _gsxrt.Toggle(true)}}))
-//line gallery.gsx:804:6
+//line gallery.gsx:806:6
 				_gsxgw.NodeResult(_gsxrenderTooltipContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Add to library")
@@ -2329,56 +2332,56 @@ func _gsxrendergalleryOverlaysCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 				return _gsxgw.Err()
 			}), nil))
 			_gsxgw.S("</div>")
-//line gallery.gsx:807:4
+//line gallery.gsx:809:4
 			_gsxgw.NodeResult(_gsxrenderCommand(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:808:5
+//line gallery.gsx:810:5
 				_gsxgw.NodeResult(_gsxrenderCommandInput(ctx, _gsxgw, "Type a command or search...", nil))
-//line gallery.gsx:809:5
+//line gallery.gsx:811:5
 				_gsxgw.NodeResult(_gsxrenderCommandList(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:810:6
+//line gallery.gsx:812:6
 					_gsxgw.NodeResult(_gsxrenderCommandEmpty(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("No results found.")
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:811:6
+//line gallery.gsx:813:6
 					_gsxgw.NodeResult(_gsxrenderCommandGroup(ctx, _gsxgw, "Suggestions", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:812:7
+//line gallery.gsx:814:7
 						_gsxgw.NodeResult(_gsxrenderCommandItem(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:813:8
+//line gallery.gsx:815:8
 							_gsxgw.Node(ctx, icon.Calendar())
-//line gallery.gsx:814:8
+//line gallery.gsx:816:8
 							_gsxgw.S("<span>Calendar</span>")
 							return _gsxgw.Err()
 						}), nil))
-//line gallery.gsx:816:7
+//line gallery.gsx:818:7
 						_gsxgw.NodeResult(_gsxrenderCommandItem(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:817:8
+//line gallery.gsx:819:8
 							_gsxgw.Node(ctx, icon.Smile())
-//line gallery.gsx:818:8
+//line gallery.gsx:820:8
 							_gsxgw.S("<span>Search Emoji</span>")
 							return _gsxgw.Err()
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:821:6
+//line gallery.gsx:823:6
 					_gsxgw.NodeResult(_gsxrenderCommandSeparator(ctx, _gsxgw, nil))
-//line gallery.gsx:822:6
+//line gallery.gsx:824:6
 					_gsxgw.NodeResult(_gsxrenderCommandGroup(ctx, _gsxgw, "Settings", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:823:7
+//line gallery.gsx:825:7
 						_gsxgw.NodeResult(_gsxrenderCommandItem(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:824:8
-							_gsxgw.Node(ctx, icon.User())
-//line gallery.gsx:825:8
-							_gsxgw.S("<span>Profile</span>")
 //line gallery.gsx:826:8
+							_gsxgw.Node(ctx, icon.User())
+//line gallery.gsx:827:8
+							_gsxgw.S("<span>Profile</span>")
+//line gallery.gsx:828:8
 							_gsxgw.NodeResult(_gsxrenderCommandShortcut(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("⌘P")
@@ -2399,7 +2402,7 @@ func _gsxrendergalleryOverlaysCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 	return _gsxgw.Err()
 }
 
-//line gallery.gsx:835:1
+//line gallery.gsx:837:1
 func galleryEmptyCard() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -2411,32 +2414,32 @@ func _gsxrendergalleryEmptyCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line gallery.gsx:836:2
+//line gallery.gsx:838:2
 	_gsxgw.NodeResult(_gsxrenderCard(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:837:3
+//line gallery.gsx:839:3
 		_gsxgw.NodeResult(_gsxrenderCardContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:838:4
+//line gallery.gsx:840:4
 			_gsxgw.NodeResult(_gsxrenderEmpty(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:839:5
+//line gallery.gsx:841:5
 				_gsxgw.NodeResult(_gsxrenderEmptyHeader(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:840:6
+//line gallery.gsx:842:6
 					_gsxgw.NodeResult(_gsxrenderEmptyMedia(ctx, _gsxgw, "icon", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:841:7
+//line gallery.gsx:843:7
 						_gsxgw.Node(ctx, icon.Inbox())
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:843:6
+//line gallery.gsx:845:6
 					_gsxgw.NodeResult(_gsxrenderEmptyTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("No messages")
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:844:6
+//line gallery.gsx:846:6
 					_gsxgw.NodeResult(_gsxrenderEmptyDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("You're all caught up. New messages will appear here.")
@@ -2444,10 +2447,10 @@ func _gsxrendergalleryEmptyCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:846:5
+//line gallery.gsx:848:5
 				_gsxgw.NodeResult(_gsxrenderEmptyContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:847:6
+//line gallery.gsx:849:6
 					_gsxgw.NodeResult(_gsxrenderButton(ctx, _gsxgw, "", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Compose message")
@@ -2457,23 +2460,23 @@ func _gsxrendergalleryEmptyCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:850:4
+//line gallery.gsx:852:4
 			_gsxgw.NodeResult(_gsxrenderCollapsible(ctx, _gsxgw, true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:851:5
+//line gallery.gsx:853:5
 				_gsxgw.NodeResult(_gsxrenderCollapsibleTrigger(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("3 starred repositories")
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "class", Value: "flex cursor-default items-center justify-between gap-4 px-1 text-sm font-semibold"}}))
-//line gallery.gsx:854:5
+//line gallery.gsx:856:5
 				_gsxgw.S("<div class=\"rounded-md border px-4 py-2 font-mono text-sm\">gsxhq/gsx</div>")
-//line gallery.gsx:855:5
+//line gallery.gsx:857:5
 				_gsxgw.NodeResult(_gsxrenderCollapsibleContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:856:6
+//line gallery.gsx:858:6
 					_gsxgw.S("<div class=\"rounded-md border px-4 py-2 font-mono text-sm\">gsxhq/gsxui</div>")
-//line gallery.gsx:857:6
+//line gallery.gsx:859:6
 					_gsxgw.S("<div class=\"rounded-md border px-4 py-2 font-mono text-sm\">gsxhq/vite</div>")
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "class", Value: "flex flex-col gap-2"}}))
@@ -2486,7 +2489,7 @@ func _gsxrendergalleryEmptyCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 	return _gsxgw.Err()
 }
 
-//line gallery.gsx:864:1
+//line gallery.gsx:866:1
 func galleryMediaCard() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -2498,19 +2501,19 @@ func _gsxrendergalleryMediaCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line gallery.gsx:865:2
+//line gallery.gsx:867:2
 	_gsxgw.NodeResult(_gsxrenderCard(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:866:3
+//line gallery.gsx:868:3
 		_gsxgw.NodeResult(_gsxrenderCardHeader(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:867:4
+//line gallery.gsx:869:4
 			_gsxgw.NodeResult(_gsxrenderCardTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Media and layout")
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:868:4
+//line gallery.gsx:870:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Ratio boxes, scroll areas, carousels, and panes.")
@@ -2518,64 +2521,64 @@ func _gsxrendergalleryMediaCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
-//line gallery.gsx:870:3
+//line gallery.gsx:872:3
 		_gsxgw.NodeResult(_gsxrenderCardContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:871:4
+//line gallery.gsx:873:4
 			_gsxgw.NodeResult(_gsxrenderAspectRatio(ctx, _gsxgw, "16 / 9", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("16 / 9")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "flex items-center justify-center rounded-lg border bg-muted text-sm text-muted-foreground"}}))
-//line gallery.gsx:877:4
+//line gallery.gsx:879:4
 			_gsxgw.NodeResult(_gsxrenderScrollArea(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:878:5
+//line gallery.gsx:880:5
 				_gsxgw.S("<div class=\"p-4\">")
-//line gallery.gsx:879:6
+//line gallery.gsx:881:6
 				_gsxgw.S("<h4 class=\"mb-3 text-sm leading-none font-medium\">Releases</h4>")
-//line gallery.gsx:880:6
+//line gallery.gsx:882:6
 				for _, tag := range []string{
 					"v1.2.0-beta.5", "v1.2.0-beta.4", "v1.2.0-beta.3",
 					"v1.2.0-beta.2", "v1.2.0-beta.1", "v1.1.9", "v1.1.8", "v1.1.7",
 				} {
-//line gallery.gsx:884:7
+//line gallery.gsx:886:7
 					_gsxgw.S("<div>")
-//line gallery.gsx:885:8
+//line gallery.gsx:887:8
 					_gsxgw.S("<div class=\"text-sm\">")
-//line gallery.gsx:885:29
+//line gallery.gsx:887:29
 					_gsxgw.Text(string(tag))
 					_gsxgw.S("</div>")
-//line gallery.gsx:886:8
+//line gallery.gsx:888:8
 					_gsxgw.NodeResult(_gsxrenderSeparator(ctx, _gsxgw, "", _gsxrt.Attrs{{Key: "class", Value: "my-2"}}))
 					_gsxgw.S("</div>")
 				}
 				_gsxgw.S("</div>")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "h-40 w-full rounded-md border"}}))
-//line gallery.gsx:891:4
+//line gallery.gsx:893:4
 			_gsxgw.NodeResult(_gsxrenderCarousel(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:892:5
+//line gallery.gsx:894:5
 				_gsxgw.NodeResult(_gsxrenderCarouselContent(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:893:6
+//line gallery.gsx:895:6
 					for _, n := range []int{1, 2, 3} {
-//line gallery.gsx:894:7
+//line gallery.gsx:896:7
 						_gsxgw.NodeResult(_gsxrenderCarouselItem(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:895:8
+//line gallery.gsx:897:8
 							_gsxgw.S("<div class=\"p-1\">")
-//line gallery.gsx:896:9
+//line gallery.gsx:898:9
 							_gsxgw.NodeResult(_gsxrenderCard(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:897:10
+//line gallery.gsx:899:10
 								_gsxgw.NodeResult(_gsxrenderCardContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
 									var _gsxnum [32]byte
-//line gallery.gsx:898:11
+//line gallery.gsx:900:11
 									_gsxgw.S("<span class=\"text-4xl font-semibold\">")
-//line gallery.gsx:898:48
+//line gallery.gsx:900:48
 									_gsxgw.IntInto(_gsxnum[:], int64(n))
 									_gsxgw.S("</span>")
 									return _gsxgw.Err()
@@ -2588,32 +2591,32 @@ func _gsxrendergalleryMediaCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 					}
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:905:5
+//line gallery.gsx:907:5
 				_gsxgw.NodeResult(_gsxrenderCarouselPrevious(ctx, _gsxgw, "", nil))
-//line gallery.gsx:906:5
+//line gallery.gsx:908:5
 				_gsxgw.NodeResult(_gsxrenderCarouselNext(ctx, _gsxgw, "", nil))
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "mx-auto w-full max-w-[240px]"}}))
-//line gallery.gsx:908:4
+//line gallery.gsx:910:4
 			_gsxgw.NodeResult(_gsxrenderResizablePanelGroup(ctx, _gsxgw, "horizontal", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:909:5
+//line gallery.gsx:911:5
 				_gsxgw.NodeResult(_gsxrenderResizablePanel(ctx, _gsxgw, "50%", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:910:6
+//line gallery.gsx:912:6
 					_gsxgw.S("<div class=\"flex h-24 items-center justify-center p-4\">")
-//line gallery.gsx:911:7
+//line gallery.gsx:913:7
 					_gsxgw.S("<span class=\"text-sm font-semibold\">One</span></div>")
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:914:5
+//line gallery.gsx:916:5
 				_gsxgw.NodeResult(_gsxrenderResizableHandle(ctx, _gsxgw, "horizontal", true, nil))
-//line gallery.gsx:915:5
+//line gallery.gsx:917:5
 				_gsxgw.NodeResult(_gsxrenderResizablePanel(ctx, _gsxgw, "50%", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:916:6
+//line gallery.gsx:918:6
 					_gsxgw.S("<div class=\"flex h-24 items-center justify-center p-4\">")
-//line gallery.gsx:917:7
+//line gallery.gsx:919:7
 					_gsxgw.S("<span class=\"text-sm font-semibold\">Two</span></div>")
 					return _gsxgw.Err()
 				}), nil))
@@ -2626,7 +2629,7 @@ func _gsxrendergalleryMediaCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 	return _gsxgw.Err()
 }
 
-//line gallery.gsx:925:1
+//line gallery.gsx:927:1
 func gallerySidebarCard(idp string) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -2638,19 +2641,19 @@ func _gsxrendergallerySidebarCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, id
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line gallery.gsx:926:2
+//line gallery.gsx:928:2
 	_gsxgw.NodeResult(_gsxrenderCard(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:927:3
+//line gallery.gsx:929:3
 		_gsxgw.NodeResult(_gsxrenderCardHeader(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:928:4
+//line gallery.gsx:930:4
 			_gsxgw.NodeResult(_gsxrenderCardTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Application shell")
 				return _gsxgw.Err()
 			}), nil))
-//line gallery.gsx:929:4
+//line gallery.gsx:931:4
 			_gsxgw.NodeResult(_gsxrenderCardDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 				_gsxgw.S("Sidebar navigation with inset content.")
@@ -2658,73 +2661,73 @@ func _gsxrendergallerySidebarCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, id
 			}), nil))
 			return _gsxgw.Err()
 		}), nil))
-//line gallery.gsx:931:3
+//line gallery.gsx:933:3
 		_gsxgw.NodeResult(_gsxrenderCardContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:935:4
+//line gallery.gsx:937:4
 			_gsxgw.S("<div class=\"relative isolate transform-gpu overflow-hidden rounded-lg border\">")
-//line gallery.gsx:936:5
+//line gallery.gsx:938:5
 			_gsxgw.NodeResult(_gsxrenderSidebarProvider(ctx, _gsxgw, true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:937:5
+//line gallery.gsx:939:5
 				_gsxgw.NodeResult(_gsxrenderSidebar(ctx, _gsxgw, true, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:938:6
+//line gallery.gsx:940:6
 					_gsxgw.NodeResult(_gsxrenderSidebarHeader(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:939:7
+//line gallery.gsx:941:7
 						_gsxgw.S("<div class=\"px-2 py-1 text-sm font-semibold\">Acme Inc</div>")
-//line gallery.gsx:940:7
+//line gallery.gsx:942:7
 						_gsxgw.NodeResult(_gsxrenderSidebarInput(ctx, _gsxgw, _gsxrt.Attrs{{Key: "placeholder", Value: "Search navigation"}}))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:942:6
+//line gallery.gsx:944:6
 					_gsxgw.NodeResult(_gsxrenderSidebarSeparator(ctx, _gsxgw, nil))
-//line gallery.gsx:943:6
+//line gallery.gsx:945:6
 					_gsxgw.NodeResult(_gsxrenderSidebarContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:944:7
+//line gallery.gsx:946:7
 						_gsxgw.NodeResult(_gsxrenderSidebarGroup(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:945:8
+//line gallery.gsx:947:8
 							_gsxgw.NodeResult(_gsxrenderSidebarGroupLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 								_gsxgw.S("Application")
 								return _gsxgw.Err()
 							}), nil))
-//line gallery.gsx:946:8
+//line gallery.gsx:948:8
 							_gsxgw.NodeResult(_gsxrenderSidebarGroupContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:947:9
+//line gallery.gsx:949:9
 								_gsxgw.NodeResult(_gsxrenderSidebarMenu(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:948:10
+//line gallery.gsx:950:10
 									_gsxgw.NodeResult(_gsxrenderSidebarMenuItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:949:11
+//line gallery.gsx:951:11
 										_gsxgw.NodeResult(_gsxrenderSidebarMenuButton(ctx, _gsxgw, true, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 											_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:950:12
+//line gallery.gsx:952:12
 											_gsxgw.Node(ctx, icon.House())
-//line gallery.gsx:951:12
+//line gallery.gsx:953:12
 											_gsxgw.S("<span>Home</span>")
 											return _gsxgw.Err()
 										}), nil))
 										return _gsxgw.Err()
 									}), nil))
-//line gallery.gsx:954:10
+//line gallery.gsx:956:10
 									_gsxgw.NodeResult(_gsxrenderSidebarMenuItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:955:11
+//line gallery.gsx:957:11
 										_gsxgw.NodeResult(_gsxrenderSidebarMenuButton(ctx, _gsxgw, false, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 											_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:956:12
+//line gallery.gsx:958:12
 											_gsxgw.Node(ctx, icon.Inbox())
-//line gallery.gsx:957:12
+//line gallery.gsx:959:12
 											_gsxgw.S("<span>Inbox</span>")
 											return _gsxgw.Err()
 										}), nil))
-//line gallery.gsx:959:11
+//line gallery.gsx:961:11
 										_gsxgw.NodeResult(_gsxrenderSidebarMenuBadge(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 											_gsxgw := _gsxrt.W(_gsxw)
 											_gsxgw.S("24")
@@ -2732,15 +2735,15 @@ func _gsxrendergallerySidebarCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, id
 										}), nil))
 										return _gsxgw.Err()
 									}), nil))
-//line gallery.gsx:961:10
+//line gallery.gsx:963:10
 									_gsxgw.NodeResult(_gsxrenderSidebarMenuItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:962:11
+//line gallery.gsx:964:11
 										_gsxgw.NodeResult(_gsxrenderSidebarMenuButton(ctx, _gsxgw, false, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 											_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:963:12
+//line gallery.gsx:965:12
 											_gsxgw.Node(ctx, icon.Settings())
-//line gallery.gsx:964:12
+//line gallery.gsx:966:12
 											_gsxgw.S("<span>Settings</span>")
 											return _gsxgw.Err()
 										}), nil))
@@ -2754,21 +2757,21 @@ func _gsxrendergallerySidebarCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, id
 						}), nil))
 						return _gsxgw.Err()
 					}), nil))
-//line gallery.gsx:971:6
+//line gallery.gsx:973:6
 					_gsxgw.NodeResult(_gsxrenderSidebarFooter(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:972:7
+//line gallery.gsx:974:7
 						_gsxgw.NodeResult(_gsxrenderSidebarMenu(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:973:8
+//line gallery.gsx:975:8
 							_gsxgw.NodeResult(_gsxrenderSidebarMenuItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:974:9
+//line gallery.gsx:976:9
 								_gsxgw.NodeResult(_gsxrenderSidebarMenuButton(ctx, _gsxgw, false, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:975:10
+//line gallery.gsx:977:10
 									_gsxgw.Node(ctx, icon.User())
-//line gallery.gsx:976:10
+//line gallery.gsx:978:10
 									_gsxgw.S("<span>Account</span>")
 									return _gsxgw.Err()
 								}), nil))
@@ -2780,18 +2783,18 @@ func _gsxrendergallerySidebarCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, id
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:982:5
+//line gallery.gsx:984:5
 				_gsxgw.NodeResult(_gsxrenderSidebarInset(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:983:6
+//line gallery.gsx:985:6
 					_gsxgw.S("<header class=\"flex h-12 items-center gap-2 border-b px-4\">")
-//line gallery.gsx:984:7
+//line gallery.gsx:986:7
 					_gsxgw.NodeResult(_gsxrenderSidebarTrigger(ctx, _gsxgw, nil))
-//line gallery.gsx:985:7
+//line gallery.gsx:987:7
 					_gsxgw.S("<span class=\"text-sm text-muted-foreground\">Dashboard</span></header>")
-//line gallery.gsx:987:6
+//line gallery.gsx:989:6
 					_gsxgw.S("<div class=\"p-4 text-sm text-muted-foreground\">Overview of ")
-//line gallery.gsx:988:19
+//line gallery.gsx:990:19
 					_gsxgw.Text(string(idp))
 					_gsxgw.S(" workspace activity.</div>")
 					return _gsxgw.Err()

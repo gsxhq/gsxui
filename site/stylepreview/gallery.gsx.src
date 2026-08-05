@@ -111,6 +111,7 @@ component galleryLoginCard(idp string) {
 			</CardAction>
 		</CardHeader>
 		<CardContent>
+			<form>
 			<FieldGroup>
 				<Field>
 					<FieldLabel for={idp + "-login-email"}>Email</FieldLabel>
@@ -127,6 +128,7 @@ component galleryLoginCard(idp string) {
 					<Label for={idp + "-login-remember"}>Remember me for 30 days</Label>
 				</div>
 			</FieldGroup>
+			</form>
 		</CardContent>
 		<CardFooter class="flex-col gap-2 pb-4">
 			<Button class="w-full">Create account</Button>
