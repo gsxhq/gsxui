@@ -133,7 +133,13 @@ component siteLayout(title string, active string, mode layoutMode, toc []docTOCI
 			data-site-layout={mode}
 			class={bodyClass}
 			hx-boost:inherited="true"
-			hx-swap:inherited="outerMorph"
+			{/* transition:true wraps the morph in a View Transition, making the
+			   swap paint-atomic. Without it, idiomorph's attribute-by-attribute
+			   rewriting of reused nodes has paintable intermediate states — a
+			   popover surface whose popover/slot attributes are momentarily
+			   absent renders as a plain block for a frame (the "select flash"
+			   between /components/separator and /components/select). */}
+			hx-swap:inherited="outerMorph transition:true"
 		>
 			<header class={headerClass}>
 				<div class={headerContainerClass}>
@@ -238,7 +244,16 @@ component siteLayout(title string, active string, mode layoutMode, toc []docTOCI
 						</nav>
 					</aside>
 				} }
+				{/* The per-page id makes cross-page boosted morphs REPLACE main's
+				   subtree instead of pairing unrelated nodes: idiomorph refuses to
+				   morph across mismatched ids, and a wholesale insert lands with
+				   every attribute already present — no attribute-by-attribute
+				   rewrite window where a popover surface (its popover/slot
+				   attributes momentarily absent) paints as a plain block. The
+				   sidebar/header/TOC keep morphing and holding their state;
+				   same-page navigations keep morphing main too (same id). */}
 				<main
+					id={"site-main-" + active}
 					{ if mode == layoutDocs {
 						data-site-docs-article
 					} }
