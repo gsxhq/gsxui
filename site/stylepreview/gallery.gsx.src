@@ -112,22 +112,22 @@ component galleryLoginCard(idp string) {
 		</CardHeader>
 		<CardContent>
 			<form>
-			<FieldGroup>
-				<Field>
-					<FieldLabel for={idp + "-login-email"}>Email</FieldLabel>
-					<Input id={idp + "-login-email"} type="email" placeholder="m@example.com" autocomplete="email"/>
-					<FieldDescription>We never share your email with anyone.</FieldDescription>
-				</Field>
-				<Field>
-					<FieldLabel for={idp + "-login-password"}>Password</FieldLabel>
-					<Input id={idp + "-login-password"} type="password" value="" autocomplete="current-password"/>
-				</Field>
-				<FieldSeparator>or</FieldSeparator>
-				<div class="flex items-center gap-2">
-					<Checkbox id={idp + "-login-remember"} checked/>
-					<Label for={idp + "-login-remember"}>Remember me for 30 days</Label>
-				</div>
-			</FieldGroup>
+				<FieldGroup>
+					<Field>
+						<FieldLabel for={idp + "-login-email"}>Email</FieldLabel>
+						<Input id={idp + "-login-email"} type="email" placeholder="m@example.com" autocomplete="email"/>
+						<FieldDescription>We never share your email with anyone.</FieldDescription>
+					</Field>
+					<Field>
+						<FieldLabel for={idp + "-login-password"}>Password</FieldLabel>
+						<Input id={idp + "-login-password"} type="password" value="" autocomplete="current-password"/>
+					</Field>
+					<FieldSeparator>or</FieldSeparator>
+					<div class="flex items-center gap-2">
+						<Checkbox id={idp + "-login-remember"} checked/>
+						<Label for={idp + "-login-remember"}>Remember me for 30 days</Label>
+					</div>
+				</FieldGroup>
 			</form>
 		</CardContent>
 		<CardFooter class="flex-col gap-2 pb-4">

@@ -291,21 +291,21 @@ func _gsxrendergalleryLoginCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, idp 
 			_gsxgw := _gsxrt.W(_gsxw)
 //line gallery.gsx:114:4
 			_gsxgw.S("<form>")
-//line gallery.gsx:115:4
+//line gallery.gsx:115:5
 			_gsxgw.NodeResult(_gsxrenderFieldGroup(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:116:5
+//line gallery.gsx:116:6
 				_gsxgw.NodeResult(_gsxrenderField(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:117:6
+//line gallery.gsx:117:7
 					_gsxgw.NodeResult(_gsxrenderFieldLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Email")
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "for", Value: idp + "-login-email"}}))
-//line gallery.gsx:118:6
+//line gallery.gsx:118:7
 					_gsxgw.NodeResult(_gsxrenderInput(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: idp + "-login-email"}}, _gsxrt.Attrs{{Key: "type", Value: "email"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "m@example.com"}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "email"}})))
-//line gallery.gsx:119:6
+//line gallery.gsx:119:7
 					_gsxgw.NodeResult(_gsxrenderFieldDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("We never share your email with anyone.")
@@ -313,30 +313,30 @@ func _gsxrendergalleryLoginCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, idp 
 					}), nil))
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:121:5
+//line gallery.gsx:121:6
 				_gsxgw.NodeResult(_gsxrenderField(ctx, _gsxgw, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line gallery.gsx:122:6
+//line gallery.gsx:122:7
 					_gsxgw.NodeResult(_gsxrenderFieldLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
 						_gsxgw.S("Password")
 						return _gsxgw.Err()
 					}), _gsxrt.Attrs{{Key: "for", Value: idp + "-login-password"}}))
-//line gallery.gsx:123:6
+//line gallery.gsx:123:7
 					_gsxgw.NodeResult(_gsxrenderInput(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: idp + "-login-password"}}, _gsxrt.Attrs{{Key: "type", Value: "password"}}, _gsxrt.Attrs{{Key: "value", Value: ""}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "current-password"}})))
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:125:5
+//line gallery.gsx:125:6
 				_gsxgw.NodeResult(_gsxrenderFieldSeparator(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("or")
 					return _gsxgw.Err()
 				}), nil))
-//line gallery.gsx:126:5
+//line gallery.gsx:126:6
 				_gsxgw.S("<div class=\"flex items-center gap-2\">")
-//line gallery.gsx:127:6
+//line gallery.gsx:127:7
 				_gsxgw.NodeResult(_gsxrenderCheckbox(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: idp + "-login-remember"}}, _gsxrt.Attrs{{Key: "checked", Value: _gsxrt.Toggle(true)}})))
-//line gallery.gsx:128:6
+//line gallery.gsx:128:7
 				_gsxgw.NodeResult(_gsxrenderLabel(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Remember me for 30 days")
