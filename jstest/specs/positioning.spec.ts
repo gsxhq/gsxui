@@ -154,6 +154,40 @@ test("reposition listeners attach once per open and detach on close", async ({
   }
 });
 
+test("reposition listeners self-release when open content leaves the DOM", async ({
+  page,
+}) => {
+  // A swap (boosted navigation, htmx morph) can remove an OPEN popover's
+  // content without ever firing its close toggle — the release path. The
+  // engine's update() self-releases on the first scroll/resize that finds
+  // the content disconnected.
+  await page.goto("/x/popover/basic");
+  const client = await page.context().newCDPSession(page);
+  const countWindowListeners = async () => {
+    const { result } = await client.send("Runtime.evaluate", {
+      expression: "window",
+    });
+    const { listeners } = await client.send("DOMDebugger.getEventListeners", {
+      objectId: result.objectId!,
+    });
+    return listeners.filter((l) => l.type === "scroll" || l.type === "resize")
+      .length;
+  };
+
+  const baseline = await countWindowListeners();
+  await page.locator("[data-gsxui-slot-popover-trigger]").click();
+  const content = page.locator("[data-gsxui-slot-popover-content]");
+  await expect(content).toBeVisible();
+  expect(await countWindowListeners()).toBe(baseline + 2);
+
+  await content.evaluate((el) => el.remove());
+  await page.evaluate(() => window.dispatchEvent(new Event("resize")));
+  expect(
+    await countWindowListeners(),
+    "released on first update after disconnect",
+  ).toBe(baseline);
+});
+
 test("dropdown content start-aligns to the trigger's right edge under dir=rtl", async ({
   page,
 }) => {

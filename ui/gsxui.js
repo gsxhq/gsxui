@@ -265,7 +265,8 @@ export function position(content, anchor, opts = {}) {
     anchor instanceof Element
       ? () => anchor.getBoundingClientRect()
       : () => anchor;
-  const update = () =>
+  const update = () => {
+    if (!content.isConnected) return release(content);
     applyPlacement(content, anchorRect(), {
       side,
       align,
@@ -274,6 +275,7 @@ export function position(content, anchor, opts = {}) {
       flip,
       cap,
     });
+  };
   const onToggle = (e) => {
     if (e.newState === "closed") release(content);
   };
@@ -291,11 +293,10 @@ export function position(content, anchor, opts = {}) {
 
 // release detaches the reposition listeners and restores the authored
 // data-side. Idempotent; runs automatically on the content's close toggle.
-// Caveat: release() runs off the content's own close toggle. A content
-// element REMOVED from the DOM while open never fires toggle, leaking its
-// scroll/resize listeners and tracked entry — acceptable while the DOM is
-// server-rendered and static during an open popover; revisit if SPA-style
-// swaps ever land.
+// A content element REMOVED from the DOM while open (e.g. a boosted-swap
+// navigation mid-open) never fires that toggle; update() covers this by
+// self-releasing on the first scroll/resize that finds the content
+// disconnected — exactly the events the leaked entry is subscribed to.
 export function release(content) {
   const entry = tracked.get(content);
   if (!entry) return;
