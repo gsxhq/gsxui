@@ -113,9 +113,9 @@ func (rt Rtl) Page() _gsxrt.Node {
 			_gsxgw.S("<code>dir=\"ltr\"</code>: a code like ")
 //line rtl.gsx:69:11
 			_gsxgw.S("<code>482915</code> reads left-to-right even inside an RTL form, matching real Arabic and Hebrew UIs. And Sheet, Drawer, and Sidebar keep their ")
-//line rtl.gsx:70:48
+//line rtl.gsx:70:44
 			_gsxgw.S("<code>side=\"left\"</code>/")
-//line rtl.gsx:70:73
+//line rtl.gsx:70:69
 			_gsxgw.S("<code>side=\"right\"</code> prop")
 //line rtl.gsx:71:6
 			_gsxgw.S("<strong>physical</strong>, matching shadcn's ")
@@ -172,10 +172,10 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:103:5
 			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, rtlTOCItems[3], nil))
 //line rtl.gsx:104:5
-			_gsxgw.S("<p>The site's own Latin type is Geist. For Arabic content, pair it with")
-//line rtl.gsx:106:6
-			_gsxgw.S("<a href=\"https://fonts.google.com/noto/specimen/Noto+Sans+Arabic\" target=\"_blank\" rel=\"noreferrer\">Noto Sans Arabic</a>(a UI sans) or")
-//line rtl.gsx:108:6
+			_gsxgw.S("<p>The site's own Latin type is Geist. For Arabic content, pair it with ")
+//line rtl.gsx:106:11
+			_gsxgw.S("<a href=\"https://fonts.google.com/noto/specimen/Noto+Sans+Arabic\" target=\"_blank\" rel=\"noreferrer\">Noto Sans Arabic</a>(a UI sans) or ")
+//line rtl.gsx:108:9
 			_gsxgw.S("<a href=\"https://fonts.google.com/noto/specimen/Noto+Naskh+Arabic\" target=\"_blank\" rel=\"noreferrer\">Noto Naskh Arabic</a>(better for longer prose). Load the Arabic font as a fallback rather than replacing Geist outright, so Latin text — brand names, code — keeps rendering in Geist inside an RTL document.</p></section></div>")
 			return _gsxgw.Err()
 		})))

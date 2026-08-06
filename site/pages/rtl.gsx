@@ -54,20 +54,20 @@ component (rt Rtl) Page() {
 						<code>rtl:rotate-180</code>, flipping only under an RTL ancestor.
 					</li>
 					<li>
-						<strong>Direction-aware floating positioning.</strong> Popover, dropdown-menu, select, tooltip, and the
-						rest of the floating-UI family resolve their placement in JS at position time, so "start"-aligned content
-						opens on the correct physical side.
+						<strong>Direction-aware floating positioning.</strong> Popover, dropdown-menu, select, tooltip, and the rest
+						of the floating-UI family resolve their placement in JS at position time, so "start"-aligned content opens
+						on the correct physical side.
 					</li>
 					<li>
 						<strong>Mirrored keyboard semantics.</strong> Arrow keys in menus, tabs, carousel, calendar, and the other
-						roving-focus components mirror by meaning per WAI-ARIA — under RTL, ArrowLeft means "toward the next
-						item" and opens submenus, the way ArrowRight does under LTR.
+						roving-focus components mirror by meaning per WAI-ARIA — under RTL, ArrowLeft means "toward the next item"
+						and opens submenus, the way ArrowRight does under LTR.
 					</li>
 				</ul>
 				<p>
 					Two deliberate exceptions. <code>input-otp</code>'s digit group stays pinned <code>dir="ltr"</code>: a code
-					like <code>482915</code> reads left-to-right even inside an RTL form, matching real Arabic and Hebrew UIs.
-					And Sheet, Drawer, and Sidebar keep their <code>side="left"</code>/<code>side="right"</code> prop
+					like <code>482915</code> reads left-to-right even inside an RTL form, matching real Arabic and Hebrew UIs. And
+					Sheet, Drawer, and Sidebar keep their <code>side="left"</code>/<code>side="right"</code> prop
 					<strong>physical</strong>, matching shadcn's <code>data-side</code> contract — a <code>side="right"</code>
 					sidebar stays on the visual right under either direction, while everything inside it still mirrors normally.
 				</p>
@@ -102,10 +102,10 @@ component (rt Rtl) Page() {
 			<section class="flex flex-col gap-3">
 				<docHeading item={rtlTOCItems[3]}/>
 				<p>
-					The site's own Latin type is Geist. For Arabic content, pair it with
-					<a href="https://fonts.google.com/noto/specimen/Noto+Sans+Arabic" target="_blank" rel="noreferrer">Noto Sans Arabic</a>
-					(a UI sans) or
-					<a href="https://fonts.google.com/noto/specimen/Noto+Naskh+Arabic" target="_blank" rel="noreferrer">Noto Naskh Arabic</a>
+					The site's own Latin type is Geist. For Arabic content, pair it
+					with <a href="https://fonts.google.com/noto/specimen/Noto+Sans+Arabic" target="_blank" rel="noreferrer">Noto Sans Arabic</a>
+					(a UI sans)
+					or <a href="https://fonts.google.com/noto/specimen/Noto+Naskh+Arabic" target="_blank" rel="noreferrer">Noto Naskh Arabic</a>
 					(better for longer prose). Load the Arabic font as a fallback rather than replacing Geist outright, so Latin
 					text — brand names, code — keeps rendering in Geist inside an RTL document.
 				</p>
