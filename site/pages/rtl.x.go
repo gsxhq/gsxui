@@ -174,9 +174,9 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:104:5
 			_gsxgw.S("<p>The site's own Latin type is Geist. For Arabic content, pair it with ")
 //line rtl.gsx:106:11
-			_gsxgw.S("<a href=\"https://fonts.google.com/noto/specimen/Noto+Sans+Arabic\" target=\"_blank\" rel=\"noreferrer\">Noto Sans Arabic</a>(a UI sans) or ")
+			_gsxgw.S("<a href=\"https://fonts.google.com/noto/specimen/Noto+Sans+Arabic\" target=\"_blank\" rel=\"noreferrer\">Noto Sans Arabic</a> (a UI sans) or ")
 //line rtl.gsx:108:9
-			_gsxgw.S("<a href=\"https://fonts.google.com/noto/specimen/Noto+Naskh+Arabic\" target=\"_blank\" rel=\"noreferrer\">Noto Naskh Arabic</a>(better for longer prose). Load the Arabic font as a fallback rather than replacing Geist outright, so Latin text — brand names, code — keeps rendering in Geist inside an RTL document.</p></section></div>")
+			_gsxgw.S("<a href=\"https://fonts.google.com/noto/specimen/Noto+Naskh+Arabic\" target=\"_blank\" rel=\"noreferrer\">Noto Naskh Arabic</a> (better for longer prose). Load the Arabic font as a fallback rather than replacing Geist outright, so Latin text — brand names, code — keeps rendering in Geist inside an RTL document.</p></section></div>")
 			return _gsxgw.Err()
 		})))
 		return _gsxgw.Err()

@@ -103,11 +103,11 @@ component (rt Rtl) Page() {
 				<docHeading item={rtlTOCItems[3]}/>
 				<p>
 					The site's own Latin type is Geist. For Arabic content, pair it
-					with <a href="https://fonts.google.com/noto/specimen/Noto+Sans+Arabic" target="_blank" rel="noreferrer">Noto Sans Arabic</a>
-					(a UI sans)
-					or <a href="https://fonts.google.com/noto/specimen/Noto+Naskh+Arabic" target="_blank" rel="noreferrer">Noto Naskh Arabic</a>
-					(better for longer prose). Load the Arabic font as a fallback rather than replacing Geist outright, so Latin
-					text — brand names, code — keeps rendering in Geist inside an RTL document.
+					with <a href="https://fonts.google.com/noto/specimen/Noto+Sans+Arabic" target="_blank" rel="noreferrer">Noto Sans Arabic</a> (a
+					UI sans)
+					or <a href="https://fonts.google.com/noto/specimen/Noto+Naskh+Arabic" target="_blank" rel="noreferrer">Noto Naskh Arabic</a> (better
+					for longer prose). Load the Arabic font as a fallback rather than replacing Geist outright, so Latin text —
+					brand names, code — keeps rendering in Geist inside an RTL document.
 				</p>
 			</section>
 		</div>
