@@ -22,8 +22,8 @@ component (g GettingStarted) Page() {
 			<div class="flex flex-col gap-4">
 				<h1 class="text-3xl font-semibold tracking-tight">Getting Started</h1>
 				<p class="text-muted-foreground">
-					gsxui components are copy-in: the CLI vendors real <code>.gsx</code> source into your own module, so what you
-					build against is code you own and can edit — not a package you import and can't touch.
+					gsxui components are copy-in: the CLI vendors real <code>.gsx</code> source into your own module. You can also
+					import the gsxui package directly.
 				</p>
 			</div>
 			<section class="flex flex-col gap-3">
@@ -36,31 +36,23 @@ component (g GettingStarted) Page() {
 				<pre><code>{ hl.Node("snippets/init.sh") }</code></pre>
 				<pre><code>{ hl.Node("snippets/init.output") }</code></pre>
 				<p>
-					For the unmodified npm/Vite scaffold produced by <code>gsx init --yes</code>, this is the complete setup.
-					<code>gsxui init</code> installs Tailwind CSS, its Vite plugin, and <code>tw-animate-css</code>; registers
-					<code>tailwindcss()</code> in <code>vite.config.ts</code>; and imports the gsxui CSS and behavior entries
-					from <code>web/main.js</code>.
+					For the unmodified npm/Vite scaffold produced by <code>gsx init --yes</code>, this is the complete
+					setup. <code>gsxui init</code>:
 				</p>
-				<p>
-					This vendors the CSS entry (<code>web/gsxui/index.css</code>) plus its sibling
-					<code>foundation.css</code>, <code>theme.css</code>, and <code>style.css</code>; the JS runtime and behavior
-					barrel (
-					<code>web/gsxui/</code>); and the class merger (<code>ui/merge/merge.go</code>), then
-					points <code>gsx.toml</code>'s <code>class_merger</code> at it — the seam that makes caller-class-merge work
-					(see <a href={Theming{} |> url}>Theming</a>). It
-					also <code>go get</code> <code>gsx</code> and <code>tailwind-merge-go</code>, and installs
-					the <code>gsx</code> tool via <code>go get -tool</code>.
-				</p>
-				<p>
-					Rerunning <code>gsxui init</code> is safe: npm verifies the locked dependencies and the exact scaffold
-					integration is not duplicated.
-				</p>
+				<ul class="list-disc space-y-2 pl-6">
+					<li>installs Tailwind CSS and wires it into <code>vite.config.ts</code> and <code>web/main.js</code></li>
+					<li>vendors the gsxui CSS and JS entries into <code>web/gsxui/</code></li>
+					<li>
+						installs the class merger (<code>ui/merge/merge.go</code>) that lets caller classes override component
+						styles (see <a href={Theming{} |> url}>Theming</a>)
+					</li>
+				</ul>
+				<p>Rerunning it is safe — nothing is duplicated.</p>
 				<div class="mt-4 flex flex-col gap-3">
 					<docHeading item={gettingStartedTOCItems[2]}/>
 					<p>
-						If you changed the Vite config, entry file, package manager, or gsxui JS/CSS paths, automatic rewriting
-						stops before running commands or writing files. Keep your custom structure and apply the printed
-						responsibilities yourself:
+						If you customized the Vite config, entry file, package manager, or gsxui paths, <code>gsxui init</code>stops
+						before writing anything and prints what to wire up yourself:
 					</p>
 					<pre><code>{ hl.Node("snippets/manual-integration") }</code></pre>
 					<p>
@@ -74,34 +66,26 @@ component (g GettingStarted) Page() {
 				<pre><code>{ hl.Node("snippets/add.sh") }</code></pre>
 				<pre><code>{ hl.Node("snippets/add.output") }</code></pre>
 				<p>
-					<code>card</code> has no dependencies of its own, but a component that does (e.g. <code>native-select</code>,
-					which needs <code>icon</code>) pulls its dependency in automatically
-					— <code>gsxui add native-select</code> vendors <code>icon</code> too. You own every file this
-					writes: <code>gsxui add</code> never touches one you've already modified unless you
-					pass <code>--overwrite</code>. After upgrading the <code>gsxui</code> binary,
-					re-run <code>gsxui add &lt;name&gt; --overwrite</code> to refresh vendored components — that discards local
-					edits to those files.
+					Dependencies come along automatically — <code>gsxui add native-select</code> also vendors <code>icon</code>.
+					You own every file this writes: <code>gsxui add</code> never touches a file you've modified unless you
+					pass <code>--overwrite</code>, which is also how you refresh components after upgrading
+					the <code>gsxui</code> binary (discarding local edits to those files).
 				</p>
 			</section>
 			<section class="flex flex-col gap-3">
 				<docHeading item={gettingStartedTOCItems[4]}/>
 				<p>
-					<code>gsx init</code> already scaffolded a working app: <code>app.gsx</code> holds
-					a <code>Layout</code> and an <code>Index</code> component, and <code>main.go</code> serves it. Make it your
-					first gsxui page by rendering a <code>Card</code> around a <code>Button</code> — replace
-					the <code>Index</code> component in <code>app.gsx</code> and add the <code>ui</code> import:
+					<code>gsx init</code> already scaffolded a working app. Replace the <code>Index</code> component
+					in <code>app.gsx</code> with a <code>Card</code> around a <code>Button</code>, adding
+					the <code>ui</code> import:
 				</p>
 				<pre><code>{ hl.Node("snippets/first-page.gsx") }</code></pre>
 				<p>Then start the development loop:</p>
 				<pre><code>{ hl.Node("snippets/dev.sh") }</code></pre>
 				<p>
-					The scaffold's <code>npm run dev</code> is a one-line wrapper around the same command. <code>gsx dev</code>
-					watches your sources, regenerates <code>.gsx</code> to Go, rebuilds and swaps the server, and reloads the
-					browser — edit <code>app.gsx</code>, save, and the page updates.
-				</p>
-				<p>
-					Open the printed URL — a styled Card with a Button inside, rendered with gsxui's default
-					light theme. Next: <a href={Theming{} |> url}>restyle it</a>.
+					<code>gsx dev</code> watches your sources, rebuilds the server, and reloads the browser on save. Open the
+					printed URL to see your Card and Button in gsxui's default theme.
+					Next: <a href={Theming{} |> url}>restyle it</a>.
 				</p>
 			</section>
 		</div>

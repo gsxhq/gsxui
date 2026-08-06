@@ -23,17 +23,15 @@ component (rt Rtl) Page() {
 			<div class="flex flex-col gap-4">
 				<h1 class="text-3xl font-semibold tracking-tight">RTL</h1>
 				<p class="text-muted-foreground">
-					Every gsxui component renders correctly in a right-to-left document without a separate RTL variant to install
-					or opt into. Set <code>dir="rtl"</code> and the components already vendored into your project adapt on their
-					own.
+					Every gsxui component renders correctly in a right-to-left document. Set <code>dir="rtl"</code> and the
+					components you've already vendored adapt on their own — no RTL variant to install or opt into.
 				</p>
 			</div>
 			<section class="flex flex-col gap-3">
 				<docHeading item={rtlTOCItems[0]}/>
 				<p>
-					Set <code>dir="rtl"</code> on <code>&lt;html&gt;</code> for a fully right-to-left page, or on any subtree that
-					needs it — a single Arabic or Hebrew panel inside an otherwise left-to-right app, for example. No component
-					prop, build flag, or extra CSS import is required either way.
+					Set <code>dir="rtl"</code> on <code>&lt;html&gt;</code> for a fully right-to-left page, or on any subtree — a
+					single Arabic or Hebrew panel inside a left-to-right app, for example:
 				</p>
 				<pre><code>{ `<html lang="ar" dir="rtl">
   ...
@@ -43,55 +41,42 @@ component (rt Rtl) Page() {
 				<docHeading item={rtlTOCItems[1]}/>
 				<p>
 					Four mechanisms carry direction through the component set, all driven by the ancestor's
-					resolved <code>dir</code> — none of it is per-component configuration:
+					resolved <code>dir</code>:
 				</p>
 				<ul class="list-disc space-y-2 pl-6">
 					<li>
-						<strong>Logical Tailwind classes.</strong> Components are written with <code>ms-*</code>/<code>me-*</code>,
-						<code>ps-*</code>/<code>pe-*</code>, <code>start-*</code>/<code>end-*</code>, and
-						<code>text-start</code>/<code>text-end</code> instead of physical <code>ml-*</code>/<code>mr-*</code>,
-						<code>left-*</code>/<code>right-*</code>. The browser resolves inline-start/inline-end against the element's
-						own direction, so spacing and alignment mirror for free.
+						<strong>Logical Tailwind classes.</strong> Components use <code>ms-*</code>/<code>me-*</code>,
+						<code>start-*</code>/<code>end-*</code>, and <code>text-start</code>/<code>text-end</code> instead of
+						physical <code>ml-*</code>/<code>left-*</code>, so spacing and alignment mirror for free.
 					</li>
 					<li>
-						<strong>Directional icons.</strong> Chevrons and arrows that encode a left/right meaning (accordion carets,
-						breadcrumb separators, pagination's prev/next, carousel arrows) carry
+						<strong>Directional icons.</strong> Chevrons and arrows that encode a left/right meaning carry
 						<code>rtl:rotate-180</code>, flipping only under an RTL ancestor.
 					</li>
 					<li>
-						<strong>Direction-aware floating positioning.</strong> Popover, dropdown-menu, select, tooltip, and the rest
-						of the floating-UI family resolve their placement in JS (<code>ui/gsxui.js</code>'s <code>isRTL(el)</code>,
-						read from computed style at position time), so "start"-aligned content opens on the correct physical side
-						under either direction.
+						<strong>Direction-aware floating positioning.</strong> Popover, dropdown-menu, select, tooltip, and the
+						rest of the floating-UI family resolve their placement in JS at position time, so "start"-aligned content
+						opens on the correct physical side.
 					</li>
 					<li>
-						<strong>Mirrored keyboard semantics.</strong> Roving-focus and open/close arrow keys in dropdown-menu,
-						context-menu, menubar, tabs, toggle-group, carousel, resizable, and calendar follow the WAI-ARIA convention
-						of mirroring by meaning, not by physical key — ArrowLeft still means "toward the next item" under RTL the
-						way ArrowRight does under LTR, and ArrowLeft still opens a submenu the way ArrowRight does under LTR.
+						<strong>Mirrored keyboard semantics.</strong> Arrow keys in menus, tabs, carousel, calendar, and the other
+						roving-focus components mirror by meaning per WAI-ARIA — under RTL, ArrowLeft means "toward the next
+						item" and opens submenus, the way ArrowRight does under LTR.
 					</li>
 				</ul>
 				<p>
-					Slider's fill gradient is direction-aware too, filling from the correct inline-start edge.
-					<code>input-otp</code> is the one deliberate exception: its digit group stays pinned
-					<code>dir="ltr"</code>, because a code like <code>482915</code> should read left-to-right even inside an RTL
-					form — this matches how phone numbers and codes read in real Arabic and Hebrew UIs.
-				</p>
-				<p>
-					Sheet, Drawer, and Sidebar are the other deliberate exception: their <code>side="left"</code> /
-					<code>side="right"</code> prop stays <strong>physical</strong> under RTL, matching shadcn's own
-					<code>data-side</code> contract — a sidebar you explicitly place with <code>side="right"</code> stays on the
-					visual right whether the document is LTR or RTL. Everything inside those components — header, content, footer
-					spacing, the toggle icon — is still logical and mirrors normally; only the outer <code>side</code> placement
-					is fixed.
+					Two deliberate exceptions. <code>input-otp</code>'s digit group stays pinned <code>dir="ltr"</code>: a code
+					like <code>482915</code> reads left-to-right even inside an RTL form, matching real Arabic and Hebrew UIs.
+					And Sheet, Drawer, and Sidebar keep their <code>side="left"</code>/<code>side="right"</code> prop
+					<strong>physical</strong>, matching shadcn's <code>data-side</code> contract — a <code>side="right"</code>
+					sidebar stays on the visual right under either direction, while everything inside it still mirrors normally.
 				</p>
 			</section>
 			<section class="flex flex-col gap-3">
 				<docHeading item={rtlTOCItems[2]}/>
 				<p>
-					An Arabic sign-in card, composed from unmodified <code>Card</code>, <code>Label</code>,
-					<code>Input</code>, and <code>Button</code> — the same components the rest of the docs use, wrapped in
-					<code>dir="rtl"</code>.
+					An Arabic sign-in card: unmodified <code>Card</code>, <code>Label</code>, <code>Input</code>,
+					and <code>Button</code>, wrapped in <code>dir="rtl"</code>.
 				</p>
 				<div class="border rounded-lg p-8 bg-background">
 					{ loginExample.Node }
@@ -119,11 +104,10 @@ component (rt Rtl) Page() {
 				<p>
 					The site's own Latin type is Geist. For Arabic content, pair it with
 					<a href="https://fonts.google.com/noto/specimen/Noto+Sans+Arabic" target="_blank" rel="noreferrer">Noto Sans Arabic</a>
-					(a UI sans matching Geist's weight range) or
+					(a UI sans) or
 					<a href="https://fonts.google.com/noto/specimen/Noto+Naskh+Arabic" target="_blank" rel="noreferrer">Noto Naskh Arabic</a>
-					(a book-style naskh better suited to longer prose). Load the Arabic font as a <code>lang="ar"</code> fallback
-					rather than replacing Geist outright, so Latin text — brand names, code, page furniture — keeps rendering in
-					Geist inside an RTL document.
+					(better for longer prose). Load the Arabic font as a fallback rather than replacing Geist outright, so Latin
+					text — brand names, code — keeps rendering in Geist inside an RTL document.
 				</p>
 			</section>
 		</div>

@@ -19,12 +19,13 @@ component (t Theming) Page() {
 			<div class="flex flex-col gap-4">
 				<h1 class="text-3xl font-semibold tracking-tight">Theming</h1>
 				<p class="text-muted-foreground">
-					gsxui keeps behavior, semantic values, and component presentation in separate CSS files. A theme changes
-					variables only; every component keeps the same canonical GSX markup.
+					A theme changes CSS variables only: recolor every component, light and dark, by editing one file. Component
+					markup never changes.
 				</p>
 			</div>
 			<section class="flex flex-col gap-3">
 				<docHeading item={themingTOCItems[0]}/>
+				<p><code>gsxui init</code> vendors four CSS files into <code>web/gsxui/</code>:</p>
 				<pre><code>{ hl.Node("snippets/theme-entry.css") }</code></pre>
 				<ul class="list-disc space-y-2 pl-6">
 					<li><code>index.css</code> is the one entry your app imports.</li>
@@ -37,54 +38,72 @@ component (t Theming) Page() {
 						radius tokens.
 					</li>
 					<li>
-						<code>style.css</code> owns the replaceable component presentation: density, borders, shadows, typography,
-						and visual variants.
+						<code>style.css</code> owns the default style's component presentation rules: density, borders, shadows,
+						typography.
 					</li>
 				</ul>
 				<p>
-					To recolor the default style, replace only <code>theme.css</code>. Keep the other three files unchanged.
+					To recolor the default style, edit or replace <code>theme.css</code> only. The other three files stay
+					untouched.
 				</p>
 			</section>
 			<section class="flex flex-col gap-3">
 				<docHeading item={themingTOCItems[1]}/>
 				<p>
-					The variables are shadcn-compatible <code>:root</code> and <code>.dark</code> blocks. The theme editor imports
-					and exports exactly this variables-only file.
+					The variables are shadcn-compatible <code>:root</code> and <code>.dark</code> blocks — nothing else lives in
+					the file. The <a href={Theme{} |> url}>theme editor</a> imports and exports exactly this file, so you can
+					build a theme visually and download the result.
 				</p>
 				<pre><code>{ hl.Node("snippets/theme-restyle.css") }</code></pre>
 			</section>
 			<section class="flex flex-col gap-3">
 				<docHeading item={themingTOCItems[2]}/>
 				<p>
-					Components expose one bare <code>data-gsxui-slot-&lt;name&gt;</code> attribute per semantic part. Composed
-					parts forward each distinct attribute onto the same element, so selectors use exact presence matching:
+					To restyle a part from your own CSS, target its marker: every semantic part carries one bare
+					<code>data-gsxui-slot-&lt;name&gt;</code> attribute. A composed part carries every role it plays —
+					AlertDialog's action renders a Button whose element has both <code>data-gsxui-slot-button</code>
+					and <code>data-gsxui-slot-alert-dialog-action</code> — so each role stays targetable:
 				</p>
 				<pre><code>{ hl.Node("snippets/theme-slot.css") }</code></pre>
 				<p>
-					Use the same exact presence form in project CSS. Value and token operators are not part of the contract.
+					Match on bare presence only — value and operator forms are not part of the contract.
 				</p>
 			</section>
 			<section class="flex flex-col gap-3">
 				<docHeading item={themingTOCItems[3]}/>
 				<p>
-					The default style is in <code>@layer components</code>. Tailwind utilities are emitted later, so an ordinary
-					caller class such as <code>h-12</code> or <code>rounded-full</code> overrides the style
-					without <code>!important</code> or a class merger fighting component-owned utility strings.
+					Pass an ordinary utility class and it wins — no <code>!important</code>:
 				</p>
 				<pre><code>{ hl.Node("snippets/theme-merge.gsx") }</code></pre>
+				<p>Two mechanisms make that hold:</p>
+				<ul class="list-disc space-y-2 pl-6">
+					<li>
+						Utilities a component carries in its own markup are settled by the vendored class merger
+						(<code>ui/merge/merge.go</code>): your <code>h-12</code> replaces the component's own height utility
+						instead of conflicting with it.
+					</li>
+					<li>
+						Rules in <code>style.css</code> live in <code>@layer components</code>, while your class lands in
+						Tailwind's later <code>@layer utilities</code> — the later layer wins regardless of specificity.
+					</li>
+				</ul>
 				<p>
-					Fallthrough attributes still carry ids, ARIA, data, and HTMX attributes to the rendered element:
+					Fallthrough attributes carry ids, ARIA, data, and HTMX attributes to the rendered element the same way:
 				</p>
 				<pre><code>{ hl.Node("snippets/theme-attrs.gsx") }</code></pre>
 				<p>
-					Behaviour roles are opt-in data attributes, separate from identity. Any element can become a
-					dialog trigger by carrying <code>data-gsxui-dialog-trigger</code> — the family's own Trigger
-					components need no role attribute, because for them the role is implied by their slot marker:
+					Behaviour roles are opt-in data attributes: any element becomes a dialog trigger by
+					carrying <code>data-gsxui-dialog-trigger</code>. The family's own Trigger components need no role attribute
+					— their slot marker implies it:
 				</p>
 				<pre><code>{ hl.Node("snippets/theme-dataattr.gsx") }</code></pre>
 			</section>
 			<section class="flex flex-col gap-3">
 				<docHeading item={themingTOCItems[4]}/>
+				<p>
+					Only projects from before the four-file split — a single <code>web/gsxui.css</code> entry
+					and <code>data-slot</code> markers — need this. There is no compatibility layer; migrate in one pass:
+				</p>
 				<ol class="list-decimal space-y-2 pl-6">
 					<li>Change the CSS entry from <code>web/gsxui.css</code> to <code>web/gsxui/index.css</code>.</li>
 					<li>Review the four-file diff, then run <code>gsxui init --overwrite</code>.</li>
@@ -92,13 +111,10 @@ component (t Theming) Page() {
 						Run <code>gsxui add &lt;component&gt; --overwrite</code> for each vendored component you want to refresh.
 					</li>
 					<li>
-						Replace intentional project <code>data-slot</code> selectors with exact presence selectors such
+						Replace project <code>data-slot</code> selectors with exact presence selectors such
 						as <code>[data-gsxui-slot-button]</code>.
 					</li>
 				</ol>
-				<p>
-					This is a one-time breaking migration. There is no legacy selector or combined-file compatibility layer.
-				</p>
 			</section>
 		</div>
 	</siteLayout>

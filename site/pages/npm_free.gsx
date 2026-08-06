@@ -19,20 +19,17 @@ component (n NpmFree) Page() {
 			<div class="flex flex-col gap-4">
 				<h1 class="text-3xl font-semibold tracking-tight">npm-free</h1>
 				<p class="text-muted-foreground">
-					The recommended setup is the gsx scaffold with gsxui on top — <code>gsx init</code> then
-					<code>gsxui init</code>, as <a href={GettingStarted{} |> url}>Getting Started</a> shows. But nothing in
-					gsxui requires Vite — or npm: the component behaviors are dependency-free native ES modules, and the one
-					CSS dependency (<code>tw-animate-css</code>) is vendored as <code>web/gsxui/animate.css</code> so the
-					stylesheet builds without <code>node_modules</code>.
+					Nothing in gsxui requires Vite — or npm. The component behaviors are dependency-free native ES modules, and
+					the one CSS dependency is vendored, so the stylesheet builds without <code>node_modules</code>. (The
+					recommended setup is still the scaffold from <a href={GettingStarted{} |> url}>Getting Started</a>.)
 				</p>
 			</div>
 			<section class="flex flex-col gap-3">
 				<docHeading item={npmFreeTOCItems[0]}/>
 				<p>
 					If <code>gsxui init</code> finds neither <code>vite.config.ts</code> nor <code>web/main.js</code>, it
-					initializes in npm-free mode: no npm commands run and no <code>package.json</code> is written. Everything
-					else matches the <a href={GettingStarted{} |> url}>standard setup</a> — the same CSS and JS entries are
-					vendored, and the Go tooling is installed the same way.
+					initializes in npm-free mode: no npm commands run, no <code>package.json</code> is written. The same CSS and
+					JS entries are vendored and the Go tooling is installed as usual.
 				</p>
 				<pre><code>{ hl.Node("snippets/nonvite-init.output") }</code></pre>
 			</section>
@@ -47,12 +44,10 @@ component (n NpmFree) Page() {
 			<section class="flex flex-col gap-3">
 				<docHeading item={npmFreeTOCItems[2]}/>
 				<p>
-					Build the CSS entry with any Tailwind v4 tool — gsxui never installs or manages your build tooling.
-					True to this page's title, the <a href="https://tailwindcss.com/docs/installation/tailwind-cli">standalone
-					Tailwind CLI</a> is the natural fit: a single binary
-					from <a href="https://github.com/tailwindlabs/tailwindcss/releases/latest">GitHub releases</a>, no npm
-					involved. If you already have npm, its <code>@tailwindcss/cli</code> package takes the same flags. Then
-					link the output from your pages:
+					Build the CSS entry with any Tailwind v4 tool. The <a href="https://tailwindcss.com/docs/installation/tailwind-cli">standalone
+					Tailwind CLI</a> — a single binary
+					from <a href="https://github.com/tailwindlabs/tailwindcss/releases/latest">GitHub releases</a> — is the
+					natural fit; npm's <code>@tailwindcss/cli</code> takes the same flags. Then link the output from your pages:
 				</p>
 				<pre><code>{ hl.Node("snippets/nonvite-css.sh") }</code></pre>
 			</section>

@@ -37,12 +37,10 @@ func (n NpmFree) Page() _gsxrt.Node {
 //line npm_free.gsx:20:5
 			_gsxgw.S("<h1 class=\"text-3xl font-semibold tracking-tight\">npm-free</h1>")
 //line npm_free.gsx:21:5
-			_gsxgw.S("<p class=\"text-muted-foreground\">The recommended setup is the gsx scaffold with gsxui on top — ")
-//line npm_free.gsx:22:70
-			_gsxgw.S("<code>gsx init</code> then")
-//line npm_free.gsx:23:6
-			_gsxgw.S("<code>gsxui init</code>, as ")
-//line npm_free.gsx:23:34
+			_gsxgw.S("<p class=\"text-muted-foreground\">Nothing in gsxui requires Vite — or npm. The component behaviors are dependency-free native ES modules, and the one CSS dependency is vendored, so the stylesheet builds without ")
+//line npm_free.gsx:23:75
+			_gsxgw.S("<code>node_modules</code>. (The recommended setup is still the scaffold from ")
+//line npm_free.gsx:24:51
 			_gsxgw.S("<a")
 			_gsxv0, _gsxerr := _gsxf0.URLFor(ctx, (GettingStarted{}))
 			if _gsxerr != nil {
@@ -50,73 +48,58 @@ func (n NpmFree) Page() _gsxrt.Node {
 			}
 			_gsxgw.S(" href=\"")
 			_gsxgw.URL(string(_gsxv0))
-			_gsxgw.S("\">Getting Started</a> shows. But nothing in gsxui requires Vite — or npm: the component behaviors are dependency-free native ES modules, and the one CSS dependency (")
-//line npm_free.gsx:25:22
-			_gsxgw.S("<code>tw-animate-css</code>) is vendored as ")
-//line npm_free.gsx:25:66
-			_gsxgw.S("<code>web/gsxui/animate.css</code> so the stylesheet builds without ")
-//line npm_free.gsx:26:32
-			_gsxgw.S("<code>node_modules</code>.</p></div>")
-//line npm_free.gsx:29:4
+			_gsxgw.S("\">Getting Started</a>.)</p></div>")
+//line npm_free.gsx:27:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line npm_free.gsx:30:5
+//line npm_free.gsx:28:5
 			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, npmFreeTOCItems[0], nil))
-//line npm_free.gsx:31:5
+//line npm_free.gsx:29:5
 			_gsxgw.S("<p>If ")
-//line npm_free.gsx:32:9
+//line npm_free.gsx:30:9
 			_gsxgw.S("<code>gsxui init</code> finds neither ")
-//line npm_free.gsx:32:47
+//line npm_free.gsx:30:47
 			_gsxgw.S("<code>vite.config.ts</code> nor ")
-//line npm_free.gsx:32:79
-			_gsxgw.S("<code>web/main.js</code>, it initializes in npm-free mode: no npm commands run and no ")
-//line npm_free.gsx:33:63
-			_gsxgw.S("<code>package.json</code> is written. Everything else matches the ")
-//line npm_free.gsx:34:23
-			_gsxgw.S("<a")
-			_gsxv1, _gsxerr := _gsxf0.URLFor(ctx, (GettingStarted{}))
-			if _gsxerr != nil {
-				return _gsxerr
-			}
-			_gsxgw.S(" href=\"")
-			_gsxgw.URL(string(_gsxv1))
-			_gsxgw.S("\">standard setup</a> — the same CSS and JS entries are vendored, and the Go tooling is installed the same way.</p>")
-//line npm_free.gsx:37:5
+//line npm_free.gsx:30:79
+			_gsxgw.S("<code>web/main.js</code>, it initializes in npm-free mode: no npm commands run, no ")
+//line npm_free.gsx:31:60
+			_gsxgw.S("<code>package.json</code> is written. The same CSS and JS entries are vendored and the Go tooling is installed as usual.</p>")
+//line npm_free.gsx:34:5
 			_gsxgw.S("<pre>")
-//line npm_free.gsx:37:10
+//line npm_free.gsx:34:10
 			_gsxgw.S("<code>")
-//line npm_free.gsx:37:16
+//line npm_free.gsx:34:16
 			_gsxgw.Node(ctx, hl.Node("snippets/nonvite-init.output"))
 			_gsxgw.S("</code></pre></section>")
-//line npm_free.gsx:39:4
+//line npm_free.gsx:36:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line npm_free.gsx:40:5
+//line npm_free.gsx:37:5
 			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, npmFreeTOCItems[1], nil))
-//line npm_free.gsx:41:5
+//line npm_free.gsx:38:5
 			_gsxgw.S("<p>You own serving and CSS building. Serve the vendored JS directory statically and load the barrel with one module script tag — no bundler required, any bundler welcome:</p>")
-//line npm_free.gsx:45:5
+//line npm_free.gsx:42:5
 			_gsxgw.S("<pre>")
-//line npm_free.gsx:45:10
+//line npm_free.gsx:42:10
 			_gsxgw.S("<code>")
-//line npm_free.gsx:45:16
+//line npm_free.gsx:42:16
 			_gsxgw.Node(ctx, hl.Node("snippets/nonvite-serve.go"))
 			_gsxgw.S("</code></pre></section>")
-//line npm_free.gsx:47:4
+//line npm_free.gsx:44:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")
-//line npm_free.gsx:48:5
+//line npm_free.gsx:45:5
 			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, npmFreeTOCItems[2], nil))
-//line npm_free.gsx:49:5
-			_gsxgw.S("<p>Build the CSS entry with any Tailwind v4 tool — gsxui never installs or manages your build tooling. True to this page's title, the ")
-//line npm_free.gsx:51:37
-			_gsxgw.S("<a href=\"https://tailwindcss.com/docs/installation/tailwind-cli\">standalone Tailwind CLI</a> is the natural fit: a single binary from ")
-//line npm_free.gsx:53:11
-			_gsxgw.S("<a href=\"https://github.com/tailwindlabs/tailwindcss/releases/latest\">GitHub releases</a>, no npm involved. If you already have npm, its ")
-//line npm_free.gsx:54:45
-			_gsxgw.S("<code>@tailwindcss/cli</code> package takes the same flags. Then link the output from your pages:</p>")
-//line npm_free.gsx:57:5
+//line npm_free.gsx:46:5
+			_gsxgw.S("<p>Build the CSS entry with any Tailwind v4 tool. The ")
+//line npm_free.gsx:47:57
+			_gsxgw.S("<a href=\"https://tailwindcss.com/docs/installation/tailwind-cli\">standalone Tailwind CLI</a> — a single binary from ")
+//line npm_free.gsx:49:11
+			_gsxgw.S("<a href=\"https://github.com/tailwindlabs/tailwindcss/releases/latest\">GitHub releases</a> — is the natural fit; npm's ")
+//line npm_free.gsx:50:25
+			_gsxgw.S("<code>@tailwindcss/cli</code> takes the same flags. Then link the output from your pages:</p>")
+//line npm_free.gsx:52:5
 			_gsxgw.S("<pre>")
-//line npm_free.gsx:57:10
+//line npm_free.gsx:52:10
 			_gsxgw.S("<code>")
-//line npm_free.gsx:57:16
+//line npm_free.gsx:52:16
 			_gsxgw.Node(ctx, hl.Node("snippets/nonvite-css.sh"))
 			_gsxgw.S("</code></pre></section></div>")
 			return _gsxgw.Err()
