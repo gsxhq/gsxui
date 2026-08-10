@@ -277,7 +277,13 @@ on(
       // hovered) — only the top-level content auto-focuses its first item
       // on open. A keyboard-opened submenu (ArrowRight) focuses its own
       // first item explicitly, from the ArrowRight handler itself, not here.
-      if (!isSub) ownItems(content)[0]?.focus();
+      // Guarded on focus not already being inside: this queued task can run
+      // late under load, after focus has legitimately moved into the menu
+      // (a submenu item via ArrowRight, a programmatic sub-trigger focus) —
+      // stomping that focus back to the first item sends the next arrow key
+      // to the wrong menu level.
+      if (!isSub && !content.contains(document.activeElement))
+        ownItems(content)[0]?.focus();
     }
     emit(content, open ? "gsxui:open" : "gsxui:close");
   },

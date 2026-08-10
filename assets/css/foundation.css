@@ -152,6 +152,38 @@
   }
 }
 
+/* Floating surfaces hit-test only once placed. Between showPopover() and
+   gsxui.js position()'s placement the surface sits at the UA-default popover
+   position — held invisible at opacity 0 by its @starting-style enter arm,
+   but opacity does not disable hit-testing — so a frame landing in that gap
+   re-targets hover onto a box the user never saw, and the placement move then
+   synthesizes pointerover/pointerout that drive hover-is-focus and
+   focus-parking handlers (observed: select wiping the checked item's
+   aria-selected right after open, under CI load). applyPlacement stamps
+   data-gsxui-positioned when it places the box; release() removes it on
+   close, re-arming the gate for the next open (and letting the exit fade
+   pass clicks through). The [popover] guard keeps non-popover renderings of
+   these slots (navigation-menu-content inside a shared viewport) untouched.
+   Every position()-managed popover surface must appear in this list. */
+@layer components {
+  :where(
+      [data-gsxui-slot-combobox-content],
+      [data-gsxui-slot-context-menu-content],
+      [data-gsxui-slot-context-menu-sub-content],
+      [data-gsxui-slot-dropdown-menu-content],
+      [data-gsxui-slot-dropdown-menu-sub-content],
+      [data-gsxui-slot-hover-card-content],
+      [data-gsxui-slot-menubar-content],
+      [data-gsxui-slot-menubar-sub-content],
+      [data-gsxui-slot-navigation-menu-content],
+      [data-gsxui-slot-popover-content],
+      [data-gsxui-slot-select-content],
+      [data-gsxui-slot-tooltip-content]
+    ):where([popover]:not([data-gsxui-positioned])) {
+    pointer-events: none;
+  }
+}
+
 /* Accordion open/close animation over native <details>. */
 :where([data-gsxui-slot-accordion-item])::details-content {
   display: grid;

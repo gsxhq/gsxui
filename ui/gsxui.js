@@ -227,6 +227,16 @@ export function hasLiveTabStop(els) {
 // data-[side=...], so a flipped placement must animate from the flipped
 // direction, exactly as Radix recomputes placement), and restores the
 // authored data-side on close so the next open starts from the preference.
+// It also stamps data-gsxui-positioned on placement: between showPopover()
+// and the (often queued) position() call the surface sits at the UA-default
+// popover position — held at opacity 0 by its @starting-style enter arm,
+// but opacity does not disable hit-testing — so a frame landing in that gap
+// re-targets hover onto a box the user never saw, and the placement move
+// then synthesizes pointerover/pointerout that drive hover-is-focus and
+// focus-parking handlers (observed: select wiping the checked item's
+// aria-selected right after open, under CI load). foundation.css keeps a
+// shown-but-unplaced surface at pointer-events:none until the stamp lands;
+// release() removes it so every open re-arms the gate.
 // Cleanup is automatic: the content's own "toggle" (newState "closed")
 // releases the listeners, so a module only ever calls position().
 
@@ -312,6 +322,9 @@ export function release(content) {
   // key on data-[side=...]; the exit is a side-agnostic fade/scale.
   if (entry.hadSide) content.setAttribute("data-side", entry.authoredSide);
   else content.removeAttribute("data-side");
+  // Re-arm the pre-placement hit-test gate (see position()'s header) for
+  // the next open; the exit fade also stops intercepting clicks.
+  content.removeAttribute("data-gsxui-positioned");
 }
 
 // isRTL reports the resolved direction at el — computed style, so it honors
@@ -402,6 +415,9 @@ function applyPlacement(content, a, o) {
   if (o.flip) content.dataset.side = side;
   content.style.left = `${left}px`;
   content.style.top = `${top}px`;
+  // Placed: lift foundation.css's pre-placement pointer-events gate (see
+  // position()'s header).
+  content.setAttribute("data-gsxui-positioned", "");
 }
 
 function alignedCoord(align, start, anchorSize, contentSize) {
