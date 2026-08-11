@@ -6,6 +6,7 @@ import (
 
 	"github.com/gsxhq/gsxui/internal/preset"
 	"github.com/gsxhq/gsxui/ui"
+	"github.com/gsxhq/gsxui/ui/icon"
 )
 
 // Theme is the /theme route: a live editor over the shadcn-compatible
@@ -279,7 +280,11 @@ component themeEditor(previewURL string, workspace bool) {
 			<section data-theme-style-panel class="flex min-w-0 flex-col gap-3">
 				<div class="flex items-center justify-between gap-3">
 					<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Style</h2>
-					<ui.Button data-theme-reset variant="outline" size="sm">Reset</ui.Button>
+					<div class="flex items-center gap-1">
+						<ui.Button data-theme-undo variant="outline" size="icon-sm" aria-label="Undo" title="Undo (⌘Z)" disabled><icon.Undo/></ui.Button>
+						<ui.Button data-theme-redo variant="outline" size="icon-sm" aria-label="Redo" title="Redo (⌘⇧Z)" disabled><icon.Redo/></ui.Button>
+						<ui.Button data-theme-reset variant="outline" size="sm">Reset</ui.Button>
+					</div>
 				</div>
 				<div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
 					{ for _, choice := range preset.StyleChoices() {

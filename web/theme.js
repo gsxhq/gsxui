@@ -1,9 +1,12 @@
 import { init, on } from "../ui/gsxui.js";
 import { parse as parseCSSDeclaration, tokenize, tokenTypes } from "css-tree";
 import {
+  canRedo,
+  canUndo,
   canonicalJSON,
   clearPalettePreview,
   commandStrings,
+  createHistory,
   createThemeState,
   encodeShare,
   importPresetJSON,
@@ -14,6 +17,8 @@ import {
   previewPreset,
   previewRadius,
   previewTheme,
+  pushHistory,
+  redoHistory,
   replacePreset,
   resetThemeState,
   selectMode,
@@ -22,6 +27,7 @@ import {
   selectStyle,
   selectTheme,
   themeCSS,
+  undoHistory,
 } from "./theme-state.js";
 
 const PREVIEW_MESSAGE = "gsxui:theme-preview:v1";
@@ -54,11 +60,14 @@ on("toggle", "[data-theme-picker] [data-gsxui-slot-popover-content]", (e, el) =>
 on("click", "[data-theme-style]", (e, el) => editor?.onStyleClick(e, el));
 on("click", "[data-theme-mode-tab]", (e, el) => editor?.onModeClick(e, el));
 on("click", "[data-theme-reset]", (e, el) => editor?.onReset(e, el));
+on("click", "[data-theme-undo]", (e, el) => editor?.onUndo(e, el));
+on("click", "[data-theme-redo]", (e, el) => editor?.onRedo(e, el));
 on("click", "[data-theme-copy]", (e, el) => editor?.onCopy(e, el));
 on("click", "[data-theme-download]", (e, el) => editor?.onDownload(e, el));
 on("click", "[data-theme-import-apply]", (e, el) => editor?.onImportApply(e, el));
 on("click", "[data-theme-preview-retry]", (e, el) => editor?.onPreviewRetry(e, el));
 addEventListener("message", (e) => editor?.onMessage(e));
+addEventListener("keydown", (e) => editor?.onKeyDown(e));
 
 function setup(schemaElement) {
   const schema = JSON.parse(schemaElement.textContent);
@@ -67,6 +76,8 @@ function setup(schemaElement) {
   const previewStatus = document.querySelector("[data-theme-preview-status]");
   const previewRetry = document.querySelector("[data-theme-preview-retry]");
   const manualCopy = document.querySelector("[data-theme-manual-copy]");
+  const undoButton = document.querySelector("[data-theme-undo]");
+  const redoButton = document.querySelector("[data-theme-redo]");
   const colorProbe = document.createElement("span").style;
 
   const validators = {
@@ -102,6 +113,10 @@ function setup(schemaElement) {
     state = createThemeState(schema);
     initialMessage = error instanceof Error ? `Share link ignored: ${error.message}` : "Share link ignored.";
   }
+  // Named commitHistory, not history — this closure also calls the global
+  // window.history (replaceState for URL sync) and the two must not shadow
+  // each other.
+  let commitHistory = createHistory(state);
 
   function setStatus(message, error = false) {
     if (!status) return;
@@ -174,6 +189,8 @@ function setup(schemaElement) {
       button.classList.toggle("text-muted-foreground", !active);
     }
     renderPickers();
+    if (undoButton) undoButton.disabled = !canUndo(commitHistory);
+    if (redoButton) redoButton.disabled = !canRedo(commitHistory);
 
     const artifacts = currentArtifacts();
     for (const output of document.querySelectorAll("[data-theme-command]")) {
@@ -539,6 +556,7 @@ function setup(schemaElement) {
     if (kind === "baseColor") state = selectBaseColor(state, input.value, schema);
     else if (kind === "theme") state = selectTheme(state, input.value, schema);
     else state = selectRadius(state, input.value, schema);
+    commitHistory = pushHistory(commitHistory, state);
     render();
   }
 
@@ -574,6 +592,7 @@ function setup(schemaElement) {
 
   function onStyleClick(_event, button) {
     state = selectStyle(state, button.dataset.themeStyle, schema);
+    commitHistory = pushHistory(commitHistory, state);
     render();
   }
 
@@ -584,7 +603,45 @@ function setup(schemaElement) {
 
   function onReset() {
     state = resetThemeState(state, schema);
+    commitHistory = pushHistory(commitHistory, state);
     render();
+  }
+
+  function onUndo() {
+    const step = undoHistory(commitHistory, state, schema);
+    commitHistory = step.history;
+    state = step.state;
+    render();
+  }
+
+  function onRedo() {
+    const step = redoHistory(commitHistory, state, schema);
+    commitHistory = step.history;
+    state = step.state;
+    render();
+  }
+
+  function isTypingTarget(target) {
+    return (
+      target instanceof HTMLElement &&
+      (target.isContentEditable ||
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target instanceof HTMLSelectElement)
+    );
+  }
+
+  function onKeyDown(event) {
+    if (!event.metaKey && !event.ctrlKey) return;
+    if (isTypingTarget(event.target)) return;
+    const key = event.key.toLowerCase();
+    if ((key === "z" && event.shiftKey) || (key === "y" && event.ctrlKey)) {
+      event.preventDefault();
+      onRedo();
+    } else if (key === "z") {
+      event.preventDefault();
+      onUndo();
+    }
   }
 
   async function onCopy(_event, button) {
@@ -620,6 +677,7 @@ function setup(schemaElement) {
       } else {
         state = importThemeCSS(state, input.value, schema, validators, parseCompatibleThemeCSS);
       }
+      commitHistory = pushHistory(commitHistory, state);
       setStatus(`Applied ${kind.toUpperCase()} import.`);
       render();
     } catch (error) {
@@ -676,6 +734,9 @@ function setup(schemaElement) {
     onStyleClick,
     onModeClick,
     onReset,
+    onUndo,
+    onRedo,
+    onKeyDown,
     onCopy,
     onDownload,
     onImportApply,

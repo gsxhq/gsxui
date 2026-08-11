@@ -3,9 +3,13 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 import {
+  HISTORY_LIMIT,
+  canRedo,
+  canUndo,
   canonicalJSON,
   clearPalettePreview,
   commandStrings,
+  createHistory,
   createThemeState,
   decodeShare,
   encodeShare,
@@ -17,6 +21,8 @@ import {
   previewPreset,
   previewRadius,
   previewTheme,
+  pushHistory,
+  redoHistory,
   replacePreset,
   resetThemeState,
   selectBaseColor,
@@ -25,6 +31,7 @@ import {
   selectStyle,
   selectTheme,
   themeCSS,
+  undoHistory,
 } from "./theme-state.js";
 
 const schema = {
@@ -383,6 +390,90 @@ test("CSS import commits only a fully valid parsed candidate", () => {
   });
   assert.throws(() => importThemeCSS(state, "invalid", schema, validators, invalidParser));
   assert.deepEqual(state.resolved, schema.defaults.nova);
+});
+
+test("undo/redo replays a bounded history stack of committed states", () => {
+  let state = createThemeState(schema);
+  let history = createHistory(state);
+  assert.equal(canUndo(history), false);
+  assert.equal(canRedo(history), false);
+
+  state = selectBaseColor(state, "stone", schema);
+  history = pushHistory(history, state);
+  state = selectTheme(state, "blue", schema);
+  history = pushHistory(history, state);
+  state = selectRadius(state, "large", schema);
+  history = pushHistory(history, state);
+  assert.deepEqual(state.selection, { baseColor: "stone", theme: "blue", radius: "large" });
+  assert.equal(canUndo(history), true);
+  assert.equal(canRedo(history), false);
+
+  let step = undoHistory(history, state, schema);
+  history = step.history;
+  state = step.state;
+  assert.deepEqual(state.selection, { baseColor: "stone", theme: "blue", radius: "medium" });
+
+  step = undoHistory(history, state, schema);
+  history = step.history;
+  state = step.state;
+  assert.deepEqual(state.selection, { baseColor: "stone", theme: "stone", radius: "medium" });
+  assert.equal(canRedo(history), true);
+
+  step = redoHistory(history, state, schema);
+  history = step.history;
+  state = step.state;
+  assert.deepEqual(state.selection, { baseColor: "stone", theme: "blue", radius: "medium" });
+  assert.equal(canUndo(history), true);
+  assert.equal(canRedo(history), true);
+});
+
+test("undo/redo at the stack's bounds is a no-op", () => {
+  const state = createThemeState(schema);
+  const history = createHistory(state);
+
+  const undone = undoHistory(history, state, schema);
+  assert.equal(undone.history, history);
+  assert.equal(undone.state, state);
+
+  const redone = redoHistory(history, state, schema);
+  assert.equal(redone.history, history);
+  assert.equal(redone.state, state);
+});
+
+test("a new commit after undo discards the redo branch", () => {
+  let state = createThemeState(schema);
+  let history = createHistory(state);
+
+  state = selectTheme(state, "blue", schema);
+  history = pushHistory(history, state);
+  state = selectTheme(state, "rose", schema);
+  history = pushHistory(history, state);
+
+  let step = undoHistory(history, state, schema);
+  history = step.history;
+  state = step.state;
+  assert.equal(state.selection.theme, "blue");
+
+  state = selectRadius(state, "large", schema);
+  history = pushHistory(history, state);
+  assert.equal(canRedo(history), false);
+  assert.equal(history.entries.length, 3);
+  assert.equal(history.cursor, 2);
+});
+
+test("history is bounded to HISTORY_LIMIT entries, dropping the oldest", () => {
+  let state = createThemeState(schema);
+  let history = createHistory(state);
+  const names = ["neutral", "blue", "rose"];
+
+  for (let i = 0; i < HISTORY_LIMIT + 10; i++) {
+    state = selectTheme(state, names[i % names.length], schema);
+    history = pushHistory(history, state);
+  }
+
+  assert.equal(history.entries.length, HISTORY_LIMIT);
+  assert.equal(history.cursor, HISTORY_LIMIT - 1);
+  assert.deepEqual(history.entries.at(-1), state.resolved);
 });
 
 test("clipboard fallback retains selected manual-copy text", () => {

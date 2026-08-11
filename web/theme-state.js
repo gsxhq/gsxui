@@ -213,6 +213,53 @@ export function resetThemeState(state, schema) {
   return replacePreset(state, schema.defaults[state.resolved.style], schema);
 }
 
+// Undo/redo is a bounded stack of committed `resolved` presets (never
+// `previewResolved` — hover previews are never pushed, matching every
+// committing reducer above, which already only ever mutates `resolved`).
+// Mode (light/dark) intentionally rides along outside history: it is a
+// client-only view toggle, not part of the preset schema, so undoing never
+// flips it — only theme.gsx's calls decide when a state change is a commit
+// worth a history entry, by calling pushHistory once per commit, at the
+// same granularity the editor already commits at (click-driven pickers,
+// style buttons, reset, and import-apply — there is no per-keystroke commit
+// path in this editor to begin with, so no separate debounce is needed).
+export const HISTORY_LIMIT = 50;
+
+export function createHistory(state) {
+  return { entries: [clone(state.resolved)], cursor: 0 };
+}
+
+export function pushHistory(history, state) {
+  const entries = history.entries.slice(0, history.cursor + 1);
+  entries.push(clone(state.resolved));
+  const overflow = entries.length - HISTORY_LIMIT;
+  const trimmed = overflow > 0 ? entries.slice(overflow) : entries;
+  return { entries: trimmed, cursor: trimmed.length - 1 };
+}
+
+export function canUndo(history) {
+  return history.cursor > 0;
+}
+
+export function canRedo(history) {
+  return history.cursor < history.entries.length - 1;
+}
+
+function travelHistory(history, state, schema, delta) {
+  const cursor = history.cursor + delta;
+  if (cursor < 0 || cursor >= history.entries.length) return { history, state };
+  const resolved = history.entries[cursor];
+  return { history: { ...history, cursor }, state: replacePreset(state, resolved, schema) };
+}
+
+export function undoHistory(history, state, schema) {
+  return travelHistory(history, state, schema, -1);
+}
+
+export function redoHistory(history, state, schema) {
+  return travelHistory(history, state, schema, 1);
+}
+
 function orderedPreset(preset, schema) {
   const theme = {};
   for (const mode of ["light", "dark"]) {

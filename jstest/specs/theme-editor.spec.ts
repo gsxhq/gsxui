@@ -412,6 +412,52 @@ test("the address bar's share code round-trips to the exact committed preset", a
   expect((await downloadText(page, "json")).text).toBe(committedJSON);
 });
 
+test("undo/redo buttons and keyboard shortcuts replay committed changes", async ({ page }) => {
+  await page.goto("/theme");
+  const undo = page.locator("[data-theme-undo]");
+  const redo = page.locator("[data-theme-redo]");
+  await expect(undo).toBeDisabled();
+  await expect(redo).toBeDisabled();
+
+  await choose(page, "theme", "Blue");
+  await expect(selectionValue(page, "theme")).resolves.toBe("Blue");
+  await expect(undo).toBeEnabled();
+  await expect(redo).toBeDisabled();
+
+  await choose(page, "theme", "Rose");
+  await expect(selectionValue(page, "theme")).resolves.toBe("Rose");
+
+  await undo.click();
+  await expect(selectionValue(page, "theme")).resolves.toBe("Blue");
+  await expect(redo).toBeEnabled();
+
+  // Keyboard shortcuts reach the editor even though focus is not on the
+  // undo/redo buttons themselves.
+  await page.locator("[data-theme-style-panel] h2").click();
+  await page.keyboard.press("ControlOrMeta+z");
+  await expect(selectionValue(page, "theme")).resolves.toBe("Neutral");
+  await expect(undo).toBeDisabled();
+
+  await page.keyboard.press("ControlOrMeta+Shift+z");
+  await expect(selectionValue(page, "theme")).resolves.toBe("Blue");
+
+  await page.keyboard.press("ControlOrMeta+Shift+z");
+  await expect(selectionValue(page, "theme")).resolves.toBe("Rose");
+  await expect(redo).toBeDisabled();
+
+  // A new commit after undoing discards the redo branch.
+  await undo.click();
+  await choose(page, "radius", "Large");
+  await expect(redo).toBeDisabled();
+
+  // The keyboard shortcut is inert while typing in an import textarea, so
+  // native text-undo keeps working there instead.
+  const jsonImport = page.locator('[data-theme-import="json"]');
+  await jsonImport.fill("hello");
+  await jsonImport.press("ControlOrMeta+z");
+  await expect(selectionValue(page, "radius")).resolves.toBe("Large");
+});
+
 test("share commands use compact built-ins and full custom imports", async ({ page }) => {
   await page.goto("/theme");
 
