@@ -24,6 +24,6 @@
   }
 
   .gsxui-recipe-button-group-separator {
-    @apply bg-input;
+    @apply relative m-0 self-stretch bg-input data-[orientation=vertical]:h-auto;
   }
 }
