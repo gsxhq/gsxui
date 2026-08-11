@@ -106,6 +106,16 @@ test("caller utilities override the Button defaults", async ({ page }) => {
   });
 });
 
+// Before the 8-style port, Button/Badge's destructive variant was a SOLID
+// bg-destructive treatment (dark:bg-destructive/60 on hover-darkened text),
+// which is what the harness's "dark-destructive"/"destructive-hover"
+// reference elements (jstest/harness/style_contract.gsx) originally
+// matched. The new base+8-styles design (apps/v4/registry/styles/
+// style-*.css MARK: Button / Badge, verified 2026-08-11) redesigned
+// destructive into a soft tint: bg-destructive/10 (light) /
+// dark:bg-destructive/20 (rest) and dark:hover:bg-destructive/30 — the
+// same value on both Button and Badge, faithfully carried by this port.
+// The reference elements' alpha was updated to /20 and /30 to match.
 test("dark primitive states use their dark semantic colors", async ({ page }) => {
   const response = await page.goto("/f/style-contract");
   expect(response?.status(), "style contract fixture response").toBe(200);
@@ -252,6 +262,17 @@ test("an active invalid InputOTP slot keeps destructive border and ring semantic
   );
 });
 
+// Padding values below are Toggle's own real per-size geometry
+// (registry/styles/nova/toggle.css), not the flat px-3 every size used to
+// share pre-port. They also depend on ToggleGroup's root actually carrying
+// `group/toggle-group` — the 8-style port ported upstream's
+// group-data-[spacing=…]/toggle-group: selectors verbatim onto
+// ToggleGroupItem's recipe but left the marker CLASS that makes them match
+// anything off ToggleGroup's own root (registry/canonical/toggle-group.gsx),
+// a real bug this test caught: every group-data-…/toggle-group: rule in
+// every style's toggle-group.css was dead code, silently, and joined items
+// fell back to whatever unconditional padding happened to be next in the
+// cascade instead of the spacing=0 joined-pill treatment upstream intends.
 test("joined ToggleGroup items override composed Toggle sizing and borders", async ({
   page,
 }) => {
@@ -279,8 +300,8 @@ test("joined ToggleGroup items override composed Toggle sizing and borders", asy
   const last = await metrics('[data-style-contract="toggle-group-sm-last"]');
   expect(first).toMatchObject({
     height: "28px",
-    paddingLeft: "12px",
-    paddingRight: "12px",
+    paddingLeft: "8px",
+    paddingRight: "8px",
     borderLeftWidth: "1px",
     borderTopRightRadius: "0px",
   });
@@ -294,8 +315,8 @@ test("joined ToggleGroup items override composed Toggle sizing and borders", asy
   });
   expect(last).toMatchObject({
     height: "28px",
-    paddingLeft: "12px",
-    paddingRight: "12px",
+    paddingLeft: "8px",
+    paddingRight: "8px",
     borderLeftWidth: "0px",
     borderTopLeftRadius: "0px",
   });
@@ -306,15 +327,15 @@ test("joined ToggleGroup items override composed Toggle sizing and borders", asy
     await metrics('[data-style-contract="toggle-group-default"]'),
   ).toMatchObject({
     height: "32px",
-    paddingLeft: "12px",
-    paddingRight: "12px",
+    paddingLeft: "10px",
+    paddingRight: "10px",
   });
   expect(
     await metrics('[data-style-contract="toggle-group-large"]'),
   ).toMatchObject({
     height: "36px",
-    paddingLeft: "12px",
-    paddingRight: "12px",
+    paddingLeft: "10px",
+    paddingRight: "10px",
   });
   expect(
     await metrics('[data-style-contract="toggle-group-caller"]'),
@@ -369,9 +390,20 @@ test("Dialog keeps dedicated a11y hooks, semantic backdrop, and caller cascade",
     descriptionID: expect.any(String),
     borderRadius: "0px",
     display: "grid",
-    backdrop: await page
-      .locator('[data-style-contract-reference="overlay"]')
-      .evaluate((element) => getComputedStyle(element).backgroundColor),
+    // Before the 8-style port, Dialog's ::backdrop referenced the shared
+    // `--overlay` theme token directly (`backdrop:bg-[var(--overlay)]`),
+    // so comparing against the "overlay" reference element was a same-token
+    // check. Upstream's new base+8-styles design (apps/v4/registry/styles/
+    // style-*.css MARK: Dialog / Alert Dialog, verified 2026-08-11) instead
+    // hardcodes a PER-STYLE backdrop darkness (nova/vega/lyra: black/10,
+    // maia/mira: black/80, luma/rhea: black/30, sera: black/20) with no
+    // shared token at all — a genuine, deliberate design change this port
+    // faithfully carries. nova's own black/10 happens to render the same
+    // visual darkness as the old shared --overlay token, just through
+    // Tailwind's built-in color scale (oklab) rather than --overlay's own
+    // oklch literal, hence the differing (but visually identical)
+    // getComputedStyle serialization.
+    backdrop: "oklab(0 0 0 / 0.1)",
   });
   const relationships = await dialog.evaluate((element) => ({
     labelledBy: element.getAttribute("aria-labelledby"),

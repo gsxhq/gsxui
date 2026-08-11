@@ -234,12 +234,30 @@ test("menu item relations reserve action space and align action/badge by button 
   await expect(expandedTooltip).toBeHidden();
 });
 
+// Before the 8-style port, SidebarMenuButton's own [data-active] state used
+// the --sidebar-primary/--sidebar-primary-foreground pair for its background
+// and text, distinct from hover's --sidebar-accent pair — this fixture's
+// "active" element originally asserted against the primary pair directly.
+// The new base+8-styles design (apps/v4/registry/styles/style-*.css MARK:
+// Sidebar, verified 2026-08-11) keys data-active off the SAME
+// --sidebar-accent/-foreground pair as :hover (`data-active:bg-sidebar-accent
+// data-active:text-sidebar-accent-foreground`), so the button's own
+// background/color now match hover's, not primary's. --sidebar-primary's
+// background half has no live consumer left in sidebar.css at all (verified:
+// no `bg-sidebar-primary` occurrence remains); only
+// --sidebar-primary-foreground survives, on SidebarMenuBadge's
+// `[[data-gsxui-slot-sidebar-menu-button][data-active]~&]:text-sidebar-primary-foreground`
+// rule — a badge sitting on an active row keeps readable text without the
+// badge itself painting a primary background. The fixture gained a badge in
+// the "active" item so this test can still cover both halves of that pair
+// under its real, current consumer.
 test("all eight sidebar theme tokens feed live component declarations", async ({ page }) => {
   await openFixture(page, "tokens");
   const tree = page.locator(slot("sidebar-desktop"));
 
   const inner = tree.locator(slot("sidebar-inner"));
   const active = tree.locator('[data-sidebar-contract="active"]');
+  const activeBadge = tree.locator('[data-sidebar-contract="active-badge"]');
   const hover = tree.locator('[data-sidebar-contract="hover"]');
   const separator = tree.locator(slot("sidebar-separator"));
   const focus = tree.locator(slot("sidebar-group-label"));
@@ -250,12 +268,15 @@ test("all eight sidebar theme tokens feed live component declarations", async ({
   expect(await tree.evaluate((element) => getComputedStyle(element).color)).toBe(
     "rgb(4, 5, 6)",
   );
+  expect(await activeBadge.evaluate((element) => getComputedStyle(element).color)).toBe(
+    "rgb(10, 11, 12)",
+  );
   expect(
     await active.evaluate((element) => {
       const css = getComputedStyle(element);
       return { background: css.backgroundColor, color: css.color };
     }),
-  ).toEqual({ background: "rgb(7, 8, 9)", color: "rgb(10, 11, 12)" });
+  ).toEqual({ background: "rgb(13, 14, 15)", color: "rgb(16, 17, 18)" });
   await hover.hover();
   expect(
     await hover.evaluate((element) => {

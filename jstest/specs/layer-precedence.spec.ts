@@ -551,35 +551,48 @@ test("TooltipContent keeps its own has-kbd padding when it contains a Kbd", asyn
   expect(paddingRightPlain).toBe("12px");
 });
 
-// Input's and Textarea's own text-base/md:text-sm pair is retained the same
-// way (see assets/css/styles/default/input.css and
-// assets/css/styles/default/textarea.css) — both properties stayed off the
-// recipe entirely, not just md:text-sm, because a components-layer rule can
-// never beat ANY utilities-layer rule: leaving text-base on the recipe while
-// retaining only md:text-sm made the retained rule permanently dead instead
-// of merely losing to a caller (make sweep-compare caught this on the first
-// attempt). These pins run at the default (desktop, >=48rem) viewport, where
-// md:text-sm would otherwise apply, and assert the caller's text-lg wins at
-// every property in that group.
+// Input's and Textarea's own text-base/md:text-sm pair used to be kept off
+// the recipe entirely (see the retired assets/css/styles/default/input.css
+// and assets/css/styles/default/textarea.css) specifically so a caller's
+// plain text-lg — landing in @layer utilities either way — always beat the
+// responsive default via the components-layer/utilities-layer boundary,
+// regardless of viewport.
+//
+// The 8-style port retired that fallback: every style's own Input/Textarea
+// recipe now includes text-base/md:text-sm directly (registry/styles/<style>/
+// input.css, textarea.css), verbatim from upstream, and it genuinely varies
+// per style (mira ships text-sm/md:text-xs, lyra ships text-xs/md:text-xs —
+// this is real per-style typography, not shared residue). That value is now
+// Input's/Textarea's own compiled presentation, at ordinary Tailwind
+// specificity, so md:text-sm — a DIFFERENT variant group from a plain
+// text-lg — is not one tailwind-merge dedupes away, and at >=48rem it wins
+// on source order the same way it would in upstream's own React component.
+// This is a deliberate, upstream-parity trade: gsxui no longer promises a
+// plain text-* override beats every breakpoint; a caller that wants that
+// now has to say so at the breakpoint too (e.g. `class="text-lg md:text-lg"`).
+// These pins run at the default (desktop, >=48rem) viewport and assert the
+// new, intentional reality: the style's own md:text-sm wins there.
 
-test("Input's caller text-lg stays overridable against the retained md:text-sm", async ({ page }) => {
+test("Input's own md:text-sm wins over a caller's unprefixed text-lg at md+, matching upstream", async ({
+  page,
+}) => {
   const response = await page.goto("/f/style-contract");
   expect(response?.status(), "style contract fixture response").toBe(200);
 
   const el = page.locator('[data-style-contract="input-caller-text-size"]');
   const fontSize = await el.evaluate((n) => getComputedStyle(n).fontSize);
-  // text-lg (18px) must beat the retained md:text-sm (14px) rule.
-  expect(fontSize).toBe("18px");
+  expect(fontSize).toBe("14px");
 });
 
-test("Textarea's caller text-lg stays overridable against the retained md:text-sm", async ({ page }) => {
+test("Textarea's own md:text-sm wins over a caller's unprefixed text-lg at md+, matching upstream", async ({
+  page,
+}) => {
   const response = await page.goto("/f/style-contract");
   expect(response?.status(), "style contract fixture response").toBe(200);
 
   const el = page.locator('[data-style-contract="textarea-caller-text-size"]');
   const fontSize = await el.evaluate((n) => getComputedStyle(n).fontSize);
-  // text-lg (18px) must beat the retained md:text-sm (14px) rule.
-  expect(fontSize).toBe("18px");
+  expect(fontSize).toBe("14px");
 });
 
 // Dialog's content radius, and AlertDialogContent's retained max-w-xs caller
@@ -1536,17 +1549,29 @@ test("Toaster's inset custom property still reaches the toast card", async ({
 // "compiles" is not "applies" — these open the dialog and stamp the attribute so
 // the rules are actually exercised.
 
-test("CommandDialog's in-dialog density reaches items once the dialog is open", async ({ page }) => {
+test("CommandDialog's in-dialog rounding reaches items once the dialog is open", async ({ page }) => {
   await page.goto("/x/command/basic");
+  // Before the 8-style port, upstream's old new-york-v4 CommandDialog wrapper
+  // bumped `[cmdk-item]` padding/icon-size in-dialog (`[&_[cmdk-item]]:px-2
+  // [&_[cmdk-item]]:py-3 ...`). The new base+8-styles design system (all 8
+  // apps/v4/registry/styles/style-*.css MARK: Command sections, verified
+  // 2026-08-11) dropped that density bump entirely and replaced it with a
+  // narrower effect: only the item's own border-radius changes in-dialog, via
+  // `in-data-[slot=dialog-content]:rounded-<X>` (nova: rounded-lg), which
+  // this repo's command-item recipe carries as
+  // `[[data-gsxui-slot-dialog-content]_&]:rounded-lg`. This is a genuine
+  // upstream behavior change, not a porter drop, so the assertion now checks
+  // radius instead of padding. A plain CommandItem outside the dialog keeps
+  // its base rounded-sm.
+  const plain = page.locator("[data-gsxui-slot-command-item]").first();
+  expect(await plain.evaluate((n) => getComputedStyle(n).borderRadius)).toBe("6px");
   const dialog = page.locator("[data-gsxui-slot-command-dialog-content]");
   await dialog.evaluate((el) =>
     el.dispatchEvent(new CustomEvent("gsxui:request-open", { bubbles: true, cancelable: true })),
   );
   await expect(dialog).toHaveJSProperty("open", true);
   const item = dialog.locator("[data-gsxui-slot-command-item]").first();
-  // The in-dialog rule loosens the item's vertical padding; a plain CommandItem
-  // outside a dialog does not carry it.
-  expect(await item.evaluate((n) => getComputedStyle(n).padding)).toBe("12px 8px");
+  expect(await item.evaluate((n) => getComputedStyle(n).borderRadius)).toBe("10px");
 });
 
 test("CommandItem's data-selected background paints the accent", async ({ page }) => {

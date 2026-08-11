@@ -103,7 +103,18 @@ test("a Select near the bottom edge is capped to the available height and scroll
   // the scale-95 transition shrinks the painted box by a few px (the same
   // discrimination the theme-editor viewport pin documents), while layout
   // position/size are what the engine actually computed.
+  //
+  // toBeVisible() confirms the popover is showing but not that select.js's
+  // own "toggle" handler (which calls gsxui.js's position()) has finished —
+  // under worker/CPU contention in a full-suite run that handler can still
+  // be mid-flight, leaving style.top empty for an instant. Poll for a real
+  // (non-empty) style.top before trusting it.
   const t = (await trigger.boundingBox())!;
+  await expect
+    .poll(async () => content.evaluate((el: HTMLElement) => el.style.top), {
+      message: "select.js positioned the content",
+    })
+    .not.toBe("");
   const c = await content.evaluate((el: HTMLElement) => ({
     top: parseFloat(el.style.top),
     height: el.offsetHeight,
@@ -238,6 +249,17 @@ test("context-menu submenu prefers physical left under dir=rtl", async ({ page }
   await expect(subContent).toBeVisible();
 
   await expect(subContent).toHaveAttribute("data-side", "left");
+  // The 8-style port replaced the sub-content's old @starting-style CSS
+  // transition with a data-[state=open]:animate-in zoom-in-95 keyframe
+  // animation. toBeVisible() only waits for CSS visibility, not for that
+  // animation to settle, so a boundingBox() read here can sometimes land
+  // mid-animation (scale still short of 1) and shrink sub.width by a
+  // fraction of a px — flaky under a strict `+ 2` tolerance. Finishing all
+  // running animations first measures the settled box, matching what a
+  // real user sees once the submenu stops moving.
+  await page.evaluate(() => {
+    for (const animation of document.getAnimations()) animation.finish();
+  });
   const parent = (await subTrigger.boundingBox())!;
   const sub = (await subContent.boundingBox())!;
   expect(sub.x + sub.width).toBeLessThanOrEqual(parent.x + 2);
