@@ -1,0 +1,15 @@
+.style-demo {
+  /* MARK: Accordion */
+  .cn-accordion {
+    @apply overflow-hidden rounded-2xl border;
+  }
+
+  .cn-accordion-trigger {
+    @apply **:data-[slot=accordion-trigger-icon]:size-4 gap-6 p-4;
+  }
+
+  /* MARK: Radio Group */
+  .cn-radio-group-item {
+    @apply size-4 data-[size=sm]:size-3;
+  }
+}
