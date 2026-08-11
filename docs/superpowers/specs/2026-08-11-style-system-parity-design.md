@@ -81,6 +81,24 @@ Three deterministic rules convert one to the other:
    "no upstream counterpart" (trigger-icon, close-icon, …) is simply
    expressed as a descendant selector upstream.
 
+**Variant grammar — which prefixes participate.** Rules 2 and 3 must fire on
+exactly one prefix form each; every other Tailwind variant passes through
+verbatim onto the slot's own rule. This table is normative:
+
+| Prefix form | Example (style-maia.css) | Handling |
+|---|---|---|
+| `data-[<dim>=<val>]:` — bare, on the element itself | `data-[size=sm]:max-w-xs` | **Rule 2**: move utility into the `-<dim>-<val>` rule, iff `<dim>` is declared in the shape. Undeclared dim → error |
+| `**:data-[slot=<x>]:` — universal descendant | `**:data-[slot=accordion-trigger-icon]:size-4` | **Rule 3**: move utility into slot `<x>`'s rule, iff `<x>` is one of our slots. Unknown slot → reported |
+| `group-data-*`, `group-has-data-*` | `group-data-[size=default]/alert-dialog-content:place-items-start` | **Verbatim.** Cross-element condition on an ancestor's state — our per-dimension rules live on the same element and cannot express it |
+| `in-data-[…]:` | descendant-of variant | **Verbatim** — same reason |
+| `has-data-[…]:` | `has-data-[slot=alert-dialog-media]:grid-rows-…` | **Verbatim** — parent-has-child condition |
+| Bare boolean data variants | `data-open:bg-muted/50`, `data-closed:animate-…` | **Verbatim.** These are runtime *state*, not a declared dimension |
+| Responsive / theme / support / structural | `sm:`, `dark:`, `supports-*`, `not-last:`, `*:[svg…]` | **Verbatim** |
+
+The distinction that matters: a bare `data-[x=y]:` names a *dimension of this
+element* and re-splits; anything qualified by `group-`/`in-`/`has-` names a
+*relationship* and must not.
+
 Anything that survives all three rules unmapped is **reported, never
 silently dropped** — the porter exits non-zero with a per-component list.
 
@@ -136,6 +154,13 @@ style's bytes.
 
 `ui/*.gsx` remains the `DefaultStyle` copy, and `DefaultStyle` stays `nova`
 — now meaning upstream nova.
+
+**Hand-maintained style lists** that must gain the 6 new styles (the porter
+cannot infer these): `internal/preset/preset.go:24-29,53` holds a
+`StyleNova`/`StyleMaia` enum and is the most consequential; plus the
+`/theme` picker (`site/pages/theme_picker.gsx`) and any style literals in
+`internal/cli/`, `site/`, and `jstest/`. `stylegen`'s own pipeline discovers
+styles from the filesystem and needs no edit.
 
 ### 4.6 Gates
 
