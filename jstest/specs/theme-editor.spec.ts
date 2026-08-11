@@ -377,6 +377,41 @@ test("click commits palette state to JSON, share code, commands, and iframe", as
     .toBe(catalog.palette.resolved.neutral.blue.light.primary);
 });
 
+test("committed changes sync the address bar without growing history", async ({ page }) => {
+  await page.goto("/theme");
+  const beforeSearch = await page.evaluate(() => location.search);
+  expect(beforeSearch).toMatch(/^\?preset=gsxui%3Ap1%3A/);
+
+  await choose(page, "theme", "Blue");
+  const afterBlueSearch = await page.evaluate(() => location.search);
+  expect(afterBlueSearch).not.toBe(beforeSearch);
+  expect(afterBlueSearch).toMatch(/^\?preset=gsxui%3Ap1%3A/);
+  expect(shareFromInit((await commands(page)).init)).toBe(
+    decodeURIComponent(afterBlueSearch.slice("?preset=".length)),
+  );
+
+  await choose(page, "radius", "Large");
+  const afterRadiusSearch = await page.evaluate(() => location.search);
+  expect(afterRadiusSearch).not.toBe(afterBlueSearch);
+
+  // Both commits used replaceState, not pushState: a single back navigation
+  // leaves /theme entirely rather than stepping through each change.
+  await page.goBack();
+  await expect(page).not.toHaveURL(/\/theme/);
+});
+
+test("the address bar's share code round-trips to the exact committed preset", async ({
+  page,
+}) => {
+  await page.goto("/theme");
+  await choose(page, "theme", "Blue");
+  const search = await page.evaluate(() => location.search);
+  const committedJSON = (await downloadText(page, "json")).text;
+
+  await page.goto(`/theme${search}`);
+  expect((await downloadText(page, "json")).text).toBe(committedJSON);
+});
+
 test("share commands use compact built-ins and full custom imports", async ({ page }) => {
   await page.goto("/theme");
 

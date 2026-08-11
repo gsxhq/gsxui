@@ -179,6 +179,14 @@ function setup(schemaElement) {
     for (const output of document.querySelectorAll("[data-theme-command]")) {
       output.value = artifacts[output.dataset.themeCommand];
     }
+    // replaceState (never pushState) mirrors the committed state into the
+    // address bar on every render — including transient hover-preview
+    // renders, which is safe because currentArtifacts() always reads
+    // state.resolved, never state.previewResolved. pushState would spam
+    // history with every hover and fight undo/redo's own history stack.
+    if (artifacts.url !== location.href) {
+      history.replaceState(null, "", artifacts.url);
+    }
     if (initialMessage) {
       setStatus(initialMessage);
       initialMessage = "";
