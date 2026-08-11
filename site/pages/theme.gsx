@@ -213,7 +213,7 @@ const themeImportPlaceholder = `:root {
 }`
 
 component (t Theme) Page() {
-	<siteLayout title="Theme" active="" mode={layoutWorkspace} toc={nil}>
+	<siteLayout title="Theme" active="" mode={layoutWorkspace}>
 		<themeEditor previewURL={ThemePreview{} |> url} workspace/>
 	</siteLayout>
 }
