@@ -13,8 +13,12 @@ func TestToggleGroupRootPinned(t *testing.T) {
 	// a type="multiple" group — role="toolbar", data-orientation stamped
 	// horizontal, the dead upstream shadow selector dropped per this port's
 	// ADAPT (nova's own .cn-toggle-group precedent, see docs/jsx-parity.md).
+	// group/toggle-group was added (registry/canonical/toggle-group.gsx) so
+	// ToggleGroupItem's own group-data-[…]/toggle-group: selectors have a
+	// real ancestor to match — see the style-porter report's "missing
+	// group/toggle-group marker class" entry.
 	got := render(t, ui.ToggleGroup("multiple", "", "", "", gsx.Raw("x"), nil))
-	want := `<div data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" role="toolbar" style="--gap: 0" class="flex rounded-lg" data-gsxui-slot-toggle-group>x</div>`
+	want := `<div data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" role="toolbar" style="--gap: 0" class="group/toggle-group flex rounded-lg" data-gsxui-slot-toggle-group>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -29,8 +33,22 @@ func TestToggleGroupRootSingleRole(t *testing.T) {
 
 func TestToggleGroupItemSinglePinned(t *testing.T) {
 	// type="single" item: role="radio" + aria-checked, NOT aria-pressed.
+	//
+	// The class string now also composes Toggle's own base/variant/size
+	// presentation (hover:text-foreground .. size-4, per style) — see
+	// registry/styles/nova/toggle-group.css's own comment. rounded-lg (from
+	// that composed base) is not visible below: tailwind-merge correctly
+	// drops it in favour of the spacing="0" arm's own unconditional
+	// rounded-none (same class group, same modifier, later in the merge
+	// order), which is the pre-existing, unchanged squared-off-pill
+	// behaviour this pin already covered.
+	// has-data-[icon=…] (dead selector, never stamped by our markup) is
+	// replaced with has-[>svg]: throughout, and the base rule's own
+	// icon-only padding is no longer duplicated per group-data-[spacing=0]
+	// arm — see the style-porter report's "Systemic: has-data-[icon=…]"
+	// entry.
 	got := render(t, ui.ToggleGroupItem("single", "", "", "", true, "bold", gsx.Raw("B"), nil))
-	want := `<button type="button" data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" data-state="on" data-value="bold" role="radio" aria-checked="true" class="group-data-[spacing=0]/toggle-group:rounded-none group-data-[spacing=0]/toggle-group:px-2 group-data-[spacing=0]/toggle-group:has-data-[icon=inline-end]:pr-1.5 group-data-[spacing=0]/toggle-group:has-data-[icon=inline-start]:pl-1.5 group-data-horizontal/toggle-group:data-[spacing=0]:first:rounded-l-lg group-data-vertical/toggle-group:data-[spacing=0]:first:rounded-t-lg group-data-horizontal/toggle-group:data-[spacing=0]:last:rounded-r-lg group-data-vertical/toggle-group:data-[spacing=0]:last:rounded-b-lg has-[&gt;svg]:px-2 rounded-none shadow-none data-[variant=outline]:border-s-0 data-[variant=outline]:first:border-s data-[spacing=0]:first:rounded-s-lg data-[spacing=0]:last:rounded-e-lg" data-gsxui-slot-toggle-group-item data-gsxui-slot-toggle>B</button>`
+	want := `<button type="button" data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" data-state="on" data-value="bold" role="radio" aria-checked="true" class="hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-muted data-[variant=outline]:border-input data-[variant=outline]:hover:bg-muted data-[variant=outline]:border gap-1 text-sm font-medium transition-all [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 group-data-[spacing=0]/toggle-group:rounded-none group-data-[spacing=0]/toggle-group:px-2 group-data-horizontal/toggle-group:data-[spacing=0]:first:rounded-l-lg group-data-vertical/toggle-group:data-[spacing=0]:first:rounded-t-lg group-data-horizontal/toggle-group:data-[spacing=0]:last:rounded-r-lg group-data-vertical/toggle-group:data-[spacing=0]:last:rounded-b-lg h-8 min-w-8 px-2.5 has-[&gt;svg]:px-2 group-data-[spacing=0]/toggle-group:has-[&gt;svg]:px-2 rounded-none shadow-none data-[variant=outline]:border-s-0 data-[variant=outline]:first:border-s data-[spacing=0]:first:rounded-s-lg data-[spacing=0]:last:rounded-e-lg" data-gsxui-slot-toggle-group-item data-gsxui-slot-toggle>B</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -43,8 +61,11 @@ func TestToggleGroupItemMultiplePinned(t *testing.T) {
 	// type="multiple" item: aria-pressed, no role override — identical
 	// class string to the single-type pinned case above (variant/size
 	// unchanged); only data-state/data-value/the ARIA attribute pair differ.
+	// See TestToggleGroupItemSinglePinned for why rounded-lg is composed in
+	// but not visible in the merged string.
+	// Same has-[>svg]: replacement as TestToggleGroupItemSinglePinned above.
 	got := render(t, ui.ToggleGroupItem("multiple", "", "", "", false, "bold", gsx.Raw("B"), nil))
-	want := `<button type="button" data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" data-state="off" data-value="bold" aria-pressed="false" class="group-data-[spacing=0]/toggle-group:rounded-none group-data-[spacing=0]/toggle-group:px-2 group-data-[spacing=0]/toggle-group:has-data-[icon=inline-end]:pr-1.5 group-data-[spacing=0]/toggle-group:has-data-[icon=inline-start]:pl-1.5 group-data-horizontal/toggle-group:data-[spacing=0]:first:rounded-l-lg group-data-vertical/toggle-group:data-[spacing=0]:first:rounded-t-lg group-data-horizontal/toggle-group:data-[spacing=0]:last:rounded-r-lg group-data-vertical/toggle-group:data-[spacing=0]:last:rounded-b-lg has-[&gt;svg]:px-2 rounded-none shadow-none data-[variant=outline]:border-s-0 data-[variant=outline]:first:border-s data-[spacing=0]:first:rounded-s-lg data-[spacing=0]:last:rounded-e-lg" data-gsxui-slot-toggle-group-item data-gsxui-slot-toggle>B</button>`
+	want := `<button type="button" data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" data-state="off" data-value="bold" aria-pressed="false" class="hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-muted data-[variant=outline]:border-input data-[variant=outline]:hover:bg-muted data-[variant=outline]:border gap-1 text-sm font-medium transition-all [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 group-data-[spacing=0]/toggle-group:rounded-none group-data-[spacing=0]/toggle-group:px-2 group-data-horizontal/toggle-group:data-[spacing=0]:first:rounded-l-lg group-data-vertical/toggle-group:data-[spacing=0]:first:rounded-t-lg group-data-horizontal/toggle-group:data-[spacing=0]:last:rounded-r-lg group-data-vertical/toggle-group:data-[spacing=0]:last:rounded-b-lg h-8 min-w-8 px-2.5 has-[&gt;svg]:px-2 group-data-[spacing=0]/toggle-group:has-[&gt;svg]:px-2 rounded-none shadow-none data-[variant=outline]:border-s-0 data-[variant=outline]:first:border-s data-[spacing=0]:first:rounded-s-lg data-[spacing=0]:last:rounded-e-lg" data-gsxui-slot-toggle-group-item data-gsxui-slot-toggle>B</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

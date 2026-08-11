@@ -63,8 +63,18 @@ func inputGroupRecipeClasses(slot string, extra ...string) []string {
 
 // canonicalInputGroupClass is the class attribute one InputGroup slot renders,
 // plus any caller classes, merged the way gsx merges class values at runtime.
+// InputGroup carries a literal "group/input-group" marker class
+// (registry/canonical/input-group.gsx) that inputGroupRecipeClasses cannot
+// see, for the same reason documented on field_test.go's
+// canonicalFieldClass — see the style-porter report's "missing group/<name>
+// marker" entry.
 func canonicalInputGroupClass(slot string, extra []string, caller ...string) string {
-	classes := append(inputGroupRecipeClasses(slot, extra...), caller...)
+	var marker []string
+	if slot == "" {
+		marker = []string{"group/input-group"}
+	}
+	classes := append(marker, inputGroupRecipeClasses(slot, extra...)...)
+	classes = append(classes, caller...)
 	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
 }
 

@@ -96,8 +96,15 @@ func TestTabsAttrsFallThrough(t *testing.T) {
 }
 
 func TestTabsTriggerPinned(t *testing.T) {
+	// group-data-[variant=…]/tabs-list: (no group/tabs-list marker or
+	// data-variant axis on our TabsList) and has-data-[icon=…] (dead
+	// selector) were both untranslatable Radix vocabulary — see the
+	// style-porter report's "Tabs" and "Systemic: has-data-[icon=…]"
+	// entries. The active-state shadow now applies unconditionally
+	// (this port ships only the one variant), and icon-only padding uses
+	// has-[>svg]:.
 	got := render(t, ui.TabsTrigger("a", true, gsx.Raw("Account"), nil))
-	want := `<button type="button" role="tab" data-value="a" data-state="active" aria-selected="true" tabindex="0" class="gap-1.5 rounded-md border border-transparent px-1.5 py-0.5 text-sm font-medium group-data-[variant=default]/tabs-list:data-active:shadow-sm group-data-[variant=line]/tabs-list:data-active:shadow-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 has-data-[icon=inline-end]:pr-1 has-data-[icon=inline-start]:pl-1 inline-flex" data-gsxui-slot-tabs-trigger>Account</button>`
+	want := `<button type="button" role="tab" data-value="a" data-state="active" aria-selected="true" tabindex="0" class="gap-1.5 rounded-md border border-transparent px-1.5 py-0.5 text-sm font-medium data-[state=active]:shadow-sm [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 has-[&gt;svg]:px-1 inline-flex" data-gsxui-slot-tabs-trigger>Account</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

@@ -54,8 +54,24 @@ func fieldRecipeClasses(slot string, extra ...string) []string {
 
 // canonicalFieldClass is the class attribute one Field slot renders, plus any
 // caller classes, merged the way gsx merges class values at runtime.
+//
+// Field and FieldGroup each carry a literal "group/field"/"group/field-group"
+// marker class (registry/canonical/field.gsx) that fieldRecipeClasses cannot
+// see — it comes from the recipe's compiled CSS file, and a group/<name>
+// marker is never a compiled declaration, only a literal token the canonical
+// .gsx component hardcodes alongside its recipe class (see the style-porter
+// report's "missing group/<name> marker" entry). Prepended here rather than
+// per call site, so every caller of this helper gets it automatically.
 func canonicalFieldClass(slot string, extra []string, caller ...string) string {
-	classes := append(fieldRecipeClasses(slot, extra...), caller...)
+	var marker []string
+	switch slot {
+	case "":
+		marker = []string{"group/field"}
+	case "group":
+		marker = []string{"group/field-group"}
+	}
+	classes := append(marker, fieldRecipeClasses(slot, extra...)...)
+	classes = append(classes, caller...)
 	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
 }
 

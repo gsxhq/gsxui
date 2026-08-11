@@ -135,13 +135,23 @@ func TestFormControlCompositionTokenOrder(t *testing.T) {
 			want: `<div data-content ` + canonicalFieldClass("separator-wrapper", nil) + ` data-gsxui-slot-field-separator-wrapper><div role="none" data-orientation="horizontal" ` + canonicalFieldSeparatorClass() + ` data-gsxui-slot-field-separator data-gsxui-slot-separator></div><span ` + canonicalFieldClass("separator-content", nil) + ` data-gsxui-slot-field-separator-content>Or</span></div>`,
 		},
 		{
-			// ToggleGroupItem is now migrated too (composing Toggle's own
-			// still-unmigrated marker, data-gsxui-slot-toggle, alongside its
-			// own recipe class) — same carve-out as FieldLabel/FieldSeparator
-			// above for a migrated primitive's own class.
+			// ToggleGroupItem is now migrated too, and its own recipe
+			// (registry/styles/nova/toggle-group.css) directly composes
+			// Toggle's own base/variant/size presentation onto
+			// data-gsxui-slot-toggle — the marker is a real render target
+			// now, not a still-unmigrated fallback carve-out. See
+			// TestToggleGroupItemSinglePinned for why rounded-lg (part of
+			// that composed base) does not appear in the merged string: the
+			// spacing="0" arm's own unconditional rounded-none wins.
+			//
+			// has-data-[icon=…] was replaced by has-[>svg]: (dead selector —
+			// see the style-porter report's "Systemic: has-data-[icon=…]"
+			// entry); the base rule's own icon-only padding now sits
+			// unconditioned rather than duplicated per group-data-[spacing=0]
+			// arm (see the report's ToggleGroup entries).
 			name: "ToggleGroupItem",
 			node: ui.ToggleGroupItem("multiple", "", "", "", false, "bold", gsx.Raw("B"), nil),
-			want: `<button type="button" data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" data-state="off" data-value="bold" aria-pressed="false" class="group-data-[spacing=0]/toggle-group:rounded-none group-data-[spacing=0]/toggle-group:px-2 group-data-[spacing=0]/toggle-group:has-data-[icon=inline-end]:pr-1.5 group-data-[spacing=0]/toggle-group:has-data-[icon=inline-start]:pl-1.5 group-data-horizontal/toggle-group:data-[spacing=0]:first:rounded-l-lg group-data-vertical/toggle-group:data-[spacing=0]:first:rounded-t-lg group-data-horizontal/toggle-group:data-[spacing=0]:last:rounded-r-lg group-data-vertical/toggle-group:data-[spacing=0]:last:rounded-b-lg has-[&gt;svg]:px-2 rounded-none shadow-none data-[variant=outline]:border-s-0 data-[variant=outline]:first:border-s data-[spacing=0]:first:rounded-s-lg data-[spacing=0]:last:rounded-e-lg" data-gsxui-slot-toggle-group-item data-gsxui-slot-toggle>B</button>`,
+			want: `<button type="button" data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" data-state="off" data-value="bold" aria-pressed="false" class="hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-muted data-[variant=outline]:border-input data-[variant=outline]:hover:bg-muted data-[variant=outline]:border gap-1 text-sm font-medium transition-all [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 group-data-[spacing=0]/toggle-group:rounded-none group-data-[spacing=0]/toggle-group:px-2 group-data-horizontal/toggle-group:data-[spacing=0]:first:rounded-l-lg group-data-vertical/toggle-group:data-[spacing=0]:first:rounded-t-lg group-data-horizontal/toggle-group:data-[spacing=0]:last:rounded-r-lg group-data-vertical/toggle-group:data-[spacing=0]:last:rounded-b-lg h-8 min-w-8 px-2.5 has-[&gt;svg]:px-2 group-data-[spacing=0]/toggle-group:has-[&gt;svg]:px-2 rounded-none shadow-none data-[variant=outline]:border-s-0 data-[variant=outline]:first:border-s data-[spacing=0]:first:rounded-s-lg data-[spacing=0]:last:rounded-e-lg" data-gsxui-slot-toggle-group-item data-gsxui-slot-toggle>B</button>`,
 		},
 	}
 

@@ -16,8 +16,10 @@ func TestToggleOffPinned(t *testing.T) {
 	// accessor calls, rather than being absent as it was pre-migration. The
 	// computed presentation is unchanged — verified by the sweep (make
 	// sweep-compare) — only the class attribute's literal contents changed.
+	// has-data-[icon=…] (dead selector) replaced with has-[>svg]: — see the
+	// style-porter report's "Systemic: has-data-[icon=…]" entry.
 	got := render(t, ui.Toggle(false, "", "", gsx.Raw("Bold"), nil))
-	want := `<button type="button" data-variant="default" data-size="default" data-state="off" aria-pressed="false" class="hover:text-foreground aria-pressed:bg-muted focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive data-[state=on]:bg-muted gap-1 rounded-lg text-sm font-medium transition-all [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 inline-flex bg-transparent h-8 min-w-8 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2" data-gsxui-slot-toggle>Bold</button>`
+	want := `<button type="button" data-variant="default" data-size="default" data-state="off" aria-pressed="false" class="hover:text-foreground aria-pressed:bg-muted focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-muted gap-1 rounded-lg text-sm font-medium transition-all [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 inline-flex bg-transparent h-8 min-w-8 px-2.5 has-[&gt;svg]:px-2" data-gsxui-slot-toggle>Bold</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -28,7 +30,7 @@ func TestTogglePressedPinned(t *testing.T) {
 	// "on" state (aria-pressed="true" data-state="on"), no click required.
 	// See TestToggleOffPinned for why the class attribute is now present.
 	got := render(t, ui.Toggle(true, "", "", gsx.Raw("Bold"), nil))
-	want := `<button type="button" data-variant="default" data-size="default" data-state="on" aria-pressed="true" class="hover:text-foreground aria-pressed:bg-muted focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive data-[state=on]:bg-muted gap-1 rounded-lg text-sm font-medium transition-all [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 inline-flex bg-transparent h-8 min-w-8 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2" data-gsxui-slot-toggle>Bold</button>`
+	want := `<button type="button" data-variant="default" data-size="default" data-state="on" aria-pressed="true" class="hover:text-foreground aria-pressed:bg-muted focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-muted gap-1 rounded-lg text-sm font-medium transition-all [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 inline-flex bg-transparent h-8 min-w-8 px-2.5 has-[&gt;svg]:px-2" data-gsxui-slot-toggle>Bold</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
