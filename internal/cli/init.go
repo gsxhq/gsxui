@@ -34,6 +34,44 @@ func cssAssetTargets(entry string) []cssAssetTarget {
 	}
 }
 
+// fontAssetsSourceDir holds the font pair picker's self-hosted variable
+// WOFF2 bundle (internal/preset/catalog.go's fontCatalog): six @font-face
+// declarations in fonts.css, their binary files, and NOTICE.md's licence
+// text. assets/css/index.css's own @import "./fonts/fonts.css" (the last
+// line of that file) is what actually loads them once vendored — without
+// this, a project gets --font-sans/--font-heading CSS variables naming
+// fonts nothing serves, silently falling back to each stack's generic tail
+// (ui-sans-serif etc.) instead of the picked font.
+const fontAssetsSourceDir = "assets/fonts"
+
+// fontAssetTargets lists every file under fontAssetsSourceDir, vendored
+// into a "fonts" directory alongside entry (the same directory
+// cssAssetTargets already vendors foundation.css/theme.css/style.css into)
+// so fonts.css's relative url("./name.woff2") references keep resolving
+// wherever a project configures its CSS path. Reading the source directory
+// (rather than hardcoding six font names) means a future font added to
+// assets/fonts/ vendors automatically, with no matching edit needed here.
+// Kept separate from cssAssetTargets, whose exact 4-entry shape
+// TestCSSAssetTargetsExcludeSiteButtonFallback pins.
+func fontAssetTargets(fsys fs.FS, entry string) ([]cssAssetTarget, error) {
+	entries, err := fs.ReadDir(fsys, fontAssetsSourceDir)
+	if err != nil {
+		return nil, fmt.Errorf("list %s: %w", fontAssetsSourceDir, err)
+	}
+	dir := filepath.Join(filepath.Dir(entry), "fonts")
+	targets := make([]cssAssetTarget, 0, len(entries))
+	for _, sourceEntry := range entries {
+		if sourceEntry.IsDir() {
+			continue
+		}
+		targets = append(targets, cssAssetTarget{
+			source: fontAssetsSourceDir + "/" + sourceEntry.Name(),
+			target: filepath.Join(dir, sourceEntry.Name()),
+		})
+	}
+	return targets, nil
+}
+
 func runInit(args []string) error {
 	flags := flag.NewFlagSet("init", flag.ContinueOnError)
 	presetInput := flags.String("preset", "", "preset file, share code, raw JSON, URL, or - for stdin")
@@ -242,6 +280,21 @@ func initArtifacts(dir, module string, cfg Config, selected preset.Preset, nonVi
 		artifacts = append(artifacts, artifact{
 			RelativePath: filepath.ToSlash(filepath.Join(filepath.Dir(cfg.CSS), "animate.css")),
 			Content:      animate,
+			Managed:      true,
+		})
+	}
+	fontTargets, err := fontAssetTargets(gsxui.Files, cfg.CSS)
+	if err != nil {
+		return nil, err
+	}
+	for _, asset := range fontTargets {
+		content, err := fs.ReadFile(gsxui.Files, asset.source)
+		if err != nil {
+			return nil, err
+		}
+		artifacts = append(artifacts, artifact{
+			RelativePath: filepath.ToSlash(asset.target),
+			Content:      content,
 			Managed:      true,
 		})
 	}

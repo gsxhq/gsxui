@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -55,13 +56,15 @@ func TestInitWritesEverything(t *testing.T) {
 		"gsx.toml",
 		"vite.config.ts",
 		"web/main.js",
+		"web/gsxui/fonts/fonts.css",
+		"web/gsxui/fonts/NOTICE.md",
 	} {
 		if _, err := os.Stat(filepath.Join(dir, p)); err != nil {
 			t.Errorf("missing %s: %v", p, err)
 		}
 	}
 	assertInitializedPreset(t, dir, preset.StyleNova)
-	assertManagedFilesMatch(t, dir, []string{
+	assertManagedFilesMatch(t, dir, append([]string{
 		"gsxui.preset.json",
 		"ui/merge/merge.go",
 		"web/gsxui/foundation.css",
@@ -70,13 +73,13 @@ func TestInitWritesEverything(t *testing.T) {
 		"web/gsxui/index.js",
 		"web/gsxui/style.css",
 		"web/gsxui/theme.css",
-	})
+	}, wantFontManagedPaths(t, "web/gsxui")...))
 	toml, _ := os.ReadFile(filepath.Join(dir, "gsx.toml"))
 	if want := `class_merger = "example.com/app/ui/merge.Merge"`; !strings.Contains(string(toml), want) {
 		t.Errorf("gsx.toml missing %q:\n%s", want, toml)
 	}
 	indexCSS, _ := os.ReadFile(filepath.Join(dir, "web/gsxui/index.css"))
-	for _, want := range []string{"./foundation.css", "./theme.css", "./style.css"} {
+	for _, want := range []string{"./foundation.css", "./theme.css", "./style.css", "./fonts/fonts.css"} {
 		if !strings.Contains(string(indexCSS), want) {
 			t.Errorf("index.css missing import %q:\n%s", want, indexCSS)
 		}
@@ -164,6 +167,8 @@ func TestInitNonViteVendorsWithoutNPM(t *testing.T) {
 		"web/gsxui/index.js",
 		"ui/merge/merge.go",
 		"gsx.toml",
+		"web/gsxui/fonts/fonts.css",
+		"web/gsxui/fonts/NOTICE.md",
 	} {
 		if _, err := os.Stat(filepath.Join(dir, p)); err != nil {
 			t.Errorf("missing %s: %v", p, err)
@@ -358,7 +363,7 @@ func TestInitRejectsModifiedGeneratedBarrelWithoutAdoptingItsHash(t *testing.T) 
 	if !bytes.Equal(got, Barrel(nil)) {
 		t.Fatalf("init --overwrite did not restore generated barrel:\n%s", got)
 	}
-	assertManagedFilesMatch(t, dir, []string{
+	assertManagedFilesMatch(t, dir, append([]string{
 		"gsxui.preset.json",
 		"ui/merge/merge.go",
 		"web/gsxui/foundation.css",
@@ -367,7 +372,7 @@ func TestInitRejectsModifiedGeneratedBarrelWithoutAdoptingItsHash(t *testing.T) 
 		"web/gsxui/index.js",
 		"web/gsxui/style.css",
 		"web/gsxui/theme.css",
-	})
+	}, wantFontManagedPaths(t, "web/gsxui")...))
 }
 
 func TestInitRejectsConfigAliasedToPlannedArtifactBeforeWrites(t *testing.T) {
@@ -786,6 +791,115 @@ func TestCSSAssetTargetsExcludeSiteButtonFallback(t *testing.T) {
 	}
 }
 
+// TestFontAssetTargetsLandBesideCustomCSSPath asserts the font bundle
+// vendors into a "fonts" subdirectory next to wherever a project configures
+// its CSS entry — not hardcoded to the default web/gsxui/ layout — mirroring
+// TestCSSAssetTargetsExcludeSiteButtonFallback's own custom-path coverage
+// for cssAssetTargets.
+func TestFontAssetTargetsLandBesideCustomCSSPath(t *testing.T) {
+	targets, err := fontAssetTargets(gsxui.Files, "web/styles/brand.css")
+	if err != nil {
+		t.Fatal(err)
+	}
+	sourceEntries, err := fs.ReadDir(gsxui.Files, fontAssetsSourceDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(targets) != len(sourceEntries) {
+		t.Fatalf("fontAssetTargets() has %d entries, want %d (one per %s file): %v",
+			len(targets), len(sourceEntries), fontAssetsSourceDir, targets)
+	}
+	foundFontsCSS := false
+	for _, target := range targets {
+		wantTarget := "web/styles/fonts/" + strings.TrimPrefix(target.source, fontAssetsSourceDir+"/")
+		if target.target != wantTarget {
+			t.Errorf("fontAssetTargets()[%q].target = %q, want %q", target.source, target.target, wantTarget)
+		}
+		if target.source == fontAssetsSourceDir+"/fonts.css" {
+			foundFontsCSS = true
+		}
+	}
+	if !foundFontsCSS {
+		t.Errorf("fontAssetTargets() missing %s/fonts.css: %v", fontAssetsSourceDir, targets)
+	}
+}
+
+// fontFaceURLPattern extracts the relative url(...) from a fonts.css
+// @font-face src declaration, e.g. `src: url("./inter-latin-wght-normal.woff2") format(...)`.
+var fontFaceURLPattern = regexp.MustCompile(`url\("([^"]+)"\)`)
+
+// TestInitVendorsFontAssets is the carried-over fix from Task 3: gsxui init
+// must copy assets/fonts/* into a fresh project (byte-identical to the
+// embedded source), not just emit --font-sans/--font-heading CSS variables
+// naming fonts nothing serves. It asserts the woff2 files actually land AND
+// that fonts.css's own @font-face url()s resolve to real files relative to
+// wherever fonts.css itself was written — the exact failure mode a path
+// mismatch between fontAssetTargets and the @font-face declarations would
+// produce, which byte-identity alone would not catch.
+func TestInitVendorsFontAssets(t *testing.T) {
+	dir, _ := initTestModule(t)
+	if err := Run([]string{"init"}); err != nil {
+		t.Fatal(err)
+	}
+
+	fontsDir := filepath.Join(dir, "web", "gsxui", "fonts")
+	sourceEntries, err := fs.ReadDir(gsxui.Files, fontAssetsSourceDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(sourceEntries) == 0 {
+		t.Fatalf("%s is empty in the embedded source", fontAssetsSourceDir)
+	}
+	woff2Count := 0
+	for _, entry := range sourceEntries {
+		want, err := fs.ReadFile(gsxui.Files, fontAssetsSourceDir+"/"+entry.Name())
+		if err != nil {
+			t.Fatal(err)
+		}
+		got, err := os.ReadFile(filepath.Join(fontsDir, entry.Name()))
+		if err != nil {
+			t.Fatalf("vendored font asset %s: %v", entry.Name(), err)
+		}
+		if !bytes.Equal(got, want) {
+			t.Errorf("vendored %s does not match the embedded source byte-for-byte", entry.Name())
+		}
+		if strings.HasSuffix(entry.Name(), ".woff2") {
+			woff2Count++
+		}
+	}
+	if woff2Count == 0 {
+		t.Fatal("no .woff2 files vendored")
+	}
+
+	fontsCSS, err := os.ReadFile(filepath.Join(fontsDir, "fonts.css"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	matches := fontFaceURLPattern.FindAllSubmatch(fontsCSS, -1)
+	if len(matches) != woff2Count {
+		t.Fatalf("fonts.css declares %d @font-face url()s, want one per vendored .woff2 file (%d)", len(matches), woff2Count)
+	}
+	for _, match := range matches {
+		relative := string(match[1])
+		if !strings.HasPrefix(relative, "./") {
+			t.Errorf("fonts.css url(%q) is not a same-directory relative reference", relative)
+			continue
+		}
+		resolved := filepath.Join(fontsDir, filepath.FromSlash(strings.TrimPrefix(relative, "./")))
+		if _, err := os.Stat(resolved); err != nil {
+			t.Errorf("fonts.css url(%q) does not resolve to a vendored file at %s: %v", relative, resolved, err)
+		}
+	}
+
+	index, err := os.ReadFile(filepath.Join(dir, "web/gsxui/index.css"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(index), `@import "./fonts/fonts.css";`) {
+		t.Errorf("index.css does not import the vendored font bundle:\n%s", index)
+	}
+}
+
 func TestInitRejectsCustomCSSPathBeforeCommands(t *testing.T) {
 	dir, commands := initTestModule(t)
 	cfg := Config{UI: "ui", JS: "web/gsxui", CSS: "web/styles/brand.css"}
@@ -839,6 +953,10 @@ func TestInitOverwriteRefreshesOnlyVersionedSupportFiles(t *testing.T) {
 		{path: "web/gsxui/style.css", source: "assets/css/styles/default.css"},
 		{path: filepath.Join(cfg.JS, "gsxui.js"), source: "ui/gsxui.js"},
 		{path: filepath.Join(cfg.UI, "merge", "merge.go"), source: "merge/merge.go"},
+		// The font bundle is Managed the same as every other vendored
+		// support file — locally modifying it must be protected from a
+		// plain init and refreshed by --overwrite exactly like the rest.
+		{path: "web/gsxui/fonts/fonts.css", source: fontAssetsSourceDir + "/fonts.css"},
 	}
 	for _, target := range targets {
 		if err := os.WriteFile(
@@ -1080,6 +1198,26 @@ func TestInitDoesNotClobberUnparsableConfig(t *testing.T) {
 	if string(got) != broken {
 		t.Errorf("gsxui.json was modified:\n%s", got)
 	}
+}
+
+// wantFontManagedPaths returns every font asset's expected vendored path
+// under dir/fonts, read dynamically from the embedded assets/fonts source
+// directory so this expectation can never drift out of sync with
+// fontAssetTargets' own dynamic listing (both walk the same directory).
+func wantFontManagedPaths(t *testing.T, dir string) []string {
+	t.Helper()
+	entries, err := fs.ReadDir(gsxui.Files, fontAssetsSourceDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	paths := make([]string, 0, len(entries))
+	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+		paths = append(paths, filepath.ToSlash(filepath.Join(dir, "fonts", entry.Name())))
+	}
+	return paths
 }
 
 // expectedVendoredCSS is the exact bytes `gsxui init` writes for one embedded CSS
