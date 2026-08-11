@@ -50,7 +50,7 @@ func TestAvatarPinned(t *testing.T) {
 	// to overlay the fallback (no-JS rendering correct). Now carries the
 	// recipe's resolved class (slot axis migration).
 	got := render(t, ui.AvatarImage("/shadcn.jpg", "shadcn", nil))
-	want := `<img src="/shadcn.jpg" alt="shadcn" class="absolute inset-0 aspect-square size-full" data-gsxui-slot-avatar-image>`
+	want := `<img src="/shadcn.jpg" alt="shadcn" class="rounded-full" data-gsxui-slot-avatar-image>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

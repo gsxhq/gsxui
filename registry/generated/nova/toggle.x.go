@@ -95,22 +95,22 @@ func Toggle(pressed bool, variant string, size string, children gsx.Node, attrs 
 			_gsxgw.S(_gsxsc.FormatBool(bool(pressed)))
 			_gsxgw.S("\"")
 		}
-		_gsxv0 := "inline-flex items-center justify-center gap-1 rounded-lg bg-transparent text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-muted hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+		_gsxv0 := "hover:text-foreground aria-pressed:bg-muted focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive data-[state=on]:bg-muted gap-1 rounded-lg text-sm font-medium transition-all [&_svg:not([class*='size-'])]:size-4 inline-flex"
 		var _gsxv1 string
 		switch variant {
 		case "outline":
-			_gsxv1 = "border border-input hover:bg-accent hover:text-accent-foreground"
+			_gsxv1 = "border-input hover:bg-muted border bg-transparent"
 		default:
 			_gsxv1 = "bg-transparent"
 		}
 		var _gsxv2 string
 		switch size {
 		case "sm":
-			_gsxv2 = "h-7 min-w-7 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3.5"
+			_gsxv2 = "h-7 min-w-7 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5"
 		case "lg":
-			_gsxv2 = "h-9 min-w-9 px-2.5 has-[>svg]:px-2"
+			_gsxv2 = "h-9 min-w-9 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2"
 		default:
-			_gsxv2 = "h-8 min-w-8 px-2.5 has-[>svg]:px-2"
+			_gsxv2 = "h-8 min-w-8 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2"
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(attrs.Class()))
@@ -119,7 +119,7 @@ func Toggle(pressed bool, variant string, size string, children gsx.Node, attrs 
 		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-toggle"})
 		_gsxgw.BoolAttr("data-gsxui-slot-toggle", true)
 		_gsxgw.S(">")
-//line toggle.gsx:85:3
+//line toggle.gsx:80:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()

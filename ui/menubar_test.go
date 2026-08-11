@@ -192,7 +192,7 @@ func TestMenubarPinnedParts(t *testing.T) {
 		{
 			name: "root",
 			node: ui.Menubar(gsx.Raw("x"), nil),
-			want: `<div class="flex h-8 items-center gap-0.5 rounded-lg border bg-background p-[3px]" role="menubar" data-gsxui-slot-menubar>x</div>`,
+			want: `<div class="h-8 gap-0.5 rounded-lg border p-[3px] flex" role="menubar" data-gsxui-slot-menubar>x</div>`,
 		},
 		{
 			name: "menu",
@@ -202,27 +202,27 @@ func TestMenubarPinnedParts(t *testing.T) {
 		{
 			name: "item",
 			node: ui.MenubarItem("", gsx.Raw("Print"), nil),
-			want: `<div class="relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 [&amp;_svg:not([class*=&#39;text-&#39;])]:text-muted-foreground text-foreground" data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-menubar-item>Print</div>`,
+			want: `<div class="focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-1.5 rounded-md px-1.5 py-1 text-sm data-disabled:opacity-50 data-inset:pl-7 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 flex text-foreground" data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-menubar-item>Print</div>`,
 		},
 		{
 			name: "content",
 			node: ui.MenubarContent(gsx.Raw("x"), nil),
-			want: `<div class="z-50 min-w-36 origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&amp;:popover-open]:opacity-100 [&amp;:popover-open]:scale-100 starting:[&amp;:popover-open]:opacity-0 starting:[&amp;:popover-open]:scale-95 data-[side=bottom]:starting:[&amp;:popover-open]:-translate-y-2 data-[side=left]:starting:[&amp;:popover-open]:translate-x-2 data-[side=right]:starting:[&amp;:popover-open]:-translate-x-2 data-[side=top]:starting:[&amp;:popover-open]:translate-y-2" popover="auto" role="menu" tabindex="-1" data-state="closed" data-side="bottom" data-gsxui-slot-menubar-content>x</div>`,
+			want: `<div class="bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 min-w-36 rounded-lg p-1 shadow-md ring-1 duration-100" popover="auto" role="menu" tabindex="-1" data-state="closed" data-side="bottom" data-gsxui-slot-menubar-content>x</div>`,
 		},
 		{
 			name: "label",
 			node: ui.MenubarLabel(gsx.Raw("People"), nil),
-			want: `<div class="px-1.5 py-1 text-sm font-medium" data-gsxui-slot-menubar-label>People</div>`,
+			want: `<div class="px-1.5 py-1 text-sm font-medium data-inset:pl-7" data-gsxui-slot-menubar-label>People</div>`,
 		},
 		{
 			name: "separator",
 			node: ui.MenubarSeparator(nil),
-			want: `<div class="-mx-1 my-1 h-px bg-border" role="separator" data-gsxui-slot-menubar-separator></div>`,
+			want: `<div class="bg-border" role="separator" data-gsxui-slot-menubar-separator></div>`,
 		},
 		{
 			name: "shortcut",
 			node: ui.MenubarShortcut(gsx.Raw("⌘T"), nil),
-			want: `<span class="ms-auto text-xs tracking-widest text-muted-foreground" data-gsxui-slot-menubar-shortcut>⌘T</span>`,
+			want: `<span class="text-muted-foreground group-focus/menubar-item:text-accent-foreground text-xs tracking-widest" data-gsxui-slot-menubar-shortcut>⌘T</span>`,
 		},
 		{
 			name: "group",

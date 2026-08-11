@@ -1,0 +1,26 @@
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-luma.css, Alert Dialog lines 483-506. Ported
+   by internal/stylegen/port; utilities are upstream Tailwind classes,
+   re-slotted onto gsxui's shape-declared classes. */
+@layer components {
+  .gsxui-recipe-alert-dialog-content {
+    @apply data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 bg-popover text-popover-foreground ring-foreground/5 dark:ring-foreground/10 gap-6 rounded-4xl p-6 shadow-xl ring-1 duration-100 data-[size=default]:max-w-xs data-[size=sm]:max-w-xs data-[size=default]:sm:max-w-md;
+  }
+
+  .gsxui-recipe-alert-dialog-header {
+    @apply grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center sm:group-data-[size=default]/alert-dialog-content:place-items-start sm:group-data-[size=default]/alert-dialog-content:text-left;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-alert-dialog-footer {
+    @apply -mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4 sm:flex-row sm:justify-end;
+  }
+
+  .gsxui-recipe-alert-dialog-title {
+    @apply text-lg font-medium;
+  }
+
+  .gsxui-recipe-alert-dialog-description {
+    @apply text-muted-foreground *:[a]:hover:text-foreground text-sm text-balance md:text-pretty *:[a]:underline *:[a]:underline-offset-3;
+  }
+}

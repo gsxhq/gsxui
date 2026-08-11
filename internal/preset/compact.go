@@ -28,6 +28,12 @@ const (
 var compactStyles = []Style{
 	StyleNova,
 	StyleMaia,
+	StyleVega,
+	StyleLyra,
+	StyleMira,
+	StyleLuma,
+	StyleSera,
+	StyleRhea,
 }
 
 var compactBaseColors = []string{

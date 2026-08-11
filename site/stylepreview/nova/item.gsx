@@ -10,7 +10,12 @@ package nova
 import "github.com/gsxhq/gsx"
 
 component ItemGroup(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "flex flex-col" } role="list" { attrs... } data-gsxui-slot-item-group>
+	<div
+		class={ "gap-4 has-data-[size=sm]:gap-2.5 has-data-[size=xs]:gap-2 flex flex-col" }
+		role="list"
+		{ attrs... }
+		data-gsxui-slot-item-group
+	>
 		{ children }
 	</div>
 }
@@ -47,8 +52,15 @@ component Item(variant string, size string, children gsx.Node, attrs gsx.Attrs) 
 		data-variant={variant |> default("default")}
 		data-size={size |> default("default")}
 		class={
-			"flex flex-wrap items-center gap-2.5 rounded-lg border border-transparent px-3 py-2.5 text-sm transition-colors duration-100 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 [a&]:transition-colors [a&]:hover:bg-accent/50",
-			switch variant { case "outline": "border-border" case "muted": "bg-muted/50" default: "bg-transparent" }
+			"[a]:hover:bg-muted rounded-lg border text-sm flex flex-wrap",
+			switch variant {
+			case "outline":
+				"border-border"
+			case "muted":
+				"bg-muted/50 border-transparent"
+			default:
+				"border-transparent"
+			}
 		}
 		{ attrs... }
 		data-gsxui-slot-item
@@ -72,12 +84,12 @@ component ItemMedia(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-variant={variant |> default("default")}
 		class={
-			"flex shrink-0 items-center justify-center gap-2 [&_svg]:pointer-events-none",
+			"gap-2 group-has-[[data-gsxui-slot-item-description]]/item:translate-y-0.5 group-has-[[data-gsxui-slot-item-description]]/item:self-start flex",
 			switch variant {
 			case "icon":
-				"size-8 rounded-sm border bg-muted [&_svg:not([class*='size-'])]:size-4"
+				"[&_svg:not([class*='size-'])]:size-4"
 			case "image":
-				"size-10 overflow-hidden rounded-sm [&_img]:size-full [&_img]:object-cover"
+				"size-10 overflow-hidden rounded-sm group-data-[size=sm]/item:size-8 group-data-[size=xs]/item:size-6 [&_img]:size-full [&_img]:object-cover"
 			default:
 				"bg-transparent"
 			}
@@ -90,18 +102,14 @@ component ItemMedia(variant string, children gsx.Node, attrs gsx.Attrs) {
 }
 
 component ItemContent(children gsx.Node, attrs gsx.Attrs) {
-	<div
-		class={ "flex flex-1 flex-col gap-1 [&+[data-gsxui-slot-item-content]]:flex-none" }
-		{ attrs... }
-		data-gsxui-slot-item-content
-	>
+	<div class={ "gap-1 group-data-[size=xs]/item:gap-0 flex flex-col" } { attrs... } data-gsxui-slot-item-content>
 		{ children }
 	</div>
 }
 
 component ItemTitle(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "flex w-fit items-center gap-2 text-sm leading-snug font-medium" }
+		class={ "gap-2 text-sm leading-snug font-medium underline-offset-4 flex" }
 		{ attrs... }
 		data-gsxui-slot-item-title
 	>
@@ -114,9 +122,7 @@ component ItemTitle(children gsx.Node, attrs gsx.Attrs) {
 // <div> — see empty.gsx).
 component ItemDescription(children gsx.Node, attrs gsx.Attrs) {
 	<p
-		class={
-			"line-clamp-2 text-sm leading-normal font-normal text-balance text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary"
-		}
+		class={ "text-muted-foreground text-left text-sm leading-normal group-data-[size=xs]/item:text-xs" }
 		{ attrs... }
 		data-gsxui-slot-item-description
 	>
@@ -125,19 +131,19 @@ component ItemDescription(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component ItemActions(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "flex items-center gap-2" } { attrs... } data-gsxui-slot-item-actions>
+	<div class={ "gap-2 flex" } { attrs... } data-gsxui-slot-item-actions>
 		{ children }
 	</div>
 }
 
 component ItemHeader(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "flex basis-full items-center justify-between gap-2" } { attrs... } data-gsxui-slot-item-header>
+	<div class={ "gap-2 flex" } { attrs... } data-gsxui-slot-item-header>
 		{ children }
 	</div>
 }
 
 component ItemFooter(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "flex basis-full items-center justify-between gap-2" } { attrs... } data-gsxui-slot-item-footer>
+	<div class={ "gap-2 flex" } { attrs... } data-gsxui-slot-item-footer>
 		{ children }
 	</div>
 }

@@ -72,7 +72,7 @@ func AlertDialogContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 //line alert-dialog.gsx:40:3
 			_gsxgw.Node(ctx, children)
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 bg-popover text-popover-foreground ring-foreground/5 gap-6 rounded-4xl p-6 ring-1 duration-100 data-[size=default]:max-w-xs data-[size=sm]:max-w-xs data-[size=default]:sm:max-w-md"))}}, _gsxrt.Attrs{{Key: "role", Value: "alertdialog"}}, _gsxrt.Attrs{{Key: "data-gsxui-dialog-static", Value: _gsxrt.Toggle(true)}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-alert-dialog-content", Value: _gsxrt.Toggle(true)}})))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 bg-popover text-popover-foreground ring-foreground/5 gap-6 rounded-4xl p-6 ring-1 duration-100 data-[size=default]:max-w-xs data-[size=sm]:max-w-xs data-[size=default]:sm:max-w-md"))}}, _gsxrt.Attrs{{Key: "role", Value: "alertdialog"}}, _gsxrt.Attrs{{Key: "data-gsxui-dialog-static", Value: _gsxrt.Toggle(true)}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-alert-dialog-content", Value: _gsxrt.Toggle(true)}})))
 		return _gsxgw.Err()
 	})
 }

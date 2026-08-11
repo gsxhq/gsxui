@@ -24,7 +24,7 @@ import (
 // anything else listens for the gsxui:select CustomEvent on the item.
 component Command(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "flex h-full w-full flex-col overflow-hidden rounded-xl bg-popover p-1 text-popover-foreground" }
+		class={ "bg-popover text-popover-foreground rounded-xl p-1 flex flex-col" }
 		{ attrs... }
 		data-gsxui-slot-command
 	>
@@ -50,7 +50,7 @@ component CommandDialog(title string, description string, trigger gsx.Node, chil
 		{ trigger }
 		<DialogContent
 			data-gsxui-command-dialog
-			class={ "[dialog&]:overflow-hidden" }
+			class={ "rounded-xl" }
 			{ attrs... }
 			data-gsxui-slot-command-dialog-content
 		>
@@ -72,7 +72,7 @@ component CommandDialog(title string, description string, trigger gsx.Node, chil
 component CommandInput(placeholder string, attrs gsx.Attrs) {
 	<div
 		class={
-			"flex h-9 items-center gap-2 border-b px-3 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50 [[data-gsxui-slot-command-dialog-content]_&]:h-12 [[data-gsxui-slot-command-dialog-content]_&]:[&_svg]:size-5"
+			"p-1 pb-0 bg-input/30 border-input/30 h-8 rounded-lg shadow-none [&>[data-gsxui-slot-input-group-addon]]:pl-2 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50 flex"
 		}
 		data-gsxui-slot-command-input-wrapper
 	>
@@ -85,9 +85,7 @@ component CommandInput(placeholder string, attrs gsx.Attrs) {
 			autocomplete="off"
 			spellcheck="false"
 			placeholder={placeholder}
-			class={
-				"flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 [[data-gsxui-slot-command-dialog-content]_&]:h-12"
-			}
+			class={ "w-full text-sm flex" }
 			{ attrs... }
 			data-gsxui-slot-command-input
 		/>
@@ -97,7 +95,7 @@ component CommandInput(placeholder string, attrs gsx.Attrs) {
 component CommandList(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="listbox"
-		class={ "max-h-72 scroll-py-1 overflow-x-hidden overflow-y-auto" }
+		class={ "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-h-72 scroll-py-1 outline-none" }
 		{ attrs... }
 		data-gsxui-slot-command-list
 	>
@@ -120,7 +118,7 @@ component CommandGroup(heading string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="group"
 		class={
-			"overflow-hidden p-1 text-foreground [[data-gsxui-slot-command-dialog-content]_&]:px-2 [[data-gsxui-slot-command-dialog-content]_[data-gsxui-slot-command-group]:not([hidden])~&]:pt-0"
+			"text-foreground **:[[cmdk-group-heading]]:text-muted-foreground overflow-hidden p-1 **:[[cmdk-group-heading]]:px-2 **:[[cmdk-group-heading]]:py-1.5 **:[[cmdk-group-heading]]:text-xs **:[[cmdk-group-heading]]:font-medium"
 		}
 		{ attrs... }
 		data-gsxui-slot-command-group
@@ -135,7 +133,7 @@ component CommandGroup(heading string, children gsx.Node, attrs gsx.Attrs) {
 }
 
 component CommandSeparator(attrs gsx.Attrs) {
-	<div role="separator" class={ "-mx-1 h-px bg-border" } { attrs... } data-gsxui-slot-command-separator></div>
+	<div role="separator" class={ "bg-border -mx-1 h-px" } { attrs... } data-gsxui-slot-command-separator></div>
 }
 
 // CommandItem is a role="option" div (cmdk's own role), NOT focusable —
@@ -151,7 +149,7 @@ component CommandItem(value string, children gsx.Node, attrs gsx.Attrs) {
 		role="option"
 		aria-selected="false"
 		class={
-			"relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled=true]:pointer-events-none data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [[data-gsxui-slot-command-dialog-content]_&]:px-2 [[data-gsxui-slot-command-dialog-content]_&]:py-3 [[data-gsxui-slot-command-dialog-content]_&]:[&_svg]:size-5"
+			"data-selected:bg-muted data-selected:text-foreground data-selected:*:[svg]:text-foreground relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none [[data-gsxui-slot-dialog-content]_&]:rounded-lg [&_svg:not([class*='size-'])]:size-4"
 		}
 		{ attrs... }
 		data-gsxui-slot-command-item
@@ -161,7 +159,11 @@ component CommandItem(value string, children gsx.Node, attrs gsx.Attrs) {
 }
 
 component CommandShortcut(children gsx.Node, attrs gsx.Attrs) {
-	<span class={ "ms-auto text-xs tracking-widest text-muted-foreground" } { attrs... } data-gsxui-slot-command-shortcut>
+	<span
+		class={ "text-muted-foreground group-data-selected/command-item:text-foreground ml-auto text-xs tracking-widest" }
+		{ attrs... }
+		data-gsxui-slot-command-shortcut
+	>
 		{ children }
 	</span>
 }

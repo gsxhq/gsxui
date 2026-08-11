@@ -1,0 +1,27 @@
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-vega.css, Accordion lines 2-17. Ported by
+   internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
+   onto gsxui's shape-declared classes. */
+@layer components {
+  .gsxui-recipe-accordion-item {
+    @apply not-last:border-b;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-accordion-trigger {
+    @apply focus-visible:ring-ring/50 focus-visible:border-ring focus-visible:after:border-ring rounded-md py-4 text-left text-sm font-medium hover:underline focus-visible:ring-3 flex;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-accordion-trigger-icon {
+    @apply text-muted-foreground ml-auto size-4 shrink-0 transition-transform duration-200 [[data-gsxui-slot-accordion-item][open]_&]:rotate-180;
+  }
+
+  .gsxui-recipe-accordion-content {
+    @apply data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up text-sm;
+  }
+
+  .gsxui-recipe-accordion-content-inner {
+    @apply pt-0 pb-4;
+  }
+}

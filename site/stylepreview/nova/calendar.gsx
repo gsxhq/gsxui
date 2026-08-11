@@ -728,9 +728,7 @@ component Calendar(mode string, month time.Time, selected []time.Time, from time
 		} }
 		data-gsxui-calendar-nav-from-year={strconv.Itoa(navFromYear)}
 		data-gsxui-calendar-nav-to-year={strconv.Itoa(navToYear)}
-		class={
-			"w-fit bg-background p-2 [--cell-size:calc(var(--spacing)*7)] [[data-gsxui-slot-card-content]_&]:bg-transparent [[data-gsxui-slot-popover-content]_&]:bg-transparent"
-		}
+		class={ "p-2 [--cell-radius:var(--radius-md)] [--cell-size:--spacing(7)]" }
 		{ attrs... }
 		data-gsxui-slot-calendar
 	>

@@ -16,28 +16,28 @@ component Button(variant string, size string, href string, disabled bool, childr
 			href={href}
 			class={
 				"group/button",
-				"inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:shrink-0 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
+				"focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 rounded-lg border border-transparent bg-clip-padding text-sm font-medium focus-visible:ring-3 aria-invalid:ring-3 active:not-aria-[haspopup]:translate-y-px [&_svg:not([class*='size-'])]:size-4 inline-flex shrink-0 items-center justify-center whitespace-nowrap transition-all outline-none select-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
 				switch variant {
 				case "destructive":
-					"bg-destructive text-contrast hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:hover:bg-destructive/90 dark:focus-visible:ring-destructive/40"
+					"bg-destructive/10 hover:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/20 text-destructive focus-visible:border-destructive/40 dark:hover:bg-destructive/30"
 				case "outline":
-					"border-border bg-background hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
+					"border-border bg-background hover:bg-muted hover:text-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 aria-expanded:bg-muted aria-expanded:text-foreground"
 				case "secondary":
-					"bg-secondary text-secondary-foreground hover:bg-secondary/80"
+					"bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground"
 				case "ghost":
-					"hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50"
+					"hover:bg-muted hover:text-foreground dark:hover:bg-muted/50 aria-expanded:bg-muted aria-expanded:text-foreground"
 				case "link":
 					"text-primary underline-offset-4 hover:underline"
 				default:
-					"bg-primary text-primary-foreground hover:bg-primary/90"
+					"bg-primary text-primary-foreground hover:bg-primary/80"
 				},
 				switch size {
 				case "xs":
-					"h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3"
+					"h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3"
 				case "sm":
-					"h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3.5"
+					"h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5"
 				case "lg":
-					"h-9 gap-1.5 px-2.5 has-[>svg]:px-2"
+					"h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2"
 				case "icon":
 					"size-8"
 				case "icon-xs":
@@ -47,7 +47,7 @@ component Button(variant string, size string, href string, disabled bool, childr
 				case "icon-lg":
 					"size-9"
 				default:
-					"h-8 gap-1.5 px-2.5 has-[>svg]:px-2"
+					"h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2"
 				}
 			}
 			{ attrs... }
@@ -63,28 +63,28 @@ component Button(variant string, size string, href string, disabled bool, childr
 			disabled={disabled}
 			class={
 				"group/button",
-				"inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:shrink-0 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
+				"focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 rounded-lg border border-transparent bg-clip-padding text-sm font-medium focus-visible:ring-3 aria-invalid:ring-3 active:not-aria-[haspopup]:translate-y-px [&_svg:not([class*='size-'])]:size-4 inline-flex shrink-0 items-center justify-center whitespace-nowrap transition-all outline-none select-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
 				switch variant {
 				case "destructive":
-					"bg-destructive text-contrast hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:hover:bg-destructive/90 dark:focus-visible:ring-destructive/40"
+					"bg-destructive/10 hover:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/20 text-destructive focus-visible:border-destructive/40 dark:hover:bg-destructive/30"
 				case "outline":
-					"border-border bg-background hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
+					"border-border bg-background hover:bg-muted hover:text-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 aria-expanded:bg-muted aria-expanded:text-foreground"
 				case "secondary":
-					"bg-secondary text-secondary-foreground hover:bg-secondary/80"
+					"bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground"
 				case "ghost":
-					"hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50"
+					"hover:bg-muted hover:text-foreground dark:hover:bg-muted/50 aria-expanded:bg-muted aria-expanded:text-foreground"
 				case "link":
 					"text-primary underline-offset-4 hover:underline"
 				default:
-					"bg-primary text-primary-foreground hover:bg-primary/90"
+					"bg-primary text-primary-foreground hover:bg-primary/80"
 				},
 				switch size {
 				case "xs":
-					"h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3"
+					"h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3"
 				case "sm":
-					"h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3.5"
+					"h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5"
 				case "lg":
-					"h-9 gap-1.5 px-2.5 has-[>svg]:px-2"
+					"h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2"
 				case "icon":
 					"size-8"
 				case "icon-xs":
@@ -94,7 +94,7 @@ component Button(variant string, size string, href string, disabled bool, childr
 				case "icon-lg":
 					"size-9"
 				default:
-					"h-8 gap-1.5 px-2.5 has-[>svg]:px-2"
+					"h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2"
 				}
 			}
 			{ attrs... }

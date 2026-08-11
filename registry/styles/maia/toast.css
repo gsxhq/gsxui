@@ -5,7 +5,7 @@
 @layer components {
   /* carried: no upstream counterpart */
   .gsxui-recipe-toast {
-    @apply rounded-2xl flex;
+    @apply rounded-2xl flex w-[356px] items-start gap-3 border border-border bg-popover p-4 text-sm text-popover-foreground shadow-lg transition-[transform,opacity] duration-300 ease-out;
   }
 
   /* carried: no upstream counterpart */

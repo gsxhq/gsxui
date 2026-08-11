@@ -25,7 +25,7 @@ func TestPaginationAttrsFallThrough(t *testing.T) {
 
 func TestPaginationContentPinned(t *testing.T) {
 	got := render(t, ui.PaginationContent(gsx.Raw("x"), nil))
-	want := `<ul class="flex flex-row items-center gap-0.5" data-gsxui-slot-pagination-content>x</ul>`
+	want := `<ul class="gap-0.5 flex flex-row" data-gsxui-slot-pagination-content>x</ul>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -131,7 +131,7 @@ func TestPaginationNextPinned(t *testing.T) {
 
 func TestPaginationEllipsisPinned(t *testing.T) {
 	got := render(t, ui.PaginationEllipsis(nil))
-	want := `<span aria-hidden="true" class="flex size-8 items-center justify-center [&amp;&gt;svg]:size-4" data-gsxui-slot-pagination-ellipsis><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg><span data-gsxui-slot-pagination-ellipsis-label>More pages</span></span>`
+	want := `<span aria-hidden="true" class="size-8 items-center justify-center [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 flex" data-gsxui-slot-pagination-ellipsis><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg><span data-gsxui-slot-pagination-ellipsis-label>More pages</span></span>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

@@ -290,7 +290,7 @@ func _gsxrenderResizableHandle(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, orien
 	if withHandle {
 //line resizable.gsx:210:4
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("z-10 flex h-6 w-1 shrink-0 rounded-lg bg-border"))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-border h-6 w-1 rounded-lg flex"))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-resizable-handle-grip", true)
 		_gsxgw.S("></div>")

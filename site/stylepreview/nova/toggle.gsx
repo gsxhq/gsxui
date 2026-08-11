@@ -63,20 +63,15 @@ component Toggle(pressed bool, variant string, size string, children gsx.Node, a
 		data-state={state}
 		aria-pressed={pressed}
 		class={
-			"inline-flex items-center justify-center gap-1 rounded-lg bg-transparent text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-muted hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-			switch variant {
-			case "outline":
-				"border border-input hover:bg-accent hover:text-accent-foreground"
-			default:
-				"bg-transparent"
-			},
+			"hover:text-foreground aria-pressed:bg-muted focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive data-[state=on]:bg-muted gap-1 rounded-lg text-sm font-medium transition-all [&_svg:not([class*='size-'])]:size-4 inline-flex",
+			switch variant { case "outline": "border-input hover:bg-muted border bg-transparent" default: "bg-transparent" },
 			switch size {
 			case "sm":
-				"h-7 min-w-7 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3.5"
+				"h-7 min-w-7 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5"
 			case "lg":
-				"h-9 min-w-9 px-2.5 has-[>svg]:px-2"
+				"h-9 min-w-9 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2"
 			default:
-				"h-8 min-w-8 px-2.5 has-[>svg]:px-2"
+				"h-8 min-w-8 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2"
 			}
 		}
 		{ attrs... }

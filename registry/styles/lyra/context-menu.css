@@ -1,0 +1,74 @@
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-lyra.css, Context Menu lines 392-439. Ported
+   by internal/stylegen/port; utilities are upstream Tailwind classes,
+   re-slotted onto gsxui's shape-declared classes. */
+@layer components {
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-context-menu {
+    @apply contents;
+  }
+
+  .gsxui-recipe-context-menu-content {
+    @apply data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 bg-popover text-popover-foreground min-w-36 rounded-none shadow-md ring-1 duration-100;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-context-menu-item {
+    @apply focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 focus:*:[svg]:text-accent-foreground gap-2 rounded-none px-2 py-2 text-xs data-inset:pl-7 [&_svg:not([class*='size-'])]:size-4 flex;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-context-menu-item-variant-default {
+    @apply text-foreground;
+  }
+
+  .gsxui-recipe-context-menu-item-variant-destructive {
+    @apply text-destructive focus:bg-destructive/10 focus:text-destructive *:[svg]:text-destructive;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-context-menu-checkbox-item {
+    @apply focus:bg-accent focus:text-accent-foreground gap-2 rounded-none py-2 pr-8 pl-2 text-xs data-inset:pl-7 [&_svg:not([class*='size-'])]:size-4 flex;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-context-menu-checkbox-item-indicator {
+    @apply pointer-events-none absolute end-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-4;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-context-menu-radio-item {
+    @apply focus:bg-accent focus:text-accent-foreground gap-2 rounded-none py-2 pr-8 pl-2 text-xs data-inset:pl-7 [&_svg:not([class*='size-'])]:size-4 flex;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-context-menu-radio-item-indicator {
+    @apply pointer-events-none absolute end-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-2 [&>svg]:fill-current;
+  }
+
+  .gsxui-recipe-context-menu-label {
+    @apply text-muted-foreground px-2 py-2 text-xs data-inset:pl-7;
+  }
+
+  .gsxui-recipe-context-menu-separator {
+    @apply bg-border -mx-1 h-px;
+  }
+
+  .gsxui-recipe-context-menu-shortcut {
+    @apply text-muted-foreground group-focus/context-menu-item:text-accent-foreground ml-auto text-xs tracking-widest;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-context-menu-sub {
+    @apply contents;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-context-menu-sub-trigger {
+    @apply focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground gap-2 rounded-none px-2 py-2 text-xs data-inset:pl-7 [&_svg:not([class*='size-'])]:size-4 flex;
+  }
+
+  .gsxui-recipe-context-menu-sub-content {
+    @apply data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 bg-popover text-popover-foreground min-w-32 rounded-none border shadow-lg duration-100;
+  }
+}

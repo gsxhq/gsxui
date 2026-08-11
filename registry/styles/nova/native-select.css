@@ -1,40 +1,14 @@
-/* Source: assets/css/styles/default/native-select.css (all nine rules,
-   nothing retained and nothing left behind). The wrapper's `> svg` chevron
-   rule folds onto the wrapper slot as an arbitrary child variant
-   ([&>svg]:), the same form registry/styles/nova/select.css already uses for
-   SelectTrigger's chevron — the chevron is icon.ChevronDown and carries no
-   native-select marker of its own, so it is not a slot. :focus-visible,
-   :disabled and [aria-invalid="true"] are native Tailwind variants; the
-   three `.dark` ancestor rules are the `dark:` variant, with the
-   aria-invalid one stacking as dark:aria-invalid: exactly as Select's
-   trigger does.
-
-   Nothing here needs to stay behind under section 10b: the caller's class
-   lands on the WRAPPER, and the only property the wrapper and a caller
-   contest is width (w-fit vs a caller's w-full / w-[180px]). Both are plain
-   utilities on the same element once resolved, so merge.Merge drops w-fit
-   and the caller wins — the same outcome the old zero-specificity :where()
-   rule produced, by a different mechanism. The <select> slot takes no
-   caller class at all (native-select.gsx routes class to the wrapper and
-   only non-class attrs to the select), so its text-sm cannot be contested
-   the way Input's text-base/md:text-sm pair was.
-
-   Nova and Maia have not diverged on NativeSelect yet, so this file is
-   byte-identical to registry/styles/maia/native-select.css. Confirmed
-   compiling with this repo's Tailwind v4 CLI before use. */
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-nova.css, Native Select lines 899-906. Ported
+   by internal/stylegen/port; utilities are upstream Tailwind classes,
+   re-slotted onto gsxui's shape-declared classes. */
 @layer components {
   .gsxui-recipe-native-select-wrapper {
-    @apply relative w-fit;
-    @apply [&>svg]:pointer-events-none [&>svg]:absolute [&>svg]:top-1/2 [&>svg]:end-2.5 [&>svg]:size-4 [&>svg]:-translate-y-1/2 [&>svg]:opacity-50;
+    @apply [&>svg]:text-muted-foreground [&>svg]:top-1/2 [&>svg]:right-2.5 [&>svg]:size-4 [&>svg]:-translate-y-1/2;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-native-select {
-    @apply flex h-8 w-full appearance-none items-center justify-between gap-2 rounded-lg border border-input bg-transparent py-1 pr-8 pl-2.5 text-sm whitespace-nowrap transition-[color,box-shadow] outline-none;
-    @apply focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50;
-    @apply disabled:cursor-not-allowed disabled:opacity-50;
-    @apply aria-invalid:border-destructive aria-invalid:ring-destructive/20;
-    @apply dark:bg-input/30;
-    @apply dark:hover:bg-input/50;
-    @apply dark:aria-invalid:ring-destructive/40;
+    @apply border-input placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 dark:hover:bg-input/50 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-8 w-full min-w-0 appearance-none rounded-lg border bg-transparent py-1 pr-8 pl-2.5 text-sm transition-colors select-none focus-visible:ring-3 aria-invalid:ring-3 data-[size=sm]:h-7 data-[size=sm]:rounded-[min(var(--radius-md),10px)] data-[size=sm]:py-0.5 flex;
   }
 }

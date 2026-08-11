@@ -1,0 +1,34 @@
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-luma.css, Badge lines 554-581. Ported by
+   internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
+   onto gsxui's shape-declared classes. */
+@layer components {
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-badge {
+    @apply h-5 gap-1 rounded-3xl border border-transparent px-2 py-0.5 text-xs font-medium transition-all has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&>svg]:size-3 inline-flex;
+  }
+
+  .gsxui-recipe-badge-variant-default {
+    @apply bg-primary text-primary-foreground [a]:hover:bg-primary/80;
+  }
+
+  .gsxui-recipe-badge-variant-secondary {
+    @apply bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80;
+  }
+
+  .gsxui-recipe-badge-variant-destructive {
+    @apply bg-destructive/10 [a]:hover:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 text-destructive dark:bg-destructive/20;
+  }
+
+  .gsxui-recipe-badge-variant-outline {
+    @apply border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground;
+  }
+
+  .gsxui-recipe-badge-variant-ghost {
+    @apply hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50;
+  }
+
+  .gsxui-recipe-badge-variant-link {
+    @apply text-primary underline-offset-4 hover:underline;
+  }
+}

@@ -1,13 +1,13 @@
-/* Source: gsxui@05bfe97, assets/css/styles/default.css, Progress block (two
-   rules: track and indicator). No relational forms, no dimensions. Nova and
-   Maia have not diverged on Progress, so this file is byte-identical to
-   registry/styles/maia/progress.css. */
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-nova.css, Progress lines 946-965. Ported by
+   internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
+   onto gsxui's shape-declared classes. */
 @layer components {
   .gsxui-recipe-progress {
-    @apply relative h-1 w-full overflow-hidden rounded-full bg-primary/20;
+    @apply bg-muted h-1 rounded-full;
   }
 
   .gsxui-recipe-progress-indicator {
-    @apply h-full w-full flex-1 bg-primary transition-all;
+    @apply bg-primary;
   }
 }

@@ -141,7 +141,7 @@ func TestFormControlCompositionTokenOrder(t *testing.T) {
 			// above for a migrated primitive's own class.
 			name: "ToggleGroupItem",
 			node: ui.ToggleGroupItem("multiple", "", "", "", false, "bold", gsx.Raw("B"), nil),
-			want: `<button type="button" data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" data-state="off" data-value="bold" aria-pressed="false" class="w-auto min-w-0 shrink-0 px-3 focus:z-10 focus-visible:z-10 has-[&gt;svg]:px-2 rounded-none shadow-none data-[variant=outline]:border-s-0 data-[variant=outline]:first:border-s data-[spacing=0]:first:rounded-s-lg data-[spacing=0]:last:rounded-e-lg" data-gsxui-slot-toggle-group-item data-gsxui-slot-toggle>B</button>`,
+			want: `<button type="button" data-variant="default" data-size="default" data-spacing="0" data-orientation="horizontal" data-state="off" data-value="bold" aria-pressed="false" class="group-data-[spacing=0]/toggle-group:rounded-none group-data-[spacing=0]/toggle-group:px-2 group-data-[spacing=0]/toggle-group:has-data-[icon=inline-end]:pr-1.5 group-data-[spacing=0]/toggle-group:has-data-[icon=inline-start]:pl-1.5 group-data-horizontal/toggle-group:data-[spacing=0]:first:rounded-l-lg group-data-vertical/toggle-group:data-[spacing=0]:first:rounded-t-lg group-data-horizontal/toggle-group:data-[spacing=0]:last:rounded-r-lg group-data-vertical/toggle-group:data-[spacing=0]:last:rounded-b-lg has-[&gt;svg]:px-2 rounded-none shadow-none data-[variant=outline]:border-s-0 data-[variant=outline]:first:border-s data-[spacing=0]:first:rounded-s-lg data-[spacing=0]:last:rounded-e-lg" data-gsxui-slot-toggle-group-item data-gsxui-slot-toggle>B</button>`,
 		},
 	}
 

@@ -31,13 +31,13 @@ component Progress(value float64, attrs gsx.Attrs) {
 		aria-valuemin="0"
 		aria-valuemax="100"
 		aria-valuenow={value}
-		class={ "relative h-1 w-full overflow-hidden rounded-full bg-primary/20" }
+		class={ "bg-muted h-1 rounded-full" }
 		{ attrs... }
 		data-gsxui-slot-progress
 	>
 		<div
 			style=css`transform: translateX(-@{100 - value}%)`
-			class={ "h-full w-full flex-1 bg-primary transition-all" }
+			class={ "bg-primary" }
 			data-gsxui-slot-progress-indicator
 		></div>
 	</div>

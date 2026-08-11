@@ -5,7 +5,9 @@ import (
 	"testing"
 )
 
-var compactTransportStyles = []Style{StyleNova, StyleMaia}
+var compactTransportStyles = []Style{
+	StyleNova, StyleMaia, StyleVega, StyleLyra, StyleMira, StyleLuma, StyleSera, StyleRhea,
+}
 
 var compactTransportBaseColors = []string{
 	"neutral", "stone", "zinc", "mauve", "olive", "mist", "taupe",
@@ -192,7 +194,7 @@ func TestDecodeCompactShareRejectsInvalidTransport(t *testing.T) {
 		{name: "empty payload", code: "gsxui:p1:", want: "empty"},
 		{name: "invalid character", code: "gsxui:p1:!", want: "base62"},
 		{name: "integer overflow", code: "gsxui:p1:zzzzzzzzzzzz", want: "overflow"},
-		{name: "unused style index", code: "gsxui:p1:2", want: "style"},
+		{name: "unused style index", code: "gsxui:p1:8", want: "style"},
 		{name: "unused base color index", code: "gsxui:p1:1o", want: "base color"},
 		{name: "unused theme index", code: "gsxui:p1:1bc", want: "theme"},
 		{name: "unused radius index", code: "gsxui:p1:8WW", want: "radius"},

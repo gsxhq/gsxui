@@ -138,13 +138,13 @@ func TestButtonRecipesCarryRecognizableConcretePresentationForEveryRole(t *testi
 	tests := map[string]map[string][]string{
 		"nova": {
 			"gsxui-recipe-button":                     {"inline-flex", "rounded-lg", "border-transparent", "disabled:opacity-50"},
-			"gsxui-recipe-button-variant-default":     {"bg-primary", "text-primary-foreground", "hover:bg-primary/90"},
-			"gsxui-recipe-button-variant-destructive": {"bg-destructive", "text-contrast", "dark:bg-destructive/60"},
+			"gsxui-recipe-button-variant-default":     {"bg-primary", "text-primary-foreground", "hover:bg-primary/80"},
+			"gsxui-recipe-button-variant-destructive": {"bg-destructive/10", "text-destructive", "dark:bg-destructive/20"},
 			"gsxui-recipe-button-variant-outline":     {"border-border", "bg-background", "dark:bg-input/30"},
-			"gsxui-recipe-button-variant-secondary":   {"bg-secondary", "hover:bg-secondary/80"},
-			"gsxui-recipe-button-variant-ghost":       {"hover:bg-accent", "dark:hover:bg-accent/50"},
+			"gsxui-recipe-button-variant-secondary":   {"bg-secondary", "hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)]"},
+			"gsxui-recipe-button-variant-ghost":       {"hover:bg-muted", "dark:hover:bg-muted/50"},
 			"gsxui-recipe-button-variant-link":        {"text-primary", "hover:underline"},
-			"gsxui-recipe-button-size-default":        {"h-8", "px-2.5", "has-[>svg]:px-2"},
+			"gsxui-recipe-button-size-default":        {"h-8", "px-2.5", "has-data-[icon=inline-start]:pl-2"},
 			"gsxui-recipe-button-size-xs":             {"h-6", "rounded-[min(var(--radius-md),10px)]", "text-xs"},
 			"gsxui-recipe-button-size-sm":             {"h-7", "rounded-[min(var(--radius-md),12px)]", "text-[0.8rem]"},
 			"gsxui-recipe-button-size-lg":             {"h-9", "px-2.5"},

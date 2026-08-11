@@ -87,11 +87,11 @@ func TestStylesAndTokenNamesReturnOrderedCopies(t *testing.T) {
 	t.Parallel()
 
 	styles := Styles()
-	if want := []Style{StyleNova, StyleMaia}; !slices.Equal(styles, want) {
+	if want := []Style{StyleVega, StyleNova, StyleMaia, StyleLyra, StyleMira, StyleLuma, StyleSera, StyleRhea}; !slices.Equal(styles, want) {
 		t.Fatalf("Styles() = %v, want %v", styles, want)
 	}
 	styles[0] = "changed"
-	if got := Styles()[0]; got != StyleNova {
+	if got := Styles()[0]; got != StyleVega {
 		t.Fatalf("Styles returned shared storage: first style = %q", got)
 	}
 

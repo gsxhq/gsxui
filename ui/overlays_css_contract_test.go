@@ -78,7 +78,7 @@ func TestAccordionCSSOnlyContract(t *testing.T) {
 	if strings.Count(got, `id="caller-id"`) != 1 {
 		t.Errorf(`id="caller-id" must render exactly once\nin: %s`, got)
 	}
-	if !strings.Contains(got, "border-b last:border-b-0 caller-only") {
+	if !strings.Contains(got, "not-last:border-b caller-only") {
 		t.Errorf("caller class must merge onto the item element's own recipe class\nin: %s", got)
 	}
 	if !strings.Contains(got, `name="faq" open`) {
@@ -180,7 +180,7 @@ func TestAlertDialogCSSOnlyContract(t *testing.T) {
 	if strings.Count(content, `id="caller-id"`) != 1 {
 		t.Errorf("id=\"caller-id\" must render exactly once\nin: %s", content)
 	}
-	if !strings.Contains(content, "max-w-xs sm:max-w-sm caller-only") {
+	if !strings.Contains(content, "data-[size=default]:max-w-xs data-[size=sm]:max-w-xs data-[size=default]:sm:max-w-sm caller-only") {
 		t.Errorf("caller class must merge after AlertDialog's own content utilities\nin: %s", content)
 	}
 	for _, want := range []string{

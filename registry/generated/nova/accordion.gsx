@@ -13,7 +13,7 @@ component Accordion(name string, children gsx.Node, attrs gsx.Attrs) {
 }
 
 component AccordionItem(name string, open bool, children gsx.Node, attrs gsx.Attrs) {
-	<details name={name} open={open} class={ "border-b last:border-b-0" } { attrs... } data-gsxui-slot-accordion-item>
+	<details name={name} open={open} class={ "not-last:border-b" } { attrs... } data-gsxui-slot-accordion-item>
 		{ children }
 	</details>
 }
@@ -21,7 +21,7 @@ component AccordionItem(name string, open bool, children gsx.Node, attrs gsx.Att
 component AccordionTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<summary
 		class={
-			"flex list-none items-start justify-between rounded-lg py-2.5 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
+			"focus-visible:ring-ring/50 focus-visible:border-ring focus-visible:after:border-ring rounded-lg py-2.5 text-left text-sm font-medium hover:underline focus-visible:ring-3 flex"
 		}
 		{ attrs... }
 		data-gsxui-slot-accordion-trigger
@@ -29,7 +29,7 @@ component AccordionTrigger(children gsx.Node, attrs gsx.Attrs) {
 		{ children }
 		<icon.ChevronDown
 			class={
-				"size-4 shrink-0 text-muted-foreground transition-transform duration-200 [[data-gsxui-slot-accordion-item][open]_&]:rotate-180"
+				"text-muted-foreground ml-auto size-4 shrink-0 transition-transform duration-200 [[data-gsxui-slot-accordion-item][open]_&]:rotate-180"
 			}
 			data-gsxui-slot-accordion-trigger-icon
 		/>
@@ -40,7 +40,11 @@ component AccordionTrigger(children gsx.Node, attrs gsx.Attrs) {
 // classes join the inner padding token so utilities override its defaults on
 // the same box.
 component AccordionContent(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "overflow-hidden text-sm" } { attrs.Without("class")... } data-gsxui-slot-accordion-content>
+	<div
+		class={ "data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up text-sm" }
+		{ attrs.Without("class")... }
+		data-gsxui-slot-accordion-content
+	>
 		<div class={ "pt-0 pb-2.5", attrs.Class() } data-gsxui-slot-accordion-content-inner>{ children }</div>
 	</div>
 }

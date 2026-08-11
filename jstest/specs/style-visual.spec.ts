@@ -699,7 +699,7 @@ test.describe("mobile visual contracts", () => {
 // keeps this gate from needing any change to the gallery source itself.
 // This lands deliberately before the bulk port (Task 8): it establishes a
 // reviewable baseline against nova before the other six styles arrive.
-const galleryStyles = ["nova", "maia"] as const;
+const galleryStyles = ["vega", "nova", "maia", "lyra", "mira", "luma", "sera", "rhea"] as const;
 
 const galleryCards = [
   "buttons",

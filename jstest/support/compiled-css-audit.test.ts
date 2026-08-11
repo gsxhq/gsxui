@@ -37,7 +37,7 @@ function defaultStyleCSS(): string {
     .join("");
 }
 
-for (const style of ["nova", "maia"]) {
+for (const style of ["vega", "nova", "maia", "lyra", "mira", "luma", "sera", "rhea"]) {
   test(`compiles the authored ${style} Button recipe with Tailwind`, () => {
     const input = [
       '@import "tailwindcss" source(none);',

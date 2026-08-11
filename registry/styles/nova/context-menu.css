@@ -1,134 +1,74 @@
-/* Source: assets/css/styles/default/menu.css (shared with DropdownMenu and
-   Menubar, 33 rules split three ways — this file carries ContextMenu's
-   share) and the now-deleted assets/css/styles/default/
-   menu-popover-transition.css (shared with DropdownMenu, Menubar,
-   NavigationMenu and Combobox — this file carries ContextMenu's
-   Content/SubContent share of the discrete-transition block; Combobox was
-   that file's last unmigrated selector and has since migrated too, so the
-   file no longer exists — see registry/styles/nova/combobox.css). Nova and Maia have not
-   diverged on ContextMenu yet, so this file is byte-identical to
-   registry/styles/maia/context-menu.css.
-
-   TWO rules are DELIBERATELY NOT HERE, left as plain CSS in
-   assets/css/styles/default/menu.css's own residual @layer components
-   block — spec section 10b (a caller may override these, and translating
-   them into an arbitrary variant on this recipe would strip that power
-   permanently, the same fix already applied to Card/Label/Pagination):
-
-   - `[data-inset]:pl-8` on item/label/sub-trigger — data-inset is stamped
-     by the CALLER through attrs (ContextMenuItem/ContextMenuLabel/
-     ContextMenuSubTrigger's own doc comments), not by this component, so a
-     caller who wants to override the resulting padding must still be able
-     to win a plain utility contest against it.
-   - `[data-disabled]:opacity-50` — data-disabled is also caller-supplied
-     through attrs. `pointer-events-none` for the same [data-disabled] state
-     IS migrated below (baked directly onto item/checkbox-item/radio-item/
-     sub-trigger's own recipe class): no caller should be able to
-     re-enable pointer interaction on a disabled menu row, the identical
-     ruling assets/css/styles/default/label.css already made for its own
-     ancestor/sibling disabled-state rules. Only the purely presentational
-     opacity needed to stay caller-overridable. */
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-nova.css, Context Menu lines 413-460. Ported
+   by internal/stylegen/port; utilities are upstream Tailwind classes,
+   re-slotted onto gsxui's shape-declared classes. */
 @layer components {
+  /* carried: no upstream counterpart */
   .gsxui-recipe-context-menu {
     @apply contents;
   }
 
   .gsxui-recipe-context-menu-content {
-    @apply z-50 max-h-96 min-w-36 origin-top-left overflow-x-hidden overflow-y-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md;
-    @apply opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150;
-    @apply [&:popover-open]:opacity-100 [&:popover-open]:scale-100;
-    @apply starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95;
-    @apply data-[side=bottom]:starting:[&:popover-open]:-translate-y-2;
-    @apply data-[side=left]:starting:[&:popover-open]:translate-x-2;
-    @apply data-[side=right]:starting:[&:popover-open]:-translate-x-2;
-    @apply data-[side=top]:starting:[&:popover-open]:translate-y-2;
+    @apply data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 bg-popover text-popover-foreground min-w-36 rounded-lg p-1 shadow-md ring-1 duration-100;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-context-menu-item {
-    @apply relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none;
-    @apply focus:bg-accent focus:text-accent-foreground;
-    @apply data-disabled:pointer-events-none;
-    @apply [&_svg]:pointer-events-none [&_svg]:shrink-0;
-    @apply [&_svg:not([class*='size-'])]:size-4;
-    @apply [&_svg:not([class*='text-'])]:text-muted-foreground;
+    @apply focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 focus:*:[svg]:text-accent-foreground gap-1.5 rounded-md px-1.5 py-1 text-sm data-inset:pl-7 [&_svg:not([class*='size-'])]:size-4 flex;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-context-menu-item-variant-default {
     @apply text-foreground;
   }
 
   .gsxui-recipe-context-menu-item-variant-destructive {
-    @apply text-destructive;
-    @apply focus:bg-destructive/10 focus:text-destructive;
-    @apply dark:focus:bg-destructive/20;
-    @apply [&_svg]:text-destructive;
+    @apply text-destructive focus:bg-destructive/10 focus:text-destructive *:[svg]:text-destructive;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-context-menu-checkbox-item {
-    @apply relative flex cursor-default items-center gap-1.5 rounded-md py-1 pe-8 ps-1.5 text-sm outline-hidden select-none;
-    @apply focus:bg-accent focus:text-accent-foreground;
-    @apply data-disabled:pointer-events-none;
-    @apply [&_svg]:pointer-events-none [&_svg]:shrink-0;
-    @apply [&_svg:not([class*='size-'])]:size-4;
-    @apply [&_svg:not([class*='text-'])]:text-muted-foreground;
+    @apply focus:bg-accent focus:text-accent-foreground gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm data-inset:pl-7 [&_svg:not([class*='size-'])]:size-4 flex;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-context-menu-checkbox-item-indicator {
-    @apply pointer-events-none absolute end-2 hidden size-4 items-center justify-center;
-    @apply [[data-state=checked]_&]:flex;
-    @apply [&>svg]:size-4;
+    @apply pointer-events-none absolute end-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-4;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-context-menu-radio-item {
-    @apply relative flex cursor-default items-center gap-1.5 rounded-md py-1 pe-8 ps-1.5 text-sm outline-hidden select-none;
-    @apply focus:bg-accent focus:text-accent-foreground;
-    @apply data-disabled:pointer-events-none;
-    @apply [&_svg]:pointer-events-none [&_svg]:shrink-0;
-    @apply [&_svg:not([class*='size-'])]:size-4;
-    @apply [&_svg:not([class*='text-'])]:text-muted-foreground;
+    @apply focus:bg-accent focus:text-accent-foreground gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm data-inset:pl-7 [&_svg:not([class*='size-'])]:size-4 flex;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-context-menu-radio-item-indicator {
-    @apply pointer-events-none absolute end-2 hidden size-4 items-center justify-center;
-    @apply [[data-state=checked]_&]:flex;
-    @apply [&>svg]:size-2 [&>svg]:fill-current;
+    @apply pointer-events-none absolute end-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-2 [&>svg]:fill-current;
   }
 
   .gsxui-recipe-context-menu-label {
-    @apply px-1.5 py-1 text-xs font-medium text-foreground;
+    @apply text-muted-foreground px-1.5 py-1 text-xs font-medium data-inset:pl-7;
   }
 
   .gsxui-recipe-context-menu-separator {
-    @apply -mx-1 my-1 h-px bg-border;
+    @apply bg-border -mx-1 my-1 h-px;
   }
 
   .gsxui-recipe-context-menu-shortcut {
-    @apply ms-auto text-xs tracking-widest text-muted-foreground;
+    @apply text-muted-foreground group-focus/context-menu-item:text-accent-foreground ml-auto text-xs tracking-widest;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-context-menu-sub {
     @apply contents;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-context-menu-sub-trigger {
-    @apply relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none;
-    @apply focus:bg-accent focus:text-accent-foreground;
-    @apply data-[state=open]:bg-accent data-[state=open]:text-accent-foreground;
-    @apply [&_svg]:pointer-events-none [&_svg]:shrink-0;
-    @apply [&_svg:not([class*='size-'])]:size-4;
-    @apply [&_svg:not([class*='text-'])]:text-muted-foreground;
-    @apply [&>svg:last-child]:ms-auto [&>svg:last-child]:size-4;
-    @apply [&>svg:last-child]:rtl:rotate-180;
+    @apply focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground gap-1.5 rounded-md px-1.5 py-1 text-sm data-inset:pl-7 [&_svg:not([class*='size-'])]:size-4 flex;
   }
 
   .gsxui-recipe-context-menu-sub-content {
-    @apply z-50 min-w-[96px] origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg;
-    @apply opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150;
-    @apply [&:popover-open]:opacity-100 [&:popover-open]:scale-100;
-    @apply starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95;
-    @apply data-[side=bottom]:starting:[&:popover-open]:-translate-y-2;
-    @apply data-[side=left]:starting:[&:popover-open]:translate-x-2;
-    @apply data-[side=right]:starting:[&:popover-open]:-translate-x-2;
-    @apply data-[side=top]:starting:[&:popover-open]:translate-y-2;
+    @apply data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 bg-popover text-popover-foreground min-w-32 rounded-lg border p-1 shadow-lg duration-100;
   }
 }

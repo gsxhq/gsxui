@@ -35,7 +35,7 @@ func TestNavigationMenuListIsAList(t *testing.T) {
 
 func TestNavigationMenuRootPinned(t *testing.T) {
 	got := render(t, ui.NavigationMenu(gsx.Raw("x"), nil))
-	want := `<nav class="relative flex max-w-max flex-1 items-center justify-center" data-viewport="false" data-gsxui-slot-navigation-menu>x</nav>`
+	want := `<nav class="max-w-max flex" data-viewport="false" data-gsxui-slot-navigation-menu>x</nav>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -60,7 +60,7 @@ func TestNavigationMenuPinnedStructuralParts(t *testing.T) {
 		{
 			name: "list",
 			node: ui.NavigationMenuList(gsx.Raw("x"), nil),
-			want: `<ul class="flex flex-1 list-none items-center justify-center gap-0" data-gsxui-slot-navigation-menu-list>x</ul>`,
+			want: `<ul class="gap-0 flex" data-gsxui-slot-navigation-menu-list>x</ul>`,
 		},
 		{
 			name: "item",
@@ -70,7 +70,7 @@ func TestNavigationMenuPinnedStructuralParts(t *testing.T) {
 		{
 			name: "content",
 			node: ui.NavigationMenuContent(gsx.Raw("x"), nil),
-			want: `<div class="top-0 start-0 p-1 md:absolute [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:top-full [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:mt-1.5 [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:overflow-hidden [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:rounded-lg [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:border [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:bg-popover [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:text-popover-foreground [[data-gsxui-slot-navigation-menu][data-viewport=false]_&amp;]:shadow opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&amp;:popover-open]:opacity-100 [&amp;:popover-open]:scale-100 starting:[&amp;:popover-open]:opacity-0 starting:[&amp;:popover-open]:scale-95 data-[side=bottom]:starting:[&amp;:popover-open]:-translate-y-2 data-[side=left]:starting:[&amp;:popover-open]:translate-x-2 data-[side=right]:starting:[&amp;:popover-open]:-translate-x-2 data-[side=top]:starting:[&amp;:popover-open]:translate-y-2" popover="manual" data-state="closed" data-side="bottom" data-gsxui-slot-navigation-menu-content>x</div>`,
+			want: `<div class="data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 group-data-[viewport=false]/navigation-menu:bg-popover group-data-[viewport=false]/navigation-menu:text-popover-foreground group-data-[viewport=false]/navigation-menu:data-[state=open]:animate-in group-data-[viewport=false]/navigation-menu:data-[state=closed]:animate-out group-data-[viewport=false]/navigation-menu:data-[state=closed]:zoom-out-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:zoom-in-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:fade-in-0 group-data-[viewport=false]/navigation-menu:data-[state=closed]:fade-out-0 group-data-[viewport=false]/navigation-menu:ring-foreground/10 p-1 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[viewport=false]/navigation-menu:rounded-lg group-data-[viewport=false]/navigation-menu:shadow group-data-[viewport=false]/navigation-menu:ring-1 group-data-[viewport=false]/navigation-menu:duration-300" popover="manual" data-state="closed" data-side="bottom" data-gsxui-slot-navigation-menu-content>x</div>`,
 		},
 	}
 	for _, tt := range tests {

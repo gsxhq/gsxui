@@ -1,37 +1,32 @@
-/* Source: assets/css/styles/default/breadcrumb.css. The root <nav> and the
-   ellipsis-label slot carry no rules here — the root is unstyled, and
-   ellipsis-label is fully styled by a shared sr-only rule in
-   assets/css/foundation.css's @layer base (shared with Pagination, Dialog,
-   Sheet, Command, Combobox, Carousel, Calendar — foundation mechanics, not
-   Breadcrumb's own rule, so it stays there untouched).
-
-   Separator and Ellipsis's default.css rules only reach their child <svg>
-   (`> svg { size-X }`, unconditional, not :has()) — translated as a
-   same-slot `[&>svg]:size-X` arbitrary variant on each slot's own base rule.
-   Nova and Maia have not diverged on Breadcrumb, so this file is
-   byte-identical to registry/styles/maia/breadcrumb.css. */
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-nova.css, Breadcrumb lines 123-146. Ported by
+   internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
+   onto gsxui's shape-declared classes. */
 @layer components {
+  /* carried: no upstream counterpart */
   .gsxui-recipe-breadcrumb-list {
-    @apply flex flex-wrap items-center gap-1.5 text-sm break-words text-muted-foreground;
+    @apply text-muted-foreground gap-1.5 text-sm flex flex-wrap;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-breadcrumb-item {
-    @apply inline-flex items-center gap-1;
+    @apply gap-1 inline-flex;
   }
 
   .gsxui-recipe-breadcrumb-link {
-    @apply transition-colors hover:text-foreground;
+    @apply hover:text-foreground transition-colors;
   }
 
   .gsxui-recipe-breadcrumb-page {
-    @apply font-normal text-foreground;
+    @apply text-foreground font-normal;
   }
 
   .gsxui-recipe-breadcrumb-separator {
-    @apply [&>svg]:size-3.5 [&>svg]:rtl:rotate-180;
+    @apply [&>svg]:size-3.5;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-breadcrumb-ellipsis {
-    @apply flex size-5 items-center justify-center [&>svg]:size-4;
+    @apply size-5 [&>svg]:size-4 flex;
   }
 }

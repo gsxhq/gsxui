@@ -11,7 +11,7 @@ component Separator(orientation string, attrs gsx.Attrs) {
 	<div
 		role="none"
 		data-orientation={orientation |> default("horizontal")}
-		class={ "shrink-0 bg-border", switch orientation { case "vertical": "h-full w-px" default: "h-px w-full" } }
+		class={ "bg-border shrink-0", switch orientation { case "vertical": "h-full w-px" default: "h-px w-full" } }
 		{ attrs... }
 		data-gsxui-slot-separator
 	></div>

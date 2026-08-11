@@ -4,7 +4,7 @@
    onto gsxui's shape-declared classes. */
 @layer components {
   .gsxui-recipe-accordion-item {
-    @apply data-open:bg-muted/50 not-last:border-b;
+    @apply data-[state=open]:bg-muted/50 not-last:border-b;
   }
 
   /* carried: no upstream counterpart */
@@ -12,12 +12,13 @@
     @apply gap-6 p-4 text-left text-sm font-medium hover:underline flex;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-accordion-trigger-icon {
-    @apply text-muted-foreground ml-auto size-4;
+    @apply text-muted-foreground ml-auto size-4 shrink-0 transition-transform duration-200 [[data-gsxui-slot-accordion-item][open]_&]:rotate-180;
   }
 
   .gsxui-recipe-accordion-content {
-    @apply data-open:animate-accordion-down data-closed:animate-accordion-up px-4 text-sm;
+    @apply data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up px-4 text-sm;
   }
 
   .gsxui-recipe-accordion-content-inner {

@@ -1,0 +1,41 @@
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-mira.css, Input Group lines 1394-1449. Ported
+   by internal/stylegen/port; utilities are upstream Tailwind classes,
+   re-slotted onto gsxui's shape-declared classes. */
+@layer components {
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-input-group {
+    @apply border-input bg-input/20 dark:bg-input/30 has-[[data-gsxui-slot-input-group-control]:focus-visible]:border-ring has-[[data-gsxui-slot-input-group-control]:focus-visible]:ring-ring/30 has-[[aria-invalid=true]]:ring-destructive/20 has-[[aria-invalid=true]]:border-destructive dark:has-[[aria-invalid=true]]:ring-destructive/40 h-7 rounded-md border transition-colors [[data-gsxui-slot-combobox-content]_&]:focus-within:border-inherit [[data-gsxui-slot-combobox-content]_&]:focus-within:ring-0 has-data-[align=block-end]:rounded-md has-data-[align=block-start]:rounded-md has-[[data-gsxui-slot-input-group-control]:focus-visible]:ring-2 has-[[aria-invalid=true]]:ring-2 has-[textarea]:rounded-md has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=inline-end]]:[&>input]:pr-1.5 has-[>[data-align=inline-start]]:[&>input]:pl-1.5 flex;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-input-group-addon {
+    @apply text-muted-foreground [&_[data-gsxui-slot-kbd]]:bg-muted-foreground/10 h-auto gap-1 py-2 text-xs/relaxed font-medium group-data-[disabled=true]/input-group:opacity-50 [&_[data-gsxui-slot-kbd]]:rounded-[calc(var(--radius-sm)-2px)] [&_[data-gsxui-slot-kbd]]:px-1 [&_[data-gsxui-slot-kbd]]:text-[0.625rem] [&>svg:not([class*='size-'])]:size-3.5 flex;
+  }
+
+  .gsxui-recipe-input-group-addon-align-inline-start {
+    @apply pl-2 has-[>button]:ml-[-0.275rem] has-[>kbd]:ml-[-0.275rem];
+  }
+
+  .gsxui-recipe-input-group-addon-align-inline-end {
+    @apply pr-2 has-[>button]:mr-[-0.275rem] has-[>kbd]:mr-[-0.275rem];
+  }
+
+  .gsxui-recipe-input-group-addon-align-block-start {
+    @apply px-2 pt-2 group-has-[>input]/input-group:pt-2 [.border-b]:pb-2;
+  }
+
+  .gsxui-recipe-input-group-addon-align-block-end {
+    @apply px-2 pb-2 group-has-[>input]/input-group:pb-2 [.border-t]:pt-2;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-input-group-text {
+    @apply text-muted-foreground gap-2 text-xs/relaxed [&_svg:not([class*='size-'])]:size-4 flex;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-input-group-control {
+    @apply flex-1 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent;
+  }
+}

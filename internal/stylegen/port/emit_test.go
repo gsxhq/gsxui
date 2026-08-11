@@ -58,17 +58,20 @@ func TestRenderAccordionMaiaGolden(t *testing.T) {
 	}
 
 	// The fallback policy carries a slot's utilities from the CURRENT nova
-	// recipe when upstream has no counterpart for it, and (carryMissingDisplayUtility)
+	// recipe when upstream has no counterpart for it; carryMissingDisplayUtility
 	// carries a single missing display-establishing utility even when upstream
-	// DID contribute other utilities to that slot. Real Maia's Accordion
+	// DID contribute other utilities to that slot; carryStructuralGap carries
+	// Accordion trigger-icon's declared structural gap (rotate/transition,
+	// never in any of the 8 style files) the same way. Real Maia's Accordion
 	// section covers all five declared slots' THEMED content itself, but
-	// never mentions "flex" anywhere in the whole style-maia.css file for any
-	// component — confirmed against the real upstream source: it is baked
-	// into the shared React trigger element's own class list, a layer no
-	// style-<name>.css file ever carries. So trigger's own "flex" is
-	// legitimately carried from nova here — this fixture is exercised
-	// (Transform requires a fallback.Style argument) and this ONE entry is
-	// the correct, expected outcome, asserted below via Ported.Carried.
+	// never mentions "flex" (trigger's display) or the chevron's rotate/
+	// transition (trigger-icon) anywhere in the whole style-maia.css file —
+	// confirmed against the real upstream source: both are baked into the
+	// shared React elements' own class lists, a layer no style-<name>.css
+	// file ever carries. So both are legitimately carried from nova here —
+	// this fixture is exercised (Transform requires a fallback.Style
+	// argument) and these two entries are the correct, expected outcome,
+	// asserted below via Ported.Carried.
 	novaPath := filepath.Join("..", "..", "..", "registry", "styles", "nova", "accordion.css")
 	novaSrc, err := os.ReadFile(novaPath)
 	if err != nil {
@@ -83,9 +86,14 @@ func TestRenderAccordionMaiaGolden(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Transform: %v", err)
 	}
-	wantCarried := map[string]bool{"gsxui-recipe-accordion-trigger": true}
-	if len(ported.Carried) != len(wantCarried) || !ported.Carried["gsxui-recipe-accordion-trigger"] {
-		t.Fatalf("Carried = %v, want %v: only trigger's display-establishing utility (flex) has no upstream counterpart anywhere in style-maia.css", ported.Carried, wantCarried)
+	wantCarried := map[string]bool{"gsxui-recipe-accordion-trigger": true, "gsxui-recipe-accordion-trigger-icon": true}
+	for class := range wantCarried {
+		if !ported.Carried[class] {
+			t.Fatalf("Carried = %v, want %v: trigger's display (flex) and trigger-icon's rotate/transition have no upstream counterpart anywhere in style-maia.css", ported.Carried, wantCarried)
+		}
+	}
+	if len(ported.Carried) != len(wantCarried) {
+		t.Fatalf("Carried = %v, want exactly %v", ported.Carried, wantCarried)
 	}
 	// cn-accordion (the upstream root rule) has no gsxui slot -- Accordion's
 	// shape declares no root slot at all (registry/canonical/shapes/accordion.go's

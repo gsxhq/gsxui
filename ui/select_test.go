@@ -14,14 +14,14 @@ import (
 // "'" -> "&#39;").
 const (
 	canonicalSelectRootClass           = "contents"
-	canonicalSelectTriggerDefaultClass = `flex w-fit items-center justify-between gap-1.5 rounded-lg border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg]:text-muted-foreground [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 [&amp;&gt;svg]:size-4 [&amp;&gt;svg]:opacity-50 h-8`
-	canonicalSelectValueClass          = `pointer-events-none [[data-gsxui-slot-select-trigger]&gt;&amp;]:line-clamp-1 [[data-gsxui-slot-select-trigger]&gt;&amp;]:flex [[data-gsxui-slot-select-trigger]&gt;&amp;]:items-center [[data-gsxui-slot-select-trigger]&gt;&amp;]:gap-1.5`
-	canonicalSelectContentClass        = `z-50 max-h-[min(--spacing(96),var(--gsxui-available-height,9999px))] min-w-36 origin-top-left overflow-x-hidden overflow-y-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&amp;:popover-open]:opacity-100 [&amp;:popover-open]:scale-100 starting:[&amp;:popover-open]:opacity-0 starting:[&amp;:popover-open]:scale-95 starting:[&amp;:popover-open]:data-[side=bottom]:-translate-y-2 starting:[&amp;:popover-open]:data-[side=left]:translate-x-2 starting:[&amp;:popover-open]:data-[side=right]:-translate-x-2 starting:[&amp;:popover-open]:data-[side=top]:translate-y-2`
-	canonicalSelectLabelClass          = "px-1.5 py-1 text-xs text-muted-foreground"
-	canonicalSelectItemClass           = `relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pe-8 ps-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg]:text-muted-foreground [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 data-[state=checked]:[&amp;&gt;[data-gsxui-slot-select-item-indicator]]:flex`
-	canonicalSelectItemIndicatorClass  = `pointer-events-none absolute end-2 hidden size-4 items-center justify-center [&amp;&gt;svg]:size-4`
-	canonicalSelectItemTextClass       = "flex items-center gap-2"
-	canonicalSelectSeparatorClass      = "-mx-1 my-1 h-px bg-border"
+	canonicalSelectTriggerDefaultClass = `border-input data-placeholder:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 gap-1.5 rounded-lg border bg-transparent py-2 pr-2 pl-2.5 text-sm transition-colors select-none focus-visible:ring-3 aria-invalid:ring-3 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 flex h-8`
+	canonicalSelectValueClass          = `flex gap-1.5 flex-1 text-left`
+	canonicalSelectContentClass        = `bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 min-w-36 rounded-lg shadow-md ring-1 duration-100`
+	canonicalSelectLabelClass          = "text-muted-foreground px-1.5 py-1 text-xs"
+	canonicalSelectItemClass           = `focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2 flex`
+	canonicalSelectItemIndicatorClass  = `pointer-events-none absolute right-2 flex size-4 items-center justify-center`
+	canonicalSelectItemTextClass       = "flex flex-1 gap-2"
+	canonicalSelectSeparatorClass      = "bg-border -mx-1 my-1 h-px"
 )
 
 // TestSelectTriggerPinnedDefault covers the structural and behavioral

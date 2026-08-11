@@ -1,95 +1,34 @@
-/* Source: assets/css/styles/default/dialog.css. Dialog is a compound
-   component; several slots (trigger, close, close-label, footer-close)
-   carry no rules here because they have none upstream either — trigger and
-   close are plain unstyled buttons, close-label is fully styled by the
-   shared sr-only rule in assets/css/foundation.css's @layer base (see
-   registry/styles/nova/breadcrumb.css's own comment for the identical
-   pattern), and footer-close is a marker on an already-migrated <ui.Button>
-   (DialogFooter composes it directly), which brings its own recipe
-   utilities with it. Nova and Maia have not diverged on Dialog yet, so this
-   file is byte-identical to registry/styles/maia/dialog.css.
-
-   dialog-content's rule set below carries ONLY the plain-modal box (the
-   original default.css guarded it with
-   :not([data-gsxui-slot-drawer-content]):not([data-gsxui-slot-sheet-content]),
-   because Drawer and Sheet share the SAME data-gsxui-slot-dialog-content
-   marker on their own <dialog> elements). That guard is now structural
-   rather than selector-based: DrawerContent/SheetContent stamp the marker
-   directly (ui/drawer.gsx, ui/sheet.gsx) without ever calling
-   dialog.Content(), so this recipe's resolved utilities only ever land on a
-   genuine <ui.DialogContent>, and the :not() exclusion has nothing left to
-   exclude. The chrome Drawer/Sheet DO still need from Dialog (the
-   unconditional fixed/z-50/duration-200 base, the data-state animate-in/out,
-   and the ::backdrop styling — none of which was ever behind the :not()
-   guard) is preserved verbatim as a marker-keyed fallback in
-   assets/css/styles/default/drawer-sheet-shared.css, which this migration
-   extends rather than deletes (Drawer and Sheet are both still unmigrated).
-
-   dialog-content's rule set DOES carry the truly unconditional chrome
-   (fixed/z-50/text-sm/duration-200/outline-none, the data-state
-   animate-in/out, and ::backdrop styling) — those were never behind the
-   :not() guard in default.css, so all three (Dialog, Drawer, Sheet) always
-   shared them unconditionally. Real <ui.DialogContent> gets them from this
-   recipe; Drawer/Sheet, which stamp the marker without calling
-   dialog.Content(), get an identical marker-keyed fallback added to
-   assets/css/styles/default.css's Dialog-content fallback block (the same
-   :where()-wrapped, zero-specificity, "authored to lose to the real recipe
-   class" pattern as the Toggle marker fallback there) — added rather than
-   placed in drawer-sheet-shared.css, because that file is specifically the
-   rules ONLY Drawer/Sheet need (which already correctly require their own
-   marker), not the base chrome all three share.
-
-   AlertDialogContent's narrower max-w-xs (a same-element compound reacting
-   to AlertDialog's OWN data-gsxui-slot-alert-dialog-content marker, since
-   AlertDialogContent composes <ui.DialogContent> directly) is DELIBERATELY
-   NOT HERE. Section 10b: an arbitrary same-element variant reacting to
-   another component's marker compiles to a two-class-equivalent selector
-   ((0,2,0), class + attribute) that permanently outranks a caller's plain
-   max-w-* utility regardless of source order — the same mechanism as Card's
-   [&.border-b]:pb-4. It stays authored as plain CSS in
-   assets/css/styles/default/alert-dialog.css instead, which also carries
-   AlertDialogFooter's fallback (AlertDialogFooter renders its own plain
-   <div data-gsxui-slot-alert-dialog-footer> without ever calling
-   dialog.Footer(), so the rule dialog-footer and alert-dialog-footer used to
-   share needs a like-for-like fallback there — composer fallout, not 10b). */
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-nova.css, Dialog lines 462-489. Ported by
+   internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
+   onto gsxui's shape-declared classes. */
 @layer components {
+  /* carried: no upstream counterpart */
   .gsxui-recipe-dialog {
     @apply contents;
   }
 
   .gsxui-recipe-dialog-content {
-    @apply fixed z-50 text-sm duration-200 outline-none;
-    @apply data-[state=closed]:animate-out;
-    @apply data-[state=open]:animate-in;
-    @apply backdrop:bg-[var(--overlay)] backdrop:backdrop-blur-xs backdrop:duration-200;
-    @apply data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0;
-    @apply data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0;
-    @apply top-1/2 left-1/2 w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl border bg-background p-4 text-foreground;
-    @apply open:grid;
-    @apply data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95;
-    @apply data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95;
-    @apply sm:max-w-sm;
+    @apply data-[state=open]:backdrop:animate-in data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 data-[state=open]:backdrop:fade-in-0 backdrop:bg-black/10 backdrop:duration-100 supports-backdrop-filter:backdrop:backdrop-blur-xs bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 ring-foreground/10 open:grid max-w-[calc(100%-2rem)] gap-4 rounded-xl p-4 text-sm ring-1 duration-100 sm:max-w-sm;
   }
 
   .gsxui-recipe-dialog-close-button {
-    @apply absolute top-2 end-2 rounded-xs opacity-70 ring-offset-background transition-opacity;
-    @apply hover:opacity-100;
-    @apply focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden;
-    @apply disabled:pointer-events-none;
+    @apply absolute top-2 right-2;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-dialog-close-icon {
     @apply size-4 shrink-0 pointer-events-none;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-dialog-header {
-    @apply flex flex-col gap-2 text-center;
-    @apply sm:text-start;
+    @apply gap-2 flex flex-col;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-dialog-footer {
-    @apply -mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4;
-    @apply sm:flex-row sm:justify-end;
+    @apply bg-muted/50 -mx-4 -mb-4 rounded-b-xl border-t p-4 flex flex-col-reverse;
   }
 
   .gsxui-recipe-dialog-title {
@@ -97,6 +36,6 @@
   }
 
   .gsxui-recipe-dialog-description {
-    @apply text-sm text-muted-foreground;
+    @apply text-muted-foreground *:[a]:hover:text-foreground text-sm *:[a]:underline *:[a]:underline-offset-3;
   }
 }

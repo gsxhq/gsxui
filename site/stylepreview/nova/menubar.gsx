@@ -167,7 +167,7 @@ import (
 // already replaced site-wide before this component existed.
 component Menubar(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "flex h-8 items-center gap-0.5 rounded-lg border bg-background p-[3px]" }
+		class={ "h-8 gap-0.5 rounded-lg border p-[3px] flex" }
 		role="menubar"
 		{ attrs... }
 		data-gsxui-slot-menubar
@@ -205,9 +205,7 @@ component MenubarMenu(children gsx.Node, attrs gsx.Attrs) {
 // which has no such selector to key at all.
 component MenubarTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<button
-		class={
-			"flex items-center rounded-sm px-1.5 py-[2px] text-sm font-medium outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
-		}
+		class={ "hover:bg-muted aria-expanded:bg-muted rounded-sm px-1.5 py-[2px] text-sm font-medium flex" }
 		type="button"
 		aria-haspopup="menu"
 		aria-expanded="false"
@@ -242,7 +240,7 @@ component MenubarTrigger(children gsx.Node, attrs gsx.Attrs) {
 component MenubarContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"z-50 min-w-36 origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 data-[side=bottom]:starting:[&:popover-open]:-translate-y-2 data-[side=left]:starting:[&:popover-open]:translate-x-2 data-[side=right]:starting:[&:popover-open]:-translate-x-2 data-[side=top]:starting:[&:popover-open]:translate-y-2"
+			"bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 min-w-36 rounded-lg p-1 shadow-md ring-1 duration-100"
 		}
 		popover="auto"
 		role="menu"
@@ -265,10 +263,10 @@ component MenubarContent(children gsx.Node, attrs gsx.Attrs) {
 component MenubarItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground",
+			"focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-1.5 rounded-md px-1.5 py-1 text-sm data-disabled:opacity-50 data-inset:pl-7 [&_svg:not([class*='size-'])]:size-4 flex",
 			switch variant {
 			case "destructive":
-				"text-destructive focus:bg-destructive/10 focus:text-destructive dark:focus:bg-destructive/20 [&_svg]:text-destructive"
+				"text-destructive focus:bg-destructive/10 focus:text-destructive *:[svg]:text-destructive"
 			default:
 				"text-foreground"
 			}
@@ -314,7 +312,7 @@ component MenubarGroup(children gsx.Node, attrs gsx.Attrs) {
 component MenubarCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"relative flex cursor-default items-center gap-1.5 rounded-md py-1 pe-8 ps-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
+			"focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-1.5 rounded-md py-1 pr-1.5 pl-7 text-sm data-inset:pl-7 flex"
 		}
 		role="menuitemcheckbox"
 		data-value={value}
@@ -330,9 +328,7 @@ component MenubarCheckboxItem(checked bool, value string, children gsx.Node, att
 		data-gsxui-slot-menubar-checkbox-item
 	>
 		<span
-			class={
-				"pointer-events-none absolute end-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-4"
-			}
+			class={ "left-1.5 size-4 [&_svg:not([class*='size-'])]:size-4" }
 			data-gsxui-slot-menubar-checkbox-item-indicator
 		>
 			<icon.Check/>
@@ -364,7 +360,7 @@ component MenubarRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) {
 component MenubarRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"relative flex cursor-default items-center gap-1.5 rounded-md py-1 pe-8 ps-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
+			"focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-1.5 rounded-md py-1 pr-1.5 pl-7 text-sm data-disabled:opacity-50 data-inset:pl-7 [&_svg:not([class*='size-'])]:size-4 flex"
 		}
 		role="menuitemradio"
 		data-value={value}
@@ -379,12 +375,7 @@ component MenubarRadioItem(checked bool, value string, children gsx.Node, attrs 
 		{ attrs... }
 		data-gsxui-slot-menubar-radio-item
 	>
-		<span
-			class={
-				"pointer-events-none absolute end-2 hidden size-4 items-center justify-center [[data-state=checked]_&]:flex [&>svg]:size-2 [&>svg]:fill-current"
-			}
-			data-gsxui-slot-menubar-radio-item-indicator
-		>
+		<span class={ "left-1.5 size-4 [&_svg:not([class*='size-'])]:size-4" } data-gsxui-slot-menubar-radio-item-indicator>
 			<icon.Circle/>
 		</span>
 		{ children }
@@ -397,11 +388,13 @@ component MenubarRadioItem(checked bool, value string, children gsx.Node, attrs 
 // .cn-menubar-label rule is genuinely text-sm, a real per-component nova
 // value, not a copy of dropdown's own (already-shipped) Label metrics.
 component MenubarLabel(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "px-1.5 py-1 text-sm font-medium" } { attrs... } data-gsxui-slot-menubar-label>{ children }</div>
+	<div class={ "px-1.5 py-1 text-sm font-medium data-inset:pl-7" } { attrs... } data-gsxui-slot-menubar-label>
+		{ children }
+	</div>
 }
 
 component MenubarSeparator(attrs gsx.Attrs) {
-	<div class={ "-mx-1 my-1 h-px bg-border" } role="separator" { attrs... } data-gsxui-slot-menubar-separator></div>
+	<div class={ "bg-border" } role="separator" { attrs... } data-gsxui-slot-menubar-separator></div>
 }
 
 // The automatic leading margin is KEPT even though nova's own shortcut rule
@@ -415,7 +408,11 @@ component MenubarSeparator(attrs gsx.Attrs) {
 // in this file for it to key off, the same scope call as every other
 // dropdown/context-menu Shortcut in this codebase.
 component MenubarShortcut(children gsx.Node, attrs gsx.Attrs) {
-	<span class={ "ms-auto text-xs tracking-widest text-muted-foreground" } { attrs... } data-gsxui-slot-menubar-shortcut>
+	<span
+		class={ "text-muted-foreground group-focus/menubar-item:text-accent-foreground text-xs tracking-widest" }
+		{ attrs... }
+		data-gsxui-slot-menubar-shortcut
+	>
 		{ children }
 	</span>
 }
@@ -466,7 +463,7 @@ component MenubarSub(children gsx.Node, attrs gsx.Attrs) {
 component MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg:not([class*='size-'])]:size-4 [&>svg:last-child]:ms-auto [&>svg:last-child]:size-4 [&>svg:last-child]:rtl:rotate-180"
+			"focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground gap-1.5 rounded-md px-1.5 py-1 text-sm data-inset:pl-7 [&_svg:not([class*='size-'])]:size-4 flex"
 		}
 		role="menuitem"
 		aria-haspopup="menu"
@@ -497,7 +494,7 @@ component MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 component MenubarSubContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"z-50 min-w-[8rem] origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 data-[side=bottom]:starting:[&:popover-open]:-translate-y-2 data-[side=left]:starting:[&:popover-open]:translate-x-2 data-[side=right]:starting:[&:popover-open]:-translate-x-2 data-[side=top]:starting:[&:popover-open]:translate-y-2"
+			"bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 min-w-32 rounded-lg p-1 shadow-lg ring-1 duration-100"
 		}
 		popover="auto"
 		role="menu"

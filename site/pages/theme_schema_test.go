@@ -77,7 +77,7 @@ func TestThemeEditorSchemaMatchesPresetAuthority(t *testing.T) {
 	if !reflect.DeepEqual(schema.RadiusUnits, preset.RadiusUnits()) {
 		t.Errorf("radius units = %#v, want %#v", schema.RadiusUnits, preset.RadiusUnits())
 	}
-	wantStyles := []string{"nova", "maia"}
+	wantStyles := []string{"vega", "nova", "maia", "lyra", "mira", "luma", "sera", "rhea"}
 	if !reflect.DeepEqual(schema.Styles, wantStyles) {
 		t.Errorf("styles = %#v, want %#v", schema.Styles, wantStyles)
 	}

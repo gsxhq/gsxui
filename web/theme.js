@@ -183,7 +183,9 @@ function setup(schemaElement) {
       setStatus(initialMessage);
       initialMessage = "";
     } else {
-      setStatus(`${state.resolved.style === "maia" ? "Maia" : "Nova"} · ${state.mode}`);
+      const styleTitle =
+        state.resolved.style.charAt(0).toUpperCase() + state.resolved.style.slice(1);
+      setStatus(`${styleTitle} · ${state.mode}`);
     }
     syncPreview();
   }

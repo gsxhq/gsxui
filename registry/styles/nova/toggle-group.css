@@ -1,47 +1,14 @@
-/* Source: assets/css/styles/default/toggle-group.css. Every item rule there
-   is authored as the ROOT's own data-attribute reaching down into the item
-   as a descendant (`[data-size="sm"] > [...item]`); this recipe re-keys each
-   one onto the ITEM's own mirrored data-attribute instead (see
-   registry/canonical/shapes/toggle-group.go's comment) — computed style is
-   identical for the only supported usage (caller passes matching values to
-   both ToggleGroup and every ToggleGroupItem).
-
-   "variant" is referenced only as a raw data-[variant=outline]: arbitrary
-   check inside the spacing-0 rule, not declared as its own Item dimension:
-   default.css has no rule keyed on item variant alone, only compounded with
-   spacing=0, so a standalone "variant" dimension would have no content of
-   its own (Conform requires every declared dimension value to author at
-   least one utility) — same runtize-state-reference treatment as
-   Resizable's aria-orientation.
-
-   orientation IS a real dimension (data-orientation, unlike Resizable's
-   aria-orientation — see that shape's own comment) even though only
-   "horizontal" exists today (vertical is out-of-scope GAP per
-   ui/toggle-group.gsx's doc comment); its one arm's content is itself a
-   spacing-0-conditional compound, since default.css never conditions on
-   orientation alone either.
-
-   spacing="2" has no distinguishing rule in default.css at all — items at
-   that spacing rely entirely on Toggle's own unconditioned presentation
-   (rounded-lg, no shadow). Conform still requires every declared value to
-   author a non-empty rule, so this arm restates Toggle's own rounded-lg as
-   an explicit no-op (same property, same value — no visual change) rather
-   than inventing new behavior.
-
-   The root's "gap: calc(var(--spacing) * var(--gap))" plain-CSS declaration
-   (querying the --gap custom property the .gsx sets via inline style) has
-   no Tailwind utility form, so it stays behind in
-   assets/css/styles/default.css's @layer utilities escape hatch. Nova and
-   Maia have not diverged on ToggleGroup, so this file is byte-identical to
-   registry/styles/maia/toggle-group.css. */
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-nova.css, Toggle Group lines 1370-1377. Ported
+   by internal/stylegen/port; utilities are upstream Tailwind classes,
+   re-slotted onto gsxui's shape-declared classes. */
 @layer components {
+  /* carried: no upstream counterpart */
   .gsxui-recipe-toggle-group {
-    @apply flex w-fit items-center rounded-lg;
+    @apply rounded-lg flex;
   }
 
-  /* default/lg have no distinguishing root rule in default.css — both
-     restate the base rule's own rounded-lg as an explicit no-op, same
-     reasoning as the item's spacing-2 arm above. */
+  /* carried: no upstream counterpart */
   .gsxui-recipe-toggle-group-size-default {
     @apply rounded-lg;
   }
@@ -50,50 +17,41 @@
     @apply rounded-[min(var(--radius-md),10px)];
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-toggle-group-size-lg {
     @apply rounded-lg;
   }
 
   .gsxui-recipe-toggle-group-item {
-    @apply w-auto min-w-0 shrink-0 px-3 focus:z-10 focus-visible:z-10;
+    @apply group-data-[spacing=0]/toggle-group:rounded-none group-data-[spacing=0]/toggle-group:px-2 group-data-[spacing=0]/toggle-group:has-data-[icon=inline-end]:pr-1.5 group-data-[spacing=0]/toggle-group:has-data-[icon=inline-start]:pl-1.5 group-data-horizontal/toggle-group:data-[spacing=0]:first:rounded-l-lg group-data-vertical/toggle-group:data-[spacing=0]:first:rounded-t-lg group-data-horizontal/toggle-group:data-[spacing=0]:last:rounded-r-lg group-data-vertical/toggle-group:data-[spacing=0]:last:rounded-b-lg;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-toggle-group-item-size-default {
     @apply has-[>svg]:px-2;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-toggle-group-item-size-sm {
     @apply has-[>svg]:px-1.5;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-toggle-group-item-size-lg {
     @apply has-[>svg]:px-2;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-toggle-group-item-spacing-0 {
-    @apply rounded-none shadow-none;
-    @apply data-[variant=outline]:border-s-0 data-[variant=outline]:first:border-s;
+    @apply rounded-none shadow-none data-[variant=outline]:border-s-0 data-[variant=outline]:first:border-s;
   }
 
-  /* Not rounded-lg: ToggleGroupItem also carries data-gsxui-slot-toggle and
-     composes Toggle's own (still unmigrated) presentation, which sets ITS
-     OWN per-size border-radius (default.css's toggle.css, e.g. a
-     size=sm-capped 12px value this recipe cannot see or predict). A real
-     Tailwind utility compiles into Tailwind's OWN internal @layer utilities,
-     which always outranks Toggle's @layer components rule regardless of
-     specificity — so restating rounded-lg here (as this arm's first draft
-     did) silently overrode Toggle's own per-size rounding and was caught
-     only by the computed-style sweep (borderRadius 8px -> 10px on
-     /x/toggle-group/spacing). default.css genuinely has no rule at all for
-     spacing="2" (items at that spacing rely entirely on Toggle's own
-     unconditioned presentation), so this arm uses "isolate" — a real
-     utility satisfying Conform's one-rule-per-value requirement that
-     touches no property Toggle's own rules set anywhere, chosen
-     specifically to avoid this collision rather than risk another one. */
+  /* carried: no upstream counterpart */
   .gsxui-recipe-toggle-group-item-spacing-2 {
     @apply isolate;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-toggle-group-item-orientation-horizontal {
     @apply data-[spacing=0]:first:rounded-s-lg data-[spacing=0]:last:rounded-e-lg;
   }

@@ -112,8 +112,24 @@ func Run(repoRoot, upstreamRoot string, styles []string, dryRun bool) (Report, e
 				report.Skipped++
 				continue
 			}
-			if _, exists := sectionByComponent[component]; exists {
-				return Report{}, fmt.Errorf("port: %s: two MARK sections both map to component %q", upstreamPath, component)
+			if existing, exists := sectionByComponent[component]; exists {
+				// An empty MARK section (no rules before the next MARK
+				// comment) never contributes anything, so it can never
+				// really conflict with another section mapping to the same
+				// component — confirmed against style-mira.css's own
+				// duplicated, back-to-back "/* MARK: Sidebar */" comment
+				// (the first with nothing between it and the second), an
+				// upstream authoring artifact rather than two real
+				// sections. Only two NON-empty sections mapping to the same
+				// component is the real, still-fatal ambiguity.
+				switch {
+				case len(existing.Rules) == 0:
+					sectionByComponent[component] = sec
+				case len(sec.Rules) == 0:
+				default:
+					return Report{}, fmt.Errorf("port: %s: two MARK sections both map to component %q", upstreamPath, component)
+				}
+				continue
 			}
 			sectionByComponent[component] = sec
 		}
@@ -123,7 +139,7 @@ func Run(repoRoot, upstreamRoot string, styles []string, dryRun bool) (Report, e
 
 			sec, hasSection := sectionByComponent[component]
 			if !hasSection {
-				if !StyleInvariant(component) {
+				if !StyleInvariant(component) && !missingSectionExpected(component, style) {
 					return Report{}, fmt.Errorf(
 						"port: %s: component %q has no upstream MARK section and is not StyleInvariant — extend the mapping table",
 						upstreamPath, component)

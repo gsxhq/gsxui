@@ -31,7 +31,7 @@ func _gsxrenderKbd(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.Node
 	}
 //line kbd.gsx:11:2
 	_gsxgw.S("<kbd class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pointer-events-none inline-flex h-5 w-fit min-w-5 items-center justify-center gap-1 rounded-sm bg-muted px-1 font-sans text-xs font-medium text-muted-foreground select-none [&_svg:not([class*='size-'])]:size-3 [[data-gsxui-slot-tooltip-content]_&]:bg-background/20 [[data-gsxui-slot-tooltip-content]_&]:text-background [[data-gsxui-slot-tooltip-content]_&]:rounded-sm [.dark_[data-gsxui-slot-tooltip-content]_&]:bg-background/10"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-muted text-muted-foreground [[data-gsxui-slot-tooltip-content]_&]:bg-background/20 [[data-gsxui-slot-tooltip-content]_&]:text-background dark:[[data-gsxui-slot-tooltip-content]_&]:bg-background/10 h-5 w-fit min-w-5 gap-1 rounded-sm px-1 font-sans text-xs font-medium [&_svg:not([class*='size-'])]:size-3 inline-flex"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "kbd", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-kbd"})
@@ -63,7 +63,7 @@ func _gsxrenderKbdGroup(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx
 	}
 //line kbd.gsx:27:2
 	_gsxgw.S("<kbd class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("inline-flex items-center gap-1"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-1 inline-flex"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "kbd", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-kbd-group"})

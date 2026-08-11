@@ -1,0 +1,24 @@
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-vega.css, Tabs lines 1315-1334. Ported by
+   internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
+   onto gsxui's shape-declared classes. */
+@layer components {
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-tabs {
+    @apply gap-2 flex flex-col;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-tabs-list {
+    @apply rounded-lg p-[3px] group-data-horizontal/tabs:h-9 data-[variant=line]:rounded-none inline-flex;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-tabs-trigger {
+    @apply gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium group-data-[variant=default]/tabs-list:data-active:shadow-sm group-data-[variant=line]/tabs-list:data-active:shadow-none [&_svg:not([class*='size-'])]:size-4 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 inline-flex;
+  }
+
+  .gsxui-recipe-tabs-content {
+    @apply text-sm;
+  }
+}

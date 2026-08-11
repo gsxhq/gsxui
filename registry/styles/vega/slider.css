@@ -1,0 +1,9 @@
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-vega.css, Slider lines 1227-1242. Ported by
+   internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
+   onto gsxui's shape-declared classes. */
+@layer components {
+  .gsxui-recipe-slider {
+    @apply data-vertical:min-h-40 [&::-webkit-slider-runnable-track]:bg-muted [&::-webkit-slider-runnable-track]:rounded-full data-horizontal:[&::-webkit-slider-runnable-track]:h-1.5 data-horizontal:[&::-webkit-slider-runnable-track]:w-full data-vertical:[&::-webkit-slider-runnable-track]:h-full data-vertical:[&::-webkit-slider-runnable-track]:w-1.5 [&::-moz-range-track]:bg-muted [&::-moz-range-track]:rounded-full data-horizontal:[&::-moz-range-track]:h-1.5 data-horizontal:[&::-moz-range-track]:w-full data-vertical:[&::-moz-range-track]:h-full data-vertical:[&::-moz-range-track]:w-1.5 [&::-webkit-slider-thumb]:border-primary [&::-webkit-slider-thumb]:ring-ring/50 [&::-webkit-slider-thumb]:size-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-sm [&::-webkit-slider-thumb]:transition-[color,box-shadow] hover:[&::-webkit-slider-thumb]:ring-4 focus-visible:[&::-webkit-slider-thumb]:ring-4 focus-visible:[&::-webkit-slider-thumb]:outline-hidden [&::-moz-range-thumb]:border-primary [&::-moz-range-thumb]:ring-ring/50 [&::-moz-range-thumb]:size-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:shadow-sm [&::-moz-range-thumb]:transition-[color,box-shadow] hover:[&::-moz-range-thumb]:ring-4 focus-visible:[&::-moz-range-thumb]:ring-4 focus-visible:[&::-moz-range-thumb]:outline-hidden;
+  }
+}

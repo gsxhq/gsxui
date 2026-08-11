@@ -88,17 +88,17 @@ func _gsxrenderSheetContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, side str
 	}
 //line sheet.gsx:34:2
 	_gsxgw.S("<dialog")
-	_gsxv0 := "backdrop:bg-black/80 supports-backdrop-filter:backdrop:backdrop-blur-xs bg-popover text-popover-foreground fixed z-50 flex flex-col bg-clip-padding text-sm shadow-lg transition duration-200 ease-in-out"
+	_gsxv0 := "backdrop:bg-black/80 supports-backdrop-filter:backdrop:backdrop-blur-xs bg-popover text-popover-foreground fixed z-50 flex flex-col bg-clip-padding text-sm shadow-lg transition duration-200 ease-in-out m-0 gap-4 max-h-none outline-none data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:backdrop-blur-xs backdrop:duration-200 data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 open:flex"
 	var _gsxv1 string
 	switch side {
 	case "bottom":
-		_gsxv1 = "inset-x-0 bottom-0 h-auto border-t"
+		_gsxv1 = "inset-x-0 bottom-0 h-auto border-t top-auto w-full max-w-none data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom"
 	case "left":
-		_gsxv1 = "inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm"
+		_gsxv1 = "inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm right-auto data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left"
 	case "top":
-		_gsxv1 = "inset-x-0 top-0 h-auto border-b"
+		_gsxv1 = "inset-x-0 top-0 h-auto border-b bottom-auto w-full max-w-none data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top"
 	default:
-		_gsxv1 = "inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm"
+		_gsxv1 = "inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm left-auto data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right"
 	}
 	_gsxgw.S(" class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))

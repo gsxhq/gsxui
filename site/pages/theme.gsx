@@ -203,6 +203,28 @@ func mustThemePickerChoices(baseColor string) []preset.PaletteChoice {
 	return choices
 }
 
+// themeStylePressedAttr and themeStyleButtonClass render the style panel's
+// JS-less default: web/theme.js's own render() re-syncs both aria-pressed
+// and these two classes against state.resolved.style on load and on every
+// click (data-theme-style is generic there — no style name is hardcoded),
+// so this only has to get the page's FIRST paint right. preset.StyleNova
+// is the real system-wide default (preset.Default's own fallback, and
+// theme-state.js's schema.defaults.nova), not merely StyleChoices()'s
+// first entry (that's vega, the plan's canonical listing order).
+func themeStylePressedAttr(name string) string {
+	if name == string(preset.StyleNova) {
+		return "true"
+	}
+	return "false"
+}
+
+func themeStyleButtonClass(name string) string {
+	if name == string(preset.StyleNova) {
+		return "rounded-xl border border-primary bg-accent/50 p-4 text-left transition-colors hover:bg-accent"
+	}
+	return "rounded-xl border border-border p-4 text-left transition-colors hover:bg-accent"
+}
+
 const tabBtnBase = "rounded-md border border-border px-3 py-1.5 text-sm font-medium transition-colors"
 
 const themeImportPlaceholder = `:root {
@@ -250,7 +272,7 @@ component themeEditor(previewURL string, workspace bool) {
 			<h1 class="text-3xl font-semibold tracking-tight">Theme editor</h1>
 			<p class="mt-2 max-w-2xl text-sm text-muted-foreground">
 				Choose the copied component style, then edit the semantic theme it consumes. The gallery renders the exact
-				Nova or Maia component source a project receives from <code>gsxui add</code>.
+				component source a project receives from <code>gsxui add</code> under the selected style.
 			</p>
 		</div>
 		<div class={gridClass}>
@@ -259,25 +281,18 @@ component themeEditor(previewURL string, workspace bool) {
 					<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Style</h2>
 					<ui.Button data-theme-reset variant="outline" size="sm">Reset</ui.Button>
 				</div>
-				<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-					<button
-						type="button"
-						data-theme-style="nova"
-						aria-pressed="true"
-						class="rounded-xl border border-primary bg-accent/50 p-4 text-left transition-colors hover:bg-accent"
-					>
-						<span class="block font-medium">Nova</span>
-						<span class="mt-1 block text-xs text-muted-foreground">Compact, practical defaults.</span>
-					</button>
-					<button
-						type="button"
-						data-theme-style="maia"
-						aria-pressed="false"
-						class="rounded-xl border border-border p-4 text-left transition-colors hover:bg-accent"
-					>
-						<span class="block font-medium">Maia</span>
-						<span class="mt-1 block text-xs text-muted-foreground">Softer geometry and roomier controls.</span>
-					</button>
+				<div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+					{ for _, choice := range preset.StyleChoices() {
+						<button
+							type="button"
+							data-theme-style={choice.Name}
+							aria-pressed={themeStylePressedAttr(choice.Name)}
+							class={themeStyleButtonClass(choice.Name)}
+						>
+							<span class="block font-medium">{ choice.Title }</span>
+							<span class="mt-1 block text-xs text-muted-foreground">{ choice.Description }</span>
+						</button>
+					} }
 				</div>
 				<p class="text-xs text-muted-foreground">
 					Both styles render the full component catalogue. The CLI refuses an unsafe mixed-style migration once

@@ -35,7 +35,7 @@ component DrawerTrigger(children gsx.Node, attrs gsx.Attrs) {
 component DrawerContent(direction string, children gsx.Node, attrs gsx.Attrs) {
 	<dialog
 		class={
-			"m-0 flex-col gap-4 shadow-lg transition ease-in-out bg-popover text-popover-foreground fixed z-50 text-sm duration-200 outline-none data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-[var(--overlay)] backdrop:backdrop-blur-xs backdrop:duration-200 data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 open:flex",
+			"backdrop:bg-black/10 supports-backdrop-filter:backdrop:backdrop-blur-xs bg-popover text-popover-foreground flex h-auto flex-col text-sm data-[vaul-drawer-direction=bottom]:rounded-t-xl data-[vaul-drawer-direction=bottom]:border-t data-[vaul-drawer-direction=left]:rounded-r-xl data-[vaul-drawer-direction=left]:border-r data-[vaul-drawer-direction=right]:rounded-l-xl data-[vaul-drawer-direction=right]:border-l data-[vaul-drawer-direction=top]:rounded-b-xl data-[vaul-drawer-direction=top]:border-b m-0 gap-4 shadow-lg transition ease-in-out fixed z-50 duration-200 outline-none data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:backdrop-blur-xs backdrop:duration-200 data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 open:flex",
 			switch direction {
 			case "left":
 				"inset-y-0 left-0 right-auto h-full max-h-none w-3/4 rounded-r-xl border-r sm:max-w-sm data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left md:[&_[data-gsxui-slot-drawer-header]]:text-start"
@@ -54,29 +54,39 @@ component DrawerContent(direction string, children gsx.Node, attrs gsx.Attrs) {
 		data-gsxui-slot-dialog-content
 	>
 		{ if direction == "" || direction == "bottom" {
-			<div class={ "mx-auto mt-4 h-1 w-[100px] shrink-0 rounded-full bg-muted" } data-gsxui-slot-drawer-handle></div>
+			<div
+				class={ "bg-muted mx-auto mt-4 hidden h-1 w-[100px] shrink-0 rounded-full" }
+				data-gsxui-slot-drawer-handle
+			></div>
 		} }
 		{ children }
 	</dialog>
 }
 
 component DrawerHeader(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "flex flex-col gap-0.5 p-4" } { attrs... } data-gsxui-slot-drawer-header>{ children }</div>
+	<div class={ "gap-0.5 p-4 md:gap-0.5 md:text-left flex flex-col" } { attrs... } data-gsxui-slot-drawer-header>
+		{ children }
+	</div>
 }
 
 component DrawerFooter(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "mt-auto flex flex-col gap-2 p-4" } { attrs... } data-gsxui-slot-drawer-footer>{ children }</div>
+	<div class={ "gap-2 p-4 flex flex-col" } { attrs... } data-gsxui-slot-drawer-footer>{ children }</div>
 }
 
 component DrawerTitle(children gsx.Node, attrs gsx.Attrs) {
-	<h2 class={ "font-medium text-foreground" } { attrs... } data-gsxui-slot-drawer-title data-gsxui-slot-dialog-title>
+	<h2
+		class={ "text-foreground text-base font-medium" }
+		{ attrs... }
+		data-gsxui-slot-drawer-title
+		data-gsxui-slot-dialog-title
+	>
 		{ children }
 	</h2>
 }
 
 component DrawerDescription(children gsx.Node, attrs gsx.Attrs) {
 	<p
-		class={ "text-sm text-muted-foreground" }
+		class={ "text-muted-foreground text-sm" }
 		{ attrs... }
 		data-gsxui-slot-drawer-description
 		data-gsxui-slot-dialog-description

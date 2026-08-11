@@ -16,7 +16,7 @@ component AccordionItem(name string, open bool, children gsx.Node, attrs gsx.Att
 	<details
 		name={name}
 		open={open}
-		class={ "data-open:bg-muted/50 not-last:border-b" }
+		class={ "data-[state=open]:bg-muted/50 not-last:border-b" }
 		{ attrs... }
 		data-gsxui-slot-accordion-item
 	>
@@ -31,7 +31,12 @@ component AccordionTrigger(children gsx.Node, attrs gsx.Attrs) {
 		data-gsxui-slot-accordion-trigger
 	>
 		{ children }
-		<icon.ChevronDown class={ "text-muted-foreground ml-auto size-4" } data-gsxui-slot-accordion-trigger-icon/>
+		<icon.ChevronDown
+			class={
+				"text-muted-foreground ml-auto size-4 shrink-0 transition-transform duration-200 [[data-gsxui-slot-accordion-item][open]_&]:rotate-180"
+			}
+			data-gsxui-slot-accordion-trigger-icon
+		/>
 	</summary>
 }
 
@@ -40,7 +45,7 @@ component AccordionTrigger(children gsx.Node, attrs gsx.Attrs) {
 // the same box.
 component AccordionContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "data-open:animate-accordion-down data-closed:animate-accordion-up px-4 text-sm" }
+		class={ "data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up px-4 text-sm" }
 		{ attrs.Without("class")... }
 		data-gsxui-slot-accordion-content
 	>

@@ -80,7 +80,7 @@ component SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) {
 		data-size={size |> default("default")}
 		data-placeholder
 		class={
-			"flex w-fit items-center justify-between gap-1.5 rounded-lg border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg]:text-muted-foreground [&_svg:not([class*='size-'])]:size-4 [&>svg]:size-4 [&>svg]:opacity-50",
+			"border-input data-placeholder:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 gap-1.5 rounded-lg border bg-transparent py-2 pr-2 pl-2.5 text-sm transition-colors select-none focus-visible:ring-3 aria-invalid:ring-3 [&_svg:not([class*='size-'])]:size-4 flex",
 			switch size { case "sm": "h-7 rounded-[min(var(--radius-md),10px)]" default: "h-8" }
 		}
 		{ attrs... }
@@ -95,7 +95,7 @@ component SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) {
 // selected. select.js overwrites its text content on selection. The default
 // stylesheet applies pointer-events:none.
 component SelectValue(placeholder string, attrs gsx.Attrs) {
-	<span class={ "pointer-events-none [[data-gsxui-slot-select-trigger]>&]:line-clamp-1 [[data-gsxui-slot-select-trigger]>&]:flex [[data-gsxui-slot-select-trigger]>&]:items-center [[data-gsxui-slot-select-trigger]>&]:gap-1.5" } { attrs... } data-gsxui-slot-select-value>{ placeholder }</span>
+	<span class={ "flex gap-1.5 flex-1 text-left" } { attrs... } data-gsxui-slot-select-value>{ placeholder }</span>
 }
 
 // SelectContent is the popover listbox. It rides the exact dropdown-menu.js
@@ -115,7 +115,7 @@ component SelectContent(children gsx.Node, attrs gsx.Attrs) {
 		data-state="closed"
 		data-side="bottom"
 		class={
-			"z-50 max-h-[min(--spacing(96),var(--gsxui-available-height,9999px))] min-w-36 origin-top-left overflow-x-hidden overflow-y-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 starting:[&:popover-open]:data-[side=bottom]:-translate-y-2 starting:[&:popover-open]:data-[side=left]:translate-x-2 starting:[&:popover-open]:data-[side=right]:-translate-x-2 starting:[&:popover-open]:data-[side=top]:translate-y-2"
+			"bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 min-w-36 rounded-lg shadow-md ring-1 duration-100"
 		}
 		{ attrs... }
 		data-gsxui-slot-select-content
@@ -136,7 +136,7 @@ component SelectGroup(children gsx.Node, attrs gsx.Attrs) {
 // SelectLabel is the group heading (select.js stamps its id and the group's
 // aria-labelledby at init).
 component SelectLabel(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "px-1.5 py-1 text-xs text-muted-foreground" } { attrs... } data-gsxui-slot-select-label>
+	<div class={ "text-muted-foreground px-1.5 py-1 text-xs" } { attrs... } data-gsxui-slot-select-label>
 		{ children }
 	</div>
 }
@@ -167,23 +167,23 @@ component SelectItem(value string, selected bool, disabled bool, children gsx.No
 			aria-disabled="true"
 		} }
 		class={
-			"relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pe-8 ps-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg]:text-muted-foreground [&_svg:not([class*='size-'])]:size-4 data-[state=checked]:[&>[data-gsxui-slot-select-item-indicator]]:flex"
+			"focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2 flex"
 		}
 		{ attrs... }
 		data-gsxui-slot-select-item
 	>
 		<span
-			class={ "pointer-events-none absolute end-2 hidden size-4 items-center justify-center [&>svg]:size-4" }
+			class={ "pointer-events-none absolute right-2 flex size-4 items-center justify-center" }
 			data-gsxui-slot-select-item-indicator
 		>
 			<icon.Check/>
 		</span>
-		<span class={ "flex items-center gap-2" } data-gsxui-slot-select-item-text>{ children }</span>
+		<span class={ "flex flex-1 gap-2" } data-gsxui-slot-select-item-text>{ children }</span>
 	</div>
 }
 
 // SelectSeparator divides groups. aria-hidden per Radix's own SelectSeparator
 // (a decorative rule, not a role="separator" like DropdownMenuSeparator).
 component SelectSeparator(attrs gsx.Attrs) {
-	<div aria-hidden="true" class={ "-mx-1 my-1 h-px bg-border" } { attrs... } data-gsxui-slot-select-separator></div>
+	<div aria-hidden="true" class={ "bg-border -mx-1 my-1 h-px" } { attrs... } data-gsxui-slot-select-separator></div>
 }

@@ -46,7 +46,7 @@ import (
 // guarded against; callers overriding this attribute are on their own.
 component NavigationMenu(children gsx.Node, attrs gsx.Attrs) {
 	<nav
-		class={ "relative flex max-w-max flex-1 items-center justify-center" }
+		class={ "max-w-max flex" }
 		data-viewport="false"
 		{ attrs... }
 		data-gsxui-slot-navigation-menu
@@ -60,11 +60,7 @@ component NavigationMenu(children gsx.Node, attrs gsx.Attrs) {
 // positions it relative to this element). gap-0 is nova's own metric
 // (`.cn-navigation-menu-list`), replacing new-york-v4's own gap-1.
 component NavigationMenuList(children gsx.Node, attrs gsx.Attrs) {
-	<ul
-		class={ "flex flex-1 list-none items-center justify-center gap-0" }
-		{ attrs... }
-		data-gsxui-slot-navigation-menu-list
-	>
+	<ul class={ "gap-0 flex" } { attrs... } data-gsxui-slot-navigation-menu-list>
 		{ children }
 	</ul>
 }
@@ -124,7 +120,7 @@ component NavigationMenuItem(children gsx.Node, attrs gsx.Attrs) {
 component NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<button
 		class={
-			"inline-flex h-9 w-max items-center justify-center rounded-lg px-2.5 py-1.5 text-sm font-medium transition-all outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-accent/50 data-[state=open]:text-accent-foreground data-[state=open]:hover:bg-accent data-[state=open]:focus:bg-accent"
+			"hover:bg-muted focus:bg-muted data-[state=open]:hover:bg-muted data-[state=open]:focus:bg-muted data-[state=open]:bg-muted/50 focus-visible:ring-ring/50 data-popup-open:bg-muted/50 data-popup-open:hover:bg-muted rounded-lg px-2.5 py-1.5 text-sm font-medium transition-all focus-visible:ring-3 focus-visible:outline-1 disabled:opacity-50 inline-flex"
 		}
 		type="button"
 		aria-expanded="false"
@@ -134,7 +130,9 @@ component NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 	>
 		{ children }{ " " }
 		<icon.ChevronDown
-			class={ "relative top-px ms-1 size-3 transition duration-300 [[data-state=open]_&]:rotate-180" }
+			class={
+				"relative top-px ml-1 size-3 transition duration-300 group-data-open/navigation-menu-trigger:rotate-180 group-data-popup-open/navigation-menu-trigger:rotate-180"
+			}
 			data-gsxui-slot-navigation-menu-trigger-icon
 		/>
 	</button>
@@ -206,7 +204,7 @@ component NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 component NavigationMenuContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"top-0 start-0 p-1 md:absolute [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:top-full [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:mt-1.5 [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:overflow-hidden [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:rounded-lg [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:border [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:bg-popover [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:text-popover-foreground [[data-gsxui-slot-navigation-menu][data-viewport=false]_&]:shadow opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 data-[side=bottom]:starting:[&:popover-open]:-translate-y-2 data-[side=left]:starting:[&:popover-open]:translate-x-2 data-[side=right]:starting:[&:popover-open]:-translate-x-2 data-[side=top]:starting:[&:popover-open]:translate-y-2"
+			"data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 group-data-[viewport=false]/navigation-menu:bg-popover group-data-[viewport=false]/navigation-menu:text-popover-foreground group-data-[viewport=false]/navigation-menu:data-[state=open]:animate-in group-data-[viewport=false]/navigation-menu:data-[state=closed]:animate-out group-data-[viewport=false]/navigation-menu:data-[state=closed]:zoom-out-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:zoom-in-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:fade-in-0 group-data-[viewport=false]/navigation-menu:data-[state=closed]:fade-out-0 group-data-[viewport=false]/navigation-menu:ring-foreground/10 p-1 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[viewport=false]/navigation-menu:rounded-lg group-data-[viewport=false]/navigation-menu:shadow group-data-[viewport=false]/navigation-menu:ring-1 group-data-[viewport=false]/navigation-menu:duration-300"
 		}
 		popover="manual"
 		data-state="closed"
@@ -250,7 +248,7 @@ component NavigationMenuLink(active bool, variant string, children gsx.Node, att
 	}}
 	<a
 		class={
-			"flex flex-col gap-1 rounded-lg p-2 text-sm transition-all outline-none [[data-gsxui-slot-navigation-menu-content]_&]:rounded-md hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 [[data-gsxui-slot-navigation-menu-content]_&]:focus:ring-0 [[data-gsxui-slot-navigation-menu-content]_&]:focus:outline-none [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground",
+			"data-active:focus:bg-muted data-active:hover:bg-muted data-active:bg-muted/50 focus-visible:ring-ring/50 hover:bg-muted focus:bg-muted flex items-center gap-2 rounded-lg p-2 text-sm transition-all outline-none focus-visible:ring-3 focus-visible:outline-1 [[data-gsxui-slot-navigation-menu-content]_&]:rounded-md [&_svg:not([class*='size-'])]:size-4",
 			switch linkVariant {
 			case "trigger":
 				"inline-flex h-9 w-max items-center justify-center rounded-lg px-2.5 py-1.5 text-sm font-medium transition-all outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-accent/50 data-[state=open]:text-accent-foreground data-[state=open]:hover:bg-accent data-[state=open]:focus:bg-accent"
@@ -310,15 +308,12 @@ component NavigationMenuLink(active bool, variant string, children gsx.Node, att
 component NavigationMenuIndicator(attrs gsx.Attrs) {
 	<div
 		class={
-			"pointer-events-none top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden opacity-0 transition-opacity duration-200 data-[state=visible]:opacity-100"
+			"data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in flex"
 		}
 		data-state="hidden"
 		{ attrs... }
 		data-gsxui-slot-navigation-menu-indicator
 	>
-		<div
-			class={ "relative top-[60%] h-2 w-2 rotate-45 rounded-tl-sm bg-border shadow-md" }
-			data-gsxui-slot-navigation-menu-indicator-arrow
-		></div>
+		<div class={ "bg-border rounded-tl-sm shadow-md" } data-gsxui-slot-navigation-menu-indicator-arrow></div>
 	</div>
 }

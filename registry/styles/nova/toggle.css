@@ -1,60 +1,30 @@
-/* Source: assets/css/styles/default/toggle.css (all rules), migrated onto
-   the slot axis. variant/size are shape dimensions (registry/canonical/
-   shapes/toggle.go); pressed/data-state, :disabled, and aria-invalid are
-   runtime Tailwind state variants folded onto the one root rule instead,
-   since ui/toggle.js re-stamps data-state/aria-pressed on every click with
-   no server round trip — the same treatment Button/Switch already give
-   disabled/aria-invalid. Nova and Maia have not diverged on Toggle yet, so
-   this file is byte-identical to registry/styles/maia/toggle.css.
-
-   ui/toggle-group.gsx's ToggleGroupItem stamps data-gsxui-slot-toggle
-   alongside its own data-gsxui-slot-toggle-group-item marker WITHOUT
-   calling any accessor on this recipe — it never composed Toggle's classes,
-   only its marker-keyed CSS. Deleting assets/css/styles/default/toggle.css
-   would leave it unstyled, so a :where()-wrapped, zero-specificity copy of
-   these same rules is preserved in assets/css/styles/default.css's @layer
-   components for ToggleGroupItem's benefit only (Toggle itself always wins
-   via this recipe's higher-specificity .gsxui-recipe-toggle class — same
-   values either way, so no visible difference). See that file's own
-   comment and internal/stylegen/layercheck.go's
-   toggleMarkerFallbackExemptions, the identical prior fix from the earlier
-   (reverted) Toggle migration attempt, now without ToggleGroup's own
-   padding/radius/border rules alongside it — ToggleGroup is migrated now
-   and carries those itself in registry/styles/{nova,maia}/toggle-group.css. */
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-nova.css, Toggle lines 1341-1368. Ported by
+   internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
+   onto gsxui's shape-declared classes. */
 @layer components {
+  /* carried: no upstream counterpart */
   .gsxui-recipe-toggle {
-    @apply inline-flex items-center justify-center gap-1 rounded-lg bg-transparent text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none;
-    @apply hover:bg-muted hover:text-muted-foreground;
-    @apply focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50;
-    @apply disabled:pointer-events-none disabled:opacity-50;
-    @apply aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40;
-    @apply data-[state=on]:bg-accent data-[state=on]:text-accent-foreground;
-    @apply [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4;
+    @apply hover:text-foreground aria-pressed:bg-muted focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive data-[state=on]:bg-muted gap-1 rounded-lg text-sm font-medium transition-all [&_svg:not([class*='size-'])]:size-4 inline-flex;
   }
 
-  /* No distinguishing rule for the default variant in default.css — restates
-     the base rule's own bg-transparent as an explicit no-op (same property,
-     same value, no visual change), the same treatment ToggleGroup's
-     default-size arm gives rounded-lg. */
   .gsxui-recipe-toggle-variant-default {
     @apply bg-transparent;
   }
 
   .gsxui-recipe-toggle-variant-outline {
-    @apply border border-input;
-    @apply hover:bg-accent hover:text-accent-foreground;
+    @apply border-input hover:bg-muted border bg-transparent;
   }
 
   .gsxui-recipe-toggle-size-default {
-    @apply h-8 min-w-8 px-2.5 has-[>svg]:px-2;
+    @apply h-8 min-w-8 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2;
   }
 
   .gsxui-recipe-toggle-size-sm {
-    @apply h-7 min-w-7 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-[>svg]:px-1.5;
-    @apply [&_svg:not([class*='size-'])]:size-3.5;
+    @apply h-7 min-w-7 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5;
   }
 
   .gsxui-recipe-toggle-size-lg {
-    @apply h-9 min-w-9 px-2.5 has-[>svg]:px-2;
+    @apply h-9 min-w-9 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2;
   }
 }

@@ -10,7 +10,7 @@ import "github.com/gsxhq/gsx"
 component Label(children gsx.Node, attrs gsx.Attrs) {
 	<label
 		class={
-			"flex items-center gap-2 text-sm leading-none font-medium select-none [[data-disabled=true]_&]:pointer-events-none [:disabled~&]:cursor-not-allowed"
+			"gap-2 text-sm leading-none font-medium group-data-[disabled=true]:opacity-50 peer-disabled:opacity-50 flex"
 		}
 		{ attrs... }
 		data-gsxui-slot-label

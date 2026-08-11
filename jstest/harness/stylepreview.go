@@ -7,17 +7,28 @@ import (
 	"net/http"
 
 	"github.com/gsxhq/gsx"
+	"github.com/gsxhq/gsxui/site/stylepreview/luma"
+	"github.com/gsxhq/gsxui/site/stylepreview/lyra"
 	"github.com/gsxhq/gsxui/site/stylepreview/maia"
+	"github.com/gsxhq/gsxui/site/stylepreview/mira"
 	"github.com/gsxhq/gsxui/site/stylepreview/nova"
+	"github.com/gsxhq/gsxui/site/stylepreview/rhea"
+	"github.com/gsxhq/gsxui/site/stylepreview/sera"
+	"github.com/gsxhq/gsxui/site/stylepreview/vega"
 )
 
 // stylePreviewGalleries renders one style's Gallery composition standalone
 // (not the twice-in-one-document theme editor preview), for
 // jstest/specs/style-visual.spec.ts's per-style, per-card snapshot gate.
-// Extend this map as internal/stylegen/port ports more styles.
 var stylePreviewGalleries = map[string]func(idp string) gsx.Node{
+	"vega": vega.Gallery,
 	"nova": nova.Gallery,
 	"maia": maia.Gallery,
+	"lyra": lyra.Gallery,
+	"mira": mira.Gallery,
+	"luma": luma.Gallery,
+	"sera": sera.Gallery,
+	"rhea": rhea.Gallery,
 }
 
 // registerStylePreviewRoutes serves GET /stylepreview/{style}, the harness

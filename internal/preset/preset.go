@@ -24,9 +24,59 @@ const (
 type Style string
 
 const (
+	StyleVega Style = "vega"
 	StyleNova Style = "nova"
 	StyleMaia Style = "maia"
+	StyleLyra Style = "lyra"
+	StyleMira Style = "mira"
+	StyleLuma Style = "luma"
+	StyleSera Style = "sera"
+	StyleRhea Style = "rhea"
 )
+
+// StyleChoice is one style's display metadata for a picker UI: Name is the
+// Style value itself (as a plain string, matching PaletteChoice/
+// RadiusChoice's own shape below), Title is its capitalized display name,
+// and Description is upstream's own one-line description
+// (apps/v4/registry/styles.tsx in the shadcn-ui checkout).
+type StyleChoice struct {
+	Name        string
+	Title       string
+	Description string
+}
+
+var styleTitles = map[Style]string{
+	StyleVega: "Vega",
+	StyleNova: "Nova",
+	StyleMaia: "Maia",
+	StyleLyra: "Lyra",
+	StyleMira: "Mira",
+	StyleLuma: "Luma",
+	StyleSera: "Sera",
+	StyleRhea: "Rhea",
+}
+
+var styleDescriptions = map[Style]string{
+	StyleVega: "Clean, neutral, and familiar",
+	StyleNova: "Reduced padding and margins",
+	StyleMaia: "Rounded, with generous spacing.",
+	StyleLyra: "Boxy and sharp. For mono fonts.",
+	StyleMira: "Made for compact interfaces.",
+	StyleLuma: "Fluid, luminous, and soft.",
+	StyleSera: "Editorial and typographic.",
+	StyleRhea: "Like Luma but compact.",
+}
+
+// StyleChoices returns every style's display metadata, in Styles()'s own
+// order, for a picker UI to render directly — the same catalogue shape
+// BaseColorChoices/RadiusChoices already give their own axes.
+func StyleChoices() []StyleChoice {
+	choices := make([]StyleChoice, len(styles))
+	for i, s := range styles {
+		choices[i] = StyleChoice{Name: string(s), Title: styleTitles[s], Description: styleDescriptions[s]}
+	}
+	return choices
+}
 
 type ThemeValues map[string]string
 
@@ -50,7 +100,12 @@ type TokenDefinition struct {
 	Dark  string
 }
 
-var styles = []Style{StyleNova, StyleMaia}
+// styles lists all 8 styles in the plan's own canonical order (Global
+// Constraints: "vega, nova, maia, lyra, mira, luma, sera, rhea"). Unlike
+// compact.go's compactStyles, this order has no wire-format ABI to
+// preserve — it only governs Styles()'s and StyleChoices()'s own iteration
+// order, i.e. picker display order.
+var styles = []Style{StyleVega, StyleNova, StyleMaia, StyleLyra, StyleMira, StyleLuma, StyleSera, StyleRhea}
 
 var presentationGroups = []string{
 	"Base",

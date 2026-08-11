@@ -41,7 +41,7 @@ func TestCardPinned(t *testing.T) {
 	// class attribute's literal contents changed, from nothing to the
 	// resolved Nova recipe for the root slot.
 	got := render(t, ui.Card(gsx.Raw("Content"), nil))
-	want := `<div class="flex flex-col gap-4 rounded-xl border bg-card py-4 text-sm text-card-foreground has-[[data-gsxui-slot-card-footer]]:pb-0" data-gsxui-slot-card>Content</div>`
+	want := `<div class="ring-foreground/10 bg-card text-card-foreground gap-(--card-spacing) overflow-hidden rounded-xl py-(--card-spacing) text-sm ring-1 [--card-spacing:--spacing(4)] has-[[data-gsxui-slot-card-footer]]:pb-0 has-[&gt;img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] data-[size=sm]:has-[[data-gsxui-slot-card-footer]]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl flex flex-col" data-gsxui-slot-card>Content</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

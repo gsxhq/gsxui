@@ -8,8 +8,14 @@ import (
 	_gsxctx "context"
 	_gsxrt "github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/internal/preset"
+	"github.com/gsxhq/gsxui/site/stylepreview/luma"
+	"github.com/gsxhq/gsxui/site/stylepreview/lyra"
 	"github.com/gsxhq/gsxui/site/stylepreview/maia"
+	"github.com/gsxhq/gsxui/site/stylepreview/mira"
 	"github.com/gsxhq/gsxui/site/stylepreview/nova"
+	"github.com/gsxhq/gsxui/site/stylepreview/rhea"
+	"github.com/gsxhq/gsxui/site/stylepreview/sera"
+	"github.com/gsxhq/gsxui/site/stylepreview/vega"
 	_gsxio "io"
 )
 
@@ -18,41 +24,89 @@ import (
 // catalogue — each style package's generated gallery composition — not the
 // site's canonical recipe-class components.
 //
-//line theme_preview.gsx:11:1
+//line theme_preview.gsx:17:1
 type ThemePreview struct{}
 
 func themePreviewTokenNames() string {
 	return strings.Join(preset.TokenNames(), ",")
 }
 
-//line theme_preview.gsx:21:1
+// component (preview ThemePreview) Page renders all 8 style sections into
+// one same-origin document; web/theme-preview.js toggles which one is
+// visible entirely by DOM query (`[data-theme-preview-style]`), so this
+// list is the only place a newly ported style needs to be added — nothing
+// in the JS layer names a style directly.
+
+//line theme_preview.gsx:32:1
 func (preview ThemePreview) Page() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 		_gsxgw.S("<!DOCTYPE html>")
-//line theme_preview.gsx:23:2
+//line theme_preview.gsx:34:2
 		_gsxgw.S("<html lang=\"en\">")
-//line theme_preview.gsx:24:3
+//line theme_preview.gsx:35:3
 		_gsxgw.NodeResult(_gsxrendersiteHead(ctx, _gsxgw, "Theme preview", "web/preview.js"))
-//line theme_preview.gsx:25:3
+//line theme_preview.gsx:36:3
 		_gsxgw.S("<body")
 		_gsxgw.BoolAttr("data-theme-button-preview", true)
 		_gsxgw.S(" data-theme-preview-tokens=\"")
 		_gsxgw.AttrValue(string(themePreviewTokenNames()))
 		_gsxgw.S("\" class=\"min-h-svh overflow-auto bg-background text-foreground antialiased\">")
-//line theme_preview.gsx:30:4
+//line theme_preview.gsx:41:4
 		_gsxgw.S("<main aria-label=\"Component gallery preview\">")
-//line theme_preview.gsx:31:5
+//line theme_preview.gsx:42:5
+		_gsxgw.S("<section data-theme-preview-style=\"vega\"")
+		_gsxgw.BoolAttr("hidden", true)
+		_gsxgw.S(">")
+//line theme_preview.gsx:43:6
+		_gsxgw.Node(ctx, vega.Gallery("vega"))
+		_gsxgw.S("</section>")
+//line theme_preview.gsx:45:5
 		_gsxgw.S("<section data-theme-preview-style=\"nova\">")
-//line theme_preview.gsx:32:6
+//line theme_preview.gsx:46:6
 		_gsxgw.Node(ctx, nova.Gallery("nova"))
 		_gsxgw.S("</section>")
-//line theme_preview.gsx:34:5
+//line theme_preview.gsx:48:5
 		_gsxgw.S("<section data-theme-preview-style=\"maia\"")
 		_gsxgw.BoolAttr("hidden", true)
 		_gsxgw.S(">")
-//line theme_preview.gsx:35:6
+//line theme_preview.gsx:49:6
 		_gsxgw.Node(ctx, maia.Gallery("maia"))
+		_gsxgw.S("</section>")
+//line theme_preview.gsx:51:5
+		_gsxgw.S("<section data-theme-preview-style=\"lyra\"")
+		_gsxgw.BoolAttr("hidden", true)
+		_gsxgw.S(">")
+//line theme_preview.gsx:52:6
+		_gsxgw.Node(ctx, lyra.Gallery("lyra"))
+		_gsxgw.S("</section>")
+//line theme_preview.gsx:54:5
+		_gsxgw.S("<section data-theme-preview-style=\"mira\"")
+		_gsxgw.BoolAttr("hidden", true)
+		_gsxgw.S(">")
+//line theme_preview.gsx:55:6
+		_gsxgw.Node(ctx, mira.Gallery("mira"))
+		_gsxgw.S("</section>")
+//line theme_preview.gsx:57:5
+		_gsxgw.S("<section data-theme-preview-style=\"luma\"")
+		_gsxgw.BoolAttr("hidden", true)
+		_gsxgw.S(">")
+//line theme_preview.gsx:58:6
+		_gsxgw.Node(ctx, luma.Gallery("luma"))
+		_gsxgw.S("</section>")
+//line theme_preview.gsx:60:5
+		_gsxgw.S("<section data-theme-preview-style=\"sera\"")
+		_gsxgw.BoolAttr("hidden", true)
+		_gsxgw.S(">")
+//line theme_preview.gsx:61:6
+		_gsxgw.Node(ctx, sera.Gallery("sera"))
+		_gsxgw.S("</section>")
+//line theme_preview.gsx:63:5
+		_gsxgw.S("<section data-theme-preview-style=\"rhea\"")
+		_gsxgw.BoolAttr("hidden", true)
+		_gsxgw.S(">")
+//line theme_preview.gsx:64:6
+		_gsxgw.Node(ctx, rhea.Gallery("rhea"))
 		_gsxgw.S("</section></main></body></html>")
 		return _gsxgw.Err()
 	})

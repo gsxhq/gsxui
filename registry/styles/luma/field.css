@@ -1,0 +1,83 @@
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-luma.css, Field lines 371-418. Ported by
+   internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
+   onto gsxui's shape-declared classes. */
+@layer components {
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-field-set {
+    @apply gap-6 flex flex-col;
+  }
+
+  .gsxui-recipe-field-legend {
+    @apply mb-3 font-medium;
+  }
+
+  .gsxui-recipe-field-legend-variant-legend {
+    @apply text-base;
+  }
+
+  .gsxui-recipe-field-legend-variant-label {
+    @apply text-sm;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-field-group {
+    @apply gap-7 [&>[data-gsxui-slot-field-group]]:gap-4 flex flex-col;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-field {
+    @apply data-[invalid=true]:text-destructive gap-3 p-4 flex;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-field-orientation-vertical {
+    @apply flex-col [&>*]:w-full [&>[data-gsxui-slot-select-bridge]]:w-auto;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-field-orientation-horizontal {
+    @apply flex-row items-center [&>[data-gsxui-slot-field-label]]:flex-auto has-[>[data-gsxui-slot-field-content]]:items-start has-[>[data-gsxui-slot-field-content]]:[&>:is([role=checkbox],[role=radio])]:mt-px;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-field-orientation-responsive {
+    @apply flex-col [&>*]:w-full [&>[data-gsxui-slot-select-bridge]]:w-auto @min-[28rem]/field-group:flex-row @min-[28rem]/field-group:items-center @min-[28rem]/field-group:[&>*]:w-auto @min-[28rem]/field-group:[&>[data-gsxui-slot-field-label]]:flex-auto @min-[28rem]/field-group:has-[>[data-gsxui-slot-field-content]]:items-start @min-[28rem]/field-group:has-[>[data-gsxui-slot-field-content]]:[&>:is([role=checkbox],[role=radio])]:mt-px;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-field-content {
+    @apply gap-1 flex flex-col;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-field-label {
+    @apply has-data-checked:bg-input/30 gap-2 leading-snug group-data-[disabled=true]/field:opacity-50 has-[>[data-gsxui-slot-field]]:rounded-2xl has-[>[data-gsxui-slot-field]]:border flex;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-field-title {
+    @apply gap-2 text-sm font-medium group-data-[disabled=true]/field:opacity-50 flex leading-snug;
+  }
+
+  .gsxui-recipe-field-description {
+    @apply text-muted-foreground text-left text-sm [[data-variant=legend]+&]:-mt-1.5;
+  }
+
+  .gsxui-recipe-field-separator-wrapper {
+    @apply -my-2 h-5 text-sm group-data-[variant=outline]/field-group:-mb-2 relative;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-field-separator {
+    @apply absolute inset-0 top-1/2;
+  }
+
+  .gsxui-recipe-field-separator-content {
+    @apply text-muted-foreground px-2 relative mx-auto block w-fit bg-background;
+  }
+
+  .gsxui-recipe-field-error {
+    @apply text-destructive text-sm;
+  }
+}

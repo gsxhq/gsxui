@@ -70,7 +70,7 @@ func parseWrapper(filename string, src []byte) (string, []upstreamRule, error) {
 	parser := css.NewParser(parse.NewInputBytes(src), false)
 
 	var style string
-	var haveWrapper, inWrapper bool
+	var haveWrapper, inWrapper, skipping bool
 	var rules []upstreamRule
 	var current *upstreamRule
 
@@ -113,13 +113,36 @@ func parseWrapper(filename string, src []byte) (string, []upstreamRule, error) {
 			}
 			class, ok := cnSelector(parser.Values())
 			if !ok {
-				return "", nil, upstreamError(filename, src, parser.Offset(), "expected .cn-* rule inside .style-%s, found %s", style, selectorText(parser.Values()))
+				// A compound/relational selector whose SUBJECT is still a
+				// .cn-* rule (e.g. `.cn-card-content:has(> [data-slot=
+				// questionnaire-choices])`, style-vega.css) is a real but
+				// out-of-grammar shape: dossier §5's rule model is "one class,
+				// one rule", and a :has()/combinator condition changes WHEN
+				// the utilities apply, which the whole slot/dimension model
+				// has no representation for. Every occurrence found across
+				// all 8 style files targets a section the mapping table
+				// already ignores wholesale (Questionnaire), so skipping the
+				// whole ruleset — contributing nothing, rather than
+				// mis-attributing its utilities to the plain class as if
+				// unconditional — is correct, not a gap papered over: an
+				// occurrence that named a REAL, supported component would
+				// still be a hard error below, since relationalCnSelector
+				// only recognizes the leading-class shape and nothing else
+				// about it.
+				if !relationalCnSelector(parser.Values()) {
+					return "", nil, upstreamError(filename, src, parser.Offset(), "expected .cn-* rule inside .style-%s, found %s", style, selectorText(parser.Values()))
+				}
+				skipping = true
+				continue
 			}
 			line, _, _ := parse.Position(bytes.NewReader(src), parser.Offset())
 			current = &upstreamRule{Rule: Rule{Class: class, Line: line}}
 
 		case css.AtRuleGrammar:
 			if current == nil {
+				if skipping {
+					continue
+				}
 				return "", nil, upstreamError(filename, src, parser.Offset(), "unexpected at-rule outside a .cn-* rule")
 			}
 			if !bytes.Equal(data, []byte("@apply")) {
@@ -132,6 +155,10 @@ func parseWrapper(filename string, src []byte) (string, []upstreamRule, error) {
 			current.Utilities = append(current.Utilities, utilities...)
 
 		case css.EndRulesetGrammar:
+			if skipping {
+				skipping = false
+				continue
+			}
 			if current != nil {
 				line, _, _ := parse.Position(bytes.NewReader(src), parser.Offset())
 				current.endLine = line
@@ -266,6 +293,19 @@ func cnSelector(tokens []css.Token) (string, bool) {
 		return "", false
 	}
 	return class, true
+}
+
+// relationalCnSelector reports whether tokens open with a `.cn-<ident>`
+// class (cnSelector's own leading shape) followed by MORE tokens — a
+// combinator, pseudo-class, attribute selector, or anything else that makes
+// the utilities inside conditional on more than the class itself. It does
+// not care what the trailing tokens are: parseWrapper's caller only uses
+// this to decide "skip the whole ruleset" for a class it otherwise
+// recognizes, never to extract meaning from the relational part.
+func relationalCnSelector(tokens []css.Token) bool {
+	return len(tokens) > 2 &&
+		tokens[0].TokenType == css.DelimToken && bytes.Equal(tokens[0].Data, []byte(".")) &&
+		tokens[1].TokenType == css.IdentToken && bytes.HasPrefix(tokens[1].Data, []byte("cn-"))
 }
 
 // selectorText renders a CSS selector's tokens back to source text, for

@@ -1,0 +1,63 @@
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-mira.css, Carousel lines 268-275. Ported by
+   internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
+   onto gsxui's shape-declared classes. */
+@layer components {
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-carousel {
+    @apply relative;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-carousel-content {
+    @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-carousel-track-orientation-horizontal {
+    @apply -ms-4;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-carousel-track-orientation-vertical {
+    @apply -mt-4;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-carousel-item-orientation-horizontal {
+    @apply ps-4 -scroll-ms-4;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-carousel-item-orientation-vertical {
+    @apply pt-4 -scroll-mt-4;
+  }
+
+  .gsxui-recipe-carousel-previous {
+    @apply rounded-full;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-carousel-previous-orientation-horizontal {
+    @apply top-1/2 -start-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)];
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-carousel-previous-orientation-vertical {
+    @apply -top-12 left-1/2 -translate-x-1/2 rotate-90;
+  }
+
+  .gsxui-recipe-carousel-next {
+    @apply rounded-full;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-carousel-next-orientation-horizontal {
+    @apply top-1/2 -end-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)];
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-carousel-next-orientation-vertical {
+    @apply -bottom-12 left-1/2 -translate-x-1/2 rotate-90;
+  }
+}

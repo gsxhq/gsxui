@@ -48,16 +48,16 @@ func TestSheetContentSideAxis(t *testing.T) {
 // reuse Dialog's, so this is its own chrome, not a narrowing of
 // dialogContentClass.
 func sheetContentClass(side string) string {
-	const base = "m-0 flex-col gap-4 shadow-lg transition ease-in-out max-h-none bg-background text-foreground fixed z-50 text-sm duration-200 outline-none data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-[var(--overlay)] backdrop:backdrop-blur-xs backdrop:duration-200 data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 open:flex"
+	const base = "backdrop:bg-black/10 supports-backdrop-filter:backdrop:backdrop-blur-xs bg-popover text-popover-foreground fixed z-50 flex flex-col gap-4 bg-clip-padding text-sm shadow-lg transition duration-200 ease-in-out m-0 max-h-none outline-none data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:backdrop-blur-xs backdrop:duration-200 data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 open:flex"
 	switch side {
 	case "right":
-		return base + " inset-y-0 right-0 left-auto h-full w-3/4 border-l sm:max-w-sm data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right"
+		return base + " inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm left-auto data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right"
 	case "left":
-		return base + " inset-y-0 left-0 right-auto h-full w-3/4 border-r sm:max-w-sm data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left"
+		return base + " inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm right-auto data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left"
 	case "top":
-		return base + " inset-x-0 top-0 bottom-auto h-auto w-full max-w-none border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top"
+		return base + " inset-x-0 top-0 h-auto border-b bottom-auto w-full max-w-none data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top"
 	case "bottom":
-		return base + " inset-x-0 bottom-0 top-auto h-auto w-full max-w-none border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom"
+		return base + " inset-x-0 bottom-0 h-auto border-t top-auto w-full max-w-none data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom"
 	}
 	panic("unknown sheet side " + side)
 }
@@ -65,7 +65,7 @@ func sheetContentClass(side string) string {
 // sheetCloseButtonClass and sheetCloseIconClass are the resolved classes of
 // the close parts SheetContent injects.
 func sheetCloseButtonClass() string {
-	return "absolute top-3 end-3 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
+	return "absolute top-3 right-3"
 }
 
 func sheetCloseIconClass() string { return "size-4" }

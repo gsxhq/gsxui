@@ -1,0 +1,29 @@
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-vega.css, Input OTP lines 681-700. Ported by
+   internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
+   onto gsxui's shape-declared classes. */
+@layer components {
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-input-otp {
+    @apply gap-2 flex;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-input-otp-input {
+    @apply cursor-text disabled:cursor-not-allowed;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-input-otp-group {
+    @apply has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 has-aria-invalid:border-destructive rounded-md has-aria-invalid:ring-3 flex;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-input-otp-slot {
+    @apply dark:bg-input/30 border-input data-[active=true]:border-ring data-[active=true]:ring-ring/50 data-[active=true]:aria-invalid:ring-destructive/20 dark:data-[active=true]:aria-invalid:ring-destructive/40 aria-invalid:border-destructive data-[active=true]:aria-invalid:border-destructive size-9 border-y border-r text-sm shadow-xs transition-all outline-none first:rounded-l-md first:border-l last:rounded-r-md data-[active=true]:ring-3 flex;
+  }
+
+  .gsxui-recipe-input-otp-separator {
+    @apply [&_svg:not([class*='size-'])]:size-4;
+  }
+}

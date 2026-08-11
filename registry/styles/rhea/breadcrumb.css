@@ -1,0 +1,32 @@
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-rhea.css, Breadcrumb lines 583-606. Ported by
+   internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
+   onto gsxui's shape-declared classes. */
+@layer components {
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-breadcrumb-list {
+    @apply text-muted-foreground gap-1.5 text-sm sm:gap-2.5 flex flex-wrap;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-breadcrumb-item {
+    @apply gap-1.5 inline-flex;
+  }
+
+  .gsxui-recipe-breadcrumb-link {
+    @apply hover:text-foreground transition-colors;
+  }
+
+  .gsxui-recipe-breadcrumb-page {
+    @apply text-foreground font-normal;
+  }
+
+  .gsxui-recipe-breadcrumb-separator {
+    @apply [&>svg]:size-3.5;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-breadcrumb-ellipsis {
+    @apply size-5 [&>svg]:size-4 flex;
+  }
+}

@@ -1,0 +1,24 @@
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-sera.css, Tabs lines 1306-1321. Ported by
+   internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
+   onto gsxui's shape-declared classes. */
+@layer components {
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-tabs {
+    @apply gap-2 flex flex-col;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-tabs-list {
+    @apply p-1 group-data-horizontal/tabs:h-10 inline-flex;
+  }
+
+  /* carried: no upstream counterpart */
+  .gsxui-recipe-tabs-trigger {
+    @apply gap-2 border border-transparent px-4 py-1.5 text-xs font-semibold group-data-vertical/tabs:px-4 group-data-vertical/tabs:py-2 [&_svg:not([class*='size-'])]:size-3.5 has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5 uppercase tracking-wider inline-flex;
+  }
+
+  .gsxui-recipe-tabs-content {
+    @apply text-sm;
+  }
+}

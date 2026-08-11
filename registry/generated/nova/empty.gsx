@@ -7,19 +7,13 @@ import "github.com/gsxhq/gsx"
 // plain styled <div>, the same "package-namespaced compound parts" shape as
 // card/breadcrumb.
 component Empty(children gsx.Node, attrs gsx.Attrs) {
-	<div
-		class={
-			"flex min-w-0 flex-1 flex-col items-center justify-center gap-4 rounded-xl border-dashed p-6 text-center text-balance"
-		}
-		{ attrs... }
-		data-gsxui-slot-empty
-	>
+	<div class={ "gap-4 rounded-xl border-dashed p-6 flex flex-col" } { attrs... } data-gsxui-slot-empty>
 		{ children }
 	</div>
 }
 
 component EmptyHeader(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "flex max-w-sm flex-col items-center gap-2 text-center" } { attrs... } data-gsxui-slot-empty-header>
+	<div class={ "gap-2 flex flex-col" } { attrs... } data-gsxui-slot-empty-header>
 		{ children }
 	</div>
 }
@@ -32,10 +26,10 @@ component EmptyMedia(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-variant={variant |> default("default")}
 		class={
-			"mb-2 flex shrink-0 items-center justify-center [&_svg]:shrink-0 [&_svg]:pointer-events-none",
+			"mb-2 flex",
 			switch variant {
 			case "icon":
-				"size-8 rounded-lg bg-muted text-foreground [&_svg:not([class*='size-'])]:size-4"
+				"bg-muted text-foreground flex size-8 shrink-0 items-center justify-center rounded-lg [&_svg:not([class*='size-'])]:size-4"
 			default:
 				"bg-transparent"
 			}
@@ -59,21 +53,13 @@ component EmptyTitle(children gsx.Node, attrs gsx.Attrs) {
 // for Kbd/KbdGroup (see docs/jsx-parity.md ## kbd); ported verbatim, tag
 // included, per the token-for-token rule.
 component EmptyDescription(children gsx.Node, attrs gsx.Attrs) {
-	<div
-		class={ "text-sm/relaxed text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary" }
-		{ attrs... }
-		data-gsxui-slot-empty-description
-	>
+	<div class={ "text-sm/relaxed" } { attrs... } data-gsxui-slot-empty-description>
 		{ children }
 	</div>
 }
 
 component EmptyContent(children gsx.Node, attrs gsx.Attrs) {
-	<div
-		class={ "flex w-full max-w-sm min-w-0 flex-col items-center gap-2.5 text-sm text-balance" }
-		{ attrs... }
-		data-gsxui-slot-empty-content
-	>
+	<div class={ "gap-2.5 text-sm flex flex-col" } { attrs... } data-gsxui-slot-empty-content>
 		{ children }
 	</div>
 }

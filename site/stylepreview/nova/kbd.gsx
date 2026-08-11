@@ -10,7 +10,7 @@ import "github.com/gsxhq/gsx"
 component Kbd(children gsx.Node, attrs gsx.Attrs) {
 	<kbd
 		class={
-			"pointer-events-none inline-flex h-5 w-fit min-w-5 items-center justify-center gap-1 rounded-sm bg-muted px-1 font-sans text-xs font-medium text-muted-foreground select-none [&_svg:not([class*='size-'])]:size-3 [[data-gsxui-slot-tooltip-content]_&]:bg-background/20 [[data-gsxui-slot-tooltip-content]_&]:text-background [[data-gsxui-slot-tooltip-content]_&]:rounded-sm [.dark_[data-gsxui-slot-tooltip-content]_&]:bg-background/10"
+			"bg-muted text-muted-foreground [[data-gsxui-slot-tooltip-content]_&]:bg-background/20 [[data-gsxui-slot-tooltip-content]_&]:text-background dark:[[data-gsxui-slot-tooltip-content]_&]:bg-background/10 h-5 w-fit min-w-5 gap-1 rounded-sm px-1 font-sans text-xs font-medium [&_svg:not([class*='size-'])]:size-3 inline-flex"
 		}
 		{ attrs... }
 		data-gsxui-slot-kbd
@@ -24,7 +24,7 @@ component Kbd(children gsx.Node, attrs gsx.Attrs) {
 // a <kbd> element (registry/new-york-v4/ui/kbd.tsx, verified) — ported
 // verbatim, tag included (see docs/jsx-parity.md).
 component KbdGroup(children gsx.Node, attrs gsx.Attrs) {
-	<kbd class={ "inline-flex items-center gap-1" } { attrs... } data-gsxui-slot-kbd-group>
+	<kbd class={ "gap-1 inline-flex" } { attrs... } data-gsxui-slot-kbd-group>
 		{ children }
 	</kbd>
 }

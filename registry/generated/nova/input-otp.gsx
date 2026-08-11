@@ -106,7 +106,7 @@ import (
 // instead of through InputOTP's root.
 component InputOTP(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "flex items-center gap-2 has-[[data-gsxui-slot-input-otp-input]:disabled]:opacity-50" }
+		class={ "gap-2 flex" }
 		dir="ltr"
 		data-gsxui-slot-input-otp
 	>
@@ -142,7 +142,7 @@ component InputOTP(children gsx.Node, attrs gsx.Attrs) {
 component InputOTPGroup(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"flex items-center rounded-lg has-[[aria-invalid=true]]:border-destructive has-[[aria-invalid=true]]:ring-3 has-[[aria-invalid=true]]:ring-destructive/20 dark:has-[[aria-invalid=true]]:ring-destructive/40"
+			"has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 has-aria-invalid:border-destructive rounded-lg has-aria-invalid:ring-3 flex"
 		}
 		dir="ltr"
 		{ attrs... }
@@ -160,7 +160,7 @@ component InputOTPSlot(attrs gsx.Attrs) {
 	<div
 		data-active="false"
 		class={
-			"relative flex size-8 items-center justify-center border-y border-e border-input text-sm transition-all outline-none first:rounded-s-lg first:border-s last:rounded-e-lg aria-invalid:border-destructive data-[active=true]:z-10 data-[active=true]:border-ring data-[active=true]:ring-3 data-[active=true]:ring-ring/50 data-[active=true]:aria-invalid:border-destructive data-[active=true]:aria-invalid:ring-destructive/20 dark:bg-input/30 dark:data-[active=true]:aria-invalid:ring-destructive/40"
+			"dark:bg-input/30 border-input data-[active=true]:border-ring data-[active=true]:ring-ring/50 data-[active=true]:aria-invalid:ring-destructive/20 dark:data-[active=true]:aria-invalid:ring-destructive/40 aria-invalid:border-destructive data-[active=true]:aria-invalid:border-destructive size-8 border-y border-r text-sm transition-all outline-none first:rounded-l-lg first:border-l last:rounded-r-lg data-[active=true]:ring-3 flex"
 		}
 		{ attrs... }
 		data-gsxui-slot-input-otp-slot

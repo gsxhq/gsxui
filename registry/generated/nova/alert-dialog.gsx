@@ -28,7 +28,9 @@ component AlertDialogTrigger(children gsx.Node, attrs gsx.Attrs) {
 
 component AlertDialogContent(children gsx.Node, attrs gsx.Attrs) {
 	<DialogContent
-		class={ "max-w-xs sm:max-w-sm" }
+		class={
+			"data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 bg-popover text-popover-foreground ring-foreground/10 gap-4 rounded-xl p-4 ring-1 duration-100 data-[size=default]:max-w-xs data-[size=sm]:max-w-xs data-[size=default]:sm:max-w-sm"
+		}
 		hideCloseButton={true}
 		role="alertdialog"
 		data-gsxui-dialog-static
@@ -41,7 +43,9 @@ component AlertDialogContent(children gsx.Node, attrs gsx.Attrs) {
 
 component AlertDialogHeader(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center" }
+		class={
+			"grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center sm:group-data-[size=default]/alert-dialog-content:place-items-start sm:group-data-[size=default]/alert-dialog-content:text-left"
+		}
 		{ attrs... }
 		data-gsxui-slot-alert-dialog-header
 	>
@@ -51,7 +55,7 @@ component AlertDialogHeader(children gsx.Node, attrs gsx.Attrs) {
 
 component AlertDialogFooter(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "-mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4 sm:flex-row sm:justify-end" }
+		class={ "bg-muted/50 -mx-4 -mb-4 rounded-b-xl border-t p-4 flex flex-col-reverse" }
 		{ attrs... }
 		data-gsxui-slot-alert-dialog-footer
 	>
@@ -67,7 +71,9 @@ component AlertDialogTitle(children gsx.Node, attrs gsx.Attrs) {
 
 component AlertDialogDescription(children gsx.Node, attrs gsx.Attrs) {
 	<p
-		class={ "text-sm text-muted-foreground" }
+		class={
+			"text-muted-foreground *:[a]:hover:text-foreground text-sm text-balance md:text-pretty *:[a]:underline *:[a]:underline-offset-3"
+		}
 		{ attrs... }
 		data-gsxui-slot-alert-dialog-description
 		data-gsxui-slot-dialog-description

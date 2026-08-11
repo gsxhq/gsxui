@@ -2,6 +2,7 @@ package port
 
 import (
 	"regexp"
+	"slices"
 	"sort"
 	"strings"
 
@@ -87,6 +88,27 @@ func StyleInvariant(component string) bool {
 	return styleInvariantComponents[component]
 }
 
+// missingSectionAllowed declares (component, style) pairs where upstream's
+// style-<name>.css genuinely has no MARK section at all for component —
+// unlike styleInvariantComponents (no section in ANY of the 8 styles),
+// these are per-style holes: confirmed by grep across all 8 style files,
+// Carousel has a real, distinct MARK section in vega/nova/maia/mira/luma/
+// rhea but none in lyra or sera. Run treats a declared pair exactly like a
+// StyleInvariant component for that one style: the section is empty, and
+// Transform's existing fallback policy carries the whole recipe from nova.
+// Every OTHER (component, style) pair with no section is still the hard
+// error it always was — this table is for confirmed upstream omissions,
+// not a way to silence a real mapping-table gap.
+var missingSectionAllowed = map[string]map[string]bool{
+	"carousel": {"lyra": true, "sera": true},
+}
+
+// missingSectionExpected reports whether upstream is known to omit
+// component's MARK section entirely under style.
+func missingSectionExpected(component, style string) bool {
+	return missingSectionAllowed[component][style]
+}
+
 // slotOverride is a declared exception to the default class→slot
 // derivation: either a fixed target slot (ok=true) or an explicit "this
 // upstream class has no gsxui slot" (ok=false). Either way it is a REVIEWED
@@ -105,11 +127,20 @@ func StyleInvariant(component string) bool {
 // `bg-black/80` to the dialog BOX itself, not its backdrop — visibly wrong,
 // and (for alert-dialog specifically, see below) also a real Tailwind
 // conflict once merged against the box's own background utility.
+// variants generalizes variant to MORE than one inserted prefix: Slider's
+// thumb/track need their one upstream rule fused onto root under BOTH
+// vendor pseudo-elements (`[&::-webkit-slider-thumb]:`/
+// `[&::-moz-range-thumb]:`), not just one, since the two browser engines
+// never share a selector. When set, it wins over variant entirely (Transform
+// emits the rule's utilities once per entry in variants, never additionally
+// under the singular variant field) — the two are never both set on the
+// same entry.
 type slotOverride struct {
-	slot    string
-	ok      bool
-	variant string
-	extra   []string
+	slot     string
+	ok       bool
+	variant  string
+	variants []string
+	extra    []string
 }
 
 // slotOverrides holds per-component exceptions to the default class→slot
@@ -277,15 +308,26 @@ var slotOverrides = map[string]map[string]slotOverride{
 	// Slider's upstream Radix implementation renders track/range/thumb as
 	// real child <div>s; gsxui's Slider (registry/canonical/shapes/slider.go)
 	// is a single native <input type=range> styled entirely through
-	// vendor-prefixed pseudo-element selectors on its own root rule
-	// (nova/slider.css's `[&::-webkit-slider-thumb]:`/`[&::-moz-range-thumb]:`
-	// arbitrary variants) — there are no track/range/thumb DOM nodes at all
-	// to receive a separate rule. A permanent structural difference, not a
-	// naming gap.
+	// vendor-prefixed pseudo-element selectors on its own root rule — its own
+	// doc comment names the exact mechanism: "[&::-webkit-slider-thumb]:/
+	// [&::-moz-range-thumb]:" arbitrary variants stacked on the ONE recipe
+	// rule. So track and thumb DO fuse onto root (their utilities are real,
+	// per-style content — this was ok:false, a silent drop, until running the
+	// real port and rendering the real page showed Slider's whole chrome
+	// (thumb, track) missing entirely). Each fuses under BOTH engines'
+	// pseudo-elements via the plural `variants` field. range has no
+	// gsxui counterpart: the native input's own track fill has no separate
+	// paintable layer to receive it (confirmed empty of anything but
+	// `bg-primary`, which the browser's own range-input styling model has no
+	// slot for at all), so it alone stays a silent non-mapping.
 	"slider": {
-		"cn-slider-track": {ok: false},
+		"cn-slider-track": {slot: "", ok: true, variants: []string{
+			"[&::-webkit-slider-runnable-track]", "[&::-moz-range-track]",
+		}},
 		"cn-slider-range": {ok: false},
-		"cn-slider-thumb": {ok: false},
+		"cn-slider-thumb": {slot: "", ok: true, variants: []string{
+			"[&::-webkit-slider-thumb]", "[&::-moz-range-thumb]",
+		}},
 	},
 	// cn-progress-track duplicates cn-progress's own bare utilities verbatim
 	// (both "bg-muted h-3 rounded-4xl") — upstream ships two DOM strategies
@@ -409,6 +451,7 @@ var slotOverrides = map[string]map[string]slotOverride{
 	"input-group": {
 		"cn-input-group-button":              {ok: false},
 		"cn-input-group-button-size-xs":      {ok: false},
+		"cn-input-group-button-size-sm":      {ok: false}, // lyra/mira only add this size; same escape hatch as its xs/icon-* siblings.
 		"cn-input-group-button-size-icon-xs": {ok: false},
 		"cn-input-group-button-size-icon-sm": {ok: false},
 		"cn-input-group-input":               {ok: false},
@@ -635,6 +678,19 @@ var slotAttributeDrops = map[string][]string{
 	"combobox":     {"data-[slot=combobox-chip]"}, // prefix: also matches combobox-chip-remove
 	"field":        {"data-[slot=checkbox-group]", "[data-slot=checkbox-group]", "[data-slot=radio-group]"},
 	"button-group": {"[data-slot=button-group]", "[data-slot=select-trigger]", "[data-slot]"},
+	// The other half of the identical ButtonGroup-corner-rounding feature
+	// above, from Button's own side this time (in-data-[slot=button-group]:
+	// on button-size-xs/sm/icon-xs/icon-sm, confirmed against upstream
+	// style-nova.css) — translating it would introduce a BRAND NEW variant
+	// shape ([[data-gsxui-slot-button-group]_&]:) onto Button's recipe that
+	// internal/stylegen/generate.go's web/site-button.css fallback
+	// generator has never needed to express (it hard-errors: "has no
+	// site-fallback selector form"). Consistent with the button-group drop
+	// above: this whole feature lives in assets/css/styles/default.css's
+	// own @layer utilities escape hatch, deliberately outside BOTH
+	// components' own recipes, for the identical caller-override
+	// specificity reason nova/button-group.css's header already documents.
+	"button": {"in-data-[slot=button-group]"},
 }
 
 func slotAttributeDropped(component, token string) bool {
@@ -646,22 +702,39 @@ func slotAttributeDropped(component, token string) bool {
 	return false
 }
 
-// Regexes for the three Tailwind shorthand forms that stack a bare
+// Regexes for the four Tailwind shorthand forms that stack a bare
 // data-[slot=<x>] bracket directly onto a relational combinator keyword —
 // distinct from Rule 3's **:/*: prefix forms (variant.go's KindSlot), which
 // this file's Transform caller never routes through
 // rewriteSlotAttributeReferences at all (Classify sees them first). These
-// three are the shapes dossier §5.4 didn't anticipate: upstream also reaches
-// for a slot from an ANCESTOR (in-), a DESCENDANT existence check (has-), or
-// a NAMED ancestor group's descendant existence check (group-has-.../name),
+// four are the shapes dossier §5.4 didn't anticipate: upstream also reaches
+// for a slot from an ANCESTOR (in-), a DESCENDANT existence check (has-), a
+// NAMED ancestor group's descendant existence check (group-has-.../name), or
+// a PRECEDING SIBLING check (peer-, confirmed against style-sera.css's
+// FieldLabel styling itself off its peer Checkbox/Radio/Switch control) —
 // none of which name the styled element itself the way **:/*: do.
 var (
 	inSlotVariant       = regexp.MustCompile(`^in-data-\[slot=([a-zA-Z0-9-]+)\]$`)
 	hasSlotVariant      = regexp.MustCompile(`^has-data-\[slot=([a-zA-Z0-9-]+)\]$`)
 	groupHasSlotVariant = regexp.MustCompile(`^group-has-data-\[slot=([a-zA-Z0-9-]+)\]/(.+)$`)
+	peerSlotVariant     = regexp.MustCompile(`^peer-data-\[slot=([a-zA-Z0-9-]+)\]$`)
+	bareSlotSegment     = regexp.MustCompile(`^data-\[slot=([a-zA-Z0-9-]+)\]$`)
 	bracketSlotValue    = regexp.MustCompile(`\[data-slot=([a-zA-Z0-9-]+)\]`)
 	bracketBareSlotPair = regexp.MustCompile(`\[data-slot\](\[[^\]]+\])`)
 )
+
+// slotMarkerAliases declares upstream slot VALUES that name a gsxui
+// component differently than resolveSlotMarker's bare-root/longest-prefix
+// search would ever derive on its own — reviewed one at a time, the same as
+// every other mapping-table entry. "radio-group-item" is upstream's own
+// name for the single control gsxui's Radio shape already IS in full
+// (registry/canonical/shapes/radio.go: one root slot, no sub-slots at all,
+// the identical "Radio Group" MARK-name override sectionComponentOverrides
+// already declares for the exact same upstream/gsxui naming gap) — not a
+// sub-slot reference, so the longest-prefix search would never find it.
+var slotMarkerAliases = map[string]string{
+	"radio-group-item": "radio",
+}
 
 // resolveSlotMarker resolves an upstream data-slot VALUE (e.g.
 // "item-description", "input-group-control", "combobox-content", or a bare
@@ -673,6 +746,9 @@ var (
 // slot existence instead of dimension-value existence. ok is false when
 // nothing in the registry matches at all.
 func resolveSlotMarker(allShapes map[string]recipe.Shape, upstreamValue string) (marker string, ok bool) {
+	if alias, aliased := slotMarkerAliases[upstreamValue]; aliased {
+		upstreamValue = alias
+	}
 	if _, exists := allShapes[upstreamValue]; exists {
 		return upstreamValue, true
 	}
@@ -759,6 +835,33 @@ func rewriteSlotAttributeReferences(allShapes map[string]recipe.Shape, token str
 				ok = false
 			}
 			continue
+		case peerSlotVariant.MatchString(segment):
+			m := peerSlotVariant.FindStringSubmatch(segment)
+			if marker, resolved := resolveSlotMarker(allShapes, m[1]); resolved {
+				segments[i] = "peer-[[data-gsxui-slot-" + marker + "]]"
+			} else {
+				ok = false
+			}
+			continue
+		// A bare data-[slot=x] segment stacked ANYWHERE but the leading
+		// */** position (index 1 right after segments[0]=="*"/"**") is
+		// Rule 3's own **:/*: shorthand form STACKED behind some other
+		// variant Classify never sees on its own (confirmed against
+		// style-mira.css's has-[>[data-variant=outline]]:*:data-[slot=
+		// input-group]:border-border — has-[...]: stays untouched here,
+		// only the data-[slot=x] segment resolves). The excluded position
+		// is deliberately left alone: variant.go's Classify already owns
+		// that exact shape (KindSlot) with its own Child/descendant
+		// decomposition, and rewriting it here first would hide the
+		// leading */** combinator from Classify entirely.
+		case bareSlotSegment.MatchString(segment) && !(i == 1 && (segments[0] == "*" || segments[0] == "**")):
+			m := bareSlotSegment.FindStringSubmatch(segment)
+			if marker, resolved := resolveSlotMarker(allShapes, m[1]); resolved {
+				segments[i] = "[data-gsxui-slot-" + marker + "]"
+			} else {
+				ok = false
+			}
+			continue
 		}
 
 		if !strings.Contains(segment, "[data-slot") {
@@ -814,6 +917,56 @@ var noScrollbarExpansion = []string{"[scrollbar-width:none]", "[&::-webkit-scrol
 // already provides another way.
 func stripImportantModifier(token string) string {
 	return strings.TrimSuffix(token, "!")
+}
+
+// openClosedMarkerRewrites translates upstream's bare data-open/data-closed
+// boolean presence variants into gsxui's own valued data-[state=open]/
+// data-[state=closed] form — confirmed, not assumed: every ui/*.js behavior
+// module that drives an enter/exit animation (dialog.js, dropdown-menu.js,
+// combobox.js, and by the same convention popover.js/tooltip.js/select.js/
+// et al.) stamps `element.dataset.state = "open"|"closed"`, never a bare
+// `data-open`/`data-closed` attribute — grepped across every ui/*.js file,
+// zero hits for either. Left untranslated, `data-open:animate-in` compiles
+// to the CSS attribute selector `[data-open]`, which gsxui's real DOM can
+// never carry, so the enter/exit animation silently never fires: confirmed
+// by the actual regression (jstest's own dialog/sheet/drawer/accordion
+// specs — computed animationName "none" instead of containing "enter", the
+// accordion chevron's rotate landing at its resting 0deg/"none" instead of
+// 180deg when open) once nova's real content ran through the full suite for
+// the first time. This is the SAME "bare data-*: doesn't reliably resolve
+// against this repo's DOM the way the explicit [data-x=y]: form does"
+// finding markerRewrites already established for Sidebar's data-active/
+// data-show-on-hover — just universal instead of one component's markers,
+// because data-state is gsxui's OWN established open/closed convention
+// everywhere, not a per-component choice. Every OTHER bare boolean variant
+// (data-selected, data-highlighted, data-disabled, data-checked, ...)
+// passes through unmodified, same as markerRewrites's own documented
+// default — those genuinely are bare presence attributes in gsxui's real
+// DOM, confirmed by the same grep finding plain `dataset.selected = true`-
+// shaped assignments (not `.state =`) wherever they're used.
+var openClosedMarkerRewrites = map[string]string{
+	"data-open":   "data-[state=open]",
+	"data-closed": "data-[state=closed]",
+}
+
+// rewriteOpenClosedMarker applies openClosedMarkerRewrites to every stacked
+// segment of token (not just the leading one: group-data-open:-shaped
+// compounds never occur in practice today, but a mid-stack data-open would
+// need the same substitution if one ever appeared, and checking every
+// segment costs nothing when most tokens have only one or two).
+func rewriteOpenClosedMarker(token string) string {
+	segments := splitVariants(token)
+	changed := false
+	for i, segment := range segments {
+		if rewritten, ok := openClosedMarkerRewrites[segment]; ok {
+			segments[i] = rewritten
+			changed = true
+		}
+	}
+	if !changed {
+		return token
+	}
+	return strings.Join(segments, ":")
 }
 
 // nativeVisibilityGate lists (component, slot) pairs whose upstream style
@@ -918,6 +1071,137 @@ func gateNativeVisibility(component, slot, dimension, utility string) string {
 	return gate + ":" + utility
 }
 
+// structuralGapSlots declares (component, slot) pairs where upstream's
+// style-<name>.css is confirmed, by direct inspection of all 8 style files,
+// to omit SOME of the slot's necessary presentation for every single one of
+// them — content baked into the shared component's own TSX rather than any
+// style file. carryMissingDisplayUtility (transform.go) already generalizes
+// the common case (a missing flex/grid/... display keyword); this table is
+// for the rest, found by running the real port through the full test suite
+// end to end: Accordion's trigger-icon needs BOTH transition-transform (to
+// animate the flip) and the ancestor-scoped, native-<details>-[open]-gated
+// rotate-180 (the flip itself) — neither is a display keyword, and neither
+// ever appears in any of the 8 upstream style files' Accordion section for
+// this slot (upstream supplies only text-muted-foreground/ml-auto/size-4
+// for it, via the **:data-[slot=accordion-trigger-icon]: decomposition on
+// cn-accordion-trigger). Confirmed by the real regression this surfaced:
+// jstest's own "Tooltip Kbd relationship and Accordion native open
+// mechanics compute" spec measured the chevron's computed rotate stuck at
+// its resting value instead of 180deg once nova's real content ran through
+// the suite for the first time.
+var structuralGapSlots = map[string]map[string]bool{
+	"accordion": {"trigger-icon": true},
+	// Drawer/Sheet's content slot needs its own data-[state=open]:animate-in/
+	// data-[state=closed]:animate-out (plus the matching ::backdrop pair) the
+	// same way Dialog's does — confirmed missing from BOTH upstream sections
+	// directly: cn-drawer-content is architecturally a different library
+	// entirely (vaul's own data-vaul-drawer-direction/data-swipe-direction
+	// attributes, nothing gsxui's native-<dialog> Drawer implements at all),
+	// and cn-sheet-content, while Radix-shaped like gsxui's own, simply never
+	// repeats the animate-in/out pair Dialog's own section does. Both need
+	// it: without it the native <dialog> still opens/closes correctly (the
+	// position/size utilities upstream DOES supply are real and kept), it
+	// just does so with no enter/exit transition at all — confirmed by the
+	// real regression (jstest's own directional-overlay spec measured
+	// computed animationName "none" instead of containing "enter").
+	"drawer": {"content": true},
+	// Sheet's own per-side dimension values (content-side-{top,right,bottom,
+	// left}) are where its missing piece actually lives, not the base
+	// content rule: upstream's cn-sheet-content carries the animate-in/out
+	// pair (checked above), but NONE of the four per-side upstream rules
+	// (cn-sheet-content, filtered through the "side" dimension) repeat the
+	// data-[state=open]:slide-in-from-<side>/data-[state=closed]:slide-out-
+	// to-<side> pair nova's original hand-authored version had per side —
+	// confirmed missing directly from style-nova.css's own Sheet section.
+	// carryStructuralGapValue (transform.go) is what actually reaches these;
+	// this same "sheet"/"content" entry drives both the base and per-value
+	// carry, since structuralGapSlots names the SLOT, not which of its rules
+	// has the gap.
+	"sheet": {"content": true},
+	// Toast's root: upstream's cn-toast is JUST "rounded-2xl" — confirmed
+	// directly, every other utility nova's own hand-authored version had
+	// (w-[356px], the border/background/shadow/typography, the
+	// transition) is entirely absent from style-nova.css, because upstream
+	// itself renders Toast through the third-party "sonner" library, whose
+	// own bundled CSS supplies all of that outside any style file. gsxui's
+	// simpler native Toast has no such external stylesheet to lean on, so
+	// nova's original chrome is carried back in wholesale (matching
+	// carryMissingDisplayUtility's own established precedent, just for a
+	// slot missing far more than one keyword).
+	"toast": {"": true},
+}
+
+// carryStructuralGap carries every one of fallback's utilities for
+// (component, slot) that Transform's own output doesn't already have, for
+// slots structuralGapSlots declares — unlike carryMissingDisplayUtility,
+// there is no keyword filter: whatever nova adds beyond upstream's own
+// contribution for a declared slot is, by construction, exactly the
+// confirmed-missing structural piece.
+// A candidate is skipped, not just deduplicated, when merge.Merge itself
+// says it conflicts with what the slot already has — confirmed necessary,
+// not merely careful, by style-sera's own accordion-trigger-icon: upstream
+// gives it its own "size-3.5" (sera's own, smaller icon scale), and nova's
+// "size-4" is a real same-property conflict, not a harmless repeat;
+// resolveMergeOrder's later dedupe/reorder pass only fixes ORDER, never a
+// genuine two-different-values conflict like this one.
+func (p *Ported) carryStructuralGap(component, slot, class string, fallback recipe.Style) {
+	if !structuralGapSlots[component][slot] {
+		return
+	}
+	rule, ok := fallback.Lookup(class)
+	if !ok {
+		return
+	}
+	have := make(map[string]bool, len(p.Base[slot]))
+	for _, u := range p.Base[slot] {
+		have[u] = true
+	}
+	for _, u := range rule.Utilities {
+		if have[u] {
+			continue
+		}
+		candidate := append(slices.Clone(p.Base[slot]), u)
+		if !mergesCleanly(candidate) {
+			continue
+		}
+		p.Base[slot] = candidate
+		have[u] = true
+		p.Carried[class] = true
+	}
+}
+
+// carryStructuralGapValue is carryStructuralGap's exact counterpart for a
+// (slot, dimension, value) rule instead of a slot's base rule — Sheet's own
+// confirmed gap (see the "sheet" structuralGapSlots entry) is per side, not
+// on the base content rule at all.
+func (p *Ported) carryStructuralGapValue(component, slot, dimension, value, class string, fallback recipe.Style) {
+	if !structuralGapSlots[component][slot] {
+		return
+	}
+	rule, ok := fallback.Lookup(class)
+	if !ok {
+		return
+	}
+	current := p.Values[slot][dimension][value]
+	have := make(map[string]bool, len(current))
+	for _, u := range current {
+		have[u] = true
+	}
+	for _, u := range rule.Utilities {
+		if have[u] {
+			continue
+		}
+		candidate := append(slices.Clone(current), u)
+		if !mergesCleanly(candidate) {
+			continue
+		}
+		current = candidate
+		have[u] = true
+		p.Carried[class] = true
+	}
+	p.setValue(slot, dimension, value, current)
+}
+
 // upstreamPrefix returns the upstream cn-* class prefix (without "cn-") a
 // gsxui component's own rules appear under. Every component shares its name
 // with the upstream prefix except radio, whose section is "Radio Group" (see
@@ -965,6 +1249,20 @@ func overrideVariant(component, class string) string {
 		return ""
 	}
 	return override.variant
+}
+
+// overrideVariants returns every variant prefix Transform must fuse the
+// rule's utilities under, one whole pass of the token loop per entry — the
+// declared override's variants when set (Slider's thumb/track, fused under
+// both vendor pseudo-elements), else a single-element slice wrapping the
+// singular variant field (possibly ""), so callers never special-case the
+// zero/one/many cases separately.
+func overrideVariants(component, class string) []string {
+	override, matched := matchedOverride(component, class)
+	if !matched || !override.ok || len(override.variants) == 0 {
+		return []string{overrideVariant(component, class)}
+	}
+	return override.variants
 }
 
 // overrideExtra returns extra utilities a declared slotOverride wants

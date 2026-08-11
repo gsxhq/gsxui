@@ -128,73 +128,98 @@ func Transform(shape recipe.Shape, sec Section, fallback recipe.Style) (Ported, 
 			}
 		}
 
-		variant := overrideVariant(shape.Component, effectiveClass)
-		for _, token := range rule.Utilities {
-			token = stripImportantModifier(token)
-			if token == noScrollbarUtility {
-				for _, u := range noScrollbarExpansion {
-					put(u)
-				}
-				continue
-			}
-			token = rewriteMarkerVariant(shape.Component, token)
-			if slotAttributeDropped(shape.Component, token) {
-				continue
-			}
-			rewritten, resolvedSlots := rewriteSlotAttributeReferences(allShapes, token)
-			if !resolvedSlots {
-				unmapped = append(unmapped, fmt.Sprintf("%s: %s", rule.Class, token))
-				continue
-			}
-			token = rewritten
-			if variant != "" {
-				token = insertVariant(token, variant)
-			}
-			classified := Classify(token)
-			switch classified.Kind {
-			case KindSlot:
-				targetSlot, ok := SlotFor(shape.Component, "cn-"+classified.Slot)
-				if ok {
-					if _, hasTarget := shape.Slot(targetSlot); !hasTarget {
-						ok = false
-					}
-				}
-				if ok {
-					if dimension == "" && targetSlot != slot {
-						ported.appendBase(targetSlot, classified.Rest)
-					} else {
-						put(descendantSelector(shape.Component, targetSlot, classified.Child) + ":" + classified.Rest)
+		// Almost every override fuses under exactly one variant (or none);
+		// overrideVariants always returns a slice so this loop never needs a
+		// separate single/plural case. A rule with a genuinely plural
+		// override (Slider's thumb/track, fused under both vendor
+		// pseudo-elements — see mapping.go's "slider" slotOverrides entry)
+		// runs the WHOLE token pass once per variant, accumulating into the
+		// same target via put; unmapped reporting only fires on the first
+		// pass so a token that fails to resolve is never reported twice.
+		for variantIndex, variant := range overrideVariants(shape.Component, effectiveClass) {
+			for _, token := range rule.Utilities {
+				token = stripImportantModifier(token)
+				token = rewriteOpenClosedMarker(token)
+				if token == noScrollbarUtility {
+					if variantIndex == 0 {
+						for _, u := range noScrollbarExpansion {
+							put(u)
+						}
 					}
 					continue
 				}
-				// classified.Slot may not be a sub-slot of THIS component at
-				// all: it may instead be the ROOT of an entirely DIFFERENT
-				// gsxui component nested inside this one (Tooltip reaching
-				// into a rendered Kbd, Combobox reaching into a rendered
-				// InputGroup). That relationship is always conditional on
-				// this specific composition — it must never become the
-				// OTHER component's own unconditional rule (every Kbd
-				// everywhere would get Tooltip's treatment) — so it always
-				// rewrites as a descendant-selector utility kept on the
-				// SOURCE'S own rule, using the OTHER component's bare name
-				// as the marker (no sub-slot: it's that component's root).
-				if _, isOtherComponent := allShapes[classified.Slot]; isOtherComponent {
-					put(descendantSelector(classified.Slot, "", classified.Child) + ":" + classified.Rest)
+				token = rewriteMarkerVariant(shape.Component, token)
+				if slotAttributeDropped(shape.Component, token) {
 					continue
 				}
-				unmapped = append(unmapped, fmt.Sprintf("%s: %s", rule.Class, token))
-
-			case KindDimension:
-				if dimension == "" {
-					if _, hasDimension := slotDecl.Dimension(classified.Dimension); hasDimension {
-						ported.appendValue(slot, classified.Dimension, classified.Value, classified.Rest)
+				rewritten, resolvedSlots := rewriteSlotAttributeReferences(allShapes, token)
+				if !resolvedSlots {
+					if variantIndex == 0 {
+						unmapped = append(unmapped, fmt.Sprintf("%s: %s", rule.Class, token))
+					}
+					continue
+				}
+				token = rewritten
+				if variant != "" {
+					token = insertVariant(token, variant)
+				}
+				classified := Classify(token)
+				switch classified.Kind {
+				case KindSlot:
+					targetSlot, ok := SlotFor(shape.Component, "cn-"+classified.Slot)
+					if ok {
+						if _, hasTarget := shape.Slot(targetSlot); !hasTarget {
+							ok = false
+						}
+					}
+					if ok {
+						if dimension == "" && targetSlot != slot {
+							ported.appendBase(targetSlot, classified.Rest)
+						} else {
+							put(descendantSelector(shape.Component, targetSlot, classified.Child) + ":" + classified.Rest)
+						}
 						continue
 					}
-				}
-				put(classified.Raw)
+					// classified.Slot may not be a sub-slot of THIS component at
+					// all: it may instead be the ROOT of an entirely DIFFERENT
+					// gsxui component nested inside this one (Tooltip reaching
+					// into a rendered Kbd, Combobox reaching into a rendered
+					// InputGroup). That relationship is always conditional on
+					// this specific composition — it must never become the
+					// OTHER component's own unconditional rule (every Kbd
+					// everywhere would get Tooltip's treatment) — so it always
+					// rewrites as a descendant-selector utility kept on the
+					// SOURCE'S own rule, using the OTHER component's bare name
+					// as the marker (no sub-slot: it's that component's root).
+					//
+					// classified.Slot may also name a NAMED SUB-SLOT of that
+					// other component rather than its bare root (Command's
+					// input-wrapper reaching into its composed InputGroup's
+					// "addon" sub-slot as **:data-[slot=input-group-addon]:) —
+					// resolveSlotMarker's longest-match search (the same one
+					// rewriteSlotAttributeReferences uses for the compound
+					// in-/has-/group-has- forms) covers both shapes at once; a
+					// bare other-component root is just the zero-subslot case.
+					if marker, resolved := resolveSlotMarker(allShapes, classified.Slot); resolved {
+						put(descendantSelector(marker, "", classified.Child) + ":" + classified.Rest)
+						continue
+					}
+					if variantIndex == 0 {
+						unmapped = append(unmapped, fmt.Sprintf("%s: %s", rule.Class, token))
+					}
 
-			default: // KindPlain
-				put(gateNativeVisibility(shape.Component, slot, dimension, classified.Raw))
+				case KindDimension:
+					if dimension == "" {
+						if _, hasDimension := slotDecl.Dimension(classified.Dimension); hasDimension {
+							ported.appendValue(slot, classified.Dimension, classified.Value, classified.Rest)
+							continue
+						}
+					}
+					put(classified.Raw)
+
+				default: // KindPlain
+					put(gateNativeVisibility(shape.Component, slot, dimension, classified.Raw))
+				}
 			}
 		}
 
@@ -220,19 +245,21 @@ func Transform(shape recipe.Shape, sec Section, fallback recipe.Style) (Ported, 
 				}
 			} else {
 				ported.carryMissingDisplayUtility(slot.Name, class, fallback)
+				ported.carryStructuralGap(shape.Component, slot.Name, class, fallback)
 			}
 		}
 		for _, dimension := range slot.Dimensions {
 			for _, value := range dimension.Values {
-				if len(ported.Values[slot.Name][dimension.Name][value]) > 0 {
-					continue
-				}
 				class := shape.ValueClass(slot.Name, dimension.Name, value)
-				if rule, ok := fallback.Lookup(class); ok {
-					ported.setValue(slot.Name, dimension.Name, value, rule.Utilities)
-					ported.Carried[class] = true
+				if len(ported.Values[slot.Name][dimension.Name][value]) == 0 {
+					if rule, ok := fallback.Lookup(class); ok {
+						ported.setValue(slot.Name, dimension.Name, value, rule.Utilities)
+						ported.Carried[class] = true
+					} else {
+						missing = append(missing, fmt.Sprintf("slot %s dimension %q value %q: no upstream rule and no nova fallback (class %s)", slotLabel(slot.Name), dimension.Name, value, class))
+					}
 				} else {
-					missing = append(missing, fmt.Sprintf("slot %s dimension %q value %q: no upstream rule and no nova fallback (class %s)", slotLabel(slot.Name), dimension.Name, value, class))
+					ported.carryStructuralGapValue(shape.Component, slot.Name, dimension.Name, value, class, fallback)
 				}
 			}
 		}

@@ -87,7 +87,7 @@ component ContextMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 component ContextMenuContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"z-50 max-h-96 min-w-36 origin-top-left overflow-x-hidden overflow-y-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 data-[side=bottom]:starting:[&:popover-open]:-translate-y-2 data-[side=left]:starting:[&:popover-open]:translate-x-2 data-[side=right]:starting:[&:popover-open]:-translate-x-2 data-[side=top]:starting:[&:popover-open]:translate-y-2"
+			"data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 bg-popover text-popover-foreground min-w-36 rounded-lg p-1 shadow-md ring-1 duration-100"
 		}
 		popover="auto"
 		role="menu"
@@ -108,10 +108,10 @@ component ContextMenuContent(children gsx.Node, attrs gsx.Attrs) {
 component ContextMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground",
+			"focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 focus:*:[svg]:text-accent-foreground gap-1.5 rounded-md px-1.5 py-1 text-sm data-inset:pl-7 [&_svg:not([class*='size-'])]:size-4 flex",
 			switch variant {
 			case "destructive":
-				"text-destructive focus:bg-destructive/10 focus:text-destructive dark:focus:bg-destructive/20 [&_svg]:text-destructive"
+				"text-destructive focus:bg-destructive/10 focus:text-destructive *:[svg]:text-destructive"
 			default:
 				"text-foreground"
 			}
@@ -153,7 +153,7 @@ component ContextMenuGroup(children gsx.Node, attrs gsx.Attrs) {
 component ContextMenuCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"relative flex cursor-default items-center gap-1.5 rounded-md py-1 pe-8 ps-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
+			"focus:bg-accent focus:text-accent-foreground gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm data-inset:pl-7 [&_svg:not([class*='size-'])]:size-4 flex"
 		}
 		role="menuitemcheckbox"
 		data-value={value}
@@ -209,7 +209,7 @@ component ContextMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs
 component ContextMenuRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"relative flex cursor-default items-center gap-1.5 rounded-md py-1 pe-8 ps-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
+			"focus:bg-accent focus:text-accent-foreground gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm data-inset:pl-7 [&_svg:not([class*='size-'])]:size-4 flex"
 		}
 		role="menuitemradio"
 		data-value={value}
@@ -243,18 +243,24 @@ component ContextMenuRadioItem(checked bool, value string, children gsx.Node, at
 // the shadcn source, not a copy error (see docs/jsx-parity.md ##
 // context-menu).
 component ContextMenuLabel(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "px-1.5 py-1 text-xs font-medium text-foreground" } { attrs... } data-gsxui-slot-context-menu-label>
+	<div
+		class={ "text-muted-foreground px-1.5 py-1 text-xs font-medium data-inset:pl-7" }
+		{ attrs... }
+		data-gsxui-slot-context-menu-label
+	>
 		{ children }
 	</div>
 }
 
 component ContextMenuSeparator(attrs gsx.Attrs) {
-	<div class={ "-mx-1 my-1 h-px bg-border" } role="separator" { attrs... } data-gsxui-slot-context-menu-separator></div>
+	<div class={ "bg-border -mx-1 my-1 h-px" } role="separator" { attrs... } data-gsxui-slot-context-menu-separator></div>
 }
 
 component ContextMenuShortcut(children gsx.Node, attrs gsx.Attrs) {
 	<span
-		class={ "ms-auto text-xs tracking-widest text-muted-foreground" }
+		class={
+			"text-muted-foreground group-focus/context-menu-item:text-accent-foreground ml-auto text-xs tracking-widest"
+		}
 		{ attrs... }
 		data-gsxui-slot-context-menu-shortcut
 	>
@@ -288,7 +294,7 @@ component ContextMenuSub(children gsx.Node, attrs gsx.Attrs) {
 component ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&>svg:last-child]:ms-auto [&>svg:last-child]:size-4 [&>svg:last-child]:rtl:rotate-180"
+			"focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground gap-1.5 rounded-md px-1.5 py-1 text-sm data-inset:pl-7 [&_svg:not([class*='size-'])]:size-4 flex"
 		}
 		role="menuitem"
 		aria-haspopup="menu"
@@ -320,7 +326,7 @@ component ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 component ContextMenuSubContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"z-50 min-w-[96px] origin-top-left overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg opacity-0 scale-95 transition-[opacity,scale,translate,display,overlay] transition-discrete duration-150 [&:popover-open]:opacity-100 [&:popover-open]:scale-100 starting:[&:popover-open]:opacity-0 starting:[&:popover-open]:scale-95 data-[side=bottom]:starting:[&:popover-open]:-translate-y-2 data-[side=left]:starting:[&:popover-open]:translate-x-2 data-[side=right]:starting:[&:popover-open]:-translate-x-2 data-[side=top]:starting:[&:popover-open]:translate-y-2"
+			"data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 bg-popover text-popover-foreground min-w-32 rounded-lg border p-1 shadow-lg duration-100"
 		}
 		popover="auto"
 		role="menu"

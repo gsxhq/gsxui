@@ -24,16 +24,14 @@ component TableBody(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component TableFooter(children gsx.Node, attrs gsx.Attrs) {
-	<tfoot class={ "border-t bg-muted/50 font-medium" } { attrs... } data-gsxui-slot-table-footer>
+	<tfoot class={ "bg-muted/50 border-t font-medium [&>tr]:last:border-b-0" } { attrs... } data-gsxui-slot-table-footer>
 		{ children }
 	</tfoot>
 }
 
 component TableRow(children gsx.Node, attrs gsx.Attrs) {
 	<tr
-		class={
-			"border-b transition-colors hover:bg-muted/50 has-[[aria-expanded=true]]:bg-muted/50 data-[state=selected]:bg-muted [[data-gsxui-slot-table-body]_&]:last:border-b-0 [[data-gsxui-slot-table-footer]_&]:last:border-b-0"
-		}
+		class={ "hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors" }
 		{ attrs... }
 		data-gsxui-slot-table-row
 	>
@@ -44,7 +42,7 @@ component TableRow(children gsx.Node, attrs gsx.Attrs) {
 component TableHead(children gsx.Node, attrs gsx.Attrs) {
 	<th
 		class={
-			"h-10 px-2 text-start align-middle font-medium whitespace-nowrap text-foreground has-[[role=checkbox]]:pe-0 [&>[role=checkbox]]:translate-y-[2px]"
+			"text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pr-0"
 		}
 		{ attrs... }
 		data-gsxui-slot-table-head
@@ -55,7 +53,7 @@ component TableHead(children gsx.Node, attrs gsx.Attrs) {
 
 component TableCell(children gsx.Node, attrs gsx.Attrs) {
 	<td
-		class={ "p-2 align-middle whitespace-nowrap has-[[role=checkbox]]:pe-0 [&>[role=checkbox]]:translate-y-[2px]" }
+		class={ "p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0" }
 		{ attrs... }
 		data-gsxui-slot-table-cell
 	>
@@ -64,7 +62,7 @@ component TableCell(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component TableCaption(children gsx.Node, attrs gsx.Attrs) {
-	<caption class={ "mt-4 text-sm text-muted-foreground" } { attrs... } data-gsxui-slot-table-caption>
+	<caption class={ "text-muted-foreground mt-4 text-sm" } { attrs... } data-gsxui-slot-table-caption>
 		{ children }
 	</caption>
 }
