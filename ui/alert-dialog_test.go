@@ -19,7 +19,7 @@ import (
 // AlertDialog's own gap-4/rounded-xl/p-4/etc. and size-scoped max-w-xs
 // utilities rather than appending to it.
 func alertDialogContentClass() string {
-	return merge.Merge([]string{dialogContentClass(), "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 bg-popover text-popover-foreground ring-foreground/10 gap-4 rounded-xl p-4 ring-1 duration-100 data-[size=default]:max-w-xs data-[size=sm]:max-w-xs data-[size=default]:sm:max-w-sm"})
+	return merge.Merge([]string{dialogContentClass(), "group/alert-dialog-content", "transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 bg-popover text-popover-foreground ring-foreground/10 gap-4 rounded-xl p-4 ring-1 duration-100 max-w-xs sm:max-w-sm"})
 }
 
 func TestAlertDialogPinnedParts(t *testing.T) {

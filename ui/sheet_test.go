@@ -48,7 +48,7 @@ func TestSheetContentSideAxis(t *testing.T) {
 // reuse Dialog's, so this is its own chrome, not a narrowing of
 // dialogContentClass.
 func sheetContentClass(side string) string {
-	const base = "backdrop:bg-black/10 supports-backdrop-filter:backdrop:backdrop-blur-xs bg-popover text-popover-foreground fixed z-50 flex flex-col gap-4 bg-clip-padding text-sm shadow-lg transition duration-200 ease-in-out m-0 max-h-none outline-none data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:backdrop-blur-xs backdrop:duration-200 data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 open:flex"
+	const base = "backdrop:bg-black/10 supports-backdrop-filter:backdrop:backdrop-blur-xs bg-popover text-popover-foreground fixed z-50 flex flex-col gap-4 bg-clip-padding text-sm shadow-lg transition duration-200 ease-in-out backdrop:transition-none m-0 max-h-none outline-none data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:backdrop-blur-xs backdrop:duration-200 data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 open:flex"
 	switch side {
 	case "right":
 		return base + " inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm left-auto data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right"
@@ -65,7 +65,7 @@ func sheetContentClass(side string) string {
 // sheetCloseButtonClass and sheetCloseIconClass are the resolved classes of
 // the close parts SheetContent injects.
 func sheetCloseButtonClass() string {
-	return "absolute top-3 right-3"
+	return "absolute top-3 end-3"
 }
 
 func sheetCloseIconClass() string { return "size-4" }

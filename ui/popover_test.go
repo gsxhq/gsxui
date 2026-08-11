@@ -13,7 +13,9 @@ func TestPopoverPinned(t *testing.T) {
 		ui.PopoverTrigger(gsx.Raw("Open"), nil),
 		ui.PopoverContent(gsx.Raw("Body"), nil),
 	), nil))
-	want := `<div class="contents" data-gsxui-slot-popover><button type="button" aria-expanded="false" data-gsxui-slot-popover-trigger>Open</button><div popover="auto" data-state="closed" data-side="bottom" tabindex="-1" class="bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 [&amp;:popover-open]:flex flex-col gap-2.5 rounded-lg p-2.5 text-sm shadow-md ring-1 duration-100" data-gsxui-slot-popover-content>Body</div></div>`
+	// transition-none suppresses an implicit transition:all — see the
+	// style-porter report's "duration-N alone" entry.
+	want := `<div class="contents" data-gsxui-slot-popover><button type="button" aria-expanded="false" data-gsxui-slot-popover-trigger>Open</button><div popover="auto" data-state="closed" data-side="bottom" tabindex="-1" class="transition-none bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 [&amp;:popover-open]:flex flex-col gap-2.5 rounded-lg p-2.5 text-sm shadow-md ring-1 duration-100" data-gsxui-slot-popover-content>Body</div></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
