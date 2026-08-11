@@ -18,6 +18,7 @@ import {
   loadShareFromURL,
   manualCopyState,
   previewBaseColor,
+  previewChartColor,
   previewPreset,
   previewRadius,
   previewTheme,
@@ -26,6 +27,7 @@ import {
   replacePreset,
   resetThemeState,
   selectBaseColor,
+  selectChartColor,
   selectMenuAccent,
   selectMode,
   selectRadius,
@@ -34,6 +36,17 @@ import {
   themeCSS,
   undoHistory,
 } from "./theme-state.js";
+
+// Shared fixtures: the "neutral" base color/chart color baseline, reused
+// across defaults, resolved, and chartColors below so every fixture that
+// is supposed to start out matching "neutral" actually does, byte for
+// byte (matchedPaletteSelection compares structurally).
+const neutralBaseValues = { background: "white", primary: "black", "primary-foreground": "white", accent: "gray", "accent-foreground": "black" };
+const neutralBaseValuesDark = { background: "black", primary: "white", "primary-foreground": "black", accent: "darkgray", "accent-foreground": "white" };
+const neutralChartValues = {
+  light: { "chart-1": "gainsboro", "chart-2": "silver", "chart-3": "darkgray", "chart-4": "dimgray", "chart-5": "black" },
+  dark: { "chart-1": "black", "chart-2": "dimgray", "chart-3": "darkgray", "chart-4": "silver", "chart-5": "gainsboro" },
+};
 
 const schema = {
   schema: "https://ui.gsxhq.dev/schemas/preset-v1.json",
@@ -74,7 +87,18 @@ const schema = {
       menuAccents: ["subtle", "bold"],
     },
   },
-  tokenNames: ["background", "primary", "primary-foreground", "accent", "accent-foreground"],
+  tokenNames: [
+    "background",
+    "primary",
+    "primary-foreground",
+    "accent",
+    "accent-foreground",
+    "chart-1",
+    "chart-2",
+    "chart-3",
+    "chart-4",
+    "chart-5",
+  ],
   styles: ["nova", "maia"],
   defaults: {
     nova: {
@@ -83,8 +107,8 @@ const schema = {
       style: "nova",
       radius: "0.625rem",
       theme: {
-        light: { background: "white", primary: "black", "primary-foreground": "white", accent: "gray", "accent-foreground": "black" },
-        dark: { background: "black", primary: "white", "primary-foreground": "black", accent: "darkgray", "accent-foreground": "white" },
+        light: { ...neutralBaseValues, ...neutralChartValues.light },
+        dark: { ...neutralBaseValuesDark, ...neutralChartValues.dark },
       },
     },
     maia: {
@@ -93,8 +117,22 @@ const schema = {
       style: "maia",
       radius: "1rem",
       theme: {
-        light: { background: "ivory", primary: "navy", "primary-foreground": "ivory", accent: "lightblue", "accent-foreground": "navy" },
-        dark: { background: "navy", primary: "ivory", "primary-foreground": "navy", accent: "darkblue", "accent-foreground": "ivory" },
+        light: {
+          background: "ivory",
+          primary: "navy",
+          "primary-foreground": "ivory",
+          accent: "lightblue",
+          "accent-foreground": "navy",
+          ...neutralChartValues.light,
+        },
+        dark: {
+          background: "navy",
+          primary: "ivory",
+          "primary-foreground": "navy",
+          accent: "darkblue",
+          "accent-foreground": "ivory",
+          ...neutralChartValues.dark,
+        },
       },
     },
   },
@@ -113,37 +151,47 @@ const schema = {
       { name: "subtle", title: "Subtle" },
       { name: "bold", title: "Bold" },
     ],
+    // Flat by name, not nested by base color: matches theme.gsx's own
+    // schema.palette.chartColors shape (see catalog.go's ChartColorChoices
+    // doc comment — the chart color axis is independent of base color).
+    chartColors: {
+      neutral: neutralChartValues,
+      violet: {
+        light: { "chart-1": "lavender", "chart-2": "mediumpurple", "chart-3": "blueviolet", "chart-4": "indigo", "chart-5": "purple" },
+        dark: { "chart-1": "purple", "chart-2": "indigo", "chart-3": "blueviolet", "chart-4": "mediumpurple", "chart-5": "lavender" },
+      },
+    },
     resolved: {
       neutral: {
         neutral: {
-          light: { background: "white", primary: "black", "primary-foreground": "white", accent: "gray", "accent-foreground": "black" },
-          dark: { background: "black", primary: "white", "primary-foreground": "black", accent: "darkgray", "accent-foreground": "white" },
+          light: { ...neutralBaseValues, ...neutralChartValues.light },
+          dark: { ...neutralBaseValuesDark, ...neutralChartValues.dark },
         },
         blue: {
-          light: { background: "white", primary: "blue", "primary-foreground": "white", accent: "gray", "accent-foreground": "black" },
-          dark: { background: "black", primary: "skyblue", "primary-foreground": "black", accent: "darkgray", "accent-foreground": "white" },
+          light: { background: "white", primary: "blue", "primary-foreground": "white", accent: "gray", "accent-foreground": "black", ...neutralChartValues.light },
+          dark: { background: "black", primary: "skyblue", "primary-foreground": "black", accent: "darkgray", "accent-foreground": "white", ...neutralChartValues.dark },
         },
         rose: {
-          light: { background: "mistyrose", primary: "crimson", "primary-foreground": "white", accent: "gray", "accent-foreground": "black" },
-          dark: { background: "maroon", primary: "pink", "primary-foreground": "black", accent: "darkgray", "accent-foreground": "white" },
+          light: { background: "mistyrose", primary: "crimson", "primary-foreground": "white", accent: "gray", "accent-foreground": "black", ...neutralChartValues.light },
+          dark: { background: "maroon", primary: "pink", "primary-foreground": "black", accent: "darkgray", "accent-foreground": "white", ...neutralChartValues.dark },
         },
       },
       stone: {
         stone: {
-          light: { background: "linen", primary: "sienna", "primary-foreground": "white", accent: "silver", "accent-foreground": "black" },
-          dark: { background: "sienna", primary: "linen", "primary-foreground": "black", accent: "dimgray", "accent-foreground": "white" },
+          light: { background: "linen", primary: "sienna", "primary-foreground": "white", accent: "silver", "accent-foreground": "black", ...neutralChartValues.light },
+          dark: { background: "sienna", primary: "linen", "primary-foreground": "black", accent: "dimgray", "accent-foreground": "white", ...neutralChartValues.dark },
         },
         blue: {
-          light: { background: "linen", primary: "blue", "primary-foreground": "white", accent: "silver", "accent-foreground": "black" },
-          dark: { background: "sienna", primary: "skyblue", "primary-foreground": "black", accent: "dimgray", "accent-foreground": "white" },
+          light: { background: "linen", primary: "blue", "primary-foreground": "white", accent: "silver", "accent-foreground": "black", ...neutralChartValues.light },
+          dark: { background: "sienna", primary: "skyblue", "primary-foreground": "black", accent: "dimgray", "accent-foreground": "white", ...neutralChartValues.dark },
         },
         rose: {
-          light: { background: "linen", primary: "crimson", "primary-foreground": "white", accent: "silver", "accent-foreground": "black" },
-          dark: { background: "sienna", primary: "pink", "primary-foreground": "black", accent: "dimgray", "accent-foreground": "white" },
+          light: { background: "linen", primary: "crimson", "primary-foreground": "white", accent: "silver", "accent-foreground": "black", ...neutralChartValues.light },
+          dark: { background: "sienna", primary: "pink", "primary-foreground": "black", accent: "dimgray", "accent-foreground": "white", ...neutralChartValues.dark },
         },
       },
     },
-    defaultSelection: { baseColor: "neutral", theme: "neutral", radius: "medium", menuAccent: "subtle" },
+    defaultSelection: { baseColor: "neutral", theme: "neutral", radius: "medium", chartColor: "neutral", menuAccent: "subtle" },
   },
 };
 
@@ -158,7 +206,7 @@ const validators = {
 
 test("state starts matched to the default palette selection", () => {
   const state = createThemeState(schema);
-  assert.deepEqual(state.selection, { baseColor: "neutral", theme: "neutral", radius: "medium", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "neutral", theme: "neutral", radius: "medium", chartColor: "neutral", menuAccent: "subtle" });
   assert.equal(state.previewResolved, null);
 });
 
@@ -166,7 +214,7 @@ test("palette selections commit colors while preserving the current radius", () 
   let state = selectStyle(createThemeState(schema), "maia", schema);
   state = selectBaseColor(state, "stone", schema);
   state = selectTheme(state, "blue", schema);
-  assert.deepEqual(state.selection, { baseColor: "stone", theme: "blue", radius: "medium", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "stone", theme: "blue", radius: "medium", chartColor: "neutral", menuAccent: "subtle" });
   assert.equal(state.resolved.style, "maia");
   assert.equal(state.resolved.theme.light.background, "linen");
   assert.equal(state.resolved.theme.light.primary, "blue");
@@ -182,7 +230,7 @@ test("menu accent overlays accent from primary and round-trips back to subtle", 
   let state = selectTheme(createThemeState(schema), "blue", schema);
   const subtleLight = structuredClone(state.resolved.theme.light);
   const subtleDark = structuredClone(state.resolved.theme.dark);
-  assert.deepEqual(state.selection, { baseColor: "neutral", theme: "blue", radius: "medium", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "neutral", theme: "blue", radius: "medium", chartColor: "neutral", menuAccent: "subtle" });
 
   state = selectMenuAccent(state, "bold", schema);
   assert.equal(state.selection.menuAccent, "bold");
@@ -204,7 +252,7 @@ test("menu accent overlays accent from primary and round-trips back to subtle", 
 test("menu accent survives a later base color or theme change", () => {
   let state = selectMenuAccent(createThemeState(schema), "bold", schema);
   state = selectBaseColor(state, "stone", schema);
-  assert.deepEqual(state.selection, { baseColor: "stone", theme: "stone", radius: "medium", menuAccent: "bold" });
+  assert.deepEqual(state.selection, { baseColor: "stone", theme: "stone", radius: "medium", chartColor: "neutral", menuAccent: "bold" });
   assert.equal(state.resolved.theme.light.accent, state.resolved.theme.light.primary);
 
   state = selectTheme(state, "blue", schema);
@@ -214,6 +262,61 @@ test("menu accent survives a later base color or theme change", () => {
 
 test("menu accent selection rejects unsupported values", () => {
   assert.throws(() => selectMenuAccent(createThemeState(schema), "loud", schema));
+});
+
+test("chart color overlays only chart-1..5, independent of base color and theme", () => {
+  let state = selectTheme(createThemeState(schema), "blue", schema);
+  const beforeLight = structuredClone(state.resolved.theme.light);
+  const beforeDark = structuredClone(state.resolved.theme.dark);
+  assert.deepEqual(state.selection, { baseColor: "neutral", theme: "blue", radius: "medium", chartColor: "neutral", menuAccent: "subtle" });
+
+  state = selectChartColor(state, "violet", schema);
+  assert.deepEqual(state.selection, { baseColor: "neutral", theme: "blue", radius: "medium", chartColor: "violet", menuAccent: "subtle" });
+  assert.equal(state.resolved.theme.light["chart-1"], "lavender");
+  assert.equal(state.resolved.theme.dark["chart-1"], "purple");
+  // Only chart-1..5 changed — base color, theme, and menu accent's own
+  // tokens are untouched.
+  for (const name of ["background", "primary", "accent", "accent-foreground"]) {
+    assert.equal(state.resolved.theme.light[name], beforeLight[name]);
+    assert.equal(state.resolved.theme.dark[name], beforeDark[name]);
+  }
+
+  state = selectChartColor(state, "neutral", schema);
+  assert.deepEqual(state.resolved.theme.light, beforeLight);
+  assert.deepEqual(state.resolved.theme.dark, beforeDark);
+});
+
+test("chart color survives a later base color, theme, or menu accent change", () => {
+  let state = selectChartColor(createThemeState(schema), "violet", schema);
+  state = selectBaseColor(state, "stone", schema);
+  assert.deepEqual(state.selection, { baseColor: "stone", theme: "stone", radius: "medium", chartColor: "violet", menuAccent: "subtle" });
+  assert.equal(state.resolved.theme.light["chart-1"], "lavender");
+
+  state = selectTheme(state, "blue", schema);
+  assert.equal(state.selection.chartColor, "violet");
+  assert.equal(state.resolved.theme.dark["chart-1"], "purple");
+
+  state = selectMenuAccent(state, "bold", schema);
+  assert.equal(state.selection.chartColor, "violet");
+  assert.equal(state.resolved.theme.light["chart-1"], "lavender");
+  assert.equal(state.resolved.theme.light.accent, state.resolved.theme.light.primary);
+});
+
+test("chart color hover preview never alters committed export state", () => {
+  const committed = createThemeState(schema);
+  const committedJSON = canonicalJSON(committed.resolved, schema);
+  const preview = previewChartColor(committed, "violet", schema);
+
+  assert.equal(previewPreset(preview).theme.light["chart-1"], "lavender");
+  assert.equal(canonicalJSON(preview.resolved, schema), committedJSON);
+
+  const cleared = clearPalettePreview(preview);
+  assert.equal(cleared.previewResolved, null);
+  assert.deepEqual(previewPreset(cleared), committed.resolved);
+});
+
+test("chart color selection rejects unsupported values", () => {
+  assert.throws(() => selectChartColor(createThemeState(schema), "plaid", schema));
 });
 
 test("palette previews never alter committed export state", () => {
@@ -248,12 +351,12 @@ test("replacement derives custom palette selections from exact imported values",
   const changedColor = structuredClone(schema.defaults.nova);
   changedColor.theme.light.primary = "violet";
   let state = replacePreset(createThemeState(schema), changedColor, schema);
-  assert.deepEqual(state.selection, { baseColor: "custom", theme: "custom", radius: "medium", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "custom", theme: "custom", radius: "medium", chartColor: "neutral", menuAccent: "subtle" });
 
   const changedRadius = structuredClone(schema.defaults.nova);
   changedRadius.radius = "1rem";
   state = replacePreset(state, changedRadius, schema);
-  assert.deepEqual(state.selection, { baseColor: "neutral", theme: "neutral", radius: "custom", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "neutral", theme: "neutral", radius: "custom", chartColor: "neutral", menuAccent: "subtle" });
 });
 
 test("base selection from custom restores its same-named theme and preserves a custom radius", () => {
@@ -263,7 +366,7 @@ test("base selection from custom restores its same-named theme and preserves a c
   let state = replacePreset(createThemeState(schema), imported, schema);
   state = selectBaseColor(state, "stone", schema);
 
-  assert.deepEqual(state.selection, { baseColor: "stone", theme: "stone", radius: "custom", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "stone", theme: "stone", radius: "custom", chartColor: "neutral", menuAccent: "subtle" });
   assert.equal(state.resolved.theme.light.background, "linen");
   assert.equal(state.resolved.radius, "1rem");
 });
@@ -274,7 +377,7 @@ test("theme selection from custom uses neutral as its base", () => {
   let state = replacePreset(createThemeState(schema), imported, schema);
   state = selectTheme(state, "blue", schema);
 
-  assert.deepEqual(state.selection, { baseColor: "neutral", theme: "blue", radius: "medium", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "neutral", theme: "blue", radius: "medium", chartColor: "neutral", menuAccent: "subtle" });
   assert.equal(state.resolved.theme.light.background, "white");
   assert.equal(state.resolved.theme.light.primary, "blue");
 });
@@ -286,7 +389,7 @@ test("named radius selection preserves imported custom colors exactly", () => {
   let state = replacePreset(createThemeState(schema), imported, schema);
   state = selectRadius(state, "large", schema);
 
-  assert.deepEqual(state.selection, { baseColor: "custom", theme: "custom", radius: "large", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "custom", theme: "custom", radius: "large", chartColor: "neutral", menuAccent: "subtle" });
   assert.equal(state.resolved.theme.light.background, "rgb(1 2 3)");
   assert.equal(state.resolved.theme.dark.primary, "hsl(1deg 2% 3%)");
   assert.equal(state.resolved.radius, "0.875rem");
@@ -296,7 +399,7 @@ test("reset restores the selected style built-in preset and recomputes selection
   let state = selectStyle(createThemeState(schema), "maia", schema);
   state = resetThemeState(state, schema);
   assert.deepEqual(state.resolved, schema.defaults.maia);
-  assert.deepEqual(state.selection, { baseColor: "custom", theme: "custom", radius: "custom", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "custom", theme: "custom", radius: "custom", chartColor: "neutral", menuAccent: "subtle" });
 });
 
 test("canonical JSON, share code, share URL, CSS, and commands round trip", () => {
@@ -325,6 +428,15 @@ test("bold menu accent still uses the compact transport and decodes back to bold
   const decoded = decodeShare(share, schema, validators);
   assert.deepEqual(decoded, state.resolved);
   assert.equal(decoded.theme.light.accent, decoded.theme.light.primary);
+});
+
+test("a non-default chart color still uses the compact transport and decodes back to it", () => {
+  const state = selectChartColor(createThemeState(schema), "violet", schema);
+  const share = encodeShare(state.resolved, schema);
+  assert.match(share, /^gsxui:p1:/);
+  const decoded = decodeShare(share, schema, validators);
+  assert.deepEqual(decoded, state.resolved);
+  assert.equal(decoded.theme.light["chart-1"], "lavender");
 });
 
 test("compact transport matches the Go bit layout for every catalogue combination", () => {
@@ -457,25 +569,25 @@ test("undo/redo replays a bounded history stack of committed states", () => {
   history = pushHistory(history, state);
   state = selectRadius(state, "large", schema);
   history = pushHistory(history, state);
-  assert.deepEqual(state.selection, { baseColor: "stone", theme: "blue", radius: "large", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "stone", theme: "blue", radius: "large", chartColor: "neutral", menuAccent: "subtle" });
   assert.equal(canUndo(history), true);
   assert.equal(canRedo(history), false);
 
   let step = undoHistory(history, state, schema);
   history = step.history;
   state = step.state;
-  assert.deepEqual(state.selection, { baseColor: "stone", theme: "blue", radius: "medium", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "stone", theme: "blue", radius: "medium", chartColor: "neutral", menuAccent: "subtle" });
 
   step = undoHistory(history, state, schema);
   history = step.history;
   state = step.state;
-  assert.deepEqual(state.selection, { baseColor: "stone", theme: "stone", radius: "medium", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "stone", theme: "stone", radius: "medium", chartColor: "neutral", menuAccent: "subtle" });
   assert.equal(canRedo(history), true);
 
   step = redoHistory(history, state, schema);
   history = step.history;
   state = step.state;
-  assert.deepEqual(state.selection, { baseColor: "stone", theme: "blue", radius: "medium", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "stone", theme: "blue", radius: "medium", chartColor: "neutral", menuAccent: "subtle" });
   assert.equal(canUndo(history), true);
   assert.equal(canRedo(history), true);
 });
@@ -574,8 +686,15 @@ function compactTestSchema() {
       themes,
       radii,
       menuAccents: schema.palette.menuAccents,
+      // This exhaustive sweep never carries chart-1..5 tokens at all (see
+      // the tokenNames override above), so "neutral" chart color is
+      // modeled as an empty overlay — containsThemeValues's "every key in
+      // subset" check is vacuously true for an empty subset, so every
+      // preset here matches it, which is exactly right: they are all
+      // fixed at the chart color default throughout this sweep.
+      chartColors: { neutral: { light: {}, dark: {} } },
       resolved,
-      defaultSelection: { baseColor: "neutral", theme: "neutral", radius: "medium", menuAccent: "subtle" },
+      defaultSelection: { baseColor: "neutral", theme: "neutral", radius: "medium", chartColor: "neutral", menuAccent: "subtle" },
     },
   };
 }
@@ -587,7 +706,8 @@ function expectedCompactCode(valueSchema, style, baseColor, theme, radius) {
     (compact.baseColors.indexOf(baseColor) << 4) |
     (compact.themes.indexOf(theme) << 8) |
     (compact.radii.indexOf(radius) << 13) |
-    (compact.menuAccents.indexOf("subtle") << 16);
+    (compact.menuAccents.indexOf("subtle") << 16) |
+    (compact.themes.indexOf("neutral") << 18);
   const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   let value = packed;
   let payload = "";

@@ -17,12 +17,14 @@ const (
 	compactThemeBits      = 5
 	compactRadiusBits     = 3
 	compactMenuAccentBits = 2
+	compactChartColorBits = 5
 
 	compactBaseColorShift  = compactStyleBits
 	compactThemeShift      = compactBaseColorShift + compactBaseColorBits
 	compactRadiusShift     = compactThemeShift + compactThemeBits
 	compactMenuAccentShift = compactRadiusShift + compactRadiusBits
-	compactSchemaBits      = compactMenuAccentShift + compactMenuAccentBits
+	compactChartColorShift = compactMenuAccentShift + compactMenuAccentBits
+	compactSchemaBits      = compactChartColorShift + compactChartColorBits
 )
 
 // These arrays are the append-only p1 transport ABI. They intentionally do
@@ -120,7 +122,7 @@ func encodeCompactShare(value Preset) (string, bool, error) {
 	}
 	selection := MatchPalette(value)
 	if selection.BaseColor == CustomChoice || selection.Theme == CustomChoice ||
-		selection.Radius == CustomChoice {
+		selection.Radius == CustomChoice || selection.ChartColor == CustomChoice {
 		return "", false, nil
 	}
 
@@ -129,7 +131,13 @@ func encodeCompactShare(value Preset) (string, bool, error) {
 	themeIndex := indexStringValue(compactThemes, selection.Theme)
 	radiusIndex := indexStringValue(compactRadii, selection.Radius)
 	menuAccentIndex := indexStringValue(compactMenuAccents, selection.MenuAccent)
-	if styleIndex == -1 || baseColorIndex == -1 || themeIndex == -1 || radiusIndex == -1 || menuAccentIndex == -1 {
+	// ChartColor reuses compactThemes for its index: it draws from the
+	// identical 24-hue catalogue as Theme (see chartLayerTokens), just
+	// applied to a disjoint set of tokens, so a second parallel append-only
+	// array would only duplicate this one.
+	chartColorIndex := indexStringValue(compactThemes, selection.ChartColor)
+	if styleIndex == -1 || baseColorIndex == -1 || themeIndex == -1 || radiusIndex == -1 ||
+		menuAccentIndex == -1 || chartColorIndex == -1 {
 		return "", false, nil
 	}
 
@@ -137,7 +145,8 @@ func encodeCompactShare(value Preset) (string, bool, error) {
 		uint64(baseColorIndex)<<compactBaseColorShift |
 		uint64(themeIndex)<<compactThemeShift |
 		uint64(radiusIndex)<<compactRadiusShift |
-		uint64(menuAccentIndex)<<compactMenuAccentShift
+		uint64(menuAccentIndex)<<compactMenuAccentShift |
+		uint64(chartColorIndex)<<compactChartColorShift
 	return compactSharePrefix + encodeBase62(packed), true, nil
 }
 
@@ -161,6 +170,7 @@ func decodeCompactShare(payload string) (Preset, error) {
 	themeIndex := int((packed >> compactThemeShift) & compactMask(compactThemeBits))
 	radiusIndex := int((packed >> compactRadiusShift) & compactMask(compactRadiusBits))
 	menuAccentIndex := int((packed >> compactMenuAccentShift) & compactMask(compactMenuAccentBits))
+	chartColorIndex := int((packed >> compactChartColorShift) & compactMask(compactChartColorBits))
 
 	if styleIndex >= len(compactStyles) {
 		return Preset{}, fmt.Errorf("compact payload uses unused style index %d", styleIndex)
@@ -177,12 +187,16 @@ func decodeCompactShare(payload string) (Preset, error) {
 	if menuAccentIndex >= len(compactMenuAccents) {
 		return Preset{}, fmt.Errorf("compact payload uses unused menu accent index %d", menuAccentIndex)
 	}
+	if chartColorIndex >= len(compactThemes) {
+		return Preset{}, fmt.Errorf("compact payload uses unused chart color index %d", chartColorIndex)
+	}
 
 	selection := PaletteSelection{
 		BaseColor:  compactBaseColors[baseColorIndex],
 		Theme:      compactThemes[themeIndex],
 		Radius:     compactRadii[radiusIndex],
 		MenuAccent: compactMenuAccents[menuAccentIndex],
+		ChartColor: compactThemes[chartColorIndex],
 	}
 	value, err := ResolvePalette(compactStyles[styleIndex], selection)
 	if err != nil {

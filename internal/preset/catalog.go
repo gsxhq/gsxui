@@ -76,10 +76,22 @@ func applyMenuAccent(values ThemeValues, accent string) {
 	values["accent-foreground"] = values["primary-foreground"]
 }
 
+// chartLayerTokens is the five-token layer PaletteSelection.ChartColor
+// overlays, mirroring baseLayerTokens/themeLayerTokens above. Like
+// accentOverrideTokens, it is excluded from MatchPalette's base/theme
+// structural comparison: ChartColor may name a different hue than Theme
+// (mirrors upstream, registry/config.ts:719-729), so the chart tokens stop
+// carrying the base-color/theme signal once a non-default chart color is
+// chosen.
+var chartLayerTokens = map[string]bool{
+	"chart-1": true, "chart-2": true, "chart-3": true, "chart-4": true, "chart-5": true,
+}
+
 type PaletteSelection struct {
 	BaseColor  string
 	Theme      string
 	Radius     string
+	ChartColor string
 	MenuAccent string
 }
 
@@ -97,6 +109,13 @@ type themeDefinition struct {
 	swatch string
 	light  ThemeValues
 	dark   ThemeValues
+	// chartLight/chartDark hold ONLY the five chart-1..5 tokens for this
+	// hue — a separate layer from light/dark above (the theme/brand layer:
+	// primary, secondary, sidebar-primary). ResolvePalette overlays them
+	// independently via PaletteSelection.ChartColor, which may name a
+	// different hue than PaletteSelection.Theme (see chartLayerTokens).
+	chartLight ThemeValues
+	chartDark  ThemeValues
 }
 
 var baseLayerTokens = map[string]bool{
@@ -152,8 +171,35 @@ func RadiusChoices() []RadiusChoice {
 	return slices.Clone(radiusCatalog)
 }
 
+// ChartColorChoices returns every hue's picker metadata for the chart-color
+// axis, unfiltered by base color — unlike ThemeChoices(baseColor), which
+// upstream's own ChartColorPicker also filters (dossier §1: "splits
+// base-color-named themes from pure accent themes into two picker
+// groups"), this is the full 24-entry catalogue, useful for callers (like
+// the theme editor's schema) that need every hue's resolved chart values
+// regardless of which base color happens to be selected right now.
+func ChartColorChoices() []PaletteChoice {
+	choices := make([]PaletteChoice, len(themeCatalog))
+	for i, definition := range themeCatalog {
+		choices[i] = paletteChoice(definition)
+	}
+	return choices
+}
+
+// ResolveChartColor returns the chart-1..5 token values for the given hue
+// name, independent of base color, theme, or style — the same overlay
+// resolvePalette applies for PaletteSelection.ChartColor, exposed in
+// isolation for callers building a picker's value table.
+func ResolveChartColor(name string) (light, dark ThemeValues, err error) {
+	theme := themeDefinitionByName(name)
+	if theme == nil {
+		return nil, nil, fmt.Errorf("chart color %q is not in the palette catalog", name)
+	}
+	return maps.Clone(theme.chartLight), maps.Clone(theme.chartDark), nil
+}
+
 func DefaultPaletteSelection() PaletteSelection {
-	return PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "medium", MenuAccent: "subtle"}
+	return PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "medium", ChartColor: "neutral", MenuAccent: "subtle"}
 }
 
 func ResolvePalette(style Style, selection PaletteSelection) (Preset, error) {
@@ -175,18 +221,21 @@ func MatchPalette(preset Preset) PaletteSelection {
 		BaseColor:  CustomChoice,
 		Theme:      CustomChoice,
 		Radius:     CustomChoice,
+		ChartColor: CustomChoice,
 		MenuAccent: "subtle",
 	}
 	if Validate(preset) != nil {
 		return selection
 	}
 	selection.MenuAccent = matchMenuAccent(preset)
+	selection.ChartColor = matchChartColor(preset)
 
-	// accentOverrideTokens is excluded from this comparison: a bold menu
-	// accent (just detected above, independent of base color/theme)
-	// overwrites accent/accent-foreground in the resolved preset, so they
-	// no longer carry the base color's own signal once that's happened.
-	// The remaining ~30 compared tokens are already proven unique per
+	// accentOverrideTokens and chartLayerTokens are excluded from this
+	// comparison: a bold menu accent (just detected above) overwrites
+	// accent/accent-foreground, and a non-default chart color overwrites
+	// chart-1..5 — both independent of base color/theme, so neither set
+	// carries the base color's own signal once that's happened. The
+	// remaining ~25 compared tokens are already proven unique per
 	// base-color/theme combination by validateCatalog's own digest check.
 	for _, base := range baseColorCatalog {
 		choices, err := ThemeChoices(base.name)
@@ -198,11 +247,12 @@ func MatchPalette(preset Preset) PaletteSelection {
 				BaseColor:  base.name,
 				Theme:      theme.Name,
 				Radius:     "medium",
+				ChartColor: "neutral",
 				MenuAccent: "subtle",
 			})
 			if err == nil &&
-				themeValuesEqualExcluding(candidate.Theme.Light, preset.Theme.Light, accentOverrideTokens) &&
-				themeValuesEqualExcluding(candidate.Theme.Dark, preset.Theme.Dark, accentOverrideTokens) {
+				themeValuesEqualExcluding(candidate.Theme.Light, preset.Theme.Light, accentOverrideTokens, chartLayerTokens) &&
+				themeValuesEqualExcluding(candidate.Theme.Dark, preset.Theme.Dark, accentOverrideTokens, chartLayerTokens) {
 				selection.BaseColor = base.name
 				selection.Theme = theme.Name
 				break
@@ -236,6 +286,32 @@ func matchMenuAccent(preset Preset) string {
 	return "subtle"
 }
 
+// matchChartColor looks for a hue whose chart-1..5 values (light and dark)
+// exactly match the preset's, independent of which base color or theme
+// also matches — ChartColor is its own axis, so this can and does return
+// "custom" even when BaseColor/Theme match a catalog combination exactly.
+func matchChartColor(preset Preset) string {
+	for _, definition := range themeCatalog {
+		if containsThemeValues(preset.Theme.Light, definition.chartLight) &&
+			containsThemeValues(preset.Theme.Dark, definition.chartDark) {
+			return definition.name
+		}
+	}
+	return CustomChoice
+}
+
+// containsThemeValues reports whether every key in subset is present in
+// full with an equal value. Used to match a partial layer (like a chart
+// color's five tokens) against a full preset's theme map.
+func containsThemeValues(full, subset ThemeValues) bool {
+	for name, value := range subset {
+		if full[name] != value {
+			return false
+		}
+	}
+	return true
+}
+
 func canonicalDefault(style Style) Preset {
 	light := make(ThemeValues, len(tokenDefinitions))
 	dark := make(ThemeValues, len(tokenDefinitions))
@@ -264,6 +340,10 @@ func resolvePalette(style Style, selection PaletteSelection) (Preset, error) {
 	if theme.name != selection.BaseColor && !isAccentTheme(theme.name) {
 		return Preset{}, fmt.Errorf("theme %q is not available for base color %q", selection.Theme, selection.BaseColor)
 	}
+	chartColor := themeDefinitionByName(selection.ChartColor)
+	if chartColor == nil {
+		return Preset{}, fmt.Errorf("chart color %q is not in the palette catalog", selection.ChartColor)
+	}
 	radius := radiusChoiceByName(selection.Radius)
 	if radius == nil {
 		return Preset{}, fmt.Errorf("radius %q is not in the palette catalog", selection.Radius)
@@ -272,11 +352,17 @@ func resolvePalette(style Style, selection PaletteSelection) (Preset, error) {
 		return Preset{}, fmt.Errorf("menu accent %q is not in the palette catalog", selection.MenuAccent)
 	}
 
+	// Order mirrors upstream's own buildRegistryTheme (registry/config.ts:
+	// 697-741): base + theme merge, then the chart overlay, then the menu
+	// accent overlay last (so bold reads whatever primary the theme layer
+	// just set, not a stale value).
 	preset := canonicalDefault(style)
 	applyThemeValues(preset.Theme.Light, base.light)
 	applyThemeValues(preset.Theme.Dark, base.dark)
 	applyThemeValues(preset.Theme.Light, theme.light)
 	applyThemeValues(preset.Theme.Dark, theme.dark)
+	applyThemeValues(preset.Theme.Light, chartColor.chartLight)
+	applyThemeValues(preset.Theme.Dark, chartColor.chartDark)
 	applyMenuAccent(preset.Theme.Light, selection.MenuAccent)
 	applyMenuAccent(preset.Theme.Dark, selection.MenuAccent)
 	preset.Radius = radius.Value
@@ -327,9 +413,9 @@ func applyThemeValues(destination, overrides ThemeValues) {
 	maps.Copy(destination, overrides)
 }
 
-func themeValuesEqualExcluding(a, b ThemeValues, excluded map[string]bool) bool {
+func themeValuesEqualExcluding(a, b ThemeValues, excluded ...map[string]bool) bool {
 	for _, name := range TokenNames() {
-		if excluded[name] {
+		if slices.ContainsFunc(excluded, func(set map[string]bool) bool { return set[name] }) {
 			continue
 		}
 		if a[name] != b[name] {
@@ -367,6 +453,7 @@ func validateCatalog() error {
 				BaseColor:  base.name,
 				Theme:      theme.Name,
 				Radius:     radiusCatalog[0].Name,
+				ChartColor: "neutral",
 				MenuAccent: "subtle",
 			})
 			if err != nil {
@@ -404,6 +491,7 @@ func validateBaseColorCatalog() error {
 
 func validateThemeCatalog() error {
 	seen := make(map[string]bool, len(themeCatalog))
+	seenChart := make(map[[32]byte]string, len(themeCatalog))
 	for _, definition := range themeCatalog {
 		if definition.name == "" || definition.title == "" || definition.swatch == "" {
 			return fmt.Errorf("theme has incomplete metadata")
@@ -418,6 +506,17 @@ func validateThemeCatalog() error {
 		if err := validateLayer(definition.name+".dark", definition.dark, themeLayerTokens); err != nil {
 			return err
 		}
+		if err := validateLayer(definition.name+".chartLight", definition.chartLight, chartLayerTokens); err != nil {
+			return err
+		}
+		if err := validateLayer(definition.name+".chartDark", definition.chartDark, chartLayerTokens); err != nil {
+			return err
+		}
+		chartDigest := layerDigest(definition.chartLight, definition.chartDark)
+		if previous, ok := seenChart[chartDigest]; ok {
+			return fmt.Errorf("duplicate chart color resolutions %q and %q", previous, definition.name)
+		}
+		seenChart[chartDigest] = definition.name
 	}
 	for _, base := range baseColorCatalog {
 		if !seen[base.name] {
@@ -483,6 +582,21 @@ func paletteDigest(preset Preset) [32]byte {
 	var values strings.Builder
 	for _, mode := range []ThemeValues{preset.Theme.Light, preset.Theme.Dark} {
 		for _, name := range TokenNames() {
+			fmt.Fprintf(&values, "%s=%s\n", name, mode[name])
+		}
+	}
+	return sha256.Sum256([]byte(values.String()))
+}
+
+// layerDigest hashes an arbitrary light/dark token layer in a stable key
+// order, independent of TokenNames()'s own ordering — used to detect
+// duplicate chart color resolutions, which would otherwise make
+// matchChartColor's catalog scan ambiguous.
+func layerDigest(light, dark ThemeValues) [32]byte {
+	var values strings.Builder
+	for _, mode := range []ThemeValues{light, dark} {
+		names := slices.Sorted(maps.Keys(mode))
+		for _, name := range names {
 			fmt.Fprintf(&values, "%s=%s\n", name, mode[name])
 		}
 	}

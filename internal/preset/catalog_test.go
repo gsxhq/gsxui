@@ -131,10 +131,16 @@ func TestPaletteCatalogResolvesAndMatchesEveryCombination(t *testing.T) {
 			for _, theme := range themes {
 				for _, radius := range RadiusChoices() {
 					for _, accent := range MenuAccentChoices() {
+						// ChartColor is fixed at "neutral" here to keep this sweep's
+						// runtime bounded — it already covers
+						// style x baseColor x theme x radius x menuAccent.
+						// TestChartColorCatalogRoundTrips below covers the chart
+						// color axis on its own.
 						selection := PaletteSelection{
 							BaseColor:  baseColor,
 							Theme:      theme.Name,
 							Radius:     radius.Name,
+							ChartColor: "neutral",
 							MenuAccent: accent.Name,
 						}
 						resolved, err := ResolvePalette(style, selection)
@@ -163,7 +169,7 @@ func TestPaletteCatalogResolvesAndMatchesEveryCombination(t *testing.T) {
 }
 
 func TestDefaultResolvesCanonicalPaletteSelection(t *testing.T) {
-	want := PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "medium", MenuAccent: "subtle"}
+	want := PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "medium", ChartColor: "neutral", MenuAccent: "subtle"}
 	if got := DefaultPaletteSelection(); got != want {
 		t.Fatalf("DefaultPaletteSelection() = %#v, want %#v", got, want)
 	}
@@ -180,7 +186,7 @@ func TestMatchPaletteReportsIndependentCustomSelections(t *testing.T) {
 		t.Fatal(err)
 	}
 	preset.Theme.Light["primary"] = "oklch(0.5 0.2 250)"
-	want := PaletteSelection{BaseColor: CustomChoice, Theme: CustomChoice, Radius: "medium", MenuAccent: "subtle"}
+	want := PaletteSelection{BaseColor: CustomChoice, Theme: CustomChoice, Radius: "medium", ChartColor: "neutral", MenuAccent: "subtle"}
 	if got := MatchPalette(preset); got != want {
 		t.Fatalf("MatchPalette(custom palette) = %#v", got)
 	}
@@ -190,18 +196,80 @@ func TestMatchPaletteReportsIndependentCustomSelections(t *testing.T) {
 		t.Fatal(err)
 	}
 	preset.Radius = "1rem"
-	want = PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: CustomChoice, MenuAccent: "subtle"}
+	want = PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: CustomChoice, ChartColor: "neutral", MenuAccent: "subtle"}
 	if got := MatchPalette(preset); got != want {
 		t.Fatalf("MatchPalette(custom radius) = %#v", got)
 	}
 
-	preset, err = ResolvePalette(StyleNova, PaletteSelection{BaseColor: "neutral", Theme: "blue", Radius: "medium", MenuAccent: "bold"})
+	preset, err = ResolvePalette(StyleNova, PaletteSelection{BaseColor: "neutral", Theme: "blue", Radius: "medium", ChartColor: "neutral", MenuAccent: "bold"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	want = PaletteSelection{BaseColor: "neutral", Theme: "blue", Radius: "medium", MenuAccent: "bold"}
+	want = PaletteSelection{BaseColor: "neutral", Theme: "blue", Radius: "medium", ChartColor: "neutral", MenuAccent: "bold"}
 	if got := MatchPalette(preset); got != want {
 		t.Fatalf("MatchPalette(bold accent) = %#v, want %#v", got, want)
+	}
+
+	preset, err = ResolvePalette(StyleNova, PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "medium", ChartColor: "violet", MenuAccent: "subtle"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want = PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "medium", ChartColor: "violet", MenuAccent: "subtle"}
+	if got := MatchPalette(preset); got != want {
+		t.Fatalf("MatchPalette(custom chart color) = %#v, want %#v", got, want)
+	}
+}
+
+// TestChartColorCatalogRoundTrips exercises the chart color axis
+// separately from TestPaletteCatalogResolvesAndMatchesEveryCombination,
+// which fixes ChartColor at "neutral" to keep that sweep's runtime
+// bounded.
+func TestChartColorCatalogRoundTrips(t *testing.T) {
+	if got := len(ChartColorChoices()); got != 24 {
+		t.Fatalf("ChartColorChoices() = %d entries, want 24", got)
+	}
+	for _, chartColor := range ChartColorChoices() {
+		selection := PaletteSelection{BaseColor: "stone", Theme: "blue", Radius: "large", ChartColor: chartColor.Name, MenuAccent: "subtle"}
+		resolved, err := ResolvePalette(StyleSera, selection)
+		if err != nil {
+			t.Fatalf("ResolvePalette(%#v): %v", selection, err)
+		}
+		light, dark, err := ResolveChartColor(chartColor.Name)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, name := range []string{"chart-1", "chart-2", "chart-3", "chart-4", "chart-5"} {
+			if resolved.Theme.Light[name] != light[name] {
+				t.Fatalf("ResolvePalette(%#v).Theme.Light[%q] = %q, want %q", selection, name, resolved.Theme.Light[name], light[name])
+			}
+			if resolved.Theme.Dark[name] != dark[name] {
+				t.Fatalf("ResolvePalette(%#v).Theme.Dark[%q] = %q, want %q", selection, name, resolved.Theme.Dark[name], dark[name])
+			}
+		}
+		if got := MatchPalette(resolved); got != selection {
+			t.Fatalf("MatchPalette(ResolvePalette(%#v)) = %#v", selection, got)
+		}
+	}
+}
+
+func TestResolveChartColorRejectsUnknownNames(t *testing.T) {
+	if _, _, err := ResolveChartColor("plaid"); err == nil {
+		t.Fatal("ResolveChartColor(unknown) returned nil error")
+	}
+}
+
+func TestResolveChartColorReturnsIndependentStorage(t *testing.T) {
+	light, _, err := ResolveChartColor("blue")
+	if err != nil {
+		t.Fatal(err)
+	}
+	light["chart-1"] = "changed"
+	againLight, _, err := ResolveChartColor("blue")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if againLight["chart-1"] == "changed" {
+		t.Fatal("ResolveChartColor returned shared storage")
 	}
 }
 

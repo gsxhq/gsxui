@@ -42,6 +42,7 @@ component Gallery(idp string) {
 		<galleryFeedbackCard/>
 		<galleryTeamCard/>
 		<galleryTableCard/>
+		<galleryChartCard/>
 		<galleryTabsCard idp={idp}/>
 		<galleryNavigationCard/>
 		<galleryControlsCard idp={idp}/>
@@ -486,6 +487,47 @@ component galleryTableCard() {
 					</TableRow>
 				</TableFooter>
 			</Table>
+		</CardContent>
+	</Card>
+}
+
+// galleryChartCard is a static color swatch shaped like a chart, painted
+// with var(--chart-1)..var(--chart-5) — a preview for the chart-color
+// axis, deliberately not a real charting component (no data binding, no
+// tooltips; the theme preview loads no component JS to begin with, per
+// the doc comment at the top of this file).
+component galleryChartCard() {
+	<Card>
+		<CardHeader>
+			<CardTitle>Chart colors</CardTitle>
+			<CardDescription>chart-1 through chart-5.</CardDescription>
+		</CardHeader>
+		<CardContent class="flex flex-col gap-4">
+			{/* Percentage heights need a parent with a DEFINITE height, so the
+			   bars are direct children of the h-32 row (not nested inside a
+			   flex-1 column, which has no height of its own to resolve
+			   against) — the number labels live in a separate row underneath. */}
+			<div class="flex h-32 items-end gap-3">
+				<div class="flex-1 rounded-t-sm" style="height: 45%; background-color: var(--chart-1)"></div>
+				<div class="flex-1 rounded-t-sm" style="height: 70%; background-color: var(--chart-2)"></div>
+				<div class="flex-1 rounded-t-sm" style="height: 55%; background-color: var(--chart-3)"></div>
+				<div class="flex-1 rounded-t-sm" style="height: 90%; background-color: var(--chart-4)"></div>
+				<div class="flex-1 rounded-t-sm" style="height: 65%; background-color: var(--chart-5)"></div>
+			</div>
+			<div class="flex gap-3 text-center text-xs text-muted-foreground">
+				<span class="flex-1">1</span>
+				<span class="flex-1">2</span>
+				<span class="flex-1">3</span>
+				<span class="flex-1">4</span>
+				<span class="flex-1">5</span>
+			</div>
+			<div class="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
+				<span class="flex items-center gap-1.5"><span class="size-2.5 rounded-full" style="background-color: var(--chart-1)"></span>chart-1</span>
+				<span class="flex items-center gap-1.5"><span class="size-2.5 rounded-full" style="background-color: var(--chart-2)"></span>chart-2</span>
+				<span class="flex items-center gap-1.5"><span class="size-2.5 rounded-full" style="background-color: var(--chart-3)"></span>chart-3</span>
+				<span class="flex items-center gap-1.5"><span class="size-2.5 rounded-full" style="background-color: var(--chart-4)"></span>chart-4</span>
+				<span class="flex items-center gap-1.5"><span class="size-2.5 rounded-full" style="background-color: var(--chart-5)"></span>chart-5</span>
+			</div>
 		</CardContent>
 	</Card>
 }

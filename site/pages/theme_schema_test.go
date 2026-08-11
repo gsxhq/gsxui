@@ -96,18 +96,23 @@ func TestThemeEditorSchemaMatchesPresetAuthority(t *testing.T) {
 	if got := len(schema.Palette.MenuAccents); got != 2 {
 		t.Errorf("palette menu accents = %d, want 2", got)
 	}
+	if got := len(schema.Palette.ChartColors); got != 24 {
+		t.Errorf("palette chart colors = %d, want 24", got)
+	}
 	if got, want := schema.Palette.DefaultSelection, (struct {
 		BaseColor  string `json:"baseColor"`
 		Theme      string `json:"theme"`
 		Radius     string `json:"radius"`
+		ChartColor string `json:"chartColor"`
 		MenuAccent string `json:"menuAccent"`
-	}{BaseColor: "neutral", Theme: "neutral", Radius: "medium", MenuAccent: "subtle"}); got != want {
+	}{BaseColor: "neutral", Theme: "neutral", Radius: "medium", ChartColor: "neutral", MenuAccent: "subtle"}); got != want {
 		t.Errorf("palette default selection = %#v, want %#v", got, want)
 	}
 	wantBlue, err := preset.ResolvePalette(preset.StyleNova, preset.PaletteSelection{
 		BaseColor:  "neutral",
 		Theme:      "blue",
 		Radius:     "medium",
+		ChartColor: "neutral",
 		MenuAccent: "subtle",
 	})
 	if err != nil {
@@ -119,6 +124,17 @@ func TestThemeEditorSchemaMatchesPresetAuthority(t *testing.T) {
 	}
 	if !reflect.DeepEqual(gotBlue.Light, wantBlue.Theme.Light) || !reflect.DeepEqual(gotBlue.Dark, wantBlue.Theme.Dark) {
 		t.Errorf("palette resolved neutral + blue = %#v, want %#v", gotBlue, wantBlue.Theme)
+	}
+	wantVioletLight, wantVioletDark, err := preset.ResolveChartColor("violet")
+	if err != nil {
+		t.Fatal(err)
+	}
+	gotViolet, ok := schema.Palette.ChartColors["violet"]
+	if !ok {
+		t.Fatal("palette chart colors missing violet")
+	}
+	if !reflect.DeepEqual(gotViolet.Light, wantVioletLight) || !reflect.DeepEqual(gotViolet.Dark, wantVioletDark) {
+		t.Errorf("palette chart color violet = %#v, want light=%#v dark=%#v", gotViolet, wantVioletLight, wantVioletDark)
 	}
 	for _, style := range preset.Styles() {
 		raw, ok := schema.Defaults[string(style)]
@@ -171,6 +187,10 @@ type paletteSchemaProbe struct {
 		Name  string `json:"name"`
 		Title string `json:"title"`
 	} `json:"menuAccents"`
+	ChartColors map[string]struct {
+		Light preset.ThemeValues `json:"light"`
+		Dark  preset.ThemeValues `json:"dark"`
+	} `json:"chartColors"`
 	Resolved map[string]map[string]struct {
 		Light preset.ThemeValues `json:"light"`
 		Dark  preset.ThemeValues `json:"dark"`
@@ -179,6 +199,7 @@ type paletteSchemaProbe struct {
 		BaseColor  string `json:"baseColor"`
 		Theme      string `json:"theme"`
 		Radius     string `json:"radius"`
+		ChartColor string `json:"chartColor"`
 		MenuAccent string `json:"menuAccent"`
 	} `json:"defaultSelection"`
 }

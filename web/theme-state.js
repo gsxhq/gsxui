@@ -84,16 +84,45 @@ function paletteResolution(schema, baseColor, theme) {
 // keys alone, independent of which base color or theme actually matches).
 const accentOverrideTokens = new Set(["accent", "accent-foreground"]);
 
+// chartLayerTokens mirrors catalog.go's chartLayerTokens: the five tokens
+// applyChartColor overwrites, excluded from matchedPaletteSelection's base
+// color/theme comparison for the same reason as accentOverrideTokens —
+// schema.palette.resolved is always baked at the "neutral" chart default.
+const chartLayerTokens = new Set(["chart-1", "chart-2", "chart-3", "chart-4", "chart-5"]);
+const baseThemeMatchExclusions = new Set([...accentOverrideTokens, ...chartLayerTokens]);
+
 function applyMenuAccent(values, accent) {
   if (accent !== "bold") return;
   values.accent = values.primary;
   values["accent-foreground"] = values["primary-foreground"];
 }
 
-function applyPaletteTheme(preset, schema, baseColor, theme, menuAccent) {
+function chartColorResolution(schema, chartColor) {
+  const resolution = schema.palette.chartColors[chartColor];
+  if (!resolution) {
+    throw new Error(`unsupported palette chart color ${String(chartColor)}`);
+  }
+  return resolution;
+}
+
+// applyChartColor overlays ONLY the five chart-1..5 tokens from the named
+// hue, independent of base color/theme (mirrors catalog.go's identical
+// overlay in resolvePalette). Unlike applyMenuAccent's "subtle", which
+// depends on the current base color's own accent value, chart color's
+// baseline (schema.palette.chartColors) is a flat, self-contained table —
+// so, unlike selectMenuAccent below, selectChartColor never needs to
+// collapse a custom base color/theme to reapply it.
+function applyChartColor(preset, schema, chartColor) {
+  const resolution = chartColorResolution(schema, chartColor);
+  Object.assign(preset.theme.light, clone(resolution.light));
+  Object.assign(preset.theme.dark, clone(resolution.dark));
+}
+
+function applyPaletteTheme(preset, schema, baseColor, theme, chartColor, menuAccent) {
   const resolution = paletteResolution(schema, baseColor, theme);
   preset.theme.light = clone(resolution.light);
   preset.theme.dark = clone(resolution.dark);
+  applyChartColor(preset, schema, chartColor);
   applyMenuAccent(preset.theme.light, menuAccent);
   applyMenuAccent(preset.theme.dark, menuAccent);
 }
@@ -123,8 +152,8 @@ function matchedPaletteSelection(preset, schema) {
   for (const [candidateBaseColor, themes] of Object.entries(schema.palette.resolved)) {
     for (const [candidateTheme, resolved] of Object.entries(themes)) {
       if (
-        themeValuesEqual(preset.theme.light, resolved.light, schema.tokenNames, accentOverrideTokens) &&
-        themeValuesEqual(preset.theme.dark, resolved.dark, schema.tokenNames, accentOverrideTokens)
+        themeValuesEqual(preset.theme.light, resolved.light, schema.tokenNames, baseThemeMatchExclusions) &&
+        themeValuesEqual(preset.theme.dark, resolved.dark, schema.tokenNames, baseThemeMatchExclusions)
       ) {
         baseColor = candidateBaseColor;
         theme = candidateTheme;
@@ -135,11 +164,16 @@ function matchedPaletteSelection(preset, schema) {
   }
   const radius = schema.palette.radii.find((choice) => choice.value === preset.radius)?.name ?? "custom";
   const menuAccent = matchMenuAccent(preset);
-  return { baseColor, theme, radius, menuAccent };
+  const chartColor = matchChartColor(preset, schema);
+  return { baseColor, theme, radius, chartColor, menuAccent };
 }
 
 function themeValuesEqual(a, b, tokenNames, excluded = null) {
   return tokenNames.every((name) => excluded?.has(name) || a[name] === b[name]);
+}
+
+function containsThemeValues(full, subset) {
+  return Object.entries(subset).every(([name, value]) => full[name] === value);
 }
 
 // matchMenuAccent has no "custom" outcome, unlike the other axes: bold is
@@ -156,6 +190,23 @@ function matchMenuAccent(preset) {
   return bold ? "bold" : "subtle";
 }
 
+// matchChartColor mirrors catalog.go's matchChartColor: it looks for a hue
+// whose chart-1..5 values (light and dark) exactly match the preset's,
+// independent of which base color or theme also matches — this can and
+// does return "custom" even when base color/theme match a catalog
+// combination exactly.
+function matchChartColor(preset, schema) {
+  for (const [name, resolution] of Object.entries(schema.palette.chartColors)) {
+    if (
+      containsThemeValues(preset.theme.light, resolution.light) &&
+      containsThemeValues(preset.theme.dark, resolution.dark)
+    ) {
+      return name;
+    }
+  }
+  return "custom";
+}
+
 export function replacePreset(state, preset, schema) {
   const next = cloneState(state);
   next.resolved = clone(preset);
@@ -167,7 +218,7 @@ export function replacePreset(state, preset, schema) {
 export function selectBaseColor(state, baseColor, schema) {
   const next = cloneState(state);
   const theme = themeSelectionForBase(state, baseColor, schema);
-  applyPaletteTheme(next.resolved, schema, baseColor, theme, state.selection.menuAccent);
+  applyPaletteTheme(next.resolved, schema, baseColor, theme, state.selection.chartColor, state.selection.menuAccent);
   next.selection.baseColor = baseColor;
   next.selection.theme = theme;
   next.previewResolved = null;
@@ -177,7 +228,7 @@ export function selectBaseColor(state, baseColor, schema) {
 export function selectTheme(state, theme, schema) {
   const next = cloneState(state);
   const baseColor = state.selection.baseColor === "custom" ? "neutral" : state.selection.baseColor;
-  applyPaletteTheme(next.resolved, schema, baseColor, theme, state.selection.menuAccent);
+  applyPaletteTheme(next.resolved, schema, baseColor, theme, state.selection.chartColor, state.selection.menuAccent);
   next.selection.baseColor = baseColor;
   next.selection.theme = theme;
   next.previewResolved = null;
@@ -190,10 +241,18 @@ export function selectMenuAccent(state, menuAccent, schema) {
   }
   const next = cloneState(state);
   const { baseColor, theme } = resolvedBaseColorAndTheme(state);
-  applyPaletteTheme(next.resolved, schema, baseColor, theme, menuAccent);
+  applyPaletteTheme(next.resolved, schema, baseColor, theme, state.selection.chartColor, menuAccent);
   next.selection.baseColor = baseColor;
   next.selection.theme = theme;
   next.selection.menuAccent = menuAccent;
+  next.previewResolved = null;
+  return next;
+}
+
+export function selectChartColor(state, chartColor, schema) {
+  const next = cloneState(state);
+  applyChartColor(next.resolved, schema, chartColor);
+  next.selection.chartColor = chartColor;
   next.previewResolved = null;
   return next;
 }
@@ -214,7 +273,7 @@ export function previewBaseColor(state, baseColor, schema) {
   const next = cloneState(state);
   const theme = themeSelectionForBase(state, baseColor, schema);
   next.previewResolved = clone(next.resolved);
-  applyPaletteTheme(next.previewResolved, schema, baseColor, theme, state.selection.menuAccent);
+  applyPaletteTheme(next.previewResolved, schema, baseColor, theme, state.selection.chartColor, state.selection.menuAccent);
   return next;
 }
 
@@ -222,7 +281,14 @@ export function previewTheme(state, theme, schema) {
   const next = cloneState(state);
   const baseColor = state.selection.baseColor === "custom" ? "neutral" : state.selection.baseColor;
   next.previewResolved = clone(next.resolved);
-  applyPaletteTheme(next.previewResolved, schema, baseColor, theme, state.selection.menuAccent);
+  applyPaletteTheme(next.previewResolved, schema, baseColor, theme, state.selection.chartColor, state.selection.menuAccent);
+  return next;
+}
+
+export function previewChartColor(state, chartColor, schema) {
+  const next = cloneState(state);
+  next.previewResolved = clone(next.resolved);
+  applyChartColor(next.previewResolved, schema, chartColor);
   return next;
 }
 
@@ -395,7 +461,12 @@ function decodeBase62(value) {
 
 function compactSelection(preset, schema) {
   const selection = matchedPaletteSelection(preset, schema);
-  if (selection.baseColor === "custom" || selection.theme === "custom" || selection.radius === "custom") {
+  if (
+    selection.baseColor === "custom" ||
+    selection.theme === "custom" ||
+    selection.radius === "custom" ||
+    selection.chartColor === "custom"
+  ) {
     return null;
   }
   const compact = schema.transport.compact;
@@ -405,6 +476,9 @@ function compactSelection(preset, schema) {
     theme: compact.themes.indexOf(selection.theme),
     radius: compact.radii.indexOf(selection.radius),
     menuAccent: compact.menuAccents.indexOf(selection.menuAccent),
+    // ChartColor reuses compact.themes for its index — see compact.go's
+    // identical reasoning (the same 24-hue catalogue, a disjoint token set).
+    chartColor: compact.themes.indexOf(selection.chartColor),
   };
   return Object.values(indexes).includes(-1) ? null : indexes;
 }
@@ -421,14 +495,15 @@ export function encodeShare(preset, schema) {
     (BigInt(selection.baseColor) << 4n) |
     (BigInt(selection.theme) << 8n) |
     (BigInt(selection.radius) << 13n) |
-    (BigInt(selection.menuAccent) << 16n);
+    (BigInt(selection.menuAccent) << 16n) |
+    (BigInt(selection.chartColor) << 18n);
   return `${schema.transport.compactPrefix}${encodeBase62(packed)}`;
 }
 
 function decodeCompactShare(code, schema, validators) {
   const payload = code.slice(schema.transport.compactPrefix.length);
   const packed = decodeBase62(payload);
-  if (packed >> 18n !== 0n) {
+  if (packed >> 23n !== 0n) {
     throw new Error("compact payload uses bits beyond the p1 schema");
   }
   const compact = schema.transport.compact;
@@ -438,6 +513,7 @@ function decodeCompactShare(code, schema, validators) {
     theme: Number((packed >> 8n) & 0x1fn),
     radius: Number((packed >> 13n) & 0x7n),
     menuAccent: Number((packed >> 16n) & 0x3n),
+    chartColor: Number((packed >> 18n) & 0x1fn),
   };
   for (const [name, index] of Object.entries(indexes)) {
     const values =
@@ -449,7 +525,9 @@ function decodeCompactShare(code, schema, validators) {
             ? compact.themes
             : name === "radius"
               ? compact.radii
-              : compact.menuAccents;
+              : name === "menuAccent"
+                ? compact.menuAccents
+                : compact.themes;
     if (index >= values.length) throw new Error(`compact payload uses unused ${name} index`);
   }
 
@@ -458,6 +536,7 @@ function decodeCompactShare(code, schema, validators) {
   const theme = compact.themes[indexes.theme];
   const radiusName = compact.radii[indexes.radius];
   const menuAccent = compact.menuAccents[indexes.menuAccent];
+  const chartColor = compact.themes[indexes.chartColor];
   const resolved = schema.palette.resolved[baseColor]?.[theme];
   if (!resolved) {
     throw new Error(`compact payload has invalid base-color/theme combination ${baseColor}/${theme}`);
@@ -468,6 +547,9 @@ function decodeCompactShare(code, schema, validators) {
   }
   const light = clone(resolved.light);
   const dark = clone(resolved.dark);
+  const chartResolution = chartColorResolution(schema, chartColor);
+  Object.assign(light, chartResolution.light);
+  Object.assign(dark, chartResolution.dark);
   applyMenuAccent(light, menuAccent);
   applyMenuAccent(dark, menuAccent);
   const preset = validatePreset(

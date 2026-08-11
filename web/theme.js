@@ -14,6 +14,7 @@ import {
   loadShareFromURL,
   manualCopyState,
   previewBaseColor,
+  previewChartColor,
   previewPreset,
   previewRadius,
   previewTheme,
@@ -21,6 +22,7 @@ import {
   redoHistory,
   replacePreset,
   resetThemeState,
+  selectChartColor,
   selectMenuAccent,
   selectMode,
   selectBaseColor,
@@ -238,7 +240,7 @@ function setup(schemaElement) {
       swatch.style.borderRadius = radius ? (choice?.value ?? "") : "";
     }
 
-    for (const kind of ["baseColor", "theme", "radius"]) {
+    for (const kind of ["baseColor", "theme", "radius", "chartColor"]) {
       const picker = document.querySelector(`[data-theme-picker="${kind}"]`);
       if (!picker) continue;
       const choices = pickerChoices(kind);
@@ -564,6 +566,7 @@ function setup(schemaElement) {
     const kind = input.closest("[data-theme-picker]").dataset.themePicker;
     if (kind === "baseColor") state = selectBaseColor(state, input.value, schema);
     else if (kind === "theme") state = selectTheme(state, input.value, schema);
+    else if (kind === "chartColor") state = selectChartColor(state, input.value, schema);
     else state = selectRadius(state, input.value, schema);
     commitHistory = pushHistory(commitHistory, state);
     render();
@@ -578,6 +581,7 @@ function setup(schemaElement) {
     const kind = input.closest("[data-theme-picker]").dataset.themePicker;
     if (kind === "baseColor") state = previewBaseColor(state, input.value, schema);
     else if (kind === "theme") state = previewTheme(state, input.value, schema);
+    else if (kind === "chartColor") state = previewChartColor(state, input.value, schema);
     else state = previewRadius(state, input.value, schema);
     render();
   }

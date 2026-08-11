@@ -32,7 +32,7 @@ func TestCompactShareExactCodes(t *testing.T) {
 		{
 			name:      "zero boundary",
 			style:     StyleNova,
-			selection: PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "none", MenuAccent: "subtle"},
+			selection: PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "none", ChartColor: "neutral", MenuAccent: "subtle"},
 			want:      "gsxui:p1:0",
 		},
 		{
@@ -50,8 +50,8 @@ func TestCompactShareExactCodes(t *testing.T) {
 		{
 			name:      "upper boundary",
 			style:     StyleMaia,
-			selection: PaletteSelection{BaseColor: "taupe", Theme: "yellow", Radius: "large", MenuAccent: "bold"},
-			want:      "gsxui:p1:Ozx",
+			selection: PaletteSelection{BaseColor: "taupe", Theme: "yellow", Radius: "large", ChartColor: "yellow", MenuAccent: "bold"},
+			want:      "gsxui:p1:PhUv",
 		},
 		{
 			// "H32" (2^16) used to be rejected by TestDecodeCompactShareRejectsInvalidTransport
@@ -61,8 +61,20 @@ func TestCompactShareExactCodes(t *testing.T) {
 			// illustration of the append-only rule at compact.go:26-27.
 			name:      "menu accent bold only",
 			style:     StyleNova,
-			selection: PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "none", MenuAccent: "bold"},
+			selection: PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "none", ChartColor: "neutral", MenuAccent: "bold"},
 			want:      "gsxui:p1:H32",
+		},
+		{
+			// "16C8" (2^18) used to be rejected as beyond the pre-Task-2a
+			// 18-bit schema (see the "bits beyond schema" case in
+			// TestDecodeCompactShareRejectsInvalidTransport below); chartColor's
+			// bit now claims that exact position, so it decodes to chart
+			// color "stone" with every other axis at its catalog default —
+			// the same append-only illustration one axis later.
+			name:      "chart color only",
+			style:     StyleNova,
+			selection: PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "none", ChartColor: "stone", MenuAccent: "subtle"},
+			want:      "gsxui:p1:16C8",
 		},
 	}
 
@@ -98,6 +110,7 @@ func TestCompactShareRoundTripsEveryCatalogCombination(t *testing.T) {
 					BaseColor:  baseColor,
 					Theme:      theme,
 					Radius:     compactTransportRadii[0],
+					ChartColor: "neutral",
 					MenuAccent: "subtle",
 				}
 				if themeIndex := indexString(compactTransportThemes, theme); themeIndex < len(compactTransportBaseColors) &&
@@ -146,7 +159,7 @@ func TestCompactShareRoundTripsEveryCatalogCombination(t *testing.T) {
 // combinatorial sweep's runtime bounded.
 func TestCompactShareMenuAccentRoundTrips(t *testing.T) {
 	for _, accent := range compactMenuAccents {
-		selection := PaletteSelection{BaseColor: "taupe", Theme: "yellow", Radius: "large", MenuAccent: accent}
+		selection := PaletteSelection{BaseColor: "taupe", Theme: "yellow", Radius: "large", ChartColor: "neutral", MenuAccent: accent}
 		value, err := ResolvePalette(StyleRhea, selection)
 		if err != nil {
 			t.Fatalf("ResolvePalette(%#v): %v", selection, err)
@@ -167,6 +180,39 @@ func TestCompactShareMenuAccentRoundTrips(t *testing.T) {
 		}
 		if got := MatchPalette(got).MenuAccent; got != accent {
 			t.Fatalf("MatchPalette(DecodeShare(%q)).MenuAccent = %q, want %q", code, got, accent)
+		}
+	}
+}
+
+// TestCompactShareChartColorRoundTrips exercises the chart color axis
+// through the compact transport, separately from
+// TestCompactShareRoundTripsEveryCatalogCombination (fixed at "neutral").
+// ChartColor reuses compactThemes for its index (compact.go's own
+// documented reasoning), so this also proves that sharing an array between
+// two PaletteSelection fields round-trips correctly.
+func TestCompactShareChartColorRoundTrips(t *testing.T) {
+	for _, chartColor := range compactThemes {
+		selection := PaletteSelection{BaseColor: "stone", Theme: "blue", Radius: "small", ChartColor: chartColor, MenuAccent: "subtle"}
+		value, err := ResolvePalette(StyleLyra, selection)
+		if err != nil {
+			t.Fatalf("ResolvePalette(%#v): %v", selection, err)
+		}
+		code, err := EncodeShare(value)
+		if err != nil {
+			t.Fatalf("EncodeShare(%#v): %v", selection, err)
+		}
+		if !strings.HasPrefix(code, "gsxui:p1:") {
+			t.Fatalf("EncodeShare(%#v) = %q, want compact code", selection, code)
+		}
+		got, err := DecodeShare(code)
+		if err != nil {
+			t.Fatalf("DecodeShare(%q): %v", code, err)
+		}
+		if !presetsEqual(got, value) {
+			t.Fatalf("DecodeShare(%q) = %#v, want %#v", code, got, value)
+		}
+		if got := MatchPalette(got).ChartColor; got != chartColor {
+			t.Fatalf("MatchPalette(DecodeShare(%q)).ChartColor = %q, want %q", code, got, chartColor)
 		}
 	}
 }
@@ -244,8 +290,9 @@ func TestDecodeCompactShareRejectsInvalidTransport(t *testing.T) {
 		{name: "unused theme index", code: "gsxui:p1:1bc", want: "theme"},
 		{name: "unused radius index", code: "gsxui:p1:8WW", want: "radius"},
 		{name: "unused menu accent index", code: "gsxui:p1:Y64", want: "menu accent"},
+		{name: "unused chart color index", code: "gsxui:p1:QOh6", want: "chart color"},
 		{name: "invalid base and theme pair", code: "gsxui:p1:G", want: "combination"},
-		{name: "bits beyond schema", code: "gsxui:p1:16C8", want: "schema"},
+		{name: "bits beyond schema", code: "gsxui:p1:ZCG8", want: "schema"},
 		{name: "leading zero", code: "gsxui:p1:04GG", want: "canonical"},
 	}
 

@@ -11,6 +11,7 @@ type ThemeSchema = {
       string,
       Record<string, { light: Record<string, string>; dark: Record<string, string> }>
     >;
+    chartColors: Record<string, { light: Record<string, string>; dark: Record<string, string> }>;
   };
 };
 
@@ -63,13 +64,13 @@ function shareFromInit(command: string) {
   return match[1];
 }
 
-function picker(page: Page, kind: "baseColor" | "theme" | "radius") {
+function picker(page: Page, kind: "baseColor" | "theme" | "radius" | "chartColor") {
   return page.locator(`[data-theme-picker="${kind}"]`);
 }
 
 async function choose(
   page: Page,
-  kind: "baseColor" | "theme" | "radius",
+  kind: "baseColor" | "theme" | "radius" | "chartColor",
   accessibleName: string,
 ) {
   const control = picker(page, kind);
@@ -82,7 +83,7 @@ async function choose(
 
 async function selectionValue(
   page: Page,
-  kind: "baseColor" | "theme" | "radius",
+  kind: "baseColor" | "theme" | "radius" | "chartColor",
 ) {
   return picker(page, kind).locator("[data-theme-selection-value]").textContent();
 }
@@ -173,7 +174,12 @@ test("pickers expose accessible catalog choices and no raw token inputs", async 
   await expect(radius.getByRole("radio")).toHaveCount(4);
   await expect(radius.getByRole("radio", { name: "Medium", exact: true })).toBeChecked();
 
-  for (const kind of ["baseColor", "theme", "radius"] as const) {
+  const chartColor = picker(page, "chartColor");
+  await chartColor.locator("[data-theme-picker-trigger]").click();
+  await expect(chartColor.getByRole("radio")).toHaveCount(18);
+  await expect(chartColor.getByRole("radio", { name: "Neutral", exact: true })).toBeChecked();
+
+  for (const kind of ["baseColor", "theme", "radius", "chartColor"] as const) {
     await expect(picker(page, kind).locator("[data-theme-selection-swatch]")).toBeVisible();
     await expect(picker(page, kind).locator("[data-theme-choice-swatch]")).not.toHaveCount(0);
   }
@@ -280,6 +286,37 @@ test("menu accent tabs overlay accent from primary and survive a theme change", 
 
   await subtleTab.click();
   await expect.poll(() => iframeVariable(page, "accent")).not.toBe(await iframeVariable(page, "primary"));
+});
+
+test("chart color picker overlays chart-1..5 independent of theme and survives a theme change", async ({
+  page,
+}) => {
+  await page.goto("/theme");
+  const catalog = await schema(page);
+
+  const beforeChart1 = await iframeVariable(page, "chart-1");
+  const beforePrimary = await iframeVariable(page, "primary");
+  await expect(selectionValue(page, "chartColor")).resolves.toBe("Neutral");
+
+  await choose(page, "chartColor", "Violet");
+  await expect(selectionValue(page, "chartColor")).resolves.toBe("Violet");
+  // Base color/theme picker selections are untouched by the chart color
+  // axis — it is independent, not a collapse to a matching theme.
+  await expect(selectionValue(page, "baseColor")).resolves.toBe("Neutral");
+  await expect(selectionValue(page, "theme")).resolves.toBe("Neutral");
+  await expect.poll(() => iframeVariable(page, "primary")).toBe(beforePrimary);
+  await expect
+    .poll(() => iframeVariable(page, "chart-1"))
+    .toBe(catalog.palette.chartColors.violet.light["chart-1"]);
+  expect(await iframeVariable(page, "chart-1")).not.toBe(beforeChart1);
+
+  // The override survives an unrelated theme change instead of being wiped
+  // by the fresh base color/theme resolution.
+  await choose(page, "theme", "Blue");
+  await expect.poll(() => iframeVariable(page, "primary")).not.toBe(beforePrimary);
+  await expect
+    .poll(() => iframeVariable(page, "chart-1"))
+    .toBe(catalog.palette.chartColors.violet.light["chart-1"]);
 });
 
 test("desktop hover previews only the iframe and restores on dismissal or pointer leave", async ({

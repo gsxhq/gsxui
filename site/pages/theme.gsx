@@ -46,6 +46,12 @@ type themePaletteSchema struct {
 	Themes           map[string][]themePaletteChoiceSchema            `json:"themes"`
 	Radii            []themeRadiusChoiceSchema                        `json:"radii"`
 	MenuAccents      []themeMenuAccentChoiceSchema                    `json:"menuAccents"`
+	// ChartColors is flat by hue name (not nested by base color like
+	// Resolved): the chart color axis overlays independently of base
+	// color, and its picker reuses Themes[baseColor]'s own choices for
+	// display, so this table only needs to answer "what are chart-1..5 for
+	// this name" regardless of which base color's picker view showed it.
+	ChartColors      map[string]themePaletteResolvedSchema `json:"chartColors"`
 	Resolved         map[string]map[string]themePaletteResolvedSchema `json:"resolved"`
 	DefaultSelection themePaletteSelectionSchema                      `json:"defaultSelection"`
 }
@@ -76,6 +82,7 @@ type themePaletteSelectionSchema struct {
 	BaseColor  string `json:"baseColor"`
 	Theme      string `json:"theme"`
 	Radius     string `json:"radius"`
+	ChartColor string `json:"chartColor"`
 	MenuAccent string `json:"menuAccent"`
 }
 
@@ -130,6 +137,7 @@ func themePaletteSchemaValue() themePaletteSchema {
 		Themes:           make(map[string][]themePaletteChoiceSchema),
 		Radii:            themeRadiusChoiceSchemaValues(preset.RadiusChoices()),
 		MenuAccents:      themeMenuAccentChoiceSchemaValues(preset.MenuAccentChoices()),
+		ChartColors:      make(map[string]themePaletteResolvedSchema),
 		Resolved:         make(map[string]map[string]themePaletteResolvedSchema),
 		DefaultSelection: themePaletteSelectionSchemaFromPreset(selection),
 	}
@@ -141,13 +149,15 @@ func themePaletteSchemaValue() themePaletteSchema {
 		schema.Themes[baseColor.Name] = themePaletteChoiceSchemaValues(themes)
 		schema.Resolved[baseColor.Name] = make(map[string]themePaletteResolvedSchema, len(themes))
 		for _, theme := range themes {
-			// Resolved swatches always use the default menu accent
-			// ("subtle"): this matrix backs the base color/theme pickers'
-			// hue previews, not the independent menu-accent control.
+			// Resolved swatches always use the default chart color and
+			// menu accent ("neutral"/"subtle"): this matrix backs the base
+			// color/theme pickers' hue previews, not the independent chart
+			// color or menu-accent controls.
 			resolved, err := preset.ResolvePalette(preset.StyleNova, preset.PaletteSelection{
 				BaseColor:  baseColor.Name,
 				Theme:      theme.Name,
 				Radius:     selection.Radius,
+				ChartColor: selection.ChartColor,
 				MenuAccent: selection.MenuAccent,
 			})
 			if err != nil {
@@ -158,6 +168,13 @@ func themePaletteSchemaValue() themePaletteSchema {
 				Dark:  resolved.Theme.Dark,
 			}
 		}
+	}
+	for _, chartColor := range preset.ChartColorChoices() {
+		light, dark, err := preset.ResolveChartColor(chartColor.Name)
+		if err != nil {
+			panic(err)
+		}
+		schema.ChartColors[chartColor.Name] = themePaletteResolvedSchema{Light: light, Dark: dark}
 	}
 	return schema
 }
@@ -191,6 +208,7 @@ func themePaletteSelectionSchemaFromPreset(selection preset.PaletteSelection) th
 		BaseColor:  selection.BaseColor,
 		Theme:      selection.Theme,
 		Radius:     selection.Radius,
+		ChartColor: selection.ChartColor,
 		MenuAccent: selection.MenuAccent,
 	}
 }
@@ -414,7 +432,7 @@ component themeEditor(previewURL string, workspace bool) {
 							</div>
 						</div>
 					</div>
-					<div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+					<div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
 						<ThemePicker
 							name="baseColor"
 							label="Base color"
@@ -432,6 +450,12 @@ component themeEditor(previewURL string, workspace bool) {
 							label="Radius"
 							selected="medium"
 							choices={themeRadiusPickerChoices(preset.RadiusChoices())}
+						/>
+						<ThemePicker
+							name="chartColor"
+							label="Chart color"
+							selected="neutral"
+							choices={themePickerChoices(mustThemePickerChoices("neutral"))}
 						/>
 					</div>
 				</section>
