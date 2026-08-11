@@ -4,7 +4,7 @@
    onto gsxui's shape-declared classes. */
 @layer components {
   .gsxui-recipe-alert {
-    @apply grid gap-0.5 rounded-lg border px-4 py-3 text-left text-sm has-data-[slot=alert-action]:relative has-data-[slot=alert-action]:pr-18 has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2.5 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg]:text-current *:[svg:not([class*='size-'])]:size-4;
+    @apply grid gap-0.5 rounded-lg border px-4 py-3 text-left text-sm has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2.5 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg]:text-current *:[svg:not([class*='size-'])]:size-4;
   }
 
   .gsxui-recipe-alert-variant-default {
@@ -19,7 +19,8 @@
     @apply font-medium group-has-[>svg]/alert:col-start-2;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-alert-description {
-    @apply text-muted-foreground text-sm text-balance md:text-pretty [&_p:not(:last-child)]:mb-4;
+    @apply text-muted-foreground text-sm text-balance md:text-pretty [&_p:not(:last-child)]:mb-4 grid;
   }
 }

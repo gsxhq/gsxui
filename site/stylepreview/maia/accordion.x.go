@@ -95,7 +95,7 @@ func _gsxrenderAccordionTrigger(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, chil
 	}
 //line accordion.gsx:28:2
 	_gsxgw.S("<summary class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-6 p-4 text-left text-sm font-medium hover:underline"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-6 p-4 text-left text-sm font-medium hover:underline flex"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "summary", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-accordion-trigger"})

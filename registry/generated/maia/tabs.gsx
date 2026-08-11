@@ -35,14 +35,14 @@ import "github.com/gsxhq/gsx"
 // their own doc comments), collapsing nova's matching inline-start/
 // inline-end value (both px-1) into one has-[>svg]:px-1.
 component Tabs(value string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-value={value} class={ "gap-2" } { attrs... } data-gsxui-slot-tabs>{ children }</div>
+	<div data-value={value} class={ "gap-2 flex flex-col" } { attrs... } data-gsxui-slot-tabs>{ children }</div>
 }
 
 component TabsList(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="tablist"
 		class={
-			"rounded-4xl p-[3px] group-data-horizontal/tabs:h-9 group-data-vertical/tabs:rounded-2xl data-[variant=line]:rounded-none"
+			"rounded-4xl p-[3px] group-data-horizontal/tabs:h-9 group-data-vertical/tabs:rounded-2xl data-[variant=line]:rounded-none inline-flex"
 		}
 		{ attrs... }
 		data-gsxui-slot-tabs-list
@@ -73,7 +73,7 @@ component TabsTrigger(value string, selected bool, children gsx.Node, attrs gsx.
 		aria-selected={selected}
 		tabindex={tabindex}
 		class={
-			"gap-1.5 rounded-xl border border-transparent px-2 py-1 text-sm font-medium group-data-vertical/tabs:px-2.5 group-data-vertical/tabs:py-1.5 [&_svg:not([class*='size-'])]:size-4 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5"
+			"gap-1.5 rounded-xl border border-transparent px-2 py-1 text-sm font-medium group-data-vertical/tabs:px-2.5 group-data-vertical/tabs:py-1.5 [&_svg:not([class*='size-'])]:size-4 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 inline-flex"
 		}
 		{ attrs... }
 		data-gsxui-slot-tabs-trigger

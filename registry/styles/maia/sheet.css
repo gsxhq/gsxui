@@ -32,12 +32,14 @@
     @apply size-4;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-sheet-header {
-    @apply gap-1.5 p-6;
+    @apply gap-1.5 p-6 flex flex-col;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-sheet-footer {
-    @apply gap-2 p-6;
+    @apply gap-2 p-6 flex flex-col;
   }
 
   .gsxui-recipe-sheet-title {

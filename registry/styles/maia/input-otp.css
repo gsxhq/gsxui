@@ -3,8 +3,9 @@
    internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
    onto gsxui's shape-declared classes. */
 @layer components {
+  /* carried: no upstream counterpart */
   .gsxui-recipe-input-otp {
-    @apply gap-2;
+    @apply gap-2 flex;
   }
 
   /* carried: no upstream counterpart */
@@ -12,12 +13,14 @@
     @apply cursor-text disabled:cursor-not-allowed;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-input-otp-group {
-    @apply has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 has-aria-invalid:border-destructive rounded-4xl has-aria-invalid:ring-[3px];
+    @apply has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 has-aria-invalid:border-destructive rounded-4xl has-aria-invalid:ring-[3px] flex;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-input-otp-slot {
-    @apply bg-input/30 border-input data-[active=true]:border-ring data-[active=true]:ring-ring/50 data-[active=true]:aria-invalid:ring-destructive/20 dark:data-[active=true]:aria-invalid:ring-destructive/40 aria-invalid:border-destructive data-[active=true]:aria-invalid:border-destructive size-9 border-y border-r text-sm transition-all outline-none first:rounded-l-4xl first:border-l last:rounded-r-4xl data-[active=true]:ring-[3px];
+    @apply bg-input/30 border-input data-[active=true]:border-ring data-[active=true]:ring-ring/50 data-[active=true]:aria-invalid:ring-destructive/20 dark:data-[active=true]:aria-invalid:ring-destructive/40 aria-invalid:border-destructive data-[active=true]:aria-invalid:border-destructive size-9 border-y border-r text-sm transition-all outline-none first:rounded-l-4xl first:border-l last:rounded-r-4xl data-[active=true]:ring-[3px] flex;
   }
 
   .gsxui-recipe-input-otp-separator {

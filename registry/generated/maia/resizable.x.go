@@ -268,7 +268,7 @@ func ResizableHandle(orientation string, withHandle bool, attrs gsx.Attrs) _gsxr
 		if withHandle {
 //line resizable.gsx:210:4
 			_gsxgw.S("<div class=\"")
-			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-border h-6 w-1 rounded-lg"))
+			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-border h-6 w-1 rounded-lg flex"))
 			_gsxgw.S("\"")
 			_gsxgw.BoolAttr("data-gsxui-slot-resizable-handle-grip", true)
 			_gsxgw.S("></div>")

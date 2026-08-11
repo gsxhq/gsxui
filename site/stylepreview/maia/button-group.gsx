@@ -35,13 +35,8 @@ component ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) {
 		role="group"
 		data-orientation={orientation |> default("horizontal")}
 		class={
-			"has-[>[data-slot=button-group]]:gap-2 has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-4xl",
-			switch orientation {
-			case "vertical":
-				"[&>[data-slot]:not(:has(~[data-slot]))]:rounded-b-4xl!"
-			default:
-				"[&>[data-slot]:not(:has(~[data-slot]))]:rounded-r-4xl!"
-			}
+			"flex w-fit items-stretch [&>*:focus-visible]:relative [&>*:focus-visible]:z-10 [&>input]:flex-1",
+			switch orientation { case "vertical": "flex-col" default: "flex-row" }
 		}
 		{ attrs... }
 		data-gsxui-slot-button-group
@@ -56,7 +51,7 @@ component ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) {
 // as-is rather than "fixed", per the token-for-token rule.
 component ButtonGroupText(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "bg-muted gap-2 rounded-4xl border px-2.5 text-sm font-medium [&_svg:not([class*='size-'])]:size-4" }
+		class={ "bg-muted gap-2 rounded-4xl border px-2.5 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 flex" }
 		{ attrs... }
 		data-gsxui-slot-button-group-text
 	>

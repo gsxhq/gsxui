@@ -31,12 +31,14 @@
     @apply bg-muted mx-auto mt-4 hidden h-1.5 w-[100px] shrink-0 rounded-full;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-drawer-header {
-    @apply gap-0.5 p-4 md:gap-1.5 md:text-left;
+    @apply gap-0.5 p-4 md:gap-1.5 md:text-left flex flex-col;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-drawer-footer {
-    @apply gap-2 p-4;
+    @apply gap-2 p-4 flex flex-col;
   }
 
   .gsxui-recipe-drawer-title {

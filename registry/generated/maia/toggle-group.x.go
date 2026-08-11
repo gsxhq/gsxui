@@ -116,7 +116,7 @@ func ToggleGroup(groupType string, variant string, size string, spacing string, 
 			_gsxgw.AttrValue(_gsxrt.StyleValue(string(sp)))
 			_gsxgw.S("\"")
 		}
-		_gsxv0 := "data-[spacing=0]:data-[variant=outline]:rounded-4xl"
+		_gsxv0 := "data-[spacing=0]:data-[variant=outline]:rounded-4xl flex"
 		var _gsxv1 string
 		switch size {
 		case "sm":

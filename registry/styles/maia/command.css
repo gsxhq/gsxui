@@ -3,24 +3,27 @@
    internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
    onto gsxui's shape-declared classes. */
 @layer components {
+  /* carried: no upstream counterpart */
   .gsxui-recipe-command {
-    @apply bg-popover text-popover-foreground rounded-4xl p-1;
+    @apply bg-popover text-popover-foreground rounded-4xl p-1 flex flex-col;
   }
 
   .gsxui-recipe-command-dialog-content {
-    @apply rounded-4xl! p-0;
+    @apply rounded-4xl p-0;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-command-input-wrapper {
-    @apply p-1 pb-0 bg-input/30 h-9 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50;
+    @apply p-1 pb-0 bg-input/30 h-9 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50 flex;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-command-input {
-    @apply w-full text-sm;
+    @apply w-full text-sm flex;
   }
 
   .gsxui-recipe-command-list {
-    @apply no-scrollbar max-h-72 scroll-py-1 outline-none;
+    @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-h-72 scroll-py-1 outline-none;
   }
 
   .gsxui-recipe-command-empty {
@@ -41,7 +44,7 @@
   }
 
   .gsxui-recipe-command-item {
-    @apply data-selected:bg-muted data-selected:text-foreground data-selected:*:[svg]:text-foreground relative flex cursor-default items-center gap-2 rounded-lg px-3 py-2 text-sm outline-hidden select-none in-data-[slot=dialog-content]:rounded-2xl [&_svg:not([class*='size-'])]:size-4;
+    @apply data-selected:bg-muted data-selected:text-foreground data-selected:*:[svg]:text-foreground relative flex cursor-default items-center gap-2 rounded-lg px-3 py-2 text-sm outline-hidden select-none [[data-gsxui-slot-dialog-content]_&]:rounded-2xl [&_svg:not([class*='size-'])]:size-4;
   }
 
   .gsxui-recipe-command-shortcut {

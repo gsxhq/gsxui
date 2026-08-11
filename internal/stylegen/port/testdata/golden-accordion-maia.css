@@ -7,8 +7,9 @@
     @apply data-open:bg-muted/50 not-last:border-b;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-accordion-trigger {
-    @apply gap-6 p-4 text-left text-sm font-medium hover:underline;
+    @apply gap-6 p-4 text-left text-sm font-medium hover:underline flex;
   }
 
   .gsxui-recipe-accordion-trigger-icon {

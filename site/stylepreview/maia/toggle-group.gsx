@@ -80,7 +80,7 @@ component ToggleGroup(groupType string, variant string, size string, spacing str
 		role={role}
 		style=css`--gap: @{sp}`
 		class={
-			"data-[spacing=0]:data-[variant=outline]:rounded-4xl",
+			"data-[spacing=0]:data-[variant=outline]:rounded-4xl flex",
 			switch size { case "sm": "rounded-[min(var(--radius-md),10px)]" case "lg": "rounded-lg" default: "rounded-lg" }
 		}
 		{ attrs... }

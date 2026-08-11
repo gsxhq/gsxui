@@ -13,7 +13,7 @@ import "github.com/gsxhq/gsx"
 
 component Avatar(children gsx.Node, attrs gsx.Attrs) {
 	<span
-		class={ "size-8 rounded-full after:rounded-full data-[size=lg]:size-10 data-[size=sm]:size-6" }
+		class={ "size-8 rounded-full after:rounded-full data-[size=lg]:size-10 data-[size=sm]:size-6 flex" }
 		{ attrs... }
 		data-gsxui-slot-avatar
 	>
@@ -33,7 +33,7 @@ component AvatarImage(src string, alt string, attrs gsx.Attrs) {
 
 component AvatarFallback(children gsx.Node, attrs gsx.Attrs) {
 	<span
-		class={ "bg-muted text-muted-foreground rounded-full" }
+		class={ "bg-muted text-muted-foreground rounded-full flex" }
 		{ attrs... }
 		data-gsxui-slot-avatar-fallback
 	>

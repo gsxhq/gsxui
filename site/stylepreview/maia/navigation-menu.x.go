@@ -66,7 +66,7 @@ func _gsxrenderNavigationMenu(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childr
 	}
 //line navigation-menu.gsx:48:2
 	_gsxgw.S("<nav class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("max-w-max"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("max-w-max flex"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	if !attrs.Has("data-viewport") {
 		_gsxgw.S(" data-viewport=\"false\"")
@@ -101,7 +101,7 @@ func _gsxrenderNavigationMenuList(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, ch
 	}
 //line navigation-menu.gsx:63:2
 	_gsxgw.S("<ul class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-0"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-0 flex"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "ul", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu-list"})
@@ -203,7 +203,7 @@ func _gsxrenderNavigationMenuTrigger(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer,
 	}
 //line navigation-menu.gsx:121:2
 	_gsxgw.S("<button class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("hover:bg-muted focus:bg-muted data-open:hover:bg-muted data-open:focus:bg-muted data-open:bg-muted/50 focus-visible:ring-ring/50 data-popup-open:bg-muted/50 data-popup-open:hover:bg-muted rounded-2xl px-4.5 py-2.5 text-sm font-medium transition-all focus-visible:ring-[3px] focus-visible:outline-1 disabled:opacity-50"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("hover:bg-muted focus:bg-muted data-open:hover:bg-muted data-open:focus:bg-muted data-open:bg-muted/50 focus-visible:ring-ring/50 data-popup-open:bg-muted/50 data-popup-open:hover:bg-muted rounded-2xl px-4.5 py-2.5 text-sm font-medium transition-all focus-visible:ring-[3px] focus-visible:outline-1 disabled:opacity-50 inline-flex"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	if !attrs.Has("type") {
 		_gsxgw.S(" type=\"button\"")
@@ -372,7 +372,7 @@ func _gsxrenderNavigationMenuLink(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, ac
 	}
 //line navigation-menu.gsx:249:2
 	_gsxgw.S("<a")
-	_gsxv0 := "focus-visible:ring-ring/50 hover:bg-muted focus:bg-muted flex items-center gap-1.5 rounded-2xl p-3 text-sm transition-all outline-none focus-visible:ring-[3px] focus-visible:outline-1 [&_svg:not([class*='size-'])]:size-4 in-data-[slot=navigation-menu-content]:rounded-xl"
+	_gsxv0 := "focus-visible:ring-ring/50 hover:bg-muted focus:bg-muted flex items-center gap-1.5 rounded-2xl p-3 text-sm transition-all outline-none focus-visible:ring-[3px] focus-visible:outline-1 [&_svg:not([class*='size-'])]:size-4 [[data-gsxui-slot-navigation-menu-content]_&]:rounded-xl"
 	var _gsxv1 string
 	switch linkVariant {
 	case "trigger":
@@ -466,7 +466,7 @@ func _gsxrenderNavigationMenuIndicator(ctx _gsxctx.Context, _gsxgw *_gsxrt.Write
 	}
 //line navigation-menu.gsx:304:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in flex"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	if !attrs.Has("data-state") {
 		_gsxgw.S(" data-state=\"hidden\"")

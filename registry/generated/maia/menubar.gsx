@@ -167,7 +167,7 @@ import (
 // already replaced site-wide before this component existed.
 component Menubar(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "h-9 rounded-4xl border p-1" }
+		class={ "h-9 rounded-4xl border p-1 flex" }
 		role="menubar"
 		{ attrs... }
 		data-gsxui-slot-menubar
@@ -205,7 +205,7 @@ component MenubarMenu(children gsx.Node, attrs gsx.Attrs) {
 // which has no such selector to key at all.
 component MenubarTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<button
-		class={ "hover:bg-muted aria-expanded:bg-muted rounded-xl px-2 py-0.75 text-sm font-medium" }
+		class={ "hover:bg-muted aria-expanded:bg-muted rounded-xl px-2 py-0.75 text-sm font-medium flex" }
 		type="button"
 		aria-haspopup="menu"
 		aria-expanded="false"
@@ -263,10 +263,10 @@ component MenubarContent(children gsx.Node, attrs gsx.Attrs) {
 component MenubarItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2.5 rounded-xl px-3 py-2 text-sm data-disabled:opacity-50 data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4",
+			"focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2.5 rounded-xl px-3 py-2 text-sm data-disabled:opacity-50 data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex",
 			switch variant {
 			case "destructive":
-				"text-destructive focus:bg-destructive/10 focus:text-destructive *:[svg]:text-destructive!"
+				"text-destructive focus:bg-destructive/10 focus:text-destructive *:[svg]:text-destructive"
 			default:
 				"text-foreground"
 			}
@@ -312,7 +312,7 @@ component MenubarGroup(children gsx.Node, attrs gsx.Attrs) {
 component MenubarCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-2.5 rounded-xl py-2 pr-3 pl-9.5 text-sm data-inset:pl-9.5"
+			"focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-2.5 rounded-xl py-2 pr-3 pl-9.5 text-sm data-inset:pl-9.5 flex"
 		}
 		role="menuitemcheckbox"
 		data-value={value}
@@ -360,7 +360,7 @@ component MenubarRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) {
 component MenubarRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-2.5 rounded-xl py-2 pr-3 pl-9.5 text-sm data-disabled:opacity-50 data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4"
+			"focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-2.5 rounded-xl py-2 pr-3 pl-9.5 text-sm data-disabled:opacity-50 data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex"
 		}
 		role="menuitemradio"
 		data-value={value}
@@ -467,7 +467,7 @@ component MenubarSub(children gsx.Node, attrs gsx.Attrs) {
 component MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"focus:bg-accent focus:text-accent-foreground data-open:bg-accent data-open:text-accent-foreground gap-2 rounded-xl px-3 py-2 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4"
+			"focus:bg-accent focus:text-accent-foreground data-open:bg-accent data-open:text-accent-foreground gap-2 rounded-xl px-3 py-2 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex"
 		}
 		role="menuitem"
 		aria-haspopup="menu"

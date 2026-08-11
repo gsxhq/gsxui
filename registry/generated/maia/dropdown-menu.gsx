@@ -99,7 +99,7 @@ component DropdownMenuContent(children gsx.Node, attrs gsx.Attrs) {
 component DropdownMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2.5 rounded-xl px-3 py-2 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4",
+			"focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2.5 rounded-xl px-3 py-2 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex",
 			switch variant {
 			case "destructive":
 				"text-destructive focus:bg-destructive/10 focus:text-destructive *:[svg]:text-destructive"
@@ -154,7 +154,7 @@ component DropdownMenuGroup(children gsx.Node, attrs gsx.Attrs) {
 component DropdownMenuCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-2.5 rounded-xl py-2 pr-8 pl-3 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4"
+			"focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-2.5 rounded-xl py-2 pr-8 pl-3 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex"
 		}
 		role="menuitemcheckbox"
 		data-value={value}
@@ -211,7 +211,7 @@ component DropdownMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attr
 component DropdownMenuRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-2.5 rounded-xl py-2 pr-8 pl-3 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4"
+			"focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-2.5 rounded-xl py-2 pr-8 pl-3 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex"
 		}
 		role="menuitemradio"
 		data-value={value}
@@ -298,7 +298,7 @@ component DropdownMenuSub(children gsx.Node, attrs gsx.Attrs) {
 component DropdownMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"focus:bg-accent focus:text-accent-foreground data-open:bg-accent data-open:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2 rounded-xl px-3 py-2 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4"
+			"focus:bg-accent focus:text-accent-foreground data-open:bg-accent data-open:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2 rounded-xl px-3 py-2 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex"
 		}
 		role="menuitem"
 		aria-haspopup="menu"

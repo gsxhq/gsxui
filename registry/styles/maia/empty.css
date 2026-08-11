@@ -3,16 +3,19 @@
    internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
    onto gsxui's shape-declared classes. */
 @layer components {
+  /* carried: no upstream counterpart */
   .gsxui-recipe-empty {
-    @apply gap-4 rounded-lg border-dashed p-12;
+    @apply gap-4 rounded-lg border-dashed p-12 flex flex-col;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-empty-header {
-    @apply gap-2;
+    @apply gap-2 flex flex-col;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-empty-icon {
-    @apply mb-2;
+    @apply mb-2 flex;
   }
 
   .gsxui-recipe-empty-icon-variant-default {
@@ -31,7 +34,8 @@
     @apply text-sm/relaxed;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-empty-content {
-    @apply gap-4 text-sm;
+    @apply gap-4 text-sm flex flex-col;
   }
 }

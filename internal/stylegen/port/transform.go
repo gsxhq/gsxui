@@ -130,7 +130,23 @@ func Transform(shape recipe.Shape, sec Section, fallback recipe.Style) (Ported, 
 
 		variant := overrideVariant(shape.Component, effectiveClass)
 		for _, token := range rule.Utilities {
+			token = stripImportantModifier(token)
+			if token == noScrollbarUtility {
+				for _, u := range noScrollbarExpansion {
+					put(u)
+				}
+				continue
+			}
 			token = rewriteMarkerVariant(shape.Component, token)
+			if slotAttributeDropped(shape.Component, token) {
+				continue
+			}
+			rewritten, resolvedSlots := rewriteSlotAttributeReferences(allShapes, token)
+			if !resolvedSlots {
+				unmapped = append(unmapped, fmt.Sprintf("%s: %s", rule.Class, token))
+				continue
+			}
+			token = rewritten
 			if variant != "" {
 				token = insertVariant(token, variant)
 			}
@@ -178,7 +194,7 @@ func Transform(shape recipe.Shape, sec Section, fallback recipe.Style) (Ported, 
 				put(classified.Raw)
 
 			default: // KindPlain
-				put(classified.Raw)
+				put(gateNativeVisibility(shape.Component, slot, dimension, classified.Raw))
 			}
 		}
 
@@ -193,13 +209,17 @@ func Transform(shape recipe.Shape, sec Section, fallback recipe.Style) (Ported, 
 
 	var missing []string
 	for _, slot := range shape.Slots {
-		if slot.Base && len(ported.Base[slot.Name]) == 0 {
+		if slot.Base {
 			class := shape.BaseClass(slot.Name)
-			if rule, ok := fallback.Lookup(class); ok {
-				ported.Base[slot.Name] = rule.Utilities
-				ported.Carried[class] = true
+			if len(ported.Base[slot.Name]) == 0 {
+				if rule, ok := fallback.Lookup(class); ok {
+					ported.Base[slot.Name] = rule.Utilities
+					ported.Carried[class] = true
+				} else {
+					missing = append(missing, fmt.Sprintf("slot %s: no upstream rule and no nova fallback (class %s)", slotLabel(slot.Name), class))
+				}
 			} else {
-				missing = append(missing, fmt.Sprintf("slot %s: no upstream rule and no nova fallback (class %s)", slotLabel(slot.Name), class))
+				ported.carryMissingDisplayUtility(slot.Name, class, fallback)
 			}
 		}
 		for _, dimension := range slot.Dimensions {
@@ -367,6 +387,68 @@ func decodeUpstreamValue(shape recipe.Shape, bogusSlot string) (slot, dimension,
 		return candidates[0].slot, candidates[0].dimension, candidates[0].value, true
 	}
 	return "", "", "", false
+}
+
+// carryMissingDisplayUtility appends a display-establishing utility (flex,
+// grid, ...) from the fallback (nova) recipe when the transform DID produce
+// some utilities for slot from upstream but is missing one nova proves
+// necessary. This is deliberately narrower than the whole-rule fallback
+// above it: running the real port and rendering the result found upstream's
+// style-<name>.css genuinely never carries a huge swath of the catalog's
+// own display-establishing utility at all — confirmed directly against
+// upstream source (.cn-command, .cn-badge, .cn-avatar, .cn-item, and
+// dozens more never mention flex/inline-flex/grid anywhere in ANY of
+// their rules). It is baked into the shared React component's own cva()
+// base class list instead (apps/v4/registry/bases/radix/ui/<component>.tsx
+// or the plain-element equivalent), a layer the porter has no access to.
+// Every one of gsxui's own hand-authored nova recipes already carries the
+// correct structural utility — a human composed it against the real
+// rendered DOM — and it is style-invariant BY CONSTRUCTION: the same
+// display mechanism a component needs in every style, only the surrounding
+// spacing/color/radius varies. So this carries just that one utility from
+// nova, rather than the whole rule, keeping every upstream-sourced value
+// intact while fixing the missing layout mechanism. Confirmed empirically
+// against the real rendered page: without it, Field's whole compound
+// layout collapses to block flow and FieldSeparator's negative margin
+// overlaps the row after it; every other slot this function touches loses
+// its flex arrangement (icon+label rows collapse, gap stops applying,
+// wrapping breaks) the same way.
+func (p *Ported) carryMissingDisplayUtility(slot, class string, fallback recipe.Style) {
+	rule, ok := fallback.Lookup(class)
+	if !ok {
+		return
+	}
+	have := make(map[string]bool, len(p.Base[slot]))
+	for _, u := range p.Base[slot] {
+		have[u] = true
+	}
+
+	missingDisplay := false
+	for _, u := range rule.Utilities {
+		if displayEstablishingUtilities[u] && !have[u] {
+			missingDisplay = true
+			break
+		}
+	}
+	if !missingDisplay {
+		return
+	}
+
+	// A display utility is missing, so its container companions
+	// (flex-direction/flex-wrap/grid-template — see
+	// layoutCompanionUtilities's own doc comment) are carried alongside it:
+	// upstream never mentions either family for this slot, and "flex"
+	// without nova's own "flex-col" is worse than neither, not better.
+	for _, u := range rule.Utilities {
+		if have[u] {
+			continue
+		}
+		if !displayEstablishingUtilities[u] && !isLayoutCompanionUtility(u) {
+			continue
+		}
+		p.Base[slot] = append(p.Base[slot], u)
+		p.Carried[class] = true
+	}
 }
 
 // descendantSelector builds the arbitrary descendant-selector variant gsxui

@@ -26,7 +26,7 @@ component AccordionItem(name string, open bool, children gsx.Node, attrs gsx.Att
 
 component AccordionTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<summary
-		class={ "gap-6 p-4 text-left text-sm font-medium hover:underline" }
+		class={ "gap-6 p-4 text-left text-sm font-medium hover:underline flex" }
 		{ attrs... }
 		data-gsxui-slot-accordion-trigger
 	>

@@ -199,7 +199,7 @@ func _gsxrenderContextMenuItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, varia
 	}
 //line context-menu.gsx:109:2
 	_gsxgw.S("<div")
-	_gsxv0 := "focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 focus:*:[svg]:text-accent-foreground gap-2.5 rounded-xl px-3 py-2 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4"
+	_gsxv0 := "focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 focus:*:[svg]:text-accent-foreground gap-2.5 rounded-xl px-3 py-2 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex"
 	var _gsxv1 string
 	switch variant {
 	case "destructive":
@@ -282,7 +282,7 @@ func ContextMenuCheckboxItem(checked bool, value string, children gsx.Node, attr
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:154:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("focus:bg-accent focus:text-accent-foreground gap-2 rounded-xl py-2 pr-8 pl-3 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("focus:bg-accent focus:text-accent-foreground gap-2 rounded-xl py-2 pr-8 pl-3 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitemcheckbox\"")
@@ -381,7 +381,7 @@ func ContextMenuRadioItem(checked bool, value string, children gsx.Node, attrs g
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:210:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("focus:bg-accent focus:text-accent-foreground gap-2 rounded-xl py-2 pr-8 pl-3 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("focus:bg-accent focus:text-accent-foreground gap-2 rounded-xl py-2 pr-8 pl-3 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitemradio\"")
@@ -556,7 +556,7 @@ func ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:300:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("focus:bg-accent focus:text-accent-foreground data-open:bg-accent data-open:text-accent-foreground rounded-xl px-3 py-2 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("focus:bg-accent focus:text-accent-foreground data-open:bg-accent data-open:text-accent-foreground rounded-xl px-3 py-2 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitem\"")

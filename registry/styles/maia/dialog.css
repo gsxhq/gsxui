@@ -9,7 +9,7 @@
   }
 
   .gsxui-recipe-dialog-content {
-    @apply data-open:backdrop:animate-in data-closed:backdrop:animate-out data-closed:backdrop:fade-out-0 data-open:backdrop:fade-in-0 backdrop:bg-black/80 backdrop:duration-100 supports-backdrop-filter:backdrop:backdrop-blur-xs bg-popover text-popover-foreground data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 ring-foreground/5 grid max-w-[calc(100%-2rem)] gap-6 rounded-4xl p-6 text-sm ring-1 duration-100 sm:max-w-md;
+    @apply data-open:backdrop:animate-in data-closed:backdrop:animate-out data-closed:backdrop:fade-out-0 data-open:backdrop:fade-in-0 backdrop:bg-black/80 backdrop:duration-100 supports-backdrop-filter:backdrop:backdrop-blur-xs bg-popover text-popover-foreground data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 ring-foreground/5 open:grid max-w-[calc(100%-2rem)] gap-6 rounded-4xl p-6 text-sm ring-1 duration-100 sm:max-w-md;
   }
 
   .gsxui-recipe-dialog-close-button {
@@ -21,12 +21,14 @@
     @apply size-4 shrink-0 pointer-events-none;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-dialog-header {
-    @apply gap-2;
+    @apply gap-2 flex flex-col;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-dialog-footer {
-    @apply gap-2;
+    @apply gap-2 flex flex-col-reverse;
   }
 
   .gsxui-recipe-dialog-title {

@@ -31,7 +31,7 @@ func _gsxrenderEmpty(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.No
 	}
 //line empty.gsx:10:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-4 rounded-lg border-dashed p-12"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-4 rounded-lg border-dashed p-12 flex flex-col"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-empty"})
@@ -57,7 +57,7 @@ func _gsxrenderEmptyHeader(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children 
 	}
 //line empty.gsx:16:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2 flex flex-col"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-empty-header"})
@@ -94,7 +94,7 @@ func _gsxrenderEmptyMedia(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant st
 		_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
 		_gsxgw.S("\"")
 	}
-	_gsxv0 := "mb-2"
+	_gsxv0 := "mb-2 flex"
 	var _gsxv1 string
 	switch variant {
 	case "icon":
@@ -188,7 +188,7 @@ func _gsxrenderEmptyContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children
 	}
 //line empty.gsx:62:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-4 text-sm"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-4 text-sm flex flex-col"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-empty-content"})

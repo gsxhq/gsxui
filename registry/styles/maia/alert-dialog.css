@@ -8,7 +8,7 @@
   }
 
   .gsxui-recipe-alert-dialog-header {
-    @apply grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center has-data-[slot=alert-dialog-media]:grid-rows-[auto_auto_1fr] has-data-[slot=alert-dialog-media]:gap-x-6 sm:group-data-[size=default]/alert-dialog-content:place-items-start sm:group-data-[size=default]/alert-dialog-content:text-left sm:group-data-[size=default]/alert-dialog-content:has-data-[slot=alert-dialog-media]:grid-rows-[auto_1fr];
+    @apply grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center sm:group-data-[size=default]/alert-dialog-content:place-items-start sm:group-data-[size=default]/alert-dialog-content:text-left;
   }
 
   /* carried: no upstream counterpart */
@@ -17,7 +17,7 @@
   }
 
   .gsxui-recipe-alert-dialog-title {
-    @apply text-lg font-medium sm:group-data-[size=default]/alert-dialog-content:group-has-data-[slot=alert-dialog-media]/alert-dialog-content:col-start-2;
+    @apply text-lg font-medium;
   }
 
   .gsxui-recipe-alert-dialog-description {

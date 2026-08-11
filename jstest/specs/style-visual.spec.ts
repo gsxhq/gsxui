@@ -691,6 +691,53 @@ test.describe("mobile visual contracts", () => {
   }
 });
 
+// Per-style visual gate (style porter plan, Task 7). Each style's
+// site/stylepreview/<style> gallery composition is the same authored
+// document (site/stylepreview/gallery.gsx.src) recompiled with that style's
+// ported recipes, so the fifteen gallery cards always appear in the same
+// DOM order — indexing by position, rather than by a per-card selector,
+// keeps this gate from needing any change to the gallery source itself.
+// This lands deliberately before the bulk port (Task 8): it establishes a
+// reviewable baseline against nova before the other six styles arrive.
+const galleryStyles = ["nova", "maia"] as const;
+
+const galleryCards = [
+  "buttons",
+  "login",
+  "settings",
+  "calendar",
+  "menus",
+  "feedback",
+  "team",
+  "table",
+  "tabs",
+  "navigation",
+  "controls",
+  "overlays",
+  "empty",
+  "media",
+  "sidebar",
+] as const;
+
+test.describe("per-style gallery cards", () => {
+  for (const style of galleryStyles) {
+    test(`${style} gallery cards keep their per-style visual contract`, async ({ page }) => {
+      const response = await page.goto(`/stylepreview/${style}`);
+      expect(response?.status(), `${style} stylepreview response`).toBe(200);
+      await page.evaluate(async () => {
+        await document.fonts.ready;
+        await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+      });
+
+      const cards = page.locator("[data-theme-preview-gallery] > *");
+      await expect(cards).toHaveCount(galleryCards.length);
+      for (const [index, card] of galleryCards.entries()) {
+        await expect(cards.nth(index)).toHaveScreenshot(`${style}-${card}.png`, screenshotOptions);
+      }
+    });
+  }
+});
+
 // The three tests below pin presentation that a component's own CSS supplies
 // ON TOP OF the Button it renders through. ui.Button ships concrete Tailwind
 // utilities compiled from its style recipe, and those land in @layer

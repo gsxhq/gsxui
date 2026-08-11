@@ -188,7 +188,7 @@ func _gsxrenderMenubar(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.
 	}
 //line menubar.gsx:169:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("h-9 rounded-4xl border p-1"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("h-9 rounded-4xl border p-1 flex"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	if !attrs.Has("role") {
 		_gsxgw.S(" role=\"menubar\"")
@@ -270,7 +270,7 @@ func _gsxrenderMenubarTrigger(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childr
 	}
 //line menubar.gsx:207:2
 	_gsxgw.S("<button class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("hover:bg-muted aria-expanded:bg-muted rounded-xl px-2 py-0.75 text-sm font-medium"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("hover:bg-muted aria-expanded:bg-muted rounded-xl px-2 py-0.75 text-sm font-medium flex"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	if !attrs.Has("type") {
 		_gsxgw.S(" type=\"button\"")
@@ -379,11 +379,11 @@ func _gsxrenderMenubarItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant s
 	}
 //line menubar.gsx:264:2
 	_gsxgw.S("<div")
-	_gsxv0 := "focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2.5 rounded-xl px-3 py-2 text-sm data-disabled:opacity-50 data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4"
+	_gsxv0 := "focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2.5 rounded-xl px-3 py-2 text-sm data-disabled:opacity-50 data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex"
 	var _gsxv1 string
 	switch variant {
 	case "destructive":
-		_gsxv1 = "text-destructive focus:bg-destructive/10 focus:text-destructive *:[svg]:text-destructive!"
+		_gsxv1 = "text-destructive focus:bg-destructive/10 focus:text-destructive *:[svg]:text-destructive"
 	default:
 		_gsxv1 = "text-foreground"
 	}
@@ -466,7 +466,7 @@ func MenubarCheckboxItem(checked bool, value string, children gsx.Node, attrs gs
 		_gsxgw := _gsxrt.W(_gsxw)
 //line menubar.gsx:313:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-2.5 rounded-xl py-2 pr-3 pl-9.5 text-sm data-inset:pl-9.5"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-2.5 rounded-xl py-2 pr-3 pl-9.5 text-sm data-inset:pl-9.5 flex"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitemcheckbox\"")
@@ -564,7 +564,7 @@ func MenubarRadioItem(checked bool, value string, children gsx.Node, attrs gsx.A
 		_gsxgw := _gsxrt.W(_gsxw)
 //line menubar.gsx:361:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-2.5 rounded-xl py-2 pr-3 pl-9.5 text-sm data-disabled:opacity-50 data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-2.5 rounded-xl py-2 pr-3 pl-9.5 text-sm data-disabled:opacity-50 data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitemradio\"")
@@ -770,7 +770,7 @@ func MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line menubar.gsx:468:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("focus:bg-accent focus:text-accent-foreground data-open:bg-accent data-open:text-accent-foreground gap-2 rounded-xl px-3 py-2 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("focus:bg-accent focus:text-accent-foreground data-open:bg-accent data-open:text-accent-foreground gap-2 rounded-xl px-3 py-2 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitem\"")

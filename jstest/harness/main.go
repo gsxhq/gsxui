@@ -118,6 +118,7 @@ func newMux(root string) http.Handler {
 
 	registerModuleRoutes(mux, root)
 	registerSiteRoutes(mux)
+	registerStylePreviewRoutes(mux)
 
 	return mux
 }

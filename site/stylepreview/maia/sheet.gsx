@@ -84,11 +84,11 @@ component SheetContent(side string, hideCloseButton bool, children gsx.Node, att
 }
 
 component SheetHeader(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "gap-1.5 p-6" } { attrs... } data-gsxui-slot-sheet-header>{ children }</div>
+	<div class={ "gap-1.5 p-6 flex flex-col" } { attrs... } data-gsxui-slot-sheet-header>{ children }</div>
 }
 
 component SheetFooter(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "gap-2 p-6" } { attrs... } data-gsxui-slot-sheet-footer>{ children }</div>
+	<div class={ "gap-2 p-6 flex flex-col" } { attrs... } data-gsxui-slot-sheet-footer>{ children }</div>
 }
 
 component SheetTitle(children gsx.Node, attrs gsx.Attrs) {

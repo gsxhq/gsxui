@@ -1,6 +1,12 @@
 package port
 
-import "strings"
+import (
+	"regexp"
+	"sort"
+	"strings"
+
+	"github.com/gsxhq/gsxui/internal/recipe"
+)
 
 // ignoredSections are upstream MARK sections with no gsxui component
 // counterpart at all: seven blocks belong to an AI-chat/composer surface
@@ -485,6 +491,38 @@ var slotOverrides = map[string]map[string]slotOverride{
 			"[[data-gsxui-slot-sidebar-menu-button][data-active]~&[data-show-on-hover]]:text-sidebar-primary-foreground",
 		}},
 	},
+	// FieldSeparator composes three gsxui slots from upstream's two classes
+	// (registry/canonical/field.gsx's own doc comment: "The wrapper has its
+	// own token because it owns layout while the nested separator owns the
+	// rule"). Upstream's single cn-field-separator class is redirected onto
+	// separator-wrapper by classRenames below, carrying upstream's own
+	// -my-2/h-5/group-data-[variant=outline] utilities verbatim, PLUS
+	// "relative" appended here: the wrapper must be the positioned ancestor
+	// the absolutely-positioned separator line resolves against, and
+	// upstream's own class list never needs to say so because its DOM
+	// doesn't route position through this same element. Confirmed against
+	// the real rendered page: without it, the separator's `absolute` escapes
+	// to the viewport instead of the wrapper (x:0 width:1280 instead of the
+	// wrapper's own box) — registry/styles/nova/field.css's wrapper rule
+	// carries the identical "relative" for the same reason.
+	//
+	// That leaves gsxui's OWN "separator" slot (the actual composed
+	// <ui.Separator>, absolutely positioned across the wrapper for the
+	// line-through-text effect) with no upstream counterpart at all —
+	// Transform's fallback policy carries it from nova automatically once
+	// nothing maps there directly. cn-field-separator-content keeps its
+	// default mapping but needs its own positioning appended: nova's content
+	// rule is upstream's text-muted-foreground px-2 PLUS
+	// "relative mx-auto block w-fit bg-background", the piece that lets the
+	// label visually interrupt the line beneath it — structural chrome with
+	// no themed value, so both travel as extra rather than a themed utility
+	// any style would spell differently.
+	"field": {
+		"cn-field-separator": {slot: "separator-wrapper", ok: true, extra: []string{"relative"}},
+		"cn-field-separator-content": {slot: "separator-content", ok: true, extra: []string{
+			"relative", "mx-auto", "block", "w-fit", "bg-background",
+		}},
+	},
 }
 
 // classRenames maps (component, upstream class) to a DIFFERENT upstream
@@ -559,6 +597,325 @@ func rewriteMarkerVariant(component, token string) string {
 	}
 	segments[0] = rewritten
 	return strings.Join(segments, ":")
+}
+
+// slotAttributeDrops declares (component, raw-token substring) pairs whose
+// WHOLE utility is dropped, silently, before slot-attribute resolution ever
+// runs — found by running the real port and reading its unmapped report,
+// each one verified against the real upstream section and (where one
+// exists) the corresponding nova/<component>.css before being added here.
+// Every entry is one of two reviewed reasons:
+//
+//   - The referenced gsxui feature does not exist at all: Alert has no
+//     "action" slot (registry/canonical/shapes/alert.go declares only root/
+//     title/description), AlertDialog has no "media" slot
+//     (registry/canonical/shapes/alert-dialog.go), Combobox renders no chip
+//     UI (registry/canonical/shapes/combobox.go's own doc comment), and
+//     gsxui has no standalone CheckboxGroup/RadioGroup wrapper component at
+//     all (Checkbox and Radio are each a single root slot, registry/
+//     canonical/shapes/checkbox.go and radio.go) — upstream's own Field
+//     section references them anyway, defensively, for a composition gsxui
+//     never renders.
+//   - Translating it verbatim would reintroduce a caller-override
+//     specificity hazard nova's own hand-authored recipe deliberately kept
+//     OUT of @layer components: registry/styles/nova/button-group.css's own
+//     header documents all three of ButtonGroup's data-slot-referencing
+//     rules (the has-[]:gap-2 relational rule, the corner-rounding pair, and
+//     the select-trigger width guard) as intentionally NOT migrated, for
+//     exactly this reason — they still live in assets/css/styles/
+//     default.css's own @layer utilities escape hatch, outside the porter's
+//     reach entirely.
+//
+// Matched by substring against the token BEFORE any rewriting, so the
+// surrounding variant stack (dark:, responsive prefixes, the sibling
+// bracket clause) never has to be enumerated separately.
+var slotAttributeDrops = map[string][]string{
+	"alert":        {"data-[slot=alert-action]"},
+	"alert-dialog": {"data-[slot=alert-dialog-media]"},
+	"combobox":     {"data-[slot=combobox-chip]"}, // prefix: also matches combobox-chip-remove
+	"field":        {"data-[slot=checkbox-group]", "[data-slot=checkbox-group]", "[data-slot=radio-group]"},
+	"button-group": {"[data-slot=button-group]", "[data-slot=select-trigger]", "[data-slot]"},
+}
+
+func slotAttributeDropped(component, token string) bool {
+	for _, fragment := range slotAttributeDrops[component] {
+		if strings.Contains(token, fragment) {
+			return true
+		}
+	}
+	return false
+}
+
+// Regexes for the three Tailwind shorthand forms that stack a bare
+// data-[slot=<x>] bracket directly onto a relational combinator keyword —
+// distinct from Rule 3's **:/*: prefix forms (variant.go's KindSlot), which
+// this file's Transform caller never routes through
+// rewriteSlotAttributeReferences at all (Classify sees them first). These
+// three are the shapes dossier §5.4 didn't anticipate: upstream also reaches
+// for a slot from an ANCESTOR (in-), a DESCENDANT existence check (has-), or
+// a NAMED ancestor group's descendant existence check (group-has-.../name),
+// none of which name the styled element itself the way **:/*: do.
+var (
+	inSlotVariant       = regexp.MustCompile(`^in-data-\[slot=([a-zA-Z0-9-]+)\]$`)
+	hasSlotVariant      = regexp.MustCompile(`^has-data-\[slot=([a-zA-Z0-9-]+)\]$`)
+	groupHasSlotVariant = regexp.MustCompile(`^group-has-data-\[slot=([a-zA-Z0-9-]+)\]/(.+)$`)
+	bracketSlotValue    = regexp.MustCompile(`\[data-slot=([a-zA-Z0-9-]+)\]`)
+	bracketBareSlotPair = regexp.MustCompile(`\[data-slot\](\[[^\]]+\])`)
+)
+
+// resolveSlotMarker resolves an upstream data-slot VALUE (e.g.
+// "item-description", "input-group-control", "combobox-content", or a bare
+// component root like "kbd") to gsxui's own data-gsxui-slot-<marker> suffix,
+// trying the value as a bare component root first and then, longest
+// component name first, as <component>-<slot> against the declared shape
+// registry — the same ambiguity-resolution shape transform.go's
+// decodeUpstreamValue already uses for dimension values, generalized here to
+// slot existence instead of dimension-value existence. ok is false when
+// nothing in the registry matches at all.
+func resolveSlotMarker(allShapes map[string]recipe.Shape, upstreamValue string) (marker string, ok bool) {
+	if _, exists := allShapes[upstreamValue]; exists {
+		return upstreamValue, true
+	}
+
+	names := make([]string, 0, len(allShapes))
+	for name := range allShapes {
+		names = append(names, name)
+	}
+	sort.Slice(names, func(i, j int) bool { return len(names[i]) > len(names[j]) })
+
+	for _, name := range names {
+		remainder, cut := strings.CutPrefix(upstreamValue, name+"-")
+		if !cut {
+			continue
+		}
+		if _, hasSlot := allShapes[name].Slot(remainder); hasSlot {
+			return name + "-" + remainder, true
+		}
+	}
+	return "", false
+}
+
+// rewriteSlotAttributeReferences translates every compound-variant
+// reference to upstream's legacy data-slot attribute within token into
+// gsxui's own data-gsxui-slot-* marker convention. Three shapes, all
+// confirmed against real, already-compiled nova recipes before being
+// added:
+//
+//   - in-data-[slot=<x>]: becomes [[data-gsxui-slot-<marker>]_&]: — gsxui's
+//     own manual ancestor-context idiom (registry/styles/nova/kbd.css's
+//     tooltip-content rules, registry/styles/nova/navigation-menu.css's
+//     link rule), not Tailwind's in-* shorthand: the codebase has never
+//     used the shorthand for this relationship and this keeps the porter
+//     consistent with every hand-authored rule of the same shape.
+//   - has-data-[slot=<x>]: and group-has-data-[slot=<x>]/<name>: become
+//     has-[[data-gsxui-slot-<marker>]]: / group-has-[[data-gsxui-slot-
+//     <marker>]]/<name>: — Tailwind's own arbitrary-value bracket form,
+//     confirmed compiling correctly by registry/styles/nova/tooltip.css's
+//     existing has-[[data-gsxui-slot-kbd]]: rule.
+//   - An already-bracketed [data-slot=<x>] (has-[[data-slot=x]:pseudo]:,
+//     [&>[data-slot=x]]:, ...) has just that inner attribute selector
+//     substituted, in place, leaving the surrounding arbitrary-selector
+//     syntax untouched — confirmed against registry/styles/nova/item.css's
+//     own [&+[data-gsxui-slot-item-content]]:flex-none.
+//   - A bare [data-slot] immediately followed by another bracket clause
+//     (has-[[data-slot][aria-invalid=true]]:) has the redundant [data-slot]
+//     clause dropped outright: gsxui's simpler DOM never needs it to
+//     disambiguate, confirmed by registry/styles/nova/input-group.css's own
+//     plain has-[[aria-invalid=true]]: spelling of the identical rule.
+//
+// ok is false when some data-slot reference in token resolved to nothing in
+// the declared shape registry — the caller reports that as unmapped rather
+// than emitting a selector gsxui's DOM can never match.
+func rewriteSlotAttributeReferences(allShapes map[string]recipe.Shape, token string) (string, bool) {
+	if !strings.Contains(token, "data-slot") && !strings.Contains(token, "data-[slot") {
+		return token, true
+	}
+
+	segments := splitVariants(token)
+	ok := true
+	for i, segment := range segments {
+		switch {
+		case inSlotVariant.MatchString(segment):
+			m := inSlotVariant.FindStringSubmatch(segment)
+			if marker, resolved := resolveSlotMarker(allShapes, m[1]); resolved {
+				segments[i] = "[[data-gsxui-slot-" + marker + "]_&]"
+			} else {
+				ok = false
+			}
+			continue
+		case hasSlotVariant.MatchString(segment):
+			m := hasSlotVariant.FindStringSubmatch(segment)
+			if marker, resolved := resolveSlotMarker(allShapes, m[1]); resolved {
+				segments[i] = "has-[[data-gsxui-slot-" + marker + "]]"
+			} else {
+				ok = false
+			}
+			continue
+		case groupHasSlotVariant.MatchString(segment):
+			m := groupHasSlotVariant.FindStringSubmatch(segment)
+			if marker, resolved := resolveSlotMarker(allShapes, m[1]); resolved {
+				segments[i] = "group-has-[[data-gsxui-slot-" + marker + "]]/" + m[2]
+			} else {
+				ok = false
+			}
+			continue
+		}
+
+		if !strings.Contains(segment, "[data-slot") {
+			continue
+		}
+		segment = bracketBareSlotPair.ReplaceAllString(segment, "$1")
+		segment = bracketSlotValue.ReplaceAllStringFunc(segment, func(match string) string {
+			value := bracketSlotValue.FindStringSubmatch(match)[1]
+			marker, resolved := resolveSlotMarker(allShapes, value)
+			if !resolved {
+				ok = false
+				return match
+			}
+			return "[data-gsxui-slot-" + marker + "]"
+		})
+		if strings.Contains(segment, "[data-slot]") {
+			ok = false
+		}
+		segments[i] = segment
+	}
+	return strings.Join(segments, ":"), ok
+}
+
+// noScrollbarUtility is a custom Tailwind utility upstream registers in its
+// OWN demo app (apps/v4/app/globals.css's `@utility no-scrollbar { ... }`),
+// entirely outside style-<name>.css and so outside the porter's reach —
+// gsxui's Tailwind build never registers it, and compiling it verbatim is a
+// hard error ("Cannot apply unknown utility class `no-scrollbar`"), not
+// just a visual gap. noScrollbarExpansion is the exact rule that utility
+// declares (-ms-overflow-style is a legacy Edge property with no Tailwind
+// arbitrary-property form worth carrying), confirmed byte-for-byte
+// equivalent to gsxui's own pre-existing, hand-verified spelling for the
+// identical need (registry/styles/nova/combobox.css's and sidebar.css's own
+// scrollbar-hiding rules, both already compiled with this repo's Tailwind
+// v4 CLI). Unlike the display/slot-attribute rewrites above, this is a
+// context-free 1:1 substitution: no component ever wants literal
+// `no-scrollbar` treated as an ordinary opaque utility.
+const noScrollbarUtility = "no-scrollbar"
+
+var noScrollbarExpansion = []string{"[scrollbar-width:none]", "[&::-webkit-scrollbar]:hidden"}
+
+// stripImportantModifier removes Tailwind's trailing `!` importance
+// modifier (rounded-4xl! -> rounded-4xl). It is always the literal last
+// character of the whole token regardless of how many variants precede the
+// base utility, so a plain suffix trim is exact, not a heuristic. gsxui
+// never ships !important: merge.Merge only ever settles a conflict within
+// its own layer, and stylegen.CheckLayerPrecedence exists specifically so
+// an override wins by @layer ordering instead — confirmed no hand-authored
+// registry/styles/nova/*.css or registry/canonical/*.gsx file has ever
+// needed one (make audit's own `rg -n '!important'` gate), so upstream's own
+// forced-important spellings are simply de-emphasized back to a plain
+// utility rather than carried as a behavior gsxui's own architecture
+// already provides another way.
+func stripImportantModifier(token string) string {
+	return strings.TrimSuffix(token, "!")
+}
+
+// nativeVisibilityGate lists (component, slot) pairs whose upstream style
+// file spells a display-establishing utility (flex, grid, ...)
+// UNCONDITIONALLY on a content element gsxui renders through a native
+// browser hide-when-closed mechanism — confirmed by running the real port,
+// rendering the result, and finding these three, specifically, painted open
+// on page load with no click ever having happened. Upstream authors this
+// class list for a JS framework that mounts/unmounts the content, so it
+// never needs to condition display on visibility. gsxui keeps the content
+// element in the DOM always and relies on the BROWSER's own native
+// hiding instead — dialog:not([open]){display:none} for Dialog (also
+// AlertDialog, which composes DialogContent directly and inherits this
+// slot's rule, and Sheet/Drawer, which stamp the same
+// data-gsxui-slot-dialog-content marker on their own <dialog> per
+// registry/styles/nova/dialog.css's own header comment), and
+// [popover]:not(:popover-open){display:none} for Popover/Tooltip — both
+// NORMAL-weight UA rules, which any unconditional author display utility in
+// @layer components legitimately outranks per the ordinary cascade
+// (author-normal beats UA-normal regardless of layer), defeating the hide.
+// gsxui's own hand-authored recipes have never made this mistake:
+// registry/styles/nova/dialog.css's content rule spells this exact "grid"
+// as `open:grid` (Tailwind's variant for the native [open] attribute),
+// confirmed compiling and working. This table is what lets the porter make
+// the same choice automatically instead of requiring a human to catch every
+// occurrence by eye; extend it if porting the other 6 styles (or
+// re-porting nova itself) surfaces more.
+var nativeVisibilityGate = map[string]map[string]string{
+	"dialog":  {"content": "open"},
+	"popover": {"content": "[&:popover-open]"},
+	"tooltip": {"content": "[&:popover-open]"},
+}
+
+// displayEstablishingUtilities are the Tailwind display-keyword utilities
+// nativeVisibilityGate gates. contents is deliberately absent: it never
+// establishes a visible box of its own (it makes the element's children
+// participate in the PARENT's layout instead), so it never fights a
+// display:none default the way flex/grid/block do.
+var displayEstablishingUtilities = map[string]bool{
+	"flex": true, "inline-flex": true,
+	"grid": true, "inline-grid": true,
+	"block": true, "inline-block": true,
+	"table": true, "flow-root": true,
+}
+
+// layoutCompanionUtilities are exact-match flex/grid CONTAINER utilities
+// that only mean anything paired with a display-establishing utility —
+// confirmed necessary, not merely tidy, by running the real port: carrying
+// nova's "flex" onto a card without ALSO carrying its "flex-col" leaves
+// Tailwind's flex default (row) in effect, which visually reflows a
+// vertically-stacked card into a horizontal one — worse than the missing
+// "flex" alone. carryMissingDisplayUtility only ever consults this table
+// for a slot where it has ALREADY decided a display utility is missing (see
+// its own doc comment); it is never applied to a slot upstream fully
+// covers, so a style that legitimately wants row direction where nova
+// wants column (or vice versa) is never touched here.
+var layoutCompanionUtilities = map[string]bool{
+	"flex-row": true, "flex-row-reverse": true,
+	"flex-col": true, "flex-col-reverse": true,
+	"flex-wrap": true, "flex-wrap-reverse": true, "flex-nowrap": true,
+}
+
+// layoutCompanionPrefixes are the same idea as layoutCompanionUtilities but
+// for the grid-template family, whose values are per-component arbitrary
+// content (grid-rows-[auto_auto], grid-cols-[1fr_auto], auto-rows-min) and
+// so can't be matched by exact string.
+var layoutCompanionPrefixes = []string{"grid-cols-", "grid-rows-", "auto-cols-", "auto-rows-", "grid-flow-"}
+
+// isLayoutCompanionUtility reports whether u is one of the container-level
+// flex-direction/flex-wrap/grid-template utilities carryMissingDisplayUtility
+// treats as inseparable from a missing display utility.
+func isLayoutCompanionUtility(u string) bool {
+	if layoutCompanionUtilities[u] {
+		return true
+	}
+	for _, prefix := range layoutCompanionPrefixes {
+		if strings.HasPrefix(u, prefix) {
+			return true
+		}
+	}
+	return false
+}
+
+// gateNativeVisibility rewrites utility to carry its declared
+// nativeVisibilityGate prefix when (component, slot) names a native-hidden
+// content element, utility is exactly one of Tailwind's display-
+// establishing keywords, and dimension is empty (the gate only applies to
+// a slot's own base rule — a value rule is already conditional on
+// something else, and none of the three confirmed cases are value rules
+// anyway). Every other utility — and a token upstream already gated itself
+// (a responsive md:flex would arrive as Classify's KindPlain too, but its
+// Raw is "md:flex", not "flex", so the exact-match check below leaves it
+// untouched) — passes through unchanged.
+func gateNativeVisibility(component, slot, dimension, utility string) string {
+	if dimension != "" || !displayEstablishingUtilities[utility] {
+		return utility
+	}
+	gate, ok := nativeVisibilityGate[component][slot]
+	if !ok {
+		return utility
+	}
+	return gate + ":" + utility
 }
 
 // upstreamPrefix returns the upstream cn-* class prefix (without "cn-") a

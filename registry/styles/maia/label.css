@@ -3,7 +3,8 @@
    internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
    onto gsxui's shape-declared classes. */
 @layer components {
+  /* carried: no upstream counterpart */
   .gsxui-recipe-label {
-    @apply gap-2 text-sm leading-none font-medium group-data-[disabled=true]:opacity-50 peer-disabled:opacity-50;
+    @apply gap-2 text-sm leading-none font-medium group-data-[disabled=true]:opacity-50 peer-disabled:opacity-50 flex;
   }
 }

@@ -81,7 +81,7 @@ func _gsxrenderDialogContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, hideClo
 	}
 //line dialog.gsx:24:2
 	_gsxgw.S("<dialog class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("data-open:backdrop:animate-in data-closed:backdrop:animate-out data-closed:backdrop:fade-out-0 data-open:backdrop:fade-in-0 backdrop:bg-black/80 backdrop:duration-100 supports-backdrop-filter:backdrop:backdrop-blur-xs bg-popover text-popover-foreground data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 ring-foreground/5 grid max-w-[calc(100%-2rem)] gap-6 rounded-4xl p-6 text-sm ring-1 duration-100 sm:max-w-md"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("data-open:backdrop:animate-in data-closed:backdrop:animate-out data-closed:backdrop:fade-out-0 data-open:backdrop:fade-in-0 backdrop:bg-black/80 backdrop:duration-100 supports-backdrop-filter:backdrop:backdrop-blur-xs bg-popover text-popover-foreground data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 ring-foreground/5 open:grid max-w-[calc(100%-2rem)] gap-6 rounded-4xl p-6 text-sm ring-1 duration-100 sm:max-w-md"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	if !attrs.Has("data-state") {
 		_gsxgw.S(" data-state=\"closed\"")
@@ -135,13 +135,13 @@ func _gsxrenderDialogHeader(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children
 	}
 //line dialog.gsx:65:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2 flex flex-col"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dialog-header"})
 	_gsxgw.BoolAttr("data-gsxui-slot-dialog-header", true)
 	_gsxgw.S(">")
-//line dialog.gsx:65:68
+//line dialog.gsx:65:82
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
@@ -153,7 +153,7 @@ func DialogFooter(showCloseButton bool, children gsx.Node, attrs gsx.Attrs) _gsx
 		_gsxgw := _gsxrt.W(_gsxw)
 //line dialog.gsx:69:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2 flex flex-col-reverse"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-dialog-footer"})

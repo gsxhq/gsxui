@@ -43,7 +43,7 @@ func _gsxrenderBadge(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string,
 		_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
 		_gsxgw.S("\"")
 	}
-	_gsxv0 := "h-5 gap-1 rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium transition-all has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&>svg]:size-3!"
+	_gsxv0 := "h-5 gap-1 rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium transition-all has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&>svg]:size-3 inline-flex"
 	var _gsxv1 string
 	switch variant {
 	case "secondary":

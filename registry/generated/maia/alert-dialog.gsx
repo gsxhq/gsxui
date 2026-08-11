@@ -44,7 +44,7 @@ component AlertDialogContent(children gsx.Node, attrs gsx.Attrs) {
 component AlertDialogHeader(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center has-data-[slot=alert-dialog-media]:grid-rows-[auto_auto_1fr] has-data-[slot=alert-dialog-media]:gap-x-6 sm:group-data-[size=default]/alert-dialog-content:place-items-start sm:group-data-[size=default]/alert-dialog-content:text-left sm:group-data-[size=default]/alert-dialog-content:has-data-[slot=alert-dialog-media]:grid-rows-[auto_1fr]"
+			"grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center sm:group-data-[size=default]/alert-dialog-content:place-items-start sm:group-data-[size=default]/alert-dialog-content:text-left"
 		}
 		{ attrs... }
 		data-gsxui-slot-alert-dialog-header
@@ -64,14 +64,7 @@ component AlertDialogFooter(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component AlertDialogTitle(children gsx.Node, attrs gsx.Attrs) {
-	<h2
-		class={
-			"text-lg font-medium sm:group-data-[size=default]/alert-dialog-content:group-has-data-[slot=alert-dialog-media]/alert-dialog-content:col-start-2"
-		}
-		{ attrs... }
-		data-gsxui-slot-alert-dialog-title
-		data-gsxui-slot-dialog-title
-	>
+	<h2 class={ "text-lg font-medium" } { attrs... } data-gsxui-slot-alert-dialog-title data-gsxui-slot-dialog-title>
 		{ children }
 	</h2>
 }

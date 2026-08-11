@@ -8,7 +8,8 @@
     @apply bg-border focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:outline-hidden aria-[orientation=vertical]:w-px aria-[orientation=vertical]:cursor-col-resize aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:cursor-row-resize aria-[orientation=horizontal]:[&>[data-gsxui-slot-resizable-handle-grip]]:rotate-90;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-resizable-handle-grip {
-    @apply bg-border h-6 w-1 rounded-lg;
+    @apply bg-border h-6 w-1 rounded-lg flex;
   }
 }

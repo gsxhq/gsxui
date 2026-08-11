@@ -47,7 +47,7 @@ component Toast(toastType string, title string, description string, action strin
 		role="status"
 		aria-live={ariaLive}
 		aria-atomic="true"
-		class={ "rounded-2xl" }
+		class={ "rounded-2xl flex" }
 		{ attrs... }
 		data-gsxui-slot-toast
 	>

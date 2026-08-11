@@ -46,7 +46,7 @@ import (
 // guarded against; callers overriding this attribute are on their own.
 component NavigationMenu(children gsx.Node, attrs gsx.Attrs) {
 	<nav
-		class={ "max-w-max" }
+		class={ "max-w-max flex" }
 		data-viewport="false"
 		{ attrs... }
 		data-gsxui-slot-navigation-menu
@@ -60,7 +60,7 @@ component NavigationMenu(children gsx.Node, attrs gsx.Attrs) {
 // positions it relative to this element). gap-0 is nova's own metric
 // (`.cn-navigation-menu-list`), replacing new-york-v4's own gap-1.
 component NavigationMenuList(children gsx.Node, attrs gsx.Attrs) {
-	<ul class={ "gap-0" } { attrs... } data-gsxui-slot-navigation-menu-list>
+	<ul class={ "gap-0 flex" } { attrs... } data-gsxui-slot-navigation-menu-list>
 		{ children }
 	</ul>
 }
@@ -120,7 +120,7 @@ component NavigationMenuItem(children gsx.Node, attrs gsx.Attrs) {
 component NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<button
 		class={
-			"hover:bg-muted focus:bg-muted data-open:hover:bg-muted data-open:focus:bg-muted data-open:bg-muted/50 focus-visible:ring-ring/50 data-popup-open:bg-muted/50 data-popup-open:hover:bg-muted rounded-2xl px-4.5 py-2.5 text-sm font-medium transition-all focus-visible:ring-[3px] focus-visible:outline-1 disabled:opacity-50"
+			"hover:bg-muted focus:bg-muted data-open:hover:bg-muted data-open:focus:bg-muted data-open:bg-muted/50 focus-visible:ring-ring/50 data-popup-open:bg-muted/50 data-popup-open:hover:bg-muted rounded-2xl px-4.5 py-2.5 text-sm font-medium transition-all focus-visible:ring-[3px] focus-visible:outline-1 disabled:opacity-50 inline-flex"
 		}
 		type="button"
 		aria-expanded="false"
@@ -248,7 +248,7 @@ component NavigationMenuLink(active bool, variant string, children gsx.Node, att
 	}}
 	<a
 		class={
-			"focus-visible:ring-ring/50 hover:bg-muted focus:bg-muted flex items-center gap-1.5 rounded-2xl p-3 text-sm transition-all outline-none focus-visible:ring-[3px] focus-visible:outline-1 [&_svg:not([class*='size-'])]:size-4 in-data-[slot=navigation-menu-content]:rounded-xl",
+			"focus-visible:ring-ring/50 hover:bg-muted focus:bg-muted flex items-center gap-1.5 rounded-2xl p-3 text-sm transition-all outline-none focus-visible:ring-[3px] focus-visible:outline-1 [&_svg:not([class*='size-'])]:size-4 [[data-gsxui-slot-navigation-menu-content]_&]:rounded-xl",
 			switch linkVariant {
 			case "trigger":
 				"inline-flex h-9 w-max items-center justify-center rounded-lg px-2.5 py-1.5 text-sm font-medium transition-all outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-accent/50 data-[state=open]:text-accent-foreground data-[state=open]:hover:bg-accent data-[state=open]:focus:bg-accent"
@@ -303,7 +303,7 @@ component NavigationMenuLink(active bool, variant string, children gsx.Node, att
 component NavigationMenuIndicator(attrs gsx.Attrs) {
 	<div
 		class={
-			"data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in"
+			"data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in flex"
 		}
 		data-state="hidden"
 		{ attrs... }

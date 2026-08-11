@@ -9,7 +9,9 @@ import "github.com/gsxhq/gsx"
 // see docs/jsx-parity.md).
 component Label(children gsx.Node, attrs gsx.Attrs) {
 	<label
-		class={ "gap-2 text-sm leading-none font-medium group-data-[disabled=true]:opacity-50 peer-disabled:opacity-50" }
+		class={
+			"gap-2 text-sm leading-none font-medium group-data-[disabled=true]:opacity-50 peer-disabled:opacity-50 flex"
+		}
 		{ attrs... }
 		data-gsxui-slot-label
 	>

@@ -3,8 +3,9 @@
    internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
    onto gsxui's shape-declared classes. */
 @layer components {
+  /* carried: no upstream counterpart */
   .gsxui-recipe-item {
-    @apply [a]:hover:bg-muted rounded-2xl border text-sm;
+    @apply [a]:hover:bg-muted rounded-2xl border text-sm flex flex-wrap;
   }
 
   .gsxui-recipe-item-variant-default {
@@ -19,16 +20,18 @@
     @apply bg-muted/50 border-transparent;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-item-group {
-    @apply gap-4 has-data-[size=sm]:gap-2.5 has-data-[size=xs]:gap-2;
+    @apply gap-4 has-data-[size=sm]:gap-2.5 has-data-[size=xs]:gap-2 flex flex-col;
   }
 
   .gsxui-recipe-item-separator {
     @apply my-2;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-item-media {
-    @apply gap-2 group-has-data-[slot=item-description]/item:translate-y-0.5 group-has-data-[slot=item-description]/item:self-start;
+    @apply gap-2 group-has-[[data-gsxui-slot-item-description]]/item:translate-y-0.5 group-has-[[data-gsxui-slot-item-description]]/item:self-start flex;
   }
 
   .gsxui-recipe-item-media-variant-default {
@@ -43,27 +46,32 @@
     @apply size-10 overflow-hidden rounded-lg group-data-[size=sm]/item:size-8 group-data-[size=xs]/item:size-6 group-data-[size=xs]/item:rounded-md [&_img]:size-full [&_img]:object-cover;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-item-content {
-    @apply gap-1 group-data-[size=xs]/item:gap-0.5;
+    @apply gap-1 group-data-[size=xs]/item:gap-0.5 flex flex-col;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-item-title {
-    @apply gap-2 text-sm leading-snug font-medium underline-offset-4;
+    @apply gap-2 text-sm leading-snug font-medium underline-offset-4 flex;
   }
 
   .gsxui-recipe-item-description {
     @apply text-muted-foreground text-left text-sm;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-item-actions {
-    @apply gap-2;
+    @apply gap-2 flex;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-item-header {
-    @apply gap-2;
+    @apply gap-2 flex;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-item-footer {
-    @apply gap-2;
+    @apply gap-2 flex;
   }
 }

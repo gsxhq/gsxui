@@ -24,7 +24,7 @@ import (
 // anything else listens for the gsxui:select CustomEvent on the item.
 component Command(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "bg-popover text-popover-foreground rounded-4xl p-1" }
+		class={ "bg-popover text-popover-foreground rounded-4xl p-1 flex flex-col" }
 		{ attrs... }
 		data-gsxui-slot-command
 	>
@@ -50,7 +50,7 @@ component CommandDialog(title string, description string, trigger gsx.Node, chil
 		{ trigger }
 		<DialogContent
 			data-gsxui-command-dialog
-			class={ "rounded-4xl! p-0" }
+			class={ "rounded-4xl p-0" }
 			{ attrs... }
 			data-gsxui-slot-command-dialog-content
 		>
@@ -71,7 +71,7 @@ component CommandDialog(title string, description string, trigger gsx.Node, chil
 // focus stays here (aria-activedescendant tracks the selected option).
 component CommandInput(placeholder string, attrs gsx.Attrs) {
 	<div
-		class={ "p-1 pb-0 bg-input/30 h-9 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50" }
+		class={ "p-1 pb-0 bg-input/30 h-9 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50 flex" }
 		data-gsxui-slot-command-input-wrapper
 	>
 		<icon.Search/>
@@ -83,7 +83,7 @@ component CommandInput(placeholder string, attrs gsx.Attrs) {
 			autocomplete="off"
 			spellcheck="false"
 			placeholder={placeholder}
-			class={ "w-full text-sm" }
+			class={ "w-full text-sm flex" }
 			{ attrs... }
 			data-gsxui-slot-command-input
 		/>
@@ -93,7 +93,7 @@ component CommandInput(placeholder string, attrs gsx.Attrs) {
 component CommandList(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="listbox"
-		class={ "no-scrollbar max-h-72 scroll-py-1 outline-none" }
+		class={ "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-h-72 scroll-py-1 outline-none" }
 		{ attrs... }
 		data-gsxui-slot-command-list
 	>
@@ -147,7 +147,7 @@ component CommandItem(value string, children gsx.Node, attrs gsx.Attrs) {
 		role="option"
 		aria-selected="false"
 		class={
-			"data-selected:bg-muted data-selected:text-foreground data-selected:*:[svg]:text-foreground relative flex cursor-default items-center gap-2 rounded-lg px-3 py-2 text-sm outline-hidden select-none in-data-[slot=dialog-content]:rounded-2xl [&_svg:not([class*='size-'])]:size-4"
+			"data-selected:bg-muted data-selected:text-foreground data-selected:*:[svg]:text-foreground relative flex cursor-default items-center gap-2 rounded-lg px-3 py-2 text-sm outline-hidden select-none [[data-gsxui-slot-dialog-content]_&]:rounded-2xl [&_svg:not([class*='size-'])]:size-4"
 		}
 		{ attrs... }
 		data-gsxui-slot-command-item

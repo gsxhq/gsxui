@@ -207,7 +207,7 @@ component ResizableHandle(orientation string, withHandle bool, attrs gsx.Attrs) 
 		data-gsxui-slot-resizable-handle
 	>
 		{ if withHandle {
-			<div class={ "bg-border h-6 w-1 rounded-lg" } data-gsxui-slot-resizable-handle-grip></div>
+			<div class={ "bg-border h-6 w-1 rounded-lg flex" } data-gsxui-slot-resizable-handle-grip></div>
 		} }
 	</div>
 }

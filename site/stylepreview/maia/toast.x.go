@@ -79,7 +79,7 @@ func _gsxrenderToast(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, toastType strin
 		_gsxgw.S(" aria-atomic=\"true\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("rounded-2xl"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("rounded-2xl flex"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "li", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-toast"})

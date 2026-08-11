@@ -7,13 +7,13 @@ import "github.com/gsxhq/gsx"
 // plain styled <div>, the same "package-namespaced compound parts" shape as
 // card/breadcrumb.
 component Empty(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "gap-4 rounded-lg border-dashed p-12" } { attrs... } data-gsxui-slot-empty>
+	<div class={ "gap-4 rounded-lg border-dashed p-12 flex flex-col" } { attrs... } data-gsxui-slot-empty>
 		{ children }
 	</div>
 }
 
 component EmptyHeader(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "gap-2" } { attrs... } data-gsxui-slot-empty-header>
+	<div class={ "gap-2 flex flex-col" } { attrs... } data-gsxui-slot-empty-header>
 		{ children }
 	</div>
 }
@@ -26,7 +26,7 @@ component EmptyMedia(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-variant={variant |> default("default")}
 		class={
-			"mb-2",
+			"mb-2 flex",
 			switch variant {
 			case "icon":
 				"bg-muted text-foreground flex size-10 shrink-0 items-center justify-center rounded-lg [&_svg:not([class*='size-'])]:size-6"
@@ -59,7 +59,7 @@ component EmptyDescription(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component EmptyContent(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "gap-4 text-sm" } { attrs... } data-gsxui-slot-empty-content>
+	<div class={ "gap-4 text-sm flex flex-col" } { attrs... } data-gsxui-slot-empty-content>
 		{ children }
 	</div>
 }

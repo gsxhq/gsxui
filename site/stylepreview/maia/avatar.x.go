@@ -34,7 +34,7 @@ func _gsxrenderAvatar(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.N
 	}
 //line avatar.gsx:15:2
 	_gsxgw.S("<span class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("size-8 rounded-full after:rounded-full data-[size=lg]:size-10 data-[size=sm]:size-6"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("size-8 rounded-full after:rounded-full data-[size=lg]:size-10 data-[size=sm]:size-6 flex"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-avatar"})
@@ -94,7 +94,7 @@ func _gsxrenderAvatarFallback(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childr
 	}
 //line avatar.gsx:35:2
 	_gsxgw.S("<span class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-muted text-muted-foreground rounded-full"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-muted text-muted-foreground rounded-full flex"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-avatar-fallback"})

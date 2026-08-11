@@ -45,7 +45,7 @@ func _gsxrenderCommand(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.
 	}
 //line command.gsx:26:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-popover text-popover-foreground rounded-4xl p-1"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-popover text-popover-foreground rounded-4xl p-1 flex flex-col"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command"})
@@ -111,7 +111,7 @@ func CommandDialog(title string, description string, trigger gsx.Node, children 
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "data-gsxui-slot-command-dialog-command", Value: _gsxrt.Toggle(true)}}))
 				return _gsxgw.Err()
-			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-command-dialog", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("rounded-4xl! p-0"))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-command-dialog-content", Value: _gsxrt.Toggle(true)}})))
+			}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-gsxui-command-dialog", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("rounded-4xl p-0"))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-command-dialog-content", Value: _gsxrt.Toggle(true)}})))
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "data-gsxui-slot-command-dialog", Value: _gsxrt.Toggle(true)}}))
 		return _gsxgw.Err()
@@ -138,7 +138,7 @@ func _gsxrenderCommandInput(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, placehol
 	}
 //line command.gsx:73:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("p-1 pb-0 bg-input/30 h-9 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50"))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("p-1 pb-0 bg-input/30 h-9 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50 flex"))
 	_gsxgw.S("\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-command-input-wrapper", true)
 	_gsxgw.S(">")
@@ -170,7 +170,7 @@ func _gsxrenderCommandInput(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, placehol
 		_gsxgw.S("\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("w-full text-sm"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("w-full text-sm flex"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "input", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command-input"})
@@ -197,7 +197,7 @@ func _gsxrenderCommandList(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children 
 		_gsxgw.S(" role=\"listbox\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("no-scrollbar max-h-72 scroll-py-1 outline-none"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("[scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-h-72 scroll-py-1 outline-none"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command-list"})
@@ -354,7 +354,7 @@ func _gsxrenderCommandItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, value str
 		_gsxgw.S(" aria-selected=\"false\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("data-selected:bg-muted data-selected:text-foreground data-selected:*:[svg]:text-foreground relative flex cursor-default items-center gap-2 rounded-lg px-3 py-2 text-sm outline-hidden select-none in-data-[slot=dialog-content]:rounded-2xl [&_svg:not([class*='size-'])]:size-4"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("data-selected:bg-muted data-selected:text-foreground data-selected:*:[svg]:text-foreground relative flex cursor-default items-center gap-2 rounded-lg px-3 py-2 text-sm outline-hidden select-none [[data-gsxui-slot-dialog-content]_&]:rounded-2xl [&_svg:not([class*='size-'])]:size-4"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command-item"})

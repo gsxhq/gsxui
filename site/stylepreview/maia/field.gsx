@@ -22,7 +22,7 @@ import "github.com/gsxhq/gsx"
 // errors-array-to-list plumbing.
 component FieldSet(children gsx.Node, attrs gsx.Attrs) {
 	<fieldset
-		class={ "gap-6 has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3" }
+		class={ "gap-6 flex flex-col" }
 		{ attrs... }
 		data-gsxui-slot-field-set
 	>
@@ -44,7 +44,7 @@ component FieldLegend(variant string, children gsx.Node, attrs gsx.Attrs) {
 
 component FieldGroup(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "gap-7 data-[slot=checkbox-group]:gap-3 [&>[data-gsxui-slot-field-group]]:gap-4" }
+		class={ "gap-7 [&>[data-gsxui-slot-field-group]]:gap-4 flex flex-col" }
 		{ attrs... }
 		data-gsxui-slot-field-group
 	>
@@ -59,7 +59,7 @@ component Field(orientation string, children gsx.Node, attrs gsx.Attrs) {
 		role="group"
 		data-orientation={orientation |> default("vertical")}
 		class={
-			"data-[invalid=true]:text-destructive gap-3 p-4",
+			"data-[invalid=true]:text-destructive gap-3 p-4 flex",
 			switch orientation {
 			case "horizontal":
 				"flex-row items-center [&>[data-gsxui-slot-field-label]]:flex-auto has-[>[data-gsxui-slot-field-content]]:items-start has-[>[data-gsxui-slot-field-content]]:[&>:is([role=checkbox],[role=radio])]:mt-px"
@@ -78,7 +78,7 @@ component Field(orientation string, children gsx.Node, attrs gsx.Attrs) {
 
 component FieldContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "gap-1" }
+		class={ "gap-1 flex flex-col" }
 		{ attrs... }
 		data-gsxui-slot-field-content
 	>
@@ -91,7 +91,7 @@ component FieldContent(children gsx.Node, attrs gsx.Attrs) {
 component FieldLabel(children gsx.Node, attrs gsx.Attrs) {
 	<Label
 		class={
-			"has-data-checked:bg-primary/5 has-data-checked:border-primary/30 dark:has-data-checked:border-primary/20 dark:has-data-checked:bg-primary/10 gap-2 leading-snug group-data-[disabled=true]/field:opacity-50 has-[>[data-slot=field]]:rounded-xl has-[>[data-slot=field]]:border"
+			"has-data-checked:bg-primary/5 has-data-checked:border-primary/30 dark:has-data-checked:border-primary/20 dark:has-data-checked:bg-primary/10 gap-2 leading-snug group-data-[disabled=true]/field:opacity-50 has-[>[data-gsxui-slot-field]]:rounded-xl has-[>[data-gsxui-slot-field]]:border flex"
 		}
 		{ attrs... }
 		data-gsxui-slot-field-label
@@ -104,7 +104,7 @@ component FieldLabel(children gsx.Node, attrs gsx.Attrs) {
 // independently from the composed FieldLabel.
 component FieldTitle(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "gap-2 text-sm font-medium group-data-[disabled=true]/field:opacity-50 leading-snug" }
+		class={ "gap-2 text-sm font-medium group-data-[disabled=true]/field:opacity-50 flex leading-snug" }
 		{ attrs... }
 		data-gsxui-slot-field-title
 	>
@@ -130,17 +130,14 @@ component FieldDescription(children gsx.Node, attrs gsx.Attrs) {
 component FieldSeparator(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-content={children != nil}
-		class={ "relative -my-2 h-5 text-sm [[data-gsxui-slot-field-group][data-variant=outline]_&]:-mb-2" }
+		class={ "-my-2 h-5 text-sm group-data-[variant=outline]/field-group:-mb-2 relative" }
 		{ attrs... }
 		data-gsxui-slot-field-separator-wrapper
 	>
-		<Separator
-			class={ "-my-2 h-5 text-sm group-data-[variant=outline]/field-group:-mb-2" }
-			data-gsxui-slot-field-separator
-		/>
+		<Separator class={ "absolute inset-0 top-1/2" } data-gsxui-slot-field-separator/>
 		{ if children != nil {
 			<span
-				class={ "text-muted-foreground px-2" }
+				class={ "text-muted-foreground px-2 relative mx-auto block w-fit bg-background" }
 				data-gsxui-slot-field-separator-content
 			>
 				{ children }

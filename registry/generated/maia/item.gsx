@@ -11,7 +11,7 @@ import "github.com/gsxhq/gsx"
 
 component ItemGroup(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "gap-4 has-data-[size=sm]:gap-2.5 has-data-[size=xs]:gap-2" }
+		class={ "gap-4 has-data-[size=sm]:gap-2.5 has-data-[size=xs]:gap-2 flex flex-col" }
 		role="list"
 		{ attrs... }
 		data-gsxui-slot-item-group
@@ -52,7 +52,7 @@ component Item(variant string, size string, children gsx.Node, attrs gsx.Attrs) 
 		data-variant={variant |> default("default")}
 		data-size={size |> default("default")}
 		class={
-			"[a]:hover:bg-muted rounded-2xl border text-sm",
+			"[a]:hover:bg-muted rounded-2xl border text-sm flex flex-wrap",
 			switch variant {
 			case "outline":
 				"border-border"
@@ -84,7 +84,7 @@ component ItemMedia(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-variant={variant |> default("default")}
 		class={
-			"gap-2 group-has-data-[slot=item-description]/item:translate-y-0.5 group-has-data-[slot=item-description]/item:self-start",
+			"gap-2 group-has-[[data-gsxui-slot-item-description]]/item:translate-y-0.5 group-has-[[data-gsxui-slot-item-description]]/item:self-start flex",
 			switch variant {
 			case "icon":
 				"[&_svg:not([class*='size-'])]:size-4"
@@ -102,13 +102,17 @@ component ItemMedia(variant string, children gsx.Node, attrs gsx.Attrs) {
 }
 
 component ItemContent(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "gap-1 group-data-[size=xs]/item:gap-0.5" } { attrs... } data-gsxui-slot-item-content>
+	<div class={ "gap-1 group-data-[size=xs]/item:gap-0.5 flex flex-col" } { attrs... } data-gsxui-slot-item-content>
 		{ children }
 	</div>
 }
 
 component ItemTitle(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "gap-2 text-sm leading-snug font-medium underline-offset-4" } { attrs... } data-gsxui-slot-item-title>
+	<div
+		class={ "gap-2 text-sm leading-snug font-medium underline-offset-4 flex" }
+		{ attrs... }
+		data-gsxui-slot-item-title
+	>
 		{ children }
 	</div>
 }
@@ -123,19 +127,19 @@ component ItemDescription(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component ItemActions(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "gap-2" } { attrs... } data-gsxui-slot-item-actions>
+	<div class={ "gap-2 flex" } { attrs... } data-gsxui-slot-item-actions>
 		{ children }
 	</div>
 }
 
 component ItemHeader(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "gap-2" } { attrs... } data-gsxui-slot-item-header>
+	<div class={ "gap-2 flex" } { attrs... } data-gsxui-slot-item-header>
 		{ children }
 	</div>
 }
 
 component ItemFooter(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "gap-2" } { attrs... } data-gsxui-slot-item-footer>
+	<div class={ "gap-2 flex" } { attrs... } data-gsxui-slot-item-footer>
 		{ children }
 	</div>
 }

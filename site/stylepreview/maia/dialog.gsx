@@ -23,7 +23,7 @@ component DialogTrigger(children gsx.Node, attrs gsx.Attrs) {
 component DialogContent(hideCloseButton bool, children gsx.Node, attrs gsx.Attrs) {
 	<dialog
 		class={
-			"data-open:backdrop:animate-in data-closed:backdrop:animate-out data-closed:backdrop:fade-out-0 data-open:backdrop:fade-in-0 backdrop:bg-black/80 backdrop:duration-100 supports-backdrop-filter:backdrop:backdrop-blur-xs bg-popover text-popover-foreground data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 ring-foreground/5 grid max-w-[calc(100%-2rem)] gap-6 rounded-4xl p-6 text-sm ring-1 duration-100 sm:max-w-md"
+			"data-open:backdrop:animate-in data-closed:backdrop:animate-out data-closed:backdrop:fade-out-0 data-open:backdrop:fade-in-0 backdrop:bg-black/80 backdrop:duration-100 supports-backdrop-filter:backdrop:backdrop-blur-xs bg-popover text-popover-foreground data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 ring-foreground/5 open:grid max-w-[calc(100%-2rem)] gap-6 rounded-4xl p-6 text-sm ring-1 duration-100 sm:max-w-md"
 		}
 		data-state="closed"
 		{ attrs... }
@@ -62,11 +62,11 @@ component DialogContent(hideCloseButton bool, children gsx.Node, attrs gsx.Attrs
 }
 
 component DialogHeader(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "gap-2" } { attrs... } data-gsxui-slot-dialog-header>{ children }</div>
+	<div class={ "gap-2 flex flex-col" } { attrs... } data-gsxui-slot-dialog-header>{ children }</div>
 }
 
 component DialogFooter(showCloseButton bool, children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "gap-2" } { attrs... } data-gsxui-slot-dialog-footer>
+	<div class={ "gap-2 flex flex-col-reverse" } { attrs... } data-gsxui-slot-dialog-footer>
 		{ children }
 		{ if showCloseButton {
 			<Button

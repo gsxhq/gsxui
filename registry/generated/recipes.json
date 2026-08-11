@@ -1640,7 +1640,8 @@
               "text-left",
               "text-sm",
               "font-medium",
-              "hover:underline"
+              "hover:underline",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -1666,8 +1667,6 @@
               "py-3",
               "text-left",
               "text-sm",
-              "has-data-[slot=alert-action]:relative",
-              "has-data-[slot=alert-action]:pr-18",
               "has-[\u003esvg]:grid-cols-[auto_1fr]",
               "has-[\u003esvg]:gap-x-2.5",
               "*:[svg]:row-span-2",
@@ -1696,7 +1695,8 @@
               "text-sm",
               "text-balance",
               "md:text-pretty",
-              "[\u0026_p:not(:last-child)]:mb-4"
+              "[\u0026_p:not(:last-child)]:mb-4",
+              "grid"
             ],
             "dimensions": {}
           },
@@ -1768,19 +1768,15 @@
               "place-items-center",
               "gap-1.5",
               "text-center",
-              "has-data-[slot=alert-dialog-media]:grid-rows-[auto_auto_1fr]",
-              "has-data-[slot=alert-dialog-media]:gap-x-6",
               "sm:group-data-[size=default]/alert-dialog-content:place-items-start",
-              "sm:group-data-[size=default]/alert-dialog-content:text-left",
-              "sm:group-data-[size=default]/alert-dialog-content:has-data-[slot=alert-dialog-media]:grid-rows-[auto_1fr]"
+              "sm:group-data-[size=default]/alert-dialog-content:text-left"
             ],
             "dimensions": {}
           },
           "title": {
             "base": [
               "text-lg",
-              "font-medium",
-              "sm:group-data-[size=default]/alert-dialog-content:group-has-data-[slot=alert-dialog-media]/alert-dialog-content:col-start-2"
+              "font-medium"
             ],
             "dimensions": {}
           }
@@ -1804,7 +1800,8 @@
               "rounded-full",
               "after:rounded-full",
               "data-[size=lg]:size-10",
-              "data-[size=sm]:size-6"
+              "data-[size=sm]:size-6",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -1812,7 +1809,8 @@
             "base": [
               "bg-muted",
               "text-muted-foreground",
-              "rounded-full"
+              "rounded-full",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -1840,7 +1838,8 @@
               "transition-all",
               "has-data-[icon=inline-end]:pr-1.5",
               "has-data-[icon=inline-start]:pl-1.5",
-              "[\u0026\u003esvg]:size-3!"
+              "[\u0026\u003esvg]:size-3",
+              "inline-flex"
             ],
             "dimensions": {
               "variant": {
@@ -1889,13 +1888,15 @@
           "ellipsis": {
             "base": [
               "size-5",
-              "[\u0026\u003esvg]:size-4"
+              "[\u0026\u003esvg]:size-4",
+              "flex"
             ],
             "dimensions": {}
           },
           "item": {
             "base": [
-              "gap-1.5"
+              "gap-1.5",
+              "inline-flex"
             ],
             "dimensions": {}
           },
@@ -1911,7 +1912,9 @@
               "text-muted-foreground",
               "gap-1.5",
               "text-sm",
-              "sm:gap-2.5"
+              "sm:gap-2.5",
+              "flex",
+              "flex-wrap"
             ],
             "dimensions": {}
           },
@@ -2061,16 +2064,20 @@
         "slots": {
           "": {
             "base": [
-              "has-[\u003e[data-slot=button-group]]:gap-2",
-              "has-[select[aria-hidden=true]:last-child]:[\u0026\u003e[data-slot=select-trigger]:last-of-type]:rounded-r-4xl"
+              "flex",
+              "w-fit",
+              "items-stretch",
+              "[\u0026\u003e*:focus-visible]:relative",
+              "[\u0026\u003e*:focus-visible]:z-10",
+              "[\u0026\u003einput]:flex-1"
             ],
             "dimensions": {
               "orientation": {
                 "horizontal": [
-                  "[\u0026\u003e[data-slot]:not(:has(~[data-slot]))]:rounded-r-4xl!"
+                  "flex-row"
                 ],
                 "vertical": [
-                  "[\u0026\u003e[data-slot]:not(:has(~[data-slot]))]:rounded-b-4xl!"
+                  "flex-col"
                 ]
               }
             }
@@ -2090,7 +2097,8 @@
               "px-2.5",
               "text-sm",
               "font-medium",
-              "[\u0026_svg:not([class*='size-'])]:size-4"
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "flex"
             ],
             "dimensions": {}
           }
@@ -2280,7 +2288,9 @@
               "has-[\u003eimg:first-child]:pt-0",
               "data-[size=sm]:[--card-spacing:--spacing(4)]",
               "*:[img:first-child]:rounded-t-xl",
-              "*:[img:last-child]:rounded-b-xl"
+              "*:[img:last-child]:rounded-b-xl",
+              "flex",
+              "flex-col"
             ],
             "dimensions": {}
           },
@@ -2311,7 +2321,8 @@
             "base": [
               "rounded-b-xl",
               "px-(--card-spacing)",
-              "[.border-t]:pt-(--card-spacing)"
+              "[.border-t]:pt-(--card-spacing)",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -2320,7 +2331,10 @@
               "gap-2",
               "rounded-t-xl",
               "px-(--card-spacing)",
-              "[.border-b]:pb-(--card-spacing)"
+              "[.border-b]:pb-(--card-spacing)",
+              "grid",
+              "auto-rows-min",
+              "grid-rows-[auto_auto]"
             ],
             "dimensions": {}
           },
@@ -2535,7 +2549,8 @@
               "pr-8",
               "pl-3",
               "text-sm",
-              "[\u0026_svg:not([class*='size-'])]:size-4"
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -2562,7 +2577,8 @@
           },
           "list": {
             "base": [
-              "no-scrollbar",
+              "[scrollbar-width:none]",
+              "[\u0026::-webkit-scrollbar]:hidden",
               "max-h-[min(calc(--spacing(72)---spacing(9)),calc(var(--available-height)---spacing(9)))]",
               "scroll-py-1",
               "overflow-y-auto",
@@ -2602,13 +2618,15 @@
               "bg-popover",
               "text-popover-foreground",
               "rounded-4xl",
-              "p-1"
+              "p-1",
+              "flex",
+              "flex-col"
             ],
             "dimensions": {}
           },
           "dialog-content": {
             "base": [
-              "rounded-4xl!",
+              "rounded-4xl",
               "p-0"
             ],
             "dimensions": {}
@@ -2647,7 +2665,8 @@
           "input": {
             "base": [
               "w-full",
-              "text-sm"
+              "text-sm",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -2659,7 +2678,8 @@
               "h-9",
               "[\u0026\u003esvg]:size-4",
               "[\u0026\u003esvg]:shrink-0",
-              "[\u0026\u003esvg]:opacity-50"
+              "[\u0026\u003esvg]:opacity-50",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -2679,14 +2699,15 @@
               "text-sm",
               "outline-hidden",
               "select-none",
-              "in-data-[slot=dialog-content]:rounded-2xl",
+              "[[data-gsxui-slot-dialog-content]_\u0026]:rounded-2xl",
               "[\u0026_svg:not([class*='size-'])]:size-4"
             ],
             "dimensions": {}
           },
           "list": {
             "base": [
-              "no-scrollbar",
+              "[scrollbar-width:none]",
+              "[\u0026::-webkit-scrollbar]:hidden",
               "max-h-72",
               "scroll-py-1",
               "outline-none"
@@ -2732,7 +2753,8 @@
               "pl-3",
               "text-sm",
               "data-inset:pl-9.5",
-              "[\u0026_svg:not([class*='size-'])]:size-4"
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -2786,7 +2808,8 @@
               "py-2",
               "text-sm",
               "data-inset:pl-9.5",
-              "[\u0026_svg:not([class*='size-'])]:size-4"
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "flex"
             ],
             "dimensions": {
               "variant": {
@@ -2823,7 +2846,8 @@
               "pl-3",
               "text-sm",
               "data-inset:pl-9.5",
-              "[\u0026_svg:not([class*='size-'])]:size-4"
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -2901,7 +2925,8 @@
               "py-2",
               "text-sm",
               "data-inset:pl-9.5",
-              "[\u0026_svg:not([class*='size-'])]:size-4"
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "flex"
             ],
             "dimensions": {}
           }
@@ -2949,7 +2974,7 @@
               "data-closed:zoom-out-95",
               "data-open:zoom-in-95",
               "ring-foreground/5",
-              "grid",
+              "open:grid",
               "max-w-[calc(100%-2rem)]",
               "gap-6",
               "rounded-4xl",
@@ -2973,13 +2998,17 @@
           },
           "footer": {
             "base": [
-              "gap-2"
+              "gap-2",
+              "flex",
+              "flex-col-reverse"
             ],
             "dimensions": {}
           },
           "header": {
             "base": [
-              "gap-2"
+              "gap-2",
+              "flex",
+              "flex-col"
             ],
             "dimensions": {}
           },
@@ -3088,7 +3117,9 @@
           "footer": {
             "base": [
               "gap-2",
-              "p-4"
+              "p-4",
+              "flex",
+              "flex-col"
             ],
             "dimensions": {}
           },
@@ -3110,7 +3141,9 @@
               "gap-0.5",
               "p-4",
               "md:gap-1.5",
-              "md:text-left"
+              "md:text-left",
+              "flex",
+              "flex-col"
             ],
             "dimensions": {}
           },
@@ -3144,7 +3177,8 @@
               "pl-3",
               "text-sm",
               "data-inset:pl-9.5",
-              "[\u0026_svg:not([class*='size-'])]:size-4"
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -3199,7 +3233,8 @@
               "py-2",
               "text-sm",
               "data-inset:pl-9.5",
-              "[\u0026_svg:not([class*='size-'])]:size-4"
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "flex"
             ],
             "dimensions": {
               "variant": {
@@ -3237,7 +3272,8 @@
               "pl-3",
               "text-sm",
               "data-inset:pl-9.5",
-              "[\u0026_svg:not([class*='size-'])]:size-4"
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -3318,7 +3354,8 @@
               "py-2",
               "text-sm",
               "data-inset:pl-9.5",
-              "[\u0026_svg:not([class*='size-'])]:size-4"
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "flex"
             ],
             "dimensions": {}
           }
@@ -3331,14 +3368,18 @@
               "gap-4",
               "rounded-lg",
               "border-dashed",
-              "p-12"
+              "p-12",
+              "flex",
+              "flex-col"
             ],
             "dimensions": {}
           },
           "content": {
             "base": [
               "gap-4",
-              "text-sm"
+              "text-sm",
+              "flex",
+              "flex-col"
             ],
             "dimensions": {}
           },
@@ -3350,13 +3391,16 @@
           },
           "header": {
             "base": [
-              "gap-2"
+              "gap-2",
+              "flex",
+              "flex-col"
             ],
             "dimensions": {}
           },
           "icon": {
             "base": [
-              "mb-2"
+              "mb-2",
+              "flex"
             ],
             "dimensions": {
               "variant": {
@@ -3393,7 +3437,8 @@
             "base": [
               "data-[invalid=true]:text-destructive",
               "gap-3",
-              "p-4"
+              "p-4",
+              "flex"
             ],
             "dimensions": {
               "orientation": {
@@ -3425,7 +3470,9 @@
           },
           "content": {
             "base": [
-              "gap-1"
+              "gap-1",
+              "flex",
+              "flex-col"
             ],
             "dimensions": {}
           },
@@ -3448,8 +3495,9 @@
           "group": {
             "base": [
               "gap-7",
-              "data-[slot=checkbox-group]:gap-3",
-              "[\u0026\u003e[data-gsxui-slot-field-group]]:gap-4"
+              "[\u0026\u003e[data-gsxui-slot-field-group]]:gap-4",
+              "flex",
+              "flex-col"
             ],
             "dimensions": {}
           },
@@ -3462,8 +3510,9 @@
               "gap-2",
               "leading-snug",
               "group-data-[disabled=true]/field:opacity-50",
-              "has-[\u003e[data-slot=field]]:rounded-xl",
-              "has-[\u003e[data-slot=field]]:border"
+              "has-[\u003e[data-gsxui-slot-field]]:rounded-xl",
+              "has-[\u003e[data-gsxui-slot-field]]:border",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -3485,35 +3534,39 @@
           },
           "separator": {
             "base": [
-              "-my-2",
-              "h-5",
-              "text-sm",
-              "group-data-[variant=outline]/field-group:-mb-2"
+              "absolute",
+              "inset-0",
+              "top-1/2"
             ],
             "dimensions": {}
           },
           "separator-content": {
             "base": [
               "text-muted-foreground",
-              "px-2"
+              "px-2",
+              "relative",
+              "mx-auto",
+              "block",
+              "w-fit",
+              "bg-background"
             ],
             "dimensions": {}
           },
           "separator-wrapper": {
             "base": [
-              "relative",
               "-my-2",
               "h-5",
               "text-sm",
-              "[[data-gsxui-slot-field-group][data-variant=outline]_\u0026]:-mb-2"
+              "group-data-[variant=outline]/field-group:-mb-2",
+              "relative"
             ],
             "dimensions": {}
           },
           "set": {
             "base": [
               "gap-6",
-              "has-[\u003e[data-slot=checkbox-group]]:gap-3",
-              "has-[\u003e[data-slot=radio-group]]:gap-3"
+              "flex",
+              "flex-col"
             ],
             "dimensions": {}
           },
@@ -3523,6 +3576,7 @@
               "text-sm",
               "font-medium",
               "group-data-[disabled=true]/field:opacity-50",
+              "flex",
               "leading-snug"
             ],
             "dimensions": {}
@@ -3600,21 +3654,21 @@
             "base": [
               "border-input",
               "bg-input/30",
-              "has-[[data-slot=input-group-control]:focus-visible]:border-ring",
-              "has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50",
-              "has-[[data-slot][aria-invalid=true]]:ring-destructive/20",
-              "has-[[data-slot][aria-invalid=true]]:border-destructive",
-              "dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40",
+              "has-[[data-gsxui-slot-input-group-control]:focus-visible]:border-ring",
+              "has-[[data-gsxui-slot-input-group-control]:focus-visible]:ring-ring/50",
+              "has-[[aria-invalid=true]]:ring-destructive/20",
+              "has-[[aria-invalid=true]]:border-destructive",
+              "dark:has-[[aria-invalid=true]]:ring-destructive/40",
               "h-9",
               "rounded-4xl",
               "border",
               "transition-colors",
-              "in-data-[slot=combobox-content]:focus-within:border-inherit",
-              "in-data-[slot=combobox-content]:focus-within:ring-0",
+              "[[data-gsxui-slot-combobox-content]_\u0026]:focus-within:border-inherit",
+              "[[data-gsxui-slot-combobox-content]_\u0026]:focus-within:ring-0",
               "has-data-[align=block-end]:rounded-2xl",
               "has-data-[align=block-start]:rounded-2xl",
-              "has-[[data-slot=input-group-control]:focus-visible]:ring-[3px]",
-              "has-[[data-slot][aria-invalid=true]]:ring-[3px]",
+              "has-[[data-gsxui-slot-input-group-control]:focus-visible]:ring-[3px]",
+              "has-[[aria-invalid=true]]:ring-[3px]",
               "has-[textarea]:rounded-xl",
               "has-[\u003e[data-align=block-end]]:h-auto",
               "has-[\u003e[data-align=block-end]]:flex-col",
@@ -3623,7 +3677,8 @@
               "has-[\u003e[data-align=block-end]]:[\u0026\u003einput]:pt-3",
               "has-[\u003e[data-align=block-start]]:[\u0026\u003einput]:pb-3",
               "has-[\u003e[data-align=inline-end]]:[\u0026\u003einput]:pr-1.5",
-              "has-[\u003e[data-align=inline-start]]:[\u0026\u003einput]:pl-1.5"
+              "has-[\u003e[data-align=inline-start]]:[\u0026\u003einput]:pl-1.5",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -3639,7 +3694,8 @@
               "group-data-[disabled=true]/input-group:opacity-50",
               "[\u0026_[data-gsxui-slot-kbd]]:rounded-4xl",
               "[\u0026_[data-gsxui-slot-kbd]]:px-1.5",
-              "[\u0026\u003esvg:not([class*='size-'])]:size-4"
+              "[\u0026\u003esvg:not([class*='size-'])]:size-4",
+              "flex"
             ],
             "dimensions": {
               "align": {
@@ -3683,7 +3739,8 @@
               "text-muted-foreground",
               "gap-2",
               "text-sm",
-              "[\u0026_svg:not([class*='size-'])]:size-4"
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "flex"
             ],
             "dimensions": {}
           }
@@ -3693,7 +3750,8 @@
         "slots": {
           "": {
             "base": [
-              "gap-2"
+              "gap-2",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -3703,7 +3761,8 @@
               "dark:has-aria-invalid:ring-destructive/40",
               "has-aria-invalid:border-destructive",
               "rounded-4xl",
-              "has-aria-invalid:ring-[3px]"
+              "has-aria-invalid:ring-[3px]",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -3739,7 +3798,8 @@
               "first:rounded-l-4xl",
               "first:border-l",
               "last:rounded-r-4xl",
-              "data-[active=true]:ring-[3px]"
+              "data-[active=true]:ring-[3px]",
+              "flex"
             ],
             "dimensions": {}
           }
@@ -3752,7 +3812,9 @@
               "[a]:hover:bg-muted",
               "rounded-2xl",
               "border",
-              "text-sm"
+              "text-sm",
+              "flex",
+              "flex-wrap"
             ],
             "dimensions": {
               "variant": {
@@ -3771,14 +3833,17 @@
           },
           "actions": {
             "base": [
-              "gap-2"
+              "gap-2",
+              "flex"
             ],
             "dimensions": {}
           },
           "content": {
             "base": [
               "gap-1",
-              "group-data-[size=xs]/item:gap-0.5"
+              "group-data-[size=xs]/item:gap-0.5",
+              "flex",
+              "flex-col"
             ],
             "dimensions": {}
           },
@@ -3792,7 +3857,8 @@
           },
           "footer": {
             "base": [
-              "gap-2"
+              "gap-2",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -3800,21 +3866,25 @@
             "base": [
               "gap-4",
               "has-data-[size=sm]:gap-2.5",
-              "has-data-[size=xs]:gap-2"
+              "has-data-[size=xs]:gap-2",
+              "flex",
+              "flex-col"
             ],
             "dimensions": {}
           },
           "header": {
             "base": [
-              "gap-2"
+              "gap-2",
+              "flex"
             ],
             "dimensions": {}
           },
           "media": {
             "base": [
               "gap-2",
-              "group-has-data-[slot=item-description]/item:translate-y-0.5",
-              "group-has-data-[slot=item-description]/item:self-start"
+              "group-has-[[data-gsxui-slot-item-description]]/item:translate-y-0.5",
+              "group-has-[[data-gsxui-slot-item-description]]/item:self-start",
+              "flex"
             ],
             "dimensions": {
               "variant": {
@@ -3849,7 +3919,8 @@
               "text-sm",
               "leading-snug",
               "font-medium",
-              "underline-offset-4"
+              "underline-offset-4",
+              "flex"
             ],
             "dimensions": {}
           }
@@ -3861,9 +3932,9 @@
             "base": [
               "bg-muted",
               "text-muted-foreground",
-              "in-data-[slot=tooltip-content]:bg-background/20",
-              "in-data-[slot=tooltip-content]:text-background",
-              "dark:in-data-[slot=tooltip-content]:bg-background/10",
+              "[[data-gsxui-slot-tooltip-content]_\u0026]:bg-background/20",
+              "[[data-gsxui-slot-tooltip-content]_\u0026]:text-background",
+              "dark:[[data-gsxui-slot-tooltip-content]_\u0026]:bg-background/10",
               "h-5",
               "w-fit",
               "min-w-5",
@@ -3873,13 +3944,15 @@
               "font-sans",
               "text-xs",
               "font-medium",
-              "[\u0026_svg:not([class*='size-'])]:size-3"
+              "[\u0026_svg:not([class*='size-'])]:size-3",
+              "inline-flex"
             ],
             "dimensions": {}
           },
           "group": {
             "base": [
-              "gap-1"
+              "gap-1",
+              "inline-flex"
             ],
             "dimensions": {}
           }
@@ -3894,7 +3967,8 @@
               "leading-none",
               "font-medium",
               "group-data-[disabled=true]:opacity-50",
-              "peer-disabled:opacity-50"
+              "peer-disabled:opacity-50",
+              "flex"
             ],
             "dimensions": {}
           }
@@ -3907,7 +3981,8 @@
               "h-9",
               "rounded-4xl",
               "border",
-              "p-1"
+              "p-1",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -3922,7 +3997,8 @@
               "pr-3",
               "pl-9.5",
               "text-sm",
-              "data-inset:pl-9.5"
+              "data-inset:pl-9.5",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -3968,7 +4044,8 @@
               "text-sm",
               "data-disabled:opacity-50",
               "data-inset:pl-9.5",
-              "[\u0026_svg:not([class*='size-'])]:size-4"
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "flex"
             ],
             "dimensions": {
               "variant": {
@@ -3979,7 +4056,7 @@
                   "text-destructive",
                   "focus:bg-destructive/10",
                   "focus:text-destructive",
-                  "*:[svg]:text-destructive!"
+                  "*:[svg]:text-destructive"
                 ]
               }
             }
@@ -4013,7 +4090,8 @@
               "text-sm",
               "data-disabled:opacity-50",
               "data-inset:pl-9.5",
-              "[\u0026_svg:not([class*='size-'])]:size-4"
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -4082,7 +4160,8 @@
               "py-2",
               "text-sm",
               "data-inset:pl-9.5",
-              "[\u0026_svg:not([class*='size-'])]:size-4"
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -4094,7 +4173,8 @@
               "px-2",
               "py-0.75",
               "text-sm",
-              "font-medium"
+              "font-medium",
+              "flex"
             ],
             "dimensions": {}
           }
@@ -4131,7 +4211,8 @@
               "select-none",
               "focus-visible:ring-[3px]",
               "aria-invalid:ring-[3px]",
-              "data-[size=sm]:h-8"
+              "data-[size=sm]:h-8",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -4151,7 +4232,8 @@
         "slots": {
           "": {
             "base": [
-              "max-w-max"
+              "max-w-max",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -4191,7 +4273,8 @@
               "data-[state=visible]:animate-in",
               "data-[state=hidden]:animate-out",
               "data-[state=hidden]:fade-out",
-              "data-[state=visible]:fade-in"
+              "data-[state=visible]:fade-in",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -4225,7 +4308,7 @@
               "focus-visible:ring-[3px]",
               "focus-visible:outline-1",
               "[\u0026_svg:not([class*='size-'])]:size-4",
-              "in-data-[slot=navigation-menu-content]:rounded-xl"
+              "[[data-gsxui-slot-navigation-menu-content]_\u0026]:rounded-xl"
             ],
             "dimensions": {
               "active": {
@@ -4274,7 +4357,8 @@
           },
           "list": {
             "base": [
-              "gap-0"
+              "gap-0",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -4296,7 +4380,8 @@
               "transition-all",
               "focus-visible:ring-[3px]",
               "focus-visible:outline-1",
-              "disabled:opacity-50"
+              "disabled:opacity-50",
+              "inline-flex"
             ],
             "dimensions": {}
           },
@@ -4328,7 +4413,9 @@
           },
           "content": {
             "base": [
-              "gap-1"
+              "gap-1",
+              "flex",
+              "flex-row"
             ],
             "dimensions": {}
           },
@@ -4337,7 +4424,8 @@
               "size-9",
               "items-center",
               "justify-center",
-              "[\u0026_svg:not([class*='size-'])]:size-4"
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -4380,7 +4468,7 @@
               "data-[side=right]:slide-in-from-left-2",
               "data-[side=top]:slide-in-from-bottom-2",
               "ring-foreground/5",
-              "flex",
+              "[\u0026:popover-open]:flex",
               "flex-col",
               "gap-4",
               "rounded-2xl",
@@ -4461,7 +4549,8 @@
               "bg-border",
               "h-6",
               "w-1",
-              "rounded-lg"
+              "rounded-lg",
+              "flex"
             ],
             "dimensions": {}
           }
@@ -4528,7 +4617,8 @@
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "*:[span]:last:flex",
               "*:[span]:last:items-center",
-              "*:[span]:last:gap-2"
+              "*:[span]:last:gap-2",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -4591,7 +4681,8 @@
               "transition-colors",
               "focus-visible:ring-[3px]",
               "aria-invalid:ring-[3px]",
-              "[\u0026_svg:not([class*='size-'])]:size-4"
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "flex"
             ],
             "dimensions": {
               "size": {
@@ -4713,14 +4804,18 @@
           "footer": {
             "base": [
               "gap-2",
-              "p-6"
+              "p-6",
+              "flex",
+              "flex-col"
             ],
             "dimensions": {}
           },
           "header": {
             "base": [
               "gap-1.5",
-              "p-6"
+              "p-6",
+              "flex",
+              "flex-col"
             ],
             "dimensions": {}
           },
@@ -4757,7 +4852,8 @@
           },
           "content": {
             "base": [
-              "no-scrollbar",
+              "[scrollbar-width:none]",
+              "[\u0026::-webkit-scrollbar]:hidden",
               "gap-2",
               "[--radius:var(--radius-xl)]"
             ],
@@ -4772,7 +4868,9 @@
           "footer": {
             "base": [
               "gap-2",
-              "p-2"
+              "p-2",
+              "flex",
+              "flex-col"
             ],
             "dimensions": {}
           },
@@ -4786,7 +4884,9 @@
           },
           "group": {
             "base": [
-              "p-2"
+              "p-2",
+              "flex",
+              "flex-col"
             ],
             "dimensions": {}
           },
@@ -4803,7 +4903,8 @@
               "rounded-md",
               "p-0",
               "focus-visible:ring-2",
-              "[\u0026\u003esvg]:size-4"
+              "[\u0026\u003esvg]:size-4",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -4828,7 +4929,8 @@
               "group-data-[collapsible=icon]:-mt-8",
               "group-data-[collapsible=icon]:opacity-0",
               "focus-visible:ring-2",
-              "[\u0026\u003esvg]:size-4"
+              "[\u0026\u003esvg]:size-4",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -4836,7 +4938,9 @@
             "base": [
               "gap-2",
               "p-2",
-              "[--radius:var(--radius-xl)]"
+              "[--radius:var(--radius-xl)]",
+              "flex",
+              "flex-col"
             ],
             "dimensions": {}
           },
@@ -4872,7 +4976,9 @@
           },
           "menu": {
             "base": [
-              "gap-1"
+              "gap-1",
+              "flex",
+              "flex-col"
             ],
             "dimensions": {}
           },
@@ -4899,7 +5005,8 @@
               "md:[[data-gsxui-slot-sidebar-menu-item]:hover\u003e\u0026[data-show-on-hover]]:opacity-100",
               "md:[[data-gsxui-slot-sidebar-menu-item]:focus-within\u003e\u0026[data-show-on-hover]]:opacity-100",
               "md:[\u0026[data-show-on-hover][data-state=open]]:opacity-100",
-              "[[data-gsxui-slot-sidebar-menu-button][data-active]~\u0026[data-show-on-hover]]:text-sidebar-primary-foreground"
+              "[[data-gsxui-slot-sidebar-menu-button][data-active]~\u0026[data-show-on-hover]]:text-sidebar-primary-foreground",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -4943,10 +5050,11 @@
               "text-sm",
               "transition-[width,height,padding]",
               "group-has-data-[sidebar=menu-action]/menu-item:pr-8",
-              "group-data-[collapsible=icon]:size-8!",
-              "group-data-[collapsible=icon]:p-2!",
+              "group-data-[collapsible=icon]:size-8",
+              "group-data-[collapsible=icon]:p-2",
               "focus-visible:ring-2",
-              "[\u0026[data-active]]:font-medium"
+              "[\u0026[data-active]]:font-medium",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -4961,7 +5069,8 @@
               "h-8",
               "gap-2",
               "rounded-md",
-              "px-2"
+              "px-2",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -4987,7 +5096,9 @@
               "border-l",
               "px-2.5",
               "py-0.5",
-              "group-data-[collapsible=icon]:hidden"
+              "group-data-[collapsible=icon]:hidden",
+              "flex",
+              "flex-col"
             ],
             "dimensions": {}
           },
@@ -5009,7 +5120,8 @@
               "focus-visible:ring-2",
               "data-[size=md]:text-sm",
               "data-[size=sm]:text-xs",
-              "[\u0026\u003esvg]:size-4"
+              "[\u0026\u003esvg]:size-4",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -5135,7 +5247,8 @@
               "group-data-[size=default]/switch:data-checked:before:translate-x-[calc(100%-2px)]",
               "group-data-[size=sm]/switch:data-checked:before:translate-x-[calc(100%-2px)]",
               "group-data-[size=default]/switch:data-unchecked:before:translate-x-0",
-              "group-data-[size=sm]/switch:data-unchecked:before:translate-x-0"
+              "group-data-[size=sm]/switch:data-unchecked:before:translate-x-0",
+              "inline-flex"
             ],
             "dimensions": {}
           }
@@ -5213,7 +5326,9 @@
         "slots": {
           "": {
             "base": [
-              "gap-2"
+              "gap-2",
+              "flex",
+              "flex-col"
             ],
             "dimensions": {}
           },
@@ -5229,7 +5344,8 @@
               "p-[3px]",
               "group-data-horizontal/tabs:h-9",
               "group-data-vertical/tabs:rounded-2xl",
-              "data-[variant=line]:rounded-none"
+              "data-[variant=line]:rounded-none",
+              "inline-flex"
             ],
             "dimensions": {}
           },
@@ -5247,7 +5363,8 @@
               "group-data-vertical/tabs:py-1.5",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "has-data-[icon=inline-end]:pr-1.5",
-              "has-data-[icon=inline-start]:pl-1.5"
+              "has-data-[icon=inline-start]:pl-1.5",
+              "inline-flex"
             ],
             "dimensions": {}
           }
@@ -5274,7 +5391,8 @@
               "transition-colors",
               "focus-visible:ring-[3px]",
               "aria-invalid:ring-[3px]",
-              "md:text-sm"
+              "md:text-sm",
+              "flex"
             ],
             "dimensions": {}
           }
@@ -5284,7 +5402,8 @@
         "slots": {
           "": {
             "base": [
-              "rounded-2xl"
+              "rounded-2xl",
+              "flex"
             ],
             "dimensions": {}
           },
@@ -5401,7 +5520,8 @@
               "text-sm",
               "font-medium",
               "transition-colors",
-              "[\u0026_svg:not([class*='size-'])]:size-4"
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "inline-flex"
             ],
             "dimensions": {
               "size": {
@@ -5446,7 +5566,8 @@
         "slots": {
           "": {
             "base": [
-              "data-[spacing=0]:data-[variant=outline]:rounded-4xl"
+              "data-[spacing=0]:data-[variant=outline]:rounded-4xl",
+              "flex"
             ],
             "dimensions": {
               "size": {
@@ -5542,14 +5663,14 @@
               "data-[side=left]:slide-in-from-right-2",
               "data-[side=right]:slide-in-from-left-2",
               "data-[side=top]:slide-in-from-bottom-2",
-              "inline-flex",
+              "[\u0026:popover-open]:inline-flex",
               "items-center",
               "gap-1.5",
               "rounded-2xl",
               "px-3",
               "py-1.5",
               "text-xs",
-              "has-data-[slot=kbd]:pr-1.5",
+              "has-[[data-gsxui-slot-kbd]]:pr-1.5",
               "[\u0026_[data-gsxui-slot-kbd]]:relative",
               "[\u0026_[data-gsxui-slot-kbd]]:isolate",
               "[\u0026_[data-gsxui-slot-kbd]]:z-50",

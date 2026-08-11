@@ -26,7 +26,7 @@ component Pagination(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component PaginationContent(children gsx.Node, attrs gsx.Attrs) {
-	<ul class={ "gap-1" } { attrs... } data-gsxui-slot-pagination-content>
+	<ul class={ "gap-1 flex flex-row" } { attrs... } data-gsxui-slot-pagination-content>
 		{ children }
 	</ul>
 }
@@ -103,7 +103,7 @@ component PaginationNext(href string, attrs gsx.Attrs) {
 component PaginationEllipsis(attrs gsx.Attrs) {
 	<span
 		aria-hidden="true"
-		class={ "size-9 items-center justify-center [&_svg:not([class*='size-'])]:size-4" }
+		class={ "size-9 items-center justify-center [&_svg:not([class*='size-'])]:size-4 flex" }
 		{ attrs... }
 		data-gsxui-slot-pagination-ellipsis
 	>

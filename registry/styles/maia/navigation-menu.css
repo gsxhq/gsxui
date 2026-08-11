@@ -3,12 +3,14 @@
    Ported by internal/stylegen/port; utilities are upstream Tailwind classes,
    re-slotted onto gsxui's shape-declared classes. */
 @layer components {
+  /* carried: no upstream counterpart */
   .gsxui-recipe-navigation-menu {
-    @apply max-w-max;
+    @apply max-w-max flex;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-navigation-menu-list {
-    @apply gap-0;
+    @apply gap-0 flex;
   }
 
   /* carried: no upstream counterpart */
@@ -16,8 +18,9 @@
     @apply relative;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-navigation-menu-trigger {
-    @apply hover:bg-muted focus:bg-muted data-open:hover:bg-muted data-open:focus:bg-muted data-open:bg-muted/50 focus-visible:ring-ring/50 data-popup-open:bg-muted/50 data-popup-open:hover:bg-muted rounded-2xl px-4.5 py-2.5 text-sm font-medium transition-all focus-visible:ring-[3px] focus-visible:outline-1 disabled:opacity-50;
+    @apply hover:bg-muted focus:bg-muted data-open:hover:bg-muted data-open:focus:bg-muted data-open:bg-muted/50 focus-visible:ring-ring/50 data-popup-open:bg-muted/50 data-popup-open:hover:bg-muted rounded-2xl px-4.5 py-2.5 text-sm font-medium transition-all focus-visible:ring-[3px] focus-visible:outline-1 disabled:opacity-50 inline-flex;
   }
 
   .gsxui-recipe-navigation-menu-trigger-icon {
@@ -29,7 +32,7 @@
   }
 
   .gsxui-recipe-navigation-menu-link {
-    @apply focus-visible:ring-ring/50 hover:bg-muted focus:bg-muted flex items-center gap-1.5 rounded-2xl p-3 text-sm transition-all outline-none focus-visible:ring-[3px] focus-visible:outline-1 [&_svg:not([class*='size-'])]:size-4 in-data-[slot=navigation-menu-content]:rounded-xl;
+    @apply focus-visible:ring-ring/50 hover:bg-muted focus:bg-muted flex items-center gap-1.5 rounded-2xl p-3 text-sm transition-all outline-none focus-visible:ring-[3px] focus-visible:outline-1 [&_svg:not([class*='size-'])]:size-4 [[data-gsxui-slot-navigation-menu-content]_&]:rounded-xl;
   }
 
   /* carried: no upstream counterpart */
@@ -51,8 +54,9 @@
     @apply focus:bg-muted hover:bg-muted bg-muted/50;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-navigation-menu-indicator {
-    @apply data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in;
+    @apply data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in flex;
   }
 
   .gsxui-recipe-navigation-menu-indicator-arrow {
