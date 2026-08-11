@@ -52,12 +52,12 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-field-label {
-    @apply has-data-checked:bg-primary/5 has-data-checked:border-primary/30 dark:has-data-checked:border-primary/20 dark:has-data-checked:bg-primary/10 gap-2 leading-snug group-data-[disabled=true]/field:opacity-50 has-[>[data-gsxui-slot-field]]:rounded-none has-[>[data-gsxui-slot-field]]:border flex;
+    @apply has-data-checked:bg-primary/5 has-data-checked:border-primary/30 dark:has-data-checked:border-primary/20 dark:has-data-checked:bg-primary/10 gap-2 leading-snug has-[>[data-gsxui-slot-field]]:rounded-none has-[>[data-gsxui-slot-field]]:border flex;
   }
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-field-title {
-    @apply gap-2 text-xs/relaxed group-data-[disabled=true]/field:opacity-50 flex;
+    @apply gap-2 text-xs/relaxed flex;
   }
 
   .gsxui-recipe-field-description {
