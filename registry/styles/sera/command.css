@@ -9,7 +9,7 @@
   }
 
   .gsxui-recipe-command-dialog-content {
-    @apply p-0;
+    @apply p-0 [dialog&]:overflow-hidden;
   }
 
   /* carried: no upstream counterpart */
@@ -44,7 +44,7 @@
   }
 
   .gsxui-recipe-command-item {
-    @apply data-selected:bg-muted data-selected:text-foreground data-selected:*:[svg]:text-foreground relative flex cursor-default items-center gap-2 rounded-none px-3 py-2 text-sm outline-hidden select-none [[data-gsxui-slot-dialog-content]_&]:rounded-none [&_svg:not([class*='size-'])]:size-3.5;
+    @apply data-disabled:pointer-events-none data-selected:bg-muted data-selected:text-foreground data-selected:*:[svg]:text-foreground relative flex cursor-default items-center gap-2 rounded-none px-3 py-2 text-sm outline-hidden select-none [[data-gsxui-slot-dialog-content]_&]:rounded-none [&_svg:not([class*='size-'])]:size-3.5;
   }
 
   .gsxui-recipe-command-shortcut {
