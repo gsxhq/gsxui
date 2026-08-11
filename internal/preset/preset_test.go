@@ -41,6 +41,11 @@ var expectedTokenNames = []string{
 	"warning",
 	"overlay",
 	"contrast",
+	"chart-1",
+	"chart-2",
+	"chart-3",
+	"chart-4",
+	"chart-5",
 }
 
 func TestCSSColorParserAcceptsShippedThemeColors(t *testing.T) {
@@ -109,7 +114,7 @@ func TestPresentationMetadataReturnsIndependentDefaults(t *testing.T) {
 	t.Parallel()
 
 	groups := GroupNames()
-	wantGroups := []string{"Base", "Brand", "Feedback", "Structure", "Status and overlay", "Sidebar"}
+	wantGroups := []string{"Base", "Brand", "Feedback", "Structure", "Status and overlay", "Chart", "Sidebar"}
 	if !slices.Equal(groups, wantGroups) {
 		t.Fatalf("GroupNames = %#v, want %#v", groups, wantGroups)
 	}
@@ -142,6 +147,53 @@ func TestPresentationMetadataReturnsIndependentDefaults(t *testing.T) {
 		radius.Light != "0.625rem" ||
 		radius.Dark != "0.625rem" {
 		t.Fatalf("RadiusDefinition = %#v", radius)
+	}
+}
+
+func TestPresetHasChartTokens(t *testing.T) {
+	t.Parallel()
+
+	wantChartTokens := []string{"chart-1", "chart-2", "chart-3", "chart-4", "chart-5"}
+	definitions := TokenDefinitions()
+	byName := make(map[string]TokenDefinition, len(definitions))
+	for _, definition := range definitions {
+		byName[definition.Name] = definition
+	}
+
+	for _, name := range wantChartTokens {
+		definition, ok := byName[name]
+		if !ok {
+			t.Fatalf("TokenDefinitions is missing %q", name)
+		}
+		if definition.Group != "Chart" {
+			t.Fatalf("TokenDefinitions[%q].Group = %q, want %q", name, definition.Group, "Chart")
+		}
+		if definition.Light == "" {
+			t.Fatalf("TokenDefinitions[%q].Light is empty", name)
+		}
+		if definition.Dark == "" {
+			t.Fatalf("TokenDefinitions[%q].Dark is empty", name)
+		}
+		if _, err := csscolorparser.Parse(definition.Light); err != nil {
+			t.Fatalf("TokenDefinitions[%q].Light = %q: %v", name, definition.Light, err)
+		}
+		if _, err := csscolorparser.Parse(definition.Dark); err != nil {
+			t.Fatalf("TokenDefinitions[%q].Dark = %q: %v", name, definition.Dark, err)
+		}
+	}
+
+	if !slices.Contains(GroupNames(), "Chart") {
+		t.Fatalf("GroupNames() = %#v, want it to contain %q", GroupNames(), "Chart")
+	}
+
+	preset := Default(StyleNova)
+	for _, name := range wantChartTokens {
+		if _, ok := preset.Theme.Light[name]; !ok {
+			t.Fatalf("Default().Theme.Light is missing %q", name)
+		}
+		if _, ok := preset.Theme.Dark[name]; !ok {
+			t.Fatalf("Default().Theme.Dark is missing %q", name)
+		}
 	}
 }
 

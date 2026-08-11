@@ -321,62 +321,58 @@ continue? [y/N] apply declined.
 	assertProjectPreset(t, dir, incoming)
 }
 
-func TestApplyRejectsUnsupportedMaiaBeforePromptOrMutation(t *testing.T) {
-	dir, commands := initedModuleWithStyle(t, preset.StyleNova)
+// TestApplyStyleChangeVendorsEveryInstalledStyledComponent asserts the
+// correctness-trap fix on the apply side: a style-axis change re-vendors
+// *every* installed styled component from registry/generated/<style>/, not
+// only Button. It also doubles as the maia-gate removal test — applying
+// maia while a non-Button component (badge) is installed (previously
+// refused with "style maia supports only the standalone Button") now
+// succeeds and replaces both sources exactly.
+func TestApplyStyleChangeVendorsEveryInstalledStyledComponent(t *testing.T) {
+	dir, _ := initedModuleWithStyle(t, preset.StyleNova)
+	if err := Run([]string{"add", "button"}); err != nil {
+		t.Fatal(err)
+	}
 	if err := Run([]string{"add", "badge"}); err != nil {
 		t.Fatal(err)
 	}
-	before := treeDigest(t, dir)
-	commandCount := len(*commands)
-	originalStdin := commandStdin
-	commandStdin = strings.NewReader("yes\n")
-	t.Cleanup(func() { commandStdin = originalStdin })
+	if err := Run([]string{"add", "icon"}); err != nil {
+		t.Fatal(err)
+	}
+	iconBefore := readProjectFile(t, dir, "ui/icon/icon.gsx")
 
 	output, err := captureRunOutput(t, []string{
 		"apply",
 		"--preset", presetCode(t, preset.Default(preset.StyleMaia)),
-	})
-	if err == nil || !strings.Contains(strings.ToLower(err.Error()), "maia") ||
-		!strings.Contains(err.Error(), "badge") {
-		t.Fatalf("unsupported Maia error = %v", err)
-	}
-	if output != "" {
-		t.Fatalf("unsupported Maia prompted or printed a summary before refusal:\n%s", output)
-	}
-	if got := treeDigest(t, dir); got != before {
-		t.Fatalf("unsupported Maia refusal changed tree:\n before %s\n  after %s", before, got)
-	}
-	if len(*commands) != commandCount {
-		t.Fatalf("unsupported Maia refusal ran commands: %v", (*commands)[commandCount:])
-	}
-}
-
-func TestApplyRejectsMaiaWhenInstalledStyledComponentIsDirectory(t *testing.T) {
-	dir, commands := initedModuleWithStyle(t, preset.StyleNova)
-	if err := Run([]string{"add", "icon"}); err != nil {
-		t.Fatal(err)
-	}
-	if info, err := os.Stat(filepath.Join(dir, "ui", "icon")); err != nil || !info.IsDir() {
-		t.Fatalf("installed icon directory: %v", err)
-	}
-	before := treeDigest(t, dir)
-	commandCount := len(*commands)
-
-	err := Run([]string{
-		"apply",
-		"--preset", presetCode(t, preset.Default(preset.StyleMaia)),
 		"--yes",
 	})
-	if err == nil || !strings.Contains(strings.ToLower(err.Error()), "maia") ||
-		!strings.Contains(err.Error(), "icon") {
-		t.Fatalf("installed directory component error = %v", err)
+	if err != nil {
+		t.Fatal(err)
 	}
-	if got := treeDigest(t, dir); got != before {
-		t.Fatalf("directory-component refusal changed tree:\n before %s\n  after %s", before, got)
+	if !strings.Contains(output, "ui/button.gsx (component source replacement)") ||
+		!strings.Contains(output, "ui/badge.gsx (component source replacement)") {
+		t.Fatalf("style apply summary missing component replacements:\n%s", output)
 	}
-	if len(*commands) != commandCount {
-		t.Fatalf("directory-component refusal ran commands: %v", (*commands)[commandCount:])
+	assertProjectPreset(t, dir, preset.Default(preset.StyleMaia))
+
+	for _, name := range []string{"button", "badge"} {
+		got := readProjectFile(t, dir, "ui/"+name+".gsx")
+		want, err := fs.ReadFile(gsxui.Files, "registry/generated/maia/"+name+".gsx")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !bytes.Equal(got, want) {
+			t.Fatalf("full style apply did not install exact Maia %s source", name)
+		}
+		assertManagedHashMatches(t, dir, "ui/"+name+".gsx")
 	}
+
+	// icon has no per-style artifact — it vendors identically under every
+	// style, so a style-axis change must leave it untouched.
+	if got := readProjectFile(t, dir, "ui/icon/icon.gsx"); !bytes.Equal(got, iconBefore) {
+		t.Fatal("style apply rewrote style-invariant icon source")
+	}
+	assertNoTransactionArtifacts(t, dir)
 }
 
 func TestApplyNovaAllowsInstalledNonButtonComponents(t *testing.T) {

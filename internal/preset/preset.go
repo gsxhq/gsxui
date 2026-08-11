@@ -113,6 +113,7 @@ var presentationGroups = []string{
 	"Feedback",
 	"Structure",
 	"Status and overlay",
+	"Chart",
 	"Sidebar",
 }
 
@@ -149,6 +150,15 @@ var tokenDefinitions = []TokenDefinition{
 	{Name: "warning", Group: "Status and overlay", Light: "oklch(76.9% 0.188 70.08)", Dark: "oklch(76.9% 0.188 70.08)"},
 	{Name: "overlay", Group: "Status and overlay", Light: "oklch(0% 0 0 / 10%)", Dark: "oklch(0% 0 0 / 10%)"},
 	{Name: "contrast", Group: "Status and overlay", Light: "oklch(100% 0 0)", Dark: "oklch(100% 0 0)"},
+	// Chart defaults are upstream's "neutral" base-color chart palette
+	// (shadcn-ui apps/v4/registry/themes.ts, theme "neutral", cssVars.light/
+	// dark), which also match every other token above at the neutral
+	// default. Light and dark share the same achromatic values there.
+	{Name: "chart-1", Group: "Chart", Light: "oklch(0.87 0 0)", Dark: "oklch(0.87 0 0)"},
+	{Name: "chart-2", Group: "Chart", Light: "oklch(0.556 0 0)", Dark: "oklch(0.556 0 0)"},
+	{Name: "chart-3", Group: "Chart", Light: "oklch(0.439 0 0)", Dark: "oklch(0.439 0 0)"},
+	{Name: "chart-4", Group: "Chart", Light: "oklch(0.371 0 0)", Dark: "oklch(0.371 0 0)"},
+	{Name: "chart-5", Group: "Chart", Light: "oklch(0.269 0 0)", Dark: "oklch(0.269 0 0)"},
 }
 
 var lengthUnits = []string{

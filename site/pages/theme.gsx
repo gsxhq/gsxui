@@ -295,8 +295,7 @@ component themeEditor(previewURL string, workspace bool) {
 					} }
 				</div>
 				<p class="text-xs text-muted-foreground">
-					Both styles render the full component catalogue. The CLI refuses an unsafe mixed-style migration once
-					components are installed.
+					All 8 styles render the full component catalogue. <code>gsxui add</code> and <code>gsxui apply</code> vendor each component's exact source for the selected style.
 				</p>
 			</section>
 			<div

@@ -32,6 +32,11 @@
   --warning: oklch(76.9% 0.188 70.08);
   --overlay: oklch(0% 0 0 / 10%);
   --contrast: oklch(100% 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
 }
 
 .dark {
@@ -67,4 +72,9 @@
   --warning: oklch(76.9% 0.188 70.08);
   --overlay: oklch(0% 0 0 / 10%);
   --contrast: oklch(100% 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
 }

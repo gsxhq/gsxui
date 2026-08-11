@@ -60,13 +60,6 @@ func runAdd(args []string) error {
 	if err != nil {
 		return err
 	}
-	if selectedPreset.Style == preset.StyleMaia {
-		for _, name := range resolved {
-			if name != "button" {
-				return fmt.Errorf("style maia supports only the standalone Button; dependency closure contains %q", name)
-			}
-		}
-	}
 
 	artifacts, err := addArtifacts(dir, module, cfg, selectedPreset, resolved)
 	if err != nil {
@@ -152,28 +145,11 @@ func addArtifacts(dir, module string, cfg Config, selected preset.Preset, resolv
 				})
 			}
 		} else {
-			if name == "button" {
-				button, err := selectedButtonArtifact(module, cfg, selected.Style)
-				if err != nil {
-					return nil, err
-				}
-				artifacts = append(artifacts, button)
-			} else {
-				sourcePath := "ui/" + name + ".gsx"
-				src, err := fs.ReadFile(gsxui.Files, sourcePath)
-				if err != nil {
-					return nil, err
-				}
-				rewritten, err := RewriteGsx(src, module, cfg.UI)
-				if err != nil {
-					return nil, fmt.Errorf("rewrite %s: %w", sourcePath, err)
-				}
-				artifacts = append(artifacts, artifact{
-					RelativePath: filepath.ToSlash(filepath.Join(cfg.UI, name+".gsx")),
-					Content:      rewritten,
-					Managed:      true,
-				})
+			styled, err := selectedStyledArtifact(module, cfg, name, selected.Style)
+			if err != nil {
+				return nil, err
 			}
+			artifacts = append(artifacts, styled)
 		}
 		if registry.HasJS(name) {
 			src, err := fs.ReadFile(gsxui.Files, "ui/"+name+".js")

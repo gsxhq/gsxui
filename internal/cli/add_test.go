@@ -138,21 +138,40 @@ func TestAddNovaNonButtonUsesExistingUISource(t *testing.T) {
 	}
 }
 
-func TestAddMaiaRejectsAnyNonButtonClosureBeforeWrites(t *testing.T) {
-	dir, commands := initedModuleWithStyle(t, preset.StyleMaia)
-	before := snapshotFiles(t, dir)
-	commandCount := len(*commands)
-
-	err := Run([]string{"add", "dialog"})
-	if err == nil || !strings.Contains(strings.ToLower(err.Error()), "maia") ||
-		!strings.Contains(err.Error(), "Button") {
-		t.Fatalf("Maia dependency error = %v", err)
+// TestAddVendorsSelectedStyle asserts the correctness-trap fix: every
+// component (not only Button) vendors from registry/generated/<style>/, so
+// `gsxui add <component>` under a non-default style yields that style's
+// exact source rather than DefaultStyle's. It doubles as the maia-gate
+// removal test — `gsxui add card` under maia (previously refused with
+// "style maia supports only the standalone Button") now succeeds.
+func TestAddVendorsSelectedStyle(t *testing.T) {
+	tests := []struct {
+		style     preset.Style
+		component string
+	}{
+		{style: preset.StyleMaia, component: "card"},
+		{style: preset.StyleLyra, component: "card"},
 	}
-	if !equalFileSnapshots(before, snapshotFiles(t, dir)) {
-		t.Fatal("Maia rejection changed project files")
-	}
-	if len(*commands) != commandCount {
-		t.Fatalf("Maia rejection ran commands: %v", (*commands)[commandCount:])
+	for _, tt := range tests {
+		t.Run(string(tt.style), func(t *testing.T) {
+			dir, _ := initedModuleWithStyle(t, tt.style)
+			if err := Run([]string{"add", tt.component}); err != nil {
+				t.Fatal(err)
+			}
+			relative := "ui/" + tt.component + ".gsx"
+			got, err := os.ReadFile(filepath.Join(dir, relative))
+			if err != nil {
+				t.Fatal(err)
+			}
+			want, err := fs.ReadFile(gsxui.Files, "registry/generated/"+string(tt.style)+"/"+tt.component+".gsx")
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !bytes.Equal(got, want) {
+				t.Fatalf("%s differs from exact %s registry artifact", relative, tt.style)
+			}
+			assertManagedHashMatches(t, dir, relative)
+		})
 	}
 }
 
