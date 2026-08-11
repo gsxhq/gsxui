@@ -243,9 +243,9 @@ func StyleContractFixture() _gsxrt.Node {
 //line style_contract.gsx:69:3
 		_gsxgw.S("<div class=\"hidden\">")
 //line style_contract.gsx:70:4
-		_gsxgw.S("<div class=\"bg-destructive/60\" data-style-contract-reference=\"dark-destructive\"></div>")
+		_gsxgw.S("<div class=\"bg-destructive/20\" data-style-contract-reference=\"dark-destructive\"></div>")
 //line style_contract.gsx:71:4
-		_gsxgw.S("<div class=\"bg-destructive/90\" data-style-contract-reference=\"destructive-hover\"></div>")
+		_gsxgw.S("<div class=\"bg-destructive/30\" data-style-contract-reference=\"destructive-hover\"></div>")
 //line style_contract.gsx:72:4
 		_gsxgw.S("<div class=\"ring-[3px] ring-destructive/40\" data-style-contract-reference=\"dark-invalid-ring\"></div>")
 //line style_contract.gsx:73:4

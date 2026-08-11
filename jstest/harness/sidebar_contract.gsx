@@ -83,6 +83,7 @@ component SidebarTokenFixture() {
 							<ui.SidebarMenuButton isActive={true} data-sidebar-contract="active">
 								Active
 							</ui.SidebarMenuButton>
+							<ui.SidebarMenuBadge data-sidebar-contract="active-badge">1</ui.SidebarMenuBadge>
 						</ui.SidebarMenuItem>
 						<ui.SidebarMenuItem>
 							<ui.SidebarMenuButton data-sidebar-contract="hover">Hover</ui.SidebarMenuButton>

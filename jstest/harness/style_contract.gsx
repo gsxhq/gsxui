@@ -67,8 +67,8 @@ component StyleContractFixture() {
 			<ui.Badge aria-invalid="true" tabindex="0" data-style-contract="dark-badge-invalid">Invalid badge</ui.Badge>
 		</div>
 		<div class="hidden">
-			<div class="bg-destructive/60" data-style-contract-reference="dark-destructive"></div>
-			<div class="bg-destructive/90" data-style-contract-reference="destructive-hover"></div>
+			<div class="bg-destructive/20" data-style-contract-reference="dark-destructive"></div>
+			<div class="bg-destructive/30" data-style-contract-reference="destructive-hover"></div>
 			<div class="ring-[3px] ring-destructive/40" data-style-contract-reference="dark-invalid-ring"></div>
 			<div
 				class="border border-destructive ring-3 ring-destructive/20"
