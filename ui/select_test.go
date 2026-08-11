@@ -22,15 +22,15 @@ const (
 	// see the style-porter report's "Select — missing max-height/overflow"
 	// and "duration-N alone" entries.
 	canonicalSelectContentClass = `transition-none z-50 max-h-[min(--spacing(96),var(--gsxui-available-height,9999px))] overflow-x-hidden overflow-y-auto p-1 bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 min-w-36 rounded-lg shadow-md ring-1 duration-100`
-	canonicalSelectLabelClass          = "text-muted-foreground px-1.5 py-1 text-xs"
+	canonicalSelectLabelClass   = "text-muted-foreground px-1.5 py-1 text-xs"
 	// data-[state=checked]:[&>[…]]:flex on the item, matched by "hidden"
 	// (not "flex") on the indicator, restores the item's own show/hide
 	// mechanism for its indicator — see the style-porter report's "Checkbox/
 	// Radio 'display flex on selected' mechanism" entry.
 	canonicalSelectItemClass          = `focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2 flex data-[state=checked]:[&amp;&gt;[data-gsxui-slot-select-item-indicator]]:flex`
 	canonicalSelectItemIndicatorClass = `pointer-events-none absolute right-2 hidden size-4 items-center justify-center`
-	canonicalSelectItemTextClass       = "flex flex-1 gap-2"
-	canonicalSelectSeparatorClass      = "bg-border -mx-1 my-1 h-px"
+	canonicalSelectItemTextClass      = "flex flex-1 gap-2"
+	canonicalSelectSeparatorClass     = "bg-border -mx-1 my-1 h-px"
 )
 
 // TestSelectTriggerPinnedDefault covers the structural and behavioral

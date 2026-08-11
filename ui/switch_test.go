@@ -21,7 +21,7 @@ import (
 // pseudo-element (no separate sibling/group-data-[…]/switch: relationship —
 // Switch has no data-size axis at all, a deliberate simplification from the
 // mechanical port's dead group/switch-gated size variants), so
-// before:content-['']/before:pointer-events-none/before:block/
+// before:content-[&#39;&#39;]/before:pointer-events-none/before:block/
 // before:transition-transform and appearance-none/outline-none/
 // disabled:cursor-not-allowed/disabled:opacity-50 are restored structural
 // chrome — see the report's "Switch — full structural rewrite" entry.
