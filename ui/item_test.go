@@ -41,12 +41,20 @@ func itemRecipeUtilities(class string) []string {
 // canonicalItemClass builds the class attribute one Item slot renders: the
 // slot's base utilities, then any dimension-value utilities, then the caller's
 // own classes, merged the way gsx merges class values at runtime.
+// Item carries a literal "group/item" marker class
+// (registry/canonical/item.gsx) that itemRecipeUtilities cannot see, for the
+// same reason documented on field_test.go's canonicalFieldClass — see the
+// style-porter report's "missing group/<name> marker" entry.
 func canonicalItemClass(slot string, extra []string, caller ...string) string {
 	base := "gsxui-recipe-item"
 	if slot != "" {
 		base += "-" + slot
 	}
-	classes := append([]string(nil), itemRecipeUtilities(base)...)
+	var classes []string
+	if slot == "" {
+		classes = append(classes, "group/item")
+	}
+	classes = append(classes, itemRecipeUtilities(base)...)
 	for _, value := range extra {
 		classes = append(classes, itemRecipeUtilities(base+"-"+value)...)
 	}

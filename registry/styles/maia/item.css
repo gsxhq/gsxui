@@ -31,7 +31,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-item-media {
-    @apply gap-2 group-has-[[data-gsxui-slot-item-description]]/item:translate-y-0.5 group-has-[[data-gsxui-slot-item-description]]/item:self-start flex;
+    @apply gap-2 flex;
   }
 
   .gsxui-recipe-item-media-variant-default {
@@ -48,7 +48,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-item-content {
-    @apply gap-1 group-data-[size=xs]/item:gap-0.5 flex flex-col;
+    @apply flex-1 [&+[data-gsxui-slot-item-content]]:flex-none gap-1 group-data-[size=xs]/item:gap-0.5 flex flex-col;
   }
 
   /* carried: no upstream counterpart */
