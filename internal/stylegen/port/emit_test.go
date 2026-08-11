@@ -1,0 +1,137 @@
+package port
+
+import (
+	"bytes"
+	"flag"
+	"os"
+	"path/filepath"
+	"slices"
+	"strings"
+	"testing"
+
+	"github.com/gsxhq/gsxui/internal/recipe"
+	"github.com/gsxhq/gsxui/registry/canonical/shapes"
+)
+
+var update = flag.Bool("update", false, "update golden files")
+
+// upstreamMaiaPath is the real, locally-checked-out upstream style file this
+// package's golden test transforms a real section from. Pinned SHA per the
+// plan's Global Constraints; re-verify with
+// `git -C /Users/jackieli/personal/shadcn-ui rev-parse HEAD` if the checkout
+// ever moves.
+const (
+	upstreamMaiaPath    = "/Users/jackieli/personal/shadcn-ui/apps/v4/registry/styles/style-maia.css"
+	upstreamMaiaRelPath = "apps/v4/registry/styles/style-maia.css"
+	upstreamPinnedSHA   = "41bbc12cfd39ed8d9cb8da04275479ee7ecc0612"
+)
+
+// TestRenderAccordionMaiaGolden transforms the real Accordion section out of
+// the real upstream style-maia.css and asserts Render's output equals the
+// committed golden byte-for-byte, following internal/preset/css_test.go's
+// golden-file pattern (dossier §7.1). Run with -update to regenerate the
+// golden after a deliberate change.
+func TestRenderAccordionMaiaGolden(t *testing.T) {
+	if _, err := os.Stat(upstreamMaiaPath); err != nil {
+		t.Skipf("upstream shadcn-ui checkout not present at %s", upstreamMaiaPath)
+	}
+
+	_, sections, err := ReadUpstream(upstreamMaiaPath)
+	if err != nil {
+		t.Fatalf("ReadUpstream: %v", err)
+	}
+	var accordion Section
+	found := false
+	for _, sec := range sections {
+		if sec.Name == "Accordion" {
+			accordion = sec
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Fatal("no Accordion section in style-maia.css")
+	}
+
+	shape, ok := shapes.All()["accordion"]
+	if !ok {
+		t.Fatal("no declared shape for accordion")
+	}
+
+	// The fallback policy carries a slot's utilities from the CURRENT nova
+	// recipe when upstream has no counterpart for it. Real Maia's Accordion
+	// section covers all five declared slots itself, so this fixture is
+	// exercised (Transform requires a fallback.Style argument) but should
+	// contribute nothing — asserted below via Ported.Carried.
+	novaPath := filepath.Join("..", "..", "..", "registry", "styles", "nova", "accordion.css")
+	novaSrc, err := os.ReadFile(novaPath)
+	if err != nil {
+		t.Fatalf("read nova fallback %s: %v", novaPath, err)
+	}
+	nova, err := recipe.ParseStyle(novaPath, novaSrc)
+	if err != nil {
+		t.Fatalf("parse nova fallback: %v", err)
+	}
+
+	ported, unmapped, err := Transform(shape, accordion, nova)
+	if err != nil {
+		t.Fatalf("Transform: %v", err)
+	}
+	if len(ported.Carried) != 0 {
+		t.Fatalf("Carried = %v, want none: real Maia's Accordion section covers every declared slot", ported.Carried)
+	}
+	// cn-accordion (the upstream root rule) has no gsxui slot -- Accordion's
+	// shape declares no root slot at all (registry/canonical/shapes/accordion.go's
+	// doc comment). It must be reported, never silently dropped.
+	wantUnmapped := []string{"cn-accordion"}
+	if !slices.Equal(unmapped, wantUnmapped) {
+		t.Fatalf("unmapped = %v, want %v", unmapped, wantUnmapped)
+	}
+
+	got, err := Render(ported, "maia", upstreamPinnedSHA, upstreamMaiaRelPath)
+	if err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+
+	goldenPath := filepath.Join("testdata", "golden-accordion-maia.css")
+	if *update {
+		if err := os.WriteFile(goldenPath, got, 0o644); err != nil {
+			t.Fatalf("write golden: %v", err)
+		}
+	}
+	want, err := os.ReadFile(goldenPath)
+	if err != nil {
+		t.Fatalf("read golden %s: %v", goldenPath, err)
+	}
+	if !bytes.Equal(got, want) {
+		t.Fatalf("Render output does not match golden\n--- got ---\n%s\n--- want ---\n%s", got, want)
+	}
+
+	if err := Validate(goldenPath, shape, got); err != nil {
+		t.Fatalf("Validate rejected Render's own output: %v", err)
+	}
+}
+
+// TestValidateRejectsUnknownClass hand-builds recipe bytes carrying a class
+// the shape never declares and asserts Validate errors instead of silently
+// accepting it -- the load-bearing property from dossier §3.2: Conform
+// demands exact bidirectional coverage, no extra classes tolerated.
+func TestValidateRejectsUnknownClass(t *testing.T) {
+	shape, ok := shapes.All()["accordion"]
+	if !ok {
+		t.Fatal("no declared shape for accordion")
+	}
+	src := []byte(`@layer components {
+  .gsxui-recipe-accordion-bogus {
+    @apply p-4;
+  }
+}
+`)
+	err := Validate("bogus.css", shape, src)
+	if err == nil {
+		t.Fatal("Validate accepted a class the shape doesn't declare, want error")
+	}
+	if !strings.Contains(err.Error(), "bogus") {
+		t.Fatalf("Validate error = %v, want it to mention the unknown class", err)
+	}
+}
