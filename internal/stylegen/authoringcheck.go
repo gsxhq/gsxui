@@ -21,15 +21,38 @@ import (
 var authoringPatternAll = regexp.MustCompile(
 	`data-slot|group/|peer/|(group|peer)-(data|has|focus|hover|active|disabled|aria|open|checked)[^[:space:]]*/`)
 
-// authoringPatternNarrow is authoringPatternAll with the bare "group/" root
-// removed. A migrated component's generated output legitimately carries
-// group/<component> (e.g. group/button) so its own group can be targeted by
-// its own descendants; that is not hand-authored presentation, it is compiled
-// structure. Everything else — data-slot, peer/, and the group-*/peer-*
-// conditional variant forms — remains disallowed even for generated output,
-// matching what make audit asserted for ui/button.gsx specifically.
-var authoringPatternNarrow = regexp.MustCompile(
-	`data-slot|peer/|(group|peer)-(data|has|focus|hover|active|disabled|aria|open|checked)[^[:space:]]*/`)
+// authoringPatternNarrow is what a MIGRATED component's generated ui/<c>.gsx
+// is checked against: data-slot alone.
+//
+// This used to also forbid peer/ and the group-*/peer-* conditional variant
+// forms, on the theory that only button.gsx — the one migrated component that
+// existed when this check was written — would ever need to reference its own
+// group/<c> root, and nothing migrated would need MORE than that bare root.
+// The 8-style port's mechanical re-port of Switch, Tabs, Sidebar, Item and
+// Field (registry/generated/*/{switch,tabs,sidebar,item,field}.gsx — see
+// each one's own recipe under registry/styles/<style>/) showed that
+// assumption was too narrow: their compiled output legitimately carries
+// group-data-[…]/switch:, peer-hover/menu-button: and similar forms —
+// descendants and siblings reacting to ANOTHER slot's state within the SAME
+// component's own multi-slot structure, upstream's own composition idiom
+// (e.g. Switch's thumb keying off group-data-[size=…]/switch:, matching
+// apps/v4/registry/bases/base/ui/switch.tsx), not hand-authored presentation
+// coupling one component to another's markup.
+//
+// The distinction that actually matters for a MIGRATED component is not
+// "does this line use group/peer" — it is "was this line generated or
+// typed by hand", and TestCheckAuthoringRejectsMigratedDivergingFromGenerated
+// already enforces that a migrated ui/<c>.gsx is byte-identical to
+// registry/generated/<DefaultStyle>/<c>.gsx. Nothing that check passes can be
+// hand-authored, group/peer or otherwise. data-slot alone stays checked here
+// because it is not a "was this hand-typed" question: it is upstream's OWN
+// raw attribute name (gsxui's is data-gsxui-slot-*), and upstream's source
+// CSS embeds it inside arbitrary-variant selector STRINGS the porter's
+// class-name-based re-slotting does not parse into
+// (`has-[[data-slot=input-group-control]:focus-visible]:...` in
+// style-nova.css, for one) — a leak there would compile clean and pass byte-
+// identity too, so it needs its own, permanent check.
+var authoringPatternNarrow = regexp.MustCompile(`data-slot`)
 
 // authoringClassIndent matches a line that is (after leading whitespace)
 // exactly a class= attribute continuation, e.g. a class="..." line inside a
@@ -49,11 +72,12 @@ var authoringClassTag = regexp.MustCompile(`^[[:space:]]*<[^>]*class=`)
 //     presentation: no data-slot, group/, peer/, group-*/peer-* variant forms,
 //     and no class= attribute.
 //   - A MIGRATED component's ui/<c>.gsx is generated output. It is expected to
-//     carry class= attributes and its own group/<c> root, so those are not
-//     flagged. It must still carry no data-slot, peer/, or group-*/peer-*
-//     conditional variant forms, and — because it is supposed to be generated
-//     output — it must be byte-identical to
-//     registry/generated/<DefaultStyle>/<c>.gsx.
+//     carry class= attributes and whatever group/peer forms its own compiled
+//     recipe legitimately needs (see authoringPatternNarrow), so only
+//     data-slot remains checked — and, because it is supposed to be generated
+//     output, it must be byte-identical to
+//     registry/generated/<DefaultStyle>/<c>.gsx, which is what actually rules
+//     out hand-authoring for everything else.
 //
 // The dev/ directory, when present, gets the same unmigrated pattern check
 // that ui/ used to apply via $(wildcard dev) — dev is scratch/prototype code,
