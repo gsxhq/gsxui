@@ -1,4 +1,4 @@
-import { on } from "../ui/gsxui.js";
+import { init, on } from "../ui/gsxui.js";
 import { parse as parseCSSDeclaration, tokenize, tokenTypes } from "css-tree";
 import {
   canonicalJSON,
@@ -30,9 +30,37 @@ const APPLIED_MESSAGE = "gsxui:theme-preview-applied:v1";
 const ERROR_MESSAGE = "gsxui:theme-preview-error:v1";
 const PREVIEW_HANDSHAKE_TIMEOUT_MS = 2_000;
 
-const schemaElement = document.querySelector("[data-theme-schema]");
+// The editor wires per pageview. setup() captures this page's elements and
+// state in one closure and returns the event handlers; the module-scope
+// registrations below forward to the CURRENT pageview's closure. A module
+// used to scan for [data-theme-schema] once at load, which left the editor
+// dead when boosted navigation morphed the theme page in AFTER that scan —
+// init() (the shared MutationObserver contract in ui/gsxui.js) re-runs the
+// build for every fresh schema element instead, and the forwards never
+// stack because they are registered exactly once here.
+let editor = null;
 
-if (schemaElement) {
+init("[data-theme-schema]", (schemaElement) => {
+  if (editor?.schemaElement === schemaElement) return;
+  editor?.dispose();
+  editor = setup(schemaElement);
+});
+
+on("change", "[data-theme-picker] [data-gsxui-slot-radio]", (e, el) => editor?.onPickerChange(e, el));
+on("pointerenter", "[data-theme-picker] [data-theme-choice]", (e, el) => editor?.onChoiceEnter(e, el), { capture: true });
+on("pointerleave", "[data-theme-picker]", (e, el) => editor?.onPickerLeave(e, el), { capture: true });
+on("gsxui:open", "[data-theme-picker] [data-gsxui-slot-popover-content]", (e, el) => editor?.onPickerOpen(e, el));
+on("toggle", "[data-theme-picker] [data-gsxui-slot-popover-content]", (e, el) => editor?.onPickerToggle(e, el), { capture: true });
+on("click", "[data-theme-style]", (e, el) => editor?.onStyleClick(e, el));
+on("click", "[data-theme-mode-tab]", (e, el) => editor?.onModeClick(e, el));
+on("click", "[data-theme-reset]", (e, el) => editor?.onReset(e, el));
+on("click", "[data-theme-copy]", (e, el) => editor?.onCopy(e, el));
+on("click", "[data-theme-download]", (e, el) => editor?.onDownload(e, el));
+on("click", "[data-theme-import-apply]", (e, el) => editor?.onImportApply(e, el));
+on("click", "[data-theme-preview-retry]", (e, el) => editor?.onPreviewRetry(e, el));
+addEventListener("message", (e) => editor?.onMessage(e));
+
+function setup(schemaElement) {
   const schema = JSON.parse(schemaElement.textContent);
   const frame = document.querySelector("[data-theme-preview-frame]");
   const status = document.querySelector("[data-theme-status]");
@@ -496,15 +524,15 @@ if (schemaElement) {
     }
   }
 
-  on("change", "[data-theme-picker] [data-gsxui-slot-radio]", (_event, input) => {
+  function onPickerChange(_event, input) {
     const kind = input.closest("[data-theme-picker]").dataset.themePicker;
     if (kind === "baseColor") state = selectBaseColor(state, input.value, schema);
     else if (kind === "theme") state = selectTheme(state, input.value, schema);
     else state = selectRadius(state, input.value, schema);
     render();
-  });
+  }
 
-  on("pointerenter", "[data-theme-picker] [data-theme-choice]", (event, choice) => {
+  function onChoiceEnter(event, choice) {
     if (
       event.pointerType === "touch" ||
       !matchMedia("(hover: hover) and (pointer: fine)").matches
@@ -515,50 +543,49 @@ if (schemaElement) {
     else if (kind === "theme") state = previewTheme(state, input.value, schema);
     else state = previewRadius(state, input.value, schema);
     render();
-  }, { capture: true });
-  on("pointerleave", "[data-theme-picker]", (event, picker) => {
+  }
+
+  function onPickerLeave(event, picker) {
     if (event.relatedTarget instanceof Node && picker.contains(event.relatedTarget)) return;
     state = clearPalettePreview(state);
     render();
-  }, { capture: true });
-  on(
-    "gsxui:open",
-    "[data-theme-picker] [data-gsxui-slot-popover-content]",
-    (_event, content) => {
-      content.querySelector("[data-gsxui-slot-radio]:checked")?.focus();
-    },
-  );
-  on("toggle", "[data-theme-picker] [data-gsxui-slot-popover-content]", (event) => {
+  }
+
+  function onPickerOpen(_event, content) {
+    content.querySelector("[data-gsxui-slot-radio]:checked")?.focus();
+  }
+
+  function onPickerToggle(event) {
     if (event.newState === "closed") {
       state = clearPalettePreview(state);
       render();
     }
-  }, { capture: true });
+  }
 
-  on("click", "[data-theme-style]", (_event, button) => {
+  function onStyleClick(_event, button) {
     state = selectStyle(state, button.dataset.themeStyle, schema);
     render();
-  });
+  }
 
-  on("click", "[data-theme-mode-tab]", (_event, button) => {
+  function onModeClick(_event, button) {
     state = selectMode(state, button.dataset.themeModeTab);
     render();
-  });
+  }
 
-  on("click", "[data-theme-reset]", () => {
+  function onReset() {
     state = resetThemeState(state, schema);
     render();
-  });
+  }
 
-  on("click", "[data-theme-copy]", async (_event, button) => {
+  async function onCopy(_event, button) {
     const artifacts = currentArtifacts();
     const text = artifacts[button.dataset.themeCopy];
     const copied = await copyText(text);
     showManualCopy(copied, text);
     if (copied) setStatus("Copied.");
-  });
+  }
 
-  on("click", "[data-theme-download]", (_event, button) => {
+  function onDownload(_event, button) {
     const kind = button.dataset.themeDownload;
     const artifacts = currentArtifacts();
     const text = artifacts[kind];
@@ -571,9 +598,9 @@ if (schemaElement) {
     anchor.download = kind === "json" ? "preset.json" : "theme.css";
     anchor.click();
     URL.revokeObjectURL(href);
-  });
+  }
 
-  on("click", "[data-theme-import-apply]", (_event, button) => {
+  function onImportApply(_event, button) {
     const kind = button.dataset.themeImportApply;
     const input = document.querySelector(`[data-theme-import="${kind}"]`);
     try {
@@ -588,15 +615,20 @@ if (schemaElement) {
     } catch (error) {
       setStatus(error instanceof Error ? error.message : `Could not import ${kind}.`, true);
     }
-  });
+  }
 
-  on("click", "[data-theme-preview-retry]", () => {
+  function onPreviewRetry() {
     if (!frame) return;
     startPreviewHandshake("Reconnecting to preview…");
     frame.src = frame.src;
-  });
+  }
 
-  addEventListener("message", (event) => {
+  function onMessage(event) {
+    // A stale pageview's closure must ignore messages after boosted
+    // navigation away — its frame is disconnected, and a null
+    // event.source would otherwise compare equal to its null
+    // contentWindow.
+    if (!frame?.isConnected) return;
     if (event.origin !== location.origin || event.source !== frame?.contentWindow) return;
     if (event.data?.type === READY_MESSAGE) {
       syncPreview();
@@ -611,7 +643,7 @@ if (schemaElement) {
       if (previewStatus) previewStatus.textContent = event.data.message || "Preview rejected the current state.";
       previewRetry?.classList.remove("hidden");
     }
-  });
+  }
 
   frame?.addEventListener("load", () => {
     startPreviewHandshake();
@@ -620,4 +652,24 @@ if (schemaElement) {
 
   startPreviewHandshake();
   render();
+
+  return {
+    schemaElement,
+    // dispose stops the pending handshake timer so a replaced pageview's
+    // timeout cannot write "Preview did not respond." into the new page.
+    dispose: finishPreviewHandshake,
+    onPickerChange,
+    onChoiceEnter,
+    onPickerLeave,
+    onPickerOpen,
+    onPickerToggle,
+    onStyleClick,
+    onModeClick,
+    onReset,
+    onCopy,
+    onDownload,
+    onImportApply,
+    onPreviewRetry,
+    onMessage,
+  };
 }

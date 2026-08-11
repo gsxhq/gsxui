@@ -67,4 +67,28 @@ test.describe("boosted site navigation", () => {
     await page.getByRole("link", { name: "select", exact: true }).last().click();
     await expect(page.locator("[data-gsxui-slot-select-trigger]").first()).toContainText("Apple");
   });
+
+  test("theme editor initializes after boosted navigation", async ({ page }) => {
+    await page.goto("/components/button");
+    await page.getByRole("link", { name: "Theme", exact: true }).first().click();
+    await expect(page).toHaveURL(/\/theme$/);
+    // Both signals stay dead when the editor module's one-shot page scan ran
+    // on the previous page: the preview handshake reports Live, and a mode
+    // tab click re-renders the status line.
+    await expect(page.locator("[data-theme-preview-status]")).toHaveText("Live");
+    await page.locator('[data-theme-mode-tab="dark"]').click();
+    await expect(page.locator("[data-theme-status]")).toHaveText("Nova · dark");
+
+    // Round trip: leaving and re-entering must rebuild the editor for the
+    // fresh DOM (dispose the stale closure, wire the new one). goBack, not a
+    // header link — the harness serves /theme as the shell-less ThemeEditor
+    // page, which has no site navigation of its own.
+    await page.goBack();
+    await expect(page).toHaveURL(/\/components\/button$/);
+    await page.getByRole("link", { name: "Theme", exact: true }).first().click();
+    await expect(page).toHaveURL(/\/theme$/);
+    await expect(page.locator("[data-theme-preview-status]")).toHaveText("Live");
+    await page.locator('[data-theme-mode-tab="dark"]').click();
+    await expect(page.locator("[data-theme-status]")).toHaveText("Nova · dark");
+  });
 });
