@@ -65,13 +65,13 @@ func _gsxrenderTabs(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, value string, ch
 		_gsxgw.S("\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-col gap-2"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tabs"})
 	_gsxgw.BoolAttr("data-gsxui-slot-tabs", true)
 	_gsxgw.S(">")
-//line tabs.gsx:38:92
+//line tabs.gsx:38:78
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
@@ -95,19 +95,19 @@ func _gsxrenderTabsList(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx
 		_gsxgw.S(" role=\"tablist\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("inline-flex h-8 w-fit items-center justify-center rounded-lg bg-muted p-[3px] text-muted-foreground"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("rounded-4xl p-[3px] group-data-horizontal/tabs:h-9 group-data-vertical/tabs:rounded-2xl data-[variant=line]:rounded-none"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tabs-list"})
 	_gsxgw.BoolAttr("data-gsxui-slot-tabs-list", true)
 	_gsxgw.S(">")
-//line tabs.gsx:48:3
+//line tabs.gsx:50:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
 
-//line tabs.gsx:52:1
+//line tabs.gsx:54:1
 // TabsTrigger's selected bool is the explicit, server-visible stand-in for
 // "does my value match the root's" — the caller (which already has both
 // values in scope when building the tree) resolves the comparison; this
@@ -115,7 +115,7 @@ func _gsxrenderTabsList(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx
 // inactive state, matching a caller who forgets to pass it — never
 // accidentally active.
 
-//line tabs.gsx:58:1
+//line tabs.gsx:60:1
 func TabsTrigger(value string, selected bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -128,13 +128,13 @@ func _gsxrenderTabsTrigger(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, value str
 		return _gsxerr
 	}
 	var _gsxnum [32]byte
-//line tabs.gsx:59:2
+//line tabs.gsx:61:2
 	state := "inactive"
 	tabindex := -1
 	if selected {
 		state, tabindex = "active", 0
 	}
-//line tabs.gsx:66:2
+//line tabs.gsx:68:2
 	_gsxgw.S("<button")
 	if !attrs.Has("type") {
 		_gsxgw.S(" type=\"button\"")
@@ -163,23 +163,23 @@ func _gsxrenderTabsTrigger(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, value str
 		_gsxgw.S("\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-1.5 py-0.5 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-1 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:pointer-events-none dark:text-muted-foreground dark:hover:text-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 dark:data-[state=active]:text-foreground"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-1.5 rounded-xl border border-transparent px-2 py-1 text-sm font-medium group-data-vertical/tabs:px-2.5 group-data-vertical/tabs:py-1.5 [&_svg:not([class*='size-'])]:size-4 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tabs-trigger"})
 	_gsxgw.BoolAttr("data-gsxui-slot-tabs-trigger", true)
 	_gsxgw.S(">")
-//line tabs.gsx:79:3
+//line tabs.gsx:81:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</button>")
 	return _gsxgw.Err()
 }
 
-//line tabs.gsx:83:1
+//line tabs.gsx:85:1
 // TabsContent's selected bool mirrors TabsTrigger's — same value-comparison
 // contract, same zero-value-is-inactive default.
 
-//line tabs.gsx:85:1
+//line tabs.gsx:87:1
 func TabsContent(value string, selected bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -191,12 +191,12 @@ func _gsxrenderTabsContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, value str
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line tabs.gsx:86:2
+//line tabs.gsx:88:2
 	state := "inactive"
 	if selected {
 		state = "active"
 	}
-//line tabs.gsx:92:2
+//line tabs.gsx:94:2
 	_gsxgw.S("<div")
 	if !attrs.Has("role") {
 		_gsxgw.S(" role=\"tabpanel\"")
@@ -215,13 +215,13 @@ func _gsxrenderTabsContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, value str
 		_gsxgw.BoolAttr("hidden", bool(!selected))
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex-1 text-sm outline-none"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-sm"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tabs-content"})
 	_gsxgw.BoolAttr("data-gsxui-slot-tabs-content", true)
 	_gsxgw.S(">")
-//line tabs.gsx:101:3
+//line tabs.gsx:103:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()

@@ -1,53 +1,26 @@
-/* Source: assets/css/styles/default/alert-dialog.css, which this migration
-   deletes outright. Nova and Maia have not diverged on AlertDialog yet, so
-   this file is byte-identical to registry/styles/maia/alert-dialog.css.
-
-   The root, trigger, action and cancel slots carry no rules here because
-   they have none in the default style either — the root renders <ui.Dialog>,
-   the trigger is a plain unstyled button, and action/cancel are markers on
-   already-migrated <ui.Button>s that bring their own recipe utilities.
-
-   alert-dialog-content is Dialog's box, NARROWED. AlertDialogContent
-   composes <ui.DialogContent> directly, so these utilities travel as a class
-   into DialogContent's own class attribute and merge.Merge resolves the
-   max-w-* conflict in this file's favour — verified: merge collapses
-   "max-w-[calc(100%-2rem)] sm:max-w-sm" + "max-w-xs sm:max-w-sm" to
-   "max-w-xs sm:max-w-sm", and a caller's max-w-md still displaces max-w-xs
-   afterwards. This is upstream's own mechanism (alert-dialog.tsx hands
-   AlertDialogContent's max-w to cn()/twMerge against DialogContent's), and
-   it is what makes the narrowing effective again: retained as plain CSS it
-   was :where()-wrapped at (0,0,0) and lost to Dialog's (0,1,0) recipe class
-   unconditionally. Section 10b does not apply — nothing here compiles to a
-   two-class selector; these are plain utilities settled by merge, exactly
-   like a caller's own.
-
-   alert-dialog-footer restates the values AlertDialogFooter used to inherit
-   from the selector it shared with dialog-footer in the pre-migration
-   dialog.css. AlertDialogFooter renders its own <div> rather than composing
-   <ui.DialogFooter>, so it needs its own rule; Dialog's migration parked
-   these values as a marker fallback in
-   assets/css/styles/default/alert-dialog.css and this slot retires that
-   fallback. */
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-maia.css, Alert Dialog lines 23-46. Ported by
+   internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
+   onto gsxui's shape-declared classes. */
 @layer components {
   .gsxui-recipe-alert-dialog-content {
-    @apply max-w-xs;
-    @apply sm:max-w-sm;
+    @apply data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 bg-popover text-popover-foreground ring-foreground/5 gap-6 rounded-4xl p-6 ring-1 duration-100 data-[size=default]:max-w-xs data-[size=sm]:max-w-xs data-[size=default]:sm:max-w-md;
   }
 
   .gsxui-recipe-alert-dialog-header {
-    @apply grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center;
+    @apply grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center has-data-[slot=alert-dialog-media]:grid-rows-[auto_auto_1fr] has-data-[slot=alert-dialog-media]:gap-x-6 sm:group-data-[size=default]/alert-dialog-content:place-items-start sm:group-data-[size=default]/alert-dialog-content:text-left sm:group-data-[size=default]/alert-dialog-content:has-data-[slot=alert-dialog-media]:grid-rows-[auto_1fr];
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-alert-dialog-footer {
-    @apply -mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4;
-    @apply sm:flex-row sm:justify-end;
+    @apply -mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4 sm:flex-row sm:justify-end;
   }
 
   .gsxui-recipe-alert-dialog-title {
-    @apply text-base font-medium;
+    @apply text-lg font-medium sm:group-data-[size=default]/alert-dialog-content:group-has-data-[slot=alert-dialog-media]/alert-dialog-content:col-start-2;
   }
 
   .gsxui-recipe-alert-dialog-description {
-    @apply text-sm text-muted-foreground;
+    @apply text-muted-foreground *:[a]:hover:text-foreground text-sm text-balance md:text-pretty *:[a]:underline *:[a]:underline-offset-3;
   }
 }

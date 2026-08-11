@@ -10,10 +10,10 @@ component Alert(variant string, children gsx.Node, attrs gsx.Attrs) {
 		role="alert"
 		data-variant={variant |> default("default")}
 		class={
-			"relative grid w-full items-start gap-y-0.5 rounded-lg border bg-card px-2.5 py-2 text-sm text-card-foreground has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2 [&>svg]:row-span-2 [&>svg]:translate-y-0.5 [&>svg]:text-current [&>svg:not([class*='size-'])]:size-4",
+			"grid gap-0.5 rounded-lg border px-4 py-3 text-left text-sm has-data-[slot=alert-action]:relative has-data-[slot=alert-action]:pr-18 has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2.5 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg]:text-current *:[svg:not([class*='size-'])]:size-4",
 			switch variant {
 			case "destructive":
-				"bg-card text-destructive [&_[data-gsxui-slot-alert-description]]:text-destructive/90"
+				"text-destructive bg-card [&>[data-gsxui-slot-alert-description]]:text-destructive/90 *:[svg]:text-current"
 			default:
 				"bg-card text-card-foreground"
 			}
@@ -26,16 +26,14 @@ component Alert(variant string, children gsx.Node, attrs gsx.Attrs) {
 }
 
 component AlertTitle(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "col-start-2 font-medium" } { attrs... } data-gsxui-slot-alert-title>
+	<div class={ "font-medium group-has-[>svg]/alert:col-start-2" } { attrs... } data-gsxui-slot-alert-title>
 		{ children }
 	</div>
 }
 
 component AlertDescription(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={
-			"col-start-2 grid justify-items-start text-sm text-muted-foreground [&_p]:leading-relaxed [&_p:not(:last-child)]:mb-4"
-		}
+		class={ "text-muted-foreground text-sm text-balance md:text-pretty [&_p:not(:last-child)]:mb-4" }
 		{ attrs... }
 		data-gsxui-slot-alert-description
 	>

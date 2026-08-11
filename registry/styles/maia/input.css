@@ -1,41 +1,9 @@
-/* Source: assets/css/styles/default/input.css (all rules), folded onto the
-   one root slot. selection:/file:/placeholder: pseudo-element variants and
-   disabled/focus-visible/aria-invalid native state all translate directly —
-   same call as Textarea's migration (registry/styles/nova/textarea.css) and
-   Checkbox's aria-invalid rule. Nova and Maia have not diverged on Input
-   yet, so this file is byte-identical to registry/styles/maia/input.css.
-
-   EXCEPT the font-size/line-height pair (unconditional text-base AND its
-   md:text-sm override), which must stay caller-overridable — a caller's
-   plain text-* override (Input.custom's class="h-12 text-base", for one)
-   previously always won because BOTH rules lived in @layer components
-   against a caller class in @layer utilities, at every viewport. Migrating
-   just md:text-sm onto the recipe and leaving text-base behind was tried
-   first and made it WORSE, not better: once text-base is Tailwind-scanned
-   directly out of ui/input.gsx it lands in the real utilities layer, and a
-   components-layer md:text-sm can never beat ANY utilities-layer rule
-   regardless of media query — so the retained rule went from
-   "loses only to a caller override, only at md+" to "dead outright, no
-   caller present or not" (make sweep-compare caught this immediately: every
-   fixture read text-base's 16px/24px, not text-sm's 14px/20px, even absent
-   a caller class). Keeping BOTH text-base and md:text-sm off the recipe and
-   entirely in assets/css/styles/default/input.css restores the exact
-   pre-migration mechanics: with no caller present, ordinary in-layer
-   cascade/media order applies (text-sm wins at md+, same as before); with a
-   caller override present, the @layer boundary hands it the win at every
-   viewport, same as before. Section 10b of
-   docs/superpowers/specs/2026-07-29-slot-axis-and-component-migration-design.md.
-   Confirmed compiling with this repo's Tailwind v4 CLI before use. */
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-maia.css, Input lines 677-680. Ported by
+   internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
+   onto gsxui's shape-declared classes. */
 @layer components {
   .gsxui-recipe-input {
-    @apply h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 transition-[color,box-shadow] outline-none;
-    @apply selection:bg-primary selection:text-primary-foreground;
-    @apply file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground;
-    @apply placeholder:text-muted-foreground;
-    @apply focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50;
-    @apply disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50;
-    @apply aria-invalid:border-destructive aria-invalid:ring-destructive/20;
-    @apply dark:bg-input/30;
-    @apply dark:aria-invalid:ring-destructive/40;
+    @apply bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 rounded-4xl border px-3 py-1 text-base transition-colors file:h-7 file:text-sm file:font-medium focus-visible:ring-[3px] aria-invalid:ring-[3px] md:text-sm;
   }
 }

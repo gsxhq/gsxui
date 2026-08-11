@@ -1,22 +1,9 @@
-/* Source: assets/css/styles/default/radio.css, folding the .dark selector
-   and the :focus-visible/:disabled/:checked/[aria-invalid] pseudo-class and
-   attribute rules in as variants on the root slot. checked/disabled/
-   aria-invalid are runtime state (the style contract's own axes on Radio),
-   not recipe dimensions — same treatment as Badge/Alert's aria-invalid.
-
-   The radial-gradient background-image on :checked has no Tailwind utility
-   form (@apply-only rejects plain CSS properties outright), so it stays
-   behind in assets/css/styles/default.css's @layer utilities escape hatch,
-   same mechanism as Card's container-name/container-type. Nova and Maia
-   have not diverged on Radio, so this file is byte-identical to
-   registry/styles/maia/radio.css. */
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-maia.css, Radio lines 968-987. Ported by
+   internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
+   onto gsxui's shape-declared classes. */
 @layer components {
   .gsxui-recipe-radio {
-    @apply aspect-square size-4 shrink-0 appearance-none rounded-full border border-input transition-[color,box-shadow] outline-none;
-    @apply focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50;
-    @apply disabled:cursor-not-allowed disabled:opacity-50;
-    @apply aria-invalid:border-destructive aria-invalid:ring-destructive/20;
-    @apply dark:bg-input/30 dark:aria-invalid:ring-destructive/40;
-    @apply checked:border-primary checked:bg-primary checked:text-primary-foreground dark:checked:bg-primary;
+    @apply border-input dark:bg-input/30 data-checked:bg-primary data-checked:text-primary-foreground dark:data-checked:bg-primary data-checked:border-primary aria-invalid:aria-checked:border-primary aria-invalid:border-destructive focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:aria-invalid:border-destructive/50 flex size-4 rounded-full focus-visible:ring-3 aria-invalid:ring-3;
   }
 }

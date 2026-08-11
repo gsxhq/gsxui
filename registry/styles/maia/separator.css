@@ -1,21 +1,10 @@
-/* Source: gsxui@aafeaafd410d7411b0e3bd4382cbe3dfacc5e988
-   assets/css/styles/default.css, Separator block (around line 48), with the
-   two data-orientation rules folded in as an orientation dimension on the
-   root slot (matching the style contract and default.css exactly: default
-   "horizontal", plus "vertical" — no discrepancy to resolve here). Nova and
-   Maia have not diverged on Separator yet, so this file is byte-identical to
-   registry/styles/maia/separator.css.
-
-   default.css also has three same-element compound rules where Separator's
-   marker co-occurs with ButtonGroup's/Item's/Field's own "-separator" slot
-   marker on one element (e.g.
-   `[data-gsxui-slot-separator][data-gsxui-slot-button-group-separator]`).
-   Those are left untouched in default.css — the properties they set are
-   specific to how those three (unmigrated) components use a composed
-   Separator, not to Separator itself. */
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-maia.css, Separator lines 1068-1079. Ported by
+   internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
+   onto gsxui's shape-declared classes. */
 @layer components {
   .gsxui-recipe-separator {
-    @apply shrink-0 bg-border;
+    @apply bg-border shrink-0;
   }
 
   .gsxui-recipe-separator-orientation-horizontal {

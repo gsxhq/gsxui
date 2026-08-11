@@ -5,11 +5,18 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 
 	"github.com/gsxhq/gsxui/internal/stylegen"
+	"github.com/gsxhq/gsxui/internal/stylegen/port"
 )
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "port" {
+		runPort(os.Args[2:])
+		return
+	}
+
 	check := flag.Bool("check", false, "check generated style sources without writing")
 	checkLayers := flag.Bool("check-layers", false,
 		"check that every override of compiled component presentation can win the cascade")
@@ -46,6 +53,79 @@ func main() {
 		fmt.Fprintf(os.Stderr, "stylegen: %v\n", err)
 		os.Exit(1)
 	}
+}
+
+// runPort implements the `stylegen port` subcommand: port one style (or all
+// 8) from a local shadcn-ui checkout into registry/styles/, validated by
+// internal/stylegen/port.Run before anything is written.
+func runPort(args []string) {
+	fs := flag.NewFlagSet("port", flag.ExitOnError)
+	upstream := fs.String("upstream", "", "path to a local shadcn-ui checkout root (required)")
+	style := fs.String("style", "", "style to port: one of "+joinStyles()+", or \"all\" (required)")
+	dryRun := fs.Bool("dry-run", false, "compute the port and report it without writing any files")
+	allowUnmapped := fs.Bool("allow-unmapped", false,
+		"print unmapped upstream classes/utilities instead of failing when Unmapped > 0")
+	fs.Usage = func() {
+		fmt.Fprintln(os.Stderr, "usage: go run ./cmd/stylegen port --upstream <path> --style maia|all [--dry-run] [--allow-unmapped]")
+		fs.PrintDefaults()
+	}
+	fs.Parse(args)
+	if fs.NArg() != 0 || *upstream == "" || *style == "" {
+		fs.Usage()
+		os.Exit(2)
+	}
+
+	var styles []string
+	if *style == "all" {
+		styles = slices.Clone(port.AllStyles)
+	} else if slices.Contains(port.AllStyles, *style) {
+		styles = []string{*style}
+	} else {
+		fmt.Fprintf(os.Stderr, "stylegen: port: unknown style %q (want one of %s, or \"all\")\n", *style, joinStyles())
+		os.Exit(2)
+	}
+
+	root, err := repositoryRoot()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "stylegen: %v\n", err)
+		os.Exit(1)
+	}
+
+	report, err := port.Run(root, *upstream, styles, *dryRun)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "stylegen: port: %v\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("stylegen: port: written=%d carried=%d unmapped=%d skipped=%d\n",
+		report.Written, report.Carried, report.Unmapped, report.Skipped)
+
+	if report.Unmapped == 0 {
+		return
+	}
+	if *allowUnmapped {
+		fmt.Println("stylegen: port: unmapped entries (--allow-unmapped set, continuing):")
+		for _, u := range report.UnmappedDetail {
+			fmt.Println("  " + u)
+		}
+		return
+	}
+	fmt.Fprintln(os.Stderr, "stylegen: port: unmapped entries (pass --allow-unmapped to continue anyway):")
+	for _, u := range report.UnmappedDetail {
+		fmt.Fprintln(os.Stderr, "  "+u)
+	}
+	os.Exit(1)
+}
+
+func joinStyles() string {
+	out := ""
+	for i, s := range port.AllStyles {
+		if i > 0 {
+			out += ", "
+		}
+		out += s
+	}
+	return out
 }
 
 func repositoryRoot() (string, error) {

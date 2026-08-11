@@ -68,7 +68,7 @@ func _gsxrenderPaginationContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, chi
 	}
 //line pagination.gsx:29:2
 	_gsxgw.S("<ul class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-row items-center gap-0.5"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-1"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "ul", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-pagination-content"})
@@ -253,7 +253,7 @@ func _gsxrenderPaginationEllipsis(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, at
 		_gsxgw.S(" aria-hidden=\"true\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex size-8 items-center justify-center [&>svg]:size-4"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("size-9 items-center justify-center [&_svg:not([class*='size-'])]:size-4"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-pagination-ellipsis"})

@@ -66,7 +66,7 @@ func _gsxrenderProgress(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, value float6
 		_gsxgw.S("\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative h-1 w-full overflow-hidden rounded-full bg-primary/20"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-muted h-3 rounded-4xl"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-progress"})
@@ -76,7 +76,7 @@ func _gsxrenderProgress(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, value float6
 	_gsxgw.S("<div style=\"transform: translateX(-")
 	_gsxgw.AttrValue(_gsxrt.StyleValue(_gsxsc.FormatFloat(float64(100-value), 'g', -1, 64)))
 	_gsxgw.S("%)\" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("h-full w-full flex-1 bg-primary transition-all"))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-primary"))
 	_gsxgw.S("\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-progress-indicator", true)
 	_gsxgw.S("></div></div>")

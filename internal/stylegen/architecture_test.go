@@ -32,10 +32,18 @@ var canonicalImporters = map[string]bool{
 // shapesImporters names the packages allowed to import the shapes leaf package.
 // Unlike registry/canonical it is safe to depend on — it is pure data and
 // carries no recipe tokens — but it is still registry-private.
+//
+// internal/stylegen/port needs it for the same reason internal/stylegen
+// itself does: composing a recipe class requires the shape's own
+// BaseClass/ValueClass methods (Render), and recognizing when an upstream
+// `**:data-[slot=x]:` token targets a DIFFERENT gsxui component's root
+// rather than a sub-slot of the current one (Transform's cross-component
+// KindSlot case) requires knowing every declared component name.
 var shapesImporters = map[string]bool{
-	"github.com/gsxhq/gsxui/internal/stylegen": true,
-	canonicalImportPath:                        true,
-	shapesImportPath:                           true,
+	"github.com/gsxhq/gsxui/internal/stylegen":      true,
+	"github.com/gsxhq/gsxui/internal/stylegen/port": true,
+	canonicalImportPath:                             true,
+	shapesImportPath:                                true,
 }
 
 // TestNothingImportsCanonical fails if any package in the module takes a direct

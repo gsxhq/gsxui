@@ -13,26 +13,25 @@ component Accordion(name string, children gsx.Node, attrs gsx.Attrs) {
 }
 
 component AccordionItem(name string, open bool, children gsx.Node, attrs gsx.Attrs) {
-	<details name={name} open={open} class={ "border-b last:border-b-0" } { attrs... } data-gsxui-slot-accordion-item>
+	<details
+		name={name}
+		open={open}
+		class={ "data-open:bg-muted/50 not-last:border-b" }
+		{ attrs... }
+		data-gsxui-slot-accordion-item
+	>
 		{ children }
 	</details>
 }
 
 component AccordionTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<summary
-		class={
-			"flex list-none items-start justify-between rounded-lg py-2.5 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
-		}
+		class={ "gap-6 p-4 text-left text-sm font-medium hover:underline" }
 		{ attrs... }
 		data-gsxui-slot-accordion-trigger
 	>
 		{ children }
-		<icon.ChevronDown
-			class={
-				"size-4 shrink-0 text-muted-foreground transition-transform duration-200 [[data-gsxui-slot-accordion-item][open]_&]:rotate-180"
-			}
-			data-gsxui-slot-accordion-trigger-icon
-		/>
+		<icon.ChevronDown class={ "text-muted-foreground ml-auto size-4" } data-gsxui-slot-accordion-trigger-icon/>
 	</summary>
 }
 
@@ -40,7 +39,11 @@ component AccordionTrigger(children gsx.Node, attrs gsx.Attrs) {
 // classes join the inner padding token so utilities override its defaults on
 // the same box.
 component AccordionContent(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "overflow-hidden text-sm" } { attrs.Without("class")... } data-gsxui-slot-accordion-content>
-		<div class={ "pt-0 pb-2.5", attrs.Class() } data-gsxui-slot-accordion-content-inner>{ children }</div>
+	<div
+		class={ "data-open:animate-accordion-down data-closed:animate-accordion-up px-4 text-sm" }
+		{ attrs.Without("class")... }
+		data-gsxui-slot-accordion-content
+	>
+		<div class={ "pt-0 pb-4", attrs.Class() } data-gsxui-slot-accordion-content-inner>{ children }</div>
 	</div>
 }

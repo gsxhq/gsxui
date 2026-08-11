@@ -67,12 +67,27 @@ func wrapWords(s string, width int) []string {
 // then a terse sentence naming the porter (the dossier's own guidance: the
 // porter has no hand-authoring judgment to narrate, so its headers stay
 // closer to button.css's terse two-line form than accordion/select's prose).
+//
+// SrcStart == SrcEnd == 0 marks a StyleInvariant component (mapping.go's
+// StyleInvariant): no upstream MARK section exists for it at all, so Transform
+// ran against a synthetic empty Section and every rule is 100% carried from
+// nova (Ported.Carried, marked per-rule below) — the header says so instead
+// of citing a nonsensical "lines 0-0".
 func renderHeader(p Ported, upstreamSHA, upstreamPath string) []byte {
-	sentence := fmt.Sprintf(
-		"%s, %s lines %d-%d. Ported by internal/stylegen/port; utilities are "+
-			"upstream Tailwind classes, re-slotted onto gsxui's shape-declared "+
-			"classes.",
-		upstreamPath, componentTitle(p.Component), p.SrcStart, p.SrcEnd)
+	var sentence string
+	if p.SrcStart == 0 && p.SrcEnd == 0 {
+		sentence = fmt.Sprintf(
+			"%s has no %s section — this component is style-invariant. "+
+				"Ported by internal/stylegen/port; every rule is carried from nova "+
+				"(see the per-rule comments below).",
+			upstreamPath, componentTitle(p.Component))
+	} else {
+		sentence = fmt.Sprintf(
+			"%s, %s lines %d-%d. Ported by internal/stylegen/port; utilities are "+
+				"upstream Tailwind classes, re-slotted onto gsxui's shape-declared "+
+				"classes.",
+			upstreamPath, componentTitle(p.Component), p.SrcStart, p.SrcEnd)
+	}
 
 	var buf bytes.Buffer
 	fmt.Fprintf(&buf, "/* Source: shadcn-ui/ui@%s\n", upstreamSHA)

@@ -33,16 +33,16 @@ component SheetTrigger(children gsx.Node, attrs gsx.Attrs) {
 component SheetContent(side string, hideCloseButton bool, children gsx.Node, attrs gsx.Attrs) {
 	<dialog
 		class={
-			"m-0 flex-col gap-4 shadow-lg transition ease-in-out max-h-none bg-background text-foreground fixed z-50 text-sm duration-200 outline-none data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:bg-[var(--overlay)] backdrop:backdrop-blur-xs backdrop:duration-200 data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 open:flex",
+			"backdrop:bg-black/80 supports-backdrop-filter:backdrop:backdrop-blur-xs bg-popover text-popover-foreground fixed z-50 flex flex-col bg-clip-padding text-sm shadow-lg transition duration-200 ease-in-out",
 			switch side {
 			case "bottom":
-				"inset-x-0 bottom-0 top-auto h-auto w-full max-w-none border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom"
+				"inset-x-0 bottom-0 h-auto border-t"
 			case "left":
-				"inset-y-0 left-0 right-auto h-full w-3/4 border-r sm:max-w-sm data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left"
+				"inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm"
 			case "top":
-				"inset-x-0 top-0 bottom-auto h-auto w-full max-w-none border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top"
+				"inset-x-0 top-0 h-auto border-b"
 			default:
-				"inset-y-0 right-0 left-auto h-full w-3/4 border-l sm:max-w-sm data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right"
+				"inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm"
 			}
 		}
 		data-state="closed"
@@ -55,9 +55,7 @@ component SheetContent(side string, hideCloseButton bool, children gsx.Node, att
 		{ if !hideCloseButton {
 			<button
 				type="button"
-				class={
-					"absolute top-3 end-3 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
-				}
+				class={ "absolute top-4 right-4" }
 				data-gsxui-dialog-close
 				data-gsxui-slot-sheet-close-button
 				data-gsxui-slot-sheet-close
@@ -86,16 +84,16 @@ component SheetContent(side string, hideCloseButton bool, children gsx.Node, att
 }
 
 component SheetHeader(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "flex flex-col gap-0.5 p-4" } { attrs... } data-gsxui-slot-sheet-header>{ children }</div>
+	<div class={ "gap-1.5 p-6" } { attrs... } data-gsxui-slot-sheet-header>{ children }</div>
 }
 
 component SheetFooter(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "mt-auto flex flex-col gap-2 p-4" } { attrs... } data-gsxui-slot-sheet-footer>{ children }</div>
+	<div class={ "gap-2 p-6" } { attrs... } data-gsxui-slot-sheet-footer>{ children }</div>
 }
 
 component SheetTitle(children gsx.Node, attrs gsx.Attrs) {
 	<h2
-		class={ "text-base font-medium text-foreground" }
+		class={ "text-foreground text-base font-medium" }
 		{ attrs... }
 		data-gsxui-slot-sheet-title
 		data-gsxui-slot-dialog-title
@@ -106,7 +104,7 @@ component SheetTitle(children gsx.Node, attrs gsx.Attrs) {
 
 component SheetDescription(children gsx.Node, attrs gsx.Attrs) {
 	<p
-		class={ "text-sm text-muted-foreground" }
+		class={ "text-muted-foreground text-sm" }
 		{ attrs... }
 		data-gsxui-slot-sheet-description
 		data-gsxui-slot-dialog-description

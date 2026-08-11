@@ -1,104 +1,38 @@
-/* Source: assets/css/styles/default/input-group.css.
-
-   The § 10b split, same rule as Field's: retain a relational rule whose styled
-   subject carries the recipe class; migrate one that paints a different
-   element; migrate anyway when retention would strand the rule dead against
-   the slot's own utilities, with upstream shadcn
-   (registry/new-york-v4/ui/input-group.tsx) as the tiebreaker.
-
-   The root's whole state block migrated on the last of those grounds — every
-   one of the has-() rules contests a property the base rule already sets
-   (h-8 against three h-auto rules, border-input against border-ring and
-   border-destructive, and the two ring-colour rules against each other).
-   Upstream carries all of them on InputGroup's own class list verbatim.
-
-   That in turn RETIRES two promotions in assets/css/styles/default.css's
-   @layer utilities block — the focus-visible border-ring and the
-   has-(>textarea) h-auto — which were Textarea's-migration fallout, put there
-   so a components-layer rule could outrank Textarea's own utilities. They are
-   ordinary utilities on InputGroup's own element now.
-
-   The two consumer-class rules (a caller passes class="border-b" to a
-   block-start addon and gets extra padding on that edge) are on the arms
-   above. They are § 10b's OWN worst case — Card's [&.border-b]:pb-4 — and
-   retaining them was the first attempt. It does not work here: the addon's
-   base rule sets py-1.5, whose padding-bottom a components-layer pb-2 can
-   never beat once py-1.5 is a real utility, so the retained rule was simply
-   DEAD (a regression against the pre-migration render, where both rules lived
-   in @layer components and the .border-b one won on specificity). Neither
-   stylegen --check-layers nor make sweep-compare found it — the gate does not
-   read py-* as contesting pb-* (its own documented blind spot, see the pl-1.5
-   note in assets/css/styles/default.css) and no fixture passes border-b — a
-   hand-written pin did. Upstream ships them on the class list too. The cost is
-   real and unavoidable: a caller's own pb-* on a block-start addon with
-   border-b now loses, because the alternative is the rule not applying at all.
-
-   Left alone on purpose, in that same escape hatch: the input-group-button
-   size ramp, the control's rounded-none/border-0, the textarea control's
-   py-2, and the four `> input` padding overrides. Those paint an element
-   another component owns (Button, Input, Textarea) and are positioned there
-   to beat that component's own migrated utilities; re-expressing them here
-   would put a working contest back in play for nothing.
-
-   Nova and Maia have not diverged on InputGroup, so this file is
-   byte-identical to registry/styles/nova/input-group.css. Every arbitrary
-   variant below was compiled with this repo's Tailwind v4 CLI before use. */
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-maia.css, Input Group lines 1393-1444. Ported
+   by internal/stylegen/port; utilities are upstream Tailwind classes,
+   re-slotted onto gsxui's shape-declared classes. */
 @layer components {
   .gsxui-recipe-input-group {
-    @apply relative flex h-8 min-w-0 w-full items-center rounded-lg border border-input transition-[color,box-shadow] outline-none;
-    @apply dark:bg-input/30;
-    @apply has-[>[data-gsxui-slot-textarea][data-gsxui-slot-input-group-control]]:h-auto;
-    @apply has-[>[data-gsxui-slot-input-group-addon][data-align=block-start]]:h-auto has-[>[data-gsxui-slot-input-group-addon][data-align=block-start]]:flex-col;
-    @apply has-[>[data-gsxui-slot-input-group-addon][data-align=block-end]]:h-auto has-[>[data-gsxui-slot-input-group-addon][data-align=block-end]]:flex-col;
-    @apply has-[[data-gsxui-slot-input-group-control]:focus-visible]:border-ring has-[[data-gsxui-slot-input-group-control]:focus-visible]:ring-[3px] has-[[data-gsxui-slot-input-group-control]:focus-visible]:ring-ring/50;
-    @apply has-[[aria-invalid=true]]:border-destructive has-[[aria-invalid=true]]:ring-destructive/20;
-    @apply dark:has-[[aria-invalid=true]]:ring-destructive/40;
+    @apply border-input bg-input/30 has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50 has-[[data-slot][aria-invalid=true]]:ring-destructive/20 has-[[data-slot][aria-invalid=true]]:border-destructive dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40 h-9 rounded-4xl border transition-colors in-data-[slot=combobox-content]:focus-within:border-inherit in-data-[slot=combobox-content]:focus-within:ring-0 has-data-[align=block-end]:rounded-2xl has-data-[align=block-start]:rounded-2xl has-[[data-slot=input-group-control]:focus-visible]:ring-[3px] has-[[data-slot][aria-invalid=true]]:ring-[3px] has-[textarea]:rounded-xl has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=inline-end]]:[&>input]:pr-1.5 has-[>[data-align=inline-start]]:[&>input]:pl-1.5;
   }
 
   .gsxui-recipe-input-group-addon {
-    @apply flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium text-muted-foreground select-none;
-    @apply [&>kbd]:rounded-[calc(var(--radius)-5px)];
-    @apply [&>svg:not([class*='size-'])]:size-4;
+    @apply text-muted-foreground [&_[data-gsxui-slot-kbd]]:bg-muted-foreground/10 h-auto gap-2 py-2 text-sm font-medium group-data-[disabled=true]/input-group:opacity-50 [&_[data-gsxui-slot-kbd]]:rounded-4xl [&_[data-gsxui-slot-kbd]]:px-1.5 [&>svg:not([class*='size-'])]:size-4;
   }
 
   .gsxui-recipe-input-group-addon-align-inline-start {
-    @apply order-first ps-2;
+    @apply pl-3 has-[>button]:-ml-1 has-[>kbd]:ml-[-0.15rem];
   }
 
   .gsxui-recipe-input-group-addon-align-inline-end {
-    @apply order-last pe-2;
+    @apply pr-3 has-[>button]:-mr-1 has-[>kbd]:mr-[-0.15rem];
   }
 
-  /* The second rule is default.css's
-     `input-group:has(> input) > addon[block-start]` verbatim, re-keyed onto
-     the addon's own class the way upstream authors it
-     (group-has-[>input]/input-group:pt-2.5). Under this theme's nova density
-     retarget both values are 2, so it is currently a no-op restating the arm's
-     own pt-2 — carried anyway rather than dropped, since the two are separate
-     tokens upstream and only happen to coincide here. */
   .gsxui-recipe-input-group-addon-align-block-start {
-    @apply order-first w-full justify-start px-2.5 pt-2;
-    @apply [[data-gsxui-slot-input-group]:has(>[data-gsxui-slot-input])>&]:pt-2;
-    @apply [&.border-b]:pb-2;
+    @apply px-3 pt-3 group-has-[>input]/input-group:pt-3 [.border-b]:pb-3;
   }
 
   .gsxui-recipe-input-group-addon-align-block-end {
-    @apply order-last w-full justify-start px-2.5 pb-2;
-    @apply [[data-gsxui-slot-input-group]:has(>[data-gsxui-slot-input])>&]:pb-2;
-    @apply [&.border-t]:pt-2;
+    @apply px-3 pb-3 group-has-[>input]/input-group:pb-3 [.border-t]:pt-3;
   }
 
   .gsxui-recipe-input-group-text {
-    @apply flex items-center gap-2 text-sm text-muted-foreground;
-    @apply [&_svg]:pointer-events-none;
-    @apply [&_svg:not([class*='size-'])]:size-4;
+    @apply text-muted-foreground gap-2 text-sm [&_svg:not([class*='size-'])]:size-4;
   }
 
-  /* dark:bg-transparent restates the base rule's own bg-transparent — that is
-     what default.css has, and it is carried verbatim rather than tidied. */
+  /* carried: no upstream counterpart */
   .gsxui-recipe-input-group-control {
-    @apply flex-1 bg-transparent shadow-none;
-    @apply focus-visible:ring-0;
-    @apply dark:bg-transparent;
+    @apply flex-1 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent;
   }
 }

@@ -46,14 +46,14 @@ func _gsxrenderNativeSelect(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children
 	}
 //line native-select.gsx:40:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative w-fit [&>svg]:pointer-events-none [&>svg]:absolute [&>svg]:top-1/2 [&>svg]:end-2.5 [&>svg]:size-4 [&>svg]:-translate-y-1/2 [&>svg]:opacity-50"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("[&>svg]:text-muted-foreground [&>svg]:top-1/2 [&>svg]:right-3.5 [&>svg]:size-4 [&>svg]:-translate-y-1/2"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-native-select-wrapper", true)
 	_gsxgw.S(">")
 //line native-select.gsx:47:3
 	_gsxv0 := attrs.Without("class")
 	_gsxgw.S("<select class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex h-8 w-full appearance-none items-center justify-between gap-2 rounded-lg border border-input bg-transparent py-1 pr-8 pl-2.5 text-sm whitespace-nowrap transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40"), _gsxrt.Class(_gsxv0.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("border-input bg-input/30 placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 dark:hover:bg-input/50 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 w-full min-w-0 appearance-none rounded-4xl border py-1 pr-8 pl-3 text-sm transition-colors select-none focus-visible:ring-[3px] aria-invalid:ring-[3px] data-[size=sm]:h-8"), _gsxrt.Class(_gsxv0.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", _gsxv0.Style())
 	_gsxgw.Spread(ctx, "select", _gsxv0, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-native-select"})

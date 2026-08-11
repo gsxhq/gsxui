@@ -1,306 +1,143 @@
-/* Source: assets/css/styles/default/sidebar.css (every rule, both its
-   @layer components block and its two @layer utilities escape hatches), plus
-   the three sidebar rules promoted into assets/css/styles/default.css's
-   @layer utilities block by earlier migrations — SidebarSeparator's
-   mx-2/w-auto/bg-sidebar-border (Separator's fallout), SidebarTrigger's
-   size-7 (Button's), and SidebarInput's bg-background (Input's). All of them
-   are retired by this migration: each styles an element Sidebar composes, so
-   the utilities now travel into the SAME class attribute as the composed
-   component's own and merge.Merge settles the contest instead of the
-   cascade.
-
-   assets/css/styles/default/sidebar.css is NOT deleted: three rule groups
-   stay behind under spec section 10b because a style is expected to override
-   them (the collapsed-width custom properties, the floating/inset container
-   padding, and the floating inner border). See that file's own header, and
-   the three comments below marking where each one was lifted out.
-
-   assets/css/foundation.css's sidebar block stays where it is: it is the
-   state-machine mechanics (display, position, the collapsed width variables'
-   consumers), and none of the properties it sets is set again here — checked
-   rule by rule, because a foundation rule contesting a recipe utility would
-   now be dead, not merely outranked.
-
-   Nova and Maia have not diverged on Sidebar, so this file is byte-identical
-   to registry/styles/maia/sidebar.css.
-
-   TRANSLATION NOTES
-
-   - Almost every rule in the source is :where()-wrapped at (0,0,0) and
-     therefore ordered purely by source position. The arbitrary-variant forms
-     below reintroduce real specificity, and in every case the more specific
-     form is the one that was source-later — verified per property, not
-     assumed. Where two rules genuinely tie (menu-badge's hover vs active
-     colour), the pin in jstest/specs/layer-precedence.spec.ts is what holds
-     the survivor in place.
-   - Ancestor context (`[data-gsxui-slot-sidebar-desktop][…] &`) is authored
-     as an arbitrary variant on the DESCENDANT's own class rather than as a
-     `[&_…]` reach-down from the desktop slot. The desktop element varies over
-     four independent attributes; reaching down would multiply into arms this
-     shape deliberately does not declare.
-   - `:hover` becomes Tailwind's `hover:`, which adds an @media (hover:hover)
-     guard the source rule did not have. That is the same trade every
-     migrated component already made (registry/styles/nova/sheet.css's
-     close button, for one).
-   - Two declarations have no Tailwind utility and use v4's arbitrary
-     property form rather than the escape hatch: `scrollbar-width` on
-     `content`, and `transform: translateX(0)` on the offcanvas `rail`. The
-     second is written
-     as `[transform:translateX(0)]` and NOT as `translate-x-0`: v4's
-     translate utilities set the `translate` property, which composes with
-     rather than replaces foundation.css's `transform: translateX(-50%)`.
-   All forms compiled with this repo's Tailwind v4 CLI before use. */
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-maia.css, Sidebar lines 1110-1221. Ported by
+   internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
+   onto gsxui's shape-declared classes. */
 @layer components {
+  /* carried: no upstream counterpart */
   .gsxui-recipe-sidebar {
     @apply data-[collapsible=none]:bg-sidebar data-[collapsible=none]:text-sidebar-foreground;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-sidebar-wrapper {
     @apply has-[>[data-gsxui-slot-sidebar-desktop][data-variant=inset]]:bg-sidebar;
   }
 
-  /* Composes <ui.SheetContent>. p-0 was the source's own dialog rule; the
-     surface colours, the fixed width and the hidden Sheet close button were
-     already promoted to @layer utilities by Sheet's migration and are folded
-     back in here. sm:max-w-none is what actually beats Sheet's sm:max-w-sm —
-     an unprefixed max-w-none does not, because merge.Merge scopes conflicts
-     per variant. */
+  /* carried: no upstream counterpart */
   .gsxui-recipe-sidebar-mobile-content {
-    @apply w-[var(--sidebar-width)] max-w-none p-0;
-    @apply bg-sidebar text-sidebar-foreground;
-    @apply sm:max-w-none;
-    @apply [&>[data-gsxui-slot-sheet-close-button]]:hidden;
+    @apply w-[var(--sidebar-width)] max-w-none p-0 bg-sidebar text-sidebar-foreground sm:max-w-none [&>[data-gsxui-slot-sheet-close-button]]:hidden;
   }
 
-  /* Composes <ui.SheetHeader>. p-0 is explicit rather than left to sr-only:
-     sr-only and p-4 are different merge groups, so only a real p-0 defeats
-     SheetHeader's padding deterministically. */
+  /* carried: no upstream counterpart */
   .gsxui-recipe-sidebar-mobile-header {
     @apply sr-only p-0;
   }
 
-  /* The two collapsed-width custom properties are NOT here: a style is
-     expected to redefine them, so they stay in
-     assets/css/styles/default/sidebar.css per spec section 10b. */
+  /* carried: no upstream counterpart */
   .gsxui-recipe-sidebar-desktop {
     @apply text-sidebar-foreground;
   }
 
   .gsxui-recipe-sidebar-gap {
-    @apply bg-transparent transition-[width] duration-200 ease-linear;
+    @apply transition-[width] duration-200 ease-linear;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-sidebar-container {
-    /* The floating/inset p-2 is retained in
-       assets/css/styles/default/sidebar.css, same section 10b reason. */
-    @apply transition-[left,right,width] duration-200 ease-linear;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-variant=sidebar][data-side=left]>&]:border-r;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-variant=sidebar][data-side=left]>&]:border-sidebar-border;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-variant=sidebar][data-side=right]>&]:border-l;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-variant=sidebar][data-side=right]>&]:border-sidebar-border;
+    @apply transition-[left,right,width] duration-200 ease-linear [[data-gsxui-slot-sidebar-desktop][data-variant=sidebar][data-side=left]>&]:border-r [[data-gsxui-slot-sidebar-desktop][data-variant=sidebar][data-side=left]>&]:border-sidebar-border [[data-gsxui-slot-sidebar-desktop][data-variant=sidebar][data-side=right]>&]:border-l [[data-gsxui-slot-sidebar-desktop][data-variant=sidebar][data-side=right]>&]:border-sidebar-border;
   }
 
-  /* The floating border WIDTH and COLOUR are retained in
-     assets/css/styles/default/sidebar.css (section 10b again); its radius and
-     shadow are different property groups that nothing overrides, so they
-     migrate. */
   .gsxui-recipe-sidebar-inner {
-    @apply bg-sidebar text-sidebar-foreground;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-variant=floating]_&]:rounded-lg;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-variant=floating]_&]:shadow-sm;
+    @apply bg-sidebar group-data-[variant=floating]:ring-sidebar-border group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:shadow-sm group-data-[variant=floating]:ring-1;
   }
 
-  /* Composes <ui.Button variant="ghost" size="icon">, whose size arm is
-     size-8; merge.Merge drops it in favour of this. */
+  /* carried: no upstream counterpart */
   .gsxui-recipe-sidebar-trigger {
     @apply size-7;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-sidebar-trigger-label {
     @apply sr-only;
   }
 
   .gsxui-recipe-sidebar-rail {
-    @apply transition-all ease-linear;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-side=left]_&]:-right-4;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-side=left]_&]:cursor-w-resize;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-side=right]_&]:left-0;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-side=right]_&]:cursor-e-resize;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-side=left][data-state=collapsed]_&]:cursor-e-resize;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-side=right][data-state=collapsed]_&]:cursor-w-resize;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-collapsible=offcanvas]_&]:[transform:translateX(0)];
-    @apply [[data-gsxui-slot-sidebar-desktop][data-collapsible=offcanvas][data-side=left]_&]:-right-2;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-collapsible=offcanvas][data-side=right]_&]:-left-2;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-collapsible=offcanvas]_&]:after:left-full;
     @apply hover:after:bg-sidebar-border;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-collapsible=offcanvas]_&]:hover:bg-sidebar;
   }
 
   .gsxui-recipe-sidebar-inset {
-    @apply relative bg-background;
-    @apply md:[[data-gsxui-slot-sidebar-desktop][data-variant=inset]~&]:m-2;
-    @apply md:[[data-gsxui-slot-sidebar-desktop][data-variant=inset]~&]:ml-0;
-    @apply md:[[data-gsxui-slot-sidebar-desktop][data-variant=inset]~&]:rounded-xl;
-    @apply md:[[data-gsxui-slot-sidebar-desktop][data-variant=inset]~&]:shadow-sm;
-    @apply md:[[data-gsxui-slot-sidebar-desktop][data-variant=inset][data-state=collapsed]~&]:ml-2;
+    @apply bg-background md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2;
   }
 
-  /* Composes <ui.Input>: h-8 and w-full restate Input's own values and
-     merge.Merge dedupes them; bg-background and shadow-none are the two that
-     actually contest Input's bg-transparent/dark:bg-input/30 and its
-     focus ring. dark:bg-background is not in the source — it is what keeps
-     Input's dark:bg-input/30 from winning the dark theme now that the two
-     sit in one class attribute instead of on opposite sides of a layer
-     boundary; without it the sweep's dark capture changes. */
   .gsxui-recipe-sidebar-input {
-    @apply h-8 w-full bg-background shadow-none dark:bg-background;
+    @apply bg-background h-8 w-full shadow-none;
   }
 
   .gsxui-recipe-sidebar-header {
-    @apply flex flex-col gap-2 p-2;
+    @apply gap-2 p-2 [--radius:var(--radius-xl)];
   }
 
   .gsxui-recipe-sidebar-footer {
-    @apply flex flex-col gap-2 p-2;
+    @apply gap-2 p-2;
   }
 
-  /* Composes <ui.Separator>. Keyed on data-orientation exactly as the
-     promoted rule was, which is also what outranks Separator's own
-     orientation arm inside the merged class attribute. */
   .gsxui-recipe-sidebar-separator {
-    @apply data-[orientation=horizontal]:mx-2;
-    @apply data-[orientation=horizontal]:w-auto;
-    @apply data-[orientation=horizontal]:bg-sidebar-border;
+    @apply bg-sidebar-border mx-2;
   }
 
   .gsxui-recipe-sidebar-content {
-    @apply gap-0 [scrollbar-width:none];
-    @apply [&::-webkit-scrollbar]:hidden;
+    @apply no-scrollbar gap-2 [--radius:var(--radius-xl)];
   }
 
   .gsxui-recipe-sidebar-group {
-    @apply relative flex w-full min-w-0 flex-col p-2;
+    @apply p-2;
   }
 
   .gsxui-recipe-sidebar-group-label {
-    @apply flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-sidebar-foreground/70 ring-sidebar-ring outline-hidden transition-[margin,opacity] duration-200 ease-linear;
-    @apply focus-visible:ring-2;
-    @apply [&>svg]:size-4 [&>svg]:shrink-0;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:-mt-8;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:opacity-0;
+    @apply text-sidebar-foreground/70 ring-sidebar-ring h-8 rounded-md px-3 text-xs font-medium transition-[margin,opacity] duration-200 ease-linear group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0 focus-visible:ring-2 [&>svg]:size-4;
   }
 
   .gsxui-recipe-sidebar-group-action {
-    @apply absolute top-3.5 end-3 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform;
-    @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
-    @apply focus-visible:ring-2;
-    @apply [&>svg]:size-4 [&>svg]:shrink-0;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:hidden;
+    @apply text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground absolute top-3.5 right-3 w-5 rounded-md p-0 focus-visible:ring-2 [&>svg]:size-4;
   }
 
   .gsxui-recipe-sidebar-group-content {
-    @apply w-full text-sm;
+    @apply text-sm;
   }
 
   .gsxui-recipe-sidebar-menu {
-    @apply flex w-full min-w-0 flex-col gap-0;
+    @apply gap-1;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-sidebar-menu-item {
     @apply relative;
   }
 
   .gsxui-recipe-sidebar-menu-button {
-    @apply flex h-8 w-full items-center gap-2 overflow-hidden rounded-md p-2 text-start text-sm ring-sidebar-ring outline-hidden transition-[width,height,padding];
-    @apply [[data-gsxui-slot-sidebar-menu-item]:has(>[data-gsxui-slot-sidebar-menu-action])>&]:pe-8;
-    @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
-    @apply active:bg-sidebar-accent active:text-sidebar-accent-foreground;
-    @apply data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground;
-    @apply focus-visible:ring-2;
-    @apply disabled:pointer-events-none disabled:opacity-50;
-    @apply [&[aria-disabled]]:pointer-events-none [&[aria-disabled]]:opacity-50;
-    @apply [&[data-active]]:bg-sidebar-primary [&[data-active]]:font-medium [&[data-active]]:text-sidebar-primary-foreground;
-    @apply [&[data-active]]:hover:bg-sidebar-primary/90 [&[data-active]]:hover:text-sidebar-primary-foreground;
-    @apply data-[variant=outline]:bg-background data-[variant=outline]:shadow-[0_0_0_1px_var(--sidebar-border)];
-    @apply data-[variant=outline]:hover:bg-sidebar-accent data-[variant=outline]:hover:text-sidebar-accent-foreground data-[variant=outline]:hover:shadow-[0_0_0_1px_var(--sidebar-accent)];
-    @apply [&>span:last-child]:truncate;
-    @apply [&>svg]:size-4 [&>svg]:shrink-0;
-    @apply data-[size=sm]:h-7 data-[size=sm]:text-xs;
-    @apply data-[size=lg]:h-12 data-[size=lg]:text-sm;
-    /* The collapsed-icon geometry repeats the data-gsxui-slot-sidebar-desktop
-       attribute selector purely for one extra point of specificity (repeating
-       the same simple selector counts twice, per the CSS specificity
-       algorithm). Without it this rule and the menu-item :has()
-       pr-8 rule above both land at (0,3,0) and the padding shorthand loses to
-       the longhand by source order; before the migration the icon rule was
-       (0,1,0) against the pr-8 rule's (0,0,0) and won outright.
-       jstest/specs/sidebar-style-contract.spec.ts's icon-collapse geometry
-       assertion is what caught this. */
-    @apply [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:size-8;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:p-2;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&[data-size=lg]]:p-0;
+    @apply ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground [&[data-active]]:bg-sidebar-accent [&[data-active]]:text-sidebar-accent-foreground data-open:hover:bg-sidebar-accent data-open:hover:text-sidebar-accent-foreground gap-2 rounded-lg px-3 py-2 text-left text-sm transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! focus-visible:ring-2 [&[data-active]]:font-medium;
   }
 
   .gsxui-recipe-sidebar-menu-action {
-    @apply absolute top-1.5 end-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform;
-    @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
-    @apply focus-visible:ring-2;
-    @apply [&>svg]:size-4 [&>svg]:shrink-0;
-    @apply [[data-gsxui-slot-sidebar-menu-button][data-size=sm]~&]:top-1;
-    @apply [[data-gsxui-slot-sidebar-menu-button][data-size=default]~&]:top-1.5;
-    @apply [[data-gsxui-slot-sidebar-menu-button][data-size=lg]~&]:top-2.5;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:hidden;
-    @apply md:[&[data-show-on-hover]]:opacity-0;
-    @apply md:[[data-gsxui-slot-sidebar-menu-item]:hover>&[data-show-on-hover]]:opacity-100;
-    @apply md:[[data-gsxui-slot-sidebar-menu-item]:focus-within>&[data-show-on-hover]]:opacity-100;
-    @apply md:[&[data-show-on-hover][data-state=open]]:opacity-100;
-    @apply [[data-gsxui-slot-sidebar-menu-button][data-active]~&[data-show-on-hover]]:text-sidebar-primary-foreground;
-    @apply [[data-gsxui-slot-sidebar-menu-button]:hover~&]:text-sidebar-accent-foreground;
+    @apply text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground peer-hover/menu-button:text-sidebar-accent-foreground absolute top-1.5 right-1 aspect-square w-5 rounded-md p-0 peer-data-[size=default]/menu-button:top-2 peer-data-[size=lg]/menu-button:top-2.5 peer-data-[size=sm]/menu-button:top-1 focus-visible:ring-2 [&>svg]:size-4 md:[&[data-show-on-hover]]:opacity-0 md:[[data-gsxui-slot-sidebar-menu-item]:hover>&[data-show-on-hover]]:opacity-100 md:[[data-gsxui-slot-sidebar-menu-item]:focus-within>&[data-show-on-hover]]:opacity-100 md:[&[data-show-on-hover][data-state=open]]:opacity-100 [[data-gsxui-slot-sidebar-menu-button][data-active]~&[data-show-on-hover]]:text-sidebar-primary-foreground;
   }
 
   .gsxui-recipe-sidebar-menu-badge {
-    @apply pointer-events-none absolute end-1 flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-xs font-medium text-sidebar-foreground tabular-nums select-none;
-    @apply [[data-gsxui-slot-sidebar-menu-button][data-size=sm]~&]:top-1;
-    @apply [[data-gsxui-slot-sidebar-menu-button][data-size=default]~&]:top-1.5;
-    @apply [[data-gsxui-slot-sidebar-menu-button][data-size=lg]~&]:top-2.5;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:hidden;
-    @apply [[data-gsxui-slot-sidebar-menu-button]:hover~&]:text-sidebar-accent-foreground;
-    @apply [[data-gsxui-slot-sidebar-menu-button][data-active]~&]:text-sidebar-primary-foreground;
+    @apply text-sidebar-foreground peer-hover/menu-button:text-sidebar-accent-foreground peer-data-active/menu-button:text-sidebar-accent-foreground pointer-events-none absolute right-1 flex h-5 min-w-5 rounded-md px-1 text-xs font-medium peer-data-[size=default]/menu-button:top-1.5 peer-data-[size=lg]/menu-button:top-2.5 peer-data-[size=sm]/menu-button:top-1;
   }
 
   .gsxui-recipe-sidebar-menu-skeleton {
-    @apply flex h-8 items-center gap-2 rounded-md px-2;
+    @apply h-8 gap-2 rounded-md px-2;
   }
 
-  /* Both skeleton slots compose <ui.Skeleton>; rounded-md restates its own
-     value and merge.Merge dedupes it. */
   .gsxui-recipe-sidebar-menu-skeleton-icon {
     @apply size-4 rounded-md;
   }
 
   .gsxui-recipe-sidebar-menu-skeleton-text {
-    @apply h-4 max-w-[var(--skeleton-width)] flex-1;
+    @apply h-4;
   }
 
   .gsxui-recipe-sidebar-menu-sub {
-    @apply mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-s border-sidebar-border px-2.5 py-0.5;
-    @apply [[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:hidden;
+    @apply border-sidebar-border mx-3.5 translate-x-px gap-1 border-l px-2.5 py-0.5 group-data-[collapsible=icon]:hidden;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-sidebar-menu-sub-item {
     @apply relative;
   }
 
   .gsxui-recipe-sidebar-menu-sub-button {
-    @apply flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 text-sm text-sidebar-foreground ring-sidebar-ring outline-hidden;
-    @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
-    @apply active:bg-sidebar-accent active:text-sidebar-accent-foreground;
-    @apply [&[data-active]]:bg-sidebar-accent [&[data-active]]:text-sidebar-accent-foreground;
-    @apply focus-visible:ring-2;
-    @apply disabled:pointer-events-none disabled:opacity-50;
-    @apply [&[aria-disabled]]:pointer-events-none [&[aria-disabled]]:opacity-50;
-    @apply data-[size=sm]:text-xs;
-    @apply [&>span:last-child]:truncate;
-    @apply [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:text-sidebar-accent-foreground;
+    @apply text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground [&>svg]:text-sidebar-accent-foreground [&[data-active]]:bg-sidebar-accent [&[data-active]]:text-sidebar-accent-foreground h-7 gap-2 rounded-md px-2 focus-visible:ring-2 data-[size=md]:text-sm data-[size=sm]:text-xs [&>svg]:size-4;
   }
 }

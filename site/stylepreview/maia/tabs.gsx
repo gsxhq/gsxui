@@ -35,13 +35,15 @@ import "github.com/gsxhq/gsx"
 // their own doc comments), collapsing nova's matching inline-start/
 // inline-end value (both px-1) into one has-[>svg]:px-1.
 component Tabs(value string, children gsx.Node, attrs gsx.Attrs) {
-	<div data-value={value} class={ "flex flex-col gap-2" } { attrs... } data-gsxui-slot-tabs>{ children }</div>
+	<div data-value={value} class={ "gap-2" } { attrs... } data-gsxui-slot-tabs>{ children }</div>
 }
 
 component TabsList(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="tablist"
-		class={ "inline-flex h-8 w-fit items-center justify-center rounded-lg bg-muted p-[3px] text-muted-foreground" }
+		class={
+			"rounded-4xl p-[3px] group-data-horizontal/tabs:h-9 group-data-vertical/tabs:rounded-2xl data-[variant=line]:rounded-none"
+		}
 		{ attrs... }
 		data-gsxui-slot-tabs-list
 	>
@@ -71,7 +73,7 @@ component TabsTrigger(value string, selected bool, children gsx.Node, attrs gsx.
 		aria-selected={selected}
 		tabindex={tabindex}
 		class={
-			"relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-1.5 py-0.5 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-1 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:pointer-events-none dark:text-muted-foreground dark:hover:text-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 dark:data-[state=active]:text-foreground"
+			"gap-1.5 rounded-xl border border-transparent px-2 py-1 text-sm font-medium group-data-vertical/tabs:px-2.5 group-data-vertical/tabs:py-1.5 [&_svg:not([class*='size-'])]:size-4 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5"
 		}
 		{ attrs... }
 		data-gsxui-slot-tabs-trigger
@@ -94,7 +96,7 @@ component TabsContent(value string, selected bool, children gsx.Node, attrs gsx.
 		data-value={value}
 		data-state={state}
 		hidden={!selected}
-		class={ "flex-1 text-sm outline-none" }
+		class={ "text-sm" }
 		{ attrs... }
 		data-gsxui-slot-tabs-content
 	>

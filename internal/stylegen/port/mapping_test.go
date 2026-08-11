@@ -93,17 +93,36 @@ func TestSlotFor(t *testing.T) {
 		wantSlot  string
 		wantOK    bool
 	}{
-		{"root slot", "accordion", "cn-accordion", "", true},
+		// accordion's root has no gsxui slot at all (purely structural div —
+		// see registry/canonical/shapes/accordion.go and the slotOverrides
+		// doc comment in mapping.go), a declared override, not the plain
+		// prefix-strip path.
+		{"root slot has no gsxui slot", "accordion", "cn-accordion", "", false},
 		{"plain slot", "accordion", "cn-accordion-trigger", "trigger", true},
 		{"multi-word slot", "accordion", "cn-accordion-content-inner", "content-inner", true},
-		{"radio upstream prefix quirk", "radio", "cn-radio-group-item", "item", true},
-		{"radio root", "radio", "cn-radio-group", "", true},
+		// Radio's shape is one native <input type=radio> root slot; the item's
+		// own state styling (checked/focus/aria-invalid) is what that native
+		// input needs, so it's overridden onto root rather than a nonexistent
+		// "item" slot. The container (RadioGroup's own layout) has no
+		// destination at all — see mapping.go's slotOverrides doc comment.
+		{"radio upstream prefix quirk (item overrides onto root)", "radio", "cn-radio-group-item", "", true},
+		{"radio container has no destination", "radio", "cn-radio-group", "", false},
+		// The prefix-strip mechanism itself (upstreamPrefix("radio") ==
+		// "radio-group") independent of the override table above: any
+		// cn-radio-group-* class NOT in that table still strips to its
+		// plain suffix.
+		{"radio upstream prefix strip (default path)", "radio", "cn-radio-group-thumb", "thumb", true},
 		{"select scroll-up ignored", "select", "cn-select-scroll-up-button", "", false},
 		{"select scroll-down ignored", "select", "cn-select-scroll-down-button", "", false},
-		{"dialog overlay fuses onto content", "dialog", "cn-dialog-overlay", "content", true},
-		{"alert-dialog overlay fuses onto content", "alert-dialog", "cn-alert-dialog-overlay", "content", true},
-		{"drawer overlay fuses onto content", "drawer", "cn-drawer-overlay", "content", true},
-		{"sheet overlay fuses onto content", "sheet", "cn-sheet-overlay", "content", true},
+		{"select trigger-icon ignored (no separate icon element)", "select", "cn-select-trigger-icon", "", false},
+		{"select content-logical ignored (no directional slide)", "select", "cn-select-content-logical", "", false},
+		{"dialog overlay fuses onto content ::backdrop", "dialog", "cn-dialog-overlay", "content", true},
+		// alert-dialog composes DialogContent directly and inherits its
+		// ::backdrop; its own overlay section is a redundant duplicate, not a
+		// destination (see mapping.go's slotOverrides doc comment).
+		{"alert-dialog overlay has no destination", "alert-dialog", "cn-alert-dialog-overlay", "", false},
+		{"drawer overlay fuses onto content ::backdrop", "drawer", "cn-drawer-overlay", "content", true},
+		{"sheet overlay fuses onto content ::backdrop", "sheet", "cn-sheet-overlay", "content", true},
 		{"unrelated class", "accordion", "cn-select-trigger", "", false},
 		{"unrelated prefix collision", "accordion", "cn-accordion2-trigger", "", false},
 	}

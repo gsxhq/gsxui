@@ -1,91 +1,62 @@
-/* Source: assets/css/styles/default/carousel.css (all fourteen rules) plus
-   the "Carousel arrows" escape hatch that had been living in
-   assets/css/styles/default.css's @layer utilities since Button migrated.
-   assets/css/foundation.css's carousel rules are NOT here and do not
-   migrate: overflow/scroll-snap-type/display:flex/scroll-snap-align are the
-   native-scroll algorithm's mechanics, not nova's presentation.
-
-   Three translations worth naming:
-
-   - carousel-content's `scrollbar-width: none` and its
-     `::-webkit-scrollbar { display: none }` companion are plain CSS in
-     default.css, but both have Tailwind forms — an arbitrary PROPERTY
-     ([scrollbar-width:none]) and an arbitrary pseudo-element variant
-     ([&::-webkit-scrollbar]:hidden) — so neither needs the escape hatch the
-     way Card's container-name did.
-
-   - previous/next carry `size-8 rounded-full`, which default.css kept in
-     @layer utilities, unwrapped, because both parts compose <Button
-     variant="outline" size="icon"> and a components-layer rule could not
-     beat Button's own resolved rounded-lg. On the recipe it is a plain
-     utility on the SAME element as Button's, appended after Button's own
-     classes, so merge.Merge drops rounded-lg outright — the escape hatch is
-     retired rather than relocated. size-8 is identical to Button's own
-     size-icon and is kept verbatim rather than tidied away.
-
-   - the horizontal arrows' press token repeats Button's exact modifier
-     chain (active:not-aria-[haspopup]:) so tailwind-merge REPLACES Button's
-     translate-y-px instead of stacking with it; that is what preserves both
-     the -translate-y-1/2 centering and the 1px press dip. Do not "simplify"
-     it to a bare active: variant.
-
-   Nothing needs retaining under section 10b. The two rules a caller
-   contests are the spacing pair on track/item (site/examples/carousel/
-   sizes.gsx overrides -ml-4/pl-4/-scroll-ml-4 with the -1 scale): both
-   sides are plain utilities on the same element once resolved, so
-   merge.Merge hands the caller the win, the same mechanics NativeSelect's
-   wrapper width already exercises.
-
-   Nova and Maia have not diverged on Carousel yet, so this file is
-   byte-identical to registry/styles/maia/carousel.css. Confirmed compiling
-   with this repo's Tailwind v4 CLI before use. */
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-maia.css, Carousel lines 268-275. Ported by
+   internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
+   onto gsxui's shape-declared classes. */
 @layer components {
+  /* carried: no upstream counterpart */
   .gsxui-recipe-carousel {
     @apply relative;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-carousel-content {
     @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-carousel-track-orientation-horizontal {
     @apply -ms-4;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-carousel-track-orientation-vertical {
     @apply -mt-4;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-carousel-item-orientation-horizontal {
     @apply ps-4 -scroll-ms-4;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-carousel-item-orientation-vertical {
     @apply pt-4 -scroll-mt-4;
   }
 
   .gsxui-recipe-carousel-previous {
-    @apply absolute size-8 rounded-full;
+    @apply rounded-full;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-carousel-previous-orientation-horizontal {
-    @apply top-1/2 -start-12 -translate-y-1/2;
-    @apply active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)];
+    @apply top-1/2 -start-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)];
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-carousel-previous-orientation-vertical {
     @apply -top-12 left-1/2 -translate-x-1/2 rotate-90;
   }
 
   .gsxui-recipe-carousel-next {
-    @apply absolute size-8 rounded-full;
+    @apply rounded-full;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-carousel-next-orientation-horizontal {
-    @apply top-1/2 -end-12 -translate-y-1/2;
-    @apply active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)];
+    @apply top-1/2 -end-12 -translate-y-1/2 active:not-aria-[haspopup]:translate-y-[calc(1px_-_50%)];
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-carousel-next-orientation-vertical {
     @apply -bottom-12 left-1/2 -translate-x-1/2 rotate-90;
   }

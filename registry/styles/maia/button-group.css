@@ -1,69 +1,25 @@
-/* Source: assets/css/styles/default/button-group.css.
-
-   MIGRATED here: the root's base rule, its data-orientation="vertical" rule
-   (as the orientation dimension's vertical arm), the two child-targeting
-   rules (`> :focus-visible`, `> input` — arbitrary child variants, which
-   § 10b explicitly exempts because they paint a DIFFERENT element than the
-   one carrying the class and so never contest a caller's own utility), the
-   text slot's base rule plus its two descendant-svg rules, and the composed
-   Separator's rule set.
-
-   The separator rules previously lived UNWRAPPED in
-   assets/css/styles/default.css's @layer utilities escape hatch, promoted
-   there as fallout from Separator's own migration so that bg-input could
-   still beat Separator's bg-border. Migrating ButtonGroup retires that
-   workaround: ButtonGroupSeparator now passes these utilities through the
-   ordinary caller-class merge onto <Separator>, where merge.Merge/twmerge
-   dedupes bg-border against bg-input directly and no specificity contest
-   arises at all.
-
-   NOT migrated, deliberately (§ 10b) — see
-   assets/css/styles/default/button-group.css, which survives with just that
-   one rule:
-     :where([data-gsxui-slot-button-group]):has(> [data-gsxui-slot-button-group])
-   Its gap-2 is a same-element relational rule: as `has-[...]:gap-2` it would
-   compile to a (0,2,0) selector and permanently outrank a caller's plain
-   gap-* utility. It stays in @layer components so the layer boundary, not
-   specificity, keeps deciding.
-
-   Also NOT migrated and untouched: the inner/outer corner rules and the
-   select-trigger width guard already sitting in
-   assets/css/styles/default.css's @layer utilities block. Those paint
-   ButtonGroup's CHILDREN and are positioned there specifically to beat
-   Button's/Select's own migrated utilities; re-expressing them as variants
-   on ButtonGroup's own class would move them into Tailwind's utility sort
-   order and put that contest back in play for no gain.
-
-   Nova and Maia have not diverged on ButtonGroup, so this file is
-   byte-identical to registry/styles/nova/button-group.css. Every arbitrary
-   variant below was compiled with this repo's Tailwind v4 CLI before use. */
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-maia.css, Button Group lines 209-228. Ported
+   by internal/stylegen/port; utilities are upstream Tailwind classes,
+   re-slotted onto gsxui's shape-declared classes. */
 @layer components {
   .gsxui-recipe-button-group {
-    @apply flex w-fit items-stretch;
-    @apply [&>*:focus-visible]:relative [&>*:focus-visible]:z-10;
-    @apply [&>input]:flex-1;
+    @apply has-[>[data-slot=button-group]]:gap-2 has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-4xl;
   }
 
-  /* default.css has no horizontal-only root rule (every horizontal rule it
-     carries paints a child and stays put). This arm restates the base rule's
-     own row direction as an explicit no-op rather than inventing behaviour,
-     the same treatment ToggleGroup's default/lg size arms already use. */
   .gsxui-recipe-button-group-orientation-horizontal {
-    @apply flex-row;
+    @apply [&>[data-slot]:not(:has(~[data-slot]))]:rounded-r-4xl!;
   }
 
   .gsxui-recipe-button-group-orientation-vertical {
-    @apply flex-col;
+    @apply [&>[data-slot]:not(:has(~[data-slot]))]:rounded-b-4xl!;
   }
 
   .gsxui-recipe-button-group-text {
-    @apply flex items-center gap-2 rounded-lg border bg-muted px-2.5 text-sm font-medium;
-    @apply [&_svg]:pointer-events-none;
-    @apply [&_svg:not([class*='size-'])]:size-4;
+    @apply bg-muted gap-2 rounded-4xl border px-2.5 text-sm font-medium [&_svg:not([class*='size-'])]:size-4;
   }
 
   .gsxui-recipe-button-group-separator {
-    @apply relative m-0 self-stretch bg-input;
-    @apply data-[orientation=vertical]:h-auto;
+    @apply bg-input;
   }
 }

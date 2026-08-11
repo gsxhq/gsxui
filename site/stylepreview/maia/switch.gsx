@@ -26,7 +26,7 @@ component Switch(attrs gsx.Attrs) {
 		type="checkbox"
 		role="switch"
 		class={
-			"inline-flex h-[1.15rem] w-8 shrink-0 appearance-none items-center rounded-full border border-transparent bg-input transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 checked:bg-primary dark:bg-input/80 dark:checked:bg-primary before:content-[''] before:pointer-events-none before:block before:size-4 before:rounded-full before:bg-background before:transition-transform checked:before:translate-x-[calc(100%-2px)] dark:before:bg-foreground dark:checked:before:bg-primary-foreground"
+			"data-checked:bg-primary data-unchecked:bg-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 dark:data-unchecked:bg-input/80 shrink-0 rounded-full border border-transparent focus-visible:ring-[3px] aria-invalid:ring-[3px] data-[size=default]:h-[18.4px] data-[size=default]:w-[32px] data-[size=sm]:h-[14px] data-[size=sm]:w-[24px] before:bg-background dark:data-unchecked:before:bg-foreground dark:data-checked:before:bg-primary-foreground before:rounded-full group-data-[size=default]/switch:before:size-4 group-data-[size=sm]/switch:before:size-3 group-data-[size=default]/switch:data-checked:before:translate-x-[calc(100%-2px)] group-data-[size=sm]/switch:data-checked:before:translate-x-[calc(100%-2px)] group-data-[size=default]/switch:data-unchecked:before:translate-x-0 group-data-[size=sm]/switch:data-unchecked:before:translate-x-0"
 		}
 		{ attrs... }
 		data-gsxui-slot-switch

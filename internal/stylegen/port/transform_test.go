@@ -46,20 +46,23 @@ func TestTransformRule1SlotRename(t *testing.T) {
 	}
 }
 
-// Rule 2: dimension re-split. cn-radio-group-item exercises radio's
-// upstream-prefix quirk (SlotFor("radio", "cn-radio-group-item") == "item")
-// as well as the split itself: the bare "size-4" utility stays on the base
-// rule, and "data-[size=sm]:size-3" — size IS a dimension this slot
-// declares — moves to the value rule with its prefix stripped. The
-// dimension's other declared value ("default") gets nothing from upstream
-// in this fixture, so the fallback supplies it; that is incidental to this
-// test (the Fallback test below covers it directly), not what's asserted.
+// Rule 2: dimension re-split. cn-radio-group-thumb exercises radio's
+// upstream-prefix quirk (SlotFor("radio", "cn-radio-group-thumb") ==
+// "thumb" — "thumb" is a hypothetical slot name that isn't in mapping.go's
+// radio-specific override table, so this still hits the plain prefix-strip
+// path, not an override) as well as the split itself: the bare "size-4"
+// utility stays on the base rule, and "data-[size=sm]:size-3" — size IS a
+// dimension this slot declares — moves to the value rule with its prefix
+// stripped. The dimension's other declared value ("default") gets nothing
+// from upstream in this fixture, so the fallback supplies it; that is
+// incidental to this test (the Fallback test below covers it directly), not
+// what's asserted.
 func TestTransformRule2DimensionResplit(t *testing.T) {
 	shape := recipe.Shape{
 		Component: "radio",
 		Slots: []recipe.Slot{
 			{
-				Name: "item", Base: true,
+				Name: "thumb", Base: true,
 				Dimensions: []recipe.Dimension{
 					{Name: "size", Default: "default", Values: []string{"default", "sm"}},
 				},
@@ -69,7 +72,7 @@ func TestTransformRule2DimensionResplit(t *testing.T) {
 	sec := Section{
 		Name: "Radio Group",
 		Rules: []Rule{
-			{Class: "cn-radio-group-item", Utilities: []string{"size-4", "data-[size=sm]:size-3"}},
+			{Class: "cn-radio-group-thumb", Utilities: []string{"size-4", "data-[size=sm]:size-3"}},
 		},
 	}
 	fallback := mustParseStyle(t, fmt.Sprintf(`@layer components {
@@ -77,7 +80,7 @@ func TestTransformRule2DimensionResplit(t *testing.T) {
     @apply size-4;
   }
 }
-`, shape.ValueClass("item", "size", "default")))
+`, shape.ValueClass("thumb", "size", "default")))
 
 	ported, unmapped, err := Transform(shape, sec, fallback)
 	if err != nil {
@@ -86,11 +89,11 @@ func TestTransformRule2DimensionResplit(t *testing.T) {
 	if len(unmapped) != 0 {
 		t.Fatalf("unmapped = %v, want none", unmapped)
 	}
-	if want := []string{"size-4"}; !reflect.DeepEqual(ported.Base["item"], want) {
-		t.Errorf("Base[item] = %v, want %v", ported.Base["item"], want)
+	if want := []string{"size-4"}; !reflect.DeepEqual(ported.Base["thumb"], want) {
+		t.Errorf("Base[thumb] = %v, want %v", ported.Base["thumb"], want)
 	}
-	if want := []string{"size-3"}; !reflect.DeepEqual(ported.Values["item"]["size"]["sm"], want) {
-		t.Errorf(`Values["item"]["size"]["sm"] = %v, want %v`, ported.Values["item"]["size"]["sm"], want)
+	if want := []string{"size-3"}; !reflect.DeepEqual(ported.Values["thumb"]["size"]["sm"], want) {
+		t.Errorf(`Values["thumb"]["size"]["sm"] = %v, want %v`, ported.Values["thumb"]["size"]["sm"], want)
 	}
 }
 

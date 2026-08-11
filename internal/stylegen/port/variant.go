@@ -116,6 +116,27 @@ func Classify(token string) Classified {
 // the segments simply don't match that compound pattern and the whole
 // token falls through to KindPlain with Rest equal to the untouched Raw
 // token, not a reassembly of the split segments.
+// insertVariant inserts variant as a new segment immediately before token's
+// own base utility (its last splitVariants segment), preserving every
+// leading variant already stacked on token. This is the mechanism a
+// mapping-table override with a non-empty `variant` field needs: Tailwind's
+// pseudo-element variants like `backdrop:` must sit directly against the
+// base utility, AFTER any runtime-state variant already stacked in front of
+// it — `data-open:animate-in` becomes `data-open:backdrop:animate-in`, never
+// `backdrop:data-open:animate-in` (confirmed against
+// registry/styles/nova/dialog.css's existing `data-[state=open]:backdrop:*`
+// utilities, the same position, same reasoning, an older Tailwind spelling
+// of the same runtime state).
+func insertVariant(token, variant string) string {
+	segments := splitVariants(token)
+	last := len(segments) - 1
+	result := make([]string, 0, len(segments)+1)
+	result = append(result, segments[:last]...)
+	result = append(result, variant)
+	result = append(result, segments[last])
+	return strings.Join(result, ":")
+}
+
 func splitVariants(token string) []string {
 	var segments []string
 	bracketDepth := 0

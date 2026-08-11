@@ -5,7 +5,6 @@ import (
 	"flag"
 	"os"
 	"path/filepath"
-	"slices"
 	"strings"
 	"testing"
 
@@ -82,10 +81,10 @@ func TestRenderAccordionMaiaGolden(t *testing.T) {
 	}
 	// cn-accordion (the upstream root rule) has no gsxui slot -- Accordion's
 	// shape declares no root slot at all (registry/canonical/shapes/accordion.go's
-	// doc comment). It must be reported, never silently dropped.
-	wantUnmapped := []string{"cn-accordion"}
-	if !slices.Equal(unmapped, wantUnmapped) {
-		t.Fatalf("unmapped = %v, want %v", unmapped, wantUnmapped)
+	// doc comment) -- a declared, reviewed non-mapping (mapping.go's
+	// slotOverrides), not an open question, so it does not show up here.
+	if len(unmapped) != 0 {
+		t.Fatalf("unmapped = %v, want none", unmapped)
 	}
 
 	got, err := Render(ported, "maia", upstreamPinnedSHA, upstreamMaiaRelPath)

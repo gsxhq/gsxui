@@ -28,7 +28,9 @@ component AlertDialogTrigger(children gsx.Node, attrs gsx.Attrs) {
 
 component AlertDialogContent(children gsx.Node, attrs gsx.Attrs) {
 	<DialogContent
-		class={ "max-w-xs sm:max-w-sm" }
+		class={
+			"data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 bg-popover text-popover-foreground ring-foreground/5 gap-6 rounded-4xl p-6 ring-1 duration-100 data-[size=default]:max-w-xs data-[size=sm]:max-w-xs data-[size=default]:sm:max-w-md"
+		}
 		hideCloseButton={true}
 		role="alertdialog"
 		data-gsxui-dialog-static
@@ -41,7 +43,9 @@ component AlertDialogContent(children gsx.Node, attrs gsx.Attrs) {
 
 component AlertDialogHeader(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center" }
+		class={
+			"grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center has-data-[slot=alert-dialog-media]:grid-rows-[auto_auto_1fr] has-data-[slot=alert-dialog-media]:gap-x-6 sm:group-data-[size=default]/alert-dialog-content:place-items-start sm:group-data-[size=default]/alert-dialog-content:text-left sm:group-data-[size=default]/alert-dialog-content:has-data-[slot=alert-dialog-media]:grid-rows-[auto_1fr]"
+		}
 		{ attrs... }
 		data-gsxui-slot-alert-dialog-header
 	>
@@ -60,14 +64,23 @@ component AlertDialogFooter(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component AlertDialogTitle(children gsx.Node, attrs gsx.Attrs) {
-	<h2 class={ "text-base font-medium" } { attrs... } data-gsxui-slot-alert-dialog-title data-gsxui-slot-dialog-title>
+	<h2
+		class={
+			"text-lg font-medium sm:group-data-[size=default]/alert-dialog-content:group-has-data-[slot=alert-dialog-media]/alert-dialog-content:col-start-2"
+		}
+		{ attrs... }
+		data-gsxui-slot-alert-dialog-title
+		data-gsxui-slot-dialog-title
+	>
 		{ children }
 	</h2>
 }
 
 component AlertDialogDescription(children gsx.Node, attrs gsx.Attrs) {
 	<p
-		class={ "text-sm text-muted-foreground" }
+		class={
+			"text-muted-foreground *:[a]:hover:text-foreground text-sm text-balance md:text-pretty *:[a]:underline *:[a]:underline-offset-3"
+		}
 		{ attrs... }
 		data-gsxui-slot-alert-dialog-description
 		data-gsxui-slot-dialog-description

@@ -39,14 +39,14 @@ import (
 component NativeSelect(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"relative w-fit [&>svg]:pointer-events-none [&>svg]:absolute [&>svg]:top-1/2 [&>svg]:end-2.5 [&>svg]:size-4 [&>svg]:-translate-y-1/2 [&>svg]:opacity-50",
+			"[&>svg]:text-muted-foreground [&>svg]:top-1/2 [&>svg]:right-3.5 [&>svg]:size-4 [&>svg]:-translate-y-1/2",
 			attrs.Class()
 		}
 		data-gsxui-slot-native-select-wrapper
 	>
 		<select
 			class={
-				"flex h-8 w-full appearance-none items-center justify-between gap-2 rounded-lg border border-input bg-transparent py-1 pr-8 pl-2.5 text-sm whitespace-nowrap transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40"
+				"border-input bg-input/30 placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 dark:hover:bg-input/50 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 w-full min-w-0 appearance-none rounded-4xl border py-1 pr-8 pl-3 text-sm transition-colors select-none focus-visible:ring-[3px] aria-invalid:ring-[3px] data-[size=sm]:h-8"
 			}
 			{ attrs.Without("class")... }
 			data-gsxui-slot-native-select

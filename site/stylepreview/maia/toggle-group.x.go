@@ -124,7 +124,7 @@ func _gsxrenderToggleGroup(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, groupType
 		_gsxgw.AttrValue(_gsxrt.StyleValue(string(sp)))
 		_gsxgw.S("\"")
 	}
-	_gsxv0 := "flex w-fit items-center rounded-lg"
+	_gsxv0 := "data-[spacing=0]:data-[variant=outline]:rounded-4xl"
 	var _gsxv1 string
 	switch size {
 	case "sm":
@@ -236,7 +236,7 @@ func _gsxrenderToggleGroupItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, group
 			_gsxgw.S("\"")
 		}
 	}
-	_gsxv2 := "w-auto min-w-0 shrink-0 px-3 focus:z-10 focus-visible:z-10"
+	_gsxv2 := "data-[state=on]:bg-muted group-data-[spacing=0]/toggle-group:rounded-none group-data-[spacing=0]/toggle-group:px-3 group-data-[spacing=0]/toggle-group:shadow-none group-data-[spacing=0]/toggle-group:has-data-[icon=inline-end]:pr-2.5 group-data-[spacing=0]/toggle-group:has-data-[icon=inline-start]:pl-2.5 group-data-horizontal/toggle-group:data-[spacing=0]:first:rounded-l-3xl group-data-vertical/toggle-group:data-[spacing=0]:first:rounded-t-3xl group-data-horizontal/toggle-group:data-[spacing=0]:last:rounded-r-3xl group-data-vertical/toggle-group:data-[spacing=0]:last:rounded-b-3xl"
 	var _gsxv3 string
 	switch size {
 	case "sm":

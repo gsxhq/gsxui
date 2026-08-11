@@ -1,53 +1,23 @@
-/* Source: gsxui@c9289d5, assets/css/styles/default/input-otp.css, folded
-   into five slots (the JS-created caret/caret-overlay markers are NOT
-   here — see registry/canonical/shapes/input-otp.go's doc comment). Nova
-   and Maia have not diverged on InputOTP yet, so this file is
-   byte-identical to registry/styles/maia/input-otp.css.
-
-   Relational forms, all confirmed compiling against this repo's Tailwind
-   v4 with the CLI directly before use:
-   - root's `has-[[data-gsxui-slot-input-otp-input]:disabled]:opacity-50`
-     is the same same-element :has() form Card already proved, chained
-     with a pseudo-class on the descendant marker rather than just its
-     presence.
-   - group's `has-[[aria-invalid=true]]:*` (plus its `dark:` pair) is the
-     same form keyed on a plain attribute, matching Table's row/cell forms.
-   - slot's `data-[active=true]:*` is Tailwind's data-attribute-value
-     variant (see Table's data-[state=selected]); it chains with
-     `aria-invalid:` directly (`data-[active=true]:aria-invalid:*`) and
-     with `dark:` on top of both, matching upstream's own combined
-     [data-active=true][aria-invalid=true] compound rule exactly.
-   - separator's `[&_svg:not([class*='size-'])]:size-4` is nova's own
-     documented safeguard (see ui/input-otp.gsx's "Nova retarget" doc
-     comment) — a descendant (not child) selector, kept as a descendant
-     selector here since the original targeted `svg` at any depth, not
-     just a direct child. */
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-maia.css, Input OTP lines 682-701. Ported by
+   internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
+   onto gsxui's shape-declared classes. */
 @layer components {
   .gsxui-recipe-input-otp {
-    @apply flex items-center gap-2;
-    @apply has-[[data-gsxui-slot-input-otp-input]:disabled]:opacity-50;
+    @apply gap-2;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-input-otp-input {
-    @apply cursor-text;
-    @apply disabled:cursor-not-allowed;
+    @apply cursor-text disabled:cursor-not-allowed;
   }
 
   .gsxui-recipe-input-otp-group {
-    @apply flex items-center rounded-lg;
-    @apply has-[[aria-invalid=true]]:border-destructive has-[[aria-invalid=true]]:ring-3 has-[[aria-invalid=true]]:ring-destructive/20;
-    @apply dark:has-[[aria-invalid=true]]:ring-destructive/40;
+    @apply has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 has-aria-invalid:border-destructive rounded-4xl has-aria-invalid:ring-[3px];
   }
 
   .gsxui-recipe-input-otp-slot {
-    @apply relative flex size-8 items-center justify-center border-y border-e border-input text-sm transition-all outline-none;
-    @apply first:rounded-s-lg first:border-s;
-    @apply last:rounded-e-lg;
-    @apply aria-invalid:border-destructive;
-    @apply data-[active=true]:z-10 data-[active=true]:border-ring data-[active=true]:ring-3 data-[active=true]:ring-ring/50;
-    @apply data-[active=true]:aria-invalid:border-destructive data-[active=true]:aria-invalid:ring-destructive/20;
-    @apply dark:bg-input/30;
-    @apply dark:data-[active=true]:aria-invalid:ring-destructive/40;
+    @apply bg-input/30 border-input data-[active=true]:border-ring data-[active=true]:ring-ring/50 data-[active=true]:aria-invalid:ring-destructive/20 dark:data-[active=true]:aria-invalid:ring-destructive/40 aria-invalid:border-destructive data-[active=true]:aria-invalid:border-destructive size-9 border-y border-r text-sm transition-all outline-none first:rounded-l-4xl first:border-l last:rounded-r-4xl data-[active=true]:ring-[3px];
   }
 
   .gsxui-recipe-input-otp-separator {

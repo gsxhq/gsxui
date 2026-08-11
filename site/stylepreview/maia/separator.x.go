@@ -40,7 +40,7 @@ func _gsxrenderSeparator(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, orientation
 		_gsxgw.AttrValue(string(_gsxstd.Default((orientation), "horizontal")))
 		_gsxgw.S("\"")
 	}
-	_gsxv0 := "shrink-0 bg-border"
+	_gsxv0 := "bg-border shrink-0"
 	var _gsxv1 string
 	switch orientation {
 	case "vertical":

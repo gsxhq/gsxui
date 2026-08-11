@@ -42,6 +42,24 @@
   [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-variant="default"]:hover {
     @apply bg-primary/80;
   }
+  [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-variant="destructive"] {
+    @apply bg-destructive/10 text-destructive;
+  }
+  [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-variant="destructive"]:hover {
+    @apply bg-destructive/20;
+  }
+  [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-variant="destructive"]:focus-visible {
+    @apply ring-destructive/20 border-destructive/40;
+  }
+  :where(.dark) [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-variant="destructive"]:focus-visible {
+    @apply ring-destructive/40;
+  }
+  :where(.dark) [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-variant="destructive"] {
+    @apply bg-destructive/20;
+  }
+  :where(.dark) [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-variant="destructive"]:hover {
+    @apply bg-destructive/30;
+  }
   [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-variant="outline"] {
     @apply border-border bg-input/30;
   }
@@ -69,29 +87,20 @@
   [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-variant="ghost"][aria-expanded="true"] {
     @apply bg-muted text-foreground;
   }
-  [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-variant="destructive"] {
-    @apply bg-destructive/10 text-destructive;
-  }
-  [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-variant="destructive"]:hover {
-    @apply bg-destructive/20;
-  }
-  [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-variant="destructive"]:focus-visible {
-    @apply ring-destructive/20 border-destructive/40;
-  }
-  :where(.dark) [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-variant="destructive"]:focus-visible {
-    @apply ring-destructive/40;
-  }
-  :where(.dark) [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-variant="destructive"] {
-    @apply bg-destructive/20;
-  }
-  :where(.dark) [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-variant="destructive"]:hover {
-    @apply bg-destructive/30;
-  }
   [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-variant="link"] {
     @apply text-primary underline-offset-4;
   }
   [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-variant="link"]:hover {
     @apply underline;
+  }
+  [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-size="default"] {
+    @apply h-9 gap-1.5 px-3;
+  }
+  [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-size="default"]:has([data-icon="inline-end"]) {
+    @apply pr-2.5;
+  }
+  [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-size="default"]:has([data-icon="inline-start"]) {
+    @apply pl-2.5;
   }
   [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-size="xs"] {
     @apply h-6 gap-1 px-2.5 text-xs;
@@ -114,15 +123,6 @@
   [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-size="sm"]:has([data-icon="inline-start"]) {
     @apply pl-2;
   }
-  [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-size="default"] {
-    @apply h-9 gap-1.5 px-3;
-  }
-  [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-size="default"]:has([data-icon="inline-end"]) {
-    @apply pr-2.5;
-  }
-  [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-size="default"]:has([data-icon="inline-start"]) {
-    @apply pl-2.5;
-  }
   [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-size="lg"] {
     @apply h-10 gap-1.5 px-4;
   }
@@ -132,6 +132,9 @@
   [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-size="lg"]:has([data-icon="inline-start"]) {
     @apply pl-3;
   }
+  [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-size="icon"] {
+    @apply size-9;
+  }
   [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-size="icon-xs"] {
     @apply size-6;
   }
@@ -140,9 +143,6 @@
   }
   [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-size="icon-sm"] {
     @apply size-8;
-  }
-  [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-size="icon"] {
-    @apply size-9;
   }
   [data-theme-preview-style="maia"] :where([data-gsxui-slot-button])[data-size="icon-lg"] {
     @apply size-10;

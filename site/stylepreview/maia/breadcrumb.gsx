@@ -21,17 +21,13 @@ component Breadcrumb(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component BreadcrumbList(children gsx.Node, attrs gsx.Attrs) {
-	<ol
-		class={ "flex flex-wrap items-center gap-1.5 text-sm break-words text-muted-foreground" }
-		{ attrs... }
-		data-gsxui-slot-breadcrumb-list
-	>
+	<ol class={ "text-muted-foreground gap-1.5 text-sm sm:gap-2.5" } { attrs... } data-gsxui-slot-breadcrumb-list>
 		{ children }
 	</ol>
 }
 
 component BreadcrumbItem(children gsx.Node, attrs gsx.Attrs) {
-	<li class={ "inline-flex items-center gap-1" } { attrs... } data-gsxui-slot-breadcrumb-item>
+	<li class={ "gap-1.5" } { attrs... } data-gsxui-slot-breadcrumb-item>
 		{ children }
 	</li>
 }
@@ -44,7 +40,7 @@ component BreadcrumbItem(children gsx.Node, attrs gsx.Attrs) {
 // docs/jsx-parity.md). Behavior-attachment uses of asChild are covered by
 // the data-attribute mechanism (see dialog).
 component BreadcrumbLink(href string, children gsx.Node, attrs gsx.Attrs) {
-	<a href={href} class={ "transition-colors hover:text-foreground" } { attrs... } data-gsxui-slot-breadcrumb-link>
+	<a href={href} class={ "hover:text-foreground transition-colors" } { attrs... } data-gsxui-slot-breadcrumb-link>
 		{ children }
 	</a>
 }
@@ -54,7 +50,7 @@ component BreadcrumbPage(children gsx.Node, attrs gsx.Attrs) {
 		role="link"
 		aria-disabled="true"
 		aria-current="page"
-		class={ "font-normal text-foreground" }
+		class={ "text-foreground font-normal" }
 		{ attrs... }
 		data-gsxui-slot-breadcrumb-page
 	>
@@ -69,7 +65,7 @@ component BreadcrumbSeparator(children gsx.Node, attrs gsx.Attrs) {
 	<li
 		role="presentation"
 		aria-hidden="true"
-		class={ "[&>svg]:size-3.5 [&>svg]:rtl:rotate-180" }
+		class={ "[&>svg]:size-3.5" }
 		{ attrs... }
 		data-gsxui-slot-breadcrumb-separator
 	>
@@ -88,7 +84,7 @@ component BreadcrumbEllipsis(attrs gsx.Attrs) {
 	<span
 		role="presentation"
 		aria-hidden="true"
-		class={ "flex size-5 items-center justify-center [&>svg]:size-4" }
+		class={ "size-5 [&>svg]:size-4" }
 		{ attrs... }
 		data-gsxui-slot-breadcrumb-ellipsis
 	>

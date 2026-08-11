@@ -80,7 +80,7 @@ component ToggleGroup(groupType string, variant string, size string, spacing str
 		role={role}
 		style=css`--gap: @{sp}`
 		class={
-			"flex w-fit items-center rounded-lg",
+			"data-[spacing=0]:data-[variant=outline]:rounded-4xl",
 			switch size { case "sm": "rounded-[min(var(--radius-md),10px)]" case "lg": "rounded-lg" default: "rounded-lg" }
 		}
 		{ attrs... }
@@ -131,7 +131,7 @@ component ToggleGroupItem(groupType string, variant string, size string, spacing
 			aria-pressed={pressed}
 		} }
 		class={
-			"w-auto min-w-0 shrink-0 px-3 focus:z-10 focus-visible:z-10",
+			"data-[state=on]:bg-muted group-data-[spacing=0]/toggle-group:rounded-none group-data-[spacing=0]/toggle-group:px-3 group-data-[spacing=0]/toggle-group:shadow-none group-data-[spacing=0]/toggle-group:has-data-[icon=inline-end]:pr-2.5 group-data-[spacing=0]/toggle-group:has-data-[icon=inline-start]:pl-2.5 group-data-horizontal/toggle-group:data-[spacing=0]:first:rounded-l-3xl group-data-vertical/toggle-group:data-[spacing=0]:first:rounded-t-3xl group-data-horizontal/toggle-group:data-[spacing=0]:last:rounded-r-3xl group-data-vertical/toggle-group:data-[spacing=0]:last:rounded-b-3xl",
 			switch size { case "sm": "has-[>svg]:px-1.5" case "lg": "has-[>svg]:px-2" default: "has-[>svg]:px-2" },
 			switch sp {
 			case "2":

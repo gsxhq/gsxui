@@ -35,8 +35,13 @@ component ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) {
 		role="group"
 		data-orientation={orientation |> default("horizontal")}
 		class={
-			"flex w-fit items-stretch [&>*:focus-visible]:relative [&>*:focus-visible]:z-10 [&>input]:flex-1",
-			switch orientation { case "vertical": "flex-col" default: "flex-row" }
+			"has-[>[data-slot=button-group]]:gap-2 has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-4xl",
+			switch orientation {
+			case "vertical":
+				"[&>[data-slot]:not(:has(~[data-slot]))]:rounded-b-4xl!"
+			default:
+				"[&>[data-slot]:not(:has(~[data-slot]))]:rounded-r-4xl!"
+			}
 		}
 		{ attrs... }
 		data-gsxui-slot-button-group
@@ -51,9 +56,7 @@ component ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) {
 // as-is rather than "fixed", per the token-for-token rule.
 component ButtonGroupText(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={
-			"flex items-center gap-2 rounded-lg border bg-muted px-2.5 text-sm font-medium [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4"
-		}
+		class={ "bg-muted gap-2 rounded-4xl border px-2.5 text-sm font-medium [&_svg:not([class*='size-'])]:size-4" }
 		{ attrs... }
 		data-gsxui-slot-button-group-text
 	>
@@ -74,7 +77,7 @@ component ButtonGroupText(children gsx.Node, attrs gsx.Attrs) {
 component ButtonGroupSeparator(orientation string, attrs gsx.Attrs) {
 	<Separator
 		orientation={orientation |> default("vertical")}
-		class={ "relative m-0 self-stretch bg-input data-[orientation=vertical]:h-auto" }
+		class={ "bg-input" }
 		{ attrs... }
 		data-gsxui-slot-button-group-separator
 	/>

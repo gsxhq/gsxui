@@ -35,21 +35,21 @@ func Badge(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
 			_gsxgw.S("\"")
 		}
-		_gsxv0 := "inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-[color,box-shadow] has-[>svg]:px-1.5 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:size-3 [&>svg]:pointer-events-none"
+		_gsxv0 := "h-5 gap-1 rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium transition-all has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&>svg]:size-3!"
 		var _gsxv1 string
 		switch variant {
 		case "secondary":
-			_gsxv1 = "bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90"
+			_gsxv1 = "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80"
 		case "destructive":
-			_gsxv1 = "bg-destructive text-contrast focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40 [a&]:hover:bg-destructive/90"
+			_gsxv1 = "bg-destructive/10 [a]:hover:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 text-destructive dark:bg-destructive/20"
 		case "outline":
-			_gsxv1 = "border-border text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground"
+			_gsxv1 = "border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground bg-input/30"
 		case "ghost":
-			_gsxv1 = "[a&]:hover:bg-accent [a&]:hover:text-accent-foreground"
+			_gsxv1 = "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50"
 		case "link":
-			_gsxv1 = "text-primary underline-offset-4 [a&]:hover:underline"
+			_gsxv1 = "text-primary underline-offset-4 hover:underline"
 		default:
-			_gsxv1 = "bg-primary text-primary-foreground [a&]:hover:bg-primary/90"
+			_gsxv1 = "bg-primary text-primary-foreground [a]:hover:bg-primary/80"
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))

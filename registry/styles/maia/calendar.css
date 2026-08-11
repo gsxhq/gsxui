@@ -1,113 +1,69 @@
-/* Source: assets/css/styles/default/calendar.css, all twenty-five remaining
-   rules. The five rules whose styled SUBJECT is a NativeSelect element (the
-   month/year dropdowns) are deliberately absent — they moved to
-   assets/css/styles/default.css's @layer utilities when NativeSelect
-   migrated, and belong to Calendar-about-NativeSelect, not to Calendar's own
-   classes. assets/css/foundation.css's visually-hidden treatment of
-   calendar-caption[data-caption-layout="dropdown"] is foundation and does
-   not migrate either.
-
-   Translations worth naming:
-
-   - `--cell-size: calc(var(--spacing) * 7)` is a plain custom property in
-     default.css, but Tailwind v4's arbitrary-PROPERTY form carries it
-     ([--cell-size:calc(var(--spacing)*7)]), so unlike Card's container-name
-     it needs no escape hatch. The five rules that consume it use the
-     var-shorthand utilities (w-(--cell-size), h-(--cell-size),
-     px-(--cell-size), min-w-(--cell-size)) rather than raw declarations.
-
-   - the two ancestor rules that make a Calendar transparent inside a Card or
-     a Popover are the Kbd-inside-Tooltip shape: an ancestor from a DIFFERENT
-     component, translated as [[data-gsxui-slot-card-content]_&]: and
-     [[data-gsxui-slot-popover-content]_&]:.
-
-   - the two range-edge rules and the focus-ring rule reach DOWN from a day
-     cell to its own button ([...day]:first-child[data-selected=true]>&), the
-     mirror of Alert's variant-paints-description form.
-
-   - `.dark [day-button]:hover` becomes dark:hover:. Tailwind's hover: variant
-     wraps in @media (hover: hover), which the authored `:hover` did not —
-     the same substitution every previously migrated component made (see
-     registry/styles/nova/button.css, select.css, native-select.css); kept
-     consistent rather than hand-rolled as [&:hover]:.
-
-   Nothing needs retaining under section 10b. Calendar takes a caller class
-   on its ROOT only (every other slot renders with no attrs spread at all),
-   and no fixture or example passes one; the two ancestor rules that would be
-   caller-contestable if one did are on the root's own background, whose
-   pre-migration selector was already (0,2,0)-equivalent in effect (an
-   ancestor compound beat the root's own :where() rule the same way).
-
-   Nova and Maia have not diverged on Calendar yet, so this file is
-   byte-identical to registry/styles/maia/calendar.css. Confirmed compiling
-   with this repo's Tailwind v4 CLI before use. */
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-maia.css, Calendar lines 230-241. Ported by
+   internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
+   onto gsxui's shape-declared classes. */
 @layer components {
   .gsxui-recipe-calendar {
-    @apply w-fit bg-background p-2 [--cell-size:calc(var(--spacing)*7)];
-    @apply [[data-gsxui-slot-card-content]_&]:bg-transparent [[data-gsxui-slot-popover-content]_&]:bg-transparent;
+    @apply p-3 [--cell-radius:var(--radius-4xl)] [--cell-size:--spacing(8)];
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-calendar-months {
     @apply relative flex w-full flex-col gap-4;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-calendar-nav {
     @apply absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-calendar-nav-button {
-    @apply w-(--cell-size) h-(--cell-size) p-0 select-none;
-    @apply aria-disabled:opacity-50;
+    @apply w-(--cell-size) h-(--cell-size) p-0 select-none aria-disabled:opacity-50;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-calendar-month-caption {
     @apply h-(--cell-size) px-(--cell-size) flex w-full items-center justify-center;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-calendar-dropdowns {
     @apply h-(--cell-size) flex w-full items-center justify-center gap-1.5 text-sm font-medium;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-calendar-caption {
     @apply text-sm font-medium select-none;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-calendar-grid {
     @apply w-full border-collapse;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-calendar-weekdays {
     @apply flex;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-calendar-weekday {
     @apply flex-1 rounded-md text-[0.8rem] font-normal text-muted-foreground select-none;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-calendar-week {
     @apply mt-2 flex w-full;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-calendar-day {
-    @apply relative aspect-square h-full w-full p-0 text-center select-none;
-    @apply data-[outside]:text-muted-foreground;
-    @apply data-[outside]:aria-selected:text-muted-foreground;
-    @apply data-[today]:rounded-md data-[today]:bg-accent data-[today]:text-accent-foreground;
-    @apply data-[today]:data-[selected=true]:rounded-none;
-    @apply data-[disabled]:text-muted-foreground data-[disabled]:opacity-50;
-    @apply data-[hidden]:invisible;
+    @apply relative aspect-square h-full w-full p-0 text-center select-none data-[outside]:text-muted-foreground data-[outside]:aria-selected:text-muted-foreground data-[today]:rounded-md data-[today]:bg-accent data-[today]:text-accent-foreground data-[today]:data-[selected=true]:rounded-none data-[disabled]:text-muted-foreground data-[disabled]:opacity-50 data-[hidden]:invisible;
   }
 
+  /* carried: no upstream counterpart */
   .gsxui-recipe-calendar-day-button {
-    @apply min-w-(--cell-size) flex aspect-square h-auto w-full flex-col gap-1 leading-none font-normal;
-    @apply [[data-gsxui-slot-calendar-day]:first-child[data-selected=true]>&]:rounded-s-md;
-    @apply [[data-gsxui-slot-calendar-day]:last-child[data-selected=true]>&]:rounded-e-md;
-    @apply [[data-gsxui-slot-calendar-day][data-focused]>&]:relative [[data-gsxui-slot-calendar-day][data-focused]>&]:z-10 [[data-gsxui-slot-calendar-day][data-focused]>&]:border-ring [[data-gsxui-slot-calendar-day][data-focused]>&]:ring-[3px] [[data-gsxui-slot-calendar-day][data-focused]>&]:ring-ring/50;
-    @apply data-[range-end=true]:rounded-md data-[range-end=true]:rounded-e-md data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground;
-    @apply data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground;
-    @apply data-[range-start=true]:rounded-md data-[range-start=true]:rounded-s-md data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground;
-    @apply data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground;
-    @apply dark:hover:text-accent-foreground;
-    @apply [&>span]:text-xs [&>span]:opacity-70;
+    @apply min-w-(--cell-size) flex aspect-square h-auto w-full flex-col gap-1 leading-none font-normal [[data-gsxui-slot-calendar-day]:first-child[data-selected=true]>&]:rounded-s-md [[data-gsxui-slot-calendar-day]:last-child[data-selected=true]>&]:rounded-e-md [[data-gsxui-slot-calendar-day][data-focused]>&]:relative [[data-gsxui-slot-calendar-day][data-focused]>&]:z-10 [[data-gsxui-slot-calendar-day][data-focused]>&]:border-ring [[data-gsxui-slot-calendar-day][data-focused]>&]:ring-[3px] [[data-gsxui-slot-calendar-day][data-focused]>&]:ring-ring/50 data-[range-end=true]:rounded-md data-[range-end=true]:rounded-e-md data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:rounded-md data-[range-start=true]:rounded-s-md data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-accent-foreground [&>span]:text-xs [&>span]:opacity-70;
   }
 }
