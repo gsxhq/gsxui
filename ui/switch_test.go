@@ -10,12 +10,22 @@ import (
 
 // canonicalSwitchClass is Switch's fully-resolved recipe class, copied
 // verbatim from the generated ui/switch.gsx output — Switch migrated onto
-// the slot axis, so its root class is no longer empty. Nova's ported recipe
-// targets checked/unchecked state via data-checked/data-unchecked attribute
-// variants rather than the native :checked pseudo-class (the JS that keeps
-// those attributes in sync with the input's live checked state lives in
-// web/, handled separately from this style-porting task).
-const canonicalSwitchClass = `data-checked:bg-primary data-unchecked:bg-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 dark:data-unchecked:bg-input/80 shrink-0 rounded-full border border-transparent focus-visible:ring-3 aria-invalid:ring-3 data-[size=default]:h-[18.4px] data-[size=default]:w-[32px] data-[size=sm]:h-[14px] data-[size=sm]:w-[24px] before:bg-background dark:data-unchecked:before:bg-foreground dark:data-checked:before:bg-primary-foreground before:rounded-full group-data-[size=default]/switch:before:size-4 group-data-[size=sm]/switch:before:size-3 group-data-[size=default]/switch:data-checked:before:translate-x-[calc(100%-2px)] group-data-[size=sm]/switch:data-checked:before:translate-x-[calc(100%-2px)] group-data-[size=default]/switch:data-unchecked:before:translate-x-0 group-data-[size=sm]/switch:data-unchecked:before:translate-x-0 inline-flex`
+// the slot axis, so its root class is no longer empty.
+//
+// Switch is a real native <input type="checkbox" role="switch">: the
+// data-checked/data-unchecked attribute-variant form the 8-style port
+// mechanically carried over from upstream's Radix vocabulary was dead on
+// this markup (recurring class 2 in the style-porter report) and is
+// restored here to the native :checked pseudo-class, matching
+// ui/switch.gsx's own doc comment. The thumb is this element's own ::before
+// pseudo-element (no separate sibling/group-data-[…]/switch: relationship —
+// Switch has no data-size axis at all, a deliberate simplification from the
+// mechanical port's dead group/switch-gated size variants), so
+// before:content-['']/before:pointer-events-none/before:block/
+// before:transition-transform and appearance-none/outline-none/
+// disabled:cursor-not-allowed/disabled:opacity-50 are restored structural
+// chrome — see the report's "Switch — full structural rewrite" entry.
+const canonicalSwitchClass = `checked:bg-primary bg-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 dark:bg-input/80 appearance-none outline-none disabled:cursor-not-allowed disabled:opacity-50 shrink-0 rounded-full border border-transparent focus-visible:ring-3 aria-invalid:ring-3 h-[18.4px] w-[32px] before:bg-background dark:before:bg-foreground dark:checked:before:bg-primary-foreground before:content-[&#39;&#39;] before:pointer-events-none before:block before:transition-transform before:rounded-full before:size-4 checked:before:translate-x-[calc(100%-2px)] before:translate-x-0 inline-flex`
 
 func TestSwitchDefault(t *testing.T) {
 	got := render(t, ui.Switch(nil))
@@ -93,7 +103,7 @@ func TestSwitchDarkCheckedOverride(t *testing.T) {
 	// marker-only render; now it just confirms they're present, since
 	// they're supposed to be part of Switch's own migrated presentation.
 	got := render(t, ui.Switch(nil))
-	if !strings.Contains(got, "dark:data-checked:before:bg-primary-foreground") {
-		t.Errorf("missing dark:data-checked:before presentation\nin: %s", got)
+	if !strings.Contains(got, "dark:checked:before:bg-primary-foreground") {
+		t.Errorf("missing dark:checked:before presentation\nin: %s", got)
 	}
 }
