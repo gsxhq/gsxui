@@ -40,8 +40,12 @@ func TestCardPinned(t *testing.T) {
 	// unchanged — verified by the sweep (make sweep-compare) — only the
 	// class attribute's literal contents changed, from nothing to the
 	// resolved Nova recipe for the root slot.
+	// group/card was added so Card's own has-[>[data-gsxui-slot-field]]
+	// descendants (elsewhere in the recipe) and other slots can key off
+	// Card's own ancestry — see the style-porter report's "missing
+	// group/<name> marker" entry.
 	got := render(t, ui.Card(gsx.Raw("Content"), nil))
-	want := `<div class="ring-foreground/10 bg-card text-card-foreground gap-(--card-spacing) overflow-hidden rounded-xl py-(--card-spacing) text-sm ring-1 [--card-spacing:--spacing(4)] has-[[data-gsxui-slot-card-footer]]:pb-0 has-[&gt;img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] data-[size=sm]:has-[[data-gsxui-slot-card-footer]]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl flex flex-col" data-gsxui-slot-card>Content</div>`
+	want := `<div class="group/card ring-foreground/10 bg-card text-card-foreground gap-(--card-spacing) overflow-hidden rounded-xl py-(--card-spacing) text-sm ring-1 [--card-spacing:--spacing(4)] has-[[data-gsxui-slot-card-footer]]:pb-0 has-[&gt;img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] data-[size=sm]:has-[[data-gsxui-slot-card-footer]]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl flex flex-col" data-gsxui-slot-card>Content</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

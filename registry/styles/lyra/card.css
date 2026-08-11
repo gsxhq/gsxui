@@ -10,7 +10,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-card-header {
-    @apply gap-1 rounded-none px-(--card-spacing) [.border-b]:pb-(--card-spacing) grid auto-rows-min grid-rows-[auto_auto];
+    @apply gap-1 rounded-none px-(--card-spacing) grid auto-rows-min grid-rows-[auto_auto];
   }
 
   .gsxui-recipe-card-title {
