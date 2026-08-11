@@ -251,7 +251,10 @@ component ComboboxContent(children gsx.Node, attrs gsx.Attrs) {
 		popover="auto"
 		data-state="closed"
 		data-side="bottom"
-		class={ combobox.Content() }
+		class={
+			"group/combobox-content",
+			combobox.Content(),
+		}
 		{ attrs... }
 		data-gsxui-slot-combobox-content
 	>

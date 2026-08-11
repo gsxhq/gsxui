@@ -6,7 +6,7 @@ import "github.com/gsxhq/gsx"
 // sibling components — compose them in markup; no shared state, no context.
 
 component Card(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ card.Root() } { attrs... } data-gsxui-slot-card>
+	<div class={ "group/card", card.Root() } { attrs... } data-gsxui-slot-card>
 		{ children }
 	</div>
 }

@@ -106,6 +106,7 @@ component ContextMenuContent(children gsx.Node, attrs gsx.Attrs) {
 component ContextMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
+			"group/context-menu-item",
 			contextMenu.Item(),
 			contextMenu.ItemVariant(variant),
 		}

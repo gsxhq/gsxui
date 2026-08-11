@@ -134,7 +134,10 @@ component CommandItem(value string, children gsx.Node, attrs gsx.Attrs) {
 		data-value={value}
 		role="option"
 		aria-selected="false"
-		class={ command.Item() }
+		class={
+			"group/command-item",
+			command.Item(),
+		}
 		{ attrs... }
 		data-gsxui-slot-command-item
 	>

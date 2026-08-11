@@ -28,7 +28,10 @@ component AlertDialogTrigger(children gsx.Node, attrs gsx.Attrs) {
 
 component AlertDialogContent(children gsx.Node, attrs gsx.Attrs) {
 	<DialogContent
-		class={ alertDialog.Content() }
+		class={
+			"group/alert-dialog-content",
+			alertDialog.Content(),
+		}
 		hideCloseButton={true}
 		role="alertdialog"
 		data-gsxui-dialog-static

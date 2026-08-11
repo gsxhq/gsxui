@@ -27,7 +27,7 @@ import "github.com/gsxhq/gsx"
 component InputGroup(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="group"
-		class={ inputGroup.Root() }
+		class={ "group/input-group", inputGroup.Root() }
 		{ attrs... }
 		data-gsxui-slot-input-group
 	>

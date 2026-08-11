@@ -47,6 +47,7 @@ component Item(variant string, size string, children gsx.Node, attrs gsx.Attrs) 
 		data-variant={variant |> default("default")}
 		data-size={size |> default("default")}
 		class={
+			"group/item",
 			item.Root(),
 			item.Variant(variant),
 		}

@@ -47,7 +47,7 @@ component FieldLegend(variant string, children gsx.Node, attrs gsx.Attrs) {
 
 component FieldGroup(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ field.Group() }
+		class={ "group/field-group", field.Group() }
 		{ attrs... }
 		data-gsxui-slot-field-group
 	>
@@ -62,6 +62,7 @@ component Field(orientation string, children gsx.Node, attrs gsx.Attrs) {
 		role="group"
 		data-orientation={orientation |> default("vertical")}
 		class={
+			"group/field",
 			field.Root(),
 			field.Orientation(orientation),
 		}

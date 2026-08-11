@@ -261,6 +261,7 @@ component MenubarContent(children gsx.Node, attrs gsx.Attrs) {
 component MenubarItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
+			"group/menubar-item",
 			menubar.Item(),
 			menubar.ItemVariant(variant),
 		}

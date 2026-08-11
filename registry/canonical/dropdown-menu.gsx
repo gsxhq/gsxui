@@ -97,6 +97,7 @@ component DropdownMenuContent(children gsx.Node, attrs gsx.Attrs) {
 component DropdownMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
+			"group/dropdown-menu-item",
 			dropdownMenu.Item(),
 			dropdownMenu.ItemVariant(variant),
 		}

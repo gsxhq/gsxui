@@ -46,7 +46,10 @@ import (
 // guarded against; callers overriding this attribute are on their own.
 component NavigationMenu(children gsx.Node, attrs gsx.Attrs) {
 	<nav
-		class={ navigationMenu.Root() }
+		class={
+			"group/navigation-menu",
+			navigationMenu.Root(),
+		}
 		data-viewport="false"
 		{ attrs... }
 		data-gsxui-slot-navigation-menu
@@ -119,7 +122,10 @@ component NavigationMenuItem(children gsx.Node, attrs gsx.Attrs) {
 // to key off here.
 component NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<button
-		class={ navigationMenu.Trigger() }
+		class={
+			"group/navigation-menu-trigger",
+			navigationMenu.Trigger(),
+		}
 		type="button"
 		aria-expanded="false"
 		data-state="closed"
