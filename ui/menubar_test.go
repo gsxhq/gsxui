@@ -200,19 +200,30 @@ func TestMenubarPinnedParts(t *testing.T) {
 			want: `<div class="contents" data-gsxui-slot-menubar-menu>x</div>`,
 		},
 		{
+			// group/menubar-item added; data-disabled:opacity-50 and
+			// data-inset:pl-7 removed — MenubarItem never stamps data-inset,
+			// and its data-disabled dimming plus the inset padding both live
+			// in assets/css/styles/default/menu.css's own retained escape
+			// hatches now. See the style-porter report's "missing
+			// group/<name> marker" and "DropdownMenu/ContextMenu/Menubar
+			// data-inset" entries.
 			name: "item",
 			node: ui.MenubarItem("", gsx.Raw("Print"), nil),
-			want: `<div class="focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-1.5 rounded-md px-1.5 py-1 text-sm data-disabled:opacity-50 data-inset:pl-7 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 flex text-foreground" data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-menubar-item>Print</div>`,
+			want: `<div class="group/menubar-item focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-1.5 rounded-md px-1.5 py-1 text-sm [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 flex text-foreground" data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-menubar-item>Print</div>`,
 		},
 		{
+			// transition-none suppresses an implicit transition:all — see
+			// the style-porter report's "duration-N alone" entry.
 			name: "content",
 			node: ui.MenubarContent(gsx.Raw("x"), nil),
-			want: `<div class="bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 min-w-36 rounded-lg p-1 shadow-md ring-1 duration-100" popover="auto" role="menu" tabindex="-1" data-state="closed" data-side="bottom" data-gsxui-slot-menubar-content>x</div>`,
+			want: `<div class="transition-none bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 min-w-36 rounded-lg p-1 shadow-md ring-1 duration-100" popover="auto" role="menu" tabindex="-1" data-state="closed" data-side="bottom" data-gsxui-slot-menubar-content>x</div>`,
 		},
 		{
+			// data-inset:pl-7 removed — MenubarLabel never stamps data-inset
+			// either. Same entry as "item" above.
 			name: "label",
 			node: ui.MenubarLabel(gsx.Raw("People"), nil),
-			want: `<div class="px-1.5 py-1 text-sm font-medium data-inset:pl-7" data-gsxui-slot-menubar-label>People</div>`,
+			want: `<div class="px-1.5 py-1 text-sm font-medium" data-gsxui-slot-menubar-label>People</div>`,
 		},
 		{
 			name: "separator",

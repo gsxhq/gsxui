@@ -19,12 +19,12 @@
   }
 
   .gsxui-recipe-menubar-content {
-    @apply bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/5 dark:ring-foreground/10 min-w-48 rounded-3xl p-1.5 shadow-lg ring-1 duration-100;
+    @apply transition-none bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/5 dark:ring-foreground/10 min-w-48 rounded-3xl p-1.5 shadow-lg ring-1 duration-100;
   }
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-menubar-item {
-    @apply focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2.5 rounded-2xl px-3 py-2 text-sm font-medium data-disabled:opacity-50 data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex;
+    @apply focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2.5 rounded-2xl px-3 py-2 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 flex;
   }
 
   /* carried: no upstream counterpart */
@@ -38,24 +38,28 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-menubar-checkbox-item {
-    @apply focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-2.5 rounded-2xl py-2 pr-3 pl-9.5 text-sm font-medium data-inset:pl-9.5 flex;
+    @apply data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-2.5 rounded-2xl py-2 pr-3 pl-9.5 text-sm font-medium flex;
   }
 
   .gsxui-recipe-menubar-checkbox-item-indicator {
-    @apply left-3 size-4 [&_svg:not([class*='size-'])]:size-4;
+    @apply pointer-events-none absolute hidden left-3 size-4 items-center justify-center;
+    @apply [[data-state=checked]_&]:flex;
+    @apply [&_svg:not([class*='size-'])]:size-4;
   }
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-menubar-radio-item {
-    @apply focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-2.5 rounded-2xl py-2 pr-3 pl-9.5 text-sm font-medium data-disabled:opacity-50 data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex;
+    @apply data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-2.5 rounded-2xl py-2 pr-3 pl-9.5 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 flex;
   }
 
   .gsxui-recipe-menubar-radio-item-indicator {
-    @apply left-3 size-4 [&_svg:not([class*='size-'])]:size-4;
+    @apply pointer-events-none absolute hidden left-3 size-4 items-center justify-center;
+    @apply [[data-state=checked]_&]:flex;
+    @apply [&>svg]:size-2 [&>svg]:fill-current;
   }
 
   .gsxui-recipe-menubar-label {
-    @apply text-muted-foreground px-3.5 py-2.5 text-xs data-inset:pl-9.5;
+    @apply text-muted-foreground px-3.5 py-2.5 text-xs;
   }
 
   .gsxui-recipe-menubar-separator {
@@ -73,10 +77,10 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-menubar-sub-trigger {
-    @apply focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground gap-2 rounded-2xl px-3 py-2 text-sm font-medium data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex;
+    @apply focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground gap-2 rounded-2xl px-3 py-2 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 flex;
   }
 
   .gsxui-recipe-menubar-sub-content {
-    @apply bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/5 dark:ring-foreground/10 min-w-32 rounded-3xl p-1.5 shadow-lg ring-1 duration-100;
+    @apply transition-none bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/5 dark:ring-foreground/10 min-w-32 rounded-3xl p-1.5 shadow-lg ring-1 duration-100;
   }
 }

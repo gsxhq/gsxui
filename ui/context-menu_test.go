@@ -115,8 +115,11 @@ func TestContextMenuTriggerPinned(t *testing.T) {
 }
 
 func TestContextMenuContentPinned(t *testing.T) {
+	// transition-none suppresses an implicit transition:all that duration-100
+	// alone leaves active — see the style-porter report's "duration-N alone"
+	// entry.
 	got := render(t, ui.ContextMenuContent(gsx.Raw("x"), nil))
-	want := `<div class="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 bg-popover text-popover-foreground min-w-36 rounded-lg p-1 shadow-md ring-1 duration-100" popover="auto" role="menu" tabindex="-1" data-state="closed" data-gsxui-slot-context-menu-content>x</div>`
+	want := `<div class="transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 bg-popover text-popover-foreground min-w-36 rounded-lg p-1 shadow-md ring-1 duration-100" popover="auto" role="menu" tabindex="-1" data-state="closed" data-gsxui-slot-context-menu-content>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -184,8 +187,14 @@ func TestContextMenuSubNestsContentInsideParentContentPinned(t *testing.T) {
 }
 
 func TestContextMenuPinned(t *testing.T) {
+	// group/context-menu-item was added (see the style-porter report's
+	// "missing group/<name> marker" entry); data-inset:pl-7 was removed —
+	// ContextMenuItem never stamps data-inset, and assets/css/styles/
+	// default/menu.css's own retained [data-inset] escape hatch already owns
+	// this padding (see the report's "DropdownMenu/ContextMenu/Menubar
+	// data-inset" entry).
 	got := render(t, ui.ContextMenuItem("", gsx.Raw("Back"), nil))
-	want := `<div class="focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 focus:*:[svg]:text-accent-foreground gap-1.5 rounded-md px-1.5 py-1 text-sm data-inset:pl-7 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 flex text-foreground" data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-context-menu-item>Back</div>`
+	want := `<div class="group/context-menu-item focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 focus:*:[svg]:text-accent-foreground gap-1.5 rounded-md px-1.5 py-1 text-sm [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 flex text-foreground" data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-context-menu-item>Back</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
