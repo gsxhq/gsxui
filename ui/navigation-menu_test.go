@@ -34,8 +34,12 @@ func TestNavigationMenuListIsAList(t *testing.T) {
 }
 
 func TestNavigationMenuRootPinned(t *testing.T) {
+	// group/navigation-menu was added (registry/canonical/navigation-menu.gsx)
+	// so NavigationMenuContent's own group-data-[viewport=false]/
+	// navigation-menu: selectors have a real ancestor to match — see the
+	// style-porter report's "missing group/<name> marker" entry.
 	got := render(t, ui.NavigationMenu(gsx.Raw("x"), nil))
-	want := `<nav class="max-w-max flex" data-viewport="false" data-gsxui-slot-navigation-menu>x</nav>`
+	want := `<nav class="group/navigation-menu max-w-max flex" data-viewport="false" data-gsxui-slot-navigation-menu>x</nav>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -68,9 +72,12 @@ func TestNavigationMenuPinnedStructuralParts(t *testing.T) {
 			want: `<li class="relative" data-gsxui-slot-navigation-menu-item>x</li>`,
 		},
 		{
+			// transition-none suppresses an implicit transition:all that
+			// duration-300 alone leaves active — see the style-porter
+			// report's "duration-N alone" entry.
 			name: "content",
 			node: ui.NavigationMenuContent(gsx.Raw("x"), nil),
-			want: `<div class="data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 group-data-[viewport=false]/navigation-menu:bg-popover group-data-[viewport=false]/navigation-menu:text-popover-foreground group-data-[viewport=false]/navigation-menu:data-[state=open]:animate-in group-data-[viewport=false]/navigation-menu:data-[state=closed]:animate-out group-data-[viewport=false]/navigation-menu:data-[state=closed]:zoom-out-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:zoom-in-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:fade-in-0 group-data-[viewport=false]/navigation-menu:data-[state=closed]:fade-out-0 group-data-[viewport=false]/navigation-menu:ring-foreground/10 p-1 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[viewport=false]/navigation-menu:rounded-lg group-data-[viewport=false]/navigation-menu:shadow group-data-[viewport=false]/navigation-menu:ring-1 group-data-[viewport=false]/navigation-menu:duration-300" popover="manual" data-state="closed" data-side="bottom" data-gsxui-slot-navigation-menu-content>x</div>`,
+			want: `<div class="transition-none data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 group-data-[viewport=false]/navigation-menu:bg-popover group-data-[viewport=false]/navigation-menu:text-popover-foreground group-data-[viewport=false]/navigation-menu:data-[state=open]:animate-in group-data-[viewport=false]/navigation-menu:data-[state=closed]:animate-out group-data-[viewport=false]/navigation-menu:data-[state=closed]:zoom-out-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:zoom-in-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:fade-in-0 group-data-[viewport=false]/navigation-menu:data-[state=closed]:fade-out-0 group-data-[viewport=false]/navigation-menu:ring-foreground/10 p-1 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[viewport=false]/navigation-menu:rounded-lg group-data-[viewport=false]/navigation-menu:shadow group-data-[viewport=false]/navigation-menu:ring-1 group-data-[viewport=false]/navigation-menu:duration-300" popover="manual" data-state="closed" data-side="bottom" data-gsxui-slot-navigation-menu-content>x</div>`,
 		},
 	}
 	for _, tt := range tests {
