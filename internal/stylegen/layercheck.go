@@ -285,7 +285,10 @@ const siteButtonDerivedGroup = "web/site-button.css (generated from Button's rec
 // started keying a component's own utilities by SLOT MARKER instead of by
 // component. Every one of them cited that granularity as its reason, and the
 // contests they forgave stopped occurring. Sidebar's foundation group shrank
-// from 90 entries to 8 for the same reason.
+// from 90 entries to 8 the same way, then to its last single entry (the
+// collapsed-icon tooltip's `display`), then to none: see
+// sidebarFoundationMechanicsExemptions's own comment (now just a historical
+// marker, the function itself is gone) for how that last entry resolved.
 // The chain is slices.Concat rather than nested appends: every migration wave
 // adds a group here, and a nested append chain put each addition on the same
 // two lines, so every wave collided with every other one.
@@ -305,92 +308,7 @@ func layerCheckExemptions(root string) ([]layerCheckExemption, error) {
 	return slices.Concat(
 		siteButton,
 		previewButton,
-		toggleMarkerFallbackExemptions(),
-		sidebarFoundationMechanicsExemptions(),
 	), nil
-}
-
-// toggleMarkerFallbackReason is the decision behind every entry
-// toggleMarkerFallbackExemptions lists. ui/toggle-group.gsx's
-// ToggleGroupItem stamps data-gsxui-slot-toggle onto its own <button>
-// alongside data-gsxui-slot-toggle-group-item, and has no class attribute
-// of its own — every bit of its base appearance came entirely from
-// Toggle's marker-keyed rules, not from a class Toggle's own migration
-// adds. This :where()-wrapped fallback in assets/css/styles/default.css is
-// authored at zero specificity in @layer components precisely so Toggle's
-// own compiled recipe class beats it wherever a real <ui.Toggle> renders
-// (both apply the identical values, so there is no visible difference
-// either way) — the same "authored to lose on purpose" design as
-// web/site-button.css's fallback above, just for a sibling component
-// (ToggleGroup) composing an unmigrated marker instead of docs markup.
-// Moving it to @layer utilities instead (this gate's usual fix) was tried
-// first and rejected on the earlier Toggle migration attempt: it broke a
-// real caller override, because @layer utilities is the SAME named layer
-// Tailwind's own scanned utility classes live in, and this file is
-// @imported after "tailwindcss" in every consumer — so these rules would
-// always win over a caller's plain utility class instead of losing to it,
-// the opposite of every other escape hatch in this file.
-const toggleMarkerFallbackReason = "assets/css/styles/default.css's Toggle marker fallback is docs-and-" +
-	"unmigrated-consumer-only presentation for ToggleGroupItem, which composes " +
-	"data-gsxui-slot-toggle without going through <ui.Toggle>'s own accessor calls. It is " +
-	"authored at zero specificity in @layer components precisely so a real Toggle's own " +
-	"compiled utilities win wherever <ui.Toggle> renders; losing the cascade there is the " +
-	"design, not a defect. jstest/specs/layer-precedence.spec.ts's Toggle caller-override pin " +
-	"covers the real rendering path this fallback must not break."
-
-// toggleMarkerFallbackExemptions spells out every violation the Toggle
-// marker fallback commits, one (selector, utility, style) triple at a
-// time. Enumerating beats a whole-file waiver for the reason exemptionKey's
-// own comment gives: keying by file forgives every rule added to it later.
-// assets/css/styles/default.css is hand-authored and shared with other
-// components, so unlike web/site-button.css — which is now GENERATED from
-// Button's recipe and whose exemptions are derived from it — there is nothing
-// here to derive these from.
-func toggleMarkerFallbackExemptions() []layerCheckExemption {
-	both := []string{"maia", "nova"}
-	pairs := []struct {
-		selector, contested string
-		styles              []string
-	}{
-		{selector: ":where([data-gsxui-slot-toggle])", contested: "rounded-lg", styles: both},
-		{selector: ":where([data-gsxui-slot-toggle])", contested: "text-sm", styles: both},
-		{selector: ":where([data-gsxui-slot-toggle]) svg:not([class*=\"size-\"])", contested: "size-4", styles: both},
-		{selector: ":where([data-gsxui-slot-toggle]):focus-visible", contested: "border-ring", styles: both},
-		{selector: ":where([data-gsxui-slot-toggle]):hover", contested: "bg-muted", styles: both},
-		{selector: ":where([data-gsxui-slot-toggle])[aria-invalid=\"true\"]", contested: "border-destructive", styles: both},
-		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"default\"]", contested: "h-8", styles: both},
-		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"default\"]", contested: "min-w-8", styles: both},
-		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"default\"]:has(>svg)", contested: "px-2", styles: both},
-		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"lg\"]", contested: "h-9", styles: both},
-		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"lg\"]", contested: "min-w-9", styles: both},
-		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"lg\"]:has(>svg)", contested: "px-2", styles: both},
-		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"sm\"]", contested: "h-7", styles: both},
-		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"sm\"]", contested: "min-w-7", styles: both},
-		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"sm\"]", contested: "rounded-[min(var(--radius-md),12px)]", styles: both},
-		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"sm\"]", contested: "text-[0.8rem]", styles: both},
-		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"sm\"] svg:not([class*=\"size-\"])", contested: "size-3.5", styles: both},
-		{selector: ":where([data-gsxui-slot-toggle])[data-size=\"sm\"]:has(>svg)", contested: "px-1.5", styles: both},
-		{selector: ":where([data-gsxui-slot-toggle])[data-state=\"on\"]", contested: "bg-accent", styles: both},
-		{selector: ":where([data-gsxui-slot-toggle])[data-variant=\"outline\"]:hover", contested: "bg-accent", styles: both},
-	}
-	out := make([]layerCheckExemption, 0, len(pairs)*2)
-	for _, pair := range pairs {
-		if len(pair.styles) == 0 {
-			panic("exemption for " + pair.selector + " / " + pair.contested + " names no style")
-		}
-		for _, style := range pair.styles {
-			out = append(out, layerCheckExemption{
-				key: exemptionKey{
-					file:      "assets/css/styles/default.css",
-					style:     style,
-					selector:  pair.selector,
-					contested: pair.contested,
-				},
-				reason: toggleMarkerFallbackReason,
-			})
-		}
-	}
-	return out
 }
 
 // exemptionIndex maps each exempted violation to its reason. Building it here
@@ -1390,106 +1308,26 @@ func skipBalanced(s string, open int, left, right byte) int {
 	return len(s)
 }
 
-// sidebarFoundationMechanicsReason is the decision behind every entry
-// sidebarFoundationMechanicsExemptions lists under it.
+// sidebarFoundationMechanicsExemptions is gone entirely. It used to hold 90
+// (selector, property, style) triples for assets/css/foundation.css's
+// Sidebar state-machine mechanics, shrinking to 8 and then to a single
+// surviving entry — the collapsed-icon tooltip's `display` — as the gate's
+// own comparison narrowed from per-COMPONENT to per-SLOT-MARKER unions and
+// the rail's offcanvas override was restored as unconditional mechanics.
 //
-// assets/css/foundation.css carries Sidebar's state-machine mechanics — the
-// display/position/width/height/flex arithmetic that makes one semantic tree
-// render as either a mobile Sheet or a fixed desktop column. Sidebar's
-// migration to the slot axis gave those same elements compiled recipe
-// utilities.
-//
-// This group used to hold 44 (selector, property) pairs per style, all of them
-// artifacts of the gate keying a component's own utilities by COMPONENT rather
-// than by slot: the union it compared each foundation rule against was every
-// utility Sidebar renders anywhere across its 32 slots. own is now keyed by
-// SLOT MARKER and all 41 of those vanished. Two remain here:
-//
-//   - the collapsed-icon tooltip's `display`. It is reached through the
-//     DESCENDANT path, which still compares against the component-wide union
-//     by design — the marker names the selected element, not the ancestor slot
-//     whose `[&_…]:` utility could contest it. Over-reporting is the safe
-//     direction there; see utilitySets.
-//   - `content` on the rail's ::after. That one is real and per-slot:
-//     registry/styles/{nova,maia}/sidebar.css puts `hover:after:bg-sidebar-border`
-//     and `…:after:left-full` on the rail's own recipe class, and Tailwind's
-//     `after:` variant emits `content: ""` with them. The foundation ::after
-//     still supplies the content in every state those variants do not cover.
-//
-// The gate's usual fix does not apply to either. These rules must keep working
-// with no style loaded at all (jstest's foundation mode), which a style-owned
-// @layer utilities rule cannot do; and promoting them into foundation's own
-// @layer utilities block would make them beat a caller's plain utility instead
-// of losing to it — site/examples/sidebar/basic.gsx's
-// `class="min-h-[32rem]"` on the wrapper is exactly that caller, and it must
-// keep winning over foundation's `min-height: 100svh`.
-const sidebarFoundationMechanicsReason = "assets/css/foundation.css holds Sidebar's state-machine mechanics " +
-	"(display/position/size/flex), which since Sidebar's migration sit on a component with compiled " +
-	"utilities. The collapsed-icon tooltip entry is reached through the gate's descendant path, which " +
-	"compares against Sidebar's whole-component utility union by design; the rail ::after entry is a real " +
-	"same-layer contest with the rail recipe's own after:* variants, whose content: \"\" the foundation " +
-	"rule still supplies in every state those variants do not cover. These rules must apply with no style " +
-	"loaded, so they cannot move into a style's @layer utilities, and promoting them inside foundation " +
-	"would make them beat caller utilities they are required to lose to."
-
-// sidebarRailConditionalOverrideReason covers the two entries the gate is
-// literally right about, and which are still deliberate.
-//
-// foundation.css's rail base sets `transform: translateX(-50%)` and its
-// ::after sets `left: 50%`. Sidebar's recipe overrides both — but only under
-// an offcanvas desktop ancestor, as `[…[data-collapsible=offcanvas] &]:
-// [transform:translateX(0)]` and `…:after:left-full`. That is exactly what the
-// pre-migration rules in assets/css/styles/default/sidebar.css did from the
-// same layer by source order; the migration moved the winner into
-// @layer utilities and left the loser where it was, so the unconditional
-// foundation value still applies in every non-offcanvas state. The gate models
-// neither the variant condition nor the fact that the base value is still
-// reachable, so it reports a total loss where there is a conditional one.
-// jstest/specs/layer-precedence.spec.ts pins both halves.
-const sidebarRailConditionalOverrideReason = "assets/css/foundation.css's rail transform and ::after offset are " +
-	"overridden by registry/styles/{nova,maia}/sidebar.css ONLY under an offcanvas desktop ancestor, which " +
-	"is what the pre-migration rules did by source order in the same layer. The unconditional foundation " +
-	"value still applies in every other state; the gate models neither the variant condition nor the " +
-	"surviving base value. jstest/specs/layer-precedence.spec.ts pins both."
-
-// sidebarFoundationMechanicsExemptions spells out every violation Sidebar's
-// migration still exposes in foundation.css, one (selector, property, style)
-// triple at a time, for the same reason toggleMarkerFallbackExemptions does:
-// foundation.css is hand-authored, so there is no generator output to derive
-// these from.
-func sidebarFoundationMechanicsExemptions() []layerCheckExemption {
-	both := []string{"maia", "nova"}
-	pairs := []struct {
-		selector, contested, reason string
-		styles                      []string
-	}{
-		{selector: ":is( [data-gsxui-slot-sidebar-desktop][data-collapsible=\"icon\"] ) :is( [data-gsxui-slot-sidebar-menu-button-tooltip-content]:popover-open )", contested: "display", styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-rail])::after", contested: "content", styles: both},
-
-		// The two the gate is literally right about; see the reason above.
-		{selector: ":where([data-gsxui-slot-sidebar-rail])", contested: "transform", reason: sidebarRailConditionalOverrideReason, styles: both},
-		{selector: ":where([data-gsxui-slot-sidebar-rail])::after", contested: "left", reason: sidebarRailConditionalOverrideReason, styles: both},
-	}
-	out := make([]layerCheckExemption, 0, len(pairs)*2)
-	for _, pair := range pairs {
-		if len(pair.styles) == 0 {
-			panic("exemption for " + pair.selector + " / " + pair.contested + " names no style")
-		}
-		reason := pair.reason
-		if reason == "" {
-			reason = sidebarFoundationMechanicsReason
-		}
-		for _, style := range pair.styles {
-			out = append(out, layerCheckExemption{
-				key: exemptionKey{
-					file:      "assets/css/foundation.css",
-					style:     style,
-					selector:  pair.selector,
-					contested: pair.contested,
-				},
-				reason: reason,
-			})
-		}
-	}
-	return out
-}
+// That last entry stopped being a real violation once the 8-style port gave
+// TooltipContent's own recipe a genuine `[&:popover-open]:inline-flex`
+// @layer utilities declaration (apps/v4/registry/styles/style-*.css MARK:
+// Tooltip, verified 2026-08-11) — pre-port Tooltip had no popover-open
+// display rule of its own, so foundation's components-layer gate always won
+// outright and the exemption only forgave the checker's inability to see
+// past the descendant path's whole-component union. Once Tooltip carried a
+// REAL competing utilities-layer declaration for the same property, the
+// components-layer gate could never win regardless of specificity — an
+// actual regression, not a false positive. Fixed at the source instead of
+// re-justified: the sidebar tooltip display gate moved out of foundation's
+// @layer components block into its own @layer utilities block (right after
+// the sidebar-mobile-root promotion it now sits beside), with its
+// unconditional half's selector repeated once for a specificity floor that
+// beats `[&:popover-open]:inline-flex` regardless of bundle source order.
+// See foundation.css's own comment on that block for the full trace.

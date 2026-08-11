@@ -70,15 +70,24 @@
      border-input/30 and bg-input/30 each contest a property InputGroup's own
      recipe emits as a real utility on this element, so they were promoted to
      assets/css/styles/default.css's @layer utilities block when InputGroup
-     migrated and stay there. m-1/mb-0/shadow-none contest nothing InputGroup
-     sets, so they keep their :where() wrapping and (0,0,0) specificity here.
+     migrated and stay there. m-1/mb-0 contest nothing InputGroup sets under
+     any of the 8 styles, so they keep their :where() wrapping and (0,0,0)
+     specificity here.
+
+     shadow-none moved to join h-8/border-input/bg-input in the utilities
+     block instead, by the same rule: the 8-style port gave vega's own
+     InputGroup recipe a real shadow-xs on its base rule (upstream's actual
+     vega design, not shared residue), which shadow-none now contests. It is
+     harmless — restated identically — under the other 7 styles, but the
+     invariant is per-rule, not per-style: a rule that loses under ANY
+     installed style has to live where it can win under all of them.
 
      They do now sit EARLIER in the sheet than they did (this file is imported
      before combobox.css was), which only matters against another (0,0,0) rule
-     setting margin or box-shadow on an input-group between here and the old
-     position — there is none. */
+     setting margin on an input-group between here and the old position —
+     there is none. */
   :where([data-gsxui-slot-combobox-content])
     > :where([data-gsxui-slot-input-group]) {
-    @apply m-1 mb-0 shadow-none;
+    @apply m-1 mb-0;
   }
 }

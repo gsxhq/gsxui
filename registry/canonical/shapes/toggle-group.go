@@ -22,10 +22,20 @@ import "github.com/gsxhq/gsxui/internal/recipe"
 // dimension because its axis is `aria-orientation`), but the contract and
 // default.css both only ever exercise one value ("horizontal" — vertical is
 // out of scope GAP per the package doc comment), so Values has exactly one
-// member. disabled/data-state/aria-invalid are runtime state on the ITEM,
-// handled entirely by Toggle's own shape/recipe (ToggleGroupItem also
-// carries data-gsxui-slot-toggle and composes Toggle's presentation) — not
-// this shape's concern.
+// member.
+//
+// disabled/data-state/aria-invalid ARE this shape's concern, in the sense
+// that matters: the ITEM slot's recipe (registry/styles/<style>/
+// toggle-group.css) composes Toggle's own per-style state rules directly
+// onto `.gsxui-recipe-toggle-group-item`, using the values from that SAME
+// style's registry/styles/<style>/toggle.css. This used to be handled by one
+// shared, style-invariant fallback in assets/css/styles/default.css instead
+// (a single hardcoded reference look for every style) — the 8-style port
+// retired it once 8 materially different Toggle looks made that fallback
+// visibly wrong for most installed styles, and folded Toggle's presentation
+// into this shape's own per-style recipe instead. See
+// registry/canonical/toggle-group.gsx's package doc comment and
+// registry/styles/nova/toggle-group.css's own comment on the item rule.
 var ToggleGroup = recipe.Shape{
 	Component: "toggle-group",
 	Slots: []recipe.Slot{

@@ -1,22 +1,38 @@
 @layer components {
-  /* Card migrated to the slot axis (registry/styles/{nova,maia}/card.css)
-     EXCEPT this one rule, which must stay here as plain CSS. Its
-     caller-overridability depends on the CSS LAYER boundary — this rule
-     lives in @layer components, a caller's plain utility class lives in
+  /* Card migrated to the slot axis (registry/styles/<style>/card.css)
+     EXCEPT these two rules, which must stay here as plain CSS. Their
+     caller-overridability depends on the CSS LAYER boundary — these rules
+     live in @layer components, a caller's plain utility class lives in
      @layer utilities, and @layer utilities always wins regardless of
-     specificity. That guarantee only exists pre-resolution: if this rule
-     migrated onto CardHeader's recipe, it would resolve to a literal
-     utility class Tailwind scans directly out of ui/card.gsx — no longer
-     inside an explicit @layer components boundary at consumption time — and
-     it would then compete on ordinary specificity instead. Its own
-     arbitrary same-element compound-selector form outranks a caller's plain
-     utility ((0,2,0) vs (0,1,0)), so the caller would permanently lose. See
+     specificity. That guarantee only exists pre-resolution: if these rules
+     migrated onto CardHeader's/CardFooter's recipe, they would resolve to a
+     literal utility class Tailwind scans directly out of ui/card.gsx — no
+     longer inside an explicit @layer components boundary at consumption
+     time — and would then compete on ordinary specificity instead. Their
+     own arbitrary same-element compound-selector form outranks a caller's
+     plain utility ((0,2,0) vs (0,1,0)), so the caller would permanently
+     lose. See
      docs/superpowers/specs/2026-07-29-slot-axis-and-component-migration-design.md
      section 10b, and assets/css/styles/default/pagination.css for the
-     identical prior fix on a different component. Nothing else in Card's
-     own recipe sets padding-bottom on the header slot in any state, so the
-     layer gate has nothing to contest this rule against. */
+     identical prior fix on a different component.
+
+     The 8-style port's mechanical re-port put `[.border-b]:pb-(--card-
+     spacing)` / `[.border-t]:pt-(--card-spacing)` directly onto the
+     compiled recipe (matching upstream's own style-<name>.css literally),
+     which reintroduced exactly the caller-override loss this file exists to
+     prevent — TestCardHeaderBorderBPaddingStaysCallerOverridable (jstest)
+     caught it. Removed from every style's card.css; these two rules are the
+     sole source again. --card-spacing is a per-style CSS custom property
+     (registry/styles/<style>/card.css's own `.gsxui-recipe-card`), not a
+     hand-picked value, so writing pb-(--card-spacing) here — rather than a
+     fixed pb-4 — keeps the padding genuinely per-style while staying
+     caller-overridable: the custom property still resolves to whichever
+     style's own --card-spacing is in scope, because it inherits normally
+     through the DOM regardless of which layer references it. */
   :where([data-gsxui-slot-card-header].border-b) {
-    @apply pb-4;
+    @apply pb-(--card-spacing);
+  }
+  :where([data-gsxui-slot-card-footer].border-t) {
+    @apply pt-(--card-spacing);
   }
 }

@@ -47,8 +47,9 @@ import "github.com/gsxhq/gsx"
 //
 // ui/toggle-group.gsx's ToggleGroupItem stamps data-gsxui-slot-toggle
 // alongside its own marker WITHOUT calling any accessor here — see
-// assets/css/styles/default.css's Toggle marker fallback block for how that
-// composition keeps working after this migration.
+// registry/canonical/toggle-group.gsx and each style's own toggle-group.css,
+// which compose this component's own per-style presentation directly onto
+// ToggleGroupItem's recipe instead of relying on a shared marker fallback.
 component Toggle(pressed bool, variant string, size string, children gsx.Node, attrs gsx.Attrs) {
 	{{
 		state := "off"

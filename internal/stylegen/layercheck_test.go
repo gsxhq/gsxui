@@ -110,19 +110,36 @@ func repoExemptions(t *testing.T) []layerCheckExemption {
 	return exemptions
 }
 
-// handWrittenExemption returns the first exemption someone actually wrote down.
-// The per-entry staleness tests below are about hand-written entries: a derived
-// group's entries are arithmetic over a recipe, judged as a group instead (see
-// TestDerivedGroupStalenessIsJudgedWholeNotPerEntry).
+// handWrittenExemption returns a hand-written-shaped exemption (derived == "")
+// built from a REAL, currently-occurring violation, rather than requiring one
+// to already sit in the committed exemption list. The per-entry staleness
+// tests below are about hand-written entries: a derived group's entries are
+// arithmetic over a recipe, judged as a group instead (see
+// TestDerivedGroupStalenessIsJudgedWholeNotPerEntry) — that distinction is
+// what this helper's shape exercises, not any specific decision someone
+// happened to write down.
+//
+// It used to pick the first hand-written entry off repoExemptions(t)
+// directly. That stopped working once the last one — Sidebar's
+// collapsed-icon tooltip display gate — got fixed at the source (moved into
+// assets/css/foundation.css's own @layer utilities block) instead of staying
+// exempted: a healthy trend, not a fixture regression, and one this helper
+// should survive going all the way to zero. Synthesizing from a live
+// violation keeps the staleness mechanics covered independently of how many
+// hand-written exemptions the committed tree happens to carry at any moment.
 func handWrittenExemption(t *testing.T) layerCheckExemption {
 	t.Helper()
-	for _, exemption := range repoExemptions(t) {
-		if exemption.derived == "" {
-			return exemption
-		}
+	violations := repoViolations(t)
+	if len(violations) == 0 {
+		t.Fatal("no live violation left to synthesize a hand-written exemption from")
 	}
-	t.Fatal("no hand-written exemption left to exercise per-entry staleness with")
-	return layerCheckExemption{}
+	v := violations[0]
+	return layerCheckExemption{
+		key: v.key,
+		reason: "synthesized for TestStaleExemptionFailsTheBuild/TestExemptionThatStillHoldsPassesAndSurfacesItsReason " +
+			"from a live violation (see handWrittenExemption's own doc comment); not a real committed decision. " +
+			"Pinned by internal/stylegen/layercheck_test.go.",
+	}
 }
 
 // repoViolations runs the gate's own collection pass over the committed tree,
@@ -207,6 +224,16 @@ func TestStaleExemptionFailsTheBuild(t *testing.T) {
 // TestExemptionThatStillHoldsPassesAndSurfacesItsReason is the positive case:
 // a live exemption is not reported, and its reason is the one the gate would
 // print if it ever went stale.
+//
+// Looks the reason up through exemptionIndex of the synthesized exemption
+// alone, not repoExemptions(t): handWrittenExemption's key matches a real,
+// currently-occurring violation, but that violation is covered by whichever
+// REAL (possibly derived) exemption the committed tree currently uses for
+// it — not by the synthetic reason handWrittenExemption itself made up. The
+// mechanism under test is exemptionIndex's key->reason lookup, which is
+// equally well exercised either way; asserting against the synthetic
+// exemption's own reason keeps this test independent of which real
+// exemption happens to cover that key today.
 func TestExemptionThatStillHoldsPassesAndSurfacesItsReason(t *testing.T) {
 	t.Parallel()
 
@@ -214,12 +241,12 @@ func TestExemptionThatStillHoldsPassesAndSurfacesItsReason(t *testing.T) {
 	if stale := staleExemptions(repoViolations(t), []layerCheckExemption{live}); len(stale) != 0 {
 		t.Fatalf("a live exemption was reported stale: %v", stale)
 	}
-	reason, ok := exemptionIndex(repoExemptions(t))[live.key]
+	reason, ok := exemptionIndex([]layerCheckExemption{live})[live.key]
 	if !ok || reason == "" {
 		t.Fatal("exemption index lost the reason")
 	}
-	if !strings.Contains(reason, ".spec.ts") {
-		t.Errorf("reason must point at what pins the behaviour, got %q", reason)
+	if reason != live.reason {
+		t.Errorf("reason must round-trip through the index unchanged, got %q, want %q", reason, live.reason)
 	}
 }
 
@@ -332,15 +359,24 @@ func TestCheckLayerPrecedenceAllowsNonCompetingRawDeclarations(t *testing.T) {
 }
 
 // TestCheckLayerPrecedenceAllowsAnUnconditionalRuleAgainstAHoverOnlyUtility is
-// the false positive the migration wave would have hit 153 times over. Button
-// declares text-decoration-line only under `hover:underline`; an unconditional
-// rule setting it never competes with that, so flagging it would block correct
-// work for no cascade reason at all.
+// the false positive the migration wave would have hit 153 times over. This
+// pins it against Accordion's trigger rather than Carousel's Button-composed
+// marker: the 8-style port gave sera's own Button link variant BOTH
+// `hover:underline` AND an unconditional `underline` (a real, upstream-
+// faithful per-style difference, not a bug — text-decoration-line is
+// genuinely dead against Button under sera now), so Button no longer
+// demonstrates "hover-only, no unconditional counterpart" for every style.
+// Accordion has no variant dimension at all — trigger's `hover:underline` is
+// its ONLY declaration touching text-decoration-line, in every one of the 8
+// styles — so it still isolates the row this test exists to pin: an
+// unconditional rule setting a property Accordion's trigger declares only
+// under `hover:` never competes with that, so flagging it would block
+// correct work for no cascade reason at all.
 func TestCheckLayerPrecedenceAllowsAnUnconditionalRuleAgainstAHoverOnlyUtility(t *testing.T) {
 	t.Parallel()
 
 	root := injectCSS(t, "assets/css/foundation.css", "@layer components {",
-		`  [data-gsxui-slot-carousel-previous] { text-decoration-line: underline; }`)
+		`  [data-gsxui-slot-accordion-trigger] { text-decoration-line: underline; }`)
 	if err := CheckLayerPrecedence(root); err != nil {
 		t.Fatalf("CheckLayerPrecedence() = %v, want nil — an unconditional rule cannot contest hover:underline", err)
 	}
@@ -414,14 +450,16 @@ func TestCheckLayerPrecedenceRejectsARuleNarrowedOnlyByAMediaQuery(t *testing.T)
 // TestCheckLayerPrecedenceAllowsAMediaQueryNarrowingAHoverOnlyUtility keeps the
 // row above from being an accident of "any @media contests anything". The
 // authored rule is unconditional apart from the width, and the utility applies
-// only on hover, so outside hover the authored rule still governs.
+// only on hover, so outside hover the authored rule still governs. Accordion's
+// trigger, not Carousel's Button-composed marker — see the identical note on
+// TestCheckLayerPrecedenceAllowsAnUnconditionalRuleAgainstAHoverOnlyUtility.
 func TestCheckLayerPrecedenceAllowsAMediaQueryNarrowingAHoverOnlyUtility(t *testing.T) {
 	t.Parallel()
 
 	root := injectCSS(t, "assets/css/foundation.css", "@layer components {",
 		strings.Join([]string{
 			`  @media (width >= 40rem) {`,
-			`    [data-gsxui-slot-carousel-previous] { text-decoration-line: underline; }`,
+			`    [data-gsxui-slot-accordion-trigger] { text-decoration-line: underline; }`,
 			`  }`,
 		}, "\n"))
 	if err := CheckLayerPrecedence(root); err != nil {
@@ -474,15 +512,23 @@ func TestCheckLayerPrecedenceShadowingIsDirectionalForRawDeclarations(t *testing
 			wantDead: true,
 			property: "text-decoration-line",
 		},
+		// These two rows use Accordion's trigger, not Carousel's Button-composed
+		// marker like the rest of this table: sera's own Button link variant now
+		// (faithfully, per the 8-style port) sets an unconditional `underline`
+		// alongside `hover:underline`, so text-decoration-line is genuinely dead
+		// against Button under sera and these two "still applies somewhere" rows
+		// would no longer hold there. Accordion's trigger has no variant
+		// dimension, so `hover:underline` is its only declaration touching
+		// text-decoration-line in every one of the 8 styles.
 		{
 			name:     "unconditional rule under a hover utility",
-			rule:     `  [data-gsxui-slot-carousel-previous] { text-decoration-line: underline; }`,
+			rule:     `  [data-gsxui-slot-accordion-trigger] { text-decoration-line: underline; }`,
 			wantDead: false,
 			property: "text-decoration-line",
 		},
 		{
 			name:     "focus rule under a hover utility",
-			rule:     `  [data-gsxui-slot-carousel-previous]:focus { text-decoration-line: underline; }`,
+			rule:     `  [data-gsxui-slot-accordion-trigger]:focus { text-decoration-line: underline; }`,
 			wantDead: false,
 			property: "text-decoration-line",
 		},
@@ -616,30 +662,40 @@ func TestCheckLayerPrecedenceFailsLoudlyOnAnUnsupportedSelectorForm(t *testing.T
 	}
 }
 
-// TestCheckLayerPrecedenceChecksEveryStyleNotJustTheDefault is P1b. Maia is
+// TestCheckLayerPrecedenceChecksEveryStyleNotJustTheDefault is P1b. Sera is
 // installable and its Button utilities differ substantially from Nova's, so a
-// rule can be dead under Maia while a default-only gate stays green. `select-none`
-// is in Maia's Button recipe and not in Nova's, which makes user-select a
-// property exactly one style takes over.
+// rule can be dead under Sera while a default-only gate stays green.
+// `uppercase`/`tracking-widest` (text-transform/letter-spacing) are in Sera's
+// Button recipe's base rule — its bold, all-caps aesthetic — and in no other
+// style's, including Nova's, which makes text-transform a property exactly
+// one style takes over.
+//
+// This used to pin maia/user-select instead: before the 8-style port maia's
+// hand-authored Button had `select-none` and nova's did not. The port gave
+// EVERY style's Button recipe `select-none` (faithfully, from the shared
+// button.tsx base classes every one of the 8 styles composes — see
+// registry/styles/nova/button.css's own "carried: no upstream counterpart"
+// marker), so user-select stopped being a property exactly one style takes
+// over.
 func TestCheckLayerPrecedenceChecksEveryStyleNotJustTheDefault(t *testing.T) {
 	t.Parallel()
 
-	if DefaultStyle == "maia" {
-		t.Fatal("this test relies on maia NOT being the default style")
+	if DefaultStyle == "sera" {
+		t.Fatal("this test relies on sera NOT being the default style")
 	}
 	root := injectCSS(t, "assets/css/foundation.css", "@layer components {",
-		`  [data-gsxui-slot-carousel-previous] { user-select: none; }`)
+		`  [data-gsxui-slot-carousel-previous] { text-transform: uppercase; }`)
 	err := CheckLayerPrecedence(root)
 	if err == nil {
-		t.Fatal("CheckLayerPrecedence() = nil, want an error — the rule is dead under maia")
+		t.Fatal("CheckLayerPrecedence() = nil, want an error — the rule is dead under sera")
 	}
-	if !strings.Contains(err.Error(), "maia") {
+	if !strings.Contains(err.Error(), "sera") {
 		t.Errorf("the diagnostic must name the style that creates the conflict, got:\n%s", err)
 	}
 	if strings.Contains(err.Error(), "under style nova") {
-		t.Errorf("nova does not set user-select, so it must not be blamed, got:\n%s", err)
+		t.Errorf("nova does not set text-transform, so it must not be blamed, got:\n%s", err)
 	}
-	if !strings.Contains(err.Error(), "user-select") {
+	if !strings.Contains(err.Error(), "text-transform") {
 		t.Errorf("error must name the contested property, got:\n%s", err)
 	}
 }
@@ -669,6 +725,35 @@ func TestEveryStyleIsChecked(t *testing.T) {
 	}
 }
 
+// styleInvariantViolationKey returns a violation key whose exact selector and
+// contested property occur under BOTH nova and maia — the shape
+// TestExemptionForOneStyleDoesNotExemptAnother needs to prove a per-style
+// exemption does not leak to a sibling style. handWrittenExemption's plain
+// "first violation" pick carries no such guarantee (most violations are
+// genuinely per-style, not shared across styles), so this scans
+// independently rather than reusing it.
+func styleInvariantViolationKey(t *testing.T, found []violation) exemptionKey {
+	t.Helper()
+	byStyle := map[string]map[exemptionKey]bool{}
+	for _, v := range found {
+		k := v.key
+		style := k.style
+		k.style = ""
+		if byStyle[style] == nil {
+			byStyle[style] = map[exemptionKey]bool{}
+		}
+		byStyle[style][k] = true
+	}
+	for k := range byStyle["nova"] {
+		if byStyle["maia"][k] {
+			k.style = "nova"
+			return k
+		}
+	}
+	t.Fatal("no violation contests the same selector+property under both nova and maia")
+	return exemptionKey{}
+}
+
 // TestExemptionForOneStyleDoesNotExemptAnother is the consequence of putting the
 // style in the key, exercised. web/site-button.css contests the same utilities
 // under both styles today; an exemption written for Nova alone must leave the
@@ -678,8 +763,7 @@ func TestExemptionForOneStyleDoesNotExemptAnother(t *testing.T) {
 	t.Parallel()
 
 	found := repoViolations(t)
-	novaOnly := handWrittenExemption(t)
-	novaOnly.key.style = "nova"
+	novaOnly := layerCheckExemption{key: styleInvariantViolationKey(t, found), reason: "test fixture"}
 	if !slices.ContainsFunc(found, func(v violation) bool { return v.key == novaOnly.key }) {
 		t.Fatalf("fixture moved: %v is no longer a violation under nova", novaOnly.key)
 	}

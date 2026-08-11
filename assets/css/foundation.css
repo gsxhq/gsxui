@@ -304,6 +304,7 @@
     z-index: 20;
     display: none;
     width: 1rem;
+    transition: all 150ms linear;
     transform: translateX(-50%);
   }
   :where([data-gsxui-slot-sidebar-rail])::after {
@@ -312,6 +313,69 @@
     left: 50%;
     width: 2px;
     content: "";
+  }
+  /* Physical, side-keyed rail geometry: which edge the rail hugs, its
+     resize-cursor affordance, and the offcanvas flip (the whole sidebar is
+     off-screen while collapsed, so the still-visible rail hugs the viewport
+     edge instead of centering over a hidden container edge). Upstream keeps
+     every one of these in SidebarRail's own hardcoded className
+     (registry/new-york-v4/ui/sidebar.tsx), not in any per-style
+     style-<name>.css — confirmed identical (only `hover:after:bg-sidebar-
+     border`) across all 8 upstream style files — so this is style-invariant
+     mechanics by upstream's own architecture, the same as the rest of this
+     block, and belongs here rather than in a per-style recipe.
+
+     This content used to live in registry/styles/{nova,maia}/sidebar.css
+     (hand-authored, byte-identical between the two, i.e. already
+     style-invariant in substance) and was silently dropped when Nova's and
+     Maia's sidebar.css were mechanically re-ported from upstream's own
+     narrower .cn-sidebar-rail section — a real regression the layer gate
+     caught via now-stale exemptions, not a new per-style gap to paper over. */
+  :where([data-gsxui-slot-sidebar-desktop][data-side="left"])
+    :where([data-gsxui-slot-sidebar-rail]) {
+    right: -1rem;
+    cursor: w-resize;
+  }
+  :where([data-gsxui-slot-sidebar-desktop][data-side="right"])
+    :where([data-gsxui-slot-sidebar-rail]) {
+    left: 0;
+    cursor: e-resize;
+  }
+  :where(
+      [data-gsxui-slot-sidebar-desktop][data-side="left"][data-state="collapsed"]
+    )
+    :where([data-gsxui-slot-sidebar-rail]) {
+    cursor: e-resize;
+  }
+  :where(
+      [data-gsxui-slot-sidebar-desktop][data-side="right"][data-state="collapsed"]
+    )
+    :where([data-gsxui-slot-sidebar-rail]) {
+    cursor: w-resize;
+  }
+  :where([data-gsxui-slot-sidebar-desktop][data-collapsible="offcanvas"])
+    :where([data-gsxui-slot-sidebar-rail]) {
+    transform: translateX(0);
+  }
+  :where([data-gsxui-slot-sidebar-desktop][data-collapsible="offcanvas"])
+    :where([data-gsxui-slot-sidebar-rail])::after {
+    left: 100%;
+  }
+  :where(
+      [data-gsxui-slot-sidebar-desktop][data-collapsible="offcanvas"][data-side="left"]
+    )
+    :where([data-gsxui-slot-sidebar-rail]) {
+    right: -0.5rem;
+  }
+  :where(
+      [data-gsxui-slot-sidebar-desktop][data-collapsible="offcanvas"][data-side="right"]
+    )
+    :where([data-gsxui-slot-sidebar-rail]) {
+    left: -0.5rem;
+  }
+  :where([data-gsxui-slot-sidebar-desktop][data-collapsible="offcanvas"])
+    :where([data-gsxui-slot-sidebar-rail]):hover {
+    background-color: var(--sidebar);
   }
   :where([data-gsxui-slot-sidebar-mobile-content])
     :where([data-gsxui-slot-sidebar-rail]) {
@@ -322,22 +386,6 @@
     position: absolute;
     inset: -0.5rem;
     content: "";
-  }
-
-  /* A Sidebar tooltip may enter the top layer only for the collapsed-icon
-     desktop tree. This state gate prevents closed or expanded ghost boxes. */
-  :is(
-      [data-gsxui-slot-sidebar-menu-button-tooltip-content]:popover-open
-    ) {
-    display: none;
-  }
-  :is(
-      [data-gsxui-slot-sidebar-desktop][data-collapsible="icon"]
-    )
-    :is(
-      [data-gsxui-slot-sidebar-menu-button-tooltip-content]:popover-open
-    ) {
-    display: block;
   }
 
   @media (width >= 40rem) {
@@ -428,6 +476,36 @@ input[type="range"] {
     :is([data-gsxui-slot-sidebar-mobile-root]) {
       display: none;
     }
+  }
+}
+
+/* A Sidebar tooltip may enter the top layer only for the collapsed-icon
+   desktop tree. This state gate prevents closed or expanded ghost boxes.
+   It lived in the @layer components block above (with the rest of Sidebar's
+   foundation mechanics) until the 8-style port gave TooltipContent's own
+   recipe a real Tailwind-scanned `[&:popover-open]:inline-flex` utility
+   (apps/v4/registry/styles/style-*.css MARK: Tooltip, verified
+   2026-08-11) — pre-port Tooltip had no popover-open display rule of its
+   own, so this gate always won outright within @layer components. Once
+   Tooltip's recipe carries a real @layer utilities declaration for the same
+   `display` property, this components-layer rule can never win regardless
+   of specificity, same failure shape as the sidebar-mobile-root rule above.
+   Promoted here; the first rule's selector is repeated once for a
+   (0,3,0) floor so it wins the tie against `[&:popover-open]:inline-flex`'s
+   (0,2,0) regardless of bundle source order — same cheap-repetition trick
+   sidebar-menu-button's own icon-collapse rule already uses (see
+   registry/styles/nova/sidebar.css's own comment on that rule). Caught by
+   Playwright (jstest/specs/sidebar-style-contract.spec.ts's "menu item
+   relations reserve action space..." test), not by stylegen --check-layers
+   (this selector reacts to Tooltip's OWN slot attribute stamped by a
+   different component's caller, a shape the gate does not model). */
+@layer utilities {
+  [data-gsxui-slot-sidebar-menu-button-tooltip-content][data-gsxui-slot-sidebar-menu-button-tooltip-content]:popover-open {
+    display: none;
+  }
+  [data-gsxui-slot-sidebar-desktop][data-collapsible="icon"]
+    [data-gsxui-slot-sidebar-menu-button-tooltip-content]:popover-open {
+    display: block;
   }
 }
 

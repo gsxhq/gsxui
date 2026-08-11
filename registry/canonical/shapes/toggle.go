@@ -14,11 +14,12 @@ import "github.com/gsxhq/gsxui/internal/recipe"
 // ui/toggle-group.gsx's ToggleGroupItem stamps data-gsxui-slot-toggle
 // alongside its own data-gsxui-slot-toggle-group-item marker, WITHOUT
 // calling any of this shape's accessors — see
-// assets/css/styles/default.css's Toggle marker fallback block (added by
-// this same change) and internal/stylegen/layercheck.go's
-// toggleMarkerFallbackExemptions for why that composition needs its own
-// preserved copy of these rules, zero-specificity, purely for
-// ToggleGroupItem's benefit.
+// registry/canonical/shapes/toggle-group.go for why ToggleGroupItem's own
+// recipe carries its own copy of this component's per-style presentation
+// instead (the 8-style port retired the single shared, style-invariant
+// marker fallback this comment used to describe: with 8 materially
+// different Toggle looks, one hardcoded reference rendering was no longer a
+// reasonable compromise).
 var Toggle = recipe.Shape{
 	Component: "toggle",
 	Slots: []recipe.Slot{{

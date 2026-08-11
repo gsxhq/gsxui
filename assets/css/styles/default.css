@@ -25,100 +25,33 @@
 @import "./default/label.css";
 @import "./default/pagination.css";
 @import "./default/field.css";
-@import "./default/input.css";
 @import "./default/input-group.css";
 @import "./default/command.css";
 @import "./default/combobox.css";
 @import "./default/menu.css";
-@import "./default/textarea.css";
 @import "./default/sidebar.css";
 
-/* Toggle marker fallback: a @layer components block, not utilities.
+/* Toggle marker fallback — RETIRED by the 8-style port.
    ui/toggle-group.gsx's ToggleGroupItem stamps data-gsxui-slot-toggle onto
-   its own <button> ALONGSIDE data-gsxui-slot-toggle-group-item, and has no
-   class attribute of its own referencing Toggle's recipe — every bit of its
-   base appearance (layout, hover/focus/disabled states, variant/size
-   geometry, icon sizing) came entirely from Toggle's own marker-keyed
-   rules, not from a class Toggle's migration adds. Toggle's migration
-   deletes those marker rules from assets/css/styles/default/toggle.css
-   (moved to registry/styles/{nova,maia}/toggle.css, scoped to the new
-   .gsxui-recipe-toggle class), which would leave ToggleGroupItem — a
-   sibling component out of scope for this migration — unstyled.
+   its own <button> alongside data-gsxui-slot-toggle-group-item, and has no
+   class referencing Toggle's own recipe, so its base appearance (layout,
+   hover/focus/disabled states, variant/size geometry, icon sizing) had to
+   come from somewhere. This block used to supply it as a single,
+   style-invariant :where()-wrapped fallback shared by every consumer.
 
-   FINDING (carried over from the earlier, reverted Toggle migration
-   attempt): this does NOT belong in @layer utilities like every other
-   escape hatch below. @layer utilities is the SAME named layer Tailwind's
-   own scanned utility classes live in, and this file is @imported after
-   "tailwindcss" in every consumer (web/site.css, jstest/site.css), so a
-   rule placed there always wins over a caller's plain utility class
-   instead of losing to it — the opposite of what every other escape hatch
-   here relies on. Kept :where()-wrapped at (0,0,0) here instead, exactly as
-   toggle.css originally had it: it only needs to lose gracefully to
-   Toggle's own new (0,1,0) recipe class (identical values, no visible
-   difference) and to any real caller utility class (which lives in @layer
-   utilities and always outranks @layer components regardless of
-   specificity).
-
-   ToggleGroup is already migrated (registry/styles/{nova,maia}/
-   toggle-group.css), so unlike the earlier attempt this block carries NO
-   ToggleGroupItem-specific rules — its own padding/radius/border overrides
-   already live in its own recipe and are unaffected by this migration. */
-@layer components {
-  :where([data-gsxui-slot-toggle]) {
-    @apply inline-flex items-center justify-center gap-1 rounded-lg bg-transparent text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none;
-  }
-  :where([data-gsxui-slot-toggle]):hover {
-    @apply bg-muted text-muted-foreground;
-  }
-  :where([data-gsxui-slot-toggle]):focus-visible {
-    @apply border-ring ring-[3px] ring-ring/50;
-  }
-  :where([data-gsxui-slot-toggle]):disabled {
-    @apply pointer-events-none opacity-50;
-  }
-  :where([data-gsxui-slot-toggle])[aria-invalid="true"] {
-    @apply border-destructive ring-destructive/20;
-  }
-  .dark :where([data-gsxui-slot-toggle][aria-invalid="true"]) {
-    @apply ring-destructive/40;
-  }
-  :where([data-gsxui-slot-toggle])[data-state="on"] {
-    @apply bg-accent text-accent-foreground;
-  }
-  :where([data-gsxui-slot-toggle])[data-variant="outline"] {
-    @apply border border-input;
-  }
-  :where([data-gsxui-slot-toggle])[data-variant="outline"]:hover {
-    @apply bg-accent text-accent-foreground;
-  }
-  :where([data-gsxui-slot-toggle])[data-size="default"] {
-    @apply h-8 min-w-8 px-2.5;
-  }
-  :where([data-gsxui-slot-toggle])[data-size="default"]:has(> svg) {
-    @apply px-2;
-  }
-  :where([data-gsxui-slot-toggle])[data-size="sm"] {
-    @apply h-7 min-w-7 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem];
-  }
-  :where([data-gsxui-slot-toggle])[data-size="sm"]:has(> svg) {
-    @apply px-1.5;
-  }
-  :where([data-gsxui-slot-toggle])[data-size="sm"] svg:not([class*="size-"]) {
-    @apply size-3.5;
-  }
-  :where([data-gsxui-slot-toggle])[data-size="lg"] {
-    @apply h-9 min-w-9 px-2.5;
-  }
-  :where([data-gsxui-slot-toggle])[data-size="lg"]:has(> svg) {
-    @apply px-2;
-  }
-  :where([data-gsxui-slot-toggle]) svg {
-    @apply pointer-events-none shrink-0;
-  }
-  :where([data-gsxui-slot-toggle]) svg:not([class*="size-"]) {
-    @apply size-4;
-  }
-}
+   With 8 real, materially different Toggle recipes (nova's rounded-lg/h-8
+   is not sera's rounded-none/h-10 uppercase treatment) a single hardcoded
+   reference look stopped being a reasonable compromise — ToggleGroupItem
+   would render one style's Toggle chrome regardless of which of the 8 was
+   actually installed. Each style's registry/styles/<style>/toggle-group.css
+   now composes that same style's own Toggle presentation directly onto
+   `.gsxui-recipe-toggle-group-item` (the exact values from that style's
+   own toggle.css, using data-[state=on] in place of Toggle's own
+   aria-pressed since ToggleGroupItem in a groupType="single" group never
+   stamps aria-pressed — see toggle-group.css's own comment) — the same
+   composition upstream's real ToggleGroupItem gets for free from
+   cn(toggleVariants({variant,size}), …, className). See
+   registry/canonical/shapes/toggle-group.go. */
 
 /* The @layer utilities block below stays in this file rather than moving into
    ./default/. It is cross-component fallout — Card, FieldLabel,
@@ -346,15 +279,19 @@
 
   /* Combobox fallout from InputGroup's migration: ui/combobox.gsx composes
      <ui.InputGroup> directly, so the rendered element now carries InputGroup's
-     own recipe utilities. The rule below contests three InputGroup emits —
-     h-8, border-input, and dark's bg-input/30 — and a :where()-wrapped
-     (0,0,0) selector in @layer components would lose regardless of source
-     order. Unwrapped to clear the (0,1,0) specificity floor. This rule is not
-     Combobox's to migrate: its styled SUBJECT is InputGroup (Combobox's
-     content is only ancestor context), so Combobox's own migration left it
-     alone. The uncontested half — m-1/mb-0/shadow-none — moved with the rest
-     of the old combobox.css to assets/css/styles/default/input-group.css,
-     where InputGroup's other marker-keyed rules live.
+     own recipe utilities. The rule below contests utilities InputGroup emits
+     under one or more of the 8 installed styles — h-8, border-input and
+     dark's bg-input/30 under all of them, plus shadow-none against vega's own
+     shadow-xs (real per-style content, not shared residue: see
+     assets/css/styles/default/input-group.css's own comment) — and a
+     :where()-wrapped (0,0,0) selector in @layer components would lose
+     regardless of source order. Unwrapped to clear the (0,1,0) specificity
+     floor. This rule is not Combobox's to migrate: its styled SUBJECT is
+     InputGroup (Combobox's content is only ancestor context), so Combobox's
+     own migration left it alone. The uncontested half — m-1/mb-0 — moved
+     with the rest of the old combobox.css to
+     assets/css/styles/default/input-group.css, where InputGroup's other
+     marker-keyed rules live.
 
      The selector is compounded with data-gsxui-slot-input-group rather than
      merely unwrapped. (0,1,0) is only the FLOOR: inside @layer utilities the
@@ -370,7 +307,7 @@
      cn("w-auto", className) form — so tailwind-merge orders it correctly
      against both InputGroup's w-full and the caller's width. */
   [data-gsxui-slot-combobox-content] > [data-gsxui-slot-input-group][data-gsxui-slot-input-group] {
-    @apply h-8 border-input/30 bg-input/30;
+    @apply h-8 border-input/30 bg-input/30 shadow-none;
   }
 
   /* CommandDialog's dialog-content sizing: p-0 and max-w-lg, contesting

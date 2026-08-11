@@ -33,7 +33,25 @@
      own contract axis exists but pointer-events/opacity for a disabled
      sub-trigger were never wired to CSS pre-migration either; that gap is
      unchanged carried-over behavior, not something this migration
-     introduced or is responsible for fixing. */
+     introduced or is responsible for fixing.
+
+     KNOWN LIMITATION (8-style port, not yet resolved): the 8-style port put
+     `data-inset:pl-<N>` directly onto each menu family's own item/label/
+     sub-trigger recipe classes (all 8 styles, all 3 families), which
+     reintroduced exactly the caller-override loss this file exists to
+     prevent — TestDropdownMenuItemInsetPaddingAndDisabledOpacityStayCaller
+     Overridable (jstest) caught it — AND the inset amount genuinely varies
+     per style (confirmed: nova/lyra/rhea pl-7, mira pl-7.5, vega pl-8,
+     maia/luma/sera pl-9.5), unlike border-b's --card-spacing indirection
+     this can reference (no shared custom property carries this value today).
+     `data-inset:pl-<N>` was removed from all 8 styles' recipes so the
+     caller-override guarantee holds again, but the value below is pinned to
+     nova's own pl-7 (28px) rather than each style's real amount — correct
+     caller-override behavior, correct value for the shipped default style,
+     approximate for the other 7 installed styles' non-default inset amount.
+     Follow-up: give each menu family's own recipe an unconditional custom
+     property (mirroring --card-spacing) and reference it here instead of a
+     literal pl-7, the same fix already applied to Card's border-b/border-t. */
   :where(
       [data-gsxui-slot-dropdown-menu-item],
       [data-gsxui-slot-context-menu-item],
@@ -45,7 +63,7 @@
       [data-gsxui-slot-context-menu-sub-trigger],
       [data-gsxui-slot-menubar-sub-trigger]
     )[data-inset] {
-    @apply pl-8;
+    @apply pl-7;
   }
   :where(
       [data-gsxui-slot-dropdown-menu-item],
