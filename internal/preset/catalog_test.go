@@ -131,17 +131,20 @@ func TestPaletteCatalogResolvesAndMatchesEveryCombination(t *testing.T) {
 			for _, theme := range themes {
 				for _, radius := range RadiusChoices() {
 					for _, accent := range MenuAccentChoices() {
-						// ChartColor is fixed at "neutral" here to keep this sweep's
-						// runtime bounded — it already covers
-						// style x baseColor x theme x radius x menuAccent.
-						// TestChartColorCatalogRoundTrips below covers the chart
-						// color axis on its own.
+						// ChartColor is fixed at "neutral" and FontSans/FontHeading
+						// at "geist" here to keep this sweep's runtime bounded — it
+						// already covers style x baseColor x theme x radius x
+						// menuAccent. TestChartColorCatalogRoundTrips and
+						// TestFontCatalogRoundTrips below cover those two axes on
+						// their own.
 						selection := PaletteSelection{
-							BaseColor:  baseColor,
-							Theme:      theme.Name,
-							Radius:     radius.Name,
-							ChartColor: "neutral",
-							MenuAccent: accent.Name,
+							BaseColor:   baseColor,
+							Theme:       theme.Name,
+							Radius:      radius.Name,
+							ChartColor:  "neutral",
+							MenuAccent:  accent.Name,
+							FontSans:    "geist",
+							FontHeading: "geist",
 						}
 						resolved, err := ResolvePalette(style, selection)
 						if err != nil {
@@ -169,7 +172,7 @@ func TestPaletteCatalogResolvesAndMatchesEveryCombination(t *testing.T) {
 }
 
 func TestDefaultResolvesCanonicalPaletteSelection(t *testing.T) {
-	want := PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "medium", ChartColor: "neutral", MenuAccent: "subtle"}
+	want := PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "medium", ChartColor: "neutral", MenuAccent: "subtle", FontSans: "geist", FontHeading: "geist"}
 	if got := DefaultPaletteSelection(); got != want {
 		t.Fatalf("DefaultPaletteSelection() = %#v, want %#v", got, want)
 	}
@@ -186,7 +189,7 @@ func TestMatchPaletteReportsIndependentCustomSelections(t *testing.T) {
 		t.Fatal(err)
 	}
 	preset.Theme.Light["primary"] = "oklch(0.5 0.2 250)"
-	want := PaletteSelection{BaseColor: CustomChoice, Theme: CustomChoice, Radius: "medium", ChartColor: "neutral", MenuAccent: "subtle"}
+	want := PaletteSelection{BaseColor: CustomChoice, Theme: CustomChoice, Radius: "medium", ChartColor: "neutral", MenuAccent: "subtle", FontSans: "geist", FontHeading: "geist"}
 	if got := MatchPalette(preset); got != want {
 		t.Fatalf("MatchPalette(custom palette) = %#v", got)
 	}
@@ -196,25 +199,25 @@ func TestMatchPaletteReportsIndependentCustomSelections(t *testing.T) {
 		t.Fatal(err)
 	}
 	preset.Radius = "1rem"
-	want = PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: CustomChoice, ChartColor: "neutral", MenuAccent: "subtle"}
+	want = PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: CustomChoice, ChartColor: "neutral", MenuAccent: "subtle", FontSans: "geist", FontHeading: "geist"}
 	if got := MatchPalette(preset); got != want {
 		t.Fatalf("MatchPalette(custom radius) = %#v", got)
 	}
 
-	preset, err = ResolvePalette(StyleNova, PaletteSelection{BaseColor: "neutral", Theme: "blue", Radius: "medium", ChartColor: "neutral", MenuAccent: "bold"})
+	preset, err = ResolvePalette(StyleNova, PaletteSelection{BaseColor: "neutral", Theme: "blue", Radius: "medium", ChartColor: "neutral", MenuAccent: "bold", FontSans: "geist", FontHeading: "geist"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	want = PaletteSelection{BaseColor: "neutral", Theme: "blue", Radius: "medium", ChartColor: "neutral", MenuAccent: "bold"}
+	want = PaletteSelection{BaseColor: "neutral", Theme: "blue", Radius: "medium", ChartColor: "neutral", MenuAccent: "bold", FontSans: "geist", FontHeading: "geist"}
 	if got := MatchPalette(preset); got != want {
 		t.Fatalf("MatchPalette(bold accent) = %#v, want %#v", got, want)
 	}
 
-	preset, err = ResolvePalette(StyleNova, PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "medium", ChartColor: "violet", MenuAccent: "subtle"})
+	preset, err = ResolvePalette(StyleNova, PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "medium", ChartColor: "violet", MenuAccent: "subtle", FontSans: "geist", FontHeading: "geist"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	want = PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "medium", ChartColor: "violet", MenuAccent: "subtle"}
+	want = PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "medium", ChartColor: "violet", MenuAccent: "subtle", FontSans: "geist", FontHeading: "geist"}
 	if got := MatchPalette(preset); got != want {
 		t.Fatalf("MatchPalette(custom chart color) = %#v, want %#v", got, want)
 	}
@@ -229,7 +232,7 @@ func TestChartColorCatalogRoundTrips(t *testing.T) {
 		t.Fatalf("ChartColorChoices() = %d entries, want 24", got)
 	}
 	for _, chartColor := range ChartColorChoices() {
-		selection := PaletteSelection{BaseColor: "stone", Theme: "blue", Radius: "large", ChartColor: chartColor.Name, MenuAccent: "subtle"}
+		selection := PaletteSelection{BaseColor: "stone", Theme: "blue", Radius: "large", ChartColor: chartColor.Name, MenuAccent: "subtle", FontSans: "geist", FontHeading: "geist"}
 		resolved, err := ResolvePalette(StyleSera, selection)
 		if err != nil {
 			t.Fatalf("ResolvePalette(%#v): %v", selection, err)
@@ -250,6 +253,75 @@ func TestChartColorCatalogRoundTrips(t *testing.T) {
 			t.Fatalf("MatchPalette(ResolvePalette(%#v)) = %#v", selection, got)
 		}
 	}
+}
+
+// expectedFontNames mirrors fontCatalog's own order in catalog.go — "geist"
+// first is load-bearing (compact.go's backward-compatible default index).
+var expectedFontNames = []string{
+	"geist", "inter", "figtree", "jetbrains-mono", "noto-sans", "playfair-display",
+}
+
+// TestFontCatalogRoundTrips exercises the font axis (FontSans and
+// FontHeading independently) separately from
+// TestPaletteCatalogResolvesAndMatchesEveryCombination, which fixes both at
+// "geist" to keep that sweep's runtime bounded — mirrors
+// TestChartColorCatalogRoundTrips's own structure for its axis.
+func TestFontCatalogRoundTrips(t *testing.T) {
+	choices := FontChoices()
+	if got := choiceNamesFont(choices); !slices.Equal(got, expectedFontNames) {
+		t.Fatalf("FontChoices() names = %#v, want %#v", got, expectedFontNames)
+	}
+	for _, choice := range choices {
+		if choice.Title == "" || choice.Stack == "" {
+			t.Fatalf("font choice is incomplete: %#v", choice)
+		}
+	}
+
+	for _, fontSans := range choices {
+		for _, fontHeading := range choices {
+			selection := PaletteSelection{
+				BaseColor: "stone", Theme: "blue", Radius: "large", ChartColor: "neutral", MenuAccent: "subtle",
+				FontSans: fontSans.Name, FontHeading: fontHeading.Name,
+			}
+			resolved, err := ResolvePalette(StyleSera, selection)
+			if err != nil {
+				t.Fatalf("ResolvePalette(%#v): %v", selection, err)
+			}
+			if resolved.FontSans != fontSans.Stack {
+				t.Fatalf("ResolvePalette(%#v).FontSans = %q, want %q", selection, resolved.FontSans, fontSans.Stack)
+			}
+			if resolved.FontHeading != fontHeading.Stack {
+				t.Fatalf("ResolvePalette(%#v).FontHeading = %q, want %q", selection, resolved.FontHeading, fontHeading.Stack)
+			}
+			if got := MatchPalette(resolved); got != selection {
+				t.Fatalf("MatchPalette(ResolvePalette(%#v)) = %#v", selection, got)
+			}
+		}
+	}
+}
+
+func TestResolvePaletteRejectsUnknownFontNames(t *testing.T) {
+	base := DefaultPaletteSelection()
+
+	sans := base
+	sans.FontSans = "comic-sans"
+	if _, err := ResolvePalette(StyleNova, sans); err == nil {
+		t.Fatal("ResolvePalette(unknown FontSans) returned nil error")
+	}
+
+	heading := base
+	heading.FontHeading = "comic-sans"
+	if _, err := ResolvePalette(StyleNova, heading); err == nil {
+		t.Fatal("ResolvePalette(unknown FontHeading) returned nil error")
+	}
+}
+
+func choiceNamesFont(choices []FontChoice) []string {
+	names := make([]string, len(choices))
+	for i, choice := range choices {
+		names[i] = choice.Name
+	}
+	return names
 }
 
 func TestResolveChartColorRejectsUnknownNames(t *testing.T) {

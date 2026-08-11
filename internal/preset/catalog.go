@@ -39,6 +39,76 @@ var menuAccentCatalog = []MenuAccentChoice{
 	{Name: "bold", Title: "Bold"},
 }
 
+// FontChoice is a picker-metadata entry for the font axis (catalog.go's own
+// analogue of PaletteChoice/RadiusChoice/MenuAccentChoice above): Stack is
+// the literal CSS font-family value the picker commits into
+// Preset.FontSans/FontHeading when this choice is selected — see
+// resolvePalette's font handling below. Unlike PaletteChoice it carries no
+// Swatch: a font isn't a hue.
+type FontChoice struct {
+	Name  string
+	Title string
+	Stack string
+}
+
+// fontCatalog is gsxui's own curation, not upstream-audited data (unlike
+// baseColorCatalog/themeCatalog in catalog_data.go): six self-hosted
+// variable fonts chosen to cover the 8 shipped styles' typographic
+// character (geometric sans, humanist sans, mono, and a serif for sera's
+// editorial style) without the ~26-font/next-font-google/CDN sprawl
+// upstream's own picker offers — see docs/superpowers/plans/
+// 2026-08-11-theme-creator-parity.md Task 3b. "geist" is first (index 0)
+// deliberately: compact.go's wire format relies on index 0 being the
+// default choice so pre-Task-3 share codes, whose bits for this axis never
+// existed, decode to today's actual default rather than an arbitrary
+// entry — see compact.go's own comment on compactFonts.
+//
+// Each Stack names a family already registered by a hand-authored
+// @font-face rule in assets/fonts/fonts.css (self-hosted variable WOFF2,
+// font-display: swap — no npm, no CDN, per the plan's Global Constraints).
+// The trailing generic-family fallback is Tailwind's own default stack for
+// that font's character (ui-sans-serif/ui-monospace/ui-serif), so a
+// project that never loads fonts.css still renders a sane system font
+// instead of an invalid declaration.
+var fontCatalog = []FontChoice{
+	{Name: "geist", Title: "Geist", Stack: `"Geist Variable", ui-sans-serif, system-ui, sans-serif`},
+	{Name: "inter", Title: "Inter", Stack: `"Inter Variable", ui-sans-serif, system-ui, sans-serif`},
+	{Name: "figtree", Title: "Figtree", Stack: `"Figtree Variable", ui-sans-serif, system-ui, sans-serif`},
+	{Name: "jetbrains-mono", Title: "JetBrains Mono", Stack: `"JetBrains Mono Variable", ui-monospace, SFMono-Regular, monospace`},
+	{Name: "noto-sans", Title: "Noto Sans", Stack: `"Noto Sans Variable", ui-sans-serif, system-ui, sans-serif`},
+	{Name: "playfair-display", Title: "Playfair Display", Stack: `"Playfair Display Variable", ui-serif, Georgia, serif`},
+}
+
+// FontChoices returns the font axis's picker metadata, in fontCatalog's own
+// order, for the theme editor's two font pickers (body/FontSans and
+// heading/FontHeading both draw from this same list — mirrors upstream's
+// own single font list backing both pickers, dossier §1).
+func FontChoices() []FontChoice {
+	return slices.Clone(fontCatalog)
+}
+
+func fontChoiceByName(name string) *FontChoice {
+	for i := range fontCatalog {
+		if fontCatalog[i].Name == name {
+			return &fontCatalog[i]
+		}
+	}
+	return nil
+}
+
+// matchFont looks for a catalog entry whose Stack exactly equals stack,
+// returning CustomChoice if none matches (e.g. a foreign theme.css or raw
+// JSON import named an arbitrary font-family not in fontCatalog) — mirrors
+// matchChartColor's exact-equality catalog scan above.
+func matchFont(stack string) string {
+	for _, choice := range fontCatalog {
+		if choice.Stack == stack {
+			return choice.Name
+		}
+	}
+	return CustomChoice
+}
+
 // MenuAccentChoices returns the menu accent axis's picker metadata. This is
 // the cheap half of the upstream menu-chrome axis (registry/config.ts's
 // menuAccent): a pure token override, ported directly. The color
@@ -88,11 +158,13 @@ var chartLayerTokens = map[string]bool{
 }
 
 type PaletteSelection struct {
-	BaseColor  string
-	Theme      string
-	Radius     string
-	ChartColor string
-	MenuAccent string
+	BaseColor   string
+	Theme       string
+	Radius      string
+	ChartColor  string
+	MenuAccent  string
+	FontSans    string
+	FontHeading string
 }
 
 type baseColorDefinition struct {
@@ -199,7 +271,7 @@ func ResolveChartColor(name string) (light, dark ThemeValues, err error) {
 }
 
 func DefaultPaletteSelection() PaletteSelection {
-	return PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "medium", ChartColor: "neutral", MenuAccent: "subtle"}
+	return PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "medium", ChartColor: "neutral", MenuAccent: "subtle", FontSans: "geist", FontHeading: "geist"}
 }
 
 func ResolvePalette(style Style, selection PaletteSelection) (Preset, error) {
@@ -218,17 +290,21 @@ func ResolvePalette(style Style, selection PaletteSelection) (Preset, error) {
 
 func MatchPalette(preset Preset) PaletteSelection {
 	selection := PaletteSelection{
-		BaseColor:  CustomChoice,
-		Theme:      CustomChoice,
-		Radius:     CustomChoice,
-		ChartColor: CustomChoice,
-		MenuAccent: "subtle",
+		BaseColor:   CustomChoice,
+		Theme:       CustomChoice,
+		Radius:      CustomChoice,
+		ChartColor:  CustomChoice,
+		MenuAccent:  "subtle",
+		FontSans:    CustomChoice,
+		FontHeading: CustomChoice,
 	}
 	if Validate(preset) != nil {
 		return selection
 	}
 	selection.MenuAccent = matchMenuAccent(preset)
 	selection.ChartColor = matchChartColor(preset)
+	selection.FontSans = matchFont(preset.FontSans)
+	selection.FontHeading = matchFont(preset.FontHeading)
 
 	// accentOverrideTokens and chartLayerTokens are excluded from this
 	// comparison: a bold menu accent (just detected above) overwrites
@@ -244,11 +320,13 @@ func MatchPalette(preset Preset) PaletteSelection {
 		}
 		for _, theme := range choices {
 			candidate, err := resolvePalette(preset.Style, PaletteSelection{
-				BaseColor:  base.name,
-				Theme:      theme.Name,
-				Radius:     "medium",
-				ChartColor: "neutral",
-				MenuAccent: "subtle",
+				BaseColor:   base.name,
+				Theme:       theme.Name,
+				Radius:      "medium",
+				ChartColor:  "neutral",
+				MenuAccent:  "subtle",
+				FontSans:    "geist",
+				FontHeading: "geist",
 			})
 			if err == nil &&
 				themeValuesEqualExcluding(candidate.Theme.Light, preset.Theme.Light, accentOverrideTokens, chartLayerTokens) &&
@@ -324,6 +402,8 @@ func canonicalDefault(style Style) Preset {
 		SchemaVersion: SchemaVersion,
 		Style:         style,
 		Radius:        defaultRadius,
+		FontSans:      defaultFontFamily,
+		FontHeading:   defaultFontFamily,
 		Theme:         Theme{Light: light, Dark: dark},
 	}
 }
@@ -351,11 +431,21 @@ func resolvePalette(style Style, selection PaletteSelection) (Preset, error) {
 	if menuAccentChoiceByName(selection.MenuAccent) == nil {
 		return Preset{}, fmt.Errorf("menu accent %q is not in the palette catalog", selection.MenuAccent)
 	}
+	fontSans := fontChoiceByName(selection.FontSans)
+	if fontSans == nil {
+		return Preset{}, fmt.Errorf("font %q is not in the palette catalog", selection.FontSans)
+	}
+	fontHeading := fontChoiceByName(selection.FontHeading)
+	if fontHeading == nil {
+		return Preset{}, fmt.Errorf("font %q is not in the palette catalog", selection.FontHeading)
+	}
 
 	// Order mirrors upstream's own buildRegistryTheme (registry/config.ts:
 	// 697-741): base + theme merge, then the chart overlay, then the menu
 	// accent overlay last (so bold reads whatever primary the theme layer
-	// just set, not a stale value).
+	// just set, not a stale value). Font is independent of all of the
+	// above — it never touches Theme.Light/Dark — so its position here
+	// doesn't matter; it's applied last for readability only.
 	preset := canonicalDefault(style)
 	applyThemeValues(preset.Theme.Light, base.light)
 	applyThemeValues(preset.Theme.Dark, base.dark)
@@ -366,6 +456,8 @@ func resolvePalette(style Style, selection PaletteSelection) (Preset, error) {
 	applyMenuAccent(preset.Theme.Light, selection.MenuAccent)
 	applyMenuAccent(preset.Theme.Dark, selection.MenuAccent)
 	preset.Radius = radius.Value
+	preset.FontSans = fontSans.Stack
+	preset.FontHeading = fontHeading.Stack
 	return preset, nil
 }
 
@@ -441,6 +533,9 @@ func validateCatalog() error {
 	if err := validateRadiusCatalog(); err != nil {
 		return err
 	}
+	if err := validateFontCatalog(); err != nil {
+		return err
+	}
 
 	seen := make(map[[32]byte]PaletteSelection)
 	for _, base := range baseColorCatalog {
@@ -450,11 +545,13 @@ func validateCatalog() error {
 		}
 		for _, theme := range choices {
 			preset, err := resolvePalette(StyleNova, PaletteSelection{
-				BaseColor:  base.name,
-				Theme:      theme.Name,
-				Radius:     radiusCatalog[0].Name,
-				ChartColor: "neutral",
-				MenuAccent: "subtle",
+				BaseColor:   base.name,
+				Theme:       theme.Name,
+				Radius:      radiusCatalog[0].Name,
+				ChartColor:  "neutral",
+				MenuAccent:  "subtle",
+				FontSans:    fontCatalog[0].Name,
+				FontHeading: fontCatalog[0].Name,
 			})
 			if err != nil {
 				return err
@@ -543,6 +640,31 @@ func validateRadiusCatalog() error {
 		seenValues[choice.Value] = true
 		if err := validateRadius(choice.Value); err != nil {
 			return fmt.Errorf("radius %q: %w", choice.Name, err)
+		}
+	}
+	return nil
+}
+
+func validateFontCatalog() error {
+	if len(fontCatalog) == 0 || fontCatalog[0].Name != "geist" {
+		return fmt.Errorf("font catalog: index 0 must be %q for compact.go's backward-compatible default", "geist")
+	}
+	seen := make(map[string]bool, len(fontCatalog))
+	seenStacks := make(map[string]bool, len(fontCatalog))
+	for _, choice := range fontCatalog {
+		if choice.Name == "" || choice.Title == "" || choice.Stack == "" {
+			return fmt.Errorf("font has incomplete metadata")
+		}
+		if seen[choice.Name] {
+			return fmt.Errorf("duplicate font %q", choice.Name)
+		}
+		if seenStacks[choice.Stack] {
+			return fmt.Errorf("duplicate font stack %q", choice.Stack)
+		}
+		seen[choice.Name] = true
+		seenStacks[choice.Stack] = true
+		if err := validateFontFamily(choice.Stack); err != nil {
+			return fmt.Errorf("font %q: %w", choice.Name, err)
 		}
 	}
 	return nil

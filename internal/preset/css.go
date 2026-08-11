@@ -32,6 +32,11 @@ func ThemeCSS(preset Preset) ([]byte, error) {
 	var buffer bytes.Buffer
 	buffer.WriteString(":root {\n")
 	writeCSSProperty(&buffer, "radius", preset.Radius)
+	// FontSans/FontHeading are not per-mode (see the Preset field's own doc
+	// comment), so they're written once in :root — .dark inherits them like
+	// any other unset custom property.
+	writeCSSProperty(&buffer, "font-sans", preset.FontSans)
+	writeCSSProperty(&buffer, "font-heading", preset.FontHeading)
 	for _, name := range TokenNames() {
 		writeCSSProperty(&buffer, name, preset.Theme.Light[name])
 	}
@@ -60,6 +65,10 @@ func ImportThemeCSS(base Preset, src []byte) (Preset, error) {
 	}
 	var radiusValue string
 	var radiusSeen bool
+	var fontSansValue string
+	var fontSansSeen bool
+	var fontHeadingValue string
+	var fontHeadingSeen bool
 
 	for {
 		grammar, _, data := parser.Next()
@@ -103,17 +112,34 @@ func ImportThemeCSS(base Preset, src []byte) (Preset, error) {
 			seen[mode][name] = true
 
 			value := customPropertyValue(parser.Values())
-			if name == "radius" {
+			switch name {
+			case "radius":
 				if radiusSeen && radiusValue != value {
 					return Preset{}, fmt.Errorf("theme CSS import: conflicting radius declarations %q and %q", radiusValue, value)
 				}
 				radiusSeen = true
 				radiusValue = value
 				candidate.Radius = value
-			} else if mode == themeModeLight {
-				candidate.Theme.Light[name] = value
-			} else {
-				candidate.Theme.Dark[name] = value
+			case "font-sans":
+				if fontSansSeen && fontSansValue != value {
+					return Preset{}, fmt.Errorf("theme CSS import: conflicting font-sans declarations %q and %q", fontSansValue, value)
+				}
+				fontSansSeen = true
+				fontSansValue = value
+				candidate.FontSans = value
+			case "font-heading":
+				if fontHeadingSeen && fontHeadingValue != value {
+					return Preset{}, fmt.Errorf("theme CSS import: conflicting font-heading declarations %q and %q", fontHeadingValue, value)
+				}
+				fontHeadingSeen = true
+				fontHeadingValue = value
+				candidate.FontHeading = value
+			default:
+				if mode == themeModeLight {
+					candidate.Theme.Light[name] = value
+				} else {
+					candidate.Theme.Dark[name] = value
+				}
 			}
 		}
 	}
@@ -203,7 +229,7 @@ func recognizedThemeProperty(property string) (string, bool) {
 		return "", false
 	}
 	name := strings.TrimPrefix(property, "--")
-	return name, name == "radius" || isTokenName(name)
+	return name, name == "radius" || name == "font-sans" || name == "font-heading" || isTokenName(name)
 }
 
 func declarationThemeMode(scopes []cssScope, property []byte) (themeMode, error) {

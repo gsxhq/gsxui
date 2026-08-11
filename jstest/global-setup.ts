@@ -52,6 +52,7 @@ export default function globalSetup() {
   auditCompiledCSSFile(cssPath);
   auditCompiledCSSFile(foundationCSSPath);
   linkFontAssets();
+  linkGsxuiFontAssets();
 }
 
 /**
@@ -121,6 +122,51 @@ function linkFontAssets() {
     throw new Error(
       `compiled stylesheet at ${cssPath} references font files that did not resolve to a ` +
         `readable file under ${fontsourceDir}/*/files: ${unresolved.join(", ")}`,
+    );
+  }
+}
+
+/**
+ * gsxui's own self-hosted theme-picker fonts (assets/fonts/fonts.css,
+ * imported by web/site.css — see internal/preset/catalog.go's fontCatalog
+ * and assets/fonts/NOTICE.md) hit the identical Tailwind CLI url()
+ * pass-through gap linkFontAssets() above works around for @fontsource:
+ * the compiled stylesheet still says url(./inter-latin-wght-normal.woff2),
+ * meant to resolve next to fonts.css in assets/fonts/, not next to
+ * jstest/.tmp/site.css. Unlike the @fontsource files, these sit directly
+ * beside fonts.css with no ./files/ subdirectory, so they get their own
+ * symlink pass straight into jstest/.tmp/ rather than jstest/.tmp/files/.
+ * Real Vite (the production build) does not have this problem — its own
+ * CSS asset pipeline rewrites url() references automatically; only this
+ * harness's one-shot `@tailwindcss/cli` compile skips that step.
+ */
+function linkGsxuiFontAssets() {
+  const css = readFileSync(cssPath, "utf8");
+  const names = new Set<string>();
+  // gsxui's own fonts.css quotes its url()s (url("./name.woff2"));
+  // @fontsource's wght.css does not (url(./files/name.woff2)) — the quote
+  // is optional here so this still matches either style.
+  for (const m of css.matchAll(/url\(["']?\.\/([^/)'"]+\.woff2)["']?\)/g)) {
+    names.add(m[1]);
+  }
+  if (names.size === 0) return;
+
+  const fontsDir = path.join(repoRoot, "assets", "fonts");
+  const unresolved: string[] = [];
+  for (const name of names) {
+    const source = path.join(fontsDir, name);
+    if (!existsSync(source)) {
+      unresolved.push(name);
+      continue;
+    }
+    const link = path.join(tmpDir, name);
+    if (existsSync(link)) unlinkSync(link);
+    symlinkSync(source, link);
+  }
+  if (unresolved.length > 0) {
+    throw new Error(
+      `compiled stylesheet at ${cssPath} references gsxui font files that do not exist under ` +
+        `${fontsDir}: ${unresolved.join(", ")}`,
     );
   }
 }

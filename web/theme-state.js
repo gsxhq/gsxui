@@ -33,6 +33,12 @@ function validatePreset(preset, schema, validators) {
   if (!validators.radius(preset.radius)) {
     throw new Error("radius is not a supported CSS length");
   }
+  if (!validators.fontFamily(preset.fontSans)) {
+    throw new Error("fontSans is not a valid CSS font-family list");
+  }
+  if (!validators.fontFamily(preset.fontHeading)) {
+    throw new Error("fontHeading is not a valid CSS font-family list");
+  }
   if (!preset.theme || typeof preset.theme !== "object" || Array.isArray(preset.theme)) {
     throw new Error("theme must be an object");
   }
@@ -165,7 +171,9 @@ function matchedPaletteSelection(preset, schema) {
   const radius = schema.palette.radii.find((choice) => choice.value === preset.radius)?.name ?? "custom";
   const menuAccent = matchMenuAccent(preset);
   const chartColor = matchChartColor(preset, schema);
-  return { baseColor, theme, radius, chartColor, menuAccent };
+  const fontSans = matchFont(preset.fontSans, schema);
+  const fontHeading = matchFont(preset.fontHeading, schema);
+  return { baseColor, theme, radius, chartColor, menuAccent, fontSans, fontHeading };
 }
 
 function themeValuesEqual(a, b, tokenNames, excluded = null) {
@@ -205,6 +213,14 @@ function matchChartColor(preset, schema) {
     }
   }
   return "custom";
+}
+
+// matchFont mirrors catalog.go's matchFont: a catalog entry whose Stack
+// exactly equals the preset's fontSans/fontHeading value, or "custom" if
+// none matches (a foreign theme.css or raw JSON import named a font-family
+// gsxui hasn't curated).
+function matchFont(stack, schema) {
+  return schema.palette.fonts.find((choice) => choice.stack === stack)?.name ?? "custom";
 }
 
 export function replacePreset(state, preset, schema) {
@@ -257,6 +273,40 @@ export function selectChartColor(state, chartColor, schema) {
   return next;
 }
 
+// fontChoice looks up a font catalog entry by name, throwing on an unknown
+// one — mirrors chartColorResolution's shape above.
+function fontChoice(schema, font) {
+  const choice = schema.palette.fonts.find((candidate) => candidate.name === font);
+  if (!choice) {
+    throw new Error(`unsupported palette font ${String(font)}`);
+  }
+  return choice;
+}
+
+// selectFont/selectFontHeading are the simplest palette reducers: unlike
+// selectChartColor/selectMenuAccent, the font axis never touches
+// resolved.theme.light/dark at all (Preset.FontSans/FontHeading are
+// top-level fields, not part of ThemeValues — see catalog.go's dossier
+// citation on Preset), so there is no overlay to apply and nothing else to
+// collapse from "custom" first. Shape mirrors selectRadius exactly.
+export function selectFont(state, font, schema) {
+  const choice = fontChoice(schema, font);
+  const next = cloneState(state);
+  next.resolved.fontSans = choice.stack;
+  next.selection.fontSans = font;
+  next.previewResolved = null;
+  return next;
+}
+
+export function selectFontHeading(state, font, schema) {
+  const choice = fontChoice(schema, font);
+  const next = cloneState(state);
+  next.resolved.fontHeading = choice.stack;
+  next.selection.fontHeading = font;
+  next.previewResolved = null;
+  return next;
+}
+
 export function selectRadius(state, radius, schema) {
   const choice = schema.palette.radii.find((candidate) => candidate.name === radius);
   if (!choice) {
@@ -289,6 +339,22 @@ export function previewChartColor(state, chartColor, schema) {
   const next = cloneState(state);
   next.previewResolved = clone(next.resolved);
   applyChartColor(next.previewResolved, schema, chartColor);
+  return next;
+}
+
+export function previewFont(state, font, schema) {
+  const choice = fontChoice(schema, font);
+  const next = cloneState(state);
+  next.previewResolved = clone(next.resolved);
+  next.previewResolved.fontSans = choice.stack;
+  return next;
+}
+
+export function previewFontHeading(state, font, schema) {
+  const choice = fontChoice(schema, font);
+  const next = cloneState(state);
+  next.previewResolved = clone(next.resolved);
+  next.previewResolved.fontHeading = choice.stack;
   return next;
 }
 
@@ -395,6 +461,8 @@ function orderedPreset(preset, schema) {
     schemaVersion: preset.schemaVersion,
     style: preset.style,
     radius: preset.radius,
+    fontSans: preset.fontSans,
+    fontHeading: preset.fontHeading,
     theme,
   };
 }
@@ -406,6 +474,8 @@ export function canonicalJSON(preset, schema) {
 export function themeCSS(preset, schema) {
   const root = [
     `  --radius: ${preset.radius};`,
+    `  --font-sans: ${preset.fontSans};`,
+    `  --font-heading: ${preset.fontHeading};`,
     ...schema.tokenNames.map((name) => `  --${name}: ${preset.theme.light[name]};`),
   ].join("\n");
   const dark = schema.tokenNames
@@ -465,7 +535,9 @@ function compactSelection(preset, schema) {
     selection.baseColor === "custom" ||
     selection.theme === "custom" ||
     selection.radius === "custom" ||
-    selection.chartColor === "custom"
+    selection.chartColor === "custom" ||
+    selection.fontSans === "custom" ||
+    selection.fontHeading === "custom"
   ) {
     return null;
   }
@@ -479,6 +551,8 @@ function compactSelection(preset, schema) {
     // ChartColor reuses compact.themes for its index — see compact.go's
     // identical reasoning (the same 24-hue catalogue, a disjoint token set).
     chartColor: compact.themes.indexOf(selection.chartColor),
+    fontSans: compact.fonts.indexOf(selection.fontSans),
+    fontHeading: compact.fonts.indexOf(selection.fontHeading),
   };
   return Object.values(indexes).includes(-1) ? null : indexes;
 }
@@ -496,14 +570,16 @@ export function encodeShare(preset, schema) {
     (BigInt(selection.theme) << 8n) |
     (BigInt(selection.radius) << 13n) |
     (BigInt(selection.menuAccent) << 16n) |
-    (BigInt(selection.chartColor) << 18n);
+    (BigInt(selection.chartColor) << 18n) |
+    (BigInt(selection.fontSans) << 23n) |
+    (BigInt(selection.fontHeading) << 26n);
   return `${schema.transport.compactPrefix}${encodeBase62(packed)}`;
 }
 
 function decodeCompactShare(code, schema, validators) {
   const payload = code.slice(schema.transport.compactPrefix.length);
   const packed = decodeBase62(payload);
-  if (packed >> 23n !== 0n) {
+  if (packed >> 29n !== 0n) {
     throw new Error("compact payload uses bits beyond the p1 schema");
   }
   const compact = schema.transport.compact;
@@ -514,6 +590,8 @@ function decodeCompactShare(code, schema, validators) {
     radius: Number((packed >> 13n) & 0x7n),
     menuAccent: Number((packed >> 16n) & 0x3n),
     chartColor: Number((packed >> 18n) & 0x1fn),
+    fontSans: Number((packed >> 23n) & 0x7n),
+    fontHeading: Number((packed >> 26n) & 0x7n),
   };
   for (const [name, index] of Object.entries(indexes)) {
     const values =
@@ -527,7 +605,9 @@ function decodeCompactShare(code, schema, validators) {
               ? compact.radii
               : name === "menuAccent"
                 ? compact.menuAccents
-                : compact.themes;
+                : name === "chartColor"
+                  ? compact.themes
+                  : compact.fonts;
     if (index >= values.length) throw new Error(`compact payload uses unused ${name} index`);
   }
 
@@ -537,6 +617,8 @@ function decodeCompactShare(code, schema, validators) {
   const radiusName = compact.radii[indexes.radius];
   const menuAccent = compact.menuAccents[indexes.menuAccent];
   const chartColor = compact.themes[indexes.chartColor];
+  const fontSansName = compact.fonts[indexes.fontSans];
+  const fontHeadingName = compact.fonts[indexes.fontHeading];
   const resolved = schema.palette.resolved[baseColor]?.[theme];
   if (!resolved) {
     throw new Error(`compact payload has invalid base-color/theme combination ${baseColor}/${theme}`);
@@ -544,6 +626,14 @@ function decodeCompactShare(code, schema, validators) {
   const radius = schema.palette.radii.find((choice) => choice.name === radiusName)?.value;
   if (radius === undefined) {
     throw new Error(`compact payload radius ${radiusName} is absent from the palette schema`);
+  }
+  const fontSans = schema.palette.fonts.find((choice) => choice.name === fontSansName)?.stack;
+  if (fontSans === undefined) {
+    throw new Error(`compact payload font sans ${fontSansName} is absent from the palette schema`);
+  }
+  const fontHeading = schema.palette.fonts.find((choice) => choice.name === fontHeadingName)?.stack;
+  if (fontHeading === undefined) {
+    throw new Error(`compact payload font heading ${fontHeadingName} is absent from the palette schema`);
   }
   const light = clone(resolved.light);
   const dark = clone(resolved.dark);
@@ -558,6 +648,8 @@ function decodeCompactShare(code, schema, validators) {
       schemaVersion: schema.schemaVersion,
       style,
       radius,
+      fontSans,
+      fontHeading,
       theme: { light, dark },
     },
     schema,
@@ -641,8 +733,8 @@ export function importPresetJSON(source, schema, validators) {
 
   const presetEntries = objectEntries(
     root,
-    ["$schema", "schemaVersion", "style", "radius", "theme"],
-    ["$schema", "schemaVersion", "style", "radius", "theme"],
+    ["$schema", "schemaVersion", "style", "radius", "fontSans", "fontHeading", "theme"],
+    ["$schema", "schemaVersion", "style", "radius", "fontSans", "fontHeading", "theme"],
     "preset",
   );
   const themeEntries = objectEntries(
@@ -667,6 +759,8 @@ export function importThemeCSS(state, source, schema, validators, parseCSS) {
   const parsed = parseCSS(source, schema);
   const candidate = clone(state.resolved);
   if (parsed.radius) candidate.radius = parsed.radius;
+  if (parsed.fontSans) candidate.fontSans = parsed.fontSans;
+  if (parsed.fontHeading) candidate.fontHeading = parsed.fontHeading;
   Object.assign(candidate.theme.light, parsed.light);
   Object.assign(candidate.theme.dark, parsed.dark);
   validatePreset(candidate, schema, validators);

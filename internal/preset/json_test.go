@@ -131,23 +131,33 @@ func TestParseJSONRejectsMissingRequiredFields(t *testing.T) {
 			path: "radius",
 		},
 		{
-			name: "theme",
+			name: "font sans",
 			src:  `{"$schema":"https://ui.gsxhq.dev/schemas/preset-v1.json","schemaVersion":1,"style":"nova","radius":"0"}`,
+			path: "fontSans",
+		},
+		{
+			name: "font heading",
+			src:  `{"$schema":"https://ui.gsxhq.dev/schemas/preset-v1.json","schemaVersion":1,"style":"nova","radius":"0","fontSans":"Inter"}`,
+			path: "fontHeading",
+		},
+		{
+			name: "theme",
+			src:  `{"$schema":"https://ui.gsxhq.dev/schemas/preset-v1.json","schemaVersion":1,"style":"nova","radius":"0","fontSans":"Inter","fontHeading":"Inter"}`,
 			path: "theme",
 		},
 		{
 			name: "light mode",
-			src:  `{"$schema":"https://ui.gsxhq.dev/schemas/preset-v1.json","schemaVersion":1,"style":"nova","radius":"0","theme":{"dark":{}}}`,
+			src:  `{"$schema":"https://ui.gsxhq.dev/schemas/preset-v1.json","schemaVersion":1,"style":"nova","radius":"0","fontSans":"Inter","fontHeading":"Inter","theme":{"dark":{}}}`,
 			path: "theme.light",
 		},
 		{
 			name: "dark mode",
-			src:  `{"$schema":"https://ui.gsxhq.dev/schemas/preset-v1.json","schemaVersion":1,"style":"nova","radius":"0","theme":{"light":{}}}`,
+			src:  `{"$schema":"https://ui.gsxhq.dev/schemas/preset-v1.json","schemaVersion":1,"style":"nova","radius":"0","fontSans":"Inter","fontHeading":"Inter","theme":{"light":{}}}`,
 			path: "theme.dark",
 		},
 		{
 			name: "light token",
-			src:  `{"$schema":"https://ui.gsxhq.dev/schemas/preset-v1.json","schemaVersion":1,"style":"nova","radius":"0","theme":{"light":{},"dark":{}}}`,
+			src:  `{"$schema":"https://ui.gsxhq.dev/schemas/preset-v1.json","schemaVersion":1,"style":"nova","radius":"0","fontSans":"Inter","fontHeading":"Inter","theme":{"light":{},"dark":{}}}`,
 			path: "theme.light.background",
 		},
 	}

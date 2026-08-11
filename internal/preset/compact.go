@@ -12,19 +12,23 @@ const (
 	compactSharePrefix = "gsxui:p1:"
 	base62Alphabet     = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
-	compactStyleBits      = 4
-	compactBaseColorBits  = 4
-	compactThemeBits      = 5
-	compactRadiusBits     = 3
-	compactMenuAccentBits = 2
-	compactChartColorBits = 5
+	compactStyleBits       = 4
+	compactBaseColorBits   = 4
+	compactThemeBits       = 5
+	compactRadiusBits      = 3
+	compactMenuAccentBits  = 2
+	compactChartColorBits  = 5
+	compactFontSansBits    = 3
+	compactFontHeadingBits = 3
 
-	compactBaseColorShift  = compactStyleBits
-	compactThemeShift      = compactBaseColorShift + compactBaseColorBits
-	compactRadiusShift     = compactThemeShift + compactThemeBits
-	compactMenuAccentShift = compactRadiusShift + compactRadiusBits
-	compactChartColorShift = compactMenuAccentShift + compactMenuAccentBits
-	compactSchemaBits      = compactChartColorShift + compactChartColorBits
+	compactBaseColorShift   = compactStyleBits
+	compactThemeShift       = compactBaseColorShift + compactBaseColorBits
+	compactRadiusShift      = compactThemeShift + compactThemeBits
+	compactMenuAccentShift  = compactRadiusShift + compactRadiusBits
+	compactChartColorShift  = compactMenuAccentShift + compactMenuAccentBits
+	compactFontSansShift    = compactChartColorShift + compactChartColorBits
+	compactFontHeadingShift = compactFontSansShift + compactFontSansBits
+	compactSchemaBits       = compactFontHeadingShift + compactFontHeadingBits
 )
 
 // These arrays are the append-only p1 transport ABI. They intentionally do
@@ -94,6 +98,22 @@ var compactMenuAccents = []string{
 	"bold",
 }
 
+// compactFonts was appended after compactChartColor (Task 3). Index 0
+// ("geist") is what every share code minted before this axis existed
+// decodes to for BOTH FontSans and FontHeading, since their unused high
+// bits read as zero — exactly catalog.go's fontCatalog[0], the same
+// backward-compatibility contract compactMenuAccents/compactRadii already
+// document above. catalog.go's validateFontCatalog enforces fontCatalog[0]
+// stays "geist" so this can't silently drift.
+var compactFonts = []string{
+	"geist",
+	"inter",
+	"figtree",
+	"jetbrains-mono",
+	"noto-sans",
+	"playfair-display",
+}
+
 type ShareSchema struct {
 	FullPrefix    string
 	CompactPrefix string
@@ -102,6 +122,7 @@ type ShareSchema struct {
 	Themes        []string
 	Radii         []string
 	MenuAccents   []string
+	Fonts         []string
 }
 
 func ShareTransportSchema() ShareSchema {
@@ -113,6 +134,7 @@ func ShareTransportSchema() ShareSchema {
 		Themes:        slices.Clone(compactThemes),
 		Radii:         slices.Clone(compactRadii),
 		MenuAccents:   slices.Clone(compactMenuAccents),
+		Fonts:         slices.Clone(compactFonts),
 	}
 }
 
@@ -122,7 +144,8 @@ func encodeCompactShare(value Preset) (string, bool, error) {
 	}
 	selection := MatchPalette(value)
 	if selection.BaseColor == CustomChoice || selection.Theme == CustomChoice ||
-		selection.Radius == CustomChoice || selection.ChartColor == CustomChoice {
+		selection.Radius == CustomChoice || selection.ChartColor == CustomChoice ||
+		selection.FontSans == CustomChoice || selection.FontHeading == CustomChoice {
 		return "", false, nil
 	}
 
@@ -136,8 +159,10 @@ func encodeCompactShare(value Preset) (string, bool, error) {
 	// applied to a disjoint set of tokens, so a second parallel append-only
 	// array would only duplicate this one.
 	chartColorIndex := indexStringValue(compactThemes, selection.ChartColor)
+	fontSansIndex := indexStringValue(compactFonts, selection.FontSans)
+	fontHeadingIndex := indexStringValue(compactFonts, selection.FontHeading)
 	if styleIndex == -1 || baseColorIndex == -1 || themeIndex == -1 || radiusIndex == -1 ||
-		menuAccentIndex == -1 || chartColorIndex == -1 {
+		menuAccentIndex == -1 || chartColorIndex == -1 || fontSansIndex == -1 || fontHeadingIndex == -1 {
 		return "", false, nil
 	}
 
@@ -146,7 +171,9 @@ func encodeCompactShare(value Preset) (string, bool, error) {
 		uint64(themeIndex)<<compactThemeShift |
 		uint64(radiusIndex)<<compactRadiusShift |
 		uint64(menuAccentIndex)<<compactMenuAccentShift |
-		uint64(chartColorIndex)<<compactChartColorShift
+		uint64(chartColorIndex)<<compactChartColorShift |
+		uint64(fontSansIndex)<<compactFontSansShift |
+		uint64(fontHeadingIndex)<<compactFontHeadingShift
 	return compactSharePrefix + encodeBase62(packed), true, nil
 }
 
@@ -171,6 +198,8 @@ func decodeCompactShare(payload string) (Preset, error) {
 	radiusIndex := int((packed >> compactRadiusShift) & compactMask(compactRadiusBits))
 	menuAccentIndex := int((packed >> compactMenuAccentShift) & compactMask(compactMenuAccentBits))
 	chartColorIndex := int((packed >> compactChartColorShift) & compactMask(compactChartColorBits))
+	fontSansIndex := int((packed >> compactFontSansShift) & compactMask(compactFontSansBits))
+	fontHeadingIndex := int((packed >> compactFontHeadingShift) & compactMask(compactFontHeadingBits))
 
 	if styleIndex >= len(compactStyles) {
 		return Preset{}, fmt.Errorf("compact payload uses unused style index %d", styleIndex)
@@ -190,13 +219,21 @@ func decodeCompactShare(payload string) (Preset, error) {
 	if chartColorIndex >= len(compactThemes) {
 		return Preset{}, fmt.Errorf("compact payload uses unused chart color index %d", chartColorIndex)
 	}
+	if fontSansIndex >= len(compactFonts) {
+		return Preset{}, fmt.Errorf("compact payload uses unused font sans index %d", fontSansIndex)
+	}
+	if fontHeadingIndex >= len(compactFonts) {
+		return Preset{}, fmt.Errorf("compact payload uses unused font heading index %d", fontHeadingIndex)
+	}
 
 	selection := PaletteSelection{
-		BaseColor:  compactBaseColors[baseColorIndex],
-		Theme:      compactThemes[themeIndex],
-		Radius:     compactRadii[radiusIndex],
-		MenuAccent: compactMenuAccents[menuAccentIndex],
-		ChartColor: compactThemes[chartColorIndex],
+		BaseColor:   compactBaseColors[baseColorIndex],
+		Theme:       compactThemes[themeIndex],
+		Radius:      compactRadii[radiusIndex],
+		MenuAccent:  compactMenuAccents[menuAccentIndex],
+		ChartColor:  compactThemes[chartColorIndex],
+		FontSans:    compactFonts[fontSansIndex],
+		FontHeading: compactFonts[fontHeadingIndex],
 	}
 	value, err := ResolvePalette(compactStyles[styleIndex], selection)
 	if err != nil {

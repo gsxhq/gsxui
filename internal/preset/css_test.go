@@ -100,6 +100,57 @@ func TestImportThemeCSSUpdatesRadiusFromEitherModeWhenConsistent(t *testing.T) {
 	}
 }
 
+func TestImportThemeCSSUpdatesFontsFromEitherModeWhenConsistent(t *testing.T) {
+	t.Parallel()
+
+	got, err := ImportThemeCSS(Default(StyleNova), []byte(`
+:root { --font-sans: "Inter Variable", sans-serif; }
+.dark { --font-heading: "Playfair Display Variable", serif; }
+`))
+	if err != nil {
+		t.Fatalf("ImportThemeCSS: %v", err)
+	}
+	if got.FontSans != `"Inter Variable", sans-serif` {
+		t.Fatalf("FontSans = %q", got.FontSans)
+	}
+	if got.FontHeading != `"Playfair Display Variable", serif` {
+		t.Fatalf("FontHeading = %q", got.FontHeading)
+	}
+}
+
+func TestImportThemeCSSRejectsConflictingFontDeclarations(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name string
+		src  string
+	}{
+		{
+			name: "font-sans",
+			src: `
+:root { --font-sans: Inter; }
+.dark { --font-sans: Geist; }
+`,
+		},
+		{
+			name: "font-heading",
+			src: `
+:root { --font-heading: Inter; }
+.dark { --font-heading: Geist; }
+`,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			_, err := ImportThemeCSS(Default(StyleNova), []byte(tt.src))
+			if err == nil || !strings.Contains(err.Error(), "conflicting") {
+				t.Fatalf("ImportThemeCSS error = %v, want conflicting %s", err, tt.name)
+			}
+		})
+	}
+}
+
 func TestImportThemeCSSIgnoresUnrelatedRulesAndReturnsCopy(t *testing.T) {
 	t.Parallel()
 

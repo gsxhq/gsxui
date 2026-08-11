@@ -3,6 +3,8 @@
   "schemaVersion": 1,
   "style": "nova",
   "radius": "0.625rem",
+  "fontSans": "\"Geist Variable\", ui-sans-serif, system-ui, sans-serif",
+  "fontHeading": "\"Geist Variable\", ui-sans-serif, system-ui, sans-serif",
   "theme": {
     "light": {
       "background": "oklch(1 0 0)",

@@ -15,6 +15,8 @@ import {
   manualCopyState,
   previewBaseColor,
   previewChartColor,
+  previewFont,
+  previewFontHeading,
   previewPreset,
   previewRadius,
   previewTheme,
@@ -23,6 +25,8 @@ import {
   replacePreset,
   resetThemeState,
   selectChartColor,
+  selectFont,
+  selectFontHeading,
   selectMenuAccent,
   selectMode,
   selectBaseColor,
@@ -83,6 +87,7 @@ function setup(schemaElement) {
   const undoButton = document.querySelector("[data-theme-undo]");
   const redoButton = document.querySelector("[data-theme-redo]");
   const colorProbe = document.createElement("span").style;
+  const fontProbe = document.createElement("span").style;
 
   const validators = {
     color(value) {
@@ -102,6 +107,12 @@ function setup(schemaElement) {
       } catch {
         return false;
       }
+    },
+    fontFamily(value) {
+      if (typeof value !== "string" || value.trim() === "") return false;
+      fontProbe.fontFamily = "";
+      fontProbe.fontFamily = value;
+      return fontProbe.fontFamily !== "";
     },
   };
 
@@ -229,6 +240,7 @@ function setup(schemaElement) {
   function pickerChoices(kind) {
     if (kind === "baseColor") return schema.palette.baseColors;
     if (kind === "radius") return schema.palette.radii;
+    if (kind === "fontSans" || kind === "fontHeading") return schema.palette.fonts;
     return schema.palette.themes[state.selection.baseColor === "custom" ? "neutral" : state.selection.baseColor];
   }
 
@@ -240,7 +252,7 @@ function setup(schemaElement) {
       swatch.style.borderRadius = radius ? (choice?.value ?? "") : "";
     }
 
-    for (const kind of ["baseColor", "theme", "radius", "chartColor"]) {
+    for (const kind of ["baseColor", "theme", "radius", "chartColor", "fontSans", "fontHeading"]) {
       const picker = document.querySelector(`[data-theme-picker="${kind}"]`);
       if (!picker) continue;
       const choices = pickerChoices(kind);
@@ -267,8 +279,14 @@ function setup(schemaElement) {
     validateCSSStructure(source);
     const tokenSet = new Set(schema.tokenNames);
     const seen = { light: new Set(), dark: new Set() };
-    const result = { light: {}, dark: {}, radius: "" };
-    let radiusValue = "";
+    const result = { light: {}, dark: {}, radius: "", fontSans: "", fontHeading: "" };
+    // singularValues tracks the three properties that (like colour theme.go
+    // mirrors) live once per preset rather than once per mode: --radius,
+    // --font-sans, --font-heading. Declaring one of them in BOTH :root and
+    // .dark is allowed as long as the value agrees — mirrors css.go's
+    // ImportThemeCSS conflict handling exactly.
+    const singularValues = {};
+    const singularResultKeys = { radius: "radius", "font-sans": "fontSans", "font-heading": "fontHeading" };
 
     function themeMode(selector) {
       const tokens = [];
@@ -299,7 +317,7 @@ function setup(schemaElement) {
     function recognizedName(property) {
       if (!property.startsWith("--")) return "";
       const name = property.slice(2);
-      return name === "radius" || tokenSet.has(name) ? name : "";
+      return name in singularResultKeys || tokenSet.has(name) ? name : "";
     }
 
     function declarationValue(declaration) {
@@ -327,17 +345,18 @@ function setup(schemaElement) {
       }
       seen[mode].add(name);
       const value = declarationValue(declaration);
-      if (name !== "radius") {
+      const singularKey = singularResultKeys[name];
+      if (!singularKey) {
         result[mode][name] = value;
         return;
       }
-      if (radiusValue && radiusValue !== value) {
+      if (singularValues[name] !== undefined && singularValues[name] !== value) {
         throw new Error(
-          `Conflicting radius declarations ${JSON.stringify(radiusValue)} and ${JSON.stringify(value)}.`,
+          `Conflicting ${name} declarations ${JSON.stringify(singularValues[name])} and ${JSON.stringify(value)}.`,
         );
       }
-      radiusValue = value;
-      result.radius = value;
+      singularValues[name] = value;
+      result[singularKey] = value;
     }
 
     function parseDeclaration(text) {
@@ -567,6 +586,8 @@ function setup(schemaElement) {
     if (kind === "baseColor") state = selectBaseColor(state, input.value, schema);
     else if (kind === "theme") state = selectTheme(state, input.value, schema);
     else if (kind === "chartColor") state = selectChartColor(state, input.value, schema);
+    else if (kind === "fontSans") state = selectFont(state, input.value, schema);
+    else if (kind === "fontHeading") state = selectFontHeading(state, input.value, schema);
     else state = selectRadius(state, input.value, schema);
     commitHistory = pushHistory(commitHistory, state);
     render();
@@ -582,6 +603,8 @@ function setup(schemaElement) {
     if (kind === "baseColor") state = previewBaseColor(state, input.value, schema);
     else if (kind === "theme") state = previewTheme(state, input.value, schema);
     else if (kind === "chartColor") state = previewChartColor(state, input.value, schema);
+    else if (kind === "fontSans") state = previewFont(state, input.value, schema);
+    else if (kind === "fontHeading") state = previewFontHeading(state, input.value, schema);
     else state = previewRadius(state, input.value, schema);
     render();
   }

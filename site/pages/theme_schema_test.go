@@ -74,6 +74,9 @@ func TestThemeEditorSchemaMatchesPresetAuthority(t *testing.T) {
 	if !reflect.DeepEqual(schema.Transport.Compact.MenuAccents, transport.MenuAccents) {
 		t.Errorf("compact menu accents = %#v, want %#v", schema.Transport.Compact.MenuAccents, transport.MenuAccents)
 	}
+	if !reflect.DeepEqual(schema.Transport.Compact.Fonts, transport.Fonts) {
+		t.Errorf("compact fonts = %#v, want %#v", schema.Transport.Compact.Fonts, transport.Fonts)
+	}
 	if !reflect.DeepEqual(schema.TokenNames, preset.TokenNames()) {
 		t.Errorf("token names = %#v, want %#v", schema.TokenNames, preset.TokenNames())
 	}
@@ -99,21 +102,28 @@ func TestThemeEditorSchemaMatchesPresetAuthority(t *testing.T) {
 	if got := len(schema.Palette.ChartColors); got != 24 {
 		t.Errorf("palette chart colors = %d, want 24", got)
 	}
+	if got := len(schema.Palette.Fonts); got != 6 {
+		t.Errorf("palette fonts = %d, want 6", got)
+	}
 	if got, want := schema.Palette.DefaultSelection, (struct {
-		BaseColor  string `json:"baseColor"`
-		Theme      string `json:"theme"`
-		Radius     string `json:"radius"`
-		ChartColor string `json:"chartColor"`
-		MenuAccent string `json:"menuAccent"`
-	}{BaseColor: "neutral", Theme: "neutral", Radius: "medium", ChartColor: "neutral", MenuAccent: "subtle"}); got != want {
+		BaseColor   string `json:"baseColor"`
+		Theme       string `json:"theme"`
+		Radius      string `json:"radius"`
+		ChartColor  string `json:"chartColor"`
+		MenuAccent  string `json:"menuAccent"`
+		FontSans    string `json:"fontSans"`
+		FontHeading string `json:"fontHeading"`
+	}{BaseColor: "neutral", Theme: "neutral", Radius: "medium", ChartColor: "neutral", MenuAccent: "subtle", FontSans: "geist", FontHeading: "geist"}); got != want {
 		t.Errorf("palette default selection = %#v, want %#v", got, want)
 	}
 	wantBlue, err := preset.ResolvePalette(preset.StyleNova, preset.PaletteSelection{
-		BaseColor:  "neutral",
-		Theme:      "blue",
-		Radius:     "medium",
-		ChartColor: "neutral",
-		MenuAccent: "subtle",
+		BaseColor:   "neutral",
+		Theme:       "blue",
+		Radius:      "medium",
+		ChartColor:  "neutral",
+		MenuAccent:  "subtle",
+		FontSans:    "geist",
+		FontHeading: "geist",
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -135,6 +145,16 @@ func TestThemeEditorSchemaMatchesPresetAuthority(t *testing.T) {
 	}
 	if !reflect.DeepEqual(gotViolet.Light, wantVioletLight) || !reflect.DeepEqual(gotViolet.Dark, wantVioletDark) {
 		t.Errorf("palette chart color violet = %#v, want light=%#v dark=%#v", gotViolet, wantVioletLight, wantVioletDark)
+	}
+	wantFonts := preset.FontChoices()
+	if got := len(schema.Palette.Fonts); got != len(wantFonts) {
+		t.Fatalf("palette fonts length = %d, want %d", got, len(wantFonts))
+	}
+	for i, want := range wantFonts {
+		got := schema.Palette.Fonts[i]
+		if got.Name != want.Name || got.Title != want.Title || got.Stack != want.Stack {
+			t.Errorf("palette font[%d] = %#v, want %#v", i, got, want)
+		}
 	}
 	for _, style := range preset.Styles() {
 		raw, ok := schema.Defaults[string(style)]
@@ -169,6 +189,7 @@ type transportSchemaProbe struct {
 		Themes      []string `json:"themes"`
 		Radii       []string `json:"radii"`
 		MenuAccents []string `json:"menuAccents"`
+		Fonts       []string `json:"fonts"`
 	} `json:"compact"`
 }
 
@@ -195,12 +216,19 @@ type paletteSchemaProbe struct {
 		Light preset.ThemeValues `json:"light"`
 		Dark  preset.ThemeValues `json:"dark"`
 	} `json:"resolved"`
+	Fonts []struct {
+		Name  string `json:"name"`
+		Title string `json:"title"`
+		Stack string `json:"stack"`
+	} `json:"fonts"`
 	DefaultSelection struct {
-		BaseColor  string `json:"baseColor"`
-		Theme      string `json:"theme"`
-		Radius     string `json:"radius"`
-		ChartColor string `json:"chartColor"`
-		MenuAccent string `json:"menuAccent"`
+		BaseColor   string `json:"baseColor"`
+		Theme       string `json:"theme"`
+		Radius      string `json:"radius"`
+		ChartColor  string `json:"chartColor"`
+		MenuAccent  string `json:"menuAccent"`
+		FontSans    string `json:"fontSans"`
+		FontHeading string `json:"fontHeading"`
 	} `json:"defaultSelection"`
 }
 

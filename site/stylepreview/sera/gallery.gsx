@@ -14,6 +14,18 @@
 // every popup (menus, dialogs, popovers, tooltips) renders in its resting
 // closed state. What the gallery showcases is trigger and surface chrome
 // theming, not behavior.
+//
+// Every card's <CardTitle> carries an inline `font-family: var(--font-
+// heading)` — this is the font pair picker's (theme-creator-parity Task 3)
+// only visible manifestation in this preview: --font-sans already applies
+// to the whole document for free (it's the CSS default font-family chain
+// Tailwind's Preflight resolves from, so a runtime override on the root
+// element cascades everywhere without any markup change), but nothing
+// upstream of this file previously read --font-heading at all. This
+// mirrors upstream's own approach exactly — a hand-authored .cn-font-
+// heading marker on specific preview-only elements (dossier §3/§5(b)), not
+// a change to the shared Card primitive (ui/card.gsx is untouched; a real
+// project's own Card usage is unaffected by the font axis existing).
 package sera
 
 import (
@@ -59,7 +71,7 @@ component Gallery(idp string) {
 component galleryButtonsCard() {
 	<Card>
 		<CardHeader>
-			<CardTitle>Buttons</CardTitle>
+			<CardTitle style="font-family: var(--font-heading)">Buttons</CardTitle>
 			<CardDescription>Every variant, size, and state.</CardDescription>
 		</CardHeader>
 		<CardContent class="flex flex-col gap-4">
@@ -105,7 +117,7 @@ component galleryButtonsCard() {
 component galleryLoginCard(idp string) {
 	<Card>
 		<CardHeader>
-			<CardTitle>Create an account</CardTitle>
+			<CardTitle style="font-family: var(--font-heading)">Create an account</CardTitle>
 			<CardDescription>Enter your email below to create your account.</CardDescription>
 			<CardAction>
 				<Badge variant="secondary">Beta</Badge>
@@ -141,7 +153,7 @@ component galleryLoginCard(idp string) {
 component gallerySettingsCard(idp string) {
 	<Card>
 		<CardHeader>
-			<CardTitle>Workspace settings</CardTitle>
+			<CardTitle style="font-family: var(--font-heading)">Workspace settings</CardTitle>
 			<CardDescription>Configure notifications and appearance.</CardDescription>
 		</CardHeader>
 		<CardContent class="flex flex-col gap-5">
@@ -207,7 +219,7 @@ component gallerySettingsCard(idp string) {
 component galleryCalendarCard(idp string) {
 	<Card>
 		<CardHeader>
-			<CardTitle>Schedule a review</CardTitle>
+			<CardTitle style="font-family: var(--font-heading)">Schedule a review</CardTitle>
 			<CardDescription>Pick a date for the quarterly review.</CardDescription>
 		</CardHeader>
 		<CardContent class="flex flex-col items-start gap-4">
@@ -247,7 +259,7 @@ component galleryCalendarCard(idp string) {
 component galleryMenusCard() {
 	<Card>
 		<CardHeader>
-			<CardTitle>Menus</CardTitle>
+			<CardTitle style="font-family: var(--font-heading)">Menus</CardTitle>
 			<CardDescription>Menubar, dropdown, and context menu chrome.</CardDescription>
 		</CardHeader>
 		<CardContent class="flex flex-col gap-4">
@@ -325,7 +337,7 @@ component galleryMenusCard() {
 component galleryFeedbackCard() {
 	<Card>
 		<CardHeader>
-			<CardTitle>Sync status</CardTitle>
+			<CardTitle style="font-family: var(--font-heading)">Sync status</CardTitle>
 			<CardDescription>Alerts, badges, progress, and toasts.</CardDescription>
 		</CardHeader>
 		<CardContent class="flex flex-col gap-4">
@@ -381,7 +393,7 @@ component galleryFeedbackCard() {
 component galleryTeamCard() {
 	<Card>
 		<CardHeader>
-			<CardTitle>Team members</CardTitle>
+			<CardTitle style="font-family: var(--font-heading)">Team members</CardTitle>
 			<CardDescription>Invite and manage your team.</CardDescription>
 			<CardAction>
 				<div class="flex -space-x-2">
@@ -450,7 +462,7 @@ component galleryTeamCard() {
 component galleryTableCard() {
 	<Card>
 		<CardHeader>
-			<CardTitle>Recent invoices</CardTitle>
+			<CardTitle style="font-family: var(--font-heading)">Recent invoices</CardTitle>
 			<CardDescription>Your billing history for this quarter.</CardDescription>
 		</CardHeader>
 		<CardContent>
@@ -499,7 +511,7 @@ component galleryTableCard() {
 component galleryChartCard() {
 	<Card>
 		<CardHeader>
-			<CardTitle>Chart colors</CardTitle>
+			<CardTitle style="font-family: var(--font-heading)">Chart colors</CardTitle>
 			<CardDescription>chart-1 through chart-5.</CardDescription>
 		</CardHeader>
 		<CardContent class="flex flex-col gap-4">
@@ -535,7 +547,7 @@ component galleryChartCard() {
 component galleryTabsCard(idp string) {
 	<Card>
 		<CardHeader>
-			<CardTitle>Project overview</CardTitle>
+			<CardTitle style="font-family: var(--font-heading)">Project overview</CardTitle>
 			<CardDescription>Tabs and frequently asked questions.</CardDescription>
 		</CardHeader>
 		<CardContent class="flex flex-col gap-4">
@@ -572,7 +584,7 @@ component galleryTabsCard(idp string) {
 component galleryNavigationCard() {
 	<Card>
 		<CardHeader>
-			<CardTitle>Navigation</CardTitle>
+			<CardTitle style="font-family: var(--font-heading)">Navigation</CardTitle>
 			<CardDescription>Breadcrumbs, menus, and pagination.</CardDescription>
 		</CardHeader>
 		<CardContent class="flex flex-col gap-4">
@@ -650,7 +662,7 @@ component galleryNavigationCard() {
 component galleryControlsCard(idp string) {
 	<Card>
 		<CardHeader>
-			<CardTitle>Editor controls</CardTitle>
+			<CardTitle style="font-family: var(--font-heading)">Editor controls</CardTitle>
 			<CardDescription>Toggles, groups, and composed inputs.</CardDescription>
 		</CardHeader>
 		<CardContent class="flex flex-col gap-4">
@@ -741,7 +753,7 @@ component galleryControlsCard(idp string) {
 component galleryOverlaysCard(idp string) {
 	<Card>
 		<CardHeader>
-			<CardTitle>Overlays</CardTitle>
+			<CardTitle style="font-family: var(--font-heading)">Overlays</CardTitle>
 			<CardDescription>Dialogs, sheets, popovers, and the command palette.</CardDescription>
 		</CardHeader>
 		<CardContent class="flex flex-col gap-4">
@@ -908,7 +920,7 @@ component galleryEmptyCard() {
 component galleryMediaCard() {
 	<Card>
 		<CardHeader>
-			<CardTitle>Media and layout</CardTitle>
+			<CardTitle style="font-family: var(--font-heading)">Media and layout</CardTitle>
 			<CardDescription>Ratio boxes, scroll areas, carousels, and panes.</CardDescription>
 		</CardHeader>
 		<CardContent class="flex flex-col gap-4">
@@ -969,7 +981,7 @@ component galleryMediaCard() {
 component gallerySidebarCard(idp string) {
 	<Card class="md:col-span-2 xl:col-span-3">
 		<CardHeader>
-			<CardTitle>Application shell</CardTitle>
+			<CardTitle style="font-family: var(--font-heading)">Application shell</CardTitle>
 			<CardDescription>Sidebar navigation with inset content.</CardDescription>
 		</CardHeader>
 		<CardContent>

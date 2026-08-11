@@ -19,6 +19,14 @@ const SchemaURL = "https://ui.gsxhq.dev/schemas/preset-v1.json"
 const (
 	defaultRadius = "0.625rem"
 	radiusGroup   = "Structure"
+
+	// defaultFontFamily is canonicalDefault's fallback font-family value for
+	// both FontSans and FontHeading — the "Geist Variable" stack, matching
+	// fontCatalog's own index-0 "geist" entry in catalog.go (duplicated
+	// here the same way defaultRadius above duplicates radiusCatalog's
+	// "medium" entry: canonicalDefault must stand on its own without
+	// depending on resolvePalette succeeding).
+	defaultFontFamily = `"Geist Variable", ui-sans-serif, system-ui, sans-serif`
 )
 
 type Style string
@@ -85,11 +93,22 @@ type Theme struct {
 	Dark  ThemeValues
 }
 
+// Preset's FontSans/FontHeading are deliberately NOT part of ThemeValues:
+// they are literal CSS font-family values (validated by validateFontFamily
+// below), not colors, and font families cannot be shoehorned into a map
+// that Validate checks with csscolorparser.Parse per entry. This mirrors
+// upstream's own model — font is a field on the preset alongside the color
+// theme, not inside it (dossier §5(b); packages/shadcn/src/preset/
+// preset.ts:170-181) — and reuses upstream's exact CSS variable names,
+// --font-sans/--font-heading (see css.go's ThemeCSS), so a gsxui-emitted
+// theme.css stays drop-in compatible with upstream's own shipped artifact.
 type Preset struct {
 	Schema        string
 	SchemaVersion int
 	Style         Style
 	Radius        string
+	FontSans      string
+	FontHeading   string
 	Theme         Theme
 }
 
@@ -226,6 +245,12 @@ func Validate(preset Preset) error {
 	if err := validateRadius(preset.Radius); err != nil {
 		return fmt.Errorf("radius: %w", err)
 	}
+	if err := validateFontFamily(preset.FontSans); err != nil {
+		return fmt.Errorf("fontSans: %w", err)
+	}
+	if err := validateFontFamily(preset.FontHeading); err != nil {
+		return fmt.Errorf("fontHeading: %w", err)
+	}
 	if err := validateThemeMode("theme.light", preset.Theme.Light); err != nil {
 		return err
 	}
@@ -299,6 +324,61 @@ func validateRadius(value string) error {
 		return errors.New("must contain exactly one CSS component value")
 	}
 	return nil
+}
+
+// validateFontFamily checks that value is a syntactically valid CSS
+// font-family value: a comma-separated list of one or more family names,
+// each either a single quoted string or a sequence of one-or-more
+// consecutive identifier tokens (an unquoted, possibly multi-word,
+// custom-ident/generic family name such as ui-sans-serif). This is
+// distinct from ThemeValues' color validator (csscolorparser.Parse,
+// validateThemeMode above) — FontSans/FontHeading are not colors and live
+// outside ThemeValues entirely (see the Preset field's own doc comment).
+// Structurally unrestricted (not limited to catalog.go's fontCatalog
+// names), the same way validateRadius accepts any valid CSS length rather
+// than only RadiusChoices()'s catalog values — this keeps the "arbitrary
+// foreign theme.css/JSON import" path working for a font family gsxui
+// hasn't curated.
+func validateFontFamily(value string) error {
+	lexer := css.NewLexer(parse.NewInputString(value))
+	const (
+		groupNone = iota
+		groupString
+		groupIdent
+	)
+	group := groupNone
+	for {
+		tokenType, _ := lexer.Next()
+		switch tokenType {
+		case css.WhitespaceToken, css.CommentToken:
+			continue
+		case css.ErrorToken:
+			if !errors.Is(lexer.Err(), io.EOF) {
+				return fmt.Errorf("must be a valid CSS font-family list: %w", lexer.Err())
+			}
+			if group == groupNone {
+				return errors.New("must be a valid CSS font-family list")
+			}
+			return nil
+		case css.CommaToken:
+			if group == groupNone {
+				return errors.New("must be a valid CSS font-family list")
+			}
+			group = groupNone
+		case css.StringToken:
+			if group != groupNone {
+				return errors.New("must be a valid CSS font-family list")
+			}
+			group = groupString
+		case css.IdentToken:
+			if group == groupString {
+				return errors.New("must be a valid CSS font-family list")
+			}
+			group = groupIdent
+		default:
+			return fmt.Errorf("must be a valid CSS font-family list: unexpected %s token", tokenType)
+		}
+	}
 }
 
 func nextComponentToken(lexer *css.Lexer) (css.TokenType, []byte) {

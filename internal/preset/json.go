@@ -45,6 +45,8 @@ func CanonicalJSON(preset Preset) ([]byte, error) {
 	writeJSONIntField(&buffer, 1, "schemaVersion", preset.SchemaVersion, true)
 	writeJSONField(&buffer, 1, "style", string(preset.Style), true)
 	writeJSONField(&buffer, 1, "radius", preset.Radius, true)
+	writeJSONField(&buffer, 1, "fontSans", preset.FontSans, true)
+	writeJSONField(&buffer, 1, "fontHeading", preset.FontHeading, true)
 	buffer.WriteString("  \"theme\": {\n")
 	writeThemeValues(&buffer, "light", preset.Theme.Light, true)
 	writeThemeValues(&buffer, "dark", preset.Theme.Dark, false)
@@ -81,6 +83,10 @@ func decodePreset(decoder *json.Decoder) (Preset, error) {
 			preset.Style = Style(style)
 		case "radius":
 			preset.Radius, err = decodeString(decoder, "radius")
+		case "fontSans":
+			preset.FontSans, err = decodeString(decoder, "fontSans")
+		case "fontHeading":
+			preset.FontHeading, err = decodeString(decoder, "fontHeading")
 		case "theme":
 			preset.Theme, err = decodeTheme(decoder)
 		default:
@@ -94,7 +100,7 @@ func decodePreset(decoder *json.Decoder) (Preset, error) {
 		return Preset{}, err
 	}
 
-	for _, required := range []string{"$schema", "schemaVersion", "style", "radius", "theme"} {
+	for _, required := range []string{"$schema", "schemaVersion", "style", "radius", "fontSans", "fontHeading", "theme"} {
 		if !seen[required] {
 			return Preset{}, fmt.Errorf("%s: missing required field", required)
 		}

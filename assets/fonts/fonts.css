@@ -1,0 +1,61 @@
+/* gsxui theme editor font pair picker — self-hosted variable WOFF2 fonts.
+   No npm, no CDN, no build step: six @font-face declarations plus their
+   binary WOFF2 files sit right here as static assets, matching the
+   "no npm/CDN" positioning `assets/css/animate.css`'s own header comment
+   states for tw-animate-css. Only the "latin" Unicode subset is vendored
+   per font (not latin-ext/cyrillic/etc.) to keep this directory small —
+   see NOTICE.md for the exact byte budget and where these subsets came
+   from. Every font ships ONE variable file covering its whole weight
+   range (font-weight: 1 999), so no per-weight duplication is needed.
+
+   Licences: every font below is SIL Open Font License 1.1 — see
+   NOTICE.md in this directory for the full text and per-font copyright
+   holders. font-display: swap avoids invisible text while a font loads. */
+
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-weight: 1 999;
+  font-display: swap;
+  src: url("./inter-latin-wght-normal.woff2") format("woff2-variations");
+}
+
+@font-face {
+  font-family: "Geist Variable";
+  font-style: normal;
+  font-weight: 1 999;
+  font-display: swap;
+  src: url("./geist-latin-wght-normal.woff2") format("woff2-variations");
+}
+
+@font-face {
+  font-family: "Figtree Variable";
+  font-style: normal;
+  font-weight: 1 999;
+  font-display: swap;
+  src: url("./figtree-latin-wght-normal.woff2") format("woff2-variations");
+}
+
+@font-face {
+  font-family: "JetBrains Mono Variable";
+  font-style: normal;
+  font-weight: 1 999;
+  font-display: swap;
+  src: url("./jetbrains-mono-latin-wght-normal.woff2") format("woff2-variations");
+}
+
+@font-face {
+  font-family: "Noto Sans Variable";
+  font-style: normal;
+  font-weight: 1 999;
+  font-display: swap;
+  src: url("./noto-sans-latin-wght-normal.woff2") format("woff2-variations");
+}
+
+@font-face {
+  font-family: "Playfair Display Variable";
+  font-style: normal;
+  font-weight: 1 999;
+  font-display: swap;
+  src: url("./playfair-display-latin-wght-normal.woff2") format("woff2-variations");
+}

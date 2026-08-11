@@ -338,6 +338,46 @@ func TestValidateRejectsInvalidPresetFields(t *testing.T) {
 			edit: func(p *Preset) { p.Radius = "1rem;" },
 			path: "radius",
 		},
+		{
+			name: "empty font sans",
+			edit: func(p *Preset) { p.FontSans = "" },
+			path: "fontSans",
+		},
+		{
+			name: "font sans trailing comma",
+			edit: func(p *Preset) { p.FontSans = "Inter," },
+			path: "fontSans",
+		},
+		{
+			name: "font sans leading comma",
+			edit: func(p *Preset) { p.FontSans = ",Inter" },
+			path: "fontSans",
+		},
+		{
+			name: "font sans double comma",
+			edit: func(p *Preset) { p.FontSans = "Inter,,sans-serif" },
+			path: "fontSans",
+		},
+		{
+			name: "font sans adjacent strings",
+			edit: func(p *Preset) { p.FontSans = `"Inter""Arial"` },
+			path: "fontSans",
+		},
+		{
+			name: "font sans number",
+			edit: func(p *Preset) { p.FontSans = "12" },
+			path: "fontSans",
+		},
+		{
+			name: "font sans trailing garbage",
+			edit: func(p *Preset) { p.FontSans = "Inter;" },
+			path: "fontSans",
+		},
+		{
+			name: "empty font heading",
+			edit: func(p *Preset) { p.FontHeading = "" },
+			path: "fontHeading",
+		},
 	}
 
 	for _, tt := range tests {
@@ -384,11 +424,38 @@ func TestValidateAcceptsSchemaV1RadiusLengths(t *testing.T) {
 	}
 }
 
+func TestValidateAcceptsFontFamilyLists(t *testing.T) {
+	t.Parallel()
+
+	valid := []string{
+		"Inter",
+		`"Inter Variable"`,
+		`"Inter Variable", ui-sans-serif, system-ui, sans-serif`,
+		"ui-sans-serif",
+		"Open Sans",
+		`"JetBrains Mono Variable", ui-monospace, SFMono-Regular, monospace`,
+		`"Weird, but legal"`,
+	}
+	for _, family := range valid {
+		t.Run(family, func(t *testing.T) {
+			t.Parallel()
+			preset := Default(StyleNova)
+			preset.FontSans = family
+			preset.FontHeading = family
+			if err := Validate(preset); err != nil {
+				t.Fatalf("Validate(font family %q): %v", family, err)
+			}
+		})
+	}
+}
+
 func presetsEqual(a, b Preset) bool {
 	if a.Schema != b.Schema ||
 		a.SchemaVersion != b.SchemaVersion ||
 		a.Style != b.Style ||
-		a.Radius != b.Radius {
+		a.Radius != b.Radius ||
+		a.FontSans != b.FontSans ||
+		a.FontHeading != b.FontHeading {
 		return false
 	}
 	return mapsEqual(a.Theme.Light, b.Theme.Light) &&

@@ -9,6 +9,14 @@
 @import "@fontsource-variable/geist";
 @import "@fontsource-variable/geist-mono";
 
+/* Theme editor font pair picker (internal/preset/catalog.go's fontCatalog):
+   self-hosted variable WOFF2 fonts, no npm/CDN — see assets/fonts/NOTICE.md
+   for licences. Loaded here (not just in the preview iframe's own bundle)
+   so the editor's own chrome — e.g. a future in-picker font specimen — can
+   use them too, the same reasoning web/preview.js already imports this same
+   site.css for the theme_preview.gsx iframe. */
+@import "../assets/fonts/fonts.css";
+
 @theme {
   --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, monospace;

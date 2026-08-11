@@ -19,6 +19,8 @@ import {
   manualCopyState,
   previewBaseColor,
   previewChartColor,
+  previewFont,
+  previewFontHeading,
   previewPreset,
   previewRadius,
   previewTheme,
@@ -28,6 +30,8 @@ import {
   resetThemeState,
   selectBaseColor,
   selectChartColor,
+  selectFont,
+  selectFontHeading,
   selectMenuAccent,
   selectMode,
   selectRadius,
@@ -85,6 +89,7 @@ const schema = {
       ],
       radii: ["none", "small", "medium", "large"],
       menuAccents: ["subtle", "bold"],
+      fonts: ["geist", "inter"],
     },
   },
   tokenNames: [
@@ -106,6 +111,8 @@ const schema = {
       schemaVersion: 1,
       style: "nova",
       radius: "0.625rem",
+      fontSans: "Geist",
+      fontHeading: "Geist",
       theme: {
         light: { ...neutralBaseValues, ...neutralChartValues.light },
         dark: { ...neutralBaseValuesDark, ...neutralChartValues.dark },
@@ -116,6 +123,8 @@ const schema = {
       schemaVersion: 1,
       style: "maia",
       radius: "1rem",
+      fontSans: "Geist",
+      fontHeading: "Geist",
       theme: {
         light: {
           background: "ivory",
@@ -150,6 +159,10 @@ const schema = {
     menuAccents: [
       { name: "subtle", title: "Subtle" },
       { name: "bold", title: "Bold" },
+    ],
+    fonts: [
+      { name: "geist", title: "Geist", stack: "Geist" },
+      { name: "inter", title: "Inter", stack: "Inter" },
     ],
     // Flat by name, not nested by base color: matches theme.gsx's own
     // schema.palette.chartColors shape (see catalog.go's ChartColorChoices
@@ -191,7 +204,7 @@ const schema = {
         },
       },
     },
-    defaultSelection: { baseColor: "neutral", theme: "neutral", radius: "medium", chartColor: "neutral", menuAccent: "subtle" },
+    defaultSelection: { baseColor: "neutral", theme: "neutral", radius: "medium", chartColor: "neutral", menuAccent: "subtle", fontSans: "geist", fontHeading: "geist" },
   },
 };
 
@@ -202,11 +215,14 @@ const validators = {
   radius(value) {
     return /^(?:0|[0-9.]+(?:px|rem))$/.test(value);
   },
+  fontFamily(value) {
+    return typeof value === "string" && value !== "" && value !== "invalid";
+  },
 };
 
 test("state starts matched to the default palette selection", () => {
   const state = createThemeState(schema);
-  assert.deepEqual(state.selection, { baseColor: "neutral", theme: "neutral", radius: "medium", chartColor: "neutral", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "neutral", theme: "neutral", radius: "medium", chartColor: "neutral", menuAccent: "subtle", fontSans: "geist", fontHeading: "geist" });
   assert.equal(state.previewResolved, null);
 });
 
@@ -214,7 +230,7 @@ test("palette selections commit colors while preserving the current radius", () 
   let state = selectStyle(createThemeState(schema), "maia", schema);
   state = selectBaseColor(state, "stone", schema);
   state = selectTheme(state, "blue", schema);
-  assert.deepEqual(state.selection, { baseColor: "stone", theme: "blue", radius: "medium", chartColor: "neutral", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "stone", theme: "blue", radius: "medium", chartColor: "neutral", menuAccent: "subtle", fontSans: "geist", fontHeading: "geist" });
   assert.equal(state.resolved.style, "maia");
   assert.equal(state.resolved.theme.light.background, "linen");
   assert.equal(state.resolved.theme.light.primary, "blue");
@@ -230,7 +246,7 @@ test("menu accent overlays accent from primary and round-trips back to subtle", 
   let state = selectTheme(createThemeState(schema), "blue", schema);
   const subtleLight = structuredClone(state.resolved.theme.light);
   const subtleDark = structuredClone(state.resolved.theme.dark);
-  assert.deepEqual(state.selection, { baseColor: "neutral", theme: "blue", radius: "medium", chartColor: "neutral", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "neutral", theme: "blue", radius: "medium", chartColor: "neutral", menuAccent: "subtle", fontSans: "geist", fontHeading: "geist" });
 
   state = selectMenuAccent(state, "bold", schema);
   assert.equal(state.selection.menuAccent, "bold");
@@ -252,7 +268,7 @@ test("menu accent overlays accent from primary and round-trips back to subtle", 
 test("menu accent survives a later base color or theme change", () => {
   let state = selectMenuAccent(createThemeState(schema), "bold", schema);
   state = selectBaseColor(state, "stone", schema);
-  assert.deepEqual(state.selection, { baseColor: "stone", theme: "stone", radius: "medium", chartColor: "neutral", menuAccent: "bold" });
+  assert.deepEqual(state.selection, { baseColor: "stone", theme: "stone", radius: "medium", chartColor: "neutral", menuAccent: "bold", fontSans: "geist", fontHeading: "geist" });
   assert.equal(state.resolved.theme.light.accent, state.resolved.theme.light.primary);
 
   state = selectTheme(state, "blue", schema);
@@ -268,10 +284,10 @@ test("chart color overlays only chart-1..5, independent of base color and theme"
   let state = selectTheme(createThemeState(schema), "blue", schema);
   const beforeLight = structuredClone(state.resolved.theme.light);
   const beforeDark = structuredClone(state.resolved.theme.dark);
-  assert.deepEqual(state.selection, { baseColor: "neutral", theme: "blue", radius: "medium", chartColor: "neutral", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "neutral", theme: "blue", radius: "medium", chartColor: "neutral", menuAccent: "subtle", fontSans: "geist", fontHeading: "geist" });
 
   state = selectChartColor(state, "violet", schema);
-  assert.deepEqual(state.selection, { baseColor: "neutral", theme: "blue", radius: "medium", chartColor: "violet", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "neutral", theme: "blue", radius: "medium", chartColor: "violet", menuAccent: "subtle", fontSans: "geist", fontHeading: "geist" });
   assert.equal(state.resolved.theme.light["chart-1"], "lavender");
   assert.equal(state.resolved.theme.dark["chart-1"], "purple");
   // Only chart-1..5 changed — base color, theme, and menu accent's own
@@ -289,7 +305,7 @@ test("chart color overlays only chart-1..5, independent of base color and theme"
 test("chart color survives a later base color, theme, or menu accent change", () => {
   let state = selectChartColor(createThemeState(schema), "violet", schema);
   state = selectBaseColor(state, "stone", schema);
-  assert.deepEqual(state.selection, { baseColor: "stone", theme: "stone", radius: "medium", chartColor: "violet", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "stone", theme: "stone", radius: "medium", chartColor: "violet", menuAccent: "subtle", fontSans: "geist", fontHeading: "geist" });
   assert.equal(state.resolved.theme.light["chart-1"], "lavender");
 
   state = selectTheme(state, "blue", schema);
@@ -317,6 +333,67 @@ test("chart color hover preview never alters committed export state", () => {
 
 test("chart color selection rejects unsupported values", () => {
   assert.throws(() => selectChartColor(createThemeState(schema), "plaid", schema));
+});
+
+test("font selection sets fontSans/fontHeading independently and never touches theme colors", () => {
+  const state = createThemeState(schema);
+  const beforeLight = structuredClone(state.resolved.theme.light);
+  const beforeDark = structuredClone(state.resolved.theme.dark);
+  assert.equal(state.resolved.fontSans, "Geist");
+  assert.equal(state.resolved.fontHeading, "Geist");
+  assert.deepEqual(state.selection.fontSans, "geist");
+  assert.deepEqual(state.selection.fontHeading, "geist");
+
+  const sans = selectFont(state, "inter", schema);
+  assert.equal(sans.resolved.fontSans, "Inter");
+  assert.equal(sans.resolved.fontHeading, "Geist");
+  assert.equal(sans.selection.fontSans, "inter");
+  assert.equal(sans.selection.fontHeading, "geist");
+  assert.deepEqual(sans.resolved.theme.light, beforeLight);
+  assert.deepEqual(sans.resolved.theme.dark, beforeDark);
+
+  const heading = selectFontHeading(sans, "inter", schema);
+  assert.equal(heading.resolved.fontSans, "Inter");
+  assert.equal(heading.resolved.fontHeading, "Inter");
+  assert.equal(heading.selection.fontHeading, "inter");
+
+  const back = selectFontHeading(heading, "geist", schema);
+  assert.equal(back.resolved.fontHeading, "Geist");
+  assert.equal(back.selection.fontHeading, "geist");
+});
+
+test("font selection survives a later base color, theme, or menu accent change", () => {
+  let state = selectFont(createThemeState(schema), "inter", schema);
+  state = selectFontHeading(state, "inter", schema);
+  state = selectBaseColor(state, "stone", schema);
+  assert.equal(state.resolved.fontSans, "Inter");
+  assert.equal(state.resolved.fontHeading, "Inter");
+
+  state = selectMenuAccent(state, "bold", schema);
+  assert.equal(state.resolved.fontSans, "Inter");
+  assert.equal(state.resolved.fontHeading, "Inter");
+});
+
+test("font hover preview never alters committed export state", () => {
+  const committed = createThemeState(schema);
+  const committedJSON = canonicalJSON(committed.resolved, schema);
+
+  const sansPreview = previewFont(committed, "inter", schema);
+  assert.equal(previewPreset(sansPreview).fontSans, "Inter");
+  assert.equal(canonicalJSON(sansPreview.resolved, schema), committedJSON);
+
+  const headingPreview = previewFontHeading(committed, "inter", schema);
+  assert.equal(previewPreset(headingPreview).fontHeading, "Inter");
+  assert.equal(canonicalJSON(headingPreview.resolved, schema), committedJSON);
+
+  const cleared = clearPalettePreview(headingPreview);
+  assert.equal(cleared.previewResolved, null);
+  assert.deepEqual(previewPreset(cleared), committed.resolved);
+});
+
+test("font selection rejects unsupported values", () => {
+  assert.throws(() => selectFont(createThemeState(schema), "comic-sans", schema));
+  assert.throws(() => selectFontHeading(createThemeState(schema), "comic-sans", schema));
 });
 
 test("palette previews never alter committed export state", () => {
@@ -351,12 +428,12 @@ test("replacement derives custom palette selections from exact imported values",
   const changedColor = structuredClone(schema.defaults.nova);
   changedColor.theme.light.primary = "violet";
   let state = replacePreset(createThemeState(schema), changedColor, schema);
-  assert.deepEqual(state.selection, { baseColor: "custom", theme: "custom", radius: "medium", chartColor: "neutral", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "custom", theme: "custom", radius: "medium", chartColor: "neutral", menuAccent: "subtle", fontSans: "geist", fontHeading: "geist" });
 
   const changedRadius = structuredClone(schema.defaults.nova);
   changedRadius.radius = "1rem";
   state = replacePreset(state, changedRadius, schema);
-  assert.deepEqual(state.selection, { baseColor: "neutral", theme: "neutral", radius: "custom", chartColor: "neutral", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "neutral", theme: "neutral", radius: "custom", chartColor: "neutral", menuAccent: "subtle", fontSans: "geist", fontHeading: "geist" });
 });
 
 test("base selection from custom restores its same-named theme and preserves a custom radius", () => {
@@ -366,7 +443,7 @@ test("base selection from custom restores its same-named theme and preserves a c
   let state = replacePreset(createThemeState(schema), imported, schema);
   state = selectBaseColor(state, "stone", schema);
 
-  assert.deepEqual(state.selection, { baseColor: "stone", theme: "stone", radius: "custom", chartColor: "neutral", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "stone", theme: "stone", radius: "custom", chartColor: "neutral", menuAccent: "subtle", fontSans: "geist", fontHeading: "geist" });
   assert.equal(state.resolved.theme.light.background, "linen");
   assert.equal(state.resolved.radius, "1rem");
 });
@@ -377,7 +454,7 @@ test("theme selection from custom uses neutral as its base", () => {
   let state = replacePreset(createThemeState(schema), imported, schema);
   state = selectTheme(state, "blue", schema);
 
-  assert.deepEqual(state.selection, { baseColor: "neutral", theme: "blue", radius: "medium", chartColor: "neutral", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "neutral", theme: "blue", radius: "medium", chartColor: "neutral", menuAccent: "subtle", fontSans: "geist", fontHeading: "geist" });
   assert.equal(state.resolved.theme.light.background, "white");
   assert.equal(state.resolved.theme.light.primary, "blue");
 });
@@ -389,7 +466,7 @@ test("named radius selection preserves imported custom colors exactly", () => {
   let state = replacePreset(createThemeState(schema), imported, schema);
   state = selectRadius(state, "large", schema);
 
-  assert.deepEqual(state.selection, { baseColor: "custom", theme: "custom", radius: "large", chartColor: "neutral", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "custom", theme: "custom", radius: "large", chartColor: "neutral", menuAccent: "subtle", fontSans: "geist", fontHeading: "geist" });
   assert.equal(state.resolved.theme.light.background, "rgb(1 2 3)");
   assert.equal(state.resolved.theme.dark.primary, "hsl(1deg 2% 3%)");
   assert.equal(state.resolved.radius, "0.875rem");
@@ -399,7 +476,7 @@ test("reset restores the selected style built-in preset and recomputes selection
   let state = selectStyle(createThemeState(schema), "maia", schema);
   state = resetThemeState(state, schema);
   assert.deepEqual(state.resolved, schema.defaults.maia);
-  assert.deepEqual(state.selection, { baseColor: "custom", theme: "custom", radius: "custom", chartColor: "neutral", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "custom", theme: "custom", radius: "custom", chartColor: "neutral", menuAccent: "subtle", fontSans: "geist", fontHeading: "geist" });
 });
 
 test("canonical JSON, share code, share URL, CSS, and commands round trip", () => {
@@ -439,6 +516,17 @@ test("a non-default chart color still uses the compact transport and decodes bac
   assert.equal(decoded.theme.light["chart-1"], "lavender");
 });
 
+test("non-default fonts still use the compact transport and decode back to them", () => {
+  let state = selectFont(createThemeState(schema), "inter", schema);
+  state = selectFontHeading(state, "geist", schema);
+  const share = encodeShare(state.resolved, schema);
+  assert.match(share, /^gsxui:p1:/);
+  const decoded = decodeShare(share, schema, validators);
+  assert.deepEqual(decoded, state.resolved);
+  assert.equal(decoded.fontSans, "Inter");
+  assert.equal(decoded.fontHeading, "Geist");
+});
+
 test("compact transport matches the Go bit layout for every catalogue combination", () => {
   const exhaustive = compactTestSchema();
   for (const style of exhaustive.transport.compact.styles) {
@@ -457,6 +545,8 @@ test("compact transport matches the Go bit layout for every catalogue combinatio
             schemaVersion: exhaustive.schemaVersion,
             style,
             radius: radius.value,
+            fontSans: exhaustive.palette.fonts[0].stack,
+            fontHeading: exhaustive.palette.fonts[0].stack,
             theme: structuredClone(resolved),
           };
           const want = expectedCompactCode(exhaustive, style, baseColor, theme, radius.name);
@@ -569,27 +659,64 @@ test("undo/redo replays a bounded history stack of committed states", () => {
   history = pushHistory(history, state);
   state = selectRadius(state, "large", schema);
   history = pushHistory(history, state);
-  assert.deepEqual(state.selection, { baseColor: "stone", theme: "blue", radius: "large", chartColor: "neutral", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "stone", theme: "blue", radius: "large", chartColor: "neutral", menuAccent: "subtle", fontSans: "geist", fontHeading: "geist" });
   assert.equal(canUndo(history), true);
   assert.equal(canRedo(history), false);
 
   let step = undoHistory(history, state, schema);
   history = step.history;
   state = step.state;
-  assert.deepEqual(state.selection, { baseColor: "stone", theme: "blue", radius: "medium", chartColor: "neutral", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "stone", theme: "blue", radius: "medium", chartColor: "neutral", menuAccent: "subtle", fontSans: "geist", fontHeading: "geist" });
 
   step = undoHistory(history, state, schema);
   history = step.history;
   state = step.state;
-  assert.deepEqual(state.selection, { baseColor: "stone", theme: "stone", radius: "medium", chartColor: "neutral", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "stone", theme: "stone", radius: "medium", chartColor: "neutral", menuAccent: "subtle", fontSans: "geist", fontHeading: "geist" });
   assert.equal(canRedo(history), true);
 
   step = redoHistory(history, state, schema);
   history = step.history;
   state = step.state;
-  assert.deepEqual(state.selection, { baseColor: "stone", theme: "blue", radius: "medium", chartColor: "neutral", menuAccent: "subtle" });
+  assert.deepEqual(state.selection, { baseColor: "stone", theme: "blue", radius: "medium", chartColor: "neutral", menuAccent: "subtle", fontSans: "geist", fontHeading: "geist" });
   assert.equal(canUndo(history), true);
   assert.equal(canRedo(history), true);
+});
+
+// Font is the newest axis (Task 3); this proves it participates in the
+// same commitHistory stack as every other picker, exactly like
+// TestCompactShareBackwardCompatibleWithPreTask3Codes proves it participates
+// in the share codec on the Go side.
+test("undo/redo replays font selections exactly like every other axis", () => {
+  let state = createThemeState(schema);
+  let history = createHistory(state);
+
+  state = selectFont(state, "inter", schema);
+  history = pushHistory(history, state);
+  state = selectFontHeading(state, "inter", schema);
+  history = pushHistory(history, state);
+  assert.equal(state.resolved.fontSans, "Inter");
+  assert.equal(state.resolved.fontHeading, "Inter");
+
+  let step = undoHistory(history, state, schema);
+  history = step.history;
+  state = step.state;
+  assert.equal(state.resolved.fontSans, "Inter");
+  assert.equal(state.resolved.fontHeading, "Geist");
+
+  step = undoHistory(history, state, schema);
+  history = step.history;
+  state = step.state;
+  assert.equal(state.resolved.fontSans, "Geist");
+  assert.equal(state.resolved.fontHeading, "Geist");
+  assert.equal(canUndo(history), false);
+
+  step = redoHistory(history, state, schema);
+  history = step.history;
+  state = step.state;
+  step = redoHistory(history, state, schema);
+  state = step.state;
+  assert.equal(state.resolved.fontSans, "Inter");
+  assert.equal(state.resolved.fontHeading, "Inter");
 });
 
 test("undo/redo at the stack's bounds is a no-op", () => {
@@ -694,7 +821,8 @@ function compactTestSchema() {
       // fixed at the chart color default throughout this sweep.
       chartColors: { neutral: { light: {}, dark: {} } },
       resolved,
-      defaultSelection: { baseColor: "neutral", theme: "neutral", radius: "medium", chartColor: "neutral", menuAccent: "subtle" },
+      fonts: schema.palette.fonts,
+      defaultSelection: { baseColor: "neutral", theme: "neutral", radius: "medium", chartColor: "neutral", menuAccent: "subtle", fontSans: "geist", fontHeading: "geist" },
     },
   };
 }
@@ -707,7 +835,9 @@ function expectedCompactCode(valueSchema, style, baseColor, theme, radius) {
     (compact.themes.indexOf(theme) << 8) |
     (compact.radii.indexOf(radius) << 13) |
     (compact.menuAccents.indexOf("subtle") << 16) |
-    (compact.themes.indexOf("neutral") << 18);
+    (compact.themes.indexOf("neutral") << 18) |
+    (compact.fonts.indexOf("geist") << 23) |
+    (compact.fonts.indexOf("geist") << 26);
   const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   let value = packed;
   let payload = "";

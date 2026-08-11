@@ -89,6 +89,17 @@ if (previewDocument) {
     if (radiusProbe.borderRadius === "") {
       throw new Error("radius must be a valid CSS length");
     }
+    const fontProbe = document.createElement("span").style;
+    for (const field of ["fontSans", "fontHeading"]) {
+      if (typeof preset[field] !== "string" || preset[field].trim() === "") {
+        throw new Error(`${field} must be a non-empty CSS font-family list`);
+      }
+      fontProbe.fontFamily = "";
+      fontProbe.fontFamily = preset[field];
+      if (fontProbe.fontFamily === "") {
+        throw new Error(`${field} must be a valid CSS font-family list`);
+      }
+    }
     const theme = preset.theme;
     if (!theme || typeof theme !== "object" || Array.isArray(theme)) {
       throw new Error("preset.theme must be an object");
@@ -97,6 +108,8 @@ if (previewDocument) {
       attempt: message.attempt,
       style: preset.style,
       radius: preset.radius,
+      fontSans: preset.fontSans,
+      fontHeading: preset.fontHeading,
       mode: message.mode,
       values: exactTokenMap(theme[message.mode], `preset.theme.${message.mode}`),
     };
@@ -105,6 +118,8 @@ if (previewDocument) {
   function applyState(state) {
     const staged = document.createElement("span").style;
     staged.setProperty("--radius", state.radius);
+    staged.setProperty("--font-sans", state.fontSans);
+    staged.setProperty("--font-heading", state.fontHeading);
     for (const name of tokenNames) {
       staged.setProperty(`--${name}`, state.values[name]);
     }

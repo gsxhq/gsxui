@@ -39,21 +39,25 @@ type themeCompactTransportSchema struct {
 	Themes      []string `json:"themes"`
 	Radii       []string `json:"radii"`
 	MenuAccents []string `json:"menuAccents"`
+	Fonts       []string `json:"fonts"`
 }
 
 type themePaletteSchema struct {
-	BaseColors       []themePaletteChoiceSchema                       `json:"baseColors"`
-	Themes           map[string][]themePaletteChoiceSchema            `json:"themes"`
-	Radii            []themeRadiusChoiceSchema                        `json:"radii"`
-	MenuAccents      []themeMenuAccentChoiceSchema                    `json:"menuAccents"`
+	BaseColors  []themePaletteChoiceSchema            `json:"baseColors"`
+	Themes      map[string][]themePaletteChoiceSchema `json:"themes"`
+	Radii       []themeRadiusChoiceSchema             `json:"radii"`
+	MenuAccents []themeMenuAccentChoiceSchema         `json:"menuAccents"`
 	// ChartColors is flat by hue name (not nested by base color like
 	// Resolved): the chart color axis overlays independently of base
 	// color, and its picker reuses Themes[baseColor]'s own choices for
 	// display, so this table only needs to answer "what are chart-1..5 for
 	// this name" regardless of which base color's picker view showed it.
-	ChartColors      map[string]themePaletteResolvedSchema `json:"chartColors"`
-	Resolved         map[string]map[string]themePaletteResolvedSchema `json:"resolved"`
-	DefaultSelection themePaletteSelectionSchema                      `json:"defaultSelection"`
+	ChartColors map[string]themePaletteResolvedSchema `json:"chartColors"`
+	Resolved    map[string]map[string]themePaletteResolvedSchema `json:"resolved"`
+	// Fonts backs BOTH the body (FontSans) and heading (FontHeading)
+	// pickers — same list, mirrors catalog.go's FontChoices doc comment.
+	Fonts            []themeFontChoiceSchema     `json:"fonts"`
+	DefaultSelection themePaletteSelectionSchema `json:"defaultSelection"`
 }
 
 type themePaletteChoiceSchema struct {
@@ -73,17 +77,28 @@ type themeMenuAccentChoiceSchema struct {
 	Title string `json:"title"`
 }
 
+// themeFontChoiceSchema is the font picker's choice shape: Stack is the
+// literal CSS font-family value theme-state.js's selectFont/selectFontHeading
+// commit into resolved.fontSans/fontHeading — see catalog.go's FontChoice.
+type themeFontChoiceSchema struct {
+	Name  string `json:"name"`
+	Title string `json:"title"`
+	Stack string `json:"stack"`
+}
+
 type themePaletteResolvedSchema struct {
 	Light preset.ThemeValues `json:"light"`
 	Dark  preset.ThemeValues `json:"dark"`
 }
 
 type themePaletteSelectionSchema struct {
-	BaseColor  string `json:"baseColor"`
-	Theme      string `json:"theme"`
-	Radius     string `json:"radius"`
-	ChartColor string `json:"chartColor"`
-	MenuAccent string `json:"menuAccent"`
+	BaseColor   string `json:"baseColor"`
+	Theme       string `json:"theme"`
+	Radius      string `json:"radius"`
+	ChartColor  string `json:"chartColor"`
+	MenuAccent  string `json:"menuAccent"`
+	FontSans    string `json:"fontSans"`
+	FontHeading string `json:"fontHeading"`
 }
 
 func themeEditorSchemaValue() themeEditorSchema {
@@ -126,6 +141,7 @@ func themeTransportSchemaValue() themeTransportSchema {
 			Themes:      transport.Themes,
 			Radii:       transport.Radii,
 			MenuAccents: transport.MenuAccents,
+			Fonts:       transport.Fonts,
 		},
 	}
 }
@@ -139,6 +155,7 @@ func themePaletteSchemaValue() themePaletteSchema {
 		MenuAccents:      themeMenuAccentChoiceSchemaValues(preset.MenuAccentChoices()),
 		ChartColors:      make(map[string]themePaletteResolvedSchema),
 		Resolved:         make(map[string]map[string]themePaletteResolvedSchema),
+		Fonts:            themeFontChoiceSchemaValues(preset.FontChoices()),
 		DefaultSelection: themePaletteSelectionSchemaFromPreset(selection),
 	}
 	for _, baseColor := range preset.BaseColorChoices() {
@@ -154,11 +171,13 @@ func themePaletteSchemaValue() themePaletteSchema {
 			// color/theme pickers' hue previews, not the independent chart
 			// color or menu-accent controls.
 			resolved, err := preset.ResolvePalette(preset.StyleNova, preset.PaletteSelection{
-				BaseColor:  baseColor.Name,
-				Theme:      theme.Name,
-				Radius:     selection.Radius,
-				ChartColor: selection.ChartColor,
-				MenuAccent: selection.MenuAccent,
+				BaseColor:   baseColor.Name,
+				Theme:       theme.Name,
+				Radius:      selection.Radius,
+				ChartColor:  selection.ChartColor,
+				MenuAccent:  selection.MenuAccent,
+				FontSans:    selection.FontSans,
+				FontHeading: selection.FontHeading,
 			})
 			if err != nil {
 				panic(err)
@@ -195,6 +214,14 @@ func themeRadiusChoiceSchemaValues(choices []preset.RadiusChoice) []themeRadiusC
 	return values
 }
 
+func themeFontChoiceSchemaValues(choices []preset.FontChoice) []themeFontChoiceSchema {
+	values := make([]themeFontChoiceSchema, len(choices))
+	for i, choice := range choices {
+		values[i] = themeFontChoiceSchema{Name: choice.Name, Title: choice.Title, Stack: choice.Stack}
+	}
+	return values
+}
+
 func themeMenuAccentChoiceSchemaValues(choices []preset.MenuAccentChoice) []themeMenuAccentChoiceSchema {
 	values := make([]themeMenuAccentChoiceSchema, len(choices))
 	for i, choice := range choices {
@@ -205,11 +232,13 @@ func themeMenuAccentChoiceSchemaValues(choices []preset.MenuAccentChoice) []them
 
 func themePaletteSelectionSchemaFromPreset(selection preset.PaletteSelection) themePaletteSelectionSchema {
 	return themePaletteSelectionSchema{
-		BaseColor:  selection.BaseColor,
-		Theme:      selection.Theme,
-		Radius:     selection.Radius,
-		ChartColor: selection.ChartColor,
-		MenuAccent: selection.MenuAccent,
+		BaseColor:   selection.BaseColor,
+		Theme:       selection.Theme,
+		Radius:      selection.Radius,
+		ChartColor:  selection.ChartColor,
+		MenuAccent:  selection.MenuAccent,
+		FontSans:    selection.FontSans,
+		FontHeading: selection.FontHeading,
 	}
 }
 
@@ -233,6 +262,19 @@ func themeRadiusPickerChoices(choices []preset.RadiusChoice) []themePickerChoice
 			Value:       choice.Name,
 			SwatchStyle: "border-radius: " + choice.Value,
 		}
+	}
+	return values
+}
+
+// themeFontPickerChoices adapts FontChoices() to ThemePicker's generic
+// choice shape. No SwatchStyle: a font isn't a hue or a radius, so the
+// picker's swatch circle simply stays hidden for every option (renderSwatch
+// in theme.js already hides it whenever a choice carries neither Swatch nor
+// SwatchStyle).
+func themeFontPickerChoices(choices []preset.FontChoice) []themePickerChoice {
+	values := make([]themePickerChoice, len(choices))
+	for i, choice := range choices {
+		values[i] = themePickerChoice{Title: choice.Title, Value: choice.Name}
 	}
 	return values
 }
@@ -456,6 +498,18 @@ component themeEditor(previewURL string, workspace bool) {
 							label="Chart color"
 							selected="neutral"
 							choices={themePickerChoices(mustThemePickerChoices("neutral"))}
+						/>
+						<ThemePicker
+							name="fontSans"
+							label="Body font"
+							selected="geist"
+							choices={themeFontPickerChoices(preset.FontChoices())}
+						/>
+						<ThemePicker
+							name="fontHeading"
+							label="Heading font"
+							selected="geist"
+							choices={themeFontPickerChoices(preset.FontChoices())}
 						/>
 					</div>
 				</section>

@@ -12,6 +12,7 @@ type ThemeSchema = {
       Record<string, { light: Record<string, string>; dark: Record<string, string> }>
     >;
     chartColors: Record<string, { light: Record<string, string>; dark: Record<string, string> }>;
+    fonts: { name: string; title: string; stack: string }[];
   };
 };
 
@@ -64,15 +65,13 @@ function shareFromInit(command: string) {
   return match[1];
 }
 
-function picker(page: Page, kind: "baseColor" | "theme" | "radius" | "chartColor") {
+type PickerKind = "baseColor" | "theme" | "radius" | "chartColor" | "fontSans" | "fontHeading";
+
+function picker(page: Page, kind: PickerKind) {
   return page.locator(`[data-theme-picker="${kind}"]`);
 }
 
-async function choose(
-  page: Page,
-  kind: "baseColor" | "theme" | "radius" | "chartColor",
-  accessibleName: string,
-) {
+async function choose(page: Page, kind: PickerKind, accessibleName: string) {
   const control = picker(page, kind);
   const content = control.locator("[data-gsxui-slot-popover-content]");
   if (!(await content.evaluate((element) => element.matches(":popover-open")))) {
@@ -81,10 +80,7 @@ async function choose(
   await control.getByRole("radio", { name: accessibleName, exact: true }).click();
 }
 
-async function selectionValue(
-  page: Page,
-  kind: "baseColor" | "theme" | "radius" | "chartColor",
-) {
+async function selectionValue(page: Page, kind: PickerKind) {
   return picker(page, kind).locator("[data-theme-selection-value]").textContent();
 }
 
@@ -182,6 +178,24 @@ test("pickers expose accessible catalog choices and no raw token inputs", async 
   for (const kind of ["baseColor", "theme", "radius", "chartColor"] as const) {
     await expect(picker(page, kind).locator("[data-theme-selection-swatch]")).toBeVisible();
     await expect(picker(page, kind).locator("[data-theme-choice-swatch]")).not.toHaveCount(0);
+  }
+
+  // Font pickers are the same catalog-radio shape as every axis above, but
+  // deliberately carry no swatch — a font isn't a hue or a radius, so
+  // ThemePicker's swatch circle stays hidden for every option (catalog.go's
+  // FontChoice has no Swatch field, unlike PaletteChoice).
+  const fontSans = picker(page, "fontSans");
+  await fontSans.locator("[data-theme-picker-trigger]").click();
+  await expect(fontSans.getByRole("radio")).toHaveCount(6);
+  await expect(fontSans.getByRole("radio", { name: "Geist", exact: true })).toBeChecked();
+
+  const fontHeading = picker(page, "fontHeading");
+  await fontHeading.locator("[data-theme-picker-trigger]").click();
+  await expect(fontHeading.getByRole("radio")).toHaveCount(6);
+  await expect(fontHeading.getByRole("radio", { name: "Geist", exact: true })).toBeChecked();
+
+  for (const kind of ["fontSans", "fontHeading"] as const) {
+    await expect(picker(page, kind).locator("[data-theme-selection-swatch]")).toBeHidden();
   }
 });
 
@@ -317,6 +331,55 @@ test("chart color picker overlays chart-1..5 independent of theme and survives a
   await expect
     .poll(() => iframeVariable(page, "chart-1"))
     .toBe(catalog.palette.chartColors.violet.light["chart-1"]);
+});
+
+test("font pickers set --font-sans/--font-heading independently and survive a theme change", async ({
+  page,
+}) => {
+  await page.goto("/theme");
+  const catalog = await schema(page);
+  const interStack = catalog.palette.fonts.find((choice) => choice.name === "inter")!.stack;
+  const playfairStack = catalog.palette.fonts.find(
+    (choice) => choice.name === "playfair-display",
+  )!.stack;
+
+  const beforeFontSans = await iframeVariable(page, "font-sans");
+  const beforeFontHeading = await iframeVariable(page, "font-heading");
+  const beforePrimary = await iframeVariable(page, "primary");
+  await expect(selectionValue(page, "fontSans")).resolves.toBe("Geist");
+  await expect(selectionValue(page, "fontHeading")).resolves.toBe("Geist");
+  expect(beforeFontSans).toBe(beforeFontHeading);
+
+  await choose(page, "fontSans", "Inter");
+  await expect(selectionValue(page, "fontSans")).resolves.toBe("Inter");
+  // Body and heading fonts are independent axes: changing one never touches
+  // the other, and neither touches unrelated theme colors.
+  await expect(selectionValue(page, "fontHeading")).resolves.toBe("Geist");
+  await expect.poll(() => iframeVariable(page, "font-sans")).toBe(interStack);
+  await expect.poll(() => iframeVariable(page, "font-heading")).toBe(beforeFontHeading);
+  await expect.poll(() => iframeVariable(page, "primary")).toBe(beforePrimary);
+
+  await choose(page, "fontHeading", "Playfair Display");
+  await expect(selectionValue(page, "fontHeading")).resolves.toBe("Playfair Display");
+  await expect.poll(() => iframeVariable(page, "font-heading")).toBe(playfairStack);
+  // Body font untouched by the heading font change.
+  await expect.poll(() => iframeVariable(page, "font-sans")).toBe(interStack);
+
+  // Both overrides survive an unrelated theme change.
+  await choose(page, "theme", "Blue");
+  await expect.poll(() => iframeVariable(page, "primary")).not.toBe(beforePrimary);
+  await expect.poll(() => iframeVariable(page, "font-sans")).toBe(interStack);
+  await expect.poll(() => iframeVariable(page, "font-heading")).toBe(playfairStack);
+
+  // The picked heading font is visibly applied in the preview, not just
+  // set as an inert CSS variable — gallery.gsx.src's CardTitle elements
+  // read var(--font-heading) directly.
+  const cardTitleFontFamily = await page
+    .frameLocator("[data-theme-preview-frame]")
+    .locator('[data-theme-preview-style="nova"] [data-gsxui-slot-card-title]')
+    .first()
+    .evaluate((element) => getComputedStyle(element).fontFamily);
+  expect(cardTitleFontFamily).toContain("Playfair Display Variable");
 });
 
 test("desktop hover previews only the iframe and restores on dismissal or pointer leave", async ({
