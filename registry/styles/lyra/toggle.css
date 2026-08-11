@@ -5,7 +5,7 @@
 @layer components {
   /* carried: no upstream counterpart */
   .gsxui-recipe-toggle {
-    @apply hover:text-foreground aria-pressed:bg-muted focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive data-[state=on]:bg-muted gap-1 rounded-none text-xs font-medium transition-all [&_svg:not([class*='size-'])]:size-4 inline-flex;
+    @apply hover:text-foreground aria-pressed:bg-muted focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-muted gap-1 rounded-none text-xs font-medium transition-all [&_svg:not([class*='size-'])]:size-4 inline-flex;
   }
 
   .gsxui-recipe-toggle-variant-default {
@@ -17,14 +17,14 @@
   }
 
   .gsxui-recipe-toggle-size-default {
-    @apply h-8 min-w-8 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2;
+    @apply h-8 min-w-8 px-2.5 has-[>svg]:px-2;
   }
 
   .gsxui-recipe-toggle-size-sm {
-    @apply h-7 min-w-7 rounded-none px-2.5 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5;
+    @apply h-7 min-w-7 rounded-none px-2.5 has-[>svg]:px-1.5;
   }
 
   .gsxui-recipe-toggle-size-lg {
-    @apply h-9 min-w-9 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2;
+    @apply h-9 min-w-9 px-2.5 has-[>svg]:px-2;
   }
 }

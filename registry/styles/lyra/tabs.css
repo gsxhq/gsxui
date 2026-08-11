@@ -10,12 +10,12 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-tabs-list {
-    @apply rounded-none p-[3px] group-data-horizontal/tabs:h-8 data-[variant=line]:rounded-none inline-flex;
+    @apply rounded-none p-[3px] h-8 inline-flex;
   }
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-tabs-trigger {
-    @apply gap-1.5 rounded-none border border-transparent px-1.5 py-0.5 text-xs font-medium group-data-vertical/tabs:py-[calc(--spacing(1.25))] [&_svg:not([class*='size-'])]:size-4 has-data-[icon=inline-end]:pr-1 has-data-[icon=inline-start]:pl-1 inline-flex;
+    @apply gap-1.5 rounded-none border border-transparent px-1.5 py-0.5 text-xs font-medium [&_svg:not([class*='size-'])]:size-4 has-[>svg]:px-1 inline-flex;
   }
 
   .gsxui-recipe-tabs-content {
