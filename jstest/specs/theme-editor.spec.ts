@@ -254,6 +254,34 @@ test("Base Color and Theme choices update both iframe modes and the same-named o
     .toBe(catalog.palette.resolved.stone.blue.dark.primary);
 });
 
+test("menu accent tabs overlay accent from primary and survive a theme change", async ({
+  page,
+}) => {
+  await page.goto("/theme");
+  const subtleTab = page.locator('[data-theme-menu-accent-tab="subtle"]');
+  const boldTab = page.locator('[data-theme-menu-accent-tab="bold"]');
+  await expect(subtleTab).toHaveAttribute("aria-pressed", "true");
+  await expect(boldTab).toHaveAttribute("aria-pressed", "false");
+
+  const subtleAccent = await iframeVariable(page, "accent");
+  const primary = await iframeVariable(page, "primary");
+  expect(subtleAccent).not.toBe(primary);
+
+  await boldTab.click();
+  await expect(boldTab).toHaveAttribute("aria-pressed", "true");
+  await expect(subtleTab).toHaveAttribute("aria-pressed", "false");
+  await expect.poll(() => iframeVariable(page, "accent")).toBe(primary);
+
+  // The override survives an unrelated theme change instead of being wiped
+  // by the fresh base color/theme resolution.
+  await choose(page, "theme", "Blue");
+  await expect.poll(() => iframeVariable(page, "primary")).not.toBe(primary);
+  await expect.poll(() => iframeVariable(page, "accent")).toBe(await iframeVariable(page, "primary"));
+
+  await subtleTab.click();
+  await expect.poll(() => iframeVariable(page, "accent")).not.toBe(await iframeVariable(page, "primary"));
+});
+
 test("desktop hover previews only the iframe and restores on dismissal or pointer leave", async ({
   page,
 }) => {

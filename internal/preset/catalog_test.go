@@ -130,28 +130,31 @@ func TestPaletteCatalogResolvesAndMatchesEveryCombination(t *testing.T) {
 			}
 			for _, theme := range themes {
 				for _, radius := range RadiusChoices() {
-					selection := PaletteSelection{
-						BaseColor: baseColor,
-						Theme:     theme.Name,
-						Radius:    radius.Name,
-					}
-					resolved, err := ResolvePalette(style, selection)
-					if err != nil {
-						t.Fatalf("ResolvePalette(%q, %#v): %v", style, selection, err)
-					}
-					if err := Validate(resolved); err != nil {
-						t.Fatalf("Validate(ResolvePalette(%q, %#v)): %v", style, selection, err)
-					}
-					if got := MatchPalette(resolved); got != selection {
-						t.Fatalf("MatchPalette(ResolvePalette(%q, %#v)) = %#v", style, selection, got)
-					}
-
-					if style == StyleNova && radius.Name == "none" {
-						digest := hashPalette(resolved)
-						if prior, ok := seenPalettes[digest]; ok {
-							t.Fatalf("duplicate palette resolution: %#v and %#v", prior, selection)
+					for _, accent := range MenuAccentChoices() {
+						selection := PaletteSelection{
+							BaseColor:  baseColor,
+							Theme:      theme.Name,
+							Radius:     radius.Name,
+							MenuAccent: accent.Name,
 						}
-						seenPalettes[digest] = selection
+						resolved, err := ResolvePalette(style, selection)
+						if err != nil {
+							t.Fatalf("ResolvePalette(%q, %#v): %v", style, selection, err)
+						}
+						if err := Validate(resolved); err != nil {
+							t.Fatalf("Validate(ResolvePalette(%q, %#v)): %v", style, selection, err)
+						}
+						if got := MatchPalette(resolved); got != selection {
+							t.Fatalf("MatchPalette(ResolvePalette(%q, %#v)) = %#v", style, selection, got)
+						}
+
+						if style == StyleNova && radius.Name == "none" {
+							digest := hashPalette(resolved)
+							if prior, ok := seenPalettes[digest]; ok {
+								t.Fatalf("duplicate palette resolution: %#v and %#v", prior, selection)
+							}
+							seenPalettes[digest] = selection
+						}
 					}
 				}
 			}
@@ -160,7 +163,7 @@ func TestPaletteCatalogResolvesAndMatchesEveryCombination(t *testing.T) {
 }
 
 func TestDefaultResolvesCanonicalPaletteSelection(t *testing.T) {
-	want := PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "medium"}
+	want := PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "medium", MenuAccent: "subtle"}
 	if got := DefaultPaletteSelection(); got != want {
 		t.Fatalf("DefaultPaletteSelection() = %#v, want %#v", got, want)
 	}
@@ -177,7 +180,8 @@ func TestMatchPaletteReportsIndependentCustomSelections(t *testing.T) {
 		t.Fatal(err)
 	}
 	preset.Theme.Light["primary"] = "oklch(0.5 0.2 250)"
-	if got := MatchPalette(preset); got != (PaletteSelection{BaseColor: CustomChoice, Theme: CustomChoice, Radius: "medium"}) {
+	want := PaletteSelection{BaseColor: CustomChoice, Theme: CustomChoice, Radius: "medium", MenuAccent: "subtle"}
+	if got := MatchPalette(preset); got != want {
 		t.Fatalf("MatchPalette(custom palette) = %#v", got)
 	}
 
@@ -186,8 +190,18 @@ func TestMatchPaletteReportsIndependentCustomSelections(t *testing.T) {
 		t.Fatal(err)
 	}
 	preset.Radius = "1rem"
-	if got := MatchPalette(preset); got != (PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: CustomChoice}) {
+	want = PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: CustomChoice, MenuAccent: "subtle"}
+	if got := MatchPalette(preset); got != want {
 		t.Fatalf("MatchPalette(custom radius) = %#v", got)
+	}
+
+	preset, err = ResolvePalette(StyleNova, PaletteSelection{BaseColor: "neutral", Theme: "blue", Radius: "medium", MenuAccent: "bold"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want = PaletteSelection{BaseColor: "neutral", Theme: "blue", Radius: "medium", MenuAccent: "bold"}
+	if got := MatchPalette(preset); got != want {
+		t.Fatalf("MatchPalette(bold accent) = %#v, want %#v", got, want)
 	}
 }
 

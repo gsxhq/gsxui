@@ -24,10 +24,63 @@ type RadiusChoice struct {
 	Value string
 }
 
+// MenuAccentChoice is a picker-metadata entry for the menu accent axis
+// (catalog.go's own analogue of PaletteChoice/RadiusChoice above): unlike
+// those, it carries no Swatch — "subtle" and "bold" are not hues, they are
+// which token pair (base accent vs. primary) accent/accent-foreground
+// borrow from. See applyMenuAccent.
+type MenuAccentChoice struct {
+	Name  string
+	Title string
+}
+
+var menuAccentCatalog = []MenuAccentChoice{
+	{Name: "subtle", Title: "Subtle"},
+	{Name: "bold", Title: "Bold"},
+}
+
+// MenuAccentChoices returns the menu accent axis's picker metadata. This is
+// the cheap half of the upstream menu-chrome axis (registry/config.ts's
+// menuAccent): a pure token override, ported directly. The color
+// (default/inverted) and appearance (solid/translucent) halves are
+// deliberately out of scope — they are DOM-class re-theming machinery
+// (a live MutationObserver toggling classes across every menu-bearing
+// component in every style), not a token swap, and gsxui's preview
+// architecture only ever pushes CSS custom property values today. See
+// docs/superpowers/plans/2026-08-11-theme-creator-parity.md Task 1c.
+func MenuAccentChoices() []MenuAccentChoice {
+	return slices.Clone(menuAccentCatalog)
+}
+
+func menuAccentChoiceByName(name string) *MenuAccentChoice {
+	for i := range menuAccentCatalog {
+		if menuAccentCatalog[i].Name == name {
+			return &menuAccentCatalog[i]
+		}
+	}
+	return nil
+}
+
+// accentOverrideTokens are the two tokens applyMenuAccent overwrites when
+// MenuAccent is "bold". They are excluded from MatchPalette's structural
+// base/theme comparison (below) because a bold override can move them away
+// from the values the matched base color would otherwise have contributed,
+// independent of which base color or theme is actually selected.
+var accentOverrideTokens = map[string]bool{"accent": true, "accent-foreground": true}
+
+func applyMenuAccent(values ThemeValues, accent string) {
+	if accent != "bold" {
+		return
+	}
+	values["accent"] = values["primary"]
+	values["accent-foreground"] = values["primary-foreground"]
+}
+
 type PaletteSelection struct {
-	BaseColor string
-	Theme     string
-	Radius    string
+	BaseColor  string
+	Theme      string
+	Radius     string
+	MenuAccent string
 }
 
 type baseColorDefinition struct {
@@ -100,7 +153,7 @@ func RadiusChoices() []RadiusChoice {
 }
 
 func DefaultPaletteSelection() PaletteSelection {
-	return PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "medium"}
+	return PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "medium", MenuAccent: "subtle"}
 }
 
 func ResolvePalette(style Style, selection PaletteSelection) (Preset, error) {
@@ -119,14 +172,22 @@ func ResolvePalette(style Style, selection PaletteSelection) (Preset, error) {
 
 func MatchPalette(preset Preset) PaletteSelection {
 	selection := PaletteSelection{
-		BaseColor: CustomChoice,
-		Theme:     CustomChoice,
-		Radius:    CustomChoice,
+		BaseColor:  CustomChoice,
+		Theme:      CustomChoice,
+		Radius:     CustomChoice,
+		MenuAccent: "subtle",
 	}
 	if Validate(preset) != nil {
 		return selection
 	}
+	selection.MenuAccent = matchMenuAccent(preset)
 
+	// accentOverrideTokens is excluded from this comparison: a bold menu
+	// accent (just detected above, independent of base color/theme)
+	// overwrites accent/accent-foreground in the resolved preset, so they
+	// no longer carry the base color's own signal once that's happened.
+	// The remaining ~30 compared tokens are already proven unique per
+	// base-color/theme combination by validateCatalog's own digest check.
 	for _, base := range baseColorCatalog {
 		choices, err := ThemeChoices(base.name)
 		if err != nil {
@@ -134,12 +195,14 @@ func MatchPalette(preset Preset) PaletteSelection {
 		}
 		for _, theme := range choices {
 			candidate, err := resolvePalette(preset.Style, PaletteSelection{
-				BaseColor: base.name,
-				Theme:     theme.Name,
-				Radius:    "medium",
+				BaseColor:  base.name,
+				Theme:      theme.Name,
+				Radius:     "medium",
+				MenuAccent: "subtle",
 			})
-			if err == nil && themeValuesEqual(candidate.Theme.Light, preset.Theme.Light) &&
-				themeValuesEqual(candidate.Theme.Dark, preset.Theme.Dark) {
+			if err == nil &&
+				themeValuesEqualExcluding(candidate.Theme.Light, preset.Theme.Light, accentOverrideTokens) &&
+				themeValuesEqualExcluding(candidate.Theme.Dark, preset.Theme.Dark, accentOverrideTokens) {
 				selection.BaseColor = base.name
 				selection.Theme = theme.Name
 				break
@@ -156,6 +219,21 @@ func MatchPalette(preset Preset) PaletteSelection {
 		}
 	}
 	return selection
+}
+
+// matchMenuAccent has no "custom" outcome, unlike the other axes: bold is
+// defined structurally (accent/accent-foreground literally equal
+// primary/primary-foreground in both modes, applyMenuAccent's own
+// postcondition), so every preset is either bold or — by default — subtle.
+func matchMenuAccent(preset Preset) string {
+	bold := preset.Theme.Light["accent"] == preset.Theme.Light["primary"] &&
+		preset.Theme.Light["accent-foreground"] == preset.Theme.Light["primary-foreground"] &&
+		preset.Theme.Dark["accent"] == preset.Theme.Dark["primary"] &&
+		preset.Theme.Dark["accent-foreground"] == preset.Theme.Dark["primary-foreground"]
+	if bold {
+		return "bold"
+	}
+	return "subtle"
 }
 
 func canonicalDefault(style Style) Preset {
@@ -190,12 +268,17 @@ func resolvePalette(style Style, selection PaletteSelection) (Preset, error) {
 	if radius == nil {
 		return Preset{}, fmt.Errorf("radius %q is not in the palette catalog", selection.Radius)
 	}
+	if menuAccentChoiceByName(selection.MenuAccent) == nil {
+		return Preset{}, fmt.Errorf("menu accent %q is not in the palette catalog", selection.MenuAccent)
+	}
 
 	preset := canonicalDefault(style)
 	applyThemeValues(preset.Theme.Light, base.light)
 	applyThemeValues(preset.Theme.Dark, base.dark)
 	applyThemeValues(preset.Theme.Light, theme.light)
 	applyThemeValues(preset.Theme.Dark, theme.dark)
+	applyMenuAccent(preset.Theme.Light, selection.MenuAccent)
+	applyMenuAccent(preset.Theme.Dark, selection.MenuAccent)
 	preset.Radius = radius.Value
 	return preset, nil
 }
@@ -244,8 +327,11 @@ func applyThemeValues(destination, overrides ThemeValues) {
 	maps.Copy(destination, overrides)
 }
 
-func themeValuesEqual(a, b ThemeValues) bool {
+func themeValuesEqualExcluding(a, b ThemeValues, excluded map[string]bool) bool {
 	for _, name := range TokenNames() {
+		if excluded[name] {
+			continue
+		}
 		if a[name] != b[name] {
 			return false
 		}
@@ -278,9 +364,10 @@ func validateCatalog() error {
 		}
 		for _, theme := range choices {
 			preset, err := resolvePalette(StyleNova, PaletteSelection{
-				BaseColor: base.name,
-				Theme:     theme.Name,
-				Radius:    radiusCatalog[0].Name,
+				BaseColor:  base.name,
+				Theme:      theme.Name,
+				Radius:     radiusCatalog[0].Name,
+				MenuAccent: "subtle",
 			})
 			if err != nil {
 				return err

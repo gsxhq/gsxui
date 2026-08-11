@@ -12,15 +12,17 @@ const (
 	compactSharePrefix = "gsxui:p1:"
 	base62Alphabet     = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
-	compactStyleBits     = 4
-	compactBaseColorBits = 4
-	compactThemeBits     = 5
-	compactRadiusBits    = 3
+	compactStyleBits      = 4
+	compactBaseColorBits  = 4
+	compactThemeBits      = 5
+	compactRadiusBits     = 3
+	compactMenuAccentBits = 2
 
-	compactBaseColorShift = compactStyleBits
-	compactThemeShift     = compactBaseColorShift + compactBaseColorBits
-	compactRadiusShift    = compactThemeShift + compactThemeBits
-	compactSchemaBits     = compactRadiusShift + compactRadiusBits
+	compactBaseColorShift  = compactStyleBits
+	compactThemeShift      = compactBaseColorShift + compactBaseColorBits
+	compactRadiusShift     = compactThemeShift + compactThemeBits
+	compactMenuAccentShift = compactRadiusShift + compactRadiusBits
+	compactSchemaBits      = compactMenuAccentShift + compactMenuAccentBits
 )
 
 // These arrays are the append-only p1 transport ABI. They intentionally do
@@ -80,6 +82,16 @@ var compactRadii = []string{
 	"large",
 }
 
+// compactMenuAccents was appended after compactRadii (Task 1c); index 0
+// ("subtle") is what every share code minted before this axis existed
+// decodes to, since their unused high bits read as zero — exactly the
+// behavior those presets already had (accent/accent-foreground were never
+// overridden).
+var compactMenuAccents = []string{
+	"subtle",
+	"bold",
+}
+
 type ShareSchema struct {
 	FullPrefix    string
 	CompactPrefix string
@@ -87,6 +99,7 @@ type ShareSchema struct {
 	BaseColors    []string
 	Themes        []string
 	Radii         []string
+	MenuAccents   []string
 }
 
 func ShareTransportSchema() ShareSchema {
@@ -97,6 +110,7 @@ func ShareTransportSchema() ShareSchema {
 		BaseColors:    slices.Clone(compactBaseColors),
 		Themes:        slices.Clone(compactThemes),
 		Radii:         slices.Clone(compactRadii),
+		MenuAccents:   slices.Clone(compactMenuAccents),
 	}
 }
 
@@ -114,14 +128,16 @@ func encodeCompactShare(value Preset) (string, bool, error) {
 	baseColorIndex := indexStringValue(compactBaseColors, selection.BaseColor)
 	themeIndex := indexStringValue(compactThemes, selection.Theme)
 	radiusIndex := indexStringValue(compactRadii, selection.Radius)
-	if styleIndex == -1 || baseColorIndex == -1 || themeIndex == -1 || radiusIndex == -1 {
+	menuAccentIndex := indexStringValue(compactMenuAccents, selection.MenuAccent)
+	if styleIndex == -1 || baseColorIndex == -1 || themeIndex == -1 || radiusIndex == -1 || menuAccentIndex == -1 {
 		return "", false, nil
 	}
 
 	packed := uint64(styleIndex) |
 		uint64(baseColorIndex)<<compactBaseColorShift |
 		uint64(themeIndex)<<compactThemeShift |
-		uint64(radiusIndex)<<compactRadiusShift
+		uint64(radiusIndex)<<compactRadiusShift |
+		uint64(menuAccentIndex)<<compactMenuAccentShift
 	return compactSharePrefix + encodeBase62(packed), true, nil
 }
 
@@ -144,6 +160,7 @@ func decodeCompactShare(payload string) (Preset, error) {
 	baseColorIndex := int((packed >> compactBaseColorShift) & compactMask(compactBaseColorBits))
 	themeIndex := int((packed >> compactThemeShift) & compactMask(compactThemeBits))
 	radiusIndex := int((packed >> compactRadiusShift) & compactMask(compactRadiusBits))
+	menuAccentIndex := int((packed >> compactMenuAccentShift) & compactMask(compactMenuAccentBits))
 
 	if styleIndex >= len(compactStyles) {
 		return Preset{}, fmt.Errorf("compact payload uses unused style index %d", styleIndex)
@@ -157,11 +174,15 @@ func decodeCompactShare(payload string) (Preset, error) {
 	if radiusIndex >= len(compactRadii) {
 		return Preset{}, fmt.Errorf("compact payload uses unused radius index %d", radiusIndex)
 	}
+	if menuAccentIndex >= len(compactMenuAccents) {
+		return Preset{}, fmt.Errorf("compact payload uses unused menu accent index %d", menuAccentIndex)
+	}
 
 	selection := PaletteSelection{
-		BaseColor: compactBaseColors[baseColorIndex],
-		Theme:     compactThemes[themeIndex],
-		Radius:    compactRadii[radiusIndex],
+		BaseColor:  compactBaseColors[baseColorIndex],
+		Theme:      compactThemes[themeIndex],
+		Radius:     compactRadii[radiusIndex],
+		MenuAccent: compactMenuAccents[menuAccentIndex],
 	}
 	value, err := ResolvePalette(compactStyles[styleIndex], selection)
 	if err != nil {

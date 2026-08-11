@@ -71,6 +71,9 @@ func TestThemeEditorSchemaMatchesPresetAuthority(t *testing.T) {
 	if !reflect.DeepEqual(schema.Transport.Compact.Radii, transport.Radii) {
 		t.Errorf("compact radii = %#v, want %#v", schema.Transport.Compact.Radii, transport.Radii)
 	}
+	if !reflect.DeepEqual(schema.Transport.Compact.MenuAccents, transport.MenuAccents) {
+		t.Errorf("compact menu accents = %#v, want %#v", schema.Transport.Compact.MenuAccents, transport.MenuAccents)
+	}
 	if !reflect.DeepEqual(schema.TokenNames, preset.TokenNames()) {
 		t.Errorf("token names = %#v, want %#v", schema.TokenNames, preset.TokenNames())
 	}
@@ -90,17 +93,22 @@ func TestThemeEditorSchemaMatchesPresetAuthority(t *testing.T) {
 	if got := len(schema.Palette.Radii); got != 4 {
 		t.Errorf("palette radii = %d, want 4", got)
 	}
+	if got := len(schema.Palette.MenuAccents); got != 2 {
+		t.Errorf("palette menu accents = %d, want 2", got)
+	}
 	if got, want := schema.Palette.DefaultSelection, (struct {
-		BaseColor string `json:"baseColor"`
-		Theme     string `json:"theme"`
-		Radius    string `json:"radius"`
-	}{BaseColor: "neutral", Theme: "neutral", Radius: "medium"}); got != want {
+		BaseColor  string `json:"baseColor"`
+		Theme      string `json:"theme"`
+		Radius     string `json:"radius"`
+		MenuAccent string `json:"menuAccent"`
+	}{BaseColor: "neutral", Theme: "neutral", Radius: "medium", MenuAccent: "subtle"}); got != want {
 		t.Errorf("palette default selection = %#v, want %#v", got, want)
 	}
 	wantBlue, err := preset.ResolvePalette(preset.StyleNova, preset.PaletteSelection{
-		BaseColor: "neutral",
-		Theme:     "blue",
-		Radius:    "medium",
+		BaseColor:  "neutral",
+		Theme:      "blue",
+		Radius:     "medium",
+		MenuAccent: "subtle",
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -140,10 +148,11 @@ type transportSchemaProbe struct {
 	FullPrefix    string `json:"fullPrefix"`
 	CompactPrefix string `json:"compactPrefix"`
 	Compact       struct {
-		Styles     []string `json:"styles"`
-		BaseColors []string `json:"baseColors"`
-		Themes     []string `json:"themes"`
-		Radii      []string `json:"radii"`
+		Styles      []string `json:"styles"`
+		BaseColors  []string `json:"baseColors"`
+		Themes      []string `json:"themes"`
+		Radii       []string `json:"radii"`
+		MenuAccents []string `json:"menuAccents"`
 	} `json:"compact"`
 }
 
@@ -158,14 +167,19 @@ type paletteSchemaProbe struct {
 		Name  string `json:"name"`
 		Value string `json:"value"`
 	} `json:"radii"`
+	MenuAccents []struct {
+		Name  string `json:"name"`
+		Title string `json:"title"`
+	} `json:"menuAccents"`
 	Resolved map[string]map[string]struct {
 		Light preset.ThemeValues `json:"light"`
 		Dark  preset.ThemeValues `json:"dark"`
 	} `json:"resolved"`
 	DefaultSelection struct {
-		BaseColor string `json:"baseColor"`
-		Theme     string `json:"theme"`
-		Radius    string `json:"radius"`
+		BaseColor  string `json:"baseColor"`
+		Theme      string `json:"theme"`
+		Radius     string `json:"radius"`
+		MenuAccent string `json:"menuAccent"`
 	} `json:"defaultSelection"`
 }
 

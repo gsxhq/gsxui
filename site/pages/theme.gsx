@@ -34,16 +34,18 @@ type themeTransportSchema struct {
 }
 
 type themeCompactTransportSchema struct {
-	Styles     []string `json:"styles"`
-	BaseColors []string `json:"baseColors"`
-	Themes     []string `json:"themes"`
-	Radii      []string `json:"radii"`
+	Styles      []string `json:"styles"`
+	BaseColors  []string `json:"baseColors"`
+	Themes      []string `json:"themes"`
+	Radii       []string `json:"radii"`
+	MenuAccents []string `json:"menuAccents"`
 }
 
 type themePaletteSchema struct {
 	BaseColors       []themePaletteChoiceSchema                       `json:"baseColors"`
 	Themes           map[string][]themePaletteChoiceSchema            `json:"themes"`
 	Radii            []themeRadiusChoiceSchema                        `json:"radii"`
+	MenuAccents      []themeMenuAccentChoiceSchema                    `json:"menuAccents"`
 	Resolved         map[string]map[string]themePaletteResolvedSchema `json:"resolved"`
 	DefaultSelection themePaletteSelectionSchema                      `json:"defaultSelection"`
 }
@@ -60,15 +62,21 @@ type themeRadiusChoiceSchema struct {
 	Value string `json:"value"`
 }
 
+type themeMenuAccentChoiceSchema struct {
+	Name  string `json:"name"`
+	Title string `json:"title"`
+}
+
 type themePaletteResolvedSchema struct {
 	Light preset.ThemeValues `json:"light"`
 	Dark  preset.ThemeValues `json:"dark"`
 }
 
 type themePaletteSelectionSchema struct {
-	BaseColor string `json:"baseColor"`
-	Theme     string `json:"theme"`
-	Radius    string `json:"radius"`
+	BaseColor  string `json:"baseColor"`
+	Theme      string `json:"theme"`
+	Radius     string `json:"radius"`
+	MenuAccent string `json:"menuAccent"`
 }
 
 func themeEditorSchemaValue() themeEditorSchema {
@@ -106,10 +114,11 @@ func themeTransportSchemaValue() themeTransportSchema {
 		FullPrefix:    transport.FullPrefix,
 		CompactPrefix: transport.CompactPrefix,
 		Compact: themeCompactTransportSchema{
-			Styles:     styles,
-			BaseColors: transport.BaseColors,
-			Themes:     transport.Themes,
-			Radii:      transport.Radii,
+			Styles:      styles,
+			BaseColors:  transport.BaseColors,
+			Themes:      transport.Themes,
+			Radii:       transport.Radii,
+			MenuAccents: transport.MenuAccents,
 		},
 	}
 }
@@ -120,6 +129,7 @@ func themePaletteSchemaValue() themePaletteSchema {
 		BaseColors:       themePaletteChoiceSchemaValues(preset.BaseColorChoices()),
 		Themes:           make(map[string][]themePaletteChoiceSchema),
 		Radii:            themeRadiusChoiceSchemaValues(preset.RadiusChoices()),
+		MenuAccents:      themeMenuAccentChoiceSchemaValues(preset.MenuAccentChoices()),
 		Resolved:         make(map[string]map[string]themePaletteResolvedSchema),
 		DefaultSelection: themePaletteSelectionSchemaFromPreset(selection),
 	}
@@ -131,10 +141,14 @@ func themePaletteSchemaValue() themePaletteSchema {
 		schema.Themes[baseColor.Name] = themePaletteChoiceSchemaValues(themes)
 		schema.Resolved[baseColor.Name] = make(map[string]themePaletteResolvedSchema, len(themes))
 		for _, theme := range themes {
+			// Resolved swatches always use the default menu accent
+			// ("subtle"): this matrix backs the base color/theme pickers'
+			// hue previews, not the independent menu-accent control.
 			resolved, err := preset.ResolvePalette(preset.StyleNova, preset.PaletteSelection{
-				BaseColor: baseColor.Name,
-				Theme:     theme.Name,
-				Radius:    selection.Radius,
+				BaseColor:  baseColor.Name,
+				Theme:      theme.Name,
+				Radius:     selection.Radius,
+				MenuAccent: selection.MenuAccent,
 			})
 			if err != nil {
 				panic(err)
@@ -164,11 +178,20 @@ func themeRadiusChoiceSchemaValues(choices []preset.RadiusChoice) []themeRadiusC
 	return values
 }
 
+func themeMenuAccentChoiceSchemaValues(choices []preset.MenuAccentChoice) []themeMenuAccentChoiceSchema {
+	values := make([]themeMenuAccentChoiceSchema, len(choices))
+	for i, choice := range choices {
+		values[i] = themeMenuAccentChoiceSchema{Name: choice.Name, Title: choice.Title}
+	}
+	return values
+}
+
 func themePaletteSelectionSchemaFromPreset(selection preset.PaletteSelection) themePaletteSelectionSchema {
 	return themePaletteSelectionSchema{
-		BaseColor: selection.BaseColor,
-		Theme:     selection.Theme,
-		Radius:    selection.Radius,
+		BaseColor:  selection.BaseColor,
+		Theme:      selection.Theme,
+		Radius:     selection.Radius,
+		MenuAccent: selection.MenuAccent,
 	}
 }
 
@@ -227,6 +250,25 @@ func themeStyleButtonClass(name string) string {
 }
 
 const tabBtnBase = "rounded-md border border-border px-3 py-1.5 text-sm font-medium transition-colors"
+
+// themeMenuAccentPressedAttr and themeMenuAccentTabClass are the menu
+// accent tab pair's JS-less first-paint default, the same pattern as
+// themeStylePressedAttr/themeStyleButtonClass above: web/theme.js's
+// render() re-syncs both against state.selection.menuAccent afterward.
+// "subtle" is DefaultPaletteSelection()'s own default.
+func themeMenuAccentPressedAttr(name string) string {
+	if name == "subtle" {
+		return "true"
+	}
+	return "false"
+}
+
+func themeMenuAccentTabClass(name string) string {
+	if name == "subtle" {
+		return tabBtnBase + " bg-accent text-accent-foreground"
+	}
+	return tabBtnBase + " text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+}
 
 const themeImportPlaceholder = `:root {
   --primary: oklch(0.6 0.2 280);
@@ -335,23 +377,41 @@ component themeEditor(previewURL string, workspace bool) {
 				<section class="flex flex-col gap-3 border-t border-border pt-6">
 					<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Mode and palette</h2>
 					<div class="flex flex-wrap items-end justify-between gap-4">
-						<div class="flex items-center gap-2">
-							<button
-								type="button"
-								data-theme-mode-tab="light"
-								aria-pressed="true"
-								class={ tabBtnBase, "bg-accent text-accent-foreground" }
-							>
-								Light
-							</button>
-							<button
-								type="button"
-								data-theme-mode-tab="dark"
-								aria-pressed="false"
-								class={ tabBtnBase, "text-muted-foreground hover:bg-accent hover:text-accent-foreground" }
-							>
-								Dark
-							</button>
+						<div class="flex flex-col gap-1.5">
+							<span class="text-xs text-muted-foreground">Mode</span>
+							<div class="flex items-center gap-2">
+								<button
+									type="button"
+									data-theme-mode-tab="light"
+									aria-pressed="true"
+									class={ tabBtnBase, "bg-accent text-accent-foreground" }
+								>
+									Light
+								</button>
+								<button
+									type="button"
+									data-theme-mode-tab="dark"
+									aria-pressed="false"
+									class={ tabBtnBase, "text-muted-foreground hover:bg-accent hover:text-accent-foreground" }
+								>
+									Dark
+								</button>
+							</div>
+						</div>
+						<div class="flex flex-col gap-1.5">
+							<span class="text-xs text-muted-foreground">Menu accent</span>
+							<div class="flex items-center gap-2">
+								{ for _, choice := range preset.MenuAccentChoices() {
+									<button
+										type="button"
+										data-theme-menu-accent-tab={choice.Name}
+										aria-pressed={themeMenuAccentPressedAttr(choice.Name)}
+										class={themeMenuAccentTabClass(choice.Name)}
+									>
+										{ choice.Title }
+									</button>
+								} }
+							</div>
 						</div>
 					</div>
 					<div class="grid grid-cols-1 gap-3 sm:grid-cols-3">

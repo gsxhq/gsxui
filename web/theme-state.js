@@ -76,10 +76,26 @@ function paletteResolution(schema, baseColor, theme) {
   return resolution;
 }
 
-function applyPaletteTheme(preset, schema, baseColor, theme) {
+// accentOverrideTokens mirrors catalog.go's accentOverrideTokens: the two
+// tokens applyMenuAccent overwrites when bold, and so the two tokens
+// excluded from matchedPaletteSelection's base color/theme comparison
+// below (schema.palette.resolved is always baked at the "subtle" default,
+// so a bold preset's accent/accent-foreground never equal it on those two
+// keys alone, independent of which base color or theme actually matches).
+const accentOverrideTokens = new Set(["accent", "accent-foreground"]);
+
+function applyMenuAccent(values, accent) {
+  if (accent !== "bold") return;
+  values.accent = values.primary;
+  values["accent-foreground"] = values["primary-foreground"];
+}
+
+function applyPaletteTheme(preset, schema, baseColor, theme, menuAccent) {
   const resolution = paletteResolution(schema, baseColor, theme);
   preset.theme.light = clone(resolution.light);
   preset.theme.dark = clone(resolution.dark);
+  applyMenuAccent(preset.theme.light, menuAccent);
+  applyMenuAccent(preset.theme.dark, menuAccent);
 }
 
 function themeSelectionForBase(state, baseColor, schema) {
@@ -90,14 +106,25 @@ function themeSelectionForBase(state, baseColor, schema) {
   return theme;
 }
 
+// resolvedBaseColorAndTheme collapses "custom" the same way every committing
+// palette reducer already does (see selectTheme/selectBaseColor below and
+// the pre-existing tests documenting this): an axis picker always operates
+// within the catalog model, so touching one axis while the others are
+// custom snaps them to a concrete baseline first.
+function resolvedBaseColorAndTheme(state) {
+  const baseColor = state.selection.baseColor === "custom" ? "neutral" : state.selection.baseColor;
+  const theme = state.selection.theme === "custom" ? baseColor : state.selection.theme;
+  return { baseColor, theme };
+}
+
 function matchedPaletteSelection(preset, schema) {
   let baseColor = "custom";
   let theme = "custom";
   for (const [candidateBaseColor, themes] of Object.entries(schema.palette.resolved)) {
     for (const [candidateTheme, resolved] of Object.entries(themes)) {
       if (
-        themeValuesEqual(preset.theme.light, resolved.light, schema.tokenNames) &&
-        themeValuesEqual(preset.theme.dark, resolved.dark, schema.tokenNames)
+        themeValuesEqual(preset.theme.light, resolved.light, schema.tokenNames, accentOverrideTokens) &&
+        themeValuesEqual(preset.theme.dark, resolved.dark, schema.tokenNames, accentOverrideTokens)
       ) {
         baseColor = candidateBaseColor;
         theme = candidateTheme;
@@ -107,11 +134,26 @@ function matchedPaletteSelection(preset, schema) {
     if (baseColor !== "custom") break;
   }
   const radius = schema.palette.radii.find((choice) => choice.value === preset.radius)?.name ?? "custom";
-  return { baseColor, theme, radius };
+  const menuAccent = matchMenuAccent(preset);
+  return { baseColor, theme, radius, menuAccent };
 }
 
-function themeValuesEqual(a, b, tokenNames) {
-  return tokenNames.every((name) => a[name] === b[name]);
+function themeValuesEqual(a, b, tokenNames, excluded = null) {
+  return tokenNames.every((name) => excluded?.has(name) || a[name] === b[name]);
+}
+
+// matchMenuAccent has no "custom" outcome, unlike the other axes: bold is
+// defined structurally (accent/accent-foreground literally equal
+// primary/primary-foreground in both modes, applyMenuAccent's own
+// postcondition), so a preset is either bold or — by default — subtle.
+// Mirrors catalog.go's matchMenuAccent exactly.
+function matchMenuAccent(preset) {
+  const bold =
+    preset.theme.light.accent === preset.theme.light.primary &&
+    preset.theme.light["accent-foreground"] === preset.theme.light["primary-foreground"] &&
+    preset.theme.dark.accent === preset.theme.dark.primary &&
+    preset.theme.dark["accent-foreground"] === preset.theme.dark["primary-foreground"];
+  return bold ? "bold" : "subtle";
 }
 
 export function replacePreset(state, preset, schema) {
@@ -125,7 +167,7 @@ export function replacePreset(state, preset, schema) {
 export function selectBaseColor(state, baseColor, schema) {
   const next = cloneState(state);
   const theme = themeSelectionForBase(state, baseColor, schema);
-  applyPaletteTheme(next.resolved, schema, baseColor, theme);
+  applyPaletteTheme(next.resolved, schema, baseColor, theme, state.selection.menuAccent);
   next.selection.baseColor = baseColor;
   next.selection.theme = theme;
   next.previewResolved = null;
@@ -135,9 +177,23 @@ export function selectBaseColor(state, baseColor, schema) {
 export function selectTheme(state, theme, schema) {
   const next = cloneState(state);
   const baseColor = state.selection.baseColor === "custom" ? "neutral" : state.selection.baseColor;
-  applyPaletteTheme(next.resolved, schema, baseColor, theme);
+  applyPaletteTheme(next.resolved, schema, baseColor, theme, state.selection.menuAccent);
   next.selection.baseColor = baseColor;
   next.selection.theme = theme;
+  next.previewResolved = null;
+  return next;
+}
+
+export function selectMenuAccent(state, menuAccent, schema) {
+  if (!schema.palette.menuAccents.some((choice) => choice.name === menuAccent)) {
+    throw new Error(`unsupported palette menu accent ${String(menuAccent)}`);
+  }
+  const next = cloneState(state);
+  const { baseColor, theme } = resolvedBaseColorAndTheme(state);
+  applyPaletteTheme(next.resolved, schema, baseColor, theme, menuAccent);
+  next.selection.baseColor = baseColor;
+  next.selection.theme = theme;
+  next.selection.menuAccent = menuAccent;
   next.previewResolved = null;
   return next;
 }
@@ -158,7 +214,7 @@ export function previewBaseColor(state, baseColor, schema) {
   const next = cloneState(state);
   const theme = themeSelectionForBase(state, baseColor, schema);
   next.previewResolved = clone(next.resolved);
-  applyPaletteTheme(next.previewResolved, schema, baseColor, theme);
+  applyPaletteTheme(next.previewResolved, schema, baseColor, theme, state.selection.menuAccent);
   return next;
 }
 
@@ -166,7 +222,7 @@ export function previewTheme(state, theme, schema) {
   const next = cloneState(state);
   const baseColor = state.selection.baseColor === "custom" ? "neutral" : state.selection.baseColor;
   next.previewResolved = clone(next.resolved);
-  applyPaletteTheme(next.previewResolved, schema, baseColor, theme);
+  applyPaletteTheme(next.previewResolved, schema, baseColor, theme, state.selection.menuAccent);
   return next;
 }
 
@@ -339,13 +395,16 @@ function decodeBase62(value) {
 
 function compactSelection(preset, schema) {
   const selection = matchedPaletteSelection(preset, schema);
-  if (Object.values(selection).includes("custom")) return null;
+  if (selection.baseColor === "custom" || selection.theme === "custom" || selection.radius === "custom") {
+    return null;
+  }
   const compact = schema.transport.compact;
   const indexes = {
     style: compact.styles.indexOf(preset.style),
     baseColor: compact.baseColors.indexOf(selection.baseColor),
     theme: compact.themes.indexOf(selection.theme),
     radius: compact.radii.indexOf(selection.radius),
+    menuAccent: compact.menuAccents.indexOf(selection.menuAccent),
   };
   return Object.values(indexes).includes(-1) ? null : indexes;
 }
@@ -361,14 +420,15 @@ export function encodeShare(preset, schema) {
     BigInt(selection.style) |
     (BigInt(selection.baseColor) << 4n) |
     (BigInt(selection.theme) << 8n) |
-    (BigInt(selection.radius) << 13n);
+    (BigInt(selection.radius) << 13n) |
+    (BigInt(selection.menuAccent) << 16n);
   return `${schema.transport.compactPrefix}${encodeBase62(packed)}`;
 }
 
 function decodeCompactShare(code, schema, validators) {
   const payload = code.slice(schema.transport.compactPrefix.length);
   const packed = decodeBase62(payload);
-  if (packed >> 16n !== 0n) {
+  if (packed >> 18n !== 0n) {
     throw new Error("compact payload uses bits beyond the p1 schema");
   }
   const compact = schema.transport.compact;
@@ -377,6 +437,7 @@ function decodeCompactShare(code, schema, validators) {
     baseColor: Number((packed >> 4n) & 0xfn),
     theme: Number((packed >> 8n) & 0x1fn),
     radius: Number((packed >> 13n) & 0x7n),
+    menuAccent: Number((packed >> 16n) & 0x3n),
   };
   for (const [name, index] of Object.entries(indexes)) {
     const values =
@@ -386,7 +447,9 @@ function decodeCompactShare(code, schema, validators) {
           ? compact.baseColors
           : name === "theme"
             ? compact.themes
-            : compact.radii;
+            : name === "radius"
+              ? compact.radii
+              : compact.menuAccents;
     if (index >= values.length) throw new Error(`compact payload uses unused ${name} index`);
   }
 
@@ -394,6 +457,7 @@ function decodeCompactShare(code, schema, validators) {
   const baseColor = compact.baseColors[indexes.baseColor];
   const theme = compact.themes[indexes.theme];
   const radiusName = compact.radii[indexes.radius];
+  const menuAccent = compact.menuAccents[indexes.menuAccent];
   const resolved = schema.palette.resolved[baseColor]?.[theme];
   if (!resolved) {
     throw new Error(`compact payload has invalid base-color/theme combination ${baseColor}/${theme}`);
@@ -402,13 +466,17 @@ function decodeCompactShare(code, schema, validators) {
   if (radius === undefined) {
     throw new Error(`compact payload radius ${radiusName} is absent from the palette schema`);
   }
+  const light = clone(resolved.light);
+  const dark = clone(resolved.dark);
+  applyMenuAccent(light, menuAccent);
+  applyMenuAccent(dark, menuAccent);
   const preset = validatePreset(
     {
       $schema: schema.schema,
       schemaVersion: schema.schemaVersion,
       style,
       radius,
-      theme: clone(resolved),
+      theme: { light, dark },
     },
     schema,
     validators,

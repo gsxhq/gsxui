@@ -32,7 +32,7 @@ func TestCompactShareExactCodes(t *testing.T) {
 		{
 			name:      "zero boundary",
 			style:     StyleNova,
-			selection: PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "none"},
+			selection: PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "none", MenuAccent: "subtle"},
 			want:      "gsxui:p1:0",
 		},
 		{
@@ -50,8 +50,19 @@ func TestCompactShareExactCodes(t *testing.T) {
 		{
 			name:      "upper boundary",
 			style:     StyleMaia,
-			selection: PaletteSelection{BaseColor: "taupe", Theme: "yellow", Radius: "large"},
-			want:      "gsxui:p1:7wv",
+			selection: PaletteSelection{BaseColor: "taupe", Theme: "yellow", Radius: "large", MenuAccent: "bold"},
+			want:      "gsxui:p1:Ozx",
+		},
+		{
+			// "H32" (2^16) used to be rejected by TestDecodeCompactShareRejectsInvalidTransport
+			// as beyond the pre-Task-1c 16-bit schema; menuAccent's bit now
+			// claims that exact position, so it decodes to bold accent with
+			// every other axis at its catalog default — a concrete
+			// illustration of the append-only rule at compact.go:26-27.
+			name:      "menu accent bold only",
+			style:     StyleNova,
+			selection: PaletteSelection{BaseColor: "neutral", Theme: "neutral", Radius: "none", MenuAccent: "bold"},
+			want:      "gsxui:p1:H32",
 		},
 	}
 
@@ -84,9 +95,10 @@ func TestCompactShareRoundTripsEveryCatalogCombination(t *testing.T) {
 		for _, baseColor := range compactTransportBaseColors {
 			for _, theme := range compactTransportThemes {
 				selection := PaletteSelection{
-					BaseColor: baseColor,
-					Theme:     theme,
-					Radius:    compactTransportRadii[0],
+					BaseColor:  baseColor,
+					Theme:      theme,
+					Radius:     compactTransportRadii[0],
+					MenuAccent: "subtle",
 				}
 				if themeIndex := indexString(compactTransportThemes, theme); themeIndex < len(compactTransportBaseColors) &&
 					theme != baseColor {
@@ -128,6 +140,37 @@ func TestCompactShareRoundTripsEveryCatalogCombination(t *testing.T) {
 	}
 }
 
+// TestCompactShareMenuAccentRoundTrips exercises the menu accent axis
+// separately from TestCompactShareRoundTripsEveryCatalogCombination, which
+// fixes MenuAccent at "subtle" to keep the base/theme/radius/style
+// combinatorial sweep's runtime bounded.
+func TestCompactShareMenuAccentRoundTrips(t *testing.T) {
+	for _, accent := range compactMenuAccents {
+		selection := PaletteSelection{BaseColor: "taupe", Theme: "yellow", Radius: "large", MenuAccent: accent}
+		value, err := ResolvePalette(StyleRhea, selection)
+		if err != nil {
+			t.Fatalf("ResolvePalette(%#v): %v", selection, err)
+		}
+		code, err := EncodeShare(value)
+		if err != nil {
+			t.Fatalf("EncodeShare(%#v): %v", selection, err)
+		}
+		if !strings.HasPrefix(code, "gsxui:p1:") {
+			t.Fatalf("EncodeShare(%#v) = %q, want compact code", selection, code)
+		}
+		got, err := DecodeShare(code)
+		if err != nil {
+			t.Fatalf("DecodeShare(%q): %v", code, err)
+		}
+		if !presetsEqual(got, value) {
+			t.Fatalf("DecodeShare(%q) = %#v, want %#v", code, got, value)
+		}
+		if got := MatchPalette(got).MenuAccent; got != accent {
+			t.Fatalf("MatchPalette(DecodeShare(%q)).MenuAccent = %q, want %q", code, got, accent)
+		}
+	}
+}
+
 func TestShareTransportSchemaPinsAppendOnlyABI(t *testing.T) {
 	schema := ShareTransportSchema()
 	if schema.FullPrefix != "gsxui:v1:" {
@@ -140,14 +183,16 @@ func TestShareTransportSchemaPinsAppendOnlyABI(t *testing.T) {
 	assertStringsEqual(t, "base colors", schema.BaseColors, compactTransportBaseColors)
 	assertStringsEqual(t, "themes", schema.Themes, compactTransportThemes)
 	assertStringsEqual(t, "radii", schema.Radii, compactTransportRadii)
+	assertStringsEqual(t, "menu accents", schema.MenuAccents, []string{"subtle", "bold"})
 
 	schema.Styles[0] = "changed"
 	schema.BaseColors[0] = "changed"
 	schema.Themes[0] = "changed"
 	schema.Radii[0] = "changed"
+	schema.MenuAccents[0] = "changed"
 	again := ShareTransportSchema()
 	if again.Styles[0] != StyleNova || again.BaseColors[0] != "neutral" ||
-		again.Themes[0] != "neutral" || again.Radii[0] != "none" {
+		again.Themes[0] != "neutral" || again.Radii[0] != "none" || again.MenuAccents[0] != "subtle" {
 		t.Fatal("ShareTransportSchema returned shared ABI storage")
 	}
 }
@@ -198,8 +243,9 @@ func TestDecodeCompactShareRejectsInvalidTransport(t *testing.T) {
 		{name: "unused base color index", code: "gsxui:p1:1o", want: "base color"},
 		{name: "unused theme index", code: "gsxui:p1:1bc", want: "theme"},
 		{name: "unused radius index", code: "gsxui:p1:8WW", want: "radius"},
+		{name: "unused menu accent index", code: "gsxui:p1:Y64", want: "menu accent"},
 		{name: "invalid base and theme pair", code: "gsxui:p1:G", want: "combination"},
-		{name: "bits beyond schema", code: "gsxui:p1:H32", want: "schema"},
+		{name: "bits beyond schema", code: "gsxui:p1:16C8", want: "schema"},
 		{name: "leading zero", code: "gsxui:p1:04GG", want: "canonical"},
 	}
 
