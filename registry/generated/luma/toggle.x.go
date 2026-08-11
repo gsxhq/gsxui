@@ -58,19 +58,20 @@ import (
 //
 // ui/toggle-group.gsx's ToggleGroupItem stamps data-gsxui-slot-toggle
 // alongside its own marker WITHOUT calling any accessor here — see
-// assets/css/styles/default.css's Toggle marker fallback block for how that
-// composition keeps working after this migration.
+// registry/canonical/toggle-group.gsx and each style's own toggle-group.css,
+// which compose this component's own per-style presentation directly onto
+// ToggleGroupItem's recipe instead of relying on a shared marker fallback.
 
-//line toggle.gsx:52:1
+//line toggle.gsx:53:1
 func Toggle(pressed bool, variant string, size string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line toggle.gsx:53:2
+//line toggle.gsx:54:2
 		state := "off"
 		if pressed {
 			state = "on"
 		}
-//line toggle.gsx:59:2
+//line toggle.gsx:60:2
 		_gsxgw.S("<button")
 		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"button\"")
@@ -95,7 +96,7 @@ func Toggle(pressed bool, variant string, size string, children gsx.Node, attrs 
 			_gsxgw.S(_gsxsc.FormatBool(bool(pressed)))
 			_gsxgw.S("\"")
 		}
-		_gsxv0 := "hover:text-foreground aria-pressed:bg-muted focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive gap-1 rounded-3xl text-sm font-medium transition-colors [&_svg:not([class*='size-'])]:size-4 inline-flex"
+		_gsxv0 := "hover:text-foreground aria-pressed:bg-muted focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:opacity-50 gap-1 rounded-3xl text-sm font-medium transition-colors [&_svg:not([class*='size-'])]:size-4 inline-flex"
 		var _gsxv1 string
 		switch variant {
 		case "outline":
@@ -106,11 +107,11 @@ func Toggle(pressed bool, variant string, size string, children gsx.Node, attrs 
 		var _gsxv2 string
 		switch size {
 		case "sm":
-			_gsxv2 = "h-8 min-w-8 px-3 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2"
+			_gsxv2 = "h-8 min-w-8 px-3 has-[>svg]:px-2"
 		case "lg":
-			_gsxv2 = "h-10 min-w-10 px-4 has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3"
+			_gsxv2 = "h-10 min-w-10 px-4 has-[>svg]:px-3"
 		default:
-			_gsxv2 = "h-9 min-w-9 px-3 has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5"
+			_gsxv2 = "h-9 min-w-9 px-3 has-[>svg]:px-2.5"
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(attrs.Class()))
@@ -119,7 +120,7 @@ func Toggle(pressed bool, variant string, size string, children gsx.Node, attrs 
 		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-toggle"})
 		_gsxgw.BoolAttr("data-gsxui-slot-toggle", true)
 		_gsxgw.S(">")
-//line toggle.gsx:80:3
+//line toggle.gsx:81:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()

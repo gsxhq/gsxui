@@ -90,7 +90,7 @@ func _gsxrenderDrawerContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, directi
 	}
 //line drawer.gsx:36:2
 	_gsxgw.S("<dialog")
-	_gsxv0 := "backdrop:bg-black/30 supports-backdrop-filter:backdrop:backdrop-blur-sm before:bg-popover before:border-border relative flex h-auto flex-col bg-transparent p-4 text-sm before:absolute before:inset-2 before:-z-10 before:rounded-4xl before:border before:shadow-xl m-0 gap-4 shadow-lg transition ease-in-out text-popover-foreground z-50 duration-200 outline-none data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:backdrop-blur-xs backdrop:duration-200 data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 open:flex"
+	_gsxv0 := "backdrop:bg-black/30 supports-backdrop-filter:backdrop:backdrop-blur-sm before:bg-popover before:border-border relative flex h-auto flex-col bg-transparent p-4 text-sm before:absolute before:inset-2 before:-z-10 before:rounded-4xl before:border before:shadow-xl m-0 gap-4 shadow-lg transition ease-in-out backdrop:transition-none text-popover-foreground z-50 duration-200 outline-none data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:backdrop-blur-xs backdrop:duration-200 data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 open:flex"
 	var _gsxv1 string
 	switch direction {
 	case "left":

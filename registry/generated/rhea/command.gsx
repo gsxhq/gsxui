@@ -50,7 +50,7 @@ component CommandDialog(title string, description string, trigger gsx.Node, chil
 		{ trigger }
 		<DialogContent
 			data-gsxui-command-dialog
-			class={ "rounded-3xl p-0" }
+			class={ "rounded-3xl p-0 [dialog&]:overflow-hidden" }
 			{ attrs... }
 			data-gsxui-slot-command-dialog-content
 		>
@@ -147,7 +147,8 @@ component CommandItem(value string, children gsx.Node, attrs gsx.Attrs) {
 		role="option"
 		aria-selected="false"
 		class={
-			"data-selected:bg-muted data-selected:text-foreground data-selected:*:[svg]:text-foreground relative flex cursor-default items-center gap-2 min-h-7 rounded-xl px-2 py-1.5 text-sm outline-hidden select-none [[data-gsxui-slot-dialog-content]_&]:rounded-2xl [&_svg:not([class*='size-'])]:size-4"
+			"group/command-item",
+			"data-disabled:pointer-events-none data-selected:bg-muted data-selected:text-foreground data-selected:*:[svg]:text-foreground relative flex cursor-default items-center gap-2 min-h-7 rounded-xl px-2 py-1.5 text-sm outline-hidden select-none [[data-gsxui-slot-dialog-content]_&]:rounded-2xl [&_svg:not([class*='size-'])]:size-4"
 		}
 		{ attrs... }
 		data-gsxui-slot-command-item

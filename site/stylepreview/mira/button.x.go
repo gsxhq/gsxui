@@ -70,11 +70,11 @@ func _gsxrenderButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string
 		var _gsxv3 string
 		switch size {
 		case "xs":
-			_gsxv3 = "h-5 gap-1 rounded-sm px-2 text-[0.625rem] has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-2.5"
+			_gsxv3 = "h-5 gap-1 rounded-sm px-2 text-[0.625rem] has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-2.5"
 		case "sm":
-			_gsxv3 = "h-6 gap-1 px-2 text-xs/relaxed has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3"
+			_gsxv3 = "h-6 gap-1 px-2 text-xs/relaxed has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3"
 		case "lg":
-			_gsxv3 = "h-8 gap-1 px-2.5 text-xs/relaxed has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 [&_svg:not([class*='size-'])]:size-4"
+			_gsxv3 = "h-8 gap-1 px-2.5 text-xs/relaxed has-[>svg]:px-2 [&_svg:not([class*='size-'])]:size-4"
 		case "icon":
 			_gsxv3 = "size-7 [&_svg:not([class*='size-'])]:size-3.5"
 		case "icon-xs":
@@ -84,7 +84,7 @@ func _gsxrenderButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string
 		case "icon-lg":
 			_gsxv3 = "size-8 [&_svg:not([class*='size-'])]:size-4"
 		default:
-			_gsxv3 = "h-7 gap-1 px-2 text-xs/relaxed has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5"
+			_gsxv3 = "h-7 gap-1 px-2 text-xs/relaxed has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3.5"
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(_gsxv3), _gsxrt.Class(attrs.Class()))
@@ -135,11 +135,11 @@ func _gsxrenderButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string
 		var _gsxv7 string
 		switch size {
 		case "xs":
-			_gsxv7 = "h-5 gap-1 rounded-sm px-2 text-[0.625rem] has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-2.5"
+			_gsxv7 = "h-5 gap-1 rounded-sm px-2 text-[0.625rem] has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-2.5"
 		case "sm":
-			_gsxv7 = "h-6 gap-1 px-2 text-xs/relaxed has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3"
+			_gsxv7 = "h-6 gap-1 px-2 text-xs/relaxed has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3"
 		case "lg":
-			_gsxv7 = "h-8 gap-1 px-2.5 text-xs/relaxed has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 [&_svg:not([class*='size-'])]:size-4"
+			_gsxv7 = "h-8 gap-1 px-2.5 text-xs/relaxed has-[>svg]:px-2 [&_svg:not([class*='size-'])]:size-4"
 		case "icon":
 			_gsxv7 = "size-7 [&_svg:not([class*='size-'])]:size-3.5"
 		case "icon-xs":
@@ -149,7 +149,7 @@ func _gsxrenderButton(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string
 		case "icon-lg":
 			_gsxv7 = "size-8 [&_svg:not([class*='size-'])]:size-4"
 		default:
-			_gsxv7 = "h-7 gap-1 px-2 text-xs/relaxed has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5"
+			_gsxv7 = "h-7 gap-1 px-2 text-xs/relaxed has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3.5"
 		}
 		_gsxgw.S(" class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv4), _gsxrt.Class(_gsxv5), _gsxrt.Class(_gsxv6), _gsxrt.Class(_gsxv7), _gsxrt.Class(attrs.Class()))

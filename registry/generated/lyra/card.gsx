@@ -8,6 +8,7 @@ import "github.com/gsxhq/gsx"
 component Card(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
+			"group/card",
 			"ring-foreground/10 bg-card text-card-foreground gap-(--card-spacing) overflow-hidden rounded-none py-(--card-spacing) text-xs/relaxed ring-1 [--card-spacing:--spacing(4)] has-[[data-gsxui-slot-card-footer]]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] data-[size=sm]:has-[[data-gsxui-slot-card-footer]]:pb-0 *:[img:first-child]:rounded-none *:[img:last-child]:rounded-none flex flex-col"
 		}
 		{ attrs... }
@@ -19,9 +20,7 @@ component Card(children gsx.Node, attrs gsx.Attrs) {
 
 component CardHeader(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={
-			"gap-1 rounded-none px-(--card-spacing) [.border-b]:pb-(--card-spacing) grid auto-rows-min grid-rows-[auto_auto]"
-		}
+		class={ "gap-1 rounded-none px-(--card-spacing) grid auto-rows-min grid-rows-[auto_auto]" }
 		{ attrs... }
 		data-gsxui-slot-card-header
 	>

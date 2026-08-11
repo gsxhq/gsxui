@@ -23,7 +23,7 @@ component DialogTrigger(children gsx.Node, attrs gsx.Attrs) {
 component DialogContent(hideCloseButton bool, children gsx.Node, attrs gsx.Attrs) {
 	<dialog
 		class={
-			"data-[state=open]:backdrop:animate-in data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 data-[state=open]:backdrop:fade-in-0 backdrop:bg-black/30 backdrop:duration-100 supports-backdrop-filter:backdrop:backdrop-blur-sm bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 ring-foreground/5 dark:ring-foreground/10 open:grid max-w-[calc(100%-2rem)] gap-6 rounded-[min(var(--radius-4xl),24px)] p-6 text-sm shadow-xl ring-1 duration-100 sm:max-w-md"
+			"transition-none backdrop:transition-none data-[state=open]:backdrop:animate-in data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 data-[state=open]:backdrop:fade-in-0 backdrop:bg-black/30 backdrop:duration-100 supports-backdrop-filter:backdrop:backdrop-blur-sm bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 ring-foreground/5 dark:ring-foreground/10 open:grid max-w-[calc(100%-2rem)] gap-6 rounded-[min(var(--radius-4xl),24px)] p-6 text-sm shadow-xl ring-1 duration-100 sm:max-w-md"
 		}
 		data-state="closed"
 		{ attrs... }
@@ -33,7 +33,7 @@ component DialogContent(hideCloseButton bool, children gsx.Node, attrs gsx.Attrs
 		{ if !hideCloseButton {
 			<button
 				type="button"
-				class={ "absolute top-4 right-4 bg-secondary" }
+				class={ "absolute top-4 end-4 bg-secondary" }
 				data-gsxui-dialog-close
 				data-gsxui-slot-dialog-close-button
 				data-gsxui-slot-dialog-close

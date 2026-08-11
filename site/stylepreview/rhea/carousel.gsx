@@ -144,7 +144,7 @@ component CarouselPrevious(orientation string, attrs gsx.Attrs) {
 		size="icon"
 		disabled={true}
 		class={
-			"rounded-2xl",
+			"absolute size-8 rounded-2xl",
 			switch orientation {
 			case "vertical":
 				"-top-12 left-1/2 -translate-x-1/2 rotate-90"
@@ -168,7 +168,7 @@ component CarouselNext(orientation string, attrs gsx.Attrs) {
 		variant="outline"
 		size="icon"
 		class={
-			"rounded-2xl",
+			"absolute size-8 rounded-2xl",
 			switch orientation {
 			case "vertical":
 				"-bottom-12 left-1/2 -translate-x-1/2 rotate-90"

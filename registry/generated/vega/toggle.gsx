@@ -47,8 +47,9 @@ import "github.com/gsxhq/gsx"
 //
 // ui/toggle-group.gsx's ToggleGroupItem stamps data-gsxui-slot-toggle
 // alongside its own marker WITHOUT calling any accessor here — see
-// assets/css/styles/default.css's Toggle marker fallback block for how that
-// composition keeps working after this migration.
+// registry/canonical/toggle-group.gsx and each style's own toggle-group.css,
+// which compose this component's own per-style presentation directly onto
+// ToggleGroupItem's recipe instead of relying on a shared marker fallback.
 component Toggle(pressed bool, variant string, size string, children gsx.Node, attrs gsx.Attrs) {
 	{{
 		state := "off"
@@ -63,7 +64,7 @@ component Toggle(pressed bool, variant string, size string, children gsx.Node, a
 		data-state={state}
 		aria-pressed={pressed}
 		class={
-			"hover:text-foreground aria-pressed:bg-muted focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive gap-1 rounded-md text-sm font-medium transition-[color,box-shadow] [&_svg:not([class*='size-'])]:size-4 inline-flex",
+			"hover:text-foreground aria-pressed:bg-muted focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:opacity-50 gap-1 rounded-md text-sm font-medium transition-[color,box-shadow] [&_svg:not([class*='size-'])]:size-4 inline-flex",
 			switch variant {
 			case "outline":
 				"border-input hover:bg-muted border bg-transparent shadow-xs"
@@ -72,11 +73,11 @@ component Toggle(pressed bool, variant string, size string, children gsx.Node, a
 			},
 			switch size {
 			case "sm":
-				"h-8 min-w-8 px-2.5 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5"
+				"h-8 min-w-8 px-2.5 has-[>svg]:px-1.5"
 			case "lg":
-				"h-10 min-w-10 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2"
+				"h-10 min-w-10 px-2.5 has-[>svg]:px-2"
 			default:
-				"h-9 min-w-9 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2"
+				"h-9 min-w-9 px-2.5 has-[>svg]:px-2"
 			}
 		}
 		{ attrs... }

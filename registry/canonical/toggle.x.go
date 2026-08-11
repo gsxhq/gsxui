@@ -58,19 +58,20 @@ import (
 //
 // ui/toggle-group.gsx's ToggleGroupItem stamps data-gsxui-slot-toggle
 // alongside its own marker WITHOUT calling any accessor here — see
-// assets/css/styles/default.css's Toggle marker fallback block for how that
-// composition keeps working after this migration.
+// registry/canonical/toggle-group.gsx and each style's own toggle-group.css,
+// which compose this component's own per-style presentation directly onto
+// ToggleGroupItem's recipe instead of relying on a shared marker fallback.
 
-//line toggle.gsx:52:1
+//line toggle.gsx:53:1
 func Toggle(pressed bool, variant string, size string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line toggle.gsx:53:2
+//line toggle.gsx:54:2
 		state := "off"
 		if pressed {
 			state = "on"
 		}
-//line toggle.gsx:59:2
+//line toggle.gsx:60:2
 		_gsxgw.S("<button")
 		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"button\"")
@@ -102,7 +103,7 @@ func Toggle(pressed bool, variant string, size string, children gsx.Node, attrs 
 		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-toggle"})
 		_gsxgw.BoolAttr("data-gsxui-slot-toggle", true)
 		_gsxgw.S(">")
-//line toggle.gsx:73:3
+//line toggle.gsx:74:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()

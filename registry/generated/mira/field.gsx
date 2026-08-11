@@ -44,7 +44,7 @@ component FieldLegend(variant string, children gsx.Node, attrs gsx.Attrs) {
 
 component FieldGroup(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "gap-4 [&>[data-gsxui-slot-field-group]]:gap-4 flex flex-col" }
+		class={ "group/field-group", "gap-4 [&>[data-gsxui-slot-field-group]]:gap-4 flex flex-col" }
 		{ attrs... }
 		data-gsxui-slot-field-group
 	>
@@ -59,6 +59,7 @@ component Field(orientation string, children gsx.Node, attrs gsx.Attrs) {
 		role="group"
 		data-orientation={orientation |> default("vertical")}
 		class={
+			"group/field",
 			"data-[invalid=true]:text-destructive gap-2 p-2 flex",
 			switch orientation {
 			case "horizontal":
@@ -91,7 +92,7 @@ component FieldContent(children gsx.Node, attrs gsx.Attrs) {
 component FieldLabel(children gsx.Node, attrs gsx.Attrs) {
 	<Label
 		class={
-			"has-data-checked:bg-primary/5 dark:has-data-checked:bg-primary/10 gap-2 leading-snug group-data-[disabled=true]/field:opacity-50 has-[>[data-gsxui-slot-field]]:rounded-md has-[>[data-gsxui-slot-field]]:border flex"
+			"has-data-checked:bg-primary/5 dark:has-data-checked:bg-primary/10 gap-2 leading-snug has-[>[data-gsxui-slot-field]]:rounded-md has-[>[data-gsxui-slot-field]]:border flex"
 		}
 		{ attrs... }
 		data-gsxui-slot-field-label
@@ -104,7 +105,7 @@ component FieldLabel(children gsx.Node, attrs gsx.Attrs) {
 // independently from the composed FieldLabel.
 component FieldTitle(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "gap-2 text-xs/relaxed font-medium group-data-[disabled=true]/field:opacity-50 flex" }
+		class={ "gap-2 text-xs/relaxed font-medium flex" }
 		{ attrs... }
 		data-gsxui-slot-field-title
 	>

@@ -174,7 +174,9 @@ component ComboboxInput(placeholder string, showTrigger bool, showClear bool, di
 					size="icon-xs"
 					variant="ghost"
 					disabled={disabled}
-					class={ "[&_svg:not([class*='size-'])]:size-4" }
+					class={
+						"[[data-gsxui-slot-input-group]:has([data-gsxui-slot-combobox-clear])_&]:hidden [&_svg:not([class*='size-'])]:size-4"
+					}
 					data-gsxui-slot-combobox-trigger
 				>
 					<icon.ChevronDown class={ "text-muted-foreground size-4" } data-gsxui-slot-combobox-trigger-icon/>
@@ -197,7 +199,9 @@ component ComboboxInput(placeholder string, showTrigger bool, showClear bool, di
 component ComboboxTrigger(attrs gsx.Attrs) {
 	<button
 		type="button"
-		class={ "[&_svg:not([class*='size-'])]:size-4" }
+		class={
+			"[[data-gsxui-slot-input-group]:has([data-gsxui-slot-combobox-clear])_&]:hidden [&_svg:not([class*='size-'])]:size-4"
+		}
 		{ attrs... }
 		data-gsxui-slot-combobox-trigger
 	>
@@ -252,7 +256,8 @@ component ComboboxContent(children gsx.Node, attrs gsx.Attrs) {
 		data-state="closed"
 		data-side="bottom"
 		class={
-			"bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 [&>[data-gsxui-slot-input-group]]:bg-input/30 [&>[data-gsxui-slot-input-group]]:border-input/30 max-h-72 min-w-36 overflow-hidden rounded-lg shadow-md ring-1 duration-100 [&>[data-gsxui-slot-input-group]]:m-1 [&>[data-gsxui-slot-input-group]]:mb-0 [&>[data-gsxui-slot-input-group]]:h-8 [&>[data-gsxui-slot-input-group]]:shadow-none"
+			"group/combobox-content",
+			"transition-none bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 [&>[data-gsxui-slot-input-group]]:bg-input/30 [&>[data-gsxui-slot-input-group]]:border-input/30 max-h-72 min-w-36 overflow-hidden rounded-lg shadow-md ring-1 duration-100 [&>[data-gsxui-slot-input-group]]:m-1 [&>[data-gsxui-slot-input-group]]:mb-0 [&>[data-gsxui-slot-input-group]]:h-8 [&>[data-gsxui-slot-input-group]]:shadow-none"
 		}
 		{ attrs... }
 		data-gsxui-slot-combobox-content
@@ -322,14 +327,14 @@ component ComboboxItem(value string, selected bool, children gsx.Node, attrs gsx
 		} }
 		aria-selected={selected}
 		class={
-			"data-highlighted:bg-accent data-highlighted:text-accent-foreground not-data-[variant=destructive]:data-highlighted:**:text-accent-foreground gap-2 rounded-md py-1 pr-8 pl-1.5 text-sm [&_svg:not([class*='size-'])]:size-4 flex"
+			"data-highlighted:bg-accent data-highlighted:text-accent-foreground not-data-[variant=destructive]:data-highlighted:**:text-accent-foreground gap-2 rounded-md py-1 pr-8 pl-1.5 text-sm [&_svg:not([class*='size-'])]:size-4 flex data-[state=checked]:[&>[data-gsxui-slot-combobox-item-indicator]]:flex"
 		}
 		{ attrs... }
 		data-gsxui-slot-combobox-item
 	>
 		{ children }
 		<span
-			class={ "pointer-events-none absolute right-2 flex size-4 items-center justify-center" }
+			class={ "pointer-events-none absolute right-2 hidden size-4 items-center justify-center" }
 			data-gsxui-slot-combobox-item-indicator
 		>
 			<icon.Check/>

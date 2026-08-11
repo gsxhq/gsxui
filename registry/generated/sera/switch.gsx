@@ -26,7 +26,7 @@ component Switch(attrs gsx.Attrs) {
 		type="checkbox"
 		role="switch"
 		class={
-			"data-checked:bg-primary data-unchecked:bg-input data-checked:border-primary border data-unchecked:border-input/50 focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 shrink-0 rounded-none focus-visible:ring-2 aria-invalid:ring-2 data-[size=default]:h-4.5 data-[size=default]:w-8.25 data-[size=sm]:h-3.5 data-[size=sm]:w-6.25 before:bg-background dark:data-unchecked:before:bg-foreground dark:data-checked:before:bg-primary-foreground group-data-[size=default]/switch:before:size-3.5 group-data-[size=sm]/switch:before:size-2.5 data-checked:before:translate-x-[calc(100%+2px)] data-unchecked:before:translate-x-0.25 inline-flex"
+			"checked:bg-primary bg-input checked:border-primary border border-input/50 focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 appearance-none outline-none disabled:cursor-not-allowed disabled:opacity-50 shrink-0 rounded-none focus-visible:ring-2 aria-invalid:ring-2 h-4.5 w-8.25 before:content-[''] before:pointer-events-none before:block before:transition-transform before:bg-background dark:before:bg-foreground dark:checked:before:bg-primary-foreground before:size-3.5 checked:before:translate-x-[calc(100%+2px)] before:translate-x-0.25 inline-flex"
 		}
 		{ attrs... }
 		data-gsxui-slot-switch

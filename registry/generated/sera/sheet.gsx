@@ -33,7 +33,7 @@ component SheetTrigger(children gsx.Node, attrs gsx.Attrs) {
 component SheetContent(side string, hideCloseButton bool, children gsx.Node, attrs gsx.Attrs) {
 	<dialog
 		class={
-			"backdrop:bg-black/20 supports-backdrop-filter:backdrop:backdrop-blur-sm bg-popover text-popover-foreground fixed z-50 flex flex-col bg-clip-padding text-sm shadow-md transition duration-200 ease-in-out m-0 gap-4 max-h-none outline-none data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:backdrop-blur-xs backdrop:duration-200 data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 open:flex",
+			"backdrop:bg-black/20 supports-backdrop-filter:backdrop:backdrop-blur-sm bg-popover text-popover-foreground fixed z-50 flex flex-col bg-clip-padding text-sm shadow-md transition duration-200 ease-in-out backdrop:transition-none m-0 gap-4 max-h-none outline-none data-[state=closed]:animate-out data-[state=open]:animate-in backdrop:backdrop-blur-xs backdrop:duration-200 data-[state=open]:backdrop:animate-in data-[state=open]:backdrop:fade-in-0 data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 open:flex",
 			switch side {
 			case "bottom":
 				"inset-x-0 bottom-0 h-auto border-t top-auto w-full max-w-none data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom"
@@ -55,7 +55,7 @@ component SheetContent(side string, hideCloseButton bool, children gsx.Node, att
 		{ if !hideCloseButton {
 			<button
 				type="button"
-				class={ "absolute top-4 right-4 bg-secondary" }
+				class={ "absolute top-4 end-4 bg-secondary" }
 				data-gsxui-dialog-close
 				data-gsxui-slot-sheet-close-button
 				data-gsxui-slot-sheet-close

@@ -33,11 +33,11 @@ component Button(variant string, size string, href string, disabled bool, childr
 				},
 				switch size {
 				case "xs":
-					"h-6 gap-1 px-2.5 text-xs has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 [&_svg:not([class*='size-'])]:size-3"
+					"h-6 gap-1 px-2.5 text-xs has-[>svg]:px-2 [&_svg:not([class*='size-'])]:size-3"
 				case "sm":
-					"h-8 gap-1 px-3 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2"
+					"h-8 gap-1 px-3 has-[>svg]:px-2"
 				case "lg":
-					"h-10 gap-1.5 px-4 has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3"
+					"h-10 gap-1.5 px-4 has-[>svg]:px-3"
 				case "icon":
 					"size-9"
 				case "icon-xs":
@@ -47,7 +47,7 @@ component Button(variant string, size string, href string, disabled bool, childr
 				case "icon-lg":
 					"size-10"
 				default:
-					"h-9 gap-1.5 px-3 has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5"
+					"h-9 gap-1.5 px-3 has-[>svg]:px-2.5"
 				}
 			}
 			{ attrs... }
@@ -80,11 +80,11 @@ component Button(variant string, size string, href string, disabled bool, childr
 				},
 				switch size {
 				case "xs":
-					"h-6 gap-1 px-2.5 text-xs has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 [&_svg:not([class*='size-'])]:size-3"
+					"h-6 gap-1 px-2.5 text-xs has-[>svg]:px-2 [&_svg:not([class*='size-'])]:size-3"
 				case "sm":
-					"h-8 gap-1 px-3 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2"
+					"h-8 gap-1 px-3 has-[>svg]:px-2"
 				case "lg":
-					"h-10 gap-1.5 px-4 has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3"
+					"h-10 gap-1.5 px-4 has-[>svg]:px-3"
 				case "icon":
 					"size-9"
 				case "icon-xs":
@@ -94,7 +94,7 @@ component Button(variant string, size string, href string, disabled bool, childr
 				case "icon-lg":
 					"size-10"
 				default:
-					"h-9 gap-1.5 px-3 has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5"
+					"h-9 gap-1.5 px-3 has-[>svg]:px-2.5"
 				}
 			}
 			{ attrs... }

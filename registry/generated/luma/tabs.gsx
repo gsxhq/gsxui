@@ -41,9 +41,7 @@ component Tabs(value string, children gsx.Node, attrs gsx.Attrs) {
 component TabsList(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="tablist"
-		class={
-			"rounded-full p-1 group-data-horizontal/tabs:h-9 group-data-vertical/tabs:rounded-2xl data-[variant=line]:rounded-none inline-flex"
-		}
+		class={ "rounded-full p-1 h-9 inline-flex" }
 		{ attrs... }
 		data-gsxui-slot-tabs-list
 	>
@@ -73,7 +71,7 @@ component TabsTrigger(value string, selected bool, children gsx.Node, attrs gsx.
 		aria-selected={selected}
 		tabindex={tabindex}
 		class={
-			"gap-2 rounded-full border border-transparent px-3 py-1 text-sm font-medium group-data-vertical/tabs:px-3 group-data-vertical/tabs:py-1.5 group-data-vertical/tabs:rounded-2xl [&_svg:not([class*='size-'])]:size-4 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 inline-flex"
+			"gap-2 rounded-full border border-transparent px-3 py-1 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 has-[>svg]:px-2 inline-flex"
 		}
 		{ attrs... }
 		data-gsxui-slot-tabs-trigger

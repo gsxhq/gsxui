@@ -52,6 +52,7 @@ component Item(variant string, size string, children gsx.Node, attrs gsx.Attrs) 
 		data-variant={variant |> default("default")}
 		data-size={size |> default("default")}
 		class={
+			"group/item",
 			"[a]:hover:bg-muted rounded-2xl border text-sm flex flex-wrap",
 			switch variant {
 			case "outline":
@@ -84,7 +85,7 @@ component ItemMedia(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-variant={variant |> default("default")}
 		class={
-			"gap-2 group-has-[[data-gsxui-slot-item-description]]/item:translate-y-0.5 group-has-[[data-gsxui-slot-item-description]]/item:self-start flex",
+			"gap-2 flex",
 			switch variant {
 			case "icon":
 				"[&_svg:not([class*='size-'])]:size-4"
@@ -102,7 +103,13 @@ component ItemMedia(variant string, children gsx.Node, attrs gsx.Attrs) {
 }
 
 component ItemContent(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "gap-1 group-data-[size=xs]/item:gap-0.5 flex flex-col" } { attrs... } data-gsxui-slot-item-content>
+	<div
+		class={
+			"flex-1 [&+[data-gsxui-slot-item-content]]:flex-none gap-1 group-data-[size=xs]/item:gap-0.5 flex flex-col"
+		}
+		{ attrs... }
+		data-gsxui-slot-item-content
+	>
 		{ children }
 	</div>
 }

@@ -124,30 +124,31 @@ func _gsxrenderToggleGroup(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, groupType
 		_gsxgw.AttrValue(_gsxrt.StyleValue(string(sp)))
 		_gsxgw.S("\"")
 	}
-	_gsxv0 := "rounded-md flex"
-	var _gsxv1 string
+	_gsxv0 := "group/toggle-group"
+	_gsxv1 := "rounded-md flex"
+	var _gsxv2 string
 	switch size {
 	case "sm":
-		_gsxv1 = "rounded-[min(var(--radius-md),8px)]"
+		_gsxv2 = "rounded-[min(var(--radius-md),8px)]"
 	case "lg":
-		_gsxv1 = "rounded-lg"
+		_gsxv2 = "rounded-lg"
 	default:
-		_gsxv1 = "rounded-lg"
+		_gsxv2 = "rounded-lg"
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-toggle-group"})
 	_gsxgw.BoolAttr("data-gsxui-slot-toggle-group", true)
 	_gsxgw.S(">")
-//line toggle-group.gsx:89:3
+//line toggle-group.gsx:90:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
 
-//line toggle-group.gsx:93:1
+//line toggle-group.gsx:94:1
 // ToggleGroupItem composes ordered tokens "toggle toggle-group-item".
 // Variant, size, spacing, orientation, and state are public CSS axes; only
 // the ARIA attribute pair differs between single and multiple groups.
@@ -163,7 +164,7 @@ func _gsxrenderToggleGroup(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, groupType
 // single group toggles it off (Radix allows an empty single value unless a
 // caller opts otherwise) — port the same replace-on-activate mechanic.
 
-//line toggle-group.gsx:107:1
+//line toggle-group.gsx:108:1
 func ToggleGroupItem(groupType string, variant string, size string, spacing string, pressed bool, value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -175,7 +176,7 @@ func _gsxrenderToggleGroupItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, group
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line toggle-group.gsx:108:2
+//line toggle-group.gsx:109:2
 	sp := spacing
 	if sp == "" {
 		sp = "0"
@@ -185,7 +186,7 @@ func _gsxrenderToggleGroupItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, group
 		state = "on"
 	}
 	orientation := "horizontal"
-//line toggle-group.gsx:119:2
+//line toggle-group.gsx:120:2
 	_gsxgw.S("<button")
 	if !attrs.Has("type") {
 		_gsxgw.S(" type=\"button\"")
@@ -236,37 +237,37 @@ func _gsxrenderToggleGroupItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, group
 			_gsxgw.S("\"")
 		}
 	}
-	_gsxv2 := "group-data-[spacing=0]/toggle-group:rounded-none group-data-[spacing=0]/toggle-group:px-2 group-data-[spacing=0]/toggle-group:has-data-[icon=inline-end]:pr-1.5 group-data-[spacing=0]/toggle-group:has-data-[icon=inline-start]:pl-1.5 group-data-horizontal/toggle-group:data-[spacing=0]:first:rounded-l-md group-data-vertical/toggle-group:data-[spacing=0]:first:rounded-t-md group-data-horizontal/toggle-group:data-[spacing=0]:last:rounded-r-md group-data-vertical/toggle-group:data-[spacing=0]:last:rounded-b-md"
-	var _gsxv3 string
+	_gsxv3 := "hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-muted data-[variant=outline]:border-input data-[variant=outline]:hover:bg-muted data-[variant=outline]:border gap-1 rounded-md text-xs font-medium transition-all [&_svg:not([class*='size-'])]:size-4 group-data-[spacing=0]/toggle-group:rounded-none group-data-[spacing=0]/toggle-group:px-2 group-data-horizontal/toggle-group:data-[spacing=0]:first:rounded-l-md group-data-vertical/toggle-group:data-[spacing=0]:first:rounded-t-md group-data-horizontal/toggle-group:data-[spacing=0]:last:rounded-r-md group-data-vertical/toggle-group:data-[spacing=0]:last:rounded-b-md"
+	var _gsxv4 string
 	switch size {
 	case "sm":
-		_gsxv3 = "has-[>svg]:px-1.5"
+		_gsxv4 = "h-6 min-w-6 rounded-[min(var(--radius-md),8px)] px-2 text-[0.625rem] has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3 group-data-[spacing=0]/toggle-group:has-[>svg]:px-1.5"
 	case "lg":
-		_gsxv3 = "has-[>svg]:px-2"
+		_gsxv4 = "h-8 min-w-8 px-2.5 has-[>svg]:px-2 group-data-[spacing=0]/toggle-group:has-[>svg]:px-2"
 	default:
-		_gsxv3 = "has-[>svg]:px-2"
-	}
-	var _gsxv4 string
-	switch sp {
-	case "2":
-		_gsxv4 = "isolate"
-	default:
-		_gsxv4 = "rounded-none shadow-none data-[variant=outline]:border-s-0 data-[variant=outline]:first:border-s"
+		_gsxv4 = "h-7 min-w-7 px-2 has-[>svg]:px-1.5 group-data-[spacing=0]/toggle-group:has-[>svg]:px-1.5"
 	}
 	var _gsxv5 string
+	switch sp {
+	case "2":
+		_gsxv5 = "isolate"
+	default:
+		_gsxv5 = "rounded-none shadow-none data-[variant=outline]:border-s-0 data-[variant=outline]:first:border-s"
+	}
+	var _gsxv6 string
 	switch orientation {
 	default:
-		_gsxv5 = "data-[spacing=0]:first:rounded-s-lg data-[spacing=0]:last:rounded-e-lg"
+		_gsxv6 = "data-[spacing=0]:first:rounded-s-lg data-[spacing=0]:last:rounded-e-lg"
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv2), _gsxrt.Class(_gsxv3), _gsxrt.Class(_gsxv4), _gsxrt.Class(_gsxv5), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv3), _gsxrt.Class(_gsxv4), _gsxrt.Class(_gsxv5), _gsxrt.Class(_gsxv6), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-toggle-group-item", "data-gsxui-slot-toggle"})
 	_gsxgw.BoolAttr("data-gsxui-slot-toggle-group-item", true)
 	_gsxgw.BoolAttr("data-gsxui-slot-toggle", true)
 	_gsxgw.S(">")
-//line toggle-group.gsx:148:3
+//line toggle-group.gsx:156:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</button>")
 	return _gsxgw.Err()

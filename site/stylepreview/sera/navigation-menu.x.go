@@ -66,7 +66,7 @@ func _gsxrenderNavigationMenu(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childr
 	}
 //line navigation-menu.gsx:48:2
 	_gsxgw.S("<nav class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("max-w-max flex"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/navigation-menu"), _gsxrt.Class("max-w-max flex"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	if !attrs.Has("data-viewport") {
 		_gsxgw.S(" data-viewport=\"false\"")
@@ -203,7 +203,7 @@ func _gsxrenderNavigationMenuTrigger(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer,
 	}
 //line navigation-menu.gsx:121:2
 	_gsxgw.S("<button class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("hover:bg-muted focus:bg-muted data-[state=open]:hover:bg-muted data-[state=open]:focus:bg-muted data-[state=open]:bg-muted/50 focus-visible:ring-ring/30 data-popup-open:bg-muted/50 data-popup-open:hover:bg-muted rounded-none px-4.5 py-2.5 text-sm font-medium transition-all focus-visible:ring-2 focus-visible:outline-1 disabled:opacity-50 inline-flex"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/navigation-menu-trigger"), _gsxrt.Class("hover:bg-muted focus:bg-muted data-[state=open]:hover:bg-muted data-[state=open]:focus:bg-muted data-[state=open]:bg-muted/50 focus-visible:ring-ring/30 rounded-none px-4.5 py-2.5 text-sm font-medium transition-all focus-visible:ring-2 focus-visible:outline-1 disabled:opacity-50 inline-flex"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	if !attrs.Has("type") {
 		_gsxgw.S(" type=\"button\"")
@@ -218,17 +218,17 @@ func _gsxrenderNavigationMenuTrigger(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer,
 	_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu-trigger"})
 	_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-trigger", true)
 	_gsxgw.S(">")
-//line navigation-menu.gsx:131:3
-	_gsxgw.Node(ctx, children)
-//line navigation-menu.gsx:131:15
-	_gsxgw.Text(string(" "))
 //line navigation-menu.gsx:132:3
-	_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("relative top-px ml-1 size-3 transition duration-300 group-data-open/navigation-menu-trigger:rotate-180 group-data-popup-open/navigation-menu-trigger:rotate-180"))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-navigation-menu-trigger-icon", Value: _gsxrt.Toggle(true)}})...))
+	_gsxgw.Node(ctx, children)
+//line navigation-menu.gsx:132:15
+	_gsxgw.Text(string(" "))
+//line navigation-menu.gsx:133:3
+	_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("relative top-px ml-1 size-3 transition duration-300 group-data-[state=open]/navigation-menu-trigger:rotate-180"))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-navigation-menu-trigger-icon", Value: _gsxrt.Toggle(true)}})...))
 	_gsxgw.S("</button>")
 	return _gsxgw.Err()
 }
 
-//line navigation-menu.gsx:141:1
+//line navigation-menu.gsx:142:1
 // NavigationMenuContent is the panel a NavigationMenuTrigger opens — see
 // the file header's own GAP paragraph for why this is the shadcn
 // `viewport={false}` configuration: independently popover="manual",
@@ -293,7 +293,7 @@ func _gsxrenderNavigationMenuTrigger(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer,
 // border is kept, not swapped for nova's own ring-1 (standing house
 // exception); rounded-md -> rounded-lg is nova's own metric.
 
-//line navigation-menu.gsx:204:1
+//line navigation-menu.gsx:205:1
 func NavigationMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -305,9 +305,9 @@ func _gsxrenderNavigationMenuContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer,
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line navigation-menu.gsx:205:2
+//line navigation-menu.gsx:206:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 group-data-[viewport=false]/navigation-menu:bg-popover group-data-[viewport=false]/navigation-menu:text-popover-foreground group-data-[viewport=false]/navigation-menu:data-[state=open]:animate-in group-data-[viewport=false]/navigation-menu:data-[state=closed]:animate-out group-data-[viewport=false]/navigation-menu:data-[state=closed]:zoom-out-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:zoom-in-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:fade-in-0 group-data-[viewport=false]/navigation-menu:data-[state=closed]:fade-out-0 group-data-[viewport=false]/navigation-menu:ring-foreground/10 p-2.5 pr-3 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[viewport=false]/navigation-menu:rounded-none group-data-[viewport=false]/navigation-menu:shadow-md group-data-[viewport=false]/navigation-menu:ring-1 group-data-[viewport=false]/navigation-menu:duration-300"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("transition-none data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 group-data-[viewport=false]/navigation-menu:bg-popover group-data-[viewport=false]/navigation-menu:text-popover-foreground group-data-[viewport=false]/navigation-menu:data-[state=open]:animate-in group-data-[viewport=false]/navigation-menu:data-[state=closed]:animate-out group-data-[viewport=false]/navigation-menu:data-[state=closed]:zoom-out-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:zoom-in-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:fade-in-0 group-data-[viewport=false]/navigation-menu:data-[state=closed]:fade-out-0 group-data-[viewport=false]/navigation-menu:ring-foreground/10 p-2.5 pr-3 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[viewport=false]/navigation-menu:rounded-none group-data-[viewport=false]/navigation-menu:shadow-md group-data-[viewport=false]/navigation-menu:ring-1 group-data-[viewport=false]/navigation-menu:duration-300"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	if !attrs.Has("popover") {
 		_gsxgw.S(" popover=\"manual\"")
@@ -322,13 +322,13 @@ func _gsxrenderNavigationMenuContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer,
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu-content"})
 	_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-content", true)
 	_gsxgw.S(">")
-//line navigation-menu.gsx:215:3
+//line navigation-menu.gsx:216:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
 
-//line navigation-menu.gsx:219:1
+//line navigation-menu.gsx:220:1
 // NavigationMenuLink is a single item inside a NavigationMenuContent (or,
 // with variant="trigger", a plain top-level nav link with no dropdown at
 // all). active mirrors Radix's own data-active
@@ -349,7 +349,7 @@ func _gsxrenderNavigationMenuContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer,
 // on accent, not nova's own muted rewrite — same out-of-scope ruling as
 // NavigationMenuTrigger's own shared-token doc comment.
 
-//line navigation-menu.gsx:238:1
+//line navigation-menu.gsx:239:1
 func NavigationMenuLink(active bool, variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -361,7 +361,7 @@ func _gsxrenderNavigationMenuLink(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, ac
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line navigation-menu.gsx:239:2
+//line navigation-menu.gsx:240:2
 	linkVariant := variant
 	if linkVariant == "" {
 		linkVariant = "default"
@@ -370,7 +370,7 @@ func _gsxrenderNavigationMenuLink(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, ac
 	if active {
 		linkActive = "true"
 	}
-//line navigation-menu.gsx:249:2
+//line navigation-menu.gsx:250:2
 	_gsxgw.S("<a")
 	_gsxv0 := "focus-visible:ring-ring/30 hover:bg-muted focus:bg-muted flex items-center gap-1.5 rounded-none p-3 text-sm transition-all outline-none focus-visible:ring-2 focus-visible:outline-1 [&_svg:not([class*='size-'])]:size-3.5 [[data-gsxui-slot-navigation-menu-content]_&]:rounded-none"
 	var _gsxv1 string
@@ -417,13 +417,13 @@ func _gsxrenderNavigationMenuLink(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, ac
 	}
 	_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-link", true)
 	_gsxgw.S(">")
-//line navigation-menu.gsx:272:3
+//line navigation-menu.gsx:273:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</a>")
 	return _gsxgw.Err()
 }
 
-//line navigation-menu.gsx:276:1
+//line navigation-menu.gsx:277:1
 // NavigationMenuIndicator is the small rotated-square pointer tracking the
 // active trigger, positioned under NavigationMenuList's own last child (the
 // caller places it there, matching Radix's own composition) by
@@ -452,7 +452,7 @@ func _gsxrenderNavigationMenuLink(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, ac
 // just below the trigger bar even at opacity-0. Purely decorative in every
 // state, so it should never intercept a pointer event either way.
 
-//line navigation-menu.gsx:303:1
+//line navigation-menu.gsx:304:1
 func NavigationMenuIndicator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -464,7 +464,7 @@ func _gsxrenderNavigationMenuIndicator(ctx _gsxctx.Context, _gsxgw *_gsxrt.Write
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line navigation-menu.gsx:304:2
+//line navigation-menu.gsx:305:2
 	_gsxgw.S("<div class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in flex"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
@@ -475,7 +475,7 @@ func _gsxrenderNavigationMenuIndicator(ctx _gsxctx.Context, _gsxgw *_gsxrt.Write
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-navigation-menu-indicator"})
 	_gsxgw.BoolAttr("data-gsxui-slot-navigation-menu-indicator", true)
 	_gsxgw.S(">")
-//line navigation-menu.gsx:312:3
+//line navigation-menu.gsx:313:3
 	_gsxgw.S("<div class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-border rounded-none shadow-md"))
 	_gsxgw.S("\"")

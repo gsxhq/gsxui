@@ -80,6 +80,7 @@ component ToggleGroup(groupType string, variant string, size string, spacing str
 		role={role}
 		style=css`--gap: @{sp}`
 		class={
+			"group/toggle-group",
 			"data-[spacing=0]:data-[variant=outline]:rounded-4xl flex",
 			switch size { case "sm": "rounded-[min(var(--radius-md),10px)]" case "lg": "rounded-lg" default: "rounded-lg" }
 		}
@@ -131,8 +132,15 @@ component ToggleGroupItem(groupType string, variant string, size string, spacing
 			aria-pressed={pressed}
 		} }
 		class={
-			"data-[state=on]:bg-muted group-data-[spacing=0]/toggle-group:rounded-none group-data-[spacing=0]/toggle-group:px-3 group-data-[spacing=0]/toggle-group:shadow-none group-data-[spacing=0]/toggle-group:has-data-[icon=inline-end]:pr-2.5 group-data-[spacing=0]/toggle-group:has-data-[icon=inline-start]:pl-2.5 group-data-horizontal/toggle-group:data-[spacing=0]:first:rounded-l-3xl group-data-vertical/toggle-group:data-[spacing=0]:first:rounded-t-3xl group-data-horizontal/toggle-group:data-[spacing=0]:last:rounded-r-3xl group-data-vertical/toggle-group:data-[spacing=0]:last:rounded-b-3xl",
-			switch size { case "sm": "has-[>svg]:px-1.5" case "lg": "has-[>svg]:px-2" default: "has-[>svg]:px-2" },
+			"hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-muted data-[variant=outline]:border-input data-[variant=outline]:hover:bg-muted data-[variant=outline]:border gap-1 rounded-4xl text-sm font-medium transition-colors [&_svg:not([class*='size-'])]:size-4 group-data-[spacing=0]/toggle-group:rounded-none group-data-[spacing=0]/toggle-group:px-3 group-data-[spacing=0]/toggle-group:shadow-none group-data-horizontal/toggle-group:data-[spacing=0]:first:rounded-l-3xl group-data-vertical/toggle-group:data-[spacing=0]:first:rounded-t-3xl group-data-horizontal/toggle-group:data-[spacing=0]:last:rounded-r-3xl group-data-vertical/toggle-group:data-[spacing=0]:last:rounded-b-3xl",
+			switch size {
+			case "sm":
+				"h-8 min-w-8 px-3 has-[>svg]:px-2 group-data-[spacing=0]/toggle-group:has-[>svg]:px-2"
+			case "lg":
+				"h-10 min-w-10 px-4 has-[>svg]:px-3 group-data-[spacing=0]/toggle-group:has-[>svg]:px-3"
+			default:
+				"h-9 min-w-9 px-3 has-[>svg]:px-2.5 group-data-[spacing=0]/toggle-group:has-[>svg]:px-2.5"
+			},
 			switch sp {
 			case "2":
 				"isolate"

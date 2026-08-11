@@ -8,6 +8,7 @@ import "github.com/gsxhq/gsx"
 component Card(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
+			"group/card",
 			"bg-card text-card-foreground ring-foreground/5 dark:ring-foreground/10 gap-(--card-spacing) overflow-hidden rounded-[min(var(--radius-4xl),24px)] py-(--card-spacing) text-sm shadow-sm ring-1 [--card-spacing:--spacing(5)] has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(4)] *:[img:first-child]:rounded-t-[min(var(--radius-4xl),24px)] *:[img:last-child]:rounded-b-[min(var(--radius-4xl),24px)] flex flex-col"
 		}
 		{ attrs... }
@@ -20,7 +21,7 @@ component Card(children gsx.Node, attrs gsx.Attrs) {
 component CardHeader(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"gap-1.5 rounded-t-[min(var(--radius-4xl),24px)] px-(--card-spacing) [.border-b]:pb-(--card-spacing) grid auto-rows-min grid-rows-[auto_auto]"
+			"gap-1.5 rounded-t-[min(var(--radius-4xl),24px)] px-(--card-spacing) grid auto-rows-min grid-rows-[auto_auto]"
 		}
 		{ attrs... }
 		data-gsxui-slot-card-header
@@ -53,7 +54,7 @@ component CardContent(children gsx.Node, attrs gsx.Attrs) {
 
 component CardFooter(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "rounded-b-[min(var(--radius-4xl),24px)] px-(--card-spacing) [.border-t]:pt-(--card-spacing) flex" }
+		class={ "rounded-b-[min(var(--radius-4xl),24px)] px-(--card-spacing) flex" }
 		{ attrs... }
 		data-gsxui-slot-card-footer
 	>

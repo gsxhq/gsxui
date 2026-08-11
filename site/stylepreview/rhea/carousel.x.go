@@ -253,7 +253,7 @@ func _gsxrenderCarouselPrevious(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, orie
 	}
 //line carousel.gsx:141:2
 	_gsxa4 := _gsxrt.Attrs{{Key: "data-orientation", Value: _gsxstd.Default((orientation), "horizontal")}}
-	_gsxv2 := "rounded-2xl"
+	_gsxv2 := "absolute size-8 rounded-2xl"
 	var _gsxv3 string
 	switch orientation {
 	case "vertical":
@@ -295,7 +295,7 @@ func _gsxrenderCarouselNext(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, orientat
 	}
 //line carousel.gsx:166:2
 	_gsxa8 := _gsxrt.Attrs{{Key: "data-orientation", Value: _gsxstd.Default((orientation), "horizontal")}}
-	_gsxv6 := "rounded-2xl"
+	_gsxv6 := "absolute size-8 rounded-2xl"
 	var _gsxv7 string
 	switch orientation {
 	case "vertical":

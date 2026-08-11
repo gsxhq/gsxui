@@ -224,7 +224,7 @@ func CarouselPrevious(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line carousel.gsx:141:2
 		_gsxa4 := _gsxrt.Attrs{{Key: "data-orientation", Value: _gsxstd.Default((orientation), "horizontal")}}
-		_gsxv2 := "rounded-full"
+		_gsxv2 := "absolute size-8 rounded-full"
 		var _gsxv3 string
 		switch orientation {
 		case "vertical":
@@ -259,7 +259,7 @@ func CarouselNext(orientation string, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line carousel.gsx:166:2
 		_gsxa8 := _gsxrt.Attrs{{Key: "data-orientation", Value: _gsxstd.Default((orientation), "horizontal")}}
-		_gsxv6 := "rounded-full"
+		_gsxv6 := "absolute size-8 rounded-full"
 		var _gsxv7 string
 		switch orientation {
 		case "vertical":

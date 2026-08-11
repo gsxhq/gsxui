@@ -28,6 +28,7 @@ component InputGroup(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="group"
 		class={
+			"group/input-group",
 			"border-transparent border-b-input bg-transparent has-[[data-gsxui-slot-input-group-control]:focus-visible]:border-b-ring has-[[aria-invalid=true]]:border-b-destructive dark:has-[[aria-invalid=true]]:border-b-destructive/50 h-10 rounded-none border transition-[color,border-color] [[data-gsxui-slot-combobox-content]_&]:focus-within:border-inherit [[data-gsxui-slot-combobox-content]_&]:focus-within:ring-0 has-data-[align=block-end]:rounded-none has-data-[align=block-start]:rounded-none has-[textarea]:rounded-none has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 flex"
 		}
 		{ attrs... }

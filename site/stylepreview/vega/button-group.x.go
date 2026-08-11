@@ -140,6 +140,6 @@ func _gsxrenderButtonGroupSeparator(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, 
 		return _gsxerr
 	}
 //line button-group.gsx:75:2
-	_gsxgw.NodeResult(_gsxrenderSeparator(ctx, _gsxgw, _gsxstd.Default((orientation), "vertical"), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("bg-input"))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-button-group-separator", Value: _gsxrt.Toggle(true)}})))
+	_gsxgw.NodeResult(_gsxrenderSeparator(ctx, _gsxgw, _gsxstd.Default((orientation), "vertical"), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("relative m-0 self-stretch bg-input data-[orientation=vertical]:h-auto"))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-button-group-separator", Value: _gsxrt.Toggle(true)}})))
 	return _gsxgw.Err()
 }

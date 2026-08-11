@@ -33,11 +33,11 @@ component Button(variant string, size string, href string, disabled bool, childr
 				},
 				switch size {
 				case "xs":
-					"h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3"
+					"h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3"
 				case "sm":
-					"h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5"
+					"h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3.5"
 				case "lg":
-					"h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2"
+					"h-9 gap-1.5 px-2.5 has-[>svg]:px-2"
 				case "icon":
 					"size-8"
 				case "icon-xs":
@@ -47,7 +47,7 @@ component Button(variant string, size string, href string, disabled bool, childr
 				case "icon-lg":
 					"size-9"
 				default:
-					"h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2"
+					"h-8 gap-1.5 px-2.5 has-[>svg]:px-2"
 				}
 			}
 			{ attrs... }
@@ -80,11 +80,11 @@ component Button(variant string, size string, href string, disabled bool, childr
 				},
 				switch size {
 				case "xs":
-					"h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3"
+					"h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3"
 				case "sm":
-					"h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5"
+					"h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3.5"
 				case "lg":
-					"h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2"
+					"h-9 gap-1.5 px-2.5 has-[>svg]:px-2"
 				case "icon":
 					"size-8"
 				case "icon-xs":
@@ -94,7 +94,7 @@ component Button(variant string, size string, href string, disabled bool, childr
 				case "icon-lg":
 					"size-9"
 				default:
-					"h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2"
+					"h-8 gap-1.5 px-2.5 has-[>svg]:px-2"
 				}
 			}
 			{ attrs... }

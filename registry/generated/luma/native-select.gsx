@@ -39,7 +39,8 @@ import (
 component NativeSelect(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"[&>svg]:text-muted-foreground [&>svg]:top-1/2 [&>svg]:right-2.5 [&>svg]:size-4 [&>svg]:-translate-y-1/2",
+			"group/native-select",
+			"relative w-fit [&>svg]:pointer-events-none [&>svg]:absolute [&>svg]:opacity-50 [&>svg]:text-muted-foreground [&>svg]:top-1/2 [&>svg]:right-2.5 [&>svg]:size-4 [&>svg]:-translate-y-1/2",
 			attrs.Class()
 		}
 		data-gsxui-slot-native-select-wrapper

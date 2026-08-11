@@ -72,7 +72,7 @@ component ButtonGroupText(children gsx.Node, attrs gsx.Attrs) {
 component ButtonGroupSeparator(orientation string, attrs gsx.Attrs) {
 	<Separator
 		orientation={orientation |> default("vertical")}
-		class={ "bg-input" }
+		class={ "relative m-0 self-stretch bg-input data-[orientation=vertical]:h-auto" }
 		{ attrs... }
 		data-gsxui-slot-button-group-separator
 	/>
