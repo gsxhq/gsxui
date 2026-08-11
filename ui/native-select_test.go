@@ -40,8 +40,23 @@ func nativeSelectRecipeClass(class string, caller ...string) string {
 	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
 }
 
+// The wrapper carries a literal "group/native-select" marker class
+// (registry/canonical/native-select.gsx) that nativeSelectRecipeClass
+// cannot see, for the same reason documented on field_test.go's
+// canonicalFieldClass — see the style-porter report's "missing
+// group/<name> marker" entry. Renders BEFORE the recipe's own utilities
+// (matching NativeSelect's own class={"group/native-select",
+// nativeSelect.Wrapper(), attrs.Class()} call), so it is built directly
+// rather than through nativeSelectRecipeClass's fixed [recipe..., caller...]
+// ordering.
 func canonicalNativeSelectWrapperClass(caller ...string) string {
-	return nativeSelectRecipeClass("gsxui-recipe-native-select-wrapper", caller...)
+	rule, ok := novaNativeSelectRecipe().Lookup("gsxui-recipe-native-select-wrapper")
+	if !ok {
+		panic("default style declares no recipe gsxui-recipe-native-select-wrapper")
+	}
+	classes := append([]string{"group/native-select"}, rule.Utilities...)
+	classes = append(classes, caller...)
+	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
 }
 
 func canonicalNativeSelectClass(caller ...string) string {

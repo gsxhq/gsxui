@@ -4,7 +4,7 @@
    re-slotted onto gsxui's shape-declared classes. */
 @layer components {
   .gsxui-recipe-native-select-wrapper {
-    @apply [&>svg]:text-muted-foreground [&>svg]:top-1/2 [&>svg]:right-1.5 [&>svg]:size-3.5 [&>svg]:-translate-y-1/2 group-data-[size=sm]/native-select:[&>svg]:size-3 group-data-[size=sm]/native-select:[&>svg]:-translate-y-[calc(--spacing(1.25))];
+    @apply relative w-fit [&>svg]:pointer-events-none [&>svg]:absolute [&>svg]:opacity-50 [&>svg]:text-muted-foreground [&>svg]:top-1/2 [&>svg]:right-1.5 [&>svg]:size-3.5 [&>svg]:-translate-y-1/2 group-data-[size=sm]/native-select:[&>svg]:size-3 group-data-[size=sm]/native-select:[&>svg]:-translate-y-[calc(--spacing(1.25))];
   }
 
   /* carried: no upstream counterpart */
