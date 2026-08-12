@@ -392,13 +392,18 @@ test("real interactions cover the exact runtime-owned style contract", async ({
     "open",
   );
 
-  await page.goto("/x/navigation-menu/basic");
-  const navigationTrigger = page.locator(
-    "button[data-gsxui-slot-navigation-menu-trigger]",
-  );
-  const navigationContent = page.locator(
-    "[data-gsxui-slot-navigation-menu-content]",
-  );
+  // The rtl example is the one that composes NavigationMenuIndicator —
+  // the basic example mirrors shadcn's own demo, which renders no
+  // indicator (the part only reads correctly against upstream's shared
+  // viewport; in our viewport={false} adaptation it floats as an orphan
+  // dot, so the primary demo dropped it).
+  await page.goto("/x/navigation-menu/rtl");
+  const navigationTrigger = page
+    .locator("button[data-gsxui-slot-navigation-menu-trigger]")
+    .first();
+  const navigationContent = page
+    .locator("[data-gsxui-slot-navigation-menu-content]")
+    .first();
   const navigationIndicator = page.locator(
     "[data-gsxui-slot-navigation-menu-indicator]",
   );

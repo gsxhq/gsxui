@@ -97,8 +97,6 @@ func Basic() _gsxrt.Node {
 					}), _gsxrt.Attrs{{Key: "href", Value: "#"}}))
 					return _gsxgw.Err()
 				}), nil))
-//line basic.gsx:47:4
-				_gsxgw.Node(ctx, ui.NavigationMenuIndicator(nil))
 				return _gsxgw.Err()
 			}), nil))
 			return _gsxgw.Err()

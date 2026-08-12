@@ -44,7 +44,6 @@ component Basic() {
 			<ui.NavigationMenuItem>
 				<ui.NavigationMenuLink variant="trigger" href="#">Docs</ui.NavigationMenuLink>
 			</ui.NavigationMenuItem>
-			<ui.NavigationMenuIndicator/>
 		</ui.NavigationMenuList>
 	</ui.NavigationMenu>
 }

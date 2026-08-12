@@ -91,6 +91,18 @@ const OPEN_DELAY = 100;
 const CLOSE_DELAY = 100;
 const timers = new WeakMap(); // trigger -> pending open/close setTimeout id
 
+// FIX ROUND 4 (hover-open swallowed by the same gesture's click): a mouse
+// user's instinct is hover-then-click, but hover had already opened the
+// panel by the time the click landed, so the click toggle read the open
+// state and CLOSED it — open-flash-close on every natural click. Radix
+// guards exactly this with hasPointerMoveOpenedRef: while a panel is open
+// BECAUSE pointer hover opened it, trigger clicks are ignored outright
+// (pointer-leave is what closes it); the flag resets when the panel
+// closes. Mirrored here, gated to pointerType === "mouse" so touch —
+// which has no hover and relies on the click toggle — keeps its
+// tap-open/tap-close behavior untouched.
+const pointerOpened = new WeakSet(); // triggers whose panel hover opened
+
 function clearTimer(trigger) {
   clearTimeout(timers.get(trigger));
   timers.delete(trigger);
@@ -157,6 +169,14 @@ function open(trigger) {
       close(triggerOf(other));
   }
 
+  // NOT REPLICATED (considered, reverted by request): upstream's
+  // slide-together trigger-to-trigger morph. It is a property of the shared
+  // Viewport — one persistent box animating its size while contents slide
+  // within it — which this adaptation deliberately dropped (FIX ROUND 1:
+  // coincident top-layer popovers occlude each other; see the viewport GAP).
+  // A switch here is close-then-open of two independent panels, and each
+  // open keeps its normal entry animation.
+
   // Positioned under THIS trigger's own rect (viewport={false} semantics —
   // each panel is its own self-contained floating panel, not a shared,
   // list-anchored one). Offset 0, not 6 — FIX ROUND 2: the class's own
@@ -182,6 +202,7 @@ function close(trigger) {
   clearTimer(trigger);
   const content = contentOf(trigger);
   if (!content || !content.matches(":popover-open")) return;
+  pointerOpened.delete(trigger);
   content.hidePopover();
   content.dataset.state = "closed";
   trigger.dataset.state = "closed";
@@ -199,15 +220,22 @@ function close(trigger) {
 // an accidental trigger while the pointer merely passes over the bar.
 function scheduleOpen(trigger) {
   clearTimer(trigger);
+  const openViaPointer = () => {
+    // Marked only when THIS call transitions closed->open (never from a
+    // cancelled timer, and never when a click already opened the panel and
+    // the hover timer merely fired into the idempotent early-return — a
+    // click-opened panel must stay click-closable); close() clears it.
+    const wasOpen = contentOf(trigger)?.matches(":popover-open");
+    open(trigger);
+    if (!wasOpen && contentOf(trigger)?.matches(":popover-open"))
+      pointerOpened.add(trigger);
+  };
   const menu = menuOf(trigger);
   if (menu && isAnyOpen(menu)) {
-    open(trigger);
+    openViaPointer();
     return;
   }
-  timers.set(
-    trigger,
-    setTimeout(() => open(trigger), OPEN_DELAY),
-  );
+  timers.set(trigger, setTimeout(openViaPointer, OPEN_DELAY));
 }
 
 function scheduleClose(trigger) {
@@ -218,8 +246,12 @@ function scheduleClose(trigger) {
   );
 }
 
-on("pointerover", TRIGGER_SELECTOR, (_e, t) => scheduleOpen(t));
+on("pointerover", TRIGGER_SELECTOR, (e, t) => {
+  if (e.pointerType !== "mouse") return;
+  scheduleOpen(t);
+});
 on("pointerout", TRIGGER_SELECTOR, (e, t) => {
+  if (e.pointerType !== "mouse") return;
   if (stillWithin(t, e.relatedTarget)) return;
   scheduleClose(t);
 });
@@ -241,8 +273,14 @@ on("focusout", TRIGGER_SELECTOR, (e, t) => {
 // handler in this codebase.
 on("click", TRIGGER_SELECTOR, (_e, t) => {
   const content = contentOf(t);
-  if (content?.matches(":popover-open")) close(t);
-  else open(t);
+  if (content?.matches(":popover-open")) {
+    // FIX ROUND 4: hover opened this panel and still holds it — the click
+    // that follows the same hover gesture must not collapse it.
+    if (pointerOpened.has(t)) return;
+    close(t);
+  } else {
+    open(t);
+  }
 });
 
 on(
