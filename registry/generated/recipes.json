@@ -2706,7 +2706,9 @@
               "[\u0026\u003esvg]:size-4",
               "[\u0026\u003esvg]:shrink-0",
               "[\u0026\u003esvg]:opacity-50",
-              "flex"
+              "flex",
+              "items-center",
+              "gap-2"
             ],
             "dimensions": {}
           },
@@ -7024,7 +7026,9 @@
               "[\u0026\u003esvg]:size-4",
               "[\u0026\u003esvg]:shrink-0",
               "[\u0026\u003esvg]:opacity-50",
-              "flex"
+              "flex",
+              "items-center",
+              "gap-2"
             ],
             "dimensions": {}
           },
@@ -11312,7 +11316,9 @@
               "[\u0026\u003esvg]:size-4",
               "[\u0026\u003esvg]:shrink-0",
               "[\u0026\u003esvg]:opacity-50",
-              "flex"
+              "flex",
+              "items-center",
+              "gap-2"
             ],
             "dimensions": {}
           },
@@ -15604,7 +15610,9 @@
               "[\u0026\u003esvg]:size-3.5",
               "[\u0026\u003esvg]:shrink-0",
               "[\u0026\u003esvg]:opacity-50",
-              "flex"
+              "flex",
+              "items-center",
+              "gap-2"
             ],
             "dimensions": {}
           },
@@ -19928,7 +19936,9 @@
               "[\u0026\u003esvg]:size-4",
               "[\u0026\u003esvg]:shrink-0",
               "[\u0026\u003esvg]:opacity-50",
-              "flex"
+              "flex",
+              "items-center",
+              "gap-2"
             ],
             "dimensions": {}
           },
@@ -24243,7 +24253,9 @@
               "[\u0026\u003esvg]:size-4",
               "[\u0026\u003esvg]:shrink-0",
               "[\u0026\u003esvg]:opacity-50",
-              "flex"
+              "flex",
+              "items-center",
+              "gap-2"
             ],
             "dimensions": {}
           },
@@ -28589,7 +28601,9 @@
               "[\u0026\u003esvg]:size-3.5",
               "[\u0026\u003esvg]:shrink-0",
               "[\u0026\u003esvg]:opacity-50",
-              "flex"
+              "flex",
+              "items-center",
+              "gap-2"
             ],
             "dimensions": {}
           },
@@ -32934,7 +32948,9 @@
               "[\u0026\u003esvg]:size-4",
               "[\u0026\u003esvg]:shrink-0",
               "[\u0026\u003esvg]:opacity-50",
-              "flex"
+              "flex",
+              "items-center",
+              "gap-2"
             ],
             "dimensions": {}
           },

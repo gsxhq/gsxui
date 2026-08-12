@@ -14,7 +14,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-command-input-wrapper {
-    @apply p-1 pb-0 bg-input/50 h-8 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50 flex;
+    @apply p-1 pb-0 bg-input/50 h-8 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50 flex items-center gap-2;
   }
 
   /* carried: no upstream counterpart */

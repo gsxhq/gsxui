@@ -138,7 +138,7 @@ func _gsxrenderCommandInput(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, placehol
 	}
 //line command.gsx:73:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("p-1 bg-transparent border-transparent border-b-input px-3 [&>svg]:size-3.5 [&>svg]:shrink-0 [&>svg]:opacity-50 flex"))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("p-1 bg-transparent border-transparent border-b-input px-3 [&>svg]:size-3.5 [&>svg]:shrink-0 [&>svg]:opacity-50 flex items-center gap-2"))
 	_gsxgw.S("\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-command-input-wrapper", true)
 	_gsxgw.S(">")
