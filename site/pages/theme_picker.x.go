@@ -81,7 +81,7 @@ func _gsxrenderThemePicker(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, name, lab
 			_gsxgw.Style(_gsxrt.Style(_gsxrt.StyleValue(themePickerSelectedSwatchStyle(choices, selected))))
 			_gsxgw.S("\"></span>")
 			return _gsxgw.Err()
-		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-theme-picker-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "class", Value: "flex h-10 w-full items-center justify-between gap-3 rounded-md border border-input bg-transparent px-3 text-left text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"}})))
+		}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "data-theme-picker-trigger", Value: _gsxrt.Toggle(true)}}, _gsxrt.Attrs{{Key: "class", Value: "flex min-h-10 w-full items-center justify-between gap-3 rounded-md border border-input bg-transparent px-3 py-1.5 text-left text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"}})))
 //line theme_picker.gsx:46:3
 		_gsxgw.Node(ctx, ui.PopoverContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)

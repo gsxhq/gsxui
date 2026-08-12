@@ -313,9 +313,9 @@ func themeStylePressedAttr(name string) string {
 
 func themeStyleButtonClass(name string) string {
 	if name == string(preset.StyleNova) {
-		return "rounded-xl border border-primary bg-accent/50 p-4 text-left transition-colors hover:bg-accent"
+		return "flex flex-col items-start rounded-xl border border-primary bg-accent/50 p-4 text-left transition-colors hover:bg-accent"
 	}
-	return "rounded-xl border border-border p-4 text-left transition-colors hover:bg-accent"
+	return "flex flex-col items-start rounded-xl border border-border p-4 text-left transition-colors hover:bg-accent"
 }
 
 const tabBtnBase = "rounded-md border border-border px-3 py-1.5 text-sm font-medium transition-colors"

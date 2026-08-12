@@ -38,7 +38,7 @@ component ThemePicker(name, label, selected string, choices []themePickerChoice)
 	<ui.Popover data-theme-picker={name} class="min-w-[180px]">
 		<ui.PopoverTrigger
 			data-theme-picker-trigger
-			class="flex h-10 w-full items-center justify-between gap-3 rounded-md border border-input bg-transparent px-3 text-left text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+			class="flex min-h-10 w-full items-center justify-between gap-3 rounded-md border border-input bg-transparent px-3 py-1.5 text-left text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
 		>
 			<span class="flex min-w-0 flex-col gap-0.5"><span class="text-xs text-muted-foreground">{ label }</span><span data-theme-selection-value class="truncate font-medium">{ themePickerSelectedTitle(choices, selected) }</span></span>
 			<span data-theme-selection-swatch class="size-4 shrink-0 rounded-full border border-border bg-foreground/40" style={ themePickerSelectedSwatchStyle(choices, selected) }></span>
