@@ -71,7 +71,9 @@ component CommandDialog(title string, description string, trigger gsx.Node, chil
 // focus stays here (aria-activedescendant tracks the selected option).
 component CommandInput(placeholder string, attrs gsx.Attrs) {
 	<div
-		class={ "p-1 bg-input/30 h-9 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50 flex items-center gap-2" }
+		class={
+			"mx-1 mt-1 pl-2 bg-input/30 h-9 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50 flex items-center gap-2"
+		}
 		data-gsxui-slot-command-input-wrapper
 	>
 		<icon.Search/>

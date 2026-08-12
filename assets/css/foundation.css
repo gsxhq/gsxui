@@ -454,18 +454,19 @@ input[type="radio"] {
 }
 
 /* The generic dialog close button sits at top-2 (8px, centre 16px), but the
-   command palette's search-row centre sits lower: command root p-1 (4px) + half
-   the h-8 input pill (16px) = 20px from the content edge. Drop the close button
-   to top 12px so its 16px box centres at 20px too, landing on the search row.
-   (Calibrated for the h-8 pill styles incl. nova; h-9 pills read ~2px high.)
-   The close button renders through Dialog, whose top-2 is a scanned utility in
-   @layer utilities; an unlayered override cannot reliably beat it across the
-   layer boundary, so this lives in @layer utilities too. The selector's two
-   attribute selectors give it (0,2,0), clearing the layer gate's (0,1,0)
-   floor — same fallout the InputOTP rules below document. */
+   command palette's search-row centre sits lower: command root p-1 (4px) + the
+   pill's own mt-1 inset (4px) + half the h-8 pill (16px) = 24px from the content
+   edge. Drop the close button to top-4 (16px) so its 16px box centres at 24px
+   too, landing on the search row — the same top-4 upstream's command dialog
+   uses. (Calibrated for the h-8 pill styles incl. nova; h-9 pills read ~2px
+   high.) The close button renders through Dialog, whose top-2 is a scanned
+   utility in @layer utilities; an unlayered override cannot reliably beat it
+   across the layer boundary, so this lives in @layer utilities too. The
+   selector's two attribute selectors give it (0,2,0), clearing the layer gate's
+   (0,1,0) floor — same fallout the InputOTP rules below document. */
 @layer utilities {
   [data-gsxui-slot-command-dialog-content] [data-gsxui-slot-dialog-close-button] {
-    top: 0.75rem;
+    top: 1rem;
   }
 }
 
