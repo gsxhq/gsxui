@@ -1735,7 +1735,14 @@
               "ring-1",
               "duration-100",
               "max-w-xs",
-              "sm:max-w-md"
+              "sm:max-w-md",
+              "fixed",
+              "z-50",
+              "top-1/2",
+              "left-1/2",
+              "w-full",
+              "-translate-x-1/2",
+              "-translate-y-1/2"
             ],
             "dimensions": {}
           },
@@ -3017,7 +3024,14 @@
               "shadow-xl",
               "ring-1",
               "duration-100",
-              "sm:max-w-md"
+              "sm:max-w-md",
+              "fixed",
+              "z-50",
+              "top-1/2",
+              "left-1/2",
+              "w-full",
+              "-translate-x-1/2",
+              "-translate-y-1/2"
             ],
             "dimensions": {}
           },
@@ -6041,7 +6055,14 @@
               "ring-1",
               "duration-100",
               "max-w-xs",
-              "sm:max-w-sm"
+              "sm:max-w-sm",
+              "fixed",
+              "z-50",
+              "top-1/2",
+              "left-1/2",
+              "w-full",
+              "-translate-x-1/2",
+              "-translate-y-1/2"
             ],
             "dimensions": {}
           },
@@ -7308,7 +7329,14 @@
               "text-xs/relaxed",
               "ring-1",
               "duration-100",
-              "sm:max-w-sm"
+              "sm:max-w-sm",
+              "fixed",
+              "z-50",
+              "top-1/2",
+              "left-1/2",
+              "w-full",
+              "-translate-x-1/2",
+              "-translate-y-1/2"
             ],
             "dimensions": {}
           },
@@ -10318,7 +10346,14 @@
               "ring-1",
               "duration-100",
               "max-w-xs",
-              "sm:max-w-md"
+              "sm:max-w-md",
+              "fixed",
+              "z-50",
+              "top-1/2",
+              "left-1/2",
+              "w-full",
+              "-translate-x-1/2",
+              "-translate-y-1/2"
             ],
             "dimensions": {}
           },
@@ -11584,7 +11619,14 @@
               "text-sm",
               "ring-1",
               "duration-100",
-              "sm:max-w-md"
+              "sm:max-w-md",
+              "fixed",
+              "z-50",
+              "top-1/2",
+              "left-1/2",
+              "w-full",
+              "-translate-x-1/2",
+              "-translate-y-1/2"
             ],
             "dimensions": {}
           },
@@ -14584,7 +14626,14 @@
               "ring-1",
               "duration-100",
               "max-w-xs",
-              "sm:max-w-sm"
+              "sm:max-w-sm",
+              "fixed",
+              "z-50",
+              "top-1/2",
+              "left-1/2",
+              "w-full",
+              "-translate-x-1/2",
+              "-translate-y-1/2"
             ],
             "dimensions": {}
           },
@@ -15873,7 +15922,14 @@
               "text-xs/relaxed",
               "ring-1",
               "duration-100",
-              "sm:max-w-sm"
+              "sm:max-w-sm",
+              "fixed",
+              "z-50",
+              "top-1/2",
+              "left-1/2",
+              "w-full",
+              "-translate-x-1/2",
+              "-translate-y-1/2"
             ],
             "dimensions": {}
           },
@@ -18893,7 +18949,14 @@
               "ring-1",
               "duration-100",
               "max-w-xs",
-              "sm:max-w-sm"
+              "sm:max-w-sm",
+              "fixed",
+              "z-50",
+              "top-1/2",
+              "left-1/2",
+              "w-full",
+              "-translate-x-1/2",
+              "-translate-y-1/2"
             ],
             "dimensions": {}
           },
@@ -20174,7 +20237,14 @@
               "text-sm",
               "ring-1",
               "duration-100",
-              "sm:max-w-sm"
+              "sm:max-w-sm",
+              "fixed",
+              "z-50",
+              "top-1/2",
+              "left-1/2",
+              "w-full",
+              "-translate-x-1/2",
+              "-translate-y-1/2"
             ],
             "dimensions": {}
           },
@@ -23202,7 +23272,14 @@
               "ring-1",
               "duration-100",
               "max-w-xs",
-              "sm:max-w-md"
+              "sm:max-w-md",
+              "fixed",
+              "z-50",
+              "top-1/2",
+              "left-1/2",
+              "w-full",
+              "-translate-x-1/2",
+              "-translate-y-1/2"
             ],
             "dimensions": {}
           },
@@ -24484,7 +24561,14 @@
               "shadow-xl",
               "ring-1",
               "duration-100",
-              "sm:max-w-md"
+              "sm:max-w-md",
+              "fixed",
+              "z-50",
+              "top-1/2",
+              "left-1/2",
+              "w-full",
+              "-translate-x-1/2",
+              "-translate-y-1/2"
             ],
             "dimensions": {}
           },
@@ -27522,7 +27606,14 @@
               "ring-1",
               "duration-100",
               "max-w-xs",
-              "sm:max-w-md"
+              "sm:max-w-md",
+              "fixed",
+              "z-50",
+              "top-1/2",
+              "left-1/2",
+              "w-full",
+              "-translate-x-1/2",
+              "-translate-y-1/2"
             ],
             "dimensions": {}
           },
@@ -28824,7 +28915,14 @@
               "shadow-md",
               "ring-1",
               "duration-100",
-              "sm:max-w-md"
+              "sm:max-w-md",
+              "fixed",
+              "z-50",
+              "top-1/2",
+              "left-1/2",
+              "w-full",
+              "-translate-x-1/2",
+              "-translate-y-1/2"
             ],
             "dimensions": {}
           },
@@ -31855,7 +31953,14 @@
               "ring-1",
               "duration-100",
               "max-w-xs",
-              "sm:max-w-lg"
+              "sm:max-w-lg",
+              "fixed",
+              "z-50",
+              "top-1/2",
+              "left-1/2",
+              "w-full",
+              "-translate-x-1/2",
+              "-translate-y-1/2"
             ],
             "dimensions": {}
           },
@@ -33138,7 +33243,14 @@
               "text-sm",
               "ring-1",
               "duration-100",
-              "sm:max-w-md"
+              "sm:max-w-md",
+              "fixed",
+              "z-50",
+              "top-1/2",
+              "left-1/2",
+              "w-full",
+              "-translate-x-1/2",
+              "-translate-y-1/2"
             ],
             "dimensions": {}
           },

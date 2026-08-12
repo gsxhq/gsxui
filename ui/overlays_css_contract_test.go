@@ -180,7 +180,7 @@ func TestAlertDialogCSSOnlyContract(t *testing.T) {
 	if strings.Count(content, `id="caller-id"`) != 1 {
 		t.Errorf("id=\"caller-id\" must render exactly once\nin: %s", content)
 	}
-	if !strings.Contains(content, "max-w-xs sm:max-w-sm caller-only") {
+	if !strings.Contains(content, "max-w-xs sm:max-w-sm fixed z-50 top-1/2 left-1/2 w-full -translate-x-1/2 -translate-y-1/2 caller-only") {
 		t.Errorf("caller class must merge after AlertDialog's own content utilities\nin: %s", content)
 	}
 	for _, want := range []string{

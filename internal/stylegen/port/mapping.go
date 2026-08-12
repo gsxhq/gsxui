@@ -192,6 +192,21 @@ var slotOverrides = map[string]map[string]slotOverride{
 		// separate "close-icon"). Same concept (registry/styles/nova/dialog.css's
 		// close-button rule is also absolute-positioned chrome), different name.
 		"cn-dialog-close": {slot: "close-button", ok: true},
+		// Upstream centers dialog-content not via style-<name>.css but via
+		// apps/v4/registry/bases/radix/ui/dialog.tsx's own className string
+		// on DialogContent, outside style-<name>.css's read scope entirely
+		// (same class of gap as button's cva() base string above). Preflight
+		// zeroes the `margin` the UA's `dialog:modal { margin: auto }` relies
+		// on to center a native <dialog>, so without an explicit
+		// fixed/inset-centering rule the dialog opens pinned to the
+		// scrollport's top-left corner. slot stays "content" (SlotFor's own
+		// default derivation for this class) purely so extra appends to,
+		// rather than replaces, the animation/sizing utilities upstream's
+		// style-<name>.css DOES contribute for this rule.
+		"cn-dialog-content": {slot: "content", ok: true, extra: []string{
+			"fixed", "z-50", "top-1/2", "left-1/2", "w-full",
+			"-translate-x-1/2", "-translate-y-1/2",
+		}},
 	},
 	"alert-dialog": {
 		// See the package doc comment above slotOverrides: composes
@@ -202,6 +217,16 @@ var slotOverrides = map[string]map[string]slotOverride{
 		// content/header/footer/title/description only) doesn't declare at
 		// all — a missing feature, not a naming gap.
 		"cn-alert-dialog-media": {ok: false},
+		// Same centering gap as "cn-dialog-content" above: AlertDialogContent
+		// composes <ui.DialogContent> (see the package doc comment), but
+		// upstream's own alert-dialog.tsx wraps a separate Radix
+		// AlertDialogContent that carries the identical fixed/centered
+		// className directly, also outside style-<name>.css. Without it,
+		// alert-dialog opens pinned top-left exactly like dialog.
+		"cn-alert-dialog-content": {slot: "content", ok: true, extra: []string{
+			"fixed", "z-50", "top-1/2", "left-1/2", "w-full",
+			"-translate-x-1/2", "-translate-y-1/2",
+		}},
 	},
 	"drawer": {
 		"cn-drawer-overlay": {slot: "content", ok: true, variant: "backdrop"},
