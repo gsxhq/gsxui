@@ -127,6 +127,8 @@ func planPresetApply(
 		Managed:      true,
 	}}
 	if slices.Contains(axes, "radius") ||
+		slices.Contains(axes, "font.sans") ||
+		slices.Contains(axes, "font.heading") ||
 		slices.Contains(axes, "theme.light") ||
 		slices.Contains(axes, "theme.dark") {
 		themeCSS, err := preset.ThemeCSS(selected)
@@ -236,6 +238,12 @@ func changedPresetAxes(current, selected preset.Preset) []string {
 	}
 	if current.Radius != selected.Radius {
 		axes = append(axes, "radius")
+	}
+	if current.FontSans != selected.FontSans {
+		axes = append(axes, "font.sans")
+	}
+	if current.FontHeading != selected.FontHeading {
+		axes = append(axes, "font.heading")
 	}
 	if !maps.Equal(current.Theme.Light, selected.Theme.Light) {
 		axes = append(axes, "theme.light")

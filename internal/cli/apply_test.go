@@ -94,6 +94,67 @@ func TestApplyFullThemeChangeWritesCanonicalPresetAndTheme(t *testing.T) {
 	assertManagedHashMatches(t, dir, "web/gsxui/theme.css")
 }
 
+// TestApplyFontOnlyChangeIsDetectedAndApplied is the carried-over fix from
+// Task 4's report (docs/superpowers/plans/2026-08-11-theme-creator-parity.md
+// Task 5): changedPresetAxes previously compared only Style/Radius/Theme,
+// never FontSans/FontHeading, so a preset differing from the installed one
+// solely in its font pair was invisible to `gsxui apply` — it printed
+// "(no changes)" and wrote nothing, even though the incoming preset's fonts
+// legitimately differ. This asserts the opposite: the axis is detected and
+// theme.css (the only artifact that carries --font-sans/--font-heading) is
+// actually rewritten.
+func TestApplyFontOnlyChangeIsDetectedAndApplied(t *testing.T) {
+	dir, _ := initedModuleWithStyle(t, preset.StyleNova)
+	themeBefore := readProjectFile(t, dir, "web/gsxui/theme.css")
+	incoming := preset.Default(preset.StyleNova)
+	fonts := preset.FontChoices()
+	var playfair preset.FontChoice
+	for _, choice := range fonts {
+		if choice.Name == "playfair-display" {
+			playfair = choice
+		}
+	}
+	if playfair.Name == "" {
+		t.Fatal("font catalog missing playfair-display")
+	}
+	if incoming.FontHeading == playfair.Stack {
+		t.Fatal("test fixture picked a font identical to the default — strengthen it")
+	}
+	incoming.FontHeading = playfair.Stack
+
+	output, err := captureRunOutput(t, []string{
+		"apply",
+		"--preset", presetCode(t, incoming),
+		"--yes",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.TrimSpace(output) == "(no changes)" {
+		t.Fatal("font-only preset change was not detected as a change")
+	}
+	if !strings.Contains(output, "axes: font.heading") {
+		t.Fatalf("apply summary missing font.heading axis:\n%s", output)
+	}
+	assertProjectPreset(t, dir, incoming)
+	wantTheme, err := preset.ThemeCSS(incoming)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := readProjectFile(t, dir, "web/gsxui/theme.css")
+	if !bytes.Equal(got, wantTheme) {
+		t.Fatalf("theme.css:\n%s\nwant:\n%s", got, wantTheme)
+	}
+	if bytes.Equal(got, themeBefore) {
+		t.Fatal("font-only apply left theme.css unchanged")
+	}
+	if !bytes.Contains(got, []byte(`"Playfair Display Variable"`)) {
+		t.Fatalf("theme.css does not carry the new heading font:\n%s", got)
+	}
+	assertManagedHashMatches(t, dir, "gsxui.preset.json")
+	assertManagedHashMatches(t, dir, "web/gsxui/theme.css")
+}
+
 func TestApplyOnlyThemePreservesStyleAndButtonBytes(t *testing.T) {
 	dir, _ := initedModuleWithStyle(t, preset.StyleNova)
 	if err := Run([]string{"add", "button"}); err != nil {
