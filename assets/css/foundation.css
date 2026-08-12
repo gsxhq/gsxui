@@ -443,6 +443,16 @@ input[type="radio"] {
   appearance: none;
 }
 
+/* The command palette's <input> is a bare native text input the recipe only
+   sizes (w-full/text-sm). Strip the UA border/background and — because the
+   dialog auto-focuses it on open — the focus outline, so it reads as shadcn's
+   borderless search field rather than a bordered box. Style-invariant. */
+[data-gsxui-slot-command-input] {
+  border: 0;
+  background: transparent;
+  outline: none;
+}
+
 /* InputOTP's one real input must cover the visual slots while remaining
    focusable and clickable in every style. InputOTP's own migration to the
    slot axis gave data-gsxui-slot-input-otp/-input real (0,1,0) recipe-class
