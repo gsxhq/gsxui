@@ -6,16 +6,26 @@
 @import "./theme-preview-button.css";
 @import "../assets/css/styles/default.css";
 
-@import "@fontsource-variable/geist";
-@import "@fontsource-variable/geist-mono";
-
 /* Theme editor font pair picker (internal/preset/catalog.go's fontCatalog):
    self-hosted variable WOFF2 fonts, no npm/CDN — see assets/fonts/NOTICE.md
    for licences. Loaded here (not just in the preview iframe's own bundle)
    so the editor's own chrome — e.g. a future in-picker font specimen — can
    use them too, the same reasoning web/preview.js already imports this same
-   site.css for the theme_preview.gsx iframe. */
+   site.css for the theme_preview.gsx iframe.
+
+   ORDER IS LOAD-BEARING: fonts.css also registers "Geist Variable" (its
+   latin picker subset), the same family @fontsource-variable/geist below
+   registers in full. For identical @font-face descriptors the LAST
+   declaration wins, so fonts.css must come FIRST or its subset — whose
+   hinting the subsetter stripped — shadows the full hinted face. CoreText
+   ignores hinting (macOS renders both identically), but FreeType autohints
+   the unhinted subset with stem darkening: every text-dense visual
+   baseline drifted 2-5% bolder ON CI ONLY, failing the 1% gate while
+   local runs stayed byte-identical. */
 @import "../assets/fonts/fonts.css";
+
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
 
 @theme {
   --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
