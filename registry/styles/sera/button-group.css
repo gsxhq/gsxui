@@ -20,7 +20,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-button-group-text {
-    @apply gap-2 border border-transparent border-b-input bg-transparent px-2.5 text-xs font-semibold [&_svg:not([class*='size-'])]:size-3.5 group-has-[>[data-variant=outline]]/button-group:border-border uppercase flex;
+    @apply gap-2 border border-transparent border-b-input bg-transparent px-2.5 text-xs font-semibold [&_svg:not([class*='size-'])]:size-3.5 group-has-[>[data-variant=outline]]/button-group:border-border uppercase flex items-center [&_svg]:pointer-events-none;
   }
 
   .gsxui-recipe-button-group-separator {

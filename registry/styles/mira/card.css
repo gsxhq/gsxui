@@ -32,6 +32,6 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-card-footer {
-    @apply rounded-b-lg px-(--card-spacing) flex items-center;
+    @apply rounded-b-lg px-(--card-spacing) flex items-center [.border-t]:pt-(--card-spacing);
   }
 }

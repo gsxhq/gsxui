@@ -2165,7 +2165,9 @@
               "text-sm",
               "font-medium",
               "[\u0026_svg:not([class*='size-'])]:size-4",
-              "flex"
+              "flex",
+              "items-center",
+              "[\u0026_svg]:pointer-events-none"
             ],
             "dimensions": {}
           }
@@ -2395,7 +2397,8 @@
               "rounded-b-4xl",
               "px-(--card-spacing)",
               "flex",
-              "items-center"
+              "items-center",
+              "[.border-t]:pt-(--card-spacing)"
             ],
             "dimensions": {}
           },
@@ -4581,23 +4584,24 @@
               "group-data-[viewport=false]/navigation-menu:rounded-3xl",
               "group-data-[viewport=false]/navigation-menu:shadow-lg",
               "group-data-[viewport=false]/navigation-menu:ring-1",
-              "group-data-[viewport=false]/navigation-menu:duration-300"
+              "group-data-[viewport=false]/navigation-menu:duration-300",
+              "group-data-[viewport=false]/navigation-menu:mt-1.5",
+              "origin-top-left"
             ],
             "dimensions": {}
           },
           "indicator": {
             "base": [
-              "data-[state=visible]:animate-in",
-              "data-[state=hidden]:animate-out",
-              "data-[state=hidden]:fade-out",
-              "data-[state=visible]:fade-in",
               "flex",
               "top-full",
               "z-1",
               "h-1.5",
               "items-end",
               "justify-center",
-              "overflow-hidden"
+              "overflow-hidden",
+              "pointer-events-none",
+              "opacity-0",
+              "data-[state=visible]:opacity-100"
             ],
             "dimensions": {}
           },
@@ -4623,10 +4627,12 @@
           "link": {
             "base": [
               "focus-visible:ring-ring/30",
-              "hover:bg-muted",
-              "focus:bg-muted",
+              "hover:bg-accent",
+              "hover:text-accent-foreground",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
               "flex",
-              "items-center",
+              "flex-col",
               "gap-1.5",
               "rounded-3xl",
               "p-3",
@@ -4636,7 +4642,8 @@
               "focus-visible:ring-3",
               "focus-visible:outline-1",
               "[\u0026_svg:not([class*='size-'])]:size-4",
-              "[[data-gsxui-slot-navigation-menu-content]_\u0026]:rounded-2xl"
+              "[[data-gsxui-slot-navigation-menu-content]_\u0026]:rounded-2xl",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
             ],
             "dimensions": {
               "active": {
@@ -6843,7 +6850,9 @@
               "text-xs",
               "font-medium",
               "[\u0026_svg:not([class*='size-'])]:size-4",
-              "flex"
+              "flex",
+              "items-center",
+              "[\u0026_svg]:pointer-events-none"
             ],
             "dimensions": {}
           }
@@ -9231,23 +9240,24 @@
               "group-data-[viewport=false]/navigation-menu:rounded-none",
               "group-data-[viewport=false]/navigation-menu:shadow",
               "group-data-[viewport=false]/navigation-menu:ring-1",
-              "group-data-[viewport=false]/navigation-menu:duration-300"
+              "group-data-[viewport=false]/navigation-menu:duration-300",
+              "group-data-[viewport=false]/navigation-menu:mt-1.5",
+              "origin-top-left"
             ],
             "dimensions": {}
           },
           "indicator": {
             "base": [
-              "data-[state=visible]:animate-in",
-              "data-[state=hidden]:animate-out",
-              "data-[state=hidden]:fade-out",
-              "data-[state=visible]:fade-in",
               "flex",
               "top-full",
               "z-1",
               "h-1.5",
               "items-end",
               "justify-center",
-              "overflow-hidden"
+              "overflow-hidden",
+              "pointer-events-none",
+              "opacity-0",
+              "data-[state=visible]:opacity-100"
             ],
             "dimensions": {}
           },
@@ -9272,15 +9282,18 @@
           },
           "link": {
             "base": [
-              "data-active:focus:bg-muted",
-              "data-active:hover:bg-muted",
-              "data-active:bg-muted/50",
+              "data-[active=true]:focus:bg-accent",
+              "data-[active=true]:hover:bg-accent",
+              "data-[active=true]:bg-accent/50",
+              "data-[active=true]:text-accent-foreground",
               "focus-visible:ring-ring/50",
-              "hover:bg-muted",
-              "focus:bg-muted",
+              "hover:bg-accent",
+              "hover:text-accent-foreground",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
               "flex",
-              "items-center",
-              "gap-2",
+              "flex-col",
+              "gap-1",
               "rounded-none",
               "p-2",
               "text-xs",
@@ -9289,7 +9302,8 @@
               "focus-visible:ring-1",
               "focus-visible:outline-1",
               "[[data-gsxui-slot-navigation-menu-content]_\u0026]:rounded-none",
-              "[\u0026_svg:not([class*='size-'])]:size-4"
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
             ],
             "dimensions": {
               "active": {
@@ -11488,7 +11502,9 @@
               "text-sm",
               "font-medium",
               "[\u0026_svg:not([class*='size-'])]:size-4",
-              "flex"
+              "flex",
+              "items-center",
+              "[\u0026_svg]:pointer-events-none"
             ],
             "dimensions": {}
           }
@@ -11716,7 +11732,8 @@
               "rounded-b-xl",
               "px-(--card-spacing)",
               "flex",
-              "items-center"
+              "items-center",
+              "[.border-t]:pt-(--card-spacing)"
             ],
             "dimensions": {}
           },
@@ -13882,23 +13899,24 @@
               "group-data-[viewport=false]/navigation-menu:ring-1",
               "group-data-[viewport=false]/navigation-menu:duration-300",
               "isolate",
-              "z-50"
+              "z-50",
+              "group-data-[viewport=false]/navigation-menu:mt-1.5",
+              "origin-top-left"
             ],
             "dimensions": {}
           },
           "indicator": {
             "base": [
-              "data-[state=visible]:animate-in",
-              "data-[state=hidden]:animate-out",
-              "data-[state=hidden]:fade-out",
-              "data-[state=visible]:fade-in",
               "flex",
               "top-full",
               "z-1",
               "h-1.5",
               "items-end",
               "justify-center",
-              "overflow-hidden"
+              "overflow-hidden",
+              "pointer-events-none",
+              "opacity-0",
+              "data-[state=visible]:opacity-100"
             ],
             "dimensions": {}
           },
@@ -13924,10 +13942,12 @@
           "link": {
             "base": [
               "focus-visible:ring-ring/50",
-              "hover:bg-muted",
-              "focus:bg-muted",
+              "hover:bg-accent",
+              "hover:text-accent-foreground",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
               "flex",
-              "items-center",
+              "flex-col",
               "gap-1.5",
               "rounded-2xl",
               "p-3",
@@ -13937,7 +13957,8 @@
               "focus-visible:ring-[3px]",
               "focus-visible:outline-1",
               "[\u0026_svg:not([class*='size-'])]:size-4",
-              "[[data-gsxui-slot-navigation-menu-content]_\u0026]:rounded-xl"
+              "[[data-gsxui-slot-navigation-menu-content]_\u0026]:rounded-xl",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
             ],
             "dimensions": {
               "active": {
@@ -16137,7 +16158,9 @@
               "text-xs/relaxed",
               "font-medium",
               "[\u0026_svg:not([class*='size-'])]:size-4",
-              "flex"
+              "flex",
+              "items-center",
+              "[\u0026_svg]:pointer-events-none"
             ],
             "dimensions": {}
           }
@@ -16365,7 +16388,8 @@
               "rounded-b-lg",
               "px-(--card-spacing)",
               "flex",
-              "items-center"
+              "items-center",
+              "[.border-t]:pt-(--card-spacing)"
             ],
             "dimensions": {}
           },
@@ -18549,23 +18573,24 @@
               "group-data-[viewport=false]/navigation-menu:rounded-xl",
               "group-data-[viewport=false]/navigation-menu:shadow-md",
               "group-data-[viewport=false]/navigation-menu:ring-1",
-              "group-data-[viewport=false]/navigation-menu:duration-300"
+              "group-data-[viewport=false]/navigation-menu:duration-300",
+              "group-data-[viewport=false]/navigation-menu:mt-1.5",
+              "origin-top-left"
             ],
             "dimensions": {}
           },
           "indicator": {
             "base": [
-              "data-[state=visible]:animate-in",
-              "data-[state=hidden]:animate-out",
-              "data-[state=hidden]:fade-out",
-              "data-[state=visible]:fade-in",
               "flex",
               "top-full",
               "z-1",
               "h-1.5",
               "items-end",
               "justify-center",
-              "overflow-hidden"
+              "overflow-hidden",
+              "pointer-events-none",
+              "opacity-0",
+              "data-[state=visible]:opacity-100"
             ],
             "dimensions": {}
           },
@@ -18591,10 +18616,12 @@
           "link": {
             "base": [
               "focus-visible:ring-ring/30",
-              "hover:bg-muted",
-              "focus:bg-muted",
+              "hover:bg-accent",
+              "hover:text-accent-foreground",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
               "flex",
-              "items-center",
+              "flex-col",
               "gap-1.5",
               "rounded-lg",
               "p-2",
@@ -18604,7 +18631,8 @@
               "focus-visible:ring-2",
               "focus-visible:outline-1",
               "[\u0026_svg:not([class*='size-'])]:size-4",
-              "[[data-gsxui-slot-navigation-menu-content]_\u0026]:rounded-md"
+              "[[data-gsxui-slot-navigation-menu-content]_\u0026]:rounded-md",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
             ],
             "dimensions": {
               "active": {
@@ -20811,7 +20839,9 @@
               "text-sm",
               "font-medium",
               "[\u0026_svg:not([class*='size-'])]:size-4",
-              "flex"
+              "flex",
+              "items-center",
+              "[\u0026_svg]:pointer-events-none"
             ],
             "dimensions": {}
           }
@@ -23225,23 +23255,24 @@
               "group-data-[viewport=false]/navigation-menu:rounded-lg",
               "group-data-[viewport=false]/navigation-menu:shadow",
               "group-data-[viewport=false]/navigation-menu:ring-1",
-              "group-data-[viewport=false]/navigation-menu:duration-300"
+              "group-data-[viewport=false]/navigation-menu:duration-300",
+              "group-data-[viewport=false]/navigation-menu:mt-1.5",
+              "origin-top-left"
             ],
             "dimensions": {}
           },
           "indicator": {
             "base": [
-              "data-[state=visible]:animate-in",
-              "data-[state=hidden]:animate-out",
-              "data-[state=hidden]:fade-out",
-              "data-[state=visible]:fade-in",
               "flex",
               "top-full",
               "z-1",
               "h-1.5",
               "items-end",
               "justify-center",
-              "overflow-hidden"
+              "overflow-hidden",
+              "pointer-events-none",
+              "opacity-0",
+              "data-[state=visible]:opacity-100"
             ],
             "dimensions": {}
           },
@@ -23266,15 +23297,18 @@
           },
           "link": {
             "base": [
-              "data-active:focus:bg-muted",
-              "data-active:hover:bg-muted",
-              "data-active:bg-muted/50",
+              "data-[active=true]:focus:bg-accent",
+              "data-[active=true]:hover:bg-accent",
+              "data-[active=true]:bg-accent/50",
+              "data-[active=true]:text-accent-foreground",
               "focus-visible:ring-ring/50",
-              "hover:bg-muted",
-              "focus:bg-muted",
+              "hover:bg-accent",
+              "hover:text-accent-foreground",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
               "flex",
-              "items-center",
-              "gap-2",
+              "flex-col",
+              "gap-1",
               "rounded-lg",
               "p-2",
               "text-sm",
@@ -23283,7 +23317,8 @@
               "focus-visible:ring-3",
               "focus-visible:outline-1",
               "[[data-gsxui-slot-navigation-menu-content]_\u0026]:rounded-md",
-              "[\u0026_svg:not([class*='size-'])]:size-4"
+              "[\u0026_svg:not([class*='size-'])]:size-4",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
             ],
             "dimensions": {
               "active": {
@@ -25491,7 +25526,9 @@
               "text-sm",
               "font-medium",
               "[\u0026_svg:not([class*='size-'])]:size-4",
-              "flex"
+              "flex",
+              "items-center",
+              "[\u0026_svg]:pointer-events-none"
             ],
             "dimensions": {}
           }
@@ -25721,7 +25758,8 @@
               "rounded-b-[min(var(--radius-4xl),24px)]",
               "px-(--card-spacing)",
               "flex",
-              "items-center"
+              "items-center",
+              "[.border-t]:pt-(--card-spacing)"
             ],
             "dimensions": {}
           },
@@ -27907,23 +27945,24 @@
               "group-data-[viewport=false]/navigation-menu:rounded-2xl",
               "group-data-[viewport=false]/navigation-menu:shadow-lg",
               "group-data-[viewport=false]/navigation-menu:ring-1",
-              "group-data-[viewport=false]/navigation-menu:duration-300"
+              "group-data-[viewport=false]/navigation-menu:duration-300",
+              "group-data-[viewport=false]/navigation-menu:mt-1.5",
+              "origin-top-left"
             ],
             "dimensions": {}
           },
           "indicator": {
             "base": [
-              "data-[state=visible]:animate-in",
-              "data-[state=hidden]:animate-out",
-              "data-[state=hidden]:fade-out",
-              "data-[state=visible]:fade-in",
               "flex",
               "top-full",
               "z-1",
               "h-1.5",
               "items-end",
               "justify-center",
-              "overflow-hidden"
+              "overflow-hidden",
+              "pointer-events-none",
+              "opacity-0",
+              "data-[state=visible]:opacity-100"
             ],
             "dimensions": {}
           },
@@ -27949,11 +27988,13 @@
           "link": {
             "base": [
               "focus-visible:ring-ring/30",
-              "hover:bg-muted",
-              "focus:bg-muted",
+              "hover:bg-accent",
+              "hover:text-accent-foreground",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
               "flex",
-              "items-center",
-              "gap-2",
+              "flex-col",
+              "gap-1",
               "rounded-2xl",
               "px-2.5",
               "py-1.5",
@@ -27967,7 +28008,8 @@
               "font-medium",
               "[[data-gsxui-slot-navigation-menu-content]_\u0026]:font-normal",
               "[[data-gsxui-slot-navigation-menu-content]_\u0026]:p-2",
-              "[[data-gsxui-slot-navigation-menu-content]_\u0026]:w-full"
+              "[[data-gsxui-slot-navigation-menu-content]_\u0026]:w-full",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
             ],
             "dimensions": {
               "active": {
@@ -30189,7 +30231,9 @@
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
               "group-has-[\u003e[data-variant=outline]]/button-group:border-border",
               "uppercase",
-              "flex"
+              "flex",
+              "items-center",
+              "[\u0026_svg]:pointer-events-none"
             ],
             "dimensions": {}
           }
@@ -30418,7 +30462,8 @@
             "base": [
               "px-(--card-spacing)",
               "flex",
-              "items-center"
+              "items-center",
+              "[.border-t]:pt-(--card-spacing)"
             ],
             "dimensions": {}
           },
@@ -32636,23 +32681,24 @@
               "group-data-[viewport=false]/navigation-menu:rounded-none",
               "group-data-[viewport=false]/navigation-menu:shadow-md",
               "group-data-[viewport=false]/navigation-menu:ring-1",
-              "group-data-[viewport=false]/navigation-menu:duration-300"
+              "group-data-[viewport=false]/navigation-menu:duration-300",
+              "group-data-[viewport=false]/navigation-menu:mt-1.5",
+              "origin-top-left"
             ],
             "dimensions": {}
           },
           "indicator": {
             "base": [
-              "data-[state=visible]:animate-in",
-              "data-[state=hidden]:animate-out",
-              "data-[state=hidden]:fade-out",
-              "data-[state=visible]:fade-in",
               "flex",
               "top-full",
               "z-1",
               "h-1.5",
               "items-end",
               "justify-center",
-              "overflow-hidden"
+              "overflow-hidden",
+              "pointer-events-none",
+              "opacity-0",
+              "data-[state=visible]:opacity-100"
             ],
             "dimensions": {}
           },
@@ -32678,10 +32724,12 @@
           "link": {
             "base": [
               "focus-visible:ring-ring/30",
-              "hover:bg-muted",
-              "focus:bg-muted",
+              "hover:bg-accent",
+              "hover:text-accent-foreground",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
               "flex",
-              "items-center",
+              "flex-col",
               "gap-1.5",
               "rounded-none",
               "p-3",
@@ -32691,7 +32739,8 @@
               "focus-visible:ring-2",
               "focus-visible:outline-1",
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
-              "[[data-gsxui-slot-navigation-menu-content]_\u0026]:rounded-none"
+              "[[data-gsxui-slot-navigation-menu-content]_\u0026]:rounded-none",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
             ],
             "dimensions": {
               "active": {
@@ -34887,7 +34936,9 @@
               "font-medium",
               "shadow-xs",
               "[\u0026_svg:not([class*='size-'])]:size-4",
-              "flex"
+              "flex",
+              "items-center",
+              "[\u0026_svg]:pointer-events-none"
             ],
             "dimensions": {}
           }
@@ -35116,7 +35167,8 @@
               "rounded-b-xl",
               "px-(--card-spacing)",
               "flex",
-              "items-center"
+              "items-center",
+              "[.border-t]:pt-(--card-spacing)"
             ],
             "dimensions": {}
           },
@@ -37291,23 +37343,24 @@
               "group-data-[viewport=false]/navigation-menu:rounded-md",
               "group-data-[viewport=false]/navigation-menu:shadow",
               "group-data-[viewport=false]/navigation-menu:ring-1",
-              "group-data-[viewport=false]/navigation-menu:duration-300"
+              "group-data-[viewport=false]/navigation-menu:duration-300",
+              "group-data-[viewport=false]/navigation-menu:mt-1.5",
+              "origin-top-left"
             ],
             "dimensions": {}
           },
           "indicator": {
             "base": [
-              "data-[state=visible]:animate-in",
-              "data-[state=hidden]:animate-out",
-              "data-[state=hidden]:fade-out",
-              "data-[state=visible]:fade-in",
               "flex",
               "top-full",
               "z-1",
               "h-1.5",
               "items-end",
               "justify-center",
-              "overflow-hidden"
+              "overflow-hidden",
+              "pointer-events-none",
+              "opacity-0",
+              "data-[state=visible]:opacity-100"
             ],
             "dimensions": {}
           },
@@ -37333,10 +37386,12 @@
           "link": {
             "base": [
               "focus-visible:ring-ring/50",
-              "hover:bg-muted",
-              "focus:bg-muted",
+              "hover:bg-accent",
+              "hover:text-accent-foreground",
+              "focus:bg-accent",
+              "focus:text-accent-foreground",
               "flex",
-              "items-center",
+              "flex-col",
               "gap-1.5",
               "rounded-md",
               "p-2",
@@ -37346,7 +37401,8 @@
               "focus-visible:ring-3",
               "focus-visible:outline-1",
               "[\u0026_svg:not([class*='size-'])]:size-4",
-              "[[data-gsxui-slot-navigation-menu-content]_\u0026]:rounded-sm"
+              "[[data-gsxui-slot-navigation-menu-content]_\u0026]:rounded-sm",
+              "[\u0026_svg:not([class*='text-'])]:text-muted-foreground"
             ],
             "dimensions": {
               "active": {

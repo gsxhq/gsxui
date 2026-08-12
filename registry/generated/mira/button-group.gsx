@@ -57,7 +57,7 @@ component ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) {
 component ButtonGroupText(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"bg-muted gap-2 rounded-md border px-2.5 text-xs/relaxed font-medium [&_svg:not([class*='size-'])]:size-4 flex"
+			"bg-muted gap-2 rounded-md border px-2.5 text-xs/relaxed font-medium [&_svg:not([class*='size-'])]:size-4 flex items-center [&_svg]:pointer-events-none"
 		}
 		{ attrs... }
 		data-gsxui-slot-button-group-text

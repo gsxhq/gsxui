@@ -184,13 +184,13 @@ func _gsxrenderCardFooter(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children g
 	}
 //line card.gsx:56:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("rounded-b-4xl px-(--card-spacing) flex items-center"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("rounded-b-4xl px-(--card-spacing) flex items-center [.border-t]:pt-(--card-spacing)"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-card-footer"})
 	_gsxgw.BoolAttr("data-gsxui-slot-card-footer", true)
 	_gsxgw.S(">")
-//line card.gsx:57:3
+//line card.gsx:61:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()

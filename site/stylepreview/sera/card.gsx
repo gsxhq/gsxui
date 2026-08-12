@@ -57,5 +57,11 @@ component CardContent(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component CardFooter(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "px-(--card-spacing) flex items-center" } { attrs... } data-gsxui-slot-card-footer>{ children }</div>
+	<div
+		class={ "px-(--card-spacing) flex items-center [.border-t]:pt-(--card-spacing)" }
+		{ attrs... }
+		data-gsxui-slot-card-footer
+	>
+		{ children }
+	</div>
 }

@@ -689,7 +689,6 @@ component galleryNavigationCard() {
 					<NavigationMenuItem>
 						<NavigationMenuLink variant="trigger" href="#">Docs</NavigationMenuLink>
 					</NavigationMenuItem>
-					<NavigationMenuIndicator/>
 				</NavigationMenuList>
 			</NavigationMenu>
 			<Pagination>
@@ -1135,13 +1134,11 @@ component galleryPricingCard() {
 					<CardTitle class="text-base">Starter</CardTitle>
 					<CardDescription><span class="text-lg font-semibold text-foreground">$0</span>/mo</CardDescription>
 				</CardHeader>
-				<CardContent class="flex flex-col gap-2 text-sm text-muted-foreground">
+				<CardContent class="flex flex-1 flex-col gap-2 text-sm text-muted-foreground">
 					<span class="flex items-start gap-1.5"><icon.Check class="mt-0.5 size-3.5 shrink-0"/>5 projects</span>
 					<span class="flex items-start gap-1.5"><icon.Check class="mt-0.5 size-3.5 shrink-0"/>Community support</span>
+					<div class="mt-auto pt-2"><Button variant="outline" class="w-full">Get started</Button></div>
 				</CardContent>
-				<CardFooter>
-					<Button variant="outline" class="w-full">Get started</Button>
-				</CardFooter>
 			</Card>
 			<Card class="gap-3 border-primary shadow-none">
 				<CardHeader>
@@ -1151,27 +1148,23 @@ component galleryPricingCard() {
 					<CardTitle class="text-base">Team</CardTitle>
 					<CardDescription><span class="text-lg font-semibold text-foreground">$24</span>/user/mo</CardDescription>
 				</CardHeader>
-				<CardContent class="flex flex-col gap-2 text-sm">
+				<CardContent class="flex flex-1 flex-col gap-2 text-sm">
 					<span class="flex items-start gap-1.5"><icon.Check class="mt-0.5 size-3.5 shrink-0 text-primary"/>Unlimited projects</span>
 					<span class="flex items-start gap-1.5"><icon.Check class="mt-0.5 size-3.5 shrink-0 text-primary"/>Priority support</span>
 					<span class="flex items-start gap-1.5"><icon.Check class="mt-0.5 size-3.5 shrink-0 text-primary"/>Single sign-on</span>
+					<div class="mt-auto pt-2"><Button class="w-full">Start trial</Button></div>
 				</CardContent>
-				<CardFooter>
-					<Button class="w-full">Start trial</Button>
-				</CardFooter>
 			</Card>
 			<Card class="gap-3 shadow-none">
 				<CardHeader>
 					<CardTitle class="text-base">Enterprise</CardTitle>
 					<CardDescription>Custom pricing</CardDescription>
 				</CardHeader>
-				<CardContent class="flex flex-col gap-2 text-sm text-muted-foreground">
+				<CardContent class="flex flex-1 flex-col gap-2 text-sm text-muted-foreground">
 					<span class="flex items-start gap-1.5"><icon.Check class="mt-0.5 size-3.5 shrink-0"/>Dedicated support</span>
 					<span class="flex items-start gap-1.5"><icon.Check class="mt-0.5 size-3.5 shrink-0"/>Audit logs</span>
+					<div class="mt-auto pt-2"><Button variant="outline" class="w-full">Contact sales</Button></div>
 				</CardContent>
-				<CardFooter>
-					<Button variant="outline" class="w-full">Contact sales</Button>
-				</CardFooter>
 			</Card>
 		</CardContent>
 	</Card>

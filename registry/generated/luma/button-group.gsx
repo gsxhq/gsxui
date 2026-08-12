@@ -56,7 +56,9 @@ component ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) {
 // as-is rather than "fixed", per the token-for-token rule.
 component ButtonGroupText(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "bg-muted gap-2 rounded-4xl border px-2.5 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 flex" }
+		class={
+			"bg-muted gap-2 rounded-4xl border px-2.5 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 flex items-center [&_svg]:pointer-events-none"
+		}
 		{ attrs... }
 		data-gsxui-slot-button-group-text
 	>
