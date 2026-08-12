@@ -420,6 +420,29 @@ input[type="range"] {
   outline: none;
 }
 
+/* The range thumb pseudo-elements need their own appearance:none to be
+   stylable — the input[type=range] rule above only normalizes the track;
+   without this Chrome/Firefox paint the native (blue) thumb over the
+   recipe's bg-white/border/size chrome. Style-invariant. */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+}
+input[type="range"]::-moz-range-thumb {
+  appearance: none;
+}
+
+/* Native checkbox/radio: the recipe styles the <input> itself as the visual
+   control (border, size, checked:bg-primary, punched-in dot/checkmark), which
+   only renders once the OS-native control is removed. Without appearance:none
+   the browser paints its native (blue) checkbox/radio over the recipe chrome.
+   Style-invariant — the same for every style. */
+input[type="checkbox"],
+input[type="radio"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 /* InputOTP's one real input must cover the visual slots while remaining
    focusable and clickable in every style. InputOTP's own migration to the
    slot axis gave data-gsxui-slot-input-otp/-input real (0,1,0) recipe-class
