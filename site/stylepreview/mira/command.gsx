@@ -72,7 +72,7 @@ component CommandDialog(title string, description string, trigger gsx.Node, chil
 component CommandInput(placeholder string, attrs gsx.Attrs) {
 	<div
 		class={
-			"p-1 pb-0 bg-input/20 dark:bg-input/30 h-8 [&>svg]:size-3.5 [&>svg]:shrink-0 [&>svg]:opacity-50 flex items-center gap-2"
+			"p-1 bg-input/20 dark:bg-input/30 h-8 [&>svg]:size-3.5 [&>svg]:shrink-0 [&>svg]:opacity-50 flex items-center gap-2"
 		}
 		data-gsxui-slot-command-input-wrapper
 	>

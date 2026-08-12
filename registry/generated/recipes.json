@@ -2700,7 +2700,6 @@
           "input-wrapper": {
             "base": [
               "p-1",
-              "pb-0",
               "bg-input/50",
               "h-9",
               "[\u0026\u003esvg]:size-4",
@@ -11312,7 +11311,6 @@
           "input-wrapper": {
             "base": [
               "p-1",
-              "pb-0",
               "bg-input/30",
               "h-9",
               "[\u0026\u003esvg]:size-4",
@@ -15606,7 +15604,6 @@
           "input-wrapper": {
             "base": [
               "p-1",
-              "pb-0",
               "bg-input/20",
               "dark:bg-input/30",
               "h-8",
@@ -19930,7 +19927,6 @@
           "input-wrapper": {
             "base": [
               "p-1",
-              "pb-0",
               "bg-input/30",
               "border-input/30",
               "h-8",
@@ -24252,7 +24248,6 @@
           "input-wrapper": {
             "base": [
               "p-1",
-              "pb-0",
               "bg-input/50",
               "h-8",
               "[\u0026\u003esvg]:size-4",
@@ -32945,7 +32940,6 @@
           "input-wrapper": {
             "base": [
               "p-1",
-              "pb-0",
               "bg-input/30",
               "border-input/30",
               "h-8",

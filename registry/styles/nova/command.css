@@ -12,9 +12,15 @@
     @apply rounded-xl [dialog&]:overflow-hidden;
   }
 
-  /* carried: no upstream counterpart */
+  /* Flattens upstream's .cn-command-input-wrapper (p-1 pb-0, OUTER padding
+     that positions the pill) + .cn-command-input-group (the h-8 pill) onto one
+     element. Upstream's pb-0 is outer padding around the group; collapsed onto
+     the pill it would become INNER padding (4px top / 0 bottom), shoving the
+     icon+input 2px below centre. Symmetric p-1 keeps the content centred in the
+     pill — matching upstream's centred group content — so the dialog close
+     button lands on the same centreline. */
   .gsxui-recipe-command-input-wrapper {
-    @apply p-1 pb-0 bg-input/30 border-input/30 h-8 rounded-lg shadow-none [&>[data-gsxui-slot-input-group-addon]]:pl-2 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50 flex items-center gap-2;
+    @apply p-1 bg-input/30 border-input/30 h-8 rounded-lg shadow-none [&>[data-gsxui-slot-input-group-addon]]:pl-2 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50 flex items-center gap-2;
   }
 
   /* carried: no upstream counterpart */
