@@ -106,8 +106,9 @@ apply is byte-identical; every tested failure rolls back byte-for-byte.
 
 - Build visual controls for semantic colors, radius, and typography while
   retaining exact values.
-- Use one immutable preset state with undo, redo, deterministic shuffle,
-  reset, local persistence, import/export, and sharing.
+- Use one immutable preset state with undo, redo, reset, local persistence,
+  import/export, and sharing. (Deterministic shuffle is dropped — see
+  "Deliberately deferred" below.)
 - Render the real component example registry in an isolated iframe.
 - Cover full component browsing, light/dark, responsive sizes, keyboard
   interaction, and preview failure states.
@@ -119,6 +120,47 @@ apply is byte-identical; every tested failure rolls back byte-for-byte.
 **Exit gate:** edit → share/export → import → CLI apply round-trips to the
 same canonical preset and CSS, with browser tests covering state history and
 the full handoff.
+
+### Theme creator parity (shipped 2026-08)
+
+`/theme` reached parity with shadcn's `/create` on the axes and interactions
+below, closing the audit gaps recorded in
+[`docs/superpowers/plans/2026-08-11-theme-creator-parity.md`](superpowers/plans/2026-08-11-theme-creator-parity.md):
+
+- All 8 upstream styles, each rendering the full component catalogue.
+- Palette axes: base color, accent (the "Theme" picker's 24-hue catalog),
+  chart color (`chart-1..5`, overlaid independently of base color/theme),
+  and menu accent (subtle/bold).
+- Radius and a body/heading font pair, backed by 6 self-hosted variable
+  WOFF2 fonts (`assets/fonts/`) — no npm or CDN dependency, per the
+  npm-free-path constraint.
+- Light/dark preview, undo/redo (⌘Z/⌘⇧Z, bounded 50-entry history), live
+  address-bar sync on every change (`history.replaceState`, never
+  `pushState`), and share codes (compact and full) that round-trip through
+  `gsxui init`/`gsxui apply`.
+- Canonical JSON and CSS export/import, including importing an arbitrary
+  foreign `theme.css` to start from a project's own colors.
+- A two-page preview (component gallery + realistic product surfaces:
+  invoice table, pricing, KPI row, chat thread, activity feed, and more)
+  across all 8 styles.
+
+**Deliberately deferred.** These are recorded here as decisions, not gaps —
+each was audited against upstream and judged not worth building yet:
+
+- **Icon library axis.** Upstream lets a project swap the whole icon set.
+  Porting gsxui's other 4 supported icon libraries plus building the
+  client-side icon-swap runtime the preview would need (it has none today)
+  is ~14,000 generated lines for the theme creator's lowest-signal axis.
+- **Menu color and appearance (translucency).** The cheap half of
+  upstream's menu-chrome axis — accent — shipped as a plain token override
+  (`MenuAccentChoices` in `internal/preset/catalog.go`). Color and
+  appearance are DOM-class re-theming machinery (a live MutationObserver
+  toggling classes across every menu-bearing component, in every style);
+  gsxui's preview architecture only ever pushes CSS custom property values.
+- **Shuffle.** Upstream's "shuffle" picks from 25 curated preset codes, not
+  random generation, and has little payoff at gsxui's current axis count.
+  Nothing to build until there are enough curated combinations to make
+  shuffling worthwhile.
 
 ## Phase 5 — prove the extension point if a real style arises
 

@@ -34,8 +34,9 @@ component (t Theming) Page() {
 						positioning, and interaction geometry.
 					</li>
 					<li>
-						<code>theme.css</code> owns semantic light/dark variables, including sidebar, status, overlay, contrast, and
-						radius tokens.
+						<code>theme.css</code> owns semantic light/dark variables, including sidebar, status, overlay, contrast,
+						chart, and radius tokens, plus the mode-independent <code>--font-sans</code>/<code>--font-heading</code>
+						typography pair.
 					</li>
 					<li>
 						<code>style.css</code> owns the default style's component presentation rules: density, borders, shadows,
