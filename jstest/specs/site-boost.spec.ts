@@ -71,7 +71,13 @@ test.describe("boosted site navigation", () => {
   test("theme editor initializes after boosted navigation", async ({ page }) => {
     await page.goto("/components/button");
     await page.getByRole("link", { name: "Theme", exact: true }).first().click();
-    await expect(page).toHaveURL(/\/theme$/);
+    // theme-creator-parity's live URL sync (theme.js's render()) rewrites
+    // the address bar with the resolved preset's share code on its very
+    // first render, same as a full page load of /theme — see
+    // theme-editor.spec.ts's "committed changes sync the address bar"
+    // test, which pins that as intentional. So the landing URL here
+    // carries `?preset=...`, not a bare path.
+    await expect(page).toHaveURL(/\/theme(?:\?.*)?$/);
     // Both signals stay dead when the editor module's one-shot page scan ran
     // on the previous page: the preview handshake reports Live, and a mode
     // tab click re-renders the status line.
@@ -86,7 +92,7 @@ test.describe("boosted site navigation", () => {
     await page.goBack();
     await expect(page).toHaveURL(/\/components\/button$/);
     await page.getByRole("link", { name: "Theme", exact: true }).first().click();
-    await expect(page).toHaveURL(/\/theme$/);
+    await expect(page).toHaveURL(/\/theme(?:\?.*)?$/);
     await expect(page.locator("[data-theme-preview-status]")).toHaveText("Live");
     await page.locator('[data-theme-mode-tab="dark"]').click();
     await expect(page.locator("[data-theme-status]")).toHaveText("Nova · dark");
