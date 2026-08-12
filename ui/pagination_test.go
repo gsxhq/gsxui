@@ -25,7 +25,7 @@ func TestPaginationAttrsFallThrough(t *testing.T) {
 
 func TestPaginationContentPinned(t *testing.T) {
 	got := render(t, ui.PaginationContent(gsx.Raw("x"), nil))
-	want := `<ul class="gap-0.5 flex flex-row" data-gsxui-slot-pagination-content>x</ul>`
+	want := `<ul class="gap-0.5 flex items-center" data-gsxui-slot-pagination-content>x</ul>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

@@ -5,12 +5,12 @@
 @layer components {
   /* carried: no upstream counterpart */
   .gsxui-recipe-navigation-menu {
-    @apply max-w-max flex;
+    @apply max-w-max flex relative flex-1 items-center justify-center;
   }
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-navigation-menu-list {
-    @apply gap-0 flex;
+    @apply gap-0 flex list-none flex-1 items-center justify-center;
   }
 
   /* carried: no upstream counterpart */
@@ -20,7 +20,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-navigation-menu-trigger {
-    @apply hover:bg-muted focus:bg-muted data-[state=open]:hover:bg-muted data-[state=open]:focus:bg-muted data-[state=open]:bg-muted/50 focus-visible:ring-ring/30 rounded-lg px-2.5 py-1.5 text-xs/relaxed font-medium transition-all focus-visible:ring-2 focus-visible:outline-1 disabled:opacity-50 inline-flex;
+    @apply hover:bg-muted focus:bg-muted data-[state=open]:hover:bg-muted data-[state=open]:focus:bg-muted data-[state=open]:bg-muted/50 focus-visible:ring-ring/30 rounded-lg px-2.5 py-1.5 text-xs/relaxed font-medium transition-all focus-visible:ring-2 focus-visible:outline-1 disabled:opacity-50 inline-flex h-9 w-max items-center justify-center outline-none disabled:pointer-events-none;
   }
 
   .gsxui-recipe-navigation-menu-trigger-icon {
@@ -56,10 +56,10 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-navigation-menu-indicator {
-    @apply data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in flex;
+    @apply data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in flex top-full z-1 h-1.5 items-end justify-center overflow-hidden;
   }
 
   .gsxui-recipe-navigation-menu-indicator-arrow {
-    @apply bg-border rounded-tl-sm shadow-md;
+    @apply bg-border rounded-tl-sm shadow-md relative top-[60%] h-2 w-2 rotate-45;
   }
 }

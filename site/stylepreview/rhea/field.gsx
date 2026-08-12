@@ -44,7 +44,9 @@ component FieldLegend(variant string, children gsx.Node, attrs gsx.Attrs) {
 
 component FieldGroup(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "group/field-group", "gap-6 [&>[data-gsxui-slot-field-group]]:gap-4 flex flex-col" }
+		class={
+			"group/field-group", "gap-6 [&>[data-gsxui-slot-field-group]]:gap-4 flex flex-col w-full @container/field-group"
+		}
 		{ attrs... }
 		data-gsxui-slot-field-group
 	>
@@ -60,7 +62,7 @@ component Field(orientation string, children gsx.Node, attrs gsx.Attrs) {
 		data-orientation={orientation |> default("vertical")}
 		class={
 			"group/field",
-			"data-[invalid=true]:text-destructive gap-3 p-4 flex",
+			"data-[invalid=true]:text-destructive gap-3 flex w-full",
 			switch orientation {
 			case "horizontal":
 				"flex-row items-center [&>[data-gsxui-slot-field-label]]:flex-auto has-[>[data-gsxui-slot-field-content]]:items-start has-[>[data-gsxui-slot-field-content]]:[&>:is([role=checkbox],[role=radio])]:mt-px"
@@ -79,7 +81,7 @@ component Field(orientation string, children gsx.Node, attrs gsx.Attrs) {
 
 component FieldContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "gap-1 flex flex-col" }
+		class={ "gap-1 flex flex-col flex-1 leading-snug" }
 		{ attrs... }
 		data-gsxui-slot-field-content
 	>
@@ -92,7 +94,7 @@ component FieldContent(children gsx.Node, attrs gsx.Attrs) {
 component FieldLabel(children gsx.Node, attrs gsx.Attrs) {
 	<Label
 		class={
-			"has-data-checked:bg-input/30 gap-2 leading-snug has-[>[data-gsxui-slot-field]]:rounded-2xl has-[>[data-gsxui-slot-field]]:border flex"
+			"has-data-checked:bg-input/30 gap-2 leading-snug has-[>[data-gsxui-slot-field]]:rounded-2xl has-[>[data-gsxui-slot-field]]:border flex w-fit has-[>[data-gsxui-slot-field]]:w-full has-[>[data-gsxui-slot-field]]:flex-col [&>[data-gsxui-slot-field]]:p-4"
 		}
 		{ attrs... }
 		data-gsxui-slot-field-label
@@ -105,7 +107,7 @@ component FieldLabel(children gsx.Node, attrs gsx.Attrs) {
 // independently from the composed FieldLabel.
 component FieldTitle(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "gap-2 text-sm font-medium flex leading-snug" }
+		class={ "gap-2 text-sm font-medium flex leading-snug w-fit items-center" }
 		{ attrs... }
 		data-gsxui-slot-field-title
 	>
@@ -115,7 +117,9 @@ component FieldTitle(children gsx.Node, attrs gsx.Attrs) {
 
 component FieldDescription(children gsx.Node, attrs gsx.Attrs) {
 	<p
-		class={ "text-muted-foreground text-left text-sm [[data-variant=legend]+&]:-mt-1.5" }
+		class={
+			"text-muted-foreground text-left text-sm [[data-variant=legend]+&]:-mt-1.5 leading-normal font-normal [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary"
+		}
 		{ attrs... }
 		data-gsxui-slot-field-description
 	>

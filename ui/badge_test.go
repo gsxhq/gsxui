@@ -54,7 +54,7 @@ func TestBadgePinned(t *testing.T) {
 	// data-icon attribute) — see the report's "Systemic: has-data-[icon=…]"
 	// entry.
 	got := render(t, ui.Badge("", gsx.Raw("New"), nil))
-	want := `<span data-variant="default" class="aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 focus-visible:ring-3 h-5 gap-1 rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium transition-all has-[&gt;svg]:px-1.5 [&amp;&gt;svg]:size-3 inline-flex bg-primary text-primary-foreground [a]:hover:bg-primary/80" data-gsxui-slot-badge>New</span>`
+	want := `<span data-variant="default" class="aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 focus-visible:ring-3 h-5 gap-1 rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium transition-all has-[&gt;svg]:px-1.5 [&amp;&gt;svg]:size-3 inline-flex items-center justify-center overflow-hidden whitespace-nowrap w-fit shrink-0 focus-visible:border-ring focus-visible:ring-ring/50 [&amp;&gt;svg]:pointer-events-none bg-primary text-primary-foreground [a]:hover:bg-primary/80" data-gsxui-slot-badge>New</span>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

@@ -40,14 +40,14 @@ component NativeSelect(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
 			"group/native-select",
-			"relative w-fit [&>svg]:pointer-events-none [&>svg]:absolute [&>svg]:opacity-50 [&>svg]:text-muted-foreground [&>svg]:top-1/2 [&>svg]:right-0 [&>svg]:size-3.5 [&>svg]:-translate-y-1/2",
+			"relative w-fit [&>svg]:pointer-events-none [&>svg]:absolute [&>svg]:opacity-50 [&>svg]:text-muted-foreground [&>svg]:top-1/2 [&>svg]:right-0 [&>svg]:size-3.5 [&>svg]:-translate-y-1/2 has-[select:disabled]:opacity-50",
 			attrs.Class()
 		}
 		data-gsxui-slot-native-select-wrapper
 	>
 		<select
 			class={
-				"border-transparent border-b-input bg-transparent placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground focus-visible:border-b-ring aria-invalid:border-b-destructive dark:aria-invalid:border-b-destructive/50 h-10 w-full min-w-0 appearance-none rounded-none border py-2 pr-8 pl-0 text-sm transition-[color,border-color] select-none data-[size=sm]:h-9 flex"
+				"border-transparent border-b-input bg-transparent placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground focus-visible:border-b-ring aria-invalid:border-b-destructive dark:aria-invalid:border-b-destructive/50 h-10 w-full min-w-0 appearance-none rounded-none border py-2 pr-8 pl-0 text-sm transition-[color,border-color] select-none data-[size=sm]:h-9 outline-none disabled:pointer-events-none disabled:cursor-not-allowed"
 			}
 			{ attrs.Without("class")... }
 			data-gsxui-slot-native-select

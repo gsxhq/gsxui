@@ -24,7 +24,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-menubar-item {
-    @apply focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2.5 rounded-2xl px-3 py-2 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 flex;
+    @apply focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2.5 rounded-2xl px-3 py-2 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 flex data-disabled:pointer-events-none;
   }
 
   /* carried: no upstream counterpart */
@@ -63,11 +63,11 @@
   }
 
   .gsxui-recipe-menubar-separator {
-    @apply bg-border/50;
+    @apply bg-border/50 -mx-1 my-1 h-px;
   }
 
   .gsxui-recipe-menubar-shortcut {
-    @apply text-muted-foreground group-focus/menubar-item:text-accent-foreground text-xs tracking-widest;
+    @apply text-muted-foreground group-focus/menubar-item:text-accent-foreground text-xs tracking-widest ml-auto;
   }
 
   /* carried: no upstream counterpart */

@@ -167,7 +167,7 @@ import (
 // already replaced site-wide before this component existed.
 component Menubar(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "h-10 rounded-none border p-1 flex" }
+		class={ "items-center", "h-10 rounded-none border p-1 flex" }
 		role="menubar"
 		{ attrs... }
 		data-gsxui-slot-menubar
@@ -205,7 +205,10 @@ component MenubarMenu(children gsx.Node, attrs gsx.Attrs) {
 // which has no such selector to key at all.
 component MenubarTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<button
-		class={ "hover:bg-muted aria-expanded:bg-muted rounded-none px-2 py-0.75 text-sm font-medium flex" }
+		class={
+			"items-center outline-hidden select-none",
+			"hover:bg-muted aria-expanded:bg-muted rounded-none px-2 py-0.75 text-sm font-medium flex"
+		}
 		type="button"
 		aria-haspopup="menu"
 		aria-expanded="false"
@@ -240,6 +243,7 @@ component MenubarTrigger(children gsx.Node, attrs gsx.Attrs) {
 component MenubarContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
+			"max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none",
 			"transition-none bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 min-w-48 rounded-none p-1.5 shadow-md ring-1 duration-100"
 		}
 		popover="auto"
@@ -263,8 +267,8 @@ component MenubarContent(children gsx.Node, attrs gsx.Attrs) {
 component MenubarItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"group/menubar-item",
-			"focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2.5 rounded-none px-3 py-2 text-sm [&_svg:not([class*='size-'])]:size-3.5 flex",
+			"group/menubar-item relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
+			"focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2.5 rounded-none px-3 py-2 text-sm [&_svg:not([class*='size-'])]:size-3.5 flex data-disabled:pointer-events-none",
 			switch variant {
 			case "destructive":
 				"text-destructive focus:bg-destructive/10 focus:text-destructive *:[svg]:text-destructive"
@@ -313,6 +317,7 @@ component MenubarGroup(children gsx.Node, attrs gsx.Attrs) {
 component MenubarCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
+			"relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
 			"data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-2.5 rounded-none py-2 pr-3 pl-9.5 text-xs font-medium uppercase tracking-wider flex"
 		}
 		role="menuitemcheckbox"
@@ -363,6 +368,7 @@ component MenubarRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) {
 component MenubarRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
+			"relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
 			"data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-2.5 rounded-none py-2 pr-3 pl-9.5 text-xs font-medium uppercase tracking-wider [&_svg:not([class*='size-'])]:size-3.5 flex"
 		}
 		role="menuitemradio"
@@ -426,7 +432,7 @@ component MenubarSeparator(attrs gsx.Attrs) {
 // dropdown/context-menu Shortcut in this codebase.
 component MenubarShortcut(children gsx.Node, attrs gsx.Attrs) {
 	<span
-		class={ "text-muted-foreground group-focus/menubar-item:text-accent-foreground text-xs tracking-widest" }
+		class={ "text-muted-foreground group-focus/menubar-item:text-accent-foreground text-xs tracking-widest ml-auto" }
 		{ attrs... }
 		data-gsxui-slot-menubar-shortcut
 	>
@@ -480,6 +486,7 @@ component MenubarSub(children gsx.Node, attrs gsx.Attrs) {
 component MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
+			"cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
 			"focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground gap-2 rounded-none px-3 py-2 text-xs font-medium uppercase tracking-wider [&_svg:not([class*='size-'])]:size-3.5 flex"
 		}
 		role="menuitem"
@@ -491,7 +498,7 @@ component MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 		data-gsxui-slot-menubar-sub-trigger
 	>
 		{ children }
-		<icon.ChevronRight/>
+		<icon.ChevronRight class={ "ml-auto" }/>
 	</div>
 }
 
@@ -511,6 +518,7 @@ component MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 component MenubarSubContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
+			"max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none",
 			"transition-none bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 min-w-32 rounded-none p-1.5 shadow-md ring-1 duration-100"
 		}
 		popover="auto"

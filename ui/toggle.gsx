@@ -64,7 +64,7 @@ component Toggle(pressed bool, variant string, size string, children gsx.Node, a
 		data-state={state}
 		aria-pressed={pressed}
 		class={
-			"hover:text-foreground aria-pressed:bg-muted focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-muted gap-1 rounded-lg text-sm font-medium transition-all [&_svg:not([class*='size-'])]:size-4 inline-flex",
+			"hover:text-foreground aria-pressed:bg-muted focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-muted gap-1 rounded-lg text-sm font-medium transition-all [&_svg:not([class*='size-'])]:size-4 inline-flex items-center justify-center whitespace-nowrap outline-none focus-visible:ring-[3px] [&_svg]:pointer-events-none [&_svg]:shrink-0",
 			switch variant { case "outline": "border-input hover:bg-muted border bg-transparent" default: "bg-transparent" },
 			switch size {
 			case "sm":

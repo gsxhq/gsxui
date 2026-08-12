@@ -31,7 +31,9 @@ component TableFooter(children gsx.Node, attrs gsx.Attrs) {
 
 component TableRow(children gsx.Node, attrs gsx.Attrs) {
 	<tr
-		class={ "hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors" }
+		class={
+			"hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors has-[[aria-expanded=true]]:bg-muted/50 [[data-gsxui-slot-table-body]_&]:last:border-b-0"
+		}
 		{ attrs... }
 		data-gsxui-slot-table-row
 	>

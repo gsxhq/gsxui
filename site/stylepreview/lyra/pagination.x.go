@@ -68,7 +68,7 @@ func _gsxrenderPaginationContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, chi
 	}
 //line pagination.gsx:29:2
 	_gsxgw.S("<ul class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-0.5 flex flex-row"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-0.5 flex items-center"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "ul", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-pagination-content"})

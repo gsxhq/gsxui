@@ -11,7 +11,7 @@ import "github.com/gsxhq/gsx"
 
 component ItemGroup(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "gap-4 has-data-[size=sm]:gap-2.5 has-data-[size=xs]:gap-2 flex flex-col" }
+		class={ "gap-4 has-data-[size=sm]:gap-2.5 has-data-[size=xs]:gap-2 flex flex-col w-full" }
 		role="list"
 		{ attrs... }
 		data-gsxui-slot-item-group
@@ -53,7 +53,7 @@ component Item(variant string, size string, children gsx.Node, attrs gsx.Attrs) 
 		data-size={size |> default("default")}
 		class={
 			"group/item",
-			"[a]:hover:bg-muted rounded-md border text-xs/relaxed flex flex-wrap",
+			"[a]:hover:bg-muted rounded-md border text-xs/relaxed flex flex-wrap w-full items-center transition-colors duration-100 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 [a]:transition-colors",
 			switch variant {
 			case "outline":
 				"border-border"
@@ -61,7 +61,8 @@ component Item(variant string, size string, children gsx.Node, attrs gsx.Attrs) 
 				"bg-muted/50 border-transparent"
 			default:
 				"border-transparent"
-			}
+			},
+			switch size { case "sm": "gap-2.5 px-3 py-2.5" default: "gap-2.5 px-3 py-2.5" }
 		}
 		{ attrs... }
 		data-gsxui-slot-item
@@ -85,7 +86,7 @@ component ItemMedia(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-variant={variant |> default("default")}
 		class={
-			"gap-2 flex",
+			"gap-2 flex shrink-0 items-center justify-center [&_svg]:pointer-events-none",
 			switch variant {
 			case "icon":
 				"[&_svg:not([class*='size-'])]:size-4"
@@ -116,7 +117,7 @@ component ItemContent(children gsx.Node, attrs gsx.Attrs) {
 
 component ItemTitle(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "gap-2 text-xs/relaxed leading-snug font-medium underline-offset-4 flex" }
+		class={ "gap-2 text-xs/relaxed leading-snug font-medium underline-offset-4 line-clamp-1 w-fit items-center" }
 		{ attrs... }
 		data-gsxui-slot-item-title
 	>
@@ -128,25 +129,31 @@ component ItemTitle(children gsx.Node, attrs gsx.Attrs) {
 // (unlike EmptyDescription, whose type says "p" but whose element is a
 // <div> — see empty.gsx).
 component ItemDescription(children gsx.Node, attrs gsx.Attrs) {
-	<p class={ "text-muted-foreground text-left text-xs/relaxed" } { attrs... } data-gsxui-slot-item-description>
+	<p
+		class={
+			"text-muted-foreground text-left text-xs/relaxed line-clamp-2 font-normal [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary"
+		}
+		{ attrs... }
+		data-gsxui-slot-item-description
+	>
 		{ children }
 	</p>
 }
 
 component ItemActions(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "gap-2 flex" } { attrs... } data-gsxui-slot-item-actions>
+	<div class={ "gap-2 flex items-center" } { attrs... } data-gsxui-slot-item-actions>
 		{ children }
 	</div>
 }
 
 component ItemHeader(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "gap-2 flex" } { attrs... } data-gsxui-slot-item-header>
+	<div class={ "gap-2 flex basis-full items-center justify-between" } { attrs... } data-gsxui-slot-item-header>
 		{ children }
 	</div>
 }
 
 component ItemFooter(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "gap-2 flex" } { attrs... } data-gsxui-slot-item-footer>
+	<div class={ "gap-2 flex basis-full items-center justify-between" } { attrs... } data-gsxui-slot-item-footer>
 		{ children }
 	</div>
 }

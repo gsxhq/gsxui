@@ -104,7 +104,7 @@ func TestTabsTriggerPinned(t *testing.T) {
 	// (this port ships only the one variant), and icon-only padding uses
 	// has-[>svg]:.
 	got := render(t, ui.TabsTrigger("a", true, gsx.Raw("Account"), nil))
-	want := `<button type="button" role="tab" data-value="a" data-state="active" aria-selected="true" tabindex="0" class="gap-1.5 rounded-md border border-transparent px-1.5 py-0.5 text-sm font-medium data-[state=active]:shadow-sm [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 has-[&gt;svg]:px-1 inline-flex" data-gsxui-slot-tabs-trigger>Account</button>`
+	want := `<button type="button" role="tab" data-value="a" data-state="active" aria-selected="true" tabindex="0" class="gap-1.5 rounded-md border border-transparent px-1.5 py-0.5 text-sm font-medium data-[state=active]:shadow-sm [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 has-[&gt;svg]:px-1 inline-flex relative h-[calc(100%-1px)] flex-1 items-center justify-center whitespace-nowrap text-foreground/60 transition-all hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 dark:text-muted-foreground dark:hover:text-foreground [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 data-[state=active]:bg-background data-[state=active]:text-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30" data-gsxui-slot-tabs-trigger>Account</button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

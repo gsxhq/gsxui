@@ -17,7 +17,7 @@ component Badge(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<span
 		data-variant={variant |> default("default")}
 		class={
-			"aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 focus-visible:ring-3 gap-1.5 rounded-none border-0 bg-transparent px-0 py-0 text-[0.625rem] font-semibold uppercase tracking-widest transition-colors has-[>svg]:px-0 [&>svg]:size-3 inline-flex",
+			"aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 focus-visible:ring-3 gap-1.5 rounded-none border-0 bg-transparent px-0 py-0 text-[0.625rem] font-semibold uppercase tracking-widest transition-colors has-[>svg]:px-0 [&>svg]:size-3 inline-flex items-center justify-center overflow-hidden whitespace-nowrap w-fit shrink-0 focus-visible:border-ring focus-visible:ring-ring/50 [&>svg]:pointer-events-none",
 			switch variant {
 			case "secondary":
 				"text-muted-foreground [a]:hover:text-foreground"

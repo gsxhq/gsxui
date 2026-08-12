@@ -39,7 +39,7 @@ func TestNavigationMenuRootPinned(t *testing.T) {
 	// navigation-menu: selectors have a real ancestor to match — see the
 	// style-porter report's "missing group/<name> marker" entry.
 	got := render(t, ui.NavigationMenu(gsx.Raw("x"), nil))
-	want := `<nav class="group/navigation-menu max-w-max flex" data-viewport="false" data-gsxui-slot-navigation-menu>x</nav>`
+	want := `<nav class="group/navigation-menu max-w-max flex relative flex-1 items-center justify-center" data-viewport="false" data-gsxui-slot-navigation-menu>x</nav>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -64,7 +64,7 @@ func TestNavigationMenuPinnedStructuralParts(t *testing.T) {
 		{
 			name: "list",
 			node: ui.NavigationMenuList(gsx.Raw("x"), nil),
-			want: `<ul class="gap-0 flex" data-gsxui-slot-navigation-menu-list>x</ul>`,
+			want: `<ul class="gap-0 flex list-none flex-1 items-center justify-center" data-gsxui-slot-navigation-menu-list>x</ul>`,
 		},
 		{
 			name: "item",

@@ -173,13 +173,13 @@ func _gsxrenderDrawerFooter(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children
 	}
 //line drawer.gsx:71:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2 p-4 flex flex-col"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2 p-4 flex flex-col mt-auto"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-drawer-footer"})
 	_gsxgw.BoolAttr("data-gsxui-slot-drawer-footer", true)
 	_gsxgw.S(">")
-//line drawer.gsx:71:86
+//line drawer.gsx:71:94
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
@@ -226,7 +226,7 @@ func _gsxrenderDrawerDescription(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, chi
 	}
 //line drawer.gsx:86:2
 	_gsxgw.S("<p class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground text-xs/relaxed"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground text-xs/relaxed text-balance"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "p", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-drawer-description", "data-gsxui-slot-dialog-description"})

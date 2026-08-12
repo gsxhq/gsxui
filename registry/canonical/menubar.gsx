@@ -167,7 +167,7 @@ import (
 // already replaced site-wide before this component existed.
 component Menubar(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ menubar.Root() }
+		class={ "items-center", menubar.Root() }
 		role="menubar"
 		{ attrs... }
 		data-gsxui-slot-menubar
@@ -205,7 +205,7 @@ component MenubarMenu(children gsx.Node, attrs gsx.Attrs) {
 // which has no such selector to key at all.
 component MenubarTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<button
-		class={ menubar.Trigger() }
+		class={ "items-center outline-hidden select-none", menubar.Trigger() }
 		type="button"
 		aria-haspopup="menu"
 		aria-expanded="false"
@@ -239,7 +239,7 @@ component MenubarTrigger(children gsx.Node, attrs gsx.Attrs) {
 // data-[state=closed]:animate-out.
 component MenubarContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ menubar.Content() }
+		class={ "max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none", menubar.Content() }
 		popover="auto"
 		role="menu"
 		tabindex="-1"
@@ -261,7 +261,7 @@ component MenubarContent(children gsx.Node, attrs gsx.Attrs) {
 component MenubarItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"group/menubar-item",
+			"group/menubar-item relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
 			menubar.Item(),
 			menubar.ItemVariant(variant),
 		}
@@ -305,7 +305,7 @@ component MenubarGroup(children gsx.Node, attrs gsx.Attrs) {
 // deliberately, for cross-menu-family consistency, not because nova agrees.
 component MenubarCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ menubar.CheckboxItem() }
+		class={ "relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0", menubar.CheckboxItem() }
 		role="menuitemcheckbox"
 		data-value={value}
 		{ if checked {
@@ -348,7 +348,7 @@ component MenubarRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) {
 // MenubarCheckboxItem's own doc comment.
 component MenubarRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ menubar.RadioItem() }
+		class={ "relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0", menubar.RadioItem() }
 		role="menuitemradio"
 		data-value={value}
 		{ if checked {
@@ -443,7 +443,7 @@ component MenubarSub(children gsx.Node, attrs gsx.Attrs) {
 // siblings — a real, deliberate divergence, not an oversight.
 component MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ menubar.SubTrigger() }
+		class={ "cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0", menubar.SubTrigger() }
 		role="menuitem"
 		aria-haspopup="menu"
 		aria-expanded="false"
@@ -453,7 +453,7 @@ component MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 		data-gsxui-slot-menubar-sub-trigger
 	>
 		{ children }
-		<icon.ChevronRight/>
+		<icon.ChevronRight class={ "ml-auto" }/>
 	</div>
 }
 
@@ -472,7 +472,7 @@ component MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 // DropdownMenuSubContent's own doc comment, not repeated in full here.
 component MenubarSubContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ menubar.SubContent() }
+		class={ "max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none", menubar.SubContent() }
 		popover="auto"
 		role="menu"
 		tabindex="-1"

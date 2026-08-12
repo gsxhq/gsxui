@@ -122,7 +122,7 @@ func DropdownMenuContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line dropdown-menu.gsx:79:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(dropdownMenu.Content()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none"), _gsxrt.Class(dropdownMenu.Content()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("popover") {
 			_gsxgw.S(" popover=\"auto\"")
@@ -162,7 +162,7 @@ func DropdownMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt
 		_gsxgw := _gsxrt.W(_gsxw)
 //line dropdown-menu.gsx:98:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/dropdown-menu-item"), _gsxrt.Class(dropdownMenu.Item()), _gsxrt.Class(dropdownMenu.ItemVariant(variant)), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/dropdown-menu-item relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class(dropdownMenu.Item()), _gsxrt.Class(dropdownMenu.ItemVariant(variant)), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
@@ -247,7 +247,7 @@ func DropdownMenuCheckboxItem(checked bool, value string, children gsx.Node, att
 		_gsxgw := _gsxrt.W(_gsxw)
 //line dropdown-menu.gsx:149:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(dropdownMenu.CheckboxItem()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class(dropdownMenu.CheckboxItem()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitemcheckbox\"")
@@ -347,7 +347,7 @@ func DropdownMenuRadioItem(checked bool, value string, children gsx.Node, attrs 
 		_gsxgw := _gsxrt.W(_gsxw)
 //line dropdown-menu.gsx:199:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(dropdownMenu.RadioItem()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class(dropdownMenu.RadioItem()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitemradio\"")
@@ -505,7 +505,7 @@ func DropdownMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line dropdown-menu.gsx:262:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(dropdownMenu.SubTrigger()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class(dropdownMenu.SubTrigger()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitem\"")
@@ -565,7 +565,7 @@ func DropdownMenuSubContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line dropdown-menu.gsx:300:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(dropdownMenu.SubContent()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none"), _gsxrt.Class(dropdownMenu.SubContent()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("popover") {
 			_gsxgw.S(" popover=\"auto\"")

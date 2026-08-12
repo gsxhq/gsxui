@@ -22,12 +22,12 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-field-group {
-    @apply gap-6 [&>[data-gsxui-slot-field-group]]:gap-4 flex flex-col;
+    @apply gap-6 [&>[data-gsxui-slot-field-group]]:gap-4 flex flex-col w-full @container/field-group;
   }
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-field {
-    @apply data-[invalid=true]:text-destructive gap-3 p-4 flex;
+    @apply data-[invalid=true]:text-destructive gap-3 flex w-full;
   }
 
   /* carried: no upstream counterpart */
@@ -47,21 +47,21 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-field-content {
-    @apply gap-1 flex flex-col;
+    @apply gap-1 flex flex-col flex-1 leading-snug;
   }
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-field-label {
-    @apply has-data-checked:bg-input/30 gap-2 leading-snug has-[>[data-gsxui-slot-field]]:rounded-2xl has-[>[data-gsxui-slot-field]]:border flex;
+    @apply has-data-checked:bg-input/30 gap-2 leading-snug has-[>[data-gsxui-slot-field]]:rounded-2xl has-[>[data-gsxui-slot-field]]:border flex w-fit has-[>[data-gsxui-slot-field]]:w-full has-[>[data-gsxui-slot-field]]:flex-col [&>[data-gsxui-slot-field]]:p-4;
   }
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-field-title {
-    @apply gap-2 text-sm font-medium flex leading-snug;
+    @apply gap-2 text-sm font-medium flex leading-snug w-fit items-center;
   }
 
   .gsxui-recipe-field-description {
-    @apply text-muted-foreground text-left text-sm [[data-variant=legend]+&]:-mt-1.5;
+    @apply text-muted-foreground text-left text-sm [[data-variant=legend]+&]:-mt-1.5 leading-normal font-normal [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary;
   }
 
   .gsxui-recipe-field-separator-wrapper {

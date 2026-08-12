@@ -96,7 +96,7 @@ func Toggle(pressed bool, variant string, size string, children gsx.Node, attrs 
 			_gsxgw.S(_gsxsc.FormatBool(bool(pressed)))
 			_gsxgw.S("\"")
 		}
-		_gsxv0 := "hover:text-foreground aria-pressed:bg-muted focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-muted gap-1 rounded-lg text-sm font-medium transition-all [&_svg:not([class*='size-'])]:size-4 inline-flex"
+		_gsxv0 := "hover:text-foreground aria-pressed:bg-muted focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-muted gap-1 rounded-lg text-sm font-medium transition-all [&_svg:not([class*='size-'])]:size-4 inline-flex items-center justify-center whitespace-nowrap outline-none focus-visible:ring-[3px] [&_svg]:pointer-events-none [&_svg]:shrink-0"
 		var _gsxv1 string
 		switch variant {
 		case "outline":

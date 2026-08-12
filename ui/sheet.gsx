@@ -88,7 +88,7 @@ component SheetHeader(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component SheetFooter(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "gap-2 p-4 flex flex-col" } { attrs... } data-gsxui-slot-sheet-footer>{ children }</div>
+	<div class={ "gap-2 p-4 flex flex-col mt-auto" } { attrs... } data-gsxui-slot-sheet-footer>{ children }</div>
 }
 
 component SheetTitle(children gsx.Node, attrs gsx.Attrs) {

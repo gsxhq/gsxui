@@ -31,24 +31,24 @@ func Alert(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S("\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(alert.Root()), _gsxrt.Class(alert.Variant(variant)), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/alert"), _gsxrt.Class(alert.Root()), _gsxrt.Class(alert.Variant(variant)), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-alert"})
 		_gsxgw.BoolAttr("data-gsxui-slot-alert", true)
 		_gsxgw.S(">")
-//line alert.gsx:19:3
+//line alert.gsx:20:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line alert.gsx:23:1
+//line alert.gsx:24:1
 func AlertTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line alert.gsx:24:2
+//line alert.gsx:25:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(alert.Title()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -56,18 +56,18 @@ func AlertTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-alert-title"})
 		_gsxgw.BoolAttr("data-gsxui-slot-alert-title", true)
 		_gsxgw.S(">")
-//line alert.gsx:25:3
+//line alert.gsx:26:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line alert.gsx:29:1
+//line alert.gsx:30:1
 func AlertDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line alert.gsx:30:2
+//line alert.gsx:31:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(alert.Description()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -75,7 +75,7 @@ func AlertDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-alert-description"})
 		_gsxgw.BoolAttr("data-gsxui-slot-alert-description", true)
 		_gsxgw.S(">")
-//line alert.gsx:31:3
+//line alert.gsx:32:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

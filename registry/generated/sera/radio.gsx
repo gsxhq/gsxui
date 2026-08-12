@@ -28,7 +28,7 @@ component Radio(attrs gsx.Attrs) {
 	<input
 		type="radio"
 		class={
-			"border-input bg-transparent checked:border-foreground aria-invalid:checked:border-foreground aria-invalid:border-destructive focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:aria-invalid:border-destructive/50 flex size-4.5 rounded-full border focus-visible:ring-2 aria-invalid:ring-2"
+			"border-input bg-transparent checked:border-foreground aria-invalid:checked:border-foreground aria-invalid:border-destructive focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:aria-invalid:border-destructive/50 flex size-4.5 rounded-full border focus-visible:ring-2 aria-invalid:ring-2 shrink-0 outline-none disabled:cursor-not-allowed disabled:opacity-50"
 		}
 		{ attrs... }
 		data-gsxui-slot-radio

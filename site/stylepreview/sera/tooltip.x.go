@@ -88,7 +88,7 @@ func _gsxrenderTooltipContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childr
 		_gsxgw.S(" data-side=\"top\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 [&:popover-open]:inline-flex items-center gap-1.5 rounded-none px-3 py-1.5 text-xs has-[[data-gsxui-slot-kbd]]:pr-1.5 [&_[data-gsxui-slot-kbd]]:relative [&_[data-gsxui-slot-kbd]]:isolate [&_[data-gsxui-slot-kbd]]:z-50 [&_[data-gsxui-slot-kbd]]:rounded-none"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 [&:popover-open]:inline-flex items-center gap-1.5 rounded-none px-3 py-1.5 text-xs has-[[data-gsxui-slot-kbd]]:pr-1.5 [&_[data-gsxui-slot-kbd]]:relative [&_[data-gsxui-slot-kbd]]:isolate [&_[data-gsxui-slot-kbd]]:z-50 [&_[data-gsxui-slot-kbd]]:rounded-none bg-foreground text-background w-fit max-w-xs origin-bottom"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tooltip-content"})
@@ -98,7 +98,7 @@ func _gsxrenderTooltipContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childr
 	_gsxgw.Node(ctx, children)
 //line tooltip.gsx:28:3
 	_gsxgw.S("<span class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("size-2.5 translate-y-[calc(-50%-2px)] rotate-45 rounded-none"))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("size-2.5 translate-y-[calc(-50%-2px)] rotate-45 rounded-none bg-foreground top-full left-1/2 -translate-x-1/2"))
 	_gsxgw.S("\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-tooltip-arrow", true)
 	_gsxgw.S("></span></div>")

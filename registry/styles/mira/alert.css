@@ -4,7 +4,7 @@
    onto gsxui's shape-declared classes. */
 @layer components {
   .gsxui-recipe-alert {
-    @apply grid gap-0.5 rounded-lg border px-2 py-1.5 text-left text-xs/relaxed has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-1.5 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg]:text-current *:[svg:not([class*='size-'])]:size-3.5;
+    @apply grid gap-0.5 rounded-lg border px-2 py-1.5 text-left text-xs/relaxed has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-1.5 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg]:text-current *:[svg:not([class*='size-'])]:size-3.5 w-full;
   }
 
   .gsxui-recipe-alert-variant-default {
@@ -16,11 +16,11 @@
   }
 
   .gsxui-recipe-alert-title {
-    @apply font-medium group-has-[>svg]/alert:col-start-2;
+    @apply font-medium group-has-[>svg]/alert:col-start-2 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground;
   }
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-alert-description {
-    @apply text-muted-foreground text-xs/relaxed text-balance md:text-pretty [&_p:not(:last-child)]:mb-4 grid;
+    @apply text-muted-foreground text-xs/relaxed text-balance md:text-pretty [&_p:not(:last-child)]:mb-4 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground;
   }
 }

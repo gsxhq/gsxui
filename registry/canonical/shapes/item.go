@@ -5,17 +5,14 @@ import "github.com/gsxhq/gsxui/internal/recipe"
 // Item is a layout composite: a media + content + actions row, with
 // group/separator parts for stacked lists and header/footer parts for framing.
 //
-// Two axes the style contract declares are deliberately NOT shape dimensions:
+// item's data-size (default|sm) IS a shape dimension: the 8-style port made
+// the ramp per-style (upstream .cn-item-size-default/-sm differ in vega/maia/
+// luma/sera/rhea), so the old fold-into-the-base-rule approach (nova-only
+// density retarget) can't express it. Upstream's xs value is deliberately not
+// declared — gsxui ships no dropdown-embedded Item, xs's only consumer.
 //
-//   - item's data-size (default|sm). gsxui's nova density retarget folded the
-//     whole size ramp into the base rule (gap-2.5 px-3 py-2.5), so
-//     assets/css/styles/default/item.css has no size-keyed rule at all and a
-//     size dimension would have no content for either value. Conform requires
-//     every declared value to author at least one utility; a shape may declare
-//     LESS than the contract (see agreement_test.go), so it declares nothing
-//     here rather than inventing a ramp. Upstream shadcn does ship one
-//     (registry/new-york-v4/ui/item.tsx's itemVariants.size) — restoring it is
-//     a density decision, not a migration one.
+// One axis the style contract declares is deliberately NOT a shape dimension:
+//
 //   - item-separator's data-orientation. default.css only ever gives
 //     ItemSeparator a my-2 margin, identical for both orientations.
 //
@@ -28,6 +25,7 @@ var Item = recipe.Shape{
 	Slots: []recipe.Slot{
 		{Name: "", Base: true, Dimensions: []recipe.Dimension{
 			{Name: "variant", Default: "default", Values: []string{"default", "outline", "muted"}},
+			{Name: "size", Default: "default", Values: []string{"default", "sm"}},
 		}},
 		{Name: "group", Base: true},
 		{Name: "separator", Base: true},

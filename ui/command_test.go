@@ -43,7 +43,16 @@ func canonicalCommandClass(slot string, caller ...string) string {
 	if !ok {
 		panic("default style declares no recipe " + class)
 	}
-	classes := append([]string(nil), rule.Utilities...)
+	var classes []string
+	// Literal canonical fragments (registry/canonical/command.gsx) merge in
+	// ahead of the recipe, mirroring the runtime class list.
+	switch slot {
+	case "":
+		classes = append(classes, "size-full overflow-hidden")
+	case "list":
+		classes = append(classes, "overflow-x-hidden overflow-y-auto")
+	}
+	classes = append(classes, rule.Utilities...)
 	classes = append(classes, caller...)
 	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
 }

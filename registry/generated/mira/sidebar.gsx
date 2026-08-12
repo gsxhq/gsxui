@@ -219,13 +219,15 @@ component SidebarContent(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component SidebarGroup(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "px-2 py-1 flex flex-col" } { attrs... } data-gsxui-slot-sidebar-group>{ children }</div>
+	<div class={ "px-2 py-1 flex flex-col relative w-full min-w-0" } { attrs... } data-gsxui-slot-sidebar-group>
+		{ children }
+	</div>
 }
 
 component SidebarGroupLabel(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"text-sidebar-foreground/70 ring-sidebar-ring h-8 rounded-md px-2 text-xs transition-[margin,opacity] duration-200 ease-linear [[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:-mt-8 [[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:opacity-0 focus-visible:ring-2 [&>svg]:size-4 flex"
+			"text-sidebar-foreground/70 ring-sidebar-ring h-8 rounded-md px-2 text-xs transition-[margin,opacity] duration-200 ease-linear [[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:-mt-8 [[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:opacity-0 focus-visible:ring-2 [&>svg]:size-4 flex items-center shrink-0 outline-hidden [&>svg]:shrink-0"
 		}
 		{ attrs... }
 		data-gsxui-slot-sidebar-group-label
@@ -237,7 +239,7 @@ component SidebarGroupLabel(children gsx.Node, attrs gsx.Attrs) {
 component SidebarGroupAction(children gsx.Node, attrs gsx.Attrs) {
 	<button
 		class={
-			"text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground absolute top-3.5 end-3 [[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:hidden w-5 rounded-md p-0 focus-visible:ring-2 [&>svg]:size-4 flex"
+			"text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground absolute top-3.5 end-3 [[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:hidden w-5 rounded-md p-0 focus-visible:ring-2 [&>svg]:size-4 flex aspect-square items-center justify-center outline-hidden transition-transform [&>svg]:shrink-0"
 		}
 		type="button"
 		{ attrs... }
@@ -263,7 +265,7 @@ component SidebarMenuButton(isActive bool, variant string, size string, tooltip 
 	{ if tooltip == "" {
 		<button
 			class={
-				"w-full items-center overflow-hidden ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground [&[data-active]]:bg-sidebar-accent [&[data-active]]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground gap-2 rounded-[calc(var(--radius-sm)+2px)] p-2 text-left text-xs transition-[width,height,padding] [[data-gsxui-slot-sidebar-menu-item]:has(>[data-gsxui-slot-sidebar-menu-action])>&]:pe-8 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:size-8 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:p-2 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&[data-size=lg]]:p-0 focus-visible:ring-2 [&[data-active]]:font-medium flex"
+				"w-full items-center overflow-hidden ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground [&[data-active]]:bg-sidebar-accent [&[data-active]]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground gap-2 rounded-[calc(var(--radius-sm)+2px)] p-2 text-left text-xs transition-[width,height,padding] [[data-gsxui-slot-sidebar-menu-item]:has(>[data-gsxui-slot-sidebar-menu-action])>&]:pe-8 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:size-8 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:p-2 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&[data-size=lg]]:p-0 focus-visible:ring-2 [&[data-active]]:font-medium flex h-8 data-[size=sm]:h-7 data-[size=sm]:text-xs data-[size=lg]:h-12 data-[variant=outline]:bg-background data-[variant=outline]:shadow-[0_0_0_1px_var(--sidebar-border)] data-[variant=outline]:hover:shadow-[0_0_0_1px_var(--sidebar-accent)] [&>span:last-child]:truncate disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 outline-hidden"
 			}
 			type="button"
 			data-variant={variant |> default("default")}
@@ -278,7 +280,7 @@ component SidebarMenuButton(isActive bool, variant string, size string, tooltip 
 		<Tooltip data-gsxui-slot-sidebar-menu-button-tooltip>
 			<button
 				class={
-					"w-full items-center overflow-hidden ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground [&[data-active]]:bg-sidebar-accent [&[data-active]]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground gap-2 rounded-[calc(var(--radius-sm)+2px)] p-2 text-left text-xs transition-[width,height,padding] [[data-gsxui-slot-sidebar-menu-item]:has(>[data-gsxui-slot-sidebar-menu-action])>&]:pe-8 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:size-8 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:p-2 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&[data-size=lg]]:p-0 focus-visible:ring-2 [&[data-active]]:font-medium flex"
+					"w-full items-center overflow-hidden ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground [&[data-active]]:bg-sidebar-accent [&[data-active]]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground gap-2 rounded-[calc(var(--radius-sm)+2px)] p-2 text-left text-xs transition-[width,height,padding] [[data-gsxui-slot-sidebar-menu-item]:has(>[data-gsxui-slot-sidebar-menu-action])>&]:pe-8 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:size-8 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:p-2 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&[data-size=lg]]:p-0 focus-visible:ring-2 [&[data-active]]:font-medium flex h-8 data-[size=sm]:h-7 data-[size=sm]:text-xs data-[size=lg]:h-12 data-[variant=outline]:bg-background data-[variant=outline]:shadow-[0_0_0_1px_var(--sidebar-border)] data-[variant=outline]:hover:shadow-[0_0_0_1px_var(--sidebar-accent)] [&>span:last-child]:truncate disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 outline-hidden"
 				}
 				type="button"
 				data-variant={variant |> default("default")}
@@ -300,7 +302,7 @@ component SidebarMenuButton(isActive bool, variant string, size string, tooltip 
 component SidebarMenuAction(showOnHover bool, children gsx.Node, attrs gsx.Attrs) {
 	<button
 		class={
-			"text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground [[data-gsxui-slot-sidebar-menu-button]:hover~&]:text-sidebar-accent-foreground absolute top-1.5 end-1 aspect-square w-5 rounded-[calc(var(--radius-sm)-2px)] p-0 [[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:hidden [[data-gsxui-slot-sidebar-menu-button][data-size=default]~&]:top-1.5 [[data-gsxui-slot-sidebar-menu-button][data-size=lg]~&]:top-2.5 [[data-gsxui-slot-sidebar-menu-button][data-size=sm]~&]:top-1 focus-visible:ring-2 [&>svg]:size-4 md:[&[data-show-on-hover]]:opacity-0 md:[[data-gsxui-slot-sidebar-menu-item]:hover>&[data-show-on-hover]]:opacity-100 md:[[data-gsxui-slot-sidebar-menu-item]:focus-within>&[data-show-on-hover]]:opacity-100 md:[&[data-show-on-hover][data-state=open]]:opacity-100 [[data-gsxui-slot-sidebar-menu-button][data-active]~&[data-show-on-hover]]:text-sidebar-primary-foreground flex"
+			"text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground [[data-gsxui-slot-sidebar-menu-button]:hover~&]:text-sidebar-accent-foreground absolute top-1.5 end-1 aspect-square w-5 rounded-[calc(var(--radius-sm)-2px)] p-0 [[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:hidden [[data-gsxui-slot-sidebar-menu-button][data-size=default]~&]:top-1.5 [[data-gsxui-slot-sidebar-menu-button][data-size=lg]~&]:top-2.5 [[data-gsxui-slot-sidebar-menu-button][data-size=sm]~&]:top-1 focus-visible:ring-2 [&>svg]:size-4 md:[&[data-show-on-hover]]:opacity-0 md:[[data-gsxui-slot-sidebar-menu-item]:hover>&[data-show-on-hover]]:opacity-100 md:[[data-gsxui-slot-sidebar-menu-item]:focus-within>&[data-show-on-hover]]:opacity-100 md:[&[data-show-on-hover][data-state=open]]:opacity-100 [[data-gsxui-slot-sidebar-menu-button][data-active]~&[data-show-on-hover]]:text-sidebar-primary-foreground flex items-center justify-center outline-hidden transition-transform [&>svg]:shrink-0"
 		}
 		type="button"
 		data-show-on-hover={showOnHover}
@@ -314,7 +316,7 @@ component SidebarMenuAction(showOnHover bool, children gsx.Node, attrs gsx.Attrs
 component SidebarMenuBadge(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"text-sidebar-foreground [[data-gsxui-slot-sidebar-menu-button]:hover~&]:text-sidebar-accent-foreground [[data-gsxui-slot-sidebar-menu-button][data-active]~&]:text-sidebar-primary-foreground pointer-events-none absolute end-1 [[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:hidden flex h-5 min-w-5 rounded-[calc(var(--radius-sm)-2px)] px-1 text-xs font-medium [[data-gsxui-slot-sidebar-menu-button][data-size=default]~&]:top-1.5 [[data-gsxui-slot-sidebar-menu-button][data-size=lg]~&]:top-2.5 [[data-gsxui-slot-sidebar-menu-button][data-size=sm]~&]:top-1"
+			"text-sidebar-foreground [[data-gsxui-slot-sidebar-menu-button]:hover~&]:text-sidebar-accent-foreground [[data-gsxui-slot-sidebar-menu-button][data-active]~&]:text-sidebar-primary-foreground pointer-events-none absolute end-1 [[data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:hidden flex h-5 min-w-5 rounded-[calc(var(--radius-sm)-2px)] px-1 text-xs font-medium [[data-gsxui-slot-sidebar-menu-button][data-size=default]~&]:top-1.5 [[data-gsxui-slot-sidebar-menu-button][data-size=lg]~&]:top-2.5 [[data-gsxui-slot-sidebar-menu-button][data-size=sm]~&]:top-1 items-center justify-center tabular-nums select-none"
 		}
 		{ attrs... }
 		data-gsxui-slot-sidebar-menu-badge
@@ -327,12 +329,12 @@ component SidebarMenuBadge(children gsx.Node, attrs gsx.Attrs) {
 // It is chosen once per server render, then consumed by style CSS.
 component SidebarMenuSkeleton(showIcon bool, attrs gsx.Attrs) {
 	{{ width := strconv.Itoa(rand.Intn(40)+50) + "%" }}
-	<div class={ "h-8 gap-2 rounded-md px-2 flex" } { attrs... } data-gsxui-slot-sidebar-menu-skeleton>
+	<div class={ "h-8 gap-2 rounded-md px-2 flex items-center" } { attrs... } data-gsxui-slot-sidebar-menu-skeleton>
 		{ if showIcon {
 			<Skeleton class={ "size-4 rounded-md" } data-gsxui-slot-sidebar-menu-skeleton-icon/>
 		} }
 		<Skeleton
-			class={ "h-4" }
+			class={ "h-4 max-w-(--skeleton-width) flex-1" }
 			style=css`--skeleton-width:@{width}`
 			data-gsxui-slot-sidebar-menu-skeleton-text
 		/>
@@ -358,7 +360,7 @@ component SidebarMenuSubItem(children gsx.Node, attrs gsx.Attrs) {
 component SidebarMenuSubButton(size string, isActive bool, children gsx.Node, attrs gsx.Attrs) {
 	<a
 		class={
-			"text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground [&>svg]:text-sidebar-accent-foreground [&[data-active]]:bg-sidebar-accent [&[data-active]]:text-sidebar-accent-foreground h-7 gap-2 rounded-md px-2 focus-visible:ring-2 data-[size=md]:text-xs data-[size=sm]:text-xs [&>svg]:size-4 flex"
+			"text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground [&>svg]:text-sidebar-accent-foreground [&[data-active]]:bg-sidebar-accent [&[data-active]]:text-sidebar-accent-foreground h-7 gap-2 rounded-md px-2 focus-visible:ring-2 data-[size=md]:text-xs data-[size=sm]:text-xs [&>svg]:size-4 flex items-center overflow-hidden [&>span:last-child]:truncate -translate-x-px min-w-0 outline-hidden disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>svg]:shrink-0"
 		}
 		data-size={size |> default("md")}
 		data-active={isActive}

@@ -425,7 +425,7 @@ func ComboboxItem(value string, selected bool, children gsx.Node, attrs gsx.Attr
 			_gsxgw.S("\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(combobox.Item()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative w-full items-center cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class(combobox.Item()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-combobox-item"})

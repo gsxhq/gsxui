@@ -44,7 +44,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-sheet-footer {
-    @apply gap-2 p-8 flex flex-col;
+    @apply gap-2 p-8 flex flex-col mt-auto;
   }
 
   .gsxui-recipe-sheet-title {

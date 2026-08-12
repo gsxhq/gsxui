@@ -21,7 +21,7 @@ component AccordionItem(name string, open bool, children gsx.Node, attrs gsx.Att
 component AccordionTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<summary
 		class={
-			"focus-visible:ring-ring/30 focus-visible:border-ring rounded-none gap-6 py-4 text-left text-sm font-semibold hover:underline focus-visible:ring-2 flex"
+			"focus-visible:ring-ring/30 focus-visible:border-ring rounded-none gap-6 py-4 text-left text-sm font-semibold hover:underline focus-visible:ring-2 flex items-start outline-none transition-all border border-transparent"
 		}
 		{ attrs... }
 		data-gsxui-slot-accordion-trigger
@@ -40,11 +40,7 @@ component AccordionTrigger(children gsx.Node, attrs gsx.Attrs) {
 // classes join the inner padding token so utilities override its defaults on
 // the same box.
 component AccordionContent(children gsx.Node, attrs gsx.Attrs) {
-	<div
-		class={ "data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up text-sm" }
-		{ attrs.Without("class")... }
-		data-gsxui-slot-accordion-content
-	>
+	<div class={ "text-sm overflow-hidden" } { attrs.Without("class")... } data-gsxui-slot-accordion-content>
 		<div class={ "pt-0 pb-4", attrs.Class() } data-gsxui-slot-accordion-content-inner>{ children }</div>
 	</div>
 }

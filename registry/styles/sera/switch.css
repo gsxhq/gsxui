@@ -5,6 +5,6 @@
 @layer components {
   /* carried: no upstream counterpart */
   .gsxui-recipe-switch {
-    @apply checked:bg-primary bg-input checked:border-primary border border-input/50 focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 appearance-none outline-none disabled:cursor-not-allowed disabled:opacity-50 shrink-0 rounded-none focus-visible:ring-2 aria-invalid:ring-2 h-4.5 w-8.25 before:content-[''] before:pointer-events-none before:block before:transition-transform before:bg-background dark:before:bg-foreground dark:checked:before:bg-primary-foreground before:size-3.5 checked:before:translate-x-[calc(100%+2px)] before:translate-x-0.25 inline-flex;
+    @apply checked:bg-primary bg-input checked:border-primary border border-input/50 focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 appearance-none outline-none disabled:cursor-not-allowed disabled:opacity-50 shrink-0 rounded-none focus-visible:ring-2 aria-invalid:ring-2 h-4.5 w-8.25 before:content-[''] before:pointer-events-none before:block before:transition-transform before:bg-background dark:before:bg-foreground dark:checked:before:bg-primary-foreground before:size-3.5 checked:before:translate-x-[calc(100%+2px)] before:translate-x-0.25 inline-flex items-center transition-all;
   }
 }

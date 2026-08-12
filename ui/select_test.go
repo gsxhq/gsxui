@@ -14,8 +14,8 @@ import (
 // "'" -> "&#39;").
 const (
 	canonicalSelectRootClass           = "contents"
-	canonicalSelectTriggerDefaultClass = `border-input data-placeholder:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 gap-1.5 rounded-lg border bg-transparent py-2 pr-2 pl-2.5 text-sm transition-colors select-none focus-visible:ring-3 aria-invalid:ring-3 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 flex h-8`
-	canonicalSelectValueClass          = `flex gap-1.5 flex-1 text-left`
+	canonicalSelectTriggerDefaultClass = `w-fit items-center whitespace-nowrap outline-none disabled:cursor-not-allowed disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 border-input data-placeholder:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 gap-1.5 rounded-lg border bg-transparent py-2 pr-2 pl-2.5 text-sm transition-colors select-none focus-visible:ring-3 aria-invalid:ring-3 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 flex h-8`
+	canonicalSelectValueClass          = `items-center line-clamp-1 flex gap-1.5 flex-1 text-left`
 	// z-50/max-h-[…]/overflow/p-1 are restored "carried: no upstream
 	// counterpart" positioning mechanics (select.js's --gsxui-available-height
 	// cap contract); transition-none suppresses an implicit transition:all —
@@ -27,9 +27,9 @@ const (
 	// (not "flex") on the indicator, restores the item's own show/hide
 	// mechanism for its indicator — see the style-porter report's "Checkbox/
 	// Radio 'display flex on selected' mechanism" entry.
-	canonicalSelectItemClass          = `focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2 flex data-[state=checked]:[&amp;&gt;[data-gsxui-slot-select-item-indicator]]:flex`
+	canonicalSelectItemClass          = `relative w-full items-center cursor-default outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2 flex data-[state=checked]:[&amp;&gt;[data-gsxui-slot-select-item-indicator]]:flex`
 	canonicalSelectItemIndicatorClass = `pointer-events-none absolute right-2 hidden size-4 items-center justify-center`
-	canonicalSelectItemTextClass      = "flex flex-1 gap-2"
+	canonicalSelectItemTextClass      = "flex flex-1 gap-2 shrink-0 whitespace-nowrap"
 	canonicalSelectSeparatorClass     = "bg-border -mx-1 my-1 h-px"
 )
 
@@ -37,7 +37,7 @@ const (
 // attributes; presentation is owned by the stylesheet.
 func TestSelectTriggerPinnedDefault(t *testing.T) {
 	got := render(t, ui.SelectTrigger("", ui.SelectValue("Select a fruit", nil), nil))
-	want := `<button type="button" role="combobox" aria-expanded="false" aria-autocomplete="none" data-state="closed" data-size="default" data-placeholder class="` + canonicalSelectTriggerDefaultClass + `" data-gsxui-slot-select-trigger><span class="` + canonicalSelectValueClass + `" data-gsxui-slot-select-value>Select a fruit</span><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-gsxui-slot-icon><path d="m6 9 6 6 6-6"/></svg></button>`
+	want := `<button type="button" role="combobox" aria-expanded="false" aria-autocomplete="none" data-state="closed" data-size="default" data-placeholder class="` + canonicalSelectTriggerDefaultClass + `" data-gsxui-slot-select-trigger><span class="` + canonicalSelectValueClass + `" data-gsxui-slot-select-value>Select a fruit</span><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground pointer-events-none" data-gsxui-slot-icon><path d="m6 9 6 6 6-6"/></svg></button>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -129,7 +129,9 @@ func TestSelectItemDisabled(t *testing.T) {
 		}
 	}
 	enabled := render(t, ui.SelectItem("cherry", false, false, gsx.Raw("Cherry"), nil))
-	if strings.Contains(enabled, "data-disabled") || strings.Contains(enabled, "aria-disabled") {
+	// Match the attribute form (data-disabled="true") — the class string
+	// legitimately carries data-disabled:* variant tokens on every item.
+	if strings.Contains(enabled, `data-disabled="`) || strings.Contains(enabled, `aria-disabled="`) {
 		t.Errorf("enabled item should carry neither data-disabled nor aria-disabled\nin: %s", enabled)
 	}
 }
@@ -200,7 +202,10 @@ func TestSelectContentCallerClassMerges(t *testing.T) {
 
 func TestSelectTriggerCallerClassMerges(t *testing.T) {
 	got := render(t, ui.SelectTrigger("", gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "w-[180px]"}}))
-	if strings.Count(got, "w-[180px]") != 1 || strings.Count(got, `class="`) != 1 {
+	// The chevron icon legitimately carries its own class attribute now, so
+	// pin the merge by the caller width appearing once and winning its
+	// tailwind-merge conflict against the recipe's w-fit.
+	if strings.Count(got, "w-[180px]") != 1 || strings.Contains(got, "w-fit") {
 		t.Errorf("caller class must be forwarded exactly once, merged with the recipe class\nin: %s", got)
 	}
 }

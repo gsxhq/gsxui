@@ -26,24 +26,24 @@ func Avatar(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line avatar.gsx:15:2
 		_gsxgw.S("<span class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("size-8 rounded-full after:rounded-full data-[size=lg]:size-10 data-[size=sm]:size-6 flex"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("size-8 rounded-full after:rounded-full data-[size=lg]:size-10 data-[size=sm]:size-6 flex relative shrink-0 select-none after:absolute after:inset-0 after:border after:border-border after:mix-blend-darken dark:after:mix-blend-lighten"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-avatar"})
 		_gsxgw.BoolAttr("data-gsxui-slot-avatar", true)
 		_gsxgw.S(">")
-//line avatar.gsx:20:3
+//line avatar.gsx:22:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()
 	})
 }
 
-//line avatar.gsx:24:1
+//line avatar.gsx:26:1
 func AvatarImage(src string, alt string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line avatar.gsx:25:2
+//line avatar.gsx:27:2
 		_gsxgw.S("<img")
 		if !attrs.Has("src") {
 			_gsxgw.S(" src=\"")
@@ -56,7 +56,7 @@ func AvatarImage(src string, alt string, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S("\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("rounded-full"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("rounded-full size-full object-cover aspect-square"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "img", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-avatar-image"})
@@ -66,7 +66,7 @@ func AvatarImage(src string, alt string, attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line avatar.gsx:34:1
+//line avatar.gsx:36:1
 // FIX: AvatarFallback's own recipe accessor only ever resolves to colour
 // (bg-muted/text-muted-foreground) plus rounded-full — never size or
 // centering, the same structural/presentational split progress.gsx's own
@@ -79,19 +79,19 @@ func AvatarImage(src string, alt string, attrs gsx.Attrs) _gsxrt.Node {
 // (found reviewing theme-creator-parity Task 4's profile card, which sets
 // size-16).
 
-//line avatar.gsx:45:1
+//line avatar.gsx:47:1
 func AvatarFallback(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line avatar.gsx:46:2
+//line avatar.gsx:48:2
 		_gsxgw.S("<span class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("size-full items-center justify-center"), _gsxrt.Class("bg-muted text-muted-foreground rounded-full flex"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("size-full items-center justify-center"), _gsxrt.Class("bg-muted text-muted-foreground rounded-full flex text-sm"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-avatar-fallback"})
 		_gsxgw.BoolAttr("data-gsxui-slot-avatar-fallback", true)
 		_gsxgw.S(">")
-//line avatar.gsx:51:3
+//line avatar.gsx:53:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()

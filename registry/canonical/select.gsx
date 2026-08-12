@@ -80,6 +80,7 @@ component SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) {
 		data-size={size |> default("default")}
 		data-placeholder
 		class={
+			"w-fit items-center whitespace-nowrap outline-none disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
 			select_.Trigger(),
 			select_.TriggerSize(size),
 		}
@@ -87,7 +88,7 @@ component SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) {
 		data-gsxui-slot-select-trigger
 	>
 		{ children }
-		<icon.ChevronDown/>
+		<icon.ChevronDown class={ "text-muted-foreground pointer-events-none" }/>
 	</button>
 }
 
@@ -95,7 +96,7 @@ component SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) {
 // selected. select.js overwrites its text content on selection. The default
 // stylesheet applies pointer-events:none.
 component SelectValue(placeholder string, attrs gsx.Attrs) {
-	<span class={ select_.Value() } { attrs... } data-gsxui-slot-select-value>{ placeholder }</span>
+	<span class={ "items-center line-clamp-1", select_.Value() } { attrs... } data-gsxui-slot-select-value>{ placeholder }</span>
 }
 
 // SelectContent is the popover listbox. It rides the exact dropdown-menu.js
@@ -162,7 +163,7 @@ component SelectItem(value string, selected bool, disabled bool, children gsx.No
 			data-disabled="true"
 			aria-disabled="true"
 		} }
-		class={ select_.Item() }
+		class={ "relative w-full items-center cursor-default outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0", select_.Item() }
 		{ attrs... }
 		data-gsxui-slot-select-item
 	>

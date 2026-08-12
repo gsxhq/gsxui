@@ -39,7 +39,7 @@
   }
 
   .gsxui-recipe-select-item-text {
-    @apply flex flex-1 gap-2;
+    @apply flex flex-1 gap-2 shrink-0 whitespace-nowrap;
   }
 
   .gsxui-recipe-select-item-indicator {

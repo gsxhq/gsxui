@@ -120,6 +120,12 @@
   }
   :where([data-gsxui-slot-resizable-handle]) {
     position: relative;
+    /* display:flex is load-bearing: `flex: none` is the ITEM shorthand
+       (grow/shrink/basis) and does not make this a flex CONTAINER, so
+       without it the align/justify centering of the withHandle grip is
+       inert (upstream base carries `relative flex items-center
+       justify-center` on the handle). */
+    display: flex;
     flex: none;
     align-items: center;
     justify-content: center;
@@ -280,6 +286,10 @@
     flex-direction: column;
   }
   :where([data-gsxui-slot-sidebar-inset]) {
+    /* relative from upstream base (`relative flex w-full flex-1 flex-col`):
+       without it, absolutely-positioned descendants of the inset escape to
+       the nearest positioned ancestor outside it. */
+    position: relative;
     display: flex;
     width: 100%;
     flex: 1 1 0%;

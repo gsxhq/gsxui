@@ -31,7 +31,7 @@
   }
 
   .gsxui-recipe-combobox-list {
-    @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-h-[min(calc(--spacing(72)---spacing(9)),calc(var(--available-height)---spacing(9)))] scroll-py-1 overflow-y-auto p-1 data-empty:p-0;
+    @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-h-[min(calc(--spacing(72)---spacing(9)),calc(var(--gsxui-available-height,9999px)---spacing(9)))] scroll-py-1 overflow-y-auto p-1 data-empty:p-0;
   }
 
   /* carried: no upstream counterpart */

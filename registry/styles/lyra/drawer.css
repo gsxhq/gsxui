@@ -39,7 +39,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-drawer-footer {
-    @apply gap-2 p-4 flex flex-col;
+    @apply gap-2 p-4 flex flex-col mt-auto;
   }
 
   .gsxui-recipe-drawer-title {
@@ -47,6 +47,6 @@
   }
 
   .gsxui-recipe-drawer-description {
-    @apply text-muted-foreground text-xs/relaxed;
+    @apply text-muted-foreground text-xs/relaxed text-balance;
   }
 }

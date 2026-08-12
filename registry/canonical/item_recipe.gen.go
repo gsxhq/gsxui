@@ -9,6 +9,8 @@ type itemRecipe struct{ c recipe.Component }
 
 func (r itemRecipe) Root() string { return r.c.SlotClass("") }
 
+func (r itemRecipe) Size(value string) string { return r.c.SlotValueClass("", "size", value) }
+
 func (r itemRecipe) Variant(value string) string { return r.c.SlotValueClass("", "variant", value) }
 
 func (r itemRecipe) Actions() string { return r.c.SlotClass("actions") }

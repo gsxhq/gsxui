@@ -23,30 +23,11 @@ func Empty(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line empty.gsx:10:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-4 rounded-none border-dashed p-6 flex flex-col"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-4 rounded-none border-dashed p-6 flex flex-col w-full min-w-0 flex-1 items-center justify-center text-center text-balance"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-empty"})
 		_gsxgw.BoolAttr("data-gsxui-slot-empty", true)
-		_gsxgw.S(">")
-//line empty.gsx:11:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
-	})
-}
-
-//line empty.gsx:15:1
-func EmptyHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
-	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-		_gsxgw := _gsxrt.W(_gsxw)
-//line empty.gsx:16:2
-		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2 flex flex-col"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-empty-header"})
-		_gsxgw.BoolAttr("data-gsxui-slot-empty-header", true)
 		_gsxgw.S(">")
 //line empty.gsx:17:3
 		_gsxgw.Node(ctx, children)
@@ -56,23 +37,42 @@ func EmptyHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 }
 
 //line empty.gsx:21:1
+func EmptyHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line empty.gsx:22:2
+		_gsxgw.S("<div class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2 flex flex-col max-w-sm items-center text-center"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-empty-header"})
+		_gsxgw.BoolAttr("data-gsxui-slot-empty-header", true)
+		_gsxgw.S(">")
+//line empty.gsx:23:3
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}
+
+//line empty.gsx:27:1
 // EmptyMedia's variant cva map (registry's emptyMediaVariants) picks between
 // two entirely static presentation blocks by the JS-resolved variant value.
 // The CSS-only contract reflects that value through data-variant.
 // The stable token is "empty-icon", matching shadcn's own semantic name.
 
-//line empty.gsx:25:1
+//line empty.gsx:31:1
 func EmptyMedia(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line empty.gsx:26:2
+//line empty.gsx:32:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
 			_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
 			_gsxgw.S("\"")
 		}
-		_gsxv0 := "mb-2 flex"
+		_gsxv0 := "mb-2 flex shrink-0 items-center justify-center [&_svg]:shrink-0 [&_svg]:pointer-events-none"
 		var _gsxv1 string
 		switch variant {
 		case "icon":
@@ -87,25 +87,6 @@ func EmptyMedia(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node 
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-empty-icon"})
 		_gsxgw.BoolAttr("data-gsxui-slot-empty-icon", true)
 		_gsxgw.S(">")
-//line empty.gsx:40:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
-	})
-}
-
-//line empty.gsx:44:1
-func EmptyTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
-	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
-		_gsxgw := _gsxrt.W(_gsxw)
-//line empty.gsx:45:2
-		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-sm font-medium"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-empty-title"})
-		_gsxgw.BoolAttr("data-gsxui-slot-empty-title", true)
-		_gsxgw.S(">")
 //line empty.gsx:46:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
@@ -114,44 +95,63 @@ func EmptyTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 }
 
 //line empty.gsx:50:1
-// EmptyDescription renders a <div>, matching shadcn's own actual element —
-// its TypeScript prop type reads React.ComponentProps<"p"> but the JSX it
-// returns is a <div>, the same shipped-type/element mismatch already noted
-// for Kbd/KbdGroup (see docs/jsx-parity.md ## kbd); ported verbatim, tag
-// included, per the token-for-token rule.
-
-//line empty.gsx:55:1
-func EmptyDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+func EmptyTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line empty.gsx:56:2
+//line empty.gsx:51:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-xs/relaxed"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-sm font-medium"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-empty-description"})
-		_gsxgw.BoolAttr("data-gsxui-slot-empty-description", true)
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-empty-title"})
+		_gsxgw.BoolAttr("data-gsxui-slot-empty-title", true)
 		_gsxgw.S(">")
-//line empty.gsx:57:3
+//line empty.gsx:52:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
+//line empty.gsx:56:1
+// EmptyDescription renders a <div>, matching shadcn's own actual element —
+// its TypeScript prop type reads React.ComponentProps<"p"> but the JSX it
+// returns is a <div>, the same shipped-type/element mismatch already noted
+// for Kbd/KbdGroup (see docs/jsx-parity.md ## kbd); ported verbatim, tag
+// included, per the token-for-token rule.
+
 //line empty.gsx:61:1
-func EmptyContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+func EmptyDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line empty.gsx:62:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2.5 text-xs flex flex-col"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-xs/relaxed text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
+		_gsxgw.StyleMerged("", attrs.Style())
+		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-empty-description"})
+		_gsxgw.BoolAttr("data-gsxui-slot-empty-description", true)
+		_gsxgw.S(">")
+//line empty.gsx:67:3
+		_gsxgw.Node(ctx, children)
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}
+
+//line empty.gsx:71:1
+func EmptyContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line empty.gsx:72:2
+		_gsxgw.S("<div class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2.5 text-xs flex flex-col w-full max-w-sm min-w-0 items-center text-balance"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-empty-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-empty-content", true)
 		_gsxgw.S(">")
-//line empty.gsx:63:3
+//line empty.gsx:77:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

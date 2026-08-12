@@ -50,6 +50,7 @@ component Item(variant string, size string, children gsx.Node, attrs gsx.Attrs) 
 			"group/item",
 			item.Root(),
 			item.Variant(variant),
+			item.Size(size),
 		}
 		{ attrs... }
 		data-gsxui-slot-item

@@ -95,7 +95,7 @@ func _gsxrenderTabsList(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx
 		_gsxgw.S(" role=\"tablist\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("rounded-lg p-[3px] h-8 inline-flex"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("rounded-lg p-[3px] h-8 inline-flex w-fit items-center justify-center bg-muted text-muted-foreground"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tabs-list"})
@@ -163,7 +163,7 @@ func _gsxrenderTabsTrigger(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, value str
 		_gsxgw.S("\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-1.5 rounded-md border border-transparent px-1.5 py-0.5 text-sm font-medium data-[state=active]:shadow-sm [&_svg:not([class*='size-'])]:size-4 has-[>svg]:px-1 inline-flex"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-1.5 rounded-md border border-transparent px-1.5 py-0.5 text-sm font-medium data-[state=active]:shadow-sm [&_svg:not([class*='size-'])]:size-4 has-[>svg]:px-1 inline-flex relative h-[calc(100%-1px)] flex-1 items-center justify-center whitespace-nowrap text-foreground/60 transition-all hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 dark:text-muted-foreground dark:hover:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 data-[state=active]:bg-background data-[state=active]:text-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tabs-trigger"})
@@ -215,7 +215,7 @@ func _gsxrenderTabsContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, value str
 		_gsxgw.BoolAttr("hidden", bool(!selected))
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-sm"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-sm flex-1 outline-none"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-tabs-content"})

@@ -13,7 +13,7 @@ func TestAccordionPinned(t *testing.T) {
 		ui.AccordionTrigger(gsx.Raw("Question"), nil),
 		ui.AccordionContent(gsx.Raw("Answer"), nil),
 	), nil), nil))
-	want := `<div data-name="faq" data-gsxui-slot-accordion><details name="faq" open class="not-last:border-b" data-gsxui-slot-accordion-item><summary class="focus-visible:ring-ring/50 focus-visible:border-ring focus-visible:after:border-ring rounded-lg py-2.5 text-left text-sm font-medium hover:underline focus-visible:ring-3 flex" data-gsxui-slot-accordion-trigger>Question<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground ml-auto size-4 shrink-0 transition-transform duration-200 [[data-gsxui-slot-accordion-item][open]_&amp;]:rotate-180" data-gsxui-slot-accordion-trigger-icon data-gsxui-slot-icon><path d="m6 9 6 6 6-6"/></svg></summary><div class="data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up text-sm" data-gsxui-slot-accordion-content><div class="pt-0 pb-2.5" data-gsxui-slot-accordion-content-inner>Answer</div></div></details></div>`
+	want := `<div data-name="faq" data-gsxui-slot-accordion><details name="faq" open class="not-last:border-b" data-gsxui-slot-accordion-item><summary class="focus-visible:ring-ring/50 focus-visible:border-ring focus-visible:after:border-ring rounded-lg py-2.5 text-left text-sm font-medium hover:underline focus-visible:ring-3 flex items-start outline-none transition-all border border-transparent" data-gsxui-slot-accordion-trigger>Question<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground ml-auto size-4 shrink-0 transition-transform duration-200 [[data-gsxui-slot-accordion-item][open]_&amp;]:rotate-180" data-gsxui-slot-accordion-trigger-icon data-gsxui-slot-icon><path d="m6 9 6 6 6-6"/></svg></summary><div class="text-sm overflow-hidden" data-gsxui-slot-accordion-content><div class="pt-0 pb-2.5" data-gsxui-slot-accordion-content-inner>Answer</div></div></details></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -35,7 +35,7 @@ func TestAccordionCallerClassRoutesToInnerContent(t *testing.T) {
 		{Key: "id", Value: "panel"},
 		{Key: "class", Value: "pb-8"},
 	}))
-	want := `<div class="data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up text-sm" id="panel" data-gsxui-slot-accordion-content><div class="pt-0 pb-8" data-gsxui-slot-accordion-content-inner>x</div></div>`
+	want := `<div class="text-sm overflow-hidden" id="panel" data-gsxui-slot-accordion-content><div class="pt-0 pb-8" data-gsxui-slot-accordion-content-inner>x</div></div>`
 	if got != want {
 		t.Errorf("non-class attrs must stay outer and caller class must render once on inner content\n got: %s\nwant: %s", got, want)
 	}

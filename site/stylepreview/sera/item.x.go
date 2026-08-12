@@ -25,7 +25,7 @@ func _gsxrenderItemGroup(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gs
 	}
 //line item.gsx:13:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-4 has-data-[size=sm]:gap-2.5 has-data-[size=xs]:gap-2 flex flex-col"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-4 has-data-[size=sm]:gap-2.5 has-data-[size=xs]:gap-2 flex flex-col w-full"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	if !attrs.Has("role") {
 		_gsxgw.S(" role=\"list\"")
@@ -104,7 +104,7 @@ func _gsxrenderItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string, 
 		_gsxgw.S("\"")
 	}
 	_gsxv0 := "group/item"
-	_gsxv1 := "[a]:hover:bg-muted rounded-none border text-sm flex flex-wrap"
+	_gsxv1 := "[a]:hover:bg-muted rounded-none border text-sm flex flex-wrap w-full items-center transition-colors duration-100 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 [a]:transition-colors"
 	var _gsxv2 string
 	switch variant {
 	case "outline":
@@ -114,20 +114,27 @@ func _gsxrenderItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string, 
 	default:
 		_gsxv2 = "border-transparent"
 	}
+	var _gsxv3 string
+	switch size {
+	case "sm":
+		_gsxv3 = "gap-3.5 px-3.5 py-3"
+	default:
+		_gsxv3 = "gap-3.5 px-4 py-3.5"
+	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(_gsxv3), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-item"})
 	_gsxgw.BoolAttr("data-gsxui-slot-item", true)
 	_gsxgw.S(">")
-//line item.gsx:69:3
+//line item.gsx:70:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
 
-//line item.gsx:73:1
+//line item.gsx:74:1
 // ItemMedia's variant cva map (itemMediaVariants) is reflected through
 // data-variant for the style pack.
 //
@@ -140,7 +147,7 @@ func _gsxrenderItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string, 
 // alone, and the responsive image sizing is half dead weight without a real
 // xs size param (Item's `size` axis stays sm/default only, per task scope).
 
-//line item.gsx:84:1
+//line item.gsx:85:1
 func ItemMedia(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -152,37 +159,37 @@ func _gsxrenderItemMedia(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant str
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line item.gsx:85:2
+//line item.gsx:86:2
 	_gsxgw.S("<div")
 	if !attrs.Has("data-variant") {
 		_gsxgw.S(" data-variant=\"")
 		_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
 		_gsxgw.S("\"")
 	}
-	_gsxv3 := "gap-2 flex"
-	var _gsxv4 string
+	_gsxv4 := "gap-2 flex shrink-0 items-center justify-center [&_svg]:pointer-events-none"
+	var _gsxv5 string
 	switch variant {
 	case "icon":
-		_gsxv4 = "[&_svg:not([class*='size-'])]:size-4"
+		_gsxv5 = "[&_svg:not([class*='size-'])]:size-4"
 	case "image":
-		_gsxv4 = "size-10 overflow-hidden rounded-none group-data-[size=sm]/item:size-8 group-data-[size=xs]/item:size-6 group-data-[size=xs]/item:rounded-none [&_img]:size-full [&_img]:object-cover"
+		_gsxv5 = "size-10 overflow-hidden rounded-none group-data-[size=sm]/item:size-8 group-data-[size=xs]/item:size-6 group-data-[size=xs]/item:rounded-none [&_img]:size-full [&_img]:object-cover"
 	default:
-		_gsxv4 = "bg-transparent"
+		_gsxv5 = "bg-transparent"
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv3), _gsxrt.Class(_gsxv4), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv4), _gsxrt.Class(_gsxv5), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-item-media"})
 	_gsxgw.BoolAttr("data-gsxui-slot-item-media", true)
 	_gsxgw.S(">")
-//line item.gsx:101:3
+//line item.gsx:102:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
 
-//line item.gsx:105:1
+//line item.gsx:106:1
 func ItemContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -194,7 +201,7 @@ func _gsxrenderItemContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children 
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line item.gsx:106:2
+//line item.gsx:107:2
 	_gsxgw.S("<div class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex-1 [&+[data-gsxui-slot-item-content]]:flex-none gap-1 group-data-[size=xs]/item:gap-0.5 flex flex-col"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
@@ -202,13 +209,13 @@ func _gsxrenderItemContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children 
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-item-content"})
 	_gsxgw.BoolAttr("data-gsxui-slot-item-content", true)
 	_gsxgw.S(">")
-//line item.gsx:113:3
+//line item.gsx:114:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
 
-//line item.gsx:117:1
+//line item.gsx:118:1
 func ItemTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -220,26 +227,26 @@ func _gsxrenderItemTitle(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gs
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line item.gsx:118:2
+//line item.gsx:119:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2 text-xs leading-snug font-semibold uppercase underline-offset-4 flex"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2 text-xs leading-snug font-semibold uppercase underline-offset-4 line-clamp-1 w-fit items-center"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-item-title"})
 	_gsxgw.BoolAttr("data-gsxui-slot-item-title", true)
 	_gsxgw.S(">")
-//line item.gsx:123:3
+//line item.gsx:124:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
 
-//line item.gsx:127:1
+//line item.gsx:128:1
 // ItemDescription renders a real <p>, matching shadcn's own source exactly
 // (unlike EmptyDescription, whose type says "p" but whose element is a
 // <div> — see empty.gsx).
 
-//line item.gsx:130:1
+//line item.gsx:131:1
 func ItemDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -251,21 +258,21 @@ func _gsxrenderItemDescription(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, child
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line item.gsx:131:2
+//line item.gsx:132:2
 	_gsxgw.S("<p class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground text-left text-sm leading-relaxed"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground text-left text-sm leading-relaxed line-clamp-2 font-normal [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "p", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-item-description"})
 	_gsxgw.BoolAttr("data-gsxui-slot-item-description", true)
 	_gsxgw.S(">")
-//line item.gsx:132:3
+//line item.gsx:139:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</p>")
 	return _gsxgw.Err()
 }
 
-//line item.gsx:136:1
+//line item.gsx:143:1
 func ItemActions(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -277,52 +284,52 @@ func _gsxrenderItemActions(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children 
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line item.gsx:137:2
+//line item.gsx:144:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2 flex"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2 flex items-center"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-item-actions"})
 	_gsxgw.BoolAttr("data-gsxui-slot-item-actions", true)
 	_gsxgw.S(">")
-//line item.gsx:138:3
+//line item.gsx:145:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
 
-//line item.gsx:142:1
+//line item.gsx:149:1
 func ItemHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line item.gsx:143:2
+//line item.gsx:150:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2 flex"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2 flex basis-full items-center justify-between"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-item-header"})
 		_gsxgw.BoolAttr("data-gsxui-slot-item-header", true)
 		_gsxgw.S(">")
-//line item.gsx:144:3
+//line item.gsx:151:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line item.gsx:148:1
+//line item.gsx:155:1
 func ItemFooter(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line item.gsx:149:2
+//line item.gsx:156:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2 flex"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2 flex basis-full items-center justify-between"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-item-footer"})
 		_gsxgw.BoolAttr("data-gsxui-slot-item-footer", true)
 		_gsxgw.S(">")
-//line item.gsx:150:3
+//line item.gsx:157:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

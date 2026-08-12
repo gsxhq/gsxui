@@ -187,13 +187,13 @@ func _gsxrenderSheetFooter(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children 
 	}
 //line sheet.gsx:91:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2 p-8 flex flex-col"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2 p-8 flex flex-col mt-auto"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sheet-footer"})
 	_gsxgw.BoolAttr("data-gsxui-slot-sheet-footer", true)
 	_gsxgw.S(">")
-//line sheet.gsx:91:85
+//line sheet.gsx:91:93
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()

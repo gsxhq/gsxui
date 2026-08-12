@@ -5,15 +5,15 @@
 @layer components {
   /* carried: no upstream counterpart */
   .gsxui-recipe-avatar {
-    @apply size-8 rounded-full after:rounded-full data-[size=lg]:size-10 data-[size=sm]:size-6 flex;
+    @apply size-8 rounded-full after:rounded-full data-[size=lg]:size-10 data-[size=sm]:size-6 flex relative shrink-0 select-none after:absolute after:inset-0 after:border after:border-border after:mix-blend-darken dark:after:mix-blend-lighten;
   }
 
   .gsxui-recipe-avatar-image {
-    @apply rounded-full;
+    @apply rounded-full size-full object-cover aspect-square;
   }
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-avatar-fallback {
-    @apply bg-muted text-muted-foreground rounded-full flex;
+    @apply bg-muted text-muted-foreground rounded-full flex text-sm;
   }
 }

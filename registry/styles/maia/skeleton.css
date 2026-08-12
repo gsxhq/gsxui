@@ -4,6 +4,6 @@
    onto gsxui's shape-declared classes. */
 @layer components {
   .gsxui-recipe-skeleton {
-    @apply bg-muted rounded-xl;
+    @apply bg-muted rounded-xl animate-pulse;
   }
 }

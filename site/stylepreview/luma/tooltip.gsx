@@ -19,12 +19,12 @@ component TooltipContent(children gsx.Node, attrs gsx.Attrs) {
 		data-state="closed"
 		data-side="top"
 		class={
-			"data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 [&:popover-open]:inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs has-[[data-gsxui-slot-kbd]]:pr-1.5 [&_[data-gsxui-slot-kbd]]:relative [&_[data-gsxui-slot-kbd]]:isolate [&_[data-gsxui-slot-kbd]]:z-50 [&_[data-gsxui-slot-kbd]]:rounded-lg"
+			"data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 [&:popover-open]:inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs has-[[data-gsxui-slot-kbd]]:pr-1.5 [&_[data-gsxui-slot-kbd]]:relative [&_[data-gsxui-slot-kbd]]:isolate [&_[data-gsxui-slot-kbd]]:z-50 [&_[data-gsxui-slot-kbd]]:rounded-lg bg-foreground text-background w-fit max-w-xs origin-bottom"
 		}
 		{ attrs... }
 		data-gsxui-slot-tooltip-content
 	>
 		{ children }
-		<span class={ "size-2.5 translate-y-[calc(-50%-2px)] rotate-45 rounded-[2px] data-[side=left]:translate-x-[-1.5px] data-[side=right]:translate-x-[1.5px]" } data-gsxui-slot-tooltip-arrow></span>
+		<span class={ "size-2.5 translate-y-[calc(-50%-2px)] rotate-45 rounded-[2px] data-[side=left]:translate-x-[-1.5px] data-[side=right]:translate-x-[1.5px] bg-foreground top-full left-1/2 -translate-x-1/2" } data-gsxui-slot-tooltip-arrow></span>
 	</div>
 }

@@ -22,7 +22,7 @@ component Breadcrumb(children gsx.Node, attrs gsx.Attrs) {
 
 component BreadcrumbList(children gsx.Node, attrs gsx.Attrs) {
 	<ol
-		class={ "text-muted-foreground gap-1.5 text-xs/relaxed flex flex-wrap" }
+		class={ "text-muted-foreground gap-1.5 text-xs/relaxed flex flex-wrap items-center wrap-break-word" }
 		{ attrs... }
 		data-gsxui-slot-breadcrumb-list
 	>
@@ -31,7 +31,7 @@ component BreadcrumbList(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component BreadcrumbItem(children gsx.Node, attrs gsx.Attrs) {
-	<li class={ "gap-1 inline-flex" } { attrs... } data-gsxui-slot-breadcrumb-item>
+	<li class={ "gap-1 inline-flex items-center" } { attrs... } data-gsxui-slot-breadcrumb-item>
 		{ children }
 	</li>
 }
@@ -88,7 +88,7 @@ component BreadcrumbEllipsis(attrs gsx.Attrs) {
 	<span
 		role="presentation"
 		aria-hidden="true"
-		class={ "size-4 [&>svg]:size-3.5 flex" }
+		class={ "size-4 [&>svg]:size-3.5 flex items-center justify-center" }
 		{ attrs... }
 		data-gsxui-slot-breadcrumb-ellipsis
 	>

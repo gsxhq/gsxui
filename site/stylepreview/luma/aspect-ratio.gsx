@@ -91,7 +91,7 @@ component AspectRatio(ratio string, children gsx.Node, attrs gsx.Attrs) {
 		default:
 			style=css`aspect-ratio: @{ratio};`
 		} }
-		class={ "block" }
+		class={ "relative" }
 		{ attrs... }
 		data-gsxui-slot-aspect-ratio
 	>

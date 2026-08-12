@@ -5,7 +5,7 @@
 @layer components {
   /* carried: no upstream counterpart */
   .gsxui-recipe-item {
-    @apply [a]:hover:bg-muted rounded-md border text-xs/relaxed flex flex-wrap;
+    @apply [a]:hover:bg-muted rounded-md border text-xs/relaxed flex flex-wrap w-full items-center transition-colors duration-100 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 [a]:transition-colors;
   }
 
   .gsxui-recipe-item-variant-default {
@@ -20,9 +20,17 @@
     @apply bg-muted/50 border-transparent;
   }
 
+  .gsxui-recipe-item-size-default {
+    @apply gap-2.5 px-3 py-2.5;
+  }
+
+  .gsxui-recipe-item-size-sm {
+    @apply gap-2.5 px-3 py-2.5;
+  }
+
   /* carried: no upstream counterpart */
   .gsxui-recipe-item-group {
-    @apply gap-4 has-data-[size=sm]:gap-2.5 has-data-[size=xs]:gap-2 flex flex-col;
+    @apply gap-4 has-data-[size=sm]:gap-2.5 has-data-[size=xs]:gap-2 flex flex-col w-full;
   }
 
   .gsxui-recipe-item-separator {
@@ -31,7 +39,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-item-media {
-    @apply gap-2 flex;
+    @apply gap-2 flex shrink-0 items-center justify-center [&_svg]:pointer-events-none;
   }
 
   .gsxui-recipe-item-media-variant-default {
@@ -53,25 +61,25 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-item-title {
-    @apply gap-2 text-xs/relaxed leading-snug font-medium underline-offset-4 flex;
+    @apply gap-2 text-xs/relaxed leading-snug font-medium underline-offset-4 line-clamp-1 w-fit items-center;
   }
 
   .gsxui-recipe-item-description {
-    @apply text-muted-foreground text-left text-xs/relaxed;
+    @apply text-muted-foreground text-left text-xs/relaxed line-clamp-2 font-normal [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary;
   }
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-item-actions {
-    @apply gap-2 flex;
+    @apply gap-2 flex items-center;
   }
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-item-header {
-    @apply gap-2 flex;
+    @apply gap-2 flex basis-full items-center justify-between;
   }
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-item-footer {
-    @apply gap-2 flex;
+    @apply gap-2 flex basis-full items-center justify-between;
   }
 }

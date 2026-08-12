@@ -56,7 +56,7 @@ component AlertDialogHeader(children gsx.Node, attrs gsx.Attrs) {
 
 component AlertDialogFooter(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "bg-muted/50 -mx-4 -mb-4 rounded-b-xl border-t p-4 flex flex-col-reverse" }
+		class={ "bg-muted/50 -mx-4 -mb-4 rounded-b-xl border-t p-4 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end" }
 		{ attrs... }
 		data-gsxui-slot-alert-dialog-footer
 	>

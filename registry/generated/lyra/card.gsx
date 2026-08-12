@@ -20,7 +20,9 @@ component Card(children gsx.Node, attrs gsx.Attrs) {
 
 component CardHeader(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "gap-1 rounded-none px-(--card-spacing) grid auto-rows-min grid-rows-[auto_auto]" }
+		class={
+			"gap-1 rounded-none px-(--card-spacing) grid auto-rows-min items-start has-[[data-gsxui-slot-card-action]]:grid-cols-[1fr_auto] has-[[data-gsxui-slot-card-description]]:grid-rows-[auto_auto]"
+		}
 		{ attrs... }
 		data-gsxui-slot-card-header
 	>
@@ -55,7 +57,7 @@ component CardContent(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component CardFooter(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "rounded-none border-t p-(--card-spacing) flex" } { attrs... } data-gsxui-slot-card-footer>
+	<div class={ "rounded-none border-t p-(--card-spacing) flex items-center" } { attrs... } data-gsxui-slot-card-footer>
 		{ children }
 	</div>
 }

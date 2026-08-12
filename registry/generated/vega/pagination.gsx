@@ -26,7 +26,7 @@ component Pagination(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component PaginationContent(children gsx.Node, attrs gsx.Attrs) {
-	<ul class={ "gap-1 flex flex-row" } { attrs... } data-gsxui-slot-pagination-content>
+	<ul class={ "gap-1 flex items-center" } { attrs... } data-gsxui-slot-pagination-content>
 		{ children }
 	</ul>
 }

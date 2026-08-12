@@ -81,7 +81,7 @@ component ToggleGroup(groupType string, variant string, size string, spacing str
 		style=css`--gap: @{sp}`
 		class={
 			"group/toggle-group",
-			"data-[spacing=0]:data-[variant=outline]:rounded-2xl flex",
+			"data-[spacing=0]:data-[variant=outline]:rounded-2xl flex w-fit items-center gap-[--spacing(var(--gap))]",
 			switch size { case "sm": "rounded-[min(var(--radius-md),10px)]" case "lg": "rounded-lg" default: "rounded-lg" }
 		}
 		{ attrs... }
@@ -132,7 +132,7 @@ component ToggleGroupItem(groupType string, variant string, size string, spacing
 			aria-pressed={pressed}
 		} }
 		class={
-			"hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-muted data-[variant=outline]:border-input data-[variant=outline]:hover:bg-muted data-[variant=outline]:border gap-1 rounded-2xl text-sm font-medium transition-colors [&_svg:not([class*='size-'])]:size-4 group-data-[spacing=0]/toggle-group:rounded-none group-data-[spacing=0]/toggle-group:px-2 group-data-[spacing=0]/toggle-group:shadow-none group-data-horizontal/toggle-group:data-[spacing=0]:first:rounded-l-2xl group-data-vertical/toggle-group:data-[spacing=0]:first:rounded-t-2xl group-data-horizontal/toggle-group:data-[spacing=0]:last:rounded-r-2xl group-data-vertical/toggle-group:data-[spacing=0]:last:rounded-b-2xl",
+			"hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-muted data-[variant=outline]:border-input data-[variant=outline]:hover:bg-muted data-[variant=outline]:border gap-1 rounded-2xl text-sm font-medium transition-colors [&_svg:not([class*='size-'])]:size-4 group-data-[spacing=0]/toggle-group:rounded-none group-data-[spacing=0]/toggle-group:px-2 group-data-[spacing=0]/toggle-group:shadow-none group-data-horizontal/toggle-group:data-[spacing=0]:first:rounded-l-2xl group-data-vertical/toggle-group:data-[spacing=0]:first:rounded-t-2xl group-data-horizontal/toggle-group:data-[spacing=0]:last:rounded-r-2xl group-data-vertical/toggle-group:data-[spacing=0]:last:rounded-b-2xl shrink-0 focus:z-10 focus-visible:z-10 items-center justify-center whitespace-nowrap outline-none focus-visible:ring-[3px] [&_svg]:pointer-events-none [&_svg]:shrink-0",
 			switch size {
 			case "sm":
 				"h-7 min-w-7 px-2.5 has-[>svg]:px-1.5 group-data-[spacing=0]/toggle-group:has-[>svg]:px-1.5"

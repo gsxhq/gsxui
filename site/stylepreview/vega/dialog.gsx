@@ -23,7 +23,7 @@ component DialogTrigger(children gsx.Node, attrs gsx.Attrs) {
 component DialogContent(hideCloseButton bool, children gsx.Node, attrs gsx.Attrs) {
 	<dialog
 		class={
-			"transition-none backdrop:transition-none data-[state=open]:backdrop:animate-in data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 data-[state=open]:backdrop:fade-in-0 backdrop:bg-black/10 backdrop:duration-100 supports-backdrop-filter:backdrop:backdrop-blur-xs bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 ring-foreground/10 open:grid max-w-[calc(100%-2rem)] gap-6 rounded-xl p-6 text-sm ring-1 duration-100 sm:max-w-md fixed z-50 top-1/2 left-1/2 w-full -translate-x-1/2 -translate-y-1/2"
+			"transition-none backdrop:transition-none data-[state=open]:backdrop:animate-in data-[state=closed]:backdrop:animate-out data-[state=closed]:backdrop:fade-out-0 data-[state=open]:backdrop:fade-in-0 backdrop:bg-black/10 backdrop:duration-100 supports-backdrop-filter:backdrop:backdrop-blur-xs bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 ring-foreground/10 open:grid max-w-[calc(100%-2rem)] gap-6 rounded-xl p-6 text-sm ring-1 duration-100 sm:max-w-md fixed z-50 top-1/2 left-1/2 w-full -translate-x-1/2 -translate-y-1/2 outline-none"
 		}
 		data-state="closed"
 		{ attrs... }
@@ -66,7 +66,7 @@ component DialogHeader(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component DialogFooter(showCloseButton bool, children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "gap-2 flex flex-col-reverse" } { attrs... } data-gsxui-slot-dialog-footer>
+	<div class={ "gap-2 flex flex-col-reverse sm:flex-row sm:justify-end" } { attrs... } data-gsxui-slot-dialog-footer>
 		{ children }
 		{ if showCloseButton {
 			<Button

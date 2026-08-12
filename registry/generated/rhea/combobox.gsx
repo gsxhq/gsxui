@@ -295,7 +295,7 @@ component ComboboxList(children gsx.Node, attrs gsx.Attrs) {
 		role="listbox"
 		tabindex="-1"
 		class={
-			"[scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-h-[min(calc(--spacing(72)---spacing(9)),calc(var(--available-height)---spacing(9)))] scroll-py-1 overflow-y-auto p-1 data-empty:p-0"
+			"[scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-h-[min(calc(--spacing(72)---spacing(9)),calc(var(--gsxui-available-height,9999px)---spacing(9)))] scroll-py-1 overflow-y-auto p-1 data-empty:p-0"
 		}
 		{ attrs... }
 		data-gsxui-slot-combobox-list
@@ -327,6 +327,7 @@ component ComboboxItem(value string, selected bool, children gsx.Node, attrs gsx
 		} }
 		aria-selected={selected}
 		class={
+			"relative w-full items-center cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
 			"data-highlighted:bg-accent data-highlighted:text-accent-foreground not-data-[variant=destructive]:data-highlighted:**:text-accent-foreground gap-2 min-h-7 rounded-xl py-1.5 pr-8 pl-2 text-sm [&_svg:not([class*='size-'])]:size-4 flex data-[state=checked]:[&>[data-gsxui-slot-combobox-item-indicator]]:flex"
 		}
 		{ attrs... }

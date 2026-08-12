@@ -46,14 +46,14 @@ func _gsxrenderNativeSelect(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children
 	}
 //line native-select.gsx:40:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/native-select"), _gsxrt.Class("relative w-fit [&>svg]:pointer-events-none [&>svg]:absolute [&>svg]:opacity-50 [&>svg]:text-muted-foreground [&>svg]:top-1/2 [&>svg]:right-2.5 [&>svg]:size-4 [&>svg]:-translate-y-1/2"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/native-select"), _gsxrt.Class("relative w-fit [&>svg]:pointer-events-none [&>svg]:absolute [&>svg]:opacity-50 [&>svg]:text-muted-foreground [&>svg]:top-1/2 [&>svg]:right-2.5 [&>svg]:size-4 [&>svg]:-translate-y-1/2 has-[select:disabled]:opacity-50"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-native-select-wrapper", true)
 	_gsxgw.S(">")
 //line native-select.gsx:48:3
 	_gsxv0 := attrs.Without("class")
 	_gsxgw.S("<select class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("border-input placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 dark:hover:bg-input/50 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 w-full min-w-0 appearance-none rounded-md border bg-transparent py-1 pr-8 pl-2.5 text-sm shadow-xs transition-[color,box-shadow] select-none focus-visible:ring-3 aria-invalid:ring-3 data-[size=sm]:h-8 flex"), _gsxrt.Class(_gsxv0.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("border-input placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 dark:hover:bg-input/50 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 w-full min-w-0 appearance-none rounded-md border bg-transparent py-1 pr-8 pl-2.5 text-sm shadow-xs transition-[color,box-shadow] select-none focus-visible:ring-3 aria-invalid:ring-3 data-[size=sm]:h-8 outline-none disabled:pointer-events-none disabled:cursor-not-allowed"), _gsxrt.Class(_gsxv0.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", _gsxv0.Style())
 	_gsxgw.Spread(ctx, "select", _gsxv0, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-native-select"})

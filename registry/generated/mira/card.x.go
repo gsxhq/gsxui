@@ -39,24 +39,24 @@ func CardHeader(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line card.gsx:22:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-1 rounded-t-lg px-(--card-spacing) grid auto-rows-min grid-rows-[auto_auto]"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-1 rounded-t-lg px-(--card-spacing) grid auto-rows-min items-start has-[[data-gsxui-slot-card-action]]:grid-cols-[1fr_auto] has-[[data-gsxui-slot-card-description]]:grid-rows-[auto_auto]"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-card-header"})
 		_gsxgw.BoolAttr("data-gsxui-slot-card-header", true)
 		_gsxgw.S(">")
-//line card.gsx:27:3
+//line card.gsx:29:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line card.gsx:31:1
+//line card.gsx:33:1
 func CardTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line card.gsx:32:2
+//line card.gsx:34:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-sm font-medium"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -64,18 +64,18 @@ func CardTitle(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-card-title"})
 		_gsxgw.BoolAttr("data-gsxui-slot-card-title", true)
 		_gsxgw.S(">")
-//line card.gsx:32:79
+//line card.gsx:34:79
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line card.gsx:35:1
+//line card.gsx:37:1
 func CardDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line card.gsx:36:2
+//line card.gsx:38:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground text-xs/relaxed"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -83,18 +83,18 @@ func CardDescription(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-card-description"})
 		_gsxgw.BoolAttr("data-gsxui-slot-card-description", true)
 		_gsxgw.S(">")
-//line card.gsx:37:3
+//line card.gsx:39:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line card.gsx:41:1
+//line card.gsx:43:1
 func CardAction(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line card.gsx:42:2
+//line card.gsx:44:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("col-start-2 row-span-2 row-start-1 self-start justify-self-end"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -102,18 +102,18 @@ func CardAction(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-card-action"})
 		_gsxgw.BoolAttr("data-gsxui-slot-card-action", true)
 		_gsxgw.S(">")
-//line card.gsx:47:3
+//line card.gsx:49:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line card.gsx:51:1
+//line card.gsx:53:1
 func CardContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line card.gsx:52:2
+//line card.gsx:54:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("px-(--card-spacing)"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -121,26 +121,26 @@ func CardContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-card-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-card-content", true)
 		_gsxgw.S(">")
-//line card.gsx:52:81
+//line card.gsx:54:81
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line card.gsx:55:1
+//line card.gsx:57:1
 func CardFooter(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line card.gsx:56:2
+//line card.gsx:58:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("rounded-b-lg px-(--card-spacing) flex"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("rounded-b-lg px-(--card-spacing) flex items-center"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-card-footer"})
 		_gsxgw.BoolAttr("data-gsxui-slot-card-footer", true)
 		_gsxgw.S(">")
-//line card.gsx:56:98
+//line card.gsx:59:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

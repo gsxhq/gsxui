@@ -180,7 +180,7 @@ func Menubar(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line menubar.gsx:169:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(menubar.Root()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("items-center"), _gsxrt.Class(menubar.Root()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menubar\"")
@@ -248,7 +248,7 @@ func MenubarTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line menubar.gsx:207:2
 		_gsxgw.S("<button class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(menubar.Trigger()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("items-center outline-hidden select-none"), _gsxrt.Class(menubar.Trigger()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"button\"")
@@ -301,7 +301,7 @@ func MenubarContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line menubar.gsx:241:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(menubar.Content()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none"), _gsxrt.Class(menubar.Content()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("popover") {
 			_gsxgw.S(" popover=\"auto\"")
@@ -343,7 +343,7 @@ func MenubarItem(variant string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node
 		_gsxgw := _gsxrt.W(_gsxw)
 //line menubar.gsx:262:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/menubar-item"), _gsxrt.Class(menubar.Item()), _gsxrt.Class(menubar.ItemVariant(variant)), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("group/menubar-item relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class(menubar.Item()), _gsxrt.Class(menubar.ItemVariant(variant)), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("data-variant") {
 			_gsxgw.S(" data-variant=\"")
@@ -422,7 +422,7 @@ func MenubarCheckboxItem(checked bool, value string, children gsx.Node, attrs gs
 		_gsxgw := _gsxrt.W(_gsxw)
 //line menubar.gsx:307:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(menubar.CheckboxItem()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class(menubar.CheckboxItem()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitemcheckbox\"")
@@ -520,7 +520,7 @@ func MenubarRadioItem(checked bool, value string, children gsx.Node, attrs gsx.A
 		_gsxgw := _gsxrt.W(_gsxw)
 //line menubar.gsx:350:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(menubar.RadioItem()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class(menubar.RadioItem()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitemradio\"")
@@ -712,7 +712,7 @@ func MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line menubar.gsx:445:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(menubar.SubTrigger()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class(menubar.SubTrigger()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitem\"")
@@ -736,7 +736,7 @@ func MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 //line menubar.gsx:455:3
 		_gsxgw.Node(ctx, children)
 //line menubar.gsx:456:3
-		_gsxgw.Node(ctx, icon.ChevronRight())
+		_gsxgw.Node(ctx, icon.ChevronRight(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("ml-auto"))}}...))
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
@@ -763,7 +763,7 @@ func MenubarSubContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line menubar.gsx:474:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(menubar.SubContent()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none"), _gsxrt.Class(menubar.SubContent()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("popover") {
 			_gsxgw.S(" popover=\"auto\"")

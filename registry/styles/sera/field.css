@@ -22,12 +22,12 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-field-group {
-    @apply gap-10 [&>[data-gsxui-slot-field-group]]:gap-4 flex flex-col;
+    @apply gap-10 [&>[data-gsxui-slot-field-group]]:gap-4 flex flex-col w-full @container/field-group;
   }
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-field {
-    @apply data-[invalid=true]:text-destructive gap-3 p-4 flex;
+    @apply data-[invalid=true]:text-destructive gap-3 flex w-full;
   }
 
   /* carried: no upstream counterpart */
@@ -47,21 +47,21 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-field-content {
-    @apply gap-1 flex flex-col;
+    @apply gap-1 flex flex-col flex-1 leading-snug;
   }
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-field-label {
-    @apply has-data-checked:bg-primary/5 has-data-checked:border-primary/30 dark:has-data-checked:border-primary/20 dark:has-data-checked:bg-primary/10 gap-2 has-[>[data-gsxui-slot-field]]:rounded-none has-[>[data-gsxui-slot-field]]:border leading-relaxed flex;
+    @apply has-data-checked:bg-primary/5 has-data-checked:border-primary/30 dark:has-data-checked:border-primary/20 dark:has-data-checked:bg-primary/10 gap-2 has-[>[data-gsxui-slot-field]]:rounded-none has-[>[data-gsxui-slot-field]]:border leading-relaxed flex w-fit has-[>[data-gsxui-slot-field]]:w-full has-[>[data-gsxui-slot-field]]:flex-col [&>[data-gsxui-slot-field]]:p-4;
   }
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-field-title {
-    @apply gap-2 font-semibold uppercase [[data-gsxui-slot-field-label]_&]:font-semibold text-xs flex leading-normal;
+    @apply gap-2 font-semibold uppercase [[data-gsxui-slot-field-label]_&]:font-semibold text-xs flex leading-normal w-fit items-center;
   }
 
   .gsxui-recipe-field-description {
-    @apply text-muted-foreground text-left text-sm [[data-variant=legend]+&]:-mt-1.5 normal-case tracking-normal;
+    @apply text-muted-foreground text-left text-sm [[data-variant=legend]+&]:-mt-1.5 normal-case tracking-normal leading-normal font-normal [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary;
   }
 
   .gsxui-recipe-field-separator-wrapper {

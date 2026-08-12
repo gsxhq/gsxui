@@ -24,7 +24,7 @@ import (
 // anything else listens for the gsxui:select CustomEvent on the item.
 component Command(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "bg-popover text-popover-foreground rounded-none flex flex-col" }
+		class={ "size-full overflow-hidden", "bg-popover text-popover-foreground rounded-none flex flex-col" }
 		{ attrs... }
 		data-gsxui-slot-command
 	>
@@ -50,7 +50,7 @@ component CommandDialog(title string, description string, trigger gsx.Node, chil
 		{ trigger }
 		<DialogContent
 			data-gsxui-command-dialog
-			class={ "rounded-none [dialog&]:overflow-hidden" }
+			class={ "rounded-none [dialog&]:overflow-hidden p-0 top-1/3 translate-y-0" }
 			{ attrs... }
 			data-gsxui-slot-command-dialog-content
 		>
@@ -95,7 +95,10 @@ component CommandInput(placeholder string, attrs gsx.Attrs) {
 component CommandList(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="listbox"
-		class={ "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-h-72 scroll-py-0 outline-none" }
+		class={
+			"overflow-x-hidden overflow-y-auto",
+			"[scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-h-72 scroll-py-0 outline-none"
+		}
 		{ attrs... }
 		data-gsxui-slot-command-list
 	>
@@ -150,7 +153,7 @@ component CommandItem(value string, children gsx.Node, attrs gsx.Attrs) {
 		aria-selected="false"
 		class={
 			"group/command-item",
-			"data-disabled:pointer-events-none data-selected:bg-muted data-selected:text-foreground data-selected:*:[svg]:text-foreground relative flex cursor-default items-center gap-2 rounded-none px-2 py-2 text-xs outline-hidden select-none [[data-gsxui-slot-dialog-content]_&]:rounded-none [&_svg:not([class*='size-'])]:size-4"
+			"data-disabled:pointer-events-none data-selected:bg-muted data-selected:text-foreground data-selected:*:[svg]:text-foreground relative flex cursor-default items-center gap-2 rounded-none px-2 py-2 text-xs outline-hidden select-none [[data-gsxui-slot-dialog-content]_&]:rounded-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0"
 		}
 		{ attrs... }
 		data-gsxui-slot-command-item

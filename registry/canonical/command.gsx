@@ -24,7 +24,10 @@ import (
 // anything else listens for the gsxui:select CustomEvent on the item.
 component Command(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ command.Root() }
+		class={
+			"size-full overflow-hidden",
+			command.Root(),
+		}
 		{ attrs... }
 		data-gsxui-slot-command
 	>
@@ -90,7 +93,10 @@ component CommandInput(placeholder string, attrs gsx.Attrs) {
 component CommandList(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="listbox"
-		class={ command.List() }
+		class={
+			"overflow-x-hidden overflow-y-auto",
+			command.List(),
+		}
 		{ attrs... }
 		data-gsxui-slot-command-list
 	>

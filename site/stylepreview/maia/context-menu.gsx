@@ -87,6 +87,7 @@ component ContextMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 component ContextMenuContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
+			"max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none",
 			"transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/5 bg-popover text-popover-foreground min-w-48 rounded-2xl p-1 shadow-2xl ring-1 duration-100"
 		}
 		popover="auto"
@@ -108,8 +109,8 @@ component ContextMenuContent(children gsx.Node, attrs gsx.Attrs) {
 component ContextMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"group/context-menu-item",
-			"focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 focus:*:[svg]:text-accent-foreground gap-2.5 rounded-xl px-3 py-2 text-sm [&_svg:not([class*='size-'])]:size-4 flex",
+			"group/context-menu-item relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
+			"focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 focus:*:[svg]:text-accent-foreground gap-2.5 rounded-xl px-3 py-2 text-sm [&_svg:not([class*='size-'])]:size-4 flex data-disabled:pointer-events-none",
 			switch variant {
 			case "destructive":
 				"text-destructive focus:bg-destructive/10 focus:text-destructive *:[svg]:text-destructive"
@@ -154,6 +155,7 @@ component ContextMenuGroup(children gsx.Node, attrs gsx.Attrs) {
 component ContextMenuCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
+			"relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
 			"data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground gap-2 rounded-xl py-2 pr-8 pl-3 text-sm [&_svg:not([class*='size-'])]:size-4 flex"
 		}
 		role="menuitemcheckbox"
@@ -210,6 +212,7 @@ component ContextMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs
 component ContextMenuRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
+			"relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
 			"data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground gap-2 rounded-xl py-2 pr-8 pl-3 text-sm [&_svg:not([class*='size-'])]:size-4 flex"
 		}
 		role="menuitemradio"
@@ -296,6 +299,7 @@ component ContextMenuSub(children gsx.Node, attrs gsx.Attrs) {
 component ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
+			"cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
 			"focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground rounded-xl px-3 py-2 text-sm [&_svg:not([class*='size-'])]:size-4 flex"
 		}
 		role="menuitem"
@@ -328,6 +332,7 @@ component ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 component ContextMenuSubContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
+			"max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none",
 			"transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 bg-popover text-popover-foreground min-w-32 rounded-2xl border p-1 shadow-lg duration-100"
 		}
 		popover="auto"

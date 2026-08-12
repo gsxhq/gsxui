@@ -10,12 +10,12 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-button-group-orientation-horizontal {
-    @apply flex-row;
+    @apply flex-row [&>*:not(:first-child)]:rounded-s-none [&>*:not(:last-child)]:rounded-e-none [&>*:not(:first-child)]:border-s-0;
   }
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-button-group-orientation-vertical {
-    @apply flex-col;
+    @apply flex-col [&>*:not(:first-child)]:rounded-t-none [&>*:not(:last-child)]:rounded-b-none [&>*:not(:first-child)]:border-t-0;
   }
 
   /* carried: no upstream counterpart */

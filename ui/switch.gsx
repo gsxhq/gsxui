@@ -26,7 +26,7 @@ component Switch(attrs gsx.Attrs) {
 		type="checkbox"
 		role="switch"
 		class={
-			"checked:bg-primary bg-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 dark:bg-input/80 appearance-none outline-none disabled:cursor-not-allowed disabled:opacity-50 shrink-0 rounded-full border border-transparent focus-visible:ring-3 aria-invalid:ring-3 h-[18.4px] w-[32px] before:bg-background dark:before:bg-foreground dark:checked:before:bg-primary-foreground before:content-[''] before:pointer-events-none before:block before:transition-transform before:rounded-full before:size-4 checked:before:translate-x-[calc(100%-2px)] before:translate-x-0 inline-flex"
+			"checked:bg-primary bg-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 dark:bg-input/80 appearance-none outline-none disabled:cursor-not-allowed disabled:opacity-50 shrink-0 rounded-full border border-transparent focus-visible:ring-3 aria-invalid:ring-3 h-[18.4px] w-[32px] before:bg-background dark:before:bg-foreground dark:checked:before:bg-primary-foreground before:content-[''] before:pointer-events-none before:block before:transition-transform before:rounded-full before:size-4 checked:before:translate-x-[calc(100%-2px)] before:translate-x-0 inline-flex items-center transition-all"
 		}
 		{ attrs... }
 		data-gsxui-slot-switch

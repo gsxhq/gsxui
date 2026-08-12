@@ -66,7 +66,7 @@ func _gsxrenderBreadcrumbList(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childr
 	}
 //line breadcrumb.gsx:24:2
 	_gsxgw.S("<ol class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground gap-1.5 text-sm sm:gap-2.5 flex flex-wrap"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground gap-1.5 text-sm sm:gap-2.5 flex flex-wrap items-center wrap-break-word"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "ol", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-breadcrumb-list"})
@@ -92,7 +92,7 @@ func _gsxrenderBreadcrumbItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childr
 	}
 //line breadcrumb.gsx:34:2
 	_gsxgw.S("<li class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-1.5 inline-flex"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-1.5 inline-flex items-center"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "li", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-breadcrumb-item"})
@@ -251,7 +251,7 @@ func _gsxrenderBreadcrumbEllipsis(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, at
 		_gsxgw.S(" aria-hidden=\"true\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("size-5 [&>svg]:size-4 flex"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("size-5 [&>svg]:size-4 flex items-center justify-center"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-breadcrumb-ellipsis"})

@@ -9,7 +9,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-accordion-trigger {
-    @apply gap-6 p-4 text-left text-sm font-medium hover:underline flex;
+    @apply gap-6 p-4 text-left text-sm font-medium hover:underline flex items-start outline-none transition-all border border-transparent;
   }
 
   /* carried: no upstream counterpart */
@@ -18,7 +18,7 @@
   }
 
   .gsxui-recipe-accordion-content {
-    @apply data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up px-4 text-sm;
+    @apply px-4 text-sm overflow-hidden;
   }
 
   .gsxui-recipe-accordion-content-inner {

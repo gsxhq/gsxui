@@ -36,7 +36,12 @@ component ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) {
 		data-orientation={orientation |> default("horizontal")}
 		class={
 			"has-[>[data-variant=outline]]:[&>input]:border-border has-[>[data-variant=outline]]:[&>input:focus-visible]:border-ring has-[>[data-variant=outline]]:*:[data-gsxui-slot-input-group]:border-border has-[>[data-variant=outline]]:[&>[data-gsxui-slot-input-group]:has(:focus-visible)]:border-ring has-[>[data-variant=outline]]:*:[data-gsxui-slot-select-trigger]:border-border flex",
-			switch orientation { case "vertical": "flex-col" default: "flex-row" }
+			switch orientation {
+			case "vertical":
+				"flex-col [&>*:not(:first-child)]:rounded-t-none [&>*:not(:last-child)]:rounded-b-none [&>*:not(:first-child)]:border-t-0"
+			default:
+				"flex-row [&>*:not(:first-child)]:rounded-s-none [&>*:not(:last-child)]:rounded-e-none [&>*:not(:first-child)]:border-s-0"
+			}
 		}
 		{ attrs... }
 		data-gsxui-slot-button-group

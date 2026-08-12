@@ -182,7 +182,7 @@ func TestDropdownPinned(t *testing.T) {
 	// see the style-porter report's "missing group/<name> marker" and
 	// "DropdownMenu/ContextMenu/Menubar data-inset" entries.
 	got := render(t, ui.DropdownMenuItem("", gsx.Raw("Edit"), nil))
-	want := `<div class="group/dropdown-menu-item focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-1.5 rounded-md px-1.5 py-1 text-sm [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 flex text-foreground" data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-dropdown-menu-item>Edit</div>`
+	want := `<div class="group/dropdown-menu-item relative cursor-default items-center outline-hidden select-none [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-1.5 rounded-md px-1.5 py-1 text-sm [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 flex data-disabled:pointer-events-none text-foreground" data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-dropdown-menu-item>Edit</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -192,7 +192,7 @@ func TestDropdownContentPinned(t *testing.T) {
 	// transition-none suppresses an implicit transition:all — see the
 	// style-porter report's "duration-N alone" entry.
 	got := render(t, ui.DropdownMenuContent(gsx.Raw("x"), nil))
-	want := `<div class="transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 bg-popover text-popover-foreground min-w-32 rounded-lg p-1 shadow-md ring-1 duration-100" popover="auto" role="menu" tabindex="-1" data-state="closed" data-side="bottom" data-gsxui-slot-dropdown-menu-content>x</div>`
+	want := `<div class="max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 bg-popover text-popover-foreground min-w-32 rounded-lg p-1 shadow-md ring-1 duration-100" popover="auto" role="menu" tabindex="-1" data-state="closed" data-side="bottom" data-gsxui-slot-dropdown-menu-content>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

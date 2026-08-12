@@ -5,37 +5,37 @@
 @layer components {
   /* carried: no upstream counterpart */
   .gsxui-recipe-input-group {
-    @apply bg-input/50 border-transparent has-[[data-gsxui-slot-input-group-control]:focus-visible]:border-ring has-[[data-gsxui-slot-input-group-control]:focus-visible]:ring-ring/30 has-[[aria-invalid=true]]:ring-destructive/20 has-[[aria-invalid=true]]:border-destructive dark:has-[[aria-invalid=true]]:ring-destructive/40 h-8 rounded-2xl border transition-[color,box-shadow] duration-200 [[data-gsxui-slot-combobox-content]_&]:focus-within:border-inherit [[data-gsxui-slot-combobox-content]_&]:focus-within:ring-0 has-[[data-gsxui-slot-input-group-control]:focus-visible]:ring-3 has-[[aria-invalid=true]]:ring-3 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=inline-end]]:[&>input]:pr-1.5 has-[>[data-align=inline-start]]:[&>input]:pl-1.5 flex;
+    @apply bg-input/50 border-transparent has-[[data-gsxui-slot-input-group-control]:focus-visible]:border-ring has-[[data-gsxui-slot-input-group-control]:focus-visible]:ring-ring/30 has-[[aria-invalid=true]]:ring-destructive/20 has-[[aria-invalid=true]]:border-destructive dark:has-[[aria-invalid=true]]:ring-destructive/40 h-8 rounded-2xl border transition-[color,box-shadow] duration-200 [[data-gsxui-slot-combobox-content]_&]:focus-within:border-inherit [[data-gsxui-slot-combobox-content]_&]:focus-within:ring-0 has-[[data-gsxui-slot-input-group-control]:focus-visible]:ring-3 has-[[aria-invalid=true]]:ring-3 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=inline-end]]:[&>input]:pr-1.5 has-[>[data-align=inline-start]]:[&>input]:pl-1.5 flex relative w-full min-w-0 items-center outline-none has-[>textarea]:h-auto;
   }
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-input-group-addon {
-    @apply text-muted-foreground [&_[data-gsxui-slot-kbd]]:bg-muted-foreground/10 h-auto gap-2 py-1.5 text-sm font-medium group-data-[disabled=true]/input-group:opacity-50 [&_[data-gsxui-slot-kbd]]:rounded-2xl [&_[data-gsxui-slot-kbd]]:px-1.5 [&>svg:not([class*='size-'])]:size-4 flex;
+    @apply text-muted-foreground [&_[data-gsxui-slot-kbd]]:bg-muted-foreground/10 h-auto gap-2 py-1.5 text-sm font-medium group-data-[disabled=true]/input-group:opacity-50 [&_[data-gsxui-slot-kbd]]:rounded-2xl [&_[data-gsxui-slot-kbd]]:px-1.5 [&>svg:not([class*='size-'])]:size-4 flex cursor-text items-center justify-center select-none;
   }
 
   .gsxui-recipe-input-group-addon-align-inline-start {
-    @apply pl-2 has-[>button]:ml-[-0.3rem] has-[>kbd]:ml-[-0.15rem];
+    @apply pl-2 has-[>button]:ml-[-0.3rem] has-[>kbd]:ml-[-0.15rem] order-first;
   }
 
   .gsxui-recipe-input-group-addon-align-inline-end {
-    @apply pr-2 has-[>button]:mr-[-0.3rem] has-[>kbd]:mr-[-0.15rem];
+    @apply pr-2 has-[>button]:mr-[-0.3rem] has-[>kbd]:mr-[-0.15rem] order-last;
   }
 
   .gsxui-recipe-input-group-addon-align-block-start {
-    @apply px-2.5 pt-2 group-has-[>input]/input-group:pt-2 [.border-b]:pb-2;
+    @apply px-2.5 pt-2 group-has-[>input]/input-group:pt-2 [.border-b]:pb-2 order-first w-full justify-start;
   }
 
   .gsxui-recipe-input-group-addon-align-block-end {
-    @apply px-2.5 pb-2 group-has-[>input]/input-group:pb-2 [.border-t]:pt-2;
+    @apply px-2.5 pb-2 group-has-[>input]/input-group:pb-2 [.border-t]:pt-2 order-last w-full justify-start;
   }
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-input-group-text {
-    @apply text-muted-foreground gap-2 text-sm [&_svg:not([class*='size-'])]:size-4 flex;
+    @apply text-muted-foreground gap-2 text-sm [&_svg:not([class*='size-'])]:size-4 flex items-center [&_svg]:pointer-events-none;
   }
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-input-group-control {
-    @apply flex-1 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent;
+    @apply flex-1 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent rounded-none border-0 ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:disabled:bg-transparent;
   }
 }

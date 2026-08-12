@@ -67,7 +67,7 @@ func TestRadioPinned(t *testing.T) {
 	// <input type="radio"> is native. See the style-porter report's
 	// "Radio/Checkbox data-checked: -> native :checked:" entry.
 	got := render(t, ui.Radio(nil))
-	want := `<input type="radio" class="border-input dark:bg-input/30 checked:bg-primary checked:text-primary-foreground dark:checked:bg-primary checked:border-primary aria-invalid:checked:border-primary aria-invalid:border-destructive focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:aria-invalid:border-destructive/50 flex size-4 rounded-full focus-visible:ring-3 aria-invalid:ring-3" data-gsxui-slot-radio>`
+	want := `<input type="radio" class="border-input dark:bg-input/30 checked:bg-primary checked:text-primary-foreground dark:checked:bg-primary checked:border-primary aria-invalid:checked:border-primary aria-invalid:border-destructive focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:aria-invalid:border-destructive/50 flex size-4 rounded-full focus-visible:ring-3 aria-invalid:ring-3 shrink-0 outline-none disabled:cursor-not-allowed disabled:opacity-50 border" data-gsxui-slot-radio>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

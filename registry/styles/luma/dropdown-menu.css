@@ -14,7 +14,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-dropdown-menu-item {
-    @apply focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2.5 rounded-2xl px-3 py-2 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 flex;
+    @apply focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2.5 rounded-2xl px-3 py-2 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 flex data-disabled:pointer-events-none;
   }
 
   /* carried: no upstream counterpart */

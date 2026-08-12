@@ -5,6 +5,6 @@
 @layer components {
   /* carried: no upstream counterpart */
   .gsxui-recipe-aspect-ratio {
-    @apply block;
+    @apply relative;
   }
 }

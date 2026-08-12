@@ -45,19 +45,19 @@ func _gsxrenderCommand(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.
 	}
 //line command.gsx:26:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(command.Root()), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("size-full overflow-hidden"), _gsxrt.Class(command.Root()), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command"})
 	_gsxgw.BoolAttr("data-gsxui-slot-command", true)
 	_gsxgw.S(">")
-//line command.gsx:31:3
+//line command.gsx:34:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
 
-//line command.gsx:35:1
+//line command.gsx:38:1
 // CommandDialog composes Dialog/DialogContent (so command → dialog derives
 // for the CLI and dialog.js's machinery — trigger wiring, Esc, exit
 // animation, backdrop — is reused whole). An optional trigger node renders
@@ -72,41 +72,41 @@ func _gsxrenderCommand(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gsx.
 // data-gsxui-command-dialog on the content is command.js's global-hotkey
 // hook: ⌘K/Ctrl-K toggles the first such dialog on the page.
 
-//line command.gsx:48:1
+//line command.gsx:51:1
 func CommandDialog(title string, description string, trigger gsx.Node, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line command.gsx:49:2
+//line command.gsx:52:2
 		_gsxgw.NodeResult(_gsxrenderDialog(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line command.gsx:50:3
+//line command.gsx:53:3
 			_gsxgw.Node(ctx, trigger)
-//line command.gsx:51:3
+//line command.gsx:54:3
 			_gsxgw.NodeResult(_gsxrenderDialogContent(ctx, _gsxgw, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line command.gsx:57:4
+//line command.gsx:60:4
 				_gsxgw.NodeResult(_gsxrenderDialogHeader(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line command.gsx:58:5
+//line command.gsx:61:5
 					_gsxgw.NodeResult(_gsxrenderDialogTitle(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line command.gsx:58:18
+//line command.gsx:61:18
 						_gsxgw.Text(string(_gsxstd.Default((title), "Command Palette")))
 						return _gsxgw.Err()
 					}), nil))
-//line command.gsx:59:5
+//line command.gsx:62:5
 					_gsxgw.NodeResult(_gsxrenderDialogDescription(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 						_gsxgw := _gsxrt.W(_gsxw)
-//line command.gsx:59:24
+//line command.gsx:62:24
 						_gsxgw.Text(string(_gsxstd.Default((description), "Search for a command to run...")))
 						return _gsxgw.Err()
 					}), nil))
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "data-gsxui-slot-command-dialog-header", Value: _gsxrt.Toggle(true)}}))
-//line command.gsx:61:4
+//line command.gsx:64:4
 				_gsxgw.NodeResult(_gsxrenderCommand(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line command.gsx:62:5
+//line command.gsx:65:5
 					_gsxgw.Node(ctx, children)
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "data-gsxui-slot-command-dialog-command", Value: _gsxrt.Toggle(true)}}))
@@ -118,25 +118,25 @@ func CommandDialog(title string, description string, trigger gsx.Node, children 
 	})
 }
 
-//line command.gsx:68:1
+//line command.gsx:71:1
 // CommandInput renders shadcn's search-icon-plus-input wrapper row. The
 // input is the palette's single focus target: command.js filters on input,
 // moves selection on ArrowUp/ArrowDown, and activates on Enter, all while
 // focus stays here (aria-activedescendant tracks the selected option).
 
-//line command.gsx:72:1
+//line command.gsx:75:1
 func CommandInput(placeholder string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line command.gsx:73:2
+//line command.gsx:76:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(command.InputWrapper()))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-command-input-wrapper", true)
 		_gsxgw.S(">")
-//line command.gsx:74:3
+//line command.gsx:77:3
 		_gsxgw.Node(ctx, icon.Search())
-//line command.gsx:75:3
+//line command.gsx:78:3
 		_gsxgw.S("<input")
 		if !attrs.Has("type") {
 			_gsxgw.S(" type=\"text\"")
@@ -172,39 +172,39 @@ func CommandInput(placeholder string, attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line command.gsx:90:1
+//line command.gsx:93:1
 func CommandList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line command.gsx:91:2
+//line command.gsx:94:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"listbox\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(command.List()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("overflow-x-hidden overflow-y-auto"), _gsxrt.Class(command.List()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command-list"})
 		_gsxgw.BoolAttr("data-gsxui-slot-command-list", true)
 		_gsxgw.S(">")
-//line command.gsx:97:3
+//line command.gsx:103:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line command.gsx:101:1
+//line command.gsx:107:1
 // CommandEmpty is server-rendered hidden; command.js reveals it when a
 // query matches nothing (cmdk's Empty renders conditionally — same net
 // visual, inverted mechanism since there is no VDOM to unmount).
 
-//line command.gsx:104:1
+//line command.gsx:110:1
 func CommandEmpty(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line command.gsx:105:2
+//line command.gsx:111:2
 		_gsxgw.S("<div")
 		if !attrs.Has("hidden") {
 			_gsxgw.BoolAttr("hidden", true)
@@ -216,24 +216,24 @@ func CommandEmpty(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command-empty"})
 		_gsxgw.BoolAttr("data-gsxui-slot-command-empty", true)
 		_gsxgw.S(">")
-//line command.gsx:105:83
+//line command.gsx:111:83
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line command.gsx:108:1
+//line command.gsx:114:1
 // CommandGroup's heading is a real child div (slot command-group-heading)
 // rather than cmdk's heading prop + [cmdk-group-heading] runtime stamp —
 // the styles shadcn applies through the group's descendant selectors land
 // on it via the mapped public slot selectors (see Command's doc comment).
 
-//line command.gsx:112:1
+//line command.gsx:118:1
 func CommandGroup(heading string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line command.gsx:113:2
+//line command.gsx:119:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"group\"")
@@ -245,30 +245,30 @@ func CommandGroup(heading string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Nod
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-command-group", true)
 		_gsxgw.S(">")
-//line command.gsx:114:3
+//line command.gsx:120:3
 		if heading != "" {
-//line command.gsx:115:4
+//line command.gsx:121:4
 			_gsxgw.S("<div class=\"")
 			_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(command.GroupHeading()))
 			_gsxgw.S("\"")
 			_gsxgw.BoolAttr("data-gsxui-slot-command-group-heading", true)
 			_gsxgw.S(">")
-//line command.gsx:115:80
+//line command.gsx:121:80
 			_gsxgw.Text(string(heading))
 			_gsxgw.S("</div>")
 		}
-//line command.gsx:117:3
+//line command.gsx:123:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line command.gsx:121:1
+//line command.gsx:127:1
 func CommandSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line command.gsx:122:2
+//line command.gsx:128:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"separator\"")
@@ -284,7 +284,7 @@ func CommandSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line command.gsx:125:1
+//line command.gsx:131:1
 // CommandItem is a role="option" div (cmdk's own role), NOT focusable —
 // selection is the data-selected stamp command.js manages, focus never
 // leaves the input. value seeds the match text; empty value falls back to
@@ -293,11 +293,11 @@ func CommandSeparator(attrs gsx.Attrs) _gsxrt.Node {
 // data-disabled attribute (skipped by filter, selection, and activation —
 // the same contract as DropdownMenuItem).
 
-//line command.gsx:132:1
+//line command.gsx:138:1
 func CommandItem(value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line command.gsx:133:2
+//line command.gsx:139:2
 		_gsxgw.S("<div")
 		if !attrs.Has("data-value") {
 			_gsxgw.S(" data-value=\"")
@@ -317,18 +317,18 @@ func CommandItem(value string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-command-item", true)
 		_gsxgw.S(">")
-//line command.gsx:144:3
+//line command.gsx:150:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line command.gsx:148:1
+//line command.gsx:154:1
 func CommandShortcut(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line command.gsx:149:2
+//line command.gsx:155:2
 		_gsxgw.S("<span class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(command.Shortcut()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -336,7 +336,7 @@ func CommandShortcut(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-command-shortcut"})
 		_gsxgw.BoolAttr("data-gsxui-slot-command-shortcut", true)
 		_gsxgw.S(">")
-//line command.gsx:150:3
+//line command.gsx:156:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()

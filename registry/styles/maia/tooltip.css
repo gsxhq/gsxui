@@ -9,10 +9,10 @@
   }
 
   .gsxui-recipe-tooltip-content {
-    @apply data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 [&:popover-open]:inline-flex items-center gap-1.5 rounded-2xl px-3 py-1.5 text-xs has-[[data-gsxui-slot-kbd]]:pr-1.5 [&_[data-gsxui-slot-kbd]]:relative [&_[data-gsxui-slot-kbd]]:isolate [&_[data-gsxui-slot-kbd]]:z-50 [&_[data-gsxui-slot-kbd]]:rounded-4xl;
+    @apply data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 [&:popover-open]:inline-flex items-center gap-1.5 rounded-2xl px-3 py-1.5 text-xs has-[[data-gsxui-slot-kbd]]:pr-1.5 [&_[data-gsxui-slot-kbd]]:relative [&_[data-gsxui-slot-kbd]]:isolate [&_[data-gsxui-slot-kbd]]:z-50 [&_[data-gsxui-slot-kbd]]:rounded-4xl bg-foreground text-background w-fit max-w-xs origin-bottom;
   }
 
   .gsxui-recipe-tooltip-arrow {
-    @apply size-2.5 translate-y-[calc(-50%-2px)] rotate-45 rounded-[2px] data-[side=left]:translate-x-[-1.5px] data-[side=right]:translate-x-[1.5px];
+    @apply size-2.5 translate-y-[calc(-50%-2px)] rotate-45 rounded-[2px] data-[side=left]:translate-x-[-1.5px] data-[side=right]:translate-x-[1.5px] bg-foreground top-full left-1/2 -translate-x-1/2;
   }
 }

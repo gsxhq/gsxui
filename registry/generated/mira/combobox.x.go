@@ -369,7 +369,7 @@ func ComboboxList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.S(" tabindex=\"-1\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("[scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-h-[min(calc(--spacing(72)---spacing(9)),calc(var(--available-height)---spacing(9)))] scroll-py-1 overflow-y-auto p-1 data-empty:p-0"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("[scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-h-[min(calc(--spacing(72)---spacing(9)),calc(var(--gsxui-available-height,9999px)---spacing(9)))] scroll-py-1 overflow-y-auto p-1 data-empty:p-0"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-combobox-list"})
@@ -425,28 +425,28 @@ func ComboboxItem(value string, selected bool, children gsx.Node, attrs gsx.Attr
 			_gsxgw.S("\"")
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("data-highlighted:bg-accent data-highlighted:text-accent-foreground not-data-[variant=destructive]:data-highlighted:**:text-accent-foreground min-h-7 gap-2 rounded-md px-2 py-1 text-xs/relaxed [&_svg:not([class*='size-'])]:size-3.5 flex data-[state=checked]:[&>[data-gsxui-slot-combobox-item-indicator]]:flex"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative w-full items-center cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class("data-highlighted:bg-accent data-highlighted:text-accent-foreground not-data-[variant=destructive]:data-highlighted:**:text-accent-foreground min-h-7 gap-2 rounded-md px-2 py-1 text-xs/relaxed [&_svg:not([class*='size-'])]:size-3.5 flex data-[state=checked]:[&>[data-gsxui-slot-combobox-item-indicator]]:flex"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-combobox-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-combobox-item", true)
 		_gsxgw.S(">")
-//line combobox.gsx:335:3
-		_gsxgw.Node(ctx, children)
 //line combobox.gsx:336:3
+		_gsxgw.Node(ctx, children)
+//line combobox.gsx:337:3
 		_gsxgw.S("<span class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pointer-events-none absolute right-2 hidden items-center justify-center"))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-combobox-item-indicator", true)
 		_gsxgw.S(">")
-//line combobox.gsx:340:4
+//line combobox.gsx:341:4
 		_gsxgw.Node(ctx, icon.Check())
 		_gsxgw.S("</span></div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line combobox.gsx:345:1
+//line combobox.gsx:346:1
 // ComboboxGroup wraps a set of items under a ComboboxLabel — real structural
 // parts, not a native <optgroup> collapse, the same call ## select makes
 // for SelectGroup/SelectLabel (a custom listbox can hold an arbitrary
@@ -454,11 +454,11 @@ func ComboboxItem(value string, selected bool, children gsx.Node, attrs gsx.Attr
 // aria-labelledby to the contained ComboboxLabel's generated id at init,
 // mirroring select.js's own group-labelling MECHANISM exactly.
 
-//line combobox.gsx:351:1
+//line combobox.gsx:352:1
 func ComboboxGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line combobox.gsx:352:2
+//line combobox.gsx:353:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"group\"")
@@ -468,23 +468,23 @@ func ComboboxGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-combobox-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-combobox-group", true)
 		_gsxgw.S(">")
-//line combobox.gsx:352:64
+//line combobox.gsx:353:64
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line combobox.gsx:355:1
+//line combobox.gsx:356:1
 // ComboboxLabel is the group heading. pointer-coarse: variants are a real
 // new (non-metric) addition nova's own CSS carries for this part — ported
 // verbatim, not a retarget.
 
-//line combobox.gsx:358:1
+//line combobox.gsx:359:1
 func ComboboxLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line combobox.gsx:359:2
+//line combobox.gsx:360:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground px-2 py-1.5 text-xs"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -492,24 +492,24 @@ func ComboboxLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-combobox-label"})
 		_gsxgw.BoolAttr("data-gsxui-slot-combobox-label", true)
 		_gsxgw.S(">")
-//line combobox.gsx:360:3
+//line combobox.gsx:361:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line combobox.gsx:364:1
+//line combobox.gsx:365:1
 // ComboboxEmpty is server-rendered hidden; combobox.js reveals it via the
 // content ancestor's empty-state selector when a filter pass leaves
 // zero visible items — see ComboboxContent's own doc comment for exactly
 // which element combobox.js stamps data-empty on.
 
-//line combobox.gsx:368:1
+//line combobox.gsx:369:1
 func ComboboxEmpty(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line combobox.gsx:369:2
+//line combobox.gsx:370:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground hidden w-full justify-center py-2 text-center text-xs/relaxed group-data-empty/combobox-content:flex"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -517,22 +517,22 @@ func ComboboxEmpty(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-combobox-empty"})
 		_gsxgw.BoolAttr("data-gsxui-slot-combobox-empty", true)
 		_gsxgw.S(">")
-//line combobox.gsx:376:3
+//line combobox.gsx:377:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line combobox.gsx:380:1
+//line combobox.gsx:381:1
 // ComboboxSeparator divides groups. aria-hidden, matching ## select's own
 // SelectSeparator (a decorative rule, not a role="separator").
 
-//line combobox.gsx:382:1
+//line combobox.gsx:383:1
 func ComboboxSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line combobox.gsx:383:2
+//line combobox.gsx:384:2
 		_gsxgw.S("<div")
 		if !attrs.Has("aria-hidden") {
 			_gsxgw.S(" aria-hidden=\"true\"")

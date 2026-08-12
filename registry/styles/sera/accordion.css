@@ -9,7 +9,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-accordion-trigger {
-    @apply focus-visible:ring-ring/30 focus-visible:border-ring rounded-none gap-6 py-4 text-left text-sm font-semibold hover:underline focus-visible:ring-2 flex;
+    @apply focus-visible:ring-ring/30 focus-visible:border-ring rounded-none gap-6 py-4 text-left text-sm font-semibold hover:underline focus-visible:ring-2 flex items-start outline-none transition-all border border-transparent;
   }
 
   /* carried: no upstream counterpart */
@@ -18,7 +18,7 @@
   }
 
   .gsxui-recipe-accordion-content {
-    @apply data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up text-sm;
+    @apply text-sm overflow-hidden;
   }
 
   .gsxui-recipe-accordion-content-inner {

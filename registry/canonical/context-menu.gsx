@@ -86,7 +86,7 @@ component ContextMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 // docs/jsx-parity.md's ## context-menu ledger.
 component ContextMenuContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ contextMenu.Content() }
+		class={ "max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none", contextMenu.Content() }
 		popover="auto"
 		role="menu"
 		tabindex="-1"
@@ -106,7 +106,7 @@ component ContextMenuContent(children gsx.Node, attrs gsx.Attrs) {
 component ContextMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"group/context-menu-item",
+			"group/context-menu-item relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
 			contextMenu.Item(),
 			contextMenu.ItemVariant(variant),
 		}
@@ -146,7 +146,7 @@ component ContextMenuGroup(children gsx.Node, attrs gsx.Attrs) {
 // following ui/select.gsx's SelectItem precedent), not re-derived here.
 component ContextMenuCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ contextMenu.CheckboxItem() }
+		class={ "relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0", contextMenu.CheckboxItem() }
 		role="menuitemcheckbox"
 		data-value={value}
 		{ if checked {
@@ -195,7 +195,7 @@ component ContextMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs
 // ContextMenuCheckboxItem's own doc comment, not repeated here.
 component ContextMenuRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ contextMenu.RadioItem() }
+		class={ "relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0", contextMenu.RadioItem() }
 		role="menuitemradio"
 		data-value={value}
 		{ if checked {
@@ -261,7 +261,7 @@ component ContextMenuSub(children gsx.Node, attrs gsx.Attrs) {
 // data-[state=open]: kept, not nova's data-open: (standing house exception).
 component ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ contextMenu.SubTrigger() }
+		class={ "cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0", contextMenu.SubTrigger() }
 		role="menuitem"
 		aria-haspopup="menu"
 		aria-expanded="false"
@@ -291,7 +291,7 @@ component ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 // exception).
 component ContextMenuSubContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ contextMenu.SubContent() }
+		class={ "max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none", contextMenu.SubContent() }
 		popover="auto"
 		role="menu"
 		tabindex="-1"

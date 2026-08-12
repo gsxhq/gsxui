@@ -43,7 +43,7 @@ func _gsxrenderBadge(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, variant string,
 		_gsxgw.AttrValue(string(_gsxstd.Default((variant), "default")))
 		_gsxgw.S("\"")
 	}
-	_gsxv0 := "aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 focus-visible:ring-3 h-5 gap-1 rounded-3xl border border-transparent px-2 py-0.5 text-xs font-medium transition-all has-[>svg]:px-1.5 [&>svg]:size-3 inline-flex"
+	_gsxv0 := "aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 focus-visible:ring-3 h-5 gap-1 rounded-3xl border border-transparent px-2 py-0.5 text-xs font-medium transition-all has-[>svg]:px-1.5 [&>svg]:size-3 inline-flex items-center justify-center overflow-hidden whitespace-nowrap w-fit shrink-0 focus-visible:border-ring focus-visible:ring-ring/50 [&>svg]:pointer-events-none"
 	var _gsxv1 string
 	switch variant {
 	case "secondary":

@@ -34,7 +34,7 @@
   }
 
   .gsxui-recipe-carousel-previous {
-    @apply absolute size-8 rounded-full;
+    @apply absolute size-8 rounded-full touch-manipulation;
   }
 
   /* carried: no upstream counterpart */
@@ -48,7 +48,7 @@
   }
 
   .gsxui-recipe-carousel-next {
-    @apply absolute size-8 rounded-full;
+    @apply absolute size-8 rounded-full touch-manipulation;
   }
 
   /* carried: no upstream counterpart */

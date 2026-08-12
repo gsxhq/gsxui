@@ -106,7 +106,7 @@ import (
 // instead of through InputOTP's root.
 component InputOTP(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "gap-2 flex" }
+		class={ "gap-2 flex items-center has-disabled:opacity-50" }
 		dir="ltr"
 		data-gsxui-slot-input-otp
 	>
@@ -142,7 +142,7 @@ component InputOTP(children gsx.Node, attrs gsx.Attrs) {
 component InputOTPGroup(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"has-aria-invalid:border-b-destructive dark:has-aria-invalid:border-b-destructive/50 rounded-none gap-1 flex"
+			"has-aria-invalid:border-b-destructive dark:has-aria-invalid:border-b-destructive/50 rounded-none gap-1 flex items-center"
 		}
 		dir="ltr"
 		{ attrs... }
@@ -160,7 +160,7 @@ component InputOTPSlot(attrs gsx.Attrs) {
 	<div
 		data-active="false"
 		class={
-			"border-transparent border-b-input bg-transparent data-[active=true]:border-b-ring aria-invalid:border-b-destructive dark:aria-invalid:border-b-destructive/50 size-10 border text-sm transition-[color,border-color] outline-none first:rounded-none last:rounded-none flex"
+			"border-transparent border-b-input bg-transparent data-[active=true]:border-b-ring aria-invalid:border-b-destructive dark:aria-invalid:border-b-destructive/50 size-10 border text-sm transition-[color,border-color] outline-none first:rounded-none last:rounded-none flex relative items-center justify-center data-[active=true]:z-10"
 		}
 		{ attrs... }
 		data-gsxui-slot-input-otp-slot
@@ -171,7 +171,7 @@ component InputOTPSlot(attrs gsx.Attrs) {
 component InputOTPSeparator(attrs gsx.Attrs) {
 	<div
 		role="separator"
-		class={ "[&_svg:not([class*='size-'])]:size-3.5" }
+		class={ "[&_svg:not([class*='size-'])]:size-3.5 flex items-center" }
 		{ attrs... }
 		data-gsxui-slot-input-otp-separator
 	>

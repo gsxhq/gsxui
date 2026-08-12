@@ -32,7 +32,7 @@ func TestSkeletonPinned(t *testing.T) {
 	// divergences. Now carries the recipe's resolved class (slot axis
 	// migration); the markup shape is otherwise unchanged.
 	got := render(t, ui.Skeleton(nil))
-	want := `<div class="bg-muted rounded-md" data-gsxui-slot-skeleton></div>`
+	want := `<div class="bg-muted rounded-md animate-pulse" data-gsxui-slot-skeleton></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

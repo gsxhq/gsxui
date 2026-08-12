@@ -10,7 +10,8 @@ component Alert(variant string, children gsx.Node, attrs gsx.Attrs) {
 		role="alert"
 		data-variant={variant |> default("default")}
 		class={
-			"grid gap-1 bg-background border px-4 py-3 text-left text-sm has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2.5 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg]:text-current *:[svg:not([class*='size-'])]:size-4 relative after:-inset-y-px after:-left-px after:w-0.5 after:absolute",
+			"group/alert",
+			"grid gap-1 bg-background border px-4 py-3 text-left text-sm has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2.5 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg]:text-current *:[svg:not([class*='size-'])]:size-4 relative after:-inset-y-px after:-left-px after:w-0.5 after:absolute w-full",
 			switch variant {
 			case "destructive":
 				"text-destructive bg-card [&>[data-gsxui-slot-alert-description]]:text-destructive/90 *:[svg]:text-current after:bg-destructive"
@@ -26,14 +27,22 @@ component Alert(variant string, children gsx.Node, attrs gsx.Attrs) {
 }
 
 component AlertTitle(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "font-semibold group-has-[>svg]/alert:col-start-2 text-sm" } { attrs... } data-gsxui-slot-alert-title>
+	<div
+		class={
+			"font-semibold group-has-[>svg]/alert:col-start-2 text-sm [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground"
+		}
+		{ attrs... }
+		data-gsxui-slot-alert-title
+	>
 		{ children }
 	</div>
 }
 
 component AlertDescription(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "text-muted-foreground text-sm text-balance md:text-pretty [&_p:not(:last-child)]:mb-4 grid" }
+		class={
+			"text-muted-foreground text-sm text-balance md:text-pretty [&_p:not(:last-child)]:mb-4 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground"
+		}
 		{ attrs... }
 		data-gsxui-slot-alert-description
 	>

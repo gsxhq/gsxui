@@ -46,7 +46,7 @@ import (
 // guarded against; callers overriding this attribute are on their own.
 component NavigationMenu(children gsx.Node, attrs gsx.Attrs) {
 	<nav
-		class={ "group/navigation-menu", "max-w-max flex" }
+		class={ "group/navigation-menu", "max-w-max flex relative flex-1 items-center justify-center" }
 		data-viewport="false"
 		{ attrs... }
 		data-gsxui-slot-navigation-menu
@@ -60,7 +60,11 @@ component NavigationMenu(children gsx.Node, attrs gsx.Attrs) {
 // positions it relative to this element). gap-0 is nova's own metric
 // (`.cn-navigation-menu-list`), replacing new-york-v4's own gap-1.
 component NavigationMenuList(children gsx.Node, attrs gsx.Attrs) {
-	<ul class={ "gap-0 flex" } { attrs... } data-gsxui-slot-navigation-menu-list>
+	<ul
+		class={ "gap-0 flex list-none flex-1 items-center justify-center" }
+		{ attrs... }
+		data-gsxui-slot-navigation-menu-list
+	>
 		{ children }
 	</ul>
 }
@@ -121,7 +125,7 @@ component NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<button
 		class={
 			"group/navigation-menu-trigger",
-			"hover:bg-muted focus:bg-muted data-[state=open]:hover:bg-muted data-[state=open]:focus:bg-muted data-[state=open]:bg-muted/50 focus-visible:ring-ring/50 rounded-2xl px-4.5 py-2.5 text-sm font-medium transition-all focus-visible:ring-[3px] focus-visible:outline-1 disabled:opacity-50 inline-flex"
+			"hover:bg-muted focus:bg-muted data-[state=open]:hover:bg-muted data-[state=open]:focus:bg-muted data-[state=open]:bg-muted/50 focus-visible:ring-ring/50 rounded-2xl px-4.5 py-2.5 text-sm font-medium transition-all focus-visible:ring-[3px] focus-visible:outline-1 disabled:opacity-50 inline-flex h-9 w-max items-center justify-center outline-none disabled:pointer-events-none"
 		}
 		type="button"
 		aria-expanded="false"
@@ -304,12 +308,15 @@ component NavigationMenuLink(active bool, variant string, children gsx.Node, att
 component NavigationMenuIndicator(attrs gsx.Attrs) {
 	<div
 		class={
-			"data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in flex"
+			"data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in flex top-full z-1 h-1.5 items-end justify-center overflow-hidden"
 		}
 		data-state="hidden"
 		{ attrs... }
 		data-gsxui-slot-navigation-menu-indicator
 	>
-		<div class={ "bg-border rounded-tl-sm shadow-md" } data-gsxui-slot-navigation-menu-indicator-arrow></div>
+		<div
+			class={ "bg-border rounded-tl-sm shadow-md relative top-[60%] h-2 w-2 rotate-45" }
+			data-gsxui-slot-navigation-menu-indicator-arrow
+		></div>
 	</div>
 }

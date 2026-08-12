@@ -53,7 +53,7 @@ func TestAlertPinned(t *testing.T) {
 	// (registry/new-york-v4/ui/alert.tsx) — straight port, cva() replaced by
 	// a switch (see docs/jsx-parity.md).
 	got := render(t, ui.Alert("", gsx.Raw("Heads up"), nil))
-	want := `<div role="alert" data-variant="default" class="grid gap-0.5 rounded-lg border px-2.5 py-2 text-left text-sm has-[&gt;svg]:grid-cols-[auto_1fr] has-[&gt;svg]:gap-x-2 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg]:text-current *:[svg:not([class*=&#39;size-&#39;])]:size-4 bg-card text-card-foreground" data-gsxui-slot-alert>Heads up</div>`
+	want := `<div role="alert" data-variant="default" class="group/alert grid gap-0.5 rounded-lg border px-2.5 py-2 text-left text-sm has-[&gt;svg]:grid-cols-[auto_1fr] has-[&gt;svg]:gap-x-2 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg]:text-current *:[svg:not([class*=&#39;size-&#39;])]:size-4 w-full bg-card text-card-foreground" data-gsxui-slot-alert>Heads up</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

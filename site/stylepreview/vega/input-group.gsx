@@ -29,7 +29,7 @@ component InputGroup(children gsx.Node, attrs gsx.Attrs) {
 		role="group"
 		class={
 			"group/input-group",
-			"border-input dark:bg-input/30 has-[[data-gsxui-slot-input-group-control]:focus-visible]:border-ring has-[[data-gsxui-slot-input-group-control]:focus-visible]:ring-ring/50 has-[[aria-invalid=true]]:ring-destructive/20 has-[[aria-invalid=true]]:border-destructive dark:has-[[aria-invalid=true]]:ring-destructive/40 h-9 rounded-md border shadow-xs transition-[color,box-shadow] [[data-gsxui-slot-combobox-content]_&]:focus-within:border-inherit [[data-gsxui-slot-combobox-content]_&]:focus-within:ring-0 has-[[data-gsxui-slot-input-group-control]:focus-visible]:ring-3 has-[[aria-invalid=true]]:ring-3 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=inline-end]]:[&>input]:pr-1.5 has-[>[data-align=inline-start]]:[&>input]:pl-1.5 flex"
+			"border-input dark:bg-input/30 has-[[data-gsxui-slot-input-group-control]:focus-visible]:border-ring has-[[data-gsxui-slot-input-group-control]:focus-visible]:ring-ring/50 has-[[aria-invalid=true]]:ring-destructive/20 has-[[aria-invalid=true]]:border-destructive dark:has-[[aria-invalid=true]]:ring-destructive/40 h-9 rounded-md border shadow-xs transition-[color,box-shadow] [[data-gsxui-slot-combobox-content]_&]:focus-within:border-inherit [[data-gsxui-slot-combobox-content]_&]:focus-within:ring-0 has-[[data-gsxui-slot-input-group-control]:focus-visible]:ring-3 has-[[aria-invalid=true]]:ring-3 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=inline-end]]:[&>input]:pr-1.5 has-[>[data-align=inline-start]]:[&>input]:pl-1.5 flex relative w-full min-w-0 items-center outline-none has-[>textarea]:h-auto"
 		}
 		{ attrs... }
 		data-gsxui-slot-input-group
@@ -45,16 +45,16 @@ component InputGroupAddon(align string, children gsx.Node, attrs gsx.Attrs) {
 		role="group"
 		data-align={align |> default("inline-start")}
 		class={
-			"text-muted-foreground h-auto gap-2 py-1.5 text-sm font-medium group-data-[disabled=true]/input-group:opacity-50 [&>kbd]:rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-4 flex",
+			"text-muted-foreground h-auto gap-2 py-1.5 text-sm font-medium group-data-[disabled=true]/input-group:opacity-50 [&>kbd]:rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-4 flex cursor-text items-center justify-center select-none",
 			switch align {
 			case "inline-end":
-				"pr-2 has-[>button]:-mr-1 has-[>kbd]:mr-[-0.15rem]"
+				"pr-2 has-[>button]:-mr-1 has-[>kbd]:mr-[-0.15rem] order-last"
 			case "block-start":
-				"px-2.5 pt-2 group-has-[>input]/input-group:pt-2 [.border-b]:pb-2"
+				"px-2.5 pt-2 group-has-[>input]/input-group:pt-2 [.border-b]:pb-2 order-first w-full justify-start"
 			case "block-end":
-				"px-2.5 pb-2 group-has-[>input]/input-group:pb-2 [.border-t]:pt-2"
+				"px-2.5 pb-2 group-has-[>input]/input-group:pb-2 [.border-t]:pt-2 order-last w-full justify-start"
 			default:
-				"pl-2 has-[>button]:-ml-1 has-[>kbd]:ml-[-0.15rem]"
+				"pl-2 has-[>button]:-ml-1 has-[>kbd]:ml-[-0.15rem] order-first"
 			}
 		}
 		{ attrs... }
@@ -82,7 +82,9 @@ component InputGroupButton(variant string, size string, children gsx.Node, attrs
 // InputGroupText has its own theme token.
 component InputGroupText(children gsx.Node, attrs gsx.Attrs) {
 	<span
-		class={ "text-muted-foreground gap-2 text-sm [&_svg:not([class*='size-'])]:size-4 flex" }
+		class={
+			"text-muted-foreground gap-2 text-sm [&_svg:not([class*='size-'])]:size-4 flex items-center [&_svg]:pointer-events-none"
+		}
 		{ attrs... }
 		data-gsxui-slot-input-group-text
 	>
@@ -94,7 +96,9 @@ component InputGroupText(children gsx.Node, attrs gsx.Attrs) {
 // InputGroup keys focus and invalid relations off the latter.
 component InputGroupInput(attrs gsx.Attrs) {
 	<Input
-		class={ "flex-1 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent" }
+		class={
+			"flex-1 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent rounded-none border-0 ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:disabled:bg-transparent"
+		}
 		{ attrs... }
 		data-gsxui-slot-input-group-control
 	/>
@@ -107,7 +111,9 @@ component InputGroupInput(attrs gsx.Attrs) {
 component InputGroupTextarea(value string, attrs gsx.Attrs) {
 	<Textarea
 		value={value}
-		class={ "flex-1 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent" }
+		class={
+			"flex-1 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent rounded-none border-0 ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:disabled:bg-transparent"
+		}
 		{ attrs... }
 		data-gsxui-slot-input-group-control
 	/>

@@ -36,7 +36,12 @@ component ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) {
 		data-orientation={orientation |> default("horizontal")}
 		class={
 			"flex w-fit items-stretch [&>*:focus-visible]:relative [&>*:focus-visible]:z-10 [&>input]:flex-1",
-			switch orientation { case "vertical": "flex-col" default: "flex-row" }
+			switch orientation {
+			case "vertical":
+				"flex-col [&>*:not(:first-child)]:rounded-t-none [&>*:not(:last-child)]:rounded-b-none [&>*:not(:first-child)]:border-t-0"
+			default:
+				"flex-row [&>*:not(:first-child)]:rounded-s-none [&>*:not(:last-child)]:rounded-e-none [&>*:not(:first-child)]:border-s-0"
+			}
 		}
 		{ attrs... }
 		data-gsxui-slot-button-group

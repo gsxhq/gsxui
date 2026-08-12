@@ -320,7 +320,7 @@ component ComboboxItem(value string, selected bool, children gsx.Node, attrs gsx
 			data-state="unchecked"
 		} }
 		aria-selected={selected}
-		class={ combobox.Item() }
+		class={ "relative w-full items-center cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0", combobox.Item() }
 		{ attrs... }
 		data-gsxui-slot-combobox-item
 	>

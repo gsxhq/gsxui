@@ -80,6 +80,7 @@ component SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) {
 		data-size={size |> default("default")}
 		data-placeholder
 		class={
+			"w-fit items-center whitespace-nowrap outline-none disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
 			"bg-input/50 border-transparent data-placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 gap-1.5 rounded-2xl border py-2 px-3 text-sm transition-[color,box-shadow] duration-200 focus-visible:ring-3 aria-invalid:ring-3 [&_svg:not([class*='size-'])]:size-4 flex",
 			switch size { case "sm": "h-7" default: "h-8" }
 		}
@@ -87,7 +88,7 @@ component SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) {
 		data-gsxui-slot-select-trigger
 	>
 		{ children }
-		<icon.ChevronDown/>
+		<icon.ChevronDown class={ "text-muted-foreground pointer-events-none" }/>
 	</button>
 }
 
@@ -95,7 +96,7 @@ component SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) {
 // selected. select.js overwrites its text content on selection. The default
 // stylesheet applies pointer-events:none.
 component SelectValue(placeholder string, attrs gsx.Attrs) {
-	<span class={ "flex gap-1.5 flex-1 text-left" } { attrs... } data-gsxui-slot-select-value>{ placeholder }</span>
+	<span class={ "items-center line-clamp-1", "flex gap-1.5 flex-1 text-left" } { attrs... } data-gsxui-slot-select-value>{ placeholder }</span>
 }
 
 // SelectContent is the popover listbox. It rides the exact dropdown-menu.js
@@ -165,6 +166,7 @@ component SelectItem(value string, selected bool, disabled bool, children gsx.No
 			aria-disabled="true"
 		} }
 		class={
+			"relative w-full items-center cursor-default outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
 			"focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2 min-h-7 rounded-xl py-1.5 pr-8 pl-2 text-sm [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2 flex data-[state=checked]:[&>[data-gsxui-slot-select-item-indicator]]:flex"
 		}
 		{ attrs... }
@@ -176,7 +178,7 @@ component SelectItem(value string, selected bool, disabled bool, children gsx.No
 		>
 			<icon.Check/>
 		</span>
-		<span class={ "flex flex-1 gap-2" } data-gsxui-slot-select-item-text>{ children }</span>
+		<span class={ "flex flex-1 gap-2 shrink-0 whitespace-nowrap" } data-gsxui-slot-select-item-text>{ children }</span>
 	</div>
 }
 

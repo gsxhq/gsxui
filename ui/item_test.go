@@ -131,7 +131,7 @@ func TestItemSeparatorAttrsFallThrough(t *testing.T) {
 // TestItemDefaultPinned pins the zero-value (variant="default", size="default").
 func TestItemDefaultPinned(t *testing.T) {
 	got := render(t, ui.Item("", "", gsx.Raw("x"), nil))
-	want := `<div data-variant="default" data-size="default" ` + canonicalItemClass("", []string{"variant-default"}) + ` data-gsxui-slot-item>x</div>`
+	want := `<div data-variant="default" data-size="default" ` + canonicalItemClass("", []string{"variant-default", "size-default"}) + ` data-gsxui-slot-item>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -144,7 +144,7 @@ func TestItemDefaultPinned(t *testing.T) {
 // utility is untouched).
 func TestItemOutlineSmPinned(t *testing.T) {
 	got := render(t, ui.Item("outline", "sm", gsx.Raw("x"), nil))
-	want := `<div data-variant="outline" data-size="sm" ` + canonicalItemClass("", []string{"variant-outline"}) + ` data-gsxui-slot-item>x</div>`
+	want := `<div data-variant="outline" data-size="sm" ` + canonicalItemClass("", []string{"variant-outline", "size-sm"}) + ` data-gsxui-slot-item>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -187,7 +187,7 @@ func TestItemCallerClassIsForwardedOnce(t *testing.T) {
 	}
 	// gap-8 displaces the base rule's own gap-2.5 through tailwind-merge —
 	// plain-vs-plain, so the caller wins before the cascade is consulted.
-	if want := canonicalItemClass("", []string{"variant-default"}, "gap-8"); !strings.Contains(got, want) {
+	if want := canonicalItemClass("", []string{"variant-default", "size-default"}, "gap-8"); !strings.Contains(got, want) {
 		t.Errorf("caller class not merged after the recipe's own\nwant: %s\nin: %s", want, got)
 	}
 }
@@ -343,7 +343,7 @@ func TestItemGroupWithSeparatorComposition(t *testing.T) {
 	))
 	for _, want := range []string{
 		`data-gsxui-slot-item-group`,
-		`data-variant="outline" data-size="default" ` + canonicalItemClass("", []string{"variant-outline"}) + ` data-gsxui-slot-item`,
+		`data-variant="outline" data-size="default" ` + canonicalItemClass("", []string{"variant-outline", "size-default"}) + ` data-gsxui-slot-item`,
 		`data-variant="icon" ` + canonicalItemClass("media", []string{"variant-icon"}) + ` data-gsxui-slot-item-media`,
 		`data-gsxui-slot-item-content`,
 		`data-gsxui-slot-item-title`,

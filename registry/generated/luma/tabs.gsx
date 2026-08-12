@@ -41,7 +41,7 @@ component Tabs(value string, children gsx.Node, attrs gsx.Attrs) {
 component TabsList(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="tablist"
-		class={ "rounded-full p-1 h-9 inline-flex" }
+		class={ "rounded-full p-1 h-9 inline-flex w-fit items-center justify-center bg-muted text-muted-foreground" }
 		{ attrs... }
 		data-gsxui-slot-tabs-list
 	>
@@ -71,7 +71,7 @@ component TabsTrigger(value string, selected bool, children gsx.Node, attrs gsx.
 		aria-selected={selected}
 		tabindex={tabindex}
 		class={
-			"gap-2 rounded-full border border-transparent px-3 py-1 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 has-[>svg]:px-2 inline-flex"
+			"gap-2 rounded-full border border-transparent px-3 py-1 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 has-[>svg]:px-2 inline-flex relative h-[calc(100%-1px)] flex-1 items-center justify-center whitespace-nowrap text-foreground/60 transition-all hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 dark:text-muted-foreground dark:hover:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 data-[state=active]:bg-background data-[state=active]:text-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30"
 		}
 		{ attrs... }
 		data-gsxui-slot-tabs-trigger
@@ -94,7 +94,7 @@ component TabsContent(value string, selected bool, children gsx.Node, attrs gsx.
 		data-value={value}
 		data-state={state}
 		hidden={!selected}
-		class={ "text-sm" }
+		class={ "text-sm flex-1 outline-none" }
 		{ attrs... }
 		data-gsxui-slot-tabs-content
 	>

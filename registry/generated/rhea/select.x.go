@@ -98,55 +98,56 @@ func SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node 
 		if !attrs.Has("data-placeholder") {
 			_gsxgw.BoolAttr("data-placeholder", true)
 		}
-		_gsxv0 := "bg-input/50 border-transparent data-placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 gap-1.5 rounded-2xl border py-2 px-3 text-sm transition-[color,box-shadow] duration-200 focus-visible:ring-3 aria-invalid:ring-3 [&_svg:not([class*='size-'])]:size-4 flex"
-		var _gsxv1 string
+		_gsxv0 := "w-fit items-center whitespace-nowrap outline-none disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0"
+		_gsxv1 := "bg-input/50 border-transparent data-placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 gap-1.5 rounded-2xl border py-2 px-3 text-sm transition-[color,box-shadow] duration-200 focus-visible:ring-3 aria-invalid:ring-3 [&_svg:not([class*='size-'])]:size-4 flex"
+		var _gsxv2 string
 		switch size {
 		case "sm":
-			_gsxv1 = "h-7"
+			_gsxv2 = "h-7"
 		default:
-			_gsxv1 = "h-8"
+			_gsxv2 = "h-8"
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(_gsxv0), _gsxrt.Class(_gsxv1), _gsxrt.Class(_gsxv2), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-select-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-select-trigger", true)
 		_gsxgw.S(">")
-//line select.gsx:89:3
-		_gsxgw.Node(ctx, children)
 //line select.gsx:90:3
-		_gsxgw.Node(ctx, icon.ChevronDown())
+		_gsxgw.Node(ctx, children)
+//line select.gsx:91:3
+		_gsxgw.Node(ctx, icon.ChevronDown(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("text-muted-foreground pointer-events-none"))}}...))
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line select.gsx:94:1
+//line select.gsx:95:1
 // SelectValue displays the current value, or the placeholder when nothing is
 // selected. select.js overwrites its text content on selection. The default
 // stylesheet applies pointer-events:none.
 
-//line select.gsx:97:1
+//line select.gsx:98:1
 func SelectValue(placeholder string, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line select.gsx:98:2
+//line select.gsx:99:2
 		_gsxgw.S("<span class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex gap-1.5 flex-1 text-left"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("items-center line-clamp-1"), _gsxrt.Class("flex gap-1.5 flex-1 text-left"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-select-value"})
 		_gsxgw.BoolAttr("data-gsxui-slot-select-value", true)
 		_gsxgw.S(">")
-//line select.gsx:98:92
+//line select.gsx:99:121
 		_gsxgw.Text(string(placeholder))
 		_gsxgw.S("</span>")
 		return _gsxgw.Err()
 	})
 }
 
-//line select.gsx:101:1
+//line select.gsx:102:1
 // SelectContent is the popover listbox. It rides the exact dropdown-menu.js
 // popover machinery: popover="auto" (top layer, light dismiss, free Esc),
 // server-rendered data-state="closed" + data-side="bottom" (select.js always
@@ -157,11 +158,11 @@ func SelectValue(placeholder string, attrs gsx.Attrs) _gsxrt.Node {
 // the viewport's own overflow-y-auto scrolls natively (GAP, see the parity
 // ledger).
 
-//line select.gsx:110:1
+//line select.gsx:111:1
 func SelectContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line select.gsx:111:2
+//line select.gsx:112:2
 		_gsxgw.S("<div")
 		if !attrs.Has("popover") {
 			_gsxgw.S(" popover=\"auto\"")
@@ -185,25 +186,25 @@ func SelectContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-select-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-select-content", true)
 		_gsxgw.S(">")
-//line select.gsx:123:3
+//line select.gsx:124:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line select.gsx:127:1
+//line select.gsx:128:1
 // SelectGroup wraps a set of items under a SelectLabel. Unlike
 // ui.NativeSelect's SelectGroup (which collapses onto native <optgroup
 // label=...>), the custom listbox can hold an arbitrary styled label child,
 // so this ports as a real role="group" div. select.js wires aria-labelledby
 // to the contained SelectLabel's generated id at init.
 
-//line select.gsx:132:1
+//line select.gsx:133:1
 func SelectGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line select.gsx:133:2
+//line select.gsx:134:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"group\"")
@@ -213,22 +214,22 @@ func SelectGroup(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-select-group"})
 		_gsxgw.BoolAttr("data-gsxui-slot-select-group", true)
 		_gsxgw.S(">")
-//line select.gsx:133:62
+//line select.gsx:134:62
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line select.gsx:136:1
+//line select.gsx:137:1
 // SelectLabel is the group heading (select.js stamps its id and the group's
 // aria-labelledby at init).
 
-//line select.gsx:138:1
+//line select.gsx:139:1
 func SelectLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line select.gsx:139:2
+//line select.gsx:140:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground px-2 py-1 text-xs"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -236,14 +237,14 @@ func SelectLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-select-label"})
 		_gsxgw.BoolAttr("data-gsxui-slot-select-label", true)
 		_gsxgw.S(">")
-//line select.gsx:139:101
+//line select.gsx:140:101
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line select.gsx:142:1
+//line select.gsx:143:1
 // SelectItem is one option. value is the form value (data-value, synced into
 // the hidden bridge); disabled skips it in focus/typeahead/selection;
 // selected server-renders the initial value (data-state="checked"). Two
@@ -255,11 +256,11 @@ func SelectLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 //     value but is not the highlighted item reports aria-selected="false".
 // items are always tabindex="-1"; select.js moves real DOM focus among them.
 
-//line select.gsx:152:1
+//line select.gsx:153:1
 func SelectItem(value string, selected bool, disabled bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line select.gsx:153:2
+//line select.gsx:154:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"option\"")
@@ -293,43 +294,43 @@ func SelectItem(value string, selected bool, disabled bool, children gsx.Node, a
 			}
 		}
 		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2 min-h-7 rounded-xl py-1.5 pr-8 pl-2 text-sm [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2 flex data-[state=checked]:[&>[data-gsxui-slot-select-item-indicator]]:flex"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative w-full items-center cursor-default outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class("focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2 min-h-7 rounded-xl py-1.5 pr-8 pl-2 text-sm [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2 flex data-[state=checked]:[&>[data-gsxui-slot-select-item-indicator]]:flex"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-select-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-select-item", true)
 		_gsxgw.S(">")
-//line select.gsx:173:3
+//line select.gsx:175:3
 		_gsxgw.S("<span class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("pointer-events-none absolute right-2 hidden size-4 items-center justify-center"))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-select-item-indicator", true)
 		_gsxgw.S(">")
-//line select.gsx:177:4
+//line select.gsx:179:4
 		_gsxgw.Node(ctx, icon.Check())
 		_gsxgw.S("</span>")
-//line select.gsx:179:3
+//line select.gsx:181:3
 		_gsxgw.S("<span class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-1 gap-2"))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex flex-1 gap-2 shrink-0 whitespace-nowrap"))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-select-item-text", true)
 		_gsxgw.S(">")
-//line select.gsx:179:72
+//line select.gsx:181:99
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</span></div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line select.gsx:183:1
+//line select.gsx:185:1
 // SelectSeparator divides groups. aria-hidden per Radix's own SelectSeparator
 // (a decorative rule, not a role="separator" like DropdownMenuSeparator).
 
-//line select.gsx:185:1
+//line select.gsx:187:1
 func SelectSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line select.gsx:186:2
+//line select.gsx:188:2
 		_gsxgw.S("<div")
 		if !attrs.Has("aria-hidden") {
 			_gsxgw.S(" aria-hidden=\"true\"")

@@ -5,7 +5,7 @@
 @layer components {
   /* carried: no upstream counterpart */
   .gsxui-recipe-input-otp {
-    @apply gap-2 flex;
+    @apply gap-2 flex items-center has-disabled:opacity-50;
   }
 
   /* carried: no upstream counterpart */
@@ -15,15 +15,15 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-input-otp-group {
-    @apply has-aria-invalid:border-b-destructive dark:has-aria-invalid:border-b-destructive/50 rounded-none gap-1 flex;
+    @apply has-aria-invalid:border-b-destructive dark:has-aria-invalid:border-b-destructive/50 rounded-none gap-1 flex items-center;
   }
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-input-otp-slot {
-    @apply border-transparent border-b-input bg-transparent data-[active=true]:border-b-ring aria-invalid:border-b-destructive dark:aria-invalid:border-b-destructive/50 size-10 border text-sm transition-[color,border-color] outline-none first:rounded-none last:rounded-none flex;
+    @apply border-transparent border-b-input bg-transparent data-[active=true]:border-b-ring aria-invalid:border-b-destructive dark:aria-invalid:border-b-destructive/50 size-10 border text-sm transition-[color,border-color] outline-none first:rounded-none last:rounded-none flex relative items-center justify-center data-[active=true]:z-10;
   }
 
   .gsxui-recipe-input-otp-separator {
-    @apply [&_svg:not([class*='size-'])]:size-3.5;
+    @apply [&_svg:not([class*='size-'])]:size-3.5 flex items-center;
   }
 }

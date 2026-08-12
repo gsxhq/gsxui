@@ -10,7 +10,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-pagination-content {
-    @apply gap-1 flex flex-row;
+    @apply gap-1 flex items-center;
   }
 
   /* carried: no upstream counterpart */

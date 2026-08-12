@@ -10,7 +10,7 @@ import (
 
 func TestEmptyPinned(t *testing.T) {
 	got := render(t, ui.Empty(gsx.Raw("x"), nil))
-	want := `<div class="gap-4 rounded-xl border-dashed p-6 flex flex-col" data-gsxui-slot-empty>x</div>`
+	want := `<div class="gap-4 rounded-xl border-dashed p-6 flex flex-col w-full min-w-0 flex-1 items-center justify-center text-center text-balance" data-gsxui-slot-empty>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -32,7 +32,7 @@ func TestEmptyCallerClassIsForwardedOnce(t *testing.T) {
 
 func TestEmptyHeaderPinned(t *testing.T) {
 	got := render(t, ui.EmptyHeader(gsx.Raw("x"), nil))
-	want := `<div class="gap-2 flex flex-col" data-gsxui-slot-empty-header>x</div>`
+	want := `<div class="gap-2 flex flex-col max-w-sm items-center text-center" data-gsxui-slot-empty-header>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -52,7 +52,7 @@ func TestEmptyHeaderAttrsFallThrough(t *testing.T) {
 // same idiom as badge/button-group.
 func TestEmptyMediaDefaultPinned(t *testing.T) {
 	got := render(t, ui.EmptyMedia("", gsx.Raw("x"), nil))
-	want := `<div data-variant="default" class="mb-2 flex bg-transparent" data-gsxui-slot-empty-icon>x</div>`
+	want := `<div data-variant="default" class="mb-2 flex shrink-0 items-center justify-center [&amp;_svg]:shrink-0 [&amp;_svg]:pointer-events-none bg-transparent" data-gsxui-slot-empty-icon>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -60,7 +60,7 @@ func TestEmptyMediaDefaultPinned(t *testing.T) {
 
 func TestEmptyMediaIconPinned(t *testing.T) {
 	got := render(t, ui.EmptyMedia("icon", gsx.Raw("x"), nil))
-	want := `<div data-variant="icon" class="mb-2 bg-muted text-foreground flex size-8 shrink-0 items-center justify-center rounded-lg [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4" data-gsxui-slot-empty-icon>x</div>`
+	want := `<div data-variant="icon" class="mb-2 [&amp;_svg]:shrink-0 [&amp;_svg]:pointer-events-none bg-muted text-foreground flex size-8 shrink-0 items-center justify-center rounded-lg [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4" data-gsxui-slot-empty-icon>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -93,7 +93,7 @@ func TestEmptyTitleAttrsFallThrough(t *testing.T) {
 // JSX returns a div — see ui/empty.gsx's own comment and docs/jsx-parity.md).
 func TestEmptyDescriptionPinned(t *testing.T) {
 	got := render(t, ui.EmptyDescription(gsx.Raw("x"), nil))
-	want := `<div class="text-sm/relaxed" data-gsxui-slot-empty-description>x</div>`
+	want := `<div class="text-sm/relaxed text-muted-foreground [&amp;&gt;a]:underline [&amp;&gt;a]:underline-offset-4 [&amp;&gt;a:hover]:text-primary" data-gsxui-slot-empty-description>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}
@@ -108,7 +108,7 @@ func TestEmptyDescriptionAttrsFallThrough(t *testing.T) {
 
 func TestEmptyContentPinned(t *testing.T) {
 	got := render(t, ui.EmptyContent(gsx.Raw("x"), nil))
-	want := `<div class="gap-2.5 text-sm flex flex-col" data-gsxui-slot-empty-content>x</div>`
+	want := `<div class="gap-2.5 text-sm flex flex-col w-full max-w-sm min-w-0 items-center text-balance" data-gsxui-slot-empty-content>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

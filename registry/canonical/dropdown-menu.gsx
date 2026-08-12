@@ -77,7 +77,7 @@ component DropdownMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 // applies without Radix's runtime side tracking (same ADAPT as tooltip).
 component DropdownMenuContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ dropdownMenu.Content() }
+		class={ "max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none", dropdownMenu.Content() }
 		popover="auto"
 		role="menu"
 		tabindex="-1"
@@ -97,7 +97,7 @@ component DropdownMenuContent(children gsx.Node, attrs gsx.Attrs) {
 component DropdownMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
-			"group/dropdown-menu-item",
+			"group/dropdown-menu-item relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
 			dropdownMenu.Item(),
 			dropdownMenu.ItemVariant(variant),
 		}
@@ -147,7 +147,7 @@ component DropdownMenuGroup(children gsx.Node, attrs gsx.Attrs) {
 // extra prepended token; the two mechanisms are visually equivalent.
 component DropdownMenuCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ dropdownMenu.CheckboxItem() }
+		class={ "relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0", dropdownMenu.CheckboxItem() }
 		role="menuitemcheckbox"
 		data-value={value}
 		{ if checked {
@@ -197,7 +197,7 @@ component DropdownMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attr
 // ADAPT as DropdownMenuCheckboxItem's own doc comment, not repeated here.
 component DropdownMenuRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ dropdownMenu.RadioItem() }
+		class={ "relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0", dropdownMenu.RadioItem() }
 		role="menuitemradio"
 		data-value={value}
 		{ if checked {
@@ -260,7 +260,7 @@ component DropdownMenuSub(children gsx.Node, attrs gsx.Attrs) {
 // data-open: (standing house exception).
 component DropdownMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ dropdownMenu.SubTrigger() }
+		class={ "cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0", dropdownMenu.SubTrigger() }
 		role="menuitem"
 		aria-haspopup="menu"
 		aria-expanded="false"
@@ -298,7 +298,7 @@ component DropdownMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 //     codebase).
 component DropdownMenuSubContent(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ dropdownMenu.SubContent() }
+		class={ "max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none", dropdownMenu.SubContent() }
 		popover="auto"
 		role="menu"
 		tabindex="-1"

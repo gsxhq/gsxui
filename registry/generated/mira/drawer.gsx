@@ -68,7 +68,7 @@ component DrawerHeader(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component DrawerFooter(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "gap-2 p-4 flex flex-col" } { attrs... } data-gsxui-slot-drawer-footer>{ children }</div>
+	<div class={ "gap-2 p-4 flex flex-col mt-auto" } { attrs... } data-gsxui-slot-drawer-footer>{ children }</div>
 }
 
 component DrawerTitle(children gsx.Node, attrs gsx.Attrs) {
@@ -84,7 +84,7 @@ component DrawerTitle(children gsx.Node, attrs gsx.Attrs) {
 
 component DrawerDescription(children gsx.Node, attrs gsx.Attrs) {
 	<p
-		class={ "text-muted-foreground text-xs/relaxed" }
+		class={ "text-muted-foreground text-xs/relaxed text-balance" }
 		{ attrs... }
 		data-gsxui-slot-drawer-description
 		data-gsxui-slot-dialog-description

@@ -192,7 +192,7 @@ func TestMenubarPinnedParts(t *testing.T) {
 		{
 			name: "root",
 			node: ui.Menubar(gsx.Raw("x"), nil),
-			want: `<div class="h-8 gap-0.5 rounded-lg border p-[3px] flex" role="menubar" data-gsxui-slot-menubar>x</div>`,
+			want: `<div class="items-center h-8 gap-0.5 rounded-lg border p-[3px] flex" role="menubar" data-gsxui-slot-menubar>x</div>`,
 		},
 		{
 			name: "menu",
@@ -209,14 +209,14 @@ func TestMenubarPinnedParts(t *testing.T) {
 			// data-inset" entries.
 			name: "item",
 			node: ui.MenubarItem("", gsx.Raw("Print"), nil),
-			want: `<div class="group/menubar-item focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-1.5 rounded-md px-1.5 py-1 text-sm [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 flex text-foreground" data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-menubar-item>Print</div>`,
+			want: `<div class="group/menubar-item relative cursor-default items-center outline-hidden select-none [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-1.5 rounded-md px-1.5 py-1 text-sm [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 flex data-disabled:pointer-events-none text-foreground" data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-menubar-item>Print</div>`,
 		},
 		{
 			// transition-none suppresses an implicit transition:all — see
 			// the style-porter report's "duration-N alone" entry.
 			name: "content",
 			node: ui.MenubarContent(gsx.Raw("x"), nil),
-			want: `<div class="transition-none bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 min-w-36 rounded-lg p-1 shadow-md ring-1 duration-100" popover="auto" role="menu" tabindex="-1" data-state="closed" data-side="bottom" data-gsxui-slot-menubar-content>x</div>`,
+			want: `<div class="max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none transition-none bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 min-w-36 rounded-lg p-1 shadow-md ring-1 duration-100" popover="auto" role="menu" tabindex="-1" data-state="closed" data-side="bottom" data-gsxui-slot-menubar-content>x</div>`,
 		},
 		{
 			// data-inset:pl-7 removed — MenubarLabel never stamps data-inset
@@ -228,12 +228,12 @@ func TestMenubarPinnedParts(t *testing.T) {
 		{
 			name: "separator",
 			node: ui.MenubarSeparator(nil),
-			want: `<div class="bg-border" role="separator" data-gsxui-slot-menubar-separator></div>`,
+			want: `<div class="bg-border -mx-1 my-1 h-px" role="separator" data-gsxui-slot-menubar-separator></div>`,
 		},
 		{
 			name: "shortcut",
 			node: ui.MenubarShortcut(gsx.Raw("⌘T"), nil),
-			want: `<span class="text-muted-foreground group-focus/menubar-item:text-accent-foreground text-xs tracking-widest" data-gsxui-slot-menubar-shortcut>⌘T</span>`,
+			want: `<span class="text-muted-foreground group-focus/menubar-item:text-accent-foreground text-xs tracking-widest ml-auto" data-gsxui-slot-menubar-shortcut>⌘T</span>`,
 		},
 		{
 			name: "group",

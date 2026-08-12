@@ -4,7 +4,7 @@
    onto gsxui's shape-declared classes. */
 @layer components {
   .gsxui-recipe-calendar {
-    @apply p-3 [--cell-radius:0] [--cell-size:--spacing(8)];
+    @apply p-3 [--cell-radius:0] [--cell-size:--spacing(8)] w-fit bg-background [[data-gsxui-slot-card-content]_&]:bg-transparent [[data-gsxui-slot-popover-content]_&]:bg-transparent;
   }
 
   /* carried: no upstream counterpart */
