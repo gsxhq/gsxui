@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"strings"
 	"testing"
 )
 
@@ -133,6 +134,95 @@ func TestGalleryCoversEveryComponent(t *testing.T) {
 	for component := range galleryExcluded {
 		if _, ok := contract.Components[component]; !ok {
 			t.Errorf("galleryExcluded names %q, which recipes.json does not declare", component)
+		}
+	}
+}
+
+// galleryPageCards lists the card component identifiers each preview page
+// (theme-creator-parity Task 4c) must render, in DOM order. It backs
+// TestGalleryHasTwoPagesWithExpectedCards below and is mirrored by
+// jstest/specs/style-visual.spec.ts's own per-page card list for the
+// visual snapshot gate — keep the two in sync.
+var galleryPageCards = map[string][]string{
+	"components": {
+		"galleryButtonsCard", "galleryLoginCard", "gallerySettingsCard",
+		"galleryCalendarCard", "galleryMenusCard", "galleryFeedbackCard",
+		"galleryTeamCard", "galleryTableCard", "galleryChartCard",
+		"galleryTabsCard", "galleryNavigationCard", "galleryControlsCard",
+		"galleryOverlaysCard", "galleryEmptyCard", "galleryMediaCard",
+		"gallerySidebarCard",
+	},
+	"product": {
+		"galleryPricingCard", "galleryStatsCard", "galleryChatCard",
+		"galleryRolesCard", "galleryBookingCard", "galleryActivityCard",
+		"galleryUploadsCard", "galleryNotificationsCard", "gallerySearchCard",
+		"galleryProfileCard", "galleryOnboardingCard", "galleryProjectsEmptyCard",
+		"galleryVerifyCard", "galleryNotificationPrefsCard", "galleryBillingCard",
+	},
+}
+
+// TestGalleryHasTwoPagesWithExpectedCards asserts the theme-creator-parity
+// Task 4c page split stays structurally intact: both page wrapper divs
+// exist, "product" starts hidden (matching web/theme-state.js's
+// createThemeState default of state.page = "components"), and every card
+// galleryPageCards names for a page is actually referenced inside that
+// page's own component body — not merely present somewhere in the file,
+// which TestGalleryCoversEveryComponent above already tolerates (a card
+// moved to the wrong page, or dropped from both, would still pass that
+// test as long as its tag appears once anywhere).
+func TestGalleryHasTwoPagesWithExpectedCards(t *testing.T) {
+	gallery, err := os.ReadFile("gallery.gsx.src")
+	if err != nil {
+		t.Fatal(err)
+	}
+	source := string(gallery)
+
+	if !strings.Contains(source, `data-theme-preview-page="components"`) {
+		t.Error(`gallery.gsx.src has no data-theme-preview-page="components" wrapper`)
+	}
+	if !strings.Contains(source, `data-theme-preview-page="product"`) {
+		t.Error(`gallery.gsx.src has no data-theme-preview-page="product" wrapper`)
+	}
+	// The product page must start hidden: theme.gsx's page tab pair
+	// defaults to "components" for its own JS-less first paint
+	// (themePagePressedAttr), and web/theme-state.js's createThemeState
+	// defaults state.page the same way. A markup/state default mismatch
+	// here would only ever surface as a visible flash before JS runs.
+	productWrapper := regexp.MustCompile(`data-theme-preview-page="product"[^>]*>`)
+	match := productWrapper.FindString(source)
+	if match == "" {
+		t.Fatal("could not find the product page's opening tag")
+	}
+	if !strings.Contains(match, "hidden") {
+		t.Errorf("product page wrapper is not hidden by default: %q", match)
+	}
+
+	pageBody := func(component string) string {
+		t.Helper()
+		start := strings.Index(source, "component "+component+"(idp string) {")
+		if start == -1 {
+			t.Fatalf("gallery.gsx.src has no component %s(idp string)", component)
+		}
+		// Both page components are flat — a wrapping div plus self-closed
+		// card tags, no nested control flow — so the first "\n}\n" after
+		// the opening line closes the component body.
+		end := strings.Index(source[start:], "\n}\n")
+		if end == -1 {
+			t.Fatalf("could not find the end of component %s", component)
+		}
+		return source[start : start+end]
+	}
+
+	pageComponent := map[string]string{
+		"components": "galleryComponentsPage",
+		"product":    "galleryProductPage",
+	}
+	for page, cards := range galleryPageCards {
+		body := pageBody(pageComponent[page])
+		for _, card := range cards {
+			if !strings.Contains(body, "<"+card) {
+				t.Errorf("%s does not render <%s> — expected on the %q page", pageComponent[page], card, page)
+			}
 		}
 	}
 }

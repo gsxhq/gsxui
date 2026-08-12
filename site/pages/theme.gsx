@@ -311,6 +311,43 @@ func themeStyleButtonClass(name string) string {
 
 const tabBtnBase = "rounded-md border border-border px-3 py-1.5 text-sm font-medium transition-colors"
 
+// themePageChoices backs the preview panel's page tab pair — the two
+// site/stylepreview/gallery.gsx.src page groups (theme-creator-parity
+// Task 4c), a content-navigation control over the preview document, not a
+// theme axis, so unlike Style/Palette it needs no preset.go catalog: the
+// two names and titles are hardcoded here the same way Mode's light/dark
+// tab pair already is below.
+type themePageChoice struct {
+	Name  string
+	Title string
+}
+
+func themePageChoices() []themePageChoice {
+	return []themePageChoice{
+		{Name: "components", Title: "Components"},
+		{Name: "product", Title: "Product"},
+	}
+}
+
+// themePagePressedAttr and themePageTabClass are the page tab pair's
+// JS-less first-paint default, the same pattern as
+// themeMenuAccentPressedAttr/themeMenuAccentTabClass above: web/theme.js's
+// render() re-syncs both against state.page afterward. "components" is
+// createThemeState's own default (web/theme-state.js).
+func themePagePressedAttr(name string) string {
+	if name == "components" {
+		return "true"
+	}
+	return "false"
+}
+
+func themePageTabClass(name string) string {
+	if name == "components" {
+		return tabBtnBase + " bg-accent text-accent-foreground"
+	}
+	return tabBtnBase + " text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+}
+
 // themeMenuAccentPressedAttr and themeMenuAccentTabClass are the menu
 // accent tab pair's JS-less first-paint default, the same pattern as
 // themeStylePressedAttr/themeStyleButtonClass above: web/theme.js's
@@ -409,12 +446,26 @@ component themeEditor(previewURL string, workspace bool) {
 				data-theme-preview-panel
 				class={previewPanelClass}
 			>
-				<div class="flex items-center justify-between gap-3">
+				<div class="flex flex-wrap items-center justify-between gap-3">
 					<div>
 						<h2 class="font-medium">Component preview</h2>
 						<p data-theme-preview-status class="text-xs text-muted-foreground">Connecting to preview…</p>
 					</div>
-					<ui.Button data-theme-preview-retry variant="outline" size="sm" class="hidden">Retry</ui.Button>
+					<div class="flex items-center gap-2">
+						<div class="flex items-center gap-2">
+							{ for _, choice := range themePageChoices() {
+								<button
+									type="button"
+									data-theme-page-tab={choice.Name}
+									aria-pressed={themePagePressedAttr(choice.Name)}
+									class={themePageTabClass(choice.Name)}
+								>
+									{ choice.Title }
+								</button>
+							} }
+						</div>
+						<ui.Button data-theme-preview-retry variant="outline" size="sm" class="hidden">Retry</ui.Button>
+					</div>
 				</div>
 				<iframe
 					data-theme-preview-frame

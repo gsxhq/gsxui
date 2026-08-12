@@ -35,8 +35,23 @@ import (
 // and only the percentage is a hole, so the filter still judges it and
 // nothing is trusted that the component did not itself compute. The hole
 // renders the float64 directly, the same way aria-valuenow does.
+//
+// FIX (found reviewing theme-creator-parity Task 4's new preview cards):
+// the indicator's own recipe accessor only ever resolved to a per-style
+// colour, nothing else — no width or height anywhere. Every style's
+// registry/styles/<style>/progress.css only ever sets the ROOT's
+// bg-muted/height/radius and the indicator's bg-primary, never the
+// indicator's size, because those are structural (invariant across every
+// style), not presentational. Upstream's own source confirms this split:
+// registry/bases/radix/ui/progress.tsx's Root carries "relative flex w-full
+// items-center overflow-x-hidden" and Indicator carries "size-full flex-1
+// transition-all" as literal, non-recipe classes — the same class-plus-
+// recipe-accessor shape Card's own Root already uses for "group/card".
+// Without this, translateX's math was correct but had nothing visible to
+// translate: the indicator rendered at 0×0 in every style, so Progress
+// silently never showed a fill.
 
-//line progress.gsx:28:1
+//line progress.gsx:43:1
 func Progress(value float64, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -49,7 +64,7 @@ func _gsxrenderProgress(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, value float6
 		return _gsxerr
 	}
 	var _gsxnum [32]byte
-//line progress.gsx:29:2
+//line progress.gsx:44:2
 	_gsxgw.S("<div")
 	if !attrs.Has("role") {
 		_gsxgw.S(" role=\"progressbar\"")
@@ -66,17 +81,17 @@ func _gsxrenderProgress(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, value float6
 		_gsxgw.S("\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-muted h-0.5 rounded-none"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative flex w-full items-center overflow-x-hidden"), _gsxrt.Class("bg-muted h-0.5 rounded-none"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-progress"})
 	_gsxgw.BoolAttr("data-gsxui-slot-progress", true)
 	_gsxgw.S(">")
-//line progress.gsx:38:3
+//line progress.gsx:53:3
 	_gsxgw.S("<div style=\"transform: translateX(-")
 	_gsxgw.AttrValue(_gsxrt.StyleValue(_gsxsc.FormatFloat(float64(100-value), 'g', -1, 64)))
 	_gsxgw.S("%)\" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-primary"))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("size-full flex-1 transition-all"), _gsxrt.Class("bg-primary"))
 	_gsxgw.S("\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-progress-indicator", true)
 	_gsxgw.S("></div></div>")

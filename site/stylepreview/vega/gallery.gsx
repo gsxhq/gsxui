@@ -15,6 +15,20 @@
 // closed state. What the gallery showcases is trigger and surface chrome
 // theming, not behavior.
 //
+// Gallery renders TWO pages (theme-creator-parity Task 4c), mirroring the
+// per-style section toggle site/pages/theme_preview.gsx and
+// web/theme-preview.js already use: both page groups are always in the
+// DOM, `hidden` decides which one is visible, and web/theme-preview.js
+// flips that attribute the same way it already flips which style section
+// is visible. "components" (galleryComponentsPage) is the original
+// broad-coverage showcase — every component, every state, in a compact
+// form. "product" (galleryProductPage) is newer: realistic product
+// surfaces (an invoice, a chat thread, a pricing table, ...) built from
+// the SAME 54 canonical components with plausible copy, closer to what a
+// real screen built with gsxui looks like. Both pages count toward
+// gallery_test.go's per-component coverage floor — the test scans this
+// whole file's text, not just one page's markup.
+//
 // Every card's <CardTitle> carries an inline `font-family: var(--font-
 // heading)` — this is the font pair picker's (theme-creator-parity Task 3)
 // only visible manifestation in this preview: --font-sans already applies
@@ -41,11 +55,25 @@ var galleryMonth = time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 // site/examples/avatar/basic.gsx — no image asset, no network fetch.
 var galleryAvatarSVG = []byte("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect width='64' height='64' fill='#6d28d9'/><text x='32' y='34' text-anchor='middle' dominant-baseline='central' font-family='sans-serif' font-weight='600' font-size='26' fill='#fff'>AL</text></svg>")
 
-// Gallery renders the full component showcase. idp prefixes every id and
+// Gallery renders both preview pages. idp prefixes every id and
 // form-control name: the theme preview document renders the gallery twice
-// (once per style section), so unprefixed ids would collide across sections.
+// per page (once per style section), so unprefixed ids would collide
+// across sections.
 component Gallery(idp string) {
-	<div data-theme-preview-gallery class="mx-auto grid w-full max-w-7xl items-start gap-4 p-4 sm:p-6 md:grid-cols-2 xl:grid-cols-3">
+	<galleryComponentsPage idp={idp}/>
+	<galleryProductPage idp={idp}/>
+}
+
+// galleryComponentsPage is the original 15-card broad-coverage showcase:
+// every component, every state, in a compact form. Visible by default —
+// web/theme-state.js's createThemeState defaults state.page to
+// "components".
+component galleryComponentsPage(idp string) {
+	<div
+		data-theme-preview-page="components"
+		data-theme-preview-gallery
+		class="mx-auto grid w-full max-w-7xl items-start gap-4 p-4 sm:p-6 md:grid-cols-2 xl:grid-cols-3"
+	>
 		<galleryButtonsCard/>
 		<galleryLoginCard idp={idp}/>
 		<gallerySettingsCard idp={idp}/>
@@ -62,6 +90,37 @@ component Gallery(idp string) {
 		<galleryEmptyCard/>
 		<galleryMediaCard/>
 		<gallerySidebarCard idp={idp}/>
+	</div>
+}
+
+// galleryProductPage is the realistic-product-surface showcase
+// (theme-creator-parity Task 4b): fifteen cards built from the same 54
+// canonical components as galleryComponentsPage, composed as plausible
+// product screens (an invoice, a chat thread, a pricing table, ...) rather
+// than component demonstrations. `hidden` by default; web/theme-preview.js
+// reveals it when web/theme.js's page tab commits state.page = "product".
+component galleryProductPage(idp string) {
+	<div
+		data-theme-preview-page="product"
+		data-theme-preview-gallery
+		hidden
+		class="mx-auto grid w-full max-w-7xl items-start gap-4 p-4 sm:p-6 md:grid-cols-2 xl:grid-cols-3"
+	>
+		<galleryPricingCard/>
+		<galleryStatsCard/>
+		<galleryChatCard idp={idp}/>
+		<galleryRolesCard/>
+		<galleryBookingCard idp={idp}/>
+		<galleryActivityCard/>
+		<galleryUploadsCard/>
+		<galleryNotificationsCard/>
+		<gallerySearchCard idp={idp}/>
+		<galleryProfileCard/>
+		<galleryOnboardingCard/>
+		<galleryProjectsEmptyCard/>
+		<galleryVerifyCard/>
+		<galleryNotificationPrefsCard idp={idp}/>
+		<galleryBillingCard/>
 	</div>
 }
 
@@ -1047,5 +1106,666 @@ component gallerySidebarCard(idp string) {
 				</SidebarProvider>
 			</div>
 		</CardContent>
+	</Card>
+}
+
+// --- Product page (theme-creator-parity Task 4b) -------------------------
+//
+// Realistic product surfaces, not component showcases: plausible copy,
+// real-sounding names, dates fixed to January/February 2026 (galleryMonth's
+// own era) so nothing here depends on the day it renders.
+
+// galleryPricingCard is a three-tier pricing table, the kind of page a
+// theme actually needs to look right on: nested Cards (same idiom
+// galleryMediaCard's Carousel already uses for its items) for each tier,
+// with the middle tier highlighted as the recommended plan. Spans the full
+// grid width (the same md:col-span-2 xl:col-span-3 idiom
+// gallerySidebarCard already uses on the components page) — three tiers
+// need real width, and a pricing table is realistically a page's widest
+// element anyway.
+component galleryPricingCard() {
+	<Card class="md:col-span-2 xl:col-span-3">
+		<CardHeader>
+			<CardTitle style="font-family: var(--font-heading)">Pricing</CardTitle>
+			<CardDescription>Simple plans that scale with your team.</CardDescription>
+		</CardHeader>
+		<CardContent class="grid gap-3 sm:grid-cols-3">
+			<Card class="gap-3 shadow-none">
+				<CardHeader>
+					<CardTitle class="text-base">Starter</CardTitle>
+					<CardDescription><span class="text-lg font-semibold text-foreground">$0</span>/mo</CardDescription>
+				</CardHeader>
+				<CardContent class="flex flex-col gap-2 text-sm text-muted-foreground">
+					<span class="flex items-start gap-1.5"><icon.Check class="mt-0.5 size-3.5 shrink-0"/>5 projects</span>
+					<span class="flex items-start gap-1.5"><icon.Check class="mt-0.5 size-3.5 shrink-0"/>Community support</span>
+				</CardContent>
+				<CardFooter>
+					<Button variant="outline" class="w-full">Get started</Button>
+				</CardFooter>
+			</Card>
+			<Card class="gap-3 border-primary shadow-none">
+				<CardHeader>
+					<CardAction>
+						<Badge>Popular</Badge>
+					</CardAction>
+					<CardTitle class="text-base">Team</CardTitle>
+					<CardDescription><span class="text-lg font-semibold text-foreground">$24</span>/user/mo</CardDescription>
+				</CardHeader>
+				<CardContent class="flex flex-col gap-2 text-sm">
+					<span class="flex items-start gap-1.5"><icon.Check class="mt-0.5 size-3.5 shrink-0 text-primary"/>Unlimited projects</span>
+					<span class="flex items-start gap-1.5"><icon.Check class="mt-0.5 size-3.5 shrink-0 text-primary"/>Priority support</span>
+					<span class="flex items-start gap-1.5"><icon.Check class="mt-0.5 size-3.5 shrink-0 text-primary"/>Single sign-on</span>
+				</CardContent>
+				<CardFooter>
+					<Button class="w-full">Start trial</Button>
+				</CardFooter>
+			</Card>
+			<Card class="gap-3 shadow-none">
+				<CardHeader>
+					<CardTitle class="text-base">Enterprise</CardTitle>
+					<CardDescription>Custom pricing</CardDescription>
+				</CardHeader>
+				<CardContent class="flex flex-col gap-2 text-sm text-muted-foreground">
+					<span class="flex items-start gap-1.5"><icon.Check class="mt-0.5 size-3.5 shrink-0"/>Dedicated support</span>
+					<span class="flex items-start gap-1.5"><icon.Check class="mt-0.5 size-3.5 shrink-0"/>Audit logs</span>
+				</CardContent>
+				<CardFooter>
+					<Button variant="outline" class="w-full">Contact sales</Button>
+				</CardFooter>
+			</Card>
+		</CardContent>
+	</Card>
+}
+
+// galleryStatsCard is a KPI/stat row — a dashboard's first screen, the
+// kind of overview a theme's colors have to carry at a glance.
+component galleryStatsCard() {
+	<Card>
+		<CardHeader>
+			<CardTitle style="font-family: var(--font-heading)">Overview</CardTitle>
+			<CardDescription>Key metrics for the last 30 days.</CardDescription>
+		</CardHeader>
+		<CardContent class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+			<div class="flex flex-col gap-1">
+				<span class="text-xs text-muted-foreground">MRR</span>
+				<span class="text-xl font-semibold">$48,230</span>
+				<span class="flex items-center gap-1 text-xs text-primary"><icon.TrendingUp class="size-3.5"/>12.4%</span>
+			</div>
+			<div class="flex flex-col gap-1">
+				<span class="text-xs text-muted-foreground">Active users</span>
+				<span class="text-xl font-semibold">8,412</span>
+				<span class="flex items-center gap-1 text-xs text-primary"><icon.TrendingUp class="size-3.5"/>3.1%</span>
+			</div>
+			<div class="flex flex-col gap-1">
+				<span class="text-xs text-muted-foreground">Churn</span>
+				<span class="text-xl font-semibold">1.8%</span>
+				<span class="flex items-center gap-1 text-xs text-destructive"><icon.TrendingDown class="size-3.5"/>0.4%</span>
+			</div>
+			<div class="flex flex-col gap-1">
+				<span class="text-xs text-muted-foreground">NPS</span>
+				<span class="text-xl font-semibold">62</span>
+				<span class="flex items-center gap-1 text-xs text-primary"><icon.TrendingUp class="size-3.5"/>5</span>
+			</div>
+		</CardContent>
+	</Card>
+}
+
+// galleryChatCard is a support-inbox thread: alternating incoming/outgoing
+// bubbles plus a composer row, exercising primary/muted surfaces the way a
+// real messaging UI would.
+component galleryChatCard(idp string) {
+	<Card>
+		<CardHeader>
+			<CardTitle style="font-family: var(--font-heading)">Support inbox</CardTitle>
+			<CardDescription>Conversation with a customer.</CardDescription>
+		</CardHeader>
+		<CardContent class="flex flex-col gap-3">
+			<div class="flex flex-col items-start gap-1">
+				<div class="max-w-[80%] rounded-lg bg-muted px-3 py-2 text-sm">I'm having trouble exporting my report to CSV.</div>
+				<span class="text-xs text-muted-foreground">Priya · 9:41 AM</span>
+			</div>
+			<div class="flex flex-col items-end gap-1">
+				<div class="max-w-[80%] rounded-lg bg-primary px-3 py-2 text-sm text-primary-foreground">Try Settings → Export → CSV. Let me know if that works!</div>
+				<span class="text-xs text-muted-foreground">You · 9:44 AM</span>
+			</div>
+			<div class="flex flex-col items-start gap-1">
+				<div class="max-w-[80%] rounded-lg bg-muted px-3 py-2 text-sm">That fixed it, thank you!</div>
+				<span class="text-xs text-muted-foreground">Priya · 9:46 AM</span>
+			</div>
+		</CardContent>
+		<CardFooter class="gap-2">
+			<Input id={idp + "-chat-message"} placeholder="Type a message..." class="flex-1"/>
+			<Button size="icon" aria-label="Send message">
+				<icon.Send/>
+			</Button>
+		</CardFooter>
+	</Card>
+}
+
+// galleryRolesCard is a team-roles table with per-row action menus —
+// distinct from galleryTeamCard's invite-focused avatar list on the
+// components page: this is the "manage access" screen, not the "who's on
+// the team" screen.
+component galleryRolesCard() {
+	<Card>
+		<CardHeader>
+			<CardTitle style="font-family: var(--font-heading)">Team roles</CardTitle>
+			<CardDescription>Manage access for your workspace.</CardDescription>
+		</CardHeader>
+		<CardContent>
+			<Table>
+				<TableHeader>
+					<TableRow>
+						<TableHead>Name</TableHead>
+						<TableHead>Role</TableHead>
+						<TableHead></TableHead>
+					</TableRow>
+				</TableHeader>
+				<TableBody>
+					<TableRow>
+						<TableCell>Priya Sharma</TableCell>
+						<TableCell><Badge variant="secondary">Owner</Badge></TableCell>
+						<TableCell class="text-right">
+							<DropdownMenu>
+								<Button
+									variant="ghost"
+									size="icon-sm"
+									data-gsxui-slot-dropdown-menu-trigger
+									aria-haspopup="menu"
+									aria-expanded="false"
+									aria-label="Actions for Priya Sharma"
+								>
+									<icon.Ellipsis/>
+								</Button>
+								<DropdownMenuContent>
+									<DropdownMenuItem>Change role</DropdownMenuItem>
+									<DropdownMenuItem variant="destructive">Remove</DropdownMenuItem>
+								</DropdownMenuContent>
+							</DropdownMenu>
+						</TableCell>
+					</TableRow>
+					<TableRow>
+						<TableCell>Marcus Webb</TableCell>
+						<TableCell><Badge variant="outline">Admin</Badge></TableCell>
+						<TableCell class="text-right">
+							<DropdownMenu>
+								<Button
+									variant="ghost"
+									size="icon-sm"
+									data-gsxui-slot-dropdown-menu-trigger
+									aria-haspopup="menu"
+									aria-expanded="false"
+									aria-label="Actions for Marcus Webb"
+								>
+									<icon.Ellipsis/>
+								</Button>
+								<DropdownMenuContent>
+									<DropdownMenuItem>Change role</DropdownMenuItem>
+									<DropdownMenuItem variant="destructive">Remove</DropdownMenuItem>
+								</DropdownMenuContent>
+							</DropdownMenu>
+						</TableCell>
+					</TableRow>
+					<TableRow>
+						<TableCell>Elena Ruiz</TableCell>
+						<TableCell><Badge variant="outline">Member</Badge></TableCell>
+						<TableCell class="text-right">
+							<DropdownMenu>
+								<Button
+									variant="ghost"
+									size="icon-sm"
+									data-gsxui-slot-dropdown-menu-trigger
+									aria-haspopup="menu"
+									aria-expanded="false"
+									aria-label="Actions for Elena Ruiz"
+								>
+									<icon.Ellipsis/>
+								</Button>
+								<DropdownMenuContent>
+									<DropdownMenuItem>Change role</DropdownMenuItem>
+									<DropdownMenuItem variant="destructive">Remove</DropdownMenuItem>
+								</DropdownMenuContent>
+							</DropdownMenu>
+						</TableCell>
+					</TableRow>
+				</TableBody>
+			</Table>
+		</CardContent>
+	</Card>
+}
+
+// galleryBookingCard is a "book a demo" form — distinct from
+// galleryCalendarCard's date-picker widget on the components page: this
+// is fields-and-submit, not a calendar surface.
+component galleryBookingCard(idp string) {
+	<Card>
+		<CardHeader>
+			<CardTitle style="font-family: var(--font-heading)">Book a demo</CardTitle>
+			<CardDescription>Schedule a 30-minute call with our team.</CardDescription>
+		</CardHeader>
+		<CardContent>
+			<form>
+				<FieldGroup>
+					<Field>
+						<FieldLabel for={idp + "-booking-topic"}>Topic</FieldLabel>
+						<Select name={idp + "-booking-topic"}>
+							<SelectTrigger id={idp + "-booking-topic"} class="w-full">
+								<SelectValue placeholder="Select a topic"/>
+							</SelectTrigger>
+							<SelectContent>
+								<SelectGroup>
+									<SelectItem value="tour" selected>Product tour</SelectItem>
+									<SelectItem value="pricing">Pricing questions</SelectItem>
+									<SelectItem value="migration">Migration planning</SelectItem>
+								</SelectGroup>
+							</SelectContent>
+						</Select>
+					</Field>
+					<Field>
+						<FieldLabel for={idp + "-booking-time"}>Time</FieldLabel>
+						<NativeSelect id={idp + "-booking-time"} name={idp + "-booking-time"}>
+							<NativeSelectOption value="10:00" selected>Tue, Feb 3 · 10:00 AM</NativeSelectOption>
+							<NativeSelectOption value="13:30">Tue, Feb 3 · 1:30 PM</NativeSelectOption>
+							<NativeSelectOption value="15:00">Wed, Feb 4 · 3:00 PM</NativeSelectOption>
+						</NativeSelect>
+					</Field>
+					<Field>
+						<FieldLabel for={idp + "-booking-notes"}>Notes</FieldLabel>
+						<Textarea id={idp + "-booking-notes"} value="" placeholder="Anything specific you'd like us to cover?"/>
+					</Field>
+				</FieldGroup>
+			</form>
+		</CardContent>
+		<CardFooter>
+			<Button class="w-full">Request time</Button>
+		</CardFooter>
+	</Card>
+}
+
+// galleryActivityCard is a project activity feed — icon-led events with
+// relative timestamps, a common dashboard fixture.
+component galleryActivityCard() {
+	<Card>
+		<CardHeader>
+			<CardTitle style="font-family: var(--font-heading)">Activity</CardTitle>
+			<CardDescription>Recent changes to this project.</CardDescription>
+		</CardHeader>
+		<CardContent class="flex flex-col gap-3 text-sm">
+			<div class="flex items-start gap-2.5">
+				<icon.GitCommitHorizontal class="mt-0.5 size-4 shrink-0 text-muted-foreground"/>
+				<div class="flex-1">
+					<div><span class="font-medium">Priya</span> pushed 3 commits to main</div>
+					<div class="text-xs text-muted-foreground">2 hours ago</div>
+				</div>
+			</div>
+			<Separator/>
+			<div class="flex items-start gap-2.5">
+				<icon.MessageSquare class="mt-0.5 size-4 shrink-0 text-muted-foreground"/>
+				<div class="flex-1">
+					<div><span class="font-medium">Marcus</span> commented on #482</div>
+					<div class="text-xs text-muted-foreground">5 hours ago</div>
+				</div>
+			</div>
+			<Separator/>
+			<div class="flex items-start gap-2.5">
+				<icon.CircleCheck class="mt-0.5 size-4 shrink-0 text-muted-foreground"/>
+				<div class="flex-1">
+					<div><span class="font-medium">Elena</span> closed issue #471</div>
+					<div class="text-xs text-muted-foreground">Yesterday</div>
+				</div>
+			</div>
+		</CardContent>
+	</Card>
+}
+
+// galleryUploadsCard is a file list with one item mid-upload — Progress
+// used inline inside an Item rather than standalone, unlike
+// galleryFeedbackCard's bare progress bar.
+component galleryUploadsCard() {
+	<Card>
+		<CardHeader>
+			<CardTitle style="font-family: var(--font-heading)">Files</CardTitle>
+			<CardDescription>Shared with your team.</CardDescription>
+		</CardHeader>
+		<CardContent>
+			<ItemGroup>
+				<Item>
+					<ItemMedia variant="icon">
+						<icon.FileText/>
+					</ItemMedia>
+					<ItemContent>
+						<ItemTitle>Q4-report.pdf</ItemTitle>
+						<ItemDescription>2.4 MB · Uploaded</ItemDescription>
+					</ItemContent>
+					<ItemActions>
+						<Button variant="ghost" size="icon-sm" aria-label="Download Q4-report.pdf">
+							<icon.Download/>
+						</Button>
+					</ItemActions>
+				</Item>
+				<ItemSeparator/>
+				<Item>
+					<ItemMedia variant="icon">
+						<icon.Archive/>
+					</ItemMedia>
+					<ItemContent>
+						<ItemTitle>brand-assets.zip</ItemTitle>
+						<ItemDescription>18.1 MB · Uploaded</ItemDescription>
+					</ItemContent>
+					<ItemActions>
+						<Button variant="ghost" size="icon-sm" aria-label="Download brand-assets.zip">
+							<icon.Download/>
+						</Button>
+					</ItemActions>
+				</Item>
+				<ItemSeparator/>
+				<Item>
+					<ItemMedia variant="icon">
+						<icon.FileImage/>
+					</ItemMedia>
+					<ItemContent>
+						<ItemTitle>onboarding-deck.pptx</ItemTitle>
+						<ItemDescription>Uploading — 64%</ItemDescription>
+						<Progress value={64} class="mt-1.5 h-1.5"/>
+					</ItemContent>
+				</Item>
+			</ItemGroup>
+		</CardContent>
+	</Card>
+}
+
+// galleryNotificationsCard is a notification centre: grouped, unread-dot
+// rows and a bulk action — the dropdown/popover CONTENT shadcn's own
+// preview-02 ships (e.g. Notification Settings), rendered here as a static
+// resting card rather than inside a Popover, since the point is the row
+// chrome, not the trigger.
+component galleryNotificationsCard() {
+	<Card>
+		<CardHeader>
+			<CardTitle style="font-family: var(--font-heading)">Notifications</CardTitle>
+			<CardDescription>You have 3 unread.</CardDescription>
+			<CardAction>
+				<Button variant="ghost" size="sm">Mark all read</Button>
+			</CardAction>
+		</CardHeader>
+		<CardContent class="flex flex-col gap-3">
+			<div class="text-xs font-medium text-muted-foreground uppercase tracking-wide">New</div>
+			<div class="flex items-start gap-2.5">
+				<span class="mt-1.5 size-2 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>
+				<div class="flex-1 text-sm">
+					<div>Marcus Webb requested access to <span class="font-medium">Design System</span></div>
+					<div class="text-xs text-muted-foreground">10 minutes ago</div>
+				</div>
+			</div>
+			<div class="flex items-start gap-2.5">
+				<span class="mt-1.5 size-2 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>
+				<div class="flex-1 text-sm">
+					<div>Your export finished — <span class="font-medium">annual-report.csv</span></div>
+					<div class="text-xs text-muted-foreground">1 hour ago</div>
+				</div>
+			</div>
+			<Separator/>
+			<div class="text-xs font-medium text-muted-foreground uppercase tracking-wide">Earlier</div>
+			<div class="flex items-start gap-2.5">
+				<span class="mt-1.5 size-2 shrink-0 rounded-full bg-border" aria-hidden="true"></span>
+				<div class="flex-1 text-sm text-muted-foreground">
+					<div>Elena Ruiz left a comment on #471</div>
+					<div class="text-xs">Yesterday</div>
+				</div>
+			</div>
+		</CardContent>
+	</Card>
+}
+
+// gallerySearchCard is a search-results surface: a query input over a list
+// of typed results, an Item size="sm" variant not otherwise exercised in
+// the gallery.
+component gallerySearchCard(idp string) {
+	<Card>
+		<CardHeader>
+			<CardTitle style="font-family: var(--font-heading)">Search</CardTitle>
+			<CardDescription>Results for "deployment".</CardDescription>
+		</CardHeader>
+		<CardContent class="flex flex-col gap-3">
+			<InputGroup>
+				<InputGroupAddon>
+					<icon.Search class="size-4"/>
+				</InputGroupAddon>
+				<InputGroupInput id={idp + "-search-query"} value="deployment"/>
+			</InputGroup>
+			<ItemGroup>
+				<Item size="sm">
+					<ItemMedia variant="icon">
+						<icon.FileText/>
+					</ItemMedia>
+					<ItemContent>
+						<ItemTitle>Deployment checklist</ItemTitle>
+						<ItemDescription>Docs / Runbooks</ItemDescription>
+					</ItemContent>
+				</Item>
+				<ItemSeparator/>
+				<Item size="sm">
+					<ItemMedia variant="icon">
+						<icon.MessageSquare/>
+					</ItemMedia>
+					<ItemContent>
+						<ItemTitle>#482 deployment failing on staging</ItemTitle>
+						<ItemDescription>Issues / Open</ItemDescription>
+					</ItemContent>
+				</Item>
+				<ItemSeparator/>
+				<Item size="sm">
+					<ItemMedia variant="icon">
+						<icon.Users/>
+					</ItemMedia>
+					<ItemContent>
+						<ItemTitle>Deployment on-call rotation</ItemTitle>
+						<ItemDescription>Team / Schedules</ItemDescription>
+					</ItemContent>
+				</Item>
+			</ItemGroup>
+		</CardContent>
+	</Card>
+}
+
+// galleryProfileCard is a centered profile summary — deliberately skips
+// CardHeader (like galleryEmptyCard on the components page), since a
+// photo-first profile card is a different shape than the header/content
+// pattern the rest of the gallery uses.
+component galleryProfileCard() {
+	<Card>
+		<CardContent class="flex flex-col items-center gap-3 pt-6 text-center">
+			<Avatar class="size-16">
+				<AvatarFallback>SA</AvatarFallback>
+			</Avatar>
+			<div>
+				<div class="font-semibold" style="font-family: var(--font-heading)">Sofia Alvarez</div>
+				<div class="text-sm text-muted-foreground">Product Designer at Acme</div>
+			</div>
+			<p class="text-sm text-muted-foreground">Building calm, considered interfaces. Previously at Northwind.</p>
+			<div class="flex items-center gap-6 text-sm">
+				<div class="flex flex-col items-center">
+					<span class="font-semibold">128</span>
+					<span class="text-xs text-muted-foreground">Posts</span>
+				</div>
+				<div class="flex flex-col items-center">
+					<span class="font-semibold">4,302</span>
+					<span class="text-xs text-muted-foreground">Followers</span>
+				</div>
+				<div class="flex flex-col items-center">
+					<span class="font-semibold">218</span>
+					<span class="text-xs text-muted-foreground">Following</span>
+				</div>
+			</div>
+			<Button class="w-full">Follow</Button>
+		</CardContent>
+	</Card>
+}
+
+// galleryOnboardingCard is a setup checklist: three done steps, two
+// pending, plus a determinate progress bar in the same card (unlike
+// galleryFeedbackCard, where the progress bar and the skeleton row are
+// unrelated to each other).
+component galleryOnboardingCard() {
+	<Card>
+		<CardHeader>
+			<CardTitle style="font-family: var(--font-heading)">Get started</CardTitle>
+			<CardDescription>3 of 5 steps complete.</CardDescription>
+		</CardHeader>
+		<CardContent class="flex flex-col gap-3">
+			<Progress value={60}/>
+			<ul class="flex flex-col gap-2 text-sm">
+				<li class="flex items-center gap-2">
+					<icon.CircleCheck class="size-4 text-primary"/>
+					<span>Create your workspace</span>
+				</li>
+				<li class="flex items-center gap-2">
+					<icon.CircleCheck class="size-4 text-primary"/>
+					<span>Invite your team</span>
+				</li>
+				<li class="flex items-center gap-2">
+					<icon.CircleCheck class="size-4 text-primary"/>
+					<span>Connect a data source</span>
+				</li>
+				<li class="flex items-center gap-2 text-muted-foreground">
+					<icon.Circle class="size-4"/>
+					<span>Configure notifications</span>
+				</li>
+				<li class="flex items-center gap-2 text-muted-foreground">
+					<icon.Circle class="size-4"/>
+					<span>Invite a guest reviewer</span>
+				</li>
+			</ul>
+		</CardContent>
+		<CardFooter>
+			<Button variant="outline" class="w-full">Continue setup</Button>
+		</CardFooter>
+	</Card>
+}
+
+// galleryProjectsEmptyCard is a second Empty composition (the components
+// page already has one, for an inbox) — a distinct scenario and icon, both
+// deliberate rather than a near-duplicate: an inbox empty state reads
+// differently from a "nothing created yet" empty state in a real product,
+// and this card is what proves the theme's Empty treatment holds up for
+// both.
+component galleryProjectsEmptyCard() {
+	<Card>
+		<CardContent>
+			<Empty>
+				<EmptyHeader>
+					<EmptyMedia variant="icon">
+						<icon.FolderOpen/>
+					</EmptyMedia>
+					<EmptyTitle>No projects yet</EmptyTitle>
+					<EmptyDescription>Create your first project to start tracking work.</EmptyDescription>
+				</EmptyHeader>
+				<EmptyContent>
+					<Button>New project</Button>
+				</EmptyContent>
+			</Empty>
+		</CardContent>
+	</Card>
+}
+
+// galleryVerifyCard is a two-factor verification card: InputOTP in its
+// real product context (a security step), distinct from
+// galleryControlsCard's bare "Verification code" demo on the components
+// page.
+component galleryVerifyCard() {
+	<Card>
+		<CardHeader>
+			<CardTitle style="font-family: var(--font-heading)">Verify your identity</CardTitle>
+			<CardDescription>Enter the 6-digit code we sent to +1 (415) •••-4471.</CardDescription>
+		</CardHeader>
+		<CardContent class="flex flex-col items-start gap-3">
+			<InputOTP maxlength="6">
+				<InputOTPGroup>
+					<InputOTPSlot/>
+					<InputOTPSlot/>
+					<InputOTPSlot/>
+				</InputOTPGroup>
+				<InputOTPSeparator/>
+				<InputOTPGroup>
+					<InputOTPSlot/>
+					<InputOTPSlot/>
+					<InputOTPSlot/>
+				</InputOTPGroup>
+			</InputOTP>
+			<Button variant="link" class="h-auto p-0">Resend code</Button>
+		</CardContent>
+		<CardFooter>
+			<Button class="w-full">Verify</Button>
+		</CardFooter>
+	</Card>
+}
+
+// galleryNotificationPrefsCard is a dense, all-Switch settings screen —
+// distinct from gallerySettingsCard's mixed-control workspace settings on
+// the components page: this is what a dedicated "notification
+// preferences" screen looks like, grouped under plain section labels.
+component galleryNotificationPrefsCard(idp string) {
+	<Card>
+		<CardHeader>
+			<CardTitle style="font-family: var(--font-heading)">Notification preferences</CardTitle>
+			<CardDescription>Choose what you want to hear about.</CardDescription>
+		</CardHeader>
+		<CardContent class="flex flex-col gap-4">
+			<div class="text-xs font-medium text-muted-foreground uppercase tracking-wide">Email</div>
+			<div class="flex items-center justify-between gap-4">
+				<Label for={idp + "-notifprefs-comments"}>Comments on your work</Label>
+				<Switch id={idp + "-notifprefs-comments"} checked/>
+			</div>
+			<div class="flex items-center justify-between gap-4">
+				<Label for={idp + "-notifprefs-digest"}>Weekly digest</Label>
+				<Switch id={idp + "-notifprefs-digest"} checked/>
+			</div>
+			<Separator/>
+			<div class="text-xs font-medium text-muted-foreground uppercase tracking-wide">Push</div>
+			<div class="flex items-center justify-between gap-4">
+				<Label for={idp + "-notifprefs-mentions"}>Direct mentions</Label>
+				<Switch id={idp + "-notifprefs-mentions"} checked/>
+			</div>
+			<div class="flex items-center justify-between gap-4">
+				<Label for={idp + "-notifprefs-marketing"}>Product announcements</Label>
+				<Switch id={idp + "-notifprefs-marketing"}/>
+			</div>
+		</CardContent>
+		<CardFooter>
+			<Button variant="outline" class="w-full">Save preferences</Button>
+		</CardFooter>
+	</Card>
+}
+
+// galleryBillingCard is an account billing summary — distinct from
+// galleryTableCard's invoice line-item history on the components page:
+// this is the "manage my subscription" screen, not a billing ledger.
+component galleryBillingCard() {
+	<Card>
+		<CardHeader>
+			<CardTitle style="font-family: var(--font-heading)">Billing</CardTitle>
+			<CardDescription>Your current plan and payment method.</CardDescription>
+			<CardAction>
+				<Badge>Pro plan</Badge>
+			</CardAction>
+		</CardHeader>
+		<CardContent class="flex flex-col gap-3">
+			<div>
+				<span class="text-xl font-semibold">$24</span>
+				<span class="text-sm text-muted-foreground">/user/mo</span>
+			</div>
+			<div class="text-xs text-muted-foreground">Renews Feb 12, 2026</div>
+			<Separator/>
+			<div class="flex items-center justify-between gap-4">
+				<div class="flex items-center gap-2 text-sm">
+					<icon.CreditCard class="size-4 text-muted-foreground"/>
+					<span>•••• 4242</span>
+				</div>
+				<Button variant="outline" size="sm">Update</Button>
+			</div>
+		</CardContent>
+		<CardFooter>
+			<Button variant="outline" class="w-full">Manage subscription</Button>
+		</CardFooter>
 	</Card>
 }

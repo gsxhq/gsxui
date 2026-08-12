@@ -31,9 +31,20 @@ component AvatarImage(src string, alt string, attrs gsx.Attrs) {
 	/>
 }
 
+// FIX: AvatarFallback's own recipe accessor only ever resolves to colour
+// (bg-muted/text-muted-foreground) plus rounded-full — never size or
+// centering, the same structural/presentational split progress.gsx's own
+// FIX comment documents. Without "size-full items-center justify-center"
+// (upstream's literal, non-recipe classes for this element), the fallback
+// span is a flex item with no explicit size: it shrinks to fit its text
+// content instead of filling the Avatar circle, and that text is never
+// centered within it — invisible at the default size-8 avatar (close
+// enough to look right by coincidence) but glaring at any larger override
+// (found reviewing theme-creator-parity Task 4's profile card, which sets
+// size-16).
 component AvatarFallback(children gsx.Node, attrs gsx.Attrs) {
 	<span
-		class={ "bg-muted text-muted-foreground rounded-full flex" }
+		class={ "size-full items-center justify-center", "bg-muted text-muted-foreground rounded-full flex" }
 		{ attrs... }
 		data-gsxui-slot-avatar-fallback
 	>

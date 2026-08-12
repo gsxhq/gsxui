@@ -57,9 +57,12 @@ func TestProgressAttrsFallThrough(t *testing.T) {
 
 func TestProgressPinned(t *testing.T) {
 	// Presentation is expressed as the recipe's resolved class (slot axis
-	// migration); only the dynamic transform remains inline.
+	// migration) alongside the structural, non-recipe classes every style
+	// shares (registry/canonical/progress.gsx's FIX comment: the indicator
+	// needs its own size, which no style's recipe ever set); only the
+	// dynamic transform remains inline.
 	got := render(t, ui.Progress(25, nil))
-	want := `<div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="25" class="bg-muted h-1 rounded-full" data-gsxui-slot-progress><div style="transform: translateX(-75%)" class="bg-primary" data-gsxui-slot-progress-indicator></div></div>`
+	want := `<div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="25" class="relative flex w-full items-center overflow-x-hidden bg-muted h-1 rounded-full" data-gsxui-slot-progress><div style="transform: translateX(-75%)" class="size-full flex-1 transition-all bg-primary" data-gsxui-slot-progress-indicator></div></div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

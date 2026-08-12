@@ -10,6 +10,7 @@ function cloneState(state) {
     selection: clone(state.selection),
     previewResolved: state.previewResolved === null ? null : clone(state.previewResolved),
     mode: state.mode,
+    page: state.page,
   };
 }
 
@@ -68,6 +69,7 @@ export function createThemeState(schema, preset = schema.defaults.nova) {
       selection: clone(schema.palette.defaultSelection),
       previewResolved: null,
       mode: "light",
+      page: "components",
     },
     preset,
     schema,
@@ -396,6 +398,20 @@ export function selectMode(state, mode) {
   return next;
 }
 
+// selectPage switches which preview page (the "Components" gallery vs the
+// "Product" realistic-surface gallery, site/stylepreview/gallery.gsx.src)
+// is visible in the iframe. Like mode, page is a client-only view toggle —
+// not part of the preset schema, so it rides outside undo/redo (see the
+// history block below) and is never encoded into a share code.
+export function selectPage(state, page) {
+  if (page !== "components" && page !== "product") {
+    throw new Error("page must be components or product");
+  }
+  const next = cloneState(state);
+  next.page = page;
+  return next;
+}
+
 export function resetThemeState(state, schema) {
   assertStyle(state.resolved.style, schema);
   return replacePreset(state, schema.defaults[state.resolved.style], schema);
@@ -404,10 +420,11 @@ export function resetThemeState(state, schema) {
 // Undo/redo is a bounded stack of committed `resolved` presets (never
 // `previewResolved` — hover previews are never pushed, matching every
 // committing reducer above, which already only ever mutates `resolved`).
-// Mode (light/dark) intentionally rides along outside history: it is a
-// client-only view toggle, not part of the preset schema, so undoing never
-// flips it — only theme.gsx's calls decide when a state change is a commit
-// worth a history entry, by calling pushHistory once per commit, at the
+// Mode (light/dark) and page (components/product) intentionally ride along
+// outside history: both are client-only view toggles, not part of the
+// preset schema, so undoing never flips them — only theme.gsx's calls
+// decide when a state change is a commit worth a history entry, by calling
+// pushHistory once per commit, at the
 // same granularity the editor already commits at (click-driven pickers,
 // style buttons, reset, and import-apply — there is no per-keystroke commit
 // path in this editor to begin with, so no separate debounce is needed).

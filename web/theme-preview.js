@@ -16,6 +16,16 @@ if (previewDocument) {
       section,
     ]),
   );
+  // pageSections spans every style section (each style's Gallery renders
+  // both pages, site/stylepreview/gallery.gsx.src), so a page selection
+  // applies uniformly across all 8 styles at once — exactly like style
+  // selection itself is a pure visibility toggle over content that is
+  // already fully present in the DOM, not a re-render.
+  const pageNames = new Set(
+    [...document.querySelectorAll("[data-theme-preview-page]")].map(
+      (section) => section.dataset.themePreviewPage,
+    ),
+  );
   let focusedStyle = "";
 
   function fail(attempt, message) {
@@ -81,6 +91,9 @@ if (previewDocument) {
     if (!styleSections.has(preset.style)) {
       throw new Error(`unsupported style ${String(preset.style)}`);
     }
+    if (!pageNames.has(message.page)) {
+      throw new Error(`unsupported page ${String(message.page)}`);
+    }
     if (typeof preset.radius !== "string" || preset.radius.trim() === "") {
       throw new Error("radius must be a non-empty CSS length");
     }
@@ -111,6 +124,7 @@ if (previewDocument) {
       fontSans: preset.fontSans,
       fontHeading: preset.fontHeading,
       mode: message.mode,
+      page: message.page,
       values: exactTokenMap(theme[message.mode], `preset.theme.${message.mode}`),
     };
   }
@@ -130,6 +144,9 @@ if (previewDocument) {
     root.classList.toggle("dark", state.mode === "dark");
     for (const [style, section] of styleSections) {
       section.hidden = style !== state.style;
+    }
+    for (const section of document.querySelectorAll("[data-theme-preview-page]")) {
+      section.hidden = section.dataset.themePreviewPage !== state.page;
     }
     if (focusedStyle !== state.style) {
       styleSections.get(state.style)

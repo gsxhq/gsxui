@@ -723,17 +723,22 @@ test.describe("mobile visual contracts", () => {
   }
 });
 
-// Per-style visual gate (style porter plan, Task 7). Each style's
+// Per-style visual gate (style porter plan, Task 7; extended for the
+// theme-creator-parity plan's Task 4c two-page split). Each style's
 // site/stylepreview/<style> gallery composition is the same authored
-// document (site/stylepreview/gallery.gsx.src) recompiled with that style's
-// ported recipes, so the fifteen gallery cards always appear in the same
-// DOM order — indexing by position, rather than by a per-card selector,
+// document (site/stylepreview/gallery.gsx.src) recompiled with that
+// style's ported recipes, so the cards on each page always appear in the
+// same DOM order — indexing by position within its own
+// [data-theme-preview-page] wrapper, rather than by a per-card selector,
 // keeps this gate from needing any change to the gallery source itself.
 // This lands deliberately before the bulk port (Task 8): it establishes a
 // reviewable baseline against nova before the other six styles arrive.
 const galleryStyles = ["vega", "nova", "maia", "lyra", "mira", "luma", "sera", "rhea"] as const;
 
-const galleryCards = [
+// componentsPageCards mirrors site/stylepreview/gallery_test.go's
+// galleryPageCards["components"] slugged for snapshot filenames — keep
+// both in sync with galleryComponentsPage's actual card order.
+const componentsPageCards = [
   "buttons",
   "login",
   "settings",
@@ -742,6 +747,7 @@ const galleryCards = [
   "feedback",
   "team",
   "table",
+  "chart",
   "tabs",
   "navigation",
   "controls",
@@ -751,20 +757,58 @@ const galleryCards = [
   "sidebar",
 ] as const;
 
+// productPageCards mirrors gallery_test.go's galleryPageCards["product"],
+// slugged for snapshot filenames — keep both in sync with
+// galleryProductPage's actual card order.
+const productPageCards = [
+  "pricing",
+  "stats",
+  "chat",
+  "roles",
+  "booking",
+  "activity",
+  "uploads",
+  "notifications",
+  "search",
+  "profile",
+  "onboarding",
+  "projects-empty",
+  "verify",
+  "notification-prefs",
+  "billing",
+] as const;
+
 test.describe("per-style gallery cards", () => {
   for (const style of galleryStyles) {
     test(`${style} gallery cards keep their per-style visual contract`, async ({ page }) => {
       const response = await page.goto(`/stylepreview/${style}`);
       expect(response?.status(), `${style} stylepreview response`).toBe(200);
+      // The /stylepreview/<style> harness route has no page-tab JS wiring
+      // (it renders Gallery() standalone, the same way it has no style-tab
+      // JS either — see jstest/harness/stylepreview.go) — the product page
+      // starts `hidden` per gallery.gsx.src's own JS-less default. Reveal
+      // both pages so each page's own card loop below can screenshot
+      // every card in one navigation.
+      await page.evaluate(() => {
+        for (const section of document.querySelectorAll<HTMLElement>("[data-theme-preview-page]")) {
+          section.hidden = false;
+        }
+      });
       await page.evaluate(async () => {
         await document.fonts.ready;
         await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
       });
 
-      const cards = page.locator("[data-theme-preview-gallery] > *");
-      await expect(cards).toHaveCount(galleryCards.length);
-      for (const [index, card] of galleryCards.entries()) {
-        await expect(cards.nth(index)).toHaveScreenshot(`${style}-${card}.png`, screenshotOptions);
+      const componentsCards = page.locator('[data-theme-preview-page="components"] > *');
+      await expect(componentsCards).toHaveCount(componentsPageCards.length);
+      for (const [index, card] of componentsPageCards.entries()) {
+        await expect(componentsCards.nth(index)).toHaveScreenshot(`${style}-${card}.png`, screenshotOptions);
+      }
+
+      const productCards = page.locator('[data-theme-preview-page="product"] > *');
+      await expect(productCards).toHaveCount(productPageCards.length);
+      for (const [index, card] of productPageCards.entries()) {
+        await expect(productCards.nth(index)).toHaveScreenshot(`${style}-${card}.png`, screenshotOptions);
       }
     });
   }

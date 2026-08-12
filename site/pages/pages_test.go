@@ -770,6 +770,8 @@ func TestThemePreviewRoute(t *testing.T) {
 			`src="/__vite/web/preview.js"`,
 			`data-theme-preview-style="nova"`,
 			`data-theme-preview-style="maia" hidden`,
+			`data-theme-preview-page="components"`,
+			`data-theme-preview-page="product"`,
 			`data-theme-preview-case="text"`,
 			`data-theme-preview-case="icon"`,
 			`data-theme-preview-case="disabled"`,

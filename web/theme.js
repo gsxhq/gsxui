@@ -29,6 +29,7 @@ import {
   selectFontHeading,
   selectMenuAccent,
   selectMode,
+  selectPage,
   selectBaseColor,
   selectRadius,
   selectStyle,
@@ -66,6 +67,7 @@ on("gsxui:open", "[data-theme-picker] [data-gsxui-slot-popover-content]", (e, el
 on("toggle", "[data-theme-picker] [data-gsxui-slot-popover-content]", (e, el) => editor?.onPickerToggle(e, el), { capture: true });
 on("click", "[data-theme-style]", (e, el) => editor?.onStyleClick(e, el));
 on("click", "[data-theme-mode-tab]", (e, el) => editor?.onModeClick(e, el));
+on("click", "[data-theme-page-tab]", (e, el) => editor?.onPageClick(e, el));
 on("click", "[data-theme-menu-accent-tab]", (e, el) => editor?.onMenuAccentClick(e, el));
 on("click", "[data-theme-reset]", (e, el) => editor?.onReset(e, el));
 on("click", "[data-theme-undo]", (e, el) => editor?.onUndo(e, el));
@@ -146,6 +148,7 @@ function setup(schemaElement) {
       attempt: previewAttempt,
       preset: previewPreset(state),
       mode: state.mode,
+      page: state.page,
     };
   }
 
@@ -198,6 +201,13 @@ function setup(schemaElement) {
     }
     for (const button of document.querySelectorAll("[data-theme-mode-tab]")) {
       const active = button.dataset.themeModeTab === state.mode;
+      button.setAttribute("aria-pressed", String(active));
+      button.classList.toggle("bg-accent", active);
+      button.classList.toggle("text-accent-foreground", active);
+      button.classList.toggle("text-muted-foreground", !active);
+    }
+    for (const button of document.querySelectorAll("[data-theme-page-tab]")) {
+      const active = button.dataset.themePageTab === state.page;
       button.setAttribute("aria-pressed", String(active));
       button.classList.toggle("bg-accent", active);
       button.classList.toggle("text-accent-foreground", active);
@@ -637,6 +647,11 @@ function setup(schemaElement) {
     render();
   }
 
+  function onPageClick(_event, button) {
+    state = selectPage(state, button.dataset.themePageTab);
+    render();
+  }
+
   function onMenuAccentClick(_event, button) {
     state = selectMenuAccent(state, button.dataset.themeMenuAccentTab, schema);
     commitHistory = pushHistory(commitHistory, state);
@@ -775,6 +790,7 @@ function setup(schemaElement) {
     onPickerToggle,
     onStyleClick,
     onModeClick,
+    onPageClick,
     onMenuAccentClick,
     onReset,
     onUndo,

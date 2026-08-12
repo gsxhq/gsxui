@@ -81,6 +81,19 @@ func _gsxrenderAvatarImage(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, src strin
 }
 
 //line avatar.gsx:34:1
+// FIX: AvatarFallback's own recipe accessor only ever resolves to colour
+// (bg-muted/text-muted-foreground) plus rounded-full — never size or
+// centering, the same structural/presentational split progress.gsx's own
+// FIX comment documents. Without "size-full items-center justify-center"
+// (upstream's literal, non-recipe classes for this element), the fallback
+// span is a flex item with no explicit size: it shrinks to fit its text
+// content instead of filling the Avatar circle, and that text is never
+// centered within it — invisible at the default size-8 avatar (close
+// enough to look right by coincidence) but glaring at any larger override
+// (found reviewing theme-creator-parity Task 4's profile card, which sets
+// size-16).
+
+//line avatar.gsx:45:1
 func AvatarFallback(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -92,15 +105,15 @@ func _gsxrenderAvatarFallback(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, childr
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line avatar.gsx:35:2
+//line avatar.gsx:46:2
 	_gsxgw.S("<span class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-muted text-muted-foreground rounded-full flex"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("size-full items-center justify-center"), _gsxrt.Class("bg-muted text-muted-foreground rounded-full flex"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-avatar-fallback"})
 	_gsxgw.BoolAttr("data-gsxui-slot-avatar-fallback", true)
 	_gsxgw.S(">")
-//line avatar.gsx:40:3
+//line avatar.gsx:51:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</span>")
 	return _gsxgw.Err()

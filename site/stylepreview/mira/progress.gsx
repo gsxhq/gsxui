@@ -25,19 +25,34 @@ import "github.com/gsxhq/gsx"
 // and only the percentage is a hole, so the filter still judges it and
 // nothing is trusted that the component did not itself compute. The hole
 // renders the float64 directly, the same way aria-valuenow does.
+//
+// FIX (found reviewing theme-creator-parity Task 4's new preview cards):
+// the indicator's own recipe accessor only ever resolved to a per-style
+// colour, nothing else — no width or height anywhere. Every style's
+// registry/styles/<style>/progress.css only ever sets the ROOT's
+// bg-muted/height/radius and the indicator's bg-primary, never the
+// indicator's size, because those are structural (invariant across every
+// style), not presentational. Upstream's own source confirms this split:
+// registry/bases/radix/ui/progress.tsx's Root carries "relative flex w-full
+// items-center overflow-x-hidden" and Indicator carries "size-full flex-1
+// transition-all" as literal, non-recipe classes — the same class-plus-
+// recipe-accessor shape Card's own Root already uses for "group/card".
+// Without this, translateX's math was correct but had nothing visible to
+// translate: the indicator rendered at 0×0 in every style, so Progress
+// silently never showed a fill.
 component Progress(value float64, attrs gsx.Attrs) {
 	<div
 		role="progressbar"
 		aria-valuemin="0"
 		aria-valuemax="100"
 		aria-valuenow={value}
-		class={ "bg-muted h-1 rounded-md" }
+		class={ "relative flex w-full items-center overflow-x-hidden", "bg-muted h-1 rounded-md" }
 		{ attrs... }
 		data-gsxui-slot-progress
 	>
 		<div
 			style=css`transform: translateX(-@{100 - value}%)`
-			class={ "bg-primary" }
+			class={ "size-full flex-1 transition-all", "bg-primary" }
 			data-gsxui-slot-progress-indicator
 		></div>
 	</div>

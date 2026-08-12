@@ -34,6 +34,7 @@ import {
   selectFontHeading,
   selectMenuAccent,
   selectMode,
+  selectPage,
   selectRadius,
   selectStyle,
   selectTheme,
@@ -396,6 +397,26 @@ test("font selection rejects unsupported values", () => {
   assert.throws(() => selectFontHeading(createThemeState(schema), "comic-sans", schema));
 });
 
+test("page selection defaults to components and switches independently of the preset", () => {
+  const state = createThemeState(schema);
+  assert.equal(state.page, "components");
+  const beforeJSON = canonicalJSON(state.resolved, schema);
+
+  const onProduct = selectPage(state, "product");
+  assert.equal(onProduct.page, "product");
+  // Page is a client-only view toggle (mirrors mode) — never part of the
+  // exported/committed preset.
+  assert.equal(canonicalJSON(onProduct.resolved, schema), beforeJSON);
+  assert.deepEqual(onProduct.selection, state.selection);
+
+  const back = selectPage(onProduct, "components");
+  assert.equal(back.page, "components");
+});
+
+test("page selection rejects unsupported values", () => {
+  assert.throws(() => selectPage(createThemeState(schema), "marketing"));
+});
+
 test("palette previews never alter committed export state", () => {
   const committed = createThemeState(schema);
   const basePreview = previewBaseColor(committed, "stone", schema);
@@ -717,6 +738,25 @@ test("undo/redo replays font selections exactly like every other axis", () => {
   state = step.state;
   assert.equal(state.resolved.fontSans, "Inter");
   assert.equal(state.resolved.fontHeading, "Inter");
+});
+
+test("undo/redo never touches page, the same as mode", () => {
+  let state = createThemeState(schema);
+  let history = createHistory(state);
+  state = selectPage(state, "product");
+  state = selectMode(state, "dark");
+
+  state = selectTheme(state, "blue", schema);
+  history = pushHistory(history, state);
+
+  // Undoing crosses a real commit boundary (back to the pre-"blue"
+  // resolved preset), which is what actually exercises replacePreset's
+  // clone-then-overwrite path — page and mode must survive it exactly
+  // like they already do for every other reducer.
+  const step = undoHistory(history, state, schema);
+  assert.notEqual(step.state.resolved.theme.light.primary, state.resolved.theme.light.primary);
+  assert.equal(step.state.page, "product");
+  assert.equal(step.state.mode, "dark");
 });
 
 test("undo/redo at the stack's bounds is a no-op", () => {

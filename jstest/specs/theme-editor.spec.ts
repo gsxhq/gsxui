@@ -274,6 +274,54 @@ test("Base Color and Theme choices update both iframe modes and the same-named o
     .toBe(catalog.palette.resolved.stone.blue.dark.primary);
 });
 
+test("page tabs switch the preview between the components and product galleries and survive a style change", async ({
+  page,
+}) => {
+  await page.goto("/theme");
+  await expect(page.locator("[data-theme-preview-status]")).toHaveText("Live");
+  const componentsTab = page.locator('[data-theme-page-tab="components"]');
+  const productTab = page.locator('[data-theme-page-tab="product"]');
+  await expect(componentsTab).toHaveAttribute("aria-pressed", "true");
+  await expect(productTab).toHaveAttribute("aria-pressed", "false");
+
+  const preview = page.frameLocator("[data-theme-preview-frame]");
+  const nova = preview.locator('[data-theme-preview-style="nova"]');
+  const novaComponentsPage = nova.locator('[data-theme-preview-page="components"]');
+  const novaProductPage = nova.locator('[data-theme-preview-page="product"]');
+  await expect(novaComponentsPage).not.toHaveAttribute("hidden", "");
+  await expect(novaProductPage).toHaveAttribute("hidden", "");
+  // CardTitle is a plain styled div (shadcn/ui's own pattern), not a
+  // semantic heading — locate it by its slot marker and text instead of by
+  // ARIA role.
+  await expect(
+    novaComponentsPage.locator("[data-gsxui-slot-card-title]", { hasText: "Buttons" }),
+  ).toBeVisible();
+
+  await productTab.click();
+  await expect(productTab).toHaveAttribute("aria-pressed", "true");
+  await expect(componentsTab).toHaveAttribute("aria-pressed", "false");
+  await expect(novaComponentsPage).toHaveAttribute("hidden", "");
+  await expect(novaProductPage).not.toHaveAttribute("hidden", "");
+  await expect(
+    novaProductPage.locator("[data-gsxui-slot-card-title]", { hasText: "Pricing" }),
+  ).toBeVisible();
+
+  // The page selection is a client-only view toggle, not part of the
+  // theme preset: switching styles must not reset it back to the default.
+  await page.locator('[data-theme-style="maia"]').click();
+  const maia = preview.locator('[data-theme-preview-style="maia"]');
+  await expect(maia.locator('[data-theme-preview-page="product"]')).not.toHaveAttribute("hidden", "");
+  await expect(maia.locator('[data-theme-preview-page="components"]')).toHaveAttribute("hidden", "");
+  await expect(productTab).toHaveAttribute("aria-pressed", "true");
+
+  // ...and it never leaks into the exported preset/share code either.
+  const share = await page.locator('[data-theme-command="init"]').inputValue();
+  await componentsTab.click();
+  await expect
+    .poll(() => page.locator('[data-theme-command="init"]').inputValue())
+    .toBe(share);
+});
+
 test("menu accent tabs overlay accent from primary and survive a theme change", async ({
   page,
 }) => {
