@@ -44,14 +44,14 @@ export default defineConfig({
         // committed baselines are generated) ignores hinting entirely, so
         // text-dense cards rendered 2-5% bolder ON CI ONLY — past the 1%
         // visual gate — from the per-style gate's very first Linux run.
-        // Unhinted grayscale AA converges the two rasterizers; this is the
-        // standard Playwright mitigation for shared-baseline suites.
+        // --font-render-hinting=none converges the rasterizers on the
+        // dominant divergence (hinted stem darkening). Deliberately NOT
+        // paired with --disable-lcd-text/--disable-font-subpixel-positioning:
+        // measured on CI, that trio fixed the bold-text cards but thinned
+        // small/light text enough to push a different set (feedback,
+        // lyra/mira calendar) past the same 1% gate.
         launchOptions: {
-          args: [
-            "--font-render-hinting=none",
-            "--disable-lcd-text",
-            "--disable-font-subpixel-positioning",
-          ],
+          args: ["--font-render-hinting=none"],
         },
       },
     },
