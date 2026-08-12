@@ -99,8 +99,12 @@ test("submenu uses the emitted right-side directional enter offset", async ({
 // unconditional h-8 (32px) from cn-command-input-group with no in-dialog
 // variant, same genuine upstream removal already established for
 // CommandItem's in-dialog padding bump (layer-precedence.spec.ts's "CommandDialog's
-// in-dialog rounding" test). wrapperHeight/inputHeight below reflect that
-// real, unbumped geometry; only `overflow: hidden` on the dialog itself is
+// in-dialog rounding" test). wrapperHeight below reflects that real, unbumped
+// geometry. inputHeight is the input's natural text-sm line box (20px): the
+// wrapper's `items-center` (added so the search icon isn't jammed against the
+// text) centres the input at its own height instead of stretching it to the
+// wrapper's content box, matching upstream nova's heightless .cn-command-input
+// (w-full text-sm, no height). Only `overflow: hidden` on the dialog itself is
 // still real (it's baked into CommandDialog's shared DialogContent className
 // in the .tsx, outside any per-style CSS the porter reads, so it silently
 // dropped and is restored on command-dialog-content's recipe).
@@ -131,7 +135,7 @@ test("CommandDialog sizing is supplied by CSS ancestry", async ({ page }) => {
     padding: "0px",
     commandPadding: "4px",
     wrapperHeight: "32px",
-    inputHeight: "28px",
+    inputHeight: "20px",
   });
 });
 
