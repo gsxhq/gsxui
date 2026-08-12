@@ -65,7 +65,7 @@ function shareFromInit(command: string) {
   return match[1];
 }
 
-type PickerKind = "baseColor" | "theme" | "radius" | "chartColor" | "fontSans" | "fontHeading";
+type PickerKind = "baseColor" | "theme" | "radius" | "fontSans" | "fontHeading";
 
 function picker(page: Page, kind: PickerKind) {
   return page.locator(`[data-theme-picker="${kind}"]`);
@@ -170,12 +170,14 @@ test("pickers expose accessible catalog choices and no raw token inputs", async 
   await expect(radius.getByRole("radio")).toHaveCount(4);
   await expect(radius.getByRole("radio", { name: "Medium", exact: true })).toBeChecked();
 
-  const chartColor = picker(page, "chartColor");
-  await chartColor.locator("[data-theme-picker-trigger]").click();
-  await expect(chartColor.getByRole("radio")).toHaveCount(18);
-  await expect(chartColor.getByRole("radio", { name: "Neutral", exact: true })).toBeChecked();
+  // The chart color axis deliberately has NO picker: gsxui ships no chart
+  // component, so the control was dropped from the editor (2026-08-12). The
+  // axis itself survives — schema, state, share codes, JSON import, and the
+  // emitted chart-1..5 variables all still carry it (see the "chart variables
+  // still render" test below).
+  await expect(page.locator('[data-theme-picker="chartColor"]')).toHaveCount(0);
 
-  for (const kind of ["baseColor", "theme", "radius", "chartColor"] as const) {
+  for (const kind of ["baseColor", "theme", "radius"] as const) {
     await expect(picker(page, kind).locator("[data-theme-selection-swatch]")).toBeVisible();
     await expect(picker(page, kind).locator("[data-theme-choice-swatch]")).not.toHaveCount(0);
   }
@@ -350,35 +352,26 @@ test("menu accent tabs overlay accent from primary and survive a theme change", 
   await expect.poll(() => iframeVariable(page, "accent")).not.toBe(await iframeVariable(page, "primary"));
 });
 
-test("chart color picker overlays chart-1..5 independent of theme and survives a theme change", async ({
+// The chart color PICKER is gone (gsxui has no chart component), but the axis
+// must keep emitting chart-1..5 into the preview: presets, share codes, and
+// JSON import still carry chartColor, and dropping the variables would break
+// any consumer theme that charts on them. selectChartColor's overlay/survival
+// state semantics stay covered in web/theme-state.test.js.
+test("chart variables still render without a picker and survive a theme change", async ({
   page,
 }) => {
   await page.goto("/theme");
   const catalog = await schema(page);
 
-  const beforeChart1 = await iframeVariable(page, "chart-1");
   const beforePrimary = await iframeVariable(page, "primary");
-  await expect(selectionValue(page, "chartColor")).resolves.toBe("Neutral");
+  const neutralChart1 = catalog.palette.chartColors.neutral.light["chart-1"];
+  await expect.poll(() => iframeVariable(page, "chart-1")).toBe(neutralChart1);
 
-  await choose(page, "chartColor", "Violet");
-  await expect(selectionValue(page, "chartColor")).resolves.toBe("Violet");
-  // Base color/theme picker selections are untouched by the chart color
-  // axis — it is independent, not a collapse to a matching theme.
-  await expect(selectionValue(page, "baseColor")).resolves.toBe("Neutral");
-  await expect(selectionValue(page, "theme")).resolves.toBe("Neutral");
-  await expect.poll(() => iframeVariable(page, "primary")).toBe(beforePrimary);
-  await expect
-    .poll(() => iframeVariable(page, "chart-1"))
-    .toBe(catalog.palette.chartColors.violet.light["chart-1"]);
-  expect(await iframeVariable(page, "chart-1")).not.toBe(beforeChart1);
-
-  // The override survives an unrelated theme change instead of being wiped
-  // by the fresh base color/theme resolution.
+  // A theme change re-resolves the palette; the chart axis re-applies its own
+  // (default neutral) table rather than being wiped or collapsed to the theme.
   await choose(page, "theme", "Blue");
   await expect.poll(() => iframeVariable(page, "primary")).not.toBe(beforePrimary);
-  await expect
-    .poll(() => iframeVariable(page, "chart-1"))
-    .toBe(catalog.palette.chartColors.violet.light["chart-1"]);
+  await expect.poll(() => iframeVariable(page, "chart-1")).toBe(neutralChart1);
 });
 
 test("font pickers set --font-sans/--font-heading independently and survive a theme change", async ({
