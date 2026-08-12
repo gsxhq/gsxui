@@ -128,9 +128,8 @@ function filter(root, { scrollSelection = false } = {}) {
 
   // One-time source-order stamps (items AND the list's top-level children:
   // groups, separators, the empty element, ungrouped items). Ranking ties
-  // resolve to this order, which is what restores the original DOM layout
-  // when the query clears — every score is 1 then, so the stable sort below
-  // IS the undo of all previous reorders.
+  // resolve to this order; with no query the top-level sort restores it
+  // outright (see below), undoing every prior reorder.
   const items = itemsOf(root);
   items.forEach((item, i) => {
     if (!("gsxuiIndex" in item.dataset)) item.dataset.gsxuiIndex = String(i);
@@ -159,12 +158,19 @@ function filter(root, { scrollSelection = false } = {}) {
     group.hidden = !inGroup.some((i) => !i.hidden);
   }
 
-  // The list's top level reorders by best contained score (a bare item is
-  // its own score; a group is its best item; separators/empty score 0 and
-  // are hidden or inert while a query is active anyway).
+  // The list's top level: while a query is active, float groups/bare items up
+  // by best contained score (a bare item is its own score; a group is its best
+  // item). With NO query, restore source order outright — separators (and the
+  // empty element) contain no items, so they score 0 and a rank sort would sink
+  // every one of them below the rank-1 groups to the very bottom of the list,
+  // stranding a between-groups divider at the end. sourceOrder keeps each
+  // separator between the groups it divides. Separators are hidden whenever a
+  // query is set (below), so their rank never actually matters during filtering.
   const rank = (el) =>
     scores.get(el) ?? Math.max(0, ...items.filter((i) => el.contains(i)).map((i) => scores.get(i)));
-  const kids = [...list.children].sort((a, b) => rank(b) - rank(a) || sourceOrder(a, b));
+  const kids = [...list.children].sort((a, b) =>
+    query ? rank(b) - rank(a) || sourceOrder(a, b) : sourceOrder(a, b),
+  );
   for (const kid of kids) list.appendChild(kid);
 
   for (const sep of root.querySelectorAll("[data-gsxui-slot-command-separator]")) {
