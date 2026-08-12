@@ -528,7 +528,7 @@ component themeEditor(previewURL string, workspace bool) {
 							</div>
 						</div>
 					</div>
-					<div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+					<div class="grid grid-cols-2 gap-3">
 						<ThemePicker
 							name="baseColor"
 							label="Base color"

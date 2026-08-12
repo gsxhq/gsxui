@@ -639,7 +639,7 @@ func _gsxrenderthemeEditor(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, previewUR
 	}
 	_gsxgw.S("</div></div></div>")
 //line theme.gsx:531:6
-	_gsxgw.S("<div class=\"grid grid-cols-2 gap-3 sm:grid-cols-4\">")
+	_gsxgw.S("<div class=\"grid grid-cols-2 gap-3\">")
 //line theme.gsx:532:7
 	_gsxgw.NodeResult(_gsxrenderThemePicker(ctx, _gsxgw, "baseColor", "Base color", "neutral", themePickerChoices(preset.BaseColorChoices())))
 //line theme.gsx:538:7
