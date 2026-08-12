@@ -27,7 +27,7 @@ func TestSliderPinned(t *testing.T) {
 	// render() HTML-escapes attribute values, so "&" in the arbitrary-variant
 	// class list becomes "&amp;" in the rendered output.
 	want := `<input type="range" min="0" max="100" step="1" value="50" style="--fill: 50%" class="` +
-		strings.ReplaceAll(canonicalSliderClass, "&", "&amp;") + `" data-gsxui-slot-slider>`
+		strings.ReplaceAll(canonicalSliderClass, "&", "&amp;") + `" data-horizontal data-gsxui-slot-slider>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
 	}

@@ -80,6 +80,7 @@ component Slider(value float64, min float64, max float64, step float64, attrs gs
 		style=css`--fill: @{fill}%`
 		class={ slider.Root() }
 		{ attrs... }
+		data-horizontal
 		data-gsxui-slot-slider
 	/>
 }
