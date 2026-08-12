@@ -39,6 +39,20 @@ export default defineConfig({
       use: {
         ...devices["Desktop Chrome"],
         viewport: { width: 1280, height: 900 },
+        // Cross-platform screenshot determinism: FreeType (Linux CI) hints
+        // and stem-darkens variable fonts where CoreText (macOS, where the
+        // committed baselines are generated) ignores hinting entirely, so
+        // text-dense cards rendered 2-5% bolder ON CI ONLY — past the 1%
+        // visual gate — from the per-style gate's very first Linux run.
+        // Unhinted grayscale AA converges the two rasterizers; this is the
+        // standard Playwright mitigation for shared-baseline suites.
+        launchOptions: {
+          args: [
+            "--font-render-hinting=none",
+            "--disable-lcd-text",
+            "--disable-font-subpixel-positioning",
+          ],
+        },
       },
     },
   ],

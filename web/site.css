@@ -13,15 +13,13 @@
    use them too, the same reasoning web/preview.js already imports this same
    site.css for the theme_preview.gsx iframe.
 
-   ORDER IS LOAD-BEARING: fonts.css also registers "Geist Variable" (its
-   latin picker subset), the same family @fontsource-variable/geist below
-   registers in full. For identical @font-face descriptors the LAST
-   declaration wins, so fonts.css must come FIRST or its subset — whose
-   hinting the subsetter stripped — shadows the full hinted face. CoreText
-   ignores hinting (macOS renders both identically), but FreeType autohints
-   the unhinted subset with stem darkening: every text-dense visual
-   baseline drifted 2-5% bolder ON CI ONLY, failing the 1% gate while
-   local runs stayed byte-identical. */
+   ORDER IS KEPT DELIBERATE: fonts.css also registers "Geist Variable"
+   (its latin picker file), the same family @fontsource-variable/geist
+   below registers with full unicode-range coverage. The two latin files
+   are byte-identical today (fonts.css vendors fontsource's own file), so
+   the order is currently inert — but for identical @font-face descriptors
+   the LAST declaration wins, so fonts.css stays FIRST to guarantee the
+   full fontsource set keeps winning if either file ever diverges. */
 @import "../assets/fonts/fonts.css";
 
 @import "@fontsource-variable/geist";
