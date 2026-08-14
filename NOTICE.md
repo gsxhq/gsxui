@@ -54,3 +54,14 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+The chart component (`ui/chart.gsx`, `ui/chart.js`, `ui/chart.render.js`)
+is adapted from **templui / shadcn-templ v2**
+([templui/templui](https://github.com/templui/templui), MIT © templui
+contributors, at 9ec720c03909): the Recharts-shaped Go composition API,
+the server-side chart model, and the client renderer — itself a literal
+port of the slices of Recharts, recharts-scale, d3-shape and react-smooth
+those components need — originate there, translated from templ/React
+idioms to gsx.
