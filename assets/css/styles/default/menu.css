@@ -1,25 +1,21 @@
 @layer components {
   /* DropdownMenu, ContextMenu and Menubar migrated to the slot axis
-     (registry/styles/{nova,maia}/{dropdown-menu,context-menu,menubar}.css)
-     EXCEPT these two rule groups, which must stay here as plain CSS. Their
-     caller-overridability depends on the CSS LAYER boundary — these rules
-     live in @layer components, a caller's plain utility class lives in
-     @layer utilities, and @layer utilities always wins regardless of
-     specificity. That guarantee only exists pre-resolution: if either
-     rule migrated onto its slot's recipe, it would resolve to a literal
-     `[data-inset]:pl-8` / `[data-disabled]:opacity-50` utility class
-     Tailwind scans directly out of the generated ui/*.gsx — no longer
-     inside an explicit @layer components boundary at consumption time — and
-     it would then compete on ordinary specificity instead, at (0,2,0),
-     permanently beating a caller's plain `pl-*`/`opacity-*` utility
-     regardless of source order. See
+     (registry/styles/<style>/{dropdown-menu,context-menu,menubar}.css)
+     EXCEPT this [data-disabled] opacity group, which must stay here as
+     plain CSS. Its caller-overridability depends on the CSS LAYER
+     boundary — this rule lives in @layer components, a caller's plain
+     utility class lives in @layer utilities, and @layer utilities always
+     wins regardless of specificity. That guarantee only exists
+     pre-resolution: migrated onto its slot's recipe it would resolve to a
+     literal `data-disabled:opacity-50` utility Tailwind scans directly out
+     of the generated ui/*.gsx and compete on ordinary specificity at
+     (0,2,0), permanently beating a caller's plain `opacity-*` utility. See
      docs/superpowers/specs/2026-07-29-slot-axis-and-component-migration-design.md
      section 10b, and assets/css/styles/default/{card,label,pagination}.css
      for the identical prior fix on other components.
 
-     Both data-inset and data-disabled are stamped by the CALLER through
-     attrs on these components (ContextMenuItem/DropdownMenuItem/
-     MenubarItem/*Label/*SubTrigger's own doc comments say so explicitly),
+     data-disabled is stamped by the CALLER through attrs on these
+     components (the item components' own doc comments say so explicitly),
      not by the component itself — the same shape as Card's `.border-b` and
      Label's disabled-state rules, not a component-owned runtime toggle.
 
@@ -35,36 +31,17 @@
      unchanged carried-over behavior, not something this migration
      introduced or is responsible for fixing.
 
-     KNOWN LIMITATION (8-style port, not yet resolved): the 8-style port put
-     `data-inset:pl-<N>` directly onto each menu family's own item/label/
-     sub-trigger recipe classes (all 8 styles, all 3 families), which
-     reintroduced exactly the caller-override loss this file exists to
-     prevent — TestDropdownMenuItemInsetPaddingAndDisabledOpacityStayCaller
-     Overridable (jstest) caught it — AND the inset amount genuinely varies
-     per style (confirmed: nova/lyra/rhea pl-7, mira pl-7.5, vega pl-8,
-     maia/luma/sera pl-9.5), unlike border-b's --card-spacing indirection
-     this can reference (no shared custom property carries this value today).
-     `data-inset:pl-<N>` was removed from all 8 styles' recipes so the
-     caller-override guarantee holds again, but the value below is pinned to
-     nova's own pl-7 (28px) rather than each style's real amount — correct
-     caller-override behavior, correct value for the shipped default style,
-     approximate for the other 7 installed styles' non-default inset amount.
-     Follow-up: give each menu family's own recipe an unconditional custom
-     property (mirroring --card-spacing) and reference it here instead of a
-     literal pl-7, the same fix already applied to Card's border-b/border-t. */
-  :where(
-      [data-gsxui-slot-dropdown-menu-item],
-      [data-gsxui-slot-context-menu-item],
-      [data-gsxui-slot-menubar-item],
-      [data-gsxui-slot-dropdown-menu-label],
-      [data-gsxui-slot-context-menu-label],
-      [data-gsxui-slot-menubar-label],
-      [data-gsxui-slot-dropdown-menu-sub-trigger],
-      [data-gsxui-slot-context-menu-sub-trigger],
-      [data-gsxui-slot-menubar-sub-trigger]
-    )[data-inset] {
-    @apply pl-7;
-  }
+     data-inset padding deliberately does NOT live here: it sits on each
+     style's own recipes as `data-inset:pl-<N>` (per-style, per-family
+     values ported from upstream — lyra's menubar is pl-8 while its other
+     two families are pl-7). A retained escape-hatch rule for it was dead
+     CSS: every item/label/sub-trigger recipe sets its own `px-*`/`pl-*`
+     utility, which outranks any @layer components padding-left, so the
+     rule never fired anywhere (caught 2026-08-14 by upstream parity
+     review; the jstest suite only asserted a caller's pl-2 wins, which a
+     dead rule also satisfies). On the recipe, inset padding outranks a
+     caller's plain `pl-*` — exactly upstream's own semantics, where the
+     `[data-inset]` variant beats a plain utility on specificity. */
   :where(
       [data-gsxui-slot-dropdown-menu-item],
       [data-gsxui-slot-context-menu-item],

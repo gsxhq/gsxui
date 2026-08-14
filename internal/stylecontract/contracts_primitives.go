@@ -164,7 +164,7 @@ var primitiveContracts = []Component{
 					},
 					{
 						Attribute: "data-size",
-						Values:    []string{"default", "sm"},
+						Values:    []string{"default", "sm", "xs"},
 					},
 				},
 			},

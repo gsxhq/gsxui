@@ -14,7 +14,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-context-menu-item {
-    @apply focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 focus:*:[svg]:text-accent-foreground gap-2.5 rounded-2xl px-3 py-2 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 flex data-disabled:pointer-events-none;
+    @apply focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 focus:*:[svg]:text-accent-foreground gap-2.5 rounded-2xl px-3 py-2 text-sm font-medium data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex data-disabled:pointer-events-none;
   }
 
   /* carried: no upstream counterpart */
@@ -28,7 +28,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-context-menu-checkbox-item {
-    @apply data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground gap-2.5 rounded-2xl py-2 pr-8 pl-3 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 flex;
+    @apply data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground gap-2.5 rounded-2xl py-2 pr-8 pl-3 text-sm font-medium data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex;
   }
 
   /* carried: no upstream counterpart */
@@ -38,7 +38,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-context-menu-radio-item {
-    @apply data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground gap-2.5 rounded-2xl py-2 pr-8 pl-3 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 flex;
+    @apply data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground gap-2.5 rounded-2xl py-2 pr-8 pl-3 text-sm font-medium data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex;
   }
 
   /* carried: no upstream counterpart */
@@ -47,7 +47,7 @@
   }
 
   .gsxui-recipe-context-menu-label {
-    @apply text-muted-foreground px-3 py-2.5 text-xs;
+    @apply text-muted-foreground px-3 py-2.5 text-xs data-inset:pl-9.5;
   }
 
   .gsxui-recipe-context-menu-separator {
@@ -65,7 +65,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-context-menu-sub-trigger {
-    @apply focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground rounded-2xl px-3 py-2 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 flex;
+    @apply focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground rounded-2xl px-3 py-2 text-sm font-medium data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex;
   }
 
   .gsxui-recipe-context-menu-sub-content {

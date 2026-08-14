@@ -268,7 +268,7 @@ component MenubarItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
 			"group/menubar-item relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
-			"focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground min-h-7 gap-2 rounded-md px-2 py-1 text-xs/relaxed [&_svg:not([class*='size-'])]:size-3.5 flex data-disabled:pointer-events-none",
+			"focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground min-h-7 gap-2 rounded-md px-2 py-1 text-xs/relaxed data-inset:pl-7.5 [&_svg:not([class*='size-'])]:size-3.5 flex data-disabled:pointer-events-none",
 			switch variant {
 			case "destructive":
 				"text-destructive focus:bg-destructive/10 focus:text-destructive *:[svg]:text-destructive"
@@ -318,7 +318,7 @@ component MenubarCheckboxItem(checked bool, value string, children gsx.Node, att
 	<div
 		class={
 			"relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
-			"data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground min-h-7 gap-2 rounded-md py-1.5 pr-2 pl-7.5 text-xs flex"
+			"data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground min-h-7 gap-2 rounded-md py-1.5 pr-2 pl-7.5 text-xs data-inset:pl-7.5 flex"
 		}
 		role="menuitemcheckbox"
 		data-value={value}
@@ -369,7 +369,7 @@ component MenubarRadioItem(checked bool, value string, children gsx.Node, attrs 
 	<div
 		class={
 			"relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
-			"data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground min-h-7 gap-2 rounded-md py-1.5 pr-2 pl-7.5 text-xs [&_svg:not([class*='size-'])]:size-3.5 flex"
+			"data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground min-h-7 gap-2 rounded-md py-1.5 pr-2 pl-7.5 text-xs data-inset:pl-7.5 [&_svg:not([class*='size-'])]:size-3.5 flex"
 		}
 		role="menuitemradio"
 		data-value={value}
@@ -402,7 +402,11 @@ component MenubarRadioItem(checked bool, value string, children gsx.Node, attrs 
 // .cn-menubar-label rule is genuinely text-sm, a real per-component nova
 // value, not a copy of dropdown's own (already-shipped) Label metrics.
 component MenubarLabel(children gsx.Node, attrs gsx.Attrs) {
-	<div class={ "text-muted-foreground px-2 py-1.5 text-xs" } { attrs... } data-gsxui-slot-menubar-label>
+	<div
+		class={ "text-muted-foreground px-2 py-1.5 text-xs data-inset:pl-7.5" }
+		{ attrs... }
+		data-gsxui-slot-menubar-label
+	>
 		{ children }
 	</div>
 }
@@ -480,7 +484,7 @@ component MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
 			"cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
-			"focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground min-h-7 gap-2 rounded-md px-2 py-1 text-xs [&_svg:not([class*='size-'])]:size-3.5 flex"
+			"focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground min-h-7 gap-2 rounded-md px-2 py-1 text-xs data-inset:pl-7.5 [&_svg:not([class*='size-'])]:size-3.5 flex"
 		}
 		role="menuitem"
 		aria-haspopup="menu"

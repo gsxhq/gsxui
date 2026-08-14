@@ -200,7 +200,7 @@ func _gsxrenderContextMenuItem(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, varia
 //line context-menu.gsx:110:2
 	_gsxgw.S("<div")
 	_gsxv0 := "group/context-menu-item relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"
-	_gsxv1 := "focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 focus:*:[svg]:text-accent-foreground gap-2.5 rounded-xl px-3 py-2 text-sm [&_svg:not([class*='size-'])]:size-4 flex data-disabled:pointer-events-none"
+	_gsxv1 := "focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 focus:*:[svg]:text-accent-foreground gap-2.5 rounded-xl px-3 py-2 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex data-disabled:pointer-events-none"
 	var _gsxv2 string
 	switch variant {
 	case "destructive":
@@ -283,7 +283,7 @@ func ContextMenuCheckboxItem(checked bool, value string, children gsx.Node, attr
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:156:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class("data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground gap-2 rounded-xl py-2 pr-8 pl-3 text-sm [&_svg:not([class*='size-'])]:size-4 flex"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class("data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground gap-2 rounded-xl py-2 pr-8 pl-3 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitemcheckbox\"")
@@ -382,7 +382,7 @@ func ContextMenuRadioItem(checked bool, value string, children gsx.Node, attrs g
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:213:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class("data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground gap-2 rounded-xl py-2 pr-8 pl-3 text-sm [&_svg:not([class*='size-'])]:size-4 flex"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class("data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground gap-2 rounded-xl py-2 pr-8 pl-3 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitemradio\"")
@@ -444,20 +444,20 @@ func ContextMenuLabel(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line context-menu.gsx:250:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground px-3 py-2.5 text-xs"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground px-3 py-2.5 text-xs data-inset:pl-9.5"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-context-menu-label"})
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-label", true)
 		_gsxgw.S(">")
-//line context-menu.gsx:251:3
+//line context-menu.gsx:255:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line context-menu.gsx:255:1
+//line context-menu.gsx:259:1
 func ContextMenuSeparator(attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -469,7 +469,7 @@ func _gsxrenderContextMenuSeparator(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, 
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line context-menu.gsx:256:2
+//line context-menu.gsx:260:2
 	_gsxgw.S("<div class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-border/50 -mx-1 my-1 h-px"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
@@ -483,7 +483,7 @@ func _gsxrenderContextMenuSeparator(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, 
 	return _gsxgw.Err()
 }
 
-//line context-menu.gsx:264:1
+//line context-menu.gsx:268:1
 func ContextMenuShortcut(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -495,7 +495,7 @@ func _gsxrenderContextMenuShortcut(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, c
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line context-menu.gsx:265:2
+//line context-menu.gsx:269:2
 	_gsxgw.S("<span class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("text-muted-foreground group-focus/context-menu-item:text-accent-foreground ml-auto text-xs tracking-widest"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
@@ -503,13 +503,13 @@ func _gsxrenderContextMenuShortcut(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, c
 	_gsxgw.Spread(ctx, "span", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-context-menu-shortcut"})
 	_gsxgw.BoolAttr("data-gsxui-slot-context-menu-shortcut", true)
 	_gsxgw.S(">")
-//line context-menu.gsx:272:3
+//line context-menu.gsx:276:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</span>")
 	return _gsxgw.Err()
 }
 
-//line context-menu.gsx:276:1
+//line context-menu.gsx:280:1
 // ContextMenuSub is the non-rendering submenu root — layout-neutral
 // (class="contents", same idiom as ContextMenu's own root and
 // DropdownMenuSub) so its SubTrigger/SubContent children sit inline in the
@@ -518,11 +518,11 @@ func _gsxrenderContextMenuShortcut(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, c
 // and to scope the pointer-leave grace-period boundary check to "the whole
 // sub" — same shape as DropdownMenuSub's own doc comment.
 
-//line context-menu.gsx:283:1
+//line context-menu.gsx:287:1
 func ContextMenuSub(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line context-menu.gsx:284:2
+//line context-menu.gsx:288:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("contents"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -530,14 +530,14 @@ func ContextMenuSub(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-context-menu-sub"})
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-sub", true)
 		_gsxgw.S(">")
-//line context-menu.gsx:284:74
+//line context-menu.gsx:288:74
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line context-menu.gsx:287:1
+//line context-menu.gsx:291:1
 // ContextMenuSubTrigger opens/closes its sibling ContextMenuSubContent
 // (context-menu.js: pointerenter, ArrowRight, click). aria-haspopup/
 // aria-expanded are server-rendered closed (derived-not-read ARIA anatomy,
@@ -551,13 +551,13 @@ func ContextMenuSub(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // gap-1.5 harmonization and the deliberately-preserved missing icon size-4.
 // data-[state=open]: kept, not nova's data-open: (standing house exception).
 
-//line context-menu.gsx:299:1
+//line context-menu.gsx:303:1
 func ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line context-menu.gsx:300:2
+//line context-menu.gsx:304:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class("focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground rounded-xl px-3 py-2 text-sm [&_svg:not([class*='size-'])]:size-4 flex"), _gsxrt.Class(attrs.Class()))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0"), _gsxrt.Class("focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground rounded-xl px-3 py-2 text-sm data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-4 flex"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"menuitem\"")
@@ -578,16 +578,16 @@ func ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-context-menu-sub-trigger"})
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-sub-trigger", true)
 		_gsxgw.S(">")
-//line context-menu.gsx:313:3
+//line context-menu.gsx:317:3
 		_gsxgw.Node(ctx, children)
-//line context-menu.gsx:314:3
+//line context-menu.gsx:318:3
 		_gsxgw.Node(ctx, icon.ChevronRight())
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line context-menu.gsx:318:1
+//line context-menu.gsx:322:1
 // ContextMenuSubContent is the submenu popover — see the file header's
 // SUBMENUS comment for why it must render DOM-nested (not portalled) inside
 // its ContextMenuSub. Class string is byte-identical, modulo the
@@ -603,11 +603,11 @@ func ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // rounded-lg metrics (border kept, not nova's ring-1 — standing house
 // exception).
 
-//line context-menu.gsx:332:1
+//line context-menu.gsx:336:1
 func ContextMenuSubContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line context-menu.gsx:333:2
+//line context-menu.gsx:337:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("max-h-96 origin-top-left overflow-x-hidden overflow-y-auto outline-none"), _gsxrt.Class("transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 bg-popover text-popover-foreground min-w-32 rounded-2xl border p-1 shadow-lg duration-100"), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -630,7 +630,7 @@ func ContextMenuSubContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-context-menu-sub-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-context-menu-sub-content", true)
 		_gsxgw.S(">")
-//line context-menu.gsx:346:3
+//line context-menu.gsx:350:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

@@ -24,7 +24,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-menubar-item {
-    @apply focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2 rounded-sm px-2 py-1.5 text-sm [&_svg:not([class*='size-'])]:size-4 flex data-disabled:pointer-events-none;
+    @apply focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-2 rounded-sm px-2 py-1.5 text-sm data-inset:pl-8 [&_svg:not([class*='size-'])]:size-4 flex data-disabled:pointer-events-none;
   }
 
   /* carried: no upstream counterpart */
@@ -38,7 +38,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-menubar-checkbox-item {
-    @apply data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-2 rounded-md py-1.5 pr-2 pl-8 text-sm flex;
+    @apply data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-2 rounded-md py-1.5 pr-2 pl-8 text-sm data-inset:pl-8 flex;
   }
 
   .gsxui-recipe-menubar-checkbox-item-indicator {
@@ -49,7 +49,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-menubar-radio-item {
-    @apply data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-2 rounded-md py-1.5 pr-2 pl-8 text-sm [&_svg:not([class*='size-'])]:size-4 flex;
+    @apply data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-2 rounded-md py-1.5 pr-2 pl-8 text-sm data-inset:pl-8 [&_svg:not([class*='size-'])]:size-4 flex;
   }
 
   .gsxui-recipe-menubar-radio-item-indicator {
@@ -59,7 +59,7 @@
   }
 
   .gsxui-recipe-menubar-label {
-    @apply px-2 py-1.5 text-sm font-medium;
+    @apply px-2 py-1.5 text-sm font-medium data-inset:pl-8;
   }
 
   .gsxui-recipe-menubar-separator {
@@ -77,7 +77,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-menubar-sub-trigger {
-    @apply focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground gap-2 rounded-sm px-2 py-1.5 text-sm [&_svg:not([class*='size-'])]:size-4 flex;
+    @apply focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground gap-2 rounded-sm px-2 py-1.5 text-sm data-inset:pl-8 [&_svg:not([class*='size-'])]:size-4 flex;
   }
 
   .gsxui-recipe-menubar-sub-content {

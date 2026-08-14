@@ -433,13 +433,16 @@ test("Label's disabled-state opacity stays caller-overridable", async ({ page })
   expect(opacity).toBe("1");
 });
 
-// DropdownMenu/ContextMenu/Menubar migration pins (wave 3b). Two shapes:
+// DropdownMenu/ContextMenu/Menubar migration pins (wave 3b). Three shapes:
 // regular per-component regression pins on their own migrated recipe rules,
-// and one §10b caller-override pin per component proving the retained
-// data-inset/data-disabled rules (assets/css/styles/default/menu.css) still
-// lose to a caller's plain utility — see
-// jstest/harness/style_contract.gsx's "dropdown-menu-item-caller" /
-// "context-menu-item-caller" / "menubar-item-caller" fixtures.
+// one positive inset pin per component proving data-inset actually indents
+// (28px, nova's pl-7 — the rule lives on the recipe itself, upstream
+// semantics), and one caller pin per component proving a caller's plain
+// pl-* loses to inset padding (as it does upstream) while a caller's
+// opacity utility still beats the retained [data-disabled]:opacity-50 rule
+// (assets/css/styles/default/menu.css) — see
+// jstest/harness/style_contract.gsx's "*-item-inset" / "*-item-caller"
+// fixtures.
 
 test("DropdownMenu content keeps its rounded-lg popover chrome", async ({ page }) => {
   const response = await page.goto("/x/dropdown-menu/basic");
@@ -452,7 +455,43 @@ test("DropdownMenu content keeps its rounded-lg popover chrome", async ({ page }
   expect(borderRadius).toBe("10px");
 });
 
-test("DropdownMenuItem's inset padding and disabled opacity stay caller-overridable", async ({
+test("DropdownMenuItem with data-inset indents to the recipe's inset padding", async ({
+  page,
+}) => {
+  const response = await page.goto("/f/style-contract");
+  expect(response?.status(), "style contract fixture response").toBe(200);
+
+  const el = page.locator('[data-style-contract="dropdown-menu-item-inset"]');
+  const paddingLeft = await el.evaluate((n) => getComputedStyle(n).paddingLeft);
+  // data-inset:pl-7 (28px, nova) on the recipe must beat the recipe's own
+  // px-1.5 (6px) — the padding that makes inset rows align with checkbox/
+  // radio rows, exactly as upstream renders them.
+  expect(paddingLeft).toBe("28px");
+});
+
+test("ContextMenuItem with data-inset indents to the recipe's inset padding", async ({
+  page,
+}) => {
+  const response = await page.goto("/f/style-contract");
+  expect(response?.status(), "style contract fixture response").toBe(200);
+
+  const el = page.locator('[data-style-contract="context-menu-item-inset"]');
+  const paddingLeft = await el.evaluate((n) => getComputedStyle(n).paddingLeft);
+  expect(paddingLeft).toBe("28px");
+});
+
+test("MenubarItem with data-inset indents to the recipe's inset padding", async ({
+  page,
+}) => {
+  const response = await page.goto("/f/style-contract");
+  expect(response?.status(), "style contract fixture response").toBe(200);
+
+  const el = page.locator('[data-style-contract="menubar-item-inset"]');
+  const paddingLeft = await el.evaluate((n) => getComputedStyle(n).paddingLeft);
+  expect(paddingLeft).toBe("28px");
+});
+
+test("DropdownMenuItem inset beats a caller's pl-*, disabled opacity stays caller-overridable", async ({
   page,
 }) => {
   const response = await page.goto("/f/style-contract");
@@ -463,15 +502,18 @@ test("DropdownMenuItem's inset padding and disabled opacity stay caller-overrida
     const css = getComputedStyle(n);
     return { paddingLeft: css.paddingLeft, opacity: css.opacity };
   });
-  // pl-2 (8px) must beat the retained [data-inset]:pl-8 (32px) rule, and
-  // opacity-100 (1) must beat the retained [data-disabled]:opacity-50 (0.5)
-  // rule. pointer-events-none for [data-disabled] is baked onto the recipe
-  // on purpose and is NOT exercised here (it is meant to stay unoverridable).
-  expect(style.paddingLeft).toBe("8px");
+  // Upstream semantics: the recipe's data-inset:pl-7 ([data-inset] variant,
+  // specificity (0,2,0)) beats a caller's plain pl-2 ((0,1,0)) — same as
+  // shadcn, where inset padding is not caller-overridable by a plain pl-*.
+  // opacity-100 (1) must still beat the retained [data-disabled]:opacity-50
+  // rule, which stays in @layer components. pointer-events-none for
+  // [data-disabled] is baked onto the recipe on purpose and is NOT exercised
+  // here (it is meant to stay unoverridable).
+  expect(style.paddingLeft).toBe("28px");
   expect(style.opacity).toBe("1");
 });
 
-test("ContextMenuItem's inset padding and disabled opacity stay caller-overridable", async ({
+test("ContextMenuItem inset beats a caller's pl-*, disabled opacity stays caller-overridable", async ({
   page,
 }) => {
   const response = await page.goto("/f/style-contract");
@@ -482,11 +524,11 @@ test("ContextMenuItem's inset padding and disabled opacity stay caller-overridab
     const css = getComputedStyle(n);
     return { paddingLeft: css.paddingLeft, opacity: css.opacity };
   });
-  expect(style.paddingLeft).toBe("8px");
+  expect(style.paddingLeft).toBe("28px");
   expect(style.opacity).toBe("1");
 });
 
-test("Menubar keeps its own bar radius, and its item's inset/disabled stay caller-overridable", async ({
+test("Menubar keeps its own bar radius; its item's inset beats a caller's pl-*, disabled opacity stays caller-overridable", async ({
   page,
 }) => {
   const response = await page.goto("/x/menubar/basic");
@@ -503,7 +545,7 @@ test("Menubar keeps its own bar radius, and its item's inset/disabled stay calle
     const css = getComputedStyle(n);
     return { paddingLeft: css.paddingLeft, opacity: css.opacity };
   });
-  expect(style.paddingLeft).toBe("8px");
+  expect(style.paddingLeft).toBe("28px");
   expect(style.opacity).toBe("1");
 });
 

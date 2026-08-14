@@ -10,10 +10,9 @@ import (
 // radio group, and a Profiles-shaped menu — exercising every shared item
 // type Task 1/2 already shipped (Item, CheckboxItem, RadioGroup/RadioItem,
 // Sub/SubTrigger/SubContent) plus this task's own bar-level roving tabindex
-// and open-follows-hover. Every `inset` prop shadcn's demo passes is
-// dropped along with the rest of this codebase's MenubarItem/-Label/
-// -SubTrigger inset ADAPT (see docs/jsx-parity.md's ## menubar ledger) —
-// the data-[inset]:pl-8 selector is dead weight without it.
+// and open-follows-hover. Every `inset` prop shadcn's demo passes maps to
+// the CSS-only data-inset attr axis (see docs/jsx-parity.md's
+// ## dropdown-menu ledger).
 component Full() {
 	<ui.Menubar>
 		<ui.MenubarMenu>
@@ -82,11 +81,11 @@ component Full() {
 				<ui.MenubarCheckboxItem checked={true} value="bookmarks">Always Show Bookmarks Bar</ui.MenubarCheckboxItem>
 				<ui.MenubarCheckboxItem checked={false} value="full-urls">Always Show Full URLs</ui.MenubarCheckboxItem>
 				<ui.MenubarSeparator/>
-				<ui.MenubarItem aria-disabled="true" data-disabled="true">
+				<ui.MenubarItem aria-disabled="true" data-disabled="true" data-inset="true">
 					Reload
 					<ui.MenubarShortcut>⌘R</ui.MenubarShortcut>
 				</ui.MenubarItem>
-				<ui.MenubarItem aria-disabled="true" data-disabled="true">
+				<ui.MenubarItem aria-disabled="true" data-disabled="true" data-inset="true">
 					Force Reload
 					<ui.MenubarShortcut>⇧⌘R</ui.MenubarShortcut>
 				</ui.MenubarItem>
@@ -101,9 +100,9 @@ component Full() {
 					<ui.MenubarRadioItem checked={false} value="luis">Luis</ui.MenubarRadioItem>
 				</ui.MenubarRadioGroup>
 				<ui.MenubarSeparator/>
-				<ui.MenubarItem>Edit...</ui.MenubarItem>
+				<ui.MenubarItem data-inset="true">Edit...</ui.MenubarItem>
 				<ui.MenubarSeparator/>
-				<ui.MenubarItem>Add Profile...</ui.MenubarItem>
+				<ui.MenubarItem data-inset="true">Add Profile...</ui.MenubarItem>
 			</ui.MenubarContent>
 		</ui.MenubarMenu>
 	</ui.Menubar>

@@ -209,7 +209,7 @@ func TestMenubarPinnedParts(t *testing.T) {
 			// data-inset" entries.
 			name: "item",
 			node: ui.MenubarItem("", gsx.Raw("Print"), nil),
-			want: `<div class="group/menubar-item relative cursor-default items-center outline-hidden select-none [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-1.5 rounded-md px-1.5 py-1 text-sm [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 flex data-disabled:pointer-events-none text-foreground" data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-menubar-item>Print</div>`,
+			want: `<div class="group/menubar-item relative cursor-default items-center outline-hidden select-none [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 not-data-[variant=destructive]:focus:**:text-accent-foreground gap-1.5 rounded-md px-1.5 py-1 text-sm data-inset:pl-7 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 flex data-disabled:pointer-events-none text-foreground" data-variant="default" role="menuitem" tabindex="-1" data-gsxui-slot-menubar-item>Print</div>`,
 		},
 		{
 			// transition-none suppresses an implicit transition:all — see
@@ -223,7 +223,7 @@ func TestMenubarPinnedParts(t *testing.T) {
 			// either. Same entry as "item" above.
 			name: "label",
 			node: ui.MenubarLabel(gsx.Raw("People"), nil),
-			want: `<div class="px-1.5 py-1 text-sm font-medium" data-gsxui-slot-menubar-label>People</div>`,
+			want: `<div class="px-1.5 py-1 text-sm font-medium data-inset:pl-7" data-gsxui-slot-menubar-label>People</div>`,
 		},
 		{
 			name: "separator",

@@ -20,6 +20,14 @@ component Basic() {
 			</ui.ItemContent>
 			<ui.ItemFooter>Just now</ui.ItemFooter>
 		</ui.Item>
+		<ui.Item size="xs">
+			<ui.ItemMedia variant="default">
+				<icon.User/>
+			</ui.ItemMedia>
+			<ui.ItemContent>
+				<ui.ItemTitle>Extra-small item</ui.ItemTitle>
+			</ui.ItemContent>
+		</ui.Item>
 		<ui.Item>
 			<ui.ItemMedia variant="default">
 				<icon.User/>

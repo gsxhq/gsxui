@@ -856,7 +856,8 @@
               "default": "default",
               "values": [
                 "default",
-                "sm"
+                "sm",
+                "xs"
               ]
             },
             "variant": {
@@ -2857,6 +2858,7 @@
               "pl-3",
               "text-sm",
               "font-medium",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -2914,6 +2916,7 @@
               "py-2",
               "text-sm",
               "font-medium",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex",
               "data-disabled:pointer-events-none"
@@ -2937,7 +2940,8 @@
               "text-muted-foreground",
               "px-3",
               "py-2.5",
-              "text-xs"
+              "text-xs",
+              "data-inset:pl-9.5"
             ],
             "dimensions": {}
           },
@@ -2954,6 +2958,7 @@
               "pl-3",
               "text-sm",
               "font-medium",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -3036,6 +3041,7 @@
               "py-2",
               "text-sm",
               "font-medium",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -3326,6 +3332,7 @@
               "pl-3",
               "text-sm",
               "font-medium",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -3383,6 +3390,7 @@
               "py-2",
               "text-sm",
               "font-medium",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex",
               "data-disabled:pointer-events-none"
@@ -3406,7 +3414,8 @@
               "text-muted-foreground",
               "px-3",
               "py-2.5",
-              "text-xs"
+              "text-xs",
+              "data-inset:pl-9.5"
             ],
             "dimensions": {}
           },
@@ -3424,6 +3433,7 @@
               "pl-3",
               "text-sm",
               "font-medium",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -3508,6 +3518,7 @@
               "py-2",
               "text-sm",
               "font-medium",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -4073,6 +4084,12 @@
                   "gap-3.5",
                   "px-3.5",
                   "py-3"
+                ],
+                "xs": [
+                  "gap-2.5",
+                  "px-3",
+                  "py-2.5",
+                  "[[data-gsxui-slot-dropdown-menu-content]_\u0026]:p-0"
                 ]
               },
               "variant": {
@@ -4287,6 +4304,7 @@
               "pl-9.5",
               "text-sm",
               "font-medium",
+              "data-inset:pl-9.5",
               "flex"
             ],
             "dimensions": {}
@@ -4340,6 +4358,7 @@
               "py-2",
               "text-sm",
               "font-medium",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex",
               "data-disabled:pointer-events-none"
@@ -4363,7 +4382,8 @@
               "text-muted-foreground",
               "px-3.5",
               "py-2.5",
-              "text-xs"
+              "text-xs",
+              "data-inset:pl-9.5"
             ],
             "dimensions": {}
           },
@@ -4387,6 +4407,7 @@
               "pl-9.5",
               "text-sm",
               "font-medium",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -4470,6 +4491,7 @@
               "py-2",
               "text-sm",
               "font-medium",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -7536,6 +7558,7 @@
               "pr-8",
               "pl-2",
               "text-xs",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -7590,6 +7613,7 @@
               "px-2",
               "py-2",
               "text-xs",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex",
               "data-disabled:pointer-events-none"
@@ -7613,7 +7637,8 @@
               "text-muted-foreground",
               "px-2",
               "py-2",
-              "text-xs"
+              "text-xs",
+              "data-inset:pl-7"
             ],
             "dimensions": {}
           },
@@ -7629,6 +7654,7 @@
               "pr-8",
               "pl-2",
               "text-xs",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -7707,6 +7733,7 @@
               "px-2",
               "py-2",
               "text-xs",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -7998,6 +8025,7 @@
               "pr-8",
               "pl-2",
               "text-xs",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -8052,6 +8080,7 @@
               "px-2",
               "py-2",
               "text-xs",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex",
               "data-disabled:pointer-events-none"
@@ -8075,7 +8104,8 @@
               "text-muted-foreground",
               "px-2",
               "py-2",
-              "text-xs"
+              "text-xs",
+              "data-inset:pl-7"
             ],
             "dimensions": {}
           },
@@ -8092,6 +8122,7 @@
               "pr-8",
               "pl-2",
               "text-xs",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -8172,6 +8203,7 @@
               "px-2",
               "py-2",
               "text-xs",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -8738,6 +8770,12 @@
                   "gap-2.5",
                   "px-3",
                   "py-2.5"
+                ],
+                "xs": [
+                  "gap-2",
+                  "px-2.5",
+                  "py-2",
+                  "[[data-gsxui-slot-dropdown-menu-content]_\u0026]:p-0"
                 ]
               },
               "variant": {
@@ -8949,6 +8987,7 @@
               "pr-28",
               "pl-8",
               "text-xs",
+              "data-inset:pl-8",
               "flex"
             ],
             "dimensions": {}
@@ -8999,6 +9038,7 @@
               "px-2",
               "py-2",
               "text-xs",
+              "data-inset:pl-8",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex",
               "data-disabled:pointer-events-none"
@@ -9021,7 +9061,8 @@
             "base": [
               "px-2",
               "py-2",
-              "text-xs"
+              "text-xs",
+              "data-inset:pl-8"
             ],
             "dimensions": {}
           },
@@ -9044,6 +9085,7 @@
               "pr-2",
               "pl-8",
               "text-xs",
+              "data-inset:pl-8",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -9124,6 +9166,7 @@
               "px-2",
               "py-2",
               "text-xs",
+              "data-inset:pl-8",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -12188,6 +12231,7 @@
               "pr-8",
               "pl-3",
               "text-sm",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -12243,6 +12287,7 @@
               "px-3",
               "py-2",
               "text-sm",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex",
               "data-disabled:pointer-events-none"
@@ -12266,7 +12311,8 @@
               "text-muted-foreground",
               "px-3",
               "py-2.5",
-              "text-xs"
+              "text-xs",
+              "data-inset:pl-9.5"
             ],
             "dimensions": {}
           },
@@ -12282,6 +12328,7 @@
               "pr-8",
               "pl-3",
               "text-sm",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -12361,6 +12408,7 @@
               "px-3",
               "py-2",
               "text-sm",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -12646,6 +12694,7 @@
               "pr-8",
               "pl-3",
               "text-sm",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -12702,6 +12751,7 @@
               "px-3",
               "py-2",
               "text-sm",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex",
               "data-disabled:pointer-events-none"
@@ -12725,7 +12775,8 @@
               "text-muted-foreground",
               "px-3",
               "py-2.5",
-              "text-xs"
+              "text-xs",
+              "data-inset:pl-9.5"
             ],
             "dimensions": {}
           },
@@ -12742,6 +12793,7 @@
               "pr-8",
               "pl-3",
               "text-sm",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -12824,6 +12876,7 @@
               "px-3",
               "py-2",
               "text-sm",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -13392,6 +13445,12 @@
                   "gap-3.5",
                   "px-3.5",
                   "py-3"
+                ],
+                "xs": [
+                  "gap-2.5",
+                  "px-3",
+                  "py-2.5",
+                  "[[data-gsxui-slot-dropdown-menu-content]_\u0026]:p-0"
                 ]
               },
               "variant": {
@@ -13604,6 +13663,7 @@
               "pr-3",
               "pl-9.5",
               "text-sm",
+              "data-inset:pl-9.5",
               "flex"
             ],
             "dimensions": {}
@@ -13655,6 +13715,7 @@
               "px-3",
               "py-2",
               "text-sm",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex",
               "data-disabled:pointer-events-none"
@@ -13678,7 +13739,8 @@
               "text-muted-foreground",
               "px-3.5",
               "py-2.5",
-              "text-xs"
+              "text-xs",
+              "data-inset:pl-9.5"
             ],
             "dimensions": {}
           },
@@ -13701,6 +13763,7 @@
               "pr-3",
               "pl-9.5",
               "text-sm",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -13782,6 +13845,7 @@
               "px-3",
               "py-2",
               "text-sm",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -16849,6 +16913,7 @@
               "pr-8",
               "pl-2",
               "text-xs",
+              "data-inset:pl-7.5",
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
               "flex"
             ],
@@ -16905,6 +16970,7 @@
               "px-2",
               "py-1",
               "text-xs/relaxed",
+              "data-inset:pl-7.5",
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
               "flex",
               "data-disabled:pointer-events-none"
@@ -16928,7 +16994,8 @@
               "text-muted-foreground",
               "px-2",
               "py-1.5",
-              "text-xs"
+              "text-xs",
+              "data-inset:pl-7.5"
             ],
             "dimensions": {}
           },
@@ -16946,6 +17013,7 @@
               "pr-8",
               "pl-2",
               "text-xs",
+              "data-inset:pl-7.5",
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
               "flex"
             ],
@@ -17029,6 +17097,7 @@
               "px-2",
               "py-1",
               "text-xs",
+              "data-inset:pl-7.5",
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
               "flex"
             ],
@@ -17313,6 +17382,7 @@
               "pr-8",
               "pl-2",
               "text-xs",
+              "data-inset:pl-7.5",
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
               "flex"
             ],
@@ -17369,6 +17439,7 @@
               "px-2",
               "py-1",
               "text-xs/relaxed",
+              "data-inset:pl-7.5",
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
               "flex",
               "data-disabled:pointer-events-none"
@@ -17392,7 +17463,8 @@
               "text-muted-foreground",
               "px-2",
               "py-1.5",
-              "text-xs"
+              "text-xs",
+              "data-inset:pl-7.5"
             ],
             "dimensions": {}
           },
@@ -17410,6 +17482,7 @@
               "pr-8",
               "pl-2",
               "text-xs",
+              "data-inset:pl-7.5",
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
               "flex"
             ],
@@ -17493,6 +17566,7 @@
               "px-2",
               "py-1",
               "text-xs",
+              "data-inset:pl-7.5",
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
               "flex"
             ],
@@ -18062,6 +18136,12 @@
                   "gap-2.5",
                   "px-3",
                   "py-2.5"
+                ],
+                "xs": [
+                  "gap-2.5",
+                  "px-2.5",
+                  "py-2",
+                  "[[data-gsxui-slot-dropdown-menu-content]_\u0026]:p-0"
                 ]
               },
               "variant": {
@@ -18274,6 +18354,7 @@
               "pr-2",
               "pl-7.5",
               "text-xs",
+              "data-inset:pl-7.5",
               "flex"
             ],
             "dimensions": {}
@@ -18326,6 +18407,7 @@
               "px-2",
               "py-1",
               "text-xs/relaxed",
+              "data-inset:pl-7.5",
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
               "flex",
               "data-disabled:pointer-events-none"
@@ -18349,7 +18431,8 @@
               "text-muted-foreground",
               "px-2",
               "py-1.5",
-              "text-xs"
+              "text-xs",
+              "data-inset:pl-7.5"
             ],
             "dimensions": {}
           },
@@ -18373,6 +18456,7 @@
               "pr-2",
               "pl-7.5",
               "text-xs",
+              "data-inset:pl-7.5",
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
               "flex"
             ],
@@ -18456,6 +18540,7 @@
               "px-2",
               "py-1",
               "text-xs",
+              "data-inset:pl-7.5",
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
               "flex"
             ],
@@ -21534,6 +21619,7 @@
               "pr-8",
               "pl-1.5",
               "text-sm",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -21589,6 +21675,7 @@
               "px-1.5",
               "py-1",
               "text-sm",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex",
               "data-disabled:pointer-events-none"
@@ -21613,7 +21700,8 @@
               "px-1.5",
               "py-1",
               "text-xs",
-              "font-medium"
+              "font-medium",
+              "data-inset:pl-7"
             ],
             "dimensions": {}
           },
@@ -21629,6 +21717,7 @@
               "pr-8",
               "pl-1.5",
               "text-sm",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -21709,6 +21798,7 @@
               "px-1.5",
               "py-1",
               "text-sm",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -22000,6 +22090,7 @@
               "pr-8",
               "pl-1.5",
               "text-sm",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -22055,6 +22146,7 @@
               "px-1.5",
               "py-1",
               "text-sm",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex",
               "data-disabled:pointer-events-none"
@@ -22079,7 +22171,8 @@
               "px-1.5",
               "py-1",
               "text-xs",
-              "font-medium"
+              "font-medium",
+              "data-inset:pl-7"
             ],
             "dimensions": {}
           },
@@ -22096,6 +22189,7 @@
               "pr-8",
               "pl-1.5",
               "text-sm",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -22178,6 +22272,7 @@
               "px-1.5",
               "py-1",
               "text-sm",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -22747,6 +22842,12 @@
                   "gap-2.5",
                   "px-3",
                   "py-2.5"
+                ],
+                "xs": [
+                  "gap-2",
+                  "px-2.5",
+                  "py-2",
+                  "[[data-gsxui-slot-dropdown-menu-content]_\u0026]:p-0"
                 ]
               },
               "variant": {
@@ -22961,6 +23062,7 @@
               "pr-1.5",
               "pl-7",
               "text-sm",
+              "data-inset:pl-7",
               "flex"
             ],
             "dimensions": {}
@@ -23012,6 +23114,7 @@
               "px-1.5",
               "py-1",
               "text-sm",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex",
               "data-disabled:pointer-events-none"
@@ -23035,7 +23138,8 @@
               "px-1.5",
               "py-1",
               "text-sm",
-              "font-medium"
+              "font-medium",
+              "data-inset:pl-7"
             ],
             "dimensions": {}
           },
@@ -23058,6 +23162,7 @@
               "pr-1.5",
               "pl-7",
               "text-sm",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -23139,6 +23244,7 @@
               "px-1.5",
               "py-1",
               "text-sm",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -26218,6 +26324,7 @@
               "pr-8",
               "pl-2",
               "text-sm",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -26275,6 +26382,7 @@
               "px-2",
               "py-1.5",
               "text-sm",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex",
               "data-disabled:pointer-events-none"
@@ -26298,7 +26406,8 @@
               "text-muted-foreground",
               "px-2",
               "py-1",
-              "text-xs"
+              "text-xs",
+              "data-inset:pl-7"
             ],
             "dimensions": {}
           },
@@ -26315,6 +26424,7 @@
               "pr-8",
               "pl-2",
               "text-sm",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -26397,6 +26507,7 @@
               "px-2",
               "py-1.5",
               "text-sm",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -26687,6 +26798,7 @@
               "pr-8",
               "pl-2",
               "text-sm",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -26744,6 +26856,7 @@
               "px-2",
               "py-1.5",
               "text-sm",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex",
               "data-disabled:pointer-events-none"
@@ -26767,7 +26880,8 @@
               "text-muted-foreground",
               "px-2",
               "py-1",
-              "text-xs"
+              "text-xs",
+              "data-inset:pl-7"
             ],
             "dimensions": {}
           },
@@ -26785,6 +26899,7 @@
               "pr-8",
               "pl-2",
               "text-sm",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -26869,6 +26984,7 @@
               "px-2",
               "py-1.5",
               "text-sm",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -27434,6 +27550,12 @@
                   "gap-3.5",
                   "px-3.5",
                   "py-3"
+                ],
+                "xs": [
+                  "gap-2",
+                  "px-2.5",
+                  "py-2",
+                  "[[data-gsxui-slot-dropdown-menu-content]_\u0026]:p-0"
                 ]
               },
               "variant": {
@@ -27648,6 +27770,7 @@
               "pr-1.5",
               "pl-7",
               "text-sm",
+              "data-inset:pl-7",
               "flex"
             ],
             "dimensions": {}
@@ -27701,6 +27824,7 @@
               "px-2",
               "py-1.5",
               "text-sm",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex",
               "data-disabled:pointer-events-none"
@@ -27724,7 +27848,8 @@
               "text-muted-foreground",
               "px-2",
               "py-1",
-              "text-sm"
+              "text-sm",
+              "data-inset:pl-7"
             ],
             "dimensions": {}
           },
@@ -27748,6 +27873,7 @@
               "pr-1.5",
               "pl-7",
               "text-sm",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -27831,6 +27957,7 @@
               "px-2",
               "py-1.5",
               "text-sm",
+              "data-inset:pl-7",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -30929,6 +31056,7 @@
               "font-medium",
               "uppercase",
               "tracking-wider",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
               "flex"
             ],
@@ -30987,6 +31115,7 @@
               "font-medium",
               "uppercase",
               "tracking-wider",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
               "flex",
               "data-disabled:pointer-events-none"
@@ -31012,6 +31141,7 @@
               "text-xs",
               "uppercase",
               "tracking-wider",
+              "data-inset:pl-9.5",
               "font-semibold",
               "text-muted-foreground"
             ],
@@ -31032,6 +31162,7 @@
               "font-medium",
               "uppercase",
               "tracking-wider",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
               "flex"
             ],
@@ -31115,6 +31246,7 @@
               "font-medium",
               "uppercase",
               "tracking-wider",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
               "flex"
             ],
@@ -31413,6 +31545,7 @@
               "font-medium",
               "uppercase",
               "tracking-wider",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
               "flex"
             ],
@@ -31471,6 +31604,7 @@
               "font-medium",
               "uppercase",
               "tracking-wider",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
               "flex",
               "data-disabled:pointer-events-none"
@@ -31496,6 +31630,7 @@
               "text-xs",
               "uppercase",
               "tracking-wider",
+              "data-inset:pl-9.5",
               "font-semibold",
               "text-muted-foreground"
             ],
@@ -31517,6 +31652,7 @@
               "font-medium",
               "uppercase",
               "tracking-wider",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
               "flex"
             ],
@@ -31602,6 +31738,7 @@
               "font-medium",
               "uppercase",
               "tracking-wider",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
               "flex"
             ],
@@ -32153,6 +32290,12 @@
                   "gap-3.5",
                   "px-3.5",
                   "py-3"
+                ],
+                "xs": [
+                  "gap-2.5",
+                  "px-3",
+                  "py-2.5",
+                  "[[data-gsxui-slot-dropdown-menu-content]_\u0026]:p-0"
                 ]
               },
               "variant": {
@@ -32385,6 +32528,7 @@
               "font-medium",
               "uppercase",
               "tracking-wider",
+              "data-inset:pl-9.5",
               "flex"
             ],
             "dimensions": {}
@@ -32436,6 +32580,7 @@
               "px-3",
               "py-2",
               "text-sm",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
               "flex",
               "data-disabled:pointer-events-none"
@@ -32461,6 +32606,7 @@
               "text-xs",
               "uppercase",
               "tracking-wider",
+              "data-inset:pl-9.5",
               "font-semibold",
               "text-muted-foreground"
             ],
@@ -32488,6 +32634,7 @@
               "font-medium",
               "uppercase",
               "tracking-wider",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
               "flex"
             ],
@@ -32572,6 +32719,7 @@
               "font-medium",
               "uppercase",
               "tracking-wider",
+              "data-inset:pl-9.5",
               "[\u0026_svg:not([class*='size-'])]:size-3.5",
               "flex"
             ],
@@ -35631,6 +35779,7 @@
               "pr-8",
               "pl-2",
               "text-sm",
+              "data-inset:pl-8",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -35686,6 +35835,7 @@
               "px-2",
               "py-1.5",
               "text-sm",
+              "data-inset:pl-8",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex",
               "data-disabled:pointer-events-none"
@@ -35710,7 +35860,8 @@
               "px-2",
               "py-1.5",
               "text-xs",
-              "font-medium"
+              "font-medium",
+              "data-inset:pl-8"
             ],
             "dimensions": {}
           },
@@ -35726,6 +35877,7 @@
               "pr-8",
               "pl-2",
               "text-sm",
+              "data-inset:pl-8",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -35805,6 +35957,7 @@
               "px-2",
               "py-1.5",
               "text-sm",
+              "data-inset:pl-8",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -36088,6 +36241,7 @@
               "pr-8",
               "pl-2",
               "text-sm",
+              "data-inset:pl-8",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -36143,6 +36297,7 @@
               "px-2",
               "py-1.5",
               "text-sm",
+              "data-inset:pl-8",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex",
               "data-disabled:pointer-events-none"
@@ -36167,7 +36322,8 @@
               "px-2",
               "py-1.5",
               "text-xs",
-              "font-medium"
+              "font-medium",
+              "data-inset:pl-8"
             ],
             "dimensions": {}
           },
@@ -36184,6 +36340,7 @@
               "pr-8",
               "pl-2",
               "text-sm",
+              "data-inset:pl-8",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -36266,6 +36423,7 @@
               "px-2",
               "py-1.5",
               "text-sm",
+              "data-inset:pl-8",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -36834,6 +36992,12 @@
                   "gap-2.5",
                   "px-3",
                   "py-2.5"
+                ],
+                "xs": [
+                  "gap-2",
+                  "px-2.5",
+                  "py-2",
+                  "[[data-gsxui-slot-dropdown-menu-content]_\u0026]:p-0"
                 ]
               },
               "variant": {
@@ -37049,6 +37213,7 @@
               "pr-2",
               "pl-8",
               "text-sm",
+              "data-inset:pl-8",
               "flex"
             ],
             "dimensions": {}
@@ -37100,6 +37265,7 @@
               "px-2",
               "py-1.5",
               "text-sm",
+              "data-inset:pl-8",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex",
               "data-disabled:pointer-events-none"
@@ -37123,7 +37289,8 @@
               "px-2",
               "py-1.5",
               "text-sm",
-              "font-medium"
+              "font-medium",
+              "data-inset:pl-8"
             ],
             "dimensions": {}
           },
@@ -37146,6 +37313,7 @@
               "pr-2",
               "pl-8",
               "text-sm",
+              "data-inset:pl-8",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],
@@ -37227,6 +37395,7 @@
               "px-2",
               "py-1.5",
               "text-sm",
+              "data-inset:pl-8",
               "[\u0026_svg:not([class*='size-'])]:size-4",
               "flex"
             ],

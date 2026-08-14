@@ -150,6 +150,23 @@ func TestItemOutlineSmPinned(t *testing.T) {
 	}
 }
 
+// TestItemXsPinned pins size="xs" (upstream .cn-item-size-xs: nova's
+// gap-2 px-2.5 py-2, plus p-0 inside a dropdown-menu content ancestor) —
+// the recipe class must actually exist and carry the upstream metrics, not
+// merely reflect the attribute.
+func TestItemXsPinned(t *testing.T) {
+	got := render(t, ui.Item("", "xs", gsx.Raw("x"), nil))
+	want := `<div data-variant="default" data-size="xs" ` + canonicalItemClass("", []string{"variant-default", "size-xs"}) + ` data-gsxui-slot-item>x</div>`
+	if got != want {
+		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
+	}
+	for _, utility := range []string{"gap-2", "px-2.5", "py-2"} {
+		if !strings.Contains(got, utility) {
+			t.Errorf("size xs missing upstream utility %s\nin: %s", utility, got)
+		}
+	}
+}
+
 func TestItemVariantAndSizeAxes(t *testing.T) {
 	for _, variant := range []string{"default", "outline", "muted"} {
 		input := variant
@@ -161,7 +178,7 @@ func TestItemVariantAndSizeAxes(t *testing.T) {
 			t.Errorf("variant %s: missing reflected value\nin: %s", variant, got)
 		}
 	}
-	for _, size := range []string{"default", "sm"} {
+	for _, size := range []string{"default", "sm", "xs"} {
 		input := size
 		if size == "default" {
 			input = ""

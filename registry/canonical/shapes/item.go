@@ -25,7 +25,7 @@ var Item = recipe.Shape{
 	Slots: []recipe.Slot{
 		{Name: "", Base: true, Dimensions: []recipe.Dimension{
 			{Name: "variant", Default: "default", Values: []string{"default", "outline", "muted"}},
-			{Name: "size", Default: "default", Values: []string{"default", "sm"}},
+			{Name: "size", Default: "default", Values: []string{"default", "sm", "xs"}},
 		}},
 		{Name: "group", Base: true},
 		{Name: "separator", Base: true},

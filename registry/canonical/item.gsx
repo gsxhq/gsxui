@@ -64,12 +64,11 @@ component Item(variant string, size string, children gsx.Node, attrs gsx.Attrs) 
 //
 // Retargeted to nova density (2026-07-24 nova density map, `## item`).
 // DEVIATION: nova's icon-media variant drops the bordered/muted size-8 box
-// entirely (bare 1rem svg, no container) and the image variant gains
-// ancestor-size responsive sizing tied to a `size=xs` axis this
-// package doesn't ship — both left as-is here: the box drop bundles a
-// color/border removal (border, bg-muted) the retarget is scoped to leave
-// alone, and the responsive image sizing is half dead weight without a real
-// xs size param (Item's `size` axis stays sm/default only, per task scope).
+// entirely (bare 1rem svg, no container) — left as-is here: the box drop
+// bundles a color/border removal (border, bg-muted) the retarget is scoped
+// to leave alone. The image variant's ancestor-size responsive sizing is
+// live: Item's `size` axis ships xs (2026-08-14 upstream parity review,
+// upstream .cn-item-size-xs), so group-data-[size=xs]/item:size-6 fires.
 component ItemMedia(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-variant={variant |> default("default")}

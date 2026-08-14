@@ -28,6 +28,10 @@
     @apply gap-2.5 px-3 py-2.5;
   }
 
+  .gsxui-recipe-item-size-xs {
+    @apply gap-2 px-2.5 py-2 [[data-gsxui-slot-dropdown-menu-content]_&]:p-0;
+  }
+
   /* carried: no upstream counterpart */
   .gsxui-recipe-item-group {
     @apply gap-4 has-data-[size=sm]:gap-2.5 has-data-[size=xs]:gap-2 flex flex-col w-full;

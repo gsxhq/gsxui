@@ -110,7 +110,7 @@ component ContextMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
 			"group/context-menu-item relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
-			"focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 focus:*:[svg]:text-accent-foreground gap-2.5 rounded-none px-3 py-2 text-xs font-medium uppercase tracking-wider [&_svg:not([class*='size-'])]:size-3.5 flex data-disabled:pointer-events-none",
+			"focus:bg-accent focus:text-accent-foreground dark:data-[variant=destructive]:focus:bg-destructive/20 focus:*:[svg]:text-accent-foreground gap-2.5 rounded-none px-3 py-2 text-xs font-medium uppercase tracking-wider data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-3.5 flex data-disabled:pointer-events-none",
 			switch variant {
 			case "destructive":
 				"text-destructive focus:bg-destructive/10 focus:text-destructive *:[svg]:text-destructive"
@@ -156,7 +156,7 @@ component ContextMenuCheckboxItem(checked bool, value string, children gsx.Node,
 	<div
 		class={
 			"relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
-			"data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground gap-2.5 rounded-none py-2 pr-8 pl-3 text-xs font-medium uppercase tracking-wider [&_svg:not([class*='size-'])]:size-3.5 flex"
+			"data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground gap-2.5 rounded-none py-2 pr-8 pl-3 text-xs font-medium uppercase tracking-wider data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-3.5 flex"
 		}
 		role="menuitemcheckbox"
 		data-value={value}
@@ -213,7 +213,7 @@ component ContextMenuRadioItem(checked bool, value string, children gsx.Node, at
 	<div
 		class={
 			"relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
-			"data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground gap-2.5 rounded-none py-2 pr-8 pl-3 text-xs font-medium uppercase tracking-wider [&_svg:not([class*='size-'])]:size-3.5 flex"
+			"data-disabled:pointer-events-none [&_svg:not([class*='text-'])]:text-muted-foreground focus:bg-accent focus:text-accent-foreground gap-2.5 rounded-none py-2 pr-8 pl-3 text-xs font-medium uppercase tracking-wider data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-3.5 flex"
 		}
 		role="menuitemradio"
 		data-value={value}
@@ -248,7 +248,7 @@ component ContextMenuRadioItem(checked bool, value string, children gsx.Node, at
 // context-menu).
 component ContextMenuLabel(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "px-3 py-2 text-xs uppercase tracking-wider font-semibold text-muted-foreground" }
+		class={ "px-3 py-2 text-xs uppercase tracking-wider data-inset:pl-9.5 font-semibold text-muted-foreground" }
 		{ attrs... }
 		data-gsxui-slot-context-menu-label
 	>
@@ -304,7 +304,7 @@ component ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
 		class={
 			"cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
-			"focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground rounded-none px-3 py-2 text-xs font-medium uppercase tracking-wider [&_svg:not([class*='size-'])]:size-3.5 flex"
+			"focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground rounded-none px-3 py-2 text-xs font-medium uppercase tracking-wider data-inset:pl-9.5 [&_svg:not([class*='size-'])]:size-3.5 flex"
 		}
 		role="menuitem"
 		aria-haspopup="menu"
