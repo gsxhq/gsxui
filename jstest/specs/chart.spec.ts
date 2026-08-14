@@ -218,3 +218,41 @@ test("innerHTML swap re-inits and the chart reappears", async ({ page, request }
 
   await expect(page.locator("[data-gsxui-slot-chart] svg")).toHaveCount(1);
 });
+
+/**
+ * jstest/harness/chart_contract.gsx's ChartNarrowFlexFixture (served at
+ * /f/chart-narrow-flex): ui.Chart mounted with NO caller class override,
+ * inside a 340px-wide flex column — the same shape site/stylepreview/
+ * gallery.gsx.src's galleryChartCard hits. Without container-level
+ * protection, ui/chart.render.js's renderCartesian re-measures
+ * panel.clientHeight on every entrance-animation frame and draws the SVG at
+ * that height; Chart's own div is a flex item of the narrow column, and a
+ * flex item's default min-height:auto lets its own drawn content override
+ * the aspect-ratio-derived height, so each frame's slightly-taller draw
+ * feeds the next frame's measurement — a real runaway (190px climbing past
+ * 900px) for the whole ~400ms bar entrance. min-h-0 on the recipe
+ * (registry/styles/<style>/chart.css's .gsxui-recipe-chart) is the fix:
+ * sampling clientHeight once early and once after the entrance animation
+ * must finish (bar duration 400ms) has to land on the SAME, aspect-derived
+ * value both times.
+ */
+test("chart height stays at its aspect-derived value in a narrow flex column, not growing during the entrance animation", async ({
+  page,
+}) => {
+  const response = await page.goto("/f/chart-narrow-flex");
+  expect(response?.status()).toBe(200);
+
+  const panel = page.locator("[data-chart-narrow-flex] [data-gsxui-slot-chart] > div").first();
+  await panel.waitFor();
+
+  const early = await panel.evaluate((el) => el.clientHeight);
+  // The bar entrance animation runs 400ms (ui/chart.render.js); wait past
+  // it so a runaway (still climbing every frame) has nowhere left to hide.
+  await page.waitForTimeout(600);
+  const settled = await panel.evaluate((el) => el.clientHeight);
+
+  expect(settled).toBe(early);
+  // aspect-video at the fixture's 340px width: 340 * 9 / 16 ≈ 191. A
+  // generous ceiling well under the runaway's own >900px failure mode.
+  expect(settled).toBeLessThan(250);
+});

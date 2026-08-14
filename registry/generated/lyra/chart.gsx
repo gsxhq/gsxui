@@ -142,7 +142,7 @@ component Chart(config ChartConfig, children gsx.Node, attrs gsx.Attrs) {
 	}}
 	<div
 		data-chart={id}
-		class={ "flex aspect-video justify-center text-xs" }
+		class={ "flex aspect-video justify-center text-xs min-h-0" }
 		{ attrs... }
 		data-gsxui-slot-chart
 	>

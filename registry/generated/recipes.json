@@ -2539,7 +2539,8 @@
               "flex",
               "aspect-video",
               "justify-center",
-              "text-xs"
+              "text-xs",
+              "min-h-0"
             ],
             "dimensions": {}
           },
@@ -7289,7 +7290,8 @@
               "flex",
               "aspect-video",
               "justify-center",
-              "text-xs"
+              "text-xs",
+              "min-h-0"
             ],
             "dimensions": {}
           },
@@ -11998,7 +12000,8 @@
               "flex",
               "aspect-video",
               "justify-center",
-              "text-xs"
+              "text-xs",
+              "min-h-0"
             ],
             "dimensions": {}
           },
@@ -16717,7 +16720,8 @@
               "flex",
               "aspect-video",
               "justify-center",
-              "text-xs"
+              "text-xs",
+              "min-h-0"
             ],
             "dimensions": {}
           },
@@ -21466,7 +21470,8 @@
               "flex",
               "aspect-video",
               "justify-center",
-              "text-xs"
+              "text-xs",
+              "min-h-0"
             ],
             "dimensions": {}
           },
@@ -26211,7 +26216,8 @@
               "flex",
               "aspect-video",
               "justify-center",
-              "text-xs"
+              "text-xs",
+              "min-h-0"
             ],
             "dimensions": {}
           },
@@ -30982,7 +30988,8 @@
               "flex",
               "aspect-video",
               "justify-center",
-              "text-xs"
+              "text-xs",
+              "min-h-0"
             ],
             "dimensions": {}
           },
@@ -35749,7 +35756,8 @@
               "flex",
               "aspect-video",
               "justify-center",
-              "text-xs"
+              "text-xs",
+              "min-h-0"
             ],
             "dimensions": {}
           },

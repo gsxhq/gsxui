@@ -55,3 +55,57 @@ func ChartContractFixture() _gsxrt.Node {
 		return _gsxgw.Err()
 	})
 }
+
+//line chart_contract.gsx:44:1
+// ChartNarrowFlexFixture reproduces the flex-column runaway-height defect
+// jstest/specs/chart.spec.ts's own "chart height stays..." spec pins: a
+// narrow (340px) flex column parent, ui.Chart mounted with NO caller class
+// override (the component's own default classes only, chart.Root() /
+// .gsxui-recipe-chart in registry/styles/<style>/chart.css). Every animation
+// frame, ui/chart.render.js's renderCartesian re-measures panel.clientHeight
+// and draws the SVG at that height; Chart's own div is a flex item of this
+// column, and a flex item's default min-height:auto lets its own drawn
+// content override an aspect-ratio-derived height, so each frame's
+// slightly-taller draw feeds the next frame's measurement — a real runaway
+// (190px growing past 900px over the ~400ms bar entrance animation) in any
+// sufficiently narrow flex parent. site/examples/chart's own wide,
+// unconstrained layout never triggers this (aspect-video already gives it
+// more height than its content could ever need), which is why this fixture
+// exists: nothing else in the harness reproduces a narrow flex parent.
+
+//line chart_contract.gsx:59:1
+func ChartNarrowFlexFixture() _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line chart_contract.gsx:60:2
+		cfg := ui.ChartConfig{
+			{Key: "desktop", Label: "Desktop", Color: "var(--chart-1)"},
+			{Key: "mobile", Label: "Mobile", Color: "var(--chart-2)"},
+		}
+		data := []ui.ChartDatum{
+			{"month": "Jan", "desktop": 186.0, "mobile": 80.0},
+			{"month": "Feb", "desktop": 305.0, "mobile": 200.0},
+			{"month": "Mar", "desktop": 237.0, "mobile": 120.0},
+		}
+//line chart_contract.gsx:71:2
+		_gsxgw.S("<div style=\"width: 340px\" class=\"flex flex-col gap-4\"")
+		_gsxgw.BoolAttr("data-chart-narrow-flex", true)
+		_gsxgw.S(">")
+//line chart_contract.gsx:72:3
+		_gsxgw.Node(ctx, ui.Chart(cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw := _gsxrt.W(_gsxw)
+//line chart_contract.gsx:73:4
+			_gsxgw.Node(ctx, ui.BarChart(data, nil, gsx.Fragment(
+				ui.ChartCartesianGrid(nil),
+				ui.ChartXAxis("month", nil),
+				ui.ChartTooltip(nil),
+				ui.ChartBar("desktop", nil),
+				ui.ChartBar("mobile", nil),
+				ui.ChartLegend(nil),
+			), nil))
+			return _gsxgw.Err()
+		}), nil))
+		_gsxgw.S("</div>")
+		return _gsxgw.Err()
+	})
+}

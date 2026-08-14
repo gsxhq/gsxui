@@ -588,20 +588,16 @@ component galleryTableCard() {
 // computed SVG fill live, through the CSS cascade alone
 // (jstest/specs/theme-editor.spec.ts).
 //
-// Both Chart calls below carry a caller class of min-h-0: Chart's own div
-// is "flex" and, as this card's CardContent flex column's own flex ITEM,
-// picks up the flexbox default min-height:auto — a content-based floor
-// that measured TALLER than the entrance animation's very first frame (the
-// client renderer sizes its SVG off panel.clientHeight every animation
-// frame, ui/chart.render.js's renderCartesian), so each frame's
-// slightly-taller draw pushed clientHeight up again the next frame, a
-// runaway growth for the whole 400ms bar entrance that only site/examples/
-// chart's own wide, unconstrained layout happens to never trigger (its
-// aspect-video height is already generous enough that content never
-// exceeds it). min-h-0 is the standard fix for exactly this flex-item
-// content-driven-growth gotcha, caller-overriding Chart's own class the
-// same way class="aspect-[5/1]" below already does (attrs merge, caller
-// wins per property) — no change to ui/chart.render.js or ui/chart.gsx.
+// Both charts here are exactly the shape that used to run away without
+// bound: a narrow (this card's grid column, not site/examples/chart's own
+// wide unconstrained layout) flex-column parent around a Chart, whose flex
+// item default min-height:auto let the client renderer's per-animation-
+// frame clientHeight re-measure (ui/chart.render.js's renderCartesian)
+// feed back into itself. That is now fixed at the component boundary —
+// min-h-0 on the .gsxui-recipe-chart recipe itself (registry/styles/
+// <style>/chart.css), not a caller override here — so every Chart consumer
+// gets the protection, not just this gallery. See jstest/specs/
+// chart.spec.ts's "chart height stays at its aspect-derived value..." spec.
 component galleryChartCard() {
 	{{
 		channelConfig := ChartConfig{
@@ -633,7 +629,7 @@ component galleryChartCard() {
 			<CardDescription>chart-1 through chart-5, live-rendered.</CardDescription>
 		</CardHeader>
 		<CardContent class="flex flex-col gap-4">
-			<Chart config={channelConfig} class="min-h-0">
+			<Chart config={channelConfig}>
 				{ BarChart(channelData, nil, gsx.Fragment(
 					ChartCartesianGrid(&ChartCartesianGridOptions{Vertical: ChartBool(false)}),
 					ChartXAxis("quarter", nil),
@@ -648,7 +644,7 @@ component galleryChartCard() {
 			</Chart>
 			<div class="flex flex-col gap-1.5">
 				<span class="text-xs text-muted-foreground">Weekly visits</span>
-				<Chart config={trendConfig} class="aspect-[5/1] min-h-0">
+				<Chart config={trendConfig} class="aspect-[5/1]">
 					{ AreaChart(trendData, nil, gsx.Fragment(
 						ChartXAxis("week", &ChartXAxisOptions{Hide: true}),
 						ChartTooltip(&ChartTooltipOptions{Cursor: ChartBool(false)}),

@@ -2,9 +2,20 @@
    apps/v4/registry/styles/style-lyra.css Chart section + templui chart.templ
    container; adapted per NOTICE.md. */
 @layer components {
-  /* carried: no upstream cn- counterpart, templui's own container class */
+  /* carried: no upstream cn- counterpart, templui's own container class.
+     min-h-0 is a deliberate deviation from upstream's Container class: this
+     div is a flex item, whose default min-height:auto lets its own drawn
+     content override an aspect-ratio-derived height, and the client
+     renderer re-measures clientHeight every entrance-animation frame
+     (ui/chart.render.js's renderCartesian) and redraws at that height — in
+     a narrow flex parent those two feed each other into a real per-frame
+     runaway growth (upstream templui shares the underlying defect; it
+     never ships a narrow-container demo that triggers it). See
+     jstest/specs/chart.spec.ts's "chart height stays at its
+     aspect-derived value..." spec, backed by jstest/harness/
+     chart_contract.gsx's ChartNarrowFlexFixture. */
   .gsxui-recipe-chart {
-    @apply flex aspect-video justify-center text-xs;
+    @apply flex aspect-video justify-center text-xs min-h-0;
   }
 
   /* carried: no upstream cn- counterpart, templui's own legend row class */
