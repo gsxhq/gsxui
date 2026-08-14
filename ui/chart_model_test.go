@@ -97,3 +97,52 @@ func TestAreaChartModelPinned(t *testing.T) {
 		t.Errorf("model drift\n got: %s\nwant: %s", model, want)
 	}
 }
+
+func TestPieChartModelPinned(t *testing.T) {
+	data := []ui.ChartDatum{{"browser": "desktop", "visitors": 186.0}, {"browser": "mobile", "visitors": 305.0}}
+	got := render(t, ui.Chart(cfg2Series(t),
+		ui.PieChart(
+			ui.ChartPie(data, "visitors", &ui.ChartPieOptions{NameKey: "browser"}), nil), nil))
+	model := extractModelJSON(t, got)
+	// Pie carries its own data on the ChartPie child (Recharts' own Pie
+	// takes its own data prop, unlike Bar/Line/Area reading the root's
+	// rows), so the root itself contributes no margin/labels/series at
+	// all — buildPieModel never touches those top-level fields upstream,
+	// which is why marginTop/Right/Bottom/Left stay 0 (no 5/5/5/5 default,
+	// unlike every other kind) and labels/series marshal as literal null
+	// (both lack omitempty and are never initialized for this kind).
+	want := `{"kind":"pie","marginTop":0,"marginRight":0,"marginBottom":0,"marginLeft":0,"cursor":false,"labels":null,"series":null,"tooltip":{},"pies":[{"key":"visitors","seriesLabel":"visitors","values":[186,305],"labels":["",""],"tooltipNames":["",""],"nameKey":"browser","nameValues":["desktop","mobile"],"colors":["var(--color-desktop)","var(--color-mobile)"],"labelLine":true}]}`
+	if model != want {
+		t.Errorf("model drift\n got: %s\nwant: %s", model, want)
+	}
+}
+
+func TestRadarChartModelPinned(t *testing.T) {
+	data := []ui.ChartDatum{{"month": "Jan", "desktop": 186.0}, {"month": "Feb", "desktop": 305.0}}
+	got := render(t, ui.Chart(cfg2Series(t),
+		ui.RadarChart(data, nil,
+			gsx.Fragment(
+				ui.ChartPolarAngleAxis("month"),
+				ui.ChartRadar("desktop", nil),
+			), nil), nil))
+	model := extractModelJSON(t, got)
+	want := `{"kind":"radar","marginTop":5,"marginRight":5,"marginBottom":5,"marginLeft":5,"cursor":false,"labels":["Jan","Feb"],"tooltipLabels":["Jan","Feb"],"series":[{"key":"desktop","label":"","color":"var(--color-desktop)","values":[186,305]}],"tooltip":{},"polar":{"radialLines":true,"hasAngleAxis":true}}`
+	if model != want {
+		t.Errorf("model drift\n got: %s\nwant: %s", model, want)
+	}
+}
+
+func TestRadialBarChartModelPinned(t *testing.T) {
+	data := []ui.ChartDatum{{"month": "Jan", "desktop": 186.0}, {"month": "Feb", "desktop": 305.0}}
+	got := render(t, ui.Chart(cfg2Series(t),
+		ui.RadialBarChart(data, nil,
+			ui.ChartRadialBar("desktop", nil), nil), nil))
+	model := extractModelJSON(t, got)
+	// Radial's labels come from the row index, not a registered axis key
+	// (there is no polar-angle axis on a radial bar chart), and it never
+	// sets the top-level tooltipLabels field upstream either.
+	want := `{"kind":"radial","marginTop":5,"marginRight":5,"marginBottom":5,"marginLeft":5,"cursor":false,"labels":["0","1"],"series":[{"key":"desktop","label":"","color":"var(--color-desktop)","values":[186,305],"tooltipNames":["",""]}],"tooltip":{},"radial":{"startAngle":0,"endAngle":360}}`
+	if model != want {
+		t.Errorf("model drift\n got: %s\nwant: %s", model, want)
+	}
+}

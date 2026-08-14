@@ -281,6 +281,23 @@ type chartState struct {
 	bars        []chartBarReg
 	lines       []chartLineReg
 	areas       []chartAreaReg
+
+	// Polar collectors — pie, radar, radial-bar. center (the Label child
+	// upstream mounts through Pie or PolarRadiusAxis) is not ported: the
+	// Label child itself is out of this task's explicit child list.
+	pies       []chartPieReg
+	polarGrid  *ChartPolarGridOptions
+	angleAxis  *chartPolarAngleAxisReg
+	radars     []chartRadarReg
+	radialBars []chartRadialBarReg
+	radiusAxis *ChartPolarRadiusAxisOptions
+
+	// RadialBarChart's own geometry, the pendant of upstream's own
+	// chartState fields of the same name.
+	startAngle  float64
+	endAngle    *float64
+	innerRadius float64
+	outerRadius float64
 }
 
 type chartAxisReg struct {
@@ -314,6 +331,33 @@ type chartLineReg struct {
 type chartAreaReg struct {
 	key  string
 	opts ChartAreaOptions
+}
+
+// chartPieReg is one registered ChartPie: unlike the cartesian series,
+// Recharts' own Pie takes its own data prop rather than reading the
+// enclosing chart's rows, so it carries its data alongside its key.
+type chartPieReg struct {
+	data []ChartDatum
+	key  string
+	opts ChartPieOptions
+}
+
+// chartPolarAngleAxisReg is one registered ChartPolarAngleAxis. Recharts'
+// Tick render-prop is a Go closure and cannot cross the JSON boundary to
+// the client renderer (the same reasoning ChartTooltipOptions' dropped
+// Formatter uses), so key is all this needs.
+type chartPolarAngleAxisReg struct {
+	key string
+}
+
+type chartRadarReg struct {
+	key  string
+	opts ChartRadarOptions
+}
+
+type chartRadialBarReg struct {
+	key  string
+	opts ChartRadialBarOptions
 }
 
 // ChartCartesianGridOptions is the pendant of Recharts' CartesianGrid.
@@ -449,6 +493,99 @@ type ChartAreaChartOptions struct {
 	StackOffset string
 }
 
+// ChartRadarChartOptions overrides RadarChart's Recharts defaults.
+type ChartRadarChartOptions struct {
+	Margin *ChartMargin
+}
+
+// ChartRadialBarChartOptions overrides RadialBarChart's Recharts defaults.
+type ChartRadialBarChartOptions struct {
+	// StartAngle is Recharts' zero by default, so a plain value carries it.
+	StartAngle float64
+	// EndAngle defaults to a full turn (360°), which a plain zero cannot
+	// express, so it is a pointer.
+	EndAngle    *float64
+	InnerRadius float64
+	// OuterRadius defaults to Recharts' 80% of the available radius.
+	OuterRadius float64
+	Margin      *ChartMargin
+}
+
+// ChartPolarGridOptions is the pendant of Recharts' PolarGrid.
+type ChartPolarGridOptions struct {
+	// GridType is "polygon" (default) or "circle".
+	GridType string
+	// RadialLines defaults to Recharts' true.
+	RadialLines *bool
+	// PolarRadius replaces the radius axis ticks with fixed radii.
+	PolarRadius []float64
+	// Stroke is the grid color, Recharts' "#ccc"; a radial chart demo
+	// passes "none" and paints the rings through Class instead.
+	Stroke      string
+	StrokeWidth float64
+	Class       string
+}
+
+// ChartPolarRadiusAxisOptions is the pendant of Recharts' PolarRadiusAxis.
+// Tick, TickLine and AxisLine all default to Recharts' true. Upstream
+// itself never reads these three fields back out of its own registered
+// state either (grep confirms): PolarRadiusAxis exists there only as a
+// mount point for a center Label child, which this task doesn't port (not
+// in the brief's explicit child list) — so these are captured here for
+// structural fidelity but currently as inert as they are upstream.
+type ChartPolarRadiusAxisOptions struct {
+	Tick     *bool
+	TickLine *bool
+	AxisLine *bool
+}
+
+// ChartRadarOptions is the pendant of one Recharts Radar.
+type ChartRadarOptions struct {
+	Fill string
+	// FillOpacity is a pointer because zero is a meaningful value: an
+	// unset option leaves the SVG default of 1 in place.
+	FillOpacity *float64
+	Stroke      string
+	StrokeWidth float64
+	Dot         *ChartDotOptions
+}
+
+// ChartRadialBarOptions is the pendant of one Recharts RadialBar.
+type ChartRadialBarOptions struct {
+	Fill string
+	// Background draws the track behind the bar, over the full angle range.
+	Background   bool
+	CornerRadius float64
+	StackID      string
+	Class        string
+}
+
+// ChartPieLabelOptions is the pendant of the label option of a Pie.
+type ChartPieLabelOptions struct {
+	// Fill overrides the slice color the labels inherit.
+	Fill string
+}
+
+// ChartPieOptions is the pendant of one Recharts Pie. ActiveIndex and
+// ActiveShape (Recharts' active-sector props) are deferred alongside
+// Label/LabelList's own list-registering counterparts — the same
+// reasoning ChartBarOptions' own dropped ActiveIndex/ActiveBar uses: not
+// in the brief's explicit child list for this task.
+type ChartPieOptions struct {
+	NameKey     string
+	InnerRadius float64
+	// OuterRadius defaults to Recharts' 80% of the available radius.
+	OuterRadius float64
+	StrokeWidth float64
+	// Stroke is the separator between the slices, Recharts' "#fff"; pass
+	// "0" to drop it.
+	Stroke string
+	// Label renders the value labels outside the slices, LabelLine the
+	// connecting line, on by default like Recharts.
+	Label     *ChartPieLabelOptions
+	LabelLine *bool
+}
+
 // label resolves key's config entry, the ChartConfig pendant of templui's
 // Config.Label: it returns that entry's own Label field verbatim (which
 // may be empty) when key matches, falling back to key itself only when NO
@@ -521,6 +658,21 @@ func chartStr(v any) string {
 	return fmt.Sprint(v)
 }
 
+// chartPayloadConfigKey is the pendant of templui's payloadConfigKey
+// (itself getPayloadConfigFromPayload): the key names the config entry,
+// unless the data row carries a string under that key, then its own value
+// names it instead.
+func chartPayloadConfigKey(row ChartDatum, key string) string {
+	if row != nil {
+		if v, ok := row[key]; ok {
+			if sv, isString := v.(string); isString {
+				return sv
+			}
+		}
+	}
+	return key
+}
+
 // chartRenderHTML renders a gsx.Node (e.g. a config icon) to raw HTML for
 // the legend markup.
 func chartRenderHTML(ctx context.Context, n gsx.Node) string {
@@ -545,12 +697,11 @@ const (
 
 // ChartModel is the payload a chart root serializes for the client
 // renderer: a faithful, field-for-field port of templui's own flat Model
-// (chart.templ:1645), narrowed to the fields the cartesian kinds this task
-// builds (bar, line, area) actually populate — SliceColors/Pies/Polar/Radial
-// and the always-unset top-level Radius are pie/radar/radial-only in
-// upstream too (grep confirms nothing ever assigns m.Radius there), so
-// Task 4 adds them alongside the kinds that need them, the same way this
-// task's own buildChartModel switch only covers bar/line/area.
+// (chart.templ:1645), covering every kind this file builds (bar, line,
+// area, pie, radar, radial-bar) — same field order, same json tags, same
+// omitempty-or-not as upstream, including its two dead fields (Radius and
+// SliceColors, grep-confirmed unassigned anywhere in chart.templ) kept
+// here for structural fidelity only.
 //
 // The two gsxui-specific fields are TooltipModel.TooltipClass (Task 5
 // populates it from the compiled recipe class; empty here since nothing
@@ -580,6 +731,10 @@ type ChartModel struct {
 	LegendHeight float64 `json:"legendHeight,omitempty"`
 	LegendVAlign string  `json:"legendVAlign,omitempty"` // "top" raises the legend above the plot
 	CategoryGap  float64 `json:"categoryGap,omitempty"`
+	// Radius is dead upstream too (grep confirms nothing ever assigns
+	// m.Radius in chart.templ) — ported for structural fidelity only, per
+	// this file's header credit.
+	Radius float64 `json:"radius,omitempty"`
 
 	Grid           bool `json:"grid,omitempty"`
 	GridHorizontal bool `json:"gridHorizontal,omitempty"`
@@ -600,11 +755,26 @@ type ChartModel struct {
 	Cursor bool `json:"cursor"`
 	// HasTooltip marks a declared ChartTooltip: without one the client
 	// renders no tooltip at all, so it skips the hover wiring.
-	HasTooltip    bool               `json:"hasTooltip,omitempty"`
-	Labels        []string           `json:"labels"`
-	TooltipLabels []string           `json:"tooltipLabels,omitempty"`
-	Series        []ChartModelSeries `json:"series"`
-	Tooltip       ChartTooltipModel  `json:"tooltip"`
+	HasTooltip bool     `json:"hasTooltip,omitempty"`
+	Labels     []string `json:"labels"`
+	// TooltipLabels is dead for "pie" and "radial" (upstream's own
+	// buildPieModel/buildRadialModel never set it either — a pie/radial
+	// chart's tooltip names come from each series' own TooltipNames
+	// instead, see ChartModelSeries).
+	TooltipLabels []string `json:"tooltipLabels,omitempty"`
+	// SliceColors is dead upstream too (grep confirms nothing ever assigns
+	// m.SliceColors) — ported for structural fidelity only, like Radius
+	// above; each pie's own per-slice Colors carries what the client needs
+	// (see ChartPieModel).
+	SliceColors []string           `json:"sliceColors,omitempty"`
+	Series      []ChartModelSeries `json:"series"`
+	Tooltip     ChartTooltipModel  `json:"tooltip"`
+	// Pies carries the pie geometry for the client renderer.
+	Pies []ChartPieModel `json:"pies,omitempty"`
+	// Polar carries the radar geometry.
+	Polar *ChartPolarModel `json:"polar,omitempty"`
+	// Radial carries the RadialBarChart geometry.
+	Radial *ChartRadialModel `json:"radial,omitempty"`
 
 	// AccessibilityLayer switches on the keyboard layer — also out of this
 	// task's scope, always absent for now.
@@ -643,11 +813,10 @@ type ChartTooltipModel struct {
 }
 
 // ChartModelSeries is one data series with its resolved color variable —
-// the pendant of templui's ModelSeries, narrowed to the cartesian fields
-// (Cells/ActiveIndex/ActiveBar/LabelLists/LabelList need the Cell/LabelList
-// children this task doesn't port — not in the brief's explicit child
-// list — and Background/CornerRadius/Class/TooltipNames are radial-bar-only;
-// Task 4 adds whichever of these its own kinds need).
+// the pendant of templui's ModelSeries, narrowed to the fields this file's
+// kinds actually need (Cells/ActiveIndex/ActiveBar/LabelLists/LabelList
+// need the Cell/LabelList children no task ports yet — not in either
+// task's explicit child list).
 type ChartModelSeries struct {
 	Key         string    `json:"key"`
 	Label       string    `json:"label"`
@@ -655,24 +824,89 @@ type ChartModelSeries struct {
 	Values      []float64 `json:"values"`
 	FillOpacity float64   `json:"fillOpacity,omitempty"` // area: 0 uses Recharts' 0.6
 	Curve       string    `json:"curve,omitempty"`       // line/area: "natural" (default), "linear", "step", "monotone"
-	Icon        string    `json:"icon,omitempty"`        // rendered svg, replaces the legend/tooltip color swatch
-	Fill        string    `json:"fill,omitempty"`        // area: verbatim fill, e.g. url(#fillDesktop)
-	Stroke      string    `json:"stroke,omitempty"`      // area/line: verbatim stroke
+	// FillOpacityPtr is radar's own opacity: an explicit zero stays,
+	// unlike FillOpacity above where zero falls back to Recharts' default.
+	FillOpacityPtr *float64 `json:"fillOpacityPtr,omitempty"`
+	Icon           string   `json:"icon,omitempty"`   // rendered svg, replaces the legend/tooltip color swatch
+	Fill           string   `json:"fill,omitempty"`   // area: verbatim fill, e.g. url(#fillDesktop)
+	Stroke         string   `json:"stroke,omitempty"` // area/line/radar: verbatim stroke
 
 	Radius      []float64 `json:"radius,omitempty"`      // bar: corner radii, one or four
-	StackID     string    `json:"stackId,omitempty"`     // bar/area
-	StrokeWidth float64   `json:"strokeWidth,omitempty"` // bar/line
+	StackID     string    `json:"stackId,omitempty"`     // bar/area/radial-bar
+	StrokeWidth float64   `json:"strokeWidth,omitempty"` // bar/line/radar
 
-	Dot        *ChartDotModel `json:"dot,omitempty"`        // line: per point dots
+	Dot        *ChartDotModel `json:"dot,omitempty"`        // line/radar: per point dots
 	ActiveDotR float64        `json:"activeDotR,omitempty"` // line: hover dot radius
+
+	// radial-bar: the track behind the bar, its corner radius, the class
+	// upstream puts on the sectors, and each row's own resolved tooltip
+	// name (getPayloadConfigFromPayload).
+	Background   bool     `json:"background,omitempty"`
+	CornerRadius float64  `json:"cornerRadius,omitempty"`
+	Class        string   `json:"class,omitempty"`
+	TooltipNames []string `json:"tooltipNames,omitempty"`
 }
 
-// ChartDotModel describes the per point dots of a line.
+// ChartDotModel describes the per point dots of a line or radar.
 type ChartDotModel struct {
 	R           float64 `json:"r,omitempty"`
 	FillOpacity float64 `json:"fillOpacity,omitempty"`
 	Fill        string  `json:"fill,omitempty"`
 	Size        float64 `json:"size,omitempty"`
+}
+
+// ChartPolarModel is the grid and angle-axis setup of a radar or radial
+// chart — the pendant of templui's PolarModel, minus its Ticks field:
+// PolarAngleAxis's Tick render-prop is a Go closure and cannot cross the
+// JSON boundary to the client renderer, the same reasoning
+// ChartTooltipOptions' dropped Formatter uses.
+type ChartPolarModel struct {
+	GridType     string    `json:"gridType,omitempty"`
+	RadialLines  bool      `json:"radialLines"`
+	PolarRadius  []float64 `json:"polarRadius,omitempty"`
+	Stroke       string    `json:"stroke,omitempty"`
+	StrokeWidth  float64   `json:"strokeWidth,omitempty"`
+	GridClass    string    `json:"gridClass,omitempty"`
+	HasGrid      bool      `json:"hasGrid,omitempty"`
+	HasAngleAxis bool      `json:"hasAngleAxis,omitempty"`
+}
+
+// ChartRadialModel is the geometry of a RadialBarChart. Center (the middle
+// Label) is not ported — the Label child itself is out of this task's
+// explicit child list.
+type ChartRadialModel struct {
+	StartAngle  float64 `json:"startAngle"`
+	EndAngle    float64 `json:"endAngle"`
+	InnerRadius float64 `json:"innerRadius,omitempty"`
+	OuterRadius float64 `json:"outerRadius,omitempty"`
+}
+
+// ChartPieLabelModel is the resolved label option of a Pie.
+type ChartPieLabelModel struct {
+	Fill string `json:"fill,omitempty"`
+}
+
+// ChartPieModel is one rendered Pie with its slices — the pendant of
+// templui's PieModel, minus LabelList/ActiveIndex/ActiveShape/Center: the
+// LabelList and Label children they depend on are out of this task's
+// explicit child list, and ActiveIndex/ActiveShape are deferred the same
+// way ChartBarOptions' own ActiveIndex/ActiveBar are (see ChartPieOptions'
+// own doc comment).
+type ChartPieModel struct {
+	Key          string              `json:"key"`
+	SeriesLabel  string              `json:"seriesLabel,omitempty"`
+	Values       []float64           `json:"values"`
+	Labels       []string            `json:"labels"`
+	TooltipNames []string            `json:"tooltipNames,omitempty"`
+	NameKey      string              `json:"nameKey,omitempty"`
+	NameValues   []string            `json:"nameValues,omitempty"`
+	Colors       []string            `json:"colors"`
+	InnerRadius  float64             `json:"innerRadius,omitempty"`
+	OuterRadius  float64             `json:"outerRadius,omitempty"`
+	StrokeWidth  float64             `json:"strokeWidth,omitempty"`
+	Stroke       string              `json:"stroke,omitempty"`
+	Label        *ChartPieLabelModel `json:"label,omitempty"`
+	LabelLine    bool                `json:"labelLine,omitempty"`
 }
 
 // chartModelSeries resolves the shared fields of one series (color, label,
@@ -690,11 +924,22 @@ func chartModelSeries(config ChartConfig, key, fill string, fillOpacity float64,
 }
 
 // buildChartModel normalizes the collected chart tree into the model the
-// client renderer consumes, the pendant of templui's buildModel narrowed
-// to the cartesian kinds this task ports (bar, line, area); a later task
-// extends the kind switch for pie/radar/radial.
+// client renderer consumes, the pendant of templui's buildModel: pie,
+// radar and radial-bar each get their own builder below (matching
+// upstream's own early-return dispatch), the rest of this function stays
+// the cartesian builder (bar, line, area).
 func buildChartModel(ctx context.Context, st *chartState) ChartModel {
 	config := chartConfigFromCtx(ctx)
+	if st.kind == "pie" {
+		return buildChartPieModel(ctx, config, st)
+	}
+	if st.kind == "radar" {
+		return buildChartRadarModel(ctx, config, st)
+	}
+	if st.kind == "radial" {
+		return buildChartRadialModel(ctx, config, st)
+	}
+
 	m := ChartModel{Kind: st.kind, StackOffset: st.stackOffset}
 
 	if g := st.grid; g != nil {
@@ -830,7 +1075,10 @@ func buildChartModel(ctx context.Context, st *chartState) ChartModel {
 		}
 	}
 
-	// applyIcons: copy the config icons into the model series.
+	// applyIcons: copy the config icons into the model series. Upstream
+	// only calls this from the cartesian buildModel — buildRadarModel,
+	// buildRadialModel and buildPieModel below never do, so icons stay
+	// cartesian-only, byte-faithful to that omission.
 	for i := range m.Series {
 		for _, sc := range config {
 			if sc.Key == m.Series[i].Key && sc.Icon != nil {
@@ -839,6 +1087,200 @@ func buildChartModel(ctx context.Context, st *chartState) ChartModel {
 		}
 	}
 
+	return m
+}
+
+// chartPolarModel resolves a registered ChartPolarGrid into the model the
+// renderer consumes — the pendant of templui's polarModel.
+func chartPolarModel(g *ChartPolarGridOptions) ChartPolarModel {
+	return ChartPolarModel{
+		HasGrid:     true,
+		GridType:    g.GridType,
+		RadialLines: chartBoolOr(g.RadialLines, true),
+		PolarRadius: g.PolarRadius,
+		Stroke:      g.Stroke,
+		StrokeWidth: g.StrokeWidth,
+		GridClass:   g.Class,
+	}
+}
+
+// buildChartRadarModel normalizes a RadarChart into the model, the pendant
+// of templui's buildRadarModel.
+func buildChartRadarModel(ctx context.Context, config ChartConfig, st *chartState) ChartModel {
+	m := ChartModel{Kind: "radar"}
+	if st.margin != nil {
+		m.MarginTop, m.MarginRight, m.MarginBottom, m.MarginLeft = st.margin.Top, st.margin.Right, st.margin.Bottom, st.margin.Left
+	} else {
+		m.MarginTop, m.MarginRight, m.MarginBottom, m.MarginLeft = 5, 5, 5, 5
+	}
+	polar := ChartPolarModel{RadialLines: true}
+	if g := st.polarGrid; g != nil {
+		polar = chartPolarModel(g)
+	}
+	m.Labels = make([]string, len(st.data))
+	m.TooltipLabels = make([]string, len(st.data))
+	if a := st.angleAxis; a != nil {
+		polar.HasAngleAxis = true
+		for i, d := range st.data {
+			m.Labels[i] = chartStr(d[a.key])
+			m.TooltipLabels[i] = m.Labels[i]
+		}
+	}
+	m.Polar = &polar
+	for _, r := range st.radars {
+		s := chartModelSeries(config, r.key, r.opts.Fill, 0, st.data)
+		s.FillOpacityPtr = r.opts.FillOpacity
+		s.Stroke = r.opts.Stroke
+		s.StrokeWidth = r.opts.StrokeWidth
+		if d := r.opts.Dot; d != nil {
+			s.Dot = &ChartDotModel{R: d.R, Fill: d.Fill, FillOpacity: d.FillOpacity}
+		}
+		m.Series = append(m.Series, s)
+	}
+	if st.legend != nil {
+		m.LegendHeight = defaultChartLegendHeight
+	}
+	if tt := st.tooltip; tt != nil {
+		m.Cursor = chartBoolOr(tt.opts.Cursor, true)
+		m.HasTooltip = true
+		m.Tooltip = ChartTooltipModel{
+			Indicator: tt.opts.Indicator, HideLabel: tt.opts.HideLabel, HideIndicator: tt.opts.HideIndicator,
+			Width: tt.opts.Class, LabelClassName: tt.opts.LabelClass, Color: tt.opts.Color,
+		}
+	}
+	return m
+}
+
+// buildChartRadialModel normalizes a RadialBarChart into the model: the
+// polar geometry, one series per radial bar and no center label (the
+// Label child that would carry one is out of this task's scope) — the
+// pendant of templui's buildRadialModel.
+func buildChartRadialModel(ctx context.Context, config ChartConfig, st *chartState) ChartModel {
+	m := ChartModel{Kind: "radial"}
+	if st.margin != nil {
+		m.MarginTop, m.MarginRight, m.MarginBottom, m.MarginLeft = st.margin.Top, st.margin.Right, st.margin.Bottom, st.margin.Left
+	} else {
+		m.MarginTop, m.MarginRight, m.MarginBottom, m.MarginLeft = 5, 5, 5, 5
+	}
+	// The RadialBarChart defaults: a full turn from zero, no inner radius
+	// and an outer radius of 80%.
+	r := ChartRadialModel{
+		StartAngle:  st.startAngle,
+		EndAngle:    360,
+		InnerRadius: st.innerRadius,
+		OuterRadius: st.outerRadius,
+	}
+	if st.endAngle != nil {
+		r.EndAngle = *st.endAngle
+	}
+	if g := st.polarGrid; g != nil {
+		polar := chartPolarModel(g)
+		m.Polar = &polar
+	}
+	m.Labels = make([]string, len(st.data))
+	for i := range st.data {
+		// The radius axis has no data key, so its domain is the row
+		// index, which is what a tooltip label would show.
+		m.Labels[i] = chartStr(i)
+	}
+	tt := st.tooltip
+	for _, rb := range st.radialBars {
+		s := chartModelSeries(config, rb.key, rb.opts.Fill, 0, st.data)
+		s.Background = rb.opts.Background
+		s.CornerRadius = rb.opts.CornerRadius
+		s.StackID = rb.opts.StackID
+		s.Class = rb.opts.Class
+		// getPayloadConfigFromPayload: the tooltip names every row through
+		// the name key, which the rows answer with their own value.
+		nameKey := rb.key
+		if tt != nil && tt.opts.NameKey != "" {
+			nameKey = tt.opts.NameKey
+		}
+		s.TooltipNames = make([]string, len(st.data))
+		for i, row := range st.data {
+			s.TooltipNames[i] = config.label(chartPayloadConfigKey(row, nameKey))
+		}
+		m.Series = append(m.Series, s)
+	}
+	m.Radial = &r
+	if tt != nil {
+		m.Cursor = chartBoolOr(tt.opts.Cursor, true)
+		m.HasTooltip = true
+		m.Tooltip = ChartTooltipModel{
+			Indicator: tt.opts.Indicator, HideLabel: tt.opts.HideLabel, HideIndicator: tt.opts.HideIndicator,
+			Width: tt.opts.Class, LabelClassName: tt.opts.LabelClass, Color: tt.opts.Color,
+		}
+	}
+	return m
+}
+
+// buildChartPieModel normalizes a PieChart into the model: one ChartPieModel
+// per registered ChartPie — the pendant of templui's buildPieModel. Unlike
+// every other kind, it never touches the top-level margin, Labels or
+// Series fields (upstream doesn't either), so those marshal as their zero
+// value (0 / null / null) for a pie chart.
+func buildChartPieModel(ctx context.Context, config ChartConfig, st *chartState) ChartModel {
+	m := ChartModel{Kind: "pie", Cursor: false}
+	if st.legend != nil {
+		m.LegendHeight = defaultChartLegendHeight
+	}
+	for _, ps := range st.pies {
+		pm := ChartPieModel{
+			Key:         ps.key,
+			SeriesLabel: config.label(ps.key),
+			NameKey:     ps.opts.NameKey,
+			InnerRadius: ps.opts.InnerRadius,
+			OuterRadius: ps.opts.OuterRadius,
+			StrokeWidth: ps.opts.StrokeWidth,
+			Stroke:      ps.opts.Stroke,
+			LabelLine:   chartBoolOr(ps.opts.LabelLine, true),
+		}
+		if ps.opts.Label != nil {
+			pm.Label = &ChartPieLabelModel{Fill: ps.opts.Label.Fill}
+		}
+		pm.Values = make([]float64, len(ps.data))
+		pm.Labels = make([]string, len(ps.data))
+		pm.TooltipNames = make([]string, len(ps.data))
+		pm.NameValues = make([]string, len(ps.data))
+		pm.Colors = make([]string, len(ps.data))
+		for i, d := range ps.data {
+			pm.Values[i] = chartNum(d[ps.key])
+			// getTooltipNameProp: the name key value names the slice, the
+			// data key stands in when the row has none.
+			key := ps.key
+			if ps.opts.NameKey != "" {
+				if v, ok := d[ps.opts.NameKey]; ok && v != nil {
+					key = chartStr(v)
+				}
+			}
+			pm.NameValues[i] = key
+			pm.Labels[i] = config.label(key)
+			// ChartTooltipContent names the row through nameKey when it is
+			// set, otherwise through the slice name.
+			nameKey := key
+			if st.tooltip != nil && st.tooltip.opts.NameKey != "" {
+				nameKey = st.tooltip.opts.NameKey
+			}
+			pm.TooltipNames[i] = config.label(chartPayloadConfigKey(d, nameKey))
+			if f, ok := d["fill"]; ok {
+				pm.Colors[i] = chartStr(f)
+			} else {
+				pm.Colors[i] = chartSeriesColor(key)
+			}
+		}
+		m.Pies = append(m.Pies, pm)
+	}
+	if tt := st.tooltip; tt != nil {
+		m.Cursor = chartBoolOr(tt.opts.Cursor, true)
+		m.HasTooltip = true
+		m.Tooltip = ChartTooltipModel{
+			Indicator: tt.opts.Indicator, HideLabel: tt.opts.HideLabel, HideIndicator: tt.opts.HideIndicator,
+			Width: tt.opts.Class, LabelClassName: tt.opts.LabelClass, Color: tt.opts.Color,
+		}
+		if tt.opts.LabelKey != "" {
+			m.Tooltip.Label = config.label(tt.opts.LabelKey)
+		}
+	}
 	return m
 }
 
@@ -863,18 +1305,37 @@ type chartLegendItem struct {
 	value string // the payload value the legend sorts by
 }
 
-// chartBuildLegendItems builds the legend payload: one entry per series,
-// sorted by key like Recharts' itemSorter default of "value" — the
-// pendant of templui's legendItems narrowed to the cartesian kinds (no
-// pie branch; Task 4 extends this).
-func chartBuildLegendItems(config ChartConfig, m ChartModel, opts *ChartLegendOptions) []chartLegendItem {
-	items := make([]chartLegendItem, 0, len(m.Series))
-	for _, s := range m.Series {
-		label := s.Label
-		if opts.NameKey != "" {
-			label = config.label(opts.NameKey)
+// chartBuildLegendItems builds the legend payload: one entry per series, or
+// one per pie slice, then sorted by value like Recharts' itemSorter
+// default of "value" — the pendant of templui's legendItems. A pie without
+// a name key gives every entry the same value, so the data order survives
+// the stable sort, exactly like upstream.
+func chartBuildLegendItems(config ChartConfig, m ChartModel, st *chartState, opts *ChartLegendOptions) []chartLegendItem {
+	var items []chartLegendItem
+	if m.Kind == "pie" {
+		for pi, pie := range m.Pies {
+			rows := st.pies[pi].data
+			for i := range pie.Labels {
+				// The label comes from the legend's name key on the data
+				// row, like getPayloadConfigFromPayload does.
+				name := pie.Labels[i]
+				if opts.NameKey != "" && i < len(rows) {
+					if v, ok := rows[i][opts.NameKey]; ok && v != nil {
+						name = config.label(chartStr(v))
+					}
+				}
+				items = append(items, chartLegendItem{label: name, color: pie.Colors[i], value: pie.NameValues[i]})
+			}
 		}
-		items = append(items, chartLegendItem{label: label, color: s.Color, icon: s.Icon, value: s.Key})
+	} else {
+		items = make([]chartLegendItem, 0, len(m.Series))
+		for _, s := range m.Series {
+			label := s.Label
+			if opts.NameKey != "" {
+				label = config.label(opts.NameKey)
+			}
+			items = append(items, chartLegendItem{label: label, color: s.Color, icon: s.Icon, value: s.Key})
+		}
 	}
 	sort.SliceStable(items, func(i, j int) bool { return items[i].value < items[j].value })
 	return items
@@ -889,42 +1350,42 @@ func chartBuildLegendItems(config ChartConfig, m ChartModel, opts *ChartLegendOp
 // by chartRoot once a chart's children have registered a ChartLegend, not
 // meant to be composed directly by a consumer.
 
-//line chart.gsx:867:1
+//line chart.gsx:1328:1
 func ChartLegendContent(items []chartLegendItem, opts *ChartLegendOptions) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line chart.gsx:868:2
+//line chart.gsx:1329:2
 		posStyle := "position:absolute;left:0;right:0;bottom:5px"
 		pad := "pt-3"
 		if opts.VerticalAlign == "top" {
 			posStyle = "position:absolute;left:0;right:0;top:5px"
 			pad = "pb-3"
 		}
-//line chart.gsx:876:2
+//line chart.gsx:1337:2
 		_gsxgw.S("<div style=\"")
 		_gsxgw.Style(_gsxrt.Style(_gsxrt.StyleValue(posStyle)))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-chart-legend", true)
 		_gsxgw.S(">")
-//line chart.gsx:877:3
+//line chart.gsx:1338:3
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex items-center justify-center gap-4"), _gsxrt.Class(pad), _gsxrt.Class(opts.Class))
 		_gsxgw.S("\">")
-//line chart.gsx:878:4
+//line chart.gsx:1339:4
 		for _, it := range items {
-//line chart.gsx:879:5
+//line chart.gsx:1340:5
 			_gsxgw.S("<div class=\"flex items-center gap-1.5 [&amp;&gt;svg]:h-3 [&amp;&gt;svg]:w-3 [&amp;&gt;svg]:text-muted-foreground\">")
-//line chart.gsx:880:6
+//line chart.gsx:1341:6
 			if it.icon != "" && !opts.HideIcon {
-//line chart.gsx:881:7
+//line chart.gsx:1342:7
 				_gsxgw.Node(ctx, gsx.Raw(it.icon))
 			} else {
-//line chart.gsx:883:7
+//line chart.gsx:1344:7
 				_gsxgw.S("<div class=\"h-2 w-2 shrink-0 rounded-[2px]\" style=\"")
 				_gsxgw.Style(_gsxrt.Style(_gsxrt.StyleValue("background-color:" + it.color)))
 				_gsxgw.S("\"></div>")
 			}
-//line chart.gsx:885:6
+//line chart.gsx:1346:6
 			_gsxgw.Text(string(it.label))
 			_gsxgw.S("</div>")
 		}
@@ -933,17 +1394,20 @@ func ChartLegendContent(items []chartLegendItem, opts *ChartLegendOptions) _gsxr
 	})
 }
 
-// chartRoot renders one chart root: templui's AreaChart/BarChart/LineChart
-// wrapper div, its children (which register into the chartState seeded
-// here), then the model script and (if registered) the server-rendered
-// legend — templui's own chartOutput, run after children the same way gsx
-// renders a Node's children before the statements that follow { children }
-// in its caller.
+// chartRoot renders one chart root: templui's AreaChart/BarChart/LineChart/
+// RadarChart/RadialBarChart/PieChart wrapper div, its children (which
+// register into the chartState seeded here), then the model script and (if
+// registered) the server-rendered legend — templui's own chartOutput, run
+// after children the same way gsx renders a Node's children before the
+// statements that follow { children } in its caller. st arrives already
+// populated with its kind and kind-specific fields (margin, data,
+// RadialBarChart's own angle/radius geometry, ...); every root below
+// builds one and hands it here rather than chartRoot taking every kind's
+// fields as its own positional parameters.
 //
-//line chart.gsx:892:1
-func chartRoot(kind string, data []ChartDatum, margin *ChartMargin, stackOffset string, children gsx.Node, attrs gsx.Attrs) gsx.Node {
+//line chart.gsx:1353:1
+func chartRoot(st *chartState, children gsx.Node, attrs gsx.Attrs) gsx.Node {
 	return gsx.Func(func(ctx context.Context, w io.Writer) error {
-		st := &chartState{kind: kind, data: data, margin: margin, stackOffset: stackOffset}
 		ctx = context.WithValue(ctx, chartStateCtxKey, st)
 		gw := gsx.W(w)
 		gw.S("<div")
@@ -954,7 +1418,7 @@ func chartRoot(kind string, data []ChartDatum, margin *ChartMargin, stackOffset 
 		m := buildChartModel(ctx, st)
 		gw.S(chartModelScript(m))
 		if st.legend != nil {
-			items := chartBuildLegendItems(chartConfigFromCtx(ctx), m, st.legend)
+			items := chartBuildLegendItems(chartConfigFromCtx(ctx), m, st, st.legend)
 			gw.Node(ctx, ChartLegendContent(items, st.legend))
 		}
 		gw.S("</div>")
@@ -970,7 +1434,7 @@ func BarChart(data []ChartDatum, opts *ChartBarChartOptions, children gsx.Node, 
 	if opts != nil {
 		margin = opts.Margin
 	}
-	return chartRoot("bar", data, margin, "", children, attrs)
+	return chartRoot(&chartState{kind: "bar", data: data, margin: margin}, children, attrs)
 }
 
 // LineChart is the Recharts LineChart root.
@@ -979,7 +1443,7 @@ func LineChart(data []ChartDatum, opts *ChartLineChartOptions, children gsx.Node
 	if opts != nil {
 		margin = opts.Margin
 	}
-	return chartRoot("line", data, margin, "", children, attrs)
+	return chartRoot(&chartState{kind: "line", data: data, margin: margin}, children, attrs)
 }
 
 // AreaChart is the Recharts AreaChart root.
@@ -990,7 +1454,37 @@ func AreaChart(data []ChartDatum, opts *ChartAreaChartOptions, children gsx.Node
 		margin = opts.Margin
 		stackOffset = opts.StackOffset
 	}
-	return chartRoot("area", data, margin, stackOffset, children, attrs)
+	return chartRoot(&chartState{kind: "area", data: data, margin: margin, stackOffset: stackOffset}, children, attrs)
+}
+
+// RadarChart is the Recharts RadarChart root.
+func RadarChart(data []ChartDatum, opts *ChartRadarChartOptions, children gsx.Node, attrs gsx.Attrs) gsx.Node {
+	var margin *ChartMargin
+	if opts != nil {
+		margin = opts.Margin
+	}
+	return chartRoot(&chartState{kind: "radar", data: data, margin: margin}, children, attrs)
+}
+
+// RadialBarChart is the Recharts RadialBarChart root.
+func RadialBarChart(data []ChartDatum, opts *ChartRadialBarChartOptions, children gsx.Node, attrs gsx.Attrs) gsx.Node {
+	st := &chartState{kind: "radial", data: data}
+	if opts != nil {
+		st.margin = opts.Margin
+		st.startAngle = opts.StartAngle
+		st.endAngle = opts.EndAngle
+		st.innerRadius = opts.InnerRadius
+		st.outerRadius = opts.OuterRadius
+	}
+	return chartRoot(st, children, attrs)
+}
+
+// PieChart is the Recharts PieChart root: unlike every other root, it
+// carries no data or margin of its own — Recharts' own Pie takes its own
+// data prop, so each ChartPie child registers its own rows and geometry
+// (see ChartPie); upstream's own PieChartProps is empty too.
+func PieChart(children gsx.Node, attrs gsx.Attrs) gsx.Node {
+	return chartRoot(&chartState{kind: "pie"}, children, attrs)
 }
 
 // ChartCartesianGrid registers the grid, the pendant of Recharts'
@@ -1133,6 +1627,109 @@ func ChartLine(key string, opts *ChartLineOptions) gsx.Node {
 	return gsx.Func(func(ctx context.Context, _ io.Writer) error {
 		if st := chartStateFromCtx(ctx); st != nil {
 			st.lines = append(st.lines, chartLineReg{key: key, opts: *opts})
+		}
+		return nil
+	})
+}
+
+// ---------------------------------------------------------------------
+// Polar model builder (pie, radar, radial-bar) — adapted from templui's
+// chart.templ lines 729-1100 (RadarChart / RadialBarChart / PieChart
+// roots, PolarGrid / PolarAngleAxis / PolarRadiusAxis / Radar / RadialBar /
+// Pie, buildRadarModel / buildRadialModel / buildPieModel / polarModel,
+// legendItems' pie branch). Every part below renders nothing itself,
+// exactly like the cartesian parts above: children register into the
+// chartState the enclosing root seeded through ctx.
+//
+// Label (the center donut/radial label) and its Pie/PolarRadiusAxis mount
+// points, LabelList, Cell, and every Recharts render-prop closure
+// (PolarAngleAxis's Tick) are not ported — none is in this task's explicit
+// child list, and a closure cannot cross the JSON boundary to the client
+// renderer regardless. Pie's ActiveIndex/ActiveShape are deferred the same
+// way ChartBarOptions' own ActiveIndex/ActiveBar are (see ChartPieOptions'
+// own doc comment).
+
+// ChartPolarGrid registers the polar grid, the pendant of Recharts'
+// PolarGrid element. It renders nothing; the client draws it.
+func ChartPolarGrid(opts *ChartPolarGridOptions) gsx.Node {
+	if opts == nil {
+		opts = &ChartPolarGridOptions{}
+	}
+	return gsx.Func(func(ctx context.Context, _ io.Writer) error {
+		if st := chartStateFromCtx(ctx); st != nil {
+			st.polarGrid = opts
+		}
+		return nil
+	})
+}
+
+// ChartPolarAngleAxis registers the angle axis, the labels around the
+// chart.
+func ChartPolarAngleAxis(key string) gsx.Node {
+	return gsx.Func(func(ctx context.Context, _ io.Writer) error {
+		if st := chartStateFromCtx(ctx); st != nil {
+			st.angleAxis = &chartPolarAngleAxisReg{key: key}
+		}
+		return nil
+	})
+}
+
+// ChartPolarRadiusAxis registers the radius axis. Its own options are
+// currently inert (see ChartPolarRadiusAxisOptions' own doc comment);
+// children is still rendered, matching upstream's own { children... }, so
+// a future Label child has somewhere to register through once it is
+// ported.
+func ChartPolarRadiusAxis(opts *ChartPolarRadiusAxisOptions, children gsx.Node) gsx.Node {
+	if opts == nil {
+		opts = &ChartPolarRadiusAxisOptions{}
+	}
+	return gsx.Func(func(ctx context.Context, w io.Writer) error {
+		if st := chartStateFromCtx(ctx); st != nil {
+			st.radiusAxis = opts
+		}
+		if children == nil {
+			return nil
+		}
+		return children.Render(ctx, w)
+	})
+}
+
+// ChartRadar registers one radar series.
+func ChartRadar(key string, opts *ChartRadarOptions) gsx.Node {
+	if opts == nil {
+		opts = &ChartRadarOptions{}
+	}
+	return gsx.Func(func(ctx context.Context, _ io.Writer) error {
+		if st := chartStateFromCtx(ctx); st != nil {
+			st.radars = append(st.radars, chartRadarReg{key: key, opts: *opts})
+		}
+		return nil
+	})
+}
+
+// ChartRadialBar registers one radial bar series.
+func ChartRadialBar(key string, opts *ChartRadialBarOptions) gsx.Node {
+	if opts == nil {
+		opts = &ChartRadialBarOptions{}
+	}
+	return gsx.Func(func(ctx context.Context, _ io.Writer) error {
+		if st := chartStateFromCtx(ctx); st != nil {
+			st.radialBars = append(st.radialBars, chartRadialBarReg{key: key, opts: *opts})
+		}
+		return nil
+	})
+}
+
+// ChartPie registers one pie with its own data and geometry — unlike the
+// cartesian series, Recharts' own Pie takes its own data prop rather than
+// reading the enclosing chart's rows (PieChart itself carries none).
+func ChartPie(data []ChartDatum, key string, opts *ChartPieOptions) gsx.Node {
+	if opts == nil {
+		opts = &ChartPieOptions{}
+	}
+	return gsx.Func(func(ctx context.Context, _ io.Writer) error {
+		if st := chartStateFromCtx(ctx); st != nil {
+			st.pies = append(st.pies, chartPieReg{data: data, key: key, opts: *opts})
 		}
 		return nil
 	})
