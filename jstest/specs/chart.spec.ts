@@ -81,6 +81,37 @@ test("chart.render.js loads only on pages with a chart", async ({ page }) => {
 });
 
 /**
+ * ui/chart.js's bodyPromise cache used to hold the REJECTED promise
+ * forever once a dynamic import() of chart.render.js failed (a transient
+ * network blip, an ad blocker, a flaky path in front of /ui/): every chart
+ * on the page, including ones ui/gsxui.js's own init() re-init contract
+ * would otherwise recover (a later swap/morph re-invoking initRoot for the
+ * same or a different match), silently drew nothing for the rest of the
+ * page's life. The fix clears the cache in a .catch so the NEXT initRoot
+ * call gets a fresh import() attempt. Simulated here by aborting the
+ * request once, then letting a later one through and forcing a re-init via
+ * a harmless attribute mutation on the chart root — the same
+ * self-healing re-init every other ui/*.js module relies on.
+ */
+test("a failed chart.render.js load does not wedge later charts on the same page", async ({ page }) => {
+  let blocked = true;
+  await page.route("**/ui/chart.render.js", (r) => (blocked ? r.abort() : r.continue()));
+
+  const response = await page.goto(route);
+  expect(response?.status()).toBe(200);
+  await expect(page.locator("[data-gsxui-slot-chart] svg")).toHaveCount(0);
+
+  blocked = false;
+  await page.evaluate(() => {
+    const el = document.querySelector("[data-gsxui-slot-chart]")!;
+    el.setAttribute("data-gsxui-retry-probe", "1");
+    el.removeAttribute("data-gsxui-retry-probe");
+  });
+
+  await expect(page.locator("[data-gsxui-slot-chart] svg.recharts-surface")).toHaveCount(1);
+});
+
+/**
  * Task 6's own fixture (jstest/harness/chart_contract.gsx, served at
  * /f/chart-tooltip) — NOT the public docs example above: it registers a
  * ChartTooltip (basic.gsx doesn't) and gives its "desktop" series a
