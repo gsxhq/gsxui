@@ -162,10 +162,10 @@ func (rt Rtl) Page() _gsxrt.Node {
 //line rtl.gsx:96:5
 			_gsxgw.S("<p>More RTL variants live on their own component pages: ")
 //line rtl.gsx:97:59
-			_gsxgw.S("<a href=\"/components/calendar\">Calendar</a>,")
-//line rtl.gsx:98:6
+			_gsxgw.S("<a href=\"/components/calendar\">Calendar</a>, ")
+//line rtl.gsx:98:8
 			_gsxgw.S("<a href=\"/components/pagination\">Pagination</a>, and ")
-//line rtl.gsx:98:59
+//line rtl.gsx:98:61
 			_gsxgw.S("<a href=\"/components/sidebar\">Sidebar</a> each register an \"RTL\" example alongside their other demos.</p></section>")
 //line rtl.gsx:102:4
 			_gsxgw.S("<section class=\"flex flex-col gap-3\">")

@@ -94,8 +94,8 @@ component (rt Rtl) Page() {
 					</button>
 				</div>
 				<p>
-					More RTL variants live on their own component pages: <a href="/components/calendar">Calendar</a>,
-					<a href="/components/pagination">Pagination</a>, and <a href="/components/sidebar">Sidebar</a> each register
+					More RTL variants live on their own component pages: <a href="/components/calendar">Calendar</a>
+					, <a href="/components/pagination">Pagination</a>, and <a href="/components/sidebar">Sidebar</a> each register
 					an "RTL" example alongside their other demos.
 				</p>
 			</section>
