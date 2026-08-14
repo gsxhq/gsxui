@@ -71,3 +71,36 @@ export const allowedUnmatched: AllowedUnmatched[] = [
       "by TestCommandDialogComposition), so this is an unexercised part, not drift.",
   },
 ];
+
+/**
+ * Reviewed exceptions to the behavior-module registration completeness
+ * check (jstest/support/fixtures.ts's `registrations` fixture, which
+ * expects every ui/*.js behavior module — one imported by ui/index.js, so
+ * it ships in production — to have recorded at least one on() delegation
+ * under /registrations).
+ *
+ * An entry says: this module is a real, barrel-imported behavior module
+ * that registers zero delegated on() handlers, on purpose, and here is why.
+ * It is NOT for a module that forgot to wire on() — the reason must show
+ * the module does its one job through some other mechanism the shim also
+ * stands in for (init(), see ui/gsxui.js's own dynamic-init section).
+ */
+export type AllowedZeroRegistration = {
+  /** Module filename, e.g. "chart.js". */
+  module: string;
+  reason: string;
+};
+
+export const allowedZeroRegistrations: AllowedZeroRegistration[] = [
+  {
+    module: "chart.js",
+    reason:
+      "Pure lazy-load bootstrap (see the module's own header): its only job is an " +
+      "init() call that dynamic-imports chart.render.js on the first chart and hands " +
+      "off rendering to it. There is no delegated DOM event to bind at the bootstrap " +
+      "layer itself — chart.render.js draws everything through direct " +
+      "addEventListener calls on each chart's own panel/document (mousemove, keydown, " +
+      "ResizeObserver...), the same shape shim.js's own header already documents for " +
+      "e.g. ui/carousel.js's per-root listeners as invisible to the on() registry.",
+  },
+];

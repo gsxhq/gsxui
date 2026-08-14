@@ -644,3 +644,46 @@ func TestAddAfterNonViteInitPreservesAnimateCSS(t *testing.T) {
 		t.Fatalf("barrel missing dialog behavior:\n%s", index)
 	}
 }
+
+// TestAddVendorsChartCompanionJS: chart's behavior JS (web/gsxui/chart.js)
+// lazily loads a companion body (chart.render.js, ~90KB) on first use rather
+// than parsing it on every page — addArtifacts must vendor BOTH files, and
+// the generated barrel must import only the lazy stub, never the companion
+// (which chart.js itself dynamic-imports at runtime).
+func TestAddVendorsChartCompanionJS(t *testing.T) {
+	dir, _ := initedModule(t)
+	if err := Run([]string{"add", "chart"}); err != nil {
+		t.Fatal(err)
+	}
+	for _, p := range []string{"web/gsxui/chart.js", "web/gsxui/chart.render.js"} {
+		if _, err := os.Stat(filepath.Join(dir, p)); err != nil {
+			t.Errorf("missing %s", p)
+		}
+	}
+	index := readFile(t, dir, "web/gsxui/index.js")
+	if !strings.Contains(index, `import "./chart.js";`) {
+		t.Errorf("barrel missing chart behavior:\n%s", index)
+	}
+	if strings.Contains(index, "chart.render") {
+		t.Errorf("barrel must not import the lazy chart.render companion directly:\n%s", index)
+	}
+}
+
+// TestAddButtonVendorsNoCompanionJS: button has no behavior JS at all, and
+// in particular no companion — the ui/<name>.*.js glob must not invent one.
+func TestAddButtonVendorsNoCompanionJS(t *testing.T) {
+	dir, _ := initedModule(t)
+	if err := Run([]string{"add", "button"}); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(filepath.Join(dir, "web/gsxui/button.js")); err == nil {
+		t.Error("button has no companion JS; web/gsxui/button.js must not exist")
+	}
+	matches, err := filepath.Glob(filepath.Join(dir, "web/gsxui/button.*.js"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(matches) != 0 {
+		t.Errorf("button must vendor no companion JS files, found: %v", matches)
+	}
+}

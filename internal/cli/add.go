@@ -161,6 +161,26 @@ func addArtifacts(dir, module string, cfg Config, selected preset.Preset, resolv
 				Content:      src,
 				Managed:      true,
 			})
+			// Companion behavior files (ui/<name>.<suffix>.js — today only
+			// chart.render.js) are lazily loaded by <name>.js itself via a
+			// dynamic import, never listed in the barrel (see
+			// behaviorBarrelArtifact's own dot-guard below), but they still
+			// need to land on disk for that import to resolve.
+			companions, err := fs.Glob(gsxui.Files, "ui/"+name+".*.js")
+			if err != nil {
+				return nil, err
+			}
+			for _, path := range companions {
+				src, err := fs.ReadFile(gsxui.Files, path)
+				if err != nil {
+					return nil, err
+				}
+				artifacts = append(artifacts, artifact{
+					RelativePath: filepath.ToSlash(filepath.Join(cfg.JS, filepath.Base(path))),
+					Content:      src,
+					Managed:      true,
+				})
+			}
 		}
 	}
 
@@ -195,9 +215,17 @@ func behaviorBarrelArtifact(dir string, cfg Config, resolved []string) (artifact
 	behaviorSet := make(map[string]bool)
 	for _, match := range matches {
 		name := strings.TrimSuffix(filepath.Base(match), ".js")
-		if name != "index" && name != "gsxui" {
-			behaviorSet[name] = true
+		if name == "index" || name == "gsxui" {
+			continue
 		}
+		// A companion file's trimmed name still carries its own dot (e.g.
+		// "chart.render") — no registry component name ever does — so this
+		// excludes it from becoming its own top-level barrel import; its
+		// owning behavior module dynamic-imports it instead.
+		if strings.Contains(name, ".") {
+			continue
+		}
+		behaviorSet[name] = true
 	}
 	for _, name := range resolved {
 		if registry.HasJS(name) {

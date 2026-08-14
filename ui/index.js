@@ -4,6 +4,7 @@ export * from "./gsxui.js";
 import "./avatar.js";
 import "./calendar.js";
 import "./carousel.js";
+import "./chart.js";
 import "./combobox.js";
 import "./command.js";
 import "./context-menu.js";

@@ -3,6 +3,7 @@ import path from "node:path";
 import { test as base } from "@playwright/test";
 import type { Registration } from "./globals";
 import { baseURL, repoRoot } from "./paths";
+import { allowedZeroRegistrations } from "./selector-allowlist";
 
 /**
  * The behavior modules the recorded registry must account for: every ui/*.js
@@ -14,16 +15,28 @@ import { baseURL, repoRoot } from "./paths";
  * is exactly one of the failures this is meant to catch, and reading the
  * barrel to build the expectation would make that failure invisible.
  *
- * The standing assumption is that every behavior module registers at least
- * one delegated handler; all 21 do today. A future ui/*.js that binds
- * nothing through on() would fail this, and belongs here as a named
- * exception with a reason rather than silently tolerated.
+ * A companion file (ui/<name>.<suffix>.js — today only chart.render.js) is
+ * excluded here rather than the other way around: it is dynamic-imported by
+ * its owning behavior module (chart.js) on first use, never a static
+ * ui/index.js import, so /shim/index.js structurally never loads it and it
+ * would always read as "missing" for a reason that has nothing to do with
+ * this check's actual purpose. No registry component name contains a dot,
+ * so the split is unambiguous; internal/cli/add.go's behaviorBarrelArtifact
+ * draws the same line for the same reason on the vendoring side.
+ *
+ * The standing assumption is that every remaining behavior module registers
+ * at least one delegated handler; all but one do today (see
+ * allowedZeroRegistrations in selector-allowlist.ts for the one exception,
+ * chart.js). A future ui/*.js that binds nothing through on() would fail
+ * this, and belongs there as a named exception with a reason rather than
+ * silently tolerated.
  */
 export function behaviorModules(): string[] {
   const uiDir = path.join(repoRoot, "ui");
   const names = readdirSync(uiDir)
     .filter((name) => name.endsWith(".js"))
     .filter((name) => name !== "gsxui.js" && name !== "index.js")
+    .filter((name) => !name.slice(0, -".js".length).includes("."))
     .sort();
   if (names.length === 0) {
     throw new Error(`no behavior modules found under ${uiDir}`);
@@ -74,7 +87,8 @@ export const test = base.extend<{}, { registrations: Registration[] }>({
 
       const expected = behaviorModules();
       const seen = new Set(recorded.map((r) => r.module));
-      const missing = expected.filter((name) => !seen.has(name));
+      const zeroAllowed = new Set(allowedZeroRegistrations.map((e) => e.module));
+      const missing = expected.filter((name) => !seen.has(name) && !zeroAllowed.has(name));
       const unrecognised = [...seen].filter((name) => !expected.includes(name)).sort();
       if (missing.length > 0 || unrecognised.length > 0) {
         throw new Error(
