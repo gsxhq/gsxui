@@ -673,6 +673,18 @@ func chartPayloadConfigKey(row ChartDatum, key string) string {
 	return key
 }
 
+// chartHasFillColumn reports whether the rows carry their own "fill",
+// which Recharts uses as that row's own fill — the pendant of templui's
+// hasFillColumn, byte-faithful.
+func chartHasFillColumn(data []ChartDatum) bool {
+	for _, row := range data {
+		if _, ok := row["fill"]; ok {
+			return true
+		}
+	}
+	return false
+}
+
 // chartRenderHTML renders a gsx.Node (e.g. a config icon) to raw HTML for
 // the legend markup.
 func chartRenderHTML(ctx context.Context, n gsx.Node) string {
@@ -831,9 +843,14 @@ type ChartModelSeries struct {
 	Fill           string   `json:"fill,omitempty"`   // area: verbatim fill, e.g. url(#fillDesktop)
 	Stroke         string   `json:"stroke,omitempty"` // area/line/radar: verbatim stroke
 
-	Radius      []float64 `json:"radius,omitempty"`      // bar: corner radii, one or four
-	StackID     string    `json:"stackId,omitempty"`     // bar/area/radial-bar
-	StrokeWidth float64   `json:"strokeWidth,omitempty"` // bar/line/radar
+	Radius  []float64 `json:"radius,omitempty"`  // bar: corner radii, one or four
+	StackID string    `json:"stackId,omitempty"` // bar/area/radial-bar
+	// Cells is a fill per data row, from that row's own "fill" column —
+	// pure data access, ported for radial-bar (see chartHasFillColumn);
+	// bar's own identical fallback plus its <Cell>-child-driven form stay
+	// deferred, matching this file's own Bar scope-narrowing elsewhere.
+	Cells       []string `json:"cells,omitempty"`
+	StrokeWidth float64  `json:"strokeWidth,omitempty"` // bar/line/radar
 
 	Dot        *ChartDotModel `json:"dot,omitempty"`        // line/radar: per point dots
 	ActiveDotR float64        `json:"activeDotR,omitempty"` // line: hover dot radius
@@ -855,20 +872,44 @@ type ChartDotModel struct {
 	Size        float64 `json:"size,omitempty"`
 }
 
+// ChartTickContentModel is a custom axis tick for the client renderer —
+// the pendant of templui's TickContentModel. Nothing populates it in this
+// task (PolarAngleAxis's Tick render-prop is a Go closure and cannot cross
+// the JSON boundary — the same reasoning ChartTooltipOptions' dropped
+// Formatter uses), but the renderer itself still reads polar.ticks[i]
+// separately from its own default-grid fallback (chart.js's own
+// `const custom = polar.ticks && polar.ticks[i]`), so the field stays —
+// ported for structural fidelity only, like Radius/SliceColors.
+type ChartTickContentModel struct {
+	Spans      []ChartTickSpanModel `json:"spans"`
+	FontSize   float64              `json:"fontSize,omitempty"`
+	FontWeight string               `json:"fontWeight,omitempty"`
+	OffsetY    float64              `json:"offsetY,omitempty"`
+}
+
+// ChartTickSpanModel is one tspan of a custom tick.
+type ChartTickSpanModel struct {
+	Text     string  `json:"text"`
+	Class    string  `json:"class,omitempty"`
+	FontSize float64 `json:"fontSize,omitempty"`
+	Dy       string  `json:"dy,omitempty"`
+	ResetX   bool    `json:"resetX,omitempty"`
+}
+
 // ChartPolarModel is the grid and angle-axis setup of a radar or radial
-// chart — the pendant of templui's PolarModel, minus its Ticks field:
-// PolarAngleAxis's Tick render-prop is a Go closure and cannot cross the
-// JSON boundary to the client renderer, the same reasoning
-// ChartTooltipOptions' dropped Formatter uses.
+// chart — the pendant of templui's PolarModel. Ticks is always empty in
+// this task (see ChartTickContentModel's own doc comment); every other
+// field is wired.
 type ChartPolarModel struct {
-	GridType     string    `json:"gridType,omitempty"`
-	RadialLines  bool      `json:"radialLines"`
-	PolarRadius  []float64 `json:"polarRadius,omitempty"`
-	Stroke       string    `json:"stroke,omitempty"`
-	StrokeWidth  float64   `json:"strokeWidth,omitempty"`
-	GridClass    string    `json:"gridClass,omitempty"`
-	HasGrid      bool      `json:"hasGrid,omitempty"`
-	HasAngleAxis bool      `json:"hasAngleAxis,omitempty"`
+	GridType     string                  `json:"gridType,omitempty"`
+	RadialLines  bool                    `json:"radialLines"`
+	PolarRadius  []float64               `json:"polarRadius,omitempty"`
+	Stroke       string                  `json:"stroke,omitempty"`
+	StrokeWidth  float64                 `json:"strokeWidth,omitempty"`
+	GridClass    string                  `json:"gridClass,omitempty"`
+	Ticks        []ChartTickContentModel `json:"ticks,omitempty"`
+	HasGrid      bool                    `json:"hasGrid,omitempty"`
+	HasAngleAxis bool                    `json:"hasAngleAxis,omitempty"`
 }
 
 // ChartRadialModel is the geometry of a RadialBarChart. Center (the middle
@@ -1190,6 +1231,14 @@ func buildChartRadialModel(ctx context.Context, config ChartConfig, st *chartSta
 		s.CornerRadius = rb.opts.CornerRadius
 		s.StackID = rb.opts.StackID
 		s.Class = rb.opts.Class
+		// A fill column names the row's own color, like Recharts reading
+		// the fill off the entry.
+		if chartHasFillColumn(st.data) {
+			s.Cells = make([]string, len(st.data))
+			for i, row := range st.data {
+				s.Cells[i] = chartStr(row["fill"])
+			}
+		}
 		// getPayloadConfigFromPayload: the tooltip names every row through
 		// the name key, which the rows answer with their own value.
 		nameKey := rb.key
@@ -1350,42 +1399,42 @@ func chartBuildLegendItems(config ChartConfig, m ChartModel, st *chartState, opt
 // by chartRoot once a chart's children have registered a ChartLegend, not
 // meant to be composed directly by a consumer.
 
-//line chart.gsx:1328:1
+//line chart.gsx:1377:1
 func ChartLegendContent(items []chartLegendItem, opts *ChartLegendOptions) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line chart.gsx:1329:2
+//line chart.gsx:1378:2
 		posStyle := "position:absolute;left:0;right:0;bottom:5px"
 		pad := "pt-3"
 		if opts.VerticalAlign == "top" {
 			posStyle = "position:absolute;left:0;right:0;top:5px"
 			pad = "pb-3"
 		}
-//line chart.gsx:1337:2
+//line chart.gsx:1386:2
 		_gsxgw.S("<div style=\"")
 		_gsxgw.Style(_gsxrt.Style(_gsxrt.StyleValue(posStyle)))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-chart-legend", true)
 		_gsxgw.S(">")
-//line chart.gsx:1338:3
+//line chart.gsx:1387:3
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex items-center justify-center gap-4"), _gsxrt.Class(pad), _gsxrt.Class(opts.Class))
 		_gsxgw.S("\">")
-//line chart.gsx:1339:4
+//line chart.gsx:1388:4
 		for _, it := range items {
-//line chart.gsx:1340:5
+//line chart.gsx:1389:5
 			_gsxgw.S("<div class=\"flex items-center gap-1.5 [&amp;&gt;svg]:h-3 [&amp;&gt;svg]:w-3 [&amp;&gt;svg]:text-muted-foreground\">")
-//line chart.gsx:1341:6
+//line chart.gsx:1390:6
 			if it.icon != "" && !opts.HideIcon {
-//line chart.gsx:1342:7
+//line chart.gsx:1391:7
 				_gsxgw.Node(ctx, gsx.Raw(it.icon))
 			} else {
-//line chart.gsx:1344:7
+//line chart.gsx:1393:7
 				_gsxgw.S("<div class=\"h-2 w-2 shrink-0 rounded-[2px]\" style=\"")
 				_gsxgw.Style(_gsxrt.Style(_gsxrt.StyleValue("background-color:" + it.color)))
 				_gsxgw.S("\"></div>")
 			}
-//line chart.gsx:1346:6
+//line chart.gsx:1395:6
 			_gsxgw.Text(string(it.label))
 			_gsxgw.S("</div>")
 		}
@@ -1405,7 +1454,7 @@ func ChartLegendContent(items []chartLegendItem, opts *ChartLegendOptions) _gsxr
 // builds one and hands it here rather than chartRoot taking every kind's
 // fields as its own positional parameters.
 //
-//line chart.gsx:1353:1
+//line chart.gsx:1402:1
 func chartRoot(st *chartState, children gsx.Node, attrs gsx.Attrs) gsx.Node {
 	return gsx.Func(func(ctx context.Context, w io.Writer) error {
 		ctx = context.WithValue(ctx, chartStateCtxKey, st)

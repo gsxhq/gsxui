@@ -146,3 +146,23 @@ func TestRadialBarChartModelPinned(t *testing.T) {
 		t.Errorf("model drift\n got: %s\nwant: %s", model, want)
 	}
 }
+
+// TestRadialBarChartModelCellsFromFillColumn pins hasFillColumn's per-row
+// fallback (chart.templ's own hasFillColumn/s.Cells wiring in
+// buildRadialModel): a "fill" column on the raw rows names each segment's
+// own color, the same pattern ChartPie's own per-slice Colors already
+// uses — no <Cell> child is needed, this is pure data access.
+func TestRadialBarChartModelCellsFromFillColumn(t *testing.T) {
+	data := []ui.ChartDatum{
+		{"month": "Jan", "desktop": 186.0, "fill": "var(--color-chrome)"},
+		{"month": "Feb", "desktop": 305.0, "fill": "var(--color-safari)"},
+	}
+	got := render(t, ui.Chart(cfg2Series(t),
+		ui.RadialBarChart(data, nil,
+			ui.ChartRadialBar("desktop", nil), nil), nil))
+	model := extractModelJSON(t, got)
+	want := `{"kind":"radial","marginTop":5,"marginRight":5,"marginBottom":5,"marginLeft":5,"cursor":false,"labels":["0","1"],"series":[{"key":"desktop","label":"","color":"var(--color-desktop)","values":[186,305],"cells":["var(--color-chrome)","var(--color-safari)"],"tooltipNames":["",""]}],"tooltip":{},"radial":{"startAngle":0,"endAngle":360}}`
+	if model != want {
+		t.Errorf("model drift\n got: %s\nwant: %s", model, want)
+	}
+}

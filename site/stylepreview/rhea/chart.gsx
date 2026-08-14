@@ -649,6 +649,18 @@ func chartPayloadConfigKey(row ChartDatum, key string) string {
 	return key
 }
 
+// chartHasFillColumn reports whether the rows carry their own "fill",
+// which Recharts uses as that row's own fill — the pendant of templui's
+// hasFillColumn, byte-faithful.
+func chartHasFillColumn(data []ChartDatum) bool {
+	for _, row := range data {
+		if _, ok := row["fill"]; ok {
+			return true
+		}
+	}
+	return false
+}
+
 // chartRenderHTML renders a gsx.Node (e.g. a config icon) to raw HTML for
 // the legend markup.
 func chartRenderHTML(ctx context.Context, n gsx.Node) string {
@@ -807,9 +819,14 @@ type ChartModelSeries struct {
 	Fill           string   `json:"fill,omitempty"`   // area: verbatim fill, e.g. url(#fillDesktop)
 	Stroke         string   `json:"stroke,omitempty"` // area/line/radar: verbatim stroke
 
-	Radius      []float64 `json:"radius,omitempty"`      // bar: corner radii, one or four
-	StackID     string    `json:"stackId,omitempty"`     // bar/area/radial-bar
-	StrokeWidth float64   `json:"strokeWidth,omitempty"` // bar/line/radar
+	Radius  []float64 `json:"radius,omitempty"`  // bar: corner radii, one or four
+	StackID string    `json:"stackId,omitempty"` // bar/area/radial-bar
+	// Cells is a fill per data row, from that row's own "fill" column —
+	// pure data access, ported for radial-bar (see chartHasFillColumn);
+	// bar's own identical fallback plus its <Cell>-child-driven form stay
+	// deferred, matching this file's own Bar scope-narrowing elsewhere.
+	Cells       []string `json:"cells,omitempty"`
+	StrokeWidth float64  `json:"strokeWidth,omitempty"` // bar/line/radar
 
 	Dot        *ChartDotModel `json:"dot,omitempty"`        // line/radar: per point dots
 	ActiveDotR float64        `json:"activeDotR,omitempty"` // line: hover dot radius
@@ -831,20 +848,44 @@ type ChartDotModel struct {
 	Size        float64 `json:"size,omitempty"`
 }
 
+// ChartTickContentModel is a custom axis tick for the client renderer —
+// the pendant of templui's TickContentModel. Nothing populates it in this
+// task (PolarAngleAxis's Tick render-prop is a Go closure and cannot cross
+// the JSON boundary — the same reasoning ChartTooltipOptions' dropped
+// Formatter uses), but the renderer itself still reads polar.ticks[i]
+// separately from its own default-grid fallback (chart.js's own
+// `const custom = polar.ticks && polar.ticks[i]`), so the field stays —
+// ported for structural fidelity only, like Radius/SliceColors.
+type ChartTickContentModel struct {
+	Spans      []ChartTickSpanModel `json:"spans"`
+	FontSize   float64              `json:"fontSize,omitempty"`
+	FontWeight string               `json:"fontWeight,omitempty"`
+	OffsetY    float64              `json:"offsetY,omitempty"`
+}
+
+// ChartTickSpanModel is one tspan of a custom tick.
+type ChartTickSpanModel struct {
+	Text     string  `json:"text"`
+	Class    string  `json:"class,omitempty"`
+	FontSize float64 `json:"fontSize,omitempty"`
+	Dy       string  `json:"dy,omitempty"`
+	ResetX   bool    `json:"resetX,omitempty"`
+}
+
 // ChartPolarModel is the grid and angle-axis setup of a radar or radial
-// chart — the pendant of templui's PolarModel, minus its Ticks field:
-// PolarAngleAxis's Tick render-prop is a Go closure and cannot cross the
-// JSON boundary to the client renderer, the same reasoning
-// ChartTooltipOptions' dropped Formatter uses.
+// chart — the pendant of templui's PolarModel. Ticks is always empty in
+// this task (see ChartTickContentModel's own doc comment); every other
+// field is wired.
 type ChartPolarModel struct {
-	GridType     string    `json:"gridType,omitempty"`
-	RadialLines  bool      `json:"radialLines"`
-	PolarRadius  []float64 `json:"polarRadius,omitempty"`
-	Stroke       string    `json:"stroke,omitempty"`
-	StrokeWidth  float64   `json:"strokeWidth,omitempty"`
-	GridClass    string    `json:"gridClass,omitempty"`
-	HasGrid      bool      `json:"hasGrid,omitempty"`
-	HasAngleAxis bool      `json:"hasAngleAxis,omitempty"`
+	GridType     string                  `json:"gridType,omitempty"`
+	RadialLines  bool                    `json:"radialLines"`
+	PolarRadius  []float64               `json:"polarRadius,omitempty"`
+	Stroke       string                  `json:"stroke,omitempty"`
+	StrokeWidth  float64                 `json:"strokeWidth,omitempty"`
+	GridClass    string                  `json:"gridClass,omitempty"`
+	Ticks        []ChartTickContentModel `json:"ticks,omitempty"`
+	HasGrid      bool                    `json:"hasGrid,omitempty"`
+	HasAngleAxis bool                    `json:"hasAngleAxis,omitempty"`
 }
 
 // ChartRadialModel is the geometry of a RadialBarChart. Center (the middle
@@ -1166,6 +1207,14 @@ func buildChartRadialModel(ctx context.Context, config ChartConfig, st *chartSta
 		s.CornerRadius = rb.opts.CornerRadius
 		s.StackID = rb.opts.StackID
 		s.Class = rb.opts.Class
+		// A fill column names the row's own color, like Recharts reading
+		// the fill off the entry.
+		if chartHasFillColumn(st.data) {
+			s.Cells = make([]string, len(st.data))
+			for i, row := range st.data {
+				s.Cells[i] = chartStr(row["fill"])
+			}
+		}
 		// getPayloadConfigFromPayload: the tooltip names every row through
 		// the name key, which the rows answer with their own value.
 		nameKey := rb.key
