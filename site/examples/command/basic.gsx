@@ -14,7 +14,7 @@ import (
 // gsxui:select only — they carry no data-href).
 component Basic() {
 	<div>
-		<ui.Command class="max-w-md rounded-lg border shadow-md">
+		<ui.Command class="max-w-md border shadow-md">
 			<ui.CommandInput placeholder="Type a command or search..."/>
 			<ui.CommandList>
 				<ui.CommandEmpty>No results found.</ui.CommandEmpty>

@@ -23,7 +23,7 @@
      the pill edge, content centred in h-8. The command-dialog close button
      tracks the resulting centreline at top-4 (assets/css/foundation.css). */
   .gsxui-recipe-command-input-wrapper {
-    @apply mx-1 mt-1 pl-2 bg-input/30 border-input/30 h-8 rounded-lg shadow-none [&>[data-gsxui-slot-input-group-addon]]:pl-2 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50 flex items-center gap-2;
+    @apply mx-1 mt-1 pl-2 bg-input/30 border-input/30 border h-8 rounded-lg shadow-none [&>[data-gsxui-slot-input-group-addon]]:pl-2 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50 flex items-center gap-2;
   }
 
   /* carried: no upstream counterpart */

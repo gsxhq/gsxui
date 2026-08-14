@@ -130,7 +130,7 @@ func CommandInput(placeholder string, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line command.gsx:73:2
 		_gsxgw.S("<div class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("mx-1 mt-1 pl-2 bg-input/30 h-9 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50 flex items-center gap-2"))
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("mx-1 mt-1 pl-2 bg-input/30 border border-input h-9 rounded-4xl [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50 flex items-center gap-2"))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-command-input-wrapper", true)
 		_gsxgw.S(">")

@@ -911,10 +911,14 @@ test("Command keeps its palette chrome and stays caller-overridable", async ({
     const css = getComputedStyle(n);
     return { borderRadius: css.borderRadius, backgroundColor: css.backgroundColor };
   });
-  // site/examples/command/basic.gsx passes class="max-w-md rounded-lg …": the
-  // caller's rounded-lg must replace the recipe's own rounded-xl (10px, not
-  // this theme's 14px), and the recipe's bg-popover must still apply.
-  expect(rootStyle.borderRadius).toBe("10px");
+  // site/examples/command/basic.gsx passes class="max-w-md border shadow-md"
+  // with NO caller rounding: upstream marks nova's recipe radius important
+  // precisely so the legacy demo's rounded-lg loses, and the port
+  // de-emphasises importants instead of carrying them — so our example drops
+  // the caller token and the recipe's rounded-xl (this theme's 14px) shows,
+  // matching upstream nova's render. The recipe's bg-popover must still
+  // apply.
+  expect(rootStyle.borderRadius).toBe("14px");
   expect(rootStyle.backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
 
   // The input wrapper's `> svg` search icon: a child-combinator rule that

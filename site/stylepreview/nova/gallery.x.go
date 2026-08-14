@@ -2574,7 +2574,7 @@ func _gsxrendergalleryOverlaysCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, i
 					return _gsxgw.Err()
 				}), nil))
 				return _gsxgw.Err()
-			}), _gsxrt.Attrs{{Key: "class", Value: "rounded-lg border shadow-md"}}))
+			}), _gsxrt.Attrs{{Key: "class", Value: "border shadow-md"}}))
 			return _gsxgw.Err()
 		}), _gsxrt.Attrs{{Key: "class", Value: "flex flex-col gap-4"}}))
 		return _gsxgw.Err()

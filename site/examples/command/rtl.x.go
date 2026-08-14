@@ -121,7 +121,7 @@ func Rtl() _gsxrt.Node {
 				return _gsxgw.Err()
 			}), nil))
 			return _gsxgw.Err()
-		}), _gsxrt.Attrs{{Key: "class", Value: "max-w-md rounded-lg border shadow-md"}}))
+		}), _gsxrt.Attrs{{Key: "class", Value: "max-w-md border shadow-md"}}))
 //line rtl.gsx:50:3
 		_gsxgw.Node(ctx, ui.CommandDialog("لوحة الأوامر", "البحث عن الأوامر", nil, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)

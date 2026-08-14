@@ -1248,3 +1248,56 @@ test("menubar inset padding is per-style: nova 28px, lyra 32px", async ({
   expect(await paddingFor("nova")).toBe("28px");
   expect(await paddingFor("lyra")).toBe("32px");
 });
+
+// Command pill geometry inherited from upstream's InputGroup BASE class —
+// the flatten carried only the .cn-command-input-group override tokens, so
+// base-owned rounding and the base 1px border were silently dropped (luma/
+// maia/rhea/mira rendered square pills in fully-rounded styles; all six
+// pill styles lost the border). Values are upstream .cn-input-group base +
+// command override, measured against the default radius scale.
+test("command pill styles keep their base-inherited rounding and border", async ({
+  page,
+}) => {
+  await page.goto("/theme/preview");
+  const geometryFor = (style: string) =>
+    page
+      .locator(
+        `[data-theme-preview-style="${style}"] [data-gsxui-slot-command-input-wrapper]`,
+      )
+      .first()
+      .evaluate((n) => {
+        const css = getComputedStyle(n);
+        return {
+          radius: css.borderTopLeftRadius,
+          borderWidth: css.borderTopWidth,
+        };
+      });
+  // rounded-4xl = 32px, rounded-2xl = 16px.
+  expect(await geometryFor("luma")).toEqual({ radius: "32px", borderWidth: "1px" });
+  expect(await geometryFor("maia")).toEqual({ radius: "32px", borderWidth: "1px" });
+  expect(await geometryFor("rhea")).toEqual({ radius: "16px", borderWidth: "1px" });
+  const mira = await geometryFor("mira");
+  expect(mira.borderWidth).toBe("1px");
+  expect(mira.radius).not.toBe("0px"); // rounded-md, theme-derived
+  expect((await geometryFor("nova")).borderWidth).toBe("1px");
+  expect((await geometryFor("vega")).borderWidth).toBe("1px");
+});
+
+// The Command ROOT's corners are per-style recipe chrome (.cn-command:
+// luma/maia 4xl, nova xl, lyra none). Upstream's current showcase passes
+// a bare <Command>; the legacy demo's caller rounded-lg is defeated
+// upstream by marking nova's radius important, which the port
+// deliberately de-emphasises — so gsxui's gallery/examples must not pass
+// caller rounding at all for the per-style corners to show.
+test("command root corners are per-style: lyra square, luma 32px", async ({
+  page,
+}) => {
+  await page.goto("/theme/preview");
+  const radiusFor = (style: string) =>
+    page
+      .locator(`[data-theme-preview-style="${style}"] [data-gsxui-slot-command]`)
+      .first()
+      .evaluate((n) => getComputedStyle(n).borderTopLeftRadius);
+  expect(await radiusFor("lyra")).toBe("0px");
+  expect(await radiusFor("luma")).toBe("32px");
+});

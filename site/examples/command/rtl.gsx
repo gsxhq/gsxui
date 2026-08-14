@@ -9,7 +9,7 @@ import (
 // Basic's shape: inline palette plus the CommandDialog variant.
 component Rtl() {
 	<div dir="rtl" lang="ar">
-		<ui.Command class="max-w-md rounded-lg border shadow-md">
+		<ui.Command class="max-w-md border shadow-md">
 			<ui.CommandInput placeholder="اكتب أمرًا أو ابحث..."/>
 			<ui.CommandList>
 				<ui.CommandEmpty>لم يتم العثور على نتائج.</ui.CommandEmpty>

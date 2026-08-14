@@ -922,7 +922,7 @@ component galleryOverlaysCard(idp string) {
 					<TooltipContent>Add to library</TooltipContent>
 				</Tooltip>
 			</div>
-			<Command class="rounded-lg border shadow-md">
+			<Command class="border shadow-md">
 				<CommandInput placeholder="Type a command or search..."/>
 				<CommandList>
 					<CommandEmpty>No results found.</CommandEmpty>
