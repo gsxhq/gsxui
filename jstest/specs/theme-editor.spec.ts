@@ -52,6 +52,26 @@ async function iframeVariable(page: Page, name: string) {
     .evaluate((element, property) => element.style.getPropertyValue(property).trim(), `--${name}`);
 }
 
+// Resolves a CSS value (e.g. "var(--chart-1)") to its computed rgb() form
+// INSIDE the preview iframe's own document, the same probe-element
+// technique jstest/specs/chart.spec.ts uses on the top-level page — the
+// custom property only resolves against the iframe's own cascade (theme.js
+// pushes resolved tokens onto that document's <html>, not the parent's).
+async function iframeComputedColor(page: Page, cssValue: string) {
+  return page
+    .frameLocator("[data-theme-preview-frame]")
+    .locator("html")
+    .evaluate((html, value) => {
+      const doc = html.ownerDocument;
+      const probe = doc.createElement("span");
+      probe.style.color = value;
+      doc.body.append(probe);
+      const rgb = getComputedStyle(probe).color;
+      probe.remove();
+      return rgb;
+    }, cssValue);
+}
+
 async function commands(page: Page) {
   return {
     init: await page.locator('[data-theme-command="init"]').inputValue(),
@@ -65,7 +85,7 @@ function shareFromInit(command: string) {
   return match[1];
 }
 
-type PickerKind = "baseColor" | "theme" | "radius" | "fontSans" | "fontHeading";
+type PickerKind = "baseColor" | "theme" | "radius" | "chartColor" | "fontSans" | "fontHeading";
 
 function picker(page: Page, kind: PickerKind) {
   return page.locator(`[data-theme-picker="${kind}"]`);
@@ -170,14 +190,20 @@ test("pickers expose accessible catalog choices and no raw token inputs", async 
   await expect(radius.getByRole("radio")).toHaveCount(4);
   await expect(radius.getByRole("radio", { name: "Medium", exact: true })).toBeChecked();
 
-  // The chart color axis deliberately has NO picker: gsxui ships no chart
-  // component, so the control was dropped from the editor (2026-08-12). The
-  // axis itself survives — schema, state, share codes, JSON import, and the
-  // emitted chart-1..5 variables all still carry it (see the "chart variables
-  // still render" test below).
-  await expect(page.locator('[data-theme-picker="chartColor"]')).toHaveCount(0);
+  // The chart color picker restored (gsxui now ships a real chart
+  // component, Task 9 of docs/superpowers/plans/2026-08-14-chart-component.md):
+  // its choice list reuses Themes["neutral"] the same way the Theme picker's
+  // own choices do (themePaletteSchema.ChartColors' own doc comment,
+  // site/pages/theme.gsx), not the full 24-entry ChartColorChoices() table —
+  // that table backs value RESOLUTION (chart-1..5 for any of the 24 hues,
+  // including ones reachable only through a preset/share code/JSON import),
+  // not the picker's own display list.
+  const chartColor = picker(page, "chartColor");
+  await chartColor.locator("[data-theme-picker-trigger]").click();
+  await expect(chartColor.getByRole("radio")).toHaveCount(18);
+  await expect(chartColor.getByRole("radio", { name: "Neutral", exact: true })).toBeChecked();
 
-  for (const kind of ["baseColor", "theme", "radius"] as const) {
+  for (const kind of ["baseColor", "theme", "radius", "chartColor"] as const) {
     await expect(picker(page, kind).locator("[data-theme-selection-swatch]")).toBeVisible();
     await expect(picker(page, kind).locator("[data-theme-choice-swatch]")).not.toHaveCount(0);
   }
@@ -352,12 +378,19 @@ test("menu accent tabs overlay accent from primary and survive a theme change", 
   await expect.poll(() => iframeVariable(page, "accent")).not.toBe(await iframeVariable(page, "primary"));
 });
 
-// The chart color PICKER is gone (gsxui has no chart component), but the axis
-// must keep emitting chart-1..5 into the preview: presets, share codes, and
-// JSON import still carry chartColor, and dropping the variables would break
-// any consumer theme that charts on them. selectChartColor's overlay/survival
-// state semantics stay covered in web/theme-state.test.js.
-test("chart variables still render without a picker and survive a theme change", async ({
+// The chart color picker drives the SAME axis selectChartColor's own
+// overlay/survival state semantics already cover in web/theme-state.test.js
+// (presets, share codes, and JSON import all carry chartColor) — this test
+// is the end-to-end proof the picker actually reaches a live-rendered chart:
+// site/stylepreview/gallery.gsx.src's galleryChartCard (Task 9 of
+// docs/superpowers/plans/2026-08-14-chart-component.md) now renders a real
+// BarChart whose first series is colored var(--chart-1), so picking a new
+// chart color must change that bar's own computed SVG fill inside the
+// preview iframe, through the CSS cascade alone (Chart.styleBlock's
+// [data-chart=ID] rule referencing --chart-1, not a client re-render — the
+// same mechanism jstest/specs/chart.spec.ts's own dark-mode-flip test
+// exercises for the .dark selector).
+test("chart color picker changes chart-1..5 and a rendered gallery bar's fill", async ({
   page,
 }) => {
   await page.goto("/theme");
@@ -367,11 +400,29 @@ test("chart variables still render without a picker and survive a theme change",
   const neutralChart1 = catalog.palette.chartColors.neutral.light["chart-1"];
   await expect.poll(() => iframeVariable(page, "chart-1")).toBe(neutralChart1);
 
+  const preview = page.frameLocator("[data-theme-preview-frame]");
+  const bar = preview
+    .locator('[data-theme-preview-style="nova"] [data-gsxui-slot-chart] svg path.recharts-rectangle')
+    .first();
+  await expect(bar).toBeVisible();
+  const fillBefore = await bar.evaluate((n) => getComputedStyle(n).fill);
+  expect(fillBefore).toBe(await iframeComputedColor(page, "var(--chart-1)"));
+
+  await choose(page, "chartColor", "Blue");
+  await expect(selectionValue(page, "chartColor")).resolves.toBe("Blue");
+
+  const blueChart1 = catalog.palette.chartColors.blue.light["chart-1"];
+  await expect.poll(() => iframeVariable(page, "chart-1")).toBe(blueChart1);
+  const expectedFill = await iframeComputedColor(page, "var(--chart-1)");
+  expect(expectedFill).not.toBe(fillBefore);
+  await expect.poll(() => bar.evaluate((n) => getComputedStyle(n).fill)).toBe(expectedFill);
+
   // A theme change re-resolves the palette; the chart axis re-applies its own
-  // (default neutral) table rather than being wiped or collapsed to the theme.
-  await choose(page, "theme", "Blue");
+  // chosen (Blue) table rather than being wiped or collapsed to the theme.
+  await choose(page, "theme", "Green");
   await expect.poll(() => iframeVariable(page, "primary")).not.toBe(beforePrimary);
-  await expect.poll(() => iframeVariable(page, "chart-1")).toBe(neutralChart1);
+  await expect.poll(() => iframeVariable(page, "chart-1")).toBe(blueChart1);
+  await expect.poll(() => bar.evaluate((n) => getComputedStyle(n).fill)).toBe(expectedFill);
 });
 
 test("font pickers set --font-sans/--font-heading independently and survive a theme change", async ({

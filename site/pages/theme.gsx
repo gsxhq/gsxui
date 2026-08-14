@@ -411,8 +411,8 @@ component themeEditor(previewURL string, workspace bool) {
 		<div>
 			<h1 class="text-3xl font-semibold tracking-tight">Theme editor</h1>
 			<p class="mt-2 max-w-2xl text-sm text-muted-foreground">
-				Pick one of 8 component styles, then shape the semantic theme it renders with: base color, accent, menu
-				accent, radius, and a body/heading font pair, all previewed live in light and dark. Undo/redo,
+				Pick one of 8 component styles, then shape the semantic theme it renders with: base color, accent, chart
+				color, menu accent, radius, and a body/heading font pair, all previewed live in light and dark. Undo/redo,
 				the address bar, and share codes track every change, and a foreign <code>theme.css</code> imports straight
 				in. The gallery renders the exact component source a project receives from <code>gsxui add</code> under the
 				selected style.
@@ -546,6 +546,12 @@ component themeEditor(previewURL string, workspace bool) {
 							label="Radius"
 							selected="medium"
 							choices={themeRadiusPickerChoices(preset.RadiusChoices())}
+						/>
+						<ThemePicker
+							name="chartColor"
+							label="Chart color"
+							selected="neutral"
+							choices={themePickerChoices(mustThemePickerChoices("neutral"))}
 						/>
 						<ThemePicker
 							name="fontSans"

@@ -10,10 +10,15 @@
 // asserts every component in registry/generated/recipes.json appears at
 // least once, so a future component cannot silently miss the gallery.
 //
-// The preview document loads web/preview.js only — no component JS — so
-// every popup (menus, dialogs, popovers, tooltips) renders in its resting
-// closed state. What the gallery showcases is trigger and surface chrome
-// theming, not behavior.
+// The preview document's entry (web/preview.js) already imports the full
+// behaviour barrel (ui/index.js, see PR #15 "theme preview: load the
+// behaviour barrel in the preview entries") — every popup (menus, dialogs,
+// popovers, tooltips) is live, resting closed only because nothing in the
+// gallery's own markup triggers it open, and galleryChartCard's charts
+// render a real client-side SVG the same barrel already covers (ui/chart.js
+// is one of the barrel's modules). What the gallery showcases is trigger
+// and surface chrome theming, plus (galleryChartCard) live chart geometry —
+// not scripted end-to-end behavior.
 //
 // Gallery renders TWO pages (theme-creator-parity Task 4c), mirroring the
 // per-style section toggle site/pages/theme_preview.gsx and
@@ -45,6 +50,7 @@ package mira
 import (
 	"time"
 
+	"github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/ui/icon"
 )
 
@@ -566,42 +572,89 @@ component galleryTableCard() {
 	</Card>
 }
 
-// galleryChartCard is a static color swatch shaped like a chart, painted
-// with var(--chart-1)..var(--chart-5) — a preview for the chart-color
-// axis, deliberately not a real charting component (no data binding, no
-// tooltips; the theme preview loads no component JS to begin with, per
-// the doc comment at the top of this file).
+// galleryChartCard renders two real charts, both themed entirely off
+// var(--chart-1)..var(--chart-5): a five-series BarChart (one series per
+// chart-N color — the direct pendant of the old static swatch this card
+// used to show) and a compact single-series AreaChart trending over time.
+//
+// Both are ui.Chart trees (Task 9, docs/superpowers/plans/
+// 2026-08-14-chart-component.md), which need no extra wiring in
+// web/preview.js: the entry already imports the full behaviour barrel
+// (ui/index.js, see this file's own header comment), and ui/chart.js — one
+// of that barrel's modules — lazily pulls in ui/chart.render.js the first
+// time it finds a [data-gsxui-slot-chart] and draws the SVG client-side.
+// This is also what makes the theme editor's chart-color picker demo real:
+// picking a new chart-1 changes the BarChart's first (organic) bar's
+// computed SVG fill live, through the CSS cascade alone
+// (jstest/specs/theme-editor.spec.ts).
+//
+// Both Chart calls below carry a caller class of min-h-0: Chart's own div
+// is "flex" and, as this card's CardContent flex column's own flex ITEM,
+// picks up the flexbox default min-height:auto — a content-based floor
+// that measured TALLER than the entrance animation's very first frame (the
+// client renderer sizes its SVG off panel.clientHeight every animation
+// frame, ui/chart.render.js's renderCartesian), so each frame's
+// slightly-taller draw pushed clientHeight up again the next frame, a
+// runaway growth for the whole 400ms bar entrance that only site/examples/
+// chart's own wide, unconstrained layout happens to never trigger (its
+// aspect-video height is already generous enough that content never
+// exceeds it). min-h-0 is the standard fix for exactly this flex-item
+// content-driven-growth gotcha, caller-overriding Chart's own class the
+// same way class="aspect-[5/1]" below already does (attrs merge, caller
+// wins per property) — no change to ui/chart.render.js or ui/chart.gsx.
 component galleryChartCard() {
+	{{
+		channelConfig := ChartConfig{
+			{Key: "organic", Label: "Organic", Color: "var(--chart-1)"},
+			{Key: "paid", Label: "Paid", Color: "var(--chart-2)"},
+			{Key: "referral", Label: "Referral", Color: "var(--chart-3)"},
+			{Key: "email", Label: "Email", Color: "var(--chart-4)"},
+			{Key: "social", Label: "Social", Color: "var(--chart-5)"},
+		}
+		channelData := []ChartDatum{
+			{"quarter": "Q1", "organic": 186.0, "paid": 80.0, "referral": 45.0, "email": 60.0, "social": 30.0},
+			{"quarter": "Q2", "organic": 210.0, "paid": 95.0, "referral": 52.0, "email": 58.0, "social": 41.0},
+			{"quarter": "Q3", "organic": 237.0, "paid": 120.0, "referral": 61.0, "email": 65.0, "social": 55.0},
+		}
+		trendConfig := ChartConfig{
+			{Key: "visits", Label: "Visits", Color: "var(--chart-1)"},
+		}
+		trendData := []ChartDatum{
+			{"week": "W1", "visits": 186.0},
+			{"week": "W2", "visits": 240.0},
+			{"week": "W3", "visits": 214.0},
+			{"week": "W4", "visits": 290.0},
+			{"week": "W5", "visits": 305.0},
+		}
+	}}
 	<Card>
 		<CardHeader>
-			<CardTitle style="font-family: var(--font-heading)">Chart colors</CardTitle>
-			<CardDescription>chart-1 through chart-5.</CardDescription>
+			<CardTitle style="font-family: var(--font-heading)">Revenue by channel</CardTitle>
+			<CardDescription>chart-1 through chart-5, live-rendered.</CardDescription>
 		</CardHeader>
 		<CardContent class="flex flex-col gap-4">
-			{/* Percentage heights need a parent with a DEFINITE height, so the
-			   bars are direct children of the h-32 row (not nested inside a
-			   flex-1 column, which has no height of its own to resolve
-			   against) — the number labels live in a separate row underneath. */}
-			<div class="flex h-32 items-end gap-3">
-				<div class="flex-1 rounded-t-sm" style="height: 45%; background-color: var(--chart-1)"></div>
-				<div class="flex-1 rounded-t-sm" style="height: 70%; background-color: var(--chart-2)"></div>
-				<div class="flex-1 rounded-t-sm" style="height: 55%; background-color: var(--chart-3)"></div>
-				<div class="flex-1 rounded-t-sm" style="height: 90%; background-color: var(--chart-4)"></div>
-				<div class="flex-1 rounded-t-sm" style="height: 65%; background-color: var(--chart-5)"></div>
-			</div>
-			<div class="flex gap-3 text-center text-xs text-muted-foreground">
-				<span class="flex-1">1</span>
-				<span class="flex-1">2</span>
-				<span class="flex-1">3</span>
-				<span class="flex-1">4</span>
-				<span class="flex-1">5</span>
-			</div>
-			<div class="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
-				<span class="flex items-center gap-1.5"><span class="size-2.5 rounded-full" style="background-color: var(--chart-1)"></span>chart-1</span>
-				<span class="flex items-center gap-1.5"><span class="size-2.5 rounded-full" style="background-color: var(--chart-2)"></span>chart-2</span>
-				<span class="flex items-center gap-1.5"><span class="size-2.5 rounded-full" style="background-color: var(--chart-3)"></span>chart-3</span>
-				<span class="flex items-center gap-1.5"><span class="size-2.5 rounded-full" style="background-color: var(--chart-4)"></span>chart-4</span>
-				<span class="flex items-center gap-1.5"><span class="size-2.5 rounded-full" style="background-color: var(--chart-5)"></span>chart-5</span>
+			<Chart config={channelConfig} class="min-h-0">
+				{ BarChart(channelData, nil, gsx.Fragment(
+					ChartCartesianGrid(&ChartCartesianGridOptions{Vertical: ChartBool(false)}),
+					ChartXAxis("quarter", nil),
+					ChartTooltip(nil),
+					ChartBar("organic", nil),
+					ChartBar("paid", nil),
+					ChartBar("referral", nil),
+					ChartBar("email", nil),
+					ChartBar("social", nil),
+					ChartLegend(nil),
+				), nil) }
+			</Chart>
+			<div class="flex flex-col gap-1.5">
+				<span class="text-xs text-muted-foreground">Weekly visits</span>
+				<Chart config={trendConfig} class="aspect-[5/1] min-h-0">
+					{ AreaChart(trendData, nil, gsx.Fragment(
+						ChartXAxis("week", &ChartXAxisOptions{Hide: true}),
+						ChartTooltip(&ChartTooltipOptions{Cursor: ChartBool(false)}),
+						ChartArea("visits", &ChartAreaOptions{Type: ChartCurveNatural, FillOpacity: 0.3}),
+					), nil) }
+				</Chart>
 			</div>
 		</CardContent>
 	</Card>

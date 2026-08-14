@@ -141,39 +141,46 @@ func nextChartID() string {
 func Chart(config ChartConfig, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line chart.gsx:133:2
-		id := nextChartID()
-		// The config travels to the chart roots and their parts through ctx,
-		// the pendant of shadcn's ChartContext — templui's Container does the
-		// same (context.WithValue inside its own templ body). Chart roots
-		// (BarChart/LineChart/AreaChart, appended below) read it back via
-		// chartConfigFromCtx to resolve each series' label and to render the
-		// legend server-side.
-		ctx = context.WithValue(ctx, chartConfigCtxKey, config)
-//line chart.gsx:143:2
-		_gsxgw.S("<div")
-		if !attrs.Has("data-chart") {
-			_gsxgw.S(" data-chart=\"")
-			_gsxgw.AttrValue(string(id))
-			_gsxgw.S("\"")
-		}
-		_gsxgw.S(" class=\"")
-		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex aspect-video justify-center text-xs"), _gsxrt.Class(attrs.Class()))
-		_gsxgw.S("\"")
-		_gsxgw.StyleMerged("", attrs.Style())
-		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-chart"})
-		_gsxgw.BoolAttr("data-gsxui-slot-chart", true)
-		_gsxgw.S(">")
-//line chart.gsx:149:3
-		if block := config.styleBlock(id); block != "" {
-//line chart.gsx:150:4
-			_gsxgw.Node(ctx, gsx.Raw("<style>"+block+"</style>"))
-		}
-//line chart.gsx:152:3
-		_gsxgw.Node(ctx, children)
-		_gsxgw.S("</div>")
-		return _gsxgw.Err()
+		return _gsxrenderChart(ctx, _gsxgw, config, children, attrs)
 	})
+}
+
+func _gsxrenderChart(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, config ChartConfig, children gsx.Node, attrs gsx.Attrs) error {
+	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
+		return _gsxerr
+	}
+//line chart.gsx:133:2
+	id := nextChartID()
+	// The config travels to the chart roots and their parts through ctx,
+	// the pendant of shadcn's ChartContext — templui's Container does the
+	// same (context.WithValue inside its own templ body). Chart roots
+	// (BarChart/LineChart/AreaChart, appended below) read it back via
+	// chartConfigFromCtx to resolve each series' label and to render the
+	// legend server-side.
+	ctx = context.WithValue(ctx, chartConfigCtxKey, config)
+//line chart.gsx:143:2
+	_gsxgw.S("<div")
+	if !attrs.Has("data-chart") {
+		_gsxgw.S(" data-chart=\"")
+		_gsxgw.AttrValue(string(id))
+		_gsxgw.S("\"")
+	}
+	_gsxgw.S(" class=\"")
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex aspect-video justify-center text-xs"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.S("\"")
+	_gsxgw.StyleMerged("", attrs.Style())
+	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-chart"})
+	_gsxgw.BoolAttr("data-gsxui-slot-chart", true)
+	_gsxgw.S(">")
+//line chart.gsx:149:3
+	if block := config.styleBlock(id); block != "" {
+//line chart.gsx:150:4
+		_gsxgw.Node(ctx, gsx.Raw("<style>"+block+"</style>"))
+	}
+//line chart.gsx:152:3
+	_gsxgw.Node(ctx, children)
+	_gsxgw.S("</div>")
+	return _gsxgw.Err()
 }
 
 //line chart.gsx:156:1

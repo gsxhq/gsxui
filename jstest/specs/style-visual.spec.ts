@@ -809,6 +809,12 @@ test.describe("per-style gallery cards", () => {
         await document.fonts.ready;
         await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
       });
+      // galleryChartCard (Task 9) renders two ui.Chart trees whose SVGs draw
+      // asynchronously (ui/chart.js dynamic-imports ui/chart.render.js on
+      // first [data-gsxui-slot-chart], see that file's own header comment) —
+      // wait for both before screenshotting so the chart card's baseline
+      // isn't racing the client render.
+      await expect(page.locator("[data-gsxui-slot-chart] svg")).toHaveCount(2);
 
       const componentsCards = page.locator('[data-theme-preview-page="components"] > *');
       await expect(componentsCards).toHaveCount(componentsPageCards.length);

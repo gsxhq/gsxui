@@ -27,6 +27,7 @@ var galleryTags = map[string]string{
 	"calendar":        "Calendar",
 	"card":            "Card",
 	"carousel":        "Carousel",
+	"chart":           "Chart",
 	"checkbox":        "Checkbox",
 	"collapsible":     "Collapsible",
 	"combobox":        "Combobox",
@@ -80,14 +81,6 @@ var galleryExcluded = map[string]string{
 	// caller-visible HTMX oob contract, deliberately unprefixable), which
 	// would appear twice in a document that renders the gallery per style.
 	"toaster": "singleton id gsxui-toaster; the preview document renders the gallery twice, and the Toast card already shows the themed chrome",
-	// Chart ships its container in this task (data-chart, --color-<key>
-	// variables, ChartConfig/ChartSeries), not a chart CARD: there is no
-	// data model builder, no client renderer, and no ChartTooltip/
-	// ChartLegend yet (those land in Tasks 3-7), so nothing visual exists
-	// for the gallery to show. Task 9 (docs/superpowers/plans/
-	// 2026-08-14-chart-component.md) adds the real gallery chart card once
-	// BarChart/AreaChart exist.
-	"chart": "no chart model/renderer yet — Task 9 adds the real gallery chart card once BarChart/AreaChart exist",
 }
 
 // TestGalleryCoversEveryComponent asserts that every component the recipe
