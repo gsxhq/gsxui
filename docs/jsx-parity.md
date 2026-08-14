@@ -1791,3 +1791,18 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   time-range `Select`, the demo-card's range/month/series toggle wiring)
   are unported; the six shipped examples (`site/examples/chart/{basic,area,
   line,pie,radar,radial}.gsx`) use static compositions instead.
+- GAP (`BarChart` `layout:"vertical"` unported): `ChartModel.Layout`
+  (`registry/canonical/chart.gsx`) always marshals absent — nothing in
+  `ChartBarChartOptions` (or Line's/Area's own Options structs) can set it,
+  unlike upstream's `Layout` prop, which swaps the axes and draws bars
+  horizontally. Backs two of shadcn's own bar demos (`bar-horizontal`,
+  `bar-mixed`); gsxui has no equivalent of either.
+- GAP (`accessibilityLayer` opt-out unported): `ChartModel.AccessibilityLayer`
+  exists and `ui/chart.render.js` reads it (the Recharts keyboard layer —
+  `role="application"`, arrow-key/Enter tooltip interaction), but no
+  `ChartBarChartOptions`/`ChartLineChartOptions`/`ChartAreaChartOptions`
+  field can ever set it to `true`, and Go's zero value marshals `omitempty`-
+  absent, which the renderer reads as "layer on" (`m.accessibilityLayer !==
+  false`) — Recharts' own default. The gap is the opt-OUT: a gsxui chart
+  can never render with `accessibilityLayer={false}` the way an upstream
+  chart can.
