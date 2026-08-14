@@ -129,15 +129,30 @@ func nextChartID() string {
 // Chart is the shadcn/ui ChartContainer pendant: an aspect-video box that
 // exposes its ChartConfig as --color-<key> CSS custom properties (see
 // styleBlock) for the chart roots and parts a later task adds as children.
-// templui's own class carries a wall of [&_.recharts-*] arbitrary-variant
-// selectors (axis tick fill, grid stroke, cursor fill) that reach into the
-// client-rendered SVG upstream's Recharts leaves behind; gsxui's client
-// renderer (Task 5) stamps gsxui's own classes on those nodes instead, so
-// that job moves to the renderer-emitted attributes reading the same
-// --color-<key>/--chart-N variables, and the selector wall is dropped here
-// entirely rather than ported dead.
+// templui's own class also carries a wall of [&_.recharts-*] arbitrary-
+// variant selectors (axis tick fill, grid stroke, cursor fill, dot/sector
+// rings, radial-bar background) that re-color Recharts' own hardcoded SVG
+// sentinels (#666/#ccc/#fff/#eee) — ui/chart.render.js is a byte-faithful
+// port of templui's chart.js and keeps emitting those exact sentinels
+// verbatim, so this wall is the ONLY mechanism that themes them. It lives
+// in the root recipe class the div below stamps (registry/styles/<style>/
+// chart.css's root rule), not spelled out here — same split every other
+// component's recipe class follows.
+//
+// children is expected to be exactly ONE chart root (BarChart/LineChart/
+// AreaChart/PieChart/RadarChart/RadialBarChart), matching upstream's own
+// ChartContainer usage — every shadcn/templui demo wraps a single root.
+// Nothing here rejects a second root nested alongside the first, but
+// ui/chart.render.js's renderChart(container) only ever looks up the
+// FIRST `script[data-gsxui-chart-model]` under this div (querySelector,
+// not querySelectorAll), and every root's own per-container bookkeeping
+// (container._gsxuiActive/_gsxuiActivePoints, the entrance/update-morph
+// state chartRoot's caller reads back across renders) is keyed on this
+// SAME container object with no per-root namespacing, so a second root
+// would silently never draw and could cross-talk the first root's morph
+// state besides. One Chart, one root.
 
-//line chart.gsx:132:1
+//line chart.gsx:147:1
 func Chart(config ChartConfig, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -149,7 +164,7 @@ func _gsxrenderChart(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, config ChartCon
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line chart.gsx:133:2
+//line chart.gsx:148:2
 	id := nextChartID()
 	// The config travels to the chart roots and their parts through ctx,
 	// the pendant of shadcn's ChartContext — templui's Container does the
@@ -158,7 +173,7 @@ func _gsxrenderChart(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, config ChartCon
 	// chartConfigFromCtx to resolve each series' label and to render the
 	// legend server-side.
 	ctx = context.WithValue(ctx, chartConfigCtxKey, config)
-//line chart.gsx:143:2
+//line chart.gsx:158:2
 	_gsxgw.S("<div")
 	if !attrs.Has("data-chart") {
 		_gsxgw.S(" data-chart=\"")
@@ -166,24 +181,24 @@ func _gsxrenderChart(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, config ChartCon
 		_gsxgw.S("\"")
 	}
 	_gsxgw.S(" class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex aspect-video justify-center text-xs min-h-0"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex aspect-video justify-center text-xs min-h-0 [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-hidden [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border [&_.recharts-sector]:outline-hidden [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-surface]:outline-hidden"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-chart"})
 	_gsxgw.BoolAttr("data-gsxui-slot-chart", true)
 	_gsxgw.S(">")
-//line chart.gsx:149:3
+//line chart.gsx:166:3
 	if block := config.styleBlock(id); block != "" {
-//line chart.gsx:150:4
+//line chart.gsx:167:4
 		_gsxgw.Node(ctx, gsx.Raw("<style>"+block+"</style>"))
 	}
-//line chart.gsx:152:3
+//line chart.gsx:169:3
 	_gsxgw.Node(ctx, children)
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
 
-//line chart.gsx:156:1
+//line chart.gsx:173:1
 // ---------------------------------------------------------------------
 // Cartesian model builder (bar, line, area) — adapted from templui's
 // chart.templ lines 138-1319 (Datum, chartState, ctx keys, AreaChart /
@@ -873,9 +888,10 @@ type ChartModelSeries struct {
 	Radius  []float64 `json:"radius,omitempty"`  // bar: corner radii, one or four
 	StackID string    `json:"stackId,omitempty"` // bar/area/radial-bar
 	// Cells is a fill per data row, from that row's own "fill" column —
-	// pure data access, ported for radial-bar (see chartHasFillColumn);
-	// bar's own identical fallback plus its <Cell>-child-driven form stay
-	// deferred, matching this file's own Bar scope-narrowing elsewhere.
+	// pure data access, ported for both bar and radial-bar (see
+	// chartHasFillColumn); the <Cell>-child-driven form both kinds also
+	// support upstream stays deferred, matching this file's own Bar/
+	// radial-bar scope-narrowing elsewhere.
 	Cells       []string `json:"cells,omitempty"`
 	StrokeWidth float64  `json:"strokeWidth,omitempty"` // bar/line/radar
 
@@ -1094,6 +1110,18 @@ func buildChartModel(ctx context.Context, st *chartState) ChartModel {
 			s.StrokeWidth = b.opts.StrokeWidth
 			if b.opts.StackID != "" {
 				stacked = true
+			}
+			// A fill column names the row's own color, like Recharts reading
+			// the fill off the entry — the cartesian pendant of
+			// buildChartRadialModel's own fallback (chartHasFillColumn,
+			// above). Upstream's Bar also reads an explicit <Cell>-child
+			// form first (chart.templ:1237); that form stays unported here,
+			// matching this file's own Bar scope-narrowing elsewhere.
+			if chartHasFillColumn(st.data) {
+				s.Cells = make([]string, len(st.data))
+				for i, row := range st.data {
+					s.Cells[i] = chartStr(row["fill"])
+				}
 			}
 			m.Series = append(m.Series, s)
 		}
@@ -1425,42 +1453,42 @@ func chartBuildLegendItems(config ChartConfig, m ChartModel, st *chartState, opt
 // this tree that renders real markup from a non-root registration, the
 // same reasoning.
 
-//line chart.gsx:1396:1
+//line chart.gsx:1426:1
 func ChartLegendContent(items []chartLegendItem, opts *ChartLegendOptions) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line chart.gsx:1397:2
+//line chart.gsx:1427:2
 		posStyle := "position:absolute;left:0;right:0;bottom:5px"
 		pad := "pt-3"
 		if opts.VerticalAlign == "top" {
 			posStyle = "position:absolute;left:0;right:0;top:5px"
 			pad = "pb-3"
 		}
-//line chart.gsx:1405:2
+//line chart.gsx:1435:2
 		_gsxgw.S("<div style=\"")
 		_gsxgw.Style(_gsxrt.Style(_gsxrt.StyleValue(posStyle)))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-chart-legend", true)
 		_gsxgw.S(">")
-//line chart.gsx:1406:3
+//line chart.gsx:1436:3
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex items-center justify-center gap-4"), _gsxrt.Class(pad), _gsxrt.Class(opts.Class))
 		_gsxgw.S("\">")
-//line chart.gsx:1407:4
+//line chart.gsx:1437:4
 		for _, it := range items {
-//line chart.gsx:1408:5
+//line chart.gsx:1438:5
 			_gsxgw.S("<div class=\"flex items-center gap-1.5 [&amp;&gt;svg]:h-3 [&amp;&gt;svg]:w-3 [&amp;&gt;svg]:text-muted-foreground\">")
-//line chart.gsx:1409:6
+//line chart.gsx:1439:6
 			if it.icon != "" && !opts.HideIcon {
-//line chart.gsx:1410:7
+//line chart.gsx:1440:7
 				_gsxgw.Node(ctx, gsx.Raw(it.icon))
 			} else {
-//line chart.gsx:1412:7
+//line chart.gsx:1442:7
 				_gsxgw.S("<div class=\"h-2 w-2 shrink-0 rounded-[2px]\" style=\"")
 				_gsxgw.Style(_gsxrt.Style(_gsxrt.StyleValue("background-color:" + it.color)))
 				_gsxgw.S("\"></div>")
 			}
-//line chart.gsx:1414:6
+//line chart.gsx:1444:6
 			_gsxgw.Text(string(it.label))
 			_gsxgw.S("</div>")
 		}
@@ -1480,7 +1508,7 @@ func ChartLegendContent(items []chartLegendItem, opts *ChartLegendOptions) _gsxr
 // builds one and hands it here rather than chartRoot taking every kind's
 // fields as its own positional parameters.
 //
-//line chart.gsx:1421:1
+//line chart.gsx:1451:1
 func chartRoot(st *chartState, children gsx.Node, attrs gsx.Attrs) gsx.Node {
 	return gsx.Func(func(ctx context.Context, w io.Writer) error {
 		ctx = context.WithValue(ctx, chartStateCtxKey, st)
@@ -1529,29 +1557,60 @@ func chartRoot(st *chartState, children gsx.Node, attrs gsx.Attrs) gsx.Node {
 // ever existed as literals inside chart.render.js, and web/site.css's
 // @source globs scan .gsx files only, never ui/*.js. chart.render.js reads
 // each variant's class the same way it reads the shell's.
+//
+// The data-gsxui-chart-tooltip-part elements below carry the rest of
+// tooltipHTML's own markup classes (the row wrapper and its SVG-child
+// sizing utilities, the label, the name/value grid, the value's own
+// tabular-nums styling): an earlier draft of this template stopped at the
+// four indicator swatches and left those as JS template literals in
+// chart.render.js, which broke the same way the indicator swatches would
+// have — a class that exists nowhere in a .gsx file never compiles, so a
+// ChartSeries.Icon rendered in a tooltip row painted at its raw SVG
+// default size instead of the row's intended size. chart.render.js's
+// tooltipHTML/indicatorHTML read every one of these parts' class
+// attributes off this template exactly like the four indicator swatches,
+// composing row/value-wrap variants from the shared base part plus a
+// modifier part (items-center/items-end) rather than typing either as a
+// literal.
 
-//line chart.gsx:1479:1
+//line chart.gsx:1524:1
 func ChartTooltipTemplate() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line chart.gsx:1480:2
+//line chart.gsx:1525:2
 		_gsxgw.S("<template")
 		_gsxgw.BoolAttr("data-gsxui-chart-tooltip-template", true)
 		_gsxgw.S(">")
-//line chart.gsx:1481:3
+//line chart.gsx:1526:3
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("bg-popover text-popover-foreground ring-foreground/5 dark:ring-foreground/10 gap-1.5 rounded-xl px-2.5 py-1.5 text-xs shadow-lg ring-1 grid min-w-32 items-start"))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-chart-tooltip", true)
 		_gsxgw.S("></div>")
-//line chart.gsx:1487:3
+//line chart.gsx:1532:3
 		_gsxgw.S("<div class=\"shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) h-2.5 w-2.5\" data-gsxui-chart-tooltip-indicator=\"dot\"></div>")
-//line chart.gsx:1491:3
+//line chart.gsx:1536:3
 		_gsxgw.S("<div class=\"shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) w-1\" data-gsxui-chart-tooltip-indicator=\"line\"></div>")
-//line chart.gsx:1495:3
+//line chart.gsx:1540:3
 		_gsxgw.S("<div class=\"shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) w-0 border-[1.5px] border-dashed bg-transparent\" data-gsxui-chart-tooltip-indicator=\"dashed\"></div>")
-//line chart.gsx:1499:3
-		_gsxgw.S("<div class=\"shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) w-0 border-[1.5px] border-dashed bg-transparent my-0.5\" data-gsxui-chart-tooltip-indicator=\"dashed-nested\"></div></template>")
+//line chart.gsx:1544:3
+		_gsxgw.S("<div class=\"shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) w-0 border-[1.5px] border-dashed bg-transparent my-0.5\" data-gsxui-chart-tooltip-indicator=\"dashed-nested\"></div>")
+//line chart.gsx:1548:3
+		_gsxgw.S("<div class=\"font-medium\" data-gsxui-chart-tooltip-part=\"label\"></div>")
+//line chart.gsx:1549:3
+		_gsxgw.S("<div class=\"flex w-full flex-wrap items-stretch gap-2 [&amp;&gt;svg]:h-2.5 [&amp;&gt;svg]:w-2.5 [&amp;&gt;svg]:text-muted-foreground\" data-gsxui-chart-tooltip-part=\"row\"></div>")
+//line chart.gsx:1553:3
+		_gsxgw.S("<div class=\"items-center\" data-gsxui-chart-tooltip-part=\"items-center\"></div>")
+//line chart.gsx:1554:3
+		_gsxgw.S("<div class=\"items-end\" data-gsxui-chart-tooltip-part=\"items-end\"></div>")
+//line chart.gsx:1555:3
+		_gsxgw.S("<div class=\"flex flex-1 justify-between leading-none\" data-gsxui-chart-tooltip-part=\"value-wrap\"></div>")
+//line chart.gsx:1556:3
+		_gsxgw.S("<div class=\"grid gap-1.5\" data-gsxui-chart-tooltip-part=\"grid\"></div>")
+//line chart.gsx:1557:3
+		_gsxgw.S("<span class=\"text-muted-foreground\" data-gsxui-chart-tooltip-part=\"name\"></span>")
+//line chart.gsx:1558:3
+		_gsxgw.S("<span class=\"font-mono font-medium text-foreground tabular-nums\" data-gsxui-chart-tooltip-part=\"value\"></span></template>")
 		return _gsxgw.Err()
 	})
 }
@@ -1560,7 +1619,7 @@ func ChartTooltipTemplate() _gsxrt.Node {
 // tooltip and bars, the root collects them and emits the model payload
 // for the client renderer.
 //
-//line chart.gsx:1506:1
+//line chart.gsx:1565:1
 func BarChart(data []ChartDatum, opts *ChartBarChartOptions, children gsx.Node, attrs gsx.Attrs) gsx.Node {
 	var margin *ChartMargin
 	if opts != nil {

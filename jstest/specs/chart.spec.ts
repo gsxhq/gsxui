@@ -171,6 +171,40 @@ test("tooltip appears on hover with the per-style recipe class", async ({ page }
 });
 
 /**
+ * jstest/harness/chart_contract.gsx gives desktop a ChartSeries.Icon (raw
+ * SVG, no width/height of its own — sized entirely by the tooltip row's
+ * own SVG-child sizing utilities, chart.render.js's tooltipHTML). Those
+ * utilities used to live only as a JS template literal inside
+ * ui/chart.render.js — a string web/site.css's Tailwind scan (which reads
+ * .gsx files, never ui/*.js) never saw, so no CSS rule for them ever
+ * compiled and the icon rendered at the SVG replaced-element default size
+ * instead of 10px. Moving the literal into ui.ChartTooltipTemplate's
+ * server-rendered <template> (a real class="..." the scan does see) is
+ * what makes this pass: chart.render.js now only ever echoes the class
+ * back, never types it. This comment deliberately doesn't spell out the
+ * utility literal itself, to avoid tainting any stylesheet build that ever
+ * widens its Tailwind @source glob to include spec files.
+ */
+test("a series Icon in the tooltip is sized by the compiled row utilities, not left at its SVG default", async ({
+  page,
+}) => {
+  const response = await page.goto(contractRoute);
+  expect(response?.status()).toBe(200);
+
+  const chart = page.locator("[data-gsxui-slot-chart]").first();
+  const bar = chart.locator("svg path.recharts-rectangle").first();
+  await bar.hover();
+
+  const icon = page.locator("[data-gsxui-slot-chart-tooltip] svg");
+  await expect(icon).toBeVisible();
+  const size = await icon.evaluate((n) => {
+    const cs = getComputedStyle(n);
+    return { width: cs.width, height: cs.height };
+  });
+  expect(size).toEqual({ width: "10px", height: "10px" });
+});
+
+/**
  * Legend renders server-side: block chart.render.js's own network request
  * entirely and confirm the legend text is still present in the HTML
  * Playwright receives — proving ChartLegendContent (registry/canonical/
@@ -220,19 +254,66 @@ test("dark-mode flip changes a bar's fill with no re-render", async ({ page }) =
 });
 
 /**
+ * templui's ChartContainer carries a wall of [&_.recharts-*] arbitrary-
+ * variant selectors (/tmp/templui-ref/chart.templ:126) that re-color
+ * Recharts' own hardcoded SVG sentinels (fill="#666" on axis-tick text,
+ * stroke="#ccc" on grid lines — see chart.render.js's renderCartesian,
+ * ported byte-faithful from upstream's chart.js) into theme tokens. Without
+ * it, axis ticks and gridlines paint upstream's literal light-grey no
+ * matter the resolved theme or color scheme. The wall lives in
+ * registry/styles/<style>/chart.css's .gsxui-recipe-chart rule (chart.Root(),
+ * stamped on ui.Chart's own div by registry/canonical/chart.gsx) so every
+ * style pack inherits it.
+ */
+test("axis ticks and gridlines are themed, not upstream's hardcoded grey", async ({ page }) => {
+  const response = await page.goto(contractRoute);
+  expect(response?.status()).toBe(200);
+
+  const tick = page.locator("[data-gsxui-slot-chart] .recharts-cartesian-axis-tick text").first();
+  await expect(tick).toHaveCount(1);
+  const gridLine = page.locator("[data-gsxui-slot-chart] .recharts-cartesian-grid line").first();
+  await expect(gridLine).toHaveCount(1);
+
+  const mutedForegroundRgb = async () =>
+    page.evaluate(() => {
+      const probe = document.createElement("span");
+      probe.style.color = "var(--muted-foreground)";
+      document.body.append(probe);
+      const rgb = getComputedStyle(probe).color;
+      probe.remove();
+      return rgb;
+    });
+
+  const tickFillLight = await tick.evaluate((n) => getComputedStyle(n).fill);
+  expect(tickFillLight).toBe(await mutedForegroundRgb());
+
+  const gridStroke = await gridLine.evaluate((n) => getComputedStyle(n).stroke);
+  expect(gridStroke).not.toBe("rgb(204, 204, 204)");
+
+  await page.evaluate(() => document.documentElement.classList.add("dark"));
+
+  const tickFillDark = await tick.evaluate((n) => getComputedStyle(n).fill);
+  expect(tickFillDark).toBe(await mutedForegroundRgb());
+  expect(tickFillDark).not.toBe(tickFillLight);
+});
+
+/**
  * htmx-style swap: an out-of-band swap replaces a subtree with a FRESH
- * server render (never the same-document DOM re-captured — that would
- * carry chart.render.js's own data-gsxui-chart-init="true" marker forward
- * on the <script> tag and mask a real re-init, since it's a real DOM
- * attribute chart.render.js sets via dataset). ui/gsxui.js's init()
- * MutationObserver contract re-inits any freshly added
- * [data-gsxui-slot-chart] with no re-scan needed, so the chart's SVG
- * reappears once for the fresh subtree.
+ * server render (a brand new script/panel/container node triple, never the
+ * same-document DOM re-captured). ui/chart.render.js's own once() guard
+ * (keyed on the model script node's identity, ui/gsxui.js's own once()
+ * helper) has never seen this fresh script node, so it inits normally.
+ * ui/gsxui.js's init() MutationObserver contract re-inits any freshly
+ * added [data-gsxui-slot-chart] with no re-scan needed, so the chart's SVG
+ * reappears once for the fresh subtree. Scoped to svg.recharts-surface
+ * (the chart's own drawn SVG), not a bare svg selector: the fixture's
+ * desktop series carries a ChartSeries.Icon that ChartLegendContent also
+ * renders server-side into a plain <svg> beside the recharts one.
  */
 test("innerHTML swap re-inits and the chart reappears", async ({ page, request }) => {
   const response = await page.goto(contractRoute);
   expect(response?.status()).toBe(200);
-  await expect(page.locator("[data-gsxui-slot-chart] svg")).toHaveCount(1);
+  await expect(page.locator("[data-gsxui-slot-chart] svg.recharts-surface")).toHaveCount(1);
 
   const fresh = await request.get(contractRoute);
   const freshHTML = await fresh.text();
@@ -247,7 +328,68 @@ test("innerHTML swap re-inits and the chart reappears", async ({ page, request }
     liveChart.parentElement.innerHTML = freshChart.outerHTML;
   }, freshHTML);
 
-  await expect(page.locator("[data-gsxui-slot-chart] svg")).toHaveCount(1);
+  await expect(page.locator("[data-gsxui-slot-chart] svg.recharts-surface")).toHaveCount(1);
+});
+
+/**
+ * The morph-back case a real htmx/idiomorph-style reconciliation produces:
+ * the SAME script/panel/container node objects, patched in place to match
+ * fresh server markup rather than replaced — unlike the swap test above.
+ * Before the final-review fix wave, ui/chart.render.js's own re-init guard
+ * read script.dataset.gsxuiChartInit, an attribute the server never emits;
+ * a morph that reconciles this container back to server markup strips it
+ * (nothing in the fresh HTML sets it), so initPanel() ran a second full
+ * bind — a second ResizeObserver, a second document keydown listener, a
+ * second set of panel listeners, all stacked on the SAME still-live nodes.
+ * The fix (ui/chart.render.js's initPanelOnce) keys re-init on the script
+ * node's own identity via ui/gsxui.js's once() (a WeakSet, immune to
+ * attribute stripping), so this same-node case is now blocked outright,
+ * verified here by counting real ResizeObserver construction calls — the
+ * most direct proxy available for "did initPanel's resource-bind path run
+ * again," since the tooltip/cursor HTML side effects downstream of it are
+ * idempotent per call and wouldn't visibly differ if doubled. Counted as a
+ * DELTA across the mutation, not an absolute value: ui/carousel.js
+ * instantiates its own module-level ResizeObserver at load time (the
+ * shared-instance pattern that file's own init() comment documents), and
+ * /ui/index.js — the bundle this harness page loads — pulls every ui/*.js
+ * module in, carousel.js included, so the window-global count this test
+ * observes is never "just the chart's."
+ */
+test("a same-node attribute mutation (morph-back) does not double-bind ResizeObserver", async ({ page }) => {
+  await page.addInitScript(() => {
+    (window as any).__gsxuiChartROCount = 0;
+    const NativeRO = window.ResizeObserver;
+    window.ResizeObserver = class extends NativeRO {
+      constructor(...args: ConstructorParameters<typeof ResizeObserver>) {
+        (window as any).__gsxuiChartROCount++;
+        super(...args);
+      }
+    };
+  });
+
+  const response = await page.goto(contractRoute);
+  expect(response?.status()).toBe(200);
+  await expect(page.locator("[data-gsxui-slot-chart] svg.recharts-surface")).toHaveCount(1);
+
+  // Settle past the entrance animation (400ms, same duration the narrow-
+  // flex spec above waits out) so no in-flight animation-driven mutation
+  // is still scheduling an init pass when the baseline is captured.
+  await page.waitForTimeout(600);
+  const before = await page.evaluate(() => (window as any).__gsxuiChartROCount);
+
+  // Mutate an attribute on the SAME script node a morph-back would patch —
+  // no node is replaced, so a genuine swap's "fresh script node" escape
+  // hatch does not apply here.
+  await page.evaluate(() => {
+    const script = document.querySelector("[data-gsxui-slot-chart] script[data-gsxui-chart-model]")!;
+    script.setAttribute("data-gsxui-chart-init", "true"); // the pre-fix guard's own flag: proves it's no longer read
+    script.removeAttribute("data-gsxui-chart-init");
+  });
+
+  // ui/gsxui.js's init() flushes on the next microtask; give it a real
+  // task boundary before asserting the count never moved past its baseline.
+  await page.waitForTimeout(50);
+  expect(await page.evaluate(() => (window as any).__gsxuiChartROCount)).toBe(before);
 });
 
 /**

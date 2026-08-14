@@ -13,9 +13,22 @@
      never ships a narrow-container demo that triggers it). See
      jstest/specs/chart.spec.ts's "chart height stays at its
      aspect-derived value..." spec, backed by jstest/harness/
-     chart_contract.gsx's ChartNarrowFlexFixture. */
+     chart_contract.gsx's ChartNarrowFlexFixture.
+
+     ported: upstream ChartContainer's own [&_.recharts-*] arbitrary-variant
+     wall (chart.templ's cn(...) call). ui/chart.render.js is a byte-faithful
+     port of templui's chart.js and keeps emitting Recharts' own hardcoded
+     sentinel colors verbatim (fill="#666" on axis-tick text, stroke="#ccc"
+     on grid/cursor/reference lines, fill="#eee" radial-bar background,
+     stroke="#fff" dot/sector rings) exactly like upstream — this selector
+     wall is the ONLY thing that re-colors those sentinels into theme
+     tokens (--muted-foreground, --border, --muted). Dropping it (as an
+     earlier draft here did) leaves every chart's chrome painting upstream's
+     literal light-grey regardless of style or dark mode. See
+     jstest/specs/chart.spec.ts's "axis ticks and gridlines are themed, not
+     upstream's hardcoded grey" spec. */
   .gsxui-recipe-chart {
-    @apply flex aspect-video justify-center text-xs min-h-0;
+    @apply flex aspect-video justify-center text-xs min-h-0 [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-hidden [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border [&_.recharts-sector]:outline-hidden [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-surface]:outline-hidden;
   }
 
   /* carried: no upstream cn- counterpart, templui's own legend row class */

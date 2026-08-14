@@ -23,25 +23,39 @@ import (
 // mobile here) can never exercise a real dark-mode flip — a per-scheme
 // ChartSeriesTheme is the one config shape that can, and is exactly the
 // mechanism Chart.styleBlock (registry/canonical/chart.gsx) exists to
-// serve.
+// serve. desktop also carries an Icon: ChartSeries.Icon replaces the
+// tooltip row's color-swatch indicator with raw SVG markup
+// (chart.render.js's tooltipHTML, the s.icon branch), sized entirely by
+// the tooltip row's own SVG-child sizing utilities (see
+// ui.ChartTooltipTemplate's own doc comment for exactly which ones) — an
+// icon with no intrinsic width/height of its own (viewBox only) is
+// jstest/specs/chart.spec.ts's probe for whether those utilities actually
+// compiled. This comment deliberately does NOT spell out the utility
+// literal: this .gsx file is itself inside full.css's harness @source
+// glob, so writing it here would compile the class from the comment text
+// alone and mask a real regression.
 
-//line chart_contract.gsx:21:1
+//line chart_contract.gsx:31:1
 func ChartContractFixture() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line chart_contract.gsx:22:2
+//line chart_contract.gsx:32:2
 		cfg := ui.ChartConfig{
-			{Key: "desktop", Label: "Desktop", Theme: &ui.ChartSeriesTheme{Light: "#2563eb", Dark: "#f97316"}},
+			{
+				Key: "desktop", Label: "Desktop",
+				Theme: &ui.ChartSeriesTheme{Light: "#2563eb", Dark: "#f97316"},
+				Icon:  gsx.Raw(`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>`),
+			},
 			{Key: "mobile", Label: "Mobile", Color: "var(--chart-2)"},
 		}
 		data := []ui.ChartDatum{
 			{"month": "Jan", "desktop": 186.0, "mobile": 80.0},
 			{"month": "Feb", "desktop": 305.0, "mobile": 200.0},
 		}
-//line chart_contract.gsx:32:2
+//line chart_contract.gsx:46:2
 		_gsxgw.Node(ctx, ui.Chart(cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line chart_contract.gsx:33:3
+//line chart_contract.gsx:47:3
 			_gsxgw.Node(ctx, ui.BarChart(data, nil, gsx.Fragment(
 				ui.ChartCartesianGrid(nil),
 				ui.ChartXAxis("month", nil),
@@ -56,7 +70,7 @@ func ChartContractFixture() _gsxrt.Node {
 	})
 }
 
-//line chart_contract.gsx:44:1
+//line chart_contract.gsx:58:1
 // ChartNarrowFlexFixture reproduces the flex-column runaway-height defect
 // jstest/specs/chart.spec.ts's own "chart height stays..." spec pins: a
 // narrow (340px) flex column parent, ui.Chart mounted with NO caller class
@@ -73,11 +87,11 @@ func ChartContractFixture() _gsxrt.Node {
 // more height than its content could ever need), which is why this fixture
 // exists: nothing else in the harness reproduces a narrow flex parent.
 
-//line chart_contract.gsx:59:1
+//line chart_contract.gsx:73:1
 func ChartNarrowFlexFixture() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line chart_contract.gsx:60:2
+//line chart_contract.gsx:74:2
 		cfg := ui.ChartConfig{
 			{Key: "desktop", Label: "Desktop", Color: "var(--chart-1)"},
 			{Key: "mobile", Label: "Mobile", Color: "var(--chart-2)"},
@@ -87,14 +101,14 @@ func ChartNarrowFlexFixture() _gsxrt.Node {
 			{"month": "Feb", "desktop": 305.0, "mobile": 200.0},
 			{"month": "Mar", "desktop": 237.0, "mobile": 120.0},
 		}
-//line chart_contract.gsx:71:2
+//line chart_contract.gsx:85:2
 		_gsxgw.S("<div style=\"width: 340px\" class=\"flex flex-col gap-4\"")
 		_gsxgw.BoolAttr("data-chart-narrow-flex", true)
 		_gsxgw.S(">")
-//line chart_contract.gsx:72:3
+//line chart_contract.gsx:86:3
 		_gsxgw.Node(ctx, ui.Chart(cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line chart_contract.gsx:73:4
+//line chart_contract.gsx:87:4
 			_gsxgw.Node(ctx, ui.BarChart(data, nil, gsx.Fragment(
 				ui.ChartCartesianGrid(nil),
 				ui.ChartXAxis("month", nil),

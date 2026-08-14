@@ -30,23 +30,56 @@
  * — ui/chart.js's stub owns that lifecycle) and its interactive
  * range/month/series demo-card wiring (deleted — no gsxui component emits
  * those data attributes; that is a templui demo-card feature, not part of
- * this port's component set); adaptation #8 (Task 6) — the hardcoded
- * TOOLTIP_CLASS constant and indicatorHTML's own inline Tailwind literals
- * are gone, replaced by chartTooltipClasses(container), which reads the
- * same classes off ui.ChartTooltipTemplate's server-rendered <template>
+ * this port's component set); adaptation #8 (Task 6, extended in the
+ * final-review fix wave) — the hardcoded TOOLTIP_CLASS constant and every
+ * inline Tailwind literal indicatorHTML/tooltipHTML built (the four
+ * indicator swatches, the label, the row wrapper and its SVG-child sizing
+ * utilities, the name/value grid, the value's tabular-nums styling) are
+ * gone, replaced by chartTooltipClasses(container), which reads the same
+ * classes off ui.ChartTooltipTemplate's server-rendered <template>
  * (registry/canonical/chart.gsx) instead: every one of those utility
  * classes now lives in exactly one place, a real .gsx class attribute
  * web/site.css's Tailwind scan actually sees, and chart.render.js only
  * ever echoes it back rather than typing it — the fill/positioning logic
- * indicatorHTML/tooltipHTML/tooltipWrapper otherwise run is unchanged;
- * adaptation #9 (Task 8) — the gradient-defs emitter read PascalCase Go
- * field names (g.ID/g.X1/g.Y1/g.X2/g.Y2) against the JSON-parsed model's
- * lowercase json-tag keys (g.id/g.x1/g.y1/g.x2/g.y2), which always resolved
- * to undefined and gave every <linearGradient> the colliding id
- * "...-undefined"; fixed to read the correct keys. Inherited from the
- * reference (chart.js:567 carries the identical bug, unfixed there), not a
- * new deviation from its logic.
+ * indicatorHTML/tooltipHTML/tooltipWrapper otherwise run is unchanged. An
+ * earlier pass of this adaptation stopped at the four indicator swatches
+ * and left tooltipHTML's own row/label/name/value classes as JS literals;
+ * one of them ([&>svg]-scoped sizing on the row wrapper) never compiled
+ * because it existed nowhere in a .gsx file, so a ChartSeries.Icon shown
+ * in a tooltip row rendered at its raw SVG default size instead of the
+ * row's intended size — see jstest/specs/chart.spec.ts's own tooltip-icon
+ * spec; adaptation #9 (same pass) — tooltipWrapper's own marker
+ * (data-gsxui-chart-tooltip) is a data attribute, not a class: the
+ * reference's wrapper carries no Tailwind/recipe class either (its
+ * presentation is inline style), so there was nothing to read off a
+ * template, and stamping any class name from JS — even one that exists
+ * nowhere else — would violate this codebase's audit gate (see
+ * tooltipWrapper's own comment, below); adaptation #10 (Task 8) — the
+ * gradient-defs emitter read PascalCase Go field names (g.ID/g.X1/g.Y1/
+ * g.X2/g.Y2) against the JSON-parsed model's lowercase json-tag keys
+ * (g.id/g.x1/g.y1/g.x2/g.y2), which always resolved to undefined and gave
+ * every <linearGradient> the colliding id "...-undefined"; fixed to read
+ * the correct keys. Inherited from the reference (chart.js:567 carries the
+ * identical bug, unfixed there), not a new deviation from its logic;
+ * adaptation #11 (final-review fix wave) — the reference's own auto-boot
+ * guards re-init with a plain script.dataset flag
+ * (data-tui-chart-init="true"); this port used the gsxui-prefixed
+ * equivalent, which broke ui/gsxui.js's own once() contract (see that
+ * module's header): the server never emits the flag, so an htmx-style
+ * morph that reconciles this container back to fresh server markup (same
+ * script/panel node, attributes patched to match the server's, which
+ * never sets it) strips it and initPanel() runs a second full bind —
+ * duplicate ResizeObserver, duplicate document keydown, duplicate panel
+ * listeners — on every such morph. renderChart's own guard is now a
+ * module-level once() (a WeakSet keyed on the script node, immune to
+ * attribute stripping since it's keyed on identity, not a DOM attribute).
+ * A REPLACEMENT script node (a genuine data refresh under the same
+ * persisting panel, not a morph) still passes the guard, by design — see
+ * initPanel's own teardown comment for how that path avoids stacking a
+ * second ResizeObserver/listener set on the still-live panel.
  */
+
+import { once } from "./gsxui.js";
 
 /* ---------------------------------------------------------------- */
 /* Geometry (ports of the Go engine)                                */
@@ -1642,6 +1675,14 @@ function chartTooltipClasses(container) {
     line: classOf('[data-gsxui-chart-tooltip-indicator="line"]'),
     dashed: classOf('[data-gsxui-chart-tooltip-indicator="dashed"]'),
     dashedNested: classOf('[data-gsxui-chart-tooltip-indicator="dashed-nested"]'),
+    label: classOf('[data-gsxui-chart-tooltip-part="label"]'),
+    row: classOf('[data-gsxui-chart-tooltip-part="row"]'),
+    itemsCenter: classOf('[data-gsxui-chart-tooltip-part="items-center"]'),
+    itemsEnd: classOf('[data-gsxui-chart-tooltip-part="items-end"]'),
+    valueWrap: classOf('[data-gsxui-chart-tooltip-part="value-wrap"]'),
+    grid: classOf('[data-gsxui-chart-tooltip-part="grid"]'),
+    name: classOf('[data-gsxui-chart-tooltip-part="name"]'),
+    value: classOf('[data-gsxui-chart-tooltip-part="value"]'),
   };
 }
 
@@ -1686,31 +1727,27 @@ function tooltipHTML(m, i, tc, pieIndex = 0) {
   // inside the row, so the line indicator spans the full row height. A pie
   // always carries a single payload item.
   const nestLabel = (pie ? true : m.series.length === 1) && t.indicator && t.indicator !== "dot";
-  const labelCls = `font-medium${t.labelClass ? " " + t.labelClass : ""}`;
+  const labelCls = `${tc.label}${t.labelClass ? " " + t.labelClass : ""}`;
   let html = `<div class="${tc.shell}${t.width ? " " + t.width : ""}" data-gsxui-slot-chart-tooltip>`;
   if (!t.hideLabel && !nestLabel) {
     html += `<div class="${labelCls}">${label}</div>`;
   }
-  html += `<div class="grid gap-1.5">`;
+  html += `<div class="${tc.grid}">`;
   if (pie) {
     const color = t.color || pie.colors[i];
-    const rowCls =
-      "flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-muted-foreground" +
-      (t.indicator !== "line" && t.indicator !== "dashed" ? " items-center" : "");
+    const rowCls = tc.row + (t.indicator !== "line" && t.indicator !== "dashed" ? " " + tc.itemsCenter : "");
     const nested = nestLabel && !t.hideLabel ? `<div class="${labelCls}">${label}</div>` : "";
     html +=
       `<div class="${rowCls}">` +
       (t.hideIndicator ? "" : indicatorHTML(t.indicator, color, nestLabel, tc)) +
-      `<div class="flex flex-1 justify-between leading-none ${nestLabel ? "items-end" : "items-center"}">` +
-      `<div class="grid gap-1.5">${nested}<span class="text-muted-foreground">${(pie.tooltipNames && pie.tooltipNames[i]) || pie.labels[i]}</span></div>` +
-      `<span class="font-mono font-medium text-foreground tabular-nums">${pie.values[i].toLocaleString("en-US")}</span>` +
+      `<div class="${tc.valueWrap} ${nestLabel ? tc.itemsEnd : tc.itemsCenter}">` +
+      `<div class="${tc.grid}">${nested}<span class="${tc.name}">${(pie.tooltipNames && pie.tooltipNames[i]) || pie.labels[i]}</span></div>` +
+      `<span class="${tc.value}">${pie.values[i].toLocaleString("en-US")}</span>` +
       `</div></div></div></div>`;
     return html;
   }
   m.series.forEach((s, si) => {
-    const rowCls =
-      "flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-muted-foreground" +
-      (t.indicator !== "line" && t.indicator !== "dashed" ? " items-center" : "");
+    const rowCls = tc.row + (t.indicator !== "line" && t.indicator !== "dashed" ? " " + tc.itemsCenter : "");
     // The formatter markup replaces the row's default indicator, name and
     // value, like ChartTooltipContent calling the formatter render prop.
     if (t.rows && t.rows[si]) {
@@ -1728,9 +1765,9 @@ function tooltipHTML(m, i, tc, pieIndex = 0) {
     html +=
       `<div class="${rowCls}">` +
       (s.icon || (t.hideIndicator ? "" : indicatorHTML(t.indicator, indicatorColor, nestLabel, tc))) +
-      `<div class="flex flex-1 justify-between leading-none ${nestLabel ? "items-end" : "items-center"}">` +
-      `<div class="grid gap-1.5">${nested}<span class="text-muted-foreground">${name}</span></div>` +
-      `<span class="font-mono font-medium text-foreground tabular-nums">${s.values[i].toLocaleString("en-US")}</span>` +
+      `<div class="${tc.valueWrap} ${nestLabel ? tc.itemsEnd : tc.itemsCenter}">` +
+      `<div class="${tc.grid}">${nested}<span class="${tc.name}">${name}</span></div>` +
+      `<span class="${tc.value}">${s.values[i].toLocaleString("en-US")}</span>` +
       `</div></div>`;
   });
   html += "</div></div>";
@@ -1855,18 +1892,63 @@ function tooltipTranslate(coordinate, tooltipDimension, viewBoxKey, viewBoxDimen
  * auto-boot which discovered container/script pairs itself via a
  * document-wide scan (deleted, see this file's header) — so there is no
  * panel.closest("[data-tui-chart]") walk-up here, container is simply the
- * parameter. */
+ * parameter.
+ *
+ * querySelector (not querySelectorAll) deliberately only ever finds the
+ * FIRST script[data-gsxui-chart-model] under container: ui.Chart is
+ * documented (registry/canonical/chart.gsx, Chart's own doc comment) to
+ * hold exactly one chart root. A second root's script would be silently
+ * ignored here even if one were nested in — the state every render
+ * function below reads/writes (container._gsxuiActive,
+ * container._gsxuiActivePoints) is keyed on container itself with no
+ * per-root namespacing, so supporting a second root is not simply a
+ * matter of looping this query. */
 export function renderChart(container) {
   const script = container.querySelector("script[data-gsxui-chart-model]");
   if (!script) return;
-  initPanel(container, script);
+  initPanelOnce(script);
 }
 
-function initPanel(container, script) {
-  if (script.dataset.gsxuiChartInit) return;
-  script.dataset.gsxuiChartInit = "true";
+// once() (ui/gsxui.js) keyed on the script node: "has this exact script
+// node ever been bound" is the once-only fact being guarded, immune to a
+// morph stripping the data-gsxui-chart-init attribute the pre-fix guard
+// read (see this file's header, adaptation #11) because a WeakSet keys on
+// object identity, not a DOM attribute a morph can strip. A morph-back
+// preserves the script node's identity (idiomorph-style reconciliation
+// patches attributes/children in place), so it is correctly blocked here.
+// A REPLACEMENT script node — a genuine data refresh that swaps just the
+// model script under a persisting panel, not a morph — is a different
+// object the WeakSet has never seen, so it correctly proceeds to a fresh
+// initPanel() call; that call's own teardown (see below) is what keeps
+// THAT path from stacking a second ResizeObserver/listener set onto the
+// still-live panel.
+const initPanelOnce = once(function initPanelOnce(script) {
+  const container = script.closest("[data-gsxui-slot-chart]");
+  if (!container) return;
+  initPanel(container, script);
+});
 
+function initPanel(container, script) {
   const panel = script.parentElement;
+
+  // Teardown from a PRIOR initPanel() call on this same panel node (the
+  // "replacement script, persisting panel" path initPanelOnce's own
+  // comment describes — the once() guard above only blocks a repeat call
+  // for the SAME script node, not a fresh script under the same panel).
+  // Disconnecting/aborting the previous call's ResizeObserver and every
+  // document/panel listener it registered before creating a new set is
+  // what keeps that path from stacking duplicates on a node that never
+  // went away. Both handles travel together on the panel itself (not a
+  // module-level map) because the panel node's own lifetime IS the scope
+  // that matters: once it is genuinely replaced (a real DOM swap, not a
+  // morph), the old panel and everything reachable only from IT becomes
+  // unreachable garbage on its own, teardown or not.
+  const previous = panel._gsxuiChartTeardown;
+  if (previous) {
+    previous.ro.disconnect();
+    previous.controller.abort();
+  }
+
   const m = JSON.parse(script.textContent);
   const state = { uid: "gsxui-chart-" + uid++ };
 
@@ -1935,24 +2017,48 @@ function initPanel(container, script) {
   });
   ro.observe(panel);
 
+  // Every document/panel listener this call registers below is bound with
+  // { signal: controller.signal } — see this function's own teardown
+  // comment above for why: an AbortController is the one call that
+  // removes an arbitrary, growing set of listeners (document keydown,
+  // several panel listeners, none named the same way twice across a
+  // conditional) in one shot, the same mechanism ui/toaster.js already
+  // uses for its own per-toast listener cleanup.
+  const controller = new AbortController();
+  panel._gsxuiChartTeardown = { ro, controller };
+
   // Without a declared Tooltip child Recharts renders no tooltip, no
   // active dots and no cursor, so none of the hover wiring applies.
   if (!m.hasTooltip) return;
 
   const wrapper = tooltipWrapper(container);
   const tc = chartTooltipClasses(container);
+  // chartTooltipClasses returns null when no
+  // template[data-gsxui-chart-tooltip-template] exists in the container —
+  // normally impossible while m.hasTooltip is true (chartRoot only omits
+  // the template when no ChartTooltip child registered, which is exactly
+  // what makes hasTooltip false too), but a detached/replaced container
+  // (a partial DOM swap that drops the template while leaving the model
+  // script's hasTooltip flag stale) must degrade to "no tooltip" rather
+  // than crash the whole init on tc.shell/tc.row/... being undefined
+  // further down.
+  if (!tc) return;
 
   // TooltipBoundingBox: Escape dismisses the tooltip box at its current
   // coordinate; the cursor and the active dots stay up, and the box comes
   // back as soon as the coordinate changes.
   state.dismissed = false;
   state.dismissedAt = { x: 0, y: 0 };
-  document.addEventListener("keydown", (e) => {
-    if (e.key !== "Escape") return;
-    state.dismissed = true;
-    state.dismissedAt = state.tooltipCoord || { x: 0, y: 0 };
-    wrapper.style.visibility = "hidden";
-  });
+  document.addEventListener(
+    "keydown",
+    (e) => {
+      if (e.key !== "Escape") return;
+      state.dismissed = true;
+      state.dismissedAt = state.tooltipCoord || { x: 0, y: 0 };
+      wrapper.style.visibility = "hidden";
+    },
+    { signal: controller.signal },
+  );
 
   // Like Recharts' inRange: the tooltip only activates while the pointer
   // is inside the plot rectangle, not over the axis labels below.
@@ -2028,13 +2134,17 @@ function initPanel(container, script) {
     const snap = g ? g.cats[i] : null;
     positionTooltip(e, g && g.vertical ? null : snap, g && g.vertical ? snap : null, i);
   };
-  panel.addEventListener("mousemove", handleMouseMove);
+  panel.addEventListener("mousemove", handleMouseMove, { signal: controller.signal });
   if (m.kind !== "pie") {
-    panel.addEventListener("touchmove", (e) => {
-      if (e.changedTouches != null && e.changedTouches.length > 0) {
-        handleMouseMove(e.changedTouches[0]);
-      }
-    });
+    panel.addEventListener(
+      "touchmove",
+      (e) => {
+        if (e.changedTouches != null && e.changedTouches.length > 0) {
+          handleMouseMove(e.changedTouches[0]);
+        }
+      },
+      { signal: controller.signal },
+    );
   }
 
   function positionTooltip(e, snapX, snapY, i, pieIndex = 0) {
@@ -2070,10 +2180,14 @@ function initPanel(container, script) {
     wrapper.style.transform = `translate(${tx}px, ${ty}px)`;
   }
 
-  panel.addEventListener("mouseleave", () => {
-    state.hoverActive = false;
-    resolveTooltip();
-  });
+  panel.addEventListener(
+    "mouseleave",
+    () => {
+      state.hoverActive = false;
+      resolveTooltip();
+    },
+    { signal: controller.signal },
+  );
 
   // displayDefaultTooltip: a Tooltip with a defaultIndex shows once on
   // mount, at the category's tick coordinate and halfway between the plot
@@ -2133,35 +2247,47 @@ function initPanel(container, script) {
     // focusAction: only the first focus activates the keyboard
     // interaction, at index 0; a refocus after blur keeps the tooltip
     // hidden until the arrow keys move it again.
-    panel.addEventListener("focusin", () => {
-      if (state.keyboard.active) return;
-      if (state.keyboard.index == null) {
-        state.keyboard = { active: true, index: 0 };
-        resolveTooltip();
-      }
-    });
+    panel.addEventListener(
+      "focusin",
+      () => {
+        if (state.keyboard.active) return;
+        if (state.keyboard.index == null) {
+          state.keyboard = { active: true, index: 0 };
+          resolveTooltip();
+        }
+      },
+      { signal: controller.signal },
+    );
     // blurAction deactivates the interaction but keeps the index.
-    panel.addEventListener("focusout", () => {
-      if (state.keyboard.active) {
-        state.keyboard.active = false;
+    panel.addEventListener(
+      "focusout",
+      () => {
+        if (state.keyboard.active) {
+          state.keyboard.active = false;
+          resolveTooltip();
+        }
+      },
+      { signal: controller.signal },
+    );
+    panel.addEventListener(
+      "keydown",
+      (e) => {
+        const g = state.geom;
+        if (!g || !g.cats || g.vertical) return;
+        if (e.key === "Enter") {
+          if (state.keyboard.index == null) return;
+          state.keyboard.active = !state.keyboard.active;
+          resolveTooltip();
+          return;
+        }
+        if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+        const movement = e.key === "ArrowRight" ? 1 : -1;
+        const next = state.keyboard.index == null ? (movement > 0 ? 0 : g.cats.length - 1) : state.keyboard.index + movement;
+        if (next < 0 || next > g.cats.length - 1) return;
+        state.keyboard = { active: true, index: next };
         resolveTooltip();
-      }
-    });
-    panel.addEventListener("keydown", (e) => {
-      const g = state.geom;
-      if (!g || !g.cats || g.vertical) return;
-      if (e.key === "Enter") {
-        if (state.keyboard.index == null) return;
-        state.keyboard.active = !state.keyboard.active;
-        resolveTooltip();
-        return;
-      }
-      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
-      const movement = e.key === "ArrowRight" ? 1 : -1;
-      const next = state.keyboard.index == null ? (movement > 0 ? 0 : g.cats.length - 1) : state.keyboard.index + movement;
-      if (next < 0 || next > g.cats.length - 1) return;
-      state.keyboard = { active: true, index: next };
-      resolveTooltip();
-    });
+      },
+      { signal: controller.signal },
+    );
   }
 }

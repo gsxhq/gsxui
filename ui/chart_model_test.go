@@ -66,6 +66,30 @@ func TestBarChartModelPinned(t *testing.T) {
 	}
 }
 
+// TestBarChartModelCellsFromFillColumn mirrors
+// TestRadialBarChartModelCellsFromFillColumn for cartesian Bar: upstream's
+// hasFillColumn fallback (chart.templ:1242, an `else if` alongside Bar's
+// own <Cell>-child form we don't port) applies to Bar too, not just
+// radial-bar — a "fill" column on the raw rows names each bar's own color
+// with no <Cell> child needed, identical data-access pattern.
+func TestBarChartModelCellsFromFillColumn(t *testing.T) {
+	data := []ui.ChartDatum{
+		{"month": "Jan", "desktop": 186.0, "fill": "var(--color-chrome)"},
+		{"month": "Feb", "desktop": 305.0, "fill": "var(--color-safari)"},
+	}
+	got := render(t, ui.Chart(cfg2Series(t),
+		ui.BarChart(data, nil,
+			gsx.Fragment(
+				ui.ChartXAxis("month", nil),
+				ui.ChartBar("desktop", nil),
+			), nil), nil))
+	model := extractModelJSON(t, got)
+	want := `{"kind":"bar","marginTop":5,"marginRight":5,"marginBottom":5,"marginLeft":5,"xAxisHeight":30,"minTickGap":5,"categoryGap":0.1,"cursor":false,"labels":["Jan","Feb"],"tooltipLabels":["Jan","Feb"],"series":[{"key":"desktop","label":"","color":"var(--color-desktop)","values":[186,305],"cells":["var(--color-chrome)","var(--color-safari)"]}],"tooltip":{}}`
+	if model != want {
+		t.Errorf("model drift\n got: %s\nwant: %s", model, want)
+	}
+}
+
 func TestLineChartModelPinned(t *testing.T) {
 	data := []ui.ChartDatum{{"month": "Jan", "desktop": 186.0}, {"month": "Feb", "desktop": 305.0}}
 	got := render(t, ui.Chart(cfg2Series(t),

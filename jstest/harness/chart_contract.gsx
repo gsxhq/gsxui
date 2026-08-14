@@ -17,11 +17,25 @@ import (
 // mobile here) can never exercise a real dark-mode flip — a per-scheme
 // ChartSeriesTheme is the one config shape that can, and is exactly the
 // mechanism Chart.styleBlock (registry/canonical/chart.gsx) exists to
-// serve.
+// serve. desktop also carries an Icon: ChartSeries.Icon replaces the
+// tooltip row's color-swatch indicator with raw SVG markup
+// (chart.render.js's tooltipHTML, the s.icon branch), sized entirely by
+// the tooltip row's own SVG-child sizing utilities (see
+// ui.ChartTooltipTemplate's own doc comment for exactly which ones) — an
+// icon with no intrinsic width/height of its own (viewBox only) is
+// jstest/specs/chart.spec.ts's probe for whether those utilities actually
+// compiled. This comment deliberately does NOT spell out the utility
+// literal: this .gsx file is itself inside full.css's harness @source
+// glob, so writing it here would compile the class from the comment text
+// alone and mask a real regression.
 component ChartContractFixture() {
 	{{
 		cfg := ui.ChartConfig{
-			{Key: "desktop", Label: "Desktop", Theme: &ui.ChartSeriesTheme{Light: "#2563eb", Dark: "#f97316"}},
+			{
+				Key: "desktop", Label: "Desktop",
+				Theme: &ui.ChartSeriesTheme{Light: "#2563eb", Dark: "#f97316"},
+				Icon:  gsx.Raw(`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>`),
+			},
 			{Key: "mobile", Label: "Mobile", Color: "var(--chart-2)"},
 		}
 		data := []ui.ChartDatum{

@@ -122,13 +122,28 @@ func nextChartID() string {
 // Chart is the shadcn/ui ChartContainer pendant: an aspect-video box that
 // exposes its ChartConfig as --color-<key> CSS custom properties (see
 // styleBlock) for the chart roots and parts a later task adds as children.
-// templui's own class carries a wall of [&_.recharts-*] arbitrary-variant
-// selectors (axis tick fill, grid stroke, cursor fill) that reach into the
-// client-rendered SVG upstream's Recharts leaves behind; gsxui's client
-// renderer (Task 5) stamps gsxui's own classes on those nodes instead, so
-// that job moves to the renderer-emitted attributes reading the same
-// --color-<key>/--chart-N variables, and the selector wall is dropped here
-// entirely rather than ported dead.
+// templui's own class also carries a wall of [&_.recharts-*] arbitrary-
+// variant selectors (axis tick fill, grid stroke, cursor fill, dot/sector
+// rings, radial-bar background) that re-color Recharts' own hardcoded SVG
+// sentinels (#666/#ccc/#fff/#eee) — ui/chart.render.js is a byte-faithful
+// port of templui's chart.js and keeps emitting those exact sentinels
+// verbatim, so this wall is the ONLY mechanism that themes them. It lives
+// in the root recipe class the div below stamps (registry/styles/<style>/
+// chart.css's root rule), not spelled out here — same split every other
+// component's recipe class follows.
+//
+// children is expected to be exactly ONE chart root (BarChart/LineChart/
+// AreaChart/PieChart/RadarChart/RadialBarChart), matching upstream's own
+// ChartContainer usage — every shadcn/templui demo wraps a single root.
+// Nothing here rejects a second root nested alongside the first, but
+// ui/chart.render.js's renderChart(container) only ever looks up the
+// FIRST `script[data-gsxui-chart-model]` under this div (querySelector,
+// not querySelectorAll), and every root's own per-container bookkeeping
+// (container._gsxuiActive/_gsxuiActivePoints, the entrance/update-morph
+// state chartRoot's caller reads back across renders) is keyed on this
+// SAME container object with no per-root namespacing, so a second root
+// would silently never draw and could cross-talk the first root's morph
+// state besides. One Chart, one root.
 component Chart(config ChartConfig, children gsx.Node, attrs gsx.Attrs) {
 	{{
 		id := nextChartID()
@@ -142,7 +157,9 @@ component Chart(config ChartConfig, children gsx.Node, attrs gsx.Attrs) {
 	}}
 	<div
 		data-chart={id}
-		class={ "flex aspect-video justify-center text-xs min-h-0" }
+		class={
+			"flex aspect-video justify-center text-xs min-h-0 [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-hidden [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border [&_.recharts-sector]:outline-hidden [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-surface]:outline-hidden"
+		}
 		{ attrs... }
 		data-gsxui-slot-chart
 	>
@@ -842,9 +859,10 @@ type ChartModelSeries struct {
 	Radius  []float64 `json:"radius,omitempty"`  // bar: corner radii, one or four
 	StackID string    `json:"stackId,omitempty"` // bar/area/radial-bar
 	// Cells is a fill per data row, from that row's own "fill" column —
-	// pure data access, ported for radial-bar (see chartHasFillColumn);
-	// bar's own identical fallback plus its <Cell>-child-driven form stay
-	// deferred, matching this file's own Bar scope-narrowing elsewhere.
+	// pure data access, ported for both bar and radial-bar (see
+	// chartHasFillColumn); the <Cell>-child-driven form both kinds also
+	// support upstream stays deferred, matching this file's own Bar/
+	// radial-bar scope-narrowing elsewhere.
 	Cells       []string `json:"cells,omitempty"`
 	StrokeWidth float64  `json:"strokeWidth,omitempty"` // bar/line/radar
 
@@ -1063,6 +1081,18 @@ func buildChartModel(ctx context.Context, st *chartState) ChartModel {
 			s.StrokeWidth = b.opts.StrokeWidth
 			if b.opts.StackID != "" {
 				stacked = true
+			}
+			// A fill column names the row's own color, like Recharts reading
+			// the fill off the entry — the cartesian pendant of
+			// buildChartRadialModel's own fallback (chartHasFillColumn,
+			// above). Upstream's Bar also reads an explicit <Cell>-child
+			// form first (chart.templ:1237); that form stays unported here,
+			// matching this file's own Bar scope-narrowing elsewhere.
+			if chartHasFillColumn(st.data) {
+				s.Cells = make([]string, len(st.data))
+				for i, row := range st.data {
+					s.Cells[i] = chartStr(row["fill"])
+				}
 			}
 			m.Series = append(m.Series, s)
 		}
@@ -1476,6 +1506,21 @@ func chartRoot(st *chartState, children gsx.Node, attrs gsx.Attrs) gsx.Node {
 // ever existed as literals inside chart.render.js, and web/site.css's
 // @source globs scan .gsx files only, never ui/*.js. chart.render.js reads
 // each variant's class the same way it reads the shell's.
+//
+// The data-gsxui-chart-tooltip-part elements below carry the rest of
+// tooltipHTML's own markup classes (the row wrapper and its SVG-child
+// sizing utilities, the label, the name/value grid, the value's own
+// tabular-nums styling): an earlier draft of this template stopped at the
+// four indicator swatches and left those as JS template literals in
+// chart.render.js, which broke the same way the indicator swatches would
+// have — a class that exists nowhere in a .gsx file never compiles, so a
+// ChartSeries.Icon rendered in a tooltip row painted at its raw SVG
+// default size instead of the row's intended size. chart.render.js's
+// tooltipHTML/indicatorHTML read every one of these parts' class
+// attributes off this template exactly like the four indicator swatches,
+// composing row/value-wrap variants from the shared base part plus a
+// modifier part (items-center/items-end) rather than typing either as a
+// literal.
 component ChartTooltipTemplate() {
 	<template data-gsxui-chart-tooltip-template>
 		<div
@@ -1500,6 +1545,20 @@ component ChartTooltipTemplate() {
 			class="shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) w-0 border-[1.5px] border-dashed bg-transparent my-0.5"
 			data-gsxui-chart-tooltip-indicator="dashed-nested"
 		></div>
+		<div class="font-medium" data-gsxui-chart-tooltip-part="label"></div>
+		<div
+			class="flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-muted-foreground"
+			data-gsxui-chart-tooltip-part="row"
+		></div>
+		<div class="items-center" data-gsxui-chart-tooltip-part="items-center"></div>
+		<div class="items-end" data-gsxui-chart-tooltip-part="items-end"></div>
+		<div class="flex flex-1 justify-between leading-none" data-gsxui-chart-tooltip-part="value-wrap"></div>
+		<div class="grid gap-1.5" data-gsxui-chart-tooltip-part="grid"></div>
+		<span class="text-muted-foreground" data-gsxui-chart-tooltip-part="name"></span>
+		<span
+			class="font-mono font-medium text-foreground tabular-nums"
+			data-gsxui-chart-tooltip-part="value"
+		></span>
 	</template>
 }
 
