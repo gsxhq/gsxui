@@ -350,6 +350,14 @@
         }
       }
     },
+    "chart": {
+      "slots": {
+        "": {
+          "base": true,
+          "dimensions": {}
+        }
+      }
+    },
     "checkbox": {
       "slots": {
         "": {
@@ -2513,6 +2521,19 @@
                 ]
               }
             }
+          }
+        }
+      },
+      "chart": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "aspect-video",
+              "justify-center",
+              "text-xs"
+            ],
+            "dimensions": {}
           }
         }
       },
@@ -7225,6 +7246,19 @@
           }
         }
       },
+      "chart": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "aspect-video",
+              "justify-center",
+              "text-xs"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
       "checkbox": {
         "slots": {
           "": {
@@ -11892,6 +11926,19 @@
                 ]
               }
             }
+          }
+        }
+      },
+      "chart": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "aspect-video",
+              "justify-center",
+              "text-xs"
+            ],
+            "dimensions": {}
           }
         }
       },
@@ -16572,6 +16619,19 @@
                 ]
               }
             }
+          }
+        }
+      },
+      "chart": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "aspect-video",
+              "justify-center",
+              "text-xs"
+            ],
+            "dimensions": {}
           }
         }
       },
@@ -21285,6 +21345,19 @@
           }
         }
       },
+      "chart": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "aspect-video",
+              "justify-center",
+              "text-xs"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
       "checkbox": {
         "slots": {
           "": {
@@ -25988,6 +26061,19 @@
                 ]
               }
             }
+          }
+        }
+      },
+      "chart": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "aspect-video",
+              "justify-center",
+              "text-xs"
+            ],
+            "dimensions": {}
           }
         }
       },
@@ -30721,6 +30807,19 @@
           }
         }
       },
+      "chart": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "aspect-video",
+              "justify-center",
+              "text-xs"
+            ],
+            "dimensions": {}
+          }
+        }
+      },
       "checkbox": {
         "slots": {
           "": {
@@ -35446,6 +35545,19 @@
                 ]
               }
             }
+          }
+        }
+      },
+      "chart": {
+        "slots": {
+          "": {
+            "base": [
+              "flex",
+              "aspect-video",
+              "justify-center",
+              "text-xs"
+            ],
+            "dimensions": {}
           }
         }
       },

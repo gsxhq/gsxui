@@ -209,6 +209,7 @@ var all = map[string]recipe.Shape{
 	Sidebar.Component:        Sidebar,
 	Toast.Component:          Toast,
 	Toaster.Component:        Toaster,
+	Chart.Component:          Chart,
 }
 
 // All returns every declared component shape, keyed by component name.

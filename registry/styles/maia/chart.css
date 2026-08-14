@@ -1,0 +1,9 @@
+/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+   apps/v4/registry/styles/style-maia.css Chart section + templui chart.templ
+   container; adapted per NOTICE.md. */
+@layer components {
+  /* carried: no upstream cn- counterpart, templui's own container class */
+  .gsxui-recipe-chart {
+    @apply flex aspect-video justify-center text-xs;
+  }
+}

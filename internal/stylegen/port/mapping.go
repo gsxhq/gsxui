@@ -12,13 +12,25 @@ import (
 // ignoredSections are upstream MARK sections with no gsxui component
 // counterpart at all: seven blocks belong to an AI-chat/composer surface
 // gsxui doesn't ship (Bubble, Attachment, Marker, Questionnaire, Message
-// Scroller, Message), one is a chart surface with no component or shape yet
-// (Chart), and one is a translucent-menu variant (Menu Translucent). "React
-// Aria" is a ninth: its 30 rules are all `-aria`-suffixed duplicates of
-// rules that already live in their own component's section — Ignored's
-// suffix check would catch every one of them individually, but excluding
-// the whole section here means a stray non-`-aria` class landing in it by
-// accident can never slip through as a fabricated 55th component.
+// Scroller, Message), and one is a translucent-menu variant (Menu
+// Translucent). "React Aria" is an eighth: its 30 rules are all
+// `-aria`-suffixed duplicates of rules that already live in their own
+// component's section — Ignored's suffix check would catch every one of
+// them individually, but excluding the whole section here means a stray
+// non-`-aria` class landing in it by accident can never slip through as a
+// fabricated component.
+//
+// Chart is a NINTH, but for a narrower reason than "no counterpart": a
+// gsxui chart component and shape now exist (registry/canonical/chart.gsx,
+// registry/canonical/shapes/chart.go), but the shape declares only its root
+// slot so far — the "MARK: Chart" section's one rule (.cn-chart-tooltip)
+// belongs to the tooltip PART, which has no slot yet (ChartTooltip lands in
+// a later task). Until that slot exists this whole automated port would
+// have nothing valid to map .cn-chart-tooltip onto, so the section stays
+// ignored here rather than mapped-but-broken; see styleInvariantComponents
+// below for how "chart" clears TestMappingComponentCoverage in the
+// meantime, and this table's own comment there for what un-ignoring Chart
+// needs.
 var ignoredSections = map[string]bool{
 	"React Aria":       true,
 	"Chart":            true,
@@ -73,10 +85,22 @@ func Ignored(class string) bool {
 // styleInvariantComponents take the same recipe in every style: no upstream
 // MARK section exists for them in any of the 8 style-<name>.css files, so
 // they stay hand-authored residue outside the porter's reach entirely (spec
-// §4.4). Confirmed against dossier §6: these are the only 4 of the 54
-// canonical shapes with no upstream section at all.
+// §4.4). Confirmed against dossier §6: aspect-ratio, collapsible, spinner
+// and toaster are the only 4 of the original 54 canonical shapes with no
+// upstream section at all.
+//
+// "chart" is a fifth entry, added after the dossier survey and for a
+// different reason: unlike the original 4, upstream DOES have a "MARK:
+// Chart" section (ignoredSections above) — it is just entirely about the
+// tooltip part, which chart's shape (registry/canonical/shapes/chart.go)
+// doesn't declare yet, so every style's current chart.css is genuinely
+// identical (`flex aspect-video justify-center text-xs`, hand-authored from
+// templui's container class, not from any MARK section). Remove "chart"
+// here — and un-ignore "Chart" above — together, in whichever task adds the
+// tooltip slot and a real per-style recipe for it.
 var styleInvariantComponents = map[string]bool{
 	"aspect-ratio": true,
+	"chart":        true,
 	"collapsible":  true,
 	"spinner":      true,
 	"toaster":      true,

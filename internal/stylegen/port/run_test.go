@@ -35,7 +35,10 @@ func fileChecksum(t *testing.T, path string) [32]byte {
 // maia for real (dryRun=false, done once by hand as part of Task 6's real
 // port, see the task report) must produce Written == 54 with Unmapped == 0
 // once the mapping table is complete — this test pins that same claim in
-// dry-run form, which additionally must touch nothing on disk.
+// dry-run form, which additionally must touch nothing on disk. "chart"
+// joined the canonical set after that survey as a StyleInvariant component
+// (see mapping.go's styleInvariantComponents comment), so Written is now
+// 55, still with Unmapped == 0.
 func TestRunDryRunMaia(t *testing.T) {
 	if _, err := os.Stat(upstreamRootPath); err != nil {
 		t.Skipf("upstream shadcn-ui checkout not present at %s", upstreamRootPath)
@@ -50,8 +53,8 @@ func TestRunDryRunMaia(t *testing.T) {
 		t.Fatalf("Run: %v", err)
 	}
 
-	if report.Written != 54 {
-		t.Errorf("Written = %d, want 54", report.Written)
+	if report.Written != 55 {
+		t.Errorf("Written = %d, want 55", report.Written)
 	}
 	if report.Unmapped != 0 {
 		t.Errorf("Unmapped = %d, want 0: %v", report.Unmapped, report.UnmappedDetail)

@@ -195,9 +195,11 @@ func TestMappingComponentCoverage(t *testing.T) {
 // than "nothing missing": the dossier's full 54-component survey (§6) found
 // exactly 49 components identity-mapped from a MARK section, 1 declared
 // override (radio ← "Radio Group"), and 4 StyleInvariant components with no
-// section at all — 49+1+4 = 54. If this ever drifts, the shape of the drift
-// (which bucket gained or lost) is more informative than a bare "missing"
-// list.
+// section at all — 49+1+4 = 54. "chart" (registry/canonical/shapes/
+// chart.go) joined the canonical set after that survey as a 5th
+// StyleInvariant entry (see styleInvariantComponents' own comment on why) —
+// 49+1+5 = 55. If this ever drifts, the shape of the drift (which bucket
+// gained or lost) is more informative than a bare "missing" list.
 func TestMappingComponentCoverageExactCounts(t *testing.T) {
 	reachableByOverride := map[string]bool{}
 	reachableByIdentity := map[string]bool{}
@@ -237,7 +239,7 @@ func TestMappingComponentCoverageExactCounts(t *testing.T) {
 	if len(override) != 1 {
 		t.Errorf("override-mapped components = %d, want 1: %v", len(override), override)
 	}
-	if len(invariant) != 4 {
-		t.Errorf("StyleInvariant components = %d, want 4: %v", len(invariant), invariant)
+	if len(invariant) != 5 {
+		t.Errorf("StyleInvariant components = %d, want 5: %v", len(invariant), invariant)
 	}
 }
