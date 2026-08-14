@@ -359,6 +359,10 @@
         "legend": {
           "base": true,
           "dimensions": {}
+        },
+        "tooltip": {
+          "base": true,
+          "dimensions": {}
         }
       }
     },
@@ -2545,6 +2549,25 @@
               "items-center",
               "justify-center",
               "gap-4"
+            ],
+            "dimensions": {}
+          },
+          "tooltip": {
+            "base": [
+              "bg-popover",
+              "text-popover-foreground",
+              "ring-foreground/5",
+              "dark:ring-foreground/10",
+              "gap-1.5",
+              "rounded-xl",
+              "px-2.5",
+              "py-1.5",
+              "text-xs",
+              "shadow-lg",
+              "ring-1",
+              "grid",
+              "min-w-32",
+              "items-start"
             ],
             "dimensions": {}
           }
@@ -7278,6 +7301,23 @@
               "gap-4"
             ],
             "dimensions": {}
+          },
+          "tooltip": {
+            "base": [
+              "border-border/50",
+              "bg-background",
+              "gap-1.5",
+              "rounded-none",
+              "border",
+              "px-2.5",
+              "py-1.5",
+              "text-xs",
+              "shadow-xl",
+              "grid",
+              "min-w-32",
+              "items-start"
+            ],
+            "dimensions": {}
           }
         }
       },
@@ -11968,6 +12008,23 @@
               "items-center",
               "justify-center",
               "gap-4"
+            ],
+            "dimensions": {}
+          },
+          "tooltip": {
+            "base": [
+              "border-border/50",
+              "bg-background",
+              "gap-1.5",
+              "rounded-lg",
+              "border",
+              "px-2.5",
+              "py-1.5",
+              "text-xs",
+              "shadow-xl",
+              "grid",
+              "min-w-32",
+              "items-start"
             ],
             "dimensions": {}
           }
@@ -16670,6 +16727,23 @@
               "items-center",
               "justify-center",
               "gap-4"
+            ],
+            "dimensions": {}
+          },
+          "tooltip": {
+            "base": [
+              "border-border/50",
+              "bg-background",
+              "gap-1.5",
+              "rounded-lg",
+              "border",
+              "px-2.5",
+              "py-1.5",
+              "text-xs/relaxed",
+              "shadow-xl",
+              "grid",
+              "min-w-32",
+              "items-start"
             ],
             "dimensions": {}
           }
@@ -21404,6 +21478,23 @@
               "gap-4"
             ],
             "dimensions": {}
+          },
+          "tooltip": {
+            "base": [
+              "border-border/50",
+              "bg-background",
+              "gap-1.5",
+              "rounded-lg",
+              "border",
+              "px-2.5",
+              "py-1.5",
+              "text-xs",
+              "shadow-xl",
+              "grid",
+              "min-w-32",
+              "items-start"
+            ],
+            "dimensions": {}
           }
         }
       },
@@ -26130,6 +26221,25 @@
               "items-center",
               "justify-center",
               "gap-4"
+            ],
+            "dimensions": {}
+          },
+          "tooltip": {
+            "base": [
+              "bg-popover",
+              "text-popover-foreground",
+              "ring-foreground/5",
+              "dark:ring-foreground/10",
+              "gap-1.5",
+              "rounded-xl",
+              "px-2.5",
+              "py-1.5",
+              "text-xs",
+              "shadow-lg",
+              "ring-1",
+              "grid",
+              "min-w-32",
+              "items-start"
             ],
             "dimensions": {}
           }
@@ -30884,6 +30994,23 @@
               "gap-4"
             ],
             "dimensions": {}
+          },
+          "tooltip": {
+            "base": [
+              "bg-popover",
+              "text-popover-foreground",
+              "ring-foreground/10",
+              "gap-1.5",
+              "px-2.5",
+              "py-1.5",
+              "text-xs",
+              "shadow-sm",
+              "ring-1",
+              "grid",
+              "min-w-32",
+              "items-start"
+            ],
+            "dimensions": {}
           }
         }
       },
@@ -35632,6 +35759,23 @@
               "items-center",
               "justify-center",
               "gap-4"
+            ],
+            "dimensions": {}
+          },
+          "tooltip": {
+            "base": [
+              "border-border/50",
+              "bg-background",
+              "gap-1.5",
+              "rounded-lg",
+              "border",
+              "px-2.5",
+              "py-1.5",
+              "text-xs",
+              "shadow-xl",
+              "grid",
+              "min-w-32",
+              "items-start"
             ],
             "dimensions": {}
           }
