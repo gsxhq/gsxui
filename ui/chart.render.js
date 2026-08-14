@@ -580,7 +580,7 @@ function renderCartesian(panel, m, state, alpha = 1) {
     for (const g of m.defs) {
       // The stops are raw markup from the demo, passed through verbatim
       // like Recharts passes defs children through.
-      svg += `<linearGradient id="${state.uid}-${g.ID}" x1="${g.X1}" y1="${g.Y1}" x2="${g.X2}" y2="${g.Y2}">${g.Stops || ""}</linearGradient>`;
+      svg += `<linearGradient id="${state.uid}-${g.id}" x1="${g.x1}" y1="${g.y1}" x2="${g.x2}" y2="${g.y2}">${g.stops || ""}</linearGradient>`;
     }
     svg += "</defs>";
   }
