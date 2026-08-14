@@ -188,20 +188,22 @@ func Chart(config ChartConfig, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // ctx, mirroring templui's own ctx = context.WithValue(...) inside each
 // templ body — see NOTICE.md.
 //
-// The serialized model diverges from templui's own Model on purpose: it
-// carries the raw data rows (Data) instead of templui's precomputed
-// Labels/TooltipLabels/per-series Values arrays, so the client renderer
-// (a later task) derives axis labels and per-point values itself from
-// Data plus each axis'/series' key, rather than the server duplicating
-// that same information two ways. Every other normalizing rule — default
-// resolution order, precedence, what counts as "stacked", label
-// resolution through the config — is ported faithfully.
+// The serialized model (ChartModel, below) is a byte-faithful, field-for-
+// field port of templui's own flat Model — same json tags, same
+// omitempty-or-not, same Recharts defaults — because Task 5 adapts
+// templui's chart.js renderer under a "keep geometry/animation code
+// unmodified otherwise" constraint, and that renderer reads these exact
+// flat fields (marginTop, xAxisHeight, tickMargin, minTickGap, xTickLine,
+// ...) in ~2100 lines of ported code no one wants to rewrite. The only two
+// gsxui-specific departures are the script tag's attribute name
+// (data-gsxui-chart-model, not data-tui-chart-model) and one new field,
+// ChartTooltipModel.TooltipClass — see ChartModel's own doc comment.
 
 // ChartDatum is one row of chart data, the pendant of the plain objects in
-// shadcn's chartData arrays and templui's own Datum. Marshaled as a plain
-// JSON object: encoding/json sorts map[string]any keys before writing
-// them, which is what keeps ChartModel.Data deterministic without this
-// package sorting anything itself.
+// shadcn's chartData arrays and templui's own Datum. Rows are read back by
+// key (chartNum/chartStr) while building the model; they are not
+// serialized into it themselves — Labels/TooltipLabels/per-series Values
+// carry what the client needs, exactly like templui's own Model.
 type ChartDatum map[string]any
 
 // ChartMargin replaces the chart's plot margin (Recharts' default of 5 on
@@ -498,20 +500,25 @@ func chartRadiusCorners(v any) []float64 {
 	return nil
 }
 
-// chartSeriesMin is the lowest value across every series' data, so a
+// chartSeriesMin is the lowest value across every series' own Values, so a
 // negative domain keeps its zero baseline — the pendant of templui's
-// seriesMin, reading straight from the raw rows now that the model
-// carries them instead of a precomputed Values array.
-func chartSeriesMin(series []ChartModelSeries, data []ChartDatum) float64 {
+// seriesMin, byte-faithful (it also reads s.Values, not the raw rows).
+func chartSeriesMin(series []ChartModelSeries) float64 {
 	min := 0.0
 	for _, s := range series {
-		for _, row := range data {
-			if v := chartNum(row[s.Key]); v < min {
+		for _, v := range s.Values {
+			if v < min {
 				min = v
 			}
 		}
 	}
 	return min
+}
+
+// chartStr renders a data value as text, the pendant of templui's str —
+// fmt.Sprint on whatever the row carries under that key.
+func chartStr(v any) string {
+	return fmt.Sprint(v)
 }
 
 // chartRenderHTML renders a gsx.Node (e.g. a config icon) to raw HTML for
@@ -537,80 +544,71 @@ const (
 )
 
 // ChartModel is the payload a chart root serializes for the client
-// renderer: the tree its parts registered, normalized and defaulted the
-// same way templui's own buildModel resolves it, plus the raw Data rows
-// (see this section's own header comment on why Data replaces templui's
-// precomputed Labels/Values arrays). A nested field's presence signals
-// that the corresponding part was registered at all — absent means the
-// client applies the Recharts default itself, e.g. no Margin means every
-// side is 5, no XAxis means Recharts' own axis defaults never applied in
-// the first place.
+// renderer: a faithful, field-for-field port of templui's own flat Model
+// (chart.templ:1645), narrowed to the fields the cartesian kinds this task
+// builds (bar, line, area) actually populate — SliceColors/Pies/Polar/Radial
+// and the always-unset top-level Radius are pie/radar/radial-only in
+// upstream too (grep confirms nothing ever assigns m.Radius there), so
+// Task 4 adds them alongside the kinds that need them, the same way this
+// task's own buildChartModel switch only covers bar/line/area.
+//
+// The two gsxui-specific fields are TooltipModel.TooltipClass (Task 5
+// populates it from the compiled recipe class; empty here since nothing
+// renders a tooltip element yet — see ChartTooltipModel's own doc comment)
+// and the script tag's attribute name (chartModelScript uses
+// data-gsxui-chart-model, not templui's data-tui-chart-model). Every other
+// field, its json tag, its omitempty-or-not, and its Recharts default is
+// ported byte-faithful so Task 5's adapted chart.js — which reads these
+// exact flat fields (marginTop, xAxisHeight, tickMargin, minTickGap,
+// xTickLine, ... per chart.templ:1645) unmodified — needs no rewriting.
 type ChartModel struct {
-	Kind   string             `json:"kind"`
-	Data   []ChartDatum       `json:"data"`
-	Series []ChartModelSeries `json:"series"`
+	Kind         string  `json:"kind"` // "bar" | "area" | "line"
+	MarginTop    float64 `json:"marginTop"`
+	MarginRight  float64 `json:"marginRight"`
+	MarginBottom float64 `json:"marginBottom"`
+	MarginLeft   float64 `json:"marginLeft"`
+	XAxisHeight  float64 `json:"xAxisHeight,omitempty"`
+	TickMargin   float64 `json:"tickMargin,omitempty"`
+	MinTickGap   float64 `json:"minTickGap,omitempty"`
+	YAxisWidth   float64 `json:"yAxisWidth,omitempty"`
+	YAxisMargin  float64 `json:"yAxisMargin,omitempty"` // tickMargin of the y axis
+	TickCount    int     `json:"tickCount,omitempty"`   // y ticks, Recharts default 5
+	XTickLine    bool    `json:"xTickLine,omitempty"`
+	XAxisLine    bool    `json:"xAxisLine,omitempty"`
+	YTickLine    bool    `json:"yTickLine,omitempty"`
+	YAxisLine    bool    `json:"yAxisLine,omitempty"`
+	LegendHeight float64 `json:"legendHeight,omitempty"`
+	LegendVAlign string  `json:"legendVAlign,omitempty"` // "top" raises the legend above the plot
+	CategoryGap  float64 `json:"categoryGap,omitempty"`
 
-	Margin *ChartMarginModel `json:"margin,omitempty"`
-	XAxis  *ChartXAxisModel  `json:"xAxis,omitempty"`
-	YAxis  *ChartYAxisModel  `json:"yAxis,omitempty"`
-	Grid   *ChartGridModel   `json:"grid,omitempty"`
-	Legend *ChartLegendModel `json:"legend,omitempty"`
+	Grid           bool `json:"grid,omitempty"`
+	GridHorizontal bool `json:"gridHorizontal,omitempty"`
+	GridVertical   bool `json:"gridVertical,omitempty"`
 
+	// Layout "vertical" swaps the axes and draws the bars horizontally —
+	// out of this task's scope (see ChartBarChartOptions' own doc
+	// comment), so this always marshals as absent for now.
+	Layout      string  `json:"layout,omitempty"`
+	XAxisHide   bool    `json:"xAxisHide,omitempty"`
+	YAxisHide   bool    `json:"yAxisHide,omitempty"`
 	DomainMin   float64 `json:"domainMin,omitempty"` // negative values extend the domain
 	Stacked     bool    `json:"stacked,omitempty"`
 	StackOffset string  `json:"stackOffset,omitempty"` // "expand" normalizes each stack to 1
 
 	Defs []ChartLinearGradientModel `json:"defs,omitempty"`
 
-	// Tooltip carries the registered ChartTooltip's config for the client
-	// to render from — this task registers the data only, it renders
-	// nothing server-side (see this task's report).
-	Tooltip *ChartTooltipModel `json:"tooltip,omitempty"`
-}
+	Cursor bool `json:"cursor"`
+	// HasTooltip marks a declared ChartTooltip: without one the client
+	// renders no tooltip at all, so it skips the hover wiring.
+	HasTooltip    bool               `json:"hasTooltip,omitempty"`
+	Labels        []string           `json:"labels"`
+	TooltipLabels []string           `json:"tooltipLabels,omitempty"`
+	Series        []ChartModelSeries `json:"series"`
+	Tooltip       ChartTooltipModel  `json:"tooltip"`
 
-// ChartMarginModel is the resolved margin of a registered ChartMargin.
-type ChartMarginModel struct {
-	Top    float64 `json:"top"`
-	Right  float64 `json:"right"`
-	Bottom float64 `json:"bottom"`
-	Left   float64 `json:"left"`
-}
-
-// ChartXAxisModel is the resolved geometry of a registered ChartXAxis.
-type ChartXAxisModel struct {
-	Key        string  `json:"key"`
-	TickLine   bool    `json:"tickLine"`
-	AxisLine   bool    `json:"axisLine"`
-	TickMargin float64 `json:"tickMargin"`
-	MinTickGap float64 `json:"minTickGap"`
-	Height     float64 `json:"height"`
-	Hide       bool    `json:"hide"`
-}
-
-// ChartYAxisModel is the resolved geometry of a registered ChartYAxis.
-type ChartYAxisModel struct {
-	Key        string  `json:"key"`
-	TickLine   bool    `json:"tickLine"`
-	AxisLine   bool    `json:"axisLine"`
-	TickMargin float64 `json:"tickMargin"`
-	TickCount  int     `json:"tickCount"`
-	Width      float64 `json:"width"`
-	Hide       bool    `json:"hide"`
-}
-
-// ChartGridModel is the resolved directions of a registered
-// ChartCartesianGrid.
-type ChartGridModel struct {
-	Horizontal bool `json:"horizontal"`
-	Vertical   bool `json:"vertical"`
-}
-
-// ChartLegendModel is the reserved space of a registered ChartLegend — its
-// content renders server-side (see chartWriteLegend), this is only the
-// plot area's own bookkeeping.
-type ChartLegendModel struct {
-	Height        float64 `json:"height"`
-	VerticalAlign string  `json:"verticalAlign"`
+	// AccessibilityLayer switches on the keyboard layer — also out of this
+	// task's scope, always absent for now.
+	AccessibilityLayer bool `json:"accessibilityLayer,omitempty"`
 }
 
 // ChartLinearGradientModel is a registered ChartLinearGradient, its Stops
@@ -624,35 +622,42 @@ type ChartLinearGradientModel struct {
 	Stops string `json:"stops,omitempty"`
 }
 
-// ChartTooltipModel mirrors ChartTooltipOptions, resolved.
+// ChartTooltipModel mirrors templui's TooltipModel, resolved from
+// ChartTooltipOptions, plus this task's one addition: TooltipClass.
 type ChartTooltipModel struct {
-	Cursor        bool   `json:"cursor"`
-	Indicator     string `json:"indicator,omitempty"` // "dot" (default) | "line" | "dashed"
-	Label         string `json:"label,omitempty"`     // labelKey resolved through the config
-	HideLabel     bool   `json:"hideLabel,omitempty"`
-	HideIndicator bool   `json:"hideIndicator,omitempty"`
-	Class         string `json:"class,omitempty"`
-	LabelClass    string `json:"labelClass,omitempty"`
-	Color         string `json:"color,omitempty"`
+	Indicator      string `json:"indicator,omitempty"` // "dot" (default) | "line" | "dashed"
+	Label          string `json:"label,omitempty"`     // labelKey resolved through the config
+	HideLabel      bool   `json:"hideLabel,omitempty"`
+	HideIndicator  bool   `json:"hideIndicator,omitempty"`
+	Width          string `json:"width,omitempty"` // extra content class, e.g. "w-[150px]"
+	LabelClassName string `json:"labelClass,omitempty"`
+	Color          string `json:"color,omitempty"` // indicator color override
 	// DefaultIndex shows the tooltip on mount at that category.
 	DefaultIndex *int `json:"defaultIndex,omitempty"`
+	// TooltipClass is the gsxui addition: the compiled per-style tooltip
+	// recipe's class string, for the client to stamp on the tooltip
+	// element. Empty in this task — nothing declares that recipe slot yet
+	// (see this file's own doc comment on ChartTooltip) — Task 5 populates
+	// it once the recipe exists.
+	TooltipClass string `json:"tooltipClass,omitempty"`
 }
 
 // ChartModelSeries is one data series with its resolved color variable —
-// the pendant of templui's ModelSeries, minus the precomputed Values (the
-// model's own Data plus Key already carries that) and the kinds Task 4
-// adds (pie/radar/radial fields).
+// the pendant of templui's ModelSeries, narrowed to the cartesian fields
+// (Cells/ActiveIndex/ActiveBar/LabelLists/LabelList need the Cell/LabelList
+// children this task doesn't port — not in the brief's explicit child
+// list — and Background/CornerRadius/Class/TooltipNames are radial-bar-only;
+// Task 4 adds whichever of these its own kinds need).
 type ChartModelSeries struct {
-	Key   string `json:"key"`
-	Label string `json:"label,omitempty"`
-	Color string `json:"color"`
-
-	Icon string `json:"icon,omitempty"` // rendered svg, replaces the legend/tooltip color swatch
-
-	Curve       string  `json:"curve,omitempty"`       // line/area: "natural" (default), "linear", "step", "monotone"
-	Fill        string  `json:"fill,omitempty"`        // area: verbatim fill, e.g. url(#fillDesktop)
-	Stroke      string  `json:"stroke,omitempty"`      // area/line: verbatim stroke
-	FillOpacity float64 `json:"fillOpacity,omitempty"` // area: 0 uses Recharts' 0.6
+	Key         string    `json:"key"`
+	Label       string    `json:"label"`
+	Color       string    `json:"color"`
+	Values      []float64 `json:"values"`
+	FillOpacity float64   `json:"fillOpacity,omitempty"` // area: 0 uses Recharts' 0.6
+	Curve       string    `json:"curve,omitempty"`       // line/area: "natural" (default), "linear", "step", "monotone"
+	Icon        string    `json:"icon,omitempty"`        // rendered svg, replaces the legend/tooltip color swatch
+	Fill        string    `json:"fill,omitempty"`        // area: verbatim fill, e.g. url(#fillDesktop)
+	Stroke      string    `json:"stroke,omitempty"`      // area/line: verbatim stroke
 
 	Radius      []float64 `json:"radius,omitempty"`      // bar: corner radii, one or four
 	StackID     string    `json:"stackId,omitempty"`     // bar/area
@@ -670,15 +675,18 @@ type ChartDotModel struct {
 	Size        float64 `json:"size,omitempty"`
 }
 
-// chartModelSeries resolves the shared fields of one series (color, label)
-// the pendant of templui's modelSeries, minus its Values computation (the
-// model's Data now carries the same information).
-func chartModelSeries(config ChartConfig, key, fill string, fillOpacity float64) ChartModelSeries {
+// chartModelSeries resolves the shared fields of one series (color, label,
+// values) — the pendant of templui's modelSeries, byte-faithful.
+func chartModelSeries(config ChartConfig, key, fill string, fillOpacity float64, data []ChartDatum) ChartModelSeries {
 	color := fill
 	if color == "" || color == "gradient" {
 		color = chartSeriesColor(key)
 	}
-	return ChartModelSeries{Key: key, Label: config.label(key), Color: color, FillOpacity: fillOpacity}
+	values := make([]float64, len(data))
+	for i, d := range data {
+		values[i] = chartNum(d[key])
+	}
+	return ChartModelSeries{Key: key, Label: config.label(key), Color: color, Values: values, FillOpacity: fillOpacity}
 }
 
 // buildChartModel normalizes the collected chart tree into the model the
@@ -687,57 +695,57 @@ func chartModelSeries(config ChartConfig, key, fill string, fillOpacity float64)
 // extends the kind switch for pie/radar/radial.
 func buildChartModel(ctx context.Context, st *chartState) ChartModel {
 	config := chartConfigFromCtx(ctx)
-	m := ChartModel{Kind: st.kind, Data: st.data, StackOffset: st.stackOffset}
+	m := ChartModel{Kind: st.kind, StackOffset: st.stackOffset}
 
-	if st.margin != nil {
-		m.Margin = &ChartMarginModel{
-			Top:    st.margin.Top,
-			Right:  st.margin.Right,
-			Bottom: st.margin.Bottom,
-			Left:   st.margin.Left,
-		}
-	}
 	if g := st.grid; g != nil {
-		m.Grid = &ChartGridModel{
-			Horizontal: chartBoolOr(g.Horizontal, true),
-			Vertical:   chartBoolOr(g.Vertical, true),
-		}
+		m.Grid = true
+		m.GridHorizontal = chartBoolOr(g.Horizontal, true)
+		m.GridVertical = chartBoolOr(g.Vertical, true)
 	}
 	if y := st.y; y != nil {
-		width := y.opts.Width
-		if width == 0 {
-			width = 60
+		m.YAxisWidth = y.opts.Width
+		if m.YAxisWidth == 0 {
+			m.YAxisWidth = 60
 		}
+		m.YAxisMargin = y.opts.TickMargin
+		m.TickCount = y.opts.TickCount
+		m.YTickLine = y.opts.TickLine
+		m.YAxisLine = y.opts.AxisLine
+		m.YAxisHide = y.opts.Hide
 		if y.opts.Hide {
-			width = 0
-		}
-		m.YAxis = &ChartYAxisModel{
-			Key: y.key, TickLine: y.opts.TickLine, AxisLine: y.opts.AxisLine,
-			TickMargin: y.opts.TickMargin, TickCount: y.opts.TickCount, Width: width, Hide: y.opts.Hide,
+			m.YAxisWidth = 0
 		}
 	}
+	if st.margin != nil {
+		m.MarginTop, m.MarginRight, m.MarginBottom, m.MarginLeft = st.margin.Top, st.margin.Right, st.margin.Bottom, st.margin.Left
+	} else {
+		m.MarginTop, m.MarginRight, m.MarginBottom, m.MarginLeft = 5, 5, 5, 5
+	}
 	if x := st.x; x != nil {
-		height := defaultChartXAxisHeight
+		m.XAxisHeight = defaultChartXAxisHeight
+		m.TickMargin = x.opts.TickMargin
+		m.MinTickGap = x.opts.MinTickGap
+		if m.MinTickGap == 0 {
+			m.MinTickGap = 5
+		}
+		m.XTickLine = x.opts.TickLine
+		m.XAxisLine = x.opts.AxisLine
+		m.XAxisHide = x.opts.Hide
 		if x.opts.Hide {
-			height = 0
-		}
-		minTickGap := x.opts.MinTickGap
-		if minTickGap == 0 {
-			minTickGap = 5
-		}
-		m.XAxis = &ChartXAxisModel{
-			Key: x.key, TickLine: x.opts.TickLine, AxisLine: x.opts.AxisLine,
-			TickMargin: x.opts.TickMargin, MinTickGap: minTickGap, Height: height, Hide: x.opts.Hide,
+			m.XAxisHeight = 0
 		}
 	}
 	if st.legend != nil {
-		m.Legend = &ChartLegendModel{Height: defaultChartLegendHeight, VerticalAlign: st.legend.VerticalAlign}
+		m.LegendHeight = defaultChartLegendHeight
+		m.LegendVAlign = st.legend.VerticalAlign
 	}
-	if tt := st.tooltip; tt != nil {
-		m.Tooltip = &ChartTooltipModel{
-			Cursor: chartBoolOr(tt.opts.Cursor, true), Indicator: tt.opts.Indicator,
-			HideLabel: tt.opts.HideLabel, HideIndicator: tt.opts.HideIndicator,
-			Class: tt.opts.Class, LabelClass: tt.opts.LabelClass, Color: tt.opts.Color,
+	tt := st.tooltip
+	if tt != nil {
+		m.Cursor = chartBoolOr(tt.opts.Cursor, true)
+		m.HasTooltip = true
+		m.Tooltip = ChartTooltipModel{
+			Indicator: tt.opts.Indicator, HideLabel: tt.opts.HideLabel, HideIndicator: tt.opts.HideIndicator,
+			Width: tt.opts.Class, LabelClassName: tt.opts.LabelClass, Color: tt.opts.Color,
 			DefaultIndex: tt.opts.DefaultIndex,
 		}
 		if tt.opts.LabelKey != "" {
@@ -745,11 +753,29 @@ func buildChartModel(ctx context.Context, st *chartState) ChartModel {
 		}
 	}
 
+	// The category axis carries the labels: XAxis in this task's scope —
+	// Layout "vertical" (which would read YAxis instead, like upstream)
+	// isn't ported, see ChartModel.Layout's own doc comment.
+	dataKey := ""
+	if x := st.x; x != nil {
+		dataKey = x.key
+	}
+	m.Labels = make([]string, len(st.data))
+	m.TooltipLabels = make([]string, len(st.data))
+	if dataKey != "" {
+		for i, d := range st.data {
+			raw := d[dataKey]
+			m.Labels[i] = chartStr(raw)
+			m.TooltipLabels[i] = chartStr(raw)
+		}
+	}
+
 	switch st.kind {
 	case "bar":
+		m.CategoryGap = 0.1
 		stacked := false
 		for _, b := range st.bars {
-			s := chartModelSeries(config, b.key, b.opts.Fill, 0)
+			s := chartModelSeries(config, b.key, b.opts.Fill, 0, st.data)
 			s.Radius = chartRadiusCorners(b.opts.Radius)
 			s.StackID = b.opts.StackID
 			s.StrokeWidth = b.opts.StrokeWidth
@@ -759,10 +785,10 @@ func buildChartModel(ctx context.Context, st *chartState) ChartModel {
 			m.Series = append(m.Series, s)
 		}
 		m.Stacked = stacked
-		m.DomainMin = chartSeriesMin(m.Series, st.data)
+		m.DomainMin = chartSeriesMin(m.Series)
 	case "line":
 		for _, l := range st.lines {
-			s := chartModelSeries(config, l.key, "", 0)
+			s := chartModelSeries(config, l.key, "", 0, st.data)
 			s.Curve = string(l.opts.Type)
 			s.Stroke = l.opts.Stroke
 			s.StrokeWidth = l.opts.StrokeWidth
@@ -778,7 +804,7 @@ func buildChartModel(ctx context.Context, st *chartState) ChartModel {
 			if a.opts.StackID != "" {
 				stacked = true
 			}
-			s := chartModelSeries(config, a.key, "", a.opts.FillOpacity)
+			s := chartModelSeries(config, a.key, "", a.opts.FillOpacity, st.data)
 			s.Curve = string(a.opts.Type)
 			s.Fill = a.opts.Fill
 			s.Stroke = a.opts.Stroke
@@ -790,7 +816,7 @@ func buildChartModel(ctx context.Context, st *chartState) ChartModel {
 
 	// nameKey moves the row label to another config entry, like
 	// ChartTooltipContent's nameKey.
-	if tt := st.tooltip; tt != nil && tt.opts.NameKey != "" {
+	if tt != nil && tt.opts.NameKey != "" {
 		label := config.label(tt.opts.NameKey)
 		for i := range m.Series {
 			m.Series[i].Label = label
@@ -863,42 +889,42 @@ func chartBuildLegendItems(config ChartConfig, m ChartModel, opts *ChartLegendOp
 // by chartRoot once a chart's children have registered a ChartLegend, not
 // meant to be composed directly by a consumer.
 
-//line chart.gsx:841:1
+//line chart.gsx:867:1
 func ChartLegendContent(items []chartLegendItem, opts *ChartLegendOptions) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line chart.gsx:842:2
+//line chart.gsx:868:2
 		posStyle := "position:absolute;left:0;right:0;bottom:5px"
 		pad := "pt-3"
 		if opts.VerticalAlign == "top" {
 			posStyle = "position:absolute;left:0;right:0;top:5px"
 			pad = "pb-3"
 		}
-//line chart.gsx:850:2
+//line chart.gsx:876:2
 		_gsxgw.S("<div style=\"")
 		_gsxgw.Style(_gsxrt.Style(_gsxrt.StyleValue(posStyle)))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-chart-legend", true)
 		_gsxgw.S(">")
-//line chart.gsx:851:3
+//line chart.gsx:877:3
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("flex items-center justify-center gap-4"), _gsxrt.Class(pad), _gsxrt.Class(opts.Class))
 		_gsxgw.S("\">")
-//line chart.gsx:852:4
+//line chart.gsx:878:4
 		for _, it := range items {
-//line chart.gsx:853:5
+//line chart.gsx:879:5
 			_gsxgw.S("<div class=\"flex items-center gap-1.5 [&amp;&gt;svg]:h-3 [&amp;&gt;svg]:w-3 [&amp;&gt;svg]:text-muted-foreground\">")
-//line chart.gsx:854:6
+//line chart.gsx:880:6
 			if it.icon != "" && !opts.HideIcon {
-//line chart.gsx:855:7
+//line chart.gsx:881:7
 				_gsxgw.Node(ctx, gsx.Raw(it.icon))
 			} else {
-//line chart.gsx:857:7
+//line chart.gsx:883:7
 				_gsxgw.S("<div class=\"h-2 w-2 shrink-0 rounded-[2px]\" style=\"")
 				_gsxgw.Style(_gsxrt.Style(_gsxrt.StyleValue("background-color:" + it.color)))
 				_gsxgw.S("\"></div>")
 			}
-//line chart.gsx:859:6
+//line chart.gsx:885:6
 			_gsxgw.Text(string(it.label))
 			_gsxgw.S("</div>")
 		}
@@ -914,7 +940,7 @@ func ChartLegendContent(items []chartLegendItem, opts *ChartLegendOptions) _gsxr
 // renders a Node's children before the statements that follow { children }
 // in its caller.
 //
-//line chart.gsx:866:1
+//line chart.gsx:892:1
 func chartRoot(kind string, data []ChartDatum, margin *ChartMargin, stackOffset string, children gsx.Node, attrs gsx.Attrs) gsx.Node {
 	return gsx.Func(func(ctx context.Context, w io.Writer) error {
 		st := &chartState{kind: kind, data: data, margin: margin, stackOffset: stackOffset}

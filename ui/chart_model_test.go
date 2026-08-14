@@ -48,10 +48,16 @@ func TestBarChartModelPinned(t *testing.T) {
 				ui.ChartBar("desktop", nil),
 			), nil), nil))
 	model := extractModelJSON(t, got)
-	// Pin the FULL canonical JSON (indent-free, struct-ordered fields, no
-	// top-level map — Data rows are the one map[string]any exception,
-	// relying on encoding/json's own sorted-key map marshaling).
-	want := `{"kind":"bar","data":[{"desktop":186,"month":"Jan"},{"desktop":305,"month":"Feb"}],"series":[{"key":"desktop","color":"var(--color-desktop)"}],"xAxis":{"key":"month","tickLine":false,"axisLine":false,"tickMargin":0,"minTickGap":5,"height":30,"hide":false}}`
+	// Pin the FULL canonical JSON: a byte-faithful port of templui's own
+	// flat Model (chart.templ:1645) — field order, json tags and
+	// omitempty-or-not all match upstream, so Task 5's adapted chart.js
+	// (which reads these same flat fields) needs no rewriting. marginTop/
+	// Right/Bottom/Left default to 5 (no ChartMargin registered);
+	// xAxisHeight defaults to 30 and minTickGap to 5 once an axis is
+	// registered; categoryGap 0.1 is bar's own unconditional Recharts
+	// default; cursor and tooltip (empty object) are always present, no
+	// ChartTooltip was registered here.
+	want := `{"kind":"bar","marginTop":5,"marginRight":5,"marginBottom":5,"marginLeft":5,"xAxisHeight":30,"minTickGap":5,"categoryGap":0.1,"cursor":false,"labels":["Jan","Feb"],"tooltipLabels":["Jan","Feb"],"series":[{"key":"desktop","label":"","color":"var(--color-desktop)","values":[186,305]}],"tooltip":{}}`
 	if model != want {
 		t.Errorf("model drift\n got: %s\nwant: %s", model, want)
 	}
@@ -69,7 +75,9 @@ func TestLineChartModelPinned(t *testing.T) {
 				ui.ChartLine("desktop", nil),
 			), nil), nil))
 	model := extractModelJSON(t, got)
-	want := `{"kind":"line","data":[{"desktop":186,"month":"Jan"},{"desktop":305,"month":"Feb"}],"series":[{"key":"desktop","color":"var(--color-desktop)"}],"xAxis":{"key":"month","tickLine":false,"axisLine":false,"tickMargin":0,"minTickGap":5,"height":30,"hide":false}}`
+	// Same shape as the bar pin, minus categoryGap: templui's buildModel
+	// only sets that field inside its "bar" branch.
+	want := `{"kind":"line","marginTop":5,"marginRight":5,"marginBottom":5,"marginLeft":5,"xAxisHeight":30,"minTickGap":5,"cursor":false,"labels":["Jan","Feb"],"tooltipLabels":["Jan","Feb"],"series":[{"key":"desktop","label":"","color":"var(--color-desktop)","values":[186,305]}],"tooltip":{}}`
 	if model != want {
 		t.Errorf("model drift\n got: %s\nwant: %s", model, want)
 	}
@@ -84,7 +92,7 @@ func TestAreaChartModelPinned(t *testing.T) {
 				ui.ChartArea("desktop", nil),
 			), nil), nil))
 	model := extractModelJSON(t, got)
-	want := `{"kind":"area","data":[{"desktop":186,"month":"Jan"},{"desktop":305,"month":"Feb"}],"series":[{"key":"desktop","color":"var(--color-desktop)"}],"xAxis":{"key":"month","tickLine":false,"axisLine":false,"tickMargin":0,"minTickGap":5,"height":30,"hide":false}}`
+	want := `{"kind":"area","marginTop":5,"marginRight":5,"marginBottom":5,"marginLeft":5,"xAxisHeight":30,"minTickGap":5,"cursor":false,"labels":["Jan","Feb"],"tooltipLabels":["Jan","Feb"],"series":[{"key":"desktop","label":"","color":"var(--color-desktop)","values":[186,305]}],"tooltip":{}}`
 	if model != want {
 		t.Errorf("model drift\n got: %s\nwant: %s", model, want)
 	}
