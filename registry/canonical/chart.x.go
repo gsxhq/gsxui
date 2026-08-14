@@ -828,6 +828,10 @@ type ChartLinearGradientModel struct {
 // body with a real class attribute carrying the tooltip slot's recipe
 // accessor call — the JSON model boundary was never the right place for a
 // compiled class string to begin with.
+// Upstream's TooltipModel.Rows (precomputed per-row formatted display
+// strings) is not ported — it is derived from the Formatter closures this
+// file also drops, which cannot cross the JSON boundary to the client
+// renderer. The renderer formats raw values/labels itself instead.
 type ChartTooltipModel struct {
 	Indicator      string `json:"indicator,omitempty"` // "dot" (default) | "line" | "dashed"
 	Label          string `json:"label,omitempty"`     // labelKey resolved through the config
@@ -1414,42 +1418,42 @@ func chartBuildLegendItems(config ChartConfig, m ChartModel, st *chartState, opt
 // this tree that renders real markup from a non-root registration, the
 // same reasoning.
 
-//line chart.gsx:1392:1
+//line chart.gsx:1396:1
 func ChartLegendContent(items []chartLegendItem, opts *ChartLegendOptions) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line chart.gsx:1393:2
+//line chart.gsx:1397:2
 		posStyle := "position:absolute;left:0;right:0;bottom:5px"
 		pad := "pt-3"
 		if opts.VerticalAlign == "top" {
 			posStyle = "position:absolute;left:0;right:0;top:5px"
 			pad = "pb-3"
 		}
-//line chart.gsx:1401:2
+//line chart.gsx:1405:2
 		_gsxgw.S("<div style=\"")
 		_gsxgw.Style(_gsxrt.Style(_gsxrt.StyleValue(posStyle)))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-chart-legend", true)
 		_gsxgw.S(">")
-//line chart.gsx:1402:3
+//line chart.gsx:1406:3
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(chart.Legend()), _gsxrt.Class(pad), _gsxrt.Class(opts.Class))
 		_gsxgw.S("\">")
-//line chart.gsx:1403:4
+//line chart.gsx:1407:4
 		for _, it := range items {
-//line chart.gsx:1404:5
+//line chart.gsx:1408:5
 			_gsxgw.S("<div class=\"flex items-center gap-1.5 [&amp;&gt;svg]:h-3 [&amp;&gt;svg]:w-3 [&amp;&gt;svg]:text-muted-foreground\">")
-//line chart.gsx:1405:6
+//line chart.gsx:1409:6
 			if it.icon != "" && !opts.HideIcon {
-//line chart.gsx:1406:7
+//line chart.gsx:1410:7
 				_gsxgw.Node(ctx, gsx.Raw(it.icon))
 			} else {
-//line chart.gsx:1408:7
+//line chart.gsx:1412:7
 				_gsxgw.S("<div class=\"h-2 w-2 shrink-0 rounded-[2px]\" style=\"")
 				_gsxgw.Style(_gsxrt.Style(_gsxrt.StyleValue("background-color:" + it.color)))
 				_gsxgw.S("\"></div>")
 			}
-//line chart.gsx:1410:6
+//line chart.gsx:1414:6
 			_gsxgw.Text(string(it.label))
 			_gsxgw.S("</div>")
 		}
@@ -1469,7 +1473,7 @@ func ChartLegendContent(items []chartLegendItem, opts *ChartLegendOptions) _gsxr
 // builds one and hands it here rather than chartRoot taking every kind's
 // fields as its own positional parameters.
 //
-//line chart.gsx:1417:1
+//line chart.gsx:1421:1
 func chartRoot(st *chartState, children gsx.Node, attrs gsx.Attrs) gsx.Node {
 	return gsx.Func(func(ctx context.Context, w io.Writer) error {
 		ctx = context.WithValue(ctx, chartStateCtxKey, st)
@@ -1519,27 +1523,27 @@ func chartRoot(st *chartState, children gsx.Node, attrs gsx.Attrs) gsx.Node {
 // @source globs scan .gsx files only, never ui/*.js. chart.render.js reads
 // each variant's class the same way it reads the shell's.
 
-//line chart.gsx:1475:1
+//line chart.gsx:1479:1
 func ChartTooltipTemplate() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line chart.gsx:1476:2
+//line chart.gsx:1480:2
 		_gsxgw.S("<template")
 		_gsxgw.BoolAttr("data-gsxui-chart-tooltip-template", true)
 		_gsxgw.S(">")
-//line chart.gsx:1477:3
+//line chart.gsx:1481:3
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(chart.Tooltip()))
 		_gsxgw.S("\"")
 		_gsxgw.BoolAttr("data-gsxui-slot-chart-tooltip", true)
 		_gsxgw.S("></div>")
-//line chart.gsx:1478:3
+//line chart.gsx:1482:3
 		_gsxgw.S("<div class=\"shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) h-2.5 w-2.5\" data-gsxui-chart-tooltip-indicator=\"dot\"></div>")
-//line chart.gsx:1479:3
+//line chart.gsx:1486:3
 		_gsxgw.S("<div class=\"shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) w-1\" data-gsxui-chart-tooltip-indicator=\"line\"></div>")
-//line chart.gsx:1480:3
+//line chart.gsx:1490:3
 		_gsxgw.S("<div class=\"shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) w-0 border-[1.5px] border-dashed bg-transparent\" data-gsxui-chart-tooltip-indicator=\"dashed\"></div>")
-//line chart.gsx:1481:3
+//line chart.gsx:1494:3
 		_gsxgw.S("<div class=\"shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) w-0 border-[1.5px] border-dashed bg-transparent my-0.5\" data-gsxui-chart-tooltip-indicator=\"dashed-nested\"></div></template>")
 		return _gsxgw.Err()
 	})
@@ -1549,7 +1553,7 @@ func ChartTooltipTemplate() _gsxrt.Node {
 // tooltip and bars, the root collects them and emits the model payload
 // for the client renderer.
 //
-//line chart.gsx:1485:1
+//line chart.gsx:1501:1
 func BarChart(data []ChartDatum, opts *ChartBarChartOptions, children gsx.Node, attrs gsx.Attrs) gsx.Node {
 	var margin *ChartMargin
 	if opts != nil {

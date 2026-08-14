@@ -804,6 +804,10 @@ type ChartLinearGradientModel struct {
 // body with a real class attribute carrying the tooltip slot's recipe
 // accessor call — the JSON model boundary was never the right place for a
 // compiled class string to begin with.
+// Upstream's TooltipModel.Rows (precomputed per-row formatted display
+// strings) is not ported — it is derived from the Formatter closures this
+// file also drops, which cannot cross the JSON boundary to the client
+// renderer. The renderer formats raw values/labels itself instead.
 type ChartTooltipModel struct {
 	Indicator      string `json:"indicator,omitempty"` // "dot" (default) | "line" | "dashed"
 	Label          string `json:"label,omitempty"`     // labelKey resolved through the config

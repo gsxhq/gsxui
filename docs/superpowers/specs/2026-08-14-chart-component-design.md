@@ -114,3 +114,17 @@ chart row from deferred to done.
 
 Chart kinds beyond the six; scatter/composed charts; brush/zoom
 interactions; server-side SVG rendering.
+
+## Addendum (2026-08-14, Task 10 — tooltip-template ruling)
+
+Supersedes the Theming section's third paragraph ("The client-rendered
+tooltip stamps that compiled class string carried in the model JSON"): that
+mechanism (`ChartTooltipModel.TooltipClass`) is structurally unbuildable —
+`checkShapeCoverage` rejects a recipe-accessor call made from plain Go code,
+and `buildChartModel` is not a component body. The tooltip's chrome instead
+renders as a real, hidden, server-rendered `<template>` element
+(`ChartTooltipTemplate`, `registry/canonical/chart.gsx`) carrying `class={
+chart.Tooltip() }` in genuine markup; `ui/chart.render.js` reads that
+template's own class attributes off the DOM instead of receiving them as a
+JSON string. Implemented in Task 6; see `docs/jsx-parity.md`'s `## chart`
+MECHANISM entry.

@@ -110,11 +110,15 @@ density from the start, per-component ledger entry in `docs/jsx-parity.md`.
 |---|---|---|
 | calendar | `Calendar` — a from-scratch month-grid/date-math engine (react-day-picker is not vendored), fixed six-row grid with a Go/JS `monthGrid` twin pair and exact-year agreement tests, single/multiple/range selection (`resetOnSelect` semantics), disabled-date rules, label and dropdown caption layouts, lossless hidden-input form binding including repeated multiple values, reset-to-client-month behavior, full keyboard grid (arrows/Home/End/PageUp/PageDown/Shift-variants), client-side today reconciliation | multi-month (`numberOfMonths`), week numbers, custom modifiers, locales/i18n (needs a real locale parameter threaded through both the Go and JS twins, not a client-only `Intl` call — the server-rendered month must match what the client repaints), the footer slot; cell-level `range_start`/`range_middle`/`range_end` className slots (the button carries range/selection styling instead); the `dropdown` className slot (a real `<select>` replaces upstream's invisible-select-over-a-label trick, so the dropdown caption sizes as `NativeSelect` generic, not nova's compact caption scale) |
 
-Remaining, roughly easiest → hardest for this codebase:
+**chart SHIPPED 2026-08-14**, per `docs/superpowers/specs/2026-08-14-chart-component-design.md`
+(templui/shadcn-templ v2 credited in `NOTICE.md`); per-component ledger entry in
+`docs/jsx-parity.md`.
 
-| component | approach |
-|---|---|
-| chart | recharts wrapper in shadcn — stays deferred: shadcn's `chart.tsx` is a themed shell around Recharts, not a from-scratch engine the way calendar's month grid turned out to be — two of its six exports are literal re-exports of Recharts components, and gsxui's copy-in vendoring model has no mechanism to vendor an npm dependency the way it vendors a `.tsx`/`.gsx` file; porting this needs a whole Go/JS charting answer of its own, not a token-for-token translation. Defer until demanded |
+| component | shipped as | deferred sub-features (v1 gaps, ledgered) |
+|---|---|---|
+| chart | `Chart` container + six root kinds (`BarChart`/`LineChart`/`AreaChart`/`PieChart`/`RadarChart`/`RadialBarChart`) over a templui-v2-derived server model builder and one lazy-loaded client renderer (`ui/chart.render.js`, ported from templui's `chart.js`) — resolves this file's own former deferral reason (Recharts is un-vendorable npm; a single MIT JS file is not) | `Formatter`/`LabelFormatter`/`TickFormatter`/`Tick` render-prop closures and upstream's `TooltipModel.Rows` field (none can cross the JSON boundary); `Label`/`LabelList`/`Cell` render props; interactive demo controls (time-range select, series toggle) shipped as static compositions instead |
+
+Nothing remains in this "Remaining" bucket — every tier and chart are shipped.
 
 **Registry-fork note (§0 finding, Task 0 of the 2026-07-24 tier4-batch-a
 plan):** shadcn's own docs now default to a Base UI variant, and the

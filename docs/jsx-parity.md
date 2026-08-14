@@ -1730,3 +1730,64 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   upstream's expanded default. Accepted as-is — renaming now would cost
   more (desyncing the two already-matched params) than the divergence it
   fixes; not ledgered until this round.
+
+## chart
+- ADAPT (engine substitution, credited, pinned SHA): shadcn's `chart.tsx` is
+  a themed shell around Recharts — two of its six exports are literal
+  re-exports — and gsxui's copy-in vendoring model cannot vendor an npm
+  dependency. The engine is templui/shadcn-templ v2's server model builder
+  (`registry/canonical/chart.gsx`) plus its single vendored client renderer
+  (`ui/chart.render.js`, ported from templui's `chart.js`), pinned at
+  `github.com/templui/templui@9ec720c03909` (MIT), credited in `NOTICE.md`.
+- MECHANISM (ctx-threaded model builder; flat `ChartModel`; server-rendered
+  legend + hidden tooltip template): each root (`BarChart`/`LineChart`/
+  `AreaChart`/`PieChart`/`RadarChart`/`RadialBarChart`) seeds a `*chartState`
+  collector into `context.Context`; registering children (`ChartXAxis`,
+  `ChartBar`, `ChartDefs`, …) mutate it via `gsx.Func`, and the root
+  serializes it after children render into one `<script type="application/
+  json" data-gsxui-chart-model>`. `ChartModel` is a byte-faithful,
+  field-for-field port of templui's own flat `Model` struct (`chart.templ:
+  1645`) — an earlier draft nested it around a raw `Data` field; reverted to
+  the flat shape once Task 5's renderer turned out to read templui's flat
+  fields directly, not a nested one. `ChartLegend` renders real server-side
+  markup (`ChartLegendContent`). `ChartTooltip`'s chrome was specified to
+  travel as a compiled recipe class string inside that same JSON
+  (`ChartTooltipModel.TooltipClass`); `checkShapeCoverage` structurally
+  rejects a recipe-accessor call made from plain Go code (`buildChartModel`
+  is not a component body), leaving no non-hack route to populate it. The
+  owner ruling (recorded as this file's own addendum in
+  `docs/superpowers/specs/2026-08-14-chart-component-design.md`) replaced
+  the mechanism instead: `ChartTooltipTemplate` renders the tooltip's chrome
+  as a real, hidden, server-rendered `<template>` carrying `class={
+  chart.Tooltip() }` in genuine markup, and `ui/chart.render.js` reads those
+  class strings off the template's own DOM rather than typing or receiving
+  them as a JSON string.
+- ADAPT (container recipe adds `min-h-0`, deliberate deviation from
+  upstream's Container class): `.gsxui-recipe-chart` is `flex aspect-video
+  justify-center text-xs min-h-0` in all 8 style packs. Flex items default
+  to `min-height: auto`, and `ui/chart.render.js` re-measures
+  `panel.clientHeight` on every entrance-animation frame, so a chart in a
+  narrow flex column (the theme-preview gallery card first exposed it) grew
+  unboundedly frame over frame without the override. Upstream templui
+  carries the identical defect, unexercised there only because it never
+  ships a narrow-container demo.
+- FIX (gradient defs read PascalCase keys off lowercase JSON — inherited
+  templui bug, fixed): `ui/chart.render.js`'s gradient-emitting code read
+  `g.ID`/`g.X1`/`g.Y1`/`g.X2`/`g.Y2` against a `JSON.parse`d model whose Go
+  `json` tags are lowercase (`id`/`x1`/`y1`/`x2`/`y2`), so every
+  `<linearGradient>` id resolved to the literal string `"...-undefined"`,
+  colliding across gradients and breaking every `url(#…)` fill reference —
+  silently broken since the renderer shipped, first exercised by
+  `site/examples/chart/area.gsx` and caught by the duplicate-id invariant
+  spec. Fixed to read the lowercase keys. Upstream templui's own
+  `chart.js:567` carries the same bug, unfixed there.
+- GAP (unported closures; interactive demo variants simplified to static):
+  `Formatter`/`LabelFormatter`/`TickFormatter` (Recharts render-prop
+  closures, cannot cross the JSON boundary), `ChartPolarAngleAxis`'s `Tick`
+  closure, and upstream's `TooltipModel.Rows` field (precomputed per-row
+  formatted tooltip text, itself closure-derived) are not ported — the
+  model carries raw values/labels instead. `Label`/`LabelList`/`Cell`
+  render props and shadcn's interactive demo controls (bar-interactive's
+  time-range `Select`, the demo-card's range/month/series toggle wiring)
+  are unported; the six shipped examples (`site/examples/chart/{basic,area,
+  line,pie,radar,radial}.gsx`) use static compositions instead.

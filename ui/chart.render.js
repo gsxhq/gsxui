@@ -38,7 +38,14 @@
  * classes now lives in exactly one place, a real .gsx class attribute
  * web/site.css's Tailwind scan actually sees, and chart.render.js only
  * ever echoes it back rather than typing it — the fill/positioning logic
- * indicatorHTML/tooltipHTML/tooltipWrapper otherwise run is unchanged.
+ * indicatorHTML/tooltipHTML/tooltipWrapper otherwise run is unchanged;
+ * adaptation #9 (Task 8) — the gradient-defs emitter read PascalCase Go
+ * field names (g.ID/g.X1/g.Y1/g.X2/g.Y2) against the JSON-parsed model's
+ * lowercase json-tag keys (g.id/g.x1/g.y1/g.x2/g.y2), which always resolved
+ * to undefined and gave every <linearGradient> the colliding id
+ * "...-undefined"; fixed to read the correct keys. Inherited from the
+ * reference (chart.js:567 carries the identical bug, unfixed there), not a
+ * new deviation from its logic.
  */
 
 /* ---------------------------------------------------------------- */

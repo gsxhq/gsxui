@@ -804,6 +804,10 @@ type ChartLinearGradientModel struct {
 // body with a real class attribute carrying the tooltip slot's recipe
 // accessor call — the JSON model boundary was never the right place for a
 // compiled class string to begin with.
+// Upstream's TooltipModel.Rows (precomputed per-row formatted display
+// strings) is not ported — it is derived from the Formatter closures this
+// file also drops, which cannot cross the JSON boundary to the client
+// renderer. The renderer formats raw values/labels itself instead.
 type ChartTooltipModel struct {
 	Indicator      string `json:"indicator,omitempty"` // "dot" (default) | "line" | "dashed"
 	Label          string `json:"label,omitempty"`     // labelKey resolved through the config
@@ -1475,10 +1479,22 @@ func chartRoot(st *chartState, children gsx.Node, attrs gsx.Attrs) gsx.Node {
 component ChartTooltipTemplate() {
 	<template data-gsxui-chart-tooltip-template>
 		<div class={ chart.Tooltip() } data-gsxui-slot-chart-tooltip></div>
-		<div class="shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) h-2.5 w-2.5" data-gsxui-chart-tooltip-indicator="dot"></div>
-		<div class="shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) w-1" data-gsxui-chart-tooltip-indicator="line"></div>
-		<div class="shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) w-0 border-[1.5px] border-dashed bg-transparent" data-gsxui-chart-tooltip-indicator="dashed"></div>
-		<div class="shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) w-0 border-[1.5px] border-dashed bg-transparent my-0.5" data-gsxui-chart-tooltip-indicator="dashed-nested"></div>
+		<div
+			class="shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) h-2.5 w-2.5"
+			data-gsxui-chart-tooltip-indicator="dot"
+		></div>
+		<div
+			class="shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) w-1"
+			data-gsxui-chart-tooltip-indicator="line"
+		></div>
+		<div
+			class="shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) w-0 border-[1.5px] border-dashed bg-transparent"
+			data-gsxui-chart-tooltip-indicator="dashed"
+		></div>
+		<div
+			class="shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) w-0 border-[1.5px] border-dashed bg-transparent my-0.5"
+			data-gsxui-chart-tooltip-indicator="dashed-nested"
+		></div>
 	</template>
 }
 

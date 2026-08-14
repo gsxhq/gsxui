@@ -2,6 +2,12 @@
 
 Notable changes to gsxui's component set, newest first.
 
+## 2026-08-14
+
+### Added
+
+- **chart** — six kinds (bar, line, area, pie, radar, radial-bar) over a server-rendered model and a single lazy-loaded client renderer, so pages without a chart pay zero bytes for one. Ported from templui's `chart.templ`/`chart.js` (credited in `NOTICE.md`).
+
 ## 2026-07-29
 
 ### Added
