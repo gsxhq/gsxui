@@ -42,3 +42,142 @@ test("BarChart renders themed SVG bars", async ({ page }) => {
   });
   expect(fill).toBe(chart1Rgb);
 });
+
+/**
+ * Task 6's own fixture (jstest/harness/chart_contract.gsx, served at
+ * /f/chart-tooltip) — NOT the public docs example above: it registers a
+ * ChartTooltip (basic.gsx doesn't) and gives its "desktop" series a
+ * per-scheme ChartSeriesTheme so the dark-mode-flip spec below has a bar
+ * whose fill genuinely differs between light and dark (gsxui's shared
+ * placeholder theme keeps every --chart-N token identical across schemes
+ * on purpose, so a plain Color: "var(--chart-N)" series never could).
+ */
+const contractRoute = "/f/chart-tooltip";
+
+/**
+ * The owner ruling superseding this task's brief: the tooltip's chrome
+ * (ui.ChartTooltipTemplate, registry/canonical/chart.gsx) is a real,
+ * server-rendered <template> whose shell div carries the tooltip slot's
+ * compiled recipe class — like every other gsxui recipe accessor, stylegen
+ * desugars class={ chart.Tooltip() } into the resolved style's expanded
+ * utility string at generation time (registry/generated/<style>/chart.gsx,
+ * ui/chart.gsx), not a runtime reference to the named
+ * .gsxui-recipe-chart-tooltip rule — that name exists only as the pack
+ * CSS's own authoring/conformance-check vocabulary (registry/styles/
+ * <style>/chart.css), never emitted into served HTML. chart.render.js
+ * clones the shell's own class attribute back onto the live tooltip on
+ * first hover (chartTooltipClasses(), see that file's own doc comment)
+ * rather than typing the utilities as a JS literal — asserting the live
+ * tooltip's class against the template's own class (not a hardcoded
+ * string) stays correct regardless of which style the harness compiles by
+ * default. This is the RED this task watched fail before the
+ * template/CSS/JS landed: with no template to read from,
+ * chartTooltipClasses(container) returned null and tc.shell threw inside
+ * tooltipHTML, so hovering never produced a visible tooltip at all.
+ */
+test("tooltip appears on hover with the per-style recipe class", async ({ page }) => {
+  const response = await page.goto(contractRoute);
+  expect(response?.status()).toBe(200);
+
+  const expectedClass = await page
+    .locator("template[data-gsxui-chart-tooltip-template]")
+    .evaluate((tpl) => {
+      const shell = (tpl as HTMLTemplateElement).content.querySelector("[data-gsxui-slot-chart-tooltip]");
+      return shell?.getAttribute("class") ?? "";
+    });
+  expect(expectedClass).not.toBe("");
+
+  const chart = page.locator("[data-gsxui-slot-chart]").first();
+  const bar = chart.locator("svg path.recharts-rectangle").first();
+  await bar.hover();
+
+  const tooltip = page.locator("[data-gsxui-slot-chart-tooltip]");
+  await expect(tooltip).toBeVisible();
+  await expect(tooltip).toHaveClass(expectedClass);
+
+  // The class match alone doesn't prove the utilities actually compiled —
+  // confirm the recipe's own padding utility (px-2.5 py-1.5, every style's
+  // chart.css) resolved to a real computed value, not 0px.
+  const paddingTop = await tooltip.evaluate((n) => getComputedStyle(n).paddingTop);
+  expect(paddingTop).not.toBe("0px");
+});
+
+/**
+ * Legend renders server-side: block chart.render.js's own network request
+ * entirely and confirm the legend text is still present in the HTML
+ * Playwright receives — proving ChartLegendContent (registry/canonical/
+ * chart.gsx) is real server markup, not something the client draws.
+ */
+test("legend renders server-side, before chart.render.js loads", async ({ page }) => {
+  await page.route("**/ui/chart.render.js", (route) => route.abort());
+
+  const response = await page.goto(contractRoute);
+  expect(response?.status()).toBe(200);
+
+  const legend = page.locator("[data-gsxui-slot-chart-legend]");
+  await expect(legend).toContainText("Desktop");
+  await expect(legend).toContainText("Mobile");
+});
+
+/**
+ * Dark-mode flip: toggling .dark on <html> must change a bar's computed
+ * fill through the CSS cascade alone — Chart.styleBlock's own
+ * [data-chart=ID] / .dark [data-chart=ID] rule pair, not a client
+ * re-render. evaluateHandle pins down the exact same DOM node across the
+ * flip: if chart.render.js re-rendered (rebuilt the SVG), a fresh query
+ * for the same selector would return a DIFFERENT node and this equality
+ * check would fail.
+ */
+test("dark-mode flip changes a bar's fill with no re-render", async ({ page }) => {
+  const response = await page.goto(contractRoute);
+  expect(response?.status()).toBe(200);
+
+  const barSelector = "[data-gsxui-slot-chart] svg path.recharts-rectangle";
+  const barHandle = await page.evaluateHandle(
+    (sel) => document.querySelector(sel) as Element,
+    barSelector,
+  );
+  const fillBefore = await page.evaluate((el) => getComputedStyle(el as Element).fill, barHandle);
+
+  await page.evaluate(() => document.documentElement.classList.add("dark"));
+
+  const fillAfter = await page.evaluate((el) => getComputedStyle(el as Element).fill, barHandle);
+  expect(fillAfter).not.toBe(fillBefore);
+
+  const sameNode = await page.evaluate(
+    ([el, sel]) => document.querySelector(sel as string) === el,
+    [barHandle, barSelector] as const,
+  );
+  expect(sameNode).toBe(true);
+});
+
+/**
+ * htmx-style swap: an out-of-band swap replaces a subtree with a FRESH
+ * server render (never the same-document DOM re-captured — that would
+ * carry chart.render.js's own data-gsxui-chart-init="true" marker forward
+ * on the <script> tag and mask a real re-init, since it's a real DOM
+ * attribute chart.render.js sets via dataset). ui/gsxui.js's init()
+ * MutationObserver contract re-inits any freshly added
+ * [data-gsxui-slot-chart] with no re-scan needed, so the chart's SVG
+ * reappears once for the fresh subtree.
+ */
+test("innerHTML swap re-inits and the chart reappears", async ({ page, request }) => {
+  const response = await page.goto(contractRoute);
+  expect(response?.status()).toBe(200);
+  await expect(page.locator("[data-gsxui-slot-chart] svg")).toHaveCount(1);
+
+  const fresh = await request.get(contractRoute);
+  const freshHTML = await fresh.text();
+
+  await page.evaluate((html) => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    const freshChart = doc.querySelector("[data-gsxui-slot-chart]");
+    const liveChart = document.querySelector("[data-gsxui-slot-chart]");
+    if (!freshChart || !liveChart?.parentElement) {
+      throw new Error("fixture missing [data-gsxui-slot-chart]");
+    }
+    liveChart.parentElement.innerHTML = freshChart.outerHTML;
+  }, freshHTML);
+
+  await expect(page.locator("[data-gsxui-slot-chart] svg")).toHaveCount(1);
+});

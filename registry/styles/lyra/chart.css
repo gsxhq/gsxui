@@ -11,4 +11,10 @@
   .gsxui-recipe-chart-legend {
     @apply flex items-center justify-center gap-4;
   }
+
+  /* ported: upstream .cn-chart-tooltip (MARK: Chart) + templui's own
+     grid min-w-32 items-start layout (chart.js's TOOLTIP_CLASS) */
+  .gsxui-recipe-chart-tooltip {
+    @apply border-border/50 bg-background gap-1.5 rounded-none border px-2.5 py-1.5 text-xs shadow-xl grid min-w-32 items-start;
+  }
 }

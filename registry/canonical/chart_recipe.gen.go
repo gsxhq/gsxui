@@ -10,3 +10,5 @@ type chartRecipe struct{ c recipe.Component }
 func (r chartRecipe) Root() string { return r.c.SlotClass("") }
 
 func (r chartRecipe) Legend() string { return r.c.SlotClass("legend") }
+
+func (r chartRecipe) Tooltip() string { return r.c.SlotClass("tooltip") }

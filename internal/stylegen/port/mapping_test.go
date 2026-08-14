@@ -20,7 +20,7 @@ func TestSectionComponent(t *testing.T) {
 		{"Hover Card", "hover-card", true},
 		{"Input OTP", "input-otp", true},
 		{"React Aria", "", false},
-		{"Chart", "", false},
+		{"Chart", "chart", true},
 		{"Menu Translucent", "", false},
 		{"Bubble", "", false},
 		{"Attachment", "", false},
@@ -196,10 +196,14 @@ func TestMappingComponentCoverage(t *testing.T) {
 // exactly 49 components identity-mapped from a MARK section, 1 declared
 // override (radio ← "Radio Group"), and 4 StyleInvariant components with no
 // section at all — 49+1+4 = 54. "chart" (registry/canonical/shapes/
-// chart.go) joined the canonical set after that survey as a 5th
-// StyleInvariant entry (see styleInvariantComponents' own comment on why) —
-// 49+1+5 = 55. If this ever drifts, the shape of the drift (which bucket
-// gained or lost) is more informative than a bare "missing" list.
+// chart.go) joined the canonical set after that survey; Task 5 counted it as
+// a 5th StyleInvariant entry (its shape had no tooltip slot yet, so its
+// section was ignored and it took the same recipe in every style — 49+1+5 =
+// 55), and Task 6 moved it into the identity-mapped bucket instead once the
+// tooltip slot gave "Chart" a real, per-style section to map — 50+1+4 = 55,
+// same total, different shape. If this ever drifts, the shape of the drift
+// (which bucket gained or lost) is more informative than a bare "missing"
+// list.
 func TestMappingComponentCoverageExactCounts(t *testing.T) {
 	reachableByOverride := map[string]bool{}
 	reachableByIdentity := map[string]bool{}
@@ -233,13 +237,13 @@ func TestMappingComponentCoverageExactCounts(t *testing.T) {
 	if len(unmatched) > 0 {
 		t.Fatalf("unmatched components (neither mapped nor StyleInvariant): %v", unmatched)
 	}
-	if len(identity) != 49 {
-		t.Errorf("identity-mapped components = %d, want 49: %v", len(identity), identity)
+	if len(identity) != 50 {
+		t.Errorf("identity-mapped components = %d, want 50: %v", len(identity), identity)
 	}
 	if len(override) != 1 {
 		t.Errorf("override-mapped components = %d, want 1: %v", len(override), override)
 	}
-	if len(invariant) != 5 {
-		t.Errorf("StyleInvariant components = %d, want 5: %v", len(invariant), invariant)
+	if len(invariant) != 4 {
+		t.Errorf("StyleInvariant components = %d, want 4: %v", len(invariant), invariant)
 	}
 }

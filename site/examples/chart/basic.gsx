@@ -7,11 +7,11 @@ import (
 )
 
 // Basic renders a two-series bar chart: Chart's container, BarChart's
-// model builder, and ChartLegend's server-rendered legend row together —
-// the model builder and client renderer land across this task and the
-// ones after it, so this example also keeps the style contract's
-// examples-coverage gate satisfied for the chart-legend slot ChartLegend
-// renders (see registry/canonical/shapes/chart.go).
+// model builder, ChartTooltip's hover chrome and ChartLegend's
+// server-rendered legend row together — this example keeps the style
+// contract's examples-coverage gate satisfied for the chart-legend and
+// chart-tooltip slots ChartLegend and ChartTooltip's own
+// ChartTooltipTemplate render (see registry/canonical/shapes/chart.go).
 component Basic() {
 	{{
 		cfg := ui.ChartConfig{
@@ -28,6 +28,7 @@ component Basic() {
 		{ ui.BarChart(data, nil, gsx.Fragment(
 			ui.ChartCartesianGrid(nil),
 			ui.ChartXAxis("month", nil),
+			ui.ChartTooltip(nil),
 			ui.ChartBar("desktop", nil),
 			ui.ChartBar("mobile", nil),
 			ui.ChartLegend(nil),

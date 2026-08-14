@@ -170,10 +170,15 @@ component Chart(config ChartConfig, children gsx.Node, attrs gsx.Attrs) {
 // templui's chart.js renderer under a "keep geometry/animation code
 // unmodified otherwise" constraint, and that renderer reads these exact
 // flat fields (marginTop, xAxisHeight, tickMargin, minTickGap, xTickLine,
-// ...) in ~2100 lines of ported code no one wants to rewrite. The only two
-// gsxui-specific departures are the script tag's attribute name
-// (data-gsxui-chart-model, not data-tui-chart-model) and one new field,
-// ChartTooltipModel.TooltipClass — see ChartModel's own doc comment.
+// ...) in ~2100 lines of ported code no one wants to rewrite. The one
+// gsxui-specific departure is the script tag's attribute name
+// (data-gsxui-chart-model, not data-tui-chart-model). The tooltip's own
+// chrome does NOT travel through this model at all — Task 6 renders it as
+// real server markup instead (ChartTooltipTemplate, below chartRoot) that
+// ui/chart.render.js reads directly from the DOM, so ChartModel carries no
+// tooltip-class field of any kind (an earlier draft of this field,
+// ChartTooltipModel.TooltipClass, never shipped: see that struct's own
+// doc comment).
 
 // ChartDatum is one row of chart data, the pendant of the plain objects in
 // shadcn's chartData arrays and templui's own Datum. Rows are read back by
@@ -691,15 +696,19 @@ const (
 // SliceColors, grep-confirmed unassigned anywhere in chart.templ) kept
 // here for structural fidelity only.
 //
-// The two gsxui-specific fields are TooltipModel.TooltipClass (Task 5
-// populates it from the compiled recipe class; empty here since nothing
-// renders a tooltip element yet — see ChartTooltipModel's own doc comment)
-// and the script tag's attribute name (chartModelScript uses
-// data-gsxui-chart-model, not templui's data-tui-chart-model). Every other
-// field, its json tag, its omitempty-or-not, and its Recharts default is
-// ported byte-faithful so Task 5's adapted chart.js — which reads these
-// exact flat fields (marginTop, xAxisHeight, tickMargin, minTickGap,
-// xTickLine, ... per chart.templ:1645) unmodified — needs no rewriting.
+// The one gsxui-specific field is the script tag's attribute name
+// (chartModelScript uses data-gsxui-chart-model, not templui's
+// data-tui-chart-model) — every other field, its json tag, its
+// omitempty-or-not, and its Recharts default is ported byte-faithful so
+// Task 5's adapted chart.js — which reads these exact flat fields
+// (marginTop, xAxisHeight, tickMargin, minTickGap, xTickLine, ... per
+// chart.templ:1645) unmodified — needs no rewriting. The tooltip's own
+// chrome (its per-style recipe class, its indicator swatch markup) never
+// travels through this model at all: Task 6 renders it as real server
+// markup instead (see ChartTooltipTemplate, below chartRoot), which
+// ui/chart.render.js reads directly off the DOM rather than off JSON —
+// see ChartTooltipModel's own doc comment for why an earlier draft field
+// carrying it through the model (TooltipClass) never shipped.
 type ChartModel struct {
 	Kind         string  `json:"kind"` // "bar" | "area" | "line"
 	MarginTop    float64 `json:"marginTop"`
@@ -781,7 +790,20 @@ type ChartLinearGradientModel struct {
 }
 
 // ChartTooltipModel mirrors templui's TooltipModel, resolved from
-// ChartTooltipOptions, plus this task's one addition: TooltipClass.
+// ChartTooltipOptions.
+//
+// An earlier draft carried a TooltipClass field here (the compiled
+// per-style tooltip recipe's class string, for the client to stamp onto
+// the tooltip element) — Task 5 found stylegen's checkShapeCoverage
+// structurally rejects a recipe-accessor call made from plain Go code
+// (buildChartModel is not a component body), so no non-hack route existed
+// to populate it, and it stayed permanently empty (BLOCKED, see Task 5's
+// own report). Task 6 drops the field rather than resurrect it: the
+// tooltip's chrome is server-rendered real markup instead
+// (ChartTooltipTemplate, below chartRoot), which is exactly a component
+// body with a real class attribute carrying the tooltip slot's recipe
+// accessor call — the JSON model boundary was never the right place for a
+// compiled class string to begin with.
 type ChartTooltipModel struct {
 	Indicator      string `json:"indicator,omitempty"` // "dot" (default) | "line" | "dashed"
 	Label          string `json:"label,omitempty"`     // labelKey resolved through the config
@@ -792,12 +814,6 @@ type ChartTooltipModel struct {
 	Color          string `json:"color,omitempty"` // indicator color override
 	// DefaultIndex shows the tooltip on mount at that category.
 	DefaultIndex *int `json:"defaultIndex,omitempty"`
-	// TooltipClass is the gsxui addition: the compiled per-style tooltip
-	// recipe's class string, for the client to stamp on the tooltip
-	// element. Empty in this task — nothing declares that recipe slot yet
-	// (see this file's own doc comment on ChartTooltip) — Task 5 populates
-	// it once the recipe exists.
-	TooltipClass string `json:"tooltipClass,omitempty"`
 }
 
 // ChartModelSeries is one data series with its resolved color variable —
@@ -1368,12 +1384,11 @@ func chartBuildLegendItems(config ChartConfig, m ChartModel, st *chartState, opt
 
 // ChartLegendContent renders the ChartLegendContent pendant, absolutely
 // positioned like Recharts' legend wrapper — the pendant of templui's
-// legendContent. It is the ONE part of this task's cartesian tree that
-// renders real markup from a non-root registration, which is why it (and
-// only it) gets a data-gsxui-slot-chart-legend marker and a shape slot
-// (see shapes/chart.go): ChartTooltip stays data-only in this task. Called
-// by chartRoot once a chart's children have registered a ChartLegend, not
-// meant to be composed directly by a consumer.
+// legendContent. Called by chartRoot once a chart's children have
+// registered a ChartLegend, not meant to be composed directly by a
+// consumer. ChartTooltipTemplate (below chartRoot) is the other part of
+// this tree that renders real markup from a non-root registration, the
+// same reasoning.
 component ChartLegendContent(items []chartLegendItem, opts *ChartLegendOptions) {
 	{{
 		posStyle := "position:absolute;left:0;right:0;bottom:5px"
@@ -1420,6 +1435,9 @@ func chartRoot(st *chartState, children gsx.Node, attrs gsx.Attrs) gsx.Node {
 		gw.Node(ctx, children)
 		m := buildChartModel(ctx, st)
 		gw.S(chartModelScript(m))
+		if st.tooltip != nil {
+			gw.Node(ctx, ChartTooltipTemplate())
+		}
 		if st.legend != nil {
 			items := chartBuildLegendItems(chartConfigFromCtx(ctx), m, st, st.legend)
 			gw.Node(ctx, ChartLegendContent(items, st.legend))
@@ -1427,6 +1445,58 @@ func chartRoot(st *chartState, children gsx.Node, attrs gsx.Attrs) gsx.Node {
 		gw.S("</div>")
 		return gw.Err()
 	})
+}
+
+// ChartTooltipTemplate renders the hover tooltip's server-authored chrome:
+// an inert <template> ui/chart.render.js discovers once per panel and
+// reads from (never renders itself) the first time a hover needs to show
+// a tooltip. Called by chartRoot once a chart's children have registered a
+// ChartTooltip, the same pattern ChartLegendContent uses for the legend.
+//
+// Its shell div carries chart's per-style tooltip recipe class (the
+// tooltip slot's own accessor call, below) plus the
+// data-gsxui-slot-chart-tooltip marker that ends up on the LIVE tooltip
+// too — chart.render.js reads the
+// shell's own class attribute once per panel and reuses it verbatim when
+// it builds the live tooltip's opening tag, rather than typing the
+// compiled class string as a JS literal (this codebase's audit gate bans
+// every JS-side way of stamping a class attribute, unconditionally: no
+// classList, no className assignment, no setAttribute("class", ...) — see
+// ui/chart.render.js's own tooltipWrapper comment). The four indicator
+// swatches carry the exact utility literals the tooltip's dot/line/dashed
+// indicator needs (border-(--color-border), bg-(--color-bg), h-2.5,
+// w-2.5, my-0.5, border-[1.5px], w-0 — templui's own indicatorHTML, ported
+// byte-faithful in chart.render.js) as real class="..." markup here
+// instead of as JS string literals: Task 5's report found these specific
+// classes nowhere in web/site.css's compiled output, because they only
+// ever existed as literals inside chart.render.js, and web/site.css's
+// @source globs scan .gsx files only, never ui/*.js. chart.render.js reads
+// each variant's class the same way it reads the shell's.
+component ChartTooltipTemplate() {
+	<template data-gsxui-chart-tooltip-template>
+		<div
+			class={
+				"border-border/50 bg-background gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs shadow-xl grid min-w-32 items-start"
+			}
+			data-gsxui-slot-chart-tooltip
+		></div>
+		<div
+			class="shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) h-2.5 w-2.5"
+			data-gsxui-chart-tooltip-indicator="dot"
+		></div>
+		<div
+			class="shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) w-1"
+			data-gsxui-chart-tooltip-indicator="line"
+		></div>
+		<div
+			class="shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) w-0 border-[1.5px] border-dashed bg-transparent"
+			data-gsxui-chart-tooltip-indicator="dashed"
+		></div>
+		<div
+			class="shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) w-0 border-[1.5px] border-dashed bg-transparent my-0.5"
+			data-gsxui-chart-tooltip-indicator="dashed-nested"
+		></div>
+	</template>
 }
 
 // BarChart is the Recharts BarChart root: its parts declare axes, grid,
@@ -1530,9 +1600,11 @@ func ChartYAxis(key string, opts *ChartYAxisOptions) gsx.Node {
 	})
 }
 
-// ChartTooltip registers the tooltip's config; the client renders the
-// actual tooltip markup from the model (see ChartTooltipModel's own doc
-// comment on why this task doesn't render it server-side).
+// ChartTooltip registers the tooltip's config; the enclosing chart root
+// renders the tooltip's hidden server-side chrome after its other
+// children (see ChartTooltipTemplate), and the client fills it with the
+// hovered row's values from the model (m.tooltip, the ChartTooltipModel
+// this registration resolves into).
 func ChartTooltip(opts *ChartTooltipOptions) gsx.Node {
 	if opts == nil {
 		opts = &ChartTooltipOptions{}

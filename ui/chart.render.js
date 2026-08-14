@@ -24,15 +24,21 @@
  *
  * Adaptations from the reference (everything else below is unmodified —
  * diff against the reference to verify): data-tui-chart(-model) markers
- * renamed to data-gsxui-*; the tooltip's outer wrapper class comes from
- * model.tooltip.tooltipClass (server-compiled recipe class) instead of a
- * hardcoded TOOLTIP_CLASS constant; renderChart(container) is exported for
- * the gsxui.js init() lifecycle to call per chart instance instead of the
+ * renamed to data-gsxui-*; renderChart(container) is exported for the
+ * gsxui.js init() lifecycle to call per chart instance instead of the
  * reference's own document-wide auto-boot/MutationObserver loader (deleted
  * — ui/chart.js's stub owns that lifecycle) and its interactive
  * range/month/series demo-card wiring (deleted — no gsxui component emits
  * those data attributes; that is a templui demo-card feature, not part of
- * this port's component set).
+ * this port's component set); adaptation #8 (Task 6) — the hardcoded
+ * TOOLTIP_CLASS constant and indicatorHTML's own inline Tailwind literals
+ * are gone, replaced by chartTooltipClasses(container), which reads the
+ * same classes off ui.ChartTooltipTemplate's server-rendered <template>
+ * (registry/canonical/chart.gsx) instead: every one of those utility
+ * classes now lives in exactly one place, a real .gsx class attribute
+ * web/site.css's Tailwind scan actually sees, and chart.render.js only
+ * ever echoes it back rather than typing it — the fill/positioning logic
+ * indicatorHTML/tooltipHTML/tooltipWrapper otherwise run is unchanged.
  */
 
 /* ---------------------------------------------------------------- */
@@ -1603,6 +1609,35 @@ function renderRadial(panel, m, state, alpha = 1) {
 /* Tooltip + cursor                                                 */
 /* ---------------------------------------------------------------- */
 
+/* chartTooltipClasses: chart.render.js never invents a Tailwind/recipe
+ * class string of its own — every class indicatorHTML/tooltipHTML need
+ * comes off ui.ChartTooltipTemplate's server-rendered <template> (see
+ * chart.gsx's own doc comment on that component), which carries them as
+ * real class="..." markup. This reads (never writes) the template's own
+ * class attributes once per panel, so the compiled recipe class and the
+ * indicator swatch's utility literals live in exactly one place
+ * (chart.gsx) and chart.render.js only ever echoes them back — the same
+ * reason tooltipWrapper's own marker is a data attribute, not a class:
+ * ui/'s audit gate bans every JS-side way of stamping a class name onto an
+ * element, unconditionally. Returns null when a chart root never
+ * registered a ChartTooltip (no template rendered, m.hasTooltip is false
+ * and this is never called). */
+function chartTooltipClasses(container) {
+  const tpl = container.querySelector("template[data-gsxui-chart-tooltip-template]");
+  if (!tpl) return null;
+  const classOf = (selector) => {
+    const el = tpl.content.querySelector(selector);
+    return el ? el.getAttribute("class") || "" : "";
+  };
+  return {
+    shell: classOf("[data-gsxui-slot-chart-tooltip]"),
+    dot: classOf('[data-gsxui-chart-tooltip-indicator="dot"]'),
+    line: classOf('[data-gsxui-chart-tooltip-indicator="line"]'),
+    dashed: classOf('[data-gsxui-chart-tooltip-indicator="dashed"]'),
+    dashedNested: classOf('[data-gsxui-chart-tooltip-indicator="dashed-nested"]'),
+  };
+}
+
 function tooltipWrapper(container) {
   // A data attribute, not a class, marks this element for re-lookup: ui/'s
   // own audit gate (see Makefile) bans every JS-side way of stamping a CSS
@@ -1625,15 +1660,15 @@ function tooltipWrapper(container) {
   return wrapper;
 }
 
-function indicatorHTML(indicator, color, nestLabel) {
-  let cls = "shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg)";
-  if (indicator === "line") cls += " w-1";
-  else if (indicator === "dashed") cls += ` w-0 border-[1.5px] border-dashed bg-transparent${nestLabel ? " my-0.5" : ""}`;
-  else cls += " h-2.5 w-2.5";
+function indicatorHTML(indicator, color, nestLabel, tc) {
+  let cls;
+  if (indicator === "line") cls = tc.line;
+  else if (indicator === "dashed") cls = nestLabel ? tc.dashedNested : tc.dashed;
+  else cls = tc.dot;
   return `<div class="${cls}" style="--color-bg:${color};--color-border:${color}"></div>`;
 }
 
-function tooltipHTML(m, i, pieIndex = 0) {
+function tooltipHTML(m, i, tc, pieIndex = 0) {
   const t = m.tooltip || {};
   // labelKey resolves the label through the config; a pie falls back to
   // the config label of its own data key, like getPayloadConfigFromPayload
@@ -1645,7 +1680,7 @@ function tooltipHTML(m, i, pieIndex = 0) {
   // always carries a single payload item.
   const nestLabel = (pie ? true : m.series.length === 1) && t.indicator && t.indicator !== "dot";
   const labelCls = `font-medium${t.labelClass ? " " + t.labelClass : ""}`;
-  let html = `<div class="${t.tooltipClass || ""}${t.width ? " " + t.width : ""}">`;
+  let html = `<div class="${tc.shell}${t.width ? " " + t.width : ""}" data-gsxui-slot-chart-tooltip>`;
   if (!t.hideLabel && !nestLabel) {
     html += `<div class="${labelCls}">${label}</div>`;
   }
@@ -1658,7 +1693,7 @@ function tooltipHTML(m, i, pieIndex = 0) {
     const nested = nestLabel && !t.hideLabel ? `<div class="${labelCls}">${label}</div>` : "";
     html +=
       `<div class="${rowCls}">` +
-      (t.hideIndicator ? "" : indicatorHTML(t.indicator, color, nestLabel)) +
+      (t.hideIndicator ? "" : indicatorHTML(t.indicator, color, nestLabel, tc)) +
       `<div class="flex flex-1 justify-between leading-none ${nestLabel ? "items-end" : "items-center"}">` +
       `<div class="grid gap-1.5">${nested}<span class="text-muted-foreground">${(pie.tooltipNames && pie.tooltipNames[i]) || pie.labels[i]}</span></div>` +
       `<span class="font-mono font-medium text-foreground tabular-nums">${pie.values[i].toLocaleString("en-US")}</span>` +
@@ -1685,7 +1720,7 @@ function tooltipHTML(m, i, pieIndex = 0) {
     const name = (s.tooltipNames && s.tooltipNames[i]) || s.label;
     html +=
       `<div class="${rowCls}">` +
-      (s.icon || (t.hideIndicator ? "" : indicatorHTML(t.indicator, indicatorColor, nestLabel))) +
+      (s.icon || (t.hideIndicator ? "" : indicatorHTML(t.indicator, indicatorColor, nestLabel, tc))) +
       `<div class="flex flex-1 justify-between leading-none ${nestLabel ? "items-end" : "items-center"}">` +
       `<div class="grid gap-1.5">${nested}<span class="text-muted-foreground">${name}</span></div>` +
       `<span class="font-mono font-medium text-foreground tabular-nums">${s.values[i].toLocaleString("en-US")}</span>` +
@@ -1898,6 +1933,7 @@ function initPanel(container, script) {
   if (!m.hasTooltip) return;
 
   const wrapper = tooltipWrapper(container);
+  const tc = chartTooltipClasses(container);
 
   // TooltipBoundingBox: Escape dismisses the tooltip box at its current
   // coordinate; the cursor and the active dots stay up, and the box comes
@@ -1996,7 +2032,7 @@ function initPanel(container, script) {
 
   function positionTooltip(e, snapX, snapY, i, pieIndex = 0) {
     const wasHidden = wrapper.style.visibility !== "visible";
-    wrapper.innerHTML = tooltipHTML(m, i, pieIndex);
+    wrapper.innerHTML = tooltipHTML(m, i, tc, pieIndex);
     wrapper.style.visibility = "visible";
     const crect = container.getBoundingClientRect();
     const tw = wrapper.offsetWidth;

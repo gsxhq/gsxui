@@ -10,24 +10,25 @@ import "github.com/gsxhq/gsxui/internal/recipe"
 // scoped by the container's data-chart attribute, never as a class variant
 // a style pack could enumerate.
 //
-// The root and legend slots are declared here. Task 3 (cartesian model
+// The root and legend slots were declared first. Task 3 (cartesian model
 // builder) added ChartLegend, which renders a real
 // data-gsxui-slot-chart-legend element server-side (see chartWriteLegend
-// in chart.gsx), so its slot lands now. ChartTooltip, added in the same
-// task, stays data-only — it registers tooltip config into the chart
-// model for the client renderer, it renders no element of its own — so
-// "tooltip" is still NOT declared here: stylegen's checkShapeCoverage
-// rejects a declared slot no canonical component renders yet ("shape
-// declares slot %q but the component never renders it" —
-// internal/stylegen/generate.go), by design (see that check's own doc
-// comment on why a declared-but-dead slot is a hard error, not a
-// warning). Whichever later task renders real tooltip markup adds
-// "tooltip" here (and its contract entry, and its pack CSS) alongside the
-// component that makes it real, the same way "legend" arrives now.
+// in chart.gsx), so its slot landed then. ChartTooltip itself still
+// registers only data (tooltip config into the chart model for the client
+// renderer) — it renders no element of its own — but Task 6 adds a
+// SEPARATE component, ChartTooltipTemplate, that renders the tooltip's
+// hidden server-authored chrome (a <template> ui/chart.render.js clones on
+// first hover) whenever a ChartTooltip is registered, so "tooltip" lands
+// as a real slot now: its class={ chart.Tooltip() } accessor call sits in
+// that template's real markup, satisfying stylegen's checkShapeCoverage
+// ("shape declares slot %q but the component never renders it" —
+// internal/stylegen/generate.go — no longer applies once something
+// renders it).
 var Chart = recipe.Shape{
 	Component: "chart",
 	Slots: []recipe.Slot{
 		{Name: "", Base: true},
 		{Name: "legend", Base: true},
+		{Name: "tooltip", Base: true},
 	},
 }

@@ -20,20 +20,17 @@ import (
 // non-`-aria` class landing in it by accident can never slip through as a
 // fabricated component.
 //
-// Chart is a NINTH, but for a narrower reason than "no counterpart": a
-// gsxui chart component and shape now exist (registry/canonical/chart.gsx,
-// registry/canonical/shapes/chart.go), but the shape declares only its root
-// slot so far — the "MARK: Chart" section's one rule (.cn-chart-tooltip)
-// belongs to the tooltip PART, which has no slot yet (ChartTooltip lands in
-// a later task). Until that slot exists this whole automated port would
-// have nothing valid to map .cn-chart-tooltip onto, so the section stays
-// ignored here rather than mapped-but-broken; see styleInvariantComponents
-// below for how "chart" clears TestMappingComponentCoverage in the
-// meantime, and this table's own comment there for what un-ignoring Chart
-// needs.
+// "Chart" was a ninth entry through Task 5: the shape declared only its
+// root and legend slots, so the "MARK: Chart" section's one rule
+// (.cn-chart-tooltip) — entirely about the tooltip part — had nothing
+// valid to map onto. Task 6 gives chart a real "tooltip" slot
+// (registry/canonical/shapes/chart.go) with a component that renders it
+// (ChartTooltipTemplate, registry/canonical/chart.gsx), so "Chart" is
+// un-ignored here and the porter maps .cn-chart-tooltip for real, the same
+// as every other single-rule section (default lowercase-and-hyphenate
+// derivation: "Chart" -> "chart", verified by TestSectionComponent).
 var ignoredSections = map[string]bool{
 	"React Aria":       true,
-	"Chart":            true,
 	"Menu Translucent": true,
 	"Bubble":           true,
 	"Attachment":       true,
@@ -89,18 +86,18 @@ func Ignored(class string) bool {
 // and toaster are the only 4 of the original 54 canonical shapes with no
 // upstream section at all.
 //
-// "chart" is a fifth entry, added after the dossier survey and for a
-// different reason: unlike the original 4, upstream DOES have a "MARK:
-// Chart" section (ignoredSections above) — it is just entirely about the
-// tooltip part, which chart's shape (registry/canonical/shapes/chart.go)
-// doesn't declare yet, so every style's current chart.css is genuinely
-// identical (`flex aspect-video justify-center text-xs`, hand-authored from
-// templui's container class, not from any MARK section). Remove "chart"
-// here — and un-ignore "Chart" above — together, in whichever task adds the
-// tooltip slot and a real per-style recipe for it.
+// "chart" was a fifth entry through Task 5, for a different reason: unlike
+// the original 4, upstream DOES have a "MARK: Chart" section — it was just
+// entirely about the tooltip part, which chart's shape didn't declare yet,
+// so every style's chart.css was genuinely identical (root + legend, both
+// hand-authored from templui's own classes, no MARK section for either).
+// Task 6 gives chart a real "tooltip" slot with a genuinely per-style
+// recipe (registry/styles/<style>/chart.css's new .gsxui-recipe-chart-
+// tooltip rule, sourced from .cn-chart-tooltip) — chart is no longer
+// style-invariant, so it is removed here, alongside un-ignoring "Chart"
+// above, together as that comment anticipated.
 var styleInvariantComponents = map[string]bool{
 	"aspect-ratio": true,
-	"chart":        true,
 	"collapsible":  true,
 	"spinner":      true,
 	"toaster":      true,

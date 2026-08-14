@@ -36,9 +36,11 @@ func fileChecksum(t *testing.T, path string) [32]byte {
 // port, see the task report) must produce Written == 54 with Unmapped == 0
 // once the mapping table is complete — this test pins that same claim in
 // dry-run form, which additionally must touch nothing on disk. "chart"
-// joined the canonical set after that survey as a StyleInvariant component
-// (see mapping.go's styleInvariantComponents comment), so Written is now
-// 55, still with Unmapped == 0.
+// (registry/canonical/shapes/chart.go) joined the canonical set after that
+// survey, so Written is now 55, still with Unmapped == 0 — a real "MARK:
+// Chart" section maps it (mapping.go's ignoredSections/styleInvariantComponents
+// comments have the history of Chart's own section moving from ignored to
+// mapped as its shape grew a real tooltip slot).
 func TestRunDryRunMaia(t *testing.T) {
 	if _, err := os.Stat(upstreamRootPath); err != nil {
 		t.Skipf("upstream shadcn-ui checkout not present at %s", upstreamRootPath)
