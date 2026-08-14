@@ -12,9 +12,17 @@
     @apply rounded-none [dialog&]:overflow-hidden p-0 top-1/3 translate-y-0;
   }
 
-  /* carried: no upstream counterpart */
+  /* Flattens upstream's .cn-command-input-wrapper (border-b pb-0) +
+     .cn-command-input-group (flush full-width bg-input/30 h-8, base border
+     stripped by border-none). On one element the group's border-none would
+     cancel the wrapper's border-b, so it is dropped instead — there is no
+     base InputGroup border here to strip — and border-input/30 goes with it
+     (upstream colours the group's nonexistent border, not the wrapper's
+     border-b, which stays --border). The group's addon pl-2 becomes a bare
+     pl-2 since our icon is a bare child, not an addon — same translation as
+     nova/command.css's pill flatten. */
   .gsxui-recipe-command-input-wrapper {
-    @apply border-b pb-0 bg-input/30 border-input/30 h-8 border-none shadow-none [&>[data-gsxui-slot-input-group-addon]]:pl-2 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50 flex items-center gap-2;
+    @apply border-b pb-0 pl-2 bg-input/30 h-8 shadow-none [&>[data-gsxui-slot-input-group-addon]]:pl-2 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:opacity-50 flex items-center gap-2;
   }
 
   /* carried: no upstream counterpart */

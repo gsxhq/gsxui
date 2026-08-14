@@ -1171,3 +1171,80 @@ test("the base-color picker's popover stays inside the viewport", async ({ page 
   expect(box, "content has a box").not.toBeNull();
   expect(box!.x, "left edge inside viewport").toBeGreaterThanOrEqual(0);
 });
+
+// Per-style command search-row chrome pins. The port flattens upstream's
+// two-element CommandInput (wrapper + InputGroup pill) onto one element;
+// the six pill styles were hand-translated (see registry/styles/nova/
+// command.css's comment) but lyra and sera carried the raw merge, where
+// the group's border-none cancelled the wrapper's border-b (lyra) and the
+// group's base 1px border never existed to be re-coloured (sera) — both
+// search rows lost their underline entirely.
+
+test("lyra command search row keeps its bottom border and icon inset", async ({
+  page,
+}) => {
+  await page.goto("/theme/preview");
+  const wrapper = page
+    .locator(
+      '[data-theme-preview-style="lyra"] [data-gsxui-slot-command-input-wrapper]',
+    )
+    .first();
+  const style = await wrapper.evaluate((n) => {
+    const css = getComputedStyle(n);
+    return {
+      borderBottomWidth: css.borderBottomWidth,
+      paddingLeft: css.paddingLeft,
+      height: css.height,
+    };
+  });
+  // Upstream lyra: wrapper border-b under a flush, full-width bg-input/30
+  // h-8 group; the group's addon rule insets the icon 8px.
+  expect(style.borderBottomWidth).toBe("1px");
+  expect(style.paddingLeft).toBe("8px");
+  expect(style.height).toBe("32px");
+});
+
+test("sera command search row renders its underline inset from the edges", async ({
+  page,
+}) => {
+  await page.goto("/theme/preview");
+  const wrapper = page
+    .locator(
+      '[data-theme-preview-style="sera"] [data-gsxui-slot-command-input-wrapper]',
+    )
+    .first();
+  const style = await wrapper.evaluate((n) => {
+    const css = getComputedStyle(n);
+    return {
+      borderBottomWidth: css.borderBottomWidth,
+      marginLeft: css.marginLeft,
+      height: css.height,
+    };
+  });
+  // Upstream sera: wrapper p-1 (outer -> margin here) around an h-10
+  // InputGroup whose base 1px border is transparent except the
+  // input-coloured bottom — an inset underline, not a full-width one.
+  expect(style.borderBottomWidth).toBe("1px");
+  expect(style.marginLeft).toBe("4px");
+  expect(style.height).toBe("40px");
+});
+
+// Regression pin, not a new behavior: the per-style menubar inset values
+// restored by the 2026-08-14 parity fix reach the browser. The preview
+// document renders menus closed, so this is the one place lyra's
+// menubar-vs-dropdown split (pl-8 vs pl-7) is machine-checked against a
+// live cascade — computed style resolves on hidden elements.
+test("menubar inset padding is per-style: nova 28px, lyra 32px", async ({
+  page,
+}) => {
+  await page.goto("/theme/preview");
+  const paddingFor = (style: string) =>
+    page
+      .locator(
+        `[data-theme-preview-style="${style}"] [data-gsxui-slot-menubar-item][data-inset]`,
+      )
+      .first()
+      .evaluate((n) => getComputedStyle(n).paddingLeft);
+  expect(await paddingFor("nova")).toBe("28px");
+  expect(await paddingFor("lyra")).toBe("32px");
+});

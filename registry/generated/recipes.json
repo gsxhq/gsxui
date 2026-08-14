@@ -7469,10 +7469,9 @@
             "base": [
               "border-b",
               "pb-0",
+              "pl-2",
               "bg-input/30",
-              "border-input/30",
               "h-8",
-              "border-none",
               "shadow-none",
               "[\u0026\u003e[data-gsxui-slot-input-group-addon]]:pl-2",
               "[\u0026\u003esvg]:size-4",
@@ -30964,11 +30963,13 @@
           },
           "input-wrapper": {
             "base": [
-              "p-1",
-              "bg-transparent",
+              "m-1",
+              "px-3",
+              "h-10",
+              "border",
               "border-transparent",
               "border-b-input",
-              "px-3",
+              "bg-transparent",
               "[\u0026\u003esvg]:size-3.5",
               "[\u0026\u003esvg]:shrink-0",
               "[\u0026\u003esvg]:opacity-50",

@@ -12,9 +12,15 @@
     @apply p-0 [dialog&]:overflow-hidden top-1/3 translate-y-0;
   }
 
-  /* carried: no upstream counterpart */
+  /* Flattens upstream's .cn-command-input-wrapper (p-1, outer padding
+     positioning the group -> margin here, same translation as
+     nova/command.css's pill flatten) + .cn-command-input-group
+     (bg-transparent border-transparent border-b-input px-3 over sera's
+     .cn-input-group base: h-10 with a 1px border). The base border must be
+     restated explicitly — `border` — or border-b-input colours a
+     zero-width edge and sera's inset underline never renders. */
   .gsxui-recipe-command-input-wrapper {
-    @apply p-1 bg-transparent border-transparent border-b-input px-3 [&>svg]:size-3.5 [&>svg]:shrink-0 [&>svg]:opacity-50 flex items-center gap-2;
+    @apply m-1 px-3 h-10 border border-transparent border-b-input bg-transparent [&>svg]:size-3.5 [&>svg]:shrink-0 [&>svg]:opacity-50 flex items-center gap-2;
   }
 
   /* carried: no upstream counterpart */

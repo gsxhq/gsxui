@@ -335,7 +335,11 @@ component galleryMenusCard() {
 							<MenubarShortcut>⌘N</MenubarShortcut>
 						</MenubarItem>
 						<MenubarSeparator/>
-						<MenubarItem>
+						{/* data-inset mirrors upstream's menubar demo and gives every
+						    style's per-family inset value a rendered element on the
+						    preview document (menus stay closed there, but computed
+						    style still resolves — theme-editor.spec.ts pins it). */}
+						<MenubarItem data-inset="true">
 							Print...
 							<MenubarShortcut>⌘P</MenubarShortcut>
 						</MenubarItem>
