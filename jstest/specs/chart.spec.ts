@@ -44,6 +44,43 @@ test("BarChart renders themed SVG bars", async ({ page }) => {
 });
 
 /**
+ * Task 7: the network-level proof behind ui/chart.js's own header comment
+ * ("pages without charts never parse it") — the BarChart test above only
+ * shows chart.render.js's body ran on a chart page, never that it was
+ * skipped anywhere else. jstest/harness/modules.go serves ui/*.js
+ * byte-for-byte with no bundler/hashing, so the request URL is the literal
+ * /ui/chart.render.js — matched here on the substring "chart.render" so the
+ * assertion survives if that path ever grows a prefix or transform.
+ */
+test("chart.render.js loads only on pages with a chart", async ({ page }) => {
+  const requests: string[] = [];
+  page.on("request", (r) => requests.push(r.url()));
+
+  const noChart = await page.goto("/x/button/variants");
+  expect(noChart?.status()).toBe(200);
+  expect(requests.filter((u) => u.includes("chart.render"))).toEqual([]);
+
+  requests.length = 0;
+  const withChart = await page.goto(route);
+  expect(withChart?.status()).toBe(200);
+  const bars = page.locator("[data-gsxui-slot-chart] svg path.recharts-rectangle");
+  await expect(bars).toHaveCount(6);
+  expect(requests.filter((u) => u.includes("chart.render"))).toHaveLength(1);
+
+  // A second chart-page visit in the same browsing context: a navigation
+  // tears down the prior document (and with it chart.js's own module-level
+  // bodyPromise guard), so this is a fresh module instantiation, not proof
+  // the first fetch was reused — what it does prove is that nothing about
+  // the stub only works once. It still fetches chart.render.js exactly
+  // once and still renders every bar.
+  requests.length = 0;
+  const secondVisit = await page.goto(route);
+  expect(secondVisit?.status()).toBe(200);
+  await expect(bars).toHaveCount(6);
+  expect(requests.filter((u) => u.includes("chart.render"))).toHaveLength(1);
+});
+
+/**
  * Task 6's own fixture (jstest/harness/chart_contract.gsx, served at
  * /f/chart-tooltip) — NOT the public docs example above: it registers a
  * ChartTooltip (basic.gsx doesn't) and gives its "desktop" series a
