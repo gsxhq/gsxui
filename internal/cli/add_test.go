@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"testing/fstest"
 
 	gsxui "github.com/gsxhq/gsxui"
 	"github.com/gsxhq/gsxui/internal/preset"
@@ -685,5 +686,35 @@ func TestAddButtonVendorsNoCompanionJS(t *testing.T) {
 	}
 	if len(matches) != 0 {
 		t.Errorf("button must vendor no companion JS files, found: %v", matches)
+	}
+}
+
+// TestCompanionArtifactsExcludesNonJSSameStemFiles: companionArtifacts'
+// glob ("ui/<name>.*.js") already requires the whole candidate path to end
+// in a literal ".js" (fs.Glob/path.Match match the full string), but the
+// function also carries an explicit HasSuffix allowlist as a second,
+// independent gate — this pins that gate directly against a fake fs.FS
+// carrying a stray same-stem non-JS file (e.g. a hypothetical
+// "ui/chart.map" source-map artifact) alongside a real companion, proving
+// only the real one is ever vendored.
+func TestCompanionArtifactsExcludesNonJSSameStemFiles(t *testing.T) {
+	fsys := fstest.MapFS{
+		"ui/chart.render.js": &fstest.MapFile{Data: []byte("// real companion\n")},
+		"ui/chart.map":       &fstest.MapFile{Data: []byte("{}")},
+	}
+	artifacts, err := companionArtifacts(fsys, "web/gsxui", "chart")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(artifacts) != 1 {
+		t.Fatalf("want exactly 1 vendored companion, got %d: %+v", len(artifacts), artifacts)
+	}
+	if got := artifacts[0].RelativePath; got != "web/gsxui/chart.render.js" {
+		t.Errorf("want web/gsxui/chart.render.js, got %s", got)
+	}
+	for _, a := range artifacts {
+		if strings.HasSuffix(a.RelativePath, ".map") {
+			t.Errorf("companionArtifacts vendored a non-JS file: %s", a.RelativePath)
+		}
 	}
 }

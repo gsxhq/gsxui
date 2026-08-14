@@ -166,21 +166,11 @@ func addArtifacts(dir, module string, cfg Config, selected preset.Preset, resolv
 			// dynamic import, never listed in the barrel (see
 			// behaviorBarrelArtifact's own dot-guard below), but they still
 			// need to land on disk for that import to resolve.
-			companions, err := fs.Glob(gsxui.Files, "ui/"+name+".*.js")
+			companions, err := companionArtifacts(gsxui.Files, cfg.JS, name)
 			if err != nil {
 				return nil, err
 			}
-			for _, path := range companions {
-				src, err := fs.ReadFile(gsxui.Files, path)
-				if err != nil {
-					return nil, err
-				}
-				artifacts = append(artifacts, artifact{
-					RelativePath: filepath.ToSlash(filepath.Join(cfg.JS, filepath.Base(path))),
-					Content:      src,
-					Managed:      true,
-				})
-			}
+			artifacts = append(artifacts, companions...)
 		}
 	}
 
@@ -199,6 +189,43 @@ func addArtifacts(dir, module string, cfg Config, selected preset.Preset, resolv
 		return nil, err
 	}
 	artifacts = append(artifacts, barrel)
+	return artifacts, nil
+}
+
+// companionArtifacts finds ui/<name>.<suffix>.js companion behavior files
+// (today only chart.render.js, see addArtifacts' own comment on this call
+// site) inside fsys and turns each into a Managed artifact under jsDir.
+// fsys is a parameter (not the package-level gsxui.Files) so this can be
+// exercised directly against an fstest.MapFS in tests.
+//
+// The glob "ui/"+name+".*.js" already requires the FULL candidate path to
+// end in a literal ".js" (fs.Glob/path.Match match the whole string, not a
+// substring, so neither "ui/chart.map" nor a same-stem source map like
+// "ui/chart.render.js.map" can match it today) — the explicit HasSuffix
+// below is a second, independent gate against ever vendoring a non-JS
+// companion, so a future change loosening the glob pattern (or an fs.FS
+// implementation with looser Match semantics) still cannot make a stray
+// non-.js file land in a consumer's tree.
+func companionArtifacts(fsys fs.FS, jsDir, name string) ([]artifact, error) {
+	matches, err := fs.Glob(fsys, "ui/"+name+".*.js")
+	if err != nil {
+		return nil, err
+	}
+	var artifacts []artifact
+	for _, path := range matches {
+		if !strings.HasSuffix(path, ".js") {
+			continue
+		}
+		src, err := fs.ReadFile(fsys, path)
+		if err != nil {
+			return nil, err
+		}
+		artifacts = append(artifacts, artifact{
+			RelativePath: filepath.ToSlash(filepath.Join(jsDir, filepath.Base(path))),
+			Content:      src,
+			Managed:      true,
+		})
+	}
 	return artifacts, nil
 }
 
