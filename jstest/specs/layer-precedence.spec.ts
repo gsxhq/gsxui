@@ -116,7 +116,9 @@ test("Badge keeps its pill corner radius and per-variant background", async ({ p
   await expect(secondaryBadge).toHaveAttribute("data-variant", "secondary");
 
   const radius = await defaultBadge.evaluate((n) => getComputedStyle(n).borderRadius);
-  expect(radius).toBe("32px");
+  // rounded-4xl on the --radius-derived scale (foundation.css: r * 2.6,
+  // matching upstream globals.css) — not Tailwind's static 2rem default.
+  expect(radius).toBe("26px");
 
   const defaultBg = await defaultBadge.evaluate((n) => getComputedStyle(n).backgroundColor);
   const secondaryBg = await secondaryBadge.evaluate((n) => getComputedStyle(n).backgroundColor);
@@ -1504,8 +1506,9 @@ test("Toast keeps its card chrome and its close button's own anchor", async ({
   await page.goto("/x/toast/server");
   const card = page.locator("[data-gsxui-slot-toast]").first();
   expect(await card.evaluate((n) => getComputedStyle(n).width)).toBe("356px");
+  // rounded-2xl on the --radius-derived scale (foundation.css: r * 1.8).
   expect(await card.evaluate((n) => getComputedStyle(n).borderTopLeftRadius)).toBe(
-    "16px",
+    "18px",
   );
   const close = page.locator("[data-gsxui-slot-toast-close]").first();
   expect(await close.evaluate((n) => getComputedStyle(n).position)).toBe(

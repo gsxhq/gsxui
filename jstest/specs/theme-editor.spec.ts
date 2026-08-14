@@ -1272,10 +1272,12 @@ test("command pill styles keep their base-inherited rounding and border", async 
           borderWidth: css.borderTopWidth,
         };
       });
-  // rounded-4xl = 32px, rounded-2xl = 16px.
-  expect(await geometryFor("luma")).toEqual({ radius: "32px", borderWidth: "1px" });
-  expect(await geometryFor("maia")).toEqual({ radius: "32px", borderWidth: "1px" });
-  expect(await geometryFor("rhea")).toEqual({ radius: "16px", borderWidth: "1px" });
+  // Upstream's extended radius scale is --radius-derived (globals.css:
+  // 2xl = r*1.8, 3xl = r*2.2, 4xl = r*2.6; r = 10px), measured live off
+  // upstream's own render — NOT Tailwind's static 16/24/32px defaults.
+  expect(await geometryFor("luma")).toEqual({ radius: "26px", borderWidth: "1px" });
+  expect(await geometryFor("maia")).toEqual({ radius: "26px", borderWidth: "1px" });
+  expect(await geometryFor("rhea")).toEqual({ radius: "18px", borderWidth: "1px" });
   const mira = await geometryFor("mira");
   expect(mira.borderWidth).toBe("1px");
   expect(mira.radius).not.toBe("0px"); // rounded-md, theme-derived
@@ -1289,7 +1291,7 @@ test("command pill styles keep their base-inherited rounding and border", async 
 // upstream by marking nova's radius important, which the port
 // deliberately de-emphasises — so gsxui's gallery/examples must not pass
 // caller rounding at all for the per-style corners to show.
-test("command root corners are per-style: lyra square, luma 32px", async ({
+test("command root corners are per-style: lyra square, luma 26px", async ({
   page,
 }) => {
   await page.goto("/theme/preview");
@@ -1299,5 +1301,5 @@ test("command root corners are per-style: lyra square, luma 32px", async ({
       .first()
       .evaluate((n) => getComputedStyle(n).borderTopLeftRadius);
   expect(await radiusFor("lyra")).toBe("0px");
-  expect(await radiusFor("luma")).toBe("32px");
+  expect(await radiusFor("luma")).toBe("26px");
 });
