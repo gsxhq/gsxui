@@ -8,3 +8,5 @@ import "github.com/gsxhq/gsxui/internal/recipe"
 type chartRecipe struct{ c recipe.Component }
 
 func (r chartRecipe) Root() string { return r.c.SlotClass("") }
+
+func (r chartRecipe) Legend() string { return r.c.SlotClass("legend") }

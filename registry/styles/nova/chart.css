@@ -6,4 +6,9 @@
   .gsxui-recipe-chart {
     @apply flex aspect-video justify-center text-xs;
   }
+
+  /* carried: no upstream cn- counterpart, templui's own legend row class */
+  .gsxui-recipe-chart-legend {
+    @apply flex items-center justify-center gap-4;
+  }
 }

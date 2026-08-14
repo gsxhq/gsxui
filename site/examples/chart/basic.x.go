@@ -4,33 +4,45 @@ package chart
 
 import (
 	_gsxctx "context"
+	"github.com/gsxhq/gsx"
 	_gsxrt "github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
-//line basic.gsx:6:1
-// Basic renders the Chart container with a two-series config around a
-// placeholder body. Chart ships its container in this task — the data
-// model builder and client renderer (BarChart/AreaChart and friends) land
-// in later tasks — so this example exists to keep the style contract's
-// examples-coverage gate satisfied from Chart's first commit, the same way
-// every other registered component has a real example from birth.
+//line basic.gsx:9:1
+// Basic renders a two-series bar chart: Chart's container, BarChart's
+// model builder, and ChartLegend's server-rendered legend row together —
+// the model builder and client renderer land across this task and the
+// ones after it, so this example also keeps the style contract's
+// examples-coverage gate satisfied for the chart-legend slot ChartLegend
+// renders (see registry/canonical/shapes/chart.go).
 
-//line basic.gsx:12:1
+//line basic.gsx:15:1
 func Basic() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:13:2
+//line basic.gsx:16:2
 		cfg := ui.ChartConfig{
 			{Key: "desktop", Label: "Desktop", Color: "var(--chart-1)"},
 			{Key: "mobile", Label: "Mobile", Color: "var(--chart-2)"},
 		}
-//line basic.gsx:19:2
+		data := []ui.ChartDatum{
+			{"month": "Jan", "desktop": 186.0, "mobile": 80.0},
+			{"month": "Feb", "desktop": 305.0, "mobile": 200.0},
+			{"month": "Mar", "desktop": 237.0, "mobile": 120.0},
+		}
+//line basic.gsx:27:2
 		_gsxgw.Node(ctx, ui.Chart(cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:20:3
-			_gsxgw.S("<div>Chart placeholder</div>")
+//line basic.gsx:28:3
+			_gsxgw.Node(ctx, ui.BarChart(data, nil, gsx.Fragment(
+				ui.ChartCartesianGrid(nil),
+				ui.ChartXAxis("month", nil),
+				ui.ChartBar("desktop", nil),
+				ui.ChartBar("mobile", nil),
+				ui.ChartLegend(nil),
+			), nil))
 			return _gsxgw.Err()
 		}), nil))
 		return _gsxgw.Err()

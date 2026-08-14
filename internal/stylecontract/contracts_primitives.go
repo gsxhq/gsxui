@@ -123,11 +123,12 @@ var primitiveContracts = []Component{
 	{
 		Name:         "Chart",
 		RegistryName: "chart",
-		// Only the root slot: chart-tooltip/chart-legend land with the task
-		// that adds ChartTooltip/ChartLegend (see shapes/chart.go's own
-		// doc comment on why they aren't declared here yet).
+		// chart-tooltip lands with whichever task renders real tooltip
+		// markup -- ChartTooltip stays data-only for now (see
+		// shapes/chart.go's own doc comment).
 		Slots: []Slot{
 			{Name: "chart"},
+			{Name: "chart-legend"},
 		},
 	},
 	{

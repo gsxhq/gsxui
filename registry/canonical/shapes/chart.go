@@ -10,21 +10,24 @@ import "github.com/gsxhq/gsxui/internal/recipe"
 // scoped by the container's data-chart attribute, never as a class variant
 // a style pack could enumerate.
 //
-// Only the root slot is declared here. The plan's own shape sketch also
-// names "tooltip" and "legend" parts (the recharts-compat tooltip card and
-// the legend row), but stylegen's checkShapeCoverage rejects a declared
-// slot no canonical component renders yet ("shape declares slot %q but the
-// component never renders it" — internal/stylegen/generate.go) by design:
-// see that check's own doc comment on why a declared-but-dead slot is
-// deliberately a hard error, not a warning. ChartTooltip and ChartLegend —
-// the components that will render data-gsxui-slot-chart-tooltip and
-// data-gsxui-slot-chart-legend — land in a later task; that task adds
-// those two slots here (and their contract entries, and their pack CSS)
-// alongside the components that make them real, the same way every other
-// shape in this package grew its slots alongside their consumers.
+// The root and legend slots are declared here. Task 3 (cartesian model
+// builder) added ChartLegend, which renders a real
+// data-gsxui-slot-chart-legend element server-side (see chartWriteLegend
+// in chart.gsx), so its slot lands now. ChartTooltip, added in the same
+// task, stays data-only — it registers tooltip config into the chart
+// model for the client renderer, it renders no element of its own — so
+// "tooltip" is still NOT declared here: stylegen's checkShapeCoverage
+// rejects a declared slot no canonical component renders yet ("shape
+// declares slot %q but the component never renders it" —
+// internal/stylegen/generate.go), by design (see that check's own doc
+// comment on why a declared-but-dead slot is a hard error, not a
+// warning). Whichever later task renders real tooltip markup adds
+// "tooltip" here (and its contract entry, and its pack CSS) alongside the
+// component that makes it real, the same way "legend" arrives now.
 var Chart = recipe.Shape{
 	Component: "chart",
 	Slots: []recipe.Slot{
 		{Name: "", Base: true},
+		{Name: "legend", Base: true},
 	},
 }
