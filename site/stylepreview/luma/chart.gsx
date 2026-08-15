@@ -215,20 +215,6 @@ type chartMargin struct {
 	Top, Right, Bottom, Left float64
 }
 
-// chartFloatOr resolves a flat numeric tag parameter against its built-in
-// default: zero means "not customized," the same zero-sentinel convention
-// chartXAxisOptions' own MinTickGap defaulting in buildChartModel already
-// uses (see there) — not a new idiom this task introduces, just applied to
-// margins and the two other meaningful-zero fields a public *float64
-// pointer used to carry (chartRadarOptions.FillOpacity, RadialBarChart's
-// end angle).
-func chartFloatOr(v, def float64) float64 {
-	if v == 0 {
-		return def
-	}
-	return v
-}
-
 // chartFloatPtrOr converts a flat float64 tag parameter into the *float64
 // a struct field that treats zero as "unset, leave the SVG default in
 // place" (chartRadarOptions.FillOpacity) still expects internally: zero
@@ -241,20 +227,29 @@ func chartFloatPtrOr(v float64) *float64 {
 }
 
 // chartMarginOf resolves the four flat margin tag parameters into a
-// chartState margin, each side independently defaulting to Recharts' own 5
-// when left at zero. Always non-nil: buildChartModel/buildChartRadarModel/
+// chartState margin, replacing Recharts' own 5/5/5/5 default AS A SET the
+// moment any one of the four is customized — never per side independently.
+// This mirrors Recharts' own margin prop (ported byte-faithful by templui,
+// credited in this file's header): the prop is a single object, so
+// supplying `{left: 12, right: 12}` leaves `top`/`bottom` at a literal
+// `undefined` (JS) — `0` here — not at Recharts' own class-level default,
+// exactly like `<ui.AreaChart marginLeft={12} marginRight={12}>` (this
+// file's own area demo) must render marginTop/marginBottom 0, not 5.
+// Independent per-side zero-sentinel defaulting (an earlier draft of this
+// function) got that wrong: it revived the 5 default per side rather than
+// per call, a real 5px parity regression on that exact shipped demo,
+// invisible to a byte pin that only ever exercised the all-zero path.
+// Always non-nil: buildChartModel/buildChartRadarModel/
 // buildChartRadialModel's own `if st.margin != nil` branch (unchanged from
 // before this task) is still correct for a caller who constructs a
 // chartState directly, it just never sees nil from a chart root's own
 // component body anymore, matching the same 5/5/5/5 output their nil
 // branch already produced for a caller who set no margin at all.
 func chartMarginOf(top, right, bottom, left float64) *chartMargin {
-	return &chartMargin{
-		Top:    chartFloatOr(top, 5),
-		Right:  chartFloatOr(right, 5),
-		Bottom: chartFloatOr(bottom, 5),
-		Left:   chartFloatOr(left, 5),
+	if top == 0 && right == 0 && bottom == 0 && left == 0 {
+		return &chartMargin{Top: 5, Right: 5, Bottom: 5, Left: 5}
 	}
+	return &chartMargin{Top: top, Right: right, Bottom: bottom, Left: left}
 }
 
 // chartCtxKey namespaces this file's two context values so they cannot
@@ -1564,10 +1559,11 @@ component ChartTooltipTemplate() {
 
 // BarChart is the Recharts BarChart root: its parts declare axes, grid,
 // tooltip and bars, the root collects them and emits the model payload for
-// the client renderer. marginTop/marginRight/marginBottom/marginLeft each
-// independently default to Recharts' own 5 when left at zero
-// (chartMarginOf) — a bare `<ui.BarChart data={data}>` gets Recharts'
-// 5/5/5/5 margin exactly like an omitted margin prop upstream.
+// the client renderer. marginTop/marginRight/marginBottom/marginLeft
+// replace Recharts' own 5/5/5/5 default AS A SET the moment any one of the
+// four is customized, matching Recharts (chartMarginOf) — a bare
+// `<ui.BarChart data={data}>` gets the 5/5/5/5 default; `<ui.AreaChart
+// marginLeft={12} marginRight={12}>` gets marginTop/marginBottom 0, not 5.
 component BarChart(data []ChartDatum, marginTop float64, marginRight float64, marginBottom float64, marginLeft float64, children gsx.Node, attrs gsx.Attrs) {
 	{ chartRoot(&chartState{kind: "bar", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)}, children, attrs) }
 }
@@ -1591,9 +1587,10 @@ component RadarChart(data []ChartDatum, marginTop float64, marginRight float64, 
 // RadialBarChart is the Recharts RadialBarChart root. startAngle is
 // Recharts' own zero by default, so the flat param needs no sentinel;
 // endAngle defaults to a full turn (360°) when left at zero, via
-// chartFloatPtrOr's same zero-sentinel convention chartMarginOf uses (a
-// literal 0° sweep — an invisible chart — is not expressible this way, the
-// one deliberately dropped edge case, see this task's report).
+// chartFloatPtrOr's zero-sentinel convention (a literal 0° sweep — an
+// invisible chart — is not expressible this way, a deliberately dropped
+// edge case, see this task's report). Margins follow BarChart's own
+// all-or-nothing chartMarginOf convention (see there).
 component RadialBarChart(data []ChartDatum, marginTop float64, marginRight float64, marginBottom float64, marginLeft float64, startAngle float64, endAngle float64, innerRadius float64, outerRadius float64, children gsx.Node, attrs gsx.Attrs) {
 	{ chartRoot(&chartState{
 		kind:        "radial",

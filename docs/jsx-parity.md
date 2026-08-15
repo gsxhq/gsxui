@@ -1819,8 +1819,12 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   usable as an HTML tag (`<ui.AreaChart data={data} marginLeft={12}>`).
   `ChartBool`/`ChartFloat` and every public `*Options` struct are deleted
   (pre-release, no compatibility shims); margins are flat `marginTop`/
-  `marginRight`/`marginBottom`/`marginLeft` params, each independently
-  defaulting to Recharts' own 5 when left at zero; curve is a flat `curve`
+  `marginRight`/`marginBottom`/`marginLeft` params that replace Recharts'
+  own 5/5/5/5 default AS A SET the moment any one of the four is
+  customized, matching Recharts' own margin prop exactly (`chartMarginOf`;
+  an earlier draft defaulted each side independently, a real 5px parity
+  regression on `area.gsx`/`line.gsx`'s own `marginLeft`/`marginRight`-only
+  calls, caught in review before it shipped); curve is a flat `curve`
   string param ("natural"/"linear"/"step"; empty is Recharts' own "linear"
   default, unchanged). `ChartLinearGradient` takes real SVG `<stop>`
   markup children instead of a `gsx.Raw` string.

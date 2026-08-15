@@ -122,6 +122,50 @@ func TestAreaChartModelPinned(t *testing.T) {
 	}
 }
 
+// TestAreaChartMarginPartialOverrideMatchesUpstream pins the margin
+// semantics review flagged as a parity regression: upstream (Recharts'
+// own margin prop, ported byte-faithful by templui and, before this pin,
+// by chartMarginOf) replaces its built-in 5/5/5/5 default AS A SET the
+// moment a caller supplies a margin object at all — an unset side inside
+// that object stays a literal 0, it is never re-defaulted to 5
+// independently. Passing only marginLeft/marginRight (site/examples/chart/
+// area.gsx's and line.gsx's own shape) must leave marginTop/marginBottom
+// at 0, not silently upgrade them to 5.
+func TestAreaChartMarginPartialOverrideMatchesUpstream(t *testing.T) {
+	data := []ui.ChartDatum{{"month": "Jan", "desktop": 186.0}}
+	got := render(t, ui.Chart(cfg2Series(t),
+		ui.AreaChart(data, 0, 12, 0, 12, "",
+			gsx.Fragment(
+				ui.ChartXAxis("month", false, false, false, 0, 0),
+				ui.ChartArea("desktop", "", "", "", "", 0),
+			), nil), nil))
+	model := extractModelJSON(t, got)
+	want := `{"kind":"area","marginTop":0,"marginRight":12,"marginBottom":0,"marginLeft":12,"xAxisHeight":30,"minTickGap":5,"cursor":false,"labels":["Jan"],"tooltipLabels":["Jan"],"series":[{"key":"desktop","label":"","color":"var(--color-desktop)","values":[186]}],"tooltip":{}}`
+	if model != want {
+		t.Errorf("model drift\n got: %s\nwant: %s", model, want)
+	}
+}
+
+// TestAreaChartMarginAllZeroDefaultsToFive is the bare-tag twin of the
+// partial-override pin above: every margin param left at its Go zero value
+// (the shape site/examples/chart/basic.gsx and every other margin-less
+// demo call use) must still get Recharts' own 5/5/5/5 default as a whole
+// set, not 0/0/0/0.
+func TestAreaChartMarginAllZeroDefaultsToFive(t *testing.T) {
+	data := []ui.ChartDatum{{"month": "Jan", "desktop": 186.0}}
+	got := render(t, ui.Chart(cfg2Series(t),
+		ui.AreaChart(data, 0, 0, 0, 0, "",
+			gsx.Fragment(
+				ui.ChartXAxis("month", false, false, false, 0, 0),
+				ui.ChartArea("desktop", "", "", "", "", 0),
+			), nil), nil))
+	model := extractModelJSON(t, got)
+	want := `{"kind":"area","marginTop":5,"marginRight":5,"marginBottom":5,"marginLeft":5,"xAxisHeight":30,"minTickGap":5,"cursor":false,"labels":["Jan"],"tooltipLabels":["Jan"],"series":[{"key":"desktop","label":"","color":"var(--color-desktop)","values":[186]}],"tooltip":{}}`
+	if model != want {
+		t.Errorf("model drift\n got: %s\nwant: %s", model, want)
+	}
+}
+
 func TestPieChartModelPinned(t *testing.T) {
 	data := []ui.ChartDatum{{"browser": "desktop", "visitors": 186.0}, {"browser": "mobile", "visitors": 305.0}}
 	got := render(t, ui.Chart(cfg2Series(t),
