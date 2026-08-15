@@ -1743,9 +1743,10 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   legend + hidden tooltip template): each root (`BarChart`/`LineChart`/
   `AreaChart`/`PieChart`/`RadarChart`/`RadialBarChart`) seeds a `*chartState`
   collector into `context.Context`; registering children (`ChartXAxis`,
-  `ChartBar`, `ChartDefs`, …) mutate it via `gsx.Func`, and the root
-  serializes it after children render into one `<script type="application/
-  json" data-gsxui-chart-model>`. `ChartModel` is a byte-faithful,
+  `ChartBar`, `ChartDefs`, …) mutate it from their own `component` body (a
+  bare Go-statement block, no markup — see the ADAPT entry below for the
+  tag-based shape), and the root serializes it after children render into
+  one `<script type="application/json" data-gsxui-chart-model>`. `ChartModel` is a byte-faithful,
   field-for-field port of templui's own flat `Model` struct (`chart.templ:
   1645`) — an earlier draft nested it around a raw `Data` field; reverted to
   the flat shape once Task 5's renderer turned out to read templui's flat
@@ -1792,17 +1793,61 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   are unported; the six shipped examples (`site/examples/chart/{basic,area,
   line,pie,radar,radial}.gsx`) use static compositions instead.
 - GAP (`BarChart` `layout:"vertical"` unported): `ChartModel.Layout`
-  (`registry/canonical/chart.gsx`) always marshals absent — nothing in
-  `ChartBarChartOptions` (or Line's/Area's own Options structs) can set it,
-  unlike upstream's `Layout` prop, which swaps the axes and draws bars
-  horizontally. Backs two of shadcn's own bar demos (`bar-horizontal`,
-  `bar-mixed`); gsxui has no equivalent of either.
+  (`registry/canonical/chart.gsx`) always marshals absent — no `BarChart`/
+  `LineChart`/`AreaChart` tag param can set it, unlike upstream's `Layout`
+  prop, which swaps the axes and draws bars horizontally. Backs two of
+  shadcn's own bar demos (`bar-horizontal`, `bar-mixed`); gsxui has no
+  equivalent of either.
 - GAP (`accessibilityLayer` opt-out unported): `ChartModel.AccessibilityLayer`
   exists and `ui/chart.render.js` reads it (the Recharts keyboard layer —
   `role="application"`, arrow-key/Enter tooltip interaction), but no
-  `ChartBarChartOptions`/`ChartLineChartOptions`/`ChartAreaChartOptions`
-  field can ever set it to `true`, and Go's zero value marshals `omitempty`-
-  absent, which the renderer reads as "layer on" (`m.accessibilityLayer !==
-  false`) — Recharts' own default. The gap is the opt-OUT: a gsxui chart
-  can never render with `accessibilityLayer={false}` the way an upstream
-  chart can.
+  `BarChart`/`LineChart`/`AreaChart` tag param can ever set it to `true`,
+  and Go's zero value marshals `omitempty`-absent, which the renderer reads
+  as "layer on" (`m.accessibilityLayer !== false`) — Recharts' own default.
+  The gap is the opt-OUT: a gsxui chart can never render with
+  `accessibilityLayer={false}` the way an upstream chart can.
+- ADAPT (tag-based API, default-false booleans, owner ruling): the shipped
+  options-struct/function-call surface (`ui.BarChart(data, opts,
+  gsx.Fragment(ui.ChartCartesianGrid(&ui.ChartCartesianGridOptions{...}),
+  ...), attrs)`) was rejected post-ship. Every chart root and child
+  (`BarChart`/`LineChart`/`AreaChart`/`PieChart`/`RadarChart`/
+  `RadialBarChart`, `ChartCartesianGrid`/`ChartXAxis`/`ChartYAxis`/
+  `ChartTooltip`/`ChartLegend`/`ChartBar`/`ChartLine`/`ChartArea`/
+  `ChartPie`/`ChartRadar`/`ChartRadialBar`/`ChartPolarGrid`/
+  `ChartPolarAngleAxis`/`ChartPolarRadiusAxis`/`ChartDefs`/
+  `ChartLinearGradient`) is now a real `component` with flat typed params,
+  usable as an HTML tag (`<ui.AreaChart data={data} marginLeft={12}>`).
+  `ChartBool`/`ChartFloat` and every public `*Options` struct are deleted
+  (pre-release, no compatibility shims); margins are flat `marginTop`/
+  `marginRight`/`marginBottom`/`marginLeft` params, each independently
+  defaulting to Recharts' own 5 when left at zero; curve is a flat `curve`
+  string param ("natural"/"linear"/"step"; empty is Recharts' own "linear"
+  default, unchanged). `ChartLinearGradient` takes real SVG `<stop>`
+  markup children instead of a `gsx.Raw` string.
+  Every option that used to default to Recharts' own `true` through a nil
+  `*bool` (`ChartCartesianGrid`'s `horizontal`/`vertical`,
+  `ChartTooltip`'s `cursor`, `ChartPolarGrid`'s `radialLines`, `ChartPie`'s
+  `labelLine`) now defaults `false`, gsxui's own convention: **every
+  boolean prop defaults false, enabling is explicit.** This deliberately
+  diverges from Recharts' own default-true for these five — shadcn's own
+  demos pass an explicit `false` for nearly all of them anyway (only
+  `ChartPolarGrid`'s `radialLines` and `ChartPie`'s `labelLine` are
+  shadcn-demo default-true survivors, and `labelLine` is inert without an
+  accompanying `label`, so it changes no shipped pixel either way) — so a
+  bare tag renders the shadcn demo look directly, without a caller having
+  to spell out `false` for what was already off in practice. Every shipped
+  example (`site/examples/chart/*.gsx`) passes the booleans it actually
+  wants explicit (e.g. `<ui.ChartCartesianGrid horizontal/>`,
+  `<ui.ChartPolarGrid radialLines/>`), matching upstream's own shadcn demo
+  pixel-for-pixel.
+  Two option shapes that used a meaningful-zero `*float64`/`*int` pointer
+  (`ChartRadar`'s `fillOpacity`, `RadialBarChart`'s end angle,
+  `ChartTooltip`'s `defaultIndex`) become flat numeric params with the same
+  zero-sentinel convention this file already used for `MinTickGap`/
+  `TickCount`/Area's own `fillOpacity`: zero means "not customized," so a
+  literal zero value (fully transparent radar fill, a 0° radial sweep) is
+  no longer expressible — an edge case no shipped demo exercises.
+  `ChartTooltip.defaultIndex` additionally gets a `hasDefaultIndex bool`
+  gate (int 0 is a legitimate index, so it cannot double as its own
+  "unset" sentinel); `ChartPie`'s `Label` becomes a `label bool` +
+  `labelFill string` pair the same way.

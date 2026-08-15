@@ -2,6 +2,12 @@
 
 Notable changes to gsxui's component set, newest first.
 
+## 2026-08-15
+
+### Changed
+
+- **chart** — every root and child (`BarChart`/`LineChart`/`AreaChart`/`PieChart`/`RadarChart`/`RadialBarChart`, `ChartCartesianGrid`/`ChartXAxis`/`ChartYAxis`/`ChartTooltip`/`ChartLegend`/`ChartBar`/`ChartLine`/`ChartArea`/`ChartPie`/`ChartRadar`/`ChartRadialBar`/`ChartPolarGrid`/`ChartPolarAngleAxis`/`ChartPolarRadiusAxis`/`ChartDefs`/`ChartLinearGradient`) is now a tag-based `component` with flat typed params (e.g. `<ui.AreaChart data={data} marginLeft={12}><ui.ChartCartesianGrid horizontal/>...</ui.AreaChart>`) instead of an options-struct/function-call surface. `ChartBool`/`ChartFloat` and every public `*Options` struct are removed — pre-release, no compatibility shim. Boolean props that used to default to Recharts' own `true` (`horizontal`/`vertical`, `cursor`, `radialLines`, `labelLine`) now default `false`, enabling is explicit; see `docs/jsx-parity.md`'s `## chart` ADAPT entry.
+
 ## 2026-08-14
 
 ### Added
