@@ -16,19 +16,28 @@ import (
 
 // ChartConfig is the pendant of shadcn's ChartConfig: label and color per
 // series key, keyed by ChartSeries.Key. Chart turns it into --color-<key>
-// custom properties scoped to its own data-chart attribute (styleBlock).
+// custom properties scoped to its own data-chart attribute (styleSchemes).
 type ChartConfig []ChartSeries
 
 // ChartSeries is one entry of a ChartConfig. Key identifies the series both
-// here and in the data rows a later task's chart roots read (rows are
-// matched against Key, never Label). Theme, present, takes precedence over
-// Color for both color schemes — see ChartConfig.styleBlock. Icon replaces
-// the color swatch in the legend and tooltip parts a later task adds; it is
-// unused by the container itself.
+// here and in the data rows the chart roots read (rows are matched against
+// Key, never Label). Theme, present, takes precedence over Color for both
+// color schemes — see ChartConfig.styleSchemes. Icon replaces the color
+// swatch in the legend and tooltip.
+//
+// Color (and Theme's pair) are gsx.RawCSS, not string: they land inside a
+// <style> block as CSS values, and the values every shadcn demo uses —
+// var(--chart-1), oklch(...), url(#gradient) — are exactly what gsx's CSS
+// value filter must reject from untrusted input (parens, `--` runs). The
+// type is the trust boundary: an author writing Color: "var(--chart-1)" is
+// vouching for CSS they wrote, and a caller deriving a color from user
+// input must convert to gsx.RawCSS deliberately, in sight of that decision.
+// Key stays a plain string and IS filtered — a hostile key cannot break
+// out of its declaration.
 type ChartSeries struct {
 	Key   string
 	Label string
-	Color string
+	Color gsx.RawCSS
 	Theme *ChartSeriesTheme
 	Icon  gsx.Node
 }
@@ -36,11 +45,11 @@ type ChartSeries struct {
 // ChartSeriesTheme is a color pair for the light and dark color schemes,
 // the pendant of the `theme` field in shadcn's own ChartConfig entries.
 type ChartSeriesTheme struct {
-	Light string
-	Dark  string
+	Light gsx.RawCSS
+	Dark  gsx.RawCSS
 }
 
-// styleBlock is the ChartStyle pendant: one rule per color scheme, each
+// styleSchemes is the ChartStyle pendant: one rule per color scheme, each
 // scoped by [data-chart=<id>]. Ported byte-faithful (semantics, not syntax)
 // from templui/shadcn-templ v2's chart.templ Config.styleBlock (see this
 // file's header credit):
@@ -50,10 +59,25 @@ type ChartSeriesTheme struct {
 //     itemConfig.theme?.[theme] ?? itemConfig.color upstream;
 //   - a series with neither Color nor Theme contributes no line, but does
 //     not block the other series' lines;
-//   - when NO series in the whole config carries a color, styleBlock
+//   - when NO series in the whole config carries a color, styleSchemes
 //     returns "" — no <style> tag at all — matching ChartStyle returning
 //     null rather than an empty one upstream.
-func (c ChartConfig) styleBlock(id string) string {
+// chartStyleScheme is one color scheme's resolved rule body for the Chart
+// container's <style> block: prefix selects the scheme ("" light, ".dark "
+// dark) and decls is the --color-<key> declaration list, already a
+// gsx.RawCSS because it is composed from css` ` literals — the RawCSS
+// Color passes verbatim (the author's vouch) while the plain-string key
+// runs through gsx's CSS value filter inside the literal.
+type chartStyleScheme struct {
+	prefix string
+	decls  gsx.RawCSS
+}
+
+// styleSchemes resolves the ChartStyle pendant: one scheme per color mode,
+// theme color winning over the plain color, a theme without a value for
+// the scheme falling back to the color. Nil when no series carries any
+// color, mirroring ChartStyle returning null upstream.
+func (c ChartConfig) styleSchemes() []chartStyleScheme {
 	hasColor := false
 	for _, s := range c {
 		if s.Color != "" || s.Theme != nil {
@@ -62,11 +86,11 @@ func (c ChartConfig) styleBlock(id string) string {
 		}
 	}
 	if !hasColor {
-		return ""
+		return nil
 	}
-	var sb strings.Builder
+	var out []chartStyleScheme
 	for _, scheme := range []struct{ Name, Prefix string }{{"light", ""}, {"dark", ".dark "}} {
-		fmt.Fprintf(&sb, "%s[data-chart=%s] {\n", scheme.Prefix, id)
+		var decls gsx.RawCSS
 		for _, s := range c {
 			color := s.Color
 			if s.Theme != nil {
@@ -79,12 +103,26 @@ func (c ChartConfig) styleBlock(id string) string {
 				}
 			}
 			if color != "" {
-				fmt.Fprintf(&sb, "  --color-%s: %s;\n", s.Key, color)
+				decls += css`--color-@{ s.Key }: @{ color };`
 			}
 		}
-		sb.WriteString("}\n")
+		out = append(out, chartStyleScheme{prefix: scheme.Prefix, decls: decls})
 	}
-	return sb.String()
+	return out
+}
+
+
+// chartStyleRules composes the container's <style> body: one
+// [data-chart=<id>] rule per scheme. Each piece is a css` ` literal, so
+// the result is gsx.RawCSS the <style> block emits verbatim: prefix and id
+// are ours (a fixed scheme prefix, a package counter), decls already
+// carry each key through the value filter.
+func chartStyleRules(id string, schemes []chartStyleScheme) gsx.RawCSS {
+	var out gsx.RawCSS
+	for _, sc := range schemes {
+		out += css`@{ gsx.RawCSS(sc.prefix) }[data-chart=@{ gsx.RawCSS(id) }]{@{ sc.decls }}`
+	}
+	return out
 }
 
 // chartInstanceCount backs every Chart's data-chart scoping key.
@@ -98,7 +136,7 @@ func (c ChartConfig) styleBlock(id string) string {
 // (site/stylepreview/gallery.gsx.src's idp-prefixed ids). None of those fit
 // here: data-chart is not a caller-facing identity a consumer would ever
 // want to set (unlike a DOM id), it is purely the selector key that pairs
-// this <div> with the <style> block styleBlock emits right below it in the
+// this <div> with the <style> block the container renders from styleSchemes right below it in the
 // SAME render call, so it has to be computed inside Chart, before attrs is
 // spread, with nothing to key off but the render call itself.
 //
@@ -106,7 +144,7 @@ func (c ChartConfig) styleBlock(id string) string {
 // or crypto/rand — the brief is explicit that pinned tests need
 // determinism), safe under concurrent renders (atomic.Uint64), and unique
 // for as long as the package's process runs, which is what actually matters
-// for styleBlock's [data-chart=...] selector not leaking one chart's colors
+// for the [data-chart=...] selector not leaking one chart's colors
 // onto a sibling chart's elements. Every package this file's content gets
 // copied into by stylegen (registry/generated/<style>, ui) gets its own
 // counter, since each is a distinct Go package — same per-render-tree scope
@@ -121,7 +159,7 @@ func nextChartID() string {
 
 // Chart is the shadcn/ui ChartContainer pendant: an aspect-video box that
 // exposes its ChartConfig as --color-<key> CSS custom properties (see
-// styleBlock) for the chart roots and parts a later task adds as children.
+// styleSchemes) for the chart roots and parts a later task adds as children.
 // templui's own class also carries a wall of [&_.recharts-*] arbitrary-
 // variant selectors (axis tick fill, grid stroke, cursor fill, dot/sector
 // rings, radial-bar background) that re-color Recharts' own hardcoded SVG
@@ -161,8 +199,8 @@ component Chart(config ChartConfig, children gsx.Node, attrs gsx.Attrs) {
 		{ attrs... }
 		data-gsxui-slot-chart
 	>
-		{ if block := config.styleBlock(id); block != "" {
-			{ gsx.Raw("<style>" + block + "</style>") }
+		{ if schemes := config.styleSchemes(); schemes != nil {
+			<style>@{ chartStyleRules(id, schemes) }</style>
 		} }
 		{ children }
 	</div>
@@ -580,6 +618,17 @@ type chartPieOptions struct {
 // Config.Label: it returns that entry's own Label field verbatim (which
 // may be empty) when key matches, falling back to key itself only when NO
 // entry names it at all.
+// icon returns the series' Icon node for key, nil when the series has none
+// (or the key is not configured) — the legend renders it in place.
+func (c ChartConfig) icon(key string) gsx.Node {
+	for _, s := range c {
+		if s.Key == key {
+			return s.Icon
+		}
+	}
+	return nil
+}
+
 func (c ChartConfig) label(key string) string {
 	for _, s := range c {
 		if s.Key == key {
@@ -1368,9 +1417,9 @@ func chartModelScript(m ChartModel) string {
 // LegendItem.
 type chartLegendItem struct {
 	label string
-	color string
-	icon  string
-	value string // the payload value the legend sorts by
+	color gsx.RawCSS // the series' vouched color (or a pie slice's model color)
+	icon  gsx.Node   // rendered in place; never a pre-rendered string
+	value string     // the payload value the legend sorts by
 }
 
 // chartBuildLegendItems builds the legend payload: one entry per series, or
@@ -1392,7 +1441,7 @@ func chartBuildLegendItems(config ChartConfig, m ChartModel, st *chartState, opt
 						name = config.label(chartStr(v))
 					}
 				}
-				items = append(items, chartLegendItem{label: name, color: pie.Colors[i], value: pie.NameValues[i]})
+				items = append(items, chartLegendItem{label: name, color: gsx.RawCSS(pie.Colors[i]), value: pie.NameValues[i]})
 			}
 		}
 	} else {
@@ -1402,7 +1451,7 @@ func chartBuildLegendItems(config ChartConfig, m ChartModel, st *chartState, opt
 			if opts.NameKey != "" {
 				label = config.label(opts.NameKey)
 			}
-			items = append(items, chartLegendItem{label: label, color: s.Color, icon: s.Icon, value: s.Key})
+			items = append(items, chartLegendItem{label: label, color: gsx.RawCSS(s.Color), icon: config.icon(s.Key), value: s.Key})
 		}
 	}
 	sort.SliceStable(items, func(i, j int) bool { return items[i].value < items[j].value })
@@ -1418,21 +1467,19 @@ func chartBuildLegendItems(config ChartConfig, m ChartModel, st *chartState, opt
 // same reasoning.
 component ChartLegendContent(items []chartLegendItem, opts *chartLegendOptions) {
 	{{
-		posStyle := "position:absolute;left:0;right:0;bottom:5px"
-		pad := "pt-3"
-		if opts.VerticalAlign == "top" {
-			posStyle = "position:absolute;left:0;right:0;top:5px"
-			pad = "pb-3"
-		}
+		top := opts.VerticalAlign == "top"
 	}}
-	<div style={ posStyle } data-gsxui-slot-chart-legend>
-		<div class={ chart.Legend(), pad, opts.Class }>
+	<div
+		style={ css`position:absolute;left:0;right:0`, css`top:5px`: top, css`bottom:5px`: !top }
+		data-gsxui-slot-chart-legend
+	>
+		<div class={ chart.Legend(), "pt-3": !top, "pb-3": top, opts.Class }>
 			{ for _, it := range items {
 				<div class="flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-muted-foreground">
-					{ if it.icon != "" && !opts.HideIcon {
-						{ gsx.Raw(it.icon) }
+					{ if it.icon != nil && !opts.HideIcon {
+						{ it.icon }
 					} else {
-						<div class="h-2 w-2 shrink-0 rounded-[2px]" style={ "background-color:" + it.color }></div>
+						<div class="h-2 w-2 shrink-0 rounded-[2px]" style={ css`background-color:@{ it.color }` }></div>
 					} }
 					{ it.label }
 				</div>
