@@ -1606,23 +1606,23 @@ func _gsxrendergalleryChartCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 				_gsxgw.NodeResult(_gsxrenderBarChart(ctx, _gsxgw, channelData, 0, 0, 0, 0, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line gallery.gsx:633:6
-					_gsxgw.NodeResult(_gsxrenderChartCartesianGrid(ctx, _gsxgw, true, false))
+					_gsxgw.Node(ctx, ChartCartesianGrid(true, false))
 //line gallery.gsx:634:6
-					_gsxgw.NodeResult(_gsxrenderChartXAxis(ctx, _gsxgw, "quarter", false, false, false, 0, 0))
+					_gsxgw.Node(ctx, ChartXAxis("quarter", false, false, false, 0, 0))
 //line gallery.gsx:635:6
-					_gsxgw.NodeResult(_gsxrenderChartTooltip(ctx, _gsxgw, false, "", "", false, false, "", "", "", "", false, 0))
+					_gsxgw.Node(ctx, ChartTooltip(false, "", "", false, false, "", "", "", "", false, 0))
 //line gallery.gsx:636:6
-					_gsxgw.NodeResult(_gsxrenderChartBar(ctx, _gsxgw, "organic", "", "", nil, 0))
+					_gsxgw.Node(ctx, ChartBar("organic", "", "", nil, 0))
 //line gallery.gsx:637:6
-					_gsxgw.NodeResult(_gsxrenderChartBar(ctx, _gsxgw, "paid", "", "", nil, 0))
+					_gsxgw.Node(ctx, ChartBar("paid", "", "", nil, 0))
 //line gallery.gsx:638:6
-					_gsxgw.NodeResult(_gsxrenderChartBar(ctx, _gsxgw, "referral", "", "", nil, 0))
+					_gsxgw.Node(ctx, ChartBar("referral", "", "", nil, 0))
 //line gallery.gsx:639:6
-					_gsxgw.NodeResult(_gsxrenderChartBar(ctx, _gsxgw, "email", "", "", nil, 0))
+					_gsxgw.Node(ctx, ChartBar("email", "", "", nil, 0))
 //line gallery.gsx:640:6
-					_gsxgw.NodeResult(_gsxrenderChartBar(ctx, _gsxgw, "social", "", "", nil, 0))
+					_gsxgw.Node(ctx, ChartBar("social", "", "", nil, 0))
 //line gallery.gsx:641:6
-					_gsxgw.NodeResult(_gsxrenderChartLegend(ctx, _gsxgw, "", "", "", false))
+					_gsxgw.Node(ctx, ChartLegend("", "", "", false))
 					return _gsxgw.Err()
 				}), nil))
 				return _gsxgw.Err()
@@ -1638,11 +1638,11 @@ func _gsxrendergalleryChartCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) erro
 				_gsxgw.NodeResult(_gsxrenderAreaChart(ctx, _gsxgw, trendData, 0, 0, 0, 0, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 //line gallery.gsx:648:7
-					_gsxgw.NodeResult(_gsxrenderChartXAxis(ctx, _gsxgw, "week", true, false, false, 0, 0))
+					_gsxgw.Node(ctx, ChartXAxis("week", true, false, false, 0, 0))
 //line gallery.gsx:649:7
-					_gsxgw.NodeResult(_gsxrenderChartTooltip(ctx, _gsxgw, false, "", "", false, false, "", "", "", "", false, 0))
+					_gsxgw.Node(ctx, ChartTooltip(false, "", "", false, false, "", "", "", "", false, 0))
 //line gallery.gsx:650:7
-					_gsxgw.NodeResult(_gsxrenderChartArea(ctx, _gsxgw, "visits", "natural", "", "", "", 0.3))
+					_gsxgw.Node(ctx, ChartArea("visits", "natural", "", "", "", 0.3))
 					return _gsxgw.Err()
 				}), nil))
 				return _gsxgw.Err()

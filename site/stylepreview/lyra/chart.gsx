@@ -3,7 +3,6 @@ package lyra
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 	"sort"
@@ -759,8 +758,8 @@ const (
 // here for structural fidelity only.
 //
 // The one gsxui-specific field is the script tag's attribute name
-// (chartModelScript uses data-gsxui-chart-model, not templui's
-// data-tui-chart-model) — every other field, its json tag, its
+// (chartRoot's own JSON data island uses data-gsxui-chart-model, not
+// templui's data-tui-chart-model) — every other field, its json tag, its
 // omitempty-or-not, and its Recharts default is ported byte-faithful so
 // Task 5's adapted chart.js — which reads these exact flat fields
 // (marginTop, xAxisHeight, tickMargin, minTickGap, xTickLine, ... per
@@ -1405,18 +1404,6 @@ func buildChartPieModel(ctx context.Context, config ChartConfig, st *chartState)
 	return m
 }
 
-// chartModelScript renders the embedded JSON payload the client reads —
-// the pendant of templui's ModelScript. json.Marshal HTML-escapes
-// <, >, & by default, so a data row's own text cannot break out of the
-// script tag.
-func chartModelScript(m ChartModel) string {
-	b, err := json.Marshal(m)
-	if err != nil {
-		return ""
-	}
-	return `<script type="application/json" data-gsxui-chart-model>` + string(b) + `</script>`
-}
-
 // chartLegendItem is one rendered legend entry, the pendant of templui's
 // LegendItem.
 type chartLegendItem struct {
@@ -1497,35 +1484,28 @@ component ChartLegendContent(items []chartLegendItem, opts *chartLegendOptions) 
 
 // chartRoot renders one chart root: templui's AreaChart/BarChart/LineChart/
 // RadarChart/RadialBarChart/PieChart wrapper div, its children (which
-// register into the chartState seeded here), then the model script and (if
-// registered) the server-rendered legend — templui's own chartOutput, run
-// after children the same way gsx renders a Node's children before the
-// statements that follow { children } in its caller. st arrives already
-// populated with its kind and kind-specific fields (margin, data,
-// RadialBarChart's own angle/radius geometry, ...); every root below
-// builds one and hands it here rather than chartRoot taking every kind's
-// fields as its own positional parameters.
-func chartRoot(st *chartState, children gsx.Node, attrs gsx.Attrs) gsx.Node {
-	return gsx.Func(func(ctx context.Context, w io.Writer) error {
-		ctx = context.WithValue(ctx, chartStateCtxKey, st)
-		gw := gsx.W(w)
-		gw.S("<div")
-		gw.StyleMerged("position:relative;width:100%;height:100%", attrs.Style())
-		gw.Spread(ctx, "div", attrs, gsx.AttrSinks{}, []string{"style"})
-		gw.S(">")
-		gw.Node(ctx, children)
-		m := buildChartModel(ctx, st)
-		gw.S(chartModelScript(m))
-		if st.tooltip != nil {
-			gw.Node(ctx, ChartTooltipTemplate())
-		}
-		if st.legend != nil {
-			items := chartBuildLegendItems(chartConfigFromCtx(ctx), m, st, st.legend)
-			gw.Node(ctx, ChartLegendContent(items, st.legend))
-		}
-		gw.S("</div>")
-		return gw.Err()
-	})
+// register into the chartState seeded here), then the model's JSON data
+// island and (if registered) the server-rendered tooltip chrome and legend —
+// templui's own chartOutput, run after children the same way gsx renders a
+// component's children before the markup that follows { children } in its
+// body. st arrives already populated with its kind and kind-specific fields
+// (margin, data, RadialBarChart's own angle/radius geometry, ...); every
+// public root below builds one and passes it here as a tag attribute rather
+// than chartRoot taking every kind's fields as its own positional
+// parameters.
+component chartRoot(st *chartState, children gsx.Node, attrs gsx.Attrs) {
+	{{ ctx = context.WithValue(ctx, chartStateCtxKey, st) }}
+	<div style={css`position:relative;width:100%;height:100%`} { attrs... }>
+		{ children }
+		{{ m := buildChartModel(ctx, st) }}
+		<script type="application/json" data-gsxui-chart-model>@{ m }</script>
+		{ if st.tooltip != nil {
+			<ChartTooltipTemplate/>
+		} }
+		{ if st.legend != nil {
+			<ChartLegendContent items={chartBuildLegendItems(chartConfigFromCtx(ctx), m, st, st.legend)} opts={st.legend}/>
+		} }
+	</div>
 }
 
 // ChartTooltipTemplate renders the hover tooltip's server-authored chrome:
@@ -1617,23 +1597,45 @@ component ChartTooltipTemplate() {
 // `<ui.BarChart data={data}>` gets the 5/5/5/5 default; `<ui.AreaChart
 // marginLeft={12} marginRight={12}>` gets marginTop/marginBottom 0, not 5.
 component BarChart(data []ChartDatum, marginTop float64, marginRight float64, marginBottom float64, marginLeft float64, children gsx.Node, attrs gsx.Attrs) {
-	{ chartRoot(&chartState{kind: "bar", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)}, children, attrs) }
+	<chartRoot
+		st={&chartState{kind: "bar", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)}}
+		{ attrs... }
+	>
+		{ children }
+	</chartRoot>
 }
 
 // LineChart is the Recharts LineChart root.
 component LineChart(data []ChartDatum, marginTop float64, marginRight float64, marginBottom float64, marginLeft float64, children gsx.Node, attrs gsx.Attrs) {
-	{ chartRoot(&chartState{kind: "line", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)}, children, attrs) }
+	<chartRoot
+		st={&chartState{kind: "line", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)}}
+		{ attrs... }
+	>
+		{ children }
+	</chartRoot>
 }
 
 // AreaChart is the Recharts AreaChart root. stackOffset "expand" normalizes
 // each stack to 100%, the pendant of Recharts' own stackOffset prop.
 component AreaChart(data []ChartDatum, marginTop float64, marginRight float64, marginBottom float64, marginLeft float64, stackOffset string, children gsx.Node, attrs gsx.Attrs) {
-	{ chartRoot(&chartState{kind: "area", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft), stackOffset: stackOffset}, children, attrs) }
+	<chartRoot
+		st={
+			&chartState{kind: "area", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft), stackOffset: stackOffset}
+		}
+		{ attrs... }
+	>
+		{ children }
+	</chartRoot>
 }
 
 // RadarChart is the Recharts RadarChart root.
 component RadarChart(data []ChartDatum, marginTop float64, marginRight float64, marginBottom float64, marginLeft float64, children gsx.Node, attrs gsx.Attrs) {
-	{ chartRoot(&chartState{kind: "radar", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)}, children, attrs) }
+	<chartRoot
+		st={&chartState{kind: "radar", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)}}
+		{ attrs... }
+	>
+		{ children }
+	</chartRoot>
 }
 
 // RadialBarChart is the Recharts RadialBarChart root. startAngle is
@@ -1644,15 +1646,22 @@ component RadarChart(data []ChartDatum, marginTop float64, marginRight float64, 
 // edge case, see this task's report). Margins follow BarChart's own
 // all-or-nothing chartMarginOf convention (see there).
 component RadialBarChart(data []ChartDatum, marginTop float64, marginRight float64, marginBottom float64, marginLeft float64, startAngle float64, endAngle float64, innerRadius float64, outerRadius float64, children gsx.Node, attrs gsx.Attrs) {
-	{ chartRoot(&chartState{
-		kind:        "radial",
-		data:        data,
-		margin:      chartMarginOf(marginTop, marginRight, marginBottom, marginLeft),
-		startAngle:  startAngle,
-		endAngle:    chartFloatPtrOr(endAngle),
-		innerRadius: innerRadius,
-		outerRadius: outerRadius,
-	}, children, attrs) }
+	<chartRoot
+		st={
+			&chartState{
+				kind:        "radial",
+				data:        data,
+				margin:      chartMarginOf(marginTop, marginRight, marginBottom, marginLeft),
+				startAngle:  startAngle,
+				endAngle:    chartFloatPtrOr(endAngle),
+				innerRadius: innerRadius,
+				outerRadius: outerRadius,
+			}
+		}
+		{ attrs... }
+	>
+		{ children }
+	</chartRoot>
 }
 
 // PieChart is the Recharts PieChart root: unlike every other root, it
@@ -1660,7 +1669,22 @@ component RadialBarChart(data []ChartDatum, marginTop float64, marginRight float
 // data prop, so each ChartPie child registers its own rows and geometry
 // (see ChartPie); upstream's own PieChartProps is empty too.
 component PieChart(children gsx.Node, attrs gsx.Attrs) {
-	{ chartRoot(&chartState{kind: "pie"}, children, attrs) }
+	<chartRoot st={&chartState{kind: "pie"}} { attrs... }>{ children }</chartRoot>
+}
+
+// chartRegister returns a Node that renders nothing and, at render time,
+// applies fn to the enclosing chart root's state (nil-safe: rendered
+// outside a chart root it is a no-op). It is the body of every ChartXxx
+// registration child — plain Go funcs returning gsx.Node, which gsx
+// invokes as tags (<ui.ChartCartesianGrid horizontal/>) with typed params
+// bound from attributes; bare bool attributes are true.
+func chartRegister(fn func(st *chartState)) gsx.Node {
+	return gsx.Func(func(ctx context.Context, _ io.Writer) error {
+		if st := chartStateFromCtx(ctx); st != nil {
+			fn(st)
+		}
+		return nil
+	})
 }
 
 // ChartCartesianGrid registers the grid, the pendant of Recharts'
@@ -1673,36 +1697,30 @@ component PieChart(children gsx.Node, attrs gsx.Attrs) {
 // Recharts default, so spelling both out explicitly here — e.g.
 // `<ui.ChartCartesianGrid horizontal/>` — reproduces the exact same
 // shadcn demo look a bare tag would otherwise miss.
-component ChartCartesianGrid(horizontal bool, vertical bool) {
-	{{
-		if st := chartStateFromCtx(ctx); st != nil {
-			st.grid = &chartGridOptions{Horizontal: horizontal, Vertical: vertical}
-		}
-	}}
+func ChartCartesianGrid(horizontal bool, vertical bool) gsx.Node {
+	return chartRegister(func(st *chartState) {
+		st.grid = &chartGridOptions{Horizontal: horizontal, Vertical: vertical}
+	})
 }
 
 // ChartXAxis registers the x axis.
-component ChartXAxis(key string, hide bool, tickLine bool, axisLine bool, tickMargin float64, minTickGap float64) {
-	{{
-		if st := chartStateFromCtx(ctx); st != nil {
-			st.x = &chartAxisReg{key: key, opts: chartXAxisOptions{
-				Hide: hide, TickLine: tickLine, AxisLine: axisLine,
-				TickMargin: tickMargin, MinTickGap: minTickGap,
-			}}
-		}
-	}}
+func ChartXAxis(key string, hide bool, tickLine bool, axisLine bool, tickMargin float64, minTickGap float64) gsx.Node {
+	return chartRegister(func(st *chartState) {
+		st.x = &chartAxisReg{key: key, opts: chartXAxisOptions{
+			Hide: hide, TickLine: tickLine, AxisLine: axisLine,
+			TickMargin: tickMargin, MinTickGap: minTickGap,
+		}}
+	})
 }
 
 // ChartYAxis registers the y axis.
-component ChartYAxis(key string, hide bool, tickLine bool, axisLine bool, tickMargin float64, tickCount int, width float64) {
-	{{
-		if st := chartStateFromCtx(ctx); st != nil {
-			st.y = &chartYAxisReg{key: key, opts: chartYAxisOptions{
-				Hide: hide, TickLine: tickLine, AxisLine: axisLine,
-				TickMargin: tickMargin, TickCount: tickCount, Width: width,
-			}}
-		}
-	}}
+func ChartYAxis(key string, hide bool, tickLine bool, axisLine bool, tickMargin float64, tickCount int, width float64) gsx.Node {
+	return chartRegister(func(st *chartState) {
+		st.y = &chartYAxisReg{key: key, opts: chartYAxisOptions{
+			Hide: hide, TickLine: tickLine, AxisLine: axisLine,
+			TickMargin: tickMargin, TickCount: tickCount, Width: width,
+		}}
+	})
 }
 
 // ChartTooltip registers the tooltip's config; the enclosing chart root
@@ -1722,40 +1740,39 @@ component ChartYAxis(key string, hide bool, tickLine bool, axisLine bool, tickMa
 // "not set" apart from the legitimate index 0 (Go's zero value for int),
 // the same reason ChartPie's Label field became a `label bool` gate below
 // rather than a bare fill string. No shipped demo sets this.
-component ChartTooltip(cursor bool, indicator string, labelKey string, hideLabel bool, hideIndicator bool, nameKey string, class string, labelClass string, color string, hasDefaultIndex bool, defaultIndex int) {
-	{{
+func ChartTooltip(cursor bool, indicator string, labelKey string, hideLabel bool, hideIndicator bool, nameKey string, class string, labelClass string, color string, hasDefaultIndex bool, defaultIndex int) gsx.Node {
+	return chartRegister(func(st *chartState) {
 		var di *int
 		if hasDefaultIndex {
 			di = &defaultIndex
 		}
-		if st := chartStateFromCtx(ctx); st != nil {
-			st.tooltip = &chartTooltipReg{opts: chartTooltipOptions{
-				Cursor: cursor, Indicator: indicator, LabelKey: labelKey,
-				HideLabel: hideLabel, HideIndicator: hideIndicator, NameKey: nameKey,
-				Class: class, LabelClass: labelClass, Color: color, DefaultIndex: di,
-			}}
-		}
-	}}
+		st.tooltip = &chartTooltipReg{opts: chartTooltipOptions{
+			Cursor: cursor, Indicator: indicator, LabelKey: labelKey,
+			HideLabel: hideLabel, HideIndicator: hideIndicator, NameKey: nameKey,
+			Class: class, LabelClass: labelClass, Color: color, DefaultIndex: di,
+		}}
+	})
 }
 
 // ChartLegend registers the legend; the enclosing chart root renders it
 // server-side after its other children (see ChartLegendContent).
-component ChartLegend(nameKey string, class string, verticalAlign string, hideIcon bool) {
-	{{
-		if st := chartStateFromCtx(ctx); st != nil {
-			st.legend = &chartLegendOptions{
-				NameKey: nameKey, Class: class, VerticalAlign: verticalAlign, HideIcon: hideIcon,
-			}
+func ChartLegend(nameKey string, class string, verticalAlign string, hideIcon bool) gsx.Node {
+	return chartRegister(func(st *chartState) {
+		st.legend = &chartLegendOptions{
+			NameKey: nameKey, Class: class, VerticalAlign: verticalAlign, HideIcon: hideIcon,
 		}
-	}}
+	})
 }
 
 // ChartDefs groups gradient definitions like the svg defs element —
 // nothing renders visibly server-side (the client draws the SVG), so this
 // only needs to render its children to let any ChartLinearGradient among
 // them register.
-component ChartDefs(children gsx.Node) {
-	{ children }
+func ChartDefs(children gsx.Node) gsx.Node {
+	if children == nil {
+		return gsx.Fragment()
+	}
+	return children
 }
 
 // ChartLinearGradient registers one gradient definition. Its children are
@@ -1763,8 +1780,8 @@ component ChartDefs(children gsx.Node) {
 // structure decision): rendered here to a string and captured into the
 // registered definition verbatim, like Recharts passes defs children
 // through.
-component ChartLinearGradient(id string, x1 string, y1 string, x2 string, y2 string, children gsx.Node) {
-	{{
+func ChartLinearGradient(id string, x1 string, y1 string, x2 string, y2 string, children gsx.Node) gsx.Node {
+	return gsx.Func(func(ctx context.Context, _ io.Writer) error {
 		if st := chartStateFromCtx(ctx); st != nil {
 			var sb strings.Builder
 			if children != nil {
@@ -1777,34 +1794,31 @@ component ChartLinearGradient(id string, x1 string, y1 string, x2 string, y2 str
 				stops: strings.TrimSpace(sb.String()),
 			})
 		}
-	}}
+		return nil
+	})
 }
 
 // ChartArea registers one area series. Declaration order is paint order,
 // like in Recharts. curve is Recharts' curve prop ("natural"/"linear"/
 // "step"); empty renders as Recharts' own "linear" default, unchanged by
 // this task.
-component ChartArea(key string, curve string, fill string, stroke string, stackId string, fillOpacity float64) {
-	{{
-		if st := chartStateFromCtx(ctx); st != nil {
-			st.areas = append(st.areas, chartAreaReg{key: key, opts: chartAreaOptions{
-				Curve: curve, Fill: fill, Stroke: stroke, StackID: stackId, FillOpacity: fillOpacity,
-			}})
-		}
-	}}
+func ChartArea(key string, curve string, fill string, stroke string, stackId string, fillOpacity float64) gsx.Node {
+	return chartRegister(func(st *chartState) {
+		st.areas = append(st.areas, chartAreaReg{key: key, opts: chartAreaOptions{
+			Curve: curve, Fill: fill, Stroke: stroke, StackID: stackId, FillOpacity: fillOpacity,
+		}})
+	})
 }
 
 // ChartBar registers one bar series. radius is Recharts' radius union: a
 // float64 for all corners or a []float64 of four corners, e.g.
 // []float64{0, 0, 4, 4}.
-component ChartBar(key string, fill string, stackId string, radius any, strokeWidth float64) {
-	{{
-		if st := chartStateFromCtx(ctx); st != nil {
-			st.bars = append(st.bars, chartBarReg{key: key, opts: chartBarOptions{
-				Fill: fill, StackID: stackId, Radius: radius, StrokeWidth: strokeWidth,
-			}})
-		}
-	}}
+func ChartBar(key string, fill string, stackId string, radius any, strokeWidth float64) gsx.Node {
+	return chartRegister(func(st *chartState) {
+		st.bars = append(st.bars, chartBarReg{key: key, opts: chartBarOptions{
+			Fill: fill, StackID: stackId, Radius: radius, StrokeWidth: strokeWidth,
+		}})
+	})
 }
 
 // ChartLine registers one line series. curve is Recharts' curve prop
@@ -1817,18 +1831,16 @@ component ChartBar(key string, fill string, stackId string, radius any, strokeWi
 // per-point dots draw only once a caller opts in with dot, at which point
 // dotR/dotFillOpacity/dotFill/dotSize shape them (each its own Recharts
 // SVG default when left at zero).
-component ChartLine(key string, curve string, stroke string, strokeWidth float64, dot bool, dotR float64, dotFillOpacity float64, dotFill string, dotSize float64, activeDotR float64) {
-	{{
+func ChartLine(key string, curve string, stroke string, strokeWidth float64, dot bool, dotR float64, dotFillOpacity float64, dotFill string, dotSize float64, activeDotR float64) gsx.Node {
+	return chartRegister(func(st *chartState) {
 		var d *chartDotOptions
 		if dot {
 			d = &chartDotOptions{R: dotR, FillOpacity: dotFillOpacity, Fill: dotFill, Size: dotSize}
 		}
-		if st := chartStateFromCtx(ctx); st != nil {
-			st.lines = append(st.lines, chartLineReg{key: key, opts: chartLineOptions{
-				Curve: curve, Stroke: stroke, StrokeWidth: strokeWidth, Dot: d, ActiveDotR: activeDotR,
-			}})
-		}
-	}}
+		st.lines = append(st.lines, chartLineReg{key: key, opts: chartLineOptions{
+			Curve: curve, Stroke: stroke, StrokeWidth: strokeWidth, Dot: d, ActiveDotR: activeDotR,
+		}})
+	})
 }
 
 // ---------------------------------------------------------------------
@@ -1855,25 +1867,21 @@ component ChartLine(key string, curve string, stroke string, strokeWidth float64
 // diverging from Recharts' own default-true; a radar demo that wants the
 // spokes upstream shows by default passes `<ui.ChartPolarGrid
 // radialLines/>` explicitly.
-component ChartPolarGrid(gridType string, radialLines bool, polarRadius []float64, stroke string, strokeWidth float64, class string) {
-	{{
-		if st := chartStateFromCtx(ctx); st != nil {
-			st.polarGrid = &chartPolarGridOptions{
-				GridType: gridType, RadialLines: radialLines, PolarRadius: polarRadius,
-				Stroke: stroke, StrokeWidth: strokeWidth, Class: class,
-			}
+func ChartPolarGrid(gridType string, radialLines bool, polarRadius []float64, stroke string, strokeWidth float64, class string) gsx.Node {
+	return chartRegister(func(st *chartState) {
+		st.polarGrid = &chartPolarGridOptions{
+			GridType: gridType, RadialLines: radialLines, PolarRadius: polarRadius,
+			Stroke: stroke, StrokeWidth: strokeWidth, Class: class,
 		}
-	}}
+	})
 }
 
 // ChartPolarAngleAxis registers the angle axis, the labels around the
 // chart.
-component ChartPolarAngleAxis(key string) {
-	{{
-		if st := chartStateFromCtx(ctx); st != nil {
-			st.angleAxis = &chartPolarAngleAxisReg{key: key}
-		}
-	}}
+func ChartPolarAngleAxis(key string) gsx.Node {
+	return chartRegister(func(st *chartState) {
+		st.angleAxis = &chartPolarAngleAxisReg{key: key}
+	})
 }
 
 // ChartPolarRadiusAxis registers the radius axis. tick/tickLine/axisLine
@@ -1881,13 +1889,10 @@ component ChartPolarAngleAxis(key string) {
 // children is still rendered, matching upstream's own { children... }, so
 // a future Label child has somewhere to register through once it is
 // ported.
-component ChartPolarRadiusAxis(tick bool, tickLine bool, axisLine bool, children gsx.Node) {
-	{{
-		if st := chartStateFromCtx(ctx); st != nil {
-			st.radiusAxis = &chartPolarRadiusAxisOptions{Tick: tick, TickLine: tickLine, AxisLine: axisLine}
-		}
-	}}
-	{ children }
+func ChartPolarRadiusAxis(tick bool, tickLine bool, axisLine bool, children gsx.Node) gsx.Node {
+	return gsx.Fragment(chartRegister(func(st *chartState) {
+		st.radiusAxis = &chartPolarRadiusAxisOptions{Tick: tick, TickLine: tickLine, AxisLine: axisLine}
+	}), children)
 }
 
 // ChartRadar registers one radar series.
@@ -1903,30 +1908,26 @@ component ChartPolarRadiusAxis(tick bool, tickLine bool, axisLine bool, children
 // fillOpacity=0 (fully transparent fill) is the one edge case this cannot
 // express, the same deliberately dropped case chartAreaOptions.FillOpacity
 // already accepted for Area before this task.
-component ChartRadar(key string, fill string, fillOpacity float64, stroke string, strokeWidth float64, dot bool, dotR float64, dotFill string, dotFillOpacity float64) {
-	{{
+func ChartRadar(key string, fill string, fillOpacity float64, stroke string, strokeWidth float64, dot bool, dotR float64, dotFill string, dotFillOpacity float64) gsx.Node {
+	return chartRegister(func(st *chartState) {
 		var d *chartDotOptions
 		if dot {
 			d = &chartDotOptions{R: dotR, Fill: dotFill, FillOpacity: dotFillOpacity}
 		}
-		if st := chartStateFromCtx(ctx); st != nil {
-			st.radars = append(st.radars, chartRadarReg{key: key, opts: chartRadarOptions{
-				Fill: fill, FillOpacity: chartFloatPtrOr(fillOpacity), Stroke: stroke, StrokeWidth: strokeWidth, Dot: d,
-			}})
-		}
-	}}
+		st.radars = append(st.radars, chartRadarReg{key: key, opts: chartRadarOptions{
+			Fill: fill, FillOpacity: chartFloatPtrOr(fillOpacity), Stroke: stroke, StrokeWidth: strokeWidth, Dot: d,
+		}})
+	})
 }
 
 // ChartRadialBar registers one radial bar series. background draws the
 // track behind the bar, over the full angle range.
-component ChartRadialBar(key string, fill string, background bool, cornerRadius float64, stackId string, class string) {
-	{{
-		if st := chartStateFromCtx(ctx); st != nil {
-			st.radialBars = append(st.radialBars, chartRadialBarReg{key: key, opts: chartRadialBarOptions{
-				Fill: fill, Background: background, CornerRadius: cornerRadius, StackID: stackId, Class: class,
-			}})
-		}
-	}}
+func ChartRadialBar(key string, fill string, background bool, cornerRadius float64, stackId string, class string) gsx.Node {
+	return chartRegister(func(st *chartState) {
+		st.radialBars = append(st.radialBars, chartRadialBarReg{key: key, opts: chartRadialBarOptions{
+			Fill: fill, Background: background, CornerRadius: cornerRadius, StackID: stackId, Class: class,
+		}})
+	})
 }
 
 // ChartPie registers one pie with its own data and geometry — unlike the
@@ -1943,17 +1944,15 @@ component ChartRadialBar(key string, fill string, background bool, cornerRadius 
 // diverging from Recharts' own default-true; inert without label also set
 // (chart.render.js only draws either when pie.label is present), so this
 // flip changes no shipped demo's rendered pixels.
-component ChartPie(data []ChartDatum, key string, nameKey string, innerRadius float64, outerRadius float64, strokeWidth float64, stroke string, label bool, labelFill string, labelLine bool) {
-	{{
+func ChartPie(data []ChartDatum, key string, nameKey string, innerRadius float64, outerRadius float64, strokeWidth float64, stroke string, label bool, labelFill string, labelLine bool) gsx.Node {
+	return chartRegister(func(st *chartState) {
 		var lbl *chartPieLabelOptions
 		if label {
 			lbl = &chartPieLabelOptions{Fill: labelFill}
 		}
-		if st := chartStateFromCtx(ctx); st != nil {
-			st.pies = append(st.pies, chartPieReg{data: data, key: key, opts: chartPieOptions{
-				NameKey: nameKey, InnerRadius: innerRadius, OuterRadius: outerRadius,
-				StrokeWidth: strokeWidth, Stroke: stroke, Label: lbl, LabelLine: labelLine,
-			}})
-		}
-	}}
+		st.pies = append(st.pies, chartPieReg{data: data, key: key, opts: chartPieOptions{
+			NameKey: nameKey, InnerRadius: innerRadius, OuterRadius: outerRadius,
+			StrokeWidth: strokeWidth, Stroke: stroke, Label: lbl, LabelLine: labelLine,
+		}})
+	})
 }
