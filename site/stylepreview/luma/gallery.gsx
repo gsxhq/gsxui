@@ -50,7 +50,6 @@ package luma
 import (
 	"time"
 
-	"github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/ui/icon"
 )
 
@@ -630,26 +629,26 @@ component galleryChartCard() {
 		</CardHeader>
 		<CardContent class="flex flex-col gap-4">
 			<Chart config={channelConfig}>
-				{ BarChart(channelData, nil, gsx.Fragment(
-					ChartCartesianGrid(&ChartCartesianGridOptions{Vertical: ChartBool(false)}),
-					ChartXAxis("quarter", nil),
-					ChartTooltip(nil),
-					ChartBar("organic", nil),
-					ChartBar("paid", nil),
-					ChartBar("referral", nil),
-					ChartBar("email", nil),
-					ChartBar("social", nil),
-					ChartLegend(nil),
-				), nil) }
+				<BarChart data={channelData}>
+					<ChartCartesianGrid horizontal/>
+					<ChartXAxis key="quarter"/>
+					<ChartTooltip/>
+					<ChartBar key="organic"/>
+					<ChartBar key="paid"/>
+					<ChartBar key="referral"/>
+					<ChartBar key="email"/>
+					<ChartBar key="social"/>
+					<ChartLegend/>
+				</BarChart>
 			</Chart>
 			<div class="flex flex-col gap-1.5">
 				<span class="text-xs text-muted-foreground">Weekly visits</span>
 				<Chart config={trendConfig} class="aspect-[5/1]">
-					{ AreaChart(trendData, nil, gsx.Fragment(
-						ChartXAxis("week", &ChartXAxisOptions{Hide: true}),
-						ChartTooltip(&ChartTooltipOptions{Cursor: ChartBool(false)}),
-						ChartArea("visits", &ChartAreaOptions{Type: ChartCurveNatural, FillOpacity: 0.3}),
-					), nil) }
+					<AreaChart data={trendData}>
+						<ChartXAxis key="week" hide/>
+						<ChartTooltip/>
+						<ChartArea key="visits" curve="natural" fillOpacity={0.3}/>
+					</AreaChart>
 				</Chart>
 			</div>
 		</CardContent>

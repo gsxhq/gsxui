@@ -4,23 +4,22 @@ package chart
 
 import (
 	_gsxctx "context"
-	"github.com/gsxhq/gsx"
 	_gsxrt "github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/ui"
 	uiicon "github.com/gsxhq/gsxui/ui/icon"
 	_gsxio "io"
 )
 
-//line line.gsx:9:1
+//line line.gsx:8:1
 // Line ports shadcn's chart-line-multiple demo: two monotone lines sharing
 // one x axis, cartesian grid and tooltip, wrapped in a Card with a
 // trending-up footer.
 
-//line line.gsx:12:1
+//line line.gsx:11:1
 func Line() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line line.gsx:13:2
+//line line.gsx:12:2
 		cfg := ui.ChartConfig{
 			{Key: "desktop", Label: "Desktop", Color: "var(--chart-1)"},
 			{Key: "mobile", Label: "Mobile", Color: "var(--chart-2)"},
@@ -33,19 +32,19 @@ func Line() _gsxrt.Node {
 			{"month": "May", "desktop": 209.0, "mobile": 130.0},
 			{"month": "June", "desktop": 214.0, "mobile": 140.0},
 		}
-//line line.gsx:27:2
+//line line.gsx:26:2
 		_gsxgw.Node(ctx, ui.Card(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line line.gsx:28:3
+//line line.gsx:27:3
 			_gsxgw.Node(ctx, ui.CardHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line line.gsx:29:4
+//line line.gsx:28:4
 				_gsxgw.Node(ctx, ui.CardTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Line Chart - Multiple")
 					return _gsxgw.Err()
 				}), nil))
-//line line.gsx:30:4
+//line line.gsx:29:4
 				_gsxgw.Node(ctx, ui.CardDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("January - June 2024")
@@ -53,37 +52,44 @@ func Line() _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line line.gsx:32:3
+//line line.gsx:31:3
 			_gsxgw.Node(ctx, ui.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line line.gsx:33:4
+//line line.gsx:32:4
 				_gsxgw.Node(ctx, ui.Chart(cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line line.gsx:34:5
-					_gsxgw.Node(ctx, ui.LineChart(data, &ui.ChartLineChartOptions{Margin: &ui.ChartMargin{Left: 12, Right: 12}}, gsx.Fragment(
-						ui.ChartCartesianGrid(&ui.ChartCartesianGridOptions{Vertical: ui.ChartBool(false)}),
-						ui.ChartXAxis("month", &ui.ChartXAxisOptions{TickMargin: 8}),
-						ui.ChartTooltip(&ui.ChartTooltipOptions{Cursor: ui.ChartBool(false)}),
-						ui.ChartLine("desktop", &ui.ChartLineOptions{Type: "monotone", Stroke: "var(--color-desktop)", StrokeWidth: 2}),
-						ui.ChartLine("mobile", &ui.ChartLineOptions{Type: "monotone", Stroke: "var(--color-mobile)", StrokeWidth: 2}),
-					), nil))
+//line line.gsx:33:5
+					_gsxgw.Node(ctx, ui.LineChart(data, 0, 12, 0, 12, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+//line line.gsx:34:6
+						_gsxgw.Node(ctx, ui.ChartCartesianGrid(true, false))
+//line line.gsx:35:6
+						_gsxgw.Node(ctx, ui.ChartXAxis("month", false, false, false, 8, 0))
+//line line.gsx:36:6
+						_gsxgw.Node(ctx, ui.ChartTooltip(false, "", "", false, false, "", "", "", "", false, 0))
+//line line.gsx:37:6
+						_gsxgw.Node(ctx, ui.ChartLine("desktop", "monotone", "var(--color-desktop)", 2, false, 0, 0, "", 0, 0))
+//line line.gsx:38:6
+						_gsxgw.Node(ctx, ui.ChartLine("mobile", "monotone", "var(--color-mobile)", 2, false, 0, 0, "", 0, 0))
+						return _gsxgw.Err()
+					}), nil))
 					return _gsxgw.Err()
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line line.gsx:43:3
+//line line.gsx:42:3
 			_gsxgw.Node(ctx, ui.CardFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line line.gsx:44:4
+//line line.gsx:43:4
 				_gsxgw.S("<div class=\"flex w-full items-start gap-2 text-sm\">")
-//line line.gsx:45:5
+//line line.gsx:44:5
 				_gsxgw.S("<div class=\"grid gap-2\">")
-//line line.gsx:46:6
+//line line.gsx:45:6
 				_gsxgw.S("<div class=\"flex items-center gap-2 leading-none font-medium\">Trending up by 5.2% this month")
-//line line.gsx:48:7
+//line line.gsx:47:7
 				_gsxgw.Node(ctx, uiicon.TrendingUp(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
 				_gsxgw.S("</div>")
-//line line.gsx:50:6
+//line line.gsx:49:6
 				_gsxgw.S("<div class=\"flex items-center gap-2 leading-none text-muted-foreground\">Showing total visitors for the last 6 months</div></div></div>")
 				return _gsxgw.Err()
 			}), nil))

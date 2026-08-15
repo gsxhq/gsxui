@@ -1,7 +1,6 @@
 package chart
 
 import (
-	"github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/ui"
 	uiicon "github.com/gsxhq/gsxui/ui/icon"
 )
@@ -31,13 +30,13 @@ component Line() {
 		</ui.CardHeader>
 		<ui.CardContent>
 			<ui.Chart config={cfg}>
-				{ ui.LineChart(data, &ui.ChartLineChartOptions{Margin: &ui.ChartMargin{Left: 12, Right: 12}}, gsx.Fragment(
-					ui.ChartCartesianGrid(&ui.ChartCartesianGridOptions{Vertical: ui.ChartBool(false)}),
-					ui.ChartXAxis("month", &ui.ChartXAxisOptions{TickMargin: 8}),
-					ui.ChartTooltip(&ui.ChartTooltipOptions{Cursor: ui.ChartBool(false)}),
-					ui.ChartLine("desktop", &ui.ChartLineOptions{Type: "monotone", Stroke: "var(--color-desktop)", StrokeWidth: 2}),
-					ui.ChartLine("mobile", &ui.ChartLineOptions{Type: "monotone", Stroke: "var(--color-mobile)", StrokeWidth: 2}),
-				), nil) }
+				<ui.LineChart data={data} marginLeft={12} marginRight={12}>
+					<ui.ChartCartesianGrid horizontal/>
+					<ui.ChartXAxis key="month" tickMargin={8}/>
+					<ui.ChartTooltip/>
+					<ui.ChartLine key="desktop" curve="monotone" stroke="var(--color-desktop)" strokeWidth={2}/>
+					<ui.ChartLine key="mobile" curve="monotone" stroke="var(--color-mobile)" strokeWidth={2}/>
+				</ui.LineChart>
 			</ui.Chart>
 		</ui.CardContent>
 		<ui.CardFooter>

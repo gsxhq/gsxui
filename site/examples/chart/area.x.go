@@ -4,14 +4,13 @@ package chart
 
 import (
 	_gsxctx "context"
-	"github.com/gsxhq/gsx"
 	_gsxrt "github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/ui"
 	uiicon "github.com/gsxhq/gsxui/ui/icon"
 	_gsxio "io"
 )
 
-//line area.gsx:9:1
+//line area.gsx:8:1
 // Area ports shadcn's chart-area-gradient demo: a stacked, gradient-filled
 // AreaChart wrapped in a Card, exercising ChartDefs/ChartLinearGradient
 // (the gradient <defs> upstream's own chart-area-interactive demo also
@@ -20,11 +19,11 @@ import (
 // (no client state this task models), so this keeps the static six months
 // of data every upstream chart-area-*.tsx demo shares instead.
 
-//line area.gsx:16:1
+//line area.gsx:15:1
 func Area() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line area.gsx:17:2
+//line area.gsx:16:2
 		cfg := ui.ChartConfig{
 			{Key: "desktop", Label: "Desktop", Color: "var(--chart-1)"},
 			{Key: "mobile", Label: "Mobile", Color: "var(--chart-2)"},
@@ -37,19 +36,19 @@ func Area() _gsxrt.Node {
 			{"month": "May", "desktop": 209.0, "mobile": 130.0},
 			{"month": "June", "desktop": 214.0, "mobile": 140.0},
 		}
-//line area.gsx:31:2
+//line area.gsx:30:2
 		_gsxgw.Node(ctx, ui.Card(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line area.gsx:32:3
+//line area.gsx:31:3
 			_gsxgw.Node(ctx, ui.CardHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line area.gsx:33:4
+//line area.gsx:32:4
 				_gsxgw.Node(ctx, ui.CardTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Area Chart - Gradient")
 					return _gsxgw.Err()
 				}), nil))
-//line area.gsx:34:4
+//line area.gsx:33:4
 				_gsxgw.Node(ctx, ui.CardDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Showing total visitors for the last 6 months")
@@ -57,47 +56,67 @@ func Area() _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line area.gsx:36:3
+//line area.gsx:35:3
 			_gsxgw.Node(ctx, ui.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line area.gsx:37:4
+//line area.gsx:36:4
 				_gsxgw.Node(ctx, ui.Chart(cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line area.gsx:38:5
-					_gsxgw.Node(ctx, ui.AreaChart(data, &ui.ChartAreaChartOptions{Margin: &ui.ChartMargin{Left: 12, Right: 12}}, gsx.Fragment(
-						ui.ChartCartesianGrid(&ui.ChartCartesianGridOptions{Vertical: ui.ChartBool(false)}),
-						ui.ChartXAxis("month", &ui.ChartXAxisOptions{TickMargin: 8}),
-						ui.ChartTooltip(&ui.ChartTooltipOptions{Cursor: ui.ChartBool(false)}),
-						ui.ChartDefs(gsx.Fragment(
-							ui.ChartLinearGradient(
-								ui.ChartLinearGradientOptions{ID: "fillDesktop", X1: "0", Y1: "0", X2: "0", Y2: "1"},
-								gsx.Raw(`<stop offset="5%" stop-color="var(--color-desktop)" stop-opacity="0.8"></stop><stop offset="95%" stop-color="var(--color-desktop)" stop-opacity="0.1"></stop>`),
-							),
-							ui.ChartLinearGradient(
-								ui.ChartLinearGradientOptions{ID: "fillMobile", X1: "0", Y1: "0", X2: "0", Y2: "1"},
-								gsx.Raw(`<stop offset="5%" stop-color="var(--color-mobile)" stop-opacity="0.8"></stop><stop offset="95%" stop-color="var(--color-mobile)" stop-opacity="0.1"></stop>`),
-							),
-						)),
-						ui.ChartArea("mobile", &ui.ChartAreaOptions{Type: ui.ChartCurveNatural, Fill: "url(#fillMobile)", FillOpacity: 0.4, Stroke: "var(--color-mobile)", StackID: "a"}),
-						ui.ChartArea("desktop", &ui.ChartAreaOptions{Type: ui.ChartCurveNatural, Fill: "url(#fillDesktop)", FillOpacity: 0.4, Stroke: "var(--color-desktop)", StackID: "a"}),
-					), nil))
+//line area.gsx:37:5
+					_gsxgw.Node(ctx, ui.AreaChart(data, 0, 12, 0, 12, "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+//line area.gsx:38:6
+						_gsxgw.Node(ctx, ui.ChartCartesianGrid(true, false))
+//line area.gsx:39:6
+						_gsxgw.Node(ctx, ui.ChartXAxis("month", false, false, false, 8, 0))
+//line area.gsx:40:6
+						_gsxgw.Node(ctx, ui.ChartTooltip(false, "", "", false, false, "", "", "", "", false, 0))
+//line area.gsx:41:6
+						_gsxgw.Node(ctx, ui.ChartDefs(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+							_gsxgw := _gsxrt.W(_gsxw)
+//line area.gsx:42:7
+							_gsxgw.Node(ctx, ui.ChartLinearGradient("fillDesktop", "0", "0", "0", "1", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+								_gsxgw := _gsxrt.W(_gsxw)
+//line area.gsx:43:8
+								_gsxgw.S("<stop offset=\"5%\" stop-color=\"var(--color-desktop)\" stop-opacity=\"0.8\"></stop>")
+//line area.gsx:44:8
+								_gsxgw.S("<stop offset=\"95%\" stop-color=\"var(--color-desktop)\" stop-opacity=\"0.1\"></stop>")
+								return _gsxgw.Err()
+							})))
+//line area.gsx:46:7
+							_gsxgw.Node(ctx, ui.ChartLinearGradient("fillMobile", "0", "0", "0", "1", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+								_gsxgw := _gsxrt.W(_gsxw)
+//line area.gsx:47:8
+								_gsxgw.S("<stop offset=\"5%\" stop-color=\"var(--color-mobile)\" stop-opacity=\"0.8\"></stop>")
+//line area.gsx:48:8
+								_gsxgw.S("<stop offset=\"95%\" stop-color=\"var(--color-mobile)\" stop-opacity=\"0.1\"></stop>")
+								return _gsxgw.Err()
+							})))
+							return _gsxgw.Err()
+						})))
+//line area.gsx:51:6
+						_gsxgw.Node(ctx, ui.ChartArea("mobile", "natural", "url(#fillMobile)", "var(--color-mobile)", "a", 0.4))
+//line area.gsx:52:6
+						_gsxgw.Node(ctx, ui.ChartArea("desktop", "natural", "url(#fillDesktop)", "var(--color-desktop)", "a", 0.4))
+						return _gsxgw.Err()
+					}), nil))
 					return _gsxgw.Err()
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line area.gsx:57:3
+//line area.gsx:56:3
 			_gsxgw.Node(ctx, ui.CardFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line area.gsx:58:4
+//line area.gsx:57:4
 				_gsxgw.S("<div class=\"flex w-full items-start gap-2 text-sm\">")
-//line area.gsx:59:5
+//line area.gsx:58:5
 				_gsxgw.S("<div class=\"grid gap-2\">")
-//line area.gsx:60:6
+//line area.gsx:59:6
 				_gsxgw.S("<div class=\"flex items-center gap-2 leading-none font-medium\">Trending up by 5.2% this month")
-//line area.gsx:62:7
+//line area.gsx:61:7
 				_gsxgw.Node(ctx, uiicon.TrendingUp(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
 				_gsxgw.S("</div>")
-//line area.gsx:64:6
+//line area.gsx:63:6
 				_gsxgw.S("<div class=\"flex items-center gap-2 leading-none text-muted-foreground\">January - June 2024</div></div></div>")
 				return _gsxgw.Err()
 			}), nil))

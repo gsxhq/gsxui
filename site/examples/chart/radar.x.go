@@ -4,22 +4,21 @@ package chart
 
 import (
 	_gsxctx "context"
-	"github.com/gsxhq/gsx"
 	_gsxrt "github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/ui"
 	uiicon "github.com/gsxhq/gsxui/ui/icon"
 	_gsxio "io"
 )
 
-//line radar.gsx:9:1
+//line radar.gsx:8:1
 // Radar ports shadcn's chart-radar-default demo: a single-series RadarChart
 // with a polar grid and angle axis, wrapped in a Card.
 
-//line radar.gsx:11:1
+//line radar.gsx:10:1
 func Radar() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line radar.gsx:12:2
+//line radar.gsx:11:2
 		cfg := ui.ChartConfig{
 			{Key: "desktop", Label: "Desktop", Color: "var(--chart-1)"},
 		}
@@ -31,19 +30,19 @@ func Radar() _gsxrt.Node {
 			{"month": "May", "desktop": 209.0},
 			{"month": "June", "desktop": 214.0},
 		}
-//line radar.gsx:25:2
+//line radar.gsx:24:2
 		_gsxgw.Node(ctx, ui.Card(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line radar.gsx:26:3
+//line radar.gsx:25:3
 			_gsxgw.Node(ctx, ui.CardHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line radar.gsx:27:4
+//line radar.gsx:26:4
 				_gsxgw.Node(ctx, ui.CardTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Radar Chart")
 					return _gsxgw.Err()
 				}), nil))
-//line radar.gsx:28:4
+//line radar.gsx:27:4
 				_gsxgw.Node(ctx, ui.CardDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Showing total visitors for the last 6 months")
@@ -51,32 +50,38 @@ func Radar() _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "items-center pb-4"}}))
-//line radar.gsx:30:3
+//line radar.gsx:29:3
 			_gsxgw.Node(ctx, ui.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line radar.gsx:31:4
+//line radar.gsx:30:4
 				_gsxgw.Node(ctx, ui.Chart(cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line radar.gsx:32:5
-					_gsxgw.Node(ctx, ui.RadarChart(data, nil, gsx.Fragment(
-						ui.ChartTooltip(&ui.ChartTooltipOptions{Cursor: ui.ChartBool(false)}),
-						ui.ChartPolarAngleAxis("month"),
-						ui.ChartPolarGrid(nil),
-						ui.ChartRadar("desktop", &ui.ChartRadarOptions{Fill: "var(--color-desktop)", FillOpacity: ui.ChartFloat(0.6)}),
-					), nil))
+//line radar.gsx:31:5
+					_gsxgw.Node(ctx, ui.RadarChart(data, 0, 0, 0, 0, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+//line radar.gsx:32:6
+						_gsxgw.Node(ctx, ui.ChartTooltip(false, "", "", false, false, "", "", "", "", false, 0))
+//line radar.gsx:33:6
+						_gsxgw.Node(ctx, ui.ChartPolarAngleAxis("month"))
+//line radar.gsx:34:6
+						_gsxgw.Node(ctx, ui.ChartPolarGrid("", true, nil, "", 0, ""))
+//line radar.gsx:35:6
+						_gsxgw.Node(ctx, ui.ChartRadar("desktop", "var(--color-desktop)", 0.6, "", 0, false, 0, "", 0))
+						return _gsxgw.Err()
+					}), nil))
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "class", Value: "mx-auto aspect-square max-h-[250px]"}}))
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "pb-0"}}))
-//line radar.gsx:40:3
+//line radar.gsx:39:3
 			_gsxgw.Node(ctx, ui.CardFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line radar.gsx:41:4
+//line radar.gsx:40:4
 				_gsxgw.S("<div class=\"flex items-center gap-2 leading-none font-medium\">Trending up by 5.2% this month")
-//line radar.gsx:43:5
+//line radar.gsx:42:5
 				_gsxgw.Node(ctx, uiicon.TrendingUp(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
 				_gsxgw.S("</div>")
-//line radar.gsx:45:4
+//line radar.gsx:44:4
 				_gsxgw.S("<div class=\"flex items-center gap-2 leading-none text-muted-foreground\">January - June 2024</div>")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "flex-col gap-2 text-sm"}}))

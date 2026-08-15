@@ -1,10 +1,7 @@
 // Package chart holds the site's example gsx components for ui/chart.
 package chart
 
-import (
-	"github.com/gsxhq/gsx"
-	"github.com/gsxhq/gsxui/ui"
-)
+import "github.com/gsxhq/gsxui/ui"
 
 // Basic renders a two-series bar chart: Chart's container, BarChart's
 // model builder, ChartTooltip's hover chrome and ChartLegend's
@@ -25,13 +22,13 @@ component Basic() {
 		}
 	}}
 	<ui.Chart config={cfg}>
-		{ ui.BarChart(data, nil, gsx.Fragment(
-			ui.ChartCartesianGrid(nil),
-			ui.ChartXAxis("month", nil),
-			ui.ChartTooltip(nil),
-			ui.ChartBar("desktop", nil),
-			ui.ChartBar("mobile", nil),
-			ui.ChartLegend(nil),
-		), nil) }
+		<ui.BarChart data={data}>
+			<ui.ChartCartesianGrid horizontal/>
+			<ui.ChartXAxis key="month"/>
+			<ui.ChartTooltip/>
+			<ui.ChartBar key="desktop"/>
+			<ui.ChartBar key="mobile"/>
+			<ui.ChartLegend/>
+		</ui.BarChart>
 	</ui.Chart>
 }

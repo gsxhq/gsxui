@@ -226,36 +226,57 @@ func Chart(config ChartConfig, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // carry what the client needs, exactly like templui's own Model.
 type ChartDatum map[string]any
 
-// ChartMargin replaces the chart's plot margin (Recharts' default of 5 on
-// every side) entirely when registered. Left unset, the model omits its
-// margin field and the client renderer applies the Recharts default
-// itself — see ChartModel's own doc comment on that convention.
-type ChartMargin struct {
+// chartMargin is the chart's plot margin (Recharts' default of 5 on every
+// side): a chart root's own marginTop/marginRight/marginBottom/marginLeft
+// tag params, resolved through chartMarginOf below. A directly constructed
+// chartState (nothing in this file does so with a nil margin anymore, but
+// buildChartModel/buildChartRadarModel/buildChartRadialModel still handle
+// it) treats a nil *chartMargin the same way: the model's margin fields
+// fall back to that same 5/5/5/5.
+type chartMargin struct {
 	Top, Right, Bottom, Left float64
 }
 
-// ChartCurveType selects a Line's or Area's interpolation, the pendant of
-// templui's CurveType (itself Recharts' curve prop).
-type ChartCurveType string
-
-// ChartCurveNatural is Recharts' default curve.
-const ChartCurveNatural ChartCurveType = "natural"
-
-// ChartBool returns a pointer to v, for options whose Recharts default is
-// true (e.g. CartesianGrid's Horizontal/Vertical) — pass ChartBool(false)
-// to turn one off, a nil option leaves the Recharts default in place.
-func ChartBool(v bool) *bool { return &v }
-
-// ChartFloat returns a pointer to v, for numeric options that carry a
-// meaningful zero.
-func ChartFloat(v float64) *float64 { return &v }
-
-// chartBoolOr resolves an optional option against its Recharts default.
-func chartBoolOr(v *bool, def bool) bool {
-	if v == nil {
+// chartFloatOr resolves a flat numeric tag parameter against its built-in
+// default: zero means "not customized," the same zero-sentinel convention
+// chartXAxisOptions' own MinTickGap defaulting in buildChartModel already
+// uses (see there) — not a new idiom this task introduces, just applied to
+// margins and the two other meaningful-zero fields a public *float64
+// pointer used to carry (chartRadarOptions.FillOpacity, RadialBarChart's
+// end angle).
+func chartFloatOr(v, def float64) float64 {
+	if v == 0 {
 		return def
 	}
-	return *v
+	return v
+}
+
+// chartFloatPtrOr converts a flat float64 tag parameter into the *float64
+// a struct field that treats zero as "unset, leave the SVG default in
+// place" (chartRadarOptions.FillOpacity) still expects internally: zero
+// becomes nil, any other value becomes a pointer to itself.
+func chartFloatPtrOr(v float64) *float64 {
+	if v == 0 {
+		return nil
+	}
+	return &v
+}
+
+// chartMarginOf resolves the four flat margin tag parameters into a
+// chartState margin, each side independently defaulting to Recharts' own 5
+// when left at zero. Always non-nil: buildChartModel/buildChartRadarModel/
+// buildChartRadialModel's own `if st.margin != nil` branch (unchanged from
+// before this task) is still correct for a caller who constructs a
+// chartState directly, it just never sees nil from a chart root's own
+// component body anymore, matching the same 5/5/5/5 output their nil
+// branch already produced for a caller who set no margin at all.
+func chartMarginOf(top, right, bottom, left float64) *chartMargin {
+	return &chartMargin{
+		Top:    chartFloatOr(top, 5),
+		Right:  chartFloatOr(right, 5),
+		Bottom: chartFloatOr(bottom, 5),
+		Left:   chartFloatOr(left, 5),
+	}
 }
 
 // chartCtxKey namespaces this file's two context values so they cannot
@@ -290,13 +311,13 @@ func chartStateFromCtx(ctx context.Context) *chartState {
 type chartState struct {
 	kind        string
 	data        []ChartDatum
-	margin      *ChartMargin
+	margin      *chartMargin
 	stackOffset string
-	grid        *ChartCartesianGridOptions
+	grid        *chartGridOptions
 	x           *chartAxisReg
 	y           *chartYAxisReg
 	tooltip     *chartTooltipReg
-	legend      *ChartLegendOptions
+	legend      *chartLegendOptions
 	defs        []chartGradientReg
 	bars        []chartBarReg
 	lines       []chartLineReg
@@ -306,11 +327,11 @@ type chartState struct {
 	// upstream mounts through Pie or PolarRadiusAxis) is not ported: the
 	// Label child itself is out of this task's explicit child list.
 	pies       []chartPieReg
-	polarGrid  *ChartPolarGridOptions
+	polarGrid  *chartPolarGridOptions
 	angleAxis  *chartPolarAngleAxisReg
 	radars     []chartRadarReg
 	radialBars []chartRadialBarReg
-	radiusAxis *ChartPolarRadiusAxisOptions
+	radiusAxis *chartPolarRadiusAxisOptions
 
 	// RadialBarChart's own geometry, the pendant of upstream's own
 	// chartState fields of the same name.
@@ -322,16 +343,16 @@ type chartState struct {
 
 type chartAxisReg struct {
 	key  string
-	opts ChartXAxisOptions
+	opts chartXAxisOptions
 }
 
 type chartYAxisReg struct {
 	key  string
-	opts ChartYAxisOptions
+	opts chartYAxisOptions
 }
 
 type chartTooltipReg struct {
-	opts ChartTooltipOptions
+	opts chartTooltipOptions
 }
 
 type chartGradientReg struct {
@@ -340,17 +361,17 @@ type chartGradientReg struct {
 
 type chartBarReg struct {
 	key  string
-	opts ChartBarOptions
+	opts chartBarOptions
 }
 
 type chartLineReg struct {
 	key  string
-	opts ChartLineOptions
+	opts chartLineOptions
 }
 
 type chartAreaReg struct {
 	key  string
-	opts ChartAreaOptions
+	opts chartAreaOptions
 }
 
 // chartPieReg is one registered ChartPie: unlike the cartesian series,
@@ -359,12 +380,12 @@ type chartAreaReg struct {
 type chartPieReg struct {
 	data []ChartDatum
 	key  string
-	opts ChartPieOptions
+	opts chartPieOptions
 }
 
 // chartPolarAngleAxisReg is one registered ChartPolarAngleAxis. Recharts'
 // Tick render-prop is a Go closure and cannot cross the JSON boundary to
-// the client renderer (the same reasoning ChartTooltipOptions' dropped
+// the client renderer (the same reasoning chartTooltipOptions' dropped
 // Formatter uses), so key is all this needs.
 type chartPolarAngleAxisReg struct {
 	key string
@@ -372,25 +393,27 @@ type chartPolarAngleAxisReg struct {
 
 type chartRadarReg struct {
 	key  string
-	opts ChartRadarOptions
+	opts chartRadarOptions
 }
 
 type chartRadialBarReg struct {
 	key  string
-	opts ChartRadialBarOptions
+	opts chartRadialBarOptions
 }
 
-// ChartCartesianGridOptions is the pendant of Recharts' CartesianGrid.
-// Both directions default to Recharts' true, so they are pointers: pass
-// ChartBool(false) to turn one off.
-type ChartCartesianGridOptions struct {
-	Horizontal *bool
-	Vertical   *bool
+// chartGridOptions is the pendant of Recharts' CartesianGrid. Both
+// directions default to false (gsxui's own convention, ADAPTed from
+// Recharts' own default-true — see ChartCartesianGrid's doc comment):
+// a bare `<ui.ChartCartesianGrid/>` draws no lines at all, matching a
+// caller having to opt in to each direction explicitly.
+type chartGridOptions struct {
+	Horizontal bool
+	Vertical   bool
 }
 
-// ChartXAxisOptions is the pendant of Recharts' XAxis, minus the render-prop
+// chartXAxisOptions is the pendant of Recharts' XAxis, minus the render-prop
 // fields (TickFormatter) a JSON model boundary cannot carry.
-type ChartXAxisOptions struct {
+type chartXAxisOptions struct {
 	Hide       bool
 	TickLine   bool
 	AxisLine   bool
@@ -398,8 +421,8 @@ type ChartXAxisOptions struct {
 	MinTickGap float64 // defaults to Recharts' 5
 }
 
-// ChartYAxisOptions is the pendant of Recharts' YAxis.
-type ChartYAxisOptions struct {
+// chartYAxisOptions is the pendant of Recharts' YAxis.
+type chartYAxisOptions struct {
 	Hide       bool
 	TickLine   bool
 	AxisLine   bool
@@ -408,15 +431,16 @@ type ChartYAxisOptions struct {
 	Width      float64 // defaults to Recharts' 60
 }
 
-// ChartTooltipOptions is the pendant of ChartTooltip plus
+// chartTooltipOptions is the pendant of ChartTooltip plus
 // ChartTooltipContent's non-function fields — Formatter/LabelFormatter are
 // deferred (see this task's report: a Go closure cannot cross the JSON
 // boundary to the client renderer, and the model already carries the raw
 // row data those would have formatted from).
-type ChartTooltipOptions struct {
-	// Cursor defaults to Recharts' true, so it is a pointer: pass
-	// ChartBool(false) to turn it off.
-	Cursor        *bool
+type chartTooltipOptions struct {
+	// Cursor defaults to false (gsxui's own ADAPT of Recharts' own
+	// default-true — see ChartTooltip's doc comment): a bare
+	// `<ui.ChartTooltip/>` draws no hover cursor highlight.
+	Cursor        bool
 	Indicator     string // "dot" (default), "line", "dashed"
 	LabelKey      string
 	HideLabel     bool
@@ -430,9 +454,9 @@ type ChartTooltipOptions struct {
 	DefaultIndex *int
 }
 
-// ChartLegendOptions is the pendant of ChartLegend plus
+// chartLegendOptions is the pendant of ChartLegend plus
 // ChartLegendContent's props.
-type ChartLegendOptions struct {
+type chartLegendOptions struct {
 	// NameKey picks the config entry for the label, like the nameKey of
 	// ChartLegendContent.
 	NameKey string
@@ -444,17 +468,11 @@ type ChartLegendOptions struct {
 	HideIcon bool
 }
 
-// ChartLinearGradientOptions is the pendant of a linearGradient element in
-// the chart defs, declared by a caller that fills an area with a
-// gradient.
-type ChartLinearGradientOptions struct {
-	ID             string
-	X1, Y1, X2, Y2 string
-}
-
-// ChartAreaOptions is the pendant of one Recharts Area.
-type ChartAreaOptions struct {
-	Type ChartCurveType
+// chartAreaOptions is the pendant of one Recharts Area.
+type chartAreaOptions struct {
+	// Curve is Recharts' curve prop: "natural", "linear" or "step"; empty
+	// renders as Recharts' own "linear" default, unchanged by this task.
+	Curve string
 	// Fill and Stroke are used verbatim, e.g. "url(#fillDesktop)" or
 	// "var(--color-desktop)". Empty falls back to the series color.
 	Fill        string
@@ -463,8 +481,8 @@ type ChartAreaOptions struct {
 	FillOpacity float64 // 0 uses Recharts' default 0.6
 }
 
-// ChartBarOptions is the pendant of one Recharts Bar.
-type ChartBarOptions struct {
+// chartBarOptions is the pendant of one Recharts Bar.
+type chartBarOptions struct {
 	Fill    string
 	StackID string
 	// Radius is Recharts' radius union: a float64 for all corners or a
@@ -473,70 +491,39 @@ type ChartBarOptions struct {
 	StrokeWidth float64
 }
 
-// ChartDotOptions is the pendant of Recharts' dot prop's object form.
-type ChartDotOptions struct {
+// chartDotOptions is the pendant of Recharts' dot prop's object form.
+type chartDotOptions struct {
 	R           float64
 	FillOpacity float64
 	Fill        string
 	Size        float64 // icon box, unused without an Icon renderer
 }
 
-// ChartLineOptions is the pendant of one Recharts Line.
-type ChartLineOptions struct {
-	Type        ChartCurveType
+// chartLineOptions is the pendant of one Recharts Line.
+type chartLineOptions struct {
+	// Curve is Recharts' curve prop: "natural", "linear" or "step"; empty
+	// renders as Recharts' own "linear" default, unchanged by this task.
+	Curve       string
 	Stroke      string
 	StrokeWidth float64
 	// Dot draws the per point dots; nil is the demos' dot={false}.
-	Dot *ChartDotOptions
+	Dot *chartDotOptions
 	// ActiveDotR sizes the hover dot, like Recharts' activeDot prop.
 	ActiveDotR float64
 }
 
-// ChartBarChartOptions overrides BarChart's Recharts defaults. Layout
-// (Recharts' vertical bar layout) and AccessibilityLayer are deferred —
-// neither is in this task's explicit port list (Margin, CurveType,
-// StackOffset, Bool/Float helpers); a later task can extend this struct.
-type ChartBarChartOptions struct {
-	Margin *ChartMargin
-}
+// Layout (Recharts' vertical bar layout) and AccessibilityLayer stay
+// deferred on every chart root below — neither was in the shipped task's
+// port list (Margin, curve, StackOffset), and this task only reshapes how
+// what already ported is exposed, not what is ported.
 
-// ChartLineChartOptions overrides LineChart's Recharts defaults.
-type ChartLineChartOptions struct {
-	Margin *ChartMargin
-}
-
-// ChartAreaChartOptions overrides AreaChart's Recharts defaults.
-type ChartAreaChartOptions struct {
-	Margin *ChartMargin
-	// StackOffset "expand" normalizes each stack to 100%, the pendant of
-	// Recharts' stackOffset prop.
-	StackOffset string
-}
-
-// ChartRadarChartOptions overrides RadarChart's Recharts defaults.
-type ChartRadarChartOptions struct {
-	Margin *ChartMargin
-}
-
-// ChartRadialBarChartOptions overrides RadialBarChart's Recharts defaults.
-type ChartRadialBarChartOptions struct {
-	// StartAngle is Recharts' zero by default, so a plain value carries it.
-	StartAngle float64
-	// EndAngle defaults to a full turn (360°), which a plain zero cannot
-	// express, so it is a pointer.
-	EndAngle    *float64
-	InnerRadius float64
-	// OuterRadius defaults to Recharts' 80% of the available radius.
-	OuterRadius float64
-	Margin      *ChartMargin
-}
-
-// ChartPolarGridOptions is the pendant of Recharts' PolarGrid.
-type ChartPolarGridOptions struct {
+// chartPolarGridOptions is the pendant of Recharts' PolarGrid.
+type chartPolarGridOptions struct {
 	// GridType is "polygon" (default) or "circle".
 	GridType string
-	// RadialLines defaults to Recharts' true.
-	RadialLines *bool
+	// RadialLines defaults to false (gsxui's own ADAPT of Recharts' own
+	// default-true — see ChartPolarGrid's doc comment).
+	RadialLines bool
 	// PolarRadius replaces the radius axis ticks with fixed radii.
 	PolarRadius []float64
 	// Stroke is the grid color, Recharts' "#ccc"; a radial chart demo
@@ -546,32 +533,37 @@ type ChartPolarGridOptions struct {
 	Class       string
 }
 
-// ChartPolarRadiusAxisOptions is the pendant of Recharts' PolarRadiusAxis.
-// Tick, TickLine and AxisLine all default to Recharts' true. Upstream
+// chartPolarRadiusAxisOptions is the pendant of Recharts' PolarRadiusAxis.
+// Tick, TickLine and AxisLine all default to Recharts' true upstream, but
+// (like every other bool this task ADAPTs) default false here. Upstream
 // itself never reads these three fields back out of its own registered
 // state either (grep confirms): PolarRadiusAxis exists there only as a
 // mount point for a center Label child, which this task doesn't port (not
 // in the brief's explicit child list) — so these are captured here for
-// structural fidelity but currently as inert as they are upstream.
-type ChartPolarRadiusAxisOptions struct {
-	Tick     *bool
-	TickLine *bool
-	AxisLine *bool
+// structural fidelity but currently as inert as they are upstream, and the
+// default flip changes nothing observable.
+type chartPolarRadiusAxisOptions struct {
+	Tick     bool
+	TickLine bool
+	AxisLine bool
 }
 
-// ChartRadarOptions is the pendant of one Recharts Radar.
-type ChartRadarOptions struct {
+// chartRadarOptions is the pendant of one Recharts Radar.
+type chartRadarOptions struct {
 	Fill string
 	// FillOpacity is a pointer because zero is a meaningful value: an
-	// unset option leaves the SVG default of 1 in place.
+	// unset option leaves the SVG default of 1 in place — built from
+	// ChartRadar's own flat fillOpacity float64 param via
+	// chartFloatPtrOr's zero-sentinel convention, nil when the param is
+	// left at zero.
 	FillOpacity *float64
 	Stroke      string
 	StrokeWidth float64
-	Dot         *ChartDotOptions
+	Dot         *chartDotOptions
 }
 
-// ChartRadialBarOptions is the pendant of one Recharts RadialBar.
-type ChartRadialBarOptions struct {
+// chartRadialBarOptions is the pendant of one Recharts RadialBar.
+type chartRadialBarOptions struct {
 	Fill string
 	// Background draws the track behind the bar, over the full angle range.
 	Background   bool
@@ -580,18 +572,18 @@ type ChartRadialBarOptions struct {
 	Class        string
 }
 
-// ChartPieLabelOptions is the pendant of the label option of a Pie.
-type ChartPieLabelOptions struct {
+// chartPieLabelOptions is the pendant of the label option of a Pie.
+type chartPieLabelOptions struct {
 	// Fill overrides the slice color the labels inherit.
 	Fill string
 }
 
-// ChartPieOptions is the pendant of one Recharts Pie. ActiveIndex and
+// chartPieOptions is the pendant of one Recharts Pie. ActiveIndex and
 // ActiveShape (Recharts' active-sector props) are deferred alongside
 // Label/LabelList's own list-registering counterparts — the same
-// reasoning ChartBarOptions' own dropped ActiveIndex/ActiveBar uses: not
+// reasoning chartBarOptions' own dropped ActiveIndex/ActiveBar uses: not
 // in the brief's explicit child list for this task.
-type ChartPieOptions struct {
+type chartPieOptions struct {
 	NameKey     string
 	InnerRadius float64
 	// OuterRadius defaults to Recharts' 80% of the available radius.
@@ -600,10 +592,17 @@ type ChartPieOptions struct {
 	// Stroke is the separator between the slices, Recharts' "#fff"; pass
 	// "0" to drop it.
 	Stroke string
-	// Label renders the value labels outside the slices, LabelLine the
-	// connecting line, on by default like Recharts.
-	Label     *ChartPieLabelOptions
-	LabelLine *bool
+	// Label renders the value labels outside the slices — nil (ChartPie's
+	// own flat label bool left false) shows none, matching every shipped
+	// demo, none of which passes Recharts' own label prop either.
+	Label *chartPieLabelOptions
+	// LabelLine draws the connecting line from a slice to its outside
+	// label; defaults false (gsxui's own ADAPT of Recharts' own
+	// default-true — see ChartPie's doc comment). Inert without Label
+	// also set: chart.render.js only draws either when Label is present
+	// (see ui/chart.render.js's own pie.label gate), so this default flip
+	// changes no shipped demo's rendered pixels.
+	LabelLine bool
 }
 
 // label resolves key's config entry, the ChartConfig pendant of templui's
@@ -777,8 +776,9 @@ type ChartModel struct {
 	GridVertical   bool `json:"gridVertical,omitempty"`
 
 	// Layout "vertical" swaps the axes and draws the bars horizontally —
-	// out of this task's scope (see ChartBarChartOptions' own doc
-	// comment), so this always marshals as absent for now.
+	// out of this task's scope (no BarChart tag param can set it, see
+	// docs/jsx-parity.md's own `## chart` GAP entry), so this always
+	// marshals as absent for now.
 	Layout      string  `json:"layout,omitempty"`
 	XAxisHide   bool    `json:"xAxisHide,omitempty"`
 	YAxisHide   bool    `json:"yAxisHide,omitempty"`
@@ -829,7 +829,7 @@ type ChartLinearGradientModel struct {
 }
 
 // ChartTooltipModel mirrors templui's TooltipModel, resolved from
-// ChartTooltipOptions.
+// chartTooltipOptions.
 //
 // An earlier draft carried a TooltipClass field here (the compiled
 // per-style tooltip recipe's class string, for the client to stamp onto
@@ -911,7 +911,7 @@ type ChartDotModel struct {
 // ChartTickContentModel is a custom axis tick for the client renderer —
 // the pendant of templui's TickContentModel. Nothing populates it in this
 // task (PolarAngleAxis's Tick render-prop is a Go closure and cannot cross
-// the JSON boundary — the same reasoning ChartTooltipOptions' dropped
+// the JSON boundary — the same reasoning chartTooltipOptions' dropped
 // Formatter uses), but the renderer itself still reads polar.ticks[i]
 // separately from its own default-grid fallback (chart.js's own
 // `const custom = polar.ticks && polar.ticks[i]`), so the field stays —
@@ -967,7 +967,7 @@ type ChartPieLabelModel struct {
 // templui's PieModel, minus LabelList/ActiveIndex/ActiveShape/Center: the
 // LabelList and Label children they depend on are out of this task's
 // explicit child list, and ActiveIndex/ActiveShape are deferred the same
-// way ChartBarOptions' own ActiveIndex/ActiveBar are (see ChartPieOptions'
+// way chartBarOptions' own ActiveIndex/ActiveBar are (see chartPieOptions'
 // own doc comment).
 type ChartPieModel struct {
 	Key          string              `json:"key"`
@@ -1021,8 +1021,8 @@ func buildChartModel(ctx context.Context, st *chartState) ChartModel {
 
 	if g := st.grid; g != nil {
 		m.Grid = true
-		m.GridHorizontal = chartBoolOr(g.Horizontal, true)
-		m.GridVertical = chartBoolOr(g.Vertical, true)
+		m.GridHorizontal = g.Horizontal
+		m.GridVertical = g.Vertical
 	}
 	if y := st.y; y != nil {
 		m.YAxisWidth = y.opts.Width
@@ -1063,7 +1063,7 @@ func buildChartModel(ctx context.Context, st *chartState) ChartModel {
 	}
 	tt := st.tooltip
 	if tt != nil {
-		m.Cursor = chartBoolOr(tt.opts.Cursor, true)
+		m.Cursor = tt.opts.Cursor
 		m.HasTooltip = true
 		m.Tooltip = ChartTooltipModel{
 			Indicator: tt.opts.Indicator, HideLabel: tt.opts.HideLabel, HideIndicator: tt.opts.HideIndicator,
@@ -1123,7 +1123,7 @@ func buildChartModel(ctx context.Context, st *chartState) ChartModel {
 	case "line":
 		for _, l := range st.lines {
 			s := chartModelSeries(config, l.key, "", 0, st.data)
-			s.Curve = string(l.opts.Type)
+			s.Curve = l.opts.Curve
 			s.Stroke = l.opts.Stroke
 			s.StrokeWidth = l.opts.StrokeWidth
 			s.ActiveDotR = l.opts.ActiveDotR
@@ -1139,7 +1139,7 @@ func buildChartModel(ctx context.Context, st *chartState) ChartModel {
 				stacked = true
 			}
 			s := chartModelSeries(config, a.key, "", a.opts.FillOpacity, st.data)
-			s.Curve = string(a.opts.Type)
+			s.Curve = a.opts.Curve
 			s.Fill = a.opts.Fill
 			s.Stroke = a.opts.Stroke
 			s.StackID = a.opts.StackID
@@ -1181,11 +1181,11 @@ func buildChartModel(ctx context.Context, st *chartState) ChartModel {
 
 // chartPolarModel resolves a registered ChartPolarGrid into the model the
 // renderer consumes — the pendant of templui's polarModel.
-func chartPolarModel(g *ChartPolarGridOptions) ChartPolarModel {
+func chartPolarModel(g *chartPolarGridOptions) ChartPolarModel {
 	return ChartPolarModel{
 		HasGrid:     true,
 		GridType:    g.GridType,
-		RadialLines: chartBoolOr(g.RadialLines, true),
+		RadialLines: g.RadialLines,
 		PolarRadius: g.PolarRadius,
 		Stroke:      g.Stroke,
 		StrokeWidth: g.StrokeWidth,
@@ -1230,7 +1230,7 @@ func buildChartRadarModel(ctx context.Context, config ChartConfig, st *chartStat
 		m.LegendHeight = defaultChartLegendHeight
 	}
 	if tt := st.tooltip; tt != nil {
-		m.Cursor = chartBoolOr(tt.opts.Cursor, true)
+		m.Cursor = tt.opts.Cursor
 		m.HasTooltip = true
 		m.Tooltip = ChartTooltipModel{
 			Indicator: tt.opts.Indicator, HideLabel: tt.opts.HideLabel, HideIndicator: tt.opts.HideIndicator,
@@ -1301,7 +1301,7 @@ func buildChartRadialModel(ctx context.Context, config ChartConfig, st *chartSta
 	}
 	m.Radial = &r
 	if tt != nil {
-		m.Cursor = chartBoolOr(tt.opts.Cursor, true)
+		m.Cursor = tt.opts.Cursor
 		m.HasTooltip = true
 		m.Tooltip = ChartTooltipModel{
 			Indicator: tt.opts.Indicator, HideLabel: tt.opts.HideLabel, HideIndicator: tt.opts.HideIndicator,
@@ -1330,7 +1330,7 @@ func buildChartPieModel(ctx context.Context, config ChartConfig, st *chartState)
 			OuterRadius: ps.opts.OuterRadius,
 			StrokeWidth: ps.opts.StrokeWidth,
 			Stroke:      ps.opts.Stroke,
-			LabelLine:   chartBoolOr(ps.opts.LabelLine, true),
+			LabelLine:   ps.opts.LabelLine,
 		}
 		if ps.opts.Label != nil {
 			pm.Label = &ChartPieLabelModel{Fill: ps.opts.Label.Fill}
@@ -1368,7 +1368,7 @@ func buildChartPieModel(ctx context.Context, config ChartConfig, st *chartState)
 		m.Pies = append(m.Pies, pm)
 	}
 	if tt := st.tooltip; tt != nil {
-		m.Cursor = chartBoolOr(tt.opts.Cursor, true)
+		m.Cursor = tt.opts.Cursor
 		m.HasTooltip = true
 		m.Tooltip = ChartTooltipModel{
 			Indicator: tt.opts.Indicator, HideLabel: tt.opts.HideLabel, HideIndicator: tt.opts.HideIndicator,
@@ -1407,7 +1407,7 @@ type chartLegendItem struct {
 // default of "value" — the pendant of templui's legendItems. A pie without
 // a name key gives every entry the same value, so the data order survives
 // the stable sort, exactly like upstream.
-func chartBuildLegendItems(config ChartConfig, m ChartModel, st *chartState, opts *ChartLegendOptions) []chartLegendItem {
+func chartBuildLegendItems(config ChartConfig, m ChartModel, st *chartState, opts *chartLegendOptions) []chartLegendItem {
 	var items []chartLegendItem
 	if m.Kind == "pie" {
 		for pi, pie := range m.Pies {
@@ -1447,7 +1447,7 @@ func chartBuildLegendItems(config ChartConfig, m ChartModel, st *chartState, opt
 // same reasoning.
 
 //line chart.gsx:1424:1
-func ChartLegendContent(items []chartLegendItem, opts *ChartLegendOptions) _gsxrt.Node {
+func ChartLegendContent(items []chartLegendItem, opts *chartLegendOptions) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
 //line chart.gsx:1425:2
@@ -1608,216 +1608,337 @@ func ChartTooltipTemplate() _gsxrt.Node {
 	})
 }
 
-// BarChart is the Recharts BarChart root: its parts declare axes, grid,
-// tooltip and bars, the root collects them and emits the model payload
-// for the client renderer.
-//
 //line chart.gsx:1558:1
-func BarChart(data []ChartDatum, opts *ChartBarChartOptions, children gsx.Node, attrs gsx.Attrs) gsx.Node {
-	var margin *ChartMargin
-	if opts != nil {
-		margin = opts.Margin
-	}
-	return chartRoot(&chartState{kind: "bar", data: data, margin: margin}, children, attrs)
+// BarChart is the Recharts BarChart root: its parts declare axes, grid,
+// tooltip and bars, the root collects them and emits the model payload for
+// the client renderer. marginTop/marginRight/marginBottom/marginLeft each
+// independently default to Recharts' own 5 when left at zero
+// (chartMarginOf) — a bare `<ui.BarChart data={data}>` gets Recharts'
+// 5/5/5/5 margin exactly like an omitted margin prop upstream.
+
+//line chart.gsx:1564:1
+func BarChart(data []ChartDatum, marginTop float64, marginRight float64, marginBottom float64, marginLeft float64, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line chart.gsx:1565:2
+		_gsxgw.Node(ctx, chartRoot(&chartState{kind: "bar", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)}, children, attrs))
+		return _gsxgw.Err()
+	})
 }
 
+//line chart.gsx:1568:1
 // LineChart is the Recharts LineChart root.
-func LineChart(data []ChartDatum, opts *ChartLineChartOptions, children gsx.Node, attrs gsx.Attrs) gsx.Node {
-	var margin *ChartMargin
-	if opts != nil {
-		margin = opts.Margin
-	}
-	return chartRoot(&chartState{kind: "line", data: data, margin: margin}, children, attrs)
+
+//line chart.gsx:1569:1
+func LineChart(data []ChartDatum, marginTop float64, marginRight float64, marginBottom float64, marginLeft float64, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line chart.gsx:1570:2
+		_gsxgw.Node(ctx, chartRoot(&chartState{kind: "line", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)}, children, attrs))
+		return _gsxgw.Err()
+	})
 }
 
-// AreaChart is the Recharts AreaChart root.
-func AreaChart(data []ChartDatum, opts *ChartAreaChartOptions, children gsx.Node, attrs gsx.Attrs) gsx.Node {
-	var margin *ChartMargin
-	stackOffset := ""
-	if opts != nil {
-		margin = opts.Margin
-		stackOffset = opts.StackOffset
-	}
-	return chartRoot(&chartState{kind: "area", data: data, margin: margin, stackOffset: stackOffset}, children, attrs)
+//line chart.gsx:1573:1
+// AreaChart is the Recharts AreaChart root. stackOffset "expand" normalizes
+// each stack to 100%, the pendant of Recharts' own stackOffset prop.
+
+//line chart.gsx:1575:1
+func AreaChart(data []ChartDatum, marginTop float64, marginRight float64, marginBottom float64, marginLeft float64, stackOffset string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line chart.gsx:1576:2
+		_gsxgw.Node(ctx, chartRoot(&chartState{kind: "area", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft), stackOffset: stackOffset}, children, attrs))
+		return _gsxgw.Err()
+	})
 }
 
+//line chart.gsx:1579:1
 // RadarChart is the Recharts RadarChart root.
-func RadarChart(data []ChartDatum, opts *ChartRadarChartOptions, children gsx.Node, attrs gsx.Attrs) gsx.Node {
-	var margin *ChartMargin
-	if opts != nil {
-		margin = opts.Margin
-	}
-	return chartRoot(&chartState{kind: "radar", data: data, margin: margin}, children, attrs)
+
+//line chart.gsx:1580:1
+func RadarChart(data []ChartDatum, marginTop float64, marginRight float64, marginBottom float64, marginLeft float64, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line chart.gsx:1581:2
+		_gsxgw.Node(ctx, chartRoot(&chartState{kind: "radar", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)}, children, attrs))
+		return _gsxgw.Err()
+	})
 }
 
-// RadialBarChart is the Recharts RadialBarChart root.
-func RadialBarChart(data []ChartDatum, opts *ChartRadialBarChartOptions, children gsx.Node, attrs gsx.Attrs) gsx.Node {
-	st := &chartState{kind: "radial", data: data}
-	if opts != nil {
-		st.margin = opts.Margin
-		st.startAngle = opts.StartAngle
-		st.endAngle = opts.EndAngle
-		st.innerRadius = opts.InnerRadius
-		st.outerRadius = opts.OuterRadius
-	}
-	return chartRoot(st, children, attrs)
+//line chart.gsx:1584:1
+// RadialBarChart is the Recharts RadialBarChart root. startAngle is
+// Recharts' own zero by default, so the flat param needs no sentinel;
+// endAngle defaults to a full turn (360°) when left at zero, via
+// chartFloatPtrOr's same zero-sentinel convention chartMarginOf uses (a
+// literal 0° sweep — an invisible chart — is not expressible this way, the
+// one deliberately dropped edge case, see this task's report).
+
+//line chart.gsx:1590:1
+func RadialBarChart(data []ChartDatum, marginTop float64, marginRight float64, marginBottom float64, marginLeft float64, startAngle float64, endAngle float64, innerRadius float64, outerRadius float64, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line chart.gsx:1591:2
+		_gsxgw.Node(ctx, chartRoot(&chartState{
+			kind:        "radial",
+			data:        data,
+			margin:      chartMarginOf(marginTop, marginRight, marginBottom, marginLeft),
+			startAngle:  startAngle,
+			endAngle:    chartFloatPtrOr(endAngle),
+			innerRadius: innerRadius,
+			outerRadius: outerRadius,
+		}, children, attrs))
+		return _gsxgw.Err()
+	})
 }
 
+//line chart.gsx:1602:1
 // PieChart is the Recharts PieChart root: unlike every other root, it
 // carries no data or margin of its own — Recharts' own Pie takes its own
 // data prop, so each ChartPie child registers its own rows and geometry
 // (see ChartPie); upstream's own PieChartProps is empty too.
-func PieChart(children gsx.Node, attrs gsx.Attrs) gsx.Node {
-	return chartRoot(&chartState{kind: "pie"}, children, attrs)
+
+//line chart.gsx:1606:1
+func PieChart(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line chart.gsx:1607:2
+		_gsxgw.Node(ctx, chartRoot(&chartState{kind: "pie"}, children, attrs))
+		return _gsxgw.Err()
+	})
 }
 
+//line chart.gsx:1610:1
 // ChartCartesianGrid registers the grid, the pendant of Recharts'
 // CartesianGrid element. It renders nothing; the client draws it.
-func ChartCartesianGrid(opts *ChartCartesianGridOptions) gsx.Node {
-	if opts == nil {
-		opts = &ChartCartesianGridOptions{}
-	}
-	return gsx.Func(func(ctx context.Context, _ io.Writer) error {
+//
+// horizontal/vertical default false — gsxui's own convention (`## chart`
+// ADAPT, docs/jsx-parity.md), diverging from Recharts' own default-true for
+// both: shadcn's own demos pass an explicit false for whichever direction
+// they don't want (nearly always vertical) rather than relying on the
+// Recharts default, so spelling both out explicitly here — e.g.
+// `<ui.ChartCartesianGrid horizontal/>` — reproduces the exact same
+// shadcn demo look a bare tag would otherwise miss.
+
+//line chart.gsx:1620:1
+func ChartCartesianGrid(horizontal bool, vertical bool) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line chart.gsx:1621:2
 		if st := chartStateFromCtx(ctx); st != nil {
-			st.grid = opts
+			st.grid = &chartGridOptions{Horizontal: horizontal, Vertical: vertical}
 		}
-		return nil
+		return _gsxgw.Err()
 	})
 }
 
+//line chart.gsx:1628:1
 // ChartXAxis registers the x axis.
-func ChartXAxis(key string, opts *ChartXAxisOptions) gsx.Node {
-	if opts == nil {
-		opts = &ChartXAxisOptions{}
-	}
-	return gsx.Func(func(ctx context.Context, _ io.Writer) error {
+
+//line chart.gsx:1629:1
+func ChartXAxis(key string, hide bool, tickLine bool, axisLine bool, tickMargin float64, minTickGap float64) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line chart.gsx:1630:2
 		if st := chartStateFromCtx(ctx); st != nil {
-			st.x = &chartAxisReg{key: key, opts: *opts}
+			st.x = &chartAxisReg{key: key, opts: chartXAxisOptions{
+				Hide: hide, TickLine: tickLine, AxisLine: axisLine,
+				TickMargin: tickMargin, MinTickGap: minTickGap,
+			}}
 		}
-		return nil
+		return _gsxgw.Err()
 	})
 }
 
+//line chart.gsx:1640:1
 // ChartYAxis registers the y axis.
-func ChartYAxis(key string, opts *ChartYAxisOptions) gsx.Node {
-	if opts == nil {
-		opts = &ChartYAxisOptions{}
-	}
-	return gsx.Func(func(ctx context.Context, _ io.Writer) error {
+
+//line chart.gsx:1641:1
+func ChartYAxis(key string, hide bool, tickLine bool, axisLine bool, tickMargin float64, tickCount int, width float64) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line chart.gsx:1642:2
 		if st := chartStateFromCtx(ctx); st != nil {
-			st.y = &chartYAxisReg{key: key, opts: *opts}
+			st.y = &chartYAxisReg{key: key, opts: chartYAxisOptions{
+				Hide: hide, TickLine: tickLine, AxisLine: axisLine,
+				TickMargin: tickMargin, TickCount: tickCount, Width: width,
+			}}
 		}
-		return nil
+		return _gsxgw.Err()
 	})
 }
 
+//line chart.gsx:1652:1
 // ChartTooltip registers the tooltip's config; the enclosing chart root
-// renders the tooltip's hidden server-side chrome after its other
-// children (see ChartTooltipTemplate), and the client fills it with the
-// hovered row's values from the model (m.tooltip, the ChartTooltipModel
-// this registration resolves into).
-func ChartTooltip(opts *ChartTooltipOptions) gsx.Node {
-	if opts == nil {
-		opts = &ChartTooltipOptions{}
-	}
-	return gsx.Func(func(ctx context.Context, _ io.Writer) error {
-		if st := chartStateFromCtx(ctx); st != nil {
-			st.tooltip = &chartTooltipReg{opts: *opts}
+// renders the tooltip's hidden server-side chrome after its other children
+// (see ChartTooltipTemplate), and the client fills it with the hovered
+// row's values from the model (m.tooltip, the ChartTooltipModel this
+// registration resolves into).
+//
+// cursor defaults false — gsxui's own convention (`## chart` ADAPT),
+// diverging from Recharts' own default-true; shadcn's own demos pass an
+// explicit `cursor={false}` on nearly every tooltip, so
+// `<ui.ChartTooltip/>` reproduces that shipped look.
+//
+// hasDefaultIndex/defaultIndex split what upstream carries as one nilable
+// number (`defaultIndex?: number`, shows the tooltip pinned at that
+// category on mount): a flat `defaultIndex int` param alone cannot tell
+// "not set" apart from the legitimate index 0 (Go's zero value for int),
+// the same reason ChartPie's Label field became a `label bool` gate below
+// rather than a bare fill string. No shipped demo sets this.
+
+//line chart.gsx:1669:1
+func ChartTooltip(cursor bool, indicator string, labelKey string, hideLabel bool, hideIndicator bool, nameKey string, class string, labelClass string, color string, hasDefaultIndex bool, defaultIndex int) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line chart.gsx:1670:2
+		var di *int
+		if hasDefaultIndex {
+			di = &defaultIndex
 		}
-		return nil
+		if st := chartStateFromCtx(ctx); st != nil {
+			st.tooltip = &chartTooltipReg{opts: chartTooltipOptions{
+				Cursor: cursor, Indicator: indicator, LabelKey: labelKey,
+				HideLabel: hideLabel, HideIndicator: hideIndicator, NameKey: nameKey,
+				Class: class, LabelClass: labelClass, Color: color, DefaultIndex: di,
+			}}
+		}
+		return _gsxgw.Err()
 	})
 }
 
+//line chart.gsx:1685:1
 // ChartLegend registers the legend; the enclosing chart root renders it
 // server-side after its other children (see ChartLegendContent).
-func ChartLegend(opts *ChartLegendOptions) gsx.Node {
-	if opts == nil {
-		opts = &ChartLegendOptions{}
-	}
-	return gsx.Func(func(ctx context.Context, _ io.Writer) error {
+
+//line chart.gsx:1687:1
+func ChartLegend(nameKey string, class string, verticalAlign string, hideIcon bool) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line chart.gsx:1688:2
 		if st := chartStateFromCtx(ctx); st != nil {
-			st.legend = opts
+			st.legend = &chartLegendOptions{
+				NameKey: nameKey, Class: class, VerticalAlign: verticalAlign, HideIcon: hideIcon,
+			}
 		}
-		return nil
+		return _gsxgw.Err()
 	})
 }
 
+//line chart.gsx:1697:1
 // ChartDefs groups gradient definitions like the svg defs element —
 // nothing renders visibly server-side (the client draws the SVG), so this
 // only needs to render its children to let any ChartLinearGradient among
 // them register.
-func ChartDefs(children gsx.Node) gsx.Node {
-	return gsx.Func(func(ctx context.Context, w io.Writer) error {
-		if children == nil {
-			return nil
-		}
-		return children.Render(ctx, w)
+
+//line chart.gsx:1701:1
+func ChartDefs(children gsx.Node) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line chart.gsx:1702:2
+		_gsxgw.Node(ctx, children)
+		return _gsxgw.Err()
 	})
 }
 
+//line chart.gsx:1705:1
 // ChartLinearGradient registers one gradient definition. Its children are
-// the raw stop elements, captured and passed through into the registered
-// definition verbatim, like Recharts passes defs children through.
-func ChartLinearGradient(opts ChartLinearGradientOptions, stops gsx.Node) gsx.Node {
-	return gsx.Func(func(ctx context.Context, _ io.Writer) error {
-		st := chartStateFromCtx(ctx)
-		if st == nil {
-			return nil
-		}
-		var sb strings.Builder
-		if stops != nil {
-			if err := stops.Render(ctx, &sb); err != nil {
-				return err
+// real SVG `<stop>` markup (not gsx.Raw strings, `## chart` element-
+// structure decision): rendered here to a string and captured into the
+// registered definition verbatim, like Recharts passes defs children
+// through.
+
+//line chart.gsx:1710:1
+func ChartLinearGradient(id string, x1 string, y1 string, x2 string, y2 string, children gsx.Node) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line chart.gsx:1711:2
+		if st := chartStateFromCtx(ctx); st != nil {
+			var sb strings.Builder
+			if children != nil {
+				if err := children.Render(ctx, &sb); err != nil {
+					return err
+				}
 			}
+			st.defs = append(st.defs, chartGradientReg{
+				id: id, x1: x1, y1: y1, x2: x2, y2: y2,
+				stops: strings.TrimSpace(sb.String()),
+			})
 		}
-		st.defs = append(st.defs, chartGradientReg{
-			id: opts.ID, x1: opts.X1, y1: opts.Y1, x2: opts.X2, y2: opts.Y2,
-			stops: strings.TrimSpace(sb.String()),
-		})
-		return nil
+		return _gsxgw.Err()
 	})
 }
 
+//line chart.gsx:1727:1
 // ChartArea registers one area series. Declaration order is paint order,
-// like in Recharts.
-func ChartArea(key string, opts *ChartAreaOptions) gsx.Node {
-	if opts == nil {
-		opts = &ChartAreaOptions{}
-	}
-	return gsx.Func(func(ctx context.Context, _ io.Writer) error {
+// like in Recharts. curve is Recharts' curve prop ("natural"/"linear"/
+// "step"); empty renders as Recharts' own "linear" default, unchanged by
+// this task.
+
+//line chart.gsx:1731:1
+func ChartArea(key string, curve string, fill string, stroke string, stackId string, fillOpacity float64) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line chart.gsx:1732:2
 		if st := chartStateFromCtx(ctx); st != nil {
-			st.areas = append(st.areas, chartAreaReg{key: key, opts: *opts})
+			st.areas = append(st.areas, chartAreaReg{key: key, opts: chartAreaOptions{
+				Curve: curve, Fill: fill, Stroke: stroke, StackID: stackId, FillOpacity: fillOpacity,
+			}})
 		}
-		return nil
+		return _gsxgw.Err()
 	})
 }
 
-// ChartBar registers one bar series.
-func ChartBar(key string, opts *ChartBarOptions) gsx.Node {
-	if opts == nil {
-		opts = &ChartBarOptions{}
-	}
-	return gsx.Func(func(ctx context.Context, _ io.Writer) error {
+//line chart.gsx:1741:1
+// ChartBar registers one bar series. radius is Recharts' radius union: a
+// float64 for all corners or a []float64 of four corners, e.g.
+// []float64{0, 0, 4, 4}.
+
+//line chart.gsx:1744:1
+func ChartBar(key string, fill string, stackId string, radius any, strokeWidth float64) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line chart.gsx:1745:2
 		if st := chartStateFromCtx(ctx); st != nil {
-			st.bars = append(st.bars, chartBarReg{key: key, opts: *opts})
+			st.bars = append(st.bars, chartBarReg{key: key, opts: chartBarOptions{
+				Fill: fill, StackID: stackId, Radius: radius, StrokeWidth: strokeWidth,
+			}})
 		}
-		return nil
+		return _gsxgw.Err()
 	})
 }
 
-// ChartLine registers one line series.
-func ChartLine(key string, opts *ChartLineOptions) gsx.Node {
-	if opts == nil {
-		opts = &ChartLineOptions{}
-	}
-	return gsx.Func(func(ctx context.Context, _ io.Writer) error {
-		if st := chartStateFromCtx(ctx); st != nil {
-			st.lines = append(st.lines, chartLineReg{key: key, opts: *opts})
+//line chart.gsx:1754:1
+// ChartLine registers one line series. curve is Recharts' curve prop
+// ("natural"/"linear"/"step"); empty renders as Recharts' own "linear"
+// default, unchanged by this task.
+//
+// dot/dotR/dotFillOpacity/dotFill/dotSize flatten Recharts' dot prop's
+// object form: dot defaults false, matching every shipped demo's own
+// dot={false} and this task's default-false boolean convention — the
+// per-point dots draw only once a caller opts in with dot, at which point
+// dotR/dotFillOpacity/dotFill/dotSize shape them (each its own Recharts
+// SVG default when left at zero).
+
+//line chart.gsx:1764:1
+func ChartLine(key string, curve string, stroke string, strokeWidth float64, dot bool, dotR float64, dotFillOpacity float64, dotFill string, dotSize float64, activeDotR float64) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line chart.gsx:1765:2
+		var d *chartDotOptions
+		if dot {
+			d = &chartDotOptions{R: dotR, FillOpacity: dotFillOpacity, Fill: dotFill, Size: dotSize}
 		}
-		return nil
+		if st := chartStateFromCtx(ctx); st != nil {
+			st.lines = append(st.lines, chartLineReg{key: key, opts: chartLineOptions{
+				Curve: curve, Stroke: stroke, StrokeWidth: strokeWidth, Dot: d, ActiveDotR: activeDotR,
+			}})
+		}
+		return _gsxgw.Err()
 	})
 }
 
+//line chart.gsx:1778:1
 // ---------------------------------------------------------------------
 // Polar model builder (pie, radar, radial-bar) — adapted from templui's
 // chart.templ lines 729-1100 (RadarChart / RadialBarChart / PieChart
@@ -1832,91 +1953,151 @@ func ChartLine(key string, opts *ChartLineOptions) gsx.Node {
 // (PolarAngleAxis's Tick) are not ported — none is in this task's explicit
 // child list, and a closure cannot cross the JSON boundary to the client
 // renderer regardless. Pie's ActiveIndex/ActiveShape are deferred the same
-// way ChartBarOptions' own ActiveIndex/ActiveBar are (see ChartPieOptions'
+// way chartBarOptions' own ActiveIndex/ActiveBar are (see chartPieOptions'
 // own doc comment).
 
 // ChartPolarGrid registers the polar grid, the pendant of Recharts'
 // PolarGrid element. It renders nothing; the client draws it.
-func ChartPolarGrid(opts *ChartPolarGridOptions) gsx.Node {
-	if opts == nil {
-		opts = &ChartPolarGridOptions{}
-	}
-	return gsx.Func(func(ctx context.Context, _ io.Writer) error {
+//
+// radialLines defaults false — gsxui's own convention (`## chart` ADAPT),
+// diverging from Recharts' own default-true; a radar demo that wants the
+// spokes upstream shows by default passes `<ui.ChartPolarGrid
+// radialLines/>` explicitly.
+
+//line chart.gsx:1802:1
+func ChartPolarGrid(gridType string, radialLines bool, polarRadius []float64, stroke string, strokeWidth float64, class string) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line chart.gsx:1803:2
 		if st := chartStateFromCtx(ctx); st != nil {
-			st.polarGrid = opts
+			st.polarGrid = &chartPolarGridOptions{
+				GridType: gridType, RadialLines: radialLines, PolarRadius: polarRadius,
+				Stroke: stroke, StrokeWidth: strokeWidth, Class: class,
+			}
 		}
-		return nil
+		return _gsxgw.Err()
 	})
 }
 
+//line chart.gsx:1813:1
 // ChartPolarAngleAxis registers the angle axis, the labels around the
 // chart.
-func ChartPolarAngleAxis(key string) gsx.Node {
-	return gsx.Func(func(ctx context.Context, _ io.Writer) error {
+
+//line chart.gsx:1815:1
+func ChartPolarAngleAxis(key string) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line chart.gsx:1816:2
 		if st := chartStateFromCtx(ctx); st != nil {
 			st.angleAxis = &chartPolarAngleAxisReg{key: key}
 		}
-		return nil
+		return _gsxgw.Err()
 	})
 }
 
-// ChartPolarRadiusAxis registers the radius axis. Its own options are
-// currently inert (see ChartPolarRadiusAxisOptions' own doc comment);
+//line chart.gsx:1823:1
+// ChartPolarRadiusAxis registers the radius axis. tick/tickLine/axisLine
+// are currently inert (see chartPolarRadiusAxisOptions' own doc comment);
 // children is still rendered, matching upstream's own { children... }, so
 // a future Label child has somewhere to register through once it is
 // ported.
-func ChartPolarRadiusAxis(opts *ChartPolarRadiusAxisOptions, children gsx.Node) gsx.Node {
-	if opts == nil {
-		opts = &ChartPolarRadiusAxisOptions{}
-	}
-	return gsx.Func(func(ctx context.Context, w io.Writer) error {
+
+//line chart.gsx:1828:1
+func ChartPolarRadiusAxis(tick bool, tickLine bool, axisLine bool, children gsx.Node) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line chart.gsx:1829:2
 		if st := chartStateFromCtx(ctx); st != nil {
-			st.radiusAxis = opts
+			st.radiusAxis = &chartPolarRadiusAxisOptions{Tick: tick, TickLine: tickLine, AxisLine: axisLine}
 		}
-		if children == nil {
-			return nil
-		}
-		return children.Render(ctx, w)
+//line chart.gsx:1834:2
+		_gsxgw.Node(ctx, children)
+		return _gsxgw.Err()
 	})
 }
 
+//line chart.gsx:1837:1
 // ChartRadar registers one radar series.
-func ChartRadar(key string, opts *ChartRadarOptions) gsx.Node {
-	if opts == nil {
-		opts = &ChartRadarOptions{}
-	}
-	return gsx.Func(func(ctx context.Context, _ io.Writer) error {
-		if st := chartStateFromCtx(ctx); st != nil {
-			st.radars = append(st.radars, chartRadarReg{key: key, opts: *opts})
+//
+// dot/dotR/dotFill/dotFillOpacity flatten Recharts' dot prop's object
+// form, the same split ChartLine's own dot params use — dot defaults
+// false, matching this task's default-false boolean convention (no shipped
+// radar demo sets a dot today either way).
+//
+// fillOpacity 0 leaves the SVG default of 1 in place, via
+// chartFloatPtrOr's zero-sentinel convention (chartRadarOptions.FillOpacity
+// stays a pointer internally for exactly that reason) — an explicit
+// fillOpacity=0 (fully transparent fill) is the one edge case this cannot
+// express, the same deliberately dropped case chartAreaOptions.FillOpacity
+// already accepted for Area before this task.
+
+//line chart.gsx:1850:1
+func ChartRadar(key string, fill string, fillOpacity float64, stroke string, strokeWidth float64, dot bool, dotR float64, dotFill string, dotFillOpacity float64) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line chart.gsx:1851:2
+		var d *chartDotOptions
+		if dot {
+			d = &chartDotOptions{R: dotR, Fill: dotFill, FillOpacity: dotFillOpacity}
 		}
-		return nil
+		if st := chartStateFromCtx(ctx); st != nil {
+			st.radars = append(st.radars, chartRadarReg{key: key, opts: chartRadarOptions{
+				Fill: fill, FillOpacity: chartFloatPtrOr(fillOpacity), Stroke: stroke, StrokeWidth: strokeWidth, Dot: d,
+			}})
+		}
+		return _gsxgw.Err()
 	})
 }
 
-// ChartRadialBar registers one radial bar series.
-func ChartRadialBar(key string, opts *ChartRadialBarOptions) gsx.Node {
-	if opts == nil {
-		opts = &ChartRadialBarOptions{}
-	}
-	return gsx.Func(func(ctx context.Context, _ io.Writer) error {
+//line chart.gsx:1864:1
+// ChartRadialBar registers one radial bar series. background draws the
+// track behind the bar, over the full angle range.
+
+//line chart.gsx:1866:1
+func ChartRadialBar(key string, fill string, background bool, cornerRadius float64, stackId string, class string) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line chart.gsx:1867:2
 		if st := chartStateFromCtx(ctx); st != nil {
-			st.radialBars = append(st.radialBars, chartRadialBarReg{key: key, opts: *opts})
+			st.radialBars = append(st.radialBars, chartRadialBarReg{key: key, opts: chartRadialBarOptions{
+				Fill: fill, Background: background, CornerRadius: cornerRadius, StackID: stackId, Class: class,
+			}})
 		}
-		return nil
+		return _gsxgw.Err()
 	})
 }
 
+//line chart.gsx:1876:1
 // ChartPie registers one pie with its own data and geometry — unlike the
 // cartesian series, Recharts' own Pie takes its own data prop rather than
 // reading the enclosing chart's rows (PieChart itself carries none).
-func ChartPie(data []ChartDatum, key string, opts *ChartPieOptions) gsx.Node {
-	if opts == nil {
-		opts = &ChartPieOptions{}
-	}
-	return gsx.Func(func(ctx context.Context, _ io.Writer) error {
-		if st := chartStateFromCtx(ctx); st != nil {
-			st.pies = append(st.pies, chartPieReg{data: data, key: key, opts: *opts})
+//
+// label/labelFill split what upstream carries as one nilable object
+// (Recharts' own `label` prop: falsy hides it, an object shape configures
+// it) — label defaults false, matching every shipped demo (none passes
+// Recharts' own label prop), and labelFill only has an effect once label
+// is set.
+//
+// labelLine defaults false — gsxui's own convention (`## chart` ADAPT),
+// diverging from Recharts' own default-true; inert without label also set
+// (chart.render.js only draws either when pie.label is present), so this
+// flip changes no shipped demo's rendered pixels.
+
+//line chart.gsx:1890:1
+func ChartPie(data []ChartDatum, key string, nameKey string, innerRadius float64, outerRadius float64, strokeWidth float64, stroke string, label bool, labelFill string, labelLine bool) _gsxrt.Node {
+	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+		_gsxgw := _gsxrt.W(_gsxw)
+//line chart.gsx:1891:2
+		var lbl *chartPieLabelOptions
+		if label {
+			lbl = &chartPieLabelOptions{Fill: labelFill}
 		}
-		return nil
+		if st := chartStateFromCtx(ctx); st != nil {
+			st.pies = append(st.pies, chartPieReg{data: data, key: key, opts: chartPieOptions{
+				NameKey: nameKey, InnerRadius: innerRadius, OuterRadius: outerRadius,
+				StrokeWidth: strokeWidth, Stroke: stroke, Label: lbl, LabelLine: labelLine,
+			}})
+		}
+		return _gsxgw.Err()
 	})
 }

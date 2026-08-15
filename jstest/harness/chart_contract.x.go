@@ -56,14 +56,22 @@ func ChartContractFixture() _gsxrt.Node {
 		_gsxgw.Node(ctx, ui.Chart(cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line chart_contract.gsx:47:3
-			_gsxgw.Node(ctx, ui.BarChart(data, nil, gsx.Fragment(
-				ui.ChartCartesianGrid(nil),
-				ui.ChartXAxis("month", nil),
-				ui.ChartTooltip(nil),
-				ui.ChartBar("desktop", nil),
-				ui.ChartBar("mobile", nil),
-				ui.ChartLegend(nil),
-			), nil))
+			_gsxgw.Node(ctx, ui.BarChart(data, 0, 0, 0, 0, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+//line chart_contract.gsx:48:4
+				_gsxgw.Node(ctx, ui.ChartCartesianGrid(true, true))
+//line chart_contract.gsx:49:4
+				_gsxgw.Node(ctx, ui.ChartXAxis("month", false, false, false, 0, 0))
+//line chart_contract.gsx:50:4
+				_gsxgw.Node(ctx, ui.ChartTooltip(false, "", "", false, false, "", "", "", "", false, 0))
+//line chart_contract.gsx:51:4
+				_gsxgw.Node(ctx, ui.ChartBar("desktop", "", "", nil, 0))
+//line chart_contract.gsx:52:4
+				_gsxgw.Node(ctx, ui.ChartBar("mobile", "", "", nil, 0))
+//line chart_contract.gsx:53:4
+				_gsxgw.Node(ctx, ui.ChartLegend("", "", "", false))
+				return _gsxgw.Err()
+			}), nil))
 			return _gsxgw.Err()
 		}), nil))
 		return _gsxgw.Err()
@@ -109,14 +117,22 @@ func ChartNarrowFlexFixture() _gsxrt.Node {
 		_gsxgw.Node(ctx, ui.Chart(cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line chart_contract.gsx:87:4
-			_gsxgw.Node(ctx, ui.BarChart(data, nil, gsx.Fragment(
-				ui.ChartCartesianGrid(nil),
-				ui.ChartXAxis("month", nil),
-				ui.ChartTooltip(nil),
-				ui.ChartBar("desktop", nil),
-				ui.ChartBar("mobile", nil),
-				ui.ChartLegend(nil),
-			), nil))
+			_gsxgw.Node(ctx, ui.BarChart(data, 0, 0, 0, 0, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+//line chart_contract.gsx:88:5
+				_gsxgw.Node(ctx, ui.ChartCartesianGrid(true, true))
+//line chart_contract.gsx:89:5
+				_gsxgw.Node(ctx, ui.ChartXAxis("month", false, false, false, 0, 0))
+//line chart_contract.gsx:90:5
+				_gsxgw.Node(ctx, ui.ChartTooltip(false, "", "", false, false, "", "", "", "", false, 0))
+//line chart_contract.gsx:91:5
+				_gsxgw.Node(ctx, ui.ChartBar("desktop", "", "", nil, 0))
+//line chart_contract.gsx:92:5
+				_gsxgw.Node(ctx, ui.ChartBar("mobile", "", "", nil, 0))
+//line chart_contract.gsx:93:5
+				_gsxgw.Node(ctx, ui.ChartLegend("", "", "", false))
+				return _gsxgw.Err()
+			}), nil))
 			return _gsxgw.Err()
 		}), nil))
 		_gsxgw.S("</div>")

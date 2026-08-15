@@ -1,7 +1,6 @@
 package chart
 
 import (
-	"github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/ui"
 	uiicon "github.com/gsxhq/gsxui/ui/icon"
 )
@@ -29,12 +28,12 @@ component Radar() {
 		</ui.CardHeader>
 		<ui.CardContent class="pb-0">
 			<ui.Chart config={cfg} class="mx-auto aspect-square max-h-[250px]">
-				{ ui.RadarChart(data, nil, gsx.Fragment(
-					ui.ChartTooltip(&ui.ChartTooltipOptions{Cursor: ui.ChartBool(false)}),
-					ui.ChartPolarAngleAxis("month"),
-					ui.ChartPolarGrid(nil),
-					ui.ChartRadar("desktop", &ui.ChartRadarOptions{Fill: "var(--color-desktop)", FillOpacity: ui.ChartFloat(0.6)}),
-				), nil) }
+				<ui.RadarChart data={data}>
+					<ui.ChartTooltip/>
+					<ui.ChartPolarAngleAxis key="month"/>
+					<ui.ChartPolarGrid radialLines/>
+					<ui.ChartRadar key="desktop" fill="var(--color-desktop)" fillOpacity={0.6}/>
+				</ui.RadarChart>
 			</ui.Chart>
 		</ui.CardContent>
 		<ui.CardFooter class="flex-col gap-2 text-sm">

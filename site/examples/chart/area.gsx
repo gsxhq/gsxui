@@ -1,7 +1,6 @@
 package chart
 
 import (
-	"github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/ui"
 	uiicon "github.com/gsxhq/gsxui/ui/icon"
 )
@@ -35,23 +34,23 @@ component Area() {
 		</ui.CardHeader>
 		<ui.CardContent>
 			<ui.Chart config={cfg}>
-				{ ui.AreaChart(data, &ui.ChartAreaChartOptions{Margin: &ui.ChartMargin{Left: 12, Right: 12}}, gsx.Fragment(
-					ui.ChartCartesianGrid(&ui.ChartCartesianGridOptions{Vertical: ui.ChartBool(false)}),
-					ui.ChartXAxis("month", &ui.ChartXAxisOptions{TickMargin: 8}),
-					ui.ChartTooltip(&ui.ChartTooltipOptions{Cursor: ui.ChartBool(false)}),
-					ui.ChartDefs(gsx.Fragment(
-						ui.ChartLinearGradient(
-							ui.ChartLinearGradientOptions{ID: "fillDesktop", X1: "0", Y1: "0", X2: "0", Y2: "1"},
-							gsx.Raw(`<stop offset="5%" stop-color="var(--color-desktop)" stop-opacity="0.8"></stop><stop offset="95%" stop-color="var(--color-desktop)" stop-opacity="0.1"></stop>`),
-						),
-						ui.ChartLinearGradient(
-							ui.ChartLinearGradientOptions{ID: "fillMobile", X1: "0", Y1: "0", X2: "0", Y2: "1"},
-							gsx.Raw(`<stop offset="5%" stop-color="var(--color-mobile)" stop-opacity="0.8"></stop><stop offset="95%" stop-color="var(--color-mobile)" stop-opacity="0.1"></stop>`),
-						),
-					)),
-					ui.ChartArea("mobile", &ui.ChartAreaOptions{Type: ui.ChartCurveNatural, Fill: "url(#fillMobile)", FillOpacity: 0.4, Stroke: "var(--color-mobile)", StackID: "a"}),
-					ui.ChartArea("desktop", &ui.ChartAreaOptions{Type: ui.ChartCurveNatural, Fill: "url(#fillDesktop)", FillOpacity: 0.4, Stroke: "var(--color-desktop)", StackID: "a"}),
-				), nil) }
+				<ui.AreaChart data={data} marginLeft={12} marginRight={12}>
+					<ui.ChartCartesianGrid horizontal/>
+					<ui.ChartXAxis key="month" tickMargin={8}/>
+					<ui.ChartTooltip/>
+					<ui.ChartDefs>
+						<ui.ChartLinearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
+							<stop offset="5%" stop-color="var(--color-desktop)" stop-opacity="0.8"/>
+							<stop offset="95%" stop-color="var(--color-desktop)" stop-opacity="0.1"/>
+						</ui.ChartLinearGradient>
+						<ui.ChartLinearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
+							<stop offset="5%" stop-color="var(--color-mobile)" stop-opacity="0.8"/>
+							<stop offset="95%" stop-color="var(--color-mobile)" stop-opacity="0.1"/>
+						</ui.ChartLinearGradient>
+					</ui.ChartDefs>
+					<ui.ChartArea key="mobile" curve="natural" fill="url(#fillMobile)" fillOpacity={0.4} stroke="var(--color-mobile)" stackId="a"/>
+					<ui.ChartArea key="desktop" curve="natural" fill="url(#fillDesktop)" fillOpacity={0.4} stroke="var(--color-desktop)" stackId="a"/>
+				</ui.AreaChart>
 			</ui.Chart>
 		</ui.CardContent>
 		<ui.CardFooter>

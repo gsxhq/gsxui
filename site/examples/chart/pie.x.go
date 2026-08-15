@@ -4,14 +4,13 @@ package chart
 
 import (
 	_gsxctx "context"
-	"github.com/gsxhq/gsx"
 	_gsxrt "github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/ui"
 	uiicon "github.com/gsxhq/gsxui/ui/icon"
 	_gsxio "io"
 )
 
-//line pie.gsx:9:1
+//line pie.gsx:8:1
 // Pie ports shadcn's chart-pie-donut demo: a donut PieChart over five
 // browser-share slices with a hidden-label tooltip, wrapped in a Card. The
 // sibling chart-pie-donut-text demo's center total (a Recharts Label
@@ -19,11 +18,11 @@ import (
 // ported (see ui/chart.gsx's polar-model-builder section header) — so this
 // keeps the plain donut instead.
 
-//line pie.gsx:15:1
+//line pie.gsx:14:1
 func Pie() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line pie.gsx:16:2
+//line pie.gsx:15:2
 		cfg := ui.ChartConfig{
 			{Key: "visitors", Label: "Visitors"},
 			{Key: "chrome", Label: "Chrome", Color: "var(--chart-1)"},
@@ -39,19 +38,19 @@ func Pie() _gsxrt.Node {
 			{"browser": "edge", "visitors": 173.0, "fill": "var(--color-edge)"},
 			{"browser": "other", "visitors": 90.0, "fill": "var(--color-other)"},
 		}
-//line pie.gsx:33:2
+//line pie.gsx:32:2
 		_gsxgw.Node(ctx, ui.Card(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line pie.gsx:34:3
+//line pie.gsx:33:3
 			_gsxgw.Node(ctx, ui.CardHeader(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line pie.gsx:35:4
+//line pie.gsx:34:4
 				_gsxgw.Node(ctx, ui.CardTitle(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("Pie Chart - Donut")
 					return _gsxgw.Err()
 				}), nil))
-//line pie.gsx:36:4
+//line pie.gsx:35:4
 				_gsxgw.Node(ctx, ui.CardDescription(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("January - June 2024")
@@ -59,30 +58,34 @@ func Pie() _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "items-center pb-0"}}))
-//line pie.gsx:38:3
+//line pie.gsx:37:3
 			_gsxgw.Node(ctx, ui.CardContent(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line pie.gsx:39:4
+//line pie.gsx:38:4
 				_gsxgw.Node(ctx, ui.Chart(cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line pie.gsx:40:5
-					_gsxgw.Node(ctx, ui.PieChart(gsx.Fragment(
-						ui.ChartTooltip(&ui.ChartTooltipOptions{Cursor: ui.ChartBool(false), HideLabel: true}),
-						ui.ChartPie(data, "visitors", &ui.ChartPieOptions{NameKey: "browser", InnerRadius: 60}),
-					), nil))
+//line pie.gsx:39:5
+					_gsxgw.Node(ctx, ui.PieChart(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+						_gsxgw := _gsxrt.W(_gsxw)
+//line pie.gsx:40:6
+						_gsxgw.Node(ctx, ui.ChartTooltip(false, "", "", true, false, "", "", "", "", false, 0))
+//line pie.gsx:41:6
+						_gsxgw.Node(ctx, ui.ChartPie(data, "visitors", "browser", 60, 0, 0, "", false, "", false))
+						return _gsxgw.Err()
+					}), nil))
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "class", Value: "mx-auto aspect-square max-h-[250px]"}}))
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "flex-1 pb-0"}}))
-//line pie.gsx:46:3
+//line pie.gsx:45:3
 			_gsxgw.Node(ctx, ui.CardFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line pie.gsx:47:4
+//line pie.gsx:46:4
 				_gsxgw.S("<div class=\"flex items-center gap-2 leading-none font-medium\">Trending up by 5.2% this month")
-//line pie.gsx:49:5
+//line pie.gsx:48:5
 				_gsxgw.Node(ctx, uiicon.TrendingUp(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
 				_gsxgw.S("</div>")
-//line pie.gsx:51:4
+//line pie.gsx:50:4
 				_gsxgw.S("<div class=\"leading-none text-muted-foreground\">Showing total visitors for the last 6 months</div>")
 				return _gsxgw.Err()
 			}), _gsxrt.Attrs{{Key: "class", Value: "flex-col gap-2 text-sm"}}))

@@ -4,13 +4,12 @@ package chart
 
 import (
 	_gsxctx "context"
-	"github.com/gsxhq/gsx"
 	_gsxrt "github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/ui"
 	_gsxio "io"
 )
 
-//line basic.gsx:9:1
+//line basic.gsx:6:1
 // Basic renders a two-series bar chart: Chart's container, BarChart's
 // model builder, ChartTooltip's hover chrome and ChartLegend's
 // server-rendered legend row together — this example keeps the style
@@ -18,11 +17,11 @@ import (
 // chart-tooltip slots ChartLegend and ChartTooltip's own
 // ChartTooltipTemplate render (see registry/canonical/shapes/chart.go).
 
-//line basic.gsx:15:1
+//line basic.gsx:12:1
 func Basic() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:16:2
+//line basic.gsx:13:2
 		cfg := ui.ChartConfig{
 			{Key: "desktop", Label: "Desktop", Color: "var(--chart-1)"},
 			{Key: "mobile", Label: "Mobile", Color: "var(--chart-2)"},
@@ -32,18 +31,26 @@ func Basic() _gsxrt.Node {
 			{"month": "Feb", "desktop": 305.0, "mobile": 200.0},
 			{"month": "Mar", "desktop": 237.0, "mobile": 120.0},
 		}
-//line basic.gsx:27:2
+//line basic.gsx:24:2
 		_gsxgw.Node(ctx, ui.Chart(cfg, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line basic.gsx:28:3
-			_gsxgw.Node(ctx, ui.BarChart(data, nil, gsx.Fragment(
-				ui.ChartCartesianGrid(nil),
-				ui.ChartXAxis("month", nil),
-				ui.ChartTooltip(nil),
-				ui.ChartBar("desktop", nil),
-				ui.ChartBar("mobile", nil),
-				ui.ChartLegend(nil),
-			), nil))
+//line basic.gsx:25:3
+			_gsxgw.Node(ctx, ui.BarChart(data, 0, 0, 0, 0, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+				_gsxgw := _gsxrt.W(_gsxw)
+//line basic.gsx:26:4
+				_gsxgw.Node(ctx, ui.ChartCartesianGrid(true, false))
+//line basic.gsx:27:4
+				_gsxgw.Node(ctx, ui.ChartXAxis("month", false, false, false, 0, 0))
+//line basic.gsx:28:4
+				_gsxgw.Node(ctx, ui.ChartTooltip(false, "", "", false, false, "", "", "", "", false, 0))
+//line basic.gsx:29:4
+				_gsxgw.Node(ctx, ui.ChartBar("desktop", "", "", nil, 0))
+//line basic.gsx:30:4
+				_gsxgw.Node(ctx, ui.ChartBar("mobile", "", "", nil, 0))
+//line basic.gsx:31:4
+				_gsxgw.Node(ctx, ui.ChartLegend("", "", "", false))
+				return _gsxgw.Err()
+			}), nil))
 			return _gsxgw.Err()
 		}), nil))
 		return _gsxgw.Err()

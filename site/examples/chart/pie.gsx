@@ -1,7 +1,6 @@
 package chart
 
 import (
-	"github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/ui"
 	uiicon "github.com/gsxhq/gsxui/ui/icon"
 )
@@ -37,10 +36,10 @@ component Pie() {
 		</ui.CardHeader>
 		<ui.CardContent class="flex-1 pb-0">
 			<ui.Chart config={cfg} class="mx-auto aspect-square max-h-[250px]">
-				{ ui.PieChart(gsx.Fragment(
-					ui.ChartTooltip(&ui.ChartTooltipOptions{Cursor: ui.ChartBool(false), HideLabel: true}),
-					ui.ChartPie(data, "visitors", &ui.ChartPieOptions{NameKey: "browser", InnerRadius: 60}),
-				), nil) }
+				<ui.PieChart>
+					<ui.ChartTooltip hideLabel/>
+					<ui.ChartPie data={data} key="visitors" nameKey="browser" innerRadius={60}/>
+				</ui.PieChart>
 			</ui.Chart>
 		</ui.CardContent>
 		<ui.CardFooter class="flex-col gap-2 text-sm">

@@ -44,14 +44,14 @@ component ChartContractFixture() {
 		}
 	}}
 	<ui.Chart config={cfg}>
-		{ ui.BarChart(data, nil, gsx.Fragment(
-			ui.ChartCartesianGrid(nil),
-			ui.ChartXAxis("month", nil),
-			ui.ChartTooltip(nil),
-			ui.ChartBar("desktop", nil),
-			ui.ChartBar("mobile", nil),
-			ui.ChartLegend(nil),
-		), nil) }
+		<ui.BarChart data={data}>
+			<ui.ChartCartesianGrid horizontal vertical/>
+			<ui.ChartXAxis key="month"/>
+			<ui.ChartTooltip/>
+			<ui.ChartBar key="desktop"/>
+			<ui.ChartBar key="mobile"/>
+			<ui.ChartLegend/>
+		</ui.BarChart>
 	</ui.Chart>
 }
 
@@ -84,14 +84,14 @@ component ChartNarrowFlexFixture() {
 	}}
 	<div style="width: 340px" class="flex flex-col gap-4" data-chart-narrow-flex>
 		<ui.Chart config={cfg}>
-			{ ui.BarChart(data, nil, gsx.Fragment(
-				ui.ChartCartesianGrid(nil),
-				ui.ChartXAxis("month", nil),
-				ui.ChartTooltip(nil),
-				ui.ChartBar("desktop", nil),
-				ui.ChartBar("mobile", nil),
-				ui.ChartLegend(nil),
-			), nil) }
+			<ui.BarChart data={data}>
+				<ui.ChartCartesianGrid horizontal vertical/>
+				<ui.ChartXAxis key="month"/>
+				<ui.ChartTooltip/>
+				<ui.ChartBar key="desktop"/>
+				<ui.ChartBar key="mobile"/>
+				<ui.ChartLegend/>
+			</ui.BarChart>
 		</ui.Chart>
 	</div>
 }

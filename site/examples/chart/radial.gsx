@@ -1,7 +1,6 @@
 package chart
 
 import (
-	"github.com/gsxhq/gsx"
 	"github.com/gsxhq/gsxui/ui"
 	uiicon "github.com/gsxhq/gsxui/ui/icon"
 )
@@ -33,10 +32,10 @@ component Radial() {
 		</ui.CardHeader>
 		<ui.CardContent class="flex-1 pb-0">
 			<ui.Chart config={cfg} class="mx-auto aspect-square max-h-[250px]">
-				{ ui.RadialBarChart(data, &ui.ChartRadialBarChartOptions{InnerRadius: 30, OuterRadius: 110}, gsx.Fragment(
-					ui.ChartTooltip(&ui.ChartTooltipOptions{Cursor: ui.ChartBool(false), HideLabel: true, NameKey: "browser"}),
-					ui.ChartRadialBar("visitors", &ui.ChartRadialBarOptions{Background: true}),
-				), nil) }
+				<ui.RadialBarChart data={data} innerRadius={30} outerRadius={110}>
+					<ui.ChartTooltip hideLabel nameKey="browser"/>
+					<ui.ChartRadialBar key="visitors" background/>
+				</ui.RadialBarChart>
 			</ui.Chart>
 		</ui.CardContent>
 		<ui.CardFooter class="flex-col gap-2 text-sm">

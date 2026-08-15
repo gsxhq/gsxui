@@ -42,21 +42,21 @@ func extractModelJSON(t *testing.T, got string) string {
 func TestBarChartModelPinned(t *testing.T) {
 	data := []ui.ChartDatum{{"month": "Jan", "desktop": 186.0}, {"month": "Feb", "desktop": 305.0}}
 	got := render(t, ui.Chart(cfg2Series(t),
-		ui.BarChart(data, nil,
+		ui.BarChart(data, 0, 0, 0, 0,
 			gsx.Fragment(
-				ui.ChartXAxis("month", nil),
-				ui.ChartBar("desktop", nil),
+				ui.ChartXAxis("month", false, false, false, 0, 0),
+				ui.ChartBar("desktop", "", "", nil, 0),
 			), nil), nil))
 	model := extractModelJSON(t, got)
 	// Pin the FULL canonical JSON: a byte-faithful port of templui's own
 	// flat Model (chart.templ:1645) — field order, json tags and
 	// omitempty-or-not all match upstream, so Task 5's adapted chart.js
 	// (which reads these same flat fields) needs no rewriting. marginTop/
-	// Right/Bottom/Left default to 5 (no ChartMargin registered);
-	// xAxisHeight defaults to 30 and minTickGap to 5 once an axis is
-	// registered; categoryGap 0.1 is bar's own unconditional Recharts
-	// default; cursor and tooltip (empty object) are always present, no
-	// ChartTooltip was registered here.
+	// Right/Bottom/Left default to 5 (no margin registered, chartMarginOf's
+	// own zero-sentinel default); xAxisHeight defaults to 30 and
+	// minTickGap to 5 once an axis is registered; categoryGap 0.1 is bar's
+	// own unconditional Recharts default; cursor and tooltip (empty
+	// object) are always present, no ChartTooltip was registered here.
 	want := `{"kind":"bar","marginTop":5,"marginRight":5,"marginBottom":5,"marginLeft":5,"xAxisHeight":30,"minTickGap":5,"categoryGap":0.1,"cursor":false,"labels":["Jan","Feb"],"tooltipLabels":["Jan","Feb"],"series":[{"key":"desktop","label":"","color":"var(--color-desktop)","values":[186,305]}],"tooltip":{}}`
 	if model != want {
 		t.Errorf("model drift\n got: %s\nwant: %s", model, want)
@@ -78,10 +78,10 @@ func TestBarChartModelCellsFromFillColumn(t *testing.T) {
 		{"month": "Feb", "desktop": 305.0, "fill": "var(--color-safari)"},
 	}
 	got := render(t, ui.Chart(cfg2Series(t),
-		ui.BarChart(data, nil,
+		ui.BarChart(data, 0, 0, 0, 0,
 			gsx.Fragment(
-				ui.ChartXAxis("month", nil),
-				ui.ChartBar("desktop", nil),
+				ui.ChartXAxis("month", false, false, false, 0, 0),
+				ui.ChartBar("desktop", "", "", nil, 0),
 			), nil), nil))
 	model := extractModelJSON(t, got)
 	want := `{"kind":"bar","marginTop":5,"marginRight":5,"marginBottom":5,"marginLeft":5,"xAxisHeight":30,"minTickGap":5,"categoryGap":0.1,"cursor":false,"labels":["Jan","Feb"],"tooltipLabels":["Jan","Feb"],"series":[{"key":"desktop","label":"","color":"var(--color-desktop)","values":[186,305],"cells":["var(--color-chrome)","var(--color-safari)"]}],"tooltip":{}}`
@@ -93,10 +93,10 @@ func TestBarChartModelCellsFromFillColumn(t *testing.T) {
 func TestLineChartModelPinned(t *testing.T) {
 	data := []ui.ChartDatum{{"month": "Jan", "desktop": 186.0}, {"month": "Feb", "desktop": 305.0}}
 	got := render(t, ui.Chart(cfg2Series(t),
-		ui.LineChart(data, nil,
+		ui.LineChart(data, 0, 0, 0, 0,
 			gsx.Fragment(
-				ui.ChartXAxis("month", nil),
-				ui.ChartLine("desktop", nil),
+				ui.ChartXAxis("month", false, false, false, 0, 0),
+				ui.ChartLine("desktop", "", "", 0, false, 0, 0, "", 0, 0),
 			), nil), nil))
 	model := extractModelJSON(t, got)
 	// Same shape as the bar pin, minus categoryGap: templui's buildModel
@@ -110,10 +110,10 @@ func TestLineChartModelPinned(t *testing.T) {
 func TestAreaChartModelPinned(t *testing.T) {
 	data := []ui.ChartDatum{{"month": "Jan", "desktop": 186.0}, {"month": "Feb", "desktop": 305.0}}
 	got := render(t, ui.Chart(cfg2Series(t),
-		ui.AreaChart(data, nil,
+		ui.AreaChart(data, 0, 0, 0, 0, "",
 			gsx.Fragment(
-				ui.ChartXAxis("month", nil),
-				ui.ChartArea("desktop", nil),
+				ui.ChartXAxis("month", false, false, false, 0, 0),
+				ui.ChartArea("desktop", "", "", "", "", 0),
 			), nil), nil))
 	model := extractModelJSON(t, got)
 	want := `{"kind":"area","marginTop":5,"marginRight":5,"marginBottom":5,"marginLeft":5,"xAxisHeight":30,"minTickGap":5,"cursor":false,"labels":["Jan","Feb"],"tooltipLabels":["Jan","Feb"],"series":[{"key":"desktop","label":"","color":"var(--color-desktop)","values":[186,305]}],"tooltip":{}}`
@@ -126,16 +126,21 @@ func TestPieChartModelPinned(t *testing.T) {
 	data := []ui.ChartDatum{{"browser": "desktop", "visitors": 186.0}, {"browser": "mobile", "visitors": 305.0}}
 	got := render(t, ui.Chart(cfg2Series(t),
 		ui.PieChart(
-			ui.ChartPie(data, "visitors", &ui.ChartPieOptions{NameKey: "browser"}), nil), nil))
+			ui.ChartPie(data, "visitors", "browser", 0, 0, 0, "", false, "", false), nil), nil))
 	model := extractModelJSON(t, got)
 	// Pie carries its own data on the ChartPie child (Recharts' own Pie
 	// takes its own data prop, unlike Bar/Line/Area reading the root's
 	// rows), so the root itself contributes no margin/labels/series at
 	// all — buildPieModel never touches those top-level fields upstream,
-	// which is why marginTop/Right/Bottom/Left stay 0 (no 5/5/5/5 default,
-	// unlike every other kind) and labels/series marshal as literal null
-	// (both lack omitempty and are never initialized for this kind).
-	want := `{"kind":"pie","marginTop":0,"marginRight":0,"marginBottom":0,"marginLeft":0,"cursor":false,"labels":null,"series":null,"tooltip":{},"pies":[{"key":"visitors","seriesLabel":"visitors","values":[186,305],"labels":["",""],"tooltipNames":["",""],"nameKey":"browser","nameValues":["desktop","mobile"],"colors":["var(--color-desktop)","var(--color-mobile)"],"labelLine":true}]}`
+	// which is why marginTop/Right/Bottom/Left stay 0 (PieChart takes no
+	// margin params at all, unlike every other kind) and labels/series
+	// marshal as literal null (both lack omitempty and are never
+	// initialized for this kind). labelLine is false, not the shipped
+	// bar/line/area pins' own true: this task flips ChartPie's LabelLine
+	// default from Recharts' true to gsxui's own false convention (`##
+	// chart` ADAPT), and this call leaves it at that default — a legitimate
+	// pin change, not drift (see this task's report for the byte diff).
+	want := `{"kind":"pie","marginTop":0,"marginRight":0,"marginBottom":0,"marginLeft":0,"cursor":false,"labels":null,"series":null,"tooltip":{},"pies":[{"key":"visitors","seriesLabel":"visitors","values":[186,305],"labels":["",""],"tooltipNames":["",""],"nameKey":"browser","nameValues":["desktop","mobile"],"colors":["var(--color-desktop)","var(--color-mobile)"]}]}`
 	if model != want {
 		t.Errorf("model drift\n got: %s\nwant: %s", model, want)
 	}
@@ -144,10 +149,10 @@ func TestPieChartModelPinned(t *testing.T) {
 func TestRadarChartModelPinned(t *testing.T) {
 	data := []ui.ChartDatum{{"month": "Jan", "desktop": 186.0}, {"month": "Feb", "desktop": 305.0}}
 	got := render(t, ui.Chart(cfg2Series(t),
-		ui.RadarChart(data, nil,
+		ui.RadarChart(data, 0, 0, 0, 0,
 			gsx.Fragment(
 				ui.ChartPolarAngleAxis("month"),
-				ui.ChartRadar("desktop", nil),
+				ui.ChartRadar("desktop", "", 0, "", 0, false, 0, "", 0),
 			), nil), nil))
 	model := extractModelJSON(t, got)
 	want := `{"kind":"radar","marginTop":5,"marginRight":5,"marginBottom":5,"marginLeft":5,"cursor":false,"labels":["Jan","Feb"],"tooltipLabels":["Jan","Feb"],"series":[{"key":"desktop","label":"","color":"var(--color-desktop)","values":[186,305]}],"tooltip":{},"polar":{"radialLines":true,"hasAngleAxis":true}}`
@@ -159,8 +164,8 @@ func TestRadarChartModelPinned(t *testing.T) {
 func TestRadialBarChartModelPinned(t *testing.T) {
 	data := []ui.ChartDatum{{"month": "Jan", "desktop": 186.0}, {"month": "Feb", "desktop": 305.0}}
 	got := render(t, ui.Chart(cfg2Series(t),
-		ui.RadialBarChart(data, nil,
-			ui.ChartRadialBar("desktop", nil), nil), nil))
+		ui.RadialBarChart(data, 0, 0, 0, 0, 0, 0, 0, 0,
+			ui.ChartRadialBar("desktop", "", false, 0, "", ""), nil), nil))
 	model := extractModelJSON(t, got)
 	// Radial's labels come from the row index, not a registered axis key
 	// (there is no polar-angle axis on a radial bar chart), and it never
@@ -182,11 +187,39 @@ func TestRadialBarChartModelCellsFromFillColumn(t *testing.T) {
 		{"month": "Feb", "desktop": 305.0, "fill": "var(--color-safari)"},
 	}
 	got := render(t, ui.Chart(cfg2Series(t),
-		ui.RadialBarChart(data, nil,
-			ui.ChartRadialBar("desktop", nil), nil), nil))
+		ui.RadialBarChart(data, 0, 0, 0, 0, 0, 0, 0, 0,
+			ui.ChartRadialBar("desktop", "", false, 0, "", ""), nil), nil))
 	model := extractModelJSON(t, got)
 	want := `{"kind":"radial","marginTop":5,"marginRight":5,"marginBottom":5,"marginLeft":5,"cursor":false,"labels":["0","1"],"series":[{"key":"desktop","label":"","color":"var(--color-desktop)","values":[186,305],"cells":["var(--color-chrome)","var(--color-safari)"],"tooltipNames":["",""]}],"tooltip":{},"radial":{"startAngle":0,"endAngle":360}}`
 	if model != want {
 		t.Errorf("model drift\n got: %s\nwant: %s", model, want)
+	}
+}
+
+// TestChartXAxisBareTagMatchesExplicitFalse proves the API-surface refactor
+// changed nothing about the DEFAULT model output for ChartXAxis: a bare
+// `<ui.ChartXAxis key="month"/>` (every bool/float64 param left at its Go
+// zero value) yields byte-identical xAxis-derived fields to the old
+// explicit-false options path this pin already covers above
+// (TestBarChartModelPinned's own xAxisHeight/minTickGap/xTickLine/
+// xAxisLine/tickMargin fields) — required by this task's brief (#5).
+func TestChartXAxisBareTagMatchesExplicitFalse(t *testing.T) {
+	data := []ui.ChartDatum{{"month": "Jan", "desktop": 186.0}, {"month": "Feb", "desktop": 305.0}}
+	bare := render(t, ui.Chart(cfg2Series(t),
+		ui.BarChart(data, 0, 0, 0, 0,
+			gsx.Fragment(
+				ui.ChartXAxis("month", false, false, false, 0, 0),
+				ui.ChartBar("desktop", "", "", nil, 0),
+			), nil), nil))
+	explicit := render(t, ui.Chart(cfg2Series(t),
+		ui.BarChart(data, 0, 0, 0, 0,
+			gsx.Fragment(
+				ui.ChartXAxis("month", false /* hide */, false /* tickLine */, false /* axisLine */, 0 /* tickMargin */, 0 /* minTickGap */),
+				ui.ChartBar("desktop", "", "", nil, 0),
+			), nil), nil))
+	bareModel := extractModelJSON(t, bare)
+	explicitModel := extractModelJSON(t, explicit)
+	if bareModel != explicitModel {
+		t.Errorf("bare ChartXAxis diverged from explicit-false ChartXAxis\n bare: %s\nexplicit: %s", bareModel, explicitModel)
 	}
 }
