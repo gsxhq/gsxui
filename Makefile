@@ -1,4 +1,4 @@
-.PHONY: generate generate-styles generate-animate verify-generated verify-generated-styles test test-js test-theme-state test-css-audit audit check ci icons site-dev site highlight sweep-baseline sweep-compare
+.PHONY: test-prod-bundle generate generate-styles generate-animate verify-generated verify-generated-styles test test-js test-theme-state test-css-audit audit check ci icons site-dev site highlight sweep-baseline sweep-compare
 
 audit-source-dirs := ui registry/canonical site/examples site/pages web $(wildcard dev)
 audit-css-source-dirs := assets/css site web $(wildcard dev)
@@ -57,6 +57,14 @@ test: generate
 test-js:
 	npx playwright test --config jstest/playwright.config.ts
 
+# test-prod-bundle builds the real Vite production bundle and asserts every
+# dynamically imported ui module the runtime needs is emitted and wired —
+# the browser suite runs against unbundled dev modules and cannot see
+# bundler behavior (a computed import() specifier once 404'd only in prod).
+test-prod-bundle:
+	node --test jstest/support/prod-bundle.test.ts
+	@touch site/dist/.gitkeep
+
 test-css-audit:
 	node --test jstest/support/compiled-css-audit.test.ts
 
@@ -94,7 +102,7 @@ audit:
 	go run ./cmd/stylegen --check-layers
 	go run ./cmd/stylegen --check-authoring
 
-check: audit test-css-audit test-theme-state verify-generated-styles
+check: audit test-css-audit test-theme-state test-prod-bundle verify-generated-styles
 	@$(MAKE) --no-print-directory verify-generated
 	go vet ./...
 	go test ./...
@@ -106,7 +114,7 @@ check: audit test-css-audit test-theme-state verify-generated-styles
 # ci is the authoritative uncached gate. It mirrors check without reusing
 # Go's test-result cache and keeps the browser, generation, syntax,
 # structural, and formatting checks in the same run.
-ci: audit test-css-audit test-theme-state verify-generated-styles
+ci: audit test-css-audit test-theme-state test-prod-bundle verify-generated-styles
 	@$(MAKE) --no-print-directory verify-generated
 	go vet ./...
 	go test -count=1 ./...

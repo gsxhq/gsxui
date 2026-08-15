@@ -22,16 +22,28 @@ let bodyPromise;
 // made, cache clear or not. retryCount busts the URL (a query string the
 // Go static file servers under /ui/ ignore for path routing, same as any
 // static file server) so a retry is a genuinely fresh module-map entry.
+//
+// The two paths are written as two separate import() calls on purpose.
+// The first attempt MUST be a bare string-literal specifier: bundlers
+// (Vite/Rollup for the site's production build) can only follow, emit and
+// hash a dynamic import whose specifier is a static literal — a computed
+// specifier (a ternary, a template) is opaque to them, the chunk is never
+// emitted, and prod 404s on ./chart.render.js while every unbundled dev
+// test passes (this happened; jstest/support/prod-bundle.test.ts pins it).
+// The retry path derives its URL from import.meta.url — the one dynamic
+// form the bundler also understands and rewrites to the emitted chunk's
+// real hashed URL — and appends the cache-busting query there.
 let retryCount = 0;
 function loadBody() {
-	bodyPromise ??= import(retryCount === 0 ? "./chart.render.js" : `./chart.render.js?retry=${retryCount}`).catch(
-		(err) => {
-			console.error("gsxui: failed to load chart.render.js", err);
-			bodyPromise = null;
-			retryCount++;
-			throw err;
-		},
-	);
+	bodyPromise ??= (retryCount === 0
+		? import("./chart.render.js")
+		: import(/* @vite-ignore */ new URL("./chart.render.js", import.meta.url).href + `?retry=${retryCount}`)
+	).catch((err) => {
+		console.error("gsxui: failed to load chart.render.js", err);
+		bodyPromise = null;
+		retryCount++;
+		throw err;
+	});
 	return bodyPromise;
 }
 function initRoot(el) {
