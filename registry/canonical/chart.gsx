@@ -4,11 +4,11 @@ package canonical
 import (
 	"context"
 	"fmt"
+	"hash/fnv"
 	"io"
 	"sort"
 	"strconv"
 	"strings"
-	"sync/atomic"
 
 	"github.com/gsxhq/gsx"
 )
@@ -124,36 +124,39 @@ func chartStyleRules(id string, schemes []chartStyleScheme) gsx.RawCSS {
 	return out
 }
 
-// chartInstanceCount backs every Chart's data-chart scoping key.
+// Chart ids scope each container's <style> block — [data-chart=<id>] —
+// to its own element, so two charts on one page with different colors for
+// the same series key never clobber each other (shadcn scopes ChartStyle
+// with useId(); templui with a random id).
 //
-// gsxui has no pre-existing per-render unique-id helper: an exhaustive grep
-// across registry/canonical, internal/, and the vendored gsx module found
-// none. Every other component that needs a stable id takes it from the
-// caller instead — an explicit param (e.g. Calendar's name), a fixed
-// singleton default a caller can override through attrs (Toaster's
-// id="gsxui-toaster"), or a caller-supplied prefix at the call site
-// (site/stylepreview/gallery.gsx.src's idp-prefixed ids). None of those fit
-// here: data-chart is not a caller-facing identity a consumer would ever
-// want to set (unlike a DOM id), it is purely the selector key that pairs
-// this <div> with the <style> block the container renders from styleSchemes right below it in the
-// SAME render call, so it has to be computed inside Chart, before attrs is
-// spread, with nothing to key off but the render call itself.
-//
-// This is a process-lifetime monotonic counter: deterministic (no math/rand
-// or crypto/rand — the brief is explicit that pinned tests need
-// determinism), safe under concurrent renders (atomic.Uint64), and unique
-// for as long as the package's process runs, which is what actually matters
-// for the [data-chart=...] selector not leaking one chart's colors
-// onto a sibling chart's elements. Every package this file's content gets
-// copied into by stylegen (registry/generated/<style>, ui) gets its own
-// counter, since each is a distinct Go package — same per-render-tree scope
-// every other id-like mechanism in this codebase already has.
-var chartInstanceCount atomic.Uint64
-
-// nextChartID returns the next deterministic, process-unique data-chart
-// scoping key: "chart-1", "chart-2", ....
-func nextChartID() string {
-	return "chart-" + strconv.FormatUint(chartInstanceCount.Add(1), 10)
+// The id is a content hash of the config's keys and resolved colors — a
+// pure function of the rules the <style> block will contain — and nothing
+// else: no per-process counter, no per-request scope, no random source.
+// That is the only construction that survives every way a chart can reach
+// a page: full renders, htmx or other partial swaps composed client-side
+// from independent server renders, streamed islands, and any number of
+// nodes rendering the same document. Two charts get the same id exactly
+// when their configs are byte-identical — and then sharing it is not a
+// collision but a dedup, because they emit identical rules. Distinct
+// configs always get distinct ids (modulo a 32-bit hash collision), so
+// scoping holds without any coordination between renders. It is also
+// deterministic per render, so pinned renders and snapshots never depend
+// on what rendered before them.
+func chartID(c ChartConfig) string {
+	h := fnv.New32a()
+	for _, s := range c {
+		io.WriteString(h, s.Key)
+		h.Write([]byte{0})
+		io.WriteString(h, string(s.Color))
+		h.Write([]byte{0})
+		if s.Theme != nil {
+			io.WriteString(h, string(s.Theme.Light))
+			h.Write([]byte{0})
+			io.WriteString(h, string(s.Theme.Dark))
+		}
+		h.Write([]byte{1})
+	}
+	return "chart-" + strconv.FormatUint(uint64(h.Sum32()), 36)
 }
 
 // Chart is the shadcn/ui ChartContainer pendant: an aspect-video box that
@@ -183,7 +186,7 @@ func nextChartID() string {
 // state besides. One Chart, one root.
 component Chart(config ChartConfig, children gsx.Node, attrs gsx.Attrs) {
 	{{
-		id := nextChartID()
+		id := chartID(config)
 		// The config travels to the chart roots and their parts through ctx,
 		// the pendant of shadcn's ChartContext — templui's Container does the
 		// same (context.WithValue inside its own templ body). Chart roots

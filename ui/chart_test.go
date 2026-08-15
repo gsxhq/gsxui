@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"io"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -118,5 +119,38 @@ func TestChartLegendStylesRender(t *testing.T) {
 		if !strings.Contains(got, want) {
 			t.Errorf("legend missing %q in: %s", want, got)
 		}
+	}
+}
+
+// TestChartIDsAreContentDerived pins the id contract that survives htmx
+// swaps, streaming and multi-node renders: the data-chart id scoping a
+// chart's <style> block is a pure function of its config. Two renders of
+// the same document are byte-identical (no process counter, no random
+// source); charts with distinct configs get distinct ids (their rules
+// differ, so scoping matters); charts with identical configs share one id
+// (their rules are identical, so sharing is a dedup, not a collision).
+func TestChartIDsAreContentDerived(t *testing.T) {
+	a := ui.ChartConfig{{Key: "d", Color: "red"}}
+	b := ui.ChartConfig{{Key: "d", Color: "blue"}}
+	doc := func() gsx.Node {
+		return gsx.Fragment(
+			ui.Chart(a, gsx.Raw("1"), nil),
+			ui.Chart(b, gsx.Raw("2"), nil),
+			ui.Chart(a, gsx.Raw("3"), nil),
+		)
+	}
+	first := render(t, doc())
+	if second := render(t, doc()); first != second {
+		t.Errorf("chart ids must be deterministic across renders\nfirst:  %s\nsecond: %s", first, second)
+	}
+	ids := regexp.MustCompile(`data-chart="([^"]+)"`).FindAllStringSubmatch(first, -1)
+	if len(ids) != 3 {
+		t.Fatalf("expected 3 chart ids, got %d in %s", len(ids), first)
+	}
+	if ids[0][1] == ids[1][1] {
+		t.Errorf("distinct configs must get distinct ids: %s", first)
+	}
+	if ids[0][1] != ids[2][1] {
+		t.Errorf("identical configs must share one id (identical rules): %s", first)
 	}
 }
