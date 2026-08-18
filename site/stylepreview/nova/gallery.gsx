@@ -152,10 +152,18 @@ component galleryButtonsCard() {
 				<Button size="sm" data-theme-preview-case="text">Small</Button>
 				<Button data-theme-preview-case="text">Default</Button>
 				<Button size="lg" data-theme-preview-case="text">Large</Button>
-				<Button size="icon-xs" aria-label="Icon extra small" data-theme-preview-case="icon"><icon.Plus/></Button>
-				<Button size="icon-sm" aria-label="Icon small" data-theme-preview-case="icon"><icon.Plus/></Button>
-				<Button size="icon" aria-label="Icon" data-theme-preview-case="icon"><icon.Plus/></Button>
-				<Button size="icon-lg" aria-label="Icon large" data-theme-preview-case="icon"><icon.Plus/></Button>
+				<Button size="icon-xs" aria-label="Icon extra small" data-theme-preview-case="icon">
+					<icon.Plus/>
+				</Button>
+				<Button size="icon-sm" aria-label="Icon small" data-theme-preview-case="icon">
+					<icon.Plus/>
+				</Button>
+				<Button size="icon" aria-label="Icon" data-theme-preview-case="icon">
+					<icon.Plus/>
+				</Button>
+				<Button size="icon-lg" aria-label="Icon large" data-theme-preview-case="icon">
+					<icon.Plus/>
+				</Button>
 			</div>
 			<div class="flex flex-wrap items-center gap-2">
 				<Button disabled data-theme-preview-case="disabled">Disabled</Button>
@@ -382,7 +390,9 @@ component galleryMenusCard() {
 				</DropdownMenu>
 			</div>
 			<ContextMenu>
-				<ContextMenuTrigger class="flex h-24 w-full items-center justify-center rounded-md border border-dashed text-sm">
+				<ContextMenuTrigger
+					class="flex h-24 w-full items-center justify-center rounded-md border border-dashed text-sm"
+				>
 					Right click here
 				</ContextMenuTrigger>
 				<ContextMenuContent class="w-52">
@@ -545,17 +555,23 @@ component galleryTableCard() {
 				<TableBody>
 					<TableRow>
 						<TableCell>INV-2041</TableCell>
-						<TableCell><Badge variant="outline">Paid</Badge></TableCell>
+						<TableCell>
+							<Badge variant="outline">Paid</Badge>
+						</TableCell>
 						<TableCell>$250.00</TableCell>
 					</TableRow>
 					<TableRow data-state="selected">
 						<TableCell>INV-2042</TableCell>
-						<TableCell><Badge variant="secondary">Pending</Badge></TableCell>
+						<TableCell>
+							<Badge variant="secondary">Pending</Badge>
+						</TableCell>
 						<TableCell>$125.00</TableCell>
 					</TableRow>
 					<TableRow>
 						<TableCell>INV-2043</TableCell>
-						<TableCell><Badge variant="destructive">Overdue</Badge></TableCell>
+						<TableCell>
+							<Badge variant="destructive">Overdue</Badge>
+						</TableCell>
 						<TableCell>$75.00</TableCell>
 					</TableRow>
 				</TableBody>
@@ -1100,60 +1116,60 @@ component gallerySidebarCard(idp string) {
 			    stays inside its card instead of overlaying the page. */}
 			<div class="relative isolate transform-gpu overflow-hidden rounded-lg border">
 				<SidebarProvider open={true} class="min-h-[24rem]">
-				<Sidebar open={true}>
-					<SidebarHeader>
-						<div class="px-2 py-1 text-sm font-semibold">Acme Inc</div>
-						<SidebarInput placeholder="Search navigation"/>
-					</SidebarHeader>
-					<SidebarSeparator/>
-					<SidebarContent>
-						<SidebarGroup>
-							<SidebarGroupLabel>Application</SidebarGroupLabel>
-							<SidebarGroupContent>
-								<SidebarMenu>
-									<SidebarMenuItem>
-										<SidebarMenuButton isActive={true}>
-											<icon.House/>
-											<span>Home</span>
-										</SidebarMenuButton>
-									</SidebarMenuItem>
-									<SidebarMenuItem>
-										<SidebarMenuButton>
-											<icon.Inbox/>
-											<span>Inbox</span>
-										</SidebarMenuButton>
-										<SidebarMenuBadge>24</SidebarMenuBadge>
-									</SidebarMenuItem>
-									<SidebarMenuItem>
-										<SidebarMenuButton>
-											<icon.Settings/>
-											<span>Settings</span>
-										</SidebarMenuButton>
-									</SidebarMenuItem>
-								</SidebarMenu>
-							</SidebarGroupContent>
-						</SidebarGroup>
-					</SidebarContent>
-					<SidebarFooter>
-						<SidebarMenu>
-							<SidebarMenuItem>
-								<SidebarMenuButton>
-									<icon.User/>
-									<span>Account</span>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
-						</SidebarMenu>
-					</SidebarFooter>
-				</Sidebar>
-				<SidebarInset>
-					<header class="flex h-12 items-center gap-2 border-b px-4">
-						<SidebarTrigger/>
-						<span class="text-sm text-muted-foreground">Dashboard</span>
-					</header>
-					<div class="p-4 text-sm text-muted-foreground">
-						Overview of { idp } workspace activity.
-					</div>
-				</SidebarInset>
+					<Sidebar open={true}>
+						<SidebarHeader>
+							<div class="px-2 py-1 text-sm font-semibold">Acme Inc</div>
+							<SidebarInput placeholder="Search navigation"/>
+						</SidebarHeader>
+						<SidebarSeparator/>
+						<SidebarContent>
+							<SidebarGroup>
+								<SidebarGroupLabel>Application</SidebarGroupLabel>
+								<SidebarGroupContent>
+									<SidebarMenu>
+										<SidebarMenuItem>
+											<SidebarMenuButton isActive={true}>
+												<icon.House/>
+												<span>Home</span>
+											</SidebarMenuButton>
+										</SidebarMenuItem>
+										<SidebarMenuItem>
+											<SidebarMenuButton>
+												<icon.Inbox/>
+												<span>Inbox</span>
+											</SidebarMenuButton>
+											<SidebarMenuBadge>24</SidebarMenuBadge>
+										</SidebarMenuItem>
+										<SidebarMenuItem>
+											<SidebarMenuButton>
+												<icon.Settings/>
+												<span>Settings</span>
+											</SidebarMenuButton>
+										</SidebarMenuItem>
+									</SidebarMenu>
+								</SidebarGroupContent>
+							</SidebarGroup>
+						</SidebarContent>
+						<SidebarFooter>
+							<SidebarMenu>
+								<SidebarMenuItem>
+									<SidebarMenuButton>
+										<icon.User/>
+										<span>Account</span>
+									</SidebarMenuButton>
+								</SidebarMenuItem>
+							</SidebarMenu>
+						</SidebarFooter>
+					</Sidebar>
+					<SidebarInset>
+						<header class="flex h-12 items-center gap-2 border-b px-4">
+							<SidebarTrigger/>
+							<span class="text-sm text-muted-foreground">Dashboard</span>
+						</header>
+						<div class="p-4 text-sm text-muted-foreground">
+							Overview of { idp } workspace activity.
+						</div>
+					</SidebarInset>
 				</SidebarProvider>
 			</div>
 		</CardContent>
@@ -1187,8 +1203,14 @@ component galleryPricingCard() {
 					<CardDescription><span class="text-lg font-semibold text-foreground">$0</span>/mo</CardDescription>
 				</CardHeader>
 				<CardContent class="flex flex-1 flex-col gap-2 text-sm text-muted-foreground">
-					<span class="flex items-start gap-1.5"><icon.Check class="mt-0.5 size-3.5 shrink-0"/>5 projects</span>
-					<span class="flex items-start gap-1.5"><icon.Check class="mt-0.5 size-3.5 shrink-0"/>Community support</span>
+					<span class="flex items-start gap-1.5">
+						<icon.Check class="mt-0.5 size-3.5 shrink-0"/>
+						5 projects
+					</span>
+					<span class="flex items-start gap-1.5">
+						<icon.Check class="mt-0.5 size-3.5 shrink-0"/>
+						Community support
+					</span>
 					<div class="mt-auto pt-2"><Button variant="outline" class="w-full">Get started</Button></div>
 				</CardContent>
 			</Card>
@@ -1201,9 +1223,18 @@ component galleryPricingCard() {
 					<CardDescription><span class="text-lg font-semibold text-foreground">$24</span>/user/mo</CardDescription>
 				</CardHeader>
 				<CardContent class="flex flex-1 flex-col gap-2 text-sm">
-					<span class="flex items-start gap-1.5"><icon.Check class="mt-0.5 size-3.5 shrink-0 text-primary"/>Unlimited projects</span>
-					<span class="flex items-start gap-1.5"><icon.Check class="mt-0.5 size-3.5 shrink-0 text-primary"/>Priority support</span>
-					<span class="flex items-start gap-1.5"><icon.Check class="mt-0.5 size-3.5 shrink-0 text-primary"/>Single sign-on</span>
+					<span class="flex items-start gap-1.5">
+						<icon.Check class="mt-0.5 size-3.5 shrink-0 text-primary"/>
+						Unlimited projects
+					</span>
+					<span class="flex items-start gap-1.5">
+						<icon.Check class="mt-0.5 size-3.5 shrink-0 text-primary"/>
+						Priority support
+					</span>
+					<span class="flex items-start gap-1.5">
+						<icon.Check class="mt-0.5 size-3.5 shrink-0 text-primary"/>
+						Single sign-on
+					</span>
 					<div class="mt-auto pt-2"><Button class="w-full">Start trial</Button></div>
 				</CardContent>
 			</Card>
@@ -1213,8 +1244,14 @@ component galleryPricingCard() {
 					<CardDescription>Custom pricing</CardDescription>
 				</CardHeader>
 				<CardContent class="flex flex-1 flex-col gap-2 text-sm text-muted-foreground">
-					<span class="flex items-start gap-1.5"><icon.Check class="mt-0.5 size-3.5 shrink-0"/>Dedicated support</span>
-					<span class="flex items-start gap-1.5"><icon.Check class="mt-0.5 size-3.5 shrink-0"/>Audit logs</span>
+					<span class="flex items-start gap-1.5">
+						<icon.Check class="mt-0.5 size-3.5 shrink-0"/>
+						Dedicated support
+					</span>
+					<span class="flex items-start gap-1.5">
+						<icon.Check class="mt-0.5 size-3.5 shrink-0"/>
+						Audit logs
+					</span>
 					<div class="mt-auto pt-2"><Button variant="outline" class="w-full">Contact sales</Button></div>
 				</CardContent>
 			</Card>
@@ -1234,22 +1271,34 @@ component galleryStatsCard() {
 			<div class="flex flex-col gap-1">
 				<span class="text-xs text-muted-foreground">MRR</span>
 				<span class="text-xl font-semibold">$48,230</span>
-				<span class="flex items-center gap-1 text-xs text-primary"><icon.TrendingUp class="size-3.5"/>12.4%</span>
+				<span class="flex items-center gap-1 text-xs text-primary">
+					<icon.TrendingUp class="size-3.5"/>
+					12.4%
+				</span>
 			</div>
 			<div class="flex flex-col gap-1">
 				<span class="text-xs text-muted-foreground">Active users</span>
 				<span class="text-xl font-semibold">8,412</span>
-				<span class="flex items-center gap-1 text-xs text-primary"><icon.TrendingUp class="size-3.5"/>3.1%</span>
+				<span class="flex items-center gap-1 text-xs text-primary">
+					<icon.TrendingUp class="size-3.5"/>
+					3.1%
+				</span>
 			</div>
 			<div class="flex flex-col gap-1">
 				<span class="text-xs text-muted-foreground">Churn</span>
 				<span class="text-xl font-semibold">1.8%</span>
-				<span class="flex items-center gap-1 text-xs text-destructive"><icon.TrendingDown class="size-3.5"/>0.4%</span>
+				<span class="flex items-center gap-1 text-xs text-destructive">
+					<icon.TrendingDown class="size-3.5"/>
+					0.4%
+				</span>
 			</div>
 			<div class="flex flex-col gap-1">
 				<span class="text-xs text-muted-foreground">NPS</span>
 				<span class="text-xl font-semibold">62</span>
-				<span class="flex items-center gap-1 text-xs text-primary"><icon.TrendingUp class="size-3.5"/>5</span>
+				<span class="flex items-center gap-1 text-xs text-primary">
+					<icon.TrendingUp class="size-3.5"/>
+					5
+				</span>
 			</div>
 		</CardContent>
 	</Card>
@@ -1266,11 +1315,15 @@ component galleryChatCard(idp string) {
 		</CardHeader>
 		<CardContent class="flex flex-col gap-3">
 			<div class="flex flex-col items-start gap-1">
-				<div class="max-w-[80%] rounded-lg bg-muted px-3 py-2 text-sm">I'm having trouble exporting my report to CSV.</div>
+				<div class="max-w-[80%] rounded-lg bg-muted px-3 py-2 text-sm">
+					I'm having trouble exporting my report to CSV.
+				</div>
 				<span class="text-xs text-muted-foreground">Priya · 9:41 AM</span>
 			</div>
 			<div class="flex flex-col items-end gap-1">
-				<div class="max-w-[80%] rounded-lg bg-primary px-3 py-2 text-sm text-primary-foreground">Try Settings → Export → CSV. Let me know if that works!</div>
+				<div class="max-w-[80%] rounded-lg bg-primary px-3 py-2 text-sm text-primary-foreground">
+					Try Settings → Export → CSV. Let me know if that works!
+				</div>
 				<span class="text-xs text-muted-foreground">You · 9:44 AM</span>
 			</div>
 			<div class="flex flex-col items-start gap-1">
@@ -1309,7 +1362,9 @@ component galleryRolesCard() {
 				<TableBody>
 					<TableRow>
 						<TableCell>Priya Sharma</TableCell>
-						<TableCell><Badge variant="secondary">Owner</Badge></TableCell>
+						<TableCell>
+							<Badge variant="secondary">Owner</Badge>
+						</TableCell>
 						<TableCell class="text-right">
 							<DropdownMenu>
 								<Button
@@ -1331,7 +1386,9 @@ component galleryRolesCard() {
 					</TableRow>
 					<TableRow>
 						<TableCell>Marcus Webb</TableCell>
-						<TableCell><Badge variant="outline">Admin</Badge></TableCell>
+						<TableCell>
+							<Badge variant="outline">Admin</Badge>
+						</TableCell>
 						<TableCell class="text-right">
 							<DropdownMenu>
 								<Button
@@ -1353,7 +1410,9 @@ component galleryRolesCard() {
 					</TableRow>
 					<TableRow>
 						<TableCell>Elena Ruiz</TableCell>
-						<TableCell><Badge variant="outline">Member</Badge></TableCell>
+						<TableCell>
+							<Badge variant="outline">Member</Badge>
+						</TableCell>
 						<TableCell class="text-right">
 							<DropdownMenu>
 								<Button

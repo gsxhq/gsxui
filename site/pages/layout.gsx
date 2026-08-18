@@ -131,12 +131,12 @@ component siteLayout(title string, active string, mode layoutMode, toc []docTOCI
 		<siteHead title={title} entry="web/main.js"/>
 		<body
 			data-site-layout={mode}
-			class={bodyClass}
+			class={ bodyClass }
 			hx-boost:inherited="true"
 			hx-swap:inherited="outerMorph transition:true"
 		>
-			<header class={headerClass}>
-				<div class={headerContainerClass}>
+			<header class={ headerClass }>
+				<div class={ headerContainerClass }>
 					<div class="flex items-center gap-2">
 						<a href={Home{} |> url} class="flex items-center">
 							<siteLogo/>
@@ -149,13 +149,15 @@ component siteLayout(title string, active string, mode layoutMode, toc []docTOCI
 						<ui.CommandDialog
 							title="Search documentation"
 							description="Search components and pages..."
-							trigger={ <ui.DialogTrigger
-								class="hidden h-8 w-56 items-center gap-2 rounded-lg border bg-muted/50 px-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted sm:inline-flex"
-							>
-								<icon.Search class="size-4"/>
-								<span class="flex-1 text-left">Search docs...</span>
-								<ui.Kbd>⌘K</ui.Kbd>
-							</ui.DialogTrigger> }
+							trigger={
+								<ui.DialogTrigger
+									class="hidden h-8 w-56 items-center gap-2 rounded-lg border bg-muted/50 px-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted sm:inline-flex"
+								>
+									<icon.Search class="size-4"/>
+									<span class="flex-1 text-left">Search docs...</span>
+									<ui.Kbd>⌘K</ui.Kbd>
+								</ui.DialogTrigger>
+							}
 						>
 							<ui.CommandInput placeholder="Search documentation..."/>
 							<ui.CommandList>
@@ -226,7 +228,7 @@ component siteLayout(title string, active string, mode layoutMode, toc []docTOCI
 					</nav>
 				</div>
 			</header>
-			<div class={contentContainerClass}>
+			<div class={ contentContainerClass }>
 				{ if mode == layoutDocs {
 					<aside data-site-docs-sidebar class="hidden min-w-0 lg:block">
 						<nav
@@ -251,7 +253,7 @@ component siteLayout(title string, active string, mode layoutMode, toc []docTOCI
 					{ if mode == layoutDocs {
 						data-site-docs-article
 					} }
-					class={mainClass}
+					class={ mainClass }
 				>
 					{ children }
 				</main>
@@ -265,7 +267,7 @@ component siteLayout(title string, active string, mode layoutMode, toc []docTOCI
 			</div>
 			{ if mode != layoutWorkspace {
 				<footer data-site-footer class="border-t border-border">
-					<div class={footerContainerClass}>
+					<div class={ footerContainerClass }>
 						gsxui — shadcn-style components for gsx. Copy-in, type-checked, server-rendered.
 					</div>
 				</footer>

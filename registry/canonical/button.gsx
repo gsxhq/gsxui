@@ -14,12 +14,7 @@ component Button(variant string, size string, href string, disabled bool, childr
 			data-variant={variant |> default("default")}
 			data-size={size |> default("default")}
 			href={href}
-			class={
-				"group/button",
-				button.Root(),
-				button.Variant(variant),
-				button.Size(size),
-			}
+			class={ "group/button", button.Root(), button.Variant(variant), button.Size(size) }
 			{ attrs... }
 			data-gsxui-slot-button
 		>
@@ -31,12 +26,7 @@ component Button(variant string, size string, href string, disabled bool, childr
 			data-size={size |> default("default")}
 			type="button"
 			disabled={disabled}
-			class={
-				"group/button",
-				button.Root(),
-				button.Variant(variant),
-				button.Size(size),
-			}
+			class={ "group/button", button.Root(), button.Variant(variant), button.Size(size) }
 			{ attrs... }
 			data-gsxui-slot-button
 		>

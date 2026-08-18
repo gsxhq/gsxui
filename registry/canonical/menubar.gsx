@@ -263,7 +263,7 @@ component MenubarItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 		class={
 			"group/menubar-item relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
 			menubar.Item(),
-			menubar.ItemVariant(variant),
+			menubar.ItemVariant(variant)
 		}
 		data-variant={variant |> default("default")}
 		role="menuitem"
@@ -305,7 +305,10 @@ component MenubarGroup(children gsx.Node, attrs gsx.Attrs) {
 // deliberately, for cross-menu-family consistency, not because nova agrees.
 component MenubarCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0", menubar.CheckboxItem() }
+		class={
+			"relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
+			menubar.CheckboxItem()
+		}
 		role="menuitemcheckbox"
 		data-value={value}
 		{ if checked {
@@ -348,7 +351,10 @@ component MenubarRadioGroup(value string, children gsx.Node, attrs gsx.Attrs) {
 // MenubarCheckboxItem's own doc comment.
 component MenubarRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0", menubar.RadioItem() }
+		class={
+			"relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
+			menubar.RadioItem()
+		}
 		role="menuitemradio"
 		data-value={value}
 		{ if checked {
@@ -443,7 +449,10 @@ component MenubarSub(children gsx.Node, attrs gsx.Attrs) {
 // siblings — a real, deliberate divergence, not an oversight.
 component MenubarSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0", menubar.SubTrigger() }
+		class={
+			"cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
+			menubar.SubTrigger()
+		}
 		role="menuitem"
 		aria-haspopup="menu"
 		aria-expanded="false"

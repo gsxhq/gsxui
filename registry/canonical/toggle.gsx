@@ -63,11 +63,7 @@ component Toggle(pressed bool, variant string, size string, children gsx.Node, a
 		data-size={size |> default("default")}
 		data-state={state}
 		aria-pressed={pressed}
-		class={
-			toggle.Root(),
-			toggle.Variant(variant),
-			toggle.Size(size),
-		}
+		class={ toggle.Root(), toggle.Variant(variant), toggle.Size(size) }
 		{ attrs... }
 		data-gsxui-slot-toggle
 	>

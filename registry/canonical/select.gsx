@@ -82,7 +82,7 @@ component SelectTrigger(size string, children gsx.Node, attrs gsx.Attrs) {
 		class={
 			"w-fit items-center whitespace-nowrap outline-none disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
 			select_.Trigger(),
-			select_.TriggerSize(size),
+			select_.TriggerSize(size)
 		}
 		{ attrs... }
 		data-gsxui-slot-select-trigger
@@ -163,7 +163,10 @@ component SelectItem(value string, selected bool, disabled bool, children gsx.No
 			data-disabled="true"
 			aria-disabled="true"
 		} }
-		class={ "relative w-full items-center cursor-default outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0", select_.Item() }
+		class={
+			"relative w-full items-center cursor-default outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+			select_.Item()
+		}
 		{ attrs... }
 		data-gsxui-slot-select-item
 	>

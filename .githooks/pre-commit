@@ -1,0 +1,34 @@
+#!/bin/sh
+# Pre-commit: refuse to commit .gsx / .go files that gsx fmt / gofmt would
+# change. Install once per clone with `make hooks`. Checks the STAGED
+# content (not the working copy), so `git add -p` partial stages are judged
+# on what will actually land in the commit.
+#
+# Deliberately does not auto-format and re-stage: that would silently
+# sweep unstaged hunks of the same file into the commit.
+set -eu
+
+files=$(git diff --cached --name-only --diff-filter=ACMR -- '*.gsx' '*.go')
+[ -n "$files" ] || exit 0
+
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+
+bad=""
+for f in $files; do
+	mkdir -p "$tmp/$(dirname "$f")"
+	git show ":$f" > "$tmp/$f"
+	# gsx fmt -l exits non-zero when a file differs (gofmt -l does not);
+	# `|| true` so set -e doesn't abort before the summary is printed.
+	case "$f" in
+	*.gsx) out=$(go tool gsx fmt -l "$tmp/$f" || true) ;;
+	*.go)  out=$(gofmt -l "$tmp/$f") ;;
+	esac
+	[ -z "$out" ] || bad="$bad $f"
+done
+
+if [ -n "$bad" ]; then
+	echo "pre-commit: unformatted files (run: go tool gsx fmt -w / gofmt -w, then re-stage):" >&2
+	for f in $bad; do echo "  $f" >&2; done
+	exit 1
+fi

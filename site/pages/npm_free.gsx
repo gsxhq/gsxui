@@ -36,17 +36,17 @@ component (n NpmFree) Page() {
 			<section class="flex flex-col gap-3">
 				<docHeading item={npmFreeTOCItems[1]}/>
 				<p>
-					You own serving and CSS building. Serve the vendored JS directory statically and load the barrel
-					with one module script tag — no bundler required, any bundler welcome:
+					You own serving and CSS building. Serve the vendored JS directory statically and load the barrel with one
+					module script tag — no bundler required, any bundler welcome:
 				</p>
 				<pre><code>{ hl.Node("snippets/nonvite-serve.go") }</code></pre>
 			</section>
 			<section class="flex flex-col gap-3">
 				<docHeading item={npmFreeTOCItems[2]}/>
 				<p>
-					Build the CSS entry with any Tailwind v4 tool. The <a href="https://tailwindcss.com/docs/installation/tailwind-cli">standalone
-					Tailwind CLI</a> — a single binary
-					from <a href="https://github.com/tailwindlabs/tailwindcss/releases/latest">GitHub releases</a> — is the
+					Build the CSS entry with any Tailwind v4 tool.
+					The <a href="https://tailwindcss.com/docs/installation/tailwind-cli">standalone Tailwind CLI</a> — a single
+					binary from <a href="https://github.com/tailwindlabs/tailwindcss/releases/latest">GitHub releases</a> — is the
 					natural fit; npm's <code>@tailwindcss/cli</code> takes the same flags. Then link the output from your pages:
 				</p>
 				<pre><code>{ hl.Node("snippets/nonvite-css.sh") }</code></pre>

@@ -9,11 +9,7 @@ component Alert(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="alert"
 		data-variant={variant |> default("default")}
-		class={
-			"group/alert",
-			alert.Root(),
-			alert.Variant(variant),
-		}
+		class={ "group/alert", alert.Root(), alert.Variant(variant) }
 		{ attrs... }
 		data-gsxui-slot-alert
 	>

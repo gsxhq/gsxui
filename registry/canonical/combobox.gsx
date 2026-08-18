@@ -251,10 +251,7 @@ component ComboboxContent(children gsx.Node, attrs gsx.Attrs) {
 		popover="auto"
 		data-state="closed"
 		data-side="bottom"
-		class={
-			"group/combobox-content",
-			combobox.Content(),
-		}
+		class={ "group/combobox-content", combobox.Content() }
 		{ attrs... }
 		data-gsxui-slot-combobox-content
 	>
@@ -320,7 +317,10 @@ component ComboboxItem(value string, selected bool, children gsx.Node, attrs gsx
 			data-state="unchecked"
 		} }
 		aria-selected={selected}
-		class={ "relative w-full items-center cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0", combobox.Item() }
+		class={
+			"relative w-full items-center cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
+			combobox.Item()
+		}
 		{ attrs... }
 		data-gsxui-slot-combobox-item
 	>

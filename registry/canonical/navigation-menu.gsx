@@ -46,10 +46,7 @@ import (
 // guarded against; callers overriding this attribute are on their own.
 component NavigationMenu(children gsx.Node, attrs gsx.Attrs) {
 	<nav
-		class={
-			"group/navigation-menu",
-			navigationMenu.Root(),
-		}
+		class={ "group/navigation-menu", navigationMenu.Root() }
 		data-viewport="false"
 		{ attrs... }
 		data-gsxui-slot-navigation-menu
@@ -122,10 +119,7 @@ component NavigationMenuItem(children gsx.Node, attrs gsx.Attrs) {
 // to key off here.
 component NavigationMenuTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<button
-		class={
-			"group/navigation-menu-trigger",
-			navigationMenu.Trigger(),
-		}
+		class={ "group/navigation-menu-trigger", navigationMenu.Trigger() }
 		type="button"
 		aria-expanded="false"
 		data-state="closed"
@@ -244,11 +238,7 @@ component NavigationMenuLink(active bool, variant string, children gsx.Node, att
 		}
 	}}
 	<a
-		class={
-			navigationMenu.Link(),
-			navigationMenu.LinkVariant(linkVariant),
-			navigationMenu.LinkActive(linkActive),
-		}
+		class={ navigationMenu.Link(), navigationMenu.LinkVariant(linkVariant), navigationMenu.LinkActive(linkActive) }
 		data-variant={linkVariant}
 		{ if active {
 			data-active="true"

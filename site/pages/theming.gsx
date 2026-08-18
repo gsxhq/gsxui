@@ -79,13 +79,13 @@ component (t Theming) Page() {
 				<p>Two mechanisms make that hold:</p>
 				<ul class="list-disc space-y-2 pl-6">
 					<li>
-						Utilities a component carries in its own markup are settled by the vendored class merger
-						(<code>ui/merge/merge.go</code>): your <code>h-12</code> replaces the component's own height utility
-						instead of conflicting with it.
+						Utilities a component carries in its own markup are settled by the vendored class merger (
+						<code>ui/merge/merge.go</code>): your <code>h-12</code> replaces the component's own height utility instead
+						of conflicting with it.
 					</li>
 					<li>
-						Rules in <code>style.css</code> live in <code>@layer components</code>, while your class lands in
-						Tailwind's later <code>@layer utilities</code> — the later layer wins regardless of specificity.
+						Rules in <code>style.css</code> live in <code>@layer components</code>, while your class lands in Tailwind's
+						later <code>@layer utilities</code> — the later layer wins regardless of specificity.
 					</li>
 				</ul>
 				<p>
@@ -94,8 +94,8 @@ component (t Theming) Page() {
 				<pre><code>{ hl.Node("snippets/theme-attrs.gsx") }</code></pre>
 				<p>
 					Behaviour roles are opt-in data attributes: any element becomes a dialog trigger by
-					carrying <code>data-gsxui-dialog-trigger</code>. The family's own Trigger components need no role attribute
-					— their slot marker implies it:
+					carrying <code>data-gsxui-dialog-trigger</code>. The family's own Trigger components need no role attribute —
+					their slot marker implies it:
 				</p>
 				<pre><code>{ hl.Node("snippets/theme-dataattr.gsx") }</code></pre>
 			</section>

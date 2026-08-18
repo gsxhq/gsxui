@@ -108,7 +108,7 @@ component ContextMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 		class={
 			"group/context-menu-item relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
 			contextMenu.Item(),
-			contextMenu.ItemVariant(variant),
+			contextMenu.ItemVariant(variant)
 		}
 		data-variant={variant |> default("default")}
 		role="menuitem"
@@ -146,7 +146,10 @@ component ContextMenuGroup(children gsx.Node, attrs gsx.Attrs) {
 // following ui/select.gsx's SelectItem precedent), not re-derived here.
 component ContextMenuCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0", contextMenu.CheckboxItem() }
+		class={
+			"relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
+			contextMenu.CheckboxItem()
+		}
 		role="menuitemcheckbox"
 		data-value={value}
 		{ if checked {
@@ -195,7 +198,10 @@ component ContextMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attrs
 // ContextMenuCheckboxItem's own doc comment, not repeated here.
 component ContextMenuRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0", contextMenu.RadioItem() }
+		class={
+			"relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
+			contextMenu.RadioItem()
+		}
 		role="menuitemradio"
 		data-value={value}
 		{ if checked {
@@ -261,7 +267,10 @@ component ContextMenuSub(children gsx.Node, attrs gsx.Attrs) {
 // data-[state=open]: kept, not nova's data-open: (standing house exception).
 component ContextMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0", contextMenu.SubTrigger() }
+		class={
+			"cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
+			contextMenu.SubTrigger()
+		}
 		role="menuitem"
 		aria-haspopup="menu"
 		aria-expanded="false"

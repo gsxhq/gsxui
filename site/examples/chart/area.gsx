@@ -48,8 +48,22 @@ component Area() {
 							<stop offset="95%" stop-color="var(--color-mobile)" stop-opacity="0.1"/>
 						</ui.ChartLinearGradient>
 					</ui.ChartDefs>
-					<ui.ChartArea key="mobile" curve="natural" fill="url(#fillMobile)" fillOpacity={0.4} stroke="var(--color-mobile)" stackId="a"/>
-					<ui.ChartArea key="desktop" curve="natural" fill="url(#fillDesktop)" fillOpacity={0.4} stroke="var(--color-desktop)" stackId="a"/>
+					<ui.ChartArea
+						key="mobile"
+						curve="natural"
+						fill="url(#fillMobile)"
+						fillOpacity={0.4}
+						stroke="var(--color-mobile)"
+						stackId="a"
+					/>
+					<ui.ChartArea
+						key="desktop"
+						curve="natural"
+						fill="url(#fillDesktop)"
+						fillOpacity={0.4}
+						stroke="var(--color-desktop)"
+						stackId="a"
+					/>
 				</ui.AreaChart>
 			</ui.Chart>
 		</ui.CardContent>

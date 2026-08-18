@@ -34,10 +34,7 @@ component ButtonGroup(orientation string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="group"
 		data-orientation={orientation |> default("horizontal")}
-		class={
-			buttonGroup.Root(),
-			buttonGroup.Orientation(orientation),
-		}
+		class={ buttonGroup.Root(), buttonGroup.Orientation(orientation) }
 		{ attrs... }
 		data-gsxui-slot-button-group
 	>

@@ -38,6 +38,7 @@ jobs:
         run: npx playwright install --with-deps chromium
       - if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
+      - run: make fmt-check
       - run: go test ./...
       - id: test-js
         run: make test-js

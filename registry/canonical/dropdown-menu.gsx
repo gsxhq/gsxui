@@ -99,7 +99,7 @@ component DropdownMenuItem(variant string, children gsx.Node, attrs gsx.Attrs) {
 		class={
 			"group/dropdown-menu-item relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
 			dropdownMenu.Item(),
-			dropdownMenu.ItemVariant(variant),
+			dropdownMenu.ItemVariant(variant)
 		}
 		data-variant={variant |> default("default")}
 		role="menuitem"
@@ -147,7 +147,10 @@ component DropdownMenuGroup(children gsx.Node, attrs gsx.Attrs) {
 // extra prepended token; the two mechanisms are visually equivalent.
 component DropdownMenuCheckboxItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0", dropdownMenu.CheckboxItem() }
+		class={
+			"relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
+			dropdownMenu.CheckboxItem()
+		}
 		role="menuitemcheckbox"
 		data-value={value}
 		{ if checked {
@@ -197,7 +200,10 @@ component DropdownMenuRadioGroup(value string, children gsx.Node, attrs gsx.Attr
 // ADAPT as DropdownMenuCheckboxItem's own doc comment, not repeated here.
 component DropdownMenuRadioItem(checked bool, value string, children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0", dropdownMenu.RadioItem() }
+		class={
+			"relative cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
+			dropdownMenu.RadioItem()
+		}
 		role="menuitemradio"
 		data-value={value}
 		{ if checked {
@@ -260,7 +266,10 @@ component DropdownMenuSub(children gsx.Node, attrs gsx.Attrs) {
 // data-open: (standing house exception).
 component DropdownMenuSubTrigger(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0", dropdownMenu.SubTrigger() }
+		class={
+			"cursor-default items-center outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
+			dropdownMenu.SubTrigger()
+		}
 		role="menuitem"
 		aria-haspopup="menu"
 		aria-expanded="false"

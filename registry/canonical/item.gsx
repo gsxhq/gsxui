@@ -46,12 +46,7 @@ component Item(variant string, size string, children gsx.Node, attrs gsx.Attrs) 
 	<div
 		data-variant={variant |> default("default")}
 		data-size={size |> default("default")}
-		class={
-			"group/item",
-			item.Root(),
-			item.Variant(variant),
-			item.Size(size),
-		}
+		class={ "group/item", item.Root(), item.Variant(variant), item.Size(size) }
 		{ attrs... }
 		data-gsxui-slot-item
 	>
@@ -72,10 +67,7 @@ component Item(variant string, size string, children gsx.Node, attrs gsx.Attrs) 
 component ItemMedia(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		data-variant={variant |> default("default")}
-		class={
-			item.Media(),
-			item.MediaVariant(variant),
-		}
+		class={ item.Media(), item.MediaVariant(variant) }
 		{ attrs... }
 		data-gsxui-slot-item-media
 	>

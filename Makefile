@@ -1,4 +1,4 @@
-.PHONY: test-prod-bundle generate generate-styles generate-animate verify-generated verify-generated-styles test test-js test-theme-state test-css-audit audit check ci icons site-dev site highlight sweep-baseline sweep-compare
+.PHONY: fmt-check hooks test-prod-bundle generate generate-styles generate-animate verify-generated verify-generated-styles test test-js test-theme-state test-css-audit audit check ci icons site-dev site highlight sweep-baseline sweep-compare
 
 audit-source-dirs := ui registry/canonical site/examples site/pages web $(wildcard dev)
 audit-css-source-dirs := assets/css site web $(wildcard dev)
@@ -102,26 +102,36 @@ audit:
 	go run ./cmd/stylegen --check-layers
 	go run ./cmd/stylegen --check-authoring
 
-check: audit test-css-audit test-theme-state test-prod-bundle verify-generated-styles
+# fmt-check lists any .gsx or .go file whose formatting differs from
+# `gsx fmt` / gofmt. It is part of check and ci and of the pre-commit hook
+# (`make hooks` installs it); fix with `go tool gsx fmt -w <files>`.
+fmt-check:
+	go tool gsx fmt -l . | (! grep .)
+	gofmt -l . | (! grep .)
+
+# hooks points git at the versioned hooks in .githooks/ for this clone.
+# One-time per clone; the pre-commit hook runs fmt-check on staged files.
+hooks:
+	git config core.hooksPath .githooks
+
+check: fmt-check audit test-css-audit test-theme-state test-prod-bundle verify-generated-styles
 	@$(MAKE) --no-print-directory verify-generated
 	go vet ./...
 	go test ./...
 	npx playwright test --config jstest/playwright.config.ts
 	@test -f site/dist/.gitkeep || { echo "error: site/dist/.gitkeep missing (vite build deletes it — restore before commit)"; exit 1; }
 	@for f in $$(find ui jstest web -name '*.js'); do node --check $$f || exit 1; done
-	gofmt -l . | (! grep .)
 
 # ci is the authoritative uncached gate. It mirrors check without reusing
 # Go's test-result cache and keeps the browser, generation, syntax,
 # structural, and formatting checks in the same run.
-ci: audit test-css-audit test-theme-state test-prod-bundle verify-generated-styles
+ci: fmt-check audit test-css-audit test-theme-state test-prod-bundle verify-generated-styles
 	@$(MAKE) --no-print-directory verify-generated
 	go vet ./...
 	go test -count=1 ./...
 	npx playwright test --config jstest/playwright.config.ts
 	@test -f site/dist/.gitkeep || { echo "error: site/dist/.gitkeep missing (vite build deletes it — restore before commit)"; exit 1; }
 	@for f in $$(find ui jstest web -name '*.js'); do node --check $$f || exit 1; done
-	gofmt -l . | (! grep .)
 
 # site-dev runs the two-command dev loop: `npm install` once, then this.
 # `gsx dev` warm-generates .x.go, builds-then-swaps the site/ binary (see

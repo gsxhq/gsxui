@@ -16,10 +16,7 @@ import "github.com/gsxhq/gsx"
 component Badge(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<span
 		data-variant={variant |> default("default")}
-		class={
-			badge.Root(),
-			badge.Variant(variant),
-		}
+		class={ badge.Root(), badge.Variant(variant) }
 		{ attrs... }
 		data-gsxui-slot-badge
 	>

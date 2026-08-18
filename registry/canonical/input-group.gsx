@@ -41,10 +41,7 @@ component InputGroupAddon(align string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="group"
 		data-align={align |> default("inline-start")}
-		class={
-			inputGroup.Addon(),
-			inputGroup.AddonAlign(align),
-		}
+		class={ inputGroup.Addon(), inputGroup.AddonAlign(align) }
 		{ attrs... }
 		data-gsxui-slot-input-group-addon
 	>

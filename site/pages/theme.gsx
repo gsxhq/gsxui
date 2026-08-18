@@ -52,7 +52,7 @@ type themePaletteSchema struct {
 	// color, and its picker reuses Themes[baseColor]'s own choices for
 	// display, so this table only needs to answer "what are chart-1..5 for
 	// this name" regardless of which base color's picker view showed it.
-	ChartColors map[string]themePaletteResolvedSchema `json:"chartColors"`
+	ChartColors map[string]themePaletteResolvedSchema            `json:"chartColors"`
 	Resolved    map[string]map[string]themePaletteResolvedSchema `json:"resolved"`
 	// Fonts backs BOTH the body (FontSans) and heading (FontHeading)
 	// pickers — same list, mirrors catalog.go's FontChoices doc comment.
@@ -406,25 +406,28 @@ component themeEditor(previewURL string, workspace bool) {
 			iframeClass += " min-h-[640px]"
 		}
 	}}
-	<div class={editorClass}>
+	<div class={ editorClass }>
 		<script type="application/json" data-theme-schema>@{ themeEditorSchemaValue() }</script>
 		<div>
 			<h1 class="text-3xl font-semibold tracking-tight">Theme editor</h1>
 			<p class="mt-2 max-w-2xl text-sm text-muted-foreground">
-				Pick one of 8 component styles, then shape the semantic theme it renders with: base color, accent, chart
-				color, menu accent, radius, and a body/heading font pair, all previewed live in light and dark. Undo/redo,
-				the address bar, and share codes track every change, and a foreign <code>theme.css</code> imports straight
-				in. The gallery renders the exact component source a project receives from <code>gsxui add</code> under the
-				selected style.
+				Pick one of 8 component styles, then shape the semantic theme it renders with: base color, accent, chart color,
+				menu accent, radius, and a body/heading font pair, all previewed live in light and dark. Undo/redo, the address
+				bar, and share codes track every change, and a foreign <code>theme.css</code> imports straight in. The gallery
+				renders the exact component source a project receives from <code>gsxui add</code> under the selected style.
 			</p>
 		</div>
-		<div class={gridClass}>
+		<div class={ gridClass }>
 			<section data-theme-style-panel class="flex min-w-0 flex-col gap-3">
 				<div class="flex items-center justify-between gap-3">
 					<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Style</h2>
 					<div class="flex items-center gap-1">
-						<ui.Button data-theme-undo variant="outline" size="icon-sm" aria-label="Undo" title="Undo (⌘Z)" disabled><icon.Undo/></ui.Button>
-						<ui.Button data-theme-redo variant="outline" size="icon-sm" aria-label="Redo" title="Redo (⌘⇧Z)" disabled><icon.Redo/></ui.Button>
+						<ui.Button data-theme-undo variant="outline" size="icon-sm" aria-label="Undo" title="Undo (⌘Z)" disabled>
+							<icon.Undo/>
+						</ui.Button>
+						<ui.Button data-theme-redo variant="outline" size="icon-sm" aria-label="Redo" title="Redo (⌘⇧Z)" disabled>
+							<icon.Redo/>
+						</ui.Button>
 						<ui.Button data-theme-reset variant="outline" size="sm">Reset</ui.Button>
 					</div>
 				</div>
@@ -434,7 +437,7 @@ component themeEditor(previewURL string, workspace bool) {
 							type="button"
 							data-theme-style={choice.Name}
 							aria-pressed={themeStylePressedAttr(choice.Name)}
-							class={themeStyleButtonClass(choice.Name)}
+							class={ themeStyleButtonClass(choice.Name) }
 						>
 							<span class="block font-medium">{ choice.Title }</span>
 							<span class="mt-1 block text-xs text-muted-foreground">{ choice.Description }</span>
@@ -442,12 +445,13 @@ component themeEditor(previewURL string, workspace bool) {
 					} }
 				</div>
 				<p class="text-xs text-muted-foreground">
-					All 8 styles render the full component catalogue. <code>gsxui add</code> and <code>gsxui apply</code> vendor each component's exact source for the selected style.
+					All 8 styles render the full component catalogue. <code>gsxui add</code> and <code>gsxui apply</code> vendor
+					each component's exact source for the selected style.
 				</p>
 			</section>
 			<div
 				data-theme-preview-panel
-				class={previewPanelClass}
+				class={ previewPanelClass }
 			>
 				<div class="flex flex-wrap items-center justify-between gap-3">
 					<div>
@@ -461,7 +465,7 @@ component themeEditor(previewURL string, workspace bool) {
 									type="button"
 									data-theme-page-tab={choice.Name}
 									aria-pressed={themePagePressedAttr(choice.Name)}
-									class={themePageTabClass(choice.Name)}
+									class={ themePageTabClass(choice.Name) }
 								>
 									{ choice.Title }
 								</button>
@@ -474,7 +478,7 @@ component themeEditor(previewURL string, workspace bool) {
 					data-theme-preview-frame
 					title="Theme preview"
 					src={previewURL}
-					class={iframeClass}
+					class={ iframeClass }
 				></iframe>
 				<p data-theme-status role="status" aria-live="polite" class="min-h-5 text-sm text-muted-foreground"></p>
 				<textarea
@@ -486,7 +490,7 @@ component themeEditor(previewURL string, workspace bool) {
 			</div>
 			<div
 				data-theme-controls-panel
-				class={controlsPanelClass}
+				class={ controlsPanelClass }
 			>
 				<section class="flex flex-col gap-3 border-t border-border pt-6">
 					<h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Mode and palette</h2>
@@ -520,7 +524,7 @@ component themeEditor(previewURL string, workspace bool) {
 										type="button"
 										data-theme-menu-accent-tab={choice.Name}
 										aria-pressed={themeMenuAccentPressedAttr(choice.Name)}
-										class={themeMenuAccentTabClass(choice.Name)}
+										class={ themeMenuAccentTabClass(choice.Name) }
 									>
 										{ choice.Title }
 									</button>

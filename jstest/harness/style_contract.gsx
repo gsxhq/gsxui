@@ -53,7 +53,9 @@ component StyleContractFixture() {
 			</ui.CardHeader>
 		</div>
 		<div data-disabled="true">
-			<ui.Label class="opacity-100" data-style-contract="label-disabled-caller">Disabled label caller override</ui.Label>
+			<ui.Label class="opacity-100" data-style-contract="label-disabled-caller">
+				Disabled label caller override
+			</ui.Label>
 		</div>
 		<div>
 			<ui.Badge>Badge</ui.Badge>
@@ -104,8 +106,16 @@ component StyleContractFixture() {
 		    addon (the retained consumer-class rule) and a caller padding that
 		    must still beat it. */}
 		<ui.InputGroup>
-			<ui.InputGroupAddon align="block-start" class="border-b" data-style-contract="input-group-addon-border-b">URL</ui.InputGroupAddon>
-			<ui.InputGroupAddon align="block-start" class="border-b pb-8" data-style-contract="input-group-addon-border-b-caller">URL</ui.InputGroupAddon>
+			<ui.InputGroupAddon align="block-start" class="border-b" data-style-contract="input-group-addon-border-b">
+				URL
+			</ui.InputGroupAddon>
+			<ui.InputGroupAddon
+				align="block-start"
+				class="border-b pb-8"
+				data-style-contract="input-group-addon-border-b-caller"
+			>
+				URL
+			</ui.InputGroupAddon>
 			<ui.InputGroupInput placeholder="probe"/>
 		</ui.InputGroup>
 		{/* Field § 10b probes. The nested FieldGroup pins the migrated
@@ -315,13 +325,31 @@ component StyleContractFixture() {
 			<ui.MenubarItem data-inset="true" tabindex="0" data-style-contract="menubar-item-inset">
 				Inset menubar item
 			</ui.MenubarItem>
-			<ui.DropdownMenuItem data-inset="true" data-disabled="true" class="pl-2 opacity-100" tabindex="0" data-style-contract="dropdown-menu-item-caller">
+			<ui.DropdownMenuItem
+				data-inset="true"
+				data-disabled="true"
+				class="pl-2 opacity-100"
+				tabindex="0"
+				data-style-contract="dropdown-menu-item-caller"
+			>
 				Inset + disabled dropdown item, caller-overridden
 			</ui.DropdownMenuItem>
-			<ui.ContextMenuItem data-inset="true" data-disabled="true" class="pl-2 opacity-100" tabindex="0" data-style-contract="context-menu-item-caller">
+			<ui.ContextMenuItem
+				data-inset="true"
+				data-disabled="true"
+				class="pl-2 opacity-100"
+				tabindex="0"
+				data-style-contract="context-menu-item-caller"
+			>
 				Inset + disabled context item, caller-overridden
 			</ui.ContextMenuItem>
-			<ui.MenubarItem data-inset="true" data-disabled="true" class="pl-2 opacity-100" tabindex="0" data-style-contract="menubar-item-caller">
+			<ui.MenubarItem
+				data-inset="true"
+				data-disabled="true"
+				class="pl-2 opacity-100"
+				tabindex="0"
+				data-style-contract="menubar-item-caller"
+			>
 				Inset + disabled menubar item, caller-overridden
 			</ui.MenubarItem>
 			{/* Same §10b shape for Command/Combobox: data-disabled is stamped by

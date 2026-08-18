@@ -34,10 +34,7 @@ component FieldSet(children gsx.Node, attrs gsx.Attrs) {
 component FieldLegend(variant string, children gsx.Node, attrs gsx.Attrs) {
 	<legend
 		data-variant={variant |> default("legend")}
-		class={
-			field.Legend(),
-			field.LegendVariant(variant),
-		}
+		class={ field.Legend(), field.LegendVariant(variant) }
 		{ attrs... }
 		data-gsxui-slot-field-legend
 	>
@@ -61,11 +58,7 @@ component Field(orientation string, children gsx.Node, attrs gsx.Attrs) {
 	<div
 		role="group"
 		data-orientation={orientation |> default("vertical")}
-		class={
-			"group/field",
-			field.Root(),
-			field.Orientation(orientation),
-		}
+		class={ "group/field", field.Root(), field.Orientation(orientation) }
 		{ attrs... }
 		data-gsxui-slot-field
 	>

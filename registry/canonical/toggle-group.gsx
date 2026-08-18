@@ -79,11 +79,7 @@ component ToggleGroup(groupType string, variant string, size string, spacing str
 		data-orientation="horizontal"
 		role={role}
 		style=css`--gap: @{sp}`
-		class={
-			"group/toggle-group",
-			toggleGroup.Root(),
-			toggleGroup.Size(size),
-		}
+		class={ "group/toggle-group", toggleGroup.Root(), toggleGroup.Size(size) }
 		{ attrs... }
 		data-gsxui-slot-toggle-group
 	>
@@ -135,7 +131,7 @@ component ToggleGroupItem(groupType string, variant string, size string, spacing
 			toggleGroup.Item(),
 			toggleGroup.ItemSize(size),
 			toggleGroup.ItemSpacing(sp),
-			toggleGroup.ItemOrientation(orientation),
+			toggleGroup.ItemOrientation(orientation)
 		}
 		{ attrs... }
 		data-gsxui-slot-toggle-group-item

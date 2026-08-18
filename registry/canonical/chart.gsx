@@ -61,6 +61,7 @@ type ChartSeriesTheme struct {
 //   - when NO series in the whole config carries a color, styleSchemes
 //     returns "" — no <style> tag at all — matching ChartStyle returning
 //     null rather than an empty one upstream.
+//
 // chartStyleScheme is one color scheme's resolved rule body for the Chart
 // container's <style> block: prefix selects the scheme ("" light, ".dark "
 // dark) and decls is the --color-<key> declaration list, already a
@@ -102,14 +103,13 @@ func (c ChartConfig) styleSchemes() []chartStyleScheme {
 				}
 			}
 			if color != "" {
-				decls += css`--color-@{ s.Key }: @{ color };`
+				decls += css`--color-@{s.Key}: @{color};`
 			}
 		}
 		out = append(out, chartStyleScheme{prefix: scheme.Prefix, decls: decls})
 	}
 	return out
 }
-
 
 // chartStyleRules composes the container's <style> body: one
 // [data-chart=<id>] rule per scheme. Each piece is a css` ` literal, so
@@ -119,7 +119,7 @@ func (c ChartConfig) styleSchemes() []chartStyleScheme {
 func chartStyleRules(id string, schemes []chartStyleScheme) gsx.RawCSS {
 	var out gsx.RawCSS
 	for _, sc := range schemes {
-		out += css`@{ gsx.RawCSS(sc.prefix) }[data-chart=@{ gsx.RawCSS(id) }]{@{ sc.decls }}`
+		out += css`@{gsx.RawCSS(sc.prefix)}[data-chart=@{gsx.RawCSS(id)}]{@{sc.decls}}`
 	}
 	return out
 }
@@ -202,7 +202,9 @@ component Chart(config ChartConfig, children gsx.Node, attrs gsx.Attrs) {
 		data-gsxui-slot-chart
 	>
 		{ if schemes := config.styleSchemes(); schemes != nil {
-			<style>@{ chartStyleRules(id, schemes) }</style>
+			<style>
+				@{ chartStyleRules(id, schemes) }
+			</style>
 		} }
 		{ children }
 	</div>
@@ -1441,7 +1443,12 @@ func chartBuildLegendItems(config ChartConfig, m ChartModel, st *chartState, opt
 			if opts.NameKey != "" {
 				label = config.label(opts.NameKey)
 			}
-			items = append(items, chartLegendItem{label: label, color: gsx.RawCSS(s.Color), icon: config.icon(s.Key), value: s.Key})
+			items = append(items, chartLegendItem{
+				label: label,
+				color: gsx.RawCSS(s.Color),
+				icon:  config.icon(s.Key),
+				value: s.Key,
+			})
 		}
 	}
 	sort.SliceStable(items, func(i, j int) bool { return items[i].value < items[j].value })
@@ -1456,9 +1463,7 @@ func chartBuildLegendItems(config ChartConfig, m ChartModel, st *chartState, opt
 // this tree that renders real markup from a non-root registration, the
 // same reasoning.
 component ChartLegendContent(items []chartLegendItem, opts *chartLegendOptions) {
-	{{
-		top := opts.VerticalAlign == "top"
-	}}
+	{{ top := opts.VerticalAlign == "top" }}
 	<div
 		style={ css`position:absolute;left:0;right:0`, css`top:5px`: top, css`bottom:5px`: !top }
 		data-gsxui-slot-chart-legend
@@ -1469,7 +1474,7 @@ component ChartLegendContent(items []chartLegendItem, opts *chartLegendOptions) 
 					{ if it.icon != nil && !opts.HideIcon {
 						{ it.icon }
 					} else {
-						<div class="h-2 w-2 shrink-0 rounded-[2px]" style={ css`background-color:@{ it.color }` }></div>
+						<div class="h-2 w-2 shrink-0 rounded-[2px]" style={css`background-color:@{it.color}`}></div>
 					} }
 					{ it.label }
 				</div>
@@ -1491,7 +1496,7 @@ component ChartLegendContent(items []chartLegendItem, opts *chartLegendOptions) 
 // parameters.
 component chartRoot(st *chartState, children gsx.Node, attrs gsx.Attrs) {
 	{{ ctx = context.WithValue(ctx, chartStateCtxKey, st) }}
-	<div style={ css`position:relative;width:100%;height:100%` } { attrs... }>
+	<div style={css`position:relative;width:100%;height:100%`} { attrs... }>
 		{ children }
 		{{ m := buildChartModel(ctx, st) }}
 		<script type="application/json" data-gsxui-chart-model>@{ m }</script>
@@ -1499,7 +1504,7 @@ component chartRoot(st *chartState, children gsx.Node, attrs gsx.Attrs) {
 			<ChartTooltipTemplate/>
 		} }
 		{ if st.legend != nil {
-			<ChartLegendContent items={ chartBuildLegendItems(chartConfigFromCtx(ctx), m, st, st.legend) } opts={ st.legend }/>
+			<ChartLegendContent items={chartBuildLegendItems(chartConfigFromCtx(ctx), m, st, st.legend)} opts={st.legend}/>
 		} }
 	</div>
 }
@@ -1588,23 +1593,45 @@ component ChartTooltipTemplate() {
 // `<ui.BarChart data={data}>` gets the 5/5/5/5 default; `<ui.AreaChart
 // marginLeft={12} marginRight={12}>` gets marginTop/marginBottom 0, not 5.
 component BarChart(data []ChartDatum, marginTop float64, marginRight float64, marginBottom float64, marginLeft float64, children gsx.Node, attrs gsx.Attrs) {
-	<chartRoot st={ &chartState{kind: "bar", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)} } { attrs... }>{ children }</chartRoot>
+	<chartRoot
+		st={&chartState{kind: "bar", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)}}
+		{ attrs... }
+	>
+		{ children }
+	</chartRoot>
 }
 
 // LineChart is the Recharts LineChart root.
 component LineChart(data []ChartDatum, marginTop float64, marginRight float64, marginBottom float64, marginLeft float64, children gsx.Node, attrs gsx.Attrs) {
-	<chartRoot st={ &chartState{kind: "line", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)} } { attrs... }>{ children }</chartRoot>
+	<chartRoot
+		st={&chartState{kind: "line", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)}}
+		{ attrs... }
+	>
+		{ children }
+	</chartRoot>
 }
 
 // AreaChart is the Recharts AreaChart root. stackOffset "expand" normalizes
 // each stack to 100%, the pendant of Recharts' own stackOffset prop.
 component AreaChart(data []ChartDatum, marginTop float64, marginRight float64, marginBottom float64, marginLeft float64, stackOffset string, children gsx.Node, attrs gsx.Attrs) {
-	<chartRoot st={ &chartState{kind: "area", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft), stackOffset: stackOffset} } { attrs... }>{ children }</chartRoot>
+	<chartRoot
+		st={
+			&chartState{kind: "area", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft), stackOffset: stackOffset}
+		}
+		{ attrs... }
+	>
+		{ children }
+	</chartRoot>
 }
 
 // RadarChart is the Recharts RadarChart root.
 component RadarChart(data []ChartDatum, marginTop float64, marginRight float64, marginBottom float64, marginLeft float64, children gsx.Node, attrs gsx.Attrs) {
-	<chartRoot st={ &chartState{kind: "radar", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)} } { attrs... }>{ children }</chartRoot>
+	<chartRoot
+		st={&chartState{kind: "radar", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)}}
+		{ attrs... }
+	>
+		{ children }
+	</chartRoot>
 }
 
 // RadialBarChart is the Recharts RadialBarChart root. startAngle is
@@ -1615,15 +1642,22 @@ component RadarChart(data []ChartDatum, marginTop float64, marginRight float64, 
 // edge case, see this task's report). Margins follow BarChart's own
 // all-or-nothing chartMarginOf convention (see there).
 component RadialBarChart(data []ChartDatum, marginTop float64, marginRight float64, marginBottom float64, marginLeft float64, startAngle float64, endAngle float64, innerRadius float64, outerRadius float64, children gsx.Node, attrs gsx.Attrs) {
-	<chartRoot st={ &chartState{
-		kind:        "radial",
-		data:        data,
-		margin:      chartMarginOf(marginTop, marginRight, marginBottom, marginLeft),
-		startAngle:  startAngle,
-		endAngle:    chartFloatPtrOr(endAngle),
-		innerRadius: innerRadius,
-		outerRadius: outerRadius,
-	} } { attrs... }>{ children }</chartRoot>
+	<chartRoot
+		st={
+			&chartState{
+				kind:        "radial",
+				data:        data,
+				margin:      chartMarginOf(marginTop, marginRight, marginBottom, marginLeft),
+				startAngle:  startAngle,
+				endAngle:    chartFloatPtrOr(endAngle),
+				innerRadius: innerRadius,
+				outerRadius: outerRadius,
+			}
+		}
+		{ attrs... }
+	>
+		{ children }
+	</chartRoot>
 }
 
 // PieChart is the Recharts PieChart root: unlike every other root, it
@@ -1631,7 +1665,7 @@ component RadialBarChart(data []ChartDatum, marginTop float64, marginRight float
 // data prop, so each ChartPie child registers its own rows and geometry
 // (see ChartPie); upstream's own PieChartProps is empty too.
 component PieChart(children gsx.Node, attrs gsx.Attrs) {
-	<chartRoot st={ &chartState{kind: "pie"} } { attrs... }>{ children }</chartRoot>
+	<chartRoot st={&chartState{kind: "pie"}} { attrs... }>{ children }</chartRoot>
 }
 
 // chartRegister returns a Node that renders nothing and, at render time,

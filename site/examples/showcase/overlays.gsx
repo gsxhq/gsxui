@@ -10,7 +10,9 @@ component OverlaysCard() {
 	<ui.Card>
 		<ui.CardHeader>
 			<ui.CardTitle>Interactive, no framework</ui.CardTitle>
-			<ui.CardDescription>Dialogs, menus, tooltips and toasts — server-rendered, hydrated by tiny shims.</ui.CardDescription>
+			<ui.CardDescription>
+				Dialogs, menus, tooltips and toasts — server-rendered, hydrated by tiny shims.
+			</ui.CardDescription>
 		</ui.CardHeader>
 		<ui.CardContent>
 			<ui.Tabs value="overlays">
@@ -73,7 +75,10 @@ component OverlaysCard() {
 				</ui.TabsContent>
 				<ui.TabsContent value="feedback">
 					<div class="flex flex-col items-start gap-3 pt-2">
-						<p class="text-sm text-muted-foreground">Server flash pattern: a pre-rendered toast row appended into the page's toaster, exactly like an HTMX out-of-band swap.</p>
+						<p class="text-sm text-muted-foreground">
+							Server flash pattern: a pre-rendered toast row appended into the page's toaster, exactly like an HTMX
+							out-of-band swap.
+						</p>
 						<ui.Button variant="outline" id="home-showcase-toast-btn">Show toast</ui.Button>
 						<template data-home-showcase-toast>
 							<ui.Toast

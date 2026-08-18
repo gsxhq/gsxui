@@ -28,10 +28,7 @@ component AlertDialogTrigger(children gsx.Node, attrs gsx.Attrs) {
 
 component AlertDialogContent(children gsx.Node, attrs gsx.Attrs) {
 	<DialogContent
-		class={
-			"group/alert-dialog-content",
-			alertDialog.Content(),
-		}
+		class={ "group/alert-dialog-content", alertDialog.Content() }
 		hideCloseButton={true}
 		role="alertdialog"
 		data-gsxui-dialog-static
@@ -51,11 +48,20 @@ component AlertDialogFooter(children gsx.Node, attrs gsx.Attrs) {
 }
 
 component AlertDialogTitle(children gsx.Node, attrs gsx.Attrs) {
-	<h2 class={ alertDialog.Title() } { attrs... } data-gsxui-slot-alert-dialog-title data-gsxui-slot-dialog-title>{ children }</h2>
+	<h2 class={ alertDialog.Title() } { attrs... } data-gsxui-slot-alert-dialog-title data-gsxui-slot-dialog-title>
+		{ children }
+	</h2>
 }
 
 component AlertDialogDescription(children gsx.Node, attrs gsx.Attrs) {
-	<p class={ alertDialog.Description() } { attrs... } data-gsxui-slot-alert-dialog-description data-gsxui-slot-dialog-description>{ children }</p>
+	<p
+		class={ alertDialog.Description() }
+		{ attrs... }
+		data-gsxui-slot-alert-dialog-description
+		data-gsxui-slot-dialog-description
+	>
+		{ children }
+	</p>
 }
 
 component AlertDialogAction(children gsx.Node, attrs gsx.Attrs) {
