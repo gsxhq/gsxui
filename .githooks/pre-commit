@@ -6,29 +6,25 @@
 #
 # Deliberately does not auto-format and re-stage: that would silently
 # sweep unstaged hunks of the same file into the commit.
-set -eu
+#
+# gsx fmt exit codes: 0 clean, 1 differs, 2 read/parse failure. A parse
+# failure is reported and blocks the commit too — the file is broken.
+set -u
 
 files=$(git diff --cached --name-only --diff-filter=ACMR -- '*.gsx' '*.go')
 [ -n "$files" ] || exit 0
 
-tmp=$(mktemp -d)
-trap 'rm -rf "$tmp"' EXIT
-
 bad=""
 for f in $files; do
-	mkdir -p "$tmp/$(dirname "$f")"
-	git show ":$f" > "$tmp/$f"
-	# gsx fmt -l exits non-zero when a file differs (gofmt -l does not);
-	# `|| true` so set -e doesn't abort before the summary is printed.
 	case "$f" in
-	*.gsx) out=$(go tool gsx fmt -l "$tmp/$f" || true) ;;
-	*.go)  out=$(gofmt -l "$tmp/$f") ;;
+	*.gsx) git show ":$f" | go tool gsx fmt -l -stdin-filename "$f" >/dev/null; rc=$? ;;
+	*.go)  out=$(git show ":$f" | gofmt -l 2>&1); rc=$?; [ $rc -eq 0 ] && [ -n "$out" ] && rc=1 ;;
 	esac
-	[ -z "$out" ] || bad="$bad $f"
+	[ "$rc" -eq 0 ] || bad="$bad $f"
 done
 
 if [ -n "$bad" ]; then
-	echo "pre-commit: unformatted files (run: go tool gsx fmt -w / gofmt -w, then re-stage):" >&2
+	echo "pre-commit: unformatted (or unparsable) files — run go tool gsx fmt -w / gofmt -w, then re-stage:" >&2
 	for f in $bad; do echo "  $f" >&2; done
 	exit 1
 fi

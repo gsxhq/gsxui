@@ -105,8 +105,10 @@ audit:
 # fmt-check lists any .gsx or .go file whose formatting differs from
 # `gsx fmt` / gofmt. It is part of check and ci and of the pre-commit hook
 # (`make hooks` installs it); fix with `go tool gsx fmt -w <files>`.
+# gsx fmt -l exits 1 when anything differs and 2 on a parse failure, so it
+# needs no grep; gofmt -l always exits 0 and does.
 fmt-check:
-	go tool gsx fmt -l . | (! grep .)
+	go tool gsx fmt -l .
 	gofmt -l . | (! grep .)
 
 # hooks points git at the versioned hooks in .githooks/ for this clone.

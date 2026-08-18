@@ -89,9 +89,9 @@ func (n NpmFree) Page() _gsxrt.Node {
 			_gsxgw.NodeResult(_gsxrenderdocHeading(ctx, _gsxgw, npmFreeTOCItems[2], nil))
 //line npm_free.gsx:46:5
 			_gsxgw.S("<p>Build the CSS entry with any Tailwind v4 tool. The ")
-//line npm_free.gsx:47:57
+//line npm_free.gsx:48:10
 			_gsxgw.S("<a href=\"https://tailwindcss.com/docs/installation/tailwind-cli\">standalone Tailwind CLI</a> — a single binary from ")
-//line npm_free.gsx:49:11
+//line npm_free.gsx:49:18
 			_gsxgw.S("<a href=\"https://github.com/tailwindlabs/tailwindcss/releases/latest\">GitHub releases</a> — is the natural fit; npm's ")
 //line npm_free.gsx:50:25
 			_gsxgw.S("<code>@tailwindcss/cli</code> takes the same flags. Then link the output from your pages:</p>")

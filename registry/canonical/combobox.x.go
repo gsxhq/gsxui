@@ -323,14 +323,14 @@ func ComboboxContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-combobox-content"})
 		_gsxgw.BoolAttr("data-gsxui-slot-combobox-content", true)
 		_gsxgw.S(">")
-//line combobox.gsx:261:3
+//line combobox.gsx:258:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line combobox.gsx:265:1
+//line combobox.gsx:262:1
 // ComboboxList is the scrolling item container (unlike ui.Select, which has
 // no separate list part — SelectContent itself scrolls — Combobox's List is
 // its own element, matching the raw source's own separate part). role and
@@ -356,11 +356,11 @@ func ComboboxContent(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // ComboboxContent's own max-height + overflow-hidden with no way to
 // scroll to it.
 
-//line combobox.gsx:289:1
+//line combobox.gsx:286:1
 func ComboboxList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line combobox.gsx:290:2
+//line combobox.gsx:287:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"listbox\"")
@@ -375,14 +375,14 @@ func ComboboxList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-combobox-list"})
 		_gsxgw.BoolAttr("data-gsxui-slot-combobox-list", true)
 		_gsxgw.S(">")
-//line combobox.gsx:297:3
+//line combobox.gsx:294:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line combobox.gsx:301:1
+//line combobox.gsx:298:1
 // ComboboxItem is one option. value is the form/filter value (data-value,
 // synced into the hidden bridge on commit); selected server-renders the
 // initial pick. Two attributes track two different facts, the same split
@@ -396,11 +396,11 @@ func ComboboxList(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // different split since focus never leaves the input). Items are never tab
 // stops (command.js's model): no tabindex is stamped at all.
 
-//line combobox.gsx:313:1
+//line combobox.gsx:310:1
 func ComboboxItem(value string, selected bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line combobox.gsx:314:2
+//line combobox.gsx:311:2
 		_gsxgw.S("<div")
 		if !attrs.Has("role") {
 			_gsxgw.S(" role=\"option\"")

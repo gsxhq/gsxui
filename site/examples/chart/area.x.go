@@ -96,7 +96,7 @@ func Area() _gsxrt.Node {
 						})))
 //line area.gsx:51:6
 						_gsxgw.Node(ctx, ui.ChartArea("mobile", "natural", "url(#fillMobile)", "var(--color-mobile)", "a", 0.4))
-//line area.gsx:52:6
+//line area.gsx:59:6
 						_gsxgw.Node(ctx, ui.ChartArea("desktop", "natural", "url(#fillDesktop)", "var(--color-desktop)", "a", 0.4))
 						return _gsxgw.Err()
 					}), nil))
@@ -104,19 +104,19 @@ func Area() _gsxrt.Node {
 				}), nil))
 				return _gsxgw.Err()
 			}), nil))
-//line area.gsx:56:3
+//line area.gsx:70:3
 			_gsxgw.Node(ctx, ui.CardFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line area.gsx:57:4
+//line area.gsx:71:4
 				_gsxgw.S("<div class=\"flex w-full items-start gap-2 text-sm\">")
-//line area.gsx:58:5
+//line area.gsx:72:5
 				_gsxgw.S("<div class=\"grid gap-2\">")
-//line area.gsx:59:6
+//line area.gsx:73:6
 				_gsxgw.S("<div class=\"flex items-center gap-2 leading-none font-medium\">Trending up by 5.2% this month")
-//line area.gsx:61:7
+//line area.gsx:75:7
 				_gsxgw.Node(ctx, uiicon.TrendingUp(_gsxrt.Attrs{{Key: "class", Value: "size-4"}}...))
 				_gsxgw.S("</div>")
-//line area.gsx:63:6
+//line area.gsx:77:6
 				_gsxgw.S("<div class=\"flex items-center gap-2 leading-none text-muted-foreground\">January - June 2024</div></div></div>")
 				return _gsxgw.Err()
 			}), nil))

@@ -57,18 +57,18 @@ func Login() _gsxrt.Node {
 //line login.gsx:23:7
 				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "rtl-login-email"}}, _gsxrt.Attrs{{Key: "type", Value: "email"}}, _gsxrt.Attrs{{Key: "name", Value: "email"}}, _gsxrt.Attrs{{Key: "placeholder", Value: "you@example.com"}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "email"}}, _gsxrt.Attrs{{Key: "required", Value: _gsxrt.Toggle(true)}})))
 				_gsxgw.S("</div>")
-//line login.gsx:25:6
+//line login.gsx:32:6
 				_gsxgw.S("<div class=\"flex flex-col gap-2\">")
-//line login.gsx:26:7
+//line login.gsx:33:7
 				_gsxgw.Node(ctx, ui.Label(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("كلمة المرور")
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "for", Value: "rtl-login-password"}}))
-//line login.gsx:27:7
+//line login.gsx:34:7
 				_gsxgw.Node(ctx, ui.Input(_gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "id", Value: "rtl-login-password"}}, _gsxrt.Attrs{{Key: "type", Value: "password"}}, _gsxrt.Attrs{{Key: "name", Value: "password"}}, _gsxrt.Attrs{{Key: "autocomplete", Value: "current-password"}}, _gsxrt.Attrs{{Key: "required", Value: _gsxrt.Toggle(true)}})))
 				_gsxgw.S("</div>")
-//line login.gsx:29:6
+//line login.gsx:36:6
 				_gsxgw.Node(ctx, ui.Button("", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
 					_gsxgw.S("دخول")
@@ -77,10 +77,10 @@ func Login() _gsxrt.Node {
 				_gsxgw.S("</form>")
 				return _gsxgw.Err()
 			}), nil))
-//line login.gsx:32:4
+//line login.gsx:39:4
 			_gsxgw.Node(ctx, ui.CardFooter(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line login.gsx:33:5
+//line login.gsx:40:5
 				_gsxgw.S("<p class=\"text-sm text-muted-foreground\">ليس لديك حساب؟ إنشاء حساب</p>")
 				return _gsxgw.Err()
 			}), nil))

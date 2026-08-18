@@ -149,9 +149,9 @@ func (t Theming) Page() _gsxrt.Node {
 			_gsxgw.S("<ul class=\"list-disc space-y-2 pl-6\">")
 //line theming.gsx:81:6
 			_gsxgw.S("<li>Utilities a component carries in its own markup are settled by the vendored class merger (")
-//line theming.gsx:83:8
+//line theming.gsx:83:7
 			_gsxgw.S("<code>ui/merge/merge.go</code>): your ")
-//line theming.gsx:83:46
+//line theming.gsx:83:45
 			_gsxgw.S("<code>h-12</code> replaces the component's own height utility instead of conflicting with it.</li>")
 //line theming.gsx:86:6
 			_gsxgw.S("<li>Rules in ")
@@ -159,7 +159,7 @@ func (t Theming) Page() _gsxrt.Node {
 			_gsxgw.S("<code>style.css</code> live in ")
 //line theming.gsx:87:47
 			_gsxgw.S("<code>@layer components</code>, while your class lands in Tailwind's later ")
-//line theming.gsx:88:24
+//line theming.gsx:88:13
 			_gsxgw.S("<code>@layer utilities</code> — the later layer wins regardless of specificity.</li></ul>")
 //line theming.gsx:91:5
 			_gsxgw.S("<p>Fallthrough attributes carry ids, ARIA, data, and HTMX attributes to the rendered element the same way:</p>")

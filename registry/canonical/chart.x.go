@@ -108,7 +108,7 @@ func (c ChartConfig) styleSchemes() []chartStyleScheme {
 				}
 			}
 			if color != "" {
-				decls += _gsxrt.RawCSS("--color-" + _gsxrt.FilterCSS(string(s.Key)) + ": " + string(color) + ";") /*line chart.gsx:105:50*/
+				decls += _gsxrt.RawCSS("--color-" + _gsxrt.FilterCSS(string(s.Key)) + ": " + string(color) + ";") /*line chart.gsx:106:46*/
 			}
 		}
 		out = append(out, chartStyleScheme{prefix: scheme.Prefix, decls: decls})
@@ -124,7 +124,7 @@ func (c ChartConfig) styleSchemes() []chartStyleScheme {
 func chartStyleRules(id string, schemes []chartStyleScheme) gsx.RawCSS {
 	var out gsx.RawCSS
 	for _, sc := range schemes {
-		out += _gsxrt.RawCSS(string(gsx.RawCSS(sc.prefix)) + "[data-chart=" + string(gsx.RawCSS(id)) + "]{" + string(sc.decls) + "}") /*line chart.gsx:122:88*/
+		out += _gsxrt.RawCSS(string(gsx.RawCSS(sc.prefix)) + "[data-chart=" + string(gsx.RawCSS(id)) + "]{" + string(sc.decls) + "}") /*line chart.gsx:122:82*/
 	}
 	return out
 }
@@ -222,18 +222,18 @@ func Chart(config ChartConfig, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 //line chart.gsx:205:4
 			_gsxgw.S("<style")
 			_gsxgw.Nonce(ctx)
-			_gsxgw.S(">")
+			_gsxgw.S(">\n")
 			_gsxgw.S(string(chartStyleRules(id, schemes)))
-			_gsxgw.S("</style>")
+			_gsxgw.S("\n</style>")
 		}
-//line chart.gsx:207:3
+//line chart.gsx:209:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line chart.gsx:211:1
+//line chart.gsx:213:1
 // ---------------------------------------------------------------------
 // Cartesian model builder (bar, line, area) — adapted from templui's
 // chart.templ lines 138-1319 (Datum, chartState, ctx keys, AreaChart /
@@ -1467,7 +1467,12 @@ func chartBuildLegendItems(config ChartConfig, m ChartModel, st *chartState, opt
 			if opts.NameKey != "" {
 				label = config.label(opts.NameKey)
 			}
-			items = append(items, chartLegendItem{label: label, color: gsx.RawCSS(s.Color), icon: config.icon(s.Key), value: s.Key})
+			items = append(items, chartLegendItem{
+				label: label,
+				color: gsx.RawCSS(s.Color),
+				icon:  config.icon(s.Key),
+				value: s.Key,
+			})
 		}
 	}
 	sort.SliceStable(items, func(i, j int) bool { return items[i].value < items[j].value })
@@ -1482,7 +1487,7 @@ func chartBuildLegendItems(config ChartConfig, m ChartModel, st *chartState, opt
 // this tree that renders real markup from a non-root registration, the
 // same reasoning.
 
-//line chart.gsx:1458:1
+//line chart.gsx:1465:1
 func ChartLegendContent(items []chartLegendItem, opts *chartLegendOptions) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -1494,33 +1499,33 @@ func _gsxrenderChartLegendContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, it
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line chart.gsx:1459:2
+//line chart.gsx:1466:2
 	top := opts.VerticalAlign == "top"
-//line chart.gsx:1462:2
+//line chart.gsx:1467:2
 	_gsxgw.S("<div style=\"")
 	_gsxgw.Style(_gsxrt.Style("position:absolute;left:0;right:0"), _gsxrt.StyleIf("top:5px", top), _gsxrt.StyleIf("bottom:5px", !top))
 	_gsxgw.S("\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-chart-legend", true)
 	_gsxgw.S(">")
-//line chart.gsx:1466:3
+//line chart.gsx:1471:3
 	_gsxgw.S("<div class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(chart.Legend()), _gsxrt.ClassIf("pt-3", !top), _gsxrt.ClassIf("pb-3", top), _gsxrt.Class(opts.Class))
 	_gsxgw.S("\">")
-//line chart.gsx:1467:4
+//line chart.gsx:1472:4
 	for _, it := range items {
-//line chart.gsx:1468:5
+//line chart.gsx:1473:5
 		_gsxgw.S("<div class=\"flex items-center gap-1.5 [&amp;&gt;svg]:h-3 [&amp;&gt;svg]:w-3 [&amp;&gt;svg]:text-muted-foreground\">")
-//line chart.gsx:1469:6
+//line chart.gsx:1474:6
 		if it.icon != nil && !opts.HideIcon {
-//line chart.gsx:1470:7
+//line chart.gsx:1475:7
 			_gsxgw.Node(ctx, it.icon)
 		} else {
-//line chart.gsx:1472:7
+//line chart.gsx:1477:7
 			_gsxgw.S("<div class=\"h-2 w-2 shrink-0 rounded-[2px]\" style=\"background-color:")
 			_gsxgw.AttrValue(_gsxrt.StyleValue(it.color))
 			_gsxgw.S("\"></div>")
 		}
-//line chart.gsx:1474:6
+//line chart.gsx:1479:6
 		_gsxgw.Text(string(it.label))
 		_gsxgw.S("</div>")
 	}
@@ -1528,7 +1533,7 @@ func _gsxrenderChartLegendContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, it
 	return _gsxgw.Err()
 }
 
-//line chart.gsx:1481:1
+//line chart.gsx:1486:1
 // chartRoot renders one chart root: templui's AreaChart/BarChart/LineChart/
 // RadarChart/RadialBarChart/PieChart wrapper div, its children (which
 // register into the chartState seeded here), then the model's JSON data
@@ -1541,7 +1546,7 @@ func _gsxrenderChartLegendContent(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, it
 // than chartRoot taking every kind's fields as its own positional
 // parameters.
 
-//line chart.gsx:1492:1
+//line chart.gsx:1497:1
 func chartRoot(st *chartState, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -1553,9 +1558,9 @@ func _gsxrenderchartRoot(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, st *chartSt
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line chart.gsx:1493:2
+//line chart.gsx:1498:2
 	ctx = context.WithValue(ctx, chartStateCtxKey, st)
-//line chart.gsx:1494:2
+//line chart.gsx:1499:2
 	_gsxgw.S("<div")
 	if !attrs.Has("style") {
 		_gsxgw.S(" style=\"position:relative;width:100%;height:100%\"")
@@ -1564,32 +1569,32 @@ func _gsxrenderchartRoot(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, st *chartSt
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style"})
 	_gsxgw.S(">")
-//line chart.gsx:1495:3
+//line chart.gsx:1500:3
 	_gsxgw.Node(ctx, children)
-//line chart.gsx:1496:3
+//line chart.gsx:1501:3
 	m := buildChartModel(ctx, st)
-//line chart.gsx:1497:3
+//line chart.gsx:1502:3
 	_gsxgw.S("<script type=\"application/json\"")
 	_gsxgw.BoolAttr("data-gsxui-chart-model", true)
 	_gsxgw.Nonce(ctx)
 	_gsxgw.S(">")
 	_gsxgw.JSVal(m)
 	_gsxgw.S("</script>")
-//line chart.gsx:1498:3
+//line chart.gsx:1503:3
 	if st.tooltip != nil {
-//line chart.gsx:1499:4
+//line chart.gsx:1504:4
 		_gsxgw.NodeResult(_gsxrenderChartTooltipTemplate(ctx, _gsxgw))
 	}
-//line chart.gsx:1501:3
+//line chart.gsx:1506:3
 	if st.legend != nil {
-//line chart.gsx:1502:4
+//line chart.gsx:1507:4
 		_gsxgw.NodeResult(_gsxrenderChartLegendContent(ctx, _gsxgw, chartBuildLegendItems(chartConfigFromCtx(ctx), m, st, st.legend), st.legend))
 	}
 	_gsxgw.S("</div>")
 	return _gsxgw.Err()
 }
 
-//line chart.gsx:1507:1
+//line chart.gsx:1512:1
 // ChartTooltipTemplate renders the hover tooltip's server-authored chrome:
 // an inert <template> ui/chart.render.js discovers once per panel and
 // reads from (never renders itself) the first time a hover needs to show
@@ -1631,7 +1636,7 @@ func _gsxrenderchartRoot(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, st *chartSt
 // modifier part (items-center/items-end) rather than typing either as a
 // literal.
 
-//line chart.gsx:1547:1
+//line chart.gsx:1552:1
 func ChartTooltipTemplate() _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -1643,44 +1648,44 @@ func _gsxrenderChartTooltipTemplate(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) 
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line chart.gsx:1548:2
+//line chart.gsx:1553:2
 	_gsxgw.S("<template")
 	_gsxgw.BoolAttr("data-gsxui-chart-tooltip-template", true)
 	_gsxgw.S(">")
-//line chart.gsx:1549:3
+//line chart.gsx:1554:3
 	_gsxgw.S("<div class=\"")
 	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(chart.Tooltip()))
 	_gsxgw.S("\"")
 	_gsxgw.BoolAttr("data-gsxui-slot-chart-tooltip", true)
 	_gsxgw.S("></div>")
-//line chart.gsx:1550:3
+//line chart.gsx:1555:3
 	_gsxgw.S("<div class=\"shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) h-2.5 w-2.5\" data-gsxui-chart-tooltip-indicator=\"dot\"></div>")
-//line chart.gsx:1554:3
+//line chart.gsx:1559:3
 	_gsxgw.S("<div class=\"shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) w-1\" data-gsxui-chart-tooltip-indicator=\"line\"></div>")
-//line chart.gsx:1558:3
+//line chart.gsx:1563:3
 	_gsxgw.S("<div class=\"shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) w-0 border-[1.5px] border-dashed bg-transparent\" data-gsxui-chart-tooltip-indicator=\"dashed\"></div>")
-//line chart.gsx:1562:3
-	_gsxgw.S("<div class=\"shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) w-0 border-[1.5px] border-dashed bg-transparent my-0.5\" data-gsxui-chart-tooltip-indicator=\"dashed-nested\"></div>")
-//line chart.gsx:1566:3
-	_gsxgw.S("<div class=\"font-medium\" data-gsxui-chart-tooltip-part=\"label\"></div>")
 //line chart.gsx:1567:3
-	_gsxgw.S("<div class=\"flex w-full flex-wrap items-stretch gap-2 [&amp;&gt;svg]:h-2.5 [&amp;&gt;svg]:w-2.5 [&amp;&gt;svg]:text-muted-foreground\" data-gsxui-chart-tooltip-part=\"row\"></div>")
+	_gsxgw.S("<div class=\"shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) w-0 border-[1.5px] border-dashed bg-transparent my-0.5\" data-gsxui-chart-tooltip-indicator=\"dashed-nested\"></div>")
 //line chart.gsx:1571:3
-	_gsxgw.S("<div class=\"items-center\" data-gsxui-chart-tooltip-part=\"items-center\"></div>")
+	_gsxgw.S("<div class=\"font-medium\" data-gsxui-chart-tooltip-part=\"label\"></div>")
 //line chart.gsx:1572:3
-	_gsxgw.S("<div class=\"items-end\" data-gsxui-chart-tooltip-part=\"items-end\"></div>")
-//line chart.gsx:1573:3
-	_gsxgw.S("<div class=\"flex flex-1 justify-between leading-none\" data-gsxui-chart-tooltip-part=\"value-wrap\"></div>")
-//line chart.gsx:1574:3
-	_gsxgw.S("<div class=\"grid gap-1.5\" data-gsxui-chart-tooltip-part=\"grid\"></div>")
-//line chart.gsx:1575:3
-	_gsxgw.S("<span class=\"text-muted-foreground\" data-gsxui-chart-tooltip-part=\"name\"></span>")
+	_gsxgw.S("<div class=\"flex w-full flex-wrap items-stretch gap-2 [&amp;&gt;svg]:h-2.5 [&amp;&gt;svg]:w-2.5 [&amp;&gt;svg]:text-muted-foreground\" data-gsxui-chart-tooltip-part=\"row\"></div>")
 //line chart.gsx:1576:3
+	_gsxgw.S("<div class=\"items-center\" data-gsxui-chart-tooltip-part=\"items-center\"></div>")
+//line chart.gsx:1577:3
+	_gsxgw.S("<div class=\"items-end\" data-gsxui-chart-tooltip-part=\"items-end\"></div>")
+//line chart.gsx:1578:3
+	_gsxgw.S("<div class=\"flex flex-1 justify-between leading-none\" data-gsxui-chart-tooltip-part=\"value-wrap\"></div>")
+//line chart.gsx:1579:3
+	_gsxgw.S("<div class=\"grid gap-1.5\" data-gsxui-chart-tooltip-part=\"grid\"></div>")
+//line chart.gsx:1580:3
+	_gsxgw.S("<span class=\"text-muted-foreground\" data-gsxui-chart-tooltip-part=\"name\"></span>")
+//line chart.gsx:1581:3
 	_gsxgw.S("<span class=\"font-mono font-medium text-foreground tabular-nums\" data-gsxui-chart-tooltip-part=\"value\"></span></template>")
 	return _gsxgw.Err()
 }
 
-//line chart.gsx:1583:1
+//line chart.gsx:1588:1
 // BarChart is the Recharts BarChart root: its parts declare axes, grid,
 // tooltip and bars, the root collects them and emits the model payload for
 // the client renderer. marginTop/marginRight/marginBottom/marginLeft
@@ -1689,14 +1694,14 @@ func _gsxrenderChartTooltipTemplate(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) 
 // `<ui.BarChart data={data}>` gets the 5/5/5/5 default; `<ui.AreaChart
 // marginLeft={12} marginRight={12}>` gets marginTop/marginBottom 0, not 5.
 
-//line chart.gsx:1590:1
+//line chart.gsx:1595:1
 func BarChart(data []ChartDatum, marginTop float64, marginRight float64, marginBottom float64, marginLeft float64, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line chart.gsx:1591:2
+//line chart.gsx:1596:2
 		_gsxgw.NodeResult(_gsxrenderchartRoot(ctx, _gsxgw, &chartState{kind: "bar", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)}, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line chart.gsx:1591:143
+//line chart.gsx:1600:3
 			_gsxgw.Node(ctx, children)
 			return _gsxgw.Err()
 		}), attrs))
@@ -1704,17 +1709,17 @@ func BarChart(data []ChartDatum, marginTop float64, marginRight float64, marginB
 	})
 }
 
-//line chart.gsx:1594:1
+//line chart.gsx:1604:1
 // LineChart is the Recharts LineChart root.
 
-//line chart.gsx:1595:1
+//line chart.gsx:1605:1
 func LineChart(data []ChartDatum, marginTop float64, marginRight float64, marginBottom float64, marginLeft float64, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line chart.gsx:1596:2
+//line chart.gsx:1606:2
 		_gsxgw.NodeResult(_gsxrenderchartRoot(ctx, _gsxgw, &chartState{kind: "line", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)}, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line chart.gsx:1596:144
+//line chart.gsx:1610:3
 			_gsxgw.Node(ctx, children)
 			return _gsxgw.Err()
 		}), attrs))
@@ -1722,18 +1727,18 @@ func LineChart(data []ChartDatum, marginTop float64, marginRight float64, margin
 	})
 }
 
-//line chart.gsx:1599:1
+//line chart.gsx:1614:1
 // AreaChart is the Recharts AreaChart root. stackOffset "expand" normalizes
 // each stack to 100%, the pendant of Recharts' own stackOffset prop.
 
-//line chart.gsx:1601:1
+//line chart.gsx:1616:1
 func AreaChart(data []ChartDatum, marginTop float64, marginRight float64, marginBottom float64, marginLeft float64, stackOffset string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line chart.gsx:1602:2
+//line chart.gsx:1617:2
 		_gsxgw.NodeResult(_gsxrenderchartRoot(ctx, _gsxgw, &chartState{kind: "area", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft), stackOffset: stackOffset}, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line chart.gsx:1602:170
+//line chart.gsx:1623:3
 			_gsxgw.Node(ctx, children)
 			return _gsxgw.Err()
 		}), attrs))
@@ -1741,17 +1746,17 @@ func AreaChart(data []ChartDatum, marginTop float64, marginRight float64, margin
 	})
 }
 
-//line chart.gsx:1605:1
+//line chart.gsx:1627:1
 // RadarChart is the Recharts RadarChart root.
 
-//line chart.gsx:1606:1
+//line chart.gsx:1628:1
 func RadarChart(data []ChartDatum, marginTop float64, marginRight float64, marginBottom float64, marginLeft float64, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line chart.gsx:1607:2
+//line chart.gsx:1629:2
 		_gsxgw.NodeResult(_gsxrenderchartRoot(ctx, _gsxgw, &chartState{kind: "radar", data: data, margin: chartMarginOf(marginTop, marginRight, marginBottom, marginLeft)}, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line chart.gsx:1607:145
+//line chart.gsx:1633:3
 			_gsxgw.Node(ctx, children)
 			return _gsxgw.Err()
 		}), attrs))
@@ -1759,7 +1764,7 @@ func RadarChart(data []ChartDatum, marginTop float64, marginRight float64, margi
 	})
 }
 
-//line chart.gsx:1610:1
+//line chart.gsx:1637:1
 // RadialBarChart is the Recharts RadialBarChart root. startAngle is
 // Recharts' own zero by default, so the flat param needs no sentinel;
 // endAngle defaults to a full turn (360°) when left at zero, via
@@ -1768,11 +1773,11 @@ func RadarChart(data []ChartDatum, marginTop float64, marginRight float64, margi
 // edge case, see this task's report). Margins follow BarChart's own
 // all-or-nothing chartMarginOf convention (see there).
 
-//line chart.gsx:1617:1
+//line chart.gsx:1644:1
 func RadialBarChart(data []ChartDatum, marginTop float64, marginRight float64, marginBottom float64, marginLeft float64, startAngle float64, endAngle float64, innerRadius float64, outerRadius float64, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line chart.gsx:1618:2
+//line chart.gsx:1645:2
 		_gsxgw.NodeResult(_gsxrenderchartRoot(ctx, _gsxgw, &chartState{
 			kind:        "radial",
 			data:        data,
@@ -1783,7 +1788,7 @@ func RadialBarChart(data []ChartDatum, marginTop float64, marginRight float64, m
 			outerRadius: outerRadius,
 		}, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line chart.gsx:1626:19
+//line chart.gsx:1659:3
 			_gsxgw.Node(ctx, children)
 			return _gsxgw.Err()
 		}), attrs))
@@ -1791,20 +1796,20 @@ func RadialBarChart(data []ChartDatum, marginTop float64, marginRight float64, m
 	})
 }
 
-//line chart.gsx:1629:1
+//line chart.gsx:1663:1
 // PieChart is the Recharts PieChart root: unlike every other root, it
 // carries no data or margin of its own — Recharts' own Pie takes its own
 // data prop, so each ChartPie child registers its own rows and geometry
 // (see ChartPie); upstream's own PieChartProps is empty too.
 
-//line chart.gsx:1633:1
+//line chart.gsx:1667:1
 func PieChart(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line chart.gsx:1634:2
+//line chart.gsx:1668:2
 		_gsxgw.NodeResult(_gsxrenderchartRoot(ctx, _gsxgw, &chartState{kind: "pie"}, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
-//line chart.gsx:1634:58
+//line chart.gsx:1668:56
 			_gsxgw.Node(ctx, children)
 			return _gsxgw.Err()
 		}), attrs))
@@ -1819,7 +1824,7 @@ func PieChart(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 // invokes as tags (<ui.ChartCartesianGrid horizontal/>) with typed params
 // bound from attributes; bare bool attributes are true.
 //
-//line chart.gsx:1637:1
+//line chart.gsx:1671:1
 func chartRegister(fn func(st *chartState)) gsx.Node {
 	return gsx.Func(func(ctx context.Context, _ io.Writer) error {
 		if st := chartStateFromCtx(ctx); st != nil {
