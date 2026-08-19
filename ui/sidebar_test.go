@@ -289,6 +289,8 @@ func TestSidebarMenuButtonReflectsEveryPresentationAxis(t *testing.T) {
 			tc.variant,
 			tc.size,
 			"",
+			"",
+			false,
 			gsx.Raw("x"),
 			gsx.Attrs{{Key: "class", Value: "caller"}},
 		))
@@ -327,6 +329,8 @@ func TestSidebarMenuControlsPreserveCallerStateAndDisabledAxes(t *testing.T) {
 		"",
 		"",
 		"",
+		"",
+		false,
 		gsx.Raw("x"),
 		gsx.Attrs{
 			{Key: "data-state", Value: "open"},
@@ -365,6 +369,8 @@ func TestSidebarMenuButtonComposesTooltipTokens(t *testing.T) {
 		"outline",
 		"lg",
 		"Inbox",
+		"",
+		false,
 		gsx.Raw("Inbox"),
 		nil,
 	))
@@ -392,6 +398,75 @@ func TestSidebarMenuButtonComposesTooltipTokens(t *testing.T) {
 	requireContainsAll(t, got, canonicalSidebarClass("sidebar-menu-button"))
 	if strings.Contains(got, `data-slot=`) || strings.Contains(got, `data-sidebar=`) {
 		t.Fatalf("tooltip composition retained legacy styling hooks\nin: %s", got)
+	}
+}
+
+func TestSidebarMenuButtonHrefRendersAnchorUnlessDisabled(t *testing.T) {
+	// Plain button: no tooltip marker, no aria-current, real <button>.
+	plain := render(t, ui.SidebarMenuButton(false, "", "", "", "", false, gsx.Raw("x"), nil))
+	if !strings.HasPrefix(plain, "<button ") || strings.Contains(plain, "<a ") {
+		t.Fatalf("no href must render a <button>\nin: %s", plain)
+	}
+	if strings.Contains(plain, "data-gsxui-tooltip-trigger") || strings.Contains(plain, "aria-current") {
+		t.Fatalf("plain button must not carry tooltip-trigger or aria-current\nin: %s", plain)
+	}
+
+	// href: an <a href> carrying every axis; active stamps aria-current="page".
+	anchor := render(t, ui.SidebarMenuButton(true, "outline", "sm", "", "/inbox", false, gsx.Raw("x"), gsx.Attrs{{Key: "class", Value: "caller"}}))
+	if !strings.HasPrefix(anchor, "<a ") || strings.Contains(anchor, "<button") {
+		t.Fatalf("href must render an <a>\nin: %s", anchor)
+	}
+	requireContainsAll(t, anchor,
+		`href="/inbox"`,
+		`aria-current="page"`,
+		`data-gsxui-slot-sidebar-menu-button`,
+		`data-variant="outline"`,
+		`data-size="sm"`,
+		canonicalSidebarClass("sidebar-menu-button", "caller"),
+	)
+	if !strings.Contains(withoutClassAttributes(anchor), ` data-active`) || strings.Contains(withoutClassAttributes(anchor), `data-active=`) {
+		t.Fatalf("active anchor must render data-active as a bare marker\nin: %s", anchor)
+	}
+	if strings.Contains(anchor, `type="button"`) || strings.Contains(anchor, "data-gsxui-tooltip-trigger") {
+		t.Fatalf("anchor must not carry type=button or a tooltip-trigger marker\nin: %s", anchor)
+	}
+	inactive := render(t, ui.SidebarMenuButton(false, "", "", "", "/inbox", false, gsx.Raw("x"), nil))
+	if strings.Contains(inactive, "aria-current") {
+		t.Fatalf("inactive anchor must omit aria-current\nin: %s", inactive)
+	}
+
+	// href via attrs (how SidebarMenuSubButton callers pass it) also renders an <a>.
+	viaAttrs := render(t, ui.SidebarMenuButton(false, "", "", "", "", false, gsx.Raw("x"), gsx.Attrs{{Key: "href", Value: "/attrs"}}))
+	if !strings.HasPrefix(viaAttrs, "<a ") || !strings.Contains(viaAttrs, `href="/attrs"`) || strings.Count(viaAttrs, "href=") != 1 {
+		t.Fatalf("href from attrs must render one <a href>\nin: %s", viaAttrs)
+	}
+
+	// Tooltip + href: the <a> itself is the tooltip trigger.
+	tooltip := render(t, ui.SidebarMenuButton(true, "", "", "Inbox", "/inbox", false, gsx.Raw("Inbox"), nil))
+	trigger := regexp.MustCompile(`<a [^>]*>`).FindString(tooltip)
+	if trigger == "" {
+		t.Fatalf("tooltip href must render an <a>\nin: %s", tooltip)
+	}
+	requireContainsAll(t, trigger, `href="/inbox"`, `data-gsxui-tooltip-trigger`, `data-gsxui-slot-sidebar-menu-button`, `aria-current="page"`)
+	if strings.Contains(trigger, `data-gsxui-tooltip-trigger=`) {
+		t.Fatalf("tooltip trigger must be a bare marker\nin: %s", trigger)
+	}
+	requireContainsAll(t, tooltip, `data-gsxui-slot-sidebar-menu-button-tooltip-content`)
+	if strings.Contains(tooltip, "<button") {
+		t.Fatalf("tooltip href must not render a <button>\nin: %s", tooltip)
+	}
+
+	// disabled wins over href: a real disabled <button>, never an aria-disabled link.
+	disabled := render(t, ui.SidebarMenuButton(false, "", "", "", "/inbox", true, gsx.Raw("x"), nil))
+	if !strings.HasPrefix(disabled, "<button ") || strings.Contains(disabled, "<a ") || strings.Contains(disabled, "href=") {
+		t.Fatalf("disabled with href must render a <button> without href\nin: %s", disabled)
+	}
+	if !regexp.MustCompile(`\sdisabled(>|\s)`).MatchString(disabled) {
+		t.Fatalf("missing disabled attr\nin: %s", disabled)
+	}
+	enabled := render(t, ui.SidebarMenuButton(false, "", "", "", "", false, gsx.Raw("x"), nil))
+	if regexp.MustCompile(`\sdisabled(>|\s)`).MatchString(enabled) {
+		t.Fatalf("enabled button must omit disabled\nin: %s", enabled)
 	}
 }
 

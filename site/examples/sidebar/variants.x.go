@@ -34,7 +34,7 @@ func _gsxrenderbrand(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error {
 		_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:14:4
-			_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "lg", "Acme Inc", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "lg", "Acme Inc", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:20:5
 				_gsxgw.S("<span class=\"flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground\"")
@@ -77,7 +77,7 @@ func _gsxrendermenu(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error {
 		_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:38:4
-			_gsxgw.Node(ctx, ui.SidebarMenuButton(true, "", "", "Home", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.SidebarMenuButton(true, "", "", "Home", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:39:5
 				_gsxgw.Node(ctx, icon.House())
@@ -91,7 +91,7 @@ func _gsxrendermenu(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error {
 		_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:44:4
-			_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "", "Inbox", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "", "Inbox", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:45:5
 				_gsxgw.Node(ctx, icon.Inbox())
@@ -105,7 +105,7 @@ func _gsxrendermenu(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer) error {
 		_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 			_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:50:4
-			_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "", "Settings", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+			_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "", "Settings", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
 //line variants.gsx:51:5
 				_gsxgw.Node(ctx, icon.Settings())

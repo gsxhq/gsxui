@@ -192,9 +192,34 @@ test("icon collapse hides labelled branches and preserves menu button geometry",
   ).toEqual({ width: "32px", height: "32px", padding: "0px" });
 
   const tooltipButton = desktop.getByRole("button", { name: "Tooltip item" });
-  const tooltip = desktop.getByRole("tooltip");
+  const tooltip = desktop.getByRole("tooltip", { name: "Tooltip item" });
   await expect(tooltip).toBeHidden();
   await tooltipButton.hover();
+  await expect(tooltip).toBeVisible();
+});
+
+test("href menu button renders an active anchor that is its own tooltip trigger", async ({
+  page,
+}) => {
+  await openFixture(page, "menu-icon");
+  const desktop = page.locator(slot("sidebar-desktop"));
+  const link = desktop.locator('[data-sidebar-contract="tooltip-link"]');
+
+  expect(await link.evaluate((element) => element.tagName)).toBe("A");
+  await expect(link).toHaveAttribute("href", "#tooltip-link");
+  await expect(link).toHaveAttribute("aria-current", "page");
+  await expect(link).toHaveAttribute("data-active", "");
+  await expect(link).toHaveAttribute("data-gsxui-tooltip-trigger", "");
+  await expect(link).toHaveAttribute("data-gsxui-slot-sidebar-menu-button", "");
+  expect(await link.evaluate((element) => element.hasAttribute("type"))).toBe(false);
+  const small = desktop.locator(`${slot("sidebar-menu-button")}[data-size="sm"]`);
+  expect(await link.evaluate((element) => getComputedStyle(element).height)).toBe(
+    await small.evaluate((element) => getComputedStyle(element).height),
+  );
+
+  const tooltip = desktop.getByRole("tooltip", { name: "Tooltip link" });
+  await expect(tooltip).toBeHidden();
+  await link.hover();
   await expect(tooltip).toBeVisible();
 });
 
@@ -228,7 +253,7 @@ test("menu item relations reserve action space and align action/badge by button 
   expect(await largeBadge.evaluate((element) => getComputedStyle(element).top)).toBe("10px");
 
   const expandedTooltipButton = desktop.getByRole("button", { name: "Tooltip item" });
-  const expandedTooltip = desktop.getByRole("tooltip");
+  const expandedTooltip = desktop.getByRole("tooltip", { name: "Tooltip item" });
   await expandedTooltipButton.hover();
   await page.waitForTimeout(350);
   await expect(expandedTooltip).toBeHidden();

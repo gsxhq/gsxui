@@ -207,37 +207,86 @@ component SidebarMenuItem(children gsx.Node, attrs gsx.Attrs) {
 	<li class={ sidebar.MenuItem() } { attrs... } data-gsxui-slot-sidebar-menu-item>{ children }</li>
 }
 
-component SidebarMenuButton(isActive bool, variant string, size string, tooltip string, children gsx.Node, attrs gsx.Attrs) {
+// SidebarMenuButton renders a nav entry. A non-empty href (named param or
+// attrs, as ui.Button / the <a>-only SidebarMenuSubButton accept it) renders
+// an <a> instead of a <button> — the pendant of shadcn's canonical
+// `<SidebarMenuButton asChild><a href=…>` composition (gsx has no asChild;
+// ui.Button's own href mode sets the precedent). disabled always renders a
+// real disabled <button>, even with href, because aria-disabled on an <a>
+// only blocks pointer input — keyboard activation would still navigate. The
+// active anchor also carries aria-current="page" (PaginationLink precedent);
+// the tooltip wrapper marks the inner element as its trigger via the bare
+// data-gsxui-tooltip-trigger attribute.
+component SidebarMenuButton(isActive bool, variant string, size string, tooltip string, href string, disabled bool, children gsx.Node, attrs gsx.Attrs) {
+	{{ link := (href != "" || attrs.Has("href")) && !disabled }}
 	{ if tooltip == "" {
-		<button
+		<sidebarMenuButtonRoot
+			isActive={isActive}
+			variant={variant}
+			size={size}
+			href={href}
+			link={link}
+			disabled={disabled}
+			tooltipTrigger={false}
+			{ attrs... }
+		>
+			{ children }
+		</sidebarMenuButtonRoot>
+	} else {
+		<Tooltip data-gsxui-slot-sidebar-menu-button-tooltip>
+			<sidebarMenuButtonRoot
+				isActive={isActive}
+				variant={variant}
+				size={size}
+				href={href}
+				link={link}
+				disabled={disabled}
+				tooltipTrigger={true}
+				{ attrs... }
+			>
+				{ children }
+			</sidebarMenuButtonRoot>
+			<TooltipContent data-gsxui-slot-sidebar-menu-button-tooltip-content>
+				{ tooltip }
+			</TooltipContent>
+		</Tooltip>
+	} }
+}
+
+// sidebarMenuButtonRoot is the one element SidebarMenuButton renders — an
+// <a> when link, else a <button> — so the shared attribute set is written
+// once rather than per tag × tooltip combination.
+component sidebarMenuButtonRoot(isActive bool, variant string, size string, href string, link bool, disabled bool, tooltipTrigger bool, children gsx.Node, attrs gsx.Attrs) {
+	{ if link {
+		<a
 			class={ sidebar.MenuButton() }
-			type="button"
+			href={href}
+			{ if isActive {
+				aria-current="page"
+			} }
 			data-variant={variant |> default("default")}
 			data-size={size |> default("default")}
 			data-active={isActive}
+			data-gsxui-tooltip-trigger={tooltipTrigger}
+			{ attrs... }
+			data-gsxui-slot-sidebar-menu-button
+		>
+			{ children }
+		</a>
+	} else {
+		<button
+			class={ sidebar.MenuButton() }
+			type="button"
+			disabled={disabled}
+			data-variant={variant |> default("default")}
+			data-size={size |> default("default")}
+			data-active={isActive}
+			data-gsxui-tooltip-trigger={tooltipTrigger}
 			{ attrs... }
 			data-gsxui-slot-sidebar-menu-button
 		>
 			{ children }
 		</button>
-	} else {
-		<Tooltip data-gsxui-slot-sidebar-menu-button-tooltip>
-			<button
-				class={ sidebar.MenuButton() }
-				type="button"
-				data-variant={variant |> default("default")}
-				data-size={size |> default("default")}
-				data-active={isActive}
-				data-gsxui-tooltip-trigger
-				{ attrs... }
-				data-gsxui-slot-sidebar-menu-button
-			>
-				{ children }
-			</button>
-			<TooltipContent data-gsxui-slot-sidebar-menu-button-tooltip-content>
-				{ tooltip }
-			</TooltipContent>
-		</Tooltip>
 	} }
 }
 
