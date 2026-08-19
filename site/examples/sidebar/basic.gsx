@@ -26,7 +26,7 @@ component Basic() {
 					<ui.SidebarGroupContent>
 						<ui.SidebarMenu>
 							<ui.SidebarMenuItem>
-								<ui.SidebarMenuButton isActive={true} tooltip="Home">
+								<ui.SidebarMenuButton href="#home" isActive={true} tooltip="Home">
 									<icon.House/>
 									<span>Home</span>
 								</ui.SidebarMenuButton>

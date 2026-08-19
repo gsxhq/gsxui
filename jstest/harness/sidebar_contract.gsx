@@ -51,6 +51,16 @@ component SidebarContractMenu() {
 						<ui.SidebarMenuButton tooltip="Tooltip item">Tooltip item</ui.SidebarMenuButton>
 					</ui.SidebarMenuItem>
 					<ui.SidebarMenuItem>
+						<ui.SidebarMenuButton
+							href="#tooltip-link"
+							tooltip="Tooltip link"
+							isActive={true}
+							data-sidebar-contract="tooltip-link"
+						>
+							Tooltip link
+						</ui.SidebarMenuButton>
+					</ui.SidebarMenuItem>
+					<ui.SidebarMenuItem>
 						<ui.SidebarMenuButton>Parent</ui.SidebarMenuButton>
 						<ui.SidebarMenuSub>
 							<ui.SidebarMenuSubItem>

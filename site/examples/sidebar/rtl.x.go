@@ -61,7 +61,7 @@ func Rtl() _gsxrt.Node {
 								_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:28:10
-									_gsxgw.Node(ctx, ui.SidebarMenuButton(true, "", "", "الرئيسية", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+									_gsxgw.Node(ctx, ui.SidebarMenuButton(true, "", "", "الرئيسية", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:29:11
 										_gsxgw.Node(ctx, icon.House())
@@ -75,7 +75,7 @@ func Rtl() _gsxrt.Node {
 								_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:34:10
-									_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "", "البريد الوارد", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+									_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "", "البريد الوارد", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:35:11
 										_gsxgw.Node(ctx, icon.Inbox())
@@ -89,7 +89,7 @@ func Rtl() _gsxrt.Node {
 								_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:40:10
-									_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "", "الإعدادات", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+									_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "", "الإعدادات", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
 //line rtl.gsx:41:11
 										_gsxgw.Node(ctx, icon.Settings())

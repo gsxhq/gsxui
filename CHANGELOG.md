@@ -2,6 +2,12 @@
 
 Notable changes to gsxui's component set, newest first.
 
+## 2026-08-19
+
+### Changed
+
+- **sidebar** — `SidebarMenuButton` gains `href string` and `disabled bool` params (positional, after `tooltip`; direct Go callers must pass them). A non-empty href renders an `<a>` instead of a `<button>` — gsxui's `asChild` pendant, as on Button — with `aria-current="page"` when active; `disabled` always renders a real disabled `<button>`, even with href. The tooltip trigger marker moves onto whichever element is rendered.
+
 ## 2026-08-15
 
 ### Changed

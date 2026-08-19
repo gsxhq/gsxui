@@ -65,7 +65,7 @@ func Basic() _gsxrt.Node {
 								_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:29:9
-									_gsxgw.Node(ctx, ui.SidebarMenuButton(true, "", "", "Home", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+									_gsxgw.Node(ctx, ui.SidebarMenuButton(true, "", "", "Home", "#home", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:30:10
 										_gsxgw.Node(ctx, icon.House())
@@ -79,7 +79,7 @@ func Basic() _gsxrt.Node {
 								_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:35:9
-									_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "outline", "sm", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+									_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "outline", "sm", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:36:10
 										_gsxgw.Node(ctx, icon.Inbox())
@@ -127,7 +127,7 @@ func Basic() _gsxrt.Node {
 								_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:52:9
-									_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "lg", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+									_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "lg", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:53:10
 										_gsxgw.Node(ctx, icon.Calendar())
@@ -147,7 +147,7 @@ func Basic() _gsxrt.Node {
 								_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:59:9
-									_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+									_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:60:10
 										_gsxgw.Node(ctx, icon.Search())
@@ -186,7 +186,7 @@ func Basic() _gsxrt.Node {
 						_gsxgw.Node(ctx, ui.SidebarMenuItem(_gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 							_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:76:7
-							_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "", "Settings", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+							_gsxgw.Node(ctx, ui.SidebarMenuButton(false, "", "", "Settings", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 //line basic.gsx:77:8
 								_gsxgw.Node(ctx, icon.Settings())

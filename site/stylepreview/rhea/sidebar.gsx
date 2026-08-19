@@ -263,41 +263,90 @@ component SidebarMenuItem(children gsx.Node, attrs gsx.Attrs) {
 	<li class={ "relative" } { attrs... } data-gsxui-slot-sidebar-menu-item>{ children }</li>
 }
 
-component SidebarMenuButton(isActive bool, variant string, size string, tooltip string, children gsx.Node, attrs gsx.Attrs) {
+// SidebarMenuButton renders a nav entry. A non-empty href (named param or
+// attrs, as ui.Button / the <a>-only SidebarMenuSubButton accept it) renders
+// an <a> instead of a <button> — the pendant of shadcn's canonical
+// `<SidebarMenuButton asChild><a href=…>` composition (gsx has no asChild;
+// ui.Button's own href mode sets the precedent). disabled always renders a
+// real disabled <button>, even with href, because aria-disabled on an <a>
+// only blocks pointer input — keyboard activation would still navigate. The
+// active anchor also carries aria-current="page" (PaginationLink precedent);
+// the tooltip wrapper marks the inner element as its trigger via the bare
+// data-gsxui-tooltip-trigger attribute.
+component SidebarMenuButton(isActive bool, variant string, size string, tooltip string, href string, disabled bool, children gsx.Node, attrs gsx.Attrs) {
+	{{ link := (href != "" || attrs.Has("href")) && !disabled }}
 	{ if tooltip == "" {
+		<sidebarMenuButtonRoot
+			isActive={isActive}
+			variant={variant}
+			size={size}
+			href={href}
+			link={link}
+			disabled={disabled}
+			tooltipTrigger={false}
+			{ attrs... }
+		>
+			{ children }
+		</sidebarMenuButtonRoot>
+	} else {
+		<Tooltip data-gsxui-slot-sidebar-menu-button-tooltip>
+			<sidebarMenuButtonRoot
+				isActive={isActive}
+				variant={variant}
+				size={size}
+				href={href}
+				link={link}
+				disabled={disabled}
+				tooltipTrigger={true}
+				{ attrs... }
+			>
+				{ children }
+			</sidebarMenuButtonRoot>
+			<TooltipContent data-gsxui-slot-sidebar-menu-button-tooltip-content>
+				{ tooltip }
+			</TooltipContent>
+		</Tooltip>
+	} }
+}
+
+// sidebarMenuButtonRoot is the one element SidebarMenuButton renders — an
+// <a> when link, else a <button> — so the shared attribute set is written
+// once rather than per tag × tooltip combination.
+component sidebarMenuButtonRoot(isActive bool, variant string, size string, href string, link bool, disabled bool, tooltipTrigger bool, children gsx.Node, attrs gsx.Attrs) {
+	{ if link {
+		<a
+			class={
+				"w-full items-center overflow-hidden ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground [&[data-active]]:bg-sidebar-accent [&[data-active]]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground gap-2 rounded-xl px-3 has-[>svg:first-child]:pl-2.5 has-[>svg:last-child]:pr-2.5 py-2 text-left text-sm transition-[width,height,padding] duration-200 [[data-gsxui-slot-sidebar-menu-item]:has(>[data-gsxui-slot-sidebar-menu-action])>&]:pe-8 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:size-8 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:p-2 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&[data-size=lg]]:p-0 focus-visible:ring-3 [&[data-active]]:font-medium whitespace-nowrap flex h-8 data-[size=sm]:h-7 data-[size=sm]:text-xs data-[size=lg]:h-12 data-[variant=outline]:bg-background data-[variant=outline]:shadow-[0_0_0_1px_var(--sidebar-border)] data-[variant=outline]:hover:shadow-[0_0_0_1px_var(--sidebar-accent)] [&>span:last-child]:truncate disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 outline-hidden"
+			}
+			href={href}
+			{ if isActive {
+				aria-current="page"
+			} }
+			data-variant={variant |> default("default")}
+			data-size={size |> default("default")}
+			data-active={isActive}
+			data-gsxui-tooltip-trigger={tooltipTrigger}
+			{ attrs... }
+			data-gsxui-slot-sidebar-menu-button
+		>
+			{ children }
+		</a>
+	} else {
 		<button
 			class={
 				"w-full items-center overflow-hidden ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground [&[data-active]]:bg-sidebar-accent [&[data-active]]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground gap-2 rounded-xl px-3 has-[>svg:first-child]:pl-2.5 has-[>svg:last-child]:pr-2.5 py-2 text-left text-sm transition-[width,height,padding] duration-200 [[data-gsxui-slot-sidebar-menu-item]:has(>[data-gsxui-slot-sidebar-menu-action])>&]:pe-8 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:size-8 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:p-2 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&[data-size=lg]]:p-0 focus-visible:ring-3 [&[data-active]]:font-medium whitespace-nowrap flex h-8 data-[size=sm]:h-7 data-[size=sm]:text-xs data-[size=lg]:h-12 data-[variant=outline]:bg-background data-[variant=outline]:shadow-[0_0_0_1px_var(--sidebar-border)] data-[variant=outline]:hover:shadow-[0_0_0_1px_var(--sidebar-accent)] [&>span:last-child]:truncate disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 outline-hidden"
 			}
 			type="button"
+			disabled={disabled}
 			data-variant={variant |> default("default")}
 			data-size={size |> default("default")}
 			data-active={isActive}
+			data-gsxui-tooltip-trigger={tooltipTrigger}
 			{ attrs... }
 			data-gsxui-slot-sidebar-menu-button
 		>
 			{ children }
 		</button>
-	} else {
-		<Tooltip data-gsxui-slot-sidebar-menu-button-tooltip>
-			<button
-				class={
-					"w-full items-center overflow-hidden ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground [&[data-active]]:bg-sidebar-accent [&[data-active]]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground gap-2 rounded-xl px-3 has-[>svg:first-child]:pl-2.5 has-[>svg:last-child]:pr-2.5 py-2 text-left text-sm transition-[width,height,padding] duration-200 [[data-gsxui-slot-sidebar-menu-item]:has(>[data-gsxui-slot-sidebar-menu-action])>&]:pe-8 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:size-8 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&]:p-2 [[data-gsxui-slot-sidebar-desktop][data-gsxui-slot-sidebar-desktop][data-collapsible=icon]_&[data-size=lg]]:p-0 focus-visible:ring-3 [&[data-active]]:font-medium whitespace-nowrap flex h-8 data-[size=sm]:h-7 data-[size=sm]:text-xs data-[size=lg]:h-12 data-[variant=outline]:bg-background data-[variant=outline]:shadow-[0_0_0_1px_var(--sidebar-border)] data-[variant=outline]:hover:shadow-[0_0_0_1px_var(--sidebar-accent)] [&>span:last-child]:truncate disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 outline-hidden"
-				}
-				type="button"
-				data-variant={variant |> default("default")}
-				data-size={size |> default("default")}
-				data-active={isActive}
-				data-gsxui-tooltip-trigger
-				{ attrs... }
-				data-gsxui-slot-sidebar-menu-button
-			>
-				{ children }
-			</button>
-			<TooltipContent data-gsxui-slot-sidebar-menu-button-tooltip-content>
-				{ tooltip }
-			</TooltipContent>
-		</Tooltip>
 	} }
 }
 

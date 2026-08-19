@@ -2932,7 +2932,7 @@ func _gsxrendergallerySidebarCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, id
 									_gsxgw.NodeResult(_gsxrenderSidebarMenuItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
 //line gallery.gsx:1131:12
-										_gsxgw.NodeResult(_gsxrenderSidebarMenuButton(ctx, _gsxgw, true, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+										_gsxgw.NodeResult(_gsxrenderSidebarMenuButton(ctx, _gsxgw, true, "", "", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 											_gsxgw := _gsxrt.W(_gsxw)
 //line gallery.gsx:1132:13
 											_gsxgw.Node(ctx, icon.House())
@@ -2946,7 +2946,7 @@ func _gsxrendergallerySidebarCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, id
 									_gsxgw.NodeResult(_gsxrenderSidebarMenuItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
 //line gallery.gsx:1137:12
-										_gsxgw.NodeResult(_gsxrenderSidebarMenuButton(ctx, _gsxgw, false, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+										_gsxgw.NodeResult(_gsxrenderSidebarMenuButton(ctx, _gsxgw, false, "", "", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 											_gsxgw := _gsxrt.W(_gsxw)
 //line gallery.gsx:1138:13
 											_gsxgw.Node(ctx, icon.Inbox())
@@ -2966,7 +2966,7 @@ func _gsxrendergallerySidebarCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, id
 									_gsxgw.NodeResult(_gsxrenderSidebarMenuItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 										_gsxgw := _gsxrt.W(_gsxw)
 //line gallery.gsx:1144:12
-										_gsxgw.NodeResult(_gsxrenderSidebarMenuButton(ctx, _gsxgw, false, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+										_gsxgw.NodeResult(_gsxrenderSidebarMenuButton(ctx, _gsxgw, false, "", "", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 											_gsxgw := _gsxrt.W(_gsxw)
 //line gallery.gsx:1145:13
 											_gsxgw.Node(ctx, icon.Settings())
@@ -2994,7 +2994,7 @@ func _gsxrendergallerySidebarCard(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, id
 							_gsxgw.NodeResult(_gsxrenderSidebarMenuItem(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 								_gsxgw := _gsxrt.W(_gsxw)
 //line gallery.gsx:1156:10
-								_gsxgw.NodeResult(_gsxrenderSidebarMenuButton(ctx, _gsxgw, false, "", "", "", _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
+								_gsxgw.NodeResult(_gsxrenderSidebarMenuButton(ctx, _gsxgw, false, "", "", "", "", false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 									_gsxgw := _gsxrt.W(_gsxw)
 //line gallery.gsx:1157:11
 									_gsxgw.Node(ctx, icon.User())

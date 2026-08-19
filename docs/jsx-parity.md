@@ -1640,7 +1640,8 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   the reference wraps `<TooltipTrigger asChild>{button}</TooltipTrigger>`;
   gsxui has no `asChild`, so — same button-in-button HTML trap as
   `DialogTrigger`/`SheetTrigger` (`## dialog` FINDING) — `data-gsxui-
-  tooltip-trigger` goes directly on the `<button>` itself, no nested
+  tooltip-trigger` goes directly on the rendered element itself (the
+  `<button>`, or the `<a>` in href mode), no nested
   `ui.TooltipTrigger`, per `ui.Tooltip`'s own documented idiom. The
   reference's `side="right"` override has no gsxui equivalent at all
   (`ui.TooltipContent` always anchors above the trigger, no side/align
@@ -1672,10 +1673,16 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   shrink-0`, dropped in nova's own quoted rule) is kept as the base
   throughout, per the source map's own recommendation.
 - ADAPT (`asChild` dropped throughout): `SidebarGroupLabel`/
-  `SidebarGroupAction`/`SidebarMenuButton`/`SidebarMenuSubButton`'s Radix
-  `Slot`-based `asChild` polymorphism has no gsxui equivalent (no dynamic
-  tag) — each always renders its own tag (`div`/`button`/`button`/`a`
-  respectively), same narrow gap as button's/item's own `asChild` entries.
+  `SidebarGroupAction`/`SidebarMenuSubButton`'s Radix `Slot`-based
+  `asChild` polymorphism has no gsxui equivalent (no dynamic tag) — each
+  always renders its own tag (`div`/`button`/`a` respectively), same
+  narrow gap as button's/item's own `asChild` entries. `SidebarMenuButton`
+  follows `## button`: ported as an `href` param (named, or via attrs)
+  rendering `<a>` — the reference's dominant `<SidebarMenuButton asChild>
+  <a href>` composition — plus `disabled`, which like Button always forces
+  a real `disabled` `<button>` (an `aria-disabled` anchor still navigates
+  on Enter). The active anchor adds `aria-current="page"` (PaginationLink's
+  precedent; upstream stamps only `data-active`).
 - NOTE (`type="button"` added to every native button this component
   renders): the reference's own `Comp = asChild ? Slot.Root : "button"`
   branches never set an explicit `type` prop — a plain native `"button"`
