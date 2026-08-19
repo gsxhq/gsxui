@@ -483,47 +483,46 @@ func SidebarMenuItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 }
 
 //line sidebar.gsx:210:1
-// SidebarMenuButton renders a nav entry. A non-empty href (named param or
-// attrs, as ui.Button / the <a>-only SidebarMenuSubButton accept it) renders
-// an <a> instead of a <button> — the pendant of shadcn's canonical
+// SidebarMenuButton renders a nav entry. A non-empty href renders an <a>
+// instead of a <button> — the pendant of shadcn's canonical
 // `<SidebarMenuButton asChild><a href=…>` composition (gsx has no asChild;
-// ui.Button's own href mode sets the precedent). disabled always renders a
+// ui.Button's href param sets the precedent). disabled always renders a
 // real disabled <button>, even with href, because aria-disabled on an <a>
 // only blocks pointer input — keyboard activation would still navigate. The
 // active anchor also carries aria-current="page" (PaginationLink precedent);
 // the tooltip wrapper marks the inner element as its trigger via the bare
 // data-gsxui-tooltip-trigger attribute.
 
-//line sidebar.gsx:220:1
+//line sidebar.gsx:219:1
 func SidebarMenuButton(isActive bool, variant string, size string, tooltip string, href string, disabled bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
+//line sidebar.gsx:220:2
+		link := href != "" && !disabled
 //line sidebar.gsx:221:2
-		link := (href != "" || attrs.Has("href")) && !disabled
-//line sidebar.gsx:222:2
 		if tooltip == "" {
-//line sidebar.gsx:223:3
+//line sidebar.gsx:222:3
 			_gsxgw.NodeResult(_gsxrendersidebarMenuButtonRoot(ctx, _gsxgw, isActive, variant, size, href, link, disabled, false, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:233:4
+//line sidebar.gsx:232:4
 				_gsxgw.Node(ctx, children)
 				return _gsxgw.Err()
 			}), attrs))
 		} else {
-//line sidebar.gsx:236:3
+//line sidebar.gsx:235:3
 			_gsxgw.NodeResult(_gsxrenderTooltip(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 				_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:237:4
+//line sidebar.gsx:236:4
 				_gsxgw.NodeResult(_gsxrendersidebarMenuButtonRoot(ctx, _gsxgw, isActive, variant, size, href, link, disabled, true, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:247:5
+//line sidebar.gsx:246:5
 					_gsxgw.Node(ctx, children)
 					return _gsxgw.Err()
 				}), attrs))
-//line sidebar.gsx:249:4
+//line sidebar.gsx:248:4
 				_gsxgw.NodeResult(_gsxrenderTooltipContent(ctx, _gsxgw, _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 					_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:250:5
+//line sidebar.gsx:249:5
 					_gsxgw.Text(string(tooltip))
 					return _gsxgw.Err()
 				}), _gsxrt.Attrs{{Key: "data-gsxui-slot-sidebar-menu-button-tooltip-content", Value: _gsxrt.Toggle(true)}}))
@@ -534,12 +533,12 @@ func SidebarMenuButton(isActive bool, variant string, size string, tooltip strin
 	})
 }
 
-//line sidebar.gsx:256:1
+//line sidebar.gsx:255:1
 // sidebarMenuButtonRoot is the one element SidebarMenuButton renders — an
 // <a> when link, else a <button> — so the shared attribute set is written
 // once rather than per tag × tooltip combination.
 
-//line sidebar.gsx:259:1
+//line sidebar.gsx:258:1
 func sidebarMenuButtonRoot(isActive bool, variant string, size string, href string, link bool, disabled bool, tooltipTrigger bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
@@ -551,9 +550,9 @@ func _gsxrendersidebarMenuButtonRoot(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer,
 	if _gsxerr := _gsxgw.Err(); _gsxerr != nil {
 		return _gsxerr
 	}
-//line sidebar.gsx:260:2
+//line sidebar.gsx:259:2
 	if link {
-//line sidebar.gsx:261:3
+//line sidebar.gsx:260:3
 		_gsxgw.S("<a class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.MenuButton()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -587,11 +586,11 @@ func _gsxrendersidebarMenuButtonRoot(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer,
 		_gsxgw.Spread(ctx, "a", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-button"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-button", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:274:4
+//line sidebar.gsx:273:4
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</a>")
 	} else {
-//line sidebar.gsx:277:3
+//line sidebar.gsx:276:3
 		_gsxgw.S("<button class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.MenuButton()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -621,18 +620,18 @@ func _gsxrendersidebarMenuButtonRoot(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer,
 		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-button"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-button", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:288:4
+//line sidebar.gsx:287:4
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 	}
 	return _gsxgw.Err()
 }
 
-//line sidebar.gsx:293:1
+//line sidebar.gsx:292:1
 func SidebarMenuAction(showOnHover bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:294:2
+//line sidebar.gsx:293:2
 		_gsxgw.S("<button class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.MenuAction()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -646,18 +645,18 @@ func SidebarMenuAction(showOnHover bool, children gsx.Node, attrs gsx.Attrs) _gs
 		_gsxgw.Spread(ctx, "button", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-action"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-action", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:301:3
+//line sidebar.gsx:300:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</button>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:305:1
+//line sidebar.gsx:304:1
 func SidebarMenuBadge(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:306:2
+//line sidebar.gsx:305:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.MenuBadge()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -665,24 +664,24 @@ func SidebarMenuBadge(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-badge"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-badge", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:306:85
+//line sidebar.gsx:305:85
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:309:1
+//line sidebar.gsx:308:1
 // The randomized width is the one dynamic presentation value in this part.
 // It is chosen once per server render, then consumed by style CSS.
 
-//line sidebar.gsx:311:1
+//line sidebar.gsx:310:1
 func SidebarMenuSkeleton(showIcon bool, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:312:2
+//line sidebar.gsx:311:2
 		width := strconv.Itoa(rand.Intn(40)+50) + "%"
-//line sidebar.gsx:313:2
+//line sidebar.gsx:312:2
 		_gsxgw.S("<div class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.MenuSkeleton()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -690,12 +689,12 @@ func SidebarMenuSkeleton(showIcon bool, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-skeleton"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-skeleton", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:314:3
+//line sidebar.gsx:313:3
 		if showIcon {
-//line sidebar.gsx:315:4
+//line sidebar.gsx:314:4
 			_gsxgw.NodeResult(_gsxrenderSkeleton(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(sidebar.MenuSkeletonIcon()))}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-sidebar-menu-skeleton-icon", Value: _gsxrt.Toggle(true)}})))
 		}
-//line sidebar.gsx:317:3
+//line sidebar.gsx:316:3
 		_gsxa4 := _gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class(sidebar.MenuSkeletonText()))}}
 		_gsxv3 := _gsxrt.FilterCSS(string(width))
 		_gsxgw.NodeResult(_gsxrenderSkeleton(ctx, _gsxgw, _gsxrt.ConcatAttrs(_gsxa4, _gsxrt.Attrs{{Key: "style", Value: _gsxrt.RawCSS("--skeleton-width:" + _gsxv3)}}, _gsxrt.Attrs{{Key: "data-gsxui-slot-sidebar-menu-skeleton-text", Value: _gsxrt.Toggle(true)}})))
@@ -704,11 +703,11 @@ func SidebarMenuSkeleton(showIcon bool, attrs gsx.Attrs) _gsxrt.Node {
 	})
 }
 
-//line sidebar.gsx:325:1
+//line sidebar.gsx:324:1
 func SidebarMenuSub(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:326:2
+//line sidebar.gsx:325:2
 		_gsxgw.S("<ul class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.MenuSub()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -716,18 +715,18 @@ func SidebarMenuSub(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "ul", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-sub"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-sub", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:326:80
+//line sidebar.gsx:325:80
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</ul>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:329:1
+//line sidebar.gsx:328:1
 func SidebarMenuSubItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:330:2
+//line sidebar.gsx:329:2
 		_gsxgw.S("<li class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.MenuSubItem()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -735,18 +734,18 @@ func SidebarMenuSubItem(children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 		_gsxgw.Spread(ctx, "li", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-sub-item"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-sub-item", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:330:89
+//line sidebar.gsx:329:89
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</li>")
 		return _gsxgw.Err()
 	})
 }
 
-//line sidebar.gsx:333:1
+//line sidebar.gsx:332:1
 func SidebarMenuSubButton(size string, isActive bool, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 	return _gsxrt.Func(func(ctx _gsxctx.Context, _gsxw _gsxio.Writer) error {
 		_gsxgw := _gsxrt.W(_gsxw)
-//line sidebar.gsx:334:2
+//line sidebar.gsx:333:2
 		_gsxgw.S("<a class=\"")
 		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(sidebar.MenuSubButton()), _gsxrt.Class(attrs.Class()))
 		_gsxgw.S("\"")
@@ -762,7 +761,7 @@ func SidebarMenuSubButton(size string, isActive bool, children gsx.Node, attrs g
 		_gsxgw.Spread(ctx, "a", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-sidebar-menu-sub-button"})
 		_gsxgw.BoolAttr("data-gsxui-slot-sidebar-menu-sub-button", true)
 		_gsxgw.S(">")
-//line sidebar.gsx:341:3
+//line sidebar.gsx:340:3
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</a>")
 		return _gsxgw.Err()

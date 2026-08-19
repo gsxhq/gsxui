@@ -1677,8 +1677,7 @@ The custom Radix listbox (distinct from `## native-select`, which ships the styl
   `asChild` polymorphism has no gsxui equivalent (no dynamic tag) — each
   always renders its own tag (`div`/`button`/`a` respectively), same
   narrow gap as button's/item's own `asChild` entries. `SidebarMenuButton`
-  follows `## button`: ported as an `href` param (named, or via attrs)
-  rendering `<a>` — the reference's dominant `<SidebarMenuButton asChild>
+  follows `## button`: ported as a named `href` param rendering `<a>` — the reference's dominant `<SidebarMenuButton asChild>
   <a href>` composition — plus `disabled`, which like Button always forces
   a real `disabled` `<button>` (an `aria-disabled` anchor still navigates
   on Enter). The active anchor adds `aria-current="page"` (PaginationLink's
