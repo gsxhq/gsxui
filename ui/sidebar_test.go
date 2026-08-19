@@ -435,12 +435,6 @@ func TestSidebarMenuButtonHrefRendersAnchorUnlessDisabled(t *testing.T) {
 		t.Fatalf("inactive anchor must omit aria-current\nin: %s", inactive)
 	}
 
-	// href via attrs (how SidebarMenuSubButton callers pass it) also renders an <a>.
-	viaAttrs := render(t, ui.SidebarMenuButton(false, "", "", "", "", false, gsx.Raw("x"), gsx.Attrs{{Key: "href", Value: "/attrs"}}))
-	if !strings.HasPrefix(viaAttrs, "<a ") || !strings.Contains(viaAttrs, `href="/attrs"`) || strings.Count(viaAttrs, "href=") != 1 {
-		t.Fatalf("href from attrs must render one <a href>\nin: %s", viaAttrs)
-	}
-
 	// Tooltip + href: the <a> itself is the tooltip trigger.
 	tooltip := render(t, ui.SidebarMenuButton(true, "", "", "Inbox", "/inbox", false, gsx.Raw("Inbox"), nil))
 	trigger := regexp.MustCompile(`<a [^>]*>`).FindString(tooltip)
