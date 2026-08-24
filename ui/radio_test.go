@@ -1,6 +1,7 @@
 package ui_test
 
 import (
+	"html"
 	"strings"
 	"testing"
 
@@ -62,13 +63,19 @@ func TestRadioDisabledAttr(t *testing.T) {
 }
 
 func TestRadioPinned(t *testing.T) {
-	// Presentation lives in the stylesheet; the render pin covers structure.
+	// The class expectation derives from the default style's recipe CSS
+	// (registry/styles/nova/radio.css) — see TestCheckboxPinned.
+	got := render(t, ui.Radio(nil))
+	want := `<input type="radio" class="` +
+		html.EscapeString(strings.Join(styleRecipeUtilities("radio", "gsxui-recipe-radio"), " ")) +
+		`" data-gsxui-slot-radio>`
+	if got != want {
+		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
+	}
 	// data-checked:/aria-invalid:aria-checked: were dead selectors — our
 	// <input type="radio"> is native. See the style-porter report's
 	// "Radio/Checkbox data-checked: -> native :checked:" entry.
-	got := render(t, ui.Radio(nil))
-	want := `<input type="radio" class="border-input dark:bg-input/30 checked:bg-primary checked:text-primary-foreground dark:checked:bg-primary checked:border-primary aria-invalid:checked:border-primary aria-invalid:border-destructive focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:aria-invalid:border-destructive/50 flex size-4 rounded-full focus-visible:ring-3 aria-invalid:ring-3 group-has-[:focus-visible]/field-label:ring-0 group-has-[:focus-visible]/field-label:not-checked:border-input group-has-[:focus-visible]/field-label:checked:border-primary shrink-0 outline-none disabled:cursor-not-allowed disabled:opacity-50 border" data-gsxui-slot-radio>`
-	if got != want {
-		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
+	if strings.Contains(got, "data-checked") || strings.Contains(got, "data-unchecked") {
+		t.Errorf("dead data-checked/data-unchecked vocabulary in render\nin: %s", got)
 	}
 }

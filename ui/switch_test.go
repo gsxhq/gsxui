@@ -1,6 +1,7 @@
 package ui_test
 
 import (
+	"html"
 	"strings"
 	"testing"
 
@@ -8,9 +9,12 @@ import (
 	"github.com/gsxhq/gsxui/ui"
 )
 
-// canonicalSwitchClass is Switch's fully-resolved recipe class, copied
-// verbatim from the generated ui/switch.gsx output — Switch migrated onto
-// the slot axis, so its root class is no longer empty.
+// canonicalSwitchClass is Switch's fully-resolved recipe class, derived from
+// the default style's recipe CSS (registry/styles/nova/switch.css) the same
+// way TestCheckboxPinned derives Checkbox's — asserting ui/switch.gsx stays
+// in lockstep with the registry instead of re-typing a literal on every
+// style edit. Switch migrated onto the slot axis, so its root class is no
+// longer empty.
 //
 // Switch is a real native <input type="checkbox" role="switch">: the
 // data-checked/data-unchecked attribute-variant form the 8-style port
@@ -25,7 +29,9 @@ import (
 // before:transition-transform and appearance-none/outline-none/
 // disabled:cursor-not-allowed/disabled:opacity-50 are restored structural
 // chrome — see the report's "Switch — full structural rewrite" entry.
-const canonicalSwitchClass = `checked:bg-primary bg-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 dark:bg-input/80 appearance-none outline-none disabled:cursor-not-allowed disabled:opacity-50 shrink-0 rounded-full border border-transparent focus-visible:ring-3 aria-invalid:ring-3 group-has-[:focus-visible]/field-label:ring-0 group-has-[:focus-visible]/field-label:border-transparent h-[18.4px] w-[32px] before:bg-background dark:before:bg-foreground dark:checked:before:bg-primary-foreground before:content-[&#39;&#39;] before:pointer-events-none before:block before:transition-transform before:rounded-full before:size-4 checked:before:translate-x-[calc(100%-2px)] before:translate-x-0 inline-flex items-center transition-all`
+func canonicalSwitchClass() string {
+	return html.EscapeString(strings.Join(styleRecipeUtilities("switch", "gsxui-recipe-switch"), " "))
+}
 
 func TestSwitchDefault(t *testing.T) {
 	got := render(t, ui.Switch(nil))
@@ -88,11 +94,17 @@ func TestSwitchDisabledAttr(t *testing.T) {
 
 func TestSwitchPinned(t *testing.T) {
 	// Switch migrated onto the slot axis: the resolved recipe class is now
-	// part of the pinned render, copied verbatim from generated output.
+	// part of the pinned render, derived from the default style's recipe CSS.
 	got := render(t, ui.Switch(nil))
-	want := `<input type="checkbox" role="switch" class="` + canonicalSwitchClass + `" data-gsxui-slot-switch>`
+	want := `<input type="checkbox" role="switch" class="` + canonicalSwitchClass() + `" data-gsxui-slot-switch>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
+	}
+	// The data-checked/data-unchecked attribute-variant vocabulary is dead
+	// on this native markup (see canonicalSwitchClass's comment); a derived
+	// expectation can't pin the translation, so reject it directly.
+	if strings.Contains(got, "data-checked") || strings.Contains(got, "data-unchecked") {
+		t.Errorf("dead data-checked/data-unchecked vocabulary in render\nin: %s", got)
 	}
 }
 
