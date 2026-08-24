@@ -102,7 +102,7 @@ component FieldLabel(children gsx.Node, attrs gsx.Attrs) {
 	<Label
 		class={
 			"group/field-label",
-			"has-checked:bg-primary/5 has-checked:border-primary/30 dark:has-checked:border-primary/20 dark:has-checked:bg-primary/10 gap-2 leading-snug has-[>[data-gsxui-slot-field]]:rounded-lg has-[>[data-gsxui-slot-field]]:border has-[>[data-gsxui-slot-field]]:not-has-[:disabled,[data-disabled]]:hover:bg-muted/50 has-[>[data-gsxui-slot-field]]:has-[:focus-visible]:border-ring has-[>[data-gsxui-slot-field]]:has-[:focus-visible]:ring-ring/50 has-[>[data-gsxui-slot-field]]:has-[:focus-visible]:ring-3 flex w-fit has-[>[data-gsxui-slot-field]]:w-full has-[>[data-gsxui-slot-field]]:flex-col [&>[data-gsxui-slot-field]]:p-2.5"
+			"has-[input:checked]:bg-primary/5 has-[input:checked]:border-primary/30 dark:has-[input:checked]:border-primary/20 dark:has-[input:checked]:bg-primary/10 gap-2 leading-snug has-[>[data-gsxui-slot-field]]:rounded-lg has-[>[data-gsxui-slot-field]]:border has-[>[data-gsxui-slot-field]]:not-has-[:disabled,[data-disabled]]:hover:bg-muted/50 has-[>[data-gsxui-slot-field]]:has-[:focus-visible]:border-ring has-[>[data-gsxui-slot-field]]:has-[:focus-visible]:ring-ring/50 has-[>[data-gsxui-slot-field]]:has-[:focus-visible]:ring-3 flex w-fit has-[>[data-gsxui-slot-field]]:w-full has-[>[data-gsxui-slot-field]]:flex-col [&>[data-gsxui-slot-field]]:p-2.5"
 		}
 		{ attrs... }
 		data-gsxui-slot-field-label
