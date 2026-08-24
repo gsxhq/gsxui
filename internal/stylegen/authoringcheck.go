@@ -54,6 +54,18 @@ var authoringPatternAll = regexp.MustCompile(
 // identity too, so it needs its own, permanent check.
 var authoringPatternNarrow = regexp.MustCompile(`data-slot`)
 
+// authoringPatternDeadChecked matches upstream's data-checked/data-unchecked
+// variant vocabulary in a hand-ported registry/styles sheet. Nothing in gsxui
+// stamps data-checked anywhere — checkbox, radio and switch are real native
+// <input>s, so the port translates these variants to :checked forms
+// (data-checked: -> checked:, has-data-checked: -> has-[input:checked]:; see
+// docs/jsx-parity.md's "field-label focus ring"). A leaked token is the same
+// failure class as a data-slot leak: it compiles clean, passes byte-identity
+// and every other gate, and silently never matches in the browser — it
+// happened twice before this check existed (the three controls, then
+// FieldLabel).
+var authoringPatternDeadChecked = regexp.MustCompile(`data-checked|data-unchecked`)
+
 // authoringClassIndent matches a line that is (after leading whitespace)
 // exactly a class= attribute continuation, e.g. a class="..." line inside a
 // multi-line tag.
@@ -100,6 +112,12 @@ func CheckAuthoring(root string) error {
 		}
 		violations = append(violations, devViolations...)
 	}
+
+	styleViolations, err := checkDeadCheckedVocabulary(root)
+	if err != nil {
+		return err
+	}
+	violations = append(violations, styleViolations...)
 
 	if len(violations) == 0 {
 		return nil
@@ -155,6 +173,38 @@ func checkAuthoringDir(root, dir string, checkClass bool) ([]string, error) {
 			violations = append(violations, scanAuthoringLines(rel, content, authoringClassIndent)...)
 			violations = append(violations, scanAuthoringLines(rel, content, authoringClassTag)...)
 		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return violations, nil
+}
+
+// checkDeadCheckedVocabulary walks every .css file under registry/styles and
+// reports lines carrying the dead data-checked/data-unchecked vocabulary (see
+// authoringPatternDeadChecked). It runs on the ported source of truth rather
+// than any generated output because that is where a pin-bump hand-port would
+// introduce the leak.
+func checkDeadCheckedVocabulary(root string) ([]string, error) {
+	var violations []string
+	stylesDir := filepath.Join(root, "registry", "styles")
+	err := filepath.WalkDir(stylesDir, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if d.IsDir() || filepath.Ext(path) != ".css" {
+			return nil
+		}
+		rel, err := filepath.Rel(root, path)
+		if err != nil {
+			return err
+		}
+		content, err := os.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		violations = append(violations, scanAuthoringLines(rel, content, authoringPatternDeadChecked)...)
 		return nil
 	})
 	if err != nil {

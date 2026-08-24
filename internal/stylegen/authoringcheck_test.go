@@ -174,3 +174,33 @@ func TestCheckAuthoringRejectsMigratedDivergingFromGenerated(t *testing.T) {
 		t.Fatalf("CheckAuthoring() error = %v, want it to report the byte-identity mismatch", err)
 	}
 }
+
+// TestCheckAuthoringRejectsDeadCheckedVocabularyInStyles pins the
+// registry/styles gate: a hand-ported sheet must never carry upstream's
+// data-checked/data-unchecked variant vocabulary — nothing in gsxui stamps
+// data-checked, so a leaked token compiles clean and silently never matches.
+func TestCheckAuthoringRejectsDeadCheckedVocabularyInStyles(t *testing.T) {
+	root := t.TempDir()
+	copyRepoFixture(t, root)
+
+	path := filepath.Join(root, "registry", "styles", DefaultStyle, "field.css")
+	content, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	leaked := strings.Replace(string(content), "has-[input:checked]:bg-primary/5", "has-data-checked:bg-primary/5", 1)
+	if leaked == string(content) {
+		t.Fatal("fixture field.css does not contain has-[input:checked]:bg-primary/5 to mutate")
+	}
+	if err := os.WriteFile(path, []byte(leaked), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	err = CheckAuthoring(root)
+	if err == nil {
+		t.Fatal("CheckAuthoring() = nil, want error for data-checked vocabulary in a registry/styles sheet")
+	}
+	if !strings.Contains(err.Error(), "data-checked") || !strings.Contains(err.Error(), "field.css") {
+		t.Fatalf("CheckAuthoring() error = %v, want it to name the data-checked leak in field.css", err)
+	}
+}
