@@ -52,7 +52,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-field-label {
-    @apply has-checked:bg-input/30 gap-2 leading-snug has-[>[data-gsxui-slot-field]]:rounded-2xl has-[>[data-gsxui-slot-field]]:border has-[>[data-gsxui-slot-field]]:not-has-[:disabled,[data-disabled]]:hover:bg-input/40 has-[>[data-gsxui-slot-field]]:has-[:focus-visible]:border-ring has-[>[data-gsxui-slot-field]]:has-[:focus-visible]:ring-ring/50 has-[>[data-gsxui-slot-field]]:has-[:focus-visible]:ring-3 flex w-fit has-[>[data-gsxui-slot-field]]:w-full has-[>[data-gsxui-slot-field]]:flex-col [&>[data-gsxui-slot-field]]:p-4;
+    @apply has-[input:checked]:bg-input/30 gap-2 leading-snug has-[>[data-gsxui-slot-field]]:rounded-2xl has-[>[data-gsxui-slot-field]]:border has-[>[data-gsxui-slot-field]]:not-has-[:disabled,[data-disabled]]:hover:bg-input/40 has-[>[data-gsxui-slot-field]]:has-[:focus-visible]:border-ring has-[>[data-gsxui-slot-field]]:has-[:focus-visible]:ring-ring/50 has-[>[data-gsxui-slot-field]]:has-[:focus-visible]:ring-3 flex w-fit has-[>[data-gsxui-slot-field]]:w-full has-[>[data-gsxui-slot-field]]:flex-col [&>[data-gsxui-slot-field]]:p-4;
   }
 
   /* carried: no upstream counterpart */

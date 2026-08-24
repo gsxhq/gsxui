@@ -210,7 +210,7 @@ func _gsxrenderFieldLabel(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children g
 //line field.gsx:110:3
 		_gsxgw.Node(ctx, children)
 		return _gsxgw.Err()
-	}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("group/field-label"), _gsxrt.Class("has-checked:bg-primary/5 has-checked:border-primary/30 dark:has-checked:border-primary/20 dark:has-checked:bg-primary/10 gap-2 has-[>[data-gsxui-slot-field]]:rounded-none has-[>[data-gsxui-slot-field]]:border has-[>[data-gsxui-slot-field]]:not-has-[:disabled,[data-disabled]]:hover:bg-muted/50 has-[>[data-gsxui-slot-field]]:has-[:focus-visible]:ring-ring/30 has-[>[data-gsxui-slot-field]]:has-[:focus-visible]:ring-2 leading-relaxed flex w-fit has-[>[data-gsxui-slot-field]]:w-full has-[>[data-gsxui-slot-field]]:flex-col [&>[data-gsxui-slot-field]]:p-4"))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-field-label", Value: _gsxrt.Toggle(true)}})))
+	}), _gsxrt.ConcatAttrs(_gsxrt.Attrs{{Key: "class", Value: _gsxrt.ClassJoin(_gsxrt.Class("group/field-label"), _gsxrt.Class("has-[input:checked]:bg-primary/5 has-[input:checked]:border-primary/30 dark:has-[input:checked]:border-primary/20 dark:has-[input:checked]:bg-primary/10 gap-2 has-[>[data-gsxui-slot-field]]:rounded-none has-[>[data-gsxui-slot-field]]:border has-[>[data-gsxui-slot-field]]:not-has-[:disabled,[data-disabled]]:hover:bg-muted/50 has-[>[data-gsxui-slot-field]]:has-[:focus-visible]:ring-ring/30 has-[>[data-gsxui-slot-field]]:has-[:focus-visible]:ring-2 leading-relaxed flex w-fit has-[>[data-gsxui-slot-field]]:w-full has-[>[data-gsxui-slot-field]]:flex-col [&>[data-gsxui-slot-field]]:p-4"))}}, attrs, _gsxrt.Attrs{{Key: "data-gsxui-slot-field-label", Value: _gsxrt.Toggle(true)}})))
 	return _gsxgw.Err()
 }
 

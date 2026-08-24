@@ -2,6 +2,16 @@
 
 Notable changes to gsxui's component set, newest first.
 
+## 2026-08-24
+
+### Changed
+
+- **field, checkbox, radio, switch** — upstream parity (pin `41bbc12c` -> `ac60ef5c`): when a checkbox, radio, or switch inside a `FieldLabel` card takes keyboard focus, the focus ring now renders on the card instead of the control, and the card gains a hover tint; `FieldLabel` declares the `group/field-label` marker these selectors scope to. See `docs/jsx-parity.md`'s `## field-label focus ring`.
+
+### Fixed
+
+- **field** — `FieldLabel`'s checked-state highlight (the tint behind a checked checkbox or radio card) never rendered in any style: it was authored as `has-data-checked:*` but gsxui's controls are native inputs and nothing stamps `data-checked`. Now `has-[input:checked]:*`, scoped to `input` so a `FieldLabel` wrapping a select (whose always-selected `<option>` also matches `:checked`) doesn't tint permanently.
+
 ## 2026-08-19
 
 ### Changed

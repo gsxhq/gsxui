@@ -3777,7 +3777,7 @@
           },
           "label": {
             "base": [
-              "has-checked:bg-input/30",
+              "has-[input:checked]:bg-input/30",
               "gap-2",
               "leading-snug",
               "has-[\u003e[data-gsxui-slot-field]]:rounded-2xl",
@@ -8524,10 +8524,10 @@
           },
           "label": {
             "base": [
-              "has-checked:bg-primary/5",
-              "has-checked:border-primary/30",
-              "dark:has-checked:border-primary/20",
-              "dark:has-checked:bg-primary/10",
+              "has-[input:checked]:bg-primary/5",
+              "has-[input:checked]:border-primary/30",
+              "dark:has-[input:checked]:border-primary/20",
+              "dark:has-[input:checked]:bg-primary/10",
               "gap-2",
               "leading-snug",
               "has-[\u003e[data-gsxui-slot-field]]:rounded-none",
@@ -13265,10 +13265,10 @@
           },
           "label": {
             "base": [
-              "has-checked:bg-primary/5",
-              "has-checked:border-primary/30",
-              "dark:has-checked:border-primary/20",
-              "dark:has-checked:bg-primary/10",
+              "has-[input:checked]:bg-primary/5",
+              "has-[input:checked]:border-primary/30",
+              "dark:has-[input:checked]:border-primary/20",
+              "dark:has-[input:checked]:bg-primary/10",
               "gap-2",
               "leading-snug",
               "has-[\u003e[data-gsxui-slot-field]]:rounded-xl",
@@ -18022,8 +18022,8 @@
           },
           "label": {
             "base": [
-              "has-checked:bg-primary/5",
-              "dark:has-checked:bg-primary/10",
+              "has-[input:checked]:bg-primary/5",
+              "dark:has-[input:checked]:bg-primary/10",
               "gap-2",
               "leading-snug",
               "has-[\u003e[data-gsxui-slot-field]]:rounded-md",
@@ -22793,10 +22793,10 @@
           },
           "label": {
             "base": [
-              "has-checked:bg-primary/5",
-              "has-checked:border-primary/30",
-              "dark:has-checked:border-primary/20",
-              "dark:has-checked:bg-primary/10",
+              "has-[input:checked]:bg-primary/5",
+              "has-[input:checked]:border-primary/30",
+              "dark:has-[input:checked]:border-primary/20",
+              "dark:has-[input:checked]:bg-primary/10",
               "gap-2",
               "leading-snug",
               "has-[\u003e[data-gsxui-slot-field]]:rounded-lg",
@@ -27574,7 +27574,7 @@
           },
           "label": {
             "base": [
-              "has-checked:bg-input/30",
+              "has-[input:checked]:bg-input/30",
               "gap-2",
               "leading-snug",
               "has-[\u003e[data-gsxui-slot-field]]:rounded-2xl",
@@ -32397,10 +32397,10 @@
           },
           "label": {
             "base": [
-              "has-checked:bg-primary/5",
-              "has-checked:border-primary/30",
-              "dark:has-checked:border-primary/20",
-              "dark:has-checked:bg-primary/10",
+              "has-[input:checked]:bg-primary/5",
+              "has-[input:checked]:border-primary/30",
+              "dark:has-[input:checked]:border-primary/20",
+              "dark:has-[input:checked]:bg-primary/10",
               "gap-2",
               "has-[\u003e[data-gsxui-slot-field]]:rounded-none",
               "has-[\u003e[data-gsxui-slot-field]]:border",
@@ -37145,10 +37145,10 @@
           },
           "label": {
             "base": [
-              "has-checked:bg-primary/5",
-              "has-checked:border-primary/30",
-              "dark:has-checked:border-primary/20",
-              "dark:has-checked:bg-primary/10",
+              "has-[input:checked]:bg-primary/5",
+              "has-[input:checked]:border-primary/30",
+              "dark:has-[input:checked]:border-primary/20",
+              "dark:has-[input:checked]:bg-primary/10",
               "gap-2",
               "leading-snug",
               "has-[\u003e[data-gsxui-slot-field]]:rounded-md",

@@ -50,12 +50,15 @@ checkout.
 
 - PORT (2026-08-24, upstream `41bbc12c..ac60ef5c`): upstream moved the focus
   ring off a checkbox/radio/switch and onto its enclosing `FieldLabel` card
-  when the control takes keyboard focus. Purely additive, in all 8 styles:
+  when the control takes keyboard focus. Additive at the rule level in all 8
+  styles (though not behaviorally neutral — see KNOWN HOLE below):
   the three controls each gained
   `group-has-[:focus-visible]/field-label:ring-0` plus a per-style border
   override, and `.cn-field-label` gained
   `has-[>[data-slot=field]]:not-has-[:disabled,[data-disabled]]:hover:bg-*` and
-  a `has-[>[data-slot=field]]:has-[:focus-visible]:*` ring triple. Ported with
+  a `has-[>[data-slot=field]]:has-[:focus-visible]:*` ring triple (sera: a
+  ring pair — upstream `style-sera.css` has no `border-ring` token there, so
+  neither do we). Ported with
   this port's two standing translations — `[data-slot=field]` ->
   `[data-gsxui-slot-field]`, and `data-checked:`/`not-data-checked:`/
   `data-unchecked:` -> native `checked:`/`not-checked:` (the same mapping
@@ -72,6 +75,13 @@ checkout.
   through `:where(.group\/field-label):has(:is(:focus-visible))`.
   `peer/field-label` is NOT added — nothing in gsxui's 8 styles targets a
   `peer-*/field-label` selector, so it would be dead weight.
+- KNOWN HOLE (upstream's, kept for parity): the ring-suppression
+  (`group-has-[:focus-visible]/field-label:ring-0`) fires in ANY `FieldLabel`,
+  but the replacement ring on the label only fires in the card variant
+  (`has-[>[data-slot=field]]`). A control nested in a plain `FieldLabel` — no
+  `Field` card child — therefore keyboard-focuses with no visible ring at all.
+  The selector structure is byte-identical to upstream `ac60ef5c`, which has
+  the same hole; do not "fix" it here without an upstream change to port.
 - FIX (dead selector, same bump): `FieldLabel`'s checked-state highlight —
   `has-data-checked:bg-*`/`border-*` and its `dark:` pair — could never match.
   Nothing in gsxui stamps `data-checked` anywhere (our controls are native
@@ -79,8 +89,14 @@ checkout.
   checkbox or radio simply never rendered, in every style. This is the same
   dead-selector class the checkbox/radio/switch port already fixed; the
   `data-checked:` -> `:checked` pass just missed `FieldLabel`, which reaches
-  the control through `:has()` rather than on itself. Now `has-checked:*`,
-  compiling to `:has(:checked)`.
+  the control through `:has()` rather than on itself. Now
+  `has-[input:checked]:*`, compiling to `:has(:is(input:checked))` — scoped to
+  `input` deliberately, NOT the bare `has-checked:` (`:has(:checked)`):
+  `:checked` also matches a `<select>`'s selected `<option>`, and a native
+  select always has one, so the bare form would tint a `FieldLabel` wrapping
+  `NativeSelect`/`Select` permanently. Upstream's `[data-checked]` attribute
+  stamp could never match an option; scoping to `input` (checkbox, radio and
+  switch are all real `<input>`s) restores that semantic.
 
 ## packaging
 - NOTE (single package by design): `ui/` is one flat `package ui` — every
