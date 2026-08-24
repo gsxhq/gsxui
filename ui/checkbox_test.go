@@ -3,6 +3,7 @@ package ui_test
 import (
 	"encoding/base64"
 	"encoding/xml"
+	"html"
 	"os"
 	"strings"
 	"testing"
@@ -121,14 +122,25 @@ func TestCheckboxDisabledAttr(t *testing.T) {
 }
 
 func TestCheckboxPinned(t *testing.T) {
+	// The class expectation derives from the default style's recipe CSS
+	// (registry/styles/nova/checkbox.css), so ui/checkbox.gsx staying in
+	// lockstep with the registry is the assertion — the same pattern
+	// button_test.go/field_test.go use instead of a literal that would have
+	// to be re-typed on every style edit.
+	got := render(t, ui.Checkbox(nil))
+	want := `<input type="checkbox" class="` +
+		html.EscapeString(strings.Join(styleRecipeUtilities("checkbox", "gsxui-recipe-checkbox"), " ")) +
+		`" data-gsxui-slot-checkbox>`
+	if got != want {
+		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
+	}
 	// data-checked:/aria-invalid:aria-checked: were dead selectors — our
 	// <input type="checkbox"> is native, so :checked:/aria-invalid:checked:
 	// are what actually match. See the style-porter report's "Radio/Checkbox
-	// data-checked: -> native :checked:" entry.
-	got := render(t, ui.Checkbox(nil))
-	want := `<input type="checkbox" class="border-input dark:bg-input/30 checked:bg-primary checked:text-primary-foreground dark:checked:bg-primary checked:border-primary aria-invalid:checked:border-primary aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 flex size-4 items-center justify-center rounded-[4px] border transition-colors group-has-disabled/field:opacity-50 focus-visible:ring-3 aria-invalid:ring-3 group-has-[:focus-visible]/field-label:ring-0 group-has-[:focus-visible]/field-label:not-checked:border-input group-has-[:focus-visible]/field-label:checked:border-primary shrink-0 outline-none disabled:cursor-not-allowed disabled:opacity-50" data-gsxui-slot-checkbox>`
-	if got != want {
-		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
+	// data-checked: -> native :checked:" entry. A derived expectation can't
+	// pin that translation, so reject the dead vocabulary directly.
+	if strings.Contains(got, "data-checked") || strings.Contains(got, "data-unchecked") {
+		t.Errorf("dead data-checked/data-unchecked vocabulary in render\nin: %s", got)
 	}
 }
 
