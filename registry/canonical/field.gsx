@@ -78,9 +78,16 @@ component FieldContent(children gsx.Node, attrs gsx.Attrs) {
 
 // FieldLabel composes ui.Label directly, preserving ordered styling tokens
 // "label field-label".
+//
+// group/field-label is shadcn's own marker on this element (field.tsx's
+// FieldLabel carries it alongside peer/field-label). Checkbox, Radio and
+// Switch each scope their focused-inside-a-label rules to it — the ring moves
+// off the control and onto the FieldLabel card — so the marker has to be
+// declared here for those selectors to match, the same shape FieldGroup and
+// Field already use for group/field-group and group/field.
 component FieldLabel(children gsx.Node, attrs gsx.Attrs) {
 	<Label
-		class={ field.Label() }
+		class={ "group/field-label", field.Label() }
 		{ attrs... }
 		data-gsxui-slot-field-label
 	>

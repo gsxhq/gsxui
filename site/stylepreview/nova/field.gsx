@@ -91,10 +91,18 @@ component FieldContent(children gsx.Node, attrs gsx.Attrs) {
 
 // FieldLabel composes ui.Label directly, preserving ordered styling tokens
 // "label field-label".
+//
+// group/field-label is shadcn's own marker on this element (field.tsx's
+// FieldLabel carries it alongside peer/field-label). Checkbox, Radio and
+// Switch each scope their focused-inside-a-label rules to it — the ring moves
+// off the control and onto the FieldLabel card — so the marker has to be
+// declared here for those selectors to match, the same shape FieldGroup and
+// Field already use for group/field-group and group/field.
 component FieldLabel(children gsx.Node, attrs gsx.Attrs) {
 	<Label
 		class={
-			"has-data-checked:bg-primary/5 has-data-checked:border-primary/30 dark:has-data-checked:border-primary/20 dark:has-data-checked:bg-primary/10 gap-2 leading-snug has-[>[data-gsxui-slot-field]]:rounded-lg has-[>[data-gsxui-slot-field]]:border flex w-fit has-[>[data-gsxui-slot-field]]:w-full has-[>[data-gsxui-slot-field]]:flex-col [&>[data-gsxui-slot-field]]:p-2.5"
+			"group/field-label",
+			"has-checked:bg-primary/5 has-checked:border-primary/30 dark:has-checked:border-primary/20 dark:has-checked:bg-primary/10 gap-2 leading-snug has-[>[data-gsxui-slot-field]]:rounded-lg has-[>[data-gsxui-slot-field]]:border has-[>[data-gsxui-slot-field]]:not-has-[:disabled,[data-disabled]]:hover:bg-muted/50 has-[>[data-gsxui-slot-field]]:has-[:focus-visible]:border-ring has-[>[data-gsxui-slot-field]]:has-[:focus-visible]:ring-ring/50 has-[>[data-gsxui-slot-field]]:has-[:focus-visible]:ring-3 flex w-fit has-[>[data-gsxui-slot-field]]:w-full has-[>[data-gsxui-slot-field]]:flex-col [&>[data-gsxui-slot-field]]:p-2.5"
 		}
 		{ attrs... }
 		data-gsxui-slot-field-label
