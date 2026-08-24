@@ -15,6 +15,73 @@ below preserve `data-slot` and utility strings when they describe the
 upstream shadcn source or the historical port; they are not the current
 gsxui selector contract.
 
+## upstream style pin
+
+`registry/styles/<style>/*.css` carries a `Source: shadcn-ui/ui@<sha>` header
+naming the upstream commit its ported utilities were taken from. All 440 files
+(55 components x 8 styles) share one pin, which is what makes drift detection a
+single `git diff <pin>..HEAD -- apps/v4/registry/styles/` against a shadcn-ui
+checkout.
+
+- PIN (2026-08-24): bumped `41bbc12c` -> `ac60ef5c`. Every `.cn-*` rule in all
+  8 upstream style sheets was diffed across the two commits; exactly six
+  changed. Four are gsxui components and are ported in this bump (see
+  `## field-label focus ring` below). The other two are not ours:
+  `.cn-hover-card-content-aria` is a new react-aria base rule — the porter
+  ignores every `-aria`-suffixed class by design (`port.mapping.go`'s
+  `HasSuffix(class, "-aria")`), and gsxui's hover-card ports the plain
+  `.cn-hover-card-content`; `.cn-questionnaire-choice` (luma/maia/mira/rhea,
+  which dropped `bg-input/20`) has no gsxui counterpart at all. Every other
+  file's bytes are unchanged, so the header bump across all 440 records a
+  verified-clean pin rather than a re-port. `apps/v4/registry/new-york-v4/ui/`
+  — the structural reference — has no diff at all between the two commits.
+- NOTE (do not re-port to fix drift): `stylegen port` is a bootstrapping tool,
+  not an idempotent regenerator. Its carry policy works at whole-rule
+  granularity, so re-running it over today's tree silently drops the
+  hand-carried TOKENS inside rules that do have an upstream counterpart —
+  measured on this bump, a full `--style all` re-port would have deleted, among
+  much else, avatar's `after:*` border ring, carousel's `absolute size-8
+  touch-manipulation`, alert's `w-full`, accordion-trigger's `items-start
+  outline-none transition-all border border-transparent`, and chart's entire
+  hand-authored deviation commentary. Port drift by hand, rule by rule, from
+  the upstream diff.
+
+## field-label focus ring
+
+- PORT (2026-08-24, upstream `41bbc12c..ac60ef5c`): upstream moved the focus
+  ring off a checkbox/radio/switch and onto its enclosing `FieldLabel` card
+  when the control takes keyboard focus. Purely additive, in all 8 styles:
+  the three controls each gained
+  `group-has-[:focus-visible]/field-label:ring-0` plus a per-style border
+  override, and `.cn-field-label` gained
+  `has-[>[data-slot=field]]:not-has-[:disabled,[data-disabled]]:hover:bg-*` and
+  a `has-[>[data-slot=field]]:has-[:focus-visible]:*` ring triple. Ported with
+  this port's two standing translations — `[data-slot=field]` ->
+  `[data-gsxui-slot-field]`, and `data-checked:`/`not-data-checked:`/
+  `data-unchecked:` -> native `checked:`/`not-checked:` (the same mapping
+  `TestCheckboxPinned`/`TestRadioPinned` already document, since our controls
+  are real `<input>`s).
+- MECHANISM (`group/field-label` marker added): the ported selectors are scoped
+  to `group/field-label`, which shadcn's own `field.tsx` `FieldLabel` carries
+  (alongside `peer/field-label`) but this port had never declared — so the
+  marker is now a literal fragment on `FieldLabel`, `class={ "group/field-label",
+  field.Label() }`, the same shape `FieldGroup`/`Field` already use for
+  `group/field-group`/`group/field`. Without it the whole ported ring would
+  compile and never match. Verified against real Tailwind output: all 7
+  `group-has-[:focus-visible]/field-label:*` utilities emit rules resolving
+  through `:where(.group\/field-label):has(:is(:focus-visible))`.
+  `peer/field-label` is NOT added — nothing in gsxui's 8 styles targets a
+  `peer-*/field-label` selector, so it would be dead weight.
+- FIX (dead selector, same bump): `FieldLabel`'s checked-state highlight —
+  `has-data-checked:bg-*`/`border-*` and its `dark:` pair — could never match.
+  Nothing in gsxui stamps `data-checked` anywhere (our controls are native
+  inputs), so the "this card is selected" tint upstream shows behind a checked
+  checkbox or radio simply never rendered, in every style. This is the same
+  dead-selector class the checkbox/radio/switch port already fixed; the
+  `data-checked:` -> `:checked` pass just missed `FieldLabel`, which reaches
+  the control through `:has()` rather than on itself. Now `has-checked:*`,
+  compiling to `:has(:checked)`.
+
 ## packaging
 - NOTE (single package by design): `ui/` is one flat `package ui` — every
   component is `ui.Button`, `ui.Card`, `ui.DialogContent`, and so on, not

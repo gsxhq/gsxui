@@ -1,4 +1,4 @@
-/* Source: shadcn-ui/ui@41bbc12cfd39ed8d9cb8da04275479ee7ecc0612
+/* Source: shadcn-ui/ui@ac60ef5c4db4265d71454dd9ecd3f93e255d7211
    apps/v4/registry/styles/style-nova.css, Field lines 618-665. Ported by
    internal/stylegen/port; utilities are upstream Tailwind classes, re-slotted
    onto gsxui's shape-declared classes. */
@@ -52,7 +52,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-field-label {
-    @apply has-data-checked:bg-primary/5 has-data-checked:border-primary/30 dark:has-data-checked:border-primary/20 dark:has-data-checked:bg-primary/10 gap-2 leading-snug has-[>[data-gsxui-slot-field]]:rounded-lg has-[>[data-gsxui-slot-field]]:border flex w-fit has-[>[data-gsxui-slot-field]]:w-full has-[>[data-gsxui-slot-field]]:flex-col [&>[data-gsxui-slot-field]]:p-2.5;
+    @apply has-checked:bg-primary/5 has-checked:border-primary/30 dark:has-checked:border-primary/20 dark:has-checked:bg-primary/10 gap-2 leading-snug has-[>[data-gsxui-slot-field]]:rounded-lg has-[>[data-gsxui-slot-field]]:border has-[>[data-gsxui-slot-field]]:not-has-[:disabled,[data-disabled]]:hover:bg-muted/50 has-[>[data-gsxui-slot-field]]:has-[:focus-visible]:border-ring has-[>[data-gsxui-slot-field]]:has-[:focus-visible]:ring-ring/50 has-[>[data-gsxui-slot-field]]:has-[:focus-visible]:ring-3 flex w-fit has-[>[data-gsxui-slot-field]]:w-full has-[>[data-gsxui-slot-field]]:flex-col [&>[data-gsxui-slot-field]]:p-2.5;
   }
 
   /* carried: no upstream counterpart */

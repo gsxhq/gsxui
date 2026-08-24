@@ -76,12 +76,19 @@ func canonicalFieldClass(slot string, extra []string, caller ...string) string {
 }
 
 // canonicalFieldLabelClass is what FieldLabel renders: ui.Label's own recipe
-// utilities with Field's field-label slot merged in after them as an ordinary
-// caller class. tailwind-merge is what resolves leading-snug against Label's
-// leading-none here — the reason the old @layer utilities promotion in
+// utilities, then the literal group/field-label marker, then Field's
+// field-label slot merged in after them as an ordinary caller class.
+// tailwind-merge is what resolves leading-snug against Label's leading-none
+// here — the reason the old @layer utilities promotion in
 // assets/css/styles/default.css could be retired.
+//
+// group/field-label is the same kind of literal, never-compiled marker
+// canonicalFieldClass documents above: Checkbox, Radio and Switch scope their
+// focused-inside-a-label rules to it, so FieldLabel hardcodes it alongside its
+// recipe class in registry/canonical/field.gsx.
 func canonicalFieldLabelClass(caller ...string) string {
 	classes := append([]string(nil), labelRecipeUtilities("gsxui-recipe-label")...)
+	classes = append(classes, "group/field-label")
 	classes = append(classes, fieldRecipeClasses("label")...)
 	classes = append(classes, caller...)
 	return `class="` + html.EscapeString(merge.Merge(classes)) + `"`
