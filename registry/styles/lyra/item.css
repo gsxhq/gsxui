@@ -65,7 +65,7 @@
 
   /* carried: no upstream counterpart */
   .gsxui-recipe-item-title {
-    @apply gap-2 text-xs font-medium underline-offset-4 line-clamp-1 w-fit items-center;
+    @apply gap-2 text-xs font-medium underline-offset-4 flex w-fit items-center;
   }
 
   .gsxui-recipe-item-description {

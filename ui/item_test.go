@@ -4,6 +4,7 @@ import (
 	"html"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"sync"
 	"testing"
@@ -260,6 +261,61 @@ func TestItemTitlePinned(t *testing.T) {
 	want := `<div ` + canonicalItemClass("title", nil) + ` data-gsxui-slot-item-title>x</div>`
 	if got != want {
 		t.Errorf("pinned render mismatch\n got: %s\nwant: %s", got, want)
+	}
+}
+
+// classAttr returns the decoded value of the first class attribute in rendered,
+// so a test can reason about class tokens individually rather than by substring.
+func classAttr(t *testing.T, rendered string) string {
+	t.Helper()
+	const marker = ` class="`
+	i := strings.Index(rendered, marker)
+	if i < 0 {
+		t.Fatalf("no class attribute in: %s", rendered)
+	}
+	rest := rendered[i+len(marker):]
+	j := strings.IndexByte(rest, '"')
+	if j < 0 {
+		t.Fatalf("unterminated class attribute in: %s", rendered)
+	}
+	return html.UnescapeString(rest[:j])
+}
+
+// TestItemTitleIsFlexAndUnclamped guards the two tokens a 2026-08-31 parity
+// audit found swapped in every style's item.css: the carried structural trio
+// read "line-clamp-1 w-fit items-center" where upstream's own ItemTitle base
+// (registry/new-york-v4/ui/item.tsx) is "flex w-fit items-center gap-2 text-sm
+// leading-snug font-medium". TestItemTitlePinned cannot catch this — it builds
+// its want from the same recipe CSS, so a CSS-side swap moves both sides of
+// that comparison together. Asserted on the rendered output rather than the
+// recipe so it also covers the canonical -> generated -> ui/ propagation.
+//
+// Both tokens are load-bearing: without "flex" the sibling "items-center" and
+// "gap-2" are inert on a block box (a title composing text plus a badge loses
+// its gap and its centering), and "line-clamp-1" sets display:-webkit-box plus
+// a one-line clamp, truncating a title upstream lets wrap. Upstream carries no
+// line-clamp on this part in any of the 8 style packs — contrast ItemDescription,
+// whose line-clamp-2 IS upstream's and is asserted present here to keep this
+// test from being read as a blanket "no clamping in item" rule.
+func TestItemTitleIsFlexAndUnclamped(t *testing.T) {
+	got := render(t, ui.ItemTitle(gsx.Raw("x"), nil))
+	// Token-wise, not substring: a bare "flex" must not be satisfied by a
+	// later "flex-col", nor "gap-2" by "gap-2.5".
+	tokens := strings.Fields(classAttr(t, got))
+	for _, want := range []string{"flex", "items-center", "gap-2", "w-fit"} {
+		if !slices.Contains(tokens, want) {
+			t.Errorf("ItemTitle must carry %q (upstream item.tsx base)\nin: %s", want, got)
+		}
+	}
+	for _, tok := range tokens {
+		if strings.HasPrefix(tok, "line-clamp-") {
+			t.Errorf("ItemTitle must not clamp — upstream carries no line-clamp on this part, got %q\nin: %s", tok, got)
+		}
+	}
+
+	desc := render(t, ui.ItemDescription(gsx.Raw("x"), nil))
+	if !strings.Contains(desc, "line-clamp-2") {
+		t.Errorf("ItemDescription must keep upstream's line-clamp-2\nin: %s", desc)
 	}
 }
 
