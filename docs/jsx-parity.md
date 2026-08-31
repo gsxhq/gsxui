@@ -321,7 +321,30 @@ The Base UI (`@base-ui/react`) filtered listbox (`registry/new-york-v4/ui/combob
 - GAP (narrow): shadcn's `InputGroupButton` accepts every `Button` prop except `size` (`Omit<ComponentProps<typeof Button>, "size">`), so it can render as a link via `Button`'s own mechanisms; this port's signature (`variant`, `size`, `children`, `attrs`) hard-codes `href=""` in the composed `Button` call, and `Button`'s `<a>`-vs-`<button>` tag choice is gated on that Go param — not on anything `attrs` can supply — so an `InputGroupButton` can never render as an `<a>`. `disabled` still works (flows through `attrs` into `Button`'s spread). Add an `href` param if a real use appears; none of shadcn's own input-group demos exercise it.
 
 ## item
-- Straight port; no dropped tokens on `ItemGroup`/`ItemContent`/`ItemTitle`/`ItemDescription`/`ItemActions`/`ItemHeader`/`ItemFooter`. shadcn's own `item.tsx` has no Radix primitive underneath its own parts either (`Separator` is composed, not a Radix wrapper) — the same "package-namespaced compound parts" shape as card/breadcrumb/empty.
+- FIX (`ItemTitle` display, 2026-08-31 — a real drift, not a ledgered divergence):
+  the carried structural trio on `.gsxui-recipe-item-title` read
+  `line-clamp-1 w-fit items-center` in all 8 styles, where
+  `registry/new-york-v4/ui/item.tsx`'s own `ItemTitle` base is
+  `flex w-fit items-center gap-2 text-sm leading-snug font-medium` — `flex` had
+  been dropped and a `line-clamp-1` that upstream's `ItemTitle` has never
+  carried (it was introduced with the part in #8334 and never changed) added in
+  its place. Two visible consequences, both fixed by swapping the one token back
+  in `registry/styles/<style>/item.css`: (1) `line-clamp-1` sets
+  `display:-webkit-box` plus a one-line clamp, so a title that would wrap
+  upstream was truncated with an ellipsis instead; (2) with no `flex`, the
+  sibling `items-center` and `gap-2` were inert, so a title composing more than
+  one child (text plus a badge or icon — the shape `site/examples/item/` and
+  shadcn's own item demos use) lost both its 8px gap and its vertical
+  centering. `line-clamp-1` is NOT upstream's on this part — contrast
+  `ItemDescription`, whose `line-clamp-2` IS upstream's and is untouched, and
+  `## alert`'s own `AlertTitle`, where the nova retarget correctly DID drop an
+  upstream `line-clamp-1`. Confirmed against every one of the 8 upstream
+  `.cn-item-title` rules (none carries a `flex` or a `line-clamp`), so the
+  correction is identical in all 8 styles and leaves each style pack's own
+  tokens untouched. Sibling recipes already showed the intended shape:
+  `item-content` carries `flex flex-col`, `item-actions` carries
+  `flex items-center`.
+- Straight port; no dropped tokens on `ItemGroup`/`ItemContent`/`ItemTitle`/`ItemDescription`/`ItemActions`/`ItemHeader`/`ItemFooter` (see the `ItemTitle` FIX above, which restored that property for `ItemTitle` itself). shadcn's own `item.tsx` has no Radix primitive underneath its own parts either (`Separator` is composed, not a Radix wrapper) — the same "package-namespaced compound parts" shape as card/breadcrumb/empty.
 - WIN: `Item`'s `itemVariants` cva map (`variant`: default/outline/muted, `size`: default/sm/xs — xs is upstream's style-pack `.cn-item-size-xs`, added 2026-08-14, not in base `item.tsx`'s cva) and `ItemMedia`'s `itemMediaVariants` (`variant`: default/icon/image) all pick between static class blocks by the JS-resolved prop values — no `data-[variant=...]`/`data-[size=...]` selectors in `registry/new-york-v4/ui/item.tsx` to preserve — so all three port as `switch`es inside `class={}`, the same idiom as badge/button-group/empty. `Item`'s two switches (variant, size) are inlined directly rather than extracted into shared helper functions the way `button.gsx`'s `variantClass`/`sizeClass` are — no sibling component reuses this pair the way `pagination.gsx` reuses button's.
 - GAP (narrow): `Item`'s `asChild` tag-swapping (no dynamic tag) is dropped — always renders a `<div>`. Same narrow gap as button's own `asChild` (see `## button`); behavior-attachment uses of `asChild` are covered by the data-attribute mechanism (see dialog).
 - WIN: `ItemSeparator` composes `ui.Separator` directly (flat package, no re-implementation) — the `item` → `separator` dependency `internal/registry` derives and `registry_test.go` pins.

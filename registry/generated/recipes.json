@@ -4292,7 +4292,7 @@
               "leading-snug",
               "font-medium",
               "underline-offset-4",
-              "line-clamp-1",
+              "flex",
               "w-fit",
               "items-center"
             ],
@@ -9040,7 +9040,7 @@
               "text-xs",
               "font-medium",
               "underline-offset-4",
-              "line-clamp-1",
+              "flex",
               "w-fit",
               "items-center"
             ],
@@ -13783,7 +13783,7 @@
               "leading-snug",
               "font-medium",
               "underline-offset-4",
-              "line-clamp-1",
+              "flex",
               "w-fit",
               "items-center"
             ],
@@ -18540,7 +18540,7 @@
               "leading-snug",
               "font-medium",
               "underline-offset-4",
-              "line-clamp-1",
+              "flex",
               "w-fit",
               "items-center"
             ],
@@ -23313,7 +23313,7 @@
               "leading-snug",
               "font-medium",
               "underline-offset-4",
-              "line-clamp-1",
+              "flex",
               "w-fit",
               "items-center"
             ],
@@ -28089,7 +28089,7 @@
               "leading-snug",
               "font-medium",
               "underline-offset-4",
-              "line-clamp-1",
+              "flex",
               "w-fit",
               "items-center"
             ],
@@ -32896,7 +32896,7 @@
               "font-semibold",
               "uppercase",
               "underline-offset-4",
-              "line-clamp-1",
+              "flex",
               "w-fit",
               "items-center"
             ],
@@ -37663,7 +37663,7 @@
               "leading-snug",
               "font-medium",
               "underline-offset-4",
-              "line-clamp-1",
+              "flex",
               "w-fit",
               "items-center"
             ],

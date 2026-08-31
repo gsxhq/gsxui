@@ -121,7 +121,7 @@ component ItemContent(children gsx.Node, attrs gsx.Attrs) {
 
 component ItemTitle(children gsx.Node, attrs gsx.Attrs) {
 	<div
-		class={ "gap-2 text-xs font-medium underline-offset-4 line-clamp-1 w-fit items-center" }
+		class={ "gap-2 text-xs font-medium underline-offset-4 flex w-fit items-center" }
 		{ attrs... }
 		data-gsxui-slot-item-title
 	>

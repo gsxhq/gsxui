@@ -230,7 +230,7 @@ func _gsxrenderItemTitle(ctx _gsxctx.Context, _gsxgw *_gsxrt.Writer, children gs
 	}
 //line item.gsx:123:2
 	_gsxgw.S("<div class=\"")
-	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2 text-xs font-medium underline-offset-4 line-clamp-1 w-fit items-center"), _gsxrt.Class(attrs.Class()))
+	_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class("gap-2 text-xs font-medium underline-offset-4 flex w-fit items-center"), _gsxrt.Class(attrs.Class()))
 	_gsxgw.S("\"")
 	_gsxgw.StyleMerged("", attrs.Style())
 	_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-item-title"})
