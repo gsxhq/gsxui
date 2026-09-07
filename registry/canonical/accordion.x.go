@@ -27,12 +27,14 @@ func Accordion(name string, children gsx.Node, attrs gsx.Attrs) _gsxrt.Node {
 			_gsxgw.AttrValue(string(name))
 			_gsxgw.S("\"")
 		}
-		_gsxgw.ClassMerged(_gsxcm.Merge, attrs.Class())
+		_gsxgw.S(" class=\"")
+		_gsxgw.Class(_gsxcm.Merge, _gsxrt.Class(accordion.Root()), _gsxrt.Class(attrs.Class()))
+		_gsxgw.S("\"")
 		_gsxgw.StyleMerged("", attrs.Style())
 		_gsxgw.Spread(ctx, "div", attrs, _gsxrt.AttrSinks{}, []string{"class", "style", "data-gsxui-slot-accordion"})
 		_gsxgw.BoolAttr("data-gsxui-slot-accordion", true)
 		_gsxgw.S(">")
-//line accordion.gsx:12:63
+//line accordion.gsx:12:90
 		_gsxgw.Node(ctx, children)
 		_gsxgw.S("</div>")
 		return _gsxgw.Err()

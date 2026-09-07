@@ -7,6 +7,8 @@ import "github.com/gsxhq/gsxui/internal/recipe"
 // accordionRecipe is accordion's typed slot accessor set.
 type accordionRecipe struct{ c recipe.Component }
 
+func (r accordionRecipe) Root() string { return r.c.SlotClass("") }
+
 func (r accordionRecipe) Content() string { return r.c.SlotClass("content") }
 
 func (r accordionRecipe) ContentInner() string { return r.c.SlotClass("content-inner") }
